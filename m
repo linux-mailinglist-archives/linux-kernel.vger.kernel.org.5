@@ -1,200 +1,125 @@
-Return-Path: <linux-kernel+bounces-81324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE9586743C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:03:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFC1286745B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:07:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439DB1F2E18D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:03:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E5391F2B076
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:07:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95625B5A1;
-	Mon, 26 Feb 2024 12:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3195FDB5;
+	Mon, 26 Feb 2024 12:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kzG7Z1CL"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zo1CLWn7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E01B1CD08;
-	Mon, 26 Feb 2024 12:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9A75B1F6;
+	Mon, 26 Feb 2024 12:07:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949001; cv=none; b=TTP+P2o2JyXccecj73Vysk2Xg3QmeXK00iByZJYH1+zV0ym4bygLLiE9RvlddcsRWPKFq6G7EqzH+NTew/g+q/A+IphGKvCzBHb1wlpRXiVDKZb5GWyYsuUfwnWGJZT4kil9TGvb8FZF4mq/8VIQqSHsr0WndrMdg/3cNup/PqA=
+	t=1708949258; cv=none; b=LC9ZLtR1pVZUMRUnDqbVo4Qbn7+ZoWOFV/G1vDRuFlmg53yMuSofTwuJbVHV1V9Mg34PQJI8cWgOuhD/M27HhSDecdQjFNuDbhh8VtNJpMHqgXJBHwwvCU/Y6Gar2RAJW6VYs5jF90S7qcds6TBx28yD9f+njyPBvy5PLmNqs5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949001; c=relaxed/simple;
-	bh=vRIEb/+D7M4j/nHK9fDGfbH9sUW39k0q7B5ZbffZKjw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y3SR1IwpVW92Q6/gL3hpTzceTc0LovI+8JtYSwXv5zBMSD5hL8z5Vgy8II86+ULvJY3F5mN+Tf8sXjcnvON4t3MJV5eH8zkwA9txO5WbGgSJHwXMV8v4qIAWq0ZjAiWaawtSdGG+UPTUd4SNUQfxodWaF6dZVZaCcb898sUX9J8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=kzG7Z1CL; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41QC2mR0099398;
-	Mon, 26 Feb 2024 06:02:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708948968;
-	bh=+3AsQsaBHuAdklDpGOnvvIB16uuAzF8tgDh7ffFqkhY=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=kzG7Z1CL27dDBNkYo2tw7iZjIJPFaNvIU847qw0GQo0uVwMo1MBKX5cMH/pORS2V4
-	 H4t1PkdKa7j5T1kXRQH+nJFQc9l9KTioni/0nyQWp/DlrIYRmzNB0SPQ4CTbzy580C
-	 FV04F/xi3LJYmMN8WiwyuXf90xfPaRTq7klgspuE=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41QC2m0t104041
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 26 Feb 2024 06:02:48 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 26
- Feb 2024 06:02:48 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 26 Feb 2024 06:02:48 -0600
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41QC2lnH056462;
-	Mon, 26 Feb 2024 06:02:47 -0600
-Date: Mon, 26 Feb 2024 17:32:46 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC: Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel
-	<gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Marek Vasut
-	<marek.vasut+renesas@gmail.com>,
-        Yoshihiro Shimoda
-	<yoshihiro.shimoda.uh@renesas.com>,
-        Kishon Vijay Abraham I
-	<kishon@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <mhi@lists.linux.dev>,
-        <s-vadapalli@ti.com>
-Subject: Re: [PATCH v3 1/5] PCI: dwc: Refactor dw_pcie_edma_find_chip() API
-Message-ID: <a3e4f9f9-e3c0-428c-913c-d777f3386556@ti.com>
-References: <20240226-dw-hdma-v3-0-cfcb8171fc24@linaro.org>
- <20240226-dw-hdma-v3-1-cfcb8171fc24@linaro.org>
+	s=arc-20240116; t=1708949258; c=relaxed/simple;
+	bh=tst3N3Ogd0NLb+9yQntn2eZ6lXZNfRn8LL6bYGoKxOc=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bPAXqVTjRW8+LFQcR30kUDTwYcPqSE7qbajyYsKIzGKmOS1L+mzhrJf75N9cQLDz4xcaH1KFg/YYv+7J30ISaWxE/ma08Xf7Z/vWKuuy2ckUhtLDYXT1313D4SPvgyQ0HEOnHYuX/yT/lgr0SGhW88WiFF0gJBm9HgTelCUa7rY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zo1CLWn7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9E2FC433C7;
+	Mon, 26 Feb 2024 12:07:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708949258;
+	bh=tst3N3Ogd0NLb+9yQntn2eZ6lXZNfRn8LL6bYGoKxOc=;
+	h=From:Subject:Date:To:Cc:From;
+	b=Zo1CLWn7kBO3dqtZwYhjmHvz67hXbCsddgPuOPmU86fiMqg0ZsBgR48+8JOSOuf+u
+	 580OS/zJkG5wR3YOOPnMlJkAGuqVivmU+zKwp0ntgCv/OgWDJhRWV5boR3dBkzVAdv
+	 6nqXS5XAZj5u9+K51qRE2a9iQOucI8+LUouBdbSO34nWJIVYqsgrlvQFQ7sozX+0Nt
+	 CzSYzEwUIHh7LEOzBPXross7QDzOC48AridRdNko68syRIxa8OGgPkU7QjnJjSt7UQ
+	 zw2B/toZ/Cn+TXkZO9jEqbhmRSKx/TuP/jNwQRQDBV/TlaVjd5oq9/cK+2it4rub3/
+	 a6OnXjJ+dtM7w==
+From: Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v6 0/4] arm64: dts: ti: am62: Add USB support for k3-am62p
+Date: Mon, 26 Feb 2024 14:03:06 +0200
+Message-Id: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-0-acf77fff4344@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240226-dw-hdma-v3-1-cfcb8171fc24@linaro.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPp93GUC/43NQQ6CMBCF4auQWTsGaluQlfcwLKAdoFEpmWIjI
+ dzdyglcfm/xvw0CsaMAdbYBU3TB+SlBnzIwYzsNhM4mg8iFzIW4YCex94xRo8L2pQW+Q4fLOpN
+ Bu2Cpr0RGmsrIFlJjZurd5+jfm+TRhcXzetxF9Vv/LUeFOcpOVUraorRFdXsQT/Q8ex6g2ff9C
+ /Y8QlnLAAAA
+To: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>
+Cc: Andrew Davis <afd@ti.com>, b-liu@ti.com, srk@ti.com, 
+ r-gunasekaran@ti.com, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ Roger Quadros <rogerq@kernel.org>, Rob Herring <robh@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1486; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=tst3N3Ogd0NLb+9yQntn2eZ6lXZNfRn8LL6bYGoKxOc=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBl3H8B5NRe0+ntzBZocwRCFpqIUzzMk6GiOSfm7
+ LVKZRCdLFGJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZdx/AQAKCRDSWmvTvnYw
+ k+rAEAC1Avjo5YCFn0nTskB3ig6WyENuCGfXxlC3gLifKf7LC/N/Gaepyrfg8JJbeiVYmQ4YP2h
+ EpD+Nfny9z8tlV8OYOt9QNJlfnOBxo5EPTXpdQJcQomjVXO+DP1Iv5P13L8Vvx+SjrjQKKpHzk6
+ dgFlQRt+nTso9/F3YhZMElSdraI+cVW84fy+FfkLhWA22uGOQTsiB4Qv8dm7by5ZKtkPQ11xZHN
+ yAnLLfqNA2n7ZK71GXzcNyb74QXNNzmxJShuZ/Jr8g50H/yXrjaDIdQBle8ecNgyf3r+u2VkqnD
+ xRuPZbra1vAwmtDPoeoCGrXde/GZvB2sC6kZe2dLqZ8XyTqOYLtrGxvxYZ/vnM3z+7NSeE5INSy
+ snWIcsPGETNs7SH3YGvAGpdt9cTsSzJXbomZqjgi37oQvdIW0g1YmARh/ntQ4TTeULn6Q7Vx4r1
+ jHLrpwbNtoBW87/nHXZ3AO3ctbp5zk17veP4OVk/4JW+KkBr5L6FFhK0VqQwTP6xF+sThSDR2P3
+ aq4Q6VFlRIw75g8HjlpQhwd4ZXtlbS+mrukkZMVUeEyJD+EkBns4t/8ndD/uT3s5zovpggH1vHj
+ DxJ9O9ckuC3mm2m2sQ/1QkzXjO+Q3srNh/ITMXWrofOmNTFrGarhWSKtSbMUkm9mXyQKPFn24iM
+ FOsCYdagOETN0uA==
+X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
+ fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 
-On Mon, Feb 26, 2024 at 05:07:26PM +0530, Manivannan Sadhasivam wrote:
-> In order to add support for Hyper DMA (HDMA), let's refactor the existing
-> dw_pcie_edma_find_chip() API by moving the common code to separate
-> functions.
-> 
-> No functional change.
-> 
-> Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Hi,
 
-Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+This series first adds device nodes for USB0_PHY_CTRL and USB1_PHY_CTRL
+in the wkup_conf node and fixus up the USB nodes to use the newly
+added nodes.
 
-Regards,
-Siddharth.
+Then it adds USB support for AM62P SoC and AM62P5-SK board.
 
-> ---
->  drivers/pci/controller/dwc/pcie-designware.c | 52 +++++++++++++++++++++-------
->  1 file changed, 39 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 250cf7f40b85..193fcd86cf93 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -880,7 +880,17 @@ static struct dw_edma_plat_ops dw_pcie_edma_ops = {
->  	.irq_vector = dw_pcie_edma_irq_vector,
->  };
->  
-> -static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> +static void dw_pcie_edma_init_data(struct dw_pcie *pci)
-> +{
-> +	pci->edma.dev = pci->dev;
-> +
-> +	if (!pci->edma.ops)
-> +		pci->edma.ops = &dw_pcie_edma_ops;
-> +
-> +	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
-> +}
-> +
-> +static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
->  {
->  	u32 val;
->  
-> @@ -900,24 +910,27 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
->  	else
->  		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
->  
-> -	if (val == 0xFFFFFFFF && pci->edma.reg_base) {
-> -		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
-> -
-> -		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
-> -	} else if (val != 0xFFFFFFFF) {
-> -		pci->edma.mf = EDMA_MF_EDMA_LEGACY;
-> +	/* Set default mapping format here and update it below if needed */
-> +	pci->edma.mf = EDMA_MF_EDMA_LEGACY;
->  
-> +	if (val == 0xFFFFFFFF && pci->edma.reg_base)
-> +		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
-> +	else if (val != 0xFFFFFFFF)
->  		pci->edma.reg_base = pci->dbi_base + PCIE_DMA_VIEWPORT_BASE;
-> -	} else {
-> +	else
->  		return -ENODEV;
-> -	}
->  
-> -	pci->edma.dev = pci->dev;
-> +	return 0;
-> +}
->  
-> -	if (!pci->edma.ops)
-> -		pci->edma.ops = &dw_pcie_edma_ops;
-> +static int dw_pcie_edma_find_channels(struct dw_pcie *pci)
-> +{
-> +	u32 val;
->  
-> -	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
-> +	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
-> +		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-> +	else
-> +		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
->  
->  	pci->edma.ll_wr_cnt = FIELD_GET(PCIE_DMA_NUM_WR_CHAN, val);
->  	pci->edma.ll_rd_cnt = FIELD_GET(PCIE_DMA_NUM_RD_CHAN, val);
-> @@ -930,6 +943,19 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
->  	return 0;
->  }
->  
-> +static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> +{
-> +	int ret;
-> +
-> +	dw_pcie_edma_init_data(pci);
-> +
-> +	ret = dw_pcie_edma_find_mf(pci);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return dw_pcie_edma_find_channels(pci);
-> +}
-> +
->  static int dw_pcie_edma_irq_verify(struct dw_pcie *pci)
->  {
->  	struct platform_device *pdev = to_platform_device(pci->dev);
-> 
-> -- 
-> 2.25.1
-> 
-> 
+cheers,
+-roger
+
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+---
+Changes in v6:
+- Rebased on next-20240226
+- Link to v5: https://lore.kernel.org/r/20240223-b4-for-v6-5-am62-usb-typec-dt-v5-0-4b5854d17d18@kernel.org
+
+---
+Roger Quadros (4):
+      dt-bindings: mfd: syscon: Add ti,am62-usb-phy-ctrl compatible
+      arm64: dts: ti: k3-am62/a: use sub-node for USB_PHY_CTRL registers
+      arm64: dts: ti: k3-am62p: add the USB sub-system
+      arm64: dts: ti: k3-am62a: Disable USB LPM
+
+ Documentation/devicetree/bindings/mfd/syscon.yaml |  1 +
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi          |  4 +-
+ arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi        | 10 ++++
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi         |  8 ++-
+ arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi       | 10 ++++
+ arch/arm64/boot/dts/ti/k3-am62p-main.dtsi         | 50 +++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi       | 10 ++++
+ arch/arm64/boot/dts/ti/k3-am62p5-sk.dts           | 67 +++++++++++++++++++++++
+ 8 files changed, 156 insertions(+), 4 deletions(-)
+---
+base-commit: 8552c902efe7ef670b6961fb8885b67961aeb629
+change-id: 20240223-b4-for-v6-5-am62-usb-typec-dt-769eec4c8c4a
+
+Best regards,
+-- 
+Roger Quadros <rogerq@kernel.org>
+
 
