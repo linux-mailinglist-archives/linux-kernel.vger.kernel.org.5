@@ -1,113 +1,116 @@
-Return-Path: <linux-kernel+bounces-82240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78682868114
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:35:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76D38680FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C833B240C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:28:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46F811F2DA23
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA1C12FF64;
-	Mon, 26 Feb 2024 19:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E380212FF65;
+	Mon, 26 Feb 2024 19:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J2GMF/yl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XDn2P28F"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA5C12F5A1;
-	Mon, 26 Feb 2024 19:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ED8E12FB03
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708975682; cv=none; b=F7DbIVvcHS13rMaU4jAzO0pBG060vujxlVhsbY9oJvrYReLfC0qwxW0Ca8/ToenydsD3N4GP2jal/R1iojRZJxMoxrBJI0gXLKN0bFgjRSWXXiETjOJX9rhfEeiqVL6ddRWr8J5mVm8Xb/ZzBJrmaLmBtOv+dNoHVprdrP1PPnk=
+	t=1708975705; cv=none; b=Oxgi2uPpWYcRiXMaw+vSNyg8dIk0ZRf2tKco4IztLFXLiFAm5U3n+LqmRXjjO0X0nNT9gdGkP9MN6psdHH+uR2YG9N0jmPeU4MswkyRhtcSDCLEHO1fNklZPW91LS7fLQJ2nXMNBKRk75lfGvq0/u+QCtx8Abbd85+TWI+26FFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708975682; c=relaxed/simple;
-	bh=z3CtMvNdNhYJJenylM+bgudMHFASYy1j0Pe/vc9ycbQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FBAns2PcUMrZXVowMBrTaOyoBDUejyEUg5RMkTx0Z6OG9bxMmQFB25Vlu9WHnodY8IZBUGMze5kxONOvVUyKgNxZGPgRO7clGmDfOtdtO2gVlFf+MeZUkgPy57J3doA34cTwkyH2+2C8z+qyEfrleBJpRqIBC19TVJMxf6mZnjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J2GMF/yl; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708975680; x=1740511680;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=z3CtMvNdNhYJJenylM+bgudMHFASYy1j0Pe/vc9ycbQ=;
-  b=J2GMF/ylSX1eE9AmN11KZdHCnw/55iaZpsHTCYh4nECKgUqpSKuXlyX9
-   nyMsno49jIs1fNU+UVG0TRc3tAmW/zRzRLWmnK80UdXjFb3TdZqwDRRcl
-   QqyHecPJ2PEVTqJgtUvlbxUR3GRWDmbuka7pVJ8fgtAcadtiQCufxLKNE
-   DKw3b4ijyVa5MsrVsYfsySZcAFjtPGQJPlf/huGTaitheiJme58x2e4tT
-   cWCjGVWaesifZJx82cLm6Ai7G78/oOUVLoAf8JUySF1Z6aSKuXrUrIWSp
-   LyWxRY6N/wF5DsNoXFsEl/cu/KJJ8pfHuXUkvpIFSwU0hTXVS6nL9i8VB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3161312"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3161312"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:27:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="6749704"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:27:58 -0800
-Date: Mon, 26 Feb 2024 11:27:57 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: isaku.yamahata@intel.com
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>,
-	Yuan Yao <yuan.yao@intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 028/130] KVM: TDX: Add TDX "architectural" error codes
-Message-ID: <20240226192757.GS177224@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <ae0b961d80ab90e43c6eff4a675e00ff80ab3b9f.1708933498.git.isaku.yamahata@intel.com>
+	s=arc-20240116; t=1708975705; c=relaxed/simple;
+	bh=w09eVwNl/udBZSm14ewjIAURwXfKkMekAoVbB7ELkK8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=HLL1hhkZPLb4i5evzYsk96MdYQ0xrFvpgfAbOjyI3CqmhCID2yfAsgf3IwFsu8PTdp+wCuvfslVN6Sy+Dqt3NiatZnQx+CmEhVE8oBtTdRX61PAJ8mzJHTMx2XiNfBYMZu+4k39noEnT3IVD+gI4R4tzI1L3S1QelEmONl4qgG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XDn2P28F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0AB5C43390;
+	Mon, 26 Feb 2024 19:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708975704;
+	bh=w09eVwNl/udBZSm14ewjIAURwXfKkMekAoVbB7ELkK8=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=XDn2P28FvP1BUb8/iHdXPrLLEU/UcXEvXdDNNArcIcqJZmopOzPChOLnkKiKAUbz+
+	 CEO/zV216e0VjFSo1EC1Rr1j1BQwwcmRzHnCSefgLLFUvsFX93B7tWb2h5owJ7cvzP
+	 C5fIRWg6+iD1/GsiKk6BG3mPMXvi42pwxqZoV/C6QUwMODC2pEdR5WfKDUD3VkgWHU
+	 YvWaPutNbMJ/zAab0RAZp8eczvG8dfWNQ3srVwb92OgjuNdZNzoLm6YKSFVUgPQaOO
+	 eOUaH8+EmPDYO8gVQK7cxttQtpmXlit5AvbP8uGv0FX4g74BbZBBj+7nIbCRiMI6ij
+	 pQV0W0w4n4olw==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, 
+ Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 
+ linux-amlogic@lists.infradead.org
+In-Reply-To: <20240223175116.2005407-1-jbrunet@baylibre.com>
+References: <20240223175116.2005407-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH 0/6] ASoC: meson: axg fixes and clean-up
+Message-Id: <170897570345.121037.4947854271427341182.b4-ty@kernel.org>
+Date: Mon, 26 Feb 2024 19:28:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ae0b961d80ab90e43c6eff4a675e00ff80ab3b9f.1708933498.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-On Mon, Feb 26, 2024 at 12:25:30AM -0800,
-isaku.yamahata@intel.com wrote:
+On Fri, 23 Feb 2024 18:51:06 +0100, Jerome Brunet wrote:
+> This are various fixes and clean up gathered while working on Amlogic audio
+> support. These help better handle higher and unusual clock configuration
+> for TDM, SPDIF or PDM.
+> 
+> Jerome Brunet (6):
+>   ASoC: meson: axg-tdm-interface: fix mclk setup without mclk-fs
+>   ASoC: meson: axg-tdm-interface: add frame rate constraint
+>   ASoC: meson: axg-tdm-interface: update error format error traces
+>   ASoC: meson: axg-spdifin: use max width for rate detection
+>   ASoC: meson: axg-fifo: take continuous rates
+>   ASoC: meson: axg-fifo: use FIELD helpers
+> 
+> [...]
 
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index fdfd41511b02..28c4a62b7dba 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -26,7 +26,13 @@
->  #define TDVMCALL_GET_QUOTE		0x10002
->  #define TDVMCALL_REPORT_FATAL_ERROR	0x10003
->  
-> -#define TDVMCALL_STATUS_RETRY		1
+Applied to
 
-Oops, I accidentally removed this constant to break tdx guest build.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-index ef1c8e5a2944..1367a5941499 100644
---- a/arch/x86/include/asm/shared/tdx.h
-+++ b/arch/x86/include/asm/shared/tdx.h
-@@ -28,6 +28,8 @@
- #define TDVMCALL_REPORT_FATAL_ERROR    0x10003
- #define TDVMCALL_SETUP_EVENT_NOTIFY_INTERRUPT  0x10004
- 
-+#define TDVMCALL_STATUS_RETRY          1
-+
- /*
-  * TDG.VP.VMCALL Status Codes (returned in R10)
-  */
--- 
-2.25.1
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Thanks!
+
+[1/6] ASoC: meson: axg-tdm-interface: fix mclk setup without mclk-fs
+      commit: e3741a8d28a1137f8b19ae6f3d6e3be69a454a0a
+[2/6] ASoC: meson: axg-tdm-interface: add frame rate constraint
+      commit: 59c6a3a43b221cc2a211181b1298e43b2c2df782
+[3/6] ASoC: meson: axg-tdm-interface: update error format error traces
+      commit: 48bbec092e4cf2fe1d3f81a889ec176e83aee695
+[4/6] ASoC: meson: axg-spdifin: use max width for rate detection
+      commit: a2417b6c0f9c3cc914c88face9abd6e9b9d76c00
+[5/6] ASoC: meson: axg-fifo: take continuous rates
+      commit: 8b410b3c46128f1eee78f1182731b84d9d2e79ef
+[6/6] ASoC: meson: axg-fifo: use FIELD helpers
+      (no commit info)
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
