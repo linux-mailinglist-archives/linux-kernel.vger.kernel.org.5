@@ -1,126 +1,162 @@
-Return-Path: <linux-kernel+bounces-81856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81858-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04C23867B03
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:01:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3706E867B0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:02:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE16229075C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:01:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8EB41F2CB4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EACE912C81A;
-	Mon, 26 Feb 2024 16:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="vQ5v3SWJ"
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 437BE12C7FD;
+	Mon, 26 Feb 2024 16:02:03 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555C612C55D;
-	Mon, 26 Feb 2024 16:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D18112BF3C;
+	Mon, 26 Feb 2024 16:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708963284; cv=none; b=h1p4GFz8PrnnR9KwleQ2DuV50aSqZpPpHTDqyEqI+CUPSm0hnD8IGFD22Xwq1OKu2mhkpxbirKqqE03Vhf6eraM0kYbnnKKIPl6S2TJCfBoQ8IlpMsjTYJFXyA6eje6ZZ6YLuGwxBKR6aww+yPpOkC0Y9SWcf+H0GTpsC3cmKkk=
+	t=1708963322; cv=none; b=WTLwndwgzUUi8q0BpNBNaZFfwGCDdZ69Wy+QwxGTrjiX5WX4bHxyUtOJhii/Km67HY/Vnzh0OcnX0Rh3f5GUAuq3s+DXGpgYNLl8W2RS7oi6iWiomR4CbUR0SezI41VH7gb/i+34c+K/L4G2Js8AVpvvaAZdnv2R1Hzou3fYbZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708963284; c=relaxed/simple;
-	bh=dMr2bgmwiVOt4TcUYH1qJC2vLb4zsG+TYAOHrr5w6YA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Hb6CDIDlmGzmFCZGzMSzFf3xPvtccx40u4wxQ1kTd2sKlJBr2ALObaSIrP8Bw6ZFqp9ix8VxrtA48+VRSP1zQcAMdZDYuURrhrqUdVqmbd1E8NZZQoWl9UCJDXZx91UjOh5Mxdznz9HSoI+E2e35+gAkCBDklCVnINNATXlGAAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=vQ5v3SWJ; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708963277; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=uO744AgFJT3omawn12Dq7uRsOiSEoPU3Y3gdcHNc6O4=;
-	b=vQ5v3SWJWiveFSM6sRgM1wiJ7b+QcsZOklVJwqrHFyw7Sueu4h7VQ1KksBE28OS6aPT98tgX5ARgSQ0W1KpLhlQ68q5EO5RXAxrBj1lkLrWpahzDscjYo5xJjMwmHvxdXJ/CDuSjL8zJoVyaKeyj8ZGzjHhKipxmrxFzP4MS2ZU=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=ethan.xys@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W1K5SSG_1708963266;
-Received: from localhost(mailfrom:ethan.xys@linux.alibaba.com fp:SMTPD_---0W1K5SSG_1708963266)
-          by smtp.aliyun-inc.com;
-          Tue, 27 Feb 2024 00:01:17 +0800
-From: Yisheng Xie <ethan.xys@linux.alibaba.com>
-To: alex.williamson@redhat.com
-Cc: akpm@linux-foundation.org,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	ethan.xys@linux.alibaba.com
-Subject: [PATCH] vfio/type1: unpin PageReserved page
-Date: Tue, 27 Feb 2024 00:01:06 +0800
-Message-Id: <20240226160106.24222-1-ethan.xys@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.1
+	s=arc-20240116; t=1708963322; c=relaxed/simple;
+	bh=z1qeTpEjMEfc2m6/6tnNBSOhd7axsMR5VpVy+elxQ20=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AT+t/SM0FZYA78VGuenK8QkrwyT7JoUkyDl1uYODhCnclN2ha3hoMLFeFVtPCfFeRgEiAdKCgNXnx9BeVVVvnlFwgzQLyJl85objJyO4Jgr/u1dWkenCRqXXTT6P4KfsLgQFoV8O3mh/mmrEBZNwIfcs7gE0j3hskl914PBNnHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-607e54b6cf5so21992767b3.0;
+        Mon, 26 Feb 2024 08:02:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708963319; x=1709568119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oYLdQGeG0+orphpmC7yUAHvEglcSX2xBetFEu0Q3iXQ=;
+        b=OUrsjVLO1WFlPifNNYrpZzOeqsGt84XY5/43PsYF6D16Gp6YplrY2UNwUgUgI2Pb7U
+         lQCA+4a/z1oNWP666dOa0BAGiqEMgD3I8AgOY6JUM3I5/ZFCZ9x5Yso93MZ0uxF4U61D
+         YARAXbYyX2UuHfCZiUKGIsM7vycFNP6XYrBvri/AxtOIrPqbpvNZoXml4BaFa5cRtMYT
+         nfRlKRTMJ/TGb2hnvn3O2nrmAwZrDcHE6WQPiYzVo0TRPKfz6+ZRQhFWG/Qs9pypVwK4
+         4SIQMLHM/lyPnTINMqlGvuhgi6PJ9pBpDasCGVoDBOlMVOfsfFAQNm9R9vHByGrVmS1Y
+         TFGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVOa2ED2kO9hQTiWh27SW023CGNGgrv3xP6Ekc56gU3vioZszupeISrzjIY5H6DUjhGaynd8n6OV13AnPvS6orLxPKcLM5yUP1y8HKGxvVOIxYJRvkTNQ/wgtp2IocwKVqrgQNi3jemVQ==
+X-Gm-Message-State: AOJu0YyCMPomDNM7/6jnKl76pDRTvuKLTeKYX2dO1z884MiI6n6+oSPm
+	lOPmWH8Gs4zbHCOKxIVi47FP7UYB7NwD9Qa8BplBPelcBzouwgEAJfpdXkOqYMw=
+X-Google-Smtp-Source: AGHT+IFWp6qoVWibZnaoUG6/6q4jndWnf1FBWR5155ZcWCf/bajewxyzUgo5a4pzMRlI/bfsXmS/eQ==
+X-Received: by 2002:a81:ae62:0:b0:608:b1eb:f631 with SMTP id g34-20020a81ae62000000b00608b1ebf631mr3888836ywk.3.1708963318708;
+        Mon, 26 Feb 2024 08:01:58 -0800 (PST)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id f187-20020a0dc3c4000000b00607bc220c5esm1232202ywd.102.2024.02.26.08.01.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 08:01:58 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbed179f0faso1799401276.1;
+        Mon, 26 Feb 2024 08:01:58 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUnqaGkn8K7XmgE2pg4xd08EDjclbV+BGwoJwieYPvQ3KJTDhx6gbcL7SKPFUVQb5AeFyOzpget+i77N1dSwGRaI5Eb1s1X15HqDQxDj/No6eAn4f5NuRqSs1TulTyewRHNR9rVN11o2Q==
+X-Received: by 2002:a25:e0ce:0:b0:dc6:e7f6:254a with SMTP id
+ x197-20020a25e0ce000000b00dc6e7f6254amr4561945ybg.8.1708963318051; Mon, 26
+ Feb 2024 08:01:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240219170337.2161754-1-andriy.shevchenko@linux.intel.com> <20240219170337.2161754-10-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240219170337.2161754-10-andriy.shevchenko@linux.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 26 Feb 2024 17:01:46 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWpepH0P8g9dPfq1rsZRJsvOnoZ7VnjqTL9nkSGtKFpYQ@mail.gmail.com>
+Message-ID: <CAMuHMdWpepH0P8g9dPfq1rsZRJsvOnoZ7VnjqTL9nkSGtKFpYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 9/9] auxdisplay: Add driver for MAX695x 7-segment LED controllers
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andy Shevchenko <andy@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Robin van der Gracht <robin@protonic.nl>, Paul Burton <paulburton@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We meet a warning as following:
- WARNING: CPU: 99 PID: 1766859 at mm/gup.c:209 try_grab_page.part.0+0xe8/0x1b0
- CPU: 99 PID: 1766859 Comm: qemu-kvm Kdump: loaded Tainted: GOE  5.10.134-008.2.x86_64 #1
- Hardware name: Foxconn AliServer-Thor-04-12U-v2/Thunder2, BIOS 1.0.PL.FC.P.031.00 05/18/2022
- RIP: 0010:try_grab_page.part.0+0xe8/0x1b0
- Code: b9 00 04 00 00 83 e6 01 74 ca 48 8b 32 b9 00 04 00 00 f7 c6 00 00 01 00 74 ba eb 91 8b 57 34 48 89 f8 85 d2 0f 8f 48 ff ff ff <0f> 0b 31 c0 c3 48 89 fa 48 8b 0a f7 c1 00 00 01 00 0f 85 5c ff ff
- RSP: 0018:ffffc900b1a63b98 EFLAGS: 00010282
- RAX: ffffea00000e4580 RBX: 0000000000052202 RCX: ffffea00000e4580
- RDX: 0000000080000001 RSI: 0000000000052202 RDI: ffffea00000e4580
- RBP: ffff88efa5d3d860 R08: 0000000000000000 R09: 0000000000000002
- R10: 0000000000000008 R11: ffff89403fff7000 R12: ffff88f589165818
- R13: 00007f1320600000 R14: ffffea0181296ca8 R15: ffffea00000e4580
- FS:  00007f1324f93e00(0000) GS:ffff893ebfb80000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 00007f1321694070 CR3: 0000006046014004 CR4: 00000000007726e0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- PKRU: 55555554
- Call Trace:
-  follow_page_pte+0x64b/0x800
-  __get_user_pages+0x228/0x560
-  __gup_longterm_locked+0xa0/0x2f0
-  vaddr_get_pfns+0x67/0x100 [vfio_iommu_type1]
-  vfio_pin_pages_remote+0x30b/0x460 [vfio_iommu_type1]
-  vfio_pin_map_dma+0xd4/0x2e0 [vfio_iommu_type1]
-  vfio_dma_do_map+0x21e/0x340 [vfio_iommu_type1]
-  vfio_iommu_type1_ioctl+0xdd/0x170 [vfio_iommu_type1]
-  ? __fget_files+0x79/0xb0
-  ksys_ioctl+0x7b/0xb0
-  ? ksys_write+0xc4/0xe0
-  __x64_sys_ioctl+0x16/0x20
-  do_syscall_64+0x2d/0x40
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Hi Andy,
 
-After add dumppage, it shows that it is a PageReserved page(e.g. zero page),
-whoes refcount is just overflow:
- page:00000000b0504535 refcount:-2147483647 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x3916
- flags: 0xffffc000001002(referenced|reserved)
- raw: 00ffffc000001002 ffffea00000e4588 ffffea00000e4588 0000000000000000
- raw: 0000000000000000 0000000000000000 80000001ffffffff 0000000000000000
+On Mon, Feb 19, 2024 at 6:03=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+> Add initial driver for the MAX6958 and MAX6959 7-segment LED
+> controllers.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-gup will _pin_ a page which is PageReserved, however, put_pfn in vfio will
-skip unpin page which is PageReserved. So use pfn_valid in put_pfn
-instead of !is_invalid_reserved_pfn to unpin PageReserved page.
+Thanks for your patch!
 
-Signed-off-by: Yisheng Xie <ethan.xys@linux.alibaba.com>
----
- drivers/vfio/vfio_iommu_type1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index b2854d7939ce..12775bab27ee 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -461,7 +461,7 @@ static bool is_invalid_reserved_pfn(unsigned long pfn)
- 
- static int put_pfn(unsigned long pfn, int prot)
- {
--	if (!is_invalid_reserved_pfn(pfn)) {
-+	if (pfn_valid(pfn)) {
- 		struct page *page = pfn_to_page(pfn);
- 
- 		unpin_user_pages_dirty_lock(&page, 1, prot & IOMMU_WRITE);
--- 
-2.39.1
+> --- /dev/null
+> +++ b/drivers/auxdisplay/max6959.c
 
+> +static void max6959_disp_update(struct work_struct *work)
+> +{
+> +       struct max6959_priv *priv =3D container_of(work, struct max6959_p=
+riv, work.work);
+> +       struct linedisp *linedisp =3D &priv->linedisp;
+> +       struct linedisp_map *map =3D linedisp->map;
+> +       char *s =3D linedisp->buf;
+> +       u8 buf[4];
+> +
+> +       /* Map segments according to datasheet */
+> +       buf[0] =3D bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
+> +       buf[1] =3D bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
+> +       buf[2] =3D bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
+> +       buf[3] =3D bitrev8(map_to_seg7(&map->map.seg7, *s++)) >> 1;
+
+for (unsigned int i =3D 0; i < linedisp->num_chars; i++) { ... }
+
+> +
+> +       regmap_bulk_write(priv->regmap, REG_DIGIT(0), buf, ARRAY_SIZE(buf=
+));
+
+linedisp->num_chars
+
+> +}
+
+> +static int max6959_i2c_probe(struct i2c_client *client)
+> +{
+> +       struct device *dev =3D &client->dev;
+> +       struct max6959_priv *priv;
+> +       int ret;
+> +
+> +       priv =3D devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +       if (!priv)
+> +               return -ENOMEM;
+> +
+> +       priv->regmap =3D devm_regmap_init_i2c(client, &max6959_regmap_con=
+fig);
+> +       if (IS_ERR(priv->regmap))
+> +               return PTR_ERR(priv->regmap);
+> +
+> +       ret =3D max6959_power_on(priv);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret =3D linedisp_register(&priv->linedisp, dev, 4, &max6959_lined=
+isp_ops);
+
++ device_property_read_u32(dev, "display-width-chars", ...) handling.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
