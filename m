@@ -1,131 +1,145 @@
-Return-Path: <linux-kernel+bounces-82019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25BD9867DD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:15:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0122A867DD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57BBF1C2B3BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:15:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 992DF28ABE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C5D135A42;
-	Mon, 26 Feb 2024 17:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F4160DC5;
+	Mon, 26 Feb 2024 17:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UwCcma0b"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="J5hwbTHq"
+Received: from smtp-8fa9.mail.infomaniak.ch (smtp-8fa9.mail.infomaniak.ch [83.166.143.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C0813540B;
-	Mon, 26 Feb 2024 17:05:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FEFA12F366
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708967123; cv=none; b=J1vNLxJN4EAHzPHYLONOVE8/yyWyp/oGIjb84cnaknsqn5VZ8zg/jHimIDCRIS9TukvkN0XzSmE5/yrs7xXamudT+pPY5C4ey9uxTOuAGPd2um9wwfZGyTynH0kPKNwBcOoX5l6Cs/HPYP4/77tEfxrVLFFyHouRs3FCkC/LTGg=
+	t=1708967154; cv=none; b=TMyjAJS0e0BSQrxxNQJn4ZhqsiuN55AASlAZjLTAZFxBRp+Q+wSwPWU5BX/1tZTCwgMGecx0aTI6XYllDEZ9aiDKiK0OMFpPSCuND/5moxNkBZmo8gnpJaj1s9oqyyc/8oQLvrFlwKmo+T5MXI1zgV4mIz/yXoITNBma9CaeKEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708967123; c=relaxed/simple;
-	bh=ypNyr0Uoo5ne9ovtpSKtjzM4p27kJo/g2Xvh37ER8Xo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DyUOHVax9Pip1ii3a7Z6BG6m7+OU4xteOTUJ7tEYIfnL44c24U61QTySxJuW/ZWMqQd6bR7trBUqhwjBaqn4T44RkgQUo8yAF/TlgUA/SmgvB5icElM8Jdg+X24ofQTD+pBbWbYul+urkj3oxtD/Ig0O7u1mdUVaXm528/L2Agw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UwCcma0b; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D88B0240004;
-	Mon, 26 Feb 2024 17:05:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708967118;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Tn9G+qXphFLUMlqaCdrIW1lI3L/sy7DuNc4RBARSO5c=;
-	b=UwCcma0by2RTCLSjDCaPHB11eVl9Hv4E4WFacUMgZUZtZi0PL3lvGYEBvnQRj1nwItn3xV
-	FtyUM6pIm2R5EQvStPsW9ZHAPY+m5Cs2ZqCB44BPWuB1DKrC3Z70IpsGQFOSgZs9zVzG5r
-	XPasAQae0LgApFmbzOsIWRzK54Q48Qk3NySaufIAiOTAVYhtSJTWLBDRMeHY8IH4FiuTSV
-	V0nzgn2/dyDNy41C8LVe5bltpaY6nseXrji9JBI3F9n7HNzSl+e9n7MuT+Cj5CxYqlJGbl
-	2Z/rvRso9ouN18O8ajWRzHIZFS/DIJjpsd62nguxkjQdhlOKNsTOlnki4dxT/g==
-Message-ID: <e24c77e6-5fcd-42f0-b93c-b4e6ce17e75a@bootlin.com>
-Date: Mon, 26 Feb 2024 18:05:16 +0100
+	s=arc-20240116; t=1708967154; c=relaxed/simple;
+	bh=TEpQO8oVhWg12vbtVS68hwoIFoQZycElKAGrNEzuM9o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fu08EbTRR1f5T5i0TM5ro1EFmohg+DfamccSuBmWYBaGU21Mr9rvQFOSOef4S6Z4YB8NqQA2H92ZBXfxDDiq3P3WDJZzFffak3NEDn+6Vr81yl2WqSiuX6aanUDqRLr7kvcBOowXGVgRDIasu58rl8rYqBRubJtvJ3yXMWXEMuA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=J5hwbTHq; arc=none smtp.client-ip=83.166.143.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-4-0001.mail.infomaniak.ch (smtp-4-0001.mail.infomaniak.ch [10.7.10.108])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tk6Sk4MjfzQkL;
+	Mon, 26 Feb 2024 18:05:42 +0100 (CET)
+Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tk6Sj5blNz1sr;
+	Mon, 26 Feb 2024 18:05:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1708967142;
+	bh=TEpQO8oVhWg12vbtVS68hwoIFoQZycElKAGrNEzuM9o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J5hwbTHqlvYD7XVRvMUl+1yLrl1IYNrSHFaPd8XOBjVbSlYpYstl5VbR9fB/ZR0zT
+	 JMGK2lOQSwEMUYdDl7Dyk0mcgPxC3oA1Jqi097/QPKxFi0rLGPUkh6CUmXtp72Ifs7
+	 JsByWA9GE4IGe2H/Z8jBwKANLAlE0JkMPCdJXydE=
+Date: Mon, 26 Feb 2024 18:05:33 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack3000@gmail.com>
+Cc: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	Paul Moore <paul@paul-moore.com>, "Serge E . Hallyn" <serge@hallyn.com>, 
+	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>, Shervin Oloumi <enlightened@chromium.org>, 
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] landlock: Warn once if a Landlock action is requested
+ while disabled
+Message-ID: <20240226.Ceemai4ahxei@digikod.net>
+References: <20240219191804.2978911-1-mic@digikod.net>
+ <20240221.b8dcd9590c37@gnoack.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 17/18] PCI: j721e: add reset GPIO to struct j721e_pcie
-Content-Language: en-US
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
- Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-17-5c2e4a3fac1f@bootlin.com>
- <Zc42HIibtoXqLyEA@smile.fi.intel.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <Zc42HIibtoXqLyEA@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: thomas.richard@bootlin.com
+In-Reply-To: <20240221.b8dcd9590c37@gnoack.org>
+X-Infomaniak-Routing: alpha
 
-On 2/15/24 17:04, Andy Shevchenko wrote:
-> On Thu, Feb 15, 2024 at 04:18:02PM +0100, Thomas Richard wrote:
->> From: Théo Lebrun <theo.lebrun@bootlin.com>
->>
->> Add reset GPIO to struct j721e_pcie, so it can be used at suspend and
->> resume stages.
+On Wed, Feb 21, 2024 at 10:35:50PM +0100, Günther Noack wrote:
+> Hello!
 > 
-> ...
+> I think this is a good idea.
+> Some minor implementation remarks below.
 > 
->>  	case PCI_MODE_RC:
->> -		gpiod = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
->> -		if (IS_ERR(gpiod)) {
->> -			ret = PTR_ERR(gpiod);
->> +		pcie->reset_gpio = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_LOW);
->> +		if (IS_ERR(pcie->reset_gpio)) {
->> +			ret = PTR_ERR(pcie->reset_gpio);
->>  			if (ret != -EPROBE_DEFER)
->>  				dev_err(dev, "Failed to get reset GPIO\n");
->>  			goto err_get_sync;
->> @@ -504,9 +504,9 @@ static int j721e_pcie_probe(struct platform_device *pdev)
->>  		 * mode is selected while enabling the PHY. So deassert PERST#
->>  		 * after 100 us.
->>  		 */
->> -		if (gpiod) {
->> +		if (pcie->reset_gpio) {
->>  			usleep_range(100, 200);
->> -			gpiod_set_value_cansleep(gpiod, 1);
->> +			gpiod_set_value_cansleep(pcie->reset_gpio, 1);
->>  		}
+> On Mon, Feb 19, 2024 at 08:18:04PM +0100, Mickaël Salaün wrote:
+> > Because sandboxing can be used as an opportunistic security measure,
+> > user space may not log unsupported features.  Let the system
+> > administrator know if an application tries to use Landlock but failed
+> > because it isn't enabled at boot time.  This may be caused by bootloader
+> > configurations with outdated "lsm" kernel's command-line parameter.
+> > 
+> > Cc: Günther Noack <gnoack@google.com>
+> > Cc: stable@vger.kernel.org
+> > Fixes: 265885daf3e5 ("landlock: Add syscall implementations")
+> > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> > ---
+> >  security/landlock/syscalls.c | 18 +++++++++++++++---
+> >  1 file changed, 15 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.c
+> > index f0bc50003b46..b5b424819dee 100644
+> > --- a/security/landlock/syscalls.c
+> > +++ b/security/landlock/syscalls.c
+> > @@ -33,6 +33,18 @@
+> >  #include "ruleset.h"
+> >  #include "setup.h"
+> >  
+> > +static bool is_not_initialized(void)
+> > +{
+> > +	if (likely(landlock_initialized))
+> > +		return false;
 > 
-> Instead of all this, just add one line assignment. Moreover, before or after
-> this patch refactor the code to use ret = dev_err_probe(...); pattern that
-> eliminates those deferral probe checks.
+> Optional stylistic remark; I try to avoid predicate functions which
+> have a "negated" meaning, because double negations are slightly more
+> error prone.  (We return false here, so Landlock is not not
+> initialized.)
 
-Hi Andy,
+I agree, I was also bothered about this double negation. I'll send a v2
+with the same behavior but an is_initialized() helper instead.
 
-I'm not sure what you exactly want when you write "just add one line
-assignment".
-For the dev_err_probe() it's okay, it will be fixed in the next iteration.
+> 
+> > +
+> > +	pr_warn_once(
+> > +		"Disabled but requested by user space. "
+> > +		"You should enable Landlock at boot time: "
+> > +		"https://docs.kernel.org/userspace-api/landlock.html#kernel-support\n");
+> > +	return true;
+> > +}
+> > +
+> >  /**
+> >   * copy_min_struct_from_user - Safe future-proof argument copying
+> >   *
+> > @@ -173,7 +185,7 @@ SYSCALL_DEFINE3(landlock_create_ruleset,
+> >  	/* Build-time checks. */
+> >  	build_check_abi();
+> >  
+> > -	if (!landlock_initialized)
+> > +	if (is_not_initialized())
+> >  		return -EOPNOTSUPP;
+> 
+> Technically, any Landlock user needs to go through the
+> landlock_create_ruleset() system call anyway; it might be enough to
+> just add it in that place and leave the other system calls as they
+> were.  Then you could also omit the special function.
 
-Regards,
+True, but we never know. I prefer to cover all entry points the same
+way.  It makes things more consistent and easier to review.
 
--- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+> 
+> Reviewed-by: Günther Noack <gnoack3000@gmail.com>
+> 
+> –Günther
+> 
 
