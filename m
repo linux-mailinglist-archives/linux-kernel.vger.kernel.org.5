@@ -1,221 +1,257 @@
-Return-Path: <linux-kernel+bounces-81007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE129866EEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 208EF866EFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:44:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 537931F2700A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:43:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89D6C1F2732F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:44:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D9587AE7D;
-	Mon, 26 Feb 2024 09:07:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02CE7CF13;
+	Mon, 26 Feb 2024 09:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UyEmmUbQ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="EEmI43gj"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F0A7AE60;
-	Mon, 26 Feb 2024 09:07:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40C323768;
+	Mon, 26 Feb 2024 09:08:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708938469; cv=none; b=kjpgbQYej1Gvoh5s4ab9rhXpX537TIkO/nMZIizQHjOuTZZFvNQtrgREDNtPVPwHofzS3wRAg9eGT2PnA159q9QuJQnKwZ5CyzDp84s4/T4QyzFUXxicUUNrvQR3VtXZbR5/I7sDM0RaOInNH1kupFKIs4fuKmIJO/be0ojYpvk=
+	t=1708938526; cv=none; b=qQidX/St4XsX3daKRiKFgLo7mlLMzfWs156UD84eh46Hsv8W9JS7A6CHd46h2acE35wcwdMBkp4c0abio/cVfVWek/MDfGN5nmBKy4syyZuH4yvb6B/rxMI2HXVf9yhKbFSFWp9ZD6dRC02wm2qo5Ksy1Ewq5SminLrVEGji524=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708938469; c=relaxed/simple;
-	bh=0h+QPYCBOa+lFPOYm0hdCnXgUZg87EDE2Bud1O1gZnM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q+M//Q5Y7qDjPgIyBsJOhwxzms7ZxinNi9lTxy7fB8Iz1tFu3jxMmJ3gb0jflgP10nUWKtr4ZKnLWHQ4GLIIzeEvFu9M3t4MVk8/lN7vUq4QgZHR+w4mjyQzv9mBHXubZa6AwWA/zrTcSPf/Qs98+cC1A9quS26Cze/YRLY/1fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UyEmmUbQ; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708938468; x=1740474468;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0h+QPYCBOa+lFPOYm0hdCnXgUZg87EDE2Bud1O1gZnM=;
-  b=UyEmmUbQcx2alXDSza9abyTwJXC4VpdY1EZGV/RJWhLHwRhNJQwa57iT
-   h/2OXTyHVqUZ7wVd53GsOSBRCFkT8jrCvpXpUSVwAehT8XVdwpwq2b6Xv
-   oNAaSQYz7QxK1IjccU3nuwjAdCvhGIgkPuIpxwcnZP278CBVWWWMNHmkx
-   R1SrVf0ak805Ppo1wb3YMFNgK0ODtq6pOlv7MgCc+sdZeTMYTHS1w8dcv
-   ORI9WCASTX0S2xU2ygsbpBwHwAByl3SbmgXDHKN7yS2GMyjOEHEvxt8rZ
-   UYidCowZz1Ltyx/WN5AKmBSw2ObNhSJvWsC8RwISCqCncpHGOxTZ5iMRO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="6997880"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6997880"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 01:07:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937029627"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="937029627"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 26 Feb 2024 01:07:42 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 26 Feb 2024 11:07:41 +0200
-Date: Mon, 26 Feb 2024 11:07:41 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Jameson Thies <jthies@google.com>
-Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com,
-	abhishekpandit@chromium.org, andersson@kernel.org,
-	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com,
-	gregkh@linuxfoundation.org, hdegoede@redhat.com,
-	neil.armstrong@linaro.org, rajaram.regupathy@intel.com,
-	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] usb: typec: ucsi: Register SOP' alternate modes with
- cable plug
-Message-ID: <ZdxU3dB2/GVlxWFe@kuha.fi.intel.com>
-References: <20240223010328.2826774-1-jthies@google.com>
- <20240223010328.2826774-5-jthies@google.com>
+	s=arc-20240116; t=1708938526; c=relaxed/simple;
+	bh=U01h9L1+UkCeGva9sz0XcyySArX+WnZPXS9U7CDy9hk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ILxxV36UHJEtNlx1EEPMIGJqVzy8rq/EI1uuHRS99NBKlLv5i/apOTvvKtnI0Afp0heTcncFgKdTXN0U8q3soG1A12uK0wlUGS2VV8xmlSj/CzOjNFZxLZnbzTwXwQHYsWxJqq229raDJ98+yjT6Ha0n9GPi4dfz57ukpkwPeyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=EEmI43gj; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41Q98ZsA026841;
+	Mon, 26 Feb 2024 03:08:35 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708938515;
+	bh=4Iem/3dn5S2Id6pTl2iaGP7FvOdBnbe8AXCqGJhP8Co=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=EEmI43gjg3VvNlq7JsDYLM8YsQQnwG5K5xEI9xScMrURAYtMFaZ9N3mTQ7uVDseVg
+	 mJrz6Yzqe3DZz14wQxWy+y96mjpRUT9RK+Xe3duy4XN46KqO9ekwWu1jXIjxqMtJrz
+	 JZZ8wvcNwqYHPd5RvcvuxYNOgm/3VoXQ3UMpa4Z8=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41Q98ZWZ045234
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 26 Feb 2024 03:08:35 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 26
+ Feb 2024 03:08:34 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 26 Feb 2024 03:08:34 -0600
+Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41Q98VLK064302;
+	Mon, 26 Feb 2024 03:08:32 -0600
+Message-ID: <3713e01e-1e48-489b-8ec2-e98471ca22f0@ti.com>
+Date: Mon, 26 Feb 2024 14:38:30 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223010328.2826774-5-jthies@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/2] net: ethernet: ti: am65-cpts: Enable PTP RX
+ HW timestamp using CPTS FIFO
+Content-Language: en-US
+To: Roger Quadros <rogerq@kernel.org>,
+        Dan Carpenter
+	<dan.carpenter@linaro.org>,
+        Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Richard
+ Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, Jakub
+ Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S.
+ Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20240215110953.3225099-1-c-vankar@ti.com>
+ <52ff5e18-3616-478a-ab40-8f9a6f7f3e37@kernel.org>
+From: Chintan Vankar <c-vankar@ti.com>
+In-Reply-To: <52ff5e18-3616-478a-ab40-8f9a6f7f3e37@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Feb 23, 2024 at 01:03:28AM +0000, Jameson Thies wrote:
-> Register SOP' alternate modes with a Type-C Connector Class cable plug.
-> Alternate modes are queried from the PPM using the GET_ALTERNATE_MODES
-> command with recipient set to SOP'.
-> 
-> Signed-off-by: Jameson Thies <jthies@google.com>
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
-> Tested on v6.6 kernel. SOP' GET_ALTERNATE_MODE responses from the PPM
-> are correctly registered as to the cable plug.
-> redrix-rev3 /sys/class/typec # ls port2-cable/port2-plug0/
-> device  port2-plug0.0  port2-plug0.1  power  subsystem  uevent
-> 
->  drivers/usb/typec/ucsi/ucsi.c | 60 +++++++++++++++++++++++++++++++++++
->  drivers/usb/typec/ucsi/ucsi.h |  2 ++
->  2 files changed, 62 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index 6d6443e61faa..9b541547917b 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -399,6 +399,27 @@ static int ucsi_register_altmode(struct ucsi_connector *con,
->  
->  		con->partner_altmode[i] = alt;
->  		break;
-> +	case UCSI_RECIPIENT_SOP_P:
-> +		i = ucsi_next_altmode(con->plug_altmode);
-> +		if (i < 0) {
-> +			ret = i;
-> +			goto err;
-> +		}
-> +
-> +		ret = ucsi_altmode_next_mode(con->plug_altmode, desc->svid);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		desc->mode = ret;
-> +
-> +		alt = typec_plug_register_altmode(con->plug, desc);
-> +		if (IS_ERR(alt)) {
-> +			ret = PTR_ERR(alt);
-> +			goto err;
-> +		}
-> +
-> +		con->plug_altmode[i] = alt;
-> +		break;
->  	default:
->  		return -EINVAL;
->  	}
-> @@ -566,6 +587,9 @@ static void ucsi_unregister_altmodes(struct ucsi_connector *con, u8 recipient)
->  	case UCSI_RECIPIENT_SOP:
->  		adev = con->partner_altmode;
->  		break;
-> +	case UCSI_RECIPIENT_SOP_P:
-> +		adev = con->plug_altmode;
-> +		break;
->  	default:
->  		return;
->  	}
-> @@ -801,6 +825,33 @@ static void ucsi_unregister_partner_pdos(struct ucsi_connector *con)
->  	con->partner_pd = NULL;
->  }
->  
-> +static int ucsi_register_plug(struct ucsi_connector *con)
-> +{
-> +	struct typec_plug *plug;
-> +	struct typec_plug_desc desc = {.index = TYPEC_PLUG_SOP_P};
-> +
-> +	plug = typec_register_plug(con->cable, &desc);
-> +	if (IS_ERR(plug)) {
-> +		dev_err(con->ucsi->dev,
-> +			"con%d: failed to register plug (%ld)\n", con->num,
-> +			PTR_ERR(plug));
-> +		return PTR_ERR(plug);
-> +	}
-> +
-> +	con->plug = plug;
-> +	return 0;
-> +}
-> +
-> +static void ucsi_unregister_plug(struct ucsi_connector *con)
-> +{
-> +	if (!con->plug)
-> +		return;
-> +
-> +	ucsi_unregister_altmodes(con, UCSI_RECIPIENT_SOP_P);
-> +	typec_unregister_plug(con->plug);
-> +	con->plug = NULL;
-> +}
-> +
->  static int ucsi_register_cable(struct ucsi_connector *con)
->  {
->  	struct typec_cable *cable;
-> @@ -842,6 +893,7 @@ static void ucsi_unregister_cable(struct ucsi_connector *con)
->  	if (!con->cable)
->  		return;
->  
-> +	ucsi_unregister_plug(con);
->  	typec_unregister_cable(con->cable);
->  	con->cable = NULL;
->  	memset(&con->cable_identity, 0, sizeof(con->cable_identity));
-> @@ -1046,6 +1098,14 @@ static int ucsi_check_cable(struct ucsi_connector *con)
->  	if (ret < 0)
->  		return ret;
->  
-> +	ret = ucsi_register_plug(con);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
-> +	if (ret < 0)
-> +		return ret;
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index b89fae82e8ce..32daf5f58650 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -429,9 +429,11 @@ struct ucsi_connector {
->  	struct typec_port *port;
->  	struct typec_partner *partner;
->  	struct typec_cable *cable;
-> +	struct typec_plug *plug;
->  
->  	struct typec_altmode *port_altmode[UCSI_MAX_ALTMODES];
->  	struct typec_altmode *partner_altmode[UCSI_MAX_ALTMODES];
-> +	struct typec_altmode *plug_altmode[UCSI_MAX_ALTMODES];
->  
->  	struct typec_capability typec_cap;
->  
-> -- 
-> 2.44.0.rc0.258.g7320e95886-goog
-
--- 
-heikki
+On 19/02/24 16:54, Roger Quadros wrote:
+>
+> On 15/02/2024 13:09, Chintan Vankar wrote:
+>> CPTS module supports capturing timestamp for every packet it receives,
+>> add a new function named "am65_cpts_rx_find_ts()" to get the timestamp
+>> of received packets from CPTS FIFO.
+>>
+>> Add another function named "am65_cpts_rx_timestamp()" which internally
+>> calls "am65_cpts_rx_find_ts()" function and timestamps the received
+>> PTP packets.
+>>
+>> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+>> ---
+>>   drivers/net/ethernet/ti/am65-cpts.c | 84 +++++++++++++++++++++--------
+>>   drivers/net/ethernet/ti/am65-cpts.h | 11 ++--
+>>   2 files changed, 67 insertions(+), 28 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+>> index c66618d91c28..92a3b40e60d6 100644
+>> --- a/drivers/net/ethernet/ti/am65-cpts.c
+>> +++ b/drivers/net/ethernet/ti/am65-cpts.c
+>> @@ -859,29 +859,6 @@ static long am65_cpts_ts_work(struct ptp_clock_info *ptp)
+>>   	return delay;
+>>   }
+>>   
+>> -/**
+>> - * am65_cpts_rx_enable - enable rx timestamping
+>> - * @cpts: cpts handle
+>> - * @en: enable
+>> - *
+>> - * This functions enables rx packets timestamping. The CPTS can timestamp all
+>> - * rx packets.
+>> - */
+>> -void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+>> -{
+>> -	u32 val;
+>> -
+>> -	mutex_lock(&cpts->ptp_clk_lock);
+>> -	val = am65_cpts_read32(cpts, control);
+>> -	if (en)
+>> -		val |= AM65_CPTS_CONTROL_TSTAMP_EN;
+>> -	else
+>> -		val &= ~AM65_CPTS_CONTROL_TSTAMP_EN;
+>> -	am65_cpts_write32(cpts, val, control);
+>> -	mutex_unlock(&cpts->ptp_clk_lock);
+>> -}
+>> -EXPORT_SYMBOL_GPL(am65_cpts_rx_enable);
+>> -
+>>   static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>>   {
+>>   	unsigned int ptp_class = ptp_classify_raw(skb);
+>> @@ -906,6 +883,67 @@ static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>>   	return 1;
+>>   }
+>>   
+>> +static u64 am65_cpts_find_rx_ts(struct am65_cpts *cpts, struct sk_buff *skb,
+>> +				int ev_type, u32 skb_mtype_seqid)
+>> +{
+>> +	struct list_head *this, *next;
+>> +	struct am65_cpts_event *event;
+>> +	unsigned long flags;
+>> +	u32 mtype_seqid;
+>> +	u64 ns = 0;
+>> +
+>> +	am65_cpts_fifo_read(cpts);
+> am65_cpts_fifo_read() is called from the CPTS interrupt handler and the
+> event is popped out of the FIFO and pushed into an event list.
+>
+> Doesn't this race with that interrupt handler?
+Could you clarify why there be a race condition ?
+> Can't you use that event list instead of reading cpts_fifo directly?
+>
+> Something like am65_cpts_match_tx_ts()?
+>
+>> +	spin_lock_irqsave(&cpts->lock, flags);
+>> +	list_for_each_safe(this, next, &cpts->events) {
+>> +		event = list_entry(this, struct am65_cpts_event, list);
+>> +		if (time_after(jiffies, event->tmo)) {
+>> +			list_del_init(&event->list);
+>> +			list_add(&event->list, &cpts->pool);
+>> +			continue;
+>> +		}
+>> +
+>> +		mtype_seqid = event->event1 &
+>> +			      (AM65_CPTS_EVENT_1_MESSAGE_TYPE_MASK |
+>> +			       AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK |
+>> +			       AM65_CPTS_EVENT_1_EVENT_TYPE_MASK);
+>> +
+>> +		if (mtype_seqid == skb_mtype_seqid) {
+>> +			ns = event->timestamp;
+>> +			list_del_init(&event->list);
+>> +			list_add(&event->list, &cpts->pool);
+>> +			break;
+>> +		}
+>> +	}
+>> +	spin_unlock_irqrestore(&cpts->lock, flags);
+>> +
+>> +	return ns;
+>> +}
+>> +
+>> +void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb)
+>> +{
+>> +	struct am65_cpts_skb_cb_data *skb_cb = (struct am65_cpts_skb_cb_data *)skb->cb;
+>> +	struct skb_shared_hwtstamps *ssh;
+>> +	int ret;
+>> +	u64 ns;
+>> +
+>> +	ret = am65_skb_get_mtype_seqid(skb, &skb_cb->skb_mtype_seqid);
+>> +	if (!ret)
+>> +		return; /* if not PTP class packet */
+>> +
+>> +	skb_cb->skb_mtype_seqid |= (AM65_CPTS_EV_RX << AM65_CPTS_EVENT_1_EVENT_TYPE_SHIFT);
+>> +
+>> +	dev_dbg(cpts->dev, "%s mtype seqid %08x\n", __func__, skb_cb->skb_mtype_seqid);
+>> +
+>> +	ns = am65_cpts_find_rx_ts(cpts, skb, AM65_CPTS_EV_RX, skb_cb->skb_mtype_seqid);
+>> +	if (!ns)
+>> +		return;
+>> +
+>> +	ssh = skb_hwtstamps(skb);
+>> +	memset(ssh, 0, sizeof(*ssh));
+>> +	ssh->hwtstamp = ns_to_ktime(ns);
+>> +}
+>> +EXPORT_SYMBOL_GPL(am65_cpts_rx_timestamp);
+>> +
+>>   /**
+>>    * am65_cpts_tx_timestamp - save tx packet for timestamping
+>>    * @cpts: cpts handle
+>> diff --git a/drivers/net/ethernet/ti/am65-cpts.h b/drivers/net/ethernet/ti/am65-cpts.h
+>> index 6e14df0be113..6099d772799d 100644
+>> --- a/drivers/net/ethernet/ti/am65-cpts.h
+>> +++ b/drivers/net/ethernet/ti/am65-cpts.h
+>> @@ -22,9 +22,9 @@ void am65_cpts_release(struct am65_cpts *cpts);
+>>   struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+>>   				   struct device_node *node);
+>>   int am65_cpts_phc_index(struct am65_cpts *cpts);
+>> +void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+>>   void am65_cpts_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+>>   void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+>> -void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en);
+>>   u64 am65_cpts_ns_gettime(struct am65_cpts *cpts);
+>>   int am65_cpts_estf_enable(struct am65_cpts *cpts, int idx,
+>>   			  struct am65_cpts_estf_cfg *cfg);
+>> @@ -48,17 +48,18 @@ static inline int am65_cpts_phc_index(struct am65_cpts *cpts)
+>>   	return -1;
+>>   }
+>>   
+>> -static inline void am65_cpts_tx_timestamp(struct am65_cpts *cpts,
+>> +static inline void am65_cpts_rx_timestamp(struct am65_cpts *cpts,
+>>   					  struct sk_buff *skb)
+>>   {
+>>   }
+>>   
+>> -static inline void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts,
+>> -					       struct sk_buff *skb)
+>> +static inline void am65_cpts_tx_timestamp(struct am65_cpts *cpts,
+>> +					  struct sk_buff *skb)
+>>   {
+>>   }
+>>   
+>> -static inline void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+>> +static inline void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts,
+>> +					       struct sk_buff *skb)
+>>   {
+>>   }
+>>   
 
