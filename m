@@ -1,130 +1,81 @@
-Return-Path: <linux-kernel+bounces-82270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 717EF86817F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:55:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4BA86818C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C775A291DE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:55:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BAFD1C250B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5ED130AF9;
-	Mon, 26 Feb 2024 19:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BD4130AFB;
+	Mon, 26 Feb 2024 19:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QTJZwrFx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="r+kctEEA"
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2084.outbound.protection.outlook.com [40.107.241.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DBA160BA1;
-	Mon, 26 Feb 2024 19:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CC312FF76;
+	Mon, 26 Feb 2024 19:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.84
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708977300; cv=fail; b=RwKM6lfo7bJ7AHD1I/XsXjUuze7xdO94wsEVWyKpKke7d1eihL7tXwONVmoSyiYBaGCXDpQsy5X3Xaiz6QPAfzEknLEfq9RvFYq6knf97Tr92YJbrrqd+HFRnkvYbzb4fiUSCUbLmALbbmymdEsk8DgCs7LSnkuIMpIlcyGR/5k=
+	t=1708977454; cv=fail; b=CtxI0g3uSfpGGzt6oE5E+0NpZbvif+dZy2SPq5Hqxi76o7LGLyA6xJ+rqJMMSPV59AOdK1nKP9Ycm4HpyuRmVIoNrvHEQLs0QJulEOwoECWnwkyk3vLCjZOyk61bueM4sA7F8ms8Rt+RhHeZROp/t9zh6nDexi+hq0icKjvhlsU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708977300; c=relaxed/simple;
-	bh=oS393CsZp4eDKHf4ljXTITOLNXkjl+kOuMPgQeNCNno=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=RZJE5fWa2KlQBJDpD9LjGAxfSNxp1pDBNcL0JxdDK72ts9h0lOzC0/O2dNwF1fEfo3bnXW+2WvNkIrF0Qt35r2xBNou2C7R6lry7OVbho15Zo8urbX2gBmFa2Izd7zideRB/a3FUG9KlPWHExKuI0tOhDO41qDh64edyrHJAFw0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QTJZwrFx; arc=fail smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708977298; x=1740513298;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=oS393CsZp4eDKHf4ljXTITOLNXkjl+kOuMPgQeNCNno=;
-  b=QTJZwrFxLO9917waRa8jNWolG9nbeNNV6Rfgnm6KXriQkPEa0KNZTJGo
-   M9op3z7/ArCsyrdlJkegV7fNKowQAhm1pt44sOkbkpG7eIs9iOLDmHCIB
-   TA6Rzd3eUr1xNIfirBDE/Yq4Tx+laZm6DepIXfhBTxlyaW89kxlnu10hC
-   y7SQPxxDOXBVipYxIlVkmdC7ij5pc5A2bPbAWJjSVdVsx6tDYP+EJp0ir
-   6jFclatOmME2otx+WlSIiYQvJ7nrcoTm7oBuBzcQvbJHV5wrGONvVHP0h
-   3JYIWTZaSrDy3OPkG3n51rcYLpKNeKrqz1iVM9ZPuaZYYz5XELhGkkpUi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3448333"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3448333"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:54:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="7320782"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Feb 2024 11:54:57 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 26 Feb 2024 11:54:55 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 26 Feb 2024 11:54:55 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 26 Feb 2024 11:54:55 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 26 Feb 2024 11:54:55 -0800
+	s=arc-20240116; t=1708977454; c=relaxed/simple;
+	bh=POj9WB2QdSBbKwYzg0CjdGw1DM/8vmghN2llpTeCy08=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=VOX2d1ZWfwaFrWltB7Ak6f+UrGYKG9GLCAId7rkFtKrjJg5uUdbehNhQ0M1M3RfhYI9pTelv0FBLvVJuroeRXFhMcIx++FyNlV4n749UwYMPhcpVvYVx42zBLz5wlaB1CayGnGufjqGYNLaXHMMj362FpvIwYUjMoWElbQA07V0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=r+kctEEA; arc=fail smtp.client-ip=40.107.241.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OZ3gnS738ME4b4HJTGqkpEjnZWNwo4Mcq2ZdeZvXE9w4ngp4BYOfV6RQ8lyrlNYZh5azzLT3rrgGQZsAyTuU/KqvaI8ygqFy5YJ4pmZDEzA9n4zIHcZzY5wyj8rj0Mb0RNXoTKmzo8bWMhaf6JoameOxlERcMF9vXrYvIB2bazs9Q/ZZsilm8/Lu5CMm/S1g5LKhEwFY3DyBokmyzRBPdavJe+qXNhd5PmkQTADGlNR3Y7pM02vKwtnzoTCF4w8iW5kI8q489ZN3HDih3FXT03YNj7OgP/fE1tBv5B6zIb45VWmRhtypXhL6CdNSPkuyh+I5D17e61o9m3cLC5Klbw==
+ b=OtPngpMgvdtj642cELYhtDHZ/Zn+TTkZbXBTRc43ZEFtUs0PlTI+mXyv3B/nZy6rq9FzZCxoVNwYd3lBwJiNm22YwsyIHBCCs2oOMiij7u7HF7G0bPDLmU7DvGCj64DDSYZN7g6ZQxhsgnugy4aCqj+Na9u24tAX1z+x2syJCQacIlyoWK4NxbVxKZSp9fKMFZhf4nzUr4Th64HdMX4IetfI1iQ4AxanYJmFyHGxGHZ8aZ/tazi5hpwmL5xSoIlBwXlJXIN8RXUESuHy//U70eTkrxfUwVgSk9XbnZFpJm+ck4dqzvReKeytn8GAOuECKGEoPKxEbdAw2bYgiHdJYA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L8Pnr6Wuyvl8OKaYOp00jYv3VGYy9sSqTpC/keGfApY=;
- b=JcVApfDZzZJpQ2mzPoVlTXuql0xjbtRzx5MHBNqXzFRMNpSeN39KOqhNOTx1gZ8ygCky73Gid5KOvX02JS+L6hkDDOxfKKEH02kk8ms/vf8NiZXl7/OIJeMSscL48CTAHyTVfWTjQ7LSPuyS1/GplnlzZmDok0qW8ju5gx35xw/Ybcg3maOKJ0zSdsxGgkFXdk1mS/iI1Kq9NH7xKOWpSFiAXyqmDnYIiI4RtSU04idJWqUJLBaBoOg/pG2z5GsRcnDDLGvX+vQa5ie9Zka8dOrJHpyJ3KSKEZ9jBblieoBb73PR5T1nUQQtXRVlH5PRMYwKK9KG++Iegl/gmzfp1Q==
+ bh=WEBTQ1JmLhq51B0Xn3AtPN/RfPfyhM0PaReuE2sCyrA=;
+ b=Ghoor8Lp3+8BpugdJDlrxxJYpmOctG3d/qeQdB3Aquu2AuTNIXrEWYf+EtP336eA3aL6A+IXE/b3COr+o6sadt4Z3Kfv3QbA8VKojG7kD7rK+yEMED+aW7Fx+wpBt6Ve+AmS0PzFMUuqZCqR36jRvo4FH0Q6m3WsxyB85zrOyc5fL1su5OKaFTZ7KJM3etwd0BML1NPS/Qk8vZsyk0JY268zfWdQWYcYKHf7CsV2ZAAgfytEZA6ni5Gcz2HwvYQYe+elEwlfWGzYCxAHwl+40sU693lHM9m9JU7GjhthFYpoklPhMq1RZzoWWyHFDQqYSlGOBmawA70IJwZJJ2NgTA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WEBTQ1JmLhq51B0Xn3AtPN/RfPfyhM0PaReuE2sCyrA=;
+ b=r+kctEEAb+kTyaF5qvOgVyFt1+VyESwyyZIxVKBmZoAg5yv+s5YxnyqO8N0CcJT5MIddUlLF3XtwhQsyZnGf3bOPtqfeoxs5GlKsQzU+/SMcr6Y8WyWSat9kojMWBRv8N7cEqkKUVI1h3CUXUsmw68Ze1FgF82Gcqw+o6eMI+Wg=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by CY8PR11MB6988.namprd11.prod.outlook.com (2603:10b6:930:54::18) with
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PA2PR04MB10278.eurprd04.prod.outlook.com (2603:10a6:102:408::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 26 Feb
- 2024 19:54:53 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::b383:e86d:874:245a]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::b383:e86d:874:245a%5]) with mapi id 15.20.7339.007; Mon, 26 Feb 2024
- 19:54:53 +0000
-Message-ID: <ec969f62-a1bb-4287-a4eb-083201134bae@intel.com>
-Date: Mon, 26 Feb 2024 11:54:49 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next v1 1/6] ethtool: add interface to read Tx
- hardware timestamping statistics
-Content-Language: en-US
-To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-CC: Saeed Mahameed <saeed@kernel.org>, Leon Romanovsky <leon@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, "Jonathan
- Corbet" <corbet@lwn.net>, Richard Cochran <richardcochran@gmail.com>, "Tariq
- Toukan" <tariqt@nvidia.com>, Gal Pressman <gal@nvidia.com>, Vadim Fedorenko
-	<vadim.fedorenko@linux.dev>, Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit
-	<hkallweit1@gmail.com>, Przemek Kitszel <przemyslaw.kitszel@intel.com>, Ahmed
- Zaki <ahmed.zaki@intel.com>, Alexander Lobakin
-	<aleksander.lobakin@intel.com>, Hangbin Liu <liuhangbin@gmail.com>, "Paul
- Greenwalt" <paul.greenwalt@intel.com>, Justin Stitt <justinstitt@google.com>,
-	Randy Dunlap <rdunlap@infradead.org>, Maxime Chevallier
-	<maxime.chevallier@bootlin.com>, Kory Maincent <kory.maincent@bootlin.com>,
-	Wojciech Drewek <wojciech.drewek@intel.com>, Vladimir Oltean
-	<vladimir.oltean@nxp.com>, Jiri Pirko <jiri@resnulli.us>, Alexandre Torgue
-	<alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, "Dragos
- Tatulea" <dtatulea@nvidia.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-References: <20240223192658.45893-1-rrameshbabu@nvidia.com>
- <20240223192658.45893-2-rrameshbabu@nvidia.com>
- <abbff26c-c626-42ce-82a9-4dc983372de3@intel.com> <875xyex10q.fsf@nvidia.com>
- <a84df9ec-475d-4ffc-a975-a0911a57901e@intel.com> <87il2evhtk.fsf@nvidia.com>
-From: Jacob Keller <jacob.e.keller@intel.com>
-In-Reply-To: <87il2evhtk.fsf@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0319.namprd03.prod.outlook.com
- (2603:10b6:303:dd::24) To CO1PR11MB5089.namprd11.prod.outlook.com
- (2603:10b6:303:9b::16)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Mon, 26 Feb
+ 2024 19:57:27 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.032; Mon, 26 Feb 2024
+ 19:57:27 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: conor@kernel.org
+Cc: Frank.li@nxp.com,
+	bhelgaas@google.com,
+	conor+dt@kernel.org,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org,
+	kw@linux.com,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org,
+	robh@kernel.org
+Subject: [PATCH 1/1] dt-bindings: pci: layerscape-pci: Convert to yaml format
+Date: Mon, 26 Feb 2024 14:57:11 -0500
+Message-Id: <20240226195711.270153-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR03CA0011.namprd03.prod.outlook.com
+ (2603:10b6:a02:a8::24) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -132,220 +83,488 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB5089:EE_|CY8PR11MB6988:EE_
-X-MS-Office365-Filtering-Correlation-Id: 58d979e9-5d1f-4e6f-6f70-08dc3704cc9d
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA2PR04MB10278:EE_
+X-MS-Office365-Filtering-Correlation-Id: 853050d5-e5c7-4669-9508-08dc3705287e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vp6FevFnNQ9F2hcrA5ZvwfcoQN6T68AsUhuvyUYk02S1feKvwzKYhifQ8z67FcQpaYZb8POJ+Z18TsHYhrVorh5Pqa2+lsncXlaiZTZw5js9H6K5s2LOtRa/rHb0bv4eGZghJtHKF8Qs9k/3bPZsQduk/+LOVb9ChGrztsDGHRG1Wxv7fDbj3VMz2God12FBIouzNe02jkN5Tz+pCoabBGZ6YQpkuvk7F4yo/pFRpPIRC6mmAe/1kfqVopdIe8PUIVI6R9Gj+khJHW10a73dGzWr3baNeA5qTHr/m5jyz9XDHvFcPlASP0IhLquMpLCztL7Umor/5/TCL75cBsXSpxIcXUUs27Lr085gJQko6Mr06OfixJ+tvymTN+egUPKtbT69U+WFbVzWznr3BbknI0TifCitRjbqHKlqmEZOrclIhxQJRFh5+ACvriUs3mjf68PMYdfaPJB4CrEnWS2B3IdoOaGen1t7TGrXYe19VUNhAVeVc4dV/uBIaTufg6HpOI87ohIyTBhM0Sl6wJQFFG6rytB0gVIQMiLFryxP7xJMpwRbcVV2JhhZZXTX5Aj98g2+yPNghzJDeAQhTzBLKJijVs4YUXotRyx1ondWDWPxv2D94P5x2NlHur23hpI2NxluWBkgQJAUvOEGD9K8eQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	4s9yN3oLotwM9JqdpazZySeDDqF3XQWz2Mbi/o+OUmgziZQnWPgxtExksKEPtYelG4ci1xkMh8mVAtLbR+06qXqeW50jQC6o1XbEdyCdienwP9DqapFoT4AmXpXKjVmSScT/kArEtcHbdYfzjQulC2mobCiy9E4auOLm9pojsM21iDoGpd3eR+OBrWwO0P29q9RGeRubKNx/7hibRCOlTjS8PAHK8WJi/1NVmCpBJY/uSjJUs/mzqJBTgeF0Z+1ze9BGLXkrshHE/mRXVDL897G+el1K6MevEbqQrgoTnqPe6pCgSJuFe93SvO3yXU5BAP7wuI817i/aGKzIlmgYUGpRcRulzh3nyGmBY+QWYtAnXon1B/Owsz4YpvA+b/H9DfeviO6K7SFJAigrh44Sgcaew5UOzH0DKku46iI96vU0DKLqnGkUoOfHuymjWyaZSPL+Jd5Ip6BOF7Y7WN8pkMTqWkL9ywFIrsfARHJ1f8dsf6IbMw9Uyv31kwTAQIz1qayd7TOJLWNmiHnqLthtRd3K+bRRlN2F2FbzcPoSrPNw4PiaIHIhXkMvs49TQjkRADLYBroUTMY/ncX3dhztvrYCJxLG6Uveh4eBmNli17Sywz9O+lWevemW7ze3EWuiVkjJepAVm8jrgEvQhYGkNPvrYxIjZevbTA9IJiF5FqvqG50b+sQZMKZ/zvdraT3i0iWPwWUsBOIMGFmNDQgKpg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WG4rUjJJa1pXS2tyRUo5ZDM0WDU2SzViT1lKVUtHOTZQYmgvLy9zTXh2dWpU?=
- =?utf-8?B?MS9aZml3V2sxTHh1MW52L1hVOW9FTTNITng5b0psUytkdlZGcGFaaEFxVkdN?=
- =?utf-8?B?THNPZk5SVUF0WFZRZHUvWHBISldSUm1QdHZ6VVdlYzlQWmdYclFaMHQ2dnlt?=
- =?utf-8?B?UzVDekNyTHRFblp1RXlBWVhUQzBTT2l1S3dVVDlRYVNkelVxOVdUa2I1bzFp?=
- =?utf-8?B?UkJYaG9yOEt0elRDUHloVWdrLzlWTHM2SHpsaUxpSVFnR0RBZURWV1B2NHZI?=
- =?utf-8?B?NVI0enF4SUZPRHUwWS93NkZyUHRkZ09VOElqQ1ZrQkZsa2JMSGhGNmE3VWxn?=
- =?utf-8?B?THBpbTJTdUlwS0ptNlJnNHJPQzFPV0lDUlVzNlIrb0N6YkNLMmhqYS8rMkJZ?=
- =?utf-8?B?MUJBRm1tVXpyalFOMGkwaTZ6bThSbFBXcjJxOEM5Vkt1ZExjaGxlTGw4WDdt?=
- =?utf-8?B?b0NOTVhSYUFKbnhHbGlsWUc0QVRlanprTG1BNEFqbjdycFhQRkMrblI5eEov?=
- =?utf-8?B?V3NwaDc3SjlDL25nbk1RYmc4dmw2d1hmZnNrdzA3eW9YMEhKVXJicVBqci80?=
- =?utf-8?B?SlV3RW5LamJSMTBtQ1ZEN1dWM3QwWnAzVTJMZGptZTQzc1A2UGQ3b1pGNEND?=
- =?utf-8?B?ZGxpaTloZy9PZXFmVm9reEFHcmRvSkkvZE9XM0R6cFl3K2tLRUZOY2pDOFdY?=
- =?utf-8?B?eXpBbDZqblBwQk8rZ2lhaWFydXlSSGQ0RWJKbUc0blpwZWNmOWRkR3NnNUll?=
- =?utf-8?B?V1pCR2xsczFNQklTZHNacldPczZ4cGZiKzkrQXZmVEFlUWNWMDljZG90MDc1?=
- =?utf-8?B?aXY4enlyZ09LTFF6bkR0VXJnUElrUWUzeVBIMVBjN014NFczVzVXSGFBUUc5?=
- =?utf-8?B?eXRTR1VncTI4UnRPMFlSTUcxekp3eURlVkFIdjVycnpjMnVYbzE4alV2bnRH?=
- =?utf-8?B?RkJGdlVheVFWY0dBRHdKNmNBRGxVbjMzVWxuWjU3OXdaRy9CbURxUDBOS2V2?=
- =?utf-8?B?ODNQTlg2QTVPeDc2RWVpMnlOb2hndUptR2RpcVdxVUZRZTlmYm5idFhDbU14?=
- =?utf-8?B?aUFqVHdLM2xTRGUxNmp2MmpOc1FmWWk3NG04YzVRRHo1T3NZYmxYaGl0WDFh?=
- =?utf-8?B?b3J6eFVjUmlXNURCZWFOUG0wYmRKV3F2MngzVW1RemE3MVp0ZHYwWjRYcmtT?=
- =?utf-8?B?RXR3K0MzQTNvWjMyalJnbjk4TzBYdnhMWFNQcko4Y0VnWk53N2U5bENqQ1Vk?=
- =?utf-8?B?ODlldVRRNXVwYm4rWCsyamdpcHRWWUEwWC9WZWdYc2hzMjAzam9FbTlYb1Qx?=
- =?utf-8?B?b1hnOEd0NGZ5TzAwUm5VL1plYlpNeE16VVcxM1pEeHIzcjFHL1ZSeGh5bkNj?=
- =?utf-8?B?RzVzWDVtcktDOXY2OHg2UGdtSFdxbW8rUW56dno0MFhEc295YWhBN0l4U3h4?=
- =?utf-8?B?NjdwTzJ5dXU2cndZTE5xVGFOYWd1NElhZXpRNWs5alV0cVNNZlZSOVYyRmZx?=
- =?utf-8?B?UWYyTDdWY3AzMjNsVWpVRjhQU3lZV09UYkI5bmpqMFlmQ05peldWOG9zWG5v?=
- =?utf-8?B?TDRGMTJoSmdhQVhqdUpkVXowMUl3dXdvTXEzZGt4MzdJMjRBY0FoTTA4d2g5?=
- =?utf-8?B?SEhoRmJVVHRFN3gwZnhsKzBLZ1JnSVV0MkxHT2VNS2hXQUtRVzdoalNGTTVP?=
- =?utf-8?B?b01UMCtpMlZrb3RPUjRCSitwU2orRW9EN3FPc2ViN2cyaXdSNDBML0U0T0pJ?=
- =?utf-8?B?Vjc3UUVFcFh2L1k2YWllS1BndzRvbEJFRGZIbWJlWmlJaGc0Y05Qbmh4NVdT?=
- =?utf-8?B?TkpTanVyeXhTOU1XZ2w5TndGbkpObmJFOGd0a3VnOWUrS0dMMVA2MHFmUzR0?=
- =?utf-8?B?YzZzUHpjZGdscm9LK2t1OFpqc1NwOEloTUVYQk5vVENkYWdOQ2wxYllOTE1l?=
- =?utf-8?B?N0ttSStUNmhnSlNmb0Q5T2ROc2VwQTI0QzBuN3AzRUgzWm53Q1RMMWNUdUtz?=
- =?utf-8?B?WU1SNGVoRHJQRlQ0R013WFpma2greWhmdTlXOXBFOTBnTjc3akZWVExYZTBT?=
- =?utf-8?B?cUFNZG5aWkdEQWVZMWY2Z0NOUXorZTdxUGpXWUdERnJVdVphWldLS1FORk1j?=
- =?utf-8?B?SlZsejlPMkdzbUduYUE2Z015MUFpZi9KYVR0eGFsM2srQ3Fjank3Z0JIK3hj?=
- =?utf-8?B?b3c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58d979e9-5d1f-4e6f-6f70-08dc3704cc9d
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?X7P8hEza356TukcE0gvokV7hSCNwFJmOfGiWA/a+rnRWYQDwQGrFfgqcFuQr?=
+ =?us-ascii?Q?G/QQ/ho0RBwTmWPPYrsNJHBTVOL+EQV9hNwLw4ntLwdTam/lZJblIY0Fl2CM?=
+ =?us-ascii?Q?jv5AlxRg25ueWZ2MJBcB66iYAgBe3ZxQVm2wT3am+/638JO6VeClsLDT6Wuc?=
+ =?us-ascii?Q?H2lzRtKNVHa+4UjB8KeMSiEa+9X2DPINLxjGvSa6q7qfGhBw9YwokLt3onnC?=
+ =?us-ascii?Q?rSaPRJArbp1RtyM7oOmJpg914MFx+qeUdEEN/XvsvENx2ijghmTaqVD9nYAe?=
+ =?us-ascii?Q?P5cK1CF7+gud1qjORXSFvN5QSPo40kRuF2ycPyD5YeTTWeg0pGWrUJfrJ5L5?=
+ =?us-ascii?Q?EaoTYVj/1gQq0dmcqJB8R8wBLX9P3a6LTiZyqM9Aq5Ca1uy2/rbdO+cjcCnn?=
+ =?us-ascii?Q?5Xt0GI22jTMgHXcqV1RfC0bQKcTKVaYNk6YILj8wtpqgVEszZ7CVHe6nPFNd?=
+ =?us-ascii?Q?GV94jG2tiH3vRyiADuC1H8qIh26eiuRGKRb3wLr/Ra9wNPpmk5gD4t6g1R9i?=
+ =?us-ascii?Q?zzldPKdxa7UzqOhCYZhzx46FfH3ejN7i/iFYCJn7rPsjy4iIxFzqWFa/PT7P?=
+ =?us-ascii?Q?PumHSFj2X5rMa1yIJC2LKLo5x/+RMwYviQQ2VXS67xiDaeP9NarBO2yjLsJ6?=
+ =?us-ascii?Q?uh6UC8JfJj4KFs7XJy0Tny/ZB62aQHtlgTOuqiF6aKQZQMwDB2SccvHjJYcN?=
+ =?us-ascii?Q?d7/Lr9m1a526bQfR9HD+mzTjQjwvlFF5Lf+kf4jRU3vtP0huZRpNnkdtSppv?=
+ =?us-ascii?Q?I7a9h59UWPPCAU5HBX80ldGmliPU8gFr0HD9yRt7UawMtzTX0Tlmp6QC9I15?=
+ =?us-ascii?Q?X7H3TFoHB/tkBN+v6y4xSR65UQwOyuqCYAs6A9T4r8DFPog8pe9F0qMc3s5k?=
+ =?us-ascii?Q?+uvvBUttf1bGk5cY2StDfb0jrIfmrn32YznAdk2Z8K9xkTrSCULoXJCVMWvR?=
+ =?us-ascii?Q?JdglJE6kGv/tbIjB3OjCeNiq/Xi4EBiBpbXzNcwINtbnsmfmWpfYxNa6T+Nf?=
+ =?us-ascii?Q?U0CeDKmdbI85vNZvJS5rdp3wwS5HxOw9QiF7VSgmtdVBu+cPbwgxD9xkd78t?=
+ =?us-ascii?Q?rzsANMFbyY8wPmKAbNCsFdB3Nmluf581NJ9Ib1qdZtkXO2Tn2W30ozDR33XY?=
+ =?us-ascii?Q?oaWkGj1Huw4Z0E6xjBgAosF8kXdY0U44JwHusn2nhEA4qwjjXmrcMKzK/npv?=
+ =?us-ascii?Q?gSySQKrqGxsdPJgb+dP6X/VMgHVgcCiqh4beLoO9+tQ5cwhdGo2iLgydB+kv?=
+ =?us-ascii?Q?YEnVYgfUyVtYKEHgGX/kZfIwJSwpOrkJnj0V6K5V/KnZM8yKlz8PxDsAvyjv?=
+ =?us-ascii?Q?K4aS1dyZav+YYCMHCvJ1B0PS/mBzMrF73souOeQnJbfyci7NBoXMN8AipqMW?=
+ =?us-ascii?Q?6QcOTHWwIHYqbP5jXcE4xU7FB4na+Wjtb8h/L2QGsxxy8hW6us2tBA51Ehjv?=
+ =?us-ascii?Q?P8jBlQNAO3ZOVtPy7+C+/h57wtG4Kl87gddDwLSqpdeEIjrOdkdgXDgk+Rb/?=
+ =?us-ascii?Q?LF1rgoUlN9oWPJG4XOfaPAuU2bjgG95vMn0pE+H51VEKO0j+IR+JvVjp8+Pk?=
+ =?us-ascii?Q?A99VR2gESYEumM4jVIM=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 853050d5-e5c7-4669-9508-08dc3705287e
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 19:54:53.2956
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 19:57:27.5325
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jiA9SfKoOLlyhTO/DRoB0vMdf0DW080oBecAMPB1Hj9Ph09Qydk8jp4+V0ANCzLa36TwipF/9qK0w1It646EdfxzFgEANtAewJSQbXJvyv4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6988
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: NbsBRnCI/hb4s7etLoyGDKuEhx3BfWcl+qyRsEHOCKg8zZZLwLSyIzVQMCI6iYvCDZ9astLcvQUhUnMCmmBAPA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA2PR04MB10278
 
+Convert the layerscape-pci PCIe binding document to yaml format.
 
+Additionally, changes for the layerscape-pci endpoint part:
+- Add interrupt name 'pme' restriction for fsl,ls1028a-pcie-ep,
+fsl,ls1046a-pcie-ep, and fsl,ls1088a-pcie-ep.
+- Add register name restrictions: 'reg' and 'addr_space'. 'addr_space' is
+required by snps,dw-pcie-ep.
+- Add an example.
 
-On 2/23/2024 3:43 PM, Rahul Rameshbabu wrote:
-> 
-> On Fri, 23 Feb, 2024 14:48:51 -0800 Jacob Keller <jacob.e.keller@intel.com> wrote:
->> On 2/23/2024 2:21 PM, Rahul Rameshbabu wrote:
->>>> The Intel ice drivers has the following Tx timestamp statistics:
->>>>
->>>> tx_hwtstamp_skipped - indicates when we get a Tx timestamp request but
->>>> are unable to fulfill it.
->>>> tx_hwtstamp_timeouts - indicates we had a Tx timestamp skb waiting for a
->>>> timestamp from hardware but it didn't get received within some internal
->>>> time limit.
->>>
->>> This is interesting. In mlx5 land, the only case where we are unable to
->>> fulfill a hwtstamp is when the timestamp information is lost or late.
->>>
->>
->> For ice, the timestamps are captured in the PHY and stored in a block of
->> registers with limited slots. The driver tracks the available slots and
->> uses one when a Tx timestamp request comes in.
->>
->> So we have "skipped" because its possible to request too many timestamps
->> at once and fill up all the slots before the first timestamp is reported
->> back.
->>
->>> lost for us means that the timestamp never arrived within some internal
->>> time limit that our device will supposedly never be able to deliver
->>> timestamp information after that point.
->>>
->>
->> That is more or less the equivalent we have for timeout.
->>
->>> late for us is that we got hardware timestamp information delivered
->>> after that internal time limit. We are able to track this by using
->>> identifiers in our completion events and we only release references to
->>> these identifiers upon delivery (never delivering leaks the references.
->>> Enough build up leads to a recovery flow). The theory for us is that
->>> late timestamp information arrival after that period of time should not
->>> happen. However the truth is that it does happen and we want our driver
->>> implementation to be resilient to this case rather than trusting the
->>> time interval.
->>>
->>
->> In our case, because of how the slots work, once we "timeout" a slot, it
->> could get re-used. We set the timeout to be pretty ridiculous (1 second)
->> to ensure that if we do timeout its almost certainly because hardware
->> never timestamped the packet.
-> 
-> We were thinking about that design as well. We use a 1 second timeout to
-> be safe.
-> 
->   #define MLX5E_PTP_TS_CQE_UNDELIVERED_TIMEOUT (1 * NSEC_PER_SEC)
-> 
-> Our device does not do any bookkeeping internally to prevent a
-> completion event with timestamp information from arriving after 1
-> second. Some internal folks have said it shouldn't be possible, but we
-> did not want to take any chances and built a model that is resilient to
-> timestamp deliveries after any period of time even after consuming the
-> skb without appending timestamp information. If no other vendor finds
-> this useful, we could roll this up into the error counter and leave the
-> late counter as vendor specific. I do not want to introduce too many
-> counters that are hard to understand. We document the device specific
-> counters on top of introducing them in the code base already.
-> 
->   https://docs.kernel.org/networking/device_drivers/ethernet/mellanox/mlx5/counters.html
-> 
+Changes for the layerscape-pci root complex part:
+- Add required property: 'reg-names', "#address-cells", "#size-cells",
+'device_type', 'bus-range', 'ranges', "#interrupt-cells",
+'interrupt-map-mask' and 'interrupt-map'.
+- Interrupt-names requirement split to each compatible string.
+- Add register name restrictions: 'reg' and 'config'. 'config' is required
+by snps,dw-pcie.
 
-We can't distinguish "late". At best we could notice if we get a
-timestamp on an index thats not currently active, but we wouldn't know
-for sure if it was late from a previous request or due to some other
-programming error.
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
->>
->>> Do you have any example of a case of skipping timestamp information that
->>> is not related to lack of delivery over time? I am wondering if this
->>> case is more like a hardware error or not. Or is it more like something
->>> along the lines of being busy/would impact line rate of timestamp
->>> information must be recorded?
->>>
->>
->> The main example for skipped is the event where all our slots are full
->> at point of timestamp request.
-> 
-> This is what I was guessing as the main (if not only reason). For this
-> specific reason, I think a general "busy" stats counter makes sense.
-> mlx5 does not need this counter, but I can see a lot of other hw
-> implementations needing this. (The skipped counter name obviously should
-> be left only in the ice driver. Just felt "busy" was easy to understand
-> for generalized counters.)
+Notes:
+    There are log discuss at v1. If I missed something, let me know.
+    
+    Change from v3 to v4
+    - remove ep label
+    - remove status="disabled"
+    - remove deprecated property
+    - fixed irq max-numbers
+    - because dts still use "reg" instead "dbi", to avoid dtb check warning,
+    not referernece to snps,dwc-pcie yet.
+    
+    Change from v2 to v3
+    - update commit message, show change compare txt file
+    - add failback compatible fsl,ls-pcie-ep.
+    - add commit message about 'addr_space' and 'config'.
+    
+    Change from v1 to v2
+    - remove '|-'
+    - dma-coherent: true
+    - add interrupts and interrupt-names at before Allof
+    - remove ref to snps,pcie*.yaml, some reg-names are not aligned with in
+    drivers
+    - Add an example for pcie-ep
 
-Yea, I don't expect this would be required for all hardware but it seems
-like a common approach if you have limited slots for Tx timestamps
-available.
+ .../bindings/pci/fsl,layerscape-pcie-ep.yaml  | 107 +++++++++++
+ .../bindings/pci/fsl,layerscape-pcie.yaml     | 175 ++++++++++++++++++
+ .../bindings/pci/layerscape-pci.txt           |  79 --------
+ 3 files changed, 282 insertions(+), 79 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-pci.txt
 
-> 
-> The reason why I prefer busy is that "skip" to me makes me think someone
-> used SIOCSHWTSTAMP to filter which packets get timestamped which is very
-> different from something like lack of resource availability.
-> 
+diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+new file mode 100644
+index 0000000000000..c230446bbab1d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+@@ -0,0 +1,107 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie-ep.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale Layerscape PCIe Endpoint(EP) controller
++
++maintainers:
++  - Frank Li <Frank.Li@nxp.com>
++
++description:
++  This PCIe EP controller is based on the Synopsys DesignWare PCIe IP.
++
++  This controller derives its clocks from the Reset Configuration Word (RCW)
++  which is used to describe the PLL settings at the time of chip-reset.
++
++  Also as per the available Reference Manuals, there is no specific 'version'
++  register available in the Freescale PCIe controller register set,
++  which can allow determining the underlying DesignWare PCIe controller version
++  information.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - fsl,ls2088a-pcie-ep
++          - fsl,ls1088a-pcie-ep
++          - fsl,ls1046a-pcie-ep
++          - fsl,ls1028a-pcie-ep
++          - fsl,lx2160ar2-pcie-ep
++      - const: fsl,ls-pcie-ep
++
++  reg:
++    maxItems: 2
++
++  reg-names:
++    items:
++      - const: regs
++      - const: addr_space
++
++  fsl,pcie-scfg:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: A phandle to the SCFG device node. The second entry is the
++      physical PCIe controller index starting from '0'. This is used to get
++      SCFG PEXN registers.
++
++  big-endian:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: If the PEX_LUT and PF register block is in big-endian, specify
++      this property.
++
++  dma-coherent: true
++
++  interrupts:
++    minItems: 1
++    maxItems: 2
++
++  interrupt-names:
++    minItems: 1
++    maxItems: 2
++    oneOf:
++      - anyOf:
++          - const: pme
++          - const: aer
++      - const: intr
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-names
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          enum:
++            - fsl,ls1028a-pcie-ep
++            - fsl,ls1046a-pcie-ep
++            - fsl,ls1088a-pcie-ep
++    then:
++      properties:
++        interrupt-names:
++          items:
++            - const: pme
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    soc {
++      #address-cells = <2>;
++      #size-cells = <2>;
++
++      pcie-ep@3400000 {
++        compatible = "fsl,ls1028a-pcie-ep", "fsl,ls-pcie-ep";
++        reg = <0x00 0x03400000 0x0 0x00100000
++              0x80 0x00000000 0x8 0x00000000>;
++        reg-names = "regs", "addr_space";
++        interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>; /* PME interrupt */
++        interrupt-names = "pme";
++      };
++    };
++...
+diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+new file mode 100644
+index 0000000000000..a2bfdcf818eec
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+@@ -0,0 +1,175 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale Layerscape PCIe Root Complex(RC) controller
++
++maintainers:
++  - Frank Li <Frank.Li@nxp.com>
++
++description:
++  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
++
++  This controller derives its clocks from the Reset Configuration Word (RCW)
++  which is used to describe the PLL settings at the time of chip-reset.
++
++  Also as per the available Reference Manuals, there is no specific 'version'
++  register available in the Freescale PCIe controller register set,
++  which can allow determining the underlying DesignWare PCIe controller version
++  information.
++
++properties:
++  compatible:
++    enum:
++      - fsl,ls1021a-pcie
++      - fsl,ls2080a-pcie
++      - fsl,ls2085a-pcie
++      - fsl,ls2088a-pcie
++      - fsl,ls1088a-pcie
++      - fsl,ls1046a-pcie
++      - fsl,ls1043a-pcie
++      - fsl,ls1012a-pcie
++      - fsl,ls1028a-pcie
++      - fsl,lx2160a-pcie
++
++  reg:
++    maxItems: 2
++
++  reg-names:
++    items:
++      - const: regs
++      - const: config
++
++  fsl,pcie-scfg:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: A phandle to the SCFG device node. The second entry is the
++      physical PCIe controller index starting from '0'. This is used to get
++      SCFG PEXN registers.
++
++  big-endian:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: If the PEX_LUT and PF register block is in big-endian, specify
++      this property.
++
++  dma-coherent: true
++
++  msi-parent: true
++
++  iommu-map: true
++
++  interrupts:
++    minItems: 1
++    maxItems: 3
++
++  interrupt-names:
++    minItems: 1
++    maxItems: 3
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - "#address-cells"
++  - "#size-cells"
++  - device_type
++
++allOf:
++  - $ref: /schemas/pci/pci-bus.yaml#
++  - if:
++      properties:
++        compatible:
++          enum:
++            - fsl,lx2160a-pcie
++    then:
++      properties:
++        interrupts:
++          maxItems: 3
++        interrupt-names:
++          items:
++            - const: pme
++            - const: aer
++            - const: intr
++
++  - if:
++      properties:
++        compatible:
++          enum:
++            - fsl,ls1028a-pcie
++            - fsl,ls1046a-pcie
++            - fsl,ls1043a-pcie
++            - fsl,ls1012a-pcie
++    then:
++      properties:
++        interrupts:
++          maxItems: 2
++        interrupt-names:
++          items:
++            - const: pme
++            - const: aer
++
++  - if:
++      properties:
++        compatible:
++          enum:
++            - fsl,ls2080a-pcie
++            - fsl,ls2085a-pcie
++            - fsl,ls2088a-pcie
++            - fsl,ls1021a-pcie
++    then:
++      properties:
++        interrupts:
++          maxItems: 1
++        interrupt-names:
++          items:
++            - const: intr
++
++  - if:
++      properties:
++        compatible:
++          enum:
++            - fsl,ls1088a-pcie
++    then:
++      properties:
++        interrupts:
++          maxItems: 1
++        interrupt-names:
++          items:
++            - const: aer
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    soc {
++      #address-cells = <2>;
++      #size-cells = <2>;
++
++      pcie@3400000 {
++        compatible = "fsl,ls1088a-pcie";
++        reg = <0x00 0x03400000 0x0 0x00100000>, /* controller registers */
++            <0x20 0x00000000 0x0 0x00002000>; /* configuration space */
++        reg-names = "regs", "config";
++        interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>; /* aer interrupt */
++        interrupt-names = "aer";
++        #address-cells = <3>;
++        #size-cells = <2>;
++        dma-coherent;
++        device_type = "pci";
++        bus-range = <0x0 0xff>;
++        ranges = <0x81000000 0x0 0x00000000 0x20 0x00010000 0x0 0x00010000   /* downstream I/O */
++                 0x82000000 0x0 0x40000000 0x20 0x40000000 0x0 0x40000000>; /* non-prefetchable memory */
++        msi-parent = <&its>;
++        #interrupt-cells = <1>;
++        interrupt-map-mask = <0 0 0 7>;
++        interrupt-map = <0000 0 0 1 &gic 0 0 0 109 IRQ_TYPE_LEVEL_HIGH>,
++                        <0000 0 0 2 &gic 0 0 0 110 IRQ_TYPE_LEVEL_HIGH>,
++                        <0000 0 0 3 &gic 0 0 0 111 IRQ_TYPE_LEVEL_HIGH>,
++                        <0000 0 0 4 &gic 0 0 0 112 IRQ_TYPE_LEVEL_HIGH>;
++        iommu-map = <0 &smmu 0 1>; /* Fixed-up by bootloader */
++      };
++    };
++...
+diff --git a/Documentation/devicetree/bindings/pci/layerscape-pci.txt b/Documentation/devicetree/bindings/pci/layerscape-pci.txt
+deleted file mode 100644
+index ee8a4791a78b4..0000000000000
+--- a/Documentation/devicetree/bindings/pci/layerscape-pci.txt
++++ /dev/null
+@@ -1,79 +0,0 @@
+-Freescale Layerscape PCIe controller
+-
+-This PCIe host controller is based on the Synopsys DesignWare PCIe IP
+-and thus inherits all the common properties defined in snps,dw-pcie.yaml.
+-
+-This controller derives its clocks from the Reset Configuration Word (RCW)
+-which is used to describe the PLL settings at the time of chip-reset.
+-
+-Also as per the available Reference Manuals, there is no specific 'version'
+-register available in the Freescale PCIe controller register set,
+-which can allow determining the underlying DesignWare PCIe controller version
+-information.
+-
+-Required properties:
+-- compatible: should contain the platform identifier such as:
+-  RC mode:
+-        "fsl,ls1021a-pcie"
+-        "fsl,ls2080a-pcie", "fsl,ls2085a-pcie"
+-        "fsl,ls2088a-pcie"
+-        "fsl,ls1088a-pcie"
+-        "fsl,ls1046a-pcie"
+-        "fsl,ls1043a-pcie"
+-        "fsl,ls1012a-pcie"
+-        "fsl,ls1028a-pcie"
+-  EP mode:
+-	"fsl,ls1028a-pcie-ep", "fsl,ls-pcie-ep"
+-	"fsl,ls1046a-pcie-ep", "fsl,ls-pcie-ep"
+-	"fsl,ls1088a-pcie-ep", "fsl,ls-pcie-ep"
+-	"fsl,ls2088a-pcie-ep", "fsl,ls-pcie-ep"
+-	"fsl,lx2160ar2-pcie-ep", "fsl,ls-pcie-ep"
+-- reg: base addresses and lengths of the PCIe controller register blocks.
+-- interrupts: A list of interrupt outputs of the controller. Must contain an
+-  entry for each entry in the interrupt-names property.
+-- interrupt-names: It could include the following entries:
+-  "aer": Used for interrupt line which reports AER events when
+-	 non MSI/MSI-X/INTx mode is used
+-  "pme": Used for interrupt line which reports PME events when
+-	 non MSI/MSI-X/INTx mode is used
+-  "intr": Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
+-	  which has a single interrupt line for miscellaneous controller
+-	  events(could include AER and PME events).
+-- fsl,pcie-scfg: Must include two entries.
+-  The first entry must be a link to the SCFG device node
+-  The second entry is the physical PCIe controller index starting from '0'.
+-  This is used to get SCFG PEXN registers
+-- dma-coherent: Indicates that the hardware IP block can ensure the coherency
+-  of the data transferred from/to the IP block. This can avoid the software
+-  cache flush/invalid actions, and improve the performance significantly.
+-
+-Optional properties:
+-- big-endian: If the PEX_LUT and PF register block is in big-endian, specify
+-  this property.
+-
+-Example:
+-
+-        pcie@3400000 {
+-                compatible = "fsl,ls1088a-pcie";
+-                reg = <0x00 0x03400000 0x0 0x00100000>, /* controller registers */
+-                      <0x20 0x00000000 0x0 0x00002000>; /* configuration space */
+-                reg-names = "regs", "config";
+-                interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>; /* aer interrupt */
+-                interrupt-names = "aer";
+-                #address-cells = <3>;
+-                #size-cells = <2>;
+-                device_type = "pci";
+-                dma-coherent;
+-                num-viewport = <256>;
+-                bus-range = <0x0 0xff>;
+-                ranges = <0x81000000 0x0 0x00000000 0x20 0x00010000 0x0 0x00010000   /* downstream I/O */
+-                          0x82000000 0x0 0x40000000 0x20 0x40000000 0x0 0x40000000>; /* non-prefetchable memory */
+-                msi-parent = <&its>;
+-                #interrupt-cells = <1>;
+-                interrupt-map-mask = <0 0 0 7>;
+-                interrupt-map = <0000 0 0 1 &gic 0 0 0 109 IRQ_TYPE_LEVEL_HIGH>,
+-                                <0000 0 0 2 &gic 0 0 0 110 IRQ_TYPE_LEVEL_HIGH>,
+-                                <0000 0 0 3 &gic 0 0 0 111 IRQ_TYPE_LEVEL_HIGH>,
+-                                <0000 0 0 4 &gic 0 0 0 112 IRQ_TYPE_LEVEL_HIGH>;
+-                iommu-map = <0 &smmu 0 1>; /* Fixed-up by bootloader */
+-        };
+-- 
+2.34.1
 
-Busy is fine with me.
-
->>>> The only major addition I think is the skipped stat, which I would
->>>> prefer to have. Perhaps that could be tracked in the netdev layer by
->>>> checking whether the skb flags to see whether or not the driver actually
->>>> set the appropriate flag?
->>>
->>> I guess the problem is how would the core stack know at what layer this
->>> was skipped at (I think Kory's patch series can be used to help with
->>> this since it's adding a common interface in ethtool to select the
->>> timestamping layer). As of today, mlx5 is the only driver I know of that
->>> supports selecting between the DMA and PHY layers for timestamp
->>> information.
->>>
->>
->> Well, the way the interface worked in my understanding was that the core
->> sets the SKBTX_HW_TSTAMP flag. The driver is supposed to then prepare
->> the packet for timestamp and set the SKBTX_IN_PROGRESS flag. I just
->> looked though, and it looks like ice doesn't actually set this flag...
-> 
-> That would be a good fix. We set this in mlx5.
-> 
-> 	/* device driver is going to provide hardware time stamp */
-> 	SKBTX_IN_PROGRESS = 1 << 2,
-> 
-
-Yea. I kind of wonder how necessary it is since we haven't been setting
-it and don't seem to have an existing bug report for this. I can dig
-through the kernel and see what it actually does...
-
->>
->> If we fixed this, in theory the stack should be able to check after the
->> packet gets sent with SKBTX_HW_TSTAMP, if SKBTX_IN_PROGRESS isn't set
->> then it would be a skipped timestamp?
-> 
-> One question I have about this idea. Wouldn't SKBTX_IN_PROGRESS also not
-> be set in the case when timestamp information is lost/a timeout occurs?
-> I feel like the problem is not being able to separate these two cases
-> from the perspective of the core stack.
-> 
-> Btw, mlx5 does keep the flag even when we fail to write timestamp
-> information..... I feel like it might be a good idea to add a warning in
-> the core stack if both SKBTX_HW_TSTAMP and SKBTX_IN_PROGRESS are set but
-> the skb is consumed without skb_hwtstamps(skb) being written by the
-> driver before consuming the skb.
-> 
-
-I was thinking the check would happen much earlier, i.e. the moment we
-exit the driver xmit routines it would check whether SKBTX_IN_PROGRESS
-is set. This would be well before any actual Tx timestamp was acquired.
-Its basically a "if we set SKBTX_HW_TSTAMP and you didn't set
-IN_PROGRESS then we know you didn't even start a timestamp request, so
-you must have been busy"
-
-It might not be workable because I think the IN_PROGRESS flag is used
-for another purpose. I tried to read the documentation for it in
-Documentation, but I got confused a bit. I'm going to go through the
-code and see what places actually check this flag.
 
