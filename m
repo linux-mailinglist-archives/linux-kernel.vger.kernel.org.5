@@ -1,265 +1,146 @@
-Return-Path: <linux-kernel+bounces-81600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A24086780C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C266A867810
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:17:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FB6BB21BEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:17:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 633BCB21F50
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E52F12AAC5;
-	Mon, 26 Feb 2024 14:17:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6801212AAF4;
+	Mon, 26 Feb 2024 14:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XyYm2SsY"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XLDWD9hK"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923BD129A75
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:17:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E217129A75;
+	Mon, 26 Feb 2024 14:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708957029; cv=none; b=Uihrb5uO4Q4Dig0viB2iG91uz6btrTvVatWDvgKDwoH41DRlgq2Ic8zk/awRm/RVpWpVslUU/kzM1r3gE9o/7v8vdqyFK+RcnhXZtS0iJc1eYHb24EwDiTSQi+qsk0nwkn/XM2iGEmkJRwd0ZbMQVxbKnSMPMrnfFvdK9em1AuE=
+	t=1708957035; cv=none; b=H2/igorI3HUWG9PE3CtrHo6RVhfusoOMmm4RFiIAMQjZb+Wz+TsBvib9iqYURvjwJ9PhBJohu9Lz+xrmHoF7JvJ+yddszElaSZc21lfr+VqfT37qHnS4hEkFCbGc+M7pNFTfQTmdMZ9jGc6VpB85PAOujkmqfpqhA08bj8iGZLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708957029; c=relaxed/simple;
-	bh=2R8zmYeri3zsG9W6fhcIti0cqMgjlxvVSXl9omqewUI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h+hIPg+of4i4KRkooO7YXYzb0N5lre153+K1Nkb0ahpZsIPxeRB27xYBQ2VFaLOxm08Gznfm+lF/lQfhRfsUd5/q/1NfwK/ECI9J0VSjmIqHwDalyvh8/ZgxJHQSIX5CzbrydvKxAXsRf09SULRtIvfv0IM3dLpkdIYePzb2+3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XyYm2SsY; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708957025;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rT5FNd5ZdPMnJpwMSAxERhFJWRk/ww2nvQqf7Xzgvsw=;
-	b=XyYm2SsY/MwNeaJUi35r0Zp9mcwVdQjLn7W3h2NI+g70j/8TJ2PSfDnFJYEdLHHFg7BA8o
-	doPahK3lJmQjFwoyR6aClQkoaK3tggCvx58Jp7aWLj9hf26ROwITCGA2VV4GIZzWGiUR0X
-	H14KuBOoPaiFORw4YQjoeDr0t3Y1OGs=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-399-PIHWAKlQPeWBOlQDfJq_Mg-1; Mon, 26 Feb 2024 09:17:03 -0500
-X-MC-Unique: PIHWAKlQPeWBOlQDfJq_Mg-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1dbcbfff988so29303695ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:17:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708957022; x=1709561822;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rT5FNd5ZdPMnJpwMSAxERhFJWRk/ww2nvQqf7Xzgvsw=;
-        b=FDt1D9G7hlqLOzLIvZQD+qXJEg9vyBxz6OqbhDyYMx1wmFGoKjhyJ5Vpkimi416x6H
-         7Tz0s+FdheLz5iAfvG/fgKjt2aLp/3zlh9jll/vDDkTmjqEd2+1pILb1P6LSlNc+/ULZ
-         Xu1oWFVl10S/XBlWTJ504sYwSMXqJz+3TumBn5D3v+EarWL/qNAWMbaeAgkwan20EKFc
-         OVCrgbmZ3s/XmYzKl5HypVGbRNGzbph9iSU4yMJnga4PpHt2auvMHDB5/kvwCQcUl6Uk
-         b7mY/crWl5RpK29hqJPkI3zS86gdGaFY6t+1BbgQycn/c4Bg0oxQ4W77AA398fOPWPzD
-         G3UA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvNTDuWFlXtxY7Etj25ykJ6dApaREvEvPxJTFT0yht20gVdUhAa0LoM0Ei1WDcmQ1SDWFUnt60PIcM0zEaQILXdfNrnjSF6AcWc5OG
-X-Gm-Message-State: AOJu0YyqGu063yQ9AtGqQDK3rJq3j/W7Me6m6v1rIGMPjVYqnbNHhcfl
-	C3fntvYiIVMNm5vT6aXiCcummCsg7cU1qVWRosoVA67Vwk1MZyAYKNki1ZbbqfV2XESfi1FFycx
-	g8IvtswZMtFXKlztkE+TCGL7ddRpj3oYsf9cWAh2oupCVBWKqgLuEZWwcPKlWuZXLsPdVAw3NOM
-	R5qXECut7QSacEt1+g17fVvdR/Yd972CFZFXaJ
-X-Received: by 2002:a17:902:f690:b0:1dc:5dc0:9ba with SMTP id l16-20020a170902f69000b001dc5dc009bamr7813018plg.26.1708957022702;
-        Mon, 26 Feb 2024 06:17:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHGpEzUc/7S8O7mb0wIKBfe+g8VFrEOyCmvLDtXYk2SFh9UHlV+5Ma265vgaNuM2ir0S+UM+QJ0tYa/XbzRugQ=
-X-Received: by 2002:a17:902:f690:b0:1dc:5dc0:9ba with SMTP id
- l16-20020a170902f69000b001dc5dc009bamr7812995plg.26.1708957022361; Mon, 26
- Feb 2024 06:17:02 -0800 (PST)
+	s=arc-20240116; t=1708957035; c=relaxed/simple;
+	bh=HZlXZGpEZ0auGfIkoqRiKy72XZYfKXmXVmc4SJZWGJo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AAl0fRMvnnTyhadnN5JzNlLyfk4ha6ANIgn2pWRxd7XTwtoYc2C5BlLuJiQstRX6FQdpTImG6WC9j0ISpJGJErLJXH6Rl8Mp/E5UnBD1f6oGqv4WSb/Ql73GlsznL+JGw8HoFxjpAKGxQJA1TsPk+gfQtMSRavv+1hQ3bAPkKHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XLDWD9hK; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708957035; x=1740493035;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=HZlXZGpEZ0auGfIkoqRiKy72XZYfKXmXVmc4SJZWGJo=;
+  b=XLDWD9hKWSYS93+37BvlTXBZ6JM6TPO2yMqN8070OaF1NRVheRzy7aNh
+   C8+aBkPAeDa3JRuo//3OTkghATG1dNXAZjETuIcXLR3TP+cQdrocS38f7
+   J6xBn9Ls3gxQCKn92fLTM6foUg26500JT1tcbjMfzCKQ9giYPa99uRXL7
+   /JUOcfxPai348/cfF/y84SSZNT30zEuRGFfM8UlfdLpNHoAzBPFmvWY1R
+   ALlskxrfP3+PR4xvYS4oGQDxViRLcDoAGnyLGtx/4BaXHB4cz1KU7JNZh
+   l+25I4qtB65xEIzy+8e3uXlZ/++WDLpJuzg9TItX+fBVLotxpDDKIJfk5
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="7047436"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="7047436"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:17:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="913872291"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="913872291"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:17:07 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rebmx-00000007hRa-3oE3;
+	Mon, 26 Feb 2024 16:17:03 +0200
+Date: Mon, 26 Feb 2024 16:17:03 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH v1 02/14] serial: core: Add UPIO_UNSET constant for unset
+ port type
+Message-ID: <ZdydX79GBaedFqku@smile.fi.intel.com>
+References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
+ <20240221183442.4124354-3-andriy.shevchenko@linux.intel.com>
+ <5aeee02f-45a6-48e5-a6f4-e55b76d4b959@kernel.org>
+ <ZddKaaB7HO0CyldD@smile.fi.intel.com>
+ <fa46f220-a1c4-43f4-91e1-5929ff335be0@kernel.org>
+ <ZdiyzKMZPlkN462G@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com> <20240222075806.1816400-7-yukuai1@huaweicloud.com>
-In-Reply-To: <20240222075806.1816400-7-yukuai1@huaweicloud.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Mon, 26 Feb 2024 22:16:51 +0800
-Message-ID: <CALTww2-ypx2YJOeXTzj7Y0EtXMkfrTOAJzzmDnnUK=1irspWtQ@mail.gmail.com>
-Subject: Re: [PATCH md-6.9 06/10] md/raid1: factor out read_first_rdev() from read_balance()
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com, shli@fb.com, 
-	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdiyzKMZPlkN462G@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 22, 2024 at 4:04=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> read_balance() is hard to understand because there are too many status
-> and branches, and it's overlong.
->
-> This patch factor out the case to read the first rdev from
-> read_balance(), there are no functional changes.
->
-> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
-> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/raid1.c | 63 +++++++++++++++++++++++++++++++++-------------
->  1 file changed, 46 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-> index 8089c569e84f..08c45ca55a7e 100644
-> --- a/drivers/md/raid1.c
-> +++ b/drivers/md/raid1.c
-> @@ -579,6 +579,47 @@ static sector_t align_to_barrier_unit_end(sector_t s=
-tart_sector,
->         return len;
->  }
->
-> +static void update_read_sectors(struct r1conf *conf, int disk,
-> +                               sector_t this_sector, int len)
-> +{
-> +       struct raid1_info *info =3D &conf->mirrors[disk];
-> +
-> +       atomic_inc(&info->rdev->nr_pending);
-> +       if (info->next_seq_sect !=3D this_sector)
-> +               info->seq_start =3D this_sector;
-> +       info->next_seq_sect =3D this_sector + len;
-> +}
-> +
-> +static int choose_first_rdev(struct r1conf *conf, struct r1bio *r1_bio,
-> +                            int *max_sectors)
-> +{
-> +       sector_t this_sector =3D r1_bio->sector;
-> +       int len =3D r1_bio->sectors;
-> +       int disk;
-> +
-> +       for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
-> +               struct md_rdev *rdev;
-> +               int read_len;
-> +
-> +               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED)
-> +                       continue;
-> +
-> +               rdev =3D conf->mirrors[disk].rdev;
-> +               if (!rdev || test_bit(Faulty, &rdev->flags))
-> +                       continue;
-> +
-> +               /* choose the first disk even if it has some bad blocks. =
-*/
-> +               read_len =3D raid1_check_read_range(rdev, this_sector, &l=
-en);
-> +               if (read_len > 0) {
-> +                       update_read_sectors(conf, disk, this_sector, read=
-_len);
-> +                       *max_sectors =3D read_len;
-> +                       return disk;
-> +               }
+On Fri, Feb 23, 2024 at 04:59:25PM +0200, Andy Shevchenko wrote:
+> On Fri, Feb 23, 2024 at 06:42:15AM +0100, Jiri Slaby wrote:
+> > On 22. 02. 24, 14:21, Andy Shevchenko wrote:
+> > > On Thu, Feb 22, 2024 at 07:58:32AM +0100, Jiri Slaby wrote:
+> > > > On 21. 02. 24, 19:31, Andy Shevchenko wrote:
 
-Hi Kuai
+..
 
-It needs to update max_sectors even if the bad block starts before
-this_sector. Because it can't read more than bad_blocks from other
-member disks. If it reads more data than bad blocks, it will cause
-data corruption. One rule here is read from the primary disk (the
-first readable disk) if it has no bad block and read the
-badblock-data-length data from other disks.
+> > > > >    	unsigned char		iotype;			/* io access style */
+> > > > > +#define UPIO_UNSET		((unsigned char)~0U)	/* UCHAR_MAX */
+> > > > 
+> > > > Perhaps making the var u8 and this U8_MAX then? It would make more sense to
+> > > > me.
+> > > 
+> > > WFM, should it be a separate change?
+> > 
+> > Likely.
+> 
+> Then I need a commit message, because I'm unable to justify this change myself.
+> 
+> > > Btw, how can I justify it?
+> > 
+> > Hmm, thinking about it, why is it not an enum?
+> 
+> Maybe, but it is a replica of UAPI definitions, do we want to see it as a enum?
+> To me it will be a bit ugly looking.
+> 
+> > But it could be also an u8 because you want it be exactly 8 bits as you want
+> > to be sure values up to 255 fit.
+> 
+> Depends on what we assume UAPI does with those flags. It maybe even less than
+> 8 bits, or great than, currently 8 bits is enough...
+> 
+> TL;DR: I would rather take a patch from you and incorporate into the series
+> than trying hard to invent a justification and proper type.
 
-Best Regards
-Xiao
+Okay, I want to send a new version, for now I leave the type change for
+the next time. It looks that quirks as well will benefit from type clarifying.
 
-> +       }
-> +
-> +       return -1;
-> +}
-> +
->  /*
->   * This routine returns the disk from which the requested read should
->   * be done. There is a per-array 'next expected sequential IO' sector
-> @@ -603,7 +644,6 @@ static int read_balance(struct r1conf *conf, struct r=
-1bio *r1_bio, int *max_sect
->         sector_t best_dist;
->         unsigned int min_pending;
->         struct md_rdev *rdev;
-> -       int choose_first;
->
->   retry:
->         sectors =3D r1_bio->sectors;
-> @@ -613,10 +653,11 @@ static int read_balance(struct r1conf *conf, struct=
- r1bio *r1_bio, int *max_sect
->         best_pending_disk =3D -1;
->         min_pending =3D UINT_MAX;
->         best_good_sectors =3D 0;
-> -       choose_first =3D raid1_should_read_first(conf->mddev, this_sector=
-,
-> -                                              sectors);
->         clear_bit(R1BIO_FailFast, &r1_bio->state);
->
-> +       if (raid1_should_read_first(conf->mddev, this_sector, sectors))
-> +               return choose_first_rdev(conf, r1_bio, max_sectors);
-> +
->         for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
->                 sector_t dist;
->                 sector_t first_bad;
-> @@ -662,8 +703,6 @@ static int read_balance(struct r1conf *conf, struct r=
-1bio *r1_bio, int *max_sect
->                                  * bad_sectors from another device..
->                                  */
->                                 bad_sectors -=3D (this_sector - first_bad=
-);
-> -                               if (choose_first && sectors > bad_sectors=
-)
-> -                                       sectors =3D bad_sectors;
->                                 if (best_good_sectors > sectors)
->                                         best_good_sectors =3D sectors;
->
-> @@ -673,8 +712,6 @@ static int read_balance(struct r1conf *conf, struct r=
-1bio *r1_bio, int *max_sect
->                                         best_good_sectors =3D good_sector=
-s;
->                                         best_disk =3D disk;
->                                 }
-> -                               if (choose_first)
-> -                                       break;
->                         }
->                         continue;
->                 } else {
-> @@ -689,10 +726,6 @@ static int read_balance(struct r1conf *conf, struct =
-r1bio *r1_bio, int *max_sect
->
->                 pending =3D atomic_read(&rdev->nr_pending);
->                 dist =3D abs(this_sector - conf->mirrors[disk].head_posit=
-ion);
-> -               if (choose_first) {
-> -                       best_disk =3D disk;
-> -                       break;
-> -               }
->                 /* Don't change to another disk for sequential reads */
->                 if (conf->mirrors[disk].next_seq_sect =3D=3D this_sector
->                     || dist =3D=3D 0) {
-> @@ -760,13 +793,9 @@ static int read_balance(struct r1conf *conf, struct =
-r1bio *r1_bio, int *max_sect
->                 rdev =3D conf->mirrors[best_disk].rdev;
->                 if (!rdev)
->                         goto retry;
-> -               atomic_inc(&rdev->nr_pending);
-> -               sectors =3D best_good_sectors;
-> -
-> -               if (conf->mirrors[best_disk].next_seq_sect !=3D this_sect=
-or)
-> -                       conf->mirrors[best_disk].seq_start =3D this_secto=
-r;
->
-> -               conf->mirrors[best_disk].next_seq_sect =3D this_sector + =
-sectors;
-> +               sectors =3D best_good_sectors;
-> +               update_read_sectors(conf, disk, this_sector, sectors);
->         }
->         *max_sectors =3D sectors;
->
-> --
-> 2.39.2
->
->
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
