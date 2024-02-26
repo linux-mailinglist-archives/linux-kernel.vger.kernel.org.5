@@ -1,216 +1,181 @@
-Return-Path: <linux-kernel+bounces-80479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302ED8668D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:48:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F92A8668DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:49:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AA76B21353
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:47:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C79F1C20894
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:49:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA25B18E25;
-	Mon, 26 Feb 2024 03:47:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m47QsHMO"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C8791B27D;
+	Mon, 26 Feb 2024 03:49:18 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27086DF44
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708919270; cv=fail; b=NwjKQcugEnxPOZ3yiN62SFW6C4lWXhp6sV+O6/BjBuuVqq9waINqMMWEfCXO7i4Sax5WS9tNmEH/jayvikcSBNP1YyzORnSsauwzTTT8oOHIPZa+NpochvnpDrf5NIHgtf8kbIMu8uagtS1rbTDMa1ZSquZrbzv3fpNMT8GUenU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708919270; c=relaxed/simple;
-	bh=2iiW3naxHnEZK+lzSGzaAKebHL61cLXJIYV9IH4hNtw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=NGZpSBAO966maJ1FjrlwY/gtNL9o4mwvhjXmdeE6LuNOu/r5MKul0SctYfmoOf20pksWwOU8fCo/+VFqWdqshiOYOxoBkoG2daIjWKq7zHGyNIsdwMjufE4q1qTfNs/gBmIgYNTsLDFcPYmUJNkLqPiG2EPNkH3vgYTeM3RPdkg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m47QsHMO; arc=fail smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708919269; x=1740455269;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=2iiW3naxHnEZK+lzSGzaAKebHL61cLXJIYV9IH4hNtw=;
-  b=m47QsHMOzoD152R/RerGPKI3+mc9YFtrMwuf2WaC2zSj2EiK+gTeAn2O
-   OpAWqHkiEtebVAsuKP9mAGseRFSvb2IIlAZyeVq2yptPn04+jM1nWHwSr
-   jg5VR+6rgLMO03lhfPDvIKr46jBBObdWPWjHjnq29QfzclY/tLRN6NOag
-   MaRooX/bjqrrPG5XwkVGanL2jfl2ziphNSnAoCFOEcDEl53vF+kLOLpxW
-   ggB4nmDQVDa95a0mdFYmzj0pLLuq+oiTA3Wpnjnv/4HlFKnSofAfAakD6
-   r0uPK3J3v8OAuwHaOyD6ZCpwQDjnH6Nipw/dT1yGy86karnZgZTqM59TS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="13829514"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="13829514"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 19:47:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6519582"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 25 Feb 2024 19:47:48 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 25 Feb 2024 19:47:47 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 25 Feb 2024 19:47:47 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 25 Feb 2024 19:47:45 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N1EaO+W8Vq6ca3C+2ontvJrIDpdyw9tax3rvS6OiHvXJs4jXHvYUKE7yEDDm2M2a29as9wxnQUHLpSR5WLtlB3YH3rtu/5j1cegtAdp6oZ8JDswipjr47SjDML8ggLO0SEDis9G+NTHxIuALW9F/d7lUdQrCtDrCLtBz7pOvPr9VSXMNRRs6j+abOLTSOO+Um9D+/JV8dD2mhlIFyF7Cl6bvnzsIg/ikB0ysrqznBLyPFzSA1Kj1MMmI0cNBGMw6lUPpuqehbumV1KfiErvhf0apsUb6rEKCacsee0oxg6fuCh5QSDoF7ckqz5GgB0rDHzPzcXIALqsSRKUpgpfLNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IX3+4965Qqt0TusY5+wtMrbN0YTPiUxzkTLTsiIV8FQ=;
- b=CVm5QKQMXCzGy5SRRi5uw1fEYq9hbmWT3OPkll1VeaIAWFMF6grKCRGCH04v/KXxN4sFasAIERbWcX5tCwmgzk2M4g0fG3Fiu7VnTim9fm2kBbroRwL2qxqBDh7o+Dp0UfuJpMGu8n9/qmdSsl9GgItKqDTKKXKkro7nbIumqrC0jQIGVOFwU3+x0By1YYBCz1CnpzshxZwlYDveIvdg2DlDESKMHy0GfR8epL12asHsfANACytWipd4qunxLcYnm8bHi6kWZmfwNVR+Uow5SWUxa8l1WHCO2t7jGHA0GEGjr1E3qNvlrchktGx2aMz4nQS/SGJjJKt631lTVQA/aw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
- by DM4PR11MB6168.namprd11.prod.outlook.com (2603:10b6:8:ab::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.8; Mon, 26 Feb
- 2024 03:47:44 +0000
-Received: from CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::7352:aa4b:e13e:cb01]) by CY5PR11MB6139.namprd11.prod.outlook.com
- ([fe80::7352:aa4b:e13e:cb01%7]) with mapi id 15.20.7339.024; Mon, 26 Feb 2024
- 03:47:44 +0000
-Date: Sun, 25 Feb 2024 21:47:41 -0600
-From: Lucas De Marchi <lucas.demarchi@intel.com>
-To: Arnd Bergmann <arnd@kernel.org>
-CC: Oded Gabbay <ogabbay@kernel.org>, Thomas =?utf-8?Q?Hellstr=C3=B6m?=
-	<thomas.hellstrom@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, "Maarten
- Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
-	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi
-	<rodrigo.vivi@intel.com>, Matt Roper <matthew.d.roper@intel.com>, "Matthew
- Brost" <matthew.brost@intel.com>, Himal Prasad Ghimiray
-	<himal.prasad.ghimiray@intel.com>, Francois Dugast
-	<francois.dugast@intel.com>, Dave Airlie <airlied@redhat.com>,
-	<intel-xe@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] drm/xe/xe2: fix 64-bit division in pte_update_size
-Message-ID: <nuwtejmu4nvxxvkobawafbmogpx6qjk3dnbnj7kobfb7gvpyw7@pxg3bv42qkop>
-References: <20240224121528.1972719-1-arnd@kernel.org>
- <20240224121528.1972719-3-arnd@kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240224121528.1972719-3-arnd@kernel.org>
-X-ClientProxiedBy: SJ0PR03CA0084.namprd03.prod.outlook.com
- (2603:10b6:a03:331::29) To CY5PR11MB6139.namprd11.prod.outlook.com
- (2603:10b6:930:29::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BEB17BC5
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708919357; cv=none; b=CI4W/50UGTN+HHYEhg7QKSZwFW5tAEWlFdBKebWHwFFNOMvPlB2Mxz+Wb1XQxPF9X+xJI5mqJc/94czogPKpf7YR7uhyEEGuzq8xuy1B4lFelR4xsOzC8Fa+GiNq4EvzpLuoQhsDZ3Fc4GWVR+Oj2KnVThmn472QeR/atlhLzCE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708919357; c=relaxed/simple;
+	bh=Kv/9ghpnZXPQShU9ARicBKeEcvIWW8nIOrSAkXJtrQY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=A6pBcgk2Vy3NK6UZHXIarzezw2oh5JZ4/gy2bL5HZF9Z4XInJBHUVWsOv8O/bxIzbXqniVXC3a+jpDrbeTZf6nmdnKOKraDjIN+B5tK4NVz+zBvo48kfyTUL1twMSAs1B/0TgbDpzciAl7ApXAN5odnBeCwuWSi4vkixFca+ga8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36512fcf643so17981355ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 19:49:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708919355; x=1709524155;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=h0zDGz1LWZDnj7pbq9vHRQdQrSo5fq2Jh5AL7Ztrk2A=;
+        b=vJQciSm4vm4n10tvKi+P+NLutYdnyBi/oZ4Y93gr4IuYPY23l4XIzj2hiYe8L3EQ13
+         w5H8ud3Qi5vHDFLB/LC8844d/kjDGYQQifA4r23SnjghT+ngaQX9UpZ0Iu5pIzCxijTe
+         hu+0cL0hbyZFj5Lfbj5MEkholJSHqvVPEF9A3I0W4XJLP/ir1MTQ3ecnRkFXZG5NZBE7
+         4w7UbaHIBZO7bnJSKfG0k4ckBKmSUMHC0iFUZazG6hUHOlQdrWIkugeZubTbS45XAQGq
+         kPIynS1FYddVqLXwuxpJUUO5BV+bloo6PG1yERRK/anxZIAVT/0Ax5IqV/Kb3wpqqUqo
+         1pdg==
+X-Forwarded-Encrypted: i=1; AJvYcCXHe8u15whlLy9udoNMc1ccNHEh87q+9ZUIslMCM1WN+0avpWPf2oTkwdy/sldSMPWUFEXLqugCyCBzVR4Wp6uo7sIRlVU2Y3hkOwfi
+X-Gm-Message-State: AOJu0YwK8ZRB4jnfc45WdewajF75Mcun5JT5/739dPF7BBOmRQmx2P0R
+	S2icKmFnursEmMdKytUzdbhK71mrtojF/fbQjf6wnzDuMoCwnXDFNueDrc0gv7WgbCtf8AL5B+s
+	Rvclr/sJxM1J1EzQxvEIOE+tgvag//v/w+p+pa3ofKXe+SZBIeiB0fWM=
+X-Google-Smtp-Source: AGHT+IHFVt7LsA6twkpn6/boz58rkQDQVkGx3V25ZV4MR7zZ40ZPzM8o8MC8I8+EfFjMh2OG5QAJBELsBDYfa3M6tanwS/3nz5U4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|DM4PR11MB6168:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0918f65e-447e-4dca-f7f7-08dc367db0a9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rz+5pz/zjRhRYOWzp8S2FQdFTWILDc0bMaf8eP2nnKOGdEqdL9fTznWk5Ex5qgiVSfyjj7T3v9tMMWJo6yHa94DAwOnlcp0ASw0PBoh2zVcWauXBEr1L+71wMAH8D/p1EydZQ1/3I+kvTV2m3lIYg0m1D51UQOS1wz8IqzuNnOfId8DF400/Xe11ERZLj6+BkmA1YEonw1fCwrzXTU2qNazGgMa7zYs+jNbjkIyJmeEqcVFkYn/44CrSL3dOSaSi07qu+Q9Bdj1j9ZFC6lwBE9M4v+F7Sl/NE+iesehW3fgCzCJgb1UXFf10a1SAvFl+ODhWEvcIT/Ob8/p429VpOtOruhCODM/rHcWOL0G9OBPMAxte21/qr9cIie1PyfHryWkIQwfooqSZl366z7MUF3sPbbEXiPSNoVpcO2F06gG7M3UFdbqBjJOwEZzC46dUqo1SVLwNG0HvmxjnQvNOY70wizQHKjVipAtRaYTh/MImg7MsrpPjoCkDCS7rXiC9ZIzrc75JrcuJqyXWsveNaJdPD4GK8/ZnL0qLgdyhjU4dMlEBpIIqI7T6NmyX8SvcIqpLCD0DqdNpxpwx1MksxL1EFa+ixEEEO+b8ace2FauGE0gbLEOngrkxIDdy74ES
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ShSIiGvZtNEYvBQMlL353jTGwcXUeLvoDO6cjMBmapiYhhrr9q64UFAcd1Pu?=
- =?us-ascii?Q?c2GnoiKT0pX3JR9Bg7pr3dFeKFknLnKHAHdgNL0ESV5GXnT7173ylfP7hXgT?=
- =?us-ascii?Q?3jWzMKAeiYLaCVlwr9ayGaxzvj1sjoehrHep+fh09TaoeQBNbZoGk2EKVdNR?=
- =?us-ascii?Q?sug94q5BGCmt59Zbv7oSOIt4TK2sZiDyNurkn6CveLZs+3QBpFWYG+u6Q3h+?=
- =?us-ascii?Q?8g3taL+sDcBRrJmnhX6YhTiHxK9RrRSlY8HxbL0ju0It4NqlrheeMOBe81Kf?=
- =?us-ascii?Q?TMgNqOHaRbFQCzE1q4VMwwzPB3dIKrWpdJZwm4TQCa4sL3+XfrLegCUA/3a/?=
- =?us-ascii?Q?rVFNwx/etluOxPJWVmPAUGREWkEoJI6bxBhwuWRkjIV1oH7VVzgUOO+E4JdI?=
- =?us-ascii?Q?SMFcaFWT3old5SDh6rH5jy2a0zLytXFadZr5IpII6AYMeUGjh3eiGJD821L1?=
- =?us-ascii?Q?HiZaGx/Ytp2fonEauWvnnxwmoXRIlwyK4kzcRzma/T7RjnEEcvB1nue5kAjt?=
- =?us-ascii?Q?NB0hB8mqjVLy8DuPaxqZ2GgAEOd/na5Z4DF/bXsc1LvzhW1kWhCXZ2QqwiDP?=
- =?us-ascii?Q?26XHYu3gJ208rUy8hQk0b2a1CyzmLeyqCWeDvBvq/fGlb4Elc10Wbrn4dbMT?=
- =?us-ascii?Q?Kx4wKyiGm4iGDVRvPw/V3t8AtyqZXIjqqqJsDBcBPcKDC97rOmwMxrTJxZsv?=
- =?us-ascii?Q?OUJMDuv3qRsD6wJzVBQVjwUjQgYz0a4Yr5w/e9+fEIrk3sK7dzrcHTBzcI7D?=
- =?us-ascii?Q?Fz7g96CI6pe8JmUeXGxdaxeWItmqNlXrfruwIiAWa7pCUH4KB6iQawSFGfcc?=
- =?us-ascii?Q?4XdiMZlYyhA6DQtxsruoeaOnelVqBDtGafJILBcT3F+vD6jGKiO0coIk4K8Z?=
- =?us-ascii?Q?/Xq/nLm6bkhUpD4/xmKqfkI7g2/ANYMavPiHovgou2lPEsc09CZgu6yt0+CJ?=
- =?us-ascii?Q?ujkpVw2MEpygs96ZpBN7m9Xfa7T7refOEIoRiCVygJpJiMFlH7z+RuRE5Up3?=
- =?us-ascii?Q?AMyrELJP/c2v0dQLf8tUHfIxhQGiFYYSnpngD9st02KxmK79vHJOlv9ILpsb?=
- =?us-ascii?Q?kk5Rnt/qFqylSiYKO18bcl5B7gcw3Z37RnwjD26Z/et/e3CBvkoFsRkJq4Lv?=
- =?us-ascii?Q?Xtwp5GsTym8ifFRQJBM96i+Jst+sjX2cnzatuzewEAXYfbt2KnvMzwieKLMN?=
- =?us-ascii?Q?ls4lqJ/QCBwF6kb8kDEeTl7u93DOOC6ULdqS9d0ZWKN7qIYbRbyag4FnY39e?=
- =?us-ascii?Q?MIqkN3VQyfcUN5e/vAPWFNEc4blx4YerNlVuPdNwg+zV7JP+zH4NnVoy2AfU?=
- =?us-ascii?Q?WWX8VPtBBijKW7gzHtTzglMFqspRjPALwwhrEsddIFkGwuEwCovD60HhpqgH?=
- =?us-ascii?Q?ZwAsWmYq3FkrVAikRAkyk4T8IWO+Q6LWpwHbTH/aGWhy4Y3q++X4xlouN6yu?=
- =?us-ascii?Q?TanFJx0/ihSA243WgeeieBPx3Q7zGf/+vn7zGxFOcXV6c1e3s6EVdjen+pjq?=
- =?us-ascii?Q?qPIucCZ3952RStIazIDD7973uFbBiJI07XMJxRHfjr8lQLJkgcsMhXaM1J3a?=
- =?us-ascii?Q?fGOoHGG11Wi/llPrrsgTsMvNerLTHbVdlR5kMZL6D8qugU1MTuCMdcEp8Zn9?=
- =?us-ascii?Q?mA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0918f65e-447e-4dca-f7f7-08dc367db0a9
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 03:47:44.3881
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2cvj3nsZhUsVI6RT24GW5gG6wDFATcqOknVigrSCx0A9Ne1/uL+ApKAkG1Q4eQ3JK7uawQOOOI0ZN8Ovc4iO0BO4X/E7tZBaSmKBd3K2rbE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6168
-X-OriginatorOrg: intel.com
+X-Received: by 2002:a05:6e02:349f:b0:365:7607:3f4b with SMTP id
+ bp31-20020a056e02349f00b0036576073f4bmr472012ilb.2.1708919355150; Sun, 25 Feb
+ 2024 19:49:15 -0800 (PST)
+Date: Sun, 25 Feb 2024 19:49:15 -0800
+In-Reply-To: <000000000000ed666a0611af6818@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001d1939061240cbd7@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
+ dereference in dev_map_hash_update_elem
+From: syzbot <syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Feb 24, 2024 at 01:15:01PM +0100, Arnd Bergmann wrote:
->From: Arnd Bergmann <arnd@arndb.de>
->
->This function does not build on 32-bit targets when the compiler
->fails to reduce DIV_ROUND_UP() into a shift:
->
->ld.lld: error: undefined symbol: __aeabi_uldivmod
->>>> referenced by xe_migrate.c
->>>>               drivers/gpu/drm/xe/xe_migrate.o:(pte_update_size) in archive vmlinux.a
->
->There are two instances in this function. Change the first to
->use an open-coded shift with the same behavior, and the second
->one to a 32-bit calculation, which is sufficient here as the size
->is never more than 2^32 pages (16TB).
->
->Fixes: ea97a66a2218 ("drm/xe: Disable 32bits build")
+syzbot has found a reproducer for the following issue on:
 
-same comment as in patch 2... should rather be the commit *enabling* 32b
-builds?
+HEAD commit:    70ff1fe626a1 Merge tag 'docs-6.8-fixes3' of git://git.lwn...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1762045c180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4cf52b43f46d820d
+dashboard link: https://syzkaller.appspot.com/bug?extid=8cd36f6b65f3cafd400a
+compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110cf122180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142f6d8c180000
 
-Should this be something to be dealt with at the DIV_ROUND_UP() layer?
-Why did the compiler fail to reduce it here but didn't in the other
-11 uses in the xe driver?
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-70ff1fe6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bc398db9fd8c/vmlinux-70ff1fe6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6d3f8b72a671/zImage-70ff1fe6.xz
 
-thanks
-Lucas De Marchi
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
 
->Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->---
-> drivers/gpu/drm/xe/xe_migrate.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/drivers/gpu/drm/xe/xe_migrate.c b/drivers/gpu/drm/xe/xe_migrate.c
->index a66fdf2d2991..ee1bb938c493 100644
->--- a/drivers/gpu/drm/xe/xe_migrate.c
->+++ b/drivers/gpu/drm/xe/xe_migrate.c
->@@ -462,7 +462,7 @@ static u32 pte_update_size(struct xe_migrate *m,
-> 	} else {
-> 		/* Clip L0 to available size */
-> 		u64 size = min(*L0, (u64)avail_pts * SZ_2M);
->-		u64 num_4k_pages = DIV_ROUND_UP(size, XE_PAGE_SIZE);
->+		u32 num_4k_pages = (size + XE_PAGE_SIZE - 1) >> XE_PTE_SHIFT;
->
-> 		*L0 = size;
-> 		*L0_ofs = xe_migrate_vm_addr(pt_ofs, 0);
->-- 
->2.39.2
->
+8<--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 00000010 when read
+[00000010] *pgd=8423f003, *pmd=fe0d5003
+Internal error: Oops: 207 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 0 PID: 2983 Comm: syz-executor360 Not tainted 6.8.0-rc5-syzkaller #0
+Hardware name: ARM-Versatile Express
+PC is at __dev_map_hash_lookup_elem kernel/bpf/devmap.c:269 [inline]
+PC is at __dev_map_hash_update_elem kernel/bpf/devmap.c:972 [inline]
+PC is at dev_map_hash_update_elem+0x90/0x210 kernel/bpf/devmap.c:1010
+LR is at get_lock_parent_ip include/linux/ftrace.h:977 [inline]
+LR is at preempt_latency_start kernel/sched/core.c:5843 [inline]
+LR is at preempt_count_add+0x12c/0x150 kernel/sched/core.c:5868
+pc : [<803e5f34>]    lr : [<8027b29c>]    psr: 60000093
+sp : df96dda8  ip : df96dd68  fp : df96dde4
+r10: 00000000  r9 : 828f71c0  r8 : 8417bb10
+r7 : 00000000  r6 : 20000013  r5 : 8417ba00  r4 : ffffffff
+r3 : 00000000  r2 : 00000010  r1 : 00000000  r0 : 20000013
+Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 30c5387d  Table: 84656480  DAC: fffffffd
+Register r0 information: non-paged memory
+Register r1 information: NULL pointer
+Register r2 information: zero-size pointer
+Register r3 information: NULL pointer
+Register r4 information: non-paged memory
+Register r5 information: slab kmalloc-512 start 8417ba00 pointer offset 0 size 512
+Register r6 information: non-paged memory
+Register r7 information: NULL pointer
+Register r8 information: slab kmalloc-512 start 8417ba00 pointer offset 272 size 512
+Register r9 information: non-slab/vmalloc memory
+Register r10 information: NULL pointer
+Register r11 information: 2-page vmalloc region starting at 0xdf96c000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
+Register r12 information: 2-page vmalloc region starting at 0xdf96c000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
+Process syz-executor360 (pid: 2983, stack limit = 0xdf96c000)
+Stack: (0xdf96dda8 to 0xdf96e000)
+dda0:                   df96ddc4 00000004 00000000 1b98af0a df96dde4 8417ba00
+ddc0: 824aeaf0 843ef140 8442a040 8365a9c0 00000004 8417ba00 df96de14 df96dde8
+dde0: 8038c0b8 803e5eb0 00000000 00000000 80884220 8417bab8 8365a9c0 8365a9c0
+de00: df96dec8 843ef140 df96de6c df96de18 8038d040 8038bec8 00000000 00000000
+de20: 8027b44c 00000004 20000140 00000004 00000000 8442a040 20000200 00000000
+de40: df96de6c 00000000 00000020 df96dea0 00000002 20000200 00000020 00000000
+de60: df96df8c df96de70 80392aa0 8038cdf8 8088300c 81856650 00000000 841ee000
+de80: df96dee0 df96dfb0 df96dea4 df96de98 80884220 df96dee0 df96dfb0 80200288
+dea0: 20000200 00000000 00000008 00000000 00000008 8041ad98 841ee000 ffffffff
+dec0: df96df2c 80200b9c 00000003 00000000 200000c0 00000000 20000140 00000000
+dee0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+df00: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+df20: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+df40: 00000000 00000000 00000000 00000000 00000000 00000000 df96df94 1b98af0a
+df60: 8134e0a0 ffffffff 00000000 0008e058 00000182 80200288 841ee000 00000182
+df80: df96dfa4 df96df90 80394ea4 80392830 20000200 00000000 00000000 df96dfa8
+dfa0: 80200060 80394e84 ffffffff 00000000 00000002 20000200 00000020 00000000
+dfc0: ffffffff 00000000 0008e058 00000182 000f4240 00000000 00000001 00003a97
+dfe0: 7e973c70 7e973c60 000106cc 0002e810 00000010 00000002 00000000 00000000
+Backtrace: 
+[<803e5ea4>] (dev_map_hash_update_elem) from [<8038c0b8>] (bpf_map_update_value+0x1fc/0x2d4 kernel/bpf/syscall.c:202)
+ r10:8417ba00 r9:00000004 r8:8365a9c0 r7:8442a040 r6:843ef140 r5:824aeaf0
+ r4:8417ba00
+[<8038bebc>] (bpf_map_update_value) from [<8038d040>] (map_update_elem+0x254/0x460 kernel/bpf/syscall.c:1553)
+ r8:843ef140 r7:df96dec8 r6:8365a9c0 r5:8365a9c0 r4:8417bab8
+[<8038cdec>] (map_update_elem) from [<80392aa0>] (__sys_bpf+0x27c/0x2104 kernel/bpf/syscall.c:5445)
+ r10:00000000 r9:00000020 r8:20000200 r7:00000002 r6:df96dea0 r5:00000020
+ r4:00000000
+[<80392824>] (__sys_bpf) from [<80394ea4>] (__do_sys_bpf kernel/bpf/syscall.c:5561 [inline])
+[<80392824>] (__sys_bpf) from [<80394ea4>] (sys_bpf+0x2c/0x48 kernel/bpf/syscall.c:5559)
+ r10:00000182 r9:841ee000 r8:80200288 r7:00000182 r6:0008e058 r5:00000000
+ r4:ffffffff
+[<80394e78>] (sys_bpf) from [<80200060>] (ret_fast_syscall+0x0/0x1c arch/arm/mm/proc-v7.S:66)
+Exception stack(0xdf96dfa8 to 0xdf96dff0)
+dfa0:                   ffffffff 00000000 00000002 20000200 00000020 00000000
+dfc0: ffffffff 00000000 0008e058 00000182 000f4240 00000000 00000001 00003a97
+dfe0: 7e973c70 7e973c60 000106cc 0002e810
+Code: e595210c e1a06000 e2433001 e003300a (e7924103) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	e595210c 	ldr	r2, [r5, #268]	@ 0x10c
+   4:	e1a06000 	mov	r6, r0
+   8:	e2433001 	sub	r3, r3, #1
+   c:	e003300a 	and	r3, r3, sl
+* 10:	e7924103 	ldr	r4, [r2, r3, lsl #2] <-- trapping instruction
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
