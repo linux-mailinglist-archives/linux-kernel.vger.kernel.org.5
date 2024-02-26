@@ -1,192 +1,228 @@
-Return-Path: <linux-kernel+bounces-81062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D62E866FA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:00:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12EDB866FAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:01:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DFE91C25C92
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:00:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 94ABA1F27F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:01:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5172E5A787;
-	Mon, 26 Feb 2024 09:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8449559165;
+	Mon, 26 Feb 2024 09:37:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="TsHTKA2I"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2067.outbound.protection.outlook.com [40.107.94.67])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="oYLwh52t";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zi+/LFED"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1FBE59B70;
-	Mon, 26 Feb 2024 09:34:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19001EEE7;
+	Mon, 26 Feb 2024 09:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940052; cv=fail; b=PYpW4dIsfE4+Hlz9Z59anjMfdJtDMnGiG9Ihd5ehfkLq2j88k2sCk2VW3zcAawYmeSo74U+eycmmWi7sSbb4LaHBwV/Y9U13FOGYiPLKq9CGyAaKWtakEB7VJBJ45k+jLnhJHO+fB0qJPU2QI/OD1AC6Ggodh9f+Jmhdj9hqcPE=
+	t=1708940242; cv=fail; b=gnbnJqK5fYDnXdEljCq5veAPhzEaDLNrzM1aQ2agDhqgbD/LzP4Gz/kResNwLyU6tpFglKS4+/7bIBlmMqww3ZiMhRus9XeOecjdsV9egEAtG6ZfJNbsTUaTi55rQWsc7Fio297HQKrpNhMUBpj9VsO2ixBPKjHtelfM3h+bTvg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940052; c=relaxed/simple;
-	bh=n5kdWOGHcqUQi1C01+5xje06SaqcPxfMqLu+q83VKK4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ViAcKJHVKi2sRoGofdJ9QQWWQ32vAL7Q6FMpr+TVSNafMn1YFSzaxEfz8qSp0JnjHQz8gC+EUuVuCdJHOdofxTDzqOpZOWlgJpFKhc/7fFc2QTx978IvX131Q3Z7qI1Zu1AzTYWC7M78dxrwAZHjLA5begoT1K599W/KZeimnaA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=TsHTKA2I; arc=fail smtp.client-ip=40.107.94.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1708940242; c=relaxed/simple;
+	bh=GtKo/bWsWB6KfXfQRB872elJmJDr3mVYBB48ntnxjE8=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=RRw7vbGICdCTXka6eAP3fEV2ddSbOKlBX8ASq+mxi+9szS/J4vEUkD7lczDUmr9I0Y+bXD9g5yNPfvWzneg44hRD4RQS4ypqaYJS9/PMQhHAY09bTgxBEv67+KoVBhiwYr4eV3jUJJPeS8+EslgQBD3L1CmTd/rvpxULFhsxKUQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=oYLwh52t; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zi+/LFED; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41PLPouD023296;
+	Mon, 26 Feb 2024 09:36:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=3TRYWIfNGS6y4XOJ1V919ZQwqQr5DaAFS93+LgKgjeI=;
+ b=oYLwh52tmAD/LhTVtVidsI068CwYreGGjBLOJhUEvXWxNtwzPBfb9Wbj5M1UjWSOQM5L
+ x654+jiLXUpHrsyYr9EiQiC8BGx6me6pwpTU8fkkzCo0H3n8Zs2eSUr9a6pj8Y2IOHqN
+ 3vHiMUIlsG2kWqYU27cLpSxFpZYdkaImaK8g09t9HZaSSX9VVskHD0R+6y5OX11M2w+s
+ n37z33vWNAsgGvqxA+PRo5ZDunmxmO7h9Sl9Yl11Bu7l23QViQC95h9TLnJxExLsaxwg
+ fmQuau/Yt1+hTYNwBk+fR3qoEnY88QqfUYTWNC00FHCzRS4/WqyFN1chQg7OkMFToOoe tw== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf7ccc3hu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 09:36:47 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41Q898ED013413;
+	Mon, 26 Feb 2024 09:36:46 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wgbdh4xy3-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 09:36:46 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mqEp6MbfqJw7ez7MHtwL5MqPoUWxKGtlfh/lUIWGXcAPJ+fdCH+nJxiM46CBm5vCg7iBa3FxKTXeGGplTy82b74VFBX/1pNx8jzmpiE3kdQGaEW0D9U4/ZuArC/bKTSpKF3IzRa9WXGAuscZ9T/Zx1ljlgIcWItqWXn+dT44YYKK4HULCfIH1gZKPlPe+10e+7xuUdLENOt0BX3mkqUy8ZtuCYrPzhdbcWFM5HIChU1PygsxhNZcQypQLpPaI666h1/ev2lfzj4N32LIw6kml4jhyj4WK2NZtTAwGTuZ8nubvv2WJ7jc7qbSJmBxOTtzoJR40CnFHS1cdLIV4NZqEg==
+ b=amVp4qAkT1MJHeri/jlDR6n8kcKSVmFPW10axgE7FhW182MV1R1ePJ+OVGtgeqoifP3JkYFcNdujgQwsAAlCjaFHrm1ulgJO1lVVAJMRddFz/swNRd37j9Jz4psNVt1zvY4B+sshab/sLEiNjVCNVA/KRJNs2kI/g3QrS3w4pb6hM7P2bqq6Sv8nTVuT7bnfLkb1D7Ndr09UyAlvTedbDGJ1D/mwcw0saKYqNNTc/urFegPUqbgINmveFEWh4BGWwAcyQg+nFVUahggfVxoN4/hgQvJhKrX8wnNMCQbg9D1jRoJ3VDt0E5Cwt1TR7pf2ytkR8vm8ljkVCCCRuL8lig==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q+O5bCVThQKY+yU0HHeTtd7kcs7uNH9IJcrnKxTr0gc=;
- b=iu1Qu8kmg2MKSkqNmBJfub5hkTV/txDxeBf8SvPyRI6OoP0DRLYgvLo5USLv1cQjLzLm9lzjU2DL08r0kGa8Jp6i3UCEmSQRYM6sMFPyENSs3wOO9Ae7efjg11TDFX5tX4Igu6nHdrNs2hO5MZBGM2UxtBe2n1ztYhVZ/TU6q9eAHqpuq9YLob200hUgku78VHZpLZ4dk0MTpU9s3rXmH+iFncaHs+o/fl+UHn1I8XiggZ9w2aa/b/UKt6MvZ1lM+LRJj2ePB9cFbL9SX08sUErPxzI7SUu1RLYt83dH3F5WwttIWbf2zYlDswR3utcnFOwNmyyB5vx+EVIpZIZmfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=3TRYWIfNGS6y4XOJ1V919ZQwqQr5DaAFS93+LgKgjeI=;
+ b=GphS3jidmaeexMiPX+jhlKqLgA4GvlFT9sDUgXk6MAjqkUNBLYjeWwVTMv2LLNPBu4ZWLLoUoXK+OH/0J6eEY+d39bcHWSr9ezBpTX9GAsriPLoAXR5JVAXJdV2PkU+vGwiRNfQyAdQGeW2z7f03D6hLS7b9+xuaZE/WEMyAfbWlMbRNJnZxxa+O/JGqPOtx8ma09wPEsd9D7ZoP5nnuSaFhm0UcaDgDw3q03Hmamv9TBHIZ6ZHpl/WnLdzFpmTN6kmiN9Oy+EmwZJtjh/S8GNYIuRiKN6uG2xqU35wJ7O68tbl8e+7Bz8HzCo0qioRxnnhyiPCsD5Tbp0XIo+6Hbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q+O5bCVThQKY+yU0HHeTtd7kcs7uNH9IJcrnKxTr0gc=;
- b=TsHTKA2I/QbuP/gPefJHdkq6xGw8qPls8m27NG4SesyMp1JkWqJYQLaKgK4EgpjYk/4gNX1Ib6DSlY/2dPRAzwfX0eFbwdiB0L3l/xWUhiKmMZOoObp1riAD4bs5Iqqy/7fUqnaxR8adQ5QStLE/TO8VOejDG6zBPssqINVcI/Y=
-Received: from SA9PR10CA0024.namprd10.prod.outlook.com (2603:10b6:806:a7::29)
- by PH8PR12MB7136.namprd12.prod.outlook.com (2603:10b6:510:22b::5) with
+ bh=3TRYWIfNGS6y4XOJ1V919ZQwqQr5DaAFS93+LgKgjeI=;
+ b=zi+/LFEDlmNV4/HIuuD+a+90HRR4U1UuV3IREziAx7IRD6wQ8wS+WKgqmV8CGpancoJDlj18lb7FM53rH+IAwwVy1iduoULhX5Z4K8X0JS7gPQKlrT2UjNYYjXHfQwkZvNqyHijvCrucG4v2VIZletQE+XyfAvPQRx8HbriIy30=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by BY5PR10MB4369.namprd10.prod.outlook.com (2603:10b6:a03:204::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.33; Mon, 26 Feb
- 2024 09:34:05 +0000
-Received: from SN1PEPF0002BA4D.namprd03.prod.outlook.com
- (2603:10b6:806:a7:cafe::1d) by SA9PR10CA0024.outlook.office365.com
- (2603:10b6:806:a7::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
- Transport; Mon, 26 Feb 2024 09:34:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- SN1PEPF0002BA4D.mail.protection.outlook.com (10.167.242.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Mon, 26 Feb 2024 09:34:05 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 26 Feb
- 2024 03:34:04 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 26 Feb
- 2024 03:34:04 -0600
-Received: from xhdmubinusm40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Mon, 26 Feb 2024 03:34:01 -0600
-From: Mubin Sayyed <mubin.sayyed@amd.com>
-To: <krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
-	<conor+dt@kernel.org>, <devicetree@vger.kernel.org>
-CC: <daniel.lezcano@linaro.org>, <tglx@linutronix.de>, <michal.simek@amd.com>,
-	<linux-kernel@vger.kernel.org>, Mubin Sayyed <mubin.sayyed@amd.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3] dt-bindings: timer: Add support for cadence TTC PWM
-Date: Mon, 26 Feb 2024 15:03:33 +0530
-Message-ID: <20240226093333.2581092-1-mubin.sayyed@amd.com>
-X-Mailer: git-send-email 2.25.1
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Mon, 26 Feb
+ 2024 09:36:43 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::97a0:a2a2:315e:7aff]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::97a0:a2a2:315e:7aff%3]) with mapi id 15.20.7316.034; Mon, 26 Feb 2024
+ 09:36:43 +0000
+Message-ID: <85d2aef9-b966-4c90-8602-ba5961efc23a@oracle.com>
+Date: Mon, 26 Feb 2024 09:36:37 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 06/11] block: Add atomic write support for statx
+Content-Language: en-US
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, djwong@kernel.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, dchinner@redhat.com, jack@suse.cz
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        tytso@mit.edu, jbongio@google.com, linux-scsi@vger.kernel.org,
+        ojaswin@linux.ibm.com, linux-aio@kvack.org,
+        linux-btrfs@vger.kernel.org, io-uring@vger.kernel.org,
+        nilay@linux.ibm.com,
+        Prasad Singamsetty <prasad.singamsetty@oracle.com>
+References: <87frxg1v8p.fsf@doe.com>
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <87frxg1v8p.fsf@doe.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO3P265CA0018.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:bb::23) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF0002BA4D:EE_|PH8PR12MB7136:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4f070777-eeaf-4ae0-178f-08dc36ae131b
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|BY5PR10MB4369:EE_
+X-MS-Office365-Filtering-Correlation-Id: f434f809-47a3-40ad-d153-08dc36ae716a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	b+3GVh9E4He4LKOgIDz3aH4KW5f+yhX2iDS3GlXhYQDqLG5HFs8zYCmUhvAWYgcbcS88S3I0Fgb49wNUN6zYOB+4RizUAM5K2FN81BQsliSjEbMjLFOy49YjvIjYBnzno7bBbLJkxyl+fqv0XQo6IxuzS94BDGtJdQ0a+QycjOWNhMGM3qv6XkNYFTFeIeeHKI1Xt+wnflSYt/x9iWks6E5J2MEnUq+YBAtE1eYRkPl79l70uM9u9tLZ6Rr9cKcIr5I8NWnmaJ/zvDDaVtB8LQb+L+96DZ8lrAKMYqh3mm5i0dPN0cSA0UNFQhl03Au+C/8O2byIM8BxmPNVJit9k0BjQzBiSL+thf769G9+IZtg3q2SAiRCaKn3c4k6WARixCm5PaqLF79KkrWr+tTsYItV4pVNNy+nF1C/gs3Rh7+qi7tP20TVAR2dNfANdUiAWM6qG2t51Ywb34VAQEXiVmi1czKCmtazuT9Rq5dg5ogKcyTvw8yljzNEQL579nbWf24X6Kssvn5WDCo+4gJUY5VcG9g5cMCUsYHFh9jKVWlWBvpj+rwspA7uBHbiqzxdCpnFLKDA/Qwv6Wa3yIlSIdIL/NUJuUFVq4qahC71z4fX5om2i/TNEKOeBRVBlwgRtf3tF1Et36t3nu5muB1ymfyQU6/2vZwOIyFXo4ggb8tn0RUuacVIWEnnRHZ3/P37TBh5H5FtCZKO+GA0tcCLOC4v71LOhzG0Bu82MF3xaCuiOM6e8BGw0nGm4IIy3q09
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 09:34:05.1894
+X-Microsoft-Antispam-Message-Info: 
+	GA7HQAmzZ5EMOTK9vPU21wGWgRojJx5frvtE4KbSetBGAuqpvFFUYSz7x/3D9zeMNpBMfB1Wbqa6GxKC2lS3suYyPeUgmAVrD/IIBCsD2GGvCVSKnrVoBhNGysC3arYxI8NxS5OSYCG15h1xUFfeAqE8OU6bSvmaOJn5Fjyfh3fiW6ydHKdDM9PkV1hfecPXBIuFRWRrgWXIE2lOM5R6bEexqVwjkyZkRzEQCs02eVNDP2WJSXJo7fuQA6zC9X/3ux7WIPeRoPWxQCeY6f8sIhnU52jhsOXyppDButbBHm84evfZKzODEfTEX1Xqa+jv+QaDeDTWU+MS6s70pFPXrpNkFQdYOYbdWugfIvO6Bk8fpj5ZAhe9WmWhtEsC9DX7EPuG/LqVTNxTHVkDkYIUIFMeD8gMFUakSTPFBKcSjVbQredYEBqQxtXhC7F+zKSN8v5eKGaXvffIMYqCnXi41GSh0RBQ6vuRYg5UPxP1qbUUU8ERjYOyvRZ0LpeHZFLS1dGmgaphxHfGisNfKDu9PiECGyloJ0nsPSTt+ipJrhREM7bHvAYWMIcXK1ZHsVPjtomni2BlZDzwiue/UKtoRDb3OCqMWlDfAEHERpILQ2SMyzRvbsu11wMCUoyiOVpCiX18Bg4DtC01E8E/oqQgISzPy71huULIqvK2fdXZNMz/SMTLWJ1OcS2GdUJVnk2M5hwLDDwSjKz++inZuSmvHg==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?STJzbXVqWm5DTXBUWElGYWhkMW9ESlZSKzRtY2RhWi9VYkFES0dzTlMxd201?=
+ =?utf-8?B?ekdYN29RanVBeWplM3FLbENTS05CVDlaSVNsRDVUNFFSallnZTZ1UHJ3NndR?=
+ =?utf-8?B?Y3hPVWEyNmZGalBvZFdJM0tyV2pKUjVzbGgzSjVmZERSeHpDVFd1YlVSbDNN?=
+ =?utf-8?B?V3lURjgrdVJNNitaS3hHWEc3M2ZQSCtTZDVXZ2hNVW9hWjl0aWp6WG51ZXVO?=
+ =?utf-8?B?NkNjb3NVaVlrR2lHREpQR3l6Y3ZJNERaenJHZVdvMXJSR3haRVFxYm54VG4r?=
+ =?utf-8?B?TGpDWVgydUpUbFVTZElybERxY0h6dlVWcytyN2pLMnRoNHlrY0RZUVNNUk56?=
+ =?utf-8?B?Y1lhWFFSRzdOWFNLTGFLbFFkVU9aRHZRWUpUVmpZQjJkeUFBdmlDOG9DZ0NK?=
+ =?utf-8?B?TERoNXV4YVZMODRtb2JtdWNob3VrcWthalIvdDRjT2lJM2dwd2E4QWRsd1lM?=
+ =?utf-8?B?bEJHWCtJLzRlZWVLenliM1JRZjgzaDBLRjVycElaczI5WHJoRXEwKytDdGNq?=
+ =?utf-8?B?ZWtoeWttYmpuL05mS3F3S2FxbmVmZy9zbjFRQnZkYS9Sa0RNaU02Z0JTQkw2?=
+ =?utf-8?B?RkZreVRiN2I2bkswbE85ZjBXUk9xM0FTSDBHK2FKUEN2dll3c1pqMmo4b3N6?=
+ =?utf-8?B?b3ZYbkxoTzJLblRpT3NyRnNaa1pLZ1Zxei9qaFNpWTI1Rllnd3NHN2lSS21z?=
+ =?utf-8?B?RVUrbkhnWTFUc2FUSnZjbEpTbW9JeitJdWxIKzhVaVFGY2hXKzBqWnMvZk5z?=
+ =?utf-8?B?aW1CQ05oSkk4djN5U0Q4Y1MxWGtZcEU4bUlNaEQwZklmcW1TOEd6UVByQWJ3?=
+ =?utf-8?B?ZytueE1TUUxzdit2dnR6S04yN1ErdWU5cVdNU05kVmtZcGFNTlRxY0E3blpN?=
+ =?utf-8?B?M082eHhBQ29RSzVlemdUU09TcVptU0drTXBpYWtFeWk1ZUd2Q2NxNU9Mbkpj?=
+ =?utf-8?B?a2JPMkdwdDMweXdueVJLdDJpS1BwYitLb1EvSmovekhHWWFDUXJUNHhEZ0x0?=
+ =?utf-8?B?b1E3ZmlleGZHSDlwZFJyTDc2b0phbnJ6TGp4TVJ6SWRLOEVybVNUcDVReURl?=
+ =?utf-8?B?dUttMGRpUkVHM2RleE5EMVFuMk45NmN1YWFHanhmU2tYYVdOZWVIYXZmWUtZ?=
+ =?utf-8?B?WHRRYkpua0ZOLzl2MTU0WmdoOW9RbVpkRXBtSjNYQnFNak9MUUhLaG53bWxz?=
+ =?utf-8?B?dE12YnhCR05WUnJyUnV3M1ZsZ0Z4U2s0TDF1UG93Qk5mWGI4Y0VidWhoU016?=
+ =?utf-8?B?R0xQbmFjbTVKZHRDNXpsajR2bitzMUhYSlJVdGt1UmlCR1Y1SEg1bS8rRnlE?=
+ =?utf-8?B?akxlQlNGWUZNNXFoMzRsbUFlTUNoTmJ6cmVtN1JwZ0NGUkJDQzVFRVRndUli?=
+ =?utf-8?B?OVIxcHZIWDVjMU5TS2sraE9rUHA2U3FZaGFPY1MzWU5iTEloYlFvWFl5c09R?=
+ =?utf-8?B?R2dEckVlRElvUzIwc1pXajM2c0ZBNFVndjAybS92SzRNY3VFOWh5ejZHdmJm?=
+ =?utf-8?B?YzIzM09yWWV6Nk50YjVKV2tQN2FwWUhyb2FQY29oVEpYUm9aWnJMRzgwSDhN?=
+ =?utf-8?B?b01PNE1ERG9IZ0Z5T3ErSCtFb1puUDBNNlVhK3BCUTRYWHJQRFIvaWtCWWVh?=
+ =?utf-8?B?M2lmRUFTSVhSc1ZKZVFsQmJXc2RKeVRURmVVZnNkeUJOa3UxVGZaa3ZqK3VU?=
+ =?utf-8?B?a3ZweWdESyt0c2VqNUhDOUFMelhORzJpSnNma0MwZXpMYjJqZGduWXYvSm1x?=
+ =?utf-8?B?Q1Q2QnBUZFVWbk5zR2hYWFhPc0xiaWxKbWMzQ3pjYTN4SEFFU3BlazZRdU5k?=
+ =?utf-8?B?TGZOREttdit2V3o5T1paR2JvQjVtV1A0SHdtdWZXZUpNZ3lhaDVkOVpzVWMx?=
+ =?utf-8?B?UjR2YnNqZ3FRUG9IeGRXUEdFdVZZdnJUdElaU01OR1NGYll5cTV0OE4xbnE3?=
+ =?utf-8?B?SzNra3krMGRtSHc5VVNWRGl1L2NhNGVaMHFqcENpaVAwcFhkc3hGejIyZkZ6?=
+ =?utf-8?B?Z3pVSVR1SkxtbTF1RW5XUzZSakI0emVLa2t2Mk1YTVF4SG8zUkExeExwR09G?=
+ =?utf-8?B?TGNkcmhLU2xOWncyclR3TTR3Mk5hRkVoWUdta29yb1NQN1UvK2tPa0FPUlA2?=
+ =?utf-8?B?TnZFcXdqSjQ2WnlIYWRFcjczU1ZueURCTHRITTJCU0JqM3R0STd1V1pLRGx5?=
+ =?utf-8?B?eVE9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	cRjW46JyVq1nyfTPRgiqIGu290f/ZudVZwdAkzRHnPuhyktyXc8EHCc0i609B7Rj3WVydEm6EAXRA1vmq4GPPmGZ8U6b10u4NiDqezoUFV8fEkTOHWN1tlrqv8qJW9FVjSMyHxU1I26tUzEXjKW6DlO+ZiKyURmsj9L2bcR7950t4+Om88dhrw5wfsMK23erpAytRCMiMatufsQeC5WZlMQgEYjo9bIogTWZGqz6diGm6gCDBIuCtHNy28BesUpWcP09UWK7JjoURm/qLEo3tW1PePMCMVYb8YV/7FRsN0EcV0dewdnwYJWBV0jjJh8NFOyIZVqIbkMghylj4swI8biuZN6Qts/iVqjLlp2Y/w0n7WWJ8QAP+slvYdIUtW5LZMGQEFCo0HGinDlKebUuB3Ka0KNLZ1ub2bGNiFkC6jYwemK7NngN2BcH4KvTdKNhtyg56T6LIZaT2CQYSkCovq0lhdNoCoMJ7/SVT9L7/cF3Yt7fELYIJDW8BBP+JHGuIndmQ+9QZqSNFW29wpp3lL0JKVQI0wv5s/dEy4pQkZn+fNoIRPW3xRdB4G0Tt1zG5CEfgGMtfj///8tFQNRPxTqtOkuDlhWVLg+3YbWM+KE=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f434f809-47a3-40ad-d153-08dc36ae716a
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 09:36:43.6623
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f070777-eeaf-4ae0-178f-08dc36ae131b
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF0002BA4D.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7136
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mXb88wENguKtA0A1TSSjMezPTqPWZ+sZHUx1afRcUWiNacraFacI7z+pxSKoFKvdUgY2m2t7/ytlWVH753jLwA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4369
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_07,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402260072
+X-Proofpoint-ORIG-GUID: h_N4ZjsXTDfNWxYmC7LWkOSPhdJfF_Jw
+X-Proofpoint-GUID: h_N4ZjsXTDfNWxYmC7LWkOSPhdJfF_Jw
 
-Cadence TTC can act as PWM device, it will be supported through
-separate PWM framework based driver. Decision to configure
-specific TTC device as PWM or clocksource/clockevent would
-be done based on presence of "#pwm-cells" property.
+On 25/02/2024 14:20, Ritesh Harjani (IBM) wrote:
+> John Garry <john.g.garry@oracle.com> writes:
+> 
+>> From: Prasad Singamsetty <prasad.singamsetty@oracle.com>
+>>
+>> Extend statx system call to return additional info for atomic write support
+>> support if the specified file is a block device.
+>>
+>> Signed-off-by: Prasad Singamsetty <prasad.singamsetty@oracle.com>
+>> Signed-off-by: John Garry <john.g.garry@oracle.com>
+>> ---
+>>   block/bdev.c           | 37 +++++++++++++++++++++++++++----------
+>>   fs/stat.c              | 13 ++++++-------
+>>   include/linux/blkdev.h |  5 +++--
+>>   3 files changed, 36 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/block/bdev.c b/block/bdev.c
+>> index e9f1b12bd75c..0dada9902bd4 100644
+>> --- a/block/bdev.c
+>> +++ b/block/bdev.c
+>> @@ -1116,24 +1116,41 @@ void sync_bdevs(bool wait)
+>>   	iput(old_inode);
+>>   }
+>>   
+>> +#define BDEV_STATX_SUPPORTED_MASK (STATX_DIOALIGN | STATX_WRITE_ATOMIC)
+>> +
+>>   /*
+>> - * Handle STATX_DIOALIGN for block devices.
+>> - *
+>> - * Note that the inode passed to this is the inode of a block device node file,
+>> - * not the block device's internal inode.  Therefore it is *not* valid to use
+>> - * I_BDEV() here; the block device has to be looked up by i_rdev instead.
+>> + * Handle STATX_{DIOALIGN, WRITE_ATOMIC} for block devices.
+>>    */
+>> -void bdev_statx_dioalign(struct inode *inode, struct kstat *stat)
+>> +void bdev_statx(struct dentry *dentry, struct kstat *stat, u32 request_mask)
+> 
+> why change this to dentry? Why not keep it as inode itself?
 
-Also, interrupt property is not required for TTC PWM driver.
-Update bindings to support TTC PWM configuration.
+I suppose that I could do that.
 
-Signed-off-by: Mubin Sayyed <mubin.sayyed@amd.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
-Changes for v3:
-  Add Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-  tag
-  Remove bindings from subject
-  1/3 and 3/3 are dropped as of now (WIP).
-
-Changes for v2:
-  Update subject
-  Modify #pwm-cells to constant 3
-  Update example to use generic name
-
-link for v2:
-  https://lore.kernel.org/linux-arm-kernel/20231114124748.581850-2-mubin.sayyed@amd.com/T/
----
- .../devicetree/bindings/timer/cdns,ttc.yaml   | 22 ++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/timer/cdns,ttc.yaml b/Documentation/devicetree/bindings/timer/cdns,ttc.yaml
-index dbba780c9b02..da342464d32e 100644
---- a/Documentation/devicetree/bindings/timer/cdns,ttc.yaml
-+++ b/Documentation/devicetree/bindings/timer/cdns,ttc.yaml
-@@ -32,12 +32,23 @@ properties:
-     description: |
-       Bit width of the timer, necessary if not 16.
- 
-+  "#pwm-cells":
-+    const: 3
-+
- required:
-   - compatible
-   - reg
--  - interrupts
-   - clocks
- 
-+allOf:
-+  - if:
-+      not:
-+        required:
-+          - "#pwm-cells"
-+    then:
-+      required:
-+        - interrupts
-+
- additionalProperties: false
- 
- examples:
-@@ -50,3 +61,12 @@ examples:
-         clocks = <&cpu_clk 3>;
-         timer-width = <32>;
-     };
-+
-+  - |
-+    pwm: pwm@f8002000 {
-+        compatible = "cdns,ttc";
-+        reg = <0xf8002000 0x1000>;
-+        clocks = <&cpu_clk 3>;
-+        timer-width = <32>;
-+        #pwm-cells = <3>;
-+    };
--- 
-2.25.1
-
+Thanks,
+John
 
