@@ -1,359 +1,172 @@
-Return-Path: <linux-kernel+bounces-82046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9612A867E37
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:23:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9B68867E45
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:23:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A4E9293B43
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:23:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C91FB1C2CA72
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11D8E12E1C2;
-	Mon, 26 Feb 2024 17:22:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DF8412DDB6;
+	Mon, 26 Feb 2024 17:22:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ju41FPsq"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2074.outbound.protection.outlook.com [40.107.22.74])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="km1NyRKX"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19561292FF;
-	Mon, 26 Feb 2024 17:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708968136; cv=fail; b=dzTu1/BbErEZeMY4YvdCpgCzxxJ6Pkq+f5xS1VFTURUpzkC42NX20cHPU7CclC0UaILlDLSWDMUVlmZSo5z9Q7TDm/LTsrDtsBhTMoQnSG+gOFeyU2GrJLlah1qlnaZdpywui7DWOZHMmz0EX66L2akOmC80/P+8Viw+/OyyYkw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708968136; c=relaxed/simple;
-	bh=LNo5ExOn0XNIaZxjo7usizM2cW7CKeutsVZLq+sxZ1I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Dnp3iJBZJCz6zYDXHFpNPnbeZ2JYsLvrtD7kCVHftvGm6BVPH112Zce5onFG1PjizWbLsWJ2pOi/uBBF90VeAx0t+oB+cdNfQOks1DN9I/xfZjou5gUf1GULESibFOtsQz2uImBxV2nuBi2DWXy8fEhBBt9H110Zg+hAN6n50/8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ju41FPsq; arc=fail smtp.client-ip=40.107.22.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YmN1PzcyKxjmVqoSagKGby86YmYheDPVLAqYo+YOyKwUDwkrmQL3qsgbp7IMgBnNrpogTwg92JY4FV8xMCiBcv01mfz62gc7h0gjFMuTjrrNRiL/U2mP123kwfzSQdrlnF/HaqKqDjBm7HxtliC8+sA/JrY/t1vAO7pdkhzJ8fNa9z2gG8CrOi8n3y/EvtqaRNolp58vaikO2ptJETENdhJvPSTq4c+CkZXAYFBMf9+mhj3tByQMnxShf8L97PC3sSwZKX4sLWdRJTNYKrZb6A12qhV5gzECzwcIVESvK5KvOElHW7jPutwMvqz1HxJZCsUoCrReu2prE0sXkxPxGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YfDX1Cbt8721jRgx5yD3L/XZ3IW87b0Rj5sOby8pE1A=;
- b=mZTy8CumcQu/2MyG79kKaiGlIUWiNaszF8eTofuwTDtvkLbbVNRiPvF5rsnTiBZsCcWqK23Cgi6dCMRxjipyf4jIDj5NWdPRPS7ns7wGw5eGzYzFOvcIygTHXG2hCIJAfPp8PcT4xGgiZPv70bzwC1IK+QoSiBoJyO6mJDEmkNvXru/rohFdyuJlVRcgxFMatcBYWy/jO66OQNCOshZMD3MhSf8NJw/vJpNJYUp0F5UAycirx+HOAGPsZbT+nMsbauiJvSghiqvrz8iA/X2OL1wHQwN0UgeRT0FiQZFGt14+B1t8wHwg1oWbz3iEFBtG5EG6Wq8RKuYM7GuBGfi25A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YfDX1Cbt8721jRgx5yD3L/XZ3IW87b0Rj5sOby8pE1A=;
- b=ju41FPsqxiq9MrbjXLjaa+Lab4ggn72AbaL7VPhAV1nw6UxOz1UIptE/Z3Ul0i7/8rR1z3krfFb88x4zgQh1tL9dqf1HmznMco5/VyXrTiIYNMbGObtmV8rwLRC1hIQOu0LcIxZQAGqDQNAJyglLDZue5Q3nToS4sxVv2lJxUq8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PA4PR04MB8032.eurprd04.prod.outlook.com (2603:10a6:102:ba::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Mon, 26 Feb
- 2024 17:22:11 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.032; Mon, 26 Feb 2024
- 17:22:11 +0000
-Date: Mon, 26 Feb 2024 12:21:59 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Niklas Cassel <cassel@kernel.org>
-Subject: Re: [PATCH v8 10/10] PCI: dwc: ep: Add Kernel-doc comments for APIs
-Message-ID: <ZdzIt8aqogaoW22Y@lizhi-Precision-Tower-5810>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-10-64c7fd0cfe64@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224-pci-dbi-rework-v8-10-64c7fd0cfe64@linaro.org>
-X-ClientProxiedBy: BYAPR21CA0004.namprd21.prod.outlook.com
- (2603:10b6:a03:114::14) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CF312F5BA;
+	Mon, 26 Feb 2024 17:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708968170; cv=none; b=gVeOEAQ3Uliy1WF7k6L2VFDO8StiY+YhKUIVSDw2zcptDw4dSZVL0Ee8vEgK0AhoMXrNfRxgDYbs8iieSFj1/C/Vr5aSMGI5Woknj5wDuUNSMJbRPsOgpFT61w0pXgyqAC5z4twY2Kt5NmgNCT7IEl8QaSzKP0o4qdcLTFUYNt4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708968170; c=relaxed/simple;
+	bh=U8t2ESsI4CcVZphAgS7e2T8l+PJy2Q0N4kwscHHmEZ8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Szxxq48mIoJ0rMwiU55w5lL0rWwAD8YnOaIv/zPM3HA8S/ABgS5teMTGkmDHZbFQsnH+cqwoOqnhQXsWYgVBT19FYxIQXDUdJG3oGqzh1SvQQDCfW+38iyzOGNRA8RrOtsRPp7WBQ5DO5/LmHwxgBV0+fqBK8JyCJ+a9nSLP5QY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=km1NyRKX; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QF8vAO011259;
+	Mon, 26 Feb 2024 17:22:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=WSMjhNn
+	35cLADacMh39W7rFnj1+8t1bmLlgzSAMVrNE=; b=km1NyRKXzx35zPvzLX9P1QB
+	gqTbo5SRkfPSP3nNm0WPgrlWIbBruGetHF/YPfTIF5o6GwTUUA2U0SHFuMlBVgge
+	U10D5qBw/K2XU9Zisa/yS6HPmHPudSjOr1Hxxntw9GXjGC/msodgG9DDL22lzSig
+	GwLgw+ZDw7VbktDlpM6EfqM1oIVWE2Y+czP13rCDR2LcKcbsoS1zDJnIySvo08Ej
+	d+KbFIdDR2qzDeFo9/6iVP1Pkq7nXjYOzlwEKavH22UGyYnrItQy0eD8qU1ycEzp
+	dM78ivoSwxw8W4N/9b/g6qmD745bwB2XqMqvYSjZGLwrkTGZveHOIEZC2diKedA=
+	=
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxpsjj0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 17:22:34 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41QHMX3G006877
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 17:22:33 GMT
+Received: from hu-c-gdjako-lv.qualcomm.com (10.49.16.6) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 26 Feb 2024 09:22:32 -0800
+From: Georgi Djakov <quic_c_gdjako@quicinc.com>
+To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <will@kernel.org>, <robin.murphy@arm.com>,
+        <joro@8bytes.org>, <iommu@lists.linux.dev>
+CC: <devicetree@vger.kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robdclark@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <quic_cgoldswo@quicinc.com>,
+        <quic_sukadev@quicinc.com>, <quic_pdaly@quicinc.com>,
+        <quic_sudaraja@quicinc.com>, <djakov@kernel.org>
+Subject: [PATCH v5 0/7] Add support for Translation Buffer Units
+Date: Mon, 26 Feb 2024 09:22:11 -0800
+Message-ID: <20240226172218.69486-1-quic_c_gdjako@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA4PR04MB8032:EE_
-X-MS-Office365-Filtering-Correlation-Id: afb1a931-4667-40e2-d5fc-08dc36ef77de
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	r1B56Cm/QPCi/CAMl4C3WTfEJIbcnE9szgjFw1iCgXR+CPBNMcj6h83GEaLrtIy5dbD4poJdikOBkF4AqpqWOfptpUpgc2TZNiRAvP6N5HsNM1qzECvElL/05vlGP+IHSqayZuMj7LHEUcMgURO/82DdnwzFkoJ8o6+9w+kmPJFzPFZryih+Sd9p7pWBWMLFjFRkXNal0EgTea3gzN8zXvjONprotVQJ3McSqLi4VjpMDVnOX1/9PM+hUG9Jf+eM9BiuWgOmPfumI1oSLA7cM5UTJ3rZOPLv0VbL3FsCtt1sptZ4qoeUAOtY4v23ih4sn+qda6AreCMG/PJG4+Oo9nw2ugcG+4hnsVSitSLiuF/pk9BjGqa+yNocRXGiSDaQHvNbtGg2jazFgzUxiSF12NAkPsga8qI7cNlATgFh1TwbQb+2QDchJXrdkyl9SQ1pkvtuec9GJYMFZM/mq8tPNATuyasrvvUaOh1/XSnbSYfdV569P4lSwULup1HldzrOxEftinU5ZwOFdl8cK+04ptVx6f7f24NiGn51xszBrk+0RxA4QnluRNDqV9dCIxxEcvKm1Z1p2fRIDvNqxOw59O14eAxVqqY2yfRUQBUHrWcRdRJokRnnqhTj+Zu441yAj1KXlM+kegFbkkFj5Kmirfyu32NlnwkfhihZUFDxVy2vArAy0OPwGrYx2GNdE9LnXUXbnpEOGTlnRWGVAoBxjA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?4EkRx0h2QDVyJW0jk5xLsgvFnKdqQp1FW8bxoskEIAlSPCBRQJ9mH7V+BQ87?=
- =?us-ascii?Q?e9i+j5Pnm910PbmxI4390yOzQOMRI9Ochj6x5Bn/PsSeyhLPDut83JolMHEg?=
- =?us-ascii?Q?lj3EHHrp7zK7UWuqvZn2MecBqSwGUaIqA7p9FeeNuHQ0qNdAMMStiF6G40zr?=
- =?us-ascii?Q?E3mJfJ4t89lJoWLAFNYLhDLROYwC6RItjnBN9kfX598TTpVDZWiTBTI/OObb?=
- =?us-ascii?Q?PofLYXRTSP623n8WZvt/Ne9FB410c4DpgmxoeOGafQI/0mEdHJGCCkrS9uWI?=
- =?us-ascii?Q?y+LCIH8q8Kx8T+tuozZ1kfWjoBnvdb9dLkJrhWyNxSXqEiBTFJX1jcufRsEI?=
- =?us-ascii?Q?hvERSLfD0eZK/Es3saVkvyGJwhw0JNL9j/oLy/rbvGc4gc8mSAqu9MoP0tkh?=
- =?us-ascii?Q?JC9Sla+tLIBV8n9wUqC7j+UF8jqxzYelHc2GPr5YNDX8oYJHtnvwfohopW4z?=
- =?us-ascii?Q?EZKM8Ba+DEln/AOrPSGac4QeQazg/06KNuK0GN1YbNdMRlck2tGjLoybEOe5?=
- =?us-ascii?Q?2wd1v2gvktgJ9vQuxgOoAYN+1gl3hTiKhv6KjD9nyZnYu0wpL8aDrLKaqh81?=
- =?us-ascii?Q?aF1p7t8fv0tQfr5pmmvFBFAZ1NangO7MJ0jqlzhfYL4yIG/g4kD+wg4EsjNX?=
- =?us-ascii?Q?A4zx8/lttovgHvDF2Uhj3LSJNwEW3MNUWfeUItb2dF/owVwfYrIKKcfQUhWJ?=
- =?us-ascii?Q?lbayPb3+ThAChQmHgDXk6eSApDxnJsizb8QB1oVe3jSZx1nigFz95r02/dQB?=
- =?us-ascii?Q?S4nQcnvLHix+5DKfM2GsjhOZEkH451N2M8qiqKuXq8PL6Fpy8MIBzAoyQXX7?=
- =?us-ascii?Q?K5DONb49hVz3NZMe86WFxYFt5S6D0gmB1mZrM6YPM0kSHj5JK5a+NNUErqQ5?=
- =?us-ascii?Q?loZFdPEqyBJNt3VkhdsFV1X5wQostZnTA9kjq5cwVR0+yeL5wVf4r3V4xn7n?=
- =?us-ascii?Q?NXVZ0PT+ombUg9L81Xs/RabLQHsGqXbN1x+P3VKQ/AlX5YIulA/jaXmR83Gk?=
- =?us-ascii?Q?o+yOw4bYU2hWpnyvbX/iHHWHTRbsdnsIlVxe3L9KrSiKNAGvZAMVE9VlvilA?=
- =?us-ascii?Q?O+fVkdsQCTX7kyfNLZVn0TRYaBxqxn4jApeMf9zYLJN39xgD7GwMu1SoYRQp?=
- =?us-ascii?Q?NnL9dbhjL5H3Br+OfNN63V1phv5s4zg9FKUjyXF66C9DnFY4u5geg50R3gDw?=
- =?us-ascii?Q?St5vOJTq/ZaJ/YiyS7sKCCdtzR9b4TxOBVsD9lIL3ldh0KgMGchNTwCeFw4v?=
- =?us-ascii?Q?gVO0H8drMMp8+ps06ESjoy5nPX69QRn4DAa6NYBbN4lX6zcJED6aUkt3pipQ?=
- =?us-ascii?Q?vn5KdUG9sPZqekw+hXVN0Y+CP+PYKEqnVJTWmhBnd3u9MMO2DtRux02ywubo?=
- =?us-ascii?Q?pIKp1JrlYPNYgDU/Vm3vmkV1hUPOAuq7h5Ujn898x/X3mjKFN/mOUAT39Soq?=
- =?us-ascii?Q?y8LceudKH4pklf1BO+hNw4hBLrYdNPP2saxPYDhVngOscQsLKWLcM9+sk4rQ?=
- =?us-ascii?Q?1sMsjEULxssBX0YvwABdNmEGDF2XucCtH9g/uepuNTRgfx4jZGDX1qtCkkGW?=
- =?us-ascii?Q?qO/hOTbl1UyWGygbMi+a2ZLDlL2ZkV/pwxbvQ8Ej?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: afb1a931-4667-40e2-d5fc-08dc36ef77de
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 17:22:11.8313
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Uq6Y0kGoQtT0O+mgwXrnShRwO1YvxbFtD9DA/mx7+gxpARnHIfpr7gZvwfzUGXAlgqs6WpTroVEbrfZvT5GgZw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB8032
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: lV5dc0zywG9KoHXOSOzomwlzH-RcRpX-
+X-Proofpoint-ORIG-GUID: lV5dc0zywG9KoHXOSOzomwlzH-RcRpX-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=934
+ impostorscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2402260132
 
-On Sat, Feb 24, 2024 at 12:24:16PM +0530, Manivannan Sadhasivam wrote:
-> All of the APIs are missing the Kernel-doc comments. Hence, add them.
-> 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+The TCUs (Translation Control Units) and TBUs (Translation Buffer
+Units) are key components of the MMU-500. Multiple TBUs are connected
+to a single TCU over an interconnect. Each TBU contains a TLB that
+caches page tables. The MMU-500 implements a TBU for each connected
+master, and the TBU is designed, so that it is local to the master.
+A common TBU DT schema is added to describe the TBUs.
 
-Reviewed-by: Frank Li <Frank.Li@nxp.com>
+The Qualcomm SDM845 and SC7280 platforms have an implementation of the
+SMMU-500, that has multiple TBUs. A vendor-specific DT schema is added
+to describe the resources for each TBU (register space, power-domains,
+interconnects and clocks).
 
-> ---
->  drivers/pci/controller/dwc/pcie-designware-ep.c | 92 +++++++++++++++++++++++++
->  1 file changed, 92 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> index fed4c2936c78..cdcb33a279db 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -14,6 +14,11 @@
->  #include <linux/pci-epc.h>
->  #include <linux/pci-epf.h>
->  
-> +/**
-> + * dw_pcie_ep_init_notify - Notify EPF drivers about EPC initialization
-> + *			    complete
-> + * @ep: DWC EP device
-> + */
->  void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep)
->  {
->  	struct pci_epc *epc = ep->epc;
-> @@ -22,6 +27,14 @@ void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep)
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_init_notify);
->  
-> +/**
-> + * dw_pcie_ep_get_func_from_ep - Get the struct dw_pcie_ep_func corresponding to
-> + *				 the endpoint function
-> + * @ep: DWC EP device
-> + * @func_no: Function number of the endpoint device
-> + *
-> + * Return: struct dw_pcie_ep_func if success, NULL otherwise.
-> + */
->  struct dw_pcie_ep_func *
->  dw_pcie_ep_get_func_from_ep(struct dw_pcie_ep *ep, u8 func_no)
->  {
-> @@ -52,6 +65,11 @@ static void __dw_pcie_ep_reset_bar(struct dw_pcie *pci, u8 func_no,
->  	dw_pcie_dbi_ro_wr_dis(pci);
->  }
->  
-> +/**
-> + * dw_pcie_ep_reset_bar - Reset endpoint BAR
-> + * @pci: DWC PCI device
-> + * @bar: BAR number of the endpoint
-> + */
->  void dw_pcie_ep_reset_bar(struct dw_pcie *pci, enum pci_barno bar)
->  {
->  	u8 func_no, funcs;
-> @@ -431,6 +449,13 @@ static const struct pci_epc_ops epc_ops = {
->  	.get_features		= dw_pcie_ep_get_features,
->  };
->  
-> +/**
-> + * dw_pcie_ep_raise_intx_irq - Raise INTx IRQ to the host
-> + * @ep: DWC EP device
-> + * @func_no: Function number of the endpoint
-> + *
-> + * Return: 0 if success, errono otherwise.
-> + */
->  int dw_pcie_ep_raise_intx_irq(struct dw_pcie_ep *ep, u8 func_no)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> @@ -442,6 +467,14 @@ int dw_pcie_ep_raise_intx_irq(struct dw_pcie_ep *ep, u8 func_no)
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_raise_intx_irq);
->  
-> +/**
-> + * dw_pcie_ep_raise_msi_irq - Raise MSI IRQ to the host
-> + * @ep: DWC EP device
-> + * @func_no: Function number of the endpoint
-> + * @interrupt_num: Interrupt number to be raised
-> + *
-> + * Return: 0 if success, errono otherwise.
-> + */
->  int dw_pcie_ep_raise_msi_irq(struct dw_pcie_ep *ep, u8 func_no,
->  			     u8 interrupt_num)
->  {
-> @@ -490,6 +523,15 @@ int dw_pcie_ep_raise_msi_irq(struct dw_pcie_ep *ep, u8 func_no,
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_raise_msi_irq);
->  
-> +/**
-> + * dw_pcie_ep_raise_msix_irq_doorbell - Raise MSIX to the host using Doorbell
-> + *					method
-> + * @ep: DWC EP device
-> + * @func_no: Function number of the endpoint device
-> + * @interrupt_num: Interrupt number to be raised
-> + *
-> + * Return: 0 if success, errno otherwise.
-> + */
->  int dw_pcie_ep_raise_msix_irq_doorbell(struct dw_pcie_ep *ep, u8 func_no,
->  				       u16 interrupt_num)
->  {
-> @@ -509,6 +551,14 @@ int dw_pcie_ep_raise_msix_irq_doorbell(struct dw_pcie_ep *ep, u8 func_no,
->  	return 0;
->  }
->  
-> +/**
-> + * dw_pcie_ep_raise_msix_irq - Raise MSIX to the host
-> + * @ep: DWC EP device
-> + * @func_no: Function number of the endpoint device
-> + * @interrupt_num: Interrupt number to be raised
-> + *
-> + * Return: 0 if success, errno otherwise.
-> + */
->  int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
->  			      u16 interrupt_num)
->  {
-> @@ -556,6 +606,12 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
->  	return 0;
->  }
->  
-> +/**
-> + * dw_pcie_ep_cleanup - Cleanup DWC EP resources
-> + * @ep: DWC EP device
-> + *
-> + * Cleans up the DWC EP specific resources like eDMA etc...
-> + */
->  void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> @@ -564,6 +620,13 @@ void dw_pcie_ep_cleanup(struct dw_pcie_ep *ep)
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_cleanup);
->  
-> +/**
-> + * dw_pcie_ep_deinit - Deinitialize the endpoint device
-> + * @ep: DWC EP device
-> + *
-> + * Deinitialize the endpoint device. EPC device is not destroyed since that will
-> + * taken care by Devres.
-> + */
->  void dw_pcie_ep_deinit(struct dw_pcie_ep *ep)
->  {
->  	struct pci_epc *epc = ep->epc;
-> @@ -635,6 +698,14 @@ static void dw_pcie_ep_init_non_sticky_registers(struct dw_pcie *pci)
->  	dw_pcie_dbi_ro_wr_dis(pci);
->  }
->  
-> +/**
-> + * dw_pcie_ep_init_registers - Initialize DWC EP specific registers
-> + * @ep: DWC EP device
-> + *
-> + * Initialize the registers (CSRs) specific to DWC EP. This API should be called
-> + * only when the endpoint receives an active refclk (either from host or
-> + * generated locally).
-> + */
->  int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> @@ -718,6 +789,10 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_init_registers);
->  
-> +/**
-> + * dw_pcie_ep_linkup - Notify EPF drivers about link up event
-> + * @ep: DWC EP device
-> + */
->  void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
->  {
->  	struct pci_epc *epc = ep->epc;
-> @@ -726,6 +801,14 @@ void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
->  
-> +/**
-> + * dw_pcie_ep_linkdown - Notify EPF drivers about link down event
-> + * @ep: DWC EP device
-> + *
-> + * Non-sticky registers are also initialized before sending the notification to
-> + * the EPF drivers. This is needed since the registers need to be initialized
-> + * before the link comes back again.
-> + */
->  void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
-> @@ -743,6 +826,15 @@ void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep)
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_ep_linkdown);
->  
-> +/**
-> + * dw_pcie_ep_init - Initialize the endpoint device
-> + * @ep: DWC EP device
-> + *
-> + * Initialize the endpoint device. Allocate resources and create the EPC
-> + * device with the endpoint framework.
-> + *
-> + * Return: 0 if success, errno otherwise.
-> + */
->  int dw_pcie_ep_init(struct dw_pcie_ep *ep)
->  {
->  	int ret;
-> 
-> -- 
-> 2.25.1
-> 
+The TBU driver will manage the resources and allow the system to
+operate the TBUs during a context fault to obtain details by doing
+s1 inv, software + hardware page table walks etc. This is implemented
+with ATOS/eCATs as the ATS feature is not supported. Being able to
+query the TBUs is useful for debugging various hardware/software
+issues on these platforms.
+
+v5:
+- Drop the common TBU bindings and child nodes. These TBU functionalities
+  are only Qualcomm specific and not generic. In the unmodified ARM MMU-500
+  implementation there are no TBU-specific resources, so just make them
+  standalone DT nodes. (Robin)
+- The "qcom,stream-id-range" DT property now takes a phandle to the smmu
+  and a stream ID range.
+
+v4: https://lore.kernel.org/all/20240201210529.7728-1-quic_c_gdjako@quicinc.com/
+- Create a common TBU schema. Move the vendor-specific properties into
+  a separate schema that references the common one. (Rob)
+- Drop unused DT labels in example, fix regex. (Rob)
+- Properly rebase on latest code.
+
+v3: https://lore.kernel.org/r/20231220060236.18600-1-quic_c_gdjako@quicinc.com
+- Having a TBU is not Qualcomm specific, so allow having TBU child
+  nodes with no specific constraints on properties. For some of the
+  vendor compatibles however, add a schema to describe specific
+  properties and allow validation. (Rob)
+- Drop the useless reg-names DT property on TBUs. (Rob)
+- Make the stream-id-range DT property a common one. (Rob)
+- Fix the DT example. (Rob)
+- Minor fixes on the TBU driver.
+- Add support for SC7280 platforms.
+
+v2: https://lore.kernel.org/r/20231118042730.2799-1-quic_c_gdjako@quicinc.com
+- Improve DT binding description, add full example. (Konrad)
+- Drop Qcom specific stuff from the generic binding. (Rob)
+- Unconditionally try to populate subnodes. (Konrad)
+- Improve TBU driver commit text, remove memory barriers. (Bjorn)
+- Move TBU stuff into separate file. Make the driver builtin.
+- TODO: Evaluate whether to keep TBU support as a separate driver
+  or just instantiate things from qcom_smmu_impl_init()
+
+v1: https://lore.kernel.org/r/20231019021923.13939-1-quic_c_gdjako@quicinc.com
+
+Georgi Djakov (7):
+  dt-bindings: iommu: Add Qualcomm TBU bindings
+  iommu/arm-smmu-qcom-tbu: Add Qualcomm TBU driver
+  iommu/arm-smmu: Allow using a threaded handler for context interrupts
+  iommu/arm-smmu-qcom: Use a custom context fault handler for sdm845
+  arm64: dts: qcom: sdm845: Add DT nodes for the TBUs
+  iommu/arm-smmu-qcom: Use the custom fault handler on more platforms
+  arm64: dts: qcom: sc7280: Add DT nodes for the TBUs
+
+ .../devicetree/bindings/iommu/qcom,tbu.yaml   |  65 +++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi          |  89 ++++
+ arch/arm64/boot/dts/qcom/sdm845.dtsi          |  70 +++
+ drivers/iommu/Kconfig                         |   9 +
+ drivers/iommu/arm/arm-smmu/Makefile           |   1 +
+ .../iommu/arm/arm-smmu/arm-smmu-qcom-tbu.c    | 495 ++++++++++++++++++
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c    |   8 +
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h    |   2 +
+ drivers/iommu/arm/arm-smmu/arm-smmu.c         |  12 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h         |   3 +
+ 10 files changed, 752 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/iommu/qcom,tbu.yaml
+ create mode 100644 drivers/iommu/arm/arm-smmu/arm-smmu-qcom-tbu.c
+
 
