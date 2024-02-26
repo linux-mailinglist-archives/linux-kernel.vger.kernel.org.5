@@ -1,342 +1,217 @@
-Return-Path: <linux-kernel+bounces-81920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F5F867C31
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:39:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D652867C34
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:40:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4006A296035
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4CAE29682B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20D2512BF12;
-	Mon, 26 Feb 2024 16:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489CC12AAEF;
+	Mon, 26 Feb 2024 16:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="H2p+HbLF"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h30LVGM5"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 375971E522
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708965565; cv=none; b=O0ufsMnf4eosYcOpoQ9MDRi/KSXxkQX5L8UN29+3sQy91yaAfYtoG/ov+RLvGQLYfdgMvt2D4s5dO0rF7Ecu7o7zWGM2Ci9LZIaMAm8Y3DjUCEt5FYIG8pSKR6H0ifji8FpUc4IU+Gwiq2jEAfIbU6Ai2V3pil1UX9WXbFBzUxY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708965565; c=relaxed/simple;
-	bh=9/DoYW84F7UI+Hh7Q7bfBY2sZ83cw2mp2T/o2fkltAA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TkTXKnN0oYnZy+FgNFZgDC2QNGN6v90vA/Pq7eIJIa2AmHGJhzvrYBLdRka2xljPfz4OtAGPnd6mrkEOGanM0fn0bNyfRQmgABri8hGYHg1YNlZtAP+BYlYpFFOvaZkg3E/DixkVwcRD6dlJHWlfZ9FsEvfeeHaf5hPDhr2vQpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=H2p+HbLF; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4Tk5tL19C9zDqLc;
-	Mon, 26 Feb 2024 16:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1708965562; bh=9/DoYW84F7UI+Hh7Q7bfBY2sZ83cw2mp2T/o2fkltAA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=H2p+HbLFAR6/3zpb+Jt5bnWnE1CSw03mVCTFYmO1Su6B87iaS0XY8OpDdYutpFUXQ
-	 7HSbmHiG0NRTnmvuCDqIHN/t2IlwpwXyheqnxvmJpkk5J6kEklV6SWv5vZ65PfvODn
-	 myHL6BYM5Fykg8hXEh8jU/GXwp5bvRGsNKVYeglw=
-X-Riseup-User-ID: 67BBA5A2599F3DC7CC4EF7FE7959CB57C844C3A47FE960AB446AB8892D781C95
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4Tk5tF0PB3zJs4q;
-	Mon, 26 Feb 2024 16:39:16 +0000 (UTC)
-Message-ID: <4406ec1c-fcfc-4d06-bec2-a428058d32cc@riseup.net>
-Date: Mon, 26 Feb 2024 13:39:12 -0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3C01DFC1
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708965622; cv=fail; b=JRc7OS+qfivDToGjdWlPFXE/U6KhLoH3aSdsmNH48/PvqhotaTTR4eCLScoGEGQbK0QromTx/YczkpCpALrrqIxlzAN7fRDyFkGfpEP0QagMOy0fPC++L8ZoP1lvMMEBcM2y0HaJrJxrwmgFMtD7nmIrfLkUar6Jz0i9rGJ3aFI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708965622; c=relaxed/simple;
+	bh=z9UvnZabD1O6kIIA9Cg/ukLG4q9Yi6fLos+jelMLhCY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=WI8P/2pnwFzLXQyfnuAkQ3Qjyh7Qo/iYnf7qd427NcIqf8/sbIlinkfMm7DrON2ABvQHQw2YEUQIel7ERZUMnp/vPmBf1W2E6fZ+7SxYptvbTFQXibYu6FZuo91SOcd/h1YR0BYG4ZW6klb0epz0Bo3N2FbMKn4LnGz/wB5iQKg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h30LVGM5; arc=fail smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708965620; x=1740501620;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=z9UvnZabD1O6kIIA9Cg/ukLG4q9Yi6fLos+jelMLhCY=;
+  b=h30LVGM5MYuiqozuW5xjKo0DJKd1bTkTiRfhh6kmwvvAjdNGvtkXfKEx
+   a/7mrPWMZsjt0MGAX/TTHn8iCqwe6Xe7cv0zX7OyNGQwIuYVlo9eOiF4q
+   C8+hvYPlZLUe5RpCDZ13grfeCb6BqVyMZgoOIKrK21XRXVMa2i/NAkLc0
+   2A2ImZEVz/Qt/TD8oxqiXtKMx/PaB2BXAZ4iU/sjWkGhlezw5cIMC7H0W
+   l9XD6L3sgxidPJRoGLQV8x5Vm6FwgvWo18qbc+tZ8i2OIzLI+GZWohy9U
+   S+DI7mjeIbCRCrfyVK4hSzyxjDg9EWMX9isHEhFSwDifaxgIY7qBQzEvz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3130099"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="3130099"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:40:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="29894199"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Feb 2024 08:40:19 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 26 Feb 2024 08:40:18 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 26 Feb 2024 08:40:18 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 26 Feb 2024 08:40:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YEUW3ffeZOuX33OnpgnQZoVBYV2ephXrOyRNK3t4srzAdXm92r302xs17XOO732PNTByg90akoOanTE8psnQ8VN+v98IpfSCFZQNxvBLIzaKZTzzOeJak8swMulWg/jJ1ZJstzoHlSSt7wUahcD7B5d9HrDjxiIiGaPJVkrPyAMZoSQ+XDBNlHzIDDHLy+OM7wsffp84lYTw0lcw+Y54MBCB/qoKCMp3b9WlhS7XwGhgH5Mj7+I49KYnpLuttZJ/RXRMxga6/IaNVfdqWfm00EPP0Cn/aB9Q+5wrn4uYM/k5CYCwCK9d1eRkWiA+lLwcu+SSylXEYTMUrS4or0SZsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VSfJgIjSsCEz1/ZvODREuYtBzH9AMKdjciUDY5nA2cM=;
+ b=QQYzcmkLAwdtUpeZbcFtctAhT/fvJZRkS1oVjYNUwc9RydYzmJLiB4wf5nxLtyALdql1dXeFvS7QvN8mz75oBdpcnZGzLP0TQAP2PuMcDMMzLWcrwT3nhraL2BXdsAt0SZE2xn5uAB7hNkEYfrv3JXFSvKe6fnl7e0W3fMIPBzLtdlRnCVhf47q8x491LynanyKyWw21k7y2YSq5zDruOi84TO7rVjzm2W/6QM8eJC446325HgJIUDeGyiI22duZVrlKOozXzOX/8ss2jCoE/ROwq4za5YTGiEqIASrMu8m+9bUeDUBEL02+/SLebjPr0hp6B9kxr2yQtzPcB4sqUA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by MN0PR11MB6256.namprd11.prod.outlook.com (2603:10b6:208:3c3::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Mon, 26 Feb
+ 2024 16:40:16 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::7352:aa4b:e13e:cb01]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::7352:aa4b:e13e:cb01%7]) with mapi id 15.20.7339.024; Mon, 26 Feb 2024
+ 16:40:16 +0000
+Date: Mon, 26 Feb 2024 10:40:11 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Arnd Bergmann <arnd@kernel.org>
+CC: Oded Gabbay <ogabbay@kernel.org>, Thomas =?utf-8?Q?Hellstr=C3=B6m?=
+	<thomas.hellstrom@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi
+	<rodrigo.vivi@intel.com>, Matt Roper <matthew.d.roper@intel.com>, "Matthew
+ Brost" <matthew.brost@intel.com>, <intel-xe@lists.freedesktop.org>,
+	<dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] [v2] drm/xe/xe2: fix 64-bit division in
+ pte_update_size
+Message-ID: <kq3cpbz4ctqvfhtlh7f7wxd7ub3izdjovhv2jqkjasre7u6y2k@exaw42ber3f6>
+References: <20240226124736.1272949-1-arnd@kernel.org>
+ <20240226124736.1272949-3-arnd@kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240226124736.1272949-3-arnd@kernel.org>
+X-ClientProxiedBy: BYAPR07CA0027.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::40) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 9/9] drm/vkms: Create KUnit tests for YUV conversions
-Content-Language: en-US
-To: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
- <20240223-yuv-v2-9-aa6be2827bb7@bootlin.com>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <20240223-yuv-v2-9-aa6be2827bb7@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|MN0PR11MB6256:EE_
+X-MS-Office365-Filtering-Correlation-Id: de48196a-77e1-4591-4bca-08dc36e99c8e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: N5HcD2r061VFtYdWzxlB+BRrA3geEDXzEkLCESNlQVDTGjMZ/ubvYbwqvO0Cg1ZHc5eJeMge9ZMA9Gl1q3UGvib74xMCQ/uSTWUp0ITVzysrjXEvY0zWkzxpgzSni/hb1PlnH4PmZFbbJTPoxm1xCkZmLLT/DEcvPZIlr42v+vAY0pT4cdhUT/K0dmNERzOztBolN4k+gq8O7iZU092wh9KzsTKEkZR10DKb32TzPzLt9KMmFhdT3ykXFgEQp/1sbrWPRFJUzZqzb7h0c1qYZaDehEYAmBidZIxx0w/0lTig+qKBeqw0mDyUzQucMIOuwNP+DJa/NOwfCAN03FLXpbB/qIOB9KAngtXJwoBPH78e0CnmwmwstUKndd1Lu63OlwCcNhVLRkm6NrFNGkXw3ZWsRNa7TXK7mV1rYm+IIQTyTdHd7Fow32+fwl4UDQhQ1DdtX44o8IwqsR2y31gYm4qcgfhzNVoM8c3nhYScqpLid3EW31RxacFnFg/4RD9VGTudMbaBl1bYlrRLqHaBKrdFoBHvaO7tHD3jb7Sjpmm3ZFdl9F4Q1xhokYszqotEX3PDsc+dkZz7PAg/sGqwDNzIZJ1HfiCxp6082Y4qSNcHLx3RDqcCoPDQO3/dYqf5
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u1SaKRyIxQxFKbqe4vjwXmeOOMZpZgQ3soId/rB4yfMoXdbwZuBEJci4DOoY?=
+ =?us-ascii?Q?WcARqoXnkgTYeHnPeb5+AKd1GSHefbd7eFMpTgzCZAjDybxrQ6x0/orNQzTQ?=
+ =?us-ascii?Q?6dtUqTkr9xWMcD3V1tr9wuNXj0cF3q9EH5qzpDbJUPHO2Dvc9RSgFxtb7Nhw?=
+ =?us-ascii?Q?9e9ZzUI18i4qEzP7AwsWrSscv/A1uyb853MAqHUYQECQyjJxvhYzVALgCE45?=
+ =?us-ascii?Q?eYPvMMyPlKY9ZK/xLT6l9cAQR7eYnxpIxqIy+fMItWC2oA0it8+C9JcAmj7z?=
+ =?us-ascii?Q?H2XO9T/RfDSMHMyFvhViLsbWwv8TumtAkoX0XFuDgW8fQ3tD4T/2UcMolmG9?=
+ =?us-ascii?Q?rl2WXmD/efbz8h+JpuefNFy9guAIH4/Bvpp1XdFtSSGvoD/9ltiPcPzsQq9k?=
+ =?us-ascii?Q?BSEeSxCNU7OLZvWsczPduVQZoll+cpowHvqmiFwBRbQgDFYvRstNAPoZP8Md?=
+ =?us-ascii?Q?9+w+9uuzxcjH3Yjop1klj0SWUTMhzgMxfR7loCresXeZD6Z3HMav0LNzL50Z?=
+ =?us-ascii?Q?+c4qx/2OBNX6e78UodVuWE68Ac5+GhvoHPbmutRu2En3diQShwfychEz8iGU?=
+ =?us-ascii?Q?J0CwCxsFLusesnTRm0zkSBM2j80jSas1F0q3iBE94Ngs3je/CIwseBiqIBKd?=
+ =?us-ascii?Q?KANGVV8NTZv0MBaHX77QorNLUF2lfehTxlR8CNCfXf1q9swDjBWUe+Ac4eQ+?=
+ =?us-ascii?Q?3RNRYHfbDndp0klmJQYAG47Zr9F2MTMl8+rF572BhCSyFG+UKQ3H1pJvr57u?=
+ =?us-ascii?Q?IojFTrx2cIVIHFjIqyddJUvl855LP166ZoZPN5GOVmaVm0eVYRP4p1rtQebJ?=
+ =?us-ascii?Q?EHas1wAQh+1jL82woP6arzP0KiDo5aoklezjokFvVZpyGNS5QyfBUqqCw5dL?=
+ =?us-ascii?Q?ksCH2W4c9LC/n7zcgHRLZh07a2SLhBcJRBz7CNwhAmC7hzaD2AGYF2nqaD2V?=
+ =?us-ascii?Q?pailzeTj163yL5tdNcm71KX2kORDq6avbK0Y4w6dlwmoxcjeH+A7Ii55Oie5?=
+ =?us-ascii?Q?/yV4zdFy/HX5ZOUA/mzIBpypqQTfopMnnWpnpqPoluCxjpOuYbQqsZQDr+Kb?=
+ =?us-ascii?Q?xT1ciE20O40ipIMLZoz4Bb6Ik3IkKoo7/W3f0mKZyNTBqPG/tV19OOQp+9+K?=
+ =?us-ascii?Q?68xSRFn9TW8cmimZO7oUOFRJtdsQ3MQes5+gP4HX66V11JWy8efHKRl091K+?=
+ =?us-ascii?Q?eDde+jkLu2bOuCyeRHjaKR90P5tea6MrIvr/VArV7JObkKscs6PIPggSjNQI?=
+ =?us-ascii?Q?jrQbOn6sCxvAsnqf9bxvElCzyHFbazcR69VV0qT37z0P45MdSXrqAgyWDCKy?=
+ =?us-ascii?Q?2P8IbLKYIgdDGn2JyymsdcA4FP7m00NmTkoycDGz2Xo116uY83zR4M5lw3ZJ?=
+ =?us-ascii?Q?RgAHrMuhABehiO0R/+4SiBX2zwpGa5WMQ9Ojs6vcDYjpM+FStbQ3ke+xjFtm?=
+ =?us-ascii?Q?euHf7+eOnZSC5UScV3Y9ljL9L47C440dPFdlo3XmmIiwOPVcTvMmOKMBN4sq?=
+ =?us-ascii?Q?rL92VUGdlbRKG4R+zriQOfg/6Sp9Cxjz61jattUlDCqbmGnnn0s+cDL7CLuF?=
+ =?us-ascii?Q?W0ulfyj0i7BPvhnHKchi16hvy8PW83oa9JL/Tycwl2CUvv2QH21hYSUrNJ7K?=
+ =?us-ascii?Q?kg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: de48196a-77e1-4591-4bca-08dc36e99c8e
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 16:40:16.3122
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z4d80YQNphhhmmPOpVs/4KegHdELrizQWMV8BEL9RBRrzRCsCmXw9QHf0BBeUFKz/tq8ahpIOewE908Og95RsLC8r2/jZc/jCTyHFjUkh/M=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6256
+X-OriginatorOrg: intel.com
 
+On Mon, Feb 26, 2024 at 01:46:38PM +0100, Arnd Bergmann wrote:
+>From: Arnd Bergmann <arnd@arndb.de>
+>
+>This function does not build on 32-bit targets when the compiler
+>fails to reduce DIV_ROUND_UP() into a shift:
+>
+>ld.lld: error: undefined symbol: __aeabi_uldivmod
+>>>> referenced by xe_migrate.c
+>>>>               drivers/gpu/drm/xe/xe_migrate.o:(pte_update_size) in archive vmlinux.a
+>
+>There are two instances in this function. Change the first to
+>use an open-coded shift with the same behavior, and the second
+>one to a 32-bit calculation, which is sufficient here as the size
+>is never more than 2^32 pages (16TB).
+>
+>Fixes: 237412e45390 ("drm/xe: Enable 32bits build")
+>Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>---
+>v2: use correct Fixes tag
 
+but what about the other comment? How are we supposed to use
+DIV_ROUND_UP() but then in some places (which?) have to open code it?
 
-On 23/02/24 08:37, Louis Chauvet wrote:
-> From: Arthur Grillo <arthurgrillo@riseup.net>
-> 
-> Create KUnit tests to test the conversion between YUV and RGB. Test each
-> conversion and range combination with some common colors.
-> 
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> [Louis Chauvet: fix minor formating issues (whitespace, double line)]
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> ---
->  drivers/gpu/drm/vkms/Makefile                 |   1 +
->  drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
->  drivers/gpu/drm/vkms/tests/Makefile           |   3 +
->  drivers/gpu/drm/vkms/tests/vkms_format_test.c | 155 ++++++++++++++++++++++++++
->  drivers/gpu/drm/vkms/vkms_formats.c           |   9 +-
->  drivers/gpu/drm/vkms/vkms_formats.h           |   5 +
->  6 files changed, 175 insertions(+), 2 deletions(-)
+What compiler does this fail on?
 
-You need to add the CONFIG_DRM_VKMS_KUNIT_TESTS config to
-drivers/gpu/drm/vkms/Kconfig, like my previous patch did.
+>---
+> drivers/gpu/drm/xe/xe_migrate.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>
+>diff --git a/drivers/gpu/drm/xe/xe_migrate.c b/drivers/gpu/drm/xe/xe_migrate.c
+>index a66fdf2d2991..ee1bb938c493 100644
+>--- a/drivers/gpu/drm/xe/xe_migrate.c
+>+++ b/drivers/gpu/drm/xe/xe_migrate.c
+>@@ -462,7 +462,7 @@ static u32 pte_update_size(struct xe_migrate *m,
+> 	} else {
+> 		/* Clip L0 to available size */
+> 		u64 size = min(*L0, (u64)avail_pts * SZ_2M);
+>-		u64 num_4k_pages = DIV_ROUND_UP(size, XE_PAGE_SIZE);
+>+		u32 num_4k_pages = (size + XE_PAGE_SIZE - 1) >> XE_PTE_SHIFT;
 
-Best Regards,
-~Arthur Grillo
+also the commit message doesn't seem to match the patch as you are only
+changing one instance.
 
-> 
-> diff --git a/drivers/gpu/drm/vkms/Makefile b/drivers/gpu/drm/vkms/Makefile
-> index 1b28a6a32948..8d3e46dde635 100644
-> --- a/drivers/gpu/drm/vkms/Makefile
-> +++ b/drivers/gpu/drm/vkms/Makefile
-> @@ -9,3 +9,4 @@ vkms-y := \
->  	vkms_writeback.o
->  
->  obj-$(CONFIG_DRM_VKMS) += vkms.o
-> +obj-$(CONFIG_DRM_VKMS_KUNIT_TESTS) += tests/
-> diff --git a/drivers/gpu/drm/vkms/tests/.kunitconfig b/drivers/gpu/drm/vkms/tests/.kunitconfig
-> new file mode 100644
-> index 000000000000..70e378228cbd
-> --- /dev/null
-> +++ b/drivers/gpu/drm/vkms/tests/.kunitconfig
-> @@ -0,0 +1,4 @@
-> +CONFIG_KUNIT=y
-> +CONFIG_DRM=y
-> +CONFIG_DRM_VKMS=y
-> +CONFIG_DRM_VKMS_KUNIT_TESTS=y
-> diff --git a/drivers/gpu/drm/vkms/tests/Makefile b/drivers/gpu/drm/vkms/tests/Makefile
-> new file mode 100644
-> index 000000000000..2d1df668569e
-> --- /dev/null
-> +++ b/drivers/gpu/drm/vkms/tests/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +obj-$(CONFIG_DRM_VKMS_KUNIT_TESTS) += vkms_format_test.o
-> diff --git a/drivers/gpu/drm/vkms/tests/vkms_format_test.c b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
-> new file mode 100644
-> index 000000000000..cb6d32ff115d
-> --- /dev/null
-> +++ b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
-> @@ -0,0 +1,155 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +
-> +#include <kunit/test.h>
-> +
-> +#include <drm/drm_fixed.h>
-> +#include <drm/drm_fourcc.h>
-> +#include <drm/drm_print.h>
-> +
-> +#include "../../drm_crtc_internal.h"
-> +
-> +#include "../vkms_drv.h"
-> +#include "../vkms_formats.h"
-> +
-> +#define TEST_BUFF_SIZE 50
-> +
-> +struct yuv_u8_to_argb_u16_case {
-> +	enum drm_color_encoding encoding;
-> +	enum drm_color_range range;
-> +	size_t n_colors;
-> +	struct format_pair {
-> +		char *name;
-> +		struct pixel_yuv_u8 yuv;
-> +		struct pixel_argb_u16 argb;
-> +	} colors[TEST_BUFF_SIZE];
-> +};
-> +
-> +static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
-> +	{
-> +		.encoding = DRM_COLOR_YCBCR_BT601,
-> +		.range = DRM_COLOR_YCBCR_FULL_RANGE,
-> +		.n_colors = 6,
-> +		.colors = {
-> +			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
-> +			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
-> +			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
-> +			{"red",   {0x4c, 0x55, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
-> +			{"green", {0x96, 0x2c, 0x15}, {0x0000, 0x0000, 0xffff, 0x0000}},
-> +			{"blue",  {0x1d, 0xff, 0x6b}, {0x0000, 0x0000, 0x0000, 0xffff}},
-> +		},
-> +	},
-> +	{
-> +		.encoding = DRM_COLOR_YCBCR_BT601,
-> +		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
-> +		.n_colors = 6,
-> +		.colors = {
-> +			{"white", {0xeb, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
-> +			{"gray",  {0x7e, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
-> +			{"black", {0x10, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
-> +			{"red",   {0x51, 0x5a, 0xf0}, {0x0000, 0xffff, 0x0000, 0x0000}},
-> +			{"green", {0x91, 0x36, 0x22}, {0x0000, 0x0000, 0xffff, 0x0000}},
-> +			{"blue",  {0x29, 0xf0, 0x6e}, {0x0000, 0x0000, 0x0000, 0xffff}},
-> +		},
-> +	},
-> +	{
-> +		.encoding = DRM_COLOR_YCBCR_BT709,
-> +		.range = DRM_COLOR_YCBCR_FULL_RANGE,
-> +		.n_colors = 4,
-> +		.colors = {
-> +			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
-> +			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
-> +			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
-> +			{"red",   {0x35, 0x63, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
-> +			{"green", {0xb6, 0x1e, 0x0c}, {0x0000, 0x0000, 0xffff, 0x0000}},
-> +			{"blue",  {0x12, 0xff, 0x74}, {0x0000, 0x0000, 0x0000, 0xffff}},
-> +		},
-> +	},
-> +	{
-> +		.encoding = DRM_COLOR_YCBCR_BT709,
-> +		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
-> +		.n_colors = 4,
-> +		.colors = {
-> +			{"white", {0xeb, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
-> +			{"gray",  {0x7e, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
-> +			{"black", {0x10, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
-> +			{"red",   {0x3f, 0x66, 0xf0}, {0x0000, 0xffff, 0x0000, 0x0000}},
-> +			{"green", {0xad, 0x2a, 0x1a}, {0x0000, 0x0000, 0xffff, 0x0000}},
-> +			{"blue",  {0x20, 0xf0, 0x76}, {0x0000, 0x0000, 0x0000, 0xffff}},
-> +		},
-> +	},
-> +	{
-> +		.encoding = DRM_COLOR_YCBCR_BT2020,
-> +		.range = DRM_COLOR_YCBCR_FULL_RANGE,
-> +		.n_colors = 4,
-> +		.colors = {
-> +			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
-> +			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
-> +			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
-> +			{"red",   {0x43, 0x5c, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
-> +			{"green", {0xad, 0x24, 0x0b}, {0x0000, 0x0000, 0xffff, 0x0000}},
-> +			{"blue",  {0x0f, 0xff, 0x76}, {0x0000, 0x0000, 0x0000, 0xffff}},
-> +		},
-> +	},
-> +	{
-> +		.encoding = DRM_COLOR_YCBCR_BT2020,
-> +		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
-> +		.n_colors = 4,
-> +		.colors = {
-> +			{"white", {0xeb, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
-> +			{"gray",  {0x7e, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
-> +			{"black", {0x10, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
-> +			{"red",   {0x4a, 0x61, 0xf0}, {0x0000, 0xffff, 0x0000, 0x0000}},
-> +			{"green", {0xa4, 0x2f, 0x19}, {0x0000, 0x0000, 0xffff, 0x0000}},
-> +			{"blue",  {0x1d, 0xf0, 0x77}, {0x0000, 0x0000, 0x0000, 0xffff}},
-> +		},
-> +	},
-> +};
-> +
-> +static void vkms_format_test_yuv_u8_to_argb_u16(struct kunit *test)
-> +{
-> +	const struct yuv_u8_to_argb_u16_case *param = test->param_value;
-> +	struct pixel_argb_u16 argb;
-> +
-> +	for (size_t i = 0; i < param->n_colors; i++) {
-> +		const struct format_pair *color = &param->colors[i];
-> +
-> +		yuv_u8_to_argb_u16(&argb, &color->yuv, param->encoding, param->range);
-> +
-> +		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.a, color->argb.a), 257,
-> +				    "On the A channel of the color %s expected 0x%04x, got 0x%04x",
-> +				    color->name, color->argb.a, argb.a);
-> +		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.r, color->argb.r), 257,
-> +				    "On the R channel of the color %s expected 0x%04x, got 0x%04x",
-> +				    color->name, color->argb.r, argb.r);
-> +		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.g, color->argb.g), 257,
-> +				    "On the G channel of the color %s expected 0x%04x, got 0x%04x",
-> +				    color->name, color->argb.g, argb.g);
-> +		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.b, color->argb.b), 257,
-> +				    "On the B channel of the color %s expected 0x%04x, got 0x%04x",
-> +				    color->name, color->argb.b, argb.b);
-> +	}
-> +}
-> +
-> +static void vkms_format_test_yuv_u8_to_argb_u16_case_desc(struct yuv_u8_to_argb_u16_case *t,
-> +							  char *desc)
-> +{
-> +	snprintf(desc, KUNIT_PARAM_DESC_SIZE, "%s - %s",
-> +		 drm_get_color_encoding_name(t->encoding), drm_get_color_range_name(t->range));
-> +}
-> +
-> +KUNIT_ARRAY_PARAM(yuv_u8_to_argb_u16, yuv_u8_to_argb_u16_cases,
-> +		  vkms_format_test_yuv_u8_to_argb_u16_case_desc);
-> +
-> +static struct kunit_case vkms_format_test_cases[] = {
-> +	KUNIT_CASE_PARAM(vkms_format_test_yuv_u8_to_argb_u16, yuv_u8_to_argb_u16_gen_params),
-> +	{}
-> +};
-> +
-> +static struct kunit_suite vkms_format_test_suite = {
-> +	.name = "vkms-format",
-> +	.test_cases = vkms_format_test_cases,
-> +};
-> +
-> +kunit_test_suite(vkms_format_test_suite);
-> +
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> index 515c80866a58..20dd23ce9051 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -7,6 +7,8 @@
->  #include <drm/drm_rect.h>
->  #include <drm/drm_fixed.h>
->  
-> +#include <kunit/visibility.h>
-> +
->  #include "vkms_formats.h"
->  
->  /**
-> @@ -175,8 +177,10 @@ static void ycbcr2rgb(const s16 m[3][3], u8 y, u8 cb, u8 cr, u8 y_offset, u8 *r,
->  	*b = clamp(b_16, 0, 0xffff) >> 8;
->  }
->  
-> -static void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pixel_yuv_u8 *yuv_u8,
-> -			       enum drm_color_encoding encoding, enum drm_color_range range)
-> +VISIBLE_IF_KUNIT void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16,
-> +					 const struct pixel_yuv_u8 *yuv_u8,
-> +					 enum drm_color_encoding encoding,
-> +					 enum drm_color_range range)
->  {
->  	static const s16 bt601_full[3][3] = {
->  		{ 256, 0,   359 },
-> @@ -237,6 +241,7 @@ static void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pix
->  	argb_u16->g = g * 257;
->  	argb_u16->b = b * 257;
->  }
-> +EXPORT_SYMBOL_IF_KUNIT(yuv_u8_to_argb_u16);
->  
->  /*
->   * The following functions are read_line function for each pixel format supported by VKMS.
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/vkms_formats.h
-> index 5a3a9e1328d8..4245a5c5e956 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.h
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.h
-> @@ -13,4 +13,9 @@ struct pixel_yuv_u8 {
->  	u8 y, u, v;
->  };
->  
-> +#if IS_ENABLED(CONFIG_KUNIT)
-> +void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pixel_yuv_u8 *yuv_u8,
-> +			enum drm_color_encoding encoding, enum drm_color_range range);
-> +#endif
-> +
->  #endif /* _VKMS_FORMATS_H_ */
-> 
+Lucas De Marchi
+
+>
+> 		*L0 = size;
+> 		*L0_ofs = xe_migrate_vm_addr(pt_ofs, 0);
+>-- 
+>2.39.2
+>
 
