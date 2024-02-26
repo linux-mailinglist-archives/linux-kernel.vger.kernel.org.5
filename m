@@ -1,188 +1,186 @@
-Return-Path: <linux-kernel+bounces-81870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D48867C07
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:31:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E930867B3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83549B2CA47
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:10:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 250121F2D33A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51AF812CDB8;
-	Mon, 26 Feb 2024 16:09:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAC4612CD80;
+	Mon, 26 Feb 2024 16:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gFKSjVwP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IeKh5YG0"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7386212C547;
-	Mon, 26 Feb 2024 16:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18BBF12C55B
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708963774; cv=none; b=WPqiz+eQ9gDbjfmUrWDXLlnc31+G7AZA/i5f8+JzHrqjwhW5ugRR0etVuEap21U40UHeVNUV9p00+rK4XE9RVublif9Kz9u42zI15aNUSsYYjfzC6qrkdtldGn0XalmuyGXK+ZzLG7kG1pnkAmYQeW+OoFmA2zWXsktZYxRH+MU=
+	t=1708963797; cv=none; b=qpDDoMrTM05rCN6NOJqAUpYCdlvw2GzRtQNm1eBT+s5Rpd7qEpQJ+F1VsX/7dH/pLeke02nC2nxFZEHycP1L4IMUkMB8hsN5hVNCeq88+5xQnp6esg5w3zxhpGzFzAXrSTnV+ZP6hp3CEG1q5FGDpZNeYTwgfkNg0p9ypl4P7q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708963774; c=relaxed/simple;
-	bh=544qUMhqgYQOHGl46eHK6g/2ihFgsZn/LHzZzuoNf14=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i4mJ0pVA9S2hBdWVQ73eeeMwlxu9QAX/yJGlbs17nqEExN2S7I9qNoXk7iMn5e5br5IyBMj0SMjzhVsJi87VIESrJQYKaMt2orV6Ziu1AeJa2ByHTWY3WXyWqChTnOmQ9iAjrBTHx6TA6c3k/doKAsjhkJcAg6UknGas/psdvZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gFKSjVwP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3858C433F1;
-	Mon, 26 Feb 2024 16:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708963774;
-	bh=544qUMhqgYQOHGl46eHK6g/2ihFgsZn/LHzZzuoNf14=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gFKSjVwP60i6oW9D7LFMScKauvLLEEnmQASp+Uth6mTofKuSpkIQq72+2SDSFXZ6R
-	 Lq1ZT4yI+OaSa41rwTMpeOj5sbsruVuvaxytpdeoM3mWQ6iV+7K1OeNGrhBLoCz/2i
-	 dTrZH7dG03AaoXC267IIp6BIqJ2w1vurx7gjm8QLgpfD5U7WkqMKQYhBBbyRT9fpOc
-	 HDalcrYaW3e2HphJwpjaqrUVi3BGrjIH2eQGKh6nHJGgmqSAQnXBCyaFcFggWxVqn5
-	 vJqdYB/klAj/39MMDPZHvGtUhlGcsH9DLE4+bQbCDJWVo2dydZozgQ9SPNQ+YZwRHv
-	 7TuEZXZlVRG3A==
-Date: Mon, 26 Feb 2024 16:09:25 +0000
-From: Mark Brown <broonie@kernel.org>
-To: amergnat@baylibre.com
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-	Nicolas Belin <nbelin@baylibre.com>
-Subject: Re: [PATCH 12/18] ASoC: codecs: mt6357: add MT6357 codec
-Message-ID: <9891855d-2284-42e4-9d3a-35ba406540e8@sirena.org.uk>
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-12-4fa1cea1667f@baylibre.com>
+	s=arc-20240116; t=1708963797; c=relaxed/simple;
+	bh=PG9T0E4ZcsWjvdpfHUOgdfPJ9G3s6+OiDx3FL9PDAwM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hR/VNDTjag5NY3xfnzRb66cr0Jg1Tbhtd1lZLOkQRiAy62d8l6EqOZxAREMiu4BPflEqBZmY4TXyB8ElJ/Fz4XLwXHwDV99GXeo9qtqhLl+5zc5QpP1Ga9tQBBicArYKJzUH1uJtSTYEuNlQcUd+NVHD/43xcP3irD6CraNdYLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IeKh5YG0; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso3599471276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708963794; x=1709568594; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q2i9nu0Yj7jZAbH4EMUTPvr2EXed0SrW18ZEoR5sBFQ=;
+        b=IeKh5YG0zG4QERv9OQmrbe53HbIMQJBWFJgDUjkuYrDQu3Pqoo6CI9Ih3XSXBvEnYs
+         0FEGEwMRrfRUvaAqMDAi/A8z4Y3x/vBes2nRxkZ9ZuWyrxEC+GHUKsGZLm5IEz8DgH1x
+         XeIgBHkciWSrGcb9Vmcf9M6/9K9hTpMXbb32I9TORsVFJU0kNzJIdkwsDzTTmaLdnunU
+         /wFIrevrF6GtW65Kub+qU5kr0EIuZpFUePKPgI3XdDimaO24aLTLTn6ILiYicTP2tzvb
+         vgbOELcE6WdrW1nnzBu2zFr5XymqaZziUszPvM2TvaD2YJKWnaJV9+0jVipbTWxKg+nT
+         pQWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708963794; x=1709568594;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q2i9nu0Yj7jZAbH4EMUTPvr2EXed0SrW18ZEoR5sBFQ=;
+        b=if60bdOGeIaypVqIeeH3dVGxC4LXl0b10ggbdrsV/R7Kz9Xo0pL6QmcukEuyXVSoWc
+         5XRForJwF87u+1EOv+2jvQ2fa8LXOYXM2rLzk3M2pSl/JM++JWbEiAJHJeMx3VyReCpr
+         Ce0yaWXeZ5yMMGJclchQhkkY2pY+J3eEzpOBw+Knk6uXas2aSZ0yQoNsGMwwnmkXW6FL
+         G4NVIFtw9a05DzV9P/dooHyM930OtXMKJtegMQ5+JqiKNqWS/v3cxhlH3kcsn5sRDuWQ
+         p8SkjGMnGhoNT7h8b9mY7bMdTW262bmulD2b1PBSZl+sKui5/kQDmCzrpl9K6kP0s1sX
+         8mrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUC9uaXBVvKjdM6pH9rrrkkzVEDQhnqvVtLML+QdmQeL6HCAZ9tZYcYKfbog2Yjpk38Ai4Xh4dsfQGvL9WWMa5x9PeMpI/BiVYsP0gd
+X-Gm-Message-State: AOJu0Yzl60D09TQVgwOztnn8l02/da4R/VRsVNW5NZIczvuMSRnqwyo4
+	hnu9N4WqTM41F1hX7YENFSTS6Vhzc21CKoqT9SyA8zqxCX4vbaxggAV3NNZjRoPiw8Dpaau2Z6W
+	ls3C9n8RsAjrc4QfQWc17QhhWXOAGhgc9dLC0
+X-Google-Smtp-Source: AGHT+IFiv+y72N/mXVEJcRlho2bUNXrJYvtkNjNCkqw5WfMbaDfjXaMlMUIsggVwW64saHx2yjHtEvViFdZhB2+giI8=
+X-Received: by 2002:a25:ef4a:0:b0:dcd:3575:db79 with SMTP id
+ w10-20020a25ef4a000000b00dcd3575db79mr4289171ybm.6.1708963793723; Mon, 26 Feb
+ 2024 08:09:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="CwpsPPtJ8s7wyugW"
-Content-Disposition: inline
-In-Reply-To: <20240226-audio-i350-v1-12-4fa1cea1667f@baylibre.com>
-X-Cookie: Walk softly and carry a BFG-9000.
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-4-surenb@google.com>
+ <CA+CK2bD8Cr1V2=PWAsf6CwDnakZ54Qaf_q5t4aVYV-jXQPtPbg@mail.gmail.com>
+ <CAJuCfpHBgZeJN_O1ZQg_oLbAXc-Y+jmUpB02jznkEySpd4rzvw@mail.gmail.com>
+ <d8a7ed49-f7d1-44bf-b0e5-64969e816057@suse.cz> <CA+CK2bBggtq6M96Pu49BmG_j01Sv6p_84Go++9APuvVPXHMwvQ@mail.gmail.com>
+In-Reply-To: <CA+CK2bBggtq6M96Pu49BmG_j01Sv6p_84Go++9APuvVPXHMwvQ@mail.gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 26 Feb 2024 08:09:40 -0800
+Message-ID: <CAJuCfpE_=A3H+FKwHeu-XLX5rDCqrV8dUT40=EVm4w_q8A=EwQ@mail.gmail.com>
+Subject: Re: [PATCH v4 03/36] mm/slub: Mark slab_free_freelist_hook() __always_inline
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>, Andrew Morton <akpm@linux-foundation.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, Michal Hocko <mhocko@suse.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Mel Gorman <mgorman@suse.de>, dave@stgolabs.net, Matthew Wilcox <willy@infradead.org>, 
+	"Liam R. Howlett" <liam.howlett@oracle.com>, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
+	Jonathan Corbet <corbet@lwn.net>, void@manifault.com, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Peter Xu <peterx@redhat.com>, David Hildenbrand <david@redhat.com>, 
+	Jens Axboe <axboe@kernel.dk>, mcgrof@kernel.org, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, dennis@kernel.org, Tejun Heo <tj@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, Mike Rapoport <rppt@kernel.org>, paulmck@kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>, Yu Zhao <yuzhao@google.com>, dhowells@redhat.com, 
+	Hugh Dickins <hughd@google.com>, andreyknvl@gmail.com, Kees Cook <keescook@chromium.org>, 
+	ndesaulniers@google.com, vvvvvv@google.com, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	Steven Rostedt <rostedt@goodmis.org>, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Alexander Potapenko <glider@google.com>, elver@google.com, dvyukov@google.com, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <songmuchun@bytedance.com>, jbaron@akamai.com, 
+	David Rientjes <rientjes@google.com>, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, Linux Doc Mailing List <linux-doc@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, iommu@lists.linux.dev, 
+	"open list:GENERIC INCLUDE/ASM HEADER FILES" <linux-arch@vger.kernel.org>, linux-fsdevel <linux-fsdevel@vger.kernel.org>, 
+	linux-mm <linux-mm@kvack.org>, linux-modules@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Feb 26, 2024 at 7:21=E2=80=AFAM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
+>
+>
+>
+> On Mon, Feb 26, 2024, 9:31=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>>
+>> On 2/24/24 03:02, Suren Baghdasaryan wrote:
+>> > On Wed, Feb 21, 2024 at 1:16=E2=80=AFPM Pasha Tatashin
+>> > <pasha.tatashin@soleen.com> wrote:
+>> >>
+>> >> On Wed, Feb 21, 2024 at 2:41=E2=80=AFPM Suren Baghdasaryan <surenb@go=
+ogle.com> wrote:
+>> >> >
+>> >> > From: Kent Overstreet <kent.overstreet@linux.dev>
+>> >> >
+>> >> > It seems we need to be more forceful with the compiler on this one.
+>> >> > This is done for performance reasons only.
+>> >> >
+>> >> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>> >> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>> >> > Reviewed-by: Kees Cook <keescook@chromium.org>
+>> >> > ---
+>> >> >  mm/slub.c | 2 +-
+>> >> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >> >
+>> >> > diff --git a/mm/slub.c b/mm/slub.c
+>> >> > index 2ef88bbf56a3..d31b03a8d9d5 100644
+>> >> > --- a/mm/slub.c
+>> >> > +++ b/mm/slub.c
+>> >> > @@ -2121,7 +2121,7 @@ bool slab_free_hook(struct kmem_cache *s, voi=
+d *x, bool init)
+>> >> >         return !kasan_slab_free(s, x, init);
+>> >> >  }
+>> >> >
+>> >> > -static inline bool slab_free_freelist_hook(struct kmem_cache *s,
+>> >> > +static __always_inline bool slab_free_freelist_hook(struct kmem_ca=
+che *s,
+>> >>
+>> >> __fastpath_inline seems to me more appropriate here. It prioritizes
+>> >> memory vs performance.
+>> >
+>> > Hmm. AFAIKT this function is used only in one place and we do not add
+>> > any additional users, so I don't think changing to __fastpath_inline
+>> > here would gain us anything.
+>
+>
+> For consistency __fastpath_inline makes more sense, but I am ok with or w=
+ithout this change.
 
---CwpsPPtJ8s7wyugW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, I'll update in the next revision. Thanks!
 
-On Mon, Feb 26, 2024 at 03:01:50PM +0100, amergnat@baylibre.com wrote:
-
-> index 000000000000..13e95c227114
-> --- /dev/null
-> +++ b/sound/soc/codecs/mt6357.c
-> @@ -0,0 +1,1805 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * MT6357 ALSA SoC audio codec driver
-> + *
-
-Please use a C++ comment for the whole comment to make it clearer that
-this is intentional.
-
-> +static void set_playback_gpio(struct mt6357_priv *priv, bool enable)
-> +{
-> +	if (enable) {
-> +		/* set gpio mosi mode */
-> +		regmap_write(priv->regmap, MT6357_GPIO_MODE2_CLR, GPIO_MODE2_CLEAR_ALL);
-> +		regmap_write(priv->regmap, MT6357_GPIO_MODE2_SET, GPIO8_MODE_SET_AUD_CLK_MOSI |
-> +								  GPIO9_MODE_SET_AUD_DAT_MOSI0 |
-> +								  GPIO10_MODE_SET_AUD_DAT_MOSI1 |
-> +								  GPIO11_MODE_SET_AUD_SYNC_MOSI);
-
-This would be a lot more legible if you worked out the values to set and
-then had a single set of writes, currently the indentation makes it very
-hard to read.  Similarly for other similar functions.
-
-> +static int mt6357_put_volsw(struct snd_kcontrol *kcontrol, struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-> +	struct mt6357_priv *priv = snd_soc_component_get_drvdata(component);
-> +	struct soc_mixer_control *mc = (struct soc_mixer_control *)kcontrol->private_value;
-> +	unsigned int reg;
-> +	int ret;
-> +
-> +	ret = snd_soc_put_volsw(kcontrol, ucontrol);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	switch (mc->reg) {
-> +	case MT6357_ZCD_CON2:
-> +		regmap_read(priv->regmap, MT6357_ZCD_CON2, &reg);
-> +		priv->ana_gain[ANALOG_VOLUME_HPOUTL] =
-> +			(reg & AUD_HPL_GAIN_MASK) >> AUD_HPL_GAIN_SFT;
-> +		priv->ana_gain[ANALOG_VOLUME_HPOUTR] =
-> +			(reg & AUD_HPR_GAIN_MASK) >> AUD_HPR_GAIN_SFT;
-> +		break;
-
-It would probably be less code and would definitely be clearer and
-simpler to just read the values when we need them rather than constatly
-keeping a cache separate to the register cache.
-
-> +	/* ul channel swap */
-> +	SOC_SINGLE("UL LR Swap", MT6357_AFE_UL_DL_CON0, AFE_UL_LR_SWAP_SFT, 1, 0),
-
-On/off controls should end in Switch.
-
-> +static const char * const hslo_mux_map[] = {
-> +	"Open", "DACR", "Playback", "Test mode"
-> +};
-> +
-> +static int hslo_mux_map_value[] = {
-> +	0x0, 0x1, 0x2, 0x3,
-> +};
-
-Why not just use a normal mux here, there's no missing values or
-reordering?  Similarly for other muxes.
-
-> +static unsigned int mt6357_read(struct snd_soc_component *codec, unsigned int reg)
-> +{
-> +	struct mt6357_priv *priv = snd_soc_component_get_drvdata(codec);
-> +	unsigned int val;
-> +
-> +	pr_debug("%s() reg = 0x%x", __func__, reg);
-> +	regmap_read(priv->regmap, reg, &val);
-> +	return val;
-> +}
-
-Remove these, there are vastly more logging facilities as standard in
-the regmap core.
-
-> +/* Reg bit defines */
-> +/* MT6357_GPIO_DIR0 */
-> +#define GPIO8_DIR_MASK				BIT(8)
-> +#define GPIO8_DIR_INPUT				0
-
-Please namespace your defines, these look very generic.
-
---CwpsPPtJ8s7wyugW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXct7QACgkQJNaLcl1U
-h9Agkgf7BBrglcg7jMvSrH2s1xIYkCIuoub5OdCpv9Ph6xdo47W9uy2hoGlAK6nD
-BS+w4kyaZmwgueREI0Rf/l6hYRPKJtWv9emek2zz9z5r4R7xzhdbzj2R4MVJkcJH
-O9QTkYk0PoAJkgVJnH6XNqFGriEYmNxkuRdF4l3Mdbn6KiHlf4XwaqWx29KLmXci
-bxoCisLzrR5rPaZAKPMuf8lPvMAQr19dvvk1RlMkyZ2Di1mpakxQIn+QZY7ja2GI
-dJs9hbr+UAJTCKhf0uhtslARm+WZfNCHtGbr8YUjZnzQ+z6vAcNdTTfgDBYINKSC
-AWTgPQtQPSt9Ti03CsQj0ka+/ujatQ==
-=uDQI
------END PGP SIGNATURE-----
-
---CwpsPPtJ8s7wyugW--
+>
+> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+>
+>>
+>> It would have been more future-proof and self-documenting. But I don't i=
+nsist.
+>>
+>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>>
+>> >>
+>> >> >                                            void **head, void **tail=
+,
+>> >> >                                            int *cnt)
+>> >> >  {
+>> >> > --
+>> >> > 2.44.0.rc0.258.g7320e95886-goog
+>> >> >
+>>
 
