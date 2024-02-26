@@ -1,159 +1,146 @@
-Return-Path: <linux-kernel+bounces-82008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7AAF867DB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:12:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0801867DB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0CE01C285A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:12:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E32CA1C297B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AAF13328B;
-	Mon, 26 Feb 2024 16:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59E813F006;
+	Mon, 26 Feb 2024 16:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R4SNCihX"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MqEW7hdk"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A459712C807;
-	Mon, 26 Feb 2024 16:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D43713EFEC
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966750; cv=none; b=MR2yzSMAN21Co9ZJ/uNZYRnpphtPHGjciO7MnbTtHBMpZfH82HzYU2eD9UPtaXwxbHfCr7rXda0O1iJFoOhnW8ErEuGij9C1/DtcKq8az29nJBi8W1e0jLEBOQNFvUg6U8cf+AMrooFkYpnNFpI3oJeZAaFMJ/T7yT40MmwFb18=
+	t=1708966760; cv=none; b=rGxZnXitIB5r4JPdF2IPGc1hqbAPC9wbV5ByF29tEpebLY/wTUK7NbYh5a+++eiVsy88vyDnf4dlsNC8OEkgl8F9l+nyAwRVZqCQMAEz8qljscldRlZRpl3Cz2hanwRXM238A8waw+28dpDORx8/jKJ4sWLL9wdCrH+ikqBZZn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966750; c=relaxed/simple;
-	bh=BLAS03sOMxIrSy3dV5ost75fW5umBREUcI8rl3VAb3A=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=iUXCdLYQ8JgFQy3d/8GpC/6Z8BumUTAmFvEodAiyY1RrI/HEuIRB3UO5i16Tbz//8ZxCvxoJdSxkxrnfxRui29/y512txvtwtooB5D8aGa4EKA2JrLaNsUTnSxMQgTvLeTFQx7C45GFh/az2YPrqwqwpvpoblKUx8LffMcB7bjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R4SNCihX; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708966749; x=1740502749;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=BLAS03sOMxIrSy3dV5ost75fW5umBREUcI8rl3VAb3A=;
-  b=R4SNCihXvVwHSornTPea3RdglxrpsuMUrA2dGwFcYuri3etLggJaLnb3
-   1DJ2gNNmVjjUCKvJr23cCXtWG4fABgFYC1CRGV1mtgVMebe4YPMf65y8i
-   wYYQ5lsJkPwj4oya+BZ12HcC+2+/12vK0uVwNTXgWNSmBwKaitMvF4ois
-   9Mw/cBFPRVRkMXlDdYYYDQ+2XNaTpAboyJrhNY8h7sgIbrGzVIFHiVDkq
-   tZMvO7+WdVyimRo3GeGDhXuCy8HswT0jrvat4hPkFnozHBx5vQ3Et9YOp
-   wxtrs0dwBx7cnxSlApcancypid0/rS7T8I47HbmWcStpIzuPSKhMRGhrx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3133426"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3133426"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:59:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="7269610"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.12])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:59:05 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 26 Feb 2024 18:59:00 +0200 (EET)
-To: Luiz Capitulino <luizcap@redhat.com>
-cc: shravankr@nvidia.com, davthompson@nvidia.com, ndalvi@redhat.com, 
-    LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org, 
-    Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 0/2] platform/mellanox: mlxbf-pmc: Fix module loading
-In-Reply-To: <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
-Message-ID: <8a05120e-fcdf-f7f2-6b60-22e3ee819d37@linux.intel.com>
-References: <cover.1708635408.git.luizcap@redhat.com> <170895404513.2243.14840310263795846559.b4-ty@linux.intel.com> <def1a153-3cfb-431d-a7d2-a13bb7d65f4f@redhat.com> <29863354-4efe-d199-a9d4-7daf83f6cde9@linux.intel.com>
- <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
+	s=arc-20240116; t=1708966760; c=relaxed/simple;
+	bh=Er5kYmOwbzt4vnhThP5tnUWt8owS9wSl1gKtGt0Oo4U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ifJ+rOu56KENjB+KmHS24eBZ8PCviHDav2dnT823sVYxJUBn9XnI6gr0J4Mq4SoHODpTJSTID61ZKI1TuwiiMFfZQnDD6h9XDEv197PdNbR2R+TNPQ71bK1MccMuTlUPXT7arfXHLlACw5wDPfKX3c8moOUgRkro3mdgZ1SXEsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MqEW7hdk; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33d90b322b0so863560f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:59:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708966757; x=1709571557; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eptKKzttKp+WY9FQ4xCv+8P8GHnHxpcwbYYbruZKAew=;
+        b=MqEW7hdkm8jgabZ31Ov0sQndiypvCO2eR+GEEhFEsNe9/cEAbGLKcQVU8wvuQ3QPxS
+         22S/0t8IDHR4OGqn0DYcfBUDvl+jR9LNr1XsWvVPKIg8Ip9HV0/mN+zFYHeg8MB5kAGd
+         iQ6dJhJqwhltpU8q+KNncCl/WBbcHktCxhniAExoNaLBv0lte02XRg5Rffn3LUb9ub2Z
+         7Fpl0uIsfEVhXzVM0pyamRJyge8cf066ZOSyMprCMBku0Oe34IWMODwq/QcJWYmos2VP
+         PsznyQm60wWABrMevIfuknTbbmwy8DUwS0qrqzHh+/R+iqgG+j9aRs1QCBOtNf9eq/wE
+         UskA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708966757; x=1709571557;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eptKKzttKp+WY9FQ4xCv+8P8GHnHxpcwbYYbruZKAew=;
+        b=jlySjCjIc7MKMLJcqmOjcEBeMBABIh3OotF94GEO9KBGiziB6oacfPkR31dPzuYmkT
+         ZbU301OY7QmaowdTVuqcsE7soXcSt9weIQRVovt4lZxM9VDf3mT70gxPmegY2indunYs
+         dL9yg8eaJ/or3DRCJvPOHBAtbM3kidNzrj3XZa5pWTAzYf+HIQA3dRPhLf/HaRF6meB7
+         073N/q6IZcKiTi/iRLc7FSi9juZcjfaxFrIRZIiHIoHGpVC12gCgwl7RqdYeR4oQl0Gg
+         Cjx6fDxwFOtNTWcP/Ak3xsAc1d9NiAEcd1kSKJH/a5ZBeW8DIJv2XA3+82qloSJ19afS
+         ld1g==
+X-Forwarded-Encrypted: i=1; AJvYcCUk9KleduPKUKqV1HCsdT7MF7WnfpGP6rd71H3xbwSy3t32E44rmnm5/BHYsoITYDifz7ECr+wIvpoyrSL+MHahf0B7Wkx7wBmSD/GR
+X-Gm-Message-State: AOJu0YwBZGZK5zeJTkcxltQSPTxjkznZMBxvDbeTUS1T/s7d4OoX9Rdd
+	pv5/NxtLy+m8knlUnxhBep4R6eOEYrQO1lMHW47+Rn4Wz5GZesq0
+X-Google-Smtp-Source: AGHT+IHxRmyFfLI5Nxsic5nNOcezskF5ApgJeljJNXcoAx4s/4UwsRLvaSZxfN1YaExD612ZVRPu+Q==
+X-Received: by 2002:a05:6000:1e09:b0:33c:fa05:68b with SMTP id bj9-20020a0560001e0900b0033cfa05068bmr5217307wrb.0.1708966756773;
+        Mon, 26 Feb 2024 08:59:16 -0800 (PST)
+Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id by15-20020a056000098f00b0033da933b250sm8942363wrb.5.2024.02.26.08.59.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 08:59:16 -0800 (PST)
+Message-ID: <236c7275-c8db-4ed8-9568-dd21c5834fc9@gmail.com>
+Date: Mon, 26 Feb 2024 17:59:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-730537961-1708964317=:1203"
-Content-ID: <4b808e5d-8e8a-3c86-7ca7-e69e8bd41f28@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/20] Staging: rtl8192e: Rename function
+ rtllib_rx_ADDBAReq()
+Content-Language: en-US
+To: Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
+ anjan@momi.ca
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240226035624.370443-1-tdavies@darkphysics.net>
+ <20240226035624.370443-2-tdavies@darkphysics.net>
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20240226035624.370443-2-tdavies@darkphysics.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 2/26/24 04:56, Tree Davies wrote:
+> Rename function rtllib_rx_ADDBAReq to rtllib_rx_add_ba_req to fix checkpatch
+> warning Avoid CamelCase.
+> 
+WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit 
+description?)
+#7:
+Rename function rtllib_rx_ADDBAReq to rtllib_rx_add_ba_req to fix checkpatch
+> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+> ---
+>   drivers/staging/rtl8192e/rtl819x_BAProc.c | 2 +-
+>   drivers/staging/rtl8192e/rtllib.h         | 2 +-
+>   drivers/staging/rtl8192e/rtllib_softmac.c | 2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> index da7319c124e7..bd1d86e0323d 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> @@ -211,7 +211,7 @@ static void rtllib_send_DELBA(struct rtllib_device *ieee, u8 *dst,
+>   		netdev_dbg(ieee->dev, "Failed to generate DELBA packet.\n");
+>   }
+>   
+> -int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb)
+> +int rtllib_rx_add_ba_req(struct rtllib_device *ieee, struct sk_buff *skb)
+>   {
+>   	struct ieee80211_hdr_3addr *req = NULL;
+>   	u16 rc = 0;
+> diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+> index 348644998744..95a8e9416f61 100644
+> --- a/drivers/staging/rtl8192e/rtllib.h
+> +++ b/drivers/staging/rtl8192e/rtllib.h
+> @@ -1771,7 +1771,7 @@ u8 ht_c_check(struct rtllib_device *ieee, u8 *pFrame);
+>   void ht_reset_iot_setting(struct rt_hi_throughput *ht_info);
+>   bool is_ht_half_nmode_aps(struct rtllib_device *ieee);
+>   u16  tx_count_to_data_rate(struct rtllib_device *ieee, u8 nDataRate);
+> -int rtllib_rx_ADDBAReq(struct rtllib_device *ieee, struct sk_buff *skb);
+> +int rtllib_rx_add_ba_req(struct rtllib_device *ieee, struct sk_buff *skb);
+>   int rtllib_rx_add_ba_rsp(struct rtllib_device *ieee, struct sk_buff *skb);
+>   int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb);
+>   void rtllib_ts_init_add_ba(struct rtllib_device *ieee, struct tx_ts_record *ts,
+> diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
+> index 2545ac8963c4..f12ee685e989 100644
+> --- a/drivers/staging/rtl8192e/rtllib_softmac.c
+> +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
+> @@ -1551,7 +1551,7 @@ static void rtllib_process_action(struct rtllib_device *ieee,
+>   	case ACT_CAT_BA:
+>   		switch (*act) {
+>   		case ACT_ADDBAREQ:
+> -			rtllib_rx_ADDBAReq(ieee, skb);
+> +			rtllib_rx_add_ba_req(ieee, skb);
+>   			break;
+>   		case ACT_ADDBARSP:
+>   			rtllib_rx_add_ba_rsp(ieee, skb);
 
---8323328-730537961-1708964317=:1203
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <0b7f7ff4-48f1-66a2-0394-e1037cd78cc7@linux.intel.com>
-
-On Mon, 26 Feb 2024, Luiz Capitulino wrote:
-
-> On 2024-02-26 11:04, Ilpo J=E4rvinen wrote:
-> > On Mon, 26 Feb 2024, Luiz Capitulino wrote:
-> >=20
-> > > On 2024-02-26 08:27, Ilpo J=E4rvinen wrote:
-> > > > On Thu, 22 Feb 2024 15:57:28 -0500, Luiz Capitulino wrote:
-> > > >=20
-> > > > > The mlxbf-pmc driver fails to load when the firmware reports a ne=
-w but
-> > > > > not
-> > > > > yet implemented performance block. I can reproduce this today wit=
-h a
-> > > > > Bluefield-3 card and UEFI version 4.6.0-18-g7d063bb-BId13035, sin=
-ce
-> > > > > this
-> > > > > reports the new clock_measure performance block.
-> > > > >=20
-> > > > > This[1] patch from Shravan implements the clock_measure support a=
-nd
-> > > > > will
-> > > > > solve the issue. But this series avoids the situation by ignoring=
- and
-> > > > > logging unsupported performance blocks.
-> > > > >=20
-> > > > > [...]
-> > > >=20
-> > > >=20
-> > > > Thank you for your contribution, it has been applied to my local
-> > > > review-ilpo branch. Note it will show up in the public
-> > > > platform-drivers-x86/review-ilpo branch only once I've pushed my
-> > > > local branch there, which might take a while.
-> > >=20
-> > > Thank you Ilpo and thanks Hans for the review.
-> > >=20
-> > > The only detail is that we probably want this merged for 6.8 since
-> > > the driver doesn't currently load with the configuration mentioned ab=
-ove.
-> >=20
-> > Oh, sorry, I missed the mention in the coverletter.
-> >=20
-> > So you'd want I drop these from review-ilpo branch as there they end
-> > up into for-next branch, and they should go through Hans instead who
-> > handles fixes branch for this cycle?
->=20
-> If that's the path to get this series merged for this cycle then yes,
-> but let's see if Hans agrees (sorry that I didn't know this before
-> posting).
->
-> One additional detail is that this series is on top of linux-next, which
-> has two additional mlxbf-pmc changes:
->
-> *
-> https://lore.kernel.org/lkml/39be055af3506ce6f843d11e45d71620f2a96e26.170=
-7808180.git.shravankr@nvidia.com/
-> *
-> https://lore.kernel.org/lkml/d8548c70339a29258a906b2b518e5c48f669795c.170=
-7808180.git.shravankr@nvidia.com/
->=20
-> Maybe those two should be included for 6.8 as well?
-
-Those look a new feature to me so they belong to for-next. So no, they=20
-will not end up into 6.8 (to fixes branch). If the 2 patches in this=20
-series do not apply without some for-next targetting dependencies, you=20
-should rebase on top of fixes branch and send a new version.
-
-About those two patches, please also see my reply. I intentionally only 2=
-=20
-patches of that series because I wanted to see sysfs documentation first=20
-so you should resend those two patches to for-next with sysfs=20
-documentation.
-
---=20
- i.
---8323328-730537961-1708964317=:1203--
 
