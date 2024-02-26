@@ -1,145 +1,263 @@
-Return-Path: <linux-kernel+bounces-81798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0319867A30
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:27:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D338C867ADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7B221C21A18
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:27:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4548B33604
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914C812B145;
-	Mon, 26 Feb 2024 15:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7651292ED;
+	Mon, 26 Feb 2024 15:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hrsTFM81"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ldJt/rwH"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB2712AAC8
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC1E12BE84
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708961239; cv=none; b=D1etR/g06Wb6gmBIyRDUZVBE2eSHIgEe2dhOrBIKqiixPywQoEHglKmxS2i2yotAnePxHYtQN0CACrRnW8ZhL9uEVxA0hQqH93wMCefvIcUHna6ZnLCKFt3wn+epQZNtIZZeDui0z0j/+pVFK5xFHoXTs680v0bO1zSdoZxRoeM=
+	t=1708961286; cv=none; b=epEAgSR/W3P96NihN+UbZqJ7Tj3faIA+ovIXuzjHSQKAgb/Ajcv1pKOsdpRYtcx/pvNh6eXG5Bqf7iJbv6pr7U2sxXOvkuDFsQy6QgBRFJ5geY53E907VJ/9VgHCJUgJPUahsAMR/F6kM21/Sm2ZVxQNYjroDhRjEiKEL5PbUy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708961239; c=relaxed/simple;
-	bh=ujz3KPBAMBQU33eq3LN9zOuebEUgTrKcSEL6G1EBSkE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Tr8Oajn48lV76lIFWu8PpcpYktT0WjdUIE4POCkFxf7mG5ylZiBoIL3WjOEx0Of9JPF+iiboy1YlRwRSqT/GmsAmpNx4XuuSf3UO7mWCMQ77oipcqIwZe4jDbEmYCh16BajC246ZWNt6YNWH2ZskE+j+pfepEP9FJk/9txaoYUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hrsTFM81; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc05887ee9so4314190276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:27:18 -0800 (PST)
+	s=arc-20240116; t=1708961286; c=relaxed/simple;
+	bh=/zIqNEIiZgqgESqdwwv84VSZjlqukKlOFeK313xRY+A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SNjgMs8TzUEfvFGtCY17OxzWevmi+3ZalKK0r2m2iCP6Tpy+wj2HUtKJdmEFTs6lDh4etXgcHxfts5mTxArct3mFJSqd+r8yxDQD/VhgPcHchDJ1bqcDTp4goXdqPnz5RNXb2yF6EiG8BP9j6SzxnhwTMXV0FCw1PqsiMHgWuEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ldJt/rwH; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d8ddbac4fbso2650090a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:28:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708961237; x=1709566037; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPyeDZVIIyCXYt9YL0uYOoqOy56Yb0xUHXTmaer34Ao=;
-        b=hrsTFM81d20T/qXvuoeg1B0y+bo9Z2l/Ae7J70FNWGSCFr8wgaocjWSPcx/oobaZ/P
-         9YziBwwgZGPIDMB0xtl9x495rSdjPMkErpHsgNGHw7PIp8ycnapA7Hbg1ebEv+ljRNvG
-         cNK4TuMEt9qUpnPiIOIYCtrS05jpPqfSdFvW8+QLL7aHFP7PNY+jdeM2RBHgRz21UU3g
-         Z6X36jAA0YGrzThloQ1o6TXCsrbO15dskNw7B5osY8MgLUK571fWemUW+h51Kp9WUGwo
-         RY72Pg6hJ4hccx3Vd1IHtPT+E0EcHIzO2q/cOK4xTpSGQqB88miegxSWleKTLjs4P+DV
-         U0lQ==
+        d=linaro.org; s=google; t=1708961283; x=1709566083; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zUk/ORfZNSqc9ZCObPtK2ZClf11ZenkgiuTQii/H4vM=;
+        b=ldJt/rwHc2iFKZEc+XMfvB/rDW0WTfyv5fjj5BjJGp64hKkXg1A3cYu63AV6e3g0rE
+         HmsGE3a9jgslNlTgHNd3W7ekWkHflzi2rnCzrqNpvyUPw0D65AtLF1m+v+IgCc5WVeJX
+         T8ZAyf4dw6fb4b1l57RRpWe3x00SfUonSA2hoeqOT6ZWIsmaC8mBuiOZWm8Umy4CvFrL
+         hymUKCimhyZLqdIWUjbcLfLRSXXTUjep5P/HZnOJTkfGmAlHBrlTzq4CduVmpy89wP9V
+         /qGoZpke7L4FvRipxUU5vc5QWLLAK5fJfl42RRycRDLYp817sninRTYYnCor1ni51r/U
+         HAQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708961237; x=1709566037;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPyeDZVIIyCXYt9YL0uYOoqOy56Yb0xUHXTmaer34Ao=;
-        b=sr1bnPASIpnxKOG1PDr0QooqWhs4wQuktV4tP2BBF3sZGGpDZY5tGiqB4mzA+dKRiN
-         TUuSTLFK6iXZDPxM/iSa2ScOb4/1ToPQpXQFTOTmHzjzVg/TcV0R9HjhLKIyCtRzQTAU
-         zA+G3dxusEEjG+Ugv2/Ve/4iLi8joNnU3uQXARpOg9mW0yIrYEJEAzPIhhlUXBCgT8aA
-         O7i32OEmgyNVhAZW8mEhu+yCR2y5YrdU6slbcbnSHdczl2WsRolWpgpDvzq/UFnntEX7
-         EkRDGUVhwwn3RZ9NfPIdqZ3GZWONBNy1JPZjekr5rhfoLfPjZYxhhtr0tmfIC4krr5qZ
-         IxFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXb84kfK2ANjIk9WX+XYETruM8p0r+GEgm3M2aw4z+14wcoUheaHM5VwTwb3d0aB+252oUXqub8jkDJtgPLC0EHIHRvCmVWHnZVTMX8
-X-Gm-Message-State: AOJu0YxyZYj851BmP37Yl0ViW0IDwdTd/PFd3rYhJSqlm/z3Qgs3IKLh
-	zx6/hUPV7TmRd3rhOi1ibqUhz8I+9M3CzY8cxJUvGZKfYc9jJ998K6TJGPp2QrWAAP95YgodhvV
-	oiA==
-X-Google-Smtp-Source: AGHT+IHkBgKMhwVLkljwA3qRqGVQLniO8Rd2JfPhJNxGsBGlHhVC+4r/+VEFC4ZaYLPTGWbUsyBC7X4WmVs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1245:b0:dbe:30cd:8fcb with SMTP id
- t5-20020a056902124500b00dbe30cd8fcbmr261623ybu.0.1708961237221; Mon, 26 Feb
- 2024 07:27:17 -0800 (PST)
-Date: Mon, 26 Feb 2024 07:27:15 -0800
-In-Reply-To: <Zdw5qziEGdTyLIFN@linux.bj.intel.com>
+        d=1e100.net; s=20230601; t=1708961283; x=1709566083;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zUk/ORfZNSqc9ZCObPtK2ZClf11ZenkgiuTQii/H4vM=;
+        b=UbBUWbxFfRQYy6xNaJZy6Et5/CK0lTxvjf1Ww5f9OAWK6BAR/kqaaXgt46oiTLd6kO
+         ekeinR4lvGrxjXqd44nX/97SlL2X5nU1iicHUfhtgChohVCyTEI01nTwsiEAW3pAQ+7j
+         Mk8Te88XFatOekgy0Dr2x3js1EI0/k8VDGg6+1pbCx93feYeIr01W85TLQfQ852UNkW7
+         MN+DDNS05psksxWkO3J0NL/cFogO4ByVO0jOhkuJVL/cGucy1gZ8/b//r9yuiYWphBHF
+         E+WBj5CwN4XILYnUSHhQz+CzjTj559o2fNZtITBt93TdnZuWPx2jgA1i2Ja5/1CCKEV7
+         Nd7A==
+X-Forwarded-Encrypted: i=1; AJvYcCW+v8dhJegkFxuGjlVqTSsHguylCbFzbzMUUsGvOHLFdBqbnEAZ0773VWV592F0qRMdzNUkijbyR1MLKY1D2kMDUxaEKwZmsSPluKdF
+X-Gm-Message-State: AOJu0Yx2VBKySfTfBNOGKpms0cPmZspALm2EB/eYALiXG4CRlLVmbYL0
+	IZBX34Q1RiEveuICcBlmiO1IS1yhweFxzCacg6y2TFV5mxQCG0si2Bqru6StyQ==
+X-Google-Smtp-Source: AGHT+IFASf7wo/ZepyNEJ40sBxrik6uh3CI0+HCHyKlm+3jmHjdxgtw9uL5jNgpl+vxlzT6sDHAIBw==
+X-Received: by 2002:a17:90a:fe0d:b0:29a:7f4f:c55a with SMTP id ck13-20020a17090afe0d00b0029a7f4fc55amr5377972pjb.7.1708961283129;
+        Mon, 26 Feb 2024 07:28:03 -0800 (PST)
+Received: from thinkpad ([117.202.184.81])
+        by smtp.gmail.com with ESMTPSA id c13-20020a63da0d000000b005dcaa45d87esm4110876pgh.42.2024.02.26.07.27.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 07:28:02 -0800 (PST)
+Date: Mon, 26 Feb 2024 20:57:57 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Siddharth Vadapalli <s-vadapalli@ti.com>,
+	Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	mhi@lists.linux.dev
+Subject: Re: [PATCH v3 1/5] PCI: dwc: Refactor dw_pcie_edma_find_chip() API
+Message-ID: <20240226152757.GF8422@thinkpad>
+References: <20240226-dw-hdma-v3-0-cfcb8171fc24@linaro.org>
+ <20240226-dw-hdma-v3-1-cfcb8171fc24@linaro.org>
+ <fielxplkgrvz5qmqrrq5ahmah5yqx7anjylrlcqyev2z2cl2wo@3ltyl242vkba>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240110002340.485595-1-seanjc@google.com> <170864656017.3080257.14048100709856204250.b4-ty@google.com>
- <dfca56c5-770b-46a3-90a3-3a6b219048f2@intel.com> <Zdw5qziEGdTyLIFN@linux.bj.intel.com>
-Message-ID: <Zdyt028xOBAgiBtn@google.com>
-Subject: Re: [PATCH] x86/cpu: Add a VMX flag to enumerate 5-level EPT support
- to userspace
-From: Sean Christopherson <seanjc@google.com>
-To: Tao Su <tao1.su@linux.intel.com>
-Cc: Xiaoyao Li <xiaoyao.li@intel.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Yi Lai <yi1.lai@intel.com>, 
-	Xudong Hao <xudong.hao@intel.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fielxplkgrvz5qmqrrq5ahmah5yqx7anjylrlcqyev2z2cl2wo@3ltyl242vkba>
 
-On Mon, Feb 26, 2024, Tao Su wrote:
-> On Mon, Feb 26, 2024 at 09:30:33AM +0800, Xiaoyao Li wrote:
-> > On 2/23/2024 9:35 AM, Sean Christopherson wrote:
-> > > On Tue, 09 Jan 2024 16:23:40 -0800, Sean Christopherson wrote:
-> > > > Add a VMX flag in /proc/cpuinfo, ept_5level, so that userspace can query
-> > > > whether or not the CPU supports 5-level EPT paging.  EPT capabilities are
-> > > > enumerated via MSR, i.e. aren't accessible to userspace without help from
-> > > > the kernel, and knowing whether or not 5-level EPT is supported is sadly
-> > > > necessary for userspace to correctly configure KVM VMs.
-> > > > 
-> > > > When EPT is enabled, bits 51:49 of guest physical addresses are consumed
-> > > > if and only if 5-level EPT is enabled.  For CPUs with MAXPHYADDR > 48, KVM
-> > > > *can't* map all legal guest memory if 5-level EPT is unsupported, e.g.
-> > > > creating a VM with RAM (or anything that gets stuffed into KVM's memslots)
-> > > > above bit 48 will be completely broken.
-> > > > 
-> > > > [...]
-> > > 
-> > > Applied to kvm-x86 vmx, with a massaged changelog to avoid presenting this as a
-> > > bug fix (and finally fixed the 51:49=>51:48 goof):
-> > > 
-> > >      Add a VMX flag in /proc/cpuinfo, ept_5level, so that userspace can query
-> > >      whether or not the CPU supports 5-level EPT paging.  EPT capabilities are
-> > >      enumerated via MSR, i.e. aren't accessible to userspace without help from
-> > >      the kernel, and knowing whether or not 5-level EPT is supported is useful
-> > >      for debug, triage, testing, etc.
-> > >      For example, when EPT is enabled, bits 51:48 of guest physical addresses
-> > >      are consumed by the CPU if and only if 5-level EPT is enabled.  For CPUs
-> > >      with MAXPHYADDR > 48, KVM *can't* map all legal guest memory if 5-level
-> > >      EPT is unsupported, making it more or less necessary to know whether or
-> > >      not 5-level EPT is supported.
-> > > 
-> > > [1/1] x86/cpu: Add a VMX flag to enumerate 5-level EPT support to userspace
-> > >        https://github.com/kvm-x86/linux/commit/b1a3c366cbc7
-> > 
-> > Do we need a new KVM CAP for this? This decides how to interact with old
-> > kernel without this patch. In that case, no ept_5level in /proc/cpuinfo,
-> > what should we do in the absence of ept_5level? treat it only 4 level EPT
-> > supported?
+On Mon, Feb 26, 2024 at 03:45:16PM +0300, Serge Semin wrote:
+> Hi Manivannan
 > 
-> Maybe also adding flag for 4-level EPT can be an option. If userspace
-> checks both 4-level and 5-level are not in /proc/cpuinfo, it can regard
-> the kernel as old.
+> On Mon, Feb 26, 2024 at 05:07:26PM +0530, Manivannan Sadhasivam wrote:
+> > In order to add support for Hyper DMA (HDMA), let's refactor the existing
+> > dw_pcie_edma_find_chip() API by moving the common code to separate
+> > functions.
+> > 
+> > No functional change.
+> > 
+> > Suggested-by: Serge Semin <fancer.lancer@gmail.com>
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-designware.c | 52 +++++++++++++++++++++-------
+> >  1 file changed, 39 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> > index 250cf7f40b85..193fcd86cf93 100644
+> > --- a/drivers/pci/controller/dwc/pcie-designware.c
+> > +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> > @@ -880,7 +880,17 @@ static struct dw_edma_plat_ops dw_pcie_edma_ops = {
+> >  	.irq_vector = dw_pcie_edma_irq_vector,
+> >  };
+> >  
+> > -static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+> > +static void dw_pcie_edma_init_data(struct dw_pcie *pci)
+> > +{
+> > +	pci->edma.dev = pci->dev;
+> > +
+> > +	if (!pci->edma.ops)
+> > +		pci->edma.ops = &dw_pcie_edma_ops;
+> > +
+> > +	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
+> > +}
+> > +
+> > +static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
+> >  {
+> >  	u32 val;
+> >  
+> > @@ -900,24 +910,27 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+> >  	else
+> >  		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
+> > 
+> 
+> > -	if (val == 0xFFFFFFFF && pci->edma.reg_base) {
+> > -		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
+> > -
+> > -		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+> > -	} else if (val != 0xFFFFFFFF) {
+> > -		pci->edma.mf = EDMA_MF_EDMA_LEGACY;
+> > +	/* Set default mapping format here and update it below if needed */
+> > +	pci->edma.mf = EDMA_MF_EDMA_LEGACY;
+> >  
+> > +	if (val == 0xFFFFFFFF && pci->edma.reg_base)
+> > +		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
+> > +	else if (val != 0xFFFFFFFF)
+> >  		pci->edma.reg_base = pci->dbi_base + PCIE_DMA_VIEWPORT_BASE;
+> > -	} else {
+> > +	else
+> >  		return -ENODEV;
+> > -	}
+> 
+> Sorry for not posting my opinion about this earlier, but IMO v2 code
+> was more correct than this one. This version makes the code being not
+> linear as it was in v2, thus harder to comprehend:
+> 
+> 1. Setting up a default value and then overriding it or not makes the
+> reader to keep in mind the initialized value which is harder than to
+> just read what is done in the respective branch.
+> 
 
-The intent is that this is informational only, not something that userspace can
-or should use to make decisions about how to configure KVM guests.  As pointed
-out elsewhere in the thread, simply restricting guest.MAXPHYADDR to 48 doesn't
-actually create an architecturally viable VM.  At the very least, KVM needs to
-be configured with allow_smaller_maxphyaddr=1, and aside from the gaping holes
-in KVM related to that knob, AIUI allow_smaller_maxphyaddr=1 isn't an option in
-this case due to other quirks/flaws with the CPU in question.
+No, I disagree. Whether we set the default value or not, EDMA_MF_EDMA_LEGACY is
+indeed the default mapping format (this is one of the reasons why the enums
+should start from 1 instead of 0). So initializing it to legacy is not changing
+anything, rather making it explicit.
 
-I don't think there's been an on-list summary posted, but the plan is to figure
-out a way to inform guest firmware of the max _usable_ physical address, so that
-firmware doesn't create BARs and whatnot in memory that KVM can't map.  And then
-have KVM relay the usuable guest.MAXPHYADDR to userspace.  That way userspace
-doesn't need to infer the effective guest.MAXPHYADDR from EPT knobs.
+> 2. Splitting up the case clause with respective inits and the mapping
+> format setting up also makes it harder to comprehend what's going on.
+> In the legacy case the reg-base address and the mapping format init are
+> split up while they should have been done simultaneously only if (val
+> != 0xFFFFFFFF).
+> 
+
+Well again, this doesn't matter since the default mapping format is legacy. But
+somewhat agree that the two clauses are setting different fields, but even if
+the legacy mapping format is set inside the second clause, it still differs from
+the first one since we are not setting reg_base.
+
+> 3. The most of the current devices has the unrolled mapping (available
+> since v4.9 IP-core), thus having the mf field pre-initialized produces
+> a redundant store operation for the most of the modern devices.
+> 
+
+Ok, this one I agree. We could avoid the extra assignment.
+
+> 4. Getting rid from the curly braces isn't something what should be
+> avoided at any cost and doesn't give any optimization really. It
+> doesn't cause having less C-lines of the source code and doesn't
+> improve the code readability.
+> 
+
+Yeah, there is no benefit other than a simple view of the code. But for point
+(3), I agree to roll back to v2 version.
+
+> So to speak, I'd suggest to get back the v2 implementation here.
+> 
+> >  
+> > -	pci->edma.dev = pci->dev;
+> > +	return 0;
+> > +}
+> >  
+> > -	if (!pci->edma.ops)
+> > -		pci->edma.ops = &dw_pcie_edma_ops;
+> > +static int dw_pcie_edma_find_channels(struct dw_pcie *pci)
+> > +{
+> > +	u32 val;
+> >  
+> > -	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
+> 
+> > +	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
+> > +		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
+> > +	else
+> > +		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+> 
+> Just dw_pcie_readl_dma(pci, PCIE_DMA_CTRL)
+> 
+
+'val' is uninitialized. Why should the assignment be skipped?
+
+- Mani
+
+> -Serge(y)
+> 
+> >  
+> >  	pci->edma.ll_wr_cnt = FIELD_GET(PCIE_DMA_NUM_WR_CHAN, val);
+> >  	pci->edma.ll_rd_cnt = FIELD_GET(PCIE_DMA_NUM_RD_CHAN, val);
+> > @@ -930,6 +943,19 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+> >  	return 0;
+> >  }
+> >  
+> > +static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+> > +{
+> > +	int ret;
+> > +
+> > +	dw_pcie_edma_init_data(pci);
+> > +
+> > +	ret = dw_pcie_edma_find_mf(pci);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return dw_pcie_edma_find_channels(pci);
+> > +}
+> > +
+> >  static int dw_pcie_edma_irq_verify(struct dw_pcie *pci)
+> >  {
+> >  	struct platform_device *pdev = to_platform_device(pci->dev);
+> > 
+> > -- 
+> > 2.25.1
+> > 
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
