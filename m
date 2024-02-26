@@ -1,108 +1,172 @@
-Return-Path: <linux-kernel+bounces-82168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86E0986802B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:56:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED54C86802D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25E6BB243E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:56:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73C02B281D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C245112F366;
-	Mon, 26 Feb 2024 18:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22AD12F366;
+	Mon, 26 Feb 2024 18:56:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="odhHk28u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hBDh4B6g"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF791E866;
-	Mon, 26 Feb 2024 18:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F220E12E1D5;
+	Mon, 26 Feb 2024 18:56:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708973788; cv=none; b=X+ufXOZUgc86U55sMo0zr27t6STB6cy7hVa2iJ1ViDkUJJ141f1i4fSGVE0hAYuHqBuzqirAgNmIPr/wx3DFLetwJfnTf4GDbyOaMy6btfz1XQClp2K8M0GpDsDlwW6zAbZAB6q3Ae1OTNupf4uSPevk8tYeakCGo1xjwh7XOvU=
+	t=1708973796; cv=none; b=DF7QtoWEUhFlyDNVxNhUw4tozPNu2k2p8TSXHbMeWTUEjECDPwsJB4rTjwiTVIZPj4kTEXhwU51OuLH2wH3EO+9wAcetpJjlmNE/2JUiR6401hW0KDnzFN/R+YSuEebjIFkeRUVDeDX22zAQ6r3AUkpqk7eZ9ELSqK68GHxE25Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708973788; c=relaxed/simple;
-	bh=4/ht9cg/8jPdSwNdZpj18Zq8GSZsf6eqVmgNBZwyisU=;
+	s=arc-20240116; t=1708973796; c=relaxed/simple;
+	bh=LHD+JDEOdVWmiSEIxtQemrQnvU3P82mWYGpIuPIt0XY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qrB1A0iM71UkcxVYpDtRT+/rJIARaoLCPJde7JTKZZquk87NMMiNu7qcLFJPsQ77ho7BXqskOw6nnnKirUinlist9dK2dCf91/gtrk4lkQfhpaffgGMy9n4NoAOIQeAJ7SD1XmTZXF19eQGHm56Aqku+hptZP7xwdZyxQXfkwmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=odhHk28u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 976FEC433F1;
-	Mon, 26 Feb 2024 18:56:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708973787;
-	bh=4/ht9cg/8jPdSwNdZpj18Zq8GSZsf6eqVmgNBZwyisU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=odhHk28uPnYzLH5s4vt8muhzUtrBhljzUsbhTVOkGAZzNceCATjyVG/aMJ2muuzEd
-	 rmYCrjQEZM9ThaOcn3DbicwC7RuZ94tSyiyuFfaGLFTuALZ7Db2mEqcfDYXHbdb3zx
-	 EIaXyH+zfQYhjeG3c468kjOHjCFCsge/6nsA7BsAa7rih+lgi7ONbu+1pS+goqlejV
-	 Qx4iVyzjVbnvQwGfK0Z2E+7X3WKfeYPRNJSyAuG2jXoJEF3638nwV2RRZLN/eqyCoQ
-	 Uh5Swtn0qanspekiUtu5mudPDVqWgn9LqMVhKUVvdpxrFTwaOX7FsF7120cqZGFceB
-	 bAKmOT0QyZ12g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 3F98FCE0E27; Mon, 26 Feb 2024 10:56:27 -0800 (PST)
-Date: Mon, 26 Feb 2024 10:56:27 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Fix the comments for
- tasks_rcu_exit_srcu_stall_timer
-Message-ID: <ec57f86d-936c-4709-aeda-d9f57a8fd7aa@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240226032439.26359-1-qiang.zhang1211@gmail.com>
- <CALm+0cXvWG2cP2sECzF9JGyUvvp0bBgSXA8NbGf896iMQEcCuA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DIMO6z2Nq7F9XwK1mKq0+tybJ9vvvCWQPxS3Dw07m05Z2he6htDchEJVC0SUGybDqvWnVFMp5Er1erAHodeJB2WlLGxASWIkFK/dnaouGKpWgGBg83CUvmGsCCRN7de+s33LXYIgyJFj6nbZoKhxkPv6fTqEk1GNS2ArNx8OPPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hBDh4B6g; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708973794; x=1740509794;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=LHD+JDEOdVWmiSEIxtQemrQnvU3P82mWYGpIuPIt0XY=;
+  b=hBDh4B6gjaZrgSufEtAB4JhwjF/lA2j9FiFROtOnIo6dXP+vRwYIBCsW
+   3Hw9uUAwtxlaq7d6BTdk2br96A/VUhnYtFd672YiVIzzn6bnwkrG3iidb
+   6q2Jh3CH5894Kn5wLJsyByrHb0+3rIx6aqGfXZ3qVGuqHn7gWTsSkjOYf
+   9iWW9fXGS8NG7paEP7Vl3V1mH4BUU1jJ33BVlR8KPQFY89c9Srfsi/HSa
+   hP0EiROWRsjKIQE+T96mHCvdvNueeJU85yskVFVFfPu+WvXwFWbFKgspf
+   GLwKZxUtGys5nQXbPxt0xhvTJdi7j0rx8W7RSomtpE9sC4bsaTw6x/8uI
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14719198"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="14719198"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 10:56:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="6909793"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 10:56:33 -0800
+Date: Mon, 26 Feb 2024 10:56:32 -0800
+From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To: Yuan Yao <yuan.yao@linux.intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v18 024/121] KVM: TDX: create/destroy VM structure
+Message-ID: <20240226185632.GJ177224@ls.amr.corp.intel.com>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <167b3797f5928c580526f388761dcfb342626ad2.1705965634.git.isaku.yamahata@intel.com>
+ <20240201083227.vwyqlptrr3bdwr7m@yy-desk-7060>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CALm+0cXvWG2cP2sECzF9JGyUvvp0bBgSXA8NbGf896iMQEcCuA@mail.gmail.com>
+In-Reply-To: <20240201083227.vwyqlptrr3bdwr7m@yy-desk-7060>
 
-On Mon, Feb 26, 2024 at 11:28:57AM +0800, Z qiang wrote:
-> >
-> > The synchronize_srcu() has been removed by commit("rcu-tasks: Eliminate
-> > deadlocks involving do_exit() and RCU tasks") in rcu_tasks_postscan.
-> > This commit therefore fix the comments of tasks_rcu_exit_srcu_stall_timer.
-> >
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > ---
-> >  kernel/rcu/tasks.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index 78d74c81cc24..d5319bbe8c98 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -150,7 +150,7 @@ static struct rcu_tasks rt_name =                                                   \
-> >
-> >  #ifdef CONFIG_TASKS_RCU
-> >
-> > -/* Report delay in synchronize_srcu() completion in rcu_tasks_postscan(). */
-> > +/* Report delay of scan exiting tasklist in rcu_tasks_postscan(). */
-> >  static void tasks_rcu_exit_srcu_stall(struct timer_list *unused);
-> >  static DEFINE_TIMER(tasks_rcu_exit_srcu_stall_timer, tasks_rcu_exit_srcu_stall);
+On Thu, Feb 01, 2024 at 04:32:27PM +0800,
+Yuan Yao <yuan.yao@linux.intel.com> wrote:
+
+..
+> > +static int __tdx_reclaim_page(hpa_t pa)
+> > +{
+> > +	struct tdx_module_args out;
+> > +	u64 err;
+> > +
+> > +	do {
+> > +		err = tdh_phymem_page_reclaim(pa, &out);
+> > +		/*
+> > +		 * TDH.PHYMEM.PAGE.RECLAIM is allowed only when TD is shutdown.
+> > +		 * state.  i.e. destructing TD.
+> > +		 * TDH.PHYMEM.PAGE.RECLAIM requires TDR and target page.
+> > +		 * Because we're destructing TD, it's rare to contend with TDR.
+> > +		 */
+> > +	} while (unlikely(err == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_RCX)));
 > 
-> Is this timer not necessary? any thoughts?
+> v16 changed to tdx module 1.5, so here should be TDX_OPERAND_ID_TDR, value 128ULL.
 
-We have preemption points in the list traversals, and things like mutex
-contention on the do_exit() path could result in extremely long lists,
-so I believe we do need the timer.
+We should handle both RCX(SEPT) and TDR. So I make it err == RCX || err == TDR.
 
-But what did you have in mind?
+..
 
-							Thanx, Paul
-
-> Thanks
-> Zqiang
+> > +static int __tdx_td_init(struct kvm *kvm)
+> > +{
+> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
+> > +	cpumask_var_t packages;
+> > +	unsigned long *tdcs_pa = NULL;
+> > +	unsigned long tdr_pa = 0;
+> > +	unsigned long va;
+> > +	int ret, i;
+> > +	u64 err;
+> > +
+> > +	ret = tdx_guest_keyid_alloc();
+> > +	if (ret < 0)
+> > +		return ret;
+> > +	kvm_tdx->hkid = ret;
+> > +
+> > +	va = __get_free_page(GFP_KERNEL_ACCOUNT);
+> > +	if (!va)
+> > +		goto free_hkid;
+> > +	tdr_pa = __pa(va);
+> > +
+> > +	tdcs_pa = kcalloc(tdx_info->nr_tdcs_pages, sizeof(*kvm_tdx->tdcs_pa),
+> > +			  GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+> > +	if (!tdcs_pa)
+> > +		goto free_tdr;
+> > +	for (i = 0; i < tdx_info->nr_tdcs_pages; i++) {
+> > +		va = __get_free_page(GFP_KERNEL_ACCOUNT);
+> > +		if (!va)
+> > +			goto free_tdcs;
+> > +		tdcs_pa[i] = __pa(va);
+> > +	}
+> > +
+> > +	if (!zalloc_cpumask_var(&packages, GFP_KERNEL)) {
+> > +		ret = -ENOMEM;
+> > +		goto free_tdcs;
+> > +	}
+> > +	cpus_read_lock();
+> > +	/*
+> > +	 * Need at least one CPU of the package to be online in order to
+> > +	 * program all packages for host key id.  Check it.
+> > +	 */
+> > +	for_each_present_cpu(i)
+> > +		cpumask_set_cpu(topology_physical_package_id(i), packages);
+> > +	for_each_online_cpu(i)
+> > +		cpumask_clear_cpu(topology_physical_package_id(i), packages);
+> > +	if (!cpumask_empty(packages)) {
+> > +		ret = -EIO;
+> > +		/*
+> > +		 * Because it's hard for human operator to figure out the
+> > +		 * reason, warn it.
+> > +		 */
+> > +#define MSG_ALLPKG	"All packages need to have online CPU to create TD. Online CPU and retry.\n"
+> > +		pr_warn_ratelimited(MSG_ALLPKG);
+> > +		goto free_packages;
+> > +	}
 > 
-> 
-> >  #endif
-> > --
-> > 2.17.1
-> >
+> Generate/release hkid both requests to have "cpumask of at least 1
+> cpu per each node", how about add one helper for this ? The helper also
+> checks the cpus_read_lock() is held and return the cpumask if at least
+> 1 cpu is online per node, thus this init funciotn can be simplified and
+> become more easy to review.
+
+We don't need cpumask to release hkid. So only tdx_td_init() needs cpumask
+allocation. So I didn't to bother create a helper function with v19.
+-- 
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
 
