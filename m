@@ -1,220 +1,194 @@
-Return-Path: <linux-kernel+bounces-82427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 988CA868414
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:57:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F17D086842A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:00:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EC961F22C08
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:57:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A67512849E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B73135418;
-	Mon, 26 Feb 2024 22:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5E2C135417;
+	Mon, 26 Feb 2024 23:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b="oej2VSZP"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WZv8aGO6"
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B70135A4F
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 22:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B49134CE3;
+	Mon, 26 Feb 2024 23:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708988219; cv=none; b=VlzUlOMWpYnh/j2dO0X23hhU38HdoX5oseeOnLmTDGYi30Tq7TlmkwEGs2rOTplx51DWUlZpOJlL27TksOSoiJudsTlvru+gims9RAgR3apOG7qGpPJKlo47IXXYnJF+5wv1QQhfZFz5UJr0qH5Ju+YzT9uFuAUv6FG5QxBduwU=
+	t=1708988406; cv=none; b=oZLmMK7GrMs5bbjM/46RRU+bxFz2fwhBkZT5250AtoNFp+l9A57uLdZJiai0VvGQp7zFEHXJM8BiRMy1Ls7919ztyugNnYbVkaahCCi/53x2i0p7fKo34AmyWwcB+CS2r3+04KV4w6NZvgKnzSBLpzrqeovfl0LKdper3RD165Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708988219; c=relaxed/simple;
-	bh=BY4yjPqK6m+yhqIEHOoRqXpbbR4sRRpARgLKgEPvpHo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FixUjtfhWnC2DvwH5GDVqTrHBp+STurLEB+mjypTTARymok5MusK4xn3z+w3+NN3D5GqvcR6+X6LSNvBnIfgsXsjCqjJmJa/1Y2PzRBjVPEzYjqBKtrTbioymjITDMyKU1nchJFP16N25KHTl6VSUly7grWhPdTIpezDJErOmlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com; spf=pass smtp.mailfrom=amarulasolutions.com; dkim=pass (1024-bit key) header.d=amarulasolutions.com header.i=@amarulasolutions.com header.b=oej2VSZP; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amarulasolutions.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amarulasolutions.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-565d1656c12so3310406a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:56:54 -0800 (PST)
+	s=arc-20240116; t=1708988406; c=relaxed/simple;
+	bh=eDdDRpRLOs+TLu9DRUmMhRRpoJ/GPPb+1lbirKhJPXU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t3SnwahZQIC9R8FhKxfQbEyzEbxovNP+LfwQkuyJSC0rhn6UAum09gvOesxyFhd+OhVppxHkQFNPcYxHvKUueJbfJx6LXLij6gm3bK6Y+QDsSYCYFQc/bYPI595xWH1kuPcCXV1aa2j8kzHnrP9mtVqEdsBVMY28L/xGWKWaYJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WZv8aGO6; arc=none smtp.client-ip=209.85.161.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5a054fa636eso2001859eaf.0;
+        Mon, 26 Feb 2024 15:00:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google; t=1708988212; x=1709593012; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XfKJBq26hOJvsm+iIu7w4P5R8/ik8TQdnQLZDaom8ws=;
-        b=oej2VSZP4kmyBqYymdFHJJTtxzTluvTqVtv5qtsR8d5X3tdSGfdIz4zRXsvMVP1Lx7
-         xpwKMlqwzgSa5DdyiORpaB0rBCAi4D/Fq+1KnU9LDkrEOsFteDjuqKqaQu9mFhYtBLdS
-         lqTV1j/NR9P3ePCG/rQQItCvIKbil8Yom2X8w=
+        d=gmail.com; s=20230601; t=1708988403; x=1709593203; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zww+OwBsoYB5pURroMSrOkz/ZQvrjX3VS1JUC45kLpM=;
+        b=WZv8aGO6ryajzFRToQ2E9JUurbQjzqasuLOOQjViyK/CUZQ3tTji+DbKD93jlap9LL
+         c67tsyu7ZYu6VvbSIBCZiqN9yEzx2dUPOBRJHzwiq3Uxoh5bZdVz1lt3af5zpIf59sbH
+         RGIpzG/GMNJHyzRwwWakqgZAFN7NBhRer2ui4llSiW2n62Jx/nGd+e0Xer+6O4Azhjcf
+         NLXvwpM5ajaQ3MMGKJiVyYiAR05TwBR57XqfKsPPMVtGDJWgdQ+J/zPieYmGLGwNxmSq
+         +DOUYP6eZoNMJotduP9iaSXJc0/RMB4DWPRS6pooqwxr1rOKQuwBeNIfQI5qm8/PxELJ
+         26PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708988212; x=1709593012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708988403; x=1709593203;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XfKJBq26hOJvsm+iIu7w4P5R8/ik8TQdnQLZDaom8ws=;
-        b=iDQa9sEjpYL1IfJ44h6v53830m70KY04WoV5f8jYMZmEcunURFzYdE0m7WvxV7dsx+
-         nGpicZUVb+6iyN2xUH3ogfhDbh+sWBwZq2nSn/b1RhjkvVQou4IcTDc93a0htG1j7XAe
-         nJJx9n6fHdcLqosZxMc+WpyRbD4Djy1Lw5i46mK7NlrVSL53AxICvJxR6Wjglx7/mWj9
-         aBSWM5nJ7Q/sLdSMaJXryMLS44Mb/oXUllQDPbamzV3xRKcN382tVVGHdBy6zTdEp4+x
-         jbbG5RE3XoT33D0pbEXN90JU4ZU9u3B9ZMw35iFQaXIE+fRtAEzwW3GFVxUOz7ByNAz4
-         g0nw==
-X-Forwarded-Encrypted: i=1; AJvYcCUhY95++2L7UQfCZvyIBFDacohIIbsWa7EcxapQjaWX396whxnPU0HQc66ol2yClOMuuj8FMbCm91k8jUtCsq/WjGo3hbz8wJzSUVX1
-X-Gm-Message-State: AOJu0YwNUPexbbN3ljAeto9OXFcvpCECfRPNboR/efbXVkJuCyJs6w67
-	DD3Q41w4BqaguOPUcT+XwJkg9O0mKTAfzXz7QhcgmTuUa9CkBKhBSp3H7kK9DdelfXCtj2mnodx
-	3dmIRN/gTJRbGXdEi2p+l4w1Nz1fts6jpgtsG1A==
-X-Google-Smtp-Source: AGHT+IHsYoZ9fHFPHFyJRiHYvA8LVDvNhguHutZh7ska2jaz/K8V/hHlDIxWdxJotHTSKKg6fba3g4vsUY2fnkPhyVs=
-X-Received: by 2002:aa7:c318:0:b0:565:211b:32ea with SMTP id
- l24-20020aa7c318000000b00565211b32eamr7521347edq.19.1708988211788; Mon, 26
- Feb 2024 14:56:51 -0800 (PST)
+        bh=Zww+OwBsoYB5pURroMSrOkz/ZQvrjX3VS1JUC45kLpM=;
+        b=seBhbM+1W480hFZFbbeS4+zNAPMhcoVGbbQ0QlE9AhYbB6w52Ehvdlzb8/kSM3YRq2
+         wCXNxa0IvPDzJYDbnEabMbsYMAMaRPXpX3akhfhloXqAZ9Hf8XMLiMy6uiQ7OEbgkzZj
+         D9Si1h+e/Fo2o/nVqQs+MahDcdgTb4rStC2IYDC4p94WJYUr0wfg/wEeJP1OUPkyOk2+
+         Wo2Ik+QRMdNEHd+6CN+cII3gKj5j6azzTznu8qVsdjQ1RERIEXihWF9w9QnnpFTH826T
+         l+pZAhD+wprhsM55Amw5K5m4N+1/BNudQBV6Oxu8tfuGjYWgS5rNUr2pomhKjKLIZaX/
+         PmdQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTZCBPUfMFvAWFyVw1Oh7QFD19cZLxfvEpbwzIpuZZvZbPRepuy847zByakFLH1+nEYlbyxtubmMnoslj88smdV5oFcR75txp6dJVjMPua1GBvxY2sbIkn4GcgESnrTj7xJvooQ80vd99kHepY8udXStSrsGoGnVR6kmMs+4fxtNRvfJ2MKGrEaL7uTo9FPWWHuISZund0eOa8SK6+YDuSSw==
+X-Gm-Message-State: AOJu0YzgX5aPXutSkN859xcSvqc84MVcaXH/A5nZnUf4/8WnZBuAftoq
+	oCTtEcChH6pGLKsZL5U6ekKoLqsPycOMDXBA4l+/b1HZuHs03BWbbNmFNBJyNcM=
+X-Google-Smtp-Source: AGHT+IG3rstfE0sxQj75CLdtkz7tDS/WIIMftEy2NPTiJzeS4j0Vku5utN7c2f5g6t9XbBlzt+Z8DA==
+X-Received: by 2002:a05:6820:2c07:b0:5a0:651d:4238 with SMTP id dw7-20020a0568202c0700b005a0651d4238mr5467910oob.2.1708988403399;
+        Mon, 26 Feb 2024 15:00:03 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id ej5-20020a0568200d0500b005a06c8ecf54sm1135729oob.25.2024.02.26.15.00.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 15:00:03 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Mon, 26 Feb 2024 17:00:00 -0600
+From: John Groves <John@groves.net>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 13/20] famfs: Add iomap_ops
+Message-ID: <y4gzithu2qurexucsa5kq542pws3qfxf5rtpza6a7qzsb3r2bv@b434hxvv7hv2>
+References: <cover.1708709155.git.john@groves.net>
+ <2996a7e757c3762a9a28c789645acd289f5f7bc0.1708709155.git.john@groves.net>
+ <20240226133038.00006e23@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226100502.1845284-1-michael@amarulasolutions.com> <20240226223643.pay4tb66j3q44cuk@synopsys.com>
-In-Reply-To: <20240226223643.pay4tb66j3q44cuk@synopsys.com>
-From: Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Date: Mon, 26 Feb 2024 23:56:40 +0100
-Message-ID: <CAOf5uwkcFuSRZy3F44pSZFpHk5Hah-r8m01JLt3Gd1ngvg-CPQ@mail.gmail.com>
-Subject: Re: [PATCH V3] usb: dwc3: gadget: Fix suspend/resume warning when
- no-gadget is connected
-To: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-amarula@amarulasolutions.com" <linux-amarula@amarulasolutions.com>, 
-	"stable@vger.kernel.org" <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226133038.00006e23@Huawei.com>
 
-Hi
+On 24/02/26 01:30PM, Jonathan Cameron wrote:
+> On Fri, 23 Feb 2024 11:41:57 -0600
+> John Groves <John@Groves.net> wrote:
+> 
+> > This commit introduces the famfs iomap_ops. When either
+> > dax_iomap_fault() or dax_iomap_rw() is called, we get a callback
+> > via our iomap_begin() handler. The question being asked is
+> > "please resolve (file, offset) to (daxdev, offset)". The function
+> > famfs_meta_to_dax_offset() does this.
+> > 
+> > The per-file metadata is just an extent list to the
+> > backing dax dev.  The order of this resolution is O(N) for N
+> > extents. Note with the current user space, files usually have
+> > only one extent.
+> > 
+> > Signed-off-by: John Groves <john@groves.net>
+> 
+> > ---
+> >  fs/famfs/famfs_file.c | 245 ++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 245 insertions(+)
+> >  create mode 100644 fs/famfs/famfs_file.c
+> > 
+> > diff --git a/fs/famfs/famfs_file.c b/fs/famfs/famfs_file.c
+> > new file mode 100644
+> > index 000000000000..fc667d5f7be8
+> > --- /dev/null
+> > +++ b/fs/famfs/famfs_file.c
+> > @@ -0,0 +1,245 @@
+> 
+> > +static int
+> > +famfs_meta_to_dax_offset(
+> > +	struct inode *inode,
+> > +	struct iomap *iomap,
+> > +	loff_t        offset,
+> > +	loff_t        len,
+> > +	unsigned int  flags)
+> > +{
+> > +	struct famfs_file_meta *meta = (struct famfs_file_meta *)inode->i_private;
+> 
+> i_private is void * so no need for explicit cast (C spec says this is always fine without)
 
-On Mon, Feb 26, 2024 at 11:36=E2=80=AFPM Thinh Nguyen <Thinh.Nguyen@synopsy=
-s.com> wrote:
->
-> Hi,
->
-> On Mon, Feb 26, 2024, Michael Trimarchi wrote:
-> > This patch avoid to disconnect an already gadget in not connected state
-> >
-> > [   45.597274] dwc3 31000000.usb: wait for SETUP phase timed out
-> > [   45.599140] dwc3 31000000.usb: failed to set STALL on ep0out
-> > [   45.601069] ------------[ cut here ]------------
-> > [   45.601073] WARNING: CPU: 0 PID: 150 at drivers/usb/dwc3/ep0.c:289 d=
-wc3_ep0_out_start+0xcc/0xd4
-> > [   45.601102] Modules linked in: cfg80211 rfkill ipv6 rpmsg_ctrl rpmsg=
-_char crct10dif_ce rti_wdt k3_j72xx_bandgap rtc_ti_k3 omap_mailbox sa2ul au=
-thenc [last unloaded: ti_k3_r5_remoteproc]
-> > [   45.601151] CPU: 0 PID: 150 Comm: sh Not tainted 6.8.0-rc5 #1
-> > [   45.601159] Hardware name: BSH - CCM-M3 (DT)
-> > [   45.601164] pstate: 600000c5 (nZCv daIF -PAN -UAO -TCO -DIT -SSBS BT=
-YPE=3D--)
-> > [   45.601172] pc : dwc3_ep0_out_start+0xcc/0xd4
-> > [   45.601179] lr : dwc3_ep0_out_start+0x50/0xd4
-> > [   45.601186] sp : ffff8000832739e0
-> > [   45.601189] x29: ffff8000832739e0 x28: ffff800082a21000 x27: ffff800=
-0808dc630
-> > [   45.601200] x26: 0000000000000002 x25: ffff800082530a44 x24: 0000000=
-000000000
-> > [   45.601210] x23: ffff000000e079a0 x22: ffff000000e07a68 x21: 0000000=
-000000001
-> > [   45.601219] x20: ffff000000e07880 x19: ffff000000e07880 x18: 0000000=
-000000040
-> > [   45.601229] x17: ffff7fff8e1ce000 x16: ffff800080000000 x15: fffffff=
-ffffe5260
-> > [   45.601239] x14: 0000000000000000 x13: 206e6f204c4c4154 x12: 5320746=
-573206f74
-> > [   45.601249] x11: 0000000000000001 x10: 000000000000000a x9 : ffff800=
-083273930
-> > [   45.601259] x8 : 000000000000000a x7 : ffffffffffff3f0c x6 : fffffff=
-fffff3f00
-> > [   45.601268] x5 : ffffffffffff3f0c x4 : 0000000000000000 x3 : 0000000=
-000000000
-> > [   45.601278] x2 : 0000000000000000 x1 : ffff000004e7e600 x0 : 0000000=
-0ffffff92
-> > [   45.601289] Call trace:
-> > [   45.601293]  dwc3_ep0_out_start+0xcc/0xd4
-> > [   45.601301]  dwc3_ep0_stall_and_restart+0x98/0xbc
-> > [   45.601309]  dwc3_ep0_reset_state+0x5c/0x88
-> > [   45.601315]  dwc3_gadget_soft_disconnect+0x144/0x160
-> > [   45.601323]  dwc3_gadget_suspend+0x18/0xb0
-> > [   45.601329]  dwc3_suspend_common+0x5c/0x18c
-> > [   45.601341]  dwc3_suspend+0x20/0x44
-> > [   45.601350]  platform_pm_suspend+0x2c/0x6c
-> > [   45.601360]  __device_suspend+0x10c/0x34c
-> > [   45.601372]  dpm_suspend+0x1a8/0x240
-> > [   45.601382]  dpm_suspend_start+0x80/0x9c
-> > [   45.601391]  suspend_devices_and_enter+0x1c4/0x584
-> > [   45.601402]  pm_suspend+0x1b0/0x264
-> > [   45.601408]  state_store+0x80/0xec
-> > [   45.601415]  kobj_attr_store+0x18/0x2c
-> > [   45.601426]  sysfs_kf_write+0x44/0x54
-> > [   45.601434]  kernfs_fop_write_iter+0x120/0x1ec
-> > [   45.601445]  vfs_write+0x23c/0x358
-> > [   45.601458]  ksys_write+0x70/0x104
-> > [   45.601467]  __arm64_sys_write+0x1c/0x28
-> > [   45.601477]  invoke_syscall+0x48/0x114
-> > [   45.601488]  el0_svc_common.constprop.0+0x40/0xe0
-> > [   45.601498]  do_el0_svc+0x1c/0x28
-> > [   45.601506]  el0_svc+0x34/0xb8
-> > [   45.601516]  el0t_64_sync_handler+0x100/0x12c
-> > [   45.601522]  el0t_64_sync+0x190/0x194
-> > [   45.601531] ---[ end trace 0000000000000000 ]---
-> > [   45.608794] Disabling non-boot CPUs ...
-> > [   45.611029] psci: CPU1 killed (polled 0 ms)
-> > [   45.611837] Enabling non-boot CPUs ...
-> > [   45.612247] Detected VIPT I-cache on CPU1
-> >
-> > Tested on a am62x board with a usbnet gadget
-> >
-> > Fixes: 61a348857e86 ("usb: dwc3: gadget: Fix NULL pointer dereference i=
-n dwc3_gadget_suspend)
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
-> > ---
-> > V2->V3:
-> >       - Change the logic of the patch using the gadget connected state
-> >       - Change of the commit message
-> > V1->V2:
-> >       - Add stable in CC
-> > ---
-> >  drivers/usb/dwc3/gadget.c | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
-> >
-> > diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> > index 4c8dd6724678..a7316a1703ad 100644
-> > --- a/drivers/usb/dwc3/gadget.c
-> > +++ b/drivers/usb/dwc3/gadget.c
-> > @@ -2650,6 +2650,15 @@ static int dwc3_gadget_soft_disconnect(struct dw=
-c3 *dwc)
-> >       int ret;
-> >
-> >       spin_lock_irqsave(&dwc->lock, flags);
-> > +     /*
-> > +      * Attempt to disconnect a no connected gadget
-> > +      */
-> > +     if (!dwc->connected) {
-> > +             dev_warn(dwc->dev, "No connected device\n");
-> > +             spin_unlock_irqrestore(&dwc->lock, flags);
-> > +             return 0;
-> > +     }
+Yessir.
+
+> 
+> 
 > > +
-> >       dwc->connected =3D false;
-> >
-> >       /*
-> > --
-> > 2.40.1
-> >
->
-> There's already a fix for this, and it's already in mainline. Let me
-> know if this works for you:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3Db191a18cb5c47109ca696370a74a5062a70adfd0
->
+> > +/**
+> > + * famfs_iomap_begin()
+> > + *
+> > + * This function is pretty simple because files are
+> > + * * never partially allocated
+> > + * * never have holes (never sparse)
+> > + * * never "allocate on write"
+> > + */
+> > +static int
+> > +famfs_iomap_begin(
+> > +	struct inode	       *inode,
+> > +	loff_t			offset,
+> > +	loff_t			length,
+> > +	unsigned int		flags,
+> > +	struct iomap	       *iomap,
+> > +	struct iomap	       *srcmap)
+> > +{
+> > +	struct famfs_file_meta *meta = inode->i_private;
+> > +	size_t size;
+> > +	int rc;
+> > +
+> > +	size = i_size_read(inode);
+> > +
+> > +	WARN_ON(size != meta->file_size);
+> > +
+> > +	rc = famfs_meta_to_dax_offset(inode, iomap, offset, length, flags);
+> > +
+> > +	return rc;
+> 	return famfs_meta_...
 
-Can you explain to me the logic here? I mean pullsup_connected seems
-never protected by spin lock and so I can not figure
-out it easily and the commit message does not explain so much
+Done
 
-Michael
+> 
+> > +}
+> 
+> 
+> > +static vm_fault_t
+> > +famfs_filemap_map_pages(
+> > +	struct vm_fault	       *vmf,
+> > +	pgoff_t			start_pgoff,
+> > +	pgoff_t			end_pgoff)
+> > +{
+> > +	vm_fault_t ret;
+> > +
+> > +	ret = filemap_map_pages(vmf, start_pgoff, end_pgoff);
+> > +	return ret;
+> 	return filename_map_pages()....
 
-> Thanks,
-> Thinh
+Done, thanks
+
+John
+
 
