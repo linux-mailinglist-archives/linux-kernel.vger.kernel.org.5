@@ -1,103 +1,222 @@
-Return-Path: <linux-kernel+bounces-82303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A12E868220
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:53:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE55686822A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:56:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B3C51C22981
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:53:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22CBB1F2530C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1172130E58;
-	Mon, 26 Feb 2024 20:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B8A13173B;
+	Mon, 26 Feb 2024 20:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="cUFSVx66"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="Sisyyq5J";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SLpntasc"
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFEB12C7F6;
-	Mon, 26 Feb 2024 20:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C96252AD0F;
+	Mon, 26 Feb 2024 20:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.29
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708980810; cv=none; b=VZovVbne7JV2cIatGeLlBOGOGw2ECVkGJ7+35RvhG0XkfiQBa7ChF8LmTZ7QM8cQG9aCCgEy41cF2kY4E1fuFc2i6/7W2gcsaXR8QjScUQdoOnOaa23gpnyX02UGgSA1Td+TXNMxnCD7naLFKrOhZfvLcDYuSOAHsZjlQpiLj0I=
+	t=1708980972; cv=none; b=isaTUb9pO+7kbeT279HFrfISAa74YKLVtagGv9tOy2+Gr3aGq1F0NopGiPUAfSJXtyezH7QwRyMzaxLTwuZbwswiH1xxnIrWVne8U4MduU0zRf2EMU8v/lOVIMbJ6tdw4M5vyUbxzbC7qnhuBmz9GHSQQmvjR8YQiK57kr7Q4po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708980810; c=relaxed/simple;
-	bh=0uuyXwtXBhT4lKZPab76TWhVhwVGMx+Z82IxNhoFkJk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=WVlzEa8Igj/kfXClyU0Gbdh0vRgMyeHZXkHwh8sfbcKu6/dI4g036Vu0JmuRAfmJe0o0VO+tajJsPIx+gf7WgLB3m93MSBZ5U3YUwLFaf9sbFZChbSL9cRIADRjbNIzVEux4UCFqsWqtI/xL7Gz9WOBvBiOW1pE3QLg76e4WF9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=cUFSVx66; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708980804;
-	bh=VXJnkZmX0FPhcwZxkySoznvdUiSDnw5EemMrFJowppg=;
-	h=Date:From:To:Cc:Subject:From;
-	b=cUFSVx669T0DvPz8Ywpe/lCahs7JYL2jrmUbp47Ls7XGCoTfiWQCL0Z53ZHStZt4F
-	 cz5a2xnUJ05ORoBzPxYNG+yvMzhx6OGIkwExbSKN1w44jdTIdrZwVmjKGj0gJYIapr
-	 zqRcoWJlxIznkDmmKzcdGMOUvHDJeSI/e+6nw7vRY5dkbJHLyAYJVM/XU3IgoTicuW
-	 bI+S3J21grbERWfUF6wouP7m3Tz4Hbo4RiJDSaXeRDnNb+UURvswvpDVx7sNw+9syt
-	 dG8+0gQ8JqBmya8e1MrrMMzX9W/R+5Dg6tZ4j3+8Yr7VWzDwFqr3KGtr/ugZu1PQG8
-	 6V+JDSIg1/ajg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TkCWR6y3Lz4wc6;
-	Tue, 27 Feb 2024 07:53:23 +1100 (AEDT)
-Date: Tue, 27 Feb 2024 07:53:22 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the loongarch tree
-Message-ID: <20240227075322.15f084b7@canb.auug.org.au>
+	s=arc-20240116; t=1708980972; c=relaxed/simple;
+	bh=QLAbqKeBhGRCT6THiD1vK7O6pLkm2J856ju0bLi64o8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Nj/g5ctdnUPFglBVkAejz32DzO7nVAVBt0IB2EK5UjWAUSS8f+FeLSwGkhsllzk51qNeTGFMdH+vjzJX0oR1+4H0zRthrJouZgG0ES5aDxUCEUH8RTjnXr9NHsiDtF2AoOBS85CqH3aJmKGZ53gFriRTfVZguovuSUgCFSj9svw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=Sisyyq5J; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SLpntasc; arc=none smtp.client-ip=66.111.4.29
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.nyi.internal (Postfix) with ESMTP id BF9685C0042;
+	Mon, 26 Feb 2024 15:56:08 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 26 Feb 2024 15:56:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:reply-to:subject:subject:to:to; s=fm1; t=1708980968; x=
+	1709067368; bh=bmT2DnSl6CM0A0GVel5YhNk6o76L5d7SeCcHbqGzTpM=; b=S
+	isyyq5JHwqTW4KpZhy1XySg8XgYGf1U31W9+oJuGrFnFz7ObS8I48ak/0qKIhiSY
+	wXaoWaKKavaiVlCO9kwiePnIDhzFyQ3e53y0Ucqm1UqkZFWqNaxiolMwflChevaZ
+	HZXMdiifJi/RWTH7twtRj+AkPopHnI2obz0dQbThzg8oGIzf9lNv5His6IIJbfo9
+	JY9ihQPRABEgJlCkC8cFwi7AQrRWEHoDlCHwgVNG+0mQygKMfBdfaNf10b721q1X
+	kdQkiiQhIDwxxu8TFGkVzgcsoLpttpCWwmmN/XGUVlbrgRJqCCLtTPNybE+lg6zX
+	qBfAgjRA+MntZiH4rJWtQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:reply-to
+	:subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm1; t=1708980968; x=1709067368; bh=b
+	mT2DnSl6CM0A0GVel5YhNk6o76L5d7SeCcHbqGzTpM=; b=SLpntascn9IURNetF
+	9B8Hm3byN8LSOlvZICgnuZCtSOYPR25BUDU20f9761HnKyDT4AMwPaNrTaiQAKDl
+	z8Jn4uZG+8wQx+udvcASDVKO9Z5HgXKQBJJgGv+VDTgEgCEpKYj3hvupG0K9Ux2X
+	3fEx3MHEz0WUYP09566Q22g+Pvsf+DI45ujEGWebH4G1vkSSTrKX5HkclS7UjyPP
+	t1C53iOzwQA9EKo/c5b4jVex6FbLZ1icy4TH9hp6xNdWxG4GHKnpRU8DxcmKRbqM
+	AUqOHRZdF2SW8ZpE8/t6jGwaa1QW/IoDaYlLrARcv0srySbHro9zDI79b0YYJT6K
+	QzyvA==
+X-ME-Sender: <xms:5_rcZUP8uHMJTfDS_VSpD6wgyiIuc712uC89JTC3O6ARjaa-HflDlw>
+    <xme:5_rcZa-2IWiefyosOLq7xLOTty4au_OMHmiH1U_GgTgUfkCtNBgD_TTl3mM1vT2e6
+    C_a7_Hzz-G-s0ZrOQ>
+X-ME-Received: <xmr:5_rcZbRaMMNw3Voes2LDCw8-wu6NXq37nPLbF5sAt5kthjZCjfE_632KVe4vCesBMzVahg_-BmncTm0P0t0VbSugnAS3F2tUvNRUQ4pYJAPiNP_aSAvZlcPF>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgedvgddugedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofhrgggtgfesthekredtredtjeenucfhrhhomhepkghiucgj
+    rghnuceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepteduve
+    ehteehheeiteeihfejveejledtgfdvieeuiedutefftdevtdfhteevtdffnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
+X-ME-Proxy: <xmx:5_rcZcvC54c_scBmr5ZTPeIN210O0R8TBskFpMRVhVh60qpI420V0A>
+    <xmx:5_rcZccWGPAV90ezITbWsDUB6ucJJt0MOGrcXgGWgk5f2TtHNeJz3Q>
+    <xmx:5_rcZQ0ZE_EzF5lKDEpvgXYd6heNptNTw7zJizYHxsQXJb-l5sviqg>
+    <xmx:6PrcZbCDMSLb8vf1xjlt68I5-WzxW-8ABig9OGq5oTT7AmuroFOd9g>
+Feedback-ID: iccd040f4:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 26 Feb 2024 15:56:07 -0500 (EST)
+From: Zi Yan <zi.yan@sent.com>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+	linux-mm@kvack.org
+Cc: Zi Yan <ziy@nvidia.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	David Hildenbrand <david@redhat.com>,
+	Yang Shi <shy828301@gmail.com>,
+	Yu Zhao <yuzhao@google.com>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	"Zach O'Keefe" <zokeefe@google.com>,
+	Hugh Dickins <hughd@google.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v5 0/8] Split a folio to any lower order folios
+Date: Mon, 26 Feb 2024 15:55:26 -0500
+Message-ID: <20240226205534.1603748-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.43.0
+Reply-To: Zi Yan <ziy@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/92sZMzJ0992hmEkcQyEN7dW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
---Sig_/92sZMzJ0992hmEkcQyEN7dW
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Zi Yan <ziy@nvidia.com>
 
 Hi all,
 
-Commits
+File folio supports any order and multi-size THP is upstreamed[1], so both
+file and anonymous folios can be >0 order. Currently, split_huge_page()
+only splits a huge page to order-0 pages, but splitting to orders higher than
+0 might better utilize large folios, if done properly. In addition,
+Large Block Sizes in XFS support would benefit from it during truncate[2].
+This patchset adds support for splitting a large folio to any lower order
+folios. The patchset is on top of mm-everything-2024-02-24-02-40.
 
-  58aeb61a338e ("LoongArch: Add ORC stack unwinder support")
-  a6bbf4a71828 ("objtool: Check local label in read_unwind_hints()")
-  81168bc899dd ("objtool: Check local label in add_dead_ends()")
-  545dcd435e0a ("objtool/LoongArch: Enable orc to be built")
-  da7492437f53 ("objtool/x86: Separate arch-specific and generic parts")
-  f7af74356cf9 ("objtool/LoongArch: Implement instruction decoder")
-  b68e6ed546d0 ("objtool/LoongArch: Enable objtool to be built")
+In addition to this implementation of split_huge_page_to_list_to_order(),
+a possible optimization could be splitting a large folio to arbitrary
+smaller folios instead of a single order. As both Hugh and Ryan pointed
+out [3,5] that split to a single order might not be optimal, an order-9 folio
+might be better split into 1 order-8, 1 order-7, ..., 1 order-1, and 2 order-0
+folios, depending on subsequent folio operations. Leave this as future work.
 
-are missing a Signed-off-by from their committer.
 
---=20
-Cheers,
-Stephen Rothwell
+Changelog
+===
 
---Sig_/92sZMzJ0992hmEkcQyEN7dW
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Since v4[4]
+1. Picked up Matthew's order-1 folio support in the page cache patch, so
+   that XFS Large Block Sizes patchset can avoid additional code churn in
+   split_huge_page_to_list_to_order().
+2. Dropped truncate change patch and corresponding testing code.
+3. Removed thp_nr_pages() use in __split_huge_page()
+   (per David Hildenbrand).
+4. Fixed __split_page_owner() (per David Hildenbrand).
+5. Changed unmap_folio() to only add TTU_SPLIT_HUGE_PMD if the folios is
+   pmd mappable (per Ryan Roberts).
+6. Moved swapcached folio split warning upfront and return -EINVAL
+   (per Ryan Roberts).
 
------BEGIN PGP SIGNATURE-----
+Since v3
+---
+1. Excluded shmem folios and pagecache folios without FS support from
+   splitting to any order (per Hugh Dickins).
+2. Allowed splitting anonymous large folio to any lower order since
+   multi-size THP is upstreamed.
+3. Adapted selftests code to new framework.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXc+kIACgkQAVBC80lX
-0Gw0Mwf+NVwXGRXdkxd+z8xmlMkZH1Im7E0A9LOD1m458YbodhqQ6DXKTQWHe7lv
-AS/voOt2B+0mdjn0m8bTgAubDYPzYIgC35SJWLCPksXeCI7gEs+fDsAmZA/Ltz+V
-06VbNzE8ISS6dmj2KN6NmBq0GaxNOCcJyaOsjgKfkuCSt4FSn3yDORikp2e8rj2d
-l13lBEv9QYRvjpQiN5wMpGcQ7/aUCSYomddBAvpHu7ND7LxoJrb2MANOGbC3bOK5
-zUy7QU9h4ZDuh1zpPfMP7uMiFoNi4YacznesbCVwa7ugKWTq4hh9XWcdsjrfRBaa
-WcMg6zyhhCXD2BhCUSAqApEbZkuQ6w==
-=Z0vk
------END PGP SIGNATURE-----
+Since v2
+---
+1. Fixed an issue in __split_page_owner() introduced during my rebase
 
---Sig_/92sZMzJ0992hmEkcQyEN7dW--
+Since v1
+---
+1. Changed split_page_memcg() and split_page_owner() parameter to use order
+2. Used folio_test_pmd_mappable() in place of the equivalent code
+
+Details
+===
+
+* Patch 1 changes unmap_folio() to only add TTU_SPLIT_HUGE_PMD if the
+  folio is pmd mappable.
+* Patch 2 adds support for order-1 page cache folio.
+* Patch 3 changes split_page_memcg() to use order instead of nr_pages.
+* Patch 4 changes split_page_owner() to use order instead of nr_pages.
+* Patch 5 and 6 add new_order parameter split_page_memcg() and
+  split_page_owner() and prepare for upcoming changes.
+* Patch 7 adds split_huge_page_to_list_to_order() to split a huge page
+  to any lower order. The original split_huge_page_to_list() calls
+  split_huge_page_to_list_to_order() with new_order = 0.
+* Patch 8 adds a test API to debugfs and test cases in
+  split_huge_page_test selftests.
+
+Comments and/or suggestions are welcome.
+
+[1] https://lore.kernel.org/all/20231207161211.2374093-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-mm/20240226094936.2677493-1-kernel@pankajraghav.com/
+[3] https://lore.kernel.org/linux-mm/9dd96da-efa2-5123-20d4-4992136ef3ad@google.com/
+[4] https://lore.kernel.org/linux-mm/cbb1d6a0-66dd-47d0-8733-f836fe050374@arm.com/
+[5] https://lore.kernel.org/linux-mm/20240213215520.1048625-1-zi.yan@sent.com/
+
+
+Matthew Wilcox (Oracle) (1):
+  mm: Support order-1 folios in the page cache
+
+Zi Yan (7):
+  mm/huge_memory: only split PMD mapping when necessary in unmap_folio()
+  mm/memcg: use order instead of nr in split_page_memcg()
+  mm/page_owner: use order instead of nr in split_page_owner()
+  mm: memcg: make memcg huge page split support any order split.
+  mm: page_owner: add support for splitting to any order in split
+    page_owner.
+  mm: thp: split huge page to any lower order pages
+  mm: huge_memory: enable debugfs to split huge pages to any order.
+
+ include/linux/huge_mm.h                       |  21 ++-
+ include/linux/memcontrol.h                    |   4 +-
+ include/linux/page_owner.h                    |  14 +-
+ mm/filemap.c                                  |   2 -
+ mm/huge_memory.c                              | 173 +++++++++++++-----
+ mm/internal.h                                 |   3 +-
+ mm/memcontrol.c                               |  10 +-
+ mm/page_alloc.c                               |   8 +-
+ mm/page_owner.c                               |   6 +-
+ mm/readahead.c                                |   3 -
+ .../selftests/mm/split_huge_page_test.c       | 115 +++++++++++-
+ 11 files changed, 276 insertions(+), 83 deletions(-)
+
+-- 
+2.43.0
+
 
