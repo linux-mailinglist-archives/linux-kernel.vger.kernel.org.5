@@ -1,228 +1,116 @@
-Return-Path: <linux-kernel+bounces-81448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 992AD867618
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:10:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 88C8C867616
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:10:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 124E01F25C0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:10:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26F2F1F25780
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1D718174C;
-	Mon, 26 Feb 2024 13:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B6B80042;
+	Mon, 26 Feb 2024 13:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pD55HlzZ"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="pfyoy3mI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F99E7FBCB
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8225C1CFA9
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:10:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708953015; cv=none; b=jvmP4R62Nb6mO78cuiBwxSur4OIeafaLbwz6OPTVtc1x3jPUDj4PoviwETBE7US6ULVkoCZrpKzJ6ncezUty9K9QgiPqKzPe7hwyy7KmhdxajffDH3/nADpfEZ4R2KB7fhJ7lF+VqmMcwTL4TID8h2Y7KTR0w1NzcKsW1rNG+no=
+	t=1708953002; cv=none; b=FxVFT6D540NQz0svibnUWGHNPu9PTSTvMsfvKPPn1Y30qtr2vjg9VS1L+0K++hRGcntH77dr89NeLVYnYhJsK2jSOEyx7uuV+J/jDDily/1xwCi7h0668DCLBDI0gtZY+v2Cj2aNDmlNsgRU0xPHsh3+htTGOko7hPDV1PhvT3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708953015; c=relaxed/simple;
-	bh=2QpTE8HEcaEB2BJ0B8nzDrAHeb/l9ZbZW410PvVHIdE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ayQ3hlOe06SxzupksAyJlLVbPjp1sHclo87Vz0VuSspDe0F524BoyQYUvBNmZ6cgDqSY2TJUvCcgbCBrJ7FhsSsI6N+gVIfGkk/o4w2z5Hwz3czWDEQm42yM8VGSRpNoSuzSkEmPZ4qq0ue4erSQIhSQX8zR3reaxbASfWqBOCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pD55HlzZ; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41QCsw90023561;
-	Mon, 26 Feb 2024 13:09:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=VfWtWmbtiXwnoVJ0ekIYKJDZKxJUaW6dtIBwoZb8OTs=;
- b=pD55HlzZoKE8GNEreGe8NBja7n1xHXsUz8nIW3ZOjC5WTWHgsG+42mDEjrEjmTjvDLSt
- d0SKGP6AE7BVOifXeib9SJxcLKmZQOC/JZ9U8MTX8RxWhQmU1JZHrra7Z7Yk3l4/5604
- 9ChPv4AHjBU8C1scQ5oj484YZSUwWBDmgk7I7jeQZKayxNDWbkoCMUmy2M85ajz1VMID
- LDSrC7UeG3ZjwRkGeH3Y9w4xNXhLT8Xa6q/4295j5jXYGnJ/m1zqrK120klvdzlZ5f8n
- mZNxJpqPra/rWlj5U8NYhltlwb3v9HHoJhYl+/KJt9qTsAjN/c4RDpWvpqRm0HpL/2ZY Dw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wgdvuqy2b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 13:09:33 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41QD1UxN026834;
-	Mon, 26 Feb 2024 13:09:32 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wgdvuqy1j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 13:09:32 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41QAmiPe021762;
-	Mon, 26 Feb 2024 13:09:31 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfu5ysays-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 13:09:31 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41QD9SUo44237468
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 Feb 2024 13:09:31 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E288F58071;
-	Mon, 26 Feb 2024 13:09:26 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BCC005805F;
-	Mon, 26 Feb 2024 13:09:18 +0000 (GMT)
-Received: from [9.109.245.191] (unknown [9.109.245.191])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 26 Feb 2024 13:09:18 +0000 (GMT)
-Message-ID: <0e633718-2313-4a0f-9907-b0fa5ffa18bc@linux.ibm.com>
-Date: Mon, 26 Feb 2024 18:39:16 +0530
+	s=arc-20240116; t=1708953002; c=relaxed/simple;
+	bh=CETfm2ZAiU7NP2W+UKDMT2EafoPo2rsh7PincvKVpA4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=knYYfWlv9jBVaGZGZWMOOKqo6WP3vpi7nsCNQO/Kr0dYQOzgBeYNa5AzRU47jHvT2ZvmVyYu4gU70/HZWzXhWYw1RYXc99fiNREO+kHF7BH84kIUgrMPiFHWCw099TbellgHtXByQLKTChatdB19l8lJ6CQK++xOrygbRrNBPZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=pfyoy3mI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9075BC433F1;
+	Mon, 26 Feb 2024 13:10:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708953001;
+	bh=CETfm2ZAiU7NP2W+UKDMT2EafoPo2rsh7PincvKVpA4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pfyoy3mI3LcKIKqtiEDFsyAmK1ZrZEr71DdXi945tYs2iEfyTxY7TpTbyIhMqRSAu
+	 QrRw9T/3ESsBoXLNyaNfz0dWHMbBmWtygyDBShOGWiJAtjzvnRZ7aitnGNNyhHXV9q
+	 kC1xNXEJbCKldiN7uSWzq9by4PfNI20WDmvplfKQ=
+Date: Mon, 26 Feb 2024 14:09:59 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Mukesh Ojha <quic_mojha@quicinc.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, russ.weight@linux.dev,
+	rafael@kernel.org, linux-kernel@vger.kernel.org,
+	cocci@systeme.lip6.fr
+Subject: Re: [PATCH vRFC 3/8] treewide: rename firmware_request_platform()
+Message-ID: <2024022644-trough-humility-12b8@gregkh>
+References: <20240222180033.23775-1-quic_mojha@quicinc.com>
+ <20240222180033.23775-4-quic_mojha@quicinc.com>
+ <2024022347-ribcage-clench-37c4@gregkh>
+ <Zdi2odoYPBWywOXn@bombadil.infradead.org>
+ <2024022323-accustom-eradicate-8af4@gregkh>
+ <Zdj1K28NBfGfSJ-0@bombadil.infradead.org>
+ <2024022452-unwilling-pancake-3b2a@gregkh>
+ <ed9f2b75-38d3-8562-0476-2200e201d4c9@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] mm/numa_balancing:Allow migrate on protnone reference
- with MPOL_PREFERRED_MANY policy
-To: Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Mel Gorman <mgorman@suse.de>, Ben Widawsky <ben.widawsky@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz
- <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>
-References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
- <8d7737208bd24e754dc7a538a3f7f02de84f1f72.1708097962.git.donettom@linux.ibm.com>
- <ZdNjmOlkMqEOGci1@tiehlicka>
- <25b420aa-3fe6-40a4-8d60-a46ab61ee7b7@linux.ibm.com>
- <ZdOoF_pMAa-FGN4m@tiehlicka>
- <0f0fd8e3-98b2-4001-ba6a-6a8a26a5393f@kernel.org>
- <ZdRneVbsts8t3VAW@tiehlicka>
-Content-Language: en-US
-From: Donet Tom <donettom@linux.ibm.com>
-In-Reply-To: <ZdRneVbsts8t3VAW@tiehlicka>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: vKlneigSdiNmbAH5ZLTjdnHMAGvwyw3x
-X-Proofpoint-ORIG-GUID: y8fV19dnBkQNypfuOyDjvBmB4Xeu5cOs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_09,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 spamscore=0 suspectscore=0 clxscore=1015 adultscore=0
- mlxlogscore=748 bulkscore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2402260099
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed9f2b75-38d3-8562-0476-2200e201d4c9@quicinc.com>
 
+On Mon, Feb 26, 2024 at 04:22:09PM +0530, Mukesh Ojha wrote:
+> 
+> 
+> On 2/24/2024 11:06 AM, Greg KH wrote:
+> > On Fri, Feb 23, 2024 at 11:42:35AM -0800, Luis Chamberlain wrote:
+> > > On Fri, Feb 23, 2024 at 04:33:40PM +0100, Greg KH wrote:
+> > > > On Fri, Feb 23, 2024 at 07:15:45AM -0800, Luis Chamberlain wrote:
+> > > > > On Fri, Feb 23, 2024 at 07:21:31AM +0100, Greg KH wrote:
+> > > > > > On Thu, Feb 22, 2024 at 11:30:28PM +0530, Mukesh Ojha wrote:
+> > > > > > > Rename firmware_request_platform() to request_firmware_platform()
+> > > > > > > to be more concrete and align with the name of other request
+> > > > > > > firmware family functions.
+> > > > > > 
+> > > > > > Sorry, but no, it should be "noun_verb" for public functions.
+> > > > > 
+> > > > > News to me, do we have this documented somewhere?
+> > > > 
+> > > > Not really, but searching makes it nicer.
+> > > > 
+> > > > And yes, I violated this in the past in places, and have regretted it...
+> > > 
+> > > Care to share a few examples of regret?
+> > 
+> > 	get_device()
+> > 	put_device()
+> > 	kill_device()
+> > 
+> > vs. a saner:
+> > 	kobject_get()
+> > 	kobject_put()
+> > 	kobject_del()
+> > 
+> > Learn from the mistakes of my youth please :)
+> 
+> Thanks for the history.,
+> In that case, should we fix this verb_noun cases ?
+> 
+> request_firmware()
+> request_firmware_into_buf()
+> request_firmware_nowarn()
+> request_firmware_direct()
+> request_firmware_cache()
+> request_partial_firmware_into_buf()
+> release_firmware()
 
-On 2/20/24 14:18, Michal Hocko wrote:
-> On Tue 20-02-24 09:27:25, Aneesh Kumar K.V wrote:
-> [...]
->> 	case MPOL_PREFERRED_MANY:
->> 		if (pol->flags & MPOL_F_MORON) {
->> 			if (!mpol_preferred_should_numa_migrate(thisnid, curnid, pol))
->> 				goto out;
->> 			break;
->> 		}
->>
->> 		/*
->> 		 * use current page if in policy nodemask,
->> 		 * else select nearest allowed node, if any.
->> 		 * If no allowed nodes, use current [!misplaced].
->> 		 */
->> 		if (node_isset(curnid, pol->nodes))
->> 			goto out;
->> 		z = first_zones_zonelist(
->> 				node_zonelist(thisnid, GFP_HIGHUSER),
->> 				gfp_zone(GFP_HIGHUSER),
->> 				&pol->nodes);
->> 		polnid = zone_to_nid(z->zone);
->> 		break;
->>   ....
->> ..
->>         }
->>
->> 	/* Migrate the folio towards the node whose CPU is referencing it */
->> 	if (pol->flags & MPOL_F_MORON) {
->> 		polnid = thisnid;
->>
->> 		if (!should_numa_migrate_memory(current, folio, curnid,
->> 						thiscpu))
->> 			goto out;
->> 	}
->>
->> 	if (curnid != polnid)
->> 		ret = polnid;
->> out:
->> 	mpol_cond_put(pol);
->>
->> 	return ret;
->> }
-> Ohh, right this code is confusing as hell. Thanks for the clarification.
-> With this in mind. There should be a comment warning about MPOL_F_MOF
-> always being unset as the userspace cannot really set it up.
->
-> Thanks!
->
-Hi Michal
+That would provide consistency, right?
 
-Sorry For the late reply.
-If we set  MPOL_F_NUMA_BALANCING from userspace then MPOL_F_MOF and MPOL_F_MORON flags will get set in kernel.
+thanks,
 
-/* Basic parameter sanity check used by both mbind() and set_mempolicy() */
-static inline int sanitize_mpol_flags(int *mode, unsigned short *flags)
-{
-     *flags = *mode & MPOL_MODE_FLAGS;
-     *mode &= ~MPOL_MODE_FLAGS;
-
-     if ((unsigned int)(*mode) >=  MPOL_MAX)
-         return -EINVAL;
-
-     if ((*flags & MPOL_F_STATIC_NODES) && (*flags & MPOL_F_RELATIVE_NODES))
-         return -EINVAL;
-
-     if (*flags & MPOL_F_NUMA_BALANCING) {
-         if (*mode == MPOL_BIND || *mode == MPOL_PREFERRED_MANY)
-             *flags |= (MPOL_F_MOF | MPOL_F_MORON);
-         else
-             return -EINVAL;
-}
-
-In current kernel it is supported only for MPOL_BIND and we added suppor for MPOL_PREFERRED_MANY also.
-
-Why MPOL_F_MOF  flag is required?
----------------------------------
-For NUMA migration the process memory is unmapped by "task_numa_work" periodically, if unmapped memory got
-accessed again then NUMA hinting page fault will occur and in page fault handler the pages get migrated.
-
-If MPOL_F_MOF is not set then "task_numa_work" will not unmap the process pages and NUMA hinting page fault
-and migration will not occur. This change has been introduced by commit
-fc3147245d193b (mm: numa: Limit NUMA scanning to migrate-on-fault VMAs).
-
-How new implementation works
-----------------------------
-MPOL_PREFERRED_MANY is able to set  MPOL_F_MOF and MPOL_F_MORON through MPOL_F_NUMA_BALANCING. So NUMA hinting
-page faults will occur. In mpol_misplaced if we can do numa migration, we select the currently executing node as the target node
-otherwise we end up returning from the function with ret = NUMA_NO_NODE.
-
-So since we are able to set MPOL_F_MOF from userspace through MPOL_F_NUMA_BALANCING, no need to add this comment right?
-
-Thanks
-Donet Tom
-
-
+greg k-h
 
