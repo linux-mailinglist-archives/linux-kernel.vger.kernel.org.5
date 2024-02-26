@@ -1,57 +1,83 @@
-Return-Path: <linux-kernel+bounces-81785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0295C867A16
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE80B867A17
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 346A11C21AC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:23:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D8711C2199A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:23:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EE112BF03;
-	Mon, 26 Feb 2024 15:21:38 +0000 (UTC)
-Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8499B12BEB5;
+	Mon, 26 Feb 2024 15:22:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZO8Q6gRd"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D33A128368
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.139.111.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364DC1E4A1;
+	Mon, 26 Feb 2024 15:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708960897; cv=none; b=f45cIzuLETPsOCr+gkirWNPbFY/Tbmriyi36Q6915WP8cslvjxq9KXpZGT0Gv09juo1MTBSFsp4RU9mJKlOk8YMogJ4z8LiBHZwiu5Pl5Q4VfYcY51zOJYznCu0YfRBMeDUd6PCcLlhpD1k29ORfcRu16HHRlduUeACRxzpPduQ=
+	t=1708960939; cv=none; b=NEpPj6gumv8+xcIEJ1sy7neauktXNM0zllYQx0754UbkKkqvzSqjLMiBZcc7djBB3DwRiXuzwM2gaR2T9mVsVCa1HzEfjr+NjhCHWF3e4dxnFz+Ws1lK1DRGdL9qNXhFOmmptLJxKDQiXioZg/zCaMnrxYKEfN1BALpG2+/z1qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708960897; c=relaxed/simple;
-	bh=y3ktYAlWGlGh0UnsX6kzOaJ18fiNnqB5N6XWTMa6ZYo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q+oRc58eBSP1I0qpqC665Mtkc7o8YKUmRVY92oF5/SEz/YDFR3OC4ujmba6MzsuCv4nyAbcvt+8kNXJdL5Wzc5moYNnYeIm4dcA44f9jL4FKevW0dl2gj9lp5OQCqlsaAFbSaYWqzdF0x32Ku3yQLvINvWEaqy2qHYxEP00M704=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=205.139.111.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-612-hUFdyclRNYa7u9Dzspq9HQ-1; Mon, 26 Feb 2024 10:21:27 -0500
-X-MC-Unique: hUFdyclRNYa7u9Dzspq9HQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AC846185A781;
-	Mon, 26 Feb 2024 15:21:26 +0000 (UTC)
-Received: from gentoo.redhat.com (unknown [10.45.224.64])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id ED5D3492BE2;
-	Mon, 26 Feb 2024 15:21:25 +0000 (UTC)
-From: Alexey Gladkov <legion@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Cc: linux-api@vger.kernel.org
-Subject: [RFC PATCH v2 5/5] fbcon: Allow to get max font width and height
-Date: Mon, 26 Feb 2024 16:21:14 +0100
-Message-ID: <ab4ce129aef39b81cd27f10d49142a1c64f87a37.1708960303.git.legion@kernel.org>
-In-Reply-To: <cover.1708960303.git.legion@kernel.org>
-References: <cover.1708011391.git.legion@kernel.org> <cover.1708960303.git.legion@kernel.org>
+	s=arc-20240116; t=1708960939; c=relaxed/simple;
+	bh=pnLMu2JRaK4jkBKbdQ/FyNx6bxwlJXbOumIQ5QXHA54=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g2RwWMzJC+/zt4opouobLrg2++/lpa99NVcJPm1zhK0AtiZEz8w5ExTH9GwM3NvGGqYpQMK5Dew6dDKUJ1G90jTfNkkCGbfxN3tqqtg0P6mZXP/hOgUkdMLXtPq9r737exK9JpVKtqmC+oNe9iYXRDjNGxxvleiOtLDG1EL8kLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZO8Q6gRd; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d24a727f78so45338321fa.0;
+        Mon, 26 Feb 2024 07:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708960936; x=1709565736; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WkqUh76ItlVehsi7wY8VmVeMyWF5V+vxuPwZ5kjJDeM=;
+        b=ZO8Q6gRdcI7KhPUoGTrSGB53QkmoOGCEyPlEFS/6hNLFpGO6Md2XDWROq+iyiBrYr7
+         pYvllUOuqJwnwi8P2HE5JK6PF9igk4BYEVOn6CLhsEQYmtAGma4bX6nUCdnknNKrX1p3
+         porCnOTkC25QIg3Un6xNGX0UY2yzDcDOVB5nsKUbcR4IEmfSxlJpGVsr6v3XoB61a62D
+         zkUdltanIpeklv+nPtW+b21AsUNALHVemCwH3tK0lCkMvlAzDb0jZQGL4CyNJK3q+YUB
+         5ld4wsq1j8vnkHN+CJ8UgKIahFnXgkZ9joWyPYrcDEzrZUe7AkhzU6ik6WYMe2YzzY0h
+         1m4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708960936; x=1709565736;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WkqUh76ItlVehsi7wY8VmVeMyWF5V+vxuPwZ5kjJDeM=;
+        b=udExlnfXgA4MWeO8XLCB8XKzs+nmvcEnmkOMje7lP1dG/Rt7sFFI5p5lz04VOyTj6d
+         fWWgrjT5q2QgJRaTvFQQaWfwTRZLwBXY6qLG/rrhcKVYHfKdsbV+tSEHu7SGIeav2bgx
+         0t6bP5QSBVLiBBPDvPDAEMPA5YKCV+l9R5vaQK8MEo/BoBahmlpKUtu8lbyeG18Tm68S
+         syabm6orbCWCrF3LbaENm1dl5Rcl5V+jE0meWUetzMxvTcPwwZ74hiATvuE4vGFBCEDD
+         B/3dZ7SpMjD2qgSf30HP8jLao7UtZEDw/damLnNQc3hwdpDPdrBEMXUWPclHYcPQsrNt
+         yK+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWPcECNMWqQemMUUuNMG+w4QzgKxfyphXTF+zNy/yNwQvgGYUI6cbcHf3jZLMp1EGB027hWgLDbUkBOWMn+O1pYnJ/CKY5g2bO4NiYwud6aLFkKaAGa2vEkqJjcnNy+CNmNBgTIuz/tSw==
+X-Gm-Message-State: AOJu0Yxpv6qsMF0uNYH6PeQ7H33T8qYJn5QLTxpetnUV9E2t9FqNXD3M
+	ylK6tzLPWY9eifP3K4HzD87zQ8BIvHKlRaUoNxKWEghdvMs+S8xZp4i1E7Ki
+X-Google-Smtp-Source: AGHT+IHPpp4B4SYdq6vLgAkUoOon4yKj1df+LOx8WqTWVPOKzVIKw5eJe4Ff5fZnOkPxBF/C4Eeixg==
+X-Received: by 2002:a2e:86cf:0:b0:2d2:724d:f653 with SMTP id n15-20020a2e86cf000000b002d2724df653mr4873791ljj.38.1708960936140;
+        Mon, 26 Feb 2024 07:22:16 -0800 (PST)
+Received: from localhost ([2001:861:3385:e20:6384:4cf:52c5:3194])
+        by smtp.gmail.com with ESMTPSA id js1-20020a05600c564100b004128936b9a9sm12354104wmb.33.2024.02.26.07.22.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 07:22:15 -0800 (PST)
+From: Raphael Gallais-Pou <rgallaispou@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: serial: convert st,asc to DT schema
+Date: Mon, 26 Feb 2024 16:21:35 +0100
+Message-ID: <20240226152135.8671-1-rgallaispou@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,68 +85,109 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-Signed-off-by: Alexey Gladkov <legion@kernel.org>
+'clocks' property is required regarding the device. Convert st,asc
+binding to DT schema format in order to add this property, and update
+example.
+
+Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
 ---
- drivers/video/fbdev/core/fbcon.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+Changes in v2:
+  - Drop 'uart-has-rtscts' property
+  - Rewrite commit log to better match the changes
+---
+ .../devicetree/bindings/serial/st,asc.yaml    | 55 +++++++++++++++++++
+ .../devicetree/bindings/serial/st-asc.txt     | 18 ------
+ 2 files changed, 55 insertions(+), 18 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/serial/st,asc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/serial/st-asc.txt
 
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 1183e7a871f8..055d0d01243c 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -101,6 +101,9 @@ enum {
- 	FBCON_LOGO_DONTSHOW	= -3	/* do not show the logo */
- };
- 
-+#define FBCON_MAX_FONT_WIDTH 32
-+#define FBCON_MAX_FONT_HEIGHT 32
+diff --git a/Documentation/devicetree/bindings/serial/st,asc.yaml b/Documentation/devicetree/bindings/serial/st,asc.yaml
+new file mode 100644
+index 000000000000..f2083388f36b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/st,asc.yaml
+@@ -0,0 +1,55 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/serial/st,asc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- static struct fbcon_display fb_display[MAX_NR_CONSOLES];
- 
- static struct fb_info *fbcon_registered_fb[FB_MAX];
-@@ -2458,6 +2461,21 @@ static int fbcon_do_set_font(struct vc_data *vc, int w, int h, int charcount,
- 	return ret;
- }
- 
++title: STMicroelectronics STi SoCs Serial Port
 +
-+static int fbcon_font_info(struct vc_data *vc, struct console_font_info *info)
-+{
-+	info->min_width = 0;
-+	info->min_height = 0;
++maintainers:
++  - Patrice Chotard <patrice.chotard@foss.st.com>
 +
-+	info->max_width = FBCON_MAX_FONT_WIDTH;
-+	info->max_height = FBCON_MAX_FONT_HEIGHT;
++allOf:
++  - $ref: serial.yaml#
 +
-+	info->flags = KD_FONT_INFO_FLAG_LOW_SIZE | KD_FONT_INFO_FLAG_HIGH_SIZE;
++properties:
++  compatible:
++    const: st,asc
 +
-+	return 0;
-+}
++  reg:
++    maxItems: 1
 +
++  interrupts:
++    maxItems: 1
 +
- /*
-  *  User asked to set font; we are guaranteed that charcount does not exceed 512
-  *  but lets not assume that, since charcount of 512 is small for unicode support.
-@@ -2485,7 +2503,8 @@ static int fbcon_set_font(struct vc_data *vc, struct console_font *font,
- 	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
- 		return -EINVAL;
- 
--	if (font->width > 32 || font->height > 32)
-+	if (font->width > FBCON_MAX_FONT_WIDTH ||
-+	    font->height > FBCON_MAX_FONT_HEIGHT)
- 		return -EINVAL;
- 
- 	/* Make sure drawing engine can handle the font */
-@@ -3160,6 +3179,7 @@ static const struct consw fb_con = {
- 	.con_scroll 		= fbcon_scroll,
- 	.con_switch 		= fbcon_switch,
- 	.con_blank 		= fbcon_blank,
-+	.con_font_info 		= fbcon_font_info,
- 	.con_font_set 		= fbcon_set_font,
- 	.con_font_get 		= fbcon_get_font,
- 	.con_font_default	= fbcon_set_def_font,
++  clocks:
++    maxItems: 1
++
++  st,hw-flow-ctrl:
++    description: When set, enable hardware flow control.
++    type: boolean
++
++  st,force-m1:
++    description: When set, force asc to be in Mode-1. This is recommended for
++      high bit rates above 19.2K.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/stih407-clks.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    serial@9830000 {
++        compatible = "st,asc";
++        reg = <0x9830000 0x2c>;
++        interrupts = <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>;
++        clocks = <&clk_s_c0_flexgen CLK_EXT2F_A9>;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/serial/st-asc.txt b/Documentation/devicetree/bindings/serial/st-asc.txt
+deleted file mode 100644
+index a1b9b6f3490a..000000000000
+--- a/Documentation/devicetree/bindings/serial/st-asc.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-*st-asc(Serial Port)
+-
+-Required properties:
+-- compatible : Should be "st,asc".
+-- reg, reg-names, interrupts, interrupt-names	: Standard way to define device
+-			resources with names. look in
+-			Documentation/devicetree/bindings/resource-names.txt
+-
+-Optional properties:
+-- st,hw-flow-ctrl	bool flag to enable hardware flow control.
+-- st,force-m1		bool flat to force asc to be in Mode-1 recommended
+-			for high bit rates (above 19.2K)
+-Example:
+-serial@fe440000{
+-    compatible    = "st,asc";
+-    reg         = <0xfe440000 0x2c>;
+-    interrupts     =  <0 209 0>;
+-};
 -- 
-2.44.0
+2.43.2
 
 
