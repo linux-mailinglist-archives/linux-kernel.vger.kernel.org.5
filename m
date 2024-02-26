@@ -1,117 +1,195 @@
-Return-Path: <linux-kernel+bounces-81328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A33B867447
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:05:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3864386744A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B17BB21F65
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:05:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 626341C22B62
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:05:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9EAE5FEEF;
-	Mon, 26 Feb 2024 12:05:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z4y9tUjt"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1A485FDAC;
+	Mon, 26 Feb 2024 12:05:43 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3935E5FEF0
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172315FF0B;
+	Mon, 26 Feb 2024 12:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949136; cv=none; b=C8AddR5MV+nsb6lZRr6fvdddOtGP9PicGiNi71je6ztX4gigF0fZ9Ksf+QQWrDbLzajSr5I5tAG6enRFZyvGwqB+p/jHn9ma2EGUMpbmrU2BoMzvqVRmAjrzDUmknHw/D/XBrbSxa+ENOpZgRueWksIuvZla9nnUY6C6QuJ0mLQ=
+	t=1708949143; cv=none; b=aBo0VsSBdkpM6ymB/aADC8vTcKHD5Q2JeMpghHsIB8ROQhI5OmUrJdquoNGVUuTUCGXc1jaJr0+v/v/UW8EZA/a/xD36cAbE7Wy/tTzaURVnRa+EKVnJKiP1e9fDVMuNGK8+3QnyVTgnrw0XzBp2DVr0R9XF75G3yAA+d8wSyfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949136; c=relaxed/simple;
-	bh=HXalZqslNQYwXLbvprw7luRqbREUSPpfMkDGT29SA9w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mX1SrFk66uTOyFd/OuiD5Hde5s7iaBAK7hqFu++gIGS3JW17lCvb/eBg3vxibKr/ZCnXILdQJxPTuhDkCwO+0Nxdb6UDxwH3w5OCGZPaSPiA4a2RYXpnZ6I+LOK2XmJ+YQCMr7KH0Kg3uYs/WeuTFp7OTRo6k48bbuijoR3QWvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z4y9tUjt; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-563bb51c36eso3053049a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708949131; x=1709553931; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cu6KL11qTKrcmMChj9XCg4X5h9VHj+gjehFCETsIZJQ=;
-        b=Z4y9tUjt7ohJQYO3q8q5owmyL+u/rsU9NrIudtJuJhp4JGifSP7h0/3o06Ge52jDbW
-         h12eilqDZmKtvHHVbjkqK1LktdAkanPSUEjJwKNMfEB1Z9bDgn9UuHyyecSfnDXveDk7
-         tj6JfF4/VCkXdmXXQ9FcUGbiD7j8P9QlVCpxzTXssF35bDTDustYJetNBspyy++MiZ2T
-         Ziq8YUy43o46rQ30M4BkUQH+Cf8Kc22rRrjGs0ISjUNoKvmtupCdp+/BOlW1jXy3Cnvy
-         L2qvJJ+1DCBFcAgV3c4r0ASe5Ba/E7+dlSSdH0uVH5US5iz/dOMXpOv//PHVLSaE3ny0
-         N/Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708949131; x=1709553931;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cu6KL11qTKrcmMChj9XCg4X5h9VHj+gjehFCETsIZJQ=;
-        b=dVA6syokLqjoKo1++OpqdENgbmldzFIrMftGTiSepr3I/fZpjTTRs8lduXS4Op5v/X
-         X/Yz1+S6gKbSHj1XW1/l9bJA/WomyCKf9qwp+izwcfEoWIH5hVCQVXKDyhh7y6SWJFrV
-         1xC+4BB6pcWNLySOYHOed662own+bQTjBjbSWMv3yDTouw5OwtWQ3bg082r+Il+U0LgT
-         83cuEbAbd9U/152NFtvpbddqPCXGIMDDVNtHYsmsuFlLDO0dkA8y58nj3NegATG5LmkM
-         GwrzO/9Mi6ZDKPTyAWRba6iE47Hsu+MvwvfqHgY16573Xs3dnFDkUtTgAEsztzSdHLeY
-         kCtA==
-X-Forwarded-Encrypted: i=1; AJvYcCWnXh/6ZDCu3b0aRc18IC5vweOvP22EPEceJQsQsHXDSxliCfziiIuSlfcK4DI1FbedLcf3eGkIwPcfKeyPzVEPAPIabaEspGLIwaB0
-X-Gm-Message-State: AOJu0Yy7ts/gykPp2spijqT70H7e3reMfTdxaI02sOjWgUniU6tpPGST
-	CxyLnkrI+JIwqccAQALpM1tjR38fBcXIQEmzOQVNhIonamdOdCnb10JUNaRZi/eY187zi0rXG7m
-	Wtv4suye3wfazmVIYNXwfirBuKkwge3OB/DhMVA==
-X-Google-Smtp-Source: AGHT+IHmfjaGpQl0WdulrJo6xIdeIlMXBi5NQiG4QYx3lDG+bwg4WfzJO0SpEobO9IMKBdAxql4xZmiVPncCQOQXODs=
-X-Received: by 2002:a17:906:1949:b0:a43:3b2:bcf9 with SMTP id
- b9-20020a170906194900b00a4303b2bcf9mr3251769eje.5.1708949130946; Mon, 26 Feb
- 2024 04:05:30 -0800 (PST)
+	s=arc-20240116; t=1708949143; c=relaxed/simple;
+	bh=X6Bosa0A2A1es99TJJ26f3cbulaCTZndrqN6NEOItkU=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Yj+bVNfWIHijVi+tjUQn4YQBFUS+sWU5QrvfUtpPDPoobcwid8nrc+wzWkpfB2oMEjfh082+ggmKIvpumN33j5L+mAUmMv4XNOOsVw+DU0HG6am2zyRBQyTI6gUMMKq5LgHRpROiurTVNiGq8/vHY2S7Rc3eY3gGINDT8V7csyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TjzjC6Ckfz6JBM0;
+	Mon, 26 Feb 2024 20:01:03 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 74AA21410C8;
+	Mon, 26 Feb 2024 20:05:37 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 12:05:36 +0000
+Date: Mon, 26 Feb 2024 12:05:35 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 02/20] dev_dax_iomap: Add fs_dax_get() func to
+ prepare dax for fs-dax usage
+Message-ID: <20240226120535.00007a36@Huawei.com>
+In-Reply-To: <69ed4a3064bd9b48fd0593941038dd111fcfb8f3.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<69ed4a3064bd9b48fd0593941038dd111fcfb8f3.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226075225.44881-1-meir6264@gmail.com> <96ab1a91-7682-4aed-a522-ceaed0dbf56c@moroto.mountain>
-In-Reply-To: <96ab1a91-7682-4aed-a522-ceaed0dbf56c@moroto.mountain>
-From: meir elisha <meir6264@gmail.com>
-Date: Mon, 26 Feb 2024 14:05:19 +0200
-Message-ID: <CAHdEp89HhwiBuQEqTP8nTTy0VPrLr5PKWi8mKLx6wFzeTb9eXw@mail.gmail.com>
-Subject: Re: [PATCH v3] Staging: rtl8723bs: Remove spaces before tabs in rtw_set_auth
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Hans de Goede <hdegoede@redhat.com>, 
-	Ruan Jinjie <ruanjinjie@huawei.com>, Yang Yingliang <yangyingliang@huawei.com>, 
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Dan
+On Fri, 23 Feb 2024 11:41:46 -0600
+John Groves <John@Groves.net> wrote:
 
-Thanks for the response.
-Not sure I got the problem here.
-In V2 I removed spaces and deleted dead code. In V3 I just removed
-spaces after tabs (reverting the dead code changes).
-I'll want to create a seperate patch for the dead code deletion later on.
-What am I missing here?
+> This function should be called by fs-dax file systems after opening the
+> devdax device. This adds holder_operations.
+> 
+> This function serves the same role as fs_dax_get_by_bdev(), which dax
+> file systems call after opening the pmem block device.
+> 
+> Signed-off-by: John Groves <john@groves.net>
 
-=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=91=D7=
-=B3, 26 =D7=91=D7=A4=D7=91=D7=A8=D7=B3 2024 =D7=91-12:23 =D7=9E=D7=90=D7=AA=
- =E2=80=AADan Carpenter=E2=80=AC=E2=80=8F
-<=E2=80=AAdan.carpenter@linaro.org=E2=80=AC=E2=80=8F>:=E2=80=AC
->
-> On Mon, Feb 26, 2024 at 09:52:25AM +0200, Meir Elisha wrote:
-> > Remove spaces before tabs to improve coding style.
-> >
-> > Signed-off-by: Meir Elisha <meir6264@gmail.com>
-> > ---
-> > Changes in v3: subject and description changed, revert dead code change=
-s
-> > Changes in v2: remove dead code
-> >
->
-> Sorry that I was not clear.  This needs to be split into two patches:
-> [patch 1] delete dead code
-> [patch 2] remove spaces before tabs
->
-> regards,
-> dan carpenter
->
+A few trivial comments form a first read to get my head around this.
+
+Yeah, it is only an RFC, but who doesn't like tidy code? :)
+
+
+> ---
+>  drivers/dax/super.c | 38 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/dax.h |  5 +++++
+>  2 files changed, 43 insertions(+)
+> 
+> diff --git a/drivers/dax/super.c b/drivers/dax/super.c
+> index f4b635526345..fc96362de237 100644
+> --- a/drivers/dax/super.c
+> +++ b/drivers/dax/super.c
+> @@ -121,6 +121,44 @@ void fs_put_dax(struct dax_device *dax_dev, void *holder)
+>  EXPORT_SYMBOL_GPL(fs_put_dax);
+>  #endif /* CONFIG_BLOCK && CONFIG_FS_DAX */
+>  
+> +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
+> +
+> +/**
+> + * fs_dax_get()
+
+Smells like kernel doc but fairly sure it needs a short description.
+Have you sanity checked for warnings when running scripts/kerneldoc on it?
+
+> + *
+> + * fs-dax file systems call this function to prepare to use a devdax device for fsdax.
+Trivial but lines too long. Keep under 80 chars unless there is a strong
+readability arguement for not doing so.
+
+
+> + * This is like fs_dax_get_by_bdev(), but the caller already has struct dev_dax (and there
+> + * is no bdev). The holder makes this exclusive.
+
+Not familiar with this area: what does exclusive mean here?
+
+> + *
+> + * @dax_dev: dev to be prepared for fs-dax usage
+> + * @holder: filesystem or mapped device inside the dax_device
+> + * @hops: operations for the inner holder
+> + *
+> + * Returns: 0 on success, -1 on failure
+
+Why not return < 0 and use somewhat useful return values?
+
+> + */
+> +int fs_dax_get(
+> +	struct dax_device *dax_dev,
+> +	void *holder,
+> +	const struct dax_holder_operations *hops)
+
+Match local style for indents - it's a bit inconsistent but probably...
+
+int fs_dax_get(struct dad_device *dev_dax, void *holder,
+	       const struct dax_holder_operations *hops)
+
+> +{
+> +	/* dax_dev->ops should have been populated by devm_create_dev_dax() */
+> +	if (WARN_ON(!dax_dev->ops))
+> +		return -1;
+> +
+> +	if (!dax_dev || !dax_alive(dax_dev) || !igrab(&dax_dev->inode))
+
+You dereferenced dax_dev on the line above so check is too late or
+unnecessary
+
+> +		return -1;
+> +
+> +	if (cmpxchg(&dax_dev->holder_data, NULL, holder)) {
+> +		pr_warn("%s: holder_data already set\n", __func__);
+
+Perhaps nicer to use a pr_fmt() deal with the func name if you need it.
+or make it pr_debug and let dynamic debug control formatting if anyone
+wants the function name.
+
+> +		return -1;
+> +	}
+> +	dax_dev->holder_ops = hops;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(fs_dax_get);
+> +#endif /* DEV_DAX_IOMAP */
+> +
+>  enum dax_device_flags {
+>  	/* !alive + rcu grace period == no new operations / mappings */
+>  	DAXDEV_ALIVE,
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index b463502b16e1..e973289bfde3 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -57,7 +57,12 @@ struct dax_holder_operations {
+>  
+>  #if IS_ENABLED(CONFIG_DAX)
+>  struct dax_device *alloc_dax(void *private, const struct dax_operations *ops);
+> +
+> +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
+> +int fs_dax_get(struct dax_device *dax_dev, void *holder, const struct dax_holder_operations *hops);
+line wrap < 80 chars
+
+> +#endif
+>  void *dax_holder(struct dax_device *dax_dev);
+> +struct dax_device *inode_dax(struct inode *inode);
+
+Unrelated change?
+
+>  void put_dax(struct dax_device *dax_dev);
+>  void kill_dax(struct dax_device *dax_dev);
+>  void dax_write_cache(struct dax_device *dax_dev, bool wc);
+
 
