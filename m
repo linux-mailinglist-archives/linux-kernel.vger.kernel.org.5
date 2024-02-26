@@ -1,137 +1,238 @@
-Return-Path: <linux-kernel+bounces-82274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F59E868198
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:00:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FD538681A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:00:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F4E71F26FAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:00:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 272661C2903A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2E8130AF2;
-	Mon, 26 Feb 2024 20:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7163130AEE;
+	Mon, 26 Feb 2024 20:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="Vu0ltbrW"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Mgk5/BMS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C4712FF98
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:00:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 311CB130AFE;
+	Mon, 26 Feb 2024 20:00:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708977613; cv=none; b=HSoAIloG0886r92hgNHXBUKzPdV3IXWLH+P3wjAzC0/qHwTDms7FLSYVWs/Y32+PNPxe+xLeq6DNGuZXvERO928ALMJc6jwA5CDc4UGtIgcbOM7kqf/UVtrm257H7ojn4xr6Pt6REOvUlyZbEXj+xGYSERcQ9U/Y7fohPiY1mWc=
+	t=1708977643; cv=none; b=TagPC5wTcJSFT2AdoZGqE22iHcCN1DHLxj/ZMIXbx9twWEOQB7QnAM9HpHIAGP0mTqASlGzQgbZK+e8aVbuLXZpaE4MsSRHM/2RefPh6LiUeDmVBjLYYwQMin299ONM8hz0NZj7H6IyNDJkHWVMRKIV78NleNQ5haR7aQjqyWG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708977613; c=relaxed/simple;
-	bh=pehUlEWHJhuRq9lM7KavvQJzY5vJpoSwudZUjolrSuA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YNp1Sz24rRc8N0Lovr4p5FJx5etKlp++58Byu1tBtK2Gb2TuB8tt2WDMjYS/2oMmyzcgrllXoGxXkuS5727JJIeanv3Q/pVou04dS0yCwSAaycmFQ26o9/VoALGADnMuUt6xGME/rEBGVIt7QCKnPJGZ10uz06T8Ytd/Vscu9Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=Vu0ltbrW; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc6d24737d7so2992649276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:00:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1708977610; x=1709582410; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XMyH3X6y0ghY91KBV/IXMi8hinan8vTup4YSJD234YQ=;
-        b=Vu0ltbrWtBfntQBiqMOXofE/xsoZFs0qnwabmBXg2gZBbRjxNb2r8hC4eBn7FLc99M
-         un+ei2VMF9y1YGWnSzSkbs4S7suJNMbjP9H/iEaFRHCjYr4Guni2+3X0H8zN/YElaMED
-         Sq1pRyIao3TGcVuFlDUKXP5TZ3WlSSOLr3/d41LYh4cCYppPD8KcSN9xSENfirqlR4vO
-         1ypQKraoUEHU0IunmWgzNrVuC/wWapFmyXTfJzjhUTRPfhxpJh46vq/rrGz2xbTViXY0
-         wr9YPFH7+jduOS2vyzwn5QF8cU8fBQg05UboGcEtoydnqTQpNWuHf7bU5O8MDs1O8xDe
-         4HvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708977610; x=1709582410;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XMyH3X6y0ghY91KBV/IXMi8hinan8vTup4YSJD234YQ=;
-        b=XlWIFbu0akxDPDevlsqenxC94dGhKkuGlkVtJnyeVMV/yQzreH+qJdz6tjneayS5ic
-         izuV9XMWsCxsSDzJR7YUJh8woAzjDRPm7OXiVF7UQTa9Z2dbkDWUfgdAM1va+Z65GPbt
-         paq3F5DRdxX+mLF35ZUjnn6SMz2oFeRC0U5nfjdxOB78COm/MvZ6k0/1vW4USIIoZvEa
-         9oyxNrMpQWJq7aOGFF+JX++HYLK8Jj/rIK/Dtew9bP9GRdnIq5KJRXXjU8oFmVCUq9N+
-         PUSDXSnlDxHV6D2RS9627hMLxpgQ0qgVMfb0vrP3Z9UeHilKzwTVoJFXxClQ8nVmddGK
-         bMRg==
-X-Forwarded-Encrypted: i=1; AJvYcCWoU6bG/ihO0365fY5nEgJlXFqJFNhPBo14RnV5qzwowE/TbG/XMdl51gzt7uxOqWs6HYhz3apG+TuWWFrAQQfCg6KYE5MmNc48VVJp
-X-Gm-Message-State: AOJu0YwM+lb/8wdVe8AMBABIm8naFYUbxmPjN3EfBDeV4VIcx4PlDFak
-	ORphh4lhDCLXiiBGfZX6iz9LCIh7YTfxa/wO23DuD5A2Xa+cyrmWKIICXn1FEWVMjO7sSVYJMFU
-	xDhuhHGU3i+0C12yk8B/50i9wSg/baeUxpjxz+nc7vftEUMM=
-X-Google-Smtp-Source: AGHT+IH9gi+JHHei3aslePPRBmX+ggOjwi0k4abScoUltl6mqfTgxhLuJg5zV2FSQNlPizp/84gScLMILBMR1UO0cxY=
-X-Received: by 2002:a25:8b89:0:b0:dc6:bbbc:80e4 with SMTP id
- j9-20020a258b89000000b00dc6bbbc80e4mr206159ybl.4.1708977610011; Mon, 26 Feb
- 2024 12:00:10 -0800 (PST)
+	s=arc-20240116; t=1708977643; c=relaxed/simple;
+	bh=s9SBE+3/1NhK9cfyqIIFTjRmoWxhSNiFxCbfOOR0Zxo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lLlVUOSDghlG5/F5A+mamG/rYXJGBNU8aMt7A8vzGKQnGBuJdXGwcbtc5625bQU2N9+l3yfjGqxAYrDT7U+GhalMQ6zZCUSARLinvbbIKwFxVkMxCaOWFhJnfpSEMA528eRnRCTDXlY3XwiSpv+YahoVnkzf2fFwXEnbRgwIYfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Mgk5/BMS; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708977640; x=1740513640;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=s9SBE+3/1NhK9cfyqIIFTjRmoWxhSNiFxCbfOOR0Zxo=;
+  b=Mgk5/BMSyLBgxuF3i57I7EbV1fMWqri/dLOaSTCK8frdDuj6KBtRVGpV
+   eGdGwPThymE8jQrFAm5UKe2dhsCahCCwHFm537FnHRiNc8HDiv89hgSaG
+   Lw0erLp5eNh7nVN5ZZkPaF547fabe0YGwarz/N0plMtMZE/2MPZxQYje7
+   KBc41IFvqejVgVoaGZjaHsXMk3QDQNwecpIae+5LsHZuIMAtbD6Y/hhvC
+   3laatqzBxJ1VGpdt51vT8bSFkGfXLZnHSZSe2LWLNMhbkh44KCR6O3dEH
+   VknkSM/luX0kUnkdXGp8XaEWgrUNJW/AXuFp5gTlTTp5xduVghn4L/e1D
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3136238"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="3136238"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 12:00:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="37809154"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 12:00:36 -0800
+Message-ID: <623ce65f-da43-4493-8a21-4fd6dfe86dbb@linux.intel.com>
+Date: Tue, 27 Feb 2024 04:00:33 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223190546.3329966-1-mic@digikod.net> <20240223190546.3329966-2-mic@digikod.net>
- <CAHC9VhQGLmeL4Buh3ZzS3LuZ9Grut9s7KEq2q04DYUMCftrVkg@mail.gmail.com>
-In-Reply-To: <CAHC9VhQGLmeL4Buh3ZzS3LuZ9Grut9s7KEq2q04DYUMCftrVkg@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 26 Feb 2024 14:59:59 -0500
-Message-ID: <CAHC9VhTUux1j9awg8pBhHv_4-ZZH0_txnEp5jQuiRpAcZy79uQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] AppArmor: Fix lsm_get_self_attr()
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Casey Schaufler <casey@schaufler-ca.com>, John Johansen <john.johansen@canonical.com>, 
-	James Morris <jmorris@namei.org>, "Serge E . Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 3/3] iommu/vt-d: improve ITE fault handling if target
+ device isn't valid
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
+ jgg@ziepe.ca, kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org,
+ lukas@wunner.de, yi.l.liu@intel.com, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+References: <20240222090251.2849702-1-haifeng.zhao@linux.intel.com>
+ <20240222090251.2849702-4-haifeng.zhao@linux.intel.com>
+ <c655cd15-c883-483b-b698-b1b7ae360388@moroto.mountain>
+ <2d1788da-521c-4531-a159-81d2fb801d6c@linux.intel.com>
+ <039a19e5-d1ff-47ae-aa35-3347c08acc13@moroto.mountain>
+ <31ee6660-ad4a-40b8-8503-ebc3ed06dd16@linux.intel.com>
+ <f779be97-66c2-4520-91f2-a9a54e84017c@moroto.mountain>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <f779be97-66c2-4520-91f2-a9a54e84017c@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024 at 4:07=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
-ote:
-> On Fri, Feb 23, 2024 at 2:06=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@dig=
-ikod.net> wrote:
-> >
-> > aa_getprocattr() may not initialize the value's pointer in some case.
-> > As for proc_pid_attr_read(), initialize this pointer to NULL in
-> > apparmor_getselfattr() to avoid an UAF in the kfree() call.
-> >
-> > Cc: Casey Schaufler <casey@schaufler-ca.com>
-> > Cc: John Johansen <john.johansen@canonical.com>
-> > Cc: Paul Moore <paul@paul-moore.com>
-> > Cc: stable@vger.kernel.org
-> > Fixes: 223981db9baf ("AppArmor: Add selfattr hooks")
-> > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> > ---
-> >  security/apparmor/lsm.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+
+On 2/23/2024 4:19 PM, Dan Carpenter wrote:
+> On Fri, Feb 23, 2024 at 03:32:52PM +0800, Ethan Zhao wrote:
+>> On 2/23/2024 2:08 PM, Dan Carpenter wrote:
+>>> On Fri, Feb 23, 2024 at 10:29:28AM +0800, Ethan Zhao wrote:
+>>>>>> @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>>>>>>     			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+>>>>>>     		} while (head != tail);
+>>>>>> +		/*
+>>>>>> +		 * If got ITE, we need to check if the sid of ITE is one of the
+>>>>>> +		 * current valid ATS invalidation target devices, if no, or the
+>>>>>> +		 * target device isn't presnet, don't try this request anymore.
+>>>>>> +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
+>>>>>> +		 */
+>>>>> This comment is kind of confusing.
+>>>> Really confusing ? this is typo there, resnet-> "present"
+>>>>
+>>> Reading this comment again, the part about zero ite_sid values is
+>>> actually useful, but what does "old" mean in "old VT-d device".  How old
+>>> is it?  One year old?
+>> I recite the description from Intel VT-d spec here
+>>
+>> "A value of 0 in this field indicates that this is an older version of DMA
+>> remapping hardware which does not provide additional details about
+>> the Invalidation Time-out Error"
+>>
+> This is good.  Put that in the comment.  Otherwise it's not clear.  I
+> assumed "old" meant released or something.
 >
-> If you like John, I can send this up to Linus with the related SELinux
-> fix, I would just need an ACK from you.
+>
+>> At least, the Intel VT-d spec 4.0 released 2022 June says the same thing.
+>> as to how old, I didn't find docs older than that, really out of my radar.
+>>
+>>>>> /*
+>>>>>     * If we have an ITE, then we need to check whether the sid of the ITE
+>>>>>     * is in the rbtree (meaning it is probed and not released), and that
+>>>>>     * the PCI device is present.
+>>>>>     */
+>>>>>
+>>>>> My comment is slightly shorter but I think it has the necessary
+>>>>> information.
+>>>>>
+>>>>>> +		if (ite_sid) {
+>>>>>> +			dev = device_rbtree_find(iommu, ite_sid);
+>>>>>> +			if (!dev || !dev_is_pci(dev))
+>>>>>> +				return -ETIMEDOUT;
+>>>>> -ETIMEDOUT is weird.  The callers don't care which error code we return.
+>>>>> Change this to -ENODEV or something
+>>>> -ETIMEDOUT means prior ATS invalidation request hit timeout fault, and the
+>>>> caller really cares about the returned value.
+>>>>
+>>> I don't really care about the return value and if you say it should be
+>>> -ETIMEDOUT, then you're the expert.  However, I don't see anything in
+>>> linux-next which cares about the return values except -EAGAIN.
+>>> This function is only called from qi_submit_sync() which checks for
+>>> -EAGAIN.  Then I did a git grep.
+>>>
+>>> $ git grep qi_submit_sync
+>>> drivers/iommu/intel/dmar.c:int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+>>> drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/dmar.c:     qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/iommu.h:int qi_submit_sync(struct intel_iommu *iommu, struct qi_desc *desc,
+>>> drivers/iommu/intel/iommu.h: * Options used in qi_submit_sync:
+>>> drivers/iommu/intel/irq_remapping.c:    return qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/pasid.c:    qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/svm.c:      qi_submit_sync(iommu, desc, 3, QI_OPT_WAIT_DRAIN);
+>>> drivers/iommu/intel/svm.c:      qi_submit_sync(iommu, &desc, 1, 0);
+>>> drivers/iommu/intel/svm.c:              qi_submit_sync(iommu, &desc, 1, 0);
+>>>
+>>> Only qi_flush_iec() in irq_remapping.c cares about the return.  Then I
+>>> traced those callers back and nothing cares about -ETIMEOUT.
+>>>
+>>> Are you refering to patches that haven't ben merged yet?
+>> Yes, patches under working, not the code running on your boxes.
+>>
+>> -ETIMEOUT & -ENODEV, they both describe the error that is happenning, someone
+>> prefers -ETIMEOUT, they would like to know the request was timeout, and someone
+>> perfers -ENODEV, they know the target device is gone, ever existed.
+> Okay.  I obviously can't comment on patches that I haven't seen but,
+> sure, it sounds reasonable.
+>
+>>>>>> +			pdev = to_pci_dev(dev);
+>>>>>> +			if (!pci_device_is_present(pdev) &&
+>>>>>> +				ite_sid == pci_dev_id(pci_physfn(pdev)))
+>>>>> The && confused me, but then I realized that probably "ite_sid ==
+>>>>> pci_dev_id(pci_physfn(pdev))" is always true.  Can we delete that part?
+>>>> Here is the fault handling, just double confirm nothing else goes wrong --
+>>>> beyond the assumption.
+>>>>
+>>> Basically for that to ever be != it would need some kind of memory
+>>> corruption?  I feel like in that situation, the more conservative thing
+>>> is to give up.  If the PCI device is not present then just give up.
+>> memory corruption, buggy BIOS tables, faked request ...something out
+>> of imagination, after confirmed the device is what it claimed to be, if
+>> not present, then give up to retry the request.
+> This is not correct.  We looked up the device based on the ite_sid so
+> we know what the device id is, unless we experience catastrophic memory
+> corruption.
+>
+> +                       dev = device_rbtree_find(iommu, ite_sid);
+>                                                          ^^^^^^^
+> We looked it up here.
+>
+> +                       if (!dev || !dev_is_pci(dev))
+> +                               return -ETIMEDOUT;
+> +                       pdev = to_pci_dev(dev);
+> +                       if (!pci_device_is_present(pdev) &&
+> +                               ite_sid == pci_dev_id(pci_physfn(pdev)))
+>                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Unless the device_rbtree_find() is returning garbage then these things
+> must be true.
+>
+> +                               return -ETIMEDOUT;
+>
+> I tried to double check how we were storing devices into the rbtree,
+> but then I discovered that the device_rbtree_find() doesn't exist in
+> linux-next and this patch breaks the build.
+>
+> This is very frustrating thing.  But let's say a buggy BIOS could mess
+> up the rbtree.  In that situation, we would still want to change the &&
+> to an ||.  If the divice is not present and^W or the rbtree is corrupted
 
-Reviewed-by: Paul Moore <paul@paul-moore.com>
+Maybe you meant
++                       if (!pci_device_is_present(pdev) ||
++                               ite_sid != pci_dev_id(pci_physfn(pdev)))
 
-This patch looks good to me, and while we've still got at least two
-(maybe three?) more weeks before v6.8 is tagged, I think it would be
-good to get this up to Linus ASAP.  I'll hold off for another day, but
-if we don't see any comment from John I'll go ahead and merge this and
-send it up to Linus with the SELinux fix; I'm sure John wouldn't be
-happy if v6.8 went out the door without this fix.
+Unfortunately, the ite_sid we got from the "Invalidation Queue Error Record Register" is the *PCI Requester-id* of faulty device, that could be different
+BDF as the sid in the ATS invalidation request for devices:
 
-> > diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-> > index 98e1150bee9d..9a3dcaafb5b1 100644
-> > --- a/security/apparmor/lsm.c
-> > +++ b/security/apparmor/lsm.c
-> > @@ -784,7 +784,7 @@ static int apparmor_getselfattr(unsigned int attr, =
-struct lsm_ctx __user *lx,
-> >         int error =3D -ENOENT;
-> >         struct aa_task_ctx *ctx =3D task_ctx(current);
-> >         struct aa_label *label =3D NULL;
-> > -       char *value;
-> > +       char *value =3D NULL;
-> >
-> >         switch (attr) {
-> >         case LSM_ATTR_CURRENT:
-> > --
-> > 2.43.0
+1. behind the PCIe to PCI bridges.
+2. behindConventional PCI Bridges  
+3.PCI Express* Devices Using Phantom Functions  
+4.Intel® Scalable I/O Virtualization Capable Devices  (e.g. ADI)
+5. devices with ARI function.
+6. behind root port without ACS enabled.
+.. ...
 
---=20
-paul-moore.com
+
+Thanks,
+Ethan
+
+> then return an error.  But don't do this.  If the memory is corrupted we
+> are already screwed and there is no way the system can really recover
+> in any reasonable way.
+>
+> regards,
+> dan carpenter
+>
+>
 
