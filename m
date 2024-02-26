@@ -1,151 +1,140 @@
-Return-Path: <linux-kernel+bounces-81802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C19E4867A40
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:29:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BE89867A46
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:30:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 769271F241B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:29:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 483DD1C2427E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:30:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB8212C522;
-	Mon, 26 Feb 2024 15:28:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289E912AAD8;
+	Mon, 26 Feb 2024 15:29:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qiHqOP8l";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="b2FLq7ww"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="eZnnLeOH"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2074.outbound.protection.outlook.com [40.107.93.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EDC219E3;
-	Mon, 26 Feb 2024 15:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708961309; cv=none; b=JtOX2EUSCy5tdkaGrVc2UuD0+eJAKJebo0RC1TZSKDWujai6QRaqGigz5JY7dSuexByesFETn1+P1uOgy/FgCVwy6EaN9oT59MrHZhk6knN3m6JM1zmrYIXbdgN6H3LWZsUPqWlHxhl3PmS9u0PSCSVYpu/9sWAza5XX30iVWe0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708961309; c=relaxed/simple;
-	bh=eITRa6/dNliWbYSQG0MqgGYZZFqc07AifDCVVZZDKK8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U3zjQe4jUxI4/obNeNxIgDUju0D4YDkEmgmNOMzFaAAQV0OPty58Eqi3Lt1ipxUd+4U6NPvM2GmsrEAmoQdBtjSaerDwu8lDyQPO7afynDC/cITDeUkR2MM8vY22Ji2YlUuUx8T8DlGBeCtpVktSwEIwMTVcg7G2Du/PRiVx6io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qiHqOP8l; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=b2FLq7ww; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from blackpad (unknown [10.100.12.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D0031225CA;
-	Mon, 26 Feb 2024 15:28:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708961306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/qL2shtSe0WTJwYJugT1JyXRoQHJ5+B/iJUmAXE1O4c=;
-	b=qiHqOP8lAAdRJmDR9/ScJ1aNBrgFj2AQi18FTYKkkfgks0eU5sPN8R4njbDlMsGyfyiPZm
-	0mLQ2f689eFzU9WNY7U/4mNfy2ffumI9mZGGxY33ZcDpvChvPiTspwgNlDJVL7CkdIXB3O
-	f2MsFbnjrl/aTEDBYr3QqnukALa0SPc=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708961305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/qL2shtSe0WTJwYJugT1JyXRoQHJ5+B/iJUmAXE1O4c=;
-	b=b2FLq7wwz4tKaGoupw+8/bcv88zvY/14jI3062jmlBiC2sTsq9z03g0Sl3azKDDu8H7FkB
-	llaXbffqGkfAHAz+Gc7yUh+W8Q1fMnv+i96Th1cjmpMUzUOW7Oo6PRpr7Nxm06WLeMGLAL
-	/lBh6z837PzYYhWYHPNz7W2AF2PJaVs=
-Date: Mon, 26 Feb 2024 16:28:24 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Cruz Zhao <CruzZhao@linux.alibaba.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/core: introduce CPUTIME_FORCEIDLE_TASK
-Message-ID: <pb7jf52x2qpofgttzz3fphkeiuxuamjbjqb64paw7dvvtv2sxd@mgcol2syra6z>
-References: <20240219084134.10673-1-CruzZhao@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60F253E28;
+	Mon, 26 Feb 2024 15:29:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708961398; cv=fail; b=Rb46JI06Zdu32+/VSTNvITifgSg5z9UI3hX/zS/MuA9BH5yo1x3w6w41eTiFelZzP/8Ajx68u8XTbMc1YyPamVZA31K7LW/Jr9tG4KYIlvAicyKEmkLi9q/2cMXgAQZuX+ZbXOOhGmSHbTTX/J4K+/lo8Va02vX+PtzVbE7GEUk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708961398; c=relaxed/simple;
+	bh=CUcZsn0yj8uFF+lyTuNrm4OoN0GwPBwWQtsnvasHqVQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eY9uOrUK6VGvvMCxy8JNtxpiaCcFVN8fZOMQFWN4EGy8BJYyNoD9e5ao7/gPuqmPM5BZX1U1I8vizrA/n0sqpIxPsKA9kuGXdwTbRhD41WVihjwf0oJDAGGdVeFo3WV12NWmd59eQYpB+H+EY2Zr1dwk6e2XWr8i9CVAKU/V5/c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=eZnnLeOH; arc=fail smtp.client-ip=40.107.93.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VKgLENSAQZHZtiE09fe9Wjac8y7Du0+Lpmw6xyPdD5ixwN5vRlVPE1asjhxZeV5kdluOr6Ml94QkMfwpLxyyGLCVtq8xT9OQazfeesnK2tOGLfheCIz0Ekccbr8BUoUQe0A0JB2bVI9unNtO735T5Kuzd/s5W5ZEloXPWFqEBzHwAR3lY1N5+A8L84JY+qV1j396yzjBX1cD/I4x5madEJmAWi4xiel1lCazFjVsYPHBhAPUmU4NPZl17xWOo2U7lmHotiQlXGjQCUNfJAvGo5b9Y/QkEZmO60bMPNWq5bLbb5bZJyrOFOKSokVnoF7QsaGXVqYrIl1/1BtYXfuRDA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/JIFJmOwyvAsM2K/E3zfEbw95y2e8XILJ1iHyHItRR0=;
+ b=eY3n64Osxxt+0pzgeOSQpEYciFJgnOKQKaRNxmYuhAN5wwjhjnax8mWliIsLMkp9SADzlP5FpZZkYAmAjKjBS7PtZ4/9x/N2tArmBzBEc91MSxiike45hDPViI2zA8S1wV6+Dj97LWI3R7KsjsQv2ylmeD2SSyQFC1AgHHM9ggZ6wlSUdxkD7+Q/7AwmbZTxs0F/TbZzDlisufvJcpuBsESJnjE4mOI5yy6kRoIihpFp3UmGppZvpwK7+14dtXDjawl3fJSZMON986gTMtQue6FadbMt/p+rydAIuWOMwS/WjL3ptiVehbeMNEH1rN6MmYqnubrkdfCMNVpWTxjrRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/JIFJmOwyvAsM2K/E3zfEbw95y2e8XILJ1iHyHItRR0=;
+ b=eZnnLeOHQJ5ddFu08xcxgH82Gw+vvUIMkVaRdvEAe7QsEmyECa690FNEBg5GGjuKEu+tq3FXZy3Yn9hHh/Hemu76Rcl/kwgW3Qj4Oj3nrd2hNq5/9hDiaVZuamntUfv1HbTZGRPKeO/lMdBB2j558XXGVQ+PVYxKf+QctILom2Y=
+Received: from SJ0PR03CA0361.namprd03.prod.outlook.com (2603:10b6:a03:3a1::6)
+ by BY5PR12MB4260.namprd12.prod.outlook.com (2603:10b6:a03:206::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Mon, 26 Feb
+ 2024 15:29:53 +0000
+Received: from CO1PEPF000044FA.namprd21.prod.outlook.com
+ (2603:10b6:a03:3a1:cafe::1b) by SJ0PR03CA0361.outlook.office365.com
+ (2603:10b6:a03:3a1::6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
+ Transport; Mon, 26 Feb 2024 15:29:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044FA.mail.protection.outlook.com (10.167.241.200) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7362.0 via Frontend Transport; Mon, 26 Feb 2024 15:29:52 +0000
+Received: from quartz-7b1chost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 26 Feb
+ 2024 09:29:50 -0600
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+To: <bp@alien8.de>, <tony.luck@intel.com>, <linux-edac@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <avadhut.naik@amd.com>,
+	<john.allen@amd.com>, <muralidhara.mk@amd.com>, <sathyapriya.k@amd.com>,
+	<naveenkrishna.chatradhi@amd.com>, Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: [PATCH 0/3] FMPM Debug Updates
+Date: Mon, 26 Feb 2024 09:29:38 -0600
+Message-ID: <20240226152941.2615007-1-yazen.ghannam@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cwh5t3gx4dedreqm"
-Content-Disposition: inline
-In-Reply-To: <20240219084134.10673-1-CruzZhao@linux.alibaba.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.08 / 50.00];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[16];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 R_MIXED_CHARSET(0.63)[subject];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 BAYES_HAM(-0.00)[19.37%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.08
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FA:EE_|BY5PR12MB4260:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5713e43c-a5c9-4b31-6b48-08dc36dfc6fd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	nyqiUksEyDTHeDiwBYYcvSty2pV4iBI4TFz0f+u58UTs8lm/fSv0EWE9O0wuk4KLoxHlt0jroSytMOKuzSnyr4W8w5Um1mpRvZ9V1r18tFkXIkk7CAfatw8NUjQfMW5KQVNDI3mZiLXnkAT/Aax0T6ELeYTDBuPmKonB7rdjmbSA3Hbd4N/r2N1VrprZkLaUYTsrog+t1yU/V9YDFR35CtPiou1KIfadRJFXHXg825TBqTwO+XgexrSeyMHL202iGWBXOuMyrmzauDjs9RS2a2/CMTxNfmIr9wXEwSmPrbYumIXCufNSxzEUGCKGqxYREHRYmIqtdIcn4f8oWZW8T1Zhy/QRHlanQwLSaX7Rh/Ex0mBR2Y+6w5vx1tn8oAmFVnmqKyZznmkC4/hKMygnykfSYbkUwJtxMR1btJmDXu0CFue9HSFxHPC1qt1NTN9VdCZRvEEvi+7Oy29Cdq6xmw83v8+71L6ix8R0kgn/w9HrwDq0yYlu7yWqYBIA1KTKo5FB7/ImsXVv+G7p0To7l2w6Y6Yq+v37Zqmm44WutHST2FMrCCkwrelsAfNJRvoWjBJBKGvxH7rQ1NejwNYTox1C0NovLLD7ZFDroin/Hzm7P20rtdAYAUM2IvABV/Y9tzRazH/0LSgkslEWE5f+dtK30gVUSbcfDKNkocpOn4e7Fg+oyiSx5/9HQBflTASjSOr5nA2Ue8VAKlT/uI69a2Y+nM2RZcEYSoXPs4Cq6dq0meB2RP8mNNGavQQsrKuy
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 15:29:52.2152
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5713e43c-a5c9-4b31-6b48-08dc36dfc6fd
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000044FA.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4260
+
+Hi all,
+
+This set adds two pieces of debug functionality.
+1) Saving the system physical address of a recorded error.
+2) Printing record entries through a debugfs file.
+
+I'd like to include Murali, Naveen, and Sathya as co-developers, since
+this is based on their previous work from here:
+https://lore.kernel.org/r/20231129075034.2159223-4-muralimk@amd.com
+
+Thanks,
+Yazen
+
+Yazen Ghannam (3):
+  RAS: Export ras_debugfs_dir
+  RAS/AMD/FMPM: Save SPA values
+  RAS/AMD/FMPM: Add debugfs interface to print record entries
+
+ drivers/ras/amd/fmpm.c | 183 +++++++++++++++++++++++++++++++++++++++++
+ drivers/ras/debugfs.c  |   1 +
+ 2 files changed, 184 insertions(+)
 
 
---cwh5t3gx4dedreqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+base-commit: 3513ecaa685c6627a943b1f610421754734301fa
+-- 
+2.34.1
 
-Hello.
-
-On Mon, Feb 19, 2024 at 04:41:34PM +0800, Cruz Zhao <CruzZhao@linux.alibaba.com> wrote:
-> As core sched uses rq_clock() as clock source to account forceidle
-> time, irq time will be accounted into forceidle time. However, in
-> some scenarios, forceidle sum will be much larger than exec runtime,
-> e.g., we observed that forceidle time of task calling futex_wake()
-> is 50% larger than exec runtime, which is confusing.
-
-And those 50% turned out to be all attributed to irq time (that's
-suggested by your diagram)?
-
-(Could you argue about that time with data from /proc/stat alone?)
-
-> Interfaces:
->  - task level: /proc/$pid/sched, row core_forceidle_task_sum.
->  - cgroup level: /sys/fs/cgroup/$cg/cpu.stat, row
->      core_sched.force_idle_task_usec.
-
-Hm, when you touch this, could you please also add a section into
-Documentation/admin-guide/cgroup-v2.rst about these entries?
-
-(Alternatively, explain in the commit message why those aren't supposed
-to be documented.
-Alternative altenratively, would mere documenting of
-core_sched.force_idle_usec help to prevent the confusion that you called
-out above?)
-
-Also, I wonder if the rstat counting code shouldn't be hidden with
-CONFIG_SCHED_DEBUG too? (IIUC, that's the same one required to see
-analogous stats in /proc/$pid/sched.)
-
-Regards,
-Michal
-
---cwh5t3gx4dedreqm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZdyuFgAKCRAGvrMr/1gc
-jlQ2AP9lHZzRmJGKHC/PArhq58TYH4bO31Cw8QJyLzpMB6/oOAEA7GubxdNMgkf8
-rKxYVNUeG+tzvQedlpfiWwD+Ql7RTAA=
-=aTWv
------END PGP SIGNATURE-----
-
---cwh5t3gx4dedreqm--
 
