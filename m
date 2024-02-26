@@ -1,48 +1,49 @@
-Return-Path: <linux-kernel+bounces-81332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC1286745B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:07:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6302486745E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:08:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E5391F2B076
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:07:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EFA61F2BB28
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3195FDB5;
-	Mon, 26 Feb 2024 12:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304DA5FF00;
+	Mon, 26 Feb 2024 12:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zo1CLWn7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tooi7QKJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E9A75B1F6;
-	Mon, 26 Feb 2024 12:07:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB955FEE7;
+	Mon, 26 Feb 2024 12:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949258; cv=none; b=LC9ZLtR1pVZUMRUnDqbVo4Qbn7+ZoWOFV/G1vDRuFlmg53yMuSofTwuJbVHV1V9Mg34PQJI8cWgOuhD/M27HhSDecdQjFNuDbhh8VtNJpMHqgXJBHwwvCU/Y6Gar2RAJW6VYs5jF90S7qcds6TBx28yD9f+njyPBvy5PLmNqs5Y=
+	t=1708949262; cv=none; b=Vd5g96Zloi3O1wUl5zl4rwzvqT6uhMENUg7kfttEERsgg7P9IOgnHcAoEyFnqXLKT7haalYLFzKgPDxav9fXYigbRcQVLYC3mjU8F6dWzTI5k2d8ehpfKZj/giezXzJT/X73TatcLbpd6Y9hjVg+ccBd9H9RBQD1984ag+8VYSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949258; c=relaxed/simple;
-	bh=tst3N3Ogd0NLb+9yQntn2eZ6lXZNfRn8LL6bYGoKxOc=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=bPAXqVTjRW8+LFQcR30kUDTwYcPqSE7qbajyYsKIzGKmOS1L+mzhrJf75N9cQLDz4xcaH1KFg/YYv+7J30ISaWxE/ma08Xf7Z/vWKuuy2ckUhtLDYXT1313D4SPvgyQ0HEOnHYuX/yT/lgr0SGhW88WiFF0gJBm9HgTelCUa7rY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zo1CLWn7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9E2FC433C7;
-	Mon, 26 Feb 2024 12:07:34 +0000 (UTC)
+	s=arc-20240116; t=1708949262; c=relaxed/simple;
+	bh=2ff+U/daLvta7prHxzZSq2xWA5leXpB8TWzwlk61Z/Q=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=cQsMU7aLxzeXA6RU+/h2jpLx+bxCg8sae+AbVvK2tkwSsBEzx0e1o+HIyNsQocHwc6e+iHcHBxZyvLH3o5DhIlzIpLLBpRYdgjRM1Dan5tOoOD1FE2ufTtBKEQVOqgQYWrR5EFrDFn/vFxvBYrMsIu++bTTKAAXIpzZVoZDVDLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tooi7QKJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CB71C433F1;
+	Mon, 26 Feb 2024 12:07:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708949258;
-	bh=tst3N3Ogd0NLb+9yQntn2eZ6lXZNfRn8LL6bYGoKxOc=;
-	h=From:Subject:Date:To:Cc:From;
-	b=Zo1CLWn7kBO3dqtZwYhjmHvz67hXbCsddgPuOPmU86fiMqg0ZsBgR48+8JOSOuf+u
-	 580OS/zJkG5wR3YOOPnMlJkAGuqVivmU+zKwp0ntgCv/OgWDJhRWV5boR3dBkzVAdv
-	 6nqXS5XAZj5u9+K51qRE2a9iQOucI8+LUouBdbSO34nWJIVYqsgrlvQFQ7sozX+0Nt
-	 CzSYzEwUIHh7LEOzBPXross7QDzOC48AridRdNko68syRIxa8OGgPkU7QjnJjSt7UQ
-	 zw2B/toZ/Cn+TXkZO9jEqbhmRSKx/TuP/jNwQRQDBV/TlaVjd5oq9/cK+2it4rub3/
-	 a6OnXjJ+dtM7w==
+	s=k20201202; t=1708949261;
+	bh=2ff+U/daLvta7prHxzZSq2xWA5leXpB8TWzwlk61Z/Q=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=Tooi7QKJzJYXZY5AfQMJ6g4MfNGi7Y1a/p7B2ky2hp9L0sOSp5iDpJJU0B+QsRCHn
+	 Zwd1PE1GlzfK7s7gBNyNtEYVEyo6BweVNm9q4o3OJ/mgZxyxMN8wmd8dTxsoQrgNp+
+	 7f/oDLTFCguRKl+zIz3fA3ROTT6BEct8cPxleeX0OzJ3HBamjOfu5vXRU1Jg1/z6cj
+	 3w7EHTmTRO29FZ7jn4JEOeTiwYRqrxYEKfSO4p+fYWvE/QIpR/abMCr4isrNEM2l4l
+	 GgXGubvHcDrUTtuV8IBiLxWc5BPsf/3l9qY4RePotk3lV0g2d1vcDlqhyu9TYrZHGo
+	 SGsfPXGLCz/wg==
 From: Roger Quadros <rogerq@kernel.org>
-Subject: [PATCH v6 0/4] arm64: dts: ti: am62: Add USB support for k3-am62p
-Date: Mon, 26 Feb 2024 14:03:06 +0200
-Message-Id: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-0-acf77fff4344@kernel.org>
+Date: Mon, 26 Feb 2024 14:03:07 +0200
+Subject: [PATCH v6 1/4] dt-bindings: mfd: syscon: Add ti,am62-usb-phy-ctrl
+ compatible
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,10 +52,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAPp93GUC/43NQQ6CMBCF4auQWTsGaluQlfcwLKAdoFEpmWIjI
- dzdyglcfm/xvw0CsaMAdbYBU3TB+SlBnzIwYzsNhM4mg8iFzIW4YCex94xRo8L2pQW+Q4fLOpN
- Bu2Cpr0RGmsrIFlJjZurd5+jfm+TRhcXzetxF9Vv/LUeFOcpOVUraorRFdXsQT/Q8ex6g2ff9C
- /Y8QlnLAAAA
+Message-Id: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-1-acf77fff4344@kernel.org>
+References: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-0-acf77fff4344@kernel.org>
+In-Reply-To: <20240226-b4-for-v6-5-am62-usb-typec-dt-v6-0-acf77fff4344@kernel.org>
 To: Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
  Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>, 
@@ -64,62 +64,57 @@ Cc: Andrew Davis <afd@ti.com>, b-liu@ti.com, srk@ti.com,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  Roger Quadros <rogerq@kernel.org>, Rob Herring <robh@kernel.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1486; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=tst3N3Ogd0NLb+9yQntn2eZ6lXZNfRn8LL6bYGoKxOc=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBl3H8B5NRe0+ntzBZocwRCFpqIUzzMk6GiOSfm7
- LVKZRCdLFGJAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZdx/AQAKCRDSWmvTvnYw
- k+rAEAC1Avjo5YCFn0nTskB3ig6WyENuCGfXxlC3gLifKf7LC/N/Gaepyrfg8JJbeiVYmQ4YP2h
- EpD+Nfny9z8tlV8OYOt9QNJlfnOBxo5EPTXpdQJcQomjVXO+DP1Iv5P13L8Vvx+SjrjQKKpHzk6
- dgFlQRt+nTso9/F3YhZMElSdraI+cVW84fy+FfkLhWA22uGOQTsiB4Qv8dm7by5ZKtkPQ11xZHN
- yAnLLfqNA2n7ZK71GXzcNyb74QXNNzmxJShuZ/Jr8g50H/yXrjaDIdQBle8ecNgyf3r+u2VkqnD
- xRuPZbra1vAwmtDPoeoCGrXde/GZvB2sC6kZe2dLqZ8XyTqOYLtrGxvxYZ/vnM3z+7NSeE5INSy
- snWIcsPGETNs7SH3YGvAGpdt9cTsSzJXbomZqjgi37oQvdIW0g1YmARh/ntQ4TTeULn6Q7Vx4r1
- jHLrpwbNtoBW87/nHXZ3AO3ctbp5zk17veP4OVk/4JW+KkBr5L6FFhK0VqQwTP6xF+sThSDR2P3
- aq4Q6VFlRIw75g8HjlpQhwd4ZXtlbS+mrukkZMVUeEyJD+EkBns4t/8ndD/uT3s5zovpggH1vHj
- DxJ9O9ckuC3mm2m2sQ/1QkzXjO+Q3srNh/ITMXWrofOmNTFrGarhWSKtSbMUkm9mXyQKPFn24iM
- FOsCYdagOETN0uA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1251; i=rogerq@kernel.org;
+ h=from:subject:message-id; bh=2ff+U/daLvta7prHxzZSq2xWA5leXpB8TWzwlk61Z/Q=;
+ b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBl3H8FF4jq4BFw1U/vhzVYQm7gp+wptBEhiVRof
+ 9A+HIJE2p+JAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZdx/BQAKCRDSWmvTvnYw
+ k9oCEADHMqqmiB3qQpLssXsSrxaWrNjuFRCXNya9s8A1BMfScm9Qk59t1yaZSKI7FAr4dFAtsA9
+ ODrFANTs+NPvmhzdR8wWWuS+yVtVP4cpFVfP+jVDZKFxjWw4PlVhGUxPzIjYm5YGyeiNUjyPxDw
+ mfbdUOOCfh/cD38tZBInzrNcT3AiJF0YI4UDDQUtx4cfJSVDrL2hB+cNAfl8SaQYYXd+7fds1bH
+ liXvQK1dmuX8TkDdOVDw5WG8wKRsk669MjJcVDJC6bOoCD/MZgtZwXMDMLQBm4UkpYnl5RM8BI/
+ Qz0rYvfkoMVFt++5E08gJtjakOvPJ8OnSyZ2mqJzQy0SsIcBe327euMZUCRAy2o+2eexwtquBOb
+ 88hB9j4nXmDqFm+VOVnngMu62hCHVHEh7MhhWiTTxlXss4blYna/NRCuF7oPWjuM17XOp24Knch
+ jr7BAhoWMYmDJT9LFc+cGn3OFezQShF++nZsZgqa/dJsNa586J18RTRw+ORH46iWa7cwgbgl1b4
+ 2/dcIGRl1MuQgzqmscp0PtUE0V89genWGdvYCAYAd8D2dK5zkrU6CbMU05VLS8S9K1/0XBzlpoN
+ 5JAf58fthmdINscVUjCe2i11nohrLQ5zUsn/BlojXoD7katormzb8p1hWLqmx5MY13wRyNb2VHf
+ Ad4phQXuBgGlH4A==
 X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
  fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
 
-Hi,
+Add the compatible for TI AM62 USB PHY Control register. This
+register is found in the TI AM62 WKUP_CTRL_MMR0 space [1]. It
+is used to indicate the USB PHY PLL reference clock rate and
+core voltage level to the USB controller.
 
-This series first adds device nodes for USB0_PHY_CTRL and USB1_PHY_CTRL
-in the wkup_conf node and fixus up the USB nodes to use the newly
-added nodes.
-
-Then it adds USB support for AM62P SoC and AM62P5-SK board.
-
-cheers,
--roger
+[1] - https://www.ti.com/lit/pdf/spruiv7
 
 Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
-Changes in v6:
-- Rebased on next-20240226
-- Link to v5: https://lore.kernel.org/r/20240223-b4-for-v6-5-am62-usb-typec-dt-v5-0-4b5854d17d18@kernel.org
-
+Changelog:
+v6 - Rebased on next-20240226
+v5 - no change. Added Lee Jones in To list
+v4 - no change. Added Rob's Acked-by
+v3 - add compatibles in alphabetical order
+v2 - New patch
 ---
-Roger Quadros (4):
-      dt-bindings: mfd: syscon: Add ti,am62-usb-phy-ctrl compatible
-      arm64: dts: ti: k3-am62/a: use sub-node for USB_PHY_CTRL registers
-      arm64: dts: ti: k3-am62p: add the USB sub-system
-      arm64: dts: ti: k3-am62a: Disable USB LPM
+ Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
- Documentation/devicetree/bindings/mfd/syscon.yaml |  1 +
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi          |  4 +-
- arch/arm64/boot/dts/ti/k3-am62-wakeup.dtsi        | 10 ++++
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi         |  8 ++-
- arch/arm64/boot/dts/ti/k3-am62a-wakeup.dtsi       | 10 ++++
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi         | 50 +++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi       | 10 ++++
- arch/arm64/boot/dts/ti/k3-am62p5-sk.dts           | 67 +++++++++++++++++++++++
- 8 files changed, 156 insertions(+), 4 deletions(-)
----
-base-commit: 8552c902efe7ef670b6961fb8885b67961aeb629
-change-id: 20240223-b4-for-v6-5-am62-usb-typec-dt-769eec4c8c4a
+diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+index 820c364c01f2..9d55bee155ce 100644
+--- a/Documentation/devicetree/bindings/mfd/syscon.yaml
++++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+@@ -72,6 +72,7 @@ properties:
+               - rockchip,rk3588-qos
+               - rockchip,rv1126-qos
+               - starfive,jh7100-sysmain
++              - ti,am62-usb-phy-ctrl
+               - ti,am654-dss-oldi-io-ctrl
+               - ti,am654-serdes-ctrl
+               - ti,j784s4-pcie-ctrl
 
-Best regards,
 -- 
-Roger Quadros <rogerq@kernel.org>
+2.34.1
 
 
