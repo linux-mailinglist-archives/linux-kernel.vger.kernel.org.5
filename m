@@ -1,166 +1,154 @@
-Return-Path: <linux-kernel+bounces-82122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 101EE867F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:09:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEB6B867F97
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B7A01F21ECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:09:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF9771C243A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:10:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9ECA12F36E;
-	Mon, 26 Feb 2024 18:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A2012F366;
+	Mon, 26 Feb 2024 18:10:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="G5sDphJs";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mZXkRcmU"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="U9uBdYs0"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5205C12E1F5;
-	Mon, 26 Feb 2024 18:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92D912DDAB;
+	Mon, 26 Feb 2024 18:10:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708970967; cv=none; b=Ou+VEvHtnc3b3Z+c7cmH26wsVri1ZjuHOwDz22QFxzqo2cvey0kFCxqKz8AYEA0rqpXV52XSpK9Fz074Ww4+c+vu0vyueMwk1QgkvHrg69V1fIxzJWJntTK5Jd9dOkIgu2ldiOLLcloeyR8SzgjUz0GoZfSICCk55XnBgvZNpD4=
+	t=1708971047; cv=none; b=Tg8gIvfLLeY7iP9AZ7lA4DVSJgy/RR/j9WH6EuZ1rnJAhp4u0A2GKMnfv513PBlQn9R+jHPP6vuvBNpJtXaqqarD1l+m2pR9YnvBO0ZzKxRsFVHjI6UpXXarjzZTh6QecFvgoeOgTkr7JHCzx7cp2PEgRjth+UYdkITrJMibotE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708970967; c=relaxed/simple;
-	bh=EgcqXpFezT+1t7YK8f56X0MEgJ6W6GxDYo7o8TM6gUE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=KPhTYJQ+7InPGLmyaoQRq0vHRXm+kg5IThQMyuGfHFR1Ga2niTCrOw9hUjo6BUXV3SOGSm8odcDQ7X8qg3MIw6BcK6k0gAkQF6Lh9FWm69X/oHHx4afBNzpEPy5CPUZBd41yXoPDdoIn96u/+9t69x9e6lr0XUcnWYyLin7mg54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=G5sDphJs; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mZXkRcmU; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708970963;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lBiIbeLll0i8806pw3+a5wtiCC8R3KilwQQO3Vmsk48=;
-	b=G5sDphJs7t9/raF+7NYDjjcuKFwrRc0mqtuV/gpfLcT+jH6DXladNCYEqLak8e2uai5TD+
-	ZcTwChJ8MRp+01HO3nKWNKe+NhKUZvPjHaVfpllKVSfsey894PDzlGGuvLRd0X5D8J82dv
-	CqMwC6SoYU86gtUCYVqmQ8Yu7sD05uyf777NW9SzmGMWzGpcxyL2FVvckmC6GlOfGem5AS
-	33YWLOeIMQWQJhI0qjRJgCA7E7rPEUqWA++z25qhnjTzfUmFgKFgXhtYxaa1S1rNjafLx6
-	1JE8wnN5SQygZR6jXnuuQzKneRTbC7TmsoLykcIhsO39hkJ4+vHGjujy2sTf7w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708970963;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lBiIbeLll0i8806pw3+a5wtiCC8R3KilwQQO3Vmsk48=;
-	b=mZXkRcmUoZuND93toW5bsRFgQG3qHZFIQrwEXNOwCdtZ2hwAjok8Xgut2Ym9p5Xw23JOqV
-	3M+bMQhHuGc36HAg==
-To: Mathias Nyman <mathias.nyman@linux.intel.com>, Linux regressions mailing
- list <regressions@lists.linux.dev>
-Cc: "Christian A. Ehrhardt" <lk@c--e.de>, niklas.neronin@linux.intel.com,
- Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, Greg KH
- <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- linux-x86_64@vger.kernel.org, netdev@vger.kernel.org, Randy Dunlap
- <rdunlap@infradead.org>, Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Subject: Re: This is the fourth time I've tried to find what led to the
- regression of outgoing network speed and each time I find the merge commit
- 8c94ccc7cd691472461448f98e2372c75849406c
-In-Reply-To: <acc2b877-4b42-fd4d-867b-603dae95d09d@linux.intel.com>
-References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
- <e7b96819-edf7-1f9f-7b01-e2e805c99b33@linux.intel.com>
- <CABXGCsPjW_Gr4fGBzYSkr_4tsn0fvuT72G-YJYXcb1a4kX=CQw@mail.gmail.com>
- <2d87509a-1515-520c-4b9e-bba4cd4fa2c6@linux.intel.com>
- <CABXGCsPdXqRG6v97KDGy+o59xc3ayaq3rLj267veC7YcKVp8ww@mail.gmail.com>
- <1126ed0a-bfc1-a752-1b5e-f1339d7a8aa5@linux.intel.com>
- <CABXGCsN5_O3iKDOyYxtsGTGDA6fw4962CjzXLSnOK3rscELq+Q@mail.gmail.com>
- <a026ecd8-6fba-017d-d673-0d0759a37ed8@linux.intel.com>
- <CABXGCsOgy8H4GGcNU1jRE+SzRqwnPeNuy_3xBukjwB-bPxeZrQ@mail.gmail.com>
- <CABXGCsOd=E428ixUOw+msRpnaubgx5-cVU7TDXwRUCdrM5Oicw@mail.gmail.com>
- <34d7ab1b-ab12-489d-a480-5e6ccc41bfc3@infradead.org>
- <10487018-49b8-4b27-98a1-07cee732290d@infradead.org>
- <4f34b6a8-4415-6ea4-8090-262847d606c6@linux.intel.com>
- <3ea25443-1275-4c67-90e0-b637212d32b5@leemhuis.info>
- <1e719367-01ae-565a-2199-0ff7e260422b@linux.intel.com>
- <410817b8-1cf9-4285-b20b-f1fa0513cee8@leemhuis.info>
- <acc2b877-4b42-fd4d-867b-603dae95d09d@linux.intel.com>
-Date: Mon, 26 Feb 2024 19:09:22 +0100
-Message-ID: <87r0gz9jxp.ffs@tglx>
+	s=arc-20240116; t=1708971047; c=relaxed/simple;
+	bh=hEcSAUnbz3n2LmN/VICAPNTSRgNLRrDuxbmA81pv+gc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=NWO0z8GmO7zKYT7OmNPdaMJU5JoIJSbUu8QDBUIeZH78K9e2PHSmMSmuOOwzhb1ib9sORSPlhDDaD4SC3Lsr5uvNQ9pzmR11jUrrciMkGKUdH7N6KGnhfI6k3wSDAMvORLdV33m5s4Gb7FOE0hPIcm6e0ycvaOCBX4zBVsxOpf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=U9uBdYs0; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1708971027; x=1709575827; i=markus.elfring@web.de;
+	bh=hEcSAUnbz3n2LmN/VICAPNTSRgNLRrDuxbmA81pv+gc=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=U9uBdYs0pyb8l68xKrPVdFxo+9R6SFhdyVj0qGgcTg0RhLPhCBqMfZSsLbLwffgw
+	 NPdhLA/7pVO1KvXo9RAX7V0plpEvhzl8NZtzvJq6zC66402lXz/n7pY2KnzhsQo6o
+	 hfFvaSQ6sLF0/5WFni8w/0MY9prEcYE1cU/muPkig/kXZHucZ4sLIj/Dh4KYfWK/x
+	 ISJJllgT1chX7prypVqI7rgiQYBMXWWmda5Mqpjy46R+VOV4gQ2XRbq+PT0iThxjn
+	 98ilyJnjZRy+20E+/eumTWhwpyNPDUcz14poOLPqqwE4+OnaADIeCsDOk6H9aibz0
+	 jaeZPr7P7+JstHgLDw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MdfCH-1r5bnP3TLF-00ZZmS; Mon, 26
+ Feb 2024 19:10:26 +0100
+Message-ID: <5a9e4cb8-824e-4f62-bfc0-ea4b89f27ebf@web.de>
+Date: Mon, 26 Feb 2024 19:10:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+To: freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Akhil P Oommen <quic_akhilpo@quicinc.com>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@gmail.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Douglas Anderson <dianders@chromium.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] drm/msm/a6xx: Improve error handling in a6xx_gmu_rpmh_init()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/rqSBuUqEf/kYjvRFzsIYsjAmaIC0le+OIDvKdMIX+8WRAJdbvl
+ 8xwPiSyrSPo6Uq3TD7VkFy/4q1yq3KcxaapAQ8yTWrHKAUP7/6CW+W2I0E3NnApXUkdeTVy
+ C37ffE9OObkJus66qXJuXQOSKy2Nlq1xqgpKUeMUh8cQDRpBgOzi1GIZaLtxqAksq/Uqad3
+ 0+Sfc8wsFIIZklRtaqINA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:FdpfUuTW3hE=;qT2la4ln01wFUxHSA5KyVXPa8uk
+ bDSBGRNcQ4L4T1mJBcXVHoxB1VWh5FJclNOYqCZ57T5LREm+BsdB5UErNW5PWjINDxAqgt9yF
+ bHZuDp4nsQy8IHTUBVBBwdS8BYlTaommVav7DoNWzuaWSLK3bgIZ/4husDam4OHkeWvh1yA2l
+ jSw5gRDiub6AkaTER5SqzR0isjTloSOc1JotE33+qSkMsFInCaT9Pbb/XD7cxVEICd/m0TwP/
+ toWrMP9BgtWS6gvJismpLsrafU1ALQmNQv9f+hKE/5/q7LOpaGBWLCgS2+gjJnTt/WIYStJDu
+ zMxuKErCIZWdFpuuGwf19t3ToeccyXIhyzBTfrkG0m0A/PdnGzr0SZWJR3qEDc/FYTCTi5OLD
+ Km8RMtHDAJHLmOm1ssV4oh4yyAaViUHQJ4w05J7DP0E8+Rm+5PO+RpW8mSm0Nj3gHFLE7qqad
+ +13N4vRaAxpXuw0wRuIu1CmCKfNMmNvIlAtKUNv5bFuoOZ7lzzPfApVppqeV0Bf3RLctJHdZp
+ kD+9awVAmnHyE8adXLKbTqidYs0fWhkOmmRoEK10UPQFD/ldum8P/e42Jc67LZ07uGTMwrkBW
+ zyMHcsTGW2gxsLwEqyoBbmhi+CEcxANF7sny2jh5s/jAvLjPKe17oQ4qfxHBzHDRXgWegYqC4
+ J/m05LSMWYWYAl5amEVilbMD+bkuLejUoY1r3bXQo2ronNaxaCNgAeI7u4rWyLr3XNXsirSV7
+ pJvVq8B+XWt1x4uyljPbZpoopgtBEOKic+QlEushrvcR96JProjtUuobJsdeim0VFNYrkz/xs
+ iif2Pl/N+X5WlPB1CpGE+VK9GdMf7PqPbLEWbiRJcBVaE=
 
-On Mon, Feb 26 2024 at 12:54, Mathias Nyman wrote:
-> On 26.2.2024 11.51, Linux regression tracking (Thorsten Leemhuis) wrote:
->>> I don't think reverting this series is a solution.
->>>
->>> This isn't really about those usb xhci patches.
->>> This is about which interrupt gets assigned to which CPU.
->> 
->> I know, but from my understanding of Linus expectations wrt to handling
->> regressions it does not matter much if a bug existed earlier or
->> somewhere else: what counts is the commit that exposed the problem.
->> 
->> But I might be wrong here. Anyway, not CCing Linus for this; but I'll
->> likely point him to this direction on Sunday in my next weekly report,
->> unless some fix comes into sight.
->> 
->>> Mikhail got unlucky when the network adapter interrupts on that system was
->>> assigned to CPU0, clearly a more "clogged" CPU, thus causing a drop in max
->>> bandwidth.
->> 
->> But maybe others will be just as "unlucky". Or is there anything to
->> believe otherwise? Maybe some aspect of the .config or local setup that
->> is most likely unique to Mikhail's setup?
->
-> I believe this is a zero-sum case.
->
-> Others got equally lucky due to this change.
-> Their devices end up interrupting less clogged CPUs and see a similar
-> performance increase.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 26 Feb 2024 18:46:38 +0100
 
-Reverting this does not make any sense.
+The label =E2=80=9Cerr=E2=80=9D was used as a target for two statements de=
+spite of
+the implementation detail that failure conditions could be handled better.
 
-The kernel assigns the initial interrupt affinities to the CPUs so that
-the number of interrupts is halfways balanced. That spreading algorithm
-is completely agnostic of the actual usage of the interrupts. Where
-e.g. the network interrupt ends up depends on the probe/enumeration
-order of devices. Add another PCI-E card into the machine and it will
-again look different.
+* Thus return directly after a call of the function =E2=80=9Ca6xx_gmu_get_=
+mmio=E2=80=9D
+  failed at the beginning.
 
-There is nothing the kernel can do about it and earlier attempts to do
-interrupt frequency based balancing in the kernel ended up nowhere
-simply because the kernel does not have enough information about the
-overall requirements. That's why the kernel leaves the affinity
-configuration for user space, e.g. irqbalanced, except for true
-multi-queue scenarios like NVME where the kernel binds queues and their
-interrupts to specific CPUs or groups of CPUs.
+* Reorder affected statements at the end.
 
-Why ending up on CPU0 has this particular effect on Mikhails machine is
-unclear as we don't have any information about the overall workload,
-other interrupt sources on CPU0 and their frequency. That'd need to be
-investigated with instrumentation and might unearth some completely
-different underlying reason causing this behavior.
+* Adjust a jump target.
 
-So I don't think this is a regression in the true sense of
-regressions. It's an unfortunate coincidence and reverting the
-identified commits would just paper over the real problem, if there is
-actually one single source of trouble which causes the performance drop
-only on CPU0.  The commits are definitely _not_ the root cause, they
-happen to unearth some other issue, which might be as mundane as
-e.g. that the NVME interrupt on CPU0 is competing with the network
-interrupt. So don't shoot the messenger.
+* Omit an extra pointer check which became unnecessary
+  with this refactoring.
 
-Thanks,
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/gpu/drm/msm/adreno/a6xx_gmu.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-        tglx
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c b/drivers/gpu/drm/msm/a=
+dreno/a6xx_gmu.c
+index 8c4900444b2c..55a34f11eb9a 100644
+=2D-- a/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gmu.c
+@@ -525,7 +525,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+ 	bool pdc_in_aop =3D false;
 
+ 	if (IS_ERR(pdcptr))
+-		goto err;
++		return;
 
+ 	if (adreno_is_a650(adreno_gpu) ||
+ 	    adreno_is_a660_family(adreno_gpu) ||
+@@ -541,7 +541,7 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
+ 	if (!pdc_in_aop) {
+ 		seqptr =3D a6xx_gmu_get_mmio(pdev, "gmu_pdc_seq");
+ 		if (IS_ERR(seqptr))
+-			goto err;
++			goto unmap_io_pdc;
+ 	}
 
+ 	/* Disable SDE clock gating */
+@@ -634,11 +634,11 @@ static void a6xx_gmu_rpmh_init(struct a6xx_gmu *gmu)
 
+ 	a6xx_rpmh_stop(gmu);
 
+-err:
+-	if (!IS_ERR_OR_NULL(pdcptr))
+-		iounmap(pdcptr);
+ 	if (!IS_ERR_OR_NULL(seqptr))
+ 		iounmap(seqptr);
++
++unmap_io_pdc:
++	iounmap(pdcptr);
+ }
 
-
-
-
+ /*
+=2D-
+2.43.2
 
 
