@@ -1,110 +1,99 @@
-Return-Path: <linux-kernel+bounces-82173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52980868036
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:58:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8462F868044
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:01:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8474A1C25352
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:58:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1755B23F0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:59:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA9D12F583;
-	Mon, 26 Feb 2024 18:58:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F4BE1E866;
+	Mon, 26 Feb 2024 18:59:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PzAEqCYP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="U/G3rUNl"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5BA12E1F0;
-	Mon, 26 Feb 2024 18:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BD112EBF6;
+	Mon, 26 Feb 2024 18:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708973896; cv=none; b=qZ0Krel7g4PJY8z3Z/wUrUWPTxBpDAO9xDQw+Hrtn401YtP8ZpmaAp8f33bB14Tl3R8/ytrtEkWRt8Kjtyy07TL/p5bcK2iuAVz0f3wbP16vR7GopAMPYZZ1++A6Cihwr+K+F9XULyNqrgJh/GtlxbBCghmH+8beKY7X/02JGpI=
+	t=1708973965; cv=none; b=rCNctQnEhEzR0kNZ7M9raPfEPq4OBtaCY6PAf20/wFg0MfTcFNTHgUKUeNG37+J/np4Xf3dhXmqGXDac76TfbV+RWv3LWNf7/JOtSyUbtoZKR1NzH0pLGxilaKkqdAJ7LxJiEnAEVxElU6OWt7hqLhSzEC/ICsQwcLxqf459Dho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708973896; c=relaxed/simple;
-	bh=98GfyHFMzpKrK23mnt5GV5fD+sLh8aFquLTB/LhXPe8=;
+	s=arc-20240116; t=1708973965; c=relaxed/simple;
+	bh=qlAmNKHGR7vwy7bKxbfNjwMCIzUTjBUjhpOzPJgm7ts=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UQSeZlvLhf2wJ7wFSXJ88tAMF0GmDqhyTRFqQivebtxwutDBQ/Uv/LZaCi5qac94Mhl+kfBIFX58MB11HZFPbxeWmB6GQAwF83/ZY3jMiCqg44w9TErNExl+FmCMicV0GHRMeO1avQ5GeqMMeW+Y0gCngSSZ/xeRW4wn22lzMGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PzAEqCYP; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708973894; x=1740509894;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=98GfyHFMzpKrK23mnt5GV5fD+sLh8aFquLTB/LhXPe8=;
-  b=PzAEqCYPRLRVCcmqASVH01a7NHu80Pn2bYG4atkMmmoYX01MHaId4vAP
-   GeReg6h/2zuqh1BRtKsTxrUNkIrzpFAMwHy+BQX351botYmqzg2y3KcFq
-   bJweg/g4KTakZLe24if26JIwUn1Q/JpdF9dPzYbBXxz5bVUlANOP7T99F
-   cfBMm/+sv7fbvoFpghEYX6fp8VWTSNUL8HSo3NG6DizNjuuw3zaU++MgJ
-   7n6S93HNXDiuGwpvuqSvxZFumYlDpQNCddAt39oXtjv82Cn5XMSHWOsKV
-   2U55rgwMvlnfpG3X28bNP36aU4DWkpb8svHJDxC6QzJ2qJT0BPdpG0KbD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3409124"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3409124"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 10:58:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="7302804"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 10:58:14 -0800
-Date: Mon, 26 Feb 2024 10:58:13 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v18 029/121] KVM: TDX: create/free TDX vcpu structure
-Message-ID: <20240226185813.GL177224@ls.amr.corp.intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <f857ba01c0b2ffbcc310727fd7a61599221c4f21.1705965635.git.isaku.yamahata@intel.com>
- <49f044a1-e5ab-4a3d-8d73-67fa913e2948@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gHvzVHVCcdlCHkW/aKuYwRCVroaiAtf/c6mK1l/oaRDC3Jp+Ib//zKWohHucLoLdfEgOKOo+n1rGTkIduskqlBy/xu4Do3YpPYqSsdLO7ljbpjMPf82V9+OtUKwm7wz3e/KbPuGVx4EGqHgoR/SEcXg4rlYS9mEIHd1hfsyLheA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=U/G3rUNl; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=QGUT/3moj2OhsxsxICwpbLQML/W18VFE18o89MKHXvw=; b=U/G3rUNlaV4fF493SyQmav3vC2
+	ARJZzTqt9VPnTCGOzK5BBRZUHEgyd4s2/64ilvkL3ArZJDIM2EbAdRZnbJpsyHiTF3ckTMXDI7KlA
+	bbHcwR5lcIcDC1MolngdfESjvbVkKsDtqNtNA2omCqE8KB70lYLZF9c6DxP9uWZZFtZI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1regCG-008kvg-CP; Mon, 26 Feb 2024 19:59:28 +0100
+Date: Mon, 26 Feb 2024 19:59:28 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Wei Fang <wei.fang@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v6 5/8] net: phy: Immediately call adjust_link
+ if only tx_lpi_enabled changes
+Message-ID: <fe071598-64eb-4dd2-8926-d4d0954e7e7e@lunn.ch>
+References: <20240223094425.691209-1-o.rempel@pengutronix.de>
+ <20240223094425.691209-6-o.rempel@pengutronix.de>
+ <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
+ <84e1368d-ec6a-48af-945b-509528c45dff@lunn.ch>
+ <Zdic+ua5LnWxjLPn@shell.armlinux.org.uk>
+ <6af3406a-7968-41e5-bf6e-71d020d8b28a@broadcom.com>
+ <Zdot-Mqw1z4ZEo8v@pengutronix.de>
+ <c6b0716d-f093-4aba-8453-c89a562ab581@lunn.ch>
+ <e679f467-d4cd-4a1e-9bfc-92e2c9bf35d4@broadcom.com>
+ <ZdzQG6t2slqEyH0m@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <49f044a1-e5ab-4a3d-8d73-67fa913e2948@linux.intel.com>
+In-Reply-To: <ZdzQG6t2slqEyH0m@shell.armlinux.org.uk>
 
-On Thu, Jan 25, 2024 at 11:06:22AM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+On Mon, Feb 26, 2024 at 05:53:31PM +0000, Russell King (Oracle) wrote:
+> On Mon, Feb 26, 2024 at 09:50:02AM -0800, Florian Fainelli wrote:
+> > This is the source of the concern, we don't know which MAC drivers we might
+> > end-up breaking by calling adjust_link(link == 1) twice in a row, hopefully
+> > none, because they should be well written to only update the parameters that
+> > need updating, but who knows?
+> 
+> Just quickly... There are some (I went through a bunch.) They don't
+> support EEE. I haven't been through all though, so there could be
+> some which support EEE and where adjust_link() with phydev->link=true
+> twice in a row could result in badness.
 
-> > diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> > index 1c6541789c39..8330f448ab8e 100644
-> > --- a/arch/x86/kvm/vmx/tdx.c
-> > +++ b/arch/x86/kvm/vmx/tdx.c
-> > @@ -411,6 +411,55 @@ int tdx_vm_init(struct kvm *kvm)
-> >   	return 0;
-> >   }
-> > +int tdx_vcpu_create(struct kvm_vcpu *vcpu)
-> > +{
-> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
-> > +
-> > +	/*
-> > +	 * On cpu creation, cpuid entry is blank.  Forcibly enable
-> > +	 * X2APIC feature to allow X2APIC.
-> 
-> This comment is a bit confusing.
-> Do you mean force x2apic here or elsewhere?
-> So far, in this patch, x2apic is not forced yet.
-> 
-> > +	 * Because vcpu_reset() can't return error, allocation is done here.
-> 
-> What do you mean "allocation" here?
+So i think we all agree the MAC needs to see a down/up, even if the
+link itself never went down. Anything else is too risky and will
+probably break something somewhere.
 
-Now this comment is stale, I removed it as Yuan pointed out.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+	 Andrew
+
 
