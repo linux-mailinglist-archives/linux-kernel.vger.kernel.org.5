@@ -1,64 +1,62 @@
-Return-Path: <linux-kernel+bounces-82110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94A43867F6A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:58:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2331A867F6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F84628C126
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:58:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDD2528AF3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168E512EBE5;
-	Mon, 26 Feb 2024 17:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 993A912EBE9;
+	Mon, 26 Feb 2024 17:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KnVScf5Q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JGn+ddpk"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5058F12C815;
-	Mon, 26 Feb 2024 17:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C77012C815;
+	Mon, 26 Feb 2024 17:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708970292; cv=none; b=Lzkt90LDxsDZulFS+GHICudMXJGJhwF5vDGrPYC8QJpxkL2wUVuL88qGxZlhK4APRKuR1i4ZqD+/INC/Mee+dqCFTS8ab4ClWIDRPhHM3hxAZLpyMakpqIKpfHHhBp58T8OYFKIbcXeDymTXw7t65jZtdOu5DHMOzvrwqOCx3+I=
+	t=1708970329; cv=none; b=fXw9A1/6MkgSmvUxMdIWrqnVhOoVtVViKNylQgz6I7COLnD4yVyPLYkJASimjE273Tt23K4niLpyyf72VMnJoHHjQtRnxIlD731RmqP4vbk8tMsFwqFd/7kcxHKY87scVSm3UKU8c4Go6CjPmZ/Gr0+K8fvJKElxZDDtPC5EIYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708970292; c=relaxed/simple;
-	bh=mXtVnnZU5KldRH/xAQBuuqOy4rYUXPWyBCIe0Ahw4DY=;
+	s=arc-20240116; t=1708970329; c=relaxed/simple;
+	bh=JCKGyXmXmi33uTluuNOUyXMVPJdU5wG6Bzr+GONc22A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h2UJydDXFW7o+mfSOwiytSMs+oelAiTAPuCtRW2qZnTQri8g30rMJL0QpUa/Ru10LFYn5M0XtrGdnpWm7CCk+Yct0DSviGiFIvRIpnCeceD/OGT4GjAG3SpeF5Ahzz0HCPLv5fUu643gwkfKYI+WP76X8EBom1pZJ5rEff1Wttk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KnVScf5Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6668C433C7;
-	Mon, 26 Feb 2024 17:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708970291;
-	bh=mXtVnnZU5KldRH/xAQBuuqOy4rYUXPWyBCIe0Ahw4DY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KnVScf5Ql39ByDTDraRO5HJefp1ts2WNx7YSyg0S473pWGzF+mUaYmexthRZAvHRG
-	 MXnsLGH1IZSftf29Pq1zDBIGpMW16NEjMuTDdbdnocr0Z4jLwo++AH5420p4XkbLck
-	 muptFsm3DmCIUHMjeaVNJB1ou69kCgFcvxQWZLCp0sN39JESkafDLiKs/J6OB1xhRD
-	 yLqoAgb1h7bYehmhJg34m64npHE9AW7yAI/C3Xo8mVbEs+kaE4Uy2EPK5Tc0Y8bBQ8
-	 p3vc6PjkQNWScqRv47Kl+eo+2G0KvqZEdOKnn/zbQ3Jf1RQXFXv0fWdINNF8uePaXt
-	 13AXreIPxRUEQ==
-Date: Mon, 26 Feb 2024 17:58:06 +0000
-From: Simon Horman <horms@kernel.org>
-To: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Florian Westphal <fw@strlen.de>,
-	Kishen Maloor <kishen.maloor@intel.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Peter Krystad <peter.krystad@linux.intel.com>,
-	Christoph Paasch <cpaasch@apple.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH net 10/10] selftests: mptcp: explicitly trigger the
- listener diag code-path
-Message-ID: <20240226175806.GI13129@kernel.org>
-References: <20240223-upstream-net-20240223-misc-fixes-v1-0-162e87e48497@kernel.org>
- <20240223-upstream-net-20240223-misc-fixes-v1-10-162e87e48497@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xr1A8LyvAMFv23tMqK0gxvrDKW6n/AcYw7xJiqJIJAvSmxw9yb1NBrkSKu1qZ4h3u0fLVzNUgXQI5W1xmCRMKWOmTdlsct28EGwRtaeZYaEn+KxMnXd9t1IW0MAOYuWv2tiEZf9OXuZ523sbU8J43U2lg7rVy5KnLqx1Q95HnD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JGn+ddpk; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=29RQZolZJ+S71Y+xqolEPeXKycR8yatJmFhICqJiOuE=; b=JGn+ddpkrdBTTW6om/gUMcO+ha
+	pBUlwhCxIymXSDTVQ2PS/YUum0YlBaQoERJsHAfkOI0kU8bdOq2WUcqzjFm+7NInu9R7M9ZNEgjh9
+	BfTnjLwVQVeMt9hDDFVhKdHgQqtHkPljk7v9WPXSF+KYsC4utfxOQP4E8S9kKY19GIEZvBEzCD3bV
+	mbrA/wD0H633S2uXVjCXsvoZzexM8sEeU67m6PvCd4zuC5uLp8o4svfLErdr6IlyPca2T6zjNxXQn
+	eepmZFZCY/LmfekHWR5QnZX0D3SCKQw1oYZ0IdjbqhpG937wvZ70jZCPrxxR189CiHAJ6CfuxuqHI
+	iAkwOwQQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1refFT-00000000Dcf-1Gir;
+	Mon, 26 Feb 2024 17:58:43 +0000
+Date: Mon, 26 Feb 2024 17:58:43 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, david@fromorbit.com,
+	chandan.babu@oracle.com, akpm@linux-foundation.org,
+	mcgrof@kernel.org, ziy@nvidia.com, hare@suse.de, djwong@kernel.org,
+	gost.dev@samsung.com, linux-mm@kvack.org,
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 10/13] iomap: fix iomap_dio_zero() for fs bs > system
+ page size
+Message-ID: <ZdzRU0sMqFYlNC01@casper.infradead.org>
+References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+ <20240226094936.2677493-11-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,27 +65,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240223-upstream-net-20240223-misc-fixes-v1-10-162e87e48497@kernel.org>
+In-Reply-To: <20240226094936.2677493-11-kernel@pankajraghav.com>
 
-On Fri, Feb 23, 2024 at 05:14:20PM +0100, Matthieu Baerts (NGI0) wrote:
-> From: Paolo Abeni <pabeni@redhat.com>
-> 
-> The mptcp diag interface already experienced a few locking bugs
-> that lockdep and appropriate coverage have detected in advance.
-> 
-> Let's add a test-case triggering the relevant code path, to prevent
-> similar issues in the future.
-> 
-> Be careful to cope with very slow environments.
-> 
-> Note that we don't need an explicit timeout on the mptcp_connect
-> subprocess to cope with eventual bug/hang-up as the final cleanup
-> terminating the child processes will take care of that.
-> 
-> Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-> Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+On Mon, Feb 26, 2024 at 10:49:33AM +0100, Pankaj Raghav (Samsung) wrote:
+> +++ b/fs/iomap/direct-io.c
+> @@ -239,14 +239,23 @@ static void iomap_dio_zero(const struct iomap_iter *iter, struct iomap_dio *dio,
+>  	struct page *page = ZERO_PAGE(0);
+>  	struct bio *bio;
+>  
+> -	bio = iomap_dio_alloc_bio(iter, dio, 1, REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+> +	WARN_ON_ONCE(len > (BIO_MAX_VECS * PAGE_SIZE));
+> +
+> +	bio = iomap_dio_alloc_bio(iter, dio, BIO_MAX_VECS,
+> +				  REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
+>  	fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
+>  				  GFP_KERNEL);
+> +
+>  	bio->bi_iter.bi_sector = iomap_sector(&iter->iomap, pos);
+>  	bio->bi_private = dio;
+>  	bio->bi_end_io = iomap_dio_bio_end_io;
+>  
+> -	__bio_add_page(bio, page, len, 0);
+> +	while (len) {
+> +		unsigned int io_len = min_t(unsigned int, len, PAGE_SIZE);
+> +
+> +		__bio_add_page(bio, page, io_len, 0);
+> +		len -= io_len;
+> +	}
 
-Reviewed-by: Simon Horman <horms@kernel.org>
-
+I thought we were going to use the huge_zero_page for this?
 
