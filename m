@@ -1,94 +1,109 @@
-Return-Path: <linux-kernel+bounces-80403-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CCDC866814
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:13:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC13866866
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 477312819EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:13:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F7281F2220E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B75414F70;
-	Mon, 26 Feb 2024 02:13:27 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADB811CB8;
+	Mon, 26 Feb 2024 02:57:03 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D15C14A85
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:13:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14254EEDE
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:56:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708913607; cv=none; b=ccuZQAkxTKJSsLHWWo1+yzDddL7GTole5vswLq2qNbCLBBtI+Vxo1pe2QFREGnKM0OTV3wOn/+hShuNDWOPyaYaoHUpSxEtMgRp89kTY8GLPMd1zHMNTKLdqDYtrAYDPHBwtOFNksrSuwbyzrltIT4YEHrtYzOvVjgDMOLgyC58=
+	t=1708916222; cv=none; b=UmGRTwcWYVPQ4ozCIChqfyZuGY4ibRzhHelSo+nSGf0awnmrvew7b3S+uzxUYQ9KiqhffzIopMyG+9uUQ4nGFEcZp4JbeANpJfaQvrnDA7TZvq9u4qnA0SyZY1qNewFnjaI3RDHmolCZMUlF3y7UDHoZvIiIXfbRP/RFKnmL59g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708913607; c=relaxed/simple;
-	bh=A2/uoLowPnARdXuuFm2lFhFcljWmp7TOh3DBia2TOmg=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ckdFah6uRvGLQsmFV3g1E89pFJ/X0RzGluqexIDC4dmOk9z+uaj6w8whDkAyEJxzyacdXgHbMUaNqQteBPEbI6AGfPcqnbhwxT8enIV24JlveXmAfHFxcyO6/+GQl6nEJUHbFo7mRgwp4E8lP5tSkO5cGJfKF3Skb7crtT8OqqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TjkcR3ff3z1h0bh;
-	Mon, 26 Feb 2024 10:11:03 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 40B391A0178;
-	Mon, 26 Feb 2024 10:13:16 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 26 Feb 2024 10:13:14 +0800
-Subject: Re: [PATCH] jffs2: remove SLAB_MEM_SPREAD flag usage
-To: <chengming.zhou@linux.dev>, <dwmw2@infradead.org>, <richard@nod.at>,
-	<jack@suse.cz>, <chuck.lever@oracle.com>, <dave.kleikamp@oracle.com>,
-	<amir73il@gmail.com>
-CC: <zhouchengming@bytedance.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, <vbabka@suse.cz>,
-	<roman.gushchin@linux.dev>, <Xiongwei.Song@windriver.com>
-References: <20240224134915.829634-1-chengming.zhou@linux.dev>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <dac3e4b6-2915-7d77-f5d4-4ba8d510d952@huawei.com>
-Date: Mon, 26 Feb 2024 10:13:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1708916222; c=relaxed/simple;
+	bh=RkYRKXC8rDGhcHXpOqxOD+2kabTswxu8nRbiz9T3PnA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hDnP7/8OUfb5Z34jHcnBbqMyf+ypN2oSUCD9aEqIRREGRo4pYjNTva43lFaVnAiSLc5iib6z8GWi5hSwXhoj4gf0a5mEUsxe1BbwndlpHFF8jsLOdfTX8MLgouWjqxYL7Nn1DLBx+y7l17Xp+NsNMVCqIeyXPAhcyepaVD2WTbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 4546ceb75acc42a9b2151b68aacf51a8-20240226
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:e41c192e-b886-4454-bc77-1e6bcaeef539,IP:10,
+	URL:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:20
+X-CID-INFO: VERSION:1.1.37,REQID:e41c192e-b886-4454-bc77-1e6bcaeef539,IP:10,UR
+	L:0,TC:0,Content:0,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:20
+X-CID-META: VersionHash:6f543d0,CLOUDID:42c032ff-c16b-4159-a099-3b9d0558e447,B
+	ulkID:2402261019466BTZH2M6,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
+	02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:
+	nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 4546ceb75acc42a9b2151b68aacf51a8-20240226
+Received: from mail.kylinos.cn [(39.156.73.10)] by mailgw
+	(envelope-from <chentao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1034945641; Mon, 26 Feb 2024 10:19:44 +0800
+Received: from mail.kylinos.cn (localhost [127.0.0.1])
+	by mail.kylinos.cn (NSMail) with SMTP id 7A78CE000EBC;
+	Mon, 26 Feb 2024 10:19:44 +0800 (CST)
+X-ns-mid: postfix-65DBF540-285856213
+Received: from kernel.. (unknown [172.20.15.254])
+	by mail.kylinos.cn (NSMail) with ESMTPA id 43257E000EBC;
+	Mon, 26 Feb 2024 10:19:41 +0800 (CST)
+From: Kunwu Chan <chentao@kylinos.cn>
+To: lucas.demarchi@intel.com,
+	ogabbay@kernel.org,
+	thomas.hellstrom@linux.intel.com,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: intel-xe@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Kunwu Chan <chentao@kylinos.cn>
+Subject: [PATCH] drm/xe: use KMEM_CACHE() to create xe_hw_fence cache
+Date: Mon, 26 Feb 2024 10:19:12 +0800
+Message-Id: <20240226021912.1779715-1-chentao@kylinos.cn>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240224134915.829634-1-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+Content-Transfer-Encoding: quoted-printable
 
-ÔÚ 2024/2/24 21:49, chengming.zhou@linux.dev Ð´µÀ:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> its usage so we can delete it from slab. No functional change.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->   fs/jffs2/super.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+Use the KMEM_CACHE() macro instead of kmem_cache_create() to simplify
+the creation of SLAB caches when the default values are used.
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> 
-> diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-> index f99591a634b4..aede1be4dc0c 100644
-> --- a/fs/jffs2/super.c
-> +++ b/fs/jffs2/super.c
-> @@ -387,7 +387,7 @@ static int __init init_jffs2_fs(void)
->   	jffs2_inode_cachep = kmem_cache_create("jffs2_i",
->   					     sizeof(struct jffs2_inode_info),
->   					     0, (SLAB_RECLAIM_ACCOUNT|
-> -						SLAB_MEM_SPREAD|SLAB_ACCOUNT),
-> +						SLAB_ACCOUNT),
->   					     jffs2_i_init_once);
->   	if (!jffs2_inode_cachep) {
->   		pr_err("error: Failed to initialise inode cache\n");
-> 
+Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+---
+ drivers/gpu/drm/xe/xe_hw_fence.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/xe/xe_hw_fence.c b/drivers/gpu/drm/xe/xe_hw_=
+fence.c
+index a6094c81f2ad..cd258e0ccdf3 100644
+--- a/drivers/gpu/drm/xe/xe_hw_fence.c
++++ b/drivers/gpu/drm/xe/xe_hw_fence.c
+@@ -20,9 +20,7 @@ static struct kmem_cache *xe_hw_fence_slab;
+=20
+ int __init xe_hw_fence_module_init(void)
+ {
+-	xe_hw_fence_slab =3D kmem_cache_create("xe_hw_fence",
+-					     sizeof(struct xe_hw_fence), 0,
+-					     SLAB_HWCACHE_ALIGN, NULL);
++	xe_hw_fence_slab =3D KMEM_CACHE(xe_hw_fence, SLAB_HWCACHE_ALIGN);
+ 	if (!xe_hw_fence_slab)
+ 		return -ENOMEM;
+=20
+--=20
+2.39.2
 
 
