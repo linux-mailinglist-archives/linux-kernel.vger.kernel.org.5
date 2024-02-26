@@ -1,175 +1,258 @@
-Return-Path: <linux-kernel+bounces-81671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D74C98678E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:46:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 386C486794F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:01:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 879872976FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:46:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2811B30F4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D256134CE7;
-	Mon, 26 Feb 2024 14:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16EA613AA24;
+	Mon, 26 Feb 2024 14:36:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="iKTqD1KN"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PDNLVYDu"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58C6134727;
-	Mon, 26 Feb 2024 14:36:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A449E13A879;
+	Mon, 26 Feb 2024 14:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958166; cv=none; b=LGCeAEUgHGHdLfxO8zk7fCqey//n4DP7OM9VOQqo3lrtiIpL6ajrSHUUbFdklB9PH8zl3x6Gki6fQbJ/E8UrlfBaGlpHJ6TUWLz6QG84vxAH4lsBO03+Cz6jsqzZ2qoRwrakNiWiH49vHmmlkXiwSA8qcytL/C2n5l2kIWH7aGA=
+	t=1708958217; cv=none; b=KKtPaSOE8hm5oU0gYUGXf7KIvZpYVe+alI5sKA7xlmpmMjp9GkBGEKADinXKPSz8/3K5fqx8GwkWRP2B2906UZO/gK8uWQG0wWwBWpHXAI2gFB5ZGJp95IhFojynXhaGR2R4NTXg/Wz3Ta1d7APLpV+9HDcIf8EKBn+4F+ts+74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958166; c=relaxed/simple;
-	bh=9ywEGY5Eo3x6FAI3cUqz0fj17fVyroyFNHMiCN6mL/0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
-	 References:In-Reply-To; b=AL3yII8vq0mTujTbnvC0jhlf86YzXSYe9nmhJB7H7mLfiJ7XD14Q1XRx1qqy8vRZJG5wwdBX1UDQLpuFfQU2U71yd1IYvSHpCflQ9XyIJCTs/NY+57Nat6XgensQqeNUTvtCz2xRt6C6Gbosb5QGuzay2XDJ4gohBXKMzgibQe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=iKTqD1KN; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 751121BF209;
-	Mon, 26 Feb 2024 14:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708958161;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xzRRKGTCf49DCuAE0sJucov1JPKZw/oB6zFjk/bAKO0=;
-	b=iKTqD1KNUEKWwhSN9AhG2JhtpDWL87tAJ9I4T86LLIn0QkDMqI+Oq/4+t5fhJHfsecTixf
-	s+/UCitLkC/j7Yzf2luIY9kN/WVrqMOEEhpie7a1JCoV8PxKfF7ZsBq1MSbynBrgmJ/0G8
-	ZxSoSjSk+MX665A3cbZFKu1gKOPna55GAkVF91br9adMhh4PNkUAXQV2JhQDci4qKmmejm
-	JL2SGM4FZHA5FflxtIvKquzoswqNZ3772Bw7PYJFrEI13XKigy9mEFjpYofCBWCbm8cCGy
-	ekDso4pH4pexQ/dQvsW+ccS6C8ALdQM9DHAkXv9hA7YZiY3GXIkRlLIWyj4lqg==
+	s=arc-20240116; t=1708958217; c=relaxed/simple;
+	bh=QvIfkotJQxMfa11Ye+5Mx3wJUOol1gW3+VkFSNADlgU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=M29P2vdem1OjHlksJjqjywDbtnQZrUDmhm1qKcvm1LEyfDFt7hOKJ4IvNWFUp96CGXh7LPyd3XzLqaMR61U9keQRh7Yg/u4S3BQ6T8F1ZdHGyZpXLDBfGiXHX2J6KHKKos2zjzDjA1wQ1Cnrz4s0O4ywyyMXYt39PBF0ZsuCRkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PDNLVYDu; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e0f43074edso2168511a34.1;
+        Mon, 26 Feb 2024 06:36:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708958214; x=1709563014; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HdqH8jVNXmEu4zs1zan2Z9bnYeRZlguwUihIbfO84eA=;
+        b=PDNLVYDuhvgcfAQ5VsTHEfTR5kK26G412sx+wCWD6+hkKZ8441GE6au7P4C5lozW+Y
+         ffjIA8e18VL9SnNmE8IitGQFu4bBGiK3W6+9Zgvclo39zcmpprr2zny9Om/viMQqmB/G
+         roGDmCk2bXF94wDcawunQECGhZeKbjO0zinG3wb3BBwMJ+OYFHNzbRXt2LVsrK9A8i9L
+         7V/ZdlGhKAXRIPdh7jWXIr5rht3FNOXvTl3l9ddHJmbuxTxHmP5IMsEpxBpAgmGjAUJ0
+         nxiYr6M4/qsutgzgBXumth6iJSSZ2Z3CUM7HKDplkzfKbxCX6Iu+WFbZBL0EhuexUI/r
+         MpqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708958214; x=1709563014;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HdqH8jVNXmEu4zs1zan2Z9bnYeRZlguwUihIbfO84eA=;
+        b=YvdHQHsVs9fAZpfSJqOJk0c4Mn+HRlH8Gu8S829qVHgjze/Bw7ghU0TZ0qOHYztZQk
+         1TcjwWH7WKLFITdADMSTGBUWHMECpRD4xnQZsSOKsu1+C59wjbYc64AA6HRCEiXai37i
+         5rYbxbuP75CNiC9aRkWeT5bItQ/bFzIfBNKh6ZIoqkKriLkxmvrv2W5GJBDP9rLtYRGB
+         UXv92AAWWR3QYbN5Qct/bxbteX9RLZdEGwLDT/wvwcjxexowUt3SKHaTi5oR2X5pOmwH
+         kl6m1vRjjZ+oh5tTX98F3yg8TPV8Otol51iDRUfGl7gRSRniSIgNEp5ixoP9GAXiI0CF
+         TRKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWlmXSvpFPrNAWQsMOk668SDXDCHAm9uCEWYMfDLU8JR83KDdJEH/FFtyXlbTrZqcYfE1obsgSN5c3ipWLT90pOht+M
+X-Gm-Message-State: AOJu0YxS8PhHJ3IF327hVzN5iQmAwP8Ufmy76/XL2R7kimau2aWYbp6g
+	ubYtREn2G7TAT3LEweqqvchAYj8Hix9XZ9Cf4xtnMRaMn1kR0Q7FyMaLmmFw
+X-Google-Smtp-Source: AGHT+IGzhilLnOqDnW8DtlnwMh+tC9Pj86iMFec5r5I9e0Ve/nJKQ5bcBi6m3xQOLVYQTSM7JwtmLA==
+X-Received: by 2002:a05:6358:4428:b0:17a:def8:5687 with SMTP id z40-20020a056358442800b0017adef85687mr5692172rwc.27.1708958214434;
+        Mon, 26 Feb 2024 06:36:54 -0800 (PST)
+Received: from localhost ([47.254.32.37])
+        by smtp.gmail.com with ESMTPSA id d4-20020a634f04000000b005d8b2f04eb7sm3922538pgb.62.2024.02.26.06.36.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 26 Feb 2024 06:36:54 -0800 (PST)
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Hou Wenlong <houwenlong.hwl@antgroup.com>,
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	x86@kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	Juergen Gross <jgross@suse.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [RFC PATCH 42/73] KVM: x86/PVM: Support for kvm_exit() tracepoint
+Date: Mon, 26 Feb 2024 22:35:59 +0800
+Message-Id: <20240226143630.33643-43-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20240226143630.33643-1-jiangshanlai@gmail.com>
+References: <20240226143630.33643-1-jiangshanlai@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 26 Feb 2024 15:35:59 +0100
-Message-Id: <CZF33W51MC4M.3GUBZFQXT39DB@bootlin.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v3 1/8] dt-bindings: usb: ti,j721e-usb: drop useless
- compatible list
-Cc: "Conor Dooley" <conor@kernel.org>, "Greg Kroah-Hartman"
- <gregkh@linuxfoundation.org>, "Rob Herring" <robh+dt@kernel.org>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
- <conor+dt@kernel.org>, "Roger Quadros" <rogerq@kernel.org>, "Peter Chen"
- <peter.chen@kernel.org>, "Pawel Laszczak" <pawell@cadence.com>, "Nishanth
- Menon" <nm@ti.com>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Tero Kristo"
- <kristo@kernel.org>, "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
- =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Kevin
- Hilman" <khilman@kernel.org>, "Alan Stern" <stern@rowland.harvard.edu>,
- <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-To: "Conor Dooley" <conor.dooley@microchip.com>
-X-Mailer: aerc 0.15.2
-References: <20240223-j7200-usb-suspend-v3-0-b41c9893a130@bootlin.com>
- <20240223-j7200-usb-suspend-v3-1-b41c9893a130@bootlin.com>
- <20240223-clarity-variably-206b01b7276a@spud>
- <CZEXXXQDZZWB.1M5CTZAFVO4YP@bootlin.com>
- <20240226-portable-rockslide-e501667a0d9a@wendy>
-In-Reply-To: <20240226-portable-rockslide-e501667a0d9a@wendy>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Hello,
+From: Hou Wenlong <houwenlong.hwl@antgroup.com>
 
-On Mon Feb 26, 2024 at 12:56 PM CET, Conor Dooley wrote:
-> On Mon, Feb 26, 2024 at 11:33:06AM +0100, Th=C3=A9o Lebrun wrote:
-> > Hello Conor,
-> >=20
-> > On Fri Feb 23, 2024 at 7:12 PM CET, Conor Dooley wrote:
-> > > On Fri, Feb 23, 2024 at 05:05:25PM +0100, Th=C3=A9o Lebrun wrote:
-> > > > Compatible can be A or B, not A or B or A+B. Remove last option.
-> > > > A=3Dti,j721e-usb and B=3Dti,am64-usb.
-> > > >=20
-> > > > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 9 +++---=
+Similar to VMX/SVM, add necessary information to support kvm_exit()
+tracepoint.
+
+Suggested-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
+Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 ---
-> > > >  1 file changed, 3 insertions(+), 6 deletions(-)
-> > > >=20
-> > > > diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yam=
-l b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > > > index 95ff9791baea..949f45eb45c2 100644
-> > > > --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > > > +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
-> > > > @@ -11,12 +11,9 @@ maintainers:
-> > > > =20
-> > > >  properties:
-> > > >    compatible:
-> > > > -    oneOf:
-> > > > -      - const: ti,j721e-usb
-> > > > -      - const: ti,am64-usb
-> > > > -      - items:
-> > > > -          - const: ti,j721e-usb
-> > > > -          - const: ti,am64-usb
-> > >
-> > > Correct, this makes no sense. The devices seem to be compatible thoug=
-h,
-> > > so I would expect this to actually be:
-> > > oneOf:
-> > >   - const: ti,j721e-usb
-> > >   - items:
-> > >       - const: ti,am64-usb
-> > >       - const: ti,j721e-usb
-> >=20
-> > I need your help to grasp what that change is supposed to express? Woul=
-d
-> > you mind turning it into english sentences?
-> > A=3Dti,j721e-usb and B=3Dti,am64-usb. My understanding of your proposal=
- is
-> > that a device can either be compat with A or B. But B is compatible
-> > with A so you express it as a list of items. If B is compat with A then
-> > A is compat with B. Does the order of items matter?
->
-> The two devices are compatible with each other, based on an inspection of
-> the driver and the existing "A+B" setup. If this was a newly submitted
-> binding, "B" would not get approved because "A+B" allows support without
-> software changes and all that jazz.
->
-> Your patch says that allowing "A", "B" and "A+B" makes no sense and you
-> suggest removing "A+B". I am agreeing that it makes no sense to allow
-> all 3 of these situations.
->
-> What I also noticed is other problems with the binding. What should have
-> been "A+B" is actually documented as "B+A", but that doesn't make sense
-> when the originally supported device is "A".
->
-> Therefore my suggestion was to only allow "A" and "A+B", which is what
-> we would (hopefully) tell you to do were you submitting the am64 support
-> as a new patch today.
+ arch/x86/kvm/pvm/pvm.c | 41 +++++++++++++++++++++++++++++++++++++++++
+ arch/x86/kvm/pvm/pvm.h | 35 +++++++++++++++++++++++++++++++++++
+ arch/x86/kvm/trace.h   |  7 ++++++-
+ 3 files changed, 82 insertions(+), 1 deletion(-)
 
-Thank you for the in-depth explanation! It makes much more sense now,
-especially the handling of historic stuff that ideally wouldn't have
-been done this way but that won't be changed from now on.
-
-> > I've not applied your proposal to check for dtbs_check but I'd guess it
-> > would throw warnings for the single existing upstream DTSI (as of
-> > v6.8-rc6) that uses "ti,am64-usb"? See:
-> > arch/arm64/boot/dts/ti/k3-am64-main.dtsi.
->
-> Yeah, it would but it's not as if that cannot be changed. There's no
-> concerns here about backwards compatibility here, right?
-
-I'm not involved in the maintenance of this platform so I do not believe
-I should be answering this question. I asked the question because I
-taught there always were concerns of backwards-compat when it comes to
-DT and dt-bindings (in the best of all possible worlds).
-
-K3 maintainers are already in cc.
-
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/arch/x86/kvm/pvm/pvm.c b/arch/x86/kvm/pvm/pvm.c
+index e68052f33186..6ac599587567 100644
+--- a/arch/x86/kvm/pvm/pvm.c
++++ b/arch/x86/kvm/pvm/pvm.c
+@@ -1996,6 +1996,43 @@ static int pvm_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+ 	return 0;
+ }
+ 
++static u32 pvm_get_syscall_exit_reason(struct kvm_vcpu *vcpu)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++	unsigned long rip = kvm_rip_read(vcpu);
++
++	if (is_smod(pvm)) {
++		if (rip == pvm->msr_retu_rip_plus2)
++			return PVM_EXIT_REASONS_ERETU;
++		else if (rip == pvm->msr_rets_rip_plus2)
++			return PVM_EXIT_REASONS_ERETS;
++		else
++			return PVM_EXIT_REASONS_HYPERCALL;
++	}
++
++	return PVM_EXIT_REASONS_SYSCALL;
++}
++
++static void pvm_get_exit_info(struct kvm_vcpu *vcpu, u32 *reason, u64 *info1, u64 *info2,
++			      u32 *intr_info, u32 *error_code)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++
++	if (pvm->exit_vector == PVM_SYSCALL_VECTOR)
++		*reason = pvm_get_syscall_exit_reason(vcpu);
++	else if (pvm->exit_vector == IA32_SYSCALL_VECTOR)
++		*reason = PVM_EXIT_REASONS_INT80;
++	else if (pvm->exit_vector >= FIRST_EXTERNAL_VECTOR &&
++		 pvm->exit_vector < NR_VECTORS)
++		*reason = PVM_EXIT_REASONS_INTERRUPT;
++	else
++		*reason = pvm->exit_vector;
++	*info1 = pvm->exit_vector;
++	*info2 = pvm->exit_error_code;
++	*intr_info = pvm->exit_vector;
++	*error_code = pvm->exit_error_code;
++}
++
+ static void pvm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_pvm *pvm = to_pvm(vcpu);
+@@ -2298,6 +2335,8 @@ static fastpath_t pvm_vcpu_run(struct kvm_vcpu *vcpu)
+ 	mark_page_dirty_in_slot(vcpu->kvm, pvm->pvcs_gpc.memslot,
+ 				pvm->pvcs_gpc.gpa >> PAGE_SHIFT);
+ 
++	trace_kvm_exit(vcpu, KVM_ISA_PVM);
++
+ 	return EXIT_FASTPATH_NONE;
+ }
+ 
+@@ -2627,6 +2666,8 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
+ 	.refresh_apicv_exec_ctrl = pvm_refresh_apicv_exec_ctrl,
+ 	.deliver_interrupt = pvm_deliver_interrupt,
+ 
++	.get_exit_info = pvm_get_exit_info,
++
+ 	.vcpu_after_set_cpuid = pvm_vcpu_after_set_cpuid,
+ 
+ 	.check_intercept = pvm_check_intercept,
+diff --git a/arch/x86/kvm/pvm/pvm.h b/arch/x86/kvm/pvm/pvm.h
+index f28ab0b48f40..2f8fdb0ae3df 100644
+--- a/arch/x86/kvm/pvm/pvm.h
++++ b/arch/x86/kvm/pvm/pvm.h
+@@ -10,6 +10,41 @@
+ #define PVM_SYSCALL_VECTOR		SWITCH_EXIT_REASONS_SYSCALL
+ #define PVM_FAILED_VMENTRY_VECTOR	SWITCH_EXIT_REASONS_FAILED_VMETNRY
+ 
++#define PVM_EXIT_REASONS_SHIFT		16
++#define PVM_EXIT_REASONS_SYSCALL	(1UL << PVM_EXIT_REASONS_SHIFT)
++#define PVM_EXIT_REASONS_HYPERCALL	(2UL << PVM_EXIT_REASONS_SHIFT)
++#define PVM_EXIT_REASONS_ERETU		(3UL << PVM_EXIT_REASONS_SHIFT)
++#define PVM_EXIT_REASONS_ERETS		(4UL << PVM_EXIT_REASONS_SHIFT)
++#define PVM_EXIT_REASONS_INTERRUPT	(5UL << PVM_EXIT_REASONS_SHIFT)
++#define PVM_EXIT_REASONS_INT80		(6UL << PVM_EXIT_REASONS_SHIFT)
++
++#define PVM_EXIT_REASONS		\
++	{ DE_VECTOR, "DE excp" },	\
++	{ DB_VECTOR, "DB excp" },	\
++	{ NMI_VECTOR, "NMI excp" },	\
++	{ BP_VECTOR, "BP excp" },	\
++	{ OF_VECTOR, "OF excp" },	\
++	{ BR_VECTOR, "BR excp" },	\
++	{ UD_VECTOR, "UD excp" },	\
++	{ NM_VECTOR, "NM excp" },	\
++	{ DF_VECTOR, "DF excp" },	\
++	{ TS_VECTOR, "TS excp" },	\
++	{ SS_VECTOR, "SS excp" },	\
++	{ GP_VECTOR, "GP excp" },	\
++	{ PF_VECTOR, "PF excp" },	\
++	{ MF_VECTOR, "MF excp" },	\
++	{ AC_VECTOR, "AC excp" },	\
++	{ MC_VECTOR, "MC excp" },	\
++	{ XM_VECTOR, "XM excp" },	\
++	{ VE_VECTOR, "VE excp" },	\
++	{ PVM_EXIT_REASONS_SYSCALL, "SYSCALL" },	\
++	{ PVM_EXIT_REASONS_HYPERCALL, "HYPERCALL" },	\
++	{ PVM_EXIT_REASONS_ERETU, "ERETU" },		\
++	{ PVM_EXIT_REASONS_ERETS, "ERETS" },		\
++	{ PVM_EXIT_REASONS_INTERRUPT, "INTERRUPT" },	\
++	{ PVM_EXIT_REASONS_INT80, "INT80" },		\
++	{ PVM_FAILED_VMENTRY_VECTOR, "FAILED_VMENTRY" }
++
+ #define PT_L4_SHIFT		39
+ #define PT_L4_SIZE		(1UL << PT_L4_SHIFT)
+ #define DEFAULT_RANGE_L4_SIZE	(32 * PT_L4_SIZE)
+diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
+index 83843379813e..3d6549679e98 100644
+--- a/arch/x86/kvm/trace.h
++++ b/arch/x86/kvm/trace.h
+@@ -8,6 +8,8 @@
+ #include <asm/clocksource.h>
+ #include <asm/pvclock-abi.h>
+ 
++#include "pvm/pvm.h"
++
+ #undef TRACE_SYSTEM
+ #define TRACE_SYSTEM kvm
+ 
+@@ -282,11 +284,14 @@ TRACE_EVENT(kvm_apic,
+ 
+ #define KVM_ISA_VMX   1
+ #define KVM_ISA_SVM   2
++#define KVM_ISA_PVM   3
+ 
+ #define kvm_print_exit_reason(exit_reason, isa)				\
+ 	(isa == KVM_ISA_VMX) ?						\
+ 	__print_symbolic(exit_reason & 0xffff, VMX_EXIT_REASONS) :	\
+-	__print_symbolic(exit_reason, SVM_EXIT_REASONS),		\
++	((isa == KVM_ISA_SVM) ?						\
++	__print_symbolic(exit_reason, SVM_EXIT_REASONS) :		\
++	__print_symbolic(exit_reason, PVM_EXIT_REASONS)),		\
+ 	(isa == KVM_ISA_VMX && exit_reason & ~0xffff) ? " " : "",	\
+ 	(isa == KVM_ISA_VMX) ?						\
+ 	__print_flags(exit_reason & ~0xffff, " ", VMX_EXIT_REASON_FLAGS) : ""
+-- 
+2.19.1.6.gb485710b
 
 
