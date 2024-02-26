@@ -1,115 +1,116 @@
-Return-Path: <linux-kernel+bounces-80510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1040386690E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:03:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A300E86690F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12CC51C2343E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:03:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40C40B239D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E771CD0C;
-	Mon, 26 Feb 2024 03:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570451CD3E;
+	Mon, 26 Feb 2024 03:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hbazXW/n"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="M7D6Rs9l"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6593D1CA85;
-	Mon, 26 Feb 2024 03:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B8C1CD2F
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708919948; cv=none; b=dKMmmJQnXDs59hzEghivmf2c9gTbDuYAtXjZmIxit9LZ6Y5Vb5UsgO4F713dR1dZIrunJHsGo18HTvWQy98XnroYHk111GA4+y5ShJneIv3JtlHb0InXTm0cNtI6UQxC2uxe6b5Lag1JtCV1udy4s6d498nJ5bXhi6R50iveX3E=
+	t=1708919961; cv=none; b=iPt6FaOWwRJn6UlTen7+tb09d8oxmPiI2FXukJ5yOcQ1J2epWVmKF15VUwVS9ocoCWE7vE1NcL2qfPGppVQDFZZgQUkNSRW/Oqhn4APKGawGn2GZbDFe7QxjsFH5EufrRJnpyw11wgX9RNtq4+JUj6pkblMt0eUWXvJ6QBxZv/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708919948; c=relaxed/simple;
-	bh=+bUIR3Sr3KLkcoy88QRFGtdrGix9yzfmI6AvbnJxv5c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Sg5/cTNYSQAIkGARZmNXS7LC7phiIGCQ73XSPK9+fHtZNr9f1aPzLydTSlcNGMfb29dNH86Kp+J2WzHhS8Lphc9BEEhcLQOy4G6SH+0K2Ln5wJspv17NSxr7kmhyHbv61zzgISnIXpzOKPO4axav/b2KPK34TPuuY4F/lOQWTOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hbazXW/n; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26456C433F1;
-	Mon, 26 Feb 2024 03:59:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708919947;
-	bh=+bUIR3Sr3KLkcoy88QRFGtdrGix9yzfmI6AvbnJxv5c=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hbazXW/nYFyjtKHvoC+N5XOy84OIILjSUms/qyKqD3pgrhQb323DtqyYbVjIj80qH
-	 zFhwQu/yijQ17SmtTzGC2nSFVhCG/EvRgzsBIUlw1CQnrjnatKGo/0Mq/Rl94mNjTw
-	 uV37Fl4NXDg7EbYeIUPFVYHz4fcJZ/J0lJFwX1eVlj+gwpnhY0Kl1opVGZEUVdkHDg
-	 3V1e1w9mhWcc7Ax8IT9cl4M1xqbVdw7JQCrj7D97WOcWWpFbs1GU4ziKKX3oMeBMVC
-	 qrcalUf/Bx8GCwXl5m9dShcL9JEXJZhd5kDei5sNpwYFnbiIzootb+35alNXp4kAyh
-	 AFZRrA13v0Nsw==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Jiri Olsa <jolsa@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	mhiramat@kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 7/7] Documentation: tracing: Add entry argument access at function exit
-Date: Mon, 26 Feb 2024 12:59:03 +0900
-Message-Id: <170891994330.609861.9109792572425248438.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170891987362.609861.6767830614537418260.stgit@devnote2>
-References: <170891987362.609861.6767830614537418260.stgit@devnote2>
-User-Agent: StGit/0.19
+	s=arc-20240116; t=1708919961; c=relaxed/simple;
+	bh=618httmeWCIIGJJeFM0I/PfO2VgZGTGYJmRi/GlI1l0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I3LN1408VpZAJ8UlLueONPUf886Z0tT6UNCKAfWpzKsGa3kPM0G5kMki1F++MPY5NTi9Aq3pm4tbVeyZ7dYQzfDKQwzbYLPPCRFkZEEgoL2MBwZbCWYEDwuYmPgBPM/BdDqnsgvUT9zHt9W72VBvEAOm6oHucSIFT+NHrpqjEj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=M7D6Rs9l; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc418fa351so12379835ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 19:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=darkphysics.net; s=google; t=1708919959; x=1709524759; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xOsrd801zJsct3pzB+qM0qFvoaKTOFPWMLrZ/GwwX1Y=;
+        b=M7D6Rs9lsSDPcan3c1iN7OOGmc5yD7d9TR+0HsT3g4V5jfrPyUCdMNdOylOJGhj8TG
+         JehJkzoLI7JSr5dES5PLbLa3T68p3elxXO96KIZ8VO2+FA98QtvjCNMtTQ9X1MJ6Mfdw
+         rQFte8BQbBuTHY3lXQK4MwpV7zPn/vjCXHkejbjJes90PUVjba6ZFhyucMEBZ2SxQVKy
+         SddqP8sst0Pi8xp+9sulCq3bR9GDgefXO4lDUUGufbf6vTSXVBNKEB2e6jMEig/qE/Io
+         egA52IIfuAABF1sjSoRXMw+n9XM0W+V+qF98Gzn8RKe2Fh0l8k+kmme/rKZHx9gvt1Om
+         ne8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708919959; x=1709524759;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xOsrd801zJsct3pzB+qM0qFvoaKTOFPWMLrZ/GwwX1Y=;
+        b=gOGm88ATjtvHsMNYGS1SiGelGdPd1rUm4Vn8styxfldb1BTq27DGZiu78V18yzHUZA
+         X67i33ql6HmptJO0cG3LEUaIIAnHQuZzHwwD4Tii5UWSGRJgGdK1IuxzdQiWcl3L/fn0
+         zvCFYwbscicEkWImkJVVhKVzksB8cFeGjA2u/SeQ4UA0mauNPlqcsdIlVTC+FtKQ3uDe
+         zqMsfKd4ZnGZlAww5fl/rdy+6QFrs5/mlVcudV7hwRYlTmgpcps4O0AQwapVj6v2YJAt
+         9Uw+u+fJrvFvVbg3OVInDNKPSUxq5rKqNcJkvtAYqrxTbVbitaw13dGfK8knXdEeA/8s
+         Mtiw==
+X-Forwarded-Encrypted: i=1; AJvYcCX6l4hRUll1nmIhW2UTzlPaKfjYDhxjN9zXzXU9MkHH7Q82QFyXjQi1eJyA//jAgXAGQ4HkQ1F8U68zA/qx752K1PtnM5mkjvvMSbex
+X-Gm-Message-State: AOJu0YxT0FmOywfgRpefP7bXrDQVccZIdrUJlGm4ErlIIB2prm9361l6
+	jMNpd10G1jeDS3jyLVZyVgo+DfVZnBTwXGStEfBSVAAPZ5yyeqbw7Cj9CikCyPSZv4eCf3dcnfL
+	D
+X-Google-Smtp-Source: AGHT+IHnQD5q9kiyidY9XUm4GTNj/1IOQwkucBz96milIytJRdhSpAhuFAR4zIocKpdP2sWYK36cqw==
+X-Received: by 2002:a17:903:182:b0:1dc:88bd:64db with SMTP id z2-20020a170903018200b001dc88bd64dbmr6045943plg.21.1708919959609;
+        Sun, 25 Feb 2024 19:59:19 -0800 (PST)
+Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
+        by smtp.gmail.com with ESMTPSA id iy13-20020a170903130d00b001da105d6a83sm2893426plb.224.2024.02.25.19.59.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Feb 2024 19:59:19 -0800 (PST)
+From: Tree Davies <tdavies@darkphysics.net>
+To: gregkh@linuxfoundation.org,
+	philipp.g.hortmann@gmail.com,
+	anjan@momi.ca
+Cc: linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Tree Davies <tdavies@darkphysics.net>
+Subject: [PATCH 0/8] Staging: rtl8192e: Fix Checkpatch warnings in rtl819x_BAProc.c
+Date: Sun, 25 Feb 2024 19:59:07 -0800
+Message-Id: <20240226035915.370478-1-tdavies@darkphysics.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+This series fixes the remaining checkpatch issues in rtl819x_BAProc.c
+These patches are to be applied after patch-series:
+'[PATCH 00/20] Staging: rtl8192e: Fix checkpatch warning for rtllib_softmac.c ''
+Thank you to all reviewers                                                      
+~ Tree Davies  
 
-Add a notes about the entry argument access at function exit probes for
-kprobes and fprobe trace event.
+Tree Davies (8):
+  Staging: rtl8192e: Fix 5 chckpatch alignment warnings in
+    rtl819x_BAProc.c
+  Staging: rtl8192e: Rename variable TxRxSelect
+  Staging: rtl8192e: Rename function rtllib_send_ADDBAReq()
+  Staging: rtl8192e: Rename function rtllib_send_ADDBARsp()
+  Staging: rtl8192e: Rename goto OnADDBAReq_Fail
+  Staging: rtl8192e: Rename goto OnADDBARsp_Reject
+  Staging: rtl8192e: Rename function rtllib_FlushRxTsPendingPkts()
+  Staging: rtl8192e: Rename function GetHalfNmodeSupportByAPsHandler()
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Documentation/trace/fprobetrace.rst |    7 +++++++
- Documentation/trace/kprobetrace.rst |    7 +++++++
- 2 files changed, 14 insertions(+)
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  2 +-
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.c   |  2 +-
+ drivers/staging/rtl8192e/rtl819x_BAProc.c    | 66 ++++++++++----------
+ drivers/staging/rtl8192e/rtl819x_HTProc.c    |  8 +--
+ drivers/staging/rtl8192e/rtl819x_TSProc.c    | 24 +++----
+ drivers/staging/rtl8192e/rtllib.h            |  8 +--
+ drivers/staging/rtl8192e/rtllib_rx.c         |  2 +-
+ 7 files changed, 56 insertions(+), 56 deletions(-)
 
-diff --git a/Documentation/trace/fprobetrace.rst b/Documentation/trace/fprobetrace.rst
-index e35e6b18df40..ab71ebf178cb 100644
---- a/Documentation/trace/fprobetrace.rst
-+++ b/Documentation/trace/fprobetrace.rst
-@@ -70,6 +70,13 @@ Synopsis of fprobe-events
- 
- For the details of TYPE, see :ref:`kprobetrace documentation <kprobetrace_types>`.
- 
-+Function arguments at exit
-+--------------------------
-+Function arguments can be accessed at exit probe using $arg<N> fetcharg. This
-+is useful to record the function parameter and return value at once, and
-+trace the difference of structure fields (for debuging a function whether it
-+correctly updates the given data structure or not)
-+
- BTF arguments
- -------------
- BTF (BPF Type Format) argument allows user to trace function and tracepoint
-diff --git a/Documentation/trace/kprobetrace.rst b/Documentation/trace/kprobetrace.rst
-index bf9cecb69fc9..35a383f95746 100644
---- a/Documentation/trace/kprobetrace.rst
-+++ b/Documentation/trace/kprobetrace.rst
-@@ -70,6 +70,13 @@ Synopsis of kprobe_events
-   (\*3) this is useful for fetching a field of data structures.
-   (\*4) "u" means user-space dereference. See :ref:`user_mem_access`.
- 
-+Function arguments at kretprobe
-+-------------------------------
-+Function arguments can be accessed at kretprobe using $arg<N> fetcharg. This
-+is useful to record the function parameter and return value at once, and
-+trace the difference of structure fields (for debuging a function whether it
-+correctly updates the given data structure or not)
-+
- .. _kprobetrace_types:
- 
- Types
+-- 
+2.39.2
 
 
