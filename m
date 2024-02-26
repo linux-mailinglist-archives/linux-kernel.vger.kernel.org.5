@@ -1,199 +1,154 @@
-Return-Path: <linux-kernel+bounces-81831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D39867A93
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:44:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C3B867A91
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:44:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21816294C14
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:44:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 118801F249E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:44:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B3712C7FB;
-	Mon, 26 Feb 2024 15:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A135012C54A;
+	Mon, 26 Feb 2024 15:44:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="VrsStQxc"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="ib8A4GsB"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2822012BEBD;
-	Mon, 26 Feb 2024 15:43:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9AF12B153
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:43:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708962243; cv=none; b=ChXHu7IluvBvSd4CJ3E0VRM5gyFUTD4c5vgiXQFYn6q1sFRvOuiFarwoDF2L5aacCywFjwf9craLn/BglWrlx2tkDwr/WSOQqzwf8lb/r4Fi8tapPCzcbk2wdcP3UyS+LbdbBSvSWNV4xTrNGDwFyf8R/SVOmH8NsMsCma5NIzQ=
+	t=1708962240; cv=none; b=qVp33Bs8nfnrhw9yt0327nXZQ8xnq2u7m82EQP/pX6atrlMWLIMa0uS88fAHiRyY3xQ84iCRdSiW/eZHmw7s5Hqa9sjbXoRAUcgsW1BZKMG62WlzTRPN9cCZkWp/q1qfa0k4A+giMeO0sUYlwdbiaTOdQbILJJcVyxOnJlWLW4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708962243; c=relaxed/simple;
-	bh=p19kTaortInEha0cwpwtBZnqivplGiTeVDdaQ9egqbU=;
+	s=arc-20240116; t=1708962240; c=relaxed/simple;
+	bh=2wyf2ujb08m8GhazXh3Gyxy718s5Mv9dJyv60Q7wujU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MkRr7oFhca9p+s2UgEa98fH2Iargimx05JG1fChH+Vn1CoCU2OSPCkOzY4OxfFoaSPvIRBWYRGopeN7FodpO5B4nSAtkczYkGkL4vZ2jdZxXQNNI0JqJUjkrnL75aDu+0WVCj/vYIgJJZtAy/gbBfPa4SFxXO438wKTFSI+d5NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=VrsStQxc; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BD49B40E0192;
-	Mon, 26 Feb 2024 15:43:57 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id zQBq6k5xoCaZ; Mon, 26 Feb 2024 15:43:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1708962234; bh=MQZvRp1V0lIMTMZthnsmol8I4kRgnl75tJYZUkvpj8U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VrsStQxcO/dy3x+x3wa1y1hi5a5pKkUi36+spe97eUaQOa6OwLy03JeVYFDTTlxSm
-	 b7nv6Obb27or0Kez96zL+EV3dte70DQWWtYY5nXaJ43mgx5E9iIt2bAmZku6QOmGQm
-	 j0ehgJ8cXjloiGZpVXsbe1VTmTdzBYX6q2yqat0yX+SHtdivV/ZtoyTjcdUxeQuFvK
-	 C4gAZQodqzv858TLzmEYk8ipxM0LsuQJnRkUCVEyBk4kBglYhRie4+eSbOjSFfbTY9
-	 7Mqd7OKoLQHKdKOxhdOpsydjkBre6SHTUjMYxfdLudckSH0RiQyJGecGrQFAl9gVu2
-	 ZiQAq1Ha19Xmu6/J9pioJt9RLBpHy34pQ27fyOU9XzbueP/l9slxGncgfedfwmK2wO
-	 L8fSldA53IXqtvNxH87t8827Dlx0uQ23g6LnKlfrBYPlxln4eXIO0ST+tt+sm6sRHR
-	 TGL9tKSjcjeNuj5LJZDUtbqIgKqhBXmlXOGVpmH0DBz0K1n6A8cn+txqlLmQZrAjp2
-	 rAKPp/RAtEqNnQe/wM6Cu800xrz3mMNaY8iAOlBkxoWryUyaznS8Wb1mFRBvvhXkGG
-	 B8uAAQzyB9KShfv++tjeuh2xUPk9VBdY4b5U3QrxvbZycKbYZy+udD4LWXrhd+no2r
-	 rrWsanG6VV9X6CgsYs+YxoLQ=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AC90D40E016C;
-	Mon, 26 Feb 2024 15:43:45 +0000 (UTC)
-Date: Mon, 26 Feb 2024 16:43:39 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com, sathyapriya.k@amd.com,
-	naveenkrishna.chatradhi@amd.com
-Subject: Re: [PATCH 1/3] RAS: Export ras_debugfs_dir
-Message-ID: <20240226154339.GDZdyxq7YoDLPXdi8x@fat_crate.local>
-References: <20240226152941.2615007-1-yazen.ghannam@amd.com>
- <20240226152941.2615007-2-yazen.ghannam@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kw7h12zayHYac9TftQOYMRYxBswQJWgl/txjcdTNrsSRVBslBsjSvU7Hw6YruJSCvssvjaTSt24P9T3Zt6RTq6/qT0+MY2QU5CDhbJpPKfMr6NNw3Bg+JvnOPcNmUP3iearZfsOrSmDI+zNqPOYho6NqWFeaP58Yi12Q5Ptry/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=ib8A4GsB; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412a57832fcso7227455e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:43:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1708962236; x=1709567036; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XvYdJ2bX5RdvpWqE29LP7ldFuj3uxxQcDnVOS9BvGUM=;
+        b=ib8A4GsBiqQLqYS/ehmOBluq139i2a+2RkThpYyph6LFfdWpuDoWiO+072rWRIdqtN
+         Yx2YrJKCGrDtIUhxlt1eb1etUIMHCvzYO0RYy0aO1gdw/FfR4a9/LGT6l6WYRkZERDSp
+         qngNOvAg071CnAOREV2KgOvNWIV6M63p2ulOns7w03yo+V0HTghTDcNpt+3qXfA3ZDDV
+         O2oGUOCYGQpLbjeQps0iFrYwUbBN+ILhK368ktAYZmL1EgVFkYma6PtM73FmOrl44RW9
+         IsVOEDX5ZHnSuLluJDwgjRouB30ydUaLP0BOX/pkbbpvAICdpoBenfJ8Uz/vfC1VCbkN
+         tQiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708962236; x=1709567036;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XvYdJ2bX5RdvpWqE29LP7ldFuj3uxxQcDnVOS9BvGUM=;
+        b=FfMrECWgGb6LwJagyykqd+cIyqFTwJN3dGFcI9UG6Tqdu24IGInGnkAX670EtYLrF4
+         YbjzTT8AqL7G4tjuztS6e72IdcIFYKUTquTw0pR7/zF5MFfEX7jN3pEB+epjx13RrWTZ
+         jQ9LxcZVsZFQ7zLbq3G8Wus0uWTABvOsokKOubQXqEz0vPFp3yWMZ2EZbfyGp/FI9Pg+
+         CrV3Cl/gzGqpTTCHIrocnLc7HMqqNW3JR5UB0RLPHmM8MvO/g4ULc2S5z6tg1qL8BLY3
+         9YQgiEgwiJEr+JWhR5RWM7OyB/juz/GvnHah1z8CCWlsSQMQU/IZHHfkwl+V+VovqQJw
+         xocw==
+X-Forwarded-Encrypted: i=1; AJvYcCWv7Oer6TY1gdw4CC9yVGvvzOxS9m0LqMwMydTT8TD1F+kl6aPjHCLIxQQUnQhhBfXUYEsXN+UgG3aUK4iRzMbeE7FxsvAO44chLVU4
+X-Gm-Message-State: AOJu0Yz1hT3gFiKrs1LUnUjm+1PqhbuRrezRgzPi3G6jXXW09JoUH8J0
+	MUJynlJd+NRdRFuyVFNuYFtID/WY+yVUMFqStUtqWMx3l7nZ2j75EU8luRPRsGs=
+X-Google-Smtp-Source: AGHT+IFhLwI5PSlJ0OM2xL/E+xxgK4oP1sElYrCNx5Enleue6GFv0SvYJepL5iZYrAujYqejlWV7jg==
+X-Received: by 2002:a05:600c:3ba3:b0:412:11ad:b891 with SMTP id n35-20020a05600c3ba300b0041211adb891mr4787527wms.6.1708962236419;
+        Mon, 26 Feb 2024 07:43:56 -0800 (PST)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id k20-20020a05600c0b5400b004129018510esm12410716wmr.22.2024.02.26.07.43.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 07:43:55 -0800 (PST)
+Date: Mon, 26 Feb 2024 16:43:52 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Michael Chan <michael.chan@broadcom.com>,
+	Somnath Kotur <somnath.kotur@broadcom.com>,
+	Pavan Chebbi <pavan.chebbi@broadcom.com>,
+	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] bnxt_en: fix accessing vnic_info before
+ allocating it
+Message-ID: <ZdyxuDFY9_LpXr89@nanopsycho>
+References: <20240226144911.1297336-1-aleksander.lobakin@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240226152941.2615007-2-yazen.ghannam@amd.com>
+In-Reply-To: <20240226144911.1297336-1-aleksander.lobakin@intel.com>
 
-On Mon, Feb 26, 2024 at 09:29:39AM -0600, Yazen Ghannam wrote:
-> ...so that RAS modules can use it.
-> 
-> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> ---
->  drivers/ras/debugfs.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/ras/debugfs.c b/drivers/ras/debugfs.c
-> index ffb973c328e3..fd3d4595c122 100644
-> --- a/drivers/ras/debugfs.c
-> +++ b/drivers/ras/debugfs.c
-> @@ -4,6 +4,7 @@
->  #include "debugfs.h"
->  
->  struct dentry *ras_debugfs_dir;
-> +EXPORT_SYMBOL_GPL(ras_debugfs_dir);
+Mon, Feb 26, 2024 at 03:49:11PM CET, aleksander.lobakin@intel.com wrote:
+>bnxt_alloc_mem() dereferences ::vnic_info in the variable declaration
+>block, but allocates it much later. As a result, the following crash
+>happens on my setup:
+>
+> BUG: kernel NULL pointer dereference, address: 0000000000000090
+> fbcon: Taking over console
+> #PF: supervisor write access in kernel mode
+> #PF: error_code (0x0002) - not-present page
+> PGD 12f382067 P4D 0
+> Oops: 8002 [#1] PREEMPT SMP NOPTI
+> CPU: 47 PID: 2516 Comm: NetworkManager Not tainted 6.8.0-rc5-libeth+ #49
+> Hardware name: Intel Corporation M50CYP2SBSTD/M58CYP2SBSTD, BIOS SE5C620.86B.01.01.0088.2305172341 05/17/2023
+> RIP: 0010:bnxt_alloc_mem+0x1609/0x1910 [bnxt_en]
+> Code: 81 c8 48 83 c8 08 31 c9 e9 d7 fe ff ff c7 44 24 Oc 00 00 00 00 49 89 d5 e9 2d fe ff ff 41 89 c6 e9 88 00 00 00 48 8b 44 24 50 <80> 88 90 00 00 00 Od 8b 43 74 a8 02 75 1e f6 83 14 02 00 00 80 74
+> RSP: 0018:ff3f25580f3432c8 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: ff15a5cfc45249e0 RCX: 0000002079777000
+> RDX: ff15a5dfb9767000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: ff15a5dfb9777000 R11: ffffff8000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000020 R15: ff15a5cfce34f540
+> FS:  000007fb9a160500(0000) GS:ff15a5dfbefc0000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CRO: 0000000080050033
+> CR2: 0000000000000090 CR3: 0000000109efc00Z CR4: 0000000000771ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DRZ: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+>
+> Call Trace:
+> <TASK>
+> ? __die_body+0x68/0xb0
+> ? page_fault_oops+0x3a6/0x400
+> ? exc_page_fault+0x7a/0x1b0
+> ? asm_exc_page_fault+0x26/8x30
+> ? bnxt_alloc_mem+0x1609/0x1910 [bnxt_en]
+> ? bnxt_alloc_mem+0x1389/8x1918 [bnxt_en]
+> _bnxt_open_nic+0x198/0xa50 [bnxt_en]
+> ? bnxt_hurm_if_change+0x287/0x3d0 [bnxt_en]
+> bnxt_open+0xeb/0x1b0 [bnxt_en]
+> _dev_open+0x12e/0x1f0
+> _dev_change_flags+0xb0/0x200
+> dev_change_flags+0x25/0x60
+> do_setlink+0x463/0x1260
+> ? sock_def_readable+0x14/0xc0
+> ? rtnl_getlink+0x4b9/0x590
+> ? _nla_validate_parse+0x91/0xfa0
+> rtnl_newlink+0xbac/0xe40
+> <...>
+>
+>Don't create a variable and dereference the first array member directly
+>since it's used only once in the code.
+>
+>Fixes: ef4ee64e9990 ("bnxt_en: Define BNXT_VNIC_DEFAULT for the default vnic index")
 
-I am never a fan of exporting things so let's add a helper this first,
-in a separate pre-patch.
+Nice example how things may go off when patch is doing multiple things
+at once :)
 
-Also, I'd like to have this:
 
--       fmpm_dfs_dir = debugfs_create_dir(KBUILD_MODNAME, ras_debugfs_dir);
-+       fmpm_dfs_dir = debugfs_create_dir("fmpm", dfs);
+>Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
 
-so that we don't accidentally change the module name and fsck up scripts
-in the process.
-
-Thx.
-
----
-
-diff --git a/drivers/ras/amd/fmpm.c b/drivers/ras/amd/fmpm.c
-index e0811a71e6e7..b8e3e4c81f7e 100644
---- a/drivers/ras/amd/fmpm.c
-+++ b/drivers/ras/amd/fmpm.c
-@@ -913,10 +913,13 @@ static const struct file_operations fmpm_fops = {
- 
- static void setup_debugfs(void)
- {
--	if (!ras_debugfs_dir)
-+	struct dentry *dfs;
-+
-+	dfs = ras_get_debugfs_root();
-+	if (!dfs)
- 		return;
- 
--	fmpm_dfs_dir = debugfs_create_dir(KBUILD_MODNAME, ras_debugfs_dir);
-+	fmpm_dfs_dir = debugfs_create_dir("fmpm", dfs);
- 	if (!fmpm_dfs_dir)
- 		return;
- 
-diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
-index 321af498ee11..e440b15fbabc 100644
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -480,9 +480,15 @@ DEFINE_SHOW_ATTRIBUTE(array);
- 
- static int __init create_debugfs_nodes(void)
- {
--	struct dentry *d, *pfn, *decay, *count, *array;
-+	struct dentry *d, *pfn, *decay, *count, *array, *dfs;
- 
--	d = debugfs_create_dir("cec", ras_debugfs_dir);
-+	dfs = ras_get_debugfs_root();
-+	if (!dfs) {
-+		pr_warn("Error getting RAS debugfs root!\n");
-+		return -1;
-+	}
-+
-+	d = debugfs_create_dir("cec", dfs);
- 	if (!d) {
- 		pr_warn("Error creating cec debugfs node!\n");
- 		return -1;
-diff --git a/drivers/ras/debugfs.c b/drivers/ras/debugfs.c
-index fd3d4595c122..42afd3de68b2 100644
---- a/drivers/ras/debugfs.c
-+++ b/drivers/ras/debugfs.c
-@@ -3,11 +3,16 @@
- #include <linux/ras.h>
- #include "debugfs.h"
- 
--struct dentry *ras_debugfs_dir;
--EXPORT_SYMBOL_GPL(ras_debugfs_dir);
-+static struct dentry *ras_debugfs_dir;
- 
- static atomic_t trace_count = ATOMIC_INIT(0);
- 
-+struct dentry *ras_get_debugfs_root(void)
-+{
-+	return ras_debugfs_dir;
-+}
-+EXPORT_SYMBOL_GPL(ras_get_debugfs_root);
-+
- int ras_userspace_consumers(void)
- {
- 	return atomic_read(&trace_count);
-diff --git a/drivers/ras/debugfs.h b/drivers/ras/debugfs.h
-index c07443b462ad..4749ccdeeba1 100644
---- a/drivers/ras/debugfs.h
-+++ b/drivers/ras/debugfs.h
-@@ -4,6 +4,6 @@
- 
- #include <linux/debugfs.h>
- 
--extern struct dentry *ras_debugfs_dir;
-+struct dentry *ras_get_debugfs_root(void);
- 
- #endif /* __RAS_DEBUGFS_H__ */
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 
