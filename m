@@ -1,95 +1,120 @@
-Return-Path: <linux-kernel+bounces-80529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31677866929
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:09:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB6FC866944
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:12:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 633AC1C21409
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:09:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1948A1C243AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:12:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF291B947;
-	Mon, 26 Feb 2024 04:09:05 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463211B279;
+	Mon, 26 Feb 2024 04:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="mrK4AxRc"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3BE19BBA
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:09:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59C717BC5;
+	Mon, 26 Feb 2024 04:12:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708920545; cv=none; b=fxrTtlaKcz2y4G5k0KJcBFNiFll9AmKRoUpRRbpezr3NxUZYh9+6tE5neHmlDk7p7zYpZG9gXF9txc9XbgBeJ2lxzF6bgbxoB4lq5mgKMszL0b2a3AeaggMeOvZPdzMqncNIcxtK5lnIwbsvOsMx+OFp1zG5QskRmkSOnRkgdIY=
+	t=1708920756; cv=none; b=D1r3MGu+OnPipM47h/ivV0CGN0oY3qAEPAixZAJA9RsowZNLwI/IbSlvWO0Kc9erETtIaYUSwWr6C4NNyeyz6ZulBo93vsBMEEKZSVPLV7LQlp0qdOcCNleP/X3TXdo7rXih+NLlcL0mJhQ3rRN7QVG956bhum5t7wdpqCVMhAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708920545; c=relaxed/simple;
-	bh=sVf87IQzTzV0aVFiMywfSmA3BksnTd1FHjfXa6C0bbk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=WwiQAtlkuRj/EEr+B1+l/flTxF4rucmNHJo0fh/N1A1zOmuepnJrqGK7XJmnz85Xq/biaDycDT3z1ChfjIK8aCnWjFgpZyCbCI0G0h80NOqMWIoOgYVELI4Q+Elo0y5InO07FIMWREvQJRzhB1DBwAFKMqDYqYNBonTbXyfD87Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3651fd50053so24969885ab.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:09:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708920543; x=1709525343;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZNDjEj3dO41B6yHWj0vKf07JfaPf4wfX68sy+dsc0cc=;
-        b=wlnFLARAHscIPnqgTmZ9/D1AYFyKtx/CPFDozo5Q4zrFkzFlcIWIGlNwfQZfdE+qr5
-         D10Ol6kjiyEeMfXcJurFiEtAIh9gmNyugwmHd1vxYWUqC7YPcl35uV6r7KseuxSInuiN
-         o87HuKwfhRQ4ydRfKV/mTxfEwnzATAvIe+a9xGVmEjZRyvUmP+G1Hu3GjVMCPDLihOx1
-         QBpIwHbIyx4E8K652ILd/W9UbK1e8hy1zEoBE1TtLLn5PiYMzGQR/+HZkP4yIUnueTfh
-         2nFlSAS5e8Xn5PWuM1uxJcOOAXjI0NvSNl7pvV89Hyp1EighrULb161VJTrWIFaGl6r0
-         ItbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUAPNduqr/lGIJyTZdxGDfWbu9CWd0Y3abfJBhf9LfxuKYqgJpWQLntvkBKxckEDfV6B5L3AaiJde18OoH/yBMClfx7W0yqdEOX3Kk6
-X-Gm-Message-State: AOJu0Yz4c1h8MCBSBmYQ2uyryf51/ry7DnepuqA1npWGging0sDZscZe
-	aAFfirXJkyBggwIYLI959XpfDqxgV1LEV+V973H7a/ngTbv9DuUFhrl7vUdmE+iU/P+fJR8nRbC
-	hoUdXYU4mK9yiKOt9egfQVKXJcyh8217r5K/GzcKG+a0o4rXwoztLCgc=
-X-Google-Smtp-Source: AGHT+IHGIB6xFgTBe8rarTPKRKsWIcHLb2B4v1XZJ1w4HhxteEbNfAkQ533BJ23mhdcAFx0a27dCQeZQZTB4NpfTSSMAAxlsZQQQ
+	s=arc-20240116; t=1708920756; c=relaxed/simple;
+	bh=Pe94gA4uf1vHFYSF+mnEFT0ytZjmWjUodzwCgag62eU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=S+i0L0I9hMvsN1bu1CFPxvS5LcrTF2t/7GjByAvxVDAGZJRTgBD5hsVCNzw6x73e13d7uMHjeFvjAFdYcX/Kc1RZChEYlOpaDKhu+y5yGBysRt32D7umRsNC3X0Lvl/9rrNjcdYgNWRe0wGbjL3HrzxLKqTYI+R9QlRc3yKifYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=mrK4AxRc; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp118-210-168-240.adl-adc-lon-bras34.tpg.internode.on.net [118.210.168.240])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 85F5A2014E;
+	Mon, 26 Feb 2024 12:12:28 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1708920752;
+	bh=XXRWq9LzaWJldDlLUORe5CRUYm2s2hhDXWkS7OTa4Lg=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=mrK4AxRcBQAiIKCOPTCJmIVgne/8nIuXIhpXuCDvYKC2xvr/0qonrkIXrDVMHnkfV
+	 SJpQ4glDbG8r8ZjSpRe+DY6Ey7JhHXhfcfOaTTqNev7gE4fsswYgJPcRwqQuMxQUhh
+	 BRsglrzdRY+rIyDxyE3sHLuSt/KMh5558ntUPdudvw3DoZIN56Eblru48iBTPsNITc
+	 /m0B0b/q1uA3uO0RcplIh/4kxIWbI6pxJ4/lCg3g7iwcqHbLU8D7m5H3O8ChcCltuz
+	 o55K+LzKWT+TD7MkYpfONNShG2JzgYB31QHJBUSVedDncb82YdRV5cKQoSRMIq7zBB
+	 //zPm9ZLM1GHg==
+Message-ID: <ab237d0e08b6919d29f25d89ec34d149341f4c57.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v1 10/14] serial: 8250_of: Switch to use
+ uart_read_port_properties()
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner
+ <tglx@linutronix.de>, linux-kernel@vger.kernel.org, 
+ linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org, 
+ linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org, Jiri Slaby
+ <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>, Florian Fainelli
+ <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, Scott Branden
+ <sbranden@broadcom.com>, Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Al Cooper <alcooperx@gmail.com>, 
+ Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, Paul
+ Cercueil <paul@crapouillou.net>,  Vladimir Zapolskiy <vz@mleia.com>,
+ Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter
+ <jonathanh@nvidia.com>, Kunihiko Hayashi <hayashi.kunihiko@socionext.com>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, Andi Shyti
+ <andi.shyti@linux.intel.com>
+Date: Mon, 26 Feb 2024 14:42:27 +1030
+In-Reply-To: <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
+References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
+	 <20240221183442.4124354-11-andriy.shevchenko@linux.intel.com>
+	 <0a828f2c50de712940fb9a881702ac1678a35b7c.camel@codeconstruct.com.au>
+	 <ZddKzHplwOX7naLv@smile.fi.intel.com> <Zdd5m2xIPlGI0_Qv@smile.fi.intel.com>
+	 <Zdd6lnXwvpPPUhRR@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d13:b0:365:2f19:e597 with SMTP id
- i19-20020a056e021d1300b003652f19e597mr470242ila.5.1708920543138; Sun, 25 Feb
- 2024 20:09:03 -0800 (PST)
-Date: Sun, 25 Feb 2024 20:09:03 -0800
-In-Reply-To: <001a113eba282f2ffc0568b76123@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ec5a2f0612411136@google.com>
-Subject: Re: [syzbot] [reiserfs?] kernel BUG at fs/reiserfs/journal.c:LINE!
-From: syzbot <syzbot+6820505ae5978f4f8f2f@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, alaaemadhossney.ae@gmail.com, 
-	alex.shi@linux.alibaba.com, axboe@kernel.dk, baijiaju1990@gmail.com, 
-	brauner@kernel.org, colin.king@canonical.com, dhowells@redhat.com, 
-	gregkh@linuxfoundation.org, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, mingo@kernel.org, rdunlap@infradead.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	yanaijie@huawei.com, zhengbin13@huawei.com
-Content-Type: text/plain; charset="UTF-8"
 
-syzbot suspects this issue was fixed by commit:
+On Thu, 2024-02-22 at 18:47 +0200, Andy Shevchenko wrote:
+> On Thu, Feb 22, 2024 at 06:43:08PM +0200, Andy Shevchenko wrote:
+> > On Thu, Feb 22, 2024 at 03:23:24PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Feb 22, 2024 at 11:07:05AM +1030, Andrew Jeffery wrote:
+> > > > On Wed, 2024-02-21 at 20:31 +0200, Andy Shevchenko wrote:
+> > > > > Since we have now a common helper to read port properties
+> > > > > use it instead of sparse home grown solution.
+> > > >=20
+> > > > I did some brief testing of the series for the Aspeed machines unde=
+r
+> > > > qemu, building them on top of v6.8-rc5:
+> > > >=20
+> > > > export ARCH=3Darm
+> > > > export CROSS_COMPILE=3Darm-linux-gnueabihf-
+> > > > make aspeed_g5_defconfig
+> > > > make -j$(nproc)
+> > > > qemu-system-arm -M rainier-bmc -nographic -no-reboot -kernel arch/a=
+rm/boot/zImage -dtb arch/arm/boot/dts/aspeed/aspeed-bmc-ibm-rainier.dtb -in=
+itrd ...
+> > > >=20
+> > > > I got an oops during boot, which bisected to this change:
+> > >=20
+> > > Thank you for prompt testing! I will look at it.
+> >=20
+> > I found the issue, will be fixed in next version.
+>=20
+> Whoever is going to test this series, the
+>=20
+> -		port->iotype =3D use_defaults ? UPIO_MEM : port->iotype;
+> +		port->iotype =3D UPIO_MEM;
+>=20
+> should be applied to uart_read_port_properties() implementation.
+>=20
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Thanks, with that fix applied it works fine for me also.
 
-    fs: Block writes to mounted block devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16fcca02180000
-start commit:   b85ea95d0864 Linux 6.7-rc1
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b5bf1661f609e7f0
-dashboard link: https://syzkaller.appspot.com/bug?extid=6820505ae5978f4f8f2f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1728c947680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1079c598e80000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Andrew
 
