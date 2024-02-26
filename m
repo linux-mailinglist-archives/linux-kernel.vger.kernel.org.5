@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-80382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033C9866798
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:34:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2D3586679B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 826521F2101A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 01:34:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F20561C211C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 01:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C306DDF44;
-	Mon, 26 Feb 2024 01:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C71F7D534;
+	Mon, 26 Feb 2024 01:36:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="K4q0+VKp"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="CQZAf5fN"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C928D2FE;
-	Mon, 26 Feb 2024 01:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845B11C02;
+	Mon, 26 Feb 2024 01:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708911235; cv=none; b=S9tuLFb6cgwyEXHxk6ryg/Q8kUbeqm1cvKyebt9vtQv8/V4NQzH/JhIZK0Bk3uxKFa/fL/DxQ4pP4uqs80i85XVSPMVIvJA3nA1E56a7+kQnSUjs7EdGQ7lksyAGdn/PaMPlY1P2G698JApvNytKnjao8xJSNba8xnhG3aYsnXM=
+	t=1708911368; cv=none; b=VdpNmKzyNXZk8cM9kKKGE796BoReAc69aNlRWJJAWp4dWYUMmu2RS2kRqXNKpG0bDanyjzvPWXx+aHZCArIfbTtxjZ+5kVWUYqHbSi0CdsIzUBe3zxadDenYhr0X7Fs68jniVX4nnc09hjU6f1MfAxRBhP37x6pzAd2IcPdEazc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708911235; c=relaxed/simple;
-	bh=IFVZZRMfiP+VjB4RTEv79lj2VIGz4m0+HcV8iKRRuMw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lvpudEzC26VbiM8n4BOz5hZhhnnHeTarBGfCzqursVW5bMOS87p38SIi5cwDJEYlG4+GQzmDyNhpdKDDljIxqVWUQ6gffzMItoBw0YlFXU9GpKJYmZbpfEDIfnmtR3yFq4MKtU77Y5X7k/iP152+nKYyrXmfz2Lou8YITb+wDmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=K4q0+VKp; arc=none smtp.client-ip=205.220.168.131
+	s=arc-20240116; t=1708911368; c=relaxed/simple;
+	bh=pIL77mnn/86sOmS6cx8O/zi7Oig/gz4CTJF9Dejd9Yg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=XmwLJtkzZftc7zLvz088a+Qpt+3cngWYIXnULnmnBz+Vgpyf8FuGRKTOqUxeBgxlTZSMzKgAUZK8Z33JZV7bfByDZUY0FmKO2BgKqd+Zhkmrlg2bGDcWQbqL0bXIcYt6XrLF65glPoIMHF2M4s06WCosVhCEeHpjgL/z2AjANCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=CQZAf5fN; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41Q1Xg7i004227;
-	Mon, 26 Feb 2024 01:33:42 GMT
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41Q0iWRZ003713;
+	Mon, 26 Feb 2024 01:35:59 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
+	message-id:date:mime-version:subject:from:to:cc:references
 	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=EQcNerH5zlqRogyZtmxYs0V0RQjRviVf4F1C9HUrbY4=; b=K4
-	q0+VKpk0Zj6NFu9BFS5p+ZzcGkdv0KPH9r5vmeCg5L2s4XMexRlK6Z+EpgPTGzSs
-	iCVG5xaPJG91ei8q+BlCQrHmlfgfjzcsU2As+b0xHrRQlbzyyF4/Zwm/izfqVm62
-	vVWw+cZjpqM53G2oe4Z2k64/Lm9g4QTVjuHZVjTxHlawyaBwceturYkBfX062Ji+
-	+5IKYBfV374bD98fgtU53RUlqAXJJ7bZ9uSbZL/Ub23dqg2k5Y5Hm/8WrVM2tFjx
-	heKtIbWhqTnIdgVF///iP1zOuzJffhM6pE0ehuqyC1oDNe5LM6IKviQ2UYBs4+uh
-	ZvTTk14e2HeIVpuwYrPg==
+	qcppdkim1; bh=IewfBOrPUxGnXhkfxZXG51CRbI5sZJWyaKDgJYLyteY=; b=CQ
+	ZAf5fNiVapy9N7S26+7JIGucr7GykzpDSsujIlwll6yfwpEdzEVvO824cZoS5t/q
+	MjohNa3MX9WUub/Dx5k0wBz21UXrhtprvNQhX10Pu4/uf2+vQkfNzVxH/uwb3GM5
+	QdDURZEL9W57zczRq8p8jNsXcOQoZvKFRbMgOuoQDoz/kEeyMMKRmblHAp7AY3FB
+	w+49AawJxuUxUmVEJlGIPaUAtohbrUnFg5/ZGGQuiPL3+XauhcBVLdvS7CZelu+3
+	/xx9YSsZl3+arruf3VT/TN/6TZR39UMojuugSagwva3KbeoN1KGKqQJEREApZLCi
+	I1ZWGlR1IDC3K7s7PO7A==
 Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wf7dv2pxx-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wf8p7jmfe-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 01:33:41 +0000 (GMT)
+	Mon, 26 Feb 2024 01:35:58 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41Q1Xe1B004662
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41Q1Zw8q006981
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 01:33:40 GMT
+	Mon, 26 Feb 2024 01:35:58 GMT
 Received: from [10.110.76.211] (10.80.80.8) by nalasex01a.na.qualcomm.com
  (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 25 Feb
- 2024 17:33:39 -0800
-Message-ID: <b412dd01-126b-155d-5961-b544da821ce6@quicinc.com>
-Date: Sun, 25 Feb 2024 17:33:38 -0800
+ 2024 17:35:57 -0800
+Message-ID: <3dd62c7e-e419-9ea2-b383-4c1c0959fecf@quicinc.com>
+Date: Sun, 25 Feb 2024 17:35:56 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,269 +65,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.11.0
-Subject: Re: [PATCH v3 2/3] drm/msm/dpu: split dpu_encoder_wait_for_event into
- two functions
+Subject: Re: [PATCH v3 3/3] drm/msm/dpu: capture snapshot on the first
+ commit_done timeout
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn
- Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Steev Klimaszewski <steev@kali.org>, <linux-arm-msm@vger.kernel.org>,
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark
+	<robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten
+	<marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>
+CC: Steev Klimaszewski <steev@kali.org>, <linux-arm-msm@vger.kernel.org>,
         <dri-devel@lists.freedesktop.org>, <freedreno@lists.freedesktop.org>,
         <linux-kernel@vger.kernel.org>
 References: <20240225-fd-dpu-debug-timeout-v3-0-252f2b21cdcc@linaro.org>
- <20240225-fd-dpu-debug-timeout-v3-2-252f2b21cdcc@linaro.org>
- <f3c304b3-7cd3-6f90-c438-8c2c0ded8bd2@quicinc.com>
- <CAA8EJpqfERqpxeSY_cd=T4Rdfjh6SsGOj7phN_cpfByaM7pt1Q@mail.gmail.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAA8EJpqfERqpxeSY_cd=T4Rdfjh6SsGOj7phN_cpfByaM7pt1Q@mail.gmail.com>
+ <20240225-fd-dpu-debug-timeout-v3-3-252f2b21cdcc@linaro.org>
+ <33e38ac8-f41e-ca66-0b75-e72990691a80@quicinc.com>
+In-Reply-To: <33e38ac8-f41e-ca66-0b75-e72990691a80@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: g6QEntQV3M3yENABosRIXgXdf3WPIdbl
-X-Proofpoint-ORIG-GUID: g6QEntQV3M3yENABosRIXgXdf3WPIdbl
+X-Proofpoint-ORIG-GUID: vscv7Qt20e2p-cYt2sgrR05dFsyzW_Jz
+X-Proofpoint-GUID: vscv7Qt20e2p-cYt2sgrR05dFsyzW_Jz
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-25_29,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 phishscore=0 adultscore=0 suspectscore=0
- clxscore=1015 lowpriorityscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ impostorscore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2402120000 definitions=main-2402260010
 
 
 
-On 2/25/2024 12:52 PM, Dmitry Baryshkov wrote:
-> On Sun, 25 Feb 2024 at 21:49, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->>
->>
->>
->> On 2/25/2024 6:12 AM, Dmitry Baryshkov wrote:
->>> Stop multiplexing several events via the dpu_encoder_wait_for_event()
->>> function. Split it into two distinct functions two allow separate
->>> handling of those events.
->>>
->>
->> I understand the idea but would handling of those events be really distinct?
+On 2/25/2024 11:57 AM, Abhinav Kumar wrote:
 > 
-> We are interested in capturing the state after the first
-> wait_for_commit_done() timeout. The wait_for_tx_complete doesn't need
-> such handling. Even if we were to handle it in some way, it would be a
-> different conditional.
+> 
+> On 2/25/2024 6:12 AM, Dmitry Baryshkov wrote:
+>> In order to debug commit_done timeouts, capture the devcoredump state
+>> when the first timeout occurs after the encoder has been enabled.
+>>
+>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> ---
+>>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 9 +++++++++
+>>   1 file changed, 9 insertions(+)
+>>
+> 
+> This looks fine now. Once we discuss patch 2, I can ack this.
 > 
 
-wait_for_tx_complete timeout also needs similar handling.
-
-the timeout mechanisms need to be unified at some point, that time I 
-will re-visit the need to have a common wait_timeout handler.
-
-Lets see how this code evolves.
-
-So with that nit about the kernel doc addressed,
+Not entirely onboard with patch 2, but lets see how that code evolves
 
 Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-> Last but not least, I don't like multiplexing just for the sake of it.
-> There is nearly no common behaviour.
-> 
-
-the multiplexing allows us to have one common timeout path which I think 
-will eventually happen. So i dont think its true that there is no common 
-behavior.
-
+>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c 
+>> b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> index 30f349c8a1e5..3cae07bf0b9b 100644
+>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+>> @@ -126,6 +126,8 @@ enum dpu_enc_rc_states {
+>>    * @base:        drm_encoder base class for registration with DRM
+>>    * @enc_spinlock:    Virtual-Encoder-Wide Spin Lock for IRQ purposes
+>>    * @enabled:        True if the encoder is active, protected by 
+>> enc_lock
+>> + * @commit_done_timedout: True if there has been a timeout on commit 
+>> after
+>> + *            enabling the encoder.
+>>    * @num_phys_encs:    Actual number of physical encoders contained.
+>>    * @phys_encs:        Container of physical encoders managed.
+>>    * @cur_master:        Pointer to the current master in this mode. 
+>> Optimization
+>> @@ -172,6 +174,7 @@ struct dpu_encoder_virt {
+>>       spinlock_t enc_spinlock;
+>>       bool enabled;
+>> +    bool commit_done_timedout;
+>>       unsigned int num_phys_encs;
+>>       struct dpu_encoder_phys *phys_encs[MAX_PHYS_ENCODERS_PER_VIRTUAL];
+>> @@ -1226,6 +1229,8 @@ static void 
+>> dpu_encoder_virt_atomic_enable(struct drm_encoder *drm_enc,
+>>       else if (disp_info->intf_type == INTF_DSI)
+>>           dpu_enc->wide_bus_en = 
+>> msm_dsi_wide_bus_enabled(priv->dsi[index]);
+>> +    dpu_enc->commit_done_timedout = false;
+>> +
+>>       mutex_lock(&dpu_enc->enc_lock);
+>>       cur_mode = &dpu_enc->base.crtc->state->adjusted_mode;
+>> @@ -2436,6 +2441,10 @@ int dpu_encoder_wait_for_commit_done(struct 
+>> drm_encoder *drm_enc)
+>>               DPU_ATRACE_BEGIN("wait_for_commit_done");
+>>               ret = phys->ops.wait_for_commit_done(phys);
+>>               DPU_ATRACE_END("wait_for_commit_done");
+>> +            if (ret == -ETIMEDOUT && !dpu_enc->commit_done_timedout) {
+>> +                dpu_enc->commit_done_timedout = true;
+>> +                msm_disp_snapshot_state(drm_enc->dev);
+>> +            }
+>>               if (ret)
+>>                   return ret;
+>>           }
 >>
->> Like if wait_for_commit_done timedout or wait_for_tx_complete timedout,
->> the handling will be similar from my PoV.
->>
->>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>> ---
->>>    drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 74 +++++++++++++++++++++--------
->>>    drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h | 22 ++-------
->>>    drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c     |  2 +-
->>>    drivers/gpu/drm/msm/msm_drv.h               | 10 ----
->>>    4 files changed, 59 insertions(+), 49 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>> index 194dbb08331d..30f349c8a1e5 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->>> @@ -1282,7 +1282,7 @@ static void dpu_encoder_virt_atomic_disable(struct drm_encoder *drm_enc,
->>>        trace_dpu_enc_disable(DRMID(drm_enc));
->>>
->>>        /* wait for idle */
->>> -     dpu_encoder_wait_for_event(drm_enc, MSM_ENC_TX_COMPLETE);
->>> +     dpu_encoder_wait_for_tx_complete(drm_enc);
->>>
->>>        dpu_encoder_resource_control(drm_enc, DPU_ENC_RC_EVENT_PRE_STOP);
->>>
->>> @@ -2402,10 +2402,23 @@ struct drm_encoder *dpu_encoder_init(struct drm_device *dev,
->>>        return &dpu_enc->base;
->>>    }
->>>
->>> -int dpu_encoder_wait_for_event(struct drm_encoder *drm_enc,
->>> -     enum msm_event_wait event)
->>> +/**
->>> + * dpu_encoder_wait_for_commit_done() - Wait for encoder to flush pending state
->>> + * @drm_enc: encoder pointer
->>> + *
->>> + * Wait for hardware to have flushed the current pending frames to hardware at
->>> + * a vblank or ctl_start Encoders will map this differently depending on the
->>> + * panel type.
->>> + *
->>
->> Missing a '.' between ctl_start and Encoder?
-> 
-> Ack. Also I should drop the leftovers afterwards.
-> 
->>
->>> + * MSM_ENC_TX_COMPLETE -  Wait for the hardware to transfer all the pixels to
->>> + *                        the panel. Encoders will map this differently
->>> + *                        depending on the panel type.
->>> + *                        vid mode -> vsync_irq
->>> + *                        cmd mode -> pp_done
->>> + * Return: 0 on success, -EWOULDBLOCK if already signaled, error otherwise
->>> + */
->>> +int dpu_encoder_wait_for_commit_done(struct drm_encoder *drm_enc)
->>>    {
->>> -     int (*fn_wait)(struct dpu_encoder_phys *phys_enc) = NULL;
->>>        struct dpu_encoder_virt *dpu_enc = NULL;
->>>        int i, ret = 0;
->>>
->>> @@ -2419,23 +2432,46 @@ int dpu_encoder_wait_for_event(struct drm_encoder *drm_enc,
->>>        for (i = 0; i < dpu_enc->num_phys_encs; i++) {
->>>                struct dpu_encoder_phys *phys = dpu_enc->phys_encs[i];
->>>
->>> -             switch (event) {
->>> -             case MSM_ENC_COMMIT_DONE:
->>> -                     fn_wait = phys->ops.wait_for_commit_done;
->>> -                     break;
->>> -             case MSM_ENC_TX_COMPLETE:
->>> -                     fn_wait = phys->ops.wait_for_tx_complete;
->>> -                     break;
->>> -             default:
->>> -                     DPU_ERROR_ENC(dpu_enc, "unknown wait event %d\n",
->>> -                                     event);
->>> -                     return -EINVAL;
->>> +             if (phys->ops.wait_for_commit_done) {
->>> +                     DPU_ATRACE_BEGIN("wait_for_commit_done");
->>> +                     ret = phys->ops.wait_for_commit_done(phys);
->>> +                     DPU_ATRACE_END("wait_for_commit_done");
->>> +                     if (ret)
->>> +                             return ret;
->>>                }
->>> +     }
->>> +
->>> +     return ret;
->>> +}
->>> +
->>> +/**
->>> + * dpu_encoder_wait_for_tx_complete() - Wait for encoder to transfer pixels to panel
->>> + * @drm_enc: encoder pointer
->>> + *
->>> + * Wait for the hardware to transfer all the pixels to the panel. Encoders will
->>> + * map this differently depending on the panel type.
->>> + *
->>> + * Return: 0 on success, -EWOULDBLOCK if already signaled, error otherwise
->>> + */
->>> +int dpu_encoder_wait_for_tx_complete(struct drm_encoder *drm_enc)
->>> +{
->>> +     struct dpu_encoder_virt *dpu_enc = NULL;
->>> +     int i, ret = 0;
->>> +
->>> +     if (!drm_enc) {
->>> +             DPU_ERROR("invalid encoder\n");
->>> +             return -EINVAL;
->>> +     }
->>> +     dpu_enc = to_dpu_encoder_virt(drm_enc);
->>> +     DPU_DEBUG_ENC(dpu_enc, "\n");
->>> +
->>> +     for (i = 0; i < dpu_enc->num_phys_encs; i++) {
->>> +             struct dpu_encoder_phys *phys = dpu_enc->phys_encs[i];
->>>
->>> -             if (fn_wait) {
->>> -                     DPU_ATRACE_BEGIN("wait_for_completion_event");
->>> -                     ret = fn_wait(phys);
->>> -                     DPU_ATRACE_END("wait_for_completion_event");
->>> +             if (phys->ops.wait_for_tx_complete) {
->>> +                     DPU_ATRACE_BEGIN("wait_for_tx_complete");
->>> +                     ret = phys->ops.wait_for_tx_complete(phys);
->>> +                     DPU_ATRACE_END("wait_for_tx_complete");
->>>                        if (ret)
->>>                                return ret;
->>>                }
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
->>> index fe6b1d312a74..0c928d1876e4 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.h
->>> @@ -93,25 +93,9 @@ void dpu_encoder_kickoff(struct drm_encoder *encoder);
->>>     */
->>>    int dpu_encoder_vsync_time(struct drm_encoder *drm_enc, ktime_t *wakeup_time);
->>>
->>> -/**
->>> - * dpu_encoder_wait_for_event - Waits for encoder events
->>> - * @encoder: encoder pointer
->>> - * @event:      event to wait for
->>> - * MSM_ENC_COMMIT_DONE -  Wait for hardware to have flushed the current pending
->>> - *                        frames to hardware at a vblank or ctl_start
->>> - *                        Encoders will map this differently depending on the
->>> - *                        panel type.
->>> - *                     vid mode -> vsync_irq
->>> - *                        cmd mode -> ctl_start
->>> - * MSM_ENC_TX_COMPLETE -  Wait for the hardware to transfer all the pixels to
->>> - *                        the panel. Encoders will map this differently
->>> - *                        depending on the panel type.
->>> - *                        vid mode -> vsync_irq
->>> - *                        cmd mode -> pp_done
->>> - * Returns: 0 on success, -EWOULDBLOCK if already signaled, error otherwise
->>> - */
->>> -int dpu_encoder_wait_for_event(struct drm_encoder *drm_encoder,
->>> -                                             enum msm_event_wait event);
->>> +int dpu_encoder_wait_for_commit_done(struct drm_encoder *drm_encoder);
->>> +
->>> +int dpu_encoder_wait_for_tx_complete(struct drm_encoder *drm_encoder);
->>>
->>>    /*
->>>     * dpu_encoder_get_intf_mode - get interface mode of the given encoder
->>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
->>> index d6412395bacc..26b5e54031d9 100644
->>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
->>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
->>> @@ -476,7 +476,7 @@ static void dpu_kms_wait_for_commit_done(struct msm_kms *kms,
->>>                 * mode panels. This may be a no-op for command mode panels.
->>>                 */
->>>                trace_dpu_kms_wait_for_commit_done(DRMID(crtc));
->>> -             ret = dpu_encoder_wait_for_event(encoder, MSM_ENC_COMMIT_DONE);
->>> +             ret = dpu_encoder_wait_for_commit_done(encoder);
->>>                if (ret && ret != -EWOULDBLOCK) {
->>>                        DPU_ERROR("wait for commit done returned %d\n", ret);
->>>                        break;
->>> diff --git a/drivers/gpu/drm/msm/msm_drv.h b/drivers/gpu/drm/msm/msm_drv.h
->>> index 762e13e2df74..91cf57f72321 100644
->>> --- a/drivers/gpu/drm/msm/msm_drv.h
->>> +++ b/drivers/gpu/drm/msm/msm_drv.h
->>> @@ -74,16 +74,6 @@ enum msm_dsi_controller {
->>>    #define MSM_GPU_MAX_RINGS 4
->>>    #define MAX_H_TILES_PER_DISPLAY 2
->>>
->>> -/**
->>> - * enum msm_event_wait - type of HW events to wait for
->>> - * @MSM_ENC_COMMIT_DONE - wait for the driver to flush the registers to HW
->>> - * @MSM_ENC_TX_COMPLETE - wait for the HW to transfer the frame to panel
->>> - */
->>> -enum msm_event_wait {
->>> -     MSM_ENC_COMMIT_DONE = 0,
->>> -     MSM_ENC_TX_COMPLETE,
->>> -};
->>> -
->>>    /**
->>>     * struct msm_display_topology - defines a display topology pipeline
->>>     * @num_lm:       number of layer mixers used
->>>
-> 
-> 
-> 
 
