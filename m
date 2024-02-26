@@ -1,152 +1,152 @@
-Return-Path: <linux-kernel+bounces-81355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5867E8674A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:21:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E8C58674AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:21:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0631B230DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:20:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA9781F2BFF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F302604C9;
-	Mon, 26 Feb 2024 12:20:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qi4Icdis"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C883C605A2;
+	Mon, 26 Feb 2024 12:21:47 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97B5604AD;
-	Mon, 26 Feb 2024 12:20:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF891B27D;
+	Mon, 26 Feb 2024 12:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950050; cv=none; b=pCO5Gz+2uhLshAWdktgV8sCii40m3EvAq0S27hK5cp1bFxhUibJttthnQyhneTbpEjZl3O9JXr5DCWYDmuH7vAJoL5tiz+G0UVwcBeICzbEHRvNmEQL69/ftlpxECIxgUFTkncGlfXYw6C36hRoi2S/QLRiIwOd2KCQqt3tj6Og=
+	t=1708950107; cv=none; b=eA3JodmapVfBbQJZgvQ0iBRHpJIxmvlwWLmhOgBOx5XSvGsR1lw1o+FitHhktCO8w0bpUsB9fFs7uJhHX+8zupx94Pl9Q9iEoyr1Cg5t4QIunczEsuU7wM+5OWk7b3gJWxXYWSl5Kh/4N0gkSKe/Z1RMVkC+mBvqfqsk4/4YoDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950050; c=relaxed/simple;
-	bh=MklLrIDTS7FBhRMF3t1OlfezefpnGDB616/6YDTb+M4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bb5P988ZhGowxvvH57vkFHWO5lbgEFOzBTzvw1V1fos/jWjPeJVLTtBTdFjYhwbHish4Uy5mxibFe5FyVWJCu042Vt09IMh1UyrKFmkHZlD/Zj2KyqOV5Tyx6jEo5xZ1L0J54xuup7aekk/EZ4kst6/k5Fd0JdAwG+UsgUqsGq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qi4Icdis; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-512fce83ab5so1043228e87.1;
-        Mon, 26 Feb 2024 04:20:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708950047; x=1709554847; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xS2Q6CbvED2rXlKIWb0ms2HmMRr1/aS0n8oEYtj1IGo=;
-        b=Qi4Icdisp4Jdac6gsZDgawrTMd5FEJn5xfOOcqyksOmruHlaNavFDigp6JQfL8ES1M
-         iRNXwkHMR5MsLIPJ9o6+qA3anmYqLxuiSvis6FH/m0wFIj1SFV4tWopVnjaIO6XC2Hnn
-         NBJ7bF1SQAU1o0fadSk6fkFL1vaQz6+e0Rq9RH5iPCVp+udSTslIttiONyc/Pd3l2dEU
-         dtSA2TxWib6phoqKtabMs3wkB0MOiB2hgSS0hdZELQyyBwvJ+FXMydbTfGQpnbmOr2ca
-         KWhMbV41vbjd9u33Imug2GTJCWNep72BHMbD8uoObQsGsL6fJnVbJsAkCyUEhm8pjq/A
-         nTbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708950047; x=1709554847;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xS2Q6CbvED2rXlKIWb0ms2HmMRr1/aS0n8oEYtj1IGo=;
-        b=nNvpsX2cZxZxpx66KDZzWKStq846dtj3nrBGRO+yXRTrG1J9D+8fwpzmix5EjK3+tU
-         2N5pwSF0YU34f6Gsns5O8qQQd0SLW+o5Zk8SHhnuz1t8ZqxZTJRwUayNDhgvU4W4VEqc
-         E1jax/Xu5M/6DKhnqWLcJZ47oiMRfDTNS0BDesMJdmdeEJfjy7LrbB6e7QLJbL4oLCJe
-         QozVy2hVQQDyQ/eUi3KiK792f683WquUX6GlFw3lSgJuShmqV7EJJBPONa/837Pq8NbT
-         Gtpo+nzjWTvWzKRrnBS3LIXaG8//slOq6dAlDBCyT+xMGubJ1bKVcf6JhEsSJ+cFPVUi
-         OgSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW3FL0K8VnbOSVDXzBz1TxPJbHvueEVqjCyDvMnl+/gLES81U+ZEKF1ZiRfjqKhIn3unIo34yk+g4voGYNSzEFx+OrBFEjwjAZ/aq48YWknG3tzDzVrUtg4NDuuvvSKBE7dLC7df4bh8A==
-X-Gm-Message-State: AOJu0YzHVGmFJ84pkco86vDykxz3Mq2ppCLSVCzPpRBXkWyGS5UVvZrV
-	7rGzBfCIZybMTbfxt0EKstoCp3xiH7DIlJ52MnSPV6ENrh80aCNF
-X-Google-Smtp-Source: AGHT+IGtfTtM6cOA5wBmQUSrMJUxcmr1SIU7E83Uy6sQpHBM4tP/IwZ5EUFkh2tIMSDouznX0qyDVw==
-X-Received: by 2002:a19:ee16:0:b0:512:bea2:f002 with SMTP id g22-20020a19ee16000000b00512bea2f002mr3856294lfb.6.1708950046770;
-        Mon, 26 Feb 2024 04:20:46 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id t16-20020ac25490000000b005130282c899sm7596lfk.0.2024.02.26.04.20.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 04:20:46 -0800 (PST)
-Date: Mon, 26 Feb 2024 15:20:43 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Jiaxun Yang <jiaxun.yang@flygoat.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mips: cm: Convert __mips_cm_l2sync_phys_base() to
- weak function
-Message-ID: <simbnmm644ouv3kc3agsxiub6fzg6advihkqsbjzgmb44nmuxv@ktgkhn3kr43z>
-References: <20240226105427.7191-1-fancer.lancer@gmail.com>
- <20240226105427.7191-2-fancer.lancer@gmail.com>
- <34af21b5-a878-418e-a70b-299cab61b37e@app.fastmail.com>
- <y2lxeu5uvj7ezlv7kf6lox5e5xprmvrhqmf3gvzjsatlrrlub7@mvqzoyq5mnvd>
- <cc9e02b3-57df-4a7d-bd21-2d574bf4b878@app.fastmail.com>
+	s=arc-20240116; t=1708950107; c=relaxed/simple;
+	bh=pi3BrUr3ur1vJpL7LOfjfmoG+suaosBkg1tWLQHk5BU=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=eDJypdXrTtigFt3O3M8nJYLrQhB8Y0L6mgB7jMdvXtMyZ7rNJRVOxdBQOPOjVj1v1W5tyx9TmzeRfiztpf0j0mdqzTFdh4+YeTcFBAtr6VXKejCpsHWSTnDruzsaEd/in4C7Ldktiz3KB87zFZim1XrskglFQ2IPdV0g0DpPBwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk04k1G1Pz6K9M8;
+	Mon, 26 Feb 2024 20:17:58 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5C7CA1400DB;
+	Mon, 26 Feb 2024 20:21:41 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 12:21:40 +0000
+Date: Mon, 26 Feb 2024 12:21:39 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 04/20] dev_dax_iomap: Save the kva from memremap
+Message-ID: <20240226122139.0000135b@Huawei.com>
+In-Reply-To: <66620f69fa3f3664d955649eba7da63fdf8d65ad.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<66620f69fa3f3664d955649eba7da63fdf8d65ad.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc9e02b3-57df-4a7d-bd21-2d574bf4b878@app.fastmail.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Feb 26, 2024 at 01:04:33PM +0100, Arnd Bergmann wrote:
-> On Mon, Feb 26, 2024, at 12:27, Serge Semin wrote:
-> > On Mon, Feb 26, 2024 at 12:04:06PM +0100, Arnd Bergmann wrote:
-> >> On Mon, Feb 26, 2024, at 11:54, Serge Semin wrote:
-> s to.
-> >> 
-> >> Since the resolution of the alias is all done at link time
-> >> anyway, could you just convert these to an #ifdef check
-> >> that documents exactly when each of the versions is used?
-> >
-> > Not sure I've completely understood what you meant. Do you suggest to
-> > add a mips_cm_l2sync_phys_base macro which would be defined if a
-> > "strong" version of the method is defined (and surround the
-> > underscored function by it)?
-> >
-> > Please note after this patch is applied no aliases will
-> > be left, but only a single weakly defined method:
-> > mips_cm_l2sync_phys_base()
-> > This is what we agreed to do with Thomas:
-> > https://lore.kernel.org/linux-mips/pf6cvzper4g5364nqhd4wd2pmlkyygoymobeqduulpslcjhyy6@kf66z7chjbl3
-> > Thus there will be no need in the macro you suggest since the
-> > weak-version of the method will be discarded by the linker as it will
-> > have been replaced with the "strong" one. 
-> 
-> I meant that instead of having both a weak and an optional strong
-> version that get linked together, always define exactly one of the
-> two, such as:
-> 
-> #ifndef CONFIG_MIPS_CM_xxx
-> static phys_addr_t mips_cm_l2sync_phys_base(void)
-> {
->        /* current implementation ... */
-> }
-> #endif
-> 
-> where CONFIG_MIPS_CM_xxx is the Kconfig symbol that decides
-> whether the file with the strong version is built or not.
-> 
-> This way you always get exactly one of the two versions
-> of the function built, the local version can be inlined
-> if the compiler thinks that is better, and the #ifdef
-> documents exactly whether the function is used or not
-> for a given configuration, rather than a reader having
-> to track down how many other definitions exist and whether
-> a config includes them.
+On Fri, 23 Feb 2024 11:41:48 -0600
+John Groves <John@Groves.net> wrote:
 
-I see your point now. Thanks for clarification. IMO it would be less
-readable due to the ifdef-ery and the new config, and less
-maintainable due to the conditional compilation, but would provide a
-more performant solution since the compiler will be able to inline the
-singly used static method. Basically you suggest to emulate the weak
-implementation by an additional kernel config. Not sure whether it
-would be better than a well-known weak-attribute-based pattern. Anyway
-let's wait for the Thomas' opinion about your suggestion. If he thinks
-it would be better I'll update the patches.
+> Save the kva from memremap because we need it for iomap rw support
+> 
+> Prior to famfs, there were no iomap users of /dev/dax - so the virtual
+> address from memremap was not needed.
+> 
+> Also: in some cases dev_dax_probe() is called with the first
+> dev_dax->range offset past pgmap[0].range. In those cases we need to
+> add the difference to virt_addr in order to have the physaddr's in
+> dev_dax->ranges match dev_dax->virt_addr.
 
--Serge(y)
+Probably good to have info on when this happens and preferably why
+this dragon is there.
 
 > 
->        Arnd
+> Dragons...
+> 
+> Signed-off-by: John Groves <john@groves.net>
+> ---
+>  drivers/dax/dax-private.h |  1 +
+>  drivers/dax/device.c      | 15 +++++++++++++++
+>  2 files changed, 16 insertions(+)
+> 
+> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> index 446617b73aea..894eb1c66b4a 100644
+> --- a/drivers/dax/dax-private.h
+> +++ b/drivers/dax/dax-private.h
+> @@ -63,6 +63,7 @@ struct dax_mapping {
+>  struct dev_dax {
+>  	struct dax_region *region;
+>  	struct dax_device *dax_dev;
+> +	u64 virt_addr;
+
+Why as a u64? If it's a virt address why not just void *?
+
+>  	unsigned int align;
+>  	int target_node;
+>  	bool dyn_id;
+> diff --git a/drivers/dax/device.c b/drivers/dax/device.c
+> index 40ba660013cf..6cd79d00fe1b 100644
+> --- a/drivers/dax/device.c
+> +++ b/drivers/dax/device.c
+> @@ -372,6 +372,7 @@ static int dev_dax_probe(struct dev_dax *dev_dax)
+>  	struct dax_device *dax_dev = dev_dax->dax_dev;
+>  	struct device *dev = &dev_dax->dev;
+>  	struct dev_pagemap *pgmap;
+> +	u64 data_offset = 0;
+>  	struct inode *inode;
+>  	struct cdev *cdev;
+>  	void *addr;
+> @@ -426,6 +427,20 @@ static int dev_dax_probe(struct dev_dax *dev_dax)
+>  	if (IS_ERR(addr))
+>  		return PTR_ERR(addr);
+>  
+> +	/* Detect whether the data is at a non-zero offset into the memory */
+> +	if (pgmap->range.start != dev_dax->ranges[0].range.start) {
+> +		u64 phys = (u64)dev_dax->ranges[0].range.start;
+
+Why the cast? Ranges use u64s internally.
+
+> +		u64 pgmap_phys = (u64)dev_dax->pgmap[0].range.start;
+> +		u64 vmemmap_shift = (u64)dev_dax->pgmap[0].vmemmap_shift;
+> +
+> +		if (!WARN_ON(pgmap_phys > phys))
+> +			data_offset = phys - pgmap_phys;
+> +
+> +		pr_notice("%s: offset detected phys=%llx pgmap_phys=%llx offset=%llx shift=%llx\n",
+> +		       __func__, phys, pgmap_phys, data_offset, vmemmap_shift);
+
+pr_debug() + dynamic debug will then deal with __func__ for you.
+
+> +	}
+> +	dev_dax->virt_addr = (u64)addr + data_offset;
+> +
+>  	inode = dax_inode(dax_dev);
+>  	cdev = inode->i_cdev;
+>  	cdev_init(cdev, &dax_fops);
+
 
