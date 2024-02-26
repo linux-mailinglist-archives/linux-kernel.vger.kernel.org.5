@@ -1,103 +1,96 @@
-Return-Path: <linux-kernel+bounces-80990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 466E0866EC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:39:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF5CB866EB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:37:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04738B264EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:37:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69363286915
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC6D6692FF;
-	Mon, 26 Feb 2024 08:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F7369D02;
+	Mon, 26 Feb 2024 08:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eG3iAHed"
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fm0ecaSr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672DC200DA
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 473B969D06
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:57:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708937858; cv=none; b=cUcW3qySDjBxnBzmMATF7d9PbJas5QDZYlLbZhtGSopUhEkcs27QCl78lDMA1cmP0LvPQpNnHDVkb/sF2nlJXMh/3TtY64jsAL4Kk9uaC5EqrhLsktVkX5jjHTKdePXFHwZFoeTPa2/+5wEDykSsU3ZkZ7SRgnxNAyDGN2o/xfs=
+	t=1708937873; cv=none; b=tGs5DeDOIyJmRYZxvfJeDoAiRmf51+ByvjqL+dKh39abYLnVDHfCt4Kyv2lsNohilnGIH8uz3V1iLSccjqT+QpCQj6S9NYlIztDXlaW+/YDR+do7tbXeUb3+sOsHYd305y0kWbU+LvQ6GE8PkwBFxUEZzowAwmj87YgocnOnRfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708937858; c=relaxed/simple;
-	bh=euXXnvdMbMJMMfV4qlsZzqA+Y2K2gkmqFHN6luvwkDg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NrvaCfG9d2edZoNjmKsRH7g5jgJAjpAbkCMUvWAZmT/chYxg1qlHDowr6CdN3xbbE2vqDaCi3UGp1FwPv6uBE0e3hsFNBBBQYFK+GJ9mg9STUg0YQ2AS5SYIvX6AjiF571tTyX80zXZuEu7mm1uIa5DV8pKVzYCOJUtGsLLOU9w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eG3iAHed; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f4b7e424-8f43-4940-89f0-cdfffbf6bb4c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708937854;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OGvTh26T848JMN3BBqWYMoEdVO583KgJ9tSKxunJFKY=;
-	b=eG3iAHedFz6CjYOcYV8vFg6YjWsHc5MirCyzm+JyrQ2Mni1FAtyC1+uK1men9uHOqAPs7/
-	OisnnlkKQgBVV1caAbHf6o+d9AQgI2Y3HELcZJvvFuBU0Kl0//ioa+RKNO0cPyvnRkwVcp
-	d1Zs90/JLO1DM4gSrwwzZ2MGcBMvWvg=
-Date: Mon, 26 Feb 2024 16:57:31 +0800
+	s=arc-20240116; t=1708937873; c=relaxed/simple;
+	bh=sh71VdSvALbb1x72VML15YUfIUFsFmJ85m1Hgf7DKVg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YUqfvz4XdjEcsR7i6xSIeLmCzJ12Cki/fD2GBFPE8fYoiCFJ/h5Oe7StqTp2Al/A7TL73jxVJH+K3KQ7IqVU3ohxEr9Re7qPjiLi1z+fEJvgJ4ckLiQC6Dx0gUABlgpwB0KbFjPiyDQ2xZYZETm871+PunX3Qy9fRk5LpdUZjPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fm0ecaSr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA702C433C7;
+	Mon, 26 Feb 2024 08:57:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708937872;
+	bh=sh71VdSvALbb1x72VML15YUfIUFsFmJ85m1Hgf7DKVg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Fm0ecaSrsJB0TogIIJqRWm8n02V8ypWw/tOl2WUYacuDBBP9J2yiz80EhDM1UVzxN
+	 j1C6bZarCvwVcWUk0mh0YgMdHJ1EKToc1Iam2RLsCYCmdQOPitPgRknYG8WGBaCNCF
+	 swCVL5gTdED2x/0/CT2Anq2XljKwbuM03U8Ayen4vHEVjY88HxH0igN5ukDx4S0tcD
+	 zxxPGnnWgbbW/bugIWm8Wnz5jVSXfuEdePG2T9LD+H+m4Gvz03kHrS3FbvuCwabor4
+	 pRk7HALf9B5Zg4IWh8mN8WrImcR24oDPDHn+PkvSk6+cX5rjQEyI8xkHTt9CCBb8eN
+	 sHMkHJbzFA3Ig==
+Date: Mon, 26 Feb 2024 09:57:47 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Tycho Andersen <tycho@tycho.pizza>
+Cc: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>, 
+	stgraber@stgraber.org, cyphar@cyphar.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] tests/pid_namespace: add pid_max tests
+Message-ID: <20240226-gestrafft-pastinaken-94ff0e993a51@brauner>
+References: <20240222160915.315255-1-aleksandr.mikhalitsyn@canonical.com>
+ <20240222160915.315255-3-aleksandr.mikhalitsyn@canonical.com>
+ <Zdd8MAJJD3M11yeR@tycho.pizza>
+ <20240223-kantholz-knallen-558beba46c62@brauner>
+ <ZdoEavHorDs3IlF5@tycho.pizza>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] erofs: remove SLAB_MEM_SPREAD flag usage
-Content-Language: en-US
-To: xiang@kernel.org, chao@kernel.org, huyue2@coolpad.com,
- jefflexu@linux.alibaba.com
-Cc: linux-erofs@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- vbabka@suse.cz, Xiongwei.Song@windriver.com
-References: <20240224134749.829361-1-chengming.zhou@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20240224134749.829361-1-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZdoEavHorDs3IlF5@tycho.pizza>
 
-On 2024/2/24 21:47, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
+> > > A small quibble, but I wonder about the semantics here. "You can write
+> > > whatever you want to this file, but we'll ignore it sometimes" seems
+> > > weird to me. What if someone (CRIU) wants to spawn a pid numbered 450
+> > > in this case? I suppose they read pid_max first, they'll be able to
+> > > tell it's impossible and can exit(1), but returning E2BIG from write()
+> > > might be more useful.
+> > 
+> > That's a good idea. But it's a bit tricky. The straightforward thing is
+> > to walk upwards through all ancestor pid namespaces and use the lowest
+> > pid_max value as the upper bound for the current pid namespace. This
+> > will guarantee that you get an error when you try to write a value that
+> > you would't be able to create. The same logic should probably apply to
+> > ns_last_pid as well.
+> > 
+> > However, that still leaves cases where the current pid namespace writes
+> > a pid_max limit that is allowed (IOW, all ancestor pid namespaces are
+> > above that limit.). But then immediately afterwards an ancestor pid
+> > namespace lowers the pid_max limit. So you can always end up in a
+> > scenario like this.
 > 
-> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> its usage so we can delete it from slab. No functional change.
+> I wonder if we can push edits down too? Or an render .effective file, like
 
-Update changelog to make it clearer:
-
-The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
-removed as of v6.8-rc1, so it became a dead flag since the commit
-16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"). And the
-series[1] went on to mark it obsolete explicitly to avoid confusion
-for users. Here we can just remove all its users, which has no any
-functional change.
-
-[1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
-
-Thanks!
-
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  fs/erofs/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-> index 9b4b66dcdd4f..8b6bf9ae1a59 100644
-> --- a/fs/erofs/super.c
-> +++ b/fs/erofs/super.c
-> @@ -885,7 +885,7 @@ static int __init erofs_module_init(void)
->  
->  	erofs_inode_cachep = kmem_cache_create("erofs_inode",
->  			sizeof(struct erofs_inode), 0,
-> -			SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD | SLAB_ACCOUNT,
-> +			SLAB_RECLAIM_ACCOUNT | SLAB_ACCOUNT,
->  			erofs_inode_init_once);
->  	if (!erofs_inode_cachep)
->  		return -ENOMEM;
+I don't think that works in the current design? The pid_max value is per
+struct pid_namespace. And while there is a 1:1 relationship between a
+child pid namespace to all of its ancestor pid namespaces there's a 1 to
+many relationship between a pid namespace and it's child pid namespaces.
+IOW, if you change pid_max in pidns_level_1 then you'd have to go
+through each of the child pid namespaces on pidns_level_2 which could be
+thousands. So you could only do this lazily. IOW, compare and possibly
+update the pid_max value of the child pid namespace everytime it's read
+or written. Maybe that .effective is the way to go; not sure right now.
 
