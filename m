@@ -1,252 +1,240 @@
-Return-Path: <linux-kernel+bounces-80920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F230866E14
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:18:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0AD866E0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAF1B1F2900E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:18:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC271F28F62
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9920452F90;
-	Mon, 26 Feb 2024 08:38:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D5A50A7C;
+	Mon, 26 Feb 2024 08:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="VYDSOLKa"
-Received: from esa2.fujitsucc.c3s2.iphmx.com (esa2.fujitsucc.c3s2.iphmx.com [68.232.152.246])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HgTS+w4V"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75549524C3;
-	Mon, 26 Feb 2024 08:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.152.246
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708936685; cv=fail; b=rg2lK0yLXPGKsdkjY5hqfnRbJLMyEWH1z7V8VW1KxAd2i8K/pnudVl6OboM7m9ibKmClav/Z/bkNppwGsFXbum5PWjMOrz2uzA4IJZkdv8Sx2PyBVYYQs0Z4NMbezyOShrpGSdV24qjjO4Owqmyx6yp404MWKCMi52o5R3HScLk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708936685; c=relaxed/simple;
-	bh=soi+QIPwIHE+W9uNXLWbiOFuREUDJoXH9JHDwIrUeNs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=nq+bo1OZrPKy7Ru48/Ii/8TNlBoTawZNhvfghWd/64mRogA6FLcN51s6RwsAgafsZ1pNJ6zoNg9mTG3B75Z+bgeSmRrNZSOlirHYvYb3xrcxI4zoY3FSsUV3W/faTPV4l0lxZR7m7ojvBOwJKjNtAVMBYjaqouP+GCOSu+P4bCE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=VYDSOLKa; arc=fail smtp.client-ip=68.232.152.246
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1708936683; x=1740472683;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=soi+QIPwIHE+W9uNXLWbiOFuREUDJoXH9JHDwIrUeNs=;
-  b=VYDSOLKalfh+aQk/5uIpoGq58oygNxExWY0yZyhH8xppnIxY/EYCLIGh
-   nSWQ8dl81tWr5Dj4Nx/Q6tS4IrFevMA090M6OFio4z7Hpx2lsX8sGosqm
-   p2bcdeSaHR47OIzkhZBlvxqpsDsChIaInFaOKNL5VQ2WUeAxaPaq6ZEeo
-   j+7vBM34vhnUn8/fZ3q/Z83Fb15Rm3BGMPjAhHVqCR5j4KX10ma9NKdnw
-   g9YitlqtzAE/oeBhC1mIvqA6CFZxwuyYWtMLqkDhMODAKnrnhKrZ+xk5d
-   bgrVB+NZs9BDyfra6mSg+PKgY+eqWC3wIWTM6DZlm4UiWPK2+VMED4+EP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="23225138"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705330800"; 
-   d="scan'208";a="23225138"
-Received: from mail-os0jpn01lp2105.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.105])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 17:36:45 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a+hE3kmZKc6IFS0QiSlGMFSrX0vf+QME2ebg2snpw5blS4PTgUt8/it57d7EdkuLCPWe3Pr6AkwIDLMSCBYHwhaAO8pgAz/CXFReJq8LYaEwoEM7K605nElysvFAfqdHoSAXA8OWAgdXInR9WzQMtl03/Qqc84MFTvRSZZMXWntUAU+kvaxoZ/iouFIX+Pyry6Okdu+UTSIUlykJzd+o4kpTezs+Y4v4sX5AxGBgXtF8lZ76yt3WvAQngoXfH7XEMfDNBnnVX11QnneOzZp4rJQ5kLOewqVLf/CYjnAzyWG7ALjxHyghjUn7fTNDCAAP8zot1f5uztWRe5Cqbxj8EA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=x9vodBSANotGwd5vD4rSiyBr+NjT4gFQ6qs/AGh1Euc=;
- b=ThZv3VgWoHkQ3MkQinNkTm6W+z0LpoIp0SY3CdT4QIEDwfpYcoDePsiRRlssP842EUQcOi2diBEYm85Afrbz9y3LWyw24TLi1APromVsVWLInxoi22XQFBR8OHMT0OrMhh+wj1RbD3g2Uw29M15SWWdsh8nwmUS7iYwmFOISWy1rp9FsjWKZdfSKtN1fwhcDGPazYUW+tlJFWF9EcWoGWNqB75ANTHzHIGHWo5DY1J0ZyTBKwbkbfdW7jSXwE7hYVOlPqXAiJqdlcTlo70AZ7Fa/xm0CNeNn3HQTKGzHjSRJ1a1Y1+u1KmFyUQqvhSymKDxMAfs6CYuUQIPcfKSb4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TY2PR01MB4330.jpnprd01.prod.outlook.com (2603:1096:404:10b::23)
- by TY3PR01MB10985.jpnprd01.prod.outlook.com (2603:1096:400:3af::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Mon, 26 Feb
- 2024 08:36:41 +0000
-Received: from TY2PR01MB4330.jpnprd01.prod.outlook.com
- ([fe80::da21:d66c:22d1:fdcc]) by TY2PR01MB4330.jpnprd01.prod.outlook.com
- ([fe80::da21:d66c:22d1:fdcc%5]) with mapi id 15.20.7316.031; Mon, 26 Feb 2024
- 08:36:41 +0000
-From: "Tomohiro Misono (Fujitsu)" <misono.tomohiro@fujitsu.com>
-To: 'Mihai Carabas' <mihai.carabas@oracle.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-CC: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-pm@vger.kernel.org"
-	<linux-pm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "catalin.marinas@arm.com"
-	<catalin.marinas@arm.com>, "will@kernel.org" <will@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "mingo@redhat.com"
-	<mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org"
-	<x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>, "pbonzini@redhat.com"
-	<pbonzini@redhat.com>, "wanpengli@tencent.com" <wanpengli@tencent.com>,
-	"vkuznets@redhat.com" <vkuznets@redhat.com>, "rafael@kernel.org"
-	<rafael@kernel.org>, "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "pmladek@suse.com"
-	<pmladek@suse.com>, "peterz@infradead.org" <peterz@infradead.org>,
-	"dianders@chromium.org" <dianders@chromium.org>, "npiggin@gmail.com"
-	<npiggin@gmail.com>, "rick.p.edgecombe@intel.com"
-	<rick.p.edgecombe@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "juerg.haefliger@canonical.com"
-	<juerg.haefliger@canonical.com>, "mic@digikod.net" <mic@digikod.net>,
-	"arnd@arndb.de" <arnd@arndb.de>, "ankur.a.arora@oracle.com"
-	<ankur.a.arora@oracle.com>
-Subject: RE: [PATCH v4 7/8] cpuidle/poll_state: replace cpu_relax with
- smp_cond_load_relaxed
-Thread-Topic: [PATCH v4 7/8] cpuidle/poll_state: replace cpu_relax with
- smp_cond_load_relaxed
-Thread-Index: AQHaX+1Gvox7RnWHnUWfe0PEFo6XArEUVjnQ
-Date: Mon, 26 Feb 2024 08:36:34 +0000
-Deferred-Delivery: Mon, 26 Feb 2024 08:36:34 +0000
-Message-ID:
- <TY2PR01MB4330F7FF122BBF12EC0ADE06E55A2@TY2PR01MB4330.jpnprd01.prod.outlook.com>
-References: <1707982910-27680-1-git-send-email-mihai.carabas@oracle.com>
- <1707982910-27680-8-git-send-email-mihai.carabas@oracle.com>
-In-Reply-To: <1707982910-27680-8-git-send-email-mihai.carabas@oracle.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_ActionId=77b23a09-c031-4c36-9627-b64b2ffb57d5;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_ContentBits=0;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_Enabled=true;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_Method=Privileged;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_Name=FUJITSU-PUBLIC?;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_SetDate=2024-02-21T05:59:05Z;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;
-x-shieldmailcheckerpolicyversion: FJ-ISEC-20181130-VDI-enc
-x-shieldmailcheckermailid: eceddb408e08436880adf6b8349bf71c
-x-securitypolicycheck: OK by SHieldMailChecker v2.6.2
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY2PR01MB4330:EE_|TY3PR01MB10985:EE_
-x-ms-office365-filtering-correlation-id: c5022e5b-316e-4d5d-a467-08dc36a60e40
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- skSpbZj90bWQ4+gsFDLpjGb+Ig7Iekz1h+e9vgP5Wh4CW86ahhFmWZPFW4+f3I2Khl32eGwuwizDBXCL58UBnIyDzTkewBrhumRO1YwEDcJ6q7SAgEECzXaOaY8nKkrs5T/UEOhrTzIoKoti6vPcIllCdc6RbWXgxrsPTffE1P0iJWdjuZT+y2iw43JpEH4eOWPCl2l3i6AbCLZV+DBm3LdoPrWRnpLJ24XwH40YCIb5KwFuTR8MoquwetsCAfUyGiIaFX5GtdPuzbi55XBS/09RU7ltmwBK9r5rAFf4dgTggWBfIG4NpAbcqIbjBKSwidaBtH5eru0/nk0mQo6U2PZBXA19t4fPI7/ZpOqMC3WTxYAgobWnhkLOfp+Rhx/bBvtwIvMAsGMUVZZ/aw4kRtoYqg5UGZaoZQkfiVi7PSXIJO9biYr5bXPtMuv2b8GVgmH9XpHLSy8bHsnpec7YmRGuT8c1ozFkpBeBx3ptsMjhk0wC7My6AVXaMfeJ2v2eMz+pOgF4R5MpZAMrNRtWRv888Zs2VhIr4RbqegcXIVaBfv+8G7Gwy01X5j1TDQBFNWPr1zOg61BCHmIG7/cbk6sXjvODjvWTxNvvENBnLLHy2waffJkhWHI5OMEa/VMSEpeOu0yHYJ+TwFTsbzahnx3QT3P5/N+ym4JyR+uFvKnWTLu3AC/RFk8/2aH17TGdlHkF6V2jhXBTsdLA4+SGtW/0qzhPMT/T5TUIqW2xi+g=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB4330.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009)(1580799018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-2022-jp?B?dEtwL1orWXNlZWFQdm1kVHVIVGROWjRCNWdSNitocW9vZ1pRdzhPMjlM?=
- =?iso-2022-jp?B?QmM0M3pwYW9ISDhoVE5pSG9PQU5KYys0a0w1SkloaThIalZCOUdueER3?=
- =?iso-2022-jp?B?bFQyNERUelZyY0VtalJRZFozTVYvZVhLSCs2ajIrMW0wTUd2MFEvQ1RJ?=
- =?iso-2022-jp?B?SzBTM3dNNWdVSDJhMDZVNkVrS0tYYmJnK3Y5SFY2ek53SDhhVHlXQjZV?=
- =?iso-2022-jp?B?ZWJ6ZU16dnlqYVBOWmFySkJXTUw4NHZWWllyRG5UT0FFUVZ6Si9GOE9o?=
- =?iso-2022-jp?B?dGJhcWYrRXVZY3Z5b0d2ZW80Tm9xSWUxdDUwcHNzY1NnQmJSdGp5bUhh?=
- =?iso-2022-jp?B?aGxiRHdESEFHajRnWlhoSWpOMkZuSGRybTU3LzhoMFROU3hlRnhsTWtB?=
- =?iso-2022-jp?B?MTA2cElUcEpMeWVFckZpdXNkK2FtV1d2SWdMZGRuZmgxQWVxRnhrdSsw?=
- =?iso-2022-jp?B?cDE1STdiZ1NzUzVGNUx5ZktLdFBXeXNIcUdzaDFkQ0t1bkhSOE5LZXlp?=
- =?iso-2022-jp?B?NnVGR29rSTB2TVdUTnhZYXdrRm82UG84VmE4em9xM1hjY2Vub0o1SzJM?=
- =?iso-2022-jp?B?TlAyU1A2b2dmTC9kSTlmdnJXejcrUzlFOVJEWmF4WTJjYnF3MWhoTGpL?=
- =?iso-2022-jp?B?T2p4U3F0bHJQUGRCN3RNTVJhWkVCaWt6STFvSnBBTC9uMzFQNDg3WTB5?=
- =?iso-2022-jp?B?NmE3Z2drazZ5VjFQMS9ZYW1PYzRIN0hKZDF3NGswYXcvQVMvbWZ6VGcr?=
- =?iso-2022-jp?B?QVdqdVJDeUFMb3pHSFJPQVEzamY5TUlPM1ArVlByM1VVL05WS3V6eDUy?=
- =?iso-2022-jp?B?cFIveC92am9rZysyWWt2VnJZWDZ0SVdHZXdkekE1YXR5eExDVVJPWmNL?=
- =?iso-2022-jp?B?QzVyMVRZUFBUdDlpRzYrTXNQeE5BNkV3WWNPNXJMS1oxbUZ4N2xhUDdy?=
- =?iso-2022-jp?B?QmRQMFVnSDJMb3hmY2lmbVhmMjVrNjVoZC8waEpBK2hIZG9ZMG5SWWR2?=
- =?iso-2022-jp?B?UGF6K1RQOUdqcjR1eUcwdm5vOFZiRmU5VkRDOHFQcWFaR01YcVBPc3Vh?=
- =?iso-2022-jp?B?NHdrUENWb3ZuTy8yZEt2UlFFYjY2Vm9VRUxGM2RVZ05PMXVJNHdyeldR?=
- =?iso-2022-jp?B?RVBwUUQ1d2lBZmVTUzk1ZUZmeHFuWmo2enFBU2NHZFdXL0d2eUU4UzQ2?=
- =?iso-2022-jp?B?bzFDNWx0a1lROUEvNERKQVh3MEJTaHM2S09CckFaWUxrVEJTS2lLWWJ5?=
- =?iso-2022-jp?B?L1hFc2dSV1M1dm5wQjc4dkJVbUF2VzZxYkI3SFhEa0UxSHRQZTF6aDJF?=
- =?iso-2022-jp?B?VVU2Sm9sSEtwaS9VUVp3Wk1UcTV6UlY1Z08vYUFuVTBQM2U1dXdod3Fx?=
- =?iso-2022-jp?B?MytzNUN2dkpjd29Sa09YMzYxQmJJVWNZV2dJVHVVY2RrSWRNNUQyMWg0?=
- =?iso-2022-jp?B?R1VKV01CYlFoK2dENndSL2duNW9YU2huN2tQckU5ci93WW1lU04zcmRs?=
- =?iso-2022-jp?B?NEs5dStvSldkeTdhRWg2Nk41V1VkTUlXRk9SeVc2OFNCUlhNK2JIVkUz?=
- =?iso-2022-jp?B?ZkFrRGNSMllCN3lmeFY1TU5iMG9iUWtxMVc3dUNDNTVqeERaYUFNdERm?=
- =?iso-2022-jp?B?WTN3QVJOYmpHbHF2WmU1UE5BTk9meUNPSEF4cVFkVHBCSTJIMk9VUGs2?=
- =?iso-2022-jp?B?Vy9TdEJzWWZwYVQxQWtGZjF3Y3JwdWFVZml6MHZtU05LeDAvS2o1T2tD?=
- =?iso-2022-jp?B?ZDFoVkdjd2tNb2tBSEN1c0lSNmxOdEJLZ1RScGVBYlRKTlVyZE5vUUtJ?=
- =?iso-2022-jp?B?RllPdHBGTmJRZ0EvUTNLMWREZE9WOVRIVnpmWDJ0cDFKNXcybnVKTTU4?=
- =?iso-2022-jp?B?Z0xpN0lyQ3JhS2xRS0R1Mmp4OVdlejNxN09XMW9ReExsTUZBN3BpRUFN?=
- =?iso-2022-jp?B?bkcxUlR0am0xeEtkN0o5K3FCTExBNDF6RHJEUDFCRHhHaXMrMHZKaXBK?=
- =?iso-2022-jp?B?c1d1ZURJMHlGMTlqNDdlRU9WZDRqeGlQQ1hiWEVSbWpaUUl3TUt4NEpX?=
- =?iso-2022-jp?B?WVM3ZHB4dkdOSlY5Q1BLL09NUHdWemtCS1pxR0QzeXFidHVhalArQ0Rz?=
- =?iso-2022-jp?B?dnp4YUtJNENLZlg4NjRGUWRhbG43YXdoQXhQWHgzZXlCVzFGaFpnVmpY?=
- =?iso-2022-jp?B?a1E4MGo2VnVOZkVodHNCQ3Z3Ukk3aW1EZmE5c1JDTVpTcElEMCtnMnA2?=
- =?iso-2022-jp?B?by83Y0FZSnlZUGxQT3YxTWc1dGo4allJUmcvUWJFbFhYKzVaaTN3RDRX?=
- =?iso-2022-jp?B?YVZsemhCY1k0V0crVHJjMmR0WitERmIwdWc9PQ==?=
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145B250A65
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708936634; cv=none; b=qXbnpwgbqRBLEdaAHKQCBfa69nF1hVhvIudW19SWH0sad8bXVE29n6kjrTIh5LPILBz8r4XApP5dedM8zWj8mdq6JmRtASgvOwO0KE1I2Eeer5XUijW97DNx9EbkxSjyPBsXVnhRCgbPPqiS0MJ9+tOBKJ2+7Fe1F8CYAwzjUJc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708936634; c=relaxed/simple;
+	bh=Wpyv7cwfAh+/8axnwuNHvynIMAy4pwR4p2tH3OEB1pk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OlfiK3Ei+ScSqxChuy9W3skmZtcQ0S25rnTkgVnakeY3OjRSYfibuRDt5sB56hTBycVuJZnsmbiHY2hlLsK+s2TuNNRsh3sFLagDqGNqzqEUC3NvS+1rg+3g/T36x1/M6UiGRpkfLBiJRBoHeO9moup8lYVfQfXh3apIU+aF+SA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HgTS+w4V; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708936632;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tEsGHyKmhHFaggiU/p+Qf67ugl62p05Uk9RKbVQZhjk=;
+	b=HgTS+w4V+ooHdPPVFw5Vtk42HwCQt0uQe7RNWU3EocUVusBvAV7SwKx3/65APPl748++ai
+	SURST6EeNALgwF8l0VIjxK8TBW0tNm/sZJLc4N9UBrh5UZ6x6M/HX6BV1jWJW278r2HTsL
+	y78MKafNmfQsacwpXTrPJcagLs4OlS0=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-263-nH5CcEhIPPizJXmOKaxa1g-1; Mon, 26 Feb 2024 03:37:10 -0500
+X-MC-Unique: nH5CcEhIPPizJXmOKaxa1g-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d27af05d98so15802071fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 00:37:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708936628; x=1709541428;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tEsGHyKmhHFaggiU/p+Qf67ugl62p05Uk9RKbVQZhjk=;
+        b=NromzziU8k8V4oIxgDGCZyjhnqqvvBxA73gOYGO0gPjYhFkPOha/429cUGBCe1QR3t
+         V148c2Cc2J2c042kJbGaWzJ+p5nQX1eo8o9YUpL0HMy7qmrCndMbi12Y+rzXI/ZnVhuu
+         AOxqn75MPJZR0fX0GDDfGeNDium1Ax3fpKKeAAkzy4/b0Ph1qUOU476+tkzEMDTZTkNh
+         bseAxjuzCqRJepShVe34NqM0gUKJsjbtzOs0nxU2hnYMnP015uR+AICweq6/Xi1HMAvt
+         QV0LqeFg04NS5LwyiGDWFacfAJTVbu/AfLNsDAz6/W7MfE9E2De2wsKHlPMZZKjcUEKC
+         uNEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXXITah9+yY26MzR08Wxsn5z1duBWSgdMGg/t89cSvg7PBvKFtSkOqry1F+e2OlY93wnSIHVfMEQObZV3dHITHTowyAWJhVkpHthQB+
+X-Gm-Message-State: AOJu0YxNq1rc5srD+vVlm+id1Bbc8erzU27PDUYM/Qzeq4frL7xPx/R2
+	SfbMEpEYG6hRlx822aojgergh+pZrPXgbAVAroQSPaUr674TgcOX2XgsyWRmyfN4KrWSRt0gf4O
+	XIOTktZ/HznRXE4LlxiCGPaKxEKqhE/MzXTuDiMjqBz9E1w0xfJ4kxoHNtE2PAg==
+X-Received: by 2002:a2e:bea0:0:b0:2d2:86c4:c8a7 with SMTP id a32-20020a2ebea0000000b002d286c4c8a7mr2448190ljr.34.1708936628663;
+        Mon, 26 Feb 2024 00:37:08 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEqZtNVcAgG0XLU1mqokLPY5YlcLtZdA3CUKhIij4yRc415t+fg4oJkJsPWsk6ORBAGzfr9Bg==
+X-Received: by 2002:a2e:bea0:0:b0:2d2:86c4:c8a7 with SMTP id a32-20020a2ebea0000000b002d286c4c8a7mr2448168ljr.34.1708936628238;
+        Mon, 26 Feb 2024 00:37:08 -0800 (PST)
+Received: from ?IPV6:2003:cb:c72f:f700:104b:9184:1b45:1898? (p200300cbc72ff700104b91841b451898.dip0.t-ipconnect.de. [2003:cb:c72f:f700:104b:9184:1b45:1898])
+        by smtp.gmail.com with ESMTPSA id bv20-20020a0560001f1400b0033d73e1505bsm7571209wrb.18.2024.02.26.00.37.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 00:37:07 -0800 (PST)
+Message-ID: <8d70939f-ca14-4167-9647-b8f44ddcbb98@redhat.com>
+Date: Mon, 26 Feb 2024 09:37:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	UTXHsYwePGLLn2tS1RffJaEhlHhdvsJ8UqOHstuykhWahBXiLr2CmD6Co4560UFryijsGp+izHuUScghh+WZsXNU1V0XPLrgSfkA+um2C92aC0Hd3hXZCYUE7TAxn/T4lKT3Svxi1Kog3Z4olsVl/xJoSeo3aDqk9qi9dU1qROvgfAHsmDpEVTjyjHCqy3wqdy7slKAzBe2xdelKdJbNhS1z9etwH4NEsBOAymGBkwmrtmZMi/WfgUUMVj47bDa38w6leeUlckQUOXwh/rvtFPwkg+Bj8bFKYadFlnHR3I4LYoa5zFnpZl7ExsvUAgkjrejkVbyFsj0kZkrw/HhOGkYBgselvLUMZgjY9OUa3FkVKlVBpYv9SEwmW7T9mXPSIkwKnTjDtbYHEl2JHKMKc0lmkHKjh42AubyIC2z9j/OPVJMLn3dZQBeV09ui3SbULGIq8DyIoiXL/htrLsMwDPxWaGLRaa7Ru/7EKxdWa/Ar+J2pu+ZFmvKQGkJ4okTP4xTnLsIzA1lTMnZ0n9YJpBCrBFt6g2bu6leeKrXnuF/truoZ2/JNyKIZjor78MGDGbNYe9X8XGsUZ7+GGKxXu0FUYG1ei3lb3n3nOuw/IWEifVrq4sSqP6D/U6NIWS0E
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB4330.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5022e5b-316e-4d5d-a467-08dc36a60e40
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Feb 2024 08:36:41.0740
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RUWLV7+nEgWWP0O+kgx8UDBT5iXcOhyhMFcKc1tHAv3lRCfX2aK/LCrm6OmP3OEhn9cemT8++YFnDQOtxIt7uHXuAqIa8JsoYh9/AGoACfc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3PR01MB10985
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] PM: hibernate: Fix level3 translation fault in
+ swsusp_save()
+Content-Language: en-US
+To: Yaxiong Tian <13327272236@163.com>, rafael@kernel.org, pavel@ucw.cz,
+ len.brown@intel.com, keescook@chromium.org, tony.luck@intel.com,
+ gpiccoli@igalia.com, akpm@linux-foundation.org, ardb@kernel.org,
+ rppt@kernel.org, wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
+ will@kernel.org
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Yaxiong Tian <tianyaxiong@kylinos.cn>,
+ xiongxin <xiongxin@kylinos.cn>
+References: <20240226034225.48689-1-13327272236@163.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240226034225.48689-1-13327272236@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
-> Subject: [PATCH v4 7/8] cpuidle/poll_state: replace cpu_relax with smp_co=
-nd_load_relaxed
->=20
-> cpu_relax on ARM64 does a simple "yield". Thus we replace it with
-> smp_cond_load_relaxed which basically does a "wfe".
->=20
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Mihai Carabas <mihai.carabas@oracle.com>
+On 26.02.24 04:42, Yaxiong Tian wrote:
+> From: Yaxiong Tian <tianyaxiong@kylinos.cn>
+> 
+> On ARM64 machines using UEFI, if the linear map is not set (can_set_direct_map()
+> return false), swsusp_save() will fail due to can't finding the map table
+> under the nomap memory.such as:
+> 
+> [   48.532162] Unable to handle kernel paging request at virtual address ffffff8000000000
+> [   48.532162] Mem abort info:
+> [   48.532162]   ESR = 0x0000000096000007
+> [   48.532162]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [   48.532162]   SET = 0, FnV = 0
+> [   48.532162]   EA = 0, S1PTW = 0
+> [   48.532162]   FSC = 0x07: level 3 translation fault
+> [   48.532162] Data abort info:
+> [   48.532162]   ISV = 0, ISS = 0x00000007, ISS2 = 0x00000000
+> [   48.532162]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> [   48.532162]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> [   48.532162] swapper pgtable: 4k pages, 39-bit VAs, pgdp=00000000eeb0b000
+> [   48.532162] [ffffff8000000000] pgd=180000217fff9803, p4d=180000217fff9803, pud=180000217fff9803, pmd=180000217fff8803, pte=0000000000000000
+> [   48.532162] Internal error: Oops: 0000000096000007 [#1] SMP
+> [   48.532162] Internal error: Oops: 0000000096000007 [#1] SMP
+> [   48.532162] Modules linked in: xt_multiport ipt_REJECT nf_reject_ipv4 xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bpfilter rfkill at803x snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg dwmac_generic stmmac_platform snd_hda_codec stmmac joydev pcs_xpcs snd_hda_core phylink ppdev lp parport ramoops reed_solomon ip_tables x_tables nls_iso8859_1 vfat multipath linear amdgpu amdxcp drm_exec gpu_sched drm_buddy hid_generic usbhid hid radeon video drm_suballoc_helper drm_ttm_helper ttm i2c_algo_bit drm_display_helper cec drm_kms_helper drm
+> [   48.532162] CPU: 0 PID: 3663 Comm: systemd-sleep Not tainted 6.6.2+ #76
+> [   48.532162] Source Version: 4e22ed63a0a48e7a7cff9b98b7806d8d4add7dc0
+> [   48.532162] Hardware name: Greatwall GW-XXXXXX-XXX/GW-XXXXXX-XXX, BIOS KunLun BIOS V4.0 01/19/2021
+> [   48.532162] pstate: 600003c5 (nZCv DAIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> [   48.532162] pc : swsusp_save+0x280/0x538
+> [   48.532162] lr : swsusp_save+0x280/0x538
+> [   48.532162] sp : ffffffa034a3fa40
+> [   48.532162] x29: ffffffa034a3fa40 x28: ffffff8000001000 x27: 0000000000000000
+> [   48.532162] x26: ffffff8001400000 x25: ffffffc08113e248 x24: 0000000000000000
+> [   48.532162] x23: 0000000000080000 x22: ffffffc08113e280 x21: 00000000000c69f2
+> [   48.532162] x20: ffffff8000000000 x19: ffffffc081ae2500 x18: 0000000000000000
+> [   48.532162] x17: 6666662074736420 x16: 3030303030303030 x15: 3038666666666666
+> [   48.532162] x14: 0000000000000b69 x13: ffffff9f89088530 x12: 00000000ffffffea
+> [   48.532162] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffffffc08193f0d0
+> [   48.532162] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 0000000000000001
+> [   48.532162] x5 : ffffffa0fff09dc8 x4 : 0000000000000000 x3 : 0000000000000027
+> [   48.532162] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 000000000000004e
+> [   48.532162] Call trace:
+> [   48.532162]  swsusp_save+0x280/0x538
+> [   48.532162]  swsusp_arch_suspend+0x148/0x190
+> [   48.532162]  hibernation_snapshot+0x240/0x39c
+> [   48.532162]  hibernate+0xc4/0x378
+> [   48.532162]  state_store+0xf0/0x10c
+> [   48.532162]  kobj_attr_store+0x14/0x24
+> 
+> QEMU ARM64 using UEFI also has the problem by setting can_set_direct_map()
+> return false.
+> 
+> Since the NOMAP regions are now marked as PageReserved(), pfn walkers
+> and the rest of core mm will treat them as unusable memory. So this
+> regions should not saved in hibernation.
+> 
+> This problem may cause by changes to pfn_valid() logic in commit
+> a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify pfn_valid()").
+> 
+> So to fix it, we add pfn_is_map_memory() check in saveable_page(). It
+> make such regisons don't save in hibernation.
+> 
+> Fixes: a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify pfn_valid()")
+> Co-developed-by: xiongxin <xiongxin@kylinos.cn>
+> Signed-off-by: xiongxin <xiongxin@kylinos.cn>
+> Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
 > ---
->  drivers/cpuidle/poll_state.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
->=20
-> diff --git a/drivers/cpuidle/poll_state.c b/drivers/cpuidle/poll_state.c
-> index 9b6d90a72601..1e45be906e72 100644
-> --- a/drivers/cpuidle/poll_state.c
-> +++ b/drivers/cpuidle/poll_state.c
-> @@ -13,6 +13,7 @@
->  static int __cpuidle poll_idle(struct cpuidle_device *dev,
->  			       struct cpuidle_driver *drv, int index)
->  {
-> +	unsigned long ret;
->  	u64 time_start;
->=20
->  	time_start =3D local_clock_noinstr();
-> @@ -26,12 +27,16 @@ static int __cpuidle poll_idle(struct cpuidle_device =
-*dev,
->=20
->  		limit =3D cpuidle_poll_time(drv, dev);
->=20
-> -		while (!need_resched()) {
-> -			cpu_relax();
-> -			if (loop_count++ < POLL_IDLE_RELAX_COUNT)
-> -				continue;
-> -
-> +		for (;;) {
->  			loop_count =3D 0;
-> +
-> +			ret =3D smp_cond_load_relaxed(&current_thread_info()->flags,
-> +						    VAL & _TIF_NEED_RESCHED ||
-> +						    loop_count++ >=3D POLL_IDLE_RELAX_COUNT);
-> +
-> +			if (!(ret & _TIF_NEED_RESCHED))
-> +				break;
+>   kernel/power/snapshot.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 0f12e0a97e43..a06e3b1869d2 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -1400,7 +1400,7 @@ static struct page *saveable_page(struct zone *zone, unsigned long pfn)
+>   		return NULL;
+>   
+>   	if (PageReserved(page)
+> -	    && (!kernel_page_present(page) || pfn_is_nosave(pfn)))
+> +	    && (!kernel_page_present(page) || pfn_is_nosave(pfn) || !pfn_is_map_memory(pfn)))
+>   		return NULL;
+>   
+>   	if (page_is_guard(page))
 
-Should this be "if (ret & _TIF_NEED_RESCHED) since we want to break here
-if the flag is set, or am I misunderstood?
+On top of which tree does this apply?
 
-Regards,
-Tomohiro
+All occurrences of pfn_is_map_memory() are in arch/arm64, how does this 
+compile on other architectures?
 
-> +
->  			if (local_clock_noinstr() - time_start > limit) {
->  				dev->poll_time_limit =3D true;
->  				break;
-> --
-> 1.8.3.1
->=20
->=20
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+-- 
+Cheers,
+
+David / dhildenb
+
 
