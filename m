@@ -1,151 +1,113 @@
-Return-Path: <linux-kernel+bounces-80615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61BFD866A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:03:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44AC3866A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:03:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CD7D283028
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:03:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75505B21846
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C8F1BDC3;
-	Mon, 26 Feb 2024 07:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e4+HbDHZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2DE1BDD6;
+	Mon, 26 Feb 2024 07:03:12 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482751C280;
-	Mon, 26 Feb 2024 07:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284981BDCE
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708931016; cv=none; b=NI83pDNnKzAd5jO1nlaxPTYW9eJMPwI7LnA8BsTwfN6IbUSkjaQTKk/1ehbiLerLfMryEZ1gIliJiv+e1l231wQV/FJplbJiUx3wd96SC59EX3zQKCAL4ZoDVPt5QNF1+N9WMXKQlB606SWDwOPWk5Zg+4UHpdGMMH33/olCM9g=
+	t=1708930992; cv=none; b=aohT2w9CrdrpaizIgV51Vt99yknj3jQRJGl2nVd4u6WFHywrf9BJkL6PDJUZlvqYTdGQctdDva2EvHYnRvA3JVygZI/P1r02uG5/0MH0QnYIwucsw5vZ0QcPyNbjc+Tg2pyQ2SFjYlXl3dHmApU2PfIDn2CzIXOjJGpe0C+G0S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708931016; c=relaxed/simple;
-	bh=McHriLc9VHpbi8pf3LEto0DWYbClS1FsZTk12Re/s0c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HeeWBZyt9+oPyFm7swaprWCTugCoz2CKZIb6KDjDN2O+NwVGPduKUjmXuDG0oZaNXSGnY0dUK7xgZXEAQ3+UjmBdUPRO4sj1/8H1ef+Y3bFfCJgxMfLOJDwPJZCjuc2VyHYhxwUx3egWvWe3x4G5EooCIIxhqSOcRxcFtk7d0PY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e4+HbDHZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F9BC433A6;
-	Mon, 26 Feb 2024 07:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708931015;
-	bh=McHriLc9VHpbi8pf3LEto0DWYbClS1FsZTk12Re/s0c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=e4+HbDHZear95QoLvFW20iEIy9F7NnlszG53ezKs3SiYuUTGyxc30+wOZO0DwTm2l
-	 IBHyq6YH67F20QwWj7nxTIg8R8o2gRGyLO7vtZLX/HFJPvI7Q2n9Yab5luNCRLHoAC
-	 D2mYM5CkXnxmeht1WNuU5s/25nsZe1jgwoSqoezl3aLCHm/8MYDZF/SY9eyRWQnbiu
-	 xacXwm2uxtzHy3LkjbBMxDcjCUdBeGbom1uX7yhhgqbyG4W/XOgo0fVzC1w4etdI24
-	 a6Nt/BfrCJeDr9ZOdCxA1QpHbiKYm2UO9WBfUVVrdhmCNH3OrTmCbI4qeCBWz3jDnI
-	 ruWZSUAZK4v+g==
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d2305589a2so40134381fa.1;
-        Sun, 25 Feb 2024 23:03:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXh0567t+4EmQT861PMR/3SOa2JCTtGlTtrYGQc3DWY9LiM8cYMfG8fH81Rtq8zQamX8AToigllVWOoS9RZi3MhC29rbhDhHLzdPZRgoVv0O2lqiXaK8zt0w9olaioM4k83S2L1EGJYg11DGRf3WEcz8NnjF/XiJl9Di3YBmiZUZ91Wgd4vEg==
-X-Gm-Message-State: AOJu0YwwYbs/6wMvUBqMCNa+nA2CxrcGsE9J66iWh7a6pPZ9GLpGFgyQ
-	zW0PFfW4KY6+U2U5e1eek2XhWC6BSUMhPDufkYnsD97stA4XlgrE5whhhomqRUl/Ql7Pr4F77jz
-	TuIyjK7STrhkSrUjaOT4YFJUwgNo=
-X-Google-Smtp-Source: AGHT+IG7y3BqdCJ+sfjI74RCsEt3lLih8aIWurAWDnZJbN45ufZkQqGa++R+6q+3o5wNfprqbpIU7Nm9lSVNng2tJJY=
-X-Received: by 2002:a2e:850a:0:b0:2d2:8ce0:215b with SMTP id
- j10-20020a2e850a000000b002d28ce0215bmr794228lji.0.1708931014170; Sun, 25 Feb
- 2024 23:03:34 -0800 (PST)
+	s=arc-20240116; t=1708930992; c=relaxed/simple;
+	bh=1DtOKBCxpfL5fIkR2Rryk2XB5jCDrHQvAcOgOxHdaUE=;
+	h=Message-ID:Date:MIME-Version:To:CC:References:Subject:From:
+	 In-Reply-To:Content-Type; b=A5qCHTGbPcn5jo/7wEodECwC3WgyjEMNMIwF49kpAIHe6y3vWT1Fwt5SPOalggbPPB+B++n7zQESiUkmXAxhh5FND3qKy+k0Pu1IvgxeF2G3Bbw6uQ0R+AymdOKYOC/klnPPxV8uuUIAz+EgqGMfwZrQqaAIrhMkytzoeh0WqfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Tjs4k0Y49zqjgw;
+	Mon, 26 Feb 2024 15:02:30 +0800 (CST)
+Received: from dggpeml500011.china.huawei.com (unknown [7.185.36.84])
+	by mail.maildlp.com (Postfix) with ESMTPS id 569081400F4;
+	Mon, 26 Feb 2024 15:03:06 +0800 (CST)
+Received: from [10.174.179.13] (10.174.179.13) by
+ dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 26 Feb 2024 15:03:05 +0800
+Message-ID: <5a1d28b7-1e6e-da39-9b34-f86470163bb1@huawei.com>
+Date: Mon, 26 Feb 2024 15:03:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240225151209.343160-1-alexander.stein@mailbox.org>
-In-Reply-To: <20240225151209.343160-1-alexander.stein@mailbox.org>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Mon, 26 Feb 2024 16:02:57 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARxfhYm9WyDH-S0PT7Mb5Tj5tmbqGLs9NzNxzsi1_4OQw@mail.gmail.com>
-Message-ID: <CAK7LNARxfhYm9WyDH-S0PT7Mb5Tj5tmbqGLs9NzNxzsi1_4OQw@mail.gmail.com>
-Subject: Re: [PATCH 1/1] kbuild: Add DT schema check also when applying DT overlays
-To: Alexander Stein <alexander.stein@mailbox.org>, Rob Herring <robh+dt@kernel.org>, 
-	DTML <devicetree@vger.kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+To: <liuyongqiang13@huawei.com>
+CC: <arnd@arndb.de>, <keescook@chromium.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux@armlinux.org.uk>, <m.szyprowski@samsung.com>, <rppt@linux.ibm.com>,
+	<sunnanyong@huawei.com>, <wangkefeng.wang@huawei.com>, <willy@infradead.org>,
+	<yanaijie@huawei.com>, <zhangxiaoxu5@huawei.com>
+References: <20240223063608.2605736-1-liuyongqiang13@huawei.com>
+Subject: Re: [PATCH v2] arm: flush: check if the folio is reserved for
+ no-mapping addresses
+Reply-To: <20240223063608.2605736-1-liuyongqiang13@huawei.com>
+From: Jinjiang Tu <tujinjiang@huawei.com>
+In-Reply-To: <20240223063608.2605736-1-liuyongqiang13@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500011.china.huawei.com (7.185.36.84)
 
-+ Rob Herring, DT List
+Since some abuses of pfn_valid() have been reported, I check all the use 
+of pfn_valid(), and find some suspicious cases.
 
+phys_mem_access_prot() defined in arch/arm/mm/mmu.c returns 
+pgprot_noncached() when pfn_valid() returns false.
+I think it’s purpose is to return pgprot_noncached() when the pfn is not 
+in RAM, and the use of pfn_valid() is incorrect.
+Notably, phys_mem_access_prot() defined in arm64 uses 
+pfn_is_map_memory() instead of pfn_valid() since commit
+873ba463914c (arm64: decouple check whether pfn is in linear map from 
+pfn_valid()).
 
-On Mon, Feb 26, 2024 at 12:12=E2=80=AFAM Alexander Stein
-<alexander.stein@mailbox.org> wrote:
->
-> Add a similar mechanism as for regular DT files to call the DT checker
-> after applying DT overlays to base DT files.
->
-> Signed-off-by: Alexander Stein <alexander.stein@mailbox.org>
-> ---
-> I'm unsure if this is the "right" way, or if the multi-dtb-y lines
-> should be moved. But checking for schemas in DT overlays is a nice thing.
+Similarly, virt_addr_valid() defined in arm64 uses pfn_is_map_memory() 
+instead of pfn_valid() since commit
+873ba463914c (arm64: decouple check whether pfn is in linear map from 
+pfn_valid()), But virt_addr_valid() still
+uses pfn_valid(). Besides, the implementation of x86 also uses pfn_valid().
 
+update_mmu_cache_range() defined in arch/arm/mm/fault-armv.c checks 
+pfn_valid() and then calls __flush_dcache_folio().
+This case is similar to the case reported by Yongqiang Liu, the pfn may 
+not be a RAM pfn, and the system will crash in
+__flush_dcache_folio() due to the kernel linear mapping is not 
+established. virt_addr_valid() is used to check whether a
+vrtual address is valid linear mapping. Are these uses of pfn_valid() 
+incorrect?
 
+pfn_modify_allowed() defined in arch/x86/mm/mmap.c checks pfn_valid(), 
+and the comment says it is intended to check
+whether the pfn is in real memory. So the use of pfn_valid() should be 
+incorrent. This case is only involved when the cpu
+is affected by X86_BUG_L1TF.
 
-There is no need to move the multi-dtb-y line.
+try_ram_remap() defined in kernel/iomem.c returns the linear address 
+when three checks are passed. One of the checks is
+pfn_valid(). The only caller memremap() guarantees the pfn passed to 
+try_ram_remap() is in RAM, but the pfn may be in
+NOMAP memory regions and is not mapped in linear mapping. commit 
+260364d112bc (arm[64]/memremap: don't abuse
+pfn_valid() to ensure presence of linear map) solves it by checking in 
+arch_memremap_can_ram_remap(), However, if other
+architectures involve this issue?
 
+Do these suspicious case abuse pfn_valid() really? Thanks
 
-
-
->  scripts/Makefile.lib | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 038a12e15586..964892b18f95 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -406,10 +406,6 @@ cmd_dtc =3D $(HOSTCC) -E $(dtc_cpp_flags) -x assembl=
-er-with-cpp -o $(dtc-tmp) $< ;
->  quiet_cmd_fdtoverlay =3D DTOVL   $@
->        cmd_fdtoverlay =3D $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $(re=
-al-prereqs)
->
-> -$(multi-dtb-y): FORCE
-> -       $(call if_changed,fdtoverlay)
-> -$(call multi_depend, $(multi-dtb-y), .dtb, -dtbs)
-> -
->  ifneq ($(CHECK_DTBS)$(CHECK_DT_BINDING),)
->  DT_CHECKER ?=3D dt-validate
->  DT_CHECKER_FLAGS ?=3D $(if $(DT_SCHEMA_FILES),-l $(DT_SCHEMA_FILES),-m)
-> @@ -418,9 +414,13 @@ DT_TMP_SCHEMA :=3D $(objtree)/$(DT_BINDING_DIR)/proc=
-essed-schema.json
->
->  quiet_cmd_dtb =3D        DTC_CHK $@
->        cmd_dtb =3D        $(cmd_dtc) ; $(DT_CHECKER) $(DT_CHECKER_FLAGS) =
--u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $@ || true
-> +quiet_cmd_dtbo =3D DTOVL_CHK $@
-> +      cmd_dtbo =3D $(cmd_fdtoverlay) ; $(DT_CHECKER) $(DT_CHECKER_FLAGS)=
- -u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $@ || true
->  else
->  quiet_cmd_dtb =3D $(quiet_cmd_dtc)
->        cmd_dtb =3D $(cmd_dtc)
-> +quiet_cmd_dtbo =3D $(quiet_cmd_fdtoverlay)
-> +      cmd_dtbo =3D $(cmd_fdtoverlay)
->  endif
->
->  $(obj)/%.dtb: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
-> @@ -429,6 +429,10 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) F=
-ORCE
->  $(obj)/%.dtbo: $(src)/%.dtso $(DTC) FORCE
->         $(call if_changed_dep,dtc)
->
-> +$(multi-dtb-y): FORCE
-> +       $(call if_changed,dtbo)
-> +$(call multi_depend, $(multi-dtb-y), .dtb, -dtbs)
-> +
->  dtc-tmp =3D $(subst $(comma),_,$(dot-target).dts.tmp)
->
->  # Bzip2
-> --
-> 2.44.0
->
-
-
---=20
-Best Regards
-Masahiro Yamada
 
