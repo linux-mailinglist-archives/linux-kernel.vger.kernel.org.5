@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-81612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C3686785A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:27:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58584867859
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:27:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FC451F2C069
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:27:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89FC61C29A21
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51ED612BEB6;
-	Mon, 26 Feb 2024 14:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB6212C81E;
+	Mon, 26 Feb 2024 14:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CfPcndYW"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vvp/mnKU"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B67C712C534;
-	Mon, 26 Feb 2024 14:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A259212C52A;
+	Mon, 26 Feb 2024 14:25:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708957534; cv=none; b=Ts3XaOALUvO7vtGpD6qc7DvnVvEbgwzHVP+v7hnrvLvQHba/G6i+m1/mL07qgFC5iGRkiYdFS0fZh/HueT4v1RHJDVF579rSpk19I5eag9xiLPNAC2NcglZXaC1Ks6wj8IHGksvmfD6Wr4ovfsDMRvUwCYCFNcV3wFg6Mue///8=
+	t=1708957534; cv=none; b=PwcxRcoTnPpeL38HL+NlUlnUyU6bwIhLBkcGX158t70ihCdr98dxs0NK6VZRLsojs1PGnfbjCW/dwm/FM3nmX2oK8AnelZq15Yd1zCtug1XQa2e7MutZihm2CDjucEmS5XEvr7JSAa2o/iTY6JaDCf+GS8LyF4fOzC8IvaQNxf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708957534; c=relaxed/simple;
-	bh=n8M+Zxd5EsI5el7vSlKXZtzNU2WwNtafBo9TBX3vAmw=;
+	bh=vhK6pyGf2T+TFWuVP7O7kQnPlVO9Kof9u3xE7jBi6uw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=a2KHAXzN4ATA2u7yUbATIntSxmMYKHKhCAdXTKplAiVZLMz1nutMSI1ueo3rE8oRaTGIHEbeem31BCwRlxyfo2L/3BY98q9U5uy2f3vADBgWY3kEM+xZwp9PdRIxOKu7IEQxCQxDAZC0wcmf1z+JYVCBEBKxgo9RRmclK8/1rUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CfPcndYW; arc=none smtp.client-ip=198.175.65.16
+	 MIME-Version; b=IA7rZo5B6udjGrH5PCqrL5bgpuVAsdKVeWIFKts1AFmmSN1/7HLLaYIDn94rHknrO9niJZhIdkhvk3zIHKuSZeZwLqJHYteLNgqdkkeuB+QlkZznjudjZusnrOQLja/OsbIIql7qR2pHoEJ1A+6TeeOJqrDkNAMoaHnsAhnB2PA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vvp/mnKU; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -35,27 +35,27 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1708957533; x=1740493533;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=n8M+Zxd5EsI5el7vSlKXZtzNU2WwNtafBo9TBX3vAmw=;
-  b=CfPcndYWbq06N2wjCD2AQ5vqzwZAUohStdhKvCzCE/J/cLiGi/++BdSf
-   yIRkOJVH5elcLQTcAO59HIwcAUFvNBZ4AoYsvRBYcp4Bw2efbKkq4XdLi
-   S0+WyB3gevGE6FN4Pyv1gfsT72yTKLfpuN8UsmNXVjNh/XuHxv3IUgVQi
-   CmOOWMvTAPifv9pstbfh984jJWk1OrIIxM39m+u9zUeWgldFn4mXNAO2i
-   ssrLXcq8nV0jodXLhUIqlXcQMpzMrGwSlwe/dfLI8Zj9jBw4X+oaQpuyP
-   WQFN8/mIHaFHmH1ndlrWpIQC7roawiomKsSiuIF0Dz0qbRnT6CYAcJH1G
+  bh=vhK6pyGf2T+TFWuVP7O7kQnPlVO9Kof9u3xE7jBi6uw=;
+  b=Vvp/mnKUNSh9GrrLEdZJjuSkGQdGLJ4wM03dsAt+n0K4ZR9jZmz9Ct0k
+   7Qswqzj1OtopdZ0/fg7GN0DBRYpLdir4uEOEf3D4HeVHFt2yGffUFz0Ad
+   gkdxb7FwcKImQ/+UvEQwBEni04Xx9UFFpDKKA6Qxl2LGwgCIXMcQPyBP9
+   XJvt9n+cu7EBxfh6mcm1mJV4E5JqDVi6YANtiLaVuCKnz5KRi6t6r6nGI
+   77dWbJcgg1EpCCYMm9vZ2YYy7CUzEWS+UrhtDzUq12F0B8jUSAZdvRGCb
+   H4RLbS1KlDzZxv7UGNV3sRN6HOOViT+29OeCHS4RKrb/8vME0PMdllu25
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3375211"
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3375226"
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3375211"
+   d="scan'208";a="3375226"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:25:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937030144"
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937030145"
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="937030144"
+   d="scan'208";a="937030145"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 26 Feb 2024 06:25:23 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 5B595692; Mon, 26 Feb 2024 16:25:16 +0200 (EET)
+	id 683EC812; Mon, 26 Feb 2024 16:25:16 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -81,11 +81,10 @@ Cc: Jiri Slaby <jirislaby@kernel.org>,
 	Thierry Reding <thierry.reding@gmail.com>,
 	Jonathan Hunter <jonathanh@nvidia.com>,
 	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Andi Shyti <andi.shyti@linux.intel.com>
-Subject: [PATCH v2 07/14] serial: 8250_dw: Switch to use uart_read_port_properties()
-Date: Mon, 26 Feb 2024 16:19:23 +0200
-Message-ID: <20240226142514.1485246-8-andriy.shevchenko@linux.intel.com>
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH v2 08/14] serial: 8250_ingenic: Switch to use uart_read_port_properties()
+Date: Mon, 26 Feb 2024 16:19:24 +0200
+Message-ID: <20240226142514.1485246-9-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240226142514.1485246-1-andriy.shevchenko@linux.intel.com>
 References: <20240226142514.1485246-1-andriy.shevchenko@linux.intel.com>
@@ -100,143 +99,63 @@ Content-Transfer-Encoding: 8bit
 Since we have now a common helper to read port properties
 use it instead of sparse home grown solution.
 
-Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/tty/serial/8250/8250_dw.c | 67 +++++++++++++------------------
- 1 file changed, 27 insertions(+), 40 deletions(-)
+ drivers/tty/serial/8250/8250_ingenic.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
-index 2d1f350a4bea..a1825e83231f 100644
---- a/drivers/tty/serial/8250/8250_dw.c
-+++ b/drivers/tty/serial/8250/8250_dw.c
-@@ -17,7 +17,6 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/notifier.h>
--#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/property.h>
-@@ -449,12 +448,7 @@ static void dw8250_quirks(struct uart_port *p, struct dw8250_data *data)
- 
- 	if (np) {
- 		unsigned int quirks = data->pdata->quirks;
--		int id;
- 
--		/* get index of serial line, if found in DT aliases */
--		id = of_alias_get_id(np, "serial");
--		if (id >= 0)
--			p->line = id;
- #ifdef CONFIG_64BIT
- 		if (quirks & DW_UART_QUIRK_OCTEON) {
- 			p->serial_in = dw8250_serial_inq;
-@@ -465,12 +459,6 @@ static void dw8250_quirks(struct uart_port *p, struct dw8250_data *data)
- 		}
- #endif
- 
--		if (of_device_is_big_endian(np)) {
--			p->iotype = UPIO_MEM32BE;
--			p->serial_in = dw8250_serial_in32be;
--			p->serial_out = dw8250_serial_out32be;
--		}
--
- 		if (quirks & DW_UART_QUIRK_ARMADA_38X)
- 			p->serial_out = dw8250_serial_out38x;
- 		if (quirks & DW_UART_QUIRK_SKIP_SET_RATE)
-@@ -510,39 +498,21 @@ static int dw8250_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct dw8250_data *data;
+diff --git a/drivers/tty/serial/8250/8250_ingenic.c b/drivers/tty/serial/8250/8250_ingenic.c
+index a12f737924c0..7603129f1c07 100644
+--- a/drivers/tty/serial/8250/8250_ingenic.c
++++ b/drivers/tty/serial/8250/8250_ingenic.c
+@@ -234,7 +234,7 @@ static int ingenic_uart_probe(struct platform_device *pdev)
+ 	struct ingenic_uart_data *data;
+ 	const struct ingenic_uart_config *cdata;
  	struct resource *regs;
--	int irq;
- 	int err;
--	u32 val;
+-	int irq, err, line;
++	int err;
  
- 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!regs)
- 		return dev_err_probe(dev, -EINVAL, "no registers defined\n");
+ 	cdata = of_device_get_match_data(&pdev->dev);
+ 	if (!cdata) {
+@@ -242,10 +242,6 @@ static int ingenic_uart_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
  
--	irq = platform_get_irq_optional(pdev, 0);
--	/* no interrupt -> fall back to polling */
--	if (irq == -ENXIO)
--		irq = 0;
+-	irq = platform_get_irq(pdev, 0);
 -	if (irq < 0)
 -		return irq;
 -
- 	spin_lock_init(&p->lock);
--	p->mapbase	= regs->start;
--	p->irq		= irq;
- 	p->handle_irq	= dw8250_handle_irq;
- 	p->pm		= dw8250_do_pm;
- 	p->type		= PORT_8250;
--	p->flags	= UPF_SHARE_IRQ | UPF_FIXED_PORT;
-+	p->flags	= UPF_FIXED_PORT;
- 	p->dev		= dev;
--	p->iotype	= UPIO_MEM;
--	p->serial_in	= dw8250_serial_in;
--	p->serial_out	= dw8250_serial_out;
- 	p->set_ldisc	= dw8250_set_ldisc;
- 	p->set_termios	= dw8250_set_termios;
+ 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!regs) {
+ 		dev_err(&pdev->dev, "no registers defined\n");
+@@ -259,21 +255,19 @@ static int ingenic_uart_probe(struct platform_device *pdev)
+ 	spin_lock_init(&uart.port.lock);
+ 	uart.port.type = PORT_16550A;
+ 	uart.port.flags = UPF_SKIP_TEST | UPF_IOREMAP | UPF_FIXED_TYPE;
+-	uart.port.iotype = UPIO_MEM;
+ 	uart.port.mapbase = regs->start;
+-	uart.port.regshift = 2;
+ 	uart.port.serial_out = ingenic_uart_serial_out;
+ 	uart.port.serial_in = ingenic_uart_serial_in;
+-	uart.port.irq = irq;
+ 	uart.port.dev = &pdev->dev;
+-	uart.port.fifosize = cdata->fifosize;
+ 	uart.tx_loadsz = cdata->tx_loadsz;
+ 	uart.capabilities = UART_CAP_FIFO | UART_CAP_RTOIE;
  
--	p->membase = devm_ioremap(dev, regs->start, resource_size(regs));
--	if (!p->membase)
--		return -ENOMEM;
--
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
- 		return -ENOMEM;
-@@ -554,15 +524,35 @@ static int dw8250_probe(struct platform_device *pdev)
- 	data->uart_16550_compatible = device_property_read_bool(dev,
- 						"snps,uart-16550-compatible");
- 
--	err = device_property_read_u32(dev, "reg-shift", &val);
--	if (!err)
--		p->regshift = val;
-+	p->mapbase = regs->start;
-+	p->mapsize = resource_size(regs);
- 
--	err = device_property_read_u32(dev, "reg-io-width", &val);
--	if (!err && val == 4) {
--		p->iotype = UPIO_MEM32;
-+	p->membase = devm_ioremap(dev, p->mapbase, p->mapsize);
-+	if (!p->membase)
-+		return -ENOMEM;
-+
-+	err = uart_read_port_properties(p, true);
-+	/* no interrupt -> fall back to polling */
-+	if (err == -ENXIO)
-+		err = 0;
+-	/* Check for a fixed line number */
+-	line = of_alias_get_id(pdev->dev.of_node, "serial");
+-	if (line >= 0)
+-		uart.port.line = line;
++	err = uart_read_port_properties(&uart.port, true);
 +	if (err)
 +		return err;
 +
-+	switch (p->iotype) {
-+	case UPIO_MEM:
-+		p->serial_in = dw8250_serial_in;
-+		p->serial_out = dw8250_serial_out;
-+		break;
-+	case UPIO_MEM32:
- 		p->serial_in = dw8250_serial_in32;
- 		p->serial_out = dw8250_serial_out32;
-+		break;
-+	case UPIO_MEM32BE:
-+		p->serial_in = dw8250_serial_in32be;
-+		p->serial_out = dw8250_serial_out32be;
-+		break;
-+	default:
-+		return -ENODEV;
- 	}
++	uart.port.regshift = 2;
++	uart.port.fifosize = cdata->fifosize;
  
- 	if (device_property_read_bool(dev, "dcd-override")) {
-@@ -589,9 +579,6 @@ static int dw8250_probe(struct platform_device *pdev)
- 		data->msr_mask_off |= UART_MSR_TERI;
- 	}
- 
--	/* Always ask for fixed clock rate from a property. */
--	device_property_read_u32(dev, "clock-frequency", &p->uartclk);
--
- 	/* If there is separate baudclk, get the rate from it. */
- 	data->clk = devm_clk_get_optional_enabled(dev, "baudclk");
- 	if (data->clk == NULL)
+ 	uart.port.membase = devm_ioremap(&pdev->dev, regs->start,
+ 					 resource_size(regs));
 -- 
 2.43.0.rc1.1.gbec44491f096
 
