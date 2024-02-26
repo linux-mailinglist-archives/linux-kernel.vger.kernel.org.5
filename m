@@ -1,110 +1,141 @@
-Return-Path: <linux-kernel+bounces-80607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6F88866A49
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C97E9866A4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:50:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5706E1F211A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:50:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4081F1F22862
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054131BC5C;
-	Mon, 26 Feb 2024 06:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE181BC53;
+	Mon, 26 Feb 2024 06:50:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="evbXDi+5";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="VDabwXod"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="LvZNwcMT"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B041BC22;
-	Mon, 26 Feb 2024 06:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89731BF28;
+	Mon, 26 Feb 2024 06:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708930205; cv=none; b=QtJJKr2XlajzFiv1cAn8Tm2/azx/SAziPP7Adp49EtfT0SOfXV8n1TazkLTnAHK7X8VtYTN1nXCDrxsO1JPkfKZ7Eg+C3DJ9hd8cE6KovMPnXE4f4+DZ53/YPgCkPG+hXCWArbXApqURQXHSFQzPmoJg7FEXdkNLoCyARHIwGdw=
+	t=1708930216; cv=none; b=gTDetIgeIMZy7f0Bnqq2uVh9k16F69/7jYN6lbEGXaIgGxV7U5JpD/TxXtiUDAZo2ofqWafmTJKrmSKDBIylPHGXSC1gSbuTGrs0x3eMQcodkPnYGE2JMkJkab3YG3eU2vr4K3MQxHbE43KiAmNSJHYTOCFi9qChZXZ2by/8y9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708930205; c=relaxed/simple;
-	bh=utfovlb6iGUZxJTgTBi8R7FxTD70n5B62sNrBoBhyyo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PRh53UY1EL+y7wA6BV2cyJ5jQ+7/um7pzWcABDro4iZC9yMHQf6uK275CAC2HS2S+kGGDKfTx4avp7hMeD16McggJTeh0t+jVFkTXsPCODIT0GVwVhuTQ8SuH26EVabQBttTCASG7lYX/2oeg1kY8ePnLPZ7tBuK0fuQqwVk2BY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=evbXDi+5; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=VDabwXod; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1708930202;
-	bh=utfovlb6iGUZxJTgTBi8R7FxTD70n5B62sNrBoBhyyo=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=evbXDi+5y4qsEvfaC10gugiTHz1v8yEUa4W18CGGxbEADM3eXPqDxCNIGAKZzENvl
-	 cOyOMqV478c5lTuKK9+KVodbXvCrXGA16jDwG8QovdUExB6oce55q2SnHx8C4WyYIP
-	 th+nm9lsin2m/edb97raB3lh5GqmjRBF5blZkGFI=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 2BCF612860BE;
-	Mon, 26 Feb 2024 01:50:02 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id Xq4EyvsWYnr9; Mon, 26 Feb 2024 01:50:02 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1708930201;
-	bh=utfovlb6iGUZxJTgTBi8R7FxTD70n5B62sNrBoBhyyo=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=VDabwXodFPoDcsWGjmfMp3Gam3xyimZZDgHiLNahVqSyfNTc2TnPSlLPjXYbGCboZ
-	 w0pZGXFnM7z5g43nL75edUoLySO8fcsIBnON5BqS5kSR/YHQDvfWnYz6BUtUJkb8/2
-	 +XTz+CuHP0BraUineL5yewplLcOJEPFCt4EcoZHs=
-Received: from [10.0.15.72] (unknown [49.231.15.39])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id BF32312860BC;
-	Mon, 26 Feb 2024 01:49:59 -0500 (EST)
-Message-ID: <eaa5107ac4f982b6fd6e80b522643a591e719dc9.camel@HansenPartnership.com>
-Subject: Re: [PATCH] MAINTAINERS: Update W's for KEYS/KEYRINGS_INTEGRITY and
- TPM DEVICE RIVER
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Jarkko Sakkinen <jarkko@kernel.org>, linux-kernel@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Mimi Zohar <zohar@linux.ibm.com>, Peter
-	Huewe <peterhuewe@gmx.de>, linux-integrity@vger.kernel.org
-Date: Mon, 26 Feb 2024 13:49:50 +0700
-In-Reply-To: <20240226062245.2279635-1-jarkko@kernel.org>
-References: <20240226062245.2279635-1-jarkko@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1708930216; c=relaxed/simple;
+	bh=6oiheK8jXhJu3jEbbcTC7KYrEfi4/V3nGQUHfUKvfCs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KT0zWV9G/rv2OWMOHjnXBdVQ7BtodQsphtt7bK7TKUS0cwsdw8rb3TGMwPgJYZs+UXAQEMQSbwETnie+oiZtyMbgv9iDzJQUCmr8Qx99Gsa7kcRxZsR19LzDGaV+eLM0gh70bLM5kpGe2pixU3fu6c08oKMp51anVXwQ5kYv7ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=LvZNwcMT; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=1kc2WcM3zb+rxch8r0ftfqGh2C9F2iUAZFnheJ+68jk=; b=LvZNwcMTQzKVcHpiPtles1wWKs
+	Z8S57J8xGJj9KeJiehkQqflREG3srrXKYZBNOA0dV2EJFCPMAJ1rFJBEa/CEdi0X+fnCe2ZA4JRbV
+	mQnSRTg9j3JRdWMjav4ma7k/6tWO5jbAAC328Vhu0A75WTKJHNLrKcmt3aMna+nk7txDYddBtaraG
+	ziEzsPkadrVJkYjRV4AjxmhO2UmMhDC2YoJcq9yosU9j7mdbvrmM2m5p2kA+9XYVW0311XBsNKdJn
+	RIPLCFgiGLDOke7cDXJhh6tL0kCoaLD+NTKtkSkiL9J6xgTTjUxMzon2WSRx3sDRakOd6MvgBHE/w
+	Ezro9YTQ==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1reUoV-0000000GhjS-1wzZ;
+	Mon, 26 Feb 2024 06:50:11 +0000
+Message-ID: <77012b38-4b49-47f4-9a88-d773d52909ad@infradead.org>
+Date: Sun, 25 Feb 2024 22:50:10 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: ethernet: adi: requires PHYLIB support
+To: Michal Kubecek <mkubecek@suse.cz>
+Cc: linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+ Lennart Franzen <lennart@lfdomain.com>,
+ Alexandru Tachici <alexandru.tachici@analog.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org
+References: <20240215070050.2389-1-rdunlap@infradead.org>
+ <20240226064440.ismpxvp5qmnskyna@lion.mk-sys.cz>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240226064440.ismpxvp5qmnskyna@lion.mk-sys.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 2024-02-26 at 08:22 +0200, Jarkko Sakkinen wrote:
-> Add TPM driver test suite URL to the MAINTAINERS files and move the
-> wiki
-> URL to more appropriate location.
+Hi,
+
+On 2/25/24 22:44, Michal Kubecek wrote:
+> On Wed, Feb 14, 2024 at 11:00:50PM -0800, Randy Dunlap wrote:
+>> This driver uses functions that are supplied by the Kconfig symbol
+>> PHYLIB, so select it to ensure that they are built as needed.
+>>
+>> When CONFIG_ADIN1110=y and CONFIG_PHYLIB=m, there are multiple build
+>> (linker) errors that are resolved by this Kconfig change:
+>>
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_net_open':
+>>    drivers/net/ethernet/adi/adin1110.c:933: undefined reference to `phy_start'
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_probe_netdevs':
+>>    drivers/net/ethernet/adi/adin1110.c:1603: undefined reference to `get_phy_device'
+>>    ld: drivers/net/ethernet/adi/adin1110.c:1609: undefined reference to `phy_connect'
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_disconnect_phy':
+>>    drivers/net/ethernet/adi/adin1110.c:1226: undefined reference to `phy_disconnect'
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `devm_mdiobus_alloc':
+>>    include/linux/phy.h:455: undefined reference to `devm_mdiobus_alloc_size'
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_register_mdiobus':
+>>    drivers/net/ethernet/adi/adin1110.c:529: undefined reference to `__devm_mdiobus_register'
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_net_stop':
+>>    drivers/net/ethernet/adi/adin1110.c:958: undefined reference to `phy_stop'
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_disconnect_phy':
+>>    drivers/net/ethernet/adi/adin1110.c:1226: undefined reference to `phy_disconnect'
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_adjust_link':
+>>    drivers/net/ethernet/adi/adin1110.c:1077: undefined reference to `phy_print_status'
+>>    ld: drivers/net/ethernet/adi/adin1110.o: in function `adin1110_ioctl':
+>>    drivers/net/ethernet/adi/adin1110.c:790: undefined reference to `phy_do_ioctl'
+>>    ld: drivers/net/ethernet/adi/adin1110.o:(.rodata+0xf60): undefined reference to `phy_ethtool_get_link_ksettings'
+>>    ld: drivers/net/ethernet/adi/adin1110.o:(.rodata+0xf68): undefined reference to `phy_ethtool_set_link_ksettings'
+>>
+>> Fixes: bc93e19d088b ("net: ethernet: adi: Add ADIN1110 support")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes: https://lore.kernel.org/oe-kbuild-all/202402070626.eZsfVHG5-lkp@intel.com/
+>> Cc: Lennart Franzen <lennart@lfdomain.com>
+>> Cc: Alexandru Tachici <alexandru.tachici@analog.com>
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: Eric Dumazet <edumazet@google.com>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: Paolo Abeni <pabeni@redhat.com>
+>> Cc: netdev@vger.kernel.org
+>> ---
+>>  drivers/net/ethernet/adi/Kconfig |    1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff -- a/drivers/net/ethernet/adi/Kconfig b/drivers/net/ethernet/adi/Kconfig
+>> --- a/drivers/net/ethernet/adi/Kconfig
+>> +++ b/drivers/net/ethernet/adi/Kconfig
+>> @@ -7,6 +7,7 @@ config NET_VENDOR_ADI
+>>  	bool "Analog Devices devices"
+>>  	default y
+>>  	depends on SPI
+>> +	select PHYLIB
+>>  	help
+>>  	  If you have a network (Ethernet) card belonging to this class, say Y.
 > 
-> Link: https://gitlab.com/jarkkojs/linux-tpmdd-test
-> Link: https://kernsec.org/wiki/index.php/Linux_Kernel_Integrity
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Mimi Zohar <zohar@linux.ibm.com>
-> Cc: Peter Huewe <peterhuewe@gmx.de>
-> Cc: linux-integrity@vger.kernel.org
-> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> ---
->  MAINTAINERS | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bf77be03fb2b..6380c1109b86 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11947,6 +11947,7 @@ M:      Mimi Zohar <zohar@linux.ibm.com>
->  L:     linux-integrity@vger.kernel.org
->  L:     keyrings@vger.kernel.org
->  S:     Supported
-> +W:     https://kernsec.org/wiki/index.php/inux_Kernel_Integrity
-                                             ^
-                                         Missing L
+> Shouldn't the "select PHYLIB" be added to ADIN1110 rather than
+> NET_VENDOR_ADI? Now with v6.8-rc6, PHYLIB and few other options are
+> forced to "Y" whenever NET_VENDOR_ADI is enabled (even with ADIN1110
+> disabled).
 
-James
+ugh, I believe that you are correct.
+I'll send a corrected patch.
 
+Thanks.
+-- 
+#Randy
 
