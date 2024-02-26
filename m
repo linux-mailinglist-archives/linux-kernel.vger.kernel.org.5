@@ -1,191 +1,201 @@
-Return-Path: <linux-kernel+bounces-81837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7E58867AA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:46:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 237AB867AAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:49:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8329F28FED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:46:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E4B11F287F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4947112C556;
-	Mon, 26 Feb 2024 15:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C823C12BF26;
+	Mon, 26 Feb 2024 15:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rt1Spkys"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QFxebVyZ"
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844431BDDC;
-	Mon, 26 Feb 2024 15:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79FFD12BEB6;
+	Mon, 26 Feb 2024 15:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708962369; cv=none; b=JYqr8yW+unY3TWueUJwKR4fNg+qeCfVBcTwiFif8g+Qz+EcgA2zBfcv2WTYtUTkvo6BDpu64Aw6EC8GV5yAWr57jmPDfVVxq77fHH17pR3lIXVsZAJtSujKA6Mr+Bg+ZOFIp78rt6BuxW5flVtIm2tgC4882SBVia4y+XCREHs0=
+	t=1708962533; cv=none; b=jNwcS9xlCbZf6b0V/MIPZMZC92FjVH/G08fuenLioPBOrXc3m0K2K25Wus1vQl9ZyftP17QKwDMwapmG6TXuyrzTgP5Lab+ZCHsPT8+5oWukmZqNBvthSZSjYDzWAbF3PQXaVmFfC4C2jpnqQCZ0070Kr1CNlIpgfBKi/8SWJPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708962369; c=relaxed/simple;
-	bh=UsqyRMSqElQb29ybk/PYbZx8lzm8g++czw/Vi6K81ck=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RdeMxjMH9oaLsSVZ4lmDjiCBSjJIWpz9eRz4UNXL3C0++K7Gaq1a4JwILz07aXSYGE6o3HMWs3wxqG7dRFMcbrWopOcGx/2j39RgE0xW8Yn9gcYhSX00J5C3Gsxo8Dfb3CqBTkBpJqlrKlQTVrNXk/qpOM57SPIJmXNsSry2WAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rt1Spkys; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708962368; x=1740498368;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UsqyRMSqElQb29ybk/PYbZx8lzm8g++czw/Vi6K81ck=;
-  b=Rt1SpkysvqHPaquNJcmn9Bzgh4WHgKNV571QfjhngHfmlWwuqzZlYAfN
-   peB0WtoeFTc48XE3Z9lZ2Rz2Zt9xfXHpqslaXsrSrGTr5gXML8K4zdlwK
-   M25x2qmfjNYoL9jUpLc+q3I7fOEyOMmLaCcbF2n3o+D5yBTyVrPicf1Yr
-   0au3IVAwKIfRqo8DOUH8qJTvR0zAqD4ZZE/MS3NSL+hYYssfQt57TDAI2
-   1KhnMTIJTIUufJMjdX/MHFdVspEMryHCizuj783q2u9BUMlLtkhk1EW1/
-   8yLwjV6MoVsCr1TCVC+gHsMv+nwJBvtxs3lnZcXOtubxPKGAcLbs/9ASN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="6200753"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6200753"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 07:46:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6695740"
-Received: from tvereenx-mobl.amr.corp.intel.com (HELO [10.251.5.170]) ([10.251.5.170])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 07:46:06 -0800
-Message-ID: <dfc9692b-1a9a-4d53-9e3e-33b2e88d0d37@linux.intel.com>
-Date: Mon, 26 Feb 2024 07:46:05 -0800
+	s=arc-20240116; t=1708962533; c=relaxed/simple;
+	bh=HAFBj8+lhYpdZl1QneCB2GMGS+XvqJF/SW95VkhrC5w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J9tb/YM685M853pViKKLN8FigBk564cUNWyYHntdRQQtAHdatdKbPpPHm2evDDhyMikbhGd6gk92Y+YHDDZNi9J4TY6GKK3ANw14T5Cvhtt1zKQlMe6Bqy4zA6a8YBZoXb4TQhMsrTFnb7Pf3+jdhkUbeGQvQJQnofICfXTXIO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QFxebVyZ; arc=none smtp.client-ip=209.85.160.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-21ffac15528so743182fac.0;
+        Mon, 26 Feb 2024 07:48:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708962529; x=1709567329; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g1Ef7Zrtq6omQnQLjTPEQeB7WpA4VjRn7DjZ66gvGyg=;
+        b=QFxebVyZl4IhedVrAmqd7K77MgBzAN/98UUwpllIEAbDX3ivC4+/31vkpwmf0GQKy2
+         dHcYKnng1vuaNJTS4lkvZPlw1iAydPdhDwBxFPyLaphblEiE540vT5Lp0lrM4qhBFlEk
+         84XGKkFQ+heP1e4+bHHfKAr/7ZT/TgntWbig3mvOQnNlRBpsJW7Fx+HXxtGGc9LReeIp
+         Gck0d8p3q6/Zxgu5wwlp2vxckjAvEBGcxTEM4uoR3y/Ufo1fzIH1ASQ7ddpxp5yDEimq
+         0JuQTSxGRgL3phK/dMHRhGyzk5nhk/Yg+mvWydRPXeZMHEFR53m847jfNK4vardnLj4E
+         etdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708962529; x=1709567329;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g1Ef7Zrtq6omQnQLjTPEQeB7WpA4VjRn7DjZ66gvGyg=;
+        b=VKDlwicOzkmU96nyT28OAuKx9GnXeTCcHHSa8cjbS0Ih8+pOpA5gRsbFAhmzn5rfy8
+         E/eS46rpPgGkXv9wv7OtcEHyIoekNQ9BalMqaJMWJx7Ehyz75PaAL0n0CoteHtXAH14G
+         nlwEcbctBKBS45tJvPxaqaXZQNDSepE4bdtmBG5wNjBvd6tND2+EJudeAjYdJyp11Gb2
+         RVwvYoAt+/0LWHjJ7iPkE0I1xpY2rLNWhAAcllrrueRCS6lMZNNLJFp6UgMfMA1DowP/
+         vRVpJxE3+9Wz5RN4lKDGMqH+N0wPTp5Yg2lwW67ihF+xgOe0sbBr/dxGm4MpSPKT7LL8
+         toew==
+X-Forwarded-Encrypted: i=1; AJvYcCXwa2PDNWfwcoztp6/XVeYGIdqer2RgeDP+mqC471jxr7lUPrBkFwRuCmydpfA0Mar/OYWYBrJD5Y7YEQegajocRa3/luI8qSHpsc64F3HgVyZWnhGs59S2ahEWhau5YEIk/D6hq1Dx3dOSg64bToRcCcd+JziHfu9zwRhyqSGOrvAKGCYz7mp5MHWWuGiaNs8VEt3+oWkSb+GRTQmLDmpPLg==
+X-Gm-Message-State: AOJu0YxVr4+WueQLZZOJY3rap0eRYoNpG7dokIUeUn3SJz/RFv3MSj/Q
+	pYEQiBv06VdOKWpDXj11Q/KepQPIslOdecdLsxAMcM0WvLACyRxP
+X-Google-Smtp-Source: AGHT+IHBnk/ikDk3sUqAcZtkdVfd8nz2HPMuab3RRIOBE3LZkSw4ZFujEh+N/1KdTo/PHgEe82UeRw==
+X-Received: by 2002:a05:6870:709f:b0:21e:8797:95ca with SMTP id v31-20020a056870709f00b0021e879795camr9411219oae.23.1708962529545;
+        Mon, 26 Feb 2024 07:48:49 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id d7-20020a9d4f07000000b006e42884bad9sm1147569otl.1.2024.02.26.07.48.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 07:48:48 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Mon, 26 Feb 2024 09:48:46 -0600
+From: John Groves <John@groves.net>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 04/20] dev_dax_iomap: Save the kva from memremap
+Message-ID: <tngofq33j2uk7cixkiicvy73n67dkx3aqzypdrkgd6bbuusgjc@jugpgbcvgzvx>
+References: <cover.1708709155.git.john@groves.net>
+ <66620f69fa3f3664d955649eba7da63fdf8d65ad.1708709155.git.john@groves.net>
+ <20240226122139.0000135b@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] PCI/DPC: Request DPC only if also requesting AER
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- Matthew W Carlis <mattc@purestorage.com>, Keith Busch <kbusch@kernel.org>,
- Lukas Wunner <lukas@wunner.de>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Bjorn Helgaas <bhelgaas@google.com>, stable@vger.kernel.org
-References: <20240226151805.GA200026@bhelgaas>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240226151805.GA200026@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226122139.0000135b@Huawei.com>
 
+On 24/02/26 12:21PM, Jonathan Cameron wrote:
+> On Fri, 23 Feb 2024 11:41:48 -0600
+> John Groves <John@Groves.net> wrote:
+> 
+> > Save the kva from memremap because we need it for iomap rw support
+> > 
+> > Prior to famfs, there were no iomap users of /dev/dax - so the virtual
+> > address from memremap was not needed.
+> > 
+> > Also: in some cases dev_dax_probe() is called with the first
+> > dev_dax->range offset past pgmap[0].range. In those cases we need to
+> > add the difference to virt_addr in order to have the physaddr's in
+> > dev_dax->ranges match dev_dax->virt_addr.
+> 
+> Probably good to have info on when this happens and preferably why
+> this dragon is there.
 
-On 2/26/24 7:18 AM, Bjorn Helgaas wrote:
-> On Sun, Feb 25, 2024 at 11:46:07AM -0800, Kuppuswamy Sathyanarayanan wrote:
->> On 2/22/24 2:15 PM, Bjorn Helgaas wrote:
->>> From: Bjorn Helgaas <bhelgaas@google.com>
->>>
->>> When booting with "pci=noaer", we don't request control of AER, but we
->>> previously *did* request control of DPC, as in the dmesg log attached at
->>> the bugzilla below:
->>>
->>>   Command line: ... pci=noaer
->>>   acpi PNP0A08:00: _OSC: OS supports [ExtendedConfig ASPM ClockPM Segments MSI EDR HPX-Type3]
->>>   acpi PNP0A08:00: _OSC: OS now controls [PCIeHotplug SHPCHotplug PME PCIeCapability LTR DPC]
->>>
->>> That's illegal per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, which
->>> says:
->>>
->>>   If the operating system sets this bit [OSC_PCI_EXPRESS_DPC_CONTROL], it
->>>   must also set bit 7 of the Support field (indicating support for Error
->>>   Disconnect Recover notifications) and bits 3 and 4 of the Control field
->>>   (requesting control of PCI Express Advanced Error Reporting and the PCI
->>>   Express Capability Structure).
->> IIUC, this dependency is discussed in sec 4.5.2.4. "Dependencies
->> Between _OSC Control Bits".
->>
->> Because handling of Downstream Port Containment has a dependency on
->> Advanced Error Reporting, the operating system is required to
->> request control over Advanced Error Reporting (bit 3 of the Control
->> field) while requesting control over Downstream Port Containment
->> Configuration (bit 7 of the Control field). If the operating system
->> attempts to claim control of Downstream Port Containment
->> Configuration without also claiming control over Advanced Error
->> Reporting, firmware is required to refuse control of the feature
->> being illegally claimed and mask the corresponding bit.  Firmware is
->> required to maintain ownership of Advanced Error Reporting if it
->> retains ownership of Downstream Port Containment Configuration.  If
->> the operating system sets bit 7 of the Control field, it must set
->> bit 7 of the Support field, indicating support for the Error
->> Disconnect Recover event.
-> So I guess you're suggesting that there are two defects here?
->
->   1) Linux requested DPC control without requesting AER control.
->
->   2) Platform granted DPC control when it shouldn't have.
->
-> I do agree with that, but obviously we can only fix 1) in Linux.
+I added this paragraph:
 
-Sorry, maybe my comment was not clear. I was just suggesting
-to change the  spec reference from r3.3, sec 4.5.1, table 4-5
-to  r3.3, sec 4.5.2.4 "Dependencies Between _OSC Control Bits". I agree that we cannot do much if firmware misbehaves here.
+  This happens with devdax devices that started as pmem and got converted
+  to devdax. I'm not sure whether the offset is due to label storage, or
+  page tables. Dan?
 
->>> Request DPC control only if we have also requested AER control.
->>>
->>> Fixes: ac1c8e35a326 ("PCI/DPC: Add Error Disconnect Recover (EDR) support")
->>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218491#c12
->>> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
->>> Cc: <stable@vger.kernel.org>	# v5.7+
->>> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->>> Cc: Matthew W Carlis <mattc@purestorage.com>
->>> Cc: Keith Busch <kbusch@kernel.org>
->>> Cc: Lukas Wunner <lukas@wunner.de>
->>> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
->>> Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
->>> ---
->> Code wise it looks fine to me.
->>
->> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->>>  drivers/acpi/pci_root.c | 20 +++++++++++---------
->>>  1 file changed, 11 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
->>> index 58b89b8d950e..efc292b6214e 100644
->>> --- a/drivers/acpi/pci_root.c
->>> +++ b/drivers/acpi/pci_root.c
->>> @@ -518,17 +518,19 @@ static u32 calculate_control(void)
->>>  	if (IS_ENABLED(CONFIG_HOTPLUG_PCI_SHPC))
->>>  		control |= OSC_PCI_SHPC_NATIVE_HP_CONTROL;
->>>  
->>> -	if (pci_aer_available())
->>> +	if (pci_aer_available()) {
->>>  		control |= OSC_PCI_EXPRESS_AER_CONTROL;
->>>  
->>> -	/*
->>> -	 * Per the Downstream Port Containment Related Enhancements ECN to
->>> -	 * the PCI Firmware Spec, r3.2, sec 4.5.1, table 4-5,
->>> -	 * OSC_PCI_EXPRESS_DPC_CONTROL indicates the OS supports both DPC
->>> -	 * and EDR.
->>> -	 */
->>> -	if (IS_ENABLED(CONFIG_PCIE_DPC) && IS_ENABLED(CONFIG_PCIE_EDR))
->>> -		control |= OSC_PCI_EXPRESS_DPC_CONTROL;
->>> +		/*
->>> +		 * Per PCI Firmware Spec, r3.3, sec 4.5.1, table 4-5, the
->>> +		 * OS can request DPC control only if it has advertised
->>> +		 * OSC_PCI_EDR_SUPPORT and requested both
->>> +		 * OSC_PCI_EXPRESS_CAPABILITY_CONTROL and
->>> +		 * OSC_PCI_EXPRESS_AER_CONTROL.
->>> +		 */
->>> +		if (IS_ENABLED(CONFIG_PCIE_DPC))
->>> +			control |= OSC_PCI_EXPRESS_DPC_CONTROL;
->>> +	}
->>>  
->>>  	return control;
->>>  }
->> -- 
->> Sathyanarayanan Kuppuswamy
->> Linux Kernel Developer
->>
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+..which is also insufficient, but perhaps Dan or somebody else from the
+dax side can correct this.
+
+> 
+> > 
+> > Dragons...
+> > 
+> > Signed-off-by: John Groves <john@groves.net>
+> > ---
+> >  drivers/dax/dax-private.h |  1 +
+> >  drivers/dax/device.c      | 15 +++++++++++++++
+> >  2 files changed, 16 insertions(+)
+> > 
+> > diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> > index 446617b73aea..894eb1c66b4a 100644
+> > --- a/drivers/dax/dax-private.h
+> > +++ b/drivers/dax/dax-private.h
+> > @@ -63,6 +63,7 @@ struct dax_mapping {
+> >  struct dev_dax {
+> >  	struct dax_region *region;
+> >  	struct dax_device *dax_dev;
+> > +	u64 virt_addr;
+> 
+> Why as a u64? If it's a virt address why not just void *?
+
+Changed to void * - thanks
+
+> 
+> >  	unsigned int align;
+> >  	int target_node;
+> >  	bool dyn_id;
+> > diff --git a/drivers/dax/device.c b/drivers/dax/device.c
+> > index 40ba660013cf..6cd79d00fe1b 100644
+> > --- a/drivers/dax/device.c
+> > +++ b/drivers/dax/device.c
+> > @@ -372,6 +372,7 @@ static int dev_dax_probe(struct dev_dax *dev_dax)
+> >  	struct dax_device *dax_dev = dev_dax->dax_dev;
+> >  	struct device *dev = &dev_dax->dev;
+> >  	struct dev_pagemap *pgmap;
+> > +	u64 data_offset = 0;
+> >  	struct inode *inode;
+> >  	struct cdev *cdev;
+> >  	void *addr;
+> > @@ -426,6 +427,20 @@ static int dev_dax_probe(struct dev_dax *dev_dax)
+> >  	if (IS_ERR(addr))
+> >  		return PTR_ERR(addr);
+> >  
+> > +	/* Detect whether the data is at a non-zero offset into the memory */
+> > +	if (pgmap->range.start != dev_dax->ranges[0].range.start) {
+> > +		u64 phys = (u64)dev_dax->ranges[0].range.start;
+> 
+> Why the cast? Ranges use u64s internally.
+
+I've removed all the unnecessary casts in this function - thanks
+for the catch
+
+> 
+> > +		u64 pgmap_phys = (u64)dev_dax->pgmap[0].range.start;
+> > +		u64 vmemmap_shift = (u64)dev_dax->pgmap[0].vmemmap_shift;
+> > +
+> > +		if (!WARN_ON(pgmap_phys > phys))
+> > +			data_offset = phys - pgmap_phys;
+> > +
+> > +		pr_notice("%s: offset detected phys=%llx pgmap_phys=%llx offset=%llx shift=%llx\n",
+> > +		       __func__, phys, pgmap_phys, data_offset, vmemmap_shift);
+> 
+> pr_debug() + dynamic debug will then deal with __func__ for you.
+
+Thanks - yeah that would be better than just taking it out...
+
+> 
+> > +	}
+> > +	dev_dax->virt_addr = (u64)addr + data_offset;
+> > +
+> >  	inode = dax_inode(dax_dev);
+> >  	cdev = inode->i_cdev;
+> >  	cdev_init(cdev, &dax_fops);
+> 
+
+Thanks,
+John
 
 
