@@ -1,138 +1,191 @@
-Return-Path: <linux-kernel+bounces-81081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAAD9866FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:06:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF92866FE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABD8A1C255D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:06:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61EA01C241A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:05:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB86604DE;
-	Mon, 26 Feb 2024 09:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BMQO1ZH/"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A855FF15;
+	Mon, 26 Feb 2024 09:42:29 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E43CA4E;
-	Mon, 26 Feb 2024 09:43:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7563224CE
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940602; cv=none; b=qW4XKN0+i1M5HK45595FiqFw2YLM5hF01vWT6PU7yKbu28wWAIv1rBKq4QL3NbT6F1SncSkfMyu/+kjSVpF4nATjrG9zIbVlt5T3vV5h/V+9njXYfRIMYKpACVAN+7Pxw7J9LKWyreeIRPQFSVmLQekCPaq3kAQXmYXZPwD13nY=
+	t=1708940549; cv=none; b=KqnLIyrToka2EUB0P+mwxYuMnjckvHtO7C97YpSFWSLaZoW7y+LNUzqE29b5bd7lzpaEFm9EWwcvsHfNKXqwIRhg820Os8GFkMfjjCTTtUKYzIm/FiF62QGE1H2Vu8vBF+3J6tA1o9OphzhcPQxTwEt/8tDYOky+ivufT3nDxAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940602; c=relaxed/simple;
-	bh=K4GBuBvY1jfaKNJfI+V2iQAToLrbcQCzobKkx+s7CfI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=otiKHpXIaZR9Zg3jh9jSvazyWHyEiP1pcKM574ZLnB0jwis9+jRuw4y+QtEcffRhhCuRdDRGpgFW1zxi/OyheND5DFZtZpgIj287yD1C7A9IGe3bXtKsOob4bkYHs+rJTVmBcV/h2UW2/t1LFhKVG31hWq624NNJvDkRJreuZIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BMQO1ZH/; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41Q9PrLp028933;
-	Mon, 26 Feb 2024 09:43:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=tPqIhtoFZXpZFmCyP7Lnu9T4i55IofRcpfNy6UEYCmY=; b=BM
-	QO1ZH/h1SrCYOvYK0GONf06sofiRF/gqfcIRaF/dC4hx2zVcCbBJslkuSVcAqEsr
-	p1u61ruVFRdcebf8gUI/6lMpwVKge5lrCZdafHTGgKlsDuk2Skqt7QfRwClmgmJj
-	LMWGj5TZkWv4VXjaStQpLq3ynH64vw0YLSdxd/iYo5UZAZP/C1iQPVJGKUrtaJnD
-	FxeJScgVepVK+0R+fPR+ndyBdGEWfhA62tGSMFKVtDStXke42PUee9JE45XvGgg8
-	iP7y3MNlIqDBn3gcGsfofSahzfM0MNKe/GbNkp1nVkUTj08YlouvGi3TC3HuY/uA
-	/4hdsrVR/DByZ2STvVtQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxkrh25-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 09:43:05 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41Q9h4OM019569
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 09:43:04 GMT
-Received: from hu-sarohasa-hyd.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 26 Feb 2024 01:42:54 -0800
-From: Sarosh Hasan <quic_sarohasa@quicinc.com>
-To: Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
-        "Bjorn
- Andersson" <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "Jose
- Abreu" <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Prasad Sodagudi
-	<psodagud@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>, Rob Herring
-	<robh@kernel.org>
-CC: <kernel@quicinc.com>, Sneh Shah <quic_snehshah@quicinc.com>,
-        Suraj Jaiswal
-	<quic_jsuraj@quicinc.com>
-Subject: [PATCH net-next v2] net: stmmac: dwmac-qcom-ethqos: Update link clock rate only for RGMII
-Date: Mon, 26 Feb 2024 15:12:26 +0530
-Message-ID: <20240226094226.14276-1-quic_sarohasa@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1708940549; c=relaxed/simple;
+	bh=2r+Jg4IirYez90/CeN3v3u34PFYDkfTtbokSRqIaL/M=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uY6vUyM6bK3SOJoKgNgxvWBeHOISeOjscGEV/+wDGxQ/ixL8QTctlKk8xtr/O1XP0+WeP6zC4gNJrhkKVruqLUA96LITZRpkrm1jo7pItiNVHHPX6NEt4PbLjz1aE7XN0DgYSBmIdG2O4aipkVWqZjjmakZznYbZikdKhL8Kf/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36512fcf643so19076795ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:42:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708940547; x=1709545347;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6mzm746klVmYl18EiU1HABrzvIW1GEwskKuL2oGrXzc=;
+        b=C3o5RrDkft03GH/M7DdC0Y0RwbxBY3G13Y4cvZLKsfhFNHeDqeCmBVyAbZe0LvvF2r
+         gm3QUk4ZUD9wFYUo0OUjrock1E8gh7mIzZXlv0UD/X8hVOlj56qAfuYbUJJIZeYz69qP
+         xnNkB2T6CzoLroKhcLy3+1XX/f/gx5ZEVX1Qd2wyr6SLSOkkiNX7h46miHix28ZTj3FW
+         blA7kEmMM7dHUATdB2DKT+Nsuqau3PN3V2lpBpgRD3GKGUGM7+ZdGzvPirLbg38i1TXx
+         CIHrYLSQQwMDbWz7mkeYUylfNSHzCEgLyG97blVpkYkhz6VxzV+ddQqesJ8vybkx5ztT
+         T25g==
+X-Forwarded-Encrypted: i=1; AJvYcCXdTy4YBqAD4VQ8OySCQgooY0U10AO1H6jqXhmqCNmG93si81tjxileDonzzYQyTASsomkwQX94lWPfHNGnLNI1CiCx4pQC5VPpdwIp
+X-Gm-Message-State: AOJu0YxcJP6Lqdh8seJCYWhzaS1yLVygD2y+6vyPnENTcodeuT8hpyGD
+	m2EJlSAgKbOOB0LkqEqIkcBDh/BKlbAQmlVmlBYOyQ39sMtN1eJdkIFwYw+iWn++sUWPLGmda9W
+	QP09FvPdZuOMrrJ8+JVTWFMEWAkw04K7dcTI0PYJLOlaTN9zFzuC0UpE=
+X-Google-Smtp-Source: AGHT+IGg+zmSUa5QfjPli/WDJFydT/dqQ9GQYePyx5iMd/vjx9Dt5vNWCWX2/17AgZMbPFsDTgrOMI4IKTPWZ5Zb9P8/CDyG6ETt
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: tUDjRYwkIeEMxJzJSSUfF6jLBNtXEbHZ
-X-Proofpoint-GUID: tUDjRYwkIeEMxJzJSSUfF6jLBNtXEbHZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_07,2024-02-23_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=924 malwarescore=0
- suspectscore=0 bulkscore=0 adultscore=0 spamscore=0 clxscore=1015
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2402120000 definitions=main-2402260073
+X-Received: by 2002:a05:6e02:1d86:b0:365:26e3:6e48 with SMTP id
+ h6-20020a056e021d8600b0036526e36e48mr515484ila.0.1708940546977; Mon, 26 Feb
+ 2024 01:42:26 -0800 (PST)
+Date: Mon, 26 Feb 2024 01:42:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003eb868061245ba7f@google.com>
+Subject: [syzbot] [usb-storage?] divide error in isd200_ata_command
+From: syzbot <syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com>
+To: bvanassche@acm.org, emilne@redhat.com, gregkh@linuxfoundation.org, 
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
+	martin.petersen@oracle.com, stern@rowland.harvard.edu, 
+	syzkaller-bugs@googlegroups.com, tasos@tasossah.com, 
+	usb-storage@lists.one-eyed-alien.net
+Content-Type: text/plain; charset="UTF-8"
 
-Updating link clock rate for different speeds is only needed when
-using RGMII, as that mode requires changing clock speed when the link
-speed changes. Let's restrict updating the link clock speed in
-ethqos_update_link_clk() to just RGMII. Other modes such as SGMII
-only need to enable the link clock (which is already done in probe).
+Hello,
 
-Signed-off-by: Sarosh Hasan <quic_sarohasa@quicinc.com>
+syzbot found the following issue on:
+
+HEAD commit:    f2e367d6ad3b Merge tag 'for-6.8/dm-fix-3' of git://git.ker..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=114e10e4180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=eff9f3183d0a20dd
+dashboard link: https://syzkaller.appspot.com/bug?extid=28748250ab47a8f04100
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1064b372180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10aca6ac180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/c55ca1fdc5ad/disk-f2e367d6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4556a82fb4ed/vmlinux-f2e367d6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/95338ed9dad1/bzImage-f2e367d6.xz
+
+The issue was bisected to:
+
+commit 321da3dc1f3c92a12e3c5da934090d2992a8814c
+Author: Martin K. Petersen <martin.petersen@oracle.com>
+Date:   Tue Feb 13 14:33:06 2024 +0000
+
+    scsi: sd: usb_storage: uas: Access media prior to querying device properties
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15a3934a180000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17a3934a180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a3934a180000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com
+Fixes: 321da3dc1f3c ("scsi: sd: usb_storage: uas: Access media prior to querying device properties")
+
+divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 PID: 5070 Comm: usb-storage Not tainted 6.8.0-rc5-syzkaller-00297-gf2e367d6ad3b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:isd200_scsi_to_ata drivers/usb/storage/isd200.c:1318 [inline]
+RIP: 0010:isd200_ata_command+0x776/0x2380 drivers/usb/storage/isd200.c:1529
+Code: 62 fa 49 8d 7c 24 0c 48 89 f8 48 c1 e8 03 42 0f b6 04 28 84 c0 0f 85 00 18 00 00 41 0f b7 5c 24 0c 48 8b 7c 24 18 89 f8 31 d2 <f7> f3 41 89 d0 49 83 c4 06 4c 89 e0 48 c1 e8 03 42 0f b6 04 28 84
+RSP: 0018:ffffc900043ffc00 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888023230000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc900043ffd50 R08: ffffffff873161fd R09: ffffffff87315c95
+R10: 0000000000000008 R11: ffff888023230000 R12: ffff88807f7a0000
+R13: dffffc0000000000 R14: ffff888021da1000 R15: ffff88807c10a110
+FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563828985bd8 CR3: 000000002e0cc000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ usb_stor_control_thread+0x4b1/0xa50 drivers/usb/storage/usb.c:368
+ kthread+0x2ef/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:isd200_scsi_to_ata drivers/usb/storage/isd200.c:1318 [inline]
+RIP: 0010:isd200_ata_command+0x776/0x2380 drivers/usb/storage/isd200.c:1529
+Code: 62 fa 49 8d 7c 24 0c 48 89 f8 48 c1 e8 03 42 0f b6 04 28 84 c0 0f 85 00 18 00 00 41 0f b7 5c 24 0c 48 8b 7c 24 18 89 f8 31 d2 <f7> f3 41 89 d0 49 83 c4 06 4c 89 e0 48 c1 e8 03 42 0f b6 04 28 84
+RSP: 0018:ffffc900043ffc00 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888023230000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: ffffc900043ffd50 R08: ffffffff873161fd R09: ffffffff87315c95
+R10: 0000000000000008 R11: ffff888023230000 R12: ffff88807f7a0000
+R13: dffffc0000000000 R14: ffff888021da1000 R15: ffff88807c10a110
+FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000563828985bd8 CR3: 000000000df32000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	fa                   	cli
+   1:	49 8d 7c 24 0c       	lea    0xc(%r12),%rdi
+   6:	48 89 f8             	mov    %rdi,%rax
+   9:	48 c1 e8 03          	shr    $0x3,%rax
+   d:	42 0f b6 04 28       	movzbl (%rax,%r13,1),%eax
+  12:	84 c0                	test   %al,%al
+  14:	0f 85 00 18 00 00    	jne    0x181a
+  1a:	41 0f b7 5c 24 0c    	movzwl 0xc(%r12),%ebx
+  20:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
+  25:	89 f8                	mov    %edi,%eax
+  27:	31 d2                	xor    %edx,%edx
+* 29:	f7 f3                	div    %ebx <-- trapping instruction
+  2b:	41 89 d0             	mov    %edx,%r8d
+  2e:	49 83 c4 06          	add    $0x6,%r12
+  32:	4c 89 e0             	mov    %r12,%rax
+  35:	48 c1 e8 03          	shr    $0x3,%rax
+  39:	42 0f b6 04 28       	movzbl (%rax,%r13,1),%eax
+  3e:	84                   	.byte 0x84
+
+
 ---
-v2 changelog:
-- Addressed Konrad Dybcio comment on optimizing the patch
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 3 +++
- 1 file changed, 3 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-index 31631e3f89d0..c182294a6515 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-@@ -169,6 +169,9 @@ static void rgmii_dump(void *priv)
- static void
- ethqos_update_link_clk(struct qcom_ethqos *ethqos, unsigned int speed)
- {
-+	if (!phy_interface_mode_is_rgmii(ethqos->phy_mode))
-+		return;
-+
- 	switch (speed) {
- 	case SPEED_1000:
- 		ethqos->link_clk_rate =  RGMII_1000_NOM_CLK_FREQ;
--- 
-2.17.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
