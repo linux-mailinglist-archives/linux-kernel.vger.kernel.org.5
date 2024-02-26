@@ -1,273 +1,122 @@
-Return-Path: <linux-kernel+bounces-81072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94AC7866FD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:04:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DB4B866FD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:04:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CDE31F24C11
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:04:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDCA3288B14
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2180B5F578;
-	Mon, 26 Feb 2024 09:40:13 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806F85BADF;
+	Mon, 26 Feb 2024 09:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="FZ+k0Plf"
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6815B5F49A;
-	Mon, 26 Feb 2024 09:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540C5219ED
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940412; cv=none; b=G4WOjPwexjg5B9G0YsitB2Nw9MnwRCPO9Ge3ekvYNEkk7Pff35QPNh7KleHeFmEb9bzUJcOSOqbgGQgJK2XDa6bXbTUaI4JBCDixh+nxD03a2aScV9/O4PeynBg3bKPbDD0tw/a6KjnWE0OBbvHbo3Ya8DSH/65akQCWerd5eWw=
+	t=1708940474; cv=none; b=BF+UF+C2bJJuI2OCa+43exJCcYPC1towCWd627sNYruxH2lNPGeKnXNFH/Jhe2NlinceD0T+adMXskOs737RtRblZqolrcNW6sX/I6v6w+1jU/OjldhKFwf1bqdFfxDK6D5kyvqSML3dMzt/z8erJ+1a9YH/8V8iwvhKvwRgmEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940412; c=relaxed/simple;
-	bh=SS5aWCEFp88J7+X6Yo4GCAC3/LyWxt3ymokDrhw+bzs=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=c/Sg6BMCnneKWt/f28jAs033CnoCLTGI7fgcr/5gyhkDuJ1V/urKVwVw0o127+hYeg1CK+mlVGLRN4g59t18I1B1hig/uKar8TI3owPQnmtKpOidIaj8/wbh7dxzPmEcHheF8w/0PK/Ud26+3oIl0Zx6WJMJWKgCqa935eUxv3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TjwZQ5tk9z4f3nVC;
-	Mon, 26 Feb 2024 17:39:58 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 1C9481A0EBB;
-	Mon, 26 Feb 2024 17:40:06 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBF1XNxlRaLOFA--.41686S3;
-	Mon, 26 Feb 2024 17:40:05 +0800 (CST)
-Subject: Re: [PATCH md-6.9 03/10] md/raid1: fix choose next idle in
- read_balance()
-To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com,
- shli@fb.com, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
- <20240222075806.1816400-4-yukuai1@huaweicloud.com>
- <CALTww2_g5Sdxh5f=krWiZ1y2y7ud3XaSX5Hhx-mz3AU45c6rGg@mail.gmail.com>
- <34fbafbe-a510-5193-b86c-91fac69de95f@huaweicloud.com>
- <CALTww2929Ddf_U1z3HJ0BLK2xH=tVSdYtf3EDkdBJrX=xw5Ywg@mail.gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <05fab111-7111-1dca-57a8-89069a34adc2@huaweicloud.com>
-Date: Mon, 26 Feb 2024 17:40:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1708940474; c=relaxed/simple;
+	bh=oMwEwBsS9LpqWFkXQJGn/wGr2D2RG9J1+84Vl1zgefc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MvxL21mMvv/MhRckUjaA2GR5LR/DaV6EP1sgLBJe8e+mIHWneuw1GEnKjq9cdKbZo3PkrFlecBD7ZCbuesgITrL5UXFrTF5egfvzAymBETRrfof9/nZOV+JLan1s7DAWNRSJzQj0ZBKQ9z9F7/5IlkYk0hXfhCMRih+IwxL9ris=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=FZ+k0Plf; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c1993331a7so1236114b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1708940472; x=1709545272; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gbQaXGx202MYUih537vCjMC9neGAB2aCaE4Hy7lgplw=;
+        b=FZ+k0PlfQr/3MUCxf1HI2tCXfYUNfM4j2ibM+rAe+4EhJ5Y6L5v7UPDJCfaMv7Qgfm
+         YcB88ozct7BzujyhYsmaMgCgskNhIbq2hSdAM4zbpcGvKmhcxjfApD/6xtN+x+Onm/sg
+         Jwe1l4e6K9ACiiTKmgngausbIwjXmW1T5kn6h1bQeauigU3ZwFGYZf5zTpLgEeJ+je1u
+         9ch35GuqfqRM3HKx0gPSuW5ZzRjfHUrg/NP5K8/ZyMgMfUZxJI0AQ3rSwX8xuBx8je9q
+         LJqPWnqHAVHKRty8QHN0IypurVLDMCYO6TsL/ZXPXv+H4txObnRfcHIUeriiYqHWmcc2
+         z96A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708940472; x=1709545272;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gbQaXGx202MYUih537vCjMC9neGAB2aCaE4Hy7lgplw=;
+        b=FLtBMQ/t9dzhye2FSrWhmL/iqGjEkdl6jteYSu+KTox6n4GOzsH7SA/jQt6+DJDXFm
+         BXXQTLLYhobxIwvJjMKogI179uwJArCFio9UbrimWftr4m+3GaYvs3SEAopRTycL6oDd
+         G1JSeOa0mk4W3ZVT1UIJv3nE/eRxLwW76ZOnznm2619q9mCJVL5D0ggNi9J+94xw6/JH
+         iMtnUDeAmQDRlOL90li+Vgshih/gG1mYswBtfQuVGK8ju49Ov4CBVbPG7NdQ++NbSMrI
+         bgvyMkZu4vltGk/V2HP3flX9135iYi8YvVIVqq9FR7d7lqTbFaeQYAZrY0gQxwNwGfe/
+         tdMw==
+X-Forwarded-Encrypted: i=1; AJvYcCXgvPpO5xNzmRokvV5pMOpEl3e4oXC3zIwjaKJIB2fNybpB4T8Y+ACrom76f76VMpb0nu1fXGiFTMcPFNFnQHqumzJZLzL17zRq6fk5
+X-Gm-Message-State: AOJu0YyHFrpjO8TZ2+LMlfWM1DCPGvu9/PkWkDlCq1Y8OYpoFEQDYsj6
+	10EAvD1+b1OYPW6rxMdhzpOI2lgEuijlcLySlOMM65ctpP2ih4MM0E0vMz7rDEzzrE7c/7FGsc4
+	B0P+C516TKke3tw==
+X-Google-Smtp-Source: AGHT+IGb4DMDY2Ls9t80jorxvIX8b6cha77RpNYr/L3xSKnLlr3PO0LB+jlhLLtVQjC0FZnq8x4suA==
+X-Received: by 2002:a05:6808:1644:b0:3bd:cdec:ba04 with SMTP id az4-20020a056808164400b003bdcdecba04mr7266464oib.58.1708940472482;
+        Mon, 26 Feb 2024 01:41:12 -0800 (PST)
+Received: from C02CV19DML87.bytedance.net ([203.208.189.6])
+        by smtp.gmail.com with ESMTPSA id ls22-20020a056a00741600b006e533caee00sm949194pfb.155.2024.02.26.01.41.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 01:41:12 -0800 (PST)
+From: "$(name)" <qirui.001@bytedance.com>
+X-Google-Original-From: "$(name)" <$(mail address)>
+To: bp@alien8.de,
+	mingo@redhat.com,
+	tglx@linutronix.de,
+	hpa@zytor.com,
+	jpoimboe@redhat.com,
+	peterz@infradead.org,
+	mbenes@suse.cz,
+	gregkh@linuxfoundation.org,
+	stable@vger.kernel.org,
+	alexandre.chartre@oracle.com
+Cc: x86@kernel.org,
+	linux-kernel@vger.kernel.org,
+	qirui.001@bytedance.com
+Subject: [PATCH 0/3] Support intra-function call validation
+Date: Mon, 26 Feb 2024 17:40:58 +0800
+Message-Id: <20240226094101.95544-1-qirui.001@bytedance.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALTww2929Ddf_U1z3HJ0BLK2xH=tVSdYtf3EDkdBJrX=xw5Ywg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBXKBF1XNxlRaLOFA--.41686S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3JrW8WFWkZrWfCr1Dur1xXwb_yoW7Ar4xpr
-	W0qanFyFWUXry5K3s2qw4UXr9aq343JF48uFykJ34Sqr90qFyqqF47KryUuFy8CFs7Jw17
-	Xr1UGrW7u3W0kFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWU
-	JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUF9a9DUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi,
+From: Rui Qi <qirui.001@bytedance.com>
 
-在 2024/02/26 17:24, Xiao Ni 写道:
-> On Mon, Feb 26, 2024 at 5:12 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> Hi,
->>
->> 在 2024/02/26 16:55, Xiao Ni 写道:
->>> Hi Kuai
->>>
->>> Thanks for the effort!
->>>
->>> On Thu, Feb 22, 2024 at 4:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>>>
->>>> From: Yu Kuai <yukuai3@huawei.com>
->>>>
->>>> Commit 12cee5a8a29e ("md/raid1: prevent merging too large request") add
->>>> the case choose next idle in read_balance():
->>>>
->>>> read_balance:
->>>>    for_each_rdev
->>>>     if(next_seq_sect == this_sector || disk == 0)
->>>
->>> typo error: s/disk/dist/g
->>>
->>>>     -> sequential reads
->>>>      best_disk = disk;
->>>>      if (...)
->>>>       choose_next_idle = 1
->>>>       continue;
->>>>
->>>>    for_each_rdev
->>>>    -> iterate next rdev
->>>>     if (pending == 0)
->>>>      best_disk = disk;
->>>>      -> choose the next idle disk
->>>>      break;
->>>>
->>>>     if (choose_next_idle)
->>>>      -> keep using this rdev if there are no other idle disk
->>>>      continue
->>>>
->>>> However, commit 2e52d449bcec ("md/raid1: add failfast handling for reads.")
->>>> remove the code:
->>>>
->>>> -               /* If device is idle, use it */
->>>> -               if (pending == 0) {
->>>> -                       best_disk = disk;
->>>> -                       break;
->>>> -               }
->>>>
->>>> Hence choose next idle will never work now, fix this problem by
->>>> following:
->>>>
->>>> 1) don't set best_disk in this case, read_balance() will choose the best
->>>>      disk after iterating all the disks;
->>>> 2) add 'pending' so that other idle disk will be chosen;
->>>> 3) set 'dist' to 0 so that if there is no other idle disk, and all disks
->>>>      are rotational, this disk will still be chosen;
->>>>
->>>> Fixes: 2e52d449bcec ("md/raid1: add failfast handling for reads.")
->>>> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
->>>> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
->>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->>>> ---
->>>>    drivers/md/raid1.c | 21 ++++++++++++---------
->>>>    1 file changed, 12 insertions(+), 9 deletions(-)
->>>>
->>>> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
->>>> index c60ea58ae8c5..d0bc67e6d068 100644
->>>> --- a/drivers/md/raid1.c
->>>> +++ b/drivers/md/raid1.c
->>>> @@ -604,7 +604,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>>>           unsigned int min_pending;
->>>>           struct md_rdev *rdev;
->>>>           int choose_first;
->>>> -       int choose_next_idle;
->>>>
->>>>           /*
->>>>            * Check if we can balance. We can balance on the whole
->>>> @@ -619,7 +618,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>>>           best_pending_disk = -1;
->>>>           min_pending = UINT_MAX;
->>>>           best_good_sectors = 0;
->>>> -       choose_next_idle = 0;
->>>>           clear_bit(R1BIO_FailFast, &r1_bio->state);
->>>>
->>>>           if ((conf->mddev->recovery_cp < this_sector + sectors) ||
->>>> @@ -712,7 +710,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>>>                           int opt_iosize = bdev_io_opt(rdev->bdev) >> 9;
->>>>                           struct raid1_info *mirror = &conf->mirrors[disk];
->>>>
->>>> -                       best_disk = disk;
->>>>                           /*
->>>>                            * If buffered sequential IO size exceeds optimal
->>>>                            * iosize, check if there is idle disk. If yes, choose
->>>> @@ -731,15 +728,21 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>>>                               mirror->next_seq_sect > opt_iosize &&
->>>>                               mirror->next_seq_sect - opt_iosize >=
->>>>                               mirror->seq_start) {
->>>> -                               choose_next_idle = 1;
->>>> -                               continue;
->>>> +                               /*
->>>> +                                * Add 'pending' to avoid choosing this disk if
->>>> +                                * there is other idle disk.
->>>> +                                * Set 'dist' to 0, so that if there is no other
->>>> +                                * idle disk and all disks are rotational, this
->>>> +                                * disk will still be chosen.
->>>> +                                */
->>>> +                               pending++;
->>>> +                               dist = 0;
->>>
->>> There is a problem. If all disks are not idle and there is a disk with
->>> dist=0 before the seq disk, it can't read from the seq disk. It will
->>> read from the first disk with dist=0. Maybe we can only add the codes
->>> which are removed from 2e52d449bcec?
->>
->> If there is a disk with disk=0, then best_dist_disk will be updated to
->> the disk, and best_dist will be updated to 0 already:
->>
->> // in each iteration
->> if (dist < best_dist) {
->>          best_dist = dist;
->>          btest_disk_disk = disk;
->> }
->>
->> In this case, best_dist will be set to the first disk with dist=0, and
->> at last, the disk will be chosen:
->>
->> if (best_disk == -1) {
->>           if (has_nonrot_disk || min_pending == 0)
->>                   best_disk = best_pending_disk;
->>           else
->>                   best_disk = best_dist_disk;
->>                  -> the first disk with dist=0;
->> }
->>
->> So, the problem that you concerned should not exist.
-> 
-> Hi Kuai
-> 
-> Thanks for the explanation. You're right. It chooses the first disk
-> which has dist==0. In the above, you made the same typo error disk=0
-> as the comment. I guess you want to use dist=0, right? Beside this,
-> this patch is good to me.
+Since kernel version 5.4.250 LTS, there has been an issue with the kernel live patching feature becoming unavailable. When compiling the sample code for kernel live patching, the following message is displayed when enabled:
 
-Yes, and Paul change the name 'best_dist' to 'closest_dist_disk',
-and 'btest_disk_disk' to 'closest_dist' in the last patch to avoid typo
-like this. :)
+livepatch: klp_check_stack: kworker/u256:6:23490 has an unreliable stack
 
-Thanks,
-Kuai
+After investigation, it was found that this is due to objtool not supporting intra-function calls, resulting in incorrect orc entry generation.
 
+This patchset adds support for intra-function calls, allowing the kernel live patching feature to work correctly.
 
-> 
-> Best Regards
-> Xiao
->>
->> Thanks,
->> Kuai
->>>
->>> Best Regards
->>> Xiao
->>>
->>>> +                       } else {
->>>> +                               best_disk = disk;
->>>> +                               break;
->>>>                           }
->>>> -                       break;
->>>>                   }
->>>>
->>>> -               if (choose_next_idle)
->>>> -                       continue;
->>>> -
->>>>                   if (min_pending > pending) {
->>>>                           min_pending = pending;
->>>>                           best_pending_disk = disk;
->>>> --
->>>> 2.39.2
->>>>
->>>>
->>>
->>> .
->>>
->>
-> 
-> .
-> 
+Alexandre Chartre (2):
+  objtool: is_fentry_call() crashes if call has no destination
+  objtool: Add support for intra-function calls
+
+Rui Qi (1):
+  x86/speculation: Support intra-function call validation
+
+ arch/x86/include/asm/nospec-branch.h          |  7 ++
+ include/linux/frame.h                         | 11 ++++
+ .../Documentation/stack-validation.txt        |  8 +++
+ tools/objtool/arch/x86/decode.c               |  6 ++
+ tools/objtool/check.c                         | 64 +++++++++++++++++--
+ 5 files changed, 91 insertions(+), 5 deletions(-)
+
+-- 
+2.39.2 (Apple Git-143)
 
 
