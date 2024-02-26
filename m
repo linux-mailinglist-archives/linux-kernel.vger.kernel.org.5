@@ -1,127 +1,106 @@
-Return-Path: <linux-kernel+bounces-81729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3D01867975
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:06:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1931867978
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:07:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D14D299BB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:06:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 701271F2E6D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1BD13174A;
-	Mon, 26 Feb 2024 14:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 554E5131E52;
+	Mon, 26 Feb 2024 14:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oqqs7shT"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VnFVGuTE"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE42B12BF29
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F79A12B15F
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958687; cv=none; b=lLKvkb10Gf2x9ZpvzBhrVGHXAfyefz4sptP38LUXuk1oo6pKTzkWwDNUJduGyXxt1NhEPjYg8UKUnzGtq/D0ibONA44wZ4XalZGkj+SJTfRB7yjO3IQ95Xz9EMx4c/AY85GWlVLXHQBeLhQSWaKf9Z9GPIl+papxRM2wOJLt9UE=
+	t=1708958739; cv=none; b=pETBAZVT2k68QwNrN9QGctL7s6O1mXUCxcTrbtHh8rQ9OnDsjc0HAb949R2Dchv7WPuIIFPfRUXVcFw1NOIpKfNiMblP6etpr+5lf322pnir7TMkIsuwyuIVszqajyhru6szJg6u7IZPy2Zvuf6B9/q7eSPy8s0jr/ZyQgNsUHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958687; c=relaxed/simple;
-	bh=+7EGPxI8njojWIFtKK0niBxOgiA/ror8Zq84fmjVI+s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kxTicjA7QnTghOeWGSu4ENmf0AzjY6G/rviaYKu6D/zvAFVKTNA8R4PUGjwFr9mKs/qFT2IJENQq6eD7SVnFCkVc6o0eknDxeh3eLKsmZa7JaS8MgxCCncmdcB3DfCHQm1WiKzbA/0vzveTLKGFkO9oacu/VfP3cBmQhVT+za1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oqqs7shT; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41241f64c6bso24698905e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:44:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708958683; x=1709563483; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xebCF9Rlp7+lnTRinKmQM1qUIifmCWo6oOreD/07nk0=;
-        b=oqqs7shTGESEKQNn6q9EY0l+JAG9rPGh9KneyUKyY1Gb/QVjOzpdbXgc9gc7TdXgKW
-         yzIWcNlbH0QNXTfH55/oeUkSA1Tx2roq1KL9bb/smfdYRgPWuJF8PZ6MDMP/uuKJAMHA
-         lL9g43jLJKeyD0Ktc9YGjAfYUKYb5iq0jcA4DMRU3JtaiU9D1IcP6OwsMqApQtRx+y6Y
-         CMZpIne3ANYaKB5apSijLkgSG5F/hbVOAHoqcC01KkFhcdM4jp9S18Ezj4fYVac1DTB5
-         HAmUafG5tWnWHduUJf9Yfa2J3nnR2v+bOez0FE4dCY2m0t5bLf3dAegtdkwsVSsAy6Li
-         0vVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708958683; x=1709563483;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xebCF9Rlp7+lnTRinKmQM1qUIifmCWo6oOreD/07nk0=;
-        b=PxPV1Y2oL7qICSaKdB40kz+U5f+bMGgrdX88bCB5viCXZT547Hre8DV10bWr3LPxSx
-         voDPhk4+9N24oBAD1cZ+BqUXSy9l4mUggCV9VNBhxFVQhpZSLmMCZ7UzV2UKCN2yt5Nv
-         B7UngCpSJuE3xpHGnLb+Dak/lOwkglC2EmY44VYKp8NMkXYIhptCYZi/+8RyM2vP9N9X
-         bR6Ppe+t/93ZJ+DkA8cTHt6XDkglm6Y7EzoIUubD5vScvyz8Kieah9aMicC3vU8PCSZb
-         aKBEs8FCkGLCe8alxvqUdHcTeXwD9Q8wIhninFlQlOb6ofhtXPBG81buEhelxnahkEPK
-         N8rw==
-X-Forwarded-Encrypted: i=1; AJvYcCV36UTE9sLR8a1xLLxYEbnxSBuZuZrSU2wHLaqmeSnXd9qD4EVmfOIEVP+8B6T3m+wskutdLi2wkKkJZuvkItldaUDiWIaQtOBPXe/f
-X-Gm-Message-State: AOJu0YycLGqG2RyJ9z/Hl+Rw/Dqprq0WmmVENNjvij0CT8uw0dkmh+jU
-	eVDM9AkTvKbJlQZ+Cr8jYe4deD6WPNiAsBayzLJNPAcAemaVwHteOvxZFl0kTBU=
-X-Google-Smtp-Source: AGHT+IG9SpqrImlSczgJxnpgDOf0lff+zMPddH3C9S1iodwRZL/rSMYdzPAPbQ3AXMmt1pT+Z1JJIw==
-X-Received: by 2002:a05:600c:35d1:b0:412:a927:a646 with SMTP id r17-20020a05600c35d100b00412a927a646mr582114wmq.24.1708958683167;
-        Mon, 26 Feb 2024 06:44:43 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id n1-20020a05600c4f8100b004127ead18aasm8586036wmq.22.2024.02.26.06.44.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 06:44:42 -0800 (PST)
-Message-ID: <46630fa5-381a-4006-ade4-2c18e76331ff@linaro.org>
-Date: Mon, 26 Feb 2024 15:44:42 +0100
+	s=arc-20240116; t=1708958739; c=relaxed/simple;
+	bh=eJkehOGsWcnIAv2C7aKxVAn/Nm5vdYM89SPCXjmFqkE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=flcfX4M8OnAbsxaFgUXK1ayAXLFAyPL/wf2Gi7A5iE4kfOa/iwMFZQ7BxIleBoZ92uC9/i/FPpSs19+6Fr1mehFXtDEegVdgW91IaZgH/I38OP5VhW6AmDNWCdU9M/GBbdKlbf5BtCKgbXd26ROsgY3owIx2IWr1os4RAU35wxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VnFVGuTE; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708958738; x=1740494738;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eJkehOGsWcnIAv2C7aKxVAn/Nm5vdYM89SPCXjmFqkE=;
+  b=VnFVGuTE2ukPaJQOeiZxgaBiv22ES7fxJfgEw4OsQ090GZoQDJXEGk/z
+   UClCMCSer0oLx5C0CS6skMStaT+6JEShT1kmRdJabN8wT1Cff6zMDMdrV
+   0HofjFmIjHhs4uCjHc2Rew2fPx8s3FZ5fV/12Y5Jh4ZhajHGbYlfUa8z0
+   d0BeQlMXSOjO4f+a09Xy6N5s8o7eBFdC5YgsB+ZiV9uGRg+QCdBH9OM0S
+   q7HuxA851tIJ8pn9dRzNWOhXCETdURmkhXrgbyUCQe19x2nr8a4N6N4nb
+   ooK2ujqfmusRouwvlzv6ydXPhSZG+6JlVypyoiDIgMCOxZ5KqeH61y09o
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="14681565"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="14681565"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:45:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="913874071"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="913874071"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:45:35 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1recEW-00000007hsz-1jZ9;
+	Mon, 26 Feb 2024 16:45:32 +0200
+Date: Mon, 26 Feb 2024 16:45:32 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Shahar Avidar <ikobh7@gmail.com>
+Cc: gregkh@linuxfoundation.org, luca.ceresoli@bootlin.com,
+	benjamin.tissoires@redhat.com, elder@linaro.org, robh@kernel.org,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] staging: pi433: Remove a duplicated F_OSC define
+Message-ID: <ZdykDGo9fMw5fEdp@smile.fi.intel.com>
+References: <20240225173341.1278918-1-ikobh7@gmail.com>
+ <20240225173341.1278918-2-ikobh7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] dt-bindings: timer: Add support for cadence TTC PWM
-Content-Language: en-US
-To: Mubin Sayyed <mubin.sayyed@amd.com>, krzysztof.kozlowski+dt@linaro.org,
- robh+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org
-Cc: tglx@linutronix.de, michal.simek@amd.com, linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-References: <20240226093333.2581092-1-mubin.sayyed@amd.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20240226093333.2581092-1-mubin.sayyed@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240225173341.1278918-2-ikobh7@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On 26/02/2024 10:33, Mubin Sayyed wrote:
-> Cadence TTC can act as PWM device, it will be supported through
-> separate PWM framework based driver. Decision to configure
-> specific TTC device as PWM or clocksource/clockevent would
-> be done based on presence of "#pwm-cells" property.
-> 
-> Also, interrupt property is not required for TTC PWM driver.
-> Update bindings to support TTC PWM configuration.
-> 
-> Signed-off-by: Mubin Sayyed <mubin.sayyed@amd.com>
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-> Changes for v3:
->    Add Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->    tag
->    Remove bindings from subject
->    1/3 and 3/3 are dropped as of now (WIP).
-> 
-> Changes for v2:
->    Update subject
->    Modify #pwm-cells to constant 3
->    Update example to use generic name
-> 
-> link for v2:
->    https://lore.kernel.org/linux-arm-kernel/20231114124748.581850-2-mubin.sayyed@amd.com/T/
-> ---
+On Sun, Feb 25, 2024 at 07:33:38PM +0200, Shahar Avidar wrote:
+> F_OSC is already defined & only used by rf69.c source file
+> Also fix define comment
 
-Applied, thanks
+You missed periods at the end of the sentences.
 
+..
+
+> -#define F_OSC	  32000000 /* in Hz */
+> +#define F_OSC	  32000000 /* Hz */
+
+Instead of having a comment you can
+
+  #include <linux/units.h>
+  ...
+  #define F_OSC	  (32 * HZ_PER_MHZ)
+
+which will be more robust code (no need to count 0s).
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+With Best Regards,
+Andy Shevchenko
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
 
 
