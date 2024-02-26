@@ -1,248 +1,163 @@
-Return-Path: <linux-kernel+bounces-81930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E986E867C67
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:47:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 44FBF867C5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:45:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FDE7289B63
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:47:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE67128E907
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADA012E1D5;
-	Mon, 26 Feb 2024 16:47:08 +0000 (UTC)
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679C212C7F1;
+	Mon, 26 Feb 2024 16:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FoK8cc2d";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5/ZXCHY5";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MteP/CWz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YSPc2zIj"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2088B12C522;
-	Mon, 26 Feb 2024 16:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A046127B4D;
+	Mon, 26 Feb 2024 16:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966026; cv=none; b=UIdR4UDPDFZisBF4Xpnt6SDohDq3YJX5gC2yaxRVTTOU+BJanuXmWPVe+ixCHh3w5gBokziKBfX3NZQcWM1W8rFR6BslHSk9vt77s6EkOFK0hbzvg+T2I+RQkd0VS9xMySmbEynrXDPCk7DNl7AFg3Kbne8sosMh7OyrJkSHAng=
+	t=1708965922; cv=none; b=Yd4rHA88I57+egCSEJr0Obb6tnIq9Rp61DHThH1MBahkl83+uYvXn3KwHrY8YpoCZr7zJ7nmOX8A2H7fIR1kj8fMS9Zbbp+ktTCZ8/718XvhTdogPMrFrYtYoPESTTK7C73I8IShNySx9iSBuQlcjlPt1GL5HJjuySC1xCxM1gM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966026; c=relaxed/simple;
-	bh=80eMbshAOaGrGFUKm7chy0SE9XzQNdY5bar8g8qo9s0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oSOWjCnAxuzn8sZpGi9JWEOgJZ7OMx87+GdbdssUPzHaKmcvhoh2iGUVCgt2LC1MPJVwYTAETbe+gfLVvRKoDGdyIHckJLyOBv94NEqJV//ClRAqcR2UYT4wukVUjGPvPotE0kzFpEejERJ4mbAvNabO2MNILNjlP+zZXWxiDi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id fcde5ceec8ac2b3d; Mon, 26 Feb 2024 17:46:55 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
+	s=arc-20240116; t=1708965922; c=relaxed/simple;
+	bh=htcnUineXKuRIijMZZzqAZpIfeDz5CJu5ZzPoiE2Ql0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Un2+ZaWcFqw99bfHaxurj/QltNilqiyhyB5hek9yPjUpM6Cu5KyI/TUBukG3CqmORKYAb2wJL9wOYe5D3r1BjtsxjPmnAZ/oNkcDMF3L1NyVOHVYoOdgH94kjxT3Hnm/XwXqMC268U1rrXMMIrEWwthWqvPNCNpufseq9gxOkC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FoK8cc2d; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5/ZXCHY5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MteP/CWz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YSPc2zIj; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 884C166A4D4;
-	Mon, 26 Feb 2024 17:46:54 +0100 (CET)
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux ACPI <linux-acpi@vger.kernel.org>,
- Jonathan Cameron <jonathan.cameron@huawei.com>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- "Russell King (Oracle)" <linux@armlinux.org.uk>
-Subject:
- [PATCH v2 4/5] ACPI: scan: Rework Device Check and Bus Check notification
- handling
-Date: Mon, 26 Feb 2024 17:45:11 +0100
-Message-ID: <1958983.PYKUYFuaPT@kreacher>
-In-Reply-To: <6021126.lOV4Wx5bFT@kreacher>
-References: <6021126.lOV4Wx5bFT@kreacher>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E490E225AF;
+	Mon, 26 Feb 2024 16:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708965919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VNKQOvX+alm4LCMtGGNsFDsIgNEjmJS+VHB4k1BcnoI=;
+	b=FoK8cc2d/IpT93Anet6ZMgVmF0417NNt8kEwHcm8oR9msOJZjAsH0abIEf+b6Hi6yYnsgT
+	0b7jSvdAvoKaxcdm4PhUFyPDDfunqMrKqjc9DmpjJCG1v8l3tE+DAf8iafAGutEPc9m5rf
+	wL5cgfaBVgoStqphXUuG1JXhaEfj9q8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708965919;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VNKQOvX+alm4LCMtGGNsFDsIgNEjmJS+VHB4k1BcnoI=;
+	b=5/ZXCHY5e9+HWvqCTBBUuURJzTIrP5tHzUpUBcEy0uabtOxhTPUjXeX/uC8YnNKdIF5+IP
+	X1FHWhuqlzrxSUCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708965918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VNKQOvX+alm4LCMtGGNsFDsIgNEjmJS+VHB4k1BcnoI=;
+	b=MteP/CWzWhn+dK0SaqUbv3rWE+O04xwyDiSMHgV1mF33vP1MPioucBzdaF8rq3EKJavEj4
+	n81Alg6YGa6VdWOfWA2mjYG14MEWQ7FrHfqcar1ZvqWd5BGffFYXP6Dp2yp/irPNNJGfyt
+	NiPemduGs6+mIj9h9s0Q3jVVHZrnjjM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708965918;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VNKQOvX+alm4LCMtGGNsFDsIgNEjmJS+VHB4k1BcnoI=;
+	b=YSPc2zIjtp7PO4Rtt9tam47ZoWA8VrgLgOl/mblznZcDxJ7YLNw1CjpA89ezIaRa8Ml/r/
+	r4AFMyPi0nDKNlDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D1EB13A58;
+	Mon, 26 Feb 2024 16:45:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id b4jJIR7A3GWrFAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 26 Feb 2024 16:45:18 +0000
+Message-ID: <3b539d8d-e529-45b0-aa83-545248bc0670@suse.cz>
+Date: Mon, 26 Feb 2024 17:45:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrgedvgdeltdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeektddvveeijeekveekvdffieffheeitdehkeekfeeiheffkefgledtheelhedvudenucffohhmrghinhepuhgvfhhirdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehjohhnrghthhgrnhdrtggrmhgvrhhonheshhhurgifvghirdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhikhgrrdifvghsthgv
- rhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehrrghfrggvlheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugiesrghrmhhlihhnuhigrdhorhhgrdhukh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm, vmscan: prevent infinite loop for costly GFP_NOIO |
+ __GFP_RETRY_MAYFAIL allocations
+Content-Language: en-US
+To: Sven van Ashbrook <svenva@chromium.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, bgeffon@google.com,
+ cujomalainey@chromium.org, kramasub@chromium.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-sound@vger.kernel.org, perex@perex.cz, stable@vger.kernel.org,
+ tiwai@suse.com, tiwai@suse.de, Michal Hocko <mhocko@kernel.org>,
+ Mel Gorman <mgorman@techsingularity.net>
+References: <CAG-rBihs_xMKb3wrMO1+-+p4fowP9oy1pa_OTkfxBzPUVOZF+g@mail.gmail.com>
+ <20240221114357.13655-2-vbabka@suse.cz>
+ <CAG-rBijH3GaHN2zA2_cby-RsQCVHou-WjZnxudMebPrS9imgfg@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAG-rBijH3GaHN2zA2_cby-RsQCVHou-WjZnxudMebPrS9imgfg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="MteP/CWz";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=YSPc2zIj
+X-Spamd-Result: default: False [-0.75 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-0.45)[78.91%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.75
+X-Rspamd-Queue-Id: E490E225AF
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 2/26/24 17:09, Sven van Ashbrook wrote:
+> Vlastimil,
+> 
+> We noticed that this patch is now added to Andrew Morton's
+> mm-hotfixes-unstable branch.
+> 
+> How can we help to get this into mm-hotfixes-stable
+> and from there, into mainline ?
 
-The underlying problem is the handling of the enabled bit in device
-status (bit 1 of _STA return value) which is required by the ACPI
-specification to be observed in addition to the present bit (bit 0
-of _STA return value) [1], but Linux does not observe it.
+A Tested-by: can't hurt, but of course you need to finish the testing first.
+It's encouraging you didn't hit the bug yet anymore, thought!
 
-Since Linux has not looked at that bit for a long time, it is generally
-risky to start obseving it in all device enumeration cases, especially
-at the system initialization time, but it can be observed when the
-kernel receives a Bus Check or Device Check notification indicating a
-change in device configuration.  In those cases, seeing the enabled bit
-clear may be regarded as an indication that the device at hand should
-not be used any more.
+> We are still stress-testing using low memory suspend. Anything else
+> that is required, and we can help with?
 
-For this reason, rework the handling of Device Check and Bus Check
-notifications in the ACPI core device enumeration code in the
-following way:
+I think that's already great enough, thanks!
 
- 1. Rename acpi_bus_trim_one() to acpi_scan_check_and_detach() and make
-    it check device status if its second argument is not NULL, in which
-    case it will detach scan handlers or ACPI drivers from devices whose
-    _STA returns the enabled bit clear.
-
- 2. Make acpi_scan_device_check() and acpi_scan_bus_check() invoke
-    acpi_scan_check_and_detach() with a non-NULL second argument
-    unconditionally, so scan handlers and ACPI drivers are detached
-    from the target device and its ancestors if their _STA returns the
-    enabled bit clear.
-
-Link: https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#sta-device-status # [1]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
-
-v1 -> v2:
-   * Split patch [3/4] from v1 and put changes related to the "enabled" _STA bit
-     into this patch.
-   * Leave the acpi_device_is_present() check in acpi_scan_device_check(), so as to
-     continue walking the bus below the device when it is not enabled (for
-     backwards compatibility).
-
----
- drivers/acpi/scan.c |   84 +++++++++++++++++++++++++++-------------------------
- 1 file changed, 45 insertions(+), 39 deletions(-)
-
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -244,11 +244,27 @@ static int acpi_scan_try_to_offline(stru
- 	return 0;
- }
- 
--static int acpi_bus_trim_one(struct acpi_device *adev, void *not_used)
-+static int acpi_scan_check_and_detach(struct acpi_device *adev, void *check)
- {
- 	struct acpi_scan_handler *handler = adev->handler;
- 
--	acpi_dev_for_each_child_reverse(adev, acpi_bus_trim_one, NULL);
-+	acpi_dev_for_each_child_reverse(adev, acpi_scan_check_and_detach, check);
-+
-+	if (check) {
-+		acpi_bus_get_status(adev);
-+		/*
-+		 * Skip devices that are still there and take the enabled
-+		 * flag into account.
-+		 */
-+		if (acpi_device_is_enabled(adev))
-+			return 0;
-+
-+		/* Skip device that have not been enumerated. */
-+		if (!acpi_device_enumerated(adev)) {
-+			dev_dbg(&adev->dev, "Still not enumerated\n");
-+			return 0;
-+		}
-+	}
- 
- 	adev->flags.match_driver = false;
- 	if (handler) {
-@@ -270,6 +286,11 @@ static int acpi_bus_trim_one(struct acpi
- 	return 0;
- }
- 
-+static void acpi_scan_check_subtree(struct acpi_device *adev)
-+{
-+	acpi_scan_check_and_detach(adev, (void *)true);
-+}
-+
- static int acpi_scan_hot_remove(struct acpi_device *device)
- {
- 	acpi_handle handle = device->handle;
-@@ -315,42 +336,30 @@ static int acpi_scan_hot_remove(struct a
- 	return 0;
- }
- 
--static int acpi_scan_device_not_enumerated(struct acpi_device *adev)
--{
--	if (!acpi_device_enumerated(adev)) {
--		dev_warn(&adev->dev, "Still not enumerated\n");
--		return -EALREADY;
--	}
--	acpi_bus_trim(adev);
--	return 0;
--}
--
- static int acpi_scan_device_check(struct acpi_device *adev)
- {
- 	int error;
- 
--	acpi_bus_get_status(adev);
--	if (acpi_device_is_present(adev)) {
--		/*
--		 * This function is only called for device objects for which
--		 * matching scan handlers exist.  The only situation in which
--		 * the scan handler is not attached to this device object yet
--		 * is when the device has just appeared (either it wasn't
--		 * present at all before or it was removed and then added
--		 * again).
--		 */
--		if (adev->handler) {
--			dev_dbg(&adev->dev, "Already enumerated\n");
--			return 0;
--		}
--		error = acpi_bus_scan(adev->handle);
--		if (error) {
--			dev_warn(&adev->dev, "Namespace scan failure\n");
--			return error;
--		}
--	} else {
--		error = acpi_scan_device_not_enumerated(adev);
-+	acpi_scan_check_subtree(adev);
-+
-+	if (!acpi_device_is_present(adev))
-+		return 0;
-+
-+	/*
-+	 * This function is only called for device objects for which matching
-+	 * scan handlers exist.  The only situation in which the scan handler
-+	 * is not attached to this device object yet is when the device has
-+	 * just appeared (either it wasn't present at all before or it was
-+	 * removed and then added again).
-+	 */
-+	if (adev->handler) {
-+		dev_dbg(&adev->dev, "Already enumerated\n");
-+		return 0;
- 	}
-+	error = acpi_bus_scan(adev->handle);
-+	if (error)
-+		dev_warn(&adev->dev, "Namespace scan failure\n");
-+
- 	return error;
- }
- 
-@@ -359,11 +368,8 @@ static int acpi_scan_bus_check(struct ac
- 	struct acpi_scan_handler *handler = adev->handler;
- 	int error;
- 
--	acpi_bus_get_status(adev);
--	if (!acpi_device_is_present(adev)) {
--		acpi_scan_device_not_enumerated(adev);
--		return 0;
--	}
-+	acpi_scan_check_subtree(adev);
-+
- 	if (handler && handler->hotplug.scan_dependent)
- 		return handler->hotplug.scan_dependent(adev);
- 
-@@ -2586,7 +2592,7 @@ EXPORT_SYMBOL(acpi_bus_scan);
-  */
- void acpi_bus_trim(struct acpi_device *adev)
- {
--	acpi_bus_trim_one(adev, NULL);
-+	acpi_scan_check_and_detach(adev, NULL);
- }
- EXPORT_SYMBOL_GPL(acpi_bus_trim);
- 
-
-
+> Sven
 
 
