@@ -1,85 +1,84 @@
-Return-Path: <linux-kernel+bounces-81032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AEB4866F98
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:59:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FA81866F41
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D49FB2B5F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:52:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A6E7282D1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF1438DE9;
-	Mon, 26 Feb 2024 09:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA5E47F5C;
+	Mon, 26 Feb 2024 09:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TTF/xT18"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ic073+E3"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFE51DA58
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60EFC1E516
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708938989; cv=none; b=d52hpsHCRskhO1Mbhp927ZOiWY5yam/MBcNfXA21siGdRW+jLYWGdb8Cg2ZowqMwGB3PDC/aZPy4ANMMxJ0FTkX0f1Pz7nJz6Hkw/aIhTDC0PD3eTA+tYdt/4yTvNWckVygvapA4OBnySfE0Xquo1Tw2VBAaHpZqG7pmC94iWQ0=
+	t=1708939013; cv=none; b=bgSJOuhu4hxEtdZ91P9SxHXt4W3m4iH1CkbG/xQQZBjwMQcGW2zHewdDM1ZC4uWr9Uv7kgTks7kOgDLezhCbg5InzIf5dAb6xqA1oxsh3kpOPcHBpKOM+mDnqj9tTUJQjNfxYIuAsnRrmF0CHWr07RvmvTh5lZhspNFfCsZp8NI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708938989; c=relaxed/simple;
-	bh=u2D1K14aSbuHQlYPlwf4/XUKp9ima91ZltaPpSb69vQ=;
+	s=arc-20240116; t=1708939013; c=relaxed/simple;
+	bh=Upp2iFcc875yCuJA5X9ShBlOF4WCgv9wR6a1vPVlUjE=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=AmKSZzGQKRDK45i6WtUwdBDnp7isUnTrS2IbDVooo0saSVOyCLLdUeZ/JnDWvaCJSw+n+5HM9Fr2f6ouEFyjVuej2gsXZaY4QoZcB70aQBftcDspGRvEmYt+JPv9N5354ebx2dTKgSfFLO9gy1+nFrqJ7rNaCZE4i7eHJwJ2yGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TTF/xT18; arc=none smtp.client-ip=209.85.218.44
+	 MIME-Version:Content-Type; b=DoFnAP3BQU3g/x5HxupgCdLVaC8HVGVx1bXwFh5wieSxiX/28TcXnrKZBOAXVCoFcc+oOaYnjF7Amf8ReA90UNarnlc7Xlnn/bawTH4c8Q2bggBKzx8cxvUIucJZ6WpmjQBJvrJ/OlDtPUxkBbY15sDY1mk5O1FQeR9FMBX2WTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ic073+E3; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a4348aaa705so85395266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:16:27 -0800 (PST)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so3197512a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:16:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708938986; x=1709543786; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708939009; x=1709543809; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q52e/ahqP4T6pWmT8jNQjktGuVz+xJCyCIgv15kYLW0=;
-        b=TTF/xT18ttL7w3NE/WATQKpUb1vEcT2wNAVqyvvlXGiClSWuUP35FkzBXf+1o8aLvi
-         Oani2opPgFLnjc0fGpfcJ5pVlWg678QxNsCp8Hu4sQ2HdCLjjZ2zKcQED3NxWvfVI4xI
-         rHTwar/4ZrMbXZz3m0OplzztlluOkSNOtb9KQfWPT7Lp+ImDqtay1w3IExqIliASmNBn
-         JJ+sBC4qxMrm0ZEXiIWdlGxrwNtD0mU8qh9V+Qdmku0Gu66Ow9hEDyfVXXS6ltxPzoK7
-         UZAeOIaJ/YHgDAYmDk9W/Tvdof342dYv9p7p5CleVL+4KFBUC8jCr1t3uDTobcQX6e92
-         pRkA==
+        bh=JMmWZOmsO0vyhq4eNQPTY608ecp9OvqMQOtT08KRhk8=;
+        b=ic073+E3eft5HhZVlZT0LmN2JXx3kQv+clDS8krEa1fTxt6G8qnc/9zSvadM9SSlQ+
+         x9IydCGoG6gJwpG8k9Sb6jZlGBxI/KcmUz2aSXfZualiuGjocjGebCN42zgwge/PUcZm
+         3z76Ld3SxpGQtW7LxQSrQRSBhQZjQFjWtmbDSIZ2ACEYQk0WlypuOyLGZS/FuN4w88a9
+         hNFFo7Et9b4TrxMmZN22yQMW3uTO+2H5wcdzShuqAKSqPZUKfnkSfofOQ6Z1LhASnaJL
+         gNJPwQn7DmViTvJwtqL/XD6gTl8fiK4BoFatjMDv/KP/5sqNTqgcYjcDvb/nAObtvT0E
+         WuNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708938986; x=1709543786;
+        d=1e100.net; s=20230601; t=1708939009; x=1709543809;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Q52e/ahqP4T6pWmT8jNQjktGuVz+xJCyCIgv15kYLW0=;
-        b=RwLm/+t00Eva1yRjds2VXurYRmasFg9J9Ae40ZnK/F1dG4BAVSMatUayCvx0VhqxGt
-         VxKHREIo1tTCkF780kFWxaPXzpXDP8OYJDo4E7zXlNLjeMV3AkQqTwQAq8nyyTJ21VJz
-         mUchY8X721z1BotSxs25FLAvAdqCWfhr1treXlSoLIQtIsEPO2l5NGGc8mgq5fNsrnYp
-         oIekTOzq+lhFjprchcom5cbHJNnCbJpKdj7I2+X9DVQnfsAMm6MWVod4AYW5Gfox1rOv
-         2Z8UyW6i1NBV86D17fDMxmSV4AkCPnA4ywoIXDkLK5XkCvCxw3TkAVU1AIoVbrkjG0IZ
-         E/ag==
-X-Gm-Message-State: AOJu0YzZ+lqO/O2eegmWIFucOYp1ShAWvYrI9KvrZbP8CqKBcs5wsOPu
-	ymW3RmjXfNHa+0P+pwS/QonBcCebHGkt7KLPbXJbUX9EtPiUzVgFfwSIBo+MV+A=
-X-Google-Smtp-Source: AGHT+IHCJnITCwMOFBnEouaFM5+XWHwJ6u2WI0iCbuf0+DskJlC6ES88lu/X8WYpnPi+CJgpZf4dBg==
-X-Received: by 2002:a17:906:f6d4:b0:a43:277b:96b4 with SMTP id jo20-20020a170906f6d400b00a43277b96b4mr427569ejb.57.1708938986160;
-        Mon, 26 Feb 2024 01:16:26 -0800 (PST)
+        bh=JMmWZOmsO0vyhq4eNQPTY608ecp9OvqMQOtT08KRhk8=;
+        b=vQCOPjs5t/Kx5XRpxk0rhmsQYDty6bIpYMtr1rEStkY8Q5AyUZgsrrjRey2lTABZZT
+         VlzuXpCKw7kkuWP51Gvnjhun1MaQlyU2xh/apk7JjE33128sUw4oVUq2Cde9coXw3ysK
+         m/aQDVvc9dbVbG7n1oVgaW+RWQ03KxpbL/232LN8ekul4uDlWFY8AXbLs793LBGoblaA
+         JYaqWa2k6XPwgeWNyjPewR1g6oVMzzl5rhc2V0jz4WQ3VT8Xp2duTlcpE0m/9Z4n4Oio
+         BV3rwiWPrBdqpJMJLo6hUpBvO5/XVQAAfv9eTp/wokKctx7nTe5DIKGcIzcckFbwZ2Pd
+         Zo3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWndbNDdugIwDpI2dQZBNY/4q4X5f5YwFvBebfAISg8Ar/zEWqK44claY+cKhRkaIJJu9fsDRW35wbEDO/PpjyumlEU41BeB3B+msv/
+X-Gm-Message-State: AOJu0YzISVLyG+4aW+Ha9uOhw482BYm793NzAJhGiXusHzXyCAh2CuzD
+	TRU05bAEOYyuntHyxGm5FJRjgT4LvPWbxqWiXFi/NJYeCy9ApkQXm3sKVd9nyVc=
+X-Google-Smtp-Source: AGHT+IEyIbiGGcmhV5IKj2JAF5rpef/IBwu4K0kyDJ0jA11wqSHhARelVSGWrrVgdR5wuJbi84CiMg==
+X-Received: by 2002:a17:906:408f:b0:a3f:d927:4c0d with SMTP id u15-20020a170906408f00b00a3fd9274c0dmr3937942ejj.26.1708939009689;
+        Mon, 26 Feb 2024 01:16:49 -0800 (PST)
 Received: from [127.0.1.1] ([188.24.162.93])
-        by smtp.gmail.com with ESMTPSA id r18-20020a170906365200b00a3efa4e033asm2202076ejb.151.2024.02.26.01.16.24
+        by smtp.gmail.com with ESMTPSA id ts4-20020a170907c5c400b00a3ef17464b1sm2225053ejc.9.2024.02.26.01.16.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 01:16:25 -0800 (PST)
+        Mon, 26 Feb 2024 01:16:49 -0800 (PST)
 From: Abel Vesa <abel.vesa@linaro.org>
-To: Abel Vesa <abelvesa@kernel.org>, Fabio Estevam <festevam@gmail.com>, 
- Michael Turquette <mturquette@baylibre.com>, Peng Fan <peng.fan@nxp.com>, 
- Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>, 
- Stephen Boyd <sboyd@kernel.org>, kernel@pengutronix.de, linux-imx@nxp.com, 
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- kernel-janitors@vger.kernel.org, Markus Elfring <Markus.Elfring@web.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr, 
- Kuan-Wei Chiu <visitorckw@gmail.com>
-In-Reply-To: <01446ce9-c0e8-4467-8b2d-fd736bc5b8e4@web.de>
-References: <01446ce9-c0e8-4467-8b2d-fd736bc5b8e4@web.de>
-Subject: Re: [PATCH] clk: imx: scu: Use common error handling code in
- imx_clk_scu_alloc_dev()
-Message-Id: <170893898492.1768204.4132765783691588048.b4-ty@linaro.org>
-Date: Mon, 26 Feb 2024 11:16:24 +0200
+To: abelvesa@kernel.org, peng.fan@nxp.com, mturquette@baylibre.com, 
+ sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de, 
+ kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com, 
+ shengjiu.wang@gmail.com, marex@denx.de, m.felsch@pengutronix.de, 
+ Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <1708683351-8504-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1708683351-8504-1-git-send-email-shengjiu.wang@nxp.com>
+Subject: Re: [PATCH] clk: imx: imx8mp: Fix SAI_MCLK_SEL definition
+Message-Id: <170893900836.1770969.7795991183882277509.b4-ty@linaro.org>
+Date: Mon, 26 Feb 2024 11:16:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,16 +90,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13.0
 
 
-On Fri, 22 Dec 2023 13:03:08 +0100, Markus Elfring wrote:
-> Add a jump target so that a bit of exception handling can be better reused
-> at the end of this function.
+On Fri, 23 Feb 2024 18:15:51 +0800, Shengjiu Wang wrote:
+> There is SAI1, SAI2, SAI3, SAI5, SAI6, SAI7 existing in this block
+> control, the order is discontinuous. The definition of SAI_MCLK_SEL(n)
+> is not match with the usage of CLK_SAIn(n).
+> 
+> So define SAI##n##_MCLK_SEL separately to fix the issue.
 > 
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] clk: imx: scu: Use common error handling code in imx_clk_scu_alloc_dev()
-      commit: e4818d3b3f621e996b5a1d1a4913d11ccf769c24
+[1/1] clk: imx: imx8mp: Fix SAI_MCLK_SEL definition
+      commit: 13269dc6c70444528f0093585e3559cd2f38850a
 
 Best regards,
 -- 
