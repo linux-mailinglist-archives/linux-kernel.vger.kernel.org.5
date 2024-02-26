@@ -1,159 +1,233 @@
-Return-Path: <linux-kernel+bounces-80554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C7086696A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:36:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D326986696F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DF06B219B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:36:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C60E7B20DC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A4D1B810;
-	Mon, 26 Feb 2024 04:35:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D4F1B270;
+	Mon, 26 Feb 2024 04:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QElqefSi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="clvAPpsZ"
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B81B1B59D
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C690199DC
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:47:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708922152; cv=none; b=gFG8oKUfCQROqZwrd6inGL9GMcKrtOl71ozG1ZTL0FTvNnw843iGQJQeWjtDAIPOKKcCskRBpRB7XmDmYzIepzl6scE0L+Pdl58h10IePLS7TgOeq6M1zIiU01p+2OrymdBJt1q8SIMGrN2NkFxhYUlw5FKFRfWcBPNjXOC86f4=
+	t=1708922836; cv=none; b=TLF4eObf4WdREXMo6YboVEZ7bfcRv35FZwLYviQdmXiwg2Bt4C9vzv+/j6XO5XRzQLPFCHi42YWHhKyKPDiP4yrIAdbLYQK32BOhSGdvjf6AgdL+BGfqMAb2Wpj2IXuh8OWlnC96PhH056hVvo/Gf8DU5YGV5Ep8ZWnrwgbBkMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708922152; c=relaxed/simple;
-	bh=YgmsCyaDQM+hvz5LzibF8i2C/KUrIruop1g19F5sGMY=;
+	s=arc-20240116; t=1708922836; c=relaxed/simple;
+	bh=h66mOhPCChkpo61t8ShlWCzzwguwnP/TmYuf4I290bo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pelOen+zP3AE2TjupckkzMPgCziRtXuB5ZGvjaDcaomtTzkqZ3tGZX2Fm4AXjneNzVJBg5/+Y+QZ6YcmboMNOVR/EVJV4EkslOuRYCEQKDUlcKdAzvpnoTrXc+j3XbkTlhVNVIgbG9khPeievp9vseGo3ekTR+/DgqtUrPKzjmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QElqefSi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708922149;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mNInRIAHX11kPLkn5JDEzJWWJ44ZyYTteaCUwmZkHQI=;
-	b=QElqefSiP6TXWElS+hZ2GlIQisG4v5KoENh6nBBFEyYyb+xhDJVI2j7ylJcjQEDv96/WjY
-	2AO0zYs3PdZs/AOZwmoPzd+L8r9G+CtdsX6gH65emBkhxNza+7wqodL/doS/WuB8D2Pe+Z
-	dFaNo8h1nMykd5lSnSwcfqMbsD6mQIc=
-Received: from mail-vs1-f71.google.com (mail-vs1-f71.google.com
- [209.85.217.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-17-tnuqlq-WNUu4RVhi00s0zQ-1; Sun, 25 Feb 2024 23:35:47 -0500
-X-MC-Unique: tnuqlq-WNUu4RVhi00s0zQ-1
-Received: by mail-vs1-f71.google.com with SMTP id ada2fe7eead31-4705f87b742so371779137.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:35:47 -0800 (PST)
+	 To:Cc:Content-Type; b=DQ0meKCvp6U/73AorlSbROmxF2yC0s4tmktAcVO4l198qWCRMQSnOxNZuRuPC69QFVlqVYUYEHeM3QK2tnXHj4tbNY2MPYH9y9fn6F5Bfl6e/m0T4v3ed8YootB0lwjXXgCKHMAOKEX2/wnsYBMMaSV/MsQayRLtY8GNIi/+kaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=clvAPpsZ; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so1420129241.3
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:47:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708922833; x=1709527633; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2evqKUntkKcx/ouxIcn5GSYuRU6W+/guAPwVvK2rp+k=;
+        b=clvAPpsZPef2iLF+bggWEXoImGNa3+XBLFJCleM+brnjGFawf2hb+kXyr/ZZzc6wkI
+         vwcQJgqTpY4v74NREAbHRfiNxLtlhoVaMeR71ROUfbHW15CxmUrgw0BYYwOeOK0TGVQP
+         fw2LWSwOWBmOkL3oDX3H3AsGCCmbg3uV3cdXI5fd2ExWHX6Jdpzw8807k1L3Tw2Efrqb
+         whdb6rZhRYsmlxs9ziENO3Yw49LfiJdDWGiQmFjSqc396L0q86B2bCi8xN5z7ksWzD44
+         FDJsUIw89F2AMyIoAc45ltez5JfwZQsg3RQI5f2N7Nf48XOmCQnkAklcqSNBkkW0heZw
+         z2dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708922147; x=1709526947;
+        d=1e100.net; s=20230601; t=1708922833; x=1709527633;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mNInRIAHX11kPLkn5JDEzJWWJ44ZyYTteaCUwmZkHQI=;
-        b=LMwaK8jdJuaHxM0WwGzZIGb0Q4NBIYZiZVTJ1+ALs8ZomzsNw6c1RYUALb5CQcsETt
-         X/0w2Wf21X1PiEpvjlwW4eTiU0qe1rsGVEjnVV9w0V9TZbIyn9PTkX0Ex814ab6g25oW
-         +GoPUtvpmEflZw2h4V+h2G3KaKPJOJp6dtW7rOTm7R+wyWa9ctq245QIR2qN8T9+iLla
-         g6jRJ4KOZD26Hq/E48xl526kqz1AeVLGcrhx9pbKJG0PmllhO+YiwCOYS9qOvrO4bcsq
-         tQTnDIrA8f1Xxf6iMgCJwIdkc8aKoWuF5FO6O6+4QiV8qjgFO1UyekY8IJl53ak5h/mz
-         bAVA==
-X-Forwarded-Encrypted: i=1; AJvYcCVyvwmIPRm17WiFK5X20CwQ0YbzqPUZ0vrMRVFYlIz9f91KfQBetoWPuVIvnePGJt1fXxZ8oOAyuLt2i2rlwqlvlR6jJ2qRyZJqJ3SD
-X-Gm-Message-State: AOJu0YwspQkzHI4o//B2V76U51SaVqbG4V9hbDvPI/uLH/m8Ge4mrPKD
-	UU9UXHpG2WN1flrQgZp9DeZXa1BgFIcv9BjDKc0Em9sCyFy0D8fWs5+r0bdGszfJftpoFHZWpiT
-	sg6WLjSi+BzhAJ9MFhtD4NN3awgDw/ae/oaJq2qxEKeBTuyekc04fx1IcV7fLmqTL5yHa2sCxDC
-	4Yfpj90JdfxAzVdxQIN72+MAQiA7podgEm9PA3
-X-Received: by 2002:a67:f5c4:0:b0:470:3aae:7bf9 with SMTP id t4-20020a67f5c4000000b004703aae7bf9mr3437962vso.31.1708922147043;
-        Sun, 25 Feb 2024 20:35:47 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGho3E9PF3VSZkqZUi88dUdxZ4miVeUE/lQIMlnYEhwOZSRYWcYTp0vGoWF2GiQj2AsM5JjTu+NbkdJ5labwF8=
-X-Received: by 2002:a67:f5c4:0:b0:470:3aae:7bf9 with SMTP id
- t4-20020a67f5c4000000b004703aae7bf9mr3437949vso.31.1708922146746; Sun, 25 Feb
- 2024 20:35:46 -0800 (PST)
+        bh=2evqKUntkKcx/ouxIcn5GSYuRU6W+/guAPwVvK2rp+k=;
+        b=V06tD9Red+lfMNiZC6HiUUCE14n6pUAIjNoZEc1j/QCePFd9VrjxiV+JcdU+Uhb33G
+         RWEPWCTV82NfUzAr42HRZddOclVQ8rXl9bXq7TJZDhGsxhoWnXyZl/i+gVIYv8B2mcM4
+         of/HRH+azIPiZln/9hMg9AUCoJEaiVA2FsP/p7ObVsVtSdWAq2IKR9DJVsW5PeX3oXVQ
+         0CB3exM7vZAmfUxWocqq/SjEil0KaV1FXorMZoTtiV9/gGLkJKOKZzVIFC1BY0KgGdwo
+         5m5lXe4/DqPlQrqMqTGtYRbd8jTPz1MKufnDU2NwBNAsY5mmcAohwBR/fSDft4usNBRL
+         BtyA==
+X-Forwarded-Encrypted: i=1; AJvYcCUMOezOw2lkC6fsiC5xVV9q6xLAa4ra4iXuJ/HCoG08k9Sd2Or8fiL6RzNCi0bfu5W4IwPkMHK11OH28VKd4nKPBv/8mH3obWC/IPoE
+X-Gm-Message-State: AOJu0YwKGRNHOlus8wDC7JjGb9fwQ6rvlPHYHPWiXygIRu91zHM3f1wk
+	/MIIFIqAj0QmZOtExTY1BOoSKgYcqXfbp7muATURw9a3BR5LjFaPGSI0GQJ4YONM/16kA7Qo1XQ
+	FeuJJrfuNygzxQH+KkouRrwKvufU=
+X-Google-Smtp-Source: AGHT+IHBXtSc0pPDmFFVyN84Q/468/d4r71tO8SRKVOSIw1NeJ246xlCPqVxqgcMScvdWgPsfh9m/Js7eusVj1RMiOg=
+X-Received: by 2002:a1f:c402:0:b0:4cd:b55a:bb0d with SMTP id
+ u2-20020a1fc402000000b004cdb55abb0dmr2466062vkf.2.1708922833135; Sun, 25 Feb
+ 2024 20:47:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226135357.29ebadf0@canb.auug.org.au>
-In-Reply-To: <20240226135357.29ebadf0@canb.auug.org.au>
-From: Leonardo Bras Soares Passos <leobras@redhat.com>
-Date: Mon, 26 Feb 2024 01:35:35 -0300
-Message-ID: <CAJ6HWG5LATEMRJqH1=NAEKZ29=KQNTYPj4rJFJqWH=WoTKuSvQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the tip tree with the workqueues tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>, 
-	Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231025144546.577640-1-ryan.roberts@arm.com> <20240118111036.72641-1-21cnbao@gmail.com>
+ <20240118111036.72641-3-21cnbao@gmail.com> <CAF8kJuOPXyAxmmh9QO1SdU=8GWtMhPjaWgGtQ8gvnNyfbSZbig@mail.gmail.com>
+In-Reply-To: <CAF8kJuOPXyAxmmh9QO1SdU=8GWtMhPjaWgGtQ8gvnNyfbSZbig@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Mon, 26 Feb 2024 17:47:01 +1300
+Message-ID: <CAGsJ_4x1n4jtOKB2FAw1GffpvXbTCBMnwH6QRQSguk-rar46fw@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/6] mm: swap: introduce swap_nr_free() for batched swap_free()
+To: Chris Li <chrisl@kernel.org>
+Cc: ryan.roberts@arm.com, akpm@linux-foundation.org, david@redhat.com, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, mhocko@suse.com, 
+	shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org, 
+	xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com, surenb@google.com, 
+	steven.price@arm.com, Chuanhua Han <hanchuanhua@oppo.com>, 
+	Barry Song <v-songbaohua@oppo.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 25, 2024 at 11:54=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.or=
-g.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the tip tree got a conflict in:
->
->   kernel/workqueue.c
->
-> between commit:
->
->   aae17ebb53cd ("workqueue: Avoid using isolated cpus' timers on queue_de=
-layed_work")
->
-> from the workqueues tree and commit:
->
->   c0e8c5b59949 ("workqueue: Use global variant for add_timer()")
->
-> from the tip tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->
-> --
-> Cheers,
-> Stephen Rothwell
->
-> diff --cc kernel/workqueue.c
-> index 65a27be81452,78eaea2e5d72..000000000000
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@@ -2545,18 -1958,10 +2545,18 @@@ static void __queue_delayed_work(int c=
-p
->         dwork->cpu =3D cpu;
->         timer->expires =3D jiffies + delay;
->
->  -      if (unlikely(cpu !=3D WORK_CPU_UNBOUND))
->  +      if (housekeeping_enabled(HK_TYPE_TIMER)) {
->  +              /* If the current cpu is a housekeeping cpu, use it. */
->  +              cpu =3D smp_processor_id();
->  +              if (!housekeeping_test_cpu(cpu, HK_TYPE_TIMER))
->  +                      cpu =3D housekeeping_any_cpu(HK_TYPE_TIMER);
->                 add_timer_on(timer, cpu);
->  -      else
->  -              add_timer_global(timer);
->  +      } else {
->  +              if (likely(cpu =3D=3D WORK_CPU_UNBOUND))
-> -                       add_timer(timer);
-> ++                      add_timer_global(timer);
->  +              else
->  +                      add_timer_on(timer, cpu);
->  +      }
->   }
->
->   /**
+Hi Chris,
 
-Fix looks perfect.
+Thanks!
 
-Thanks Stephen!
-Leo
+On Sat, Jan 27, 2024 at 12:17=E2=80=AFPM Chris Li <chrisl@kernel.org> wrote=
+:
+>
+> On Thu, Jan 18, 2024 at 3:11=E2=80=AFAM Barry Song <21cnbao@gmail.com> wr=
+ote:
+> >
+> > From: Chuanhua Han <hanchuanhua@oppo.com>
+> >
+> > While swapping in a large folio, we need to free swaps related to the w=
+hole
+> > folio. To avoid frequently acquiring and releasing swap locks, it is be=
+tter
+> > to introduce an API for batched free.
+> >
+> > Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+> > Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> > ---
+> >  include/linux/swap.h |  6 ++++++
+> >  mm/swapfile.c        | 29 +++++++++++++++++++++++++++++
+> >  2 files changed, 35 insertions(+)
+> >
+> > diff --git a/include/linux/swap.h b/include/linux/swap.h
+> > index 4db00ddad261..31a4ee2dcd1c 100644
+> > --- a/include/linux/swap.h
+> > +++ b/include/linux/swap.h
+> > @@ -478,6 +478,7 @@ extern void swap_shmem_alloc(swp_entry_t);
+> >  extern int swap_duplicate(swp_entry_t);
+> >  extern int swapcache_prepare(swp_entry_t);
+> >  extern void swap_free(swp_entry_t);
+> > +extern void swap_nr_free(swp_entry_t entry, int nr_pages);
+> >  extern void swapcache_free_entries(swp_entry_t *entries, int n);
+> >  extern int free_swap_and_cache(swp_entry_t);
+> >  int swap_type_of(dev_t device, sector_t offset);
+> > @@ -553,6 +554,11 @@ static inline void swap_free(swp_entry_t swp)
+> >  {
+> >  }
+> >
+> > +void swap_nr_free(swp_entry_t entry, int nr_pages)
+> > +{
+> > +
+> > +}
+> > +
+> >  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp=
+)
+> >  {
+> >  }
+> > diff --git a/mm/swapfile.c b/mm/swapfile.c
+> > index 556ff7347d5f..6321bda96b77 100644
+> > --- a/mm/swapfile.c
+> > +++ b/mm/swapfile.c
+> > @@ -1335,6 +1335,35 @@ void swap_free(swp_entry_t entry)
+> >                 __swap_entry_free(p, entry);
+> >  }
+> >
+> > +void swap_nr_free(swp_entry_t entry, int nr_pages)
+> > +{
+> > +       int i;
+> > +       struct swap_cluster_info *ci;
+> > +       struct swap_info_struct *p;
+> > +       unsigned type =3D swp_type(entry);
+> > +       unsigned long offset =3D swp_offset(entry);
+> > +       DECLARE_BITMAP(usage, SWAPFILE_CLUSTER) =3D { 0 };
+> > +
+> > +       VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUST=
+ER);
+>
+> BUG_ON here seems a bit too developer originated. Maybe warn once and
+> roll back to free one by one?
 
+The function is used only for the case we are quite sure we are freeing
+some contiguous swap entries within a cluster. if it is not the case,
+we will need an array of entries[]. will people be more comfortable to
+have a WARN_ON instead? but the problem is if that really happens,
+it is a bug, WARN isn't enough.
+
+>
+> How big is your typical SWAPFILE_CUSTER and nr_pages typically in arm?
+
+My case is SWAPFILE_CLUSTER  =3D HPAGE_PMD_NR =3D 2MB/4KB =3D 512.
+
+>
+> I ask this question because nr_ppages > 64, that is a totally
+> different game, we can completely  bypass the swap cache slots.
+>
+
+I agree we have a chance to bypass slot cache if nr_pages is bigger than
+SWAP_SLOTS_CACHE_SIZE. on the other hand, even when nr_pages <
+64, we still have a good chance to optimize free_swap_slot() by batching
+as there are many spin_lock and sort() for each single entry.
+
+
+> > +
+> > +       if (nr_pages =3D=3D 1) {
+> > +               swap_free(entry);
+> > +               return;
+> > +       }
+> > +
+> > +       p =3D _swap_info_get(entry);
+> > +
+> > +       ci =3D lock_cluster(p, offset);
+> > +       for (i =3D 0; i < nr_pages; i++) {
+> > +               if (__swap_entry_free_locked(p, offset + i, 1))
+> > +                       __bitmap_set(usage, i, 1);
+> > +       }
+> > +       unlock_cluster(ci);
+> > +
+> > +       for_each_clear_bit(i, usage, nr_pages)
+> > +               free_swap_slot(swp_entry(type, offset + i));
+>
+> Notice that free_swap_slot() internal has per CPU cache batching as
+> well. Every free_swap_slot will get some per_cpu swap slot cache and
+> cache->lock. There is double batching here.
+> If the typical batch size here is bigger than 64 entries, we can go
+> directly to batching swap_entry_free and avoid the free_swap_slot()
+> batching altogether. Unlike free_swap_slot_entries(), here swap slots
+> are all from one swap device, there is no need to sort and group the
+> swap slot by swap devices.
+
+I agree.  you are completely right!
+However, to make the patchset smaller at the beginning, I prefer
+these optimizations to be deferred as a separate patchset after this one.
+
+>
+> Chris
+>
+>
+> Chris
+>
+> > +}
+> > +
+> >  /*
+> >   * Called after dropping swapcache to decrease refcnt to swap entries.
+> >   */
+> > --
+> > 2.34.1
+
+Thanks
+Barry
 
