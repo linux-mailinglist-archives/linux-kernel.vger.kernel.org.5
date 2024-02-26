@@ -1,105 +1,158 @@
-Return-Path: <linux-kernel+bounces-82094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C48867F5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:55:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC30867F33
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:48:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 337CAB2664E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:47:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84BE41F2F08F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C5CD12DD87;
-	Mon, 26 Feb 2024 17:47:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143D512E1ED;
+	Mon, 26 Feb 2024 17:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VbX5F5/D"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Ogzxs2hN"
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EA412B167
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:47:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B47643AA8
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708969635; cv=none; b=CUyGfrtFJ1I4PkD+agtZtj83ke9WW9/ul6QjMXLSHs9iafUGFWKFuKJbo84Sr9/bJGyyyqZJshFHh9yfh+6t6H/t0bDeVuEmdMhMW0ZqTyZ1HkZXWwCfzEOzRIVR1gjOTKE2/NM+SJFyCTK6Yc0hgGGNHvkWAlX33Q2XsisgaCc=
+	t=1708969711; cv=none; b=NDEhhmXpAKNTTcuBcZWJ+Ma0ZH7OGM17DRMZP0UvshifjgHI1FLIJ9lleM3ouJkp5Tto2AkSy6I+9ZGei9doF3yCnSmW4CdmSBRHpYQlgRtr+rJyY1l2zSfjsGibikVN9CvGfTsCq3jaZx1+sjSjrTtELc48cDsHYjkrrkl79VU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708969635; c=relaxed/simple;
-	bh=B41ir5VYbxpF04PAmMUAVJ67JQSh5yH++omCohwmiS4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=F/f8LTkOaR6IZTWWzX/M+/lBVKXxX5rDi8XYZOE1+CSvoXAe5xrkJuxwILZpCLKLIgxBbgJBrPHNgACTz6qG+S/wp/6LoUGfvGoTgrfFzCnvUi+L08wOmYQ57SwIOtuStWl6W1RJgRMI7ZcOfqAqHfga+YIFWyFrwuk4DtYhDIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VbX5F5/D; arc=none smtp.client-ip=209.85.210.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e49a5b1bbfso916357a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:47:13 -0800 (PST)
+	s=arc-20240116; t=1708969711; c=relaxed/simple;
+	bh=9CNH6eBrpG7Y4RPdoxYMylKkon4YJXsFwRrwUsvdA5I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LHHu/S+ddEhB/sfaYGQWyrxMQlgzB9nZmIVN3B7ZpbSFDts5I5OF/u5iIntCJLngYRHCl9cKW1JqN164BUOOSJhct8RxwVx7fPW5eEvSzkUS4Z2ALb0orI9IrCW2gQk+Z4VGL9IN8BVCb1Y62UKfIvCS5N0wdFIwyANVL4gerBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Ogzxs2hN; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-3392b12dd21so2820477f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:48:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708969633; x=1709574433; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x+coxhOY/Hxui8PDFROluhcZaBPd/6HAGgu1JExmMgQ=;
-        b=VbX5F5/DZxveCk2tDyNEIm7WztWZikJvS/YRnxBwsZMnJs8Crnm5NwaBubebNioLHh
-         ufnUC8Fo+DrZ/XdhakT6xmn6J+w06Iw/038QHNHAHcgR8X/gXKNWOt7gWYHOsIHwUUYI
-         eDHouEcOG+q0xBuieDZtKUirxYjDaTLgK98shmMUrdvB1YwWaoWFiAI3jsJnsTQQsSza
-         zQKkyJjGukK58k0PXIJ6i6qc528fCAU4XYG4Fr1D2MyVEQgGb2XUR1WdHyfCvbUln7du
-         5RLdb/bRkvAvVw0PC6lHZG+zIMN7p9hBTsyHZxdBho3dxLBXBhe0eKAn9uNN8q6Q6acv
-         9Rlg==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708969707; x=1709574507; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ojp2zJXBZwpD/60KKk/OWh1F7+E9xMLGoW5yyn8MP1Q=;
+        b=Ogzxs2hNvY31TJ8yEzCuEKgsyRflf1CIFLDUPoz3SPZhcI5XpfjFcBVylwMo2p7Rw6
+         YbnFWpNlssFvAjMN+5lDgvZuhx+kbJDeg79CgyfDsAFlttNl6jzn8Xu+YDdpUtV1XxK4
+         2kFCv38UIhiXiAYapi0uTO1+IpyA6P6oKB37zh6Bs51kWNKmi8yzY3OUTxIbXVu7iC2N
+         OSEIQAI/BsNsHjYxhP3pi2tBpZB/0hPbJf75zySUVZ5OelkBFnqYyNTYq6UZFbzkBcp0
+         mr1SM79onmmHXQvdRU9vNc0Rlr6vw8VM3nvYZI0nY/i3ZPZ6Yn6B47U4CLZOklMc6Eoe
+         l2aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708969633; x=1709574433;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x+coxhOY/Hxui8PDFROluhcZaBPd/6HAGgu1JExmMgQ=;
-        b=E0OivX3p7T4ON6+uD5IkpesjpnvMUjx+ibmLHU6Z2TanWwdIyATXVX5cu63rx97gQ1
-         yQq7lHDmFw8XnwGxPelwSTHXgpMg34eucAxrYnL1rkJo+238yAXxw6wyOH1UTT3CktBc
-         uUFREEult232NVJqvDmPHPFdr4LUPo7rPummqDGkjfN6xeFxlQjfwq85ZYEJ+3rJerl2
-         VtX4wSeC4apnYa7uRw5tjiWhUTtDxxsh+8dO/DDhDxoRugV+bxomYlKFU28B/2BvOTRF
-         Jgar0i8pyeJjagi/whgU4llpqiq4bpc51JcsG/RNvgf8Kc4RAvxK8SY+0p8nZ/lH1cL1
-         jWuw==
-X-Forwarded-Encrypted: i=1; AJvYcCWbA4pG1Pv788+Rr+rvXyQ0d6gtGE7yolr71yEoSHwKqY+ZcRpRvyxd90wa1CW0D0i3Psv+dof0bRqjmKNQqa8k4jJcLwrnXpqAj/SB
-X-Gm-Message-State: AOJu0Yyb6tAyzrNQWrGfFW1pIXUO4fA/M+f1rCudl1aotSrrYINql6z3
-	NwW6wm2nuEoqjgkJvilu69rfpjgIporRZGEydYsPQ//XrFFLsiszDnm4gIoub5Y=
-X-Google-Smtp-Source: AGHT+IFCePGlGVE4lMjTY0/9moCLWOzSCx+v5oqeY2701JqpmJJ2XNiwbKLDRoBfBHN6yiXmmfdKLQ==
-X-Received: by 2002:a9d:6c42:0:b0:6e4:8122:c5a2 with SMTP id g2-20020a9d6c42000000b006e48122c5a2mr9142155otq.0.1708969633143;
-        Mon, 26 Feb 2024 09:47:13 -0800 (PST)
-Received: from ishi.. ([185.243.57.248])
-        by smtp.gmail.com with ESMTPSA id t3-20020a05620a034300b00787c7c0a078sm2247762qkm.121.2024.02.26.09.47.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 09:47:12 -0800 (PST)
-From: William Breathitt Gray <william.gray@linaro.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: William Breathitt Gray <william.gray@linaro.org>,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] counter: constify the struct device_type usage
-Date: Mon, 26 Feb 2024 12:46:49 -0500
-Message-ID: <170896953583.22408.16217091033236084164.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240219-device_cleanup-counter-v1-1-24d0316ae815@marliere.net>
-References: <20240219-device_cleanup-counter-v1-1-24d0316ae815@marliere.net>
+        d=1e100.net; s=20230601; t=1708969707; x=1709574507;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ojp2zJXBZwpD/60KKk/OWh1F7+E9xMLGoW5yyn8MP1Q=;
+        b=uWJ93PBdrQEqaSSPkQA3+z+Krpas1EicMNSN+kh7j4GStEfyR6HKkTNbw3fX1nVuIN
+         07cLbaxUDjuGYEW0hme1TuHxFdQvaO4/z332CaujTuKILZRqBXJLlfSK4kDxwQeYnVYf
+         Zx216eYqgIknwGMmEWTzAtjeQPCEMJIxNx5elzs9PuSAYIxeRvWivRa97tJ0Nq1ksPKP
+         KaL22AhB5UiFz7lMNa6VES1/9niL/hxG0ApiAQ77tjyV+zPhWYRys4MTsZ4vo4YYX1vt
+         QBpIWBtx4AANkuTJ/UXetW/AY+SYO/nPucdUGsMn11+6Q+0Rpqr09QcQIsUCAPue9mYt
+         gWDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEccO91vh6M2ViaLd9Eqp0bhENQ5Es8j7B+X/zrGWI86VTToFGJsKbWQyWMnuSZkeA65Cg6BQ8O6fBf7RIiDs5bE7ftus+oZfd6ESs
+X-Gm-Message-State: AOJu0YxT1iPy9TelHBxKsADowRqF8FBhii7VqV16SYqAEAe8pLVGPpDJ
+	XmnKkBhxKMJunW6O9A7wu4/Q+buX+nSy4CsHnGnRgIVeC7IHrY1hJFfswkiDXjY=
+X-Google-Smtp-Source: AGHT+IFeR4xk7Fwu0u7VFlJ0xMPB7f8Wl3ldtiQ7PBzLuOaNIEmCyOPdZa82wTMgFMPSlFRnwQydCw==
+X-Received: by 2002:a05:6000:4ed:b0:33d:6be8:bb61 with SMTP id cr13-20020a05600004ed00b0033d6be8bb61mr5836632wrb.35.1708969707330;
+        Mon, 26 Feb 2024 09:48:27 -0800 (PST)
+Received: from [192.168.1.70] ([84.102.31.43])
+        by smtp.gmail.com with ESMTPSA id c3-20020adfe703000000b0033d6fe3f6absm8903931wrm.62.2024.02.26.09.48.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 09:48:26 -0800 (PST)
+Message-ID: <1c2fe59a-daf6-4486-84ca-5880222d24bd@baylibre.com>
+Date: Mon, 26 Feb 2024 18:48:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: ethernet: ti: am65-cpsw: Add minimal XDP support
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+References: <20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com>
+ <20240226172533.GG13129@kernel.org>
+From: Julien Panis <jpanis@baylibre.com>
+In-Reply-To: <20240226172533.GG13129@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hello Simon,
 
-On Mon, 19 Feb 2024 16:52:52 -0300, Ricardo B. Marliere wrote:
-> Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-> core can properly handle constant struct device_type. Move the
-> counter_device_type variable to be a constant structure as well, placing it
-> into read-only memory which can not be modified at runtime.
-> 
-> 
+Thank you for the review.
 
-Applied, thanks!
+On 2/26/24 18:25, Simon Horman wrote:
+> On Fri, Feb 23, 2024 at 12:01:37PM +0100, Julien Panis wrote:
+>> This patch adds XDP (eXpress Data Path) support to TI AM65 CPSW
+>> Ethernet driver. The following features are implemented:
+>> - NETDEV_XDP_ACT_BASIC (XDP_PASS, XDP_TX, XDP_DROP, XDP_ABORTED)
+>> - NETDEV_XDP_ACT_REDIRECT (XDP_REDIRECT)
+>> - NETDEV_XDP_ACT_NDO_XMIT (ndo_xdp_xmit callback)
+>>
+>> Signed-off-by: Julien Panis <jpanis@baylibre.com>
+> ...
+>
+>> @@ -440,6 +476,27 @@ static void am65_cpsw_nuss_tx_cleanup(void *data, dma_addr_t desc_dma)
+>>   	dev_kfree_skb_any(skb);
+>>   }
+>>   
+>> +static struct sk_buff *am65_cpsw_alloc_skb(struct net_device *ndev, unsigned int len)
+>> +{
+>> +	struct page *page;
+>> +	struct sk_buff *skb;
+> nit: please arrange local variables in reverse xmas tree order,
+>       from longest line to shortest in new code.
+>
+>       This tool can be useful: https://github.com/ecree-solarflare/xmastree
 
-[1/1] counter: constify the struct device_type usage
-      commit: 3bb282ef1149a08a94bc5321b758825bc99c84c0
+You mean, for the new functions introduced in this patch only ?
 
-William Breathitt Gray <william.gray@linaro.org>
+>
+>> +
+>> +	page = dev_alloc_pages(0);
+> nit: Maybe dev_alloc_page() is appropriate here?
+
+Absolutely.
+
+>
+>> +	if (unlikely(!page))
+>> +		return NULL;
+>> +
+>> +	len += AM65_CPSW_HEADROOM;
+>> +
+>> +	skb = build_skb(page_address(page), len);
+>> +	if (unlikely(!skb))
+> Does page need to be freed here?
+
+Of course it does ! This will be fixed in the next version.
+
+>
+>> +		return NULL;
+>> +
+>> +	skb_reserve(skb, AM65_CPSW_HEADROOM + NET_IP_ALIGN);
+>> +	skb->dev = ndev;
+>> +
+>> +	return skb;
+>> +}
+> ...
+
 
