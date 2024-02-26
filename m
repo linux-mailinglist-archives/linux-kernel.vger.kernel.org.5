@@ -1,89 +1,89 @@
-Return-Path: <linux-kernel+bounces-81299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4A6A8673F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:53:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E5008673C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:46:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACE23B281F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:45:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AE0828CFE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB241EB27;
-	Mon, 26 Feb 2024 11:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="PezFmYNF"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876911F605;
+	Mon, 26 Feb 2024 11:46:05 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6488F1F604;
-	Mon, 26 Feb 2024 11:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4AAA1D54B
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:46:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708947911; cv=none; b=fkdjfNdWnqpDCgvvmuueeFmm/N5/VmVeVwUoOkcR3TUipws/CkZ41KoG+b0Cm34pKWB08ffksBB+Xg70liUWUcM8LNhVl1NbCL6IJiPxfAeHQKRf/cSs3ednI00u1JsitynSY3KI8/GX6WJZX7ZmLp80RaXtVwFvuZ5sbP3uAps=
+	t=1708947965; cv=none; b=cZDuRJJYYyKOOLjb2lXte0P0INR6X5FfE7+gLv9YNuruG/7qoWPlhRWP9wtbJp+/8Cq5q5w+KRyOQZ+JP7L/KvlvNEU+jT21B+WHzcND0KHLUWAx7YWnvAvFBvgiaSH5UoZBiw7VtyV7+eBoIo5MmmnlERn8ewFX+ikY9qKT220=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708947911; c=relaxed/simple;
-	bh=oSvoN8H+rqwZXxcM1Lw/Xnu0f94O0PIpJpGfNO1tV0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZhaxxlqD8K5o1HKmNiklNGyx8JWyNDujxycE/f+itHrgEePu93+F88iUqtgBKbAipvMRdfDI1gl1OtfATz/iJ5cEFOssm2cKU3Vel51C/f7G1+8yhrmQgJ3lRyXcJv3GpM7YL7+D5EKIMFFOpzeDQ9cRldA23VwxfpcDfwnYhIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=PezFmYNF; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=9fx1xFWIaqHRlfNeLJHhLh9M9CR7/OWd/dFYXNoL+Ak=; b=PezFmYNF0aWQlCCcwDR5gvmKyS
-	EUGqdd/VbgmjtliFb/DOVw18XVzEurQjFJ8eTAIpob2O+OMbK2MvTRoVWUu75Ymgjo5A/KmKun7aL
-	udU/0WM2b+bRkRRoAMoDH+u/GUelcWWgNGwdJa8Bm1+pzzDKe4IFILa3CMo4yl1eTxw2yWbiqgrf9
-	94LyHaEEuLtu6AC63EnjjEoCNUKTUCFmFzG5ZAN5HaJtU/ozRnyEzo004MjlBNe6xBrI20EiLKLP4
-	5h0AYbhVPahi0cHkIBfgFpdmCtuMPZZMWbrihIBeU0w1VIP/vtX/GqQolqyMHTwfZXLfOpc6+Obco
-	an3Fbp3g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:41710)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1reZPt-00039s-0F;
-	Mon, 26 Feb 2024 11:45:05 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1reZPs-0006Oy-3J; Mon, 26 Feb 2024 11:45:04 +0000
-Date: Mon, 26 Feb 2024 11:45:03 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-	Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH net-next 2/2] doc: sfp-phylink: mention the
- mac_capabilities and supported_interfaces
-Message-ID: <Zdx5v1UXDqsKsjW8@shell.armlinux.org.uk>
-References: <20240220160406.3363002-1-maxime.chevallier@bootlin.com>
- <20240220160406.3363002-3-maxime.chevallier@bootlin.com>
+	s=arc-20240116; t=1708947965; c=relaxed/simple;
+	bh=S1DH6N129w+vMq5/UljzKNmTTX+FRMOyP1Xrb7w06Bs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=JhC7C/fQXsoe4Ts0zUurCSfDLkldn2MrTmqxqvcA/fD65OuoWHK2YPem0EU3spauZvWaaNpOnj//W7ce2TEl/y7Nya9+MozIUd/WmztAmtbInbFC5XAwNKIDoW37NX0VAAP74sBQ1zPdRMekTKvtRjHcNgYnt4kZM+TZMRZaZlc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3657ef5f01eso39601745ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:46:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708947963; x=1709552763;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Co4mHqcajZ+TaVXtj1uAZr7j1bhwGXeKEUyHjDEeql4=;
+        b=XKQRSHpU+VkyzZL0Pgq+iHIkvl0vpdlFYSNzhfMUdDFkkUdJmqL0epYcbjFDv++kqI
+         NFfU9IZUEUmdMqPtirZD1HyQUM2UqoAtNJdTUfDQ0UWawzXVje8NFOhvRDNcIDzW2s+A
+         WnqzYniibw6b486fnsOqy5Wu+VNkfsYI0g+QgKozATCHLRMzSU7WT3GfqXyWKIS0YHPY
+         lDo3dU0fsC16hwhadZkv4ekgVxL//+xmlisuSFEWQc1r5gpU29vks3J4bAGB3D07T7uM
+         jL4aolgnwWGtSEGiS1cBNAN5IRP3LPVUswSKkMzuknAcdZRX1EaO6Br7lJyH8TvdPduc
+         sWqg==
+X-Forwarded-Encrypted: i=1; AJvYcCW7iRhwwMMHgcEX699VJSysDT/C5CiYAA2NFa91Sa/LlWZgCH/LFg2/q95LZIK43DzPklqiMybTc2jJh6/klZlwkaAeGuOR3nTH3TtF
+X-Gm-Message-State: AOJu0Yw74OJTNnY6OvczX01DzDPtn8GBV1tcsWw8ZaHrnrl6WpcTATRX
+	c/V/Z0CpqsONXj1bnNsvncW4KJY83GynCspQT4H0j7S4AYPaGQKjxM8yuZhRxS9d4R8WYwEl1Qo
+	07gA0eXy5NgWkZF7liFm3kmaLe5W72ifWCLqN4O7HXfTEBvNpGgR6fCc=
+X-Google-Smtp-Source: AGHT+IHIVqTZZ7YCL3IN8GhgKNZ48yzHqYO4fermQmaHfAwR6BgfFyKH6DsdKtx8xrqBPkzE+Y2WHuiAXDPL2Aoeo4nERWuFkxCB
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220160406.3363002-3-maxime.chevallier@bootlin.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Received: by 2002:a05:6e02:3885:b0:365:2f9d:5efc with SMTP id
+ cn5-20020a056e02388500b003652f9d5efcmr328599ilb.6.1708947962903; Mon, 26 Feb
+ 2024 03:46:02 -0800 (PST)
+Date: Mon, 26 Feb 2024 03:46:02 -0800
+In-Reply-To: <20240226105506.1398-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000044c2da06124774f7@google.com>
+Subject: Re: [syzbot] [ntfs3?] possible deadlock in ntfs_set_state (2)
+From: syzbot <syzbot+c2ada45c23d98d646118@syzkaller.appspotmail.com>
+To: almaz.alexandrovich@paragon-software.com, boqun.feng@gmail.com, 
+	hdanton@sina.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	ntfs3@lists.linux.dev, penguin-kernel@i-love.sakura.ne.jp, 
+	syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 20, 2024 at 05:04:04PM +0100, Maxime Chevallier wrote:
-> +   Fill-in all the :c:type:`phy_interface_t <phy_interface_t>` (i.e. all MAC to
-> +   PHY link modes) that your MAC can output. The following example shows a
+Hello,
 
-Technically, this should be "MAC and all PCS associated with this MAC".
+syzbot tried to test the proposed patch but the build/boot failed:
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git on commit 716f4aaa7b48: failed to run ["git" "fetch" "--force" "--tags" "4d52a57a3858a6eee0d0b25cc3a0c9533f747d8f" "716f4aaa7b48"]: exit status 128
+fatal: couldn't find remote ref 716f4aaa7b48
+
+
+
+Tested on:
+
+commit:         [unknown 
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 716f4aaa7b48
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1d7c92dd8d5c7a1e
+dashboard link: https://syzkaller.appspot.com/bug?extid=c2ada45c23d98d646118
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=172e5f4a180000
+
 
