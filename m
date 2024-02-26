@@ -1,204 +1,112 @@
-Return-Path: <linux-kernel+bounces-82407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AC9E8683C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F078B8683CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:34:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95E42B23106
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:33:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80E26B234AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CCFF134756;
-	Mon, 26 Feb 2024 22:33:35 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79FC2134756;
+	Mon, 26 Feb 2024 22:34:04 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF2C61DDD7;
-	Mon, 26 Feb 2024 22:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F480134737
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 22:34:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708986814; cv=none; b=pFy292831mnBljUmzDXnYle3fEHugdXHDRUhnwekAGQXecseW/hEaLoiSss8wlW2Rw7Y7i2xYi+z8RrdEpO+jMFFil0l2GTR3DCn3fH6sYUf/daJUMF+W71V6M8Ptfxsc24pJyf7/doZsFGnPDEJy013Y14wf8Jknr29GSLqQSs=
+	t=1708986844; cv=none; b=C/1vBnNqYfvj49WnL23JVXLowKlEgRuY9sRLJc/Qa+q2CAGSBJqWTU/4ELLNIZxIZ/Sol1u3+gJK/lTETUEs/HJiX243K4hgntMDtZTioYpP7BSiEQhB1xc/bU6XxZ+2QdErH69WQfQC/5dF/RRsYnmQ93RgeO5/8MaMjo9kKe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708986814; c=relaxed/simple;
-	bh=XzkLglHncfPugzyDyH7vIDjIn0LxhOMGEOoaYlwJ2m8=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=nyxKze1Kn0R9dYh8JEmaQf03zAlX8y4ug1BSd7VXpN6Gn6fXyk39/OmN5v5uoTRE5XF3MgIoxW2B/k4tnV6PPEsJo0kweSSa8tcNNmGTBU0Mv8xVlaTe/cC9nfg0s0lse+U6P+QWJPu7e4RQ2/K9XRCpDGxeeFVJkZIcqLWjNWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 5514B3780016;
-	Mon, 26 Feb 2024 22:33:29 +0000 (UTC)
-From: "Adrian Ratiu" <adrian.ratiu@collabora.com>
-In-Reply-To: <202402261123.B2A1D0DE@keescook>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240221210626.155534-1-adrian.ratiu@collabora.com>
- <CAD=FV=WR51_HJA0teHhBKvr90ufzZePVcxdA+iVZqXUK=cYJng@mail.gmail.com>
- <202402261110.B8129C002@keescook> <202402261123.B2A1D0DE@keescook>
-Date: Mon, 26 Feb 2024 22:33:29 +0000
-Cc: jannh@google.com, "Doug Anderson" <dianders@chromium.org>, linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@collabora.com, "Guenter Roeck" <groeck@chromium.org>, "Mike Frysinger" <vapier@chromium.org>, linux-hardening@vger.kernel.org
-To: "Kees Cook" <keescook@chromium.org>
+	s=arc-20240116; t=1708986844; c=relaxed/simple;
+	bh=8YwRDCw8u7OiS5I+dqtgAvNb327qcrJIgDvZkaOACo4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=kRQuwdi7CJTQDj0fZBVbIoyp4W4D2wTI4SA1NgHKi02iT+XSsFb2nsQ1ExggS81rGdmLvrCCXyCvxZErlClSLTwLabNuWgxaq3tO/ws8MKZM7SRwWZD4KayWK5VPz3RpZk4+RaligZJooI6Btnyz7xAxgPVgMb0i3/xeQoSJW3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-23-WxwTNdofNyCIwID63HDNlQ-1; Mon, 26 Feb 2024 22:33:58 +0000
+X-MC-Unique: WxwTNdofNyCIwID63HDNlQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 26 Feb
+ 2024 22:33:56 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 26 Feb 2024 22:33:56 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Russell King' <linux@armlinux.org.uk>, Charlie Jenkins
+	<charlie@rivosinc.com>
+CC: Guenter Roeck <linux@roeck-us.net>, Christophe Leroy
+	<christophe.leroy@csgroup.eu>, Palmer Dabbelt <palmer@dabbelt.com>, "Andrew
+ Morton" <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>, "James
+ E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Parisc List
+	<linux-parisc@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Palmer Dabbelt
+	<palmer@rivosinc.com>, Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Thread-Topic: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Thread-Index: AQHaaOb3nOScRpPJiESuqwXNhBxv4rEdMNJg
+Date: Mon, 26 Feb 2024 22:33:56 +0000
+Message-ID: <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com>
+References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
+ <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
+ <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
+ <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk> <ZdzZ5tk459bgUrgz@ghost>
+ <ZdzhRntTHApp0doV@shell.armlinux.org.uk>
+In-Reply-To: <ZdzhRntTHApp0doV@shell.armlinux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <1405e4-65dd1180-3-7a785380@32026879>
-Subject: =?utf-8?q?Re=3A?= [PATCH] =?utf-8?q?proc=3A?= allow restricting 
- /proc/pid/mem writes
-User-Agent: SOGoMail 5.9.1
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hello
+..
+> I think you misunderstand. "NET_IP_ALIGN offset is what the kernel
+> defines to be supported" is a gross misinterpretation. It is not
+> "defined to be supported" at all. It is the _preferred_ alignment
+> nothing more, nothing less.
 
-On Monday, February 26, 2024 21:24 EET, Kees Cook <keescook@chromium.or=
-g> wrote:
+I'm sure I've seen code that would realign IP headers to a 4 byte
+boundary before processing them - but that might not have been in
+Linux.
 
-> [sorry for the duplicate, fixing Jann's email address]
->=20
-> On Mon, Feb 26, 2024 at 09:10:54AM -0800, Doug Anderson wrote:
-> > Hi,
-> >=20
-> > On Wed, Feb 21, 2024 at 1:06=E2=80=AFPM Adrian Ratiu <adrian.ratiu@=
-collabora.com> wrote:
-> > >
-> > > Prior to v2.6.39 write access to /proc/<pid>/mem was restricted,
-> > > after which it got allowed in commit 198214a7ee50 ("proc: enable
-> > > writing to /proc/pid/mem"). Famous last words from that patch:
-> > > "no longer a security hazard". :)
-> > >
-> > > Afterwards exploits appeared started causing drama like [1]. The
-> > > /proc/*/mem exploits can be rather sophisticated like [2] which
-> > > installed an arbitrary payload from noexec storage into a running
-> > > process then exec'd it, which itself could include an ELF loader
-> > > to run arbitrary code off noexec storage.
-> > >
-> > > As part of hardening against these types of attacks, distrbutions
-> > > can restrict /proc/*/mem to only allow writes when they makes sen=
-se,
-> > > like in case of debuggers which have ptrace permissions, as they
-> > > are able to access memory anyway via PTRACE=5FPOKEDATA and friend=
-s.
-> > >
-> > > Dropping the mode bits disables write access for non-root users.
-> > > Trying to `chmod` the paths back fails as the kernel rejects it.
-> > >
-> > > For users with CAP=5FDAC=5FOVERRIDE (usually just root) we have t=
-o
-> > > disable the mem=5Fwrite callback to avoid bypassing the mode bits=
-.
-> > >
-> > > Writes can be used to bypass permissions on memory maps, even if =
-a
-> > > memory region is mapped r-x (as is a program's executable pages),
-> > > the process can open its own /proc/self/mem file and write to the
-> > > pages directly.
-> > >
-> > > Even if seccomp filters block mmap/mprotect calls with W|X perms,
-> > > they often cannot block open calls as daemons want to read/write
-> > > their own runtime state and seccomp filters cannot check file pat=
-hs.
-> > > Write calls also can't be blocked in general via seccomp.
-> > >
-> > > Since the mem file is part of the dynamic /proc/<pid>/ space, we
-> > > can't run chmod once at boot to restrict it (and trying to react
-> > > to every process and run chmod doesn't scale, and the kernel no
-> > > longer allows chmod on any of these paths).
-> > >
-> > > SELinux could be used with a rule to cover all /proc/*/mem files,
-> > > but even then having multiple ways to deny an attack is useful in
-> > > case on layer fails.
-> > >
-> > > [1] https://lwn.net/Articles/476947/
-> > > [2] https://issues.chromium.org/issues/40089045
-> > >
-> > > Based on an initial patch by Mike Frysinger <vapier@chromium.org>=
-.
-> > >
-> > > Cc: Guenter Roeck <groeck@chromium.org>
-> > > Cc: Doug Anderson <dianders@chromium.org>
-> > > Signed-off-by: Mike Frysinger <vapier@chromium.org>
->=20
-> This should have a "Co-developed-by: Mike..." tag, since you're makin=
-g
-> changes and not just passing it along directly.
+I'm also sure there are cpu which will fault double length misaligned
+memory transfers - which might be used to marginally speed up code.
+Assuming more than 4 byte alignment for the IP header is likely
+'wishful thinking'.
 
-Thanks, I'll address this in v2.
+There is plenty of ethernet hardware that can only write frames
+to even boundaries and plenty of cpu that fault misaligned accesses.
+There are even cases of both on the same silicon die.
 
->=20
-> > > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> > > ---
-> > > Tested on next-20240220.
-> > >
-> > > I would really like to avoid depending on CONFIG=5FMEMCG which is
-> > > required for the struct mm=5Fstryct "owner" pointer.
-> > >
-> > > Any suggestions how check the ptrace owner without MEMCG?
-> > > ---
-> > >  fs/proc/base.c   | 26 ++++++++++++++++++++++++--
-> > >  security/Kconfig | 13 +++++++++++++
-> > >  2 files changed, 37 insertions(+), 2 deletions(-)
-> >=20
-> > Thanks for posting this! This looks reasonable to me, but I'm nowhe=
-re
-> > near an expert on this so I won't add a Reviewed-by tag.
-> >=20
-> > This feels like the kind of thing that Kees might be interested in
-> > reviewing, so adding him to the "To" list.
->=20
-> I'd love to make /proc/$pid/mem more strict. A few comments:
->=20
-> > [...]
-> > +	if (ptracer=5Fcapable(current, mm->user=5Fns) &&
->=20
-> It really looks like you're trying to do a form of ptrace=5Fmay=5Facc=
-ess(),
-> but =5Fwithout=5F the introspection exception?
->=20
-> Also, using "current" in the write path can lead to problems[1], so t=
-his
-> should somehow use file->f=5Fcred, or limit write access during the o=
-pen()
-> instead?
+You also pretty much never want a fault handler to fixup misaligned
+ethernet frames (or really anything else for that matter).
+It is always going to be better to check in the code itself.
 
-I think Mike explained pretty well why we need to check if current alre=
-ady
-is a ptracer. The point you raise is valid (thanks again) so we need to=
- check
-a bit earlier, during open().
+x86 has just made people 'sloppy' :-)
 
->=20
-> > [...]
-> > +config SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITES
->=20
-> Instead of a build-time CONFIG, I'd prefer a boot-time config (or a
-> sysctl, but that's be harder given the perms). That this is selectabl=
-e
-> by distro users, etc, and they don't need to rebuild their kernel to
-> benefit from it.
+=09David
 
-Ack, I'll implement a cmdline arg in v2.
-
->=20
-> Jann Horn has tried to restrict access to this file in the past as we=
-ll,
-> so he may have some additional advice about it.
-
-I'll leave this a few more days in case others have more ideas, then wi=
-ll
-send v2 and also add Jann to the "To:" list.
-
->=20
-> -Kees
->=20
-> [1] https://docs.kernel.org/security/credentials.html#open-file-crede=
-ntials
->=20
-> --=20
-> Kees Cook
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
