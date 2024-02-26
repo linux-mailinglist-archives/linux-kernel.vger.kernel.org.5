@@ -1,189 +1,142 @@
-Return-Path: <linux-kernel+bounces-80964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC1EA866E72
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:30:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8E98866E83
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:32:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2449A1F252FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:30:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 15BD11C23063
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A4326024D;
-	Mon, 26 Feb 2024 08:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF93F60DF9;
+	Mon, 26 Feb 2024 08:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="wfKheqgf";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uy7Zbc0g";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="wfKheqgf";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uy7Zbc0g"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="dtRd7VE9"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0BE55FF18;
-	Mon, 26 Feb 2024 08:50:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FEB260263;
+	Mon, 26 Feb 2024 08:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708937449; cv=none; b=GRA6RaZluSlErF/EwaquDGV8E7eeXAiKYfzB0seb7aRmRDquwRx/wJ4Rzm1+yYP7G5TizljXlNsyQXDyzp/rJ9aFOqxOiJx0+o6rqEDRd2c6Jpb0sHb0zj9paejE3DCoSjHFxnWIS9N4h94cUZqqIBnTa1iO/baM3hZyOaAWE2s=
+	t=1708937476; cv=none; b=oH3gpQ2Vi6vWgPA+eEniBUw0D63KkYhkzT2ovLPTvuni/TqWblALOE3Z4vRp9rQitjtj1pPmus2QM8Qi6/6aAzrZN1QG21C/k7xw7UURoEyBkGTEB7H9yYbg9lOYjhrrLsnzxxv9dMjQt5prHGAlasnRRtmDrJK/X5POfgz/HSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708937449; c=relaxed/simple;
-	bh=oaDCTS0Y18vsEvDVZTZJLmkjz0O+k+Dseb0hfV1wNuE=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FWLnfwf0tbsCGOfdtd7Yt28JTcyHUytc4nM4JUUq1UAb6qaERUkswjPLRg075IwBZZ3+T+MNtldriPRTKq/x1jR0JGEB3ljMdY7ZHQFQnCBeSHgH3FFYo0Wex6wZECgigzbFxmPXFabQ8RlobzL6+xkguIr5qfl1KNyLxar3aO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=wfKheqgf; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uy7Zbc0g; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=wfKheqgf; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uy7Zbc0g; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 058E41F911;
-	Mon, 26 Feb 2024 08:50:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708937446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVg3+4MrPJeDgDG/+SZ95kFC8x4+K8jcoMQ3drqjs2s=;
-	b=wfKheqgfxIiPGc70DzQV8gHwnadGVfgtUkY5klsdWCZNNGS1ybI2YDBPJPaNEDp1k6ZVB5
-	ttX/0ubhpcHymwT/GGK/RvWGz7GSdXLfwEjZEH+/YR7sQEgJR6alD8KEKMBHf3frU9tEw3
-	E2nwEgA3DwdX2MapODIbF0IsOzB9NQU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708937446;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVg3+4MrPJeDgDG/+SZ95kFC8x4+K8jcoMQ3drqjs2s=;
-	b=uy7Zbc0gqJJeLqdh8jsW34YKqqtLKH9keGE+5+VBfWIec7Mi8JMy7ulYAmGETuJVZrLehA
-	BnH3Yr8TJlgND4BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708937446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVg3+4MrPJeDgDG/+SZ95kFC8x4+K8jcoMQ3drqjs2s=;
-	b=wfKheqgfxIiPGc70DzQV8gHwnadGVfgtUkY5klsdWCZNNGS1ybI2YDBPJPaNEDp1k6ZVB5
-	ttX/0ubhpcHymwT/GGK/RvWGz7GSdXLfwEjZEH+/YR7sQEgJR6alD8KEKMBHf3frU9tEw3
-	E2nwEgA3DwdX2MapODIbF0IsOzB9NQU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708937446;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jVg3+4MrPJeDgDG/+SZ95kFC8x4+K8jcoMQ3drqjs2s=;
-	b=uy7Zbc0gqJJeLqdh8jsW34YKqqtLKH9keGE+5+VBfWIec7Mi8JMy7ulYAmGETuJVZrLehA
-	BnH3Yr8TJlgND4BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 72BBA13A58;
-	Mon, 26 Feb 2024 08:50:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Q93IF+VQ3GXqFgAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 26 Feb 2024 08:50:45 +0000
-Date: Mon, 26 Feb 2024 09:50:45 +0100
-Message-ID: <87wmqrzk0q.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Baochen Qiang <quic_bqiang@quicinc.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Jeff Johnson <quic_jjohnson@quicinc.com>,
-	Takashi Iwai <tiwai@suse.de>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	Linux Wireless <linux-wireless@vger.kernel.org>,
-	ath11k@lists.infradead.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	mhi@lists.linux.dev,
-	linux-arm-msm@vger.kernel.org
-Subject: Re: ath11k allocation failure on resume breaking wifi until power cycle
-In-Reply-To: <a36b35a9-fb37-4afe-a718-a47dfe658cb5@suse.cz>
-References: <96481a45-3547-4d23-ad34-3a8f1d90c1cd@suse.cz>
-	<0994ae16-8174-4a04-b454-1974b16bc106@quicinc.com>
-	<20240222054739.GG3374@thinkpad>
-	<38c36d16-9cc1-4f03-b758-4a3ba90f8aa4@suse.cz>
-	<abc0c24f-2137-41eb-bb99-80aea8dacdb2@quicinc.com>
-	<a36b35a9-fb37-4afe-a718-a47dfe658cb5@suse.cz>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1708937476; c=relaxed/simple;
+	bh=POuh+0ljuU40eILrVMmcJRd8iAKsWRHkTX6VH2T5erE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=V0xJ57gcfj+wyGRF8bGENOUoMDa2vjJijyCVt2QPY4gYYnZ5ICt6MaftYWPM9FPLPeBhiucqI+dhnOZaCErMCPjhhWx29tfrURxvBIXPoQrihAxcofdsR8i5Rj0nLZ3cT8y4gQPeXDaTKBbfYVOOGRTue7a4l57spqKJ85rlytg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=dtRd7VE9; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 2b01aa3ad48411eea528b71b88a53856-20240226
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=H0JQnIL6JDIB1FYuN6u1xpM61X9dGTNhtuPI4F7rVnE=;
+	b=dtRd7VE9rw15/JgY3NC6ZMh0QTeK4Ywz/L2Ego2NYfgf/keCANf/9CG9MvKgqtz1Jn8EWrhqHCrGTZStlQ5SEqIBVwBNbCPf0mHCaQBSEiEKs2/sQc1mcH/kMgzO+FDact27cUoqogBjNYFdQ248gcS/pyvNJlJEhRCpNYAl0Ek=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:516e0f92-2dd6-44ff-9849-1a58ca06f89b,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:fc62d280-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 2b01aa3ad48411eea528b71b88a53856-20240226
+Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
+	(envelope-from <shawn.sung@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1875465088; Mon, 26 Feb 2024 16:51:01 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 26 Feb 2024 16:51:00 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 26 Feb 2024 16:51:00 +0800
+From: Shawn Sung <shawn.sung@mediatek.com>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
+	<christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-media@vger.kernel.org>,
+	<linaro-mm-sig@lists.linaro.org>, Hsiao Chien Sung
+	<shawn.sung@mediatek.corp-partner.google.com>
+Subject: [PATCH 00/11] Rename mtk_drm_* to mtk_*
+Date: Mon, 26 Feb 2024 16:50:48 +0800
+Message-ID: <20240226085059.26850-1-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.10 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.10
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK: N
 
-On Mon, 26 Feb 2024 09:45:17 +0100,
-Vlastimil Babka wrote:
-> 
-> On 2/26/24 03:09, Baochen Qiang wrote:
-> > 
-> > 
-> > On 2/23/2024 11:28 PM, Vlastimil Babka wrote:
-> >> On 2/22/24 06:47, Manivannan Sadhasivam wrote:
-> >>> On Wed, Feb 21, 2024 at 08:34:23AM -0800, Jeff Johnson wrote:
-> >>>> On 2/21/2024 6:39 AM, Vlastimil Babka wrote:
-> >>>>> Hi,
-> >>>>>
-> >>>>> starting with 6.8 rc series, I'm experiencing problems on resume from s2idle
-> >>>>> on my laptop, which is Lenovo T14s Gen3:
-> >>>>>
-> >>>>> LENOVO 21CRS0K63K/21CRS0K63K, BIOS R22ET65W (1.35 )
-> >>>>> ath11k_pci 0000:01:00.0: wcn6855 hw2.1
-> >>>>> ath11k_pci 0000:01:00.0: chip_id 0x12 chip_family 0xb board_id 0xff soc_id 0x400c1211
-> >>>>> ath11k_pci 0000:01:00.0: fw_version 0x1106196e fw_build_timestamp 2024-01-12 11:30 fw_build_id WLAN.HSP.1.1-03125-QCAHSPSWPL_V1_V2_SILICONZ_LITE-3.6510.37
-> >>>>>
-> >>>>> The problem is an allocation failure happening on resume from s2idle. After
-> >>>>> that the wifi stops working and even a reboot won't fix it, only a
-> >>>>> poweroff/poweron cycle of the laptop.
-> >>>>>
-> >>>
-> >>> Looks like WLAN is powered down during s2idle, which doesn't make sense. I hope
-> >>> Jeff will figure out what's going on.
-> >> 
-> >> You mean the firmware is supposed to power it down/up transparently without
-> >> kernel involvement? Because it should be powered down to save the power, no?
-> > Let me clarify: from backtrace info, seems you are using a kernel with 
-> > the hibernation-support patches [1] applied, which are not accepted yet 
-> > to mainline kernel or even 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git.
-> 
-> Oh, you're right. Sorry for confusing you all. The rc kernel builds we have
-> for openSUSE have nearly no non-upstream patches so it didn't really occur
-> to me to double check if there might be in the area.
-> 
-> Seems Takashi (Cc'd) added them indeed to make hibernation work:
-> https://bugzilla.suse.com/show_bug.cgi?id=1207948#c51
+From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-Yeah, and I'm afraid that we still have the ath11k hibernation patches
-in our 6.8-rc default kernel (i.e. patches are in both master and
-stable branches).  But you can test vanilla flavor that has certainly
-no downstream patches at all.
+Rename some unnecessary  "mtk_drm_*" to "mtk_*" because:
+- Lower the matches when searching the native drm_* codes
+- Reduce the code
 
+Hsiao Chien Sung (11):
+  drm/mediatek: Rename "mtk_drm_crtc" to "mtk_crtc"
+  drm/mediatek: Rename "mtk_drm_ddp_comp" to "mtk_ddp_comp"
+  drm/mediatek: Rename "mtk_drm_plane" to "mtk_plane"
+  drm/mediatek: Rename "mtk_drm_gem" to "mtk_gem"
+  drm/mediatek: Rename "mtk_drm_hdmi" to "mtk_hdmi"
+  drm/mediatek: Rename files "mtk_drm_crtc.*" to "mtk_crtc.*"
+  drm/mediatek: Rename files "mtk_drm_ddp_comp.*" to "mtk_ddp_comp.*"
+  drm/mediatek: Rename files "mtk_drm_plane.*" to "mtk_plane.*"
+  drm/mediatek: Rename files "mtk_drm_gem.*" to "mtk_gem.*"
+  drm/mediatek: Rename mtk_ddp_comp functions
+  drm/mediatek: Rename "pending_needs_vblank" to "needs_vblank"
 
-thanks,
+ drivers/gpu/drm/mediatek/Makefile             |   8 +-
+ .../mediatek/{mtk_drm_crtc.c => mtk_crtc.c}   | 218 +++++++++---------
+ drivers/gpu/drm/mediatek/mtk_crtc.h           |  30 +++
+ .../{mtk_drm_ddp_comp.c => mtk_ddp_comp.c}    |  51 ++--
+ .../{mtk_drm_ddp_comp.h => mtk_ddp_comp.h}    |   9 +-
+ drivers/gpu/drm/mediatek/mtk_disp_aal.c       |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ccorr.c     |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_color.c     |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h       |   2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c     |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_merge.c     |   2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |   4 +-
+ .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |   4 +-
+ drivers/gpu/drm/mediatek/mtk_dpi.c            |   4 +-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.h       |  30 ---
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  32 +--
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   4 +-
+ drivers/gpu/drm/mediatek/mtk_dsi.c            |   6 +-
+ drivers/gpu/drm/mediatek/mtk_ethdr.c          |   4 +-
+ .../drm/mediatek/{mtk_drm_gem.c => mtk_gem.c} |  65 +++---
+ .../drm/mediatek/{mtk_drm_gem.h => mtk_gem.h} |  19 +-
+ drivers/gpu/drm/mediatek/mtk_hdmi.c           |  14 +-
+ drivers/gpu/drm/mediatek/mtk_padding.c        |   4 +-
+ .../mediatek/{mtk_drm_plane.c => mtk_plane.c} |  26 +--
+ .../mediatek/{mtk_drm_plane.h => mtk_plane.h} |   4 +-
+ 26 files changed, 277 insertions(+), 283 deletions(-)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_crtc.c => mtk_crtc.c} (82%)
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_crtc.h
+ rename drivers/gpu/drm/mediatek/{mtk_drm_ddp_comp.c => mtk_ddp_comp.c} (94%)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_ddp_comp.h => mtk_ddp_comp.h} (98%)
+ delete mode 100644 drivers/gpu/drm/mediatek/mtk_drm_crtc.h
+ rename drivers/gpu/drm/mediatek/{mtk_drm_gem.c => mtk_gem.c} (76%)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_gem.h => mtk_gem.h} (65%)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_plane.c => mtk_plane.c} (94%)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_plane.h => mtk_plane.h} (95%)
 
-Takashi
+--
+2.18.0
+
 
