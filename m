@@ -1,89 +1,112 @@
-Return-Path: <linux-kernel+bounces-81185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 218898671C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:46:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48698671CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:47:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBE041F28C7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:46:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C802295838
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08AF51F5F3;
-	Mon, 26 Feb 2024 10:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E67D44F61C;
+	Mon, 26 Feb 2024 10:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ccjhfYPR"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="N3JDcS45"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F04C4D9E2;
-	Mon, 26 Feb 2024 10:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEDD4EB43
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708944229; cv=none; b=D57EY9qehJEPkcbAAT6uN6qkIeBb6Mi6oHdROU1fCVBx441KXQX51ehyP1N6sg31k05CMO0Zon4mu0l+4zbtyPdT29g8h39aVctMKWu1oCalBJXMFVW5+zOsyi64O78l60QFWYVYVgRgdpzqgG9PJY3a1P62Ebb49d0Gv3q3pQ8=
+	t=1708944244; cv=none; b=TKOI9DkjZ9PPETGa8dpSlWuuBq8+LjgrG7NeW4se+2d+DUrmvieDmesNBlzLoChTdyquVOj6LJB+QZuJNE3rh4X5vEejTjPc+DPJBu1Aqe4MvwLV9SAQCDH/jhogCjk9wjRlBW6BaFXepQLde4IWeJpioT8vaI+ePNZQpE/7oQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708944229; c=relaxed/simple;
-	bh=vDtt1qad7d+14ut2THuDeEEY3FL6dIHf7i9adMicIZk=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NsQB0Q9TRUF1LR0ZsynDpuA91y7im7YF7DFJe9ur8TvfUjnfa13dMnWlyM31XhqeXiwJdS7NngFToJHLqaLAu/ZLXecqNP/ZDv7KYlSOJYJapekcTFvRM5HWvFKZy89K6U6Sjh8WywG74BY5PuUCjLg5lZbcqe2u2A7HwPs7fsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ccjhfYPR; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C070AFF804;
-	Mon, 26 Feb 2024 10:43:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708944225;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pbuG9zKlK6ziqZGMdcv8Imk0IwSOjhpEoUUTm5M8p7I=;
-	b=ccjhfYPRzGq4Vk3DqllusYqNYAwB2BN5xggKYeKVaKP2EEWfNew/SZroBqrrz6vZ+ic8aV
-	gp67fl3aQKY4eT5Lr//50VQayl1gH5fnYrTiEPjiIEwBqEOybJOXe8vG0mG4opEisUnS5P
-	1Bu6HrhlrHGhhxjofOHJbT6FXQWtnEad3u4jsvbT5xKN2v2sdS3IkQETYsDxp6rYJQiOcf
-	dgquHrTFfyT1SG/nNqx0EPFjYZlnnnjhzDLz5q1SqqJN34Oq7sk2OZaR5PERjHKnbqfjSG
-	vh9F9rEQNYmOxtVHKeJ9KcHAL2yajQIfPDAZOHgdHJdi5ljQ8kSu8TdVuP0Z9g==
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Varshini Rajendran <varshini.rajendran@microchip.com>,
-	tudor.ambarus@linaro.org,
-	miquel.raynal@bootlin.com,
-	richard@nod.at,
-	vigneshr@ti.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	nicolas.ferre@microchip.com,
-	alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev,
-	linux-mtd@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 08/39] dt-bindings: atmel-nand: add microchip,sam9x7-pmecc
-Date: Mon, 26 Feb 2024 11:43:44 +0100
-Message-Id: <20240226104344.489249-1-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240223172520.671940-1-varshini.rajendran@microchip.com>
-References: 
+	s=arc-20240116; t=1708944244; c=relaxed/simple;
+	bh=VtYX2AAclW+6PyEznVmEi56KktEN8DIyyWShUfMv2sQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cypFfDBvjTVB/NC2zzYRM3RR9O+TvPkTSoXAF+GlI6JuvhCB9+N8obpWDakEVEqmlfxSl3vdavezD15+/sIUbVmpLq5eIrN0TrPhvO65zi0z0XCAk4kbLE/HMozWouTcg1nus+5eQjKj15+qIIx6h7PT9phY2NyaP6/MqFPnkq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=N3JDcS45; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-564372fb762so4188179a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:44:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708944241; x=1709549041; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/1u96TCZGh+uaR4bi6Ag7KK+CWFlrG+NLarSYTmkM2k=;
+        b=N3JDcS45ILSNv/FoRVwj2M44aSAvWOIcJbv3ZxhcaIBjYsOuha9ir8Qvqw5GAydnPD
+         ta5X9+PTkqWMESjEoK1wk9E15sGEglS2dPaMcuB5OBtGrZW3BWJNnv7aS+VFMrEGi3jg
+         XNH1PKfnKoxl94ZDgydGNM2n+gU9aFq9/Qq5n1TRN1xqwKKaqIw14PJVAxtPO6UfY6jx
+         Gsj/Tqt9GSOFUZWFqzvYntvJY7eshIZuOydqJST3cWNIL7K2wLoQfycpBXVaxSN2nrfe
+         GkLTKiPfzqTq1Hj6lsMFR4rE72nKfp/X5omdDcr09aaiQRjTj2nu9DGA0GV3KIZTCDwr
+         gIiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708944241; x=1709549041;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/1u96TCZGh+uaR4bi6Ag7KK+CWFlrG+NLarSYTmkM2k=;
+        b=QZr6p35f6QPYFwPY9cbLU45xvhIWyzt8DwNvSa3KitHcZdPHx8XeWxMQPi/Qng3HEs
+         ZEit5i5eZRcasvfQ4VglZqjY9r/zbdiZQSpfJgcU48vKnGLiji4NnYMoN3c+rykZPckK
+         XoRDMhRItKB5sRT30sOo0onZWnqJgO2Ex5xmGiZCoB/hJZqczvAvDUFGIgiyV9EFR25f
+         QZVCDy0B9vMivBPcRATC/QY+xkKq0am6uXOJXBtM8geaEMc9NX6YiVsFemUORROYpSX+
+         3EsUVeneKprcjBqTomrm3J9e+QDyQHud+5GtLMTy7FIDJZZT8OA38b7Rhi+7u3dvt7TM
+         Hi8g==
+X-Forwarded-Encrypted: i=1; AJvYcCUedFmwyWfcJHLgneuOm/iIhhbVOQftKmomAYJ4BdtHWYzvcPVCetpgj3YGJih3dYfWUKI+mLEuC8vpsGkSU2cafKiCgdElQcvV9FI0
+X-Gm-Message-State: AOJu0YyvxbEIFMnd8Zwzv+XYfhM8+hPrM1Ak33L2fphe0TvEJ56EBW7o
+	Z/UjvZuL8MiikUsCT0uqt4rOlCplZIEd9I3Igx1QPJEK8SNN0A55lMqHtEHluFqk080rpJIYxe0
+	K
+X-Google-Smtp-Source: AGHT+IFXQa+vLT3VSAjwilZdTzIVK0TdFefSAdZBFz9SZ+bVKQh5rMYDuB0XwPGEMcDzdkmxULENgA==
+X-Received: by 2002:a05:6402:35ca:b0:565:ba2f:85d7 with SMTP id z10-20020a05640235ca00b00565ba2f85d7mr3967435edc.37.1708944240891;
+        Mon, 26 Feb 2024 02:44:00 -0800 (PST)
+Received: from [192.168.0.173] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id z18-20020aa7c652000000b005657eefa8e9sm2192416edr.4.2024.02.26.02.43.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 02:44:00 -0800 (PST)
+Message-ID: <33c0c516-1f5f-4cf5-bd3b-70b61372a53c@linaro.org>
+Date: Mon, 26 Feb 2024 12:43:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'3c1f9b7fa20aed8b3227d4ed7ed630da6077304b'
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: miquel.raynal@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: spi-nor: Add Puya Semiconductor chips driver
+Content-Language: en-US
+To: Dmitry Dunaev <dunaev@tecon.ru>
+Cc: dunaich@mail.ru, Pratyush Yadav <pratyush@kernel.org>,
+ Michael Walle <mwalle@kernel.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+References: <9ebf9cdf-eeba-417a-8410-3f87a0973136@linaro.org>
+ <20240226104101.1848855-1-dunaev@tecon.ru>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240226104101.1848855-1-dunaev@tecon.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2024-02-23 at 17:25:20 UTC, Varshini Rajendran wrote:
-> Add microchip,sam9x7-pmecc to DT bindings documentation.
+
+
+On 26.02.2024 12:40, Dmitry Dunaev wrote:
+> Add a SPI NOR manufacturer driver for Puya Semiconductor chips
 > 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Signed-off-by: Dmitry Dunaev <dunaev@tecon.ru>
+> ---
+>  drivers/mtd/spi-nor/Makefile |  1 +
+>  drivers/mtd/spi-nor/core.c   |  1 +
+>  drivers/mtd/spi-nor/core.h   |  1 +
+>  drivers/mtd/spi-nor/puya.c   | 64 ++++++++++++++++++++++++++++++++++++
+>  4 files changed, 67 insertions(+)
+>  create mode 100644 drivers/mtd/spi-nor/puya.c
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
+what changed in v2? why do you need these entries? Can you rely instead
+on SFDP to initialize these flashes?
 
-Miquel
+Please read: https://docs.kernel.org/driver-api/mtd/spi-nor.html
 
