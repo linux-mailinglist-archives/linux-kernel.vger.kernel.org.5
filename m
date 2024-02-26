@@ -1,99 +1,106 @@
-Return-Path: <linux-kernel+bounces-80719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC270866BA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:03:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E3F6866BB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:05:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDC4B1C21CA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:03:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 400E01C229D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC4631C692;
-	Mon, 26 Feb 2024 08:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jgto7MOS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DCA1C6A6;
+	Mon, 26 Feb 2024 08:05:03 +0000 (UTC)
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.62.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203531C290
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30481C692;
+	Mon, 26 Feb 2024 08:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.62.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708934588; cv=none; b=rreuCPjvz4Bk2o8qHf2Nbfa6uPYg9roFZ07OrO+ybMi4AQRMzK6B25SxZe0ixi/nBxPaXHB656K//G0+KsduHIki/TqJhOE/6VoEguMZdDhqjcR8rL5aWrS0t+6WroxW4yP2p72KEiiWuTgISxid8dgu3OF1ppGHnl2GgaFaWEw=
+	t=1708934702; cv=none; b=nGzfX8xr7EmggxUVnsiKi5m3LJWr2Jo4Cowc+FCm8K1W1irfBNKVTdD1xDLwIKGLi7P/QQmyNNLnH3/bblbczs6bSQAazpS6XFelRVJpvnyJkux1EoCiQ72gpRvLXwY+P/31CUtb2Bxgf5t9UpFumqHdamPz6nR7Q/W8dnsoTC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708934588; c=relaxed/simple;
-	bh=BeTOLJtP9AdrBcyMBpzL9OYFKJ9cR8nzGWdiyS7Gj+E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DCd80ScxAUS7cpUG0OmLW48WdEj71K/b9crjJii2qLJf/kt54aKd9OUxeonhAk2J2GUdy0fpqVJ1D5NPRnU6QRsJRQ0n0iU9RtxTLTn1MDOVJfLt7nU6ey0zsxfW960irgUMoqWcQLf7Fv+pOhfrp0h5D5Q0oZKCKhMk9VI+UZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jgto7MOS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55353C433C7;
-	Mon, 26 Feb 2024 08:03:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708934587;
-	bh=BeTOLJtP9AdrBcyMBpzL9OYFKJ9cR8nzGWdiyS7Gj+E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Jgto7MOSPftYRs/CvdQZe0jlNQ0kX07dEjimQFDf87NFbLUPSxHE+zvNRJmt5BYxd
-	 ia0kX3UbVJyF5JLmyACNQ7oeCtdDoFP0pv05gp39NHtbTU9YxbBotuDfHJrIQ695BM
-	 31W17sEYfpVhaRn+u41BkRoauj7CIDoyNdih2UUW5ziRj4QC70BEizlNnUScGfGIa4
-	 dm4aUUEHrCfrvYwapscD73+vRN1TXRPWL2+Ugb7F5aFBEMoZD+oyghpzWWfgtkra9e
-	 B/n1ytflWFv1ObGUoz3EQnDtk3wQuoVSe8AG2TMPLmh77tQydQxDP34px7rmzIva3e
-	 uV44/lD/UjrXw==
-Date: Mon, 26 Feb 2024 10:03:02 +0200
-From: Oded Gabbay <ogabbay@kernel.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] accel: constify the struct device_type usage
-Message-ID: <ZdxFtvl6C/k71nbZ@ogabbay-vm-u22.habana-labs.com>
-References: <20240219-device_cleanup-accel-v1-1-5031e5046cff@marliere.net>
+	s=arc-20240116; t=1708934702; c=relaxed/simple;
+	bh=dN3E446p7hva0FnMIQ6NFdYTCxG7DQq3CBiJFrGa6Ew=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BQgfzVqPqqg3kaWnSoSqTwnzJGMvgHXYx8UNWTIk0otiX+L5Loe1YVKxsFB1HF1IdiaN+vQ2tS9R0N+GgUBYiWnfUmp7zHPGZUJXNg+ahPh+NnZzFxPHxBmGv4/LrVcmaWMSV/nmeAUa3GNahWJiqz294wjn292hR4ZWJjzqxuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=114.132.62.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+X-QQ-mid: bizesmtp86t1708934613towayw64
+X-QQ-Originating-IP: cPL1Ck3yLJrKvXVPFv3NE+RF3uFMoNuGQ35pxT3KDRM=
+Received: from localhost.localdomain ( [113.57.152.160])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 26 Feb 2024 16:03:31 +0800 (CST)
+X-QQ-SSF: 01400000000000C0B000000A0000000
+X-QQ-FEAT: RrZlkntZBflMICK+qs6fwIpCV2d/qsk9tQTFhoQEIKaT681VwUo/mZi9pW5Ep
+	k5lwP9mwmvUt2QBdS310uRcAPLffXOPehuc42UEt/wCNHf+/7u8S45VGzlTcfGHC23d3E75
+	vqpTuSj1AtuHvx/0sh5Mv4ezn6qFXRJBaSW4RVk3qrzHe4RKByXHxB0bNB25Leq7ft2oO0A
+	OGP64dY2zxxCOYhS+KkycSsm7LU+AcvDyKppNaUg4Uv70uUBpEADPbHuCL9oN8f0N9x429u
+	fjMZ8NzlJx7PAc47q1mFwtN4pzGlPMH98oLm+LOzIIV/MKj/TiHz/jBOFIHhNWRA4SRjcS4
+	ta28ykuSow/hEtK+tkdFQPPVFOb7Ohg7xHU/sJcbCmHyjKDwUDpwfymOCMa1AAFXtx+bHOM
+	cjoCqCmgnl5yIl8+2CTISg==
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 7263635772186819798
+From: WangYuli <wangyuli@uniontech.com>
+To: herbert@gondor.apana.org.au,
+	davem@davemloft.net,
+	chenhuacai@kernel.org,
+	kernel@xen0n.name
+Cc: linux-crypto@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	WangYuli <wangyuli@uniontech.com>,
+	Guan Wentao <guanwentao@uniontech.com>
+Subject: [PATCH] loongarch/crypto: Clean up useless assignment operations
+Date: Mon, 26 Feb 2024 16:03:28 +0800
+Message-Id: <20240226080328.334021-1-wangyuli@uniontech.com>
+X-Mailer: git-send-email 2.33.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219-device_cleanup-accel-v1-1-5031e5046cff@marliere.net>
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
 
-On Mon, Feb 19, 2024 at 04:48:28PM -0300, Ricardo B. Marliere wrote:
-> Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-> core can properly handle constant struct device_type. Move the
-> accel_sysfs_device_minor variable to be a constant structure as well,
-> placing it into read-only memory which can not be modified at runtime.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
->  drivers/accel/drm_accel.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/accel/drm_accel.c b/drivers/accel/drm_accel.c
-> index 24cac4c0274b..16c3edb8c46e 100644
-> --- a/drivers/accel/drm_accel.c
-> +++ b/drivers/accel/drm_accel.c
-> @@ -23,7 +23,7 @@ static struct idr accel_minors_idr;
->  
->  static struct dentry *accel_debugfs_root;
->  
-> -static struct device_type accel_sysfs_device_minor = {
-> +static const struct device_type accel_sysfs_device_minor = {
->  	.name = "accel_minor"
->  };
->  
-> 
-> ---
-> base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-> change-id: 20240219-device_cleanup-accel-a990dc3bfbc1
-> 
-> Best regards,
-> -- 
-> Ricardo B. Marliere <ricardo@marliere.net>
-> 
-Applied to -next.
-Thanks,
-Oded
+Both crc32 and crc32c hw accelerated funcs will calculate the
+remaining len. Those codes are derived from
+arch/mips/crypto/crc32-mips.c and "len -= sizeof(u32)" is not
+necessary for 64-bit CPUs.
+
+Removing it can make context code style more unified and improve
+code readability.
+
+Suggested-by: Guan Wentao <guanwentao@uniontech.com>
+Signed-off-by: WangYuli <wangyuli@uniontech.com>
+---
+ arch/loongarch/crypto/crc32-loongarch.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/loongarch/crypto/crc32-loongarch.c b/arch/loongarch/crypto/crc32-loongarch.c
+index a49e507af38c..3eebea3a7b47 100644
+--- a/arch/loongarch/crypto/crc32-loongarch.c
++++ b/arch/loongarch/crypto/crc32-loongarch.c
+@@ -44,7 +44,6 @@ static u32 crc32_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
+ 
+ 		CRC32(crc, value, w);
+ 		p += sizeof(u32);
+-		len -= sizeof(u32);
+ 	}
+ 
+ 	if (len & sizeof(u16)) {
+@@ -80,7 +79,6 @@ static u32 crc32c_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
+ 
+ 		CRC32C(crc, value, w);
+ 		p += sizeof(u32);
+-		len -= sizeof(u32);
+ 	}
+ 
+ 	if (len & sizeof(u16)) {
+-- 
+2.33.1
 
 
