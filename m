@@ -1,259 +1,283 @@
-Return-Path: <linux-kernel+bounces-81443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F37B867607
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:07:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD0618675FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51211289170
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:07:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E02181C23C0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D17380C19;
-	Mon, 26 Feb 2024 13:07:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A9980037;
+	Mon, 26 Feb 2024 13:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KTT5wpb5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="D7iciNee";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QuYbR2Nl"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FCA81756;
-	Mon, 26 Feb 2024 13:07:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067CC5B03B
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708952830; cv=none; b=h0cNBJ1Br/ZJrkCCfMwdug82ViruDyf/0sAvOyE+ieccuFJ++HmevOrero8QsayDPpglSLJK+OSuPmtp+R/YSf1N6EFV6OcJ3wT78I4rj1bjt9bIIpwNY9AZhRBjLt50VW1DpQ3vO46YtcA6hlg85LjpVn+ieKwEsWM6tCSHHvM=
+	t=1708952808; cv=none; b=eNaDOtM31hYaor83hMdkM21nnHHzRd6Zn1DZC48DG6rQ5r/IoiTBC9fHmItxvumYou/YumD5QP3lIk/k9VRmhJNow3yepthPEVbGu3LeICYppWxzPZsPa5MilidVh3bZETIfgIyE5nijnJ4UmaU+ZF+a20PCEkDCSP8MVIKE/E0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708952830; c=relaxed/simple;
-	bh=bx31a6Hgu3PNfIf12RI+wbdyS9Wxxa8ztr0P7NRK8fU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dsEOhSQ/d58FOeyCE8d00uOhhsoByxTliI1KmFEoNNT58CixCnGqskbB3JXpeyiAGO3SgdkWOxfI3Wf86IkJS2Yrjlq3jNlEDWdGh9ldABhBeVDu2sblXlGlwnYhZoHHg32sm8vHcKWj6h7YbsRdF1xTpBZH15DkMyqNRTI7IhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KTT5wpb5; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708952829; x=1740488829;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bx31a6Hgu3PNfIf12RI+wbdyS9Wxxa8ztr0P7NRK8fU=;
-  b=KTT5wpb5/eOsLGz0ekkZb7eQZ553nhge/5ozR2Wg/2a9Ppuh0NeP4bAr
-   2Jf+R0wdyCxoiu8zNrbfRFUcXq8l29gt8sUwoSH+WOxjLqoxvfw1d6nZy
-   zqtgr0tiKXm6eRlItFPu4tAc/tjTIECNAlO4M5+j8PrqZreAVYTCzIGYy
-   FfO9QdTzAndvSu64ZZX63rP3aeC0zo7FL9+2q+wiDfRPAAMpWxLkQhiSP
-   muxoTOsEKxdQFTpJJyzoZE7vNQZmeDx3glBeqx8XV02cERRfkVPpaygwD
-   ovpJI8WBYHAUH77ZkMXx7+h8e6/Ur1HmSWCiLdY14ztpjoDKI22WD2qOq
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="14669214"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="14669214"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 05:06:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6586267"
-Received: from pkwiatko-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.23.220])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 05:06:40 -0800
-From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To: Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Shuah Khan <shuah@kernel.org>
-Cc: ilpo.jarvinen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v4 3/3] selftests/resctrl: Move cleanups out of individual tests
-Date: Mon, 26 Feb 2024 14:05:50 +0100
-Message-ID: <ef48cf79fb4ef464e78294240e781d2987811385.1708949785.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <cover.1708949785.git.maciej.wieczor-retman@intel.com>
-References: <cover.1708949785.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1708952808; c=relaxed/simple;
+	bh=XBJjaxY29vsjHIvx7KbeSz6k8oTAy1xwg467THgSk5Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GmoR0adZxqQAFA3fW6rmqAd810PKB5Mhk1mvOFWm5h2omzcsLRtoINcsEAcp4W5afEH7bYJH7wLfkXZPAYGIUp2zLEd4bx2y4Up9fU92mHaB8SVflixqhBDBSb0XT9xZsf+eYu8/gBXYTDbftmlGz+EdBtCm+W4BdQGu2Z+yCxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=D7iciNee; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QuYbR2Nl; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EFF1B1FD26;
+	Mon, 26 Feb 2024 13:06:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708952803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SdjeURyEIiVj/ZjHRCqbFd6GFC1z8/tL8xhBYzMmpL8=;
+	b=D7iciNeeD6AyEkBXOh2rkL7IYjOrbDloBLE4sHbMtmzcGsIfU9a0moxy79Nubsj8jkCEYF
+	61rPP/mq/SYoDTQuQNROwvQuFENnwxntJkWTy1QNuoIImBapajo+DoD88/ydwcOqJFi3Th
+	d8wzmLSArHD1G3vQJTB/D672UAWCvxA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708952802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SdjeURyEIiVj/ZjHRCqbFd6GFC1z8/tL8xhBYzMmpL8=;
+	b=QuYbR2Nl7ARFM63tl4v7tptKOzTZd9Y+ImznsuGkcKCa37uDYuVTtx4XafCtHANd1kFxy8
+	2541Y3gfnfwYmAqjN2vGbIlx+UAXcHAppMMZgTOwA64HbPFU0B1ijFL9ofcsphMLRcPAQS
+	39Ze6kc0mTguKqF860/QqMRN1RRs6oI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D9A3813A58;
+	Mon, 26 Feb 2024 13:06:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5b8mMuKM3GWQWAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Mon, 26 Feb 2024 13:06:42 +0000
+Date: Mon, 26 Feb 2024 14:06:30 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com, yuzhao@google.com,
+	ying.huang@intel.com, Mel Gorman <mgorman@suse.de>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v3] mm, vmscan: do not turn on cache_trim_mode if it
+ doesn't work
+Message-ID: <ZdyM1nS8a8UR1dw_@tiehlicka>
+References: <20240223054407.14829-1-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240223054407.14829-1-byungchul@sk.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.60 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.60
 
-Every test calls its cleanup function at the end of it's test function.
-After the cleanup function pointer is added to the test framework this
-can be simplified to executing the callback function at the end of the
-generic test running function.
+[CC Mel, Vlastimil and Johannes for awareness]
 
-Make test cleanup functions static and call them from the end of
-run_single_test() from the resctrl_test's cleanup function pointer.
+On Fri 23-02-24 14:44:07, Byungchul Park wrote:
+> Changes from v2:
+> 	1. Change the condition to stop cache_trim_mode.
+> 
+> 	   From - Stop it if it's at high scan priorities, 0 or 1.
+> 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
+> 	          the mode didn't work in the previous turn.
+> 
+> 	   (feedbacked by Huang Ying)
+> 
+> 	2. Change the test result in the commit message after testing
+> 	   with the new logic.
+> 
+> Changes from v1:
+> 	1. Add a comment describing why this change is necessary in code
+> 	   and rewrite the commit message with how to reproduce and what
+> 	   the result is using vmstat. (feedbacked by Andrew Morton and
+> 	   Yu Zhao)
+> 	2. Change the condition to avoid cache_trim_mode from
+> 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
+> 	   where the priority goes to zero all the way. (feedbacked by
+> 	   Yu Zhao)
+> 
+> --->8---
+> >From 05846e34bf02ac9b3e254324dc2d7afd97a025d9 Mon Sep 17 00:00:00 2001
+> From: Byungchul Park <byungchul@sk.com>
+> Date: Fri, 23 Feb 2024 13:47:16 +0900
+> Subject: [PATCH v3] mm, vmscan: do not turn on cache_trim_mode if it doesn't work
+> 
+> With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
+> pages.  However, it should be more careful to turn on the mode because
+> it's going to prevent anon pages from being reclaimed even if there are
+> a huge number of anon pages that are cold and should be reclaimed.  Even
+> worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
+> stopping kswapd from functioning until direct reclaim eventually works
+> to resume kswapd.
+> 
+> So do not turn on cache_trim_mode if the mode doesn't work, especially
+> while the sytem is struggling against reclaim.
+> 
+> The problematic behavior can be reproduced by:
+> 
+>    CONFIG_NUMA_BALANCING enabled
+>    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
+>    numa node0 (8GB local memory, 16 CPUs)
+>    numa node1 (8GB slow tier memory, no CPUs)
+> 
+>    Sequence:
+> 
+>    1) echo 3 > /proc/sys/vm/drop_caches
+>    2) To emulate the system with full of cold memory in local DRAM, run
+>       the following dummy program and never touch the region:
+> 
+>          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
+> 	      MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
+> 
+>    3) Run any memory intensive work e.g. XSBench.
+>    4) Check if numa balancing is working e.i. promotion/demotion.
+>    5) Iterate 1) ~ 4) until numa balancing stops.
+> 
+> With this, you could see that promotion/demotion are not working because
+> kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
+> 
+> Interesting vmstat delta's differences between before and after are like:
+> 
+>    +-----------------------+-------------------------------+
+>    | interesting vmstat	   | before	   | after	   |
+>    +-----------------------+-------------------------------+
+>    | nr_inactive_anon	   | 321935	   | 1636737	   |
+>    | nr_active_anon	   | 1780700	   | 465913	   |
+>    | nr_inactive_file	   | 30425	   | 35711	   |
+>    | nr_active_file	   | 14961	   | 8698	   |
+>    | pgpromote_success	   | 356	   | 1267785	   |
+>    | pgpromote_candidate   | 21953245	   | 1745631	   |
+>    | pgactivate		   | 1844523	   | 3309867	   |
+>    | pgdeactivate	   | 50634	   | 1545041	   |
+>    | pgfault		   | 31100294	   | 6411036	   |
+>    | pgdemote_kswapd	   | 30856	   | 2267467	   |
+>    | pgscan_kswapd	   | 1861981	   | 7729231	   |
+>    | pgscan_anon	   | 1822930	   | 7667544	   |
+>    | pgscan_file	   | 39051	   | 61687	   |
+>    | pgsteal_anon	   | 386	   | 2227217	   |
+>    | pgsteal_file	   | 30470	   | 40250	   |
+>    | pageoutrun		   | 30		   | 457	   |
+>    | numa_hint_faults	   | 27418279	   | 2752289	   |
+>    | numa_pages_migrated   | 356	   | 1267785 	   |
+>    +-----------------------+-------------------------------+
+> 
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  mm/vmscan.c | 24 +++++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index bba207f41b14..f7312d831fed 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -127,6 +127,9 @@ struct scan_control {
+>  	/* One of the zones is ready for compaction */
+>  	unsigned int compaction_ready:1;
+>  
+> +	/* If the last try was reclaimable */
+> +	unsigned int reclaimable:1;
+> +
+>  	/* There is easily reclaimable cold cache in the current node */
+>  	unsigned int cache_trim_mode:1;
+>  
+> @@ -2266,9 +2269,14 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+>  	 * If we have plenty of inactive file pages that aren't
+>  	 * thrashing, try to reclaim those first before touching
+>  	 * anonymous pages.
+> +	 *
+> +	 * It doesn't make sense to keep cache_trim_mode on if the mode
+> +	 * is not working while struggling against reclaim. So do not
+> +	 * turn it on if so. Note the highest priority of kswapd is 1.
+>  	 */
+>  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
+> -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+> +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+> +	    !(sc->cache_trim_mode && !sc->reclaimable && sc->priority <= 1))
+>  		sc->cache_trim_mode = 1;
+>  	else
+>  		sc->cache_trim_mode = 0;
+> @@ -5862,7 +5870,6 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>  {
+>  	unsigned long nr_reclaimed, nr_scanned, nr_node_reclaimed;
+>  	struct lruvec *target_lruvec;
+> -	bool reclaimable = false;
+>  
+>  	if (lru_gen_enabled() && root_reclaim(sc)) {
+>  		lru_gen_shrink_node(pgdat, sc);
+> @@ -5877,6 +5884,14 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>  	nr_reclaimed = sc->nr_reclaimed;
+>  	nr_scanned = sc->nr_scanned;
+>  
+> +	/*
+> +	 * Reset to the default values at the start.
+> +	 */
+> +	if (sc->priority == DEF_PRIORITY) {
+> +		sc->reclaimable = 1;
+> +		sc->cache_trim_mode = 0;
+> +	}
+> +
+>  	prepare_scan_control(pgdat, sc);
+>  
+>  	shrink_node_memcgs(pgdat, sc);
+> @@ -5890,8 +5905,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>  		vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
+>  			   sc->nr_scanned - nr_scanned, nr_node_reclaimed);
+>  
+> -	if (nr_node_reclaimed)
+> -		reclaimable = true;
+> +	sc->reclaimable = !!nr_node_reclaimed;
+>  
+>  	if (current_is_kswapd()) {
+>  		/*
+> @@ -5965,7 +5979,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>  	 * sleep. On reclaim progress, reset the failure counter. A
+>  	 * successful direct reclaim run will revive a dormant kswapd.
+>  	 */
+> -	if (reclaimable)
+> +	if (sc->reclaimable)
+>  		pgdat->kswapd_failures = 0;
+>  }
+>  
+> -- 
+> 2.17.1
+> 
 
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
----
-Changelog v4:
-- Move cleanup call to test_cleanup(). (Reinette)
-
-Changelog v2:
-- Change most goto out paths into return ret. (Ilpo)
-
- tools/testing/selftests/resctrl/cat_test.c      | 7 ++-----
- tools/testing/selftests/resctrl/cmt_test.c      | 3 +--
- tools/testing/selftests/resctrl/mba_test.c      | 7 ++-----
- tools/testing/selftests/resctrl/mbm_test.c      | 7 ++-----
- tools/testing/selftests/resctrl/resctrl.h       | 4 ----
- tools/testing/selftests/resctrl/resctrl_tests.c | 6 ++++--
- 6 files changed, 11 insertions(+), 23 deletions(-)
-
-diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-index 2d2f69d3e5b7..1d1efed6164e 100644
---- a/tools/testing/selftests/resctrl/cat_test.c
-+++ b/tools/testing/selftests/resctrl/cat_test.c
-@@ -128,7 +128,7 @@ static int check_results(struct resctrl_val_param *param, const char *cache_type
- 	return fail;
- }
- 
--void cat_test_cleanup(void)
-+static void cat_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -284,13 +284,10 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
- 
- 	ret = cat_test(test, uparams, &param, span, start_mask);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = check_results(&param, test->resource,
- 			    cache_total_size, full_cache_mask, start_mask);
--out:
--	cat_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/cmt_test.c b/tools/testing/selftests/resctrl/cmt_test.c
-index 32ddee87e43d..c477f3c9635f 100644
---- a/tools/testing/selftests/resctrl/cmt_test.c
-+++ b/tools/testing/selftests/resctrl/cmt_test.c
-@@ -91,7 +91,7 @@ static int check_results(struct resctrl_val_param *param, size_t span, int no_of
- 				 MAX_DIFF, MAX_DIFF_PERCENT, runs - 1, true);
- }
- 
--void cmt_test_cleanup(void)
-+static void cmt_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -161,7 +161,6 @@ static int cmt_run_test(const struct resctrl_test *test, const struct user_param
- 		ksft_print_msg("Intel CMT may be inaccurate when Sub-NUMA Clustering is enabled. Check BIOS configuration.\n");
- 
- out:
--	cmt_test_cleanup();
- 	free(span_str);
- 
- 	return ret;
-diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-index 7cc4067ce930..a2f81d900900 100644
---- a/tools/testing/selftests/resctrl/mba_test.c
-+++ b/tools/testing/selftests/resctrl/mba_test.c
-@@ -137,7 +137,7 @@ static int check_results(void)
- 	return show_mba_info(bw_imc, bw_resc);
- }
- 
--void mba_test_cleanup(void)
-+static void mba_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -158,13 +158,10 @@ static int mba_run_test(const struct resctrl_test *test, const struct user_param
- 
- 	ret = resctrl_val(test, uparams, uparams->benchmark_cmd, &param);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = check_results();
- 
--out:
--	mba_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-index 071e2d3808a7..6589154c102e 100644
---- a/tools/testing/selftests/resctrl/mbm_test.c
-+++ b/tools/testing/selftests/resctrl/mbm_test.c
-@@ -105,7 +105,7 @@ static int mbm_setup(const struct resctrl_test *test,
- 	return ret;
- }
- 
--void mbm_test_cleanup(void)
-+static void mbm_test_cleanup(void)
- {
- 	remove(RESULT_FILE_NAME);
- }
-@@ -126,15 +126,12 @@ static int mbm_run_test(const struct resctrl_test *test, const struct user_param
- 
- 	ret = resctrl_val(test, uparams, uparams->benchmark_cmd, &param);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	ret = check_results(DEFAULT_SPAN);
- 	if (ret && (get_vendor() == ARCH_INTEL))
- 		ksft_print_msg("Intel MBM may be inaccurate when Sub-NUMA Clustering is enabled. Check BIOS configuration.\n");
- 
--out:
--	mbm_test_cleanup();
--
- 	return ret;
- }
- 
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 826783b29c9d..428ce9174384 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -153,8 +153,6 @@ int resctrl_val(const struct resctrl_test *test,
- 		const struct user_params *uparams,
- 		const char * const *benchmark_cmd,
- 		struct resctrl_val_param *param);
--void mbm_test_cleanup(void);
--void mba_test_cleanup(void);
- unsigned long create_bit_mask(unsigned int start, unsigned int len);
- unsigned int count_contiguous_bits(unsigned long val, unsigned int *start);
- int get_full_cbm(const char *cache_type, unsigned long *mask);
-@@ -163,9 +161,7 @@ int get_cache_size(int cpu_no, const char *cache_type, unsigned long *cache_size
- void ctrlc_handler(int signum, siginfo_t *info, void *ptr);
- int signal_handler_register(const struct resctrl_test *test);
- void signal_handler_unregister(void);
--void cat_test_cleanup(void);
- unsigned int count_bits(unsigned long n);
--void cmt_test_cleanup(void);
- 
- void perf_event_attr_initialize(struct perf_event_attr *pea, __u64 config);
- void perf_event_initialize_read_format(struct perf_event_read *pe_read);
-diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-index 161f5365b4f0..4c902cf80c49 100644
---- a/tools/testing/selftests/resctrl/resctrl_tests.c
-+++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-@@ -94,8 +94,10 @@ static int test_prepare(const struct resctrl_test *test)
- 	return 0;
- }
- 
--static void test_cleanup(void)
-+static void test_cleanup(const struct resctrl_test *test)
- {
-+	if (test->cleanup)
-+		test->cleanup();
- 	umount_resctrlfs();
- 	signal_handler_unregister();
- }
-@@ -137,7 +139,7 @@ static void run_single_test(const struct resctrl_test *test, const struct user_p
- 	ksft_test_result(!ret, "%s: test\n", test->name);
- 
- cleanup:
--	test_cleanup();
-+	test_cleanup(test);
- }
- 
- static void init_user_params(struct user_params *uparams)
 -- 
-2.43.2
-
+Michal Hocko
+SUSE Labs
 
