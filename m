@@ -1,129 +1,125 @@
-Return-Path: <linux-kernel+bounces-82031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8C5B867DFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:18:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95076867DFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:19:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84F901F2C768
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:18:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6EE21C2C1AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DAE612CD9F;
-	Mon, 26 Feb 2024 17:12:36 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 311AE12CD89;
-	Mon, 26 Feb 2024 17:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC50132485;
+	Mon, 26 Feb 2024 17:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UAMLG4mC"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C64132474;
+	Mon, 26 Feb 2024 17:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708967555; cv=none; b=cqNYzohdW6HwjvNhmjPhgx3ry1W/P75NWsshaFZFO2EX0UTB/7GmjJpPOLOfWtVJVYwa4etM7PCbMfToaMLYBNb1ZsRPZz3jV7PbuVvmsVCyHAD0PkXadfU4DT9gdNh1SbnrLcc2CBcuCxJi4u0GaX5nqvA5aj/7L7YrNIov1GU=
+	t=1708967577; cv=none; b=BFLx+dYLKS7crzs97oq1DnOswMzXSwQ8JdAt88IWj6AKcZD/fEnJwullDWREE7uRNajyL1HTVYt7nEVwC5d7JpHyLkogDi0PzDFag7WoDOBrnQHT6r4KNb4emek/lGWgdpclqy9Fdj0/hHVqdwR8lD3piejdYqqFEzADQeElhOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708967555; c=relaxed/simple;
-	bh=740ThXuH7qBFedfVnHgzd+yuT/T19dQtEhUBFyzKkaE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mTWRFi1xWquZuvOwCGJRV+8u1kn0r1N8BJoq87l7wt1/pP/7aGpTpYX7HFyh7P7UqH5EM1o6CC30TgTVaw0v5vOCxawH9N2vjcqJxZWs3YVWVWk1O/r+v5btI2D32NiIDm2wSVjAdKJHjXbXEze6glvbIOlL2SrgZmOtElBhKUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 36F68DA7;
-	Mon, 26 Feb 2024 09:13:10 -0800 (PST)
-Received: from [10.57.49.227] (unknown [10.57.49.227])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AA3A3F73F;
-	Mon, 26 Feb 2024 09:12:30 -0800 (PST)
-Message-ID: <3e1e7c18-d9ac-4f9a-82bb-6b4f10580705@arm.com>
-Date: Mon, 26 Feb 2024 17:12:28 +0000
+	s=arc-20240116; t=1708967577; c=relaxed/simple;
+	bh=qfs9npxew4QZJ2PWJjpG7NN0CXdtBE3vktHY5s5LCmo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=dXkkHZmj4k/Wew4saBrih3JsOjS4YLZxsUTps0W0RysDTF2DxCr84kb4Ms9cXa+QXlevFvAnhL9Ta2TmvfDsDtpyEDr+aRwnOc423ujCmKw3JxQARHX16SrE+C+XMW8jIwIezBy2zdKi2Q6QNiLNSLNzHBLj3rIcbggvu8MyfYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UAMLG4mC; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so4371070a12.1;
+        Mon, 26 Feb 2024 09:12:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708967574; x=1709572374; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xHsvO2ojw3wAaSXT20nex1iPrH3WjQEzc6x+r/FAtBs=;
+        b=UAMLG4mCy7Emc1QlJQxXFY7FYiSNAwxODcROdyPXF/n4LE41sgkX8DeiX3hBOP4i+B
+         NsXZv7o3/2uxr2SeEogJay2d6j1KuQRiBohJ7JLB8/sMQ/TA+c/ThjWxyGFA+I+cgUMv
+         lWO19AVGAdz1GIO59Z6OS+gUiX8O4vUBU+YMPEWV5yxkKiWDU4r6JjVuWhMmxMAHWStu
+         joSYuuDN5et5Nwl6WGX06vDROT2ylLEjW0RagNZ8FLv6otSgafbuwKevzICzDZuqvDK0
+         OBu4GucoJdWfVLpYoflFhSJFPZ2pSW7HqcHRlBOLJ5FD/4STwvvxXBso+i/B4vVuz4QS
+         kp5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708967574; x=1709572374;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xHsvO2ojw3wAaSXT20nex1iPrH3WjQEzc6x+r/FAtBs=;
+        b=erSRFz9Iz1YjL/wSAbkYgKJx+O8+bQwKZnW3yIRKHPelimzggd/OKatcFKH5CdNBVA
+         tDV8g34/erShfsTooZYae3kBniDkB6unoJ5ZLwh5MNRZHmZ4vPwJxVqXz3vMUAN7Qsq8
+         5xV6gCPQtqMuYGKV/yAhP1iTe7wa1bSOvOz6ZDk9xn2p4kv1jfbAl47+p5x9+3aFY4WL
+         LOSUyxtR7IqYW4t7VyLiZepCxejiERDfktYanHouivKo3E/IcXU2z14Mn5jXV7s/dm1a
+         YVAs2LgKJWjhHFHVkXhSEayKzrdONpRgAhr4CUTbAREBKgeZrGIaZaxAIpP55p+U23kh
+         zm5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUGhA1CSPl80BdbnTU0ulyyr+X1h8v9tf0gua1aE9rrUt4Rz5M6vhdEbF2QINyJe8UmXAzRkZqC4We9aKdDHSndmpqTm5+dmx+mFheIOAr4yy0+S4zLLV/UeYIiMatCUOYLsV6H/mR27g==
+X-Gm-Message-State: AOJu0Yx2/tdOiRvH4hEL2csbIydEGBxIywG783ZV41B/rW9zZwZXx9gQ
+	gdt5lOeA+vflcYO91i2Q23NhkIkKAC5USUqDwA63XGQV9tunRMk0
+X-Google-Smtp-Source: AGHT+IH5frrm0IXBGW0E8O+sVSV0Pc15SBSqYT7kfDX8vi7iJPKdrue3XGDQNR9RWKKAlFGQL8P+Uw==
+X-Received: by 2002:a17:906:b115:b0:a3f:5b9b:a17b with SMTP id u21-20020a170906b11500b00a3f5b9ba17bmr4675959ejy.53.1708967574495;
+        Mon, 26 Feb 2024 09:12:54 -0800 (PST)
+Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
+        by smtp.googlemail.com with ESMTPSA id ss3-20020a170907c00300b00a4396e930bdsm98989ejc.79.2024.02.26.09.12.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 09:12:54 -0800 (PST)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Subject: [PATCH v2 0/2] arm64: add minimal boot support for TP-Link Archer
+ AX55 v1
+Date: Mon, 26 Feb 2024 18:12:38 +0100
+Message-Id: <20240226-archer-ax55-v1-v2-0-3776eb61f432@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Correcting the spelling mistakes in
- "Documentation/ABI/testing/sysfs-bus-cxl" and
- "Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc"
-Content-Language: en-GB
-To: prabhav kumar <pvkumar5749404@gmail.com>, mike.leach@linaro.org,
- james.clark@arm.com
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- corbet@lwn.net, linux-doc@vger.kernel.org
-References: <20240220214212.10231-1-pvkumar5749404@gmail.com>
- <CAH8oh8XcHGL_jdwLJJKa3qW0xQ6D36_LEUXFJUkzhdVNygSGjQ@mail.gmail.com>
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <CAH8oh8XcHGL_jdwLJJKa3qW0xQ6D36_LEUXFJUkzhdVNygSGjQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIbG3GUC/13MTQrCMBCG4auUWRvJj7GNK+8hXYR00g7YpiQSK
+ iV3NxbcCLN5B75nh4SRMMGt2SFipkRhqSFPDbjJLiMyGmqD5PLCpRTMRjdhZHbTmmXBWoWDEda
+ 07opQR2tET9sBPvraE6VXiO/Dz+L7/VHqn6rHmTG+81Y61enuPs6WnmcXZuhLKR8FA57YrAAAA
+ A==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>, 
+ Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.3
 
-On 21/02/2024 18:52, prabhav kumar wrote:
-> 
-> 
-> On Wed, Feb 21, 2024 at 3:12 AM Prabhav Kumar Vaish 
-> <pvkumar5749404@gmail.com <mailto:pvkumar5749404@gmail.com>> wrote:
-> 
->     Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com
->     <mailto:pvkumar5749404@gmail.com>>
-> 
->     Changes:
->              - "avaialble" corrected to "available" in
->     "Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc"
->              - "firwmare" corrected to "firmware" in
->     "Documentation/ABI/testing/sysfs-bus-cxl"
->     Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com
->     <mailto:pvkumar5749404@gmail.com>>
+The purpose of this series to add minimal boot support for the
+TP-Link Archer AX55 v1 dual-band wireless router.
 
-And also, please don't post empty responses. + Fix your mail client to
-stick to plain-text for email responses on the list.
+There are two patches:
+  - the first one adds the compatible for the board into the dt-bindings
+    documentation,
+  - the second patch introduces a minimal device tree source which can be
+    used for booting initramfs images
 
+---
+Changes in v2:
+  - reorder pin configuration properties in patch 2/2
+  - add 'Acked-by' tag to patch 1/2
+  - Link to v1: https://lore.kernel.org/r/20240223-archer-ax55-v1-v1-0-99f8fa2c3858@gmail.com
 
-Suzuki
+---
+Gabor Juhos (2):
+      dt-bindings: arm: qcom: add TP-Link Archer AX55 v1
+      arm64: dts: qcom: add TP-Link Archer AX55 v1
 
+ Documentation/devicetree/bindings/arm/qcom.yaml    |   1 +
+ arch/arm64/boot/dts/qcom/Makefile                  |   1 +
+ .../dts/qcom/ipq5018-tplink-archer-ax55-v1.dts     | 133 +++++++++++++++++++++
+ 3 files changed, 135 insertions(+)
+---
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+change-id: 20240221-archer-ax55-v1-73ed91a97c6e
 
->     ---
->       Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc | 2 +-
->       Documentation/ABI/testing/sysfs-bus-cxl                   | 2 +-
->       2 files changed, 2 insertions(+), 2 deletions(-)
-> 
->     diff --git
->     a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
->     b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
->     index 96aafa66b4a5..339cec3b2f1a 100644
->     --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
->     +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
->     @@ -97,7 +97,7 @@ Date:         August 2023
->       KernelVersion: 6.7
->       Contact:       Anshuman Khandual <anshuman.khandual@arm.com
->     <mailto:anshuman.khandual@arm.com>>
->       Description:   (Read) Shows all supported Coresight TMC-ETR buffer
->     modes available
->     -               for the users to configure explicitly. This file is
->     avaialble only
->     +               for the users to configure explicitly. This file is
->     available only
->                      for TMC ETR devices.
-> 
->       What:         
->     /sys/bus/coresight/devices/<memory_map>.tmc/buf_mode_preferred
->     diff --git a/Documentation/ABI/testing/sysfs-bus-cxl
->     b/Documentation/ABI/testing/sysfs-bus-cxl
->     index fff2581b8033..bbf6de5a4ca1 100644
->     --- a/Documentation/ABI/testing/sysfs-bus-cxl
->     +++ b/Documentation/ABI/testing/sysfs-bus-cxl
->     @@ -224,7 +224,7 @@ Description:
->                      decoding a Host Physical Address range. Note that
->     this number
->                      may be elevated without any regionX objects active
->     or even
->                      enumerated, as this may be due to decoders
->     established by
->     -               platform firwmare or a previous kernel (kexec).
->     +               platform firmware or a previous kernel (kexec).
-> 
-> 
->       What:          /sys/bus/cxl/devices/decoderX.Y
->     -- 
->     2.34.1
-> 
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
 
 
