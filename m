@@ -1,176 +1,108 @@
-Return-Path: <linux-kernel+bounces-82298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 839D586820D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:43:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE43386820A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:42:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B56081C22858
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:43:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E6671F2313E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54367130E5B;
-	Mon, 26 Feb 2024 20:43:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB39131746;
+	Mon, 26 Feb 2024 20:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mFTKedXe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="eJKJaNiO"
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EADF1E878;
-	Mon, 26 Feb 2024 20:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46AD8199B8;
+	Mon, 26 Feb 2024 20:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708980197; cv=none; b=CdfJjekNh+rxCs5edzht5nSzVfvsckvfGn+9F/KPSSHVqC974eXmrvhzkxPtlJxJO5BEiR/VG1QrQ+ExaRz9TCp4YYUyibqoQwh0/5uKRsO3Vyv0TTTpKAXdP6GPTNBMxi+38POFhCy74pvO1WjhIJTHhhfNpKxzjrUn/s3VXl0=
+	t=1708980148; cv=none; b=NPNg+zbXh5yKPiXRC9R2R73EgYuvQbKwe118oFEjxZ/HIU3yX1k6iyoHR2Cy7Z7Z8syaRx1yF00+hgnpcxKBVRAsVF0jUEMHq2QNk+HAAtNgviyZ3FMt2Z08S/q+wxaagOBtc5BWiGKGc6j9a6DjQhCNbi8CipHB8NzOwfU1RA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708980197; c=relaxed/simple;
-	bh=MdpXJHvPFyl1RGvBDZHlVxvMYdSYQEzmwqbyhU9uefI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pllEUbQcNu5kfDFWYcoVSQG1kpnvMoibO3vFQbt3U2B92MjShMut4M4osFBxhVqbiW74QuLGPSTEkGpIe/M7YWmkFuDUtdeotifXzW2BErR2SZ/6dejajnwqMpKbJ1rGEl90amxZxWL6yWT2uIsOGXu+RU0XSLcCnrLLjjfQJuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mFTKedXe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DBD2C433F1;
-	Mon, 26 Feb 2024 20:43:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708980197;
-	bh=MdpXJHvPFyl1RGvBDZHlVxvMYdSYQEzmwqbyhU9uefI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mFTKedXeGids3PFaNjc8pIdSTCfpY1rxt/VGX52eFORSwm45uc6U8Oly1UDpo09jC
-	 wTbTQrcU68F418dMHqJgghcgJeLiGFJyM6Uyvyc4+kOs3rzNrEal2u4J9dZPH87xjA
-	 679uJKZDD04T90Tn2sYH5JMv4RGiSa0d+OEUlICSJ89mBVtWQvvHuij2mPHyqpc4yQ
-	 u1LQQM9X/HNRt23aBUqs/qQw/INSsjexkrkXS5jf6JAE7nmOWP5qiczWIN1T4CdAMm
-	 3wzvIOMJo53sB3obX1HRSqbkiD7nbspgIgYdPSbxgsIiI5DJnfBK3SN9F/3kcogWp+
-	 tvsvsWXuRs7qw==
-Date: Mon, 26 Feb 2024 20:41:42 +0000
-From: Simon Horman <horms@kernel.org>
-To: Dmitry Safonov <dima@arista.com>
-Cc: Eric Dumazet <edumazet@google.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	David Ahern <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	Dmitry Safonov <0x7f454c46@gmail.com>
-Subject: Re: [PATCH net-next 03/10] net/tcp: Move tcp_inbound_hash() from
- headers
-Message-ID: <20240226204142.GJ13129@kernel.org>
-References: <20240224-tcp-ao-tracepoints-v1-0-15f31b7f30a7@arista.com>
- <20240224-tcp-ao-tracepoints-v1-3-15f31b7f30a7@arista.com>
+	s=arc-20240116; t=1708980148; c=relaxed/simple;
+	bh=f2j+Sd5wJcy3Yy1n0NkWtL6bNbfHHQrqDFOhVY0x1k8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ZbFTHKw1VTUJA+BYeYEbT4UDtIufw7Dky+MmgW4PA/c0JPMeDyr2owfDKvCdafOezTqkVSCh8ta1p8nOalCDy283yZdymqNMNDP/Ie1NTtmUCXfclMAhBhEf5WeK33DNi+u54Bk4qP3F0SzCtG8qr+HjAn/bjmmzlbtbDdUIXAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=eJKJaNiO; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4TkCGn1mkXzDqW9;
+	Mon, 26 Feb 2024 20:42:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1708980145; bh=f2j+Sd5wJcy3Yy1n0NkWtL6bNbfHHQrqDFOhVY0x1k8=;
+	h=From:Date:Subject:To:Cc:From;
+	b=eJKJaNiOEN9yQrggyt8qHJPDQBSeGfSeu+XmODTsDxvhyE+cJeaJFHA6SBX99rUUp
+	 SOGaGwDpB1o1yEQENJXM38tn5foDMlQy0cr3VJ5fCEtcwXnl/VzZCyrqOmY04xjCy6
+	 FxNkvHjZ1QPrjIszOMkpTRGHaHRUMvAkcV4V8f/I=
+X-Riseup-User-ID: 5C435D2CB39E271D201AEA1B972B596A08179232E5392308FFFB717330863423
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4TkCGh2RgTzJn68;
+	Mon, 26 Feb 2024 20:42:19 +0000 (UTC)
+From: Arthur Grillo <arthurgrillo@riseup.net>
+Date: Mon, 26 Feb 2024 17:42:11 -0300
+Subject: [PATCH] drm/vkms: Add information on how to benchmark
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224-tcp-ao-tracepoints-v1-3-15f31b7f30a7@arista.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240226-bench-vkms-v1-1-515ef91b11c8@riseup.net>
+X-B4-Tracking: v=1; b=H4sIAKL33GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIyMz3aTUvOQM3bLs3GJd0ySLJPPExCQjU9NUJaCGgqLUtMwKsGHRsbW
+ 1AGPd0U9cAAAA
+To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
+ Melissa Wen <melissa.srw@gmail.com>, 
+ =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>, 
+ Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+ Pekka Paalanen <pekka.paalanen@collabora.com>
+Cc: dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Arthur Grillo <arthurgrillo@riseup.net>
 
-On Sat, Feb 24, 2024 at 09:04:11AM +0000, Dmitry Safonov wrote:
-> Two reasons:
-> 1. It's grown up enough
-> 2. In order to not do header spaghetti by including
->    <trace/events/tcp.h>, which is necessary for TCP tracepoints.
-> 
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
+Now that we have a defined benchmark for testing the driver, add
+documentation on how to run it.
 
-..
+Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+---
+ Documentation/gpu/vkms.rst | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> index c82dc42f57c6..5fd61ae6bcc9 100644
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@ -4485,6 +4485,78 @@ EXPORT_SYMBOL(tcp_inbound_md5_hash);
->  
->  #endif
->  
-> +/* Called with rcu_read_lock() */
-> +enum skb_drop_reason
-> +tcp_inbound_hash(struct sock *sk, const struct request_sock *req,
-> +		 const struct sk_buff *skb,
-> +		 const void *saddr, const void *daddr,
-> +		 int family, int dif, int sdif)
-> +{
-> +	const struct tcphdr *th = tcp_hdr(skb);
-> +	const struct tcp_ao_hdr *aoh;
-> +	const __u8 *md5_location;
-> +	int l3index;
-> +
-> +	/* Invalid option or two times meet any of auth options */
-> +	if (tcp_parse_auth_options(th, &md5_location, &aoh)) {
-> +		tcp_hash_fail("TCP segment has incorrect auth options set",
-> +			      family, skb, "");
-> +		return SKB_DROP_REASON_TCP_AUTH_HDR;
-> +	}
-> +
-> +	if (req) {
-> +		if (tcp_rsk_used_ao(req) != !!aoh) {
-> +			u8 keyid, rnext, maclen;
-> +
-> +			if (aoh) {
-> +				keyid = aoh->keyid;
-> +				rnext = aoh->rnext_keyid;
-> +				maclen = tcp_ao_hdr_maclen(aoh);
-> +			} else {
-> +				keyid = rnext = maclen = 0;
-> +			}
+diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
+index ba04ac7c2167..6d07f79f77ff 100644
+--- a/Documentation/gpu/vkms.rst
++++ b/Documentation/gpu/vkms.rst
+@@ -89,6 +89,12 @@ You can also run subtests if you do not want to run the entire test::
+   sudo ./build/tests/kms_flip --run-subtest basic-plain-flip --device "sys:/sys/devices/platform/vkms"
+   sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/tests/kms_flip --run-subtest basic-plain-flip
+ 
++If you are developing features that may affect performance, you can run the kms_fb_stress
++benchmark::
++
++  sudo ./build/benchmarks/kms_fb_stress --device "sys:/sys/devices/platform/vkms"
++  sudo IGT_DEVICE="sys:/sys/devices/platform/vkms" ./build/benchmarks/kms_fb_stress
++
+ TODO
+ ====
+ 
 
-Hi Dmitry,
+---
+base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
+change-id: 20240226-bench-vkms-5b8b7aab255e
 
-it looks like keyid is set but otherwise unused.
+Best regards,
+-- 
+Arthur Grillo <arthurgrillo@riseup.net>
 
-Flagged by W=1 builds with gcc-13 and clang-17.
-
-> +
-> +			NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOBAD);
-> +			tcp_hash_fail("TCP connection can't start/end using TCP-AO",
-> +				      family, skb, "%s",
-> +				      !aoh ? "missing AO" : "AO signed");
-> +			return SKB_DROP_REASON_TCP_AOFAILURE;
-> +		}
-> +	}
-> +
-> +	/* sdif set, means packet ingressed via a device
-> +	 * in an L3 domain and dif is set to the l3mdev
-> +	 */
-> +	l3index = sdif ? dif : 0;
-> +
-> +	/* Fast path: unsigned segments */
-> +	if (likely(!md5_location && !aoh)) {
-> +		/* Drop if there's TCP-MD5 or TCP-AO key with any rcvid/sndid
-> +		 * for the remote peer. On TCP-AO established connection
-> +		 * the last key is impossible to remove, so there's
-> +		 * always at least one current_key.
-> +		 */
-> +		if (tcp_ao_required(sk, saddr, family, l3index, true)) {
-> +			tcp_hash_fail("AO hash is required, but not found",
-> +					family, skb, "L3 index %d", l3index);
-> +			return SKB_DROP_REASON_TCP_AONOTFOUND;
-> +		}
-> +		if (unlikely(tcp_md5_do_lookup(sk, l3index, saddr, family))) {
-> +			NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMD5NOTFOUND);
-> +			tcp_hash_fail("MD5 Hash not found",
-> +				      family, skb, "L3 index %d", l3index);
-> +			return SKB_DROP_REASON_TCP_MD5NOTFOUND;
-> +		}
-> +		return SKB_NOT_DROPPED_YET;
-> +	}
-> +
-> +	if (aoh)
-> +		return tcp_inbound_ao_hash(sk, skb, family, req, l3index, aoh);
-> +
-> +	return tcp_inbound_md5_hash(sk, skb, saddr, daddr, family,
-> +				    l3index, md5_location);
-> +}
-> +
->  void tcp_done(struct sock *sk)
->  {
->  	struct request_sock *req;
-> 
-> -- 
-> 2.43.0
-> 
-> 
 
