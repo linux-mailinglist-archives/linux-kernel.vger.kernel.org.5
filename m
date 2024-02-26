@@ -1,231 +1,281 @@
-Return-Path: <linux-kernel+bounces-80697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C860A866B64
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:52:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0D98866B70
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F101B21557
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:52:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6E9EB229EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 676461BF50;
-	Mon, 26 Feb 2024 07:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418921C283;
+	Mon, 26 Feb 2024 07:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZrodU2zL"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QRj1/jI8"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A751BDD8
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3391E1BF37
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708933958; cv=none; b=PLkgjNmOHqM0Iahb8hN2vzGTxyJBu+ZUVTc+/VT6vkzOsn5cjJKCET5eR30k7ud07Kl5GD/W7iV+WrmLVvLnpArsjro/58hNNOAKxS9jXHUAbcv1o5N5Oke3jqkyqtiGSAFmOAJdVdf+zzXGna106Jae1PzUYfrTdXoa8Gy55Fw=
+	t=1708934097; cv=none; b=p6nXv3WADR/GTRf0XiuKxNMjnRmgC8l70yVNNsOJ42atLzv0rEMqSCrydH6hRoqVdqEPEaojZBCoou+RuMtsnFHnnY4+Wq1Cuu3AN/gS2NLrVkzbbAQvDu24RqEsc3jmLRHoREjb21MTGpHLYpR/feUh1DxOeaNkhmj9cCDlkiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708933958; c=relaxed/simple;
-	bh=79IFNXtUb0pKOStZ3CnUgtwtP/UJl7nrruMLfiTiZ4I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BKTmtnSUXkNvGcQJUTEDrC3ogBBhJ1iJWvtZ8tgWKEqDuRGFqA+9rUZXelBsNoCZ1gvSaUieDgrnyzcirw1erun530KbTU85XP4GiklBwTa+LNzyKA04wnvyjoxhA9PXJQoL4SyaZXeU3Iy3i11GKk0BQnNKshn86ETM0zctGvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZrodU2zL; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33dc3fe739aso688262f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 23:52:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708933955; x=1709538755; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPQ+HZG9ZH8pgTa6BFUHg2MQy0OsY1NDbVY61HuOvvM=;
-        b=ZrodU2zL+mpi/4Ak/M0e21kaQ0sMDyDeLFMz8lopiT22u4U8ww3yi1kYJ78u6o+1rt
-         YBf3RElJZTVnEYaOWTQFpb5h86pKf7695PWaHejrVUMo3Fy/ypEiZhgCt638bEmhAexX
-         AbOi5d1NHlGXvx9NrERYNgY4VTGSTwM2XnDQn3XqgU35NNrZl86FaVgfC9N3xEGuXQmd
-         eBeyZqf6ToC1+Td0137Wx1VzD/qyDSvbsWwz75Xybal54uDqk9BirQzTHfxWiIvBJ/kz
-         KUDAWokaTcqqMyO+KHCB1eeWH8jDVd1/qg4rIoKMqgfd/A5zxu5QDKlQ88VXECsO0yrk
-         2ROw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708933955; x=1709538755;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZPQ+HZG9ZH8pgTa6BFUHg2MQy0OsY1NDbVY61HuOvvM=;
-        b=rZvbSfC2oWEeS85ZcXg5aHNMMTJpOpDFWZDhVet/OBoHMIgtGikEvV6zXiAiGkGxxr
-         Dz2rr/EfgE62ZhVa5ImczGacWqYlb6Kqk/iqgPgPuPH4ICwxV+JFNaCZKqypWmeCFOK+
-         MgmDcyKtY2BFyKJr+GKlARUM09GgSii+0HyZUHJ1yRYMoM9m3PYDCz8zz5la6iv81UA3
-         5a+yKUHu4c4OW4WxkQMntQ7/I2TTCSYAIOCjjpG9C4/Em/gf5+AqQ5WEtrA2lxboEu8j
-         xh4i9FFEvRDRZx14A0J5jk3NGvTjRsi1bE49+90RtjWQM9ytpkSSXNk1M8En/xlDSxuo
-         WggQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVmO9NVJGnU5gve/vJ7ahjw1EmO+sFY3iOs2vlZZ9g7VKJ7kmkmPZdDcSxharrl4wgrdtxN0FM4movN/uw4Vh7LXUCE1BcV3+zAf8Xm
-X-Gm-Message-State: AOJu0YwUoeL5gPIWTUwo6JlnCm6fCD+n1V82ZK+pyJsgyfQCDtMtka1h
-	ULHOQIUzITZYkjzD7uewXERPeYIRC5I7fe9Kexxv/MfIt0AA+6Rh
-X-Google-Smtp-Source: AGHT+IFaQ6sNsZyzhrO0DhVowwdLlWEGJHqFGcrFAghi/l+k+EEJbC6GBWulh3qLj9alsBg0etlpBg==
-X-Received: by 2002:a5d:528f:0:b0:33d:dd41:674c with SMTP id c15-20020a5d528f000000b0033ddd41674cmr704870wrv.28.1708933954756;
-        Sun, 25 Feb 2024 23:52:34 -0800 (PST)
-Received: from Ubuntu22.myguest.virtualbox.org ([46.121.140.152])
-        by smtp.gmail.com with ESMTPSA id bj20-20020a0560001e1400b0033db0c866f7sm7436968wrb.11.2024.02.25.23.52.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 23:52:34 -0800 (PST)
-Received: by Ubuntu22.myguest.virtualbox.org (sSMTP sendmail emulation); Mon, 26 Feb 2024 09:52:31 +0200
-From: Meir Elisha <meir6264@gmail.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ruan Jinjie <ruanjinjie@huawei.com>,
-	Yang Yingliang <yangyingliang@huawei.com>
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Meir Elisha <meir6264@gmail.com>
-Subject: [PATCH v3] Staging: rtl8723bs: Remove spaces before tabs in rtw_set_auth
-Date: Mon, 26 Feb 2024 09:52:25 +0200
-Message-Id: <20240226075225.44881-1-meir6264@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708934097; c=relaxed/simple;
+	bh=jx9S3qDAUaiPoiMuabchvVlMN/Q1rpDtv8tOt9/cFKE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YHoAiMGsHbWurAO3225bAD4FjAnW9r3SB8Iq72/5t/uodlvcwPgweD7RsvGgRx9htkKfAiiiQ74TO3kNvA93rUmIVbQfbZqZU0OUl3l412fM3QeqNOuMJCk8WmjXRfWN3Ic2MhxHTjqc6LEgbZVnBGZTeLnxdDzzx0uMP6s/3FU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QRj1/jI8; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708934095; x=1740470095;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=jx9S3qDAUaiPoiMuabchvVlMN/Q1rpDtv8tOt9/cFKE=;
+  b=QRj1/jI8LJ+caWOYjsrYBHJsYpXhbCh7e9cWN7E0CVC333sLtVW3pxRU
+   V1tFvx+5QdKs9dFGGf40k9jza84MuO7ZYYPlqjp4S4LWbk7MG0Z45GCc3
+   1pxhBeC85jX9Mz8OLq6XzqFm6+uMRJAJdNfdF/S8eF4lik9PA5j67glJ/
+   +Ikq3HMVENkobjoxGUrOpmBEQSDl32hiY7/AyQUXlicVGWk/Dx9SUJZ6S
+   XxOEbncp0C0hLI9imKjXr8Q+NTTdL4xY2pOWmLwvvcJXcwBxU5UpW38f2
+   7G8AFnToHR6H/6+GgyM+dGqcSEaaS6ov+SmhrwV0+ikPhVw2wb9mtjQuH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="20654587"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="20654587"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 23:54:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6719975"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 23:54:51 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: "zhangpeng (AS)" <zhangpeng362@huawei.com>
+Cc: <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>,
+  <akpm@linux-foundation.org>,  <willy@infradead.org>,
+  <fengwei.yin@intel.com>,  <aneesh.kumar@linux.ibm.com>,
+  <shy828301@gmail.com>,  <hughd@google.com>,  <david@redhat.com>,
+  <wangkefeng.wang@huawei.com>,  Nanyong Sun <sunnanyong@huawei.com>
+Subject: Re: [PATCH v2] filemap: avoid unnecessary major faults in
+ filemap_fault()
+In-Reply-To: <43182940-ddaa-7073-001a-e95d0999c5ba@huawei.com> (zhangpeng's
+	message of "Mon, 26 Feb 2024 15:33:08 +0800")
+References: <20240206092627.1421712-1-zhangpeng362@huawei.com>
+	<87jznhypxy.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<a905dea7-018e-80c0-ab54-85766add8d96@huawei.com>
+	<87frxfhibt.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<43182940-ddaa-7073-001a-e95d0999c5ba@huawei.com>
+Date: Mon, 26 Feb 2024 15:52:56 +0800
+Message-ID: <87il2bek6f.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 
-Remove spaces before tabs to improve coding style.
+"zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
 
-Signed-off-by: Meir Elisha <meir6264@gmail.com>
----
-Changes in v3: subject and description changed, revert dead code changes
-Changes in v2: remove dead code
+> On 2024/2/26 14:04, Huang, Ying wrote:
+>
+>> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
+>>
+>>> On 2024/2/7 10:21, Huang, Ying wrote:
+>>>
+>>>> Peng Zhang <zhangpeng362@huawei.com> writes:
+>>>>> From: ZhangPeng <zhangpeng362@huawei.com>
+>>>>>
+>>>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
+>>>>> in application, which leading to an unexpected performance issue[1].
+>>>>>
+>>>>> This caused by temporarily cleared PTE during a read+clear/modify/write
+>>>>> update of the PTE, eg, do_numa_page()/change_pte_range().
+>>>>>
+>>>>> For the data segment of the user-mode program, the global variable area
+>>>>> is a private mapping. After the pagecache is loaded, the private anonymous
+>>>>> page is generated after the COW is triggered. Mlockall can lock COW pages
+>>>>> (anonymous pages), but the original file pages cannot be locked and may
+>>>>> be reclaimed. If the global variable (private anon page) is accessed when
+>>>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
+>>>>>
+>>>>> At this time, the original private file page may have been reclaimed.
+>>>>> If the page cache is not available at this time, a major fault will be
+>>>>> triggered and the file will be read, causing additional overhead.
+>>>>>
+>>>>> Fix this by rechecking the PTE without acquiring PTL in filemap_fault()
+>>>>> before triggering a major fault.
+>>>>>
+>>>>> Testing file anonymous page read and write page fault performance in ext4
+>>>>> and ramdisk using will-it-scale[2] on a x86 physical machine. The data
+>>>>> is the average change compared with the mainline after the patch is
+>>>>> applied. The test results are within the range of fluctuation, and there
+>>>>> is no obvious difference. The test results are as follows:
+>>>> You still claim that there's no difference in the test results.  If so,
+>>>> why do you implement the patch?  IMHO, you need to prove your patch can
+>>>> improve the performance in some cases.
+>>> I'm sorry that maybe I didn't express myself clearly.
+>>>
+>>> The purpose of this patch is to fix the issue that major fault may still be triggered
+>>> with mlockall(), thereby improving a little performance. This patch is more of a bugfix
+>>> than a performance improvement patch.
+>>>
+>>> This issue affects our traffic analysis service. The inbound traffic is heavy. If a major
+>>> fault occurs, the I/O schedule is triggered and the original I/O is suspended. Generally,
+>>> the I/O schedule is 0.7 ms. If other applications are operating disks, the system needs
+>>> to wait for more than 10 ms. However, the inbound traffic is heavy and the NIC buffer is
+>>> small. As a result, packet loss occurs. The traffic analysis service can't tolerate packet
+>>> loss.
+>>>
+>>> To prevent packet loss, we use the mlockall() function to prevent I/O. It is unreasonable
+>>> that major faults will still be triggered after mlockall() is used.
+>>>
+>>> In our service test environment, the baseline is 7 major faults/12 hours. After applied the
+>>> unlock patch, the probability of triggering the major fault is 1 major faults/12 hours. After
+>>> applied the lock patch, no major fault will be triggered. So only the locked patch can actually
+>>> solve our problem.
+>> This is the data I asked for.
+>>
+>> But, you said that this is a feature bug fix instead of performance
+>> improvement.  So, I checked the mlock(2), and found the following words,
+>>
+>> "
+>>         mlockall() locks all pages mapped into the address space of the calling
+>>         process.  This includes the pages of the code, data, and stack segment,
+>>         as well as shared libraries, user space kernel data, shared memory, and
+>>         memory-mapped files.  All mapped pages are guaranteed to be resident in
+>>         RAM when the call returns successfully; the  pages  are  guaranteed  to
+>>         stay in RAM until later unlocked.
+>> "
+>>
+>> In theory, the locked page are in RAM.  So, IIUC, we don't violate the
+>> ABI.  But, in effect, we does do that.
+>
+> "mlockall() locks all pages mapped into the address space of the calling process."
+> For a private mapping, mlockall() can lock COW pages (anonymous pages), but the
+> original file pages can't be locked. Maybe, we violate the ABI here.
 
- drivers/staging/rtl8723bs/core/rtw_mlme.c | 48 +++++++++++------------
- 1 file changed, 24 insertions(+), 24 deletions(-)
+If so, please make it explicit and loudly.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-index 5568215b35bd..5379393349fe 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-@@ -169,7 +169,7 @@ void _rtw_free_network(struct	mlme_priv *pmlmepriv, struct wlan_network *pnetwor
- {
- 	unsigned int delta_time;
- 	u32 lifetime = SCANQUEUE_LIFETIME;
--/* 	_irqL irqL; */
-+/*	_irqL irqL; */
- 	struct __queue *free_queue = &(pmlmepriv->free_bss_pool);
- 
- 	if (!pnetwork)
-@@ -389,7 +389,7 @@ int is_same_network(struct wlan_bssid_ex *src, struct wlan_bssid_ex *dst, u8 fea
- 	d_cap = le16_to_cpu(tmpd);
- 
- 	return (src->ssid.ssid_length == dst->ssid.ssid_length) &&
--		/* 	(src->configuration.ds_config == dst->configuration.ds_config) && */
-+		/* (src->configuration.ds_config == dst->configuration.ds_config) && */
- 			((!memcmp(src->mac_address, dst->mac_address, ETH_ALEN))) &&
- 			((!memcmp(src->ssid.ssid, dst->ssid.ssid, src->ssid.ssid_length))) &&
- 			((s_cap & WLAN_CAPABILITY_IBSS) ==
-@@ -627,11 +627,11 @@ void rtw_add_network(struct adapter *adapter, struct wlan_bssid_ex *pnetwork)
- }
- 
- /* select the desired network based on the capability of the (i)bss. */
--/*  check items: (1) security */
--/* 			   (2) network_type */
--/* 			   (3) WMM */
--/* 			   (4) HT */
--/*                      (5) others */
-+/* check items: (1) security */
-+/* (2) network_type */
-+/* (3) WMM */
-+/* (4) HT */
-+/* (5) others */
- int rtw_is_desired_network(struct adapter *adapter, struct wlan_network *pnetwork);
- int rtw_is_desired_network(struct adapter *adapter, struct wlan_network *pnetwork)
- {
-@@ -1054,9 +1054,9 @@ static struct sta_info *rtw_joinbss_update_stainfo(struct adapter *padapter, str
- 			memset((u8 *)&psta->dot11rxpn, 0, sizeof(union pn48));
- 		}
- 
--		/* 	Commented by Albert 2012/07/21 */
--		/* 	When doing the WPS, the wps_ie_len won't equal to 0 */
--		/* 	And the Wi-Fi driver shouldn't allow the data packet to be transmitted. */
-+		/* Commented by Albert 2012/07/21 */
-+		/* When doing the WPS, the wps_ie_len won't equal to 0 */
-+		/* And the Wi-Fi driver shouldn't allow the data packet to be transmitted. */
- 		if (padapter->securitypriv.wps_ie_len != 0) {
- 			psta->ieee8021x_blocked = true;
- 			padapter->securitypriv.wps_ie_len = 0;
-@@ -1916,10 +1916,10 @@ signed int rtw_set_auth(struct adapter *adapter, struct security_priv *psecurity
- signed int rtw_set_key(struct adapter *adapter, struct security_priv *psecuritypriv, signed int keyid, u8 set_tx, bool enqueue)
- {
- 	u8 keylen;
--	struct cmd_obj		*pcmd;
--	struct setkey_parm	*psetkeyparm;
--	struct cmd_priv 	*pcmdpriv = &(adapter->cmdpriv);
--	signed int	res = _SUCCESS;
-+	struct cmd_obj *pcmd;
-+	struct setkey_parm *psetkeyparm;
-+	struct cmd_priv *pcmdpriv = &(adapter->cmdpriv);
-+	signed int res = _SUCCESS;
- 
- 	psetkeyparm = rtw_zmalloc(sizeof(struct setkey_parm));
- 	if (!psetkeyparm) {
-@@ -2023,8 +2023,8 @@ int rtw_restruct_wmm_ie(struct adapter *adapter, u8 *in_ie, u8 *out_ie, uint in_
- /*  */
- /*  Search by BSSID, */
- /*  Return Value: */
--/* 		-1		:if there is no pre-auth key in the  table */
--/* 		>= 0		:if there is pre-auth key, and   return the entry id */
-+/*  -1 :if there is no pre-auth key in the  table */
-+/*  >= 0 :if there is pre-auth key, and   return the entry id */
- /*  */
- /*  */
- 
-@@ -2187,7 +2187,7 @@ void rtw_joinbss_reset(struct adapter *padapter)
- 	u8 threshold;
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 
--	struct ht_priv 	*phtpriv = &pmlmepriv->htpriv;
-+	struct ht_priv *phtpriv = &pmlmepriv->htpriv;
- 
- 	/* todo: if you want to do something io/reg/hw setting before join_bss, please add code here */
- 
-@@ -2213,11 +2213,11 @@ void rtw_joinbss_reset(struct adapter *padapter)
- 
- void rtw_ht_use_default_setting(struct adapter *padapter)
- {
--	struct mlme_priv 	*pmlmepriv = &padapter->mlmepriv;
--	struct ht_priv 	*phtpriv = &pmlmepriv->htpriv;
-+	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
-+	struct ht_priv *phtpriv = &pmlmepriv->htpriv;
- 	struct registry_priv *pregistrypriv = &padapter->registrypriv;
--	bool		bHwLDPCSupport = false, bHwSTBCSupport = false;
--	bool		bHwSupportBeamformer = false, bHwSupportBeamformee = false;
-+	bool bHwLDPCSupport = false, bHwSTBCSupport = false;
-+	bool bHwSupportBeamformer = false, bHwSupportBeamformee = false;
- 
- 	if (pregistrypriv->wifi_spec)
- 		phtpriv->bss_coexist = 1;
-@@ -2288,7 +2288,7 @@ unsigned int rtw_restructure_ht_ie(struct adapter *padapter, u8 *in_ie, u8 *out_
- 	u8 cbw40_enable = 0, stbc_rx_enable = 0, operation_bw = 0;
- 	struct registry_priv *pregistrypriv = &padapter->registrypriv;
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
--	struct ht_priv 	*phtpriv = &pmlmepriv->htpriv;
-+	struct ht_priv *phtpriv = &pmlmepriv->htpriv;
- 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
- 
- 	phtpriv->ht_option = false;
-@@ -2417,7 +2417,7 @@ void rtw_update_ht_cap(struct adapter *padapter, u8 *pie, uint ie_len, u8 channe
- 	struct ieee80211_ht_cap *pht_capie;
- 	/* struct recv_reorder_ctrl *preorder_ctrl; */
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
--	struct ht_priv 	*phtpriv = &pmlmepriv->htpriv;
-+	struct ht_priv *phtpriv = &pmlmepriv->htpriv;
- 	/* struct recv_priv *precvpriv = &padapter->recvpriv; */
- 	struct registry_priv *pregistrypriv = &padapter->registrypriv;
- 	/* struct wlan_network *pcur_network = &(pmlmepriv->cur_network);; */
-@@ -2546,7 +2546,7 @@ void rtw_issue_addbareq_cmd(struct adapter *padapter, struct xmit_frame *pxmitfr
- void rtw_append_exented_cap(struct adapter *padapter, u8 *out_ie, uint *pout_len)
- {
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
--	struct ht_priv 	*phtpriv = &pmlmepriv->htpriv;
-+	struct ht_priv *phtpriv = &pmlmepriv->htpriv;
- 	u8 cap_content[8] = {0};
- 
- 	if (phtpriv->bss_coexist)
--- 
-2.34.1
+> This is also
+> the cause of this issue. The patch fix the impact of this issue: prevent major
+> faults, reduce IO, and fix the service packet loss issue.
+>
+> Preventing major faults, and thus reducing IO, could be an important reason to use
+> mlockall(). Could we fix this with the locked patch? Or is there another way?
 
+Unfortunately, locked patch cause performance regressions for more
+common cases.  Is it possible for us to change ptep_modify_prot_start()
+to use some magic PTE value instead of 0?  That may be possible.  But,
+that isn't enough, you need to change all ptep_get_and_clear() users.
+
+--
+Best Regards,
+Huang, Ying
+
+>> But, from git history, we have cleared the PTE during modification from
+>> 2.6.12-rc2 at least.  I guess that because Linux isn't a hard real time
+>> OS, users don't expect that too.
+>>
+>> --
+>> Best Regards,
+>> Huang, Ying
+>>
+>>> The test data provided is intended to prove that the patch does not have a major impact
+>>> on the performance of the page fault itself.
+>>>
+>>>>> 	                 processes processes_idle threads threads_idle
+>>>>> ext4    private file write: -1.14%  -0.08%         -1.87%   0.13%
+>>>>> ext4    shared  file write:  0.14%  -0.53%          2.88%  -0.77%
+>>>>> ext4    private file  read:  0.03%  -0.65%         -0.51%  -0.08%
+>>>>> tmpfs   private file write: -0.34%  -0.11%          0.20%   0.15%
+>>>>> tmpfs   shared  file write:  0.96%   0.10%          2.78%  -0.34%
+>>>>> ramdisk private file write: -1.21%  -0.21%         -1.12%   0.11%
+>>>>> ramdisk private file  read:  0.00%  -0.68%         -0.33%  -0.02%
+>>>>>
+>>>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
+>>>>> [2] https://github.com/antonblanchard/will-it-scale/
+>>>>>
+>>>>> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
+>>>>> Suggested-by: Yin Fengwei <fengwei.yin@intel.com>
+>>>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+>>>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>>>> ---
+>>>>> v1->v2:
+>>>>> - Add more test results per Huang, Ying
+>>>>> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
+>>>>>     and Yin Fengwei
+>>>>> - Change pte_offset_map_nolock to pte_offset_map as the ptl lock won't
+>>>>>     be used
+>>>>>
+>>>>> RFC->v1:
+>>>>> - Add error handling when ptep == NULL per Huang, Ying and Matthew
+>>>>>     Wilcox
+>>>>> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
+>>>>>     Huang, Ying and Yin Fengwei
+>>>>> - Add pmd_none() check before PTE map
+>>>>> - Update commit message and add performance test information
+>>>>>
+>>>>>    mm/filemap.c | 34 ++++++++++++++++++++++++++++++++++
+>>>>>    1 file changed, 34 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/filemap.c b/mm/filemap.c
+>>>>> index 142864338ca4..a2c1a98bc771 100644
+>>>>> --- a/mm/filemap.c
+>>>>> +++ b/mm/filemap.c
+>>>>> @@ -3238,6 +3238,40 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>>>>    			mapping_locked = true;
+>>>>>    		}
+>>>>>    	} else {
+>>>>> +		if (!pmd_none(*vmf->pmd)) {
+>>>>> +			pte_t *ptep;
+>>>>> +
+>>>>> +			ptep = pte_offset_map(vmf->pmd, vmf->address);
+>>>>> +			if (unlikely(!ptep))
+>>>>> +				return VM_FAULT_NOPAGE;
+>>>>> +			/*
+>>>>> +			 * Recheck PTE as the PTE can be cleared temporarily
+>>>>> +			 * during a read+clear/modify/write update of the PTE,
+>>>>> +			 * eg, do_numa_page()/change_pte_range(). This will
+>>>>> +			 * trigger a major fault, even if we use mlockall,
+>>>>> +			 * which may affect performance.
+>>>>> +			 * We don't hold PTL here as acquiring PTL hurts
+>>>>> +			 * performance. So the check is still racy, but
+>>>>> +			 * the race window seems small enough.
+>>>>> +			 *
+>>>>> +			 * If we lose the race during the check, the page_fault
+>>>>> +			 * will be triggered. Butthe page table entry lock
+>>>>> +			 * still make sure the correctness:
+>>>>> +			 * - If the page cache is not reclaimed, the page_fault
+>>>>> +			 *   will work like the page fault was served already
+>>>>> +			 *   and bail out.
+>>>>> +			 * - If the page cache is reclaimed, the major fault
+>>>>> +			 *   will be triggered, page cache is filled,
+>>>>> +			 *   page_fault also work like the page fault was
+>>>>> +			 *   served already and bail out.
+>>>>> +			 */
+>>>> IMHO, this is too long.  It can be shorten to like,
+>>>>
+>>>> If we lose the race, major fault may be triggered unnecessary.  This
+>>>> hurts performance but not functionality.
+>>> OK, I'll fix it in the next version.
+>>>
+>>>>> +			if (unlikely(!pte_none(ptep_get_lockless(ptep))))
+>>>>> +				ret = VM_FAULT_NOPAGE;
+>>>>> +			pte_unmap(ptep);
+>>>>> +			if (unlikely(ret))
+>>>>> +				return ret;
+>>>>> +		}
+>>>>> +
+>>>>>    		/* No page in the page cache at all */
+>>>>>    		count_vm_event(PGMAJFAULT);
+>>>>>    		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
+>>>> --
+>>>> Best Regards,
+>>>> Huang, Ying
 
