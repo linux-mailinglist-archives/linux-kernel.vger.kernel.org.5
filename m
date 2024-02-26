@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-82211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1439C868099
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:13:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 835BD86809A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:14:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37DEF1C28822
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:13:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38E411F27599
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5514F132C3E;
-	Mon, 26 Feb 2024 19:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AFEF1332A0;
+	Mon, 26 Feb 2024 19:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U7dIZYyv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jOT4lAGg"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8ADB132471
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E05F132496
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708974606; cv=none; b=UQr+I1zK560AZXV9jMPVyqYnCkLTw02J9Y8S+ZNsrJMBQEe3O3ij0g+GTXylnv4iHTVerNKKrICsqRKAMwzRl0JIU015mfznH18tB1WjR/XyGUAXDzyhEdSDYuhefDmxz6+CskIJu9sp2lP4/Y9vzfiMinUOs6iSbjryOw0BIaY=
+	t=1708974607; cv=none; b=Bv9GsQsXNQOJWG6Y7mtcxJ4Q6juubHsE4xaX/TWiLDWIgUWG9jcGdAv/oyYgyfsu457LF74ENZJxbBZZvTpSyHsLC9UNLlP4qR3hmAC3btcM0RS29sdBZJYvfDSvOOi1++4Aq2Bax8KkTrMSrEd5hNOqpKHxGLw4TBX/Mqg81xE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708974606; c=relaxed/simple;
-	bh=PSY3c+TQ2hmITdUufmc9vn7rLXvDTbUQjAaHGocBj3w=;
+	s=arc-20240116; t=1708974607; c=relaxed/simple;
+	bh=9Kz1B1g9YBWVQVBA7u5n8sBfRhBddgPHEWEy/INdrdY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DNd0cij0p/U+jMygqLr7PbIVdjPvzMU+puju+5FnanPAOebfXHfEB5QKEZTkLbC298WyKkg0S+n6So92ZFAJWBgPKQMnsgCGugXi/ws2sAs5PF+kSiqJcsaZKHNE8VsesiKIBZHFpmlwpZ75O4aaQ6aZWjVaZpuByrzcTbJxatc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U7dIZYyv; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=Dikgc8YGooM1yMflyIaCpxnHE22e4TczU+1MHhu0GWoGr6afsQOj730HXxP37nYg3T9o65q2YasiNmU7qORD0fBtatmk2bSD1GrtRXDHoaHVjXFiFM1PKoI8Npv9TKVUXcfnXJpn6iaVJljgRI5GuEI4USpM5YxXti8A3+tvQbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jOT4lAGg; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708974605; x=1740510605;
+  t=1708974606; x=1740510606;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PSY3c+TQ2hmITdUufmc9vn7rLXvDTbUQjAaHGocBj3w=;
-  b=U7dIZYyvQs6leiB/kfmBlgVEpXV2Jm6XErpvbeC7L41jFPfx6PS9QnIR
-   fLIMP6pKIfwD0lduKPDGrYOtzg87LMKciaLhFaybzLaAC9jxHgTFV10O+
-   oeEkbx2bUaKoaIaVoOToYOu6tm7HH3d2ea9uRMzcIaFXbhdam7t09oJhz
-   CVBomgBoDW20o3xaukFmNJZAJT1VpPoTCTBcnUXosoH3jH9ocgg6fasGf
-   OXAHK97VOoXHx37HVlaWl5zNEBkBD2l7gaSe4pDCaQO2TgGCmIZXEeq1l
-   05+iWI99ns2M++fLqfnqA657ygey2ftUwKpdHz2NGET+8qyl46ngwXtNE
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14721420"
+  bh=9Kz1B1g9YBWVQVBA7u5n8sBfRhBddgPHEWEy/INdrdY=;
+  b=jOT4lAGgGPJSBIobtFG6DfkeDJDgCH9S1EcXTIpJpCTFNDri0NJf14+l
+   oPC5sVR5E5RLLYfdmLBOiYsmoyATTvnh96egcmJn1rs4CtG+HqLkL9LoI
+   Ew0vQAn5R+LW7AZiyn3e+uS9d4p7Bodw01OY/SLZuZpC8ri/rTx2b/UQw
+   CFhhdD6iMng2Q3j8kVxc3owxbgRLoZAv0834YLBEKOyz6Jbb74JZd5e4X
+   uZRyrmcC/iC5QP/JwpQwR6pArw9vHT0u5acncF0VipYu1mBU4qGSLnMmr
+   YNfkH2UkDydNgcScAwHoZLJRs2P5DKVzMu115buy2CjIZWaBV75v5NJJ7
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14721432"
 X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="14721420"
+   d="scan'208";a="14721432"
 Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:10:05 -0800
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:10:06 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="6911471"
+   d="scan'208";a="6911475"
 Received: from bdmirand-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.251.3.213])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:10:03 -0800
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:10:04 -0800
 From: Rick Edgecombe <rick.p.edgecombe@intel.com>
 To: Liam.Howlett@oracle.com,
 	akpm@linux-foundation.org,
@@ -71,9 +71,9 @@ To: Liam.Howlett@oracle.com,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
 Cc: rick.p.edgecombe@intel.com
-Subject: [PATCH v2 8/9] x86/mm: Care about shadow stack guard gap during placement
-Date: Mon, 26 Feb 2024 11:09:50 -0800
-Message-Id: <20240226190951.3240433-9-rick.p.edgecombe@intel.com>
+Subject: [PATCH v2 9/9] selftests/x86: Add placement guard gap test for shstk
+Date: Mon, 26 Feb 2024 11:09:51 -0800
+Message-Id: <20240226190951.3240433-10-rick.p.edgecombe@intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
 References: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
@@ -83,69 +83,115 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-When memory is being placed, mmap() will take care to respect the guard
-gaps of certain types of memory (VM_SHADOWSTACK, VM_GROWSUP and
-VM_GROWSDOWN). In order to ensure guard gaps between mappings, mmap()
-needs to consider two things:
- 1. That the new mapping isn’t placed in an any existing mappings guard
-    gaps.
- 2. That the new mapping isn’t placed such that any existing mappings
-    are not in *its* guard gaps.
-
-The long standing behavior of mmap() is to ensure 1, but not take any care
-around 2. So for example, if there is a PAGE_SIZE free area, and a
-mmap() with a PAGE_SIZE size, and a type that has a guard gap is being
-placed, mmap() may place the shadow stack in the PAGE_SIZE free area. Then
-the mapping that is supposed to have a guard gap will not have a gap to
-the adjacent VMA.
-
-Now that the vm_flags is passed into the arch get_unmapped_area()'s, and
-vm_unmapped_area() is ready to consider it, have VM_SHADOW_STACK's get
-guard gap consideration for scenario 2.
+The existing shadow stack test for guard gaps just checks that new
+mappings are not placed in an existing mapping's guard gap. Add one that
+checks that new mappings are not placed such that preexisting mappings are
+in the new mappings guard gap.
 
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 ---
- arch/x86/kernel/sys_x86_64.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../testing/selftests/x86/test_shadow_stack.c | 67 +++++++++++++++++--
+ 1 file changed, 63 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/sys_x86_64.c b/arch/x86/kernel/sys_x86_64.c
-index 95cb9efc47fb..f44afb3345db 100644
---- a/arch/x86/kernel/sys_x86_64.c
-+++ b/arch/x86/kernel/sys_x86_64.c
-@@ -119,6 +119,14 @@ static void find_start_end(unsigned long addr, unsigned long flags,
- 		*end = task_size_64bit(addr > DEFAULT_MAP_WINDOW);
+diff --git a/tools/testing/selftests/x86/test_shadow_stack.c b/tools/testing/selftests/x86/test_shadow_stack.c
+index 757e6527f67e..ee909a7927f9 100644
+--- a/tools/testing/selftests/x86/test_shadow_stack.c
++++ b/tools/testing/selftests/x86/test_shadow_stack.c
+@@ -556,7 +556,7 @@ struct node {
+  *      looked at the shadow stack gaps.
+  *   5. See if it landed in the gap.
+  */
+-int test_guard_gap(void)
++int test_guard_gap_other_gaps(void)
+ {
+ 	void *free_area, *shstk, *test_map = (void *)0xFFFFFFFFFFFFFFFF;
+ 	struct node *head = NULL, *cur;
+@@ -593,11 +593,64 @@ int test_guard_gap(void)
+ 	if (shstk - test_map - PAGE_SIZE != PAGE_SIZE)
+ 		return 1;
+ 
+-	printf("[OK]\tGuard gap test\n");
++	printf("[OK]\tGuard gap test, other mapping's gaps\n");
+ 
+ 	return 0;
  }
  
-+static inline unsigned long stack_guard_placement(vm_flags_t vm_flags)
++/* Tests respecting the guard gap of the mapping getting placed */
++int test_guard_gap_new_mappings_gaps(void)
 +{
-+	if (vm_flags & VM_SHADOW_STACK)
-+		return PAGE_SIZE;
++	void *free_area, *shstk_start, *test_map = (void *)0xFFFFFFFFFFFFFFFF;
++	struct node *head = NULL, *cur;
++	int ret = 0;
 +
-+	return 0;
++	free_area = mmap(0, PAGE_SIZE * 4, PROT_READ | PROT_WRITE,
++			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	munmap(free_area, PAGE_SIZE * 4);
++
++	/* Test letting map_shadow_stack find a free space */
++	shstk_start = mmap(free_area, PAGE_SIZE, PROT_READ | PROT_WRITE,
++			   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
++	if (shstk_start == MAP_FAILED || shstk_start != free_area)
++		return 1;
++
++	while (test_map > shstk_start) {
++		test_map = (void *)syscall(__NR_map_shadow_stack, 0, PAGE_SIZE, 0);
++		if (test_map == MAP_FAILED) {
++			printf("[INFO]\tmap_shadow_stack MAP_FAILED\n");
++			ret = 1;
++			break;
++		}
++
++		cur = malloc(sizeof(*cur));
++		cur->mapping = test_map;
++
++		cur->next = head;
++		head = cur;
++
++		if (test_map == free_area + PAGE_SIZE) {
++			printf("[INFO]\tNew mapping has other mapping in guard gap!\n");
++			ret = 1;
++			break;
++		}
++	}
++
++	while (head) {
++		cur = head;
++		head = cur->next;
++		munmap(cur->mapping, PAGE_SIZE);
++		free(cur);
++	}
++
++	munmap(shstk_start, PAGE_SIZE);
++
++	if (!ret)
++		printf("[OK]\tGuard gap test, placement mapping's gaps\n");
++
++	return ret;
 +}
 +
- unsigned long
- arch_get_unmapped_area_vmflags(struct file *filp, unsigned long addr, unsigned long len,
- 		       unsigned long pgoff, unsigned long flags, vm_flags_t vm_flags)
-@@ -150,6 +158,7 @@ arch_get_unmapped_area_vmflags(struct file *filp, unsigned long addr, unsigned l
- 	info.high_limit = end;
- 	info.align_mask = 0;
- 	info.align_offset = pgoff << PAGE_SHIFT;
-+	info.start_gap = stack_guard_placement(vm_flags);
- 	if (filp) {
- 		info.align_mask = get_align_mask();
- 		info.align_offset += get_align_bits();
-@@ -199,6 +208,7 @@ arch_get_unmapped_area_topdown_vmflags(struct file *filp, unsigned long addr0,
- 		info.low_limit = PAGE_SIZE;
+ /*
+  * Too complicated to pull it out of the 32 bit header, but also get the
+  * 64 bit one needed above. Just define a copy here.
+@@ -850,9 +903,15 @@ int main(int argc, char *argv[])
+ 		goto out;
+ 	}
  
- 	info.high_limit = get_mmap_base(0);
-+	info.start_gap = stack_guard_placement(vm_flags);
+-	if (test_guard_gap()) {
++	if (test_guard_gap_other_gaps()) {
+ 		ret = 1;
+-		printf("[FAIL]\tGuard gap test\n");
++		printf("[FAIL]\tGuard gap test, other mappings' gaps\n");
++		goto out;
++	}
++
++	if (test_guard_gap_new_mappings_gaps()) {
++		ret = 1;
++		printf("[FAIL]\tGuard gap test, placement mapping's gaps\n");
+ 		goto out;
+ 	}
  
- 	/*
- 	 * If hint address is above DEFAULT_MAP_WINDOW, look for unmapped area
 -- 
 2.34.1
 
