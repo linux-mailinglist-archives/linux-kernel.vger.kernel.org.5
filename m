@@ -1,259 +1,290 @@
-Return-Path: <linux-kernel+bounces-80675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31117866B16
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:40:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0706C866B17
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C9F01F22194
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:40:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B15C2283D84
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0CC1CAB2;
-	Mon, 26 Feb 2024 07:33:17 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 291E11CD37;
+	Mon, 26 Feb 2024 07:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="AAwbXVZ+"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2052.outbound.protection.outlook.com [40.107.7.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4869B1C69A
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:33:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708932796; cv=none; b=SvJGk0C2RhThjAIAb0dLFe19qsWjiGzO+FyN1xVWhBodGl32L2uqdpbsDJ/uLS7OvS4cXGyRb8PVULEOYWc0vj8acrbuKdDoTnjmYwozlNdtAqYa7h3+fPXeVFBqX81ZV7ZqdCywlDsmZPwVTpTOkYRxeUoVK66iLC8RF43cN7I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708932796; c=relaxed/simple;
-	bh=VP1YTB1RmPKdiNgzEwDdlT/5h7UKJfQ5XWVF4M6bbGk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WYGIYd+e6WvbdEbl2L9Jxq0VzJ7nZ9K4PMEFYv9z3sXxZVN4PbW+riiKi6iis2nyEZJ2Q7rIkiMmryW/3SnZ7JEj6axmGweWXwb8BWr1oB8N/naJYIkaKi+88tKPdlYOhchl/DFHp0vGQdHMvNco0qHSUZbnurGWBmRvgOme84Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TjslQ3yPszqhs8;
-	Mon, 26 Feb 2024 15:32:34 +0800 (CST)
-Received: from kwepemm600020.china.huawei.com (unknown [7.193.23.147])
-	by mail.maildlp.com (Postfix) with ESMTPS id CB6B51A0172;
-	Mon, 26 Feb 2024 15:33:10 +0800 (CST)
-Received: from [10.174.179.160] (10.174.179.160) by
- kwepemm600020.china.huawei.com (7.193.23.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 26 Feb 2024 15:33:09 +0800
-Message-ID: <43182940-ddaa-7073-001a-e95d0999c5ba@huawei.com>
-Date: Mon, 26 Feb 2024 15:33:08 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22831CD18
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708932835; cv=fail; b=OrwH/38ynJCKPcET9zYpfFecrfb/+3/Ib6X0pg7e1kOUyG1mvYX0L1drtyPMmV/zHC0CaVhkDxzo8pf+/rKKelWJ9fKlW6Lk+Q0TyBvAH2abCev0U4f0ywhBQ3ytxrE2QSt0k8l/om5kjrqeFM4MqaYQvgpqd4qzeuGWceSRj8g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708932835; c=relaxed/simple;
+	bh=sx7n3QvZg/0MeELmqCpL5BOCa+ZS50YVs92T/g6Bj6w=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=DCZW2SBZnmUXr9xAK4EBgOVgqKisdHfiUd1dv6MtMhnnx5KzsEK78Fudik/L+JqIqWjcQPFO4v1BJLc9gRZqgoE4Gb3jYucBqN6UvLRZn8S2efhaDzelKa1JjSJBL1opqY/6zyrt3KB+UF3G+C8tMD1SirFuB1Yd7Ip3coiWbLs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=AAwbXVZ+; arc=fail smtp.client-ip=40.107.7.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SLgia7wUc4MZjMJQ9BHhU25oaB5VMGdN5JVJP/Yv6ZUNS7P1SyKXHRhD5kjuUnYZo+2Otq+IgNxDMMQ8ZA2bUpk+pKdQvpaYVHxw13qoFa4GEwFPoJ9ZIJpV5sYqwDAls0R4/FUpBQhaO8Pte/Etyrs6yoYMfSan3yKnVszYBTGeVT/skAWe25mJJX4mECLj/AzndEW+cOWz5XkcX5c8FMeAlQ+zs2MFsQCBhP1nmpNaostNbrKgw7Yj3SbZ0vyiEKrOdIZLxie6bMjNnK+d6nCkq1u02J1kSkFgHg66ZsTAsO7G6AW4iDq7vMFmLs9hsgYAbW+wTtKwZgdNUp7Puw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aV+za19P11GpG0vLFuD7MRWY05OuAXyr9WZa6387vYE=;
+ b=aYV/zc0fFL4mtbDx3NufEWC5C3a6CUcgSjpZBSJOfPebHHB6l24M9iOjkt25wigOLonJ28+p6fG6oi0i1tQLSSzq/OnD1Fa6Td3UkrKDio34TkeJ/414fhHyrcxe2DpEVWK5MFC9VffdtT6vmR1UalZQ7FUUm8JpZs0YnUENS06ZzFOJkeu4WMqPDl7EE/p3I+/ALbNnU1OOMCh9YwYoHJwdgedGvtW11F3Ap82TK2YlB4d97TEbhYYC2Y46xz2sequwdke5sZHy8hosqBkKGEYN5JO1BgGRVgYZajs6+RqBV50q7egRR5i8Cv932XlwqIKoGY3uNFAJfmrVkYklfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aV+za19P11GpG0vLFuD7MRWY05OuAXyr9WZa6387vYE=;
+ b=AAwbXVZ+88QvK+PYEWKsMYTzpt/hJmcV6uGtb7E20+LYF85dUaD+tj3DIYzgTBAzeOjaAcF0EkLf4j3Rn2NaeLe2qzNf7XPxcFeEvmo+Ogf9U1lSXvaLuvE+B8Rjgu0445skBjqSr9FTzODIMhkgfbU2aaqLrMmcku9pCRKf2cs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU2PR04MB8582.eurprd04.prod.outlook.com (2603:10a6:10:2d9::24)
+ by AM7PR04MB7048.eurprd04.prod.outlook.com (2603:10a6:20b:11a::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Mon, 26 Feb
+ 2024 07:33:49 +0000
+Received: from DU2PR04MB8582.eurprd04.prod.outlook.com
+ ([fe80::195c:9861:96a1:56ed]) by DU2PR04MB8582.eurprd04.prod.outlook.com
+ ([fe80::195c:9861:96a1:56ed%4]) with mapi id 15.20.7316.034; Mon, 26 Feb 2024
+ 07:33:49 +0000
+Message-ID: <e9d061fb-c377-46a8-bd01-e661a75122a5@oss.nxp.com>
+Date: Mon, 26 Feb 2024 09:33:44 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] MAINTAINERS: Add maintainer for NXP S32G boards
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>, Chester Lin <chester62515@gmail.com>,
+ Shawn Guo <shawnguo2@yeah.net>
+Cc: Matthias Brugger <mbrugger@suse.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Olof Johansson <olof@lixom.net>, krzysztof.kozlowski+dt@linaro.org,
+ =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+ Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, soc@kernel.org,
+ NXP S32 Linux Team <s32@nxp.com>,
+ Ghennadi Procopciuc <ghennadi.procopciuc@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
+ NXP Linux Team <linux-imx@nxp.com>
+References: <20240221120123.1118552-2-ghennadi.procopciuc@oss.nxp.com>
+ <f4465547-1fb1-4578-9a69-7d399e7661b3@linaro.org>
+ <403e32c2-910e-4745-9ebe-fbf377c3fde8@linaro.org>
+ <ad856766-8903-46c0-93af-24e101ad51dc@oss.nxp.com>
+ <e538ded0-bd3a-4ca4-b2bd-8d20d8c8c3fe@linaro.org>
+ <bcb79af4-56d9-4204-9503-cff996f1ba41@oss.nxp.com>
+ <e6f6070e-8355-4a0b-a904-1a24970f249b@linaro.org>
+ <e530d504-dfa3-4d39-b903-b2570bb8b014@suse.com>
+ <c3e68c62-b81f-475b-9b15-c983c94aed8b@app.fastmail.com>
+ <Zdiu8s5Cgz9s6dLP@dragon> <ZdmZ4JC0CsX2qs5C@linux-8mug>
+ <57dce440-d24b-4638-9395-62dfb03ec002@app.fastmail.com>
+From: Ghennadi Procopciuc <ghennadi.procopciuc@oss.nxp.com>
+In-Reply-To: <57dce440-d24b-4638-9395-62dfb03ec002@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: VI1P189CA0015.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:802:2a::28) To DU2PR04MB8582.eurprd04.prod.outlook.com
+ (2603:10a6:10:2d9::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v2] filemap: avoid unnecessary major faults in
- filemap_fault()
-Content-Language: en-US
-To: "Huang, Ying" <ying.huang@intel.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<akpm@linux-foundation.org>, <willy@infradead.org>, <fengwei.yin@intel.com>,
-	<aneesh.kumar@linux.ibm.com>, <shy828301@gmail.com>, <hughd@google.com>,
-	<david@redhat.com>, <wangkefeng.wang@huawei.com>, Nanyong Sun
-	<sunnanyong@huawei.com>
-References: <20240206092627.1421712-1-zhangpeng362@huawei.com>
- <87jznhypxy.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <a905dea7-018e-80c0-ab54-85766add8d96@huawei.com>
- <87frxfhibt.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: "zhangpeng (AS)" <zhangpeng362@huawei.com>
-In-Reply-To: <87frxfhibt.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600020.china.huawei.com (7.193.23.147)
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU2PR04MB8582:EE_|AM7PR04MB7048:EE_
+X-MS-Office365-Filtering-Correlation-Id: f55f734f-a951-4222-cf17-08dc369d45ae
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ufT/cXFJkwomMrwfNdP3V8gvsdQkgOOOisXBOciLiEbY7SQQ7RFf52b7kKTxNARaS6UWgn2V/IqmkZvHej/ekr5EJWR793PKEPXTS+W2frxOeGRjsFEv/xodGnO1vt/1ToA3Ar4HuQ/n0FBAm/9bbCN2JlzdE3ZEUerR/xfN+q+mJRJEk3CJj/G1S/fjR/6SQvoMMgqBHWb6TmJhXnn7lsg/PkZ9FLXxzNxmEwwVrO0tIJLf/77rrcmdXJNpLD5K5KYxWumbF4VqRMzkct7weuc0nFXL+8KpIPQylHx32NRI5+4MVYOkJvPRWQtGveDZcgQOQMn0L49HhH23NbcgTafpLtGkf48wUy0CWrFzrzG/cBWsUmwc7UYxyn5zrjdKEzcW+uozJjgrm0pH3YNf9Swej/GXPzg547DG8Ihkhvuj9A8nJ/kVLwOwGyO/Hv4NLJD2hwyTMZyQhkDqQJIxbd5EQoC1s1Y+UqVonot0tBBmNuf+V/rhur6yxBT4y5x7OFSb0/LE7TB1/8SVPjWXA9/3P6qZG0xLM26A7v3ddH5/MhFKgw+eF7/D9lkf9ZTzvSDjMDpeWIqQ3SFTXuSXPPEeSA1izAVT41wNeqJBDfvUdm20eGYGhgqHw2VdL4saOS41VoGrb8b5FJZrjg8+zg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR04MB8582.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZVNIYTZ6RmxjY2pSeklmQ201N3hvakdqMVhxeTV2N3VKQlhBMWc4M1dUQjk1?=
+ =?utf-8?B?SGNGZkJRWVQwMy9CWTlzQUJqeGxieXc1MExZNTNIOGk4RDhGVEtPM0FMQW1Q?=
+ =?utf-8?B?SVFBbktaSStDc0VjMmtLTU5mdzkwQUJuRTF1TnVpZFhRNThaZTVybG5mcC85?=
+ =?utf-8?B?L1prMWgzQWp4bnN4VVJDWTZBM1V1bUZNN1RLTCtIcjhKRC92Uk14OUNtYlY5?=
+ =?utf-8?B?WEQyaytjRW5aNVZXQmVwVVF0TEpwMnloTTgyYjlMMkZaUTlEVzUyVTQxYzNv?=
+ =?utf-8?B?STNvaHFzKzhBYU16d3pxb3dhVjhTS1hCekg0UUx0YkxGc0Nrb09vRDJVbDNR?=
+ =?utf-8?B?SVFqZlBrcXBvL1JJTG4vOXdsSllZNmZIa2ZRbXRIV3pBMXY5MkhUV2FWNWgy?=
+ =?utf-8?B?TE1jT2tLZEhtcDdyYit4ZUFrN1dxNFlHenFZU3dBcTVyU3p2QklaQTRTMDBi?=
+ =?utf-8?B?YlkyenU1UDNMQlpLUnl4WFF3N3JSSUFTdzRjZzdFSkEyWE9KZ2pOK0s1S1R1?=
+ =?utf-8?B?NVh2NUNpKzYyQituM2dLclN1Y2NuOVp3ckoyQ2JmbWJ5akFobmVua2liMnlK?=
+ =?utf-8?B?Y1dsUUM0MW81RG5VNmFkeDUwOUExN2VOSjdYSlFMUVh5OFlqbHd5VlhOSDFR?=
+ =?utf-8?B?UWNaWXFySU92MysyNlhzNDhsY1AzQkRha3VNdXVrTkxVVld5b3ZCVzU5dVZ0?=
+ =?utf-8?B?MGZscWdMdDV2QVN6N2xDL3RROG1PblF2OG1MWFZhODhHVGVGWDk3ajUwL2ZZ?=
+ =?utf-8?B?d0RLRE9jbFlUVzZSYkNNSDBsVURKZE56RkFxbU1iN0NGOEVMRW9sWE9uMGxX?=
+ =?utf-8?B?WCtrR0RmakVmT0J6V1pQbkVsWnYyZGJyS1owazdFdHNYb3hYZEtDNzVrMEhs?=
+ =?utf-8?B?YlJ1YWR1YUpINHVsZ09xRkQxTlNHanRjdExDU1RZR3orV2JEK0tmTFFMdnJ6?=
+ =?utf-8?B?a21pTEZyZGJsTHpjVll6WHZhNEc1NGtHcXVzSWhhZjNwQ2xxcEgxeitKMWRt?=
+ =?utf-8?B?WktMa0RmU0IzbE1Fdmwyb2hEYWZFbWw4OW1CMnlRcVJibWtiT3dyRXd5dTdk?=
+ =?utf-8?B?ZU1hM0RXeklBcW04MWtlQnlLS2NOUi9JWXJiQlVoTHp0ZGlPUmZ3aXJQZXZx?=
+ =?utf-8?B?Mmg0K0szYUFlelA2ZXJ5NXp2cU90cThCb1FGclFmNWxnMHlsRHFSZmFFaHND?=
+ =?utf-8?B?OWM1OGxCYkdyeUxrQnNuNGNWUU5RSERUMmVSc3lHSzEzNmlwa1hqVjRreVJv?=
+ =?utf-8?B?UVdFcUhqNTd2UkpDUEt6aEZxekZvRExSVlJtYW43Z2VlcjQ4aUg0eWZONzRI?=
+ =?utf-8?B?a3dEQ0FWRzIwVVhSQTNzdFhsSG5Vb0w0QndhdmpPT1g1N3pJL1BjdndNZ1lh?=
+ =?utf-8?B?VGNCa2JoM3FTWGFnSS8vdGRhY1QxSWl5LzRtNDVBWmlNV2V6ejdpeFNRQlFl?=
+ =?utf-8?B?b0tNQXg2YUNjdkZYRlE4K2VyV3hYOCtOOWtMRUR3YTZ3N0xMKytNOXNrZHVO?=
+ =?utf-8?B?YTFhRkFHaW5OVlZJSjYzK3JodDBQOWJsSmVtMUt1U214WFdHSXlQb2VjYXRr?=
+ =?utf-8?B?RitCNTdkVnBqclh3YXVpejJGblp4TjNuc1IrUXVjVTA1QVBLUmR5MnN6ZE9L?=
+ =?utf-8?B?VzhJOGtDNTVPUExTa0pFamdpWkczNTV5YjFjV1V1ZG9ESDBTWFBRS3JheEFN?=
+ =?utf-8?B?ZnhOYUlpdytxa00rblB0VGI4cU52a2Zad0hFdktEWUNjdXU4OG9jbnlwTC9a?=
+ =?utf-8?B?aEx6cU1NMjNCZ0VWT0ZoVGYwejFCRDVRaUNOdGg3Z2RLZU1PUVFFMXhWYkt2?=
+ =?utf-8?B?SDNiVEFiTjk4UFB4ZVBWMEZUeEFITjByZC9iM0xWdjZzNlNKSFEvQVk0NUZy?=
+ =?utf-8?B?QTlkajFkYkExcWN4QUhJOSt3eHpZeVBRam9xU1ZrSzNkemZmN0cvWVlsZzl2?=
+ =?utf-8?B?SG5iN1Z1Tm5sVEJkRVdLWmZWMGVJcFF5eWEyNzd2STBZN3JMNVdxT283dkJ6?=
+ =?utf-8?B?cUVHTndLejR3MngzUUpSRVNHSm81ZkZwWjIyNjF5Wmp4L0MxUkV6NWtlUllJ?=
+ =?utf-8?B?aGtaUlZ0MnEvZTZUUG5CUFd6Z2QvS2J3aTk1VkludEpQNnZSTHpaaVJVN0hJ?=
+ =?utf-8?B?Z3FGT2toR1lQcDNqbWwyN2hCZnpPMlE2bVZyTG13ZGUwTHBkYmhMNndENWpQ?=
+ =?utf-8?B?RGc9PQ==?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f55f734f-a951-4222-cf17-08dc369d45ae
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR04MB8582.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 07:33:49.3075
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rX0YlOFkHQb31K8qbRdynTCcXEuGk153ViXP4knkczYJyEAUuamzx39LP9xBaFA7rMVxBNcNsbpZHxrmXyAGfvFLbwgWFPF9cQfoddvqXug=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB7048
 
-On 2024/2/26 14:04, Huang, Ying wrote:
-
-> "zhangpeng (AS)" <zhangpeng362@huawei.com> writes:
->
->> On 2024/2/7 10:21, Huang, Ying wrote:
+On 2/24/24 13:42, Arnd Bergmann wrote:
+> On Sat, Feb 24, 2024, at 08:25, Chester Lin wrote:
+>> Hi all,
 >>
->>> Peng Zhang <zhangpeng362@huawei.com> writes:
->>>> From: ZhangPeng <zhangpeng362@huawei.com>
->>>>
->>>> The major fault occurred when using mlockall(MCL_CURRENT | MCL_FUTURE)
->>>> in application, which leading to an unexpected performance issue[1].
->>>>
->>>> This caused by temporarily cleared PTE during a read+clear/modify/write
->>>> update of the PTE, eg, do_numa_page()/change_pte_range().
->>>>
->>>> For the data segment of the user-mode program, the global variable area
->>>> is a private mapping. After the pagecache is loaded, the private anonymous
->>>> page is generated after the COW is triggered. Mlockall can lock COW pages
->>>> (anonymous pages), but the original file pages cannot be locked and may
->>>> be reclaimed. If the global variable (private anon page) is accessed when
->>>> vmf->pte is zeroed in numa fault, a file page fault will be triggered.
->>>>
->>>> At this time, the original private file page may have been reclaimed.
->>>> If the page cache is not available at this time, a major fault will be
->>>> triggered and the file will be read, causing additional overhead.
->>>>
->>>> Fix this by rechecking the PTE without acquiring PTL in filemap_fault()
->>>> before triggering a major fault.
->>>>
->>>> Testing file anonymous page read and write page fault performance in ext4
->>>> and ramdisk using will-it-scale[2] on a x86 physical machine. The data
->>>> is the average change compared with the mainline after the patch is
->>>> applied. The test results are within the range of fluctuation, and there
->>>> is no obvious difference. The test results are as follows:
->>> You still claim that there's no difference in the test results.  If so,
->>> why do you implement the patch?  IMHO, you need to prove your patch can
->>> improve the performance in some cases.
->> I'm sorry that maybe I didn't express myself clearly.
+>> Sorry for the late reply since I lost connection with upstream due to a
+>> health condition, which affected my eyesights for a while so I tried to use
+>> my eyes as less as possible. Please accept my apologies anyway.
+> 
+> No worries, and thanks for the clarifications.
+> 
+>> On Fri, Feb 23, 2024 at 10:42:58PM +0800, Shawn Guo wrote:
+>>> On Fri, Feb 23, 2024 at 01:29:10PM +0100, Arnd Bergmann wrote:
 >>
->> The purpose of this patch is to fix the issue that major fault may still be triggered
->> with mlockall(), thereby improving a little performance. This patch is more of a bugfix
->> than a performance improvement patch.
+>> Before leaving SUSE I reached NXP to see if anyone could take over it but I
+>> didn't get response unfortunately. Maybe it was too rush to find a right person
+>> at the moment but I still wish that someone can take over this role based on the
+>> following reasons:
 >>
->> This issue affects our traffic analysis service. The inbound traffic is heavy. If a major
->> fault occurs, the I/O schedule is triggered and the original I/O is suspended. Generally,
->> the I/O schedule is 0.7 ms. If other applications are operating disks, the system needs
->> to wait for more than 10 ms. However, the inbound traffic is heavy and the NIC buffer is
->> small. As a result, packet loss occurs. The traffic analysis service can't tolerate packet
->> loss.
+>> - Since I have returned my S32G boards to SUSE, currently I do not have 
+>> a platform
+>> to verify S32G patches unless I could get a new one. I wish I could 
+>> still help
+>> out but hardware & doc resources will be the biggest challenge to me.
 >>
->> To prevent packet loss, we use the mlockall() function to prevent I/O. It is unreasonable
->> that major faults will still be triggered after mlockall() is used.
->>
->> In our service test environment, the baseline is 7 major faults/12 hours. After applied the
->> unlock patch, the probability of triggering the major fault is 1 major faults/12 hours. After
->> applied the lock patch, no major fault will be triggered. So only the locked patch can actually
->> solve our problem.
-> This is the data I asked for.
->
-> But, you said that this is a feature bug fix instead of performance
-> improvement.  So, I checked the mlock(2), and found the following words,
->
-> "
->         mlockall() locks all pages mapped into the address space of the calling
->         process.  This includes the pages of the code, data, and stack segment,
->         as well as shared libraries, user space kernel data, shared memory, and
->         memory-mapped files.  All mapped pages are guaranteed to be resident in
->         RAM when the call returns successfully; the  pages  are  guaranteed  to
->         stay in RAM until later unlocked.
-> "
->
-> In theory, the locked page are in RAM.  So, IIUC, we don't violate the
-> ABI.  But, in effect, we does do that.
-
-"mlockall() locks all pages mapped into the address space of the calling process."
-For a private mapping, mlockall() can lock COW pages (anonymous pages), but the
-original file pages can't be locked. Maybe, we violate the ABI here. This is also
-the cause of this issue. The patch fix the impact of this issue: prevent major
-faults, reduce IO, and fix the service packet loss issue.
-
-Preventing major faults, and thus reducing IO, could be an important reason to use
-mlockall(). Could we fix this with the locked patch? Or is there another way?
-
-> But, from git history, we have cleared the PTE during modification from
-> 2.6.12-rc2 at least.  I guess that because Linux isn't a hard real time
-> OS, users don't expect that too.
->
-> --
-> Best Regards,
-> Huang, Ying
->
->> The test data provided is intended to prove that the patch does not have a major impact
->> on the performance of the page fault itself.
->>
->>>> 	                 processes processes_idle threads threads_idle
->>>> ext4    private file write: -1.14%  -0.08%         -1.87%   0.13%
->>>> ext4    shared  file write:  0.14%  -0.53%          2.88%  -0.77%
->>>> ext4    private file  read:  0.03%  -0.65%         -0.51%  -0.08%
->>>> tmpfs   private file write: -0.34%  -0.11%          0.20%   0.15%
->>>> tmpfs   shared  file write:  0.96%   0.10%          2.78%  -0.34%
->>>> ramdisk private file write: -1.21%  -0.21%         -1.12%   0.11%
->>>> ramdisk private file  read:  0.00%  -0.68%         -0.33%  -0.02%
+>> - My current employee may have competitive relationship with NXP in automotive
+>> field, which means I may not be fit in this role unless nobody cares.
+> 
+> In general, there no problem to just retire from a maintainer
+> position or mark it as 'Odd fixes' instead of 'Maintained' when
+> you are no longer planning to actively maintain it.
+> 
 >>>>
->>>> [1] https://lore.kernel.org/linux-mm/9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com/
->>>> [2] https://github.com/antonblanchard/will-it-scale/
->>>>
->>>> Suggested-by: "Huang, Ying" <ying.huang@intel.com>
->>>> Suggested-by: Yin Fengwei <fengwei.yin@intel.com>
->>>> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
->>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->>>> ---
->>>> v1->v2:
->>>> - Add more test results per Huang, Ying
->>>> - Add more comments before check PTE per Huang, Ying, David Hildenbrand
->>>>     and Yin Fengwei
->>>> - Change pte_offset_map_nolock to pte_offset_map as the ptl lock won't
->>>>     be used
->>>>
->>>> RFC->v1:
->>>> - Add error handling when ptep == NULL per Huang, Ying and Matthew
->>>>     Wilcox
->>>> - Check the PTE without acquiring PTL in filemap_fault(), suggested by
->>>>     Huang, Ying and Yin Fengwei
->>>> - Add pmd_none() check before PTE map
->>>> - Update commit message and add performance test information
->>>>
->>>>    mm/filemap.c | 34 ++++++++++++++++++++++++++++++++++
->>>>    1 file changed, 34 insertions(+)
->>>>
->>>> diff --git a/mm/filemap.c b/mm/filemap.c
->>>> index 142864338ca4..a2c1a98bc771 100644
->>>> --- a/mm/filemap.c
->>>> +++ b/mm/filemap.c
->>>> @@ -3238,6 +3238,40 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->>>>    			mapping_locked = true;
->>>>    		}
->>>>    	} else {
->>>> +		if (!pmd_none(*vmf->pmd)) {
->>>> +			pte_t *ptep;
->>>> +
->>>> +			ptep = pte_offset_map(vmf->pmd, vmf->address);
->>>> +			if (unlikely(!ptep))
->>>> +				return VM_FAULT_NOPAGE;
->>>> +			/*
->>>> +			 * Recheck PTE as the PTE can be cleared temporarily
->>>> +			 * during a read+clear/modify/write update of the PTE,
->>>> +			 * eg, do_numa_page()/change_pte_range(). This will
->>>> +			 * trigger a major fault, even if we use mlockall,
->>>> +			 * which may affect performance.
->>>> +			 * We don't hold PTL here as acquiring PTL hurts
->>>> +			 * performance. So the check is still racy, but
->>>> +			 * the race window seems small enough.
->>>> +			 *
->>>> +			 * If we lose the race during the check, the page_fault
->>>> +			 * will be triggered. Butthe page table entry lock
->>>> +			 * still make sure the correctness:
->>>> +			 * - If the page cache is not reclaimed, the page_fault
->>>> +			 *   will work like the page fault was served already
->>>> +			 *   and bail out.
->>>> +			 * - If the page cache is reclaimed, the major fault
->>>> +			 *   will be triggered, page cache is filled,
->>>> +			 *   page_fault also work like the page fault was
->>>> +			 *   served already and bail out.
->>>> +			 */
->>> IMHO, this is too long.  It can be shorten to like,
+>>>> Added everyone there to Cc, having any s32 patches go through
+>>>> the imx tree would be the easiest way as far as I'm concerned.
+>>>> I've added the maintainers to Cc, let's see what they think.
 >>>
->>> If we lose the race, major fault may be triggered unnecessary.  This
->>> hurts performance but not functionality.
->> OK, I'll fix it in the next version.
+>>> It's unintentional that IMX entry covers s32 dts files, as they have a
+>>> dedicated entry.
+>>>
+>>> ARM/NXP S32G ARCHITECTURE
+>>> M:      Chester Lin <chester62515@gmail.com>
+>>> R:      Andreas Färber <afaerber@suse.de>
+>>> R:      Matthias Brugger <mbrugger@suse.com>
+>>> R:      NXP S32 Linux Team <s32@nxp.com>
+>>> L:      linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>>> S:      Maintained
+>>> F:      arch/arm64/boot/dts/freescale/s32g*.dts*
+>>>
+>>> However I'm fine with collecting and sending patches through IMX tree,
+>>> if S32G folks help review them.
+>>>
 >>
->>>> +			if (unlikely(!pte_none(ptep_get_lockless(ptep))))
->>>> +				ret = VM_FAULT_NOPAGE;
->>>> +			pte_unmap(ptep);
->>>> +			if (unlikely(ret))
->>>> +				return ret;
->>>> +		}
->>>> +
->>>>    		/* No page in the page cache at all */
->>>>    		count_vm_event(PGMAJFAULT);
->>>>    		count_memcg_event_mm(vmf->vma->vm_mm, PGMAJFAULT);
->>> --
->>> Best Regards,
->>> Huang, Ying
+>> This looks good to me as well.
 
--- 
-Best Regards,
-Peng
+I agree, this looks good to me too.
+
+> 
+> Ok, in this case I would suggest we change this section to
+> only have 'R:' entries and no 'M:' for the moment.
+> 
+> Between the four of you (Chester, Andreas, Matthias, Ghennadi),
+> I think we can choose to keep everyone or drop those that are
+> unlikely to actually review patches. Please let us know you
+> would like to be included as a reviewer or not.
+
+I would like to be included as reviewer.
+Can we add Shawn as the maintainer since Chester agreed to pass on the
+responsibility to him?
+
+> 
+> For the pinctrl driver, I would add the files to the "freescale"
+> pinctrl entry in a similar way and end up with
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index efeaeb51f183..c1924c0053bc 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2555,13 +2555,14 @@ F:      drivers/*/*/*wpcm*
+>  F:     drivers/*/*wpcm*
+>  
+>  ARM/NXP S32G ARCHITECTURE
+> -M:     Chester Lin <chester62515@gmail.com>
+> +R:     Chester Lin <chester62515@gmail.com>
+>  R:     Andreas Färber <afaerber@suse.de>
+>  R:     Matthias Brugger <mbrugger@suse.com>
+>  R:     NXP S32 Linux Team <s32@nxp.com>
+>  L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:     Maintained
+>  F:     arch/arm64/boot/dts/freescale/s32g*.dts*
+> +F:     drivers/pinctrl/nxp/
+>  
+>  ARM/Orion SoC/Technologic Systems TS-78xx platform support
+>  M:     Alexander Clouter <alex@digriz.org.uk>
+> @@ -17415,7 +17416,9 @@ R:      Pengutronix Kernel Team <kernel@pengutronix.de>
+>  L:     linux-gpio@vger.kernel.org
+>  S:     Maintained
+>  F:     Documentation/devicetree/bindings/pinctrl/fsl,*
+> +F:     Documentation/devicetree/bindings/pinctrl/nxp,s32*
+>  F:     drivers/pinctrl/freescale/
+> +F:     drivers/pinctrl/nxp/
+
+Could you please add 'L: NXP S32 Linux Team <s32@nxp.com>', given that
+this list is relevant for S32 patches ?
+
+>  PIN CONTROLLER - INTEL
+>  M:     Mika Westerberg <mika.westerberg@linux.intel.com>
+> @@ -17469,14 +17472,6 @@ S:     Supported
+>  F:     drivers/gpio/gpio-sama5d2-piobu.c
+>  F:     drivers/pinctrl/pinctrl-at91*
+>  
+> -PIN CONTROLLER - NXP S32
+> -M:     Chester Lin <clin@suse.com>
+> -R:     NXP S32 Linux Team <s32@nxp.com>
+> -L:     linux-gpio@vger.kernel.org
+> -S:     Maintained
+> -F:     Documentation/devicetree/bindings/pinctrl/nxp,s32*
+> -F:     drivers/pinctrl/nxp/
+> -
+>  PIN CONTROLLER - QUALCOMM
+>  M:     Bjorn Andersson <andersson@kernel.org>
+>  L:     linux-arm-msm@vger.kernel.org
+
+Best regards,
+Ghennadi
 
 
