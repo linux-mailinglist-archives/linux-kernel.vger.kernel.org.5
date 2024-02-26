@@ -1,209 +1,165 @@
-Return-Path: <linux-kernel+bounces-82414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB118683DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:39:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 317CD8683DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:38:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06ED51F25466
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:39:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAEC028D410
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 195B5135411;
-	Mon, 26 Feb 2024 22:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A0E13540B;
+	Mon, 26 Feb 2024 22:38:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZSx7ci83"
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M3MAaMkx"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6592134722
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 22:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490E71E878;
+	Mon, 26 Feb 2024 22:38:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708987138; cv=none; b=rT9eIlfWC8nBHcM07uOIX4XUz5hErD7BThqwcHoHUaAYiRAfsSX0NvoM+/HmFC6hsyx9wtrtZMOlovQM7zwoCokW89+WF0lMPWprgH7xue2o1LRJxTd6ClLAvc3OAG90BqbMi6XSOvyqrg8kGBSJ/C7E/DTISwftiMY4jdkoU2g=
+	t=1708987117; cv=none; b=IVAhKSbvTKLu9biJLkn2cLUn13tGlrVAmbLxeJrJRTxN7JjDEgXirQIy5Xg9OtfTH1y4Nnvu3Jjm1jkADzZ3nVEcouDNZFUioYb0u75Jnri1DkmeSZEPmfB3XoSl3+YwNy701dFmFmhqkQKO/bYzRYiOh7mki0A0WiJUu8W9L+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708987138; c=relaxed/simple;
-	bh=Kna95S8a5X5qYHXQaf0hY660SinfhcPH/VKsumHlEU0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uTc33Uoa5b6KtFjm1M1mpZxi0D/iMtRGsqJkinSwgd/9Iwno9krjJKbo/trywxHpKbbX+MUC+BJ/s449jcfKhbsg5njmeOFbf1Qnm9zhWPINgIGeW87KWT/kv764SrM5X9Zl7hgWQge0chi601aHcz9NBRS8U3ErcmOkmusF/AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZSx7ci83; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6ddca59e336so2047810a34.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:38:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708987136; x=1709591936; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a91PQgJAkXhE3tI3QtihYX3shOIlngJRqPpCQigQ7j0=;
-        b=ZSx7ci83tVHTXrit7Y0LLV7NSacAFI2+2cjqLXzM4mxHP8+EOCbs2O9Fo44VMqI5UV
-         DmQuiXrAWv1Y3zbseaaTEkYWEF/ZX/DyDS/yVjLBTH3MW3v4rbsSs6i0nl5SXXOmVKYO
-         2gpYB7w63mkGnUqRDJ87D+7EuWW4nCTJkqGh4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708987136; x=1709591936;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a91PQgJAkXhE3tI3QtihYX3shOIlngJRqPpCQigQ7j0=;
-        b=tBoAoqnNV/rEif0sDpqLE+h8oVNR37KAR1JgPDnobCno5yOjvQWYxoNmoNjWJjB603
-         CQXtfOap8WfIK90ZJr6mPEJmW08KBfAcwlqP3xV2rGsXEpgfX5qEyoEk0NRGbRaVnWGh
-         maNOG8lLu1uWwunbiuqeIMj38tzC5bPYv6Ovx0h4CQf764SzKOwDAQfAqEuvVs0XiyRE
-         D0dvCFCZ6IJKy82vDJD/YJ6vZBzekLRCiPj5v/Qntrm9Vr7FNzXjJWOo4mi2QFKBCRcP
-         7XnllIJsmgzrQJ0+xCUru4GkBAt73/bUp8IFSR85uVV8h4i6R3EWfq8WtCh2rjDzgTcv
-         V9bg==
-X-Forwarded-Encrypted: i=1; AJvYcCUUc/Eu/P0M7F6ppP9GuVRScTjZLGmiy2MNPyc+7qlKmN09ej4Cl7LG04rPLXfVE6l2jy3lsBkM0Uit+7ZAA1LZsZGpTB2Tvd47s13w
-X-Gm-Message-State: AOJu0YxU2ZiQtqW3EhKwyht0aCJD/TlAbPqiR9P2WlWvG8aQ74Uxywnv
-	asxC9BJxU3fIHvlYSjAQpoVWvV3bzTwf3hA+MUcNi1eV9/2S1W3IgYDtm4rE9aWK9hBjK9jj4Tq
-	0wSO5qY4g+KGt8HEpPara4YLCOY3Tc5udAgxb
-X-Google-Smtp-Source: AGHT+IEJSF064zLDcy7THqsCR1Gu3viyZcgQ3FkbswHkFN3DhjMF+9ef6R6pAXqmZFZ5eIfckZ51AgUo6HsG2mo3Z7U=
-X-Received: by 2002:a9d:7ccc:0:b0:6e4:779d:f8bc with SMTP id
- r12-20020a9d7ccc000000b006e4779df8bcmr3715976otn.19.1708987135817; Mon, 26
- Feb 2024 14:38:55 -0800 (PST)
+	s=arc-20240116; t=1708987117; c=relaxed/simple;
+	bh=X0PJK/vHdE0DTl5Ql9hKaeKEoGtLbdGBX8Babr3HUa4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=usV21E8steg9iMepOlXIUKlXkD+k2LUgElwVhBqTp1aVlGlpgUBOIJC1L6ru38uKWFzVK27iyUwRvCrublZlM7lRJBwraSiTG+RIbkfz4l6zUSCcE0qe+qY4FsQnDqSYdX26iPuOO8PTMDlbSqRLyYRfaBMeCwwjvvEoWbFbvFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M3MAaMkx; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708987117; x=1740523117;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=X0PJK/vHdE0DTl5Ql9hKaeKEoGtLbdGBX8Babr3HUa4=;
+  b=M3MAaMkx845I7a9Ci7bUr5vAqpfboDJFAjBc8Dr5NoBUPeQ3zafzcX69
+   zTITO39pfdhU3zs0puredYzezvx4FuxS7ZX2S4LsZwJtW4bA4iM6FnBnA
+   8p93ZJy4V7t+kdE1Pj2pWMs3/K3EMEYPJVke+rHfgqajGTAMhB1jyQYGG
+   pajr3NL/Pi0UWiEZX1hiNAYLLEW8F4FcB9i5pkvISpAVLXjC2NMcEim+W
+   kQU9oqLrkx4HtDr0jpIMRHNKU1MytLzpxrQFCLPZzSr+uSDaC4dyectTl
+   /XWECwoBax9DUQTO0t77vDShVjdYrOivAlj5lw/sGG0Ddo6PCCef5IgAB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3465447"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="3465447"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 14:38:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="6959824"
+Received: from dukhanki-mobl.amr.corp.intel.com (HELO [10.209.30.102]) ([10.209.30.102])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 14:38:33 -0800
+Message-ID: <ddec5892-b748-425e-acea-4757bdeecb8b@intel.com>
+Date: Mon, 26 Feb 2024 14:38:32 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223223958.3887423-1-hsinyi@chromium.org> <20240223223958.3887423-3-hsinyi@chromium.org>
- <CAD=FV=Xs4V7ei4NW0T0x0Bq6_dQF6sZKvFSy2WGQFQsHae=61Q@mail.gmail.com>
-In-Reply-To: <CAD=FV=Xs4V7ei4NW0T0x0Bq6_dQF6sZKvFSy2WGQFQsHae=61Q@mail.gmail.com>
-From: Hsin-Yi Wang <hsinyi@chromium.org>
-Date: Mon, 26 Feb 2024 14:38:30 -0800
-Message-ID: <CAJMQK-jKuA_2Y+rQ5q4MkbmkQFJh4+DC98GhExuVt39DTfBwsg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] drm/panel: panel-edp: Match with panel hash for
- overridden modes
-To: Doug Anderson <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
+ try_charge()
+Content-Language: en-US
+To: "Huang, Kai" <kai.huang@intel.com>,
+ Haitao Huang <haitao.huang@linux.intel.com>, "tj@kernel.org"
+ <tj@kernel.org>, "jarkko@kernel.org" <jarkko@kernel.org>,
+ "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "hpa@zytor.com" <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>,
+ "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>,
+ "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>,
+ "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-11-haitao.huang@linux.intel.com>
+ <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
+ <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
+ <op.2jkfeezjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <c913193c0560c4372d2fdb31e9edb28bcb419f50.camel@intel.com>
+ <op.2jlti6g9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <7b53e155-2622-4acb-b7c9-d22e623e4cb3@intel.com>
+ <op.2jqdjjd8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <48faaea8b24f032baa6a858a2909a5b4ace769c6.camel@intel.com>
+ <d9b0df06-da68-4729-8aac-2a77e890e152@intel.com>
+ <op.2jrquskiwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3f4c6d12-7e0f-44ca-920e-ec219904e0aa@intel.com>
+ <b4c7e743-55d7-4a76-baeb-871b0e8cf394@intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <b4c7e743-55d7-4a76-baeb-871b0e8cf394@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 26, 2024 at 2:29=E2=80=AFPM Doug Anderson <dianders@chromium.or=
-g> wrote:
->
-> Hi,
->
-> On Fri, Feb 23, 2024 at 2:40=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org=
-> wrote:
-> >
-> > It's found that some panels have variants that they share the same pane=
-l id
-> > although their EDID and names are different. One of the variants requir=
-es
-> > using overridden modes to resolve glitching issue as described in commi=
-t
-> > 70e0d5550f5c ("drm/panel-edp: Add auo_b116xa3_mode"). Other variants sh=
-ould
-> > use the modes parsed from EDID.
-> >
-> > For example, AUO 0x405c B116XAK01.0, it has at least 2 different varian=
-ts
-> > that EDID and panel name are different, but using the same panel id. On=
-e of
-> > the variants require using overridden mode. Same case for AUO 0x615c
-> > B116XAN06.1.
-> >
-> > Add such entries and use the hash of the EDID to match the panel needs =
-the
-> > overridden modes.
->
-> As pointed out in an offline discussion, it's possible that we might
-> want to "ignore" some of these bytes for the purpose of the CRC.
-> Specifically, we might want to ignore:
-> * byte 16 - Week of manufacture
-> * byte 17 - Year of manufacture
-> * byte 127 - Checksum
->
-> That way if a manufacturer actually is updating those numbers in
-> production we can still have one hash that captures all the panels. I
-> have no idea if manufacturers actually are, but IMO the hash of the
-> rest of the base block should be sufficient to differentiate between
-> different panels anyway. It would be easy to just zero out those 3
-> bytes before computing the CRC.
->
-> What do you think?
+On 2/26/24 14:34, Huang, Kai wrote:
+> So I am trying to get the actual downside of doing per-cgroup reclaim or
+> the full reason that we choose global reclaim.
 
-Agreed that we can zero out these fields.
+Take the most extreme example:
 
->
->
-> > @@ -758,13 +762,13 @@ static void panel_edp_parse_panel_timing_node(str=
-uct device *dev,
-> >                 dev_err(dev, "Reject override mode: No display_timing f=
-ound\n");
-> >  }
-> >
-> > -static const struct edp_panel_entry *find_edp_panel(u32 panel_id);
-> > +static const struct edp_panel_entry *find_edp_panel(u32 panel_id, u32 =
-panel_hash);
-> >
-> >  static int generic_edp_panel_probe(struct device *dev, struct panel_ed=
-p *panel)
-> >  {
-> >         struct panel_desc *desc;
-> >         void *base_block;
-> > -       u32 panel_id;
-> > +       u32 panel_id, panel_hash;
-> >         char vend[4];
-> >         u16 product_id;
-> >         u32 reliable_ms =3D 0;
-> > @@ -796,15 +800,17 @@ static int generic_edp_panel_probe(struct device =
-*dev, struct panel_edp *panel)
-> >         base_block =3D drm_edid_get_base_block(panel->ddc);
-> >         if (base_block) {
-> >                 panel_id =3D drm_edid_get_panel_id(base_block);
-> > +               panel_hash =3D crc32_le(~0, base_block, EDID_LENGTH) ^ =
-0xffffffff;
->
-> Any reason you need to XOR with 0xffffffff?
->
-To be consistent with the crc32[1] command. It's more convenient to be
-able to verify it with userspace tools.
+	while (hit_global_sgx_limit())
+		reclaim_from_this(cgroup);
 
-[1] https://www.commandlinux.com/man-page/man1/crc32.1.html
-
->
-> > @@ -2077,13 +2098,32 @@ static const struct edp_panel_entry edp_panels[=
-] =3D {
-> >         { /* sentinal */ }
-> >  };
-> >
-> > -static const struct edp_panel_entry *find_edp_panel(u32 panel_id)
-> > +/*
-> > + * Similar to edp_panels, this table lists panel variants that require=
- using
-> > + * overridden modes but have the same panel id as one of the entries i=
-n edp_panels.
-> > + *
-> > + * Sort first by vendor, then by product ID.
->
-> Add ", then by hash" just in case we need it.
->
->
-> > +static const struct edp_panel_entry *find_edp_panel(u32 panel_id, u32 =
-panel_hash)
-> >  {
-> >         const struct edp_panel_entry *panel;
-> >
-> > -       if (!panel_id)
-> > +       if (!panel_id || !panel_hash)
-> >                 return NULL;
->
-> IMO just remove the check above. Not sure why it was there in the
-> first place. Maybe I had it from some older version of the code?
-> Callers shouldn't be calling us with a panel ID / hash of 0 anyway,
-> and if they do they'll go through the loop and return NULL anyway.
->
-
-Sure.
-
->
->
-> -Doug
+You eventually end up with all of 'cgroup's pages gone and handed out to
+other users on the system who stole them all.  Other users might cause
+you to go over the global limit.  *They* should be paying part of the
+cost, not just you and your cgroup.
 
