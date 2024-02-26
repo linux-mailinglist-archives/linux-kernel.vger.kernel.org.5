@@ -1,73 +1,79 @@
-Return-Path: <linux-kernel+bounces-81237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 441EA867269
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:00:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC7AB86726D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DE7428519E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:00:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBCDB1C28946
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D541F946;
-	Mon, 26 Feb 2024 10:59:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51CD210E4;
+	Mon, 26 Feb 2024 10:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aSSpRDgM"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UyUmWxsZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90411C6B5
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFBA1F61C
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708945152; cv=none; b=HjP/Nz6L48rCWWXubK5I/qiGZeCQJm+iuRHW4J6us1qJSQhBmlaGSuQKfqPEI//pkbgAahSddEB5SD2g/7haG3AgiA3SDuGns9hTQfDWO6+FATokoZlZkTkEFCXO67qeOwDb7M/WPF6TzMNcG2hzRV3SwIWmbEmVb1+mOrTrtaw=
+	t=1708945154; cv=none; b=GW7oU5nN7n0JyK0XlIjt25Qj8YAc6k+fnbdf0fbKpnhGsY1yec1F1cRj5GH1T0MQ88+dqWvhKtYn8GOTJOxpO5m82FyvR9ib9Snvec9b2saSjCTVqFJuGYicmIyjNrzlUj4W5xgyyARKnTU0+jCms46oo2wUHZL9TdyWbmrKfpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708945152; c=relaxed/simple;
-	bh=BXcYHfVzTPws/Xz1eVKZjkKb3L4dkosZD8GZ96eOQ+Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jA3POPTBPn1KcGMksSA3wKL0OWEbfGYN54KTvbHfcad6DdQpTHLI4doAUolKbEbjeTVrQX64v9aJ6G06azf17MT6NhiL1K0fEFv+KdofUu4DRBgGu1cZ1gZcczWJ4Ww2PxQSYr1R1vWhDG7CGG+Z5w2RrnLXiZ/inzJ7vwD9wdY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aSSpRDgM; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so3877947a12.1
+	s=arc-20240116; t=1708945154; c=relaxed/simple;
+	bh=Hm4zAdQ4GDiOUyZuyai9dxp0y9ODMI0oisWl9PvStsE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dJNAL/ztrb/vCDsIgGnDOM7Nyp7sVAE5bU1G5Ot6Rjy0y9B6URn3WBDEvR1QXNO2c7P58lJspZdmiaJ3Fszxi2h814WDcaD4+n54YX9idSERJ8N1iRU+0C4d1RFcShbZWblOmrScJDH3ekX1BMct9CdXqk0RGwf4An+de6wdXOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UyUmWxsZ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708945151;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yLwmtbKMH5gchD1DVzVsDxkSCGg6eb5ZnmDAF0IJ7vw=;
+	b=UyUmWxsZ1Lax64Fv55OsvJWuDeFyIxZ9Jvv8lxzMaTQPiuGqKY2MYPfDvUcvGQuLpsyqxC
+	vEyenTIyQ0eoXIsp0MB81N3jD67qsKI05AdYWk7wXpVLoWdSu5iC82gGLVlX0n27PbtPvN
+	Y9eMH/oeXUKrUeMnxxtjwkAL52ualXs=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-410-G95ztz7UNlaw3CqiGin0rw-1; Mon, 26 Feb 2024 05:59:10 -0500
+X-MC-Unique: G95ztz7UNlaw3CqiGin0rw-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a3ee38c40baso143127566b.0
         for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:59:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1708945148; x=1709549948; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RLz2UG7iYBlQjZWsuoaSDjycNBdnd5B3AGu3clJ03m8=;
-        b=aSSpRDgMNMNC+n4lM4X7+LXbQBJVXazsg39aNL+wXeHKAkSQk6U3HOjaGlCgC8Sdo7
-         8E+bq+LKnRj6c3OVma8zRun44wDjnCg0b7CgQysxzM/D3CawhgYjfcRaCojGaXWx2HU3
-         hcEniOcULXQIyPEuytVAHlkYTSTng/uKh12Zy5yRRaKbM4npNyEeE0JWBna2rL1CCvdJ
-         HQ/UIrjLiVQQOSfTuVlSDAxtrcKl5YyV+gZBdRxJjCCeo9jBaOv8jnUN8RHU2xamuJ0e
-         x6MQtKiENSpdSdou1Yawz3NQmZM6+saLmaJQYy9em0rf+WLgbscOn6J7fIcSfm9X1cCH
-         me/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708945148; x=1709549948;
-        h=content-transfer-encoding:in-reply-to:from:references:to
+        d=1e100.net; s=20230601; t=1708945149; x=1709549949;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RLz2UG7iYBlQjZWsuoaSDjycNBdnd5B3AGu3clJ03m8=;
-        b=OL/y/bAQmKuLVsxVOxBRhyq2xBo9dxb04EocXwsFKVPLWNTMw4h08VUVpakircaaR2
-         nz7jtId+jPY0x7fG5rnuVtsi1j6qvgsIJgKm5Opx4XvaKQJlsFron6albXWUuJDt7MfY
-         oH8ZAOZeaqrSgisDj+E/FqC0ScnYE1vQSM+tlgReBKUcsHHeat2cNPOn9kuO6u286qZt
-         UX94jck/dOYiiOEwoGFr5texbBRX00dI17KodBx0k3gyrsCPxPQWKvy5VvlhB7Xb8tpQ
-         AotpJdu7D2w858WQWM01jFEDxDZwqquRNjoGtuPbQL30i12cKmIeIlmyAAvbje6HxViM
-         eEpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIxDiVB6edy24jJruL3ogKNeP+DurHnWr28z0pYg5ZPugegauBZt6yA6UjYW39ewrwNT/R5gpV+B6bFVFHvyHqY2Imb0qdgvKm2N7Y
-X-Gm-Message-State: AOJu0YyS+0BkGo7Pb7FG8z8d24As0LM3QdomfuaPCIYGCsykb69OuxNB
-	KrPl4TNgSMdqaS5sECDa6vv7weB/K5deQRACsSC5g2CWfc5/sUL0dt0tv5J6ses=
-X-Google-Smtp-Source: AGHT+IF6uROkTpq2xYNeB24qIs65rL7KrNZuV3oYdgDF7LxXyHDZxyyt+d9Z4xgzeKdf13uH8tY0aw==
-X-Received: by 2002:a17:906:3590:b0:a43:393c:176d with SMTP id o16-20020a170906359000b00a43393c176dmr2035525ejb.20.1708945148074;
+        bh=yLwmtbKMH5gchD1DVzVsDxkSCGg6eb5ZnmDAF0IJ7vw=;
+        b=AY3rbfmBRKDejKobZN3ZLVYpvQNq1peiPSS5SUe8yuVXXkjVyfzwZdK3HMf+TPyteX
+         s00PCCm9qB8T+pp9ScPPpjn4Y1qYzOD0i2LsyKPeQsQ4GJ9U/iaHS/Jc3CiDBJ3YgMz0
+         7RrS1qVI+89pqqGUfevUyN3YSH3/gm+Q1wlVZrjdBQtT4ETM6tw0r1qhrgF2LEr6xYaW
+         P+9PxFqPWhbgexrDSGDVdF3THA3bv+MCaGRHusiBqSgWpOIHaFoT/7zogZ0WeUlVuzt3
+         X4wBCUsrSIuUAOYoac82H7E8Jv5sJBEygVxGTHAKbkEK4vfm/iJmnIL24KETJDOVNyfq
+         qRcA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFFxIUvzElvjpGPprcC1jy9M5X9d6Age+1tMHqmp77ymKf+hef6pguX7iWjNfQn5XcnBd8pku4KHegXoMOPYissohRoyyFVV01EE/c
+X-Gm-Message-State: AOJu0YyCqaZDl9U96Ak/yndL0WdlcOOCZp8KYePKcAFlxx1FSvA5lkKN
+	jiD5tX/TM62iaru/sKQoIgYG2gS6JhOmpHOWco9qq92StEJYuoHXWEnTX/ufL9prKaHHr80+JJ3
+	zLQsd514Oy9GmSFQnw2P8G33aL8xNXK/NCuSfctyuLb3xnuro1zWyoIv/zBFehg==
+X-Received: by 2002:a17:906:3397:b0:a3f:d797:e6e2 with SMTP id v23-20020a170906339700b00a3fd797e6e2mr4111293eja.28.1708945149016;
+        Mon, 26 Feb 2024 02:59:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGbVwLt4Av7nV0P9ftMnJykmqz01tHlbTHcunaAafulySeFvYABGEE8KC9dLJAXOuFSaKVfLQ==
+X-Received: by 2002:a17:906:3397:b0:a3f:d797:e6e2 with SMTP id v23-20020a170906339700b00a3fd797e6e2mr4111285eja.28.1708945148658;
         Mon, 26 Feb 2024 02:59:08 -0800 (PST)
-Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
-        by smtp.gmail.com with ESMTPSA id tj7-20020a170907c24700b00a434dec771esm852555ejc.217.2024.02.26.02.59.07
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id wb5-20020a170907d50500b00a3e48782f08sm2322285ejc.27.2024.02.26.02.59.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 02:59:07 -0800 (PST)
-Message-ID: <99b0fb1b-37b3-4da4-8129-e502ed8e479a@suse.com>
-Date: Mon, 26 Feb 2024 11:59:06 +0100
+        Mon, 26 Feb 2024 02:59:08 -0800 (PST)
+Message-ID: <edec3bee-8604-49a9-8e2f-6c21e852ef6c@redhat.com>
+Date: Mon, 26 Feb 2024 11:59:07 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,68 +81,159 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [usb-storage?] divide error in isd200_ata_command
+Subject: Re: [PATCH v3 2/3] power: supply: Add Acer Aspire 1 embedded
+ controller driver
 Content-Language: en-US
-To: syzbot <syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com>,
- bvanassche@acm.org, emilne@redhat.com, gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
- martin.petersen@oracle.com, stern@rowland.harvard.edu,
- syzkaller-bugs@googlegroups.com, tasos@tasossah.com,
- usb-storage@lists.one-eyed-alien.net
-References: <0000000000003eb868061245ba7f@google.com>
-From: Oliver Neukum <oneukum@suse.com>
-In-Reply-To: <0000000000003eb868061245ba7f@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Nikita Travkin <nikita@trvn.ru>,
+ Sebastian Reichel <sebastian.reichel@collabora.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org,
+ Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
+ linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org
+References: <20240220-aspire1-ec-v3-0-02cb139a4931@trvn.ru>
+ <20240220-aspire1-ec-v3-2-02cb139a4931@trvn.ru>
+ <qoidm5wujjbeoc2hlraky26wuwmuaxi2atyl6ehovhvffdbfeh@g5gunqdei45m>
+ <7c429d2110dbac68d0c82c8fb8bfb742@trvn.ru>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <7c429d2110dbac68d0c82c8fb8bfb742@trvn.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 Hi,
 
-On 26.02.24 10:42, syzbot wrote:
-> Hello,
++Ilpo (fellow pdx86 maintainer)
+
+On 2/23/24 15:32, Nikita Travkin wrote:
+> Sebastian Reichel писал(а) 22.02.2024 04:41:
+>> Hi,
+>>
+>> On Tue, Feb 20, 2024 at 04:57:13PM +0500, Nikita Travkin wrote:
+>>> Acer Aspire 1 is a Snapdragon 7c based laptop. It uses an embedded
+>>> controller to control the charging and battery management, as well as to
+>>> perform a set of misc functions.
+>>>
+>>> Unfortunately, while all this functionality is implemented in ACPI, it's
+>>> currently not possible to use ACPI to boot Linux on such Qualcomm
+>>> devices. To allow Linux to still support the features provided by EC,
+>>> this driver reimplments the relevant ACPI parts. This allows us to boot
+>>> the laptop with Device Tree and retain all the features.
+>>>
+>>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
+>>> ---
+>>>  drivers/power/supply/Kconfig           |  14 +
+>>>  drivers/power/supply/Makefile          |   1 +
+>>>  drivers/power/supply/acer-aspire1-ec.c | 453 +++++++++++++++++++++++++++++++++
+>>
+>> I think this belongs into drivers/platform, as it handles all bits of
+>> the EC.
+>>
 > 
-> syzbot found the following issue on:
+> Hm, I initially submitted it to power/supply following the c630 driver,
+> but I think you're right... Though I'm not sure where in platform/ I'd
+> put this driver... (+CC Hans)
 > 
-> HEAD commit:    f2e367d6ad3b Merge tag 'for-6.8/dm-fix-3' of git://git.ker..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=114e10e4180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=eff9f3183d0a20dd
-> dashboard link: https://syzkaller.appspot.com/bug?extid=28748250ab47a8f04100
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1064b372180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10aca6ac180000
+> Seems like most of the things live in platform/x86 but there is no i.e.
+> platform/arm64...
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/c55ca1fdc5ad/disk-f2e367d6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/4556a82fb4ed/vmlinux-f2e367d6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/95338ed9dad1/bzImage-f2e367d6.xz
+> Hans, (as a maintainer for most things in platform/) what do you think
+> would be the best place to put this (and at least two more I'd expect)
+> driver in inside platform/? And can we handle it through the
+> platform-driver-x86 list?
+
+I guess that adding a drivers/platform/aarch64 map for this makes
+sense, with some comments in the Makefile and in the Kconfig
+help explaining that this is for PC/laptop style EC drivers,
+which combine multiple logical functions in one, only!
+
+Assuming that we are only going to use this for such EC drivers,
+using the platform-driver-x86 mailinglist for this makes sense
+since that is where are the people are with knowledge of e.g.
+userspace APIs for various typical EC functionalities.
+
+It might even make sense to also use:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
+
+As git tree for this and send pull-reqs to Linus for this
+together with the other pdx86 for the same reasons.
+
+I would be open to that as long as this is strictly limited to
+EC (like) drivers.
+
+Ilpo, what do you think about this ?
+
+Regards,
+
+Hans
+
+
+
+
+
+
+
+
 > 
-> The issue was bisected to:
+>> [...]
+>>
+>>>  3 files changed, 468 insertions(+)
+>>>
+>>> diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+>>> index 3e31375491d5..e91a3acecb41 100644
+>>> --- a/drivers/power/supply/Kconfig
+>>> +++ b/drivers/power/supply/Kconfig
+>>> @@ -985,4 +985,18 @@ config FUEL_GAUGE_MM8013
+>>>  	  the state of charge, temperature, cycle count, actual and design
+>>>  	  capacity, etc.
+>>>
+>>> +config EC_ACER_ASPIRE1
+>>> +	tristate "Acer Aspire 1 Emedded Controller driver"
+>>> +	depends on I2C
+>>> +	depends on DRM
+>>> +	help
+>>> +	  Say Y here to enable the EC driver for the (Snapdragon-based)
+>>> +	  Acer Aspire 1 laptop. The EC handles battery and charging
+>>> +	  monitoring as well as some misc functions like the lid sensor
+>>> +	  and USB Type-C DP HPD events.
+>>> +
+>>> +	  This driver provides battery and AC status support for the mentioned
+>>
+>> I did not see any AC status bits?
+>>
 > 
-> commit 321da3dc1f3c92a12e3c5da934090d2992a8814c
-> Author: Martin K. Petersen <martin.petersen@oracle.com>
-> Date:   Tue Feb 13 14:33:06 2024 +0000
+> I was referring to whatever ACPI spec calls "AC Adapter" but I guess
+> I should have used the word "charger" instead... Will reword this.
 > 
->      scsi: sd: usb_storage: uas: Access media prior to querying device properties
+>>> [...]
+>>
+>>> +	case POWER_SUPPLY_PROP_PRESENT:
+>>> +		val->intval = 1;
+>>
+>> You have an unused ASPIRE_EC_FG_FLAG_PRESENT, that looks like it
+>> should be used here?
+>>
+> 
+> Oh, you're right! I think I initially didn't have this property and
+> added it like this as a reaction to that upower change that made it
+> consider everything not explicitly present as absent.
+> 
+> I've just checked what is reported after unplugging the battery and
+> seems like the flag (as well as everything else) is gone. Will change
+> the driver to read the flag.
+> 
+> Thanks for your review!
+> Nikita
+> 
+>>> [...]
+>>
+>> Otherwise the power-supply bits LGTM.
+>>
+>> -- Sebastian
+> 
 
-preliminary analysis:
-
-It oopses here:
-
-		} else {
-			if (!id[ATA_ID_SECTORS] || !id[ATA_ID_HEADS])
-				goto too_early;
-			sectnum = (u8)((lba % id[ATA_ID_SECTORS]) + 1);
-			cylinder = (u16)(lba / (id[ATA_ID_SECTORS] *
-					id[ATA_ID_HEADS]));
-
-in isd200_scsi_to_ata() because it must not be called before isd200_get_inquiry_data()
-has completed.
-
-That raises two questions.
-
-1) should we limit the read_before_ms flag to the cases transparent SCSI is used?
-2) does isd200_get_inquiry_data() need to validate what it reads?
-
-	Regards
-		Oliver
 
