@@ -1,119 +1,114 @@
-Return-Path: <linux-kernel+bounces-81726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E806A86796D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:05:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6355986796F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:05:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70AB828E911
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:05:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 940691C2987F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:05:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB24E130E30;
-	Mon, 26 Feb 2024 14:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7C8130E55;
+	Mon, 26 Feb 2024 14:43:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kg7bI7tw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AbPBzyEG"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819F1130AFE;
-	Mon, 26 Feb 2024 14:42:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0255912BF0A
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958562; cv=none; b=FvVH//cWQL1bYLeUUR8+LRd2DQ/ssvgS5kz0rBzhxyXXBkV+8dPPbBzPr5fy3rPOAokpx+zs0sTNX9ehWhxpq+cuxaalEtSPTLt13oq5cH5TB3JC48tdXMtiVL5D0uLL801gLrx8LucgI0t2S9pxKDrNfeEmZh+e03PN/vI1/Z4=
+	t=1708958587; cv=none; b=u0CQNDVcbnMv70RjzXgPbXUKyX0LwrENmUVrn2yAvHEY0HSekDgX/JfLE3eHX7QOYCPo2Sfq7t5vh55zjUXLz0D94ySKr7oGOCkUZ9Jr1CIbbvFcz3Kbs0HnuJYJ/SXJP7+vqWcOu6IURr56VmV59Ofim4bgBWYhC3uwYWcCchU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958562; c=relaxed/simple;
-	bh=EUJ5esbYjUapXTYbha5kyIY8tScY0s/JJFha6imEgQw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nP5jL/Ocdyg2XHLHbOPIYr4tOm0YOptpd9wJi+Lyv/BH7hCKZBdbIE5HKJNDL9oq4rmx4EpYzB4mN7YgvjF8KQSoROXk2t6QJOqwBdvjM87bkHHMZI5HK4DpD7gYFNDFaSKsT78ZMGCOrxK1RnwlVPIVA1R9gpmsB8NZJbADSKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kg7bI7tw; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708958560; x=1740494560;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=EUJ5esbYjUapXTYbha5kyIY8tScY0s/JJFha6imEgQw=;
-  b=kg7bI7twSo5akob+eL+2IaLeV0Hp/4T6NYaBS2vnzYKYKnC4hyi6egRT
-   ag92cAWy76a2BjePoXWCe/DUq/4RTnJXHbylSnDZTXb5CJRhVvEM8e18i
-   KyNC9u7WqffSe9Bh37GKWLw/1r4FuQPD+l5USj38y8QqXxSMgATsZ0+gN
-   uK9Uje15xhJI1rcNmxc4GzwcWDDO4KX2GsxrfhbvEfqYW5VfFp4XsTd7M
-   OHl++vADp02Wa8dOPPsZr0AgZZl+4eeoMMEIt/CruQK1SQeT+QaQ/AtWq
-   umhQa4w85pNw74d5Kk7UHAmIB3J5iSz78L2Od0phyFom+8v6emx5NxBnH
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="14681144"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="14681144"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:42:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="913873886"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="913873886"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:42:36 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1recBd-00000007hqk-1zwX;
-	Mon, 26 Feb 2024 16:42:33 +0200
-Date: Mon, 26 Feb 2024 16:42:33 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: nikita.shubin@maquefel.me
-Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
-	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-input@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v8 23/38] input: keypad: ep93xx: add DT support for
- Cirrus EP93xx
-Message-ID: <ZdyjWVwYRfASc38I@smile.fi.intel.com>
-References: <20240226-ep93xx-v8-0-3136dca7238f@maquefel.me>
- <20240226-ep93xx-v8-23-3136dca7238f@maquefel.me>
+	s=arc-20240116; t=1708958587; c=relaxed/simple;
+	bh=194/ZcRx90rMT6lhPS7u93Tfa7QH/NXGR85wnsvgn5U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H3Md/2pdGGB4ilwQwVDwy9zYt6MzmbPGMUQ41c3NBVZYZczV+BkTGPxj7Tn4Z7RG3lXFim7AIKXa2KZv4aZom7dHPc9Y6Vd5VT1k9YitHh46io0HhLYBfwW+aN+n8Pt9qio06vLVw9MpBKWWl9GA1bYSxYAeNw9HIXFyNoNbDvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AbPBzyEG; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412a8d9402eso2807005e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:43:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708958584; x=1709563384; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D9tbNaYjJUe+G+wb/l7hVhkbXYhWJjIHDAkvy08BoSQ=;
+        b=AbPBzyEGQYrNJGEAKMfDv6AUSvzbGZsU3PAhyXTa4KdkMVXcOGi0pSnF5sredsxVT9
+         B3Iia8TFBXkZX5FCpS3QSoVq6rs/IYrKf8h0Sy0aAJpDXOYJCChK0JImZA9d3TDvmX44
+         SIRGEwYafdF8UlpqB2j25Z/O4mt6FL8LLzUVrXz1h2VS4TUcjX9i8VTR90QbKeXjJwaC
+         Yqlkg7DlFv5PyqwzO4DWelZ2+MRUarfuZ5QFhiYa2sZhtdqmzvFVnroJFBz2NPNmbhwj
+         XxPJZVJ1zGPDiUFapK6Ks0Z7BW6m4SaD7tCihnErgqP7B7ix30uXd3qQ9bX5QY798vBD
+         12Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708958584; x=1709563384;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D9tbNaYjJUe+G+wb/l7hVhkbXYhWJjIHDAkvy08BoSQ=;
+        b=BFf5PllhnQHd0Gnp+Pdq8icGN98grhjKLsR0A50fRWhjd1zKQwKTpwraB6PWhZPGnH
+         fVCeO3N+vfD+maKgZrJ4DYn3pltjuoXaqQVP5YzONHao9JHRBfThvG16yBtJ995RUJde
+         zAPPO3AhgI7JsgYSb3Odvi0wL3YhHbNis4NldlTxTZaSwvxijiYQG7NTauAy2hokRgp9
+         Yx5i3GbodozrlrTIg+hxXb6dspjV0tkb2rSdKayUoBDd07y+kMy0YxOu7CU8I/vGBRu8
+         3l6GJW3nflzssh8MgsOBur0osXKFEoHxxbRkavKtVEaIzI0LcSZAYCkDQRD2D4S9ALk4
+         WHqw==
+X-Forwarded-Encrypted: i=1; AJvYcCWl83W97PBowV+DYf2NvjRkded+d+VT8Sbz9i23Px/0YwrVCdBLhMGYnK2ml5hdnfqdH6DnXqpGAqc17n8Ozfzb/xybh1qbpS8a5bf4
+X-Gm-Message-State: AOJu0Yw7Hj32mP3YT25L4KxyeB052dw1/jqvcP7jknGT+nsA0pK2UAfa
+	DQDlUCwOlzn6eplyMaWAxCqjmpF9lBGKC1DvKVvsh/iVftEF+1r7cwMlqPcSWYYukgEGzjheMiF
+	N
+X-Google-Smtp-Source: AGHT+IH2Ee7jy/1HUKjhnM0FzWr1llSFk1mmZxb+jGS8XK1HpX8qhtkl8SiSACuchuYO1pFYaOe8YA==
+X-Received: by 2002:a05:600c:1992:b0:412:9c2a:7622 with SMTP id t18-20020a05600c199200b004129c2a7622mr5989940wmq.8.1708958584336;
+        Mon, 26 Feb 2024 06:43:04 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id n1-20020a05600c4f8100b004127ead18aasm8586036wmq.22.2024.02.26.06.43.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 06:43:04 -0800 (PST)
+Message-ID: <6f4a4d7f-e258-47de-ae9d-026370339641@linaro.org>
+Date: Mon, 26 Feb 2024 15:43:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226-ep93xx-v8-23-3136dca7238f@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2] thermal/drivers/qoriq: fix getting tmu range
+Content-Language: en-US
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, rafael@kernel.org
+Cc: rui.zhang@intel.com, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+References: <20240226003657.3012880-1-peng.fan@oss.nxp.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20240226003657.3012880-1-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 26, 2024 at 10:30:19AM +0300, Nikita Shubin via B4 Relay wrote:
-> From: Nikita Shubin <nikita.shubin@maquefel.me>
+On 26/02/2024 01:36, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> - drop flags, they were not used anyway
-> - add OF ID match table
-> - process "autorepeat", "debounce-delay-ms", prescale from device tree
-> - drop platform data usage and it's header
-> - keymap goes from device tree now on
+> TMU Version 1 has 4 TTRCRs, while TMU Version >=2 has 16 TTRCRs.
+> So limit the len to 4 will report "invalid range data" for i.MX93.
+> 
+> This patch drop the local array with allocated ttrcr array and
+> able to support larger tmu ranges.
+> 
+> Fixes: f12d60c81fce ("thermal/drivers/qoriq: Support version 2.1")
+> Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
 
-..
-
->  struct ep93xx_keypad {
-> -	struct ep93xx_keypad_platform_data *pdata;
->  	struct input_dev *input_dev;
->  	struct clk *clk;
-> +	unsigned int	debounce;
-> +	uint16_t	prescale;
-
-In case you need to send a new version note that the indentation of the fields
-is different here. Also uint16_t is not the type we expect to see usually
-(does the file use it already?). In kernel we have u16.
-
->  	void __iomem *mmio_base;
+Applied, thanks
 
 -- 
-With Best Regards,
-Andy Shevchenko
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
 
