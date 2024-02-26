@@ -1,191 +1,174 @@
-Return-Path: <linux-kernel+bounces-82375-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A2D5868367
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:57:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F6D5868366
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:57:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B326928E2C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:57:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 754511C21A3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82082131E57;
-	Mon, 26 Feb 2024 21:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC623131E46;
+	Mon, 26 Feb 2024 21:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rtRu16vM"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eSueyoK8"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A431F130E55
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 21:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57843130E2E;
+	Mon, 26 Feb 2024 21:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708984611; cv=none; b=LKsd5Z6ZmDmeBWh90FvVcKuaQst6MaX64U8RbyXVYJgMJBGm5eJzKASVdV/+qQ5D4c1O9RXSZ3S4ZqIjW06zlc/9U+sp/SEh27mloizaxpb4W6khNhIwx+08xjHIEHVdm20R1+WwDdJGyPxLhBoMjuOMMCHXScIwcW0a+8dtfy8=
+	t=1708984611; cv=none; b=HW3GTeZEOh2ReCV/U3N1zgdYV7gRkDTK14ZU1sUA5hJuCAkSRMoln1ze5hgrKHoVOVc/fQl79WbqDasxRoSIyAYGR3WptWUQmWkULKiQ2Jw4/NWifnbNTDt8BUZy8F8p3Xb0M1QpQkPuobKnTeK3KU+FK5A15oF8FkZz6/bHS4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708984611; c=relaxed/simple;
-	bh=8u2FC3jAwvrF6TPDojQJKao+PCsVs+BnFj6gQL2hy2w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=utoDeILkcmEnq4x2tDM9s3jFJKPWZgjyEIGUnf+NCXUxVnbkWxUxyFmTDmuc/JpOK4U9vwJZH+N3PzFIRnVYbFm+Q7RnfogmuVoRYq2RWgNU659HC17qEbYmMn2mlM/4bIHzOeJBNLaY83xaPbO9WNSNVicSTFGqnRU2lb58Bec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rtRu16vM; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so617a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:56:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708984607; x=1709589407; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=azUYynWCdgGcNWjxX8ZZ1okg2QCYfjC5Um2iCEPR9g4=;
-        b=rtRu16vMxr4Br2s/krLpxlMa3gUY5w+R0egHVC7ddsFzjFQIJYa6kDxxvB2r9FZ5uY
-         E4/P81DN09m1P3m0551nQtaaquRSJvNVLhHkOfaTRKJuCeyXgV81AZ7y/PnOgTLHA/HI
-         pD3MgUo5ixURyg83HGl/W74U+870irPHOV11fXp3Tol+CXdkz/e8WrQsF4qTQHscVJOu
-         XTRKnicFT9+jLbp/IqOtC9HJrsUQsZrKAbTy7+jzdHY5og0UKXPbmfgRVVp6+WPY9UR2
-         uIJLoAfxza0FTbnPJK7aI9o0kqqyb83Pl6Bm78d+yna5WSrOHJGa3rh2Ww25zMGHQyDY
-         B0og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708984607; x=1709589407;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=azUYynWCdgGcNWjxX8ZZ1okg2QCYfjC5Um2iCEPR9g4=;
-        b=daS0d358gPfRQhBe/fAePne/YOca4IdtW0Ey4wBbQMiR+4nFNnfBi2+WLwpa3zYsXx
-         ZhVr9xvFFhbETsFqunfrNyHGG2qTDd6I4B5D4StB3UWjlTjUW11WR0Jcf2qOPcGW3pvQ
-         aoRXPS8GvygterU8nqBWLnBrz3Zn7HhvvsYiUt1s1IKVg3QxdRL1iPOXBWAvKws/4vyU
-         CsqGEusgePlgwOBWHCcGmq8RD9RoHUwlj6kc+zx5uTGNZrZGBts2vxCjLhRZ7IyHtdX+
-         ++WqggOD6Sx+UuQkArnKoFcO3Ufr1TtwpUoOHjeccAm68f7jkfgXxpW8a96j6VLfdmu5
-         n9Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCVABgsWuUYz3/hMP9I0T0KV4bmoCOu0pBjfy+BCeoKmM99iqe2lueMxEedyB0q04HKAcPNNvnI/A8pxaXSz9aF/CC78HMr1r/hkLw2z
-X-Gm-Message-State: AOJu0YxqAyJiT2Jnc1kKKy/iIWsSEVkvFGy+jD/qS2fmFV09ARsKP3v/
-	Ge5AHLJU9EVu0/4u7f1nFwkHhUfvCzOkcZn9JyDXdWC3Bn8XGo/c11sGzURqNqNKDBGsHg4P36b
-	10DDyRQDjho9PNNKmCTfE4G6ew8NnH3ofmR3H
-X-Google-Smtp-Source: AGHT+IFi3ylAsCIsvdv/4W6+maO7OqFdyJK2LjzRb/kVlH1D+Q89qTQR6aA+BoWJaN4QVWomh07SqDONCGS3/cNvlWI=
-X-Received: by 2002:a50:9e2a:0:b0:565:ad42:b97d with SMTP id
- z39-20020a509e2a000000b00565ad42b97dmr89705ede.0.1708984606786; Mon, 26 Feb
- 2024 13:56:46 -0800 (PST)
+	bh=OKSebMMO6/DYqu7NpbNiHX/+srJ9ql/kyB206hhDmAs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q2rGpaBa4QavKa2aIWs4thW6/FUmCcNcZJIQJPwtErs5+4vhqemeqNpizGSUsPTB/cyWno83OOMSQNvY6QoYIVfxnyj4+r+j8yuRKUDYlCs9mJHKqRp8NSB0zqaiE5I9wbgRu3KCNAUrT6Jpb7tTsFN0oRUYAPGOo7eheUp8GSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eSueyoK8; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708984609; x=1740520609;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=OKSebMMO6/DYqu7NpbNiHX/+srJ9ql/kyB206hhDmAs=;
+  b=eSueyoK8aKsQAh0CC6+iOy03JJ47WBD2iF2RlZhkQ/hcAplnA0CdBQpW
+   FeOpGPS/YVJ+vmxG/t4pu/6bJIUdFGUnB/AI/y12lygDsFL/Vby5LS8kq
+   4Zojwq5i8qMx1HquW2LrIIiALvwnv0A5JUY2CKORyhEwjqflNxBm9xsUd
+   87eMffDc8csxpDIpIYION6Dp+JJcepumZxrHtCJYfxqSqCRFC9S0VovA7
+   QQQlG//tncVz6Au0Kn/hzQZQLN2ClNYmOkigAoqgd7z9w8Xarub25hOyq
+   wuS9gHSI2aWdwsVjeDWejMz5DEAJr8kWkP8nw8NgAtEYxfe3rQqX0AMmf
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3416212"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="3416212"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 13:56:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="7028174"
+Received: from dukhanki-mobl.amr.corp.intel.com (HELO [10.209.30.102]) ([10.209.30.102])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 13:56:43 -0800
+Message-ID: <3f4c6d12-7e0f-44ca-920e-ec219904e0aa@intel.com>
+Date: Mon, 26 Feb 2024 13:56:42 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
-In-Reply-To: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date: Mon, 26 Feb 2024 13:56:30 -0800
-Message-ID: <CANP3RGf7qsuwcgVpmOoH0QNh-v4PjRh_xj7Rcz=YJ1TbGiPK0Q@mail.gmail.com>
-Subject: Re: [RFC PATCH] usb: gadget: ncm: Fix handling of zero block length packets
-To: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com, 
-	quic_wcheng@quicinc.com, quic_jackp@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
+ try_charge()
+Content-Language: en-US
+To: Haitao Huang <haitao.huang@linux.intel.com>,
+ "Huang, Kai" <kai.huang@intel.com>, "tj@kernel.org" <tj@kernel.org>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "hpa@zytor.com" <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>,
+ "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>,
+ "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>,
+ "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-11-haitao.huang@linux.intel.com>
+ <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
+ <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
+ <op.2jkfeezjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <c913193c0560c4372d2fdb31e9edb28bcb419f50.camel@intel.com>
+ <op.2jlti6g9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <7b53e155-2622-4acb-b7c9-d22e623e4cb3@intel.com>
+ <op.2jqdjjd8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <48faaea8b24f032baa6a858a2909a5b4ace769c6.camel@intel.com>
+ <d9b0df06-da68-4729-8aac-2a77e890e152@intel.com>
+ <op.2jrquskiwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <op.2jrquskiwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 26, 2024 at 3:28=E2=80=AFAM Krishna Kurapati
-<quic_kriskura@quicinc.com> wrote:
->
-> While connecting to a Linux host with CDC_NCM_NTB_DEF_SIZE_TX
-> set to 65536, it has been observed that we receive short packets,
-> which come at interval of 5-10 seconds sometimes and have block
-> length zero but still contain 1-2 valid datagrams present.
->
-> According to the NCM spec:
->
-> "If wBlockLength =3D 0x0000, the block is terminated by a
-> short packet. In this case, the USB transfer must still
-> be shorter than dwNtbInMaxSize or dwNtbOutMaxSize. If
-> exactly dwNtbInMaxSize or dwNtbOutMaxSize bytes are sent,
-> and the size is a multiple of wMaxPacketSize for the
-> given pipe, then no ZLP shall be sent.
->
-> wBlockLength=3D 0x0000 must be used with extreme care, because
-> of the possibility that the host and device may get out of
-> sync, and because of test issues.
->
-> wBlockLength =3D 0x0000 allows the sender to reduce latency by
-> starting to send a very large NTB, and then shortening it when
-> the sender discovers that there=E2=80=99s not sufficient data to justify
-> sending a large NTB"
->
-> However, there is a potential issue with the current implementation,
-> as it checks for the occurrence of multiple NTBs in a single
-> giveback by verifying if the leftover bytes to be processed is zero
-> or not. If the block length reads zero, we would process the same
-> NTB infintely because the leftover bytes is never zero and it leads
-> to a crash. Fix this by bailing out if block length reads zero.
->
-> Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NTB's=
- in unwrap call")
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
->
-> PS: Although this issue was seen after CDC_NCM_NTB_DEF_SIZE_TX
-> was modified to 64K on host side, I still believe this
-> can come up at any time as per the spec. Also I assumed
-> that the giveback where block length is zero, has only
-> one NTB and not multiple ones.
->
->  drivers/usb/gadget/function/f_ncm.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/fun=
-ction/f_ncm.c
-> index e2a059cfda2c..355e370e5140 100644
-> --- a/drivers/usb/gadget/function/f_ncm.c
-> +++ b/drivers/usb/gadget/function/f_ncm.c
-> @@ -1337,6 +1337,9 @@ static int ncm_unwrap_ntb(struct gether *port,
->         VDBG(port->func.config->cdev,
->              "Parsed NTB with %d frames\n", dgram_counter);
->
-> +       if (block_len =3D=3D 0)
-> +               goto done;
-> +
->         to_process -=3D block_len;
->
->         /*
-> @@ -1351,6 +1354,7 @@ static int ncm_unwrap_ntb(struct gether *port,
->                 goto parse_ntb;
->         }
->
-> +done:
->         dev_consume_skb_any(skb);
->
->         return 0;
-> --
-> 2.34.1
->
+On 2/26/24 13:48, Haitao Huang wrote:
+> In case of overcomitting, i.e., sum of limits greater than the EPC
+> capacity, if one group has a fault, and its usage is not above its own
+> limit (try_charge() passes), yet total usage of the system has exceeded
+> the capacity, whether we do global reclaim or just reclaim pages in the
+> current faulting group.
 
-In general this is of course fine (though see Greg's auto-complaint).
+I don't see _any_ reason to limit reclaim to the current faulting cgroup.
 
-I haven't thought too much about this, but I just wonder whether the
-check for block_len =3D=3D 0
-shouldn't be just after block_len is read, ie. somewhere just after:
+>> Last, what is the simplest (least amount of code) thing that the SGX
+>> cgroup controller could implement here?
+> 
+> I still think the current approach of doing global reclaim is reasonable
+> and simple: try_charge() checks cgroup limit and reclaim within the
+> group if needed, then do EPC page allocation, reclaim globally if
+> allocation fails due to global usage reaches the capacity.
+> 
+> I'm not sure how not doing global reclaiming in this case would bring
+> any benefit.
+I tend to agree.
 
-block_len =3D get_ncm(&tmp, opts->block_length);
+Kai, I think your examples sound a little bit contrived.  Have actual
+users expressed a strong intent for doing anything with this series
+other than limiting bad actors from eating all the EPC?
 
-as it is kind of weird to be handling block_len =3D=3D 0 at the point where
-you are already theoretically done processing the block...
-
-I guess, as is, this assumes the block isn't actually of length 0,
-since there's a bunch of following get_ncm() calls...
-Are those guaranteed to be valid?
-
-I guess I don't actually see the infinite loop with block_len =3D=3D 0,
-since get_ncm() always moves us forward...
-
-Maybe your patch *is* correct as is, and you just need a comment
-explaining *why* block_len =3D=3D 0 is terminal at the spot you're adding t=
-he check.
-
-Also couldn't you fix this without goto, by changing
-
-  } else if (to_process > 0) {
-to
-  } else if (to_process && block_len) {
-    // See NCM spec.  zero block_len means short packet.
-
---
-Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
 
