@@ -1,180 +1,172 @@
-Return-Path: <linux-kernel+bounces-81401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 380AB8675DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:00:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2A9386757E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:46:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91268B2A7BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:45:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DB0EB2997B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AC87F7DE;
-	Mon, 26 Feb 2024 12:45:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99AAB7FBCB;
+	Mon, 26 Feb 2024 12:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=infineon.com header.i=@infineon.com header.b="A+BOZT7K"
-Received: from smtp2.infineon.com (smtp2.infineon.com [217.10.52.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H8syFrFb"
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4007A1D54B;
-	Mon, 26 Feb 2024 12:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.52.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D51D7F49D
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:44:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708951510; cv=none; b=l3ruT69LkFlUH88XUZo+8shGVcdimbnSOai1JAvrRPddJXxIMd1QTEktLrbU+mZbsnyUQrnLaBH7jlwNPrAnblW/NokPBnxvrFUDVEk5PrpalyC+SUrfLe/cQ5Px515YGhPL5nTqNM48WgtTerErzl07w9UtUah+4wK+kR2Nnxo=
+	t=1708951448; cv=none; b=R7n9VDJSZl83GONtqunWXAdNOA3D18gtrhzzQTnltpVZEjQeppV9pyeyP9nAL7P39OKjzt7FFvvxpisUQxUpCA5pKHlTzoEhVWnXynLumIri+3Jfu5ah9u/tDkaS0/8D51g3kQdbRuhpGox+2dRNZJdxL5EvjKFFG3ckbYPG0c8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708951510; c=relaxed/simple;
-	bh=uopANXtSJT51k4uIm3FZj2qxgzsKx67DpU6Vep4VvQU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=n254ky+SS0yX9HR7ona3hZvArTcc2O2W7Ip4mUWcF863vZgeQOP6KyZ0U2XgpRX34k2uxskY4T6T9Qvzb0KLLpJg6k47Yjt4xtl1HiPUtruvY1bD+l8MTnPjeoUAbpsLDnss6qc7fuK/DzbPtSQGpI5RhmHIM3BGF1bzDO4tJtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infineon.com; spf=pass smtp.mailfrom=infineon.com; dkim=pass (1024-bit key) header.d=infineon.com header.i=@infineon.com header.b=A+BOZT7K; arc=none smtp.client-ip=217.10.52.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infineon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=infineon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=infineon.com; i=@infineon.com; q=dns/txt; s=IFXMAIL;
-  t=1708951509; x=1740487509;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=uopANXtSJT51k4uIm3FZj2qxgzsKx67DpU6Vep4VvQU=;
-  b=A+BOZT7KA3BZTWASeXZ5D2m8w64M+6DJk98LVJ/ywMFq2UP4H12ejBH6
-   nKnXi1+PJ9LrQX+4Fe/1MaN1RcWauWCFro/OGjQ5Tchdre1zVH5J0bzbc
-   IdjUlS7RDap4wzCamWWrLUb0cHu3vVg5EZSC7aLAk2LprAs1u07WlHzvi
-   Q=;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="69010008"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705359600"; 
-   d="scan'208";a="69010008"
-Received: from unknown (HELO MUCSE814.infineon.com) ([172.23.29.40])
-  by smtp2.infineon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 13:43:57 +0100
-Received: from KLUSE844.infineon.com (172.28.156.184) by MUCSE814.infineon.com
- (172.23.29.40) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
- 2024 13:43:56 +0100
-Received: from [10.160.239.31] (10.160.239.31) by KLUSE844.infineon.com
- (172.28.156.184) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
- 2024 13:43:56 +0100
-Message-ID: <fd34e752-b6ce-4880-9ef5-4feda985bf42@infineon.com>
-Date: Mon, 26 Feb 2024 13:43:55 +0100
+	s=arc-20240116; t=1708951448; c=relaxed/simple;
+	bh=VGOF//hEPOKVInRy9u/t4EELWuVUy3vArJLdV3NkLOc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YuVbiHxVDHnfAATTOEBO2AtEWxkDBz+0UFbJPWopmeCmJ9/2TiYATL0KYrFEAtnfkd23d8ONJGzCjiScYaRcMK5b5bPIOj3lZ50iaCYv4VsUQkqSxy+1q4d3e/TpV8n4v1H0GdenfO8UlFO9Hh30P8BwS+NdX+nXEZrKmjajhxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=H8syFrFb; arc=none smtp.client-ip=209.85.166.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7c72294e3d1so147961139f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:44:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708951446; x=1709556246; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q+35+P4r2JIren/LNJaaaherP1wCOAvB2HpC0DyEeMg=;
+        b=H8syFrFb9/7hwuQYGNNJLkZYo4lqzE58RFdyMuyd7KQR8uHVLXOY7wGlPvPl7y+2Bf
+         oUDO+WKQkkBYTfZmQ/k2c8z6XKJ5Zg1EOVkSo9emX33xVX+toBsMwJiz5CZnY94oF0VN
+         xbz34HTA9pdobQN2BSCR+i4TqLahgXt2SnbNcerhyZ574fKjjJLFFe+9nshMGsHyZCXp
+         2A5ZTZw9VYH9jkG4fwzXE/Fvh9z8pj23fEvEw2zQx8wESTc3kBcsUO1HTbczX2+OfN0o
+         VZJZOkfyrsdKKZl8oSo7S8VTMoMxAT05VJYODHDNFN10t7W+3fOe2I1E2D7fodfGTQ+/
+         EUDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708951446; x=1709556246;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q+35+P4r2JIren/LNJaaaherP1wCOAvB2HpC0DyEeMg=;
+        b=bUaViX0hUj10iEqCLSH50iuVmMUxmjznMrZFU8PlJkzjP8h2HCjNE1HZ1vaHASHM/E
+         XSZldiIoLnWCVbIgmR49Y2hsfWZ6jx5D8qSqw/+ewlXDw9twK9yDPPlCqnj7Sy/Y/xFm
+         1DhvuS3coAlELravVKii3dBj6qxA6+utZGsB5ztdqatgPbCyEmLXTtNLD7NbfWVxpzHp
+         w22W+RCFlJD5oaz6KwPuwaenXH8i99IC7dgBvfilsaz9SWb7/VXq2XYQAjuZ7ChH/Up6
+         WevgV9z18wKGJ9uooNUqkrPqRPcx8C6Rvqgo5ICxYod+vdxJXpIwrBIinoz5MfqhSzzx
+         mXWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWRJYTTFLLtyD9ueqkWKO5UUlZPSMsxL0ATcc2/IIPKeNRHYqDwP0h7RC55OnTC//duO/qPvxZ54h2ZuY0s3XjnBlsaAuJb7qZmnbJx
+X-Gm-Message-State: AOJu0YyTI+ZYJxN4jHZCMUaJyC7IotUmi1X3pe4zaUNlA9SAkE7kw6lG
+	ftVPPcFiFbLx9En0sQs1/6S0M8uP9MKu7kQ5gOhkkeZmnYXbRzVRxXfRmiiSb4sSSJEd85O4VG7
+	XWC3t+lTYf+6tYHvb3xr5k3WJAjnXxr2Cv02K
+X-Google-Smtp-Source: AGHT+IHcQ49ya8fWuFRYRtaEwX1j4GO+9eoCIEgu+RmTzs9mIQP4CSt0k7FW7/FiUFuNkGHC/QwN3dkzwfDTaAEIpSg=
+X-Received: by 2002:a6b:c8d8:0:b0:7c7:9646:827b with SMTP id
+ y207-20020a6bc8d8000000b007c79646827bmr7806606iof.18.1708951446529; Mon, 26
+ Feb 2024 04:44:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] tpm: protect against locality counter underflow
-To: "Daniel P. Smith" <dpsmith@apertussolutions.com>, Lino Sanfilippo
-	<l.sanfilippo@kunbus.com>, Jarkko Sakkinen <jarkko@kernel.org>, "Jason
- Gunthorpe" <jgg@ziepe.ca>, Sasha Levin <sashal@kernel.org>,
-	<linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: Ross Philipson <ross.philipson@oracle.com>, Kanth Ghatraju
-	<kanth.ghatraju@oracle.com>, Peter Huewe <peterhuewe@gmx.de>
-References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
- <20240131170824.6183-2-dpsmith@apertussolutions.com>
- <CYU3CFW08DAA.29DJY7SJYPJJZ@suppilovahvero>
- <2ba9a96e-f93b-48e2-9ca0-48318af7f9b1@kunbus.com>
- <ae3fecc4-7b76-4607-8749-045e17941923@infineon.com>
- <f52546f1-acca-4915-924c-cdd2018215d5@apertussolutions.com>
-From: Alexander Steffen <Alexander.Steffen@infineon.com>
-In-Reply-To: <f52546f1-acca-4915-924c-cdd2018215d5@apertussolutions.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MUCSE822.infineon.com (172.23.29.53) To
- KLUSE844.infineon.com (172.28.156.184)
+References: <20240221160215.484151-1-panikiel@google.com> <20240221160215.484151-9-panikiel@google.com>
+ <13aeb2ff-72f4-49d9-b65e-ddc31569a936@linaro.org> <CAM5zL5q0oKoTMR0jSwYVAChCOJ9iKYPRFiU1vH4qDqhHALKz4w@mail.gmail.com>
+ <e1fd8cbd-060b-4d15-8256-6d8dbba545da@linaro.org>
+In-Reply-To: <e1fd8cbd-060b-4d15-8256-6d8dbba545da@linaro.org>
+From: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>
+Date: Mon, 26 Feb 2024 13:43:55 +0100
+Message-ID: <CAM5zL5qxBM1xQ__t86gxUKMy8O3BzoCe_vTFxxsqFq7mw4-8EQ@mail.gmail.com>
+Subject: Re: [PATCH v2 8/9] media: dt-bindings: Add Intel Displayport RX IP
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: airlied@gmail.com, akpm@linux-foundation.org, conor+dt@kernel.org, 
+	daniel@ffwll.ch, dinguyen@kernel.org, hverkuil-cisco@xs4all.nl, 
+	krzysztof.kozlowski+dt@linaro.org, maarten.lankhorst@linux.intel.com, 
+	mchehab@kernel.org, mripard@kernel.org, robh+dt@kernel.org, 
+	tzimmermann@suse.de, devicetree@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, chromeos-krk-upstreaming@google.com, 
+	ribalda@chromium.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 23.02.2024 02:55, Daniel P. Smith wrote:
-> On 2/20/24 13:42, Alexander Steffen wrote:
->> On 02.02.2024 04:08, Lino Sanfilippo wrote:
->>> On 01.02.24 23:21, Jarkko Sakkinen wrote:
->>>
->>>>
->>>> On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
->>>>> Commit 933bfc5ad213 introduced the use of a locality counter to
->>>>> control when a
->>>>> locality request is allowed to be sent to the TPM. In the commit,
->>>>> the counter
->>>>> is indiscriminately decremented. Thus creating a situation for an
->>>>> integer
->>>>> underflow of the counter.
->>>>
->>>> What is the sequence of events that leads to this triggering the
->>>> underflow? This information should be represent in the commit message.
->>>>
->>>
->>> AFAIU this is:
->>>
->>> 1. We start with a locality_counter of 0 and then we call
->>> tpm_tis_request_locality()
->>> for the first time, but since a locality is (unexpectedly) already 
->>> active
->>> check_locality() and consequently __tpm_tis_request_locality() return
->>> "true".
->>
->> check_locality() returns true, but __tpm_tis_request_locality() returns
->> the requested locality. Currently, this is always 0, so the check for
->> !ret will always correctly indicate success and increment the
->> locality_count.
->>
->> But since theoretically a locality != 0 could be requested, the correct
->> fix would be to check for something like ret >= 0 or ret == l instead of
->> !ret. Then the counter will also be incremented correctly for localities
->> != 0, and no underflow will happen later on. Therefore, explicitly
->> checking for an underflow is unnecessary and hides the real problem.
->>
-> 
-> My apologies, but I will have to humbly disagree from a fundamental
-> level here. If a state variable has bounds, then those bounds should be
-> enforced when the variable is being manipulated.
+On Mon, Feb 26, 2024 at 1:06=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 26/02/2024 11:59, Pawe=C5=82 Anikiel wrote:
+> >>> +properties:
+> >>> +  compatible:
+> >>> +    const: intel,dprx-20.0.1
+> >>> +
+> >>> +  reg:
+> >>> +    maxItems: 1
+> >>> +
+> >>> +  interrupts:
+> >>> +    maxItems: 1
+> >>> +
+> >>> +  intel,max-link-rate:
+> >>> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >>> +    description: Max link rate configuration parameter
+> >>
+> >> Please do not duplicate property name in description. It's useless.
+> >> Instead explain what is this responsible for.
+> >>
+> >> Why max-link-rate would differ for the same dprx-20.0.1? And why
+> >> standard properties cannot be used?
+> >>
+> >> Same for all questions below.
+> >
+> > These four properties are the IP configuration parameters mentioned in
+> > the device description. When generating the IP core you can set these
+> > parameters, which could make them differ for the same dprx-20.0.1.
+> > They are documented in the user guide, for which I also put a link in
+> > the description. Is that enough? Or should I also document these
+> > parameters here?
+>
+> user-guide is something for users, like user-space programmers or
+> end-users. I would never open it to look for any information related to
+> hardware.
+>
+> Anyway, external resources are a no-go. We have it clearly in submitting
+> patches:
+>
+> https://elixir.bootlin.com/linux/v6.8-rc6/source/Documentation/process/su=
+bmitting-patches.rst#L130
 
-That's fine, but that is not what your proposed fix does.
+Okay, I will describe these properties in the bindings as well.
 
-tpm_tis_request_locality and tpm_tis_relinquish_locality are meant to be 
-called in pairs: for every (successful) call to tpm_tis_request_locality 
-there *must* be a corresponding call to tpm_tis_relinquish_locality 
-afterwards. Unfortunately, in C there is no language construct to 
-enforce that (nothing like a Python context manager), so instead 
-locality_count is used to count the number of successful calls to 
-tpm_tis_request_locality, so that tpm_tis_relinquish_locality can wait 
-to actually relinquish the locality until the last expected call has 
-happened (you can think of that as a Python RLock, to stay with the 
-Python analogies).
+>
+> >
+> >>
+> >>> +
+> >>> +  intel,max-lane-count:
+> >>> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >>> +    description: Max lane count configuration parameter
+> >>> +
+> >>> +  intel,multi-stream-support:
+> >>> +    type: boolean
+> >>> +    description: Multi-Stream Transport support configuration parame=
+ter
+> >>> +
+> >>> +  intel,max-stream-count:
+> >>> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >>> +    description: Max stream count configuration parameter
+> >>> +
+> >>> +  port:
+> >>> +    $ref: /schemas/graph.yaml#/properties/port
+> >>> +    description: SST main link
+> >>
+> >> I don't understand why you have both port and ports. Shouldn't this be
+> >> under ports?
+> >
+> > I put both so that you can use the shorter port property when the
+> > device only has one port (i.e. no MST support). It would work fine
+> > without it. If you think that's unnecessary, I can remove it (and use
+> > the ports property even if there is only one).
+>
+> No, it is fine, but then you need allOf: which will restrict to only one
+> of them: either port or ports.
 
-So if locality_count ever gets negative, that is certainly a bug 
-somewhere. But your proposed fix hides this bug, by allowing 
-tpm_tis_relinquish_locality to be called more often than 
-tpm_tis_request_locality. You could have added something like 
-BUG_ON(priv->locality_count == 0) before decrementing the counter. That 
-would really enforce the bounds, without hiding the bug, and I would be 
-fine with that.
-
-Of course, that still leaves the actual bug to be fixed. In this case, 
-there is no mismatch between the calls to tpm_tis_request_locality and 
-tpm_tis_relinquish_locality. It is just (as I said before) that the 
-counting of successful calls in tpm_tis_request_locality is broken for 
-localities != 0, so that is what you need to fix.
-
-> Assuming that every
-> path leading to the variable manipulation code has ensured proper
-> manipulation is just that, an assumption. When assumptions fail is how
-> bugs and vulnerabilities occur.
-> 
-> To your point, does this full address the situation experienced, I would
-> say it does not. IMHO, the situation is really a combination of both
-> patch 1 and patch 2, but the request was to split the changes for
-> individual discussion. We selected this one as being the fixes for two
-> reasons. First, it blocks the underflow such that when the Secure Launch
-> series opens Locality 2, it will get incremented at that time and the
-> internal locality tracking state variables will end up with the correct
-> values. Thus leading to the relinquish succeeding at kernel shutdown.
-> Second, it provides a stronger defensive coding practice.
-> 
-> Another reason that this works as a fix is that the TPM specification
-> requires the registers to be mirrored across all localities, regardless
-> of the active locality. While all the request/relinquishes for Locality
-> 0 sent by the early code do not succeed, obtaining the values via the
-> Locality 0 registers are still guaranteed to be correct.
-> 
-> v/r,
-> dps
-
+There already is an allOf below that says that ports is required for
+MST support and port is required otherwise. Isn't this enough?
 
