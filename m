@@ -1,106 +1,138 @@
-Return-Path: <linux-kernel+bounces-80722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E3F6866BB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA68A866BAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:03:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 400E01C229D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:05:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB8421C218CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06DCA1C6A6;
-	Mon, 26 Feb 2024 08:05:03 +0000 (UTC)
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.62.65])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C23A1C6A4;
+	Mon, 26 Feb 2024 08:03:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f8OJ5cOB"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A30481C692;
-	Mon, 26 Feb 2024 08:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.62.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43571CA81;
+	Mon, 26 Feb 2024 08:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708934702; cv=none; b=nGzfX8xr7EmggxUVnsiKi5m3LJWr2Jo4Cowc+FCm8K1W1irfBNKVTdD1xDLwIKGLi7P/QQmyNNLnH3/bblbczs6bSQAazpS6XFelRVJpvnyJkux1EoCiQ72gpRvLXwY+P/31CUtb2Bxgf5t9UpFumqHdamPz6nR7Q/W8dnsoTC8=
+	t=1708934618; cv=none; b=Zcy41NQkkf4fwydcLEdXnnEprQuOEQ9RTZxtNxaRsqcLtqbFRVSr1Cd1fymAUZ8iVc7iB811Y1UPodkp/745LrtCfavdYFmVJfC0bgJUr0RH9tD0Sv2dZmJx6cmRKZFM6wwr0xLMTdbtPMRnIKTJ7h9I9s63BkVy8bKP0udomGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708934702; c=relaxed/simple;
-	bh=dN3E446p7hva0FnMIQ6NFdYTCxG7DQq3CBiJFrGa6Ew=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BQgfzVqPqqg3kaWnSoSqTwnzJGMvgHXYx8UNWTIk0otiX+L5Loe1YVKxsFB1HF1IdiaN+vQ2tS9R0N+GgUBYiWnfUmp7zHPGZUJXNg+ahPh+NnZzFxPHxBmGv4/LrVcmaWMSV/nmeAUa3GNahWJiqz294wjn292hR4ZWJjzqxuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=114.132.62.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-mid: bizesmtp86t1708934613towayw64
-X-QQ-Originating-IP: cPL1Ck3yLJrKvXVPFv3NE+RF3uFMoNuGQ35pxT3KDRM=
-Received: from localhost.localdomain ( [113.57.152.160])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Mon, 26 Feb 2024 16:03:31 +0800 (CST)
-X-QQ-SSF: 01400000000000C0B000000A0000000
-X-QQ-FEAT: RrZlkntZBflMICK+qs6fwIpCV2d/qsk9tQTFhoQEIKaT681VwUo/mZi9pW5Ep
-	k5lwP9mwmvUt2QBdS310uRcAPLffXOPehuc42UEt/wCNHf+/7u8S45VGzlTcfGHC23d3E75
-	vqpTuSj1AtuHvx/0sh5Mv4ezn6qFXRJBaSW4RVk3qrzHe4RKByXHxB0bNB25Leq7ft2oO0A
-	OGP64dY2zxxCOYhS+KkycSsm7LU+AcvDyKppNaUg4Uv70uUBpEADPbHuCL9oN8f0N9x429u
-	fjMZ8NzlJx7PAc47q1mFwtN4pzGlPMH98oLm+LOzIIV/MKj/TiHz/jBOFIHhNWRA4SRjcS4
-	ta28ykuSow/hEtK+tkdFQPPVFOb7Ohg7xHU/sJcbCmHyjKDwUDpwfymOCMa1AAFXtx+bHOM
-	cjoCqCmgnl5yIl8+2CTISg==
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 7263635772186819798
-From: WangYuli <wangyuli@uniontech.com>
-To: herbert@gondor.apana.org.au,
-	davem@davemloft.net,
-	chenhuacai@kernel.org,
-	kernel@xen0n.name
-Cc: linux-crypto@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	WangYuli <wangyuli@uniontech.com>,
-	Guan Wentao <guanwentao@uniontech.com>
-Subject: [PATCH] loongarch/crypto: Clean up useless assignment operations
-Date: Mon, 26 Feb 2024 16:03:28 +0800
-Message-Id: <20240226080328.334021-1-wangyuli@uniontech.com>
-X-Mailer: git-send-email 2.33.1
+	s=arc-20240116; t=1708934618; c=relaxed/simple;
+	bh=lKCJAGB8b/UhlOF810+HmhG2QMowiBaclTzfZnZ3Rek=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eBgNbB0lQRQz9baGhKFcvjPvNNQm8AL03SZZxlk4Vemn5wjczymwn7TNJdiy14HqTXfa5dxu5rda1vlqNHijnvHKvf1Brqg67IRaEK1miqE7EKGBN3bldi0PEhOjHNWuAFboEtchITTdYqaoL3JCMozLggIU1L0YS3oJ9tY9LHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f8OJ5cOB; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708934617; x=1740470617;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lKCJAGB8b/UhlOF810+HmhG2QMowiBaclTzfZnZ3Rek=;
+  b=f8OJ5cOB4oXDe7fEC6jABrWbgoBekqZpkUm+XsHOfzKirAfl+roFRCFe
+   Sj4MKbtT1mB24tAIELdPFnHURVfIhw//RCKh7Mg0B1bH19EDPFNuNI4qt
+   anAg0/Pvh2h8oTOVNRNgvQn/WzFLI07nkjP2KFtLsEO7ld0mon/Ii3j/E
+   GZSODn+2CUrNVV9qiFwlF5t6MiT6iMok0hx0J3O+OLDzELn/O254YEKkI
+   M70gpSJ4Wy6v4bs5jlGVZFmbGTdPbQ6Xl8HMHVIToMiDp+NeSSQBZdm5l
+   O9JFgnF3fFZzFGsf3tR/8xRO/paCz0XhsShh1J3Z/f43FLyLQHJjtH6Km
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="14335908"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="14335908"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:03:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937029451"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="937029451"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 26 Feb 2024 00:03:31 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 26 Feb 2024 10:03:30 +0200
+Date: Mon, 26 Feb 2024 10:03:30 +0200
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux@roeck-us.net, jun.li@nxp.com, devicetree@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: Re: [PATCH v3 3/4] usb: typec: tcpm: add support to set tcpc
+ connector orientatition
+Message-ID: <ZdxF0rARWTjIIDnz@kuha.fi.intel.com>
+References: <20240222210903.208901-1-m.felsch@pengutronix.de>
+ <20240222210903.208901-4-m.felsch@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222210903.208901-4-m.felsch@pengutronix.de>
 
-Both crc32 and crc32c hw accelerated funcs will calculate the
-remaining len. Those codes are derived from
-arch/mips/crypto/crc32-mips.c and "len -= sizeof(u32)" is not
-necessary for 64-bit CPUs.
+On Thu, Feb 22, 2024 at 10:09:02PM +0100, Marco Felsch wrote:
+> This adds the support to set the connector orientation value
+> accordingly. This is part of the optional CONFIG_STANDARD_OUTPUT
+> register 0x18, specified within the USB port controller spsicification
+> rev. 2.0 [1].
+> 
+> [1] https://www.usb.org/sites/default/files/documents/usb-port_controller_specification_rev2.0_v1.0_0.pdf
+> 
+> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 
-Removing it can make context code style more unified and improve
-code readability.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Suggested-by: Guan Wentao <guanwentao@uniontech.com>
-Signed-off-by: WangYuli <wangyuli@uniontech.com>
----
- arch/loongarch/crypto/crc32-loongarch.c | 2 --
- 1 file changed, 2 deletions(-)
+> ---
+> v3:
+> - no changes
+> v2:
+> - no changes
+> 
+>  drivers/usb/typec/tcpm/tcpm.c | 6 ++++++
+>  include/linux/usb/tcpm.h      | 2 ++
+>  2 files changed, 8 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 5945e3a2b0f7..85ca26687324 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1099,6 +1099,12 @@ static int tcpm_set_roles(struct tcpm_port *port, bool attached,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	if (port->tcpc->set_orientation) {
+> +		ret = port->tcpc->set_orientation(port->tcpc, orientation);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+>  	port->pwr_role = role;
+>  	port->data_role = data;
+>  	typec_set_data_role(port->typec_port, data);
+> diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
+> index 65fac5e1f317..93b681ff3ef9 100644
+> --- a/include/linux/usb/tcpm.h
+> +++ b/include/linux/usb/tcpm.h
+> @@ -133,6 +133,8 @@ struct tcpc_dev {
+>  		      enum typec_cc_status *cc2);
+>  	int (*set_polarity)(struct tcpc_dev *dev,
+>  			    enum typec_cc_polarity polarity);
+> +	int (*set_orientation)(struct tcpc_dev *dev,
+> +			       enum typec_orientation orientation);
+>  	int (*set_vconn)(struct tcpc_dev *dev, bool on);
+>  	int (*set_vbus)(struct tcpc_dev *dev, bool on, bool charge);
+>  	int (*set_current_limit)(struct tcpc_dev *dev, u32 max_ma, u32 mv);
+> -- 
+> 2.39.2
 
-diff --git a/arch/loongarch/crypto/crc32-loongarch.c b/arch/loongarch/crypto/crc32-loongarch.c
-index a49e507af38c..3eebea3a7b47 100644
---- a/arch/loongarch/crypto/crc32-loongarch.c
-+++ b/arch/loongarch/crypto/crc32-loongarch.c
-@@ -44,7 +44,6 @@ static u32 crc32_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
- 
- 		CRC32(crc, value, w);
- 		p += sizeof(u32);
--		len -= sizeof(u32);
- 	}
- 
- 	if (len & sizeof(u16)) {
-@@ -80,7 +79,6 @@ static u32 crc32c_loongarch_hw(u32 crc_, const u8 *p, unsigned int len)
- 
- 		CRC32C(crc, value, w);
- 		p += sizeof(u32);
--		len -= sizeof(u32);
- 	}
- 
- 	if (len & sizeof(u16)) {
 -- 
-2.33.1
-
+heikki
 
