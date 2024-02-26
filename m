@@ -1,137 +1,166 @@
-Return-Path: <linux-kernel+bounces-81432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8442286762E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:13:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E2588675F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52B93B2EB50
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:00:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28E53B2C653
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E826480042;
-	Mon, 26 Feb 2024 13:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0C47FBAF;
+	Mon, 26 Feb 2024 12:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vB2Tswhp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="Nl0hEbre"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2041.outbound.protection.outlook.com [40.107.21.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F2F5A7B9;
-	Mon, 26 Feb 2024 13:00:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708952412; cv=none; b=PbjcCymjBniFjAEPZHHwurt3pa+viBM2Fy3i0Yw5zw5oOLU9RiQs0/cPbVSp3j7IDVVeLDM3nLRfrCd+mlFj2D+Vclq3Max3mjY9J9WXEhBvVHHnPlLeHdHMOFc5WEMxvZzT9i5mlL0zR9LPGoGshgBTF8nVsRQCw4E+Bsf8lQU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708952412; c=relaxed/simple;
-	bh=OMiWctER0LJ1jLO/g05SXNcA18YmEBLscWZvA7VnJkM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qfOOpOFrWj73Q/DTGgk+usldvuK33OwahaRko85Qzx6gzdBxFHAsHJ1SZteuBxumg1r02XlxQ3h41DLtMXhTVfqR79Hq5dPOuPYjYly94SicYVIKA6l81zxOdPKYndk2VuKwrJMJCqNMS9csMt9HHpS5ugaCe2mPKYNVK9oISXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vB2Tswhp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8000C43601;
-	Mon, 26 Feb 2024 13:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708952411;
-	bh=OMiWctER0LJ1jLO/g05SXNcA18YmEBLscWZvA7VnJkM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=vB2TswhpFY1yqMJl0NwGq0yJMVGeZKkqi78nomO7G/RYeP65nMeJos1uYBNQXfy0i
-	 eAnPEqB8UmbOE+IihZLRLVKVQasSgmpWjPlvcQ47uwXAI8yu9qAE6DrzfvTi2VZrwz
-	 XyM35WmTBKBcuQUT0iF0LMlRuBSkLEWIEse8sW/Z7g921wFg0CJAsXdb0iWGqIz2yU
-	 7rhsVLwgqqS4hYSW//RcyNmVW5ZOLrJ/NNkbUC/MLg7IRKICsGFxFiluuXNI9IwFVs
-	 k1NjRbOvRu7p5Hn0AXlE2Vemb8vrhksHCQep+ctT1CZAjGTpPvaK2rs6Iv5Z0r5rTJ
-	 JwU008ZHAKmuA==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a437a2a46b1so57944066b.2;
-        Mon, 26 Feb 2024 05:00:11 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXleWZLb1givXMKwGYwzupNXuMpwLvUGMzZYkOAWzEATNoob53K1LQufBFkRktYWkHZNngSMZTUWAY7FiWyzwYigDv8SexYZWPUZPuvEHOFKVPqTneako6mWSSx4oNqj+/i
-X-Gm-Message-State: AOJu0YwmYvIVKejHp1u2o4s8drVNyeup6riukCyFVIi7cf38vkuLniUW
-	fkXofhe+P50hsE9copXIpwemszgvkrhUpH7XscbjjaNdMLSav9+NzMWfFHcTJIYi1wItVuUQTpm
-	w5D8v60YRv/0s7yv2PFYfH0Ye4WM=
-X-Google-Smtp-Source: AGHT+IHLK4Exe7j67rwEw991AFJgmSFjyGqKbOmZ/W+iJwdhbSt+QDLwruPF2NYpobJ0QS7xyR1J+L7PCSAOdYvq8Ng=
-X-Received: by 2002:a17:906:3411:b0:a43:1415:2f1e with SMTP id
- c17-20020a170906341100b00a4314152f1emr2987434ejb.69.1708952410260; Mon, 26
- Feb 2024 05:00:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03B060860;
+	Mon, 26 Feb 2024 12:54:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708952081; cv=fail; b=gJzowUelSbwur8hH7UxVzReXnA72+VZqGTmacUFYuKCb9DMwlEk1Y5zKgfxflBIixE+V/S+ytewtW6M1iiE1xTu0ZeRJ8A30ae54llcOxrnTrh3WW9XMA/D3Xb7EhtnxeTw5igsxEbonJNZLKv7XIqTb5j/1gxk5vfHqAfd89Fw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708952081; c=relaxed/simple;
+	bh=w9k/CRCtO0wGfaWLODPpDWdwXRq79FKfF1/JFlhXFRU=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=tJhG/01y30zd5jQeVPP/2/iHmlqwycngnQ5604qAbpv5+OLMZYZoT6lmaQMmzwNM8PjD6X5dYp4kY9wfKNBVEC7MJErn/VDCuxJq+zg9Ey/GAc7ogt/s2MZbVa2pt4PJmQqLE2FfK5ctyzEowCuJQ7A3nsaRJPT0O8DM6OSDrpI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=Nl0hEbre; arc=fail smtp.client-ip=40.107.21.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YA0vq76v9m8vhWhdg6UA1UWiOujg2qMhX7Y6J8IJZBS+PMhNs6ajoI3JH5I1rQ/351WOgRmhsjVhK9Oo3w7itqNK5k0h1bTHDhakHNzovCTmfdeEWIPdtoskJpu0u3FIM3opK94IcnTuF7rQOlwOllfCutpZX2iuBkeHwbEbvZN7WE4ObcpOl6/NmyDo9McvJ2bBJ/gPOrNruhLQJyZAy2oJka7aOLEWxXFxSd4fo0Sgh04x3DX+UIslaQGglrUqcjzRRkmXyx6uAQ4Gq32hVEjA9/VbeMGm9DTkFDI5k4iwJhdA2x9utSEJRPNBEyIVlcP0pJ5u8qySmAK9/hi+8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DJgiR8aXBy9nPkF3IQ3/B+17CQQRTW01aR1cUf+WXyU=;
+ b=eWqLPYMoW82aGTjtZR7Cd4MZuvf8xrfLI4uhlJ1D7S9c+2BsRAQJ6y6HxO+jWj6ejeneNK1TeEQPBQq9yYFOJsjqGK4rfsQzO60F5jAhrrnCsR2ZDMrf8PFYHDw5RDVXLg/MpKyFw3VDKmuY+ywbTH0fvMBgrVkf2xwk9NF9Z5uuFxufgA/gcmtASNe7BZZZXJ+Z78RliElEEX6oRXucz85sJbDI5RQ5IBjGqo59hFtJfC/6K77UjrJ2l5pLt6HJwvuiXvvJjIRvGgMnIdRHF4WSYnaoqwxfuU6Zw6VOI4bAaZgah/8zVPlueZrjA7fMbpAIBELEW6/PXhWhADy1Iw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DJgiR8aXBy9nPkF3IQ3/B+17CQQRTW01aR1cUf+WXyU=;
+ b=Nl0hEbreo4pUgo1YAQGbfztiOStDZvH073tRhaq+kZJ+laFUUmncxY+RknopuxsyLEt+ChQo59G96BXkeJTvR0YDl9eVYAbFTHUfF+l7tsRXY1eay9RmT1SbIP2zLWW6C3wVeBBproXoRq2sqzq2+9jE0OXuHNMm6QWkzmCUjVE=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AM9PR04MB8746.eurprd04.prod.outlook.com (2603:10a6:20b:43f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.33; Mon, 26 Feb
+ 2024 12:54:34 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::1232:ed97:118f:72fd]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::1232:ed97:118f:72fd%4]) with mapi id 15.20.7316.034; Mon, 26 Feb 2024
+ 12:54:34 +0000
+From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To: sudeep.holla@arm.com,
+	cristian.marussi@arm.com,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] dt-bindings: firmware: arm,scmi: support system power protocol
+Date: Mon, 26 Feb 2024 21:02:43 +0800
+Message-Id: <20240226130243.3820915-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGXP274CA0006.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::18)
+ To DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130072238.2829831-1-maobibo@loongson.cn> <20240130072238.2829831-3-maobibo@loongson.cn>
-In-Reply-To: <20240130072238.2829831-3-maobibo@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Mon, 26 Feb 2024 20:59:57 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5ey2g_dmSQsM+5WM+Kir-b6jqfatxnbgBRvjggZzuXtQ@mail.gmail.com>
-Message-ID: <CAAhV-H5ey2g_dmSQsM+5WM+Kir-b6jqfatxnbgBRvjggZzuXtQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] LoongArch: KVM: Do not restart SW timer when it is expired
-To: Bibo Mao <maobibo@loongson.cn>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, kvm@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM9PR04MB8746:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8fea141a-230e-4de2-ff4b-08dc36ca14b2
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	cCombyBoExf9q8H8IRLgg8/3PegNdQ2Fp1THz/N662ynbR2BSo6N4diaUkfIoywlFqwmdD9Hsi1uWPzGYY8gOaaMcDJ9ZaRTbJkJOfrOMiXIZIMvpzZxyZjHY1TBW1Uo/WGHBhHzW+cQsVz+ajugOLyX/L3OOybJ3HCcTysObPNJq9T/oykg7uLXdnDUtw8kx5J2GTwq5E3gG8Kd+b7UJ8xUIxJEu4I88sv5A+lnhghZ771payDBVFPsG5AIRSni/3jdjm03OGFYLaoivE1obrcH/swZ0FSVkE0WY4Lwk6XVY2KDfv1CvMzy/eOH9UeMtZmBWfTfv28Lz+XhG/Z+xGQpD4xeS3W7DuWjGEG2bk2J1zppagd40TxSO6BMLWb8EB4HLJSCOfekgNNZRFdhkJlIU9jHWHT528sTy8c3IJzeHv4sGNJgOdETg6hCyTe44wUqmPHq8ZamoIxXc5zz7rsw2C1rDd0/raZFvG7A0EkUKKccLQC5m01kouALQweZ27S3iiJ0rf+MLxdL6jfiiH2mjEByLW31hPGbVYPudBSdu7YMuWTDw4hod+5imTBaLCfth42hg++MrJmg1u3jQrBbB1wMpW1Fj3eT/jaAasiPeIXm/vYA4ZZ7Xv0Cs9KMjilel/Em6FgvZX5ESrmGhilE9q2LVgHdJNCi3y0OB4erC7PHCAbtTpnmSuzb08oU6q3jM/QwKXR2QoLCg7bFSEJBzX8fN8ZDYrCe7itFRuE=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?O4F5h3jITpdn31ggVUB8TRY878uO1TDu8BesfyQ1gwaqXn7gEqhK+sHvAB3l?=
+ =?us-ascii?Q?JBfr3D0JfYikGwWcWqQWp29rPdvpNY4/Lzs+H8yFpyWPWuwXVivcrA6TtqbP?=
+ =?us-ascii?Q?c0k1MgZ/irWUOOG774+31fnr57y/EQp5OGz6smtx2N/iuABax7kGgp5AH0M2?=
+ =?us-ascii?Q?W5mI32lhTLJIHYYEbBV5o+xL4lO6pZDNdBWJos/YGZmvS99W1Zzd/ymLH930?=
+ =?us-ascii?Q?UD247bw0QJYaIa+PApZgscAV0jCVa4RYlpNZKOn5jewxvxi+WZxRQIKAhk4y?=
+ =?us-ascii?Q?MAQpwU4qzCxgRDqME/5PpErA4ZXbzpRrArVVqxq4S8HaTiEjaoJovxL5ZRrM?=
+ =?us-ascii?Q?Junj2RIQvGSdc3M9n1gotmL8BPWJ2VMcfBbECoYmAE28aiZZv0I8N5kJkmcn?=
+ =?us-ascii?Q?zlEDpWeGStnemMboRzOsnmhhS6BFuV8aVeM+B+lhG235xl0k9pbGx5BH64XY?=
+ =?us-ascii?Q?KMYoHTR69S/6vR+U1YE/0Hlu5NSZ2ueHrht36ppLOV1eieRaA2bBWOdrm3lD?=
+ =?us-ascii?Q?jiD5mg/+K/KXr38SYRqxOuZEDBIt3sXbMfmUS8lz6MJQ/COb7ZpmVqddpc6f?=
+ =?us-ascii?Q?Jexjh6hZBT9otYfCUGkYlTGC/Wo2dsdz1PT2OMeGse5cO/a2rhl+6NtibSfV?=
+ =?us-ascii?Q?UzbkxxlIaKE2+SvUdhSJKaAIN94y8KpkGTtnkDtsftRPnSc+YTotuSzew+nF?=
+ =?us-ascii?Q?EdGhKCJEwJo/3u3YJF9GxzIrYtQYG+691FylyyKUc3ux0GXWavU+KEhOBdNA?=
+ =?us-ascii?Q?kV5NGAAwO8E9j+5CrtXe53T90e6wteuuiw79OhTZqL8MMREZ70rDDELa5id8?=
+ =?us-ascii?Q?EBv6pzVcLPSgduwGqTrZcR9TOmEyN6+RFBRmNsb0jdtA6vghtIto7lfRjOEf?=
+ =?us-ascii?Q?EyBUe3+0wfNQK6WeZqlihotV8U8UbxEDt71WxdNTQthDXczh0jXdZROOC5Pg?=
+ =?us-ascii?Q?eUGoZwWF772qaX6fKywvR2i41u6Cven331qhWTe5k9lEsvc5PC0JU96udfXa?=
+ =?us-ascii?Q?O+UlJ/Wq9ZPCJyoiVE/RfquBB1W/a+R1BX2wa2P7nQL6fUG6ud36RtWptPFq?=
+ =?us-ascii?Q?4WLZrEgURT4b43Y2dzK14xko6eJnVVrjIJbECxM/KJ+jjnGOwgiGryVBmLz0?=
+ =?us-ascii?Q?PrEhNKaUbuJ2LWvCu+r0mc5bh/F0CpNz8uocluXjIlbR92eg1x/ip7+u44Vk?=
+ =?us-ascii?Q?npUeRQ8PA8dtiRIGwh1bLrfZFyiWGsi33RuLXPN3za7Rrq6H+NLXCyKOTiUK?=
+ =?us-ascii?Q?hISmzL09cp4gPlIQvdAVCr4Ug++q7Py7XNIOV0Lgntl+hJ5EiJkdTcGTJIyl?=
+ =?us-ascii?Q?O0g+vWW47uEJPOeQCuHN5wM4aayS07wCF5xy2Cyv3mJ6OC94ALcTqgXMdPS/?=
+ =?us-ascii?Q?FbpwJwVbc2tl+ujKCBeq2qGGWjogPS+4ttB7xjBD5pjkaKzmqJTpKU9yaqAS?=
+ =?us-ascii?Q?5VBgCv9RgVANnSbUtW/ByGaXczhjS2uN0bd+W0eSuZvsRbXKZ7zPrCNiO1sG?=
+ =?us-ascii?Q?PWpJ21cKdiRVBs3D7G2YVNVZrAScZ3LA2hqWPCGDFo2dT0kL5qT9A7wgGfgY?=
+ =?us-ascii?Q?kSRmA+btHZIWsD0ceW75cFN8eVzjlOL7AnIFeg5j?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8fea141a-230e-4de2-ff4b-08dc36ca14b2
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 12:54:34.4173
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i4MWidyUVUvTotFLheipB+3MPuv/u2Xd+SLZBc1P8wYrq18lYQYDNtVbavctj1aWNykOsnugYcqKVuxejO4XKg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8746
 
-The code itself looks good to me, but could you please tell me what
-does "LoongArch guest has separate hw timer" mean?
+From: Peng Fan <peng.fan@nxp.com>
 
-Huacai
+Add SCMI System Power Protocol bindings, and the protocol id is 0x12.
 
-On Tue, Jan 30, 2024 at 3:22=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrot=
-e:
->
-> LoongArch guest has separate hw timer, SW timer is to wake up
-> blocked vcpu thread, rather than HW timer emulation. When blocking
-> vcpu schedules out, SW timer is used to wakeup blocked vcpu thread
-> and injects timer interrupt. It does not care about whether guest
-> timer is in period mode or oneshot mode, and SW timer needs not be
-> restarted since vcpu has been woken.
->
-> This patch does not restart sw timer when it is expired.
->
-> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-> ---
->  arch/loongarch/kvm/timer.c | 20 +-------------------
->  1 file changed, 1 insertion(+), 19 deletions(-)
->
-> diff --git a/arch/loongarch/kvm/timer.c b/arch/loongarch/kvm/timer.c
-> index a9125f0a12d1..d3282f01d4d9 100644
-> --- a/arch/loongarch/kvm/timer.c
-> +++ b/arch/loongarch/kvm/timer.c
-> @@ -23,24 +23,6 @@ static inline u64 tick_to_ns(struct kvm_vcpu *vcpu, u6=
-4 tick)
->         return div_u64(tick * MNSEC_PER_SEC, vcpu->arch.timer_mhz);
->  }
->
-> -/*
-> - * Push timer forward on timeout.
-> - * Handle an hrtimer event by push the hrtimer forward a period.
-> - */
-> -static enum hrtimer_restart kvm_count_timeout(struct kvm_vcpu *vcpu)
-> -{
-> -       unsigned long cfg, period;
-> -
-> -       /* Add periodic tick to current expire time */
-> -       cfg =3D kvm_read_sw_gcsr(vcpu->arch.csr, LOONGARCH_CSR_TCFG);
-> -       if (cfg & CSR_TCFG_PERIOD) {
-> -               period =3D tick_to_ns(vcpu, cfg & CSR_TCFG_VAL);
-> -               hrtimer_add_expires_ns(&vcpu->arch.swtimer, period);
-> -               return HRTIMER_RESTART;
-> -       } else
-> -               return HRTIMER_NORESTART;
-> -}
-> -
->  /* Low level hrtimer wake routine */
->  enum hrtimer_restart kvm_swtimer_wakeup(struct hrtimer *timer)
->  {
-> @@ -50,7 +32,7 @@ enum hrtimer_restart kvm_swtimer_wakeup(struct hrtimer =
-*timer)
->         kvm_queue_irq(vcpu, INT_TI);
->         rcuwait_wake_up(&vcpu->wait);
->
-> -       return kvm_count_timeout(vcpu);
-> +       return HRTIMER_NORESTART;
->  }
->
->  /*
-> --
-> 2.39.3
->
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ Documentation/devicetree/bindings/firmware/arm,scmi.yaml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+index 4591523b51a0..d99f1577476e 100644
+--- a/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
++++ b/Documentation/devicetree/bindings/firmware/arm,scmi.yaml
+@@ -141,6 +141,14 @@ properties:
+     required:
+       - '#power-domain-cells'
+ 
++  protocol@12:
++    $ref: '#/$defs/protocol-node'
++    unevaluatedProperties: false
++
++    properties:
++      reg:
++        const: 0x12
++
+   protocol@13:
+     $ref: '#/$defs/protocol-node'
+     unevaluatedProperties: false
+-- 
+2.37.1
+
 
