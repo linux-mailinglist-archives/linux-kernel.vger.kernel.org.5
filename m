@@ -1,150 +1,117 @@
-Return-Path: <linux-kernel+bounces-80431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8119C866864
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:55:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FC58866874
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:02:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE85E281747
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:55:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E6E41C215F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1806812E55;
-	Mon, 26 Feb 2024 02:55:50 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE0313ADC;
+	Mon, 26 Feb 2024 03:02:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QieB6N03"
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530C8F9C3;
-	Mon, 26 Feb 2024 02:55:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5DCF9C3
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708916149; cv=none; b=a6BahDLLzql8tUAlxRYkf3J5xz2iVXtsVSeTDUHujYXwwtew5v1aW2H6WOi0cthGi5zIzgrzWra1oDm8pSUx8/XdxH0XczyHJK9JzeX5eTo/0t40kImCXDvOrxnoVJ4rrEfWdrTTAVQMvg+dxeyMr90YqAK88I9vWjiKQkkQCbQ=
+	t=1708916554; cv=none; b=cVliZgePCr6pZhZPmxhXtiPyPjyaw9LXy1ctQXbWbSacF+8LMeWGltn8FiQh+8+E7A5GQ1IgyFDqKSCAARVnG67AbiGEiIRJLrtYNIK5VIS80lLr8qTRW2yNBx7wsxLLPT8aTqfML/QYdXOOYNFMlmaSDrHLpLVzz+Eepf+PQFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708916149; c=relaxed/simple;
-	bh=Ee5eROUXAl/pnz8Aoe3WfkGAh78ysaydeXO3dbLLwm8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KBe5UwUZIASDCIgWg+VvHk5yV4XWxzOouSCEbJATSuBWo5ZKYpR0pk8CkSE+Q+dKuRO6qweL+qEUlj2kxzi/nWl9P5C4p5JHbTnXoxwCGxrSS3IzlnYHuGahNPAU60CygNEeb3L67B6Cymor9dL7SzRJ/ZhKOUMRI9WKLZF41ZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TjlVH01YSz1S5HP;
-	Mon, 26 Feb 2024 10:50:46 +0800 (CST)
-Received: from dggpemd100002.china.huawei.com (unknown [7.185.36.164])
-	by mail.maildlp.com (Postfix) with ESMTPS id BE15A1400D4;
-	Mon, 26 Feb 2024 10:55:43 +0800 (CST)
-Received: from huawei.com (10.67.174.33) by dggpemd100002.china.huawei.com
- (7.185.36.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.1258.28; Mon, 26 Feb
- 2024 10:55:43 +0800
-From: "GONG, Ruiqi" <gongruiqi1@huawei.com>
-To: <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>, Johannes Weiner
-	<hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, Roman Gushchin
-	<roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, Muchun Song
-	<muchun.song@linux.dev>, Greg KH <gregkh@linuxfoundation.org>
-CC: <cgroups@vger.kernel.org>, <linux-mm@kvack.org>, Wang Weiyang
-	<wangweiyang2@huawei.com>, Xiu Jianfeng <xiujianfeng@huawei.com>
-Subject: [PATCH stable 4.19] mm: memcontrol: switch to rcu protection in drain_all_stock()
-Date: Mon, 26 Feb 2024 11:01:40 +0800
-Message-ID: <20240226030140.129822-1-gongruiqi1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708916554; c=relaxed/simple;
+	bh=RCEU+SPzcUGA1zcpyZgBCLYlfuElCOrCdvbtQNZwiSg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DBthx9sQNjcbU5+pS3j1s51/Yct1BeVL6f4flTmxbEFLWg3nZQPpU35fOwG6+J1M3P8gklfWDPloy1VcnU3jUlwoGHxI8sq7QrnpFYXES2kxjM6zOhaRUaP+SMjAKpMagTTIx8F3bGHEm2VPGp20VffIbUdtwxE3VKEnpO0gpD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QieB6N03; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e7f00fbe-a676-4d47-b1bb-cc69cc391172@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708916549;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qLnUgfVyZPSEL5gUBH6XVmm8mzZPojhGbh54ahAhp+E=;
+	b=QieB6N03fX4o3UrEdw0KLjmTi+KZ/hp42DYy4cBVJUwDrvOyptjc6N7j9fdtYWU8fOsGKk
+	9OJdwdWWtmhPe7yGQSi4CKIVc2o2eMfAM+ON4FxQqfypQzKhPNVFGHz/qJKwBS9QJRKuhx
+	HeuY47+h63rcxxL/JcvmuvBh+9N29Z0=
+Date: Mon, 26 Feb 2024 11:02:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemd100002.china.huawei.com (7.185.36.164)
+Subject: Re: [PATCH] usb: isp1760: remove SLAB_MEM_SPREAD flag usage
+Content-Language: en-US
+To: rui.silva@linaro.org, gregkh@linuxfoundation.org
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, vbabka@suse.cz,
+ roman.gushchin@linux.dev, Xiongwei.Song@windriver.com
+References: <20240224135256.830413-1-chengming.zhou@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240224135256.830413-1-chengming.zhou@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Roman Gushchin <guro@fb.com>
+On 2024/2/24 21:52, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+> its usage so we can delete it from slab. No functional change.
 
-commit e1a366be5cb4f849ec4de170d50eebc08bb0af20 upstream.
+Update changelog to make it clearer:
 
-Commit 72f0184c8a00 ("mm, memcg: remove hotplug locking from try_charge")
-introduced css_tryget()/css_put() calls in drain_all_stock(), which are
-supposed to protect the target memory cgroup from being released during
-the mem_cgroup_is_descendant() call.
+The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
+removed as of v6.8-rc1, so it became a dead flag since the commit
+16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"). And the
+series[1] went on to mark it obsolete to avoid confusion for users.
+Here we can just remove all its users, which has no functional change.
 
-However, it's not completely safe.  In theory, memcg can go away between
-reading stock->cached pointer and calling css_tryget().
+[1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
 
-This can happen if drain_all_stock() races with drain_local_stock()
-performed on the remote cpu as a result of a work, scheduled by the
-previous invocation of drain_all_stock().
+Thanks!
 
-The race is a bit theoretical and there are few chances to trigger it, but
-the current code looks a bit confusing, so it makes sense to fix it
-anyway.  The code looks like as if css_tryget() and css_put() are used to
-protect stocks drainage.  It's not necessary because stocked pages are
-holding references to the cached cgroup.  And it obviously won't work for
-works, scheduled on other cpus.
-
-So, let's read the stock->cached pointer and evaluate the memory cgroup
-inside a rcu read section, and get rid of css_tryget()/css_put() calls.
-
-Link: http://lkml.kernel.org/r/20190802192241.3253165-1-guro@fb.com
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Hillf Danton <hdanton@sina.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: stable@vger.kernel.org  # 4.19
-Fixes: cdec2e4265df ("memcg: coalesce charging via percpu storage")
-Signed-off-by: GONG, Ruiqi <gongruiqi1@huawei.com>
----
-
-This patch [1] fixed a UAF problem in drain_all_stock() existed prior to
-5.9, and following discussions [2] mentioned that the fix depends on an
-RCU read protection to stock->cached (introduced in 5.4), which doesn't
-existed in 4.19. So backport this part to 4.19 as well.
-
-[1]: https://lore.kernel.org/all/20240221081801.69764-1-gongruiqi1@huawei.com/
-[2]: https://lore.kernel.org/all/ZdXLgjpUfpwEwAe0@tiehlicka/
-
- mm/memcontrol.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8c04296df1c7..d187bfb43b1f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2094,21 +2094,22 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
- 	for_each_online_cpu(cpu) {
- 		struct memcg_stock_pcp *stock = &per_cpu(memcg_stock, cpu);
- 		struct mem_cgroup *memcg;
-+		bool flush = false;
- 
-+		rcu_read_lock();
- 		memcg = stock->cached;
--		if (!memcg || !stock->nr_pages || !css_tryget(&memcg->css))
--			continue;
--		if (!mem_cgroup_is_descendant(memcg, root_memcg)) {
--			css_put(&memcg->css);
--			continue;
--		}
--		if (!test_and_set_bit(FLUSHING_CACHED_CHARGE, &stock->flags)) {
-+		if (memcg && stock->nr_pages &&
-+		    mem_cgroup_is_descendant(memcg, root_memcg))
-+			flush = true;
-+		rcu_read_unlock();
-+
-+		if (flush &&
-+		    !test_and_set_bit(FLUSHING_CACHED_CHARGE, &stock->flags)) {
- 			if (cpu == curcpu)
- 				drain_local_stock(&stock->work);
- 			else
- 				schedule_work_on(cpu, &stock->work);
- 		}
--		css_put(&memcg->css);
- 	}
- 	put_cpu();
- 	mutex_unlock(&percpu_charge_mutex);
--- 
-2.25.1
-
+> 
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> ---
+>  drivers/usb/isp1760/isp1760-hcd.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/usb/isp1760/isp1760-hcd.c b/drivers/usb/isp1760/isp1760-hcd.c
+> index 76862ba40f35..0e5e4cb74c87 100644
+> --- a/drivers/usb/isp1760/isp1760-hcd.c
+> +++ b/drivers/usb/isp1760/isp1760-hcd.c
+> @@ -2521,21 +2521,19 @@ static const struct hc_driver isp1760_hc_driver = {
+>  int __init isp1760_init_kmem_once(void)
+>  {
+>  	urb_listitem_cachep = kmem_cache_create("isp1760_urb_listitem",
+> -			sizeof(struct urb_listitem), 0, SLAB_TEMPORARY |
+> -			SLAB_MEM_SPREAD, NULL);
+> +			sizeof(struct urb_listitem), 0, SLAB_TEMPORARY, NULL);
+>  
+>  	if (!urb_listitem_cachep)
+>  		return -ENOMEM;
+>  
+>  	qtd_cachep = kmem_cache_create("isp1760_qtd",
+> -			sizeof(struct isp1760_qtd), 0, SLAB_TEMPORARY |
+> -			SLAB_MEM_SPREAD, NULL);
+> +			sizeof(struct isp1760_qtd), 0, SLAB_TEMPORARY, NULL);
+>  
+>  	if (!qtd_cachep)
+>  		goto destroy_urb_listitem;
+>  
+>  	qh_cachep = kmem_cache_create("isp1760_qh", sizeof(struct isp1760_qh),
+> -			0, SLAB_TEMPORARY | SLAB_MEM_SPREAD, NULL);
+> +			0, SLAB_TEMPORARY, NULL);
+>  
+>  	if (!qh_cachep)
+>  		goto destroy_qtd;
 
