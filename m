@@ -1,294 +1,99 @@
-Return-Path: <linux-kernel+bounces-80859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5495A866D5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:59:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76D25866C1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:26:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4DC51F22999
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:59:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A89161C20818
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A257E11A;
-	Mon, 26 Feb 2024 08:28:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327C51CAB5;
+	Mon, 26 Feb 2024 08:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n7gOygWI"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNmznQSW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D65C7C0B2;
-	Mon, 26 Feb 2024 08:28:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690E51CA97;
+	Mon, 26 Feb 2024 08:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708936136; cv=none; b=RuOUYNWwGuFIcQqDv/0TtVuaO7nFyVIHK4403j5ogr9qdpaVX4+h9tLhduBKOkxo+ink1CtsQAb8FzSfZlg23F+bbiw1KrjnuXQGuGihTMvX7i2rW9RCZdHornL11hrGUKi/CvuCtzKDMbsA23oGwOysq65rDrt1o0gHUCPVXfc=
+	t=1708936005; cv=none; b=FCgf22hHmP0VL5+rJeaohWGcICKIuW6alxOADmmwar5UDKh0AJu4IRVqy6PPum19ZvSvFlVSNdXEhqIq248yBOlhVMYu+JtHmGrq5vWeNUT1D3/WAyfhwpxn+4H3SKLznstB6c/mM5oCHT01jJekxsIVtlfnIlx28bXeMYZD11U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708936136; c=relaxed/simple;
-	bh=IWPbF7kZorjnaCcjYxxog90DbjeIj9s2BnbE9skJqgc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nSqDUYS7EF1kMD7t1+Tjtcp4smWJVrXh3D+5NrJDG9jl3LKhrjxmngOD8lr8YqV8IoiAySgP6aARtTxQpg3FhKv6JEM+uVFnvdoBscGwH7Y4kkDX+jG81acCxUH/SXhVSKmMGZOjyZQBCDku+yiSTwix3Wt4Ie2nTasFA7QYR8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n7gOygWI; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708936134; x=1740472134;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=IWPbF7kZorjnaCcjYxxog90DbjeIj9s2BnbE9skJqgc=;
-  b=n7gOygWI4do3yG7L2pmJfWAc3i5aLceBpHChDsTRUel8KvTOyqw/gq5h
-   YUZ1vePOyCBcz8bU4KdBUQvUFmym6hdXl6VVAnFCvTZ3eHuInntqsJ+eq
-   om9p8JvxTHuXzHNWbBzM850H6nmuNo3fUE7SlAFEiNCXuNmiot3pJccui
-   RFjvDhKQd73GyFgJH49Fo+Lb6I5+Z+VvdXk5uHzcmWYuMt6m95/MQB50w
-   /uxE2semFsB9jLEsUSFTnfl6A0/g+fPFdDswxPugOk96ZDSiEFSWzxfMC
-   O+ShRPcjI5lsS9nkTjgKnmeVDKveR0hI6oZgEmXIbc07yxRhEA1dfA9w+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3069583"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3069583"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:28:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="11272669"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:28:53 -0800
-From: isaku.yamahata@intel.com
-To: kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: isaku.yamahata@intel.com,
-	isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>,
-	Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com,
-	hang.yuan@intel.com,
-	tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [PATCH v19 096/130] KVM: VMX: Move NMI/exception handler to common helper
-Date: Mon, 26 Feb 2024 00:26:38 -0800
-Message-Id: <b709dc92da98e6bd0ba15c80c1f291beafc9dada.1708933498.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1708933498.git.isaku.yamahata@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
+	s=arc-20240116; t=1708936005; c=relaxed/simple;
+	bh=haGI4n0YbA/4IGvdyThAvozbIdXURA6fZt37AbQcuwQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ofgLHtjW3ijlVWOheD4/5aMINbb0KdlIrEjS7WSFmhgfReTT2sj04CeBCuhNm6WPRjTWyFZgmfImBfoKn359HMuTXGbyBLzp/6TU19X+6g2OtcRjbrIYMf4BAGUMy2gtgNKVzynUQtL5Y9DGXTNUcU2qetpcyORMeV1SDX/8JM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNmznQSW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81AF2C433F1;
+	Mon, 26 Feb 2024 08:26:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708936005;
+	bh=haGI4n0YbA/4IGvdyThAvozbIdXURA6fZt37AbQcuwQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gNmznQSWN2MhRkWhQYUIWP+Q7rle+L3MEZFkSXk5ZDHhsdKwJ3eKwV4yUx2xGVc4I
+	 nULj0FswhucxGEgmahSlP9vZQFhLMOChl5XMThaYhBcYOhMGRu9lJmLes4bYQ86Ojr
+	 SRE22RvpV0wPnWE+EZnfXbnSj8bp6h0jlq/aw+4smaqf+9FpCLumPKq+4k2ooPltCK
+	 est+fM5foWvlrRE+Dikaboekn76SBl4/WXLB2TiOnMt0bWzd0usIgjp3890azDNTm5
+	 chJjME7RTUEGY2OP1CYvdRqhUxiQJABmduh8XNhmVEZXqkPLY1D2ocCrIv5PgV0Yl7
+	 h0lp69Wyrzwmg==
+Date: Mon, 26 Feb 2024 09:26:38 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Icenowy Zheng <uwu@icenowy.me>
+Cc: Xi Ruoyao <xry111@xry111.site>, Huacai Chen <chenhuacai@kernel.org>, 
+	WANG Xuerui <kernel@xen0n.name>, linux-api@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+	Kees Cook <keescook@chromium.org>, Xuefeng Li <lixuefeng@loongson.cn>, 
+	Jianmin Lv <lvjianmin@loongson.cn>, Xiaotian Wu <wuxiaotian@loongson.cn>, 
+	WANG Rui <wangrui@loongson.cn>, Miao Wang <shankerwangmiao@gmail.com>, 
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, linux-arch <linux-arch@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep argument
+ inspection again?
+Message-ID: <20240226-granit-seilschaft-eccc2433014d@brauner>
+References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
+ <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
+ <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
+ <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
+ <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+On Mon, Feb 26, 2024 at 02:03:48PM +0800, Icenowy Zheng wrote:
+> 在 2024-02-25星期日的 15:32 +0800，Xi Ruoyao写道：
+> > On Sun, 2024-02-25 at 14:51 +0800, Icenowy Zheng wrote:
+> > > > From my point of view, I prefer to "restore fstat", because we
+> > > > need
+> > > > to
+> > > > use the Chrome sandbox everyday (even though it hasn't been
+> > > > upstream
+> > > > by now). But I also hope "seccomp deep argument inspection" can
+> > > > be
+> > > > solved in the future.
+> > > 
+> > > My idea is this problem needs syscalls to be designed with deep
+> > > argument inspection in mind; syscalls before this should be
+> > > considered
+> > > as historical error and get fixed by resotring old syscalls.
+> > 
+> > I'd not consider fstat an error as using statx for fstat has a
+> > performance impact (severe for some workflows), and Linus has
+> > concluded
+> 
+> Sorry for clearance, I mean statx is an error in ABI design, not fstat.
 
-TDX mostly handles NMI/exception exit mostly the same to VMX case.  The
-difference is how to retrieve exit qualification.  To share the code with
-TDX, move NMI/exception to a common header, common.h.
-
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
----
- arch/x86/kvm/vmx/common.h | 59 +++++++++++++++++++++++++++++++++
- arch/x86/kvm/vmx/vmx.c    | 68 +++++----------------------------------
- 2 files changed, 67 insertions(+), 60 deletions(-)
-
-diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
-index 6f21d0d48809..632af7a76d0a 100644
---- a/arch/x86/kvm/vmx/common.h
-+++ b/arch/x86/kvm/vmx/common.h
-@@ -4,8 +4,67 @@
- 
- #include <linux/kvm_host.h>
- 
-+#include <asm/traps.h>
-+
- #include "posted_intr.h"
- #include "mmu.h"
-+#include "vmcs.h"
-+#include "x86.h"
-+
-+extern unsigned long vmx_host_idt_base;
-+void vmx_do_interrupt_irqoff(unsigned long entry);
-+void vmx_do_nmi_irqoff(void);
-+
-+static inline void vmx_handle_nm_fault_irqoff(struct kvm_vcpu *vcpu)
-+{
-+	/*
-+	 * Save xfd_err to guest_fpu before interrupt is enabled, so the
-+	 * MSR value is not clobbered by the host activity before the guest
-+	 * has chance to consume it.
-+	 *
-+	 * Do not blindly read xfd_err here, since this exception might
-+	 * be caused by L1 interception on a platform which doesn't
-+	 * support xfd at all.
-+	 *
-+	 * Do it conditionally upon guest_fpu::xfd. xfd_err matters
-+	 * only when xfd contains a non-zero value.
-+	 *
-+	 * Queuing exception is done in vmx_handle_exit. See comment there.
-+	 */
-+	if (vcpu->arch.guest_fpu.fpstate->xfd)
-+		rdmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
-+}
-+
-+static inline void vmx_handle_exception_irqoff(struct kvm_vcpu *vcpu,
-+					       u32 intr_info)
-+{
-+	/* if exit due to PF check for async PF */
-+	if (is_page_fault(intr_info))
-+		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
-+	/* if exit due to NM, handle before interrupts are enabled */
-+	else if (is_nm_fault(intr_info))
-+		vmx_handle_nm_fault_irqoff(vcpu);
-+	/* Handle machine checks before interrupts are enabled */
-+	else if (is_machine_check(intr_info))
-+		kvm_machine_check();
-+}
-+
-+static inline void vmx_handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
-+							u32 intr_info)
-+{
-+	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
-+	gate_desc *desc = (gate_desc *)vmx_host_idt_base + vector;
-+
-+	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
-+	    "unexpected VM-Exit interrupt info: 0x%x", intr_info))
-+		return;
-+
-+	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
-+	vmx_do_interrupt_irqoff(gate_offset(desc));
-+	kvm_after_interrupt(vcpu);
-+
-+	vcpu->arch.at_instruction_boundary = true;
-+}
- 
- static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
- 					     unsigned long exit_qualification)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 29d891e0795e..f8a00a766c40 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -518,7 +518,7 @@ static inline void vmx_segment_cache_clear(struct vcpu_vmx *vmx)
- 	vmx->segment_cache.bitmask = 0;
- }
- 
--static unsigned long host_idt_base;
-+unsigned long vmx_host_idt_base;
- 
- #if IS_ENABLED(CONFIG_HYPERV)
- static bool __read_mostly enlightened_vmcs = true;
-@@ -4273,7 +4273,7 @@ void vmx_set_constant_host_state(struct vcpu_vmx *vmx)
- 	vmcs_write16(HOST_SS_SELECTOR, __KERNEL_DS);  /* 22.2.4 */
- 	vmcs_write16(HOST_TR_SELECTOR, GDT_ENTRY_TSS*8);  /* 22.2.4 */
- 
--	vmcs_writel(HOST_IDTR_BASE, host_idt_base);   /* 22.2.4 */
-+	vmcs_writel(HOST_IDTR_BASE, vmx_host_idt_base);   /* 22.2.4 */
- 
- 	vmcs_writel(HOST_RIP, (unsigned long)vmx_vmexit); /* 22.2.5 */
- 
-@@ -5166,7 +5166,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
- 	intr_info = vmx_get_intr_info(vcpu);
- 
- 	/*
--	 * Machine checks are handled by handle_exception_irqoff(), or by
-+	 * Machine checks are handled by vmx_handle_exception_irqoff(), or by
- 	 * vmx_vcpu_run() if a #MC occurs on VM-Entry.  NMIs are handled by
- 	 * vmx_vcpu_enter_exit().
- 	 */
-@@ -5174,7 +5174,7 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
- 		return 1;
- 
- 	/*
--	 * Queue the exception here instead of in handle_nm_fault_irqoff().
-+	 * Queue the exception here instead of in vmx_handle_nm_fault_irqoff().
- 	 * This ensures the nested_vmx check is not skipped so vmexit can
- 	 * be reflected to L1 (when it intercepts #NM) before reaching this
- 	 * point.
-@@ -6889,59 +6889,6 @@ void vmx_load_eoi_exitmap(struct kvm_vcpu *vcpu, u64 *eoi_exit_bitmap)
- 	vmcs_write64(EOI_EXIT_BITMAP3, eoi_exit_bitmap[3]);
- }
- 
--void vmx_do_interrupt_irqoff(unsigned long entry);
--void vmx_do_nmi_irqoff(void);
--
--static void handle_nm_fault_irqoff(struct kvm_vcpu *vcpu)
--{
--	/*
--	 * Save xfd_err to guest_fpu before interrupt is enabled, so the
--	 * MSR value is not clobbered by the host activity before the guest
--	 * has chance to consume it.
--	 *
--	 * Do not blindly read xfd_err here, since this exception might
--	 * be caused by L1 interception on a platform which doesn't
--	 * support xfd at all.
--	 *
--	 * Do it conditionally upon guest_fpu::xfd. xfd_err matters
--	 * only when xfd contains a non-zero value.
--	 *
--	 * Queuing exception is done in vmx_handle_exit. See comment there.
--	 */
--	if (vcpu->arch.guest_fpu.fpstate->xfd)
--		rdmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
--}
--
--static void handle_exception_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
--{
--	/* if exit due to PF check for async PF */
--	if (is_page_fault(intr_info))
--		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
--	/* if exit due to NM, handle before interrupts are enabled */
--	else if (is_nm_fault(intr_info))
--		handle_nm_fault_irqoff(vcpu);
--	/* Handle machine checks before interrupts are enabled */
--	else if (is_machine_check(intr_info))
--		kvm_machine_check();
--}
--
--static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
--					     u32 intr_info)
--{
--	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
--	gate_desc *desc = (gate_desc *)host_idt_base + vector;
--
--	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
--	    "unexpected VM-Exit interrupt info: 0x%x", intr_info))
--		return;
--
--	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
--	vmx_do_interrupt_irqoff(gate_offset(desc));
--	kvm_after_interrupt(vcpu);
--
--	vcpu->arch.at_instruction_boundary = true;
--}
--
- void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
-@@ -6950,9 +6897,10 @@ void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
- 		return;
- 
- 	if (vmx->exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
--		handle_external_interrupt_irqoff(vcpu, vmx_get_intr_info(vcpu));
-+		vmx_handle_external_interrupt_irqoff(vcpu,
-+						     vmx_get_intr_info(vcpu));
- 	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI)
--		handle_exception_irqoff(vcpu, vmx_get_intr_info(vcpu));
-+		vmx_handle_exception_irqoff(vcpu, vmx_get_intr_info(vcpu));
- }
- 
- /*
-@@ -8284,7 +8232,7 @@ __init int vmx_hardware_setup(void)
- 	int r;
- 
- 	store_idt(&dt);
--	host_idt_base = dt.address;
-+	vmx_host_idt_base = dt.address;
- 
- 	vmx_setup_user_return_msrs();
- 
--- 
-2.25.1
-
+We will not be limited arbitrarly in system call design by seccomp being
+unable to do deep argument inspection. That ship has sailed many years
+ago. And it's a bit laughable to disalow pointer arguments and structs
+in system calls because seccomp isn't able to inspect them.
 
