@@ -1,113 +1,127 @@
-Return-Path: <linux-kernel+bounces-80627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 695B9866A9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:25:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08638866AA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:26:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25144283526
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:25:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA5A71F21430
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:26:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC661BF34;
-	Mon, 26 Feb 2024 07:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E611BF20;
+	Mon, 26 Feb 2024 07:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pqtjI83a"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (1024-bit key) header.d=quora.org header.i=@quora.org header.b="id8ndVyY"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 467311BDE7
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:25:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6468F1BDCB
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708932333; cv=none; b=U60AVxCm0aMske6YeJhkVH5PcBQuOEsuzHJiqA9FJkZmn6iasvPxXvDsUvDR6DIsnco7lYz0SIGAq/GXtiC9y4Sltxaod4kkLOVcF0rbz0KeasCO3aHbHkJu/vxJHFSw7o6wB4wWLVc0FI4n5AdcgrGUsfiZnkNhoUGXI3Bj8c0=
+	t=1708932391; cv=none; b=OSNpAFDejCbJHWle6vhyEMfIp/AmbGUXxkZl0tzx5+yIFx+pz+H0DrQHVnqC0lOWcwNdIHP9UNs+1O8WKYnhgGppifIYrNi2BaWPv6ZeLkAM2rCT0p8Wd2yrU3qxt4QhX3Krif6WXv9CWP1/jBsJCjR9Ryq0TRM+XELe1tOgDnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708932333; c=relaxed/simple;
-	bh=wRfI4G+6FC0nrrabyF8vxsAkUOkinuF6aaxWAhU8zws=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=jT41F+mEpKLy0xLr1nRxVlYYD7ae3aumAh/ix/Tu37totn94h9EEBjxUkv8Qpmdb4E6vX2/FyibzJ3/VXd9d5vNIxmPfzx8Ucat6VR3xCruaMiVjiIN0zkv3q8rxh4TlY/U6dRPTrTQPRsWrEOygo98z8QVlP+qOAtrmsSlbcqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pqtjI83a; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a293f2280c7so372684066b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 23:25:31 -0800 (PST)
+	s=arc-20240116; t=1708932391; c=relaxed/simple;
+	bh=qPsFkvdA/kFCDJ8vwXsssv+4A2ZY6yjRRpNtVPWmndY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RfKakdGIaorQ6V1ZYY717KaTD7T/2NH1FyQUr3xP/gw1yMLtfVqMaa0jMwSRfKIanohTU8YGvr0SnFRmRmBGpjmW3DrVt5bWOQrLKcIMdwVJUdtQOiDwmCxuVXsASZeSiA7MuctWI/w3wAWINSMzbYni+AEdxWi4cXntGnqjoBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=quora.org; spf=pass smtp.mailfrom=quora.org; dkim=pass (1024-bit key) header.d=quora.org header.i=@quora.org header.b=id8ndVyY; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=quora.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quora.org
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e4f49c5632so301690b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 23:26:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708932330; x=1709537130; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9+XUqGWD6IWQzzvvwRX/+nQJA+03a/6QRsX8/vxcbvc=;
-        b=pqtjI83aRyRY15JxPleiBJS+2K2AIuIkpwR2R0nv5a+DSLYOcfMMdjFNgo55cSlaSf
-         +okydGVY00pRchG/gn4idnF/qG52pAepu6dmiYcHKiZ3yUGdadnRU58HPh2Aj+Zqu28q
-         +r5u9X/vWMitAODz7q2pmJaWaVB0+X7WCgCbI4qKw/JQtLDc0F4s28kESfOsQM4oHW6d
-         e9d+i7LOL7uMVwBURvERfNtdOYm94UiMg9hQyiZqRnA96uJTwKMB+u++t3Ctvnrciwv1
-         rTKc+8rP0XBR+aLUAb06i3eUburFFape1XSDxWilGRz4C3N34hEQcR0bcRazDqZAJHH2
-         CU4A==
+        d=quora.org; s=google; t=1708932389; x=1709537189; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VjePcL8BUGrL8noDvW1Os1K5ntKu4PXsZjDkWTtsAqk=;
+        b=id8ndVyY7kXyenCTzHI83Upr/rpxOphevcJsuMR8LdIyBEVMTRvlslr2ksktepVNK1
+         xVCH8tw2wWtMOBYiYGoW3wjdaYd6ZVBUlgEHPhoy8SaQPgWLRWqpTpS4N0RCrGDDhYqM
+         gZCuECmGVtxLVREQXEEtFaQgr+FS2s05Aa4Zw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708932330; x=1709537130;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9+XUqGWD6IWQzzvvwRX/+nQJA+03a/6QRsX8/vxcbvc=;
-        b=awuq2LpWCEM094SfMse/PY74nHyMsj34ByFluyOZB0rcM5U+JnBixBIeQa+TgPaaSA
-         nuAb5fgByDXGmuqbkkcCYAvZlK3qBkZyzJEFmIKOs/w/AB3VSa9kM7/H1D+3bFR0iwTw
-         DFsDB3ueyra7dlaATzHoD3EA89dH8acuzXCnc9mqzKIhWWf8bA2yN+dbS/rUmzYBkt0r
-         Voj4BlzxHy2mq4X5IA+Mh+r0EbCk1hYNA1Ve4DV0QHPZUx+F7Rb1UO8gaInxZ415vaD8
-         FXeV45pfuaoGVtHNQUGbs4oub8uLEErBlbmHSW+6N4mrgHswzXm+2JfMaeuNqmnAVbFc
-         VQ2w==
-X-Forwarded-Encrypted: i=1; AJvYcCWRWmTWqd1mq4asSq/A5CD17LHC0f6xVcoALtkzAvwIJ+oqPi+T2v8tFAj1Jz7BOo4iRJTQHNVV+q5grsuCHPQsmoVwI7221gcatGPa
-X-Gm-Message-State: AOJu0YxMy3fKlMmJab07BoLw945CKjJnHp4MBOteuH8NIrFH9q3KASSl
-	wq+2y1tBB1EhNziGs2tAsD8JTvcq0BuU/hrW+JdFewRy/FcRjadUcDmVMPC2gCA=
-X-Google-Smtp-Source: AGHT+IEC2B+D1Rc/Z2qp0EvJ/C5SuHJvn4PGDQCefwtskxiIujOGW6alTotXIUZsbE9gNtP2e1uK6A==
-X-Received: by 2002:a17:906:318d:b0:a40:4711:da21 with SMTP id 13-20020a170906318d00b00a404711da21mr3696374ejy.37.1708932330575;
-        Sun, 25 Feb 2024 23:25:30 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id l15-20020a17090612cf00b00a3f480154a3sm2136224ejb.65.2024.02.25.23.25.28
+        d=1e100.net; s=20230601; t=1708932389; x=1709537189;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VjePcL8BUGrL8noDvW1Os1K5ntKu4PXsZjDkWTtsAqk=;
+        b=q3EwLox12ZRoTQqa5/GxbMhxd98/6D3xh7Vsh1G7TNfmH1qfeFUPV/s3DAdofSd8z1
+         IxzY8XWfuQEidnC2ho+fcd8qeNHNRu9TzlO8we5km9SrUtgwF8hVwh/PN+VYLVXrczW/
+         vTx4UJlkSQrJlgac4gINe9rQblTm9DJf+g7EVnR0QBT5Z61i4fD6TrTchVBL8N2emWlb
+         m1uo5CEJAyMjm908X7oTsb1QzcTzACS0Suedc6GrXCEpGJul/tjotPypwZGQ/DddLcCl
+         sOfbWYsHiqrYMVVemvolLJ0RZ+pxCeszm98ybZF6XnAuTy4p5+DUvS2HwS6Z7cOMmoZn
+         Sy/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU432xOzZOWS3OjK8iCxD7DKolPYfZvm0xh5P9yNvLXmXUKqOEinGa2F5EtL0ZQbMKt536njQ78+1TzG5O0Tmc4FHmwMB2v4m49nZjG
+X-Gm-Message-State: AOJu0Yw8FiYKLXsSyxd8+8ybzUhoFJEjHs44NWGee0pXVAEC6QMRxtnO
+	J4oEvpTQBj2vmCIqd0Klc4txbazYhjnRJHjtK+13NMwylwqEWvCL9vSZhEOrkBI=
+X-Google-Smtp-Source: AGHT+IGfWvb6/iOZtgWsw79koFVef0neb3umqtxYVIT6P/4Hz5Jy10nS56e+tIhvZMi1S4MWrFhB2A==
+X-Received: by 2002:a05:6a00:93a6:b0:6e5:35c8:ef06 with SMTP id ka38-20020a056a0093a600b006e535c8ef06mr769332pfb.31.1708932389515;
+        Sun, 25 Feb 2024 23:26:29 -0800 (PST)
+Received: from nuc.quora.org ([202.83.99.71])
+        by smtp.gmail.com with ESMTPSA id ey11-20020a056a0038cb00b006e144ec8eafsm3405624pfb.119.2024.02.25.23.26.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Feb 2024 23:25:30 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
- Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- NXP Linux Team <linux-imx@nxp.com>, Sebastian Reichel <sre@kernel.org>
-Cc: Dong Aisheng <aisheng.dong@nxp.com>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240224213240.1854709-3-sre@kernel.org>
-References: <20240224213240.1854709-1-sre@kernel.org>
- <20240224213240.1854709-3-sre@kernel.org>
-Subject: Re: (subset) [PATCH v4 02/16] dt-bindings: bus: imx-weim: convert
- to YAML
-Message-Id: <170893232894.6616.17442231091055419472.b4-ty@linaro.org>
-Date: Mon, 26 Feb 2024 08:25:28 +0100
+        Sun, 25 Feb 2024 23:26:29 -0800 (PST)
+From: Daniel J Blueman <daniel@quora.org>
+To: Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Cc: x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"Peter Zijlstra" <peterz@infradead.org>,
+	linux-kernel@vger.kernel.org,
+	Daniel J Blueman <daniel@quora.org>
+Subject: [PATCH] x86: Trust initial offset in architectural TSC-adjust MSRs
+Date: Mon, 26 Feb 2024 15:25:33 +0800
+Message-Id: <20240226072533.341382-1-daniel@quora.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 
+When the BIOS configures the architectural TSC-adjust MSRs on secondary
+sockets to correct a constant inter-chassis offset, after Linux brings
+the cores online, the TSC sync check later resets the core-local MSR to
+0, triggering HPET fallback and leading to performance loss.
 
-On Sat, 24 Feb 2024 22:29:34 +0100, Sebastian Reichel wrote:
-> Convert the i.MX  Wireless External Interface Module binding to YAML.
-> 
-> 
+Fix this by unconditionally using the initial adjust values read from the
+MSRs. Trusting the initial offsets in this architectural mechanism is a
+better approach than special-casing workarounds for specific platforms.
 
-Applied, thanks!
+Signed-off-by: Daniel J Blueman <daniel@quora.org>
 
-[02/16] dt-bindings: bus: imx-weim: convert to YAML
-        https://git.kernel.org/krzk/linux-mem-ctrl/c/3884bdce169de87d3f978edf41829e5e52388072
+---
+ arch/x86/kernel/tsc_sync.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-Best regards,
+diff --git a/arch/x86/kernel/tsc_sync.c b/arch/x86/kernel/tsc_sync.c
+index 1123ef3ccf90..cd64b25154d7 100644
+--- a/arch/x86/kernel/tsc_sync.c
++++ b/arch/x86/kernel/tsc_sync.c
+@@ -188,17 +188,10 @@ bool tsc_store_and_check_tsc_adjust(bool bootcpu)
+ 		return false;
+ 
+ 	rdmsrl(MSR_IA32_TSC_ADJUST, bootval);
+-	cur->bootval = bootval;
++	cur->adjusted = cur->bootval = bootval;
+ 	cur->nextcheck = jiffies + HZ;
+ 	cur->warned = false;
+ 
+-	/*
+-	 * If a non-zero TSC value for socket 0 may be valid then the default
+-	 * adjusted value cannot assumed to be zero either.
+-	 */
+-	if (tsc_async_resets)
+-		cur->adjusted = bootval;
+-
+ 	/*
+ 	 * Check whether this CPU is the first in a package to come up. In
+ 	 * this case do not check the boot value against another package
 -- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+2.40.1
 
 
