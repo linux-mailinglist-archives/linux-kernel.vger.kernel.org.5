@@ -1,239 +1,123 @@
-Return-Path: <linux-kernel+bounces-81275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A092086733C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EDB1D86731B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D5B61F26281
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:36:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A35421F262D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 567884CB20;
-	Mon, 26 Feb 2024 11:34:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C2E64C627
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BDF51DA2F;
+	Mon, 26 Feb 2024 11:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z0ZOaD6e"
+Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F09C91D54F
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708947268; cv=none; b=S6uuleUovk7MoLXidHPLCfCiuZ4pWKMFOa3+fi7ULwwwaoicJSTOpWgrQAIuve9tohNU9G2+CRidJ/cuHKioK2La2J5iurYPvV+A2U5TI9zc2tAl3E2KFE0b0nPjEL/G2tQJxnU+iPVyosE0PzQf8949WQ5vXqlj8AbPITV20VE=
+	t=1708947143; cv=none; b=UKhe1DFrcuPhQ1P8uolshXxbNQfI1GMB+RfEJwuOoBV3ss9oENVHiNg7JuT2s35OuaWSejB+yZbV3CsCrfZibMXPP4nh41/fAZ3Z5edp4EVavm0bT7GA7Bbvtq5ZSo6EZcHZII7s6sB7DzyF7q/70LFhom7u6FEa0s4OG1zIbXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708947268; c=relaxed/simple;
-	bh=iQUVhMXan0N9d/UX9hOf/y32NkYSxDSZ3nvhEoqpFqg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n7z3CAllUKnfNdpZvW/Q54TfapzaELShI1wPJtMHL8tJPM2FVQU3vChhsoGsVTvzScdgmDFCzHqpsa3+uXElfXV6uwmpJyOWScA9Hx3sqqgYJKkSqC56hwwFDyKRjvvTjbaxyWdKWamrGDaQ7zarQYe9YGfNchHCZI+kASCvL4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 69C8F1042;
-	Mon, 26 Feb 2024 03:35:05 -0800 (PST)
-Received: from e127643.broadband (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 68BED3F6C4;
-	Mon, 26 Feb 2024 03:34:23 -0800 (PST)
-From: James Clark <james.clark@arm.com>
-To: coresight@lists.linaro.org,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	maz@kernel.org,
-	suzuki.poulose@arm.com,
-	acme@kernel.org,
-	oliver.upton@linux.dev,
-	broonie@kernel.org
-Cc: James Clark <james.clark@arm.com>,
-	James Morse <james.morse@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mike Leach <mike.leach@linaro.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Miguel Luis <miguel.luis@oracle.com>,
-	Joey Gouly <joey.gouly@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Helge Deller <deller@gmx.de>,
-	Quentin Perret <qperret@google.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Vincent Donnefort <vdonnefort@google.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Fuad Tabba <tabba@google.com>,
-	Jing Zhang <jingzhangos@google.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 8/8] coresight: Pass guest TRFCR value to KVM
-Date: Mon, 26 Feb 2024 11:30:36 +0000
-Message-Id: <20240226113044.228403-9-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240226113044.228403-1-james.clark@arm.com>
-References: <20240226113044.228403-1-james.clark@arm.com>
+	s=arc-20240116; t=1708947143; c=relaxed/simple;
+	bh=59M376lOs4RpQY+QsNbUdwZI7JBMTstkeh/+AItoW50=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V0OfBVknTQ6HbX85fE1oAjlPvXK2IX6aFA1DJGMqWoy68x6LVZ1GGwbKmh52aHWenTM+xhnbFyYCrSAvULH/cUbNLcL4bGL6m0QsCcXYOuM/2bUVMNvhdFhBEZ0wyWqJyWifw2eQW9iaMCkqhIo6XHuY6OJF0dEU626N/5SxdsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Z0ZOaD6e; arc=none smtp.client-ip=209.85.221.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4cdfcb24b79so250334e0c.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708947140; x=1709551940; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=59M376lOs4RpQY+QsNbUdwZI7JBMTstkeh/+AItoW50=;
+        b=Z0ZOaD6eybQBscd+8EgGWeZd0VY13t1dTQJM1jgrTRfY5iEryI5L/xiqShblky8qXW
+         qVNIfldjgR4jJwGX2CuI/WAeM7IR+4N/CUrw6Qgecq5RapwkStTBqM+0HGi8f2wUc1C/
+         8PaGxyzR6lk6ilDx5Dv3+XCKu7u+a/tuv9+sw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708947140; x=1709551940;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=59M376lOs4RpQY+QsNbUdwZI7JBMTstkeh/+AItoW50=;
+        b=xHxovdiVO1m/RqRyJ2Dm/Hme/YQTwMByxMS5et18zkNhbi7W+NaexlTJKQqd1AfKoG
+         loZWJnzKyqWKFQ7O/mXYWGvlvKEnxYpOZeyCnb0bdai7VwHdF6pwbwfJktrkHSsKfg+F
+         wSGJgHKrHvPHi16GccP+Oh/8WVRnM9+m57s2fmo8yJ1qTxHNBtOILPCQgIHp9/yz+blC
+         NMYQJdyXIJuGxGPuRjrM8xZMqzQkxWEVHN4/kiHjw4DdfJpOH+066OTz38GJM0EnxPCI
+         jAKkC5dWMYDSSKGVTddMrBH1HRCSnh+VI19s+o2pqNolB561cta5ET0eaanTIXTJUCwS
+         Irlg==
+X-Forwarded-Encrypted: i=1; AJvYcCVeX+g5HVdDpsR6vx1hQ7SbQMitojwsuRle/HYYH1Zivswnws39uaHK40bzTPcvkn5MZZnDXBTeZL58e0H7WrMdmWMb1OFI08TOsSHc
+X-Gm-Message-State: AOJu0Yz+Q2jh10fQ++MlUcHjenE2WL2+Ck4heLos2TZUaElysGCYiMY+
+	1KXY5yoXRiselhD6xW3IN1W+YoL+O5aCW8WUb2osBLtez944aYvSWyMV1ktkxPBADK2XjXuiHbt
+	GwA==
+X-Google-Smtp-Source: AGHT+IF1qNbcqJuN5THH5NMZNm9OJKAi1HKy3rBUy0tuXhW5DT2wlgh4h7b6dN+/XL2HsCRuisWSrQ==
+X-Received: by 2002:a1f:e743:0:b0:4c0:25a4:95bb with SMTP id e64-20020a1fe743000000b004c025a495bbmr2699592vkh.8.1708947140573;
+        Mon, 26 Feb 2024 03:32:20 -0800 (PST)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id et1-20020a0561221c0100b004d13bb918c4sm593163vkb.33.2024.02.26.03.32.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 03:32:20 -0800 (PST)
+Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-471e6e9482eso128165137.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:32:19 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVQub2jt/zZyi2LX7/7w17wAtRpXWS0fd0zP+vuLszpt0LYg+vgn/XVC8HUOrXjyOKIbHw9lC9aQcnaY+z5+fWcja9wH+aRHesSaADL
+X-Received: by 2002:a05:6102:3a0f:b0:471:e2ca:4023 with SMTP id
+ b15-20020a0561023a0f00b00471e2ca4023mr2137374vsu.25.1708947138994; Mon, 26
+ Feb 2024 03:32:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240226080721.3331649-1-fshao@chromium.org>
+In-Reply-To: <20240226080721.3331649-1-fshao@chromium.org>
+From: Fei Shao <fshao@chromium.org>
+Date: Mon, 26 Feb 2024 19:31:42 +0800
+X-Gmail-Original-Message-ID: <CAC=S1niCFgbNjbnHmUD46N-9gSagYuExeQ+nUHvKOvNbS-jz1A@mail.gmail.com>
+Message-ID: <CAC=S1niCFgbNjbnHmUD46N-9gSagYuExeQ+nUHvKOvNbS-jz1A@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: Support MT8195 OVL compatible in mtk_drm_drv
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently the userspace and kernel filters for guests are never set, so
-no trace will be generated for them. Add support for tracing guests by
-passing the desired TRFCR value to KVM so it can be applied to the
-guest.
+On Mon, Feb 26, 2024 at 4:07=E2=80=AFPM Fei Shao <fshao@chromium.org> wrote=
+:
+>
+> Specify the component type for mediatek,mt8195-disp-ovl in the MediaTek
+> DRM driver on top of commit 76cdcb87d391 ("drm/mediatek: Add MT8195 ovl
+> driver support").
+>
+> With this, the compatible can function as an independent fallback for
+> other display overlays without relying on MT8192.
+>
+> Signed-off-by: Fei Shao <fshao@chromium.org>
 
-By writing either E1TRE or E0TRE, filtering on either guest kernel or
-guest userspace is also supported. And if both E1TRE and E0TRE are
-cleared when exclude_guest is set, that option is supported too. This
-change also brings exclude_host support which is difficult to add as a
-separate commit without excess churn and resulting in no trace at all.
+Please disregard this patch.
 
-Testing
-=======
+With the feedback in [1], I can also fix the issue from within the
+SoC's device tree.
+Even taking a step back, I just learned that this is a duplicate of
+[2], so it makes no sense to merge mine in any case.
+Sorry for the noise.
 
-The addresses were counted with the following:
+[1]: https://lore.kernel.org/all/c4814e25-42c9-4604-b86a-8ef0bd634f78@colla=
+bora.com/
+[2]: https://lore.kernel.org/all/20240215101119.12629-3-shawn.sung@mediatek=
+com/
 
-  $ perf report -D | grep -Eo 'EL2|EL1|EL0' | sort | uniq -c
-
-Guest kernel only:
-
-  $ perf record -e cs_etm//Gk -a -- true
-    535 EL1
-      1 EL2
-
-Guest user only (only 5 addresses because the guest runs slowly in the
-model):
-
-  $ perf record -e cs_etm//Gu -a -- true
-    5 EL0
-
-Host kernel only:
-
-  $  perf record -e cs_etm//Hk -a -- true
-   3501 EL2
-
-Host userspace only:
-
-  $  perf record -e cs_etm//Hu -a -- true
-    408 EL0
-      1 EL2
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: James Clark <james.clark@arm.com>
----
- .../coresight/coresight-etm4x-core.c          | 42 ++++++++++++++++---
- drivers/hwtracing/coresight/coresight-etm4x.h |  2 +-
- drivers/hwtracing/coresight/coresight-priv.h  |  3 ++
- 3 files changed, 40 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index ce1995a2827f..45a69bfdc6b5 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -6,6 +6,7 @@
- #include <linux/acpi.h>
- #include <linux/bitops.h>
- #include <linux/kernel.h>
-+#include <linux/kvm_host.h>
- #include <linux/moduleparam.h>
- #include <linux/init.h>
- #include <linux/types.h>
-@@ -271,9 +272,22 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
- 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
- 	if (!drvdata->trfcr)
- 		return;
-+	kvm_etm_set_guest_trfcr(0);
- 	cpu_prohibit_trace();
- }
- 
-+static u64 etm4x_get_kern_user_filter(struct etmv4_drvdata *drvdata)
-+{
-+	u64 trfcr = drvdata->trfcr;
-+
-+	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
-+		trfcr &= ~TRFCR_ELx_ExTRE;
-+	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
-+		trfcr &= ~TRFCR_ELx_E0TRE;
-+
-+	return trfcr;
-+}
-+
- /*
-  * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
-  * as configured by the drvdata->config.mode for the current
-@@ -286,18 +300,28 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
-  */
- static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
- {
--	u64 trfcr = drvdata->trfcr;
-+	u64 trfcr;
- 
- 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
--	if (!trfcr)
-+	if (!drvdata->trfcr)
- 		return;
- 
--	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
--		trfcr &= ~TRFCR_ELx_ExTRE;
--	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
--		trfcr &= ~TRFCR_ELx_E0TRE;
-+	if (drvdata->config.mode & ETM_MODE_EXCL_HOST)
-+		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
-+	else
-+		trfcr = etm4x_get_kern_user_filter(drvdata);
- 
- 	write_trfcr(trfcr);
-+
-+	/* Set filters for guests and pass to KVM */
-+	if (drvdata->config.mode & ETM_MODE_EXCL_GUEST)
-+		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
-+	else
-+		trfcr = etm4x_get_kern_user_filter(drvdata);
-+
-+	/* TRFCR_EL1 doesn't have CX so mask it out. */
-+	trfcr &= ~TRFCR_EL2_CX;
-+	kvm_etm_set_guest_trfcr(trfcr);
- }
- 
- #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
-@@ -655,6 +679,12 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
- 	if (attr->exclude_user)
- 		config->mode = ETM_MODE_EXCL_USER;
- 
-+	if (attr->exclude_host)
-+		config->mode |= ETM_MODE_EXCL_HOST;
-+
-+	if (attr->exclude_guest)
-+		config->mode |= ETM_MODE_EXCL_GUEST;
-+
- 	/* Always start from the default config */
- 	etm4_set_default_config(config);
- 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index da17b6c49b0f..70c29e91f4b5 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.h
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -841,7 +841,7 @@ enum etm_impdef_type {
-  * @s_ex_level: Secure ELs where tracing is supported.
-  */
- struct etmv4_config {
--	u32				mode;
-+	u64				mode;
- 	u32				pe_sel;
- 	u32				cfg;
- 	u32				eventctrl0;
-diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
-index 767076e07970..727dd27ba800 100644
---- a/drivers/hwtracing/coresight/coresight-priv.h
-+++ b/drivers/hwtracing/coresight/coresight-priv.h
-@@ -39,6 +39,9 @@
- 
- #define ETM_MODE_EXCL_KERN	BIT(30)
- #define ETM_MODE_EXCL_USER	BIT(31)
-+#define ETM_MODE_EXCL_HOST	BIT(32)
-+#define ETM_MODE_EXCL_GUEST	BIT(33)
-+
- struct cs_pair_attribute {
- 	struct device_attribute attr;
- 	u32 lo_off;
--- 
-2.34.1
-
+Regards,
+Fei
 
