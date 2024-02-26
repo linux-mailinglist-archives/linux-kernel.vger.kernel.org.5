@@ -1,238 +1,154 @@
-Return-Path: <linux-kernel+bounces-82368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2ABA86834C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:48:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 138D886834E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:48:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2ABCDB21EB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:48:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEBB628DC82
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862DA131E31;
-	Mon, 26 Feb 2024 21:48:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7A69131E23;
+	Mon, 26 Feb 2024 21:48:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fxPhBclp"
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CaZqnfpk"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057F3405CE;
-	Mon, 26 Feb 2024 21:47:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7788D1DFCD;
+	Mon, 26 Feb 2024 21:48:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708984080; cv=none; b=glQXV47LL/kC0X0HDsc+2qUIzPWnpHhzp2UTy/TF0DN4Wq++72oWOEXb6+0sqCHmcX12WsLzNoup/u3gDbVCeOtCYqbw9MCoHqx+4iSKWSLJaYIQlcR6NucPRFGjYgQRsm3YFkhyGvG2nyjj/8PppSjbdoENzZSFuDAHjKS22J4=
+	t=1708984107; cv=none; b=l0GZ0jEZABUBJFrTfA/B5LSWcMnehsI3G12Y9y8KCA+r8JNJ1dCYF6vCe1zOvODIllB6FxeITs4zuV8WIbXSyzoNwscrZ+qwLczmxVXpRK0RfpERe2PcJbi50+hYu1cJi9ze109BsfXFUXLN7ZB9wDVMy9PPoFY0h2eEDJEKims=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708984080; c=relaxed/simple;
-	bh=+mhRZDCckO6W8K7cXxypdompx2eyAZlDqNRYXBm0lRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GRHMcO2ldTXHr2jvC7d/XKR0IG6gUeGxZ0DHfwR1h8oG3GtwTIBuCVbLsUs5mDBPw/YuMEzapDYdhNzvHfGD32LXnu0pV44G1doIZdk+DHOCk9e0g5W0WKLQhd4lhkdjpMQGPXW0D+3/u0KTqNSnhLl/eA5VMiu6oGd6gjnBxXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fxPhBclp; arc=none smtp.client-ip=209.85.161.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5a0669228b6so1321600eaf.0;
-        Mon, 26 Feb 2024 13:47:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708984076; x=1709588876; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WwkLzcOkTdepCEL/rTOLTVwMFBrXTv/HE2I151NYxEg=;
-        b=fxPhBclpFQ+5AkFBIq5hzfZ7XqCxzt4Zaj0eafEVX/3clW9wh2zFGB6lyYsKlB3UhV
-         0belvW+1FJPyFvnoDmqU1Yo6bugWLktH/8SckZJaTcoZVEay8vpIfNVZ3A97gzSqPqrK
-         dgoINt2sjdu5aUZWysjxGoTJe8kKosXu/csZaYOGrEeFENrQIknk2XZQDJGsWtZkg97/
-         fH/tROE+VJwxtRD455Ctjy5oJPco6uAS7c5cnBg02JIYiyLW96/LHVU5I1lVs5qXa2+u
-         rPL0reWB/9l0GyxlzUjPN1vfjR72LG2Ro77IXRWXwWahM8LA4Z+c1VlaY2A9nmbH8hek
-         1Izg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708984076; x=1709588876;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WwkLzcOkTdepCEL/rTOLTVwMFBrXTv/HE2I151NYxEg=;
-        b=j4wMFwoT0Xa+DZxKMXZDgktBUGdvxmRR3nUkyzgK75iF6+dGV1T3VtsHNCvgJXiGeL
-         a7WuAHuQo6FELGK9EkolZb4aTNZXTEWIdyr46x6CxtyuO6ZQPBQuB03yAcKmr5eo6wlL
-         4nalqTAck1R4HrH/9Dz+DE10DOlt0vcujZOV3cbXfMAnMHyN+LgAgXFvOEdljXbJTAGR
-         50crZuyuVBqKXACCzAOuDiYChKOwmPoy/kd6QJgWP6Pbj8rTrQLGCPxpIBk4IyvJ91Ix
-         kPvYzugBr8aNgWN7CfZJ2hytHVNAOhJIOWXmJnB4Ps4qujoGh+DW6TLPaxdX3vD55bsb
-         93KA==
-X-Forwarded-Encrypted: i=1; AJvYcCUwNszFzu0JYKIv6QxA0SKt8VkHctio9biJ2bZyA40YOMGD+pxvBstiKqdHlU9wipyXpo6pRUEsRsMpsM3g77Q9/LwX/QyMMSy7gmxwyS0Y5gKarVP4nC2XS12oAQoFHe1Dm+4G7UGFVTVjTgbPEuTo4Y88xmp2+1nnHwiSt6TqglftDyF+++bMKFm6WZKHgGcggv05JOPc+buSZQ66WuSwWA==
-X-Gm-Message-State: AOJu0Yw/eO0xf+3PXlk+bg+lMRXKTETmxaaeuCDcNcw+9mwjjUBWO9bS
-	V8MX+1/mGABoIRR73rCMASf1M9kFEyFjpLvdsvaeawKDuuZPQK82
-X-Google-Smtp-Source: AGHT+IENzrYho4sVLLETE+2kSmQeGnYGjapvMx2yk+6P/1Df/2LXKbX/7P21pTgZxerQUQHeu5dWRA==
-X-Received: by 2002:a4a:ee8e:0:b0:5a0:5ac0:e81c with SMTP id dk14-20020a4aee8e000000b005a05ac0e81cmr6718130oob.6.1708984076000;
-        Mon, 26 Feb 2024 13:47:56 -0800 (PST)
-Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
-        by smtp.gmail.com with ESMTPSA id h26-20020a4ad29a000000b005a0174b67c0sm1415632oos.3.2024.02.26.13.47.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 13:47:55 -0800 (PST)
-Sender: John Groves <grovesaustin@gmail.com>
-Date: Mon, 26 Feb 2024 15:47:53 -0600
-From: John Groves <John@groves.net>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 09/20] famfs: Add super_operations
-Message-ID: <z3tnfxbbvhtbyantbm3yr3yv2qsih7darbm3p5pwwdsknuxlqa@rvexwleaixiy>
-References: <cover.1708709155.git.john@groves.net>
- <537f836056c141ae093c42b9623d20de919083b1.1708709155.git.john@groves.net>
- <20240226125136.00002e64@Huawei.com>
+	s=arc-20240116; t=1708984107; c=relaxed/simple;
+	bh=p1RkEchGE/mNaNi3qBs14D7WQ1wY+4Ol5xO9+bc3K1o=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=RtPKLfcGb1clUEu5BgI/8+qtwVUQbPDr10nueKbm163jlFFBEesRZI0chdHSfrjWpPy/1XcDO0YUC7YK6VOkJ4YCj0EPlpquPx7Cu5ptCQHj4OhS+bMhJdXci6kFtXJbm9Dzh8wKFaCURRSrBiaU8WHhXgWf3y2WaEl3cfcLpro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CaZqnfpk; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708984105; x=1740520105;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=p1RkEchGE/mNaNi3qBs14D7WQ1wY+4Ol5xO9+bc3K1o=;
+  b=CaZqnfpkB2fw7JFZEvCz/ylI2YALJyoyJTauYm3EG3lIbdquUKOAddep
+   f6l3O1SgoF4MtP5o+vPetFx8y0jz7FGQhqt1LmxAFHFVjbq6CqhlOrgMD
+   4tFO8tDdCTIWcPXo0XH8A4hs6xdfHR8sTzr0+2ue9Rkm+ApWuirAT5MwZ
+   bfa+1yX35M1Xgyrho4eB4HwxWYSKk7WKSinqsaFZfW+3b8WPTg+7o2iRl
+   8WnJrXjPc/SyrupkXm+zr7PZoyqntCTEULecC3to9HtZ155XJ6MWeXV2B
+   QQHAO+ePBRtgryb5GRiIggZuET1LvJODYs1EoXbX7oYxl7IySYHyjOMdi
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14010315"
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="14010315"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 13:48:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
+   d="scan'208";a="7225171"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Feb 2024 13:48:20 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "Huang, Kai" <kai.huang@intel.com>, "tj@kernel.org" <tj@kernel.org>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>,
+ "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>, "mkoutny@suse.com"
+ <mkoutny@suse.com>, "Mehta, Sohil" <sohil.mehta@intel.com>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>,
+ "Dave Hansen" <dave.hansen@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
+ try_charge()
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-11-haitao.huang@linux.intel.com>
+ <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
+ <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
+ <op.2jkfeezjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <c913193c0560c4372d2fdb31e9edb28bcb419f50.camel@intel.com>
+ <op.2jlti6g9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <7b53e155-2622-4acb-b7c9-d22e623e4cb3@intel.com>
+ <op.2jqdjjd8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <48faaea8b24f032baa6a858a2909a5b4ace769c6.camel@intel.com>
+ <d9b0df06-da68-4729-8aac-2a77e890e152@intel.com>
+Date: Mon, 26 Feb 2024 15:48:18 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226125136.00002e64@Huawei.com>
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2jrquskiwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <d9b0df06-da68-4729-8aac-2a77e890e152@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On 24/02/26 12:51PM, Jonathan Cameron wrote:
-> On Fri, 23 Feb 2024 11:41:53 -0600
-> John Groves <John@Groves.net> wrote:
-> 
-> > Introduce the famfs superblock operations
-> > 
-> > Signed-off-by: John Groves <john@groves.net>
-> > ---
-> >  fs/famfs/famfs_inode.c | 72 ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 72 insertions(+)
-> >  create mode 100644 fs/famfs/famfs_inode.c
-> > 
-> > diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
-> > new file mode 100644
-> > index 000000000000..3329aff000d1
-> > --- /dev/null
-> > +++ b/fs/famfs/famfs_inode.c
-> > @@ -0,0 +1,72 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * famfs - dax file system for shared fabric-attached memory
-> > + *
-> > + * Copyright 2023-2024 Micron Technology, inc
-> > + *
-> > + * This file system, originally based on ramfs the dax support from xfs,
-> > + * is intended to allow multiple host systems to mount a common file system
-> > + * view of dax files that map to shared memory.
-> > + */
-> > +
-> > +#include <linux/fs.h>
-> > +#include <linux/pagemap.h>
-> > +#include <linux/highmem.h>
-> > +#include <linux/time.h>
-> > +#include <linux/init.h>
-> > +#include <linux/string.h>
-> > +#include <linux/backing-dev.h>
-> > +#include <linux/sched.h>
-> > +#include <linux/parser.h>
-> > +#include <linux/magic.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/uaccess.h>
-> > +#include <linux/fs_context.h>
-> > +#include <linux/fs_parser.h>
-> > +#include <linux/seq_file.h>
-> > +#include <linux/dax.h>
-> > +#include <linux/hugetlb.h>
-> > +#include <linux/uio.h>
-> > +#include <linux/iomap.h>
-> > +#include <linux/path.h>
-> > +#include <linux/namei.h>
-> > +#include <linux/pfn_t.h>
-> > +#include <linux/blkdev.h>
-> 
-> That's a lot of header for such a small patch.. I'm going to guess
-> they aren't all used - bring them in as you need them - I hope
-> you never need some of these!
+Hi Dave,
 
-I didn't phase in headers in this series. Based on these recommendations,
-the next version of this series is gonna have to be 100% constructed from
-scratch, but okay. My head hurts just thinking about it. I need a nap...
+On Mon, 26 Feb 2024 08:04:54 -0600, Dave Hansen <dave.hansen@intel.com>  
+wrote:
 
-I've been rebasing for 3 weeks to get this series out, and it occurs to
-me that maybe there are tools I'm not aware of that make it eaiser? I'm
-just typing "rebase -i..." 200 times a day. Is there a less soul-crushing way?
+> On 2/26/24 03:36, Huang, Kai wrote:
+>>> In case of overcomitting, even if we always reclaim from the same  
+>>> cgroup
+>>> for each fault, one group may still interfere the other: e.g.,  
+>>> consider an
+>>> extreme case in that group A used up almost all EPC at the time group B
+>>> has a fault, B has to fail allocation and kill enclaves.
+>> If the admin allows group A to use almost all EPC, to me it's fair to  
+>> say he/she
+>> doesn't want to run anything inside B at all and it is acceptable  
+>> enclaves in B
+>> to be killed.
+>
+> Folks, I'm having a really hard time following this thread.  It sounds
+> like there's disagreement about when to do system-wide reclaim.  Could
+> someone remind me of the choices that we have?  (A proposed patch would
+> go a _long_ way to helping me understand)
+>
 
-> 
-> 
-> > +
-> > +#include "famfs_internal.h"
-> > +
-> > +#define FAMFS_DEFAULT_MODE	0755
-> > +
-> > +static const struct super_operations famfs_ops;
-> > +static const struct inode_operations famfs_file_inode_operations;
-> > +static const struct inode_operations famfs_dir_inode_operations;
-> 
-> Why are these all up here?
+In case of overcomitting, i.e., sum of limits greater than the EPC  
+capacity, if one group has a fault, and its usage is not above its own  
+limit (try_charge() passes), yet total usage of the system has exceeded  
+the capacity, whether we do global reclaim or just reclaim pages in the  
+current faulting group.
 
-These forward declarations are needed by a later patch in the series.
-They were in famfs_internal.h, but they are only used in this file, so
-I moved them here.
+> Also, what does the core mm memcg code do?
+>
+I'm not sure. I'll try to find out but it'd be appreciated if someone more  
+knowledgeable can comment on this. memcg also has the protection mechanism  
+(i.e., min, low settings) to guarantee some allocation per group so its  
+approach might not be applicable to misc controller here.
 
-For all answers such as this, I will hereafter reply "rebase fu", with
-further clarification only if necessary.
+> Last, what is the simplest (least amount of code) thing that the SGX
+> cgroup controller could implement here?
+>
+>
 
-> 
-> > +
-> > +/**********************************************************************************
-> > + * famfs super_operations
-> > + *
-> > + * TODO: implement a famfs_statfs() that shows size, free and available space, etc.
-> > + */
-> > +
-> > +/**
-> > + * famfs_show_options() - Display the mount options in /proc/mounts.
-> Run kernel doc script + fix all warnings.
+I still think the current approach of doing global reclaim is reasonable  
+and simple: try_charge() checks cgroup limit and reclaim within the group  
+if needed, then do EPC page allocation, reclaim globally if allocation  
+fails due to global usage reaches the capacity.
 
-Will do; I actually think I have already fixed those...
+I'm not sure how not doing global reclaiming in this case would bring any  
+benefit. Please see my response to Kai's example cases.
 
-> 
-> > + */
-> > +static int famfs_show_options(
-> > +	struct seq_file *m,
-> > +	struct dentry   *root)
-> Not that familiar with fs code, but this unusual kernel style. I'd go with 
-> something more common
-> 
-> static int famfs_show_options(struct seq_file *m, struct dentry *root)
-
-Done. To all functions...
-
-> 
-> > +{
-> > +	struct famfs_fs_info *fsi = root->d_sb->s_fs_info;
-> > +
-> > +	if (fsi->mount_opts.mode != FAMFS_DEFAULT_MODE)
-> > +		seq_printf(m, ",mode=%o", fsi->mount_opts.mode);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct super_operations famfs_ops = {
-> > +	.statfs		= simple_statfs,
-> > +	.drop_inode	= generic_delete_inode,
-> > +	.show_options	= famfs_show_options,
-> > +};
-> > +
-> > +
-> One blank line probably fine.
-
-Done
-
-> 
-> 
-> Add the rest of the stuff a module normally has, author etc in this
-> patch.
-
-Because "rebase fu" I'm not sure the order will remain the same. Will
-try not to make anybody tell me this again though...
-
-John
-
+Thanks
+Haitao
 
