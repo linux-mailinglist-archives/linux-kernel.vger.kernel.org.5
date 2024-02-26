@@ -1,106 +1,119 @@
-Return-Path: <linux-kernel+bounces-81714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889BF867950
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:01:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 084B8867967
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8FB11C2AB93
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:01:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A86962871F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA3314D452;
-	Mon, 26 Feb 2024 14:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BF95130AC2;
+	Mon, 26 Feb 2024 14:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="i36GNJFU"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="P0Igz8a1"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D9C14AD2D;
-	Mon, 26 Feb 2024 14:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6DB12AAC5;
+	Mon, 26 Feb 2024 14:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958362; cv=none; b=V/NybaR+DA7/X4GtxnFH7ztOtRvOz4KHXpvq7aFBOnAfkWbGOAgFgDTvLBmTW0YMD5Kqxe9vb24kEmSd8RDARZ8uDRduhhIgLIpLYgFPNMvLgXmK45nkFhEqEw4vF6kyWiTv9EF8qLzuxYPyFCmw1L+eQmi553wictYUprz7mLo=
+	t=1708958425; cv=none; b=tpzcGrrAaU8sewnT1b+2Ka1EGVlieRvQfKH0k0FI3M1HuWYJA8oxZO3wpFsz95W92TMFPNycfW20YNAlLFF0TX9TTBagDSSQtlOfKmKdwWHcMLWfkQ8V+jnQUlxPk74Ptjb9ZxolFbIVSju9jVp9d2cdbq6raNxiIdUB/yEMj9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958362; c=relaxed/simple;
-	bh=u6Nlj9aFWUkGtMphlgtcfzyYeMBYqT2bTgNnhxzd4PA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QOFpq6rrWE0okhZIUPbi8cnh+KMKhcwFhWKRPRNHlu9JP70LF27zruBxHAJ2VKdOZAMN3gHqUZs+5PdEgOtHTqceH53goStOPdkdVhhOCO0DrHjwVIC2NOyno00zWDbUQQSvxQ3dp0okeGauYhIGFnEU3SFVAUslzJfvibj3I6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=i36GNJFU; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=XPs0zPZIiUMU61zxAetpvc6AZcILYC4oTZnxDxpcdNc=; b=i36GNJFUnA++Z4gOewmHXVagLb
-	6ejWEec7cnUdo6EPzUZnziutrcncOvwrvq/t31x4xz5gInslKYJbXQH9/Nu7s/CARGxVrP/eckNPc
-	YocpXU/nvYsaKSb9a23T84FaOIQ/5Vh9ZMRPJbmLWOQL2dk6OfvW2cRHs6gMThumQ6p4XDdEW9/9r
-	iSimuM7vxqGMMNyTL1WEmsiovJdAj/4R77IJtcGI+LKG/FQBiTlyh741voW9xicVhea+DTRbbB3uI
-	WQq2A+H6aS4g40j10/cZRZsa7FRSrJa53olqCx2KCIxKgmxG72NpIDwb9mPlR10OMVmdTCJ20KoLA
-	4ar5Lq4A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45490)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rec8K-0003qd-23;
-	Mon, 26 Feb 2024 14:39:08 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rec8I-0006VD-77; Mon, 26 Feb 2024 14:39:06 +0000
-Date: Mon, 26 Feb 2024 14:39:06 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Shengyu Qu <wiagn233@outlook.com>
-Cc: andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v1] net: sfp: add quirks for ODI DFP-34X-2C2
-Message-ID: <ZdyiigYNGf8WVZNu@shell.armlinux.org.uk>
-References: <TY3P286MB2611C0FA24318AA397DB689B985A2@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
- <ZdyahVYAhPgf2Xqn@shell.armlinux.org.uk>
- <TY3P286MB2611BD62C30B37A5BE02D3C5985A2@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1708958425; c=relaxed/simple;
+	bh=XvQEtwLAKWGhgBGarB0Wr7PB20ORxGBoZaxk/dpNHoU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=poEwsmoPwPeh57o7q9Dc7HZWAhVG6B8+Hd893uj5ENXt+c5zK7h7i+EFddDw7SQTojga8OSwHCa8qAbhY8+bAgprFuXIxcXjyfuV2TZEeLfAWQf55DAFCt0C+yz76ASREwx4upaTeA6L+SK824pVLs6Dc6k9j8gGKr+TBThXNSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=P0Igz8a1; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41QDKxnB024671;
+	Mon, 26 Feb 2024 14:40:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=PTxvjhul145awLzkBxJam1t2BqjccVZh9EDCquswOoY=;
+ b=P0Igz8a1yW+3uPXed8+DqynuwvtvJZ+qYT5WYjag0clIgCLSovk1madVXhtfNX2nKtiL
+ 2XU0lrnppHN/lB5A5joHDrL5SJO7m72uJN/T3T4McoZQ7Mlfmw+Eymg+r9Ektg/A/83r
+ l18gI8fgMVbIIBPIaGGtQu2UszXM2W9vGyD0DPrXlYzKyHpEXGbWkN08jE+oTKBKum8G
+ 7ZMetjcmZEsKYHsZFxuGTGu9wb8QivC7BHVsX9BR53i+87aoaJP2T+wcRARdM9rCEfA2
+ b+RlDgKPkvY33/A0k0AAdv8vBLa5JnM1CrXxi9/o88sY/+St8LHInFOeI0PO5Z3SUgjU iA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf7cccq00-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 14:40:16 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41QEUvlN019220;
+	Mon, 26 Feb 2024 14:40:15 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wgbdhfsr1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 26 Feb 2024 14:40:15 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41QEeEMA040203;
+	Mon, 26 Feb 2024 14:40:14 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.129.136.47])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3wgbdhfspg-1;
+	Mon, 26 Feb 2024 14:40:14 +0000
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+To: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, dan.carpenter@linaro.org,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Subject: [PATCH] platform/x86/amd/pmf: Fix missing error code in amd_pmf_init_smart_pc()
+Date: Mon, 26 Feb 2024 06:40:10 -0800
+Message-ID: <20240226144011.2100804-1-harshit.m.mogalapalli@oracle.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TY3P286MB2611BD62C30B37A5BE02D3C5985A2@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_10,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402260111
+X-Proofpoint-ORIG-GUID: G1Uc1xhAlbV6aCXUu4JMFiz46PnnPrZj
+X-Proofpoint-GUID: G1Uc1xhAlbV6aCXUu4JMFiz46PnnPrZj
 
-On Mon, Feb 26, 2024 at 10:16:46PM +0800, Shengyu Qu wrote:
-> Hi Russell,
-> 
-> > On Mon, Feb 26, 2024 at 09:23:46PM +0800, Shengyu Qu wrote:
-> > > ODI DFP-34X-2C2 is capable of 2500base-X, but incorrectly report its
-> > > capabilities in the EEPROM.
-> > > So use sfp_quirk_2500basex for this module to allow 2500Base-X mode.
-> > This was previously submitted by Sergio Palumbo, and comes in two
-> > different forms - an OEM version and non-OEM. There was extensive
-> > discussion about this, and the result is that I'm not accepting this
-> > quirk for this module.
-> > 
-> > The reason is that the module _defaults_ to 1000base-X and requires
-> > manual reconfiguration by the user to operate at 2500base-X.
-> > Unfortunately, there is no way for the kernel to know whether that
-> > reconfiguration has occurred.
-> No, In the firmware of this stick, the speed rate is configured to auto
-> negotiation rather than fixed 1000base-X.
+On the error path, assign -ENOMEM to ret when memory allocation of
+"dev->prev_data" fails.
 
-How does this "auto negotiation" work?
+Fixes: e70961505808 ("platform/x86/amd/pmf: Fixup error handling for amd_pmf_init_smart_pc()")
+Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+---
+This is based on static analysis with smatch, only compile tested
+---
+ drivers/platform/x86/amd/pmf/tee-if.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-I mean *exactly* how does it work? How does it know whether the host is
-operating at 1000base-X or 2500base-X?
-
-There is *no* inband protocol to allow this to be negotiated.
-
+diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x86/amd/pmf/tee-if.c
+index 8527dca9cf56..dcbe8f85e122 100644
+--- a/drivers/platform/x86/amd/pmf/tee-if.c
++++ b/drivers/platform/x86/amd/pmf/tee-if.c
+@@ -458,8 +458,10 @@ int amd_pmf_init_smart_pc(struct amd_pmf_dev *dev)
+ 	amd_pmf_hex_dump_pb(dev);
+ 
+ 	dev->prev_data = kzalloc(sizeof(*dev->prev_data), GFP_KERNEL);
+-	if (!dev->prev_data)
++	if (!dev->prev_data) {
++		ret = -ENOMEM;
+ 		goto error;
++	}
+ 
+ 	ret = amd_pmf_start_policy_engine(dev);
+ 	if (ret)
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.39.3
+
 
