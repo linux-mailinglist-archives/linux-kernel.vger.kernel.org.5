@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-81074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE02866FDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:04:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46F0E866FDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:05:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A319C1F2564B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:04:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 334561C2596F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:05:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7C6B5F87E;
-	Mon, 26 Feb 2024 09:41:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3D85FBB5;
+	Mon, 26 Feb 2024 09:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="dgLqfTQl"
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="LqzbOPD/"
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5F885F879
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7565FBA8
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940481; cv=none; b=kKOAa7TZHsCpK08/G5oN6HXLF+RLrm9w8N6+zJ0g/48nooLVmH2Od/8zcOprEAd+WRF7ON3Uqg1XV0/S3mo7RSbD9s/xjMrHQ+XgfVIi3svJvsVxPHa8qkq2e4wGU4KKtxEQS/rXZ/WPPFsvfeokTYSuG467vSkzxKXUgCP74CM=
+	t=1708940486; cv=none; b=adRiPtyPa4AloKPyMsmDKhjqWpmc/Bnil3TYkeWUXJnwnf0EaQgxZQ8OoWjNwBiwe+Iaw4JgMhkGkEJppsiG1thFLmfdfBAEUrECoU18yytFfdeUkk+rg0lIl3HjPCHDRxSKe6yY+FtBZU9IngX2Gh0RFcC+NP8JuMUWkep1FoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940481; c=relaxed/simple;
-	bh=vTbbnU0AQBSusnj9unjWrvIi8LxU8OXeteKwp4FBQTs=;
+	s=arc-20240116; t=1708940486; c=relaxed/simple;
+	bh=abhzLrMcAo73itQJFRf9PngJ2NfPzbHIHmMJXMFZsec=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VjIUoVZjunQ9qpqScQwwRHFWaosO5wUGjzqWizPGvQhuLFhb69p8CU8uMClVinurlug7FqG03mHCJIghCnuzOYbUP/uu+cSg8KNlLV+N7APA5rMthceJp0JcQpkmlDDg0ruQgBmexq/WxIi18ktP/RYAGZZ5BdmRyM+7BXY1e+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=dgLqfTQl; arc=none smtp.client-ip=209.85.210.194
+	 MIME-Version; b=pEy71go7Rq5y74AX7i35fQU+GmztIdTos+BLq3cxHwmpVSUpIRAbs7Lj+0HIIsHSoar/pwYfbk+CecyPMBy6y8bB4tT1GB1MVETyoLljhAaOvO0V76AHg30nIO9UdDGOHLgOpzdxuhEdHSmujW57Lumcegj+q5IaR3HfaMBZPgI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=LqzbOPD/; arc=none smtp.client-ip=209.85.215.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-6e47a104c2eso1431546b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:41:18 -0800 (PST)
+Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so1816667a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1708940478; x=1709545278; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1708940483; x=1709545283; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1YFU6WdZM9SQFy2Ur5i4rzS9kbd1FF1r6Cyc0pRvjOk=;
-        b=dgLqfTQlM2kwZWexxnIzIltB0VVxRl+VVR2RCVA+ZbBzoS4bqmncoJ0PDMbJee7CsD
-         OPLFNNZ51dAGOog5kh0qwqjhESX9mD2jKCVcrUqNUm4lysYyKr6VqzXUR9iZLiWlokFn
-         3oWyp3ovwPVdSQimK/dn0W5LJBp3dKQHYN33psyOT0oj2DvE8z4s7cpuY91FfAc1vZmX
-         0MOsn4q+W9EySwmJUiXshWfaYeqlNLsz3flNx3sPEVwh/VDqYvTMi/EeunafOIlv/jRH
-         GLSb1QyxmJFKFuyVdIAR+MeVW9MzedadE9kSuZbw+1no9ktsfoECem2Qkiba3wBOSs4l
-         gCpA==
+        bh=4Xvb2DA8xzihP7Mzi/v0EMpx+00b5U5crlo4mSn4zeU=;
+        b=LqzbOPD/geiXW9SKp5UrBReGwTCs2wsrR1ZRwlWWtbeW+GNwBUDoVl3TVmP1Vx//YO
+         b0imZLZHTKDL67tWI069AiCNkvJY4GEl/ZOAhf+QOCkeLE4SMltVBcM/B+sGfNsZdgb5
+         IwTfp7SJft33FTLm4LVVZ28UN+hXf8JgajPNuRJ6daHNyEcrjVN4KmMf74VMbGVhCUDg
+         fgFrdPJuyOvU6jaRgzsx20ws6NsjxtEJlFz+W3Q2eFQnPVXv+sVSEol5EF2tcjXjoo1k
+         Ld/Mxh14DBL+AwADNCX/8hsmlD+yhbH186T7xdducMQaXyKay2T8Na+2cMO4mERbxLq5
+         ELfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708940478; x=1709545278;
+        d=1e100.net; s=20230601; t=1708940483; x=1709545283;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1YFU6WdZM9SQFy2Ur5i4rzS9kbd1FF1r6Cyc0pRvjOk=;
-        b=fMaSya9AnudYcCqPQXr4TGHctms3+cbRLlyH9cWY3hyh0iU5OfiCB18ZK5a8viDc46
-         lYFpAz20JouKZGkbUoElujgWgoK3PBbQ37runPkvy9cYx4raEruMC0RGApDsx+ci/Rkd
-         0EFn7WlYP++b7th6C7z16mA3aIsYVbc0RR8sf67GcL0Zhe8TgYCzXspSdyAfCCeF9ROT
-         1FijxhwrR6YvhVDLJNKdlBrOwzimT9nqIxLcifcKVgB/kMAeKOtW4AUqaWS7niWYZrmv
-         QOubc7QrL+KHnbbodK5IUOfZclTAHvkscOn7LOCdPS+NjAY+amEgIwKfhFp3KXUYNWy4
-         hPbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUIeTqQq5400LuX64jwuTDA+NwjIPi3ui1W6kCa7Xfol/Oj6adia+EJkJqoHYANXu7WcesXrFhAyFiBWpHLhFTs9UyzfQjVNedmBXDw
-X-Gm-Message-State: AOJu0YxP/RloUVqxXDImdTnr+X0aW9wx4YL1+YLhNaaFLLF+vchpxQ8f
-	T6xndO6XEIFlnael12y0z6+gNKL6B67ItEcLaicIzg07rrGBAXEtpGyFns1YsJM=
-X-Google-Smtp-Source: AGHT+IFval8ZOQaomGfAH/X9BgRIO5rpmmlEDreQ7v8aTjUX2p97jTehIp8TC5ziMI2SYFw8658Bwg==
-X-Received: by 2002:a05:6a00:4e5a:b0:6e4:df65:8335 with SMTP id gu26-20020a056a004e5a00b006e4df658335mr5107611pfb.16.1708940478025;
-        Mon, 26 Feb 2024 01:41:18 -0800 (PST)
+        bh=4Xvb2DA8xzihP7Mzi/v0EMpx+00b5U5crlo4mSn4zeU=;
+        b=cOHBPiWSxmZy4YaN41XThmY5cyieyBj0ZBJLIY8vQht2Yx4IKzHShCYkQq0dukdiRe
+         +8u9eZmn2kw2JRyTkuf+jk9s8nNx4542gO7IwT+urAK0JgNynekqPU8Q8Q/7ev0JV8bD
+         j7P6SVxQHy2IDDPX5Y+jbWkV8VmdoKRWZPrPibvm+GcgJXihOhIZm26CbpEJCWBF2tan
+         9m+F/JwvBcEhXPSxHJ67I8HZSw3ZPg1KDdt04r/RDVookElTnD8NPP+VAdhjf2UY7/Vx
+         BZw4H9hsFaCwUmsLhLDOUtvIKe8co4ymQJV3ciDowUBYrbAa0aP8gzrBjxL/rxlDxo2F
+         0U5w==
+X-Forwarded-Encrypted: i=1; AJvYcCWSpmrsjyziehBcbN5E5LLUmZVYoBrSzPnRu051E6GAMusgNBLcbHgittJuuJJB4ikzsK6H3W3iIsSb/IVMskkR+C8zvo6PJ+YWef6X
+X-Gm-Message-State: AOJu0Yz+gcp6cKMPEwI92GgxL0ZLkxcURNvM67x8Nt6KnLru7FBhL6AC
+	EIix5InUHGhtSdcF94nIr96DxCZV+r4q1I1jKWEUt15MGyLo21/VdL0phHlCASk=
+X-Google-Smtp-Source: AGHT+IGfQH3eDmtSm+TZHerFWqD+F5k2hss2J92b+IgjpliujZb0EjkcMoryDu0xIJer86ULvMVwMA==
+X-Received: by 2002:a05:6a21:6816:b0:1a1:55e:20ed with SMTP id wr22-20020a056a21681600b001a1055e20edmr413289pzb.24.1708940483445;
+        Mon, 26 Feb 2024 01:41:23 -0800 (PST)
 Received: from C02CV19DML87.bytedance.net ([203.208.189.6])
-        by smtp.gmail.com with ESMTPSA id ls22-20020a056a00741600b006e533caee00sm949194pfb.155.2024.02.26.01.41.12
+        by smtp.gmail.com with ESMTPSA id ls22-20020a056a00741600b006e533caee00sm949194pfb.155.2024.02.26.01.41.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 01:41:17 -0800 (PST)
+        Mon, 26 Feb 2024 01:41:23 -0800 (PST)
 From: "$(name)" <qirui.001@bytedance.com>
 X-Google-Original-From: "$(name)" <$(mail address)>
 To: bp@alien8.de,
@@ -81,9 +81,9 @@ To: bp@alien8.de,
 Cc: x86@kernel.org,
 	linux-kernel@vger.kernel.org,
 	qirui.001@bytedance.com
-Subject: [PATCH 1/3] objtool: is_fentry_call() crashes if call has no destination
-Date: Mon, 26 Feb 2024 17:40:59 +0800
-Message-Id: <20240226094101.95544-2-qirui.001@bytedance.com>
+Subject: [PATCH 2/3] objtool: Add support for intra-function calls
+Date: Mon, 26 Feb 2024 17:41:00 +0800
+Message-Id: <20240226094101.95544-3-qirui.001@bytedance.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 In-Reply-To: <20240226094101.95544-1-qirui.001@bytedance.com>
 References: <20240226094101.95544-1-qirui.001@bytedance.com>
@@ -97,34 +97,181 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexandre Chartre <alexandre.chartre@oracle.com>
 
-commit 87cf61fe848ca8ddf091548671e168f52e8a718e upstream.
+commit 8aa8eb2a8f5b3305a95f39957dd2b715fa668e21 upstream.
 
-Fix is_fentry_call() so that it works if a call has no destination
-set (call_dest). This needs to be done in order to support intra-
-function calls.
+Change objtool to support intra-function calls. On x86, an intra-function
+call is represented in objtool as a push onto the stack (of the return
+address), and a jump to the destination address. That way the stack
+information is correctly updated and the call flow is still accurate.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Reviewed-by: Miroslav Benes <mbenes@suse.cz>
 Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Link: https://lkml.kernel.org/r/20200414103618.12657-2-alexandre.chartre@oracle.com
+Link: https://lkml.kernel.org/r/20200414103618.12657-4-alexandre.chartre@oracle.com
+Signed-off-by: Rui Qi <qirui.001@bytedance.com>
 ---
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/frame.h                         | 11 ++++
+ .../Documentation/stack-validation.txt        |  8 +++
+ tools/objtool/arch/x86/decode.c               |  6 ++
+ tools/objtool/check.c                         | 62 +++++++++++++++++--
+ 4 files changed, 83 insertions(+), 4 deletions(-)
 
+diff --git a/include/linux/frame.h b/include/linux/frame.h
+index 02d3ca2d9598..303cda600e56 100644
+--- a/include/linux/frame.h
++++ b/include/linux/frame.h
+@@ -15,9 +15,20 @@
+ 	static void __used __section(.discard.func_stack_frame_non_standard) \
+ 		*__func_stack_frame_non_standard_##func = func
+ 
++/*
++ * This macro indicates that the following intra-function call is valid.
++ * Any non-annotated intra-function call will cause objtool to issue a warning.
++ */
++#define ANNOTATE_INTRA_FUNCTION_CALL				\
++	999:							\
++	.pushsection .discard.intra_function_calls;		\
++	.long 999b;						\
++	.popsection;
++
+ #else /* !CONFIG_STACK_VALIDATION */
+ 
+ #define STACK_FRAME_NON_STANDARD(func)
++#define ANNOTATE_INTRA_FUNCTION_CALL
+ 
+ #endif /* CONFIG_STACK_VALIDATION */
+ 
+diff --git a/tools/objtool/Documentation/stack-validation.txt b/tools/objtool/Documentation/stack-validation.txt
+index de094670050b..ee26bb382b70 100644
+--- a/tools/objtool/Documentation/stack-validation.txt
++++ b/tools/objtool/Documentation/stack-validation.txt
+@@ -290,6 +290,14 @@ they mean, and suggestions for how to fix them.
+       https://gcc.gnu.org/bugzilla/show_bug.cgi?id=70646
+ 
+ 
++11. file.o: warning: unannotated intra-function call
++
++   This warning means that a direct call is done to a destination which
++   is not at the beginning of a function. If this is a legit call, you
++   can remove this warning by putting the ANNOTATE_INTRA_FUNCTION_CALL
++   directive right before the call.
++
++
+ If the error doesn't seem to make sense, it could be a bug in objtool.
+ Feel free to ask the objtool maintainer for help.
+ 
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index a62e032863a8..c3ff62c085c8 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -437,6 +437,12 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
+ 
+ 	case 0xe8:
+ 		*type = INSN_CALL;
++		/*
++		 * For the impact on the stack, a CALL behaves like
++		 * a PUSH of an immediate value (the return address).
++		 */
++			op->src.type = OP_SRC_CONST;
++			op->dest.type = OP_DEST_PUSH;
+ 		break;
+ 
+ 	case 0xfc:
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index dfd67243faac..71a24fd46dbd 100644
+index 71a24fd46dbd..0fa414869f45 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -1367,7 +1367,7 @@ static int decode_sections(struct objtool_file *file)
+@@ -645,6 +645,7 @@ static int add_jump_destinations(struct objtool_file *file)
+ 	return 0;
+ }
  
- static bool is_fentry_call(struct instruction *insn)
++
+ /*
+  * Find the destination instructions for all calls.
+  */
+@@ -666,10 +667,7 @@ static int add_call_destinations(struct objtool_file *file)
+ 								dest_off);
+ 
+ 			if (!insn->call_dest && !insn->ignore) {
+-				WARN_FUNC("unsupported intra-function call",
+-					  insn->sec, insn->offset);
+-				if (retpoline)
+-					WARN("If this is a retpoline, please patch it in with alternatives and annotate it with ANNOTATE_NOSPEC_ALTERNATIVE.");
++				WARN_FUNC("unannotated intra-function call", insn->sec, insn->offset);
+ 				return -1;
+ 			}
+ 
+@@ -1291,6 +1289,58 @@ static int read_retpoline_hints(struct objtool_file *file)
+ 	return 0;
+ }
+ 
++
++static int read_intra_function_calls(struct objtool_file *file)
++{
++	struct instruction *insn;
++	struct section *sec;
++	struct rela *rela;
++
++	sec = find_section_by_name(file->elf, ".rela.discard.intra_function_calls");
++	if (!sec)
++		return 0;
++
++	list_for_each_entry(rela, &sec->rela_list, list) {
++		unsigned long dest_off;
++
++		if (rela->sym->type != STT_SECTION) {
++			WARN("unexpected relocation symbol type in %s",
++			     sec->name);
++			return -1;
++		}
++
++		insn = find_insn(file, rela->sym->sec, rela->addend);
++		if (!insn) {
++			WARN("bad .discard.intra_function_call entry");
++			return -1;
++		}
++
++		if (insn->type != INSN_CALL) {
++			WARN_FUNC("intra_function_call not a direct call",
++				  insn->sec, insn->offset);
++			return -1;
++		}
++
++		/*
++		 * Treat intra-function CALLs as JMPs, but with a stack_op.
++		 * See add_call_destinations(), which strips stack_ops from
++		 * normal CALLs.
++		 */
++		insn->type = INSN_JUMP_UNCONDITIONAL;
++
++		dest_off = insn->offset + insn->len + insn->immediate;
++		insn->jump_dest = find_insn(file, insn->sec, dest_off);
++		if (!insn->jump_dest) {
++			WARN_FUNC("can't find call dest at %s+0x%lx",
++				  insn->sec, insn->offset,
++				  insn->sec->name, dest_off);
++			return -1;
++		}
++	}
++
++	return 0;
++}
++
+ static void mark_rodata(struct objtool_file *file)
  {
--	if (insn->type == INSN_CALL &&
-+	if (insn->type == INSN_CALL && insn->call_dest &&
- 	    insn->call_dest->type == STT_NOTYPE &&
- 	    !strcmp(insn->call_dest->name, "__fentry__"))
- 		return true;
+ 	struct section *sec;
+@@ -1346,6 +1396,10 @@ static int decode_sections(struct objtool_file *file)
+ 	if (ret)
+ 		return ret;
+ 
++	ret = read_intra_function_calls(file);
++	if (ret)
++		return ret;
++
+ 	ret = add_call_destinations(file);
+ 	if (ret)
+ 		return ret;
 -- 
 2.39.2 (Apple Git-143)
 
