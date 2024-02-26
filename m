@@ -1,180 +1,236 @@
-Return-Path: <linux-kernel+bounces-81137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C76E0867137
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:34:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 173148670EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71EC3B2771B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:27:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A1AF1C238DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878B15A7BB;
-	Mon, 26 Feb 2024 10:12:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XC5rhn9S";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0wq0BxON";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XC5rhn9S";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0wq0BxON"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51A95D8E9;
+	Mon, 26 Feb 2024 10:13:38 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0DA63B
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5EE5D739
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708942368; cv=none; b=b1irkkIBOr28EW7WrZIiai1hOeyb0bkT3JSa9raiia0wAfLuFhZaq7CLjYbrzVXI9+vfshx0AULgFAE7vLL7qDXLOk/XrjxjCogoJMRatotERDw5F7tl4gYjpOjl0vKF04It1734/oESOoTJvtWO/mkX0lHS9SsewymB83A2dMU=
+	t=1708942418; cv=none; b=eNRNuNKSkIT7FNvRE9Cd9GO49Vn9yadVF9IH0Hc6VZuoW4jTD/SvzobzW4hZqMRr6gx3rvEa0/E/7aLR79ObUYf0CpK1AcvU5mFILXFx6UldwVWFAcyJSAVCiLb/fMMvqBHCpmhd7t38kAvaRPUQPrNVAU1S2G9Yr+i0N+jP4Yo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708942368; c=relaxed/simple;
-	bh=cwChX84IQ36TCIcgwTT+CoRqwjdP8BrUdBUljrP22XE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dROqg28aRh1nwfGAns3kDcfJjeqjrElm7ljXx90QnipvgQUhS5hTI6lq7OAURmk56I5HmTpISEhfASwvoEaC9AF/fQssQk5POSV5zUJ4GZ/OPwIzMKH2/dXLakvVfq/txPXS26ybf0+ZUl1vXhFlpiG85RasfgJTBOlEWnD/+uQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XC5rhn9S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0wq0BxON; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XC5rhn9S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0wq0BxON; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 141C822238;
-	Mon, 26 Feb 2024 10:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708942364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E1udk04wUSNMB8OocFJIbZ/Oh34hvdBxWE/amAhSt5A=;
-	b=XC5rhn9StsnbsfAdIsAQqFGHp3lEuo/hhgy7ZMnwgZn7Cb36tz4MwSRVIwSwLRiV4tHQfy
-	M766tdZp6UVp4HG9jpx0PGLzG9i7gSeONX21M3toULaaul/zXfUBlF0pARywzm2QihXvvi
-	xBEMmzsM3GkfOvtJTkBZAC9KD02Q0Yo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708942364;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E1udk04wUSNMB8OocFJIbZ/Oh34hvdBxWE/amAhSt5A=;
-	b=0wq0BxONCCbTlgFjJ/XNxl1yJaqV7jlvPKfB+SGXwzrmHKrFdVTjgwf8PDYjQ9C0OUHlk7
-	RX9acuU72aJBgLCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708942364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E1udk04wUSNMB8OocFJIbZ/Oh34hvdBxWE/amAhSt5A=;
-	b=XC5rhn9StsnbsfAdIsAQqFGHp3lEuo/hhgy7ZMnwgZn7Cb36tz4MwSRVIwSwLRiV4tHQfy
-	M766tdZp6UVp4HG9jpx0PGLzG9i7gSeONX21M3toULaaul/zXfUBlF0pARywzm2QihXvvi
-	xBEMmzsM3GkfOvtJTkBZAC9KD02Q0Yo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708942364;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E1udk04wUSNMB8OocFJIbZ/Oh34hvdBxWE/amAhSt5A=;
-	b=0wq0BxONCCbTlgFjJ/XNxl1yJaqV7jlvPKfB+SGXwzrmHKrFdVTjgwf8PDYjQ9C0OUHlk7
-	RX9acuU72aJBgLCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFB1413A3A;
-	Mon, 26 Feb 2024 10:12:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UoM0Ohtk3GX4LAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 26 Feb 2024 10:12:43 +0000
-Message-ID: <7670235f-60b8-46b4-a30f-606f798eeda4@suse.cz>
-Date: Mon, 26 Feb 2024 11:12:43 +0100
+	s=arc-20240116; t=1708942418; c=relaxed/simple;
+	bh=l/XNUdsfXsVRtLmfrCgBFlt+3X14xsPp0ov7WWwqMKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ubLUCF5Zg929K7ZnoJ0+/BwH4wG56ezLMmqNOZuFcoO5FCY7NzcD61Xdlx2bL6quZoyBlHJKW2HqzCgK/hZ7JcryCP915IkBOc4RTsdZv0GVgGGEkE/ETJX8srhroM70iLF24WXYf7im3CWl4nLMTFR9rMze1+P0FlAHZY8a3tM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reXzJ-0004kk-1T; Mon, 26 Feb 2024 11:13:33 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reXzH-002yMd-U7; Mon, 26 Feb 2024 11:13:31 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1reXzH-00Ba9u-2h;
+	Mon, 26 Feb 2024 11:13:31 +0100
+Date: Mon, 26 Feb 2024 11:13:31 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Trevor Gamblin <tgamblin@baylibre.com>
+Cc: linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	michael.hennerich@analog.com, nuno.sa@analog.com, devicetree@vger.kernel.org, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	Drew Fustini <dfustini@baylibre.com>, Sergiu Cuciurean <sergiu.cuciurean@analog.com>, 
+	David Lechner <dlechner@baylibre.com>
+Subject: Re: [PATCH 2/2 v3] pwm: Add driver for AXI PWM generator
+Message-ID: <rqozm7c4xixq3mb7sod7uslceieme7jrtdj2yelrekrqnttch2@vpsbe2nqmdsd>
+References: <20240131214042.1335251-1-tgamblin@baylibre.com>
+ <20240131214042.1335251-3-tgamblin@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: regression/bisected commit
- 773688a6cb24b0b3c2ba40354d883348a2befa38 make my system completely unusable
- under high load
-Content-Language: en-US
-To: Marco Elver <elver@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, glider@google.com,
- dvyukov@google.com, eugenis@google.com, Oscar Salvador <osalvador@suse.de>,
- Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
- Linux Memory Management List <linux-mm@kvack.org>
-References: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
- <CABXGCsM9BSD+SYFkvkYxmcrZL+aUfUb_M-rjNJhzb2cYHQr5ww@mail.gmail.com>
- <CANpmjNNXKiM0j4mR-Rr2KALhgz87=QjCOomEymNMWjtos=Z3Ug@mail.gmail.com>
- <CANpmjNOnbNw2fRL3_depaAgt81p-VpHh5_O_26kyxofjECgsFQ@mail.gmail.com>
- <CABXGCsPB-KEbE+SfymVmqfiomFVngFL2Je81Qyhw1F5_aZX-TQ@mail.gmail.com>
- <CABXGCsO5dcEuorLAXR3CFzDVyAWNk4_YfqCh=UJddfzpWF7hNg@mail.gmail.com>
- <CANpmjNPsdM2HrRFgEHYxX1seT2fbOFDuO6Ci-qF3X2y=9_PD1A@mail.gmail.com>
- <91c50335-e7b6-4ae1-9dad-a0c990b52021@suse.cz>
- <20240219152836.11d36709c594e66fe3037f2d@linux-foundation.org>
- <7e31accb-db01-486f-afb8-18a3f5402d00@suse.cz>
- <CABXGCsOHswLa5rd_Q7kHDHESb=BtqB+F=LV7Wvv+qoRxrqCboA@mail.gmail.com>
- <20240220093011.bf84486d704c3814079c2aa0@linux-foundation.org>
- <96c51d35-15ce-42d0-b81b-7e76044e1f2b@suse.cz>
- <CANpmjNMObiX5X721DERccn16aMW+WMPz+wvLKv=UdaQi3XOMwA@mail.gmail.com>
- <CANpmjNPP=c4ZfJmWFexR=03Lk4gGMr7yPW=j81WAnM_vCSCwCQ@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CANpmjNPP=c4ZfJmWFexR=03Lk4gGMr7yPW=j81WAnM_vCSCwCQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [1.25 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 BAYES_HAM(-0.16)[69.49%];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,google.com,suse.de,vger.kernel.org,kvack.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: *
-X-Spam-Score: 1.25
-X-Spam-Flag: NO
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="e7n7hyci5zrnb2jl"
+Content-Disposition: inline
+In-Reply-To: <20240131214042.1335251-3-tgamblin@baylibre.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 2/26/24 10:25, Marco Elver wrote:
-> On Tue, 20 Feb 2024 at 19:51, Marco Elver <elver@google.com> wrote:
->>
->> While it would be nice if 6.8 would not regress over 6.7 (performance
->> is mostly fixed, memory usage is not), waiting for confirmation what
->> the rcutorture issue from the bot is about might be good.
->>
->> Mikhail: since you are testing mainline, in about 4 weeks the fixes
->> should then reach 6.9-rc in the next merge window. Until then, if it's
->> not too difficult for you, you can apply those 2 patches in your own
->> tree.
-> 
-> There are more issues that are fixed by "[PATCH v2 1/2] stackdepot:
-> use variable size records for non-evictable entries". See
-> https://lore.kernel.org/all/ZdxYXQdZDuuhcqiv@elver.google.com/
-> 
-> This will eventually reach stable, but it might be good to reconsider
-> mainlining it earlier.
 
-I believe I can see that patch, together with "kasan: revert eviction of
-stack traces in generic mode" in mm-hotfixes-stable so it should be on track
-for 6.8.
+--e7n7hyci5zrnb2jl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Thanks,
-> -- Marco
+On Wed, Jan 31, 2024 at 04:40:41PM -0500, Trevor Gamblin wrote:
+> From: Drew Fustini <dfustini@baylibre.com>
+>=20
+> Add support for the Analog Devices AXI PWM Generator. This device is an
+> FPGA-implemented peripheral used as PWM signal generator and can be
+> interfaced with AXI4. The register map of this peripheral makes it
+> possible to configure the period and duty cycle of the output signal.
+>=20
+> Link: https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
+> Co-developed-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
+> Co-developed-by: David Lechner <dlechner@baylibre.com>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
+> Co-developed-by: Trevor Gamblin <tgamblin@baylibre.com>
+> Acked-by: Nuno Sa <nuno.sa@analog.com>
+> Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
+> ---
+> v3 changes:
+> * Address feedback for driver in v2:
+>   * Remove unnecessary blank line in axi_pwmgen_apply
+>   * Use macros already defined in <linux/fpga/adi-axi-common.h> for
+>     version checking
+>=20
+> v2 changes:
+> * Address feedback for driver and device tree in v1:
+>   * Use more reasonable Kconfig approach
+>   * Use common prefixes for all functions
+>   * Rename axi_pwmgen struct to axi_pwmgen_ddata
+>   * Change use of "pwm" to "ddata"
+>   * Set and check state->polarity
+>   * Multiply safely with mul_u64_u64_div_u64()
+>   * Improve handling of max and zero periods
+>   * Error if clk_rate_hz > NSEC_PER_SEC
+>   * Add "Limitations" section at top of pwm-axi-pwmgen.c
+>   * Don't disable outputs by default
+>   * Remove unnecessary macros for period, duty, offset
+>   * Fix axi_pwmgen_ddata alignment
+>   * Don't artificially limit npwm to four
+>   * Use clk_rate_exclusive_get(), balance with clk_rate_exclusive_put()
+>   * Cache clk rate in axi_pwmgen_ddata
+>   * Don't assign pwm->chip.base, do assign pwm->chip.atomic
+> * Remove redundant calls to clk_get_rate
+> * Test contents of AXI_PWMGEN_REG_CORE_MAGIC instead of
+>   arbitrary AXI_PWMGEN_TEST_DATA in AXI_PWMGEN_REG_SCRATCHPAD
+> * Remove redundant clk struct from axi_pwmgen_ddata
+> * Add self as module author
+> * Add major version check for IP core
+>=20
+> ---
+>  MAINTAINERS                  |   1 +
+>  drivers/pwm/Kconfig          |  13 ++
+>  drivers/pwm/Makefile         |   1 +
+>  drivers/pwm/pwm-axi-pwmgen.c | 242 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 257 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-axi-pwmgen.c
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8a4ed5545680..2baa7a0a1c8c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3438,6 +3438,7 @@ L:	linux-pwm@vger.kernel.org
+>  S:	Supported
+>  W:	https://ez.analog.com/linux-software-drivers
+>  F:	Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
+> +F:	drivers/pwm/pwm-axi-pwmgen.c
+> =20
+>  AXXIA I2C CONTROLLER
+>  M:	Krzysztof Adamski <krzysztof.adamski@nokia.com>
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 4b956d661755..d44b0e86adee 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -98,6 +98,19 @@ config PWM_ATMEL_TCB
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-atmel-tcb.
+> =20
+> +config PWM_AXI_PWMGEN
+> +	tristate "Analog Devices AXI PWM generator"
+> +	depends on MICROBLAZE || NIOS2 || ARCH_ZYNQ || ARCH_ZYNQMP || ARCH_INTE=
+L_SOCFPGA || COMPILE_TEST
+> +	select REGMAP_MMIO
+> +	help
+> +	  This enables support for the Analog Devices AXI PWM generator.
+> +
+> +	  This is a configurable PWM generator with variable pulse width and
+> +	  period.
+> +
+> +	  To compile this driver as a module, choose M here: the module will be
+> +	  called pwm-axi-pwmgen.
+> +
+>  config PWM_BCM_IPROC
+>  	tristate "iProc PWM support"
+>  	depends on ARCH_BCM_IPROC || COMPILE_TEST
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index c5ec9e168ee7..8322089954e9 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -6,6 +6,7 @@ obj-$(CONFIG_PWM_APPLE)		+=3D pwm-apple.o
+>  obj-$(CONFIG_PWM_ATMEL)		+=3D pwm-atmel.o
+>  obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+=3D pwm-atmel-hlcdc.o
+>  obj-$(CONFIG_PWM_ATMEL_TCB)	+=3D pwm-atmel-tcb.o
+> +obj-$(CONFIG_PWM_AXI_PWMGEN)	+=3D pwm-axi-pwmgen.o
+>  obj-$(CONFIG_PWM_BCM_IPROC)	+=3D pwm-bcm-iproc.o
+>  obj-$(CONFIG_PWM_BCM_KONA)	+=3D pwm-bcm-kona.o
+>  obj-$(CONFIG_PWM_BCM2835)	+=3D pwm-bcm2835.o
+> diff --git a/drivers/pwm/pwm-axi-pwmgen.c b/drivers/pwm/pwm-axi-pwmgen.c
+> new file mode 100644
+> index 000000000000..44e62e90b227
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-axi-pwmgen.c
+> @@ -0,0 +1,242 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Analog Devices AXI PWM generator
+> + *
+> + * Copyright 2024 Analog Devices Inc.
+> + * Copyright 2024 Baylibre SAS
+> + *
+> + * Limitations:
+> + * - The writes to registers for period and duty are shadowed until
+> + *   LOAD_CONFIG is written to AXI_PWMGEN_REG_CONFIG at the end of the
+> + *   current period.
+> + * - Writing LOAD_CONFIG also has the effect of re-synchronizing all
+> + *   enabled channels, which could cause glitching on other channels. It
+> + *   is therefore expected that channels are assigned harmonic periods
+> + *   and all have a single user coordinating this.
 
+That means that when I reconfigure pwm2 the currently running period of
+pwm2 is completed and then all pwmX's counters are reset to zero?
+
+The patch looks good to me now. It needs a rework to use
+pwmchip_alloc(). If you could care for that, that would be great.
+Otherwise I'd pick up your patch later and add the conversion myself.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--e7n7hyci5zrnb2jl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXcZEoACgkQj4D7WH0S
+/k7gbQf/UafmyR6iYiS28SUjB9rcyGxLIkjm6YaqST0mFEHMDwLQjDp+Qbhz3DRf
+7FMBK69me846eI2rHxxYDJRLZoxl6nwUmV0pcgb7eBBM11wnjPYwDtgdWzbQ4E0e
+/lRcvKD5V+9S9JP5jt9fPSqqrvVT0lvX//CecbVQhV1qnAprLyufklqJ4e/AYxBo
++1hrtgtC+rpkMvQQhCCMvjihPPaT6wtdlTwBvyzENfKg9AgA++ENl5pOLESg5Yhl
+aa+1w3IljZ+y4pG01qqN8Ot5BK9KPf1ALkfTOPQkc/+CnG6ZVz/lE4r6ClN99/va
+cS39QBEz07t8N6+98MXWgk99vHEXLw==
+=6eaA
+-----END PGP SIGNATURE-----
+
+--e7n7hyci5zrnb2jl--
 
