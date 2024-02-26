@@ -1,189 +1,130 @@
-Return-Path: <linux-kernel+bounces-81371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68328674F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:30:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A7248674EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:30:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F90E28A5E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:30:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 549341C24D07
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5688160880;
-	Mon, 26 Feb 2024 12:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE938605B1;
+	Mon, 26 Feb 2024 12:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="nO7o1mql"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="kYR60E33"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31A0604BB;
-	Mon, 26 Feb 2024 12:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E02604C5
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950602; cv=none; b=Pr16979YzLzQs14JY4PAUX0LhKeANMF2pDfRhZXgPKcwK+cvZHzaNkSHYIdQilgZJnRoA6zr6jaeUiufFrtPVhs0TTJKhBFixvKSNtTURDbkNvs1Fm5nZyzXOWaEFX86MLMu8L2ZZVhKq5taUPkHTHoexbMNRnUoQxJ1QH//CKo=
+	t=1708950579; cv=none; b=m2RmOEzgUgJiwnbo8bgL9IbOa1iRTB++svuwjmXT35PPzGq/MJhZosD30dsq1Lva4jAl6q58/qX08qEqClJnDcPJXVuNddSz5ycq2II+aO3jHB+rBu/SrJuHyjOBr2ZVmc88/4xvaOyXgKiZF5uFGzv0gNB3fYaswfX5VJS6k+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950602; c=relaxed/simple;
-	bh=2UzpBftGfONTgJsYO9jo3Eiv5eHfoMEaol+tbd/SXHA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PKWPyTvgeW2vqxUBOSUuLHIqLgMUid9jCXPSUo4wTdo9RJ+G1ZMU9J4vFwu+9eMiiEZcLqyO4ogPXM2es+vAAOVztYCoQfcTjwgA0J+u6qZC8/zUj/JuYqossibt4rDd9CO2wU+KBVpom/ZHudGp5quYnNen9ynX9bB0SGSSRM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=nO7o1mql; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=6uiBS+Qi7asaIxy6/7a5MSyWBWL8eWW6sZvNhsKqAP4=; b=nO7o1mql1l5uhE1TZDI6i2tAQ0
-	wyfpn30zdIhLWSm7LAnvxgSFa2K1lK+j8MYcjGXa3TeWtoyonvn57BTBA9m+ETkCt6ZIvqsghfzW4
-	QAkfqgbBwiJk6xewHIkjbf5mFTN6T3aHAdhW3Y83KUgbhQtVNSRTgrXyQWMm9kq+mNSD53P++KVhj
-	ZNMqKZl7GrmXWMRIT6+EryKM0uK4yq1WzsKmahmk+zfy22KNPxpv9a7uSSI4bexip7spal8O/YBHm
-	eVHrLna8RfH0FyG5WHfJ8TqABMatDf2YBgl8JDX89I05n3kSdljjUpE3jYhLzD+JTP31KV9ZKYzqQ
-	4yOKJ0pQ==;
-Received: from [177.34.169.255] (helo=[192.168.0.139])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rea72-003YnI-Sh; Mon, 26 Feb 2024 13:29:41 +0100
-Message-ID: <244fe6b9-f295-4c85-908a-014ada0033fa@igalia.com>
-Date: Mon, 26 Feb 2024 09:29:32 -0300
+	s=arc-20240116; t=1708950579; c=relaxed/simple;
+	bh=FdayiuUa0lPM16SkkBcVAS345PVinGNRNV8BhjB+2Z8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KhoGgdWIFaQBOhy4Uc00D9jsAs1ouXsp5NCwO7Gia70CxClTwQfvTH+o6Lzt5/j4MWULrjZUJAMBAGdjrHYnASmLm08P6XBB5TGkwibKZxCHjePp+VhAVy48EPZjHy7P5LuT+K3q8DRGTVLp8aPjNY6FCb5pBOHfQCWxSxnhbOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=kYR60E33; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708950576;
+	bh=FdayiuUa0lPM16SkkBcVAS345PVinGNRNV8BhjB+2Z8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=kYR60E339+DP4Z9qcK/T9Tj7OP2p7wKAx7rRTqae8QUNhCA8BPYrkIGvrbRIFY6AS
+	 tTHw3LdBnnrCxZobHWzkIt5n7rJNQ1dhPXZDe1f3tEIYHsJnLFhSzgWV+G7ejNvVTk
+	 hA/L8+aH4VQnnPEZ4Lh6ojzo3OeGi0cSoveU9HaMRiJfMr0d5aMh95bk3a4VFy6mFA
+	 Wz21zZM9bMEzxpnPJOTq4zO+XVkpBsCZZvLO2q6RQDjFcydB/MH+v95F6tt8BOwIug
+	 C2j4UfEK0sWlyFfT111iU5cQ73M5soi+3PCg5GCrqH0FjUEMUQ0sXxfSEc5HAuuoYZ
+	 B1xaezf3MJdDA==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D5EE137803EE;
+	Mon, 26 Feb 2024 12:29:34 +0000 (UTC)
+Date: Mon, 26 Feb 2024 14:29:33 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Louis Chauvet <louis.chauvet@bootlin.com>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com
+Subject: Re: [PATCH v3 0/9] drm/vkms: Reimplement line-per-line pixel
+ conversion for plane reading
+Message-ID: <20240226142933.56a60970.pekka.paalanen@collabora.com>
+In-Reply-To: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
+References: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 29/36] drm/vc4: tests: Remove vc4_dummy_plane structure
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
- Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
- <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
- Sebastian Wick <sebastian.wick@redhat.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
- <20240222-kms-hdmi-connector-state-v7-29-8f4af575fce2@kernel.org>
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240222-kms-hdmi-connector-state-v7-29-8f4af575fce2@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/dkfPYvU.MIx4fUuMxdI2u57";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 2/22/24 15:14, Maxime Ripard wrote:
-> The vc4_dummy_plane structure is an exact equivalent to vc4_plane, so we
+--Sig_/dkfPYvU.MIx4fUuMxdI2u57
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Maybe I understood incorrectly, but isn't the vc4_dummy_plane structure 
-equivalent to drm_plane?
+On Mon, 26 Feb 2024 09:46:30 +0100
+Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 
-Best Regards,
-- Maíra
+> This patchset is the second version of [1]. It is almost a complete=20
+> rewrite to use a line-by-line algorithm for the composition.
+> It can be divided in three parts:
+> - PATCH 1 to 4: no functional change is intended, only some formatting an=
+d=20
+> documenting
+> (PATCH 2 is taken from [2])
+> - PATCH 5: main patch for this series, it reintroduce the=20
+> line-by-line algorithm
+> - PATCH 6 to 9: taken from Arthur's series [2], with sometimes adaptation=
+=20
+> to use the pixel-by-pixel algorithm.
 
-> don't need it.
-> 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
->   drivers/gpu/drm/vc4/tests/vc4_mock.c       |  6 ++----
->   drivers/gpu/drm/vc4/tests/vc4_mock.h       |  9 ++-------
->   drivers/gpu/drm/vc4/tests/vc4_mock_plane.c | 14 +++++---------
->   3 files changed, 9 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock.c b/drivers/gpu/drm/vc4/tests/vc4_mock.c
-> index becb3dbaa548..0731a7d85d7a 100644
-> --- a/drivers/gpu/drm/vc4/tests/vc4_mock.c
-> +++ b/drivers/gpu/drm/vc4/tests/vc4_mock.c
-> @@ -109,16 +109,14 @@ static const struct vc4_mock_desc vc5_mock =
->   static int __build_one_pipe(struct kunit *test, struct drm_device *drm,
->   			    const struct vc4_mock_pipe_desc *pipe)
->   {
-> -	struct vc4_dummy_plane *dummy_plane;
->   	struct drm_plane *plane;
->   	struct vc4_dummy_crtc *dummy_crtc;
->   	struct drm_crtc *crtc;
->   	unsigned int i;
->   
-> -	dummy_plane = vc4_dummy_plane(test, drm, DRM_PLANE_TYPE_PRIMARY);
-> -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dummy_plane);
-> +	plane = vc4_dummy_plane(test, drm, DRM_PLANE_TYPE_PRIMARY);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, plane);
->   
-> -	plane = &dummy_plane->plane.base;
->   	dummy_crtc = vc4_mock_pv(test, drm, plane, pipe->data);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dummy_crtc);
->   
-> diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock.h b/drivers/gpu/drm/vc4/tests/vc4_mock.h
-> index 2d0b339bd9f3..002b6218960c 100644
-> --- a/drivers/gpu/drm/vc4/tests/vc4_mock.h
-> +++ b/drivers/gpu/drm/vc4/tests/vc4_mock.h
-> @@ -21,13 +21,8 @@ struct drm_crtc *vc4_find_crtc_for_encoder(struct kunit *test,
->   	return NULL;
->   }
->   
-> -struct vc4_dummy_plane {
-> -	struct vc4_plane plane;
-> -};
-> -
-> -struct vc4_dummy_plane *vc4_dummy_plane(struct kunit *test,
-> -					struct drm_device *drm,
-> -					enum drm_plane_type type);
-> +struct drm_plane *vc4_dummy_plane(struct kunit *test, struct drm_device *drm,
-> +				  enum drm_plane_type type);
->   
->   struct vc4_dummy_crtc {
->   	struct vc4_crtc crtc;
-> diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c b/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
-> index 62b18f5f41db..973f5f929097 100644
-> --- a/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
-> +++ b/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
-> @@ -22,15 +22,12 @@ static const uint32_t vc4_dummy_plane_formats[] = {
->   	DRM_FORMAT_XRGB8888,
->   };
->   
-> -struct vc4_dummy_plane *vc4_dummy_plane(struct kunit *test,
-> -					struct drm_device *drm,
-> -					enum drm_plane_type type)
-> +struct drm_plane *vc4_dummy_plane(struct kunit *test, struct drm_device *drm,
-> +				  enum drm_plane_type type)
->   {
-> -	struct vc4_dummy_plane *dummy_plane;
->   	struct drm_plane *plane;
->   
-> -	dummy_plane = drmm_universal_plane_alloc(drm,
-> -						 struct vc4_dummy_plane, plane.base,
-> +	plane = __drmm_universal_plane_alloc(drm, sizeof(struct drm_plane), 0,
->   						 0,
->   						 &vc4_dummy_plane_funcs,
->   						 vc4_dummy_plane_formats,
-> @@ -38,10 +35,9 @@ struct vc4_dummy_plane *vc4_dummy_plane(struct kunit *test,
->   						 NULL,
->   						 DRM_PLANE_TYPE_PRIMARY,
->   						 NULL);
-> -	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dummy_plane);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, plane);
->   
-> -	plane = &dummy_plane->plane.base;
->   	drm_plane_helper_add(plane, &vc4_dummy_plane_helper_funcs);
->   
-> -	return dummy_plane;
-> +	return plane;
->   }
-> 
+Hi Louis,
+
+I'll skip v3 because I was still reviewing v2 while you posted this.
+I'm done on v2 now.
+
+
+Thanks,
+pq
+
+--Sig_/dkfPYvU.MIx4fUuMxdI2u57
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXchC0ACgkQI1/ltBGq
+qqfAhQ/9HtmiTswygFvd34aYrcwIZL4tkNAGO1m9GO/tg0PCt3/rF9fDdJBJgaFq
+lg+gSqQ1hlNNcCYnveRE1n+Py/JleVrBBVWMKZAGyNeS0MX7w+7rCZvY9Ekn3lB2
+/sJrdXkIVz3egqaamewzgxaYcUyefSpscdoWwMg/peXOQ3O4HgfCtQoQ31GYBbFT
+qwgOzunbnSNaxMQJyzxx6tbTwuLyAagjnnPD1nsH9PX2M/1bElefVyvKee/VNQVy
+CDBkdJ+M3kMNbEpJflXTxNJj3NEZvoMZrvZ5yBIL9N1pv9jHo62iDoIyWxfxz+JR
+YtDktw06mdBO1qACV7RMoye32q72h0bC93vixoUFpUdoi5jJhscMZI8EXZIpeoYQ
+3oTYC5JDWWL/QaoE/1KhxBtEX9MBY1pOh65XE4eaXnEMZVpIVBdThQE042K/BHPe
+0nJBbXHWK7VOx9UoeQJtXZViwgEIepVdAqaLVkF7XOW8ki5EJaQ8ePjq2RVN0oEc
+w1yeuOibpiQ7PutqhmrYEJ+/5yQZnzeJjveyriQt2ZAJHRz4fD0P8nnTMmfYQ4pp
+i7R/LI6f75XHmgyM+cavrak7YB7kQCqour0xqYrF2VHCsXbzVR7UK4qfJJafQYKx
+tfq/SuEiQVmnHd311S5ZPTRugJHXdEAr796UWEn6hC7nwb50sWI=
+=2siJ
+-----END PGP SIGNATURE-----
+
+--Sig_/dkfPYvU.MIx4fUuMxdI2u57--
 
