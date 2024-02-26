@@ -1,107 +1,140 @@
-Return-Path: <linux-kernel+bounces-81316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2782D86742B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:01:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBEB5867411
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:58:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD77FB2665B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:58:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EA2128E826
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7325A7AC;
-	Mon, 26 Feb 2024 11:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79DBC5A7BB;
+	Mon, 26 Feb 2024 11:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="VqGhCwMT"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="VALUTm+B"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BE155A7B3
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:57:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27E4E1DA4C;
+	Mon, 26 Feb 2024 11:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708948672; cv=none; b=TVXpzndNPtckRPigGxIA7oArlozUqAJRz9sXthOB3V/IfrlBa8T1gocWwequku3gaVBye+nhjShxuXtC6Gn5OifyzHl0lvva29xmer9mz+mtoftwP4qycqWOzSaYggFf+5Xm+XSwsolbonHndEwAxVkAXIpEziuJHzDDJwkVQF4=
+	t=1708948692; cv=none; b=aioGzvykPeRhk6tcxr/xo3JdZGf1BFO+iv1DFANj1rQ+KLjc/tayNQWTAeWI4LNQK6qCkSqvS8tdMTgL4NEVuxQMWVhPYUCoZw5bJA+ztm7sX+RKoNNLy638SG+AOiNhyNi7MHfC4lky/eedTV/LPC4P/PJrHhIiVQRY5fj8/PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708948672; c=relaxed/simple;
-	bh=REpuWPsYJOuAj2YEzPdny5TFtQbhyT34ijcZuqcWDi0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lrr3am1hfOktlHfOFRqFc65tCghQzi9xDpt4fnXF5NslS1642V1t8S2s4TGzYJCFAO6BrDxJ9FYG4Pq+tH1IMBKlGyz3qhegokLujnA7jfqLOuyU2lH2B/foxr+bfCaBTyWFxIuZ8nURbrouZJyw6fnc44w3dk36R2ZbCyblgTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=VqGhCwMT; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=D0Cpl1dRF49bF8jEtTlvGAeloBKS8mPZTSqjERNiUkI=; b=VqGhCwMTOy09jD9FqIdHEICFAP
-	Y5PagkXK2hMIYd6SnSIH/U9aQlTxUxJxMU2d3egO83lxj7sepDCuA00c/fKvSA7e2jMblT+8dh9An
-	F9m/7M0itqVriXErD9Thk1g9dweTUBRT9Btt+aRiUF3fvPTaxBleOV5pcf74y9hL4ZmokLDY0eWJO
-	+0If7KDRSnbayGQ2iCQ2q2D8v/WWVTwjy4pobsdLVYIdyXIMUz+SyRX5F0V+OFmJ8yS8R4OJdnTOV
-	ZFL7yC8q3lo40V7SVun0GHEUAPEdnYdmlvV8TrDT/pyazaE9r7zf/r17/H6357AEIP0YjjCtKg7yv
-	gSBKnS1A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37602)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1reZby-0003Cq-0H;
-	Mon, 26 Feb 2024 11:57:34 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1reZbt-0006PH-St; Mon, 26 Feb 2024 11:57:29 +0000
-Date: Mon, 26 Feb 2024 11:57:29 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: 20240223063608.2605736-1-liuyongqiang13@huawei.com
-Cc: liuyongqiang13@huawei.com, arnd@arndb.de, keescook@chromium.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	m.szyprowski@samsung.com, rppt@linux.ibm.com, sunnanyong@huawei.com,
-	wangkefeng.wang@huawei.com, willy@infradead.org,
-	yanaijie@huawei.com, zhangxiaoxu5@huawei.com
-Subject: Re: [PATCH v2] arm: flush: check if the folio is reserved for
- no-mapping addresses
-Message-ID: <Zdx8qZLyjh4pO+vx@shell.armlinux.org.uk>
-References: <20240223063608.2605736-1-liuyongqiang13@huawei.com>
- <788c8a64-09ed-96fd-9878-ed126b09c683@huawei.com>
+	s=arc-20240116; t=1708948692; c=relaxed/simple;
+	bh=LZ/iy7EvE9b3WFlZVAb1AN+o08sKkPZFvgB5cDWZLkI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=PUv+N9iXh1dqfmbuiiV1M68O6U29il/s0xF6kWY4+YUNwyBon/6xSfm2JcB4gErbbB7cMZVfXWvUclQqzW02XjREoqnMHtU3PmDvLnDU4iykYwLmT/VKubpJq0i49FsyMqlrg4UlX+nEHRXkD7Q6wjh8r+JRYtdz/zxUTwVAYH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=VALUTm+B; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1708948682;
+	bh=LZ/iy7EvE9b3WFlZVAb1AN+o08sKkPZFvgB5cDWZLkI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=VALUTm+BIrGnBsYSAjZrazvciSZiDoQB3MEMlVIqZv7MPtj/uVKiHh/V+jJip7zZk
+	 JvdlWtjV3LdzYI6fJhq+LfwIW+m4713aukDLNh3G8091G0VoV/wFJRfDlVOegTSy6H
+	 KB9wYA8lW12KDJ0dV9OwT+VaqxZE7M46iIUjk+V4=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 3B7C067084;
+	Mon, 26 Feb 2024 06:57:58 -0500 (EST)
+Message-ID: <6bf460d17b9f44326497ffb41e03363b112d6927.camel@xry111.site>
+Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep
+ argument inspection again?
+From: Xi Ruoyao <xry111@xry111.site>
+To: Arnd Bergmann <arnd@arndb.de>, Icenowy Zheng <uwu@icenowy.me>, Huacai
+ Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Adhemerval
+ Zanella <adhemerval.zanella@linaro.org>, Rich Felker <dalias@aerifal.cx>
+Cc: linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>, Kees
+ Cook <keescook@chromium.org>, Xuefeng Li <lixuefeng@loongson.cn>, Jianmin
+ Lv <lvjianmin@loongson.cn>, Xiaotian Wu <wuxiaotian@loongson.cn>, WANG Rui
+ <wangrui@loongson.cn>, Miao Wang <shankerwangmiao@gmail.com>, 
+ "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, Linux-Arch
+ <linux-arch@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>
+Date: Mon, 26 Feb 2024 19:57:56 +0800
+In-Reply-To: <b9fb0de1-bfb9-47a6-9730-325e7641c182@app.fastmail.com>
+References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
+	 <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
+	 <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
+	 <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
+	 <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
+	 <3c396b7c-adec-4762-9584-5824f310bf7b@app.fastmail.com>
+	 <6f7a8e320f3c2bd5e9b704bb8d1f311714cd8644.camel@xry111.site>
+	 <b9fb0de1-bfb9-47a6-9730-325e7641c182@app.fastmail.com>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <788c8a64-09ed-96fd-9878-ed126b09c683@huawei.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Mon, Feb 26, 2024 at 02:38:58PM +0800, Jinjiang Tu wrote:
-> Since some abuses of pfn_valid() have been reported, I check all the use of
-> pfn_valid(), and find some suspicious cases.
+On Mon, 2024-02-26 at 10:20 +0100, Arnd Bergmann wrote:
 
-I do get really tired of kernel interfaces migrating to become something
-different from what they were when code was originally written, and then
-having users of that interface labelled as "suspicious" or an "abuse".
+/* snip */
 
-I don't follow MM stuff, so I can't comment on the rights or wrongs of
-this, but what I understood was that pfn_valid() is there to check that
-for a given PFN, pfn_to_page() would return a valid pointer to a struct
-page. Given that we only have struct page's for memory which the kernel
-is managing, this seems entirely correct.
+>=20
+> > Or maybe we can just introduce a new AT_something to make statx
+> > completely ignore pathname but behave like AT_EMPTY_PATH + "".
+>=20
+> I think this is better than going back to fstat64_time64(), but
+> it's still not great because
+>=20
+> - all the reserved flags on statx() are by definition incompatible
+> =C2=A0 with existing kernels that return -EINVAL for any flag they do
+> =C2=A0 not recognize.
 
-There may be other RAM in the system which is being managed via
-different mechanisms, and because those won't have a struct page
-associated with them, pfn_valid() should be returning false (which
-means memory carved out for e.g. other processors etc) won't be mapped
-cacheable.
+Oops, we are deeming passing undefined flags in "mask" undefined
+behavior but not "flags", thus "wild software" may be relying on EINVAL
+for invalid flags...  We *might* make this new AT_xxx a bit in mask
+instead of flags but it would be very dirty IMO.
 
-Or at least that's how things used to be - because 32-bit Arm's
-pfn_valid() was implemented by checking memblock for memory, and
-stolen memory _was_ removed from memblock.memory (see
-arm_memblock_steal) or quite simply these areas were not passed to
-the kernel as memory.
+> - you still need to convince libc developers to actually use
+> =C2=A0 the flag despite the backwards compatibility problem, either
+> =C2=A0 with a fallback to the current behavior or a version check.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Let me ping some libc developers then...
+
+> Using the NULL path as a fallback would solve the problem with
+> seccomp, but it would not make the normal case any faster.
+
+But "wild software" may be relying on a EFAULT for NULL path too...
+
+/* snip */
+
+> >=20
+> > Oops.=C2=A0 I thought "newstat" should be using 64-bit time but it seem=
+s the
+> > "new" is not what I'd expected...=C2=A0 The "new" actually means "newer=
+ than
+> > Linux 0.9"! :(
+> >=20
+> > Let's not use "new" in future syscall names...
+>=20
+> Right, we definitely can't ever succeed. On some architectures
+> we even had "oldstat" and "stat" before "newstat" and "stat64",
+> and on some architectures we mix them up. E.g. x86_64 has fstat()
+> and fstatat64() with the same structure but doesn't define
+> __NR_newfstat. On mips64, there is a 'newstat' but it has 32-bit
+> timestamps unlike all other 64-bit architectures.
+>=20
+> statx() was intended to solve these problems once and for all,
+> and it appears that we have failed again.
+
+https://xkcd.com/927/ :(
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
