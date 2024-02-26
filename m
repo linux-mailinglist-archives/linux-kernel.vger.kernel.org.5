@@ -1,217 +1,122 @@
-Return-Path: <linux-kernel+bounces-81525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81527-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC312867718
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:47:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1557E86771E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:47:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B57D1F22ABC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:47:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5CC4291856
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC1D1292EE;
-	Mon, 26 Feb 2024 13:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3487212A145;
+	Mon, 26 Feb 2024 13:47:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UCObxW8I"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GsRnmU4w"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703C91AACC;
-	Mon, 26 Feb 2024 13:47:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7F612883D;
+	Mon, 26 Feb 2024 13:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708955220; cv=none; b=uLoEPK8kpl0fEBXcGwUWN9wO463c9f1FbObDb4MbG/5F8nflInsyUX5mvUBvi8EQPW1W/q1G+PhKLgbW8q0P9Zu/UleGfWBNmnUioR4suUzYKxzEdjvySgoo2HRFBdrUEwsxP53qrcC86jbMKQdi8KDSdNkClB2pW9J1KM1qovU=
+	t=1708955232; cv=none; b=YrtKuMYDCAQZt4O432Js41OCYjNulGvKNzXdjQQjJU5QdEf8r208VP973Dg++Xu74yYRAHWQ+GbHm19/Qfs9cIYSPEOal2qu7GwWOL6cHXD3stiWLqxnNNeZ88kSTeLKu8T8gqAb2qVOFCS0pXxSWdQQAYfhqW/2pzzxh2+3JR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708955220; c=relaxed/simple;
-	bh=t8xGgFPpHaBkPG9nrZ91RhMmwokSR1SGGnL7zoAAxxo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pi0jGMDtP773uoe8ZIpyGaXNWf1M2BXaOSkiponW2nT/315KMUsSO/ZmaZohiSBTqMMXGbaKysdzqriuSySNd6kWDNnl0k7LDYIjmR4utKUIVZrvK/ZTcKYLJPc2/EdhJMX3WkSvdrlmo7RReJ6kwh5+D5kUBtVlmwR2aLhMllA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UCObxW8I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D384C433F1;
-	Mon, 26 Feb 2024 13:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708955220;
-	bh=t8xGgFPpHaBkPG9nrZ91RhMmwokSR1SGGnL7zoAAxxo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UCObxW8IhVhB7iFy4s4au6DTqQ4x117qWNCzOLkEL+8NBTwVfPhM7p1Jb/Vk22fQa
-	 iYZ497ovZTNcvVthfLj2G9p8UXAHHJ4hfq0j4Kwu3/5w4jnyE34eiDumoKSL6x0xjz
-	 VTq+6MchiDz/U8iS82/FXxiK8kFlz+Ft5beLOnBm9kPZ1wCV8TEZLZQ2QDVJi/vsB1
-	 DqepAqJbgHbzM6S7i5iWgx+YR4OS2ltZRcl65P3tTePZp3zliiyrk9zAlRi3hhPORd
-	 QqwsCPKoz5Ifxq7fTf3fCo1uBZRQHs9lQGqXp2BFBHzgb0l+GgkZ36Y50UJ70ZVeQ+
-	 oTpragcWja96g==
-Date: Mon, 26 Feb 2024 14:46:53 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Xi Ruoyao <xry111@xry111.site>, Icenowy Zheng <uwu@icenowy.me>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, linux-api@vger.kernel.org, 
-	Kees Cook <keescook@chromium.org>, Xuefeng Li <lixuefeng@loongson.cn>, 
-	Jianmin Lv <lvjianmin@loongson.cn>, Xiaotian Wu <wuxiaotian@loongson.cn>, 
-	WANG Rui <wangrui@loongson.cn>, Miao Wang <shankerwangmiao@gmail.com>, 
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, Linux-Arch <linux-arch@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep argument
- inspection again?
-Message-ID: <20240226-halbwahrheiten-hoffnung-a7968115c795@brauner>
-References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
- <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
- <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
- <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
- <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
- <3c396b7c-adec-4762-9584-5824f310bf7b@app.fastmail.com>
- <6f7a8e320f3c2bd5e9b704bb8d1f311714cd8644.camel@xry111.site>
- <b9fb0de1-bfb9-47a6-9730-325e7641c182@app.fastmail.com>
- <20240226-graustufen-hinsehen-6c578a744806@brauner>
+	s=arc-20240116; t=1708955232; c=relaxed/simple;
+	bh=emmNAZR0TiWv4VK6jP9M06m7OTVL5Q43QTl22ARJLOU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZkJIbLwj6nnT+arUHamK81NACtAAIJPEOpKgqCzWXL6FsQpcxK2xAeYX88NOpZCeiL4hqW6OL9YhEMhsMADle+pForufH3FGjcHDy7ZeelKEYbpvmlYflVPAG0qIYwsjyic4fewYpSi1Iq9pNIA/kE6znnnA69wDcU31BH4X3MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GsRnmU4w; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51197ca63f5so4659160e87.1;
+        Mon, 26 Feb 2024 05:47:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708955229; x=1709560029; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gSizykDxdC8x5yUdc/x3m/4mR390jcmCw+184ntuZ5s=;
+        b=GsRnmU4wqHZE87CalYzriwPOiMhj3fTw218ng1RwhX0f1XpAaGRdevLJkl/VsnxQoz
+         6Qt4WfkVZ7cY5qeVnDVT+/Yh7afjTLheuSJZ1pBkTex4ssUtDiyoWZJy69VUgJjyEOnI
+         /moblCFM6cNkrzPbmX1h0M7Czc2xDc2VJcZprhMJzP2QUSVEKitOB0JYlhH9w3SYBFg4
+         x/HXXHY881J8EXzd3D7bfif7eJbEHKSmwYoNex0Le2esije0qgj9k6OMi6Ylo9RCxdqb
+         NK0YpR96UIKRAtB1UXdbKpGbpKypWyIa3Sqywm5MLijHdLc3/7I3F22c9Ui+eV6fYvnU
+         vR0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708955229; x=1709560029;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gSizykDxdC8x5yUdc/x3m/4mR390jcmCw+184ntuZ5s=;
+        b=oupy5l7JxzS8bc2e7tgr1fCFRpvbsDhiKWqymJp/bN9L7Y2WZuD07acKiuN9028ebg
+         unmrQqMdsqi3gqyV0UWRueRyFavYaLHlO1Smg8tI46U9EEyzuuxZ8YoNDAP8ucXeTCxx
+         /B2Y1P1q5a1jWO2LQXxfMfgbxJ/1Yn96NOLx4KlxlglOh7JjVHom1dAvUw304U7DJ8JX
+         J6wwGhl12fsnKu9qTxVYudnU9361J0dwQUcQByiez09Jrz4APVI254z/kqEGqMr+bwoO
+         ycoVnt+9f1jQU6+qjDgUZZg+j3wB58eL/9MvU9M4l/1Q3X4lhP6YV2uOtxxmJcPnltjd
+         V+BQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVBuL723WFMHCR/sVLnB7J69M64n3v8Nz5pmi8LPNgGIjhV7ah8iZ3LB4XWQWgF+uMs78AaCSc2jiGwxjBdeq1/LhzROzRsFPOOhn8w
+X-Gm-Message-State: AOJu0YxNgIYizyMqWE8MuKJPAAp5LvrTZaPBFxzqChPebtJWi97N1Eyg
+	Y6o6QUrEMM75Yp15xJXyhC/pZoL6MqcDmhR7fbB6HdPmVlv0hz4i
+X-Google-Smtp-Source: AGHT+IHf9hAovCwUz9WxnDcvUvW4s5oVieA8gxvLqkp3SqYdyddY8vdPB/cL5mzw+tUovt4IL2keDg==
+X-Received: by 2002:ac2:4c2b:0:b0:512:bd81:80e4 with SMTP id u11-20020ac24c2b000000b00512bd8180e4mr4195304lfq.44.1708955228714;
+        Mon, 26 Feb 2024 05:47:08 -0800 (PST)
+Received: from localhost.localdomain (IN-84-15-189-254.bitemobile.lt. [84.15.189.254])
+        by smtp.gmail.com with ESMTPSA id k24-20020a17090666d800b00a3d00616e1fsm2450012ejp.193.2024.02.26.05.47.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 05:47:08 -0800 (PST)
+From: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+To: fabio.estevam@nxp.com,
+	linus.walleij@linaro.org,
+	brgl@bgdev.pl,
+	u.kleine-koenig@pengutronix.de,
+	andriy.shevchenko@linux.intel.com
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Arturas Moskvinas <arturas.moskvinas@gmail.com>
+Subject: [PATCH] gpio: 74x164: Enable output pins after registers are reset
+Date: Mon, 26 Feb 2024 15:46:56 +0200
+Message-ID: <20240226134656.608559-1-arturas.moskvinas@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240226-graustufen-hinsehen-6c578a744806@brauner>
 
-On Mon, Feb 26, 2024 at 02:32:09PM +0100, Christian Brauner wrote:
-> On Mon, Feb 26, 2024 at 10:20:23AM +0100, Arnd Bergmann wrote:
-> > On Mon, Feb 26, 2024, at 08:09, Xi Ruoyao wrote:
-> > > On Mon, 2024-02-26 at 07:56 +0100, Arnd Bergmann wrote:
-> > >> On Mon, Feb 26, 2024, at 07:03, Icenowy Zheng wrote:
-> > >> > 在 2024-02-25星期日的 15:32 +0800，Xi Ruoyao写道：
-> > >> > > On Sun, 2024-02-25 at 14:51 +0800, Icenowy Zheng wrote:
-> > >> > > > My idea is this problem needs syscalls to be designed with deep
-> > >> > > > argument inspection in mind; syscalls before this should be
-> > >> > > > considered
-> > >> > > > as historical error and get fixed by resotring old syscalls.
-> > >> > > 
-> > >> > > I'd not consider fstat an error as using statx for fstat has a
-> > >> > > performance impact (severe for some workflows), and Linus has
-> > >> > > concluded
-> > >> > 
-> > >> > Sorry for clearance, I mean statx is an error in ABI design, not fstat.
-> > >
-> > > I'm wondering why we decided to use AT_EMPTY_PATH/"" instead of
-> > > "AT_NULL_PATH"/nullptr in the first place?
-> > 
-> > Not sure, but it's hard to change now since the libc
-> > implementation won't easily know whether using the NULL
-> > path is safe on a given kernel. It could check the kernel
-> > version number, but that adds another bit of complexity in
-> > the fast path and doesn't work on old kernels with the
-> > feature backported.
-> > 
-> > > But it's not irrational to pass a path to syscall, as long as we still
-> > > have the concept of file system (maybe in 2371 or some year we'll use a
-> > > 128-bit UUID instead of path).
-> > >
-> > >> The problem I see with the 'use use fstat' approach is that this
-> > >> does not work on 32-bit architectures, unless we define a new
-> > >> fstatat64_time64() syscall, which is one of the things that statx()
-> > >
-> > > "fstat64_time64".  Using statx for fstatat should be just fine.
-> > 
-> > Right. It does feel wrong to have only an fstat() variant but not
-> > fstatat() if we go there.
-> > 
-> > > Or maybe we can just introduce a new AT_something to make statx
-> > > completely ignore pathname but behave like AT_EMPTY_PATH + "".
-> > 
-> > I think this is better than going back to fstat64_time64(), but
-> > it's still not great because
-> > 
-> > - all the reserved flags on statx() are by definition incompatible
-> >   with existing kernels that return -EINVAL for any flag they do
-> >   not recognize.
-> > 
-> > - you still need to convince libc developers to actually use
-> >   the flag despite the backwards compatibility problem, either
-> >   with a fallback to the current behavior or a version check.
-> > 
-> > Using the NULL path as a fallback would solve the problem with
-> > seccomp, but it would not make the normal case any faster.
-> > 
-> > >> was trying to avoid.
-> > >
-> > > Oops.  I thought "newstat" should be using 64-bit time but it seems the
-> > > "new" is not what I'd expected...  The "new" actually means "newer than
-> > > Linux 0.9"! :(
-> > >
-> > > Let's not use "new" in future syscall names...
-> > 
-> > Right, we definitely can't ever succeed. On some architectures
-> > we even had "oldstat" and "stat" before "newstat" and "stat64",
-> > and on some architectures we mix them up. E.g. x86_64 has fstat()
-> > and fstatat64() with the same structure but doesn't define
-> > __NR_newfstat. On mips64, there is a 'newstat' but it has 32-bit
-> > timestamps unlike all other 64-bit architectures.
-> > 
-> > statx() was intended to solve these problems once and for all,
-> > and it appears that we have failed again.
-> 
-> New apis don't invalidate old apis necessarily. That's just not going to
-> work in an age where you have containerized workloads.
-> 
-> statx() is just the beginning of this. A container may have aritrary
-> seccomp profiles that return ENOSYS or even EPERM for whatever reason
-> for any new api that exists. So not implementing fstat() might already
-> break container workloads.
-> 
-> Another example: You can't just skip on implementing mount() and only
-> implement the new mount api for example. Because tools that look for api
-> simplicity and don't need complex setup will _always_ continue to use
-> mount() and have a right to do so.
-> 
-> And fwiw, mount() isn't fully inspectable by seccomp since forever. The
-> list goes on and on.
-> 
-> But let's look at the original mail. Why are they denying statx() and
-> what's that claim about it not being able to be rewritten to something
-> safe? Looking at:
-> 
-> intptr_t SIGSYSFstatatHandler(const struct arch_seccomp_data& args,
->                               void* fs_denied_errno) {
->   if (args.nr == __NR_fstatat_default) {
->     if (*reinterpret_cast<const char*>(args.args[1]) == '\0' &&
->         args.args[3] == static_cast<uint64_t>(AT_EMPTY_PATH)) {
->       return syscall(__NR_fstat_default, static_cast<int>(args.args[0]),
->                      reinterpret_cast<default_stat_struct*>(args.args[2]));
->     }
->     return -reinterpret_cast<intptr_t>(fs_denied_errno);
->   }
-> 
-> What this does it to rewrite fstatat() to fstat() if it was made with
-> AT_EMPTY_PATH and the path argument was "". That is easily doable for
-> statx() because it has the exact same AT_EMPTY_PATH semantics that
-> fstatat() has.
-> 
-> Plus, they can even filter on mask and rewrite that to something that
-> they think is safe. For example, STATX_BASIC_STATS which is equivalent
-> to what any fstat() call returns. So it's pretty difficult to understand
-> what their actual gripe with statx() is.
-> 
-> It can't be that statx() passes a struct because fstatat() and fstat()
-> do that too. So what exactly is that problem there?
-> 
-> What this tells me without knowing the exact reason is that they thought
-> "Oh, if we just return ENOSYS then the workload or glibc will just
-> always be able to fallback to fstat() or fstatat()". Which ultimately is
-> the exact same thing that containers often assume.
-> 
-> So really, just skipping on various system calls isn't going to work.
-> You can't just implement new system calls and forget about the rest
-> unless you know exactly what workloads your architecure will run on.
-> 
-> Please implement fstat() or fstatat() and stop inventing hacks for
-> statx() to make weird sandboxing rules work, please.
+Move output enabling after chip registers are cleared.
 
-And fwiw, if they rewrite fstatat() to fstat() then they must be
-worrying about another thread racing and putting something in the second
-argument (the path argument) after they have inspected the system call
-arguments but before the system call continue.
+Signed-off-by: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+---
+ drivers/gpio/gpio-74x164.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-But if that is their worry then a new flag to statx() won't help at all.
-Because then they really want to use fstat(). IOW, one would have to add
-fstatx() which brings us back to square one. I'm mostly going by that
-code snippet of course.
+diff --git a/drivers/gpio/gpio-74x164.c b/drivers/gpio/gpio-74x164.c
+index e00c33310517..753e7be039e4 100644
+--- a/drivers/gpio/gpio-74x164.c
++++ b/drivers/gpio/gpio-74x164.c
+@@ -127,8 +127,6 @@ static int gen_74x164_probe(struct spi_device *spi)
+ 	if (IS_ERR(chip->gpiod_oe))
+ 		return PTR_ERR(chip->gpiod_oe);
+ 
+-	gpiod_set_value_cansleep(chip->gpiod_oe, 1);
+-
+ 	spi_set_drvdata(spi, chip);
+ 
+ 	chip->gpio_chip.label = spi->modalias;
+@@ -153,6 +151,8 @@ static int gen_74x164_probe(struct spi_device *spi)
+ 		goto exit_destroy;
+ 	}
+ 
++	gpiod_set_value_cansleep(chip->gpiod_oe, 1);
++
+ 	ret = gpiochip_add_data(&chip->gpio_chip, chip);
+ 	if (!ret)
+ 		return 0;
+
+base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+-- 
+2.43.2
+
 
