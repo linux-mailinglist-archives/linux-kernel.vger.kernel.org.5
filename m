@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-80582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36ED48669EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:13:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F618669F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2B14B20D03
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:13:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 065F21F22565
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7651BC3E;
-	Mon, 26 Feb 2024 06:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B021BC4C;
+	Mon, 26 Feb 2024 06:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kp9m4xuY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HdOIx5Lz"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FBC1BF28
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 942301B7E5;
+	Mon, 26 Feb 2024 06:15:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708928007; cv=none; b=G+PqegsLE+xih+ZhpA5Mo8kVp8Ju4f4Lu7yclM0WH175XXznxPAp7BG5WjjwwHJf/8Zx7b6jjfAHI3RpF8Uy9R48SQrKTFMwfyH6AVSJRQaJLjaVF2oeT289mnS4IdzapPcMAln5hv7oZ2WiCni6Pz66kzfvK4cDouKzhBmQub0=
+	t=1708928125; cv=none; b=QbOOoAUL5IXX+vxWGh9wPKivFUoVoPXdGdxoZZKmclIyHHFxoFk66Ci9jQeavQxnWdgbPS1CBt1F+zMEmF494+s1oplljDxj7tYqOrXnOqxO0e7QZ0iPAJWvl4Rxo6Mijo8uaeF6Za7uTgOstSrCzt1LO4U3DSnMYVQEYHGs3Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708928007; c=relaxed/simple;
-	bh=L85jrdnuvWMYNRaKJflVjhzs3F+SyK8Kz4ffE7SFr9w=;
+	s=arc-20240116; t=1708928125; c=relaxed/simple;
+	bh=HQrmzzWDLhjubSxo7AflYgWxHtE1KBZ4wM94UIcsutI=;
 	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZnfeI34EO4EprjlH1/1YaZFTsDRls+nG/3t3VBXOf3fr+loIfxFnb1Uql5M4eiPNLI3nZXV8h35B1pM/mQ00UoN/Sp65H9cq/5W12Bt9Rsbi+ncoSewcXBdsFYe0h45g4SOk4QJZtQRun+Uguv3HvHWQhJiZgOQyK59OuvpE2LI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kp9m4xuY; arc=none smtp.client-ip=192.198.163.16
+	 In-Reply-To:Content-Type; b=JZoP/csszWS5KyZ5jrVEfZXVUbHVwKVqYPAPLM8oAN1e63i5iNXFO+ij/vKEF2pzUB5pO0uzn/MbXrFv5BUnXrVyjrMCe//RP2VEptiFqXgXyfc36nkDiWN6mB/f53qEmQ9zcEabz/lEr/5/LLlVRSTJTNilMCefHYU6e24J7Vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HdOIx5Lz; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708928006; x=1740464006;
+  t=1708928124; x=1740464124;
   h=message-id:date:mime-version:cc:subject:to:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=L85jrdnuvWMYNRaKJflVjhzs3F+SyK8Kz4ffE7SFr9w=;
-  b=Kp9m4xuYdkrg0/IDNA30iempjSDeTWAN4LiyJan9OEYbcG8DzJrOXJRe
-   owsQqNt/rW08GfKLHccGWfw6u7R6cwJiPJXAKeLPrR03TyK1xd7c/+VmI
-   KTvsIHgXk9HVZB+IH5Gu30kyRhrLNAokuI4XsykY7+FQR6u7faLq10+rN
-   BfCnGkoHE+iAcw/DMTfMZC16iFD1wAoPMbgwYYXexhW2fnugDWPlfo01k
-   EjgHiq/pNBaBkVgh5tXfpn/Gr752SLLcmT/7592o6fizIpNOQIfgnmGjc
-   mWSGEWLxzI3Ofifvaf6ywK+S5ZnHg34J2gCEkOpjyw9W+RKBRPT+/Qf+d
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3738230"
+  bh=HQrmzzWDLhjubSxo7AflYgWxHtE1KBZ4wM94UIcsutI=;
+  b=HdOIx5Lzp9s7aqFX4wQzozw2eFIhPxCiPKoAqZBoKOWL0Z4h50Cz54bT
+   HLFozFWbKU71k3JywoISJO1PeP/oprs0ufLVTEMOuU4MxMpvVa1zxTgod
+   mUn2OKf1oKOjWbkRq5i0o+FYvi/wvSiEZJxa03n7OwKIhrXBTBuTlX4Uq
+   u39Z70cvowFW/x6o29V8levyX+LjuYASOsW0PhujRmm9flvYvW6hEo9lU
+   cpZBnApuFSPOpgfO/tJcaIy2Q4puEH2ctgkfwDmIihJ91GVfbiAjI38nt
+   cZ1MyidEMvNKyqavVe0tLWTnBYrs1oHA4ne5z/B6xCafmL7qCD7ZcQG33
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3738339"
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3738230"
+   d="scan'208";a="3738339"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 22:13:26 -0800
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 22:15:23 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="11129742"
+   d="scan'208";a="11130153"
 Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa005.fm.intel.com with ESMTP; 25 Feb 2024 22:13:22 -0800
-Message-ID: <b2dac6a4-3916-4a67-b7d9-8f69e5b0eb78@linux.intel.com>
-Date: Mon, 26 Feb 2024 14:07:28 +0800
+  by fmviesa005.fm.intel.com with ESMTP; 25 Feb 2024 22:15:20 -0800
+Message-ID: <1e3b71a7-1515-4533-a102-34509f8b2f01@linux.intel.com>
+Date: Mon, 26 Feb 2024 14:09:26 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,43 +62,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Jani Nikula <jani.nikula@linux.intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, iommu@lists.linux.dev,
- intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] iommu/vt-d: Remove INTEL_IOMMU_BROKEN_GFX_WA
+Cc: baolu.lu@linux.intel.com, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] iommu/vt-d: Use kcalloc() instead of kzalloc()
 Content-Language: en-US
-To: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Kevin Tian <kevin.tian@intel.com>
-References: <20240130060823.57990-1-baolu.lu@linux.intel.com>
+To: Erick Archer <erick.archer@gmx.com>, David Woodhouse
+ <dwmw2@infradead.org>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Kees Cook <keescook@chromium.org>
+References: <20240211175143.9229-1-erick.archer@gmx.com>
 From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240130060823.57990-1-baolu.lu@linux.intel.com>
+In-Reply-To: <20240211175143.9229-1-erick.archer@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 1/30/24 2:08 PM, Lu Baolu wrote:
-> Commit 62edf5dc4a524 ("intel-iommu: Restore DMAR_BROKEN_GFX_WA option for
-> broken graphics drivers") was introduced 24 years ago as a temporary
-> workaround for graphics drivers that used physical addresses for DMA and
-> avoided DMA APIs. This workaround was disabled by default.
+On 2/12/24 1:51 AM, Erick Archer wrote:
+> This is an effort to get rid of all multiplications from allocation
+> functions in order to prevent integer overflows [1].
 > 
-> As 24 years have passed, it is expected that graphics driver developers
-> have migrated their drivers to use kernel DMA APIs. Therefore, this
-> workaround is no longer required and could been removed.
+> Here the multiplication is obviously safe because DMAR_LATENCY_NUM
+> is the number of latency types defined in the "latency_type" enum.
 > 
-> The Intel iommu driver also provides a "igfx_off" option to turn off
-> the DAM translation for the graphic dedicated IOMMU. Hence, there is
-> really no good reason to keep this config option.
+> enum latency_type {
+> 	DMAR_LATENCY_INV_IOTLB = 0,
+> 	DMAR_LATENCY_INV_DEVTLB,
+> 	DMAR_LATENCY_INV_IEC,
+> 	DMAR_LATENCY_PRQ,
+> 	DMAR_LATENCY_NUM
+> };
 > 
-> Suggested-by: Kevin Tian<kevin.tian@intel.com>
-> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
-> Reviewed-by: Kevin Tian<kevin.tian@intel.com>
+> However, using kcalloc() is more appropriate [2] and improves
+> readability. This patch has no effect on runtime behavior.
+> 
+> Link:https://github.com/KSPP/linux/issues/162  [1]
+> Link:https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments  [2]
+> Signed-off-by: Erick Archer<erick.archer@gmx.com>
 > ---
->   drivers/iommu/intel/iommu.c |  4 ----
->   drivers/iommu/intel/Kconfig | 11 -----------
->   2 files changed, 15 deletions(-)
+>   drivers/iommu/intel/perf.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 
 I have queued this patch for v6.9.
 
