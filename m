@@ -1,107 +1,83 @@
-Return-Path: <linux-kernel+bounces-82349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91956868319
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:31:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F51B86831F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:33:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DA5828AA95
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:31:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82FE3B240DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFDF513175B;
-	Mon, 26 Feb 2024 21:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74831131E53;
+	Mon, 26 Feb 2024 21:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="vZsFFDfr"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QaZq903s"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C797F130AEA
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 21:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A63B4131E36;
+	Mon, 26 Feb 2024 21:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708983102; cv=none; b=PlqSZL3ZOcsr6QZRaebQVYVAUpLpKEttpQma5P4zPAN2zBgoIeiQKkvDQFmOv1qn/wIvESD/pWv8ED+ThrjrmmnBnJ4wEBto6bwAPlmSKCwMFx3lWAcK3xJaiATL+ubGo8iyOTk/zj1cZ53ct368p0qZ/hS9SPrNE8ssGo9POng=
+	t=1708983168; cv=none; b=aiEuCg3QPcV+jLes3SJoO60wkV2DYGbMmFLJqsgkCrJL8nzwz1QqMGdHvT16ZdHOytGqi9wiFS5TGU3tQOYs3vtaAYb8zr5fbhU9vo9v5xitOlRxXEIDXgAJGVR8bBkyg64y74xazQk5gKOoMiLVhpLjiwbrBSYgP646iqVznbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708983102; c=relaxed/simple;
-	bh=Nw8AqS3nu8azYAdACy/sJRukGGhmKt9W7YfvtYGs9vU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=UmGpopW6o6mJYlHdZilSeXN0Itm/XWG+t9X/QLxF782c7WPSeQSIBuZS1LCuuQEFoWJqS3iMcZOVpr8pP8SF3uNZudPxxhf2xD/XYjSeX0hZq94pBcuD3y1Rs3AEtyHo0bEqYXawGl4I7eQRBYK5G1XPv0eekBwZByiDf593H0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=vZsFFDfr; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708983099;
-	bh=Nw8AqS3nu8azYAdACy/sJRukGGhmKt9W7YfvtYGs9vU=;
-	h=From:Date:Subject:To:Cc:From;
-	b=vZsFFDfr3tqoQUbJYo1Y8oY/iBf7c396i8DkxKlJL/PFsU46fj1tdhbNK1gXRpxkl
-	 maRB5srslRsUlKsXw/4u7xpVkYBMtpAHOWaOpX30ZlObwjG1tYCI06GnVWJUTzitnj
-	 Z+y4NU7KVOuKj8W9F7SQUPobZA1+SC2dIgPGM7Gzm3g65OMLrD6amaRTpudMnWDJxo
-	 DU4sluuy61XFb/mRdFEEQaS88Zp5EBTIL5rtS8M6BqhWaXS22RR6MMk01LyPzeYEzy
-	 Gj52FWF4t7ylzPwOesB1SJWp/QVmC+vMsqqhQ/Fi/cI5MFinsZqUj7nuB/nvXupaPp
-	 C+cPEHvohW7Zg==
-Received: from [192.168.1.151] (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 610EB3782075;
-	Mon, 26 Feb 2024 21:31:37 +0000 (UTC)
-From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Mon, 26 Feb 2024 16:31:33 -0500
-Subject: [PATCH] soc: mediatek: cmdq: Don't log an error when
- gce-client-reg is not found
+	s=arc-20240116; t=1708983168; c=relaxed/simple;
+	bh=QgTMkNbqZ+DJ0W36PoSEg8EZurQhcpqm5UWGM61AQWU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nh/JNN7mbSyWckp/BCgv8bRwO1ool7C8BRa3Mapsig/9CzQPgXzfgAMajvgZKSjh4A0zhYLQ7PwU3Zc+DnjI+pC7JRcKmSRKkcCZAdFMBvszThTNT/o6mMZDmsM8fagL6ZZe+Emp/52oy9+Pj6f+C/4OA6qupMHvvw5TSkz41n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QaZq903s; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31153C43141;
+	Mon, 26 Feb 2024 21:32:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708983168;
+	bh=QgTMkNbqZ+DJ0W36PoSEg8EZurQhcpqm5UWGM61AQWU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QaZq903sbcEdcrLewBaquhnpmlrqWVCuk9eztXybhDceDRAmnwXCCZs9ZyUeM4GFa
+	 carpoz6l0FrWqypNIDljf3v2vpt+0PzDrOeMz/51w72PfUqrJO1jW7JnmPVMGN8mXo
+	 5msIEOrp8qpNdrrnq/dZL509pbHA6haljqqXXD7a326N1Ncp7Dnww61QNfFtDvcUxh
+	 KC9Q3wDk51FDVeb+Zc+WlziUXPrHhooPSfEY+gSmkfezA8LHuD4e7k86hFa4rPlHK5
+	 /WHaHLw5aVITEG0nx+mU7iLoDCiwlSbHLu+/6sUnlPkJj9xCAnaZ9hH/mFoFYa1PhR
+	 +wXb/6X/f7YTA==
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d23d301452so50135071fa.1;
+        Mon, 26 Feb 2024 13:32:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVTA9MEXxgvpux4NyJg2S6QsgYJrG1Q2n0YRrog8yNHAJgx2mMrv9UmmpVFzL4ew9od4El/ZNccWctCvSq9x3lf9m8KFG2XQu97OeiatU10ApXTS+/nL+um5zkUeJrsaBcEmxVfbqy8yQ==
+X-Gm-Message-State: AOJu0Yz8+IiyC5wFiWpr//SN+F/wd7rFuEfH7LvabfTl4kq5iSggiU65
+	Nck5g1NEyGM8aWY9kn0Wko/HK2DSlMw4WmSf5jplw14LbiHPP3qP3vTs9TjhKPid20CvPhwP9Nr
+	y4QN4gXcXwtTR+ccPOikax2sk6Ag=
+X-Google-Smtp-Source: AGHT+IGJPETZdmWcv1JcMtiZcXDLQv9UNuQ6Q6W5+SuFDNMnsgjclOHgfStps+kqDAwzcB+ESoPgFRoAKA3M3BbOXpM=
+X-Received: by 2002:ac2:4c49:0:b0:512:e704:44bc with SMTP id
+ o9-20020ac24c49000000b00512e70444bcmr6524321lfk.23.1708983166391; Mon, 26 Feb
+ 2024 13:32:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240226-gce-client-reg-log-dbg-v1-1-f0fff97c30c7@collabora.com>
-X-B4-Tracking: v=1; b=H4sIADQD3WUC/x3MQQqDMBBG4avIrB1Io9XWq4iLmPwdBySWRKQg3
- t3Q5bd476SMpMg0VCclHJp1iwWPuiK/uChgDcVkjW2NtR2LB/tVEXdOEF434TALPx3eXdM780K
- gEn8TPvr7j8fpum4s7kuzaAAAAA==
-To: Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: kernel@collabora.com, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-X-Mailer: b4 0.13.0
+References: <20240226031444.3606764-1-linan666@huaweicloud.com>
+In-Reply-To: <20240226031444.3606764-1-linan666@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 26 Feb 2024 13:32:34 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7meDZA26xEZAEZ6tFrh0FweA_zJXrXKh+pm-5S5qMQ8A@mail.gmail.com>
+Message-ID: <CAPhsuW7meDZA26xEZAEZ6tFrh0FweA_zJXrXKh+pm-5S5qMQ8A@mail.gmail.com>
+Subject: Re: [PATCH v7 0/9] bugfix of MD_CLOSING and clean up md_ioctl()
+To: linan666@huaweicloud.com
+Cc: shli@fb.com, neilb@suse.com, mariusz.tkaczyk@linux.intel.com, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
+	yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Most of the callers to this function do not require CMDQ support, it is
-optional, so the missing property shouldn't cause an error message.
-Furthermore, the callers that do require CMDQ support already log at the
-error level when an error is returned.
+On Sun, Feb 25, 2024 at 7:20=E2=80=AFPM <linan666@huaweicloud.com> wrote:
+>
+> From: Li Nan <linan122@huawei.com>
+>
+> Changes in v7:
+>  - adapt to md-6.9 branch.
 
-Change the log message in this helper to be printed at the debug level
-instead.
+LGTM. Applied to md-6.9 branch. Thanks!
 
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
----
- drivers/soc/mediatek/mtk-cmdq-helper.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
-index b0cd071c4719..2130ff3aac9e 100644
---- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-+++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-@@ -55,7 +55,7 @@ int cmdq_dev_get_client_reg(struct device *dev,
- 					       "mediatek,gce-client-reg",
- 					       3, idx, &spec);
- 	if (err < 0) {
--		dev_err(dev,
-+		dev_dbg(dev,
- 			"error %d can't parse gce-client-reg property (%d)",
- 			err, idx);
- 
-
----
-base-commit: 41913bcddc83b131649ee8ff0d9ff29e01731398
-change-id: 20240226-gce-client-reg-log-dbg-5ae9637a08ed
-
-Best regards,
--- 
-Nícolas F. R. A. Prado <nfraprado@collabora.com>
-
+Song
 
