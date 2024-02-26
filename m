@@ -1,104 +1,81 @@
-Return-Path: <linux-kernel+bounces-81214-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14328867220
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:53:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3A6B86721C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:53:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C19D82903C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:53:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4FF51C24E8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06BF54DA1A;
-	Mon, 26 Feb 2024 10:49:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455814CB4B;
+	Mon, 26 Feb 2024 10:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="Rd4/QsRv"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="i8S0YQKG"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762A01CA8A
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D910A1BC56
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708944572; cv=none; b=fs0g1zQ0WabbJUXn4mz99IAN/CCXdyyH0UJFpNTKkDPAzBq8Rb+D8lGnt8X8h+iVRMLQxyt6r+TUv/EY8bz3nhEJI0Sh2M8RB2tXYh4fUZdp1XDAMcoavVxHBJTZanwVE/hIf1h0XxgwvrGREjbgWZswx9mCsVKm9fXyBDKjHDY=
+	t=1708944569; cv=none; b=oIcf5x12DEg792vqVvGEFyZIeKhl4+HscuLV36WkVSKjlbFwMmP49rOGit0TNDK481TQmjsEQ+yRjd5NrcY5w1FuTp/u6x30oXkviaf7OWni88hfjl1FFifW0uHg3JE7URAe70e8hCwVvwBOEX2CzcAUck/ryUD5jNcdZ53vewI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708944572; c=relaxed/simple;
-	bh=/oqHh0HNdPVucXXMMwm3P4MsoTj6ZRb447x7UxS2+L4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=u9ZHPevrCfAccqBjLeAlrPzXqR6QmXHCGGJo7l1cT3BObywGTjmwLcn65J/MKP44Y+lS9ZXTTPK3JRHr86+sQZ07ErpsRU+XMnpgsaRiWVcQFLgEs01g91mqYSGTVaRBLUCoYXhCG1f5u03vGZVkk758T/+Ixjm2CDE8lWx1rAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=Rd4/QsRv; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1708944565;
-	bh=Cn2xDNXWkCC0F1GWz1ZczujdAI4K+h1xeT2o4u1IWRk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=Rd4/QsRvWBtrdProZoplXO/fbUiLEUJKHTsbbyYxAegHsyDyVD7+xOv4qwSpsqTEb
-	 1LeCy3bDWRmPoLx/BSPpeeLFYwxmPrxo2+tgzNffX6BqObbGWscmyG6hS5U/n9g+8c
-	 RRvUElATM4M5/UY+ue1FbbBWOLE+tsez1dHqcacQQPHgcdrHvw2TgJPBFfeSvUYBkl
-	 XWVh/JS8VtyI1h8Tx4Su9uCJ5gLXoiYgCDxNUzdXMWCFJE9oiIMMVJZEU3y71/tOzM
-	 atNcg08onRU/BEuP3mp3DUpFaODQ6jTacU6m4Ydwpn61Z019BmQUE7xUdyW5VNwubY
-	 Fgt/1Z+fOMbDg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tjy6Y2gCnz4wcQ;
-	Mon, 26 Feb 2024 21:49:24 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Kunwu Chan <chentao@kylinos.cn>, npiggin@gmail.com,
- christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
- naveen.n.rao@linux.ibm.com
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Kunwu Chan
- <chentao@kylinos.cn>
-Subject: Re: [PATCH] powerpc/mm: Code cleanup for __hash_page_thp
-In-Reply-To: <20240125092624.537564-1-chentao@kylinos.cn>
-References: <20240125092624.537564-1-chentao@kylinos.cn>
-Date: Mon, 26 Feb 2024 21:49:23 +1100
-Message-ID: <87h6hva4b0.fsf@mail.lhotse>
+	s=arc-20240116; t=1708944569; c=relaxed/simple;
+	bh=eLfyJG12kaItxg13e18RHjrrXXaXp5DlEPZTXUXx6GE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j3tbMiLMPu0VicWOceHEXVqF29W4j9HMn1LAYZ/35mYJ8dcbFQhhLyZsqdwjB1vBa+kjRgx/HhZGOD4ywCPTRS1drDNYI2XQDEE++wGgZhvSwPUSrkfEIjrktTFg17+RoYesp/3586QeH4iWeO/nenR2+LiDzWfqAX7y4yU76m4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=i8S0YQKG; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=f4MCPZEvnFdEIt7LHCyEa+ziE6doF9XD3m7PYs+EDEg=; b=i8S0YQKG+fw1xbIKZetnZ2jdsn
+	HOE9nqzyIxHTYctCFe1eOZsokSasqyFkIfrYrJOWX/yz+JuTpvZRYuoGE2UjqKV7VtMQJlcJDKsWH
+	I1kLsyvi2gATgRRXV/Wyd/Uw74ILdb1kf1OEOP8vJavSFqoUVEihgYceLuXgUef5+t7fGmwOTZOLZ
+	FwPTTiWJ79j8hdgmIf4d1RnJKYovN5QotsPoGAtkr/CYwU5KvdCQEIf+d87rTkSXT3f9N7iHIfBAT
+	OPRD8WIoN/d70oYmyeLWpW1ndu7g0CnSUQSdzFSbr6Nk5ZuIXrYfOP2xnYwU6lc7D4P0Nh/U6w6pp
+	JDKJhCzQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1reYY1-00000000Bci-1osE;
+	Mon, 26 Feb 2024 10:49:25 +0000
+Date: Mon, 26 Feb 2024 02:49:25 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Chengming Zhou <chengming.zhou@linux.dev>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-kernel@vger.kernel.org,
+	vbabka@suse.cz, roman.gushchin@linux.dev,
+	Xiongwei.Song@windriver.com,
+	Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH] freevxfs: remove SLAB_MEM_SPREAD flag usage
+Message-ID: <ZdxstVnClJAFQl6h@infradead.org>
+References: <20240224134835.829506-1-chengming.zhou@linux.dev>
+ <ZdxiqJZY2qSRVvEU@infradead.org>
+ <e5709d61-18cf-4c6e-89b0-9615296c645a@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5709d61-18cf-4c6e-89b0-9615296c645a@linux.dev>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Kunwu Chan <chentao@kylinos.cn> writes:
-> This part was commented from commit 6d492ecc6489
-> ("powerpc/THP: Add code to handle HPTE faults for hugepages")
-> in about 11 years before.
->
-> If there are no plans to enable this part code in the future,
-> we can remove this dead code.
+On Mon, Feb 26, 2024 at 06:24:32PM +0800, Chengming Zhou wrote:
+> On 2024/2/26 18:06, Christoph Hellwig wrote:
+> > Please just do a scripted removal after next -rc1 instead of spamming
+> > everyone..
+> > 
+> Do you mean put all diffs into a single patch, send it to all people?
+> That is also a choice if it's preferable. Should it will go through
+> the slab tree then?
 
-I agree the code can go. But I'd like it to be replaced with a comment
-explaining what the dead code was trying to say.
+Yes, send a scripted removal of what is left after6.9 -rc1 either to the
+slab maintainers or directly to Linus with the slab maintainers ACK.
 
-cheers
-
-> diff --git a/arch/powerpc/mm/book3s64/hash_hugepage.c b/arch/powerpc/mm/book3s64/hash_hugepage.c
-> index c0fabe6c5a12..127a3a2c174b 100644
-> --- a/arch/powerpc/mm/book3s64/hash_hugepage.c
-> +++ b/arch/powerpc/mm/book3s64/hash_hugepage.c
-> @@ -59,16 +59,6 @@ int __hash_page_thp(unsigned long ea, unsigned long access, unsigned long vsid,
->  
->  	rflags = htab_convert_pte_flags(new_pmd, flags);
->  
-> -#if 0
-> -	if (!cpu_has_feature(CPU_FTR_COHERENT_ICACHE)) {
-> -
-> -		/*
-> -		 * No CPU has hugepages but lacks no execute, so we
-> -		 * don't need to worry about that case
-> -		 */
-> -		rflags = hash_page_do_lazy_icache(rflags, __pte(old_pte), trap);
-> -	}
-> -#endif
->  	/*
->  	 * Find the slot index details for this ea, using base page size.
->  	 */
-> -- 
-> 2.39.2
 
