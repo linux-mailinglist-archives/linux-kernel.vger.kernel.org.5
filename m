@@ -1,154 +1,274 @@
-Return-Path: <linux-kernel+bounces-81894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2FE6867BBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C1EF867BB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:23:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B37051C2A918
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:24:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EDC51C2A5AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:23:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BBA12C7F8;
-	Mon, 26 Feb 2024 16:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE1612C7F2;
+	Mon, 26 Feb 2024 16:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b="KCw/pjAf"
-Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2067.outbound.protection.outlook.com [40.107.249.67])
+	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="Sz/gV9NS";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SL/YMeut"
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A9EA12C54B;
-	Mon, 26 Feb 2024 16:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708964628; cv=fail; b=MHy/DFujG0INefgy1E5bAmMoRk+rRqYH/LgQBeKuJG6e/K/9ICh8SuBxnXeDgerFtnipkRmha4Q9CnIkFvC2ycLvKo6mdC7NtThSfmJ/v2IowCUmRhcYfT1fy9Q36E504evFjhAs5RQMlyvIMnOu8J3s03fvtGeHS99JG1x1+t8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708964628; c=relaxed/simple;
-	bh=EUsaDE3yL68RnitcmKg7uVqIAvVYWX8bcmUQ9aIDw3o=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ttuvFi/5iLopl1GlyOsUfmJ7JX4UM2KGqFkN3aJG8tE42LSgZvJU7gCGELi1vl3uUS5EFxgVU/CtXovw3jQYgfuOs+qMA87CjshU42mcziffwM7fhklLFFDbnTA/MTty8ouJq+RaZBkVZK4P4jFjjR16k7Xty6pvvc0pGqdTNAI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com; spf=fail smtp.mailfrom=leica-geosystems.com; dkim=pass (1024-bit key) header.d=leica-geosystems.com header.i=@leica-geosystems.com header.b=KCw/pjAf; arc=fail smtp.client-ip=40.107.249.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=leica-geosystems.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=leica-geosystems.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TIoSWfeQIUvAQY+ofI7TpLT12wk4l8nG1WWc/MMhA5i6RCDvZ6A7ugjzxYJJV4oe8xdCvv6RtyZsVN62rqn0qPKhd/5DNEAvnEq40nJHu7qU39r8EvEUqRONuA0efdJx/QvV6PbpfYhTVxtgvdFMl9R5KeJAAwtZs8Yne11T61qNDTeVHeDwVtIg5GrMVppYSeLGdWRcquCOg8h1drabLLGyJo/pBnrJESHx8ieeLQdfQjCa+v11oiVNwzb2szm+uQYYuS+OEO3uD0DGIK+g/8g5NIetqrAkolKJDNngXvLa0X8SU13nukpY7JL+gK+A/P79juX9OOwXfu/BXn3ZZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a2PUlhb7aluY9PS1b2gzvNJikv/DQK9mmeHonP8mdI4=;
- b=HnEGmqt1vbLMRw6Sl1X2DbhI0m8jKwPOiaJnrMc2N/vyoHY99MDPjNGPDwgyX2UjOE4OcqrL1AITjVGZJuubReak6rI5Mmu/sB0kEDWATMkURkDBO3jtub/3odvC9fmL9WzuAbBvN10khVx45FBlALWRN93VPwxH3RFaA5FMlxK3QScanRSntMv0N1yfZYvOf8Aw1SCSCXpUdLYcJ40JdDZVa3ZfwhB3TeOVZJGrZOFOMCcaxtiPvIY1f7iKBqAwTskttFvbwYvCM4i0XTntRpIMwyWCwK1KFD0AGh0kBsTPhEyx4SGfSi0fVhYhWOJs5D0Syx4vixF0LpK+sOWXUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 193.8.40.94) smtp.rcpttodomain=vger.kernel.org
- smtp.mailfrom=leica-geosystems.com; dmarc=pass (p=reject sp=reject pct=100)
- action=none header.from=leica-geosystems.com; dkim=none (message not signed);
- arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a2PUlhb7aluY9PS1b2gzvNJikv/DQK9mmeHonP8mdI4=;
- b=KCw/pjAfAiizGqPARePMFeH+xBC0eNPrxE7DryGCdVu3z5oevKvXki3EKKYuNTYpldt3mzFrP1wk2n7u4h4Pe0k15iKCzfyGtr6aQm3qbZGD3H/nBD4g/fWOOt2+lYpVRngRcJ77UI9hY7pVjhSLzAPQJvsgdpF4GGE9zDtqUUU=
-Received: from DBBPR09CA0016.eurprd09.prod.outlook.com (2603:10a6:10:c0::28)
- by DBAPR06MB6806.eurprd06.prod.outlook.com (2603:10a6:10:180::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.23; Mon, 26 Feb
- 2024 16:23:42 +0000
-Received: from DU6PEPF0000A7E1.eurprd02.prod.outlook.com
- (2603:10a6:10:c0:cafe::e1) by DBBPR09CA0016.outlook.office365.com
- (2603:10a6:10:c0::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
- Transport; Mon, 26 Feb 2024 16:23:42 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 193.8.40.94)
- smtp.mailfrom=leica-geosystems.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=leica-geosystems.com;
-Received-SPF: Pass (protection.outlook.com: domain of leica-geosystems.com
- designates 193.8.40.94 as permitted sender) receiver=protection.outlook.com;
- client-ip=193.8.40.94; helo=hexagon.com; pr=C
-Received: from hexagon.com (193.8.40.94) by
- DU6PEPF0000A7E1.mail.protection.outlook.com (10.167.8.45) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Mon, 26 Feb 2024 16:23:41 +0000
-Received: from aherlnxbspsrv01.lgs-net.com ([10.60.34.116]) by hexagon.com with Microsoft SMTPSVC(10.0.17763.1697);
-	 Mon, 26 Feb 2024 17:23:41 +0100
-From: Catalin Popescu <catalin.popescu@leica-geosystems.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bsp-development.geo@leica-geosystems.com,
-	m.felsch@pengutronix.de,
-	Catalin Popescu <catalin.popescu@leica-geosystems.com>
-Subject: [PATCH net-next v2] net: phy: dp83826: disable WOL at init
-Date: Mon, 26 Feb 2024 17:23:39 +0100
-Message-Id: <20240226162339.696461-1-catalin.popescu@leica-geosystems.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E901D531;
+	Mon, 26 Feb 2024 16:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.19
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708964626; cv=none; b=BVsdUb7Jw6E9tkVcTwZPNSerbyTxphor4tNoGvEjUtzvsTbPMyJppTOfqK6NTBy2LWQjOnYXMBeQDSc1BD/IWX7hARi1FPsT6r25Z9EjLoeGReFtdtuF/qiV1NHl+tERfu/+NJB5KskVwCPOKs2AXNNRoe5PJnSwvjwbMcqL0gA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708964626; c=relaxed/simple;
+	bh=4obKeBixDa4cpomzXgdwYi7596cE2U0BVj92sW6prFY=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=V4sg+HFdqrN3ndQPbTx/lRz4H88dR0MMixp7n+gH2fDiHpguja4thNNZwxq0tyn5tzTCw2/i894v86LoEiiymWKl9KR9V2Ye6vlf3Khf1LZ2S3bzA2NiW6jNAh28qhkxPTUhyUwbDLugc9hoNYsDoIqMZvgUYpjSXFTIX+wAmnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=Sz/gV9NS; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SL/YMeut; arc=none smtp.client-ip=64.147.123.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.west.internal (Postfix) with ESMTP id 4A2BA32009FD;
+	Mon, 26 Feb 2024 11:23:42 -0500 (EST)
+Received: from imap52 ([10.202.2.102])
+  by compute3.internal (MEProxy); Mon, 26 Feb 2024 11:23:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1708964621; x=1709051021; bh=7BXRwHYzYW
+	EEQc06izLcRYLoHa9smQMLXOquwBp98Gc=; b=Sz/gV9NSlhEK97/komx9Q0Zu5v
+	jzuxwEZ/Wn7TQ5uVz4vhthFdaOsoa1wr3uRhCezTlRYzj6uzLGzmAsTeZZIbAnkk
+	hIUc8zRMzEVPBo5PZVqwVS5JzWujZHuDkSubplEh/SNV+hjV2xgg5QwXPtz74ZNg
+	bOsMRz0R7bsEEMIyyLI/4s9Ku7Acp2aO9uRqas1SFuL62o8xZC84W5i0igwiBEDi
+	fj8mllMiXJ/U02WevVKgvOHDSe7WdDgT9l1DOXQA1SQwDecgagfWP0ZRokLQ49kR
+	MekN3TGjlnLSmV+jvart4UnQ/J8zAPY89NLYY3gQiPUuUaJZw4JI0e9oI2Yg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708964621; x=1709051021; bh=7BXRwHYzYWEEQc06izLcRYLoHa9s
+	mQMLXOquwBp98Gc=; b=SL/YMeutO4pVf4HxFUjOYvIeke9MvwHvQL2UcgjJdieU
+	iPv9uHP/E03YQ06X163RI7tR65Vk2lKgqLqzT60y9vdP3Gpz77WzEmhaAm4VhZU5
+	mv0jvzTihod45073YT8+2Itnm1lPIQbbYNocbNh12vQi2FxsFsO733j+bDyi5r0W
+	DYh8WGtxR+vHr4mPwMdiA2Aa09sJPisATMtBnx/VraJBASK0DqqvCw+koxvsh1B6
+	Ms3ILlaFIOOL3tCJFiZcnKifhkW/EMR0CVweFihWwgr6Kcf1IkWNa5Mgd/OWlSeY
+	K3ZPP8eq9aiP9P+0wP6wWhqFVvMtWRWFPxv4ElnMGA==
+X-ME-Sender: <xms:DLvcZROh5buX2qRB8W-x-igYTNXKehK0IorrKPmCvDgdEMcr_lZW8Q>
+    <xme:DLvcZT_D9o7MnKjm1QO2se6URqwaEz-Uw52f52ASL-EE4J1CV0aJPXozUGpcSCmcl
+    Jg5w_vdVQk8oQSRkUQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgedvgdekhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdforghr
+    khcurfgvrghrshhonhdfuceomhhpvggrrhhsohhnsehsqhhuvggssgdrtggrqeenucggtf
+    frrghtthgvrhhnpeeuvefftdefjeevveejheehhfevfeelffehfefgheffjeetvddvhfdu
+    ffegheefieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehmphgvrghrshhonhesshhquhgvsggsrdgtrg
+X-ME-Proxy: <xmx:DLvcZQQU8CmU4LEC1QtrwP7Z8_zi8b3RRv_8d3A3zhngkG8aZbeY9w>
+    <xmx:DLvcZduJx70iFrMMjaDiUKrV7c88X2S2AHlmUeZoTshm6KLhOutLCA>
+    <xmx:DLvcZZc4-E_JVjmeTESjSgmnmBO2LIJGoYdHzsElWIic3QLUwjx9sg>
+    <xmx:DbvcZd4aC1CbCBK-fuANP4AWcu0eFfcKWb8EVCNjJ8PyUT7XQS7dHw>
+Feedback-ID: ic2b14614:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 9D735C60097; Mon, 26 Feb 2024 11:23:40 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-OriginalArrivalTime: 26 Feb 2024 16:23:41.0603 (UTC) FILETIME=[2949A730:01DA68D0]
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU6PEPF0000A7E1:EE_|DBAPR06MB6806:EE_
+Message-Id: <74a39cd0-cee3-49a2-a47b-92a9cf9ca008@app.fastmail.com>
+In-Reply-To: <42a7e7e9-01b0-4d41-8af1-328de90934ef@roeck-us.net>
+References: <20230721122931.505957-1-dober6023@gmail.com>
+ <a361ce91-beba-43d8-b969-285063658da5@app.fastmail.com>
+ <6b0373a2-7750-4d57-8839-95c6fa30c6b8@roeck-us.net>
+ <4209014c-1730-4c31-87d8-4192d68bcbc6@app.fastmail.com>
+ <6615ab2a-3267-477c-ad1b-a72d5a4244e0@roeck-us.net>
+ <412acdd3-6b1f-4c45-966f-c493b6fc3ddf@app.fastmail.com>
+ <42a7e7e9-01b0-4d41-8af1-328de90934ef@roeck-us.net>
+Date: Mon, 26 Feb 2024 11:23:53 -0500
+From: "Mark Pearson" <mpearson@squebb.ca>
+To: "Guenter Roeck" <linux@roeck-us.net>, "David Ober" <dober6023@gmail.com>,
+ wim@linux-watchdog.org
+Cc: linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ "David Ober" <dober@lenovo.com>
+Subject: Re: [PATCH v3] Watchdog: New module for ITE 5632 watchdog
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: ce34d50a-2112-48a2-7a7d-08dc36e74c10
-X-SET-LOWER-SCL-SCANNER: YES
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	//713sEnSpTDhuySVRPpDuAs2YNTzRQCA1HyzzpHu8q/mmwGjh5Syu+p88L3TS3whQ04/g+f4ce1rpr/k8Dy/7KjGl1e78/u+gzNKQtmoH/T2W+AFbtE6O9u5V0TXdLnKmVAERn+PxAnbKxJdT3EXoWUetM6d8GMj7iUQ8A5IsgIK8n+Vtxs+hWVis8toyRWJ7/ohVWlZwwy36EE8VTGgaXRbenfotGaXsnGL3M4auu9NR9hCYAGNZQtGLnqlPYmsPsFuajCeKYWX7sFVSMrI8jC9mgXDRXOCbXiyfxtz7Rr+6qu/Tm5yihHFkRzT5vDCLfY78awlyJw4Ej2RIcH0e9V//2LCAiTET5dHD/M+oNMb9fT5eQNhRhOplTzU4k4IQYTKcChcmH+FeC7JH+pIx2dV/xD/KNFJ9izpfzb/2Ja7TqTdKukmEvP+Wq9+RNU0jXBktfOTuZLPr3mKQw9eEccM8lvhNKq4aXW2Y5ZxZDDi50SkjorsPDXrVK/6jCVoVk9uWJOAANSEIBSywLcZkULOMCJ0euMdU+1Q7u+O489MGfwFIxxFkLhDvkTLI/cdIaufKGWiOaCM7M8xZTUMIMmxnB+5UeNjGNDTPba3nxrKxj4eFG790KebBeOGgOO0Lrq5ofzz8KD1yA76U42QkBQ3oUvwjBNJtdZ7MbYIUh30luCF1kPZrK6t4umabrfKcWpLFyXbiDXfeA/Bab1ntqqTtUfQWuc6onCJ1Dct4T3AhZlasQpPjI/ffEKO3WO
-X-Forefront-Antispam-Report:
-	CIP:193.8.40.94;CTRY:CH;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:hexagon.com;PTR:ahersrvdom50.leica-geosystems.com;CAT:NONE;SFS:(13230031)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 16:23:41.9855
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ce34d50a-2112-48a2-7a7d-08dc36e74c10
-X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a;Ip=[193.8.40.94];Helo=[hexagon.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DU6PEPF0000A7E1.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR06MB6806
 
-Commit d1d77120bc28 ("net: phy: dp83826: support TX data voltage tuning")
-introduced a regression in that WOL is not disabled by default for DP83826.
-WOL should normally be enabled through ethtool.
+Thanks!
 
-Fixes: d1d77120bc28 ("net: phy: dp83826: support TX data voltage tuning")
-Signed-off-by: Catalin Popescu <catalin.popescu@leica-geosystems.com>
----
-Changes in v2:
- - add Fixes tag to commit message
- - update subject prefix to [PATCH net-next]
----
- drivers/net/phy/dp83822.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, Feb 25, 2024, at 1:43 AM, Guenter Roeck wrote:
+> On 2/24/24 12:19, Mark Pearson wrote:
+>> Thanks Guenter,
+>> 
+>> On Sat, Feb 24, 2024, at 10:49 AM, Guenter Roeck wrote:
+>>> On 2/23/24 16:43, Mark Pearson wrote:
+>>>> Thanks Guenter
+>>>>
+>>>> On Fri, Feb 23, 2024, at 3:21 PM, Guenter Roeck wrote:
+>>>>> On 2/23/24 11:58, Mark Pearson wrote:
+>>>>>> On Fri, Jul 21, 2023, at 8:29 AM, David Ober wrote:
+>>>>>>> This modules is to allow for the new ITE 5632 EC chip
+>>>>>>> to support the watchdog for initial use in the Lenovo SE10
+>>>>>>>
+>>>>>>> Signed-off-by: David Ober <dober6023@gmail.com>
+>>>>>>>
+>>>>>>> V2 Fix stop to deactivate wdog on unload of module
+>>>>>>> V2 Remove extra logging that is not needed
+>>>>>>> V2 change udelays to usleep_range
+>>>>>>> V2 Changed to now request region on start and release on stop instead
+>>>>>>>       of for every ping and read/write
+>>>>>>> V3 add counter to while loops so it will not hang
+>>>>>>> V3 rework code to use platform_device_register_simple
+>>>>>>> V3 rework getting the Chip ID to remove duplicate code and close IO
+>>>>>>> V3 change some extra logging to be debug only
+>>>>>>> ---
+>>>>> [ ... ]
+>>>>>>> +config ITE5632_WDT
+>>>>>>> +        tristate "ITE 5632"
+>>>>>>> +        select WATCHDOG_CORE
+>>>>>>> +        help
+>>>>>>> +          If you say yes here you get support for the watchdog
+>>>>>>> +          functionality of the ITE 5632 eSIO chip.
+>>>>>>> +
+>>>>>>> +          This driver can also be built as a module. If so, the module
+>>>>>>> +          will be called ite5632_wdt.
+>>>>>>> +
+>>>>>
+>>>>> [ ... ]
+>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Please let us know if there is anything else needed to get this accepted. Happy to address any feedback.
+>>>>>>
+>>>>>
+>>>>> I am sure I commented on this before. The fact that the Lenovo SE10 uses an
+>>>>> ITE 5632 controller is completely irrelevant. Lenovo could decide tomorrow to
+>>>>> replace the ITE chip with a Nuvoton chip, use the same API to talk with it,
+>>>>> and the watchdog would work perfectly fine.
+>>>>>
+>>>>> This is a driver for the watchdog implemented in the embedded controller
+>>>>> on Lenovo SE10. It is not a watchdog driver for ITE5632. Again, the EC chip
+>>>>> used in that Lenovo system is completely irrelevant, even more so since
+>>>>> this seems to be one of those undocumented ITE chips which officially
+>>>>> don't even exist. Claiming that this would be a watchdog driver for ITE5632
+>>>>> would be not only misleading but simply wrong.
+>>>>>
+>>>>> It seems that we can not agree on this. That means that, from my perspective,
+>>>>> there is no real path to move forward. Wim will have to decide if and how
+>>>>> to proceed.
+>>>>>
+>>>> My apologies - I hadn't realised that was the issue (my fault for missing it). Appreciate the clarification.
+>>>>
+>>>> Is this as simple as renaming this driver as (for example) a lenovo_se_wdt device, and adding in the appropriate checking during the init that it is only used on Lenovo SE10 platforms?
+>>>>
+>>>
+>>> There would have to be additional changes. For example, the driver does not
+>>> return errors if its wait loops time out, and it doesn't reserve the IO address
+>>> range used by the chip. Tying the wait time to the number of wait loops
+>>> and not to the elapsed time is also something that would need to be explained.
+>>>
+>> Ack - we can look at those. Thanks for the feedback.
+>> 
+>>> Also, I notice that the communication is similar to the communication with
+>>> Super-IO chips from ITE, but not the same. Specifically, the unlock key is
+>>> the same, but the lock key is different. This means that the code may unlock
+>>> other chips from ITE in a given system, but not lock them. Some of those chips
+>>> are ... let's call it less then perfect. They will act oddly on the bus if left
+>>> unlocked. Some of those chips will act oddly if an attempt is made to lock them
+>>> after unlocking them, and they have to remain unlocked to avoid corrupting
+>>> communication with other chips on the same bus. The impact on other chips
+>>> from the same vendor will have to be explored further.
+>> 
+>> Afraid I'm still missing something here. If we make it so this driver is only used on the SE10 platform, then does that remove the concern? At that point it's specific to that HW platform and no HW changes are planned.
+>
+> Yes.
+>
+>> Agreed that having this available generically is not a good idea.
+>> 
+>>>
+>>>> I don't understand the concern if a different chip was used - wouldn't that need a different driver at that point?
+>>>>
+>>>
+>>> Why would that be the case ?
+>>>
+>>> Maybe I am missing something essential. If you insist to tie this driver to the
+>>> ITE5632 and not to the system, you will have to provide additional information.
+>> 
+>> I'm in agreement we should tie this to the platform - we'll make that change. No insistence implied :)
+>> 
+>>> The chip does not even exist in public, so no one but you and ITE really knows
+>>> what its capabilities are. Is this is a chip which is used, or is going to be
+>>> used, in a variety of systems, possibly including systems from other vendors ?
+>>> Is the communication between main CPU and the chip tied to the chip and will/may
+>>> only be used with this chip or variants of it ? Is the ITE5632 a SuperIO-like
+>>> chip with fixed capabilities, or is it a programmed micro-controller ?
+>>>
+>> 
+>> Afraid I don't understand the point about the chip not existing in public - do you just mean publicly available datasheets? At the risk of being repetitive, if this driver is locked to the Lenovo SE10 platform does that address the concerns?
+>> 
+>
+> Just try to find information about this chip anywhere. The only 
+> evidence that the
+> chip even exists appears to be this submission.
+>
+>>> To a large degree all that is due to ITE and its customers not
+>>> providing information
+>>> about their chips to the public. Due to that lack of information, my
+>>> assumption was
+>>> that it is a programmed micro-controller. The code itself suggests,
+>>> through the
+>>> use of the term "EC" in the driver, that it is an embedded controller,
+>>> not a Suoer-IO
+>>> or other fixed-capability chip. If that is not the case, and if the
+>>> communication
+>>> with the chip is fixed and not programmable, you'll have to explain
+>>> that.
+>> 
+>> Yeah, ack to that - and in that's something we need to address going forward in contracts we set for platforms that will have Linux support. I can't change what has already been done I'm afraid. We do have access, under NDA, to more details - but we're also limited in what we can disclose.
+>> I need to go look at the details for this again, with David, and see what we can do to address any questions; but there are going to be some limits I'm afraid and I'm hoping they aren't blockers.
+>
+> I can't say that I am surprised. It is quite common for chips from ITE.
+> Most of them seem to be custom builds made for specific customers/boards,
+> with little if any information available. People providing tools for Windows
+> can often sign NDAs with board vendors to get the information they need to
+> implement support in those tools. Unfortunately that isn't an option for
+> Linux kernel maintainers.
+>
+>> The aim is to get a driver working for this platform in shape enough to get accepted upstream and be useful.
+>> 
+>>>
+>>> If it is an EC, the protocol is defined by its microcode, and the
+>>> driver needs
+>>> to be tied to the systems using that microcode. If it is a
+>>> fixed-capability chip,
+>>> the driver should not suggest that it communicates with an embedded
+>>> controller
+>>> but with a fixed-capability chip.
+>>>
+>> 
+>> OK - we may also have used some incorrect terminology inadvertently, so I don't want to jump to too many conclusions. Will look into this.
+>> 
+>> Thanks for the detailed notes - we weren't sure what had been missing from the driver since the last submission so it's helpful to know where improvements are needed.
+>> Appreciate the patience as this is a learning experience for us for this kernel sub-tree.
+>> 
+> And I still have no idea if this an EC or not ;-). My best guess would
+> be that it is an NDS32 based micro-controller, related to IT5671.
+>
+> Of course, the next question would be if this chip has additional
+> functionality, such as hardware monitoring. I guess I'll see that
+> when I get a patch introducing its hwmon driver.
+>
+We believe it is only providing watchdog functionality, but we're double checking with the HW team to be sure.
 
-diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
-index 30f2616ab1c2..ba320dc3df98 100644
---- a/drivers/net/phy/dp83822.c
-+++ b/drivers/net/phy/dp83822.c
-@@ -528,7 +528,7 @@ static int dp83826_config_init(struct phy_device *phydev)
- 			return ret;
- 	}
- 
--	return 0;
-+	return dp8382x_disable_wol(phydev);
- }
- 
- static int dp8382x_config_init(struct phy_device *phydev)
+Afraid I don't have the details on what it is based on to be able to answer that.
 
-base-commit: 33e1d31873f87d119e5120b88cd350efa68ef276
-prerequisite-patch-id: 0000000000000000000000000000000000000000
--- 
-2.34.1
-
+Mark
 
