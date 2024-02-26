@@ -1,248 +1,295 @@
-Return-Path: <linux-kernel+bounces-81867-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81868-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 431AB867B2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5C9867B2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 668E91C294B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:09:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1516B1C2948B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 025F512C7EA;
-	Mon, 26 Feb 2024 16:09:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E308412C55F;
+	Mon, 26 Feb 2024 16:09:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L1x9q6O6"
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QI4zNxBH"
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826FC12C52D;
-	Mon, 26 Feb 2024 16:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 388E212C52D
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708963750; cv=none; b=GE2uchgINJ4Hw9t7x/DjeW0W3RPmS2XlgBd/T23SgRFm7RaMbHeQggcEA2lbnr6fguk+tdZaelLj+gIJ/mZUzPdgzkzRcsR7Rve2inCcW+9T9USAsbJ3nygQhC8u9gSOoCAkH6g9yOu80CDSskA4Rvx8dkuhYrVJ75K2n6pwIpc=
+	t=1708963760; cv=none; b=F5fe1iCOn/BTxoJcx/YJj2ufu+R5hwAzxPn2/f8Gtjr88+lxb5/iSZPHF8OybNErz1vzYEynzwoqMHJMFdXBxvsmjM6zGfBgQn2fj9LXrbtIizZy+ETS5HHig70K+QY1MXlU3igdDVWS7vhUPM04kcp79I92O+WYD2tvwbDNR/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708963750; c=relaxed/simple;
-	bh=haOLgV/8XDe1wiDHpv8/QB2A+c/GZzdT/aVNiO2q4Bg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QvTHCYQMDvlmjQubAgYwbV7fiofNXKTiE2or1Vg87Cy2kncBPbeEruylVLnnvbW5FaPmte6hZ9nHiJ3b3YhDVqiXETuPjRDLz7G7twAgMC5yk4dKkJEZPQPFt788DixpK0eczYXP2xldehbXXjGa2zSNhbPuii2hwIDuMViQNR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L1x9q6O6; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-21f2f813e3bso1223990fac.0;
-        Mon, 26 Feb 2024 08:09:07 -0800 (PST)
+	s=arc-20240116; t=1708963760; c=relaxed/simple;
+	bh=TidfZc7ErYBLnN3EIMvg/9g/fBw+mmuobrxPTxjxuIc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XIIfHy5xZ/Tz9x/hWKyqcwTxG78JxpQdZGcY8mg9nLrPx83dMaVld1tvsnWXKMSZ+vufbaY5uxHCAYl1Y15D9VYTbY6iCHozMmIUSAimQQ1GcY2A7dL11efilYnexik0Mk0SslFPjfpLUp4L/t1/qIJPgdkDJ4AMvwRlgigzCS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QI4zNxBH; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a095237eefso403678eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:09:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708963746; x=1709568546; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u9D3RCtWOdzu87BYCJb9nwXu0HmW2w9gBV06s00d0kw=;
-        b=L1x9q6O6B2Vbglr+3HDAjXBOAOjEypy4U6IR5uvNuhjKP+X2nSVquIFGOXMU1zIS9M
-         pp+l/XDApl9RDvM2t5fit5kLUOMJf5NSvql3yqPM4ycetFTx/6E0pxvK0C87dQuC5mzH
-         kOGdUBEXeV2RykShD5vJ2mo2zVsJCMr5CimvGo6H3s87uG7oUsmOm2q1ERKEqd5hHzWE
-         2Wo1HoxPvRu8RWY01fK0heCZB8rgkSMB4f2JJ6wViWL4NfhRKRyNRYCWZi3TOPeua9/E
-         vkSF0rEW6TYNHoRZOXMpsf/3pHKyReiRIeq4bxPe6ZkMlckLm646/iET5oABBEcim1nQ
-         lTfw==
+        d=chromium.org; s=google; t=1708963757; x=1709568557; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kY37XU8Gu2F16RfGDaO10TRnKshw9yrEqXfsRtwgKYw=;
+        b=QI4zNxBHDg/8ckWBjGr7HneyycBRBmvqGDinHu259qytlBCvT9pgNo6tTUowbFiHzk
+         pGL5cyZe8h0WBuQ8PWaBZ3JuN1WzQWSrFCmp4MYNzwqmXwy/FiWgY/rBJIsnw50Vk+1e
+         MXnABJeSMpjwSo9odhsrvFStmg47dfsGPYnfE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708963746; x=1709568546;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708963757; x=1709568557;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=u9D3RCtWOdzu87BYCJb9nwXu0HmW2w9gBV06s00d0kw=;
-        b=v4PGZu/iYbzxC8xiQmRoW9X6HKxugdmo58YhUDpXmPB8mN0KWFf5FQVCG7fRQ/X044
-         NzXXeucbWsIKJnHSDoOeXr0wO96oIUMQ03aRT6t65vIQe3wpAT6c8cSs/O7xK9M988FI
-         pzXp5W3Jk/D9P36JmVqu/rmIDw7COWQ7zqJfRSJIiFkvkhUYE/BPkTHzh9deoo9SJMvv
-         nUNUIs/xwKwdSpj1R6dvOMA6qi9y8dMgNGfypobFf+Cu8AP2BdaT38l0nrjSfKEmL94I
-         ig3fXxXtB3FG22tITxR+OvDOvGC4kpiSQ113oIdYflS2zslZXHXQrCu9E1hZ1fXvNvUC
-         urAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCURyotDUi0cbHHrspVMUDJnQU3mpZgPTyzXDjh0j5aHysJE6P5fMFl4pYoPWaWJiGPd9QqF8PrxLjJ3YBi8VaoctzttMDZjM+tYgc7dMEsvDvokvlkzPehPHschP3lT1CFujfqXX0Anqqaba+Pp2+tKeS+4PKQDYCD/h60PY3UXHsQTgmVbJU3Mx4hPFwz2v2nBUf9sD7BQKenxJNWkCMM6Cw==
-X-Gm-Message-State: AOJu0YxTums/h8esjWbOpr47rGAxGQFGMfNjkmgiRvxAD8TtsaPFJ/gf
-	+SR8V1Gu2MvXCERfJjyy3PsCbv0BnscVaUXYEIHOqFug2yFiYp/K
-X-Google-Smtp-Source: AGHT+IGzZAR5zUijDa1rMNpaNuIzI/u6jivbkCIhyuA7EK93AA3nmZ0c+VT5zVgwq3sS2f/9SptS+w==
-X-Received: by 2002:a05:6871:340c:b0:21d:e301:6a34 with SMTP id nh12-20020a056871340c00b0021de3016a34mr3700813oac.3.1708963746644;
-        Mon, 26 Feb 2024 08:09:06 -0800 (PST)
-Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
-        by smtp.gmail.com with ESMTPSA id e20-20020a056870451400b0021fd54aba16sm1497112oao.48.2024.02.26.08.09.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 08:09:06 -0800 (PST)
-Sender: John Groves <grovesaustin@gmail.com>
-Date: Mon, 26 Feb 2024 10:09:04 -0600
-From: John Groves <John@groves.net>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 05/20] dev_dax_iomap: Add dax_operations for use by
- fs-dax on devdax
-Message-ID: <2cidhftdpd6t3zsbeafk5oty6uogtgfwkyysicsyyd5hbmmb7k@ebbbikzq4jyb>
-References: <cover.1708709155.git.john@groves.net>
- <5727b1be956278e3a6c4cf7b728ee4f8f037ae51.1708709155.git.john@groves.net>
- <20240226123245.00000c01@Huawei.com>
+        bh=kY37XU8Gu2F16RfGDaO10TRnKshw9yrEqXfsRtwgKYw=;
+        b=rajkvrMho6lNAWaHFK+A0Iq2V0TN6EJVq73HVsqngTlZxSELIFttOCg64Mw/ij1ebx
+         o0GzLMN4PYskkTGrmohgmw9cM8Y3UU+h0VldxY1lZpDbVhiU4d8ryXHFpO44jZjWdbHd
+         v4npUn2BdJq+0fRG+/BFHqS5yZtdCHMWThR4nrHDl8ejnqmMSjt2EqGLBVCzeQ4rqzxn
+         CNz83wHIE1cqQp/s8SZJomtIxG3ctELaMHkEnmUST/6vKWRajMTobNCuyPYieZ9+izNW
+         kUlAFQYlKzTc9O22W6CJ/uF7OzjVlBSCLx4vRTixsTsLI+bS0whoGg4QNvK3AODlhUy8
+         SwWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZf/BvskVuXWLYDkzipfWgKu2TVdM6Ir1J3BOFe0Z5vNlqqjW/5yb+MBSBnTWRtQI6sbqdBWkqLTg7ryYFxkakmOrs4OW0OJWtRnEK
+X-Gm-Message-State: AOJu0YzAhtm8utCEKc2MgCn08b4QKGXbx52FznMx7DTDHD3HAtiPqcyL
+	OS/aTIaYrREHIv85UXtu1XDzZt1sY2Ljm9b4IJF/brBTsI8fq+aFVKJ5o/pHS+iQkgZNzNILiHS
+	us3iG8INHL8RO+ZyemJrA1P6JrLDPu1DaH+P4
+X-Google-Smtp-Source: AGHT+IGO8+qRP9Sa5Y8eYjqpu7kaXPnwBCmmXNtbHYpcRdAzwsLsqULq7XSlSPpVhz7oo52TaAYvnvDAeqhL7iNt9wg=
+X-Received: by 2002:a4a:7617:0:b0:5a0:3917:5d46 with SMTP id
+ t23-20020a4a7617000000b005a039175d46mr6268492ooc.2.1708963757421; Mon, 26 Feb
+ 2024 08:09:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226123245.00000c01@Huawei.com>
+References: <CAG-rBihs_xMKb3wrMO1+-+p4fowP9oy1pa_OTkfxBzPUVOZF+g@mail.gmail.com>
+ <20240221114357.13655-2-vbabka@suse.cz>
+In-Reply-To: <20240221114357.13655-2-vbabka@suse.cz>
+From: Sven van Ashbrook <svenva@chromium.org>
+Date: Mon, 26 Feb 2024 11:09:06 -0500
+Message-ID: <CAG-rBijH3GaHN2zA2_cby-RsQCVHou-WjZnxudMebPrS9imgfg@mail.gmail.com>
+Subject: Re: [PATCH] mm, vmscan: prevent infinite loop for costly GFP_NOIO |
+ __GFP_RETRY_MAYFAIL allocations
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, bgeffon@google.com, 
+	cujomalainey@chromium.org, kramasub@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-sound@vger.kernel.org, 
+	perex@perex.cz, stable@vger.kernel.org, tiwai@suse.com, tiwai@suse.de, 
+	Michal Hocko <mhocko@kernel.org>, Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 24/02/26 12:32PM, Jonathan Cameron wrote:
-> On Fri, 23 Feb 2024 11:41:49 -0600
-> John Groves <John@Groves.net> wrote:
-> 
-> > Notes about this commit:
-> > 
-> > * These methods are based somewhat loosely on pmem_dax_ops from
-> >   drivers/nvdimm/pmem.c
-> > 
-> > * dev_dax_direct_access() is returns the hpa, pfn and kva. The kva was
-> >   newly stored as dev_dax->virt_addr by dev_dax_probe().
-> > 
-> > * The hpa/pfn are used for mmap (dax_iomap_fault()), and the kva is used
-> >   for read/write (dax_iomap_rw())
-> > 
-> > * dev_dax_recovery_write() and dev_dax_zero_page_range() have not been
-> >   tested yet. I'm looking for suggestions as to how to test those.
-> > 
-> > Signed-off-by: John Groves <john@groves.net>
-> > ---
-> >  drivers/dax/bus.c | 107 ++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 107 insertions(+)
-> > 
-> > diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> > index 664e8c1b9930..06fcda810674 100644
-> > --- a/drivers/dax/bus.c
-> > +++ b/drivers/dax/bus.c
-> > @@ -10,6 +10,12 @@
-> >  #include "dax-private.h"
-> >  #include "bus.h"
-> >  
-> > +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
-> > +#include <linux/backing-dev.h>
-> > +#include <linux/pfn_t.h>
-> > +#include <linux/range.h>
-> > +#endif
-> > +
-> 
-> Is it worth avoiding includes based on config? Probably not.
+Vlastimil,
 
-Just trying to demonstrate that I can be tedious :D
-I'll drop the #if unless somebody disagrees.
+We noticed that this patch is now added to Andrew Morton's
+mm-hotfixes-unstable branch.
 
-> 
-> >  static DEFINE_MUTEX(dax_bus_lock);
-> >  
-> >  #define DAX_NAME_LEN 30
-> > @@ -1349,6 +1355,101 @@ __weak phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
-> >  }
-> >  EXPORT_SYMBOL_GPL(dax_pgoff_to_phys);
-> >  
-> > +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
-> > +
-> 
-> > +
-> > +static long __dev_dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff,
-> > +			     long nr_pages, enum dax_access_mode mode, void **kaddr,
-> > +			     pfn_t *pfn)
-> > +{
-> > +	struct dev_dax *dev_dax = dax_get_private(dax_dev);
-> > +	size_t dax_size = dev_dax_size(dev_dax);
-> > +	size_t size = nr_pages << PAGE_SHIFT;
-> > +	size_t offset = pgoff << PAGE_SHIFT;
-> > +	phys_addr_t phys;
-> > +	u64 virt_addr = dev_dax->virt_addr + offset;
-> > +	pfn_t local_pfn;
-> > +	u64 flags = PFN_DEV|PFN_MAP;
-> > +
-> > +	WARN_ON(!dev_dax->virt_addr); /* virt_addr must be saved for direct_access */
-> Fair enough, but from local code point of view, does it make sense to check this
-> if !kaddr as we won't use this.
+How can we help to get this into mm-hotfixes-stable
+and from there, into mainline ?
 
-Hmm. This gets called with kaddr=NULL for mmap faults, and with non-NULL
-kaddr for read/write (which need the virt_addr to do a memcpy variant).
-If dev_dax->virt-addr is NULL, mmap will work but read/write will hork.
+We are still stress-testing using low memory suspend. Anything else
+that is required, and we can help with?
 
-I lean toward keeping the warning. With these updates, it's broken if
-read/write are broken.
+Sven
 
-> > +
-> > +	phys = dax_pgoff_to_phys(dev_dax, pgoff, nr_pages << PAGE_SHIFT);
-> > +
-> > +	if (kaddr)
-> > +		*kaddr = (void *)virt_addr;
-> 
-> Back to earlier comment on virt_addr as a void *. Definitely looking like
-> that would be more accurate and simpler!  Also not much point in computing
-> virt_addr unless kaddr is good.
-
-Yes, done (the void *).
-
-the computation is copied directly from drivers/nvdimm/__pmem_direct_access() -
-which does not warn if virt_addr is null. Actually I suppose this code should
-just trust that dev_dax_probe sets virt_addr, and not warn?
-
-So I'm now contradicting myself above...
-
-> 
-> > +
-> > +	local_pfn = phys_to_pfn_t(phys, flags); /* are flags correct? */
-> If you aren't going to do anything with it for !pfn, move it under the if (pfn).
-> 
-> > +	if (pfn)
-> > +		*pfn = local_pfn;
-> > +
-> > +	/* This the valid size at the specified address */
-> > +	return PHYS_PFN(min_t(size_t, size, dax_size - offset));
-> > +}
-> > +
-> 
-> > +
-> > +static const struct dax_operations dev_dax_ops = {
-> > +	.direct_access = dev_dax_direct_access,
-> > +	.zero_page_range = dev_dax_zero_page_range,
-> > +	.recovery_write = dev_dax_recovery_write,
-> > +};
-> > +
-> > +#endif /* IS_ENABLED(CONFIG_DEV_DAX_IOMAP) */
-> > +
-> >  struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
-> >  {
-> >  	struct dax_region *dax_region = data->dax_region;
-> > @@ -1404,11 +1505,17 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
-> >  		}
-> >  	}
-> >  
-> 
-> If we were to make this 
-> 
-> 	if (IS_ENABLED(CONFIG_DEV_DAX_IOMAP))
-> 
-> etc can we avoid the ifdef stuff above and let dead code removal deal with it?
-> Might need a few stubs - I haven't tried.
-
-Better, thanks. No stubs needed.
-
-> 
-> > +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
-> > +	/* holder_ops currently populated separately in a slightly hacky way */
-> > +	dax_dev = alloc_dax(dev_dax, &dev_dax_ops);
-> > +#else
-> >  	/*
-> >  	 * No dax_operations since there is no access to this device outside of
-> >  	 * mmap of the resulting character device.
-> >  	 */
-> >  	dax_dev = alloc_dax(dev_dax, NULL);
-> > +#endif
-
-Thanks!
-John
-
+On Wed, Feb 21, 2024 at 6:44=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> Sven reports an infinite loop in __alloc_pages_slowpath() for costly
+> order __GFP_RETRY_MAYFAIL allocations that are also GFP_NOIO. Such
+> combination can happen in a suspend/resume context where a GFP_KERNEL
+> allocation can have __GFP_IO masked out via gfp_allowed_mask.
+>
+> Quoting Sven:
+>
+> 1. try to do a "costly" allocation (order > PAGE_ALLOC_COSTLY_ORDER)
+>    with __GFP_RETRY_MAYFAIL set.
+>
+> 2. page alloc's __alloc_pages_slowpath tries to get a page from the
+>    freelist. This fails because there is nothing free of that costly
+>    order.
+>
+> 3. page alloc tries to reclaim by calling __alloc_pages_direct_reclaim,
+>    which bails out because a zone is ready to be compacted; it pretends
+>    to have made a single page of progress.
+>
+> 4. page alloc tries to compact, but this always bails out early because
+>    __GFP_IO is not set (it's not passed by the snd allocator, and even
+>    if it were, we are suspending so the __GFP_IO flag would be cleared
+>    anyway).
+>
+> 5. page alloc believes reclaim progress was made (because of the
+>    pretense in item 3) and so it checks whether it should retry
+>    compaction. The compaction retry logic thinks it should try again,
+>    because:
+>     a) reclaim is needed because of the early bail-out in item 4
+>     b) a zonelist is suitable for compaction
+>
+> 6. goto 2. indefinite stall.
+>
+> (end quote)
+>
+> The immediate root cause is confusing the COMPACT_SKIPPED returned from
+> __alloc_pages_direct_compact() (step 4) due to lack of __GFP_IO to be
+> indicating a lack of order-0 pages, and in step 5 evaluating that in
+> should_compact_retry() as a reason to retry, before incrementing and
+> limiting the number of retries. There are however other places that
+> wrongly assume that compaction can happen while we lack __GFP_IO.
+>
+> To fix this, introduce gfp_compaction_allowed() to abstract the __GFP_IO
+> evaluation and switch the open-coded test in try_to_compact_pages() to
+> use it.
+>
+> Also use the new helper in:
+> - compaction_ready(), which will make reclaim not bail out in step 3, so
+>   there's at least one attempt to actually reclaim, even if chances are
+>   small for a costly order
+> - in_reclaim_compaction() which will make should_continue_reclaim()
+>   return false and we don't over-reclaim unnecessarily
+> - in __alloc_pages_slowpath() to set a local variable can_compact,
+>   which is then used to avoid retrying reclaim/compaction for costly
+>   allocations (step 5) if we can't compact and also to skip the early
+>   compaction attempt that we do in some cases
+>
+> Reported-by: Sven van Ashbrook <svenva@chromium.org>
+> Closes: https://lore.kernel.org/all/CAG-rBihs_xMKb3wrMO1%2B-%2Bp4fowP9oy1=
+pa_OTkfxBzPUVOZF%2Bg@mail.gmail.com/
+> Fixes: 3250845d0526 ("Revert "mm, oom: prevent premature OOM killer invoc=
+ation for high order request"")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>  include/linux/gfp.h |  9 +++++++++
+>  mm/compaction.c     |  7 +------
+>  mm/page_alloc.c     | 10 ++++++----
+>  mm/vmscan.c         |  5 ++++-
+>  4 files changed, 20 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index de292a007138..e2a916cf29c4 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -353,6 +353,15 @@ static inline bool gfp_has_io_fs(gfp_t gfp)
+>         return (gfp & (__GFP_IO | __GFP_FS)) =3D=3D (__GFP_IO | __GFP_FS)=
+;
+>  }
+>
+> +/*
+> + * Check if the gfp flags allow compaction - GFP_NOIO is a really
+> + * tricky context because the migration might require IO.
+> + */
+> +static inline bool gfp_compaction_allowed(gfp_t gfp_mask)
+> +{
+> +       return IS_ENABLED(CONFIG_COMPACTION) && (gfp_mask & __GFP_IO);
+> +}
+> +
+>  extern gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma);
+>
+>  #ifdef CONFIG_CONTIG_ALLOC
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 4add68d40e8d..b961db601df4 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2723,16 +2723,11 @@ enum compact_result try_to_compact_pages(gfp_t gf=
+p_mask, unsigned int order,
+>                 unsigned int alloc_flags, const struct alloc_context *ac,
+>                 enum compact_priority prio, struct page **capture)
+>  {
+> -       int may_perform_io =3D (__force int)(gfp_mask & __GFP_IO);
+>         struct zoneref *z;
+>         struct zone *zone;
+>         enum compact_result rc =3D COMPACT_SKIPPED;
+>
+> -       /*
+> -        * Check if the GFP flags allow compaction - GFP_NOIO is really
+> -        * tricky context because the migration might require IO
+> -        */
+> -       if (!may_perform_io)
+> +       if (!gfp_compaction_allowed(gfp_mask))
+>                 return COMPACT_SKIPPED;
+>
+>         trace_mm_compaction_try_to_compact_pages(order, gfp_mask, prio);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 150d4f23b010..a663202045dc 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4041,6 +4041,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int=
+ order,
+>                                                 struct alloc_context *ac)
+>  {
+>         bool can_direct_reclaim =3D gfp_mask & __GFP_DIRECT_RECLAIM;
+> +       bool can_compact =3D gfp_compaction_allowed(gfp_mask);
+>         const bool costly_order =3D order > PAGE_ALLOC_COSTLY_ORDER;
+>         struct page *page =3D NULL;
+>         unsigned int alloc_flags;
+> @@ -4111,7 +4112,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int=
+ order,
+>          * Don't try this for allocations that are allowed to ignore
+>          * watermarks, as the ALLOC_NO_WATERMARKS attempt didn't yet happ=
+en.
+>          */
+> -       if (can_direct_reclaim &&
+> +       if (can_direct_reclaim && can_compact &&
+>                         (costly_order ||
+>                            (order > 0 && ac->migratetype !=3D MIGRATE_MOV=
+ABLE))
+>                         && !gfp_pfmemalloc_allowed(gfp_mask)) {
+> @@ -4209,9 +4210,10 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned in=
+t order,
+>
+>         /*
+>          * Do not retry costly high order allocations unless they are
+> -        * __GFP_RETRY_MAYFAIL
+> +        * __GFP_RETRY_MAYFAIL and we can compact
+>          */
+> -       if (costly_order && !(gfp_mask & __GFP_RETRY_MAYFAIL))
+> +       if (costly_order && (!can_compact ||
+> +                            !(gfp_mask & __GFP_RETRY_MAYFAIL)))
+>                 goto nopage;
+>
+>         if (should_reclaim_retry(gfp_mask, order, ac, alloc_flags,
+> @@ -4224,7 +4226,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int=
+ order,
+>          * implementation of the compaction depends on the sufficient amo=
+unt
+>          * of free memory (see __compaction_suitable)
+>          */
+> -       if (did_some_progress > 0 &&
+> +       if (did_some_progress > 0 && can_compact &&
+>                         should_compact_retry(ac, order, alloc_flags,
+>                                 compact_result, &compact_priority,
+>                                 &compaction_retries))
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4f9c854ce6cc..4255619a1a31 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -5753,7 +5753,7 @@ static void shrink_lruvec(struct lruvec *lruvec, st=
+ruct scan_control *sc)
+>  /* Use reclaim/compaction for costly allocs or under memory pressure */
+>  static bool in_reclaim_compaction(struct scan_control *sc)
+>  {
+> -       if (IS_ENABLED(CONFIG_COMPACTION) && sc->order &&
+> +       if (gfp_compaction_allowed(sc->gfp_mask) && sc->order &&
+>                         (sc->order > PAGE_ALLOC_COSTLY_ORDER ||
+>                          sc->priority < DEF_PRIORITY - 2))
+>                 return true;
+> @@ -5998,6 +5998,9 @@ static inline bool compaction_ready(struct zone *zo=
+ne, struct scan_control *sc)
+>  {
+>         unsigned long watermark;
+>
+> +       if (!gfp_compaction_allowed(sc->gfp_mask))
+> +               return false;
+> +
+>         /* Allocation can already succeed, nothing to do */
+>         if (zone_watermark_ok(zone, sc->order, min_wmark_pages(zone),
+>                               sc->reclaim_idx, 0))
+> --
+> 2.43.1
+>
 
