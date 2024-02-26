@@ -1,118 +1,347 @@
-Return-Path: <linux-kernel+bounces-81674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07A1D8678F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:47:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 046AD8678EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:46:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 392C81C28635
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:47:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7AF151F23F93
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC097135A48;
-	Mon, 26 Feb 2024 14:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="fhaELeMf"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162851350FD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D17711350F4;
 	Mon, 26 Feb 2024 14:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PGXfzOtC"
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 524D4134CE3;
+	Mon, 26 Feb 2024 14:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958172; cv=none; b=hKiXpQ7qUv7UM/2neA4lAIDNQmm6MxdQziDCZud++7C2E1HweZt2C01z2napn/bGj5JWLNaF8iaUdvokCBX7HEIIaeXpUleY+xCdcGIc0vxLQVoXxXMa+FOMyTUZH4ZbdTXURuEKJnThFawjRUVaBgBXkhgtvZSo7g3rkGSiErA=
+	t=1708958168; cv=none; b=tMAN3qyT4luAXi5eUKKBSZ2Mcocscb0R2vvUMtvs8Tkkck8gUet97YMNPSb/xvHMJfeyd5OLFgHL0uUvJzT6BqmMMW33+TlnMo2g+xK1hp8WqQ5IsmtBT/5UdCo815ZaF7InRJfTIBiDCOm0ad/LV7F687kwy4Ccq465WqASXds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958172; c=relaxed/simple;
-	bh=w1j4n5piV5lJO4TYJQ5tVQ4fRWX1z8QvmVmq7Ogv0YM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GUulWZjkjbl+SVp7lGNcunSe/hYtwKbWwajTtGmObZTN0SQCtR43sts4El81urqSprxsVs+3MsL+c+QqGSPd32DJ8IE8wFdgGWegHQoxMgyc1+rdGvwkTZcTMDaXao0Hwy6uuf2lXVrIUiRoBZvddVaSlmBuz+iRs+47QN3WrKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=fhaELeMf; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1708958144; x=1709562944; i=markus.elfring@web.de;
-	bh=w1j4n5piV5lJO4TYJQ5tVQ4fRWX1z8QvmVmq7Ogv0YM=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=fhaELeMf9XLkwiHf8oWLsYuqb2xArERZFnRXqvhj/S5LOixeEp02UBm3bF9UG3u/
-	 hXebI2/dj1icLZTNCweURk0s0pgXyMR8NWFqOJbdweywmjRrIfCbq/zVo6y45OoJ5
-	 KOMj9gEYcbWX6QbKfSXQnwpF27sdkmak+nJ47pndw0U9ePzVJnjfSSI93wfQCiWuo
-	 GCECkOUUTHRleU1SME2vbGYO+gLGXQX1fG38moKzW9N9eW7yXCYAqD/GubHdkBr0Y
-	 M1P9zn8P/JHl4PNNEGsYw+bIvi7y/BHx4TRi6ekcADmWY2p4iS9GZSBIVo/ivGaE4
-	 9eEyZv19oZ6dtlD7EA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MiMEM-1r0Lqw18xq-00fP3l; Mon, 26
- Feb 2024 15:35:44 +0100
-Message-ID: <1edb972e-7285-47d1-8ee6-606146b2f9e3@web.de>
-Date: Mon, 26 Feb 2024 15:35:43 +0100
+	s=arc-20240116; t=1708958168; c=relaxed/simple;
+	bh=/mEAVcSbJaQJo/7ORL9ShODHv0ZFinR5lEggkdY6Xvs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=BqUj07t8b/s50qEJD03GXTHWTlyMg9UBJ+djHcgcaD4XFVqLd5obznQhQvPpXM7kcYyMu6F7dZthseFkULFGOggRmkLxXFmz8T5CapLRA0gp/qeTCtjfrWYXDIG95ZD2ReiYd/hQkLI1hdYRIPoBnNm6gDRyFGA6LWNgwadD+vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PGXfzOtC; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso2498113a12.0;
+        Mon, 26 Feb 2024 06:36:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708958166; x=1709562966; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ToY5GgR/8oR+7K/4zBA63JoSPDOzZ4MQ9j4bv4bYPWw=;
+        b=PGXfzOtCAJUxFDzLiPReuWMgxcwjrF0XUYik1kfmclYHgM/Td/3zvvlqOZl+cGuknI
+         THmzg4G+VmwNUeq+JA1ErGdyuWT0wb8OESxLuE5XRML2L9Mu/LJJZJmt2wBuYTBY+nHm
+         YCvA0IPrbCy2wYZeo6WJJAsrVtFhkOgKPDIeHS7r1ExKOLJ+BwMp8fQ0XRBHEqZq6BSB
+         VqGfKi4tnPe6sm6DwgXJTrr6sgnCghsi8RWakKXBX+9cWg4/lUfrmxJSuxECWHyjW/+q
+         AU5yv808mcEHf1MKbHTdXi4EWNB+ZKaRwQ9ga8whrYw8/ElKBsZPQ2d66NL3zu7QoT6l
+         ouHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708958166; x=1709562966;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ToY5GgR/8oR+7K/4zBA63JoSPDOzZ4MQ9j4bv4bYPWw=;
+        b=vg2xU4liRH84UN6SgwHCxn7opDgWZbwwY+KOOVmCFa6nduz8LlBA2IdlNuVknFAlo5
+         Fq/aB/6cION3sgJhB4UXd+5MJoaBsT0pNdlPvSv/iNmbYW3NS74k4tZ95v2tv49+0JHe
+         qgFumPUSjSjSB4iA4avShydjhPcwwTLvvm1KUqMm1npv955NzRJwbJIAc1nw9cpsThpq
+         sPekMlzG3upvCxq42ncWPNlMM1ZBgG/v2Us6cLQZ3518Z+fT4goAbeS4f783ygSSGtVL
+         RlrzNpXk/2iBDGjjr7+v2EKHkhqXYfWO7ka0LQi6VVnY/EEJi7ca1lcmW9EW9HllMblc
+         ck6A==
+X-Forwarded-Encrypted: i=1; AJvYcCW8BbSdu4NWV/KgTwdHF5U0QOQ1OnrvwV/C1345MKK5rzhFxH8Bu9KgV0sod9goorUcZlOekWEDaW1SZUNTPKpoHGo2
+X-Gm-Message-State: AOJu0YxilQrdCqLgqwC0Lu6qJ8utXKQtGgtqCSHuXLcKR8QiZhkTIsw2
+	cRARUMk4ti/JzGVeeeRbg9R2+23sSuIYuSR/35pIRj/7Jiily7ixIgHWYBAa
+X-Google-Smtp-Source: AGHT+IGXXJTeR/ZrfgQ6mnuG0H2PJAJ5iD62Ai9ROjwtr1SkKhwKPvQVD+EpFqd2UqCYBTCdwjrj/Q==
+X-Received: by 2002:a17:903:2450:b0:1db:bbe0:9e9 with SMTP id l16-20020a170903245000b001dbbbe009e9mr10410428pls.58.1708958166218;
+        Mon, 26 Feb 2024 06:36:06 -0800 (PST)
+Received: from localhost ([47.88.5.130])
+        by smtp.gmail.com with ESMTPSA id kf14-20020a17090305ce00b001db45bae92dsm4074496plb.74.2024.02.26.06.36.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 26 Feb 2024 06:36:05 -0800 (PST)
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
+	Hou Wenlong <houwenlong.hwl@antgroup.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Borislav Petkov <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	x86@kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	Juergen Gross <jgross@suse.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [RFC PATCH 27/73] KVM: x86/PVM: Implement event injection related callbacks
+Date: Mon, 26 Feb 2024 22:35:44 +0800
+Message-Id: <20240226143630.33643-28-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <20240226143630.33643-1-jiangshanlai@gmail.com>
+References: <20240226143630.33643-1-jiangshanlai@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: clk: imx: scu: Use common error handling code in
- __imx_clk_gpr_scu()
-Content-Language: en-GB
-To: Abel Vesa <abel.vesa@linaro.org>, kernel@pengutronix.de,
- linux-imx@nxp.com, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, kernel-janitors@vger.kernel.org
-Cc: Kuan-Wei Chiu <visitorckw@gmail.com>, Abel Vesa <abelvesa@kernel.org>,
- Fabio Estevam <festevam@gmail.com>,
- Michael Turquette <mturquette@baylibre.com>, Peng Fan <peng.fan@nxp.com>,
- Sascha Hauer <s.hauer@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
- Stephen Boyd <sboyd@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- cocci@inria.fr
-References: <20231210171907.3410922-1-visitorckw@gmail.com>
- <0e906ec6-fe73-4dbd-b555-a2c03b6e1030@web.de> <Zb04UUeE/cU9HtKZ@linaro.org>
- <1a3c05b8-45f8-4205-8cb5-3b8f2d791877@web.de> <ZdxVHLce6mk975Zp@linaro.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <ZdxVHLce6mk975Zp@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ik7pubzyywRLN+A8mM0fkXjKiGabN6eGEKg2njPktovMf7/kFaC
- iVS+JNE7lldbXx0Cihn0bS3x1IrbChjtnXXeppNQ/oFFxgAXBabAe8duD6XAqn+gNbOauia
- u4o0zlsfYQo9huyUbO0i8wqx7te3aOOyxeOP6/+4jmOEdU5ZWIIokDPKknVUlfGndZxE8qh
- 5s2NokyeBzRJcqy9c1H5Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:avMEIdZR8Iw=;MDxH7h9hE7musDOfhwLI8lHqKOs
- vSZxQcxO1BMq5OdWipMRggwmb6Phb8RPbGdrDx5EiGUyKP0GFoMHBIYB7GgID5CajqqzXtk+6
- r1Qoh65N5IBVhN9O/5didT7ai1T2HJKfwVQ//nE0xE9s05RETt7rKUB4/CYLg04ptaQGRHzlI
- +ksJ04n67GamCfPWbq7p5HiDCrdW9/MKL7KZ+EvGlrFH16uMlK5qoOf3zXLE+Pb3sck43OpTw
- T1p8guLssAsJUgY5J5TjNo64KsJrVdNVKgQQHsZ8MAQMJbc11CRSuXyo5IFdojagqwtcMGhg/
- QIyxG5QhGCH6sOwbw93WzSX+c4BpAwD0f3bfJupCnjPxaJqLc4g2O3qy204PablIsLKcXHIHH
- lwMhyBN/2eWidgiGI8xajsJIANfGhG0zFUA3HwmfjdfnqIBikPR2I1v2UuHVYRXSGjtXuHhT+
- Y/CqDQNA5ntSAc5MhNewLQ3FIVybhPREn4FD3vQazhV/JsnRdPeW9Ew4Z4L9mRmPVB0jIIB1Z
- TtPYEZijFEj+9IIFVcQ+EMjiDx6L7f1pfzlUONSm1vHrBXULdamd7jjB7ILRBGE223Dz655N5
- Vh1u77t/EkNlRzNmD+HpJAU20uHluduKHv9C/gpyDqAq3dAHHl3TNip0Q/HvExZcAxMCMrcyy
- NfmAWT/2Z33LJZuozoUCBIdbaFBjo/MhWPL2r1LzlYKotE3FtYVW6pl1K8SkRFuwu+8TesQJ8
- ny0Je+/DbcfMmw2AvDIsF3LjmhIcfB8GRZ/M+k0f9nc9+nJIPD69GwBoBXTVOLQ1BKbQOfDsL
- HYx2C4uxdA17KYLN0FaNZe8sv4ExJdYQ/pCo+Hoz0nrfo=
+Content-Transfer-Encoding: 8bit
 
->>>> Use another label so that a bit of exception handling can be better r=
-eused
->>>> at the end of this function.
->>>
->>> Please don't send patches as reply to other(s) patches.
->>
->> This is a general possibility to connect an information sources with
->> a corresponding change idea.
->> Will the acceptance grow for the presented source code transformation?
->>
->
-> Nope, please don't do that.
+From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-Do you find the proposed source code transformation reasonable (in princip=
-le)?
+In PVM, events are injected and consumed directly. The PVM hypervisor
+does not follow the IDT-based event delivery mechanism but instead
+utilizes a new PVM-specific event delivery ABI, which is similar to FRED
+event delivery.
 
+Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
+Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
+---
+ arch/x86/kvm/pvm/pvm.c | 193 +++++++++++++++++++++++++++++++++++++++++
+ arch/x86/kvm/pvm/pvm.h |   1 +
+ 2 files changed, 194 insertions(+)
 
-> The b4 tool will pick up the old patch if you do this.
+diff --git a/arch/x86/kvm/pvm/pvm.c b/arch/x86/kvm/pvm/pvm.c
+index 3d2a3c472664..57d987903791 100644
+--- a/arch/x86/kvm/pvm/pvm.c
++++ b/arch/x86/kvm/pvm/pvm.c
+@@ -648,6 +648,150 @@ static void pvm_event_flags_update(struct kvm_vcpu *vcpu, unsigned long set,
+ 	pvm_put_vcpu_struct(pvm, new_flags != old_flags);
+ }
+ 
++static void pvm_standard_event_entry(struct kvm_vcpu *vcpu, unsigned long entry)
++{
++	// Change rip, rflags, rcx and r11 per PVM event delivery specification,
++	// this allows to use sysret in VM enter.
++	kvm_rip_write(vcpu, entry);
++	kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
++	kvm_rcx_write(vcpu, entry);
++	kvm_r11_write(vcpu, X86_EFLAGS_IF | X86_EFLAGS_FIXED);
++}
++
++/* handle pvm user event per PVM Spec. */
++static int do_pvm_user_event(struct kvm_vcpu *vcpu, int vector,
++			     bool has_err_code, u64 err_code)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++	unsigned long entry = vector == PVM_SYSCALL_VECTOR ?
++			      pvm->msr_lstar : pvm->msr_event_entry;
++	struct pvm_vcpu_struct *pvcs;
++
++	pvcs = pvm_get_vcpu_struct(pvm);
++	if (!pvcs) {
++		kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
++		return 1;
++	}
++
++	pvcs->user_cs = pvm->hw_cs;
++	pvcs->user_ss = pvm->hw_ss;
++	pvcs->eflags = kvm_get_rflags(vcpu);
++	pvcs->pkru = 0;
++	pvcs->user_gsbase = pvm_read_guest_gs_base(pvm);
++	pvcs->rip = kvm_rip_read(vcpu);
++	pvcs->rsp = kvm_rsp_read(vcpu);
++	pvcs->rcx = kvm_rcx_read(vcpu);
++	pvcs->r11 = kvm_r11_read(vcpu);
++
++	if (has_err_code)
++		pvcs->event_errcode = err_code;
++	if (vector != PVM_SYSCALL_VECTOR)
++		pvcs->event_vector = vector;
++
++	if (vector == PF_VECTOR)
++		pvcs->cr2 = vcpu->arch.cr2;
++
++	pvm_put_vcpu_struct(pvm, true);
++
++	switch_to_smod(vcpu);
++
++	pvm_standard_event_entry(vcpu, entry);
++
++	return 1;
++}
++
++static int do_pvm_supervisor_exception(struct kvm_vcpu *vcpu, int vector,
++				       bool has_error_code, u64 error_code)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++	unsigned long stack;
++	struct pvm_supervisor_event frame;
++	struct x86_exception e;
++	int ret;
++
++	memset(&frame, 0, sizeof(frame));
++	frame.cs = kernel_cs_by_msr(pvm->msr_star);
++	frame.ss = kernel_ds_by_msr(pvm->msr_star);
++	frame.rip = kvm_rip_read(vcpu);
++	frame.rflags = kvm_get_rflags(vcpu);
++	frame.rsp = kvm_rsp_read(vcpu);
++	frame.errcode = ((unsigned long)vector << 32) | error_code;
++	frame.r11 = kvm_r11_read(vcpu);
++	frame.rcx = kvm_rcx_read(vcpu);
++
++	stack = ((frame.rsp - pvm->msr_supervisor_redzone) & ~15UL) - sizeof(frame);
++
++	ret = kvm_write_guest_virt_system(vcpu, stack, &frame, sizeof(frame), &e);
++	if (ret) {
++		kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
++		return 1;
++	}
++
++	if (vector == PF_VECTOR) {
++		struct pvm_vcpu_struct *pvcs;
++
++		pvcs = pvm_get_vcpu_struct(pvm);
++		if (!pvcs) {
++			kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
++			return 1;
++		}
++
++		pvcs->cr2 = vcpu->arch.cr2;
++		pvm_put_vcpu_struct(pvm, true);
++	}
++
++	kvm_rsp_write(vcpu, stack);
++
++	pvm_standard_event_entry(vcpu, pvm->msr_event_entry + 256);
++
++	return 1;
++}
++
++static int do_pvm_supervisor_interrupt(struct kvm_vcpu *vcpu, int vector,
++				       bool has_error_code, u64 error_code)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++	unsigned long stack = kvm_rsp_read(vcpu);
++	struct pvm_vcpu_struct *pvcs;
++
++	pvcs = pvm_get_vcpu_struct(pvm);
++	if (!pvcs) {
++		kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
++		return 1;
++	}
++	pvcs->eflags = kvm_get_rflags(vcpu);
++	pvcs->rip = kvm_rip_read(vcpu);
++	pvcs->rsp = stack;
++	pvcs->rcx = kvm_rcx_read(vcpu);
++	pvcs->r11 = kvm_r11_read(vcpu);
++
++	pvcs->event_vector = vector;
++	if (has_error_code)
++		pvcs->event_errcode = error_code;
++
++	pvm_put_vcpu_struct(pvm, true);
++
++	stack = (stack - pvm->msr_supervisor_redzone) & ~15UL;
++	kvm_rsp_write(vcpu, stack);
++
++	pvm_standard_event_entry(vcpu, pvm->msr_event_entry + 512);
++
++	return 1;
++}
++
++static int do_pvm_event(struct kvm_vcpu *vcpu, int vector,
++			bool has_error_code, u64 error_code)
++{
++	if (!is_smod(to_pvm(vcpu)))
++		return do_pvm_user_event(vcpu, vector, has_error_code, error_code);
++
++	if (vector < 32)
++		return do_pvm_supervisor_exception(vcpu, vector,
++						   has_error_code, error_code);
++
++	return do_pvm_supervisor_interrupt(vcpu, vector, has_error_code, error_code);
++}
++
+ static unsigned long pvm_get_rflags(struct kvm_vcpu *vcpu)
+ {
+ 	return to_pvm(vcpu)->rflags;
+@@ -722,6 +866,51 @@ static int pvm_nmi_allowed(struct kvm_vcpu *vcpu, bool for_injection)
+ 	return !pvm->nmi_mask && !pvm->int_shadow;
+ }
+ 
++/* Always inject the exception directly and consume the event. */
++static void pvm_inject_exception(struct kvm_vcpu *vcpu)
++{
++	unsigned int vector = vcpu->arch.exception.vector;
++	bool has_error_code = vcpu->arch.exception.has_error_code;
++	u32 error_code = vcpu->arch.exception.error_code;
++
++	kvm_deliver_exception_payload(vcpu, &vcpu->arch.exception);
++
++	if (do_pvm_event(vcpu, vector, has_error_code, error_code))
++		kvm_clear_exception_queue(vcpu);
++}
++
++/* Always inject the interrupt directly and consume the event. */
++static void pvm_inject_irq(struct kvm_vcpu *vcpu, bool reinjected)
++{
++	int irq = vcpu->arch.interrupt.nr;
++
++	trace_kvm_inj_virq(irq, vcpu->arch.interrupt.soft, false);
++
++	if (do_pvm_event(vcpu, irq, false, 0))
++		kvm_clear_interrupt_queue(vcpu);
++
++	++vcpu->stat.irq_injections;
++}
++
++/* Always inject the NMI directly and consume the event. */
++static void pvm_inject_nmi(struct kvm_vcpu *vcpu)
++{
++	if (do_pvm_event(vcpu, NMI_VECTOR, false, 0)) {
++		vcpu->arch.nmi_injected = false;
++		pvm_set_nmi_mask(vcpu, true);
++	}
++
++	++vcpu->stat.nmi_injections;
++}
++
++static void pvm_cancel_injection(struct kvm_vcpu *vcpu)
++{
++	/*
++	 * Nothing to do. Since exceptions/interrupts are delivered immediately
++	 * during event injection, so they cannot be cancelled and reinjected.
++	 */
++}
++
+ static void pvm_setup_mce(struct kvm_vcpu *vcpu)
+ {
+ }
+@@ -1282,6 +1471,10 @@ static struct kvm_x86_ops pvm_x86_ops __initdata = {
+ 	.handle_exit = pvm_handle_exit,
+ 	.set_interrupt_shadow = pvm_set_interrupt_shadow,
+ 	.get_interrupt_shadow = pvm_get_interrupt_shadow,
++	.inject_irq = pvm_inject_irq,
++	.inject_nmi = pvm_inject_nmi,
++	.inject_exception = pvm_inject_exception,
++	.cancel_injection = pvm_cancel_injection,
+ 	.interrupt_allowed = pvm_interrupt_allowed,
+ 	.nmi_allowed = pvm_nmi_allowed,
+ 	.get_nmi_mask = pvm_get_nmi_mask,
+diff --git a/arch/x86/kvm/pvm/pvm.h b/arch/x86/kvm/pvm/pvm.h
+index b0c633ce2987..39506ddbe5c5 100644
+--- a/arch/x86/kvm/pvm/pvm.h
++++ b/arch/x86/kvm/pvm/pvm.h
+@@ -7,6 +7,7 @@
+ 
+ #define SWITCH_FLAGS_INIT	(SWITCH_FLAGS_SMOD)
+ 
++#define PVM_SYSCALL_VECTOR		SWITCH_EXIT_REASONS_SYSCALL
+ #define PVM_FAILED_VMENTRY_VECTOR	SWITCH_EXIT_REASONS_FAILED_VMETNRY
+ 
+ #define PT_L4_SHIFT		39
+-- 
+2.19.1.6.gb485710b
 
-Are you looking for further improvements for this development tool?
-
-Regards,
-Markus
 
