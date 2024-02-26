@@ -1,91 +1,94 @@
-Return-Path: <linux-kernel+bounces-81762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86FB58679D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:16:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86EB7867A26
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70181F303F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:16:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F8CBB2D596
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBEC512C7F0;
-	Mon, 26 Feb 2024 15:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C74D12C53A;
+	Mon, 26 Feb 2024 15:10:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="j/wyto49"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Uq5KAJLc";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gTs37Py3"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D272C1BDD8;
-	Mon, 26 Feb 2024 15:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B5A1E525;
+	Mon, 26 Feb 2024 15:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708960064; cv=none; b=Z0DXkngAZ3oeiMz5aCnCwV22eYt2GffFY5oT+oHi9dfRbyhGuT+SvrMm9FYGn/fAs+A+iYmomOcVZz79Yjsltp7x9/76A5Rq7aeG+zgxPAud9CXXPoKFrS9VO7P15MD4X29LodcSno+YmQD+LjsF8tkqUMbvSizyAkGSBeXlXVU=
+	t=1708960208; cv=none; b=IeVr1rv7Eb9xCG8fYqQk76HIBuuLrOHi8AZEFJ/dkh31VWG4/hWFKQiA4v1V8ZA2kcnAVKOGekWQUUcTn86eq/IAK0NN1SFT//kfmBckKqC5J8TxopwkKlwwYkFaCYeOVPVvNGbVCg7AKHcVp1OfR3A3vtR77nUYuPgahGd5V1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708960064; c=relaxed/simple;
-	bh=M7isSVoISBnfAYmSdJfpU2svN/fglbkO/NWIZRmoyJA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=O/j67CK91kzkg0bNCUWCTJC8ppwWN5SX2MawtodxOKNbxi0QmK2jTlLITFIEH6FSfYXdGEecE6Vmfx+w52nMG9jeaBXOugPBSGSmG+2/AvFkN/HCN5T3ZhSqNNDmvs/FrAscbFwiL+79c0DUDuOAdqqqFcICRCub7IpC3XSszog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=j/wyto49; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9097A1BF214;
-	Mon, 26 Feb 2024 15:07:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708960060;
+	s=arc-20240116; t=1708960208; c=relaxed/simple;
+	bh=C0ZwnQmP/kh2aUrDS6fDXoRaWozBz0fD5wPpQnqCPKI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=nt+mIxgzKkfdU93HWkHY50AIZUTzlVs2TVjuuTnBP/OktnfSJ62NjYFEFEiNfHCAVvgsFW9+g/eMtuO+2GTrH/V6ItGhL6DNd18qh8CGAs5R6OipE7V8mUmDBGut0yOL0w8pRNSKTa04ceBWnJB1op2fyomS/LbfR97osl9r6n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Uq5KAJLc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gTs37Py3; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708960205;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KziltWlW/enUkzAKM/Tk7OteTNYodSmSK05UPd9lgds=;
-	b=j/wyto49AhT8qkVrQVcz4QBLfaAh7ivuygjixxSQbqcEDQ3/hsBDFvEtfwV14Pkudhpa64
-	Lk+yQk0uoIwvMfZ3otZ4Ta0h+eNBicOPlzjRqfQM1dm0vlpwd28nNZeY/qAMjWlc53pKxc
-	tAn1r1BaFqUUGW4K7fHLWcl/VxrdxDxA8xaDBGXKzamJ9vBcsiXOFpjIPDb4yPoLLijG3a
-	QsK4Y5j/Nd5ElZVPRh+1+3cBP+T865h8xvX/6ib9Aw9aPWx1d5fk+Nhfsbnd8+Bii+PFYE
-	4O43RE4JyrxNFain1pyQJaxXuxZFRY4Pd5i7H65cb6g9yD8H8ksSvfEltOTDag==
-Date: Mon, 26 Feb 2024 16:07:36 +0100
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
- <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Florian Fainelli
- <f.fainelli@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, Jonathan
- Corbet <corbet@lwn.net>
-Subject: Re: [PATCH net-next 2/2] doc: sfp-phylink: mention the
- mac_capabilities and supported_interfaces
-Message-ID: <20240226160736.5a10733f@device-28.home>
-In-Reply-To: <Zdx5v1UXDqsKsjW8@shell.armlinux.org.uk>
-References: <20240220160406.3363002-1-maxime.chevallier@bootlin.com>
-	<20240220160406.3363002-3-maxime.chevallier@bootlin.com>
-	<Zdx5v1UXDqsKsjW8@shell.armlinux.org.uk>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	bh=Np64UFrlcA1zUiScJ++rAWu+Ye7rIko/mCcLVb2aFho=;
+	b=Uq5KAJLckHXqr97Gny1FQ4D/YJkTN1iuUfrLuGuAaoF7pw2hpW+cwp9xfz3srpl79PoTKq
+	UkXU3luWYY+jHOlizNbF8zohLwD6WBXjkVZ3l8Bc4uqa0Zj9ygQPxCCANvGFvP4+526nMX
+	X4/hsvvTFU8V78XgCBeoLQ1XN56BrESxLYyRMxJH0aN0VVfePsZfOlEy8CvAxb8byRtXQ/
+	vIIwFxM8/GoLG+3xx5sHKNdtOp6Lqtrxg2alvTEIQo6P3FeEGyIwFGvOxOqwwp0mER01br
+	kqtDd7x90rlR8a9h6AIbaC4zPfPNm76KtGyUTP9N7o3AvL1n/AsSfiOx/X8OgA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708960205;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Np64UFrlcA1zUiScJ++rAWu+Ye7rIko/mCcLVb2aFho=;
+	b=gTs37Py37j7g18u29ubSzzjjG8e+Ddfm6z8kHtO8x4tD+MUcC2HMtlcgHzmWfe6s+ci0CD
+	hf+bQyc+7HwBpFBQ==
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: x86@kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, Xin Li
+ <xin@zytor.com>
+Subject: Re: [PATCH] x86: irq: unconditionally define KVM interrupt vectors
+In-Reply-To: <20240223102229.627664-1-pbonzini@redhat.com>
+References: <20240223102229.627664-1-pbonzini@redhat.com>
+Date: Mon, 26 Feb 2024 16:10:05 +0100
+Message-ID: <87zfvn9s8i.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Content-Type: text/plain
 
-On Mon, 26 Feb 2024 11:45:03 +0000
-"Russell King (Oracle)" <linux@armlinux.org.uk> wrote:
+On Fri, Feb 23 2024 at 05:22, Paolo Bonzini wrote:
+> Unlike arch/x86/kernel/idt.c, FRED support chose to remove the #ifdefs
+> from the .c files and concentrate them in the headers, where unused
+> handlers are #define'd to NULL.
+>
+> However, the constants for KVM's 3 posted interrupt vectors are still
+> defined conditionally in irq_vectors.h.  In the tree that FRED support was
+> developed on, this is innocuous because CONFIG_HAVE_KVM was effectively
+> always set.  With the cleanups that recently went into the KVM tree to
+> remove CONFIG_HAVE_KVM, the conditional became IS_ENABLED(CONFIG_KVM).
+> This causes a linux-next compilation failure in FRED code, when
+> CONFIG_KVM=n.
+>
+> In preparation for the merging of FRED in Linux 6.9, define the interrupt
+> vector numbers unconditionally.
+>
+> Cc: x86@kernel.org
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Suggested-by: Xin Li (Intel) <xin@zytor.com>
+> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-> On Tue, Feb 20, 2024 at 05:04:04PM +0100, Maxime Chevallier wrote:
-> > +   Fill-in all the :c:type:`phy_interface_t <phy_interface_t>` (i.e. all MAC to
-> > +   PHY link modes) that your MAC can output. The following example shows a  
-> 
-> Technically, this should be "MAC and all PCS associated with this MAC".
-> 
-
-Given that PCS should be covered in the doc, that's true :) I'll add
-that in V2.
-
-Thanks,
-
-Maxime
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 
