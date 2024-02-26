@@ -1,132 +1,106 @@
-Return-Path: <linux-kernel+bounces-81457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D409E867630
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:13:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC11186763C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:15:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F4E6282FF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:13:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE7D71C289F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD218527F;
-	Mon, 26 Feb 2024 13:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD7B128832;
+	Mon, 26 Feb 2024 13:14:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hc3rG1yg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="znmh2kds"
+Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23A9580037;
-	Mon, 26 Feb 2024 13:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 013A480049;
+	Mon, 26 Feb 2024 13:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708953220; cv=none; b=KSEwofR6QJHVBpJLcQmlFcqsu4LFnCNdKEsZDK7i+0gGASAG2Vb03zoWMiOuHzkYCCWalbe3OpCdd+mygCJI1QNLkPVf66Od8eUpOHC4h0pFgWLw0K/x3reB9sOBOb1yELn/4jmer8x/RsUNXu4BmHYtjdALmkdsQ3DjxsZUXPQ=
+	t=1708953278; cv=none; b=oOUHdHhz8psLNsOp5/rYlMX291oVYm3m2x8M1LWmoO+QJDNH0o2IXtawQDwXq0YFAW6D10TnPuCKt/sVcl0s1WrPAspGaRvVG8WrBM5PR74RjGZizkCRZG9jElLoiTZ9nOzPC8uUaC5cJW/UEYGogutn3XbLjl/Fs6oJHvS2V+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708953220; c=relaxed/simple;
-	bh=5d8tuwRD3hnn1I/Q5u9fzmp1C7q+UTW7gVYHJW8kmrc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=krIQiO7OIUqoHxhB5YZ9QOkfwoN3UG1OWPSzhlyhXQo251cthAhA8QAu9VZZI08KWAa2xvj16cJTNVqooqbNMS1FO3LEmGFmheIe3ve2OVHnQ9FPFZk1zCDPx97RTvOijQ7P1QpGVeiM9NPpRKy2v8hefN947e8nfaAexG4Rt2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hc3rG1yg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A64FAC433F1;
-	Mon, 26 Feb 2024 13:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708953220;
-	bh=5d8tuwRD3hnn1I/Q5u9fzmp1C7q+UTW7gVYHJW8kmrc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hc3rG1yg2BT8VqE8Z4ZwK4KtS8Lwnpl4TmaFs/SYKt8drW1WeIAbd8KPilt2BRNPX
-	 sanWLnB4FwMlOzwk4BB3yfkdfNRBnjz3LVsgFBxamgyzw4OswEu9u08JmXoLxAOq/t
-	 oVfQcxbKs2kKClI8Dpi2ezGeuwkYW8fj4uiH2lAg=
-Date: Mon, 26 Feb 2024 14:13:21 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-	quic_ppratap@quicinc.com, quic_wcheng@quicinc.com,
-	quic_jackp@quicinc.com
-Subject: Re: [RFC PATCH] usb: gadget: ncm: Fix handling of zero block length
- packets
-Message-ID: <2024022602-each-tropical-9459@gregkh>
-References: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
+	s=arc-20240116; t=1708953278; c=relaxed/simple;
+	bh=onOjtn2OCXKp0syCfFOvRuRw1qC76EXl3R0ojQ20wSE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZtZP2y2oUJHzgbPD4U6ouigG1ptZ2MxL+WIYC/6x06BDzTWzfR4A1TZD6DX/EDxJ5wdEPaGDjmAyfPususVFnPacMieGscC8BNsZmbX++KB9dPqSGUa+ocFMtM3E537fFjClxJ5+zgRQuR821KS5Px02v99McgHAnF8nFYREzGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=znmh2kds; arc=none smtp.client-ip=139.165.32.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
+Received: from localhost.localdomain (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 36962200F806;
+	Mon, 26 Feb 2024 14:14:33 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 36962200F806
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
+	s=ulg20190529; t=1708953273;
+	bh=Fki2M93IyamHdksa2ApChFnQ2IumATEN8ucI+urLSi8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=znmh2kdsCw38+VooS2xI7VpDOH6xrY2IwLT8NZXhi5tz4UlROuNEAo76sBmuxYb7K
+	 7RG1c70Xq+JbN7AwZC8oFshHoVvNtKWBIZ7y2KfhxocKTEdtF0dm4wwwYIy83OxE7Z
+	 pqm9G1VwEfX3eao+u8ydLZa+Far4QHTOnTibl5jIYOrd1E8JEHtWPSTu7iQOB9S7U4
+	 IHCwZnt1BBP1Kprzq203f81XOg7QVkuP/3jrzwxKJbJ94+Fpi8VAtc/zcSijLkU/aX
+	 KdJwdHWAVbobw3X/NPEPY8yls9pBVnKLRJiQe6ci8C5lX8xueQ1EHvKB03EzEyoghy
+	 B2eg6gq/gJjMQ==
+From: Justin Iurman <justin.iurman@uliege.be>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	dsahern@kernel.org,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-kernel@vger.kernel.org,
+	justin.iurman@uliege.be
+Subject: [PATCH net-next v5 0/3] ioam6: netlink multicast event
+Date: Mon, 26 Feb 2024 14:14:09 +0100
+Message-Id: <20240226131412.10214-1-justin.iurman@uliege.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
 
-On Mon, Feb 26, 2024 at 04:58:16PM +0530, Krishna Kurapati wrote:
-> While connecting to a Linux host with CDC_NCM_NTB_DEF_SIZE_TX
-> set to 65536, it has been observed that we receive short packets,
-> which come at interval of 5-10 seconds sometimes and have block
-> length zero but still contain 1-2 valid datagrams present.
-> 
-> According to the NCM spec:
-> 
-> "If wBlockLength = 0x0000, the block is terminated by a
-> short packet. In this case, the USB transfer must still
-> be shorter than dwNtbInMaxSize or dwNtbOutMaxSize. If
-> exactly dwNtbInMaxSize or dwNtbOutMaxSize bytes are sent,
-> and the size is a multiple of wMaxPacketSize for the
-> given pipe, then no ZLP shall be sent.
-> 
-> wBlockLength= 0x0000 must be used with extreme care, because
-> of the possibility that the host and device may get out of
-> sync, and because of test issues.
-> 
-> wBlockLength = 0x0000 allows the sender to reduce latency by
-> starting to send a very large NTB, and then shortening it when
-> the sender discovers that there’s not sufficient data to justify
-> sending a large NTB"
-> 
-> However, there is a potential issue with the current implementation,
-> as it checks for the occurrence of multiple NTBs in a single
-> giveback by verifying if the leftover bytes to be processed is zero
-> or not. If the block length reads zero, we would process the same
-> NTB infintely because the leftover bytes is never zero and it leads
-> to a crash. Fix this by bailing out if block length reads zero.
-> 
-> Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call")
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
-> ---
-> 
-> PS: Although this issue was seen after CDC_NCM_NTB_DEF_SIZE_TX
-> was modified to 64K on host side, I still believe this
-> can come up at any time as per the spec. Also I assumed
-> that the giveback where block length is zero, has only
-> one NTB and not multiple ones.
+v5:
+ - remove the "must be the destination" check before sending an ioam6
+   event
+v4:
+ - rebase on top of net merge
+v3:
+ - patchset was mistakenly superseded due to same cover title used for
+   iproute2-next equivalent patch -> resend (renamed)
+v2:
+ - fix warnings
 
-Hi,
+Add generic netlink multicast event support to ioam6 as another solution
+to share IOAM data with user space. The other one being via IPv6 raw
+sockets combined with ancillary data (or packet socket, if the listener
+does not need the processing of the IOAM Option-Type, since the hook is
+before in that case). This patchset focuses on the IOAM Pre-allocated
+Trace (the only Option-Type currently supported in the kernel), and so
+on IOAM "trace" events. See an example of a consumer here [1].
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+  [1] https://github.com/Advanced-Observability/ioam-agent-python/blob/netlink_event/ioam-agent.py
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Justin Iurman (3):
+  uapi: ioam6: API for netlink multicast events
+  net: ioam6: multicast event
+  net: exthdrs: ioam6: send trace event
 
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
+ include/net/ioam6.h             |  4 +++
+ include/uapi/linux/ioam6_genl.h | 20 +++++++++++
+ net/ipv6/exthdrs.c              |  4 +++
+ net/ipv6/ioam6.c                | 64 +++++++++++++++++++++++++++++++++
+ 4 files changed, 92 insertions(+)
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
 
-thanks,
+base-commit: 5fc3903c46a743781cd35fdecfdd889c522e2c3b
+-- 
+2.34.1
 
-greg k-h's patch email bot
 
