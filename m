@@ -1,152 +1,141 @@
-Return-Path: <linux-kernel+bounces-81497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD7AE8676B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE9F98676BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84AE51F26CF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:36:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 414BC1F23F22
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E5E31292C0;
-	Mon, 26 Feb 2024 13:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECA71292C0;
+	Mon, 26 Feb 2024 13:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="iWPYjw5H"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="dG97OFSY"
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8C61BC43;
-	Mon, 26 Feb 2024 13:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF66C7FBAA
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 13:37:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708954584; cv=none; b=Nfa5q6amTQCVFyrptmfoRMrCUJRZO8C8frhPABIuvMw42BH/cDttLBBDi/ZpxTLITiOq2lZM3DGbn0DCk/YeHPdUALx19KqBj8EdbtfPQ1BgehNkj7sRTPh7i28RzjKj5Q5IAYe0UmpNmp5o0LblM81oERqIaYuGcbNt06gbafo=
+	t=1708954655; cv=none; b=hTpK6Dz2VIbzwxHBlMz58ef8bMw1XsL4VL5D0xvPjcukCANhBkEKTvuybwLs1/4UeDP6RawJQKEqelz72cEiFHWoQrFdaaaW61WVvB5BobwFnFvceG9kvjZOt4p9aR2bAEcAKrj+VAAh2bXcubF5e9vcNOYNeQMwI+xmEn8EKtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708954584; c=relaxed/simple;
-	bh=zD1XerKk6rTbU8z4E7lpvNlFBdKdOZ0vERmxDSdZqZs=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=EUnFOwsG/Gmgow3wvWWXyU/zfUR3Q+FfINkQXnhhrtet+YbWZFVSpcHpZJmHs4W892JtGPJdMWfbSUPgc0/3aokSDT4svL8vZg+v5C4daa0gglsjAB7EEw23c6jpiaqlZzUdLuqE6ee45k3Vkc7RQPpsqc9Qii2Y0n3EUKX8Z1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=iWPYjw5H; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 638AD1C0004;
-	Mon, 26 Feb 2024 13:36:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708954579;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p39XZx/jygzOWSNQQM2/s6rjiVRFrliYhmP8SCLmXWo=;
-	b=iWPYjw5HBqFtjDgaWmtEyyFGcMAvqe0vltRGG6LtdKDXsCrHbeKxrzYrEwvtEpJdrebvw3
-	0iWjlgjkAW4NduknAZwUKflXoAPBl6ymXFTzyvRybSWqXuhf4WVT4B7vcmIhLpt2EJY3vo
-	WhJ27Xs4ilGPGuztcMX+7QBNJgn4NLkP5ODKu8UNYcvjKTcmFxMyD9PLrLtT5YGl1AxTi9
-	4WhB6Oe+C/V2+VybJvb/P3E1kdLyeHi+1D0e/+atwy05KyBQKwTXxW1sh43wUXBox1NlLY
-	EaJot7043PxRJtvlKdiI10mFguyjngNUWNmm5B2dV6O4+EN+3qYn7ckqpPVuNw==
+	s=arc-20240116; t=1708954655; c=relaxed/simple;
+	bh=QdEwI9QlMgL01Ffi2DaCcAkgo345YjCp2wxa14Lk+NQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AV1Dcur/LHbNs2HJAYpv0rdXJnGC/08RzKuWqtT0Bar+p0g3F6aQ5ixVhzty/1UD1r+4LZcXIiKs5t0nH1p18DBV5cttT8P0GEL1H83gchf4ffCWSMaGvt7zRej9XAujOMwqHUHhJOd67NJKG33duDF0tE+ST7xv1Ch4CiTKR4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=dG97OFSY; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4ccfb94ee5cso302349e0c.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 05:37:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708954652; x=1709559452; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sVBescN1cuFlk0Nm2k2RUQXFNz8C6uStbKpoBsdlsAw=;
+        b=dG97OFSYAM5gOF68+MxVRAAlNhVVRx6sajFXM7Szyot9RYRDul8fXmRV56Zar9t3T0
+         yvDcOXer5iWqGjr/HR7rnR6aiA7XY+q9mqOouKWji86obG0hBYI8MUQJUHJeuIaTUYgp
+         6k+Knk8jTeGMwN9AmPZv8+L5FjnRsnjyljIrpfp1Yf0Z0WT9BJvt+afXWEQ4yxdNcvfN
+         4eBDlDpsujhphz674nw+ml/v1aZHDbqCFA1rtt7cSJmfDAm/Y2jw+82sNgoZd+EuAPkd
+         674Df78nsf9fSImrGN5kERJ2BdyHKUVDAWXk7VCExJ21QEpC+oSXRZavm/2vr2igVS8X
+         3xPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708954652; x=1709559452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sVBescN1cuFlk0Nm2k2RUQXFNz8C6uStbKpoBsdlsAw=;
+        b=NVzfBshnLliNVqLvevdkHashQXeEsWGDHc5mwt9pPpyDWBvWM1qH60FCLWKH2pX5p7
+         Oz6zIqyI+JC3cDH/hy3ZKrzAIdzWUdyeCCmnlydsdlGJ3UK+zl7J37Bt4qfq3dHCepd/
+         b+nMTrOPSJz0R0uYZv1AwksVNaEIHUTFnLynBNMyI6WJEScKfcRBHjtQdkh/JPJOXZe6
+         5APcu0z9RvdZBAGqk98eJJo3RpDOmGdP+4lKqVAu0SVXkjr/3iDsGrreE3Y1WRlmRaPb
+         vRWoiLcZXeOvYVmO7WPtnplPro6ZTiaek1Lfe+bhZwam0hg94oV/nDn2aoCE9WTRvvdt
+         /chQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwUBeg0ycn9tyC7pA3MVqOCy0yBsyCR4WszkLZChdVQqkRzavy7eJ8ysKNrLzs1ctv6pTPNwuldZtFHwCCrtRpzM0ZZh5VVcMQh3NR
+X-Gm-Message-State: AOJu0YzswG771Wh4qiNUKjh3STM/O1Iam0W3rry5S6bFCaC2OzlmzeBq
+	2/fWXQ7u5BSX7C6B3XLKSU8efRajH2U2ZqazZISMsF/u0SplmpKLjxqutWWfMhn+cNKxNRh1qYR
+	BjJWz1cVlAvfpjbAVbFk+SyX5pVQnwb3A3QjtHnhIbKADTRE4bpM=
+X-Google-Smtp-Source: AGHT+IEfn2RuqdpoU1z0tZbiuMJyTRGgX8/XzY8xA4xhr9R9WWQS7s+vHLTBQjEQ7TNvZhNKDomanMyhV93RZKd81I4=
+X-Received: by 2002:a1f:dd81:0:b0:4cf:19c3:c1cb with SMTP id
+ u123-20020a1fdd81000000b004cf19c3c1cbmr3104603vkg.12.1708954651109; Mon, 26
+ Feb 2024 05:37:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240226174117.722301b9@canb.auug.org.au> <CAMRc=MctN=PqM6O3GxvcFuk2ZT2YcqTiKZiuCiaTnXDEV+gXaw@mail.gmail.com>
+ <20240226110424.GA120668@google.com>
+In-Reply-To: <20240226110424.GA120668@google.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Mon, 26 Feb 2024 14:37:20 +0100
+Message-ID: <CAMRc=Md3pfEWcMSoVjdj7_o9MJQUShfKL6=XyWVm3MqEWKFX9Q@mail.gmail.com>
+Subject: Re: linux-next: duplicate patch in the gpio-brgl tree
+To: Lee Jones <lee@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 26 Feb 2024 14:36:17 +0100
-Message-Id: <CZF1U6LPB3XB.1BXJPWRGB4TH@bootlin.com>
-Subject: Re: [PATCH v4 0/4] spi: cadence-qspi: Fix runtime PM and
- system-wide suspend
-Cc: "Apurva Nandan" <a-nandan@ti.com>, <linux-spi@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, "Gregory CLEMENT"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, "Nishanth" <nm@ti.com>, "Vignesh"
- <vigneshr@ti.com>
-To: "Dhruva Gole" <d-gole@ti.com>, "Mark Brown" <broonie@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240222-cdns-qspi-pm-fix-v4-0-6b6af8bcbf59@bootlin.com>
- <170862920925.104158.14642580909914879148.b4-ty@kernel.org>
- <20240226121803.5a7r5wkpbbowcxgx@dhruva>
-In-Reply-To: <20240226121803.5a7r5wkpbbowcxgx@dhruva>
-X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello Dhruva,
-
-On Mon Feb 26, 2024 at 1:18 PM CET, Dhruva Gole wrote:
-> Hi Mark, Theo,
+On Mon, Feb 26, 2024 at 12:04=E2=80=AFPM Lee Jones <lee@kernel.org> wrote:
 >
-> + Nishanth, Vignesh (maintainers of TI K3)
+> On Mon, 26 Feb 2024, Bartosz Golaszewski wrote:
 >
-> On Feb 22, 2024 at 19:13:29 +0000, Mark Brown wrote:
-> > On Thu, 22 Feb 2024 11:12:28 +0100, Th=C3=A9o Lebrun wrote:
-> > > This fixes runtime PM and system-wide suspend for the cadence-qspi
-> > > driver. Seeing how runtime PM and autosuspend are enabled by default,=
- I
-> > > believe this affects all users of the driver.
-> > >=20
-> > > This series has been tested on both Mobileye EyeQ5 hardware and the T=
-I
-> > > J7200 EVM board, under s2idle.
-> > >=20
-> > > [...]
-> >=20
-> > Applied to
-> >=20
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-=
-next
-> >=20
-> > Thanks!
-> >=20
-> > [1/4] spi: cadence-qspi: fix pointer reference in runtime PM hooks
-> >       commit: 32ce3bb57b6b402de2aec1012511e7ac4e7449dc
-> > [2/4] spi: cadence-qspi: remove system-wide suspend helper calls from r=
-untime PM hooks
-> >       commit: 959043afe53ae80633e810416cee6076da6e91c6
-> > [3/4] spi: cadence-qspi: put runtime in runtime PM hooks names
-> >       commit: 4efa1250b59ebf47ce64a7b6b7c3e2e0a2a9d35a
-> > [4/4] spi: cadence-qspi: add system-wide suspend and resume callbacks
-> >       commit: 078d62de433b4f4556bb676e5dd670f0d4103376
+> > On Mon, Feb 26, 2024 at 7:41=E2=80=AFAM Stephen Rothwell <sfr@canb.auug=
+org.au> wrote:
+> > >
+> > > Hi all,
+> > >
+> > > The following commit is also in the mfd tree as A different commit
+> > > (but the same patch):
+> > >
+> > >   4a7b0850fc7a ("dt-bindings: cros-ec: Add properties for GPIO contro=
+ller")
+> > >
+> > > This is commit
+> > >
+> > >   7b79740d42e7 ("dt-bindings: mfd: cros-ec: Add properties for GPIO c=
+ontroller")
+> > >
+> > > in the mfd tree.
+> > >
+> > > --
+> > > Cheers,
+> > > Stephen Rothwell
+> >
+> > Hi Stephen, Lee!
+> >
+> > I picked it up because I was already queuing the patch adding the GPIO
+> > driver. Unless there are conflicts with the MFD branch (doesn't seem
+> > like it?), I think it should go through the GPIO branch together with
+> > the driver.
 >
-> It seems like between 6.8.0-rc5-next-20240220 and
-> 6.8.0-rc5-next-20240222 some of TI K3 platform boot have been broken.
+> This is the first I've heard of it.  There was no reply from you, even
+> after I specifically asked you for an explanation.
 >
-> It particularly seemed related to these patches because we can see
-> cqspi_probe in the call trace and also cqspi_suspend toward the top.
+
+Huh, I now see your email in lore[1] but I don't have it in my inbox,
+not even in spam. I would have answered otherwise.
+
+> There is no convincing reason for this to follow the C change.  It's
+> more important to avoid Linus from facing merge-conflicts during the
+> merge-window. Please remove the patch from your tree.
 >
-> See logs for kernel crash in [0] and working in [1]
 
-I'm guessing we are talking about tags next-20240220 and next-20240222
-on: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/
+This is why I'm asking if this caused a conflict. Whatever, I'll drop
+it alright.
 
-Neither of those tags include the patches about fixing PM hooks.
+Bartosz
 
-   =E2=9F=A9 # next-20240220
-   =E2=9F=A9 git log --oneline --author theo.lebrun 2d5c7b7eb345 \
-      drivers/spi/spi-cadence-quadspi.c
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
 
-   =E2=9F=A9 # next-20240222
-   =E2=9F=A9 git log --oneline --author theo.lebrun e31185ce00a9 \
-      drivers/spi/spi-cadence-quadspi.c
-   0f3841a5e115 spi: cadence-qspi: report correct number of chip-select
-   7cc3522aedb5 spi: cadence-qspi: set maximum chip-select to 4
-   0d62c64a8e48 spi: cadence-qspi: assert each subnode flash CS is valid
-   =E2=9F=A9 # Those are unrelated patches.
-
-Also it shows from the calltrace: this series renames the runtime
-suspend/resume hooks to cqspi_runtime_* while the callstack you gave
-talks about cqspi_suspend. It only gets called at system-wide suspend
-following this series.
-
-My guess is that this series will rather fix the issue that you are now
-facing. :-) Could you try applying them and checking if that fixes your
-error?
-
-Regards,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+[1] https://lore.kernel.org/lkml/20240223102039.GK10170@google.com/
 
