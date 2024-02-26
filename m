@@ -1,163 +1,125 @@
-Return-Path: <linux-kernel+bounces-81736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10306867984
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:08:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A22867985
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41AD91C2AF42
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:08:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 084A41F2633A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1825A133281;
-	Mon, 26 Feb 2024 14:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F382A12CD93;
+	Mon, 26 Feb 2024 14:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fvxr/8TR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QENFvPRw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE66B12CD89;
-	Mon, 26 Feb 2024 14:49:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3621604DA
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958965; cv=none; b=jUIsZHVZ0/xtSWpb5/HVkbP/ha1gP2KmOlKgx3l4D2scRI10k2eM48tGcmMmgtBabe2pCGfK0/eL3ztUr8tyPM5uPQZ/b6nVlGFCrD3V32guZp4jjikYZeeZDAi2gMb0XC66NWCbtqZbnJpFWb/yFFmyADh4fE9EzkxtAsgBXzc=
+	t=1708958993; cv=none; b=eAoa4/ZHMtxMVaGX0N5E5NXbhCUUdSiDueG0ipNsBZ0d4ljtp096WtYqwez0yKHksdSnxJq+4VC1SAEasWpevXpak25uflqL6FzkDPhDjNWr1UnYrSK0zo2QZGilHAeKr98qiEjhoh1QyUrxuu+si+SMrUdX13EzddE1zK4Y5kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958965; c=relaxed/simple;
-	bh=pCB2xvyDUz4udYP2q+QRzpYQk36Y6qJcgoSZFIZwsrc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lOUzfqx4XqmFz5RWVVKxzziG+3wiR9HhyP6dQeI7bWdPgsGPBLHBLrar7AH1u5AkeNrwM1VwsLuc4zKUivxujf1ICsZfmGw8Woy1nlgN65/3EkHZ6xYYrfE4Wxj+Bj79BtKclRKeVydPYdx0ZdW8nO0eOCbZrOTbHuKx4kukhYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fvxr/8TR; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708958964; x=1740494964;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=pCB2xvyDUz4udYP2q+QRzpYQk36Y6qJcgoSZFIZwsrc=;
-  b=fvxr/8TRKv9homNkJ6lkJtLRdlSqI+rPaoipgqO+ddHYhWiYbRhtq9lX
-   ipresFHi42L1JwDCZf2nE/u8pND2EL/CTr16TfnHRrP868wLNA5qGLQZC
-   lPitPeo3/bZV7hmB8vNKl6b9sKMW2XXd1rSbF3kxmQ5WuX2gsEbOt7v/Z
-   evgn8hsIzJXGlYMD4coyJpvvBjsbwXfGe9fYjPUyjg1EL5OHrD6Xo2L0b
-   qi/OHYjJjQhe4r+HcHiaLKxkwHrSvPCB9ixq++4uTdro6fkqqKQmY+Ced
-   AHALT64Xy/PL/I1KNhjn7FTgKToPMcEqc3jht3y38Mp3ZdkTv7v6ZD6Co
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3167085"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3167085"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:49:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6573411"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa007.fm.intel.com with ESMTP; 26 Feb 2024 06:49:21 -0800
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Michael Chan <michael.chan@broadcom.com>,
-	Somnath Kotur <somnath.kotur@broadcom.com>,
-	Pavan Chebbi <pavan.chebbi@broadcom.com>,
-	Kalesh AP <kalesh-anakkur.purayil@broadcom.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] bnxt_en: fix accessing vnic_info before allocating it
-Date: Mon, 26 Feb 2024 15:49:11 +0100
-Message-ID: <20240226144911.1297336-1-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1708958993; c=relaxed/simple;
+	bh=4h1uS0OB13pX9giRpnNIP+0vjTvNS7C6s/4bG7aHMC4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gmC+s8nLW14WOrT1jOzKwSOvn+808JjTOA0bQFFiUoYolsYtw5oiOtua4z5Lx1fKGcbr4nXdNgJE4/NLgWjekaTFJsfhG139lmYKc+Qg+mVKtUAJ4uouLJfxCZMQ0s8G60Vo2VxXSe2SIRkPvPzxVjNf4iHbWTcuKV2CxC8lh+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QENFvPRw; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708958990;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oATdMi/DAQW7XnfLe/Ii99PaynQWsTmEg5BInunlmU4=;
+	b=QENFvPRwewRrYhCyiYo35H4hsXjSBoZprmtr8CIOy/UitTbRwrFVIihfKCv/wRaotFjgrW
+	1F1NZnJzowg5OCyo6VIV4t+Bsnk65mzrMio9DxeKqkdJ4eVrpg2BunMZXlZHnlUXnCA90s
+	W9ttP4TOYUiF8cM/hQMUKHz0QyxXHdQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-649-56tyrdf1OLSeDRmnsFqa3w-1; Mon, 26 Feb 2024 09:49:48 -0500
+X-MC-Unique: 56tyrdf1OLSeDRmnsFqa3w-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33de2d9bc74so269903f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:49:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708958987; x=1709563787;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oATdMi/DAQW7XnfLe/Ii99PaynQWsTmEg5BInunlmU4=;
+        b=L8W8DohZvSr9KJSAivn/cjcUeRmnufDh8k2JSIBee4ro9RRgua9GsWVhjTW5SBJUN/
+         MMOlvzCgZuDdCA4cvZpVrfH0tVTIKvgALdZyIBW0d004EpORt40kh6ThoeVYlELIcMsx
+         pO6k/gCe3knhhdeRKyJj21xXSSVWmI9WWHEZCSbViEFn/GAPGVzhQNrvEqpirjWNZ7CL
+         5PkCdCsbH8oL5mT8LXpIWm5xVvj93wJwsHVlhSDjfJNyQKK77gr71sb4x6hS17+b+RBA
+         fHzIQ4waxwr7MlmjqIRD64OhnVzpNQvltdaxGEUQ+c8nqxBDdURgbnsGpQzx6AaZ2zpl
+         FbsA==
+X-Gm-Message-State: AOJu0Yyrug10wce7u8g8xDh0vZRaDCY1H/2RQRrHQROgEGiHqXGaxJub
+	G1bURK43CJ23GfmTduMSD7ioAfj9iirx8YeZCA170vzHnc4ZYlbHhACPGZpKUM+8OHjqIlm5vZ2
+	6u+tqks1s0SxXdW9B7fxC3dxqA4mwQipwxwgZ1qDbaTvK/QbX34sMnspvGNtCm6/f3WSp1KEsPb
+	2Olsn/IeBl4EwXQ+LG8RCxGLBgvENh/U0h33Yj
+X-Received: by 2002:a05:6000:542:b0:33d:222d:f380 with SMTP id b2-20020a056000054200b0033d222df380mr4786194wrf.0.1708958987319;
+        Mon, 26 Feb 2024 06:49:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEh1Jo6dbimJnw7JwSkOJS+Z5z3FdkvM8eJF2SdeZSsY3mQqYpqZsnBJ6rTceTsgNv069XIT5VJPEbSzHHuOsY=
+X-Received: by 2002:a05:6000:542:b0:33d:222d:f380 with SMTP id
+ b2-20020a056000054200b0033d222df380mr4786172wrf.0.1708958987010; Mon, 26 Feb
+ 2024 06:49:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240226143630.33643-1-jiangshanlai@gmail.com>
+In-Reply-To: <20240226143630.33643-1-jiangshanlai@gmail.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Mon, 26 Feb 2024 15:49:34 +0100
+Message-ID: <CABgObfaSGOt4AKRF5WEJt2fGMj_hLXd7J2x2etce2ymvT4HkpA@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/73] KVM: x86/PVM: Introduce a new hypervisor
+To: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Lai Jiangshan <jiangshan.ljs@antgroup.com>, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Sean Christopherson <seanjc@google.com>, Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, 
+	Ingo Molnar <mingo@redhat.com>, kvm@vger.kernel.org, x86@kernel.org, 
+	Kees Cook <keescook@chromium.org>, Juergen Gross <jgross@suse.com>, 
+	Hou Wenlong <houwenlong.hwl@antgroup.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-bnxt_alloc_mem() dereferences ::vnic_info in the variable declaration
-block, but allocates it much later. As a result, the following crash
-happens on my setup:
+On Mon, Feb 26, 2024 at 3:34=E2=80=AFPM Lai Jiangshan <jiangshanlai@gmail.c=
+om> wrote:
+> - Full control: In XENPV/Lguest, the host Linux (dom0) entry code is
+>   subordinate to the hypervisor/switcher, and the host Linux kernel
+>   loses control over the entry code. This can cause inconvenience if
+>   there is a need to update something when there is a bug in the
+>   switcher or hardware.  Integral entry gives the control back to the
+>   host kernel.
+>
+> - Zero overhead incurred: The integrated entry code doesn't cause any
+>   overhead in host Linux entry path, thanks to the discreet design with
+>   PVM code in the switcher, where the PVM path is bypassed on host events=
+.
+>   While in XENPV/Lguest, host events must be handled by the
+>   hypervisor/switcher before being processed.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000090
- fbcon: Taking over console
- #PF: supervisor write access in kernel mode
- #PF: error_code (0x0002) - not-present page
- PGD 12f382067 P4D 0
- Oops: 8002 [#1] PREEMPT SMP NOPTI
- CPU: 47 PID: 2516 Comm: NetworkManager Not tainted 6.8.0-rc5-libeth+ #49
- Hardware name: Intel Corporation M50CYP2SBSTD/M58CYP2SBSTD, BIOS SE5C620.86B.01.01.0088.2305172341 05/17/2023
- RIP: 0010:bnxt_alloc_mem+0x1609/0x1910 [bnxt_en]
- Code: 81 c8 48 83 c8 08 31 c9 e9 d7 fe ff ff c7 44 24 Oc 00 00 00 00 49 89 d5 e9 2d fe ff ff 41 89 c6 e9 88 00 00 00 48 8b 44 24 50 <80> 88 90 00 00 00 Od 8b 43 74 a8 02 75 1e f6 83 14 02 00 00 80 74
- RSP: 0018:ff3f25580f3432c8 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: ff15a5cfc45249e0 RCX: 0000002079777000
- RDX: ff15a5dfb9767000 RSI: 0000000000000000 RDI: 0000000000000000
- RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
- R10: ff15a5dfb9777000 R11: ffffff8000000000 R12: 0000000000000000
- R13: 0000000000000000 R14: 0000000000000020 R15: ff15a5cfce34f540
- FS:  000007fb9a160500(0000) GS:ff15a5dfbefc0000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CRO: 0000000080050033
- CR2: 0000000000000090 CR3: 0000000109efc00Z CR4: 0000000000771ef0
- DR0: 0000000000000000 DR1: 0000000000000000 DRZ: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- PKRU: 55555554
+Lguest... Now that's a name I haven't heard in a long time. :)  To be
+honest, it's a bit weird to see yet another PV hypervisor. I think
+what really killed Xen PV was the impossibility to protect from
+various speculation side channel attacks, and I would like to
+understand how PVM fares here.
 
- Call Trace:
- <TASK>
- ? __die_body+0x68/0xb0
- ? page_fault_oops+0x3a6/0x400
- ? exc_page_fault+0x7a/0x1b0
- ? asm_exc_page_fault+0x26/8x30
- ? bnxt_alloc_mem+0x1609/0x1910 [bnxt_en]
- ? bnxt_alloc_mem+0x1389/8x1918 [bnxt_en]
- _bnxt_open_nic+0x198/0xa50 [bnxt_en]
- ? bnxt_hurm_if_change+0x287/0x3d0 [bnxt_en]
- bnxt_open+0xeb/0x1b0 [bnxt_en]
- _dev_open+0x12e/0x1f0
- _dev_change_flags+0xb0/0x200
- dev_change_flags+0x25/0x60
- do_setlink+0x463/0x1260
- ? sock_def_readable+0x14/0xc0
- ? rtnl_getlink+0x4b9/0x590
- ? _nla_validate_parse+0x91/0xfa0
- rtnl_newlink+0xbac/0xe40
- <...>
+You obviously did a great job in implementing this within the KVM
+framework; the changes in arch/x86/ are impressively small. On the
+other hand this means it's also not really my call to decide whether
+this is suitable for merging upstream. The bulk of the changes are
+really in arch/x86/kernel/ and arch/x86/entry/, and those are well
+outside my maintenance area.
 
-Don't create a variable and dereference the first array member directly
-since it's used only once in the code.
-
-Fixes: ef4ee64e9990 ("bnxt_en: Define BNXT_VNIC_DEFAULT for the default vnic index")
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-index 9968d67e6c77..a15e6d31fc22 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -5004,7 +5004,6 @@ static void bnxt_free_mem(struct bnxt *bp, bool irq_re_init)
- 
- static int bnxt_alloc_mem(struct bnxt *bp, bool irq_re_init)
- {
--	struct bnxt_vnic_info *vnic0 = &bp->vnic_info[BNXT_VNIC_DEFAULT];
- 	int i, j, rc, size, arr_size;
- 	void *bnapi;
- 
-@@ -5133,8 +5132,9 @@ static int bnxt_alloc_mem(struct bnxt *bp, bool irq_re_init)
- 	if (rc)
- 		goto alloc_mem_err;
- 
--	vnic0->flags |= BNXT_VNIC_RSS_FLAG | BNXT_VNIC_MCAST_FLAG |
--			BNXT_VNIC_UCAST_FLAG;
-+	bp->vnic_info[BNXT_VNIC_DEFAULT].flags |= BNXT_VNIC_RSS_FLAG |
-+						  BNXT_VNIC_MCAST_FLAG |
-+						  BNXT_VNIC_UCAST_FLAG;
- 	if (BNXT_SUPPORTS_NTUPLE_VNIC(bp) && (bp->flags & BNXT_FLAG_RFS))
- 		bp->vnic_info[BNXT_VNIC_NTUPLE].flags |=
- 			BNXT_VNIC_RSS_FLAG | BNXT_VNIC_NTUPLE_FLAG;
--- 
-2.43.2
+Paolo
 
 
