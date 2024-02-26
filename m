@@ -1,149 +1,248 @@
-Return-Path: <linux-kernel+bounces-82186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C408868062
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:04:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA7648680B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:17:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDFE81C24B99
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:04:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72227290940
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:17:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111D5130E40;
-	Mon, 26 Feb 2024 19:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81FC312F5A4;
+	Mon, 26 Feb 2024 19:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JzENHL8t"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=aurel32.net header.i=@aurel32.net header.b="QyS7hGWI"
+Received: from hall.aurel32.net (hall.aurel32.net [195.154.113.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1611C12FB13
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B6D12BF27;
+	Mon, 26 Feb 2024 19:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.154.113.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708974234; cv=none; b=lMy9XOfuX78NZt9N5+zaJqCzrhHLJKGIKMb+jX4cwyvRSdGFL9YWcArD/XgoLxVBIqo/xziyMH2xMHir3GwWsEdUQWb0YbO25kc0hvz/VfCIMM0SCIuZC9zexzu29jPssQnFSuR0oMM4emFwVaahvh94znLxI39EiKn4UtqrvCQ=
+	t=1708974966; cv=none; b=pt9X7s+JsrzsgCugxdLOdWdJlA3GKI0D3YeQz1VAk9oHN9ZPUEtU3h4agku2Ra5loOHKcrEXSUWnryH1anbbBxWXnUD56Ow3gDHPgOmRpa8sU+wRvm1LdWZ5lqJNmZYDfr3aATceqlGqQ21Jl7VTdvtoQTw3p/7sQKqvJaoiqYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708974234; c=relaxed/simple;
-	bh=ueogXMXjMx+FUzyBfdkqvsoWA/QpQjXs4+C7r2E26+o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mpIv8DD3NEntiCgrKhnk6//nQZWj/GdsgUKz3cNiSP+phqjsWJ1AzbVBWmxHaKU6pa98Gtlr0LTIBRkfNOZrhZnPoXvFtIXvukHdi9Ao3oldndcRFLgpPcGZEyDQoextMzJmSoln9pEmda4PigocTufwdqQGTBaUjq8NmftNu5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JzENHL8t; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708974230;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=36QbKVn/TBWqPf7/5XAMBk40KvDkqfCaZzPS8LUR4Ho=;
-	b=JzENHL8tdJK8hydg+cG/g6lua0CRCZFWzQrA4tszNd2BSvb7mopDz48WcJIyWBH/2w3ftZ
-	9gcXhzfuO/7oCseZybzaU1oihiCQuSLPqD04bWpK2gwEMOLCrFAQVPnuuWH564RZpMaZWq
-	4WVpmmQVNrY9LtG650RN8rcl/MPZkN8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-683-HX_Ofk9gNO6QkBWHpEkLkg-1; Mon, 26 Feb 2024 14:03:48 -0500
-X-MC-Unique: HX_Ofk9gNO6QkBWHpEkLkg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F115B8352A9;
-	Mon, 26 Feb 2024 19:03:47 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id CADEC401A77C;
-	Mon, 26 Feb 2024 19:03:47 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: seanjc@google.com,
-	michael.roth@amd.com,
-	aik@amd.com
-Subject: [PATCH v3 11/15] KVM: x86: Add supported_vm_types to kvm_caps
-Date: Mon, 26 Feb 2024 14:03:40 -0500
-Message-Id: <20240226190344.787149-12-pbonzini@redhat.com>
-In-Reply-To: <20240226190344.787149-1-pbonzini@redhat.com>
-References: <20240226190344.787149-1-pbonzini@redhat.com>
+	s=arc-20240116; t=1708974966; c=relaxed/simple;
+	bh=O0ZIo6cxxJHxd5FG0ZXs1D3kPCmDGTjZpf2SePW4mK4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H1uuwnBnW1GX4cc1Q5iqSicrBDaIQdGQIZ5PU5gqVcf5IasZXO93FGADeCaqV0GF+yYcyIue75KWMf32+GzS5LsV9wRms9nE2uRJbYN9fcKK0828BjsYslBgXkyKMvsWKFxktikMIYUrMyIzW+s5/e90fJWrnkHJA0k64MP9QzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aurel32.net; spf=pass smtp.mailfrom=aurel32.net; dkim=pass (2048-bit key) header.d=aurel32.net header.i=@aurel32.net header.b=QyS7hGWI; arc=none smtp.client-ip=195.154.113.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aurel32.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aurel32.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
+	; s=202004.hall; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:Reply-To:
+	Subject:Content-ID:Content-Description:X-Debbugs-Cc;
+	bh=OTrgJSJ1jDEPsGQxe8NHCf/xZH4XRsuoxTPG/b1FsiA=; b=QyS7hGWI1LCToHyw7V9iQMYHun
+	l7QpKUvlkFmqUnyTqBxsxezsPT4BE+q4DF+ZiOHNgkEOdd8bjWVEhO6cizyxFAEZD2mOdPidhrH+h
+	nQxqOMMVb51ZFFZwIrzRq1MkLntB29UnFBXaPsZhaCNAuay4/FZCAZ+le/Uw8oAVxwITbFd+zmCqc
+	g3N+RXuLRLwlgKmLTPF2bgYqVpcsH1tm/ZRxHby6c6AQlRinRmt9CSBuY/Bh8MX4iXWzL32pV3Ys+
+	74cpgV+eN6Wyzdbqmf88v1Y8Qc6qqD/eWTDsuAKtzWdrKACXsmtwDfRccbUmBuQxUVQVaQ/a+yBai
+	xAQaB4hw==;
+Received: from ohm.aurel32.net ([2001:bc8:30d7:111::2] helo=ohm.rr44.fr)
+	by hall.aurel32.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <aurelien@aurel32.net>)
+	id 1reflL-004AMc-1u;
+	Mon, 26 Feb 2024 19:31:39 +0100
+Date: Mon, 26 Feb 2024 19:31:38 +0100
+From: Aurelien Jarno <aurelien@aurel32.net>
+To: Minda Chen <minda.chen@starfivetech.com>
+Cc: David Abdurachmanov <david.abdurachmanov@gmail.com>,
+	Conor Dooley <conor@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Mason Huo <mason.huo@starfivetech.com>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v15 15/23] PCI: microchip: Add event irqchip field to
+ host port and add PLDA irqchip
+Message-ID: <ZdzZClVcyHXKwsUJ@aurel32.net>
+Mail-Followup-To: Minda Chen <minda.chen@starfivetech.com>,
+	David Abdurachmanov <david.abdurachmanov@gmail.com>,
+	Conor Dooley <conor@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Mason Huo <mason.huo@starfivetech.com>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+References: <20240218101831.113469-1-minda.chen@starfivetech.com>
+ <20240218101831.113469-2-minda.chen@starfivetech.com>
+ <SHXPR01MB0863FCE82CA2155E52A3EB6FE650A@SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn>
+ <CAEn-LTphwFA6KgCZWsqiMMob2Xw4t4sCZ70U0u0z2=yJOpyGHA@mail.gmail.com>
+ <SHXPR01MB0863DBBEB8C6AD12F3C0056DE657A@SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <SHXPR01MB0863DBBEB8C6AD12F3C0056DE657A@SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-This simplifies the implementation of KVM_CHECK_EXTENSION(KVM_CAP_VM_TYPES),
-and also allows the vendor module to specify which VM types are supported.
+Hi,
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 12 ++++++------
- arch/x86/kvm/x86.h |  2 ++
- 2 files changed, 8 insertions(+), 6 deletions(-)
+On 2024-02-21 10:10, Minda Chen wrote:
+>=20
+>=20
+> >=20
+> > On Tue, Feb 20, 2024 at 1:02=E2=80=AFPM Minda Chen <minda.chen@starfive=
+tech.com>
+> > wrote:
+> > >
+> > >
+> > > >
+> > > > As PLDA dts binding doc(Documentation/devicetree/bindings/pci/
+> > > > plda,xpressrich3-axi-common.yaml) showed, PLDA PCIe contains an
+> > > > interrupt controller.
+> > > >
+> > > > Microchip PolarFire PCIE event IRQs includes PLDA interrupts and
+> > > > Polarfire their own interrupts. The interrupt irqchip ops includes
+> > > > ack/mask/unmask interrupt ops, which will write correct registers.
+> > > > Microchip Polarfire PCIe additional interrupts require to write
+> > > > Polarfire SoC self-defined registers. So Microchip PCIe event irqch=
+ip ops can
+> > not be re-used.
+> > > >
+> > > > To support PLDA its own event IRQ process, implements PLDA irqchip
+> > > > ops and add event irqchip field to struct pcie_plda_rp.
+> > > >
+> > > > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> > > > Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> > > > ---
+> > > >  .../pci/controller/plda/pcie-microchip-host.c | 66 +++++++++++++++=
++++-
+> > > >  drivers/pci/controller/plda/pcie-plda.h       |  3 +
+> > > >  2 files changed, 68 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c
+> > > > b/drivers/pci/controller/plda/pcie-microchip-host.c
+> > > > index b3df373a2141..beaf5c27da84 100644
+> > > > --- a/drivers/pci/controller/plda/pcie-microchip-host.c
+> > > > +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
+> > > > @@ -770,6 +770,64 @@ static struct irq_chip mc_event_irq_chip =3D {
+> > > >       .irq_unmask =3D mc_unmask_event_irq,  };
+> > > >
+> > > Hi Thomas
+> > >   I think this patch code it is easy to review. If you busy, Could you
+> > > let other IRQ maintainer review? Thanks.
+> > >
+> > > Hi Lorenzo, Bjorn and Krzysztof
+> >=20
+> > Hi Minda,
+> >=20
+> > This patchset seems to have broken threading (lore, mailman). I have se=
+en other
+> > folks on IRC mentioning that too.
+> >=20
+> > I am not sure if that requires re-sending, but let's wait for others to=
+ comment.
+> >=20
+> > Cheers,
+> > david
+> >=20
+> Do you mean the auto test error in linux-riscv?=20
+> I can see that. But In v14 resend version, There is no error. Version 15 =
+just add
+> a new patch. Other no change. It is very strange.
+> If not this error, I will waiting others comment.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 9d91eb1b3080..3b87e65904ae 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -94,6 +94,7 @@
- 
- struct kvm_caps kvm_caps __read_mostly = {
- 	.supported_mce_cap = MCG_CTL_P | MCG_SER_P,
-+	.supported_vm_types = BIT(KVM_X86_DEFAULT_VM),
- };
- EXPORT_SYMBOL_GPL(kvm_caps);
- 
-@@ -4578,9 +4579,7 @@ static int kvm_ioctl_get_supported_hv_cpuid(struct kvm_vcpu *vcpu,
- 
- static bool kvm_is_vm_type_supported(unsigned long type)
- {
--	return type == KVM_X86_DEFAULT_VM ||
--	       (type == KVM_X86_SW_PROTECTED_VM &&
--		IS_ENABLED(CONFIG_KVM_SW_PROTECTED_VM) && tdp_mmu_enabled);
-+	return type < 32 && (kvm_caps.supported_vm_types & BIT(type));
- }
- 
- int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
-@@ -4781,9 +4780,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		r = kvm_caps.has_notify_vmexit;
- 		break;
- 	case KVM_CAP_VM_TYPES:
--		r = BIT(KVM_X86_DEFAULT_VM);
--		if (kvm_is_vm_type_supported(KVM_X86_SW_PROTECTED_VM))
--			r |= BIT(KVM_X86_SW_PROTECTED_VM);
-+		r = kvm_caps.supported_vm_types;
- 		break;
- 	default:
- 		break;
-@@ -9790,6 +9787,9 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
- 
- 	kvm_register_perf_callbacks(ops->handle_intel_pt_intr);
- 
-+	if (IS_ENABLED(CONFIG_KVM_SW_PROTECTED_VM) && tdp_mmu_enabled)
-+		kvm_caps.supported_vm_types |= BIT(KVM_X86_SW_PROTECTED_VM);
-+
- 	if (!kvm_cpu_cap_has(X86_FEATURE_XSAVES))
- 		kvm_caps.supported_xss = 0;
- 
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 2f7e19166658..997017d35f3a 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -24,6 +24,8 @@ struct kvm_caps {
- 	bool has_bus_lock_exit;
- 	/* notify VM exit supported? */
- 	bool has_notify_vmexit;
-+	/* bit mask of VM types */
-+	u32 supported_vm_types;
- 
- 	u64 supported_mce_cap;
- 	u64 supported_xcr0;
--- 
-2.39.1
+V15 is wrongly threaded:
+- Patch 2 has no In-Reply-To / In-Reply-To headers
+- Patch 3 to 13 reference patch 2 instead of the cover letter
+- Patch 14 has no In-Reply-To / In-Reply-To headers
+- Patch 15 references patch 14 instead of the cover letter
+- Patch 16 has no In-Reply-To / In-Reply-To headers
+- Patch 17 to 23 reference patch 17 instead of the cover letter
 
+Said otherwise, the patches appears as (sorry for the long lines):
 
+[PATCH v15 00/23] Refactoring Microchip PCIe driver and add StarFive PCIe
+=E2=94=94=E2=94=80>[PATCH v15 01/23] dt-bindings: PCI: Add PLDA XpressRICH =
+PCIe host common properties
+[PATCH v15 02/23] PCI: microchip: Move pcie-microchip-host.c to plda direct=
+ory
+=E2=94=9C=E2=94=80>[PATCH v15 03/23] PCI: microchip: Move PLDA IP register =
+macros to pcie-plda.h
+=E2=94=9C=E2=94=80>[PATCH v15 04/23] PCI: microchip: Add bridge_addr field =
+to struct mc_pcie
+=E2=94=9C=E2=94=80>[PATCH v15 05/23] PCI: microchip: Rename two PCIe data s=
+tructures
+=E2=94=9C=E2=94=80>[PATCH v15 06/23] PCI: microchip: Move PCIe host data st=
+ructures to plda-pcie.h
+=E2=94=9C=E2=94=80>[PATCH v15 07/23] PCI: microchip: Rename two setup funct=
+ions
+=E2=94=9C=E2=94=80>[PATCH v15 08/23] PCI: microchip: Change the argument of=
+ plda_pcie_setup_iomems()
+=E2=94=9C=E2=94=80>[PATCH v15 09/23] PCI: microchip: Move setup functions t=
+o pcie-plda-host.c
+=E2=94=9C=E2=94=80>[PATCH v15 10/23] PCI: microchip: Rename interrupt relat=
+ed functions
+=E2=94=9C=E2=94=80>[PATCH v15 11/23] PCI: microchip: Add num_events field t=
+o struct plda_pcie_rp
+=E2=94=9C=E2=94=80>[PATCH v15 12/23] PCI: microchip: Add request_event_irq(=
+) callback function
+=E2=94=94=E2=94=80>[PATCH v15 13/23] PCI: microchip: Add INTx and MSI event=
+ num to struct plda_event
+[PATCH v15 14/23] PCI: microchip: Add get_events() callback and add PLDA ge=
+t_event()
+=E2=94=94=E2=94=80>[PATCH v15 15/23] PCI: microchip: Add event irqchip fiel=
+d to host port and add PLDA irqchip
+[PATCH v15 16/23] PCI: microchip: Move IRQ functions to pcie-plda-host.c
+=E2=94=9C=E2=94=80>[PATCH v15 17/23] PCI: plda: Add event bitmap field to s=
+truct plda_pcie_rp
+=E2=94=9C=E2=94=80>[PATCH v15 18/23] PCI: plda: Add host init/deinit and ma=
+p bus functions
+=E2=94=9C=E2=94=80>[PATCH v15 19/23] dt-bindings: PCI: Add StarFive JH7110 =
+PCIe controller
+=E2=94=9C=E2=94=80>[PATCH v15 20/23] PCI: Add PCIE_RESET_CONFIG_DEVICE_WAIT=
+_MS waiting time value
+=E2=94=9C=E2=94=80>[PATCH v15 21/23] PCI: starfive: Add JH7110 PCIe control=
+ler
+=E2=94=9C=E2=94=80>[PATCH v15 22/23] PCI: starfive: Offload the NVMe timeou=
+t workaround to host drivers.
+=E2=94=94=E2=94=80>[PATCH v15 23/23] riscv: dts: starfive: add PCIe dts con=
+figuration for JH7110
+
+I *think* it is the reason why some tools are not able to consider all
+the patches as a single patchset.
+
+Regards
+Aurelien
+
+--=20
+Aurelien Jarno                          GPG: 4096R/1DDD8C9B
+aurelien@aurel32.net                     http://aurel32.net
 
