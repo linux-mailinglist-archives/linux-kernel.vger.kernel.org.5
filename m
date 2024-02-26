@@ -1,182 +1,145 @@
-Return-Path: <linux-kernel+bounces-81514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B2E8676F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:43:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F9B58676F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:44:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46666B20FE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:43:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0814F28F8B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2AF12DDA0;
-	Mon, 26 Feb 2024 13:40:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JZXjSWLU"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56CD1129A9B;
+	Mon, 26 Feb 2024 13:41:39 +0000 (UTC)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787BD12CD96;
-	Mon, 26 Feb 2024 13:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B16C128389;
+	Mon, 26 Feb 2024 13:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708954832; cv=none; b=hqKt+VG59oVeb4zq0zQ8Nfskv/hbihCaWxUrFshYyaxLE58SL6amulGZ67J6JC9egauK0Ga2COJCiDasO3MEj5ym9mdRHa7ZbOZkkebSSMmZpQkjBxVBTuzpHcVh8RIIFoLkypVrWDakhjS+kRE5Nk0aD3pTkAZbS9fCrDb/wLI=
+	t=1708954898; cv=none; b=j1yII5X7Lr9U1G8XzYOM2YkLbjRtD3+HNB0iOE4lItG0H2LhMiKy4ZChdGinTUaHAgFFhYLKu2fijIVun/6KWb5DqRkTAIVfqg+dBl5jYhVU8Cc1RKXvp9RDcr+OTBGbAJO2wHRQdTWBQAypkvRSvV+/uu62+VbdLz8mgeqc3yA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708954832; c=relaxed/simple;
-	bh=mxBFK4Fb71lyE8xT3cEVQg0kPCMLh4VSthxx6LrQ+zs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=etwhFUX6K4YwlEYLiIUDd2rDc/5cAdvIZ/l6h6EnjhdKmENbi98v30JT/t7EKBqvtkZSAIb1wBhFRPxyOx1EhzHn8Xqa0p8Xkgbzs2jtiXHtqM7CfJEx2DQDCx4uXnFt9chXGOPCwN+AmvJxzsVrHAVWse6vX6KoPbgfCb34efY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JZXjSWLU; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CBD8940013;
-	Mon, 26 Feb 2024 13:40:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708954829;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hrBO2wzt0J4arvEYzmCu+K7sTUcd+qHj9mVz8SibBag=;
-	b=JZXjSWLUrESjvPrFd6EacFInYe+qO37RXCU5SMvm+LcRYIuU5HzGg/Kn4TnEvuACtuF4jR
-	PFlcnvboWwlgl+VOvLKZAoUauutf3cG40+3N3uUfuZBTIHaKhU4FIp3yf8m//RYjcgBiwY
-	xjQHJUFWAPSdg7qydXEiqStxh4cI3NB/4wOZebJeN3vBN4U6BBqLIAhtkypbci+5KVsegF
-	P5M14iCwWo9p6bNPZjE9nD9BEHZWQ3/sXYlJUSprVBEfyBV2VXi6Bf/x5qCDkgQoC9fAIs
-	wBSmYCeKb44VcAtbcHr/oB55AOaCJ3l9ZDrXScvvRf+6H9fsDiOQRAdSHRKkQA==
-From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Mon, 26 Feb 2024 14:40:04 +0100
-Subject: [PATCH net-next v9 13/13] netlink: specs: tsinfo: Enhance netlink
- attributes and add a set command
+	s=arc-20240116; t=1708954898; c=relaxed/simple;
+	bh=KkHOuTxfojJAebXRZa+XnGZj2GHfgqfYukTvO9EQtV8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GM2Oh6EGKWWxEejWVNhRdfKeIOqVq1nS3bIT5zyvcdJ6wor6k7cu5FTc54EuyscwZ+KKYOTBac2qF0luzoRNW5caKpQiec/x0U97LbJsiiUa3MF1VL2RLjsvzzZz8xMdyvRVP9G6fEwrDzmSxvzX8qpsAN/W976Hf+jq7WDxDMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60853ad17f9so23735087b3.0;
+        Mon, 26 Feb 2024 05:41:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708954895; x=1709559695;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k+OhW/XaI7vSIwrRRZgNy39CQ/IuoQT/QK0SjQNuYlY=;
+        b=MIjWoMcaWkBCDlQo4YBghPH2dKIIMX62O2/0+Z4fKO6Yp05xBEN6KpLL2buKABiC3V
+         GksOhot416kR+dvSh025Ib4ErSZ6EGgPx1Fl/JXC4iqiY6WsqaPATFz6ry5aXc1H9A8A
+         1oxvVnWCnXadXAvRjI8/LWnrkQLuuZWurwBnMZTPPTvSKeYBtjsHwZ12rBYa6khcRunc
+         cWbnKCebB0K1BiqLK/uJt3duTI7YEYWn++3YCirka3LBnkKtYSTgZ+iW1SO9EINnbG+Y
+         DP97US9igRcs4HYHe8mlcehQGx4YWCbFZpqCnBs7AUf+sfiFEaYSlDArKM5b5XB7AuDl
+         cbcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoRX47MTuckJNZW5Px3LkL1enfAuOepx00sZtEl8UuU9vzUsF81s3LCMVDB4wC0vDOZMcVqObE/YE2bZZK1JALDGrwHhhCgkpae7GfMUXHD7jEqY57uzh+OpORr8pUxg+BOz+80HB3pL1TC4J/leOuMYujgChRpzfeBCPQxBHuM03j0BH5RBv22a6C
+X-Gm-Message-State: AOJu0YyhFvISx1JmPx/KAD1/5Ew7H7izC5xgpvIx8/HObXulJ15OJRPb
+	O1xun5IgFmFoBAkEQozWozFVaUK/LoShLOHILco5wl/2oi7C3FGBqbs5v17bNRQ=
+X-Google-Smtp-Source: AGHT+IFD37X8nqQ64iCS0SOCkDERHWJpLennLTe0KLo/NJf+4Z73ZnUNEVPd8ZbMMDcU/1rdJfTeJA==
+X-Received: by 2002:a05:690c:f88:b0:608:ff01:5128 with SMTP id df8-20020a05690c0f8800b00608ff015128mr1721062ywb.15.1708954895023;
+        Mon, 26 Feb 2024 05:41:35 -0800 (PST)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id f187-20020a0dc3c4000000b00607bc220c5esm1167720ywd.102.2024.02.26.05.41.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 05:41:34 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc742543119so3162363276.0;
+        Mon, 26 Feb 2024 05:41:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUbYVyHpPZCzB9o3Nsx7Usvk19lWPyK37Y+8MG0h54DhCdpICKzrEzsuFTitkfYimR6JKl6HlAjJYEXpIXtDLRO7gmhuu2j6mPTqJ41TZXxSoe7efc0EGJBYaofCjpdcQySA+GhagVjHLzkraGwY7cDKmAofB13e3tfFCvZwx40Ngnqhgp+QloFi/2e
+X-Received: by 2002:a25:dbcd:0:b0:dcc:1a56:597a with SMTP id
+ g196-20020a25dbcd000000b00dcc1a56597amr3993501ybf.36.1708954893612; Mon, 26
+ Feb 2024 05:41:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240226-feature_ptp_netnext-v9-13-455611549f21@bootlin.com>
-References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
-In-Reply-To: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
- Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
- Simon Horman <horms@kernel.org>, Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
- Kory Maincent <kory.maincent@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: kory.maincent@bootlin.com
+References: <20240219160912.1206647-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240219160912.1206647-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240219160912.1206647-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 26 Feb 2024 14:41:21 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWw4V7p9RXqx_GeL6LC=rYscChbcnkuJcDzqjfac7-XoA@mail.gmail.com>
+Message-ID: <CAMuHMdWw4V7p9RXqx_GeL6LC=rYscChbcnkuJcDzqjfac7-XoA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: soc: renesas: Document Renesas RZ/V2H{P}
+ SoC variants
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add new attributed to tsinfo allowing to get the tsinfo and the hwtstamp
-from a phc provider (composed by a phc index and a phc qualifier) on a
-netdevice's link.
-Add simultaneously a set command to be able to set hwtstamp configuration
-for a specified phc provider.
+Hi Prabhakar,
 
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+Thanks for your patch!
 
-Changes in v8:
-- New patch
----
- Documentation/netlink/specs/ethtool.yaml | 35 +++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+On Mon, Feb 19, 2024 at 5:10=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
+om> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Document Renesas RZ/V2H{P} (R9A09G057) SoC variants.
 
-diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-index 197208f419dc..cfe48f8d6283 100644
---- a/Documentation/netlink/specs/ethtool.yaml
-+++ b/Documentation/netlink/specs/ethtool.yaml
-@@ -559,6 +559,15 @@ attribute-sets:
-       -
-         name: tx-lpi-timer
-         type: u32
-+  -
-+    name: tsinfo-hwtst-provider
-+    attributes:
-+      -
-+        name: index
-+        type: u32
-+      -
-+        name: qualifier
-+        type: u32
-   -
-     name: tsinfo
-     attributes:
-@@ -581,6 +590,13 @@ attribute-sets:
-       -
-         name: phc-index
-         type: u32
-+      -
-+        name: hwtst-provider
-+        type: nest
-+        nested-attributes: tsinfo-hwtst-provider
-+      -
-+        name: hwtst-flags
-+        type: u32
-   -
-     name: cable-result
-     attributes:
-@@ -1373,7 +1389,7 @@ operations:
-       notify: eee-get
-     -
-       name: tsinfo-get
--      doc: Get tsinfo params.
-+      doc: Get tsinfo params or hwtstamp config.
- 
-       attribute-set: tsinfo
- 
-@@ -1381,6 +1397,7 @@ operations:
-         request:
-           attributes:
-             - header
-+            - hwtst-provider
-         reply:
-           attributes:
-             - header
-@@ -1388,6 +1405,8 @@ operations:
-             - tx-types
-             - rx-filters
-             - phc-index
-+            - hwtst-provider
-+            - hwtst-flags
-       dump: *tsinfo-get-op
-     -
-       name: cable-test-act
-@@ -1693,3 +1712,17 @@ operations:
-       name: mm-ntf
-       doc: Notification for change in MAC Merge configuration.
-       notify: mm-get
-+    -
-+      name: tsinfo-set
-+      doc: Set hwtstamp.
-+
-+      attribute-set: tsinfo
-+
-+      do:
-+        request:
-+          attributes:
-+            - header
-+            - tx-types
-+            - rx-filters
-+            - hwtst-provider
-+            - hwtst-flags
+I think "RZ/V2H(P)" would be better, as curly braces are usually used
+to group multiple values (e.g. "RZ/G2{L,LC}").
 
--- 
-2.25.1
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> ---
+>  .../devicetree/bindings/soc/renesas/renesas.yaml          | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml b=
+/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+> index c1ce4da2dc32..109fbc8d48db 100644
+> --- a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+> +++ b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
+> @@ -513,6 +513,14 @@ properties:
+>                - renesas,rzv2mevk2   # RZ/V2M Eval Board v2.0
+>            - const: renesas,r9a09g011
+>
+> +      - description: RZ/V2H{P} (R9A09G057)
 
+RZ/V2H(P)
+
+> +        items:
+> +          - enum:
+> +              - renesas,r9a09g057h41 # RZ/V2H
+> +              - renesas,r9a09g057h42 # RZ/V2H with Mali-G31 support
+> +              - renesas,r9a09g057h44 # RZ/V2HP with Mali-G31 + Mali-C55 =
+support
+> +          - const: renesas,r9a09g057
+> +
+>  additionalProperties: true
+
+The rest LGTM, so
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
