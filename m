@@ -1,97 +1,120 @@
-Return-Path: <linux-kernel+bounces-81252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16DA18672AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:09:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A2EE8672B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:10:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDA6D1F282B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:09:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E81821F2BF9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D42E11D54F;
-	Mon, 26 Feb 2024 11:09:42 +0000 (UTC)
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7849E1D54C;
+	Mon, 26 Feb 2024 11:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a2XB+967"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB8C1CD35
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.89
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806C31CFB4
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 11:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708945782; cv=none; b=taeJ0q+u7zVBm6TllDW7gvgV/EE4Ws9o8b+NhIu2IQB7+V8EMhH76IjjNNgQ0nsDF7w8g1d9UcX06TdRyDA3AvS6brkYwujc1dw2zxrwhZbQ1GmuuG5L3orYrW4d32dQBOKmGN91loTTQ9H0MhTk01DL1VoVuDOSG4pCqVJeCcM=
+	t=1708945793; cv=none; b=rxNe+4K5QFRuck9JQ9jo5wqLrXhMBTvX/bR6x0xYB/nTsYSKHFgimP26S8GxBw1SsPWAetpElXO4eTtgH5fGn9k4je2ZlqpbgeTvlc9hMjUw9ZIkkwm8LdkLJe9z03DdbGyocF9ZBWMmjPccYRZkuEf0vPJsLdeC9ovR59fwp+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708945782; c=relaxed/simple;
-	bh=QfAbmpSdPxk3PLAQItfucxGrrmocc9C9SjRrIqs0/z8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GLtC/RFl0APafKckrfRbysUf+M5c0JS6NK4/5bWBIuHDEXKceHloMG35HJgx+z56HDar9CM9+BpxttU2INdhi2A0/g2oHYFeGQlFq+HFADu1vG5DxIC4FvZDHEOtG6ZsGPCs+l1k7ikgttd9Us27xF8b8jsp0uHVcUBIWbm6ROE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:7662:e968:947d:f3d0])
-	by laurent.telenet-ops.be with bizsmtp
-	id rn9X2B00L5Kh3Z501n9XlV; Mon, 26 Feb 2024 12:09:31 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1reYrK-001lYB-29;
-	Mon, 26 Feb 2024 12:09:31 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1reYrT-004NKE-Ii;
-	Mon, 26 Feb 2024 12:09:31 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Antonios Motakis <a.motakis@virtualopensystems.com>,
-	Eric Auger <eric.auger@redhat.com>,
-	Alex Williamson <alex.williamson@redhat.com>
-Cc: kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] vfio: amba: Rename pl330_ids[] to vfio_amba_ids[]
-Date: Mon, 26 Feb 2024 12:09:26 +0100
-Message-Id: <1d1b873b59b208547439225aee1f24d6f2512a1f.1708945194.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708945793; c=relaxed/simple;
+	bh=+jLqiY6cbZkUaeKfyLrEDAjpX1juOggyIGmJMdgRqLw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UKMno71G92L0pEaiTmwQkpz+pwiN+g74EiUZjovOtsi8PtyVr4SjTJwT+rcVBRuKHPkfFoD+fLldXPYvR9fT0qVweP1mZYqidZ4DDUxxOS3KDVNt9cbBIivFIW4a/DGmtGIu9nO/IEQUT+fWSs8oSwTKqy5ea49yu8hmLmbkJcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=a2XB+967; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7c794deb6cdso139294239f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:09:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708945790; x=1709550590; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JXLJhA1S2e5W/9PS2kr0cO7SXhI9yiOHp+T3ajmhreE=;
+        b=a2XB+967CIeQo5ZJMtHJc0wglP2aueVO3UgSq70jxjug7SRjyemB3PM1Pm4fURQmlI
+         Pog68vVPTzTL7geTiWU93hHLzdfkGlDQ1KMLsy68a4vq2mKCtbWub6oxmTQVBcYqLq5B
+         bzwm5hW1uW8QBJCLzHkGa3VqBc9/Z/SVWGin1jazTdt3p/YDf5hrTMM7JGgFHURU943c
+         qSPC6WYOB5ZHZ5un8c6/0gvtaw8b/QZ+KWMG7ru4MOyMVb9pxHalXYfWKaSeV4iK5auw
+         tcw5Ez4L0cVCLu0Quwvbq92q7oh7z87M078T241mOlK/ESkHQZKPjzKkO7N41sF1Go0x
+         fOqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708945790; x=1709550590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JXLJhA1S2e5W/9PS2kr0cO7SXhI9yiOHp+T3ajmhreE=;
+        b=S+Gzx+fLGDK4BF0u92+IxQ+YQWgempZunvZnHKo/hQXleCcWVbSN8lihFnEUXSZXMs
+         gSiLxgtfo0NiogUqPYaGYV+8hm0MUoalE4vbqE8GzoFEwUz6Y9J0GeVNbgkf73mlHg8k
+         YXCtc7TBqJNojjFUT54Jptgsnanjnc5BG00r6xTMS2naUZpI/PuW2UpIVF4P7R7JtP4p
+         BRDVvf1rAQ12lrhtJQnCcizm8gqVcUaxGEKgfcpglMXr5VkSKkcJGE5kodwrPISiHYWy
+         HbRGWfth8fk9qDYbMep78J6snInVnUpOVFex+fFeBhhIgS1XWWH841K/nSxivkFm1cRp
+         bMEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUfjYb3WXDnZg/6eIJIIgVRR0Ck9Y2NZBBFlmz7VzxWCKCvZ6ksZDqnbRHp4dRsF/6NVOH9/hNbQfzgSzu/4GNg061VJqYNkrlyAexk
+X-Gm-Message-State: AOJu0YzcgSZ/YQf11yoy/4RiXuL+eLHxQ9qA8m3bMvcGIUKIllk6+cma
+	lK0bhdM9TIJJHcow+N1FsPk52Uzh1rdbFh8jYmKpbrIBpg5u7ZpP6WPtxdM7yZpr5xa6VO4dUD+
+	43ij5z107dFrbIe1bwgKRafFDuSoEylWyx4L6
+X-Google-Smtp-Source: AGHT+IEwEjd31elUaYKxIxM1mh70wep688OMqmuk7WudxZLnasYmVXOgCmS1ONaiIwRiUMQlImGVZaLvPKNgX1VcCmA=
+X-Received: by 2002:a05:6602:2765:b0:7c7:9944:cc8a with SMTP id
+ l5-20020a056602276500b007c79944cc8amr8677661ioe.5.1708945790588; Mon, 26 Feb
+ 2024 03:09:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240221160215.484151-1-panikiel@google.com> <20240221160215.484151-10-panikiel@google.com>
+ <310cefcb-a4d5-4f4f-a482-ba2ff08a57f6@linaro.org>
+In-Reply-To: <310cefcb-a4d5-4f4f-a482-ba2ff08a57f6@linaro.org>
+From: =?UTF-8?Q?Pawe=C5=82_Anikiel?= <panikiel@google.com>
+Date: Mon, 26 Feb 2024 12:09:39 +0100
+Message-ID: <CAM5zL5rQsYuo3+rW9+YPmvUg9PtNiR0Dy59e8Kf787ranfLh3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 9/9] ARM: dts: chameleonv3: Add video device nodes
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: airlied@gmail.com, akpm@linux-foundation.org, conor+dt@kernel.org, 
+	daniel@ffwll.ch, dinguyen@kernel.org, hverkuil-cisco@xs4all.nl, 
+	krzysztof.kozlowski+dt@linaro.org, maarten.lankhorst@linux.intel.com, 
+	mchehab@kernel.org, mripard@kernel.org, robh+dt@kernel.org, 
+	tzimmermann@suse.de, devicetree@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, chromeos-krk-upstreaming@google.com, 
+	ribalda@chromium.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Obviously drivers/vfio/platform/vfio_amba.c started its life as a
-simplified copy of drivers/dma/pl330.c, but not all variable names were
-updated.
+On Mon, Feb 26, 2024 at 10:15=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 21/02/2024 17:02, Pawe=C5=82 Anikiel wrote:
+> > Add device nodes for the video system present on the Chameleon v3.
+> > It consists of six framebuffers and two Intel Displayport receivers.
+> >
+> > Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
+> > ---
+>
+> ...
+>
+> > +             dprx_sst: dp-receiver@c0064000 {
+> > +                     compatible =3D "intel,dprx-20.0.1";
+> > +                     reg =3D <0xc0064000 0x800>;
+> > +                     interrupt-parent =3D <&dprx_sst_irq>;
+> > +                     interrupts =3D <0 IRQ_TYPE_EDGE_RISING>;
+> > +                     intel,max-link-rate =3D <0x1e>;
+>
+> Rate is not in hex! Rate is in Hz, at least usually...
+>
+> Fix your bindings...
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/vfio/platform/vfio_amba.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/vfio/platform/vfio_amba.c b/drivers/vfio/platform/vfio_amba.c
-index 6464b3939ebcfb53..485c6f9161a91be0 100644
---- a/drivers/vfio/platform/vfio_amba.c
-+++ b/drivers/vfio/platform/vfio_amba.c
-@@ -122,16 +122,16 @@ static const struct vfio_device_ops vfio_amba_ops = {
- 	.detach_ioas	= vfio_iommufd_physical_detach_ioas,
- };
- 
--static const struct amba_id pl330_ids[] = {
-+static const struct amba_id vfio_amba_ids[] = {
- 	{ 0, 0 },
- };
- 
--MODULE_DEVICE_TABLE(amba, pl330_ids);
-+MODULE_DEVICE_TABLE(amba, vfio_amba_ids);
- 
- static struct amba_driver vfio_amba_driver = {
- 	.probe = vfio_amba_probe,
- 	.remove = vfio_amba_remove,
--	.id_table = pl330_ids,
-+	.id_table = vfio_amba_ids,
- 	.drv = {
- 		.name = "vfio-amba",
- 		.owner = THIS_MODULE,
--- 
-2.34.1
-
+This is the DisplayPort link rate, for which the allowed values are
+8.1 Gbps, 5.4 Gbps, 2.7 Gbps, or 1.62 Gbps. The standard way to encode
+them (used in the DisplayPort DPCD registers and this device's
+configuration) is by multiples of 0.27Gbps. This value (AFAIK) is
+usually represented in hex, so 8.1Gbps would be 0x1e.
 
