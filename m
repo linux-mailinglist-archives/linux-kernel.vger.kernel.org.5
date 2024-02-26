@@ -1,132 +1,180 @@
-Return-Path: <linux-kernel+bounces-81136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98C0F8670CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:26:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C76E0867137
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:34:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53ADD28CF06
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:26:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71EC3B2771B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C767059B53;
-	Mon, 26 Feb 2024 10:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878B15A7BB;
+	Mon, 26 Feb 2024 10:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="p3IRZnxf";
-	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="lbbkSU6T"
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XC5rhn9S";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0wq0BxON";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XC5rhn9S";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0wq0BxON"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D83411EB23;
-	Mon, 26 Feb 2024 10:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0DA63B
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708942318; cv=none; b=McmFbvY0tC4o6A1kXFIHI+J2MhO+wqptf+iP3Gn4gRcNaKaER+hlHsgd+z2RPMVBZUwGr8phWnGTkDdfDTG19Kwi5XJ5zRmnkr0JB6qPX/t20Qbl9rNsMLVmZ/sYR4lehW79Qv0O2mNi8zc9n6OR3vgP6z3iPtdoa6HnT71a8dQ=
+	t=1708942368; cv=none; b=b1irkkIBOr28EW7WrZIiai1hOeyb0bkT3JSa9raiia0wAfLuFhZaq7CLjYbrzVXI9+vfshx0AULgFAE7vLL7qDXLOk/XrjxjCogoJMRatotERDw5F7tl4gYjpOjl0vKF04It1734/oESOoTJvtWO/mkX0lHS9SsewymB83A2dMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708942318; c=relaxed/simple;
-	bh=/FqJlwO4HhiqdkOMLE28w4KSlJDTesC5Lg2W9QEnznY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ODymdoMfazxo511YWal2vdl2x13uCJ5KT/3R3ystndV/DV+AZjRP+qxSTyGLn0eO5J1uXh2+ILdEZ4dy1RJta56NAb0g3DU+EELR3TE0ayiRG1ZrzhG4Zsib20IPxDCkoIH5UN24K/B0nUyO2YD9UBoyQaVzGuW0tDRjgcjUHlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=p3IRZnxf; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=lbbkSU6T; arc=none smtp.client-ip=96.44.175.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1708942316;
-	bh=/FqJlwO4HhiqdkOMLE28w4KSlJDTesC5Lg2W9QEnznY=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=p3IRZnxf04YywA9yOAt94SHpGuoPlkX2yTY1X8D0bC+pAYhvzhhIpIMCZy+Ki7qzr
-	 QpC7GQwDzrMcLELadGRMEXnptm24iH5u/P5nJmF9g+zHuK1Qhks/7w52Z/KxtPvfFK
-	 DmMNaC1OKR33N7F7pzer8cenPyNZQBUCw6eq1xTY=
-Received: from localhost (localhost [127.0.0.1])
-	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 063741280599;
-	Mon, 26 Feb 2024 05:11:56 -0500 (EST)
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
- by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
- with ESMTP id QC0roj-h_XGp; Mon, 26 Feb 2024 05:11:55 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-	d=hansenpartnership.com; s=20151216; t=1708942315;
-	bh=/FqJlwO4HhiqdkOMLE28w4KSlJDTesC5Lg2W9QEnznY=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-	b=lbbkSU6TwLNPTeFszSwjmRYg0qSz6lsn14R/1skXOq1N77lslD65E3Hh1xSK40haF
-	 wzSSlZ7dcFirYkBZkMrTJyrO1c8xZS4iVbB0m8Hkp3jDXJO2qDU9WTziNgBcOO8gZ5
-	 JINKl8HBpgh453D6bS6SlU6sjI0gcZOv1HhcYw8U=
-Received: from [10.0.15.72] (unknown [49.231.15.39])
+	s=arc-20240116; t=1708942368; c=relaxed/simple;
+	bh=cwChX84IQ36TCIcgwTT+CoRqwjdP8BrUdBUljrP22XE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dROqg28aRh1nwfGAns3kDcfJjeqjrElm7ljXx90QnipvgQUhS5hTI6lq7OAURmk56I5HmTpISEhfASwvoEaC9AF/fQssQk5POSV5zUJ4GZ/OPwIzMKH2/dXLakvVfq/txPXS26ybf0+ZUl1vXhFlpiG85RasfgJTBOlEWnD/+uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XC5rhn9S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0wq0BxON; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XC5rhn9S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0wq0BxON; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits))
-	(Client did not present a certificate)
-	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id C8A24128032D;
-	Mon, 26 Feb 2024 05:11:53 -0500 (EST)
-Message-ID: <3bae009a24a55902d93e4055ecd13f9f54cdbb37.camel@HansenPartnership.com>
-Subject: Re: [PATCH] MAINTAINERS: Update W's for KEYS/KEYRINGS_INTEGRITY and
- TPM DEVICE RIVER
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-To: Jarkko Sakkinen <jarkko@kernel.org>, linux-kernel@vger.kernel.org
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Mimi Zohar <zohar@linux.ibm.com>, Peter
-	Huewe <peterhuewe@gmx.de>, linux-integrity@vger.kernel.org
-Date: Mon, 26 Feb 2024 17:11:51 +0700
-In-Reply-To: <CZEWILFMZ5L1.2TCZXVS7GTDKZ@suppilovahvero>
-References: <20240226062245.2279635-1-jarkko@kernel.org>
-	 <eaa5107ac4f982b6fd6e80b522643a591e719dc9.camel@HansenPartnership.com>
-	 <CZEWILFMZ5L1.2TCZXVS7GTDKZ@suppilovahvero>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 141C822238;
+	Mon, 26 Feb 2024 10:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708942364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E1udk04wUSNMB8OocFJIbZ/Oh34hvdBxWE/amAhSt5A=;
+	b=XC5rhn9StsnbsfAdIsAQqFGHp3lEuo/hhgy7ZMnwgZn7Cb36tz4MwSRVIwSwLRiV4tHQfy
+	M766tdZp6UVp4HG9jpx0PGLzG9i7gSeONX21M3toULaaul/zXfUBlF0pARywzm2QihXvvi
+	xBEMmzsM3GkfOvtJTkBZAC9KD02Q0Yo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708942364;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E1udk04wUSNMB8OocFJIbZ/Oh34hvdBxWE/amAhSt5A=;
+	b=0wq0BxONCCbTlgFjJ/XNxl1yJaqV7jlvPKfB+SGXwzrmHKrFdVTjgwf8PDYjQ9C0OUHlk7
+	RX9acuU72aJBgLCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708942364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E1udk04wUSNMB8OocFJIbZ/Oh34hvdBxWE/amAhSt5A=;
+	b=XC5rhn9StsnbsfAdIsAQqFGHp3lEuo/hhgy7ZMnwgZn7Cb36tz4MwSRVIwSwLRiV4tHQfy
+	M766tdZp6UVp4HG9jpx0PGLzG9i7gSeONX21M3toULaaul/zXfUBlF0pARywzm2QihXvvi
+	xBEMmzsM3GkfOvtJTkBZAC9KD02Q0Yo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708942364;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=E1udk04wUSNMB8OocFJIbZ/Oh34hvdBxWE/amAhSt5A=;
+	b=0wq0BxONCCbTlgFjJ/XNxl1yJaqV7jlvPKfB+SGXwzrmHKrFdVTjgwf8PDYjQ9C0OUHlk7
+	RX9acuU72aJBgLCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFB1413A3A;
+	Mon, 26 Feb 2024 10:12:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id UoM0Ohtk3GX4LAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 26 Feb 2024 10:12:43 +0000
+Message-ID: <7670235f-60b8-46b4-a30f-606f798eeda4@suse.cz>
+Date: Mon, 26 Feb 2024 11:12:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: regression/bisected commit
+ 773688a6cb24b0b3c2ba40354d883348a2befa38 make my system completely unusable
+ under high load
+Content-Language: en-US
+To: Marco Elver <elver@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>, glider@google.com,
+ dvyukov@google.com, eugenis@google.com, Oscar Salvador <osalvador@suse.de>,
+ Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+ Linux Memory Management List <linux-mm@kvack.org>
+References: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
+ <CABXGCsM9BSD+SYFkvkYxmcrZL+aUfUb_M-rjNJhzb2cYHQr5ww@mail.gmail.com>
+ <CANpmjNNXKiM0j4mR-Rr2KALhgz87=QjCOomEymNMWjtos=Z3Ug@mail.gmail.com>
+ <CANpmjNOnbNw2fRL3_depaAgt81p-VpHh5_O_26kyxofjECgsFQ@mail.gmail.com>
+ <CABXGCsPB-KEbE+SfymVmqfiomFVngFL2Je81Qyhw1F5_aZX-TQ@mail.gmail.com>
+ <CABXGCsO5dcEuorLAXR3CFzDVyAWNk4_YfqCh=UJddfzpWF7hNg@mail.gmail.com>
+ <CANpmjNPsdM2HrRFgEHYxX1seT2fbOFDuO6Ci-qF3X2y=9_PD1A@mail.gmail.com>
+ <91c50335-e7b6-4ae1-9dad-a0c990b52021@suse.cz>
+ <20240219152836.11d36709c594e66fe3037f2d@linux-foundation.org>
+ <7e31accb-db01-486f-afb8-18a3f5402d00@suse.cz>
+ <CABXGCsOHswLa5rd_Q7kHDHESb=BtqB+F=LV7Wvv+qoRxrqCboA@mail.gmail.com>
+ <20240220093011.bf84486d704c3814079c2aa0@linux-foundation.org>
+ <96c51d35-15ce-42d0-b81b-7e76044e1f2b@suse.cz>
+ <CANpmjNMObiX5X721DERccn16aMW+WMPz+wvLKv=UdaQi3XOMwA@mail.gmail.com>
+ <CANpmjNPP=c4ZfJmWFexR=03Lk4gGMr7yPW=j81WAnM_vCSCwCQ@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CANpmjNPP=c4ZfJmWFexR=03Lk4gGMr7yPW=j81WAnM_vCSCwCQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [1.25 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 BAYES_HAM(-0.16)[69.49%];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,google.com,suse.de,vger.kernel.org,kvack.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: *
+X-Spam-Score: 1.25
+X-Spam-Flag: NO
 
-On Mon, 2024-02-26 at 11:26 +0200, Jarkko Sakkinen wrote:
-> On Mon Feb 26, 2024 at 8:49 AM EET, James Bottomley wrote:
-> > On Mon, 2024-02-26 at 08:22 +0200, Jarkko Sakkinen wrote:
-> > > Add TPM driver test suite URL to the MAINTAINERS files and move
-> > > the
-> > > wiki
-> > > URL to more appropriate location.
-> > > 
-> > > Link: https://gitlab.com/jarkkojs/linux-tpmdd-test
-> > > Link: https://kernsec.org/wiki/index.php/Linux_Kernel_Integrity
-> > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > > Cc: Mimi Zohar <zohar@linux.ibm.com>
-> > > Cc: Peter Huewe <peterhuewe@gmx.de>
-> > > Cc: linux-integrity@vger.kernel.org
-> > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > ---
-> > >  MAINTAINERS | 3 ++-
-> > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index bf77be03fb2b..6380c1109b86 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -11947,6 +11947,7 @@ M:      Mimi Zohar <zohar@linux.ibm.com>
-> > >  L:     linux-integrity@vger.kernel.org
-> > >  L:     keyrings@vger.kernel.org
-> > >  S:     Supported
-> > > +W:     https://kernsec.org/wiki/index.php/inux_Kernel_Integrity
-> >                                              ^
-> >                                          Missing L
-> > 
-> > James
+On 2/26/24 10:25, Marco Elver wrote:
+> On Tue, 20 Feb 2024 at 19:51, Marco Elver <elver@google.com> wrote:
+>>
+>> While it would be nice if 6.8 would not regress over 6.7 (performance
+>> is mostly fixed, memory usage is not), waiting for confirmation what
+>> the rcutorture issue from the bot is about might be good.
+>>
+>> Mikhail: since you are testing mainline, in about 4 weeks the fixes
+>> should then reach 6.9-rc in the next merge window. Until then, if it's
+>> not too difficult for you, you can apply those 2 patches in your own
+>> tree.
 > 
-> Thanks! I'll fixup that.
+> There are more issues that are fixed by "[PATCH v2 1/2] stackdepot:
+> use variable size records for non-evictable entries". See
+> https://lore.kernel.org/all/ZdxYXQdZDuuhcqiv@elver.google.com/
 > 
-> "linux-tpmdd-test" is the suite that I'm using to test your patch
-> set. It has swtpm integrated. I wonder if there was easy to way to
-> tweak swtpm to emulate "interposer", i.e. reset its state while it is
-> running (preferably not by restarting it).
+> This will eventually reach stable, but it might be good to reconsider
+> mainlining it earlier.
 
-The way I do it is to use a qemu patch
+I believe I can see that patch, together with "kasan: revert eviction of
+stack traces in generic mode" in mm-hotfixes-stable so it should be on track
+for 6.8.
 
-https://lore.kernel.org/qemu-devel/20231004184219.6594-1-jejb@linux.ibm.com/
-
-which allows qemu to connect to the mssim (or ibmswtpm2) TPM over an
-inet socket which means I can execute TPM commands from the host (like
-resetting the TPM) as well as the guest and snoop the TPM traffic.
-
-James
+> Thanks,
+> -- Marco
 
 
