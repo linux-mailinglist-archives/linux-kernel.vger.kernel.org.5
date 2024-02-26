@@ -1,209 +1,138 @@
-Return-Path: <linux-kernel+bounces-81080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E00C5866FEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:06:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAAD9866FEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 912A31F25B92
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:06:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ABD8A1C255D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCCB0604AB;
-	Mon, 26 Feb 2024 09:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCB86604DE;
+	Mon, 26 Feb 2024 09:43:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HXNvFhKf"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="BMQO1ZH/"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113FC6024F;
-	Mon, 26 Feb 2024 09:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0E43CA4E;
+	Mon, 26 Feb 2024 09:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940591; cv=none; b=gqaJeQm7ciWhCskSewRaIvMA9ikijAKWJa17X2uoVMzZLg1pNq3iwJj5QDZd1pcDc977bghSskbmuSyWJ8hOzkJqV/VjPV2L35Gl1bacgpY5PXbKWAF9qvejs4GU9OVowSxZyE8E3tN+GRqe/Ub7BdTmujv1/0UBFPxQKiUc310=
+	t=1708940602; cv=none; b=qW4XKN0+i1M5HK45595FiqFw2YLM5hF01vWT6PU7yKbu28wWAIv1rBKq4QL3NbT6F1SncSkfMyu/+kjSVpF4nATjrG9zIbVlt5T3vV5h/V+9njXYfRIMYKpACVAN+7Pxw7J9LKWyreeIRPQFSVmLQekCPaq3kAQXmYXZPwD13nY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940591; c=relaxed/simple;
-	bh=peeh3uBT6rkaZj0IWaTOnmOqCf87o+9OlPo0K0aPohw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ugF4KSDhZ/fcUWaDLy7cffkxNU/HwxVb8d9es4nnR7Lp73dDVy3yafpCL7EoqqSuirDJ3qw56wbVxma+ZULbj6JPACwnhu/+j2ChO8tg1dCM4elB0bPGJbqeI89lE+fBSxgeTuFBgCiL9tj1bxmg7+uvdFMF4AW7aZ9VcY6kLi4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HXNvFhKf; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708940590; x=1740476590;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=peeh3uBT6rkaZj0IWaTOnmOqCf87o+9OlPo0K0aPohw=;
-  b=HXNvFhKf+bHFH3XaVKlF/uYyCSLx0vGwogKBu1T9CZUMiqlYe0DgA1Pp
-   h0RagLTVhmBJzE6WIyW6cWSRn/8aS6rdact470i2eCFXg9MVWyqEerUy/
-   WxibEHwPwm0HNONhTc2pmKyRMD0eDhr1OaUBZLEIcYzxDmj9LMQfaIHaY
-   zoZ3Y4MVlDEZsqJVhitgHCNpIkZ8eq0q11XN51zbYpJf3qd2pQ82ksBVO
-   ZRgOaBiJqMt0hX4bB50fzvy8ztZkDfDeLkgmhXpk3avYp0saPnXUfbD87
-   wHaavXRiRxK6NIn8i9hvruBtlrjjGOkuNS1gmFwond9cft6ke0P7E0i5z
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="14346765"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="14346765"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 01:43:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="11201013"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa003.fm.intel.com with ESMTP; 26 Feb 2024 01:43:05 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1reXVn-000AE7-0w;
-	Mon, 26 Feb 2024 09:43:03 +0000
-Date: Mon, 26 Feb 2024 17:42:13 +0800
-From: kernel test robot <lkp@intel.com>
-To: David Laight <David.Laight@aculab.com>,
-	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-	'Linus Torvalds' <torvalds@linux-foundation.org>,
-	'Netdev' <netdev@vger.kernel.org>,
-	"'dri-devel@lists.freedesktop.org'" <dri-devel@lists.freedesktop.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	'Jens Axboe' <axboe@kernel.dk>,
-	"'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-	'Christoph Hellwig' <hch@infradead.org>,
-	"'linux-btrfs@vger.kernel.org'" <linux-btrfs@vger.kernel.org>,
-	'Andrew Morton' <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-	"'David S . Miller'" <davem@davemloft.net>,
-	'Dan Carpenter' <dan.carpenter@linaro.org>,
-	'Jani Nikula' <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH next v2 11/11] minmax: min() and max() don't need to
- return constant expressions
-Message-ID: <202402261720.EAMC0eHM-lkp@intel.com>
-References: <a18dcae310f74dcb9c6fc01d5bdc0568@AcuMS.aculab.com>
+	s=arc-20240116; t=1708940602; c=relaxed/simple;
+	bh=K4GBuBvY1jfaKNJfI+V2iQAToLrbcQCzobKkx+s7CfI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=otiKHpXIaZR9Zg3jh9jSvazyWHyEiP1pcKM574ZLnB0jwis9+jRuw4y+QtEcffRhhCuRdDRGpgFW1zxi/OyheND5DFZtZpgIj287yD1C7A9IGe3bXtKsOob4bkYHs+rJTVmBcV/h2UW2/t1LFhKVG31hWq624NNJvDkRJreuZIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=BMQO1ZH/; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41Q9PrLp028933;
+	Mon, 26 Feb 2024 09:43:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=tPqIhtoFZXpZFmCyP7Lnu9T4i55IofRcpfNy6UEYCmY=; b=BM
+	QO1ZH/h1SrCYOvYK0GONf06sofiRF/gqfcIRaF/dC4hx2zVcCbBJslkuSVcAqEsr
+	p1u61ruVFRdcebf8gUI/6lMpwVKge5lrCZdafHTGgKlsDuk2Skqt7QfRwClmgmJj
+	LMWGj5TZkWv4VXjaStQpLq3ynH64vw0YLSdxd/iYo5UZAZP/C1iQPVJGKUrtaJnD
+	FxeJScgVepVK+0R+fPR+ndyBdGEWfhA62tGSMFKVtDStXke42PUee9JE45XvGgg8
+	iP7y3MNlIqDBn3gcGsfofSahzfM0MNKe/GbNkp1nVkUTj08YlouvGi3TC3HuY/uA
+	/4hdsrVR/DByZ2STvVtQ==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxkrh25-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 09:43:05 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41Q9h4OM019569
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 09:43:04 GMT
+Received: from hu-sarohasa-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 26 Feb 2024 01:42:54 -0800
+From: Sarosh Hasan <quic_sarohasa@quicinc.com>
+To: Vinod Koul <vkoul@kernel.org>, Andy Gross <agross@kernel.org>,
+        "Bjorn
+ Andersson" <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "Jose
+ Abreu" <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Prasad Sodagudi
+	<psodagud@quicinc.com>,
+        Andrew Halaney <ahalaney@redhat.com>, Rob Herring
+	<robh@kernel.org>
+CC: <kernel@quicinc.com>, Sneh Shah <quic_snehshah@quicinc.com>,
+        Suraj Jaiswal
+	<quic_jsuraj@quicinc.com>
+Subject: [PATCH net-next v2] net: stmmac: dwmac-qcom-ethqos: Update link clock rate only for RGMII
+Date: Mon, 26 Feb 2024 15:12:26 +0530
+Message-ID: <20240226094226.14276-1-quic_sarohasa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a18dcae310f74dcb9c6fc01d5bdc0568@AcuMS.aculab.com>
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: tUDjRYwkIeEMxJzJSSUfF6jLBNtXEbHZ
+X-Proofpoint-GUID: tUDjRYwkIeEMxJzJSSUfF6jLBNtXEbHZ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_07,2024-02-23_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=924 malwarescore=0
+ suspectscore=0 bulkscore=0 adultscore=0 spamscore=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2402260073
 
-Hi David,
+Updating link clock rate for different speeds is only needed when
+using RGMII, as that mode requires changing clock speed when the link
+speed changes. Let's restrict updating the link clock speed in
+ethqos_update_link_clk() to just RGMII. Other modes such as SGMII
+only need to enable the link clock (which is already done in probe).
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Sarosh Hasan <quic_sarohasa@quicinc.com>
+---
+v2 changelog:
+- Addressed Konrad Dybcio comment on optimizing the patch
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on linux/master mkl-can-next/testing kdave/for-next akpm-mm/mm-nonmm-unstable linus/master v6.8-rc6]
-[cannot apply to next-20240223 dtor-input/next dtor-input/for-linus axboe-block/for-next horms-ipvs/master next-20240223]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Laight/minmax-Put-all-the-clamp-definitions-together/20240226-005902
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/a18dcae310f74dcb9c6fc01d5bdc0568%40AcuMS.aculab.com
-patch subject: [PATCH next v2 11/11] minmax: min() and max() don't need to return constant expressions
-config: i386-buildonly-randconfig-001-20240226 (https://download.01.org/0day-ci/archive/20240226/202402261720.EAMC0eHM-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240226/202402261720.EAMC0eHM-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402261720.EAMC0eHM-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> arch/x86/mm/pgtable.c:437:14: warning: variable length array used [-Wvla]
-     437 |         pmd_t *pmds[MAX_PREALLOCATED_PMDS];
-         |                     ^~~~~~~~~~~~~~~~~~~~~
-   arch/x86/mm/pgtable.c:180:31: note: expanded from macro 'MAX_PREALLOCATED_PMDS'
-     180 | #define MAX_PREALLOCATED_PMDS   MAX_UNSHARED_PTRS_PER_PGD
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/x86/mm/pgtable.c:113:2: note: expanded from macro 'MAX_UNSHARED_PTRS_PER_PGD'
-     113 |         max_t(size_t, KERNEL_PGD_BOUNDARY, PTRS_PER_PGD)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:152:27: note: expanded from macro 'max_t'
-     152 | #define max_t(type, x, y)       __careful_cmp(max, (type)(x), (type)(y), __COUNTER__)
-         |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:62:2: note: expanded from macro '__careful_cmp'
-      59 | #define __careful_cmp(op, x, y, uniq) ({        \
-         |                                       ~~~~~~~~~~~
-      60 |         _Static_assert(__types_ok(x, y),        \
-         |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      61 |                 #op "(" #x ", " #y ") signedness error, fix types or consider u" #op "() before " #op "_t()"); \
-         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      62 |         __cmp_once(op, x, y, uniq); })
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:57:2: note: expanded from macro '__cmp_once'
-      57 |         __cmp(op, __x_##uniq, __y_##uniq); })
-         |         ^
-   include/linux/minmax.h:52:26: note: expanded from macro '__cmp'
-      52 | #define __cmp(op, x, y) ((x) __cmp_op_##op (y) ? (x) : (y))
-         |                          ^
-   1 warning generated.
-
-
-vim +437 arch/x86/mm/pgtable.c
-
-1db491f77b6ed0 Fenghua Yu          2015-01-15  432  
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  433  pgd_t *pgd_alloc(struct mm_struct *mm)
-1ec1fe73dfb711 Ingo Molnar         2008-03-19  434  {
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  435  	pgd_t *pgd;
-184d47f0fd3651 Kees Cook           2018-10-08  436  	pmd_t *u_pmds[MAX_PREALLOCATED_USER_PMDS];
-184d47f0fd3651 Kees Cook           2018-10-08 @437  	pmd_t *pmds[MAX_PREALLOCATED_PMDS];
-1ec1fe73dfb711 Ingo Molnar         2008-03-19  438  
-1db491f77b6ed0 Fenghua Yu          2015-01-15  439  	pgd = _pgd_alloc();
-1ec1fe73dfb711 Ingo Molnar         2008-03-19  440  
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  441  	if (pgd == NULL)
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  442  		goto out;
-4f76cd382213b2 Jeremy Fitzhardinge 2008-03-17  443  
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  444  	mm->pgd = pgd;
-4f76cd382213b2 Jeremy Fitzhardinge 2008-03-17  445  
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  446  	if (sizeof(pmds) != 0 &&
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  447  			preallocate_pmds(mm, pmds, PREALLOCATED_PMDS) != 0)
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  448  		goto out_free_pgd;
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  449  
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  450  	if (sizeof(u_pmds) != 0 &&
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  451  			preallocate_pmds(mm, u_pmds, PREALLOCATED_USER_PMDS) != 0)
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  452  		goto out_free_pmds;
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  453  
-f59dbe9ca6707e Joerg Roedel        2018-07-18  454  	if (paravirt_pgd_alloc(mm) != 0)
-f59dbe9ca6707e Joerg Roedel        2018-07-18  455  		goto out_free_user_pmds;
-f59dbe9ca6707e Joerg Roedel        2018-07-18  456  
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  457  	/*
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  458  	 * Make sure that pre-populating the pmds is atomic with
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  459  	 * respect to anything walking the pgd_list, so that they
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  460  	 * never see a partially populated pgd.
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  461  	 */
-a79e53d85683c6 Andrea Arcangeli    2011-02-16  462  	spin_lock(&pgd_lock);
-4f76cd382213b2 Jeremy Fitzhardinge 2008-03-17  463  
-617d34d9e5d832 Jeremy Fitzhardinge 2010-09-21  464  	pgd_ctor(mm, pgd);
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  465  	if (sizeof(pmds) != 0)
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  466  		pgd_prepopulate_pmd(mm, pgd, pmds);
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  467  
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  468  	if (sizeof(u_pmds) != 0)
-f59dbe9ca6707e Joerg Roedel        2018-07-18  469  		pgd_prepopulate_user_pmd(mm, pgd, u_pmds);
-4f76cd382213b2 Jeremy Fitzhardinge 2008-03-17  470  
-a79e53d85683c6 Andrea Arcangeli    2011-02-16  471  	spin_unlock(&pgd_lock);
-4f76cd382213b2 Jeremy Fitzhardinge 2008-03-17  472  
-4f76cd382213b2 Jeremy Fitzhardinge 2008-03-17  473  	return pgd;
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  474  
-f59dbe9ca6707e Joerg Roedel        2018-07-18  475  out_free_user_pmds:
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  476  	if (sizeof(u_pmds) != 0)
-f59dbe9ca6707e Joerg Roedel        2018-07-18  477  		free_pmds(mm, u_pmds, PREALLOCATED_USER_PMDS);
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  478  out_free_pmds:
-25226df4b9be7f Gustavo A. R. Silva 2022-09-21  479  	if (sizeof(pmds) != 0)
-f59dbe9ca6707e Joerg Roedel        2018-07-18  480  		free_pmds(mm, pmds, PREALLOCATED_PMDS);
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  481  out_free_pgd:
-1db491f77b6ed0 Fenghua Yu          2015-01-15  482  	_pgd_free(pgd);
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  483  out:
-d8d5900ef8afc5 Jeremy Fitzhardinge 2008-06-25  484  	return NULL;
-4f76cd382213b2 Jeremy Fitzhardinge 2008-03-17  485  }
-4f76cd382213b2 Jeremy Fitzhardinge 2008-03-17  486  
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index 31631e3f89d0..c182294a6515 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -169,6 +169,9 @@ static void rgmii_dump(void *priv)
+ static void
+ ethqos_update_link_clk(struct qcom_ethqos *ethqos, unsigned int speed)
+ {
++	if (!phy_interface_mode_is_rgmii(ethqos->phy_mode))
++		return;
++
+ 	switch (speed) {
+ 	case SPEED_1000:
+ 		ethqos->link_clk_rate =  RGMII_1000_NOM_CLK_FREQ;
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.17.1
+
 
