@@ -1,146 +1,145 @@
-Return-Path: <linux-kernel+bounces-81601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C266A867810
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:17:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB38586783C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:26:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 633BCB21F50
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:17:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D34C1F23BD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6801212AAF4;
-	Mon, 26 Feb 2024 14:17:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E662412B17F;
+	Mon, 26 Feb 2024 14:25:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XLDWD9hK"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tl9C22Gr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E217129A75;
-	Mon, 26 Feb 2024 14:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C357A12A14B;
+	Mon, 26 Feb 2024 14:25:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708957035; cv=none; b=H2/igorI3HUWG9PE3CtrHo6RVhfusoOMmm4RFiIAMQjZb+Wz+TsBvib9iqYURvjwJ9PhBJohu9Lz+xrmHoF7JvJ+yddszElaSZc21lfr+VqfT37qHnS4hEkFCbGc+M7pNFTfQTmdMZ9jGc6VpB85PAOujkmqfpqhA08bj8iGZLM=
+	t=1708957528; cv=none; b=cYl8rvc4Vu1pr4MqLeypsMsh59SUdOi87HdAxsa43m16BJs96xNOTejlAOXPRmyNnxPRBAy2h6kmf8SwtfCu1aD4de7xc96EZjIY0/umqRyofBmoFi+/EH8xCUXq7H5LHyFbIj4+EWnejQB97O8pw9uH7EVFZGAXsw8fpR6Vub0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708957035; c=relaxed/simple;
-	bh=HZlXZGpEZ0auGfIkoqRiKy72XZYfKXmXVmc4SJZWGJo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AAl0fRMvnnTyhadnN5JzNlLyfk4ha6ANIgn2pWRxd7XTwtoYc2C5BlLuJiQstRX6FQdpTImG6WC9j0ISpJGJErLJXH6Rl8Mp/E5UnBD1f6oGqv4WSb/Ql73GlsznL+JGw8HoFxjpAKGxQJA1TsPk+gfQtMSRavv+1hQ3bAPkKHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XLDWD9hK; arc=none smtp.client-ip=198.175.65.14
+	s=arc-20240116; t=1708957528; c=relaxed/simple;
+	bh=74CnFkZQ38BEQwdCa2/x1RRI0t/N2qwbGFXvoSq90DY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WmlSTclzvI9ye/PxTUFFNLsUfBuXpMT79C3ktNJ9u7sfNFnQRs3rMljgMssyKI5A6DQT1Y3jUTjATevvvtdncPsw4Ols2fXoRDNw8xRdVuwaV8/9uqImi8ryESnis4rQ99PesA6PSutDnh9S0yZneDd/S46QaAlmdptI+x2nnTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tl9C22Gr; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708957035; x=1740493035;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HZlXZGpEZ0auGfIkoqRiKy72XZYfKXmXVmc4SJZWGJo=;
-  b=XLDWD9hKWSYS93+37BvlTXBZ6JM6TPO2yMqN8070OaF1NRVheRzy7aNh
-   C8+aBkPAeDa3JRuo//3OTkghATG1dNXAZjETuIcXLR3TP+cQdrocS38f7
-   J6xBn9Ls3gxQCKn92fLTM6foUg26500JT1tcbjMfzCKQ9giYPa99uRXL7
-   /JUOcfxPai348/cfF/y84SSZNT30zEuRGFfM8UlfdLpNHoAzBPFmvWY1R
-   ALlskxrfP3+PR4xvYS4oGQDxViRLcDoAGnyLGtx/4BaXHB4cz1KU7JNZh
-   l+25I4qtB65xEIzy+8e3uXlZ/++WDLpJuzg9TItX+fBVLotxpDDKIJfk5
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="7047436"
+  t=1708957527; x=1740493527;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=74CnFkZQ38BEQwdCa2/x1RRI0t/N2qwbGFXvoSq90DY=;
+  b=Tl9C22GrDCIfgIF2A1YWRNd8HgYuSQGRc2IcyLTp/BFJRUpHtpODlo10
+   uSr7rRJA2SmChJNGSXQVRMh/fkt6bvheMXcZDqLgcMMkN1KIyB3Xl9Jt9
+   dqGeKmMKuyjkhe3LZQiiGDBj8nozc7yOraD/ASCbyOXuzCJ/Vgmo17syX
+   LpIC0Dcb+0qu8+SdmKQCrf/IyoSdVDR6ufhZZ2Sg2oA5DPGkil76oD+d8
+   MteAHdf1pThdaO56V7lpitTJX17x8cWMuQG64XfMOE9onGJcRNAI4UQFO
+   YEJxPNlg3BEpJXoYQfsy97qCmcmt6ZYSTEe58dSf5eT2wUFFK9blWtr90
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3375144"
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="7047436"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:17:14 -0800
+   d="scan'208";a="3375144"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:25:24 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="913872291"
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="937030139"
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="913872291"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 06:17:07 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rebmx-00000007hRa-3oE3;
-	Mon, 26 Feb 2024 16:17:03 +0200
-Date: Mon, 26 Feb 2024 16:17:03 +0200
+   d="scan'208";a="937030139"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Feb 2024 06:25:17 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id E5EA8213; Mon, 26 Feb 2024 16:25:15 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linux-tegra@vger.kernel.org
+Cc: Jiri Slaby <jirislaby@kernel.org>,
 	Joel Stanley <joel@jms.id.au>,
 	Andrew Jeffery <andrew@codeconstruct.com.au>,
 	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
 	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
 	Al Cooper <alcooperx@gmail.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
 	Paul Cercueil <paul@crapouillou.net>,
 	Vladimir Zapolskiy <vz@mleia.com>,
 	Thierry Reding <thierry.reding@gmail.com>,
 	Jonathan Hunter <jonathanh@nvidia.com>,
 	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v1 02/14] serial: core: Add UPIO_UNSET constant for unset
- port type
-Message-ID: <ZdydX79GBaedFqku@smile.fi.intel.com>
-References: <20240221183442.4124354-1-andriy.shevchenko@linux.intel.com>
- <20240221183442.4124354-3-andriy.shevchenko@linux.intel.com>
- <5aeee02f-45a6-48e5-a6f4-e55b76d4b959@kernel.org>
- <ZddKaaB7HO0CyldD@smile.fi.intel.com>
- <fa46f220-a1c4-43f4-91e1-5929ff335be0@kernel.org>
- <ZdiyzKMZPlkN462G@smile.fi.intel.com>
+Subject: [PATCH v2 00/14] serial: Add a helper to parse device properties and more
+Date: Mon, 26 Feb 2024 16:19:16 +0200
+Message-ID: <20240226142514.1485246-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdiyzKMZPlkN462G@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024 at 04:59:25PM +0200, Andy Shevchenko wrote:
-> On Fri, Feb 23, 2024 at 06:42:15AM +0100, Jiri Slaby wrote:
-> > On 22. 02. 24, 14:21, Andy Shevchenko wrote:
-> > > On Thu, Feb 22, 2024 at 07:58:32AM +0100, Jiri Slaby wrote:
-> > > > On 21. 02. 24, 19:31, Andy Shevchenko wrote:
+I have noticed that many drivers are using the subset of the common
+properties and IRQ retrieval code. With the moving it to one place
+we have got a common parser one for many.
 
-..
+Tested on Intel Apollo Lake with DesingWare 8250 UARTs (clang compiled)
+and in QEMU for Aspeed configuration (gcc compiled). The rest has been
+compile tested on x86_64 with clang.
 
-> > > > >    	unsigned char		iotype;			/* io access style */
-> > > > > +#define UPIO_UNSET		((unsigned char)~0U)	/* UCHAR_MAX */
-> > > > 
-> > > > Perhaps making the var u8 and this U8_MAX then? It would make more sense to
-> > > > me.
-> > > 
-> > > WFM, should it be a separate change?
-> > 
-> > Likely.
-> 
-> Then I need a commit message, because I'm unable to justify this change myself.
-> 
-> > > Btw, how can I justify it?
-> > 
-> > Hmm, thinking about it, why is it not an enum?
-> 
-> Maybe, but it is a replica of UAPI definitions, do we want to see it as a enum?
-> To me it will be a bit ugly looking.
-> 
-> > But it could be also an u8 because you want it be exactly 8 bits as you want
-> > to be sure values up to 255 fit.
-> 
-> Depends on what we assume UAPI does with those flags. It maybe even less than
-> 8 bits, or great than, currently 8 bits is enough...
-> 
-> TL;DR: I would rather take a patch from you and incorporate into the series
-> than trying hard to invent a justification and proper type.
+In v2:
+- fixed typo (Hugo)
+- renamed UPIO_UNSET --> UPIO_UNKNOWN (Florian)
+- fixed 8250_of not working (Andrew)
+- dropped unused variable in 8250_bcm7271 (LKP)
+- added tag to 8250_aspeed_vuart (Andrew)
 
-Okay, I want to send a new version, for now I leave the type change for
-the next time. It looks that quirks as well will benefit from type clarifying.
+Andy Shevchenko (14):
+  serial: core: Move struct uart_port::quirks closer to possible values
+  serial: core: Add UPIO_UNKNOWN constant for unknown port type
+  serial: port: Introduce a common helper to read properties
+  serial: 8250_aspeed_vuart: Switch to use uart_read_port_properties()
+  serial: 8250_bcm2835aux: Switch to use uart_read_port_properties()
+  serial: 8250_bcm7271: Switch to use uart_read_port_properties()
+  serial: 8250_dw: Switch to use uart_read_port_properties()
+  serial: 8250_ingenic: Switch to use uart_read_port_properties()
+  serial: 8250_lpc18xx: Switch to use uart_read_port_properties()
+  serial: 8250_of: Switch to use uart_read_port_properties()
+  serial: 8250_omap: Switch to use uart_read_port_properties()
+  serial: 8250_pxa: Switch to use uart_read_port_properties()
+  serial: 8250_tegra: Switch to use uart_read_port_properties()
+  serial: 8250_uniphier: Switch to use uart_read_port_properties()
+
+ drivers/tty/serial/8250/8250_aspeed_vuart.c |  50 +++-----
+ drivers/tty/serial/8250/8250_bcm2835aux.c   |  92 ++++++--------
+ drivers/tty/serial/8250/8250_bcm7271.c      |  56 +++-----
+ drivers/tty/serial/8250/8250_dw.c           |  67 ++++------
+ drivers/tty/serial/8250/8250_ingenic.c      |  20 +--
+ drivers/tty/serial/8250/8250_lpc18xx.c      |  20 ++-
+ drivers/tty/serial/8250/8250_of.c           | 105 ++++-----------
+ drivers/tty/serial/8250/8250_omap.c         |  29 ++---
+ drivers/tty/serial/8250/8250_pxa.c          |  22 ++--
+ drivers/tty/serial/8250/8250_tegra.c        |  26 ++--
+ drivers/tty/serial/8250/8250_uniphier.c     |  17 +--
+ drivers/tty/serial/serial_port.c            | 134 ++++++++++++++++++++
+ include/linux/serial_core.h                 |  10 +-
+ 13 files changed, 313 insertions(+), 335 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.43.0.rc1.1.gbec44491f096
 
 
