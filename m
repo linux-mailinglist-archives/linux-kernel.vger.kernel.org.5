@@ -1,164 +1,184 @@
-Return-Path: <linux-kernel+bounces-81773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575F98679FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:20:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 591F48679FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:20:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B1D01C22E35
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:20:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F5B329DD07
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C3112F5A6;
-	Mon, 26 Feb 2024 15:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF8312A17C;
+	Mon, 26 Feb 2024 15:14:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ISDNb3Io"
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="FMLCeEwZ"
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E6C912F589;
-	Mon, 26 Feb 2024 15:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111E312BE81
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:14:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708960424; cv=none; b=HImsCP2mVEjvaP/cx5bpXdEpUH7m1Og0RSHzxG3/e+x5gHSkNEGC81jmjYmyzLjP3kDsJ3o4+JEc4lugKZTAiyxGQDz4NN425dlQq49V1yNnixYJJAkSkUumQHdpdaYF57r4SyP1HJk283Y+c3IcRnCRHeNdfy9AMo0SVYWzGeM=
+	t=1708960483; cv=none; b=rT/Psfs7WW7gMBw8f+zsH8a8IrHxCgLwWDT0MVXCNJv+4g0Bwyy4G2lUg8Jbdt7d0jLslFEZcteD/1F0e/NWyut0DZOAQV+kZr8TxLQPKS9NRER63pq4NC134lCQhU+W/ljZuMx82ZynLsAQDuS207BEKhuxj8wcgnye2SZTT2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708960424; c=relaxed/simple;
-	bh=rURmSkgy6eHeKznPm4mjLqjD6+kyDlL2P61qzNpDTF8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LfJ4w8dUc63FCFX76LK1uHLg6m+YcJlmw25a+UGDx18LynX4F5uxdR906LfOrocdtQK4Z4s+zhPBgF8z3s6l7wDVmC6cjfdhk5GD6bEuJPS0QVSJf8SkqTQjWNYKx+PKSblH2Eh12LNKvBkiXsgvd0SJxB6SI+42h9YpMrQNy6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ISDNb3Io; arc=none smtp.client-ip=209.85.160.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-21fa6e04835so1178160fac.1;
-        Mon, 26 Feb 2024 07:13:42 -0800 (PST)
+	s=arc-20240116; t=1708960483; c=relaxed/simple;
+	bh=9ZO+k7p1X5BG5gLQi9CzSxrGFtzhnM6MFGltxOVCx7s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gazPwoGtAgrhs1+LMf2rpXb0zh8VePVXOzDB19u1KqRdwbUdHEOJtv2yCN4kmMSrIcsA/uIHejbaOhgjsE+cpiOOoPr5KFqF52wXvocce21/wEjxHCEbtYPmwL5QCiSYR3rUd/15vVHncsgaMkul67E3wt0S+Ukw33/Aunjw8FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=FMLCeEwZ; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7beda6a274bso148068439f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:14:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708960421; x=1709565221; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z2RNYfbXtpUIs/lXlGZGdjPvaKF4hrHLK1yFYk95gmg=;
-        b=ISDNb3Io/NlbvAMiA1c8Cs0Mo5oRUVwRyB3UHDCfSGCUMqw/EPrh4vPypN2BXRNuIm
-         65sI3rv11vV5dwG+77krYCPsyvq/APrtNaYhC10/SW3IIfY+E9gMUOhw/6MfUY2wTs7n
-         3aVgXGxhQchBtJrXTmFxmeMfIJXoOUwXsgLbMhNLB5NSvDcs+tbASq1oSkjEAJ9GsYVJ
-         X0tb+n7nQDiXUsMDtoJXFHCrvW9TZLOfA8PqAKecf30BqZtp9lKZtY18KFsQwrzYNju3
-         RLIn6sO1kRTVnly2TygVySiTYxapbNz2UJtU8wBoqJhFpCQK7gDRY9pZhebAc9ZOoAmY
-         5lRQ==
+        d=sifive.com; s=google; t=1708960481; x=1709565281; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DnhDNqZldvfwo++1kr0TTTkp3od5W/IiFTP/MKj7Qek=;
+        b=FMLCeEwZnzZUkMgda6NcaVQj8sN+ZF3lSphMUhcE8IvROlWUBgk6FGCk3zg0wADZ/b
+         4/Ltmbpd0oNvCGDCSL2OF827S0LDNHgErXL9Xjkgf3YpS5VIgSz5d3alKn47nHNupxRb
+         BPSIDOCsRLNE8nvxpUG3dBq+alSf5KpTw2ZeENCrck3tKm1AC6zRigygHJjCvuelYtub
+         wB5D/+2H0LM8niEWYF+WO1+CD+6FyqczLR8lbiNojcxd1lprrZiSBoiANjDjJaJDDqxN
+         Ubuup0e5+UOc+p6vNLIwdW8jI9eJYhm+3yU2Ols+f4482Ejm+7baOV+JwhlaRUcbCKKi
+         2xKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708960421; x=1709565221;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Z2RNYfbXtpUIs/lXlGZGdjPvaKF4hrHLK1yFYk95gmg=;
-        b=dTIPc/ur486t7lc0lGQIAzb/SVYZI4RfjcclRZrY4i3LbsPHWxd7dExYWVMrHcFeU5
-         8H+fxwnYQMTVWswOcYxxQ6xsXEYCN1fBeiO8mpaELo2npP38ng5YoZg4oSxNlnRA7etf
-         6qqbwXUwVIO9nTfdZcE1v05CU377qVoEFuQ54lBssDXadzv3xig3WJ8XfcVgESYjoRPu
-         6Chif4lZzQxDfWHY6daddxT7AivjyQ6eUkRjpm+hwnjP+UheVStr/J0C3wbtoaV/TDKD
-         Dy5zHceHX/frM3BkjcIQ6wjWBOsSEK0WK9WPOWSZQx8jKVjhxWQmNVkzO/ZAyGKzESsi
-         Qphg==
-X-Forwarded-Encrypted: i=1; AJvYcCXD829AoOI46IhjqIb7T0S/6braTuEfJyeSCP/ECfDw/AZYWQnvllGxYWquKNa54hB6lDlrcPyQKb1X3dunAMZrPxukg23QhmghL2sb7ngWivVmooOJbBajJjovRE/zeBMPQ46mHvTEIDC8KsvMv9KDb2zbuAXfnOuATL4DK5onbBmUhyQo9vGkHfm7gLRkepw3bxkiwKjekBLNVfF+rf9DSg==
-X-Gm-Message-State: AOJu0YwvX4knzQUo59oa5IqZEtOJ1xwwSwoITJgNURYNo9GDw57jaYze
-	5Fi9GrpSHTGfF5e+2UEqRsqEFX7Pn/bssup02CeT0dfiu2AosV6DmdNT6nxR+T8=
-X-Google-Smtp-Source: AGHT+IGqrIvwue3yE+w57GRzW34rC7ys6T+9FsFecJygkZyFOJPKOETxUuiD8wmEbKYVyj2NQ94Z/g==
-X-Received: by 2002:a05:6871:587:b0:21e:a9d3:6470 with SMTP id u7-20020a056871058700b0021ea9d36470mr6414831oan.22.1708960421372;
-        Mon, 26 Feb 2024 07:13:41 -0800 (PST)
-Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
-        by smtp.gmail.com with ESMTPSA id j19-20020a056870531300b0021fd26da430sm1549113oan.4.2024.02.26.07.13.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 07:13:41 -0800 (PST)
-Sender: John Groves <grovesaustin@gmail.com>
-Date: Mon, 26 Feb 2024 09:13:38 -0600
-From: John Groves <John@groves.net>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 03/20] dev_dax_iomap: Move dax_pgoff_to_phys from
- device.c to bus.c since both need it now
-Message-ID: <3rr7b2qjwxcc57ynzyo35vvw3buaxpkwum4d4swrz7nsdb6clr@ssc4yupwatww>
-References: <cover.1708709155.git.john@groves.net>
- <8d062903cded81cba05cc703f61160a0edb4578a.1708709155.git.john@groves.net>
- <20240226121035.00007ca4@Huawei.com>
+        d=1e100.net; s=20230601; t=1708960481; x=1709565281;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DnhDNqZldvfwo++1kr0TTTkp3od5W/IiFTP/MKj7Qek=;
+        b=QT/cXFH6zjGqzk7vJDhJh2cLicIyOXgO2c+qXIufL8r3Fo847DCagNS8nqe2Go1VuZ
+         v/Yxhx6mS5FIgdmv7l3LKYo1/Zg6lqkuZLHxbmuNVVhp1bXa4NOH0f7boM/bnYYwEipl
+         vBCpIi9MQEbsb0oRiMc1cbVfHSPCtBjcx9/dgWGUb1P6EeeiY0FriyOSyqk0Rabq/T4Q
+         4UbTDHbEJLWvnup3kJ/DpmorAChQ4DIQuqqGm0O2qMF8LNH1N3LyLSIF25R7umUHHX2z
+         cxmF/KAE/QOnEnIIyq5xIzVLKAy7vViukHPhe0goMmM2B9nRdIOiZb64/xoNbBrHwM35
+         ik9w==
+X-Forwarded-Encrypted: i=1; AJvYcCWXHGeHGpoPJvXAbgMtPtRerSF17oMB+rsgMMiJWndORb3tzLu8c5zChjCegz5h3vRfUPspdRYaMHaMgD7MJ+7w6LVK9GIYsucDOZKw
+X-Gm-Message-State: AOJu0YyaS1CSvarIOY2wL9p40YsYgym/4YVWHj1UbPjDiXyQVNZxG4QV
+	gNh+fLlK9rBgVJ+ADbWhV9ouB3dsbFBhE4eIi+JrAfSeGjlUOTZB+C1TxGtDdAE=
+X-Google-Smtp-Source: AGHT+IHEaD4rR2rDzvAfb0spGPXwvQzyNLv0eR1h0rsYQclBtWakcm2H92kl96HePewGk7gyX70KWA==
+X-Received: by 2002:a6b:4e12:0:b0:7c7:dca3:7e27 with SMTP id c18-20020a6b4e12000000b007c7dca37e27mr871256iob.17.1708960480771;
+        Mon, 26 Feb 2024 07:14:40 -0800 (PST)
+Received: from [100.64.0.1] ([170.85.6.200])
+        by smtp.gmail.com with ESMTPSA id d22-20020a5d9516000000b007c7b076f07asm1112155iom.15.2024.02.26.07.14.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 07:14:40 -0800 (PST)
+Message-ID: <40dee2c1-ff24-40b2-a13c-6934139ba869@sifive.com>
+Date: Mon, 26 Feb 2024 09:14:38 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226121035.00007ca4@Huawei.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: deprecate CONFIG_MMU=n
+To: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+ Andrew Jones <ajones@ventanamicro.com>, Damien Le Moal <dlemoal@kernel.org>,
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+ Atish Patra <atishp@rivosinc.com>
+References: <20240226140649.293254-1-cleger@rivosinc.com>
+Content-Language: en-US
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240226140649.293254-1-cleger@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 24/02/26 12:10PM, Jonathan Cameron wrote:
-> On Fri, 23 Feb 2024 11:41:47 -0600
-> John Groves <John@Groves.net> wrote:
+On 2024-02-26 8:06 AM, Clément Léger wrote:
+> Deprecation of NOMMU support for riscv was discussed during LPC 2023
+> [1]. Reasons for this involves lack of users as well as maintenance
+> efforts to support this mode. psABI FDPIC specification also never
+> made it upstream and last public messages of this development seems to
+> date back from 2020 [2]. Plan the deprecation to be done in 2 years from
+
+What are the criteria for delaying/canceling the removal? NOMMU support doesn't
+rot nearly as fast as XIP; static PIE ELF works and is well specified; and as
+mentioned at LPC, there are some users, even if "just for fun".
+
+> now. Mark the Kconfig option as deprecated by adding a new dummy option
+> which explicitly displays the deprecation in case of CONFIG_MMU=n. This option
+> is selected indirectly by CONFIG_RISCV_M_MODE since an option can not
+> select another one directly with a "select" in case of such CONFIG=n.
+> Additionally, display a pr_err() message at boot time in case of NOMMU
+> build to warn about upcoming deprecation.
 > 
-> > bus.c can't call functions in device.c - that creates a circular linkage
-> > dependency.
-> > 
-> > Signed-off-by: John Groves <john@groves.net>
+> Link: https://lpc.events/event/17/contributions/1478/ [1]
+> Link: https://groups.google.com/a/groups.riscv.org/g/sw-dev/c/ZjYUJswknQ4/m/WYRRylTwAAAJ [2]
+> Signed-off-by: Clément Léger <cleger@rivosinc.com>
 > 
-> This also adds the export which you should mention!
+> ---
+>  arch/riscv/Kconfig        | 8 ++++++++
+>  arch/riscv/kernel/setup.c | 4 ++++
+>  2 files changed, 12 insertions(+)
 > 
-> Do they need it already? Seems like tense of patch title
-> may be wrong.
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index bffbd869a068..8da58c102d3f 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -221,6 +221,7 @@ config ARCH_MMAP_RND_COMPAT_BITS_MAX
+>  # set if we run in machine mode, cleared if we run in supervisor mode
+>  config RISCV_M_MODE
+>  	bool
+> +	select NOMMU
+>  	default !MMU
+>  
+>  # set if we are running in S-mode and can use SBI calls
+> @@ -236,6 +237,13 @@ config MMU
+>  	  Select if you want MMU-based virtualised addressing space
+>  	  support by paged memory management. If unsure, say 'Y'.
+>  
+> +config NOMMU
+> +	depends on !MMU
+> +	bool "NOMMU kernel (DEPRECATED)"
+> +	help
+> +	  NOMMU kernel is deprecated and is scheduled for removal by
+> +	  the beginning of 2027.
+> +
 
-I added "Also exports dax_pgoff_to_phys() since both bus.c and
-device.c now call it."
+The idiomatic way to display this kind of warning is a comment directive:
 
-The export is necessary because bus.c and device.c are not in the same .ko
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index d4e890fb5b5a..b736440ce0f7 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -248,6 +248,9 @@ config MMU
+          Select if you want MMU-based virtualised addressing space
+          support by paged memory management. If unsure, say 'Y'.
 
-Let me know if it seems like I'm misunderstanding...
++comment "NOMMU support is deprecated (scheduled for removal in 2027)"
++       depends on !MMU
++
+ config PAGE_OFFSET
+        hex
+        default 0xC0000000 if 32BIT && MMU
 
-> 
-> > ---
-> >  drivers/dax/bus.c    | 24 ++++++++++++++++++++++++
-> >  drivers/dax/device.c | 23 -----------------------
-> >  2 files changed, 24 insertions(+), 23 deletions(-)
-> > 
-> > diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> > index 1ff1ab5fa105..664e8c1b9930 100644
-> > --- a/drivers/dax/bus.c
-> > +++ b/drivers/dax/bus.c
-> > @@ -1325,6 +1325,30 @@ static const struct device_type dev_dax_type = {
-> >  	.groups = dax_attribute_groups,
-> >  };
-> >  
-> > +/* see "strong" declaration in tools/testing/nvdimm/dax-dev.c  */
-> > +__weak phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
-> > +			      unsigned long size)
-> > +{
-> > +	int i;
-> > +
-> > +	for (i = 0; i < dev_dax->nr_range; i++) {
-> > +		struct dev_dax_range *dax_range = &dev_dax->ranges[i];
-> > +		struct range *range = &dax_range->range;
-> > +		unsigned long long pgoff_end;
-> > +		phys_addr_t phys;
-> > +
-> > +		pgoff_end = dax_range->pgoff + PHYS_PFN(range_len(range)) - 1;
-> > +		if (pgoff < dax_range->pgoff || pgoff > pgoff_end)
-> > +			continue;
-> > +		phys = PFN_PHYS(pgoff - dax_range->pgoff) + range->start;
-> > +		if (phys + size - 1 <= range->end)
-> > +			return phys;
-> > +		break;
-> > +	}
-> > +	return -1;
-> 
-> Not related to your patch but returning -1 in a phys_addr_t isn't ideal.
-> I assume aim is all bits set as a marker, in which case
-> PHYS_ADDR_MAX from limits.h would make things clearer.
+Regards,
+Samuel
 
-Perhaps Dan or the other dax people can comment on this? I just moved the
-function verbatim, but Jonathan makes a good point!
-
-Thanks,
-John
+>  config PAGE_OFFSET
+>  	hex
+>  	default 0xC0000000 if 32BIT && MMU
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index 4f73c0ae44b2..8799816ef0a6 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -295,6 +295,10 @@ void __init setup_arch(char **cmdline_p)
+>  	riscv_set_dma_cache_alignment();
+>  
+>  	riscv_user_isa_enable();
+> +
+> +#if !defined(CONFIG_MMU)
+> +	pr_err("RISC-V NOMMU support is deprecated and scheduled for removal by the beginning of 2027\n");
+> +#endif
+>  }
+>  
+>  bool arch_cpu_is_hotpluggable(int cpu)
 
 
