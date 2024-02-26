@@ -1,124 +1,93 @@
-Return-Path: <linux-kernel+bounces-82109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C583867F60
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:55:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A43867F6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:58:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBE791C299F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:55:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F84628C126
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1294312EBC1;
-	Mon, 26 Feb 2024 17:55:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168E512EBE5;
+	Mon, 26 Feb 2024 17:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GSKACibp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KnVScf5Q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95AD912CD8E;
-	Mon, 26 Feb 2024 17:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5058F12C815;
+	Mon, 26 Feb 2024 17:58:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708970113; cv=none; b=BvVUXUwCLNR8cI8GnuysSAPTRc2S8bNfW7jQQOhhmMtY1bRHJ+CmJOiifEkrjbU9ZKPuGisfYGifOXq/ftYTs+GEL9fDoughfnSTKRZhmZDIageYLYL8PwNogu88iZVFOaZd2/JDxUqL4XYN5sheQBBxwbSqQGpqGQwLllh6uVo=
+	t=1708970292; cv=none; b=Lzkt90LDxsDZulFS+GHICudMXJGJhwF5vDGrPYC8QJpxkL2wUVuL88qGxZlhK4APRKuR1i4ZqD+/INC/Mee+dqCFTS8ab4ClWIDRPhHM3hxAZLpyMakpqIKpfHHhBp58T8OYFKIbcXeDymTXw7t65jZtdOu5DHMOzvrwqOCx3+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708970113; c=relaxed/simple;
-	bh=JKV0S93Mg+rTphHewtKghez0jM7ATvfjQeqI+0P17dg=;
+	s=arc-20240116; t=1708970292; c=relaxed/simple;
+	bh=mXtVnnZU5KldRH/xAQBuuqOy4rYUXPWyBCIe0Ahw4DY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AW/avJ94FOeOFyF9spcWAWbkzNjixfxI9bPA/12i0rDhiPac2HDP4AtvIpajsOwy7qaydtDC/AZKL5uxVFt4B+i7yKHibCGtvV+m1zOE6kT+JguNCzaZHzItgq2CZkYMYyKDl3gjeGcbuGMQBxosEX/+cVVSNurJUZRFD1aADbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GSKACibp; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708970111; x=1740506111;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=JKV0S93Mg+rTphHewtKghez0jM7ATvfjQeqI+0P17dg=;
-  b=GSKACibpyk+6yKFj+9+CSU9x+xqZwgNPVf33jgmON/x2DXzUShB3kdeW
-   WA7E2l8ktdRyA1qN2snn6Beu15w98IO0GaaixDTIW8ehApzqHOMN5khu2
-   CJOw3wgGoNe8PhKgHXo7eQCxf5KPHK2wJbOdcPZR7rn45NNsITwDH07Td
-   nhe4BIrhyEeeNvjymY5J/u6fig7Dp7ImYHvIFmbqnUXhG8c2V0n9TJHOo
-   Bf9NC4YODiMVWYiCIOzMtw1hwqjShAwQH4FGJ2gaKyd5OFdD50SLp/Y+J
-   qMz+wgLE1x2tJjPAI5LgWSaA1eWoBrXI/RurX8tFyMfMeanU/hWa/Ii7W
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3145661"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3145661"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 09:55:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="6951848"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 09:55:11 -0800
-Date: Mon, 26 Feb 2024 09:55:10 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v18 040/121] KVM: x86/mmu: Disallow fast page fault on
- private GPA
-Message-ID: <20240226175510.GC177224@ls.amr.corp.intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <91c797997b57056224571e22362321a23947172f.1705965635.git.isaku.yamahata@intel.com>
- <CABgObfYP4n12HOSx5XsibA==hmPCVe9hHZFTsJTTxBHA5pffwA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h2UJydDXFW7o+mfSOwiytSMs+oelAiTAPuCtRW2qZnTQri8g30rMJL0QpUa/Ru10LFYn5M0XtrGdnpWm7CCk+Yct0DSviGiFIvRIpnCeceD/OGT4GjAG3SpeF5Ahzz0HCPLv5fUu643gwkfKYI+WP76X8EBom1pZJ5rEff1Wttk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KnVScf5Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6668C433C7;
+	Mon, 26 Feb 2024 17:58:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708970291;
+	bh=mXtVnnZU5KldRH/xAQBuuqOy4rYUXPWyBCIe0Ahw4DY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KnVScf5Ql39ByDTDraRO5HJefp1ts2WNx7YSyg0S473pWGzF+mUaYmexthRZAvHRG
+	 MXnsLGH1IZSftf29Pq1zDBIGpMW16NEjMuTDdbdnocr0Z4jLwo++AH5420p4XkbLck
+	 muptFsm3DmCIUHMjeaVNJB1ou69kCgFcvxQWZLCp0sN39JESkafDLiKs/J6OB1xhRD
+	 yLqoAgb1h7bYehmhJg34m64npHE9AW7yAI/C3Xo8mVbEs+kaE4Uy2EPK5Tc0Y8bBQ8
+	 p3vc6PjkQNWScqRv47Kl+eo+2G0KvqZEdOKnn/zbQ3Jf1RQXFXv0fWdINNF8uePaXt
+	 13AXreIPxRUEQ==
+Date: Mon, 26 Feb 2024 17:58:06 +0000
+From: Simon Horman <horms@kernel.org>
+To: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
+	Geliang Tang <geliang@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Kishen Maloor <kishen.maloor@intel.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Peter Krystad <peter.krystad@linux.intel.com>,
+	Christoph Paasch <cpaasch@apple.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH net 10/10] selftests: mptcp: explicitly trigger the
+ listener diag code-path
+Message-ID: <20240226175806.GI13129@kernel.org>
+References: <20240223-upstream-net-20240223-misc-fixes-v1-0-162e87e48497@kernel.org>
+ <20240223-upstream-net-20240223-misc-fixes-v1-10-162e87e48497@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfYP4n12HOSx5XsibA==hmPCVe9hHZFTsJTTxBHA5pffwA@mail.gmail.com>
+In-Reply-To: <20240223-upstream-net-20240223-misc-fixes-v1-10-162e87e48497@kernel.org>
 
-On Mon, Feb 12, 2024 at 06:01:54PM +0100,
-Paolo Bonzini <pbonzini@redhat.com> wrote:
-
-> On Tue, Jan 23, 2024 at 12:55 AM <isaku.yamahata@intel.com> wrote:
-> >
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> >
-> > TDX requires TDX SEAMCALL to operate Secure EPT instead of direct memory
-> > access and TDX SEAMCALL is heavy operation.  Fast page fault on private GPA
-> > doesn't make sense.  Disallow fast page fault on private GPA.
-> >
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  arch/x86/kvm/mmu/mmu.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index b2924bd9b668..54d4c8f1ba68 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -3339,8 +3339,16 @@ static int kvm_handle_noslot_fault(struct kvm_vcpu *vcpu,
-> >         return RET_PF_CONTINUE;
-> >  }
-> >
-> > -static bool page_fault_can_be_fast(struct kvm_page_fault *fault)
-> > +static bool page_fault_can_be_fast(struct kvm *kvm, struct kvm_page_fault *fault)
-> >  {
-> > +       /*
-> > +        * TDX private mapping doesn't support fast page fault because the EPT
-> > +        * entry is read/written with TDX SEAMCALLs instead of direct memory
-> > +        * access.
-> > +        */
-> > +       if (kvm_is_private_gpa(kvm, fault->addr))
-> > +               return false;
+On Fri, Feb 23, 2024 at 05:14:20PM +0100, Matthieu Baerts (NGI0) wrote:
+> From: Paolo Abeni <pabeni@redhat.com>
 > 
-> I think this does not apply to SNP? If so, it would be better to check
-> the SPTE against the shared-page mask inside the do...while loop.
+> The mptcp diag interface already experienced a few locking bugs
+> that lockdep and appropriate coverage have detected in advance.
+> 
+> Let's add a test-case triggering the relevant code path, to prevent
+> similar issues in the future.
+> 
+> Be careful to cope with very slow environments.
+> 
+> Note that we don't need an explicit timeout on the mptcp_connect
+> subprocess to cope with eventual bug/hang-up as the final cleanup
+> terminating the child processes will take care of that.
+> 
+> Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+> Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 
-No, this won't apply to SNP. Let me update the patch corresponding in v19.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+
 
