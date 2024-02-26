@@ -1,106 +1,135 @@
-Return-Path: <linux-kernel+bounces-81349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04F66867494
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:17:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60FED867497
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:18:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B261A28632E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:17:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3618B236B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:18:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E443604BA;
-	Mon, 26 Feb 2024 12:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A439A604BB;
+	Mon, 26 Feb 2024 12:18:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="NKfEe9PE"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fTgua61J"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1E1604BB
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:17:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639091B27D;
+	Mon, 26 Feb 2024 12:18:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949858; cv=none; b=eNf+wxFBtbQ3L/xtp1nALU86sYjfaHFxQz3F5DLstgwfAj38QfmbdTiEJktrTKviwEv7CPQ8Uz/f8wh975PK+EDIP+yjkEOMQqMizkvipCaz6MNOe5KJYt/SUlw2WX5R7W/omFIe0oweGu4TNPPzTZs+RrmI+yFn655u0sqxAgQ=
+	t=1708949895; cv=none; b=l66wRw84cTI/n0EAhFtjtNQty6lc9zXfdULoD7C4HJvGCAK1gkzfbXefKeAT+Sy9pT55SVqcfDnaOWhqV0XSg26iylMDJT5y57N0ZFROE3XWewrdODgjj1KIan37XGf1HTysNe/25nEOmqaS3FwPL9PAPNOzO4YgHy3pi1wlzEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949858; c=relaxed/simple;
-	bh=OGa8p8GgC/sb7ZVi2Q9MDNE+Wiv/ZCXz/jfCrGqA2yI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pubA/4wYMFSfgxwvzMZEFPSMYv++SJnm1aKPv++PSDKMrJm701pdTVymn+Y0J+TZvu/Gb3u9GPAmdge3artJhVdZZXxckfsbtJfoC0Fm5GvhJjnT1+cxcJQy+fyg3pAufMBEpzxjo9zeKLgzWJUvbidxMaXIJYMOnc1uw+EStIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=NKfEe9PE; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-412a5de8a06so4129775e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:17:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708949851; x=1709554651; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cjYNEFjj+8Br1K/kWVmcw1ELzUHGJ7r8kZWsJb6hqRI=;
-        b=NKfEe9PE+8DLfYH962wdrzgAynjfJzZR4bZvzvomOX1I0vEMXYYcGVHM3ZnYIvyyxF
-         E7olb6ccQFbnKJ0g+C076g/FTjD7GjsgGexR0k0DSvD5VFbGPcdx9wyV3LQhtRx369CP
-         DOwYAzgpGZ80gJLj6mmvJVkiQQFaBDCc8QVltCCh9vGwizwl5Vji3IXUF7eU2sXPCgv6
-         hPswyDGHxWctKfargV7OX6j8PgjE7MA0nOUKuOjwLlZpiWk523PA/Rg67xUcsvKPsE7j
-         8scMRJJ18R1c4qSX71mSfYIVprMOPVzycYEHCowU14AMOe4j04Ve1W9SfY8xZnm0VMvI
-         F5Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708949851; x=1709554651;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cjYNEFjj+8Br1K/kWVmcw1ELzUHGJ7r8kZWsJb6hqRI=;
-        b=kRtqjscH0QHA7qBx/N3CebFcdkHOxXPyM0lI/2LzqGlr1PNelzgIPIGZo0xw0b3nwa
-         k98z2wqtexsyK79Dl0DDdKicuC/E4YDGkaf1w4xDIdbUfgaxLFbfOZjtiYOyN+eRiVIM
-         j3RrR/5Qu8pvLgXLY1bCTV39oJ1XcnBN+TJEOOFmVW7a/jAuF9rFv5h/z9fesg7Y3YKE
-         VLWOMmQlwVMkv4gM6SMigCYePefDV4ciTfP4YBJSzyMRUwcGk3i3FNJka+OG2kW3fi9J
-         aDVbx9jS/lnGjVkDpOZnBvEbnbryjXWcrovbRny8uTEGXRa5s56fkoSrhbSs6Xz5ZJgY
-         mPLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVxiKnmmqAsnHKD17/vbDyMXQNFIlr4yGgL+VQfFIPfq8lkbL30L9qYKBgQa880GGEcuowBcMWusXXPTDymLoPB7/SC0t287hi1vhc6
-X-Gm-Message-State: AOJu0YzEoKiWw3Mexp7tJ9mEvkggNtVy5TDa+HFeRyeMXHPeyntYWGM7
-	hnnNGJCospU8uSn7FTKxc6izOKvi+2e+7wUJdkEzcP/qG4hM5MYu0pSYgDo36fY=
-X-Google-Smtp-Source: AGHT+IHk1FfpA2y4Z9oTsQIg5vqYkF8R+cidEV/qNA4rtoBDqquyDCAvUHa8PCJ/+wEXXwmQMEcg1A==
-X-Received: by 2002:a05:6000:1841:b0:33d:2180:30da with SMTP id c1-20020a056000184100b0033d218030damr7107865wri.58.1708949851400;
-        Mon, 26 Feb 2024 04:17:31 -0800 (PST)
-Received: from [192.168.1.70] ([84.102.31.43])
-        by smtp.gmail.com with ESMTPSA id bj20-20020a0560001e1400b0033db0c866f7sm8245904wrb.11.2024.02.26.04.17.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 04:17:31 -0800 (PST)
-Message-ID: <45c31edd-45ea-4101-ae1d-5e0f95c88d20@baylibre.com>
-Date: Mon, 26 Feb 2024 13:17:29 +0100
+	s=arc-20240116; t=1708949895; c=relaxed/simple;
+	bh=xCIWZpRxxNMSN7ob6nQ9iTG5SjMeUWZcqa1ESiv8Yps=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YK/vBnoYLxQ/Sp5ebhYbITnijcAUVG6uX9Vnubd45DRT8oNh9oOhSQO959VPnBdkZUOLV8kQ2FNQlHjKcQ+8ZFN6GOZ1Vd8vZanpE/nUbLUmXHH5HakRS64CY81EnLQIAYKwrM/NOk5PeBuWHMx+B8McCmLC4IEpTob8/bQHhm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=fTgua61J; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41QCI5TJ102410;
+	Mon, 26 Feb 2024 06:18:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708949885;
+	bh=RFNVTfrO40yGnidmOJOOJB8JPl52qtzEiSN04cylThM=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=fTgua61Jk7NokrswsOrAn/pZRfeoXnlrOZJmkfBq8EZKcloAt/35uKzF8gGyJRnLU
+	 /elxbwHJiMAuaFxHsZp2ibdCQ5bnxCtR5HuosOqaS96tRAYXkxjCNJNlEjzAGeaAta
+	 r6MqNWI/F5gAu7n3wsP7FF4yh0CfSWXGBeRB6eZU=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41QCI5Oo120329
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 26 Feb 2024 06:18:05 -0600
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 26
+ Feb 2024 06:18:05 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 26 Feb 2024 06:18:05 -0600
+Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41QCI4of081093;
+	Mon, 26 Feb 2024 06:18:05 -0600
+Date: Mon, 26 Feb 2024 17:48:03 +0530
+From: Dhruva Gole <d-gole@ti.com>
+To: Mark Brown <broonie@kernel.org>
+CC: Apurva Nandan <a-nandan@ti.com>,
+        =?utf-8?B?VGjDqW8=?= Lebrun
+	<theo.lebrun@bootlin.com>,
+        <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Gregory CLEMENT
+	<gregory.clement@bootlin.com>,
+        Vladimir Kondratiev
+	<vladimir.kondratiev@mobileye.com>,
+        Thomas Petazzoni
+	<thomas.petazzoni@bootlin.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>, Nishanth <nm@ti.com>,
+        Vignesh <vigneshr@ti.com>
+Subject: Re: [PATCH v4 0/4] spi: cadence-qspi: Fix runtime PM and system-wide
+ suspend
+Message-ID: <20240226121803.5a7r5wkpbbowcxgx@dhruva>
+References: <20240222-cdns-qspi-pm-fix-v4-0-6b6af8bcbf59@bootlin.com>
+ <170862920925.104158.14642580909914879148.b4-ty@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 07/14] mfd: tps6594-core: Add TI TPS65224 PMIC core
-Content-Language: en-US
-To: Bhargav Raviprakash <bhargav.r@ltts.com>, linux-kernel@vger.kernel.org
-Cc: m.nirmaladevi@ltts.com, lee@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- devicetree@vger.kernel.org, arnd@arndb.de, gregkh@linuxfoundation.org,
- lgirdwood@gmail.com, broonie@kernel.org, linus.walleij@linaro.org,
- linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org, nm@ti.com,
- vigneshr@ti.com, kristo@kernel.org
-References: <20240223093701.66034-1-bhargav.r@ltts.com>
- <20240223093701.66034-8-bhargav.r@ltts.com>
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <20240223093701.66034-8-bhargav.r@ltts.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <170862920925.104158.14642580909914879148.b4-ty@kernel.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 2/23/24 10:36, Bhargav Raviprakash wrote:
-> Add functionality of the TPS65224 PMIC to the TPS6594 core driver. This
-> includes adding IRQ resource, MFD cells, and device initialization for
-> TPS65224.
->
-> Signed-off-by: Bhargav Raviprakash <bhargav.r@ltts.com>
-> ---
->   drivers/mfd/tps6594-core.c | 250 ++++++++++++++++++++++++++++++++++---
->   1 file changed, 232 insertions(+), 18 deletions(-)
+Hi Mark, Theo,
 
-Acked-by: Julien Panis <jpanis@baylibre.com>
++ Nishanth, Vignesh (maintainers of TI K3)
 
+On Feb 22, 2024 at 19:13:29 +0000, Mark Brown wrote:
+> On Thu, 22 Feb 2024 11:12:28 +0100, Théo Lebrun wrote:
+> > This fixes runtime PM and system-wide suspend for the cadence-qspi
+> > driver. Seeing how runtime PM and autosuspend are enabled by default, I
+> > believe this affects all users of the driver.
+> > 
+> > This series has been tested on both Mobileye EyeQ5 hardware and the TI
+> > J7200 EVM board, under s2idle.
+> > 
+> > [...]
+> 
+> Applied to
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> 
+> Thanks!
+> 
+> [1/4] spi: cadence-qspi: fix pointer reference in runtime PM hooks
+>       commit: 32ce3bb57b6b402de2aec1012511e7ac4e7449dc
+> [2/4] spi: cadence-qspi: remove system-wide suspend helper calls from runtime PM hooks
+>       commit: 959043afe53ae80633e810416cee6076da6e91c6
+> [3/4] spi: cadence-qspi: put runtime in runtime PM hooks names
+>       commit: 4efa1250b59ebf47ce64a7b6b7c3e2e0a2a9d35a
+> [4/4] spi: cadence-qspi: add system-wide suspend and resume callbacks
+>       commit: 078d62de433b4f4556bb676e5dd670f0d4103376
+
+It seems like between 6.8.0-rc5-next-20240220 and
+6.8.0-rc5-next-20240222 some of TI K3 platform boot have been broken.
+
+It particularly seemed related to these patches because we can see
+cqspi_probe in the call trace and also cqspi_suspend toward the top.
+
+See logs for kernel crash in [0] and working in [1]
+
+
+[0] https://gist.github.com/DhruvaG2000/ed997452b41d6e5301598225fc579800
+[1] https://gist.github.com/DhruvaG2000/d4e73111aeafaca555ba2d5208deb6dd
+
+-- 
+Best regards,
+Dhruva Gole <d-gole@ti.com>
 
