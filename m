@@ -1,68 +1,76 @@
-Return-Path: <linux-kernel+bounces-81816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEE62867A63
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:35:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12A59867A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:46:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 540F11F26781
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:35:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F89AB2BEFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 370F112BE84;
-	Mon, 26 Feb 2024 15:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEAD12B159;
+	Mon, 26 Feb 2024 15:35:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QAFrZ5js"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GEv905fr"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DDD12B15B;
-	Mon, 26 Feb 2024 15:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CD2D12B153
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708961738; cv=none; b=PQyaydspEX2IyJwlMtkxE7UTkyZQLf9/iWb9S8OtJBmC02Y43kehOIltF9EaSpXEE0a5Q6ggPxVlf3XQKF15tsmeWYsLyOedZxsshF7rrCRs8Eay8fft3lvmFLaFtoZuBdHSfC8LGbUkHeo7jAr4HRjTasMc1suZzUrVxuVZZfE=
+	t=1708961757; cv=none; b=NPGqXcoYwB9aumtN9Hh+ZwIG6jQFSlbhsB1WO4YdhV5RkIGQiK7Gj7rGZPTFgAyrkbUVhuH3WoM+mGcigWyYGaEM6DIpRhRTOWmwvWvHI+V4RIqUzef0hHKRcKlVBJ508wSlwBjf2AG+AkljoHwXGKpqL8PccVWzfHBAJXGnV2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708961738; c=relaxed/simple;
-	bh=XI8VRq7ucg6AHJVkerSid+ikMVTAXLYHHE043YHYtTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ixuwxTp60E19lnNjvdKMxQ4wU0fCaEU6ONIJHg5Y+xbYjRLdl5D1fzE42PjYHH3GR2PCjcxNk4aYJoB0gKK9kBd1EF4X6vJ2z/ECwD8uXyRu9rvNSVgbj2ivRq/I6oauhBymDCqITAFghOv8FDDc6arqZ+6j+1CcuCqWJ7KIYJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QAFrZ5js; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A6FAC433F1;
-	Mon, 26 Feb 2024 15:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708961738;
-	bh=XI8VRq7ucg6AHJVkerSid+ikMVTAXLYHHE043YHYtTY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QAFrZ5js6pTW5ejTIi62NrMQ/I+5wBQ0Q8LzEDJfDbhfKSjVZCto9kAObygW/58T+
-	 s7l9DfyTlLqXxv+ITWetU3kO9hZ7AoijWG0ZLgENAOdTaTqbgHqDknrTLTJN1pr36H
-	 JsFwqDiv4p5Td0i5zBc6rv0+a/dHhCk3CrBu9qXSI+wcILeXVugZ0m9EIXuqm+D6kY
-	 Ybr0ShLv0drt0sz8H9xlkwNqMcHWv0O2ROxnEbxd4GTHG7tiAM4RoKt58nJqbynbCX
-	 4FB90PDKPKn5U9Y3GRKSI40i++bvl0wOwu0hsfPnKd5OUruSG2U9vbqyoNODZ61N6Q
-	 It34GQkc4CHBQ==
-Date: Mon, 26 Feb 2024 16:35:30 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: WANG Xuerui <kernel@xen0n.name>
-Cc: Arnd Bergmann <arnd@arndb.de>, Xi Ruoyao <xry111@xry111.site>, 
-	Icenowy Zheng <uwu@icenowy.me>, Huacai Chen <chenhuacai@kernel.org>, linux-api@vger.kernel.org, 
-	Kees Cook <keescook@chromium.org>, Xuefeng Li <lixuefeng@loongson.cn>, 
-	Jianmin Lv <lvjianmin@loongson.cn>, Xiaotian Wu <wuxiaotian@loongson.cn>, 
-	WANG Rui <wangrui@loongson.cn>, Miao Wang <shankerwangmiao@gmail.com>, 
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>, Linux-Arch <linux-arch@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep argument
- inspection again?
-Message-ID: <20240226-altmodisch-gedeutet-91c5ba2f6071@brauner>
-References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
- <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
- <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
- <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
- <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
- <3c396b7c-adec-4762-9584-5824f310bf7b@app.fastmail.com>
- <6f7a8e320f3c2bd5e9b704bb8d1f311714cd8644.camel@xry111.site>
- <b9fb0de1-bfb9-47a6-9730-325e7641c182@app.fastmail.com>
- <20240226-graustufen-hinsehen-6c578a744806@brauner>
- <7641391a-b109-49b3-84c8-7e72053210d8@xen0n.name>
+	s=arc-20240116; t=1708961757; c=relaxed/simple;
+	bh=DEFsTQYOxQB1RzK8jxBp8lvN1PzPps/TqPk/AWNcRnQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=fKL5iWeDMoPaFpZbVFJtI9GcM8JHYsngyMMtUdvmReqC9MwT5vmZV8Nrc/WX+0kpAUbwwzAdO8CLxzlWcD3igSEfra0QAddoCwOGmxPIZlAYIbQURfBlWJxIwoNZ1/KdDg3NdfC0L6woyB8tAyJkArTzPzx5TxphifCFxe3Y970=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GEv905fr; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708961755; x=1740497755;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=DEFsTQYOxQB1RzK8jxBp8lvN1PzPps/TqPk/AWNcRnQ=;
+  b=GEv905freVQyNS3OtTO3sWblzDzOpjUUiu1x0r/jLcUTQA44sAl+4DrY
+   gO1/yM0B9YEvEC+U+LX76V0UHwjv4yRr0GPTC+cuMNYW0bJL/qsNikV8Z
+   GYAJfhE46VmIiVCKv4hC6TF8DznMMGIib9AZTvkRdpB2+2tdKFxu1QXLa
+   9rjYOWtBk/OR3nZHQMXcNIQBsPfHRWqlyaz4MwGBA+68AvhGxcXsb13vm
+   SudWFqBjqOFTD49Thd4l7KeGVMfQHMA0aIQvujf0lLCn3w5xw0n5V+Lh5
+   GS20wiCv+PHVhZ3INkum2mLw/Z7iqGf7YkFju+5gf49yESI4XFd4EweMl
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3417046"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3417046"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 07:35:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6579940"
+Received: from hibeid-mobl.amr.corp.intel.com (HELO localhost) ([10.252.46.254])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 07:35:51 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, Rodrigo
+ Vivi
+ <rodrigo.vivi@intel.com>, intel-gfx@lists.freedesktop.org, Petr Mladek
+ <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Rasmus Villemoes
+ <linux@rasmusvillemoes.dk>, Sergey Senozhatsky <senozhatsky@chromium.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/12] drm/i915: Indicate which pipe failed the fastset
+ check overall
+In-Reply-To: <ZdyqAMfEfhyk6zm2@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240215164055.30585-1-ville.syrjala@linux.intel.com>
+ <20240215164055.30585-2-ville.syrjala@linux.intel.com>
+ <ZdfApN1h97GTfL1t@intel.com> <Zdj2ONs8BZ6959Xb@intel.com>
+ <87bk83mfwp.fsf@intel.com> <ZdyqAMfEfhyk6zm2@smile.fi.intel.com>
+Date: Mon, 26 Feb 2024 17:35:51 +0200
+Message-ID: <878r37me5k.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,189 +78,57 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7641391a-b109-49b3-84c8-7e72053210d8@xen0n.name>
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 10:00:05PM +0800, WANG Xuerui wrote:
-> On 2/26/24 21:32, Christian Brauner wrote:
-> > On Mon, Feb 26, 2024 at 10:20:23AM +0100, Arnd Bergmann wrote:
-> > > On Mon, Feb 26, 2024, at 08:09, Xi Ruoyao wrote:
-> > > > On Mon, 2024-02-26 at 07:56 +0100, Arnd Bergmann wrote:
-> > > > > On Mon, Feb 26, 2024, at 07:03, Icenowy Zheng wrote:
-> > > > > > 在 2024-02-25星期日的 15:32 +0800，Xi Ruoyao写道：
-> > > > > > > On Sun, 2024-02-25 at 14:51 +0800, Icenowy Zheng wrote:
-> > > > > > > > My idea is this problem needs syscalls to be designed with deep
-> > > > > > > > argument inspection in mind; syscalls before this should be
-> > > > > > > > considered
-> > > > > > > > as historical error and get fixed by resotring old syscalls.
-> > > > > > > 
-> > > > > > > I'd not consider fstat an error as using statx for fstat has a
-> > > > > > > performance impact (severe for some workflows), and Linus has
-> > > > > > > concluded
-> > > > > > 
-> > > > > > Sorry for clearance, I mean statx is an error in ABI design, not fstat.
-> > > > 
-> > > > I'm wondering why we decided to use AT_EMPTY_PATH/"" instead of
-> > > > "AT_NULL_PATH"/nullptr in the first place?
-> > > 
-> > > Not sure, but it's hard to change now since the libc
-> > > implementation won't easily know whether using the NULL
-> > > path is safe on a given kernel. It could check the kernel
-> > > version number, but that adds another bit of complexity in
-> > > the fast path and doesn't work on old kernels with the
-> > > feature backported.
-> > > 
-> > > > But it's not irrational to pass a path to syscall, as long as we still
-> > > > have the concept of file system (maybe in 2371 or some year we'll use a
-> > > > 128-bit UUID instead of path).
-> > > > 
-> > > > > The problem I see with the 'use use fstat' approach is that this
-> > > > > does not work on 32-bit architectures, unless we define a new
-> > > > > fstatat64_time64() syscall, which is one of the things that statx()
-> > > > 
-> > > > "fstat64_time64".  Using statx for fstatat should be just fine.
-> > > 
-> > > Right. It does feel wrong to have only an fstat() variant but not
-> > > fstatat() if we go there.
-> > > 
-> > > > Or maybe we can just introduce a new AT_something to make statx
-> > > > completely ignore pathname but behave like AT_EMPTY_PATH + "".
-> > > 
-> > > I think this is better than going back to fstat64_time64(), but
-> > > it's still not great because
-> > > 
-> > > - all the reserved flags on statx() are by definition incompatible
-> > >    with existing kernels that return -EINVAL for any flag they do
-> > >    not recognize.
-> > > 
-> > > - you still need to convince libc developers to actually use
-> > >    the flag despite the backwards compatibility problem, either
-> > >    with a fallback to the current behavior or a version check.
-> > > 
-> > > Using the NULL path as a fallback would solve the problem with
-> > > seccomp, but it would not make the normal case any faster.
-> > > 
-> > > > > was trying to avoid.
-> > > > 
-> > > > Oops.  I thought "newstat" should be using 64-bit time but it seems the
-> > > > "new" is not what I'd expected...  The "new" actually means "newer than
-> > > > Linux 0.9"! :(
-> > > > 
-> > > > Let's not use "new" in future syscall names...
-> > > 
-> > > Right, we definitely can't ever succeed. On some architectures
-> > > we even had "oldstat" and "stat" before "newstat" and "stat64",
-> > > and on some architectures we mix them up. E.g. x86_64 has fstat()
-> > > and fstatat64() with the same structure but doesn't define
-> > > __NR_newfstat. On mips64, there is a 'newstat' but it has 32-bit
-> > > timestamps unlike all other 64-bit architectures.
-> > > 
-> > > statx() was intended to solve these problems once and for all,
-> > > and it appears that we have failed again.
-> > 
-> > New apis don't invalidate old apis necessarily. That's just not going to
-> > work in an age where you have containerized workloads.
-> > 
-> > statx() is just the beginning of this. A container may have aritrary
-> > seccomp profiles that return ENOSYS or even EPERM for whatever reason
-> > for any new api that exists. So not implementing fstat() might already
-> > break container workloads.
-> > 
-> > Another example: You can't just skip on implementing mount() and only
-> > implement the new mount api for example. Because tools that look for api
-> > simplicity and don't need complex setup will _always_ continue to use
-> > mount() and have a right to do so.
-> > 
-> > And fwiw, mount() isn't fully inspectable by seccomp since forever. The
-> > list goes on and on.
-> > 
-> > But let's look at the original mail. Why are they denying statx() and
-> > what's that claim about it not being able to be rewritten to something
-> > safe? Looking at:
-> > 
-> > intptr_t SIGSYSFstatatHandler(const struct arch_seccomp_data& args,
-> >                                void* fs_denied_errno) {
-> >    if (args.nr == __NR_fstatat_default) {
-> >      if (*reinterpret_cast<const char*>(args.args[1]) == '\0' &&
-> >          args.args[3] == static_cast<uint64_t>(AT_EMPTY_PATH)) {
-> >        return syscall(__NR_fstat_default, static_cast<int>(args.args[0]),
-> >                       reinterpret_cast<default_stat_struct*>(args.args[2]));
-> >      }
-> >      return -reinterpret_cast<intptr_t>(fs_denied_errno);
-> >    }
-> > 
-> > What this does it to rewrite fstatat() to fstat() if it was made with
-> > AT_EMPTY_PATH and the path argument was "". That is easily doable for
-> > statx() because it has the exact same AT_EMPTY_PATH semantics that
-> > fstatat() has.
-> > 
-> > Plus, they can even filter on mask and rewrite that to something that
-> > they think is safe. For example, STATX_BASIC_STATS which is equivalent
-> > to what any fstat() call returns. So it's pretty difficult to understand
-> > what their actual gripe with statx() is.
-> > 
-> > It can't be that statx() passes a struct because fstatat() and fstat()
-> > do that too. So what exactly is that problem there?
-> 
-> From our investigation:
-> 
-> For (new)fstatat calls that the sandboxed process may make, this SIGSYS
-> handler either:
-> 
-> * turns allowed calls (those looking at fd's) into fstat's that only have
-> one argument (the fd) each, or
-> * denies the call,
+On Mon, 26 Feb 2024, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wr=
+ote:
+> On Mon, Feb 26, 2024 at 04:57:58PM +0200, Jani Nikula wrote:
+>> On Fri, 23 Feb 2024, Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.=
+com> wrote:
+>> > On Thu, Feb 22, 2024 at 04:46:12PM -0500, Rodrigo Vivi wrote:
+>
+> ...
+>
+>> > I think the proper solution would be to have actually
+>> > sensible conversion specifiers in the format string.
+>> > So instead of %<set of random characters> we'd have something
+>> > more like %{drm_crtc} (or whatever color you want to throw
+>> > on that particular bikeshed).
+>>=20
+>> Personally I suck at remembering even the standard printf conversion
+>> specifiers, let alone all the kernel extensions. I basically have to
+>> look them up every time. I'd really love some %{name} format for named
+>> pointer things. And indeed preferrably without the %p. Just %{name}.
+>
+> It will become something like %{name[:subextensions]}, where subextensions
+> is what we now have with different letters/numbers after %pX (X is a lett=
+er
+> which you proposed to have written as name AFAIU).
 
-Yes, but look at the filtering that they do:
+Thanks, I appreciate it, a lot!
 
-if (args.nr == __NR_fstatat_default) {
-	if (*reinterpret_cast<const char*>(args.args[1]) == '\0' &&
-	    args.args[3] == static_cast<uint64_t>(AT_EMPTY_PATH)) {
+But could you perhaps try to go with just clean %{name} only instead of
+adding [:subextensions] right away, please?
 
-So if you have a statx() call instead of an fstatat() call this is
-trivially:
+I presume the suggestion comes from an implementation detail, and I
+guess it would be handy to reuse the current implementation for
+subextension.
 
-if (args.nr == __NR_statx) {
-	if (*reinterpret_cast<const char*>(args.args[1]) == '\0' &&
-	    args.args[2] == static_cast<uint64_t>(AT_EMPTY_PATH)) {
+For example, %pb -> %{bitmap} and %pbl -> %{bitmap:l}. But really I
+think the better option would be for the latter to become, say,
+%{bitmap-list}. The goal here is to make them easy to remember and
+understand, without resorting to looking up the documentation!
 
-maybe if they care about it also simply check
-args.args[3] == STATX_BASIC_STATS.
 
-And then just as with fstatat() rewrite it to fstat().
+BR,
+Jani.
 
-> 
-> so the sandbox only ever sees fstat calls and no (new)fstatat's, and the
-> guarantee that only open fds can ever been stat'ed trivially holds.
-> 
-> With statx, however, there's no way of guaranteeing "only look at fd"
-> semantics without peeking into the path argument, because a non-empty path
-> makes AT_EMPTY_PATH ineffective, and the flags are not validated prior to
-> use making it near-impossible to introduce new semantics in a
-> backwards-compatible manner.
+>
+>> And then we could discuss adding support for drm specific things. I
+>> guess one downside is that the functions to do this would have to be in
+>> vsprintf.c instead of drm. Unless we add some code in drm for this
+>> that's always built-in.
 
-I don't understand. That's exactly the same thing as for fstatat(). My
-point is that you can turn statx() into fstat() just like you can turn
-fstatat() into fstat(). So if you add fstat()/fstat64() what's left to
-do?
-
-> > What this tells me without knowing the exact reason is that they thought
-> > "Oh, if we just return ENOSYS then the workload or glibc will just
-> > always be able to fallback to fstat() or fstatat()". Which ultimately is
-> > the exact same thing that containers often assume.
-> > 
-> > So really, just skipping on various system calls isn't going to work.
-> > You can't just implement new system calls and forget about the rest
-> > unless you know exactly what workloads your architecure will run on.
-> > 
-> > Please implement fstat() or fstatat() and stop inventing hacks for
-> > statx() to make weird sandboxing rules work, please.
-> 
-> We have already provided fstat(at) on LoongArch for a while by
-> unconditionally doing statx and translating the returned structure -- see
-> the [glibc] and [golang] [golang-2] implementations for example -- without
-
-But you're doing that translation in userspace. I was talking about
-adding the fstat()/fstat64() system calls.
+--=20
+Jani Nikula, Intel
 
