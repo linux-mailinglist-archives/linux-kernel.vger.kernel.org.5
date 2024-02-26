@@ -1,130 +1,177 @@
-Return-Path: <linux-kernel+bounces-82065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F4A9867E90
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:32:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42D57867E92
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:32:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D12EA1F239A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:32:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19791F22F22
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48B012DD87;
-	Mon, 26 Feb 2024 17:31:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E7812DDBB;
+	Mon, 26 Feb 2024 17:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hc63XxRG"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rZ79AmTF"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520C012E1C2;
-	Mon, 26 Feb 2024 17:31:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97AB512C815
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708968703; cv=none; b=tAUpaufY9Z7iSknEJkhMLApHdT2XZtlkFi4GcoEy8uynUI1T79gH0BEnAqa2FSffXcQDpCz9ESpB01GoKUTEyVibs4Vac6gjuSURuthfT/G1Kzrkh5DAhESn4C3K0VIHFV2bmy+2RQto4VdSzzEL3e+F/T0ooeXH/doIyuAgk6w=
+	t=1708968761; cv=none; b=qO9Jw36hmjpJkqzI7SzWWR/+SW5rzAta85VylwDsgvo53fRTK3Y0HtpE2QhEE79RTXtllC0QrFWhzLOc5s2vQ3UmYT/3W60sbpf7M7x9lFCNBcLfYMYAFDnh0u7oIaAdrhkNUnzhMEOI7LvLNuxZ6+v1vWvmhCNig1JsZm2Yt+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708968703; c=relaxed/simple;
-	bh=JqR/nbtraPfs2ZLthyKJWlx6wGyBAgMXjbmnp7oiyqU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Eon/QGBqlWhG/ioljTsq2PHx4jOaG8ivz6nghRrgGduMPPZWdVJBaM4UVF08YwrxS1FKh+9KMkQSLAGONyJVbXIfVrhj9lNA0+FxUCXg28gTJi1yGErKz6hf/X/gEQo5nS6VszS4UNZDxIEvVMZJeNRpDhMUqI+3u9wC1/tnjDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hc63XxRG; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a293f2280c7so483330166b.1;
-        Mon, 26 Feb 2024 09:31:41 -0800 (PST)
+	s=arc-20240116; t=1708968761; c=relaxed/simple;
+	bh=jYI0Mh1uhn6Nyq2vB/K7SQzen2+rR581YIAH6CYgxz0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K9NW7Efl684QI0EMbkcST4E+eeCn6PLN3pq/T1kbuTysITsxneGPLFDI1vs072QKVFwkGhDFaKweEUFSijkdxf8PSB3LxGI7+Y/6FEzw448JyVZaFR6jlHT62g5cpqQuJMpOYrWNsmturYhusiVRlJ/HRhNnFbQ2IJh1C3hFwgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rZ79AmTF; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a293f2280c7so483555766b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:32:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708968700; x=1709573500; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+WU5hdSHBzbEr/EOa1is0WCLMDW3bS3kIX0rAhn0rg8=;
-        b=hc63XxRG/aoe5/LDhNndB7QhPeNqmGHnf41gu2Qf/mfPWZYNgXoqRwEV+tKO1Lxd4C
-         a592ZiyGmXNuQyDlAlIPdJn7XL9rNzLobhMOToe6qvGuTl3ZLrnwuH1hPTf7rAgQaEiI
-         jOkm2LVpPz9ZrijkAJVal/7ftMWkDM+PlzqOgyRkiQo9XShIhcjuAO5YrI0iloMMQp9K
-         sgsvcy3VAqln+K+Tf5ZONBuIc1c7LExJeqH5j9k7XQjourUmkEzeMHuFf1u9rrb7fi/b
-         Db4YTFgWAYecuNaRaOAWYTUnF7w2d04I4nI4Trx9RY3Yp7U+Pb/QMU0C5tshNawitEYt
-         esBw==
+        d=linaro.org; s=google; t=1708968758; x=1709573558; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m4GW1x35sYauLIfEoAjSJr8bEUmsmDLYbSZDkkGXyo8=;
+        b=rZ79AmTFOYKsQI8w02JKIyXq6fOjf3ucKCjrOmPCcg63BYS1JpOW47RRYsfDznmmct
+         TlX76vf3M8C6nhb2nKuWOhRiz79Xnqd+NWanqZ0UN8vKmcUlqNlNojHrLwZ+uMO7gx1P
+         KGYW0kr1MYCdHmQ9HqtQa2DFgl8SsRmdgKH+f6KxWg6yCL0Zh+ATN+pJ5jTbYQj+kGeR
+         vAgG1+BPRs9zWxMeKUxI4SHERO36yGH1L9IxgleazdZrxcIXG8KbfKOW2pAFSUj7wJ6b
+         Laehsux3OufbT4vNBEKuvufOeZylwy17ej8Pn1WewfyrJEVlZNPbdMD/80KEl0x9zqI7
+         HrSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708968700; x=1709573500;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+WU5hdSHBzbEr/EOa1is0WCLMDW3bS3kIX0rAhn0rg8=;
-        b=wdZdZXN6eq6fKCl6OtwUPYgSwpQ1nWvGBv9wxar+qVFHkDL0uX8SK95bNDqXsiWPyv
-         xzaKn6ZlcV5Lwkt1dy1AwGAtyKkgE9c6elmHF6HCE2Fa2MzmSZJV8LaVjKp6x9JLtPdh
-         5lo0WH3Ce3YfWg8Z/Pz2n4mudx7Ayeev9X4DhRjQVT+VeWYdmvgZgbk+4TTp4/HB0dYz
-         4MRTWjnQKbOqP/kgp67anHkreL4CE0EjutfYPscJRkx6PgZ494kDFRhcygQwhmCdkUiC
-         70JIKeOW2IAj5t9p9wuPnlQ3S8p8t7P6I6gjujpkhddFRmvPIpfKUplePrRv/EjbO4kc
-         UMlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUqstTfPPfIbVfXzB1UA2HVJlF0oPXVhGj7vZSf56hXJosvaBXUbPN3vJWJc/hkFgA0b4ZumGk85EQ6Z7kXnoRavGcnWlGOhIdhAU2T3Yga26y+MuVVlUPZX6WXaNajk8u7ZW3pa+6+PJzuQKNJ4l8Eds4FbfYng9sG2u093kXaxAENWBt5
-X-Gm-Message-State: AOJu0YwTWCA34HkgYndZu7e7i02l6OtkTUOnKv57hNGE60nnnloe5VHc
-	BGeV6heUtxkHnT5oIg0W7EqdL4ulSZD5oPBFG1N6RNz3yFkHMotY
-X-Google-Smtp-Source: AGHT+IFQIbGtRJZcvdmjxtUF9k7iAj+aV2asa5agG4pUYnayde6hWZh9DoU0ud+zNuxKQdrFfIsQgQ==
-X-Received: by 2002:a17:906:1310:b0:a43:c72:4146 with SMTP id w16-20020a170906131000b00a430c724146mr4081186ejb.58.1708968699695;
-        Mon, 26 Feb 2024 09:31:39 -0800 (PST)
-Received: from jernej-laptop.localnet (86-58-6-171.dynamic.telemach.net. [86.58.6.171])
-        by smtp.gmail.com with ESMTPSA id ps8-20020a170906bf4800b00a42ee2af521sm2535227ejb.137.2024.02.26.09.31.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 09:31:39 -0800 (PST)
-From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To: Hans de Goede <hdegoede@redhat.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
- Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>,
- linux-input@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
- linux-kernel@vger.kernel.org,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject:
- Re: [PATCH] dt-bindings: input: allwinner,sun4i-a10-lrad: drop redundant type
- from label
-Date: Mon, 26 Feb 2024 18:31:38 +0100
-Message-ID: <3207352.5fSG56mABF@jernej-laptop>
-In-Reply-To: <20240226122934.89257-1-krzysztof.kozlowski@linaro.org>
-References: <20240226122934.89257-1-krzysztof.kozlowski@linaro.org>
+        d=1e100.net; s=20230601; t=1708968758; x=1709573558;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m4GW1x35sYauLIfEoAjSJr8bEUmsmDLYbSZDkkGXyo8=;
+        b=BzVbRr6kCprEg7SjZ8u3L3Ury/RgJ12MtLC5tuuLAwsTjrk35TCF/f0zcKLhvnTrxR
+         W0Fp+NB30Ilpumx61ftPLQNEz/5QVWg8aMkCcVF+q2eJmSv2It+ZT5ZXF1cxrfdhIFzj
+         5ch+0c1w3DOa5s92U0eFlG5Z2WeqBa1ElzhEQJMtBGSy5TfvSEBvuJP/Pmmna1wLBYVv
+         wZ9ux460A6tYM0fPtdE5phI8SiyIJXSiBAma3u0w0X3DjXuBTuoH9S5WYLhoZDCnxBjq
+         bQ7UjfWJq0iJ9tkg15J8TEJWuwybDK7/3LMge+FdPzSM8mMFPwrCozVb5z9FUnEFKgqe
+         cuFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUt18fr3J/XcXi78wEsnlOUXy4Meh0cOrTtmSgcpx73DOVopl1nNwZUFOn4F5F3Vq7Dfjv5+qjzCG859ka2L3HznUCAuagVb/M2fW76
+X-Gm-Message-State: AOJu0YydMTIhGNGzOiFIjVFy4TUHstosZEnA2J6+PWfYRHTS24ZZgbCh
+	WpiYtr1UvJSu6+rHk3qbNvrXENAv4oUaCzLRlB1gKOT5EVb73zxD9lf/4m/79J5qa+iq05FdqlT
+	I
+X-Google-Smtp-Source: AGHT+IEqKIQIdcv8EKOmB98hBc7cakFXkMLo7/Zz0KvlEsGsTukTkGpFQSqjW0oL5K1G4DhCXAPU/w==
+X-Received: by 2002:a17:906:3b03:b0:a3d:b6c2:fc58 with SMTP id g3-20020a1709063b0300b00a3db6c2fc58mr5232223ejf.2.1708968758011;
+        Mon, 26 Feb 2024 09:32:38 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id ss3-20020a170907c00300b00a4395e9debasm124391ejc.201.2024.02.26.09.32.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 09:32:37 -0800 (PST)
+Message-ID: <3a2dfec8-b574-42fe-a17d-b844b4bb35cd@linaro.org>
+Date: Mon, 26 Feb 2024 18:32:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: qcom: Add Lenovo P2
+Content-Language: en-US
+To: Raihan Ahamed <raihan1999ahamed@gmail.com>,
+ krzysztof.kozlowski+dt@linaro.org
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli"
+ <gpiccoli@igalia.com>, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <a762f756-1a92-4d82-be38-098bacaf25dc@linaro.org>
+ <20240226094256.5736-1-raihan1999ahamed@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240226094256.5736-1-raihan1999ahamed@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Dne ponedeljek, 26. februar 2024 ob 13:29:34 CET je Krzysztof Kozlowski napisal(a):
-> dtschema defines label as string, so $ref in other bindings is
-> redundant.
+On 26/02/2024 10:41, Raihan Ahamed wrote:
+> Document the compatible for the MSM8953-based Lenovo P2
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> smartphone released in 2016
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+It seems you split one sentence over multiple lines. Please join them
+and finish with full stop.
 
-I already send PR for 6.9. Do you mind if it waits on next cycle?
+Also, this appeared in some odd place. Do not attach (thread) your
+patchsets to some other threads (unrelated or older versions). This
+buries them deep in the mailbox and might interfere with applying entire
+sets.
+
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
 Best regards,
-Jernej
-
-> ---
->  .../bindings/input/allwinner,sun4i-a10-lradc-keys.yaml           | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/input/allwinner,sun4i-a10-lradc-keys.yaml b/Documentation/devicetree/bindings/input/allwinner,sun4i-a10-lradc-keys.yaml
-> index 5efceb313879..c384bf0bb25d 100644
-> --- a/Documentation/devicetree/bindings/input/allwinner,sun4i-a10-lradc-keys.yaml
-> +++ b/Documentation/devicetree/bindings/input/allwinner,sun4i-a10-lradc-keys.yaml
-> @@ -49,7 +49,6 @@ patternProperties:
->      $ref: input.yaml#
->      properties:
->        label:
-> -        $ref: /schemas/types.yaml#/definitions/string
->          description: Descriptive name of the key
->  
->        linux,code: true
-> 
-
-
-
+Krzysztof
 
 
