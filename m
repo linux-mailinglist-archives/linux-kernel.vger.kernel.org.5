@@ -1,60 +1,57 @@
-Return-Path: <linux-kernel+bounces-80461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AC768668A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:21:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9682386688E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:19:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F068BB213CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:21:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C944281BB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:19:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A523C1BF32;
-	Mon, 26 Feb 2024 03:20:43 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2735E14008;
+	Mon, 26 Feb 2024 03:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="bq3sJS9V"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA5018EA1;
-	Mon, 26 Feb 2024 03:20:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA95DF4D;
+	Mon, 26 Feb 2024 03:18:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708917643; cv=none; b=m8kXdtsW3lRcqblmHedtXM1jpix3L1O37OCmql36zTZWS7ErTcdd6GzB/UUJOsWVdA3eJnW3Vw4fUngvhu7dO0KTJAS9CNob90tg2Z4EeXnpCCJ7GN1Z1/lDy6dK0wYbeq5wjOmOK7eLyk4tTBUF7QBl4i/+IVAjCLajaClFgk4=
+	t=1708917537; cv=none; b=VJhbp/j2ND0TLn7imVEMHmxEq7E1kzw+lheRQFO9lQdQCUnLfI/C0XPkHWep+PIoMdDLbMbyyxe3qCSjIGMZ78ib3YWr9vc/2IzYHfXQK/ih59o+aNq3C8wSTE/PyOPh0z+l1MaCeVGaACLh/bkDVicApqCgtY190gQL7klNh1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708917643; c=relaxed/simple;
-	bh=pxkzW3x8CNPXo/PaItuAjkfqG+f8YqJQM2EENaYKhYo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oQFocKs/aubwEhrbieZu2kHq30S4cwavV/NbxgeQpCFkfaw7qxGUhiDdYR+8LdZT0lVk9CI5RdxgzAbqf1zQplYC/nE1wCJsY8dmVbpo/z4trP5S8qm81p3kDznYhGhfbic4dsZixLfbdx364re0O3zFCcfkmX8CXs92m08ETww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tjm8f6FY9z4f3kKD;
-	Mon, 26 Feb 2024 11:20:34 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 2F4971A016E;
-	Mon, 26 Feb 2024 11:20:38 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g5_A9xl7gKzFA--.13921S13;
-	Mon, 26 Feb 2024 11:20:37 +0800 (CST)
-From: linan666@huaweicloud.com
-To: song@kernel.org,
-	shli@fb.com,
-	neilb@suse.com
-Cc: mariusz.tkaczyk@linux.intel.com,
-	linux-raid@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linan666@huaweicloud.com,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	houtao1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v7 9/9] md: check mddev->pers before calling md_set_readonly()
-Date: Mon, 26 Feb 2024 11:14:44 +0800
-Message-Id: <20240226031444.3606764-10-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240226031444.3606764-1-linan666@huaweicloud.com>
-References: <20240226031444.3606764-1-linan666@huaweicloud.com>
+	s=arc-20240116; t=1708917537; c=relaxed/simple;
+	bh=MXL6VcPZBWyMQPrfjTrEpeHJCu9JL55Z5etYKoyrgX8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HJ+aeKup25ccyUetDkt7LRm+RWOCMWnrnHwAqT/fZvDoI0UIknjf+7NpZCg6vHOEIo6yqM8u4QvIewz5VDYztVc5ueEZ55kNAeEmLXbjXO8Qe0ZSIdPW8ZXu4zvaw0aLa0bkez3gef2/X6sH4hJ2Frd+h3SPDMg4l3HStg/YDSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=bq3sJS9V; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708917531; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=mLCk/YbBkqEYhn5Q5sMxmBvYHKM1K5bF4wYuOkh2FwE=;
+	b=bq3sJS9ViK35UmFygOAgZqjsPFxl24/tn+mM3IZPLecktO654M8Zb+VPZLqbp9T8Ii+f6CsW/buReGZO37N9xeqYeQ5di6ddYzDb4dTdL5qcrJXsg+76NoK4XfTYA5qZR+5O5tNRpy4JUOPXeopu2d9mFfJhPyb9kdFR5jfuDFk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W1ACl3C_1708917520;
+Received: from localhost.localdomain(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W1ACl3C_1708917520)
+          by smtp.aliyun-inc.com;
+          Mon, 26 Feb 2024 11:18:50 +0800
+From: Yuanhe Shu <xiangzao@linux.alibaba.com>
+To: rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	shuah@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	xiangzao@linux.alibaba.com,
+	stable@vger.kernel.org
+Subject: [PATCH v2] selftests/ftrace: Limit length in subsystem-enable tests
+Date: Mon, 26 Feb 2024 11:18:16 +0800
+Message-Id: <20240226031816.88715-1-xiangzao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,90 +59,52 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g5_A9xl7gKzFA--.13921S13
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF15Xw47uF15tw1Dtw1UZFb_yoW8Aryfp3
-	9aqF98Gr18X34avr4Uta1kWa45Xw1xt34qkryxu3yfXF15Awn8WrySga18XrWkKas7AFZx
-	Xa15GFW7ua4Ig3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUQ214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0V
-	AKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1l
-	Ox8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErc
-	IFxwACI402YVCY1x02628vn2kIc2xKxwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr41l
-	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-	cVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26c
-	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUY4EEUUUUU
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-From: Li Nan <linan122@huawei.com>
+While sched* events being traced and sched* events continuously happen,
+"[xx] event tracing - enable/disable with subsystem level files" would
+not stop as on some slower systems it seems to take forever.
+Select the first 100 lines of output would be enough to judge whether
+there are more than 3 types of sched events.
 
-If 'mddev->pers' is NULL, there is nothing to do in md_set_readonly().
-Except for md_ioctl(), the other two callers of md_set_readonly() have
-already checked 'mddev->pers'. To simplify the code, move the check of
-'mddev->pers' to the caller.
-
-Signed-off-by: Li Nan <linan122@huawei.com>
+Fixes: 815b18ea66d6 ("ftracetest: Add basic event tracing test cases")
+Cc: stable@vger.kernel.org
+Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
 ---
- drivers/md/md.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ .../selftests/ftrace/test.d/event/subsystem-enable.tc       | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 82c12ecf17a6..f227a7613003 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -6419,6 +6419,7 @@ void md_stop(struct mddev *mddev)
+diff --git a/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc b/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
+index b1ede6249866..b7c8f29c09a9 100644
+--- a/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
++++ b/tools/testing/selftests/ftrace/test.d/event/subsystem-enable.tc
+@@ -18,7 +18,7 @@ echo 'sched:*' > set_event
  
- EXPORT_SYMBOL_GPL(md_stop);
+ yield
  
-+/* ensure 'mddev->pers' exist before calling md_set_readonly() */
- static int md_set_readonly(struct mddev *mddev)
- {
- 	int err = 0;
-@@ -6443,20 +6444,18 @@ static int md_set_readonly(struct mddev *mddev)
- 		goto out;
- 	}
+-count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
++count=`head -n 100 trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+ if [ $count -lt 3 ]; then
+     fail "at least fork, exec and exit events should be recorded"
+ fi
+@@ -29,7 +29,7 @@ echo 1 > events/sched/enable
  
--	if (mddev->pers) {
--		__md_stop_writes(mddev);
--
--		if (mddev->ro == MD_RDONLY) {
--			err  = -ENXIO;
--			goto out;
--		}
-+	__md_stop_writes(mddev);
+ yield
  
--		mddev->ro = MD_RDONLY;
--		set_disk_ro(mddev->gendisk, 1);
-+	if (mddev->ro == MD_RDONLY) {
-+		err  = -ENXIO;
-+		goto out;
- 	}
+-count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
++count=`head -n 100 trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+ if [ $count -lt 3 ]; then
+     fail "at least fork, exec and exit events should be recorded"
+ fi
+@@ -40,7 +40,7 @@ echo 0 > events/sched/enable
  
-+	mddev->ro = MD_RDONLY;
-+	set_disk_ro(mddev->gendisk, 1);
-+
- out:
--	if ((mddev->pers && !err) || did_freeze) {
-+	if (!err || did_freeze) {
- 		clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
- 		set_bit(MD_RECOVERY_NEEDED, &mddev->recovery);
- 		sysfs_notify_dirent_safe(mddev->sysfs_state);
-@@ -7729,7 +7728,8 @@ static int md_ioctl(struct block_device *bdev, blk_mode_t mode,
- 		goto unlock;
+ yield
  
- 	case STOP_ARRAY_RO:
--		err = md_set_readonly(mddev);
-+		if (mddev->pers)
-+			err = md_set_readonly(mddev);
- 		goto unlock;
- 
- 	case HOT_REMOVE_DISK:
+-count=`cat trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
++count=`head -n 100 trace | grep -v ^# | awk '{ print $5 }' | sort -u | wc -l`
+ if [ $count -ne 0 ]; then
+     fail "any of scheduler events should not be recorded"
+ fi
 -- 
-2.39.2
+2.39.3
 
 
