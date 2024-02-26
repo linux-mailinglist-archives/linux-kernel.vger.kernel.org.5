@@ -1,177 +1,124 @@
-Return-Path: <linux-kernel+bounces-81851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 369F8867AEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:56:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B62867B1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:06:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A985F1F2759F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:56:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F5D71F2AC3B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6826B12BF1C;
-	Mon, 26 Feb 2024 15:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0D012C528;
+	Mon, 26 Feb 2024 16:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Cr1+/oE/"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SgAzLgtY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DB312BF01
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:56:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8680E12BEBD
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:06:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708962994; cv=none; b=HfmNWX2CCQi/8fkdFknlQ/J5wWkG25K0GC2EemM3Pp807xW4VJOQTXxAW95VDWJMn+qsXmiOB2xaliJAU6F9E0PJIvnf4Hjpf5uuqpD/oBMdX2HqpUo/ApQtTxAaBqt5I+kmSSX63XAsCKngW235xiiPPNCBdgn3jaxZYuWkkGc=
+	t=1708963571; cv=none; b=QVnNT2fH0/FyXBL67k7KUsCtM5QmnEUAA6WsOCts0ls3Cauau3zwqIMlN+7Uao4EQSKlYV+x8dqfJqdRCBYaY0OD/IXJXnHhbfgWz6cEfE6YQ5y6dhBwBIbL+ugJ31CqxcFcEi+fc2G1jdhkdmWu0BSnZICwHzCyQqOrJZU12qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708962994; c=relaxed/simple;
-	bh=wTNfxtjjEuUsYp1JNTlYg2x2iUW0rS+mI/kNL5uqq8k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qpQwM0qaMlRhJvLNPsMu1fb30zU91/494a6iVGzfFBdnlMddAPecBB1FiYtP+LK37fvDAfPqR+fJ+Zlnyua2VkvNsIMX4u6yAECnWRfdDUyy0xFCb5j1mR8tJ6K1IABkFQNnG6lqj9g4L+c5q1sDUGDNG8snohK52lGsjW8UNyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Cr1+/oE/; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3e5d82ad86so455706066b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:56:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708962988; x=1709567788; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wTNfxtjjEuUsYp1JNTlYg2x2iUW0rS+mI/kNL5uqq8k=;
-        b=Cr1+/oE/lSCT/KHR3Phkvu0oyWtYMIRymC8UkSU5TJXl2DHLmMkZvmEUWnrxMPhvlL
-         PR6nGU3T+QzVzvL5okTMXg/mgy5Y6JDhk0SZEPfVWcgdIpM2SAv2c2DpPqSguOPHdTBZ
-         uguKnnCQyFtmGfBpGpC4DHwQScsNUUqc16GR0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708962988; x=1709567788;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wTNfxtjjEuUsYp1JNTlYg2x2iUW0rS+mI/kNL5uqq8k=;
-        b=KJLO1WmltK3yePVIUtkVNU1/+SpfrlOziGQ3kCyy//fYBLI/x+6qlRFyjItCsv9u09
-         W9AD02JMDZ1vLFXG6j/nLYc2dsvZ1fkS3cIx8ZxPcOTOumFLCnizzS8sVayYK/wxyH1N
-         +lqLPk00dzingDd56Hv9titTKpVXpFwAE776c30hRHw5iniuZnrRVWKcrIq9fikKSA5H
-         ZpkK7wiAf7sFfL1XwcGG+AKmSEXjVmWx9e9uyoH2MKAXbfB0u2pw+MsLXwqSpaIawBJO
-         IGlgakdTJ3h6zjagSWCqYNA/4CI6piSjIIhMQEX6QZYYHRjk4VvmHEX5TCq7HRVb4lGs
-         E+VQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWJZl502jJtgYrE13a0vPuMlkdrb5+/0MnbcsdbgpyydoejpYWAE7BEiXWybs4PaQ1Vjx999sa8/t/JG2aQ8Y5ViAGo60eDYcS0J6B5
-X-Gm-Message-State: AOJu0YxWFXnJIqj3GxX4igI/c+FlVlDrEWDRi28Oe5EfhkcorqB/S1V9
-	tpC4dFgYgXmYAy1s/oaGLRZs82f9zLwvdKkRHsdK/s9LKGdstmgPZ7Y6kqtjoTnpueFAq+KeaUo
-	Cpw==
-X-Google-Smtp-Source: AGHT+IHpzRjINi4RgXeDk0okBNd4/uQ3D0c3yxLNEYCapSIcyD76PjMgUnylYBuBF7k2pmMR333fig==
-X-Received: by 2002:a17:906:4bd4:b0:a3d:994a:791d with SMTP id x20-20020a1709064bd400b00a3d994a791dmr5025546ejv.59.1708962988623;
-        Mon, 26 Feb 2024 07:56:28 -0800 (PST)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id i20-20020a1709061cd400b00a3f2bf468b9sm2568183ejh.173.2024.02.26.07.56.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 07:56:27 -0800 (PST)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56619428c41so5889a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:56:26 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVghL7jt3RrYi4ppRF70Uupt/bsATAX435/H04HT1vTyCVrzM9JaeKax1wnlgw5YToKWsMpVbKDdgehD3xvIWdY2uF64uW1eiuvVGFU
-X-Received: by 2002:a50:9f28:0:b0:562:9d2:8857 with SMTP id
- b37-20020a509f28000000b0056209d28857mr330238edf.6.1708962985791; Mon, 26 Feb
- 2024 07:56:25 -0800 (PST)
+	s=arc-20240116; t=1708963571; c=relaxed/simple;
+	bh=b3xl9FmNk6hu+KL8YOmLHkCKnjghMPXBxrgh3d+k4SM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Kr7IE6OHzU7INex6TxFgHL5TgvwIqdkHlk0pusap+e1W7v5rjA9RArPNuZglLgrTC5LdYH41lCBqhTQTgpkTdPFJY+vF2ftxvgca+o92meP6C1ldbM95JQlzbeVWnSm9ETHMKoFa8ab1LNu+r86J7gdUrIqSalT1p+wsLDp1XtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SgAzLgtY; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708963570; x=1740499570;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=b3xl9FmNk6hu+KL8YOmLHkCKnjghMPXBxrgh3d+k4SM=;
+  b=SgAzLgtYFI3LMPKjWPsmtzzQYRNYJ8ZfkujxsHDq3gZ0ohW/I5i9Jz/Z
+   rCvpUmOT+SWu8qX071D0+j00h0erNBFELMzR4bYc1h+qXguaDndjSp4Qw
+   OutqIfv8NQOI1hcd0+wfvoqiFAzl+AlK3jGET5wQiz5yQHSbq1yOaShNi
+   eukRzmahVEMwQCsKKAFpRXAMIrx7VqxZGbxGM+k2ov/0gt4d51XO7MFwg
+   evSpTqYDW934JjnKkFWzRoQvutWhnmV2Qy+ZF1lhaIgYPblaU0VaCC4Og
+   /Vbr8MDE4x94bQZqJPXkXIHxXsB9T1BlhMJvxkuoBMemg9bNVm74giQzq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3129125"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3129125"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:06:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="11343492"
+Received: from tankuang-mobl.gar.corp.intel.com (HELO [10.246.128.202]) ([10.246.128.202])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 08:06:06 -0800
+Message-ID: <2c7e33e5-6904-467d-9912-417bab95e517@linux.intel.com>
+Date: Mon, 26 Feb 2024 10:56:41 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-rb3gen2-dp-connector-v1-0-dc0964ef7d96@quicinc.com>
- <20240221-rb3gen2-dp-connector-v1-3-dc0964ef7d96@quicinc.com>
- <CAA8EJpo=9vhM+5YzaFxUoYRuEWQyrMS8wLNPSF3K=bN5JwWyDw@mail.gmail.com>
- <8313a7c3-3ace-4dee-ad27-8f51a06cd58c@linaro.org> <CAA8EJpqFj5nf8d_=Uoup7qg+nQrxqQU-DHbL3uSP138m9AcXLw@mail.gmail.com>
- <8fcb5816-2d59-4e27-ba68-8e0ed6e7d839@linaro.org> <CAA8EJporaUuddHHqpyYHiYSu=toHmrDxSHf9msZUJoym4Nz72g@mail.gmail.com>
- <20240222150423.GI2936378@hu-bjorande-lv.qualcomm.com> <CAA8EJpqd=1KV_dN8AURQDcFDDyO+YtbC59gM7ftt+HohGM93hg@mail.gmail.com>
-In-Reply-To: <CAA8EJpqd=1KV_dN8AURQDcFDDyO+YtbC59gM7ftt+HohGM93hg@mail.gmail.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 26 Feb 2024 07:56:09 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XJVFX-GkL-wiAoi=r6tdiDHkJ_aFSpx6FE6+gFT5xJjA@mail.gmail.com>
-Message-ID: <CAD=FV=XJVFX-GkL-wiAoi=r6tdiDHkJ_aFSpx6FE6+gFT5xJjA@mail.gmail.com>
-Subject: Re: [PATCH 3/9] arm64: dts: qcom: sc7280: Enable MDP turbo mode
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bjorn Andersson <quic_bjorande@quicinc.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, cros-qcom-dts-watchers@chromium.org, 
-	Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXTERNAL] Re: [PATCH v9] ASoc: tas2783: Add tas2783 codec driver
+To: Mark Brown <broonie@kernel.org>, "Ding, Shenghao" <shenghao-ding@ti.com>
+Cc: "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
+ "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz"
+ <perex@perex.cz>, "13916275206@139.com" <13916275206@139.com>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+ "bard.liao@intel.com" <bard.liao@intel.com>,
+ "mengdong.lin@intel.com" <mengdong.lin@intel.com>,
+ "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
+ "Xu, Baojun" <baojun.xu@ti.com>, "Lu, Kevin" <kevin-lu@ti.com>,
+ "tiwai@suse.de" <tiwai@suse.de>, "soyer@irl.hu" <soyer@irl.hu>
+References: <20240222074000.659-1-shenghao-ding@ti.com>
+ <10f53a13-a0ff-40f9-b089-f5baacdb76b6@linux.intel.com>
+ <5c7127256bf54fcd921fc1ec83f3e527@ti.com>
+ <ZdjTyccCDoD9QYpi@finisterre.sirena.org.uk>
+Content-Language: en-US
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <ZdjTyccCDoD9QYpi@finisterre.sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On 2/23/24 12:20 PM, Mark Brown wrote:
+> On Fri, Feb 23, 2024 at 10:12:49AM +0000, Ding, Shenghao wrote:
+>> Hi Pierre-Louis
+>>
+>>> In the SoundWire spec, the unique_id is *LINK SPECIFIC*, and only used at
+>>> the bus level within the context of a link to help avoid enumeration
+>>> conflicts
+> 
+>>> If you are using the unique_id as a SYSTEM-UNIQUE value to lookup EFI
+>>> data, this is a TI-specific requirement that needs to be documented.
+>>> That also means you need to double-check for errors so make sure there
+>>> are no board configurations where the same unique_id is used in multiple
+>>> links, or by devices other than tas2783.
+> 
+>> This code only covers the tas2783s sitting in the same bus link. As to cases of the
+>> different SWD links, customer will be required to have the secondary development
+>> on current code. I'm sure my customers have much knowledge to handle this.
 
-On Thu, Feb 22, 2024 at 9:32=E2=80=AFAM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> On Thu, 22 Feb 2024 at 17:04, Bjorn Andersson <quic_bjorande@quicinc.com>=
- wrote:
-> >
-> > On Thu, Feb 22, 2024 at 11:46:26AM +0200, Dmitry Baryshkov wrote:
-> > > On Thu, 22 Feb 2024 at 11:28, Konrad Dybcio <konrad.dybcio@linaro.org=
-> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 2/22/24 10:04, Dmitry Baryshkov wrote:
-> > > > > On Thu, 22 Feb 2024 at 10:56, Konrad Dybcio <konrad.dybcio@linaro=
-org> wrote:
-> > > > >>
-> > > > >>
-> > > > >>
-> > > > >> On 2/22/24 00:41, Dmitry Baryshkov wrote:
-> > > > >>> On Thu, 22 Feb 2024 at 01:19, Bjorn Andersson <quic_bjorande@qu=
-icinc.com> wrote:
-> > > > >>>>
-> > > > >>>> The max frequency listed in the DPU opp-table is 506MHz, this =
-is not
-> > > > >>>> sufficient to drive a 4k@60 display, resulting in constant und=
-errun.
-> > > > >>>>
-> > > > >>>> Add the missing MDP_CLK turbo frequency of 608MHz to the opp-t=
-able to
-> > > > >>>> fix this.
-> > > > >>>
-> > > > >>> I think we might want to keep this disabled for ChromeOS device=
-s. Doug?
-> > > > >>
-> > > > >> ChromeOS devices don't get a special SoC
-> > > > >
-> > > > > But they have the sc7280-chrome-common.dtsi, which might contain =
-a
-> > > > > corresponding /delete-node/ .
-> > > >
-> > > > What does that change? The clock rates are bound to the
-> > > > SoC and the effective values are limited by link-frequencies
-> > > > or the panel driver.
-> > >
-> > > Preventing the DPU from overheating? Or spending too much power?
-> > >
-> >
-> > Perhaps I'm misunderstanding the implementation then, are we always
-> > running at the max opp? I thought the opp was selected based on the
-> > current need for performance?
->
-> Yes. My concern was whether the Chrome people purposely skipped this
-> top/turbo freq for any reason. In such a case, surprising them by
-> adding it to all platforms might be not the best idea. I hope Doug can
-> comment here.
+PC OEMs don't usually have a Linux team capable of handling this sort of 
+low-level plumbing, so the burden of this "secondary development" will 
+come back at you...
 
-Thanks for thinking of us! In this case, I think the only users left
-of the sc7280 Chrome devices are folks like Rob and then a few folks
-on Qualcomm's display team (like Abhinav), so if they're happy with
-the change then I have no objections.
+> As Pierre says I think we really should have some sort of defensive
+> programming here, even if you're going to leave multi-link systems to
+> future work people will still have older versions in distributions or
+> whtaever.  While I'm not sure the consequences of getting things wrong
+> are likely to be that bad (I'm expecting bad quality audio) it's also
+> going to be kind of hard to figure out if we just silently pick the
+> wrong calibration, especially if it's actually a valid calibration for
+> another device in the system.  Other vendors (eg, Cirrus) seem to have
+> figured out a scheme here?
 
-In any case, I'm not aware of any reason why this would have been
-skipped for Chrome. The Chrome devices were always intended to support
-4K so I assume this was an oversight and nothing more. ...of course,
-as Abhinav points out Chrome devices are currently limited to HBR2 + 2
-lanes DP so they can't go 4K60 anyway.
-
-In any case, in case it matters, feel free to have:
-
-Acked-by: Douglas Anderson <dianders@chromium.org>
+Leaving multi-link aside has to be seen as as temporary step, there are 
+a number of electrical issues that will prevent more than 4 amps to be 
+placed on the same link. And indeed this "secondary development" has to 
+be backwards compatible with initial calibration schemes.
 
