@@ -1,182 +1,136 @@
-Return-Path: <linux-kernel+bounces-81026-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81028-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92782866F32
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:50:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F5CB866F70
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:56:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4947828464C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:50:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE292B29F5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:51:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA40112AAC4;
-	Mon, 26 Feb 2024 09:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA4012BE81;
+	Mon, 26 Feb 2024 09:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I5dCuMFR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="AP684ytn"
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 224BA129A83
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168FA12B15E
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708938921; cv=none; b=XIR9g18Ovza2T4ta02bMs+5C6+OgfEsWQwHgBCsMHRnWmnQOBpGmvMbzCytCE9D4tDFO5q0kSLK1K4L/4jU1mV2+nBtHRqutLRcyrxygzOt+yPt+Solb53bwDVKxw5huz/52JtXzCnEaUI8/m8cbsMyJr50y8SfSTijZNUC0HBc=
+	t=1708938926; cv=none; b=OC5s2vsO7Z549xePc6C4KabdhjLkYlGwdJs51MVVMRpLZvPxK0/hHKMK74DQBgVd7jJL54cQep9eQiXN90XAlyUf3zVLmaGM6xIjhfLSRR3wOUXF6jsuuL+MlZYpr5i7uSF4iQ66MT8xpsHgZRXqVhS+mld48qByiafWw3tBg1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708938921; c=relaxed/simple;
-	bh=OPslEpvTPGKWnBZFeMHtrwh2tuZS0bNiX5RiQgg4reo=;
+	s=arc-20240116; t=1708938926; c=relaxed/simple;
+	bh=4JrM6obTNl+TTmD9WbQnog507Wg3xKCRVbWqMRbgJTg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Jsi2Lfo0SDIhAAhv8bGzG9MxULyn1+YF5UPq7VbPdD985hPRpvQHD7UldBQhWGU6y5uLhMN6KC+2OnMEplmNNFuhMb3hJLK2vyT7Ie5yqCN0wGqhse1Uf8tMhua+irBeyF8gOKl4CfdjMeuY452rESHyiSHw+E9blvBKfU6MCQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I5dCuMFR; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708938918;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XM2rZSrkvpj1hoTBbAanVZWuvHXWVTnHCwh05d8mRxk=;
-	b=I5dCuMFRwLkTzEdzRA/J5/dOyfXacjiPaKEZLb481RSDc/2/yyDTf/I2Xf12Bn2tzuR8x3
-	9iRTC3yP0F39OJ5yWACZ6iq5cJA+HIri1724MAazz19iWdJPqj8/nhKS7Yc+fS2V8tqsrj
-	pGB9+u5z+YuIOWqGWz7pRbNiO9/i8XE=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-681-IIWS53fPPH6mWO_ZofpbKw-1; Mon, 26 Feb 2024 04:15:16 -0500
-X-MC-Unique: IIWS53fPPH6mWO_ZofpbKw-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1d4212b6871so34645535ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:15:16 -0800 (PST)
+	 To:Cc:Content-Type; b=qDAc3wvVBY2sf4hnQWNKoE2R5oOotqWFSHkDJdHE157M+mKoDvdm96i1Ia1wknkboWZG0Oi/exjvGNWS3op531qjXAJogx4W+jHatt6Ui9DF4/WY6AHg9JplmOQcisbOdM1hX3JgrcgNub5O6t0P3auQiWqhW/6Mrpgr6E7pNPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AP684ytn; arc=none smtp.client-ip=209.85.217.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-471e55434e9so536070137.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:15:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708938924; x=1709543724; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4JrM6obTNl+TTmD9WbQnog507Wg3xKCRVbWqMRbgJTg=;
+        b=AP684ytn0uruUtZ4O9nQ3FsT63n8lYTu+hq4RM7Mh6B2ZV8zCAiKqCVHzv4R7XcVCv
+         KG1yjDVjf1i1FwtdIFEHSepox2EYtC6gyF9Az0LkEXYo29yxMhoFmPLQC+zyyUW4YGTL
+         qwS0R6P8TgoVs00BsclAxOEGHBdGw3gqG4OGr4VvbEJeQp1zcixrhcZ9A73ln32hx3/k
+         3UqpbFOlQC/Sstrh94Q0i670dmIVIPVn9HVHkmsNCCLSWT9DbKza4tbuYKje1tq8p2Y3
+         XYKs55V/0l4TmxcCB1mc9/6oliPl0TuHOuJjWtcJFymJuZPrhB9bE33TzmlVbpUtS9C2
+         JH9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708938916; x=1709543716;
+        d=1e100.net; s=20230601; t=1708938924; x=1709543724;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XM2rZSrkvpj1hoTBbAanVZWuvHXWVTnHCwh05d8mRxk=;
-        b=vTM3ko9+TiH2pk7ZKBViCcccUlilEOjyZyIwzK7K5nPRJCye34cKy9hmbKB2qdqqEJ
-         rboOpT5gP0H9byNmOATkYAxTe3qAfM+At9pgWfy4gY6Qtbm/9K1Spfb1ygv2+cwKfoiE
-         DgJNPYXJBLou63kxZdXE5cx8YQx8+tRpklp2RbJAkpQAD88IBR33SW3SSGyKocuvp0WE
-         FzA4OpgX7lhT99Vk8h2DY/Vd68T+8dM2HECFygpnw4c1phJxkQ6dAYjvVltfcGLYo6Yq
-         KTyKkf0OWOAnD6hflPEkKupDGskn094YG1yukj0HmIlSavujCYBSYmQ+wl4QjFFOGmeR
-         bUlA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhuwogHZ0t0INPt4iuiYVPnOGtQ32pz+jNeYUajfhx3kluOGWkYtSGCLewIdfXB7UjbKCIia2xmLs8eA8tbUO1ak4qoI1UEo7FxA09
-X-Gm-Message-State: AOJu0YzQ9wOQeVYkmCBt8/GCCNx+p6Q+OdqLFCivC5OH/MqpKocX4RCj
-	+1HLZ9rNb3InRsUbrcMGgK70KsfSo+GYnjx2xSPjZ/xZ0k20xLPk49j1qdY3ytzMN/1s00bzNFe
-	XXoEcXmLfISeKvBZ6H0tke1k3QgDdLOfXitq95SQRuE/qsw8scQJ3uc8hQgGMTulQhru4xvjg0F
-	3gemY6CQeflsBEXkgwyJe94Ha9kGezfG8nGPAx
-X-Received: by 2002:a17:902:82cc:b0:1da:1e60:f9fe with SMTP id u12-20020a17090282cc00b001da1e60f9femr6496598plz.54.1708938915903;
-        Mon, 26 Feb 2024 01:15:15 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGjtiAUPuzUBh4ubPX1A7L/YMlH/RSQKeJB9SeQOJhVhv0bZs2gncFg69XwV63F4kbstlJtlzKLWYqTjwHKI7s=
-X-Received: by 2002:a17:902:82cc:b0:1da:1e60:f9fe with SMTP id
- u12-20020a17090282cc00b001da1e60f9femr6496587plz.54.1708938915603; Mon, 26
- Feb 2024 01:15:15 -0800 (PST)
+        bh=4JrM6obTNl+TTmD9WbQnog507Wg3xKCRVbWqMRbgJTg=;
+        b=WZySN5Zgi9M4jHjkJC+syz9bL+3XT+P/a0sEjwt+wWp4JFS9sdq6O+wA5RyloyIwwa
+         F34q2wTeDODnjIHCxlq1vvEvRqVWvAXZlO/PgHNG6XGvNevEtcSQBPNdA7FGdb3X/95O
+         gXJAxpT7+MQNbP7z+I2jn1xyZdYLV7rwcMN5ZUUb9tsdhNvDCc61q6YpGWG9Do+fe8LZ
+         tGL26yS3yOhdWi7ZdEP3EJXcVnLe94fJq0FATf14dkIc5aENwRk4zuF93+8s+XTKcsY+
+         Dz/EAzEiNrb11TzwAx3khVXNV0Ecw63R5dlPr82L48GnD86stWNJfs7iPno/ETCyGqCG
+         uXKg==
+X-Forwarded-Encrypted: i=1; AJvYcCUFigsOL/dN3oh3qHm0iS+HpMBZvw/iiV8+lYzAli7hHQa8iUkb/0E+AfIXBDATCMK11GlTMkZl+nXEEzbLydP3M0MKlm4IYFXyNtKK
+X-Gm-Message-State: AOJu0YzaTiN0B8YlyXYZyOo+QioCjyucyxQBe/E8LuImvYDGt52W7S5e
+	nhtDrno77lZ2w/F/s+Kp2rm34k8ucK3mHlDFZLcFwMXbCmHx8t6ppigIC7SxKdcK8GLn9mTlsoF
+	uLfRFOXrBeHYZxqu4o6jSoELjfYjxQ4N5xiCe
+X-Google-Smtp-Source: AGHT+IG0UsEDnmHxQRrz745aw4UlqWNyLvLKlXPrUyhs0dx23Srr+KTicp6LvTTAV47/MeSVZ9UVHkCM8Vt6BAMhVZc=
+X-Received: by 2002:a67:ee18:0:b0:470:45bc:a78f with SMTP id
+ f24-20020a67ee18000000b0047045bca78fmr4607957vsp.15.1708938923903; Mon, 26
+ Feb 2024 01:15:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com> <20240222075806.1816400-5-yukuai1@huaweicloud.com>
-In-Reply-To: <20240222075806.1816400-5-yukuai1@huaweicloud.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Mon, 26 Feb 2024 17:15:04 +0800
-Message-ID: <CALTww2-heW83=h44Jo1+6urS1xkzm4EWBuoo_0R_Dn-RjiG9eg@mail.gmail.com>
-Subject: Re: [PATCH md-6.9 04/10] md/raid1-10: add a helper raid1_check_read_range()
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com, shli@fb.com, 
-	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
-	yi.zhang@huawei.com, yangerkun@huawei.com
+References: <20230503090708.2524310-7-nmi@metaspace.dk> <20230503120354.534136-1-aliceryhl@google.com>
+ <87y1b7a994.fsf@metaspace.dk>
+In-Reply-To: <87y1b7a994.fsf@metaspace.dk>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 26 Feb 2024 10:15:12 +0100
+Message-ID: <CAH5fLgjQm72KmKBtcnBEXOtVqd=Gto5UGF7jrekx8f+7QXh_Ag@mail.gmail.com>
+Subject: Re: [RFC PATCH 06/11] rust: apply cache line padding for `SpinLock`
+To: "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
+Cc: Damien.LeMoal@wdc.com, alex.gaynor@gmail.com, axboe@kernel.dk, 
+	benno.lossin@proton.me, bjorn3_gh@protonmail.com, boqun.feng@gmail.com, 
+	gary@garyguo.net, gost.dev@samsung.com, hare@suse.de, hch@lst.de, 
+	kbusch@kernel.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lsf-pc@lists.linux-foundation.org, ojeda@kernel.org, 
+	rust-for-linux@vger.kernel.org, wedsonaf@gmail.com, willy@infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 4:04=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> The checking and handler of bad blocks appear many timers during
-> read_balance() in raid1 and raid10. This helper will be used in later
-> patches to simplify read_balance() a lot.
->
-> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
-> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/raid1-10.c | 49 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 49 insertions(+)
->
-> diff --git a/drivers/md/raid1-10.c b/drivers/md/raid1-10.c
-> index 512746551f36..9bc0f0022a6c 100644
-> --- a/drivers/md/raid1-10.c
-> +++ b/drivers/md/raid1-10.c
-> @@ -227,3 +227,52 @@ static inline bool exceed_read_errors(struct mddev *=
-mddev, struct md_rdev *rdev)
->
->         return false;
->  }
-> +
-> +/**
-> + * raid1_check_read_range() - check a given read range for bad blocks,
-> + * available read length is returned;
-> + * @rdev: the rdev to read;
-> + * @this_sector: read position;
-> + * @len: read length;
-> + *
-> + * helper function for read_balance()
-> + *
-> + * 1) If there are no bad blocks in the range, @len is returned;
-> + * 2) If the range are all bad blocks, 0 is returned;
-> + * 3) If there are partial bad blocks:
-> + *  - If the bad block range starts after @this_sector, the length of fi=
-rst
-> + *  good region is returned;
-> + *  - If the bad block range starts before @this_sector, 0 is returned a=
-nd
-> + *  the @len is updated to the offset into the region before we get to t=
-he
-> + *  good blocks;
-> + */
-> +static inline int raid1_check_read_range(struct md_rdev *rdev,
-> +                                        sector_t this_sector, int *len)
-> +{
-> +       sector_t first_bad;
-> +       int bad_sectors;
-> +
-> +       /* no bad block overlap */
-> +       if (!is_badblock(rdev, this_sector, *len, &first_bad, &bad_sector=
-s))
-> +               return *len;
-> +
-> +       /*
-> +        * bad block range starts offset into our range so we can return =
-the
-> +        * number of sectors before the bad blocks start.
-> +        */
-> +       if (first_bad > this_sector)
-> +               return first_bad - this_sector;
-> +
-> +       /* read range is fully consumed by bad blocks. */
-> +       if (this_sector + *len <=3D first_bad + bad_sectors)
-> +               return 0;
-> +
-> +       /*
-> +        * final case, bad block range starts before or at the start of o=
-ur
-> +        * range but does not cover our entire range so we still return 0=
- but
-> +        * update the length with the number of sectors before we get to =
-the
-> +        * good ones.
-> +        */
-> +       *len =3D first_bad + bad_sectors - this_sector;
-> +       return 0;
-> +}
-> --
-> 2.39.2
+On Mon, Feb 26, 2024 at 10:02=E2=80=AFAM Andreas Hindborg (Samsung)
+<nmi@metaspace.dk> wrote:
 >
 >
+> Hi Alice,
+>
+> Alice Ryhl <aliceryhl@google.com> writes:
+>
+> > On Wed, 3 May 2023 11:07:03 +0200, Andreas Hindborg <a.hindborg@samsung=
+com> wrote:
+> >> The kernel `struct spinlock` is 4 bytes on x86 when lockdep is not ena=
+bled. The
+> >> structure is not padded to fit a cache line. The effect of this for `S=
+pinLock`
+> >> is that the lock variable and the value protected by the lock will sha=
+re a cache
+> >> line, depending on the alignment requirements of the protected value. =
+Aligning
+> >> the lock variable and the protected value to a cache line yields a 20%
+> >> performance increase for the Rust null block driver for sequential rea=
+ds to
+> >> memory backed devices at 6 concurrent readers.
+> >>
+> >> Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
+> >
+> > This applies the cacheline padding to all spinlocks unconditionally.
+> > It's not clear to me that we want to do that. Instead, I suggest using
+> > `SpinLock<CachePadded<T>>` in the null block driver to opt-in to the
+> > cache padding there, and let other drivers choose whether or not they
+> > want to cache pad their locks.
+>
+> I was going to write that this is not going to work because the compiler
+> is going to reorder the fields of `Lock` and put the `data` field first,
+> followed by the `state` field. But I checked the layout, and it seems
+> that I actually get the `state` field first (with an alignment of 4), 60
+> bytes of padding, and then the `data` field (with alignment 64).
+>
+> I am wondering why the compiler is not reordering these fields? Am I
+> guaranteed that the fields will not be reordered? Looking at the
+> definition of `Lock` there does not seem to be anything that prevents
+> rustc from swapping `state` and `data`.
 
-This patch looks good to me.
-Reviewed-by: Xiao Ni <xni@redhat.com>
+It's because `Lock` has `: ?Sized` on the `T` generic. Fields that
+might not be Sized must always be last.
 
+Alice
 
