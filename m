@@ -1,208 +1,137 @@
-Return-Path: <linux-kernel+bounces-82345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82346-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEBAC868311
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:29:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE6BC868314
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6835628F12B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:29:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FC8CB23A72
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 21:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453E0131E2F;
-	Mon, 26 Feb 2024 21:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B937B131E20;
+	Mon, 26 Feb 2024 21:30:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FvfIGU9N"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dQuiR6Iw"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBA013172B;
-	Mon, 26 Feb 2024 21:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A32D213173B;
+	Mon, 26 Feb 2024 21:29:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708982973; cv=none; b=DSj4nH5YlEHW9QiAFmtijGPjL3inVGPn0CmWno9wVvHl3panIH1Gu69TuPgHol2Xvnx1qc1M4kNNT+ZCR8dbtCu6rQ91Bt9W2LjNnPJzB5yEuAGoG6VlqaxKnL5vRpulpUqus59cDMQBfyDqHqPZvIKSoqdErkIcLuWHAbHEIYc=
+	t=1708983000; cv=none; b=BNexx5zxFQgjuVZci5TlDS1027/rHiwTDvEKVhJl+0+IA/dXWtWpLPaOs8o2rURixPZw7SgUgs2+Emuj8YQTByFxM4KCa/GWihx4N7csOgwpcaG9znkYoYk8HRw8eqdl0u1nM5G1trDRZiOIphspAkrJkv/vW6v/WqVjag6jzPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708982973; c=relaxed/simple;
-	bh=2rkHSH3OXibBHquAGoNmanbJaTrZopPHIqDs6Th/QeE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tObGiCJa8yNwxS5I/gY8llG1C9TTsJDoiWdPxmzT5IT94k3FBCY5b+wqeSxxDiD3H1v0Yrtf6y8amQ2edjFJr9xQjG24CcmkTrGRgsNUTE4/myG6EGpQRv6RDrBGFFJVei/WHVFSXMHclr53oHgxOwmravEpkiHk8qRlQosGHBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FvfIGU9N; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708982972; x=1740518972;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2rkHSH3OXibBHquAGoNmanbJaTrZopPHIqDs6Th/QeE=;
-  b=FvfIGU9N+/f/tnmhIAfmlr9LunIJzfLDsrDVScDoiXmgLZaSgFKj8j/7
-   AGWiNFagYdWOxWx6gJIxOq9uTAqvWHeYPmvbR9fpeuRiC4PBc68r7nw8w
-   eeiAbHSVuxqpCAmxmjq0WMp1Wy6aerPQ3u43kE9iUt8hKJQb3647YhTND
-   CgVAcQ8Zp/3fmMrnuFgRi52svZOhQ2kKV8nkGsLG9e93ARx4Js64lecFA
-   OBKkByuBCSb+jRv0NLcJ0khhYJR9wXpd2JKHLjgK/I6szFdci8ZNO6WOz
-   1f79DlfvE4SbgTpn88BXPsQEYjMrnw20zW0JparcTEStCW4RInHTV3Nez
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3457807"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3457807"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 13:29:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="7166216"
-Received: from jekeller-desk.amr.corp.intel.com ([10.166.241.1])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 13:29:31 -0800
-From: Jacob Keller <jacob.e.keller@intel.com>
-To: Kees Cook <keescook@chromium.org>,
-	linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: gustavoars@kernel.org,
-	Peter Rosin <peda@axentia.se>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jacob Keller <jacob.e.keller@intel.com>
-Subject: [PATCH v2] mux: convert mux_chip->mux to flexible array
-Date: Mon, 26 Feb 2024 13:29:25 -0800
-Message-ID: <20240226212925.3781744-1-jacob.e.keller@intel.com>
-X-Mailer: git-send-email 2.41.0
+	s=arc-20240116; t=1708983000; c=relaxed/simple;
+	bh=8gDuz5mgWE/ZhtidoEWJByIRzXHYukx0InCNd6LB0Go=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ERFwfguD5Wtk522tLKWW+INCxlxH5bMJgxNd5J+dsjMzbLa6w1EI/5uc+CSDODrIaExTW07rh+dDWsUkCRhhS0uog+9Ka045bxX9gujGBsYF9GoUZMwOe+9IasFRtMQl89DNc2aW5t0bxKwcchP2pMAYSWk20B4znC6OQPGwNAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dQuiR6Iw; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QL0Z77032516;
+	Mon, 26 Feb 2024 21:29:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=MZ9f9rx25naR6v9FTKXv7ZUWyP2Ub5DoHHljraBXq+8=; b=dQ
+	uiR6Iwm1M/80I2n1yK3UbrMnlAD0X7LQNOlx5yhzo6urTdyyKCOL4l/1mwf4LgKX
+	J1PYxMHASNCR3jZ0G9lRg9GNnQWx6gZDs1sVlIDq9KY6hCNtXMfgBwwlmyoWj/7w
+	sygvs4TbzoBsNBEPcyQUAK0LDIN1c3cj2RqMJjiQ80UE+CVHmtGHEe/W4YNIzDsm
+	mnOU6v1rxQnrhjPp7a/h8NS6RPa/Z5fqozpa4gdKUFAYmL0ptTyLYZS0qqRDkMXa
+	cZFWksqyqP4sk8kseGJCfC7/Tx02ris+oiq0FlmhGX1UEKBZEapTSoAk2iscnrGd
+	E2iIdKZoEt8ilZsonnwA==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh232r295-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 21:29:46 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41QLTj4c018054
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Feb 2024 21:29:45 GMT
+Received: from [10.71.111.207] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
+ 2024 13:29:44 -0800
+Message-ID: <a13eeb01-7df9-4577-975f-34b3aed8400f@quicinc.com>
+Date: Mon, 26 Feb 2024 13:29:44 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] drm: panel: st7701: Add Hardkernel ODROID-GO Ultra
+ panel support
+Content-Language: en-US
+To: Adam Green <greena88@gmail.com>, Jagan Teki <jagan@amarulasolutions.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard
+	<mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240221194528.1855714-1-greena88@gmail.com>
+ <20240222164332.3864716-1-greena88@gmail.com>
+ <20240222164332.3864716-2-greena88@gmail.com>
+ <f9446923-acd3-41cf-92d4-676b946280c4@quicinc.com>
+ <79a4b60e-24f3-47fd-b3b3-7d207cec1470@gmail.com>
+From: Jessica Zhang <quic_jesszhan@quicinc.com>
+In-Reply-To: <79a4b60e-24f3-47fd-b3b3-7d207cec1470@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: icxhoZ3v6B03FuVtuvP-mhxjkuhE5VZX
+X-Proofpoint-GUID: icxhoZ3v6B03FuVtuvP-mhxjkuhE5VZX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ mlxlogscore=999 impostorscore=0 phishscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402260165
 
-The mux_chip structure size is over allocated to additionally include both
-the array of mux controllers as well as a device specific private area.
-The controllers array is then pointed to by assigning mux_chip->mux to the
-first block of extra memory, while the private area is extracted via
-mux_chip_priv() and points to the area just after the controllers.
 
-The size of the mux_chip allocation uses direct multiplication and addition
-rather than the <linux/overflow.h> helpers. In addition, the mux_chip->mux
-struct member wastes space by having to store the pointer as part of the
-structures.
 
-Convert struct mux_chip to use a flexible array member for the mux
-controller array. Use struct_size() and size_add() to compute the size of
-the structure while protecting against overflow.
+On 2/22/2024 9:47 AM, Adam Green wrote:
+> On 22/02/2024 17:14, Jessica Zhang wrote:
+>> Hi Adam,
+>>
+>> Just wondering, why the change to 120 here?
+>>
+>> Thanks,
+>>
+>> Jessica Zhang
+> 
+> Hi,
+> 
+> The 120ms is taken from the datasheet specification for the controller 
+> as maximum time it takes for the display to reset,
 
-After converting the mux pointer, notice that two 4-byte holes remain in
-the structure layout due to the alignment requirements for the dev
-sub-structure and the ops pointer.
+Got it. Was the shorter sleep time breaking the display and is it 
+required for the new panel to work?
 
-These can be easily fixed through re-ordering the id field to the 4-byte
-hole just after the controllers member.
+Thanks,
 
-This changes the layout from:
+Jessica Zhang
 
-struct mux_chip {
-        unsigned int               controllers;          /*     0     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        struct mux_control *       mux;                  /*     8     8 */
-        struct device              dev __attribute__((__aligned__(8))); /*    16  1488 */
-
-        /* XXX last struct has 3 bytes of padding */
-
-        /* --- cacheline 23 boundary (1472 bytes) was 32 bytes ago --- */
-        int                        id;                   /*  1504     4 */
-
-        /* XXX 4 bytes hole, try to pack */
-
-        const struct mux_control_ops  * ops;             /*  1512     8 */
-
-        /* size: 1520, cachelines: 24, members: 5 */
-        /* sum members: 1512, holes: 2, sum holes: 8 */
-        /* paddings: 1, sum paddings: 3 */
-        /* forced alignments: 1 */
-        /* last cacheline: 48 bytes */
-} __attribute__((__aligned__(8)));
-
-To the following:
-
-struct mux_chip {
-        unsigned int               controllers;          /*     0     4 */
-        int                        id;                   /*     4     4 */
-        struct device              dev __attribute__((__aligned__(8))); /*     8  1488 */
-
-        /* XXX last struct has 3 bytes of padding */
-
-        /* --- cacheline 23 boundary (1472 bytes) was 24 bytes ago --- */
-        const struct mux_control_ops  * ops;             /*  1496     8 */
-        struct mux_control         mux[];                /*  1504     0 */
-
-        /* size: 1504, cachelines: 24, members: 5 */
-        /* paddings: 1, sum paddings: 3 */
-        /* forced alignments: 1 */
-        /* last cacheline: 32 bytes */
-} __attribute__((__aligned__(8)));
-
-This both removes risk of overflowing and performing an under-allocation,
-as well as saves 16 bytes of otherwise wasted space for every mux_chip.
-
-Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
----
-Changes since v1:
-* Rebased and updated the commit message slightly.
-
- drivers/mux/core.c         |  7 +++----
- include/linux/mux/driver.h | 10 +++++-----
- 2 files changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mux/core.c b/drivers/mux/core.c
-index 775816112932..9225abca7897 100644
---- a/drivers/mux/core.c
-+++ b/drivers/mux/core.c
-@@ -98,13 +98,12 @@ struct mux_chip *mux_chip_alloc(struct device *dev,
- 	if (WARN_ON(!dev || !controllers))
- 		return ERR_PTR(-EINVAL);
- 
--	mux_chip = kzalloc(sizeof(*mux_chip) +
--			   controllers * sizeof(*mux_chip->mux) +
--			   sizeof_priv, GFP_KERNEL);
-+	mux_chip = kzalloc(size_add(struct_size(mux_chip, mux, controllers),
-+				    sizeof_priv),
-+			   GFP_KERNEL);
- 	if (!mux_chip)
- 		return ERR_PTR(-ENOMEM);
- 
--	mux_chip->mux = (struct mux_control *)(mux_chip + 1);
- 	mux_chip->dev.class = &mux_class;
- 	mux_chip->dev.type = &mux_type;
- 	mux_chip->dev.parent = dev;
-diff --git a/include/linux/mux/driver.h b/include/linux/mux/driver.h
-index 18824064f8c0..84dc0d3e79d6 100644
---- a/include/linux/mux/driver.h
-+++ b/include/linux/mux/driver.h
-@@ -56,18 +56,18 @@ struct mux_control {
- /**
-  * struct mux_chip -	Represents a chip holding mux controllers.
-  * @controllers:	Number of mux controllers handled by the chip.
-- * @mux:		Array of mux controllers that are handled.
-- * @dev:		Device structure.
-  * @id:			Used to identify the device internally.
-+ * @dev:		Device structure.
-  * @ops:		Mux controller operations.
-+ * @mux:		Flexible array of mux controllers that are handled.
-  */
- struct mux_chip {
- 	unsigned int controllers;
--	struct mux_control *mux;
--	struct device dev;
- 	int id;
--
-+	struct device dev;
- 	const struct mux_control_ops *ops;
-+
-+	struct mux_control mux[];
- };
- 
- #define to_mux_chip(x) container_of((x), struct mux_chip, dev)
-
-base-commit: 45ec2f5f6ed3ec3a79ba1329ad585497cdcbe663
--- 
-2.41.0
-
+> 
+> Kind regards,
+> 
+> Adam
 
