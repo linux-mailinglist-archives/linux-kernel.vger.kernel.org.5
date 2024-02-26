@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-81679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69F3A867900
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:49:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88EC6867902
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB1F81F24EDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:49:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F0A6299237
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:49:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D0B137C42;
-	Mon, 26 Feb 2024 14:36:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B534138484;
+	Mon, 26 Feb 2024 14:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cRfO21ku"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OhF8/ckU"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042AA1369B8;
-	Mon, 26 Feb 2024 14:36:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7CFB137C49;
+	Mon, 26 Feb 2024 14:36:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958188; cv=none; b=S/G6GVlAyLN2+0JsAfwDQ5hFDuYBGHmERGAOL2Xvf6RHS/Tq8/bx4597zNgNiX6qN82AOkvYjheqPEfQifNILnbtfgGmWPiQftfvkDqTEFwPKNJnSXcuOUGvLo6Bd5wkDIac6C68XK6O/DuqFuBenFzTWJ88+xUO8EoeCCfAmNk=
+	t=1708958191; cv=none; b=iD7zM9SG4iCzG5N5oeKgrnZXQoh5dZgBv0ss0grFaw5ISCQPOcMI+U4OW2TZ1I1DwRxDszuRDeoAcsslRLr5/AQFmC9FpALOFTqmP7VmvjhG5b+JETh1ASOqxyQGuzKRJPdMKOoY9cPF7/sVGz+Ay0+2KOUeytXsTTzJZP6t49A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958188; c=relaxed/simple;
-	bh=FqG+PShZWy3cSlJS3qEDXedk0RFcNd6z6U1V+6nl3B8=;
+	s=arc-20240116; t=1708958191; c=relaxed/simple;
+	bh=psHI8zxpnvNzC6HzjO8u2HuTrjxyl16doUd1Ga+thcE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n5+MwEZqRcLM4lxDZVboLkH4+VVz5KJ7PJBY1WE81iVxISNNZjMsOEwqvOCo5Vw6Lu5Lg2O4gEKL5N92fF6zrJJO8752O7gHNegmZVLQRUiihe57LczbPw1tKg86IvjmdQwCXCn8k9VAJ0cb6XXc5iEfgQr1ILx7bLfFQP9qRjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cRfO21ku; arc=none smtp.client-ip=209.85.214.178
+	 MIME-Version; b=awtGEWSIULOspr6vIW7QEq0z9SbgHP34oybpAN3S1t03IEopOtJDzEfwURGxhkRpXOF73hxlklHTvONJsrHD6II7RgNKuKMRx84pDLCW4BXP4wv9rDCGi+iWhzlMZcBE1/G3ny6PI5KzCB0yqLxf5z1i0CSD961/7vfM6y3dIaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OhF8/ckU; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dc1ff3ba1aso25326715ad.3;
-        Mon, 26 Feb 2024 06:36:26 -0800 (PST)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e457fab0e2so1882673b3a.0;
+        Mon, 26 Feb 2024 06:36:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708958186; x=1709562986; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708958189; x=1709562989; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h/GP0KqLiQo98vwHDOjndhSbhcZ2rln4TVJt6Ie5g30=;
-        b=cRfO21kuPaMtiH7S2C5gbeshHNiYpLy+BbUc1xYjM5vx23faOppFqYm//5BGiIjVIK
-         uSMFGQqM8fb/NwzaCxkrTqChfGbh2pnQIi+pJwuBBboCCr+nzw33nXKo49VC3ZgeFa3K
-         i0iAdDi9io+zJW9RShFT35yArr2WxzJW2/Dbki6+P2q59HSnk2xDbrACsLTrKqMNKlUa
-         J6VNB22y4jjrovq6F0a5CeuG8Mu8y2TJvV3tmheMTzV21WdHCuumL8l/V3xxzSUvwpYE
-         5OCjyfN99HUv5d/OAL2NrgIqfHR6Npboi8mbzNy1PgFBU4UMWVmkJoDF0CUmnkNWYevA
-         uK5Q==
+        bh=cQ/nS0bgBloNdtpxFga4Mz7X6Yf8rS35YXtEExYA9cI=;
+        b=OhF8/ckUC6I4X2JVgIc0RRMIJTttTBpAbGEYPhkjbSm/ZRI0iu5GVIaZ3GYFU/5JZo
+         qvZd6Yuxl9kkP8cBJUDzTpzlPpmUTG0uvOCWrHW71Z3s763krArxkNPN4exaAoe0Dqm1
+         K2z/M1o5apPUorx4oc/NCCVh3iJqIllq4b7oboW+O9EqcC50Hpdqj1LZ1mky17TAt8dy
+         0aoAHhJLI9wZ0DbFqiActbO1mUJDN3cTc769mmx72hKJhd9ZqBcK24kl9Hmv7Jy+ClfP
+         I91DGnu3fsBxHaKI6VftZqhwzIOdMzIBj8aq64U1XoziBvXnmsoGwzpK9Lg1k2DgEIwU
+         Bm4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708958186; x=1709562986;
+        d=1e100.net; s=20230601; t=1708958189; x=1709562989;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h/GP0KqLiQo98vwHDOjndhSbhcZ2rln4TVJt6Ie5g30=;
-        b=MjSVIH5OUt2enxBW+kBtbGw6JsmPQAOvjc65z3LhP/XHxsCExXmnBHH6UEBKp8R/uX
-         Vdrvz7dzxZzolwtQmO1F+tm4YLdfqQ35uJiyygiKnIsP1JQydeCNyo9miWbOZVOP3j3x
-         ZPBGY8woAabG8r/SsZkGp3ZMkI6B4tb02fu7m5jZAH4FCqZKDeHholDtT5CbaL6eoQXJ
-         D3B/PFz4gLfqvLrq7ciBS8bXvMizo2Lu4LHMAE3DnVdW8rzXybzZ1fQsx1X5m/B4NSVe
-         HUQNNkR/0nOMYhFX2tD83Ymdd8vWLc1bhwaUlwJhZdBlOwqWGEfliMeBjR81kJwB/9rn
-         uKTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXFfVkmAraO09A5WKS+6ZMEpzmZS82+7mazVi6BwKSWkQvoUVILU2aZcy043fas9MGURSZpinQGhdzB9aRalgJjuNd1
-X-Gm-Message-State: AOJu0YwOro6pZeQxHzqhrzboxYG76WxYkE8dPOTmHZUpmUA8kn3073+t
-	FgSIikdGibEEFfMupythdmAJWqLEzt8zL+gKBplKUcnAlLNfis5hcfrqD/kz
-X-Google-Smtp-Source: AGHT+IEMuwRtiAJXeXANhaAHgTUUopEhhNurxT2IDkexHNjvTyx0eaYlmjpPJEMP+wZaJcr/GimM2A==
-X-Received: by 2002:a17:902:ea12:b0:1dc:90c0:1e6a with SMTP id s18-20020a170902ea1200b001dc90c01e6amr5660164plg.45.1708958185760;
-        Mon, 26 Feb 2024 06:36:25 -0800 (PST)
-Received: from localhost ([47.88.5.130])
-        by smtp.gmail.com with ESMTPSA id u11-20020a170902e20b00b001dc9422891esm2650104plb.30.2024.02.26.06.36.24
+        bh=cQ/nS0bgBloNdtpxFga4Mz7X6Yf8rS35YXtEExYA9cI=;
+        b=M0XthRboPolxGd330ywkJdcY0SZsih5VN/pVQuXIsNxemq1AmUUutYvROUBt7wzhO0
+         JdUdZ0zYKwOq602No0hqiZSanwUyjM7CPoD7ZJwf7yzkwNoBFCqaFzUG9kG10koLuVRQ
+         K7dZ9mp26WYeBEFR9Nol9M5wqH/qhlOUuEraLIyaXWEbVBxHYaMeQrWQKLv0ABdxU6hI
+         0KVLF6sM4GdDI7yhK8a4b7xavo5DT0JwFttmA/5qk6yh/2LJ93faK2B25Ge7N/Jaav1D
+         OeyTSbgp/OVhpg6pCbNYTR/LxLwT2XD6NytrPFi/IVgO+hVtu4tR8QuZOHhGbRfJpF7a
+         eEIw==
+X-Forwarded-Encrypted: i=1; AJvYcCV/9r7+9VCLzULlpyTaUrKOB2EkBsIkTX/VpIOFhzxgekzSv3GpF/TebZIY5pieCFxdaKQVCKsFSsNII5g+splS5PZ5
+X-Gm-Message-State: AOJu0Yx7beuKR3re804e+ZnULV65OcwmelfB+SKDXiX8gpak5FoSZXA/
+	s+6vAgVirTEPQTNtW9KCNgTErkwb0SNYD0IiLG7tHxhVVenZmP5+UyzcZhVo
+X-Google-Smtp-Source: AGHT+IG2wXl5b5ObFHNLA75gIkPTapG8hUSmdxDiOsx492fO/MObCAdwGggzwvMH2P2Zznwt4ZBAwg==
+X-Received: by 2002:a05:6a20:c888:b0:19e:cbe9:63b with SMTP id hb8-20020a056a20c88800b0019ecbe9063bmr8230483pzb.3.1708958189007;
+        Mon, 26 Feb 2024 06:36:29 -0800 (PST)
+Received: from localhost ([47.89.225.180])
+        by smtp.gmail.com with ESMTPSA id v6-20020a626106000000b006e53e075d60sm672837pfb.70.2024.02.26.06.36.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Feb 2024 06:36:25 -0800 (PST)
+        Mon, 26 Feb 2024 06:36:28 -0800 (PST)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
@@ -83,9 +83,9 @@ Cc: Lai Jiangshan <jiangshan.ljs@antgroup.com>,
 	Juergen Gross <jgross@suse.com>,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [RFC PATCH 33/73] KVM: x86/PVM: Handle VM-exit due to hardware exceptions
-Date: Mon, 26 Feb 2024 22:35:50 +0800
-Message-Id: <20240226143630.33643-34-jiangshanlai@gmail.com>
+Subject: [RFC PATCH 34/73] KVM: x86/PVM: Handle ERETU/ERETS synthetic instruction
+Date: Mon, 26 Feb 2024 22:35:51 +0800
+Message-Id: <20240226143630.33643-35-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20240226143630.33643-1-jiangshanlai@gmail.com>
 References: <20240226143630.33643-1-jiangshanlai@gmail.com>
@@ -99,201 +99,109 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-When the exceptions are of interest to the hypervisor for emulation or
-debugging, they should be handled by the hypervisor first, for example,
-handling #PF for shadow page table. If the exceptions are pure guest
-exceptions, they should be reinjected into the guest directly. If the
-exceptions belong to the host, they should already have been handled in
-an atomic way before enabling interrupts.
+PVM uses the ERETU synthetic instruction to return to user mode and the
+ERETS instruction to return to supervisor mode. Similar to event
+injection, information passing is different. For the ERETU, information
+is passed by the shared PVCS structure, and for the ERETS, information
+is passed by the current guest stack.
 
 Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
 ---
- arch/x86/kvm/pvm/pvm.c | 157 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 157 insertions(+)
+ arch/x86/kvm/pvm/pvm.c | 74 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
 diff --git a/arch/x86/kvm/pvm/pvm.c b/arch/x86/kvm/pvm/pvm.c
-index 299305903005..c6fd01c19c3e 100644
+index c6fd01c19c3e..514f0573f70f 100644
 --- a/arch/x86/kvm/pvm/pvm.c
 +++ b/arch/x86/kvm/pvm/pvm.c
-@@ -20,6 +20,7 @@
+@@ -1153,12 +1153,86 @@ static void pvm_setup_mce(struct kvm_vcpu *vcpu)
+ {
+ }
  
- #include "cpuid.h"
- #include "lapic.h"
-+#include "mmu.h"
- #include "trace.h"
- #include "x86.h"
- #include "pvm.h"
-@@ -1161,6 +1162,160 @@ static int handle_exit_syscall(struct kvm_vcpu *vcpu)
++static int handle_synthetic_instruction_return_user(struct kvm_vcpu *vcpu)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++	struct pvm_vcpu_struct *pvcs;
++
++	// instruction to return user means nmi allowed.
++	pvm->nmi_mask = false;
++
++	/*
++	 * switch to user mode before kvm_set_rflags() to avoid PVM_EVENT_FLAGS_IF
++	 * to be set.
++	 */
++	switch_to_umod(vcpu);
++
++	pvcs = pvm_get_vcpu_struct(pvm);
++	if (!pvcs) {
++		kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
++		return 1;
++	}
++
++	/*
++	 * pvm_set_rflags() doesn't clear PVM_EVENT_FLAGS_IP
++	 * for user mode, so clear it here.
++	 */
++	if (pvcs->event_flags & PVM_EVENT_FLAGS_IP) {
++		pvcs->event_flags &= ~PVM_EVENT_FLAGS_IP;
++		kvm_make_request(KVM_REQ_EVENT, vcpu);
++	}
++
++	pvm->hw_cs = pvcs->user_cs | USER_RPL;
++	pvm->hw_ss = pvcs->user_ss | USER_RPL;
++
++	pvm_write_guest_gs_base(pvm, pvcs->user_gsbase);
++	kvm_set_rflags(vcpu, pvcs->eflags | X86_EFLAGS_IF);
++	kvm_rip_write(vcpu, pvcs->rip);
++	kvm_rsp_write(vcpu, pvcs->rsp);
++	kvm_rcx_write(vcpu, pvcs->rcx);
++	kvm_r11_write(vcpu, pvcs->r11);
++
++	pvm_put_vcpu_struct(pvm, false);
++
++	return 1;
++}
++
++static int handle_synthetic_instruction_return_supervisor(struct kvm_vcpu *vcpu)
++{
++	struct vcpu_pvm *pvm = to_pvm(vcpu);
++	unsigned long rsp = kvm_rsp_read(vcpu);
++	struct pvm_supervisor_event frame;
++	struct x86_exception e;
++
++	if (kvm_read_guest_virt(vcpu, rsp, &frame, sizeof(frame), &e)) {
++		kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
++		return 1;
++	}
++
++	// instruction to return supervisor means nmi allowed.
++	pvm->nmi_mask = false;
++
++	kvm_set_rflags(vcpu, frame.rflags);
++	kvm_rip_write(vcpu, frame.rip);
++	kvm_rsp_write(vcpu, frame.rsp);
++	kvm_rcx_write(vcpu, frame.rcx);
++	kvm_r11_write(vcpu, frame.r11);
++
++	return 1;
++}
++
+ static int handle_exit_syscall(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_pvm *pvm = to_pvm(vcpu);
++	unsigned long rip = kvm_rip_read(vcpu);
+ 
+ 	if (!is_smod(pvm))
+ 		return do_pvm_user_event(vcpu, PVM_SYSCALL_VECTOR, false, 0);
++
++	if (rip == pvm->msr_retu_rip_plus2)
++		return handle_synthetic_instruction_return_user(vcpu);
++	if (rip == pvm->msr_rets_rip_plus2)
++		return handle_synthetic_instruction_return_supervisor(vcpu);
  	return 1;
  }
  
-+static int handle_exit_debug(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_pvm *pvm = to_pvm(vcpu);
-+	struct kvm_run *kvm_run = pvm->vcpu.run;
-+
-+	if (pvm->vcpu.guest_debug &
-+	    (KVM_GUESTDBG_SINGLESTEP | KVM_GUESTDBG_USE_HW_BP)) {
-+		kvm_run->exit_reason = KVM_EXIT_DEBUG;
-+		kvm_run->debug.arch.dr6 = pvm->exit_dr6 | DR6_FIXED_1 | DR6_RTM;
-+		kvm_run->debug.arch.dr7 = vcpu->arch.guest_debug_dr7;
-+		kvm_run->debug.arch.pc = kvm_rip_read(vcpu);
-+		kvm_run->debug.arch.exception = DB_VECTOR;
-+		return 0;
-+	}
-+
-+	kvm_queue_exception_p(vcpu, DB_VECTOR, pvm->exit_dr6);
-+	return 1;
-+}
-+
-+/* check if the previous instruction is "int3" on receiving #BP */
-+static bool is_bp_trap(struct kvm_vcpu *vcpu)
-+{
-+	u8 byte = 0;
-+	unsigned long rip;
-+	struct x86_exception exception;
-+	int r;
-+
-+	rip = kvm_rip_read(vcpu) - 1;
-+	r = kvm_read_guest_virt(vcpu, rip, &byte, 1, &exception);
-+
-+	/* Just assume it to be int3 when failed to fetch the instruction. */
-+	if (r)
-+		return true;
-+
-+	return byte == 0xcc;
-+}
-+
-+static int handle_exit_breakpoint(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_pvm *pvm = to_pvm(vcpu);
-+	struct kvm_run *kvm_run = pvm->vcpu.run;
-+
-+	/*
-+	 * Breakpoint exception can be caused by int3 or int 3.  While "int3"
-+	 * participates in guest debug, but "int 3" should not.
-+	 */
-+	if ((vcpu->guest_debug & KVM_GUESTDBG_USE_SW_BP) && is_bp_trap(vcpu)) {
-+		kvm_rip_write(vcpu, kvm_rip_read(vcpu) - 1);
-+		kvm_run->exit_reason = KVM_EXIT_DEBUG;
-+		kvm_run->debug.arch.pc = kvm_rip_read(vcpu);
-+		kvm_run->debug.arch.exception = BP_VECTOR;
-+		return 0;
-+	}
-+
-+	kvm_queue_exception(vcpu, BP_VECTOR);
-+	return 1;
-+}
-+
-+static int handle_exit_exception(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_pvm *pvm = to_pvm(vcpu);
-+	struct kvm_run *kvm_run = vcpu->run;
-+	u32 vector, error_code;
-+	int err;
-+
-+	vector = pvm->exit_vector;
-+	error_code = pvm->exit_error_code;
-+
-+	switch (vector) {
-+	// #PF, #GP, #UD, #DB and #BP are guest exceptions or hypervisor
-+	// interested exceptions for emulation or debugging.
-+	case PF_VECTOR:
-+		// Remove hardware generated PFERR_USER_MASK when in supervisor
-+		// mode to reflect the real mode in PVM.
-+		if (is_smod(pvm))
-+			error_code &= ~PFERR_USER_MASK;
-+
-+		// If it is a PK fault, set pkru=0 and re-enter the guest silently.
-+		// See the comment before pvm_load_guest_xsave_state().
-+		if (cpu_feature_enabled(X86_FEATURE_PKU) && (error_code & PFERR_PK_MASK))
-+			return 1;
-+
-+		return kvm_handle_page_fault(vcpu, error_code, pvm->exit_cr2,
-+					     NULL, 0);
-+	case GP_VECTOR:
-+		err = kvm_emulate_instruction(vcpu, EMULTYPE_PVM_GP);
-+		if (!err)
-+			return 0;
-+
-+		if (vcpu->arch.halt_request) {
-+			vcpu->arch.halt_request = 0;
-+			return kvm_emulate_halt_noskip(vcpu);
-+		}
-+		return 1;
-+	case UD_VECTOR:
-+		if (!is_smod(pvm)) {
-+			kvm_queue_exception(vcpu, UD_VECTOR);
-+			return 1;
-+		}
-+		return handle_ud(vcpu);
-+	case DB_VECTOR:
-+		return handle_exit_debug(vcpu);
-+	case BP_VECTOR:
-+		return handle_exit_breakpoint(vcpu);
-+
-+	// #DE, #OF, #BR, #NM, #MF, #XM, #TS, #NP, #SS and #AC are pure guest
-+	// exceptions.
-+	case DE_VECTOR:
-+	case OF_VECTOR:
-+	case BR_VECTOR:
-+	case NM_VECTOR:
-+	case MF_VECTOR:
-+	case XM_VECTOR:
-+		kvm_queue_exception(vcpu, vector);
-+		return 1;
-+	case AC_VECTOR:
-+	case TS_VECTOR:
-+	case NP_VECTOR:
-+	case SS_VECTOR:
-+		kvm_queue_exception_e(vcpu, vector, error_code);
-+		return 1;
-+
-+	// #NMI, #VE, #VC, #MC and #DF are exceptions that belong to host.
-+	// They should have been handled in atomic way when vmexit.
-+	case NMI_VECTOR:
-+		// NMI is handled by pvm_vcpu_run_noinstr().
-+		return 1;
-+	case VE_VECTOR:
-+		// TODO: tdx_handle_virt_exception(regs, &pvm->exit_ve); break;
-+		goto unknown_exit_reason;
-+	case X86_TRAP_VC:
-+		// TODO: handle the second part for #VC.
-+		goto unknown_exit_reason;
-+	case MC_VECTOR:
-+		// MC is handled by pvm_handle_exit_irqoff().
-+		// TODO: split kvm_machine_check() to avoid irq-enabled or
-+		// schedule code (thread dead) in pvm_handle_exit_irqoff().
-+		return 1;
-+	case DF_VECTOR:
-+		// DF is handled when exiting and can't reach here.
-+		pr_warn_once("host bug, can't reach here");
-+		break;
-+	default:
-+unknown_exit_reason:
-+		pr_warn_once("unknown exit_reason vector:%d, error_code:%x, rip:0x%lx\n",
-+			      vector, pvm->exit_error_code, kvm_rip_read(vcpu));
-+		kvm_run->exit_reason = KVM_EXIT_EXCEPTION;
-+		kvm_run->ex.exception = vector;
-+		kvm_run->ex.error_code = error_code;
-+		break;
-+	}
-+	return 0;
-+}
-+
- static int handle_exit_external_interrupt(struct kvm_vcpu *vcpu)
- {
- 	++vcpu->stat.irq_exits;
-@@ -1187,6 +1342,8 @@ static int pvm_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
- 
- 	if (exit_reason == PVM_SYSCALL_VECTOR)
- 		return handle_exit_syscall(vcpu);
-+	else if (exit_reason >= 0 && exit_reason < FIRST_EXTERNAL_VECTOR)
-+		return handle_exit_exception(vcpu);
- 	else if (exit_reason == IA32_SYSCALL_VECTOR)
- 		return do_pvm_event(vcpu, IA32_SYSCALL_VECTOR, false, 0);
- 	else if (exit_reason >= FIRST_EXTERNAL_VECTOR && exit_reason < NR_VECTORS)
 -- 
 2.19.1.6.gb485710b
 
