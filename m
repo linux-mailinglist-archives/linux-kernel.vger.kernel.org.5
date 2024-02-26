@@ -1,114 +1,223 @@
-Return-Path: <linux-kernel+bounces-81727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6355986796F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB609867976
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 940691C2987F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:05:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDF0D1C2AE7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7C8130E55;
-	Mon, 26 Feb 2024 14:43:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D542131E29;
+	Mon, 26 Feb 2024 14:44:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AbPBzyEG"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RHh+Jln/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0255912BF0A
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:43:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28B612BF29
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:44:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708958587; cv=none; b=u0CQNDVcbnMv70RjzXgPbXUKyX0LwrENmUVrn2yAvHEY0HSekDgX/JfLE3eHX7QOYCPo2Sfq7t5vh55zjUXLz0D94ySKr7oGOCkUZ9Jr1CIbbvFcz3Kbs0HnuJYJ/SXJP7+vqWcOu6IURr56VmV59Ofim4bgBWYhC3uwYWcCchU=
+	t=1708958692; cv=none; b=dWJl9wvNa5bN637v06FXtdY1wmHpv79B4aZNyMLlGhq8e7eOK/nXvJttE38Mv4jjKnGqUlJWDu+S3UHxmhzUigMU/hzfQEpdt9EFoNuBUIriU/tYmD/QY5iUXRix8vtHkbwALHPdoHp+RN0xdC3ondiKvGJlAEKE4S5QuaPNtMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708958587; c=relaxed/simple;
-	bh=194/ZcRx90rMT6lhPS7u93Tfa7QH/NXGR85wnsvgn5U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H3Md/2pdGGB4ilwQwVDwy9zYt6MzmbPGMUQ41c3NBVZYZczV+BkTGPxj7Tn4Z7RG3lXFim7AIKXa2KZv4aZom7dHPc9Y6Vd5VT1k9YitHh46io0HhLYBfwW+aN+n8Pt9qio06vLVw9MpBKWWl9GA1bYSxYAeNw9HIXFyNoNbDvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AbPBzyEG; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412a8d9402eso2807005e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:43:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708958584; x=1709563384; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D9tbNaYjJUe+G+wb/l7hVhkbXYhWJjIHDAkvy08BoSQ=;
-        b=AbPBzyEGQYrNJGEAKMfDv6AUSvzbGZsU3PAhyXTa4KdkMVXcOGi0pSnF5sredsxVT9
-         B3Iia8TFBXkZX5FCpS3QSoVq6rs/IYrKf8h0Sy0aAJpDXOYJCChK0JImZA9d3TDvmX44
-         SIRGEwYafdF8UlpqB2j25Z/O4mt6FL8LLzUVrXz1h2VS4TUcjX9i8VTR90QbKeXjJwaC
-         Yqlkg7DlFv5PyqwzO4DWelZ2+MRUarfuZ5QFhiYa2sZhtdqmzvFVnroJFBz2NPNmbhwj
-         XxPJZVJ1zGPDiUFapK6Ks0Z7BW6m4SaD7tCihnErgqP7B7ix30uXd3qQ9bX5QY798vBD
-         12Jw==
+	s=arc-20240116; t=1708958692; c=relaxed/simple;
+	bh=oRQ9v7kB5bqRxTK8PhLxJf5eEHNOuOC6up/KxjKjbJg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X6fNp3yViK8iN7rF/wdWqQcDkHCwipcqq6BW4yCMznEx4VKlpT4H8upzdfKiFeu+CJbxZp+Qe3seW5wmI4qoFPKz8Xcm8zlrvvAIaavD6Pb7PKb9kt3FA+zen17udJ68gdLTZyBAaf2smjChOqDSoBelwVNU5JIJa+EXJ3/z3nQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RHh+Jln/; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708958689;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WVAz6OqM9YBIHNwy968Ocu5br0K4GggiejttotLLqFo=;
+	b=RHh+Jln/hKWOlEqC8rYEhnGHMlVlzkJ/MrWipY10zjZ0s2M0p2dgAyB7GXe9dWKGYZ00/p
+	pyjp1CdklRURxc3n14pUYhubScFaR7tqWqQZhWt+UKpm2f3r0iHE64ia7YgMuwujL+l7nC
+	CIJgpApTddd4dsEc4/tUY7j62DlAEE8=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-557-21C21rZKMhKTakSEKwNy6Q-1; Mon, 26 Feb 2024 09:44:48 -0500
+X-MC-Unique: 21C21rZKMhKTakSEKwNy6Q-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5c6245bc7caso2582708a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:44:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708958584; x=1709563384;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D9tbNaYjJUe+G+wb/l7hVhkbXYhWJjIHDAkvy08BoSQ=;
-        b=BFf5PllhnQHd0Gnp+Pdq8icGN98grhjKLsR0A50fRWhjd1zKQwKTpwraB6PWhZPGnH
-         fVCeO3N+vfD+maKgZrJ4DYn3pltjuoXaqQVP5YzONHao9JHRBfThvG16yBtJ995RUJde
-         zAPPO3AhgI7JsgYSb3Odvi0wL3YhHbNis4NldlTxTZaSwvxijiYQG7NTauAy2hokRgp9
-         Yx5i3GbodozrlrTIg+hxXb6dspjV0tkb2rSdKayUoBDd07y+kMy0YxOu7CU8I/vGBRu8
-         3l6GJW3nflzssh8MgsOBur0osXKFEoHxxbRkavKtVEaIzI0LcSZAYCkDQRD2D4S9ALk4
-         WHqw==
-X-Forwarded-Encrypted: i=1; AJvYcCWl83W97PBowV+DYf2NvjRkded+d+VT8Sbz9i23Px/0YwrVCdBLhMGYnK2ml5hdnfqdH6DnXqpGAqc17n8Ozfzb/xybh1qbpS8a5bf4
-X-Gm-Message-State: AOJu0Yw7Hj32mP3YT25L4KxyeB052dw1/jqvcP7jknGT+nsA0pK2UAfa
-	DQDlUCwOlzn6eplyMaWAxCqjmpF9lBGKC1DvKVvsh/iVftEF+1r7cwMlqPcSWYYukgEGzjheMiF
-	N
-X-Google-Smtp-Source: AGHT+IH2Ee7jy/1HUKjhnM0FzWr1llSFk1mmZxb+jGS8XK1HpX8qhtkl8SiSACuchuYO1pFYaOe8YA==
-X-Received: by 2002:a05:600c:1992:b0:412:9c2a:7622 with SMTP id t18-20020a05600c199200b004129c2a7622mr5989940wmq.8.1708958584336;
-        Mon, 26 Feb 2024 06:43:04 -0800 (PST)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id n1-20020a05600c4f8100b004127ead18aasm8586036wmq.22.2024.02.26.06.43.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 06:43:04 -0800 (PST)
-Message-ID: <6f4a4d7f-e258-47de-ae9d-026370339641@linaro.org>
-Date: Mon, 26 Feb 2024 15:43:03 +0100
+        d=1e100.net; s=20230601; t=1708958687; x=1709563487;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WVAz6OqM9YBIHNwy968Ocu5br0K4GggiejttotLLqFo=;
+        b=uIigPFMEle7C9nckYzqQkm5xshfX6ukX01yS+MLZWwP3rNCqSHqA13LUf1mrSzanKb
+         4zojojbArku9mV+tgsBgLJjMOzzKdxwMhq19LlsGj8pHthXZa3JwO6bsxSMKQVuI3SYS
+         dEeJ00zUCQNHKl/gY+tBlqCnALMitKFfluSR64up/ey/PE7i5xmZF2kAC6g7N2LnyXC4
+         pG6lF6lRXq9GUDNx9kxC+f7WJRSTYpLqdDTxQG+jT9JJz/YO4HrLiRYbrl9PHwSLlbtP
+         FAlZOKliI4c0icr5Dc/4e5Gmnm+IQOHDjNLARxWLNWfi1scFRvsk3WF+bIe/Q8cOI3+h
+         NjSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUGr/wdS6ZrsRLB8fehd+EZkTvczTRCUxswcqnQLlwPincuHxIvZeOX6hFcq6QbS4lMfrH4eea2PPvuqhbD1uIqJlEAmFzyRmg6ImwU
+X-Gm-Message-State: AOJu0YzQkR1Hb6JCsbnfKDK8YTue12wPxCII1kcoIJ7cqDghjJgQjadU
+	Q1sXf7AreK/SDHwFBMJwNDrWyLPsJt8O4+YY6F0rVoG+UsCGa+P06X2FPJSKQUK3e8qvZAPIp1W
+	FYfAakkR5Urp8Qmn6nxKl7wIlYL+MFZNsRFI34wSCBL+DNtYZ0N+s6vp9T57T1dZl8+f7pKLymU
+	sxAtb1ODQ21tvmctRLUmKsBPvinYM3/nESXNCF
+X-Received: by 2002:a17:902:e841:b0:1dc:1c81:1b19 with SMTP id t1-20020a170902e84100b001dc1c811b19mr9002132plg.3.1708958687290;
+        Mon, 26 Feb 2024 06:44:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG7cionqfGU4TMZnBAEDSHJq9kGuFCGsOtY/uktnXaRrzbGASDaU/mnx+5J/yKR+IzenDmrRXpXREZPNo0jbEo=
+X-Received: by 2002:a17:902:e841:b0:1dc:1c81:1b19 with SMTP id
+ t1-20020a170902e84100b001dc1c811b19mr9002102plg.3.1708958686977; Mon, 26 Feb
+ 2024 06:44:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] thermal/drivers/qoriq: fix getting tmu range
-Content-Language: en-US
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, rafael@kernel.org
-Cc: rui.zhang@intel.com, linux-pm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
- Sascha Hauer <s.hauer@pengutronix.de>
-References: <20240226003657.3012880-1-peng.fan@oss.nxp.com>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <20240226003657.3012880-1-peng.fan@oss.nxp.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240222075806.1816400-1-yukuai1@huaweicloud.com> <20240222075806.1816400-8-yukuai1@huaweicloud.com>
+In-Reply-To: <20240222075806.1816400-8-yukuai1@huaweicloud.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Mon, 26 Feb 2024 22:44:35 +0800
+Message-ID: <CALTww2-jdEos2HHgBHYHc0VOh1tWYuWTztmvW4iaBi6bS8B-YQ@mail.gmail.com>
+Subject: Re: [PATCH md-6.9 07/10] md/raid1: factor out choose_slow_rdev() from read_balance()
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com, shli@fb.com, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 26/02/2024 01:36, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> TMU Version 1 has 4 TTRCRs, while TMU Version >=2 has 16 TTRCRs.
-> So limit the len to 4 will report "invalid range data" for i.MX93.
-> 
-> This patch drop the local array with allocated ttrcr array and
-> able to support larger tmu ranges.
-> 
-> Fixes: f12d60c81fce ("thermal/drivers/qoriq: Support version 2.1")
-> Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+On Thu, Feb 22, 2024 at 4:04=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> read_balance() is hard to understand because there are too many status
+> and branches, and it's overlong.
+>
+> This patch factor out the case to read the slow rdev from
+> read_balance(), there are no functional changes.
+>
+> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
+> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 > ---
+>  drivers/md/raid1.c | 69 ++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 52 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index 08c45ca55a7e..bc2f8fcbe5b3 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -620,6 +620,53 @@ static int choose_first_rdev(struct r1conf *conf, st=
+ruct r1bio *r1_bio,
+>         return -1;
+>  }
+>
+> +static int choose_slow_rdev(struct r1conf *conf, struct r1bio *r1_bio,
+> +                           int *max_sectors)
+> +{
+> +       sector_t this_sector =3D r1_bio->sector;
+> +       int bb_disk =3D -1;
+> +       int bb_read_len =3D 0;
+> +       int disk;
+> +
+> +       for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
+> +               struct md_rdev *rdev;
+> +               int len;
+> +               int read_len;
+> +
+> +               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED)
+> +                       continue;
+> +
+> +               rdev =3D conf->mirrors[disk].rdev;
+> +               if (!rdev || test_bit(Faulty, &rdev->flags) ||
+> +                   !test_bit(WriteMostly, &rdev->flags))
+> +                       continue;
+> +
+> +               /* there are no bad blocks, we can use this disk */
+> +               len =3D r1_bio->sectors;
+> +               read_len =3D raid1_check_read_range(rdev, this_sector, &l=
+en);
+> +               if (read_len =3D=3D r1_bio->sectors) {
+> +                       update_read_sectors(conf, disk, this_sector, read=
+_len);
+> +                       return disk;
+> +               }
+> +
+> +               /*
+> +                * there are partial bad blocks, choose the rdev with lar=
+gest
+> +                * read length.
+> +                */
+> +               if (read_len > bb_read_len) {
+> +                       bb_disk =3D disk;
+> +                       bb_read_len =3D read_len;
+> +               }
+> +       }
+> +
+> +       if (bb_disk !=3D -1) {
+> +               *max_sectors =3D bb_read_len;
+> +               update_read_sectors(conf, bb_disk, this_sector, bb_read_l=
+en);
+> +       }
+> +
+> +       return bb_disk;
+> +}
+> +
+>  /*
+>   * This routine returns the disk from which the requested read should
+>   * be done. There is a per-array 'next expected sequential IO' sector
+> @@ -672,23 +719,8 @@ static int read_balance(struct r1conf *conf, struct =
+r1bio *r1_bio, int *max_sect
+>                 if (!test_bit(In_sync, &rdev->flags) &&
+>                     rdev->recovery_offset < this_sector + sectors)
+>                         continue;
+> -               if (test_bit(WriteMostly, &rdev->flags)) {
+> -                       /* Don't balance among write-mostly, just
+> -                        * use the first as a last resort */
+> -                       if (best_dist_disk < 0) {
+> -                               if (is_badblock(rdev, this_sector, sector=
+s,
+> -                                               &first_bad, &bad_sectors)=
+) {
+> -                                       if (first_bad <=3D this_sector)
+> -                                               /* Cannot use this */
+> -                                               continue;
+> -                                       best_good_sectors =3D first_bad -=
+ this_sector;
+> -                               } else
+> -                                       best_good_sectors =3D sectors;
+> -                               best_dist_disk =3D disk;
+> -                               best_pending_disk =3D disk;
+> -                       }
+> +               if (test_bit(WriteMostly, &rdev->flags))
+>                         continue;
+> -               }
+>                 /* This is a reasonable device to use.  It might
+>                  * even be best.
+>                  */
+> @@ -799,7 +831,10 @@ static int read_balance(struct r1conf *conf, struct =
+r1bio *r1_bio, int *max_sect
+>         }
+>         *max_sectors =3D sectors;
+>
+> -       return best_disk;
+> +       if (best_disk >=3D 0)
+> +               return best_disk;
+> +
+> +       return choose_slow_rdev(conf, r1_bio, max_sectors);
+>  }
+>
+>  static void wake_up_barrier(struct r1conf *conf)
+> --
+> 2.39.2
+>
+>
 
-Applied, thanks
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+This patch looks good to me.
+Reviewed-by: Xiao Ni <xni@redhat.com>
 
 
