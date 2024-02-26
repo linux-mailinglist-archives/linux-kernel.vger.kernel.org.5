@@ -1,181 +1,183 @@
-Return-Path: <linux-kernel+bounces-80480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F92A8668DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:49:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E428668DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:55:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C79F1C20894
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:49:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16DB4281606
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C8791B27D;
-	Mon, 26 Feb 2024 03:49:18 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5184219BCA;
+	Mon, 26 Feb 2024 03:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="gTQKO4vv"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4BEB17BC5
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BDA9134B2;
+	Mon, 26 Feb 2024 03:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708919357; cv=none; b=CI4W/50UGTN+HHYEhg7QKSZwFW5tAEWlFdBKebWHwFFNOMvPlB2Mxz+Wb1XQxPF9X+xJI5mqJc/94czogPKpf7YR7uhyEEGuzq8xuy1B4lFelR4xsOzC8Fa+GiNq4EvzpLuoQhsDZ3Fc4GWVR+Oj2KnVThmn472QeR/atlhLzCE=
+	t=1708919688; cv=none; b=AfUp6ReRfprjfjaTsaJbI93buoUvhvf6ZEs1RPy8vaJJlzH4Z5veX5A68vpFK+Qp23aA3/DRdyk3dMN2/5LbfWjJRXhYGFDr6KByvGjbamgw0d852IBK74Cepu/hMOEXUJw+h54IyWYuHsig9x7ZlKqzOiIyxbSuCTQFReoGrqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708919357; c=relaxed/simple;
-	bh=Kv/9ghpnZXPQShU9ARicBKeEcvIWW8nIOrSAkXJtrQY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=A6pBcgk2Vy3NK6UZHXIarzezw2oh5JZ4/gy2bL5HZF9Z4XInJBHUVWsOv8O/bxIzbXqniVXC3a+jpDrbeTZf6nmdnKOKraDjIN+B5tK4NVz+zBvo48kfyTUL1twMSAs1B/0TgbDpzciAl7ApXAN5odnBeCwuWSi4vkixFca+ga8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36512fcf643so17981355ab.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 19:49:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708919355; x=1709524155;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h0zDGz1LWZDnj7pbq9vHRQdQrSo5fq2Jh5AL7Ztrk2A=;
-        b=vJQciSm4vm4n10tvKi+P+NLutYdnyBi/oZ4Y93gr4IuYPY23l4XIzj2hiYe8L3EQ13
-         w5H8ud3Qi5vHDFLB/LC8844d/kjDGYQQifA4r23SnjghT+ngaQX9UpZ0Iu5pIzCxijTe
-         hu+0cL0hbyZFj5Lfbj5MEkholJSHqvVPEF9A3I0W4XJLP/ir1MTQ3ecnRkFXZG5NZBE7
-         4w7UbaHIBZO7bnJSKfG0k4ckBKmSUMHC0iFUZazG6hUHOlQdrWIkugeZubTbS45XAQGq
-         kPIynS1FYddVqLXwuxpJUUO5BV+bloo6PG1yERRK/anxZIAVT/0Ax5IqV/Kb3wpqqUqo
-         1pdg==
-X-Forwarded-Encrypted: i=1; AJvYcCXHe8u15whlLy9udoNMc1ccNHEh87q+9ZUIslMCM1WN+0avpWPf2oTkwdy/sldSMPWUFEXLqugCyCBzVR4Wp6uo7sIRlVU2Y3hkOwfi
-X-Gm-Message-State: AOJu0YwK8ZRB4jnfc45WdewajF75Mcun5JT5/739dPF7BBOmRQmx2P0R
-	S2icKmFnursEmMdKytUzdbhK71mrtojF/fbQjf6wnzDuMoCwnXDFNueDrc0gv7WgbCtf8AL5B+s
-	Rvclr/sJxM1J1EzQxvEIOE+tgvag//v/w+p+pa3ofKXe+SZBIeiB0fWM=
-X-Google-Smtp-Source: AGHT+IHFVt7LsA6twkpn6/boz58rkQDQVkGx3V25ZV4MR7zZ40ZPzM8o8MC8I8+EfFjMh2OG5QAJBELsBDYfa3M6tanwS/3nz5U4
+	s=arc-20240116; t=1708919688; c=relaxed/simple;
+	bh=GXUfu3cwq5GRWXrnV144EJYNBllZKet9blYItIvgItM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kF+dRRotXGc2kcxGIvy2AfNb1Q6TjcIyKQlLQozF7BVB1D6VVEJRykZFmwnPR9PcTVqawd8RdsZL78e2ZIExqmJu8xthK6Lj4BL6EC81MAgfdR4PCwB4vCPmJgemUAzg0+dKZMowJ+6duo7QQv0AmzjKwpY/PfnfXx2HhqLEq7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=gTQKO4vv; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708919677; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=Zki5BlZ1UuJ2xtG5/ByiOc/gza7b7VV4+0LoubRXfeA=;
+	b=gTQKO4vv3y7Nda/sQ8sGg2DMALTXDPx5H1JIbgzaoJl9llXQrcRcUe2BS9dtEqjdLDkxz6DoPcOZ9+WvKnVsZkhp2sZwljo3mOpNPQ+lwXDoOLSyFxIBnsLOGwcu2D+JGLI88nFN7DtsbUMRNA/1jixPKklTY7sCnKfxC+1pi24=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R511e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W1AMbWk_1708919675;
+Received: from localhost(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W1AMbWk_1708919675)
+          by smtp.aliyun-inc.com;
+          Mon, 26 Feb 2024 11:54:36 +0800
+From: Jingbo Xu <jefflexu@linux.alibaba.com>
+To: miklos@szeredi.hu,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	amir73il@gmail.com
+Subject: [RESEND PATCH v2] fuse: add support for explicit export disabling
+Date: Mon, 26 Feb 2024 11:54:35 +0800
+Message-Id: <20240226035435.60194-1-jefflexu@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:349f:b0:365:7607:3f4b with SMTP id
- bp31-20020a056e02349f00b0036576073f4bmr472012ilb.2.1708919355150; Sun, 25 Feb
- 2024 19:49:15 -0800 (PST)
-Date: Sun, 25 Feb 2024 19:49:15 -0800
-In-Reply-To: <000000000000ed666a0611af6818@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001d1939061240cbd7@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
- dereference in dev_map_hash_update_elem
-From: syzbot <syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
-	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has found a reproducer for the following issue on:
+open_by_handle_at(2) can fail with -ESTALE with a valid handle returned
+by a previous name_to_handle_at(2) for evicted fuse inodes, which is
+especially common when entry_valid_timeout is 0, e.g. when the fuse
+daemon is in "cache=none" mode.
 
-HEAD commit:    70ff1fe626a1 Merge tag 'docs-6.8-fixes3' of git://git.lwn...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1762045c180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4cf52b43f46d820d
-dashboard link: https://syzkaller.appspot.com/bug?extid=8cd36f6b65f3cafd400a
-compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110cf122180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142f6d8c180000
+The time sequence is like:
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-70ff1fe6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bc398db9fd8c/vmlinux-70ff1fe6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6d3f8b72a671/zImage-70ff1fe6.xz
+	name_to_handle_at(2)	# succeed
+	evict fuse inode
+	open_by_handle_at(2)	# fail
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
+The root cause is that, with 0 entry_valid_timeout, the dput() called in
+name_to_handle_at(2) will trigger iput -> evict(), which will send
+FUSE_FORGET to the daemon.  The following open_by_handle_at(2) will send
+a new FUSE_LOOKUP request upon inode cache miss since the previous inode
+eviction.  Then the fuse daemon may fail the FUSE_LOOKUP request with
+-ENOENT as the cached metadata of the requested inode has already been
+cleaned up during the previous FUSE_FORGET.  The returned -ENOENT is
+treated as -ESTALE when open_by_handle_at(2) returns.
 
-8<--- cut here ---
-Unable to handle kernel NULL pointer dereference at virtual address 00000010 when read
-[00000010] *pgd=8423f003, *pmd=fe0d5003
-Internal error: Oops: 207 [#1] PREEMPT SMP ARM
-Modules linked in:
-CPU: 0 PID: 2983 Comm: syz-executor360 Not tainted 6.8.0-rc5-syzkaller #0
-Hardware name: ARM-Versatile Express
-PC is at __dev_map_hash_lookup_elem kernel/bpf/devmap.c:269 [inline]
-PC is at __dev_map_hash_update_elem kernel/bpf/devmap.c:972 [inline]
-PC is at dev_map_hash_update_elem+0x90/0x210 kernel/bpf/devmap.c:1010
-LR is at get_lock_parent_ip include/linux/ftrace.h:977 [inline]
-LR is at preempt_latency_start kernel/sched/core.c:5843 [inline]
-LR is at preempt_count_add+0x12c/0x150 kernel/sched/core.c:5868
-pc : [<803e5f34>]    lr : [<8027b29c>]    psr: 60000093
-sp : df96dda8  ip : df96dd68  fp : df96dde4
-r10: 00000000  r9 : 828f71c0  r8 : 8417bb10
-r7 : 00000000  r6 : 20000013  r5 : 8417ba00  r4 : ffffffff
-r3 : 00000000  r2 : 00000010  r1 : 00000000  r0 : 20000013
-Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
-Control: 30c5387d  Table: 84656480  DAC: fffffffd
-Register r0 information: non-paged memory
-Register r1 information: NULL pointer
-Register r2 information: zero-size pointer
-Register r3 information: NULL pointer
-Register r4 information: non-paged memory
-Register r5 information: slab kmalloc-512 start 8417ba00 pointer offset 0 size 512
-Register r6 information: non-paged memory
-Register r7 information: NULL pointer
-Register r8 information: slab kmalloc-512 start 8417ba00 pointer offset 272 size 512
-Register r9 information: non-slab/vmalloc memory
-Register r10 information: NULL pointer
-Register r11 information: 2-page vmalloc region starting at 0xdf96c000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
-Register r12 information: 2-page vmalloc region starting at 0xdf96c000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
-Process syz-executor360 (pid: 2983, stack limit = 0xdf96c000)
-Stack: (0xdf96dda8 to 0xdf96e000)
-dda0:                   df96ddc4 00000004 00000000 1b98af0a df96dde4 8417ba00
-ddc0: 824aeaf0 843ef140 8442a040 8365a9c0 00000004 8417ba00 df96de14 df96dde8
-dde0: 8038c0b8 803e5eb0 00000000 00000000 80884220 8417bab8 8365a9c0 8365a9c0
-de00: df96dec8 843ef140 df96de6c df96de18 8038d040 8038bec8 00000000 00000000
-de20: 8027b44c 00000004 20000140 00000004 00000000 8442a040 20000200 00000000
-de40: df96de6c 00000000 00000020 df96dea0 00000002 20000200 00000020 00000000
-de60: df96df8c df96de70 80392aa0 8038cdf8 8088300c 81856650 00000000 841ee000
-de80: df96dee0 df96dfb0 df96dea4 df96de98 80884220 df96dee0 df96dfb0 80200288
-dea0: 20000200 00000000 00000008 00000000 00000008 8041ad98 841ee000 ffffffff
-dec0: df96df2c 80200b9c 00000003 00000000 200000c0 00000000 20000140 00000000
-dee0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-df00: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-df20: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-df40: 00000000 00000000 00000000 00000000 00000000 00000000 df96df94 1b98af0a
-df60: 8134e0a0 ffffffff 00000000 0008e058 00000182 80200288 841ee000 00000182
-df80: df96dfa4 df96df90 80394ea4 80392830 20000200 00000000 00000000 df96dfa8
-dfa0: 80200060 80394e84 ffffffff 00000000 00000002 20000200 00000020 00000000
-dfc0: ffffffff 00000000 0008e058 00000182 000f4240 00000000 00000001 00003a97
-dfe0: 7e973c70 7e973c60 000106cc 0002e810 00000010 00000002 00000000 00000000
-Backtrace: 
-[<803e5ea4>] (dev_map_hash_update_elem) from [<8038c0b8>] (bpf_map_update_value+0x1fc/0x2d4 kernel/bpf/syscall.c:202)
- r10:8417ba00 r9:00000004 r8:8365a9c0 r7:8442a040 r6:843ef140 r5:824aeaf0
- r4:8417ba00
-[<8038bebc>] (bpf_map_update_value) from [<8038d040>] (map_update_elem+0x254/0x460 kernel/bpf/syscall.c:1553)
- r8:843ef140 r7:df96dec8 r6:8365a9c0 r5:8365a9c0 r4:8417bab8
-[<8038cdec>] (map_update_elem) from [<80392aa0>] (__sys_bpf+0x27c/0x2104 kernel/bpf/syscall.c:5445)
- r10:00000000 r9:00000020 r8:20000200 r7:00000002 r6:df96dea0 r5:00000020
- r4:00000000
-[<80392824>] (__sys_bpf) from [<80394ea4>] (__do_sys_bpf kernel/bpf/syscall.c:5561 [inline])
-[<80392824>] (__sys_bpf) from [<80394ea4>] (sys_bpf+0x2c/0x48 kernel/bpf/syscall.c:5559)
- r10:00000182 r9:841ee000 r8:80200288 r7:00000182 r6:0008e058 r5:00000000
- r4:ffffffff
-[<80394e78>] (sys_bpf) from [<80200060>] (ret_fast_syscall+0x0/0x1c arch/arm/mm/proc-v7.S:66)
-Exception stack(0xdf96dfa8 to 0xdf96dff0)
-dfa0:                   ffffffff 00000000 00000002 20000200 00000020 00000000
-dfc0: ffffffff 00000000 0008e058 00000182 000f4240 00000000 00000001 00003a97
-dfe0: 7e973c70 7e973c60 000106cc 0002e810
-Code: e595210c e1a06000 e2433001 e003300a (e7924103) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	e595210c 	ldr	r2, [r5, #268]	@ 0x10c
-   4:	e1a06000 	mov	r6, r0
-   8:	e2433001 	sub	r3, r3, #1
-   c:	e003300a 	and	r3, r3, sl
-* 10:	e7924103 	ldr	r4, [r2, r3, lsl #2] <-- trapping instruction
+This confuses the application somehow, as open_by_handle_at(2) fails
+when the previous name_to_handle_at(2) succeeds.  The returned errno is
+also confusing as the requested file is not deleted and already there.
+It is reasonable to fail name_to_handle_at(2) early in this case, after
+which the application can fallback to open(2) to access files.
 
+Since this issue typically appears when entry_valid_timeout is 0 which
+is configured by the fuse daemon, the fuse daemon is the right person to
+explicitly disable the export when required.
 
+Also considering FUSE_EXPORT_SUPPORT actually indicates the support for
+lookups of "." and "..", and there are existing fuse daemons supporting
+export without FUSE_EXPORT_SUPPORT set, for compatibility, we add a new
+INIT flag for such purpose.
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Signed-off-by: Jingbo Xu <jefflexu@linux.alibaba.com>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+RESEND v2:
+- rebase to fuse/for-next and resolve the code base conflict since the
+  passthrough feature (no logic change since original v2)
+- add "Reviewed-by" tag
+
+v2: https://lore.kernel.org/all/20240126072120.71867-1-jefflexu@linux.alibaba.com/
+v1: https://lore.kernel.org/linux-fsdevel/20240124113042.44300-1-jefflexu@linux.alibaba.com/
+RFC: https://lore.kernel.org/all/20240123093701.94166-1-jefflexu@linux.alibaba.com/
+---
+ fs/fuse/inode.c           | 11 ++++++++++-
+ include/uapi/linux/fuse.h |  3 +++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index c26a84439934..fb9a9a9c1f1b 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -1119,6 +1119,11 @@ static struct dentry *fuse_get_parent(struct dentry *child)
+ 	return parent;
+ }
+ 
++/* only for fid encoding; no support for file handle */
++static const struct export_operations fuse_export_fid_operations = {
++	.encode_fh	= fuse_encode_fh,
++};
++
+ static const struct export_operations fuse_export_operations = {
+ 	.fh_to_dentry	= fuse_fh_to_dentry,
+ 	.fh_to_parent	= fuse_fh_to_parent,
+@@ -1311,6 +1316,8 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
+ 				fc->max_stack_depth = arg->max_stack_depth;
+ 				fm->sb->s_stack_depth = arg->max_stack_depth;
+ 			}
++			if (flags & FUSE_NO_EXPORT_SUPPORT)
++				fm->sb->s_export_op = &fuse_export_fid_operations;
+ 		} else {
+ 			ra_pages = fc->max_read / PAGE_SIZE;
+ 			fc->no_lock = 1;
+@@ -1357,7 +1364,8 @@ void fuse_send_init(struct fuse_mount *fm)
+ 		FUSE_NO_OPENDIR_SUPPORT | FUSE_EXPLICIT_INVAL_DATA |
+ 		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_EXT | FUSE_INIT_EXT |
+ 		FUSE_SECURITY_CTX | FUSE_CREATE_SUPP_GROUP |
+-		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP;
++		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP |
++		FUSE_NO_EXPORT_SUPPORT;
+ #ifdef CONFIG_FUSE_DAX
+ 	if (fm->fc->dax)
+ 		flags |= FUSE_MAP_ALIGNMENT;
+@@ -1558,6 +1566,7 @@ static int fuse_fill_super_submount(struct super_block *sb,
+ 	sb->s_bdi = bdi_get(parent_sb->s_bdi);
+ 
+ 	sb->s_xattr = parent_sb->s_xattr;
++	sb->s_export_op = parent_sb->s_export_op;
+ 	sb->s_time_gran = parent_sb->s_time_gran;
+ 	sb->s_blocksize = parent_sb->s_blocksize;
+ 	sb->s_blocksize_bits = parent_sb->s_blocksize_bits;
+diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+index 1162a47b6a42..a86c2cad65ad 100644
+--- a/include/uapi/linux/fuse.h
++++ b/include/uapi/linux/fuse.h
+@@ -215,6 +215,7 @@
+  *  7.40
+  *  - add max_stack_depth to fuse_init_out, add FUSE_PASSTHROUGH init flag
+  *  - add backing_id to fuse_open_out, add FOPEN_PASSTHROUGH open flag
++ *  - add FUSE_NO_EXPORT_SUPPORT init flag
+  */
+ 
+ #ifndef _LINUX_FUSE_H
+@@ -416,6 +417,7 @@ struct fuse_file_lock {
+  *			symlink and mknod (single group that matches parent)
+  * FUSE_HAS_EXPIRE_ONLY: kernel supports expiry-only entry invalidation
+  * FUSE_DIRECT_IO_ALLOW_MMAP: allow shared mmap in FOPEN_DIRECT_IO mode.
++ * FUSE_NO_EXPORT_SUPPORT: explicitly disable export support
+  */
+ #define FUSE_ASYNC_READ		(1 << 0)
+ #define FUSE_POSIX_LOCKS	(1 << 1)
+@@ -456,6 +458,7 @@ struct fuse_file_lock {
+ #define FUSE_HAS_EXPIRE_ONLY	(1ULL << 35)
+ #define FUSE_DIRECT_IO_ALLOW_MMAP (1ULL << 36)
+ #define FUSE_PASSTHROUGH	(1ULL << 37)
++#define FUSE_NO_EXPORT_SUPPORT	(1ULL << 38)
+ 
+ /* Obsolete alias for FUSE_DIRECT_IO_ALLOW_MMAP */
+ #define FUSE_DIRECT_IO_RELAX	FUSE_DIRECT_IO_ALLOW_MMAP
+-- 
+2.19.1.6.gb485710b
+
 
