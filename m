@@ -1,713 +1,130 @@
-Return-Path: <linux-kernel+bounces-81353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB2DB86749B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9905086749D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:19:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19C6C1C249A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:19:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA7D51C24AB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB16604BB;
-	Mon, 26 Feb 2024 12:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 598D7604C0;
+	Mon, 26 Feb 2024 12:19:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="3f/weH/H"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="O6F0P5vL"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9621E1CA8B
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE8E604A5;
+	Mon, 26 Feb 2024 12:19:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708949962; cv=none; b=CxnMYNDmrgQ4IhLoJDN2K2fEzN59zIL8dBZFEExjHY8PEvGA3gKQ28F5GkjgMdQoUnKuE2UqnVhscYDoQ4LTNm242dFRhmxD5/LcjttybjVOMyLaJJzU0KyIz5JnWtm8nnzQWdtF4SrezKysXDF+hQ9zFrL2Dp7ol4lKvmaazdc=
+	t=1708949985; cv=none; b=jDBpcdEdRCmFtq4yg+IbWHC14B2k2JPY+TpLcEz3lH+A1PXvpOqMJN1UB1vM7f2vrfxBJDloFeALIWPDCoLCH2nSbl3k0LTLbGijk+4C0Ubxeuu1VvDywQP+0WjcWbbNqI/ptJJ+8M2CRnWjmvw63rH73qwTIVYJo2SDSAX235Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708949962; c=relaxed/simple;
-	bh=I7cMaxkR7UvDx5TgEi2G9CoTGM/SkvQwgbB0/PjzDNE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AIvPoCgziwCSlRdld3XAyGdi1uBzLIBAip7Vzr8RRxOeIsQGnrw0InViY1x6+YcpyqQdstKT0KGgWqOzIKk9llobor1HW1Z2S2ihhuIrh6LiVDqc5hotQBJHhiGhM95MbV9K+z/0hEf0g7+sqPtd91oSoSg3+zwaoTtk+PfbTYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=3f/weH/H; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708949958;
-	bh=I7cMaxkR7UvDx5TgEi2G9CoTGM/SkvQwgbB0/PjzDNE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=3f/weH/HEGBy+o9QO+0Q+ul31fJd7iqCeE64eXSbgjQr5e/fgDdeMmoCJPw9E59O6
-	 wV2toPcSsyRLay8EhJUBglkUFf9SPekiUqiTnLQe3Xj5XM/jv++phWyLKuKZBpbYPY
-	 hKUb9DDVObp4E78oI9CwOgHjxurvgQyLJr12HdESlVWv6ZJ0Dyvt5VHYP+UPk3jlhM
-	 RI+e6I7xIPwhFxanbYXHQaAw7sq7FCXQm24C6zqfEIrCGV6SHGjfZkHZ7DHk+vuc5q
-	 1lDcm4yxg3zH1/yrdhYicRGaUnYKj+n+F3oCRanbJL3lZZIKZvumC3PUVpTGl8SS+Q
-	 hLpgrH4xjSXsA==
-Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	s=arc-20240116; t=1708949985; c=relaxed/simple;
+	bh=S8qmz8mEsCC2aVp3rHsO/dP5uHUmHA33spU6e8whFWU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lpq97MebkVVtCN2hxSl/e4edsAWv4FZ/d/hY3hJJE9490BGMzv8d/ZG1R1DfeacZifoK0B+5nKEwcHkQ3o4xEZFt6fPX0E1+grZiw9gs9PzmMuPMhTiNIMJRIMxVuW1SoVFDRjZVWFd93IGl/NIVOGM2EDY45Ek2BDAL0XM6NH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=O6F0P5vL; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F019E40E0192;
+	Mon, 26 Feb 2024 12:19:34 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id SYe9xRSlCndm; Mon, 26 Feb 2024 12:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1708949972; bh=aowlc4g9p201VE/ouP+cqCteydTDAa5Ymyxa0wtZGh4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O6F0P5vLl9DOOGKeY4yfOxipgnBAV0gmmXxFvCJmKvAA6tQoKAcFfkHWSRECiYjYQ
+	 4yhpkt6Rwpq2p8++S2UUABKzBJUvnY18xiwJ8Z9XLVU7cjMEwfgoJtvLZnSGWGxXUy
+	 E1MrQo6/5a7Tt99DO364o8ILN82NjpyOatVr0OaQ48u12jmwIEFblUy8Y8QRFYB/bK
+	 QxPADBg4LQ70gTP4My4sMQxcG/F1ahMQXvGQNmv8eF2TdnzoH8TF4ngD0s/3bVcxPd
+	 hUTklgOaJq2DrappMYDj36S/YkqQ3wEKznBn6ub0lGlamqtRlujW3zj+tg8C++XEwL
+	 IoSwSn1emgQB56TClbNj4ayCglNMbLUE9f/sYAWlK0/WmEor+WmHw1QZoFjg5E61Yo
+	 9UFCuZNzd6AW5fjN/x/M7TPWjsj8ABBLD7lRW8gfosUH52L/khj12wKxQIO46bMx0R
+	 Jnmp//zQ18amjTSEsLtJBXTe8LiixPh6mj2XiERHLF3W+s0q4/NL1TATczKQs7+ya+
+	 dYRIGMkjM/L+DRyYZ4hGGu4J8QnyvU6bQAQyzuOKLT+ED5ppC5pg7m6GxHlgtBXtAx
+	 hcl5ReOGpGXTNL4WonzfLWbGnOjfgTuHloFcn5gALAlVX0wtxBzcxedOg9eJE6q+6d
+	 aWJlKJkdoG3YaG8u/VB2SjYk=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: pq)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8DF6837803EE;
-	Mon, 26 Feb 2024 12:19:17 +0000 (UTC)
-Date: Mon, 26 Feb 2024 14:19:16 +0200
-From: Pekka Paalanen <pekka.paalanen@collabora.com>
-To: Louis Chauvet <louis.chauvet@bootlin.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
- <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- arthurgrillo@riseup.net, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH v2 6/9] drm/vkms: Add YUV support
-Message-ID: <20240226141916.1627bbbd.pekka.paalanen@collabora.com>
-In-Reply-To: <20240223-yuv-v2-6-aa6be2827bb7@bootlin.com>
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
-	<20240223-yuv-v2-6-aa6be2827bb7@bootlin.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 05B1A40E016C;
+	Mon, 26 Feb 2024 12:19:25 +0000 (UTC)
+Date: Mon, 26 Feb 2024 13:19:19 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com
+Subject: Re: [PATCH] RAS/AMD/ATL: Fix bit overflow in denorm_addr_df4_np2()
+Message-ID: <20240226121919.GBZdyBx_jqFsHCWZP7@fat_crate.local>
+References: <20240222165449.23582-1-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/wrAdhBnH.I+6NARRtdDHMCg";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240222165449.23582-1-yazen.ghannam@amd.com>
 
---Sig_/wrAdhBnH.I+6NARRtdDHMCg
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 23 Feb 2024 12:37:26 +0100
-Louis Chauvet <louis.chauvet@bootlin.com> wrote:
-
-> From: Arthur Grillo <arthurgrillo@riseup.net>
->=20
-> Add support to the YUV formats bellow:
->=20
-> - NV12
-> - NV16
-> - NV24
-> - NV21
-> - NV61
-> - NV42
-> - YUV420
-> - YUV422
-> - YUV444
-> - YVU420
-> - YVU422
-> - YVU444
->=20
-> The conversion matrices of each encoding and range were obtained by
-> rounding the values of the original conversion matrices multiplied by
-> 2^8. This is done to avoid the use of fixed point operations.
->=20
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> [Louis Chauvet: Adapted Arthur's work and implemented the read_line_t
-> callbacks for yuv formats]
-> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+On Thu, Feb 22, 2024 at 10:54:49AM -0600, Yazen Ghannam wrote:
+> The hash_pa8 and hashed_bit values in denorm_addr_df4_np2() are
+> currently defined as u8 types. These variables represent single bits.
+> 
+> 'hash_pa8' is set based on logical AND operations using masks with more
+> than 8 bits. So the calculated value will not fit in this variable. It
+> will always be '0'. The 'hash_pa8' check later in the function will fail
+> which produces incorrect results for some cases.
+> 
+> Change these variables to bool type. This clarifies that they are
+> single bit values. Also, this allows the compiler to ensure they hold
+> the proper results. Remove an unnecessary shift operation.
+> 
+> Fixes: 3f3174996be6 ("RAS: Introduce AMD Address Translation Library")
+> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
 > ---
->  drivers/gpu/drm/vkms/vkms_composer.c |   2 +-
->  drivers/gpu/drm/vkms/vkms_drv.h      |   6 +-
->  drivers/gpu/drm/vkms/vkms_formats.c  | 289 +++++++++++++++++++++++++++++=
-++++--
->  drivers/gpu/drm/vkms/vkms_formats.h  |   4 +
->  drivers/gpu/drm/vkms/vkms_plane.c    |  14 +-
->  5 files changed, 295 insertions(+), 20 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/=
-vkms_composer.c
-> index e555bf9c1aee..54fc5161d565 100644
-> --- a/drivers/gpu/drm/vkms/vkms_composer.c
-> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
-> @@ -312,7 +312,7 @@ static void blend(struct vkms_writeback_job *wb,
->  			 * buffer [1]
->  			 */
->  			current_plane->pixel_read_line(
-> -				current_plane->frame_info,
-> +				current_plane,
->  				x_start,
->  				y_start,
->  				direction,
-> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_=
-drv.h
-> index ccc5be009f15..a4f6456cb971 100644
-> --- a/drivers/gpu/drm/vkms/vkms_drv.h
-> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
-> @@ -75,6 +75,8 @@ enum pixel_read_direction {
->  	READ_RIGHT
->  };
-> =20
-> +struct vkms_plane_state;
-> +
->  /**
->  <<<<<<< HEAD
->   * typedef pixel_read_line_t - These functions are used to read a pixel =
-line in the source frame,
-> @@ -87,8 +89,8 @@ enum pixel_read_direction {
->   * @out_pixel: Pointer where to write the pixel value. Pixels will be wr=
-itten between x_start and
->   *  x_end.
->   */
-> -typedef void (*pixel_read_line_t)(struct vkms_frame_info *frame_info, in=
-t x_start, int y_start, enum
-> -	pixel_read_direction direction, int count, struct pixel_argb_u16 out_pi=
-xel[]);
-> +typedef void (*pixel_read_line_t)(struct vkms_plane_state *frame_info, i=
-nt x_start, int y_start,
-> +	enum pixel_read_direction direction, int count, struct pixel_argb_u16 o=
-ut_pixel[]);
-
-This is the second or third time in this one series changing this type.
-Could you not do the change once, in its own patch if possible?
-
-> =20
->  /**
->   * vkms_plane_state - Driver specific plane state
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/v=
-kms_formats.c
-> index 46daea6d3ee9..515c80866a58 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> @@ -33,7 +33,8 @@ static size_t packed_pixels_offset(const struct vkms_fr=
-ame_info *frame_info, int
->  	 */
->  	return fb->offsets[plane_index] +
->  	       (y / drm_format_info_block_width(format, plane_index)) * fb->pit=
-ches[plane_index] +
-> -	       (x / drm_format_info_block_height(format, plane_index)) * format=
-->char_per_block[plane_index];
-> +	       (x / drm_format_info_block_height(format, plane_index)) *
-> +	       format->char_per_block[plane_index];
-
-Shouldn't this be in the patch that added this code in the first place?
-
->  }
-> =20
->  /**
-> @@ -84,6 +85,32 @@ static int get_step_1x1(struct drm_framebuffer *fb, en=
-um pixel_read_direction di
+>  drivers/ras/amd/atl/denormalize.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/ras/amd/atl/denormalize.c b/drivers/ras/amd/atl/denormalize.c
+> index 49a900e066f1..f46bce119255 100644
+> --- a/drivers/ras/amd/atl/denormalize.c
+> +++ b/drivers/ras/amd/atl/denormalize.c
+> @@ -545,7 +545,7 @@ static int denorm_addr_df4_np2(struct addr_ctx *ctx)
+>  	unsigned int mod_value, shift_value;
+>  	u16 mask = df_cfg.component_id_mask;
+>  	u64 temp_addr_a, temp_addr_b;
+> -	u8 hash_pa8, hashed_bit;
+> +	bool hash_pa8, hashed_bit;
+>  
+>  	switch (ctx->map.intlv_mode) {
+>  	case DF4_NPS4_3CHAN_HASH:
+> @@ -578,7 +578,6 @@ static int denorm_addr_df4_np2(struct addr_ctx *ctx)
+>  		temp_addr_a	= remove_bits(shift_value, shift_value, ctx->ret_addr);
+>  	} else {
+>  		hash_pa8	= (ctx->coh_st_fabric_id & df_cfg.socket_id_mask);
+> -		hash_pa8	>>= df_cfg.socket_id_shift;
+>  		temp_addr_a	= ctx->ret_addr;
 >  	}
->  }
-> =20
-> +/**
-> + * get_subsampling() - Get the subsampling value on a specific direction
+>  
+> -- 
 
-subsampling divisor
+Applied, thanks.
 
-> + */
-> +static int get_subsampling(const struct drm_format_info *format,
-> +			   enum pixel_read_direction direction)
-> +{
-> +	if (direction =3D=3D READ_LEFT || direction =3D=3D READ_RIGHT)
-> +		return format->hsub;
-> +	else if (direction =3D=3D READ_DOWN || direction =3D=3D READ_UP)
-> +		return format->vsub;
-> +	return 1;
+-- 
+Regards/Gruss,
+    Boris.
 
-In this and the below function, personally I'd prefer switch-case, with
-a cannot-happen-scream after the switch, so the compiler can warn about
-unhandled enum values.
-
-> +}
-> +
-> +/**
-> + * get_subsampling_offset() - Get the subsampling offset to use when inc=
-rementing the pixel counter
-> + */
-> +static int get_subsampling_offset(const struct drm_format_info *format,
-> +				  enum pixel_read_direction direction, int x_start, int y_start)
-
-'start' values as "increments" for a pixel counter? Is something
-misnamed here?
-
-Is it an increment or an offset?
-
-> +{
-> +	if (direction =3D=3D READ_RIGHT || direction =3D=3D READ_LEFT)
-> +		return x_start;
-> +	else if (direction =3D=3D READ_DOWN || direction =3D=3D READ_UP)
-> +		return y_start;
-> +	return 0;
-> +}
-> +
-> =20
->  /*
->   * The following  functions take pixel data (a, r, g, b, pixel, ...), co=
-nvert them to the format
-> @@ -130,6 +157,87 @@ static void RGB565_to_argb_u16(struct pixel_argb_u16=
- *out_pixel, const u16 *pixe
->  	out_pixel->b =3D drm_fixp2int_round(drm_fixp_mul(fp_b, fp_rb_ratio));
->  }
-> =20
-> +static void ycbcr2rgb(const s16 m[3][3], u8 y, u8 cb, u8 cr, u8 y_offset=
-, u8 *r, u8 *g, u8 *b)
-> +{
-> +	s32 y_16, cb_16, cr_16;
-> +	s32 r_16, g_16, b_16;
-> +
-> +	y_16 =3D y - y_offset;
-> +	cb_16 =3D cb - 128;
-> +	cr_16 =3D cr - 128;
-> +
-> +	r_16 =3D m[0][0] * y_16 + m[0][1] * cb_16 + m[0][2] * cr_16;
-> +	g_16 =3D m[1][0] * y_16 + m[1][1] * cb_16 + m[1][2] * cr_16;
-> +	b_16 =3D m[2][0] * y_16 + m[2][1] * cb_16 + m[2][2] * cr_16;
-> +
-> +	*r =3D clamp(r_16, 0, 0xffff) >> 8;
-> +	*g =3D clamp(g_16, 0, 0xffff) >> 8;
-> +	*b =3D clamp(b_16, 0, 0xffff) >> 8;
-> +}
-> +
-> +static void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const st=
-ruct pixel_yuv_u8 *yuv_u8,
-> +			       enum drm_color_encoding encoding, enum drm_color_range range)
-> +{
-> +	static const s16 bt601_full[3][3] =3D {
-> +		{ 256, 0,   359 },
-> +		{ 256, -88, -183 },
-> +		{ 256, 454, 0 },
-> +	};
-> +	static const s16 bt601[3][3] =3D {
-> +		{ 298, 0,    409 },
-> +		{ 298, -100, -208 },
-> +		{ 298, 516,  0 },
-> +	};
-> +	static const s16 rec709_full[3][3] =3D {
-> +		{ 256, 0,   408 },
-> +		{ 256, -48, -120 },
-> +		{ 256, 476, 0 },
-> +	};
-> +	static const s16 rec709[3][3] =3D {
-> +		{ 298, 0,   459 },
-> +		{ 298, -55, -136 },
-> +		{ 298, 541, 0 },
-> +	};
-> +	static const s16 bt2020_full[3][3] =3D {
-> +		{ 256, 0,   377 },
-> +		{ 256, -42, -146 },
-> +		{ 256, 482, 0 },
-> +	};
-> +	static const s16 bt2020[3][3] =3D {
-> +		{ 298, 0,   430 },
-> +		{ 298, -48, -167 },
-> +		{ 298, 548, 0 },
-> +	};
-> +
-> +	u8 r =3D 0;
-> +	u8 g =3D 0;
-> +	u8 b =3D 0;
-> +	bool full =3D range =3D=3D DRM_COLOR_YCBCR_FULL_RANGE;
-> +	unsigned int y_offset =3D full ? 0 : 16;
-> +
-> +	switch (encoding) {
-> +	case DRM_COLOR_YCBCR_BT601:
-> +		ycbcr2rgb(full ? bt601_full : bt601,
-
-Doing all these conditional again pixel by pixel is probably
-inefficient. Just like with the line reading functions, you could pick
-the matrix in advance.
-
-> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
-> +		break;
-> +	case DRM_COLOR_YCBCR_BT709:
-> +		ycbcr2rgb(full ? rec709_full : rec709,
-> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
-> +		break;
-> +	case DRM_COLOR_YCBCR_BT2020:
-> +		ycbcr2rgb(full ? bt2020_full : bt2020,
-> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
-> +		break;
-> +	default:
-> +		pr_warn_once("Not supported color encoding\n");
-> +		break;
-> +	}
-> +
-> +	argb_u16->r =3D r * 257;
-> +	argb_u16->g =3D g * 257;
-> +	argb_u16->b =3D b * 257;
-
-I wonder. Using 8-bit fixed point precision seems quite coarse for
-8-bit pixel formats, and it's going to be insufficient for higher bit
-depths. Was supporting e.g. 10-bit YUV considered? There is even
-deeper, too, like DRM_FORMAT_P016.
-
-> +}
-> +
->  /*
->   * The following functions are read_line function for each pixel format =
-supported by VKMS.
->   *
-> @@ -142,13 +250,13 @@ static void RGB565_to_argb_u16(struct pixel_argb_u1=
-6 *out_pixel, const u16 *pixe
->   * [1]: https://lore.kernel.org/dri-devel/d258c8dc-78e9-4509-9037-a98f7f=
-33b3a3@riseup.net/
->   */
-> =20
-> -static void ARGB8888_read_line(struct vkms_frame_info *frame_info, int x=
-_start, int y_start,
-> +static void ARGB8888_read_line(struct vkms_plane_state *plane, int x_sta=
-rt, int y_start,
->  			       enum pixel_read_direction direction, int count,
->  			       struct pixel_argb_u16 out_pixel[])
->  {
-> -	u8 *src_pixels =3D packed_pixels_addr(frame_info, x_start, y_start, 0);
-> +	u8 *src_pixels =3D packed_pixels_addr(plane->frame_info, x_start, y_sta=
-rt, 0);
-> =20
-> -	int step =3D get_step_1x1(frame_info->fb, direction, 0);
-> +	int step =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-
-These are the kind of changes I would not expect to see in a patch
-adding YUV support. There are a lot of them, too.
-
-> =20
->  	while (count) {
->  		u8 *px =3D (u8 *)src_pixels;
-> @@ -160,13 +268,13 @@ static void ARGB8888_read_line(struct vkms_frame_in=
-fo *frame_info, int x_start,
->  	}
->  }
-> =20
-> -static void XRGB8888_read_line(struct vkms_frame_info *frame_info, int x=
-_start, int y_start,
-> +static void XRGB8888_read_line(struct vkms_plane_state *plane, int x_sta=
-rt, int y_start,
->  			       enum pixel_read_direction direction, int count,
->  			       struct pixel_argb_u16 out_pixel[])
->  {
-> -	u8 *src_pixels =3D packed_pixels_addr(frame_info, x_start, y_start, 0);
-> +	u8 *src_pixels =3D packed_pixels_addr(plane->frame_info, x_start, y_sta=
-rt, 0);
-> =20
-> -	int step =3D get_step_1x1(frame_info->fb, direction, 0);
-> +	int step =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-> =20
->  	while (count) {
->  		u8 *px =3D (u8 *)src_pixels;
-> @@ -178,13 +286,13 @@ static void XRGB8888_read_line(struct vkms_frame_in=
-fo *frame_info, int x_start,
->  	}
->  }
-> =20
-> -static void ARGB16161616_read_line(struct vkms_frame_info *frame_info, i=
-nt x_start, int y_start,
-> +static void ARGB16161616_read_line(struct vkms_plane_state *plane, int x=
-_start, int y_start,
->  				   enum pixel_read_direction direction, int count,
->  				   struct pixel_argb_u16 out_pixel[])
->  {
-> -	u8 *src_pixels =3D packed_pixels_addr(frame_info, x_start, y_start, 0);
-> +	u8 *src_pixels =3D packed_pixels_addr(plane->frame_info, x_start, y_sta=
-rt, 0);
-> =20
-> -	int step =3D get_step_1x1(frame_info->fb, direction, 0);
-> +	int step =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-> =20
->  	while (count) {
->  		u16 *px =3D (u16 *)src_pixels;
-> @@ -196,13 +304,13 @@ static void ARGB16161616_read_line(struct vkms_fram=
-e_info *frame_info, int x_sta
->  	}
->  }
-> =20
-> -static void XRGB16161616_read_line(struct vkms_frame_info *frame_info, i=
-nt x_start, int y_start,
-> +static void XRGB16161616_read_line(struct vkms_plane_state *plane, int x=
-_start, int y_start,
->  				   enum pixel_read_direction direction, int count,
->  				   struct pixel_argb_u16 out_pixel[])
->  {
-> -	u8 *src_pixels =3D packed_pixels_addr(frame_info, x_start, y_start, 0);
-> +	u8 *src_pixels =3D packed_pixels_addr(plane->frame_info, x_start, y_sta=
-rt, 0);
-> =20
-> -	int step =3D get_step_1x1(frame_info->fb, direction, 0);
-> +	int step =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-> =20
->  	while (count) {
->  		u16 *px =3D (u16 *)src_pixels;
-> @@ -214,13 +322,13 @@ static void XRGB16161616_read_line(struct vkms_fram=
-e_info *frame_info, int x_sta
->  	}
->  }
-> =20
-> -static void RGB565_read_line(struct vkms_frame_info *frame_info, int x_s=
-tart, int y_start,
-> +static void RGB565_read_line(struct vkms_plane_state *plane, int x_start=
-, int y_start,
->  			     enum pixel_read_direction direction, int count,
->  			     struct pixel_argb_u16 out_pixel[])
->  {
-> -	u8 *src_pixels =3D packed_pixels_addr(frame_info, x_start, y_start, 0);
-> +	u8 *src_pixels =3D packed_pixels_addr(plane->frame_info, x_start, y_sta=
-rt, 0);
-> =20
-> -	int step =3D get_step_1x1(frame_info->fb, direction, 0);
-> +	int step =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-> =20
->  	while (count) {
->  		u16 *px =3D (u16 *)src_pixels;
-> @@ -232,6 +340,139 @@ static void RGB565_read_line(struct vkms_frame_info=
- *frame_info, int x_start, in
->  	}
->  }
-> =20
-> +static void semi_planar_yuv_read_line(struct vkms_plane_state *plane, in=
-t x_start, int y_start,
-> +				      enum pixel_read_direction direction, int count,
-> +				      struct pixel_argb_u16 out_pixel[])
-> +{
-> +	u8 *y_plane =3D packed_pixels_addr(plane->frame_info, x_start, y_start,=
- 0);
-> +	u8 *uv_plane =3D packed_pixels_addr(plane->frame_info,
-> +					  x_start / plane->frame_info->fb->format->hsub,
-> +					  y_start / plane->frame_info->fb->format->vsub,
-> +					  1);
-> +	struct pixel_yuv_u8 yuv_u8;
-> +	int step_y =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-> +	int step_uv =3D get_step_1x1(plane->frame_info->fb, direction, 1);
-> +	int subsampling =3D get_subsampling(plane->frame_info->fb->format, dire=
-ction);
-> +	int subsampling_offset =3D get_subsampling_offset(plane->frame_info->fb=
-->format, direction,
-> +							x_start, y_start); // 0
-> +
-> +	for (int i =3D 0; i < count; i++) {
-> +		yuv_u8.y =3D y_plane[0];
-> +		yuv_u8.u =3D uv_plane[0];
-> +		yuv_u8.v =3D uv_plane[1];
-> +
-> +		yuv_u8_to_argb_u16(out_pixel, &yuv_u8, plane->base.base.color_encoding,
-> +				   plane->base.base.color_range);
-
-Oh, so this was the reason to change the read-line function signature.
-Maybe just stash a pointer to the right matrix and the right y_offset
-in frame_info instead?
-
-> +		out_pixel +=3D 1;
-> +		y_plane +=3D step_y;
-> +		if ((i + subsampling_offset + 1) % subsampling =3D=3D 0)
-> +			uv_plane +=3D step_uv;
-> +	}
-> +}
-> +
-> +static void semi_planar_yvu_read_line(struct vkms_plane_state *plane, in=
-t x_start, int y_start,
-> +				      enum pixel_read_direction direction, int count,
-> +				      struct pixel_argb_u16 out_pixel[])
-> +{
-> +	u8 *y_plane =3D packed_pixels_addr(plane->frame_info, x_start, y_start,=
- 0);
-> +	u8 *vu_plane =3D packed_pixels_addr(plane->frame_info,
-> +					  x_start / plane->frame_info->fb->format->hsub,
-> +					  y_start / plane->frame_info->fb->format->vsub,
-> +					  1);
-> +	struct pixel_yuv_u8 yuv_u8;
-> +	int step_y =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-> +	int step_vu =3D get_step_1x1(plane->frame_info->fb, direction, 1);
-> +	int subsampling =3D get_subsampling(plane->frame_info->fb->format, dire=
-ction);
-> +	int subsampling_offset =3D get_subsampling_offset(plane->frame_info->fb=
-->format, direction,
-> +							x_start, y_start);
-> +	for (int i =3D 0; i < count; i++) {
-> +		yuv_u8.y =3D y_plane[0];
-> +		yuv_u8.u =3D vu_plane[1];
-> +		yuv_u8.v =3D vu_plane[0];
-
-You could swap matrix columns instead of writing this whole new
-function for UV vs. VU. Just an idea.
-
-
-Thanks,
-pq
-
-> +
-> +		yuv_u8_to_argb_u16(out_pixel, &yuv_u8, plane->base.base.color_encoding,
-> +				   plane->base.base.color_range);
-> +		out_pixel +=3D 1;
-> +		y_plane +=3D step_y;
-> +		if ((i + subsampling_offset + 1) % subsampling =3D=3D 0)
-> +			vu_plane +=3D step_vu;
-> +	}
-> +}
-> +
-> +static void planar_yuv_read_line(struct vkms_plane_state *plane, int x_s=
-tart, int y_start,
-> +				 enum pixel_read_direction direction, int count,
-> +				 struct pixel_argb_u16 out_pixel[])
-> +{
-> +	u8 *y_plane =3D packed_pixels_addr(plane->frame_info, x_start, y_start,=
- 0);
-> +	u8 *u_plane =3D packed_pixels_addr(plane->frame_info,
-> +					 x_start / plane->frame_info->fb->format->hsub,
-> +					 y_start / plane->frame_info->fb->format->vsub,
-> +					 1);
-> +	u8 *v_plane =3D packed_pixels_addr(plane->frame_info,
-> +					 x_start / plane->frame_info->fb->format->hsub,
-> +					 y_start / plane->frame_info->fb->format->vsub,
-> +					 2);
-> +	struct pixel_yuv_u8 yuv_u8;
-> +	int step_y =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-> +	int step_u =3D get_step_1x1(plane->frame_info->fb, direction, 1);
-> +	int step_v =3D get_step_1x1(plane->frame_info->fb, direction, 2);
-> +	int subsampling =3D get_subsampling(plane->frame_info->fb->format, dire=
-ction);
-> +	int subsampling_offset =3D get_subsampling_offset(plane->frame_info->fb=
-->format, direction,
-> +							x_start, y_start);
-> +
-> +	for (int i =3D 0; i < count; i++) {
-> +		yuv_u8.y =3D *y_plane;
-> +		yuv_u8.u =3D *u_plane;
-> +		yuv_u8.v =3D *v_plane;
-> +
-> +		yuv_u8_to_argb_u16(out_pixel, &yuv_u8, plane->base.base.color_encoding,
-> +				   plane->base.base.color_range);
-> +		out_pixel +=3D 1;
-> +		y_plane +=3D step_y;
-> +		if ((i + subsampling_offset + 1) % subsampling =3D=3D 0) {
-> +			u_plane +=3D step_u;
-> +			v_plane +=3D step_v;
-> +		}
-> +	}
-> +}
-> +
-> +static void planar_yvu_read_line(struct vkms_plane_state *plane, int x_s=
-tart, int y_start,
-> +				 enum pixel_read_direction direction, int count,
-> +				 struct pixel_argb_u16 out_pixel[])
-> +{
-> +	u8 *y_plane =3D packed_pixels_addr(plane->frame_info, x_start, y_start,=
- 0);
-> +	u8 *v_plane =3D packed_pixels_addr(plane->frame_info,
-> +					 x_start / plane->frame_info->fb->format->hsub,
-> +					 y_start / plane->frame_info->fb->format->vsub,
-> +					 1);
-> +	u8 *u_plane =3D packed_pixels_addr(plane->frame_info,
-> +					 x_start / plane->frame_info->fb->format->hsub,
-> +					 y_start / plane->frame_info->fb->format->vsub,
-> +					 2);
-> +	struct pixel_yuv_u8 yuv_u8;
-> +	int step_y =3D get_step_1x1(plane->frame_info->fb, direction, 0);
-> +	int step_u =3D get_step_1x1(plane->frame_info->fb, direction, 1);
-> +	int step_v =3D get_step_1x1(plane->frame_info->fb, direction, 2);
-> +	int subsampling =3D get_subsampling(plane->frame_info->fb->format, dire=
-ction);
-> +	int subsampling_offset =3D get_subsampling_offset(plane->frame_info->fb=
-->format, direction,
-> +							x_start, y_start);
-> +
-> +	for (int i =3D 0; i < count; i++) {
-> +		yuv_u8.y =3D *y_plane;
-> +		yuv_u8.u =3D *u_plane;
-> +		yuv_u8.v =3D *v_plane;
-> +
-> +		yuv_u8_to_argb_u16(out_pixel, &yuv_u8, plane->base.base.color_encoding,
-> +				   plane->base.base.color_range);
-> +		out_pixel +=3D 1;
-> +		y_plane +=3D step_y;
-> +		if ((i + subsampling_offset + 1) % subsampling =3D=3D 0) {
-> +			u_plane +=3D step_u;
-> +			v_plane +=3D step_v;
-> +		}
-> +	}
-> +}
-> +
->  /*
->   * The following functions take one argb_u16 pixel and convert it to a s=
-pecific format. The
->   * result is stored in @dst_pixels.
-> @@ -344,6 +585,22 @@ pixel_read_line_t get_pixel_read_line_function(u32 f=
-ormat)
->  		return &XRGB16161616_read_line;
->  	case DRM_FORMAT_RGB565:
->  		return &RGB565_read_line;
-> +	case DRM_FORMAT_NV12:
-> +	case DRM_FORMAT_NV16:
-> +	case DRM_FORMAT_NV24:
-> +		return &semi_planar_yuv_read_line;
-> +	case DRM_FORMAT_NV21:
-> +	case DRM_FORMAT_NV61:
-> +	case DRM_FORMAT_NV42:
-> +		return &semi_planar_yvu_read_line;
-> +	case DRM_FORMAT_YUV420:
-> +	case DRM_FORMAT_YUV422:
-> +	case DRM_FORMAT_YUV444:
-> +		return &planar_yuv_read_line;
-> +	case DRM_FORMAT_YVU420:
-> +	case DRM_FORMAT_YVU422:
-> +	case DRM_FORMAT_YVU444:
-> +		return &planar_yvu_read_line;
->  	default:
->  		return (pixel_read_line_t)NULL;
->  	}
-> diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/v=
-kms_formats.h
-> index 8d2bef95ff79..5a3a9e1328d8 100644
-> --- a/drivers/gpu/drm/vkms/vkms_formats.h
-> +++ b/drivers/gpu/drm/vkms/vkms_formats.h
-> @@ -9,4 +9,8 @@ pixel_read_line_t get_pixel_read_line_function(u32 format=
-);
-> =20
->  pixel_write_t get_pixel_write_function(u32 format);
-> =20
-> +struct pixel_yuv_u8 {
-> +	u8 y, u, v;
-> +};
-> +
->  #endif /* _VKMS_FORMATS_H_ */
-> diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkm=
-s_plane.c
-> index 58c1c74742b5..427ca67c60ce 100644
-> --- a/drivers/gpu/drm/vkms/vkms_plane.c
-> +++ b/drivers/gpu/drm/vkms/vkms_plane.c
-> @@ -17,7 +17,19 @@ static const u32 vkms_formats[] =3D {
->  	DRM_FORMAT_XRGB8888,
->  	DRM_FORMAT_XRGB16161616,
->  	DRM_FORMAT_ARGB16161616,
-> -	DRM_FORMAT_RGB565
-> +	DRM_FORMAT_RGB565,
-> +	DRM_FORMAT_NV12,
-> +	DRM_FORMAT_NV16,
-> +	DRM_FORMAT_NV24,
-> +	DRM_FORMAT_NV21,
-> +	DRM_FORMAT_NV61,
-> +	DRM_FORMAT_NV42,
-> +	DRM_FORMAT_YUV420,
-> +	DRM_FORMAT_YUV422,
-> +	DRM_FORMAT_YUV444,
-> +	DRM_FORMAT_YVU420,
-> +	DRM_FORMAT_YVU422,
-> +	DRM_FORMAT_YVU444
->  };
-> =20
->  static struct drm_plane_state *
->=20
-
-
---Sig_/wrAdhBnH.I+6NARRtdDHMCg
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXcgcQACgkQI1/ltBGq
-qqcW2hAAgmYg6sU5QTIb51gZzE56PaIsvxZHOMoKCMsEvZsAx/yI8JhYyxpP14YX
-O/LJsIOCOtt0YEusMOzTzjm9l91hlQIk+Vi7pYRB3iFO0jaAaITSiejBiJvuvn+v
-hRd3MwfiptAGAWZaKEw2kmA8iQvBF+qRCsGQYcohGGGAhdTD++nAdzTTFYg264yi
-K1K6UpacsMu14kS3RSCbqu2YFvG3fEJWZ2LVnHjYD9Ck7dB9+KRNn0TGl4Rd+L9W
-uD4kiNZCfe7ST8Z3UrteryjyJmbRgkhrRUvL6QQUYucwEDQ/VR5z9anptWEWF/vR
-tg2W4y7ETAdLcFlLFNrWxofJwQ2FgL7uw7k/7R9NvvGmNyCBDNgVKim4ITda1o2N
-A/S2NmRea0iT85hbBITgat0z9a5jXJWOZ9hKdSKuwc/sOsUMMJjxVpKFe5XFcbdo
-wOfiBqWb6teuxDOiRSM3NNakJ4abSQ8rF0A9ucpfQzZSRqc1FHlpIQnHl/nGVTqj
-6knI4UmGXoL+16wPFjfIcr7R80p7POuDwXsZkU6K8E7V6glm9ppRu4OAgOSiZDr3
-D6pGq1XMgexxKfk9m+EECAKCex2H0XN4WK2+J51rE+M+WjmwrYw/XQ4/yPXC9OqF
-0Xkz0ng0KX7KIx4fu4rXSFSdZoIxDQCc4wAziIhM/c4cQt1v4ZY=
-=l2+r
------END PGP SIGNATURE-----
-
---Sig_/wrAdhBnH.I+6NARRtdDHMCg--
+https://people.kernel.org/tglx/notes-about-netiquette
 
