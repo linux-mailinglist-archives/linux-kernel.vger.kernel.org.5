@@ -1,216 +1,220 @@
-Return-Path: <linux-kernel+bounces-80556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36EF7866972
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:54:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22E58866976
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 05:58:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3227B20C0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:54:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1ECA1F211C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34B2C1B80A;
-	Mon, 26 Feb 2024 04:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5175E1B7F6;
+	Mon, 26 Feb 2024 04:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e069fjQu"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b="p9ySF9IQ"
+Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32A3EEDE
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 04:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708923262; cv=none; b=i87u+M9ODjQ31lL8vWaV9eiSaOsC0DT8+NKHBKVk5rabXVKhRCZoBqt9BYjlK6bjKpYP5FYOvKGPIiiC4V2TWIbdi9oxVIOVxtMLrYUe//BOAsn2SSwt0pKSy6ENYpm1v3WBk5XHUlP3pLeQDSJXmygU6C1WQgpJKeXjzFVWkZc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708923262; c=relaxed/simple;
-	bh=bKHy5tJO1ClP/m/okR1ZP4F8zGLl+fd471TqzhcHOlI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KEwuDYYuAAewBxrz0xKbcVLKK0acNPAJMK8xOLoQU/N1pPgfhK9GV0g5u6Dan3ef5hIErChEahDwhFF1ZmFN6uMlRfUJd6G0TQR0PMEg+l6hdUPUMlWOsGTmC7ScV6dhVhd7L3+ioS2zR/2W8KDWlSJNTm4EffRhEwV0FSaQPfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e069fjQu; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708923258;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LrACz5Anp3j5np9PgzWbTRqtplHvhtHaAYkW+Lelxj8=;
-	b=e069fjQurNP/ZWf4ImaHHJhtYF3RcceIM+mj4HK012ZDtuiHO7XB8PoMMNVu0ut/lxuWLZ
-	cFDgerzP8Z+3K444bmkH7XkP6CXNn3VeuGWbVSVH6Opu52sBBNC/xfzeFW09h0cA2/OXeZ
-	IdmLuzA3NmOFnYmhQ8aYKeJMKYxtM4g=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-253-0N_TBXE3MCmZA9Tun3VACA-1; Sun, 25 Feb 2024 23:54:17 -0500
-X-MC-Unique: 0N_TBXE3MCmZA9Tun3VACA-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d542680c9cso30657055ad.2
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 20:54:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708923256; x=1709528056;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LrACz5Anp3j5np9PgzWbTRqtplHvhtHaAYkW+Lelxj8=;
-        b=tXLmBxs/ZWpmydlacNmdgMNm3811bwABDQ2oTeUwYJvea0kzlNAtClRC0PRH9yWSnQ
-         HsxGz+wQZ8i2pdk9Gi0zcvaOTtvUi+xW9caE0L7oBvEqAqa50Yjh71M7kEztGIsAl1pB
-         mJU5gc+Vo0iiWpPQzhaEaO1+AbCL+wa64gTeuvBgJVTO4GNLRlI5vdScXTfylzAcqFm/
-         uTIBXjMxYSXoa7T1ZYknFKT09XkPNBsmv/+iCJsbW5pNYsCZZ7xv0ZHnxrvVhXvzVJJB
-         ZzC2gcnuVCT2CREgKIYQTEAyl1vSuVVwJWNEhikAOP3SUFEiCBtbjYigtAbbbP9Z83C8
-         n/qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXFM8nTh+pdXHN8hr9j1RrcERmz941GK/MlM6s9YdvR+XhGUJGbIRvDf+4XHbjgY17slZYZmbfvGmPd4E3xM5+aO6l3rPIEhdL9GTew
-X-Gm-Message-State: AOJu0YwzlBcwuweBDC6V9lXac+g2iTLmlZrMcuZ5y0LtwLHOWsSIkhch
-	qppgsJcnPp6eQFBmQbfwSNO1aXvimb8wW0AfVUxFwl4zpk6ByYrnrBnc5wt9EoB7yIK2dpqcvB+
-	D1makn1sugoQbY200zn8lfkqgKE84AGcZNUJcvxm/SS9RVisWydv45JUk6xW7Pg==
-X-Received: by 2002:a17:902:e94f:b0:1db:fad5:26ad with SMTP id b15-20020a170902e94f00b001dbfad526admr106870pll.51.1708923256456;
-        Sun, 25 Feb 2024 20:54:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGyKSYx40AByF4zUBPndjhdof7ntq9QRkH11f6LHVqj7dhRZ4H2OOxvIvoeVBF5e07hTyRZTQ==
-X-Received: by 2002:a17:902:e94f:b0:1db:fad5:26ad with SMTP id b15-20020a170902e94f00b001dbfad526admr106860pll.51.1708923256169;
-        Sun, 25 Feb 2024 20:54:16 -0800 (PST)
-Received: from [10.72.112.214] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id ks16-20020a170903085000b001dc6528d49asm2993994plb.250.2024.02.25.20.54.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Feb 2024 20:54:15 -0800 (PST)
-Message-ID: <69589d2f-978d-4d14-9e5f-6bd6b3a43062@redhat.com>
-Date: Mon, 26 Feb 2024 12:54:10 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DE7618EA8;
+	Mon, 26 Feb 2024 04:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708923482; cv=pass; b=Odjvy/1W1ThozDqeqUeK56yYOFtqatZjuqwgYe1e3W4uaDD+StJ0Hmc1WAcQGQV4WSBN8wV6Hb0ddkQ7MFOih77Er+9vM/YMihJeujPDlL/1s9PE7phyESX7XFFm20XRpJJwfeXpK5gG/iyNYS5+bR09oLnephZFe8OMTaIlj2g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708923482; c=relaxed/simple;
+	bh=QrAILGTlcUzfFUd66MJkWp2t/tRwrE6wC4UtelAjn54=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=TVZKePTXchTrQXUye3Lv/yHrZx3DmplcYPGzd9siS5V/v6aq+tURPJk2CkpK1TVcNELfXFVdao1Z2V9GvhT6pzlllGlliRwAkdXCt6x5XemMctgeYrBj5zKAhKB8QGev/u6fDUM4S7j1VWKC0kjHrOkFyKt8sQ/QKMysRVRPP3I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me; spf=pass smtp.mailfrom=icenowy.me; dkim=pass (2048-bit key) header.d=icenowy.me header.i=uwu@icenowy.me header.b=p9ySF9IQ; arc=pass smtp.client-ip=136.143.188.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=icenowy.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icenowy.me
+ARC-Seal: i=1; a=rsa-sha256; t=1708923427; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=S9/egMTPtcK0XTfnP9q6hh4uwDIf4SH7mvB7B//loFH77TgHuG6C2eyT1uy0BTMmE2mhBatdg2QG+V9x8+nzEg80tAbYjeBurf8rxAceOpVGMtJYIkPHCTtWS7ywW1QdMLiSCWWrRUFQ1G83R9JxH06F2RgRHIAhJinILJP1csg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1708923427; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=QrAILGTlcUzfFUd66MJkWp2t/tRwrE6wC4UtelAjn54=; 
+	b=TZrdFEPMPHMgm40I0n2fVtPCCMR4CzPNWq0/vNjM9Sq9gRB3NJYzJw1y7MFUkbOslUu6Ts0bZOA2rW6C+R1c0kDy9M/rsV1xKV+1h5rn//sMzGWsDdQoYrtXwtQy9i87Kj1nxdIOJ/zc/yeXW++qLNCqASftpa4sJUrhG8uzEko=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=icenowy.me;
+	spf=pass  smtp.mailfrom=uwu@icenowy.me;
+	dmarc=pass header.from=<uwu@icenowy.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1708923427;
+	s=zmail2; d=icenowy.me; i=uwu@icenowy.me;
+	h=Message-ID:Subject:Subject:From:From:To:To:Cc:Cc:Date:Date:In-Reply-To:References:Content-Type:Content-Transfer-Encoding:MIME-Version:Message-Id:Reply-To;
+	bh=QrAILGTlcUzfFUd66MJkWp2t/tRwrE6wC4UtelAjn54=;
+	b=p9ySF9IQVfZPeDuN3uhEIHKojM87TDibcGyxFn5fW1M9y+0mj8hG1090eN1PxpZu
+	8HZ7D7iTYvpIRvei6Tst9iMAU5iIBplr9wk0Gbph4LwrcNW0wk/awHDUrY8YdQZzJ9B
+	yrsxq8JEDVpHaUt/m8evr7TmJb01ty3ke1FcAadg5tI+cK1WxHuDUbvnaj6MtHbXR0p
+	dhOAn4XRifxDvga/T+iX5VcIXvyASoI4ZANtXoBYyplgJPv+mcPDQ4XcuZL/6nKSdnJ
+	4mXw6a1tm9mkY1hqJYIY0iZeex7fwG1pYGnT7NWkgu45dS4+t1niJjXJatiGkhBfiek
+	AWXBUU3LMQ==
+Received: from edelgard.fodlan.icenowy.me (112.94.101.70 [112.94.101.70]) by mx.zohomail.com
+	with SMTPS id 1708923424459946.3223816657112; Sun, 25 Feb 2024 20:57:04 -0800 (PST)
+Message-ID: <02c27b503f379aff28563dda6ad7e2718fe7229f.camel@icenowy.me>
+Subject: Re: [PATCH v2 5/6] drm/panel: st7703: Drive XBD599 panel at higher
+ clock rate
+From: Icenowy Zheng <uwu@icenowy.me>
+To: Frank Oltmanns <frank@oltmanns.dev>, Maxime Ripard <mripard@kernel.org>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>,  Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
+ <jernej.skrabec@gmail.com>, Samuel Holland <samuel@sholland.org>, Guido
+ =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,  Purism Kernel Team
+ <kernel@puri.sm>, Ondrej Jirman <megi@xff.cz>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, Sam
+ Ravnborg <sam@ravnborg.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann
+ <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter
+ <daniel@ffwll.ch>,  Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ linux-clk@vger.kernel.org,  linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev,  linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org,  devicetree@vger.kernel.org
+Date: Mon, 26 Feb 2024 12:56:55 +0800
+In-Reply-To: <87o7c4mqzr.fsf@oltmanns.dev>
+References: <20240205-pinephone-pll-fixes-v2-0-96a46a2d8c9b@oltmanns.dev>
+	 <20240205-pinephone-pll-fixes-v2-5-96a46a2d8c9b@oltmanns.dev>
+	 <poua4bzyciiwt65sqjf2whqfdumvoe4h3bkjpf64px2vwgumrf@sai73byg2iju>
+	 <87sf1zxb0s.fsf@oltmanns.dev>
+	 <ia7e7gqozltl5wkfdvwtf2rw2ko2dt67qxtuqbavsroyv4ifys@x4mbulqhhri5>
+	 <87o7c4mqzr.fsf@oltmanns.dev>
+Organization: Anthon Open-Source Community
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ceph: remove SLAB_MEM_SPREAD flag usage
-Content-Language: en-US
-To: Chengming Zhou <chengming.zhou@linux.dev>, idryomov@gmail.com,
- jlayton@kernel.org
-Cc: ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, vbabka@suse.cz, roman.gushchin@linux.dev,
- Xiongwei.Song@windriver.com, Chengming Zhou <zhouchengming@bytedance.com>
-References: <20240224134715.829225-1-chengming.zhou@linux.dev>
- <b6083c49-5240-40e3-a028-bb1ba63ccdd7@redhat.com>
- <d91e3235-395a-4e63-8ace-c14dfaf0a4fd@linux.dev>
- <35df81f5-feac-4373-87a3-d3a27ba9c9d4@redhat.com>
- <82c2553f-822e-40c2-9bf8-433689b3669d@linux.dev>
-From: Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <82c2553f-822e-40c2-9bf8-433689b3669d@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 
+=E5=9C=A8 2024-02-25=E6=98=9F=E6=9C=9F=E6=97=A5=E7=9A=84 17:46 +0100=EF=BC=
+=8CFrank Oltmanns=E5=86=99=E9=81=93=EF=BC=9A
+> Hi Maxime,
+>=20
+> On 2024-02-22 at 11:29:51 +0100, Maxime Ripard <mripard@kernel.org>
+> wrote:
+> > [[PGP Signed Part:Undecided]]
+> > On Sun, Feb 11, 2024 at 04:42:43PM +0100, Frank Oltmanns wrote:
+> > >=20
+> > > On 2024-02-08 at 20:05:08 +0100, Maxime Ripard
+> > > <mripard@kernel.org> wrote:
+> > > > [[PGP Signed Part:Undecided]]
+> > > > Hi Frank,
+> > > >=20
+> > > > On Mon, Feb 05, 2024 at 04:22:28PM +0100, Frank Oltmanns wrote:
+> > > > > This panel is used in the pinephone that runs on a Allwinner
+> > > > > A64 SOC.
+> > > > > The SOC requires pll-mipi to run at more than 500 MHz.
+> > > > >=20
+> > > > > This is the relevant clock tree:
+> > > > > =C2=A0pll-mipi
+> > > > > =C2=A0=C2=A0=C2=A0 tcon0
+> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tcon-data-clock
+> > > > >=20
+> > > > > tcon-data-clock has to run at 1/4 the DSI per-lane bit rate.
+> > > > > The XBD599
+> > > > > has 24 bpp and 4 lanes. Therefore, the resulting requested
+> > > > > tcon-data-clock rate is:
+> > > > > =C2=A0=C2=A0=C2=A0 crtc_clock * 1000 * (24 / 4) / 4
+> > > > >=20
+> > > > > tcon-data-clock runs at tcon0 / 4 (fixed divisor), so it
+> > > > > requests a
+> > > > > parent rate of
+> > > > > =C2=A0=C2=A0=C2=A0 4 * (crtc_clock * 1000 * (24 / 4) / 4)
+> > > > >=20
+> > > > > Since tcon0 is a ccu_mux, the rate of tcon0 equals the rate
+> > > > > of pll-mipi.
+> > > > >=20
+> > > > > pll-mipi's constraint to run at 500MHz or higher forces us to
+> > > > > have a
+> > > > > crtc_clock >=3D 83333 kHz if we want a 60 Hz vertical refresh
+> > > > > rate.
+> > > > >=20
+> > > > > Change [hv]sync_(start|end) so that we reach a clock rate of
+> > > > > 83502 kHz
+> > > > > so that it is high enough to align with pll-pipi limits.
+> > > > >=20
+> > > > > Signed-off-by: Frank Oltmanns <frank@oltmanns.dev>
+> > > >=20
+> > > > That commit log is great, but it's kind of off-topic. It's a
+> > > > panel
+> > > > driver, it can be used on any MIPI-DSI controller, the only
+> > > > relevant
+> > > > information there should be the panel timings required in the
+> > > > datasheet.
+> > > >=20
+> > > > The PLL setup is something for the MIPI-DSI driver to adjust,
+> > > > not for
+> > > > the panel to care for.
+> > > >=20
+> > >=20
+> > > I absolutely agree. It even was the reason for my submission of a
+> > > sunxi-ng patch series last year that was accepted, to make pll-
+> > > mipi more
+> > > flexible. :)
+> > >=20
+> > > The only remaining option I currently see for adjusting the
+> > > sunxi-ng
+> > > driver to further accomodate the panel, is trying to use a higher
+> > > divisor than 4 for calculating tcon-data-clock from tcon0. I
+> > > remember
+> > > reading a discussion about this, but as far as I remember that
+> > > proposal
+> > > was rejected (by you, IIRC).
+> > >=20
+> > > While I appreciate other suggestion as well, I'll look into
+> > > options for
+> > > using a different divisor than 4.
+> >=20
+> > Like I said, I'm not against the patch at all, it looks great to me
+> > on
+> > principle. I just think you should completely rephrase the commit
+> > log
+> > using the datasheet as the only reliable source of the display
+> > timings.
+> > Whether sun4i can work around the panel requirements is something
+> > completely orthogonal to the discussion, and thus the commit log.
+> >=20
+>=20
+> I was trying to follow the guidelines [1] for describing the reason
+> behind my changes to the panel. My original commit message was a lot
+> shorter, which, understandably, resulted in follow up questions [2].
+> With the current commit log, I'm trying to address those questions.
+> According to the device tree, the panel is only used in the
+> pinephone.
+> The only reason for the change is that the SoC used by the only user
+> of
+> this panel can not provide the rate the panel requests with the
+> current
+> values. I think this information is relevant.
+>=20
+> Unfortunately, as described in [2], I cannot back these values with
+> any
+> datasheets because I couldn't find any. I could only find hints that
+> they are not publicly available. Icenowy (added to CC) submitted the
+> original values.
 
-On 2/26/24 12:30, Chengming Zhou wrote:
-> On 2024/2/26 12:23, Xiubo Li wrote:
->> On 2/26/24 10:42, Chengming Zhou wrote:
->>> On 2024/2/26 09:43, Xiubo Li wrote:
->>>> Hi Chengming,
->>>>
->>>> Thanks for your patch.
->>>>
->>>> BTW, could you share the link of the relevant patches to mark this a no-op ?
->>> Update changelog to make it clearer:
->>>
->>> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
->>> removed as of v6.8-rc1, so it became a dead flag. And the series[1]
->>> went on to mark it obsolete to avoid confusion for users. Here we
->>> can just remove all its users, which has no functional change.
->>>
->>> [1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
->> Thanks for your quick feedback.
->>
->> BTW, I couldn't find this change in Linus' tree in the master and even the v6.8-rc1 tag, please see https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/include/linux/slab.h?h=master.
->>
->> Did I miss something ? Or has this patch been merged ?
-> You're right, this patch hasn't been merged. But it's already a dead flag as of v6.8-rc1.
->
-> Update changelog to make it clearer:
->
-> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
-> removed as of v6.8-rc1, so it became a dead flag since the commit
-> 16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"). And the
-> series[1] went on to mark it obsolete to avoid confusion for users.
-> Here we can just remove all its users, which has no functional change.
->
-> [1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
->
-> Does this look clearer to you? I can improve it if there is still confusion.
+Sorry but this kind of things are just magic from the vendor that I
+could hardly explain...
 
-Yeah, much clearer, thanks!
-
-Maybe we should just wait for the [1] to get merged first ?
-
-Ilya, what do you think ?
-
-Thanks
-
-- Xiubo
-
-
-> Thanks!
->
->> - Xiubo
->>
->>> Thanks!
->>>
->>>> Thanks
->>>>
->>>> - Xiubo
->>>>
->>>> On 2/24/24 21:47, chengming.zhou@linux.dev wrote:
->>>>> From: Chengming Zhou <zhouchengming@bytedance.com>
->>>>>
->>>>> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
->>>>> its usage so we can delete it from slab. No functional change.
->>>>>
->>>>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->>>>> ---
->>>>>     fs/ceph/super.c | 18 +++++++++---------
->>>>>     1 file changed, 9 insertions(+), 9 deletions(-)
->>>>>
->>>>> diff --git a/fs/ceph/super.c b/fs/ceph/super.c
->>>>> index 5ec102f6b1ac..4dcbbaa297f6 100644
->>>>> --- a/fs/ceph/super.c
->>>>> +++ b/fs/ceph/super.c
->>>>> @@ -928,36 +928,36 @@ static int __init init_caches(void)
->>>>>         ceph_inode_cachep = kmem_cache_create("ceph_inode_info",
->>>>>                           sizeof(struct ceph_inode_info),
->>>>>                           __alignof__(struct ceph_inode_info),
->>>>> -                      SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD|
->>>>> -                      SLAB_ACCOUNT, ceph_inode_init_once);
->>>>> +                      SLAB_RECLAIM_ACCOUNT|SLAB_ACCOUNT,
->>>>> +                      ceph_inode_init_once);
->>>>>         if (!ceph_inode_cachep)
->>>>>             return -ENOMEM;
->>>>>     -    ceph_cap_cachep = KMEM_CACHE(ceph_cap, SLAB_MEM_SPREAD);
->>>>> +    ceph_cap_cachep = KMEM_CACHE(ceph_cap, 0);
->>>>>         if (!ceph_cap_cachep)
->>>>>             goto bad_cap;
->>>>> -    ceph_cap_snap_cachep = KMEM_CACHE(ceph_cap_snap, SLAB_MEM_SPREAD);
->>>>> +    ceph_cap_snap_cachep = KMEM_CACHE(ceph_cap_snap, 0);
->>>>>         if (!ceph_cap_snap_cachep)
->>>>>             goto bad_cap_snap;
->>>>>         ceph_cap_flush_cachep = KMEM_CACHE(ceph_cap_flush,
->>>>> -                       SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD);
->>>>> +                       SLAB_RECLAIM_ACCOUNT);
->>>>>         if (!ceph_cap_flush_cachep)
->>>>>             goto bad_cap_flush;
->>>>>           ceph_dentry_cachep = KMEM_CACHE(ceph_dentry_info,
->>>>> -                    SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD);
->>>>> +                    SLAB_RECLAIM_ACCOUNT);
->>>>>         if (!ceph_dentry_cachep)
->>>>>             goto bad_dentry;
->>>>>     -    ceph_file_cachep = KMEM_CACHE(ceph_file_info, SLAB_MEM_SPREAD);
->>>>> +    ceph_file_cachep = KMEM_CACHE(ceph_file_info, 0);
->>>>>         if (!ceph_file_cachep)
->>>>>             goto bad_file;
->>>>>     -    ceph_dir_file_cachep = KMEM_CACHE(ceph_dir_file_info, SLAB_MEM_SPREAD);
->>>>> +    ceph_dir_file_cachep = KMEM_CACHE(ceph_dir_file_info, 0);
->>>>>         if (!ceph_dir_file_cachep)
->>>>>             goto bad_dir_file;
->>>>>     -    ceph_mds_request_cachep = KMEM_CACHE(ceph_mds_request, SLAB_MEM_SPREAD);
->>>>> +    ceph_mds_request_cachep = KMEM_CACHE(ceph_mds_request, 0);
->>>>>         if (!ceph_mds_request_cachep)
->>>>>             goto bad_mds_req;
->>>>>     
+>=20
+> Best regards,
+> =C2=A0 Frank
+>=20
+> [1]:
+> https://www.kernel.org/doc/html/v6.7/process/submitting-patches.html#desc=
+ribe-your-changes
+> [2]: https://lore.kernel.org/lkml/87wmsvo0fh.fsf@oltmanns.dev/
+>=20
+> >=20
+> > Maxime
+> >=20
+> > [[End of PGP Signed Part]]
+>=20
 
 
