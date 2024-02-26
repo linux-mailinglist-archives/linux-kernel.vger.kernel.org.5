@@ -1,191 +1,194 @@
-Return-Path: <linux-kernel+bounces-81078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81079-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DF92866FE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:05:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25DAB866FE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61EA01C241A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:05:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6BD21F27653
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A855FF15;
-	Mon, 26 Feb 2024 09:42:29 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A98B960251;
+	Mon, 26 Feb 2024 09:43:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UdvdhD0D"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7563224CE
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940549; cv=none; b=KqnLIyrToka2EUB0P+mwxYuMnjckvHtO7C97YpSFWSLaZoW7y+LNUzqE29b5bd7lzpaEFm9EWwcvsHfNKXqwIRhg820Os8GFkMfjjCTTtUKYzIm/FiF62QGE1H2Vu8vBF+3J6tA1o9OphzhcPQxTwEt/8tDYOky+ivufT3nDxAI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940549; c=relaxed/simple;
-	bh=2r+Jg4IirYez90/CeN3v3u34PFYDkfTtbokSRqIaL/M=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=uY6vUyM6bK3SOJoKgNgxvWBeHOISeOjscGEV/+wDGxQ/ixL8QTctlKk8xtr/O1XP0+WeP6zC4gNJrhkKVruqLUA96LITZRpkrm1jo7pItiNVHHPX6NEt4PbLjz1aE7XN0DgYSBmIdG2O4aipkVWqZjjmakZznYbZikdKhL8Kf/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36512fcf643so19076795ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:42:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708940547; x=1709545347;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6mzm746klVmYl18EiU1HABrzvIW1GEwskKuL2oGrXzc=;
-        b=C3o5RrDkft03GH/M7DdC0Y0RwbxBY3G13Y4cvZLKsfhFNHeDqeCmBVyAbZe0LvvF2r
-         gm3QUk4ZUD9wFYUo0OUjrock1E8gh7mIzZXlv0UD/X8hVOlj56qAfuYbUJJIZeYz69qP
-         xnNkB2T6CzoLroKhcLy3+1XX/f/gx5ZEVX1Qd2wyr6SLSOkkiNX7h46miHix28ZTj3FW
-         blA7kEmMM7dHUATdB2DKT+Nsuqau3PN3V2lpBpgRD3GKGUGM7+ZdGzvPirLbg38i1TXx
-         CIHrYLSQQwMDbWz7mkeYUylfNSHzCEgLyG97blVpkYkhz6VxzV+ddQqesJ8vybkx5ztT
-         T25g==
-X-Forwarded-Encrypted: i=1; AJvYcCXdTy4YBqAD4VQ8OySCQgooY0U10AO1H6jqXhmqCNmG93si81tjxileDonzzYQyTASsomkwQX94lWPfHNGnLNI1CiCx4pQC5VPpdwIp
-X-Gm-Message-State: AOJu0YxcJP6Lqdh8seJCYWhzaS1yLVygD2y+6vyPnENTcodeuT8hpyGD
-	m2EJlSAgKbOOB0LkqEqIkcBDh/BKlbAQmlVmlBYOyQ39sMtN1eJdkIFwYw+iWn++sUWPLGmda9W
-	QP09FvPdZuOMrrJ8+JVTWFMEWAkw04K7dcTI0PYJLOlaTN9zFzuC0UpE=
-X-Google-Smtp-Source: AGHT+IGg+zmSUa5QfjPli/WDJFydT/dqQ9GQYePyx5iMd/vjx9Dt5vNWCWX2/17AgZMbPFsDTgrOMI4IKTPWZ5Zb9P8/CDyG6ETt
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127EF6024F;
+	Mon, 26 Feb 2024 09:42:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708940579; cv=fail; b=XBTEtS+0DDLZv4urmPspeBv40hybDWApZZL6iSX+x9wBr+DuGuOXi6na+UGvk5fWHEczAF9d1t7tNqQGhv4TQDzyQBRQN0pp9buGf77Mdb3iRAzU3ihVJ/hDhz+lsBv+u2Uj5B6e9NdBMh3+/R3LqOwYrGu9I6zZZ/smNy6htlc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708940579; c=relaxed/simple;
+	bh=bz/rSXGY1RXTlpiBnB2Q8vf5fRR7WM24wm80qQ2s6Ec=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=k39IdldFhlxLhEfdXBwAiTj08TBXgMu3A8OZqkvK21XJ7a/mbyXSWNNYrpoLHs4jPg2ZnOOw/pSzABaDKAzbbQ0Mf4QdZ/AzaK8f4aMsT5BJiexUnLlJzI8Au6M9Hdps6ieBoGj4dWB8mT3UHl4vUxWrrqaYVxRiJaji+sm4zwo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UdvdhD0D; arc=fail smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708940578; x=1740476578;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=bz/rSXGY1RXTlpiBnB2Q8vf5fRR7WM24wm80qQ2s6Ec=;
+  b=UdvdhD0DO0EAqEiAMDI+6Gj/VWrW45XbhZPcs8OoLcyKma5b9LA5cLKb
+   KRFDxPZWXQjoNj3FfUUuczgsvpS9+4D0ETuT5G0AtHeS+0EFdOuvbRZTs
+   bFG/wzHoQ5Y+A3iYgWy2zbZ8DTNWKdC4difdEMh0dOBnyoLjbBlMX+T3j
+   agyQTXOGLiI48RDXg7F92o3D0zLodrD1wws/rpPifPZGlIsy9tny6agM+
+   FuHevRK37J0cqKErC5nmQ3qzb46S6zSdY3kl999BvUI86rUFbzLFeCcqa
+   omu1CvrHnsebCcY3KIgC0L2s2wSaI04PXnSzQFp1w9UiYcTKdTuIsa/tk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3056910"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="3056910"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 01:42:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="11254446"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Feb 2024 01:42:57 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 26 Feb 2024 01:42:56 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 26 Feb 2024 01:42:56 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 26 Feb 2024 01:42:56 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VB0FTy2tBNKG8jy4sQVh1G4JqLvokzWp7N8qCU2BaTa/1/P+IYzhAKOOgf/yVRXwZDD4gQyCbTE4RaKXklQzxcfi5p1ncbloEtwVehSv24hSl9GNlltpaAz02/ClH4/4NROzEtYEDXP8k4dXwYbnmoNZGDj23esQd42+PMa1FuxOdqjb7j730sslS1rQFu7xkzsIywayGX9iL4V+n0fur528on61YzQEAWDOOqw/EjgVG7sgK4xxETr+iBsBZovAOij++GUdpeh7M6/5hNzlrH0y2OW+a0OfaZUKOBVhbT1Rwuq4V+de6j4YCfm1y7uHxEVzHSDExxqrAAWH8cAGzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=khaCYhZVEUlMpWa0Ju75iRdJpjP2+351pC31iMhkJVc=;
+ b=V/Guv76sh2PEYYKqTxl7BVDIztsIi4FOU6cVlU8itze3Et5Zo4SytyKCzlOjcMzz44juJOmhLDYXmQee+ppNg5ECl+5xRlxMMGg7H2rkus3zsNjPPSDPd0kZImwb9KUQuYPCTTOQ2aPQM6vNrDOCUhDClw4CempvrYsdLBr+//oZLI10K8JJ4iP43M/Bgobi6jVhT0ILJrfCxjAq/Yiz/AKFV1jalmXmYhI9nhLVu5pQxlk1CjFgG9JCJxQVIDZ3Cq8zIjpr6J+DhKPIBwKVgfSuj327idAR77SVMrFOH2g7Jrihi7B8mcYwi5HIBxAUUqq6llXzPliYnEUnJan6JA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by CY5PR11MB6140.namprd11.prod.outlook.com (2603:10b6:930:28::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.24; Mon, 26 Feb
+ 2024 09:42:54 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::6440:4b82:c32c:9eb7]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::6440:4b82:c32c:9eb7%5]) with mapi id 15.20.7339.024; Mon, 26 Feb 2024
+ 09:42:54 +0000
+Date: Mon, 26 Feb 2024 10:42:44 +0100
+From: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To: Reinette Chatre <reinette.chatre@intel.com>
+CC: Fenghua Yu <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+	<ilpo.jarvinen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] selftests/resctrl: Move cleanups out of
+ individual tests
+Message-ID: <sryavktjx6eqavjseo7ktii3v2g7opfodsv42fdlsy4dm3dwy4@algmgqcm6m35>
+References: <cover.1708599491.git.maciej.wieczor-retman@intel.com>
+ <bc4a4fec20420fb792612be024473f31f40d7bca.1708599491.git.maciej.wieczor-retman@intel.com>
+ <8caed6ce-808a-4d25-823a-fc4d6b56268d@intel.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8caed6ce-808a-4d25-823a-fc4d6b56268d@intel.com>
+X-ClientProxiedBy: WA2P291CA0042.POLP291.PROD.OUTLOOK.COM
+ (2603:10a6:1d0:1f::14) To MN0PR11MB6231.namprd11.prod.outlook.com
+ (2603:10b6:208:3c4::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d86:b0:365:26e3:6e48 with SMTP id
- h6-20020a056e021d8600b0036526e36e48mr515484ila.0.1708940546977; Mon, 26 Feb
- 2024 01:42:26 -0800 (PST)
-Date: Mon, 26 Feb 2024 01:42:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003eb868061245ba7f@google.com>
-Subject: [syzbot] [usb-storage?] divide error in isd200_ata_command
-From: syzbot <syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com>
-To: bvanassche@acm.org, emilne@redhat.com, gregkh@linuxfoundation.org, 
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	martin.petersen@oracle.com, stern@rowland.harvard.edu, 
-	syzkaller-bugs@googlegroups.com, tasos@tasossah.com, 
-	usb-storage@lists.one-eyed-alien.net
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|CY5PR11MB6140:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8e33ed57-194b-4412-4c95-08dc36af4eab
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Jn3sjVV5Y8UkhCdek4Ishm8FZjP0YYUjOTn0j4GaHr0OrEUixcGcYWAtakRflOz6JAAKo92Kf3PBYuHldy3TPEgAKpsDSyVMF0jTUwFilHaSKrtG1zylJzHHXGic/ix8W4p6vukoD6hQig1S/Lr4LxNsYS8BKWEmMBusjwEAHVrynD47DmL+Z6UkJuMSAq1SN+iF3U/9jS5QY/BqL/+eCK39sEjNj5V+5/UKyWyewu/iElTfzgx43lKWbDLMjobpfNxuIK3mPWmX6Q7OEb5r18tAVNJpmhl3ZGDpMr+vuOYxNgMO7fUCcd7b2zPRvZL0Sk+tXxYqt3kPg3t3OG4voVQ50o2OnltO5hnzdW2KU0Pz1wBCj04Jho6Y+3+ykliEKJvy7KibOJ5V+I5zn/N+i7c2vg3J/AsLuDCA4zYNXixr8OfD2+eOLX93HU7a+Bf1ts24w2gw/DRt5+2bITHUz26twsvS1vonJbTtTRGxIzw98QnVf/Qpt/XDj5vMRr2VqzPVXQb/yqsg/EVzvaQS+/PkcoVsuiSZqHJZ3pPYlt5VFiOT23fi7W+00jr8OHQGFe+xXrjVLKfI4kfwQIlZ2LUVgiHLrUE/UwC80aj7OP3V3eVYppwXrD8a7PqUrGEi8TQ/kqafi2vPr9PDEnwJJQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?XifY4e4Ur05epZuJsv7Mid6y53yjMmyfg/PHimXxC2w7a03nZVDUra1SSm?=
+ =?iso-8859-1?Q?scitIC1A1WwqsNOZmeFsuuCZt5NgDLmNBRRxXCcl6m33Q/F+GBmvfDQTFv?=
+ =?iso-8859-1?Q?CQwBiyjfbJWCQ/CJTPZfXUVRV8Sm9t6Cl/VAT70l6cEXSC8RLWdrxuC3F8?=
+ =?iso-8859-1?Q?CqF+Hf0UoGsWVw/9d/jYzMfDefQEPlQVez2e/aUYWzueLlxnBIr8XGONI4?=
+ =?iso-8859-1?Q?gaqyuB1fZsRd07cIHFeOXHAM1dvm2/mUqXEPP1/8ewoRs6lt/sZRKhSAB9?=
+ =?iso-8859-1?Q?2ADc9QKRblW7WT8SHO+NXWH6FMd5eqY4oH9S9rqBjZrb7KTFoYoIzdlB+J?=
+ =?iso-8859-1?Q?m8awG5odCaXlUIvSY+BL+LKGcgBy2usP7nK+7gcbjNZL/B3lRE1GM4d5fC?=
+ =?iso-8859-1?Q?uKQiwy69apKeiPjE7xBTehimsWd3dPmsxAtaPveMKbStngviH92DvHFKrf?=
+ =?iso-8859-1?Q?3+uU3Fyw2Uvr2sBQc+0TzDH1kjrg8gU8qryfyW12C1PFw907ktkhtsqOZy?=
+ =?iso-8859-1?Q?CZUw07RPyRUOEQl94UJCT5yz+RRC6dfjSnoYTNRsAqTGDsxatYuhih8QjM?=
+ =?iso-8859-1?Q?4P18uL17EeyVUT28NnPxMerqR4faMBWuxpLPQa3iEaHz2dryyvMceY9fjW?=
+ =?iso-8859-1?Q?j6y+lztqYEDSo1naVa04OFag0p4kJx6PNI3mCS0STwJPbnSjXFEL3FVJta?=
+ =?iso-8859-1?Q?SLDRrQeBIS29raPIA5QWuXTVM3TpNCS9cVcP9q8hasJcZ+jG8PxkflUuam?=
+ =?iso-8859-1?Q?fh8w9WBEGkTfsYpWsynN8rn9YnUA5WNyAq3GBsb2fuAl/127N+sAWIvK69?=
+ =?iso-8859-1?Q?1/anXTmnRjyesGs6PP36qbhh1rswoHug+CFIV+x8KB+YIni2L1NUFBBcbT?=
+ =?iso-8859-1?Q?vU2sqySjYs3OIF1Bp4FZVZvicgnTD09hRdUyf6jBgWO3IeTEyWC0e0IZVs?=
+ =?iso-8859-1?Q?KGQphBYkoEGld/QNS88ZBexoxILI/ZNYSuLhcu9ynPNHl2FtUOM5ktJ8/m?=
+ =?iso-8859-1?Q?B03FT7bzxpamLscHd3JjduyL0xtwf9MIQdUUk3QLRxWs8tA7cWBtFL6+rY?=
+ =?iso-8859-1?Q?2RVTbpmcvogJiSv/Ols3XMgtnUO4h1QXfnfgqn5r4Ia9YNrhpYM+2zqbEH?=
+ =?iso-8859-1?Q?14TH5pbqcIXa88asU9+Txv2upnD4jifBiWyi/3jRm58ERLYD/Z96rZO4M9?=
+ =?iso-8859-1?Q?pKou0M9F4hhliGsUhzneNre9qvN6gZ3vBJQ323Z02v2FEn1/yqAYhfQViY?=
+ =?iso-8859-1?Q?1MM1jCifUYfcSpJHLuphvtpM5TG0skh+Zb1EYWBcUkYtZjThgz2wDtt/Sl?=
+ =?iso-8859-1?Q?pGjZPLYVurR4Q3nGijsIqABAtFUIbz4XSN6+5DfmTjZ8ysN9WT/+ypYpoW?=
+ =?iso-8859-1?Q?KYMJOR5wgRreBkq2ZlaqfOy9zmty+kRcRYXP3A/6OpMUY/l8M/Gbv0oa/1?=
+ =?iso-8859-1?Q?Ceq1JgeRwtr3NExsr4EmAtODw5/mfwvete5iN+XkUmtouZiPUrbtMMj0Wq?=
+ =?iso-8859-1?Q?+WSlc5QT9XG2HVylSn50Jb8Y1mFe1THZroFzTNmLnMjRayzzcH210JB6Bp?=
+ =?iso-8859-1?Q?dehQB15zgjw/nwGY5hd0qJGDa7f6hj+SmipN7rap7uCPieUEoZL1LseQv9?=
+ =?iso-8859-1?Q?TEd6bNupNz3Y2JloVUKh22IKBD0ar0okx/+/dds02TEwKVKHI/Bvf6ll2K?=
+ =?iso-8859-1?Q?I7aybFD9jXdUtknr0T4=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e33ed57-194b-4412-4c95-08dc36af4eab
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 09:42:54.8735
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9sLD5gx+VjMbjDs0KTYWNgTqhMyj5znXcH19gZN9YQUSIXnFWUn4k7ETY6DdS77wltsNsv2Ld+6nO+xA3LWhUXiffCgsuJ6v4L3hL8FMf28=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6140
+X-OriginatorOrg: intel.com
 
-Hello,
+On 2024-02-23 at 13:18:32 -0800, Reinette Chatre wrote:
+>Hi Maciej,
+>
+>On 2/22/2024 4:07 AM, Maciej Wieczor-Retman wrote:
+>> diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+>> index 161f5365b4f0..bae08d1221ec 100644
+>> --- a/tools/testing/selftests/resctrl/resctrl_tests.c
+>> +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+>> @@ -134,6 +134,8 @@ static void run_single_test(const struct resctrl_test *test, const struct user_p
+>>  	}
+>>  
+>>  	ret = test->run_test(test, uparams);
+>> +	if (test->cleanup)
+>> +		test->cleanup();
+>>  	ksft_test_result(!ret, "%s: test\n", test->name);
+>>  
+>>  cleanup:
+>
+>I think this can be potentially confusing to do cleanup here and
+>then follow it with a test_cleanup(). Could this test specific
+>cleanup perhaps be called from the general test_cleanup() instead?
 
-syzbot found the following issue on:
+Sure, that should look nicer, thanks!
 
-HEAD commit:    f2e367d6ad3b Merge tag 'for-6.8/dm-fix-3' of git://git.ker..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=114e10e4180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eff9f3183d0a20dd
-dashboard link: https://syzkaller.appspot.com/bug?extid=28748250ab47a8f04100
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1064b372180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10aca6ac180000
+>
+>Reinette
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c55ca1fdc5ad/disk-f2e367d6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4556a82fb4ed/vmlinux-f2e367d6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/95338ed9dad1/bzImage-f2e367d6.xz
-
-The issue was bisected to:
-
-commit 321da3dc1f3c92a12e3c5da934090d2992a8814c
-Author: Martin K. Petersen <martin.petersen@oracle.com>
-Date:   Tue Feb 13 14:33:06 2024 +0000
-
-    scsi: sd: usb_storage: uas: Access media prior to querying device properties
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15a3934a180000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17a3934a180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13a3934a180000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com
-Fixes: 321da3dc1f3c ("scsi: sd: usb_storage: uas: Access media prior to querying device properties")
-
-divide error: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 0 PID: 5070 Comm: usb-storage Not tainted 6.8.0-rc5-syzkaller-00297-gf2e367d6ad3b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:isd200_scsi_to_ata drivers/usb/storage/isd200.c:1318 [inline]
-RIP: 0010:isd200_ata_command+0x776/0x2380 drivers/usb/storage/isd200.c:1529
-Code: 62 fa 49 8d 7c 24 0c 48 89 f8 48 c1 e8 03 42 0f b6 04 28 84 c0 0f 85 00 18 00 00 41 0f b7 5c 24 0c 48 8b 7c 24 18 89 f8 31 d2 <f7> f3 41 89 d0 49 83 c4 06 4c 89 e0 48 c1 e8 03 42 0f b6 04 28 84
-RSP: 0018:ffffc900043ffc00 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888023230000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc900043ffd50 R08: ffffffff873161fd R09: ffffffff87315c95
-R10: 0000000000000008 R11: ffff888023230000 R12: ffff88807f7a0000
-R13: dffffc0000000000 R14: ffff888021da1000 R15: ffff88807c10a110
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000563828985bd8 CR3: 000000002e0cc000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- usb_stor_control_thread+0x4b1/0xa50 drivers/usb/storage/usb.c:368
- kthread+0x2ef/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:isd200_scsi_to_ata drivers/usb/storage/isd200.c:1318 [inline]
-RIP: 0010:isd200_ata_command+0x776/0x2380 drivers/usb/storage/isd200.c:1529
-Code: 62 fa 49 8d 7c 24 0c 48 89 f8 48 c1 e8 03 42 0f b6 04 28 84 c0 0f 85 00 18 00 00 41 0f b7 5c 24 0c 48 8b 7c 24 18 89 f8 31 d2 <f7> f3 41 89 d0 49 83 c4 06 4c 89 e0 48 c1 e8 03 42 0f b6 04 28 84
-RSP: 0018:ffffc900043ffc00 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888023230000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc900043ffd50 R08: ffffffff873161fd R09: ffffffff87315c95
-R10: 0000000000000008 R11: ffff888023230000 R12: ffff88807f7a0000
-R13: dffffc0000000000 R14: ffff888021da1000 R15: ffff88807c10a110
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000563828985bd8 CR3: 000000000df32000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	fa                   	cli
-   1:	49 8d 7c 24 0c       	lea    0xc(%r12),%rdi
-   6:	48 89 f8             	mov    %rdi,%rax
-   9:	48 c1 e8 03          	shr    $0x3,%rax
-   d:	42 0f b6 04 28       	movzbl (%rax,%r13,1),%eax
-  12:	84 c0                	test   %al,%al
-  14:	0f 85 00 18 00 00    	jne    0x181a
-  1a:	41 0f b7 5c 24 0c    	movzwl 0xc(%r12),%ebx
-  20:	48 8b 7c 24 18       	mov    0x18(%rsp),%rdi
-  25:	89 f8                	mov    %edi,%eax
-  27:	31 d2                	xor    %edx,%edx
-* 29:	f7 f3                	div    %ebx <-- trapping instruction
-  2b:	41 89 d0             	mov    %edx,%r8d
-  2e:	49 83 c4 06          	add    $0x6,%r12
-  32:	4c 89 e0             	mov    %r12,%rax
-  35:	48 c1 e8 03          	shr    $0x3,%rax
-  39:	42 0f b6 04 28       	movzbl (%rax,%r13,1),%eax
-  3e:	84                   	.byte 0x84
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+Kind regards
+Maciej Wieczór-Retman
 
