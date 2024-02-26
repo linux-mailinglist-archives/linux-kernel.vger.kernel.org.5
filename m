@@ -1,139 +1,145 @@
-Return-Path: <linux-kernel+bounces-80417-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBD88866847
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:40:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAE3186684B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E2841F21ADD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:40:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E1472818B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:43:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E3BF4E2;
-	Mon, 26 Feb 2024 02:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC82FC01;
+	Mon, 26 Feb 2024 02:43:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F6+HRb/9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bFjm+vRc"
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9749C817
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 02:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15C06EEDE;
+	Mon, 26 Feb 2024 02:42:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708915245; cv=none; b=ruTV0J6OW3EOtDacZgXJQ3d53zHCtc3emhdjaneB15KibTsmfMXw0EtdIbJjv3+oeEMjp7E6AfTVv3i5K+r3ual9V62qBJHOXKZ9Yx625hW5JWVNK1jH7a0nwyceoslcoFMVBm6CirC4eK8ghJ0BqvLiQWLcQ71ynALtDvZRpag=
+	t=1708915382; cv=none; b=lnyPRqJStt3v3Rw+vN9AbtVFGmFGGItYT2NDbDtA0NNYiaHvrpE6S37wSNsOjZZnqgX0w7w32hryXu7PmtVuAjPo0wZNqxfqwhepfwUsaZ4fzIaFsgNYrzyvTeElQZQEdO17QfwljUuzqQ+jfqP2unpXiAPVxXnwjOIoi6dhTQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708915245; c=relaxed/simple;
-	bh=DuGF9S4m4uhmiHy72DnJgIonHHmX99UDPQZHNKqVFP4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Xz+uC5XU3PjJMSWx3OElauLs9dkQuvur5FBzqeQ479uEJm+KFHn/Ke+TWZZSRmIAN8CeYPhLrR8cdv8HcXbBAd9AX2dMEOsDzppoSCCeymQYx4wQ9uhd5gNqX7A4D+vDHCy7MoC0VXMd7rzrMQ1aZjnRGkhkOVPNWMSvdYqqNsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F6+HRb/9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3693CC433F1;
-	Mon, 26 Feb 2024 02:40:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708915245;
-	bh=DuGF9S4m4uhmiHy72DnJgIonHHmX99UDPQZHNKqVFP4=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=F6+HRb/9hWHnekgZ+zmflcvQfEybBYrxw8KGD0fT7IoNYR+T09ePn8ZhQqQpmAKCt
-	 T71rbKStsjrTOarQmZhP7H4NFyyLWgr6iJkv04hsYvOfZgVKPC62tyPd2EV4L9C8Bg
-	 SpnS/gVfqrZYUJKm7g6RhMSmBiQbvyIs69lA/8oLxhKW+hbL1aIElUc2GvuWAv4NUi
-	 sGPYkLTPb1K9S2zQY5LHfeEqBXhM5BESicI/1A/ThQQeEINVbVmd2EEf4r+/JCj7J1
-	 mDvS0zf9iEmNaDgyLsZRJLnQkHpah6zgr6BjQdn2rgYh45nlJLSMtJcfzRs+o1icyv
-	 inYsj1VB/ehjA==
-Message-ID: <afa444c5-7ac1-457e-9559-6d7c6623c426@kernel.org>
-Date: Mon, 26 Feb 2024 10:40:41 +0800
+	s=arc-20240116; t=1708915382; c=relaxed/simple;
+	bh=2lrCQXoWic/lvZYvaJPQ+wPoytEO7esJOR/f8mwfX7M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o0I91Bis8j12DbraWrU6F3zmZyy0Ie82m1TPKwkmoDajLj0wiwF94Nxk6tLb83Kch3N05tsTmUnwWe5OptI82rQ3wbn4mqcVeYJSHRX3YJ7hA6EUY14irSAZDUrrzQ9pyijHviM6YIhBZe0C11ix8rBUIgEvlivoz9BzoECBjxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bFjm+vRc; arc=none smtp.client-ip=95.215.58.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d91e3235-395a-4e63-8ace-c14dfaf0a4fd@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708915377;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C2IqjWh/yWi1m79mN9dV+v0YZlblGMbjVM2Q3IOYH54=;
+	b=bFjm+vRcwNAtPWIpm6XptVUfBkkdjZv+25Ep9G6sX9r6KFFQB87NTpRlbyYXzkys+APTEZ
+	wby50uKxS+kra1tcTtwwYRz+2+rj34wrnn6dvN6+dDALXzGoob2NpGB7GMqgjbKNnRkwWP
+	G12RenC4deP0/e9e9BlKywLPj5jXa/Y=
+Date: Mon, 26 Feb 2024 10:42:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH 1/5] f2fs: check number of blocks in a current
- section
+Subject: Re: [PATCH] ceph: remove SLAB_MEM_SPREAD flag usage
 Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20240223205535.307307-1-jaegeuk@kernel.org>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <20240223205535.307307-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Xiubo Li <xiubli@redhat.com>, idryomov@gmail.com, jlayton@kernel.org
+Cc: ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, vbabka@suse.cz, roman.gushchin@linux.dev,
+ Xiongwei.Song@windriver.com, Chengming Zhou <zhouchengming@bytedance.com>
+References: <20240224134715.829225-1-chengming.zhou@linux.dev>
+ <b6083c49-5240-40e3-a028-bb1ba63ccdd7@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <b6083c49-5240-40e3-a028-bb1ba63ccdd7@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2024/2/24 4:55, Jaegeuk Kim wrote:
-> In cfd66bb715fd ("f2fs: fix deadloop in foreground GC"), we needed to check
-> the number of blocks in a section instead of the segment.
+On 2024/2/26 09:43, Xiubo Li wrote:
+> Hi Chengming,
 > 
-> In addtion, let's check the entire node sections when checking the avaiable
-> node block space. It does not match one to one per temperature, but currently
+> Thanks for your patch.
+> 
+> BTW, could you share the link of the relevant patches to mark this a no-op ?
+Update changelog to make it clearer:
 
-I tested this patch w/ testcase in [1], it doesn't complain.
+The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
+removed as of v6.8-rc1, so it became a dead flag. And the series[1]
+went on to mark it obsolete to avoid confusion for users. Here we
+can just remove all its users, which has no functional change.
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=215914
+[1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
 
-> we don't have exact dirty page count per temperature. Hence, use a rough
-> estimation.
-
-Do we need more accurate per-temperature dirty node count for extreme
-corner case?
-
-e.g. node_blocks is counted from hot dirty nodes, and current hot_node
-log has no enough free space for it.
-
-Thanks,
+Thanks!
 
 > 
-> Fixes: cfd66bb715fd ("f2fs: fix deadloop in foreground GC")
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->   fs/f2fs/segment.h | 22 +++++++++++-----------
->   1 file changed, 11 insertions(+), 11 deletions(-)
+> Thanks
 > 
-> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-> index 3edd3809b6b5..15bf5edd9b3c 100644
-> --- a/fs/f2fs/segment.h
-> +++ b/fs/f2fs/segment.h
-> @@ -561,23 +561,23 @@ static inline bool has_curseg_enough_space(struct f2fs_sb_info *sbi,
->   			unsigned int node_blocks, unsigned int dent_blocks)
->   {
->   
-> -	unsigned int segno, left_blocks;
-> +	unsigned segno, left_blocks;
->   	int i;
->   
-> -	/* check current node segment */
-> +	/* check current node sections, which counts very roughly */
-> +	left_blocks = 0;
->   	for (i = CURSEG_HOT_NODE; i <= CURSEG_COLD_NODE; i++) {
->   		segno = CURSEG_I(sbi, i)->segno;
-> -		left_blocks = f2fs_usable_blks_in_seg(sbi, segno) -
-> -				get_seg_entry(sbi, segno)->ckpt_valid_blocks;
-> -
-> -		if (node_blocks > left_blocks)
-> -			return false;
-> +		left_blocks += CAP_BLKS_PER_SEC(sbi) -
-> +				get_ckpt_valid_blocks(sbi, segno, true);
->   	}
-> +	if (node_blocks > left_blocks)
-> +		return false;
->   
-> -	/* check current data segment */
-> +	/* check current data section for dentry blocks. */
->   	segno = CURSEG_I(sbi, CURSEG_HOT_DATA)->segno;
-> -	left_blocks = f2fs_usable_blks_in_seg(sbi, segno) -
-> -			get_seg_entry(sbi, segno)->ckpt_valid_blocks;
-> +	left_blocks = CAP_BLKS_PER_SEC(sbi) -
-> +			get_ckpt_valid_blocks(sbi, segno, true);
->   	if (dent_blocks > left_blocks)
->   		return false;
->   	return true;
-> @@ -626,7 +626,7 @@ static inline bool has_not_enough_free_secs(struct f2fs_sb_info *sbi,
->   
->   	if (free_secs > upper_secs)
->   		return false;
-> -	else if (free_secs <= lower_secs)
-> +	if (free_secs <= lower_secs)
->   		return true;
->   	return !curseg_space;
->   }
+> - Xiubo
+> 
+> On 2/24/24 21:47, chengming.zhou@linux.dev wrote:
+>> From: Chengming Zhou <zhouchengming@bytedance.com>
+>>
+>> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+>> its usage so we can delete it from slab. No functional change.
+>>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> ---
+>>   fs/ceph/super.c | 18 +++++++++---------
+>>   1 file changed, 9 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/fs/ceph/super.c b/fs/ceph/super.c
+>> index 5ec102f6b1ac..4dcbbaa297f6 100644
+>> --- a/fs/ceph/super.c
+>> +++ b/fs/ceph/super.c
+>> @@ -928,36 +928,36 @@ static int __init init_caches(void)
+>>       ceph_inode_cachep = kmem_cache_create("ceph_inode_info",
+>>                         sizeof(struct ceph_inode_info),
+>>                         __alignof__(struct ceph_inode_info),
+>> -                      SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD|
+>> -                      SLAB_ACCOUNT, ceph_inode_init_once);
+>> +                      SLAB_RECLAIM_ACCOUNT|SLAB_ACCOUNT,
+>> +                      ceph_inode_init_once);
+>>       if (!ceph_inode_cachep)
+>>           return -ENOMEM;
+>>   -    ceph_cap_cachep = KMEM_CACHE(ceph_cap, SLAB_MEM_SPREAD);
+>> +    ceph_cap_cachep = KMEM_CACHE(ceph_cap, 0);
+>>       if (!ceph_cap_cachep)
+>>           goto bad_cap;
+>> -    ceph_cap_snap_cachep = KMEM_CACHE(ceph_cap_snap, SLAB_MEM_SPREAD);
+>> +    ceph_cap_snap_cachep = KMEM_CACHE(ceph_cap_snap, 0);
+>>       if (!ceph_cap_snap_cachep)
+>>           goto bad_cap_snap;
+>>       ceph_cap_flush_cachep = KMEM_CACHE(ceph_cap_flush,
+>> -                       SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD);
+>> +                       SLAB_RECLAIM_ACCOUNT);
+>>       if (!ceph_cap_flush_cachep)
+>>           goto bad_cap_flush;
+>>         ceph_dentry_cachep = KMEM_CACHE(ceph_dentry_info,
+>> -                    SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD);
+>> +                    SLAB_RECLAIM_ACCOUNT);
+>>       if (!ceph_dentry_cachep)
+>>           goto bad_dentry;
+>>   -    ceph_file_cachep = KMEM_CACHE(ceph_file_info, SLAB_MEM_SPREAD);
+>> +    ceph_file_cachep = KMEM_CACHE(ceph_file_info, 0);
+>>       if (!ceph_file_cachep)
+>>           goto bad_file;
+>>   -    ceph_dir_file_cachep = KMEM_CACHE(ceph_dir_file_info, SLAB_MEM_SPREAD);
+>> +    ceph_dir_file_cachep = KMEM_CACHE(ceph_dir_file_info, 0);
+>>       if (!ceph_dir_file_cachep)
+>>           goto bad_dir_file;
+>>   -    ceph_mds_request_cachep = KMEM_CACHE(ceph_mds_request, SLAB_MEM_SPREAD);
+>> +    ceph_mds_request_cachep = KMEM_CACHE(ceph_mds_request, 0);
+>>       if (!ceph_mds_request_cachep)
+>>           goto bad_mds_req;
+>>   
+> 
 
