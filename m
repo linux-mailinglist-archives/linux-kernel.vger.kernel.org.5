@@ -1,116 +1,369 @@
-Return-Path: <linux-kernel+bounces-81500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0451E8676C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D35258676E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE5961F233DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:40:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E5221F2893B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:42:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BDA1292C0;
-	Mon, 26 Feb 2024 13:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A90012C7ED;
+	Mon, 26 Feb 2024 13:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IeKktXd4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dWkl9a0E"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6661E1AACC;
-	Mon, 26 Feb 2024 13:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF1712BF1E;
+	Mon, 26 Feb 2024 13:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708954806; cv=none; b=vFJaSLN9HaX215AgaQeDAZHh/ghEJS/akVBw9nqzu4rqgjBHcFkTPq1wc86jf86Hf/YZBlryYQiuTt51jr25l1oc+FnPs0WfiUFOmprf/4Bn5q5zGw/pBFhOwDq7HXWie36+kn5OJbq591sZYb65vebKTuqnIy83YWQoK82ePLU=
+	t=1708954827; cv=none; b=upXK9g14eTHWho4Uj0lTB2bK0ghjw1MEA2oKZnb0s6LJlfqA51xbLcMu9dRXd62ppVqrIyU7c3gRatdKNcq3boCTZG+N+GoyrB0ZmC5oAwVf8MN8P0YyqLT9njvUT2c6fVRjlnYEUnOE6uB53QinVOGyyKBN/1dCvli0kanWfuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708954806; c=relaxed/simple;
-	bh=w0aH9LAZkqIcxgob9/XfgZeLdv3nrmwr76/CADHXqw4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PfvnOSOBkao93q9Ha70g6ZlpwgU85NojEqV1hN8Z/mLrd9dizHkQ8z5mp/4dn2kPWPM/X8CL/9mo+VEYRn6CvE32dsSxdrMpqaT/5drHfZjp0LuiWbt6jiBxaKuv2zHzoenAnt5o91cnpq4+7RDU1ZsJ1CPI5+Omfev8+IPMdLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IeKktXd4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4339C433F1;
-	Mon, 26 Feb 2024 13:40:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708954805;
-	bh=w0aH9LAZkqIcxgob9/XfgZeLdv3nrmwr76/CADHXqw4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IeKktXd4eDPlis2egCcqOZNjF3hNccQgU+AjwapnjUckJfbKY3CqlXTmdf03L639H
-	 CmhZbsPo1nsVoi7NHBcE/lXJyqEtGDLVq9bYpU372681mP/SMGvPQ6guKAkzf2VigO
-	 1ViOA3hERzLVntzwpGuW5ss/Zr12kKbdqDvoaOIZ9NgVbth1Nkyt/QikrbQLCenhzi
-	 EGb4MeDBMHndcN65KA4+RShqPsjue9w2ZOYGZIIhNGAgZYmEzzGgzaTU79Mrjg+mUc
-	 qr7tl2Su35ilquLbD+j7zpSwHnOTm8O06aPktWvOT5ANy6bMxp6XLhSYxwSKvVX5ou
-	 vxIPX8IS7dHzQ==
-Date: Mon, 26 Feb 2024 13:40:00 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Dhruva Gole <d-gole@ti.com>
-Cc: Apurva Nandan <a-nandan@ti.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>, Nishanth <nm@ti.com>,
-	Vignesh <vigneshr@ti.com>
-Subject: Re: [PATCH v4 0/4] spi: cadence-qspi: Fix runtime PM and system-wide
- suspend
-Message-ID: <cb74a9f9-abfa-4a94-b4a9-bf41ddc697eb@sirena.org.uk>
-References: <20240222-cdns-qspi-pm-fix-v4-0-6b6af8bcbf59@bootlin.com>
- <170862920925.104158.14642580909914879148.b4-ty@kernel.org>
- <20240226121803.5a7r5wkpbbowcxgx@dhruva>
- <69f3dcd7-b79f-4b4f-aecb-dc559d74e6e4@sirena.org.uk>
+	s=arc-20240116; t=1708954827; c=relaxed/simple;
+	bh=kmIAbQWGiqY+Esp6e4HG+4T6WE1cOrUZMnGMSs1qujA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=TUGdWNSBRbZgbREJ/YKhQ11t94GSiUKQO7De6KodRUZO/uS0ztvdZwHetI1b5CCA1olcnS0KLCV2UFAnuTFlfBUBr0oHEu+gBXHJtjct0SbfeRjd33b1T0Xpfkf2qyTPMklfW3RpkWoLM4GdAkqDl+mLWw7yrVOBOIetIXO+8YE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dWkl9a0E; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0F9D540013;
+	Mon, 26 Feb 2024 13:40:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708954823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oYfxTVQWmBuJF4lBsfx9UPY0Q4bZNXUuXVcIdMJTjIQ=;
+	b=dWkl9a0EUbaxd4z5UcEvFMuaCWHCgRuD9eKdy9ZzmXbohVaSgakm9YylmiuK9Gj7znKJ/f
+	g8OxICrmiEO/M37eZrtkHPvTTU90FCXkcoZ3cZuvejcVjf1KK9IPzuO/FtNjqYbjGlMi1L
+	HBzcgnHqtkSlUr8fD8b3pMv0RzkCE4mgegyP8K6Nj4zPVwAhXtZ5MxITCZm1do+mBc7QAI
+	69VajbqEuCu0BMfJc9wqeQ6ZcB3v6uFHH5LEWASPoDI5jA00JYdxLfEt1cHvMb0yAQn+zd
+	C7RtLfMbHP4yikz8Vy6d4mK68SbD2t+b3KofA5JDOfkzH5FVKTSpFBaZ/Bh/zg==
+From: Kory Maincent <kory.maincent@bootlin.com>
+Date: Mon, 26 Feb 2024 14:40:00 +0100
+Subject: [PATCH net-next v9 09/13] net: Add the possibility to support a
+ selected hwtstamp in netdevice
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="dT9DhkmsR3HA0bqQ"
-Content-Disposition: inline
-In-Reply-To: <69f3dcd7-b79f-4b4f-aecb-dc559d74e6e4@sirena.org.uk>
-X-Cookie: Walk softly and carry a BFG-9000.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240226-feature_ptp_netnext-v9-9-455611549f21@bootlin.com>
+References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
+In-Reply-To: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
+To: Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Richard Cochran <richardcochran@gmail.com>, 
+ Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
+ Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
+ Nicolas Ferre <nicolas.ferre@microchip.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
+ Simon Horman <horms@kernel.org>, Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, 
+ Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
+ Kory Maincent <kory.maincent@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: kory.maincent@bootlin.com
 
+Introduce the description of a hwtstamp provider which is define with a
+ptp_clock pointer and a qualifier value.
 
---dT9DhkmsR3HA0bqQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Add a hwtstamp provider description within the netdev structure to be able
+to select the hwtstamp we want too use. By default we use the old API that
+does not support hwtstamp selectability which mean the hwtstamp ptp_clock
+pointer is unset.
 
-On Mon, Feb 26, 2024 at 01:27:57PM +0000, Mark Brown wrote:
-> On Mon, Feb 26, 2024 at 05:48:03PM +0530, Dhruva Gole wrote:
-> > On Feb 22, 2024 at 19:13:29 +0000, Mark Brown wrote:
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
 
-> [    1.709414] Call trace:
-> [    1.711852]  __mutex_lock.constprop.0+0x84/0x540
-> [    1.716460]  __mutex_lock_slowpath+0x14/0x20
-> [    1.720719]  mutex_lock+0x48/0x54
-> [    1.724026]  spi_controller_suspend+0x30/0x7c
-> [    1.728377]  cqspi_suspend+0x1c/0x6c
-> [    1.731944]  pm_generic_runtime_suspend+0x2c/0x44
-> [    1.736640]  genpd_runtime_suspend+0xa8/0x254
+Change in v8:
+- New patch
+---
+ drivers/net/phy/phy_device.c    |  7 +++++++
+ include/linux/net_tstamp.h      |  6 ++++++
+ include/linux/netdevice.h       |  5 +++++
+ include/uapi/linux/net_tstamp.h | 11 +++++++++++
+ net/core/dev_ioctl.c            | 39 +++++++++++++++++++++++++++++++++++++--
+ net/core/timestamping.c         | 37 ++++++++++++++++++++++++++++++++-----
+ 6 files changed, 98 insertions(+), 7 deletions(-)
 
-> (it's generally helpful to provide the most relevant section directly.)
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 2eefee970851..2532843e3c13 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -31,6 +31,7 @@
+ #include <linux/phy_led_triggers.h>
+ #include <linux/pse-pd/pse.h>
+ #include <linux/property.h>
++#include <linux/ptp_clock_kernel.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/sfp.h>
+ #include <linux/skbuff.h>
+@@ -1936,6 +1937,12 @@ void phy_detach(struct phy_device *phydev)
+ 
+ 	phy_suspend(phydev);
+ 	if (dev) {
++		/* Disable timestamp if selected */
++		if (ptp_clock_phydev(dev->hwtstamp.ptp) == phydev) {
++			dev->hwtstamp.ptp = NULL;
++			dev->hwtstamp.qualifier = HWTSTAMP_PROVIDER_QUALIFIER_PRECISE;
++		}
++
+ 		phydev->attached_dev->phydev = NULL;
+ 		phydev->attached_dev = NULL;
+ 	}
+diff --git a/include/linux/net_tstamp.h b/include/linux/net_tstamp.h
+index 662074b08c94..263dfcf12000 100644
+--- a/include/linux/net_tstamp.h
++++ b/include/linux/net_tstamp.h
+@@ -19,6 +19,11 @@ enum hwtstamp_source {
+ 	HWTSTAMP_SOURCE_PHYLIB,
+ };
+ 
++struct hwtstamp_provider {
++	struct ptp_clock *ptp;
++	enum hwtstamp_provider_qualifier qualifier;
++};
++
+ /**
+  * struct kernel_hwtstamp_config - Kernel copy of struct hwtstamp_config
+  *
+@@ -43,6 +48,7 @@ struct kernel_hwtstamp_config {
+ 	struct ifreq *ifr;
+ 	bool copied_to_user;
+ 	enum hwtstamp_source source;
++	enum hwtstamp_provider_qualifier qualifier;
+ };
+ 
+ static inline void hwtstamp_config_to_kernel(struct kernel_hwtstamp_config *kernel_cfg,
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index b67727c0dc58..43e3050a99af 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -47,6 +47,7 @@
+ #include <uapi/linux/if_bonding.h>
+ #include <uapi/linux/pkt_cls.h>
+ #include <uapi/linux/netdev.h>
++#include <linux/net_tstamp.h>
+ #include <linux/hashtable.h>
+ #include <linux/rbtree.h>
+ #include <net/net_trackers.h>
+@@ -2107,6 +2108,8 @@ enum netdev_reg_state {
+  *	@dpll_pin: Pointer to the SyncE source pin of a DPLL subsystem,
+  *		   where the clock is recovered.
+  *
++ *	@hwtstamp: Tracks which PTP performs hardware packet time stamping.
++ *
+  *	FIXME: cleanup struct net_device such that network protocol info
+  *	moves out.
+  */
+@@ -2478,6 +2481,8 @@ struct net_device {
+ 	/** @page_pools: page pools created for this netdevice */
+ 	struct hlist_head	page_pools;
+ #endif
++
++	struct hwtstamp_provider	hwtstamp;
+ };
+ #define to_net_dev(d) container_of(d, struct net_device, dev)
+ 
+diff --git a/include/uapi/linux/net_tstamp.h b/include/uapi/linux/net_tstamp.h
+index a2c66b3d7f0f..a9ed48ee8fc7 100644
+--- a/include/uapi/linux/net_tstamp.h
++++ b/include/uapi/linux/net_tstamp.h
+@@ -13,6 +13,17 @@
+ #include <linux/types.h>
+ #include <linux/socket.h>   /* for SO_TIMESTAMPING */
+ 
++/*
++ * Possible type of htstamp provider. Mainly "precise" the default one
++ * is for IEEE 1588 quality and "approx" is for NICs DMA point.
++ */
++enum hwtstamp_provider_qualifier {
++	HWTSTAMP_PROVIDER_QUALIFIER_PRECISE,
++	HWTSTAMP_PROVIDER_QUALIFIER_APPROX,
++
++	HWTSTAMP_PROVIDER_QUALIFIER_CNT,
++};
++
+ /* SO_TIMESTAMPING flags */
+ enum {
+ 	SOF_TIMESTAMPING_TX_HARDWARE = (1<<0),
+diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
+index 3342834597cd..cd093c2aad67 100644
+--- a/net/core/dev_ioctl.c
++++ b/net/core/dev_ioctl.c
+@@ -6,6 +6,7 @@
+ #include <linux/rtnetlink.h>
+ #include <linux/net_tstamp.h>
+ #include <linux/phylib_stubs.h>
++#include <linux/ptp_clock_kernel.h>
+ #include <linux/wireless.h>
+ #include <linux/if_bridge.h>
+ #include <net/dsa_stubs.h>
+@@ -270,6 +271,20 @@ static int dev_eth_ioctl(struct net_device *dev,
+ int dev_get_hwtstamp_phylib(struct net_device *dev,
+ 			    struct kernel_hwtstamp_config *cfg)
+ {
++	cfg->qualifier = dev->hwtstamp.qualifier;
++
++	if (dev->hwtstamp.ptp) {
++		struct ptp_clock *ptp = dev->hwtstamp.ptp;
++
++		if (ptp_clock_from_phylib(ptp))
++			return phy_hwtstamp_get(ptp_clock_phydev(ptp), cfg);
++
++		if (ptp_clock_from_netdev(ptp))
++			return dev->netdev_ops->ndo_hwtstamp_get(dev, cfg);
++
++		return -EOPNOTSUPP;
++	}
++
+ 	if (phy_is_default_hwtstamp(dev->phydev))
+ 		return phy_hwtstamp_get(dev->phydev, cfg);
+ 
+@@ -327,11 +342,31 @@ int dev_set_hwtstamp_phylib(struct net_device *dev,
+ 			    struct netlink_ext_ack *extack)
+ {
+ 	const struct net_device_ops *ops = dev->netdev_ops;
+-	bool phy_ts = phy_is_default_hwtstamp(dev->phydev);
+ 	struct kernel_hwtstamp_config old_cfg = {};
++	struct phy_device *phydev;
+ 	bool changed = false;
++	bool phy_ts;
+ 	int err;
+ 
++	cfg->qualifier = dev->hwtstamp.qualifier;
++
++	if (dev->hwtstamp.ptp) {
++		struct ptp_clock *ptp = dev->hwtstamp.ptp;
++
++		if (ptp_clock_from_phylib(ptp)) {
++			phy_ts = true;
++			phydev = ptp_clock_phydev(ptp);
++		} else if (ptp_clock_from_netdev(ptp)) {
++			phy_ts = false;
++		} else {
++			return -EOPNOTSUPP;
++		}
++	} else {
++		phy_ts = phy_is_default_hwtstamp(dev->phydev);
++		if (phy_ts)
++			phydev = dev->phydev;
++	}
++
+ 	cfg->source = phy_ts ? HWTSTAMP_SOURCE_PHYLIB : HWTSTAMP_SOURCE_NETDEV;
+ 
+ 	if (phy_ts && (dev->priv_flags & IFF_SEE_ALL_HWTSTAMP_REQUESTS)) {
+@@ -353,7 +388,7 @@ int dev_set_hwtstamp_phylib(struct net_device *dev,
+ 		changed = kernel_hwtstamp_config_changed(&old_cfg, cfg);
+ 
+ 	if (phy_ts) {
+-		err = phy_hwtstamp_set(dev->phydev, cfg, extack);
++		err = phy_hwtstamp_set(phydev, cfg, extack);
+ 		if (err) {
+ 			if (changed)
+ 				ops->ndo_hwtstamp_set(dev, &old_cfg, NULL);
+diff --git a/net/core/timestamping.c b/net/core/timestamping.c
+index 3717fb152ecc..a7b256ac3490 100644
+--- a/net/core/timestamping.c
++++ b/net/core/timestamping.c
+@@ -9,6 +9,7 @@
+ #include <linux/ptp_classify.h>
+ #include <linux/skbuff.h>
+ #include <linux/export.h>
++#include <linux/ptp_clock_kernel.h>
+ 
+ static unsigned int classify(const struct sk_buff *skb)
+ {
+@@ -22,18 +23,31 @@ static unsigned int classify(const struct sk_buff *skb)
+ void skb_clone_tx_timestamp(struct sk_buff *skb)
+ {
+ 	struct mii_timestamper *mii_ts;
++	struct phy_device *phydev;
+ 	struct sk_buff *clone;
+ 	unsigned int type;
+ 
+-	if (!skb->sk || !skb->dev ||
+-	    !phy_is_default_hwtstamp(skb->dev->phydev))
++	if (!skb->sk || !skb->dev)
+ 		return;
+ 
++	if (skb->dev->hwtstamp.ptp) {
++		if (!ptp_clock_from_phylib(skb->dev->hwtstamp.ptp))
++			return;
++
++		phydev = ptp_clock_phydev(skb->dev->hwtstamp.ptp);
++
++	} else {
++		if (!phy_is_default_hwtstamp(phydev))
++			return;
++
++		phydev = skb->dev->phydev;
++	}
++
+ 	type = classify(skb);
+ 	if (type == PTP_CLASS_NONE)
+ 		return;
+ 
+-	mii_ts = skb->dev->phydev->mii_ts;
++	mii_ts = phydev->mii_ts;
+ 	if (likely(mii_ts->txtstamp)) {
+ 		clone = skb_clone_sk(skb);
+ 		if (!clone)
+@@ -46,11 +60,24 @@ EXPORT_SYMBOL_GPL(skb_clone_tx_timestamp);
+ bool skb_defer_rx_timestamp(struct sk_buff *skb)
+ {
+ 	struct mii_timestamper *mii_ts;
++	struct phy_device *phydev;
+ 	unsigned int type;
+ 
+-	if (!skb->dev || !phy_is_default_hwtstamp(skb->dev->phydev))
++	if (!skb->dev)
+ 		return false;
+ 
++	if (skb->dev->hwtstamp.ptp) {
++		if (!ptp_clock_from_phylib(skb->dev->hwtstamp.ptp))
++			return false;
++
++		phydev = ptp_clock_phydev(skb->dev->hwtstamp.ptp);
++	} else {
++		if (!phy_is_default_hwtstamp(phydev))
++			return false;
++
++		phydev = skb->dev->phydev;
++	}
++
+ 	if (skb_headroom(skb) < ETH_HLEN)
+ 		return false;
+ 
+@@ -63,7 +90,7 @@ bool skb_defer_rx_timestamp(struct sk_buff *skb)
+ 	if (type == PTP_CLASS_NONE)
+ 		return false;
+ 
+-	mii_ts = skb->dev->phydev->mii_ts;
++	mii_ts = phydev->mii_ts;
+ 	if (likely(mii_ts->rxtstamp))
+ 		return mii_ts->rxtstamp(mii_ts, skb, type);
+ 
 
-> The issue here appears to be that we've registered for runtime suspend
-> prior to registering the controller...
+-- 
+2.25.1
 
-Actually, no - after this series cqspi_suspend() is the system not
-runtime PM operation and should not be called from runtime suspend.  How
-is that happening?
-
---dT9DhkmsR3HA0bqQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXclLAACgkQJNaLcl1U
-h9BuqQf+MH9CDnVqVpElG8YMfnoXoUebQzNfXKDwkudLGGp0ExSf1+MjPcfmzGrB
-mBXwd7A39yEX3v3CUFctuC2UovQA2eJDJXeGnpHuAJPSmbuWFrIlLUJEm2lv3CAl
-dSvAWQl9O+26dtX6Tda0897TMuD/hIX8bf+NY6ejvSyb61gBMGJS23AbwA6rQbkx
-E0/ulqCQ8lYL8WCYf/eoxEC3mSJefWAkjalulhvcWBfZgZrQe5uIddcmThn/Bn96
-JtK+wi1iT9ZtCysv0dwa8+lD3iSCeO2JLBHfchCTFlUfFwRH5gZX8SS4dTZhzMmi
-U0cVSxyElPcusXldph2Lw8ghLhM88A==
-=uNwv
------END PGP SIGNATURE-----
-
---dT9DhkmsR3HA0bqQ--
 
