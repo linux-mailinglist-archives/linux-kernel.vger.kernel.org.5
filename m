@@ -1,131 +1,159 @@
-Return-Path: <linux-kernel+bounces-81393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DBAC867552
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:42:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED040867555
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C91751F27D9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:42:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6746283D1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF3512A143;
-	Mon, 26 Feb 2024 12:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="hruwiW9p"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC50A8002E;
+	Mon, 26 Feb 2024 12:39:46 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447547F7C7;
-	Mon, 26 Feb 2024 12:39:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CAF7F7F8;
+	Mon, 26 Feb 2024 12:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708951172; cv=none; b=rrANa59KOUvxExc/d4b5+w1vU/L7BGtz7TDoYmP2anDffvsdqArT89xrv47M5PW0smFaSmjDZH1dKQkMbJG03g2NHdfxL5Sm/mFOxjeWeZYK8FfsVK8eJ9vmYs4DZDd+D/Lac6QZfg/27D+opdS1R2wGsTgVWdeoVGzBEq5a9DQ=
+	t=1708951186; cv=none; b=hq5NbC8CvQawrrDphX1szf9w2wGfOZTduX76Nsf0atTcwgPM3XPALwEUITUvxksgj82EEEa5P9Y2BWYB319EWbHXHvJDPf9Y/tCxfrrvjE4EMXx03HmfluhAfSelW2rTMzJSFt1qWBwi/hUnmHPMXOuuN0/+KbybuWBsEuKZeGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708951172; c=relaxed/simple;
-	bh=WuE4kCD97wZ9bNjHBG7YNNj1l3uPwjiVFXgZ1NInp4w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mWaNiFy35a2Ks4KfS/a9Av3OpwU6o6jcjdjEABU592eaIjgPjACJmZYhZGyn+/5hcGNplJcF7aLJQUAVz0rsH5/g3HVB9KSZxCR5dYULPLIRov8AnxLYQxf5TW4wFm2QTR9Xfk3KyISgMyP0zGtDkjTBqun4fm6xtaItfqQMStQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=hruwiW9p; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708951169;
-	bh=WuE4kCD97wZ9bNjHBG7YNNj1l3uPwjiVFXgZ1NInp4w=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hruwiW9pNWUrPMI0AD9IZzA/Y9miBS1AqGYeG1A93mG9LQcQ10Ia9jew8ZNEcDawX
-	 z2OBZElqRRK3DCorbhKBZoyHyjBIwBA/RxUar/Yj3jUrxr5yPQTsqVoA9ZJsyqBCfO
-	 ZZHSzru6f0uYG+SaC3GO+7DoPUxMliKkt+/iWBNtLejHWATUq1lIpomysLNwyhKKQC
-	 EIDI/5VBBFNI/7V17e1FzY0YgdFt2y4Vn8VxTTuE0glp/eUpn4mzPFVqSaOyu0XgQq
-	 COC7lTErNp+kg4igLcu882DuuMGyfXjVUNGZPxRgNh+yjGuhSWHNC9clYphHHXteDs
-	 hmtw0XcRhVcJQ==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id DD07B37820CF;
-	Mon, 26 Feb 2024 12:39:28 +0000 (UTC)
-Message-ID: <e2f901aa-9d1b-4de9-ac18-7cfb57adb587@collabora.com>
-Date: Mon, 26 Feb 2024 13:39:28 +0100
+	s=arc-20240116; t=1708951186; c=relaxed/simple;
+	bh=NGYp5BWIWj8SFQWbwPzlkAlkYMl5l0bOr2xtSsI6jtQ=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WyRnSvZqtQjSEbTtLmIruq/1m5NGxrU/wnswZyFDI20BAsd4HOHZQ1pHZUoseHlBfYlV6KZUsmaZRg0E2Xw2mKezMePgihO37JW8Y6oh754MlnXgGH+JBWTI9WJ+o3JC4WoERRo9UjD01ZTH7iinNzI7TLghQJlMr23mXC7z1eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk0Sq6gLRz6K6jp;
+	Mon, 26 Feb 2024 20:35:23 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 715421400DB;
+	Mon, 26 Feb 2024 20:39:42 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 12:39:41 +0000
+Date: Mon, 26 Feb 2024 12:39:40 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 07/20] famfs: Add include/linux/famfs_ioctl.h
+Message-ID: <20240226123940.0000692c@Huawei.com>
+In-Reply-To: <b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<b40ca30e4bf689249a8c237909d9a7aaca9861e4.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/11] drm/mediatek: Rename "pending_needs_vblank" to
- "needs_vblank"
-Content-Language: en-US
-To: Shawn Sung <shawn.sung@mediatek.com>,
- Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- dri-devel@lists.freedesktop.org, linux-mediatek@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
- Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
-References: <20240226085059.26850-1-shawn.sung@mediatek.com>
- <20240226085059.26850-12-shawn.sung@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240226085059.26850-12-shawn.sung@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Il 26/02/24 09:50, Shawn Sung ha scritto:
-> From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+On Fri, 23 Feb 2024 11:41:51 -0600
+John Groves <John@Groves.net> wrote:
+
+> Add uapi include file for famfs. The famfs user space uses ioctl on
+> individual files to pass in mapping information and file size. This
+> would be hard to do via sysfs or other means, since it's
+> file-specific.
 > 
-> Rename "pending_needs_vblank" to "needs_vblank" to reduce the code size.
-> 
-
-This decreases human readability though, so I would prefer that we omit this one.
-
-Regards,
-Angelo
-
-> Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+> Signed-off-by: John Groves <john@groves.net>
 > ---
->   drivers/gpu/drm/mediatek/mtk_crtc.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+>  include/uapi/linux/famfs_ioctl.h | 56 ++++++++++++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 include/uapi/linux/famfs_ioctl.h
 > 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_crtc.c b/drivers/gpu/drm/mediatek/mtk_crtc.c
-> index 7fe234de83a3..a1fb6c67681d 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_crtc.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_crtc.c
-> @@ -42,7 +42,7 @@ struct mtk_crtc {
->   	struct drm_crtc			base;
->   	bool				enabled;
->   
-> -	bool				pending_needs_vblank;
-> +	bool				needs_vblank;
->   	struct drm_pending_vblank_event	*event;
->   
->   	struct drm_plane		*planes;
-> @@ -105,9 +105,9 @@ static void mtk_crtc_finish_page_flip(struct mtk_crtc *mtk_crtc)
->   static void mtk_drm_finish_page_flip(struct mtk_crtc *mtk_crtc)
->   {
->   	drm_crtc_handle_vblank(&mtk_crtc->base);
-> -	if (!mtk_crtc->config_updating && mtk_crtc->pending_needs_vblank) {
-> +	if (!mtk_crtc->config_updating && mtk_crtc->needs_vblank) {
->   		mtk_crtc_finish_page_flip(mtk_crtc);
-> -		mtk_crtc->pending_needs_vblank = false;
-> +		mtk_crtc->needs_vblank = false;
->   	}
->   }
->   
-> @@ -571,7 +571,7 @@ static void mtk_crtc_update_config(struct mtk_crtc *mtk_crtc, bool needs_vblank)
->   	mutex_lock(&mtk_crtc->hw_lock);
->   	mtk_crtc->config_updating = true;
->   	if (needs_vblank)
-> -		mtk_crtc->pending_needs_vblank = true;
-> +		mtk_crtc->needs_vblank = true;
->   
->   	for (i = 0; i < mtk_crtc->layer_nr; i++) {
->   		struct drm_plane *plane = &mtk_crtc->planes[i];
+> diff --git a/include/uapi/linux/famfs_ioctl.h b/include/uapi/linux/famfs_ioctl.h
+> new file mode 100644
+> index 000000000000..6b3e6452d02f
+> --- /dev/null
+> +++ b/include/uapi/linux/famfs_ioctl.h
+> @@ -0,0 +1,56 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +/*
+> + * famfs - dax file system for shared fabric-attached memory
+> + *
+> + * Copyright 2023-2024 Micron Technology, Inc.
+> + *
+> + * This file system, originally based on ramfs the dax support from xfs,
+> + * is intended to allow multiple host systems to mount a common file system
+> + * view of dax files that map to shared memory.
+> + */
+> +#ifndef FAMFS_IOCTL_H
+> +#define FAMFS_IOCTL_H
+> +
+> +#include <linux/ioctl.h>
+> +#include <linux/uuid.h>
+> +
+> +#define FAMFS_MAX_EXTENTS 2
+Why 2?
+> +
+> +enum extent_type {
+> +	SIMPLE_DAX_EXTENT = 13,
 
+Comment on this would be good to have
+
+> +	INVALID_EXTENT_TYPE,
+> +};
+> +
+> +struct famfs_extent {
+> +	__u64              offset;
+> +	__u64              len;
+> +};
+> +
+> +enum famfs_file_type {
+> +	FAMFS_REG,
+> +	FAMFS_SUPERBLOCK,
+> +	FAMFS_LOG,
+> +};
+> +
+> +/**
+> + * struct famfs_ioc_map
+> + *
+> + * This is the metadata that indicates where the memory is for a famfs file
+> + */
+> +struct famfs_ioc_map {
+> +	enum extent_type          extent_type;
+> +	enum famfs_file_type      file_type;
+
+These are going to be potentially varying in size depending on arch, compiler
+settings etc.  Been a while, but I though best practice for uapi was always
+fixed size elements even though we lose the typing.
+
+
+> +	__u64                     file_size;
+> +	__u64                     ext_list_count;
+> +	struct famfs_extent       ext_list[FAMFS_MAX_EXTENTS];
+> +};
+> +
+> +#define FAMFSIOC_MAGIC 'u'
+> +
+> +/* famfs file ioctl opcodes */
+> +#define FAMFSIOC_MAP_CREATE    _IOW(FAMFSIOC_MAGIC, 1, struct famfs_ioc_map)
+> +#define FAMFSIOC_MAP_GET       _IOR(FAMFSIOC_MAGIC, 2, struct famfs_ioc_map)
+> +#define FAMFSIOC_MAP_GETEXT    _IOR(FAMFSIOC_MAGIC, 3, struct famfs_extent)
+> +#define FAMFSIOC_NOP           _IO(FAMFSIOC_MAGIC,  4)
+> +
+> +#endif /* FAMFS_IOCTL_H */
 
 
