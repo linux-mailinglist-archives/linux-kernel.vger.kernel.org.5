@@ -1,60 +1,65 @@
-Return-Path: <linux-kernel+bounces-82437-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A677086848E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:17:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E98868492
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:18:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56D3B1F229B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:17:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C92081C22360
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E83135A54;
-	Mon, 26 Feb 2024 23:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C290135A69;
+	Mon, 26 Feb 2024 23:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H5A/gIhM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="u2VJUnCp"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40867133285;
-	Mon, 26 Feb 2024 23:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A488133285;
+	Mon, 26 Feb 2024 23:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708989469; cv=none; b=CBWCDZMzLRmxxAOqmCay2wWHPZgg9Gzn2gfA1Pn6z6tX4uh0XTfWV4OjjPgs7J/h4vnu7/UlmNoBQFActfqMPqgKCDnDdUzSGbXEC4msKisEgls7MTixy1QbSXJPaNvi1rcR8wyezRXmjPvH/kSMmW53yfaEX+ID1uJXpO+HBW0=
+	t=1708989524; cv=none; b=Jr9xNlIJWrKU2UQ1ZDpKDACgVq2wrkzh9kV8HizRYa/PSLopwhfBve82DUkMXjTvm7XIgJ7gcpACCJx29HLpJLuWHzT2u9dGuKpqQ8qZtuJYlDnhY2xaIyUojb6J/BI6JTAEoC229DCVORA1NBRvMxXXUzRhm+X5jgNrVhrNUs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708989469; c=relaxed/simple;
-	bh=Hzq6apXKj5DIdTzjgbZTgXIDZA74qt6GSY3DsNCSG4g=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=IJGohXGocfgqtaqvU+JAL+9d/HTHuK6XKyLjz1SicQvwmdGnOtfyP++GkoBhpfljmNVfilRTQGAJ9QYdIOijAeCfiREvJX2JeFB082r3/b0ehoPy412yR6Mg2+VRdwKyTb+6xOoMLMaiufVHRvfXH8HOASVXYZyqO5a5rkbYjKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H5A/gIhM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B119C433C7;
-	Mon, 26 Feb 2024 23:17:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708989468;
-	bh=Hzq6apXKj5DIdTzjgbZTgXIDZA74qt6GSY3DsNCSG4g=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=H5A/gIhMGfbmX3Fwq8YWujjG9/EfRXs3bSZiP7Rt/d2weRrEDE7CZQ5zJ68tehTJV
-	 kATeVSAA6sYplIuNv7gDyYxbVgT7hTMspX8rMI8kAhItxb6FBMtP790CjKfN7m8na4
-	 khdfHzNoAEWHd7K9NvifvaAPFQLoLMkVgowtHvAj4sl5MX5Gfofi2aqfRhBWQm6Lqi
-	 fbt8zn7J/AQ91zE+dBsKnOV/uru/z1Nbvjg2R16TFP5ZOi2Z6qgy45VdM5SrNouyzv
-	 BDmnRtQ3h5WWONdEcL6Dni+S3wpMEJafm2Rvoj+pvVtGZHRa0QXcDl7OE4VBLZyXAn
-	 47WXN6pMeAEvg==
-Date: Mon, 26 Feb 2024 17:17:47 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof Wilczy??ski <kw@linux.com>, Rob Herring <robh@kernel.org>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	quic_krichai@quicinc.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3] PCI: Add D3 support for PCI bridges in DT based
- platforms
-Message-ID: <20240226231747.GA215353@bhelgaas>
+	s=arc-20240116; t=1708989524; c=relaxed/simple;
+	bh=RyR0GnuJRe7THA/MhNcC5QF7CUPey8a/ORFM9KGNV4A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IWdvJmgh+Q5HX7afBn+hpPPZ3KD7C/fWRVSwoxRz4ugZK3OUx31kmwzF6gniS4bZ8g+aOUxjnm6HUSicf7Z1n1PX82c72sbzR10JbvyJwpTeuV0xbheNhGCmRIDvmQ/9t9KDqMwpQRacjTMfkFmpDYyJZKoxoBNXL5p1pSS4Ouw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=u2VJUnCp; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=g2q7Y6j0wCGTV4GevQ+ES5smo37GThY91C78pWGmQpw=; b=u2VJUnCpWA24Cmf1fN0w3E962R
+	QE/KINpYUHDTH1tnNo5Sb7+K7nSN43PB3mvL29YKQNOqOgSOVN0Vik49pUcyV0oGOPMDDPT8uYNJd
+	eznc6DyK3pVvqndBP+0ptOD+lr/RzNqIHuy+azL7oUNwuRCT9svn11R4h8ZrYKdS9c4Q=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rekFA-008lsR-HI; Tue, 27 Feb 2024 00:18:44 +0100
+Date: Tue, 27 Feb 2024 00:18:44 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Julien Panis <jpanis@baylibre.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH] net: ethernet: ti: am65-cpsw: Add minimal XDP support
+Message-ID: <e382df16-c78a-448d-b6d5-39a627b30652@lunn.ch>
+References: <20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,51 +68,20 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240222094052.GA25101@wunner.de>
+In-Reply-To: <20240223-am65-cpsw-xdp-basic-v1-1-9f0b6cbda310@baylibre.com>
 
-On Thu, Feb 22, 2024 at 10:40:52AM +0100, Lukas Wunner wrote:
-> On Wed, Feb 21, 2024 at 12:20:00PM -0600, Bjorn Helgaas wrote:
-> >   1) D3hot doesn't work per spec.  This sounds like a hardware
-> >      defect in the device that should be a quirk based on
-> >      Vendor/Device ID, not something in DT.  I don't actually know if
-> >      this is common, although there are several existing quirks that
-> >      mention issues with D3.
-> 
-> My recollection is that putting Root Ports into D3hot on older x86
-> systems would raise MCEs,
+> +static struct sk_buff *am65_cpsw_alloc_skb(struct net_device *ndev, unsigned int len)
+> +{
+> +	struct page *page;
+> +	struct sk_buff *skb;
+> +
+> +	page = dev_alloc_pages(0);
 
-Color me dubious.  I don't know why an MCE should happen unless we
-tried to access MMIO space on the Root Port or we tried to access
-downstream devices, and the UR or whatever got turned into MCE.
-Avoiding D3hot seems like papering over something that we don't fully
-understand.
+You are likely to get better performance if you use the page_pool.
 
-> which is why pci_bridge_d3_possible() only
-> allows D3hot in cases which are known to work (e.g. Thunderbolt
-> controllers, machines with a recent BIOS).  It was a conservative
-> policy chosen to avoid regressions.
-> 
-> I don't know if similar issues exist on non-ACPI systems.  If they
-> don't exist, platform_pci_bridge_d3() could just return true for
-> all devicetree-based systems.  Might be worth testing if any systems
-> can be found which exhibit issues with such a policy.  That would
-> obviate the need to specify "supports-d3" in the devicetree.
-> Quite the opposite, ports which are known not to work could be
-> blacklisted.  Of course if it turns out that's the majority then
-> whitelisting via "supports-d3" is a better option.
-> 
-> >   2) The platform doesn't support putting the bridge in D3cold and
-> >      back to D0.  I don't understand this either because I assumed DT
-> >      would describe *hardware*, and "supports-d3" might imply the
-> >      presence of hardware power control, but doesn't tell us how to
-> >      operate it, and it must be up to a native driver to know how to
-> >      do it.
-> 
-> I think we're putting devices into D3hot first before cutting power
-> (i.e. putting them into D3cold), so knowing that D3hot is safe is
-> basically a prerequisite for D3cold.
-> 
-> Thanks,
-> 
-> Lukas
+When FEC added XDP support, the first set of changes was to make use
+of page_pool. That improved the drivers performance. Then XDP was
+added on top. Maybe you can follow that pattern.
+
+      Andrew
 
