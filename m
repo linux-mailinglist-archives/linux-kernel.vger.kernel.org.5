@@ -1,210 +1,229 @@
-Return-Path: <linux-kernel+bounces-81360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B848C8674D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:27:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57DD08674D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:27:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAA921C22094
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:27:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E04C28C1F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD4E605AD;
-	Mon, 26 Feb 2024 12:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="bT79gdFi"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AED9D605BB;
+	Mon, 26 Feb 2024 12:27:23 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 281D55FDB5;
-	Mon, 26 Feb 2024 12:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5487D605AD
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:27:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950424; cv=none; b=MF9yMi65adRr8nsAgYuaG6TvknMfIjBe7O3R9nSmftagIJokhDZ7yaKmnko+btHZxSD94Ju3cn2OlB2l9555pQXg1XvbaQCz7xfMUC/yMz5uOLf64AN9DvFthZce3z26Q4CnbqWe3j/p7LQrlbx9fJ0T1wUTGMTDhkWGOK1DEXg=
+	t=1708950443; cv=none; b=NT/PzUIJwFLRv4mXu0AfFd6u/sg/D+km1K0/VF1sGAI+60NfigmlRcomCyoA02Inv29yhFyKs9w/w2fg3zRKSG/JRDa4dEvcGSGeLKyijOZUiCoTJcy/72IFh6tExV8sLcj1AYi1EMMekXmzs7Cb0V/+s1TZ9RFywm2HOQZqpfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950424; c=relaxed/simple;
-	bh=1atNF5q0PHutcAVd63k0m5zQJdUvHeKBxneBLA4KQ7U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ackOomUJ32+ih/XUuf6mHAigPw0pq1XfyheLRpi2UllVOQmuKt2ymayTDelJtDPtz9hlPs6CqWN+INGTNGb6GfcAabtpKhitM5mlOrV01odm2tCqJPlTWtMcPLCJRaewiD+XBi8OptNo5Vpp9YNoLObJBjxDtSBcy+a3cvLvvB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=bT79gdFi; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=X62s8SRMke89gytb6JZNVCmlCtS3wHwCrunVCrHXdQU=; b=bT79gdFiTA/GcUxLwiLuVnAKkS
-	4suDRCbzG0TI2IIJrxWoSNa0uwTQSbr7g17hrLHmp+++T27M3L5eStMvgjuj2Z3ZVforoIckjMu1z
-	Y85eDnAIuWraGwOK+lfAbXBxNWI6/lRudFc7pKokW/MAVxz0+5Tqw/6BGZcsvCWFpnjZxvVo0ROI4
-	qWwcI2B9CCF0AOEAk/exr0iguotC58IaHwJUfJhBk0LHVptBpDZ5LDx2+cJWXvD101/GABj2HQHaC
-	uOsTZ99yM4wPkmHGiGN8O6cXlbFpdU6kmP1eFkY+jeMJnkkTXbzYcNDA8UAhNy1BN+50yYoB+xF0/
-	jTwfKE0A==;
-Received: from [177.34.169.255] (helo=[192.168.0.139])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rea4A-003Yij-2B; Mon, 26 Feb 2024 13:26:42 +0100
-Message-ID: <4aab64fe-18ab-425b-9dc1-e4e9dc6b0087@igalia.com>
-Date: Mon, 26 Feb 2024 09:26:33 -0300
+	s=arc-20240116; t=1708950443; c=relaxed/simple;
+	bh=MnH2zzUiBpWHT2hKic62kcd5bAVn2S8JMO/2jTnLU58=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nWP74HqixJGa02smt0hZeH71kBdobfISElFwgEQ7Rk+/Gw7JgdFssLDnkP8K3GegrqZfTpFdaBlVFujdymDUNechNCVJoChFV0XVPrXHRmUPwOlR03u8j89FvHaFOb3h4PzXQjZ3aq583enNYIHw4LIzpO5V1KtnqmqD3Tsenls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rea4U-0003lf-Nu; Mon, 26 Feb 2024 13:27:02 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rea4T-002zWT-As; Mon, 26 Feb 2024 13:27:01 +0100
+Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rea4T-0095RZ-0l;
+	Mon, 26 Feb 2024 13:27:01 +0100
+Date: Mon, 26 Feb 2024 13:27:01 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux@roeck-us.net, jun.li@nxp.com, devicetree@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: Re: [PATCH v3 4/4] usb: typec: tcpci: add support to set connector
+ orientation
+Message-ID: <20240226122701.inqpodm6mdfxwjo2@pengutronix.de>
+References: <20240222210903.208901-1-m.felsch@pengutronix.de>
+ <20240222210903.208901-5-m.felsch@pengutronix.de>
+ <ZdxII9W/CBx76Xai@kuha.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 04/36] drm/tests: Add helper to create mock crtc
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
- Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
- <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
- Sebastian Wick <sebastian.wick@redhat.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
- <20240222-kms-hdmi-connector-state-v7-4-8f4af575fce2@kernel.org>
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240222-kms-hdmi-connector-state-v7-4-8f4af575fce2@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdxII9W/CBx76Xai@kuha.fi.intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 2/22/24 15:13, Maxime Ripard wrote:
-> We're going to need a full-blown, functional, KMS device to test more
-> components of the atomic modesetting infrastructure.
+Hi,
+
+On 24-02-26, Heikki Krogerus wrote:
+> On Thu, Feb 22, 2024 at 10:09:03PM +0100, Marco Felsch wrote:
+> > This add the support to set the optional connector orientation bit which
+> > is part of the optional CONFIG_STANDARD_OUTPUT register 0x18 [1]. This
+> > allows system designers to connect the tcpc orientation pin directly to
+> > the 2:1 ss-mux.
+> > 
+> > [1] https://www.usb.org/sites/default/files/documents/usb-port_controller_specification_rev2.0_v1.0_0.pdf
+> > 
+> > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> > ---
+> > v3:
+> > - no changes
+> > v2:
+> > - Make use of fallthrough 
+> > 
+> >  drivers/usb/typec/tcpm/tcpci.c | 44 ++++++++++++++++++++++++++++++++++
+> >  include/linux/usb/tcpci.h      |  8 +++++++
+> >  2 files changed, 52 insertions(+)
+> > 
+> > diff --git a/drivers/usb/typec/tcpm/tcpci.c b/drivers/usb/typec/tcpm/tcpci.c
+> > index 7118551827f6..73a52e7f95c2 100644
+> > --- a/drivers/usb/typec/tcpm/tcpci.c
+> > +++ b/drivers/usb/typec/tcpm/tcpci.c
+> > @@ -67,6 +67,18 @@ static int tcpci_write16(struct tcpci *tcpci, unsigned int reg, u16 val)
+> >  	return regmap_raw_write(tcpci->regmap, reg, &val, sizeof(u16));
+> >  }
+> >  
+> > +static bool tcpci_check_std_output_cap(struct regmap *regmap, u8 mask)
+> > +{
+> > +	unsigned int reg;
+> > +	int ret;
+> > +
+> > +	ret = regmap_read(regmap, TCPC_STD_OUTPUT_CAP, &reg);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	return (reg & mask) == mask;
+> > +}
+> > +
+> >  static int tcpci_set_cc(struct tcpc_dev *tcpc, enum typec_cc_status cc)
+> >  {
+> >  	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> > @@ -301,6 +313,28 @@ static int tcpci_set_polarity(struct tcpc_dev *tcpc,
+> >  			   TCPC_TCPC_CTRL_ORIENTATION : 0);
+> >  }
+> >  
+> > +static int tcpci_set_orientation(struct tcpc_dev *tcpc,
+> > +				 enum typec_orientation orientation)
+> > +{
+> > +	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> > +	unsigned int reg;
+> > +
+> > +	switch (orientation) {
+> > +	case TYPEC_ORIENTATION_NONE:
+> > +		/* We can't put a single output into high impedance */
+> > +		fallthrough;
+> > +	case TYPEC_ORIENTATION_NORMAL:
+> > +		reg = TCPC_CONFIG_STD_OUTPUT_ORIENTATION_NORMAL;
+> > +		break;
+> > +	case TYPEC_ORIENTATION_REVERSE:
+> > +		reg = TCPC_CONFIG_STD_OUTPUT_ORIENTATION_FLIPPED;
+> > +		break;
+> > +	}
+> > +
+> > +	return regmap_update_bits(tcpci->regmap, TCPC_CONFIG_STD_OUTPUT,
+> > +				  TCPC_CONFIG_STD_OUTPUT_ORIENTATION_MASK, reg);
+> > +}
+> > +
+> >  static void tcpci_set_partner_usb_comm_capable(struct tcpc_dev *tcpc, bool capable)
+> >  {
+> >  	struct tcpci *tcpci = tcpc_to_tcpci(tcpc);
+> > @@ -808,6 +842,9 @@ struct tcpci *tcpci_register_port(struct device *dev, struct tcpci_data *data)
+> >  	if (tcpci->data->vbus_vsafe0v)
+> >  		tcpci->tcpc.is_vbus_vsafe0v = tcpci_is_vbus_vsafe0v;
+> >  
+> > +	if (tcpci->data->set_orientation)
+> > +		tcpci->tcpc.set_orientation = tcpci_set_orientation;
 > 
-> Let's add a new helper to create a dumb, mocked, CRTC. By default it
-> will create a CRTC relying only on the default helpers, but drivers are
-> free to deviate from that.
+> I don't think that flag is needed - not yet at least. Please just call
+> tcpci_check_std_output_cap() directly from here.
+
+The reason for having it this way was to not break exsisting user like:
+tcpci_rt1711h, tcpci_mt6370, tcpci_maxim which may or may not implement
+the TCPC_STD_OUTPUT_CAP_ORIENTATION. This way the users of
+tcpci_register_port() can decide by on its own if they do have this
+feature or not and how this is checked. I'm fine with your proposal if
+you still think that we can check this unconditional.
+
+Regards,
+  Marco
+
+> >  	err = tcpci_parse_config(tcpci);
+> >  	if (err < 0)
+> >  		return ERR_PTR(err);
+> > @@ -851,6 +888,13 @@ static int tcpci_probe(struct i2c_client *client)
+> >  	if (err < 0)
+> >  		return err;
+> >  
+> > +	err = tcpci_check_std_output_cap(chip->data.regmap,
+> > +					 TCPC_STD_OUTPUT_CAP_ORIENTATION);
+> > +	if (err < 0)
+> > +		return err;
+> > +
+> > +	chip->data.set_orientation = err;
+> > +
+> >  	chip->tcpci = tcpci_register_port(&client->dev, &chip->data);
+> >  	if (IS_ERR(chip->tcpci))
+> >  		return PTR_ERR(chip->tcpci);
+> > diff --git a/include/linux/usb/tcpci.h b/include/linux/usb/tcpci.h
+> > index 467e8045e9f8..f2bfb4250366 100644
+> > --- a/include/linux/usb/tcpci.h
+> > +++ b/include/linux/usb/tcpci.h
+> > @@ -47,6 +47,9 @@
+> >  #define TCPC_SINK_FAST_ROLE_SWAP	BIT(0)
+> >  
+> >  #define TCPC_CONFIG_STD_OUTPUT		0x18
+> > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_MASK		BIT(0)
+> > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_NORMAL	0
+> > +#define TCPC_CONFIG_STD_OUTPUT_ORIENTATION_FLIPPED	1
+> >  
+> >  #define TCPC_TCPC_CTRL			0x19
+> >  #define TCPC_TCPC_CTRL_ORIENTATION	BIT(0)
+> > @@ -127,6 +130,7 @@
+> >  #define TCPC_DEV_CAP_2			0x26
+> >  #define TCPC_STD_INPUT_CAP		0x28
+> >  #define TCPC_STD_OUTPUT_CAP		0x29
+> > +#define TCPC_STD_OUTPUT_CAP_ORIENTATION	BIT(0)
+> >  
+> >  #define TCPC_MSG_HDR_INFO		0x2e
+> >  #define TCPC_MSG_HDR_INFO_DATA_ROLE	BIT(3)
+> > @@ -198,12 +202,16 @@ struct tcpci;
+> >   *		Chip level drivers are expected to check for contaminant and call
+> >   *		tcpm_clean_port when the port is clean to put the port back into
+> >   *		toggling state.
+> > + * @set_orientation:
+> > + *		Optional; Enable setting the connector orientation
+> > + *		CONFIG_STANDARD_OUTPUT (0x18) bit0.
+> >   */
+> >  struct tcpci_data {
+> >  	struct regmap *regmap;
+> >  	unsigned char TX_BUF_BYTE_x_hidden:1;
+> >  	unsigned char auto_discharge_disconnect:1;
+> >  	unsigned char vbus_vsafe0v:1;
+> > +	unsigned char set_orientation:1;
+> >  
+> >  	int (*init)(struct tcpci *tcpci, struct tcpci_data *data);
+> >  	int (*set_vconn)(struct tcpci *tcpci, struct tcpci_data *data,
+> > -- 
+> > 2.39.2
 > 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-
-Reviewed-by: Maíra Canal <mcanal@igalia.com>
-
-Best Regards,
-- Maíra
-
-> ---
->   drivers/gpu/drm/tests/drm_kunit_helpers.c | 62 +++++++++++++++++++++++++++++++
->   include/drm/drm_kunit_helpers.h           | 10 +++++
->   2 files changed, 72 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> index 32dc8354641a..d5317d13d3fc 100644
-> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-> @@ -249,5 +249,67 @@ drm_kunit_helper_create_primary_plane(struct kunit *test,
->   }
->   EXPORT_SYMBOL_GPL(drm_kunit_helper_create_primary_plane);
->   
-> +static const struct drm_crtc_helper_funcs default_crtc_helper_funcs = {
-> +};
-> +
-> +static const struct drm_crtc_funcs default_crtc_funcs = {
-> +	.atomic_destroy_state   = drm_atomic_helper_crtc_destroy_state,
-> +	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
-> +	.reset                  = drm_atomic_helper_crtc_reset,
-> +};
-> +
-> +/**
-> + * drm_kunit_helper_create_crtc - Creates a mock CRTC for a KUnit test
-> + * @test: The test context object
-> + * @drm: The device to alloc the plane for
-> + * @primary: Primary plane for CRTC
-> + * @cursor: Cursor plane for CRTC. Optional.
-> + * @funcs: Callbacks for the new plane. Optional.
-> + * @helper_funcs: Helpers callbacks for the new plane. Optional.
-> + *
-> + * This allocates and initializes a mock struct &drm_crtc meant to be
-> + * part of a mock device for a KUnit test.
-> + *
-> + * Resources will be cleaned up automatically.
-> + *
-> + * @funcs will default to the default helpers implementations.
-> + * @helper_funcs will default to an empty implementation.
-> + *
-> + * Returns:
-> + * A pointer to the new CRTC, or an ERR_PTR() otherwise.
-> + */
-> +struct drm_crtc *
-> +drm_kunit_helper_create_crtc(struct kunit *test,
-> +			     struct drm_device *drm,
-> +			     struct drm_plane *primary,
-> +			     struct drm_plane *cursor,
-> +			     const struct drm_crtc_funcs *funcs,
-> +			     const struct drm_crtc_helper_funcs *helper_funcs)
-> +{
-> +	struct drm_crtc *crtc;
-> +	int ret;
-> +
-> +	if (!funcs)
-> +		funcs = &default_crtc_funcs;
-> +
-> +	if (!helper_funcs)
-> +		helper_funcs = &default_crtc_helper_funcs;
-> +
-> +	crtc = drmm_kzalloc(drm, sizeof(*crtc), GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_NULL(test, crtc);
-> +
-> +	ret = drmm_crtc_init_with_planes(drm, crtc,
-> +					 primary,
-> +					 cursor,
-> +					 funcs,
-> +					 NULL);
-> +	KUNIT_ASSERT_EQ(test, ret, 0);
-> +
-> +	drm_crtc_helper_add(crtc, helper_funcs);
-> +
-> +	return crtc;
-> +}
-> +EXPORT_SYMBOL_GPL(drm_kunit_helper_create_crtc);
-> +
->   MODULE_AUTHOR("Maxime Ripard <maxime@cerno.tech>");
->   MODULE_LICENSE("GPL");
-> diff --git a/include/drm/drm_kunit_helpers.h b/include/drm/drm_kunit_helpers.h
-> index 38667d624aa8..6e99627edf45 100644
-> --- a/include/drm/drm_kunit_helpers.h
-> +++ b/include/drm/drm_kunit_helpers.h
-> @@ -9,6 +9,8 @@
->   
->   #include <kunit/test.h>
->   
-> +struct drm_crtc_funcs;
-> +struct drm_crtc_helper_funcs;
->   struct drm_device;
->   struct drm_plane_funcs;
->   struct drm_plane_helper_funcs;
-> @@ -110,4 +112,12 @@ drm_kunit_helper_create_primary_plane(struct kunit *test,
->   				      unsigned int num_formats,
->   				      const uint64_t *modifiers);
->   
-> +struct drm_crtc *
-> +drm_kunit_helper_create_crtc(struct kunit *test,
-> +			     struct drm_device *drm,
-> +			     struct drm_plane *primary,
-> +			     struct drm_plane *cursor,
-> +			     const struct drm_crtc_funcs *funcs,
-> +			     const struct drm_crtc_helper_funcs *helper_funcs);
-> +
->   #endif // DRM_KUNIT_HELPERS_H_
+> -- 
+> heikki
 > 
 
