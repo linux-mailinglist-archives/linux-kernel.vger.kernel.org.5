@@ -1,254 +1,407 @@
-Return-Path: <linux-kernel+bounces-81574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36CB38677C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:07:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBCCD867800
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:15:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A257E1F2B822
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:07:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77D0E1F2D7FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73BB12FF84;
-	Mon, 26 Feb 2024 14:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C202E129A7B;
+	Mon, 26 Feb 2024 14:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="QNJpHldM"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i3VWTstb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9622E12F36B
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B013A1C6B9;
+	Mon, 26 Feb 2024 14:15:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708956156; cv=none; b=FxLxCjEyquheCMnclcBS0OrpSxMIlk5S/JgyibZYTtlpczlpfdzgbahFmGrLerEtRIJQYKM9ffPv4L6P10mvFqiSE0mBm48Eq6TQFZEdhrNbCDraT5bVTd/RIaLncJ7naU7oAh+vSijrzwd6Yrh7OnVmMj+TIjlCBE79SI5LIlk=
+	t=1708956945; cv=none; b=HcY/NjMGhtOM65MrTRCqIX6yxkesjrqF7ZCVjp852X2uc6tKVffidbfXLBBHCDnoi0qNRINgkeV9D+u4SHmIvcn/BrxWFpqyMB4Jt18Z+7wMUsGtknZcUsAsi+rasg/9+k2giJR42zd8fiPFkKFPk+y6CdNXkvRQAgKkDtAW9L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708956156; c=relaxed/simple;
-	bh=lbgi9OL1obZblEePDIhhejeSSwFTqveCSkacaUUqnXE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=LhoN0/kcXzXOGEvZC3ABrG+X+LwlmYw2nYE1cKIWyXInCuXYMqmrO+foUH9q3JcJoWqh91WhRcvQgxDz3VS4zyMfr6DbAUUfSPPnLfMxniA9WXHSz6fsREGnhUp4yRHLfsA0uU/rUiOCLJbFRZ9Bv3OIWvRUHNRPKHK9cWNzyMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=QNJpHldM; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d28e3c0fe0so9155811fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:02:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708956151; x=1709560951; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Fr6qUv7uphl0F7A/cjSpLzFAuez52U6vdxnRSxFG1Us=;
-        b=QNJpHldMxF9dy98Px1SheVC25WaTU61/4xHpDQHnwlGmNTf/GcJfX9l9WGk6crvuMA
-         6cdnyj5StEBCz15pwzapq0VlwGgdXIR49HeDwSc43RiRXGWe+e20wRBWN8PSzQB7YwUe
-         IElbS7GFbNCMBkQUUWRzKPS/TF/1MktOCrPBLaDbC5IXFmjeORAJVJxOELsaOiFBTSPh
-         HMuA21ZK3/K5LY20ZLBUERolQ+g0Y8RBa0lUlKSkpGGIQznOPX84EIS6x5IGq5YFbJZF
-         JB0LkSI7husDmA3zC70BjV07MnDBsrGfJ7R3CvMo0ELTACWbDPfjP5ELAZpYivI7TMpi
-         l1SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708956151; x=1709560951;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fr6qUv7uphl0F7A/cjSpLzFAuez52U6vdxnRSxFG1Us=;
-        b=R/R4yU7LlqOeB+THCzmswgl76kZVDx4VEc2OqwIXOt4zX7TiXskCLu/PUNdH6GucrH
-         ZSUToFQD7GTCFhFvjkfS014ePDYR7e2h99k82OpGQWF1jT4EfcQYDWS1BHdM5CPsi2iX
-         hoKdCY5Cln6LGvrYhnwsfCY7foYLIRPlhi3CMdqTOw83SSzvwHInRwoFS19u0fMjVJxb
-         At5/BklubuZtBRjmV5z0YjP/50liSR3eZmapolfGTm+PbqD7Tohl2/uTBqd52l5S0NZ1
-         aHb4I47PU62wqe2vFpEBHAWrHP/zG6mVsVA86t/YjdiCtaS7CbpF9FyhjdyXrcR2SXss
-         tAZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXGRL8xBKAGHGjI7ni/jLTGNT4GJUJWDez4s0kv9/yuSMmmxYwYA2zS0UhjPggajmMewnOc8hclHnxlk17lJ4tk5+BZDovUXtbIvG3S
-X-Gm-Message-State: AOJu0YzKp02G+51mRmGBETfG8iBdi+xhtyLPy7aCLFe9iNAa9zENXG6+
-	2975pRuxgN8RpfbQguIpxv3psh1/l/fXcvEg/BlD3wG0LE/iB9hz6UdQZZRsW0Q=
-X-Google-Smtp-Source: AGHT+IFoh8mPmzGM/gZj9w5NAeFQXI6f6EQmCodyO1Vvv8vUKUQrRRqnf2VVbDW26mV1+6aMSpo47A==
-X-Received: by 2002:a05:651c:10d1:b0:2d2:2012:1fef with SMTP id l17-20020a05651c10d100b002d220121fefmr3638929ljn.47.1708956151700;
-        Mon, 26 Feb 2024 06:02:31 -0800 (PST)
-Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id d33-20020a05600c4c2100b004129f87a2c6sm2838475wmp.1.2024.02.26.06.02.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 06:02:31 -0800 (PST)
-From: Alexandre Mergnat <amergnat@baylibre.com>
-Date: Mon, 26 Feb 2024 15:01:56 +0100
-Subject: [PATCH 18/18] arm64: dts: mediatek: add audio support for
- mt8365-evk
+	s=arc-20240116; t=1708956945; c=relaxed/simple;
+	bh=iqKxUW8vw4K5O4nubqAcfgPBbMUQaHd5GGqHmxDzISg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dmkvIgegADX7P0uj8v9pKU4SsFLsKaieIbnkmG4RfiQxBlU+c8TChtPepTBkjXT8siAidjujsEINldLl3C8InHq8qo2NLu0OMPgnxfd8yiJ5CdRZv5jyxrt6aO4whsCTzmNvvKGTLyRMEdEwPnBqZ2wznlGHIpAC13JBaRVCo9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i3VWTstb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B29EDC433C7;
+	Mon, 26 Feb 2024 14:15:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708956945;
+	bh=iqKxUW8vw4K5O4nubqAcfgPBbMUQaHd5GGqHmxDzISg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i3VWTstbv5SE2tnhmV3R6JAPgBJiWiqOGyORUY4mMWfiGNlrkTf+jJyJZqqMgtiUi
+	 LWUgJP/G3sFXboNmHfoXnYA+rRLqilVtTRIcb4aP/S5D8WRgp4o7NSwQMzakEGHUDf
+	 9fV4gQABQOmeFNDC1Wd88XG4zzThWvl6FDdD5mlHc4Piouh151cCBRRj0LxE6VJJzd
+	 48xUQYH0SYuQvDgM5KfaalL8Au8F1QY4glfyh8FSpyKhrRAcKQJ4QzHCjqQdumpy+/
+	 HDHiOb8q68NcvswOErwFJp2Xr3/jCaA/0HMjkM0vMa1Tm/2OiKr6hupDMirm05OWxs
+	 ybtmnDsW6Vh8w==
+Date: Mon, 26 Feb 2024 22:02:25 +0800
+From: Jisheng Zhang <jszhang@kernel.org>
+To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Cc: u.kleine-koenig@pengutronix.de, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	dlan@gentoo.org, inochiama@outlook.com
+Subject: Re: [PATCH v3 2/2] pwm: sophgo: add pwm support for Sophgo CV1800 SoC
+Message-ID: <ZdyZ8SvqbpllDDeY@xhacker>
+References: <20240223082014.109385-1-qiujingbao.dlmu@gmail.com>
+ <20240223082632.109767-1-qiujingbao.dlmu@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240226-audio-i350-v1-18-4fa1cea1667f@baylibre.com>
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
-In-Reply-To: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Matthias Brugger <matthias.bgg@gmail.com>, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Sumit Semwal <sumit.semwal@linaro.org>, 
- =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
- Alexandre Mergnat <amergnat@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3858; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=lbgi9OL1obZblEePDIhhejeSSwFTqveCSkacaUUqnXE=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBl3Jnd+w8IF/0MoA24p+dI4JyZDGShEkMctxqnmZ3g
- z3OxK12JAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZdyZ3QAKCRArRkmdfjHURa4QD/
- 95NpJWGzTF7i0U4jGIRjRkcN2D4J42NZKCYbftZ8a5Q4MTVuwCbkEMdy8eOB36kpxWTlq61VxNUsug
- lAentcdEWSrZEUsczLGt82lKlMdaKuOrVM3RBz+D/4DCgIzuNqw5RtyRK+D9US6UOjV6bAYg+VOCmr
- E2VvHOXer0VlRm/v1bpjTxH+OXtA8ztKcQFPeK4LFGLDGqSCYnMCT7v0eCZ+Mya9vw7drZY5Eibu/6
- 5q8nT8GIe5kFdPwaq64D3uV9hsu59MccdcThnyJqTGqYuEn4C1DN+9rkcT22e5Bp1YS7y7juyj6C04
- DDOXMgU2bl6P9Lpe7uCpyZPOFb6y7cbRw5YzZPYxONpskn1hFV1XqaalcwBTKgeQWdSZZhU1zLosan
- j5qZDHkmN6ipbd0We4rQJg512ny8X13q9fH1AbBW85bZLMwOM2cPOA0or/BdWx0CFzyBAuhz+Yikry
- 8OmWIr07732ikrI661VIF8Pj2ZLa1ryWzMjooj5Y/b8OppHDB1LidcNyTHsVKBep5fdn8yiHYYO3j6
- mk7lsczgK/oSLH5NTGz1sViSOvZoYwm2PC2HrHzMCikiFlcqL65mnGQ4Nnr1EqwRfQWlmJadgvAia+
- nixt2u4SvthnmJAfycBFbOcGNz/PTqn0gR2UBZ3nNGyog9K0HoQ5yCYLsjTg==
-X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
- fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240223082632.109767-1-qiujingbao.dlmu@gmail.com>
 
-Add the sound node which is linked to the MT8365 SoC AFE and
-the MT6357 audio codec.
+On Fri, Feb 23, 2024 at 04:26:32PM +0800, Jingbao Qiu wrote:
+> Implement the PWM driver for CV1800.
+> 
+> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> ---
+>  drivers/pwm/Kconfig      |  10 ++
+>  drivers/pwm/Makefile     |   1 +
+>  drivers/pwm/pwm-cv1800.c | 259 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 270 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-cv1800.c
+> 
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 4b956d661755..455f07af94f7 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -186,6 +186,16 @@ config PWM_CROS_EC
+>  	  PWM driver for exposing a PWM attached to the ChromeOS Embedded
+>  	  Controller.
+>  
+> +config PWM_CV1800
+> +	tristate "Sophgo CV1800 PWM driver"
+> +	depends on ARCH_SOPHGO || COMPILE_TEST
+> +	help
+> +	  Generic PWM framework driver for the Sophgo CV1800 series
+> +	  SoCs.
+> +
+> +	  To compile this driver as a module, build the dependecies
+> +	  as modules, this will be called pwm-cv1800.
+> +
+>  config PWM_DWC_CORE
+>  	tristate
+>  	depends on HAS_IOMEM
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index c5ec9e168ee7..6c3c4a07a316 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_PWM_CLK)		+= pwm-clk.o
+>  obj-$(CONFIG_PWM_CLPS711X)	+= pwm-clps711x.o
+>  obj-$(CONFIG_PWM_CRC)		+= pwm-crc.o
+>  obj-$(CONFIG_PWM_CROS_EC)	+= pwm-cros-ec.o
+> +obj-$(CONFIG_PWM_CV1800)	+= pwm-cv1800.o
+>  obj-$(CONFIG_PWM_DWC_CORE)	+= pwm-dwc-core.o
+>  obj-$(CONFIG_PWM_DWC)		+= pwm-dwc.o
+>  obj-$(CONFIG_PWM_EP93XX)	+= pwm-ep93xx.o
+> diff --git a/drivers/pwm/pwm-cv1800.c b/drivers/pwm/pwm-cv1800.c
+> new file mode 100644
+> index 000000000000..da1309dc0091
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-cv1800.c
+> @@ -0,0 +1,259 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * pwm-cv1800.c: PWM driver for Sophgo cv1800
+> + *
+> + * Author: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+> + *
+> + * Limitations:
+> + * - It output low when PWM channel disabled.
+> + * - This pwm device supports dynamic loading of PWM parameters. When PWMSTART
+> + *   is written from 0 to 1, the register value (HLPERIODn, PERIODn) will be
+> + *   temporarily stored inside the PWM. If you want to dynamically change the
+> + *   waveform during PWM output, after writing the new value to HLPERIODn and
+> + *   PERIODn, write 1 and then 0 to PWMUPDATE[n] to make the new value effective.
+> + * - Supports up to Rate/2 output, and the lowest is about Rate/(2^30-1).
+> + * - By setting HLPERIODn to 0, can produce 100% duty cycle.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwm.h>
+> +#include <linux/regmap.h>
+> +
+> +#define PWM_CV1800_HLPERIOD_BASE 0x00
+> +#define PWM_CV1800_PERIOD_BASE 0x04
+> +#define PWM_CV1800_PWM_CV1800_POLARITY 0x40
+> +#define PWM_CV1800_START 0x44
+> +#define PWM_CV1800_DONE 0x48
+> +#define PWM_CV1800_UPDATE 0x4c
+> +#define PWM_CV1800_OE 0xd0
+> +
+> +#define PWM_CV1800_HLPERIOD(n) (PWM_CV1800_HLPERIOD_BASE + ((n) * 0x08))
+> +#define PWM_CV1800_PERIOD(n) (PWM_CV1800_PERIOD_BASE + ((n) * 0x08))
+> +
+> +#define PWM_CV1800_UPDATE_MASK(n) (BIT(0) << (n))
+> +#define PWM_CV1800_OE_MASK(n) (BIT(0) << (n))
+> +#define PWM_CV1800_START_MASK(n) (BIT(0) << (n))
+> +
+> +#define PWM_CV1800_MAXPERIOD (BIT(30) - 1)
+> +#define PWM_CV1800_MINPERIOD BIT(1)
+> +#define PWM_CV1800_MINHLPERIOD BIT(0)
+> +#define PWM_CV1800_PERIOD_RESET BIT(1)
+> +#define PWM_CV1800_HLPERIOD_RESET BIT(0)
+> +#define PWM_CV1800_REG_DISABLE 0x0U
+> +#define PWM_CV1800_REG_ENABLE(n) (BIT(0) << (n))
+> +
+> +struct cv1800_pwm {
+> +	struct regmap *map;
+> +	struct clk *clk;
+> +	unsigned long clk_rate;
+> +};
+> +
+> +static inline struct cv1800_pwm *to_cv1800_pwm_dev(struct pwm_chip *chip)
+> +{
+> +	return pwmchip_get_drvdata(chip);
+> +}
+> +
+> +static const struct regmap_config cv1800_pwm_regmap_config = {
+> +	.reg_bits = 32,
+> +	.val_bits = 32,
+> +	.reg_stride = 4,
+> +};
+> +
+> +static int cv1800_pwm_enable(struct pwm_chip *chip, struct pwm_device *pwm,
+> +			     bool enable)
+> +{
+> +	struct cv1800_pwm *priv = to_cv1800_pwm_dev(chip);
+> +	u32 pwm_enable;
+> +
+> +	regmap_read(priv->map, PWM_CV1800_START, &pwm_enable);
 
-Update the file header.
+what's the reason of using regmap?
 
-Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
----
- arch/arm64/boot/dts/mediatek/mt8365-evk.dts | 95 +++++++++++++++++++++++++++--
- 1 file changed, 91 insertions(+), 4 deletions(-)
+> +	pwm_enable &= PWM_CV1800_START_MASK(pwm->hwpwm);
+> +
+> +	/*
+> +	 * If the parameters are changed during runtime, Register needs
+> +	 * to be updated to take effect.
+> +	 */
+> +	if (pwm_enable && enable) {
+> +		regmap_update_bits(priv->map, PWM_CV1800_UPDATE,
+> +				   PWM_CV1800_UPDATE_MASK(pwm->hwpwm),
+> +				   PWM_CV1800_REG_ENABLE(pwm->hwpwm));
+> +		regmap_update_bits(priv->map, PWM_CV1800_UPDATE,
+> +				   PWM_CV1800_UPDATE_MASK(pwm->hwpwm),
+> +				   PWM_CV1800_REG_DISABLE);
+> +	} else if (!pwm_enable && enable) {
+> +		regmap_update_bits(priv->map, PWM_CV1800_OE,
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-index 50cbaefa1a99..818a8d263949 100644
---- a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
-@@ -1,9 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * Copyright (c) 2021-2022 BayLibre, SAS.
-- * Authors:
-- * Fabien Parent <fparent@baylibre.com>
-- * Bernhard Rosenkränzer <bero@baylibre.com>
-+ * Copyright (c) 2024 BayLibre, SAS.
-+ * Authors: Fabien Parent <fparent@baylibre.com>
-+ *	    Bernhard Rosenkränzer <bero@baylibre.com>
-+ *	    Alexandre Mergnat <amergnat@baylibre.com>
-  */
- 
- /dts-v1/;
-@@ -86,6 +86,25 @@ optee_reserved: optee@43200000 {
- 			reg = <0 0x43200000 0 0x00c00000>;
- 		};
- 	};
-+
-+	sound: sound {
-+		compatible = "mediatek,mt8365-mt6357";
-+		mediatek,platform = <&afe>;
-+		pinctrl-names = "aud_default",
-+			"aud_dmic",
-+			"aud_miso_off",
-+			"aud_miso_on",
-+			"aud_mosi_off",
-+			"aud_mosi_on";
-+		pinctrl-0 = <&aud_default_pins>;
-+		pinctrl-1 = <&aud_dmic_pins>;
-+		pinctrl-2 = <&aud_miso_off_pins>;
-+		pinctrl-3 = <&aud_miso_on_pins>;
-+		pinctrl-4 = <&aud_mosi_off_pins>;
-+		pinctrl-5 = <&aud_mosi_on_pins>;
-+		vaud28-supply = <&mt6357_vaud28_reg>;
-+		status = "okay";
-+	};
- };
- 
- &cpu0 {
-@@ -181,6 +200,67 @@ &mt6357_pmic {
- };
- 
- &pio {
-+	aud_default_pins: audiodefault-pins {
-+		pins {
-+		pinmux = <MT8365_PIN_72_CMDAT4__FUNC_I2S3_BCK>,
-+			 <MT8365_PIN_73_CMDAT5__FUNC_I2S3_LRCK>,
-+			 <MT8365_PIN_74_CMDAT6__FUNC_I2S3_MCK>,
-+			 <MT8365_PIN_75_CMDAT7__FUNC_I2S3_DO>;
-+		};
-+	};
-+
-+	aud_dmic_pins: audiodmic-pins {
-+		pins {
-+		pinmux = <MT8365_PIN_117_DMIC0_CLK__FUNC_DMIC0_CLK>,
-+			 <MT8365_PIN_118_DMIC0_DAT0__FUNC_DMIC0_DAT0>,
-+			 <MT8365_PIN_119_DMIC0_DAT1__FUNC_DMIC0_DAT1>;
-+		};
-+	};
-+
-+	aud_miso_off_pins: misooff-pins {
-+		pins {
-+		pinmux = <MT8365_PIN_53_AUD_CLK_MISO__FUNC_GPIO53>,
-+			 <MT8365_PIN_54_AUD_SYNC_MISO__FUNC_GPIO54>,
-+			 <MT8365_PIN_55_AUD_DAT_MISO0__FUNC_GPIO55>,
-+			 <MT8365_PIN_56_AUD_DAT_MISO1__FUNC_GPIO56>;
-+		input-enable;
-+		bias-pull-down;
-+		drive-strength = <MTK_DRIVE_2mA>;
-+		};
-+	};
-+
-+	aud_miso_on_pins: misoon-pins {
-+		pins {
-+		pinmux = <MT8365_PIN_53_AUD_CLK_MISO__FUNC_AUD_CLK_MISO>,
-+			 <MT8365_PIN_54_AUD_SYNC_MISO__FUNC_AUD_SYNC_MISO>,
-+			 <MT8365_PIN_55_AUD_DAT_MISO0__FUNC_AUD_DAT_MISO0>,
-+			 <MT8365_PIN_56_AUD_DAT_MISO1__FUNC_AUD_DAT_MISO1>;
-+		drive-strength = <MTK_DRIVE_6mA>;
-+		};
-+	};
-+
-+	aud_mosi_off_pins: mosioff-pins {
-+		pins {
-+		pinmux = <MT8365_PIN_49_AUD_CLK_MOSI__FUNC_GPIO49>,
-+			 <MT8365_PIN_50_AUD_SYNC_MOSI__FUNC_GPIO50>,
-+			 <MT8365_PIN_51_AUD_DAT_MOSI0__FUNC_GPIO51>,
-+			 <MT8365_PIN_52_AUD_DAT_MOSI1__FUNC_GPIO52>;
-+		input-enable;
-+		bias-pull-down;
-+		drive-strength = <MTK_DRIVE_2mA>;
-+		};
-+	};
-+
-+	aud_mosi_on_pins: mosion-pins {
-+		pins {
-+		pinmux = <MT8365_PIN_49_AUD_CLK_MOSI__FUNC_AUD_CLK_MOSI>,
-+			 <MT8365_PIN_50_AUD_SYNC_MOSI__FUNC_AUD_SYNC_MOSI>,
-+			 <MT8365_PIN_51_AUD_DAT_MOSI0__FUNC_AUD_DAT_MOSI0>,
-+			 <MT8365_PIN_52_AUD_DAT_MOSI1__FUNC_AUD_DAT_MOSI1>;
-+		drive-strength = <MTK_DRIVE_6mA>;
-+		};
-+	};
-+
- 	ethernet_pins: ethernet-pins {
- 		phy_reset_pins {
- 			pinmux = <MT8365_PIN_133_TDM_TX_DATA1__FUNC_GPIO133>;
-@@ -416,3 +496,10 @@ &uart2 {
- 	pinctrl-names = "default";
- 	status = "okay";
- };
-+
-+&afe {
-+	mediatek,dmic-iir-on;
-+	mediatek,dmic-irr-mode = <5>;
-+	mediatek,dmic-two-wire-mode;
-+	status = "okay";
-+};
+I believe this isn't correct.
+TRM says setting OE as 1 means output enable, while 0 means input.
+So I guess the controller may support pwm capture, but I didn't
+get too much information about pwm capture of the controller from
+the TRM, so can you please check and implement the .capture hook
+if it's supported?
 
--- 
-2.25.1
+> +				   PWM_CV1800_OE_MASK(pwm->hwpwm),
+> +				   PWM_CV1800_REG_ENABLE(pwm->hwpwm));
+> +		regmap_update_bits(priv->map, PWM_CV1800_START,
+> +				   PWM_CV1800_START_MASK(pwm->hwpwm),
+> +				   PWM_CV1800_REG_ENABLE(pwm->hwpwm));
+> +	} else if (pwm_enable && !enable) {
+> +		regmap_update_bits(priv->map, PWM_CV1800_OE,
 
+ditto
+
+> +				   PWM_CV1800_OE_MASK(pwm->hwpwm),
+> +				   PWM_CV1800_REG_DISABLE);
+> +		regmap_update_bits(priv->map, PWM_CV1800_START,
+> +				   PWM_CV1800_START_MASK(pwm->hwpwm),
+> +				   PWM_CV1800_REG_DISABLE);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int cv1800_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> +			    const struct pwm_state *state)
+> +{
+> +	struct cv1800_pwm *priv = to_cv1800_pwm_dev(chip);
+> +	u32 period_val, hlperiod_val;
+> +	u64 tem;
+> +
+> +	if (state->polarity != PWM_POLARITY_NORMAL)
+> +		return -EINVAL;
+
+This is wrong. Per the TRM, The POLARITY(offset 0x040) reg can set the
+polarity, so both PWM_POLARITY_NORMAL and PWM_POLARITY_INVERSED are supported.
+
+> +
+> +	/*
+> +	 * This hardware use PERIOD and HLPERIOD registers to represent PWM waves.
+> +	 *
+> +	 * The meaning of PERIOD is how many clock cycles (from the clock source)
+> +	 * are used to represent PWM waves.
+> +	 * PERIOD = rate(MHz) / target(MHz)
+> +	 * PERIOD = period(ns) * rate(Hz) / NSEC_PER_SEC
+> +	 * The meaning of HLPERIOD is the number of low-level cycles in PERIOD.
+> +	 * HLPERIOD = PERIOD - rate(MHz) / duty(MHz)
+> +	 * HLPERIOD = PERIOD - (duty(ns) * rate(Hz) / NSEC_PER_SEC)
+> +	 */
+> +	tem = mul_u64_u64_div_u64(state->period, priv->clk_rate, NSEC_PER_SEC);
+> +	if (tem < PWM_CV1800_MINPERIOD)
+> +		return -EINVAL;
+> +
+> +	if (tem > PWM_CV1800_MAXPERIOD)
+> +		tem = PWM_CV1800_MAXPERIOD;
+> +
+> +	period_val = (u32)tem;
+> +
+> +	tem = mul_u64_u64_div_u64(state->duty_cycle, priv->clk_rate,
+> +				  NSEC_PER_SEC);
+> +	if (tem > period_val)
+> +		return -EINVAL;
+> +	hlperiod_val = period_val - (u32)tem;
+> +
+> +	regmap_write(priv->map, PWM_CV1800_PERIOD(pwm->hwpwm), period_val);
+> +	regmap_write(priv->map, PWM_CV1800_HLPERIOD(pwm->hwpwm), hlperiod_val);
+> +
+> +	cv1800_pwm_enable(chip, pwm, state->enabled);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cv1800_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+> +				struct pwm_state *state)
+> +{
+> +	struct cv1800_pwm *priv = to_cv1800_pwm_dev(chip);
+> +	u32 period_val, hlperiod_val;
+> +	u64 period_ns = 0;
+> +	u64 duty_ns = 0;
+> +	u32 enable = 0;
+> +
+> +	regmap_read(priv->map, PWM_CV1800_PERIOD(pwm->hwpwm), &period_val);
+> +	regmap_read(priv->map, PWM_CV1800_HLPERIOD(pwm->hwpwm), &hlperiod_val);
+> +
+> +	if (period_val != PWM_CV1800_PERIOD_RESET ||
+> +	    hlperiod_val != PWM_CV1800_HLPERIOD_RESET) {
+> +		period_ns = DIV_ROUND_UP_ULL(period_val * NSEC_PER_SEC, priv->clk_rate);
+> +		duty_ns = DIV_ROUND_UP_ULL(hlperiod_val * period_ns, period_val);
+> +
+> +		regmap_read(priv->map, PWM_CV1800_START, &enable);
+> +
+> +		enable &= PWM_CV1800_START_MASK(pwm->hwpwm);
+> +	}
+> +
+> +	state->period = period_ns;
+> +	state->duty_cycle = duty_ns;
+> +	state->enabled = enable;
+> +	state->polarity = PWM_POLARITY_NORMAL;
+
+This is not correct, see above.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct pwm_ops cv1800_pwm_ops = {
+> +	.apply = cv1800_pwm_apply,
+> +	.get_state = cv1800_pwm_get_state,
+> +};
+> +
+> +static void devm_clk_rate_exclusive_put(void *data)
+> +{
+> +	struct clk *clk = data;
+> +
+> +	clk_rate_exclusive_put(clk);
+> +}
+> +
+> +static int cv1800_pwm_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct cv1800_pwm *priv;
+> +	struct pwm_chip *chip;
+> +	void __iomem *base;
+> +	int ret;
+> +
+> +	chip = devm_pwmchip_alloc(dev, 4, sizeof(*priv));
+
+it's better to replace magic "4" with proper macro.
+
+> +	if (!chip)
+> +		return PTR_ERR(chip);
+> +
+> +	priv = to_cv1800_pwm_dev(chip);
+> +
+> +	base = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
+> +
+> +	priv->map = devm_regmap_init_mmio(&pdev->dev, base,
+> +					  &cv1800_pwm_regmap_config);
+> +	if (IS_ERR(priv->map))
+> +		return PTR_ERR(priv->map);
+> +
+> +	priv->clk = devm_clk_get_enabled(&pdev->dev, NULL);
+> +	if (IS_ERR(priv->clk))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(priv->clk),
+> +				     "clk not found\n");
+> +
+> +	ret = clk_rate_exclusive_get(priv->clk);
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret,
+> +				     "failed to get exclusive rate\n");
+> +
+> +	ret = devm_add_action_or_reset(&pdev->dev, devm_clk_rate_exclusive_put,
+> +				       priv->clk);
+> +	if (ret) {
+> +		clk_rate_exclusive_put(priv->clk);
+> +		return ret;
+> +	}
+> +
+> +	priv->clk_rate = clk_get_rate(priv->clk);
+> +	if (!priv->clk_rate)
+> +		return dev_err_probe(&pdev->dev, -EINVAL,
+> +				     "Invalid clock rate: %lu\n",
+> +				     priv->clk_rate);
+> +
+> +	chip->ops = &cv1800_pwm_ops;
+> +
+> +	return devm_pwmchip_add(dev, chip);
+> +}
+> +
+> +static const struct of_device_id cv1800_pwm_dt_ids[] = {
+> +	{ .compatible = "sophgo,cv1800-pwm" },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(of, cv1800_pwm_dt_ids);
+> +
+> +static struct platform_driver cv1800_pwm_driver = {
+> +	.driver = {
+> +		.name = "cv1800-pwm",
+> +		.of_match_table = cv1800_pwm_dt_ids,
+> +	},
+> +	.probe = cv1800_pwm_probe,
+> +};
+> +module_platform_driver(cv1800_pwm_driver);
+> +
+> +MODULE_AUTHOR("Jingbao Qiu");
+> +MODULE_DESCRIPTION("Sophgo cv1800 PWM Driver");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
