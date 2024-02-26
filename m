@@ -1,74 +1,75 @@
-Return-Path: <linux-kernel+bounces-81572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BE378677BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:07:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36CB38677C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:07:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F6D6B26905
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:07:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A257E1F2B822
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:07:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C2412F5BC;
-	Mon, 26 Feb 2024 14:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73BB12FF84;
+	Mon, 26 Feb 2024 14:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="iN/vHt4U"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="QNJpHldM"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFF612EBE1
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9622E12F36B
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:02:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708956154; cv=none; b=lypb8N9JbHNkW2qLHopM6QfSuCJYNht9lDgrgOAxYtpbith4dVPGmdmLBEyCGXSqI2jLLZEq2R7LI/ZH1sqVHwwgRpvcCA1OlCGMpSukx1zs7LQuVTFPhmrOVWiLOcki2a99HKk0L9L9tj1fsjy5E9M47JEpOBKOt/hVmS7PIiA=
+	t=1708956156; cv=none; b=FxLxCjEyquheCMnclcBS0OrpSxMIlk5S/JgyibZYTtlpczlpfdzgbahFmGrLerEtRIJQYKM9ffPv4L6P10mvFqiSE0mBm48Eq6TQFZEdhrNbCDraT5bVTd/RIaLncJ7naU7oAh+vSijrzwd6Yrh7OnVmMj+TIjlCBE79SI5LIlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708956154; c=relaxed/simple;
-	bh=xG6Nj+SE5fOs36aPHS6J8P8h9OIISvMcqRKMRAq4LYM=;
+	s=arc-20240116; t=1708956156; c=relaxed/simple;
+	bh=lbgi9OL1obZblEePDIhhejeSSwFTqveCSkacaUUqnXE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=B9scPRYKXEN9TeUC4a7ln9ELjTRYV/phXWMaQYNC3hkgfoTSMBJigqtndiSTWsg6ZzNRlzPKYlZlcOhMToBrpIRJia3TkmTGzXsA4Jl1FXxJVXPSf3l0jkcShvV/0epHNhs63XfUVtlUZ2V5mhV3MJhICH0rMgckIzEACmyrF4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=iN/vHt4U; arc=none smtp.client-ip=209.85.128.50
+	 In-Reply-To:To:Cc; b=LhoN0/kcXzXOGEvZC3ABrG+X+LwlmYw2nYE1cKIWyXInCuXYMqmrO+foUH9q3JcJoWqh91WhRcvQgxDz3VS4zyMfr6DbAUUfSPPnLfMxniA9WXHSz6fsREGnhUp4yRHLfsA0uU/rUiOCLJbFRZ9Bv3OIWvRUHNRPKHK9cWNzyMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=QNJpHldM; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412a9a61545so787385e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:02:31 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d28e3c0fe0so9155811fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 06:02:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708956150; x=1709560950; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708956151; x=1709560951; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=F62eeTl4P/lUv2qXfQTeyM9lbIH8G1u8VXxO64mOOAU=;
-        b=iN/vHt4Uq6z/vmVhjgKBF2VKujoigCPp6jKDr3UlQY42SliNh8smXWUFjbMUkuWyqu
-         JWxL49qVpPpfClJxGQmjzUvsPtKbCDswCcVXipaximDI5F17g0xcvd1dCDQfeycZR2OE
-         x7HJdNzKc5m3mGcPa9mLZ5PVty/AdL90DlLjjLBLVm2GgEEMpYl7sVs8LbOqviXSMODt
-         ddEpbRnTE1vR4W3cQXYpJJVIqcon6QliaJXtSA1juCHhUqGWFzB42bEVr6JmSIl0oG9B
-         CllXwh+t883qb9+fl/siF6lYfzO5t/OzsTuHb6k1Mc/BBTIRcojR1441Z8lprB5h7ElK
-         C5sQ==
+        bh=Fr6qUv7uphl0F7A/cjSpLzFAuez52U6vdxnRSxFG1Us=;
+        b=QNJpHldMxF9dy98Px1SheVC25WaTU61/4xHpDQHnwlGmNTf/GcJfX9l9WGk6crvuMA
+         6cdnyj5StEBCz15pwzapq0VlwGgdXIR49HeDwSc43RiRXGWe+e20wRBWN8PSzQB7YwUe
+         IElbS7GFbNCMBkQUUWRzKPS/TF/1MktOCrPBLaDbC5IXFmjeORAJVJxOELsaOiFBTSPh
+         HMuA21ZK3/K5LY20ZLBUERolQ+g0Y8RBa0lUlKSkpGGIQznOPX84EIS6x5IGq5YFbJZF
+         JB0LkSI7husDmA3zC70BjV07MnDBsrGfJ7R3CvMo0ELTACWbDPfjP5ELAZpYivI7TMpi
+         l1SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708956150; x=1709560950;
+        d=1e100.net; s=20230601; t=1708956151; x=1709560951;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=F62eeTl4P/lUv2qXfQTeyM9lbIH8G1u8VXxO64mOOAU=;
-        b=CSoKncrPf+MaTwdFxBEWJix+emBQC3VJlDQf+p/3HtHGqiq9s0Q6dP0YjKl5Uw9Ht7
-         UpWV30NYGtqmwyTQg/CVklfVwt4vT9A3PpMnLDAuoKa46aZxPnGvYKnjQzOgT9m8jiez
-         OjGtO3Ya58RcGI+l7VNGsqRlUJp+kqn2JhHiEPFVM/HV5T0tQ1JZGhaRJKKM74GafTCL
-         /t/H9fi5ecv7m+BgRnQCxkzO8ebUTQ3OAwpUidM6FZZU6GT7UVSwtG5qQapmPG6Xz/lU
-         bdvi/52a800jIEI88RLRAbt9nScq0D5Z4ZnneZtyJfWSweUDeOb4/WXOoIAGVB6ggCYu
-         RCHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWQNgPBWWSwA8UOMGDAankZtsFy1U6Iea4e13vE4js9uv/2vPIDOat5H+kHg27yIDNSBFGlg6Zbh7kQfg7f7VWR679UjfQhZjgWNeaE
-X-Gm-Message-State: AOJu0Yx0M+yamGvgjZPuyYkAv/eQJSRF65pQiIUv/QFdDYf+dGPyMEnu
-	3mEvA6ZzS70tyEqPodWveb/ziihKYS3n0m+GvXgU7RLfcYol9GdPpmsYQG4OYIQ=
-X-Google-Smtp-Source: AGHT+IHscKedkQ0b/ug4V8wD/SHcqJqmEUf1to81tnkJ5MmC7hJV2OxNQvlYaWfsvt7J++chxx9drQ==
-X-Received: by 2002:a05:600c:4712:b0:412:a1c6:ecd with SMTP id v18-20020a05600c471200b00412a1c60ecdmr2618588wmo.30.1708956150455;
-        Mon, 26 Feb 2024 06:02:30 -0800 (PST)
+        bh=Fr6qUv7uphl0F7A/cjSpLzFAuez52U6vdxnRSxFG1Us=;
+        b=R/R4yU7LlqOeB+THCzmswgl76kZVDx4VEc2OqwIXOt4zX7TiXskCLu/PUNdH6GucrH
+         ZSUToFQD7GTCFhFvjkfS014ePDYR7e2h99k82OpGQWF1jT4EfcQYDWS1BHdM5CPsi2iX
+         hoKdCY5Cln6LGvrYhnwsfCY7foYLIRPlhi3CMdqTOw83SSzvwHInRwoFS19u0fMjVJxb
+         At5/BklubuZtBRjmV5z0YjP/50liSR3eZmapolfGTm+PbqD7Tohl2/uTBqd52l5S0NZ1
+         aHb4I47PU62wqe2vFpEBHAWrHP/zG6mVsVA86t/YjdiCtaS7CbpF9FyhjdyXrcR2SXss
+         tAZA==
+X-Forwarded-Encrypted: i=1; AJvYcCXGRL8xBKAGHGjI7ni/jLTGNT4GJUJWDez4s0kv9/yuSMmmxYwYA2zS0UhjPggajmMewnOc8hclHnxlk17lJ4tk5+BZDovUXtbIvG3S
+X-Gm-Message-State: AOJu0YzKp02G+51mRmGBETfG8iBdi+xhtyLPy7aCLFe9iNAa9zENXG6+
+	2975pRuxgN8RpfbQguIpxv3psh1/l/fXcvEg/BlD3wG0LE/iB9hz6UdQZZRsW0Q=
+X-Google-Smtp-Source: AGHT+IFoh8mPmzGM/gZj9w5NAeFQXI6f6EQmCodyO1Vvv8vUKUQrRRqnf2VVbDW26mV1+6aMSpo47A==
+X-Received: by 2002:a05:651c:10d1:b0:2d2:2012:1fef with SMTP id l17-20020a05651c10d100b002d220121fefmr3638929ljn.47.1708956151700;
+        Mon, 26 Feb 2024 06:02:31 -0800 (PST)
 Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id d33-20020a05600c4c2100b004129f87a2c6sm2838475wmp.1.2024.02.26.06.02.29
+        by smtp.googlemail.com with ESMTPSA id d33-20020a05600c4c2100b004129f87a2c6sm2838475wmp.1.2024.02.26.06.02.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 06:02:29 -0800 (PST)
+        Mon, 26 Feb 2024 06:02:31 -0800 (PST)
 From: Alexandre Mergnat <amergnat@baylibre.com>
-Date: Mon, 26 Feb 2024 15:01:55 +0100
-Subject: [PATCH 17/18] arm64: dts: mediatek: add afe support for mt8365 SoC
+Date: Mon, 26 Feb 2024 15:01:56 +0100
+Subject: [PATCH 18/18] arm64: dts: mediatek: add audio support for
+ mt8365-evk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240226-audio-i350-v1-17-4fa1cea1667f@baylibre.com>
+Message-Id: <20240226-audio-i350-v1-18-4fa1cea1667f@baylibre.com>
 References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
 In-Reply-To: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
@@ -97,96 +98,155 @@ Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
  dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org, 
  Alexandre Mergnat <amergnat@baylibre.com>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2516; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=xG6Nj+SE5fOs36aPHS6J8P8h9OIISvMcqRKMRAq4LYM=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBl3JndiuFBdHmvYSuhV3YrAB4ZgAGaQLk95FRZXpfT
- wtQhZmaJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZdyZ3QAKCRArRkmdfjHURXRbEA
- CB9zjhs3sNHEteUCvQ7PrQLUoBwpi65oTqrtSHIx+d2xsx9LuHXmpU/xqe38wf+OtnmZOOJXZzKrpY
- i0XGXZ/6LpLMRhDtX3j8bre7wiZCd7P/u4QlKd1wEe308TC58uug9S5heRGPAG1FkkBAeRjMY96U9t
- pUZ2vFGYevyYNZ3hhdImBX8Eiyxum8nLgcwRTvy1GKYk8x1tNBNpvcIj2mDXX5vzTmwzYBZDSBILkD
- 48ugwynpcguHwd+liyeNx752fp//0e2p1mo5uvO3SgAVjaRCLtujqhfaU1PIpis7Bj2oWMuF2dIouh
- cKX1zee+YOUH2t4EzgOIU+EFVz0P4NTEaQJnm/cHhlDcM+iFsYFqjrWSmhUOOeutQ7/Zohp27vtSTV
- +k07l7G5eQJ/fWDCLNpr5Um3MUer6A0GPYc+oD/n1N1IwUTUfkqSVYpIjIWGbetyn1Kl5y0aqEDPpL
- a9XAD58F/z9THIwcEtj5QIg5QwlfyjjanLxk4UEJq4MLstDl7/N84yXPN5F+WGYnmsMldbGRbGh1aV
- ZXUdVCS6iGy4MG65GdrHOZvVANbQ+8AD/4Oyqm3g8qDxWqUvTcvZugmTVO+S3yPP6WU8lV0bvZ+IuK
- ovAQgS57irkAK2DYyA2a6OjucJzc4Bof15oIZvsaabiHCsMnhhLk60UlZPLQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3858; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=lbgi9OL1obZblEePDIhhejeSSwFTqveCSkacaUUqnXE=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBl3Jnd+w8IF/0MoA24p+dI4JyZDGShEkMctxqnmZ3g
+ z3OxK12JAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZdyZ3QAKCRArRkmdfjHURa4QD/
+ 95NpJWGzTF7i0U4jGIRjRkcN2D4J42NZKCYbftZ8a5Q4MTVuwCbkEMdy8eOB36kpxWTlq61VxNUsug
+ lAentcdEWSrZEUsczLGt82lKlMdaKuOrVM3RBz+D/4DCgIzuNqw5RtyRK+D9US6UOjV6bAYg+VOCmr
+ E2VvHOXer0VlRm/v1bpjTxH+OXtA8ztKcQFPeK4LFGLDGqSCYnMCT7v0eCZ+Mya9vw7drZY5Eibu/6
+ 5q8nT8GIe5kFdPwaq64D3uV9hsu59MccdcThnyJqTGqYuEn4C1DN+9rkcT22e5Bp1YS7y7juyj6C04
+ DDOXMgU2bl6P9Lpe7uCpyZPOFb6y7cbRw5YzZPYxONpskn1hFV1XqaalcwBTKgeQWdSZZhU1zLosan
+ j5qZDHkmN6ipbd0We4rQJg512ny8X13q9fH1AbBW85bZLMwOM2cPOA0or/BdWx0CFzyBAuhz+Yikry
+ 8OmWIr07732ikrI661VIF8Pj2ZLa1ryWzMjooj5Y/b8OppHDB1LidcNyTHsVKBep5fdn8yiHYYO3j6
+ mk7lsczgK/oSLH5NTGz1sViSOvZoYwm2PC2HrHzMCikiFlcqL65mnGQ4Nnr1EqwRfQWlmJadgvAia+
+ nixt2u4SvthnmJAfycBFbOcGNz/PTqn0gR2UBZ3nNGyog9K0HoQ5yCYLsjTg==
 X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
  fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
 
-Add audio front end support of MT8365 SoC.
+Add the sound node which is linked to the MT8365 SoC AFE and
+the MT6357 audio codec.
+
 Update the file header.
 
 Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8365.dtsi | 47 ++++++++++++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/mediatek/mt8365-evk.dts | 95 +++++++++++++++++++++++++++--
+ 1 file changed, 91 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8365.dtsi b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-index 24581f7410aa..13cd1298832b 100644
---- a/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8365.dtsi
-@@ -1,10 +1,12 @@
- // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+diff --git a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
+index 50cbaefa1a99..818a8d263949 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8365-evk.dts
+@@ -1,9 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
  /*
-  * (C) 2018 MediaTek Inc.
-- * Copyright (C) 2022 BayLibre SAS
+- * Copyright (c) 2021-2022 BayLibre, SAS.
+- * Authors:
 - * Fabien Parent <fparent@baylibre.com>
 - * Bernhard Rosenkränzer <bero@baylibre.com>
-+ * Copyright (C) 2024 BayLibre SAS
++ * Copyright (c) 2024 BayLibre, SAS.
 + * Authors: Fabien Parent <fparent@baylibre.com>
 + *	    Bernhard Rosenkränzer <bero@baylibre.com>
 + *	    Alexandre Mergnat <amergnat@baylibre.com>
   */
-+
- #include <dt-bindings/clock/mediatek,mt8365-clk.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/interrupt-controller/irq.h>
-@@ -813,6 +815,45 @@ apu: syscon@19020000 {
- 			reg = <0 0x19020000 0 0x1000>;
- 			#clock-cells = <1>;
- 		};
-+
-+		afe: audio-controller@11220000 {
-+			compatible = "mediatek,mt8365-afe-pcm";
-+			reg = <0 0x11220000 0 0x1000>,
-+			      <0 0x11221000 0 0xA000>;
-+			interrupts = <GIC_SPI 97 IRQ_TYPE_LEVEL_LOW>;
-+			power-domains = <&spm MT8365_POWER_DOMAIN_AUDIO>;
-+			mediatek,topckgen = <&topckgen>;
-+			#sound-dai-cells = <0>;
-+			clocks = <&clk26m>,
-+				 <&topckgen CLK_TOP_AUDIO_SEL>,
-+				 <&topckgen CLK_TOP_AUD_I2S0_M>,
-+				 <&topckgen CLK_TOP_AUD_I2S1_M>,
-+				 <&topckgen CLK_TOP_AUD_I2S2_M>,
-+				 <&topckgen CLK_TOP_AUD_I2S3_M>,
-+				 <&topckgen CLK_TOP_AUD_ENGEN1_SEL>,
-+				 <&topckgen CLK_TOP_AUD_ENGEN2_SEL>,
-+				 <&topckgen CLK_TOP_AUD_1_SEL>,
-+				 <&topckgen CLK_TOP_AUD_2_SEL>,
-+				 <&topckgen CLK_TOP_APLL_I2S0_SEL>,
-+				 <&topckgen CLK_TOP_APLL_I2S1_SEL>,
-+				 <&topckgen CLK_TOP_APLL_I2S2_SEL>,
-+				 <&topckgen CLK_TOP_APLL_I2S3_SEL>;
-+			clock-names = "top_clk26m_clk",
-+				      "top_audio_sel",
-+				      "audio_i2s0_m",
-+				      "audio_i2s1_m",
-+				      "audio_i2s2_m",
-+				      "audio_i2s3_m",
-+				      "engen1",
-+				      "engen2",
-+				      "aud1",
-+				      "aud2",
-+				      "i2s0_m_sel",
-+				      "i2s1_m_sel",
-+				      "i2s2_m_sel",
-+				      "i2s3_m_sel";
-+			status = "disabled";
-+		};
- 	};
  
- 	timer {
+ /dts-v1/;
+@@ -86,6 +86,25 @@ optee_reserved: optee@43200000 {
+ 			reg = <0 0x43200000 0 0x00c00000>;
+ 		};
+ 	};
++
++	sound: sound {
++		compatible = "mediatek,mt8365-mt6357";
++		mediatek,platform = <&afe>;
++		pinctrl-names = "aud_default",
++			"aud_dmic",
++			"aud_miso_off",
++			"aud_miso_on",
++			"aud_mosi_off",
++			"aud_mosi_on";
++		pinctrl-0 = <&aud_default_pins>;
++		pinctrl-1 = <&aud_dmic_pins>;
++		pinctrl-2 = <&aud_miso_off_pins>;
++		pinctrl-3 = <&aud_miso_on_pins>;
++		pinctrl-4 = <&aud_mosi_off_pins>;
++		pinctrl-5 = <&aud_mosi_on_pins>;
++		vaud28-supply = <&mt6357_vaud28_reg>;
++		status = "okay";
++	};
+ };
+ 
+ &cpu0 {
+@@ -181,6 +200,67 @@ &mt6357_pmic {
+ };
+ 
+ &pio {
++	aud_default_pins: audiodefault-pins {
++		pins {
++		pinmux = <MT8365_PIN_72_CMDAT4__FUNC_I2S3_BCK>,
++			 <MT8365_PIN_73_CMDAT5__FUNC_I2S3_LRCK>,
++			 <MT8365_PIN_74_CMDAT6__FUNC_I2S3_MCK>,
++			 <MT8365_PIN_75_CMDAT7__FUNC_I2S3_DO>;
++		};
++	};
++
++	aud_dmic_pins: audiodmic-pins {
++		pins {
++		pinmux = <MT8365_PIN_117_DMIC0_CLK__FUNC_DMIC0_CLK>,
++			 <MT8365_PIN_118_DMIC0_DAT0__FUNC_DMIC0_DAT0>,
++			 <MT8365_PIN_119_DMIC0_DAT1__FUNC_DMIC0_DAT1>;
++		};
++	};
++
++	aud_miso_off_pins: misooff-pins {
++		pins {
++		pinmux = <MT8365_PIN_53_AUD_CLK_MISO__FUNC_GPIO53>,
++			 <MT8365_PIN_54_AUD_SYNC_MISO__FUNC_GPIO54>,
++			 <MT8365_PIN_55_AUD_DAT_MISO0__FUNC_GPIO55>,
++			 <MT8365_PIN_56_AUD_DAT_MISO1__FUNC_GPIO56>;
++		input-enable;
++		bias-pull-down;
++		drive-strength = <MTK_DRIVE_2mA>;
++		};
++	};
++
++	aud_miso_on_pins: misoon-pins {
++		pins {
++		pinmux = <MT8365_PIN_53_AUD_CLK_MISO__FUNC_AUD_CLK_MISO>,
++			 <MT8365_PIN_54_AUD_SYNC_MISO__FUNC_AUD_SYNC_MISO>,
++			 <MT8365_PIN_55_AUD_DAT_MISO0__FUNC_AUD_DAT_MISO0>,
++			 <MT8365_PIN_56_AUD_DAT_MISO1__FUNC_AUD_DAT_MISO1>;
++		drive-strength = <MTK_DRIVE_6mA>;
++		};
++	};
++
++	aud_mosi_off_pins: mosioff-pins {
++		pins {
++		pinmux = <MT8365_PIN_49_AUD_CLK_MOSI__FUNC_GPIO49>,
++			 <MT8365_PIN_50_AUD_SYNC_MOSI__FUNC_GPIO50>,
++			 <MT8365_PIN_51_AUD_DAT_MOSI0__FUNC_GPIO51>,
++			 <MT8365_PIN_52_AUD_DAT_MOSI1__FUNC_GPIO52>;
++		input-enable;
++		bias-pull-down;
++		drive-strength = <MTK_DRIVE_2mA>;
++		};
++	};
++
++	aud_mosi_on_pins: mosion-pins {
++		pins {
++		pinmux = <MT8365_PIN_49_AUD_CLK_MOSI__FUNC_AUD_CLK_MOSI>,
++			 <MT8365_PIN_50_AUD_SYNC_MOSI__FUNC_AUD_SYNC_MOSI>,
++			 <MT8365_PIN_51_AUD_DAT_MOSI0__FUNC_AUD_DAT_MOSI0>,
++			 <MT8365_PIN_52_AUD_DAT_MOSI1__FUNC_AUD_DAT_MOSI1>;
++		drive-strength = <MTK_DRIVE_6mA>;
++		};
++	};
++
+ 	ethernet_pins: ethernet-pins {
+ 		phy_reset_pins {
+ 			pinmux = <MT8365_PIN_133_TDM_TX_DATA1__FUNC_GPIO133>;
+@@ -416,3 +496,10 @@ &uart2 {
+ 	pinctrl-names = "default";
+ 	status = "okay";
+ };
++
++&afe {
++	mediatek,dmic-iir-on;
++	mediatek,dmic-irr-mode = <5>;
++	mediatek,dmic-two-wire-mode;
++	status = "okay";
++};
 
 -- 
 2.25.1
