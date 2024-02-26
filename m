@@ -1,31 +1,31 @@
-Return-Path: <linux-kernel+bounces-80447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87116866880
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:07:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A49BB866881
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:07:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C08C71C213FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:07:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43C0B1F212CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0889D1B94D;
-	Mon, 26 Feb 2024 03:06:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191D21BDCD;
+	Mon, 26 Feb 2024 03:06:40 +0000 (UTC)
 Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77BFD14A98
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:06:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D06A18EB8
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708916798; cv=none; b=oIca/1t4UWGcj1esqA+48on9q56Cr8AJoik/GwqyHTIY/czuDyNhMbBCWtNpMTWncN4AhNMJ+3/3Q/uglNkHX8F6Ju2l0qcbjEOEj9XkpRY7ST0ScPg65EJjADrJ5tShfgY48AXwcYy4YqSz+ImjM3v5QPbkMp8oCJwLo6eMOiw=
+	t=1708916799; cv=none; b=mAzUIgiQOX0SFZlJRjJVkTHhVmsifZHMRHt3pun21dZb/Tnigctgp3zk/Jr3Fw6T/+vZFmDirnTLfMhP1xgRzc6vih3J5t1jCsy7gQqcbIeqbgA1FhFLXot2n89nkfz+vYJMl7ANrrNnVozJ7akMNmJheS8QxdGvvs8G2fiQ1b4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708916798; c=relaxed/simple;
-	bh=o7dB2cnQ4DdAIbh4UuP8+5q3qGaOJJ7booLY7nqK98M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=E8iuh9JmgfZvHFcQ8KfA8h5TEwL/YzYtBmTSxJq70JWeCJOALNmtw67eBLdBsOSCB5zBidO2AeGJ3t26RXxXVKUSw4VLCBhMRYGNfmHN0FHIk0GjDI2I5kx6aB5PoU5389s1xpHwDQh1HI6WXf8zaCrKPft4RCeCYG3b3ju73y4=
+	s=arc-20240116; t=1708916799; c=relaxed/simple;
+	bh=bOo6ompPxEjsShhZOqBiAWkLgDaqfCbo8j/HY5Q8F4Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=EEcp6dQFElWJi9sNdGExMq6RExfKcG1k1IpHoSxpdURpfv2/a+bqnBT9jM3k+IFFhrDQ93ALbdGiX/1XmWcrfaIq5emU1vuE6OtE4PJFejN5EekttKsA71BLf2le7ID7SRfMMSkPE3E/i42pPapRi0NImSEGBlYx6geI9xjfqRg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-37-65dc002fa99c
+X-AuditID: a67dfc5b-d6dff70000001748-3c-65dc002ffdf6
 From: Byungchul Park <byungchul@sk.com>
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org
@@ -44,36 +44,36 @@ Cc: kernel_team@skhynix.com,
 	bp@alien8.de,
 	dave.hansen@linux.intel.com,
 	rjgolo@gmail.com
-Subject: [RESEND PATCH v8 4/8] x86/tlb, mm/rmap: Separate arch_tlbbatch_clear() out of arch_tlbbatch_flush()
-Date: Mon, 26 Feb 2024 12:06:09 +0900
-Message-Id: <20240226030613.22366-5-byungchul@sk.com>
+Subject: [RESEND PATCH v8 5/8] mm: Separate move/undo doing on folio list from migrate_pages_batch()
+Date: Mon, 26 Feb 2024 12:06:10 +0900
+Message-Id: <20240226030613.22366-6-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240226030613.22366-1-byungchul@sk.com>
 References: <20240226030613.22366-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMLMWRmVeSWpSXmKPExsXC9ZZnka4Bw51Ug69hFnPWr2Gz+LzhH5vF
-	iw3tjBZf1/9itnj6qY/F4vKuOWwW99b8Z7U4v2stq8WOpfuYLC4dWMBkcbz3AJPF/Huf2Sw2
-	b5rKbHF8ylRGi98/gIpPzprM4iDg8b21j8Vj56y77B4LNpV6bF6h5bF4z0smj02rOtk8Nn2a
-	xO7x7tw5do8TM36zeMw7Gejxft9VNo+tv+w8GqdeY/P4vEkugC+KyyYlNSezLLVI3y6BK+Po
-	nXtsBXM4K87/msrUwHiJvYuRk0NCwETiy4WXrDD2i387wOJsAuoSN278ZAaxRQTMJA62/gGL
-	MwvcZZI40M/WxcjBISyQI7HvaxpImEVAVWL3z6dgJbwCphJrX55mgRgpL7F6wwFmkHJOoDHv
-	/xuChIWASv72XmXsYuQCKvnMJrGqfSYjRL2kxMEVN1gmMPIuYGRYxSiUmVeWm5iZY6KXUZmX
-	WaGXnJ+7iREY9Mtq/0TvYPx0IfgQowAHoxIP74IPt1OFWBPLiitzDzFKcDArifCGy9xMFeJN
-	SaysSi3Kjy8qzUktPsQozcGiJM5r9K08RUggPbEkNTs1tSC1CCbLxMEp1cCoaNMdsOrB5+U9
-	3HeTbrvb1c+c+/aLqmXDNIFjH5Wu+Nz++fVNOtPBeha2+pf9+rLaV7a+fzFj9s3EELXrDVzM
-	olvN17zXLw336ExxtExueXIyNeHsqeCHBQKTDk2+23kygy1r8/J2MU/ti5uyIj5vuc1h/90l
-	c23cTyN1/5OLHoW2hc5++3y/EktxRqKhFnNRcSIATFW9xnYCAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNLMWRmVeSWpSXmKPExsXC5WfdrKvPcCfVYP09Y4s569ewWXze8I/N
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsXC9ZZnoa4Bw51UgytbWSzmrF/DZvF5wz82
+	ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeJ47wEmi/n3PrNZ
+	bN40ldni+JSpjBa/fwAVn5w1mcVBwON7ax+Lx85Zd9k9Fmwq9di8Qstj8Z6XTB6bVnWyeWz6
+	NInd4925c+weJ2b8ZvGYdzLQ4/2+q2weW3/ZeTROvcbm8XmTXABfFJdNSmpOZllqkb5dAlfG
+	jfd32Qv6dSoWzXnI3sC4UrmLkZNDQsBEYkF3ByOM3dt7hg3EZhNQl7hx4ycziC0iYCZxsPUP
+	O4jNLHCXSeJAP1iNsECKxN3J38FsFgFViYP37oHV8AqYSsxe8ZYFYqa8xOoNB4DmcHBwAs15
+	/98QJCwEVPK39yrQWi6gkvdsElc6trBC1EtKHFxxg2UCI+8CRoZVjEKZeWW5iZk5JnoZlXmZ
+	FXrJ+bmbGIGBv6z2T/QOxk8Xgg8xCnAwKvHwLvhwO1WINbGsuDL3EKMEB7OSCG+4zM1UId6U
+	xMqq1KL8+KLSnNTiQ4zSHCxK4rxG38pThATSE0tSs1NTC1KLYLJMHJxSDYxTrXaYzOrinGnB
+	+X7XlfuLHN81fbstrP787pK/m45/Eet+c2XzvCshq7vO5H7O+m9Vs1fYqW7vos7J3lqrWjtl
+	H+px1wY2GF2+98WyuXvaZ6V1+ovasvLDwqaGv5pb++xnzoqE3ckCH1qtjtS6O5wU5RZcUbzo
+	4R21jdvLfVLfi64+ONsnWfSTEktxRqKhFnNRcSIAlFm963gCAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDLMWRmVeSWpSXmKPExsXC5WfdrKvPcCfV4OQlM4s569ewWXze8I/N
 	4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfHeA0wW
 	8+99ZrPYvGkqs8XxKVMZLX7/ACo+OWsyi4Ogx/fWPhaPnbPusnss2FTqsXmFlsfiPS+ZPDat
 	6mTz2PRpErvHu3Pn2D1OzPjN4jHvZKDH+31X2TwWv/jA5LH1l51H49RrbB6fN8kF8Edx2aSk
-	5mSWpRbp2yVwZRy9c4+tYA5nxflfU5kaGC+xdzFyckgImEi8+LcDzGYTUJe4ceMnM4gtImAm
-	cbD1D1icWeAuk8SBfrYuRg4OYYEciX1f00DCLAKqErt/PgUr4RUwlVj78jQLxEh5idUbDjCD
-	lHMCjXn/3xAkLARU8rf3KuMERq4FjAyrGEUy88pyEzNzTPWKszMq8zIr9JLzczcxAoN4We2f
-	iTsYv1x2P8QowMGoxMO74MPtVCHWxLLiytxDjBIczEoivOEyN1OFeFMSK6tSi/Lji0pzUosP
-	MUpzsCiJ83qFpyYICaQnlqRmp6YWpBbBZJk4OKUaGL209/65XXXWKmDGn+p/C/+LPHXn3rCp
-	uvOp7YIZoYk8inLKSj33ZebM2cfpl5Hhf+inK1/xR+v5ZzjOXA/q3Gd443yZlcOa84uuLThy
-	LO6y++o6FgVZgcKfLGJn7dccLRXedev7mYx3Z2bZTU+WL1zryTJlRirjrd9rBWaGRa5+lutY
-	wbx7ursSS3FGoqEWc1FxIgA7DuZGXgIAAA==
+	5mSWpRbp2yVwZdx4f5e9oF+nYtGch+wNjCuVuxg5OSQETCR6e8+wgdhsAuoSN278ZAaxRQTM
+	JA62/mEHsZkF7jJJHOgHqxEWSJG4O/k7mM0ioCpx8N49sBpeAVOJ2SveskDMlJdYveEA0BwO
+	Dk6gOe//G4KEhYBK/vZeZZzAyLWAkWEVo0hmXlluYmaOqV5xdkZlXmaFXnJ+7iZGYBgvq/0z
+	cQfjl8vuhxgFOBiVeHgXfLidKsSaWFZcmXuIUYKDWUmEN1zmZqoQb0piZVVqUX58UWlOavEh
+	RmkOFiVxXq/w1AQhgfTEktTs1NSC1CKYLBMHp1QD4xnnJfa9v8VUskR+vYviY+g12GM8qy2y
+	qkFCPttR5o+kxdn4ogsvDaW/7btgmLZz7mrO7YHbuNkmCiiFmAQWqFy2X2F01DXWdu1rk6bf
+	L5SrT6xdrzzVL+zI8rUb3BcW2TAlzK/cIrBT+ku186IHK1iStiz28BSrvlkRc/ajwKErieLr
+	vZknK7EUZyQaajEXFScCAI1XUVNfAgAA
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -81,42 +81,182 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-This is a preparation for migrc mechanism that requires to avoid
-redundant TLB flushes by manipulating tlb batch's arch data after
-arch_tlbbatch_flush(). However, we cannot because the data is getting
-cleared inside arch_tlbbatch_flush(). So separated the part clearing the
-tlb batch's arch data out of arch_tlbbatch_flush().
+Functionally, no change. This is a preparation for migrc mechanism that
+requires to use separate folio lists for its own handling at migration.
+
+Refactored migrate_pages_batch() and separated move and undo parts
+operating on folio list, from migrate_pages_batch().
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- arch/x86/mm/tlb.c | 2 --
- mm/rmap.c         | 1 +
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ mm/migrate.c | 134 +++++++++++++++++++++++++++++++--------------------
+ 1 file changed, 83 insertions(+), 51 deletions(-)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 453ea95b667d..941f41df02f3 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -1268,8 +1268,6 @@ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
- 		local_irq_enable();
- 	}
- 
--	cpumask_clear(&batch->cpumask);
--
- 	put_flush_tlb_info();
- 	put_cpu();
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 397f2a6e34cb..bbe1ecef4956 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1611,6 +1611,81 @@ static int migrate_hugetlbs(struct list_head *from, new_folio_t get_new_folio,
+ 	return nr_failed;
  }
-diff --git a/mm/rmap.c b/mm/rmap.c
-index da36f23ff7b0..b484d659d0c1 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -643,6 +643,7 @@ void try_to_unmap_flush(void)
- 		return;
  
- 	arch_tlbbatch_flush(&tlb_ubc->arch);
-+	arch_tlbbatch_clear(&tlb_ubc->arch);
- 	tlb_ubc->flush_required = false;
- 	tlb_ubc->writable = false;
++static void migrate_folios_move(struct list_head *src_folios,
++		struct list_head *dst_folios,
++		free_folio_t put_new_folio, unsigned long private,
++		enum migrate_mode mode, int reason,
++		struct list_head *ret_folios,
++		struct migrate_pages_stats *stats,
++		int *retry, int *thp_retry, int *nr_failed,
++		int *nr_retry_pages)
++{
++	struct folio *folio, *folio2, *dst, *dst2;
++	bool is_thp;
++	int nr_pages;
++	int rc;
++
++	dst = list_first_entry(dst_folios, struct folio, lru);
++	dst2 = list_next_entry(dst, lru);
++	list_for_each_entry_safe(folio, folio2, src_folios, lru) {
++		is_thp = folio_test_large(folio) && folio_test_pmd_mappable(folio);
++		nr_pages = folio_nr_pages(folio);
++
++		cond_resched();
++
++		rc = migrate_folio_move(put_new_folio, private,
++				folio, dst, mode,
++				reason, ret_folios);
++		/*
++		 * The rules are:
++		 *	Success: folio will be freed
++		 *	-EAGAIN: stay on the unmap_folios list
++		 *	Other errno: put on ret_folios list
++		 */
++		switch(rc) {
++		case -EAGAIN:
++			*retry += 1;
++			*thp_retry += is_thp;
++			*nr_retry_pages += nr_pages;
++			break;
++		case MIGRATEPAGE_SUCCESS:
++			stats->nr_succeeded += nr_pages;
++			stats->nr_thp_succeeded += is_thp;
++			break;
++		default:
++			*nr_failed += 1;
++			stats->nr_thp_failed += is_thp;
++			stats->nr_failed_pages += nr_pages;
++			break;
++		}
++		dst = dst2;
++		dst2 = list_next_entry(dst, lru);
++	}
++}
++
++static void migrate_folios_undo(struct list_head *src_folios,
++		struct list_head *dst_folios,
++		free_folio_t put_new_folio, unsigned long private,
++		struct list_head *ret_folios)
++{
++	struct folio *folio, *folio2, *dst, *dst2;
++
++	dst = list_first_entry(dst_folios, struct folio, lru);
++	dst2 = list_next_entry(dst, lru);
++	list_for_each_entry_safe(folio, folio2, src_folios, lru) {
++		int old_page_state = 0;
++		struct anon_vma *anon_vma = NULL;
++
++		__migrate_folio_extract(dst, &old_page_state, &anon_vma);
++		migrate_folio_undo_src(folio, old_page_state & PAGE_WAS_MAPPED,
++				anon_vma, true, ret_folios);
++		list_del(&dst->lru);
++		migrate_folio_undo_dst(dst, true, put_new_folio, private);
++		dst = dst2;
++		dst2 = list_next_entry(dst, lru);
++	}
++}
++
+ /*
+  * migrate_pages_batch() first unmaps folios in the from list as many as
+  * possible, then move the unmapped folios.
+@@ -1633,7 +1708,7 @@ static int migrate_pages_batch(struct list_head *from,
+ 	int pass = 0;
+ 	bool is_thp = false;
+ 	bool is_large = false;
+-	struct folio *folio, *folio2, *dst = NULL, *dst2;
++	struct folio *folio, *folio2, *dst = NULL;
+ 	int rc, rc_saved = 0, nr_pages;
+ 	LIST_HEAD(unmap_folios);
+ 	LIST_HEAD(dst_folios);
+@@ -1769,42 +1844,11 @@ static int migrate_pages_batch(struct list_head *from,
+ 		thp_retry = 0;
+ 		nr_retry_pages = 0;
+ 
+-		dst = list_first_entry(&dst_folios, struct folio, lru);
+-		dst2 = list_next_entry(dst, lru);
+-		list_for_each_entry_safe(folio, folio2, &unmap_folios, lru) {
+-			is_thp = folio_test_large(folio) && folio_test_pmd_mappable(folio);
+-			nr_pages = folio_nr_pages(folio);
+-
+-			cond_resched();
+-
+-			rc = migrate_folio_move(put_new_folio, private,
+-						folio, dst, mode,
+-						reason, ret_folios);
+-			/*
+-			 * The rules are:
+-			 *	Success: folio will be freed
+-			 *	-EAGAIN: stay on the unmap_folios list
+-			 *	Other errno: put on ret_folios list
+-			 */
+-			switch(rc) {
+-			case -EAGAIN:
+-				retry++;
+-				thp_retry += is_thp;
+-				nr_retry_pages += nr_pages;
+-				break;
+-			case MIGRATEPAGE_SUCCESS:
+-				stats->nr_succeeded += nr_pages;
+-				stats->nr_thp_succeeded += is_thp;
+-				break;
+-			default:
+-				nr_failed++;
+-				stats->nr_thp_failed += is_thp;
+-				stats->nr_failed_pages += nr_pages;
+-				break;
+-			}
+-			dst = dst2;
+-			dst2 = list_next_entry(dst, lru);
+-		}
++		/* Move the unmapped folios */
++		migrate_folios_move(&unmap_folios, &dst_folios,
++				put_new_folio, private, mode, reason,
++				ret_folios, stats, &retry, &thp_retry,
++				&nr_failed, &nr_retry_pages);
+ 	}
+ 	nr_failed += retry;
+ 	stats->nr_thp_failed += thp_retry;
+@@ -1813,20 +1857,8 @@ static int migrate_pages_batch(struct list_head *from,
+ 	rc = rc_saved ? : nr_failed;
+ out:
+ 	/* Cleanup remaining folios */
+-	dst = list_first_entry(&dst_folios, struct folio, lru);
+-	dst2 = list_next_entry(dst, lru);
+-	list_for_each_entry_safe(folio, folio2, &unmap_folios, lru) {
+-		int old_page_state = 0;
+-		struct anon_vma *anon_vma = NULL;
+-
+-		__migrate_folio_extract(dst, &old_page_state, &anon_vma);
+-		migrate_folio_undo_src(folio, old_page_state & PAGE_WAS_MAPPED,
+-				       anon_vma, true, ret_folios);
+-		list_del(&dst->lru);
+-		migrate_folio_undo_dst(dst, true, put_new_folio, private);
+-		dst = dst2;
+-		dst2 = list_next_entry(dst, lru);
+-	}
++	migrate_folios_undo(&unmap_folios, &dst_folios,
++			put_new_folio, private, ret_folios);
+ 
+ 	return rc;
  }
 -- 
 2.17.1
