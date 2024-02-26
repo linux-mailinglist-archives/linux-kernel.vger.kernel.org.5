@@ -1,271 +1,161 @@
-Return-Path: <linux-kernel+bounces-80874-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 305E0866D8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:05:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 056DA866C25
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA7B81F24EF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:05:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 708E81F21D3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3301912BEA6;
-	Mon, 26 Feb 2024 08:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA751CD3A;
+	Mon, 26 Feb 2024 08:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ho0fjsl4"
-Received: from mgamail.intel.com (unknown [192.198.163.8])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F/3QGtvt"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C70219EB;
-	Mon, 26 Feb 2024 08:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982E61CAB7
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708936149; cv=none; b=X35YErc6RIv6K0r4tArGVQMbexyaXF05bh6wiV7uNDLU1nUJ3qWe+LznZBg/difeqwg/UrByb0ydnJOyYcv3SOAl/MXi7UXQ2Rrl8rbbP02DJbewGk3BnvmBWx1yE3FRC5prU+FM9MBn2+MD9s8xOShSj0mqWzjlJ+WPuRIkf08=
+	t=1708936035; cv=none; b=S7vr6GSJyf79aLgsX8Z2rjTV1LwmdCklC8G1AFwj+IqlNe9RJK5zQ5XWUAbbELCWX7VwwRrfqPfehONS6rIYx8fZ2d8tRYx1eb0bJBus4F+aSK5y6DCQNwEqxSiGgqSPkfisC2ygTPfYxfsxSZSrOzDcmV7fgt2I63+UC+tFE6o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708936149; c=relaxed/simple;
-	bh=QnWGRm/Bs2Ha4+9BL7xtnfj7c9Dq5ASvmvWattRSzvY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GMoqSWuONNDPOiLIfoV/UnO3s2o8ikSjI9C4dxdZa0Fi501W1Pmsko+BnFa7YzSdajD6twFGKZJObBFvZLiSOZ7LC00kU06iQcOhW7++qwN2A1LjI5/bR5LfrvHVCqtZcLr7wbUNZTN80v8ScIJSkqVqjjNTdW4WutmJ/lrSyCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ho0fjsl4; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708936147; x=1740472147;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=QnWGRm/Bs2Ha4+9BL7xtnfj7c9Dq5ASvmvWattRSzvY=;
-  b=ho0fjsl4g874J2qgHwTIgutlJBQQ5i6C5PKEzoeLVFobT9wrpVNjLhw3
-   hf0isHcd7RQTrTX6U+U9yeqsbfPvUy3pbfbkeNQsIrCQnRTzBBbGwPLY6
-   W2DMCk1bk6PUmrP5g/DJRd5dJchaagaEo/5Tjx5NF6pYUhJCKQphM0GjQ
-   NXM/tOLOxmnU70Berd5wzpj9TZWXYyClhGNwfqlRcPL9OOdpl+M3EJUFR
-   si3tkPhONHuyf/a9VQ8dEuJusiak3TU+3fFgwsCnyZLpE3MRkLLejgLP3
-   MiSsq5MEWSTrI5tK4uJyuAeSgUpV9zlbtjqWf6lSUGzk/urNuioZt11/L
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="20751341"
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="20751341"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:29:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="6735074"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:29:05 -0800
-From: isaku.yamahata@intel.com
-To: kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: isaku.yamahata@intel.com,
-	isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>,
-	Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com,
-	hang.yuan@intel.com,
-	tina.zhang@intel.com,
-	Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: [PATCH v19 110/130] KVM: TDX: Handle TDX PV MMIO hypercall
-Date: Mon, 26 Feb 2024 00:26:52 -0800
-Message-Id: <a4421e0f2eafc17b4703c920936e32489d2382a3.1708933498.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1708933498.git.isaku.yamahata@intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
+	s=arc-20240116; t=1708936035; c=relaxed/simple;
+	bh=REK+VNCXI3WjyjsuKl+HSXiJRNqvxmX5KAPsA/J1Roo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lc/bC5u2RoF6V3MZM3UmA37dQBkXGlGHXMiElroLXW2yGsMGzngpU0xsH6OaOYz4KKb7Iga7xgkRE90/+F4ijtxphSo09Hv+H+Uc2u1YKsfZOfAuOiLL8lf/pV/yyZBKNevIw+N4WGGHT+uHJPDcoXfZba56xIhULR1+9kC4YSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F/3QGtvt; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708936031;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zGkEjPkjWA9B4Ml20UNQYktxGpIUURUmKif/cYqIu08=;
+	b=F/3QGtvtM1I2iFggDWwHePEnpi8MX4ZOtDb040D5cI7zMeZ2v1X/MClnAdidp0L7Q9iiL3
+	rDqkvRJSor4cNtBHyhfl5tB4QuBXkHWglqtd5p++b9c75ZDMpBSmd/EyJSHqS0WJ6Gez5y
+	x/48822dX1tiUY1GI9e27dEC14q1aww=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-59-hUMJ_eIpOwShCEc_53iP4g-1; Mon, 26 Feb 2024 03:27:09 -0500
+X-MC-Unique: hUMJ_eIpOwShCEc_53iP4g-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-559391de41bso2459174a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 00:27:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708936028; x=1709540828;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zGkEjPkjWA9B4Ml20UNQYktxGpIUURUmKif/cYqIu08=;
+        b=lrbagD1LApxWZ/RE2CB/V2qRFZbMX043628a6JbwEafyslBdfrO/G3jX53yh9KH7E+
+         Q4W7UtxRlIbr1mPUnj3sCYQeZrj+y9UBkAlxT7nE7YIucfHadBOnFjoxjA2y1M7fplgG
+         yPcVy+5ifBEPztTNXbwnK+bH6bNrhJV98HzI12VWTI1K/LczgEx82MGiafpfA5B2y6uV
+         LuSkDHNnwFd5TynDc6NNYSLFodt5X2AHaOHRaSFA2dzZHWgxHSOLvgzxzlXbOyAis5iy
+         FtBFAlBoTFX45nqWoE348yXgpX84+F4ujJ2tTEp4aGtifSkFrFCnkN71OFcWsI4xnPdy
+         FTFg==
+X-Forwarded-Encrypted: i=1; AJvYcCURFaT7+kszZSDHaY5T/OMw32m5PIQ73PO3Un4AKJXSpEN94nfsYgrVYk9o7Nas/YFKX+yOhR8CfQ+io7x4MM6j2IlAcYTrGzSX5CH5
+X-Gm-Message-State: AOJu0Yxmza3Iwktsya3bMG9UpPKoq+UzOOsPiEZZxVDxNjcKPzkReH4o
+	Fkq3kZyqoAQ/9ltQdO/UCHy0EYvsWkizAwygZOwzYVpit7eAPZHLFus61oSWRqWbffjoTbiBbX/
+	BRWHWKPQOxDMD88r86iuYlf/pzCRH1h0zc86N2fOTAsQL3PBHt0AD143IJE9A9g==
+X-Received: by 2002:a05:6402:1487:b0:565:7ce5:abd5 with SMTP id e7-20020a056402148700b005657ce5abd5mr3814990edv.18.1708936027997;
+        Mon, 26 Feb 2024 00:27:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEs8Tjqo0VpOsvxWN6d4PjBqkrrs6LEUpm+NGUAUsWf2FRaOQEeC4y6T0kpK+5Rwd2wg9QwJA==
+X-Received: by 2002:a05:6402:1487:b0:565:7ce5:abd5 with SMTP id e7-20020a056402148700b005657ce5abd5mr3814973edv.18.1708936027632;
+        Mon, 26 Feb 2024 00:27:07 -0800 (PST)
+Received: from sgarzare-redhat (host-87-11-6-148.retail.telecomitalia.it. [87.11.6.148])
+        by smtp.gmail.com with ESMTPSA id k1-20020a05640212c100b005653fe3f180sm2105105edx.70.2024.02.26.00.27.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 00:27:06 -0800 (PST)
+Date: Mon, 26 Feb 2024 09:27:04 +0100
+From: Stefano Garzarella <sgarzare@redhat.com>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com, 
+	edumazet@google.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	horms@kernel.org, 
+	"open list:VM SOCKETS (AF_VSOCK)" <virtualization@lists.linux.dev>
+Subject: Re: [PATCH net-next 1/2] net/vsockmon: Leverage core stats allocator
+Message-ID: <nrphi5hjfgpzhkfjsvskxhis6uqc3ham6u5x3c5imw2slkombb@phutaqxg23io>
+References: <20240223115839.3572852-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20240223115839.3572852-1-leitao@debian.org>
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+On Fri, Feb 23, 2024 at 03:58:37AM -0800, Breno Leitao wrote:
+>With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+>convert veth & vrf"), stats allocation could be done on net core
+>instead of this driver.
+>
+>With this new approach, the driver doesn't have to bother with error
+>handling (allocation failure checking, making sure free happens in the
+>right spot, etc). This is core responsibility now.
+>
+>Remove the allocation in the vsockmon driver and leverage the network
+>core allocation instead.
+>
+>Signed-off-by: Breno Leitao <leitao@debian.org>
+>---
+> drivers/net/vsockmon.c | 16 +---------------
+> 1 file changed, 1 insertion(+), 15 deletions(-)
 
-Export kvm_io_bus_read and kvm_mmio tracepoint and wire up TDX PV MMIO
-hypercall to the KVM backend functions.
+Thanks for this patch!
 
-kvm_io_bus_read/write() searches KVM device emulated in kernel of the given
-MMIO address and emulates the MMIO.  As TDX PV MMIO also needs it, export
-kvm_io_bus_read().  kvm_io_bus_write() is already exported.  TDX PV MMIO
-emulates some of MMIO itself.  To add trace point consistently with x86
-kvm, export kvm_mmio tracepoint.
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/vmx/tdx.c | 114 +++++++++++++++++++++++++++++++++++++++++
- arch/x86/kvm/x86.c     |   1 +
- virt/kvm/kvm_main.c    |   2 +
- 3 files changed, 117 insertions(+)
-
-diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-index 55fc6cc6c816..389bb95d2af0 100644
---- a/arch/x86/kvm/vmx/tdx.c
-+++ b/arch/x86/kvm/vmx/tdx.c
-@@ -1217,6 +1217,118 @@ static int tdx_emulate_io(struct kvm_vcpu *vcpu)
- 	return ret;
- }
- 
-+static int tdx_complete_mmio(struct kvm_vcpu *vcpu)
-+{
-+	unsigned long val = 0;
-+	gpa_t gpa;
-+	int size;
-+
-+	KVM_BUG_ON(vcpu->mmio_needed != 1, vcpu->kvm);
-+	vcpu->mmio_needed = 0;
-+
-+	if (!vcpu->mmio_is_write) {
-+		gpa = vcpu->mmio_fragments[0].gpa;
-+		size = vcpu->mmio_fragments[0].len;
-+
-+		memcpy(&val, vcpu->run->mmio.data, size);
-+		tdvmcall_set_return_val(vcpu, val);
-+		trace_kvm_mmio(KVM_TRACE_MMIO_READ, size, gpa, &val);
-+	}
-+	return 1;
-+}
-+
-+static inline int tdx_mmio_write(struct kvm_vcpu *vcpu, gpa_t gpa, int size,
-+				 unsigned long val)
-+{
-+	if (kvm_iodevice_write(vcpu, &vcpu->arch.apic->dev, gpa, size, &val) &&
-+	    kvm_io_bus_write(vcpu, KVM_MMIO_BUS, gpa, size, &val))
-+		return -EOPNOTSUPP;
-+
-+	trace_kvm_mmio(KVM_TRACE_MMIO_WRITE, size, gpa, &val);
-+	return 0;
-+}
-+
-+static inline int tdx_mmio_read(struct kvm_vcpu *vcpu, gpa_t gpa, int size)
-+{
-+	unsigned long val;
-+
-+	if (kvm_iodevice_read(vcpu, &vcpu->arch.apic->dev, gpa, size, &val) &&
-+	    kvm_io_bus_read(vcpu, KVM_MMIO_BUS, gpa, size, &val))
-+		return -EOPNOTSUPP;
-+
-+	tdvmcall_set_return_val(vcpu, val);
-+	trace_kvm_mmio(KVM_TRACE_MMIO_READ, size, gpa, &val);
-+	return 0;
-+}
-+
-+static int tdx_emulate_mmio(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_memory_slot *slot;
-+	int size, write, r;
-+	unsigned long val;
-+	gpa_t gpa;
-+
-+	KVM_BUG_ON(vcpu->mmio_needed, vcpu->kvm);
-+
-+	size = tdvmcall_a0_read(vcpu);
-+	write = tdvmcall_a1_read(vcpu);
-+	gpa = tdvmcall_a2_read(vcpu);
-+	val = write ? tdvmcall_a3_read(vcpu) : 0;
-+
-+	if (size != 1 && size != 2 && size != 4 && size != 8)
-+		goto error;
-+	if (write != 0 && write != 1)
-+		goto error;
-+
-+	/* Strip the shared bit, allow MMIO with and without it set. */
-+	gpa = gpa & ~gfn_to_gpa(kvm_gfn_shared_mask(vcpu->kvm));
-+
-+	if (size > 8u || ((gpa + size - 1) ^ gpa) & PAGE_MASK)
-+		goto error;
-+
-+	slot = kvm_vcpu_gfn_to_memslot(vcpu, gpa_to_gfn(gpa));
-+	if (slot && !(slot->flags & KVM_MEMSLOT_INVALID))
-+		goto error;
-+
-+	if (!kvm_io_bus_write(vcpu, KVM_FAST_MMIO_BUS, gpa, 0, NULL)) {
-+		trace_kvm_fast_mmio(gpa);
-+		return 1;
-+	}
-+
-+	if (write)
-+		r = tdx_mmio_write(vcpu, gpa, size, val);
-+	else
-+		r = tdx_mmio_read(vcpu, gpa, size);
-+	if (!r) {
-+		/* Kernel completed device emulation. */
-+		tdvmcall_set_return_code(vcpu, TDVMCALL_SUCCESS);
-+		return 1;
-+	}
-+
-+	/* Request the device emulation to userspace device model. */
-+	vcpu->mmio_needed = 1;
-+	vcpu->mmio_is_write = write;
-+	vcpu->arch.complete_userspace_io = tdx_complete_mmio;
-+
-+	vcpu->run->mmio.phys_addr = gpa;
-+	vcpu->run->mmio.len = size;
-+	vcpu->run->mmio.is_write = write;
-+	vcpu->run->exit_reason = KVM_EXIT_MMIO;
-+
-+	if (write) {
-+		memcpy(vcpu->run->mmio.data, &val, size);
-+	} else {
-+		vcpu->mmio_fragments[0].gpa = gpa;
-+		vcpu->mmio_fragments[0].len = size;
-+		trace_kvm_mmio(KVM_TRACE_MMIO_READ_UNSATISFIED, size, gpa, NULL);
-+	}
-+	return 0;
-+
-+error:
-+	tdvmcall_set_return_code(vcpu, TDVMCALL_INVALID_OPERAND);
-+	return 1;
-+}
-+
- static int handle_tdvmcall(struct kvm_vcpu *vcpu)
- {
- 	if (tdvmcall_exit_type(vcpu))
-@@ -1229,6 +1341,8 @@ static int handle_tdvmcall(struct kvm_vcpu *vcpu)
- 		return tdx_emulate_hlt(vcpu);
- 	case EXIT_REASON_IO_INSTRUCTION:
- 		return tdx_emulate_io(vcpu);
-+	case EXIT_REASON_EPT_VIOLATION:
-+		return tdx_emulate_mmio(vcpu);
- 	default:
- 		break;
- 	}
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 03950368d8db..d5b18cad9dcd 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -13975,6 +13975,7 @@ EXPORT_SYMBOL_GPL(kvm_sev_es_string_io);
- 
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_entry);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_exit);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_mmio);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_fast_mmio);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_inj_virq);
- EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_page_fault);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index e27c22449d85..bc14e1f2610c 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2689,6 +2689,7 @@ struct kvm_memory_slot *kvm_vcpu_gfn_to_memslot(struct kvm_vcpu *vcpu, gfn_t gfn
- 
- 	return NULL;
- }
-+EXPORT_SYMBOL_GPL(kvm_vcpu_gfn_to_memslot);
- 
- bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn)
- {
-@@ -5992,6 +5993,7 @@ int kvm_io_bus_read(struct kvm_vcpu *vcpu, enum kvm_bus bus_idx, gpa_t addr,
- 	r = __kvm_io_bus_read(vcpu, bus, &range, val);
- 	return r < 0 ? r : 0;
- }
-+EXPORT_SYMBOL_GPL(kvm_io_bus_read);
- 
- int kvm_io_bus_register_dev(struct kvm *kvm, enum kvm_bus bus_idx, gpa_t addr,
- 			    int len, struct kvm_io_device *dev)
--- 
-2.25.1
+>
+>diff --git a/drivers/net/vsockmon.c b/drivers/net/vsockmon.c
+>index b1bb1b04b664..a0b4dca36baf 100644
+>--- a/drivers/net/vsockmon.c
+>+++ b/drivers/net/vsockmon.c
+>@@ -13,19 +13,6 @@
+> #define DEFAULT_MTU (VIRTIO_VSOCK_MAX_PKT_BUF_SIZE + \
+> 		     sizeof(struct af_vsockmon_hdr))
+>
+>-static int vsockmon_dev_init(struct net_device *dev)
+>-{
+>-	dev->lstats = netdev_alloc_pcpu_stats(struct pcpu_lstats);
+>-	if (!dev->lstats)
+>-		return -ENOMEM;
+>-	return 0;
+>-}
+>-
+>-static void vsockmon_dev_uninit(struct net_device *dev)
+>-{
+>-	free_percpu(dev->lstats);
+>-}
+>-
+> struct vsockmon {
+> 	struct vsock_tap vt;
+> };
+>@@ -79,8 +66,6 @@ static int vsockmon_change_mtu(struct net_device *dev, int new_mtu)
+> }
+>
+> static const struct net_device_ops vsockmon_ops = {
+>-	.ndo_init = vsockmon_dev_init,
+>-	.ndo_uninit = vsockmon_dev_uninit,
+> 	.ndo_open = vsockmon_open,
+> 	.ndo_stop = vsockmon_close,
+> 	.ndo_start_xmit = vsockmon_xmit,
+>@@ -112,6 +97,7 @@ static void vsockmon_setup(struct net_device *dev)
+> 	dev->flags = IFF_NOARP;
+>
+> 	dev->mtu = DEFAULT_MTU;
+>+	dev->pcpu_stat_type = NETDEV_PCPU_STAT_LSTATS;
+> }
+>
+> static struct rtnl_link_ops vsockmon_link_ops __read_mostly = {
+>-- 
+>2.39.3
+>
 
 
