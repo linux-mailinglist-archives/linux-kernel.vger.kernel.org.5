@@ -1,163 +1,200 @@
-Return-Path: <linux-kernel+bounces-81374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B74E8674FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:31:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41199867509
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:33:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15CFD2868C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:31:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA37A1F22C9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245EF633F1;
-	Mon, 26 Feb 2024 12:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="EPkqIIez"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C627EEE6;
+	Mon, 26 Feb 2024 12:32:53 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D74C563113;
-	Mon, 26 Feb 2024 12:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10630364A6;
+	Mon, 26 Feb 2024 12:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708950650; cv=none; b=cjg07qzRoULv804MX3O1j58+20PnOgkFa4Kn8JVRhEStSg9u8/j+V1w3FMrRDALTXHMps//Hj/m1ES5arcVgZ/iMs5p/Ot+n2NgSAyBzbksEZerxJAzFhxlfafB/FMf1YQSuqbPl2o4OCQD8cmVJWzAJFTA+b/V0g/eqWohNIn4=
+	t=1708950773; cv=none; b=RUFbaJchShp1uceT3buqJgsc0fucUdYq10QWvezAqsiIC9oZlDfR9Ch+arjMk/KX49wpMoSx3TO5ciR58bVtaOGWIklok2WuAJG5d39s3mX/Eg4lsPQy696t8X0Gh1oVEzXi/AomicQz3am8Zhxwig1T2WlJvPwKttOB03IP+3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708950650; c=relaxed/simple;
-	bh=367nRfM+AwkILElpi2M/PUviC5yCBObZdPSIGUNMP8o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aFTOtLbshvuMX1HKI2oOqR2OFpEcyoLF4IvcGT6u6ewkdznlK79g/TuDxAFD1zrKAAai3So6WLEyivTT5pQDwvFFbOD8RaZwS3GHdKdpNOqhF+YecKF1kj5OHIdE2JWa4Q7VmUnSzvPUbpQBhEsZl0wSYTiS1NHCvxQNUSoGmok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=EPkqIIez; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=9E9uFo1ZA4/GNHoSVHywi3ucQYA9wjLjy4y7D2QRVoQ=; b=EPkqIIez4XfxwdTWX1fAQshniD
-	FJKNTXjlGpDIVV5cx73AbQbU7Azp2+otOzvEDrCbsB1QB+UOdRraNjeC+SLcngtv5x07m/8qNxxEk
-	RFGK6TdhGxMHDTlogi9HFkwbumaJaAmi1/JIOxPj4WUSyekNPJzY70rmgEsMuxH/ga1KXbKOfLMGH
-	M4DCO2/SXb6kiAQzcWXAQL0Q0WNp1RqilelPemAmio440xzS6+9rI4r3ps1c/E4irVejK+hTBIedD
-	SFPxx2OLYHPYoYfP8T2JqQAV016Ngc6nrUsDZuyH4Nx3wzURyDeEYrR+RmUrkTBkKYVCfmB0OA9rX
-	BUDcgD0w==;
-Received: from [177.34.169.255] (helo=[192.168.0.139])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rea7q-003YnI-Ph; Mon, 26 Feb 2024 13:30:31 +0100
-Message-ID: <1c91ff55-e6c6-4543-bbf5-c7543cc03979@igalia.com>
-Date: Mon, 26 Feb 2024 09:30:24 -0300
+	s=arc-20240116; t=1708950773; c=relaxed/simple;
+	bh=+samE29DNF5Z/tfPUmXV4vESiIfB7rjrnsGi9M7ixAY=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=thHmHPKeAmkItYVDrfJ4c8gaqhvxG/PX06m021dhBxMV5F2p0f8QovRcnyLK2BFATqVavyI1n199E7B9ZHShCH8sfeSneAlidm6lqrYExKSKXfrlVALunSNeuGUA8mWp0+JWrhTpuMA1OdNn2Y+WHUkr8IOXV7/xRROGwsGhkuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk0Jr5kkRz6K643;
+	Mon, 26 Feb 2024 20:28:28 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4DEFE141FF8;
+	Mon, 26 Feb 2024 20:32:47 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 12:32:46 +0000
+Date: Mon, 26 Feb 2024 12:32:45 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 05/20] dev_dax_iomap: Add dax_operations for use by
+ fs-dax on devdax
+Message-ID: <20240226123245.00000c01@Huawei.com>
+In-Reply-To: <5727b1be956278e3a6c4cf7b728ee4f8f037ae51.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<5727b1be956278e3a6c4cf7b728ee4f8f037ae51.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 30/36] drm/vc4: tests: Convert to plane creation helper
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>,
- Sandy Huang <hjc@rock-chips.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
- <heiko@sntech.de>, Chen-Yu Tsai <wens@csie.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>
-Cc: Hans Verkuil <hverkuil@xs4all.nl>,
- Sebastian Wick <sebastian.wick@redhat.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
- linux-sunxi@lists.linux.dev
-References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org>
- <20240222-kms-hdmi-connector-state-v7-30-8f4af575fce2@kernel.org>
-From: =?UTF-8?Q?Ma=C3=ADra_Canal?= <mcanal@igalia.com>
-Autocrypt: addr=mcanal@igalia.com; keydata=
- xjMEZIsaeRYJKwYBBAHaRw8BAQdAGU6aY8oojw61KS5rGGMrlcilFqR6p6ID45IZ6ovX0h3N
- H01haXJhIENhbmFsIDxtY2FuYWxAaWdhbGlhLmNvbT7CjwQTFggANxYhBDMCqFtIvFKVRJZQ
- hDSPnHLaGFVuBQJkixp5BQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQNI+cctoYVW5u
- GAEAwpaC5rI3wD8zqETKwGVoXd6+AbmGfZuVD40xepy7z/8BAM5w95/oyPsHUqOsg/xUTlNp
- rlbhA+WWoaOXA3XgR+wCzjgEZIsaeRIKKwYBBAGXVQEFAQEHQGoOK0jgh0IorMAacx6WUUWb
- s3RLiJYWUU6iNrk5wWUbAwEIB8J+BBgWCAAmFiEEMwKoW0i8UpVEllCENI+cctoYVW4FAmSL
- GnkFCQWjmoACGwwACgkQNI+cctoYVW6cqwD/Q9R98msvkhgRvi18fzUPFDwwogn+F+gQJJ6o
- pwpgFkAA/R2zOfla3IT6G3SBoV5ucdpdCpnIXFpQLbmfHK7dXsAC
-In-Reply-To: <20240222-kms-hdmi-connector-state-v7-30-8f4af575fce2@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 2/22/24 15:14, Maxime Ripard wrote:
-> Now that we have a plane create helper for kunit mocked drivers, let's
-> convert to it in vc4.
+On Fri, 23 Feb 2024 11:41:49 -0600
+John Groves <John@Groves.net> wrote:
 
-Reviewed-by: Maíra Canal <mcanal@igalia.com>
-
-Best Regards,
-- Maíra
-
+> Notes about this commit:
 > 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> * These methods are based somewhat loosely on pmem_dax_ops from
+>   drivers/nvdimm/pmem.c
+> 
+> * dev_dax_direct_access() is returns the hpa, pfn and kva. The kva was
+>   newly stored as dev_dax->virt_addr by dev_dax_probe().
+> 
+> * The hpa/pfn are used for mmap (dax_iomap_fault()), and the kva is used
+>   for read/write (dax_iomap_rw())
+> 
+> * dev_dax_recovery_write() and dev_dax_zero_page_range() have not been
+>   tested yet. I'm looking for suggestions as to how to test those.
+> 
+> Signed-off-by: John Groves <john@groves.net>
 > ---
->   drivers/gpu/drm/vc4/tests/vc4_mock_plane.c | 34 +++++++-----------------------
->   1 file changed, 8 insertions(+), 26 deletions(-)
+>  drivers/dax/bus.c | 107 ++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 107 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c b/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
-> index 973f5f929097..14357db82238 100644
-> --- a/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
-> +++ b/drivers/gpu/drm/vc4/tests/vc4_mock_plane.c
-> @@ -1,43 +1,25 @@
->   // SPDX-License-Identifier: GPL-2.0
->   
-> -#include <drm/drm_atomic_state_helper.h>
-> -#include <drm/drm_fourcc.h>
-> -#include <drm/drm_modeset_helper_vtables.h>
-> +#include <drm/drm_kunit_helpers.h>
->   #include <drm/drm_plane.h>
->   
->   #include <kunit/test.h>
->   
->   #include "vc4_mock.h"
->   
-> -static const struct drm_plane_helper_funcs vc4_dummy_plane_helper_funcs = {
-> -};
-> -
-> -static const struct drm_plane_funcs vc4_dummy_plane_funcs = {
-> -	.atomic_destroy_state	= drm_atomic_helper_plane_destroy_state,
-> -	.atomic_duplicate_state	= drm_atomic_helper_plane_duplicate_state,
-> -	.reset			= drm_atomic_helper_plane_reset,
-> -};
-> -
-> -static const uint32_t vc4_dummy_plane_formats[] = {
-> -	DRM_FORMAT_XRGB8888,
-> -};
-> -
->   struct drm_plane *vc4_dummy_plane(struct kunit *test, struct drm_device *drm,
->   				  enum drm_plane_type type)
->   {
->   	struct drm_plane *plane;
->   
-> -	plane = __drmm_universal_plane_alloc(drm, sizeof(struct drm_plane), 0,
-> -						 0,
-> -						 &vc4_dummy_plane_funcs,
-> -						 vc4_dummy_plane_formats,
-> -						 ARRAY_SIZE(vc4_dummy_plane_formats),
-> -						 NULL,
-> -						 DRM_PLANE_TYPE_PRIMARY,
-> -						 NULL);
-> +	KUNIT_ASSERT_EQ(test, type, DRM_PLANE_TYPE_PRIMARY);
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 664e8c1b9930..06fcda810674 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -10,6 +10,12 @@
+>  #include "dax-private.h"
+>  #include "bus.h"
+>  
+> +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
+> +#include <linux/backing-dev.h>
+> +#include <linux/pfn_t.h>
+> +#include <linux/range.h>
+> +#endif
 > +
-> +	plane = drm_kunit_helper_create_primary_plane(test, drm,
-> +						      NULL,
-> +						      NULL,
-> +						      NULL, 0,
-> +						      NULL);
->   	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, plane);
->   
-> -	drm_plane_helper_add(plane, &vc4_dummy_plane_helper_funcs);
-> -
->   	return plane;
->   }
-> 
+
+Is it worth avoiding includes based on config? Probably not.
+
+>  static DEFINE_MUTEX(dax_bus_lock);
+>  
+>  #define DAX_NAME_LEN 30
+> @@ -1349,6 +1355,101 @@ __weak phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
+>  }
+>  EXPORT_SYMBOL_GPL(dax_pgoff_to_phys);
+>  
+> +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
+> +
+
+> +
+> +static long __dev_dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff,
+> +			     long nr_pages, enum dax_access_mode mode, void **kaddr,
+> +			     pfn_t *pfn)
+> +{
+> +	struct dev_dax *dev_dax = dax_get_private(dax_dev);
+> +	size_t dax_size = dev_dax_size(dev_dax);
+> +	size_t size = nr_pages << PAGE_SHIFT;
+> +	size_t offset = pgoff << PAGE_SHIFT;
+> +	phys_addr_t phys;
+> +	u64 virt_addr = dev_dax->virt_addr + offset;
+> +	pfn_t local_pfn;
+> +	u64 flags = PFN_DEV|PFN_MAP;
+> +
+> +	WARN_ON(!dev_dax->virt_addr); /* virt_addr must be saved for direct_access */
+Fair enough, but from local code point of view, does it make sense to check this
+if !kaddr as we won't use this.
+> +
+> +	phys = dax_pgoff_to_phys(dev_dax, pgoff, nr_pages << PAGE_SHIFT);
+> +
+> +	if (kaddr)
+> +		*kaddr = (void *)virt_addr;
+
+Back to earlier comment on virt_addr as a void *. Definitely looking like
+that would be more accurate and simpler!  Also not much point in computing
+virt_addr unless kaddr is good.
+
+> +
+> +	local_pfn = phys_to_pfn_t(phys, flags); /* are flags correct? */
+If you aren't going to do anything with it for !pfn, move it under the if (pfn).
+
+> +	if (pfn)
+> +		*pfn = local_pfn;
+> +
+> +	/* This the valid size at the specified address */
+> +	return PHYS_PFN(min_t(size_t, size, dax_size - offset));
+> +}
+> +
+
+> +
+> +static const struct dax_operations dev_dax_ops = {
+> +	.direct_access = dev_dax_direct_access,
+> +	.zero_page_range = dev_dax_zero_page_range,
+> +	.recovery_write = dev_dax_recovery_write,
+> +};
+> +
+> +#endif /* IS_ENABLED(CONFIG_DEV_DAX_IOMAP) */
+> +
+>  struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+>  {
+>  	struct dax_region *dax_region = data->dax_region;
+> @@ -1404,11 +1505,17 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+>  		}
+>  	}
+>  
+
+If we were to make this 
+
+	if (IS_ENABLED(CONFIG_DEV_DAX_IOMAP))
+
+etc can we avoid the ifdef stuff above and let dead code removal deal with it?
+Might need a few stubs - I haven't tried.
+
+> +#if IS_ENABLED(CONFIG_DEV_DAX_IOMAP)
+> +	/* holder_ops currently populated separately in a slightly hacky way */
+> +	dax_dev = alloc_dax(dev_dax, &dev_dax_ops);
+> +#else
+>  	/*
+>  	 * No dax_operations since there is no access to this device outside of
+>  	 * mmap of the resulting character device.
+>  	 */
+>  	dax_dev = alloc_dax(dev_dax, NULL);
+> +#endif
+> +
+>  	if (IS_ERR(dax_dev)) {
+>  		rc = PTR_ERR(dax_dev);
+>  		goto err_alloc_dax;
+
 
