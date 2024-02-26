@@ -1,171 +1,252 @@
-Return-Path: <linux-kernel+bounces-82022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4576C867DD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:15:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DA45867DC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 753711C2A34A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:15:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3715F1C2A315
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B8DC13666D;
-	Mon, 26 Feb 2024 17:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ue2dCFYC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0268012DDBB;
+	Mon, 26 Feb 2024 17:04:32 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347F5136652
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:06:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7736B12C55E;
+	Mon, 26 Feb 2024 17:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708967166; cv=none; b=bjDIyhAQU1T7+AO41LCF1qsdZSlhcZxkG9XQbU8JYpyQDlTJwHcuCKG1BDgqc4CIpfAkKMYOgshjTgf7C9FaxCzbxGhuQA1kQGz7ExbKdG2s5QOMIcnjqrc3fq1fo3PO9zZ2ABsCvUauIz03YdIC1F21FESSoFcPDb8XQrgwbak=
+	t=1708967071; cv=none; b=HRk8yplHpxg0b1UsF9A5GRPoKOOWJ8IAuVj9OGaxG8Ugk0g7EH+FHkkyQQN7yZ0jkxwcJVl6qDaD/nelD2Chij9EkudeAAdTatBNLACSLOsyVh0Kduu/GOZsk4ikiUxsceIuanM+4nRXbnFE4pOGL/caK2eO07YDGwS15KL1yRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708967166; c=relaxed/simple;
-	bh=6Vyoo0Bzehw8lcWs30lDQlzHhfwrhCkNK53hcGYdx4M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fg8b5rSsTHgzRgMhRxxSXPafYvjI+n4WBP0pxO9+R8JluPhjcDSFSJoWW3tlrSLjXYv8zrbPOrRwbj7wuY1ILYS0JSqAtv1/j54TgoGyooqlmqDAhP6imb/7AtSj33hWEWCJw9+5fq9wW87/DnkQgvls9JYh6F7TQwtBaaQeyzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ue2dCFYC; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708967163;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dBgwoqBSOIGBvVMXZVHsZZp0o2jjdWKhIehyduutD1E=;
-	b=Ue2dCFYCBxAOtopbM2CdX6eozFyLGOnRGv9GORG0hLnVduxgaOo/BclQMZYLfY8A1Kj7+R
-	wXTmweOARNneDWP7HvcyvN2eyWHEiazQxHcebujrgVJRP523qoGwMRRYP0PkfDv3uTRnlI
-	cZt+tXqLoZIL9vluq3RC3hgagbbo46Y=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-484-qn3-4k7sNX--YaSoH5eh6w-1; Mon, 26 Feb 2024 12:06:00 -0500
-X-MC-Unique: qn3-4k7sNX--YaSoH5eh6w-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-42de9e960a1so40177411cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:06:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708967159; x=1709571959;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dBgwoqBSOIGBvVMXZVHsZZp0o2jjdWKhIehyduutD1E=;
-        b=v/k/2SRiJ6TNqZvLkApIxvSkfJrX8OBEWS1vskdVW35erVWrvIsRMrIzOnK/5OlXYG
-         l8DlWheb/FrHQnbK1KJlFOVjtCq0AmiBFX+StXlbE1lyRmyaPw9K64mFs2UgFoaXfrTO
-         ObifC75Tm90fM9aOeSRpaYpO+3O10ZkiKbwzzpwSuhQ5Xo8tZZ4Dy68CwZjFVjoedkaU
-         81nkxmVEzV45HrbO4habNs+7hTSvD3piHiXaTf96N5OoaBXKLA5+ROAjQKhYNOKGlveo
-         VMORThb6Gr5xK7Dp3ursGTA8InS5ZDySOPFjoyDjVbD0/x5G/rtstLpjYWf/3DDe0cLQ
-         /q+g==
-X-Forwarded-Encrypted: i=1; AJvYcCV1MtUL+tln97ZNr7AAI5f+d3MZ1I1pCxfS3aqVM376lAwYXc8ob0zc08JXA3/ugmo5x6yOV9DbJghv/maFQKix5PAk5IJO9NSir1vv
-X-Gm-Message-State: AOJu0YwsWzdckmDjL6a2m+x/OyFYVAExKVA8iKhYhYJZDZAQMR7/iq78
-	PSgZubh3VpPMTge9qFYqZSXGnmWfuDAJOr0BM0D0XKJ5H/YJgGghijlMaGzsLZsJOWRn5kb9Tf5
-	L/GZNZvw0eUnGtdq/hRqe5IdvF3bq+ZoEbmLPis2ItMtilwyPC5wXEVHLQ5zhcg==
-X-Received: by 2002:ac8:5c81:0:b0:42e:6334:cc9a with SMTP id r1-20020ac85c81000000b0042e6334cc9amr10584298qta.20.1708967159462;
-        Mon, 26 Feb 2024 09:05:59 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGouxFyrcIqSJ7v+0s8MpATsxAaXlMAoO3A9/eq2kbm9DVSpqPv+iAYJQQEc/dA3L8o1DGUvA==
-X-Received: by 2002:ac8:5c81:0:b0:42e:6334:cc9a with SMTP id r1-20020ac85c81000000b0042e6334cc9amr10584252qta.20.1708967158965;
-        Mon, 26 Feb 2024 09:05:58 -0800 (PST)
-Received: from [10.0.0.33] (modemcable096.103-83-70.mc.videotron.ca. [70.83.103.96])
-        by smtp.gmail.com with ESMTPSA id p1-20020ac84601000000b0042e625a110dsm2635894qtn.78.2024.02.26.09.05.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 09:05:58 -0800 (PST)
-Message-ID: <6c25bbf6-db97-4d55-b7d6-b7b6dbb60a82@redhat.com>
-Date: Mon, 26 Feb 2024 12:05:57 -0500
+	s=arc-20240116; t=1708967071; c=relaxed/simple;
+	bh=RKIx+oQQY1jqQNQfa40US/jQ3+vApFBCzgxBshqFQus=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Tu3cOe2l3agysoF9Zv898TdTnPr4nxX7em4BQMQooWGR6G57PeGRnZe5IGMiA0g8OuT0pSUYapkJfahYC2rZu0ns4EKlJ9SqOvTkaaBVyDa1z8NMWwydGxCimgre31uPEF10bN5WLzyhc0uOLqisxYOAQqlrrhJ21P8ExedYUBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2875AC433F1;
+	Mon, 26 Feb 2024 17:04:30 +0000 (UTC)
+Date: Mon, 26 Feb 2024 12:06:29 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Richard Chang <richardycc@google.com>
+Cc: mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+ akpm@linux-foundation.org, liumartin@google.com, surenb@google.com,
+ minchan@kernel.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm: add alloc_contig_migrate_range allocation
+ statistics
+Message-ID: <20240226120629.0c371252@gandalf.local.home>
+In-Reply-To: <20240226100045.2083962-1-richardycc@google.com>
+References: <20240226100045.2083962-1-richardycc@google.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] platform/mellanox: mlxbf-pmc: Fix module loading
-Content-Language: en-US, en-CA
-To: Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: shravankr@nvidia.com, davthompson@nvidia.com, ndalvi@redhat.com,
- LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
-References: <cover.1708635408.git.luizcap@redhat.com>
- <170895404513.2243.14840310263795846559.b4-ty@linux.intel.com>
- <def1a153-3cfb-431d-a7d2-a13bb7d65f4f@redhat.com>
- <29863354-4efe-d199-a9d4-7daf83f6cde9@linux.intel.com>
- <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
- <eea32e56-2ea3-4a11-b1b9-8dd46dac7d72@redhat.com>
-From: Luiz Capitulino <luizcap@redhat.com>
-In-Reply-To: <eea32e56-2ea3-4a11-b1b9-8dd46dac7d72@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 2024-02-26 11:57, Hans de Goede wrote:
-> Hi Luiz,
+On Mon, 26 Feb 2024 10:00:15 +0000
+Richard Chang <richardycc@google.com> wrote:
+
+> alloc_contig_migrate_range has every information to be able to
+> understand big contiguous allocation latency. For example, how many
+> pages are migrated, how many times they were needed to unmap from
+> page tables.
 > 
-> On 2/26/24 17:10, Luiz Capitulino wrote:
->> On 2024-02-26 11:04, Ilpo Järvinen wrote:
->>> On Mon, 26 Feb 2024, Luiz Capitulino wrote:
->>>
->>>> On 2024-02-26 08:27, Ilpo Järvinen wrote:
->>>>> On Thu, 22 Feb 2024 15:57:28 -0500, Luiz Capitulino wrote:
->>>>>
->>>>>> The mlxbf-pmc driver fails to load when the firmware reports a new but not
->>>>>> yet implemented performance block. I can reproduce this today with a
->>>>>> Bluefield-3 card and UEFI version 4.6.0-18-g7d063bb-BId13035, since this
->>>>>> reports the new clock_measure performance block.
->>>>>>
->>>>>> This[1] patch from Shravan implements the clock_measure support and will
->>>>>> solve the issue. But this series avoids the situation by ignoring and
->>>>>> logging unsupported performance blocks.
->>>>>>
->>>>>> [...]
->>>>>
->>>>>
->>>>> Thank you for your contribution, it has been applied to my local
->>>>> review-ilpo branch. Note it will show up in the public
->>>>> platform-drivers-x86/review-ilpo branch only once I've pushed my
->>>>> local branch there, which might take a while.
->>>>
->>>> Thank you Ilpo and thanks Hans for the review.
->>>>
->>>> The only detail is that we probably want this merged for 6.8 since
->>>> the driver doesn't currently load with the configuration mentioned above.
->>>
->>> Oh, sorry, I missed the mention in the coverletter.
->>>
->>> So you'd want I drop these from review-ilpo branch as there they end
->>> up into for-next branch, and they should go through Hans instead who
->>> handles fixes branch for this cycle?
->>
->> If that's the path to get this series merged for this cycle then yes,
->> but let's see if Hans agrees (sorry that I didn't know this before
->> posting).
+> This patch adds the trace event to collect the allocation statistics.
+> In the field, it was quite useful to understand CMA allocation
+> latency.
 > 
-> Hmm, new hw enablement typically goes through -next and not to
-> the current fixes branch. And AFAICT this is new hw enablement,
-> not a regression / bug-fix.
+> Signed-off-by: Richard Chang <richardycc@google.com>
+> ---
+>  include/trace/events/kmem.h | 39 +++++++++++++++++++++++++++++++++++++
+>  mm/internal.h               |  3 ++-
+>  mm/page_alloc.c             | 30 +++++++++++++++++++++++-----
+>  mm/page_isolation.c         |  2 +-
+>  4 files changed, 67 insertions(+), 7 deletions(-)
 > 
-> Is there any special reason why this needs to be in 6.8 ?
+> diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
+> index 58688768ef0f..964704d76f9f 100644
+> --- a/include/trace/events/kmem.h
+> +++ b/include/trace/events/kmem.h
+> @@ -304,6 +304,45 @@ TRACE_EVENT(mm_page_alloc_extfrag,
+>  		__entry->change_ownership)
+>  );
+>  
+> +TRACE_EVENT(mm_alloc_contig_migrate_range_info,
+> +
+> +	TP_PROTO(unsigned long start,
+> +		 unsigned long end,
+> +		 int migratetype,
+> +		 unsigned long nr_migrated,
+> +		 unsigned long nr_reclaimed,
+> +		 unsigned long nr_mapped),
+> +
+> +	TP_ARGS(start, end, migratetype,
+> +		nr_migrated, nr_reclaimed, nr_mapped),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(unsigned long, start)
+> +		__field(unsigned long, end)
+> +		__field(int, migratetype)
 
-Since the new firmware feature is causing the driver not to load,
-I'm seeing this more as a bug than new enablement. But it's fine
-with me if you decide on not having them on 6.8.
 
-> For RHEL kernels you can cherry-pick patches from -next
-> as necessary.
+Please move the int to the end of the longs, as it will cause a 4 byte hole
+in 64 bit machines otherwise.
 
-I know :)
 
->> One additional detail is that this series is on top of linux-next, which
->> has two additional mlxbf-pmc changes:
->>
->> * https://lore.kernel.org/lkml/39be055af3506ce6f843d11e45d71620f2a96e26.1707808180.git.shravankr@nvidia.com/
->> * https://lore.kernel.org/lkml/d8548c70339a29258a906b2b518e5c48f669795c.1707808180.git.shravankr@nvidia.com/
-> 
-> Hmm, those are not small patches, any other reason
-> why this really should go to -next IMHO.
+> +		__field(unsigned long, nr_migrated)
+> +		__field(unsigned long, nr_reclaimed)
+> +		__field(unsigned long, nr_mapped)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->start = start;
+> +		__entry->end = end;
+> +		__entry->migratetype = migratetype;
+> +		__entry->nr_migrated = nr_migrated;
+> +		__entry->nr_reclaimed = nr_reclaimed;
+> +		__entry->nr_mapped = nr_mapped;
+> +	),
+> +
+> +	TP_printk("start=0x%lx end=0x%lx migratetype=%d nr_migrated=%lu nr_reclaimed=%lu nr_mapped=%lu",
+> +		  __entry->start,
+> +		  __entry->end,
+> +		  __entry->migratetype,
+> +		  __entry->nr_migrated,
+> +		  __entry->nr_reclaimed,
+> +		  __entry->nr_mapped)
+> +);
+> +
+>  /*
+>   * Required for uniquely and securely identifying mm in rss_stat tracepoint.
+>   */
+> diff --git a/mm/internal.h b/mm/internal.h
+> index f309a010d50f..e114c647e278 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -537,7 +537,8 @@ isolate_migratepages_range(struct compact_control *cc,
+>  			   unsigned long low_pfn, unsigned long end_pfn);
+>  
+>  int __alloc_contig_migrate_range(struct compact_control *cc,
+> -					unsigned long start, unsigned long end);
+> +					unsigned long start, unsigned long end,
+> +					int migratetype);
+>  
+>  /* Free whole pageblock and set its migration type to MIGRATE_CMA. */
+>  void init_cma_reserved_pageblock(struct page *page);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 150d4f23b010..f840bc785afa 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6219,9 +6219,14 @@ static void alloc_contig_dump_pages(struct list_head *page_list)
+>  	}
+>  }
+>  
+> -/* [start, end) must belong to a single zone. */
+> +/*
+> + * [start, end) must belong to a single zone.
+> + * @migratetype: using migratetype to filter the type of migration in
+> + *		trace_mm_alloc_contig_migrate_range_info.
+> + */
+>  int __alloc_contig_migrate_range(struct compact_control *cc,
+> -					unsigned long start, unsigned long end)
+> +					unsigned long start, unsigned long end,
+> +					int migratetype)
+>  {
+>  	/* This function is based on compact_zone() from compaction.c. */
+>  	unsigned int nr_reclaimed;
+> @@ -6232,6 +6237,10 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
+>  		.nid = zone_to_nid(cc->zone),
+>  		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
+>  	};
+> +	struct page *page;
+> +	unsigned long total_mapped = 0;
+> +	unsigned long total_migrated = 0;
+> +	unsigned long total_reclaimed = 0;
+>  
+>  	lru_cache_disable();
+>  
+> @@ -6257,9 +6266,16 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
+>  							&cc->migratepages);
+>  		cc->nr_migratepages -= nr_reclaimed;
+>  
+> +		total_reclaimed += nr_reclaimed;
+> +		list_for_each_entry(page, &cc->migratepages, lru)
+> +			total_mapped += page_mapcount(page);
 
-OK.
+You're doing this calculation regardless of if tracing is enabled or not
+and it's only used for tracing? Please add:
 
-- Luiz
+		if (trace_mm_alloc_contig_migrate_range_info_enabled()) {
+			total_reclaimed += nr_reclaimed;
+			list_for_each_entry(page, &cc->migratepages, lru)
+				total_mapped += page_mapcount(page);
+		}
+
+-- Steve
+
+> +
+>  		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+>  			NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE, NULL);
+>  
+> +		if (!ret)
+
+May want the above to be:
+
+		if (trace_mm_alloc_config_migrate_range_info_enabled() && !ret)
+
+too.
+
+-- Steve
+
+> +			total_migrated += cc->nr_migratepages;
+> +
+>  		/*
+>  		 * On -ENOMEM, migrate_pages() bails out right away. It is pointless
+>  		 * to retry again over this error, so do the same here.
+> @@ -6273,9 +6289,13 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
+>  		if (!(cc->gfp_mask & __GFP_NOWARN) && ret == -EBUSY)
+>  			alloc_contig_dump_pages(&cc->migratepages);
+>  		putback_movable_pages(&cc->migratepages);
+> -		return ret;
+>  	}
+> -	return 0;
+> +
+> +	trace_mm_alloc_contig_migrate_range_info(start, end, migratetype,
+> +						 total_migrated,
+> +						 total_reclaimed,
+> +						 total_mapped);
+> +	return (ret < 0) ? ret : 0;
+>  }
+>  
+>  /**
+> @@ -6355,7 +6375,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+>  	 * allocated.  So, if we fall through be sure to clear ret so that
+>  	 * -EBUSY is not accidentally used or returned to caller.
+>  	 */
+> -	ret = __alloc_contig_migrate_range(&cc, start, end);
+> +	ret = __alloc_contig_migrate_range(&cc, start, end, migratetype);
+>  	if (ret && ret != -EBUSY)
+>  		goto done;
+>  	ret = 0;
+> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+> index cd0ea3668253..a5c8fa4c2a75 100644
+> --- a/mm/page_isolation.c
+> +++ b/mm/page_isolation.c
+> @@ -434,7 +434,7 @@ static int isolate_single_pageblock(unsigned long boundary_pfn, int flags,
+>  				}
+>  
+>  				ret = __alloc_contig_migrate_range(&cc, head_pfn,
+> -							head_pfn + nr_pages);
+> +							head_pfn + nr_pages, page_mt);
+>  
+>  				/*
+>  				 * restore the page's migratetype so that it can
 
 
