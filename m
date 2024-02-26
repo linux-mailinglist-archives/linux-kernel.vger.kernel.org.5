@@ -1,117 +1,98 @@
-Return-Path: <linux-kernel+bounces-81834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B99F867B42
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1965867ABA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:50:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54AABB29CFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:45:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52DE2B31A0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 15:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD7512B153;
-	Mon, 26 Feb 2024 15:45:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s9SY++mh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3A812BE87
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 15:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A1212BF2F;
+	Mon, 26 Feb 2024 15:46:00 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2A91BDDC;
+	Mon, 26 Feb 2024 15:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708962338; cv=none; b=C3So+Ko/7XPQP7KfZL1W3EDjrr7V3Fy8l4KL3+2nwdfsLGj9TTHqyTHz8XITs+Mz8X767tzcEmLdViKJH2i23GrbS1D5mLVxgClBjqBLqtHfhX2TrGYzwe3N4FzTuWjCUK2uvj1mSGo4Kn00Mu6gfO7kUsQEBzEq03TmWkETcvE=
+	t=1708962360; cv=none; b=IIn3AjoxMCg3OtF/Z9srvktuNZML46un1KAhUqJS+4Ef5A+RBE0NAfJgN1Vre2suHkC+9+OvokIaUk+EzRAlY+C3bUy3UtlTkghAljI12WRrjCUBPFbMJfppDSlQp9rPHdwWnK6uKcxDzWVIRSIhCouWSeX+OmeBJzfgmf8pLnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708962338; c=relaxed/simple;
-	bh=VsH0ymrYLcRyJRnocuhbJuZDkMN1aFvJrkS1qBHwOqU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NuXGm7Jh/peg09VTNJSZEDLc7hQ+ryVD2Zygs36bJcfpTuEbLpb+G4PeJpnPqA8BjGnjPPleTq5UbIKwg0YO0xfJg/wfUfg/HjLDVfxRPztdPdB6uKlrDvUKThPl0Pz3gQanEXiHErKfu1TKOynin+3lSDw/Te/yr+GP9678FEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s9SY++mh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22787C433C7;
-	Mon, 26 Feb 2024 15:45:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708962337;
-	bh=VsH0ymrYLcRyJRnocuhbJuZDkMN1aFvJrkS1qBHwOqU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s9SY++mhNAKw369O/4ET4NztG3dF+U4U2Fo2gCThAJHS4inmUjFIgWYn/UdttAMMf
-	 lVfeJGREmZ4uUbb0LcItayvC/EPlyKo0Z/n2lTJ6e/Ym1uDG+AFZipoqoKhR9iJzJH
-	 reBe+HZNyeza0I7xTpHvKx+zzPrhig6dO1/1NBcTXxHOi5ILswryo2YX2L+advZbET
-	 +jeaLLyhz4252rs456/kX7oJYss55jEz0OgKThg5yk97/bz5N1/lWH5h/zL0gTjq/5
-	 Sn61paoidyZIpP+v8eeIYhhOGkgd7dlDqkgp15DbPoEE2ZiO5NmumKBVDvqgF6w83f
-	 uaJ9/JtryeWTw==
-Date: Mon, 26 Feb 2024 16:45:33 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Tycho Andersen <tycho@tycho.pizza>
-Cc: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>, 
-	stgraber@stgraber.org, cyphar@cyphar.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] tests/pid_namespace: add pid_max tests
-Message-ID: <20240226-bewaffnen-kinokarten-94eb5abf727c@brauner>
-References: <20240222160915.315255-1-aleksandr.mikhalitsyn@canonical.com>
- <20240222160915.315255-3-aleksandr.mikhalitsyn@canonical.com>
- <Zdd8MAJJD3M11yeR@tycho.pizza>
- <20240223-kantholz-knallen-558beba46c62@brauner>
- <ZdoEavHorDs3IlF5@tycho.pizza>
- <20240226-gestrafft-pastinaken-94ff0e993a51@brauner>
- <Zdyumw6OfWBqQMTj@tycho.pizza>
+	s=arc-20240116; t=1708962360; c=relaxed/simple;
+	bh=bdJTfIlFy3ED3bBg1k1z8Me8BEsVndqCk6aPs/qgrVU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a39wgW1+Hw+1btwCFEIrzoZ2gLafKFiu2dDNuek5MouahrSXUqZcBQpSOzMF+W3Vi1fug3Gjf0fWuUI6hMWna+jmWpaWbrLAbHbr5kS+gzmqlgS4M3UhirDw1Nl3Fx329H3ms2n6jB+xZCN37om1ml+jbp1zoGV9YHxyOfxN93Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B4E93DA7;
+	Mon, 26 Feb 2024 07:46:36 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10D503F762;
+	Mon, 26 Feb 2024 07:45:55 -0800 (PST)
+Message-ID: <7e3c779e-09ae-4c87-855e-f0e6ae945169@arm.com>
+Date: Mon, 26 Feb 2024 15:45:44 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zdyumw6OfWBqQMTj@tycho.pizza>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3 2/7] dma: avoid redundant calls for sync
+ operations
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Magnus Karlsson <magnus.karlsson@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Alexander Duyck <alexanderduyck@fb.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
+ <20240214162201.4168778-3-aleksander.lobakin@intel.com>
+ <3a9dd580-1977-418f-a3f3-73003dd37710@arm.com>
+ <4d2678be-e36c-4726-83a5-ae9a3a0def55@intel.com>
+Content-Language: en-GB
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <4d2678be-e36c-4726-83a5-ae9a3a0def55@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 26, 2024 at 08:30:35AM -0700, Tycho Andersen wrote:
-> On Mon, Feb 26, 2024 at 09:57:47AM +0100, Christian Brauner wrote:
-> > > > > A small quibble, but I wonder about the semantics here. "You can write
-> > > > > whatever you want to this file, but we'll ignore it sometimes" seems
-> > > > > weird to me. What if someone (CRIU) wants to spawn a pid numbered 450
-> > > > > in this case? I suppose they read pid_max first, they'll be able to
-> > > > > tell it's impossible and can exit(1), but returning E2BIG from write()
-> > > > > might be more useful.
-> > > > 
-> > > > That's a good idea. But it's a bit tricky. The straightforward thing is
-> > > > to walk upwards through all ancestor pid namespaces and use the lowest
-> > > > pid_max value as the upper bound for the current pid namespace. This
-> > > > will guarantee that you get an error when you try to write a value that
-> > > > you would't be able to create. The same logic should probably apply to
-> > > > ns_last_pid as well.
-> > > > 
-> > > > However, that still leaves cases where the current pid namespace writes
-> > > > a pid_max limit that is allowed (IOW, all ancestor pid namespaces are
-> > > > above that limit.). But then immediately afterwards an ancestor pid
-> > > > namespace lowers the pid_max limit. So you can always end up in a
-> > > > scenario like this.
-> > > 
-> > > I wonder if we can push edits down too? Or an render .effective file, like
-> > 
-> > I don't think that works in the current design? The pid_max value is per
-> > struct pid_namespace. And while there is a 1:1 relationship between a
-> > child pid namespace to all of its ancestor pid namespaces there's a 1 to
-> > many relationship between a pid namespace and it's child pid namespaces.
-> > IOW, if you change pid_max in pidns_level_1 then you'd have to go
-> > through each of the child pid namespaces on pidns_level_2 which could be
-> > thousands. So you could only do this lazily. IOW, compare and possibly
-> > update the pid_max value of the child pid namespace everytime it's read
-> > or written. Maybe that .effective is the way to go; not sure right now.
+On 19/02/2024 12:49 pm, Alexander Lobakin wrote:
+> From: Robin Murphy <robin.murphy@arm.com>
+> Date: Wed, 14 Feb 2024 17:55:23 +0000
 > 
-> I wonder then, does it make sense to implement this as a cgroup thing
-> instead, which is used to doing this kind of traversal?
+>> On 2024-02-14 4:21 pm, Alexander Lobakin wrote:
 > 
-> Or I suppose not, since the idea is to get legacy software that's
-> writing to pid_max to work?
+> [...]
+> 
+>>> +        /*
+>>> +         * Synchronization is not possible when none of DMA sync ops
+>>> +         * is set. This check precedes the below one as it disables
+>>> +         * the synchronization unconditionally.
+>>> +         */
+>>> +        dev->dma_skip_sync = true;
+>>> +    else if (ops->flags & DMA_F_CAN_SKIP_SYNC)
+>>
+>> Personally I'd combine this into the dma-direct condition.
+> 
+> Please read the code comment a couple lines above :D
 
-My personal perspective is that this is not so important. The original
-motivation for this had been legacy workloads that expect to only get
-pid numbers up to a certain size which would otherwise break. And for
-them it doesn't matter whether that setting is applied through pid_max
-or via some cgroup setting. All that matters is that they don't get pids
-beyond what they expect.
+And my point is that that logic is not actually useful, since it would 
+be nonsensical for ops to set DMA_F_CAN_SKIP_SYNC if they don't even 
+implement sync ops anyway.
 
-So yes, from my POV we could try and make this a cgroup property. But
-we should check with Tejun first whether he'd consider this a useful
-addition or not.
+If the intent of DMA_F_CAN_SKIP_SYNC is to mean "behaves like 
+dma-direct", then "if (dma_map_direct(...) || ops->flags & 
+DMA_F_CAN_SKIP_SYNC)" is an entirely logical and expected condition.
+
+Thanks,
+Robin.
 
