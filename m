@@ -1,482 +1,135 @@
-Return-Path: <linux-kernel+bounces-81979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3C35867D7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16DFF867D67
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:06:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24BE3B2FB10
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:02:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3C53B30E69
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:05:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFD81369B2;
-	Mon, 26 Feb 2024 16:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47BEB1386DB;
+	Mon, 26 Feb 2024 16:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="k7acfr/J"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lVn534Lo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34741350F0;
-	Mon, 26 Feb 2024 16:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E5F12EBC7;
+	Mon, 26 Feb 2024 16:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966443; cv=none; b=pnz0w3b559wFVukFArhnVmwYzWDrrEC4RFRzptMrfpZGX6TE5zaFniLgMOFQZi1msdq3J4g0FoCKlaDHsMMNvgKABrOi0Y0S6+juANiR6QPpARBalb6NKmAPBZhiFfcHZJiLkNmyOI69JSu5Ic03IhZn2zWMHKIxJBkH6p5V8vg=
+	t=1708966472; cv=none; b=MNKIarIx4wm72zMfM50+YfwYH8dEPGoBHLR/vMP3tBZaNFFXG4gYJIV+HvamDq3rtbANtxxJwmA2uEIzYQGVTuKtE39Gf0cS4mpTJaMPhLw8nfIknmpEKndAJGroP8pAsirbutJxsOR1Z3sPzYFBSjCkLuUah2TxogeNITy5YEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966443; c=relaxed/simple;
-	bh=y7Ir3NHVxuCw/j7v8sOGwdCGBziRK95layLM4Yi7WNM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iZnVPpQwWuRwDSvPWF/IPWTmmHQKzi1uJYo9rgdOPG5Zt3GsFyC8uSVU7B/t9/3fb9bdDSBCPHMr7qP7+L3Wqfb9N/h7RCcha5Zf5lP+W9NzeLYeH+2tC9Pl/ntcEaH2Kf4nsf3P+YznzWFQDG1Hpf1oTYkqlwKZNhVCKWrE3ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=k7acfr/J; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41QGSHn8014969;
-	Mon, 26 Feb 2024 16:53:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=psAc7NhzV/4UUrvAwzBQj4m9xdKePW/86HpHbKqjtW0=;
- b=k7acfr/J+c7hK44idEgZU0Ut9YXZl63Flafqq+xaZx8LQXOcrre78SeBt5xtMr7v1NDf
- JR5D6+rgFTeF+frl4SneTYqLvlfy0KQQK+gy5oNGCf0dDErw5cypEgJKwY584O/YCWPV
- 0nslXt2I3H7dJEU/TgWF7Ndwa9+RVEmMewtkUjBcZrS1yNb7ZrJa3fOzbH+9EIG1RBIr
- F2V2AdBhac3TUQbXa+Bi+A6Jm4TVTzINvWO4TWGMEWIEjsXUxTDVvV3S963Azr5QiqVW
- AkPat5pwZ4SqM4SOe6a7igsLnZDILjISGKngPbMEkQKwXNGUB3xsa4q8jTY9XM1OcEVM qQ== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wgx6g8nwa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 16:53:47 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41QG5FVN008798;
-	Mon, 26 Feb 2024 16:53:46 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wftstarc0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 16:53:46 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41QGrhfg17367696
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 26 Feb 2024 16:53:45 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AC99858065;
-	Mon, 26 Feb 2024 16:53:43 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 01C5F58053;
-	Mon, 26 Feb 2024 16:53:43 +0000 (GMT)
-Received: from slate16.aus.stglabs.ibm.com (unknown [9.61.57.130])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 26 Feb 2024 16:53:42 +0000 (GMT)
-From: Eddie James <eajames@linux.ibm.com>
-To: linux-fsi@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, andi.shyti@kernel.org,
-        eajames@linux.ibm.com, alistair@popple.id.au, joel@jms.id.au,
-        jk@ozlabs.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, lakshmiy@us.ibmcom
-Subject: [PATCH v2 26/31] i2c: fsi: Improve formatting
-Date: Mon, 26 Feb 2024 10:53:16 -0600
-Message-Id: <20240226165321.91976-27-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240226165321.91976-1-eajames@linux.ibm.com>
-References: <20240226165321.91976-1-eajames@linux.ibm.com>
+	s=arc-20240116; t=1708966472; c=relaxed/simple;
+	bh=qYqxJURYXZUqzQwk9pRqWA9tac7WSFwM5rjwchAlnrI=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=kG3x0zn/RciEwILQ/nGWIkmsrW3uzxbSD+sVHEpWrgnuNLKJxN+fi12rxA5/5h5m5/XY9+IJleKPx9Zd1x509FeforlAbLU2072cNrLXGfJedQlhYizL7vNj055BNSOUNQP7momy2w34F8UKUOaqBq7APH4zpJJDnnOEnPsvo1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lVn534Lo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51C4FC433B1;
+	Mon, 26 Feb 2024 16:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708966470;
+	bh=qYqxJURYXZUqzQwk9pRqWA9tac7WSFwM5rjwchAlnrI=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=lVn534LoNsdWWgrLc+1zqXNuvTP7fnCXZBfuPm1LMS1oz3CDrv/EE/eM7UAXa2xKG
+	 ADMaTNfhQ9+lu5AFwMyskKvNzeHohuRooYjncolZj6R+FuK60e9w/GIRXplMoivrXe
+	 AkVfqiQP0koDUOkfzB9UBOj/HabkdNxcIHWiIyGBtess2b6MWiERvpK/FZuxQeLVw0
+	 JAsCoPAnD9YgmzNeM59DDQuykSgwDSM90txX8F7ljQ9MU0SXAc7M51POAKdpqLVgDp
+	 xkFCHRE0eGNjYmD6+8gg+jb/S+1Bx2E2mfBK0DPBujhcrQ6KkGR6giH8cxsumI7PUY
+	 0Hku4fe+zkrMg==
+Date: Mon, 26 Feb 2024 10:54:29 -0600
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7cepKPpawhsebnHBPokYLYDvkOm1sJDi
-X-Proofpoint-ORIG-GUID: 7cepKPpawhsebnHBPokYLYDvkOm1sJDi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 clxscore=1015 bulkscore=0 spamscore=0 mlxlogscore=964
- priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402260128
+From: Rob Herring <robh@kernel.org>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: gregory.clement@bootlin.com, andrew@lunn.ch, lee@kernel.org, 
+ devicetree@vger.kernel.org, andy.shevchenko@gmail.com, 
+ sebastian.hesselbarth@gmail.com, conor+dt@kernel.org, geert@linux-m68k.org, 
+ linux-leds@vger.kernel.org, robh+dt@kernel.org, 
+ krzysztof.kozlowski+dt@linaro.org, pavel@ucw.cz, ojeda@kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20240225213423.690561-1-chris.packham@alliedtelesis.co.nz>
+References: <20240225213423.690561-1-chris.packham@alliedtelesis.co.nz>
+Message-Id: <170896502255.859020.4639120006267962858.robh@kernel.org>
+Subject: Re: [PATCH 0/3] auxdisplay: 7 segment LED display
 
-No functional change.
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
----
- drivers/i2c/busses/i2c-fsi.c | 125 +++++++++++++++++------------------
- 1 file changed, 60 insertions(+), 65 deletions(-)
+On Mon, 26 Feb 2024 10:34:20 +1300, Chris Packham wrote:
+> This series adds a driver for a 7 segment LED display.
+> 
+> I'd like to get some feedback on how this could be extended to support >1
+> character. The driver as presented is sufficient for my hardware which only has
+> a single character display but I can see that for this to be generically useful
+> supporting more characters would be desireable.
+> 
+> Earlier I posted an idea that the characters could be represended by
+> sub-nodes[1] but there doesn't seem to be a way of having that and keeping the
+> convenience of using devm_gpiod_get_array() (unless I've missed something).
+> 
+> [1] - https://lore.kernel.org/lkml/2a8d19ee-b18b-4b7c-869f-7d601cea30b6@alliedtelesis.co.nz/
+> 
+> Chris Packham (3):
+>   auxdisplay: Add 7 segment LED display driver
+>   dt-bindings: auxdisplay: Add bindings for generic 7 segment LED
+>   ARM: dts: marvell: Add 7 segment LED display on x530
+> 
+>  .../auxdisplay/generic,gpio-7seg.yaml         |  40 +++++
+>  .../boot/dts/marvell/armada-385-atl-x530.dts  |  13 +-
+>  drivers/auxdisplay/Kconfig                    |   7 +
+>  drivers/auxdisplay/Makefile                   |   1 +
+>  drivers/auxdisplay/seg-led.c                  | 152 ++++++++++++++++++
+>  5 files changed, 212 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/auxdisplay/generic,gpio-7seg.yaml
+>  create mode 100644 drivers/auxdisplay/seg-led.c
+> 
+> --
+> 2.43.2
+> 
+> 
+> 
 
-diff --git a/drivers/i2c/busses/i2c-fsi.c b/drivers/i2c/busses/i2c-fsi.c
-index eaecf156ac31..bc44cad49ef2 100644
---- a/drivers/i2c/busses/i2c-fsi.c
-+++ b/drivers/i2c/busses/i2c-fsi.c
-@@ -148,10 +148,10 @@
- 
- struct fsi_i2c_master {
- 	struct fsi_device	*fsi;
--	u8			fifo_size;
- 	struct list_head	ports;
- 	struct mutex		lock;
- 	u32			clock_div;
-+	u8			fifo_size;
- };
- 
- struct fsi_i2c_port {
-@@ -165,15 +165,14 @@ struct fsi_i2c_port {
- static int fsi_i2c_read_reg(struct fsi_device *fsi, unsigned int reg,
- 			    u32 *data)
- {
--	int rc;
- 	__be32 data_be;
-+	int rc;
- 
- 	rc = fsi_device_read(fsi, reg, &data_be, sizeof(data_be));
- 	if (rc)
- 		return rc;
- 
- 	*data = be32_to_cpu(data_be);
--
- 	return 0;
- }
- 
-@@ -187,9 +186,11 @@ static int fsi_i2c_write_reg(struct fsi_device *fsi, unsigned int reg,
- 
- static int fsi_i2c_dev_init(struct fsi_i2c_master *i2c)
- {
--	int rc;
--	u32 mode = I2C_MODE_ENHANCED, extended_status, watermark;
-+	u32 mode = I2C_MODE_ENHANCED;
-+	u32 extended_status;
- 	u32 interrupt = 0;
-+	u32 watermark;
-+	int rc;
- 
- 	/* since we use polling, disable interrupts */
- 	rc = fsi_i2c_write_reg(i2c->fsi, I2C_FSI_INT_MASK, &interrupt);
-@@ -215,9 +216,10 @@ static int fsi_i2c_dev_init(struct fsi_i2c_master *i2c)
- 
- static int fsi_i2c_set_port(struct fsi_i2c_port *port)
- {
--	int rc;
- 	struct fsi_device *fsi = port->master->fsi;
--	u32 mode, dummy = 0;
-+	u32 dummy = 0;
-+	u32 mode;
-+	int rc;
- 
- 	rc = fsi_i2c_read_reg(fsi, I2C_FSI_MODE, &mode);
- 	if (rc)
-@@ -238,7 +240,6 @@ static int fsi_i2c_set_port(struct fsi_i2c_port *port)
- static int fsi_i2c_start(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 			 bool stop)
- {
--	struct fsi_i2c_master *i2c = port->master;
- 	u32 cmd = I2C_CMD_WITH_START | I2C_CMD_WITH_ADDR;
- 
- 	port->xfrd = 0;
-@@ -252,7 +253,7 @@ static int fsi_i2c_start(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 	cmd |= FIELD_PREP(I2C_CMD_ADDR, msg->addr);
- 	cmd |= FIELD_PREP(I2C_CMD_LEN, msg->len);
- 
--	return fsi_i2c_write_reg(i2c->fsi, I2C_FSI_CMD, &cmd);
-+	return fsi_i2c_write_reg(port->master->fsi, I2C_FSI_CMD, &cmd);
- }
- 
- static int fsi_i2c_get_op_bytes(int op_bytes)
-@@ -268,18 +269,17 @@ static int fsi_i2c_get_op_bytes(int op_bytes)
- static int fsi_i2c_write_fifo(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 			      u8 fifo_count)
- {
-+	int bytes_to_write = port->master->fifo_size - fifo_count;
-+	int bytes_remaining = msg->len - port->xfrd;
- 	int write;
- 	int rc;
--	struct fsi_i2c_master *i2c = port->master;
--	int bytes_to_write = i2c->fifo_size - fifo_count;
--	int bytes_remaining = msg->len - port->xfrd;
- 
- 	bytes_to_write = min(bytes_to_write, bytes_remaining);
- 
- 	while (bytes_to_write) {
- 		write = fsi_i2c_get_op_bytes(bytes_to_write);
- 
--		rc = fsi_device_write(i2c->fsi, I2C_FSI_FIFO,
-+		rc = fsi_device_write(port->master->fsi, I2C_FSI_FIFO,
- 				      &msg->buf[port->xfrd], write);
- 		if (rc)
- 			return rc;
-@@ -294,12 +294,11 @@ static int fsi_i2c_write_fifo(struct fsi_i2c_port *port, struct i2c_msg *msg,
- static int fsi_i2c_read_fifo(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 			     u8 fifo_count)
- {
--	int read;
--	int rc;
--	struct fsi_i2c_master *i2c = port->master;
--	int bytes_to_read;
- 	int xfr_remaining = msg->len - port->xfrd;
-+	int bytes_to_read;
- 	u32 dummy;
-+	int read;
-+	int rc;
- 
- 	bytes_to_read = min_t(int, fifo_count, xfr_remaining);
- 
-@@ -307,7 +306,7 @@ static int fsi_i2c_read_fifo(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 		read = fsi_i2c_get_op_bytes(bytes_to_read);
- 
- 		if (xfr_remaining) {
--			rc = fsi_device_read(i2c->fsi, I2C_FSI_FIFO,
-+			rc = fsi_device_read(port->master->fsi, I2C_FSI_FIFO,
- 					     &msg->buf[port->xfrd], read);
- 			if (rc)
- 				return rc;
-@@ -316,8 +315,8 @@ static int fsi_i2c_read_fifo(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 			xfr_remaining -= read;
- 		} else {
- 			/* no more buffer but data in fifo, need to clear it */
--			rc = fsi_device_read(i2c->fsi, I2C_FSI_FIFO, &dummy,
--					     read);
-+			rc = fsi_device_read(port->master->fsi, I2C_FSI_FIFO,
-+					     &dummy, read);
- 			if (rc)
- 				return rc;
- 		}
-@@ -330,85 +329,80 @@ static int fsi_i2c_read_fifo(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 
- static int fsi_i2c_get_scl(struct i2c_adapter *adap)
- {
--	u32 stat = 0;
- 	struct fsi_i2c_port *port = adap->algo_data;
--	struct fsi_i2c_master *i2c = port->master;
-+	u32 stat;
- 
--	fsi_i2c_read_reg(i2c->fsi, I2C_FSI_STAT, &stat);
-+	fsi_i2c_read_reg(port->master->fsi, I2C_FSI_STAT, &stat);
- 
- 	return !!(stat & I2C_STAT_SCL_IN);
- }
- 
- static void fsi_i2c_set_scl(struct i2c_adapter *adap, int val)
- {
--	u32 dummy = 0;
- 	struct fsi_i2c_port *port = adap->algo_data;
--	struct fsi_i2c_master *i2c = port->master;
-+	u32 dummy = 0;
- 
- 	if (val)
--		fsi_i2c_write_reg(i2c->fsi, I2C_FSI_SET_SCL, &dummy);
-+		fsi_i2c_write_reg(port->master->fsi, I2C_FSI_SET_SCL, &dummy);
- 	else
--		fsi_i2c_write_reg(i2c->fsi, I2C_FSI_RESET_SCL, &dummy);
-+		fsi_i2c_write_reg(port->master->fsi, I2C_FSI_RESET_SCL, &dummy);
- }
- 
- static int fsi_i2c_get_sda(struct i2c_adapter *adap)
- {
--	u32 stat = 0;
- 	struct fsi_i2c_port *port = adap->algo_data;
--	struct fsi_i2c_master *i2c = port->master;
-+	u32 stat;
- 
--	fsi_i2c_read_reg(i2c->fsi, I2C_FSI_STAT, &stat);
-+	fsi_i2c_read_reg(port->master->fsi, I2C_FSI_STAT, &stat);
- 
- 	return !!(stat & I2C_STAT_SDA_IN);
- }
- 
- static void fsi_i2c_set_sda(struct i2c_adapter *adap, int val)
- {
--	u32 dummy = 0;
- 	struct fsi_i2c_port *port = adap->algo_data;
--	struct fsi_i2c_master *i2c = port->master;
-+	u32 dummy = 0;
- 
- 	if (val)
--		fsi_i2c_write_reg(i2c->fsi, I2C_FSI_SET_SDA, &dummy);
-+		fsi_i2c_write_reg(port->master->fsi, I2C_FSI_SET_SDA, &dummy);
- 	else
--		fsi_i2c_write_reg(i2c->fsi, I2C_FSI_RESET_SDA, &dummy);
-+		fsi_i2c_write_reg(port->master->fsi, I2C_FSI_RESET_SDA, &dummy);
- }
- 
- static void fsi_i2c_prepare_recovery(struct i2c_adapter *adap)
- {
--	int rc;
--	u32 mode;
- 	struct fsi_i2c_port *port = adap->algo_data;
--	struct fsi_i2c_master *i2c = port->master;
-+	u32 mode;
-+	int rc;
- 
--	rc = fsi_i2c_read_reg(i2c->fsi, I2C_FSI_MODE, &mode);
-+	rc = fsi_i2c_read_reg(port->master->fsi, I2C_FSI_MODE, &mode);
- 	if (rc)
- 		return;
- 
- 	mode |= I2C_MODE_DIAG;
--	fsi_i2c_write_reg(i2c->fsi, I2C_FSI_MODE, &mode);
-+	fsi_i2c_write_reg(port->master->fsi, I2C_FSI_MODE, &mode);
- }
- 
- static void fsi_i2c_unprepare_recovery(struct i2c_adapter *adap)
- {
--	int rc;
--	u32 mode;
- 	struct fsi_i2c_port *port = adap->algo_data;
--	struct fsi_i2c_master *i2c = port->master;
-+	u32 mode;
-+	int rc;
- 
--	rc = fsi_i2c_read_reg(i2c->fsi, I2C_FSI_MODE, &mode);
-+	rc = fsi_i2c_read_reg(port->master->fsi, I2C_FSI_MODE, &mode);
- 	if (rc)
- 		return;
- 
- 	mode &= ~I2C_MODE_DIAG;
--	fsi_i2c_write_reg(i2c->fsi, I2C_FSI_MODE, &mode);
-+	fsi_i2c_write_reg(port->master->fsi, I2C_FSI_MODE, &mode);
- }
- 
- static int fsi_i2c_reset_bus(struct fsi_i2c_master *i2c,
- 			     struct fsi_i2c_port *port)
- {
-+	u32 dummy = 0;
-+	u32 stat;
- 	int rc;
--	u32 stat, dummy = 0;
- 
- 	/* force bus reset, ignore errors */
- 	i2c_recover_bus(&port->adapter);
-@@ -439,8 +433,9 @@ static int fsi_i2c_reset_bus(struct fsi_i2c_master *i2c,
- 
- static int fsi_i2c_reset_engine(struct fsi_i2c_master *i2c, u16 port)
- {
-+	u32 dummy = 0;
-+	u32 mode;
- 	int rc;
--	u32 mode, dummy = 0;
- 
- 	/* reset engine */
- 	rc = fsi_i2c_write_reg(i2c->fsi, I2C_FSI_RESET_I2C, &dummy);
-@@ -476,18 +471,17 @@ static int fsi_i2c_reset_engine(struct fsi_i2c_master *i2c, u16 port)
- 
- static int fsi_i2c_abort(struct fsi_i2c_port *port, u32 status)
- {
--	int rc;
--	unsigned long start;
-+	struct fsi_i2c_master *i2c = port->master;
- 	u32 cmd = I2C_CMD_WITH_STOP;
-+	unsigned long start;
- 	u32 stat;
--	struct fsi_i2c_master *i2c = port->master;
--	struct fsi_device *fsi = i2c->fsi;
-+	int rc;
- 
- 	rc = fsi_i2c_reset_engine(i2c, port->port);
- 	if (rc)
- 		return rc;
- 
--	rc = fsi_i2c_read_reg(fsi, I2C_FSI_STAT, &stat);
-+	rc = fsi_i2c_read_reg(i2c->fsi, I2C_FSI_STAT, &stat);
- 	if (rc)
- 		return rc;
- 
-@@ -503,15 +497,14 @@ static int fsi_i2c_abort(struct fsi_i2c_port *port, u32 status)
- 		return 0;
- 
- 	/* write stop command */
--	rc = fsi_i2c_write_reg(fsi, I2C_FSI_CMD, &cmd);
-+	rc = fsi_i2c_write_reg(i2c->fsi, I2C_FSI_CMD, &cmd);
- 	if (rc)
- 		return rc;
- 
- 	/* wait until we see command complete in the master */
- 	start = jiffies;
--
- 	do {
--		rc = fsi_i2c_read_reg(fsi, I2C_FSI_STAT, &status);
-+		rc = fsi_i2c_read_reg(i2c->fsi, I2C_FSI_STAT, &status);
- 		if (rc)
- 			return rc;
- 
-@@ -527,8 +520,8 @@ static int fsi_i2c_abort(struct fsi_i2c_port *port, u32 status)
- static int fsi_i2c_handle_status(struct fsi_i2c_port *port,
- 				 struct i2c_msg *msg, u32 status)
- {
--	int rc;
- 	u8 fifo_count;
-+	int rc;
- 
- 	if (status & I2C_STAT_ERR) {
- 		rc = fsi_i2c_abort(port, status);
-@@ -576,9 +569,9 @@ static int fsi_i2c_handle_status(struct fsi_i2c_port *port,
- static int fsi_i2c_wait(struct fsi_i2c_port *port, struct i2c_msg *msg,
- 			unsigned long timeout)
- {
--	u32 status = 0;
--	int rc;
- 	unsigned long start = jiffies;
-+	u32 status;
-+	int rc;
- 
- 	do {
- 		rc = fsi_i2c_read_reg(port->master->fsi, I2C_FSI_STAT,
-@@ -608,13 +601,13 @@ static int fsi_i2c_wait(struct fsi_i2c_port *port, struct i2c_msg *msg,
- static int fsi_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
- 			int num)
- {
--	int i, rc;
--	unsigned long start_time;
- 	struct fsi_i2c_port *port = adap->algo_data;
--	struct fsi_i2c_master *master = port->master;
-+	unsigned long start_time;
- 	struct i2c_msg *msg;
-+	int rc;
-+	int i;
- 
--	mutex_lock(&master->lock);
-+	mutex_lock(&port->master->lock);
- 
- 	rc = fsi_i2c_set_port(port);
- 	if (rc)
-@@ -635,7 +628,7 @@ static int fsi_i2c_xfer(struct i2c_adapter *adap, struct i2c_msg *msgs,
- 	}
- 
- unlock:
--	mutex_unlock(&master->lock);
-+	mutex_unlock(&port->master->lock);
- 	return rc ? : num;
- }
- 
-@@ -681,8 +674,10 @@ static int fsi_i2c_probe(struct device *dev)
- 	struct fsi_i2c_master *i2c;
- 	struct fsi_i2c_port *port;
- 	struct device_node *np;
--	u32 port_no, ports, stat;
-+	u32 port_no;
-+	u32 ports;
- 	u32 lbus;
-+	u32 stat;
- 	int rc;
- 
- 	i2c = devm_kzalloc(dev, sizeof(*i2c), GFP_KERNEL);
-@@ -753,14 +748,14 @@ static int fsi_i2c_probe(struct device *dev)
- 	}
- 
- 	dev_set_drvdata(dev, i2c);
--
- 	return 0;
- }
- 
- static int fsi_i2c_remove(struct device *dev)
- {
- 	struct fsi_i2c_master *i2c = dev_get_drvdata(dev);
--	struct fsi_i2c_port *port, *tmp;
-+	struct fsi_i2c_port *port;
-+	struct fsi_i2c_port *tmp;
- 
- 	list_for_each_entry_safe(port, tmp, &i2c->ports, list) {
- 		list_del(&port->list);
--- 
-2.39.3
+
+My bot found new DT warnings on the .dts files added or changed in this
+series.
+
+Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
+are fixed by another series. Ultimately, it is up to the platform
+maintainer whether these warnings are acceptable or not.
+
+If you already ran DT checks and didn't see these error(s), then
+make sure dt-schema is up to date:
+
+  pip3 install dtschema --upgrade
+
+
+New warnings running 'make CHECK_DTBS=y marvell/armada-385-atl-x530.dtb' for 20240225213423.690561-1-chris.packham@alliedtelesis.co.nz:
+
+arch/arm/boot/dts/marvell/armada-385-atl-x530.dtb: soc: internal-regs: {'compatible': ['simple-bus'], '#address-cells': [[1]], '#size-cells': [[1]], 'ranges': [[0, 4026597376, 0, 1048576]], 'sdramc@1400': {'compatible': ['marvell,armada-xp-sdram-controller'], 'reg': [[5120, 1280]]}, 'cache-controller@8000': {'compatible': ['arm,pl310-cache'], 'reg': [[32768, 4096]], 'cache-unified': True, 'cache-level': [[2]], 'arm,double-linefill-incr': [[0]], 'arm,double-linefill-wrap': [[0]], 'arm,double-linefill': [[0]], 'prefetch-data': [[1]]}, 'scu@c000': {'compatible': ['arm,cortex-a9-scu'], 'reg': [[49152, 88]]}, 'timer@c200': {'compatible': ['arm,cortex-a9-global-timer'], 'reg': [[49664, 32]], 'interrupts': [[1, 11, 769]], 'clocks': [[4, 2]]}, 'timer@c600': {'compatible': ['arm,cortex-a9-twd-timer'], 'reg': [[50688, 32]], 'interrupts': [[1, 13, 769]], 'clocks': [[4, 2]]}, 'interrupt-controller@d000': {'compatible': ['arm,cortex-a9-gic'], '#interrupt-cells': [[3]], '#size-cells': [[0]], 'inte
+ rrupt-controller': True, 'reg': [[53248, 4096], [49408, 256]], 'phandle': [[3]]}, 'i2c@11000': {'compatible': ['marvell,mv78230-a0-i2c', 'marvell,mv64xxx-i2c'], 'reg': [[69632, 32]], '#address-cells': [[1]], '#size-cells': [[0]], 'interrupts': [[0, 2, 4]], 'clocks': [[4, 0]], 'status': ['okay'], 'pinctrl-names': ['default', 'gpio'], 'pinctrl-0': [[5]], 'clock-frequency': [[100000]], 'pinctrl-1': [[6]], 'scl-gpio': [[7, 2, 6]], 'sda-gpio': [[7, 3, 6]], 'mux@71': {'#address-cells': [[1]], '#size-cells': [[0]], 'compatible': ['nxp,pca9544'], 'reg': [[113]], 'i2c-mux-idle-disconnect': True, 'i2c@0': {'#address-cells': [[1]], '#size-cells': [[0]], 'reg': [[0]]}, 'i2c@1': {'#address-cells': [[1]], '#size-cells': [[0]], 'reg': [[1]], 'hwmon@2e': {'compatible': ['adi,adt7476'], 'reg': [[46]]}, 'hwmon@2d': {'compatible': ['adi,adt7476'], 'reg': [[45]]}}, 'i2c@2': {'#address-cells': [[1]], '#size-cells': [[0]], 'reg': [[2]], 'rtc@68': {'compatible': ['dallas,ds1340'], 'reg': [[104]]}}, 'i2c@3
+ ': {'#address-cells': [[1]], '#size-cells': [[0]], 'reg': [[3]], 'gpio@20': {'compatible': ['nxp,pca9554'], 'gpio-controller': True, '#gpio-cells': [[2]], 'reg': [[32]], 'phandle': [[23]]}}}}, 'i2c@11100': {'compatible': ['marvell,mv78230-a0-i2c', 'marvell,mv64xxx-i2c'], 'reg': [[69888, 32]], '#address-cells': [[1]], '#size-cells': [[0]], 'interrupts': [[0, 3, 4]], 'clocks': [[4, 0]], 'status': ['disabled']}, 'serial@12000': {'compatible': ['marvell,armada-38x-uart', 'ns16550a'], 'reg': [[73728, 256]], 'reg-shift': [[2]], 'interrupts': [[0, 12, 4]], 'reg-io-width': [[1]], 'clocks': [[4, 0]], 'status': ['okay'], 'pinctrl-names': ['default'], 'pinctrl-0': [[8]]}, 'serial@12100': {'compatible': ['marvell,armada-38x-uart', 'ns16550a'], 'reg': [[73984, 256]], 'reg-shift': [[2]], 'interrupts': [[0, 13, 4]], 'reg-io-width': [[1]], 'clocks': [[4, 0]], 'status': ['disabled']}, 'pinctrl@18000': {'reg': [[98304, 32]], 'compatible': ['marvell,mv88f6820-pinctrl'], 'phandle': [[9]], 'ge-rgmii-pin
+ s-0': {'marvell,pins': ['mpp6', 'mpp7', 'mpp8', 'mpp9', 'mpp10', 'mpp11', 'mpp12', 'mpp13', 'mpp14', 'mpp15', 'mpp16', 'mpp17'], 'marvell,function': ['ge0']}, 'ge-rgmii-pins-1': {'marvell,pins': ['mpp21', 'mpp27', 'mpp28', 'mpp29', 'mpp30', 'mpp31', 'mpp32', 'mpp37', 'mpp38', 'mpp39', 'mpp40', 'mpp41'], 'marvell,function': ['ge1']}, 'i2c-pins-0': {'marvell,pins': ['mpp2', 'mpp3'], 'marvell,function': ['i2c0'], 'phandle': [[5]]}, 'mdio-pins': {'marvell,pins': ['mpp4', 'mpp5'], 'marvell,function': ['ge']}, 'ref-clk-pins-0': {'marvell,pins': ['mpp45'], 'marvell,function': ['ref']}, 'ref-clk-pins-1': {'marvell,pins': ['mpp46'], 'marvell,function': ['ref']}, 'spi-pins-0': {'marvell,pins': ['mpp22', 'mpp23', 'mpp24', 'mpp25'], 'marvell,function': ['spi0']}, 'spi-pins-1': {'marvell,pins': ['mpp56', 'mpp57', 'mpp58', 'mpp59'], 'marvell,function': ['spi1'], 'phandle': [[17]]}, 'nand-pins': {'marvell,pins': ['mpp22', 'mpp34', 'mpp23', 'mpp33', 'mpp38', 'mpp28', 'mpp40', 'mpp42', 'mpp35', 'mpp
+ 36', 'mpp25', 'mpp30', 'mpp32'], 'marvell,function': ['dev']}, 'nand-rb': {'marvell,pins': ['mpp41'], 'marvell,function': ['nand']}, 'uart-pins-0': {'marvell,pins': ['mpp0', 'mpp1'], 'marvell,function': ['ua0'], 'phandle': [[8]]}, 'uart-pins-1': {'marvell,pins': ['mpp19', 'mpp20'], 'marvell,function': ['ua1']}, 'sdhci-pins': {'marvell,pins': ['mpp48', 'mpp49', 'mpp50', 'mpp52', 'mpp53', 'mpp54', 'mpp55', 'mpp57', 'mpp58', 'mpp59'], 'marvell,function': ['sd0']}, 'sata-pins-0': {'marvell,pins': ['mpp20'], 'marvell,function': ['sata0']}, 'sata-pins-1': {'marvell,pins': ['mpp19'], 'marvell,function': ['sata1']}, 'sata-pins-2': {'marvell,pins': ['mpp47'], 'marvell,function': ['sata2']}, 'sata-pins-3': {'marvell,pins': ['mpp44'], 'marvell,function': ['sata3']}, 'i2s-pins': {'marvell,pins': ['mpp48', 'mpp49', 'mpp50', 'mpp51', 'mpp52', 'mpp53'], 'marvell,function': ['audio']}, 'spdif-pins': {'marvell,pins': ['mpp51'], 'marvell,function': ['audio']}, 'i2c-gpio-pins-0': {'marvell,pins': ['mp
+ p2', 'mpp3'], 'marvell,function': ['gpio'], 'phandle': [[6]]}}, 'gpio@18100': {'compatible': ['marvell,armada-370-gpio', 'marvell,orion-gpio'], 'reg': [[98560, 64], [98752, 8]], 'reg-names': ['gpio', 'pwm'], 'ngpios': [[32]], 'gpio-controller': True, 'gpio-ranges': [[9, 0, 0, 32]], '#gpio-cells': [[2]], '#pwm-cells': [[2]], 'interrupt-controller': True, '#interrupt-cells': [[2]], 'interrupts': [[0, 53, 4], [0, 54, 4], [0, 55, 4], [0, 56, 4]], 'clocks': [[4, 0]], 'phandle': [[7]]}, 'gpio@18140': {'compatible': ['marvell,armada-370-gpio', 'marvell,orion-gpio'], 'reg': [[98624, 64], [98760, 8]], 'reg-names': ['gpio', 'pwm'], 'ngpios': [[28]], 'gpio-controller': True, 'gpio-ranges': [[9, 0, 32, 28]], '#gpio-cells': [[2]], '#pwm-cells': [[2]], 'interrupt-controller': True, '#interrupt-cells': [[2]], 'interrupts': [[0, 58, 4], [0, 59, 4], [0, 60, 4], [0, 61, 4]], 'clocks': [[4, 0]], 'phandle': [[19]]}, 'system-controller@18200': {'compatible': ['marvell,armada-380-system-controller', 'mar
+ vell,armada-370-xp-system-controller'], 'reg': [[98816, 256]]}, 'clock-gating-control@18220': {'compatible': ['marvell,armada-380-gating-clock'], 'reg': [[98848, 4]], 'clocks': [[4, 0]], '#clock-cells': [[1]], 'phandle': [[11]]}, 'phy@18300': {'compatible': ['marvell,armada-380-comphy'], 'reg-names': ['comphy', 'conf'], 'reg': [[99072, 256], [99424, 4]], '#address-cells': [[1]], '#size-cells': [[0]], 'phy@0': {'reg': [[0]], '#phy-cells': [[1]]}, 'phy@1': {'reg': [[1]], '#phy-cells': [[1]]}, 'phy@2': {'reg': [[2]], '#phy-cells': [[1]]}, 'phy@3': {'reg': [[3]], '#phy-cells': [[1]]}, 'phy@4': {'reg': [[4]], '#phy-cells': [[1]]}, 'phy@5': {'reg': [[5]], '#phy-cells': [[1]]}}, 'mvebu-sar@18600': {'compatible': ['marvell,armada-380-core-clock'], 'reg': [[99840, 4]], '#clock-cells': [[1]], 'phandle': [[4]]}, 'mbus-controller@20000': {'compatible': ['marvell,mbus-controller'], 'reg': [[131072, 256], [131456, 32], [131664, 8]], 'phandle': [[2]]}, 'interrupt-controller@20a00': {'compatible': 
+ ['marvell,mpic'], 'reg': [[133632, 720], [135280, 88]], '#interrupt-cells': [[1]], '#size-cells': [[1]], 'interrupt-controller': True, 'msi-controller': True, 'interrupts': [[1, 15, 4]], 'phandle': [[1]]}, 'timer@20300': {'compatible': ['marvell,armada-380-timer', 'marvell,armada-xp-timer'], 'reg': [[131840, 48], [135232, 48]], 'interrupts-extended': [[3, 0, 8, 4], [3, 0, 9, 4], [3, 0, 10, 4], [3, 0, 11, 4], [1, 5], [1, 6]], 'clocks': [[4, 2], [10]], 'clock-names': ['nbclk', 'fixed']}, 'watchdog@20300': {'compatible': ['marvell,armada-380-wdt'], 'reg': [[131840, 52], [132868, 4], [98912, 4]], 'clocks': [[4, 2], [10]], 'clock-names': ['nbclk', 'fixed'], 'interrupts-extended': [[3, 0, 64, 4], [3, 0, 9, 4]]}, 'cpurst@20800': {'compatible': ['marvell,armada-370-cpu-reset'], 'reg': [[133120, 16]]}, 'mpcore-soc-ctrl@20d20': {'compatible': ['marvell,armada-380-mpcore-soc-ctrl'], 'reg': [[134432, 108]]}, 'coherency-fabric@21010': {'compatible': ['marvell,armada-380-coherency-fabric'], 'reg'
+ : [[135184, 28]]}, 'pmsu@22000': {'compatible': ['marvell,armada-380-pmsu'], 'reg': [[139264, 4096]]}, 'ethernet@70000': {'compatible': ['marvell,armada-370-neta'], 'reg': [[458752, 16384]], 'interrupts-extended': [[1, 8]], 'clocks': [[11, 4]], 'tx-csum-limit': [[9800]], 'status': ['disabled']}, 'ethernet@30000': {'compatible': ['marvell,armada-370-neta'], 'reg': [[196608, 16384]], 'interrupts-extended': [[1, 10]], 'clocks': [[11, 3]], 'status': ['disabled']}, 'ethernet@34000': {'compatible': ['marvell,armada-370-neta'], 'reg': [[212992, 16384]], 'interrupts-extended': [[1, 12]], 'clocks': [[11, 2]], 'status': ['disabled']}, 'usb@58000': {'compatible': ['marvell,orion-ehci'], 'reg': [[360448, 1280]], 'interrupts': [[0, 18, 4]], 'clocks': [[11, 18]], 'status': ['okay']}, 'xor@60800': {'compatible': ['marvell,armada-380-xor', 'marvell,orion-xor'], 'reg': [[395264, 256], [395776, 256]], 'clocks': [[11, 22]], 'status': ['okay'], 'xor00': {'interrupts': [[0, 22, 4]], 'dmacap,memcpy': Tru
+ e, 'dmacap,xor': True}, 'xor01': {'interrupts': [[0, 23, 4]], 'dmacap,memcpy': True, 'dmacap,xor': True, 'dmacap,memset': True}}, 'xor@60900': {'compatible': ['marvell,armada-380-xor', 'marvell,orion-xor'], 'reg': [[395520, 256], [396032, 256]], 'clocks': [[11, 28]], 'status': ['okay'], 'xor10': {'interrupts': [[0, 65, 4]], 'dmacap,memcpy': True, 'dmacap,xor': True}, 'xor11': {'interrupts': [[0, 66, 4]], 'dmacap,memcpy': True, 'dmacap,xor': True, 'dmacap,memset': True}}, 'mdio@72004': {'#address-cells': [[1]], '#size-cells': [[0]], 'compatible': ['marvell,orion-mdio'], 'reg': [[466948, 4]], 'clocks': [[11, 4]]}, 'crypto@90000': {'compatible': ['marvell,armada-38x-crypto'], 'reg': [[589824, 65536]], 'reg-names': ['regs'], 'interrupts': [[0, 19, 4], [0, 20, 4]], 'clocks': [[11, 23], [11, 21], [11, 14], [11, 16]], 'clock-names': ['cesa0', 'cesa1', 'cesaz0', 'cesaz1'], 'marvell,crypto-srams': [[12, 13]], 'marvell,crypto-sram-size': [[2048]]}, 'rtc@a3800': {'compatible': ['marvell,armada
+ -380-rtc'], 'reg': [[669696, 32], [99488, 12]], 'reg-names': ['rtc', 'rtc-soc'], 'interrupts': [[0, 21, 4]]}, 'sata@a8000': {'compatible': ['marvell,armada-380-ahci'], 'reg': [[688128, 8192]], 'interrupts': [[0, 26, 4]], 'clocks': [[11, 15]], 'status': ['disabled']}, 'bm@c8000': {'compatible': ['marvell,armada-380-neta-bm'], 'reg': [[819200, 172]], 'clocks': [[11, 13]], 'internal-mem': [[14]], 'status': ['disabled']}, 'sata@e0000': {'compatible': ['marvell,armada-380-ahci'], 'reg': [[917504, 8192]], 'interrupts': [[0, 28, 4]], 'clocks': [[11, 30]], 'status': ['disabled']}, 'clock@e4250': {'compatible': ['marvell,armada-380-corediv-clock'], 'reg': [[934480, 12]], '#clock-cells': [[1]], 'clocks': [[15]], 'clock-output-names': ['nand'], 'phandle': [[16]]}, 'thermal@e8078': {'compatible': ['marvell,armada380-thermal'], 'reg': [[934008, 4], [934000, 8]], 'status': ['okay']}, 'nand-controller@d0000': {'compatible': ['marvell,armada370-nand-controller'], 'reg': [[851968, 84]], '#address-ce
+ lls': [[1]], '#size-cells': [[0]], 'interrupts': [[0, 84, 4]], 'clocks': [[16, 0]], 'status': ['okay'], 'nand@0': {'reg': [[0]], 'label': ['pxa3xx_nand-0'], 'nand-rb': [[0]], 'nand-on-flash-bbt': True, 'nand-ecc-strength': [[4]], 'nand-ecc-step-size': [[512]], 'marvell,nand-enable-arbiter': True, 'partitions': {'compatible': ['fixed-partitions'], '#address-cells': [[1]], '#size-cells': [[1]], 'partition@0': {'reg': [[0, 251658240]], 'label': ['user']}, 'partition@f000000': {'reg': [[251658240, 8388608]], 'label': ['errlog']}, 'partition@f800000': {'reg': [[260046848, 8388608]], 'label': ['nand-bbt']}}}}, 'sdhci@d8000': {'compatible': ['marvell,armada-380-sdhci'], 'reg-names': ['sdhci', 'mbus', 'conf-sdio3'], 'reg': [[884736, 4096], [901120, 256], [99412, 4]], 'interrupts': [[0, 25, 4]], 'clocks': [[11, 17]], 'mrvl,clk-delay-cycles': [[31]], 'status': ['disabled']}, 'audio-controller@e8000': {'#sound-dai-cells': [[1]], 'compatible': ['marvell,armada-380-audio'], 'reg': [[950272, 1638
+ 4], [99344, 12], [98820, 4]], 'reg-names': ['i2s_regs', 'pll_regs', 'soc_ctrl'], 'interrupts': [[0, 75, 4]], 'clocks': [[11, 0]], 'clock-names': ['internal'], 'status': ['disabled']}, 'usb3@f0000': {'compatible': ['marvell,armada-380-xhci'], 'reg': [[983040, 16384], [999424, 16384]], 'interrupts': [[0, 16, 4]], 'clocks': [[11, 9]], 'status': ['disabled']}, 'usb3@f8000': {'compatible': ['marvell,armada-380-xhci'], 'reg': [[1015808, 16384], [1032192, 16384]], 'interrupts': [[0, 17, 4]], 'clocks': [[11, 10]], 'status': ['disabled']}} should not be valid under {'type': 'object'}
+	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
+
+
+
+
 
 
