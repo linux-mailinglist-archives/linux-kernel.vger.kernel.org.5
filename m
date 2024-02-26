@@ -1,53 +1,64 @@
-Return-Path: <linux-kernel+bounces-80454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4245186688F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CBA66866894
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 04:20:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412A21C213F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:19:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 073001C215AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 03:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BB014F61;
-	Mon, 26 Feb 2024 03:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DA81401B;
+	Mon, 26 Feb 2024 03:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nkdIayy8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="lO5wNnL/"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA7BA14263
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 03:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3490C11737;
+	Mon, 26 Feb 2024 03:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708917562; cv=none; b=d3jX2Tipey6aVmBCkqhfARa+kcndWw984x5m3ixhfxn0gfQAQDa/ABLb++DWqvTNbchzfOotOq0LFisGOYCJG4/bKVqltgPGkLyFozaofxC609IbpsDdK5ihXdqv5LDG2ZKydgFPqhMQMAdRtQk6QCsEC4IuPQMFeQCngkhB9VA=
+	t=1708917626; cv=none; b=tiLKols6PNHfTUT5S+iCSOVapra+NqGh/S9x0m5BWbq21ftcaaT9aqHWdofP/UgJ6H4Jl4rx+cEP+T+rEOpkiRGCOz2Co43vjZBlqFJzutb1MoMpU/hF+TCn7JCIeB69GjPkIlXbIOeG9MgB6zWcCoYYOEHiqKrasBtuUTjKflI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708917562; c=relaxed/simple;
-	bh=Sz0jqU0v0tnHzoX+q1gyX1BWNEr6Uw1vZ878UbaRw+A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OdDDH8DOpZFSqiuQXlV1q7YdRInld3W6fz4bD5gAOyagnYsKTqy5tpkGgKK6LEF/ww3Mj4fdW5MsklJ+RZ+ufpi31nRvgvqYnZWTbjsw/q1OUKc3wNwk59cBikekxiVPPxjy6L5zxxh64ggE2JnsVimBQHjAqMiNbripqMb96mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nkdIayy8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F7B5C433F1;
-	Mon, 26 Feb 2024 03:19:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708917562;
-	bh=Sz0jqU0v0tnHzoX+q1gyX1BWNEr6Uw1vZ878UbaRw+A=;
-	h=From:To:Cc:Subject:Date:From;
-	b=nkdIayy8WuuXHCfivhW41LDvhKRAvve89Ehr0XoCveRNsV4v4Kelo/ZpsOlV/Eg+r
-	 PxoMAuAfgTgOaNX2ibsqQyn0Qz6pgcjNxO3ScsvOQzXVFcUhTMpVV31pG2GelcA8RO
-	 wANUevdAV3n5yqwv0PiSMc7qA90+P265iqNOWlxyXIqonAGCoCcF96MIjgzndLcZ4d
-	 IO5+xAcdzr7BWd+M0c91iM7LAh0HMaYWwpN2q5g1VFBYc9D8l1KyDHXlmOB+0EMI60
-	 pBGfV+D0Bt4GZiqpJbXHeKqgh//InS4JpPxDQusj6OaMacfBQgVYkasLDzpXiHq8nF
-	 Zv8nuxqfAbijg==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH] f2fs: fix to check return value in f2fs_insert_range()
-Date: Mon, 26 Feb 2024 11:19:16 +0800
-Message-Id: <20240226031916.2420870-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1708917626; c=relaxed/simple;
+	bh=qNyxXNVKh3rYR+lfM0KuOhVs8XEV+DHoZej5cgSnoF4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A7oaPVJoDeaHt3kBtHDBbgP69Nxphf0fnxrhCFXsYX+g9v6NP11Ro3UWOxrpSa0sXofyrOOXVoJlfFJFUWG+8OG3zmJQiFTKKTAVjmCRyNdEEnBAF+wfYpQmM6oRWk1DgE9Ly2JZNUBRhFysmJq56v+f7S9CU8hW35TxBOw/nPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=lO5wNnL/; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from localhost.localdomain (ppp118-210-168-240.adl-adc-lon-bras34.tpg.internode.on.net [118.210.168.240])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id C384A2014E;
+	Mon, 26 Feb 2024 11:20:10 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1708917614;
+	bh=LNLPAUiRFnZl/7VHr8STDz7uh32Y54i1QIk4cgSLlRM=;
+	h=From:To:Cc:Subject:Date;
+	b=lO5wNnL/oJkFpK7pr0cijMRFZxr4Dnou6xRPTIB7bjv+v5iAQtbt2mAZw7TkqZadJ
+	 C9/nLWyAw8QBnFfpkAMkNrLQT+jKY1WvOJ4skySh4O/lCXze70qwc9kjkjjKag2Kce
+	 Sjs1rvcK8IBcbmp3YZus2BD8ppszTSt0U6sIWZ2oXJNZtkU5BgXZ+XP/OUIkQtJyMh
+	 FzsFfRaJiwd+ET6IT536vzo3BM7qUqP5ifDmp3G+Kj/Att/olv8rpwouOHvCaCos4D
+	 R7Vm7DskK1PBOELGnpFUkEkog9MEG/Mr4udmfZf6q/U+dKf5++ifyrghgvsoWRY8LP
+	 opkZEfKKS4gdA==
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: linus.walleij@linaro.org,
+	brgl@bgdev.pl,
+	krzysztof.kozlowski+dt@linaro.org
+Cc: Andrew Jeffery <andrew@codeconstruct.com.au>,
+	robh+dt@kernel.org,
+	conor+dt@kernel.org,
+	joel@jms.id.au,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT schema
+Date: Mon, 26 Feb 2024 13:49:51 +1030
+Message-Id: <20240226031951.284847-1-andrew@codeconstruct.com.au>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,36 +67,150 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-In f2fs_insert_range(), it missed to check return value of
-filemap_write_and_wait_range(), fix it.
+Squash warnings such as:
 
-Meanwhile, just return error number once __exchange_data_block()
-fails.
+```
+arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,ast2400-gpio']
+```
 
-Signed-off-by: Chao Yu <chao@kernel.org>
+Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 ---
- fs/f2fs/file.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+v2: Address feedback from Krzysztof:
+    https://lore.kernel.org/all/0d1dd262-b6dd-4d71-9239-8b0aec8cceff@linaro.org/
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 6ddc2092842b..0a80fdf0cdb8 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -1679,10 +1679,12 @@ static int f2fs_insert_range(struct inode *inode, loff_t offset, loff_t len)
- 	}
- 	filemap_invalidate_unlock(mapping);
- 	f2fs_up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-+	if (ret)
-+		return ret;
- 
- 	/* write out all moved pages, if possible */
- 	filemap_invalidate_lock(mapping);
--	filemap_write_and_wait_range(mapping, offset, LLONG_MAX);
-+	ret = filemap_write_and_wait_range(mapping, offset, LLONG_MAX);
- 	truncate_pagecache(inode, offset);
- 	filemap_invalidate_unlock(mapping);
- 
+v1: https://lore.kernel.org/all/20240220052918.742793-1-andrew@codeconstruct.com.au/
+
+ .../bindings/gpio/aspeed,ast2400-gpio.yaml    | 73 +++++++++++++++++++
+ .../devicetree/bindings/gpio/gpio-aspeed.txt  | 39 ----------
+ 2 files changed, 73 insertions(+), 39 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
+
+diff --git a/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
+new file mode 100644
+index 000000000000..74d376567dfc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
+@@ -0,0 +1,73 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/aspeed,ast2400-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Aspeed GPIO controller
++
++maintainers:
++  - Andrew Jeffery <andrew@codeconstruct.com.au>
++
++properties:
++  compatible:
++    enum:
++      - aspeed,ast2400-gpio
++      - aspeed,ast2500-gpio
++      - aspeed,ast2600-gpio
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++    description: The clock to use for debounce timings
++
++  "#gpio-cells":
++    const: 2
++
++  gpio-controller: true
++  gpio-line-names: true
++  gpio-ranges: true
++
++  interrupts:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++  ngpios: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - "#interrupt-cells"
++  - "#gpio-cells"
++  - gpio-controller
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: aspeed,ast2600-gpio
++    then:
++      required:
++        - ngpios
++
++additionalProperties: false
++
++examples:
++  - |
++    gpio@1e780000 {
++        compatible = "aspeed,ast2400-gpio";
++        reg = <0x1e780000 0x1000>;
++        interrupts = <20>;
++        interrupt-controller;
++        #gpio-cells = <2>;
++        gpio-controller;
++    };
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt b/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
+deleted file mode 100644
+index b2033fc3a71a..000000000000
+--- a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
++++ /dev/null
+@@ -1,39 +0,0 @@
+-Aspeed GPIO controller Device Tree Bindings
+--------------------------------------------
+-
+-Required properties:
+-- compatible		: Either "aspeed,ast2400-gpio", "aspeed,ast2500-gpio",
+-					or "aspeed,ast2600-gpio".
+-
+-- #gpio-cells 		: Should be two
+-			  - First cell is the GPIO line number
+-			  - Second cell is used to specify optional
+-			    parameters (unused)
+-
+-- reg			: Address and length of the register set for the device
+-- gpio-controller	: Marks the device node as a GPIO controller.
+-- interrupts		: Interrupt specifier (see interrupt bindings for
+-			  details)
+-- interrupt-controller	: Mark the GPIO controller as an interrupt-controller
+-
+-Optional properties:
+-
+-- clocks		: A phandle to the clock to use for debounce timings
+-- ngpios		: Number of GPIOs controlled by this controller. Should	be set
+-				  when there are multiple GPIO controllers on a SoC (ast2600).
+-
+-The gpio and interrupt properties are further described in their respective
+-bindings documentation:
+-
+-- Documentation/devicetree/bindings/gpio/gpio.txt
+-- Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+-
+-  Example:
+-	gpio@1e780000 {
+-		#gpio-cells = <2>;
+-		compatible = "aspeed,ast2400-gpio";
+-		gpio-controller;
+-		interrupts = <20>;
+-		reg = <0x1e780000 0x1000>;
+-		interrupt-controller;
+-	};
 -- 
-2.40.1
+2.39.2
 
 
