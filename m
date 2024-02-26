@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-80624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C49D866A91
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:17:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC745866A92
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:17:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D644B2830A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:17:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0AD31C22139
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:17:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8774F1BDDC;
-	Mon, 26 Feb 2024 07:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FFAA1BF31;
+	Mon, 26 Feb 2024 07:17:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eh/zTpMj"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SsKEUzjr"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135421BDCE
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5EA91BF32
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 07:17:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708931846; cv=none; b=mqtiF8Om7IefubhjQQAjt1wrSHJb0yjBKncrGNLpjL1BQgTXuVKzFku8CdYkQmUcKm5I9VGchEWj03nlQLRsA/EK9NxK15bnSypdGQzX56AM/w7NlHN787ksz6+v08+ypOgFUJAxaqjpq8/ziLT0EzNz0qbODzepUTaWqchO0og=
+	t=1708931858; cv=none; b=e+ZZx+PdFnsXMjgOF6xnki4+D/+07FNlPRDPOXHt76fIrjS5W1EZba2JzE6sXMnmXSdKzZ4OQzJW6kiw8cyZw/OiSx1FX3okCssZM61hXzunHtJtJMzGT0u7ftGwKtTy5bFHXzTc+HSYfMmArwyTkocQRDzHBLHiI57Vb7+nqp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708931846; c=relaxed/simple;
-	bh=ucckgSOFyNGAD71GImELPlLiNz/cyKuMdiKGJfp0rsE=;
+	s=arc-20240116; t=1708931858; c=relaxed/simple;
+	bh=7sfpJWS9yPEcYUznneT54gTGOkhkzWcS3MlVJwC5QmY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=myf4spc14Dcl1r03NJqPwIAyuWOu75lBEJ+VDelV1GDAqo+fGIUtjMXHZgRba3M59+NGBijjMj3jKwvJO08+/gjaOpi8rYPV2sit3os3Dkj/KCTPajiqfJxAvnnK+sryR0AfpOsh7UUMGT35sdG+/h46QUIT1/bNSCX9O7YIYUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eh/zTpMj; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a43488745bcso85274566b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 23:17:24 -0800 (PST)
+	 In-Reply-To:Content-Type; b=aQd9JezWefDXVk0cR+6xOj4UNajpaxd/f09glGrSwOwMN148bIFEMzDtGp7vy18kuO/27u0EgUfeo6XjCTDkycGbWxmEmJiUz+y1rE9ppxsa/YQicXrYyhMIdA1tanzSKSem81ps+Q1d6UST+Wx0k5rHCj3g/EWGh22Jb77NlyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SsKEUzjr; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d28e465655so4195651fa.0
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Feb 2024 23:17:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708931843; x=1709536643; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=suse.com; s=google; t=1708931852; x=1709536652; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0g03u1s+WIMxU4mUB9e4yrRu7++EFeFGmo3Xm+rO86w=;
-        b=eh/zTpMjAcSujAJUCVw22wVFRAzfSPKiSJPCNBScjGe7Ke8o7v+5edH+rL2uwsaKP+
-         lLctGczWSyfWf6aIm1iQmFI4G5lyeZ8XRiHSIrRBv8xe4Lfr6H+4KwDFANG+Q1ElZTfw
-         QXN2MUBOjDZqW25ibsD7MvYvjGVKgqSNGbCKiDpC92mqNESvFZoroaGHotu0Q3YfFdU+
-         DLu5x6sH849r3WPDuGBUOUPs/sESrIzrQ1YIyPQJ4T+LoE+ZGC0lj9ZnnLf62HG4u7ay
-         oli1MH1tQaAtdvxCiLoAwU6iH2Dx0PRmg/hJEM8SDWckpB2MEfd94krkMr263rIOHa4y
-         fD0Q==
+        bh=VmJnXk1/5f8SOZerX82dTM0usf0ZpJTmSgAlaoo8GNo=;
+        b=SsKEUzjrtD6zcBMNJM3kFtm894smD71humpOYxZOdFvJCBcWZJ6jW5JAEfbrC8SfGh
+         JDKVwK8mfOTifRELahVhNASVlTs4cTPup7mrRdaY2EmTN6eF+ElIUYsnGXrP2X9llrng
+         FtfIBd1Wupuv+B4MUp7xt1f5uVEX2G/O++KyAz8lHeTC5L0k1v7nSrIFtZFM6tSvw48Y
+         8ze8q1QN+ag1m09pEFeNOWFrjKEekWKKR8t3WiF9YJPG7AQrb675U2iRdnNQE8kJaIGd
+         SDBHnpb/886P6QQECkn6nXSzKRm4K3rceNWGZ9iNptVze4N/LKDUlq+OY44wT2HnwljF
+         JH8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708931843; x=1709536643;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1708931852; x=1709536652;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0g03u1s+WIMxU4mUB9e4yrRu7++EFeFGmo3Xm+rO86w=;
-        b=wttxaNtUzBQKusrXpxjC+xwmAYf2hCuV9kHMZWuNINTHk2+WANARr2V5aqt5ZGqT7d
-         DjGCJGFCiN+US29VDC0RJaxC7MQl3xQm1ZKHpgoG3awB9pR/6otF8Jv/7L4MRYEY2Ns/
-         eQ4+FWmjd3ZfvIQhS4+57xwBYCAza4QV40cwPdfXnF/8lDpQyyXMHuSwRZDsYPW4HusV
-         v0RQ0GWSoiHrF6BquXSAG/DQa3xKiyLvceXyX83jxxsGTZCRHkyGkJLjDWB3pFT4g9XJ
-         PYt94YDxY+WA3vp4VGvSlOreqkNUoYQuV88SIKiafX/0V5wmKlpQY898KfxGLs9q2SQH
-         xNQA==
-X-Forwarded-Encrypted: i=1; AJvYcCXzemeYMG+/yitmynfVTjf4vPMQcj6owoDsV0Sz5z+xg9+jD2ydrXY/k9xKJ2gjMu/Abihj785On6aoCNGjgsj5Mi2Tjcaw0OyQW7FI
-X-Gm-Message-State: AOJu0Yz3RXGcZXrtN1Y1k5RG1ULH0EzHDrryffFM/rE9PvXBlywBaT2v
-	bHN3+dC96dL1bXEOrpeSvI4eFebE9gE3YL00/umlDZCFW5M7qQj2RkC0XSJfKbg=
-X-Google-Smtp-Source: AGHT+IEyDhHqsELFHuwsRH0VwGM7sGgwsNL+Qrrmskzr6fTyly/d2MSggcJ6fWyiJr3Sj2rFEWrAag==
-X-Received: by 2002:a17:906:af09:b0:a43:80e6:eed7 with SMTP id lx9-20020a170906af0900b00a4380e6eed7mr46916ejb.6.1708931843408;
-        Sun, 25 Feb 2024 23:17:23 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id vx8-20020a170907a78800b00a4329670e9csm1169855ejc.126.2024.02.25.23.17.22
+        bh=VmJnXk1/5f8SOZerX82dTM0usf0ZpJTmSgAlaoo8GNo=;
+        b=oaCW5j/vBDeFF3LOsUTr2SdZ0fYVxyNby2gt6OwvBq/bwdi9/AsJacVjN2taddMyye
+         9yNi7cjMOLPX5NAupH6T5nWpSwhcJ+dfX6TtXk7W5rTifRqOxKs5MZq5bTBimvmmlVpO
+         fNLKWdpzZuc+6WqmXIIQ7Oay53LUIntrIyfdEXvE8sOHA6weDVjoMyqvFJfpGfYH6rXB
+         dQZhNxCKwlF1KqSQQ/r3WglRFycd+oZIGAuLvT96CGCsn1QIp/8YLOLtrod0sPblHJfQ
+         YBpN4bl7J+K4KU3lBR5ayH2CusROlPVzz/uo1QYKh4icSsK6iQ8cYAbUS09gUDtGAvHm
+         AjMA==
+X-Gm-Message-State: AOJu0YybXbwVpZZPAEjSlaFM0Wx8yAAWHpoOeN1GQC7XDc0HWex63QUo
+	fOPnFLNP9+LnBuvo5ldXSiocGj1nms6x2yoTlD6m2MYCiB2QSBkRHdivUW+4Zce/c3HzUkyq5N3
+	t
+X-Google-Smtp-Source: AGHT+IHivNcDPpisQuQQoRU+uq/yKg2tzhPXkpZXJs8rsL0iMkzFBrJhFnJyQDma7oT61Q10dLwLMA==
+X-Received: by 2002:a2e:3c1a:0:b0:2d2:4866:b5b0 with SMTP id j26-20020a2e3c1a000000b002d24866b5b0mr3209661lja.39.1708931852527;
+        Sun, 25 Feb 2024 23:17:32 -0800 (PST)
+Received: from [192.168.0.20] (nborisov.ddns.nbis.net. [85.187.216.229])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05600c468f00b004128f41a13fsm7343911wmo.38.2024.02.25.23.17.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Feb 2024 23:17:22 -0800 (PST)
-Message-ID: <a1fa82f3-225a-4c4a-904e-4e8ee059ed77@linaro.org>
-Date: Mon, 26 Feb 2024 08:17:21 +0100
+        Sun, 25 Feb 2024 23:17:32 -0800 (PST)
+Message-ID: <6380ba8d-4e99-46e6-8d92-911d10963ba7@suse.com>
+Date: Mon, 26 Feb 2024 09:17:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,74 +75,158 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: nvmem: fix tlv layout I2C eeprom example
+Subject: Re: [tip: x86/urgent] x86/bugs: Add asm helpers for executing VERW
 Content-Language: en-US
-To: Tobias Schramm <t.schramm@manjaro.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240226021017.1470869-1-t.schramm@manjaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240226021017.1470869-1-t.schramm@manjaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org
+Cc: Alyssa Milburn <alyssa.milburn@intel.com>,
+ Andrew Cooper <andrew.cooper3@citrix.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+References: <170839092792.398.3678407222202963581.tip-bot2@tip-bot2>
+From: Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <170839092792.398.3678407222202963581.tip-bot2@tip-bot2>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 26/02/2024 03:10, Tobias Schramm wrote:
-> 24Cxx eeproms are I2C devices, not SPI.
+
+
+On 20.02.24 г. 3:02 ч., tip-bot2 for Pawan Gupta wrote:
+> The following commit has been merged into the x86/urgent branch of tip:
 > 
-> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
+> Commit-ID:     baf8361e54550a48a7087b603313ad013cc13386
+> Gitweb:        https://git.kernel.org/tip/baf8361e54550a48a7087b603313ad013cc13386
+> Author:        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> AuthorDate:    Tue, 13 Feb 2024 18:21:35 -08:00
+> Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+> CommitterDate: Mon, 19 Feb 2024 16:31:33 -08:00
+> 
+> x86/bugs: Add asm helpers for executing VERW
+> 
+> MDS mitigation requires clearing the CPU buffers before returning to
+> user. This needs to be done late in the exit-to-user path. Current
+> location of VERW leaves a possibility of kernel data ending up in CPU
+> buffers for memory accesses done after VERW such as:
+> 
+>    1. Kernel data accessed by an NMI between VERW and return-to-user can
+>       remain in CPU buffers since NMI returning to kernel does not
+>       execute VERW to clear CPU buffers.
+>    2. Alyssa reported that after VERW is executed,
+>       CONFIG_GCC_PLUGIN_STACKLEAK=y scrubs the stack used by a system
+>       call. Memory accesses during stack scrubbing can move kernel stack
+>       contents into CPU buffers.
+>    3. When caller saved registers are restored after a return from
+>       function executing VERW, the kernel stack accesses can remain in
+>       CPU buffers(since they occur after VERW).
+> 
+> To fix this VERW needs to be moved very late in exit-to-user path.
+> 
+> In preparation for moving VERW to entry/exit asm code, create macros
+> that can be used in asm. Also make VERW patching depend on a new feature
+> flag X86_FEATURE_CLEAR_CPU_BUF.
+> 
+> Reported-by: Alyssa Milburn <alyssa.milburn@intel.com>
+> Suggested-by: Andrew Cooper <andrew.cooper3@citrix.com>
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Link: https://lore.kernel.org/all/20240213-delay-verw-v8-1-a6216d83edb7%40linux.intel.com
 > ---
+>   arch/x86/entry/entry.S               | 23 +++++++++++++++++++++++
+>   arch/x86/include/asm/cpufeatures.h   |  2 +-
+>   arch/x86/include/asm/nospec-branch.h | 13 +++++++++++++
+>   3 files changed, 37 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/entry/entry.S b/arch/x86/entry/entry.S
+> index 8c8d38f..0033790 100644
+> --- a/arch/x86/entry/entry.S
+> +++ b/arch/x86/entry/entry.S
+> @@ -6,6 +6,9 @@
+>   #include <linux/export.h>
+>   #include <linux/linkage.h>
+>   #include <asm/msr-index.h>
+> +#include <asm/unwind_hints.h>
+> +#include <asm/segment.h>
+> +#include <asm/cache.h>
+>   
+>   .pushsection .noinstr.text, "ax"
+>   
+> @@ -20,3 +23,23 @@ SYM_FUNC_END(entry_ibpb)
+>   EXPORT_SYMBOL_GPL(entry_ibpb);
+>   
+>   .popsection
+> +
+> +/*
+> + * Define the VERW operand that is disguised as entry code so that
+> + * it can be referenced with KPTI enabled. This ensure VERW can be
+> + * used late in exit-to-user path after page tables are switched.
+> + */
+> +.pushsection .entry.text, "ax"
+> +
+> +.align L1_CACHE_BYTES, 0xcc
+> +SYM_CODE_START_NOALIGN(mds_verw_sel)
+> +	UNWIND_HINT_UNDEFINED
+> +	ANNOTATE_NOENDBR
+> +	.word __KERNEL_DS
+> +.align L1_CACHE_BYTES, 0xcc
+> +SYM_CODE_END(mds_verw_sel);
+> +/* For KVM */
+> +EXPORT_SYMBOL_GPL(mds_verw_sel);
+> +
+> +.popsection
+> +
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index fdf723b..2b62cdd 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -95,7 +95,7 @@
+>   #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
+>   #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
+>   #define X86_FEATURE_AMD_LBR_V2		( 3*32+17) /* AMD Last Branch Record Extension Version 2 */
+> -/* FREE, was #define X86_FEATURE_LFENCE_RDTSC		( 3*32+18) "" LFENCE synchronizes RDTSC */
+> +#define X86_FEATURE_CLEAR_CPU_BUF	( 3*32+18) /* "" Clear CPU buffers using VERW */
+>   #define X86_FEATURE_ACC_POWER		( 3*32+19) /* AMD Accumulated Power Mechanism */
+>   #define X86_FEATURE_NOPL		( 3*32+20) /* The NOPL (0F 1F) instructions */
+>   #define X86_FEATURE_ALWAYS		( 3*32+21) /* "" Always-present feature */
+> diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+> index 262e655..077083e 100644
+> --- a/arch/x86/include/asm/nospec-branch.h
+> +++ b/arch/x86/include/asm/nospec-branch.h
+> @@ -315,6 +315,17 @@
+>   #endif
+>   .endm
+>   
+> +/*
+> + * Macro to execute VERW instruction that mitigate transient data sampling
+> + * attacks such as MDS. On affected systems a microcode update overloaded VERW
+> + * instruction to also clear the CPU buffers. VERW clobbers CFLAGS.ZF.
+> + *
+> + * Note: Only the memory operand variant of VERW clears the CPU buffers.
+> + */
+> +.macro CLEAR_CPU_BUFFERS
+> +	ALTERNATIVE "", __stringify(verw _ASM_RIP(mds_verw_sel)), X86_FEATURE_CLEAR_CPU_BUF
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Any particular reason why this uses RIP-relative vs an absolute address 
+mode? I know in our private exchange you said there is no significance 
+but for example older kernels have a missing relocation support in 
+alternatives. This of course can be worked around by slightly changing 
+the logic of the macro which means different kernels will have slightly 
+different macros. Relocation support landed in: 
+270a69c4485d7d07516d058bcc0473c90ee22185 (6.5)
 
-Best regards,
-Krzysztof
-
+> +.endm
+> +
+>   #else /* __ASSEMBLY__ */
+>   
+>   #define ANNOTATE_RETPOLINE_SAFE					\
+> @@ -536,6 +547,8 @@ DECLARE_STATIC_KEY_FALSE(switch_mm_cond_l1d_flush);
+>   
+>   DECLARE_STATIC_KEY_FALSE(mmio_stale_data_clear);
+>   
+> +extern u16 mds_verw_sel;
+> +
+>   #include <asm/segment.h>
+>   
+>   /**
+> 
 
