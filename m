@@ -1,92 +1,91 @@
-Return-Path: <linux-kernel+bounces-81077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F23866FE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:05:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 409C3866FF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:07:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27BE81F26DDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:05:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFAEF2886D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:07:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81A975FEEE;
-	Mon, 26 Feb 2024 09:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62738605D9;
+	Mon, 26 Feb 2024 09:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="CGosVka7"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ihutsKax"
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E155FDC8
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51351605BF;
+	Mon, 26 Feb 2024 09:43:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940490; cv=none; b=bLOO2PtJtFkN3qe2swsR6yZLyHoMGzVHsApTPSHnuLFr8/UxAmTSnd0jdqYe8WSFZ6E4XDh69Nx+ia5bmUHoxUGwAAvYKibQRqWgDpr41/CdJea4zVojpsSD9J2OCOyblXlQhKWoKQaJYBVALMPxDQX6Ug9DQb9uZmzBrqtq5mk=
+	t=1708940618; cv=none; b=evLA/jgf05MjEhAKtzEf3k4FKv4qWacZvqZFL2meMO6lw6tpdmXmytTXjOFC/yaqQp1S+ru+FP/ZuSZYXDw/HmN6ED2m0Iqb4gprSPT4O0FlOQVzZFfi1rK1smIlQl7W2p7krvTSnt3EUrRFO9buy7LfE6tHDIIXGBCJhsiiX4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940490; c=relaxed/simple;
-	bh=GVSij7Ng2ZnL6ItLte5S5qesoG2Gu5vTbGRvnRyWD94=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HhJWY8msBhlOezAdjuFStxL8D9qfdR+l/d9NfPNBXZO6iN2P8dhlJts76x9K8Iv/R6WmgMyr+oKOE6tWW3h0GLdoo8R8Dl3ZaC81Lm/p9bpa9HjH8yKzh707W5lgpK8Eeq8z5iU6XVRieQ2DL815pXVW+I3nhE8rZ9m5juKpY7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=CGosVka7; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e3ffafa708so2911769b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:41:29 -0800 (PST)
+	s=arc-20240116; t=1708940618; c=relaxed/simple;
+	bh=Pve/bSIlmcARf4qUjbNWYScv11fgtbnnRqedP2X1KB4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iBk7R6ZKtUkMtuUmrIabEmzITYG82YQcHYte9Z/NFIo5daoqsJAg9fG9m78d+MOqIxGqnjVGcvkhU/76yYSsuBGQYtP9FOtyFYcMeXkRfYH0yE7A3zwcHzBm9D5S+vHem3QSmm0zSM36wLP8cXjJzX0bBsHCu8xCXRp8cncYM4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ihutsKax; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e480fe439aso1512361a34.0;
+        Mon, 26 Feb 2024 01:43:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1708940489; x=1709545289; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708940616; x=1709545416; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lYE4VOh0Esz26qF5nAL3o0bNyOzXw7ZQ+0pcNpsCkTI=;
-        b=CGosVka7qjKnY0yXUtD2+62cpEv1B8Qhi+1DxsL2sdF7UyOq45eSF3NGmH12bPKjmI
-         41tjaSsU4mkqSagFIk63eyKyMxNYCe0CHq644jSJgVNddKoqyRXooeJ0/TvJCY3fFIMh
-         aaoeZXQaGO9mDUUbGBpppzK5kvPPymtCZbG8smCpwCcOaFtQt+/+MxGl0Tf0WYKjtafo
-         AMVtWfJULiR5JfTWhbrjXYN29/aCRfZycpfXmXDyO209XS+5jAIHwiB0YDnBmEhKAjIb
-         ZbAgugfeZHio/fm/SED3g7gXzspnXhwfnRRp7YUB8gM+9gt9wYfbVvj6OBcxFNjr3nuL
-         FyhQ==
+        bh=6VNsylMFMmdhai5j9YeBwLJQVh2MvMY/FXe9gb0gujA=;
+        b=ihutsKax5PX5JjG/qHabaTP14Datw4llWYd87Mh3ij/G+R7ygMO6nFYXrMK9TCQsj5
+         u8xNGtHRYnggi1P9NHfr/sNujAhDXQ1sNxjeRBybWzq9DanzSk37H0/tUxSGc5fe5Ijj
+         K2X63Qhducy29Yvm/ZPVsYtUfcWPBUPOfNWGJ20NXuAWrooVvC/DEF5xp3X7E1iy7mwb
+         T4jzNkJHzI9KomGiwqgI1pCWUl67krH/QDJ76pYHH9jmydpNdxlwynaimKmnJ4nATZtl
+         wgSQYvsHZFQg1D9Wm6igY1TWLc02GD0KhQfcJMvThoUhexqPssgwLoIkQ/ermhGo/+X3
+         21YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708940489; x=1709545289;
+        d=1e100.net; s=20230601; t=1708940616; x=1709545416;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lYE4VOh0Esz26qF5nAL3o0bNyOzXw7ZQ+0pcNpsCkTI=;
-        b=bFMk6tmVLIubQzhd0VlBSp/rjpWQbYicXA0Z8guYa8DR86IY94sm3XAWKXp4JWebFt
-         IJngzkElCd9nbQUhiZ3que0M1I0SPwXuR5qFHaUwxmRwHxqj416o4r59QDet3YR8fTAw
-         0AQA+GdKeFN7NOdqzyy6BklYoO6MDyPgbGt8vfiykfJRFK5+RnYvjoP2vkdjd32MMUaq
-         anKZTMaYl7b/H6g/sQ6jagfqb1srcrkVltRBGlJ8Yzs+iHGhi3xA6uL8IFGdKrtv1ZCF
-         1D/rMyWdZk61DBvcTcSHw6MlGxDRQ/1wCx49SsX+GjYRJOqsea34PvqdtzALsb/rKs/g
-         oBzA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMFkyMeXkq8RrTtfq9McgYD626p6P+24JEjZjUAnB7JopdwBD7vHRwuk894WpflNdle0LAN08mchMCo/VJ6Y3Zyxecfaj9dfEzBgE/
-X-Gm-Message-State: AOJu0Yz+56FzbDGc1/c0apBRylBHd99MzZ+sb7Bs3JtzHS9PdqYulqh5
-	GCn5CyADC6IBRBrlK+Eirpog/FsWMT3mZn0WesMV8ffITciyLrWn3pSkNG7ijUs=
-X-Google-Smtp-Source: AGHT+IGvZV8jHTxyMl8ODdufQaI3tZxW0Qibr0287grfFaY6EgP+oyydN3lDJlq23rMorsZ0fuDe2g==
-X-Received: by 2002:aa7:8edd:0:b0:6e4:1a29:7332 with SMTP id b29-20020aa78edd000000b006e41a297332mr6304473pfr.8.1708940488829;
-        Mon, 26 Feb 2024 01:41:28 -0800 (PST)
-Received: from C02CV19DML87.bytedance.net ([203.208.189.6])
-        by smtp.gmail.com with ESMTPSA id ls22-20020a056a00741600b006e533caee00sm949194pfb.155.2024.02.26.01.41.23
+        bh=6VNsylMFMmdhai5j9YeBwLJQVh2MvMY/FXe9gb0gujA=;
+        b=nv86EOay9nnruLjPvraaY6xrc4cbe7Yps5Qmaw4gu/Iud0x19MN4ZQDsvtNDFQs+A9
+         6t6DEUq4QOLfVTClUCPOVEM/Ehw9hg/fxqb/+rF8PP/DDnBtTvhkeSbRd2IVkvvJZ+aX
+         dBt9Ef8z9OHdShUdz1YPSYDKadFXQsdqYy8tT3+crWO0IbbpYKYZoCG0XzlKLSBFuwU4
+         7kGIdjZnVhMRKYOsz1HcnUrosE36sfL3hO8j2rPp0tWXtSMhUBed+H/3fG9HptLvviru
+         1DzNJqEROOsqva2YMGCCLmPJIpH0B7qCQ+u6fX/GUc9xpgy9J/RbLXpLzFElRvfsnzOt
+         9sCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXinLduFbRgwavR20T8eADa03QY1nBFBtM8XADhSQOlYkBdscjUKN7aWzK47BUow/dWQ2OjaDuoKHcFDo0di90VV8c6FGK61RuGFRCfTmDmfvXkr/Hf2qMoRUKo/iEpiy6YJQErVZ/DSt4iSQsYO9KcYzX1HchSzNOrUNwWAl7Q+NQoodXwwSRuYpTXepuARc5E7GkICxoCvY9xEGhhPBFL9nO7tzmKkE8=
+X-Gm-Message-State: AOJu0Yy8hqtq1pduCD4GTCk4BR5txyHzYdtoEXI7WTOgUCSE+xExV2kx
+	05c447XmV+0CBniGZCWGgTRhOjby4U6p1Vi/FaXJnzFfpWzQjqy5
+X-Google-Smtp-Source: AGHT+IEvtdQh+nOu/op95T7vu5tX8kKvdS9zJYMUhfDmlzVn9o/gBPLbQATjpRQLy/M0LsqNXjwpaw==
+X-Received: by 2002:a05:6359:4127:b0:17b:55f0:3bba with SMTP id kh39-20020a056359412700b0017b55f03bbamr8962252rwc.5.1708940616142;
+        Mon, 26 Feb 2024 01:43:36 -0800 (PST)
+Received: from localhost.localdomain ([115.187.42.119])
+        by smtp.gmail.com with ESMTPSA id y13-20020a62ce0d000000b006e4f1bdff29sm3799164pfg.1.2024.02.26.01.43.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 01:41:28 -0800 (PST)
-From: "$(name)" <qirui.001@bytedance.com>
-X-Google-Original-From: "$(name)" <$(mail address)>
-To: bp@alien8.de,
-	mingo@redhat.com,
-	tglx@linutronix.de,
-	hpa@zytor.com,
-	jpoimboe@redhat.com,
-	peterz@infradead.org,
-	mbenes@suse.cz,
-	gregkh@linuxfoundation.org,
-	stable@vger.kernel.org,
-	alexandre.chartre@oracle.com
-Cc: x86@kernel.org,
+        Mon, 26 Feb 2024 01:43:35 -0800 (PST)
+From: Raihan Ahamed <raihan1999ahamed@gmail.com>
+To: krzysztof.kozlowski+dt@linaro.org
+Cc: raihan1999ahamed@gmail.com,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Tony Luck <tony.luck@intel.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	qirui.001@bytedance.com
-Subject: [PATCH 3/3] x86/speculation: Support intra-function call validation
-Date: Mon, 26 Feb 2024 17:41:01 +0800
-Message-Id: <20240226094101.95544-4-qirui.001@bytedance.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
-In-Reply-To: <20240226094101.95544-1-qirui.001@bytedance.com>
-References: <20240226094101.95544-1-qirui.001@bytedance.com>
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: arm: qcom: Add Lenovo P2
+Date: Mon, 26 Feb 2024 15:11:03 +0530
+Message-ID: <20240226094256.5736-1-raihan1999ahamed@gmail.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <a762f756-1a92-4d82-be38-098bacaf25dc@linaro.org>
+References: <a762f756-1a92-4d82-be38-098bacaf25dc@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,62 +94,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Rui Qi <qirui.001@bytedance.com>
+Document the compatible for the MSM8953-based Lenovo P2
 
-commit 8afd1c7da2b0 ("x86/speculation: Change FILL_RETURN_BUFFER
- to work with objtool") does not support intra-function call
- stack validation, which causes kernel live patching to fail.
-This commit adds support for this, and after testing, the kernel
- live patching feature is restored to normal.
+smartphone released in 2016
 
-Fixes: 8afd1c7da2b0 ("x86/speculation: Change FILL_RETURN_BUFFER to work with objtool")
-
-Signed-off-by: Rui Qi <qirui.001@bytedance.com>
+Signed-off-by: Raihan Ahamed <raihan1999ahamed@gmail.com>
 ---
- arch/x86/include/asm/nospec-branch.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index c8819358a332..a88135c358c0 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -13,6 +13,8 @@
- #include <asm/unwind_hints.h>
- #include <asm/percpu.h>
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index 1a5fb889a444..6cc19c8d116d 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -263,6 +263,7 @@ properties:
  
-+#include <linux/frame.h>
-+#include <asm/unwind_hints.h>
- /*
-  * This should be used immediately before a retpoline alternative. It tells
-  * objtool where the retpolines are so that it can make sense of the control
-@@ -51,14 +53,18 @@
- #define __FILL_RETURN_BUFFER(reg, nr, sp)	\
- 	mov	$(nr/2), reg;			\
- 771:						\
-+	ANNOTATE_INTRA_FUNCTION_CALL;           \
- 	call	772f;				\
- 773:	/* speculation trap */			\
-+	UNWIND_HINT_EMPTY;		\
- 	pause;					\
- 	lfence;					\
- 	jmp	773b;				\
- 772:						\
-+	ANNOTATE_INTRA_FUNCTION_CALL;           \
- 	call	774f;				\
- 775:	/* speculation trap */			\
-+	UNWIND_HINT_EMPTY;                      \
- 	pause;					\
- 	lfence;					\
- 	jmp	775b;				\
-@@ -152,6 +158,7 @@
- .endm
- 
- .macro ISSUE_UNBALANCED_RET_GUARD
-+	ANNOTATE_INTRA_FUNCTION_CALL;
- 	call .Lunbalanced_ret_guard_\@
- 	int3
- .Lunbalanced_ret_guard_\@:
+       - items:
+           - enum:
++              - lenovo,kuntao
+               - motorola,potter
+               - xiaomi,daisy
+               - xiaomi,mido
 -- 
-2.39.2 (Apple Git-143)
+2.43.2
 
 
