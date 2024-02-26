@@ -1,235 +1,154 @@
-Return-Path: <linux-kernel+bounces-82384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A6F86838E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:22:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1D10868394
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:24:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88F74B22B1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:22:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F72E1C230E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:24:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A560131E46;
-	Mon, 26 Feb 2024 22:22:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1D4132C13;
+	Mon, 26 Feb 2024 22:24:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fMeBzee4"
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cfeIC5ac";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4RZAQLlx"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15084131E3F;
-	Mon, 26 Feb 2024 22:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C4DB132495;
+	Mon, 26 Feb 2024 22:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708986135; cv=none; b=GNhMbt3VgyaKzf3tpNE8JcMBR8K2VdyA0hLHWTf2sVgyWvALMD/iwtvbDlAu6kkBxyk2DibG5gkjQ3dUI5DQlR5gb2FtV6uLCyP1IRQzaCnnYTFIqIGokl8t2SEpkGulHtoZfSmgMbSuIN+oK5ejuM2B3z8ZAZrCfXc3g0ya5hw=
+	t=1708986272; cv=none; b=NnsRM1HDj3UQlEQoowVOa6Nq1KbQn/Mwt7c55IwAhin2HrN2cRprHgHLfPwftMiV7xiSd5A5AT0VuPMIP4vVIP1lEZX3JnR91zMZbyZcAjooT84fqGUYP324IFlTooZRfuf0N9n97LZglYpeBLzsFnJn9T1dK0rYin0uEapg+4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708986135; c=relaxed/simple;
-	bh=9B9sVk95/X6RVwf+p1Qn/KhyyBM6EhLa8TimasuHcWM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pp4BMSMpdcf95S9tA9BPQ7bjpi4oX6XRTkkWi1K0dcnAps4kaBTTgT7z+pjX9VxIXenypbr1VsysxWRJycsRHLJKN7apsr5P1GHUdnRLR0Wsqhjc4h7qpSBjjFIRykNalCgsAqxXM7L1FlJPsV8E4WhSNFfSeb0fQF26yJuPFBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fMeBzee4; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c19bc08f96so1752168b6e.2;
-        Mon, 26 Feb 2024 14:22:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708986133; x=1709590933; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uCljusvDbpC85XBVMK3c5kvPOrdu09iyxvjz7pu6Gtk=;
-        b=fMeBzee4rdGqRf++KZpHwK7fHc2KRak3BUg2XDr3gOIp1HTm4uKJhiOT13ukFACDBM
-         CBh3Z6QSKr4UjoYxztmAUvdsvnyJG6B9Rp1B1VdCA9SxWIQASYb6y4gl11PcufsYGTrO
-         xUhzTwlTdkJtDS2HL+CVIJiaeXDRTSChPHhTcHFj5ql5PaPwxt2OOqlaftJ7REsNwiWN
-         TxzTXcmNAq+x/xv7BKV4m+ZxGAoUr92ltlUgj0LchQP/SfqW7ladtmkvU2ABsYqvM5vK
-         m4nNhTJFOHN3dNyjWqKZ1NSfm/vQkxjjU0yjQYXDVPH44zhAFQHnQnUuJ8t1WRmNnkrI
-         f8HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708986133; x=1709590933;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uCljusvDbpC85XBVMK3c5kvPOrdu09iyxvjz7pu6Gtk=;
-        b=dZ3FcY8n8YULEBQ7+deg+QT5m6E/R+7rBaSTGHKm3QP8UvRctVkB8c1RW8t6JOEAJm
-         ncju6Pfidtt2L2UAKJ/DCsQdjfz1H78LwJGKw73Pkq5yne4DoC0Qt46bq04wvxzgQDSQ
-         Bc7l2novsCR+RKeNLI7Lzz6M9UrN4AGUho5G1mxFEwNjae0MEtcxLeiaMcBhvj8/fTMe
-         tqYlneV1BkVuazZRjqIfP1N+YvGGlahujqVRZp1IAWqNaGdOC0iCBKa5ONdfFMOWmJ2G
-         +bSS5UGvB1l9LTrMAJUJK84HPaZpABYm7d5sjAmNIsWxPrFvm8YhNxiIJk6KKR1iwbLM
-         6f/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWI2vmopXK3UjJyM3SzokcPDBUXKySdHHe5GhHync58JDBo/zpVD3uPhZV60H6IOc75cm4TOwBLrCyuDhcPw5u2PAIhniVDcZPn5oMWUEzwN9cbx4NrBUhF0q9kZacXWMCDlr3mOBVfNDE/HsDWlwVjBKifrn0Z/O0Afn+Dh6qSgWXnppG/StLzrrfzByd5h4lijWc40zNuyuXawt+8xbkx1w==
-X-Gm-Message-State: AOJu0YwEuNwUwsF1kJU3Q2CWRQFYfGwLUVnDQkAMP92khA94Xw+yndnO
-	O2Qa+09Pfsy/HxlGIqN2m8sFc8H6gRKVREp5ckKedblU4F10JfBC
-X-Google-Smtp-Source: AGHT+IH9/ZHMOlN9m2pQ3tNxm4b1iBEwlbsa1DLKOeAJmdm28kiQkwzlw6kslYe8H3uqCwJle03KrA==
-X-Received: by 2002:a05:6808:168e:b0:3c0:3752:626f with SMTP id bb14-20020a056808168e00b003c03752626fmr434507oib.58.1708986133186;
-        Mon, 26 Feb 2024 14:22:13 -0800 (PST)
-Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
-        by smtp.gmail.com with ESMTPSA id d17-20020a05680805d100b003c1ad351e43sm50022oij.1.2024.02.26.14.22.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 14:22:12 -0800 (PST)
-Sender: John Groves <grovesaustin@gmail.com>
-Date: Mon, 26 Feb 2024 16:22:11 -0600
-From: John Groves <John@groves.net>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 10/20] famfs: famfs_open_device() &
- dax_holder_operations
-Message-ID: <xslmwjulygnvrqvzevrzj5clalxwhqnmv5p2k2yvrp56bkqdn6@bbdmfeb24axf>
-References: <cover.1708709155.git.john@groves.net>
- <74359fdc83688fb1aac1cb2c336fbd725590a131.1708709155.git.john@groves.net>
- <20240226125642.000076d2@Huawei.com>
+	s=arc-20240116; t=1708986272; c=relaxed/simple;
+	bh=x3++88y6Yyga2IoThm9EeYXn7jl6jLoll5JW4EPO4FM=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=qL3nXX9ySrwaxrNbxQS+uQ9RT1M1eiYsAbvlIBobLT/wFj8s1VQAENVeSHmyKbiNUA1Jevy4M8q1K49/njrWVQXhng/N6TGio2Y0xFYNjVO5Hps6uxice380pfnDrADq7O7XXiUqAwnowqBy/gcJGMHDzdUtEH+DgrGJ/9uhGgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cfeIC5ac; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4RZAQLlx; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 26 Feb 2024 22:24:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708986267;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SLnCpmLMridB4rzUX2oS2TojIlSaDlBpIP7r9u3LGZs=;
+	b=cfeIC5acZt1S4R9jg2SAdznuNdWIApP5iSVNMHrNJ9B21tncrkg0P/VHM5oxE0p10EsVMN
+	uO99tILOneiiS2Rz8tzxaR13xATmez52/PeRwv3A3NQopX3rdY6kJp5TEkHRrlldY3qMtg
+	Gwx4Vh811VR60tZOtYt6/PvjDwzQre6HV1LwpMjW1tszDJG35ZDEkooAJH1+egVacSljdZ
+	dOjnXYYdi0JYuIg49ngsr938DYguSPbby+6B3doCFPBkTqsX7jd84Fv89K7nD2q/Cjajyt
+	P6RqOwIxZ/ExJwT3braGsTOO5rnx+8tW9bIbrjxzEfGxvAYgwdcIcCtCM20CiA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708986267;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SLnCpmLMridB4rzUX2oS2TojIlSaDlBpIP7r9u3LGZs=;
+	b=4RZAQLlxV1iZ7Ps05uMkSxHIBz9flIQ1wUk1asMCQDyWmUQ74NgLqetbRZhyveWAgXfudt
+	gF8TG47VgzPkrIBw==
+From: "tip-bot2 for Anna-Maria Behnsen" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: timers/core] vdso/datapage: Quick fix - use asm/page-def.h for ARM64
+Cc: Linux Kernel Functional Testing <lkft@linaro.org>,
+ "Anna-Maria Behnsen" <anna-maria@linutronix.de>,
+ Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240226175023.56679-1-anna-maria@linutronix.de>
+References: <20240226175023.56679-1-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226125642.000076d2@Huawei.com>
+Message-ID: <170898626656.398.2907648829613976791.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On 24/02/26 12:56PM, Jonathan Cameron wrote:
-> On Fri, 23 Feb 2024 11:41:54 -0600
-> John Groves <John@Groves.net> wrote:
-> 
-> > Famfs works on both /dev/pmem and /dev/dax devices. This commit introduces
-> > the function that opens a block (pmem) device and the struct
-> > dax_holder_operations that are needed for that ABI.
-> > 
-> > In this commit, support for opening character /dev/dax is stubbed. A
-> > later commit introduces this capability.
-> > 
-> > Signed-off-by: John Groves <john@groves.net>
-> 
-> Formatting comments mostly same as previous patches, so I'll stop repeating them.
+The following commit has been merged into the timers/core branch of tip:
 
-I tried to bulk apply those recommendations.
+Commit-ID:     8b3843ae3634b472530fb69c3861de0b70a5e6bf
+Gitweb:        https://git.kernel.org/tip/8b3843ae3634b472530fb69c3861de0b70a5e6bf
+Author:        Anna-Maria Behnsen <anna-maria@linutronix.de>
+AuthorDate:    Mon, 26 Feb 2024 18:50:23 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 26 Feb 2024 23:13:41 +01:00
 
-> 
-> > ---
-> >  fs/famfs/famfs_inode.c | 83 ++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 83 insertions(+)
-> > 
-> > diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
-> > index 3329aff000d1..82c861998093 100644
-> > --- a/fs/famfs/famfs_inode.c
-> > +++ b/fs/famfs/famfs_inode.c
-> > @@ -68,5 +68,88 @@ static const struct super_operations famfs_ops = {
-> >  	.show_options	= famfs_show_options,
-> >  };
-> >  
-> > +/***************************************************************************************
-> > + * dax_holder_operations for block dax
-> > + */
-> > +
-> > +static int
-> > +famfs_blk_dax_notify_failure(
-> > +	struct dax_device	*dax_devp,
-> > +	u64			offset,
-> > +	u64			len,
-> > +	int			mf_flags)
-> > +{
-> > +
-> > +	pr_err("%s: dax_devp %llx offset %llx len %lld mf_flags %x\n",
-> > +	       __func__, (u64)dax_devp, (u64)offset, (u64)len, mf_flags);
-> > +	return -EOPNOTSUPP;
-> > +}
-> > +
-> > +const struct dax_holder_operations famfs_blk_dax_holder_ops = {
-> > +	.notify_failure		= famfs_blk_dax_notify_failure,
-> > +};
-> > +
-> > +static int
-> > +famfs_open_char_device(
-> > +	struct super_block *sb,
-> > +	struct fs_context  *fc)
-> > +{
-> > +	pr_err("%s: Root device is %s, but your kernel does not support famfs on /dev/dax\n",
-> > +	       __func__, fc->source);
-> > +	return -ENODEV;
-> > +}
-> > +
-> > +/**
-> > + * famfs_open_device()
-> > + *
-> > + * Open the memory device. If it looks like /dev/dax, call famfs_open_char_device().
-> > + * Otherwise try to open it as a block/pmem device.
-> > + */
-> > +static int
-> > +famfs_open_device(
-> > +	struct super_block *sb,
-> > +	struct fs_context  *fc)
-> > +{
-> > +	struct famfs_fs_info *fsi = sb->s_fs_info;
-> > +	struct dax_device    *dax_devp;
-> > +	u64 start_off = 0;
-> > +	struct bdev_handle   *handlep;
-> Definitely don't force alignment in local parameter definitions.
-> Always goes wrong and makes for unreadable mess in patches!
+vdso/datapage: Quick fix - use asm/page-def.h for ARM64
 
-Okay, undone. Everywhere.
+The vdso rework for the generic union vdso_data_store broke compat VDSO on
+arm64:
 
-> 
-> > +
-> > +	if (fsi->dax_devp) {
-> > +		pr_err("%s: already mounted\n", __func__);
-> Fine to fail but worth a error message? Not sure on convention on this but seems noisy
-> and maybe in userspace control which isn't good.
+In file included from arch/arm64/include/asm/lse.h:5,
+		 from arch/arm64/include/asm/cmpxchg.h:14,
+		 from arch/arm64/include/asm/atomic.h:16,
+		 from include/linux/atomic.h:7,
+		 from include/asm-generic/bitops/atomic.h:5,
+		 from arch/arm64/include/asm/bitops.h:25,
+		 from include/linux/bitops.h:68,
+		 from arch/arm64/include/asm/memory.h:209,
+		 from arch/arm64/include/asm/page.h:46,
+		 from include/vdso/datapage.h:22,
+		 from lib/vdso/gettimeofday.c:5,
+		 from <command-line>:
+arch/arm64/include/asm/atomic_ll_sc.h:298:9: error: unknown type name 'u128'
+  298 |         u128 full;
+      |         ^~~~
+arch/arm64/include/asm/atomic_ll_sc.h:305:24: error: unknown type name 'u128'
+  305 | static __always_inline u128
+	 \
+      |
 
-Changing to pr_debug. Would be good to have access to it in that way
+The reason is the include of asm/page.h which in turn includes headers
+which are outside the scope of compat VDSO. The only reason for the
+asm/page.h include is the required definition of PAGE_SIZE. But as arm64
+defines PAGE_SIZE in asm/page-def.h without extra header includes, this
+could be used instead.
 
-> > +		return -EALREADY;
-> > +	}
-> > +
-> > +	if (strstr(fc->source, "/dev/dax")) /* There is probably a better way to check this */
-> > +		return famfs_open_char_device(sb, fc);
-> > +
-> > +	if (!strstr(fc->source, "/dev/pmem")) { /* There is probably a better way to check this */
-> > +		pr_err("%s: primary backing dev (%s) is not pmem\n",
-> > +		       __func__, fc->source);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	handlep = bdev_open_by_path(fc->source, FAMFS_BLKDEV_MODE, fsi, &fs_holder_ops);
-> > +	if (IS_ERR(handlep->bdev)) {
-> > +		pr_err("%s: failed blkdev_get_by_path(%s)\n", __func__, fc->source);
-> > +		return PTR_ERR(handlep->bdev);
-> > +	}
-> > +
-> > +	dax_devp = fs_dax_get_by_bdev(handlep->bdev, &start_off,
-> > +				      fsi  /* holder */,
-> > +				      &famfs_blk_dax_holder_ops);
-> > +	if (IS_ERR(dax_devp)) {
-> > +		pr_err("%s: unable to get daxdev from handlep->bdev\n", __func__);
-> > +		bdev_release(handlep);
-> > +		return -ENODEV;
-> > +	}
-> > +	fsi->bdev_handle = handlep;
-> > +	fsi->dax_devp    = dax_devp;
-> > +
-> > +	pr_notice("%s: root device is block dax (%s)\n", __func__, fc->source);
-> 
-> pr_debug()  Kernel log is too noisy anyway! + I'd assume we can tell this succeeded
-> in lots of other ways.
+Caution: this is a quick fix only! The final fix is an upcoming cleanup of
+Arnd which consolidates PAGE_SIZE definition. After the cleanup, the
+include of asm/page.h to access PAGE_SIZE is no longer required.
 
-Done
+Fixes: a0d2fcd62ac2 ("vdso/ARM: Make union vdso_data_store available for all architectures")
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20240226175023.56679-1-anna-maria@linutronix.de
+Link: https://lore.kernel.org/lkml/CA+G9fYtrXXm_KO9fNPz3XaRxHV7UD_yQp-TEuPQrNRHU+_0W_Q@mail.gmail.com/
+---
+ include/vdso/datapage.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> 
-> 
-> > +	return 0;
-> > +}
-> > +
-> > +
-> >  
-> >  MODULE_LICENSE("GPL");
-
-Thanks,
-John
-> 
+diff --git a/include/vdso/datapage.h b/include/vdso/datapage.h
+index 7ba4437..5d5c0b8 100644
+--- a/include/vdso/datapage.h
++++ b/include/vdso/datapage.h
+@@ -19,7 +19,11 @@
+ #include <vdso/time32.h>
+ #include <vdso/time64.h>
+ 
++#ifdef CONFIG_ARM64
++#include <asm/page-def.h>
++#else
+ #include <asm/page.h>
++#endif
+ 
+ #ifdef CONFIG_ARCH_HAS_VDSO_DATA
+ #include <asm/vdso/data.h>
 
