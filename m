@@ -1,114 +1,146 @@
-Return-Path: <linux-kernel+bounces-81532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 310C586772C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:48:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65EDF867729
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 14:48:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5BD51F2469C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:48:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97ECB1C297E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:48:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33A712AAD6;
-	Mon, 26 Feb 2024 13:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WJ2By5Ka"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD6D12A15A;
+	Mon, 26 Feb 2024 13:47:56 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509EA12883D;
-	Mon, 26 Feb 2024 13:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9EF1AACC;
+	Mon, 26 Feb 2024 13:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708955285; cv=none; b=eHhH1p+yABy2/7zRS1qO55GuPO4R4iXKy6Hla+R/PzBnx2/2PgINbV8yZie/Xo7+G9GnFnwQauXcCKUQ8OU+EF3lbIvB8KwNmCbIvy/sQqrxczivVIopaYYMrMind5r3NAGtwI+SyioJddNAoOGspNo3Af2NoUCaZNj1gP5e8FI=
+	t=1708955275; cv=none; b=ITSAAs0iLWhxWrxu7tisSKbcdjOFJktDFIPJYU1gHPcncuFmq8kPD8H8Doly7svUT/LI0krGwFziQk9zebKLYqCgON8+IWxTLxs8/71geqSfBovhwPRCJY+4hPKAMv01XVajzzCeJF8thUSJO1IjBJDyN0czAX2+WtfwaBy5dcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708955285; c=relaxed/simple;
-	bh=haMUGAK+PJjKaqeqp8C9tQacXFq+vv7X9U/zyUTnK08=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eMGTrWKYX3yXXxq+MgzWr3qwIgd0qErf/3tQ+yHTYagtkOyuPbckjPY4McA/VeDA5mrFido5P6BJSsvs0F/QgUas7N9FuMN2eSy5vcWCBPY3M/SXMaIjmYo12NFgtKi8XSjN4j3R/4XPYkC+QkccoeQ9u99isn74b7Q/BxAWgE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=WJ2By5Ka; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41QDlcFC125492;
-	Mon, 26 Feb 2024 07:47:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708955258;
-	bh=haMUGAK+PJjKaqeqp8C9tQacXFq+vv7X9U/zyUTnK08=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=WJ2By5Ka6LaFKMX0UNbNxGskmu1pVNcKEJGDM2v2AvfvslSwzNpHX94PO0J66Ury7
-	 SGv7575ZrgBkv6mRtTOzpmodJvC5JnuN22Zcy4VmtZbLW6EbSFS6TeRI3RtK+vGXFj
-	 gFgsKj3nAbDgkob6pjJqxrGQcufkMpaXDvu8pCKk=
-Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41QDlclv077861
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 26 Feb 2024 07:47:38 -0600
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 26
- Feb 2024 07:47:38 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 26 Feb 2024 07:47:38 -0600
-Received: from [10.249.141.75] ([10.249.141.75])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41QDlWPm074190;
-	Mon, 26 Feb 2024 07:47:33 -0600
-Message-ID: <aa180f33-9c42-4435-aff2-f23c42bcadea@ti.com>
-Date: Mon, 26 Feb 2024 19:17:31 +0530
+	s=arc-20240116; t=1708955275; c=relaxed/simple;
+	bh=E83r2PzgmcARJDM5rhAvuhFm7oVmjpWV1yfSKzHMk8E=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hg07kq/lHaLt0zq3aWrURdiNuhcPAOIVe5xHlRrLOPz+78Cjs5xV7KdmtmX21meeHc5yNrlhLv5aded4HLtmMJr0EqCLjJtlIfycmLk4xGbblCMdy64eTzdosFT848Yc4Bf7+3m4UbIIBf9h9YJNhXStB3QGhjvinKgPb3HI6jQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tk20704Rnz6K9PX;
+	Mon, 26 Feb 2024 21:44:07 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4623F1418DD;
+	Mon, 26 Feb 2024 21:47:50 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 26 Feb
+ 2024 13:47:49 +0000
+Date: Mon, 26 Feb 2024 13:47:48 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: John Groves <John@Groves.net>
+CC: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, "Dan
+ Williams" <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Alexander
+ Viro" <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, "Jan
+ Kara" <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>,
+	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<nvdimm@lists.linux.dev>, <john@jagalactic.com>, Dave Chinner
+	<david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>,
+	<dave.hansen@linux.intel.com>, <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 17/20] famfs: Add module stuff
+Message-ID: <20240226134748.00003f57@Huawei.com>
+In-Reply-To: <e633fb92d3c20ba446e60c2c161cf07074aef374.1708709155.git.john@groves.net>
+References: <cover.1708709155.git.john@groves.net>
+	<e633fb92d3c20ba446e60c2c161cf07074aef374.1708709155.git.john@groves.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] clk: keystone: sci-clk: Adding support for non
- contiguous clocks
-Content-Language: en-US
-To: Francesco Dolcini <francesco@dolcini.it>
-CC: <nm@ti.com>, <kristo@kernel.org>, <ssantosh@kernel.org>, <chandru@ti.com>,
-        <rishabh@ti.com>, <kamlesh@ti.com>, <vigneshr@ti.com>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-clk@vger.kernel.org>
-References: <20240213082640.457316-1-u-kumar1@ti.com>
- <20240226105435.GA11908@francesco-nb>
-From: "Kumar, Udit" <u-kumar1@ti.com>
-In-Reply-To: <20240226105435.GA11908@francesco-nb>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
+On Fri, 23 Feb 2024 11:42:01 -0600
+John Groves <John@Groves.net> wrote:
 
-On 2/26/2024 4:24 PM, Francesco Dolcini wrote:
-> On Tue, Feb 13, 2024 at 01:56:40PM +0530, Udit Kumar wrote:
->> Most of clocks and their parents are defined in contiguous range,
->> But in few cases, there is gap in clock numbers[0].
->> Driver assumes clocks to be in contiguous range, and add their clock
->> ids incrementally.
->>
->> New firmware started returning error while calling get_freq and is_on
->> API for non-available clock ids.
-> Is this the kind of errors I should expect in such situation?
->
-> ti-sci-clk 44043000.system-controller:clock-controller: recalc-rate failed for dev=13, clk=7, ret=-19
->
-> If this is the case, I feel like this patch should be back-ported to
-> stable kernels.
+> This commit introduces the module init and exit machinery for famfs.
+> 
+> Signed-off-by: John Groves <john@groves.net>
+I'd prefer to see this from the start with the functionality of the module
+built up as you go + build logic in place.  Makes it easy to spot places
+where the patches aren't appropriately self constrained. 
+> ---
+>  fs/famfs/famfs_inode.c | 44 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 44 insertions(+)
+> 
+> diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
+> index ab46ec50b70d..0d659820e8ff 100644
+> --- a/fs/famfs/famfs_inode.c
+> +++ b/fs/famfs/famfs_inode.c
+> @@ -462,4 +462,48 @@ static struct file_system_type famfs_fs_type = {
+>  	.fs_flags	  = FS_USERNS_MOUNT,
+>  };
+>  
+> +/*****************************************************************************************
+> + * Module stuff
 
-Sure will send to stable@vger.kernel.org
+I'd drop these drivers structure comments. They add little beyond
+a high possibility of being wrong after the code has evolved a bit.
 
+> + */
+> +static struct kobject *famfs_kobj;
+> +
+> +static int __init init_famfs_fs(void)
+> +{
+> +	int rc;
+> +
+> +#if defined(CONFIG_DEV_DAX_IOMAP)
+> +	pr_notice("%s: Your kernel supports famfs on /dev/dax\n", __func__);
+> +#else
+> +	pr_notice("%s: Your kernel does not support famfs on /dev/dax\n", __func__);
+> +#endif
+> +	famfs_kobj = kobject_create_and_add(MODULE_NAME, fs_kobj);
+> +	if (!famfs_kobj) {
+> +		pr_warn("Failed to create kobject\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	rc = sysfs_create_group(famfs_kobj, &famfs_attr_group);
+> +	if (rc) {
+> +		kobject_put(famfs_kobj);
+> +		pr_warn("%s: Failed to create sysfs group\n", __func__);
+> +		return rc;
+> +	}
+> +
+> +	return register_filesystem(&famfs_fs_type);
 
-> Any malfunction because of these errors or just some noise in the logs?
+If this fails, do we not leak the kobj and sysfs groups?
 
-Error is noise in logs, no impact on function as these reserved clocks
+> +}
+> +
+> +static void
+> +__exit famfs_exit(void)
+> +{
+> +	sysfs_remove_group(famfs_kobj,  &famfs_attr_group);
+> +	kobject_put(famfs_kobj);
+> +	unregister_filesystem(&famfs_fs_type);
+> +	pr_info("%s: unregistered\n", __func__);
+> +}
+> +
+> +
+> +fs_initcall(init_famfs_fs);
+> +module_exit(famfs_exit);
+> +
+> +MODULE_AUTHOR("John Groves, Micron Technology");
+>  MODULE_LICENSE("GPL");
 
-are not used by drivers.
-
-
->
-> Francesco
->
 
