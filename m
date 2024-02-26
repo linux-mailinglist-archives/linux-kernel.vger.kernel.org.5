@@ -1,98 +1,163 @@
-Return-Path: <linux-kernel+bounces-82097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1570867F5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:54:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A54C5867F3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:49:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80278B2C058
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:49:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BBAD28ACB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCCB612F58E;
-	Mon, 26 Feb 2024 17:48:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1856312E1ED;
+	Mon, 26 Feb 2024 17:49:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Sant42uM"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hP9OIcFV"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70FB12EBED;
-	Mon, 26 Feb 2024 17:48:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ABA312D75F
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708969715; cv=none; b=XlPtqA9ZnbTUOSLIIfKzOvHskm7+XI2Cl7oqak4ltWWLZt7/oQ1l3paJb+uC6qiazf+VqnZkpJKIuZcpW0LaF0KHUzmLtbPl6IkE8wx2Kr6am7M6xvlRTJaS01TwxrrmMg0wzCiMGw4FMGcqbw0+bvaPvFAqp0Ljcc1CjptcUYs=
+	t=1708969747; cv=none; b=Y2lAstRiaiPW34E9+hcuN2vdX73LDtm8QkSwYsnrmIgEjwiTloq/jSdCJ4D2EGB31sxJhE4nUAoABAIGm3wISl7rjqFbZA8RywiJmOUPtQFSnfOfDTAAI2jzmx8yz5o9EDua6q4NybMfX0aMbBrOd0uW/pKzZDmDqIgTKTgjgbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708969715; c=relaxed/simple;
-	bh=WA21Fa+u+0bZAQGTzI3bdQdJE0FzbKKnJdNhwb93T+E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gOcdz9u5K9MOZXVQnXbC+RIkR9TzPyO3B7ByX1QSoobmEKqxB7wvtZ/c0Gs0ZakGlDjtBLXLPpXI6MoJpFfOU/tK5jLKa8Ivj5YvA9HE2Mz11aXB291B77lhR08HlwZNX3IoIvwpvQNk9Uk00svqeFeOKSgyMPYaF5UgbKM7MGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Sant42uM; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708969712; x=1740505712;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=WA21Fa+u+0bZAQGTzI3bdQdJE0FzbKKnJdNhwb93T+E=;
-  b=Sant42uMS0h1lu1JPV2clx/fTqWpp9fp/21xua7ShTkQQ6qDuCbFQIdB
-   V7z6UdWIkZ72xOXfm55lKkof/h1he7mJPofLET1Q2WWBasWhEKFkjkh4+
-   Dp/Mkpc/jBBDpoN5LFHVMVARY3cL+P6XMs45CZZU2L8WEm6M283v5FQoD
-   14w3oyjKG0sLDwpYgGzA/iY47WqJA0VujDeu8z4s4AlmDGPT6hIz4FSrI
-   z9pV+dCaZht7/6ZNAf73TBOhNF0DUYWyEPXzjc/Jhtb6YjGlje1G/qCsM
-   oMXkRF2uQ6MTlyfojIIL5Ap1Xa1GoDKFV0iSYTV4oATJYkvlWVT8ENUOZ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3428125"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3428125"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 09:48:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="29919652"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 09:48:32 -0800
-Date: Mon, 26 Feb 2024 09:48:30 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>, isaku.yamahata@intel.com,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	isaku.yamahata@gmail.com, erdemaktas@google.com,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v18 032/121] KVM: x86/mmu: introduce config for PRIVATE
- KVM MMU
-Message-ID: <20240226174830.GA177224@ls.amr.corp.intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <591420ca62f0a9ac2478c2715181201c23f8acf0.1705965635.git.isaku.yamahata@intel.com>
- <CABgObfaEz8zmdqy4QatCKKqjugMxW+AsnLDAg6PN+BX1QyV01A@mail.gmail.com>
- <Zcrarct88veirZx7@google.com>
- <CABgObfYFnpe_BO5bNRvXC6Y-3rUxFAogs2TGFUTBu+JR25N=pQ@mail.gmail.com>
+	s=arc-20240116; t=1708969747; c=relaxed/simple;
+	bh=kjTgbrtrQFudnQ2Ks1fdChZ9nj/O1JwPt17wu4Lp+yo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XfIykhA66WVzuYMqxMeup0QC9YM0FGYINz1M2WoTjb/jx6Nu2PsOXNbZTpGOLAtgVWEooTJB5uluS0+GcZlaTlbCI63kCZLMWmaHTuBfybsCClJAgXcSQDPbwyyogY9flTIzDPcvkMiOvP+BOyAjp/h6NZ/RSEJ9l99134107xY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hP9OIcFV; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d29111272eso9060651fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:49:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708969742; x=1709574542; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E2MfOrnw8vcrCKgg1+LRA9aXdiQ7KcRVPoPiOl2oNZk=;
+        b=hP9OIcFV8jpUShnxeslMiAvpz9MYr4tlHQgGAiB/uQsoiXp2YN7SpuvUYlV7BTtJXh
+         3tyKDObZ2pjgcya3OwjDzXqRWIiuxm82tD+07TgN2VNq+qhds3dJh5i1comzh13NC6mV
+         e2v/i6HUMvz37TzYs73p3u+2WiGt16xPvR1x1iYENDunXFfxsXzBU8K8Bo49mQ+Uwfdm
+         GvIW5IkKJIy2eAdhTPc1jDEO2gw4P0UHuhZMN70drFN/VOAwOykIz5ChMhnl6czkzuko
+         e6MT9tBbwxIBvYY/SroHkfWBHhzEULDceiTAOd159hS5VDt5wN3DNoQ+dl09n1XfrZCo
+         17qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708969742; x=1709574542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E2MfOrnw8vcrCKgg1+LRA9aXdiQ7KcRVPoPiOl2oNZk=;
+        b=fwK1gKwaXPq/3rfct3uiob4kjfVGGUkBwRs9Te1J445fURSwLrl1Xv3ZGBEUFTtxLq
+         gNEPVVBX3Lxo3ki69WRiIwZLQ7XHEQN/RwCUPQfcb0T4wImcPCZlI4OvJU8H6cM9MnF5
+         O5w+mFf5vMms7FXujdQwSdjWif+sFl76gYxqmXMjTTgYq2XNMMs0/ZX6tUzKb9ToeYnn
+         xFtnwq4jDmZSd/L+wNircd+AV5KeRjh7GgTMFPozzhuhDo7o0IIoPtdCfqZpV4uWnTSt
+         HJ4VgPSy30LgFJcqs8vghaMai314DSR/8gDB3itK11BSOL3hbB7ZJnEO1B7sKcCDYK/L
+         2sHA==
+X-Forwarded-Encrypted: i=1; AJvYcCWOKwMsFHAW62GjR55eIWRNQvhnk0bLhSThHFRhwSFY2l3NR/j06zN4HTjiO4FOAAiXZD57uK5hulOLNN34jFfbK+GWcTV9LGiCA4Ig
+X-Gm-Message-State: AOJu0Yw9dEcqw4ZDnWQbsY1mmaTGZy3V3JNF45jpSkRi0ehGgiCT6rYA
+	zUfU8nS6mBc8MhWdFOnjkr/bZFMYZPbrLorAtcxRaz4OLdSpdgFVRe6WS5CmkUn9FCYhRo4Smdn
+	IpGMt2qqjjOPXjQwKKam0zNVYbGPA+XJKpMtm
+X-Google-Smtp-Source: AGHT+IGMkZ+7cEJwol9OFFnPnlkwO7m64F/71T4BMwZRitgeDSyoz1rib12v0dNYQtXiC2DOXiB0AGgmNnmExOErSa0=
+X-Received: by 2002:a2e:b889:0:b0:2d2:6676:3b0f with SMTP id
+ r9-20020a2eb889000000b002d266763b0fmr6282519ljp.22.1708969741996; Mon, 26 Feb
+ 2024 09:49:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABgObfYFnpe_BO5bNRvXC6Y-3rUxFAogs2TGFUTBu+JR25N=pQ@mail.gmail.com>
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-6-surenb@google.com>
+ <f68e7f17-c288-4dc9-9ae9-78015983f99c@suse.cz>
+In-Reply-To: <f68e7f17-c288-4dc9-9ae9-78015983f99c@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 26 Feb 2024 09:48:46 -0800
+Message-ID: <CAJuCfpEQPgg6-TD+-PEsVRXnK=T0Ak6TvMiwz7DbS-q9YxsVcg@mail.gmail.com>
+Subject: Re: [PATCH v4 05/36] fs: Convert alloc_inode_sb() to a macro
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 05:47:43PM +0100,
-Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Mon, Feb 26, 2024 at 7:44=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> > From: Kent Overstreet <kent.overstreet@linux.dev>
+> >
+> > We're introducing alloc tagging, which tracks memory allocations by
+> > callsite. Converting alloc_inode_sb() to a macro means allocations will
+> > be tracked by its caller, which is a bit more useful.
+> >
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  include/linux/fs.h | 6 +-----
+> >  1 file changed, 1 insertion(+), 5 deletions(-)
+> >
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 023f37c60709..08d8246399c3 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -3010,11 +3010,7 @@ int setattr_should_drop_sgid(struct mnt_idmap *i=
+dmap,
+> >   * This must be used for allocating filesystems specific inodes to set
+> >   * up the inode reclaim context correctly.
+> >   */
+> > -static inline void *
+> > -alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t=
+ gfp)
+>
+> A __always_inline wouldn't have the same effect? Just wondering.
 
-> On Tue, Feb 13, 2024 at 3:57 AM Sean Christopherson <seanjc@google.com> wrote:
-> > The only thing that even so much as approaches being a hot path is
-> > kvm_gfn_shared_mask(), and if that needs to be optimized, then we'd probably be
-> > better off with a static_key, a la kvm_has_noapic_vcpu (though I'm *extremely*
-> > skeptical that that adds any measurable benefit).
-> 
-> I'm okay with killing it altogether.
+I think inlining it would still keep __LINE__ and __FILE__ pointing to
+this location in the header instead of the location where the call
+happens. If we change alloc_inode_sb() to inline we will have to wrap
+it with alloc_hook() and call kmem_cache_alloc_lru_noprof() inside it.
+Doable but this change seems much simpler.
 
-I eliminated this config.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+>
+> > -{
+> > -     return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
+> > -}
+> > +#define alloc_inode_sb(_sb, _cache, _gfp) kmem_cache_alloc_lru(_cache,=
+ &_sb->s_inode_lru, _gfp)
+> >
+> >  extern void __insert_inode_hash(struct inode *, unsigned long hashval)=
+;
+> >  static inline void insert_inode_hash(struct inode *inode)
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
 
