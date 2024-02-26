@@ -1,81 +1,83 @@
-Return-Path: <linux-kernel+bounces-82376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6703A868374
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:05:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ECB1868376
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:05:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29AF328888D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:04:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18560B2143E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:05:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 262AD131E38;
-	Mon, 26 Feb 2024 22:04:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A312131E3A;
+	Mon, 26 Feb 2024 22:05:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="m3vpXWKR"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="WAOAtxwr"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E9FE131E2F;
-	Mon, 26 Feb 2024 22:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301E7131750;
+	Mon, 26 Feb 2024 22:05:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708985093; cv=none; b=dZngdT5tO0VFbFHnKIknDyasRKI/3A+ysS6liz3El7xwWTSFwlha6s4BnhBGcqzdjJuuJ+Bp2ULlPi5rsoMFUBXrtZKqYoUBdRyzpqUGSA30+lXefHsIi9I6cwV9CSbnsNEfgAQrcvHp6yAugfUB7VQo7WYImYjfAHEmLposBuE=
+	t=1708985118; cv=none; b=JoC4omrZF/s8cmiznFgN+zCwcKaEM32Svv+j4FcI+gY+wwpPcMUdTSRSet/tEh0Y1vtxyBVhZDNwMGmDWW1ztGLxD5IPg9kWrkRnrPUBG7wjqg6RxkvwjY8ZKNzsW31ZBlaGI/P0WNMEHxk4E7mQU9rJKSpTh2EXAenabwkTiwo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708985093; c=relaxed/simple;
-	bh=iYS44GJnUglVpw16XRePCj/31ios9ZoNG/L6JcUmnys=;
+	s=arc-20240116; t=1708985118; c=relaxed/simple;
+	bh=p/3wyl8Jo2S9QJLB6T+6NCzPxPyNA7mOUdaRW8YuZWw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mEqcY1sCdYqOWxIAhtcQ6/R9mVPmLfKZR0FOsTuOa2QPamZJoBhz4W2d82mvHm9Wv7cpY7ZHNM1nl5dG9661ufzokOxbmknqCpd7ounuM5ripEuxUr5yYLwq6VexsQjZgGNEfektmdDxiA+e5gw69NSaL7LgYKArfGr10D0OXFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=m3vpXWKR; arc=none smtp.client-ip=209.85.214.179
+	 To:Cc:Content-Type; b=AzTBmYLNZbfQpPcI6AgZJ7sWr7zgma6qrq6PGw+mZjN6uLaklznBOjUAbhSI4H5mfes33xdOj1xHc4kttoZjx+BHBPCvLur6XT6Dz0qeeYit6P76JPeAg8fweq99cCebgce3G3ONhRpZ+tNP3qXqWAupYfAYRa5IA293bbcCXqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=WAOAtxwr; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dc1ff3ba1aso29980295ad.3;
-        Mon, 26 Feb 2024 14:04:51 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc0e5b223eso30079575ad.1;
+        Mon, 26 Feb 2024 14:05:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1708985091; x=1709589891; darn=vger.kernel.org;
+        d=googlemail.com; s=20230601; t=1708985116; x=1709589916; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iYS44GJnUglVpw16XRePCj/31ios9ZoNG/L6JcUmnys=;
-        b=m3vpXWKR530ZcAgHsiz2EYH2Hf3N20LjATy8KQv5XQ2MGKfUX8OASKu2gWXJ8JXbJR
-         0VPTU5hW6SvW5cYiQPyagUryDe+3wr1bDbdeCJYDBCZ4W90mZIYEhTd8lispFygPV4/9
-         UDW9VZbI0sT/1X6POVB/TED1S3VXTYmOWXEkOcB/XTr8y1gYN/AOsgsboXWwkgD0EZfU
-         8B1mCsp8G/wJ3XhiOd3fZYPJwg/if42AA+WlhSqmvTy5Z0eanC4iwXYLEeIFMzAvS1SY
-         r5LD6/s1shn9ZKAkPTOtAPt6xwIdqOLj3ap4jQ7rj+h1wQpfFkdqnrBZAJeH3OnvlNgI
-         TmlQ==
+        bh=p/3wyl8Jo2S9QJLB6T+6NCzPxPyNA7mOUdaRW8YuZWw=;
+        b=WAOAtxwr1TMCWC/ibqjgpAobRjQUwP8jClDyALdoPMFqUXqyDo4rYFmTb2s7dTuILB
+         j81PKUJYiDH/ILJspfU0GZrj1dGXSErINkFVscAkRRfBnWa6NQ55a4GyiW/faV5TW4cb
+         5Fa7gUhPSSXYlU0suYNBnhTwXEGqU1n6QtL0v6M4XZp7vkt67PjcmNxdA3ohCR6gq0Ve
+         yWTV0lvHuqTiYpIxEhnBiCvoWsReAqBDUQa3RhNsvkWJZF/E24TpoP157xbN3rhbvRcd
+         SnulNUEwVylV4wC322/4qXQFeXjUebrLg8359Qrhr4XmvZp4qFGVCi+vnsnDYE+Z1vvF
+         MWMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708985091; x=1709589891;
+        d=1e100.net; s=20230601; t=1708985116; x=1709589916;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iYS44GJnUglVpw16XRePCj/31ios9ZoNG/L6JcUmnys=;
-        b=XYZdemOHAMWmSZtqVyo5o1C7FiS5ZWsAE/mMEa0j0/5ZPF70HFQrRTPj9vrh+3ZY3u
-         5UtpMsxDNEFcMPQbAXvUrZaDKdD7NjI5Gc3LCeGcuEaJQKLFUsb3uc8BFXnHvIyfbbqb
-         s9H5pH/4Qzqj2dMOIfBvojX7tBjeVlcRa7aJ8/RvDdxTz1arJTiNQTvDa2WaxrYUaikB
-         NceG5CJmFG7X2y4HprnUxF7CIYax6iaM60uT2a1X9zYAyLcTm3ix/B2f14I9InEnmcnC
-         VUPzG73l0KxGpelECJjpcNAwzvSPhRBkRwis4MTp8XkdJiyVQWFBconOXdGl3ZpZyrT7
-         lkqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNmPJ7VFU7ryZSQCjp5eXOBr5bU1cJuwZR4EaXHXpZuIFYBepoqVK8GM/yDcHjuQXjUOAPJuyUIw+zY0Q03mx9zzsi/nwVfUU3C7bb3pa+iFAp98vTuydLH2s9f5VM5Uxn9ZCJxnEpGw==
-X-Gm-Message-State: AOJu0YyMCHpbbH0Bkq48bMY7eZW6B52pG1VVJs8Rv7vhR8bxsI79cNYD
-	XDmNT2QsYqHZc0ZmH6xxAeewK5OSNdb1ypIq7vDpCQ4Hidzr95gj4H6i8ig8FJ9m7eczUiElQZz
-	9y/hpxXOtBFuSbrfci1KP4Jffg6g=
-X-Google-Smtp-Source: AGHT+IH0mmWf21ud0BhhK6Inle4DUDOZf8NRaH5wh0RvBVjgneDT1DxKJRtsK51GZj3Mt43+iDf2MZKi7JEobZ0VZpM=
-X-Received: by 2002:a17:902:bf49:b0:1dc:7bc:cb49 with SMTP id
- u9-20020a170902bf4900b001dc07bccb49mr7365633pls.60.1708985091116; Mon, 26 Feb
- 2024 14:04:51 -0800 (PST)
+        bh=p/3wyl8Jo2S9QJLB6T+6NCzPxPyNA7mOUdaRW8YuZWw=;
+        b=SKRklSOttPYq9KA/hILxi7xAUDzyw+qTgDWzIljU9FEFg8nFS28PbDbe6F39YFvfCQ
+         RbhxOITePEkXuotUnIieS9MPKEYWc5FEnTdETu6vfHMYNjLlhICGXgSqOw5rF3UvXwRr
+         AiH1tne8leMullCtBk6OjwCJtH96wiq1wtyinz8MZPDfoRAgzUcHEgJGs3QNq5itbfr5
+         f/dovsL2Uc1JhIWpitx3ls+/++riMIbxeHEi0gvxNd9W1Fr6jch6OQXD1haemBCKQn0s
+         JFe/3Eb1lufqXfPgVqXdCl5f8Lr9PevYiK7Ayusi8v3+iG6br0jiwvK3lnfoWYkhnImi
+         o4oA==
+X-Forwarded-Encrypted: i=1; AJvYcCX9TsACsjnH1Fv9APlOwNpgVrkbb1+4nAkrRE4AcwGZtUGPuduGpxUWwhclUAhDSxKMe9SKAxHH2V1ANJTe4Ecp6C6FPibZw3LryT3fN1CWLaZbS+1tkYjT97VtHuqTkx0DJyirDRC/7Q==
+X-Gm-Message-State: AOJu0YzfJJMNEXPA6+x0eHikRMrXdfJFdkriK72lZ0zj9x8ClyxqzZxi
+	ez0ZHxBwgrZuYkR40EG5Q6FyFKyBGvgahn5JkToxXARr8dQTfGJFCCwuqHgdmf/Xafdijh34gXp
+	hfgvaBPb0g2N2W2Z1eOGjffwp/kU=
+X-Google-Smtp-Source: AGHT+IF/GAOdaVYQdXJhgPE9e+g37fsL94g20U51TnMoE/5craeH10xNbQkGDkY7uYATSqOuqeXz+FrRGZ5PzyVFXo8=
+X-Received: by 2002:a17:902:ea08:b0:1dc:1ff2:c6d6 with SMTP id
+ s8-20020a170902ea0800b001dc1ff2c6d6mr8707132plg.22.1708985116478; Mon, 26 Feb
+ 2024 14:05:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240224084030.5867-1-krzysztof.kozlowski@linaro.org> <7d9221e0-8165-422b-abbb-e1566a7a733e@linaro.org>
-In-Reply-To: <7d9221e0-8165-422b-abbb-e1566a7a733e@linaro.org>
+References: <20240224084030.5867-1-krzysztof.kozlowski@linaro.org>
+ <20240224084030.5867-2-krzysztof.kozlowski@linaro.org> <e2cda8f8-4250-4ac5-b7ba-6069f37c1b98@linaro.org>
+In-Reply-To: <e2cda8f8-4250-4ac5-b7ba-6069f37c1b98@linaro.org>
 From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Mon, 26 Feb 2024 23:04:40 +0100
-Message-ID: <CAFBinCBRufbcoOvF23V0ObdJ_2tt-WjfkN=pPphTz_FiHpPvTQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: arm: amlogic: remove unstable remark
+Date: Mon, 26 Feb 2024 23:05:05 +0100
+Message-ID: <CAFBinCAymkEJycdvBeumMVL04_7mNCdr7yGz9pKxh__-Uo3rrA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: arm: amlogic: add Neil, Martin and
+ Jerome as maintainers
 To: neil.armstrong@linaro.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring <robh@kernel.org>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
@@ -85,16 +87,14 @@ Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring <robh@kern
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 9:20=E2=80=AFAM Neil Armstrong
+On Mon, Feb 26, 2024 at 9:21=E2=80=AFAM Neil Armstrong
 <neil.armstrong@linaro.org> wrote:
 >
 > + linux-amlogic@lists.infradead.org
 >
 > On 24/02/2024 09:40, Krzysztof Kozlowski wrote:
-> > Amlogic bindings were marked as work-in-progress / unstable in 2017 in
-> > commit 7e8634e821e1 ("dt-bindings: amlogic: add unstable statement").
-> > Almost seven years is enough, so drop the "unstable" remark and expect
-> > usual ABI rules.
+> > Add rest of Linux Amlogic Meson SoC maintainers and reviewers to the
+> > Amlogic board/SoC binding maintainers.
 > >
 > > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
