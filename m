@@ -1,376 +1,289 @@
-Return-Path: <linux-kernel+bounces-81084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1CEF866FF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:07:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A4C2866FDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:05:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5A221C25A25
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:07:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9B391F25063
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDAA60BA8;
-	Mon, 26 Feb 2024 09:43:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i0Y0a47c"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FE45FBBF;
+	Mon, 26 Feb 2024 09:41:28 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB675605BF;
-	Mon, 26 Feb 2024 09:43:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2025FB9C
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:41:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708940633; cv=none; b=XLX5Hxf5FlZkOJ0uiJ2hbhTZpNCy0mZXOpGnseDDaMWpedBd0trYcj/VFR45oZq1iO4C9KDtTXuPKOmS++KYwZhj/hbXhiccT7XDVlAJIcbnjmtG4sUxIerQTolW+jTGBnofN62+tluIUz8ucFb1U7q8S/7L6CEkRTGksALBGSo=
+	t=1708940487; cv=none; b=C8nkSGNrDiyp5EtkHy5KN9Kwtd3HBgKOzWPySc9ZWoYCCpZk9+BBIK3ZeaEKHZwvTMfr0Z3DW+xqXSWj10wfyMEnIqnqW66IKHENXtDVWTzX8+/fhBW74GhniDKgT0ivKbKQk9xHddOi7qGsl1kITxsuHfYTlrTlQQarOgOJomM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708940633; c=relaxed/simple;
-	bh=wx6qcLjfOsQ5f26kn1aBWeymF+akqJQOWHEnKood6b4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KqLoV7sA490rIr367igm8XMK6zpOYDeyE218l2q+Tb1aMFeC1As+T6/z0+qlkw70eh005/9fUeMG4L40xB1sJF7DK7oqx6t/q8g9Bn7ztCe8PwrMXP1Oo8Hv6xDUUrseg8EXxWYE6T7ubW787trDSM3A6DTyM1reTQfpQey/UpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i0Y0a47c; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d8b276979aso2187542a12.2;
-        Mon, 26 Feb 2024 01:43:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708940631; x=1709545431; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kqpalVXYBbAnAdxE01aG7B7dGxizfJoTVD+z7ZQguYE=;
-        b=i0Y0a47cNOdv9fAFLixnRQc3GfBw6ldX6PutEKzpmKmpnMl/ZfG9Dn9lrNWmLUFJEE
-         4ig5lGf+6AI8eYBs7hHj+Mod0rjcgTuAKCNkA4dofjK8qTgaV+xI/Ja4MN0oHC7uRAMJ
-         JDzuT41wFIY6gxm0HwFZ7iS+CQYPu1onuEyRDMQOpDkN0ldwBHXdNDxFNzjM1771BMlr
-         GAe28nsphbRvzp44I6Vmx9flH1gh0wmHG0EoMnW4lQAMknfmjrhIycN/V6GXYfzhGmuw
-         iYuIp/rakv002WgnIDo6qa9C1oEUCqxMRqQjNvKianosAgXXwWNEb496mQqxb30YHVAt
-         jsEQ==
+	s=arc-20240116; t=1708940487; c=relaxed/simple;
+	bh=SkROI4veAh4zi2XehyzLkmSpODJfIKlisIoWr9w7LJs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
+	 Content-Type; b=RRVjblioXZacaSrOjpwqkEp57cAZfqQsFep6vDQ26CnoEHu2BKCVEyK2Ce/CtmUc4W5a1ADhd3tS0uwL+3T3mbLWiWSMbbHwp+U8NMHuAWGCH+tNfFO1Pjx0UHhnRgmtks3lpbRO3AiORbgkMVPGpRSy8GCzl4Ga+G6+aXrZGeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3653311926bso19313925ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:41:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708940631; x=1709545431;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kqpalVXYBbAnAdxE01aG7B7dGxizfJoTVD+z7ZQguYE=;
-        b=FQxSZXosW7W+hhrvG5WnAx6gX0LjviYXnGDmAa+YjScRtG5Ta2zxMED8WjQjpukp7u
-         GN80Q8Rs9732xpFSxjUqf6OuMLxeJEfsLRjAlbR4XHPwTVNQbH+QeNGIOhMhSFmZWf8L
-         osxJyXlchJIwbhWTJZ/3GJP40eHL8Jw5ZPpzmk4KbZCdeTiiA1hkxnWfqrpkaoowagw1
-         eD3bYZUtoDX5xVeu9La14sBGEGaWbyAEiRNRxs+7ve+fh8JVpySB369kYrfTzdJ+yiXT
-         Owea6SCOwPvKjCnLiDKoq3X8l4Os65gQ9fa9YE/rncL5gmwMwpJfl1vgaj6bOT5KANJp
-         nlTA==
-X-Forwarded-Encrypted: i=1; AJvYcCV/cKLI5sBsvCTJCHrW6LjuPk2G3AytPwigB/dHF2XJlgvA31UV6zByPRg4WnI61blQKoPBzc6/xXPR+cuBpDps8Ht/7qEtWHpBC4TVRBy2jA1AHAx5Jz3UiiSMBTEbfKuM5fp9KRGqLqGXmR762qKAq1ULb7gFBRmecVgI/0VWrembVj3PXEH1BLbXlm5lMMsBYrZm/BclrbdiuDX61LEBJCPMNR4BqnU=
-X-Gm-Message-State: AOJu0YxDZizlzRLlnrivRqASNdfqsQ8XecrhJikgosleLThOheDoibuS
-	DVN7vMTEkJXNJWtwkrOcRSXen+IjOg2r7zc3ypso1NF12uoFdFRf
-X-Google-Smtp-Source: AGHT+IHaEETYLvx63vUgW4mx8iDIKO+7XQPbUO0Oz3DOmt3gdXfISHID2KvvvcZXG4w3BnJgyAy1Ig==
-X-Received: by 2002:a05:6a21:1799:b0:19e:48b6:9c43 with SMTP id nx25-20020a056a21179900b0019e48b69c43mr5148618pzb.58.1708940630983;
-        Mon, 26 Feb 2024 01:43:50 -0800 (PST)
-Received: from localhost.localdomain ([115.187.42.119])
-        by smtp.gmail.com with ESMTPSA id y13-20020a62ce0d000000b006e4f1bdff29sm3799164pfg.1.2024.02.26.01.43.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 01:43:50 -0800 (PST)
-From: Raihan Ahamed <raihan1999ahamed@gmail.com>
-To: krzysztof.kozlowski+dt@linaro.org
-Cc: raihan1999ahamed@gmail.com,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v2 2/2] arm64: dts: qcom: msm8953-lenovo-kuntao: Add initial device tree
-Date: Mon, 26 Feb 2024 15:11:04 +0530
-Message-ID: <20240226094256.5736-2-raihan1999ahamed@gmail.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240226094256.5736-1-raihan1999ahamed@gmail.com>
-References: <a762f756-1a92-4d82-be38-098bacaf25dc@linaro.org>
- <20240226094256.5736-1-raihan1999ahamed@gmail.com>
+        d=1e100.net; s=20230601; t=1708940485; x=1709545285;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:in-reply-to
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SkROI4veAh4zi2XehyzLkmSpODJfIKlisIoWr9w7LJs=;
+        b=XzJRjCNGAXzomSO7o8Slu+KITn8Fps0OL8YPHf69LWrTnspTJFIkGFO9a8GC7HF5kC
+         ev0w9gIKO5I9Xv+Do+c8auOQ3JKS49HQs36RxjPcf4OtDou2oOfzyQMLWqo8dXwP5rei
+         ph7g3Cl7jPVo21Ipl4DRXJCpc4vd+KdAoBD08BXnVkIaEc6rWOnI28f59y5mhP970DY1
+         sdbzIHTCET+3PqLfM0tJG911uceE4yc91s/+oOzjOfEXZlgON9ikFD9QBdaqYJ8beeUU
+         lfZrc4ZcThUHHXBoo1fRjBWTEEUiZ+5pwVuK+h+JWEf6vC/E0M0NLE1cMT+W1Px78xfF
+         sPJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUfoiAJcAbhTuF2ER12Gkz5r7hJJ3gKBjF6feMqsaXW5nP96XmU6hMV3IkpzZOMiBL2Mpwi7n45jull8rYpM/IUKy0vlTu9ZT6cUs4z
+X-Gm-Message-State: AOJu0YzCMPqfDW9ueSJG6gU8fdSl+jDU1VaaMtwB0BuA9pgNqsO/3tF3
+	J8ZkOa9z7sAdBuSZx0t4U1r769BvQCgHR2YNKJuMYjEEl4hXXf/nug96sGjtImi9J9A8DjEWeZi
+	DBR/Dutw2XBaAaMp0uDFrpy6D/A5E9oTlLvhb9ZctIiTl5Lz3026w2uo=
+X-Google-Smtp-Source: AGHT+IE+RoLt5k2JULI6X9GFGSFEMdQXhvm51DH3fD6JnGX7qWXk0/4qq3TNwjG/8rhkq6b+hRB/4Uui4k2jTH6MCgPGFGga8iT0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c563:0:b0:365:88b:3fba with SMTP id
+ b3-20020a92c563000000b00365088b3fbamr344677ilj.1.1708940484825; Mon, 26 Feb
+ 2024 01:41:24 -0800 (PST)
+Date: Mon, 26 Feb 2024 01:41:24 -0800
+In-Reply-To: <eafaa9d3-9766-4bdc-8088-dc035a4b8004@linux.dev>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008a5b76061245b619@google.com>
+Subject: Re: [syzbot] [rdma?] KASAN: slab-use-after-free Read in rdma_resolve_route
+From: syzbot <syzbot+a2e2735f09ebb9d95bd1@syzkaller.appspotmail.com>
+To: yanjun.zhu@linux.dev
+Cc: jgg@ziepe.ca, leon@kernel.org, yanjun.zhu@linux.dev, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Lenovo P2 is a handset using the MSM8953 SoC released in 2016
+> #syz test: https://github.com/zhuyj/linux.git linux_6.8_rc4_rdma_cm
 
-Add a device tree with initial support for:
+This crash does not have a reproducer. I cannot test it.
 
-- GPIO keys
-- SDHCI (internal and external storage)
-- USB Device Mode
-- WCNSS (WiFi/BT)
-- Regulators
-
-Signed-off-by: Raihan Ahamed <raihan1999ahamed@gmail.com>
----
- arch/arm64/boot/dts/qcom/Makefile             |   1 +
- .../boot/dts/qcom/msm8953-lenovo-kuntao.dts   | 240 ++++++++++++++++++
- 2 files changed, 241 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/msm8953-lenovo-kuntao.dts
-
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 39889d5f8e12..aebfb1ae728c 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -49,6 +49,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-huawei-kiwi.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-longcheer-l9100.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-samsung-a7.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8939-sony-xperia-kanuti-tulip.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-lenovo-kuntao.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-motorola-potter.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-xiaomi-daisy.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8953-xiaomi-mido.dtb
-diff --git a/arch/arm64/boot/dts/qcom/msm8953-lenovo-kuntao.dts b/arch/arm64/boot/dts/qcom/msm8953-lenovo-kuntao.dts
-new file mode 100644
-index 000000000000..2fd6345bbe15
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8953-lenovo-kuntao.dts
-@@ -0,0 +1,240 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2024, Raihan Ahamed <raihan1999ahamed@gmail.com>
-+ */
-+/dts-v1/;
-+
-+#include "msm8953.dtsi"
-+#include "pm8953.dtsi"
-+#include "pmi8950.dtsi"
-+
-+/delete-node/ &qseecom_mem;
-+
-+/ {
-+	model = "Lenovo P2";
-+	compatible = "lenovo,kuntao", "qcom,msm8953";
-+	chassis-type = "handset";
-+	qcom,msm-id = <0x125 0x00>;
-+	qcom,board-id = <0x41 0x82b1 0x41 0x83b0>;
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gpio_key_default>;
-+
-+		key-volume-up {
-+			label = "Volume Up";
-+			gpios = <&tlmm 85 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_VOLUMEUP>;
-+			debounce-interval = <15>;
-+		};
-+	};
-+
-+	reserved-memory {
-+		qseecom_mem: qseecom@84a00000 {
-+			reg = <0x0 0x84a00000 0x0 0x1900000>;
-+			no-map;
-+		};
-+
-+		ramoops@8ee00000 {
-+			compatible = "ramoops";
-+			reg = <0x0 0x8ee00000 0x0 0x80000>;
-+			console-size = <0x40000>;
-+			ftrace-size = <0x15000>;
-+			record-size = <0x5000>;
-+			pmsg-size = <0x2000>;
-+		};
-+	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+};
-+
-+&hsusb_phy {
-+	vdd-supply = <&pm8953_l3>;
-+	vdda-pll-supply = <&pm8953_l7>;
-+	vdda-phy-dpdm-supply = <&pm8953_l13>;
-+
-+	status = "okay";
-+};
-+
-+&pm8953_resin {
-+	linux,code = <KEY_VOLUMEDOWN>;
-+	status = "okay";
-+};
-+
-+&rpm_requests {
-+	regulators {
-+		compatible = "qcom,rpm-pm8953-regulators";
-+		vdd_s1-supply = <&vph_pwr>;
-+		vdd_s2-supply = <&vph_pwr>;
-+		vdd_s3-supply = <&vph_pwr>;
-+		vdd_s4-supply = <&vph_pwr>;
-+		vdd_s5-supply = <&vph_pwr>;
-+		vdd_s6-supply = <&vph_pwr>;
-+		vdd_s7-supply = <&vph_pwr>;
-+		vdd_l1-supply = <&pm8953_s3>;
-+		vdd_l2_l3-supply = <&pm8953_s3>;
-+		vdd_l4_l5_l6_l7_l16_l19-supply = <&pm8953_s4>;
-+		vdd_l8_l11_l12_l13_l14_l15-supply = <&vph_pwr>;
-+		vdd_l9_l10_l17_l18_l22-supply = <&vph_pwr>;
-+
-+		pm8953_s1: s1 {
-+			regulator-min-microvolt = <863000>;
-+			regulator-max-microvolt = <1152000>;
-+		};
-+
-+		pm8953_s3: s3 {
-+			regulator-min-microvolt = <1224000>;
-+			regulator-max-microvolt = <1224000>;
-+		};
-+
-+		pm8953_s4: s4 {
-+			regulator-min-microvolt = <1896000>;
-+			regulator-max-microvolt = <2048000>;
-+		};
-+
-+		pm8953_l1: l1 {
-+			regulator-min-microvolt = <1000000>;
-+			regulator-max-microvolt = <1100000>;
-+		};
-+
-+		pm8953_l2: l2 {
-+			regulator-min-microvolt = <1000000>;
-+			regulator-max-microvolt = <1000000>;
-+		};
-+
-+		pm8953_l3: l3 {
-+			regulator-min-microvolt = <925000>;
-+			regulator-max-microvolt = <925000>;
-+			regulator-allow-set-load;
-+		};
-+
-+		pm8953_l5: l5 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8953_l6: l6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8953_l7: l7 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1900000>;
-+		};
-+
-+		pm8953_l8: l8 {
-+			regulator-min-microvolt = <2900000>;
-+			regulator-max-microvolt = <2900000>;
-+		};
-+
-+		pm8953_l9: l9 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3300000>;
-+		};
-+
-+		pm8953_l10: l10 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8953_l11: l11 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3000000>;
-+		};
-+
-+		pm8953_l12: l12 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <3000000>;
-+		};
-+
-+		pm8953_l13: l13 {
-+			regulator-min-microvolt = <3075000>;
-+			regulator-max-microvolt = <3125000>;
-+		};
-+
-+		pm8953_l15: l15 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8953_l16: l16 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+		};
-+
-+		pm8953_l17: l17 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3000000>;
-+		};
-+
-+		pm8953_l19: l19 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1350000>;
-+		};
-+
-+		pm8953_l22: l22 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <2850000>;
-+		};
-+
-+		pm8953_l23: l23 {
-+			regulator-min-microvolt = <975000>;
-+			regulator-max-microvolt = <1225000>;
-+		};
-+	};
-+};
-+
-+&sdhc_1 {
-+	vmmc-supply = <&pm8953_l8>;
-+	vqmmc-supply = <&pm8953_l5>;
-+
-+	status = "okay";
-+};
-+
-+&sdhc_2 {
-+	vmmc-supply = <&pm8953_l11>;
-+	vqmmc-supply = <&pm8953_l12>;
-+
-+	cd-gpios = <&tlmm 133 GPIO_ACTIVE_LOW>;
-+
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&sdc2_clk_on &sdc2_cmd_on &sdc2_data_on &sdc2_cd_off>;
-+	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
-+
-+	status = "okay";
-+};
-+
-+&tlmm {
-+	gpio-reserved-ranges = <0 4>, <135 4>;
-+};
-+
-+&usb3 {
-+	status = "okay";
-+};
-+
-+&usb3_dwc3 {
-+	dr_mode = "peripheral";
-+};
-+
-+&wcnss {
-+	vddpx-supply = <&pm8953_l5>;
-+
-+	status = "okay";
-+};
-+
-+&wcnss_iris {
-+	compatible = "qcom,wcn3660b";
-+
-+	vddxo-supply = <&pm8953_l7>;
-+	vddrfa-supply = <&pm8953_l19>;
-+	vddpa-supply = <&pm8953_l9>;
-+	vdddig-supply = <&pm8953_l5>;
-+};
--- 
-2.43.2
-
+>
+> =E5=9C=A8 2024/2/26 17:37, Zhu Yanjun =E5=86=99=E9=81=93:
+>> =E5=9C=A8 2024/2/23 18:51, syzbot =E5=86=99=E9=81=93:
+>>> Hello,
+>>>
+>>> syzbot found the following issue on:
+>>>
+>>> HEAD commit:=C2=A0=C2=A0=C2=A0 2c3b09aac00d Add linux-next specific fil=
+es for 20240214
+>>> git tree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 linux-next
+>>> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1793a064180=
+000
+>>> kernel config:=20
+>>> https://syzkaller.appspot.com/x/.config?x=3D176d2dcbf8ba7017
+>>> dashboard link:=20
+>>> https://syzkaller.appspot.com/bug?extid=3Da2e2735f09ebb9d95bd1
+>>> compiler:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Debian clang version 15.0=
+6, GNU ld (GNU Binutils for=20
+>>> Debian) 2.40
+>>>
+>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>
+>>> Downloadable assets:
+>>> disk image:=20
+>>> https://storage.googleapis.com/syzbot-assets/ac51042b61c6/disk-2c3b09aa=
+raw.xz
+>>> vmlinux:=20
+>>> https://storage.googleapis.com/syzbot-assets/012344301c35/vmlinux-2c3b0=
+9aa.xz
+>>> kernel image:=20
+>>> https://storage.googleapis.com/syzbot-assets/cba3c3e5cd7c/bzImage-2c3b0=
+9aa.xz
+>>>
+>>> IMPORTANT: if you fix the issue, please add the following tag to the=20
+>>> commit:
+>>> Reported-by: syzbot+a2e2735f09ebb9d95bd1@syzkaller.appspotmail.com
+>>>
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>> BUG: KASAN: slab-use-after-free in compare_netdev_and_ip=20
+>>> drivers/infiniband/core/cma.c:473 [inline]
+>>> BUG: KASAN: slab-use-after-free in cma_add_id_to_tree=20
+>>> drivers/infiniband/core/cma.c:513 [inline]
+>>> BUG: KASAN: slab-use-after-free in rdma_resolve_route+0x23f7/0x3150=20
+>>> drivers/infiniband/core/cma.c:3379
+>>> Read of size 4 at addr ffff88808dcf6184 by task syz-executor.4/11929
+>>>
+>>> CPU: 1 PID: 11929 Comm: syz-executor.4 Not tainted=20
+>>> 6.8.0-rc4-next-20240214-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine,=20
+>>> BIOS Google 01/25/2024
+>>> Call Trace:
+>>> =C2=A0 <TASK>
+>>> =C2=A0 __dump_stack lib/dump_stack.c:88 [inline]
+>>> =C2=A0 dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+>>> =C2=A0 print_address_description mm/kasan/report.c:377 [inline]
+>>> =C2=A0 print_report+0x169/0x550 mm/kasan/report.c:488
+>>> =C2=A0 kasan_report+0x143/0x180 mm/kasan/report.c:601
+>>> =C2=A0 compare_netdev_and_ip drivers/infiniband/core/cma.c:473 [inline]
+>>> =C2=A0 cma_add_id_to_tree drivers/infiniband/core/cma.c:513 [inline]
+>>> =C2=A0 rdma_resolve_route+0x23f7/0x3150 drivers/infiniband/core/cma.c:3=
+379
+>>> =C2=A0 ucma_resolve_route+0x1ba/0x330 drivers/infiniband/core/ucma.c:74=
+5
+>>> =C2=A0 ucma_write+0x2df/0x430 drivers/infiniband/core/ucma.c:1743
+>>> =C2=A0 vfs_write+0x2a4/0xcb0 fs/read_write.c:588
+>>> =C2=A0 ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+>>> =C2=A0 do_syscall_64+0xfb/0x240
+>>> =C2=A0 entry_SYSCALL_64_after_hwframe+0x6d/0x75
+>>> RIP: 0033:0x7f4eae47dda9
+>>> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48=20
+>>> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48>=20
+>>> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+>>> RSP: 002b:00007f4eaf2cd0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+>>> RAX: ffffffffffffffda RBX: 00007f4eae5abf80 RCX: 00007f4eae47dda9
+>>> RDX: 0000000000000010 RSI: 0000000020000440 RDI: 0000000000000003
+>>> RBP: 00007f4eae4ca47a R08: 0000000000000000 R09: 0000000000000000
+>>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+>>> R13: 000000000000000b R14: 00007f4eae5abf80 R15: 00007fff93bb3dc8
+>>> =C2=A0 </TASK>
+>>>
+>>> Allocated by task 11919:
+>>> =C2=A0 kasan_save_stack mm/kasan/common.c:47 [inline]
+>>> =C2=A0 kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+>>> =C2=A0 poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+>>> =C2=A0 __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
+>>> =C2=A0 kasan_kmalloc include/linux/kasan.h:211 [inline]
+>>> =C2=A0 kmalloc_trace+0x1d9/0x360 mm/slub.c:4013
+>>> =C2=A0 kmalloc include/linux/slab.h:590 [inline]
+>>> =C2=A0 kzalloc include/linux/slab.h:711 [inline]
+>>> =C2=A0 __rdma_create_id+0x65/0x590 drivers/infiniband/core/cma.c:993
+>>> =C2=A0 rdma_create_user_id+0x83/0xc0 drivers/infiniband/core/cma.c:1049
+>>> =C2=A0 ucma_create_id+0x2d0/0x500 drivers/infiniband/core/ucma.c:463
+>>> =C2=A0 ucma_write+0x2df/0x430 drivers/infiniband/core/ucma.c:1743
+>>> =C2=A0 vfs_write+0x2a4/0xcb0 fs/read_write.c:588
+>>> =C2=A0 ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+>>> =C2=A0 do_syscall_64+0xfb/0x240
+>>> =C2=A0 entry_SYSCALL_64_after_hwframe+0x6d/0x75
+>>>
+>>> Freed by task 11915:
+>>> =C2=A0 kasan_save_stack mm/kasan/common.c:47 [inline]
+>>> =C2=A0 kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+>>> =C2=A0 kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:586
+>>> =C2=A0 poison_slab_object+0xa6/0xe0 mm/kasan/common.c:240
+>>> =C2=A0 __kasan_slab_free+0x37/0x60 mm/kasan/common.c:256
+>>> =C2=A0 kasan_slab_free include/linux/kasan.h:184 [inline]
+>>> =C2=A0 slab_free_hook mm/slub.c:2122 [inline]
+>>> =C2=A0 slab_free mm/slub.c:4296 [inline]
+>>> =C2=A0 kfree+0x14a/0x380 mm/slub.c:4406
+>>> =C2=A0 ucma_close_id drivers/infiniband/core/ucma.c:186 [inline]
+>>> =C2=A0 ucma_destroy_private_ctx+0x14e/0xc10=20
+>>> drivers/infiniband/core/ucma.c:578
+>>> =C2=A0 ucma_close+0xfc/0x170 drivers/infiniband/core/ucma.c:1808
+>>> =C2=A0 __fput+0x429/0x8a0 fs/file_table.c:411
+>>> =C2=A0 __do_sys_close fs/open.c:1557 [inline]
+>>> =C2=A0 __se_sys_close fs/open.c:1542 [inline]
+>>> =C2=A0 __x64_sys_close+0x7f/0x110 fs/open.c:1542
+>>> =C2=A0 do_syscall_64+0xfb/0x240
+>>> =C2=A0 entry_SYSCALL_64_after_hwframe+0x6d/0x75
+>>>
+>>> The buggy address belongs to the object at ffff88808dcf6000
+>>> =C2=A0 which belongs to the cache kmalloc-2k of size 2048
+>>> The buggy address is located 388 bytes inside of
+>>> =C2=A0 freed 2048-byte region [ffff88808dcf6000, ffff88808dcf6800)
+>>>
+>>> The buggy address belongs to the physical page:
+>>> page:ffffea0002373c00 refcount:1 mapcount:0 mapping:0000000000000000=20
+>>> index:0x0 pfn:0x8dcf0
+>>> head:ffffea0002373c00 order:3 entire_mapcount:0 nr_pages_mapped:0=20
+>>> pincount:0
+>>> flags: 0xfff80000000840(slab|head|node=3D0|zone=3D1|lastcpupid=3D0xfff)
+>>> page_type: 0xffffffff()
+>>> raw: 00fff80000000840 ffff888014c42000 dead000000000100 dead00000000012=
+2
+>>> raw: 0000000000000000 0000000000080008 00000001ffffffff 000000000000000=
+0
+>>> page dumped because: kasan: bad access detected
+>>> page_owner tracks the page as allocated
+>>> page last allocated via order 3, migratetype Unmovable, gfp_mask=20
+>>> 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_N=
+OMEMALLOC),=20
+>>> pid 5149, tgid 5149 (kworker/1:4), ts 205905084555, free_ts 0
+>>> =C2=A0 set_page_owner include/linux/page_owner.h:31 [inline]
+>>> =C2=A0 post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1533
+>>> =C2=A0 prep_new_page mm/page_alloc.c:1540 [inline]
+>>> =C2=A0 get_page_from_freelist+0x33ea/0x3580 mm/page_alloc.c:3311
+>>> =C2=A0 __alloc_pages+0x256/0x6a0 mm/page_alloc.c:4567
+>>> =C2=A0 __alloc_pages_node include/linux/gfp.h:238 [inline]
+>>> =C2=A0 alloc_pages_node include/linux/gfp.h:261 [inline]
+>>> =C2=A0 alloc_slab_page+0x5f/0x160 mm/slub.c:2191
+>>> =C2=A0 allocate_slab mm/slub.c:2354 [inline]
+>>> =C2=A0 new_slab+0x84/0x2f0 mm/slub.c:2407
+>>> =C2=A0 ___slab_alloc+0xc73/0x1260 mm/slub.c:3541
+>>> =C2=A0 __slab_alloc mm/slub.c:3626 [inline]
+>>> =C2=A0 __slab_alloc_node mm/slub.c:3679 [inline]
+>>> =C2=A0 slab_alloc_node mm/slub.c:3851 [inline]
+>>> =C2=A0 __do_kmalloc_node mm/slub.c:3981 [inline]
+>>> =C2=A0 __kmalloc_node_track_caller+0x2d4/0x4e0 mm/slub.c:4002
+>>> =C2=A0 kmalloc_reserve+0xf3/0x260 net/core/skbuff.c:582
+>>> =C2=A0 __alloc_skb+0x1b1/0x420 net/core/skbuff.c:651
+>>> =C2=A0 alloc_skb include/linux/skbuff.h:1296 [inline]
+>>> =C2=A0 alloc_skb_with_frags+0xc3/0x780 net/core/skbuff.c:6394
+>>> =C2=A0 sock_alloc_send_pskb+0x91a/0xa60 net/core/sock.c:2794
+>>> =C2=A0 sock_alloc_send_skb include/net/sock.h:1855 [inline]
+>>> =C2=A0 mld_newpack+0x1c3/0xa90 net/ipv6/mcast.c:1746
+>>> =C2=A0 add_grhead net/ipv6/mcast.c:1849 [inline]
+>>> =C2=A0 add_grec+0x1492/0x19a0 net/ipv6/mcast.c:1987
+>>> =C2=A0 mld_send_cr net/ipv6/mcast.c:2113 [inline]
+>>> =C2=A0 mld_ifc_work+0x6bf/0xb30 net/ipv6/mcast.c:2650
+>>> =C2=A0 process_one_work kernel/workqueue.c:3146 [inline]
+>>> =C2=A0 process_scheduled_works+0x9d7/0x1730 kernel/workqueue.c:3226
+>>> =C2=A0 worker_thread+0x86d/0xd70 kernel/workqueue.c:3307
+>>> page_owner free stack trace missing
+>>>
+>>> Memory state around the buggy address:
+>>> =C2=A0 ffff88808dcf6080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb f=
+b
+>>> =C2=A0 ffff88808dcf6100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb f=
+b
+>>>> ffff88808dcf6180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
+>>> =C2=A0 ffff88808dcf6200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb f=
+b
+>>> =C2=A0 ffff88808dcf6280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb f=
+b
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>
+>>>
+>>> ---
+>>> This report is generated by a bot. It may contain errors.
+>>> See https://goo.gl/tpsmEJ for more information about syzbot.
+>>> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>>>
+>>> syzbot will keep track of this issue. See:
+>>> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>>>
+>>> If the report is already addressed, let syzbot know by replying with:
+>>> #syz fix: exact-commit-title
+>>>
+>>> If you want to overwrite report's subsystems, reply with:
+>>> #syz set subsystems: new-subsystem
+>>> (See the list of subsystem names on the web dashboard)
+>>>
+>>> If the report is a duplicate of another one, reply with:
+>>> #syz dup: exact-subject-of-another-report
+>>>
+>>> If you want to undo deduplication, reply with:
+>>> #syz undup
+>>
 
