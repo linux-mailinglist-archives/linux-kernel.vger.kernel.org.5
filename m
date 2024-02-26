@@ -1,125 +1,194 @@
-Return-Path: <linux-kernel+bounces-80910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A00A0866DEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:16:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED2E8866DF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 558071F285AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:16:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ADDB1C2377D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 459171759E;
-	Mon, 26 Feb 2024 08:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D0F481BD;
+	Mon, 26 Feb 2024 08:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YOGtk9ps"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oX1QNv/s";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kVXS+5AQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Pa6N4nXt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6T2U4WS+"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E2151E516
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E465F45C15;
+	Mon, 26 Feb 2024 08:32:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708936281; cv=none; b=Iv/x+jlZPwVxTiJJX1cmMh0WEcLjlSdWw8MSZtFdjgFnil960jNyWlPTgldomTg7K0MTvjv0Kc94OcMTNPLGa1yTVjmsGgob3d65Np9OrR2vUnwtSYPkr2pIh4PvG/NRgvTSRkdAzzrHlmQMhPO7I2H7LZDi4QoFRGoo6sEXTcc=
+	t=1708936339; cv=none; b=WD/SFskRfwW6zw50edJl/B15bIR5KEpzZFxYe/JuCybtO4jEyuPgSi3fmbN+Xmud5gsQIm4RweXpFbxmsKT/50rZaEhdr9uar6COB1MfRFH/G60iHfaGmOxUZLI2COx9BhUBlU6GU/EiH8/ZjZ0Vfs/7+G24MNfeSsIw8tjWQcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708936281; c=relaxed/simple;
-	bh=Dygiyz1OnjTfaz+BngVouI977noQ0Hft298bDIocTX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qsswAsSMa5znKONs8953bHRcWMDG9lkGmlmU4nzhDgdw5/P5gNZHH1he8GF+z4rpmyv2+apN7OHZJuVQmxbGs/13WS7gRYcgTbS1yytS+jDN7VX1hFx57n8S0WQzNRATUkvGcu+Dzieg6Cg2+dN6VMFrAQCsFisn0DTwD7yWIMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YOGtk9ps; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708936278;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1708936339; c=relaxed/simple;
+	bh=T0a3wdRVtsycBiIf77BP4SMHFUGD0zsy5Ek93RlMHcQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FkT/b8E9BAHzQef22R5eTTogXjNGszN0YKvJ7sCEZu/XuJD2KlgK0IF2GKnpEEc+N3BDPtlWltwoLmk3/g5ptGjU+XQhvAYsHR9/0vxUpdoGopYd9UtAhh4cRgFtEwI6EHLbEkE07Y04F4kOhk0nhKqlTR2DIj1I9lCX1uJLLdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oX1QNv/s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kVXS+5AQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Pa6N4nXt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6T2U4WS+; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C980B1F911;
+	Mon, 26 Feb 2024 08:32:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708936333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TfCEbsiS180Pzdnz3BmbeixICS+mxWP3WbokAEMsGb4=;
-	b=YOGtk9psPqfjwRTvtstQ8Jvw8KUYvgopM9O01PygNulUc8MvJMtDg82YwaUdLRzte9L4HD
-	eEi9D5WzQk+abMUf8rpKaxTsS3l4ftq86fh9gwunA3tbFaZCrQXxsdx+4rcfH38e1Diy5C
-	0BXHnSXaRNYJ18ZvY0Kz+6EkfqcyMgM=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-213-vc6YpDizM5692yWiS9WCpA-1; Mon, 26 Feb 2024 03:31:15 -0500
-X-MC-Unique: vc6YpDizM5692yWiS9WCpA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a3ec1d8b1e2so139416666b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 00:31:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708936274; x=1709541074;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TfCEbsiS180Pzdnz3BmbeixICS+mxWP3WbokAEMsGb4=;
-        b=vkb5AzNZV58X542Q9+maR6QwyCyJp1bEeg4XgORJmRi/LC420i0LHETRkMiwn9xjFa
-         QYdC0ukQ6fbpyfB3doG8kfGdGpXIL8ZTqG7nKAM11o/db7Sr6C9qwsywP0G40f/HDPFQ
-         0jRhTvVL1FdNcju+vU1xJ1v3fv+6GzAChWQw1MAjw5706TL0sy9aluQ+yH54+eOiLoeg
-         cwEFL95bZ56oDR+dQ/0whcGLs+YdR0pX6SHax62KVHyM6sQdXUR2stTxmg4EhnuADzM3
-         4bxzfdL6zkrGo6gvaTH4hOdbwcFc7Ih1zIUg6xnmO2V93DN2rtaPtSwjm8ls5UtJVK+M
-         /Orw==
-X-Forwarded-Encrypted: i=1; AJvYcCX8LxoQbw5WKUx+sddN2+lXeyZk8B/jgaLN0/Gw5yxn21Je4nePKkWHjZUSrwEALLkeqlDDCY+QKrve5P5mJBQeHxZTg8RC0WaxnfgA
-X-Gm-Message-State: AOJu0Yz/O/KgB/5H6SQtdB4ndLE6RV8AIcZmk31QqcSpiCO0n3ik4cpO
-	ueQ2xE6IOmobl8ySc+u3SLoG1lL8IpB5d3AgnohS1/H64VfnpVuMS0iE3MSA3y1ctkO26NVrX25
-	M3Ad7Z7te+D9rvS3hL0TEIkiWJexAQ+2ZcnA9U190DqSP1rQFm7jByMjpTlG1Hw==
-X-Received: by 2002:a17:906:a44d:b0:a3d:9a28:52e6 with SMTP id cb13-20020a170906a44d00b00a3d9a2852e6mr4010968ejb.50.1708936274467;
-        Mon, 26 Feb 2024 00:31:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHkiK6ZRARULAZlIUD5UEKkd5/oLyZp7eTkoe/Z67A7OQ0GXsH51rC970dStdoLZ85YatD2eQ==
-X-Received: by 2002:a17:906:a44d:b0:a3d:9a28:52e6 with SMTP id cb13-20020a170906a44d00b00a3d9a2852e6mr4010953ejb.50.1708936274154;
-        Mon, 26 Feb 2024 00:31:14 -0800 (PST)
-Received: from sgarzare-redhat (host-87-11-6-148.retail.telecomitalia.it. [87.11.6.148])
-        by smtp.gmail.com with ESMTPSA id vk3-20020a170907cbc300b00a42fe08081fsm1874734ejc.47.2024.02.26.00.31.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 00:31:13 -0800 (PST)
-Date: Mon, 26 Feb 2024 09:31:11 +0100
-From: Stefano Garzarella <sgarzare@redhat.com>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com, 
-	edumazet@google.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	horms@kernel.org, 
-	"open list:VM SOCKETS (AF_VSOCK)" <virtualization@lists.linux.dev>
-Subject: Re: [PATCH net-next 2/2] net/vsockmon: Do not set zeroed statistics
-Message-ID: <rqyg27a7ukbrg7wz44jqliv3ckl6ub6fnpdcpxsutw3yyczajm@iqzvhw4rqdy6>
-References: <20240223115839.3572852-1-leitao@debian.org>
- <20240223115839.3572852-2-leitao@debian.org>
+	bh=JyXqqDQ2t8ePG++k2k0I3bejH0Ru+OjYUizfw98W8JI=;
+	b=oX1QNv/s+OMiW+SxXCMZIsDsHvnifJyIx5BVVRWnaN/4Vy3m2JkCiClnoWtfB54mFDHiaB
+	BJohmwiZsnOD9bUIldBaAOsyhx301u07w9ncLstXd5ufsFSNyRp2w46HnGs2pXSgreKcEy
+	ks6L8h/VQdR8vFG0UyuEnMNWuDrgqw4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708936333;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JyXqqDQ2t8ePG++k2k0I3bejH0Ru+OjYUizfw98W8JI=;
+	b=kVXS+5AQywkgJ9EDUzh2zOQHBdvctwRgUTTG2JxyfvrOdGUIvQU3FtdJrmZNZlviJlpZVF
+	iqfeoQRO6tTs4VBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708936332; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JyXqqDQ2t8ePG++k2k0I3bejH0Ru+OjYUizfw98W8JI=;
+	b=Pa6N4nXtUw4v1BPnCvq1WsAST1pWYpiXckWmtHPaXoJgOBieI3Vp5AYTkF+HYuHXlYOfBY
+	U8F0SsCn/NE2yEO2UyOaPz/WCLAsxjyOSsA64eGVCK6TbICAXFZZZ99H/LYAUOxXJ1acrK
+	NHmw34aaYu3llC/PTZaNswdFxoXFfJI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708936332;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JyXqqDQ2t8ePG++k2k0I3bejH0Ru+OjYUizfw98W8JI=;
+	b=6T2U4WS+HjgY1KoJJdHz5U6Uvzn3CX5ln+t5kEcZF0/4srMecPsI83y3UtOUCb+MXqfjwG
+	CRTFw/hq+Np9EFDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B1F5E13A58;
+	Mon, 26 Feb 2024 08:32:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hkcYK4xM3GVOEgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 26 Feb 2024 08:32:12 +0000
+Message-ID: <cb1e2218-9a50-4c42-8a46-a35193208442@suse.cz>
+Date: Mon, 26 Feb 2024 09:32:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240223115839.3572852-2-leitao@debian.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ceph: remove SLAB_MEM_SPREAD flag usage
+To: Xiubo Li <xiubli@redhat.com>, Chengming Zhou <chengming.zhou@linux.dev>,
+ idryomov@gmail.com, jlayton@kernel.org
+Cc: ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, roman.gushchin@linux.dev, Xiongwei.Song@windriver.com,
+ Chengming Zhou <zhouchengming@bytedance.com>
+References: <20240224134715.829225-1-chengming.zhou@linux.dev>
+ <b6083c49-5240-40e3-a028-bb1ba63ccdd7@redhat.com>
+ <d91e3235-395a-4e63-8ace-c14dfaf0a4fd@linux.dev>
+ <35df81f5-feac-4373-87a3-d3a27ba9c9d4@redhat.com>
+ <82c2553f-822e-40c2-9bf8-433689b3669d@linux.dev>
+ <69589d2f-978d-4d14-9e5f-6bd6b3a43062@redhat.com>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <69589d2f-978d-4d14-9e5f-6bd6b3a43062@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Pa6N4nXt;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=6T2U4WS+
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FREEMAIL_TO(0.00)[redhat.com,linux.dev,gmail.com,kernel.org];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -4.50
+X-Rspamd-Queue-Id: C980B1F911
+X-Spam-Flag: NO
 
-On Fri, Feb 23, 2024 at 03:58:38AM -0800, Breno Leitao wrote:
->Do not set rtnl_link_stats64 fields to zero, since they are zeroed
->before ops->ndo_get_stats64 is called in core dev_get_stats() function.
->
->Signed-off-by: Breno Leitao <leitao@debian.org>
->---
-> drivers/net/vsockmon.c | 3 ---
-> 1 file changed, 3 deletions(-)
+On 2/26/24 05:54, Xiubo Li wrote:
+> 
+> On 2/26/24 12:30, Chengming Zhou wrote:
+>> On 2024/2/26 12:23, Xiubo Li wrote:
+>>> On 2/26/24 10:42, Chengming Zhou wrote:
+>>>> On 2024/2/26 09:43, Xiubo Li wrote:
+>>>>> Hi Chengming,
+>>>>>
+>>>>> Thanks for your patch.
+>>>>>
+>>>>> BTW, could you share the link of the relevant patches to mark this a no-op ?
+>>>> Update changelog to make it clearer:
+>>>>
+>>>> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
+>>>> removed as of v6.8-rc1, so it became a dead flag. And the series[1]
+>>>> went on to mark it obsolete to avoid confusion for users. Here we
+>>>> can just remove all its users, which has no functional change.
+>>>>
+>>>> [1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
+>>> Thanks for your quick feedback.
+>>>
+>>> BTW, I couldn't find this change in Linus' tree in the master and even the v6.8-rc1 tag, please see https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/include/linux/slab.h?h=master.
+>>>
+>>> Did I miss something ? Or has this patch been merged ?
+>> You're right, this patch hasn't been merged. But it's already a dead flag as of v6.8-rc1.
+>>
+>> Update changelog to make it clearer:
+>>
+>> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
+>> removed as of v6.8-rc1, so it became a dead flag since the commit
+>> 16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"). And the
+>> series[1] went on to mark it obsolete to avoid confusion for users.
+>> Here we can just remove all its users, which has no functional change.
+>>
+>> [1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
+>>
+>> Does this look clearer to you? I can improve it if there is still confusion.
+> 
+> Yeah, much clearer, thanks!
+> 
+> Maybe we should just wait for the [1] to get merged first ?
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-
->
->diff --git a/drivers/net/vsockmon.c b/drivers/net/vsockmon.c
->index a0b4dca36baf..a1ba5169ed5d 100644
->--- a/drivers/net/vsockmon.c
->+++ b/drivers/net/vsockmon.c
->@@ -46,9 +46,6 @@ static void
-> vsockmon_get_stats64(struct net_device *dev, struct rtnl_link_stats64 *stats)
-> {
-> 	dev_lstats_read(dev, &stats->rx_packets, &stats->rx_bytes);
->-
->-	stats->tx_packets = 0;
->-	stats->tx_bytes = 0;
-> }
->
-> static int vsockmon_is_valid_mtu(int new_mtu)
->-- 
->2.39.3
->
+It's really not necessary to wait, [1] just makes it explicit but the flag
+is really effectively dead since v6.8-rc1 because nothing acts on it.
 
 
