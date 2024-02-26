@@ -1,81 +1,83 @@
-Return-Path: <linux-kernel+bounces-82106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C76CE867F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:54:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 809F0867F5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CDDF1F2B606
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:54:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B15DD1C21860
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C24712EBC1;
-	Mon, 26 Feb 2024 17:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A623112E1F3;
+	Mon, 26 Feb 2024 17:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="jRI2fyrP"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qQt090mt"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFB212DD9B;
-	Mon, 26 Feb 2024 17:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A648612DDAB
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708970031; cv=none; b=TiNAujRF+9Fe4Lx0HuhZRoS/bRN4y9+85cj/6emYyKb0TIBimPUNjQ4b7UWO4IMI1EMhGU1bYkpPHiue3JVj7RVjyTnWhKHKXYgOjRWg/A7hnEibhjNqicBRrBNFLvLbZPMSXXiSlcX+9L3xNiI/gAOtybncFpQtaE3/UfKxgGY=
+	t=1708970058; cv=none; b=jcLJCltNmO2ETdBz9IikD52tWVwK6UPIR1ycCUxxWn6MPRiEYxd67Kw8ZoeECXV5LD3IpqH+yhi+GXtAWR/Bqomg2nnk00dm/vHhtavZlUiawg517KymKK40T0O1SGYYBLIc8a6ukz/d/BsYdd4tYV+oRVkK3w5HWyceBA5Bqa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708970031; c=relaxed/simple;
-	bh=6fa34faceJzMXzcYCnRXGvqxI3/PFGNUCWHcn+SeQZ4=;
+	s=arc-20240116; t=1708970058; c=relaxed/simple;
+	bh=nCBprRl7elMDgsu3Q+VfUSyqkYGuj7H5ht+7Gk7lqw4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JCGx1wL0cvOxDOyrRVzf1RoftPLgcL5yEmq7348ccPcZpB62YeCH/HI+BQLW2MiViHux4e9XtE2ueM9NJepDC1ec229NhfOMv/eh1ARNQwtWU+Uq+R1yZnhoUC1n9hgAlGSdvSfSZHlMHIiQainJaAO0qz79ZcAw7pBxO/JwC/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=jRI2fyrP; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=1p1DkU003gUsxt6igF3+hBD3UuLE8cg1CfVd//JadfU=; b=jRI2fyrPeFscsV9g9f+myW5X2z
-	hdyGQwdM2T8fz2FQw7aITmvRPFIwHyNUzWdCi70QGWjYTZZuQquWYgXY/3rmX/7+P7g53P+JJssDU
-	vV5PExCJxuco9vKsedkgIKHdJYmtIlNDBcJtzOAZvE0xvZSKAUTyqqvExhVD6vQukWs5A7hvPnwJh
-	kd67N4mO74vp5jRmBNWieIkt5d87lhrFw+bb0H6E0fZhfJKF9N1+gtjhBgpr37wVp81OrqrvPNHYz
-	B5CcciKj4X1e4QZZRgwmbpdllbxLHCxh79oLwe1JEJgVY1+FdsrgfnAykQcsuRzJMgmvvfb6lS1q9
-	dN2gPVJw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48730)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1refAV-0004Y9-35;
-	Mon, 26 Feb 2024 17:53:36 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1refAR-0006cv-9Z; Mon, 26 Feb 2024 17:53:31 +0000
-Date: Mon, 26 Feb 2024 17:53:31 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Florian Fainelli <florian.fainelli@broadcom.com>
-Cc: Andrew Lunn <andrew@lunn.ch>, Oleksij Rempel <o.rempel@pengutronix.de>,
-	Wei Fang <wei.fang@nxp.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	Shenwei Wang <shenwei.wang@nxp.com>,
-	Clark Wang <xiaoning.wang@nxp.com>,
-	NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH net-next v6 5/8] net: phy: Immediately call adjust_link
- if only tx_lpi_enabled changes
-Message-ID: <ZdzQG6t2slqEyH0m@shell.armlinux.org.uk>
-References: <20240223094425.691209-1-o.rempel@pengutronix.de>
- <20240223094425.691209-6-o.rempel@pengutronix.de>
- <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
- <84e1368d-ec6a-48af-945b-509528c45dff@lunn.ch>
- <Zdic+ua5LnWxjLPn@shell.armlinux.org.uk>
- <6af3406a-7968-41e5-bf6e-71d020d8b28a@broadcom.com>
- <Zdot-Mqw1z4ZEo8v@pengutronix.de>
- <c6b0716d-f093-4aba-8453-c89a562ab581@lunn.ch>
- <e679f467-d4cd-4a1e-9bfc-92e2c9bf35d4@broadcom.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jf6JYOzhWl31bUT+EgflOzZl81WaNJMm7SBbZ/4Q1MH9kHhIshJGnRciMBFERbF+wCKd/L45mHatnH2cyo+6tFFGPEKZ/u2HkSZZD/+3rgk3cR9rAaOKAhFQZfPc2a/dpt3vZLomCrhV7URFJdO9OX8kvJsQyyonW0IwgZBMeN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qQt090mt; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc929e5d99so2575ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:54:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708970056; x=1709574856; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GsVc7UlGcxsksaiQoEbRw4jQmn28hv1EysTPYoFH4v0=;
+        b=qQt090mthgDxxIg7cca73kASeyRqpKdPYVQHaSPC9ZwzTR7xsPnXbaZXqiBh8cHJNR
+         dNym9qdAt0EKdEVOb6otlicinuqr2meOdof1Zzs7Mr4O7CPqR82GNNq7fnn1zDsz/oTc
+         13f31pcOO7ldbtkoS/8K1CN4WWCJCHisWFmOL5pKqdrvN1KfAPchWPD9VRJvHOqY948d
+         HoAiVQx4XLvYvQjnckHY2pHA68lDigbPzsI+bHwY/7gPcBZIvd2xt0YDmKn70bSF3lCr
+         VKQ9MxmvQdULWBR4QtKaBJd54OabHf360d2Uo2cpwjWlkCLTs/8eWuhpRYVzXY+/xXdy
+         tAeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708970056; x=1709574856;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GsVc7UlGcxsksaiQoEbRw4jQmn28hv1EysTPYoFH4v0=;
+        b=WqOVOHZ38Zn9R50Vk+0IFgjdI/T9PJhcw5d8hdFHONQ18jqyRL1eZGT9TvkKhSP8wD
+         QFsO3OZCfAKPRa1Dvg1lOxQeNiC5Pkavngaz2SWZ7r2hBpl3xFuylGdeHZxrsxQiLa48
+         oNJzvORqtIp9yKuI+otjMBuYoiLrHHBjjz23K+8LWKpNAuVsFMMisgqXmvwXsr2qh6sF
+         TvMMiHj1DoNUZ7qxjEi7/AjYfdwM2io4RrNFX+Wc38U7XvPvSvAeN+Pi5eS8MSrg0JWI
+         tH3wN0Rb8or46NFS7mhDBTWOtiGmr35m3t6ZSfPy1jvoFPDKIbcgCKM1H04r9h3e4P3Y
+         HCpg==
+X-Gm-Message-State: AOJu0YwXYp8bjeNHwZTyo1Ui0u0Fc/23XA5Qr4CclyFjn8R5XkLcqoG2
+	4LNVTYEAWuLHg3AFLS6bpNT9hCubDAwbMz1BLxlBp0b16QRVEi1Nvh19vspo+g==
+X-Google-Smtp-Source: AGHT+IEKS+AHrTe6LkZiDSjgsfP6iF+EINahMbkhYCIk/j6xzJ+g+VP+sDOgg3c5X7EajAMHMBrYYA==
+X-Received: by 2002:a17:902:788a:b0:1db:4f08:4b10 with SMTP id q10-20020a170902788a00b001db4f084b10mr418657pll.21.1708970055598;
+        Mon, 26 Feb 2024 09:54:15 -0800 (PST)
+Received: from google.com (96.41.145.34.bc.googleusercontent.com. [34.145.41.96])
+        by smtp.gmail.com with ESMTPSA id a25-20020a62e219000000b006e48e0499dfsm4312212pfi.39.2024.02.26.09.54.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 09:54:14 -0800 (PST)
+Date: Mon, 26 Feb 2024 09:54:11 -0800
+From: William McVicker <willmcvicker@google.com>
+To: "Duffin, Cooper" <cooper.duffin@intel.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	"kw@linux.com" <kw@linux.com>,
+	"jingoohan1@gmail.com" <jingoohan1@gmail.com>,
+	"gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+	"lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+	Ajay Agarwal <ajayagarwal@google.com>
+Subject: Re: Kernal patch Add support for 64-bit MSI target address
+Message-ID: <ZdzQQyAZtaxlr6sS@google.com>
+References: <SN7PR11MB8281C67DF5E5B9EE8A1B9FFBF3572@SN7PR11MB8281.namprd11.prod.outlook.com>
+ <SN7PR11MB82814D44B70D213918566050F35A2@SN7PR11MB8281.namprd11.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,21 +86,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e679f467-d4cd-4a1e-9bfc-92e2c9bf35d4@broadcom.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <SN7PR11MB82814D44B70D213918566050F35A2@SN7PR11MB8281.namprd11.prod.outlook.com>
 
-On Mon, Feb 26, 2024 at 09:50:02AM -0800, Florian Fainelli wrote:
-> This is the source of the concern, we don't know which MAC drivers we might
-> end-up breaking by calling adjust_link(link == 1) twice in a row, hopefully
-> none, because they should be well written to only update the parameters that
-> need updating, but who knows?
+On 02/26/2024, Duffin, Cooper wrote:
+> Hello,
+> 
+> I was looking at [v5,2/2] PCI: dwc: Add support for 64-bit MSI target address - Patchwork (ozlabs.org)<https://patchwork.ozlabs.org/project/linux-pci/patch/20220825185026.3816331-3-willmcvicker@google.com/> and I was curious if there was a plan to have it merged with the main Linux kernel branch? It seems like it would be a great addition.
+> 
+> Regards,
+> 
+> -Cooper Duffin
 
-Just quickly... There are some (I went through a bunch.) They don't
-support EEE. I haven't been through all though, so there could be
-some which support EEE and where adjust_link() with phydev->link=true
-twice in a row could result in badness.
+Hi,
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+This patch has gone through a number of revisions in the past few weeks. You
+can find the latest revision here:
+
+  https://lore.kernel.org/all/20240221153840.1789979-1-ajayagarwal@google.com/
+
+Based on the reviews it seems like it will get picked up, but I'm not sure if
+it will make it into v6.9 though.
+
+Regards,
+Will
 
