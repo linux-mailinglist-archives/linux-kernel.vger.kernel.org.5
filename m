@@ -1,74 +1,79 @@
-Return-Path: <linux-kernel+bounces-82447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 876188684B1
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5F158684B2
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D4BC1C2273B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:46:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3105B22025
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:45:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56C13135A78;
-	Mon, 26 Feb 2024 23:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3357135A5F;
+	Mon, 26 Feb 2024 23:45:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fOEEIWd3"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EU8PAxe+"
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A43135A46;
-	Mon, 26 Feb 2024 23:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634AB135A7A;
+	Mon, 26 Feb 2024 23:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708991145; cv=none; b=OjD29ngl2hE6qYc/ZSObyLiS1yITjRhbu+lxjx9zIVMlQDoOY0ARxB3Isz+psXFQqaMkANMerWzJdVctbHpu5/yTbxwASzJIIj56Wxg66rUsTMwlCI7BGAAcMDqAtdAGaaAl/So5y7bRwS9LvaUcg21QjUsVwRNGcRu4LZwNKLo=
+	t=1708991143; cv=none; b=enCzWm2Ny13/JIWUiTQCe4KUHWPIMjPZR6nlccnnV1l6cBQdJwj7qnWP57Kh7VrsxsI/nXCIR66iw17nKtMANq+vcN7i3cqmc/j45lkzg3HblEOR6Es1Ij2e+uiY7torkMAYqGNSa6R0ZjBDDTDincjCWlbNS4iR+Nh06PPz/0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708991145; c=relaxed/simple;
-	bh=TtompIHgbeY/OA3WXAshQm3+E9k8UAMGdrcANzV0VD4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LeNRka4+D/pisGjpIn50ajGLPOpZasPIRtnZQRNsOJ97s6XAcwDZAAZ/LaqwGdQZqOq5nVykmzlsiRXc7ueLeSigYTSQMigsVnchW9jglWFuyNexPWPeTCvUSyll8GSe1/bl1L/NpapQe3cqossLL1JKA/76KKcsFoiQNukYir4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fOEEIWd3; arc=none smtp.client-ip=209.85.166.54
+	s=arc-20240116; t=1708991143; c=relaxed/simple;
+	bh=XgqOTJb39qn6qfwvzC4Xjd8T0w2B1vbycueYW2K2slw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Nnd2HSCbjcKcNF1dgfEl8D04fWaKiBvjffHSwqbLhGV4cHkwCPSDgCz2lnl8QkrRq/bRwk8E5SoERbd2FmnE/ikCLuyCFL23ifXzShSPy096oZJCPxpU2pBfM5QkS814o70N3te2tDItXRZms5F6WbPKKgYFHxCGXLmaT54wbYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EU8PAxe+; arc=none smtp.client-ip=209.85.166.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7c7964d109aso143349839f.2;
-        Mon, 26 Feb 2024 15:45:38 -0800 (PST)
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-3651d6dea15so12392605ab.1;
+        Mon, 26 Feb 2024 15:45:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708991137; x=1709595937; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YWIbvre+rElW1Hi4Tns90pWqujeQfsqDKyIvXn+Wd7Y=;
-        b=fOEEIWd3086f1u4xx4mKSytKgBkEHsP1A4cNmsfb9LmOwWL+UO/DUAHNMLmdf/PnMr
-         crVfgaTuNrk7R9Ts6jWRs2yIwqV9DF4+dkboPyyFf9td4QsxnCJ2Yzum8l4fC+PJna7f
-         xAo4FqU01JkAJGLyyguJrKygpkiTE+JiRb+PITD3M98ZR8/Qg/zvYwbisM7lbA5Idsbz
-         AZ+aCEIVcexK4Ugbf9GjdVV0kt35BBSOJwaY2ot9nHEftHXeAhK6T3U1Z6w71q76+tWB
-         /dOAkOzvWxyZk4jZu2bZ7JkrC9ljChBvEGCuiXOy1bdOGnLGS9vuUgEcnFC4A9w5yOBe
-         uCCA==
+        d=gmail.com; s=20230601; t=1708991139; x=1709595939; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ENJCVwViqySP78QQC22e16vdfpVFUmVF6XiIGfyzNm8=;
+        b=EU8PAxe+VgumJUzw7MzB47y5YXZadvE26yszmZtCxus791HV/z7xdqu8Bd7eWVKuTB
+         vOY91l7KY6dwCXU44hKv8KhuOPp+3cXgsRnl7TBppKyPbdZGyy1+b651mielcXledxvR
+         qpU+keFQ5U/jmJHHRfU/jnOm3gQ4l7PmlReFWjoiZIpy2FVXOB3swSfa4Co677nOhFmN
+         bft+IjS2jlbpco/Ow5Gjr/VJokfuiBPz4//VuB5QMedOUZbzvdn1/CXG31sOwXhEOYK4
+         lZfVNrDBoeJshC02a8dfR1zS3+9crK2eM0wUEB0DBe+JWqw4Vk9pJsftwy3AJFf9bVTq
+         Xaew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708991137; x=1709595937;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YWIbvre+rElW1Hi4Tns90pWqujeQfsqDKyIvXn+Wd7Y=;
-        b=cflUdTP4bNa58z5PEwYkfsUeKWNWoLubiCM+zNxFBvi9XvKZt+amyI5c4oeTcbhSNF
-         KGvCvTVhQ+GaDN8BX2kXXr3zCPQX4iEj//TjYQ/h+Zb64hDLHdOxIz5T/gyELeyb2Jf6
-         vrVmM+V+kOGljgKjZeaGsxbmXM+tOXnnaTYk2kXdwqfuagUKCBMiq6H0Jpq1cSRUdYq/
-         fAg41CCLbhNw+aFdsP7SYr/PpYUnLLlxUr8S0zhkbC4BR8EAbbUkmTfkr6h/tcwj7EnB
-         o+koZSN9biBvxHa6XL69XIF9mUNr29JmZLyk75TrSvBMfrFRAteviY1aUUuZ2r0J5QsX
-         xHFg==
-X-Forwarded-Encrypted: i=1; AJvYcCXmWipvJLHX/AOthJl77YI21ruK4f/mHS5y1uJnNArAQP+LPsvdIuwhZvdlYrXYN2zi35nI8KVKe/RDmxqd6Q+7/50Thi/Xv/0Lb1JccZhvwzQaJO/dRTUHfPDo3sh3GzXyo2KVWBiURQ==
-X-Gm-Message-State: AOJu0Yy0F6gNYuaOY7udtskAuMKC7LPeQ6CCnj6FYO9JRdN1T//yEF8S
-	ZibW49Zr2s1AZwsU/+lthIySx+Bi0vjkYj9jMXzFgDkDh+vibGsC
-X-Google-Smtp-Source: AGHT+IEFd1YNIU2pFTFYWayiyy5owHCUX8d2oFahEMWR2wOBYQt4gvySx+O01SGAjDhoU7jBjgwbnA==
-X-Received: by 2002:a05:6602:1d01:b0:7c7:da5e:3a61 with SMTP id hh1-20020a0566021d0100b007c7da5e3a61mr2215880iob.9.1708991136677;
-        Mon, 26 Feb 2024 15:45:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708991139; x=1709595939;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ENJCVwViqySP78QQC22e16vdfpVFUmVF6XiIGfyzNm8=;
+        b=RVy2Upt5kLWRuf5Jpe4YFNr4tK9ZQuhjvS3uGGjWPot30Pz1iplS4ygob5JHqIKwxl
+         ErFT9jCGdkqziNCCvh6TNetM/ouHix6ae3kj3HWqwyUXy+Xa23xasNBKy7nXMk/k2mDG
+         NAAHTQSMljez9eDNWkw0HjUFePpoJG3xkkUt2q+Uy3lSvNtB9zz0UpQ6Q62ZZ5IhUCGi
+         Q6PTsrf/NPKgh07pFcJtXyknMtkbLXwAw2XvqjhMBAdtltn/1cm616NhPjxB7dMZBMeT
+         gxJnsnSChyfUt9YbxexhTPc65CSh+halQWkj0n01cPbf/gqwM5uE7zdn+nFnfYdes4gs
+         zgZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUr+Z83Y7mUWplde0dru9oOMPpV+3HJcg3HU5x9fqIAVdo8KLTgktZS7GhYtF2LdJV731iv74JSy/FhMFtkajMxHdKvwWRqE6n7B8TqWLp3XpO6CqxAXXVGinJmArX7UsdY8KjJRHSFng==
+X-Gm-Message-State: AOJu0YxwFV4Z1XP48yQP7yQdQs3YAEwPasKeSpL4G7xLCGbZ89N0veW3
+	hZpPR/lCpUZJd0y/Xf0tkZd+ad37zrcgytzd/JlX6DqBX2HYGueB
+X-Google-Smtp-Source: AGHT+IE0Qm5yQ6rNCxa0d3sGukCo6hDILzXZzbUGhgTRn/EM30OHE3gVJrckX3sKvHnVgYCb1ktBmA==
+X-Received: by 2002:a05:6e02:1a45:b0:365:4e45:5436 with SMTP id u5-20020a056e021a4500b003654e455436mr5629213ilv.15.1708991138844;
+        Mon, 26 Feb 2024 15:45:38 -0800 (PST)
 Received: from aford-System-Version.lan ([2601:447:d002:5be:9c95:d061:819a:2ab2])
-        by smtp.gmail.com with ESMTPSA id c25-20020a023319000000b004741cf1e95esm1545317jae.11.2024.02.26.15.45.35
+        by smtp.gmail.com with ESMTPSA id c25-20020a023319000000b004741cf1e95esm1545317jae.11.2024.02.26.15.45.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 15:45:36 -0800 (PST)
+        Mon, 26 Feb 2024 15:45:38 -0800 (PST)
 From: Adam Ford <aford173@gmail.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-phy@lists.infradead.org
 Cc: aford@beaconembedded.com,
+	Lucas Stach <l.stach@pengutronix.de>,
 	Adam Ford <aford173@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
 	Vinod Koul <vkoul@kernel.org>,
 	Kishon Vijay Abraham I <kishon@kernel.org>,
 	Rob Herring <robh@kernel.org>,
@@ -80,88 +85,120 @@ Cc: aford@beaconembedded.com,
 	Fabio Estevam <festevam@gmail.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
-	Lucas Stach <l.stach@pengutronix.de>,
 	devicetree@vger.kernel.org,
 	imx@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH V6 0/6] soc: imx8mp: Finish support for HDMI
-Date: Mon, 26 Feb 2024 17:45:11 -0600
-Message-ID: <20240226234532.80114-1-aford173@gmail.com>
+Subject: [PATCH V6 1/6] dt-bindings: phy: add binding for the i.MX8MP HDMI PHY
+Date: Mon, 26 Feb 2024 17:45:12 -0600
+Message-ID: <20240226234532.80114-2-aford173@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240226234532.80114-1-aford173@gmail.com>
+References: <20240226234532.80114-1-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+From: Lucas Stach <l.stach@pengutronix.de>
 
-Adam Ford <aford173@gmail.com>
-Sat, Feb 17, 10:16 PM (9 days ago)
-to linux-arm-kernel, linux-phy, aford, me, Vinod, Kishon, Rob, Krzysztof, Conor, Shawn, Sascha, Pengutronix, Fabio, NXP, Catalin, Will, Lucas, devicetree, linux-kernel
+Add a DT binding for the HDMI PHY found on the i.MX8MP SoC.
 
-The i.MX8M Plus has an HDMI controller, which depends on several
-other systems.  The Parallel Video Interface (PVI) and the
-HDMI-TX are already in the Linux-Next staging area 20240209, but
-the HDMI PHY driver and several device trees updates are still needed.
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Adam Ford <aford173@gmail.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+---
+V6:  No Change
 
-This series is adapted from multiple series from Lucas Stach with
-edits and suggestions from feedback from various attemps, but it
-since it's difficult to use and test them independently,
-I merged them into on unified series.  The version history is a
-bit ambiguous since different components were submitted at different
-times and had different amount of attempts.
+V5:  No Change
 
-The previous attempt I did used the wrong starting point for the PHY,
-so this update includes a newer starting point with tags from that version
-and fixes from various people's feedback.  I hope I caught them all, but
-I apologize if I missed something. Any tags from the previous attempt I
-made were intentionally dropped, because of the significant change,
-but I kept tags from the newer version I grabbed from patchwork.
+V4:  No Change
 
-Because several items from the last attempt were merged, this
-series is only focussed on adding the HDMI PHY driver, and enabling
-the power domain, irqsteer interrupt controller, and HDMI pipeline
-in the device tree. The version numbers are a bit strange since
-these all got pulled from various attempts with different versions,
-but I wanted to push them together as a series to complete the pending
-work.
+V3:  Removed mintems at the request of Krzysztof and add his
+     reviewed-by
 
-This series restarted at V4 based on the version of the PHY driver and
-the other drivers and power-domain changes have been applied already.
+V2:  I (Adam) tried to help move this along, so I took Lucas' patch
+     and attempted to apply fixes based on feedback.  I don't have
+     all the history, so apologies for that.
 
-V6:  Make the PHY driver depend on COMMON_CLK to fix build errors
-     Make LCDIF3 disabled by default since it depends on hardware.
-
-V5 primarily updates feedback from the PHY driver itself, but a small
-   adjustment was made to the register size in the device tree.
-Adam Ford (1):
-  arm64: defconfig: Enable DRM_IMX8MP_DW_HDMI_BRIDGE as module
-  
-  
-
-Adam Ford (1):
-  arm64: defconfig: Enable DRM_IMX8MP_DW_HDMI_BRIDGE as module
-
-Lucas Stach (5):
-  dt-bindings: phy: add binding for the i.MX8MP HDMI PHY
-  phy: freescale: add Samsung HDMI PHY
-  arm64: dts: imx8mp: add HDMI power-domains
-  arm64: dts: imx8mp: add HDMI irqsteer
-  arm64: dts: imx8mp: add HDMI display pipeline
-
- .../bindings/phy/fsl,imx8mp-hdmi-phy.yaml     |  62 ++
- arch/arm64/boot/dts/freescale/imx8mp.dtsi     | 146 ++++
- arch/arm64/configs/defconfig                  |   1 +
- drivers/phy/freescale/Kconfig                 |   6 +
- drivers/phy/freescale/Makefile                |   1 +
- drivers/phy/freescale/phy-fsl-samsung-hdmi.c  | 720 ++++++++++++++++++
- 6 files changed, 936 insertions(+)
+     Added phy-cells to the required list and fixed an error due
+     to the word 'binding' being in the title.
+---
+ .../bindings/phy/fsl,imx8mp-hdmi-phy.yaml     | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/phy/fsl,imx8mp-hdmi-phy.yaml
- create mode 100644 drivers/phy/freescale/phy-fsl-samsung-hdmi.c
 
+diff --git a/Documentation/devicetree/bindings/phy/fsl,imx8mp-hdmi-phy.yaml b/Documentation/devicetree/bindings/phy/fsl,imx8mp-hdmi-phy.yaml
+new file mode 100644
+index 000000000000..c43e86a8c2e0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/fsl,imx8mp-hdmi-phy.yaml
+@@ -0,0 +1,62 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/phy/fsl,imx8mp-hdmi-phy.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX8MP HDMI PHY
++
++maintainers:
++  - Lucas Stach <l.stach@pengutronix.de>
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx8mp-hdmi-phy
++
++  reg:
++    maxItems: 1
++
++  "#clock-cells":
++    const: 0
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: apb
++      - const: ref
++
++  "#phy-cells":
++    const: 0
++
++  power-domains:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - "#clock-cells"
++  - clocks
++  - clock-names
++  - "#phy-cells"
++  - power-domains
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx8mp-clock.h>
++    #include <dt-bindings/power/imx8mp-power.h>
++
++    phy@32fdff00 {
++        compatible = "fsl,imx8mp-hdmi-phy";
++        reg = <0x32fdff00 0x100>;
++        clocks = <&clk IMX8MP_CLK_HDMI_APB>,
++                 <&clk IMX8MP_CLK_HDMI_24M>;
++        clock-names = "apb", "ref";
++        power-domains = <&hdmi_blk_ctrl IMX8MP_HDMIBLK_PD_HDMI_TX_PHY>;
++        #clock-cells = <0>;
++        #phy-cells = <0>;
++    };
 -- 
 2.43.0
 
