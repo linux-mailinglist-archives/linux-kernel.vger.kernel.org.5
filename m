@@ -1,235 +1,140 @@
-Return-Path: <linux-kernel+bounces-82382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A6E4868386
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:17:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990A6868389
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 23:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E80EC1F24156
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:17:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D5D21C233C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 22:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4FE0131E40;
-	Mon, 26 Feb 2024 22:17:34 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2A0131E44;
+	Mon, 26 Feb 2024 22:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VNHhMEKD"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B512C1DFCD
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 22:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9224312D75E
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 22:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708985854; cv=none; b=cKPw0ewdDl8+5Twld1xF1xrgT8dAKmH5GpgFXYTqP/EKHbe4+Oitz/kzdzbs5b3coLDM4hclf5F6rPZWKTdOXss6ai8Vj0P83OJ6ljwJmqV7rfnv53wDKfhc3IP/nfevwKNXfO0RfssSM2c4rp72Y9DR5aSWDjmTOfD9darjb2M=
+	t=1708986008; cv=none; b=Go97Y44X6pwL4uueGAqybId1iFGmx/ykvngEFQSNj0dxxSqwbKYf8CuMi8qfu73/AiIrbkchrxCxLeDgSE1ZfJam6KluVONjRYvRETxBGRoxrBnGa+agMeU/PwteoYJ2TSzUlJpc7le5MU1dgOuDNoh5mp96f3q7tBNV4o0wOXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708985854; c=relaxed/simple;
-	bh=aLv4WktZkn96ms4u4GvFX2+e3tEfzxPE+7i1i6ObU2k=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=tf4Yh17DEUZmkd/qS3jEMnYybfY96VCTeyZBQt1FliOeLn2Zuy52DWB6R/nkNupt4ePL54pKTIlNOcbssN7wwYfm4VqDyGbpwfYgpgo/PnhLs+9DTo0iQLD8fQ4h12kYaJFGi+thJIoGEapuOF82zuUjaYRu+FdtVcBDE8WRyAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rejHi-0005pb-NL; Mon, 26 Feb 2024 23:17:18 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rejHh-0034rN-3d; Mon, 26 Feb 2024 23:17:17 +0100
-Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
-	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rejHh-00EbQZ-0B;
-	Mon, 26 Feb 2024 23:17:17 +0100
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Date: Mon, 26 Feb 2024 23:17:16 +0100
-Subject: [PATCH] dmaengine: zynqmp_dma: rework tasklet to threaded
- interrupt handler
+	s=arc-20240116; t=1708986008; c=relaxed/simple;
+	bh=skxVL5kaknU87N+S3YBA4vPUrAkeCI9uwX20e0OJgVA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OAD9Pqq5PoClXgkpK3EkRv7VBhOw4ouPN+RjaWqC+88I4P/jJZyUeebfPQbsdClyma9pLDkfQ6g2YLkq7V0Xo8gdTfekLCO+EXn+zm9xpGvaGhthQyYaF4PqYtt5IVb1xjopQFT9jBXQ4b90imsIRClivdgjAZU5as1sJdUEr7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VNHhMEKD; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5655c7dd3b1so5735667a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 14:20:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1708986005; x=1709590805; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5Jm9mKeVX8NPdtK0hYoioIjcJhAV/zjNJl8t3JIfdWU=;
+        b=VNHhMEKDhqLHz3w+pRbq0CHfmkpFmaPTbZeD170ijpvqgfaTJHrmMVb/BtoHBjD9Y/
+         MUEaetSsbHzZ8St77OoX2gp3Mw5MMg6r8DeKbyl0rVZx7MdL3kbvB9F/HJlnfBQDUCuC
+         RoN/Y2qMsBB1fbeAnDz1Q8469g2MsmDJCOffdihtr0kc0tp5SGdFbQjlLrf4tYdxbNiY
+         DhJ0bd8r0CYZZbuRveVDj8TtC1ptMOlf5LDsWgqHthCFa6hE9kdVv8PqpO4WQo7Sfzq+
+         uf7+zXl3s8sIq+bGhO4/z1mueCVLoA4T7v2LsA1AfSJSkD6EMcnKj64fvAU5iYpQDBtA
+         iJLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708986005; x=1709590805;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5Jm9mKeVX8NPdtK0hYoioIjcJhAV/zjNJl8t3JIfdWU=;
+        b=mf194Yb8+T/ZvDRJ0TGjGjsnVaLQmyHoVEuFj5X/8rdfAXHaKfK4yCEjBu8t1ddqrc
+         uXe6mjyUhCsyi50NKvpCPrfv5tkYW56E0sl2xCse55a1Fe8tFmDqkGledq5cNSXq8IO9
+         CNgcB8dXlP3VMOOgbzokNGr8R/Sxdaiv/RliikWK0VYkPCZpzJQpDPNHDcJH3S0zgEsG
+         /zQUY4TDTmsxfW6VeVw4NfUUDIIfL2RPMd6gR0agyGuRhvD9OsOyoMldcSE68UsS5qfb
+         JAGzE4v1y7wpvNys18RQ1AyFec6+/sODIeAGSe6lyRqYO8CcPM9ekoiXKaysd9HG1hLp
+         FeXw==
+X-Gm-Message-State: AOJu0YwsvnCCnJ+A+LwsJhGW033q3zO24f1kpBW5agU/GYVvEG6+UUub
+	Mx/aDeQ1ZjZItFCAwcTzjKYcN81WPCfdh1wzAAulo737olUU9D6w6fY0qC4mcb0=
+X-Google-Smtp-Source: AGHT+IFi7VtDe28YphgX/47GL8ixG0NcFoRu4OvHYMZS64J0qajiDvsZoKEclvilhnw5h4oZvgrwUg==
+X-Received: by 2002:a17:907:9486:b0:a42:e819:e663 with SMTP id dm6-20020a170907948600b00a42e819e663mr7503450ejc.27.1708986004884;
+        Mon, 26 Feb 2024 14:20:04 -0800 (PST)
+Received: from [192.168.0.20] (nborisov.ddns.nbis.net. [85.187.216.229])
+        by smtp.gmail.com with ESMTPSA id h5-20020a1709063c0500b00a432f3bc3a5sm152057ejg.76.2024.02.26.14.20.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 14:20:04 -0800 (PST)
+Message-ID: <20558f89-299b-472e-9a96-171403a83bd6@suse.com>
+Date: Tue, 27 Feb 2024 00:20:03 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240226-zynqmp-dma-tasklet-irqthread-v1-1-2d154d6238fd@pengutronix.de>
-X-B4-Tracking: v=1; b=H4sIAOsN3WUC/x2NMQ7CMAwAv1J5xlJqFQa+ghjcxCUWaWidgICqf
- ydivBvuNihiKgXO3QYmLy36yA36Qwc+cr4JamgM5GhwRCf8fvI6LxhmxsrlnqSi2lqjCQfsj4P
- zkxD3nqAlRi6Co3H2sUXyM6UmF5NJ3//n5brvP+94EzSDAAAA
-To: Vinod Koul <vkoul@kernel.org>, Michal Simek <michal.simek@amd.com>
-Cc: dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, 
- Michael Grzeschik <m.grzeschik@pengutronix.de>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5012;
- i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
- bh=aLv4WktZkn96ms4u4GvFX2+e3tEfzxPE+7i1i6ObU2k=;
- b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBl3Q3sUeiaCcwc0Q/53FOLGNHhLUILuumc1CcGs
- zrRC//TO1yJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZd0N7AAKCRC/aVhE+XH0
- q/iXD/sGZMnr6rjlkvxOM56Y0lvwvxGZpmYcKqx0Be03p3SFJOnFmxBTx7g2s/S0r00R2qhlTpL
- jlYbk1ml90/RyM0faymAb8MvhTtwSHm5QmZJTx5r8V8cNuqGlFXv/xtLmMebWxodFSof4tO+UJj
- XveT7FRqxWJ8qNbzALDUSjYoXTeVyoAPb0gmvteXdN9rxOhCXYOaCS5BN4aUmlnc9oA62487cca
- 2UvbfVW8ncrVLDs2sLdwTThfZH06OzDmkS1gIfgWM0yui1QiW8h6RMpfUFFPGXSwp/ENAGILTu2
- PrOawfESc5ekUN5A0zRxbJ2jUkZIC4Y1iOsU05O0JJ4hokzegT3T2mAvwlTFJ6GYOAwvfqAO9k8
- JSWlsOJPRfvzE73kNvPsey2YhIRGY6jS62M7k4txRkPAsN5exgpVfCmGhVCje8Z5ByDYuAjVt6Z
- z4zbDEeEuBv/r9C4fi7n8Fjb4BiF+5gTZgGEMJ2sxpiLx07N4GbyiI77I8yaFLjhl8n4mcQh8M5
- OvPtwVJPpCgcjBVHHiQ0dbVxjbAl20IFk4eIPON0gCl+Kkmokr8laKJmPbQTY95G62flbSeorCL
- HT0jvBhlIqzq7udMXm9GivFXPVjREF3UCum2xnsPV6sj2uIef5//0nUvD2UR+nucRLy6YO0Lc3s
- HyKMsxlH3mkUlVw==
-X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
- fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [tip: x86/urgent] x86/bugs: Add asm helpers for executing VERW
+Content-Language: en-US
+To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+ Alyssa Milburn <alyssa.milburn@intel.com>,
+ Andrew Cooper <andrew.cooper3@citrix.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+References: <170839092792.398.3678407222202963581.tip-bot2@tip-bot2>
+ <6380ba8d-4e99-46e6-8d92-911d10963ba7@suse.com>
+ <20240226221059.mnuurhn6g3irys37@desk>
+From: Nikolay Borisov <nik.borisov@suse.com>
+In-Reply-To: <20240226221059.mnuurhn6g3irys37@desk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Since the tasklets are being scheduled with low priority the actual work
-will be delayed for unseen time. Also this is a driver that probably
-other drivers depend on its work to be done early. So we move the
-actual work from an tasklet to an threaded interrupt handler and
-therefor increase the priority for the scheduler.
 
-Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
----
- drivers/dma/xilinx/zynqmp_dma.c | 36 +++++++++++-------------------------
- 1 file changed, 11 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
-index f31631bef961a..09173ef6d24bc 100644
---- a/drivers/dma/xilinx/zynqmp_dma.c
-+++ b/drivers/dma/xilinx/zynqmp_dma.c
-@@ -204,7 +204,6 @@ struct zynqmp_dma_desc_sw {
-  * @dev: The dma device
-  * @irq: Channel IRQ
-  * @is_dmacoherent: Tells whether dma operations are coherent or not
-- * @tasklet: Cleanup work after irq
-  * @idle : Channel status;
-  * @desc_size: Size of the low level descriptor
-  * @err: Channel has errors
-@@ -228,7 +227,6 @@ struct zynqmp_dma_chan {
- 	struct device *dev;
- 	int irq;
- 	bool is_dmacoherent;
--	struct tasklet_struct tasklet;
- 	bool idle;
- 	size_t desc_size;
- 	bool err;
-@@ -724,8 +722,7 @@ static irqreturn_t zynqmp_dma_irq_handler(int irq, void *data)
- 
- 	writel(isr, chan->regs + ZYNQMP_DMA_ISR);
- 	if (status & ZYNQMP_DMA_INT_DONE) {
--		tasklet_schedule(&chan->tasklet);
--		ret = IRQ_HANDLED;
-+		ret = IRQ_WAKE_THREAD;
- 	}
- 
- 	if (status & ZYNQMP_DMA_DONE)
-@@ -733,9 +730,8 @@ static irqreturn_t zynqmp_dma_irq_handler(int irq, void *data)
- 
- 	if (status & ZYNQMP_DMA_INT_ERR) {
- 		chan->err = true;
--		tasklet_schedule(&chan->tasklet);
- 		dev_err(chan->dev, "Channel %p has errors\n", chan);
--		ret = IRQ_HANDLED;
-+		ret = IRQ_WAKE_THREAD;
- 	}
- 
- 	if (status & ZYNQMP_DMA_INT_OVRFL) {
-@@ -748,19 +744,20 @@ static irqreturn_t zynqmp_dma_irq_handler(int irq, void *data)
- }
- 
- /**
-- * zynqmp_dma_do_tasklet - Schedule completion tasklet
-+ * zynqmp_dma_irq_thread - Interrupt thread function
-  * @t: Pointer to the ZynqMP DMA channel structure
-  */
--static void zynqmp_dma_do_tasklet(struct tasklet_struct *t)
-+static irqreturn_t zynqmp_dma_irq_thread(int irq, void *data)
- {
--	struct zynqmp_dma_chan *chan = from_tasklet(chan, t, tasklet);
-+	struct zynqmp_dma_chan *chan = (struct zynqmp_dma_chan *)data;
- 	u32 count;
- 	unsigned long irqflags;
- 
- 	if (chan->err) {
- 		zynqmp_dma_reset(chan);
- 		chan->err = false;
--		return;
-+
-+		return IRQ_HANDLED;
- 	}
- 
- 	spin_lock_irqsave(&chan->lock, irqflags);
-@@ -778,6 +775,8 @@ static void zynqmp_dma_do_tasklet(struct tasklet_struct *t)
- 		zynqmp_dma_start_transfer(chan);
- 		spin_unlock_irqrestore(&chan->lock, irqflags);
- 	}
-+
-+	return IRQ_HANDLED;
- }
- 
- /**
-@@ -796,17 +795,6 @@ static int zynqmp_dma_device_terminate_all(struct dma_chan *dchan)
- 	return 0;
- }
- 
--/**
-- * zynqmp_dma_synchronize - Synchronizes the termination of a transfers to the current context.
-- * @dchan: DMA channel pointer
-- */
--static void zynqmp_dma_synchronize(struct dma_chan *dchan)
--{
--	struct zynqmp_dma_chan *chan = to_chan(dchan);
--
--	tasklet_kill(&chan->tasklet);
--}
--
- /**
-  * zynqmp_dma_prep_memcpy - prepare descriptors for memcpy transaction
-  * @dchan: DMA channel
-@@ -876,7 +864,6 @@ static void zynqmp_dma_chan_remove(struct zynqmp_dma_chan *chan)
- 
- 	if (chan->irq)
- 		devm_free_irq(chan->zdev->dev, chan->irq, chan);
--	tasklet_kill(&chan->tasklet);
- 	list_del(&chan->common.device_node);
- }
- 
-@@ -921,7 +908,6 @@ static int zynqmp_dma_chan_probe(struct zynqmp_dma_device *zdev,
- 
- 	chan->is_dmacoherent =  of_property_read_bool(node, "dma-coherent");
- 	zdev->chan = chan;
--	tasklet_setup(&chan->tasklet, zynqmp_dma_do_tasklet);
- 	spin_lock_init(&chan->lock);
- 	INIT_LIST_HEAD(&chan->active_list);
- 	INIT_LIST_HEAD(&chan->pending_list);
-@@ -936,7 +922,8 @@ static int zynqmp_dma_chan_probe(struct zynqmp_dma_device *zdev,
- 	chan->irq = platform_get_irq(pdev, 0);
- 	if (chan->irq < 0)
- 		return -ENXIO;
--	err = devm_request_irq(&pdev->dev, chan->irq, zynqmp_dma_irq_handler, 0,
-+	err = devm_request_threaded_irq(&pdev->dev, chan->irq,
-+			       zynqmp_dma_irq_handler, zynqmp_dma_irq_thread, 0,
- 			       "zynqmp-dma", chan);
- 	if (err)
- 		return err;
-@@ -1071,7 +1058,6 @@ static int zynqmp_dma_probe(struct platform_device *pdev)
- 	p = &zdev->common;
- 	p->device_prep_dma_memcpy = zynqmp_dma_prep_memcpy;
- 	p->device_terminate_all = zynqmp_dma_device_terminate_all;
--	p->device_synchronize = zynqmp_dma_synchronize;
- 	p->device_issue_pending = zynqmp_dma_issue_pending;
- 	p->device_alloc_chan_resources = zynqmp_dma_alloc_chan_resources;
- 	p->device_free_chan_resources = zynqmp_dma_free_chan_resources;
+On 27.02.24 г. 0:10 ч., Pawan Gupta wrote:
+> On Mon, Feb 26, 2024 at 09:17:30AM +0200, Nikolay Borisov wrote:
+>>> diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+>>> index 262e655..077083e 100644
+>>> --- a/arch/x86/include/asm/nospec-branch.h
+>>> +++ b/arch/x86/include/asm/nospec-branch.h
+>>> @@ -315,6 +315,17 @@
+>>>    #endif
+>>>    .endm
+>>> +/*
+>>> + * Macro to execute VERW instruction that mitigate transient data sampling
+>>> + * attacks such as MDS. On affected systems a microcode update overloaded VERW
+>>> + * instruction to also clear the CPU buffers. VERW clobbers CFLAGS.ZF.
+>>> + *
+>>> + * Note: Only the memory operand variant of VERW clears the CPU buffers.
+>>> + */
+>>> +.macro CLEAR_CPU_BUFFERS
+>>> +	ALTERNATIVE "", __stringify(verw _ASM_RIP(mds_verw_sel)), X86_FEATURE_CLEAR_CPU_BUF
+>>
+>> Any particular reason why this uses RIP-relative vs an absolute address
+>> mode?
+> 
+> Early versions of the series had the VERW arg pointing to the macro
+> itself, that is why relative addressing was used. That got changed in a
+> later version with all VERW sites pointing to a single memory location.
+> 
+>> I know in our private exchange you said there is no significance but
+>> for example older kernels have a missing relocation support in alternatives.
+>> This of course can be worked around by slightly changing the logic of the
+>> macro which means different kernels will have slightly different macros.
+> 
+> Do you anticipate a problem with that? If yes, I can send a patch to use
+> fixed addressing in upstream as well.
 
----
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
-change-id: 20240226-zynqmp-dma-tasklet-irqthread-1540cfe2a1c2
+I experienced crashes on older kernels before realizing that the 
+relocation wasn't resolved correctly by the alternative framework. 
+Instead i simply changed the macro to jmp 1f, where the next instruction 
+is the verw ( I did send a backport for 5.4) and it works. Recently 
+there's been a push to make as much of the kernel assembly as possible 
+PIC so having a rip-relative addressing helps. Whether that makes any 
+material difference - I cannot say.
 
-Best regards,
--- 
-Michael Grzeschik <m.grzeschik@pengutronix.de>
+Here's my backport version for reference:
 
+https://lore.kernel.org/stable/20240226122237.198921-3-nik.borisov@suse.com/
 
