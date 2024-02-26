@@ -1,131 +1,66 @@
-Return-Path: <linux-kernel+bounces-82160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFF84868008
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11DB4868002
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808591F2B528
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:49:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5E9C1F2AD4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F3112F395;
-	Mon, 26 Feb 2024 18:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AuN+tr5W"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714CD12F586;
+	Mon, 26 Feb 2024 18:47:51 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340A612E1D5;
-	Mon, 26 Feb 2024 18:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C1512C522
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:47:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708973337; cv=none; b=NzZHN+FzIxjNlnI28w96jk5QBcx0Fo1qbuOnuaK+75bLxS6bBKRzFw/veac+r6BkvHB7iDr6hWUJa+WcQ3t/ynx8h/v2ZeWntyeHdodDapDZJrJZCW8/2yj/55d01dGYJZLvDaNAdcMzPjIuj/8zdVib+TKt8+3KmIwSpiouKLc=
+	t=1708973271; cv=none; b=okV/X2NL3Z6Rpy+cTN9FpA/ThClYG1YN7mGZfkwhB9V6sGaciiUqmN8R/WhCHkfGz4IvN0Gk5mrN5gjY/rCCgCl33q6W0Z23LNu6p0tPSiabxe/0A/yGsUPKxCAdmXCD1Vp4zY9TPd+uUzuiMeBdOaFYAmbuN6bieOdHuqNwo5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708973337; c=relaxed/simple;
-	bh=2iE21yaZVBmLCRtP2HeDQyOQN7fV3k0xIAcmqO7xdDs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NkYMKRZ8uPSU/Ji3pdGy460mld0gmkSrAIzTdk1/nD8SgbqIeKm36u8cvK2ARq4KsTj6sDhVdhOG8X73zf/7O6OPpIQg5YMCLaccx1pqyXRFnVdpOsXAq8IMLymPPJApE8Lsfbdblpvg19VotB210HWGhvxdCgfvBa7oIi/oJas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AuN+tr5W; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708973335; x=1740509335;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2iE21yaZVBmLCRtP2HeDQyOQN7fV3k0xIAcmqO7xdDs=;
-  b=AuN+tr5WwH5fWOyUjCoNmo7fLn0QjYQMKcVLhr6opS1SAe2U4X7EcWv8
-   PbeRkPzFGeRRhytr+TzGiQKkUyL/deiivuQ2Z6GzDnTenRkukQftKz6RD
-   Mu375kd/pRNGTexa/FUB7T9Qk6Xq0pZ6IukIzkfSFiS+u7nYCVgNhfZ1U
-   +GKm/wh0XWeR6EOe8J7f2i9/dZVkCeSwvFVH88x99t/9GojT6AwV7hsxx
-   HrVRKSrTMrgYsoV1q2dZE4f70fgWjygnYFMAo5MNyMxVSWsztx3lFXKBX
-   dlfOxLQtw6MBW1mVdRNl2HgMwG+Ma7rTJ+BfUHfgoKowKNg6D90K6WeaB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="28723355"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="28723355"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 10:48:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="7188026"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 10:48:54 -0800
-Date: Mon, 26 Feb 2024 10:48:52 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v18 007/121] KVM: VMX: Reorder vmx initialization with
- kvm vendor initialization
-Message-ID: <20240226184852.GH177224@ls.amr.corp.intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <411a0b38c1a6f420a88b51cabf16ee871d6ca80d.1705965634.git.isaku.yamahata@intel.com>
- <413fd812-a6e6-4aff-860a-fd8cf4654157@intel.com>
+	s=arc-20240116; t=1708973271; c=relaxed/simple;
+	bh=DhBxRRCb3yw9uoCMT602u5jMeR9weM1a6tcS9atLVT4=;
+	h=Message-ID:Date:From:To:Cc:Subject; b=gaMcRfmb4T999J+JwT17ism2afoiq609gtwKhBJwZ2fTOf0O+Cu9KIfzl/WdDsYaHw/mRco+Z3Jm/LVGDOyaNXYgg9HmdOZ9kBOZ+1YjNt44eiztK7pzmjM9LjZhwL7EupEjJlb1AzLkuF1TBJqymx84Mzv4OyLerGVuXLwhATs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7976BC433F1;
+	Mon, 26 Feb 2024 18:47:50 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1reg2w-000000090Yw-3DlP;
+	Mon, 26 Feb 2024 13:49:50 -0500
+Message-ID: <20240226184932.303400070@goodmis.org>
+User-Agent: quilt/0.67
+Date: Mon, 26 Feb 2024 13:49:32 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-next][PATCH 0/5] tracing: More updates for 6.9
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <413fd812-a6e6-4aff-860a-fd8cf4654157@intel.com>
 
-On Thu, Feb 01, 2024 at 05:34:44PM +0800,
-Xiaoyao Li <xiaoyao.li@intel.com> wrote:
 
-> > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
-> > index 18cecf12c7c8..443db8ec5cd5 100644
-> > --- a/arch/x86/kvm/vmx/main.c
-> > +++ b/arch/x86/kvm/vmx/main.c
-> > @@ -171,7 +171,7 @@ struct kvm_x86_init_ops vt_init_ops __initdata = {
-> >   static int __init vt_init(void)
-> >   {
-> >   	unsigned int vcpu_size, vcpu_align;
-> > -	int cpu, r;
-> > +	int r;
-> >   	if (!kvm_is_vmx_supported())
-> >   		return -EOPNOTSUPP;
-> > @@ -182,18 +182,14 @@ static int __init vt_init(void)
-> >   	 */
-> >   	hv_init_evmcs();
-> > -	/* vmx_hardware_disable() accesses loaded_vmcss_on_cpu. */
-> > -	for_each_possible_cpu(cpu)
-> > -		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> > -
-> > -	r = kvm_x86_vendor_init(&vt_init_ops);
-> > -	if (r)
-> > -		return r;
-> > -
-> >   	r = vmx_init();
-> >   	if (r)
-> >   		goto err_vmx_init;
-> > +	r = kvm_x86_vendor_init(&vt_init_ops);
-> > +	if (r)
-> > +		goto err_vendor_init;
-> > +
-> 
-> we cannot simply change the calling order of vmx_init() and
-> kvm_x86_vendor_init(). There is dependency between them.
-> 
-> e.g.,
-> 
-> kvm_x86_vendor_init()
->   -> ops->hardware_setup()
-> 	-> vmx_hardware_setup()
-> 
-> will update 'enable_ept' based on hardware capability (e.g., if the hardware
-> support EPT or not), while 'enable_ept' is used in vmx_init().
+Randy Dunlap (1):
+      ftrace: Fix most kernel-doc warnings
 
-I gave up this clean up to drop this patch with v19.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Steven Rostedt (Google) (4):
+      tracing: Remove __assign_str_len()
+      tracing: Add __string_len() example
+      tracing: Add warning if string in __assign_str() does not match __string()
+      tracing: Remove second parameter to __assign_rel_str()
+
+----
+ fs/nfsd/trace.h                              |  8 +--
+ include/trace/stages/stage6_event_callback.h | 31 ++++------
+ kernel/trace/ftrace.c                        | 90 ++++++++++++++--------------
+ samples/trace_events/trace-events-sample.h   | 18 +++---
+ 4 files changed, 74 insertions(+), 73 deletions(-)
 
