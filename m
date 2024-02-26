@@ -1,79 +1,73 @@
-Return-Path: <linux-kernel+bounces-81998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C0A5867D89
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:09:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58CCC867D8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:09:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B753D2963B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:09:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C31C1C27DD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:09:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53D3131724;
-	Mon, 26 Feb 2024 16:57:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38677131747;
+	Mon, 26 Feb 2024 16:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TZ5DF7Jo"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V6SCH6W/"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95B5612C53E
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B625113173E
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:57:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708966629; cv=none; b=DVrgPxxszkjj1Hq82ipq6v3Vhc7xPgKOqw6//EBBgTe0Hd/CCfvI3jc/Ufd4PcGeMYOqdtLYSTQvpUBM206zGLPsMXjPXe2Onuteb/dZrg6SBnWAXPbMI5JgcTM0XCW0eykfTiz+VCm6t57pAjzC5ybdka3ZjE1qPbETJ0xmUy0=
+	t=1708966649; cv=none; b=ryp8AYJqB+Pqat/5zV6kz8U0Yxuv9WaCzo+zqLnVsI3DfABzMXyMz2jhff2jlAkpnRmixWXAIr1MmgL/K82zvOTYA2myYDcSxDeJTlciqVkPD3BcjO+ecjdepwweEYnlUngHvDkwYJQgWGpdt54ZoSPLrz2f0X7RorAMFNlAD60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708966629; c=relaxed/simple;
-	bh=eacWoILJZ5o5Viqax6eA9ePbWI2MSS3L3kVbV7kHxlw=;
+	s=arc-20240116; t=1708966649; c=relaxed/simple;
+	bh=aJ68smvdUhAemksJrXi/fVDE0y74bVnXu1fKZwDgaUY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sVVamYV0W1EIgF3Kn/GJAvnXFO/PFoy2oQl0/6GFzrYjnHd4ti56scoiwCl7bH+GD4we5ZfbGtxWtvCjleWwniA3UGRbQA/JUTHhZEroZweQLTHkSzkuTgfeucixExvZOJGaRec4mEzrFS7MSfqixbDv1UzTVA7I8WIhRMT3KhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TZ5DF7Jo; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708966626;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8c+aIKxEaZpezL+jzlJ7u2FhDbslxiLJ7vzY5ObQAVg=;
-	b=TZ5DF7JoX3Yq5fcIdiBqTkqQ1bL/CLPxv9oILjlqvhzm5DeD0L1IpDWR3d+3l8RoNSdQG+
-	xMkybzbNz7sm5CEpGPRJvzAj7le4YOM1g6lFuUJOGRVvLEmIakq0dB674wnpctwz7MV+C0
-	RzbM8FtgLqQB4dMSMSbQAmsPYu/tWFQ=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-65-h0c-I3LfPCKXYNEKg9_M3Q-1; Mon, 26 Feb 2024 11:57:05 -0500
-X-MC-Unique: h0c-I3LfPCKXYNEKg9_M3Q-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d22b3462a0so24526851fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:57:04 -0800 (PST)
+	 In-Reply-To:Content-Type; b=Pp04KJJXUMIEY1f2ss0vEsHZj/xq5XmdtCXPgVzvB34+v6sihsddwJnBcf5HVkIjV6U11Q8EpBkmKaHXuPOBJj5IDU1RTC3MldWkuxH1hAFtnMQYeUK7Ulv+gSejwlQdb9oE/GefELKi2g9RTHEpKZMUjajHYQvs3CIGhBmkUiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V6SCH6W/; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33d855caf7dso682538f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:57:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708966646; x=1709571446; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7FUUzYRpWlE/uC7gYsXYypoQ8pTl8AZIEHC0lk+2G0w=;
+        b=V6SCH6W/T2K4Mufv9N0wSFhmiVYiNGmTfuUTn24dVHGpabu/7viiYkIfmIJ4S49VNs
+         SOLPoWpjn8K4ZizZRHzGuSY3OrwyDspexOdl5+fUui+66C40fZcrEtL1VYs0CGvEiXNC
+         rhhY8AYHt2lI3Vht3l21XXUmswZKhrGihCzvVmlkp9G81DI85oWwwuFbxmPf6OPO+9BE
+         T4+cDN2psq+/JHE8cArib9yP1FQ11LNZdIkZoKZK09ks+6Omw60c171TeRvQ4ORUeWxx
+         38Z7tZXIZxConYB6RMmuLxBttnMM2ZYb9SmV6I2y48CC7gru21tXY+ZxypzvBaOlCGT7
+         ikTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708966623; x=1709571423;
+        d=1e100.net; s=20230601; t=1708966646; x=1709571446;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8c+aIKxEaZpezL+jzlJ7u2FhDbslxiLJ7vzY5ObQAVg=;
-        b=LgNwqM6qlys3+OBzlp5XG+Dqz/MFPkf67B0Wsvff0c/C+LCcKS1h11BeS4IxBF+F/+
-         CotzQHPmoIcCfTsQcgOZcVKYV2aajOmgYvvViDuirVRAEJQT4tLPpeEXTw3KFAAiLbSp
-         WuH1k4A7vfe+5Ajdwt2Yeg8Qh8hTYRdxF9hCOXbXQk5Z7QfGJ30Wk/qOu9SPTUnTYynJ
-         RNsnduoaGaIvvs7/+XT/pHnKtSSk1Yr/ICxLfLeRUystwfYmx7h6w9WTHTihwWBgcr9C
-         We4PUaXF2rTIARllA/F1vOj8GpdLD0arrGGbEBsWPTQIYSfePjoVheEQEjGg4XNud4az
-         my9A==
-X-Forwarded-Encrypted: i=1; AJvYcCUK3rGTx9n48j4MGwUfSBSPEH0Odo6iBY6PbCAa4SmOlyKvoqkt6FB9HV8utyHShYkR3Nm3uCubGqpIq2wLgSRfMFQ1sgiFhQZ1uXMG
-X-Gm-Message-State: AOJu0YwuNFpsAPryI5DMBLUIakHe+SkYUsXRhlTWHjQgMJsR8+BJEq7g
-	m5Yt95UOdWmupzlWRoOc7jCHW2Br8A0Inr9Us8mcw9tXMJLD7C19Li3iiCbiWkTXczq+g4nlgMl
-	4Y58DjPjshefDssQTylCOWVzEFTCbiAWGKk/gdKZesHBHXaawi0Ga2m22V+xH5BQZXcqfzg==
-X-Received: by 2002:ac2:4288:0:b0:512:fdb3:7a9e with SMTP id m8-20020ac24288000000b00512fdb37a9emr1819839lfh.31.1708966623623;
-        Mon, 26 Feb 2024 08:57:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IErYMtJMKxyV17XeAD60DbKw+SYc8okTK2r7tU7czsIcdBFoyqpwalN4Y46LherjciMy/pCzA==
-X-Received: by 2002:ac2:4288:0:b0:512:fdb3:7a9e with SMTP id m8-20020ac24288000000b00512fdb37a9emr1819819lfh.31.1708966623192;
-        Mon, 26 Feb 2024 08:57:03 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id tb16-20020a1709078b9000b00a42ea030a6esm2534364ejc.82.2024.02.26.08.57.02
+        bh=7FUUzYRpWlE/uC7gYsXYypoQ8pTl8AZIEHC0lk+2G0w=;
+        b=hxlLmcgQAPgyx0EpoLXwMwMRRRir/BksPzq9SqOk2Hm/31XrIt9R3cagE8pb4v8gOo
+         C8UmqqJsY115cTfjNoBd9ZBlSqjD4GhPOApcny/mjjSXuNNOOJF2GPXbp5rkhjmalHUV
+         lpZnYhexD3x/vgPnN7kYC2A+3S39UHPbd91Ss3G9m9hNNx0MOjVJkRdoCv86FTU0fr3k
+         ZDLJYviHMJbJJwNqDHrsb0vxSSRaamNikslcAunlwQlm5zhZYsf2GL/K2LgxmeZ9OfjU
+         UsYSAU/lokmQFbABsk+IepLN3/2BK9uddl/tpvFWtbUywxTs38ivy46px4t4qCHt/zM3
+         hBUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/roW5P6FP+bQWYHM/POlPfGVq8fyYDATKv/ydzv/HsHJk9ZdH3rqFYashPhkR0wUHkCBr7y79W4Vsyc/+K8f9cQ1oXRRszYrJw9SJ
+X-Gm-Message-State: AOJu0YzzI3N0aDtpOicWZy2OhTRjOT2jtHab3mIlaXgxNeLOUmjIoFDI
+	3VGvyPj++qBOrx2zBqRC11z0ue3VRE4xfjGAN4ggScjv0hknd4RTMrxGpg0BWak=
+X-Google-Smtp-Source: AGHT+IHLw90iyN14oEJc7WiZp425r/pRSyRV7jZAGjdsZqUITNpewOwpnkk20eDcibcyiSXPu5kXBw==
+X-Received: by 2002:a5d:5a1b:0:b0:33d:297c:911c with SMTP id bq27-20020a5d5a1b000000b0033d297c911cmr6296712wrb.0.1708966645888;
+        Mon, 26 Feb 2024 08:57:25 -0800 (PST)
+Received: from [192.168.0.104] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id m26-20020a05600c3b1a00b00412a5cb5a76sm3097244wms.23.2024.02.26.08.57.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 08:57:02 -0800 (PST)
-Message-ID: <eea32e56-2ea3-4a11-b1b9-8dd46dac7d72@redhat.com>
-Date: Mon, 26 Feb 2024 17:57:02 +0100
+        Mon, 26 Feb 2024 08:57:25 -0800 (PST)
+Message-ID: <535eb04e-19bb-4d64-9818-7fc28195b9b1@gmail.com>
+Date: Mon, 26 Feb 2024 17:57:24 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,84 +75,84 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] platform/mellanox: mlxbf-pmc: Fix module loading
-To: Luiz Capitulino <luizcap@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: shravankr@nvidia.com, davthompson@nvidia.com, ndalvi@redhat.com,
- LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
-References: <cover.1708635408.git.luizcap@redhat.com>
- <170895404513.2243.14840310263795846559.b4-ty@linux.intel.com>
- <def1a153-3cfb-431d-a7d2-a13bb7d65f4f@redhat.com>
- <29863354-4efe-d199-a9d4-7daf83f6cde9@linux.intel.com>
- <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
-Content-Language: en-US, nl
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 7/8] Staging: rtl8192e: Rename function
+ rtllib_FlushRxTsPendingPkts()
+To: Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
+ anjan@momi.ca
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240226035915.370478-1-tdavies@darkphysics.net>
+ <20240226035915.370478-8-tdavies@darkphysics.net>
+Content-Language: en-US
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20240226035915.370478-8-tdavies@darkphysics.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Luiz,
-
-On 2/26/24 17:10, Luiz Capitulino wrote:
-> On 2024-02-26 11:04, Ilpo Järvinen wrote:
->> On Mon, 26 Feb 2024, Luiz Capitulino wrote:
->>
->>> On 2024-02-26 08:27, Ilpo Järvinen wrote:
->>>> On Thu, 22 Feb 2024 15:57:28 -0500, Luiz Capitulino wrote:
->>>>
->>>>> The mlxbf-pmc driver fails to load when the firmware reports a new but not
->>>>> yet implemented performance block. I can reproduce this today with a
->>>>> Bluefield-3 card and UEFI version 4.6.0-18-g7d063bb-BId13035, since this
->>>>> reports the new clock_measure performance block.
->>>>>
->>>>> This[1] patch from Shravan implements the clock_measure support and will
->>>>> solve the issue. But this series avoids the situation by ignoring and
->>>>> logging unsupported performance blocks.
->>>>>
->>>>> [...]
->>>>
->>>>
->>>> Thank you for your contribution, it has been applied to my local
->>>> review-ilpo branch. Note it will show up in the public
->>>> platform-drivers-x86/review-ilpo branch only once I've pushed my
->>>> local branch there, which might take a while.
->>>
->>> Thank you Ilpo and thanks Hans for the review.
->>>
->>> The only detail is that we probably want this merged for 6.8 since
->>> the driver doesn't currently load with the configuration mentioned above.
->>
->> Oh, sorry, I missed the mention in the coverletter.
->>
->> So you'd want I drop these from review-ilpo branch as there they end
->> up into for-next branch, and they should go through Hans instead who
->> handles fixes branch for this cycle?
+On 2/26/24 04:59, Tree Davies wrote:
+> Rename function rtllib_FlushRxTsPendingPkts -> rtllib_flush_rx_ts_pending_pkts
+This line is too long.
+WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit 
+description?)
+#
+> to fix checkpatch warning Avoid CamelCase.
 > 
-> If that's the path to get this series merged for this cycle then yes,
-> but let's see if Hans agrees (sorry that I didn't know this before
-> posting).
-
-Hmm, new hw enablement typically goes through -next and not to
-the current fixes branch. And AFAICT this is new hw enablement,
-not a regression / bug-fix.
-
-Is there any special reason why this needs to be in 6.8 ?
-
-For RHEL kernels you can cherry-pick patches from -next
-as necessary.
-
-> One additional detail is that this series is on top of linux-next, which
-> has two additional mlxbf-pmc changes:
+> Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+> ---
+>   drivers/staging/rtl8192e/rtl819x_BAProc.c | 2 +-
+>   drivers/staging/rtl8192e/rtllib.h         | 2 +-
+>   drivers/staging/rtl8192e/rtllib_rx.c      | 2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> * https://lore.kernel.org/lkml/39be055af3506ce6f843d11e45d71620f2a96e26.1707808180.git.shravankr@nvidia.com/
-> * https://lore.kernel.org/lkml/d8548c70339a29258a906b2b518e5c48f669795c.1707808180.git.shravankr@nvidia.com/
+> diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> index 0581ed1e9ed1..04f3fb54d1b7 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
+> @@ -268,7 +268,7 @@ int rtllib_rx_add_ba_req(struct rtllib_device *ieee, struct sk_buff *skb)
+>   		goto on_add_ba_req_fail;
+>   	}
+>   
+> -	rtllib_FlushRxTsPendingPkts(ieee, ts);
+> +	rtllib_flush_rx_ts_pending_pkts(ieee, ts);
+>   
+>   	deactivate_ba_entry(ieee, ba);
+>   	ba->dialog_token = *dialog_token;
+> diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+> index 05abc001507c..fe850dbeaa02 100644
+> --- a/drivers/staging/rtl8192e/rtllib.h
+> +++ b/drivers/staging/rtl8192e/rtllib.h
+> @@ -1810,7 +1810,7 @@ bool rtllib_mgnt_disconnect(struct rtllib_device *rtllib, u8 rsn);
+>   /* For the function is more related to hardware setting, it's better to use the
+>    * ieee handler to refer to it.
+>    */
+> -void rtllib_FlushRxTsPendingPkts(struct rtllib_device *ieee,
+> +void rtllib_flush_rx_ts_pending_pkts(struct rtllib_device *ieee,
+>   				 struct rx_ts_record *ts);
+CHECK: Alignment should match open parenthesis
+#40: FILE: drivers/staging/rtl8192e/rtllib.h:1814:
++void rtllib_flush_rx_ts_pending_pkts(struct rtllib_device *ieee,
+  				 struct rx_ts_record *ts);
 
-Hmm, those are not small patches, any other reason
-why this really should go to -next IMHO.
 
-Regards,
+>   int rtllib_parse_info_param(struct rtllib_device *ieee,
+>   			    struct rtllib_info_element *info_element,
+> diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
+> index 051371e0138c..be0f92e97d12 100644
+> --- a/drivers/staging/rtl8192e/rtllib_rx.c
+> +++ b/drivers/staging/rtl8192e/rtllib_rx.c
+> @@ -487,7 +487,7 @@ void rtllib_indicate_packets(struct rtllib_device *ieee,
+>   	}
+>   }
+>   
+> -void rtllib_FlushRxTsPendingPkts(struct rtllib_device *ieee,
+> +void rtllib_flush_rx_ts_pending_pkts(struct rtllib_device *ieee,
+>   				 struct rx_ts_record *ts)
+CHECK: Alignment should match open parenthesis
+#40: FILE: drivers/staging/rtl8192e/rtllib.h:1814:
++void rtllib_flush_rx_ts_pending_pkts(struct rtllib_device *ieee,
+  				 struct rx_ts_record *ts);
 
-Hans
 
+>   {
+>   	struct rx_reorder_entry *pRxReorderEntry;
 
 
