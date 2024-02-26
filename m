@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-80864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B63A0866D6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:01:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D42866D6F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CB24283960
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:01:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 871951F24352
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 09:02:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DBA8287B;
-	Mon, 26 Feb 2024 08:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B2285621;
+	Mon, 26 Feb 2024 08:29:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rx0g048S"
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=intel.com header.i=@intel.com header.b="AGD5uq6s"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87F37E784;
-	Mon, 26 Feb 2024 08:28:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B507FBCB;
+	Mon, 26 Feb 2024 08:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708936140; cv=none; b=Q6AkvedfZyF3gSLVFrlqrz6fnmy5LpfMM/GKn0e9sRgxHvehAqMJGuhOGiB8KNoSzw2eMz1S1xscINzs39/51ok08iiA7pZT3ZIf9oAOFDY8VgfyxG/6Ol4K/Ui+Y42DYPUlDIvp4Em9pK0xGxhhiN96LiCLGB71hSBcKiA+tSw=
+	t=1708936141; cv=none; b=f2pD2Qza4MEuXg6AusBiQN2iH5j1aWFRxOULOyPRudX9nIE96r/F22KIB1fJzOZZYsYfgsZz285w1F0WLCfm/b5PIZYRWhQKeaCRo8by/O7DMpQIvsRVli47TqIlUZA77fEPa6eAeGEAgWlqwUtnaqlqnatQ2sS3QU954W0xkG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708936140; c=relaxed/simple;
-	bh=HofWRmC21b/CNK3j4sNmbUeHHzfuSu3ISYfW2FhCHEE=;
+	s=arc-20240116; t=1708936141; c=relaxed/simple;
+	bh=L6TbWFTePbpuiyuGb3ssMzEB+jgZmBeUNscgSrYwAPg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J/nIxPfpMUYqS7bY1/BVYMDck9t8tas+7y6sYULxSIlmk6izkc4BCq9NdMaRYKd4XEpcMUkKvmZ69mG9NELXKLQ1Hy6I8ZERaEDfRdoIXkwyXO3R92PQSF0NYRAayXBz9koVtHx2Zo/3/aDFAQZ9Lpif91EnmmdFi4jXGUtJH9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rx0g048S; arc=none smtp.client-ip=198.175.65.19
+	 MIME-Version; b=MzmYhhYX43KK9LpdYziPhZ3uWTFMNHYDTFIsYBWYO0LSafQ4qcfcHDntMx8sBY8HKN6izhiUl7Ivd+KmZoTTbHEKdBTsNc2S0sTlEk4FGOn5rnwTouxNlKY2252bnFNFfeB3kzEVGbFtNU0++UQeE8VRzEkJpIJuURZ992jV9Hw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AGD5uq6s; arc=none smtp.client-ip=198.175.65.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708936139; x=1740472139;
+  t=1708936140; x=1740472140;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=HofWRmC21b/CNK3j4sNmbUeHHzfuSu3ISYfW2FhCHEE=;
-  b=Rx0g048SdzV9CUVkLkGJ7K6CP+pi2FOeQo8EnHw5E7709er7PFmbeK0J
-   15FVtEo+nAEW2pVc3N23rBOJiLHE6H3kTk0WFAmz7y0rujo01Q8iIs562
-   zXo/D8z7YfGwUWjOgS/ch3q3FMtE8gGAqZ3WcZ/4P2RAguYGc3IVa89Rf
-   iUqlK23j9qm44+31IZeAWfnyrhLGWr6FrtPZXUQC5b5cgqPgE9QxZnyr5
-   6utOYZsgpfzJssw9oVPVLkoSIDk5O29mKE204JjJ3CF2ZSbgNmQfhWtIG
-   dcO3OZCnBV447xvm8peZskyplJDi7dUZh2Dwxx2e2ZYj+O5jippu3r6tC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3069603"
+  bh=L6TbWFTePbpuiyuGb3ssMzEB+jgZmBeUNscgSrYwAPg=;
+  b=AGD5uq6s3jkYua/fiz56ZauCCmJ36NuXpz8pMHiCfER9+i2IEVJ9rv3o
+   XMPAvMTjQxl7H5vIEKZrArFKIpb2Xk45RulSOnHX8j9I2My+Nxh3F8TGv
+   FNvm0p8MCkhk1Di5LdYA3ZTo0F/ORSD47KE6VRGN4jsg9uInV5HdbUx0D
+   rVb6iuKVojvV6JZkzFYo1WcsU9aPMNCCD7im3BYWSAHhHGpgERWtx/31A
+   jjRDj5+2y1dOzHu7PFzz/KUXzO0Hbve+oTfpYt+Q/RMEcTkOIsD8ttER5
+   syrpvHtrs+4jx1uk04fF+uuGinur2DJomzNOvXSoarb6NirtRkiF5x0R1
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="3069604"
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="3069603"
+   d="scan'208";a="3069604"
 Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:28:59 -0800
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:29:00 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
-   d="scan'208";a="11272687"
+   d="scan'208";a="11272692"
 Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:28:58 -0800
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 00:28:59 -0800
 From: isaku.yamahata@intel.com
 To: kvm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -66,9 +66,9 @@ Cc: isaku.yamahata@intel.com,
 	chen.bo@intel.com,
 	hang.yuan@intel.com,
 	tina.zhang@intel.com
-Subject: [PATCH v19 101/130] KVM: TDX: handle ept violation/misconfig exit
-Date: Mon, 26 Feb 2024 00:26:43 -0800
-Message-Id: <f05b978021522d70a259472337e0b53658d47636.1708933498.git.isaku.yamahata@intel.com>
+Subject: [PATCH v19 102/130] KVM: TDX: handle EXCEPTION_NMI and EXTERNAL_INTERRUPT
+Date: Mon, 26 Feb 2024 00:26:44 -0800
+Message-Id: <3ac413f1d4adbac7db88a2cade97ded3b076c540.1708933498.git.isaku.yamahata@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1708933498.git.isaku.yamahata@intel.com>
 References: <cover.1708933498.git.isaku.yamahata@intel.com>
@@ -82,105 +82,60 @@ Content-Transfer-Encoding: 8bit
 
 From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-On EPT violation, call a common function, __vmx_handle_ept_violation() to
-trigger x86 MMU code.  On EPT misconfiguration, exit to ring 3 with
-KVM_EXIT_UNKNOWN.  because EPT misconfiguration can't happen as MMIO is
-trigged by TDG.VP.VMCALL. No point to set a misconfiguration value for the
-fast path.
+Because guest TD state is protected, exceptions in guest TDs can't be
+intercepted.  TDX VMM doesn't need to handle exceptions.
+tdx_handle_exit_irqoff() handles NMI and machine check.  Ignore NMI and
+machine check and continue guest TD execution.
+
+For external interrupt, increment stats same to the VMX case.
 
 Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
-v14 -> v15:
-- use PFERR_GUEST_ENC_MASK to tell the fault is private
+ arch/x86/kvm/vmx/tdx.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
----
- arch/x86/kvm/vmx/common.h |  3 +++
- arch/x86/kvm/vmx/tdx.c    | 49 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+)
-
-diff --git a/arch/x86/kvm/vmx/common.h b/arch/x86/kvm/vmx/common.h
-index 632af7a76d0a..027aa4175d2c 100644
---- a/arch/x86/kvm/vmx/common.h
-+++ b/arch/x86/kvm/vmx/common.h
-@@ -87,6 +87,9 @@ static inline int __vmx_handle_ept_violation(struct kvm_vcpu *vcpu, gpa_t gpa,
- 	error_code |= (exit_qualification & EPT_VIOLATION_GVA_TRANSLATED) != 0 ?
- 	       PFERR_GUEST_FINAL_MASK : PFERR_GUEST_PAGE_MASK;
- 
-+	if (kvm_is_private_gpa(vcpu->kvm, gpa))
-+		error_code |= PFERR_GUEST_ENC_MASK;
-+
- 	return kvm_mmu_page_fault(vcpu, gpa, error_code, NULL, 0);
- }
- 
 diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-index 2f68e6f2b53a..0db80fa020d2 100644
+index 0db80fa020d2..bdd74682b474 100644
 --- a/arch/x86/kvm/vmx/tdx.c
 +++ b/arch/x86/kvm/vmx/tdx.c
-@@ -1285,6 +1285,51 @@ void tdx_deliver_interrupt(struct kvm_lapic *apic, int delivery_mode,
- 	__vmx_deliver_posted_interrupt(vcpu, &tdx->pi_desc, vector);
+@@ -918,6 +918,25 @@ void tdx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+ 		vmx_handle_exception_irqoff(vcpu, tdexit_intr_info(vcpu));
  }
  
-+static int tdx_handle_ept_violation(struct kvm_vcpu *vcpu)
++static int tdx_handle_exception(struct kvm_vcpu *vcpu)
 +{
-+	unsigned long exit_qual;
++	u32 intr_info = tdexit_intr_info(vcpu);
 +
-+	if (kvm_is_private_gpa(vcpu->kvm, tdexit_gpa(vcpu))) {
-+		/*
-+		 * Always treat SEPT violations as write faults.  Ignore the
-+		 * EXIT_QUALIFICATION reported by TDX-SEAM for SEPT violations.
-+		 * TD private pages are always RWX in the SEPT tables,
-+		 * i.e. they're always mapped writable.  Just as importantly,
-+		 * treating SEPT violations as write faults is necessary to
-+		 * avoid COW allocations, which will cause TDAUGPAGE failures
-+		 * due to aliasing a single HPA to multiple GPAs.
-+		 */
-+#define TDX_SEPT_VIOLATION_EXIT_QUAL	EPT_VIOLATION_ACC_WRITE
-+		exit_qual = TDX_SEPT_VIOLATION_EXIT_QUAL;
-+	} else {
-+		exit_qual = tdexit_exit_qual(vcpu);
-+		if (exit_qual & EPT_VIOLATION_ACC_INSTR) {
-+			pr_warn("kvm: TDX instr fetch to shared GPA = 0x%lx @ RIP = 0x%lx\n",
-+				tdexit_gpa(vcpu), kvm_rip_read(vcpu));
-+			vcpu->run->exit_reason = KVM_EXIT_EXCEPTION;
-+			vcpu->run->ex.exception = PF_VECTOR;
-+			vcpu->run->ex.error_code = exit_qual;
-+			return 0;
-+		}
-+	}
++	if (is_nmi(intr_info) || is_machine_check(intr_info))
++		return 1;
 +
-+	trace_kvm_page_fault(vcpu, tdexit_gpa(vcpu), exit_qual);
-+	return __vmx_handle_ept_violation(vcpu, tdexit_gpa(vcpu), exit_qual);
++	kvm_pr_unimpl("unexpected exception 0x%x(exit_reason 0x%llx qual 0x%lx)\n",
++		intr_info,
++		to_tdx(vcpu)->exit_reason.full, tdexit_exit_qual(vcpu));
++	return -EFAULT;
 +}
 +
-+static int tdx_handle_ept_misconfig(struct kvm_vcpu *vcpu)
++static int tdx_handle_external_interrupt(struct kvm_vcpu *vcpu)
 +{
-+	WARN_ON_ONCE(1);
-+
-+	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-+	vcpu->run->internal.suberror = KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON;
-+	vcpu->run->internal.ndata = 2;
-+	vcpu->run->internal.data[0] = EXIT_REASON_EPT_MISCONFIG;
-+	vcpu->run->internal.data[1] = vcpu->arch.last_vmentry_cpu;
-+
-+	return 0;
++	++vcpu->stat.irq_exits;
++	return 1;
 +}
 +
- int tdx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t fastpath)
+ static int tdx_handle_triple_fault(struct kvm_vcpu *vcpu)
  {
- 	union tdx_exit_reason exit_reason = to_tdx(vcpu)->exit_reason;
-@@ -1345,6 +1390,10 @@ int tdx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t fastpath)
+ 	vcpu->run->exit_reason = KVM_EXIT_SHUTDOWN;
+@@ -1390,6 +1409,10 @@ int tdx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t fastpath)
  	WARN_ON_ONCE(fastpath != EXIT_FASTPATH_NONE);
  
  	switch (exit_reason.basic) {
-+	case EXIT_REASON_EPT_VIOLATION:
-+		return tdx_handle_ept_violation(vcpu);
-+	case EXIT_REASON_EPT_MISCONFIG:
-+		return tdx_handle_ept_misconfig(vcpu);
- 	case EXIT_REASON_OTHER_SMI:
- 		/*
- 		 * If reach here, it's not a Machine Check System Management
++	case EXIT_REASON_EXCEPTION_NMI:
++		return tdx_handle_exception(vcpu);
++	case EXIT_REASON_EXTERNAL_INTERRUPT:
++		return tdx_handle_external_interrupt(vcpu);
+ 	case EXIT_REASON_EPT_VIOLATION:
+ 		return tdx_handle_ept_violation(vcpu);
+ 	case EXIT_REASON_EPT_MISCONFIG:
 -- 
 2.25.1
 
