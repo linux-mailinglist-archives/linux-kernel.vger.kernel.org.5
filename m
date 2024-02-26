@@ -1,337 +1,169 @@
-Return-Path: <linux-kernel+bounces-81884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B65F1867B8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:16:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19C54867BD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:25:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9E6B1C289D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:16:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C50CE1F27B9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 16:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17EE12C800;
-	Mon, 26 Feb 2024 16:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650DF12CDBF;
+	Mon, 26 Feb 2024 16:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="iJRhgGHV"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="dEYla/AI"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F0F12C819
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891F512CD97;
+	Mon, 26 Feb 2024 16:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708964136; cv=none; b=lSd/z9Yfi0LVVlOmcRkxwSEuIfcMesb0L5rzyxj4+sk3v62hDYYluET5S0rcdV1wz1BHfuN7X3LjUvPwwDQZw6cTA2EvSyZqWd4mLFeFXu/kT/e9+KSRc3lHtk6fFStsXCWxJk1p6D4f8kj3JMjZampKcu3wWWE6wXVnOig/CIA=
+	t=1708964749; cv=none; b=GCWIEREILh0X46QI7oRmuQ5dmM52C3nm+sEchRAk3kvZqv2ZL/OfOnx87yEBJ9sOaxPZXT2WDg9k8JvjTsvTJxD8+DBVx0q4PZRwjvkbokzUH5nQudFbiwU23rE5hadGnjW6Yz+z9XAkLu1wE0Z9X2FTmlDcPH7Cv/OZRjf7p5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708964136; c=relaxed/simple;
-	bh=cRuyM/cz7UJ5tY0vRJ2S/aG3c5hODfkkeEollDAYOlc=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=tLusKbzdBVzSXBBFMc6a93XZAwJf+uvOwOmRZQPpHTfKkNhlqN3OajKjUQmr+aE/LD4cRbX99WJfBfSmIXI4SQ1MZRAV9jTVpgzv+G26sueiLFt8fJ1L8QuqDpYyxZb1qKyD6qahLqvQdTeJ+JTMXet9owt0LWYf58CWLFwxvbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=iJRhgGHV; arc=none smtp.client-ip=209.85.166.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7c787eee137so35716639f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 08:15:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1708964131; x=1709568931; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:from:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I54WSlbdMoyir97qensX4jHmZa71QCXBDskyk04TZEo=;
-        b=iJRhgGHVRvrTqA9r0NK1eocubzhc3DN0WArOTLWXicU32i7v2b2+COeYtEK1ugF0mu
-         ChPP2tH1ogp8DQ9CW+cJnjdm++bOFx4FhokPP8evOR8pvmz1SLdLi9NBHEyP/afXfB7+
-         0+NTWQGkz+n+04hhun67vv12U9+2njug0MaOFVmcnASPIVubhQm9EmfFqr/Qu+Q5Hxvu
-         +dFjNQENVfRknEel/ZQiFV9r96NNjIQdSKWMBvA6aOadiMLmL7sFtWPnQrhi2MJ6Q2od
-         1kqJaYVC1ZYDsX/xLJmSPT9YolWnJ1duvx8q6rdJg7UB/EbMS3AkVGQoT+uXiJUcG8Mm
-         YfVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708964131; x=1709568931;
-        h=content-transfer-encoding:to:subject:from:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=I54WSlbdMoyir97qensX4jHmZa71QCXBDskyk04TZEo=;
-        b=jN0+KH00EfmzSQy6SAmq2pK6VlsJUzZdTiemN8YsJbnBEewkYKH7zYxV0za4u21Yh7
-         He4YEsOHfQo6I2+jtxvvMQdoC+FhUp6UUqDiaOj5hWq07p8qDR4KDWrdAHZ++a9V2l+9
-         FJYBccxzTnu+D9m9z82xnjcZJd9BiPPX+4NzdxjZ+xTXAUGUVtXpPLgwO33B9wXs5Hz5
-         vpUyL2Kcui5KDClrl7taa4He/5noVmDuM2UyS67AKtQL+IYSbNlyYdyGHYraGaFnJ0T4
-         WXsgIzKtG9TxaVIoE/mve3IMGrcdKI6VPBBfwDhlTVkKpbIKyCv2VgaEP4Q2JeUMwlTU
-         ndpQ==
-X-Gm-Message-State: AOJu0YwWPbXd+iDyKyMOKMp/sCcRS1yiE2Huew807kn3KyQtrxyoholT
-	/njc4o2O9F0KvGDF0q3BGr4zPb4KYQ4CCD9TR24OxNpPQMZuqIWr90i2MhsncaqXcXovtkgKe+B
-	u
-X-Google-Smtp-Source: AGHT+IEsAzVS8gynMDSXixoRV2040OgYiGHxgVkH2NG/5jTMZ+91y01CcsNJWAcRbHykwH7/b0dIiQ==
-X-Received: by 2002:a6b:da17:0:b0:7c7:a02d:f102 with SMTP id x23-20020a6bda17000000b007c7a02df102mr6966737iob.0.1708964131195;
-        Mon, 26 Feb 2024 08:15:31 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id o19-20020a056638125300b004749076ce07sm276531jas.127.2024.02.26.08.15.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 08:15:30 -0800 (PST)
-Message-ID: <9610e52e-1d9a-466d-be2b-29482f0d0490@kernel.dk>
-Date: Mon, 26 Feb 2024 09:15:30 -0700
+	s=arc-20240116; t=1708964749; c=relaxed/simple;
+	bh=M644AwlcdbJIK6jKjqVty6atIp/A2bidPGf41KXqsw0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VU1l7i3Zrv5G63UK2+DIfthkBzwR2k4kZ0BRb4V7v846jRKpiOnKkJp2VFTDzCglkrFwZ4AuPlI2FSF1EVjQsQFjdoHsTT7EY2+DAk3w8OkyOybpmZgASvtrr7r+uO6XVW/qOk+IlemI2rksf3Q17CooNyTLg+WCK1Qn3HaueKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=dEYla/AI; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D26DF40E0192;
+	Mon, 26 Feb 2024 16:16:30 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 0nrPwegJ6bWT; Mon, 26 Feb 2024 16:16:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1708964188; bh=mHQ8bfE6f3nYOsHMRhfypl1NqckUD1JD2a1p01ILVIo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dEYla/AIA+H46pXvNQR0AR8cr1Tl7325Z2IDiLDcmJVkTCq8kZINw4Rb+eoYEVaWC
+	 dQ4/cg/yx/7VpqwUCD8OmPI/BMopgFeds9z7WcsNzkPrSUy8+yoxcn4i03C/Vi2aRU
+	 KlIZAuEyG6MkxfHLsEM8CkENvHsNo9r0B+P5QpFMFHtsvv08EYnouhuhe3AmjKUjKy
+	 NrVxhocJ7RN0d5dL4qYYog2erYyqAHdfW/zSLhx4VQmdJD520B5EMOP7ucupty5wLn
+	 qb35KkQGUtWLcfdwg34JvYY5XkgkEFT4cd6a6++B0R4V44mYk0BjL+laUmiR0XrjRW
+	 Am69hO+/oRUnAbXH2DKwmmkON4Zn94gUZuBx7hw6Wj4Gly3feGy1X9mQaQpfv7drV3
+	 j3CcOTKRcQ+cs/BOSvOC3+pOStOOI2oRgdvesOsTELxCCiw9yLMksh2vFnVZY7H+5C
+	 7nyaNPoVR+/RkOQ74UILw7nN5bAcNDbEplaXPXlAE+ulMUiDDqYJ1j9RmUblzqquOV
+	 2xQWrenTnHMwJ6pj6+VwMxoFciTRUWb9MajB/OPGPMnOxI1nDK6g4hWeO6SViRAOWf
+	 FFu0/bjew0h1PGEnNoe8Xv/R39OEbuVdglaj6gYlckGvEbc6TeeVDBp/VvJ6cRSZ3w
+	 6MLzF7UpuriAiTBOkNUUjvXc=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B0B9C40E0196;
+	Mon, 26 Feb 2024 16:16:19 +0000 (UTC)
+Date: Mon, 26 Feb 2024 17:16:12 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Yazen Ghannam <yazen.ghannam@amd.com>
+Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
+	john.allen@amd.com, muralidhara.mk@amd.com, sathyapriya.k@amd.com,
+	naveenkrishna.chatradhi@amd.com
+Subject: Re: [PATCH 2/3] RAS/AMD/FMPM: Save SPA values
+Message-ID: <20240226161612.GDZdy5TH6H5VWRGWOK@fat_crate.local>
+References: <20240226152941.2615007-1-yazen.ghannam@amd.com>
+ <20240226152941.2615007-3-yazen.ghannam@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH] sched/core: split iowait state into two states
-To: LKML <linux-kernel@vger.kernel.org>, Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240226152941.2615007-3-yazen.ghannam@amd.com>
 
-iowait is a bogus metric, but it's helpful in the sense that it allows
-short waits to not enter sleep states that have a higher exit latency
-than we would've picked for iowait'ing tasks. However, it's harmless in
-that lots of applications and monitoring assumes that iowait is busy
-time, or otherwise use it as a health metric. Particularly for async
-IO it's entirely nonsensical.
+On Mon, Feb 26, 2024 at 09:29:40AM -0600, Yazen Ghannam wrote:
+> @@ -111,6 +111,9 @@ struct fru_rec {
+>   */
+>  static struct fru_rec **fru_records;
+>  
+> +#define INVALID_SPA	~0ULL
+> +static u64 *sys_addrs;
 
-Split the iowait part into two parts - one that tracks whether we need
-boosting for short waits, and one that says we need to account the task
-as such. ->in_iowait_acct nests inside of ->in_iowait, both for
-efficiency reasons, but also so that the relationship between the two
-is clear. A waiter may set ->in_wait alone and not care about the
-accounting.
+Let's do:
 
-Existing users of nr_iowait() for accounting purposes are switched to
-use nr_iowait_acct(), which leaves the governor using nr_iowait() as it
-only cares about iowaiters, not the accounting side.
+/* system physical addresses array */
+static u64 *spa_addrs;
 
-io_schedule_prepare() and io_schedule_finish() are changed to return
-a simple mask of two state bits, as we now have more than one state to
-manage. Outside of that, no further changes are needed to suppor this
-generically.
+so that it is self-documenting.
 
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> +
+>  #define CPER_CREATOR_FMP						\
+>  	GUID_INIT(0xcd5c2993, 0xf4b2, 0x41b2, 0xb5, 0xd4, 0xf9, 0xc3,	\
+>  		  0xa0, 0x33, 0x08, 0x75)
+> @@ -140,6 +143,9 @@ static unsigned int max_nr_fru;
+>  /* Total length of record including headers and list of descriptor entries. */
+>  static size_t max_rec_len;
+>  
+> +/* Total number of entries for the entire system. */
+> +static unsigned int sys_nr_entries;
 
----
+sys_ things are always related to syscalls etc. Since it is a static
+var, just call it:
 
- arch/s390/appldata/appldata_os.c |  2 +-
- fs/proc/stat.c                   |  2 +-
- include/linux/sched.h            |  6 ++++++
- include/linux/sched/stat.h       | 10 +++++++--
- kernel/sched/core.c              | 37 +++++++++++++++++++++++++-------
- kernel/sched/sched.h             |  1 +
- kernel/time/tick-sched.c         |  6 +++---
- 7 files changed, 49 insertions(+), 15 deletions(-)
+	/* Number of SPA entries */
+	nr_entries
 
-diff --git a/arch/s390/appldata/appldata_os.c b/arch/s390/appldata/appldata_os.c
-index a363d30ce739..fa4b278aca6c 100644
---- a/arch/s390/appldata/appldata_os.c
-+++ b/arch/s390/appldata/appldata_os.c
-@@ -100,7 +100,7 @@ static void appldata_get_os_data(void *data)
- 
- 	os_data->nr_threads = nr_threads;
- 	os_data->nr_running = nr_running();
--	os_data->nr_iowait  = nr_iowait();
-+	os_data->nr_iowait  = nr_iowait_acct();
- 	os_data->avenrun[0] = avenrun[0] + (FIXED_1/200);
- 	os_data->avenrun[1] = avenrun[1] + (FIXED_1/200);
- 	os_data->avenrun[2] = avenrun[2] + (FIXED_1/200);
-diff --git a/fs/proc/stat.c b/fs/proc/stat.c
-index da60956b2915..149be7a884fb 100644
---- a/fs/proc/stat.c
-+++ b/fs/proc/stat.c
-@@ -180,7 +180,7 @@ static int show_stat(struct seq_file *p, void *v)
- 		(unsigned long long)boottime.tv_sec,
- 		total_forks,
- 		nr_running(),
--		nr_iowait());
-+		nr_iowait_acct());
- 
- 	seq_put_decimal_ull(p, "softirq ", (unsigned long long)sum_softirq);
- 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index ffe8f618ab86..1e198e268df1 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -922,7 +922,13 @@ struct task_struct {
- 
- 	/* Bit to tell TOMOYO we're in execve(): */
- 	unsigned			in_execve:1;
-+	/* task is in iowait */
- 	unsigned			in_iowait:1;
-+	/*
-+	 * task is in iowait and should be accounted as such. can only be set
-+	 * if ->in_iowait is also set.
-+	 */
-+	unsigned			in_iowait_acct:1;
- #ifndef TIF_RESTORE_SIGMASK
- 	unsigned			restore_sigmask:1;
- #endif
-diff --git a/include/linux/sched/stat.h b/include/linux/sched/stat.h
-index 0108a38bb64d..7c48a35f98ee 100644
---- a/include/linux/sched/stat.h
-+++ b/include/linux/sched/stat.h
-@@ -19,8 +19,14 @@ DECLARE_PER_CPU(unsigned long, process_counts);
- extern int nr_processes(void);
- extern unsigned int nr_running(void);
- extern bool single_task_running(void);
--extern unsigned int nr_iowait(void);
--extern unsigned int nr_iowait_cpu(int cpu);
-+extern unsigned int nr_iowait_acct(void);
-+extern unsigned int nr_iowait_acct_cpu(int cpu);
-+unsigned int nr_iowait_cpu(int cpu);
-+
-+enum {
-+	TASK_IOWAIT		= 1,
-+	TASK_IOWAIT_ACCT	= 2,
-+};
- 
- static inline int sched_info_on(void)
- {
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9116bcc90346..c643d44e38e7 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3790,6 +3790,8 @@ ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
- 	if (p->in_iowait) {
- 		delayacct_blkio_end(p);
- 		atomic_dec(&task_rq(p)->nr_iowait);
-+		if (p->in_iowait_acct)
-+			atomic_dec(&task_rq(p)->nr_iowait_acct);
- 	}
- 
- 	activate_task(rq, p, en_flags);
-@@ -4356,6 +4358,8 @@ int try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
- 			if (p->in_iowait) {
- 				delayacct_blkio_end(p);
- 				atomic_dec(&task_rq(p)->nr_iowait);
-+				if (p->in_iowait_acct)
-+					atomic_dec(&task_rq(p)->nr_iowait_acct);
- 			}
- 
- 			wake_flags |= WF_MIGRATED;
-@@ -5461,9 +5465,9 @@ unsigned long long nr_context_switches(void)
-  * it does become runnable.
-  */
- 
--unsigned int nr_iowait_cpu(int cpu)
-+unsigned int nr_iowait_acct_cpu(int cpu)
- {
--	return atomic_read(&cpu_rq(cpu)->nr_iowait);
-+	return atomic_read(&cpu_rq(cpu)->nr_iowait_acct);
- }
- 
- /*
-@@ -5496,16 +5500,21 @@ unsigned int nr_iowait_cpu(int cpu)
-  * Task CPU affinities can make all that even more 'interesting'.
-  */
- 
--unsigned int nr_iowait(void)
-+unsigned int nr_iowait_acct(void)
- {
- 	unsigned int i, sum = 0;
- 
- 	for_each_possible_cpu(i)
--		sum += nr_iowait_cpu(i);
-+		sum += nr_iowait_acct_cpu(i);
- 
- 	return sum;
- }
- 
-+unsigned int nr_iowait_cpu(int cpu)
-+{
-+	return atomic_read(&cpu_rq(cpu)->nr_iowait);
-+}
-+
- #ifdef CONFIG_SMP
- 
- /*
-@@ -6682,6 +6691,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 
- 			if (prev->in_iowait) {
- 				atomic_inc(&rq->nr_iowait);
-+				if (prev->in_iowait_acct)
-+					atomic_inc(&rq->nr_iowait_acct);
- 				delayacct_blkio_start();
- 			}
- 		}
-@@ -8986,16 +8997,25 @@ EXPORT_SYMBOL_GPL(yield_to);
- 
- int io_schedule_prepare(void)
- {
--	int old_iowait = current->in_iowait;
-+	int old_wait_flags = 0;
-+
-+	if (current->in_iowait)
-+		old_wait_flags |= TASK_IOWAIT;
-+	if (current->in_iowait_acct)
-+		old_wait_flags |= TASK_IOWAIT_ACCT;
- 
- 	current->in_iowait = 1;
-+	current->in_iowait_acct = 1;
- 	blk_flush_plug(current->plug, true);
--	return old_iowait;
-+	return old_wait_flags;
- }
- 
--void io_schedule_finish(int token)
-+void io_schedule_finish(int old_wait_flags)
- {
--	current->in_iowait = token;
-+	if (!(old_wait_flags & TASK_IOWAIT))
-+		current->in_iowait = 0;
-+	if (!(old_wait_flags & TASK_IOWAIT_ACCT))
-+		current->in_iowait_acct = 0;
- }
- 
- /*
-@@ -10029,6 +10049,7 @@ void __init sched_init(void)
- #endif
- #endif /* CONFIG_SMP */
- 		hrtick_rq_init(rq);
-+		atomic_set(&rq->nr_iowait_acct, 0);
- 		atomic_set(&rq->nr_iowait, 0);
- 
- #ifdef CONFIG_SCHED_CORE
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 001fe047bd5d..9006335b01c8 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1049,6 +1049,7 @@ struct rq {
- 	u64			clock_idle_copy;
- #endif
- 
-+	atomic_t		nr_iowait_acct;
- 	atomic_t		nr_iowait;
- 
- #ifdef CONFIG_SCHED_DEBUG
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 01fb50c1b17e..f6709d543dac 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -669,7 +669,7 @@ static void tick_nohz_stop_idle(struct tick_sched *ts, ktime_t now)
- 	delta = ktime_sub(now, ts->idle_entrytime);
- 
- 	write_seqcount_begin(&ts->idle_sleeptime_seq);
--	if (nr_iowait_cpu(smp_processor_id()) > 0)
-+	if (nr_iowait_acct_cpu(smp_processor_id()) > 0)
- 		ts->iowait_sleeptime = ktime_add(ts->iowait_sleeptime, delta);
- 	else
- 		ts->idle_sleeptime = ktime_add(ts->idle_sleeptime, delta);
-@@ -742,7 +742,7 @@ u64 get_cpu_idle_time_us(int cpu, u64 *last_update_time)
- 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
- 
- 	return get_cpu_sleep_time_us(ts, &ts->idle_sleeptime,
--				     !nr_iowait_cpu(cpu), last_update_time);
-+				     !nr_iowait_acct_cpu(cpu), last_update_time);
- }
- EXPORT_SYMBOL_GPL(get_cpu_idle_time_us);
- 
-@@ -768,7 +768,7 @@ u64 get_cpu_iowait_time_us(int cpu, u64 *last_update_time)
- 	struct tick_sched *ts = &per_cpu(tick_cpu_sched, cpu);
- 
- 	return get_cpu_sleep_time_us(ts, &ts->iowait_sleeptime,
--				     nr_iowait_cpu(cpu), last_update_time);
-+				     nr_iowait_acct_cpu(cpu), last_update_time);
- }
- EXPORT_SYMBOL_GPL(get_cpu_iowait_time_us);
- 
+or so.
+
+I was gonna say "nr_err_records" but we're calling them entries so...
+
+>  /*
+>   * Protect the local records cache in fru_records and prevent concurrent
+>   * writes to storage. This is only needed after init once notifier block
+> @@ -269,6 +275,40 @@ static bool rec_has_fpd(struct fru_rec *rec, struct cper_fru_poison_desc *fpd)
+>  	return false;
+>  }
+>  
+> +static void save_spa(struct fru_rec *rec, unsigned int entry,
+> +		     u64 addr, u64 id, unsigned int cpu)
+> +{
+> +	unsigned int i, fru_idx, sys_entry;
+> +	unsigned long sys_addr;
+> +	struct atl_err a_err;
+> +
+> +	memset(&a_err, 0, sizeof(struct atl_err));
+> +
+> +	a_err.addr = addr;
+> +	a_err.ipid = id;
+> +	a_err.cpu  = cpu;
+> +
+> +	sys_addr = amd_convert_umc_mca_addr_to_sys_addr(&a_err);
+> +	if (IS_ERR_VALUE(sys_addr)) {
+> +		pr_debug("Failed to get system address\n");
+> +		return;
+> +	}
+> +
+> +	for (i = 0; i < sys_nr_entries; i += max_nr_entries) {
+> +		fru_idx = i / max_nr_entries;
+> +		if (fru_records[fru_idx] != rec)
+> +			continue;
+> +
+> +		sys_entry = i + entry;
+> +		if (sys_entry < sys_nr_entries) {
+> +			sys_addrs[sys_entry] = sys_addr;
+> +			pr_debug("fru_idx: %u, entry: %u, sys_entry: %u, sys_addr: 0x%016llx\n",
+> +				 fru_idx, entry, sys_entry, sys_addrs[sys_entry]);
+> +			break;
+> +		}
+
+	else {
+		WARN_ON_ONCE("... indexing wrong bla... ");
+	}
+
+to catch crap.
+
 -- 
-Jens Axboe
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
