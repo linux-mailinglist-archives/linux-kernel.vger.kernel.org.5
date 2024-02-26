@@ -1,184 +1,181 @@
-Return-Path: <linux-kernel+bounces-80373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B2E86677D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:22:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B04BE86677E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 02:27:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0062B20C35
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 01:22:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE68C281298
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 01:27:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE99BD53E;
-	Mon, 26 Feb 2024 01:22:43 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F290D518;
+	Mon, 26 Feb 2024 01:27:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f7bevqkS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BE5D502
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 01:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9CE2CA7;
+	Mon, 26 Feb 2024 01:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708910563; cv=none; b=TRHTjwhTdOQCsFjVo/5qpI3FHL6RcDzm0WXHBYU+RMcdeR1QcKGkeq2qDYEQ2YiyUNMfPZcr3CubzI+g654KXhmj6CXV7mkBtMtRea2uUWC/4YJgByHby8RZ7R/pEYmt5pqCwF9m+D4NhBKYi6o/u+AU+P9jgeybKtNZq6dOSYk=
+	t=1708910833; cv=none; b=oThx1ff6NzGTrF+WtpLq5Zyzp7qwlXLL5rERPHS1tImltobTUri8YVX7ALzl4F1952k0d7dLSagZ5hLEqcuH0Jx8oiUz3H0kdQVJ1H4EKcWEG6c5atCJT39zSvfhgWlnVNau4FT7ARSFN+chz9OURkz10iEgIrNetkuEA16D804=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708910563; c=relaxed/simple;
-	bh=ZyhQOxoT7odkOVHeIkfPmP/gcKRryidAWuWjm1mLjIg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:Content-Type:
-	 MIME-Version; b=SK5QbshHir5RUGZYaGorzYCGza2WXKfDhzm/T7DPgLJ8od6AYEbcVID3bEB3OJqITVt13t29BB3M7do9s22vqZCygEx2iPlVyvllZK+3REZrAcV3pTymoj/niCUtlH/Fem9J31VTwA6R/sUkefkpOblI7dLm92IUjnxROPn5O08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 41Q1Ll8X099140;
-	Mon, 26 Feb 2024 09:21:47 +0800 (+08)
-	(envelope-from Zhiguo.Niu@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TjjVk36Wxz2KC597;
-	Mon, 26 Feb 2024 09:21:02 +0800 (CST)
-Received: from BJMBX02.spreadtrum.com (10.0.64.8) by BJMBX01.spreadtrum.com
- (10.0.64.7) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Mon, 26 Feb
- 2024 09:21:45 +0800
-Received: from BJMBX02.spreadtrum.com ([fe80::f022:2a7c:e5bc:aacd]) by
- BJMBX02.spreadtrum.com ([fe80::f022:2a7c:e5bc:aacd%19]) with mapi id
- 15.00.1497.023; Mon, 26 Feb 2024 09:21:45 +0800
-From: =?utf-8?B?54mb5b+X5Zu9IChaaGlndW8gTml1KQ==?= <Zhiguo.Niu@unisoc.com>
-To: "jaegeuk@kernel.org" <jaegeuk@kernel.org>
-CC: "linux-f2fs-devel@lists.sourceforge.net"
-	<linux-f2fs-devel@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        Chao Yu <chao@kernel.org>,
-        "niuzhiguo84@gmail.com" <niuzhiguo84@gmail.com>,
-        =?utf-8?B?6YeR57qi5a6HIChIb25neXUgSmluKQ==?= <hongyu.jin@unisoc.com>
-Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjNdIGYyZnM6IHJlZHVjZSBleHBlbnNpdmUgY2hl?=
- =?utf-8?Q?ckpoint_trigger_frequency?=
-Thread-Topic: [PATCH v3] f2fs: reduce expensive checkpoint trigger frequency
-Thread-Index: AQHaRGbEIhIgX85RYE+VteQdj17287EQ+OwAgAshOiCAAAFCcA==
-Date: Mon, 26 Feb 2024 01:21:44 +0000
-Message-ID: <ed3eecaf9e2f4c8fae2fd01241aa097e@BJMBX02.spreadtrum.com>
-References: <20240111081743.2999210-1-chao@kernel.org>
- <ae43ed8a-49b5-44bf-8fea-a222091e9790@kernel.org> 
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-exchange-transport-fromentityheader: Hosted
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1708910833; c=relaxed/simple;
+	bh=VQRLURp3N2fLV45lnFehSEVGx7kADUvzibC1ROwWOyY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iNTYRZfm7i1qOTRRBV3dNooE3c3M6K/UrMbiRHREMI2JJBPnexZQXrRyh/8MHZpkB8Rum6WK9Y1QBc7Oco28w0Wx1qaEW9Hqb+vUP7biZA813/+TAW66qJkL0EBiKjpQ+kVdt0n+m1Qe/FyAu642aP/Setog4roXzzNji4G5BU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f7bevqkS; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708910832; x=1740446832;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=VQRLURp3N2fLV45lnFehSEVGx7kADUvzibC1ROwWOyY=;
+  b=f7bevqkSSuP/mN2JgeRLaemA+fzCHRS+8yxRTqLcEhnGrc2k8ctSToum
+   BX2pFqIyyRdRt9U/jYJuPGJvARp3LDTHg4a1krV9NHpJuNbSi8kBTmeBW
+   UJj4yax9uFO42aCWZWu/7twc+c5kLQzQ6SbCg2ETQ960r2mZvfiXvHwUK
+   rucvJEwhJsfDRalrNDf7b2AQH6UZoKwkcTg/UhlOe52tTOvC5ZLjFaw5U
+   hLtidfmfEUAtLsTSy35e3L9StQt1qsBpEvwu6WQRlDDrwvpvzr7G5MpBf
+   MMi04P1729fcj7+mjVqO/UbQiroPZoDvp14944pau4capIgeszVNJIhyr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10995"; a="14308989"
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="14308989"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 17:27:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,185,1705392000"; 
+   d="scan'208";a="6421205"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.9.85]) ([10.238.9.85])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2024 17:27:07 -0800
+Message-ID: <a8a8f6de-60de-4fca-bf59-a6d42d6c9ff2@linux.intel.com>
+Date: Mon, 26 Feb 2024 09:27:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MAIL:SHSQR01.spreadtrum.com 41Q1Ll8X099140
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 077/121] KVM: x86: Add a switch_db_regs flag to handle
+ TDX's auto-switched behavior
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+ Xiaoyao Li <xiaoyao.li@intel.com>,
+ Sean Christopherson <sean.j.christopherson@intel.com>,
+ Chao Gao <chao.gao@intel.com>
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <6ae14d4e3a2f248879dcfc2990816f6341458c40.1705965635.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <6ae14d4e3a2f248879dcfc2990816f6341458c40.1705965635.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-DQpIaSBKYWVnZXVrDQoNClNvcnJ5IGZvciBkaXN0dXJiaW5nIHlvdSwgRG8geW91IGhhdmUgYW55
-IGNvbW1lbnRzIGFib3V0IHRoaXMgcGF0Y2ggZnJvbSBDaGFvLCBJ4oCZdmUgbWV0IHRoaXMgaXNz
-dWUgc2V2ZXJhbCB0aW1lcyBvbiBvdXIgcGxhdGZvcm0gd2hlbiBkbyBtb25rZXkgdGVzdC4NClRo
-YW5rcyENCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiBDaGFvIFl1IDxjaGFv
-QGtlcm5lbC5vcmc+DQrlj5HpgIHml7bpl7Q6IDIwMjTlubQy5pyIMTnml6UgMTU6MTkNCuaUtuS7
-tuS6ujogamFlZ2V1a0BrZXJuZWwub3JnDQrmioTpgIE6IGxpbnV4LWYyZnMtZGV2ZWxAbGlzdHMu
-c291cmNlZm9yZ2UubmV0OyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyDniZvlv5flm70g
-KFpoaWd1byBOaXUpIDxaaGlndW8uTml1QHVuaXNvYy5jb20+DQrkuLvpopg6IFJlOiBbUEFUQ0gg
-djNdIGYyZnM6IHJlZHVjZSBleHBlbnNpdmUgY2hlY2twb2ludCB0cmlnZ2VyIGZyZXF1ZW5jeQ0K
-DQoNCuazqOaEjzog6L+Z5bCB6YKu5Lu25p2l6Ieq5LqO5aSW6YOo44CC6Zmk6Z2e5L2g56Gu5a6a
-6YKu5Lu25YaF5a655a6J5YWo77yM5ZCm5YiZ5LiN6KaB54K55Ye75Lu75L2V6ZO+5o6l5ZKM6ZmE
-5Lu244CCDQpDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRo
-ZSBvcmdhbml6YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVu
-bGVzcyB5b3UgcmVjb2duaXplIHRoZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNvbnRlbnQgaXMgc2Fm
-ZS4NCg0KDQoNCkphZWdldWssDQoNCkFueSBjb21tZW50cz8NCg0KT24gMjAyNC8xLzExIDE2OjE3
-LCBDaGFvIFl1IHdyb3RlOg0KPiBXZSBtYXkgdHJpZ2dlciBoaWdoIGZyZXF1ZW50IGNoZWNrcG9p
-bnQgZm9yIGJlbG93IGNhc2U6DQo+IDEuIG1rZGlyIC9tbnQvZGlyMTsgc2V0IGRpcjEgZW5jcnlw
-dGVkIDIuIHRvdWNoIC9tbnQvZmlsZTE7IGZzeW5jIA0KPiAvbW50L2ZpbGUxIDMuIG1rZGlyIC9t
-bnQvZGlyMjsgc2V0IGRpcjIgZW5jcnlwdGVkIDQuIHRvdWNoIC9tbnQvZmlsZTI7IA0KPiBmc3lu
-YyAvbW50L2ZpbGUyIC4uLg0KPg0KPiBBbHRob3VnaCwgbmV3bHkgY3JlYXRlZCBkaXIgYW5kIGZp
-bGUgYXJlIG5vdCByZWxhdGVkLCBkdWUgdG8gY29tbWl0IA0KPiBiYmYxNTZmN2FmYTcgKCJmMmZz
-OiBmaXggbG9zdCB4YXR0cnMgb2YgZGlyZWN0b3JpZXMiKSwgd2Ugd2lsbCB0cmlnZ2VyIA0KPiBj
-aGVja3BvaW50IHdoZW5ldmVyIGZzeW5jKCkgY29tZXMgYWZ0ZXIgYSBuZXcgZW5jcnlwdGVkIGRp
-ciBjcmVhdGVkLg0KPg0KPiBJbiBvcmRlciB0byBhdm9pZCBzdWNoIGNvbmRpdGlvbiwgbGV0J3Mg
-cmVjb3JkIGFuIGVudHJ5IGluY2x1ZGluZyANCj4gZGlyZWN0b3J5J3MgaW5vIGludG8gZ2xvYmFs
-IGNhY2hlIHdoZW4gd2UgaW5pdGlhbGl6ZSBlbmNyeXB0aW9uIHBvbGljeSANCj4gaW4gYSBjaGVj
-a3BvaW50ZWQgZGlyZWN0b3J5LCBhbmQgdGhlbiBvbmx5IHRyaWdnZXIgY2hlY2twb2ludCgpIHdo
-ZW4gDQo+IHRhcmdldCBmaWxlJ3MgcGFyZW50IGhhcyBub24tcGVyc2lzdGVkIGVuY3J5cHRpb24g
-cG9saWN5LCBmb3IgdGhlIGNhc2UgDQo+IGl0cyBwYXJlbnQgaXMgbm90IGNoZWNrcG9pbnRlZCwg
-bmVlZF9kb19jaGVja3BvaW50KCkgaGFzIGNvdmVyIHRoYXQgYnkgDQo+IHZlcmlmeWluZyBpdCB3
-aXRoIGYyZnNfaXNfY2hlY2twb2ludGVkX25vZGUoKS4NCj4NCj4gUmVwb3J0ZWQtYnk6IFpoaWd1
-byBOaXUgPHpoaWd1by5uaXVAdW5pc29jLmNvbT4NCj4gVGVzdGVkLWJ5OiBaaGlndW8gTml1IDx6
-aGlndW8ubml1QHVuaXNvYy5jb20+DQo+IFJlcG9ydGVkLWJ5OiBZdW5sZWkgSGUgPGhleXVubGVp
-QGhpaG9ub3IuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBDaGFvIFl1IDxjaGFvQGtlcm5lbC5vcmc+
-DQo+IC0tLQ0KPiB2MzoNCj4gLSBSZWNlbnRseSwgWmhpZ3VvIE5pdSByZXBvcnRlZCB0aGUgc2Ft
-ZSBpc3N1ZSwgc28gSSByZXBvc3QgdGhpcyBwYXRjaCANCj4gZm9yIGNvbW1lbnRzLg0KPiAgIGZz
-L2YyZnMvZjJmcy5oICAgICAgICAgICAgICB8ICAyICsrDQo+ICAgZnMvZjJmcy9maWxlLmMgICAg
-ICAgICAgICAgIHwgIDMgKysrDQo+ICAgZnMvZjJmcy94YXR0ci5jICAgICAgICAgICAgIHwgMTYg
-KysrKysrKysrKysrKystLQ0KPiAgIGluY2x1ZGUvdHJhY2UvZXZlbnRzL2YyZnMuaCB8ICAzICsr
-LQ0KPiAgIDQgZmlsZXMgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkN
-Cj4NCj4gZGlmZiAtLWdpdCBhL2ZzL2YyZnMvZjJmcy5oIGIvZnMvZjJmcy9mMmZzLmggaW5kZXgg
-DQo+IGUyZTBjYTQ1Zjg4MS4uMDA5NGE4Yzg1ZjRhIDEwMDY0NA0KPiAtLS0gYS9mcy9mMmZzL2Yy
-ZnMuaA0KPiArKysgYi9mcy9mMmZzL2YyZnMuaA0KPiBAQCAtMjc5LDYgKzI3OSw3IEBAIGVudW0g
-ew0KPiAgICAgICBBUFBFTkRfSU5PLCAgICAgICAgICAgICAvKiBmb3IgYXBwZW5kIGlubyBsaXN0
-ICovDQo+ICAgICAgIFVQREFURV9JTk8sICAgICAgICAgICAgIC8qIGZvciB1cGRhdGUgaW5vIGxp
-c3QgKi8NCj4gICAgICAgVFJBTlNfRElSX0lOTywgICAgICAgICAgLyogZm9yIHRyYW5zYWN0aW9u
-cyBkaXIgaW5vIGxpc3QgKi8NCj4gKyAgICAgRU5DX0RJUl9JTk8sICAgICAgICAgICAgLyogZm9y
-IGVuY3J5cHRlZCBkaXIgaW5vIGxpc3QgKi8NCj4gICAgICAgRkxVU0hfSU5PLCAgICAgICAgICAg
-ICAgLyogZm9yIG11bHRpcGxlIGRldmljZSBmbHVzaGluZyAqLw0KPiAgICAgICBNQVhfSU5PX0VO
-VFJZLCAgICAgICAgICAvKiBtYXguIGxpc3QgKi8NCj4gICB9Ow0KPiBAQCAtMTE0Nyw2ICsxMTQ4
-LDcgQEAgZW51bSBjcF9yZWFzb25fdHlwZSB7DQo+ICAgICAgIENQX0ZBU1RCT09UX01PREUsDQo+
-ICAgICAgIENQX1NQRUNfTE9HX05VTSwNCj4gICAgICAgQ1BfUkVDT1ZFUl9ESVIsDQo+ICsgICAg
-IENQX0VOQ19ESVIsDQo+ICAgfTsNCj4NCj4gICBlbnVtIGlvc3RhdF90eXBlIHsNCj4gZGlmZiAt
-LWdpdCBhL2ZzL2YyZnMvZmlsZS5jIGIvZnMvZjJmcy9maWxlLmMgaW5kZXggDQo+IDgxOThhZmI1
-ZmI5Yy4uMThiMzNiMWYwYzgzIDEwMDY0NA0KPiAtLS0gYS9mcy9mMmZzL2ZpbGUuYw0KPiArKysg
-Yi9mcy9mMmZzL2ZpbGUuYw0KPiBAQCAtMjE4LDYgKzIxOCw5IEBAIHN0YXRpYyBpbmxpbmUgZW51
-bSBjcF9yZWFzb25fdHlwZSBuZWVkX2RvX2NoZWNrcG9pbnQoc3RydWN0IGlub2RlICppbm9kZSkN
-Cj4gICAgICAgICAgICAgICBmMmZzX2V4aXN0X3dyaXR0ZW5fZGF0YShzYmksIEYyRlNfSShpbm9k
-ZSktPmlfcGlubywNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgVFJBTlNfRElSX0lOTykpDQo+ICAgICAgICAgICAgICAgY3BfcmVhc29uID0g
-Q1BfUkVDT1ZFUl9ESVI7DQo+ICsgICAgIGVsc2UgaWYgKGYyZnNfZXhpc3Rfd3JpdHRlbl9kYXRh
-KHNiaSwgRjJGU19JKGlub2RlKS0+aV9waW5vLA0KPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBFTkNfRElSX0lOTykpDQo+ICsgICAgICAgICAg
-ICAgY3BfcmVhc29uID0gQ1BfRU5DX0RJUjsNCj4NCj4gICAgICAgcmV0dXJuIGNwX3JlYXNvbjsN
-Cj4gICB9DQo+IGRpZmYgLS1naXQgYS9mcy9mMmZzL3hhdHRyLmMgYi9mcy9mMmZzL3hhdHRyLmMg
-aW5kZXggDQo+IGYyOTBmZTkzMjdjNC4uY2JkMWI4ODI5N2ZlIDEwMDY0NA0KPiAtLS0gYS9mcy9m
-MmZzL3hhdHRyLmMNCj4gKysrIGIvZnMvZjJmcy94YXR0ci5jDQo+IEBAIC02MjksNiArNjI5LDcg
-QEAgc3RhdGljIGludCBfX2YyZnNfc2V0eGF0dHIoc3RydWN0IGlub2RlICppbm9kZSwgaW50IGlu
-ZGV4LA0KPiAgICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciAqbmFtZSwgY29uc3Qgdm9p
-ZCAqdmFsdWUsIHNpemVfdCBzaXplLA0KPiAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IHBh
-Z2UgKmlwYWdlLCBpbnQgZmxhZ3MpDQo+ICAgew0KPiArICAgICBzdHJ1Y3QgZjJmc19zYl9pbmZv
-ICpzYmkgPSBGMkZTX0lfU0IoaW5vZGUpOw0KPiAgICAgICBzdHJ1Y3QgZjJmc194YXR0cl9lbnRy
-eSAqaGVyZSwgKmxhc3Q7DQo+ICAgICAgIHZvaWQgKmJhc2VfYWRkciwgKmxhc3RfYmFzZV9hZGRy
-Ow0KPiAgICAgICBpbnQgZm91bmQsIG5ld3NpemU7DQo+IEBAIC03NzIsOCArNzczLDE5IEBAIHN0
-YXRpYyBpbnQgX19mMmZzX3NldHhhdHRyKHN0cnVjdCBpbm9kZSAqaW5vZGUsIGludCBpbmRleCwN
-Cj4gICAgICAgaWYgKGluZGV4ID09IEYyRlNfWEFUVFJfSU5ERVhfRU5DUllQVElPTiAmJg0KPiAg
-ICAgICAgICAgICAgICAgICAgICAgIXN0cmNtcChuYW1lLCBGMkZTX1hBVFRSX05BTUVfRU5DUllQ
-VElPTl9DT05URVhUKSkNCj4gICAgICAgICAgICAgICBmMmZzX3NldF9lbmNyeXB0ZWRfaW5vZGUo
-aW5vZGUpOw0KPiAtICAgICBpZiAoU19JU0RJUihpbm9kZS0+aV9tb2RlKSkNCj4gLSAgICAgICAg
-ICAgICBzZXRfc2JpX2ZsYWcoRjJGU19JX1NCKGlub2RlKSwgU0JJX05FRURfQ1ApOw0KPiArDQo+
-ICsgICAgIGlmIChTX0lTRElSKGlub2RlLT5pX21vZGUpKSB7DQo+ICsgICAgICAgICAgICAgLyoN
-Cj4gKyAgICAgICAgICAgICAgKiBJbiByZXN0cmljdCBtb2RlLCBmc3luYygpIGFsd2F5cyB0cmll
-cyB0cmlnZ2VyaW5nIGNoZWNrcG9pbnQNCj4gKyAgICAgICAgICAgICAgKiBmb3IgYWxsIG1ldGFk
-YXRhIGNvbnNpc3RlbmN5LCBpbiBvdGhlciBtb2RlLCBpdCBvbmx5IHRyaWdnZXJzDQo+ICsgICAg
-ICAgICAgICAgICogY2hlY2twb2ludCB3aGVuIHBhcmVudCdzIGVuY3J5cHRpb24gbWV0YWRhdGEg
-dXBkYXRlcy4NCj4gKyAgICAgICAgICAgICAgKi8NCj4gKyAgICAgICAgICAgICBpZiAoRjJGU19P
-UFRJT04oc2JpKS5mc3luY19tb2RlID09IEZTWU5DX01PREVfU1RSSUNUKQ0KPiArICAgICAgICAg
-ICAgICAgICAgICAgc2V0X3NiaV9mbGFnKEYyRlNfSV9TQihpbm9kZSksIFNCSV9ORUVEX0NQKTsN
-Cj4gKyAgICAgICAgICAgICBlbHNlIGlmIChJU19FTkNSWVBURUQoaW5vZGUpICYmDQo+ICsgICAg
-ICAgICAgICAgICAgICAgICBmMmZzX2lzX2NoZWNrcG9pbnRlZF9ub2RlKHNiaSwgaW5vZGUtPmlf
-aW5vKSkNCj4gKyAgICAgICAgICAgICAgICAgICAgIGYyZnNfYWRkX2lub19lbnRyeShzYmksIGlu
-b2RlLT5pX2lubywgRU5DX0RJUl9JTk8pOw0KPiArICAgICB9DQo+DQo+ICAgc2FtZToNCj4gICAg
-ICAgaWYgKGlzX2lub2RlX2ZsYWdfc2V0KGlub2RlLCBGSV9BQ0xfTU9ERSkpIHsgZGlmZiAtLWdp
-dCANCj4gYS9pbmNsdWRlL3RyYWNlL2V2ZW50cy9mMmZzLmggYi9pbmNsdWRlL3RyYWNlL2V2ZW50
-cy9mMmZzLmggaW5kZXggDQo+IDdlZDBmYzQzMGRjNi4uNDhmMmUzOTllMTg0IDEwMDY0NA0KPiAt
-LS0gYS9pbmNsdWRlL3RyYWNlL2V2ZW50cy9mMmZzLmgNCj4gKysrIGIvaW5jbHVkZS90cmFjZS9l
-dmVudHMvZjJmcy5oDQo+IEBAIC0xMzksNyArMTM5LDggQEAgVFJBQ0VfREVGSU5FX0VOVU0oRVhf
-QkxPQ0tfQUdFKTsNCj4gICAgICAgICAgICAgICB7IENQX05PREVfTkVFRF9DUCwgICAgICAibm9k
-ZSBuZWVkcyBjcCIgfSwgICAgICAgICAgICAgIFwNCj4gICAgICAgICAgICAgICB7IENQX0ZBU1RC
-T09UX01PREUsICAgICAiZmFzdGJvb3QgbW9kZSIgfSwgICAgICAgICAgICAgIFwNCj4gICAgICAg
-ICAgICAgICB7IENQX1NQRUNfTE9HX05VTSwgICAgICAibG9nIHR5cGUgaXMgMiIgfSwgICAgICAg
-ICAgICAgIFwNCj4gLSAgICAgICAgICAgICB7IENQX1JFQ09WRVJfRElSLCAgICAgICAiZGlyIG5l
-ZWRzIHJlY292ZXJ5IiB9KQ0KPiArICAgICAgICAgICAgIHsgQ1BfUkVDT1ZFUl9ESVIsICAgICAg
-ICJkaXIgbmVlZHMgcmVjb3ZlcnkiIH0sICAgICAgICAgXA0KPiArICAgICAgICAgICAgIHsgQ1Bf
-RU5DX0RJUiwgICAgICAgICAgICJwZXJzaXN0IGVuY3J5cHRpb24gcG9saWN5IiB9KQ0KPg0KPiAg
-ICNkZWZpbmUgc2hvd19zaHV0ZG93bl9tb2RlKHR5cGUpICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgXA0KPiAgICAgICBfX3ByaW50X3N5bWJvbGljKHR5cGUsICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXA0K
+
+
+On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> Add a flag, KVM_DEBUGREG_AUTO_SWITCHED_GUEST, to skip saving/restoring DRs
+> irrespective of any other flags.  TDX-SEAM unconditionally saves and
+> restores guest DRs and reset to architectural INIT state on TD exit.
+> So, KVM needs to save host DRs before TD enter without restoring guest DRs
+> and restore host DRs after TD exit.
+
+The description here is different from the implementation.
+The changelog needs to be updated?
+
+>
+> Opportunistically convert the KVM_DEBUGREG_* definitions to use BIT().
+>
+> Reported-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Chao Gao <chao.gao@intel.com>
+> Signed-off-by: Chao Gao <chao.gao@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/include/asm/kvm_host.h | 10 ++++++++--
+>   arch/x86/kvm/vmx/tdx.c          |  1 +
+>   arch/x86/kvm/x86.c              | 11 ++++++++---
+>   3 files changed, 17 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 5cb25e1f83ce..a7782a6f995a 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -626,8 +626,14 @@ struct kvm_pmu {
+>   struct kvm_pmu_ops;
+>   
+>   enum {
+> -	KVM_DEBUGREG_BP_ENABLED = 1,
+> -	KVM_DEBUGREG_WONT_EXIT = 2,
+> +	KVM_DEBUGREG_BP_ENABLED		= BIT(0),
+> +	KVM_DEBUGREG_WONT_EXIT		= BIT(1),
+> +	/*
+> +	 * Guest debug registers (DR0-3 and DR6) are saved/restored by hardware
+> +	 * on exit from or enter to guest. KVM needn't switch them. Because DR7
+> +	 * is cleared on exit from guest, DR7 need to be saved/restored.
+> +	 */
+> +	KVM_DEBUGREG_AUTO_SWITCH	= BIT(2),
+>   };
+>   
+>   struct kvm_mtrr_range {
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 58583f0ab131..db01162de136 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -636,6 +636,7 @@ int tdx_vcpu_create(struct kvm_vcpu *vcpu)
+>   
+>   	vcpu->arch.efer = EFER_SCE | EFER_LME | EFER_LMA | EFER_NX;
+>   
+> +	vcpu->arch.switch_db_regs = KVM_DEBUGREG_AUTO_SWITCH;
+>   	vcpu->arch.cr0_guest_owned_bits = -1ul;
+>   	vcpu->arch.cr4_guest_owned_bits = -1ul;
+>   
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index f14e3e888842..e252372bb633 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10973,7 +10973,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>   	if (vcpu->arch.guest_fpu.xfd_err)
+>   		wrmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
+>   
+> -	if (unlikely(vcpu->arch.switch_db_regs)) {
+> +	if (unlikely(vcpu->arch.switch_db_regs & ~KVM_DEBUGREG_AUTO_SWITCH)) {
+>   		set_debugreg(0, 7);
+>   		set_debugreg(vcpu->arch.eff_db[0], 0);
+>   		set_debugreg(vcpu->arch.eff_db[1], 1);
+> @@ -11019,6 +11019,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>   	 */
+>   	if (unlikely(vcpu->arch.switch_db_regs & KVM_DEBUGREG_WONT_EXIT)) {
+>   		WARN_ON(vcpu->guest_debug & KVM_GUESTDBG_USE_HW_BP);
+> +		WARN_ON(vcpu->arch.switch_db_regs & KVM_DEBUGREG_AUTO_SWITCH);
+>   		static_call(kvm_x86_sync_dirty_debug_regs)(vcpu);
+>   		kvm_update_dr0123(vcpu);
+>   		kvm_update_dr7(vcpu);
+> @@ -11031,8 +11032,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>   	 * care about the messed up debug address registers. But if
+>   	 * we have some of them active, restore the old state.
+>   	 */
+> -	if (hw_breakpoint_active())
+> -		hw_breakpoint_restore();
+> +	if (hw_breakpoint_active()) {
+> +		if (!(vcpu->arch.switch_db_regs & KVM_DEBUGREG_AUTO_SWITCH))
+> +			hw_breakpoint_restore();
+> +		else
+> +			set_debugreg(__this_cpu_read(cpu_dr7), 7);
+> +	}
+>   
+>   	vcpu->arch.last_vmentry_cpu = vcpu->cpu;
+>   	vcpu->arch.last_guest_tsc = kvm_read_l1_tsc(vcpu, rdtsc());
+
 
