@@ -1,165 +1,151 @@
-Return-Path: <linux-kernel+bounces-80612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-80615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F6D4866A5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:58:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61BFD866A66
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 08:03:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 509431C214B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 06:58:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CD7D283028
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 07:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E6BF1BC5B;
-	Mon, 26 Feb 2024 06:58:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12C8F1BDC3;
+	Mon, 26 Feb 2024 07:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="eC5LQlMC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DT7FJBbR"
-Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e4+HbDHZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 217EF1BDC3;
-	Mon, 26 Feb 2024 06:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482751C280;
+	Mon, 26 Feb 2024 07:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708930695; cv=none; b=eWzLH0Jb7WO84DitpOi0HJwyf+2kg4QjqnoGX6DhAYf16cibFYUSgSqF0ciQEVW6Lb/wGn2+4353MwxEqeo3McILluA/iHfERn1Dl1dscF4wya0QF5A+sfJeAwmkBOr2szFQoAlTA6GoW2ihhx0z+TuuX8+Hk5zngKprdSrFxc4=
+	t=1708931016; cv=none; b=NI83pDNnKzAd5jO1nlaxPTYW9eJMPwI7LnA8BsTwfN6IbUSkjaQTKk/1ehbiLerLfMryEZ1gIliJiv+e1l231wQV/FJplbJiUx3wd96SC59EX3zQKCAL4ZoDVPt5QNF1+N9WMXKQlB606SWDwOPWk5Zg+4UHpdGMMH33/olCM9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708930695; c=relaxed/simple;
-	bh=YvskMQL6vh3LHIbEKjAML+XytC66oTun1i9E9paZEoA=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Kv25Dmt+c1jYFcFrs9JpKuNftCzUvi8s0isQOZn7AQLXyiA75kvkPOmU8CCkU0EmGvEap5E+ivNpTwgkC4al2bCZtB9pvPWPX0IXvM+jK4y5FA41nKjk3Zu1JGTHdbvk7QgVHvKMKGqiRS3zhu7rkPJBTdHmGUyjjpp3Ty1IEoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=eC5LQlMC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DT7FJBbR; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 480DF1380083;
-	Mon, 26 Feb 2024 01:58:12 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 26 Feb 2024 01:58:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1708930692;
-	 x=1709017092; bh=JF2cDLEh4oupc3MOcy1bJ24fHuVp+oZVdvi9yntqhTs=; b=
-	eC5LQlMCgf6UFx421hPwE1Ne2iCquVkJzx/vOnsyi+GVCrjGuQkJxIoVqWBNd5FV
-	h1opcO/GgjifYyckc+tPoUdMSIV6D4D8zYKXpDRIJOK6zYN8kaJ5Pnzgzb3E7Qca
-	MoTXP/h68V8uJxvZ49opRfs40Jeg9+RfQRHgzLg56uY669E6ssWCunPG9Xf0G8XA
-	BMcjPCjlAvL0tSzsFqHh9wwFjZeW/z5deSfXP7JhmXYL2p6tws4hg2moHj6Fgcl4
-	OBaOPIfv07n7u41Ymjq6VACPL2vAowlGIfS1SZkejVMuNetC8BW22W3XjsurjDwR
-	STgVsFDZe1bLi/BdhueaaA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708930692; x=
-	1709017092; bh=JF2cDLEh4oupc3MOcy1bJ24fHuVp+oZVdvi9yntqhTs=; b=D
-	T7FJBbR7x0v/24ipJPfItK+0hxVcbs9Xky4ADQNVeSFADRu1FnPUM7OrcJ9qre62
-	4nazByWE9ms4o0ZdldxeOVdyswtBGgW9N+dApv2OnY71STv7f4TGEIShKqFyWs57
-	iq01PwXw6BxSqw7Kdl6a2mWnK9gthJz8OOlWty5Q8vEixZYFPWohFrMZmAUvQ4NU
-	HRGe+SBThMSeKF+uvLnGz9mqNbcDNk642dZIHm8V37BgKJER23hONWAdsG9z3anD
-	V5aXAh4elNvOl+w3A/FfpLxLjmktMLf15+7Y0qYVNBzDiw0WPZpCVfpCqfgyTCk2
-	LCmJ2S7fDu2aUaZaJ+3Mw==
-X-ME-Sender: <xms:gzbcZbDcvKWLVESyuSYP-WAejrVYdKrMTvlhDn79x4twC6XLl2fRUg>
-    <xme:gzbcZRgz5pkSn6ffhBHC0VwX75hEaZy1qgdECraVPJU5QegE_BDQdiXwKhLpijTvP
-    kzzqGM8gUBgwinBJDc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgedugddutdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeffkeejkeevveetfedugeefgffhjeeihefgleffhfegleeuffduheeijeel
-    geeuhfenucffohhmrghinhepshhouhhrtggvfigrrhgvrdhorhhgnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdgu
-    vg
-X-ME-Proxy: <xmx:gzbcZWmpazowYXdJH3A35_myKG16ol1yv6nV_hsK_S3pkwuw14PRVA>
-    <xmx:gzbcZdzjuhmReXfuYQCxnt3Musutnwrcb2sYbHjXMEmU-o-lsOe-_Q>
-    <xmx:gzbcZQRxXvCIgOUwnNgi1O95bsjvsOeuX3WTaqs2ViqFxMcnbc74kA>
-    <xmx:hDbcZcoi5ftvkS__B4edMHkfsG_cO5UpTXQrj6mW2TFegUkWFWLYnw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 61857B6008D; Mon, 26 Feb 2024 01:58:11 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
+	s=arc-20240116; t=1708931016; c=relaxed/simple;
+	bh=McHriLc9VHpbi8pf3LEto0DWYbClS1FsZTk12Re/s0c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HeeWBZyt9+oPyFm7swaprWCTugCoz2CKZIb6KDjDN2O+NwVGPduKUjmXuDG0oZaNXSGnY0dUK7xgZXEAQ3+UjmBdUPRO4sj1/8H1ef+Y3bFfCJgxMfLOJDwPJZCjuc2VyHYhxwUx3egWvWe3x4G5EooCIIxhqSOcRxcFtk7d0PY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e4+HbDHZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F9BC433A6;
+	Mon, 26 Feb 2024 07:03:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708931015;
+	bh=McHriLc9VHpbi8pf3LEto0DWYbClS1FsZTk12Re/s0c=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=e4+HbDHZear95QoLvFW20iEIy9F7NnlszG53ezKs3SiYuUTGyxc30+wOZO0DwTm2l
+	 IBHyq6YH67F20QwWj7nxTIg8R8o2gRGyLO7vtZLX/HFJPvI7Q2n9Yab5luNCRLHoAC
+	 D2mYM5CkXnxmeht1WNuU5s/25nsZe1jgwoSqoezl3aLCHm/8MYDZF/SY9eyRWQnbiu
+	 xacXwm2uxtzHy3LkjbBMxDcjCUdBeGbom1uX7yhhgqbyG4W/XOgo0fVzC1w4etdI24
+	 a6Nt/BfrCJeDr9ZOdCxA1QpHbiKYm2UO9WBfUVVrdhmCNH3OrTmCbI4qeCBWz3jDnI
+	 ruWZSUAZK4v+g==
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d2305589a2so40134381fa.1;
+        Sun, 25 Feb 2024 23:03:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXh0567t+4EmQT861PMR/3SOa2JCTtGlTtrYGQc3DWY9LiM8cYMfG8fH81Rtq8zQamX8AToigllVWOoS9RZi3MhC29rbhDhHLzdPZRgoVv0O2lqiXaK8zt0w9olaioM4k83S2L1EGJYg11DGRf3WEcz8NnjF/XiJl9Di3YBmiZUZ91Wgd4vEg==
+X-Gm-Message-State: AOJu0YwwYbs/6wMvUBqMCNa+nA2CxrcGsE9J66iWh7a6pPZ9GLpGFgyQ
+	zW0PFfW4KY6+U2U5e1eek2XhWC6BSUMhPDufkYnsD97stA4XlgrE5whhhomqRUl/Ql7Pr4F77jz
+	TuIyjK7STrhkSrUjaOT4YFJUwgNo=
+X-Google-Smtp-Source: AGHT+IG7y3BqdCJ+sfjI74RCsEt3lLih8aIWurAWDnZJbN45ufZkQqGa++R+6q+3o5wNfprqbpIU7Nm9lSVNng2tJJY=
+X-Received: by 2002:a2e:850a:0:b0:2d2:8ce0:215b with SMTP id
+ j10-20020a2e850a000000b002d28ce0215bmr794228lji.0.1708931014170; Sun, 25 Feb
+ 2024 23:03:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3c396b7c-adec-4762-9584-5824f310bf7b@app.fastmail.com>
-In-Reply-To: <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
-References: <599df4a3-47a4-49be-9c81-8e21ea1f988a@xen0n.name>
- <CAAhV-H4oW70y-2ZSp=b-Ed3A7Jrxfg6xvO8YpjED6To=PF0NwA@mail.gmail.com>
- <f063e65df92228cac6e57b0c21de6b750cf47e42.camel@icenowy.me>
- <24c47463f9b469bdc03e415d953d1ca926d83680.camel@xry111.site>
- <61c5b883762ba4f7fc5a89f539dcd6c8b13d8622.camel@icenowy.me>
-Date: Mon, 26 Feb 2024 07:56:38 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Icenowy Zheng" <uwu@icenowy.me>, "Xi Ruoyao" <xry111@xry111.site>,
- "Huacai Chen" <chenhuacai@kernel.org>, "WANG Xuerui" <kernel@xen0n.name>
-Cc: linux-api@vger.kernel.org, "Christian Brauner" <brauner@kernel.org>,
- "Kees Cook" <keescook@chromium.org>, "Xuefeng Li" <lixuefeng@loongson.cn>,
- "Jianmin Lv" <lvjianmin@loongson.cn>, "Xiaotian Wu" <wuxiaotian@loongson.cn>,
- "WANG Rui" <wangrui@loongson.cn>, "Miao Wang" <shankerwangmiao@gmail.com>,
- "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
- Linux-Arch <linux-arch@vger.kernel.org>,
- "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: Chromium sandbox on LoongArch and statx -- seccomp deep argument
- inspection again?
-Content-Type: text/plain;charset=utf-8
+References: <20240225151209.343160-1-alexander.stein@mailbox.org>
+In-Reply-To: <20240225151209.343160-1-alexander.stein@mailbox.org>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Mon, 26 Feb 2024 16:02:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARxfhYm9WyDH-S0PT7Mb5Tj5tmbqGLs9NzNxzsi1_4OQw@mail.gmail.com>
+Message-ID: <CAK7LNARxfhYm9WyDH-S0PT7Mb5Tj5tmbqGLs9NzNxzsi1_4OQw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] kbuild: Add DT schema check also when applying DT overlays
+To: Alexander Stein <alexander.stein@mailbox.org>, Rob Herring <robh+dt@kernel.org>, 
+	DTML <devicetree@vger.kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024, at 07:03, Icenowy Zheng wrote:
-> =E5=9C=A8 2024-02-25=E6=98=9F=E6=9C=9F=E6=97=A5=E7=9A=84 15:32 +0800=EF=
-=BC=8CXi Ruoyao=E5=86=99=E9=81=93=EF=BC=9A
->> On Sun, 2024-02-25 at 14:51 +0800, Icenowy Zheng wrote:
->> > My idea is this problem needs syscalls to be designed with deep
->> > argument inspection in mind; syscalls before this should be
->> > considered
->> > as historical error and get fixed by resotring old syscalls.
->>=20
->> I'd not consider fstat an error as using statx for fstat has a
->> performance impact (severe for some workflows), and Linus has
->> concluded
++ Rob Herring, DT List
+
+
+On Mon, Feb 26, 2024 at 12:12=E2=80=AFAM Alexander Stein
+<alexander.stein@mailbox.org> wrote:
 >
-> Sorry for clearance, I mean statx is an error in ABI design, not fstat.
-
-The same has been said about seccomp(). ;-)
-
-It's clear that the two don't go well together at the moment.
-
->> "if the user wants fstat, give them fstat" for the performance issue:
->>=20
->> https://sourceware.org/pipermail/libc-alpha/2023-September/151365.html
->>=20
->> However we only want fstat (actually "newfstat" in fs/stat.c), and it
->> seems we don't want to resurrect newstat, newlstat, newfstatat, etc.
->> (or
->> am I missing any benefit - performance or "just pleasing seccomp" -
->> of them comparing to statx?) so we don't want to just define
->> __ARCH_WANT_NEW_STAT.=C2=A0 So it seems we need to add some new #if to
->> fs/stat.c and include/uapi/asm-generic/unistd.h.
->>=20
->> And no, it's not a design issue of all other syscalls.=C2=A0 It's jus=
-t the
->> design issue of seccomp.=C2=A0 There's no way to design a syscall all=
-owing
->> seccomp to inspect a 100-character path in its argument unless
->> refactoring seccomp entirely because we cannot fit a 100-character
->> path
->> into 8 registers.
+> Add a similar mechanism as for regular DT files to call the DT checker
+> after applying DT overlays to base DT files.
 >
-> Well my meaning is that syscalls should be designed to be simple to
-> prevent this kind of circumstance.
+> Signed-off-by: Alexander Stein <alexander.stein@mailbox.org>
+> ---
+> I'm unsure if this is the "right" way, or if the multi-dtb-y lines
+> should be moved. But checking for schemas in DT overlays is a nice thing.
 
-The problem I see with the 'use use fstat' approach is that this
-does not work on 32-bit architectures, unless we define a new
-fstatat64_time64() syscall, which is one of the things that statx()
-was trying to avoid.
 
-Whichever solution we end up with should work on both
-loongarch64 and on armv7 at least.
 
-    Arnd
+There is no need to move the multi-dtb-y line.
+
+
+
+
+>  scripts/Makefile.lib | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 038a12e15586..964892b18f95 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -406,10 +406,6 @@ cmd_dtc =3D $(HOSTCC) -E $(dtc_cpp_flags) -x assembl=
+er-with-cpp -o $(dtc-tmp) $< ;
+>  quiet_cmd_fdtoverlay =3D DTOVL   $@
+>        cmd_fdtoverlay =3D $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $(re=
+al-prereqs)
+>
+> -$(multi-dtb-y): FORCE
+> -       $(call if_changed,fdtoverlay)
+> -$(call multi_depend, $(multi-dtb-y), .dtb, -dtbs)
+> -
+>  ifneq ($(CHECK_DTBS)$(CHECK_DT_BINDING),)
+>  DT_CHECKER ?=3D dt-validate
+>  DT_CHECKER_FLAGS ?=3D $(if $(DT_SCHEMA_FILES),-l $(DT_SCHEMA_FILES),-m)
+> @@ -418,9 +414,13 @@ DT_TMP_SCHEMA :=3D $(objtree)/$(DT_BINDING_DIR)/proc=
+essed-schema.json
+>
+>  quiet_cmd_dtb =3D        DTC_CHK $@
+>        cmd_dtb =3D        $(cmd_dtc) ; $(DT_CHECKER) $(DT_CHECKER_FLAGS) =
+-u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $@ || true
+> +quiet_cmd_dtbo =3D DTOVL_CHK $@
+> +      cmd_dtbo =3D $(cmd_fdtoverlay) ; $(DT_CHECKER) $(DT_CHECKER_FLAGS)=
+ -u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $@ || true
+>  else
+>  quiet_cmd_dtb =3D $(quiet_cmd_dtc)
+>        cmd_dtb =3D $(cmd_dtc)
+> +quiet_cmd_dtbo =3D $(quiet_cmd_fdtoverlay)
+> +      cmd_dtbo =3D $(cmd_fdtoverlay)
+>  endif
+>
+>  $(obj)/%.dtb: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
+> @@ -429,6 +429,10 @@ $(obj)/%.dtb: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) F=
+ORCE
+>  $(obj)/%.dtbo: $(src)/%.dtso $(DTC) FORCE
+>         $(call if_changed_dep,dtc)
+>
+> +$(multi-dtb-y): FORCE
+> +       $(call if_changed,dtbo)
+> +$(call multi_depend, $(multi-dtb-y), .dtb, -dtbs)
+> +
+>  dtc-tmp =3D $(subst $(comma),_,$(dot-target).dts.tmp)
+>
+>  # Bzip2
+> --
+> 2.44.0
+>
+
+
+--=20
+Best Regards
+Masahiro Yamada
 
