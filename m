@@ -1,236 +1,129 @@
-Return-Path: <linux-kernel+bounces-81138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 173148670EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF1108670F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 11:29:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A1AF1C238DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:28:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F06FB1C27E6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 10:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51A95D8E9;
-	Mon, 26 Feb 2024 10:13:38 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2990C5DF2D;
+	Mon, 26 Feb 2024 10:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="oeLVSXrQ"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5EE5D739
-	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 10:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95F95D90F;
+	Mon, 26 Feb 2024 10:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708942418; cv=none; b=eNRNuNKSkIT7FNvRE9Cd9GO49Vn9yadVF9IH0Hc6VZuoW4jTD/SvzobzW4hZqMRr6gx3rvEa0/E/7aLR79ObUYf0CpK1AcvU5mFILXFx6UldwVWFAcyJSAVCiLb/fMMvqBHCpmhd7t38kAvaRPUQPrNVAU1S2G9Yr+i0N+jP4Yo=
+	t=1708942428; cv=none; b=TdwlDiuGJv+stVs8NKPi8pZx9v8T0AsPQ5/w6p6kEP+pmyX0kI+Ci5xLtkhVtsj92meSFf+YyXtkrLvWHTYb88BCTEp5fQZvhMLsWZVwpfNyNjEdrAlUZ3BFTnqwD5hVXynAJg8iAUKgD+4jY4VsWlwk/Effmpnu3Zm6JMwd0Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708942418; c=relaxed/simple;
-	bh=l/XNUdsfXsVRtLmfrCgBFlt+3X14xsPp0ov7WWwqMKE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ubLUCF5Zg929K7ZnoJ0+/BwH4wG56ezLMmqNOZuFcoO5FCY7NzcD61Xdlx2bL6quZoyBlHJKW2HqzCgK/hZ7JcryCP915IkBOc4RTsdZv0GVgGGEkE/ETJX8srhroM70iLF24WXYf7im3CWl4nLMTFR9rMze1+P0FlAHZY8a3tM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1reXzJ-0004kk-1T; Mon, 26 Feb 2024 11:13:33 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1reXzH-002yMd-U7; Mon, 26 Feb 2024 11:13:31 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1reXzH-00Ba9u-2h;
-	Mon, 26 Feb 2024 11:13:31 +0100
-Date: Mon, 26 Feb 2024 11:13:31 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Trevor Gamblin <tgamblin@baylibre.com>
-Cc: linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	michael.hennerich@analog.com, nuno.sa@analog.com, devicetree@vger.kernel.org, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	Drew Fustini <dfustini@baylibre.com>, Sergiu Cuciurean <sergiu.cuciurean@analog.com>, 
-	David Lechner <dlechner@baylibre.com>
-Subject: Re: [PATCH 2/2 v3] pwm: Add driver for AXI PWM generator
-Message-ID: <rqozm7c4xixq3mb7sod7uslceieme7jrtdj2yelrekrqnttch2@vpsbe2nqmdsd>
-References: <20240131214042.1335251-1-tgamblin@baylibre.com>
- <20240131214042.1335251-3-tgamblin@baylibre.com>
+	s=arc-20240116; t=1708942428; c=relaxed/simple;
+	bh=B3YjOE5PYheV7HjsnV+dA52LtrK2wRs5zzXZdAO4pdg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=F4AWDHTd5OxFxe94I7yTzhFVj1HP0hric0idBKAXBL3nrgFjEOd1zL+UmGs78jGSOOYWdSeQIDJlmcWz5q+oXEM99pdTXXvwGGG+IrBaMcu0TMPORhUc1wyFEFor8rUFmeKAxfxy/Q5Ptu5LIOCIEGhpZNJ9QkDz0+z7PqruV9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=oeLVSXrQ; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 927CDFF80A;
+	Mon, 26 Feb 2024 10:13:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708942418;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LpmeEW2KPcAcnRm7IcTOCA1adY+H9eQbBF8a76zUX6A=;
+	b=oeLVSXrQr6IIzClrt1tDu/K6oB8jB3gPpSrBVvhAw2j/KeY9Hx5gNwc/9oiM2b4C+VjOgC
+	hv3cbSLvBTO8qLMhNd+CYQUjf26yK5wic4Q/FpJbUi66lNVR5/Lc9gFW3OLKCJAKKYGgTx
+	uTQ4Q+33Wg5WY8xGJ7E8qYy6xTHVgS7gbmfRFmUtpUFhMswU0Cex+tAu2CTGaEfh8vCRZo
+	nJbuk0HrQirievwIPJRntrdd7GuLa/WzdXRm4srSNLymiga5lsGP/dDFk8lQOqUkY3nOqF
+	Ur+42OQ45ic6IG32xDfH0H6m0bPti8gyXwvLvs9CBC25fZxnjjTfk49xiABOrg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="e7n7hyci5zrnb2jl"
-Content-Disposition: inline
-In-Reply-To: <20240131214042.1335251-3-tgamblin@baylibre.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---e7n7hyci5zrnb2jl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 26 Feb 2024 11:13:36 +0100
+Message-Id: <CZEXIZWQO1XB.1YY4P72A2K1HJ@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v3 4/8] usb: cdns3-ti: support reset-on-resume behavior
+Cc: "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>,
+ =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>, "Kevin
+ Hilman" <khilman@kernel.org>, "Alan Stern" <stern@rowland.harvard.edu>,
+ <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+To: "Sergei Shtylyov" <sergei.shtylyov@gmail.com>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>, "Rob Herring" <robh+dt@kernel.org>,
+ "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Roger Quadros" <rogerq@kernel.org>, "Peter Chen"
+ <peter.chen@kernel.org>, "Pawel Laszczak" <pawell@cadence.com>, "Nishanth
+ Menon" <nm@ti.com>, "Vignesh Raghavendra" <vigneshr@ti.com>, "Tero Kristo"
+ <kristo@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240223-j7200-usb-suspend-v3-0-b41c9893a130@bootlin.com>
+ <20240223-j7200-usb-suspend-v3-4-b41c9893a130@bootlin.com>
+ <b778d2e8-3fcf-afe4-2e48-0348be19a085@gmail.com>
+In-Reply-To: <b778d2e8-3fcf-afe4-2e48-0348be19a085@gmail.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Wed, Jan 31, 2024 at 04:40:41PM -0500, Trevor Gamblin wrote:
-> From: Drew Fustini <dfustini@baylibre.com>
->=20
-> Add support for the Analog Devices AXI PWM Generator. This device is an
-> FPGA-implemented peripheral used as PWM signal generator and can be
-> interfaced with AXI4. The register map of this peripheral makes it
-> possible to configure the period and duty cycle of the output signal.
->=20
-> Link: https://wiki.analog.com/resources/fpga/docs/axi_pwm_gen
-> Co-developed-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> Signed-off-by: Sergiu Cuciurean <sergiu.cuciurean@analog.com>
-> Co-developed-by: David Lechner <dlechner@baylibre.com>
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-> Signed-off-by: Drew Fustini <dfustini@baylibre.com>
-> Co-developed-by: Trevor Gamblin <tgamblin@baylibre.com>
-> Acked-by: Nuno Sa <nuno.sa@analog.com>
-> Signed-off-by: Trevor Gamblin <tgamblin@baylibre.com>
-> ---
-> v3 changes:
-> * Address feedback for driver in v2:
->   * Remove unnecessary blank line in axi_pwmgen_apply
->   * Use macros already defined in <linux/fpga/adi-axi-common.h> for
->     version checking
->=20
-> v2 changes:
-> * Address feedback for driver and device tree in v1:
->   * Use more reasonable Kconfig approach
->   * Use common prefixes for all functions
->   * Rename axi_pwmgen struct to axi_pwmgen_ddata
->   * Change use of "pwm" to "ddata"
->   * Set and check state->polarity
->   * Multiply safely with mul_u64_u64_div_u64()
->   * Improve handling of max and zero periods
->   * Error if clk_rate_hz > NSEC_PER_SEC
->   * Add "Limitations" section at top of pwm-axi-pwmgen.c
->   * Don't disable outputs by default
->   * Remove unnecessary macros for period, duty, offset
->   * Fix axi_pwmgen_ddata alignment
->   * Don't artificially limit npwm to four
->   * Use clk_rate_exclusive_get(), balance with clk_rate_exclusive_put()
->   * Cache clk rate in axi_pwmgen_ddata
->   * Don't assign pwm->chip.base, do assign pwm->chip.atomic
-> * Remove redundant calls to clk_get_rate
-> * Test contents of AXI_PWMGEN_REG_CORE_MAGIC instead of
->   arbitrary AXI_PWMGEN_TEST_DATA in AXI_PWMGEN_REG_SCRATCHPAD
-> * Remove redundant clk struct from axi_pwmgen_ddata
-> * Add self as module author
-> * Add major version check for IP core
->=20
-> ---
->  MAINTAINERS                  |   1 +
->  drivers/pwm/Kconfig          |  13 ++
->  drivers/pwm/Makefile         |   1 +
->  drivers/pwm/pwm-axi-pwmgen.c | 242 +++++++++++++++++++++++++++++++++++
->  4 files changed, 257 insertions(+)
->  create mode 100644 drivers/pwm/pwm-axi-pwmgen.c
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8a4ed5545680..2baa7a0a1c8c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3438,6 +3438,7 @@ L:	linux-pwm@vger.kernel.org
->  S:	Supported
->  W:	https://ez.analog.com/linux-software-drivers
->  F:	Documentation/devicetree/bindings/pwm/adi,axi-pwmgen.yaml
-> +F:	drivers/pwm/pwm-axi-pwmgen.c
-> =20
->  AXXIA I2C CONTROLLER
->  M:	Krzysztof Adamski <krzysztof.adamski@nokia.com>
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index 4b956d661755..d44b0e86adee 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -98,6 +98,19 @@ config PWM_ATMEL_TCB
->  	  To compile this driver as a module, choose M here: the module
->  	  will be called pwm-atmel-tcb.
-> =20
-> +config PWM_AXI_PWMGEN
-> +	tristate "Analog Devices AXI PWM generator"
-> +	depends on MICROBLAZE || NIOS2 || ARCH_ZYNQ || ARCH_ZYNQMP || ARCH_INTE=
-L_SOCFPGA || COMPILE_TEST
-> +	select REGMAP_MMIO
-> +	help
-> +	  This enables support for the Analog Devices AXI PWM generator.
-> +
-> +	  This is a configurable PWM generator with variable pulse width and
-> +	  period.
-> +
-> +	  To compile this driver as a module, choose M here: the module will be
-> +	  called pwm-axi-pwmgen.
-> +
->  config PWM_BCM_IPROC
->  	tristate "iProc PWM support"
->  	depends on ARCH_BCM_IPROC || COMPILE_TEST
-> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-> index c5ec9e168ee7..8322089954e9 100644
-> --- a/drivers/pwm/Makefile
-> +++ b/drivers/pwm/Makefile
-> @@ -6,6 +6,7 @@ obj-$(CONFIG_PWM_APPLE)		+=3D pwm-apple.o
->  obj-$(CONFIG_PWM_ATMEL)		+=3D pwm-atmel.o
->  obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+=3D pwm-atmel-hlcdc.o
->  obj-$(CONFIG_PWM_ATMEL_TCB)	+=3D pwm-atmel-tcb.o
-> +obj-$(CONFIG_PWM_AXI_PWMGEN)	+=3D pwm-axi-pwmgen.o
->  obj-$(CONFIG_PWM_BCM_IPROC)	+=3D pwm-bcm-iproc.o
->  obj-$(CONFIG_PWM_BCM_KONA)	+=3D pwm-bcm-kona.o
->  obj-$(CONFIG_PWM_BCM2835)	+=3D pwm-bcm2835.o
-> diff --git a/drivers/pwm/pwm-axi-pwmgen.c b/drivers/pwm/pwm-axi-pwmgen.c
-> new file mode 100644
-> index 000000000000..44e62e90b227
-> --- /dev/null
-> +++ b/drivers/pwm/pwm-axi-pwmgen.c
-> @@ -0,0 +1,242 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Analog Devices AXI PWM generator
-> + *
-> + * Copyright 2024 Analog Devices Inc.
-> + * Copyright 2024 Baylibre SAS
-> + *
-> + * Limitations:
-> + * - The writes to registers for period and duty are shadowed until
-> + *   LOAD_CONFIG is written to AXI_PWMGEN_REG_CONFIG at the end of the
-> + *   current period.
-> + * - Writing LOAD_CONFIG also has the effect of re-synchronizing all
-> + *   enabled channels, which could cause glitching on other channels. It
-> + *   is therefore expected that channels are assigned harmonic periods
-> + *   and all have a single user coordinating this.
+Hello Sergey,
 
-That means that when I reconfigure pwm2 the currently running period of
-pwm2 is completed and then all pwmX's counters are reset to zero?
+On Sat Feb 24, 2024 at 10:08 AM CET, Sergei Shtylyov wrote:
+> On 2/23/24 7:05 PM, Th=C3=A9o Lebrun wrote:
+> > Add match data support, with one boolean to indicate whether the
+> > hardware resets after a system-wide suspend. If hardware resets, we
+> > force execute ->runtime_resume() at system-wide resume to run the
+> > hardware init sequence.
+> >=20
+> > No compatible exploits this functionality, just yet.
+> >=20
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > ---
+> >  drivers/usb/cdns3/cdns3-ti.c | 27 +++++++++++++++++++++++++++
+> >  1 file changed, 27 insertions(+)
+> >=20
+> > diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.=
+c
+> > index 4c8a557e6a6f..f76327566798 100644
+> > --- a/drivers/usb/cdns3/cdns3-ti.c
+> > +++ b/drivers/usb/cdns3/cdns3-ti.c
+> [...]
+> > @@ -220,8 +226,29 @@ static int cdns_ti_runtime_resume(struct device *d=
+ev)
+> >  	return 0;
+> >  }
+> > =20
+> > +static int cdns_ti_suspend(struct device *dev)
+> > +{
+> > +	struct cdns_ti *data =3D dev_get_drvdata(dev);
+> > +
+> > +	if (data->match_data && data->match_data->reset_on_resume)
+> > +		return pm_runtime_force_suspend(dev);
+> > +	else
+>
+>    Pointless *else* after *return*...
 
-The patch looks good to me now. It needs a rework to use
-pwmchip_alloc(). If you could care for that, that would be great.
-Otherwise I'd pick up your patch later and add the conversion myself.
+Indeed! I used this form explicitely as it reads nicely: "if reset on
+reset, force suspend, else do nothing". It also prevents the error of
+adding behavior below the if-statement without seeing that it won't
+apply to both cases.
 
-Best regards
-Uwe
+If you do believe it would make the code better I'll happily change it
+for the next revision, I do not mind.
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Thanks for the review Sergey!
 
---e7n7hyci5zrnb2jl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXcZEoACgkQj4D7WH0S
-/k7gbQf/UafmyR6iYiS28SUjB9rcyGxLIkjm6YaqST0mFEHMDwLQjDp+Qbhz3DRf
-7FMBK69me846eI2rHxxYDJRLZoxl6nwUmV0pcgb7eBBM11wnjPYwDtgdWzbQ4E0e
-/lRcvKD5V+9S9JP5jt9fPSqqrvVT0lvX//CecbVQhV1qnAprLyufklqJ4e/AYxBo
-+1hrtgtC+rpkMvQQhCCMvjihPPaT6wtdlTwBvyzENfKg9AgA++ENl5pOLESg5Yhl
-aa+1w3IljZ+y4pG01qqN8Ot5BK9KPf1ALkfTOPQkc/+CnG6ZVz/lE4r6ClN99/va
-cS39QBEz07t8N6+98MXWgk99vHEXLw==
-=6eaA
------END PGP SIGNATURE-----
-
---e7n7hyci5zrnb2jl--
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
