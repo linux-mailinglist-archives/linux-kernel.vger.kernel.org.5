@@ -1,132 +1,143 @@
-Return-Path: <linux-kernel+bounces-81423-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-81425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F271B8675C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 37FD18675CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 13:58:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 922211F2784A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:57:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB5C31F27FAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 12:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB24F8002E;
-	Mon, 26 Feb 2024 12:57:11 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA9607F475;
-	Mon, 26 Feb 2024 12:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F96F81213;
+	Mon, 26 Feb 2024 12:57:32 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD5360860
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 12:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708952231; cv=none; b=mzZ0jDLxoMvKqplnG5Enzfwzidxi6LGt7Cn2ui99wtsO2hpPHDBzE0SGtDlAzIL0ObgE87nauiA8vzFYe9udcuHVJnEQYYsYY/DbF0OaMaymZgyzxl1XyEfFmFrTkO/RxwOfm1nkl+lQy50L0pvPAEelLkKu0EXQ0oYurEfQz9I=
+	t=1708952251; cv=none; b=DzDbRE5rhA9jSV34pTvDO0gbEFdivC7nvlxyxz2ldRSdv1wiaPgGv/C0YfRQ5G+RPswNJ8rpV6JlXsikqp3dLU9FlysXdo1Fj0esN3oHnRzL0/IvMAEsmdzJDDfMhk4gDQ/G841/0hxCm8xuNFEQilSYYWSj7PM5rVBhFfgp1rc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708952231; c=relaxed/simple;
-	bh=JHreYlFG9Bvy0VWQqGq32kV4+VYQfyv2BVzD2+p+oGI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=fVG3MtnXB4XeaL1oBHSNCOxfXb9hTVg6RSC6PtyvgApVRL7AIImUTODYZjuazR9f1Jpm4Jq5wP9/VmNDJFT6lAPHhgpBTb9ArIrCrknRBseg/VtuAANAOWgHGprbFqNMx5AkQHNYhbEnLoUKGKqesYMyu7PXudfxf64jSgJTHyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Tk0w873P6z1xpTt;
-	Mon, 26 Feb 2024 20:55:36 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 16B191A0172;
-	Mon, 26 Feb 2024 20:57:05 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 26 Feb 2024 20:57:04 +0800
-Message-ID: <954a1e9b-d0bb-10ea-aaa9-6a958de30537@hisilicon.com>
-Date: Mon, 26 Feb 2024 20:57:04 +0800
+	s=arc-20240116; t=1708952251; c=relaxed/simple;
+	bh=bQkPpPdoYscWgotFsktdxtN3TegKdT+lBcuCShzGxlQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RDZJYf3ii+PCZ6b6XtWD7E4VYPPvqDiw5FsQCgzSLw2IuwvMhW44SsSjMY7c4uEZWsfznzuT0V55LlzqSxvn37PBW0dxOE54Rtg4Y7bjGvoTqhmYzEspeN759/Mv/xt086/wQshs6WQLruvkG49lhw39tr/LooTZs9RlA4igvXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0EA2DDA7;
+	Mon, 26 Feb 2024 04:58:07 -0800 (PST)
+Received: from [10.57.67.4] (unknown [10.57.67.4])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 40F243F762;
+	Mon, 26 Feb 2024 04:57:25 -0800 (PST)
+Message-ID: <8b909691-ca53-43b9-aab1-dba3ef3577cd@arm.com>
+Date: Mon, 26 Feb 2024 12:57:23 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v2 for-next 2/2] RDMA/hns: Support userspace configuring
- congestion control algorithm with QP granularity
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-	<linuxarm@huawei.com>, <linux-kernel@vger.kernel.org>
-References: <20240208035038.94668-1-huangjunxian6@hisilicon.com>
- <20240208035038.94668-3-huangjunxian6@hisilicon.com>
- <20240221155248.GD13491@ziepe.ca>
- <26ea175c-fa31-720c-2ac3-41abcb4d398a@hisilicon.com>
- <20240226080946.GC1842804@unreal>
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240226080946.GC1842804@unreal>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] mm/madvise: enhance lazyfreeing with mTHP in
+ madvise_free
+Content-Language: en-GB
+To: Lance Yang <ioworker0@gmail.com>, fengwei.yin@intel.com
+Cc: akpm@linux-foundation.org, david@redhat.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+ minchan@kernel.org, peterx@redhat.com, shy828301@gmail.com,
+ songmuchun@bytedance.com, wangkefeng.wang@huawei.com, zokeefe@google.com,
+ 21cnbao@gmail.com
+References: <df416acb-d913-4e67-b810-cd991003242e@intel.com>
+ <20240226083526.26002-1-ioworker0@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240226083526.26002-1-ioworker0@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-
-On 2024/2/26 16:09, Leon Romanovsky wrote:
-> On Thu, Feb 22, 2024 at 03:06:20PM +0800, Junxian Huang wrote:
->>
->>
->> On 2024/2/21 23:52, Jason Gunthorpe wrote:
->>> On Thu, Feb 08, 2024 at 11:50:38AM +0800, Junxian Huang wrote:
->>>> Support userspace configuring congestion control algorithm with
->>>> QP granularity. If the algorithm is not specified in userspace,
->>>> use the default one.
->>>>
->>>> Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
->>>> ---
->>>>  drivers/infiniband/hw/hns/hns_roce_device.h | 23 +++++--
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 14 +---
->>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
->>>>  drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
->>>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 71 +++++++++++++++++++++
->>>>  include/uapi/rdma/hns-abi.h                 | 17 +++++
->>>>  6 files changed, 112 insertions(+), 19 deletions(-)
+On 26/02/2024 08:35, Lance Yang wrote:
+> Hey Fengwei,
 > 
-> <...>
+> Thanks for taking time to review!
 > 
->>>> +
->>>> +enum hns_roce_create_qp_comp_mask {
->>>> +	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
+>> On Mon, Feb 26, 2024 at 10:38 AM Yin Fengwei <fengwei.yin@intel.com> wrote:
+>>> On Sun, Feb 25, 2024 at 8:32 PM Lance Yang <ioworker0@gmail.com> wrote:
+> [...]
+>>> --- a/mm/madvise.c
+>>> +++ b/mm/madvise.c
+>>> @@ -676,11 +676,43 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>>>                */
+>>>               if (folio_test_large(folio)) {
+>>>                       int err;
+>>> +                     unsigned long next_addr, align;
 >>>
->>> Why 1<<1 not 1<<0?
->>
->> This is to keep consistent with our internal ABI, there are some
->> features not upstream yet.
->>
+>>> -                     if (folio_estimated_sharers(folio) != 1)
+>>> -                             break;
+>>> -                     if (!folio_trylock(folio))
+>>> -                             break;
+>>> +                     if (folio_estimated_sharers(folio) != 1 ||
+>>> +                         !folio_trylock(folio))
+>>> +                             goto skip_large_folio;
+>>> +
+>>> +                     align = folio_nr_pages(folio) * PAGE_SIZE;
+>>> +                     next_addr = ALIGN_DOWN(addr + align, align);
+>> There is a possible corner case:
+>> If there is a cow folio associated with this folio and the cow folio
+>> has smaller size than this folio for whatever reason, this change can't
+>> handle it correctly.
 > 
-> <...>
+> Thanks for pointing that out; it's very helpful to me!
+> I made some changes. Could you please check if this corner case is now resolved?
 > 
->>>> @@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
->>>>  	__u32	reserved;
->>>>  	__u32	config;
->>>>  	__u32	max_inline_data;
->>>> +	__u8	reserved0;
->>>> +	__u8	congest_type;
->>>
->>> Why this layout?
->>>> Jason
->>
->> Same as the 1<<1 issue, to keep consistent with our internal ABI.
+> As a diff against this patch.
 > 
-> We are talking about upstream kernel UAPI, there is no internal ABI here.
-> 
-> Please fix it.
-> 
-> Thanks
-> 
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index bcbf56595a2e..c7aacc9f9536 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -686,10 +686,12 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+>  			next_addr = ALIGN_DOWN(addr + align, align);
+>  
+>  			/*
+> -			 * If we mark only the subpages as lazyfree,
+> -			 * split the large folio.
+> +			 * If we mark only the subpages as lazyfree, or
+> +			 * if there is a cow folio associated with this folio,
+> +			 * then split the large folio.
+>  			 */
+> -			if (next_addr > end || next_addr - addr != align)
+> +			if (next_addr > end || next_addr - addr != align ||
+> +			    folio_total_mapcount(folio) != folio_nr_pages(folio))
 
-Sure. Will fix it in next version.
+I still don't think this is correct. I think you were previously assuming that
+if you see a page from a large folio then the whole large folio should be
+contiguously mapped? This new check doesn't validate that assumption reliably;
+you need to iterate through every pte to generate a batch, like David does in
+folio_pte_batch() for this to be safe.
+
+An example of when this check is insufficient; let's say you have a 4 page anon
+folio mapped contiguously in a process (total_mapcount=4). The process is forked
+(total_mapcount=8). Then each process munmaps the second 2 pages
+(total_mapcount=4). In place of the munmapped 2 pages, 2 new pages are mapped.
+Then call madvise. It's probably even easier to trigger for file-backed memory
+(I think this code path is used for both file and anon?)
 
 Thanks,
-Junxian
+Ryan
 
->>
->> Thanks,
->> Junxian
+
+
+
+>  				goto split_large_folio;
+>  
+>  			/*
+> ---
+> 
+> Thanks again for your time!
+> 
+> Best,
+> Lance
+
 
