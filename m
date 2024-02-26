@@ -1,216 +1,275 @@
-Return-Path: <linux-kernel+bounces-82051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B227867E51
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:24:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A902867E3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 18:23:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 977EC1F2701F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:24:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 305BD28805F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 17:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C43512CDAE;
-	Mon, 26 Feb 2024 17:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0EB812F38C;
+	Mon, 26 Feb 2024 17:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZPNI8yIc"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UtEdZPQI"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B865B130AC9;
-	Mon, 26 Feb 2024 17:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B20312CD9C
+	for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708968175; cv=none; b=Ac8M0yygYJ9xqHPFG11Y61eCFEiO5k6Jcggvt9twj673Zc30V2Ewc9d5moY17oJnEllPejs+6YFy/itz2yIy0pP/GI1mtWsju2+cX/D5+YSQDMo6N3uBvXoOmR7GXpGWuldH9Gntr4esagqzpTOLP2Cw6gVkMZBhiFncHNG9Rgk=
+	t=1708968165; cv=none; b=Jxp3Pha3paChuizy25eYJKNAjbplgLBM7zg4iISQ65mbCv1h56Rr7W/huuctFlB8jb1ikg8tC8d1J0RArRZwYcBrjynpLbL/t7703WLXqxGbN+d41+ZrgotxEZLmGZftXAyG0N8qSr9ukBOSGF47Gyq0EHdQESFxOz1/1Q3eIv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708968175; c=relaxed/simple;
-	bh=gwVYaDxijOcW/4jp1wu9USoY8f0zlVqXFt/4vyp5rww=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hCZCOnUUyOTBMueDUo9dt7ZkYIiA+dyNqOvtj3C3AmlVxL56rG0GtjGTp57H2y4WOdSPAP88acg4ErzN2/6X43jelDq0i9UNcvctiXeUSBIZZfvvCGTgecxInGoTrZ2nWIL8GTORVLEuU5TLQK5Gs0BS7KA6CGJMA7tln91YYzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZPNI8yIc; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QFvJqU008860;
-	Mon, 26 Feb 2024 17:22:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=BIBlZ6vO4Zn0Fl9g4ldcuLnPEatGDOFkMzp/ukbPqrk=; b=ZP
-	NI8yIcmrMYaLqNXJqTBI6WZOTOHus4f7f275tltAfdP+XRUoRPIzcpArMc8N+92+
-	sK6SvWcjE6Q7uheVh2lowkTSe28uzgsuFPSY1Qe7kPN6J+B1bScbVMYrnpeJiE/d
-	JsPB7UcKSNh7E3JWf4eUEzEszUDz0CN0DL8SAubY4kuXeJh3xpQGzJTWHVSRbRBy
-	saQnjYndNwe2WtWN3aoC4IN1Q0fL5icb7ngAGM4C6roqwQEDnJgy3VT7BFRTFkmd
-	WHRa4gKXMQ6q8xkMTFz0jK2Y/uOcpx87UacC1hzxoTHGfMiV8Mf62Q8CP0pP+4iD
-	2AnSiR+RsC/+NiVuDCiA==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxq9h5u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 17:22:37 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41QHMag8001143
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 26 Feb 2024 17:22:36 GMT
-Received: from hu-c-gdjako-lv.qualcomm.com (10.49.16.6) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 26 Feb 2024 09:22:36 -0800
-From: Georgi Djakov <quic_c_gdjako@quicinc.com>
-To: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <will@kernel.org>, <robin.murphy@arm.com>,
-        <joro@8bytes.org>, <iommu@lists.linux.dev>
-CC: <devicetree@vger.kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robdclark@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_cgoldswo@quicinc.com>,
-        <quic_sukadev@quicinc.com>, <quic_pdaly@quicinc.com>,
-        <quic_sudaraja@quicinc.com>, <djakov@kernel.org>
-Subject: [PATCH v5 7/7] arm64: dts: qcom: sc7280: Add DT nodes for the TBUs
-Date: Mon, 26 Feb 2024 09:22:18 -0800
-Message-ID: <20240226172218.69486-8-quic_c_gdjako@quicinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240226172218.69486-1-quic_c_gdjako@quicinc.com>
-References: <20240226172218.69486-1-quic_c_gdjako@quicinc.com>
+	s=arc-20240116; t=1708968165; c=relaxed/simple;
+	bh=EqmeweN9yJbHN4ZOPQ4NNULOO0mEliqSsTTtiukx5Xg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ou4DHqkRvNDR2UW7DWcqJao+SCrKTeiGZ8xRT5qCOlDn9UORJlKP3uYmxgT4RVw9EO5Dgf/4tpxHGplga6Yh8fyaZx9Q929tAwP9gFLBs1nYhExuSYM4W1S4qzTLKK4pY/OTNDoDG2Na9H6k0qgD6O2ooN8bAapD0amLGitg/48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UtEdZPQI; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so48837261fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 09:22:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708968161; x=1709572961; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dv1MR8FFyIVeo2kD5/jRtw1zZdBqiDH8uTYdJ7duKRA=;
+        b=UtEdZPQIZQ3QnohdxOrVw8t21VecFDMJ22AYc8M3h/OLTcWQGmofC5i2wHNfp5etvd
+         IxycCl+BPuxdiJPETX3fYYBIVegZY/vN+xUCEaifNbAmwLrnCi97dSL+u/624e0iVsDD
+         TkEcuEPlhDJPrEhQW3tw6AxiK0wnEC7A0OhZEP3hOXEWT/UH3N5czcorAcpJUMueHs7I
+         XmuqjWvOUm+mpWtOeHegPpxOGo7lxpf9TXhZWzP+WZUnQHy4D9MSMTnWOpNgnZjhkvHe
+         S5lswx19Inj0FaKiPePkX0oICzcdVKrWe/4KjFm0v49JRYDrlDdD2Gk21rsxbVbmQEf/
+         3tew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708968161; x=1709572961;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dv1MR8FFyIVeo2kD5/jRtw1zZdBqiDH8uTYdJ7duKRA=;
+        b=APz2UkN4wFdqq4rOHl2uwz3gT6LkuWqmkiN4fbe0/5sdAfng7NhqG5LpFq7toUB0TN
+         jIxMkS7wRj5P4skuEY6rRQVkB4m4HUcNZHDPjPdXkaDxjfpmhb/gZkjkzhexTj+a2JLn
+         7P8wVAzj4kuMW0oJvrBGkurpsW568oViS8MavVRIcAD6eK5wRF3lLHfNI+MVZxYQKmLx
+         +SilqlzztX7/SH06KmCBU2Xqp4IhAkYyGwhxvToEWWn+d4v4LBMHwFXIPrzXSeM22dkl
+         59hvxcZUPWqbM9TCUwbyqzE008kV1BZGrNgLjcEOJ3aqGaT/GLvcgXOlhW8S9cAbHpsM
+         Ef9A==
+X-Forwarded-Encrypted: i=1; AJvYcCVbkblFJZjAxMNXshbRdOFEfPlOYuUSOlicmXgWxQT9ByCcwr+n/bpeaP4rqk8wMkE0fEbj4uCclnKsjAQomrDO2PWbYEkSm8RhC/g7
+X-Gm-Message-State: AOJu0YzYbdSLzpR6Kkr3hPjkpSK220wvAvXf2ogOC/U5rBIjL2z4kR4k
+	Cza7PlqQn8W2NauoVHWWROivZmLGT80Lm3PT6IUXaMdaAUT+uLSwSgpUWvJ3rAZ9uo9NMRN0B9n
+	hWlKfcqjK6LFxE2owHSPdsfw5aFC/Oj/cyZuy
+X-Google-Smtp-Source: AGHT+IHRxxQsMQSRpnlCaAS8PflYsK1iTOiKydsmAuE0utC3AXspYUhCmo2l3tTpb+Dmf3/YMDJ4hjbxrgCTIuiY2OA=
+X-Received: by 2002:a2e:990b:0:b0:2d2:7164:c6ba with SMTP id
+ v11-20020a2e990b000000b002d27164c6bamr4367139lji.43.1708968160893; Mon, 26
+ Feb 2024 09:22:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: BBWx4euG2_zHS3VXKfFROkLoyeykOhK0
-X-Proofpoint-GUID: BBWx4euG2_zHS3VXKfFROkLoyeykOhK0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=943
- impostorscore=0 phishscore=0 spamscore=0 suspectscore=0 bulkscore=0
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402260132
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-8-surenb@google.com>
+ <6851f8a0-e5d2-4b79-9cee-cff0fdec2970@suse.cz>
+In-Reply-To: <6851f8a0-e5d2-4b79-9cee-cff0fdec2970@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 26 Feb 2024 17:22:21 +0000
+Message-ID: <CAJuCfpHA-0PsQcNMcJVniVyUo4+nUYaioQSS7ZnXO_TGxgumqA@mail.gmail.com>
+Subject: Re: [PATCH v4 07/36] mm: introduce slabobj_ext to support slab object extensions
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add the device-tree nodes for the TBUs (translation buffer units) that
-are present on the sc7280 platforms. The TBUs can be used debug the
-kernel and provide additional information when a context faults occur.
+On Mon, Feb 26, 2024 at 8:26=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> > Currently slab pages can store only vectors of obj_cgroup pointers in
+> > page->memcg_data. Introduce slabobj_ext structure to allow more data
+> > to be stored for each slab object. Wrap obj_cgroup into slabobj_ext
+> > to support current functionality while allowing to extend slabobj_ext
+> > in the future.
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>
+> Hi, mostly good from slab perspective, just some fixups:
+>
+> > --- a/mm/slab.h
+> > +++ b/mm/slab.h
+> > -int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
+> > -                              gfp_t gfp, bool new_slab);
+> > -void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgd=
+at,
+> > -                  enum node_stat_item idx, int nr);
+> > -#else /* CONFIG_MEMCG_KMEM */
+> > -static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
+> > +int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+> > +                     gfp_t gfp, bool new_slab);
+> >
+>
+> We could remove this declaration and make the function static in mm/slub.=
+c.
 
-Describe the all registers, clocks, interconnects and power-domain
-resources that are needed for each of the TBUs.
+Ack.
 
-Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 89 ++++++++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
+>
+> > +#else /* CONFIG_SLAB_OBJ_EXT */
+> > +
+> > +static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
+> >  {
+> >       return NULL;
+> >  }
+> >
+> > -static inline int memcg_alloc_slab_cgroups(struct slab *slab,
+> > -                                            struct kmem_cache *s, gfp_=
+t gfp,
+> > -                                            bool new_slab)
+> > +static inline int alloc_slab_obj_exts(struct slab *slab,
+> > +                                   struct kmem_cache *s, gfp_t gfp,
+> > +                                   bool new_slab)
+> >  {
+> >       return 0;
+> >  }
+>
+> Ditto
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 83b5b76ba179..cc42560f63ad 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -2905,6 +2905,18 @@ adreno_smmu: iommu@3da0000 {
- 			dma-coherent;
- 		};
- 
-+		gfx_0_tbu: tbu@3dd9000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x3dd9000 0x0 0x1000>;
-+			qcom,stream-id-range = <&adreno_smmu 0x0 0x400>;
-+		};
-+
-+		gfx_1_tbu: tbu@3ddd000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x3ddd000 0x0 0x1000>;
-+			qcom,stream-id-range = <&adreno_smmu 0x400 0x400>;
-+		};
-+
- 		remoteproc_mpss: remoteproc@4080000 {
- 			compatible = "qcom,sc7280-mpss-pas";
- 			reg = <0 0x04080000 0 0x10000>;
-@@ -5693,6 +5705,83 @@ apps_smmu: iommu@15000000 {
- 				     <GIC_SPI 408 IRQ_TYPE_LEVEL_HIGH>;
- 		};
- 
-+		anoc_1_tbu: tbu@151dd000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151dd000 0x0 0x1000>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x0 0x400>;
-+		};
-+
-+		anoc_2_tbu: tbu@151e1000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151e1000 0x0 0x1000>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x400 0x400>;
-+		};
-+
-+		mnoc_hf_0_tbu: tbu@151e5000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151e5000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_MDP0 QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_HF0_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x800 0x400>;
-+		};
-+
-+		mnoc_hf_1_tbu: tbu@151e9000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151e9000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_MDP0 QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_HF1_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0xc00 0x400>;
-+		};
-+
-+		compute_dsp_0_tbu: tbu@151ed000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151ed000 0x0 0x1000>;
-+			interconnects = <&nsp_noc MASTER_CDSP_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_TURING_MMU_TBU1_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x1000 0x400>;
-+		};
-+
-+		compute_dsp_1_tbu: tbu@151f1000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151f1000 0x0 0x1000>;
-+			interconnects = <&nsp_noc MASTER_CDSP_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_TURING_MMU_TBU0_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x1400 0x400>;
-+		};
-+
-+		adsp_tbu: tbu@151f5000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151f5000 0x0 0x1000>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &lpass_ag_noc SLAVE_LPASS_CORE_CFG QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x1800 0x400>;
-+		};
-+
-+		anoc_1_pcie_tbu: tbu@151f9000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151f9000 0x0 0x1000>;
-+			interconnects = <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &cnoc3 SLAVE_TCU QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			qcom,stream-id-range = <&apps_smmu 0x1c00 0x400>;
-+		};
-+
-+		mnoc_sf_0_tbu: tbu@151fd000 {
-+			compatible = "qcom,qsmmuv500-tbu";
-+			reg = <0x0 0x151fd000 0x0 0x1000>;
-+			interconnects = <&mmss_noc MASTER_CAMNOC_SF QCOM_ICC_TAG_ACTIVE_ONLY
-+					 &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ACTIVE_ONLY>;
-+			power-domains = <&gcc HLOS1_VOTE_MMNOC_MMU_TBU_SF0_GDSC>;
-+			qcom,stream-id-range = <&apps_smmu 0x2000 0x400>;
-+		};
-+
- 		intc: interrupt-controller@17a00000 {
- 			compatible = "arm,gic-v3";
- 			reg = <0 0x17a00000 0 0x10000>,     /* GICD */
+Ack.
+
+>
+> > -#endif /* CONFIG_MEMCG_KMEM */
+> > +
+> > +static inline struct slabobj_ext *
+> > +prepare_slab_obj_exts_hook(struct kmem_cache *s, gfp_t flags, void *p)
+> > +{
+> > +     return NULL;
+> > +}
+>
+> Same here (and the definition and usage even happens in later patch).
+
+Ack.
+
+>
+> > +#endif /* CONFIG_SLAB_OBJ_EXT */
+> > +
+> > +#ifdef CONFIG_MEMCG_KMEM
+> > +void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgd=
+at,
+> > +                  enum node_stat_item idx, int nr);
+> > +#endif
+> >
+> >  size_t __ksize(const void *objp);
+> >
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index d31b03a8d9d5..76fb600fbc80 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -683,10 +683,10 @@ static inline bool __slab_update_freelist(struct =
+kmem_cache *s, struct slab *sla
+> >
+> >       if (s->flags & __CMPXCHG_DOUBLE) {
+> >               ret =3D __update_freelist_fast(slab, freelist_old, counte=
+rs_old,
+> > -                                         freelist_new, counters_new);
+> > +                                         freelist_new, counters_new);
+> >       } else {
+> >               ret =3D __update_freelist_slow(slab, freelist_old, counte=
+rs_old,
+> > -                                         freelist_new, counters_new);
+> > +                                         freelist_new, counters_new);
+> >       }
+> >       if (likely(ret))
+> >               return true;
+> > @@ -710,13 +710,13 @@ static inline bool slab_update_freelist(struct km=
+em_cache *s, struct slab *slab,
+> >
+> >       if (s->flags & __CMPXCHG_DOUBLE) {
+> >               ret =3D __update_freelist_fast(slab, freelist_old, counte=
+rs_old,
+> > -                                         freelist_new, counters_new);
+> > +                                         freelist_new, counters_new);
+> >       } else {
+> >               unsigned long flags;
+> >
+> >               local_irq_save(flags);
+> >               ret =3D __update_freelist_slow(slab, freelist_old, counte=
+rs_old,
+> > -                                         freelist_new, counters_new);
+> > +                                          freelist_new, counters_new);
+>
+> Please no drive-by fixups of whitespace in code you're not actually
+> changing. I thought you agreed in v3?
+
+Sorry, I must have misunderstood your previous comment. I thought you
+were saying that the alignment I changed to was incorrect. I'll keep
+them untouched.
+
+
+>
+> >  static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> >                                            struct list_lru *lru,
+> >                                            struct obj_cgroup **objcgp,
+> > @@ -2314,7 +2364,7 @@ static __always_inline void account_slab(struct s=
+lab *slab, int order,
+> >                                        struct kmem_cache *s, gfp_t gfp)
+> >  {
+> >       if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
+> > -             memcg_alloc_slab_cgroups(slab, s, gfp, true);
+> > +             alloc_slab_obj_exts(slab, s, gfp, true);
+>
+> This is still guarded by the memcg_kmem_online() static key, which is goo=
+d.
+>
+> >
+> >       mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> >                           PAGE_SIZE << order);
+> > @@ -2323,8 +2373,7 @@ static __always_inline void account_slab(struct s=
+lab *slab, int order,
+> >  static __always_inline void unaccount_slab(struct slab *slab, int orde=
+r,
+> >                                          struct kmem_cache *s)
+> >  {
+> > -     if (memcg_kmem_online())
+> > -             memcg_free_slab_cgroups(slab);
+> > +     free_slab_obj_exts(slab);
+>
+> But this no longer is, yet it still could be?
+
+Yes, I missed that, it seems. free_slab_obj_exts() would bail out but
+still checking the static key is more efficient. I'll revive this
+check.
+
+Thanks for the review!
+Suren.
+
+>
+> >
+> >       mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
+> >                           -(PAGE_SIZE << order));
+>
 
