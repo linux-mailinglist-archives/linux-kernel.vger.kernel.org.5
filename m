@@ -1,101 +1,114 @@
-Return-Path: <linux-kernel+bounces-82236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07A768680E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:25:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0A728680F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 20:26:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F307E1C23970
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:25:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2B6A1C2100D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Feb 2024 19:26:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AF0130ACB;
-	Mon, 26 Feb 2024 19:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87F312FB39;
+	Mon, 26 Feb 2024 19:26:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="THe8MFa/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XileNh/v"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1859412FF9C;
-	Mon, 26 Feb 2024 19:24:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B211292FF;
+	Mon, 26 Feb 2024 19:25:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708975482; cv=none; b=Il/1JbW3pQsjBV1APGvq5fGVcpQaJ1l3vrJ/AOoxnHB692VcY2dpLSesKNmqezYZSGA7GPBO5QDe+XpQ0F/bYSnjavlBIKUDtcPiZr2jtl68BAaGZ/O94GYJzDryjTVdG6ujpWx1dlo+LoXQbJNw1uQVNj53Xxy1+rmu9lYi1CU=
+	t=1708975561; cv=none; b=Wmf1MgTMY1gOz3U1Ln5TaovRF1C678tKOgD3WXtTIbq81ity3yOlL6cdeh8/RPVPlWEi93CUD209B7QyUdiRnxohZcMxXcI3NkjelHVw6+KE2a6tG7Wh/0m5vO6xdMdLQwsrOFY7xAdsNV3G9SyyA6o3vnWeZ01MpTaAuY48bsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708975482; c=relaxed/simple;
-	bh=F+4pOhLAnZ9k3/aMMqmEmpPKb8aYtX5vG0b6hRqOXac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZNoyzLNWc++rAEYOmGZ4jFDGknvxrA1zRLVzw6pJO75PR0omDG0heL+MUwiiH4FOU7aCyUg41iRxg7+SBphmHprpE5b2MEkwUlCKT0emOAWjGgQpksY/K+9iv+kWgVW17ri/vWu0gdMigumw+1oSGHHYNwb88ggl9FSe1wT9sOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=THe8MFa/; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708975481; x=1740511481;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=F+4pOhLAnZ9k3/aMMqmEmpPKb8aYtX5vG0b6hRqOXac=;
-  b=THe8MFa/n3CkN2TG52UyKs3ZM7fRsQou6ZozdMwzCzI3y0JglHGXQlyI
-   JpYy+s+J11MG1GJgZkAnyK7x/ETF0gJd+nvPAJ4FlZyUEfyleaApJf40i
-   tjbJwSFCbIMYeiCRXu9Jy5gkjwU8DE3unVVdzehz9xMFgDy6XSF4Rr8MF
-   Aqt9MSWPoXb6C+INpQ74BapC1OkuFlmVLMSo8wPzafCOXFX+raR6ZMzQo
-   VzKu92ZWJGKgwF6H1XRh0YuCBix/LGUNlPuVeu7oAbRyBZgsb/KuBWYMx
-   bDMb7XqQ9uMwKQylUCcSagw2YT4A7ZFL4Vc5trh8q5GVe9wXyUyW4HGyQ
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3131478"
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3131478"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:24:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="11399075"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 11:24:40 -0800
-Date: Mon, 26 Feb 2024 11:24:39 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v18 071/121] KVM: TDX: restore user ret MSRs
-Message-ID: <20240226192439.GR177224@ls.amr.corp.intel.com>
-References: <cover.1705965634.git.isaku.yamahata@intel.com>
- <65e96a61c497c78b41fa670e20fbeb3593f56bfe.1705965635.git.isaku.yamahata@intel.com>
- <3ac7bcfc-ea22-43b5-b8ba-d87830637d4d@linux.intel.com>
+	s=arc-20240116; t=1708975561; c=relaxed/simple;
+	bh=PbWMB4jlXVby1Wtl2tOfGSorse+GRJQkhlfRWUhIiRU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=d5vFVTV35y5NeUupNNxmiJ6fI88F7tZY1x6OFDziRP9McaYM/qzQHvhcSKzf2r1xK6bY2wjkqgrQuTUqmXxrXOSX2Emv619E5YKPfgURfJJDSHk09gPYyyyRZPqyIEAsubyw8e41MCo0y/sPkN8iz3v2rj54l89mppf1XBglBGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XileNh/v; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33de620be53so261473f8f.2;
+        Mon, 26 Feb 2024 11:25:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708975558; x=1709580358; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IeaqTjbt7JM44Wpg22D37i2T0qr64kX299bh07EpMv0=;
+        b=XileNh/v+PFfiYHwxd6LTmqFm+cKKt0l2ctJlgeuYfh73i18CedY3BBvoB3K7CLef8
+         SVojRTFNfseAv3u3pVCeGNfv3izolRZOr1n+XwlKyl8cQxmw1MtVtbkMPRs78cxnUr7E
+         XjhMO9JWhFc0wnj4mPm5R8cQa8wSCSeQzfxoN9+QT744D7VV1rqxw3CF7XOkz8YIMFJk
+         +CqRVVB2hJKIoAga6d3Mv7dCO1ffaTBDbmUVkqsUv1KbrY8zsbB4q5/emZgiN7wrTtXS
+         Z+71tmPS6d11aISsLCfriUESDk+mUKMfUcCUOWxHtXjrbmTBlMY7s96ALXIJx8vJll33
+         3t0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708975558; x=1709580358;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IeaqTjbt7JM44Wpg22D37i2T0qr64kX299bh07EpMv0=;
+        b=K9scgApKP3YfgdyCOLfoRb8CNSX+LpUui+bwXYuFLweSQOfVciT2xn1rk6EUxaIzmO
+         NW+qapiECVNCZywOnKl3JT6FQLhCGoEU42/i13AmDOrzmGAza2kJ8EAT+7nRsQ7dRB2y
+         Q5aVBZ/uYDCPfE9btteloAM/bJbDlsCeaKiGKDe/ldLMG5eqEexypdGf1Nw5Z+Q/RTs3
+         vci3ngdqmW6ZwdPamiQ/I8F1AFsxn79+ryn8KVj3Uiu1d8d1UXt2pKVhVcnfdzMu4fEz
+         RENBC8F6ZQWOP/Llxy3NTeyy4WFCLAjXbUg7XHtGA4IORHTuYFvQfC952424IjrBRJxs
+         PtUA==
+X-Forwarded-Encrypted: i=1; AJvYcCXlgebgGawOfGiYv6TUK/lQvAhs+EnbjlzpE4Yi49vvKvNAsEqG+SlOiSjniH/omafYUuBVwhSyGlOiYNt4zhlLY15FV26J18qR8CNvFxzN7uzuH1k0ACDs8ZH0PbABYrTn8k2rNqjdGg==
+X-Gm-Message-State: AOJu0Yw70bhvdpOfqijMteguuAqXVjglDP+YS1YXxYe1JlrlZz+fZDL3
+	I8eOEjre9eZ4eEfaD8BASq1nA/ewnFEbGlRb/eBo0LYo6vP+p1K/
+X-Google-Smtp-Source: AGHT+IGCUQLoi0xhgTi5p000G5urv8WRNLFGbqdVQmw4abrxPsibNhvPn/iFua6baWGxMhkfWz0CgQ==
+X-Received: by 2002:adf:f88f:0:b0:33d:2226:a26b with SMTP id u15-20020adff88f000000b0033d2226a26bmr5955471wrp.24.1708975557436;
+        Mon, 26 Feb 2024 11:25:57 -0800 (PST)
+Received: from prasmi.home ([2a00:23c8:2500:a01:edb1:7d3e:765:66e3])
+        by smtp.gmail.com with ESMTPSA id g9-20020adfd1e9000000b0033cf4e47496sm9295412wrd.51.2024.02.26.11.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 11:25:56 -0800 (PST)
+From: Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-renesas-soc@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] pinctrl: renesas: pinctrl-rzg2l: Remove extra space in function parameter
+Date: Mon, 26 Feb 2024 19:25:30 +0000
+Message-Id: <20240226192530.141945-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3ac7bcfc-ea22-43b5-b8ba-d87830637d4d@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 05:14:02PM +0800,
-Binbin Wu <binbin.wu@linux.intel.com> wrote:
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-> > @@ -1936,6 +1959,26 @@ int __init tdx_hardware_setup(struct kvm_x86_ops *x86_ops)
-> >   		return -EINVAL;
-> >   	}
-> > +	for (i = 0; i < ARRAY_SIZE(tdx_uret_msrs); i++) {
-> > +		/*
-> > +		 * Here it checks if MSRs (tdx_uret_msrs) can be saved/restored
-> > +		 * before returning to user space.
-> > +		 *
-> > +		 * this_cpu_ptr(user_return_msrs)->registered isn't checked
-> > +		 * because the registration is done at vcpu runtime by
-> > +		 * kvm_set_user_return_msr().
-> 
-> For tdx, it's done by kvm_user_return_update_cache(), right?
+Remove unnecessary space in rzg2l_pinctrl_pm_setup_pfc() function
+parameter.
 
-Right, fixed the comment.
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+index 6840ad574f7f..60974a2b3c0c 100644
+--- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
++++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
+@@ -2503,7 +2503,7 @@ static void rzg2l_pinctrl_pm_setup_dedicated_regs(struct rzg2l_pinctrl *pctrl, b
+ 	}
+ }
+ 
+-static void rzg2l_pinctrl_pm_setup_pfc(struct  rzg2l_pinctrl *pctrl)
++static void rzg2l_pinctrl_pm_setup_pfc(struct rzg2l_pinctrl *pctrl)
+ {
+ 	u32 nports = pctrl->data->n_port_pins / RZG2L_PINS_PER_PORT;
+ 	const struct rzg2l_hwcfg *hwcfg = pctrl->data->hwcfg;
 -- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+2.34.1
+
 
