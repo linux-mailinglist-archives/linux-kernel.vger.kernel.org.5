@@ -1,190 +1,236 @@
-Return-Path: <linux-kernel+bounces-84095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 593B886A223
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:08:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE27D86A227
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:09:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C63291F22099
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:08:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84B8C282364
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:09:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D991534F6;
-	Tue, 27 Feb 2024 22:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFDF14F9D9;
+	Tue, 27 Feb 2024 22:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CQNGup5I"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hQfopNCI"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE97851009;
-	Tue, 27 Feb 2024 22:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709071582; cv=none; b=NQwNlaqxYo+znDStQ6QFbi3ORVq/uWm3JEHVOwtAk1qJh1mu07XIyo5hgD+gqeWPLgXLZ3ComF/C1UfIKeO7V3gjnIevuxVX7rPMkB4/nFKqQlDEMZHccfo3XZL2UNWSTa4FkSaHKhoKWhGeJyDZQbeFJKZJ0fTRNnyEUtn7LCE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709071582; c=relaxed/simple;
-	bh=r7oa1/JIBUsgOWXPR2x0YTv8aY/rxmGWAs3NKv/T+V4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=AEoNXbeD+wyFPPlrnyrcDhSSzMvmdYhfYZ2gTc/56w+IjYWtI1+8nzx2XxX874CajPa6xtNzrEp3hmPJnn32iwxUyyleSlW89edyuEhAXU0j8XsSxh3TfQvQBGcuZ1dhMaOmcSPI4dJtHhQYJB/TwChNCbvA4TY3zaCnebZSJx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CQNGup5I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08B78C433F1;
-	Tue, 27 Feb 2024 22:06:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709071581;
-	bh=r7oa1/JIBUsgOWXPR2x0YTv8aY/rxmGWAs3NKv/T+V4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CQNGup5IOpPNj/9KQP2EnUqZ2IL7tsD+u3JuBc103M7H4PcfYxbcx8j/fVnH3qb5T
-	 1Kx8//f5m86CwITG9KhCLrEi6uVdvW0vZ7KzL25Iylg2YfGStOWhOIg2Sge8cIPDbA
-	 Lqly99cPrdRWqsCJpOlzXdRiHnpqztmEe6DvM2zE5ePdKwhRKBUYeSWal9ympU1BJi
-	 ZnRPNhRw7drCnOpaG1looPDkik0nUWmjJdhqv69HNpbQGP1Zm2SlwDe+AF13ABesQa
-	 nfNTgz4N5gCeDKwTc3xnk8b86K7Ak8HREK2lw13XQlQZF7gWGtMaHq2bEhqs9rweOy
-	 8Y1xeT0o0d6Rw==
-Date: Wed, 28 Feb 2024 07:06:17 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Sachin Sant <sachinp@linux.ibm.com>
-Subject: Re: [PATCH] tracing: Prevent trace_marker being bigger than
- unsigned short
-Message-Id: <20240228070617.ebf2408f0d9b35e356faf01b@kernel.org>
-In-Reply-To: <20240227125706.04279ac2@gandalf.local.home>
-References: <20240227125706.04279ac2@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D030651009
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709071738; cv=fail; b=eSyAp/Ij/QBMZiQo+aejtENiPLMsDdLePyLzJswGhCKItzBDg/tAyjlHze7niilDUePS/SlMOKjZMXKtIx239vfEX1jNwGc0Jrg2iu0Wt/DOm6o4CFlhorVXkdierEe/imxxety1KewjQa20k2Eml9XbA7lSAnGkotGF4XLOmbc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709071738; c=relaxed/simple;
+	bh=4tuSUa3bUqiHeXCxKPnfeDwPfgTapCnPwZBIBsqVBVA=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=vFnxvVBr/IjORFoYIcNi1ZFd/ZNDHoGhHRfD79ePvzW/JfS+BoU1NB4JzJmaiRrVFt+ierE29V8sBvVm9PgMNRo95JupvYrjqcECJuSYiMx1Wt+xhDypEePQS4Hou0KqocwtGwUv2+jus9rP7EMrbgrFrrMc+i/OJQu+nC/n2es=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hQfopNCI; arc=fail smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709071736; x=1740607736;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=4tuSUa3bUqiHeXCxKPnfeDwPfgTapCnPwZBIBsqVBVA=;
+  b=hQfopNCIYcaoJtjxrHHCUwyTLGImvHuirdbzHoGw/8y8X1HNe1PvUkzA
+   DAxRoUIgwn27WPTuQvVYrF7HHCyTrGw5aP/iOmZT+WiCuJu9sc6tbS5cg
+   B+XEf4jdpBP0Plb1N3gV3MBD+njndhnFLrgdyHJs2jnDIzt+DxfqFw8l0
+   eYeiX5rmbRYo7fZrQrcxv0xg0GpiziWJJeJdx9srP4sKXUkYYY1TkjmU5
+   2OE21mQphYieK2M2ieP1yT3+Pj/fHGg6Ih1l3wOmhrTNTLydFUz5lnf6D
+   KvLjd6hcxIquaxfUCSXG/UQkPuBAgkhcA4/Edlfy6fkTqZeZ/Kasw6tDQ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3289483"
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="3289483"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 14:08:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="11939979"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Feb 2024 14:08:54 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 14:08:54 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 14:08:53 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 27 Feb 2024 14:08:53 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 27 Feb 2024 14:08:53 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J/sSZ4t6JuSnqlFV3jW1L+JkbRjwHD7xteUr/FViHxV5eFlRN1qFTrJzsvUE5vb4D1TUqjDCDJzC+ne8xjdGXELHOlFAK/IbPPpd5twHIqnFmCFsF1TWPClxr1tr811ftQlijBwm3PJ9PFyrWiqpM2YpOj/s2uFrLIwb6iFF7nEo52IxOiki2O2iMtF3QIL+HgfHBNpJPvtYBQ7VPSVTlgo6D3KWqhU6iV5B8sVmnfjghtbwiO/H5vp6/4GxNP/d5fi3q+zbL4sTQcX1otY0QXZR23bvUQCn9sTCrjGCZhKDnvZmnXifIF8pMwLqXvqhbqJUmUGlIWbply2wDMMnYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pBIudPUKNc8OSq4Jx7ftdi4yob9LtbqoLAoHLAeZOkA=;
+ b=Og/AekViGHI+n//OKnWmzk2QTmRDL6oAjaMQCFuvdxCFT63+XdLYNNO6r4KnnwKUkX6Py1Prfgcl5VIsIcXqSE7S7MnaYR4n4gmHNzDn7wOfm+5LXupEEERKSzip61dBCIZUOtQJDAprXuqhIRNubU0z2Q72Qmx5TSQjtvskZ/zoMlcsmH1gsmOxxJj8H2GozU7g0vjfPaJ2zji2bemiAKPGHgjjew7jaKAsbeywLczAK7HN3BcC6iOzCb1Wcaa0fVCdFM7//KIFaaH6Jemg31NJb4IqX9jCxDhFIK43loP+3jl6iA6XOVc6rft7EbxuPRrc2TOR3Xhhh2SMqEDpHA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by PH7PR11MB7608.namprd11.prod.outlook.com (2603:10b6:510:269::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.24; Tue, 27 Feb
+ 2024 22:08:51 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7339.024; Tue, 27 Feb 2024
+ 22:08:51 +0000
+Message-ID: <0a633c22-8426-42cf-9572-7812ffc75d0a@intel.com>
+Date: Wed, 28 Feb 2024 11:08:38 +1300
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv8 17/17] ACPI: tables: Print MULTIPROC_WAKEUP when MADT is
+ parsed
+Content-Language: en-US
+To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>, Thomas Gleixner
+	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>
+CC: "Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra
+	<peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, "Kuppuswamy
+ Sathyanarayanan" <sathyanarayanan.kuppuswamy@linux.intel.com>, "Elena
+ Reshetova" <elena.reshetova@intel.com>, Jun Nakajima
+	<jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, Tom
+ Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>,
+	"Sean Christopherson" <seanjc@google.com>, Baoquan He <bhe@redhat.com>,
+	<kexec@lists.infradead.org>, <linux-coco@lists.linux.dev>,
+	<linux-kernel@vger.kernel.org>
+References: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
+ <20240227212452.3228893-18-kirill.shutemov@linux.intel.com>
+From: "Huang, Kai" <kai.huang@intel.com>
+In-Reply-To: <20240227212452.3228893-18-kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR04CA0116.namprd04.prod.outlook.com
+ (2603:10b6:303:83::31) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|PH7PR11MB7608:EE_
+X-MS-Office365-Filtering-Correlation-Id: ce8d1581-0ebd-4eb0-53c5-08dc37e0ae5a
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VtN86lv8iINqEpMVcIuuV1oWfc8wrtpLWMeO7+syfXNf1zGfVT+RNsLUjzD1Ao/igYerk3Aar3murQqSGkpfoHutTe6vVFAJ8zZwMZgPWox1WMH/CVhKj/S+sSkMPfp0fFfF6a6rNEw2i5ut+UZ3A/5YWajYlJGxaEOZiIvHvyN7cAMrfjSMXw6ujigvbkFBz3OZM0L/kT5w32IEYU+voKOb4BCCGfyTcYnUAIvG0FS+aAtYNUzB9upJke34FvRoVn+6Rb3gcASYluUIs2ZCJnCEN37sfM0NFXymxl/e03cWNmEQJQVKXjV/HYRFAk6QRGdv/hw4YZwc/N9QB/EZVRUaS6nKRu/rjnxyhZVBSHTMXLxE4VGo84snea9XS8L4GVBolQg2MWpGA38VwYcaTxD6sFuLTowBGwOa6uOl6Nhrlp1/EaxpjBNXqs5zNYe9uqiw4nuyS8lyOle60FptyXchr/O40ZhLwG1ASBi+ZbGt/1Xl2MWDjrAYLJuSPrbqQ1znDbXesvN2eYS7rQEJ1WIU2pbXecwz92hlNGuqwGBdZMmPvzYuHOZPwGpY97Ze6kCdgp/w2I7Azgl83Tls8sadjRR2jNIDGpGBuxDy8El3hUqKHUfk0WA1XQGaQW15I11eXCPNCDUg5pEkj5B6oQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q2hSUDVFbkowOW5FMGsxYkRFTE9mOVViL0dmT2FadWp6eENqdHZHMEl3Sndk?=
+ =?utf-8?B?dFkxSHJ6MjR5WmVDS0d2UWIwNFhFdHNteHR5blMrSUJuZi82QjJWWVpIRXkz?=
+ =?utf-8?B?cWVudWZMd3UwTUx0aVAzZkNBL1MyQmFlVXVYQVl3d082M3ZLc3hONSs3UytT?=
+ =?utf-8?B?NjlOOXlFckZCdzdVYUtaNU9DWDZKSjd5Tmx2ME1VVFdXZ3ZFaW1nV0xWV1lq?=
+ =?utf-8?B?MkI5a3lNSmE3TlhpRHFzdTE3YTNMejVpNXlLRjJZTFhESjk0VFJnZG8yL05u?=
+ =?utf-8?B?dkNyQ2ZWV1V4Z3VWNmJwTjNyT01HdnV2bHNWNVB5bXE5SHVQRTRId21tdFQ2?=
+ =?utf-8?B?emMwNVRONXpndjcrRnl1Nmg2TUdoSkNiRTBTeXJ1clBUYkxHS043WjVhZ2dy?=
+ =?utf-8?B?UlNCMG9uL091SnBZcDNqVnJDcytmcm56NTZyL25LSUlmancvakVzbFlZTi9C?=
+ =?utf-8?B?T25ONEpkekJKOCsvbXhpZ2xSVmRjdzV3NVUyWTVlVWtJaUFjZDQ4N1hZTUhu?=
+ =?utf-8?B?eXlkbUhYQWhkOGUwZVFxOG51Rjg1ZTcrQUdQNE9icTJzOWpmUjZGUW0wS2JN?=
+ =?utf-8?B?MTFXNk9VaTZxZWduS2JNSWdQQ2hFcTNPZkJnYjFlMTRvMHg1VHUrcFpkRU5S?=
+ =?utf-8?B?WVg1d0tLeHRFYzJsMkk1bklaNklrN3gvbGsxQVAvSndJTnBxdHpsSkdEeHlB?=
+ =?utf-8?B?bjJGL09hWHlWQ2RxR3lMRm43dGMvbklaK1hldmV4c05UNno1ckJudXQyMUJI?=
+ =?utf-8?B?dDlwUno0UTF0SHdSSStqRGUvVVVqbEsxQjNhUklrTmorV0NjdkFQbkdhd1lS?=
+ =?utf-8?B?aGRYR3o3MDZ6U3ExczZGNm1tdTYrZjMzYk9RTy8zZklzK0pJZHlBb0VCSjBF?=
+ =?utf-8?B?Vnd6UWRyYU4xZnJLZ3pHcnhYbWVjNjNWK2lsNG53dTd4OFBDOU9TVW1hUWdt?=
+ =?utf-8?B?ZFRnRGtHNzFkb0lMdmI2MklGNzhMZzdDVE1zRlpZT05ZSlh4Q0tjeEdKTVlp?=
+ =?utf-8?B?eVpRaU5reHNQMXh2Ry9VczhYYkFxTkhncGpCRnNnajcwaUhKbCtUc1dOQzgy?=
+ =?utf-8?B?NHFkbVF0OS9aZ3Fsc09zWGtCbTJDblFxY3JYa0NFNDQ2Q1hyT0EyY09ERS9v?=
+ =?utf-8?B?RGVEdlBkYVNYTGZlM0NmcjQ0QThSazNTMy9RZUFsM0oxaENOOTc3emFmcGRF?=
+ =?utf-8?B?a1VMSHUrRDFzNytoTzBiWWJhMGZiRGNZdkVVb1JsQ0R6cjc5S1hBMFFYNjFt?=
+ =?utf-8?B?aXVENW4yeFB4Q0ZYN3ZtUHhSMkJaelZ3V2d5cW5CdkpUekFMczc4ODRzZ3pu?=
+ =?utf-8?B?ZHdGY0I4TFNBeEg5NEF0dnFQN1o0bjJ4NndCU3dPZ0dYbXZOY2xNdmFMQmh5?=
+ =?utf-8?B?SDFzUjJhVmJRVTh0b1pOVDYvcWpVcUs0a2kzL0s1bXJlOHgrMGNaOHNnMENM?=
+ =?utf-8?B?My9maGRiRUdxOGNnb2Q2V2lmUkp6VnBYY0RJVG02UGxDQnhDY3B4UFY1WTJt?=
+ =?utf-8?B?TmxRU01tbmN1MHdhVWdZRjZOa0laSzRNMlh1d0F6REFYRkF5eHJaTVQ2aEdu?=
+ =?utf-8?B?d0FlWm5nTlllc1BsaHRaeWV0UUF4SDBmbkZxZGhHcERBeCtjTXoxM3dHU1lt?=
+ =?utf-8?B?WnExL0RjbTBmY3pYcnd5SGJGSmkrbFZ5NjNETE1BNUg3cjJJa05SbmpnSTVt?=
+ =?utf-8?B?UllQb1FMdTZ1bTkwYVY4bW1OZi9UN1RZSWRGUmlTK3U0YVNtUlpVR2I2bXV3?=
+ =?utf-8?B?R1FNY01rUzdlcEVwTEg3emM0bGdjdGUyOE5yVU1SK1hoS09QT0lOV2ZTSjFu?=
+ =?utf-8?B?cXpXV2ZMNTNXWG1KcjhkeG1EczV6eUxPek0wYy96aEdaL2ZFemVESjJmY01o?=
+ =?utf-8?B?NkZER1VkWk5CcEl5bUwzRFBLUTEva1A4NHRiRTYrTVd0TDQvZlFablo4U3Mv?=
+ =?utf-8?B?WU9teGZKc1BpblFlaVBGb0VxN1JEOGNHQmFBZ3BSSWFlaGFnSC9CQmRQZFVS?=
+ =?utf-8?B?ZDU4ZGN0TGl1WHQ2T1hrVWcrK3VrZWpLS1BSWUx6WExnOGM0RmNCekpEZnBQ?=
+ =?utf-8?B?QTJ0aVpIbDdya1lCLzVNWVZWV1UzMEQwQktRRlRpMGs3MnhtTC8veSs1UHN1?=
+ =?utf-8?Q?IxAek8LFMrMaz1TsdOszB8x/E?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce8d1581-0ebd-4eb0-53c5-08dc37e0ae5a
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 22:08:51.8620
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PTgD3HSsdYyeiFIyveHSbJp3a0J7Ufqw7K3f8ZRw9I2jbfxgPJCvhJ6RDj+9Cxngo+A7ec5Acj52M8Lpy9LkQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7608
+X-OriginatorOrg: intel.com
 
-On Tue, 27 Feb 2024 12:57:06 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> The trace_marker write goes into the ring buffer. A test was added to
-> write a string as big as the sub-buffer of the ring buffer to see if it
-> would work. A sub-buffer is typically PAGE_SIZE in length.
-> 
-> On PowerPC architecture, the ftrace selftest for trace_marker started to
-> fail. This was due to PowerPC having a PAGE_SIZE of 65536 and not 4096. It
-> would try to write a string that was around 63000 bytes in size. This gave
-> the following warning:
-> 
-> ------------[ cut here ]------------
-> precision 63492 too large
-> WARNING: CPU: 15 PID: 2538829 at lib/vsprintf.c:2721 set_precision+0x68/0xa4
-> Modules linked in:
-> CPU: 15 PID: 2538829 Comm: awk Tainted: G M O K 6.8.0-rc5-gfca7526b7d89 #1
-> Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_018) hv:phyp pSeries
-> NIP: c000000000f57c34 LR: c000000000f57c30 CTR: c000000000f5cdf0
-> REGS: c000000a58e4f5f0 TRAP: 0700 Tainted: G M O K (6.8.0-rc5-gfca7526b7d89)
-> MSR: 8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE> CR: 48000824 XER: 00000005
-> CFAR: c00000000016154c IRQMASK: 0
-> GPR00: c000000000f57c30 c000000a58e4f890 c000000001482800 0000000000000019
-> GPR04: 0000000100011559 c000000a58e4f660 c000000a58e4f658 0000000000000027
-> GPR08: c000000e84e37c10 0000000000000001 0000000000000027 c000000002a47e50
-> GPR12: 0000000000000000 c000000e87bf7300 0000000000000000 0000000000000000
-> GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-> GPR20: c0000004a43ec590 0000000000400cc0 0000000000000003 c0000000012c3e65
-> GPR24: c000000a58e4fa18 0000000000000025 0000000000000020 000000000001ff97
-> GPR28: c0000001168a00dd c0000001168c0074 c000000a58e4f920 000000000000f804
-> NIP [c000000000f57c34] set_precision+0x68/0xa4
-> LR [c000000000f57c30] set_precision+0x64/0xa4
-> Call Trace:
-> [c000000a58e4f890] [c000000000f57c30] set_precision+0x64/0xa4 (unreliable)
-> [c000000a58e4f900] [c000000000f5ccc4] vsnprintf+0x198/0x4c8
-> [c000000a58e4f980] [c000000000f53228] seq_buf_vprintf+0x50/0xa0
-> [c000000a58e4f9b0] [c00000000031cec0] trace_seq_printf+0x60/0xe0
-> [c000000a58e4f9e0] [c00000000031b5f0] trace_print_print+0x78/0xa4
-> [c000000a58e4fa60] [c0000000003133a4] print_trace_line+0x2ac/0x6d8
-> [c000000a58e4fb20] [c0000000003145c0] s_show+0x58/0x2c0
-> [c000000a58e4fba0] [c0000000005dfb2c] seq_read_iter+0x448/0x618
-> [c000000a58e4fc70] [c0000000005dfe08] seq_read+0x10c/0x174
-> [c000000a58e4fd10] [c00000000059a7e0] vfs_read+0xe0/0x39c
-> [c000000a58e4fdc0] [c00000000059b59c] ksys_read+0x7c/0x140
-> [c000000a58e4fe10] [c000000000035d74] system_call_exception+0x134/0x330
-> [c000000a58e4fe50] [c00000000000d6a0] system_call_common+0x160/0x2e4
-> 
-> The problem was that in trace_print_print() that reads the trace_marker
-> write data had the following code:
-> 
-> 	int max = iter->ent_size - offsetof(struct print_entry, buf);
-> 
-> 	[..]
-> 	trace_seq_printf(s, ": %.*s", max, field->buf);
-> 
-> Where "max" was the size of the entry. Now that the write to trace_marker
-> can be as big as what the sub-buffer can hold, and the sub-buffer for
-> powerpc is 64K in size, the "max" value was: 63492, and that was passed to
-> trace_seq_printf() which eventually calls vsnprintf() with the same format
-> and parameters.
-> 
-> The max "precision" that "%.*s" can be is max signed short (32767) where
-> 63492 happens to be greater than.
-> 
-> Prevent the max size written by trace_marker to be greater than what a
-> signed short can hold.
 
-This looks good to me.
-
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thank you,
-
+On 28/02/2024 10:24 am, Kirill A. Shutemov wrote:
+> When MADT is parsed, print MULTIPROC_WAKEUP information:
 > 
-> Link: https://lore.kernel.org/all/C7E7AF1A-D30F-4D18-B8E5-AF1EF58004F5@linux.ibm.com/
+> ACPI: MP Wakeup (version[1], mailbox[0x7fffd000], reset[0x7fffe068])
 > 
-> Reported-by: Sachin Sant <sachinp@linux.ibm.com>
-> Tested-by: Sachin Sant <sachinp@linux.ibm.com>
-> Fixes: 8ec90be7f15f ("tracing: Allow for max buffer data size trace_marker writes")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> This debug information will be very helpful during bring up.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Reviewed-by: Baoquan He <bhe@redhat.com>
 > ---
->  kernel/trace/trace.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
+>   drivers/acpi/tables.c | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
 > 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 8198bfc54b58..1606fa99367b 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -7310,7 +7310,9 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
->  /* Used in tracing_mark_raw_write() as well */
->  #define FAULTED_STR "<faulted>"
->  #define FAULTED_SIZE (sizeof(FAULTED_STR) - 1) /* '\0' is already accounted for */
-> -
-> +#ifndef SHORT_MAX
-> +#define SHORT_MAX	((1<<15) - 1)
-> +#endif
->  	if (tracing_disabled)
->  		return -EINVAL;
->  
-> @@ -7328,6 +7330,16 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
->  	if (cnt < FAULTED_SIZE)
->  		size += FAULTED_SIZE - cnt;
->  
-> +	/*
-> +	 * trace_print_print() uses vsprintf() to determine the size via
-> +	 * the precision format "%.*s" which can not be greater than
-> +	 * a signed short.
-> +	 */
-> +	if (size > SHORT_MAX) {
-> +		cnt -= size - SHORT_MAX;
-> +		goto again;
-> +	}
+> diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+> index b07f7d091d13..c59a3617bca7 100644
+> --- a/drivers/acpi/tables.c
+> +++ b/drivers/acpi/tables.c
+> @@ -198,6 +198,20 @@ void acpi_table_print_madt_entry(struct acpi_subtable_header *header)
+>   		}
+>   		break;
+>   
+> +	case ACPI_MADT_TYPE_MULTIPROC_WAKEUP:
+> +		{
+> +			struct acpi_madt_multiproc_wakeup *p =
+> +				(struct acpi_madt_multiproc_wakeup *)header;
+> +			u64 reset_vector = 0;
 > +
->  	if (size > TRACE_SEQ_BUFFER_SIZE) {
->  		cnt -= size - TRACE_SEQ_BUFFER_SIZE;
->  		goto again;
-> -- 
-> 2.43.0
-> 
+> +			if (p->version >= ACPI_MADT_MP_WAKEUP_VERSION_V1)
+> +				reset_vector = p->reset_vector;
+> +
+> +			pr_debug("MP Wakeup (version[%d], mailbox[%#llx], reset[%#llx])\n",
+> +				 p->version, p->mailbox_address, reset_vector);
+> +		}
+> +		break;
+> +
 
+Hmm.. I hate to say, but maybe it is better to put this patch at some 
+early place in this series w/o mailbox version and reset_vector, and add 
+incremental changes where mailbox/reset_vector is introduced in this series.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+The advantage is in this way someone can just backport this patch to the 
+old kernel if they care -- this should be part of commit f39642d0dbacd 
+("x86/acpi/x86/boot: Add multiprocessor wake-up support") anyway.
+
+But I guess nobody really cares since it just prints some dmesg, and 
+nobody really noticed this until this series.
+
+So, up to you, and feel free to add:
+
+Acked-by: Kai Huang <kai.huang@intel.com>
 
