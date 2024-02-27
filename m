@@ -1,178 +1,145 @@
-Return-Path: <linux-kernel+bounces-83963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12EFF86A09F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:01:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A58CD86A0A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:05:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EE421F27140
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:01:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88851C20D75
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D8014AD23;
-	Tue, 27 Feb 2024 20:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCAB14A4C5;
+	Tue, 27 Feb 2024 20:04:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="DSnYKMAH"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Pl88GRRY"
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2055.outbound.protection.outlook.com [40.107.95.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FF514AD07
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709064098; cv=none; b=QHZNlNkcrL1GxqgReBJtv1tDDlQ7Js3vrwHEl8uKwReP2T/DacVQxTKc+Jem00qO6whv5R3+Q2c20azDO0pCjkZH3M3IXwUNOKPi1vGrHO4DWv27FL/2DkZ3po9GVO5rU3xA+Mtq2+BnDU+IBHxIY7E8UPcqY5kF8ZkJC3rw0lo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709064098; c=relaxed/simple;
-	bh=gLyw//m6G9pBImmWZWYlwzKQS/S2+z6YvepUOugVK9s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aw/eCs4d5Xx9RHRJoYnJAk+QezP2K5AUD9LbPhMod1unG4JgLkZB9GNrUJwJrlCnPynK0tR5BShEmzbGlvFE6V4BhCdqhbe5cYCBzMUv3+wYAFueE/lr4E6Ghx98NcK7i8hahL76wxMaHPR2Vjzjz83217XJnrpA09amaKhhDSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=DSnYKMAH; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7c788332976so151229439f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:01:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1709064096; x=1709668896; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JCoSqCHOuyJdrEXgcSRyyHnAhXtrU9sHKBBcP3u4W04=;
-        b=DSnYKMAHlaMCu9vajPvhP+L1Uwzx2jYVlT5KxViIHh8kwCZeEgZHdhdFFhrZ9HOorQ
-         VbBkqG5t7u4K8IpPYEY2ph9ALnnyBPun3JnyrVtT/t3+wP2bHuh/gIFlR5z7e/QUZnMO
-         WQKMgsGIw2ii9XUIfJcvv/mYrMtbHu7zDpN/07zP0dRDLryup/Q3LGIU2fFJkYnGDYXj
-         5cd2KsGa/IygzuV6gQvoE0osETFputy3pDM4MkQBJiVq7uxZd6WtzgbDakK2KjD4MjLM
-         Aj1Zk51h2GQpnmJHNhP4JTuWzycEQNqUOBTWX2k0fztLMXMuATam+ZSJ4d/mx7FMqwEo
-         D+LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709064096; x=1709668896;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JCoSqCHOuyJdrEXgcSRyyHnAhXtrU9sHKBBcP3u4W04=;
-        b=HZ45Wv8NRkpFU+HYQWjs4c5x+iwCaB5qJqwAkD3A4dbWWQW532vut/RfTFdPEz1W1R
-         S68fW3JytS7HPkk+trZLWxIfIUxdyO3qZp5r649ukiK3ruT4LJWGq5pX53O1kdYZT3nA
-         e7Ez0bIYbT7Yp4eQue0h5lzrtIEmx04IbWElEpv340p3QoceVwo48KgQIdivPvWIN91T
-         WBmaToGJm2EOYZ6qTrX7uC1hFOZpyedE71mrfZSckyVnyaSsGRPYSb4VW5BmyXMa3QI6
-         8NYF7PhmHY8m8HdrSNuSRybefjWLO3egAAStLzpO/T1wowed1/2W/wjIQd0nQAYAtURk
-         ys3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXKkNYgYtO96EFmOZ5TZxVgtvYnG/+pTywZBYB3wpBi5F5pIRk/HvYn2iLnY3LrTHyVy7cNe2KGhL0+8NmpW9jpf9/mVNF5coUWWimA
-X-Gm-Message-State: AOJu0Yw48TBhSGDSXEVDcun8uqnI3TYX+oWu7Cjp+2q3cP+QwHHi3Gni
-	lArHqL0WU8yup0+LFsp4yVt2jojtJ/rFl65PfFdriHh7uDoZxns0s3IXBGsveyo=
-X-Google-Smtp-Source: AGHT+IG5+tdMrZ2ON9H8ZpGLg3GIka4FUXbeapzA9mauWtoPzhwuW9kisXtyN8OVl6ignL92UATEaA==
-X-Received: by 2002:a6b:3f8a:0:b0:7c7:97a0:d2f4 with SMTP id m132-20020a6b3f8a000000b007c797a0d2f4mr11694640ioa.9.1709064095809;
-        Tue, 27 Feb 2024 12:01:35 -0800 (PST)
-Received: from [100.64.0.1] ([170.85.6.200])
-        by smtp.gmail.com with ESMTPSA id y90-20020a029563000000b004740d29b120sm1936267jah.111.2024.02.27.12.01.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 12:01:35 -0800 (PST)
-Message-ID: <33f16905-baab-47e8-a92f-d2543b69d704@sifive.com>
-Date: Tue, 27 Feb 2024 14:01:34 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1336F2260A;
+	Tue, 27 Feb 2024 20:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709064291; cv=fail; b=SYPc0/2vCjkuBcDSjGnet9wyAjAK5Rg6Fy4LQFA/1eXfsLFpnDa16PGMd0AdzphKCKeFfy5nDQj7yWPXsN5VkIyJ+Snc4k9bSupKsLSeWahnRf3+SaHs1i9aR4aYej/q6aDuV8gKqmwmDQjoxeZ0f8QYvdk8VcS5y+gdNl3bQvg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709064291; c=relaxed/simple;
+	bh=M9+bXWsg73l4QCENfYfOSIQg1c3tsFWlDf4P8x9lCO0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DEt01TkBIRIgvJrpGbxHZtyAJ0R4M9WQsUh5nKrgBAA39u2tfRUl17Ma0hwF4KDQEpdEI4891/2AyvqBxK1hrJWSzSnC8L08R+JK8nlQjtVQq7SyZvdG0TLV1p9Km5XV0woiSiKF+GNhf3jy23ZbzpNwEdRRMEElQl/3evSMkSY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Pl88GRRY; arc=fail smtp.client-ip=40.107.95.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vqq52YAHPfhC00+Mle33v/QvqugIRDawqn0g5w0CALyUXmXl4vSeq1VvpsZBHnkW1XWaL1li2rJg5aH5wwfGSJadA1jaY+fBR2SnE6Nd6YmUe9CaFNdOzEJTr/YS3fxVW5LtH3x1wHSEGZCnE0aHY5W+nkH9SOtoUcH/fhbxeJ3A8/EOvYGAiyWMuBbLUIeXIJIrAWe5aXp/l3l0z+R6XOF1+5N8oyLjMgRT1U/aguqAU7fPorMUAzcDfWsWQ+dTomwfGSPdQxgckX8+VTg1QEpw36vqxvKtXZ17Xajdkb+Wf2wY1bjbV1oho1Eds7I3HJos/dmHWz9GRRmF0BTyQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qywH2/mDhHSGfqUT3oPQ3bb5JCakNxiJe04tcIGneLE=;
+ b=EbD3cdse1ZpXiAdC4BYAvaT6+jjcmfaIGEj37gCnPLbtX2My79jznQ6EqwxRDH5DkCp8dz0fQlSP0F1S/jIoYSjiwkon0YavexBwagiIjENiJyPDUkzDYNZ6A6QFC0anw8vhLoGvx5GM0888NJj9FmIMyxTbRfFmZsbZ5afIcKFJppIin6OFHiIDkBVkysaVSrVbAv3QoWdooBgJ/7ivsOvgFbTgk1kmkxdi0mvLf459fbZwjDYIxor8h7khWBKrXeUsi6ila6NGns7JU5Je3KOzFWtaN2SX6364ELcQf1NEGPaBJ0uXZc1DRe5k54tQFT6+MPJ5AGm8tiFfurPZhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qywH2/mDhHSGfqUT3oPQ3bb5JCakNxiJe04tcIGneLE=;
+ b=Pl88GRRY03W+7EYElPqi+81jSQl50e81u8tkeTW+YK+gSi/20gipHFMwnsy7aKItvhNef5HgH9WKX8GZg1Qzx1K5lt7Piyw1IsVJHkilcevR+1fPWsC3Kh0rzukj4hQShYMhHXvPx/L/BLCLU096keOihYesiRnFFl8lWtEwGbY=
+Received: from DM6PR07CA0117.namprd07.prod.outlook.com (2603:10b6:5:330::32)
+ by CH0PR12MB5153.namprd12.prod.outlook.com (2603:10b6:610:b8::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Tue, 27 Feb
+ 2024 20:04:44 +0000
+Received: from DS2PEPF00003442.namprd04.prod.outlook.com
+ (2603:10b6:5:330:cafe::aa) by DM6PR07CA0117.outlook.office365.com
+ (2603:10b6:5:330::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
+ Transport; Tue, 27 Feb 2024 20:04:44 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF00003442.mail.protection.outlook.com (10.167.17.69) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Tue, 27 Feb 2024 20:04:44 +0000
+Received: from jallen-jump-host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 27 Feb
+ 2024 14:04:43 -0600
+From: John Allen <john.allen@amd.com>
+To: <kvm@vger.kernel.org>
+CC: <seanjc@google.com>, <pbonzini@redhat.com>, <mlevitsk@redhat.com>,
+	<bp@alien8.de>, <x86@kernel.org>, <thomas.lendacky@amd.com>,
+	<linux-kernel@vger.kernel.org>, John Allen <john.allen@amd.com>
+Subject: [PATCH] KVM: SVM: Rename vmplX_ssp -> plX_ssp
+Date: Tue, 27 Feb 2024 20:03:56 +0000
+Message-ID: <20240227200356.35114-1-john.allen@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -fixes v3 1/2] riscv: Fix enabling cbo.zero when running
- in M-mode
-Content-Language: en-US
-To: Alexandre Ghiti <alex@ghiti.fr>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-kernel@vger.kernel.org,
- Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org,
- Stefan O'Rear <sorear@fastmail.com>, stable@vger.kernel.org,
- Andrew Jones <ajones@ventanamicro.com>
-References: <20240214090206.195754-1-samuel.holland@sifive.com>
- <20240214090206.195754-2-samuel.holland@sifive.com>
- <20240214-661604d82db4ef137540b762@orel>
- <579c9f3f-8c28-4e4e-88ce-9f266597b7bd@ghiti.fr>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <579c9f3f-8c28-4e4e-88ce-9f266597b7bd@ghiti.fr>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003442:EE_|CH0PR12MB5153:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8497f3d3-397c-4d9b-2c11-08dc37cf576e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	HscLFbJF+DCC3YHYh4kRG6N5i8iQPSup5xaJ6JE0TSyXYyej5PmfMUetO5z9P2NYjXIKQvyEqoYD1W8HJqzqO2Ii/OnNGFEq8nsmvONdeblIKSF0bw9Kegf3Z443hdcf0XsI6QseFBlQgnQ4zMXRwPQPT/F8xoqOiRO/q2R2Vxdv0MeQfWv6Nt0og9JnoxeKkiW3rG9o2fc4UELXo9q/7ndyuM2MUCSCOeqNGrY/ks/pZOpoHOLN8mNt+LnIxG/VxMgbw3OlJfTp/StKXGioSelv/bpwKijyqx63VyV/7G1EuAE2QzZb4tdWMiEi/ivH26UlXuCJAVnQYaHJZr5UtNyMXXSAPZN1Sn3RPGIZenFpzlRsgjVhc2KMQao6xRP/JQt1kdC8DQYvIL/Ycnm/a4oa2UFalkKFZTPNTJvpDU/XBRiZz6i4+jBVKdhiz9Y4Pbv0PgIlu4H/e9kmntFlRKoRBDUZOzPtWZNEDMwPzSn4r+2eL1S1StyBuS0NOPRmusD8zBSg7lipAMUAROqadSIrjf11CSCVOL0cmgQty1LI6EoNNpo8AEoJqJGLtnmPGpmJmd9CgF4JkLdVCaQRxrhjAGzyJgcljA5xwU3ZPcUTBtb30qLxFgheaXhlKT9V4dGjOk2HaCEhiSLrVbrfcLgRGKC4CDJzAbNvOvSQj5QpuzNZEES4hDcT+1lSvS0JwNU6KRX8SRUEmlAZB8TVGhrRf8lpCG4YYXPYKV3T2TkmrADjSAU0Pv7pik9HX6+J
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 20:04:44.3582
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8497f3d3-397c-4d9b-2c11-08dc37cf576e
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF00003442.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5153
 
-Hi Alex,
+The SSP fields in the SEV-ES save area were mistakenly named vmplX_ssp
+instead of plX_ssp. Rename these to the correct names as defined in the
+APM.
 
-On 2024-02-27 1:48 PM, Alexandre Ghiti wrote:
-> Hi Samuel,
-> 
-> On 14/02/2024 10:28, Andrew Jones wrote:
->> On Wed, Feb 14, 2024 at 01:01:56AM -0800, Samuel Holland wrote:
->>> When the kernel is running in M-mode, the CBZE bit must be set in the
->>> menvcfg CSR, not in senvcfg.
->>>
->>> Cc: <stable@vger.kernel.org>
->>> Fixes: 43c16d51a19b ("RISC-V: Enable cbo.zero in usermode")
->>> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
->>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
->>> ---
->>>
->>> (no changes since v1)
->>>
->>>   arch/riscv/include/asm/csr.h   | 2 ++
->>>   arch/riscv/kernel/cpufeature.c | 2 +-
->>>   2 files changed, 3 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
->>> index 510014051f5d..2468c55933cd 100644
->>> --- a/arch/riscv/include/asm/csr.h
->>> +++ b/arch/riscv/include/asm/csr.h
->>> @@ -424,6 +424,7 @@
->>>   # define CSR_STATUS    CSR_MSTATUS
->>>   # define CSR_IE        CSR_MIE
->>>   # define CSR_TVEC    CSR_MTVEC
->>> +# define CSR_ENVCFG    CSR_MENVCFG
->>>   # define CSR_SCRATCH    CSR_MSCRATCH
->>>   # define CSR_EPC    CSR_MEPC
->>>   # define CSR_CAUSE    CSR_MCAUSE
->>> @@ -448,6 +449,7 @@
->>>   # define CSR_STATUS    CSR_SSTATUS
->>>   # define CSR_IE        CSR_SIE
->>>   # define CSR_TVEC    CSR_STVEC
->>> +# define CSR_ENVCFG    CSR_SENVCFG
->>>   # define CSR_SCRATCH    CSR_SSCRATCH
->>>   # define CSR_EPC    CSR_SEPC
->>>   # define CSR_CAUSE    CSR_SCAUSE
->>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
->>> index 89920f84d0a3..c5b13f7dd482 100644
->>> --- a/arch/riscv/kernel/cpufeature.c
->>> +++ b/arch/riscv/kernel/cpufeature.c
->>> @@ -950,7 +950,7 @@ arch_initcall(check_unaligned_access_all_cpus);
->>>   void riscv_user_isa_enable(void)
->>>   {
->>>       if (riscv_cpu_has_extension_unlikely(smp_processor_id(),
->>> RISCV_ISA_EXT_ZICBOZ))
->>> -        csr_set(CSR_SENVCFG, ENVCFG_CBZE);
->>> +        csr_set(CSR_ENVCFG, ENVCFG_CBZE);
->>>   }
->>>     #ifdef CONFIG_RISCV_ALTERNATIVE
->>> -- 
->>> 2.43.0
->>>
->> After our back and forth on how we determine the existence of the *envcfg
->> CSRs, I wonder if we shouldn't put a comment above this
->> riscv_user_isa_enable() function capturing the [current] decision.
->>
->> Something like
->>
->>   /*
->>    * While the [ms]envcfg CSRs weren't defined until priv spec 1.12,
->>    * they're assumed to be present when an extension is present which
->>    * specifies [ms]envcfg bit(s). Hence, we don't do any additional
->>    * priv spec version checks or CSR probes here.
->>    */
-> 
-> 
-> I was about to read the whole discussion in v2 to understand the v3...thank you
-> Drew :) I think it really makes sense to add this comment, do you intend to do
-> so Samuel?
+Fixes: 6d3b3d34e39e ("KVM: SVM: Update the SEV-ES save area mapping")
+Signed-off-by: John Allen <john.allen@amd.com>
+---
+ arch/x86/include/asm/svm.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Yes, I am about to send a v4 with the changes from the previous discussion,
-including a RISCV_ISA_EXT_XLINUXENVCFG bit specifically for the presence of the
-[ms]envcfg CSR and a comment like the above.
-
-Regards,
-Samuel
+diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
+index 87a7b917d30e..728c98175b9c 100644
+--- a/arch/x86/include/asm/svm.h
++++ b/arch/x86/include/asm/svm.h
+@@ -358,10 +358,10 @@ struct sev_es_save_area {
+ 	struct vmcb_seg ldtr;
+ 	struct vmcb_seg idtr;
+ 	struct vmcb_seg tr;
+-	u64 vmpl0_ssp;
+-	u64 vmpl1_ssp;
+-	u64 vmpl2_ssp;
+-	u64 vmpl3_ssp;
++	u64 pl0_ssp;
++	u64 pl1_ssp;
++	u64 pl2_ssp;
++	u64 pl3_ssp;
+ 	u64 u_cet;
+ 	u8 reserved_0xc8[2];
+ 	u8 vmpl;
+-- 
+2.40.1
 
 
