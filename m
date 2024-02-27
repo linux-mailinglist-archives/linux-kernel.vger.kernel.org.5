@@ -1,232 +1,220 @@
-Return-Path: <linux-kernel+bounces-82611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B8FA86871F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:30:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D950C868740
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:35:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D39CC1F26314
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:30:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9952B22540
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA8B11CBA;
-	Tue, 27 Feb 2024 02:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549F311CBA;
+	Tue, 27 Feb 2024 02:35:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mPDv4pFx"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="di71mfYX"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D7436C;
-	Tue, 27 Feb 2024 02:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41F4746E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709001044; cv=none; b=RofESql2fFFUPz4GQMzWTT37fzk1gCWAxWizw8XjmQOMnJuEK+6Biz2JSZ+s1CMeD7aTl3TpCqGYWDkzkuysCpfAjzATekglXLIGOLeU9BPGNedSfWnXWC6Ntra6uoKitxiMy2stDlrxJ2/rdBvGjEVxMTofQRQ4y332hxqw72g=
+	t=1709001313; cv=none; b=HTosNq6LzcyyNPe/vSjrwJpjUoTd3a6NFWxerO6vE+AvTm2F4BqoSOiv9Jk3ukhqWlpYypItjsR/UOsuwMj6fLzfTfnkzTG2pFTZ+T+ZZrmTr6gUZLsiE0fr/s3WHEXfPhBf7+khk/7oT1KZOmMoVt+Rwlndv0QYsCRL4cTZqcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709001044; c=relaxed/simple;
-	bh=UagGQq26fo7AnvfpzpWjnBmT9Vl5hqO1p5x4gvxbh/I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N7fd+7ygdBryZhSm4AuBa6S+B1sw3OVDUTKTrj5wxMU2kJRpNdT0ZCrYCcr/gNE1D3Na+OJRexyaxlQ/L3JHWexN9v6CNlbpOgxYThiFgCL2svGnVFHo0VQDUG9W6xlMVO8iUQokyyuN4cl3grqYt8PE1UaA2jEXglirY1zpTIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mPDv4pFx; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709001043; x=1740537043;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=UagGQq26fo7AnvfpzpWjnBmT9Vl5hqO1p5x4gvxbh/I=;
-  b=mPDv4pFxVEzNf77M1/B6ApNjlzuFfXZSaPkYc2JAhVlizQJNPfmJ4e7Y
-   A/uu2T5P0cq7ORn+hqQ38LAGLJZSVJVh3l6Csp27cO05IP5ox9gtVDjXo
-   9A4WqQvA1voLhUrjEEvZFkcDfqPj8qoK3sJFDYJMiCJJ1iMGJa3zf4YNm
-   ZxXw+X8HPL2w+zbRdqG79bN1R1htby6fd4Ra18+9A33p95lDukzc96ZOy
-   jcBIKJNGY21MmDNU6NqX6SZ1pRv23w8Te8QhpRxt+W88K+tGVBGK8gyJR
-   nMLECP8/TSQz7cULqXHIQI/wTe5TN3assvk2Ie9F4QW0yrkX1pho00ddB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="13964226"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="13964226"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 18:30:42 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="7020310"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 18:30:38 -0800
-Message-ID: <ae9137f1-3e9b-4d84-956f-4e8c31d2e1bb@linux.intel.com>
-Date: Tue, 27 Feb 2024 10:30:36 +0800
+	s=arc-20240116; t=1709001313; c=relaxed/simple;
+	bh=vzU2YaorHwvaPNHI/TTfps8jJxR3eDtvTDV4A/+6TmA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CFBtMOl7bevw7nHduHqBlWsuvj+QLNOhkDvtJ8r+13HtVvK+6Q6XQcKYBzfCo8gPjhAE7fLJnlbdeaGJVgC11Cd21+HPw5a9K2xy/9Dz5HUzI426bfegt1hjiB0v+UTYGLAOpLNFY4R/hDy1/QO7vv0YQKyUq2mYkp79LteMvOY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=di71mfYX; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-565a3910f86so3816812a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:35:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709001310; x=1709606110; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RKnTk+J+FX3ola1FbmaFj80zZDlGsKyOPaOv8pvNq9Y=;
+        b=di71mfYXSxzaYddQXIKT2sQZD9rwqQ82ebdk+bOzsSf24+FRPLxXSzC5xv0T+Mi3fG
+         ub4OXz97CKZe2ShhhDgzYjCVzIbuQDDNGrpnKywGUOH1jP6ZXoWmtvN7cSSCxQ2YmwE6
+         7c7LJ628+RPE1U3oXTfneHHtEGext6/FEza7lyqWiKtclCiMoxtFQZ3VEq9YwND4xp7c
+         0tUiikpvsZPbCR83nxzIfB3iTxNKiuBblTFgDepBDZqCwThqodP3iyVNxKRTi0PZmV9v
+         KXV+elM9jti/DrQpfpJArN4kSLbMLjftjHZVxGJ735Bzwn4c2Hy+4M9G78AjIWvrDtwr
+         j0lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709001310; x=1709606110;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RKnTk+J+FX3ola1FbmaFj80zZDlGsKyOPaOv8pvNq9Y=;
+        b=H8lbXmZZyrjc4/3xkeprPbUd3wOzViTklgo/VfmQGvnX3K0+3TYkhe1u+SngMDap4e
+         FF9IazbfzAp9byLsOfuCOvgHvVToaA3m9nem+lmO4EvdWHOnGhNbrZPVzjo6o+RVOe7t
+         pwQ6gS0UDKLCIhuCrLM3Ipk6DiJhy4uJJW5qj/ZS68MzUyvJLHKj4GldX7z+0n12Q4Zc
+         Gpqy223dqBL+IxOwsFO6P6I90zTirP4MP+ghxIOR6cRVf+FtI8ucG9iuSt67ImTRD/B1
+         sWxtkpr1bxlAfALjb5JtgbAWqF/QnHn1Kq3ldF1Habf/L42GxrGbOPqCT/0r2GDcM6uN
+         lDbw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/vO0eRbBGxliCnpnOb8P7O2N9XXxoC3so7HalQE810rcpx2LZtyBHCnmce3IgsIHDrqmfCNhN79W1lVH/BrB1Tkx5Wimd8jdZWSpO
+X-Gm-Message-State: AOJu0YzjViARs6h9aUQsfwX37S6PZA+PYQ/mZ89UxQCML6UcBtTauzUb
+	F5sEe8rkfuBl2LrjJJKqlh7srBzIUxVOK0OeBPDak8OQqbYpHDBZhzR6lsDb8Xq5usz4AU9KfNd
+	C1Si5JXt/N9BEuud7w9wwj4H5Dg5FMwQ+BBY=
+X-Google-Smtp-Source: AGHT+IEXXbKpXmjl9N8hMVutjJqfZLOxImX2rF+nFapa9vIsJj1qUBXl6dHVVXRP2UAScLC8ElOF8tquWZvBP2Qa+dY=
+X-Received: by 2002:aa7:d5d5:0:b0:564:3392:e9db with SMTP id
+ d21-20020aa7d5d5000000b005643392e9dbmr5247469eds.33.1709001309894; Mon, 26
+ Feb 2024 18:35:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 3/3] iommu/vt-d: improve ITE fault handling if target
- device isn't valid
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>, baolu.lu@linux.intel.com,
- bhelgaas@google.com, robin.murphy@arm.com, jgg@ziepe.ca,
- kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org, lukas@wunner.de,
- yi.l.liu@intel.com, iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-pci@vger.kernel.org
-References: <20240226225234.GA211745@bhelgaas>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20240226225234.GA211745@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <1707271264-5551-1-git-send-email-zhiguo.niu@unisoc.com>
+ <88459a22-a21c-4c3d-8371-31d7d713b536@kernel.org> <CAHJ8P3KYY27M3v=9Lu-yD2ufxU1fdG-bg=G92AbpnLUx0zLz3g@mail.gmail.com>
+ <f36ef5d0-8922-449e-b19c-de009c89e712@kernel.org> <CAHJ8P3KS2YAXm=GND8DknZqvGqTvm38Nv_9z1nEq4cTJjir-sA@mail.gmail.com>
+ <Zd03RHMKBqv1f6GF@google.com>
+In-Reply-To: <Zd03RHMKBqv1f6GF@google.com>
+From: Zhiguo Niu <niuzhiguo84@gmail.com>
+Date: Tue, 27 Feb 2024 10:34:58 +0800
+Message-ID: <CAHJ8P3Lj_1pa=npkAsMfeStEY3nWgf591tFndKTT_skFYLv+GQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] f2fs: fix panic issue in small capacity device
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: Chao Yu <chao@kernel.org>, Zhiguo Niu <zhiguo.niu@unisoc.com>, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
+	ke.wang@unisoc.com, hongyu.jin@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/27/2024 6:52 AM, Bjorn Helgaas wrote:
-> On Fri, Feb 23, 2024 at 10:29:28AM +0800, Ethan Zhao wrote:
->> On 2/22/2024 7:24 PM, Dan Carpenter wrote:
->>> On Thu, Feb 22, 2024 at 04:02:51AM -0500, Ethan Zhao wrote:
->>>> Because surprise removal could happen anytime, e.g. user could request safe
->>>> removal to EP(endpoint device) via sysfs and brings its link down to do
->>>> surprise removal cocurrently. such aggressive cases would cause ATS
->>>> invalidation request issued to non-existence target device, then deadly
->>>> loop to retry that request after ITE fault triggered in interrupt context.
->>>> this patch aims to optimize the ITE handling by checking the target device
->>>> presence state to avoid retrying the timeout request blindly, thus avoid
->>>> hard lockup or system hang.
->>>>
->>>> Devices are valid ATS invalidation request target only when they reside
->>>> in the iommu->device_rbtree (probed, not released) and present.
->>> "valid invalidation" is awkward wording.  Can we instead say:
->> If you read them together, sounds like tongue twister. but here "ATS
->> invalidation request target" is one term in PCIe spec.
-> "ATS invalidation request target" does not appear in the PCIe spec.  I
-> think you're trying to avoid sending ATS Invalidate Requests when you
-> know they will not be completed.
-
-I meant "ATS Invalidation Request" here is one term in PCIe spec, 'valid'
-is used to describe the word 'target'.
-
-This patch isn't intended to work as the same logic as patch [2/3], this
-aims to break the blindly dead loop not to retry the timeout request after
-ITE fault happened.
-
+On Tue, Feb 27, 2024 at 9:13=E2=80=AFAM Jaegeuk Kim <jaegeuk@kernel.org> wr=
+ote:
 >
-> It is impossible to reliably determine whether a device will be
-> present and able to complete an Invalidate Request.  No matter what
-> you check to determine that a device is present *now*, it may be
-> removed before an Invalidate Request reaches it.
-
-Here we check to see if the ITE fault was caused by device is not present.
-The opposite logic, not predict the future, but find the cause of the fault
-already happened, if pci_device_is_present() tells us the device isn't
-there, it is reliable I think.
-
+> On 02/26, Zhiguo Niu wrote:
+> > Dear Chao,
+> >
+> > On Fri, Feb 23, 2024 at 10:38=E2=80=AFAM Chao Yu <chao@kernel.org> wrot=
+e:
+> > >
+> > > On 2024/2/23 10:01, Zhiguo Niu wrote:
+> > > >
+> > > >
+> > > > On Thu, Feb 22, 2024 at 8:30=E2=80=AFPM Chao Yu <chao@kernel.org <m=
+ailto:chao@kernel.org>> wrote:
+> > > >
+> > > >     On 2024/2/7 10:01, Zhiguo Niu wrote:
+> > > >      > A panic issue happened in a reboot test in small capacity de=
+vice
+> > > >      > as following:
+> > > >      > 1.The device size is 64MB, and main area has 24 segments, an=
+d
+> > > >      > CONFIG_F2FS_CHECK_FS is not enabled.
+> > > >      > 2.There is no any free segments left shown in free_segmap_in=
+fo,
+> > > >      > then another write request cause get_new_segment get a out-o=
+f-bound
+> > > >      > segment with segno 24.
+> > > >      > 3.panic happen in update_sit_entry because access invalid bi=
+tmap
+> > > >      > pointer.
+> > > >
+> > > >     Zhiguo,
+> > > >
+> > > >     Can you please try below patch to see whether it can fix your p=
+roblem?
+> > > >
+> > > >     https://lore.kernel.org/linux-f2fs-devel/20240222121851.883141-=
+3-chao@kernel.org <https://lore.kernel.org/linux-f2fs-devel/20240222121851.=
+883141-3-chao@kernel.org>
+> > > >
+> > > >     Thanks,
+> > > >
+> > > >
+> > > > Dear Chao,
+> > > > I need to coordinate the testing resources. The previous testing ha=
+s been stopped because it was fixed with the current patch. In addition, th=
+is requires stability testing to reproduce, so it will take a certain amoun=
+t of time. If there is any situation, I will tell you in time.
+> > >
+> > > Zhiguo, thank you!
+> >
+> > We tested this patch  this weekend on the previous version with
+> > problem, and it can not reproduce panic issues,
+> > so this patch should fix the original issue.
+> > thanks=EF=BC=81
 >
-> If an Invalidate Request to a non-existent device causes a "deadly
-> loop" (I'm not sure what that means) or a hard lockup or a system
+Dear Jaegeuk,
+> Hey, do you guys please point out which patches were tested without what?
+This problem occurred during our platform stability testing.
+it can be fixed by my  this patch set, mainly be fixed by:
+f2fs: fix panic issue in update_sit_entry & f2fs: enhance judgment
+conditions of GET_SEGNO
+and Chao's patch can also fix this problems testing without my patch
+> IOWs, which patches should I remove and keep Chao's patch?
+I think chao's patch is more reasonable, it does error handling more comple=
+te.
+but my patch just do some sanity check for return value of GET_SEGNO
+Same as other codes(update_segment_mtime)
+and i think it also needed except this part:
 
-There is a dead loop here to blindly retry to timeout request if
-ITE happened, we want to break that loop if the target device was
-gone.
-
-> hang, something is wrong with the hardware.  There should be a
-> mechanism to recover from a timeout in that situation.
+diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
+index 3bf2ce46fa0907..bb22feeae1cfcb 100644
+--- a/fs/f2fs/segment.h
++++ b/fs/f2fs/segment.h
+@@ -96,7 +96,8 @@ static inline void sanity_check_seg_type(struct
+f2fs_sb_info *sbi,
+(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
+#define GET_SEGNO(sbi, blk_addr) \
+- ((!__is_valid_data_blkaddr(blk_addr)) ? \
++ ((!__is_valid_data_blkaddr(blk_addr) || \
++ !f2fs_is_valid_blkaddr(sbi, blk_addr, DATA_GENERIC)) ? \
+NULL_SEGNO : GET_L2R_SEGNO(FREE_I(sbi), \
+GET_SEGNO_FROM_SEG0(sbi, blk_addr)))
+#define CAP_BLKS_PER_SEC(sbi)
+because Chao's patch let new_addr=3Dnull_addr when  get_new_segment
+returns NOSPACE,
+so I think this can be reverted and it also saves code running time.
+How about Chao's opinions?
+thanks!
 >
-> You can avoid sending Invalidate Requests to devices that have been
-
-That logic works for simple safe /surprise removal as described in
-patch[2/3], no race there that case at all.
-
-> removed, and that will reduce the number of timeout cases.  But if you
-> rely on a check like pci_device_is_present() or
-> pci_dev_is_disconnected(), there is *always* an unavoidable race
-
-We are not relying on pci_device_is_present() here in this patch to close
-the race window between aggressive surprise removal and ATS invalidation
-Request, we are doing post-fault handling here.
-
-Thanks,
-Ethan
-
-> between a device removal and the Invalidate Request.
->
->>>> @@ -1273,6 +1273,9 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->>>>    {
->>>>    	u32 fault;
->>>>    	int head, tail;
->>>> +	u64 iqe_err, ite_sid;
->>>> +	struct device *dev = NULL;
->>>> +	struct pci_dev *pdev = NULL;
->>>>    	struct q_inval *qi = iommu->qi;
->>>>    	int shift = qi_shift(iommu);
->>>> @@ -1317,6 +1320,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->>>>    		tail = readl(iommu->reg + DMAR_IQT_REG);
->>>>    		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
->>>> +		/*
->>>> +		 * SID field is valid only when the ITE field is Set in FSTS_REG
->>>> +		 * see Intel VT-d spec r4.1, section 11.4.9.9
->>>> +		 */
->>>> +		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
->>>> +		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
->>>> +
->>>>    		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
->>>>    		pr_info("Invalidation Time-out Error (ITE) cleared\n");
->>>> @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
->>>>    			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
->>>>    		} while (head != tail);
->>>> +		/*
->>>> +		 * If got ITE, we need to check if the sid of ITE is one of the
->>>> +		 * current valid ATS invalidation target devices, if no, or the
->>>> +		 * target device isn't presnet, don't try this request anymore.
->>>> +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
->>>> +		 */
->>> This comment is kind of confusing.
->> Really confusing ? this is typo there, resnet-> "present"
->>
->>> /*
->>>    * If we have an ITE, then we need to check whether the sid of the ITE
->>>    * is in the rbtree (meaning it is probed and not released), and that
->>>    * the PCI device is present.
->>>    */
->>>
->>> My comment is slightly shorter but I think it has the necessary
->>> information.
->>>
->>>> +		if (ite_sid) {
->>>> +			dev = device_rbtree_find(iommu, ite_sid);
->>>> +			if (!dev || !dev_is_pci(dev))
->>>> +				return -ETIMEDOUT;
->>> -ETIMEDOUT is weird.  The callers don't care which error code we return.
->>> Change this to -ENODEV or something
->> -ETIMEDOUT means prior ATS invalidation request hit timeout fault, and the
->> caller really cares about the returned value.
->>
->>>> +			pdev = to_pci_dev(dev);
->>>> +			if (!pci_device_is_present(pdev) &&
->>>> +				ite_sid == pci_dev_id(pci_physfn(pdev)))
->>> The && confused me, but then I realized that probably "ite_sid ==
->>> pci_dev_id(pci_physfn(pdev))" is always true.  Can we delete that part?
->> Here is the fault handling, just double confirm nothing else goes wrong --
->> beyond the assumption.
->>
->>> 		pdev = to_pci_dev(dev);
->>> 		if (!pci_device_is_present(pdev))
->>> 			return -ENODEV;
->>>
->>>
->>>> +				return -ETIMEDOUT;
->>> -ENODEV.
->> The ATS invalidation request could be sent from userland in later code,
->> the userland code will care about the returned value,  -ENODEV is one aspect
->> of the fact (target device not present), while -ETIMEDOUT is another
->> (timeout happened). we couldn't return them both.
->>
->>>> +		}
->>>>    		if (qi->desc_status[wait_index] == QI_ABORT)
->>>>    			return -EAGAIN;
->>>>    	}
->>> Sorry, again for nit picking a v13 patch.  I'm not a domain expert but
->>> this patchset seems reasonable to me.
->> Though this is the v13, it is based on new rbtree code, you are welcome.
->>
->> Thanks,
->> Ethan
->>
->>> regards,
->>> dan carpenter
+> >
+> > >
+> > > BTW, I've tested this patch for a while, and it looks there is no iss=
+ue w/
+> > > FAULT_NO_SEGMENT fault injection is on.
+> > >
+> > > > btw, Why can=E2=80=99t I see this patch on your branch^^?
+> > > > https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/log/=
+?h=3Ddev-test <https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.g=
+it/log/?h=3Ddev-test>
+> > >
+> > > Too lazy to push patches in time, will do it in this weekend. :P
+> > >
+> > > > thanks=EF=BC=81
+> > > >
+> > > >
+> > > >      >
+> > > >      > More detail shown in following patch sets.
+> > > >      > The three patches are splited here because the modifications=
+ are
+> > > >      > relatively independent and more readable.
+> > > >      >
+> > > >      > ---
+> > > >      > Changes of v2: stop checkpoint when get a out-of-bound segme=
+nt
+> > > >      > ---
+> > > >      >
+> > > >      > Zhiguo Niu (4):
+> > > >      >    f2fs: correct counting methods of free_segments in __set_=
+inuse
+> > > >      >    f2fs: fix panic issue in update_sit_entry
+> > > >      >    f2fs: enhance judgment conditions of GET_SEGNO
+> > > >      >    f2fs: stop checkpoint when get a out-of-bounds segment
+> > > >      >
+> > > >      >   fs/f2fs/file.c          |  7 ++++++-
+> > > >      >   fs/f2fs/segment.c       | 21 ++++++++++++++++-----
+> > > >      >   fs/f2fs/segment.h       |  7 ++++---
+> > > >      >   include/linux/f2fs_fs.h |  1 +
+> > > >      >   4 files changed, 27 insertions(+), 9 deletions(-)
+> > > >      >
+> > > >
 
