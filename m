@@ -1,62 +1,67 @@
-Return-Path: <linux-kernel+bounces-83075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22691868E1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:54:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60105868E1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6410B211B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:54:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D1DC1F24806
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:54:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E08139568;
-	Tue, 27 Feb 2024 10:53:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA72313A25A;
+	Tue, 27 Feb 2024 10:54:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LU47WGlZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MSCXUmlC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 762F11386B4
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187321386CA;
+	Tue, 27 Feb 2024 10:54:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709031234; cv=none; b=Y5l0kxI3mcJUyHawyM9LazKrVrTT6ssL7meuQ3BFFYTBH15Mtta1tkLpkKwO2ZEwhMgjYS9JD9jEqb+PHStaoZCafKxMM8oL/bba6QNSDjrnNulVTdP7xcSTIEHFdMePFj69VBhMtC3jV6Kr4Ym5z3JpJXDzT83K54Kdrc7JWbk=
+	t=1709031241; cv=none; b=Tl5vgaJykM6P0AiYzUQsFgLlFyUrknkW45eywJNqOIa5M1LEoXztYl8x+WKgc1lG9DxZB/aqH83nzIAk9SUQqIBumJLiRNtd/RdXstW9RrRvv8fwhtRupu+LCUuNA+3Rhf5Ghz7vuWd6LirPiAHrcH3qcvqjAVkgTcmZPp22Zhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709031234; c=relaxed/simple;
-	bh=/mxC6qC32J0iPOhJxkeY8EHyScbniafSLgOMJKtR0XY=;
+	s=arc-20240116; t=1709031241; c=relaxed/simple;
+	bh=bhXwwrbmoaR8s6z94AmlzJ/t3FDBuvjQY3T2ceYGgys=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TXXlvl5dI6+pNH3sfLF5xNJGWhOyqb2qbMINfXv+Xiy4Q/8JwYJ/sfHGmqQVAj/Es1haseFvx/yMdRvHbFJns2Y1rIv+HTeotcCEF8QLgHgXGZ8btD77FFfZAy2SWhvvwa4jPNBL8qgc83tufpkvDMlJFxkfwOeCiCGB/GuM6ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LU47WGlZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E29FC433C7;
-	Tue, 27 Feb 2024 10:53:51 +0000 (UTC)
+	 MIME-Version:Content-Type; b=YVz+YgOJzI82H7Ax53v9wLcfAxSlx2OqTE3d/aAQIQ/jmgVajrW0nyb324biQdFOx3FD/v+0QRZzQLglw8ygFLUaD3c9TsjmPF4mb33B5eLhvhbNOEkuBdMKR/juqBZTlIkD5vQJjmJF6sGdTKdoY4dABW/x7mwo8Xg7+aVA5Cc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MSCXUmlC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B33AC433C7;
+	Tue, 27 Feb 2024 10:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709031234;
-	bh=/mxC6qC32J0iPOhJxkeY8EHyScbniafSLgOMJKtR0XY=;
+	s=k20201202; t=1709031240;
+	bh=bhXwwrbmoaR8s6z94AmlzJ/t3FDBuvjQY3T2ceYGgys=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=LU47WGlZ+TuhhypVCoKQHQkbia16CtsyLv+/cKXOjzgUB02ev17wE03ZY2TqD02iN
-	 qoAXZdLZxhCkj5tMbVGA9eEEHTyUw95rRumdsV07gdmHeO04HfjRqGo+bnz7rDiV4n
-	 QaTr6Ux+9Lx3sMfoxTBLvQhLbCEJsv0HliDnDwENl8QRyTdv+1rZ2XU9UuF34/6yDu
-	 f1jctyVmKk2IVMssx/VaYApt0jYyaWoTjWkARZgXAsQ3dRt9kll+m7L8a2IZnmAZQN
-	 BtsUauO5Vtc3iDODgAAwgMnUo68PSDUJt2n25be4LKTN/SnZIzxcfJCcm30ygp3skT
-	 Nwt6bY3QhPepA==
+	b=MSCXUmlCVuEz0R/iiP40pW/DYeOKcwFMwUHdB9DOTEcdqiwSxuKl0nNHPDChnF4md
+	 7LX+w7191h5WnEy5KQM9wwFcpXC6ZQOnOBp27vZbG7Kj+4pN+3K0DdYEvbQrfPlNJW
+	 EQvZBfKYn3jTiUdKjaexh6eYeDKS6+DpGotxy5fDjm+8LQ9NRzOcGueUTme+CDh10B
+	 o+vJc4FnJUxVJrshC/vGW+CwgxQ72mc2WcwCtUhgSa3eJq+IRqlndes0ZbkIdTQaUq
+	 bSoW1msBpvy5lMF5IVDdKcAlniMECVi1Ai2oXs+d2ZSuvh7SJNgCexxwpihlnCmChL
+	 DgiEK+UFRYYOg==
 From: Christian Brauner <brauner@kernel.org>
 To: jlayton@kernel.org,
+	mcgrof@kernel.org,
+	akpm@linux-foundation.org,
 	jack@suse.cz,
-	zhouchengming@bytedance.com,
+	adobriyan@gmail.com,
 	chengming.zhou@linux.dev
 Cc: Christian Brauner <brauner@kernel.org>,
+	dhowells@redhat.com,
+	zhouchengming@bytedance.com,
 	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
 	linux-mm@kvack.org,
 	vbabka@suse.cz,
 	roman.gushchin@linux.dev,
 	Xiongwei.Song@windriver.com
-Subject: Re: [PATCH] openpromfs: remove SLAB_MEM_SPREAD flag usage
-Date: Tue, 27 Feb 2024 11:52:47 +0100
-Message-ID: <20240227-geehrt-kurven-2306958e4d1c@brauner>
+Subject: Re: [PATCH] proc: remove SLAB_MEM_SPREAD flag usage
+Date: Tue, 27 Feb 2024 11:52:48 +0100
+Message-ID: <20240227-bares-sanieren-b8acbafb1750@brauner>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240224135028.829910-1-chengming.zhou@linux.dev>
-References: <20240224135028.829910-1-chengming.zhou@linux.dev>
+In-Reply-To: <20240224135048.829987-1-chengming.zhou@linux.dev>
+References: <20240224135048.829987-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,11 +69,11 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1028; i=brauner@kernel.org; h=from:subject:message-id; bh=/mxC6qC32J0iPOhJxkeY8EHyScbniafSLgOMJKtR0XY=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTe3S/2KM03t31XgVF4UvacFL6SCqHLFvvWfP/5YI2h0 bOlC4PDO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYyN5Dhf8w61X9+R6qDn119 ZenDcb1C/tbqPcKHMpmO79ht8U4lPJmR4ebBuW5s0doGiyIkzOVUBay5bn7aF+24o0eJtebIllu qjAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1022; i=brauner@kernel.org; h=from:subject:message-id; bh=bhXwwrbmoaR8s6z94AmlzJ/t3FDBuvjQY3T2ceYGgys=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTe3S8eGPp/hoPz6YhA1+uPLt9uPcayekunUcDhPe9PP tj4V8tatqOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAie+IZ/tn9CfEy3srmd3nl lVilIDed57s2qp4sKi7OrCuNOC+k94HhJ+O9M+v+sl+cn1wdf2Gb0BK2Vh/97YnmXrLGM2TKdtR tZQcA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-On Sat, 24 Feb 2024 13:50:28 +0000, chengming.zhou@linux.dev wrote:
+On Sat, 24 Feb 2024 13:50:48 +0000, chengming.zhou@linux.dev wrote:
 > The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
 > its usage so we can delete it from slab. No functional change.
 > 
@@ -93,6 +98,6 @@ trailer updates or similar. If in doubt, please check the listed branch.
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
 branch: vfs.misc
 
-[1/1] openpromfs: remove SLAB_MEM_SPREAD flag usage
-      https://git.kernel.org/vfs/vfs/c/6a940f2fa299
+[1/1] proc: remove SLAB_MEM_SPREAD flag usage
+      https://git.kernel.org/vfs/vfs/c/d20a6a4de559
 
