@@ -1,87 +1,185 @@
-Return-Path: <linux-kernel+bounces-83560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D41EC869B91
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:06:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75362869B85
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:04:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AD18B2FC2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:00:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C0E2B302EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140221474B1;
-	Tue, 27 Feb 2024 16:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCAE146E82;
+	Tue, 27 Feb 2024 16:00:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KqpHDucB"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="ubQN3Jar"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8FEE535AE
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A609145B0C;
+	Tue, 27 Feb 2024 16:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709049621; cv=none; b=NPFxqP3GAi/s3awH06rsCCeUsCe46VStnPuBzBw/1FbqT5bmjXnwTczLRdKtQYQTAVNEcxlk9tXvHo27lbAxeTaKWiMn11tqubgMRG23YGV6Ba1rWh+AisZk3IhHxA6ksGmLDq1uNSjP+r8wfnmfopmqPue8AGK6OByrWs9jd30=
+	t=1709049640; cv=none; b=JbWSHp+jpE+OAxnwC7OZawqJNv5m8H8JXuQAuGMR5o892/vwWxxLY9nK/k16duyNJeci5GLRtSuEMsA3xkRbTfTfSvpPUIk9IJz9EuRihVMtQ89PNUYFIUfHegzz/zkoGML3cGiQqi7wvNL7GafJm5jgQbwdALf50Rn66dLlU0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709049621; c=relaxed/simple;
-	bh=/ZcKHB3se7dZ04rBs98kiLqPFcRbaht4NCHpVlNlawI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lUgk5Jf4yAStEu0UMDHI2b4cfSfq/ufWG8m9R9i5t0Lg1NAqI+6QHLhqTA3pPok5e5QCIUMrXeH/M3ulWbHXg/oSWlB9P8+mlQIO32Rg83jQf/PxN+Elz5fUlG6e8rXTKUN+279TonUHVWp4PPh5Ywjr5yLcHWxxuFqjJBPDLg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KqpHDucB; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=CuJB5bRBJbOy4In+KKiCZi5akTRyl9NVfEAfw816xy4=; b=KqpHDucBRg5Iv9IKONlQDUmmIM
-	NTRyFQtftMfeOC0U1oENORYEroE+VVuyz/8hcWrZl4Bx0JyDioMkktPp3WzKojAvOv9335Wo772Bz
-	uefvIc6c0w/grkBdW+Z03XO9A4ZguEhzaM7MLmY6PgcDv/UmTwl5UWywzVMTJ7qM79ZjUfRxUON63
-	5tpxRgb81hq1YYpXiAIaz9Qss0A0oPFyd9b7+U3vcyKFdrOitsYeDX9wOMlgeqwgXmgwc+dFVMARW
-	yzmPSUW2rC1VYqoU77sSzHjJT/2+juunQbH1ojNBFtTXXmQxMdKC3Q3Gt9JVWNf3994BuHcyhIMkr
-	3wXQm3rQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rezsQ-00000005tJI-0eyv;
-	Tue, 27 Feb 2024 16:00:18 +0000
-Date: Tue, 27 Feb 2024 08:00:18 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
-	Lance Yang <ioworker0@gmail.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Yin Fengwei <fengwei.yin@intel.com>
-Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
- need it
-Message-ID: <Zd4HEjS6vpIvwfR9@infradead.org>
-References: <20240227024050.244567-1-21cnbao@gmail.com>
+	s=arc-20240116; t=1709049640; c=relaxed/simple;
+	bh=eiMVjMY2eJZ0WHua7P/FmW7E68ijkTKDc8/jZWDrrtQ=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=b9OBsVOqBHAjLy/Pk4OToYs0EKZDFPP62GVqyZ+gaBSFQYDlY6G42jFxmFLcrdqbfWQUifCRX7GtpouCIWfeJgnL7hJqb50I2UA73AATpEy+JUXbu92cfc6uQHX6xs9xlpmRcpgf8ZC+egx+WtxSIgwjKnE1d55ADS5LyMxLD4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=ubQN3Jar; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227024050.244567-1-21cnbao@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1709049634;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=S0ScTYlEOMm7KmQCkQkjYPl7d36pL1WA+3JbO05QOqI=;
+	b=ubQN3Jar96vFnIYInc7ImePz/0CkVCFsr74WzTjjQdPtwsi60iNnB6cRKzrHdG1qgUwYp7
+	+HHx/D9waAvr2uAC/VMpdmpH3hEWLK5qN8ycT6DLK11gHLgxDnTad92LiZ6CdNZE5q+sjS
+	Now4X4w1N+hgQmQ1GEZ/85EHSfPI3kXOS6OAGpeg5AgUf5RQp1zPDH8ikupOF3HM1b1TOa
+	m6QfN2IpgGTWpwLotmL/uhQgQLjGex3j6LnA2XzNbqfS+BZ68s8dGYG7ZcF1iyle+QpvDp
+	5OMHpDbdXhv/o+20dnda6iO1DfNY4J2Do0+4v41OaHbBh/yghGugRNUeFYMBwg==
+Date: Tue, 27 Feb 2024 17:00:31 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Christopher Obbard <chris.obbard@collabora.com>
+Cc: Folker Schwesinger <dev@folker-schwesinger.de>, Alban Browaeys
+ <alban.browaeys@gmail.com>, Doug Anderson <dianders@chromium.org>, Jensen
+ Huang <jensenhuang@friendlyarm.com>, =?UTF-8?Q?Heiko_St=C3=BCbner?=
+ <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Vinod Koul <vkoul@kernel.org>, Chris
+ Ruehl <chris.ruehl@gtsys.com.hk>, Brian Norris <briannorris@chromium.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>, "open list:ARM/Rockchip SoC..."
+ <linux-rockchip@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>
+Subject: Re: [PATCH] arm64: dts: rockchip: add enable-strobe-pulldown to emmc
+ phy on rk3399
+In-Reply-To: <eafd8d8c0cbcaca1b190f84ec17a1dcd7aec0306.camel@collabora.com>
+References: <20220822074139.3810-1-jensenhuang@friendlyarm.com>
+ <23552842.6Emhk5qWAg@diego>
+ <CAD=FV=W-ajJDfYcP3P8Jyk_KgsUAbdTtmwiNXqJ=Ab2ojgrUGw@mail.gmail.com>
+ <CAMpZ1qEe7xFr+XaXsS_hWDLnGGA8PfzQiToOjY1N_1ctyQ+KxA@mail.gmail.com>
+ <CAD=FV=U-=2GpQTb0N1p3Qe2TAb=JhyZJw2V8T-qbLs5TYhW7qA@mail.gmail.com>
+ <7873090c4aad382813a65e35157d8684e8842974.camel@gmail.com>
+ <CZFS45VOLIKW.2VS3M3VOMBT8V@folker-schwesinger.de>
+ <eafd8d8c0cbcaca1b190f84ec17a1dcd7aec0306.camel@collabora.com>
+Message-ID: <ca5b7cad01f645c7c559ab26a8db8085@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Tue, Feb 27, 2024 at 03:40:50PM +1300, Barry Song wrote:
-> From: Barry Song <v-songbaohua@oppo.com>
+Hello,
+
+On 2024-02-27 11:38, Christopher Obbard wrote:
+> On Tue, 2024-02-27 at 10:11 +0000, Folker Schwesinger wrote:
+>> On Tue Feb 27, 2024 at 3:05 AM CET, Alban Browaeys wrote:
+>> > Le mercredi 24 août 2022 à 07:57 -0700, Doug Anderson a écrit :
+>> > > On Tue, Aug 23, 2022 at 8:11 PM Jensen Huang
+>> > > <jensenhuang@friendlyarm.com> wrote:
+>> > > > I realized that only some devices may be affected, so I considered
+>> > > > modifying rk3399-nanopi4.dtsi only,
+>> > > > but other boards without external pull-down should still need this
+>> > > > patch.
+>> > >
+>> > > I guess the other alternative would be to change how the dt property
+>> > > works. You could say:
+>> > >
+>> > > 1. If `enable-strobe-pulldown` is set then enable the strobe
+>> > > pulldown.
+>> > >
+>> > > 2. If `enable-strobe-pulldown` is not set then don't touch the pin in
+>> > > the kernel.
+>> > >
+>> > > 3. If someone later needs to explicitly disable the strobe pulldown
+>> > > they could add a new property like `disable-strobe-pulldown`.
+>> > >
+>> > >
+>> > > Obviously there are tradeoffs between that and what you've done and
+>> > > I'm happy to let others make the call of which they'd prefer.
+>> > >
+>> >
+>> > Christopher could you try "ROCK Pi 4" and "ROCK Pi 4+" with
+>> > "enable-strobe-pulldown" instead of disabling HS400 as you did in July
+>> > 2023?
+>> >
+>> 
+>> with the following applied, the EMMC related errors are gone. dmesg 
+>> only
+>> shows "Purging ... bytes" during my tests:
+>> 
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+>> b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+>> index f2279aa6ca9e..ae0fb87e1a8b 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+>> @@ -647,8 +647,10 @@ &saradc {
+>>  &sdhci {
+>>         max-frequency = <150000000>;
+>>         bus-width = <8>;
+>> -       mmc-hs200-1_8v;
+>> +       mmc-hs400-1_8v;
+>> +       mmc-hs400-enhanced-strobe;
+>>         non-removable;
+>> +       rockchip,enable-strobe-pulldown;
+>>         status = "okay";
+>>  };
+>> 
+>> For testing I ran dd three times in a row:
+>> 
+>> dd if=/dev/zero of=./zero.bin bs=1M count=5000
+>> 
+>> I tested this on both a Rock 4SE board and a Rock Pi 4B+ board with 
+>> the
+>> same results.
 > 
-> madvise and some others might need folio_pte_batch to check if a range
-> of PTEs are completely mapped to a large folio with contiguous physcial
-> addresses. Let's export it for others to use.
+> Just for the record, all Rock 4 board schematics have no external 
+> strobe
+> pulldown resistor on the board, so we should be good to enable this.
+> 
+> I wonder what other boards this could be enabled for ?
+> 
+> It seemed to be the case on some eMMC it would work, others it 
+> wouldn't.
+> 
+> I haven't yet tested the above diff here as yet, but I can do that this 
+> week
+> on multiple boards & eMMC combos.
+> 
+> The diff above is also missing a fixes tag (and also be fixed for 
+> rk3399-rock-
+> 4c-plus.dts).
 
-It doesn't look exported to me in the patch (and that's a good thing!).
+When it comes to HS400 support on the RockPro64 and the Pinebook Pro,
+they're unfortunately miswired in a hopeless way, causing the DATA
+STROBE signal from the eMMC chip (i.e. the eMMC module) not to even
+reach the right ball on the RK3399 SoC.
 
-But even for making it non-static you probably want to include that in
-the series actually making use of it.
+Here are a few screenshots from the schematics that illustrate this
+issue (the first one is from the eMMC module schematic, the remaining
+two are from the RockPro64 schematic, which are pretty much exactly
+the same in the Pinebook Pro schematic):
 
-> +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
-> +		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
-> +		bool *any_writable);
+- https://i.imgur.com/MqD7rcG.png
+- https://i.imgur.com/hrlQBck.png
+- https://i.imgur.com/mtYvc9s.png
 
-no need for the extern here.
+There have been some Pine64 community attempts to have this fixed in
+new RockPro64 and Pinebook Pro hardware revisions, but such attempts
+unfortunately failed. :/
+
+Thus, we'll unfortunately have to deal with the whole thing on the
+board level, instead of making changes on the SoC level.
 
