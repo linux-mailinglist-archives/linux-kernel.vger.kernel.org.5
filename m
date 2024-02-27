@@ -1,92 +1,109 @@
-Return-Path: <linux-kernel+bounces-83347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D315D869422
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:51:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A5B986957D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87051288A1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:51:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB33EB23FCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:51:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0FFF145B32;
-	Tue, 27 Feb 2024 13:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A57145FF5;
+	Tue, 27 Feb 2024 13:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XkJJBI+n"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VnX+BKWo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B421F13B2BA
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:50:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD8F1420DF;
+	Tue, 27 Feb 2024 13:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709041812; cv=none; b=uq3m9eEIkfxoNVluZ1T7P+YfrJlX4KxhQV99Xw7aJOiQ/DWid7lkzrC+/+iEw6/DXY63LUn7D/XxYx5E/5PAWZIoZf8lMXLXUu76CkMLrMTZHvvvxoPFZuPQDqlxo92D1qnfWsnpRBA3xdZuuMy8SMThJso+YOAuE4tMyp2BkX0=
+	t=1709041813; cv=none; b=tPBDj3Lgeu7dShPz7F/HsjFe2tzv2z0Ojxa4n/KuZFdvp2aG7Y1lV06m8iNDfTDLvryQOgDghnYPcKoQOS6v6FFlIKYJtr2US2Z6lnwTbus1wabV+KeNkjYhbGEy51lgOwU2lRsm7z12fAzb6dPykbh97luuvIw6rb1Wp8wgbZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709041812; c=relaxed/simple;
-	bh=FssauYjLB9dKTZJiqjGG1N3fH5I5oAYipea2Zvc/7B8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q7Cl+PIo6/HAo1aQHro9yisSXT3nOD4ceysnSGGLF3TyofALBhSFZDbaTpNHHiOtXUz+ppRd1vS1D1rijxGiQfOfKpwoPvvHnVJBTUJji9bdvA4GgbYomCgUQi3y1pBbuUYHwNktjAqRHxpOrKxR085ciPOskzwtJt1TsYudWTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XkJJBI+n; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=V89YttMzF7GfHZnp7dBKJwU1XvvYwOCRmIBdLBD+tow=; b=XkJJBI+n38xVDB8ZfjNw8wdq96
-	5OUkDkqG9WKZ6dOnOmRfSHMep939vdTgegZV44Wi1sqLjO1jnW7bHhpVPlEOpYxjlwi6WPkQO3+oi
-	phFxJii0agwx4K9b0TxjJ9D8k2HOUfUWZsXyNtLIHpXOw/CC8v2CHIzzZff+Mhhljy/FioJbmXWaL
-	+RC03+abBVQcJy9to+88hp63DCOv05hx2kX6yS9LpUo53CGg15nv/IqgIEilkuRtifh/DbL6lAdOK
-	cuBcR/XnKZqHtNps7wkZ4S8gTvzxFpgvM2D2dLW6AeHKPdzkU3Wp6DfAV5Wp0M9rfLdj9yhcClxYG
-	5l7knQ+Q==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rexqT-00000005SSP-31qG;
-	Tue, 27 Feb 2024 13:50:09 +0000
-Date: Tue, 27 Feb 2024 05:50:09 -0800
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: russ.weight@linux.dev, gregkh@linuxfoundation.org, rafael@kernel.org,
-	linux-kernel@vger.kernel.org, masahiroy@kernel.org
-Subject: Re: [PATCH] firmware_loader: Use init_utsname()->release
-Message-ID: <Zd3oke0pAL2G05Rj@bombadil.infradead.org>
-References: <20240222145819.96646-1-john.g.garry@oracle.com>
- <Zddt-U-6SdxkxqmD@bombadil.infradead.org>
- <51483aaf-d64a-4eee-b256-ab126483ad6c@oracle.com>
- <Zdy9gKO5Q6K4IE8J@bombadil.infradead.org>
- <ZdzGF9bxLn3Slbgi@bombadil.infradead.org>
- <cb0c185c-54f8-4b43-856f-685cc5ed3fc4@oracle.com>
- <Zd3cz7yYezir-P7e@bombadil.infradead.org>
- <e88b76c5-1b13-4ad7-a97d-c34722cfde19@oracle.com>
+	s=arc-20240116; t=1709041813; c=relaxed/simple;
+	bh=cmuHHl9CIeYfuV4aIWfaqsYJoNLPszhG15STpDSPOGs=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QpywRHKotR82XKhAf6WTooakkOx2Q0Cr58B9Ajnby7ivKL2sJViZqtqxUZ/MP+E/QaQ2eRrmxvkPsw8dCCXGnhsPq/GTF0EcNVyOpEXfKshsPNFFO+iWuABuHYSUyy/VnJmrZjXsxn22Vpjb0RDF/8xznJVjVD76PabwsAHeb5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VnX+BKWo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67F41C43390;
+	Tue, 27 Feb 2024 13:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709041813;
+	bh=cmuHHl9CIeYfuV4aIWfaqsYJoNLPszhG15STpDSPOGs=;
+	h=From:To:Subject:In-Reply-To:References:Date:From;
+	b=VnX+BKWoPCfr+iBK1MyyV/mn28GcnQ5OFoqBa1D01Q87V64pKtBWiVJunSEHYKrTH
+	 CX5PlXKK/ZozMZyUL0E3kwy3/GmpDGCiS2FAbC2275XWYR0P91ishov9M9UE9rXa3p
+	 M/bpPEZmEJYQcVW28UmaSSercXZAxNzGyL9qBZboPWujw5kYkYNAMn1U6pGuxPvETU
+	 1HcM5azXYUKafvySNdsVPyBAAIf4oNpGpBMrm7b5YSSZEpidGyr0VWxsV/s57X1ndU
+	 1t/fLCj7Pb8lqehmdv1/Z+X/ftNbCZK1FaBi6UNghqcXP69u48QKdtppv1F4PiJ9l7
+	 r0zV//MIhaNPQ==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id D1515112E511; Tue, 27 Feb 2024 14:50:10 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: John Fastabend <john.fastabend@gmail.com>, syzbot
+ <syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com>,
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
+ hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Subject: Re: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL
+ pointer dereference in dev_map_hash_update_elem
+In-Reply-To: <65dd075bc6cbd_20e0a20892@john.notmuch>
+References: <000000000000ed666a0611af6818@google.com>
+ <0000000000001d1939061240cbd7@google.com>
+ <65dd075bc6cbd_20e0a20892@john.notmuch>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Tue, 27 Feb 2024 14:50:10 +0100
+Message-ID: <87msrmdnjh.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e88b76c5-1b13-4ad7-a97d-c34722cfde19@oracle.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain
 
-On Tue, Feb 27, 2024 at 01:02:26PM +0000, John Garry wrote:
-> On 27/02/2024 12:59, Luis Chamberlain wrote:
-> > What kernel are you seeing this issue on?
-> 
-> I was testing v6.8-rc5 last week
+John Fastabend <john.fastabend@gmail.com> writes:
 
-I cannot reproduce a hung task there either on that kernel.
+> syzbot wrote:
+>> syzbot has found a reproducer for the following issue on:
+>> 
+>> HEAD commit:    70ff1fe626a1 Merge tag 'docs-6.8-fixes3' of git://git.lwn...
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=1762045c180000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=4cf52b43f46d820d
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=8cd36f6b65f3cafd400a
+>> compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>> userspace arch: arm
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=110cf122180000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142f6d8c180000
+>> 
+>> Downloadable assets:
+>> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-70ff1fe6.raw.xz
+>> vmlinux: https://storage.googleapis.com/syzbot-assets/bc398db9fd8c/vmlinux-70ff1fe6.xz
+>> kernel image: https://storage.googleapis.com/syzbot-assets/6d3f8b72a671/zImage-70ff1fe6.xz
+>> 
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
+>> 
+>
+> I'll take a look this week if no one beats me to it. Looks like there is
+> a reproducer so should be able to sort it out.
 
-I see this:
+Took a look at the reproducer. Looks like it's creating the map with
+max_entries=0x80000202, which means the rounding up of the number of
+hash buckets overflows, and somehow the overflow check (for 0) is not
+working on a 32-bit machine? I guess because the roundup_power_of_two()
+ends up doing a (1UL << 32), which is undefined behaviour when an
+unsigned long is four bytes.
 
-sysfs: cannot create duplicate filename '/devices/virtual/misc/test_firmware/nope-test-firmware.bin'
+I'll send a patch to check the value before the rounding up instead of
+after.
 
-But these are expected as the selftests tries silly things to ensure
-they are not allowed.
-
-If you can reproduce it there, it would be appreciated if you look underneath
-the hood a bit, or share anything glaring and obvious which may help
-reproduce this.
-
-  Luis
+-Toke
 
