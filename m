@@ -1,386 +1,258 @@
-Return-Path: <linux-kernel+bounces-83757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23C0D869E15
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:43:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F0928869DE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:39:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F9A928FE3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:43:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A638E2843F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 169C84F1FA;
-	Tue, 27 Feb 2024 17:41:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57F54E1DC;
+	Tue, 27 Feb 2024 17:39:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="7lIV/hYi"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="MBdV5KSJ"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2082.outbound.protection.outlook.com [40.107.6.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF0904CB4B;
-	Tue, 27 Feb 2024 17:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709055689; cv=none; b=FL9X3b/vUGROUKK5gybhwmAMScmF7Nj8aO6ihase+oK+udd7sgWjQTWXuIa6jTQqGKYbykwkJtNo96+ya/6O3FkDqDtmZIhybqn+JZx1rUgNqRVTEuLwX8nE6mbzyHKOycZZRCpqsMdZdf/INb2GxpGsXgk71JCSZJeaZVyoJt0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709055689; c=relaxed/simple;
-	bh=0GguDa9XVPMOQ/pdEETxL7CEGVOjB/CLSWbitRuC6tQ=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rUAibwOy7/t6rsXIrqFTxe9nawngapcm0EVe+mmkpUYpVs9LA3/Tu+s7Nf2TXLOeMCi2R34zD2NKZGN8qRQ7icz8RZpLZzMS+I/o25eyXiOcwnwg+amq2+LvWGKPZJQnP67zGCi5THR30V50G35sdkim0lxg9tFlMkUHMlePqIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=7lIV/hYi; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RBi2R9029649;
-	Tue, 27 Feb 2024 18:41:13 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=45JJWKc7Z05d/UNRZjlQGN1CH09iiNsdefrvNgsenrM=; b=7l
-	IV/hYixEuJlpaaGAnzdxJLol3Phjk+7vYXnALEW04M5giGrB6KS9BIOwDqgNgI4R
-	FHNXRrRHN48p2o9FRDs6iMXGkggsQN94W61VrS3fVORZSicpsfi42QlFliG4Ew88
-	P/vpL7dX75tKk7b7XPZ0yNDDLhvuQmuF9ULBVbKPjIpWLLQ9/oeWRzL1iH0YaDDd
-	kDdgdE+IpaUeEoc0PhMwfD2sOpbtFIunxUeoIBPWd0vKGqkoEOKpQFkdag3FwQzI
-	nGSlZcAfAUowQV6rG73rtWXrHs4UC5XLef9Xg77+q+KGTAGBtY1O/y9G4M/iUqEe
-	ftzyrovpBomY9eCFZzrw==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3whf4b9ddv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 18:41:13 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id C2A8940044;
-	Tue, 27 Feb 2024 18:41:09 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 30DA02AD157;
-	Tue, 27 Feb 2024 18:40:44 +0100 (CET)
-Received: from localhost (10.252.26.109) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 27 Feb
- 2024 18:40:41 +0100
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To: <william.gray@linaro.org>
-CC: <lee@kernel.org>, <alexandre.torgue@foss.st.com>,
-        <fabrice.gasnier@foss.st.com>, <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 11/11] counter: stm32-timer-cnt: add support for capture events
-Date: Tue, 27 Feb 2024 18:38:03 +0100
-Message-ID: <20240227173803.53906-12-fabrice.gasnier@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240227173803.53906-1-fabrice.gasnier@foss.st.com>
-References: <20240227173803.53906-1-fabrice.gasnier@foss.st.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8FD1E896;
+	Tue, 27 Feb 2024 17:39:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709055546; cv=fail; b=JSn67K57gGYsLWJgycMh7JqWWdwHjYcqI10OruN+8Wp8PIIHIuiCOibd/mWR6gaxNfrOCNdJZG5apn1Xtea5fokn/pWEYEDDz9LmxhMsiBK6fZX6Vv6pC6lYayfZ/e6z8BFv5PTdlQM8/7Z6dFWE4HP8ZJrJmdS9RsF+KbVpZaY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709055546; c=relaxed/simple;
+	bh=+II4BuTHSPtiFd1ULeDsAtTNF9M6AG3tiNt39fWX56A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=WcK5odQmgOBT8FaECUoe6U1GqYvPLP/dnZi52mQY55GeLTyMlshgWhQ7RIx7nIlR6oeyqcUEfxi0uUJgQ97E+NUrLYD3fuOetKlZ2GsVviVRgea+NxLhMqhsfHO/x2ZldkneHWrz1NLuG9jWIyOhYLwpi97i3lFwBu6jVOEQJwg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=MBdV5KSJ; arc=fail smtp.client-ip=40.107.6.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CqNnTINMJ35Vn9BPG1glmplhEcAnPHee6VSf6Kw0156WrOEgK1oJ6zgzJRvZdleBfh6re9suEB5tV0xDPBLgojf7UcZ8/LXZKqGXxiJnmLNUBWYbYwynXNwIc8+cFUkU2t4KvjaOzF9NF6BCAOYe6C4sEkarUaENXqRR4A1/x1Rf56kDETWSIPevz2bQe79VzryFEHWU4dpoDtFYgZZHE6R6trg5yOuAynhWvrUVQiYjrzj8+mGCJRN+laXON2qIZN2tfmdmxXfHyMhWfXScxckOcvobQNX8eqP/MEXehBuYT214yczXW95PXaidku2j/np/pWSns3ELqK0XCaI+Kg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Uz+DHxDCUx/FREkCFHetlvIkgz5rnHJhyGZqQgtzvtA=;
+ b=KqHFy4RZMpnnO4dvXrefJKPh+GOvNl1liOlm85HU0CM1cc7gKb1//LaOqMVClMFXspsE2I29wLWuApslO+J5IF+G+RZDeUxYxjDn4tiaCz/zC6H4RUraEcq8A3KzK6gZN7HkPIW5Ob06giRrBBSoEa+DcCG0/Ix7mUZQW/4cwA7cmK0y2D06Q5N5E0Gxv9rN4GMe424rjt8hYbD+AMjFVweNVqNQnD8qT29VCb6Matw3QNYR1XvDR6L4DcCCVXfALGkERnvC6iIOoQMh1JeSuGmGR+W0glULJnO1/+tOTYnZSf+NLCBXs+jA1LSENuH3Os+FitSlJKkrkqfEtPAwgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uz+DHxDCUx/FREkCFHetlvIkgz5rnHJhyGZqQgtzvtA=;
+ b=MBdV5KSJVlgjqhJcp5Kt0c3uqkEbR6i964GRL1L/54YPUnmkprJ1TSi1VdxjIXDEDd2E1EHbaZEcq5okBNfOakJS65eWzvmb5/NvOqCdO8OLGp46AyJsm7WHh5j5BRyXjjj+L4vYdLsE8ZrAmT0TBDsNncc36yX1WagqZrfWm/Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS1PR04MB9631.eurprd04.prod.outlook.com (2603:10a6:20b:476::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Tue, 27 Feb
+ 2024 17:39:01 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
+ 17:39:01 +0000
+Date: Tue, 27 Feb 2024 12:38:52 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Serge Semin <fancer.lancer@gmail.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
+	Siddharth Vadapalli <s-vadapalli@ti.com>
+Subject: Re: [PATCH v3 3/5] PCI: dwc: Pass the eDMA mapping format flag
+ directly from glue drivers
+Message-ID: <Zd4eLBXscaV1WkbV@lizhi-Precision-Tower-5810>
+References: <20240226-dw-hdma-v3-0-cfcb8171fc24@linaro.org>
+ <20240226-dw-hdma-v3-3-cfcb8171fc24@linaro.org>
+ <Zdy8lVU6r+JO6OSJ@lizhi-Precision-Tower-5810>
+ <20240227074533.GH2587@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240227074533.GH2587@thinkpad>
+X-ClientProxiedBy: SJ0PR13CA0235.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c1::30) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-27_05,2024-02-27_01,2023-05-22_02
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS1PR04MB9631:EE_
+X-MS-Office365-Filtering-Correlation-Id: c0869dcb-5ae4-48c2-a44f-08dc37bafbdb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bba4ZIzMCjk0T6rP7F+6TsCLyqxwZKx6QvLd53uQqvEN7lQd0t+UCMf0Xj3PBhWt9uQSkXsG4vuS4AHw3Dd8SwTlcmrgiTkUivF50cmc1cI2dcT+OTeb8ZHYAw3kWTIBtkpyZXX8dPWJryGtlo2Wtj1X1CpI5cUBFXl+7OB0mbCJvS1/wrdbkXDMCLukWh1Ubou+7eNQA64z/ISQ5b8j4SQDaf/sdwV/OhFHGNYycP7QufoCiHrDToUMfJ55VYlb4yNCZ3uQGsVsgajDNtaswmNeJRKSnKK22wanroPAGmbmgXoU849Kg64lEE9yjpn+TbzfBa1ZgH9j1oOhirzSWUVKuoA0WMZXtMcUNUwR7fZns48SXcgtFjlTGOme8gMmknMGPhYVsgRdhtR/GfRhCgcIjkQKSpycC7OQHW5kE0e1Ai7OSmv5/BHuJippTc3gNH+/VYVoBCcx3fAHXnuIb0Z1htAxjjk57A7OcTHfHb0k1JgU2ZhF4+xvpzeJA6BxevoqzyO7thlv7UAekkTfvCauFKWZiOk+nXZItjfaBhmmKaTzF/ZhaRLKFkY25/Al5XWaSbqYoKX1z9BjiJvkg73zle8UlZvtBbqntE9kVSRf0lEKCHaLdUWu5jdDHCogWZjlNCJL0DmYeOuI/DdJK8Iy1pRb3l7rygjYDEhHSXYETLHvgYw3mJImkcNyn5ilubPmzsjZTb9Ro713uClu30JA1ZKODyjPefOPHESMH2g=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZW82bkNQYk84bUFGMU5YVEtCREp6UGQ2S1dvM2phL3RDWjdBRkRGYWpSVGIw?=
+ =?utf-8?B?TjlybFFZTmFTTkVKV1FldW8vRitBU3A3TzlPNzRWWk5FODVtQkdPbEhjL29S?=
+ =?utf-8?B?VndHUXQxdEtaWkhhODJxY21Id0lkbnRKb1p4UmoreHZodnNudytLQUFOeVl2?=
+ =?utf-8?B?STlpY1FPd0xsR0dvUlNpMUFrL090bzNxK00zVlNmSXlJM2lRcCtBRi9kc0hR?=
+ =?utf-8?B?Y3VMcXU1ZkQranM0RGFrTUZpbUZWU1RSY3ZUcktMc0hieE9GK1BieUNRajdx?=
+ =?utf-8?B?dlM4ZEVRVjdqZDhqM1dmK1dibGIxWnRPWXpDczkxbWdWQUl3WERDd0xsTXVy?=
+ =?utf-8?B?WU8vaGg2b21scGg1ZTRWT0R3NU1uNytnMG5aME1lK0hlYkdPN1ZhT241QU5k?=
+ =?utf-8?B?dzhjQW1UWGdPd1JIdXRhT0tJcDRuUUpEZ2Jrd1hSWEFjdk94Z1pnL3l4NTRM?=
+ =?utf-8?B?RVhoejIxWkxiVE02dkFWa3JDRlFQZC9RZ01XanNFdWJyZFgwZ3NnK3gyYitk?=
+ =?utf-8?B?K3FrakRONmNQejRYT1JyRkJFa3dpa0xnOG4zc1RlK29rekNvNjAxTXdqaWtM?=
+ =?utf-8?B?SGtaY2dHYTlmdTZHVnlETFBjb3JvQjlHUVErYnhjSGFoMnlaUTIxWkcxeWJk?=
+ =?utf-8?B?ZUJFYVNwV2lXSGMrelRHS1VRdlBIdFpTY3BxUUVCZWwreE1TeE92NEVQSWRr?=
+ =?utf-8?B?OHcvYzhaeWdGN0d6WndYVjRSVis5cWt3VTJ6SnkxR1pKNHVrZXpDaXN2bWgr?=
+ =?utf-8?B?aWtweXRoZEl4MzgxR08zYkgvM1ErSENIV1IzOWRsL0xoSGZWOTF5VWtLR0dD?=
+ =?utf-8?B?U25TdElKMnhwY1RHNHljYTNCUlFya2Zxd2JjaFphNHVQVHNYN0ZTMDdqT0ZL?=
+ =?utf-8?B?UktETXIzRU1abXNyekdiaEExNFBLdlhBWDFJaWpNaXJZejNhSnhyemdwOVpo?=
+ =?utf-8?B?NnhsWVI0RDlZRGI5NS9QNU9kS1Q5N3luVjlhMUJ4Mzd2SW9aQ0wxK3hiay92?=
+ =?utf-8?B?WXdnWE5TOWxqTmI5S3hGdzBDc2xzKzFWT3Rtb1N0SU9JZEZvNUVPL2h0MFMx?=
+ =?utf-8?B?Njd6NWN3dUc5dnpnS1phWnZjcXZKSzNPNEM5ZWpuK28wTi9saTFxYU5ZSnJu?=
+ =?utf-8?B?Y0xSNml5dVM2N2RrTXZIZU9oK3RBVXMwVW8wa0ZlY0M4anBqbFZ3WE9RZmxw?=
+ =?utf-8?B?K2tyMkZpZ0tDa2o5c3duOWpXQU5pSnRzaVhSRTBtVEV0SnloZlo1ZjZpQS9u?=
+ =?utf-8?B?cisxbFlzQThzZTJjSCt3Z2JwVjRBclZ3b2wrNDFCSEkvV0hlREVDeHRyK1Bx?=
+ =?utf-8?B?Ump6VDdHWCtsRzV0cE4rZGZVR1JVSjF2WnZoMEU3alJQeVJIMHJZaWNYeFVD?=
+ =?utf-8?B?QSswQ3kzZWRXVkVaYkNvc1hZbzl1aythaHFodEhJVzd3QWNuUWlJQ3g1OEN0?=
+ =?utf-8?B?V1RBU1FRQmFEVUNOWEcrV3FIRWp4TkZHRTVLbVlybXNPU1hFZCt6VWtQell0?=
+ =?utf-8?B?SU5XSGZLbE1HWXZja3IwbWFoOWpHTlVrQzB1eXBEaU8vT1hBL3o0ZlVZUU5m?=
+ =?utf-8?B?MnhXUzNUMzV4NG5uUlF4S1RrVnFmQ0l0eEEzLy83UEVPYnpTRWgvcmVxa2hI?=
+ =?utf-8?B?LzhkZXFlbmVpS1VwN29GUTQ4dTYzbHNueWVnTjVpbmNRRGlONmZaR2o0SkpM?=
+ =?utf-8?B?a1lvMUowMnZmNVBCUnhYdlNhQlNGYmw0OW9UR3dvWEUrWGVWZFZlTm9GMXRl?=
+ =?utf-8?B?VzhMdUtxTFRsS00zVytkc0JQTW16Ly9XZGx2RkZ1NVZQeG9TR0ZGY2JUUHpr?=
+ =?utf-8?B?YmhUVFVYYlAyQk0wWERmc1RwNWtUTVBaZEZTc2hNelBKM2xDeTNIbDRPNE1i?=
+ =?utf-8?B?dkZFTnBsNkJHMUZrSm00RVdJbTAwYUR4c0p3L0Fvdzlwb1JQOW9GWG5GZnpp?=
+ =?utf-8?B?TllZM0hmUWVaMDY2anVBUnhVNU1VS3EvKzhXbEJXWklTSTdmMXh5Y00vNGQ3?=
+ =?utf-8?B?V3B3bVhHeVBGRmpSVUMzbk05TEI4RVRGTHVVclN5MVI4Y3ZhQVlMa2RlckJt?=
+ =?utf-8?B?ZkZhVjFEcThvZDBKQzlSRUc5cDZYZ3M2eHRwYXNjdVVyNXltVnhSTnNPVWtW?=
+ =?utf-8?Q?LMvQ9JgAxhm/L+yNl/PDIyL96?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c0869dcb-5ae4-48c2-a44f-08dc37bafbdb
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 17:39:00.9632
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: h71/rqnC+xSjYz2GcEuSb43lYWiAKJSQsM298C3fmCmKfkxR4NnKIIn5TAAgPoK3HkIM6AjH2PeJN9qhTpN1CA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9631
 
-Add support for capture events. Captured counter value for each channel
-can be retrieved through CCRx register.
-STM32 timers can have up to 4 capture channels (on input channel 1 to
-channel 4), hence need to check the number of channels before reading
-the capture data.
-The capture configuration is hard-coded to capture signals on both edges
-(non-inverted). Interrupts are used to report events independently for
-each channel.
+On Tue, Feb 27, 2024 at 01:15:33PM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Feb 26, 2024 at 11:30:13AM -0500, Frank Li wrote:
+> > On Mon, Feb 26, 2024 at 05:07:28PM +0530, Manivannan Sadhasivam wrote:
+> > > Instead of maintaining a separate capability for glue drivers that cannot
+> > > support auto detection of the eDMA mapping format, let's pass the mapping
+> > > format directly from them.
+> > 
+> > Sorry, what's mapping? is it register address layout?
+> > 
+> 
+> Memory map containing the register layout for iATU, DMA etc...
 
-Acked-by: Lee Jones <lee@kernel.org>
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
----
-Changes in v4:
-- move registers definition from previous patch to here. That's where
-  the defines are actually used. So move the collected Acked-by: Lee
-  for the mfd header here.
-- drop *irq from stm32_timer_cnt, as only used at probe time.
-- adopt some of the suggestions from William: introduce cc local variable,
-  use regmap_test_bits().
+the world 'map' is too general. can you use 'register map' at least at one
+place? There are bunch 'map' related DMA, such iommu map, stream id map, 
+memory page map. The reader need go though whole thread to figure out it is
+register map. 
 
-Changes in v3:
-- patch split from: "counter: stm32-timer-cnt: add support for events", to
-  focus on the capture events only here.
-- only get relevant interrupt line
----
- drivers/counter/stm32-timer-cnt.c | 134 +++++++++++++++++++++++++++++-
- include/linux/mfd/stm32-timers.h  |  13 +++
- 2 files changed, 144 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/counter/stm32-timer-cnt.c b/drivers/counter/stm32-timer-cnt.c
-index 9ec6e18f4d43..787ebfb893b0 100644
---- a/drivers/counter/stm32-timer-cnt.c
-+++ b/drivers/counter/stm32-timer-cnt.c
-@@ -262,6 +262,40 @@ static int stm32_count_prescaler_write(struct counter_device *counter,
- 	return regmap_write(priv->regmap, TIM_PSC, psc);
- }
+Frank 
  
-+static int stm32_count_cap_read(struct counter_device *counter,
-+				struct counter_count *count,
-+				size_t ch, u64 *cap)
-+{
-+	struct stm32_timer_cnt *const priv = counter_priv(counter);
-+	u32 ccrx;
-+
-+	if (ch >= priv->nchannels)
-+		return -EOPNOTSUPP;
-+
-+	switch (ch) {
-+	case 0:
-+		regmap_read(priv->regmap, TIM_CCR1, &ccrx);
-+		break;
-+	case 1:
-+		regmap_read(priv->regmap, TIM_CCR2, &ccrx);
-+		break;
-+	case 2:
-+		regmap_read(priv->regmap, TIM_CCR3, &ccrx);
-+		break;
-+	case 3:
-+		regmap_read(priv->regmap, TIM_CCR4, &ccrx);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	dev_dbg(counter->parent, "CCR%zu: 0x%08x\n", ch + 1, ccrx);
-+
-+	*cap = ccrx;
-+
-+	return 0;
-+}
-+
- static int stm32_count_nb_ovf_read(struct counter_device *counter,
- 				   struct counter_count *count, u64 *val)
- {
-@@ -288,6 +322,8 @@ static int stm32_count_nb_ovf_write(struct counter_device *counter,
- 	return 0;
- }
- 
-+static DEFINE_COUNTER_ARRAY_CAPTURE(stm32_count_cap_array, 4);
-+
- static struct counter_comp stm32_count_ext[] = {
- 	COUNTER_COMP_DIRECTION(stm32_count_direction_read),
- 	COUNTER_COMP_ENABLE(stm32_count_enable_read, stm32_count_enable_write),
-@@ -295,6 +331,7 @@ static struct counter_comp stm32_count_ext[] = {
- 			     stm32_count_ceiling_write),
- 	COUNTER_COMP_COUNT_U64("prescaler", stm32_count_prescaler_read,
- 			       stm32_count_prescaler_write),
-+	COUNTER_COMP_ARRAY_CAPTURE(stm32_count_cap_read, NULL, stm32_count_cap_array),
- 	COUNTER_COMP_COUNT_U64("num_overflows", stm32_count_nb_ovf_read, stm32_count_nb_ovf_write),
- };
- 
-@@ -353,11 +390,68 @@ static int stm32_action_read(struct counter_device *counter,
- 	}
- }
- 
-+struct stm32_count_cc_regs {
-+	u32 ccmr_reg;
-+	u32 ccmr_mask;
-+	u32 ccmr_bits;
-+	u32 ccer_bits;
-+};
-+
-+static const struct stm32_count_cc_regs stm32_cc[] = {
-+	{ TIM_CCMR1, TIM_CCMR_CC1S, TIM_CCMR_CC1S_TI1,
-+		TIM_CCER_CC1E | TIM_CCER_CC1P | TIM_CCER_CC1NP },
-+	{ TIM_CCMR1, TIM_CCMR_CC2S, TIM_CCMR_CC2S_TI2,
-+		TIM_CCER_CC2E | TIM_CCER_CC2P | TIM_CCER_CC2NP },
-+	{ TIM_CCMR2, TIM_CCMR_CC3S, TIM_CCMR_CC3S_TI3,
-+		TIM_CCER_CC3E | TIM_CCER_CC3P | TIM_CCER_CC3NP },
-+	{ TIM_CCMR2, TIM_CCMR_CC4S, TIM_CCMR_CC4S_TI4,
-+		TIM_CCER_CC4E | TIM_CCER_CC4P | TIM_CCER_CC4NP },
-+};
-+
-+static int stm32_count_capture_configure(struct counter_device *counter, unsigned int ch,
-+					 bool enable)
-+{
-+	struct stm32_timer_cnt *const priv = counter_priv(counter);
-+	const struct stm32_count_cc_regs *cc;
-+	u32 ccmr, ccer;
-+
-+	if (ch >= ARRAY_SIZE(stm32_cc) || ch >= priv->nchannels) {
-+		dev_err(counter->parent, "invalid ch: %d\n", ch);
-+		return -EINVAL;
-+	}
-+
-+	cc = &stm32_cc[ch];
-+
-+	/*
-+	 * configure channel in input capture mode, map channel 1 on TI1, channel2 on TI2...
-+	 * Select both edges / non-inverted to trigger a capture.
-+	 */
-+	if (enable) {
-+		/* first clear possibly latched capture flag upon enabling */
-+		if (!regmap_test_bits(priv->regmap, TIM_CCER, cc->ccer_bits))
-+			regmap_write(priv->regmap, TIM_SR, ~TIM_SR_CC_IF(ch));
-+		regmap_update_bits(priv->regmap, cc->ccmr_reg, cc->ccmr_mask,
-+				   cc->ccmr_bits);
-+		regmap_set_bits(priv->regmap, TIM_CCER, cc->ccer_bits);
-+	} else {
-+		regmap_clear_bits(priv->regmap, TIM_CCER, cc->ccer_bits);
-+		regmap_clear_bits(priv->regmap, cc->ccmr_reg, cc->ccmr_mask);
-+	}
-+
-+	regmap_read(priv->regmap, cc->ccmr_reg, &ccmr);
-+	regmap_read(priv->regmap, TIM_CCER, &ccer);
-+	dev_dbg(counter->parent, "%s(%s) ch%d 0x%08x 0x%08x\n", __func__, enable ? "ena" : "dis",
-+		ch, ccmr, ccer);
-+
-+	return 0;
-+}
-+
- static int stm32_count_events_configure(struct counter_device *counter)
- {
- 	struct stm32_timer_cnt *const priv = counter_priv(counter);
- 	struct counter_event_node *event_node;
- 	u32 dier = 0;
-+	int i, ret;
- 
- 	list_for_each_entry(event_node, &counter->events_list, l) {
- 		switch (event_node->event) {
-@@ -367,6 +461,12 @@ static int stm32_count_events_configure(struct counter_device *counter)
- 				regmap_write(priv->regmap, TIM_SR, (u32)~TIM_SR_UIF);
- 			dier |= TIM_DIER_UIE;
- 			break;
-+		case COUNTER_EVENT_CAPTURE:
-+			ret = stm32_count_capture_configure(counter, event_node->channel, true);
-+			if (ret)
-+				return ret;
-+			dier |= TIM_DIER_CC_IE(event_node->channel);
-+			break;
- 		default:
- 			/* should never reach this path */
- 			return -EINVAL;
-@@ -376,6 +476,15 @@ static int stm32_count_events_configure(struct counter_device *counter)
- 	/* Enable / disable all events at once, from events_list, so write all DIER bits */
- 	regmap_write(priv->regmap, TIM_DIER, dier);
- 
-+	/* check for disabled capture events */
-+	for (i = 0 ; i < priv->nchannels; i++) {
-+		if (!(dier & TIM_DIER_CC_IE(i))) {
-+			ret = stm32_count_capture_configure(counter, i, false);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -389,6 +498,12 @@ static int stm32_count_watch_validate(struct counter_device *counter,
- 		return -EOPNOTSUPP;
- 
- 	switch (watch->event) {
-+	case COUNTER_EVENT_CAPTURE:
-+		if (watch->channel >= priv->nchannels) {
-+			dev_err(counter->parent, "Invalid channel %d\n", watch->channel);
-+			return -EINVAL;
-+		}
-+		return 0;
- 	case COUNTER_EVENT_OVERFLOW_UNDERFLOW:
- 		return 0;
- 	default:
-@@ -499,6 +614,7 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void *ptr)
- 	struct stm32_timer_cnt *const priv = counter_priv(counter);
- 	u32 clr = GENMASK(31, 0); /* SR flags can be cleared by writing 0 (wr 1 has no effect) */
- 	u32 sr, dier;
-+	int i;
- 
- 	regmap_read(priv->regmap, TIM_SR, &sr);
- 	regmap_read(priv->regmap, TIM_DIER, &dier);
-@@ -506,7 +622,7 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void *ptr)
- 	 * Some status bits in SR don't match with the enable bits in DIER. Only take care of
- 	 * the possibly enabled bits in DIER (that matches in between SR and DIER).
- 	 */
--	dier &= TIM_DIER_UIE;
-+	dier &= (TIM_DIER_UIE | TIM_DIER_CC1IE | TIM_DIER_CC2IE | TIM_DIER_CC3IE | TIM_DIER_CC4IE);
- 	sr &= dier;
- 
- 	if (sr & TIM_SR_UIF) {
-@@ -519,6 +635,15 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void *ptr)
- 		clr &= ~TIM_SR_UIF;
- 	}
- 
-+	/* Check capture events */
-+	for (i = 0 ; i < priv->nchannels; i++) {
-+		if (sr & TIM_SR_CC_IF(i)) {
-+			counter_push_event(counter, COUNTER_EVENT_CAPTURE, i);
-+			clr &= ~TIM_SR_CC_IF(i);
-+			dev_dbg(counter->parent, "COUNTER_EVENT_CAPTURE, %d\n", i);
-+		}
-+	}
-+
- 	regmap_write(priv->regmap, TIM_SR, clr);
- 
- 	return IRQ_HANDLED;
-@@ -633,8 +758,11 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
- 		}
- 	} else {
- 		for (i = 0; i < priv->nr_irqs; i++) {
--			/* Only take care of update IRQ for overflow events */
--			if (i != STM32_TIMERS_IRQ_UP)
-+			/*
-+			 * Only take care of update IRQ for overflow events, and cc for
-+			 * capture events.
-+			 */
-+			if (i != STM32_TIMERS_IRQ_UP && i != STM32_TIMERS_IRQ_CC)
- 				continue;
- 
- 			ret = devm_request_irq(&pdev->dev, ddata->irq[i], stm32_timer_cnt_isr,
-diff --git a/include/linux/mfd/stm32-timers.h b/include/linux/mfd/stm32-timers.h
-index ca35af30745f..9eb17481b07f 100644
---- a/include/linux/mfd/stm32-timers.h
-+++ b/include/linux/mfd/stm32-timers.h
-@@ -41,6 +41,11 @@
- #define TIM_SMCR_SMS	(BIT(0) | BIT(1) | BIT(2)) /* Slave mode selection */
- #define TIM_SMCR_TS	(BIT(4) | BIT(5) | BIT(6)) /* Trigger selection */
- #define TIM_DIER_UIE	BIT(0)	/* Update interrupt	   */
-+#define TIM_DIER_CC1IE	BIT(1)  /* CC1 Interrupt Enable    */
-+#define TIM_DIER_CC2IE	BIT(2)  /* CC2 Interrupt Enable    */
-+#define TIM_DIER_CC3IE	BIT(3)  /* CC3 Interrupt Enable    */
-+#define TIM_DIER_CC4IE	BIT(4)  /* CC4 Interrupt Enable    */
-+#define TIM_DIER_CC_IE(x)	BIT((x) + 1) /* CC1, CC2, CC3, CC4 interrupt enable */
- #define TIM_DIER_UDE	BIT(8)  /* Update DMA request Enable */
- #define TIM_DIER_CC1DE	BIT(9)  /* CC1 DMA request Enable  */
- #define TIM_DIER_CC2DE	BIT(10) /* CC2 DMA request Enable  */
-@@ -49,6 +54,7 @@
- #define TIM_DIER_COMDE	BIT(13) /* COM DMA request Enable  */
- #define TIM_DIER_TDE	BIT(14) /* Trigger DMA request Enable */
- #define TIM_SR_UIF	BIT(0)	/* Update interrupt flag   */
-+#define TIM_SR_CC_IF(x)	BIT((x) + 1) /* CC1, CC2, CC3, CC4 interrupt flag */
- #define TIM_EGR_UG	BIT(0)	/* Update Generation       */
- #define TIM_CCMR_PE	BIT(3)	/* Channel Preload Enable  */
- #define TIM_CCMR_M1	(BIT(6) | BIT(5))  /* Channel PWM Mode 1 */
-@@ -60,16 +66,23 @@
- #define TIM_CCMR_CC1S_TI2	BIT(1)	/* IC1/IC3 selects TI2/TI4 */
- #define TIM_CCMR_CC2S_TI2	BIT(8)	/* IC2/IC4 selects TI2/TI4 */
- #define TIM_CCMR_CC2S_TI1	BIT(9)	/* IC2/IC4 selects TI1/TI3 */
-+#define TIM_CCMR_CC3S		(BIT(0) | BIT(1)) /* Capture/compare 3 sel */
-+#define TIM_CCMR_CC4S		(BIT(8) | BIT(9)) /* Capture/compare 4 sel */
-+#define TIM_CCMR_CC3S_TI3	BIT(0)	/* IC3 selects TI3 */
-+#define TIM_CCMR_CC4S_TI4	BIT(8)	/* IC4 selects TI4 */
- #define TIM_CCER_CC1E	BIT(0)	/* Capt/Comp 1  out Ena    */
- #define TIM_CCER_CC1P	BIT(1)	/* Capt/Comp 1  Polarity   */
- #define TIM_CCER_CC1NE	BIT(2)	/* Capt/Comp 1N out Ena    */
- #define TIM_CCER_CC1NP	BIT(3)	/* Capt/Comp 1N Polarity   */
- #define TIM_CCER_CC2E	BIT(4)	/* Capt/Comp 2  out Ena    */
- #define TIM_CCER_CC2P	BIT(5)	/* Capt/Comp 2  Polarity   */
-+#define TIM_CCER_CC2NP	BIT(7)	/* Capt/Comp 2N Polarity   */
- #define TIM_CCER_CC3E	BIT(8)	/* Capt/Comp 3  out Ena    */
- #define TIM_CCER_CC3P	BIT(9)	/* Capt/Comp 3  Polarity   */
-+#define TIM_CCER_CC3NP	BIT(11)	/* Capt/Comp 3N Polarity   */
- #define TIM_CCER_CC4E	BIT(12)	/* Capt/Comp 4  out Ena    */
- #define TIM_CCER_CC4P	BIT(13)	/* Capt/Comp 4  Polarity   */
-+#define TIM_CCER_CC4NP	BIT(15)	/* Capt/Comp 4N Polarity   */
- #define TIM_CCER_CCXE	(BIT(0) | BIT(4) | BIT(8) | BIT(12))
- #define TIM_BDTR_BKE(x)	BIT(12 + (x) * 12) /* Break input enable */
- #define TIM_BDTR_BKP(x)	BIT(13 + (x) * 12) /* Break input polarity */
--- 
-2.25.1
-
+> 
+> - Mani
+> 
+> > Frank
+> > 
+> > > 
+> > > This will simplify the code and also allow adding HDMA support that also
+> > > doesn't support auto detection of mapping format.
+> > > 
+> > > Suggested-by: Serge Semin <fancer.lancer@gmail.com>
+> > > Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  drivers/pci/controller/dwc/pcie-designware.c | 16 +++++++++-------
+> > >  drivers/pci/controller/dwc/pcie-designware.h |  5 ++---
+> > >  drivers/pci/controller/dwc/pcie-rcar-gen4.c  |  2 +-
+> > >  3 files changed, 12 insertions(+), 11 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> > > index ce273c3c5421..3e90b9947a13 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> > > @@ -894,18 +894,20 @@ static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
+> > >  {
+> > >  	u32 val;
+> > >  
+> > > +	/*
+> > > +	 * Bail out finding the mapping format if it is already set by the glue
+> > > +	 * driver. Also ensure that the edma.reg_base is pointing to a valid
+> > > +	 * memory region.
+> > > +	 */
+> > > +	if (pci->edma.mf != EDMA_MF_EDMA_LEGACY)
+> > > +		return pci->edma.reg_base ? 0 : -ENODEV;
+> > > +
+> > >  	/*
+> > >  	 * Indirect eDMA CSRs access has been completely removed since v5.40a
+> > >  	 * thus no space is now reserved for the eDMA channels viewport and
+> > >  	 * former DMA CTRL register is no longer fixed to FFs.
+> > > -	 *
+> > > -	 * Note that Renesas R-Car S4-8's PCIe controllers for unknown reason
+> > > -	 * have zeros in the eDMA CTRL register even though the HW-manual
+> > > -	 * explicitly states there must FFs if the unrolled mapping is enabled.
+> > > -	 * For such cases the low-level drivers are supposed to manually
+> > > -	 * activate the unrolled mapping to bypass the auto-detection procedure.
+> > >  	 */
+> > > -	if (dw_pcie_ver_is_ge(pci, 540A) || dw_pcie_cap_is(pci, EDMA_UNROLL))
+> > > +	if (dw_pcie_ver_is_ge(pci, 540A))
+> > >  		val = 0xFFFFFFFF;
+> > >  	else
+> > >  		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> > > index 26dae4837462..995805279021 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware.h
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> > > @@ -51,9 +51,8 @@
+> > >  
+> > >  /* DWC PCIe controller capabilities */
+> > >  #define DW_PCIE_CAP_REQ_RES		0
+> > > -#define DW_PCIE_CAP_EDMA_UNROLL		1
+> > > -#define DW_PCIE_CAP_IATU_UNROLL		2
+> > > -#define DW_PCIE_CAP_CDM_CHECK		3
+> > > +#define DW_PCIE_CAP_IATU_UNROLL		1
+> > > +#define DW_PCIE_CAP_CDM_CHECK		2
+> > >  
+> > >  #define dw_pcie_cap_is(_pci, _cap) \
+> > >  	test_bit(DW_PCIE_CAP_ ## _cap, &(_pci)->caps)
+> > > diff --git a/drivers/pci/controller/dwc/pcie-rcar-gen4.c b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
+> > > index e9166619b1f9..3c535ef5ea91 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-rcar-gen4.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
+> > > @@ -255,7 +255,7 @@ static struct rcar_gen4_pcie *rcar_gen4_pcie_alloc(struct platform_device *pdev)
+> > >  	rcar->dw.ops = &dw_pcie_ops;
+> > >  	rcar->dw.dev = dev;
+> > >  	rcar->pdev = pdev;
+> > > -	dw_pcie_cap_set(&rcar->dw, EDMA_UNROLL);
+> > > +	rcar->dw.edma.mf = EDMA_MF_EDMA_UNROLL;
+> > >  	dw_pcie_cap_set(&rcar->dw, REQ_RES);
+> > >  	platform_set_drvdata(pdev, rcar);
+> > >  
+> > > 
+> > > -- 
+> > > 2.25.1
+> > > 
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
