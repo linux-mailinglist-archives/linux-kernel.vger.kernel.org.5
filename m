@@ -1,234 +1,133 @@
-Return-Path: <linux-kernel+bounces-82576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCBBE868692
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:06:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE336868696
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B87228AEB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:06:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B0CCB2281F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250DB1096F;
-	Tue, 27 Feb 2024 02:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A27748A;
+	Tue, 27 Feb 2024 02:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CRGBNlO7"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p3iOFnrb"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E35E6AB8;
-	Tue, 27 Feb 2024 02:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A363A6AB8
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708999564; cv=none; b=Kthp/R/DAH270bCs41CQzNMV6/wA9OnMyTbQrOdzVE6Dv9ta1HJ+T573Co3A0a21lVYvZTT7kS4Cv1v7Z4UN+1iX61HZ7nePCQFv9Gw4Ayou/iY3oEhuw+n1VVc14mIMm19JIJxLpj8YgXKuqPmzcbD4KFuDKlPKdDb4PczgV3c=
+	t=1708999684; cv=none; b=lzsvZkI0aQviXeeqyS8w/vtiG0RRW/uJQ44rAGyBZTZ3A3cBHHaAYKBMsYNQQkHTCxX5PoaMHaTP6zOaUmjp2JL2Z+69VNunHKZtNVw5iVSi4E7nXOPJ0sGBS/RWWQvkPq1Ag6sKTB+UHCU4l0rVu7AwFH7oM/mrB+QDRMicPJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708999564; c=relaxed/simple;
-	bh=p/sc65/Y89SirN+8xPleSpJF18VTWd6zEoKYs9P9wXk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U47XXXdJ8CQBmysujd3RAkgpRQcAB+B9rpcvdLWugBw/+8mZoBRxG6IgEEF4wNajT4A/0Lt6rJW7N/Bx4utFEyI0Uigx/OQheHri5DKYR/U3/rXU5RA9xVZHZnUA+XBCjUmzC0kdvhQgs9h8DXqMMRZOviIKz2Lg2+F+VuHZWlU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CRGBNlO7; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c19b7d9de7so913148b6e.2;
-        Mon, 26 Feb 2024 18:06:02 -0800 (PST)
+	s=arc-20240116; t=1708999684; c=relaxed/simple;
+	bh=e20cSwHxUYKaM7UrngPan3hSH8QhKOwaTuiejGgEcE4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QlvZ7WtOXlxpCE5NDj30/dDKYRVNZ1OxVWBTPBrHeV6xkc7MLz3qqaE5gH9Myp5b3wh1tSACmMhfWeGrAxnjz/SBR8yH3XeSvsVhZKfj4ISD4fSsbQqFBtgo/0LHqb3kgS5nm3scYqZc1dTRrfEOCfpDdWHGIaiaKuHD1H8CvtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=p3iOFnrb; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512a65cd2c7so5244602e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:08:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708999561; x=1709604361; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=linaro.org; s=google; t=1708999681; x=1709604481; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=SV9pHyGiurUhVbqmy78OWf51SeUPEW4JNQf5fgdiwuI=;
-        b=CRGBNlO7UZnfTJ8bHk1Ux1PBlxWC7y8l0DB4lzHt7VD1dAcr9Vv4rfcqj/koOoCOtK
-         Ke28TwSzuwfpdawJkU4x8/krDBLZhj+lp/wS3w7DYyq8lhXdJieJzDHyU+rofZxSQYiG
-         F6517wCsvVr0T0l+DwXLyR9i2g95wA2qZczdyBsjLDO/5VkW3bs6Sr+0pCu0IBT9QQa8
-         Xsu7U/g9IhVcRcUOfHDRnMmKKkxAcNqKtOYeKP6CPtLgnLc2FFfc3IjuZ9mpy/fwV8jg
-         1f96q3bV7GRz1v0sk4bR10fp92CZ5uCeK6VWuPvM/06SejBTwm4K8XsBJg/VSyl3BJl5
-         vL1g==
+        bh=pKgrsbDtRhtTwJSZwi3Iuzq+IR/GTbO5ckHV4gkPPIQ=;
+        b=p3iOFnrbTQr/7RKe5s/anuR/LwIioxh3JG8ddLkcRNGnuphUUYQjc3X1UEVEnL8AsJ
+         0zUMkNNHTq4iiIWeBkgBRFshqt5D4p5R5i1BqQ8FRQsIVK3ZURlaNljgkmQJ/+ddxH73
+         ImUMW6sz18ltZJqX6DsNS4pKreDclyOXsxacBfjNo6LPXkURgT6S4jS2vXjBDgWNYSs+
+         WTb87u/n1R6gRoubcjE2DP7tWm35saG4sZ+s7iC4cbGL20zh0RvI38IE0CuxrV5WHTR0
+         6s6+XcgEcRjG8raaZ8B3YmO1yAR/5ChFwb0aiQO/X+sAyWUvweSl7CEuT0+drOycake0
+         eboA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708999561; x=1709604361;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=1e100.net; s=20230601; t=1708999681; x=1709604481;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SV9pHyGiurUhVbqmy78OWf51SeUPEW4JNQf5fgdiwuI=;
-        b=X5D18owrsL/cWUyKbxnv3RN56be69HSLCDVAODFi0lP6AxMP2IXMtbFYLZqiZUmcmG
-         6Is3DUEOtDvrHtLGfYPy2HOEtbXlTJEq+D4HqznzN0HVLtw8J0KHF+D5uIY75drPcwz+
-         e3wjVwOURrDZoXy45jO4VrrOBa1WY0HMvd/ZHbX01pVreiHjL3lvMviWSHgwzZsSWg04
-         RXI7VZRpXlm+2yBiLr0/bBJoQ7CYi23zH5LMaqyyzQkXsx1T3XFcbzgk73iXr6mOVpQi
-         hcKwNiANwCBgM59yXd/eB+ybpRLp7C/e5HWDadhcPUbP/2eUSjTXajUOsEQVIxOvKH4u
-         dEug==
-X-Forwarded-Encrypted: i=1; AJvYcCUjI2JW/3KsfKxC5GiCziwGqDlAq083SWxo/fB6u2KBN4QrmfhZLAQmzQEmzqWbavDpND2KqDCcUeNXCGYUKACRFntlcHLBGPXGS7KxiFTatnw4/gwFPHfzBTsRYffkG3wIsDjMj5+2FUhl5B17mOA0RMODV9TCxMyE9zN4URZsDi5R3qMkkFTglP9WDZxQ70HD+kqchBwUr0szUEzNTIVK7Q==
-X-Gm-Message-State: AOJu0Yzcl3XN6mhDVwHMVqb2hTYQQlv9rUnN90FcO4VVXwS8Fyk7o1ad
-	e/Ft/gQtIzoDL37hatjgMVVHCWYvmPBrfE3MkngpiEqH9iroxbsg
-X-Google-Smtp-Source: AGHT+IEto5Hv/5kS0NEzNyuamOC5figEue036XmH8VnitTet5uL5i9qxzmLAbquKR88Rimd4Iq2s8A==
-X-Received: by 2002:a05:6870:7315:b0:21e:877d:78d5 with SMTP id q21-20020a056870731500b0021e877d78d5mr10124312oal.50.1708999561459;
-        Mon, 26 Feb 2024 18:06:01 -0800 (PST)
-Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
-        by smtp.gmail.com with ESMTPSA id t22-20020a0568301e3600b006e12266433csm1343052otr.27.2024.02.26.18.05.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 18:06:00 -0800 (PST)
-Sender: John Groves <grovesaustin@gmail.com>
-Date: Mon, 26 Feb 2024 20:05:58 -0600
-From: John Groves <John@groves.net>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 00/20] Introduce the famfs shared-memory file system
-Message-ID: <mw4yhbmza4idassgbqeiti4ue7jq377ezxfrqrcbsbzsrmfiln@kn7qmqljvswl>
-References: <cover.1708709155.git.john@groves.net>
- <ZdkzJM6sze-p3EWP@bombadil.infradead.org>
- <cc2pabb3szzpm5jxxeku276csqu5vwqgzitkwevfluagx7akiv@h45faer5zpru>
- <Zdy0CGL6e0ri8LiC@bombadil.infradead.org>
- <w5cqtmdgqtjvbnrg5okdgmxe45vjg5evaxh6gg3gs6kwfqmn5p@wgakpqcumrbt>
- <CAB=NE6UvHSvTJJCq-YuBEZNo8F5Kg25aK+2im=V7DgEsTJ8wPg@mail.gmail.com>
+        bh=pKgrsbDtRhtTwJSZwi3Iuzq+IR/GTbO5ckHV4gkPPIQ=;
+        b=rjoHL5ObdEdHJaMXZglPHseDXfcj9AfdyjscCmiEUdV4oabZjl+b51K9UF1t7EtnPU
+         /vuVybKPt7SXi2abUvuBrDeaUdjhYi2d7u2qXlxBHgPImJmu37GhKWBHkU3qLPuVSQym
+         p8MfnpFEqRT8AagLiUS6Tec7xftiGPGvsqUhVWNcat0ehR4NLJEYKxUuUa8cwggGFouM
+         125U5+OxeLsBsAlJsVQX4Aif+RcILrO1zGGLqC8HRp76R5pDX53vHm+zVarKAv5iEHe2
+         B/wlK+auh3azfCEFKGupq9B8TcXSK0E8OkgO+19NbMbEwik5+B4fO8l/CmwBCx0iLwPV
+         aStw==
+X-Forwarded-Encrypted: i=1; AJvYcCXTLb1PVV9xeCiLPz3XGguqTJSxGMEfu07vrHFVtGV9gumU3HTIsrsjeJMDIcfGioIqIRybLHw9Uu3fjUX7/olYTbn3422PsWsDPRj/
+X-Gm-Message-State: AOJu0YwjWREzvAF/8oOPViZKUNo8GCuc+3S1AY/wDzrWWtNiazJ8MkIH
+	rEmnxF/5vM2+DvVyVCzK/Ok9WFVakhjsC+4KlYA7OQ8N2Frszt/g23pczPUfeQE=
+X-Google-Smtp-Source: AGHT+IGXqMoQl1y3QKQ7aoLgd/YCYjjNvpDVJY5uZK5Inh7UBk//uGb/IfQsf0Y8r17C33Kt0AmV4Q==
+X-Received: by 2002:a05:6512:324f:b0:512:b84e:e7a1 with SMTP id c15-20020a056512324f00b00512b84ee7a1mr4873359lfr.5.1708999680724;
+        Mon, 26 Feb 2024 18:08:00 -0800 (PST)
+Received: from [172.30.204.180] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id r28-20020ac25a5c000000b00512e40ef364sm1035102lfn.108.2024.02.26.18.07.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 18:08:00 -0800 (PST)
+Message-ID: <615042d9-4a8c-45c2-be17-756e9635a8af@linaro.org>
+Date: Tue, 27 Feb 2024 03:07:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAB=NE6UvHSvTJJCq-YuBEZNo8F5Kg25aK+2im=V7DgEsTJ8wPg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
+Content-Language: en-US
+To: quic_bjorande@quicinc.com, Bjorn Andersson <andersson@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Stephen Boyd <swboyd@chromium.org>,
+ Johan Hovold <johan+linaro@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+ stable@vger.kernel.org
+References: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 24/02/26 04:58PM, Luis Chamberlain wrote:
-> On Mon, Feb 26, 2024 at 1:16 PM John Groves <John@groves.net> wrote:
-> >
-> > On 24/02/26 07:53AM, Luis Chamberlain wrote:
-> > > On Mon, Feb 26, 2024 at 07:27:18AM -0600, John Groves wrote:
-> > > > Run status group 0 (all jobs):
-> > > >   WRITE: bw=29.6GiB/s (31.8GB/s), 29.6GiB/s-29.6GiB/s (31.8GB/s-31.8GB/s), io=44.7GiB (48.0GB), run=1511-1511msec
-> > >
-> > > > This is run on an xfs file system on a SATA ssd.
-> > >
-> > > To compare more closer apples to apples, wouldn't it make more sense
-> > > to try this with XFS on pmem (with fio -direct=1)?
-> > >
-> > >   Luis
-> >
-> > Makes sense. Here is the same command line I used with xfs before, but
-> > now it's on /dev/pmem0 (the same 128G, but converted from devdax to pmem
-> > because xfs requires that.
-> >
-> > fio -name=ten-256m-per-thread --nrfiles=10 -bs=2M --group_reporting=1 --alloc-size=1048576 --filesize=256MiB --readwrite=write --fallocate=none --numjobs=48 --create_on_open=0 --ioengine=io_uring --direct=1 --directory=/mnt/xfs
+
+
+On 2/27/24 02:49, Bjorn Andersson via B4 Relay wrote:
+> From: Bjorn Andersson <quic_bjorande@quicinc.com>
 > 
-> Could you try with mkfs.xfs -d agcount=1024
+> Commit 'e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable
+> the domain")' aimed to make sure that a power-domain that is being
+> enabled without any particular performance-state requested will at least
+> turn the rail on, to avoid filling DeviceTree with otherwise unnecessary
+> required-opps properties.
 > 
->  Luis
+> But in the event that aggregation happens on a disabled power-domain, with
+> an enabled peer without performance-state, both the local and peer
+> corner are 0. The peer's enabled_corner is not considered, with the
+> result that the underlying (shared) resource is disabled.
+> 
+> One case where this can be observed is when the display stack keeps mmcx
+> enabled (but without a particular performance-state vote) in order to
+> access registers and sync_state happens in the rpmhpd driver. As mmcx_ao
+> is flushed the state of the peer (mmcx) is not considered and mmcx_ao
+> ends up turning off "mmcx.lvl" underneath mmcx. This has been observed
+> several times, but has been painted over in DeviceTree by adding an
+> explicit vote for the lowest non-disabled performance-state.
+> 
+> Fixes: e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable the domain")
+> Reported-by: Johan Hovold <johan@kernel.org>
+> Closes: https://lore.kernel.org/linux-arm-msm/ZdMwZa98L23mu3u6@hovoldconsulting.com/
+> Cc:  <stable@vger.kernel.org>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
+> This issue is the root cause of a display regression on SC8280XP boards,
+> resulting in the system often resetting during boot. It was exposed by
+> the refactoring of the DisplayPort driver in v6.8-rc1.
+> ---
 
-$ luis/fio-xfsdax.sh 
-+ sudo mkfs.xfs -d agcount=1024 -m reflink=0 -f /dev/pmem0
-meta-data=/dev/pmem0             isize=512    agcount=1024, agsize=32768 blks
-         =                       sectsz=4096  attr=2, projid32bit=1
-         =                       crc=1        finobt=1, sparse=1, rmapbt=0
-         =                       reflink=0    bigtime=1 inobtcount=1 nrext64=0
-data     =                       bsize=4096   blocks=33554432, imaxpct=25
-         =                       sunit=0      swidth=0 blks
-naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
-log      =internal log           bsize=4096   blocks=16384, version=2
-         =                       sectsz=4096  sunit=1 blks, lazy-count=1
-realtime =none                   extsz=4096   blocks=0, rtextents=0
-+ sudo mount -o dax /dev/pmem0 /mnt/xfs
-+ sudo chown jmg:jmg /mnt/xfs
-+ ls -al /mnt/xfs
-total 0
-drwxr-xr-x  2 jmg  jmg   6 Feb 26 19:56 .
-drwxr-xr-x. 4 root root 30 Feb 26 14:58 ..
-++ nproc
-+ fio -name=ten-256m-per-thread --nrfiles=10 -bs=2M --group_reporting=1 --alloc-size=1048576 --filesize=256MiB --readwrite=write --fallocate=none --numjobs=48 --create_on_open=0 --ioengine=io_uring --direct=1 --directory=/mnt/xfs
-ten-256m-per-thread: (g=0): rw=write, bs=(R) 2048KiB-2048KiB, (W) 2048KiB-2048KiB, (T) 2048KiB-2048KiB, ioengine=io_uring, iodepth=1
-..
-fio-3.33
-Starting 48 processes
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-ten-256m-per-thread: Laying out IO files (10 files / total 2441MiB)
-Jobs: 17 (f=170): [_(2),W(1),_(8),W(2),_(7),W(3),_(2),W(2),_(3),W(2),_(2),W(1),_(2),W(1),_(1),W(3),_(4),W(2)][Jobs: 1 (f=10): [_(47),W(1)][100.0%][w=8022MiB/s][w=4011 IOPS][eta 00m:00s]                                                                                
-ten-256m-per-thread: (groupid=0, jobs=48): err= 0: pid=141563: Mon Feb 26 19:56:28 2024
-  write: IOPS=6578, BW=12.8GiB/s (13.8GB/s)(114GiB/8902msec); 0 zone resets
-    slat (usec): min=18, max=60593, avg=1230.85, stdev=1799.97
-    clat (usec): min=2, max=98969, avg=5133.25, stdev=5141.07
-     lat (usec): min=294, max=99725, avg=6364.09, stdev=5440.30
-    clat percentiles (usec):
-     |  1.00th=[   11],  5.00th=[   46], 10.00th=[  217], 20.00th=[ 2376],
-     | 30.00th=[ 2999], 40.00th=[ 3556], 50.00th=[ 3785], 60.00th=[ 3982],
-     | 70.00th=[ 4228], 80.00th=[ 7504], 90.00th=[13173], 95.00th=[14091],
-     | 99.00th=[21890], 99.50th=[27919], 99.90th=[45351], 99.95th=[57934],
-     | 99.99th=[82314]
-   bw (  MiB/s): min= 5085, max=27367, per=100.00%, avg=14361.95, stdev=165.61, samples=719
-   iops        : min= 2516, max=13670, avg=7160.17, stdev=82.88, samples=719
-  lat (usec)   : 4=0.05%, 10=0.72%, 20=2.23%, 50=2.48%, 100=3.02%
-  lat (usec)   : 250=1.54%, 500=2.37%, 750=1.34%, 1000=0.75%
-  lat (msec)   : 2=3.20%, 4=43.10%, 10=23.05%, 20=14.81%, 50=1.25%
-  lat (msec)   : 100=0.08%
-  cpu          : usr=10.18%, sys=0.79%, ctx=67227, majf=0, minf=38511
-  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
-     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-     issued rwts: total=0,58560,0,0 short=0,0,0,0 dropped=0,0,0,0
-     latency   : target=0, window=0, percentile=100.00%, depth=1
+Very good find, thanks!
 
-Run status group 0 (all jobs):
-  WRITE: bw=12.8GiB/s (13.8GB/s), 12.8GiB/s-12.8GiB/s (13.8GB/s-13.8GB/s), io=114GiB (123GB), run=8902-8902msec
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Disk stats (read/write):
-  pmem0: ios=0/0, merge=0/0, ticks=0/0, in_queue=0, util=0.00%
-
-
-I ran it several times with similar results.
-
-Regards,
-John
-
+Konrad
 
