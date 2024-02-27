@@ -1,151 +1,366 @@
-Return-Path: <linux-kernel+bounces-83330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 331D3869314
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:41:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5915F869461
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDA571F22967
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:41:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C5A8B2BC5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0342913DB92;
-	Tue, 27 Feb 2024 13:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0348E13AA2F;
+	Tue, 27 Feb 2024 13:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="bBQMnjYS"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lKlYDKM4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820992F2D;
-	Tue, 27 Feb 2024 13:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0647813B2B4;
+	Tue, 27 Feb 2024 13:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709041294; cv=none; b=ayc3L4R1Gj+qUsPsLePjlb1m+Sf+ngrQyvBZmk8D7+UtTL/BYhCzh4RoyxlixFeXFXu1/Th3MQXM9dHNPi8kObCjdVtUF+3lFi3ZSWt/WKwHqGjYh5RSTvWVBJ1blufsAuAFSj6uh/ZzyA+Yv817Qq1s3pCB6KjZtgJcEO/ObiE=
+	t=1709041433; cv=none; b=CodKn2dtHVavKbT8JDpEff1jqVoR93h2KPz2MJz7+t/pNTYtevl1h7Da16d0iHud5jI7hZ+7hJLCiRhoOcYv050lQaI6IqoNlB2/LY5stT5JJH/fEg2ntKvmaClIwU/9r+iVPy5wbKqqyKI03hpuhK65D5qUlJyTqmykj4PV6qU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709041294; c=relaxed/simple;
-	bh=5u5tAoSnP+fgrFG9HWWLZrfA/Q1EvEkQTUTzPe58IaM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SQ+LH7ZG1bhaO8m8Eo0/FWFVrmT9MspbIueby/LQfSzkHw9pT6WBp/OhTvNAlcLMIXql8g3O+BP3Kwc3v1YRaI5tuXO2Zs6VOVEOB6CEz9SQkiwUiiNeU/iKpf22jg116/B8HWXY3lYDwC1fx2Lshjm4OarGTEFmXu97uSevN04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=bBQMnjYS; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1709041281; x=1709646081; i=w_armin@gmx.de;
-	bh=5u5tAoSnP+fgrFG9HWWLZrfA/Q1EvEkQTUTzPe58IaM=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=bBQMnjYS9HssAUH49/ieREQwg7MvFi0AlG1ViLFcJvbKjCjfrjyIcjbqf16WaK3n
-	 yRwdR4I9v1gtYRW/zs0pNbRzU1EOIf25ND503yhv1U97D6KXq5Lk3IsY1BMS0CqCp
-	 xDV6n5A8IR0fjCo/Hz+0dOT1MCC4LHSHg7hDW9FC2VIrMZZ2AGbCb5JiE3h+eBAEN
-	 Ks9aT3Mk6ly1nHEfUT0oOR7ndLBLnRHQSDvYCR4HPHk4ESfeu6pyrrX9G1EMBYA4s
-	 tndjxlq2yFHBAFzTIcWkU7+bdpURcIqimVZq7I2rHy3scahlUop04WWWXBx+EtMiB
-	 1OEW3snGOzHxbnN8wg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N8obG-1qrmkR0YQY-015pjB; Tue, 27
- Feb 2024 14:41:21 +0100
-Message-ID: <9cdc844a-ba39-4215-b21e-1e1629edc549@gmx.de>
-Date: Tue, 27 Feb 2024 14:41:19 +0100
+	s=arc-20240116; t=1709041433; c=relaxed/simple;
+	bh=n+sWKaLJY675WI200sbvcsNtX5pExAoPLJuSEeVd/mw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=s7etgIwXRZL0HW6AERB5/pSywOEtjfOJjhPXemrN5e9XfBiOyl4Z7XJ4BpWLPaGaOmOSMGaJpOXWha2yLshlpwg53wAsPqwXY0jdM1XC1cRiGYJ1apaNVo+bbhBVCOShQCgZ8g1AZR4Wt3RfHd5F+Y+tzYCRxCk4jYV5+wyPEdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lKlYDKM4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51564C433F1;
+	Tue, 27 Feb 2024 13:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709041432;
+	bh=n+sWKaLJY675WI200sbvcsNtX5pExAoPLJuSEeVd/mw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=lKlYDKM4QyX2+1hqzVO+A7DqDkyNi4syNZdmOc8x+feEUEnoC4Gcoy7KA9tjMv8Um
+	 HqhFffK1OisZcZbKeUfM2t44ZGUTxC035WlriXYOK+g13iiKadadcauLFsAAol1Avo
+	 imfpK0U8/UFbpnYFMwGnuvxmJMS4U6vEQcsETm3UI8SbDk9l76fBytmDsAVIy48qPA
+	 uB/XzsDm3F+B8sLp/DhxDswItVslliu614fifi7M+Inlv/JtBzd+/Ns9yQdqdcGuay
+	 Ue8XtGFoytVwlI69wHj4/+EXF+ZjDDfn/3NZLv+1Gbw9jmUyfopViBnZi3FwDeh0bq
+	 3/qIh6zQaDJSA==
+From: Christian Brauner <brauner@kernel.org>
+To: John Groves <John@groves.net>
+Cc: Christian Brauner <brauner@kernel.org>,
+	John Groves <jgroves@micron.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>,
+	linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	nvdimm@lists.linux.dev,
+	john@jagalactic.com,
+	Dave Chinner <david@fromorbit.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	dave.hansen@linux.intel.com,
+	gregory.price@memverge.com
+Subject: Re: [RFC PATCH 11/20] famfs: Add fs_context_operations
+Date: Tue, 27 Feb 2024 14:41:44 +0100
+Message-ID: <20240227-mammut-tastatur-d791ca2f556b@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To:  <a645646f071e7baa30ef37ea46ea1330ac2eb63f.1708709155.git.john@groves.net>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] platform/x86/amd/pmf: Do not use readl() for
- policy buffer access
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Shyam-sundar.S-k@amd.com,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- sathyanarayanan.kuppuswamy@linux.intel.com,
- Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>
-References: <20240223163901.13504-1-W_Armin@gmx.de>
- <20240223163901.13504-2-W_Armin@gmx.de>
- <e2b81849-3435-3efb-f2da-b74ac7f99a50@linux.intel.com>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <e2b81849-3435-3efb-f2da-b74ac7f99a50@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:JeUudHQ5pVWclUwEZ92R41Un4vqTi4Zt4ZM4rzRZQt+q/Ov/a0x
- Y5ptzKU5OBaqr3s08JO5zz3d98FS15PUbBNGA0KKYgwC0rbICPePaKik8RXrKmp5pbU6ii6
- qL2aWrfcT7ar2kI+PntWnGknT86kBp/Hd4/E/WqNxmtbqAQCofADl/9VnsNmdGg5Sa2qiwT
- 23a25WLKXVIrmJ2dSOdAw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jGXMkxGEvM8=;nEpE8Pav61acMaOjKg8A/6YVz9I
- hcJitECHEWEGlY7MYueYYKm9DaIsBMWQfq3/Wnr+Ql3TERk+KI/vQAHcElpWP2uHuhnFVjGZ1
- CSmiMWt2QWjoipA1LCOiki1YIbMtxqP6tw+ZORwNzVCRXfNUh40/E5bK3kR1uzUAi34Lun6FI
- 8hjgpAOs3kJ4ffisIshU2TTRbgpyrnWeYNEYv80tNXr5RWgURCEmeEZD21L4LataEVhb4hqli
- haLkxYcaCMPQYL98eIy4aYIxfQic6ceyDp3xFxMa1pQgolXyGZm8o/7NJ004HJ2FO3/GSM001
- n6ijoJcoi9iJ3CN7iH0t74cQrcvjFU8JvFQ3bm4LUTll22Gvn/2SckJ6vSMZT/CqGMQYMhih0
- ljOsRTu2dfHEX0xfhZvF13sOgq2DPPY6Bo/K8cs2cwR0wfy+C82qB4712GkbGE/n6Hjnhu4BA
- rTguqaeL/rHrk7nIP1dUOR1CVxgAdvjA9InLaMlQrMYs/wwWFCRwSO2HfClZKCIUx+Gkpil9X
- j1EOm4OLI+m7ACIGjvu98ezpidfFcBuu3M8Pb9EDJAJkLdl07sZoPrsZixY0uAgiR9IOHMsdW
- UH55S/F0rA/tLvakWBYK9f2I6nP/zYebRpAQdPYUMR0yhy3nvmALz8QQjxv6wfAtltIdBKfRs
- bMrCo+ihRp5f6mGX6fqSBIBC3/vIELRvEQdUvJ/ALlZgU+YrohRibZhBk8te5IXcnRxgM21DM
- 1vPxtxHRq0Faegn3XqJR1NtG5M0irkB51A2HymwZaQZGiK202mddsv03ZxOc0mV4CeoB9GRFk
- 8aFClDsdXcxWUz4RJ7/sEdybsy0SIxe7cuVpGHcx9kRLs=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8704; i=brauner@kernel.org; h=from:subject:message-id; bh=n+sWKaLJY675WI200sbvcsNtX5pExAoPLJuSEeVd/mw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTefc4nJW+35q+SSdiLc5dyC1Vkks02uC76P0HMuthws xY/426njlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgIk0rGH4K+Fx+NWclvU5y6aW 1oi/4uH6Mdn24r0n6/4UMPdKf3774Cgjw7o5q/4UiFRdVpjxdNZPnxMbLl4Xijkc+PKoWt+l208 T2LkB
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-Am 27.02.24 um 13:59 schrieb Ilpo J=C3=A4rvinen:
+On Fri, Feb 23, 2024 at 11:41:55AM -0600, John Groves wrote:
+> This commit introduces the famfs fs_context_operations and
+> famfs_get_inode() which is used by the context operations.
+> 
+> Signed-off-by: John Groves <john@groves.net>
+> ---
+>  fs/famfs/famfs_inode.c | 178 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 178 insertions(+)
+> 
+> diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
+> index 82c861998093..f98f82962d7b 100644
+> --- a/fs/famfs/famfs_inode.c
+> +++ b/fs/famfs/famfs_inode.c
+> @@ -41,6 +41,50 @@ static const struct super_operations famfs_ops;
+>  static const struct inode_operations famfs_file_inode_operations;
+>  static const struct inode_operations famfs_dir_inode_operations;
+>  
+> +static struct inode *famfs_get_inode(
+> +	struct super_block *sb,
+> +	const struct inode *dir,
+> +	umode_t             mode,
+> +	dev_t               dev)
+> +{
+> +	struct inode *inode = new_inode(sb);
+> +
+> +	if (inode) {
+> +		struct timespec64       tv;
+> +
+> +		inode->i_ino = get_next_ino();
+> +		inode_init_owner(&nop_mnt_idmap, inode, dir, mode);
+> +		inode->i_mapping->a_ops = &ram_aops;
+> +		mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+> +		mapping_set_unevictable(inode->i_mapping);
+> +		tv = inode_set_ctime_current(inode);
+> +		inode_set_mtime_to_ts(inode, tv);
+> +		inode_set_atime_to_ts(inode, tv);
+> +
+> +		switch (mode & S_IFMT) {
+> +		default:
+> +			init_special_inode(inode, mode, dev);
+> +			break;
+> +		case S_IFREG:
+> +			inode->i_op = &famfs_file_inode_operations;
+> +			inode->i_fop = &famfs_file_operations;
+> +			break;
+> +		case S_IFDIR:
+> +			inode->i_op = &famfs_dir_inode_operations;
+> +			inode->i_fop = &simple_dir_operations;
+> +
+> +			/* Directory inodes start off with i_nlink == 2 (for "." entry) */
+> +			inc_nlink(inode);
+> +			break;
+> +		case S_IFLNK:
+> +			inode->i_op = &page_symlink_inode_operations;
+> +			inode_nohighmem(inode);
+> +			break;
+> +		}
+> +	}
+> +	return inode;
+> +}
+> +
+>  /**********************************************************************************
+>   * famfs super_operations
+>   *
+> @@ -150,6 +194,140 @@ famfs_open_device(
+>  	return 0;
+>  }
+>  
+> +/*****************************************************************************************
+> + * fs_context_operations
+> + */
+> +static int
+> +famfs_fill_super(
+> +	struct super_block *sb,
+> +	struct fs_context  *fc)
+> +{
+> +	struct famfs_fs_info *fsi = sb->s_fs_info;
+> +	struct inode *inode;
+> +	int rc = 0;
+> +
+> +	sb->s_maxbytes		= MAX_LFS_FILESIZE;
+> +	sb->s_blocksize		= PAGE_SIZE;
+> +	sb->s_blocksize_bits	= PAGE_SHIFT;
+> +	sb->s_magic		= FAMFS_MAGIC;
+> +	sb->s_op		= &famfs_ops;
+> +	sb->s_time_gran		= 1;
+> +
+> +	rc = famfs_open_device(sb, fc);
+> +	if (rc)
+> +		goto out;
+> +
+> +	inode = famfs_get_inode(sb, NULL, S_IFDIR | fsi->mount_opts.mode, 0);
+> +	sb->s_root = d_make_root(inode);
+> +	if (!sb->s_root)
+> +		rc = -ENOMEM;
+> +
+> +out:
+> +	return rc;
+> +}
+> +
+> +enum famfs_param {
+> +	Opt_mode,
+> +	Opt_dax,
+> +};
+> +
+> +const struct fs_parameter_spec famfs_fs_parameters[] = {
+> +	fsparam_u32oct("mode",	  Opt_mode),
+> +	fsparam_string("dax",     Opt_dax),
+> +	{}
+> +};
+> +
+> +static int famfs_parse_param(
+> +	struct fs_context   *fc,
+> +	struct fs_parameter *param)
+> +{
+> +	struct famfs_fs_info *fsi = fc->s_fs_info;
+> +	struct fs_parse_result result;
+> +	int opt;
+> +
+> +	opt = fs_parse(fc, famfs_fs_parameters, param, &result);
+> +	if (opt == -ENOPARAM) {
+> +		opt = vfs_parse_fs_param_source(fc, param);
+> +		if (opt != -ENOPARAM)
+> +			return opt;
 
-> On Fri, 23 Feb 2024, Armin Wolf wrote:
->
->> The policy buffer is allocated using normal memory allocation
->> functions, so readl() should not be used on it.
->>
->> Use get_unaligned_le32() instead.
->>
->> Compile-tested only.
->>
->> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
->> ---
->>   drivers/platform/x86/amd/pmf/tee-if.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x=
-86/amd/pmf/tee-if.c
->> index 16973bebf55f..3220b6580270 100644
->> --- a/drivers/platform/x86/amd/pmf/tee-if.c
->> +++ b/drivers/platform/x86/amd/pmf/tee-if.c
->> @@ -11,6 +11,7 @@
->>   #include <linux/debugfs.h>
->>   #include <linux/tee_drv.h>
->>   #include <linux/uuid.h>
->> +#include <asm/unaligned.h>
->>   #include "pmf.h"
->>
->>   #define MAX_TEE_PARAM	4
->> @@ -249,8 +250,8 @@ static int amd_pmf_start_policy_engine(struct amd_p=
-mf_dev *dev)
->>   	u32 cookie, length;
->>   	int res;
->>
->> -	cookie =3D readl(dev->policy_buf + POLICY_COOKIE_OFFSET);
->> -	length =3D readl(dev->policy_buf + POLICY_COOKIE_LEN);
->> +	cookie =3D get_unaligned_le32(dev->policy_buf + POLICY_COOKIE_OFFSET)=
-;
->> +	length =3D get_unaligned_le32(dev->policy_buf + POLICY_COOKIE_LEN);
-> I don't understand you need _unaligned_ here, the offsets should be dwor=
-d
-> aligned, no?
->
-> #define POLICY_COOKIE_OFFSET      0x10
-> #define POLICY_COOKIE_LEN         0x14
->
-Hi,
+I'm not sure I understand this. But in any case add, you should add
+Opt_source to enum famfs_param and then add
 
-you are right about this.
+        fsparam_string("source",        Opt_source),
 
-However i just noticed that the driver does not validate that the policy b=
-uffer is big enough
-before accessing the data.
+to famfs_fs_parameters. Then you can add:
 
-I will prepare a separate patch series to address this.
+famfs_parse_source(fc, param);
 
-Thanks,
-Armin Wolf
+You might want to consider validating your devices right away. So think
+about:
 
+fd_fs = fsopen("famfs", ...);
+ret = fsconfig(fd_fs, FSCONFIG_SET_STRING, "source", "/definitely/not/valid/device", ...) // succeeds
+ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "OPTION_1", ...) // succeeds
+ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "OPTION_2", ...) // succeeds 
+ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "OPTION_3", ...) // succeeds 
+ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "OPTION_N", ...) // succeeds 
+ret = fsconfig(fd_fs, FSCONFIG_CMD_CREATE, ...) // superblock creation failed
+
+So what failed exactly? Yes, you can log into the fscontext and dmesg
+that it's @source that's the issue but it's annoying for userspace to
+setup a whole mount context only to figure out that some option was
+wrong at the end of it.
+
+So validating
+
+famfs_parse_source(...)
+{
+	if (fc->source)
+		return invalfc(fc, "Uhm, we already have a source....
+	
+       lookup_bdev(fc->source, &dev)
+       // validate it's a device you're actually happy to use
+
+       fc->source = param->string;
+       param->string = NULL;
+}
+
+Your ->get_tree implementation that actually creates/finds the
+superblock will validate fc->source again and yes, there's a race here
+in so far as the path that fc->source points to could change in between
+validating this in famfs_parse_source() and ->get_tree() superblock
+creation. This is fixable even right now but then you couldn't reuse
+common infrastrucute so I would just accept that race for now and we
+should provide a nicer mechanism on the vfs layer.
+
+> +
+> +		return 0;
+> +	}
+> +	if (opt < 0)
+> +		return opt;
+> +
+> +	switch (opt) {
+> +	case Opt_mode:
+> +		fsi->mount_opts.mode = result.uint_32 & S_IALLUGO;
+> +		break;
+> +	case Opt_dax:
+> +		if (strcmp(param->string, "always"))
+> +			pr_notice("%s: invalid dax mode %s\n",
+> +				  __func__, param->string);
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static DEFINE_MUTEX(famfs_context_mutex);
+> +static LIST_HEAD(famfs_context_list);
+> +
+> +static int famfs_get_tree(struct fs_context *fc)
+> +{
+> +	struct famfs_fs_info *fsi_entry;
+> +	struct famfs_fs_info *fsi = fc->s_fs_info;
+> +
+> +	fsi->rootdev = kstrdup(fc->source, GFP_KERNEL);
+> +	if (!fsi->rootdev)
+> +		return -ENOMEM;
+> +
+> +	/* Fail if famfs is already mounted from the same device */
+> +	mutex_lock(&famfs_context_mutex);
+> +	list_for_each_entry(fsi_entry, &famfs_context_list, fsi_list) {
+> +		if (strcmp(fsi_entry->rootdev, fc->source) == 0) {
+> +			mutex_unlock(&famfs_context_mutex);
+> +			pr_err("%s: already mounted from rootdev %s\n", __func__, fc->source);
+> +			return -EALREADY;
+
+What errno is EALREADY? Isn't that socket stuff. In any case, it seems
+you want EBUSY?
+
+But bigger picture I'm lost. And why do you keep that list based on
+strings? What if I do:
+
+mount -t famfs /dev/pmem1234 /mnt # succeeds
+
+mount -t famfs /dev/pmem1234 /opt # ah, fsck me, this fails.. But wait a minute....
+
+mount --bind /dev/pmem1234 /evil-masterplan
+
+mount -t famfs /evil-masterplan /opt # succeeds. YAY
+
+I believe that would trivially defeat your check.
+
+> +		}
+> +	}
+> +
+> +	list_add(&fsi->fsi_list, &famfs_context_list);
+> +	mutex_unlock(&famfs_context_mutex);
+> +
+> +	return get_tree_nodev(fc, famfs_fill_super);
+
+So why isn't this using get_tree_bdev()? Note that a while ago I
+added FSCONFIG_CMD_CREAT_EXCL which prevents silent superblock reuse. To
+implement that I added fs_context->exclusive. If you unconditionally set
+fc->exclusive = 1 in your famfs_init_fs_context() and use
+get_tree_bdev() it will give you EBUSY if fc->source is already in use -
+including other famfs instances.
+
+I also fail to yet understand how that function which actually opens the block
+device and gets the dax device figures into this. It's a bit hard to follow
+what's going on since you add all those unused functions and types so there's
+never a wider context to see that stuff in.
+
+> +
+> +}
+> +
+> +static void famfs_free_fc(struct fs_context *fc)
+> +{
+> +	struct famfs_fs_info *fsi = fc->s_fs_info;
+> +
+> +	if (fsi && fsi->rootdev)
+> +		kfree(fsi->rootdev);
+> +
+> +	kfree(fsi);
+> +}
+> +
+> +static const struct fs_context_operations famfs_context_ops = {
+> +	.free		= famfs_free_fc,
+> +	.parse_param	= famfs_parse_param,
+> +	.get_tree	= famfs_get_tree,
+> +};
+> +
+> +static int famfs_init_fs_context(struct fs_context *fc)
+> +{
+> +	struct famfs_fs_info *fsi;
+> +
+> +	fsi = kzalloc(sizeof(*fsi), GFP_KERNEL);
+> +	if (!fsi)
+> +		return -ENOMEM;
+> +
+> +	fsi->mount_opts.mode = FAMFS_DEFAULT_MODE;
+> +	fc->s_fs_info        = fsi;
+> +	fc->ops              = &famfs_context_ops;
+> +	return 0;
+> +}
+>  
+>  
+>  MODULE_LICENSE("GPL");
+> -- 
+> 2.43.0
+> 
 
