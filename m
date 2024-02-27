@@ -1,254 +1,395 @@
-Return-Path: <linux-kernel+bounces-83894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED4A869FDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:05:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 009B5869FDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 360471F2F83C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:05:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19DF71C28EEE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:06:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0825251C5C;
-	Tue, 27 Feb 2024 19:04:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A56D148319;
+	Tue, 27 Feb 2024 19:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="dO1IEkYn"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="T1TPGpCF"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2E14D107
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEA474D107;
+	Tue, 27 Feb 2024 19:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709060650; cv=none; b=jJuMHtA6ePCLcGHdDu233KbGHRnhMOR1EG3+VtBcgFsgN/2Vgf9BDhxNKFoFxVX6enj6QGU1VS6nAuqKK1V8YZ3bxanfabatWapWiv3/WrfiqtxFezKG72MBBxzAtn5lV/hnBT08DzcPjmCLWx+U9GW7XCXutHe9XYDWH4luIRs=
+	t=1709060659; cv=none; b=N2HIjWbAL4cWu1sFN3U+GQ+/CgOk6xAuawbhkICcgnFG2zJ+/WPbLRvCex08tWbMUhQ5QDUbAyuKyGVZTOSTogWA1cVrc5NqAlWw5VTxsBMdiGco2WohqsKB3B0AlbcRea/z4YnSzFcBceHVR0Ukts0/wvo05Xno6N5k6zEZ9k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709060650; c=relaxed/simple;
-	bh=21TxnJJiVMUZ/n7IdqP9Jer8gcJ9D6Qk8IRk3fS3eUI=;
+	s=arc-20240116; t=1709060659; c=relaxed/simple;
+	bh=OC0q1Tjp1Cn9HbJde+8W2RadPOD5D814KsM4q8MCQFU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fX6rvDRvnBiMudnkda0ptNrMdU5MYZ6nM6bk6OVNjPeaTQbjMHjLoEMBhCKaoWOOr2QS4hzluxIoksjPdgsGvcJHqFqlVYVygtqahUlITPI799KhUrg0VrXwiqimVPqjPvK8oiOj0vV0TTq0HehVBji609ymE1gG+cF9h5dmw3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=dO1IEkYn; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so802575ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:04:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709060647; x=1709665447; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OMAkp8kLDRBH6DaL/T38O2uylPO/mVKUbw4jqD28o5s=;
-        b=dO1IEkYnHiIWW7sznF02s5eLEGKKPSviYTz6rIpH5a0qnWAaB7i6C9//Igqbo28MM0
-         nWVXR2KtBYyvvv/oDjW9o7OKWUsFlUFhNgl0hWtWCKvWbrHBpchVPs2SEHqTZ9HT+Z0c
-         VXsUXcBu43zXD5dG3/VTI4DAdFF+EbY5sqCvPJhQRTkhoRX6wVrg7ShBW0Ita/ZuQiEK
-         Wf9qsZai+LOPiqEt4iIctq37npX8VG70mTkzKzt0VT9FcAOZxkYFJBhTV28Unr7/bWdH
-         zFkyIr9Icx/RBUNMplQspVBuohka3eRCbJA5gdSoZgU548rEzK+aYlpynM8+y39ehGc9
-         QrTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709060647; x=1709665447;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OMAkp8kLDRBH6DaL/T38O2uylPO/mVKUbw4jqD28o5s=;
-        b=nwHbZ+Dw+FVp/yWiILWMf0ax6/eKXYc4fDIpTXlZm4PzpkJVTuaDZaXOWyAyfCU9x/
-         Oih5r2/cmGoH2VyVEMn9AUVNv24z9FipU/h8PO0qODotuIDmuzFx3m/wm0BirbzsKFP+
-         wOOEeb9pCSrwOp1fQSTtWKirxQnsLEvkLQP0mgjo3W0lv2kDGFyYgtrRvcFw4jsOnO01
-         sgz0oCZJssaq/FTAfsvENYkFfdkNKziZRse8VxBT9sPWnXYrYxlFQVUremGySSsxE8u1
-         WUTh+y1QzJPwWsy2+nLPy8GxKYCDwq6tZurWDmDORjvAI2nbGCDQ28eW6l+hj1Q8uXnK
-         7aRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXeE2qhDTmANI1ZgsxuAm+UxJsl1fXj9NHAQnIskzyUemuNOE0y4C/YU15REifnEJZ7uyiDyK1bvLNOuC/iKGF1eTCfTSTIKhhRiHtP
-X-Gm-Message-State: AOJu0Yw+qm9usQvvOV/cxr3rahn4A9tALNi9T25tX0yahp28ROwxs8yz
-	N7PDEekmONMC8gIU2E9bb23djDMvk2fNnB1fx6x5WLFXb4q79Zj42T9zuur7TiE=
-X-Google-Smtp-Source: AGHT+IHwNiMOfwGTEtSm5pHYqi8a9YlCde2eYXlQmXpSj0XEr1i8os+B9NNEoL8yfU4lANtZTlklkA==
-X-Received: by 2002:a17:902:c40b:b0:1d9:4106:b8b5 with SMTP id k11-20020a170902c40b00b001d94106b8b5mr234072plk.11.1709060647382;
-        Tue, 27 Feb 2024 11:04:07 -0800 (PST)
-Received: from ghost ([50.213.54.97])
-        by smtp.gmail.com with ESMTPSA id v21-20020a1709028d9500b001db5753e8b8sm1848211plo.218.2024.02.27.11.04.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 11:04:06 -0800 (PST)
-Date: Tue, 27 Feb 2024 11:04:04 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Guenter Roeck <linux@roeck-us.net>,
-	David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Message-ID: <Zd4yJDAHyZ1lvchq@ghost>
-References: <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com>
- <Zd0b8SDT8hrG/0yW@ghost>
- <cdd09f7a-83b2-41ba-a32c-9886dd79c43e@roeck-us.net>
- <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
- <Zd25XWTkDPuIjpF8@shell.armlinux.org.uk>
- <c8ddcc98-acb0-4d2d-828a-8dd12e771b5f@csgroup.eu>
- <Zd4h6ZhvLSWfWJG/@ghost>
- <9f756413-806c-4cd0-a6cf-8dd82af14e88@csgroup.eu>
- <Zd4oLnVFJw6Qq0FA@ghost>
- <f95267c0-5d4e-4732-8889-56f7a76cf081@csgroup.eu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=O1aZ+fafdrq2tBp96iP0do5OMITZGOqCEwwCiEZbILmuXiyQ4Mn1K0Bm7MpRXZwkh220X12CtK5sMd02Syff5BT62LD8xIQOGiyLTLTKnaHEPqm91oILrJQ8Rkl0EiYbk6q2ts3UphwU2JmDqDbGO5TBUikdIuTa3IOVKWBXA2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=T1TPGpCF; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709060655;
+	bh=OC0q1Tjp1Cn9HbJde+8W2RadPOD5D814KsM4q8MCQFU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T1TPGpCFR8ZnQLvuyY6vEDt6NHVzxbmjrOFQj5GAevDJ8qLcsjVaFMK1r2LlvsnEm
+	 ow9qFYSdjfTme+PrslvnvvvDeV05kqbHgp2FN0EtMfKUuabJkjxX9wV2L0seMoqLFC
+	 pfsg2H2nfxXq2zz7d/QCPZdaZ8zfavzbih0nX9bxPRb9Fa3uPJ6b8aVL9kMSuDUmE6
+	 RGVI1wgKpikAiKGyMxfLPTNNIahH3EConL7dZRCbprB3hPNQdLCGdz9rV+omrYhoT3
+	 woJr/iq//s99Z5o/VfJVSbRXG+uToGkZoP65a5P9cRkjcjERTYYOpIwwZYKsNYzwL3
+	 h4PE/f5TWwn1g==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: alarumbe)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EEAAD378000B;
+	Tue, 27 Feb 2024 19:04:14 +0000 (UTC)
+Date: Tue, 27 Feb 2024 19:04:14 +0000
+From: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To: Boris Brezillon <boris.brezillon@collabora.com>
+Cc: Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, kernel@collabora.com, 
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] drm/panfrost: Replace fdinfo's profiling debugfs knob
+ with sysfs
+Message-ID: <r6v23p6cc6sahrg4culeocdjeri7g6k7jfw5ddv25kto64y2fx@otd37glumzhl>
+References: <20240221161237.2478193-1-adrian.larumbe@collabora.com>
+ <20240226095153.6633bf2c@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f95267c0-5d4e-4732-8889-56f7a76cf081@csgroup.eu>
+In-Reply-To: <20240226095153.6633bf2c@collabora.com>
 
-On Tue, Feb 27, 2024 at 06:35:04PM +0000, Christophe Leroy wrote:
+Hi Boris,
+
+On 26.02.2024 09:51, Boris Brezillon wrote:
+> On Wed, 21 Feb 2024 16:12:32 +0000
+> Adri√°n Larumbe <adrian.larumbe@collabora.com> wrote:
 > 
-> 
-> Le 27/02/2024 ‡ 19:21, Charlie Jenkins a Ècrit†:
-> > On Tue, Feb 27, 2024 at 06:11:24PM +0000, Christophe Leroy wrote:
-> >>
-> >>
-> >> Le 27/02/2024 ‡ 18:54, Charlie Jenkins a Ècrit†:
-> >>> On Tue, Feb 27, 2024 at 11:32:19AM +0000, Christophe Leroy wrote:
-> >>>>
-> >>>>
-> >>>> Le 27/02/2024 ‡ 11:28, Russell King (Oracle) a Ècrit†:
-> >>>>> On Tue, Feb 27, 2024 at 06:47:38AM +0000, Christophe Leroy wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> Le 27/02/2024 ‡ 00:48, Guenter Roeck a Ècrit†:
-> >>>>>>> On 2/26/24 15:17, Charlie Jenkins wrote:
-> >>>>>>>> On Mon, Feb 26, 2024 at 10:33:56PM +0000, David Laight wrote:
-> >>>>>>>>> ...
-> >>>>>>>>>> I think you misunderstand. "NET_IP_ALIGN offset is what the kernel
-> >>>>>>>>>> defines to be supported" is a gross misinterpretation. It is not
-> >>>>>>>>>> "defined to be supported" at all. It is the _preferred_ alignment
-> >>>>>>>>>> nothing more, nothing less.
-> >>>>>>>>
-> >>>>>>>> This distinction is arbitrary in practice, but I am open to being proven
-> >>>>>>>> wrong if you have data to back up this statement. If the driver chooses
-> >>>>>>>> to not follow this, then the driver might not work. ARM defines the
-> >>>>>>>> NET_IP_ALIGN to be 2 to pad out the header to be on the supported
-> >>>>>>>> alignment. If the driver chooses to pad with one byte instead of 2
-> >>>>>>>> bytes, the driver may fail to work as the CPU may stall after the
-> >>>>>>>> misaligned access.
-> >>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> I'm sure I've seen code that would realign IP headers to a 4 byte
-> >>>>>>>>> boundary before processing them - but that might not have been in
-> >>>>>>>>> Linux.
-> >>>>>>>>>
-> >>>>>>>>> I'm also sure there are cpu which will fault double length misaligned
-> >>>>>>>>> memory transfers - which might be used to marginally speed up code.
-> >>>>>>>>> Assuming more than 4 byte alignment for the IP header is likely
-> >>>>>>>>> 'wishful thinking'.
-> >>>>>>>>>
-> >>>>>>>>> There is plenty of ethernet hardware that can only write frames
-> >>>>>>>>> to even boundaries and plenty of cpu that fault misaligned accesses.
-> >>>>>>>>> There are even cases of both on the same silicon die.
-> >>>>>>>>>
-> >>>>>>>>> You also pretty much never want a fault handler to fixup misaligned
-> >>>>>>>>> ethernet frames (or really anything else for that matter).
-> >>>>>>>>> It is always going to be better to check in the code itself.
-> >>>>>>>>>
-> >>>>>>>>> x86 has just made people 'sloppy' :-)
-> >>>>>>>>>
-> >>>>>>>>>    ††††David
-> >>>>>>>>>
-> >>>>>>>>> -
-> >>>>>>>>> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes,
-> >>>>>>>>> MK1 1PT, UK
-> >>>>>>>>> Registration No: 1397386 (Wales)
-> >>>>>>>>>
-> >>>>>>>>
-> >>>>>>>> If somebody has a solution they deem to be better, I am happy to change
-> >>>>>>>> this test case. Otherwise, I would appreciate a maintainer resolving
-> >>>>>>>> this discussion and apply this fix.
-> >>>>>>>>
-> >>>>>>> Agreed.
-> >>>>>>>
-> >>>>>>> I do have a couple of patches which add explicit unaligned tests as well as
-> >>>>>>> corner case tests (which are intended to trigger as many carry overflows
-> >>>>>>> as possible). Once I get those working reliably, I'll be happy to submit
-> >>>>>>> them as additional tests.
-> >>>>>>>
-> >>>>>>
-> >>>>>> The functions definitely have to work at least with and without VLAN,
-> >>>>>> which means the alignment cannot be greater than 4 bytes. That's also
-> >>>>>> the outcome of the discussion.
-> >>>>>
-> >>>>> Thanks for completely ignoring what I've said. No. The alignment ends up
-> >>>>> being commonly 2 bytes.
-> >>>>>
-> >>>>> As I've said several times, network drivers do _not_ have to respect
-> >>>>> NET_IP_ALIGN. There are 32-bit ARM drivers which have a DMA engine in
-> >>>>> them which can only DMA to a 32-bit aligned address. This means that
-> >>>>> the start of the ethernet header is placed at a 32-bit aligned address
-> >>>>> making the IP header misaligned to 32-bit.
-> >>>>>
-> >>>>> I don't see what is so difficult to understand about this... but it
-> >>>>> seems that my comments on this are being ignored time and time again,
-> >>>>> and I can only think that those who are ignoring my comments have
-> >>>>> some alterior motive here.
-> >>>>>
-> >>>>
-> >>>> I'm sorry for this misunderstanding. I'm not ignoring what you said at
-> >>>> all. I understood that ARM is able to handle unaligned accesses with
-> >>>> some exception handlers at worst case and that DMA constraints may lead
-> >>>> to the IP header beeing on a 2 bytes alignment only.
-> >>>>
-> >>>> However I also understood from others that some architectures can't
-> >>>> handle such a 2 bytes only alignments.
-> >>>>
-> >>>> It's been suggested during the discussion that alignment tests should be
-> >>>> added later in a follow-up patch. So for the time being I'm trying to
-> >>>> find a compromise and get the existing tests working on all platforms
-> >>>> but with a smaller alignment than the 16-bytes alignment brought by
-> >>>> Charlie's v10 patch. And a 4 bytes alignment seemed to me to be a good
-> >>>> compromise for this fix. The idea is also to make the fix as minimal as
-> >>>> possible, unlike Charlie's patch that is churning up the tests quite
-> >>>> heavily.
-> >>>
-> >>> Do you have a list of platforms this is failing on? I haven't seen any
-> >>> reports that haven't been fixed.
-> >>
-> >> I don't have such a list, but I guess you do ? If all platforms have
-> >> already been fixed, why are you sending this patch at all ?
+> > Debugfs isn't always available in production builds that try to squeeze
+> > every single byte out of the kernel image, but we still need a way to
+> > toggle the timestamp and cycle counter registers so that jobs can be
+> > profiled for fdinfo's drm engine and cycle calculations.
 > > 
-> > This patch is what is doing the "fixing". Over the course of 10 versions
-> > I have "fixed" the test cases to work on platforms that have various
-> > alignment and endianness constraints. The endianness changes were picked
-> > off of these patches and spun out into a different patch by you.
+> > Drop the debugfs knob and replace it with a sysfs file that accomplishes
+> > the same functionality, and document its ABI in a separate file.
 > > 
-> > I originally introduced these two new test cases since I wrote the riscv
-> > checksum function implementations and these tests were helpful for me
-> > and I figured they may be helpful for somebody else too.
+> > Signed-off-by: Adri√°n Larumbe <adrian.larumbe@collabora.com>
+> > ---
+> >  .../testing/sysfs-driver-panfrost-profiling   | 10 +++
+> >  Documentation/gpu/panfrost.rst                |  9 +++
+> >  drivers/gpu/drm/panfrost/Makefile             |  5 +-
+> >  drivers/gpu/drm/panfrost/panfrost_debugfs.c   | 21 ------
+> >  drivers/gpu/drm/panfrost/panfrost_debugfs.h   | 14 ----
+> >  drivers/gpu/drm/panfrost/panfrost_device.h    |  5 +-
+> >  drivers/gpu/drm/panfrost/panfrost_drv.c       | 14 ++--
+> >  drivers/gpu/drm/panfrost/panfrost_job.c       |  2 +-
+> >  drivers/gpu/drm/panfrost/panfrost_sysfs.c     | 74 +++++++++++++++++++
+> >  drivers/gpu/drm/panfrost/panfrost_sysfs.h     | 15 ++++
+> >  10 files changed, 124 insertions(+), 45 deletions(-)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> >  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> >  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> >  create mode 100644 drivers/gpu/drm/panfrost/panfrost_sysfs.c
+> >  create mode 100644 drivers/gpu/drm/panfrost/panfrost_sysfs.h
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > new file mode 100644
+> > index 000000000000..ce54069714f3
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > @@ -0,0 +1,10 @@
+> > +What:		/sys/bus/.../drivers/panfrost/.../drm/../profiling/status
+> > +Date:		February 2024
+> > +KernelVersion:	6.8.0
+> > +Contact:	Adrian Larumbe <adrian.larumbe@collabora.com>
+> > +Description:
+> > +                Get/set drm fdinfo's engine and cycles profiling status.
+> > +                Valid values are:
+> > +		0: Disable fdinfo job profiling sources. This disables both the GPU's
+> > +                timestamp and cycle counter registers.
+> > +		1: Enable the above.
+> > diff --git a/Documentation/gpu/panfrost.rst b/Documentation/gpu/panfrost.rst
+> > index b80e41f4b2c5..be4ac282ef63 100644
+> > --- a/Documentation/gpu/panfrost.rst
+> > +++ b/Documentation/gpu/panfrost.rst
+> > @@ -38,3 +38,12 @@ the currently possible format options:
+> >  
+> >  Possible `drm-engine-` key names are: `fragment`, and  `vertex-tiler`.
+> >  `drm-curfreq-` values convey the current operating frequency for that engine.
+> > +
+> > +Users must bear in mind that engine and cycle sampling are disabled by default,
+> > +because of power saving concerns. `fdinfo` users and benchmark applications which
+> > +query the fdinfo file must make sure to toggle the job profiling status of the
+> > +driver by writing into the appropriate sysfs node::
+> > +
+> > +    echo <N> > /sys/bus/platform/drivers/panfrost/[a-f0-9]*.gpu/drm/card1/profiling
+> > +
+> > +Where `N` is either `0` or `1`, depending on the desired enablement status.
+> > diff --git a/drivers/gpu/drm/panfrost/Makefile b/drivers/gpu/drm/panfrost/Makefile
+> > index 2c01c1e7523e..6e718595d8a6 100644
+> > --- a/drivers/gpu/drm/panfrost/Makefile
+> > +++ b/drivers/gpu/drm/panfrost/Makefile
+> > @@ -10,8 +10,7 @@ panfrost-y := \
+> >  	panfrost_job.o \
+> >  	panfrost_mmu.o \
+> >  	panfrost_perfcnt.o \
+> > -	panfrost_dump.o
+> > -
+> > -panfrost-$(CONFIG_DEBUG_FS) += panfrost_debugfs.o
+> > +	panfrost_dump.o \
+> > +	panfrost_sysfs.o
+> >  
+> >  obj-$(CONFIG_DRM_PANFROST) += panfrost.o
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.c b/drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> > deleted file mode 100644
+> > index 72d4286a6bf7..000000000000
+> > --- a/drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> > +++ /dev/null
+> > @@ -1,21 +0,0 @@
+> > -// SPDX-License-Identifier: GPL-2.0
+> > -/* Copyright 2023 Collabora ltd. */
+> > -/* Copyright 2023 Amazon.com, Inc. or its affiliates. */
+> > -
+> > -#include <linux/debugfs.h>
+> > -#include <linux/platform_device.h>
+> > -#include <drm/drm_debugfs.h>
+> > -#include <drm/drm_file.h>
+> > -#include <drm/panfrost_drm.h>
+> > -
+> > -#include "panfrost_device.h"
+> > -#include "panfrost_gpu.h"
+> > -#include "panfrost_debugfs.h"
+> > -
+> > -void panfrost_debugfs_init(struct drm_minor *minor)
+> > -{
+> > -	struct drm_device *dev = minor->dev;
+> > -	struct panfrost_device *pfdev = platform_get_drvdata(to_platform_device(dev->dev));
+> > -
+> > -	debugfs_create_atomic_t("profile", 0600, minor->debugfs_root, &pfdev->profile_mode);
+> > -}
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.h b/drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> > deleted file mode 100644
+> > index c5af5f35877f..000000000000
+> > --- a/drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> > +++ /dev/null
+> > @@ -1,14 +0,0 @@
+> > -/* SPDX-License-Identifier: GPL-2.0 */
+> > -/*
+> > - * Copyright 2023 Collabora ltd.
+> > - * Copyright 2023 Amazon.com, Inc. or its affiliates.
+> > - */
+> > -
+> > -#ifndef PANFROST_DEBUGFS_H
+> > -#define PANFROST_DEBUGFS_H
+> > -
+> > -#ifdef CONFIG_DEBUG_FS
+> > -void panfrost_debugfs_init(struct drm_minor *minor);
+> > -#endif
+> > -
+> > -#endif  /* PANFROST_DEBUGFS_H */
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> > index 62f7e3527385..56c8e5551335 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> > @@ -130,7 +130,10 @@ struct panfrost_device {
+> >  	struct list_head scheduled_jobs;
+> >  
+> >  	struct panfrost_perfcnt *perfcnt;
+> > -	atomic_t profile_mode;
+> > +	struct kobj_profiling {
+> > +		struct kobject base;
+> > +		atomic_t profile_mode;
+> > +	} profiling;
+> >  
+> >  	struct mutex sched_lock;
+> >  
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> > index a926d71e8131..6db1ea453514 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> > @@ -20,7 +20,7 @@
+> >  #include "panfrost_job.h"
+> >  #include "panfrost_gpu.h"
+> >  #include "panfrost_perfcnt.h"
+> > -#include "panfrost_debugfs.h"
+> > +#include "panfrost_sysfs.h"
+> >  
+> >  static bool unstable_ioctls;
+> >  module_param_unsafe(unstable_ioctls, bool, 0600);
+> > @@ -600,10 +600,6 @@ static const struct drm_driver panfrost_drm_driver = {
+> >  
+> >  	.gem_create_object	= panfrost_gem_create_object,
+> >  	.gem_prime_import_sg_table = panfrost_gem_prime_import_sg_table,
+> > -
+> > -#ifdef CONFIG_DEBUG_FS
+> > -	.debugfs_init		= panfrost_debugfs_init,
+> > -#endif
+> >  };
+> >  
+> >  static int panfrost_probe(struct platform_device *pdev)
+> > @@ -663,8 +659,14 @@ static int panfrost_probe(struct platform_device *pdev)
+> >  	if (err)
+> >  		goto err_out2;
+> >  
+> > +	err = panfrost_sysfs_init(pfdev);
+> > +	if (err)
+> > +		goto err_out3;
+> > +
+> >  	return 0;
+> >  
+> > +err_out3:
+> > +	panfrost_gem_shrinker_cleanup(ddev);
+> >  err_out2:
+> >  	drm_dev_unregister(ddev);
+> >  err_out1:
+> > @@ -681,6 +683,8 @@ static void panfrost_remove(struct platform_device *pdev)
+> >  	struct panfrost_device *pfdev = platform_get_drvdata(pdev);
+> >  	struct drm_device *ddev = pfdev->ddev;
+> >  
+> > +	panfrost_sysfs_cleanup(pfdev);
+> > +
+> >  	drm_dev_unregister(ddev);
+> >  	panfrost_gem_shrinker_cleanup(ddev);
+> >  
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> > index 0c2dbf6ef2a5..49413dfda2ea 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> > @@ -243,7 +243,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
+> >  	subslot = panfrost_enqueue_job(pfdev, js, job);
+> >  	/* Don't queue the job if a reset is in progress */
+> >  	if (!atomic_read(&pfdev->reset.pending)) {
+> > -		if (atomic_read(&pfdev->profile_mode)) {
+> > +		if (atomic_read(&pfdev->profiling.profile_mode)) {
+> >  			panfrost_cycle_counter_get(pfdev);
+> >  			job->is_profiled = true;
+> >  			job->start_time = ktime_get();
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_sysfs.c b/drivers/gpu/drm/panfrost/panfrost_sysfs.c
+> > new file mode 100644
+> > index 000000000000..072d3bf349d2
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_sysfs.c
+> > @@ -0,0 +1,74 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright 2023 Collabora ltd. */
+> > +/* Copyright 2023 Amazon.com, Inc. or its affiliates. */
+> > +
+> > +#include <linux/platform_device.h>
+> > +#include <drm/drm_file.h>
+> > +#include <drm/panfrost_drm.h>
+> > +
+> > +#include "panfrost_device.h"
+> > +#include "panfrost_gpu.h"
+> > +#include "panfrost_sysfs.h"
+> > +
+> > +static ssize_t
+> > +profiling_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> > +{
+> > +	atomic_t *profile_mode =
+> > +		&container_of(kobj, struct {
+> > +			struct kobject base;
+> > +			atomic_t profile_mode; },
+> > +			base)->profile_mode;
+> > +
+> > +	return sysfs_emit(buf, "%d\n", atomic_read(profile_mode));
+> > +}
+> > +
+> > +static ssize_t
+> > +profiling_store(struct kobject *kobj, struct kobj_attribute *attr,
+> > +	       const char *buf, size_t count)
+> > +{
+> > +	atomic_t *profile_mode =
+> > +		&container_of(kobj, struct {
+> > +			struct kobject base;
+> > +			atomic_t profile_mode; },
+> > +			base)->profile_mode;
+> > +	int err, value;
 > 
-> I see.
-> 
-> Then you mis-understood. I don't say your patch leave any platform 
-> unfixed. I say that your patch seems bigger than required, it is a 
-> churn. In addition your patch assumes an alignment of 16-bytes which, as 
-> explained by Russell, it just wrong. At least an alignment of 4 bytes 
-> must work on any platforms because of VLANs.
+> Can't we just make this a RW module_param to simplify things? I fail to
+> see why we need an atomic here since active cycle-count users are
+> already tracked with an atomic_t that's incremented/decremented
+> everytime a job is submitted/considered done.
 
-Pardon my ignorance but I do not understand why VLANs cause this test
-case to be incorrect/introduce churn. The VLAN tag is a 4-byte field
-that is optionally included in an ethernet header. This causes the
-header to change from 14 bytes to 18 bytes. If the architecture defines
-NET_IP_ALIGN to 2, this pads the ethernet header by 2 bytes, causing the
-payload to be aligned along 16 bytes without VLAN and 20 bytes with
-VLAN. Another test case can be added that aligns along 18 + NET_IP_ALIGN
-but that does not achieve the goal of reducing churn and I would not
-expect those additionally 4 bytes to highlight bugs in any
-implementation.
+I thought about this, and it would greatly simplify this patch to the point that
+I could get rid of all the sysfs cruft, but then I remembered about someone at
+Collabora once told me of a very specific customer SoC configuration with two
+Mali GPU devices. I know this might be very unusual, but I guess they could be
+interested in profiling a single GPU at a time, as unplausible as it sounds.
 
-- Charlie
+Regarding the atomic variable for keeping track of the profiling status, your'e
+right, it's an overkill.  I'll just get rid of it altogether in v2.
 
-> 
-> Christophe
+> > +
+> > +	err = kstrtoint(buf, 0, &value);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	atomic_set(profile_mode, !!value);
+> > +
+> > +	return count;
+> > +}
+> > +
+> > +static const struct kobj_attribute profiling_status =
+> > +__ATTR(status, 0644, profiling_show, profiling_store);
+> > +
+> > +static const struct kobj_type kobj_profile_type = {
+> > +	.sysfs_ops = &kobj_sysfs_ops,
+> > +};
+> > +
+> > +int panfrost_sysfs_init(struct panfrost_device *pfdev)
+> > +{
+> > +	struct device *kdev = pfdev->ddev->primary->kdev;
+> > +	int err;
+> > +
+> > +	kobject_init(&pfdev->profiling.base, &kobj_profile_type);
+> > +
+> > +	err = kobject_add(&pfdev->profiling.base, &kdev->kobj, "%s", "profiling");
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	err = sysfs_create_file(&pfdev->profiling.base, &profiling_status.attr);
+> > +	if (err)
+> > +		kobject_del(&pfdev->profiling.base);
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +void panfrost_sysfs_cleanup(struct panfrost_device *pfdev)
+> > +{
+> > +	sysfs_remove_file(&pfdev->profiling.base, &profiling_status.attr);
+> > +	kobject_del(&pfdev->profiling.base);
+> > +}
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_sysfs.h b/drivers/gpu/drm/panfrost/panfrost_sysfs.h
+> > new file mode 100644
+> > index 000000000000..5fc9c8c1091a
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_sysfs.h
+> > @@ -0,0 +1,15 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright 2023 Collabora ltd.
+> > + * Copyright 2023 Amazon.com, Inc. or its affiliates.
+> > + */
+> > +
+> > +#ifndef PANFROST_SYSFS_H
+> > +#define PANFROST_SYSFS_H
+> > +
+> > +struct panfrost_device;
+> > +
+> > +int panfrost_sysfs_init(struct panfrost_device *pfdev);
+> > +void panfrost_sysfs_cleanup(struct panfrost_device *pfdev);
+> > +
+> > +#endif  /* PANFROST_SYSFS_H */
 
