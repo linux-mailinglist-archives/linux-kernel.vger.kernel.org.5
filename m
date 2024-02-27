@@ -1,269 +1,252 @@
-Return-Path: <linux-kernel+bounces-82513-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 052798685A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:15:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C47D2868587
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:07:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F4E1B21ED9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:15:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AFD3287A77
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97534C6F;
-	Tue, 27 Feb 2024 01:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="n+wRXJm9"
-Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0CE4C61;
+	Tue, 27 Feb 2024 01:06:56 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C95DD4C7C;
-	Tue, 27 Feb 2024 01:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F1C17F8;
+	Tue, 27 Feb 2024 01:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708996514; cv=none; b=I7QVOwFIiOHcJ4NxY67LfHxqb0EXDJVgxMnwOLA66srZJrYjgJ3Tn1UQCkYa0U1Z6bMSe7ql4LXVeYiOkHhsGPLiAw6aLY4hwMoKnlYrPywsND5duXM70MAn+Cphwe8/oMx9vf6yoe+SCN5KBMD9FOnF1Pk5k8aXLdHepMGJAQU=
+	t=1708996016; cv=none; b=W+2nKnX4uA8mEE5be8dZZu3uYIBbYot+mGAiWUO7AJ3F7OuX5w1+EI7IC2qlOob3cYX2mVVSLYzWzzozIFZZE0yXC3q1O43xmWhc/NwTc9CVDugx6ux7/GZvsGcKyap3mwkmbDs6DIzA1NX46HF77Nq+Pwkl6xaW+sM5JYq86cE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708996514; c=relaxed/simple;
-	bh=FQOWByJdlmLQMEM9Ugd23TVzReO5/PSUi+bbMNh6Dqw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VnBjE87fBBAuj3MNI7S7KZMXyyYZnwQZnFuVov3oTay0QCIdXnwLCdT6/NDmJ17EZJGBqufdkUeIhzah8ksBtsIRy1nEoS29Lbvcma+Mbrcqc6/9FczGVJETx8R2BNZbZ9Zt5A4RMdTpKRqncXFTci2GIEzsCGOmDDbFxkZwdZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=n+wRXJm9; arc=none smtp.client-ip=185.125.188.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from [192.168.178.2] (unknown [58.7.187.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 715913FBB1;
-	Tue, 27 Feb 2024 01:06:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1708996007;
-	bh=JPI0TIq/AS3U6NVorLva8uA3bgYOgG/blVsTCa7sRoo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type;
-	b=n+wRXJm9JkMeOwF0boDflNkPPkYPFS4IZHMFq/hxpENkuoEY3U/pS0LFm3SMUF/I2
-	 VHFHC7PutVal5BLgJpFPE8yqdeJaJ0ZcZTSaLuIRMCY1cEbwdKbQYrHuq2mT/ybWS+
-	 9E5Iq5dZ38I/Pu09AhHuxjoZSdDnYHDPgRgS3CIOyWyj41RvdYTkQQyl8pjZtiVtbx
-	 1bDxo80mvGuikzBbjV4eoyON1KIGGCO/rTycJZO0eELQi5Wwq9w37p8pw5k6yssUeY
-	 l1SSoHwHDPDEnXkbM0snl3YQkqm3vgsERNhq5p/KfCf9zD75WLjDBh7Ixt3hYSxMtE
-	 34kYJ2O4XzH+w==
-Message-ID: <39ffe230-36ac-484a-8fc1-0a12d6c38d82@canonical.com>
-Date: Tue, 27 Feb 2024 09:06:38 +0800
+	s=arc-20240116; t=1708996016; c=relaxed/simple;
+	bh=ytIdOjWG/yc37fO5pwvQfQZ/gjShqSuo3M/W3NdQsIw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=sigLqOsSkK7+Hou5MWpliSWhR8oqSBcEfDIy+xb3K4a1asHLxBCkzkdEw1kctlNa/AkOwn5k2aacTE69tI1pT0HmAnF4abO8ybsL2evwHOqwaqLzvN6wzuIx8gIgeZEX9sw9mAr+yiZv9BY/LY3j2Uvy5Y9xVeamriMpuKGUjAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TkK7l4jyqz4f3kKh;
+	Tue, 27 Feb 2024 09:06:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id F39081A016E;
+	Tue, 27 Feb 2024 09:06:46 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAX5g6lNd1l7f8RFQ--.22845S3;
+	Tue, 27 Feb 2024 09:06:46 +0800 (CST)
+Subject: Re: [PATCH md-6.9 06/10] md/raid1: factor out read_first_rdev() from
+ read_balance()
+To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com,
+ shli@fb.com, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
+ <20240222075806.1816400-7-yukuai1@huaweicloud.com>
+ <CALTww2-ypx2YJOeXTzj7Y0EtXMkfrTOAJzzmDnnUK=1irspWtQ@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <4f2ae964-5030-907e-bc06-4d9e1fc8f3e8@huaweicloud.com>
+Date: Tue, 27 Feb 2024 09:06:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] fbcon: Defer console takeover for splash screens to
- first switch
-Content-Language: en-US
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
- Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
- Jani Nikula <jani.nikula@intel.com>, Danilo Krummrich <dakr@redhat.com>,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Sebastien Bacher <seb128@ubuntu.com>
-References: <20240202085408.23251-1-daniel.van.vugt@canonical.com>
- <20240202085408.23251-2-daniel.van.vugt@canonical.com>
- <7817a2a2-b07d-4e9d-85e6-c11c5720d66e@redhat.com>
-From: Daniel van Vugt <daniel.van.vugt@canonical.com>
-In-Reply-To: <7817a2a2-b07d-4e9d-85e6-c11c5720d66e@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CALTww2-ypx2YJOeXTzj7Y0EtXMkfrTOAJzzmDnnUK=1irspWtQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX5g6lNd1l7f8RFQ--.22845S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw18JrWxGrW3KrW5Ar1rXrb_yoW7CF4Dpw
+	45JFs3tryUX34fZwn8X3yDWrn3t34ftF48GrWxJ3WIgrna9rZ5KFy8Grya9FyUCr45Jw1U
+	Zw1UArW7u3WvkFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
+	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
+	sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On 27/2/24 02:23, Hans de Goede wrote:
-> Hi All,
-> 
-> On 2/2/24 09:53, Daniel van Vugt wrote:
->> Until now, deferred console takeover only meant defer until there is
->> output. But that risks stepping on the toes of userspace splash screens,
->> as console messages may appear before the splash screen. So check for the
->> "splash" parameter (as used by Plymouth) and if present then extend the
->> deferral until the first switch.
-> 
-> Daniel, thank you for your patch but I do not believe that this
-> is the right solution. Deferring fbcon takeover further then
-> after the first text is output means that any errors about e.g.
-> a corrupt initrd or the kernel erroring out / crashing will not
-> be visible.
+Hi,
 
-That's not really correct. If a boot failure has occurred after the splash then
-pressing escape shows the log. If a boot failure has occurred before the splash
-then it can be debugged visually by rebooting without the "splash" parameter.
-
-> 
-> When the kernel e.g. oopses or panics because of not finding
-> its rootfs (I tested the latter option when writing the original
-> deferred fbcon takeover code) then fbcon must takeover and
-> print the messages from the dying kernel so that the user has
-> some notion of what is going wrong.
-
-Indeed, just reboot without the "splash" parameter to do that.
-
-> 
-> And since your patch seems to delay switching till the first
-> vc-switch this means that e.g. even after say gdm refusing
-> to start because of issues there still will be no text
-> output. This makes debugging various issues much harder.
-
-I've debugged many gdm failures and it is never useful to use the console for
-those. Reboot and get the system journal instead.
-
-> 
-> Moreover Fedora has been doing flickerfree boot for many
-> years without needing this.
-
-I believe Fedora has a mostly working solution, but not totally reliable, as
-mentioned in the commit message:
-
-"even systems whose splash exists in initrd may not be not immune because they
- still rely on racing against all possible kernel messages that might
- trigger the fbcon takeover"
-
-> 
-> The kernel itself will be quiet as long as you set
-> CONFIG_CONSOLE_LOGLEVEL_QUIET=3 Ubuntu atm has set this
-> to 4 which means any kernel pr_err() or dev_err()
-> messages will get through and since there are quite
-> a few false positives of those Ubuntu really needs
-> to set CONFIG_CONSOLE_LOGLEVEL_QUIET=3 to fix part of:
-> https://bugs.launchpad.net/bugs/1970069
-
-Incorrect. In my testing some laptops needed log level as low as 2 to go quiet.
-And the Ubuntu kernel team is never going to fix all those for non-sponsored
-devices.
-
-> 
-> After that it is "just" a matter of not making userspace
-> output anything unless it has errors to report.
-> 
-> systemd already is quiet by default (only logging
-> errors) when quiet is on the kernel commandline.
-
-Unfortunately not true for Ubuntu. We carry a noisy systemd patch which I'm
-told we can't remove in the short term:
-
-https://bugs.launchpad.net/ubuntu/+source/plymouth/+bug/1970069/comments/39
-
-> 
-> So any remaining issues are Ubuntu specific boot
-> process bits and Ubuntu really should be able to
-> make those by silent unless they have important
-> info (errors or other unexpected things) to report.
-> 
-> Given that this will make debugging boot issues
-> much harder and that there are other IMHO better
-> alternatives I'm nacking this patch: NACK.
-> 
-> FWIW I believe that I'm actually saving Ubuntu
-> from shooting themselves in the foot here,
-> hiding all sort of boot errors (like the initrd
-> not finding /) until the user does a magic
-> alt+f2 followed by alt+f1 incantation really is
-> not doing yourself any favors wrt debugging any
-> sort of boot failures.
-> 
-> Regards,
-> 
-> Hans
-
-Thanks for your input, but I respectfully disagree and did consider these
-points already.
-
-- Daniel
-
-> 
-> 
-> 
-> 
-> 
->> Closes: https://bugs.launchpad.net/bugs/1970069
->> Cc: Mario Limonciello <mario.limonciello@amd.com>
->> Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
->> ---
->>  drivers/video/fbdev/core/fbcon.c | 32 +++++++++++++++++++++++++++++---
->>  1 file changed, 29 insertions(+), 3 deletions(-)
+在 2024/02/26 22:16, Xiao Ni 写道:
+> On Thu, Feb 22, 2024 at 4:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
 >>
->> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
->> index 63af6ab034..5b9f7635f7 100644
->> --- a/drivers/video/fbdev/core/fbcon.c
->> +++ b/drivers/video/fbdev/core/fbcon.c
->> @@ -76,6 +76,7 @@
->>  #include <linux/crc32.h> /* For counting font checksums */
->>  #include <linux/uaccess.h>
->>  #include <asm/irq.h>
->> +#include <asm/cmdline.h>
->>  
->>  #include "fbcon.h"
->>  #include "fb_internal.h"
->> @@ -146,6 +147,7 @@ static inline void fbcon_map_override(void)
->>  
->>  #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
->>  static bool deferred_takeover = true;
->> +static int initial_console = -1;
->>  #else
->>  #define deferred_takeover false
->>  #endif
->> @@ -3341,7 +3343,7 @@ static void fbcon_register_existing_fbs(struct work_struct *work)
->>  	console_unlock();
->>  }
->>  
->> -static struct notifier_block fbcon_output_nb;
->> +static struct notifier_block fbcon_output_nb, fbcon_switch_nb;
->>  static DECLARE_WORK(fbcon_deferred_takeover_work, fbcon_register_existing_fbs);
->>  
->>  static int fbcon_output_notifier(struct notifier_block *nb,
->> @@ -3358,6 +3360,21 @@ static int fbcon_output_notifier(struct notifier_block *nb,
->>  
->>  	return NOTIFY_OK;
->>  }
->> +
->> +static int fbcon_switch_notifier(struct notifier_block *nb,
->> +				 unsigned long action, void *data)
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> read_balance() is hard to understand because there are too many status
+>> and branches, and it's overlong.
+>>
+>> This patch factor out the case to read the first rdev from
+>> read_balance(), there are no functional changes.
+>>
+>> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
+>> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/md/raid1.c | 63 +++++++++++++++++++++++++++++++++-------------
+>>   1 file changed, 46 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+>> index 8089c569e84f..08c45ca55a7e 100644
+>> --- a/drivers/md/raid1.c
+>> +++ b/drivers/md/raid1.c
+>> @@ -579,6 +579,47 @@ static sector_t align_to_barrier_unit_end(sector_t start_sector,
+>>          return len;
+>>   }
+>>
+>> +static void update_read_sectors(struct r1conf *conf, int disk,
+>> +                               sector_t this_sector, int len)
 >> +{
->> +	struct vc_data *vc = data;
+>> +       struct raid1_info *info = &conf->mirrors[disk];
 >> +
->> +	WARN_CONSOLE_UNLOCKED();
->> +
->> +	if (vc->vc_num != initial_console) {
->> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
->> +		dummycon_register_output_notifier(&fbcon_output_nb);
->> +	}
->> +
->> +	return NOTIFY_OK;
+>> +       atomic_inc(&info->rdev->nr_pending);
+>> +       if (info->next_seq_sect != this_sector)
+>> +               info->seq_start = this_sector;
+>> +       info->next_seq_sect = this_sector + len;
 >> +}
->>  #endif
->>  
->>  static void fbcon_start(void)
->> @@ -3370,7 +3387,14 @@ static void fbcon_start(void)
->>  
->>  	if (deferred_takeover) {
->>  		fbcon_output_nb.notifier_call = fbcon_output_notifier;
->> -		dummycon_register_output_notifier(&fbcon_output_nb);
->> +		fbcon_switch_nb.notifier_call = fbcon_switch_notifier;
->> +		initial_console = fg_console;
 >> +
->> +		if (cmdline_find_option_bool(boot_command_line, "splash"))
->> +			dummycon_register_switch_notifier(&fbcon_switch_nb);
->> +		else
->> +			dummycon_register_output_notifier(&fbcon_output_nb);
+>> +static int choose_first_rdev(struct r1conf *conf, struct r1bio *r1_bio,
+>> +                            int *max_sectors)
+>> +{
+>> +       sector_t this_sector = r1_bio->sector;
+>> +       int len = r1_bio->sectors;
+>> +       int disk;
 >> +
->>  		return;
->>  	}
->>  #endif
->> @@ -3417,8 +3441,10 @@ void __exit fb_console_exit(void)
->>  {
->>  #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
->>  	console_lock();
->> -	if (deferred_takeover)
->> +	if (deferred_takeover) {
->>  		dummycon_unregister_output_notifier(&fbcon_output_nb);
->> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
->> +	}
->>  	console_unlock();
->>  
->>  	cancel_work_sync(&fbcon_deferred_takeover_work);
+>> +       for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
+>> +               struct md_rdev *rdev;
+>> +               int read_len;
+>> +
+>> +               if (r1_bio->bios[disk] == IO_BLOCKED)
+>> +                       continue;
+>> +
+>> +               rdev = conf->mirrors[disk].rdev;
+>> +               if (!rdev || test_bit(Faulty, &rdev->flags))
+>> +                       continue;
+>> +
+>> +               /* choose the first disk even if it has some bad blocks. */
+>> +               read_len = raid1_check_read_range(rdev, this_sector, &len);
+>> +               if (read_len > 0) {
+>> +                       update_read_sectors(conf, disk, this_sector, read_len);
+>> +                       *max_sectors = read_len;
+>> +                       return disk;
+>> +               }
 > 
+> Hi Kuai
+> 
+> It needs to update max_sectors even if the bad block starts before
+> this_sector. Because it can't read more than bad_blocks from other
+> member disks. If it reads more data than bad blocks, it will cause
+> data corruption. One rule here is read from the primary disk (the
+> first readable disk) if it has no bad block and read the
+> badblock-data-length data from other disks.
+
+Noted that raid1_check_read_range() will return readable length from
+this rdev, hence if bad block starts before this_sector, 0 is returned,
+and 'len' is updated to the length of badblocks(if not exceed read
+range), and following iteration will find the first disk to read updated
+'len' data and update max_sectors.
+
+Thanks,
+Kuai
+
+> 
+> Best Regards
+> Xiao
+> 
+>> +       }
+>> +
+>> +       return -1;
+>> +}
+>> +
+>>   /*
+>>    * This routine returns the disk from which the requested read should
+>>    * be done. There is a per-array 'next expected sequential IO' sector
+>> @@ -603,7 +644,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>          sector_t best_dist;
+>>          unsigned int min_pending;
+>>          struct md_rdev *rdev;
+>> -       int choose_first;
+>>
+>>    retry:
+>>          sectors = r1_bio->sectors;
+>> @@ -613,10 +653,11 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>          best_pending_disk = -1;
+>>          min_pending = UINT_MAX;
+>>          best_good_sectors = 0;
+>> -       choose_first = raid1_should_read_first(conf->mddev, this_sector,
+>> -                                              sectors);
+>>          clear_bit(R1BIO_FailFast, &r1_bio->state);
+>>
+>> +       if (raid1_should_read_first(conf->mddev, this_sector, sectors))
+>> +               return choose_first_rdev(conf, r1_bio, max_sectors);
+>> +
+>>          for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
+>>                  sector_t dist;
+>>                  sector_t first_bad;
+>> @@ -662,8 +703,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>                                   * bad_sectors from another device..
+>>                                   */
+>>                                  bad_sectors -= (this_sector - first_bad);
+>> -                               if (choose_first && sectors > bad_sectors)
+>> -                                       sectors = bad_sectors;
+>>                                  if (best_good_sectors > sectors)
+>>                                          best_good_sectors = sectors;
+>>
+>> @@ -673,8 +712,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>                                          best_good_sectors = good_sectors;
+>>                                          best_disk = disk;
+>>                                  }
+>> -                               if (choose_first)
+>> -                                       break;
+>>                          }
+>>                          continue;
+>>                  } else {
+>> @@ -689,10 +726,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>
+>>                  pending = atomic_read(&rdev->nr_pending);
+>>                  dist = abs(this_sector - conf->mirrors[disk].head_position);
+>> -               if (choose_first) {
+>> -                       best_disk = disk;
+>> -                       break;
+>> -               }
+>>                  /* Don't change to another disk for sequential reads */
+>>                  if (conf->mirrors[disk].next_seq_sect == this_sector
+>>                      || dist == 0) {
+>> @@ -760,13 +793,9 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+>>                  rdev = conf->mirrors[best_disk].rdev;
+>>                  if (!rdev)
+>>                          goto retry;
+>> -               atomic_inc(&rdev->nr_pending);
+>> -               sectors = best_good_sectors;
+>> -
+>> -               if (conf->mirrors[best_disk].next_seq_sect != this_sector)
+>> -                       conf->mirrors[best_disk].seq_start = this_sector;
+>>
+>> -               conf->mirrors[best_disk].next_seq_sect = this_sector + sectors;
+>> +               sectors = best_good_sectors;
+>> +               update_read_sectors(conf, disk, this_sector, sectors);
+>>          }
+>>          *max_sectors = sectors;
+>>
+>> --
+>> 2.39.2
+>>
+>>
+> 
+> .
+> 
+
 
