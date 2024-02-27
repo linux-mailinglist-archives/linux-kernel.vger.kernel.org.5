@@ -1,115 +1,104 @@
-Return-Path: <linux-kernel+bounces-83768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79720869E42
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:48:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F3C0869E44
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:49:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 115ED1F241F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:48:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3563F1F24F44
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D1EB1419B3;
-	Tue, 27 Feb 2024 17:48:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55F3A4EB43;
+	Tue, 27 Feb 2024 17:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LfWPtj3j"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tQZfyJUY"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EEA54FAC;
-	Tue, 27 Feb 2024 17:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525E14E1CE
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709056108; cv=none; b=Iyn+WHHAjiK5Gxwk02VxmCNraovfb5VMKw5yPIYQIk0zarQaNUd1HgrCdkJgU7QojieCW3nb9SRCH89iaCHbhaJxUTp6zLWc/t0p5L/hiDQspwWbFP5s0Lx4vR62oSchAL/N1cS87ElLW/WrBjkAQ/141hAq9sL60SBp0owp9Ho=
+	t=1709056167; cv=none; b=F6gJiDujZ/VXso6Fgrl7oI5NFHyQsY1cq6v4GbiQX6kR6UtZ/NevGrFaKrwjI6mGp7Yn1EA31Hl+n9bDsl8yRWHchhrZA9a2hoL2IO0cWlEAJyRUeGG6h05Dbd/ru1qk67Jv89H1TB1DJ3NQPxS1LwZ4bQPx+RVCTquBCrgagFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709056108; c=relaxed/simple;
-	bh=vl3+kSJl9raKx1cJiC5v+Xip2F0XB4SZhKZYPl7v7EY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GdlN4+hO0X+uGygr58HDuWUSZwoSfLuuWwdMGKUfWsT4Q94/BYQPHQA+6iVctKYDya5tOOTkphoJr+Za1DLOP68I8vZvRieuh4dSt189EyTZCGyQkBuX+SRRBZ9IO4WtgtZ2Qg/OYU8gjiQ/s/PGyEA04qMB6IubAynVDDJ520c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LfWPtj3j; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3e552eff09so508065066b.3;
-        Tue, 27 Feb 2024 09:48:26 -0800 (PST)
+	s=arc-20240116; t=1709056167; c=relaxed/simple;
+	bh=6+V6OSADcX/vEjE+xgKzWwNNKrKAesyUgRAe5v37S8U=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=tTaphKRd2e8T+/jUp89I3sHNwSalqjyx3VrBhTl2M+eM7YwpWd2w+bkXdq7lBy6h+ns7/V5Bwwb8t6vLjSHyXBiB6UiFWDDtU6w3ymTJ5y40JH/c1L6moTwQo2KRhnny9cu7ol0ErhuuDe0/cLp0Ac1cKR5TkLmE9ddHujGzW10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tQZfyJUY; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e46e0b1706so3506009b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:49:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709056105; x=1709660905; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8aAOEt9j8cLf7pCbr5/djJex7kLy89KWqOPb/rg1GDY=;
-        b=LfWPtj3jO3fhU2CrGf1rNgLK6vF1MsQgSDY1l6VEUo7C2bzJ4Uq4CW/ROKu3SQ/Ywg
-         Uar0MKkW1dG/80vbWYHR0cYx0p8MoqFpanipNuaBSvKcnCaVJXbDPY/j8dlqMg6BtrBb
-         0Zfu7eLkm8WWIn98jkoAD02Jnz5z0nhLYbcn3CJkpfA550+xNiK9A139+W/GTordmPqm
-         uyx0psxauczmS7l5jtmPW9D6ISkh37FRTphEllD2kzNtcTOHqBd7eDgK25EETCDsrPAK
-         0oBlu11P7U74lZzsfBZw/ZGRj0RuBMyvqF3Z33LVxnlglT1ZP1CAGap7cJltWEHtrKRq
-         K0Jg==
+        d=google.com; s=20230601; t=1709056166; x=1709660966; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TrybOGpA3KrE+weUQifOFjRx5HANss1evz1Ds6moCuA=;
+        b=tQZfyJUYXdG9adGsfMnv4C8dVTtUyYmmNRqLgPDkuCubr/byEOvoUeO4zmA4+4WGwD
+         cY5RaP5L+RsHspnVFugCQx4T7OYTGYlYIJC822servyH3clu43j6wM/u4BAYdI9nXu8P
+         jR/SGm7tIMWFzmm96qZfMoiLTmWoBGQXS4rufyFXL/q9GbjkF8nO6vclKSiZTt92MAy0
+         MQDI/3L2dvwj6puxgXTTV6AwfQlZBSoxm003MVSlC7CbM1J7NMnwE0DpjjI5Ivg5pJIt
+         j6Fw1E5hX1TcPshD+783OZUs4dH6eLcvhndqXJBmD75eTYBC5HVu9RtJydEkdfcT4aY5
+         evKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709056105; x=1709660905;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8aAOEt9j8cLf7pCbr5/djJex7kLy89KWqOPb/rg1GDY=;
-        b=cLJazLtQPkG0sSGs4hJc9c6WhuKiPdo9IP0zXCiXKl77oFwrxO9c01+eTfF7XRP1s0
-         9XTommrHGwvXjn4ObzSIPCpkmrDW9ovIHuPtcoeU/Fk6bqDg2wYx/S9DLv7+WF1Vsbxh
-         TjnCjRX8q/Y4uCRZaFHujuZo37W2OKojKbsDqm3S/zplXUEQZBQvbCpIxZ62w1CSScu/
-         ZP+40zBBWV/iyh5Nqvx/+6Rv+Mb7Bi87sUdtt8P7ZBtwqRLbFRMV5/M06VjzabrV7FfR
-         CoNugXKcX6YyFP4kl8mh1SaQezFYZ0J2lYyE+I/vkO8Zzfjj/Y6AH7HkvNRdJ+mCbQNu
-         TNfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXEl/KrS8VM2Bme3VHVwDhWU0dJgCFsuekWbuhgWPsyIiUqXLEGfjWOQqOBBDb1FE4viI0JRKoxQvtFpkSrhRHOzQlGfDEQ6fSXK4mre0L08cACwkHKbgPUKtvLiLzrXm4zGj+z0sD2jgJJAJdV/0LPmqJHUf3kDhLVQOgbD7vIF6/Kue9kxrtWEmkhrBfL+N/umkjRAu4e6YgERED3c5Q11Q==
-X-Gm-Message-State: AOJu0YwF8mZFtjspvLu46fk83yZoJGc9P5mNUf9J1jDBo2A7yuZE5TaT
-	DQ45IsfVjWKQyzmYkHYxPc0Uvzg2HYvmc247gdEflzGrxJ0+vWJ5zXi3bOOv8O4=
-X-Google-Smtp-Source: AGHT+IEBmzlxvbwk14gM8ufAKwoOQLEW0wK/mhLD0mJLV4TBe02CEP32Gbjx1cNp3xViLTW7sq0u0Q==
-X-Received: by 2002:a17:906:b847:b0:a42:e2ef:2414 with SMTP id ga7-20020a170906b84700b00a42e2ef2414mr7212089ejb.35.1709056104953;
-        Tue, 27 Feb 2024 09:48:24 -0800 (PST)
-Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
-        by smtp.gmail.com with ESMTPSA id un6-20020a170907cb8600b00a3f0dbdf106sm982577ejc.105.2024.02.27.09.48.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 09:48:23 -0800 (PST)
-Sender: John Groves <grovesaustin@gmail.com>
-Date: Tue, 27 Feb 2024 11:48:17 -0600
-From: John Groves <John@groves.net>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 09/20] famfs: Add super_operations
-Message-ID: <qfxrbeajea25ckhzx74ieqg7f3baw2pqilliru4djc2a2iii6e@faxw7bgt2vi2>
-References: <cover.1708709155.git.john@groves.net>
- <537f836056c141ae093c42b9623d20de919083b1.1708709155.git.john@groves.net>
- <20240226125136.00002e64@Huawei.com>
+        d=1e100.net; s=20230601; t=1709056166; x=1709660966;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TrybOGpA3KrE+weUQifOFjRx5HANss1evz1Ds6moCuA=;
+        b=sgGCDmojwJNoSGSRh1NF0ZinVXhJSL0YxSx706hPnUPda6hEzfab1w/TsFAtvA4AC7
+         KOs6yHJoWZpz90dQBOVNeOsNiZWa0ddMAf4YNR3/ngbv0qHrA2GYQklcU6zgvlm0S3hy
+         vnTNBigWjE9b818ET781LUisYXxDVKpr7cFNeFXyes0STNhY4N12EpKZBYLAeVi2iXQq
+         BBXFXmvgFhQ/ITVMVYYkw+Bd+LKUac33XEZihe5rtc+huHglQ/9lWqlMzXD4/VS8L8pi
+         8vm/YWfbrOZS386ADD+B66LfJ7cmE6Weh+nBe+J5Lh1EetFXs294f5RTKu4RLfiyDVwT
+         B7zA==
+X-Forwarded-Encrypted: i=1; AJvYcCVJTJ3LfWyW7DSiNEyf5PGTYhcFDywwHhGEWUTIxL2zZZC82XstyJLd6GFDgixvB9PjLaSOyd7FICF+hokRL261s22i5/7mKBkBnxWu
+X-Gm-Message-State: AOJu0YzFEawREePGMYgXYWDDua1FyGPmP4YGFhBOkBsegsRAAI7/If0+
+	PUeOH6+ar8ZroOt7zi3mYt/nqunzVdi0Vl12HR/xKLtLTgSP7Vu3TOIV2KK0kKPSGko+ph2PWOT
+	kpA==
+X-Google-Smtp-Source: AGHT+IEmY3v+Iz9HPMVJv3+02pq8QcN82tX4wn6YwqxRnJ7X8vRVimOUt1XbUH1ndPffcj7NIJaQ6+wvSeg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d96:b0:6e5:3e08:cbeb with SMTP id
+ fb22-20020a056a002d9600b006e53e08cbebmr233643pfb.2.1709056165746; Tue, 27 Feb
+ 2024 09:49:25 -0800 (PST)
+Date: Tue, 27 Feb 2024 09:49:24 -0800
+In-Reply-To: <Zd1cDyyx65J1IVK1@archie.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226125136.00002e64@Huawei.com>
+Mime-Version: 1.0
+References: <20240226190344.787149-1-pbonzini@redhat.com> <Zd1cDyyx65J1IVK1@archie.me>
+Message-ID: <Zd4gpBsmTdXEZkWS@google.com>
+Subject: Re: [PATCH v3 00/15] KVM: SEV: allow customizing VMSA features
+From: Sean Christopherson <seanjc@google.com>
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
+	michael.roth@amd.com, aik@amd.com
+Content-Type: text/plain; charset="us-ascii"
 
-On 24/02/26 12:51PM, Jonathan Cameron wrote:
-> On Fri, 23 Feb 2024 11:41:53 -0600
-> John Groves <John@Groves.net> wrote:
-> > + */
-> > +static int famfs_show_options(
-> > +	struct seq_file *m,
-> > +	struct dentry   *root)
-> Not that familiar with fs code, but this unusual kernel style. I'd go with 
-> something more common
+On Tue, Feb 27, 2024, Bagas Sanjaya wrote:
+> On Mon, Feb 26, 2024 at 02:03:29PM -0500, Paolo Bonzini wrote:
+> > v2->v3:
+> > - use u64_to_user_addr()
+> > - Compile sev.c if and only if CONFIG_KVM_AMD_SEV=y
+> > - remove double signoffs
+> > - rebase on top of kvm-x86/next
 > 
-> static int famfs_show_options(struct seq_file *m, struct dentry *root)
+> I can't apply this series on top of current kvm-x86/next. On what exact
+> commit the series is based on?
 
-Actually, xfs does function declarations and prototypes this way, not sure if
-it's everywhere. But I like this format because changing one argument usually
-doesn't put un-changed args into the diff.
+Note that kvm-x86/next is my tree at https://github.com/kvm-x86/linux/tree/next.
+Are you pulling that, or are you based off kvm/next (Paolo's tree at
+git://git.kernel.org/pub/scm/virt/kvm/kvm.git)?
 
-So I may keep this style after all.
+Because this series applies for me on all of these tags from kvm-x86.
 
-John
+  kvm-x86-next-2024.02.22
+  kvm-x86-next-2024.02.23
+  kvm-x86-next-2024.02.26
+  kvm-x86-next-2024.02.26-2
 
