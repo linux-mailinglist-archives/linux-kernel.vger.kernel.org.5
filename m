@@ -1,139 +1,160 @@
-Return-Path: <linux-kernel+bounces-83146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7682C868F77
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:53:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A708868F72
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3160D2835AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:53:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24D2928242C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668AB13A250;
-	Tue, 27 Feb 2024 11:53:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0585113A24A;
+	Tue, 27 Feb 2024 11:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ZTsDYbfT"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="S5MM2CxO"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C311386D4
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:53:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 999E8139599;
+	Tue, 27 Feb 2024 11:52:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709034790; cv=none; b=r46mJv02Idr2n8UoFHoK/EeL4OwN9RBw1ni2rQ/H46V2nTYrbVIyIH6AH5IPHRp2rRfWene9EBWVWBntyyOubggcbmLcG2HlCG20gNsjteJroxZNC4gTfowNNT6AQD64dfx167m3mT/K9b8ZAK0yOtxLZ6pwz/qMK2UqCX1FFA8=
+	t=1709034742; cv=none; b=ZPYaK8OI0fvrVHTIJmE4rN1wlYpNs6V569nI2KikIpi7oSZyTezLvItTTmZ2V933t4UIF2rf1ulWZYoPM2Wt9+KGPCpRPvWIOdvxSV8Y2Q0NL033RJefbEdKbFDA2NaLaCg56VhTpKKRED1qSKVIUZbx5dwxqA1ds2fPZu7WYdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709034790; c=relaxed/simple;
-	bh=QpM2Gj+iE1842oLmR/JSz14T461jLNYwC4WotBRHz8w=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r4a4qcQGk0jv+VM57MUXo8TIoAmGlGZ2ogKD9davfpzSA+Z5IiV87U6Ro+Rx2Rx3uvHKBdmHeVdto/AiDFT5H6IV295aFPCk4bOWnB+qZ6no0GBGCypYwzqLyWjEBpomjtUwjgNNRhf5k4ub+7L5/XVeadfv+9DWYcgYC/4JlDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ZTsDYbfT; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709034789; x=1740570789;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QpM2Gj+iE1842oLmR/JSz14T461jLNYwC4WotBRHz8w=;
-  b=ZTsDYbfTO+AsrHOaIejSbOlZ+tDEZ2deusk0O/Ki7tO9jD9Rw0BD70E0
-   t/bk1b5SLcdLbDIAnv9gYef5+ZIXyfU+9qVU+UkIMk0LJH5NhPFf8U5Jt
-   FvbDZVokMfyy0Tqm1jKgbj437fWHhALRzGshyZItrJwy8ByUZr7g8Zena
-   oRjT62sMwEfEl2P6tYIsGFNuRGnmCMydRN5ojRbAQFtWFcEJA9SSNgzfP
-   ccTsu3RETNefv/NzRJ+7jV7+p7SjifDnlOsWACm8U3dQQA93CtdL/6Eot
-   kvVHjsbdnlMwunlgjFWE+AJkOE8HEM8/wH4jz6ac5Tf8Tm9rspw9dOZ5a
-   w==;
-X-CSE-ConnectionGUID: OPUfXbZxS9CqWDIW5F1xSQ==
-X-CSE-MsgGUID: RWzb322QQCeBS6neIPwO3w==
-X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
-   d="asc'?scan'208";a="16885482"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 04:53:08 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 27 Feb 2024 04:52:42 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 27 Feb 2024 04:52:41 -0700
-Date: Tue, 27 Feb 2024 11:51:58 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-CC: Palmer Dabbelt <palmer@dabbelt.com>, <linux-riscv@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] riscv: Remove MMU dependency from Zbb and Zicboz
-Message-ID: <20240227-bonehead-stonework-d56052265b35@wendy>
-References: <20240227003630.3634533-1-samuel.holland@sifive.com>
- <20240227003630.3634533-4-samuel.holland@sifive.com>
+	s=arc-20240116; t=1709034742; c=relaxed/simple;
+	bh=xw4zyQzl0Id0Z4DHabmeCkCQhjD5cr61ZeGQvk54bLA=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=tHjo3LVszqqFsi6C26vbpH9eZQWj/ho1KtCsbHvv9tRuEsNaeUpdN1VhpyLCo9ck9muHVOq8llR4yowmLxcFEDzSaJOmxZ4nhA0cyNFX2QZA5savIhS0JKzJ5njrGRvomkfjUfZwmM4b4I8ZMCmyu06T9FcEP3t/0GUYVxi0iis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=S5MM2CxO; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709034738;
+	bh=xw4zyQzl0Id0Z4DHabmeCkCQhjD5cr61ZeGQvk54bLA=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=S5MM2CxOPJlCO9VYWip/zkvw290O8fZYOtUAN3zytS8iuXi7zEkUCbwlrpZ0KXRtN
+	 /mkrxA3ipEUu2+e5WpPnBbMYLwLmOKgDdAXJD3QyMjIXshmxIxyVtE4v2bpQiMv75E
+	 kj3+N7fgCmvv9MLpZ+Trn8GloZ855D2Fj81n068/L+93DYP6ejSfuOPK7B4z2OqGwC
+	 LI7xYViNITfpias8bLTOygjrvABY203QuPVsisgO/jbu3jCXWbSwZYjaLpLFPb34v/
+	 LF4nP2nB8NI0v7vOcaAYAkWB1fOvXQrmTbluAhHLex2bqxv89e0h5+7x1WCPP1Md9q
+	 K1gzSYaH39y6g==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id A0DD037809D1;
+	Tue, 27 Feb 2024 11:52:16 +0000 (UTC)
+Message-ID: <8bd3174c-008b-48c3-9695-41ea07ea2f4b@collabora.com>
+Date: Tue, 27 Feb 2024 16:52:38 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MVkIfoCLD1B37PLh"
-Content-Disposition: inline
-In-Reply-To: <20240227003630.3634533-4-samuel.holland@sifive.com>
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Shuah Khan <shuah@kernel.org>, kernel@collabora.com,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] selftests/dmabuf-heap: conform test to TAP format
+ output
+Content-Language: en-US
+To: "T.J. Mercier" <tjmercier@google.com>
+References: <20240226080003.4094089-1-usama.anjum@collabora.com>
+ <CABdmKX2YSrvHx3U-q1irvmEf=dDtqTtB38dERKx+4muu77zbfQ@mail.gmail.com>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <CABdmKX2YSrvHx3U-q1irvmEf=dDtqTtB38dERKx+4muu77zbfQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
---MVkIfoCLD1B37PLh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2/27/24 6:52 AM, T.J. Mercier wrote:
+> On Sun, Feb 25, 2024 at 11:59 PM Muhammad Usama Anjum
+> <usama.anjum@collabora.com> wrote:
+>>
+>> Conform the layout, informational and status messages to TAP. No
+>> functional change is intended other than the layout of output messages.
+>>
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> ---
+>>  .../selftests/dmabuf-heaps/dmabuf-heap.c      | 194 +++++++-----------
+>>  1 file changed, 77 insertions(+), 117 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+>> index 890a8236a8ba7..6e538e346cb8f 100644
+>> --- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+>> +++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+>> @@ -15,6 +15,7 @@
+>>  #include <linux/dma-buf.h>
+>>  #include <linux/dma-heap.h>
+>>  #include <drm/drm.h>
+>> +#include "../kselftest.h"
+>>
+>>  #define DEVPATH "/dev/dma_heap"
+>>
+>> @@ -90,14 +91,13 @@ static int dmabuf_heap_open(char *name)
+>>         char buf[256];
+>>
+>>         ret = snprintf(buf, 256, "%s/%s", DEVPATH, name);
+>> -       if (ret < 0) {
+>> -               printf("snprintf failed!\n");
+>> -               return ret;
+>> -       }
+>> +       if (ret < 0)
+>> +               ksft_exit_fail_msg("snprintf failed!\n");
+>>
+>>         fd = open(buf, O_RDWR);
+>>         if (fd < 0)
+>> -               printf("open %s failed!\n", buf);
+>> +               ksft_exit_fail_msg("open %s failed: %s\n", buf, strerror(errno));
+>> +
+>>         return fd;
+>>  }
+>>
+>> @@ -140,7 +140,7 @@ static int dmabuf_sync(int fd, int start_stop)
+>>
+>>  #define ONE_MEG (1024 * 1024)
+>>
+>> -static int test_alloc_and_import(char *heap_name)
+>> +static void test_alloc_and_import(char *heap_name)
+>>  {
+>>         int heap_fd = -1, dmabuf_fd = -1, importer_fd = -1;
+>>         uint32_t handle = 0;
+>> @@ -148,16 +148,12 @@ static int test_alloc_and_import(char *heap_name)
+>>         int ret;
+>>
+>>         heap_fd = dmabuf_heap_open(heap_name);
+>> -       if (heap_fd < 0)
+>> -               return -1;
+>>
+>> -       printf("  Testing allocation and importing:  ");
+>> +       ksft_print_msg("Testing allocation and importing:\n");
+>>         ret = dmabuf_heap_alloc(heap_fd, ONE_MEG, 0, &dmabuf_fd);
+>> -       if (ret) {
+>> -               printf("FAIL (Allocation Failed!)\n");
+>> -               ret = -1;
+>> -               goto out;
+>> -       }
+>> +       if (ret)
+>> +               ksft_exit_fail_msg("FAIL (Allocation Failed!)\n");
+>> +
+>>         /* mmap and write a simple pattern */
+>>         p = mmap(NULL,
+>>                  ONE_MEG,
+>> @@ -166,7 +162,7 @@ static int test_alloc_and_import(char *heap_name)
+>>                  dmabuf_fd,
+>>                  0);
+>>         if (p == MAP_FAILED) {
+>> -               printf("FAIL (mmap() failed)\n");
+>> +               ksft_print_msg("FAIL (mmap() failed)\n");
+>>                 ret = -1;
+>>                 goto out;
+>>         }
+> 
+> I think you should just ksft_exit_fail_msg these too and get rid of
+> out / not bother with manual cleanup if we're going to exit anyway.
+Not sure how I missed this. I'll send a v2.
 
-On Mon, Feb 26, 2024 at 04:34:48PM -0800, Samuel Holland wrote:
-> The Zbb and Zicboz ISA extensions have no dependency on an MMU and are
-> equally useful on NOMMU kernels.
->=20
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> ---
->=20
->  arch/riscv/Kconfig | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index bffbd869a068..ef53c00470d6 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -581,7 +581,6 @@ config TOOLCHAIN_HAS_ZBB
->  config RISCV_ISA_ZBB
->  	bool "Zbb extension support for bit manipulation instructions"
->  	depends on TOOLCHAIN_HAS_ZBB
-> -	depends on MMU
->  	depends on RISCV_ALTERNATIVE
->  	default y
->  	help
-> @@ -613,7 +612,6 @@ config RISCV_ISA_ZICBOM
-> =20
->  config RISCV_ISA_ZICBOZ
->  	bool "Zicboz extension support for faster zeroing of memory"
-> -	depends on MMU
->  	depends on RISCV_ALTERNATIVE
->  	default y
->  	help
-> --=20
-> 2.43.0
->=20
-
---MVkIfoCLD1B37PLh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd3M3gAKCRB4tDGHoIJi
-0iVOAP4xnKemNhs85COxEne/mehKUX1aV+ACJN779DXpaUB2ywD+KRmu/SwerYwl
-Ooozck02olX3pPxzIw9S73glhdreTA4=
-=1ooj
------END PGP SIGNATURE-----
-
---MVkIfoCLD1B37PLh--
 
