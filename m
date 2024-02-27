@@ -1,152 +1,101 @@
-Return-Path: <linux-kernel+bounces-83837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7226C869F0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:27:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1D77869F04
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:23:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B7DA28F2AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:27:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 615731F25199
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4479D14830F;
-	Tue, 27 Feb 2024 18:27:24 +0000 (UTC)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6985514830F;
+	Tue, 27 Feb 2024 18:23:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OWCE4U4d"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DA425757;
-	Tue, 27 Feb 2024 18:27:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAAC250F8;
+	Tue, 27 Feb 2024 18:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709058443; cv=none; b=cMYdCF/Au+9cpYY4QOdF2P5xPwyrpduYiChiuAVocXzQpOKTZxVIM1/HF9au+c97vPYpyBDR+D7v+4n1w0Z9fzqgdUn1OEoCC8WnWY2gg60jYSfByw2orr97mZk48y8tItcZFxxpGwps9/ZqLqX+0qFO5jVJ369Yc7CSkRo9zfo=
+	t=1709058229; cv=none; b=MVdfaNMgnLD1NPOwgNMyM00s1N4jJE4mX3JBs4WwGZxnZ3f+8str2U3A79FaAUoXiYUIa7F5ui1sSrL8vE6Ug8d/9qJ10yqHLsBY1g6XqNS/D3oZJv4/w1IjY1sOoFM1LBBdnw4ULlPQXFeUAIKu17Ftv1F2L0xEnwHi6a2Ke80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709058443; c=relaxed/simple;
-	bh=uO+QAb9CNhOXbeAPWDtH2HJL7jsZQvvk4tKvYfP5lKI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=G1HQQuJdeI+peXDF8mxyLG3O4tOPS/QeM17acjbyFSKLFOi8TcFv9H65/Wn9GzzGxRiYrdqZam/WFNrIry8dEcuaeQoTVtJND17vKosRqLpvKVJujSBJbA1Ypu8bOdiygHnllrdv6S93pxEZ7E0MvS8zOLBJdTTQmI85N2fmgUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1709058229; c=relaxed/simple;
+	bh=wXeL6xRn84YW+yVox2D0U7SPKqNkdMbmGVqHUOm4hqY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NjXNIub1ojYGycLzAbJQbbmnKjMINAW6x1pGY2Al/ZZajGBZAqLYbywFHKAKYLyXVNtyMx6giexUZCQ1FFetxX4hElFMH2mLAT63Q3sahS96CYOzsh7nQhPqvEirHDmO/chwbk4Mz/ZzhqK3WhV07R+ARm65iEnNUi8A+UresL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OWCE4U4d; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d24a727f78so64487591fa.0;
-        Tue, 27 Feb 2024 10:27:21 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso4979883a12.3;
+        Tue, 27 Feb 2024 10:23:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709058226; x=1709663026; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wXeL6xRn84YW+yVox2D0U7SPKqNkdMbmGVqHUOm4hqY=;
+        b=OWCE4U4d1+dc55OhhBca0DGlsd9N4L1r86dJfdV6J+GjO/dD2bJ6tKdT5bZ7AeppYt
+         obazORb7F7kf+Qkej8dVFLWUuSFmJ2ME7B8JMn2sON2qhGvxLDfG9vhhVWQA4tH1JAE2
+         0A+vq+8i74e9rLVITvvmhCyykAMhLUgRoQ3vAMUu5uIKkWx2Fo0zRs5KaTT2BsvqI3Cy
+         Xyjy6Pt1daMRDjtIy8Luhl2RevndHHO79RGSmR4cRt2VKHD7OUpQn5BtgbI65A3y2Maz
+         Bnv9EhMw3oF51Syo+N7OF08IWJc6trZuID3JJfsTezol0JfG5HqUX0/VUOz2vV782oeH
+         48MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709058440; x=1709663240;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BYvzYko0Is+SAP/w3hqBwCLet2Nqsl8SFgKdmiGU1T4=;
-        b=QomaE3IKCt2eKFkSlknGy+xuk8My/4R33j4SmsSrVDj13cMjuo/g8s3jsLNWHqC4nc
-         jj2Gx5Evn7+ubTqNJXkEMG+il44WYHL4owS/KgNxylIsela2kaY29pyPjC6EPATsgFB+
-         VBKjbcvLrkLzNMcmRJNB8adfMfZEPvwtWIde3AgAHMqHo8AlT0Yewhrc1yGv9/25MKww
-         saR+0MZvKIpgvrXBvfnylDGVgDLLphbTmRAzD4XPyJemgnXirbSZOUT2nV+H1E+ozsBw
-         aMCK2U4tYKv4b2A3pIXDRee3FA1TT4DH7by9ABubKGY1Ex32pEmDoUDbH6kBhUKE5v4C
-         G44g==
-X-Forwarded-Encrypted: i=1; AJvYcCVts9PgUJrBykEfUEQu/W8iTG3/kNHKQOsvUlon7lddiVusdyHL99TX8nJoC+NMovB/1juZfixp5zZoi2E057nbHhgEN0VHBFdoWYid
-X-Gm-Message-State: AOJu0YyFTZPx9KWFEHOa7Uh7vKrZjMnMjIxtZdIOHPrgm2s2VnffORSX
-	2BX6DiguHfFBGTi31zMEpR/brYWVzMCSrjlFKVdUEIFuWF6PFmU9pgUgu/Sp
-X-Google-Smtp-Source: AGHT+IEUwtTbXJECoVbN5asUL5J5WG/LHgYO68BFG1pCrUGnFaCZjVTJp4FqoJhJXBMYuqLO4LYYaA==
-X-Received: by 2002:a05:6512:33d5:b0:512:fe39:5d0e with SMTP id d21-20020a05651233d500b00512fe395d0emr5433262lfg.9.1709058439803;
-        Tue, 27 Feb 2024 10:27:19 -0800 (PST)
-Received: from localhost (fwdproxy-lla-000.fbsv.net. [2a03:2880:30ff::face:b00c])
-        by smtp.gmail.com with ESMTPSA id u11-20020aa7db8b000000b005653f390f77sm1001546edt.10.2024.02.27.10.27.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 10:27:19 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	Roopa Prabhu <roopa@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	horms@kernel.org,
-	bridge@lists.linux.dev (open list:ETHERNET BRIDGE)
-Subject: [PATCH net-next 1/2] net: bridge: Do not allocate stats in the driver
-Date: Tue, 27 Feb 2024 10:23:36 -0800
-Message-ID: <20240227182338.2739884-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1709058226; x=1709663026;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wXeL6xRn84YW+yVox2D0U7SPKqNkdMbmGVqHUOm4hqY=;
+        b=G/8txCYFarU9g3403+1B08TqCdzjQzchYD0u0SU7tqPTMG95wKKCTawkuhxMhmj8UW
+         Xvli7dnxFGQ2SRqgr8/zZZxV0MXRdvpWMdkbd0pgxJdo4K2DqSQlCvQVEdqk8ydhsSYE
+         w1c13aFGIl8pIY6wZ3Vbow+WHeSOdOQse63G4YOgz+h/lZJKSKaeNr9PzUkUzoKNbpzJ
+         wTOi/Ldaax8tcm5UfTv43Pd9SUjLFu1EzlmykO+Lrz9m2jUCJdC+SLe2kZk3ulAwWR59
+         AhuqE8lswmujz8xMXsv4B2WIhZBAFKQ/Rwn7k6eyGUGdCLAPlhzCoUe+NyEAVPLNIAVm
+         24Wg==
+X-Forwarded-Encrypted: i=1; AJvYcCXht517tNM7lewtb+BrHIrUUldz1AumaW0EobyhYpxnVLjalP8JIJlByLYhqunLxhoFmnausLPfkxvMx73qbpvYfKKgMnIWw+64ZAmPhP9smZz6ocMD7iGbr1ijcEz/sOTT7j1XSIgf+0a21uNK
+X-Gm-Message-State: AOJu0Yy7FiQ7VmH6qdEj6vP5u9G8nhfhXvBDVA9SEOs20VOCPwz1AnWf
+	9vNQSthiNxZgD7g1mvR44ICxoG70gpEFFm8YqSFLNfsKO6GSIroAt32xxpIvaZ8BnNlflQqsKOQ
+	4nNWu59P4/fyTBc3YdPsBAwI/YMyN2xbC1j0ZEg==
+X-Google-Smtp-Source: AGHT+IGrAmqMg8fWhmS7yIJja0CR7J8G/1TxTj98sEPqZYocLYGLvz+cuN3UIYHjYR7ZvhzVbIV4LoTflOXek003zkA=
+X-Received: by 2002:a17:906:1e93:b0:a3f:6942:a213 with SMTP id
+ e19-20020a1709061e9300b00a3f6942a213mr7010301ejj.32.1709058226431; Tue, 27
+ Feb 2024 10:23:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240207143825.986-1-lukas.bulwahn@gmail.com> <20240227154424.GB15319@lst.de>
+In-Reply-To: <20240227154424.GB15319@lst.de>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date: Tue, 27 Feb 2024 19:23:36 +0100
+Message-ID: <CAKXUXMxctfDVt=+UHNrFfQFMhRitiQVQ1DBu-X0gtuM-WZYJgA@mail.gmail.com>
+Subject: Re: [PATCH] dma-contiguous: remove debug code to removed CONFIG_CMA_DEBUG
+To: Christoph Hellwig <hch@lst.de>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev, 
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of this driver.
+On Tue, Feb 27, 2024 at 4:44=E2=80=AFPM Christoph Hellwig <hch@lst.de> wrot=
+e:
+>
+> Thanks,
+>
+> added to the dma-mapping for-next branch.
+>
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
+Christoph, please drop this patch in your for-next branch if possible.
 
-Remove the allocation in the bridge driver and leverage the network
-core allocation.
+Andrew has picked this patch already and squashed it together with the
+commit "mm/cma: drop CONFIG_CMA_DEBUG" in the mm tree. So, you do not
+need to add it anymore.
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- net/bridge/br_device.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
-
-diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
-index 874cec75a818..4f636f7b0555 100644
---- a/net/bridge/br_device.c
-+++ b/net/bridge/br_device.c
-@@ -113,26 +113,18 @@ static int br_dev_init(struct net_device *dev)
- 	struct net_bridge *br = netdev_priv(dev);
- 	int err;
- 
--	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
--	if (!dev->tstats)
--		return -ENOMEM;
--
- 	err = br_fdb_hash_init(br);
--	if (err) {
--		free_percpu(dev->tstats);
-+	if (err)
- 		return err;
--	}
- 
- 	err = br_mdb_hash_init(br);
- 	if (err) {
--		free_percpu(dev->tstats);
- 		br_fdb_hash_fini(br);
- 		return err;
- 	}
- 
- 	err = br_vlan_init(br);
- 	if (err) {
--		free_percpu(dev->tstats);
- 		br_mdb_hash_fini(br);
- 		br_fdb_hash_fini(br);
- 		return err;
-@@ -140,7 +132,6 @@ static int br_dev_init(struct net_device *dev)
- 
- 	err = br_multicast_init_stats(br);
- 	if (err) {
--		free_percpu(dev->tstats);
- 		br_vlan_flush(br);
- 		br_mdb_hash_fini(br);
- 		br_fdb_hash_fini(br);
-@@ -159,7 +150,6 @@ static void br_dev_uninit(struct net_device *dev)
- 	br_vlan_flush(br);
- 	br_mdb_hash_fini(br);
- 	br_fdb_hash_fini(br);
--	free_percpu(dev->tstats);
- }
- 
- static int br_dev_open(struct net_device *dev)
-@@ -496,6 +486,7 @@ void br_dev_setup(struct net_device *dev)
- 	dev->hw_features = COMMON_FEATURES | NETIF_F_HW_VLAN_CTAG_TX |
- 			   NETIF_F_HW_VLAN_STAG_TX;
- 	dev->vlan_features = COMMON_FEATURES;
-+	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
- 
- 	br->dev = dev;
- 	spin_lock_init(&br->lock);
--- 
-2.43.0
-
+Lukas
 
