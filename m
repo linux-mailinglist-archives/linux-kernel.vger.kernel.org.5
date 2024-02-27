@@ -1,197 +1,135 @@
-Return-Path: <linux-kernel+bounces-82821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34746868A19
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:45:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF386868A1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:48:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 535021C2109E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:45:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 587161F232F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEDAE54FA5;
-	Tue, 27 Feb 2024 07:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C67254FA6;
+	Tue, 27 Feb 2024 07:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uAzeuhSk"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="htlqT1yO"
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555BE54F83
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252F052F92;
+	Tue, 27 Feb 2024 07:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709019943; cv=none; b=QKRDN1OvbcIfHEeW7/3y6BjUzoB6xMvzkIS3OG1AxO6N7lzRewu2JeKrfurzvPG74SHPQjAiew/sVDLC5Kba3EK7vd9m3v5pNuNqhy1dzSU7XElf63PB3VcYko9SWqloLZz+8BpICcKmYVPPb9PyFUsH7nzpY4NJjaoD+9wTuaQ=
+	t=1709020117; cv=none; b=h0kA+jgoAX/2YuEkGaXBWbOVWG/tLo8Aprbtn3jGF8F0B62Wk+DwJR6EM3evFI5B/CXtg5IX8ltioSzpOuGYrgzoECyiRAc6XqZ5gmsiwJVwm7zpRQ5dISfEDJeLO7+Jv8tkOL+mUb+OuPs0oD86NQZW4efpdfY6pW8MBj5r4i0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709019943; c=relaxed/simple;
-	bh=LHY1soh3TSDneqtCq2eVyxDXi8p5oUsCqKFJ1MDn28Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OiO5hTY6HqWhPFeWxcZjcshCOxf6BrXusNUFzHp9p6MOACOzx0uZTnQEkaj8DhNJ6uY4DvDpTL+vr17qwrW65icUnhC5urc3OED/sthqG/tUn7U/L16puj/pv7Rw+y0PGfsdLs+jPNmTgYArlrTR+IGHJG+Sb1ckn/UjkCVvga4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uAzeuhSk; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d94b222a3aso40444525ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:45:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709019942; x=1709624742; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vz+b24keEy8SKVGT/zsCqIzqYg8F8QonmdaHU6M1RMQ=;
-        b=uAzeuhSkOi5XC1Q0+LXKPKFqfcxiFqsB8qz0ePNLB5Ake664f9qZtlJr11kjCjTM3k
-         5XSJOvLPth+sySUqR76VsavJ38Ce2Wb77YyOw++TwqOkGmAs7n24lYUwfJPMOZfeTjUB
-         jbVH1AKHaV/NlTPoPUnC5inlX0LGqhmIQao1TdsAoSoFrYF1D6OHK5cT+kflJzY5VdkJ
-         /148x+GZ5g6WmLtcOPQVkpuEZRgH6EIiR1Tg1NZAnz03+ZWZ9YdUq+isPrk9d2fUVReK
-         yHYMfKVXQ1qSFTdYD0MPAK8JaWLFrK6ceXpTVMJtVYCHdqTAVCf9ImO5iIRxAkjnUJH5
-         gvxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709019942; x=1709624742;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vz+b24keEy8SKVGT/zsCqIzqYg8F8QonmdaHU6M1RMQ=;
-        b=eV+p6rI4EXKJvh6SdpjQWInw+87GsKdmrG1VQJwbBuSRPcc/wFAoEJFzALs8+MC6qJ
-         D405MK1k5pEmH5MJ0RwIiy4C+J4vlmr2D/DIWNKcKgzNqiO+rVrMqeQsMFCZO6cYsLPN
-         NUZhnamli1YW48L/SYVdxv7a64En/3CXgXqcU0oe2/ToUvMxVJH5rr8wTiCLuw66AAVQ
-         97JMKueH1EZ4Q1EaHlkwGC4dRJwSB3u6kRi80ebObCTDFYAKUB7Dj/eW1YM3U64eX9gR
-         FITlr2EIoFyN7/OyknJ5NDtDeY3zhdVj7wdnQVInQuhS3IG9B9Njhu7yihVwnpHOgM7J
-         BYCw==
-X-Forwarded-Encrypted: i=1; AJvYcCXHvoQVw8Zq28xzYn2D1nctwI+uR7J07hHMcefwVcZGqJqyh005abUupJ+HjnUNMHTBpiQc6RNcnasQ1r1sZum7ZHGEkPOBk5W7/WVb
-X-Gm-Message-State: AOJu0YyNrenPk9CfDrWZ/paXds7an169ce+DOkMC2khp8mXnFMLvqmyk
-	Uzya2rR02Lr7ZKsoDq7y3TUlb2L9BTGabll1jr9fAte+I2z4BF3KCRrWv7KKoA==
-X-Google-Smtp-Source: AGHT+IGoPWkNE6JIjVJz1XqdnjAP9lGvBAm0VujbexvNFkLOg4OzNepoOaOycaMqUlL+eVesMoK8lA==
-X-Received: by 2002:a17:902:db0e:b0:1dc:b77e:1973 with SMTP id m14-20020a170902db0e00b001dcb77e1973mr1593245plx.53.1709019941652;
-        Mon, 26 Feb 2024 23:45:41 -0800 (PST)
-Received: from thinkpad ([117.213.97.177])
-        by smtp.gmail.com with ESMTPSA id l20-20020a170902e2d400b001d71729ec9csm884589plc.188.2024.02.26.23.45.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 23:45:41 -0800 (PST)
-Date: Tue, 27 Feb 2024 13:15:33 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Serge Semin <fancer.lancer@gmail.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
-	Siddharth Vadapalli <s-vadapalli@ti.com>
-Subject: Re: [PATCH v3 3/5] PCI: dwc: Pass the eDMA mapping format flag
- directly from glue drivers
-Message-ID: <20240227074533.GH2587@thinkpad>
-References: <20240226-dw-hdma-v3-0-cfcb8171fc24@linaro.org>
- <20240226-dw-hdma-v3-3-cfcb8171fc24@linaro.org>
- <Zdy8lVU6r+JO6OSJ@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1709020117; c=relaxed/simple;
+	bh=wG2uIpbEANFW4tW15wCrzK5XccYHhRVggoJTbU34Urw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iuJ3DH7W5x4nw1dg6Q0oVfGp1W29HX/9NPAVVqVZf2IxvmtsaL9OtmVmGjiIKLhz0g6wg/plOLYvRRzw4vBOXkjQQacO02pRtF1mYfSLfMYqUZgIXvnFkPYkrcoPIdXJwbzJit7cafqSgXYZK67LfaibVVgl9XgsPRJQ1qcGlUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=htlqT1yO; arc=none smtp.client-ip=115.124.30.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709020111; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=ANqhyhYFXNbDTvGM7IZr9p+VwuyJreRc2hLrirn5IY4=;
+	b=htlqT1yO5e5cMacS6j9kou8nY4UoeAvtcV3VARjJ5oTTYY9ao0TqJXb9ab4518egq0UkvsB6bE7JjXZSD+IB5YBhRC4DAKdj6ktHGvgm9XdRNJm87wPo1XFvYf6aOBV4NL3Zcyvd2EONyNWKviCGBoTFfXnpDxogJbHJ9PbSVxg=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=liusong@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W1M4M.M_1709020108;
+Received: from 30.178.80.107(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0W1M4M.M_1709020108)
+          by smtp.aliyun-inc.com;
+          Tue, 27 Feb 2024 15:48:29 +0800
+Message-ID: <2c1d0ece-a781-4bf7-89dd-cea428842d05@linux.alibaba.com>
+Date: Tue, 27 Feb 2024 15:48:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv10 3/4] genirq: Avoid summation loops for /proc/interrupts
+To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
+ tglx@linutronix.de, akpm@linux-foundation.org, pmladek@suse.com,
+ kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
+ tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+ jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20240226020939.45264-1-yaoma@linux.alibaba.com>
+ <20240226020939.45264-4-yaoma@linux.alibaba.com>
+From: Liu Song <liusong@linux.alibaba.com>
+In-Reply-To: <20240226020939.45264-4-yaoma@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zdy8lVU6r+JO6OSJ@lizhi-Precision-Tower-5810>
 
-On Mon, Feb 26, 2024 at 11:30:13AM -0500, Frank Li wrote:
-> On Mon, Feb 26, 2024 at 05:07:28PM +0530, Manivannan Sadhasivam wrote:
-> > Instead of maintaining a separate capability for glue drivers that cannot
-> > support auto detection of the eDMA mapping format, let's pass the mapping
-> > format directly from them.
-> 
-> Sorry, what's mapping? is it register address layout?
-> 
 
-Memory map containing the register layout for iATU, DMA etc...
+在 2024/2/26 10:09, Bitao Hu 写道:
+> We could use the irq_desc::tot_count member to avoid the summation
+> loop for interrupts which are not marked as 'PER_CPU' interrupts in
+> 'show_interrupts'. This could reduce the time overhead of reading
+> /proc/interrupts.
+>
+> Originally-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+> ---
+>   include/linux/irqdesc.h | 2 ++
+>   kernel/irq/irqdesc.c    | 2 +-
+>   kernel/irq/proc.c       | 9 +++++++--
+>   3 files changed, 10 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
+> index 2912b1998670..1ee96d7232b4 100644
+> --- a/include/linux/irqdesc.h
+> +++ b/include/linux/irqdesc.h
+> @@ -121,6 +121,8 @@ static inline void irq_unlock_sparse(void) { }
+>   extern struct irq_desc irq_desc[NR_IRQS];
+>   #endif
+>   
+> +extern bool irq_is_nmi(struct irq_desc *desc);
+> +
+>   static inline unsigned int irq_desc_kstat_cpu(struct irq_desc *desc,
+>   					      unsigned int cpu)
+>   {
+> diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
+> index 9cd17080b2d8..56a767957a9d 100644
+> --- a/kernel/irq/irqdesc.c
+> +++ b/kernel/irq/irqdesc.c
+> @@ -955,7 +955,7 @@ unsigned int kstat_irqs_cpu(unsigned int irq, int cpu)
+>   	return desc && desc->kstat_irqs ? per_cpu(desc->kstat_irqs->cnt, cpu) : 0;
+>   }
+>   
+> -static bool irq_is_nmi(struct irq_desc *desc)
+> +bool irq_is_nmi(struct irq_desc *desc)
+>   {
+>   	return desc->istate & IRQS_NMI;
+>   }
+> diff --git a/kernel/irq/proc.c b/kernel/irq/proc.c
+> index 6954e0a02047..b3b1b93f0410 100644
+> --- a/kernel/irq/proc.c
+> +++ b/kernel/irq/proc.c
+> @@ -489,8 +489,13 @@ int show_interrupts(struct seq_file *p, void *v)
+>   		goto outsparse;
+>   
+>   	if (desc->kstat_irqs) {
+> -		for_each_online_cpu(j)
+> -			any_count |= data_race(per_cpu(desc->kstat_irqs->cnt, j));
+> +		if (!irq_settings_is_per_cpu_devid(desc) &&
+> +		    !irq_settings_is_per_cpu(desc) &&
+> +		    !irq_is_nmi(desc))
+> +			any_count = data_race(desc->tot_count);
+> +		else
+> +			for_each_online_cpu(j)
+> +				any_count |= data_race(per_cpu(desc->kstat_irqs->cnt, j));
+>   	}
+>   
+>   	if ((!desc->action || irq_desc_is_chained(desc)) && !any_count)
 
-- Mani
+The modification borrows from the implementation of |kstat_irqs. Looks 
+good.|
 
-> Frank
-> 
-> > 
-> > This will simplify the code and also allow adding HDMA support that also
-> > doesn't support auto detection of mapping format.
-> > 
-> > Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-> > Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-designware.c | 16 +++++++++-------
-> >  drivers/pci/controller/dwc/pcie-designware.h |  5 ++---
-> >  drivers/pci/controller/dwc/pcie-rcar-gen4.c  |  2 +-
-> >  3 files changed, 12 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> > index ce273c3c5421..3e90b9947a13 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> > @@ -894,18 +894,20 @@ static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
-> >  {
-> >  	u32 val;
-> >  
-> > +	/*
-> > +	 * Bail out finding the mapping format if it is already set by the glue
-> > +	 * driver. Also ensure that the edma.reg_base is pointing to a valid
-> > +	 * memory region.
-> > +	 */
-> > +	if (pci->edma.mf != EDMA_MF_EDMA_LEGACY)
-> > +		return pci->edma.reg_base ? 0 : -ENODEV;
-> > +
-> >  	/*
-> >  	 * Indirect eDMA CSRs access has been completely removed since v5.40a
-> >  	 * thus no space is now reserved for the eDMA channels viewport and
-> >  	 * former DMA CTRL register is no longer fixed to FFs.
-> > -	 *
-> > -	 * Note that Renesas R-Car S4-8's PCIe controllers for unknown reason
-> > -	 * have zeros in the eDMA CTRL register even though the HW-manual
-> > -	 * explicitly states there must FFs if the unrolled mapping is enabled.
-> > -	 * For such cases the low-level drivers are supposed to manually
-> > -	 * activate the unrolled mapping to bypass the auto-detection procedure.
-> >  	 */
-> > -	if (dw_pcie_ver_is_ge(pci, 540A) || dw_pcie_cap_is(pci, EDMA_UNROLL))
-> > +	if (dw_pcie_ver_is_ge(pci, 540A))
-> >  		val = 0xFFFFFFFF;
-> >  	else
-> >  		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> > index 26dae4837462..995805279021 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware.h
-> > +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> > @@ -51,9 +51,8 @@
-> >  
-> >  /* DWC PCIe controller capabilities */
-> >  #define DW_PCIE_CAP_REQ_RES		0
-> > -#define DW_PCIE_CAP_EDMA_UNROLL		1
-> > -#define DW_PCIE_CAP_IATU_UNROLL		2
-> > -#define DW_PCIE_CAP_CDM_CHECK		3
-> > +#define DW_PCIE_CAP_IATU_UNROLL		1
-> > +#define DW_PCIE_CAP_CDM_CHECK		2
-> >  
-> >  #define dw_pcie_cap_is(_pci, _cap) \
-> >  	test_bit(DW_PCIE_CAP_ ## _cap, &(_pci)->caps)
-> > diff --git a/drivers/pci/controller/dwc/pcie-rcar-gen4.c b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-> > index e9166619b1f9..3c535ef5ea91 100644
-> > --- a/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-> > +++ b/drivers/pci/controller/dwc/pcie-rcar-gen4.c
-> > @@ -255,7 +255,7 @@ static struct rcar_gen4_pcie *rcar_gen4_pcie_alloc(struct platform_device *pdev)
-> >  	rcar->dw.ops = &dw_pcie_ops;
-> >  	rcar->dw.dev = dev;
-> >  	rcar->pdev = pdev;
-> > -	dw_pcie_cap_set(&rcar->dw, EDMA_UNROLL);
-> > +	rcar->dw.edma.mf = EDMA_MF_EDMA_UNROLL;
-> >  	dw_pcie_cap_set(&rcar->dw, REQ_RES);
-> >  	platform_set_drvdata(pdev, rcar);
-> >  
-> > 
-> > -- 
-> > 2.25.1
-> > 
+|Reviewed-by: Liu Song <liusong@linux.alibaba.com> |
 
--- 
-மணிவண்ணன் சதாசிவம்
+||
+
 
