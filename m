@@ -1,135 +1,333 @@
-Return-Path: <linux-kernel+bounces-82966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10A8B868C57
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:33:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA75868C5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:36:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0B1828461B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:33:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7D791F231F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:36:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29BF11369B4;
-	Tue, 27 Feb 2024 09:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2372313698F;
+	Tue, 27 Feb 2024 09:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="GMTPJcrf"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Xu9Lb3v8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A291369A4;
-	Tue, 27 Feb 2024 09:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0884A135A75
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709026411; cv=none; b=pcrgCPezf3N72MM+txGNLL83F/7rp023GMuo7b+uJzGXvbKpD0/V7RrwgYKN3L1W2OcxE3sfKBwOElKfKZPSkIwT0zpto9AAHC9dW7fiKJjvnOI1BoY+yZ76ZJylz8ISksKB3r9sILZbYRG1iXe6Ed6bH0d61jEmRR9tAc7vF70=
+	t=1709026610; cv=none; b=Lxqo75GIm1KFHyv+Ydszv3w/tOgBHq4v5zuULbC6kmhoiOCUAADwMhkt3PfuF7X8PkcvQZOxz/OLu4WW/wQsBDc+MxQ9CpA4qz5kCIRUIYxYc85JPphR6Bo4w42Eqdq9HJYpd2QX25Rwu2G7APv4r/eTqE2VJIRJiOgdwgxcmEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709026411; c=relaxed/simple;
-	bh=ihSb31MveA511qLCYqgRAbr0VwITsxdL+t6Pn6z4hzI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oag7/HPqWDCCPT9X9XjGfmTe4lFScqsvg1/RYGnuvav0skgRFPMaypq5EI/XtXZpYPxbk00+5p83DYltmtkXqvl5+baGzynrmdmmDcQ9x/wE4oAAZ0JwoRJOlySGZ5cHFTWBh/AqrP4QwjivoMdJzvnY2mU1mLAjLRVion0hw28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=GMTPJcrf; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TkXNP5Jv6z9smD;
-	Tue, 27 Feb 2024 10:33:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1709026405;
+	s=arc-20240116; t=1709026610; c=relaxed/simple;
+	bh=IA4jXxU6MJ/W/qpXgS/1CKOVND0eKixNSN67gqPANlY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=edEGaisoia4I/8CYl4K/E3mpyM9dLqPYbGMuZ/Ksolh8QoKQua+sOQN2ot3HZsMmBZkMZ8hnpQuDsb4XS179AcaaPDQs4BwKvKXGsZhg7bSqMul19bTlN0Vc/ft71HYNupvahPbDzmY3LFJ3ddMjmkJojRXAgxOfpdOCLioYoew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Xu9Lb3v8; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709026606;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=50P6BtmSu6TZY3fumWs04okJUU6PUrVTmELjj8/MjQM=;
-	b=GMTPJcrfqTMcvvlrwwI/f3bHzERGH6KsPCu9OUPYazsskmeLvpmeO2lKMnMCcfDSSOAL/R
-	dvmZqZmKX3dpt0/QjiDz34yjHWSWM4GA9r3AYl9RpAD3SGErX8Nxkx2bkbWZTV5mIHcmE8
-	5gXSdvlqZLUCp3JKTKITpHBav6Ci6w6NNuL96JeCu8vQUDzSLs0RN533WXRkPxFnEZFlBr
-	6spw7PuDKhZl5kqWFsLeXR4kLcSs98VHR4rxMlaeTg/OpZvqxllaR/OfDKv5fiD59OKo60
-	a6E2UIlHVi6c4Wy5PW8/I/+BcTT4z41Myx2eckvXAhAtwQeMCWJk3mF0tQzk0w==
-Date: Tue, 27 Feb 2024 10:33:21 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, david@fromorbit.com, chandan.babu@oracle.com, 
-	akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com, hare@suse.de, 
-	djwong@kernel.org, gost.dev@samsung.com, linux-mm@kvack.org, 
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 10/13] iomap: fix iomap_dio_zero() for fs bs > system
- page size
-Message-ID: <3pqmgrlewo6ctcwakdvbvjqixac5en6irlipe5aiz6vkylfyni@2luhrs36ke5r>
-References: <20240226094936.2677493-1-kernel@pankajraghav.com>
- <20240226094936.2677493-11-kernel@pankajraghav.com>
- <ZdzRU0sMqFYlNC01@casper.infradead.org>
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=rFrtZB6Qy6FQZw76onOMTtbfujJrxXsMEz/j5WTBBdE=;
+	b=Xu9Lb3v8bvZCkRnUzFtIqhthqOLTW7z0syNH61GSTRjkm+wF5J0DfKKRIl0b20XZlG2L7k
+	RYMRO7dXyrpyRMv6mlJb6Z3jpjR27l4kBQAStoooZ6/n3DvTd9uSCvU1psiR8BIIKE4vUz
+	UgPPjS7294xZ9nltOG2vw5iOR3kP7+I=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-656-Ax3rW-dKORq8Iy3HsoSYsA-1; Tue, 27 Feb 2024 04:36:45 -0500
+X-MC-Unique: Ax3rW-dKORq8Iy3HsoSYsA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33dcd5d117fso922339f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:36:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709026604; x=1709631404;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rFrtZB6Qy6FQZw76onOMTtbfujJrxXsMEz/j5WTBBdE=;
+        b=k/9AfeAxpFAAHCtmRm9+KjbbLeet6YDQrg85QKo9NgX77NY2/OZ5VDgN1uAlt/npnu
+         rFG33gj19g7QY6DVQeSRI2g6RsROLF1NWLSv3uMGg72w9meXXAeElRNlePjpUTwars98
+         VlzVcmtPL5EOSmJyxUBAfiNWrFfW6PfjNWfyphaFSS1GMG0+UZxahuTG57qdtx5TzCDy
+         qjK5G8Rik2JB+rWmg+CDmMDP2C0poTqNUo6pTV3dpANRevFjV2z6mA+OMeYFANSZUoyM
+         5F+U7F5YaFqglsuYAlMdmYhKhR7YBD8fjUtIxfhs1KLKF9yYX4doGgt7mTvqdV0rfmyI
+         MEkw==
+X-Forwarded-Encrypted: i=1; AJvYcCVzV1QBaiGDv6yuTnlBgkKlgvo6GdbFjosVu51UKF0ULQBJ9Crc6gtetrfQphpeTORtGyuM2QMvnICMCZkJ6Gl8vaTDYISUtr5La0A7
+X-Gm-Message-State: AOJu0YzW95/V7mX9ZKGw/OC9xHuB1XO3EIdUFOQkBM93F5+E5dBRLDGf
+	7byVuu7QcZ089UtnOxKOvM1FFzYULAaSpGqCueUZX+X0GTVPzffYwHek1tAVLxPlKHGZrzJhyad
+	N+YeucP1vWxfzb98L9u/Swrea60lPhfdrr4wfGlCmvxhyMoSdUlluZqhUSSGQh8tdqBe76Q==
+X-Received: by 2002:a5d:64e4:0:b0:33d:d843:ecd2 with SMTP id g4-20020a5d64e4000000b0033dd843ecd2mr6232936wri.24.1709026604293;
+        Tue, 27 Feb 2024 01:36:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGDsUgDSopD1fVRnJyEr5SXJwldCqWCCOnD+fLPGhaDnBcJi/DaDdazKJ9JDmkli96dYKhRDw==
+X-Received: by 2002:a5d:64e4:0:b0:33d:d843:ecd2 with SMTP id g4-20020a5d64e4000000b0033dd843ecd2mr6232906wri.24.1709026603868;
+        Tue, 27 Feb 2024 01:36:43 -0800 (PST)
+Received: from ?IPV6:2003:cb:c707:7600:5c18:5a7d:c5b7:e7a9? (p200300cbc70776005c185a7dc5b7e7a9.dip0.t-ipconnect.de. [2003:cb:c707:7600:5c18:5a7d:c5b7:e7a9])
+        by smtp.gmail.com with ESMTPSA id bj29-20020a0560001e1d00b0033d81d9c44esm10925634wrb.70.2024.02.27.01.36.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 01:36:43 -0800 (PST)
+Message-ID: <42ffe7cf-8371-433d-a9bf-1a23c902f3f9@redhat.com>
+Date: Tue, 27 Feb 2024 10:36:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdzRU0sMqFYlNC01@casper.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
+ need it
+Content-Language: en-US
+To: Barry Song <21cnbao@gmail.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Barry Song <v-songbaohua@oppo.com>, Lance Yang <ioworker0@gmail.com>,
+ Yin Fengwei <fengwei.yin@intel.com>
+References: <20240227024050.244567-1-21cnbao@gmail.com>
+ <61b9dfc9-5522-44fd-89a4-140833ede8af@arm.com>
+ <c95215b2-6ec5-4efb-a73b-7be92cda1c83@redhat.com>
+ <CAGsJ_4z3dbqnN5nkKgm2_zyLHK0gqMugzPYMkPpRMK4ypBVJNw@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAGsJ_4z3dbqnN5nkKgm2_zyLHK0gqMugzPYMkPpRMK4ypBVJNw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-> I thought we were going to use the huge_zero_page for this?
+On 27.02.24 10:27, Barry Song wrote:
+> On Tue, Feb 27, 2024 at 10:14 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 27.02.24 10:07, Ryan Roberts wrote:
+>>> On 27/02/2024 02:40, Barry Song wrote:
+>>>> From: Barry Song <v-songbaohua@oppo.com>
+>>>>
+>>>> madvise and some others might need folio_pte_batch to check if a range
+>>>> of PTEs are completely mapped to a large folio with contiguous physcial
+>>>> addresses. Let's export it for others to use.
+>>>>
+>>>> Cc: Lance Yang <ioworker0@gmail.com>
+>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>>>> Cc: David Hildenbrand <david@redhat.com>
+>>>> Cc: Yin Fengwei <fengwei.yin@intel.com>
+>>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>>> ---
+>>>>    -v1:
+>>>>    at least two jobs madv_free and madv_pageout depend on it. To avoid
+>>>>    conflicts and dependencies, after discussing with Lance, we prefer
+>>>>    this one can land earlier.
+>>>
+>>> I think this will also ultimately be useful for mprotect too, though I haven't
+>>> looked at it properly yet.
+>>>
+>>
+>> Yes, I think we briefly discussed that.
+>>
+>>>>
+>>>>    mm/internal.h | 13 +++++++++++++
+>>>>    mm/memory.c   | 11 +----------
+>>>>    2 files changed, 14 insertions(+), 10 deletions(-)
+>>>>
+>>>> diff --git a/mm/internal.h b/mm/internal.h
+>>>> index 13b59d384845..8e2bc304f671 100644
+>>>> --- a/mm/internal.h
+>>>> +++ b/mm/internal.h
+>>>> @@ -83,6 +83,19 @@ static inline void *folio_raw_mapping(struct folio *folio)
+>>>>       return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
+>>>>    }
+>>>>
+>>>> +/* Flags for folio_pte_batch(). */
+>>>> +typedef int __bitwise fpb_t;
+>>>> +
+>>>> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+>>>> +#define FPB_IGNORE_DIRTY            ((__force fpb_t)BIT(0))
+>>>> +
+>>>> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+>>>> +#define FPB_IGNORE_SOFT_DIRTY               ((__force fpb_t)BIT(1))
+>>>> +
+>>>> +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>>> +            pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+>>>> +            bool *any_writable);
+>>>> +
+>>>>    void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>>>>                                               int nr_throttled);
+>>>>    static inline void acct_reclaim_writeback(struct folio *folio)
+>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>> index 1c45b6a42a1b..319b3be05e75 100644
+>>>> --- a/mm/memory.c
+>>>> +++ b/mm/memory.c
+>>>> @@ -953,15 +953,6 @@ static __always_inline void __copy_present_ptes(struct vm_area_struct *dst_vma,
+>>>>       set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+>>>>    }
+>>>>
+>>>> -/* Flags for folio_pte_batch(). */
+>>>> -typedef int __bitwise fpb_t;
+>>>> -
+>>>> -/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+>>>> -#define FPB_IGNORE_DIRTY            ((__force fpb_t)BIT(0))
+>>>> -
+>>>> -/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+>>>> -#define FPB_IGNORE_SOFT_DIRTY               ((__force fpb_t)BIT(1))
+>>>> -
+>>>>    static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+>>>>    {
+>>>>       if (flags & FPB_IGNORE_DIRTY)
+>>>> @@ -982,7 +973,7 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+>>>>     * If "any_writable" is set, it will indicate if any other PTE besides the
+>>>>     * first (given) PTE is writable.
+>>>>     */
+>>>
+>>> David was talking in Lance's patch thread, about improving the docs for this
+>>> function now that its exported. Might be worth syncing on that.
+>>
+>> Here is my take:
+>>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>    mm/memory.c | 22 ++++++++++++++++++----
+>>    1 file changed, 18 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index d0b855a1837a8..098356b8805ae 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -971,16 +971,28 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+>>          return pte_wrprotect(pte_mkold(pte));
+>>    }
+>>
+>> -/*
+>> +/**
+>> + * folio_pte_batch - detect a PTE batch for a large folio
+>> + * @folio: The large folio to detect a PTE batch for.
+>> + * @addr: The user virtual address the first page is mapped at.
+>> + * @start_ptep: Page table pointer for the first entry.
+>> + * @pte: Page table entry for the first page.
+>> + * @max_nr: The maximum number of table entries to consider.
+>> + * @flags: Flags to modify the PTE batch semantics.
+>> + * @any_writable: Optional pointer to indicate whether any entry except the
+>> + *               first one is writable.
+>> + *
+>>     * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+>> - * pages of the same folio.
+>> + * pages of the same large folio.
+>>     *
+>>     * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN,
+>>     * the accessed bit, writable bit, dirty bit (with FPB_IGNORE_DIRTY) and
+>>     * soft-dirty bit (with FPB_IGNORE_SOFT_DIRTY).
+>>     *
+>> - * If "any_writable" is set, it will indicate if any other PTE besides the
+>> - * first (given) PTE is writable.
+>> + * start_ptep must map any page of the folio. max_nr must be at least one and
+>> + * must be limited by the caller so scanning cannot exceed a single page table.
+>> + *
+>> + * Return: the number of table entries in the batch.
+>>     */
+>>    static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>                  pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+>> @@ -996,6 +1008,8 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>                  *any_writable = false;
+>>
+>>          VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+>> +       VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
+>> +       VM_WARN_ON_FOLIO(page_folio(pfn_to_page(pte_pfn(pte))) != folio, folio);
+>>
+>>          nr = pte_batch_hint(start_ptep, pte);
+>>          expected_pte = __pte_batch_clear_ignored(pte_advance_pfn(pte, nr), flags);
+>> --
+>> 2.43.2
+>>
+>>
+>>>
+>>>> -static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>>> +int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>>
+>>> fork() is very performance sensitive. Is there a risk we are regressing
+>>> performance by making this out-of-line? Although its in the same compilation
+>>> unit so the compiler may well inline it anyway?
+>>
+>> Easy to verify by looking at the generated asm I guess?
+> 
+> my aarch64-linux-gnu-gcc didn't inline it
 
-Yes. We discussed that huge_zero_page might fail, so we concluded that
-we needed an api that can return arbitrary folio order that will not
-fail:
-```
-your point about it possibly failing is correct.  so i think we need an
-api which definitely returns a folio, but it might be of arbitrary
-order.
-```
+I think on x86-64 it would inline it with "gcc (GCC) 13.2.1 20231205 
+(Red Hat 13.2.1-6)"
 
-I couldn't come up with implementing your latter suggestion, so I
-informed darrick that let's use this patch for now, and add the
-arbitrary folio order with zero as a later enhancement.
+> 
+> $ aarch64-linux-gnu-gcc --version
+> aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+> Copyright (C) 2021 Free Software Foundation, Inc.
+> 
+> $ nm -S -s vmlinux.a | grep  folio_pte_batch
+> 0000000000003818 0000000000000204 T folio_pte_batch
+> 
 
-If we want to use mm_huge_zero_page, then this should work:
+As it's only used on the folio_test_large() "slower" paths, likely 
+optimizing out the "writable" check (and possibly the flags) might not 
+be that important.
 
-diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-index 04f6c5548136..b6a3f52f48da 100644
---- a/fs/iomap/direct-io.c
-+++ b/fs/iomap/direct-io.c
-@@ -237,10 +237,17 @@ static void iomap_dio_zero(const struct iomap_iter *iter, struct iomap_dio *dio,
- {
-        struct inode *inode = file_inode(dio->iocb->ki_filp);
-        struct page *page = ZERO_PAGE(0);
-+       struct folio *folio = NULL;
-        struct bio *bio;
- 
-        WARN_ON_ONCE(len > (BIO_MAX_VECS * PAGE_SIZE));
- 
-+       if (len > PAGE_SIZE) {
-+               page = mm_get_huge_zero_page(current->mm);
-+               if (!page)
-+                       page = ZERO_PAGE(0);
-+       }
-+
-        bio = iomap_dio_alloc_bio(iter, dio, BIO_MAX_VECS,
-                                  REQ_OP_WRITE | REQ_SYNC | REQ_IDLE);
-        fscrypt_set_bio_crypt_ctx(bio, inode, pos >> inode->i_blkbits,
-@@ -249,13 +256,15 @@ static void iomap_dio_zero(const struct iomap_iter *iter, struct iomap_dio *dio,
-        bio->bi_iter.bi_sector = iomap_sector(&iter->iomap, pos);
-        bio->bi_private = dio;
-        bio->bi_end_io = iomap_dio_bio_end_io;
-+       folio = page_folio(page);
- 
-        while (len) {
--               unsigned int io_len = min_t(unsigned int, len, PAGE_SIZE);
-+               size_t size = min(len, folio_size(folio));
- 
--               __bio_add_page(bio, page, io_len, 0);
--               len -= io_len;
-+               bio_add_folio_nofail(bio, folio, size, 0);
-+               len -= size;
-        }
-+
-        iomap_dio_submit_bio(iter, dio, bio, pos);
- }
+>>
+>>>
+>>> Either way, perhaps we are better off making it inline in the header? That would
+>>> avoid needing to rerun David's micro-benchmarks for fork() and munmap().
+> 
+> actually tried this before trying extern, the problem is that we have to add
+> others into internal.h, for example __pte_batch_clear_ignored, which
+> seems not API. are we comfortable to move that one to internal.h too?
 
-Let me know if we should go for this or let's keep the original patch
-and add a ZERO_FOLIO_ORDER API that will not fail and use it as a later
-enhancement.
+Yes, that shouldn't stop us.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
