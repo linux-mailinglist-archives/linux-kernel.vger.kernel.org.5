@@ -1,144 +1,108 @@
-Return-Path: <linux-kernel+bounces-84005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7092886A13F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:57:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C654586A142
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB26A1F20F2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:57:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C1761F22034
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3289014F972;
-	Tue, 27 Feb 2024 20:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E9314EFF3;
+	Tue, 27 Feb 2024 20:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="Ghe4a1rZ"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eo6G1mRu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9DF14F965
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B29513AA36;
+	Tue, 27 Feb 2024 20:58:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709067422; cv=none; b=BW7tzGvjthvICXVjAdZhP6kEBsVgmGliz2MrYsEx5dp2pT9mc+nk1+25G4TYqjfGNDyCs83ni6V1EpCiWKCq4DzFyitEEfmriQPTGR5XC68DWFf2XpP1j1X+qD1RW1LoYnIJYLUDsbMP1wjdDoPZT5DBgUrrZtqsYvl1k9cBIyA=
+	t=1709067502; cv=none; b=ufIFS0W5tM29b7vudR6dcW/sNPena+V+DPO38H4lX3Y+PYjptyq1d1ddHOlj9ONzOY+5qGasDNy5/Dcnv8A5a04SatxGHO4DTEYZYqBUKq8qsEzMu8+x7wsYN91/VtSprJZU0MJjyaRScuDCy8lBa5u1sLj7C8ijjivJqGKHzUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709067422; c=relaxed/simple;
-	bh=gJZBinDyWIvm+ZDABf7fPqFPDqpvWRUG2+D8GQZexY8=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=XMIZmMleoB/NF7oG6eyE4PFx7gGHdq5pa0YiqhfPnfI/W3ftc3Lx1FqNHZHnqfu7bzGblX6WECIQdXuVIKwhbFHE0FF9jJpOs126Y/Mz4gMbuFtriH3f2Yd90Q73oi/RP0HgUH/jQ6A3D52WCPWYmieC8sRltGXKnmZaexwYxb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=Ghe4a1rZ; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d94b222a3aso48725545ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:57:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1709067420; x=1709672220; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NOB62dL9qN724Ecj/YLdjEDiS5KjiWcStv5/TyEIX7s=;
-        b=Ghe4a1rZSOCzmmHgwJlt9LAjnEyR+wG18+SvtxJkpS9CEYoZqha8Rx9C429kgKW/8u
-         G1/xZvmHw9I1EnnatwxuvfcFYAx401Kc5Uyc/cqPb2FqZ5N9HKDlnE0JCocCVcWK2MRP
-         kOqLH5QMp/OSojM9bYFR62U65GMCzaSkcUYVckoR3OMEiR/Fdr2xkbXMrMU6OAG0q41P
-         Y+w2wLL3/gkTjHQ6L/XYCi7cheokiZkIdzTWBEdUni/Y5iRXHN5NzQOK5ZDyIM4gh5bF
-         gwBwEoaeaznKcXNHHxsXstoYdmSZFeQmr3x6QUAN1ZbtwcmVOoFyMDRmEXel5KI0mogx
-         17lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709067420; x=1709672220;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NOB62dL9qN724Ecj/YLdjEDiS5KjiWcStv5/TyEIX7s=;
-        b=mXI5Ec7HjOnbtDyDrYEgRoo2QxnaptCvooKPoBOWsozyZ4ZiIX+iaNjhNd0HMojaWe
-         vuz0JAzNbOeqFM1GiG+v2kjrVmSra85Zw6NyPFEIiihOFiPZgTbSz1BIqeFt4QZpIBPx
-         RGOY2zTVKo0pdNhZY57PD63sMfN9C85dxE74yERDYlPpRwBc+98T3NA2o+nuaejGCbeK
-         3WTNZFksVgjIPQ3Mr2FY4YnYYPg+OS1hyfpO/50R6K+LAq/qZcwWPFFaY1omAfQUzZQE
-         65np7JDIqYh0WW5vRBXBMGk7OizRiy9fQls9bmPlzWKDbhLdKeipEKSxbCb6B87anlu6
-         NBgg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIolGWhxrlO4d98HXT/NRT3DJZT64xYKXclV4ne3phugbd1Ot7hr8Ssiq623TiYemxFUARUwz32jeRga8Q+z+69+5qaEMqxsFY1OWe
-X-Gm-Message-State: AOJu0YzNS5i+XYxnUTJc0lwuZF7YwvY2IbMeyBvqSFj79TN/S/m9BAWc
-	l54UCjAfqZe9OvyM9QajHEoCoKTt0WF1Cq3PpfDrYKCZ/HR++1oJtTJ40JfF2/w=
-X-Google-Smtp-Source: AGHT+IF0DxTx3AxrLX1ryR9GF2gpsn7xPqrDvqd55MwEJEeBh4CVMCZzNgNnxt9s/ka4wUYMDn5FYw==
-X-Received: by 2002:a17:903:1212:b0:1d9:3bb5:2819 with SMTP id l18-20020a170903121200b001d93bb52819mr13900313plh.34.1709067419669;
-        Tue, 27 Feb 2024 12:56:59 -0800 (PST)
-Received: from localhost ([50.213.54.97])
-        by smtp.gmail.com with ESMTPSA id ja9-20020a170902efc900b001dbb06b6138sm1940276plb.252.2024.02.27.12.56.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 12:56:59 -0800 (PST)
-Date: Tue, 27 Feb 2024 12:56:59 -0800 (PST)
-X-Google-Original-Date: Tue, 27 Feb 2024 12:56:51 PST (-0800)
-Subject:     Re: [PATCH v2,RESEND 1/2] drivers: perf: added capabilities for legacy PMU
-In-Reply-To: <6ad96656-3cf4-4e22-8a18-cfde5c31cfc1@ghiti.fr>
-CC: vadim.shakirov@syntacore.com, linux-riscv@lists.infradead.org,
-  atishp@atishpatra.org, anup@brainfault.org, Will Deacon <will@kernel.org>,
-  Mark Rutland <mark.rutland@arm.com>, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Atish Patra <atishp@rivosinc.com>
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: alex@ghiti.fr
-Message-ID: <mhng-320add25-610e-4e86-a266-55a5f0b52087@palmer-ri-x1c9a>
+	s=arc-20240116; t=1709067502; c=relaxed/simple;
+	bh=S4m9bTr9zzQmMMFY2/OXtF3VQx5pxQRtlH/CRZM8IfM=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=BiNoe5K/lMudptGYflSMDjtAjqAA5N7QHiNzJ6EF40GpwvJbldM3LzUXyBUgxyYj8+4iuogrG9zhQdL4btq+KEeLqHWdE1BkhJ4yPGgoIBIZHD2xxYMYwBvJL/KNN4wUE2D0ZzuAR+Ka5f2LH/EFwmnMpD5ptIXbU8bvHQ0Pvks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eo6G1mRu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADEBAC43390;
+	Tue, 27 Feb 2024 20:58:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709067502;
+	bh=S4m9bTr9zzQmMMFY2/OXtF3VQx5pxQRtlH/CRZM8IfM=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=eo6G1mRufXusc5lBh8VM/I4kP7svGiyBEr5GcRHlW2rjy8FQ6LMKLVCmTbh5uUzK7
+	 /4wqI2mIBHYcUUZQjAwFoZvHuy/ey/pSoFbG5wUffKiJXrp1l8NWFz4wlZq+IfcDZT
+	 dfbMxAuBzypEcrjbDjDbjYrjhZ53lXcTchOKNeh8FSWjfgX6PAqyA92l64dGlyG2m9
+	 3DKoCefKda353PzsCgR1KZYec9AoA5zN9HXoCtcA2+n0hoGVNtehajnKdNu0VtxE9O
+	 yhQXUFqPbtfuuRWgF2ql2N4iQHHM82e3MCiyW5UwCTvYGojZ1Tb2Wer35+iBh05+dA
+	 achG7ZtD0zjnw==
+From: Kalle Valo <kvalo@kernel.org>
+To: Javier Martinez Canillas <javierm@redhat.com>
+Cc: linux-kernel@vger.kernel.org,  Nishanth Menon <nm@ti.com>,  Breno Leitao
+ <leitao@debian.org>,  Li Zetao <lizetao1@huawei.com>,
+  linux-wireless@vger.kernel.org
+Subject: Re: [PATCH] wlcore: sdio: warn only once for
+ wl12xx_sdio_raw_{read,write}() failures
+References: <20240227002059.379267-1-javierm@redhat.com>
+Date: Tue, 27 Feb 2024 22:58:18 +0200
+In-Reply-To: <20240227002059.379267-1-javierm@redhat.com> (Javier Martinez
+	Canillas's message of "Tue, 27 Feb 2024 01:20:46 +0100")
+Message-ID: <8734tdaal1.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Tue, 27 Feb 2024 11:26:20 PST (-0800), alex@ghiti.fr wrote:
-> On 27/02/2024 18:00, Vadim Shakirov wrote:
->> Added the PERF_PMU_CAP_NO_INTERRUPT flag because the legacy pmu driver
->> does not provide sampling capabilities
->>
->> Added the PERF_PMU_CAP_NO_EXCLUDE flag because the legacy pmu driver
->> does not provide the ability to disable counter incrementation in
->> different privilege modes
->>
->> Suggested-by: Atish Patra <atishp@rivosinc.com>
->> Signed-off-by: Vadim Shakirov <vadim.shakirov@syntacore.com>
->> ---
->>   drivers/perf/riscv_pmu_legacy.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/perf/riscv_pmu_legacy.c b/drivers/perf/riscv_pmu_legacy.c
->> index 79fdd667922e..a85fc9a15f03 100644
->> --- a/drivers/perf/riscv_pmu_legacy.c
->> +++ b/drivers/perf/riscv_pmu_legacy.c
->> @@ -117,6 +117,8 @@ static void pmu_legacy_init(struct riscv_pmu *pmu)
->>   	pmu->event_mapped = pmu_legacy_event_mapped;
->>   	pmu->event_unmapped = pmu_legacy_event_unmapped;
->>   	pmu->csr_index = pmu_legacy_csr_index;
->> +	pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT;
->> +	pmu->pmu.capabilities |= PERF_PMU_CAP_NO_EXCLUDE;
->>
->>   	perf_pmu_register(&pmu->pmu, "cpu", PERF_TYPE_RAW);
->>   }
->
->
-> I see here that Atish added its RB:
-> https://lore.kernel.org/linux-riscv/CAOnJCUJ-eE+zbXH0yBX_QBK2ep779q=wNCSrc+BJfzUb+zBCaw@mail.gmail.com/
->
-> So I add it here (hopefully b4 won't complain, I don't know):
->
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+Javier Martinez Canillas <javierm@redhat.com> writes:
 
-It says
+> Report these failures only once, instead of keep logging the warnings for
+> the same condition every time that a SDIO read or write is attempted. This
+> behaviour is spammy and unnecessarily pollutes the kernel log buffer.
 
-NOTE: some trailers ignored due to from/email mismatches:
-    ! Trailer: Reviewed-by: Atish Patra <atishp@rivosinc.com>
-     Msg From: Alexandre Ghiti <alex@ghiti.fr>
-NOTE: Rerun with -S to apply them anyway
+Removing error messages is not usually a good idea, it would be much
+better to fix the root cause.
 
-Should show up on fixes in a bit, assuming it gets through the testing.
+> For example, on an AM625 BeaglePlay board where accessing a SDIO WiFi chip
+> fails with an -110 error:
+>
+>   $ dmesg | grep "sdio write\|read failed (-110)" | wc -l
+>   39
 
+-110 is -ETIMEDOUT. Why is it timing out?
+
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+> ---
 >
-> And I'd say the fixes tag for this one is:
+>  drivers/net/wireless/ti/wlcore/sdio.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> Fixes: 9b3e150e310e ("RISC-V: Add a simple platform driver for RISC-V
-> legacy perf")
->
-> Thanks,
->
-> Alex
+> diff --git a/drivers/net/wireless/ti/wlcore/sdio.c b/drivers/net/wireless/ti/wlcore/sdio.c
+> index eb5482ed76ae..47ecf33a0fbe 100644
+> --- a/drivers/net/wireless/ti/wlcore/sdio.c
+> +++ b/drivers/net/wireless/ti/wlcore/sdio.c
+> @@ -75,8 +75,8 @@ static int __must_check wl12xx_sdio_raw_read(struct device *child, int addr,
+>  
+>  	sdio_release_host(func);
+>  
+> -	if (WARN_ON(ret))
+> -		dev_err(child->parent, "sdio read failed (%d)\n", ret);
+> +	if (WARN_ON_ONCE(ret))
+> +		dev_err_once(child->parent, "sdio read failed (%d)\n", ret);
+
+WARN_ON() feels excessive here, maybe remove that entirely? But
+dev_err_ratelimited() feels more approriate than printing the error just
+once.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
