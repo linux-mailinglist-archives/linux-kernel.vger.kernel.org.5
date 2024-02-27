@@ -1,65 +1,58 @@
-Return-Path: <linux-kernel+bounces-83716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A658F869E0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:42:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0812C869D9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:30:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FF44B30AA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:29:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FBA028688F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:30:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7F7C14CAC4;
-	Tue, 27 Feb 2024 17:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778D04EB41;
+	Tue, 27 Feb 2024 17:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pd1nYwDE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i1CrSK+z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02ACC4E1BA;
-	Tue, 27 Feb 2024 17:25:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F264E1BA;
+	Tue, 27 Feb 2024 17:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054724; cv=none; b=uNQKSVFAY1lAbfaBHtBN6eZHMabbOPTJpSBGEx6YzkEVuzwo9uN9IJismYDyArbNPxph3XNVHE81hMANmzCW09lmOKv2SF8MRoR0WN09Cv58psplLkdu3EXWzQNEJXQGJbGO2mqfKVyYmHRHrYA8gsD4NxE3XOXzMVY+ZlWvrbE=
+	t=1709054766; cv=none; b=AuuQdNlhROgsAOerbRFQoRQewnrH1ts41nzQB2mcUptsMxgUtKTDg/sQ8+dzUrkLqLbDbxgPhByQsgfyunmBsWpjZ3ZY3f2Etwm77TlkJlmVwNNa0bLrP7I+nciOq4gSNtEVGUDv6E6Jin++5ESA8Og/P5mxR/lcSAIsF6hkusI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054724; c=relaxed/simple;
-	bh=xCimZPtKHjwdU7nbtwoJGxR9Q9WTWA4Hg+6aLCtN9B8=;
+	s=arc-20240116; t=1709054766; c=relaxed/simple;
+	bh=UH1cf71yVZ+IE48mE2u9YsgYD+cbHTinf+arR0nEbeQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TbWA41G3O/N8UVqmSqpVTGGzciNtwSm48SWgfQjQcDPtcnHvlXVq6tPeLHz4A+6dJNbRgx0PXnsJXXqhzmCTzSexpsuAx8m2go7owFHMUCIkuXvTW1mj5HTo7pGGVApeQjYPeA59FJ5diQkfha81pCLKUpuBXKMJ4xAyRfDpbZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pd1nYwDE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EAF3C433C7;
-	Tue, 27 Feb 2024 17:25:23 +0000 (UTC)
+	 MIME-Version:Content-Type; b=sh4hzvg/nAUm1Whck/KdqJo+nVxpqxYnTYjt1wiCozNFkJFS8vfNfHAU0ZF3V8K7I4wSWcCTUEvilceZJMSCS34/qQfnhof0IKPzoIslOM6CrdtCYNGUqsRiJFxvhLA9xxUyw4C6OB3F/z96Mdm9+h/C5EQI7zJBPqRnZXuaTjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i1CrSK+z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2205EC433C7;
+	Tue, 27 Feb 2024 17:26:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709054723;
-	bh=xCimZPtKHjwdU7nbtwoJGxR9Q9WTWA4Hg+6aLCtN9B8=;
+	s=k20201202; t=1709054766;
+	bh=UH1cf71yVZ+IE48mE2u9YsgYD+cbHTinf+arR0nEbeQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Pd1nYwDEDEWlIwyOQHUKH+/9CYNkMdDZPpaK50+aehXrf6KdtuFeTmdLMzHaE+Dj9
-	 cGcBMnnFU8nLkTSqRqrLhkQA+gy93mE8S/dXHH8i0V3RsqAOp0705TadpSyw2X5pEh
-	 Qo3G9HEJbJvvshDWaESwobRX5XoiWMckW2QdiTVcwt7uPs5bzcE9fDHlNtHV7R3Q7U
-	 b6Wvu46MOl8IJipqapk0+27lgyKPXOtoHjtkIt5/PD++cgLWfdC94/+YWnjCsWW0p7
-	 5xOCSsg1PGp1E7+60GdpMGlkwZXeyqPnNcwgFZq1OzQYvwV5KxCTGGMGWH2bmEi3Ho
-	 g0Z27toQAmE6A==
+	b=i1CrSK+z+mVXBevddBCSKX7U2BVrksMh+NRk4AhCK0Uv+aKuno3yUn5yt3hxgcWoS
+	 tizbR/OeBf+RgoYnzPUpDK6ujxvp6zG2zHpBbGETQhM4g8ZEYZC2e3PGKMGbhJci5V
+	 nz1TxZ6Jpx70/6IOQDFbd0ZlWzl3DbBLTRTtCeRrgH6mWCOGdqDTAp6XY7WqEmNDc+
+	 dLY6yXkyxnhkmctWftp90V350T3InCH6BvJ/oltXh6v8ga6n48VwvLEazx83R8fMst
+	 lgGu67H1UGdWpEizd4z/ldkdB9biZYna0q/iCl431r8Y6+UkKAqkpElx+FSPMwclyg
+	 JC2UREjXRGc3A==
 From: Namhyung Kim <namhyung@kernel.org>
-To: Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-	Ian Rogers <irogers@google.com>,
-	James Clark <james.clark@arm.com>
-Cc: Evgeny Pistun <kotborealis@awooo.ru>,
-	linux-kernel@vger.kernel.org,
-	Mark Rutland <mark.rutland@arm.com>,
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH v4] perf data convert: Fix segfault when converting to json when cpu_desc isn't set
-Date: Tue, 27 Feb 2024 09:25:20 -0800
-Message-ID: <170905469226.501091.4202015641394575376.b4-ty@kernel.org>
+	Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 1/1] perf test: Use TEST_FAIL in the TEST_ASSERT macros instead of -1
+Date: Tue, 27 Feb 2024 09:26:04 -0800
+Message-ID: <170905469226.501091.7003094916625866194.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-In-Reply-To: <20240223220458.15282-1-ilkka@os.amperecomputing.com>
-References: <20240223220458.15282-1-ilkka@os.amperecomputing.com>
+In-Reply-To: <ZdepeMsjagbf1ufD@x1>
+References: <ZdepeMsjagbf1ufD@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,17 +62,11 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Feb 2024 14:04:58 -0800, Ilkka Koskinen wrote:
-> Arm64 doesn't have Model in /proc/cpuinfo and, thus, cpu_desc doesn't get
-> assigned.
+On Thu, 22 Feb 2024 17:07:20 -0300, Arnaldo Carvalho de Melo wrote:
+> Just to make things clearer, return TEST_FAIL (-1) instead of an open
+> coded -1.
 > 
-> Running
-> 	$ perf data convert --to-json perf.data.json
 > 
-> ends up calling output_json_string() with NULL pointer, which causes a
-> segmentation fault.
-> 
-> [...]
 
 Applied to perf-tools-next, thanks!
 
