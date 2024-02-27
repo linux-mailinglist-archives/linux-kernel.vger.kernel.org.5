@@ -1,197 +1,170 @@
-Return-Path: <linux-kernel+bounces-82864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B5C9868AC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E725F868AC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:31:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A3231C21775
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:29:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2AD21C21127
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:31:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69ECA651B4;
-	Tue, 27 Feb 2024 08:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A9D77F2E;
+	Tue, 27 Feb 2024 08:31:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VfQGuUZ8"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="FDMdmr3K"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9BBC55E78;
-	Tue, 27 Feb 2024 08:28:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5741F77F28
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709022533; cv=none; b=mXUx0D3Ib6utVaRTPTt+8q4wqmXwu+6BwUXWunCuAeZ2FOMHxM5l+W9PZTuWSWQ/o56w/WhMc7RmE0RwaTpX6lS9eKlyIOApNy+JlASE60PHrUuQpdmkosvfKfMxTXXSernnoP8Kec+eYH60YeLd0ybrg1efPfpmY6YntKJ6ImY=
+	t=1709022702; cv=none; b=qifDbLeajEOmsqqda9MvrDPzduXv1POH7ankBBuVAQszHFe9hbWmeHpQxx6aINZjiP9Pd/ggCA/WnLfAIGlEKRyXXtJ3m3/AIzwnR5BlsycREF17VKGECoBmr48cGkSNdU/Msw2ivOjC3+zs1qB8XZwId8GmiRW3c4B5t068DH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709022533; c=relaxed/simple;
-	bh=Wo13l8NJVHR+LxKSyxLQCzQ+Y5u7XXhp9Pc+haG57NM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mR/dL0H1Cuz1TCqQpvVT2GcoE2KBEinA5gOCqWNPfn2X8L8BONIMI21sRxtq2OPZuD02KuPtJD5ZhmqPJ0bXNcGgFWLD48UDMrzqRmaeqKV2+h6XUgrEE3BGcpjcgNt8f7vXk6cWEDN+ANeUVT15uDfu1KY5hCnVPI3zSytu/I0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VfQGuUZ8; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41R8SL4m016693;
-	Tue, 27 Feb 2024 02:28:21 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1709022501;
-	bh=UvEz58JiJybT1iV4zwOdxj9BOekP3Yr+3ULHGrmn0T8=;
-	h=From:To:CC:Subject:Date;
-	b=VfQGuUZ8330zfn5j095nj7dWo8JP9A6KNzPc4HMsaSZEhlA8J0j7Kq+sjKiQZGNFV
-	 FIXS31eTrUvgIKRCraes1LDzLoXUkHFlbuemf77eyEotZh7tsgOKvOQCvgyL5Hi0Nh
-	 7k2YaZnUiIxuZGMvaN3P0HTfaVReW4J7Xdqbs7hc=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41R8SLVL021600
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 27 Feb 2024 02:28:21 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 27
- Feb 2024 02:28:21 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 27 Feb 2024 02:28:21 -0600
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41R8SGWT053517;
-	Tue, 27 Feb 2024 02:28:17 -0600
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <rogerq@kernel.org>, <andrew@lunn.ch>,
-        <vladimir.oltean@nxp.com>, <hkallweit1@gmail.com>,
-        <dan.carpenter@linaro.org>, <horms@kernel.org>,
-        <yuehaibing@huawei.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <s-vadapalli@ti.com>
-Subject: [PATCH net-next] net: ethernet: ti: am65-cpsw: Add priv-flag for Switch VLAN Aware mode
-Date: Tue, 27 Feb 2024 13:58:15 +0530
-Message-ID: <20240227082815.2073826-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709022702; c=relaxed/simple;
+	bh=jDcbjm051a2tWQp8mL4nW0pJ4OpF8SkO3jnpo60IyWI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V1hFY4Jsiyi8CmLbNvtUvT/k+KWWqpIBrxR/JoUbWiOy+qfC+coJDxybGGhR8Wg+bXw3uXuCivITRVOzMm72iAVfnidx/gE7n8C42T4lpXnYw8hrC1RX45Z0l13ryDhnOlKvXJopad6F14/JC4gXBmLyRDfv6Iv0oFzHhQ3tqNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FDMdmr3K; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3e5d82ad86so552281566b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:31:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709022699; x=1709627499; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TWWjdMDDlRbFnAQIhSeSTyA3KAYjkYko4A1TtZtt+H4=;
+        b=FDMdmr3KSIObla6tr5cpWU8/WvK6jUhXBFd4fZ4PKjVrz7m7KR6REXxNEG2jm6r6ff
+         h8q8NvTaxF7SERE8CMYtoE9FQxSRtIRSn40uAeBtZIqPjfhltezD+3/DQu2I4MqAlmw4
+         J2ADb1hZT8SyrHVmtUnQHqjuORE7w+BgWvjQ0tOCGGjv3IdhVjJbGe5dO++mCJwH7yqG
+         BpaWcN+WR/kx9V2yCg+EA7Fg8Tmlx9j/Ht2dM6jAWQ1AKxST99qPZHzPD/e9TJaCYE2n
+         KRwHdw4NUAvTKM5dc3PtKYBHct8U4ob5tb49mJ3kkM2iZz/fchdarjVnTDsxGgYBJs4o
+         PdVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709022699; x=1709627499;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TWWjdMDDlRbFnAQIhSeSTyA3KAYjkYko4A1TtZtt+H4=;
+        b=f4AFwbfWJ4jfKESrlTc3vshNgRtEO/JKZUBFFtDy3LRcA+jQgaQAtmfcoFvFkS54Bd
+         J9GAAEe1UC3A5eHFiKReBgorOXK9LQwHvPEt3Jg9W1vrla1HBMTLDLWhQGWuNzsRJKSz
+         vYm1LOEaYBBRDdNIbGLJzGk/5fCDxOGkkG9zqm6QH+StwzHbdRxv0VwGx4NS1ncpGpAv
+         8556Ez3dU6Ii1pB9tKEkJe2MpTAp8srrBpsI+cStTtg4/bu2FbcYboQ+D2plgJ6S/4gw
+         MEvvDQjeiagRKuAvZ37g++9Dd9kGFm+FeIQ4aU/aqpj0KvU1QjWRhhsBc8gmw+w9LiBE
+         eaoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVroT64QP45hwBXEtFzMPiWQ/ArM92x7h5bfgZpQzqqiD4LbYchxwYALSpyN+LT2oSctz2qp+ApW8v+19UymbmvTLfSuKJf3vU7jN06
+X-Gm-Message-State: AOJu0YzkO07GKUv1PUMcHvBYBNiCBMp0DLXFl6kI9IOgwteAPg+K9HNK
+	iIJkqdbW6Vn8bkpUqh9x6f6s3jxBg5xr6VirDw3qN9yfdEa/4hLAvXA3gIUQF4KSOXprscfm1tZ
+	VYKIUEVQRsU7NxXMrDJi2o0/WXJ3CAEjs4h9Z
+X-Google-Smtp-Source: AGHT+IEywMFCEF6R2EVKftvTDUWpnQPHNLoR6/60VpqwpXfH1fWVVUY+TrWJGh0aKLi+cUFG+WVi9V07kMYmfjg2/r8=
+X-Received: by 2002:a17:906:7243:b0:a43:a628:ff31 with SMTP id
+ n3-20020a170906724300b00a43a628ff31mr909690ejk.26.1709022698526; Tue, 27 Feb
+ 2024 00:31:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240206042408.224138-1-joychakr@google.com> <2024020647-submarine-lucid-ea7b@gregkh>
+ <CAOSNQF3jk+85-P+NB-1w=nQwJr1BBO9OQuLbm6s8PiXrFMQdjg@mail.gmail.com>
+ <2024020637-handpick-pamphlet-bacb@gregkh> <CAOSNQF2_qy51Z01DKO1MB-d+K4EaXGDkof1T4pHNO10U_Hm0WQ@mail.gmail.com>
+ <2024020734-curliness-licking-44c1@gregkh> <CAOSNQF2WKang6DpGoVztybkEbtL=Uhc5J-WLvyfRhT3MGWgiaA@mail.gmail.com>
+ <CAOSNQF2d27vYTtWwoDY8ALHWo3+eTeBz7e=koNodphVVmeThMQ@mail.gmail.com> <2024022737-haiku-rental-5e7b@gregkh>
+In-Reply-To: <2024022737-haiku-rental-5e7b@gregkh>
+From: Joy Chakraborty <joychakr@google.com>
+Date: Tue, 27 Feb 2024 14:01:25 +0530
+Message-ID: <CAOSNQF1_7p61pgGBcb0QWmCLCBfNAk2-gQ4qFybfbbxON3n5pw@mail.gmail.com>
+Subject: Re: [PATCH v2] nvmem: rmem: Fix return value of rmem_read()
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rob Herring <robh@kernel.org>, 
+	Nicolas Saenz Julienne <nsaenz@kernel.org>, linux-kernel@vger.kernel.org, manugautam@google.com, 
+	stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The CPSW Ethernet Switch on TI's K3 SoCs can be configured to operate in
-VLAN Aware or VLAN Unaware modes of operation. This is different from
-the ALE being VLAN Aware and Unaware. The Ethernet Switch being VLAN Aware
-results in the addition/removal/replacement of VLAN tag of packets during
-egress as described in section "12.2.1.4.6.4.1 Transmit VLAN Processing" of
-the AM65x Technical Reference Manual available at:
-https://www.ti.com/lit/ug/spruid7e/spruid7e.pdf
-In VLAN Unaware mode, packets remain unmodified on egress.
+On Tue, Feb 27, 2024 at 1:02=E2=80=AFPM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Tue, Feb 27, 2024 at 12:27:09PM +0530, Joy Chakraborty wrote:
+> > On Wed, Feb 7, 2024 at 8:33=E2=80=AFPM Joy Chakraborty <joychakr@google=
+com> wrote:
+> > >
+> > > On Wed, Feb 7, 2024 at 3:04=E2=80=AFPM Greg Kroah-Hartman
+> > > <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Tue, Feb 06, 2024 at 05:22:15PM +0530, Joy Chakraborty wrote:
+> > > > > > > Userspace will see a false error with nvmem cell reads from
+> > > > > > > nvmem_cell_attr_read() in current code, which should be fixed=
+ on
+> > > > > > > returning 0 for success.
+> > > > > >
+> > > > > > So maybe fix this all up to allow the read to return the actual=
+ amount
+> > > > > > read?  That feels more "correct" to me.
+> > > > > >
+> > > > >
+> > > > > If I change the behavior of the nvmem_reg_read_t callback to nega=
+tive
+> > > > > for error and number of bytes actually read for success then, oth=
+er
+> > > > > than the core driver I would also have to change all the
+> > > > > nvmem-provider drivers.
+> > > > > Is it okay to do so ?
+> > > >
+> > > > Sure, why not?  That seems like the correct fix to me, right?
+> > >
+> > > Sure, I can do that.
+> > >
+> > > Is it okay to change the if checks on the return code to "if (rc < 0)=
+"
+> > > instead of "if (rc)" as a fix for the immediate issue with how return
+> > > value from rmem is handled which can be applied to older kernels.
+> > > In a separate patch I can change the definition of nvmem_reg_read_t()
+> > > to return ssize_t instead of int and make corresponding changes to
+> > > nvmem-provider drivers.
+> > >
+> > > Does that sound okay ?
+> >
+> > Hi Greg,
+> >
+> > Sent a patch https://lore.kernel.org/all/20240219113149.2437990-2-joych=
+akr@google.com/
+> > to change the return type for read/write callbacks.
+> > Do I mark that with the "Fixes:" tag as well ?
+>
+> Is it actually fixing a bug?  Or just evolving the api to be more
+> correct over time?  I think the latter.
 
-The driver currently configures the Ethernet Switch in VLAN Aware mode by
-default and there is no support to toggle this capability of the Ethernet
-Switch at runtime. Thus, add support to toggle the capability by exporting
-it via the ethtool "priv-flags" interface.
+It is more of the latter i.e. evolving the API to be correct but
+indirectly it ends up fixing this bug where positive value returned by
+this rmem driver is treated as an error in nvmem core.
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
+>
+> > It affects a lot of files so might not be able to easily pick to an
+> > older kernel when needed.
+>
+> What is it fixing that older kernels need?
 
-Hello,
+It is fixing the handling of a positive value returned by this rmem
+driver which will be treated as an error in older kernels as the nvmem
+core expects 0 on success without changing API behavior.
 
-This patch is based on net-next main branch's commit:
-55a7246025cd Merge branch 'mptcp-various-small-improvements'
+>
+> And do not worry about stable kernels while doing development, only
+> take that into consideration after your changes are accepted.
 
-Regards,
-Siddharth.
+Got it, thank you for your input .
 
- drivers/net/ethernet/ti/am65-cpsw-ethtool.c |  9 ++++++++-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c    | 12 +++++++++---
- drivers/net/ethernet/ti/am65-cpsw-nuss.h    |  1 +
- 3 files changed, 18 insertions(+), 4 deletions(-)
+>
+> thanks,
+>
+> greg k-h
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-index d6ce2c9f0a8d..42c317874b75 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
-@@ -374,6 +374,8 @@ static const struct am65_cpsw_ethtool_stat am65_slave_stats[] = {
- static const char am65_cpsw_ethtool_priv_flags[][ETH_GSTRING_LEN] = {
- #define	AM65_CPSW_PRIV_P0_RX_PTYPE_RROBIN	BIT(0)
- 	"p0-rx-ptype-rrobin",
-+#define	AM65_CPSW_PRIV_VLAN_AWARE		BIT(1)
-+	"cpsw-vlan-aware",
- };
- 
- static int am65_cpsw_ethtool_op_begin(struct net_device *ndev)
-@@ -720,15 +722,19 @@ static u32 am65_cpsw_get_ethtool_priv_flags(struct net_device *ndev)
- 	if (common->pf_p0_rx_ptype_rrobin)
- 		priv_flags |= AM65_CPSW_PRIV_P0_RX_PTYPE_RROBIN;
- 
-+	if (common->cpsw_vlan_aware)
-+		priv_flags |= AM65_CPSW_PRIV_VLAN_AWARE;
-+
- 	return priv_flags;
- }
- 
- static int am65_cpsw_set_ethtool_priv_flags(struct net_device *ndev, u32 flags)
- {
- 	struct am65_cpsw_common *common = am65_ndev_to_common(ndev);
--	int rrobin;
-+	int rrobin, cpsw_vlan_aware;
- 
- 	rrobin = !!(flags & AM65_CPSW_PRIV_P0_RX_PTYPE_RROBIN);
-+	cpsw_vlan_aware = !!(flags & AM65_CPSW_PRIV_VLAN_AWARE);
- 
- 	if (common->usage_count)
- 		return -EBUSY;
-@@ -740,6 +746,7 @@ static int am65_cpsw_set_ethtool_priv_flags(struct net_device *ndev, u32 flags)
- 	}
- 
- 	common->pf_p0_rx_ptype_rrobin = rrobin;
-+	common->cpsw_vlan_aware = cpsw_vlan_aware;
- 
- 	return 0;
- }
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 9d2f4ac783e4..fec2a5968a12 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -451,9 +451,14 @@ static int am65_cpsw_nuss_common_open(struct am65_cpsw_common *common)
- 		return 0;
- 
- 	/* Control register */
--	writel(AM65_CPSW_CTL_P0_ENABLE | AM65_CPSW_CTL_P0_TX_CRC_REMOVE |
--	       AM65_CPSW_CTL_VLAN_AWARE | AM65_CPSW_CTL_P0_RX_PAD,
--	       common->cpsw_base + AM65_CPSW_REG_CTL);
-+	val = AM65_CPSW_CTL_P0_ENABLE | AM65_CPSW_CTL_P0_TX_CRC_REMOVE |
-+	      AM65_CPSW_CTL_P0_RX_PAD;
-+
-+	if (common->cpsw_vlan_aware)
-+		val |= AM65_CPSW_CTL_VLAN_AWARE;
-+
-+	writel(val, common->cpsw_base + AM65_CPSW_REG_CTL);
-+
- 	/* Max length register */
- 	writel(AM65_CPSW_MAX_PACKET_SIZE,
- 	       host_p->port_base + AM65_CPSW_PORT_REG_RX_MAXLEN);
-@@ -2977,6 +2982,7 @@ static int am65_cpsw_nuss_probe(struct platform_device *pdev)
- 	init_completion(&common->tdown_complete);
- 	common->tx_ch_num = AM65_CPSW_DEFAULT_TX_CHNS;
- 	common->pf_p0_rx_ptype_rrobin = false;
-+	common->cpsw_vlan_aware = true;
- 	common->default_vlan = 1;
- 
- 	common->ports = devm_kcalloc(dev, common->port_num,
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.h b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-index 7da0492dc091..91f625ea3859 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.h
-@@ -147,6 +147,7 @@ struct am65_cpsw_common {
- 	u32			cpsw_ver;
- 	unsigned long		bus_freq;
- 	bool			pf_p0_rx_ptype_rrobin;
-+	bool			cpsw_vlan_aware;
- 	struct am65_cpts	*cpts;
- 	int			est_enabled;
- 	bool			iet_enabled;
--- 
-2.34.1
-
+Thanks
+Joy
 
