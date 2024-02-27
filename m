@@ -1,237 +1,131 @@
-Return-Path: <linux-kernel+bounces-83138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78FB1868F5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:42:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAC54868F5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:42:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDB602852B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:42:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AC05B2547F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B336413A24A;
-	Tue, 27 Feb 2024 11:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="PM4n/0Sg"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D5A13A24D;
+	Tue, 27 Feb 2024 11:42:27 +0000 (UTC)
+Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D06B1386BF
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:42:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB62B13958A;
+	Tue, 27 Feb 2024 11:42:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709034134; cv=none; b=TqxNRuiaKGAUpr2xE4z9vogeeJRkZ18THD/y8TEBC7ikard9//gMrFDqOrBVAeSy3zKHlbfhskaakb0M4ksSSwnXPra5kFAKaPaJ+4DP0yU3pf2XfcpMBjJ8u3JxOf2wyf7v5d8/oKumWDXxr5SG9QkZ/KFcgKnan5ZuF0azYDc=
+	t=1709034147; cv=none; b=ijrPYLQRYg6ApthaiMkC1N7aJaeqS1ZrBNAQtaZWqZ1aA3ATPGWY7kqS8D2QtjKLzwgTcFVlfvgCm7LCHXZ90QnqhVP9mdYnDFVSW1opaWhZ0w2576g9BvbJCzzCwga7mu67Hj2Ntw2/yq3eIYSZ2gRFNBoTYeyMXKzFpSh0fs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709034134; c=relaxed/simple;
-	bh=l8JyPh3KUUyVYVGPAmg1GAglhyb3oHIknNuJ/fa5eJY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:Content-Type:
-	 MIME-Version:References; b=BJUf+xCzxg+FIN1l0bsMKKEBRctIAOj7FYD05y0VHU8pGOB4xec2RnpNOMHl0oXAjjZOlGbBGd2CBfWq7Z0+tOgHkMJH51i2AAwmNjEHdF4MQNQ+803A8eveW/AeqY8qh1cg0aDpoGhLLau/rs2ADvhPuMTGdoVhIygHlmVotjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=PM4n/0Sg; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240227114204euoutp014e3883ade73c9d1ef6e8ad68a0635d35~3tXsiy_yJ0806608066euoutp01N
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:42:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240227114204euoutp014e3883ade73c9d1ef6e8ad68a0635d35~3tXsiy_yJ0806608066euoutp01N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1709034124;
-	bh=9NZAb323gBIz+kfWKWXT2Qoef/UCSAmPG14ZN7ecbFM=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-	b=PM4n/0Sgb4SQrKUUn+JQDNaIloF8z/biaeaG4QZ8NyM53PwYU9Y3VE42Qx0Kc7vcp
-	 n9V/Zs3vbY/4INq0plS1/76paMjI0RGQ11sVz27T24mSneWNcWi9xIBmpL78PvD68q
-	 ZZCBKSpUs/nYaTohHufz6Tsv6a47qzOPm1aJFZkc=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240227114203eucas1p2b2e419dded18da00b8324a89f8ce80ad~3tXsID21T1978519785eucas1p2p;
-	Tue, 27 Feb 2024 11:42:03 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id DA.81.09814.B8ACDD56; Tue, 27
-	Feb 2024 11:42:03 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240227114203eucas1p1ecacb1730fade22562318b58ac69b48d~3tXrnfip80667706677eucas1p1J;
-	Tue, 27 Feb 2024 11:42:03 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240227114203eusmtrp17eae2062c2cc345b40e3029cd2d55c30~3tXrmmTmf2906129061eusmtrp1W;
-	Tue, 27 Feb 2024 11:42:03 +0000 (GMT)
-X-AuditID: cbfec7f4-727ff70000002656-93-65ddca8bed18
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 96.A6.10702.A8ACDD56; Tue, 27
-	Feb 2024 11:42:02 +0000 (GMT)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240227114202eusmtip197888232c7483b0724d3b4d4af2dd178~3tXrcBZ-t1045210452eusmtip1J;
-	Tue, 27 Feb 2024 11:42:02 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
-	CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) with Microsoft SMTP
-	Server (TLS) id 15.0.1497.2; Tue, 27 Feb 2024 11:42:02 +0000
-Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
-	([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Tue, 27 Feb
-	2024 11:42:02 +0000
-From: Daniel Gomez <da.gomez@samsung.com>
-To: Jan Kara <jack@suse.cz>
-CC: Hugh Dickins <hughd@google.com>, "viro@zeniv.linux.org.uk"
-	<viro@zeniv.linux.org.uk>, "brauner@kernel.org" <brauner@kernel.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "dagmcr@gmail.com"
-	<dagmcr@gmail.com>, "linux-fsdevel@vger.kernel.org"
-	<linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"willy@infradead.org" <willy@infradead.org>, "hch@infradead.org"
-	<hch@infradead.org>, "mcgrof@kernel.org" <mcgrof@kernel.org>, Pankaj Raghav
-	<p.raghav@samsung.com>, "gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 0/9] shmem: fix llseek in hugepages
-Thread-Topic: [RFC PATCH 0/9] shmem: fix llseek in hugepages
-Thread-Index: AQHaW2RT7xV/K52STUGwCHRBbQ9MBbEKRvYAgAc7d4CAAZVngIAAJPeAgArwXwA=
-Date: Tue, 27 Feb 2024 11:42:01 +0000
-Message-ID: <elozg4pnyccaxmbb2nde3brtm32jko56e4mydxx53srze4zkcv@hukwjfblnjlo>
-In-Reply-To: <20240220123905.qdjn2x3dtryklibl@quack3>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <00717DEDED894B4ABA452342B0C962FB@scsc.local>
+	s=arc-20240116; t=1709034147; c=relaxed/simple;
+	bh=ycpsLMGqKQfrLYCH+x1HWi2wiMddtCqg7V3YbCTEAC4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=od+s689A1CrA/WaBI+7a02F4s8+fIs0CrhC8G4jhY1KN5AtxF4Pph6S+6IMVgQTlltwq8PlPs30Ijs+rZ1rFxXCYfv7EKMtCbFLfpgwS5SaK/r9U/J9A24MtkP8FOQkIrCE8rVUqV/XqXhNWH6SYLw/Qd6/xIGtwXB3FgPxABPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf09.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay06.hostedemail.com (Postfix) with ESMTP id E681EA0EEC;
+	Tue, 27 Feb 2024 11:42:17 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf09.hostedemail.com (Postfix) with ESMTPA id 4AD102002A;
+	Tue, 27 Feb 2024 11:42:14 +0000 (UTC)
+Message-ID: <b0a352781f58a829deadffbe2ef2085c97c6ab32.camel@perches.com>
+Subject: Re: [PATCH] wifi: brcm80211: handle pmk_op allocation failure
+From: Joe Perches <joe@perches.com>
+To: Arend van Spriel <arend.vanspriel@broadcom.com>, Duoming Zhou
+	 <duoming@zju.edu.cn>, linux-kernel@vger.kernel.org
+Cc: brcm80211-dev-list.pdl@broadcom.com, brcm80211@lists.linux.dev, 
+ linux-wireless@vger.kernel.org, justinstitt@google.com, john@keeping.me.uk,
+  quic_alokad@quicinc.com, marcan@marcan.st, johannes.berg@intel.com, 
+ linus.walleij@linaro.org, kvalo@kernel.org
+Date: Tue, 27 Feb 2024 03:42:13 -0800
+In-Reply-To: <87166784-79ab-4eb4-ad1e-af4bc31757b7@broadcom.com>
+References: <20240227080613.34001-1-duoming@zju.edu.cn>
+	 <87166784-79ab-4eb4-ad1e-af4bc31757b7@broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0wTZxjH895dr0c3tqMweALdIDiyqVhUpLs5QraFzEsM7Ef2h25h2o13
-	gCvI7qiO8Q/RLMwaGDjxR1tDx8aPCgnmGE5QGq1ihcpkGyowgeGOBcHNWJqINq0bPVz63+eb
-	9/t8v8+TvAyp/V2VyJSUVWChzGhKpTXU6csPf153cGgSr5/zpXD2rk6aW7joQ9xwXYDmvPXN
-	BDfrq6M429H9BHeuf5Difuuz09xU52MVN1Y/i7hrQY+KCyzZ6def5nutk2reIZn57vY1vHTy
-	AM1LvkNq/sqxAMVfdVxS84vSC7wk/028E/WBJrsQm0r2YCEjZ6em+NexI+ry6sQvXJ67RDW6
-	F2dBUQywm2Ax2E9akIbRsu0IHrkbCEX4EUjHZtSKWEQQmOsinoycCt1QKQ9tCO5NXyD+d81Z
-	mpAiriJwu27RinAiCPp/QMvzNLsaXIOSepnj2CSwXnZSyyaS9VFw0N4RLollX4Ohi1akmLJB
-	qt5PKJwP33SfDjPFpkFP36NwUDSbB65Rh2qZo9gsaDhyPDyL2OfhtlPxkGwCTMhNK0fEQLPt
-	HKlwPIT6ZmiF02H4powUXg89LS5K4VUw31yDlJx0cJz10Qq/Cj0jrpX8tdD63QKp7BMDg8fl
-	8GHANmpgavSASgnKhZb22pXQWJj3/KiuR+nWiP2sER3WiA5rRIc1osOBVCdRAjaLpUVY3FiG
-	9+pFY6loLivSf7K7VEL//T9vyOM/g9rm7+vdiGCQGwFDpsZF62ImsTa60Fj5JRZ27xDMJiy6
-	URJDpSZEpxUmYy1bZKzAn2FcjoUnrwQTlVhN5HWVyFf4l546r2/L3fVMy4vvp1RO9Vq44Vbm
-	0Max2qnGqvdcut40+e71B5k4f7s8Upslil+TW6dtzi392PCKvUF4eSmmZ28KKv+qwnvGO6RC
-	Ez/l3JmQMtwu70LbrnXv4syhNzs/um+Y7sgtqIxf3NSacW3zSGEeG9J+PFAXz224M/Bn9tbk
-	B7q42MOWw2bhL0wGke7D8Q7Yt0ducsQ++33BzKd93xqKPv+HqfHf/ON2lakkuDQOsqC7dSN3
-	nz6zMjF/4m3PDlvXlmyUY65KckqhudElw9qs7oIT9m2z87a3Ao2G4kuPV28e9m8zzT43kPzQ
-	brYRzf3Fv7xRM349lRKLjRvWkIJo/BeMtm6o7gMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrAKsWRmVeSWpSXmKPExsVy+t/xu7rdp+6mGiwIsJizfg2bxevDnxgt
-	zvb9ZrM4PWERk8XTT30sFrOnNzNZ7Nl7ksXi8q45bBb31vxntbgx4Smjxfm/x1ktfv+Yw+bA
-	47Fz1l12jwWbSj02r9Dy2LSqk81j06dJ7B4nZvxm8Tiz4Ai7x+dNch6bnrxlCuCM0rMpyi8t
-	SVXIyC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXSt7NJSc3JLEst0rdL0Mu4dGMae0GDVMW+
-	42+YGhjfi3QxcnJICJhIbPh3jbWLkYtDSGApo8TRV4cYIRIyEhu/XGWFsIUl/lzrYoMo+sgo
-	8WVhAwuEc4ZR4sa261DtKxkl1nVsYwFpYRPQlNh3chM7iC0iIC0x69hKsA5mgU8sEt1zVjOB
-	JIQFrCVOHZ7FCFFkI7GpoZkJwvaT6N+8DcxmEVCV2LrrF9ggXgFfiX1XFgBt4wDa9pVJYns5
-	SJhTwFRi4rSZYGMYBWQlHq2EKGcWEJe49WQ+E8QLAhJL9pxnhrBFJV4+/gf1mo7E2etPoF42
-	kNi6dB8LhK0s8WpROyPEHB2JBbs/sUHYlhJbL+yDmq8tsWzha2aI0wQlTs58wjKBUWYWktWz
-	kLTPQtI+C0n7LCTtCxhZVzGKpJYW56bnFhvpFSfmFpfmpesl5+duYgQmtW3Hfm7Zwbjy1Ue9
-	Q4xMHIyHGCU4mJVEeGUE76YK8aYkVlalFuXHF5XmpBYfYjQFBt1EZinR5HxgWs0riTc0MzA1
-	NDGzNDC1NDNWEuf1LOhIFBJITyxJzU5NLUgtgulj4uCUamCabunu0rXx0qK8WJO/1uo1u9ec
-	tXk55e/WesXlF49HTNJW6Dh8IT5ZV91WV3jXk5vnxLo9My64nK7RTJ21692ruVeVrz/MEP3n
-	X2VzwXVu7cuqLb9EamPW3rkQlHFT+AJ7eWqS6ZoLL/5N2ubDeebRGqdtIh2dexbNru5wZS7u
-	cNnVYVYgnjLrXccxeeOGre4Hff2mRGs9vuvz3/6VOotuTvbyhIJ72t9v7Llaf8ha1a7o8f83
-	nn6869XXOjj9WWCae2eeNEP5joJ6ztUa9wxaeqapXLUNlQ3KaKv96BmSKtE7KW2/AMNOuSe6
-	55Qz3AWN3z2xvdCzzedvUYgYl9Jj5XOxE5qnTfO87WPycrsSS3FGoqEWc1FxIgCeYCCa8wMA
-	AA==
-X-CMS-MailID: 20240227114203eucas1p1ecacb1730fade22562318b58ac69b48d
-X-Msg-Generator: CA
-X-RootMTR: 20240214194911eucas1p187ae3bc5b2be4e0d2155f9ce792fdf8b
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240214194911eucas1p187ae3bc5b2be4e0d2155f9ce792fdf8b
-References: <20240209142901.126894-1-da.gomez@samsung.com>
-	<CGME20240214194911eucas1p187ae3bc5b2be4e0d2155f9ce792fdf8b@eucas1p1.samsung.com>
-	<25i3n46nanffixvzdby6jwxgboi64qnleixz33dposwuwmzj7p@6yvgyakozars>
-	<e3602f54-b333-7c8c-0031-6a14b32a3990@google.com>
-	<r3ws3x36uaiv6ycuk23nvpe2cn2oyzkk56af2bjlczfzmkfmuv@72otrsbffped>
-	<20240220123905.qdjn2x3dtryklibl@quack3>
+X-Rspamd-Queue-Id: 4AD102002A
+X-Stat-Signature: edoqsgf7ic6us6cah63pub7niog877mg
+X-Rspamd-Server: rspamout01
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/WU0+q9CP9YB3iZf4lKGg5gQDCP5sOEeA=
+X-HE-Tag: 1709034134-96182
+X-HE-Meta: U2FsdGVkX19TCIOBunB/trdZTRgi6R4E3PcqVCwEybxKePZ9o1W7it2/qFbLqYIs53EHyYYfFl8x0B7R0mINy3zRdpVuP62lhcb9V7LUa22u8kjylexBvXmWH/ecs+KGvdffoGc3N21S68SK05i+3sCg4yJKblnZZTtR9y3ZFxqx/XrR2Fx8zpCVrwxACFBpbGXXmULsj5PWzCO+8qQ4Sf5JJkE5OuwhWad6Y21UZJOdYOUuHe1DnpGQYM0ZOzykoLlS5HlC4zSAApnXrYm04btVQnyvH/v0N3YQ+i4aW6ciBJ22DDCTQgzDCFICBj+o
 
-On Tue, Feb 20, 2024 at 01:39:05PM +0100, Jan Kara wrote:
-> On Tue 20-02-24 10:26:48, Daniel Gomez wrote:
-> > On Mon, Feb 19, 2024 at 02:15:47AM -0800, Hugh Dickins wrote:
-> > I'm uncertain when we may want to be more elastic. In the case of XFS w=
-ith iomap
-> > and support for large folios, for instance, we are 'less' elastic than =
-here. So,
-> > what exactly is the rationale behind wanting shmem to be 'more elastic'=
-?
->=20
-> Well, but if you allocated space in larger chunks - as is the case with
-> ext4 and bigalloc feature, you will be similarly 'elastic' as tmpfs with
-> large folio support... So simply the granularity of allocation of
-> underlying space is what matters here. And for tmpfs the underlying space
-> happens to be the page cache.
-
-But it seems like the underlying space 'behaves' differently when we talk a=
-bout
-large folios and huge pages. Is that correct? And this is reflected in the =
-fstat
-st_blksize. The first one is always based on the host base page size, regar=
-dless
-of the order we get. The second one is always based on the host huge page s=
-ize
-configured (at the moment I've tested 2MiB, and 1GiB for x86-64 and 2MiB, 5=
-12
-MiB and 16GiB for ARM64).
-
-If that is the case, I'd agree this is not needed for huge pages but only w=
-hen
-we adopt large folios. Otherwise, we won't have a way to determine the step=
-/
-granularity for seeking data/holes as it could be anything from order-0 to
-order-9. Note: order-1 support currently in LBS v1 thread here [1].
-
-Regarding large folios adoption, we have the following implementations [2] =
-being
-sent to the mailing list. Would it make sense then, to have this block trac=
-king
-for the large folios case? Notice that my last attempt includes a partial
-implementation of block tracking discussed here.
-
-[1] https://lore.kernel.org/all/20240226094936.2677493-2-kernel@pankajragha=
-v.com/
-
-[2] shmem: high order folios support in write path
-v1: https://lore.kernel.org/all/20230915095042.1320180-1-da.gomez@samsung.c=
-om/
-v2: https://lore.kernel.org/all/20230919135536.2165715-1-da.gomez@samsung.c=
-om/
-v3 (RFC): https://lore.kernel.org/all/20231028211518.3424020-1-da.gomez@sam=
-sung.com/
-
->=20
-> > If we ever move shmem to large folios [1], and we use them in an oportu=
-nistic way,
-> > then we are going to be more elastic in the default path.
+On Tue, 2024-02-27 at 12:21 +0100, Arend van Spriel wrote:
+> On 2/27/2024 9:06 AM, Duoming Zhou wrote:
+> > The kzalloc() in brcmf_pmksa_v3_op() will return null if the
+> > physical memory has run out. As a result, if we dereference
+> > the null value, the null pointer dereference bug will happen.
 > >=20
-> > [1] https://lore.kernel.org/all/20230919135536.2165715-1-da.gomez@samsu=
-ng.com
+> > Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
+> > for pmk_op.
+>=20
+> NAK (see below)
+>=20
+> Also this issue was reported earlier by Joe Perches. Not sure if he=20
+> wants to be mentioned as such.
+
+I think it's unimportant to be mentioned.
+
+I think it's more important that the code be researched
+that the simple return of -ENOMEM the appropriate fix
+and is handled by all possible callers of the function.
+
+>=20
+> > Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V=
+3 operations")
+> > Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+> > ---
+> >   drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 5 +++++
+> >   1 file changed, 5 insertions(+)
 > >=20
-> > In addition, I think that having this block granularity can benefit quo=
-ta
-> > support and the reclaim path. For example, in the generic/100 fstest, a=
-round
-> > ~26M of data are reported as 1G of used disk when using tmpfs with huge=
- pages.
+> > diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.=
+cq b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > index 28d6a30cc01..3b420b33188 100644
+> > --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> > @@ -4322,6 +4322,10 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct c=
+fg80211_pmksa *pmksa,
+> >   	int ret;
+> >  =20
+> >   	pmk_op =3D kzalloc(sizeof(*pmk_op), GFP_KERNEL);
+> > +	if (!pmk_op) {
+> > +		ret =3D -ENOMEM;
+> > +		goto out;
+> > +	}
 >=20
-> And I'd argue this is a desirable thing. If 1G worth of pages is attached
-> to the inode, then quota should be accounting 1G usage even though you've
-> written just 26MB of data to the file. Quota is about constraining used
-> resources, not about "how much did I write to the file".
-
-But these are two separate values. I get that the system wants to track how=
- many
-pages are attached to the inode, so is there a way to report (in addition) =
-the
-actual use of these pages being consumed?
-
+> There is really no need to introduce a new label for this. Although you=
+=20
+> can kfree() a NULL pointer there is no need to do so when you know=20
+> already it is NULL. Just return -ENOMEM and be done with it.
 >=20
-> 								Honza
-> --=20
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR=
+> Regards,
+> Arend
+>=20
+> >   	pmk_op->version =3D cpu_to_le16(BRCMF_PMKSA_VER_3);
+> >  =20
+> >   	if (!pmksa) {
+> > @@ -4340,6 +4344,7 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cf=
+g80211_pmksa *pmksa,
+> >   	pmk_op->length =3D cpu_to_le16(length);
+> >  =20
+> >   	ret =3D brcmf_fil_iovar_data_set(ifp, "pmkid_info", pmk_op, sizeof(*=
+pmk_op));
+> > +out:
+> >   	kfree(pmk_op);
+> >   	return ret;
+> >   }
+
 
