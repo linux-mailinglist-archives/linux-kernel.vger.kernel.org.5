@@ -1,147 +1,278 @@
-Return-Path: <linux-kernel+bounces-83903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E8C1869FFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:16:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813D1869FF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9E90B2FBEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:13:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED0701F2E3D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 806A351C34;
-	Tue, 27 Feb 2024 19:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UNW9S+fS"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECDB145FE6;
+	Tue, 27 Feb 2024 19:13:37 +0000 (UTC)
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF5052F75
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:13:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546C051C4D;
+	Tue, 27 Feb 2024 19:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709061213; cv=none; b=RMZ3tSh6I3/leHcwoyshdfBMUe3i0fs36w/Qywaw9pWanqudW9XbxfhbOmtN9fgoQaRRvOUlJGbpOqVPItOrqGtmI1DRl0Q0qoW+YhDw92+BLo8nLbTzQC2IqgfonPe2B4Hp6z6VLEYYKwesarsMVYXziea2XBYDS8srkW0o8Qg=
+	t=1709061216; cv=none; b=l+NWWPSFI5CCWVLC+KC/rYkLqg1udKBzTzd0D4Y68iej6DAVJcwuGjCYXUCmU2V7Yie4jspygLb5/X4PWDBynCK35WYpTkKFlBB2CS+HXsDlvbX57dhLmvm6cTE9JdenwulCT4P8rPPk+lKHMRrJqZUFtnQraJy8x4//2ikCnLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709061213; c=relaxed/simple;
-	bh=LBkRRri5lOqofO6BZrkIFyBWNzE92eGEiK2jzbe8HAI=;
+	s=arc-20240116; t=1709061216; c=relaxed/simple;
+	bh=BdNWLB/9Q80f5latk6Tvf+i8jtOLoAB7p0iJYrLzeCY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r4BvXbXO7YsPcgDHQyu3lsr6DJlpFqiVS7bhzQjEuxD3g0xgVEap5VN0KxKlBL31hyAvDp+pNaDjPJvgakTnDYXgrks5f4DL+9pZxbUyvaF+yIJv0ZBuEHrmfn5lzkKsK7noadpmgpcQpZrdh2IIHi34xnD4krAS30Pt+xALjoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UNW9S+fS; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 To:Cc:Content-Type; b=kTmtYiBdZmxK+Ev110sQzFpOzZVW7e2qCsAh5DxHqKsUMbgEMr+DSDanqX6Qy2rkM6WR6Sp+KcWEMPhv0vpZ+cjcK0bYdw/dorxOOJzeX9LzLNpJ27+k4NeA7Z2+D6sR/p7hbwrxVto8vCJAn8bR5+Jy7yRPjcLl1GE1Cu9uAY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5d8ddbac4fbso3886559a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:13:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709061212; x=1709666012; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iBJKbsd4wIdKds37USwOrWAAhA255FzoeAt9UUCRGXc=;
-        b=UNW9S+fSUscU5vhGyOB3w8zCNC8p4rdLsK+P93y7DAYtpTSpWco3bdyde6ZJREM2Zs
-         C3Ru2s3iJtzVH6xylJeRK7lyoMMRGWqEvf6Q8WnUmpwAaL9bpsUmjLREBKxVzSYuIXt0
-         svj+J1KtYwlXQl8KZAkFrfsf1l0LwHbGblac3EFia6E15+VGcKll842AZ4MVg84Xz/R7
-         ryMNmgtISiU1xupQbFja2TcJw8M6PynJ4GE+9hWagT0HKlh/LN7DxSbxDThZZTNXntWO
-         RWRmu5jpj7aMjGnFsGdlcs4nyTcdOAha51E4sFaWE7yVIJjF+wqWIsQd9fbTdEYVerm2
-         ZV4w==
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e4857d93ebso1406226a34.0;
+        Tue, 27 Feb 2024 11:13:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709061212; x=1709666012;
+        d=1e100.net; s=20230601; t=1709061214; x=1709666014;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iBJKbsd4wIdKds37USwOrWAAhA255FzoeAt9UUCRGXc=;
-        b=smclCryUZpGW0XA3bYTcKhkgKBTtJ8SkGT6ME+gtTdT54d4nbi51arqXJzdbLnBh8p
-         4FhXT+0K3K7/vk5DpzYn0jDoC/xNJ/IB3JyNcEHLgpRP06aTCjYqyJ1lwVR7+W21sV4j
-         Bp5A3ztLsEj8DVE+emdtvdTu4E9kdzzxxf9n3HYI7MmqD/vnWmHHcbfa9vNQ3KK4OUZa
-         z2Z1g0WOO2whJlc7A0ROqAEj19bkp0aYG7kAvLSWFSXcdHhDc2cft9LEIIlTSSksXnfU
-         BeWaAZb8jMgBenn6TGbMIKNSkHwW+1JhIwUzcOKJRkFV9roVHTTocE+fj367DQ3tOBtD
-         LJMw==
-X-Forwarded-Encrypted: i=1; AJvYcCXD7hnrDPVDf9nwjWDc96jFEqVlF2NvGhr+xqQXaDQ/ziOTVNroa0PoQhSY8hHeN3nnoA3ZcLE8nlXgwaWCGFJ9HRHi6TDcjEijIndZ
-X-Gm-Message-State: AOJu0YxmWYedlLMSjC4+ERKyfR2w9VE/gNnqM8zJGQIPFKRwHq2uiUaU
-	xvn+wXN41q+SvRNpM4JtP2yUKxZiP5G3eD9yspZ1MUmYnQMbpRma6uR9/Tw5TG9R3wobOzNiNPY
-	3E1wEdQFAur/Ef69TnwI4kN22bkE=
-X-Google-Smtp-Source: AGHT+IHSN5qjnCnPdtOApqmCnCgsyXU11KA4GxFAczsdYUf2buDmdN+hfpvM8/FpiV81mxo6JYdi3Zbs+sl4LCVi710=
-X-Received: by 2002:a17:90a:bf0a:b0:29a:68ad:b77e with SMTP id
- c10-20020a17090abf0a00b0029a68adb77emr8525394pjs.19.1709061211735; Tue, 27
- Feb 2024 11:13:31 -0800 (PST)
+        bh=a+2L4lyqqD2zuVta+J15BPKHif64xeqes4P7tV8IFMI=;
+        b=VwLzSCvKTbyG2qT20KM7nCwsZIIVenaSAlLiF1gHrD9JCH/AzwFCswYRV7fM0courI
+         seEZ6y8S0dacLX4xrtCx3OSdLph0HaVw92U3dfXj/s8NY26qOEkAiefEXsaZ9yByH/A5
+         iorXnq1Ywb1Fm7nXXj9lWthiV3WXrFK+KpvtDjtJ+AhoQLxUUYw7jQtpvCeE/xp7qJnY
+         feZNavVnZwKp1pKI8l8/STUNozGLCMfRbaJ7+u/5Ym2L5nWNywe88w7e6p9a9cSvB5zA
+         NMIzMFt2tHJcgDgWhcKHU+MALTDTDMN+V0r5GiakUFhTE1RvvDYX0qj0/MDkDlKr7Yye
+         391w==
+X-Forwarded-Encrypted: i=1; AJvYcCULjgTnwsam00NbjXnfshtm+3tfk/U0hKhSimklodcYP9N1O2iVhKbyK7iO8yhfP+WYBXKawuoFEse5LGn48s66uvZLQIdeHBoI25bFxuKlI8Dy0nucNYlU06U6dw8QlGYFIMg3U5ccjw==
+X-Gm-Message-State: AOJu0YxFpxkbS9VufiRJSO1IWMEbmdU59/OcZPqiIENNRVLWAZfe9YzW
+	+ZwRZ8ReRZnZ8v15Kz6l7SuDrJOoQ8nDuJdIYW4irkgfwzPD5tXDPwXvJAl8fNOZaGEIIjSyPX2
+	L8ZDQfWlJ1Tc0EAEPyMR+l32oYL0=
+X-Google-Smtp-Source: AGHT+IFJxKNnL/HMz3LSvkzFZs4C7QS5yy6HpFPIjQTw56GSIrdr+nCfBayizBLjnLY6Cq5110coAPBd4l6eQZor/1U=
+X-Received: by 2002:a4a:d0d4:0:b0:5a0:3aeb:ae3f with SMTP id
+ u20-20020a4ad0d4000000b005a03aebae3fmr11072622oor.0.1709061214431; Tue, 27
+ Feb 2024 11:13:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227035135.54593-1-ioworker0@gmail.com>
-In-Reply-To: <20240227035135.54593-1-ioworker0@gmail.com>
-From: Yang Shi <shy828301@gmail.com>
-Date: Tue, 27 Feb 2024 11:13:19 -0800
-Message-ID: <CAHbLzkoQ1wFjA5aR51K-XMW+shSVFgujJjKK+-OG4OfVFvgOyQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/khugepaged: keep mm in mm_slot without
- MMF_DISABLE_THP check
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com, 
-	david@redhat.com, songmuchun@bytedance.com, peterx@redhat.com, 
-	minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20231130174126.688486-1-herve.codina@bootlin.com>
+ <20231130174126.688486-3-herve.codina@bootlin.com> <CAGETcx_zB95nyTpi-_kYW_VqnPqMEc8mS9sewSwRNVr0x=7+kA@mail.gmail.com>
+ <20240227162422.76a00f11@bootlin.com> <86f2262d059db84070745e299d96dde3e6078220.camel@gmail.com>
+ <20240227185402.57a3b924@bootlin.com> <9ae28df7a4770bf94358dac36fd5e0942877f147.camel@gmail.com>
+In-Reply-To: <9ae28df7a4770bf94358dac36fd5e0942877f147.camel@gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 27 Feb 2024 20:13:23 +0100
+Message-ID: <CAJZ5v0jE8QfSrs1uqgU7RceGWbT12YymouAOhsb7WxKmMbGeGg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] of: overlay: Synchronize of_overlay_remove() with the
+ devlink removals
+To: =?UTF-8?B?TnVubyBTw6E=?= <noname.nuno@gmail.com>
+Cc: Herve Codina <herve.codina@bootlin.com>, Saravana Kannan <saravanak@google.com>, 
+	Luca Ceresoli <luca.ceresoli@bootlin.com>, Nuno Sa <nuno.sa@analog.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, 
+	Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>, 
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
+	Horatiu Vultur <horatiu.vultur@microchip.com>, 
+	Steen Hegelund <steen.hegelund@microchip.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 7:51=E2=80=AFPM Lance Yang <ioworker0@gmail.com> wr=
-ote:
+On Tue, Feb 27, 2024 at 8:08=E2=80=AFPM Nuno S=C3=A1 <noname.nuno@gmail.com=
+> wrote:
 >
-> Previously, we removed the mm from mm_slot and dropped mm_count
-> if the MMF_THP_DISABLE flag was set. However, we didn't re-add
-> the mm back after clearing the MMF_THP_DISABLE flag. Additionally,
-> We add a check for the MMF_THP_DISABLE flag in hugepage_vma_revalidate().
+> Hi Herve,
 >
-> Fixes: 879c6000e191 ("mm/khugepaged: bypassing unnecessary scans with MMF=
-_DISABLE_THP check")
+> On Tue, 2024-02-27 at 18:54 +0100, Herve Codina wrote:
+> > Hi Nuno,
+> >
+> > On Tue, 27 Feb 2024 17:55:07 +0100
+> > Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+> >
+> > > On Tue, 2024-02-27 at 16:24 +0100, Herve Codina wrote:
+> > > > Hi Saravana, Luca, Nuno,
+> > > >
+> > > > On Tue, 20 Feb 2024 16:37:05 -0800
+> > > > Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > ...
+> > > >
+> > > > > >
+> > > > > > diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> > > > > > index a9a292d6d59b..5c5f808b163e 100644
+> > > > > > --- a/drivers/of/overlay.c
+> > > > > > +++ b/drivers/of/overlay.c
+> > > > > > @@ -1202,6 +1202,12 @@ int of_overlay_remove(int *ovcs_id)
+> > > > > >                 goto out;
+> > > > > >         }
+> > > > > >
+> > > > > > +       /*
+> > > > > > +        * Wait for any ongoing device link removals before rem=
+oving some
+> > > > > > of
+> > > > > > +        * nodes
+> > > > > > +        */
+> > > > > > +       device_link_wait_removal();
+> > > > > > +
+> > > > >
+> > > > > Nuno in his patch[1] had this "wait" happen inside
+> > > > > __of_changeset_entry_destroy(). Which seems to be necessary to no=
+t hit
+> > > > > the issue that Luca reported[2] in this patch series. Is there an=
+y
+> > > > > problem with doing that?
+> > > > >
+> > > > > Luca for some reason did a unlock/lock(of_mutex) in his test patc=
+h and
+> > > > > I don't think that's necessary.
+> > > >
+> > > > I think the unlock/lock in Luca's case and so in Nuno's case is nee=
+ded.
+> > > >
+> > > > I do the device_link_wait_removal() wihout having the of_mutex lock=
+ed.
+> > > >
+> > > > Now, suppose I do the device_link_wait_removal() call with the of_m=
+utex locked.
+> > > > The following flow is allowed and a deadlock is present.
+> > > >
+> > > > of_overlay_remove()
+> > > >   lock(of_mutex)
+> > > >      device_link_wait_removal()
+> > > >
+> > > > And, from the workqueue jobs execution:
+> > > >   ...
+> > > >     device_put()
+> > > >       some_driver->remove()
+> > > >         of_overlay_remove() <--- The job will never end.
+> > > >                                  It is waiting for of_mutex.
+> > > >                                  Deadlock
+> > > >
+> > >
+> > > We may need some input from Saravana (and others) on this. I might be=
+ missing
+> > > something but can a put_device() lead into a driver remove callback? =
+Driver code
+> > > is
+> > > not device code and put_device() leads to device_release() which will=
+ either call
+> > > the
+> > > device ->release(), ->type->release() or the class ->dev_release(). A=
+nd, IMO,
+> > > calling
+> > > of_overlay_remove() or something like that (like something that would=
+ lead to
+> > > unbinding a device from it's driver) in a device release callback wou=
+ld be at the
+> > > very least very questionable. Typically, what you see in there is of_=
+node_put()
+> > > and
+> > > things like kfree() of the device itself or any other data.
+> >
+> > I think that calling of_overlay_remove() in a device release callback m=
+akes
+> > sense. The overlay is used to declare sub-nodes from the device node. I=
+t
+> > does not add/remove the device node itself but sub-nodes.
+> >
+>
+> I think we are speaking about two different things... device release is n=
+ot the same
+> as the driver remove callback. I admit the pci case seems to be a beast o=
+f it's own
+> and I just spent some time (given your links) on it so I can't surely be =
+sure about
+> what I'm about to say... But, AFAICT, I did not saw any overlay or change=
+set being
+> removed from a kobj_type release callback.
+>
+> > The use case is the use of DT overlays to describe PCI devices.
+> > https://lore.kernel.org/all/1692120000-46900-1-git-send-email-lizhi.hou=
+@amd.com/
+> > https://lore.kernel.org/lkml/20220427094502.456111-1-clement.leger@boot=
+lin.com/
+> > --- 8< ---
+> > The lan966x SoCs can be used in two different ways:
+> >
+> >  - It can run Linux by itself, on ARM64 cores included in the SoC. This
+> >    use-case of the lan966x is currently being upstreamed, using a
+> >    traditional Device Tree representation of the lan996x HW blocks [1]
+> >    A number of drivers for the different IPs of the SoC have already
+> >    been merged in upstream Linux.
+> >
+> >  - It can be used as a PCIe endpoint, connected to a separate platform
+> >    that acts as the PCIe root complex. In this case, all the devices
+> >    that are embedded on this SoC are exposed through PCIe BARs and the
+> >    ARM64 cores of the SoC are not used. Since this is a PCIe card, it
+> >    can be plugged on any platform, of any architecture supporting PCIe.
+> > --- 8< ---
+> >
+> > This quite long story led to DT overlay support for PCI devices and so =
+the
+> > unittest I mentioned:
+> >   https://elixir.bootlin.com/linux/v6.8-rc6/source/drivers/of/unittest.=
+c#L3946
+> >
+> >
+> > So, I have a PCI driver that bind to the lan966x PCI board.
+> > This driver loads an overlay at probe() and unload it at remove().
+> > Also, this driver can be module. A simple rmmod leads to the remove() c=
+all.
+> >
+>
+> Hmm, and I think that would not be an issue... Note that the code that ru=
+ns in
+> device_link_release_fn() is doing put_device() which ends ups on the kobj=
+_type
+> release callback and so far I could not see any evidence of such a callba=
+ck being
+> responsible of calling device_remove() on another device. That would be w=
+eird (I
+> think) since I would expect such a call to happen in a kind of unregister=
+ function.
+>
+> > This driver is not yet upstream because I haven't yet fixed all the iss=
+ues I
+> > encountered that's why of now, I can point only the unittest related to=
+ overlay
+> > support for PCI.
+> >
+> > >
+> > > The driver remove callback should be called when unbinding the device=
+ from it's
+> > > drivers and devlinks should also be removed after device_unbind_clean=
+up() (i.e,
+> > > after
+> > > the driver remove callback).
+> > >
+> > > Having said the above, the driver core has lots of subtleties so, aga=
+in, I can be
+> > > missing something. But at this point I'm still not seeing any deadloc=
+k...
+> > >
+> >
+> > I gave a wrong example.
+> > Based on Luca's sequence he gave in
+> >   https://lore.kernel.org/all/20231220181627.341e8789@booty/
+>
+> Regarding Luca's comments, my first approach was actually to just make th=
+e devlink
+> removal synchronously... I'm still not sure what would be the issue of do=
+ing that
+> (other than potentially waiting some time for the srcu synchronization).
 
-I think Andrew will fold this fix into your original patch.
+It would allow forward progress to be made, but it would add potential
+delay for everybody, which is only really needed in the DT overlay
+case.  Sounds like something to avoid to me.
 
->
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> Suggested-by: Yang Shi <shy828301@gmail.com>
+> About the unlock, I'm just not sure what could happen if someone else (ot=
+her than us) sneaks in
+> and grabs the of_mutex while we are in the middle of removing an overlay.=
+.
 
-Reviewed-by: Yang Shi <shy828301@gmail.com>
-
-> ---
->  mm/khugepaged.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 2771fc043b3b..1c0073daad82 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -920,7 +920,7 @@ static int hugepage_vma_revalidate(struct mm_struct *=
-mm, unsigned long address,
->  {
->         struct vm_area_struct *vma;
->
-> -       if (unlikely(hpage_collapse_test_exit(mm)))
-> +       if (unlikely(hpage_collapse_test_exit_or_disable(mm)))
->                 return SCAN_ANY_PROCESS;
->
->         *vmap =3D vma =3D find_vma(mm, address);
-> @@ -1428,7 +1428,7 @@ static void collect_mm_slot(struct khugepaged_mm_sl=
-ot *mm_slot)
->
->         lockdep_assert_held(&khugepaged_mm_lock);
->
-> -       if (hpage_collapse_test_exit_or_disable(mm)) {
-> +       if (hpage_collapse_test_exit(mm)) {
->                 /* free mm_slot */
->                 hash_del(&slot->hash);
->                 list_del(&slot->mm_node);
-> @@ -2456,7 +2456,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigne=
-d int pages, int *result,
->          * Release the current mm_slot if this mm is about to die, or
->          * if we scanned all vmas of this mm.
->          */
-> -       if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
-> +       if (hpage_collapse_test_exit(mm) || !vma) {
->                 /*
->                  * Make sure that if mm_users is reaching zero while
->                  * khugepaged runs here, khugepaged_exit will find
-> --
-> 2.33.1
->
+If that is possible at all, I'd call it a bug.
 
