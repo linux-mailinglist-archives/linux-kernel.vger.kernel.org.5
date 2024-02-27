@@ -1,142 +1,99 @@
-Return-Path: <linux-kernel+bounces-82902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB9A868B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:04:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A00868B94
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A53C5284408
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:03:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01397B21FB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1CE135A7E;
-	Tue, 27 Feb 2024 09:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10773135A5A;
+	Tue, 27 Feb 2024 09:04:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fbXmdz5C"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o0LxqWWV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021DC55784;
-	Tue, 27 Feb 2024 09:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 516B712FF98;
+	Tue, 27 Feb 2024 09:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709024597; cv=none; b=ZBFf9PGn0C49Vv6xrMUen5lMJSwbd71Mj+xw1/dUE/iL/wQ6V7eOwsAlazvntayU9tye6AU6slcpXJ5Vhp/LetaoHi53Xrc9sHiHS1RR/fjvuXt8+KB2N6Qi7osDEnPHnQ3B+ypq/fCvHdgaztdk1qOvVMoLROe1LqrdTxGplBM=
+	t=1709024673; cv=none; b=mm2ZJjz0LtRp4cVue+u0QJ66ru+WU1uGrx5TXsFr8F91sG+JlwyLUjM5LurNtecV/acLSnTEbisTFE0samlCdXzA/WTUOZVhkDre3EIdRnsfHs8vKZVvJo0ccu3WBlkQpg9Eclegxw4m2c4Gso9X3UkWt9wekDgNDOeilfgE7is=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709024597; c=relaxed/simple;
-	bh=fU2iYIGjJMhLEH28pQAAHT8Nd31ZjfK3UFkPzSvJrqc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YuTlzr01duXbd96LxcORcofxeqf1ri0CRduM5/0RUAPoW0tiWz3CB/XrM7OCavusCfLoVN/bl6xcHQrx1F8Q6B0HC5HxQSbeC0gy0uKdB9uAPlVNaThuEVBYbTHNw3QdasFJtXtghdeumQj9Mh4xJ0TOxLNYpc6rlcnLURYYSUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fbXmdz5C; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33d153254b7so3088055f8f.0;
-        Tue, 27 Feb 2024 01:03:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709024594; x=1709629394; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/yDl/9Z8vdDqaR6iL8wu9PpxbAcWBuGSKPAcKXxs4mQ=;
-        b=fbXmdz5CHRCQaQwmsi1vk9S5XjtwGS/1K9ZTJSkUgRuDpImuikLjNodWcnEtGaqito
-         /GCaMIImlUqMBUEKUqhVV4mySDjRwvSQw1q8pn9o1BmD24zNxWZnpNUbpkl/hflGkBZY
-         LXj60KE5seqJbG3UMAS54ZoQsh4xiJvL9Q/UALVeTBg7tEvBQh9oGCCeBb+5JfE6fGCy
-         wyzEE+Hr98Pub1ISKv/Lc8CtVSYqlK6augzbSr8TisLvwtKcF9WbdLVunayfLcisMX08
-         skbkbnsYYBivOMG7dr0VIEsw8PuCivGYIlrIXFnlqoKFsk5GaAVPH+awYmK0bETn1zZ8
-         Th+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709024594; x=1709629394;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/yDl/9Z8vdDqaR6iL8wu9PpxbAcWBuGSKPAcKXxs4mQ=;
-        b=O6OrTY6tcg8lbDQ+koXpYHOI+oN0OWt7ftr+MhlMv8ji4zULaeDsrKbbdDsCexIM2d
-         JyLU/muRdPV3+V5nM7jGIbCYwEnnDL24mSeGVfYJD0/F0YOUb6GrBkz17AjyLhWopsfW
-         8VTSx6oKaF7OIOGMYPBNp/9z9qc9sk+dNvfsmiiKV2NKP4wg1N4ksssSCyjh3PlT54qz
-         ShZIN0fofGcaQ9hsjkj2jN8W4bq39XYEF/WnNa5E5ULFHMYBoiHZeCoA0sBIgYk7WiCw
-         Lf584q+Kizd+iYnT0HrIy6AYvL6i7ZbUM3TJAvAxYWHoHLwMnEQY6BkxCJpKK7jOtEX6
-         ETbg==
-X-Forwarded-Encrypted: i=1; AJvYcCVYpQEdDifIluCak9olWhJIPLHbfeliaf0jrj01ChC2n7sziSSmb+qGXvls4y9anzXBbVkAQ/kIFA6CawNsmYsMCOpjjqeaFgGi2ou/g68GkR+aX8CkzhYKy0PzIcUCt5BtuBPw
-X-Gm-Message-State: AOJu0Yy5rEJX7/eF4PxsEMyYJyJb1JuIDYGDL9DmpU71cGqN94cyk9Zg
-	HDdO0q6/Rr4xWrtuFnqboREy8Y4uda3ajnVjTYMKmtj/89pzJ5OD
-X-Google-Smtp-Source: AGHT+IFCQC28ggruhQycoMEQOPpIPfsMAl/IBFWeXrj8CG0KE1k9m7shkoRTh/ChNwd11Aks0a0Mfg==
-X-Received: by 2002:a5d:58d1:0:b0:33d:2d07:bb2c with SMTP id o17-20020a5d58d1000000b0033d2d07bb2cmr5935411wrf.28.1709024594081;
-        Tue, 27 Feb 2024 01:03:14 -0800 (PST)
-Received: from debian ([146.70.204.204])
-        by smtp.gmail.com with ESMTPSA id w2-20020adfcd02000000b003392206c808sm10603745wrm.105.2024.02.27.01.03.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 01:03:13 -0800 (PST)
-Message-ID: <aa5f1c11-4528-4d53-91f3-5ce8c02363ac@gmail.com>
-Date: Tue, 27 Feb 2024 10:02:51 +0100
+	s=arc-20240116; t=1709024673; c=relaxed/simple;
+	bh=Oj6QUXhE3TKC5x3LLfgn9nU0BNYadHx45h5xMqCQBWw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kQ8MKm6VIymLDB2YGSDO4j+GVl/8hI2ZLzoVg+C+tdz1KYTwvpmrAwLbTyaQ8sFr4F5yuP1OsMJKOH9BW5FbE+RFTP/Jg9Ji4csjrMAdSJeYrzKDKLlX+DFyWEc3KQgYBlcqYceySqhsFGp6r0oe2kvSETMYG6kEvGHwnIbDDoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o0LxqWWV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00964C433F1;
+	Tue, 27 Feb 2024 09:04:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709024672;
+	bh=Oj6QUXhE3TKC5x3LLfgn9nU0BNYadHx45h5xMqCQBWw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=o0LxqWWVPPhp0tiVjlSAHb6+NFMlL9oLj4So/V0Y4RFLIH8LcIryOqkkUP80dH7Y0
+	 d60V3DDtwpUeaTSAT2U36Db0UxT/0K9h+sgT7FT4+qUNeMOU2QOXhMJNnvp0pKGU1H
+	 wWC1y9uMyllpCvbcVSgvIlEC1F1CF4b6fCK7iBmcO9eBuEaJ0/Zu8n7UWBmn9mtBXY
+	 BGoldirESKzjvgdaFknqe0NtERnFasUxXq0fnZMAFjrBSFobBfMY4CcOk0KUflhFBH
+	 UGGNHNZalfNDOV3FkClCnk6AXu2jlb4AxjJKcpeAsZXUXFRf0KmUJf4gaf/WamZoFq
+	 zbIRpbC9EwQSg==
+From: Christian Brauner <brauner@kernel.org>
+To: chengming.zhou@linux.dev
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	vbabka@suse.cz,
+	roman.gushchin@linux.dev,
+	Xiongwei.Song@windriver.com,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	viro@zeniv.linux.org.uk,
+	jack@suse.cz
+Subject: Re: [PATCH] vfs: remove SLAB_MEM_SPREAD flag usage
+Date: Tue, 27 Feb 2024 10:04:24 +0100
+Message-ID: <20240227-westseite-kursziel-72040f653d65@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240224135315.830477-1-chengming.zhou@linux.dev>
+References: <20240224135315.830477-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next 2/2] net: geneve: enable local address bind for
- geneve sockets
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, idosch@nvidia.com, razor@blackwall.org,
- amcohen@nvidia.com, petrm@nvidia.com, jbenc@redhat.com, b.galvani@gmail.com,
- bpoirier@nvidia.com, gavinl@nvidia.com, martin.lau@kernel.org,
- daniel@iogearbox.net, herbert@gondor.apana.org.au, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <df300a49-7811-4126-a56a-a77100c8841b@gmail.com>
- <79a8ba83-86bf-4c22-845c-8f285c2d1396@gmail.com>
- <CAHsH6GvX7zYSoA7JVemRtunWWSaew1S11Y996WAGt6B9d8=cOA@mail.gmail.com>
-From: Richard Gobert <richardbgobert@gmail.com>
-In-Reply-To: <CAHsH6GvX7zYSoA7JVemRtunWWSaew1S11Y996WAGt6B9d8=cOA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1035; i=brauner@kernel.org; h=from:subject:message-id; bh=Oj6QUXhE3TKC5x3LLfgn9nU0BNYadHx45h5xMqCQBWw=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTeXTqjJYXp2L+gNUEP165uM11i9WqjiJ+i0vrkJ5d8D /xlW8p+pKOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiZ+8wMrxc05sS8WD6+gkX 5Sb+eD8jxpVfRpdrnaLZjeuz9/Nol3EwMlytfjfvw/aFlv67vrf96J7HI3+MoS/gelvUw7J810f PWtgA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
 
-Eyal Birger wrote:
-> Hi,
+On Sat, 24 Feb 2024 13:53:15 +0000, chengming.zhou@linux.dev wrote:
+> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+> its usage so we can delete it from slab. No functional change.
 > 
-> On Thu, Feb 22, 2024 at 12:54 PM Richard Gobert
-> <richardbgobert@gmail.com> wrote:
->>
->> This patch adds support for binding to a local address in geneve sockets.
 > 
-> Thanks for adding this.
-> 
->> It achieves this by adding a geneve_addr union to represent local address
->> to bind to, and copying it to udp_port_cfg in geneve_create_sock.
-> 
-> AFICT in geneve_sock_add(), geneve_socket_create() is only called if there's
-> no existing open socket with the GENEVE destination port. As such, wouldn't
-> this bind work only for the first socket in the namespace?
-> 
-> If that is the case, then perhaps binding the socket isn't the right
-> approach, and instead geneve_lookup() should search for the tunnel based on
-> both the source and destination IPs.
-> 
-> Am I missing something?
-> 
-> Eyal
 
-You are right, I missed it.
-Binding the socket is the main reason for the patch, to prevent exposing
-the geneve port on all interfaces.
-I think it should be searched in geneve{6}_lookup and in geneve_find_sock:
+Commit message was updated to link to SLAB_MEM_SPREAD removal.
 
-static struct geneve_sock *geneve_find_sock(struct geneve_net *gn,
-					    sa_family_t family,
-					    union geneve_addr *saddr)
- {
- 	struct geneve_sock *gs;
+---
 
- 	list_for_each_entry(gs, &gn->sock_list, list) {
-		struct inet_sock *inet = inet_sk(gs->sock->sk);
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-		if (inet->inet_sport == dst_port && geneve_get_sk_family(gs) == family) {
-			if (family == AF_INET && inet->inet_rcv_saddr == saddr->sin.sin_addr.s_addr)
-				return gs;
-        ...
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-This is also true for VXLAN
-What do you think?
-Thanks
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
+
+[1/1] vfs: remove SLAB_MEM_SPREAD flag usage
+      https://git.kernel.org/vfs/vfs/c/2b711faa0ee2
 
