@@ -1,133 +1,149 @@
-Return-Path: <linux-kernel+bounces-84098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B9386A238
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:13:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CC6986A261
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:24:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BB08B2ECA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:10:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94677B2E969
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BEDC150988;
-	Tue, 27 Feb 2024 22:10:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFFB150982;
+	Tue, 27 Feb 2024 22:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OqvI80ve"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="TBLwbUNG"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9285C14F98E;
-	Tue, 27 Feb 2024 22:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E717451009
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:09:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709071808; cv=none; b=StyKLY6BZVtAFmOLAIxnoTK2b81Ei+zHTTGGNTdMp/ahAuDs2+I3OjnOpS65ba5xYvW+N7LokOlem9wnZhFylTGs38gC41+hUKxP5CVAOTzppgWJ6g99UAR54GLA69mQdXYqfkvKLxZ9iu1WAdc8bFt9JaIdeNy/CUzXpMsgxVA=
+	t=1709071784; cv=none; b=STkKtFQ3RVZeRqcHiBYVXTKvmXOoV59ps1MWEHSYegPtTg3vLbiwur9nOagSs16S2b2behpQwJ/RX4Wl6hqcq0znjnptaJ7yynHMH7OkPEli57PwAhIzaq3h9oiWskc/ZfT2SsaRKxXZGp+xf1fDpwSw1glBbdBoW1/bY2Yl6HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709071808; c=relaxed/simple;
-	bh=RGo3+txwNsrQ6IT60hsPwAvFDG+YtsMzMqrgzgdFu9w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rgonTAFRgQhvc50OwO8xcy9L/O9l9y7dnxIFuaSH4rgVQse+wSRbX08n0hSEXpo6nnNhp86nMzRgFxTjLhCtx9Xigu23keHhfT5NXACipl6GcTBrx+7Lcu9TV030VLuxcOojjrKy4ukyJkqXKFyx/5lZHFSf2goswqCT9WAe/gQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OqvI80ve; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d28468666so4163207f8f.0;
-        Tue, 27 Feb 2024 14:10:06 -0800 (PST)
+	s=arc-20240116; t=1709071784; c=relaxed/simple;
+	bh=erW1uia3j0MExRyEPDxD5TYvHqphi6LaJfExyj4/xtk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ab3RaNBpPUOP/dkatrQC7DHWdxBAhyOrn6h3V+M/hiLU1PbXSFRAmViPq/qjgb5y4sfMmnWO0uuqnsFK75cci+0qBxwd2CDfMUU+6khYiK+zwPTCtKcmuCVFBRE3VtFhsG5x3KBxdvM7ncEFQxWN2yhXnhmG58v8it07wcVsjRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=TBLwbUNG; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-607c5679842so48650967b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:09:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709071805; x=1709676605; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ma8ASoLaikXcGfj9j8rCCZj2yH+c7Ub2I8hdjXF8mhA=;
-        b=OqvI80veLiOMJHcxgm1DT4/a9STvqNjgjp83scL7aF7QWN1bI6jwEeX1uIWdEjT9ks
-         nXYoXRChXLdXu3wwsyMATtvxMrKZOXuNAVqeKgMtoWTMnaaTQWxtyr6/rakA7w/Kph9R
-         zQ3YoST3akkDMonC4A9riylPGlCGqCEAGzS285QEktP9NJbRbZrUVH8x609lN5g6QB9m
-         RMjSwwhhllFw9SAlKKXe2cnwsK4jfP40luJh5sj4WfruE6hAWS7b+R3eRDQPHeu7JR3o
-         F+Fk7YVAK9Rp8zylVxBicwFNS2cVyqwFDx8vI2NQvikCdzaMiDU6I5Uj7zJbY5IMkFNK
-         yozQ==
+        d=paul-moore.com; s=google; t=1709071782; x=1709676582; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8LScYWTy3C7usAjGNAd7Kwwrogvq/sTUenzJxpJUUtg=;
+        b=TBLwbUNGxjMCdKfeTuReGDx6m/cQNpYjdcYIuqqGV7qhGfWS3XwyIw2zXMWI9B595H
+         rbJ3HgzSRGxabaYgGtbnnYcEEPzfU5AtJygLeS1GzTMbUMcSWNIQFB34qAJBTGjPKfoY
+         wMPQ/wPEGFiSnn076v+MSqiYSuEKbl4Lixu1IVOotIwBehiUFkPQqH31v5rc1VHQZcds
+         D8ww9o0jeiT0Rt9YListqDXYANwxzWbDedC31LkUPZbk+EjnL+EYoD+/IRcnXI9kr1wb
+         hqZItbuDjd5QnYDYClZVjhnl8cyV+NvvZ1CbmOEdMrM1FyUHCDpG/Eoe1Xlps/FdXl5W
+         1QHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709071805; x=1709676605;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ma8ASoLaikXcGfj9j8rCCZj2yH+c7Ub2I8hdjXF8mhA=;
-        b=GPqGJDxcnvLfz8ACqe7KYF2GhOBA12Ghufm0hse71coGcy87vYOwfAZzdQC/zxzs+U
-         kKuAfAEYT51izMji8K3++DDidSqzX23JJ68anaZxEKjNFuNNHchWmJBdNKKHHzgyG1k7
-         By3Eul3Lq0ON8HxiTLjPv+aSpXL09sr/GQUnYKxmIo1YZ+KbVN/5i9ftbfTVVyuEbCme
-         BAubF7Fy2h8f1KnFSgsT494RMA9exL+HWXxGWihW2sklanNWmzHLF2TLRfGOYHThOvmB
-         BkWAJb09hUb6Wl7POTVvJSNjlOf0R7eFmfujy6yNMJvH7Kc3CSikYD2cvEgmlfeAfTY8
-         +Pkw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPy3oB1JpwSUWmhis9WSYDgLpAIHOPGYBnPRVYVRZvchv7w98v9MOYrZl2RPITcBjjSCpt2mDoiEb21rIbfgQ6+WHvf/THKepkcUu3TR/gBw40cFT8hS2BNJv30o5YUw62IEy7P31fVg==
-X-Gm-Message-State: AOJu0YzPetyusVWWRSvYuMzGK1IxHpjxzJzIh0BsJJQLXP1P32vyebib
-	0JWnHZ0wrVlSjScIc/xx8pO/EnO6rSXNqCwsv/wXzG5qFqABEYUP
-X-Google-Smtp-Source: AGHT+IFNgh0VbEih7fXYUL3kk3qEsVKpWoXXdEC+dl+GDwrzEYTzSWdQKuUPy7DAB7nCM8SHNz4k8g==
-X-Received: by 2002:a5d:4e85:0:b0:33d:87f0:1475 with SMTP id e5-20020a5d4e85000000b0033d87f01475mr7283981wru.62.1709071804614;
-        Tue, 27 Feb 2024 14:10:04 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:e6a2:98b:e06b:631a])
-        by smtp.gmail.com with ESMTPSA id bu25-20020a056000079900b0033d8a17a710sm12891664wrb.88.2024.02.27.14.10.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 14:10:03 -0800 (PST)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	=?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-	devicetree@vger.kernel.org
-Cc: linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] dt-bindings: soc: renesas: renesas-soc: Add pattern for gray-hawk
-Date: Tue, 27 Feb 2024 22:09:30 +0000
-Message-Id: <20240227220930.213703-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1709071782; x=1709676582;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8LScYWTy3C7usAjGNAd7Kwwrogvq/sTUenzJxpJUUtg=;
+        b=S5oafmTqdKUuAOJJzb4rVwt+7RkAMf6z2vGPaScEUFv9tmuZIdUdvdnDgkQf84vMre
+         Hd5u404yVvB2x6N09jRc89YAO/KL7X/V1zhBoumO4zlgj19nTzs3vZOhuwats41q76Hk
+         De+QYg7ZYwc1NDGh9SvFy2Fp+doBwiqOZsJxkjFgxl/wr54liWjdr5C8g/ZgxP9UZVWS
+         9Hc+zLfsU2o/cvor1GUbztSTKoCvxnndjy4nsjSn14YcgjtKrEHQg3/lE3oIHZGI4IF0
+         ee8f1yQsL/WBm9JzzUJUaAQIIKfrYc/CeDbI2q61MCFk1iv6NL0r/z/lla6iaBwQBW/8
+         b2+w==
+X-Forwarded-Encrypted: i=1; AJvYcCV6ciMkYrfGuctOg5fY6zMjGM31S9STmIzAUpMLZlkajH6MzlZxZQUls9xuvxAkC7g/KzVcRT38/CxWOusHnX5Ocq9rwWImrqqPtWB2
+X-Gm-Message-State: AOJu0YzlX+MyUU5g4xVvno5CfN3nGxAJb0S4gcMVDaHbVCKtBTpDxnwJ
+	A8JfyKPwQtbGoGsKH4dbnJNhenRKPOgUYeWAz5qHX6vx+QVA0TAiv0RpwslJwTosAapNkk5vVUw
+	D7/+iu/b93MNOp4R/PM3hwYYwC4qAItARkdvGCQHaUL023/JgaA==
+X-Google-Smtp-Source: AGHT+IHtG1MED5oT6RLvr3hpmtsOAPq7j+1feuMfHUZVLClZGmlcZ2s0kKJgCHVkoyuRWPgPmP/jUE/BnVHiDQLxxSc=
+X-Received: by 2002:a0d:d8d8:0:b0:609:3231:6c42 with SMTP id
+ a207-20020a0dd8d8000000b0060932316c42mr2167274ywe.35.1709071781933; Tue, 27
+ Feb 2024 14:09:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240223190546.3329966-1-mic@digikod.net> <20240223190546.3329966-2-mic@digikod.net>
+ <CAHC9VhQGLmeL4Buh3ZzS3LuZ9Grut9s7KEq2q04DYUMCftrVkg@mail.gmail.com>
+ <CAHC9VhTUux1j9awg8pBhHv_4-ZZH0_txnEp5jQuiRpAcZy79uQ@mail.gmail.com> <CAHC9VhQHpZZDOoPcCqRQJeDc_DOh8XGvhFF3M2wZse4ygCXZJA@mail.gmail.com>
+In-Reply-To: <CAHC9VhQHpZZDOoPcCqRQJeDc_DOh8XGvhFF3M2wZse4ygCXZJA@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 27 Feb 2024 17:09:31 -0500
+Message-ID: <CAHC9VhQL9REbeyP6Lp=0HT=0LryPnAOKAbBF4gH9c=cBbJxaFg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] AppArmor: Fix lsm_get_self_attr()
+To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	John Johansen <john.johansen@canonical.com>
+Cc: Casey Schaufler <casey@schaufler-ca.com>, James Morris <jmorris@namei.org>, 
+	"Serge E . Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Tue, Feb 27, 2024 at 11:01=E2=80=AFAM Paul Moore <paul@paul-moore.com> w=
+rote:
+> On Mon, Feb 26, 2024 at 2:59=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
+wrote:
+> > On Fri, Feb 23, 2024 at 4:07=E2=80=AFPM Paul Moore <paul@paul-moore.com=
+> wrote:
+> > > On Fri, Feb 23, 2024 at 2:06=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic=
+@digikod.net> wrote:
+> > > >
+> > > > aa_getprocattr() may not initialize the value's pointer in some cas=
+e.
+> > > > As for proc_pid_attr_read(), initialize this pointer to NULL in
+> > > > apparmor_getselfattr() to avoid an UAF in the kfree() call.
+> > > >
+> > > > Cc: Casey Schaufler <casey@schaufler-ca.com>
+> > > > Cc: John Johansen <john.johansen@canonical.com>
+> > > > Cc: Paul Moore <paul@paul-moore.com>
+> > > > Cc: stable@vger.kernel.org
+> > > > Fixes: 223981db9baf ("AppArmor: Add selfattr hooks")
+> > > > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+> > > > ---
+> > > >  security/apparmor/lsm.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > If you like John, I can send this up to Linus with the related SELinu=
+x
+> > > fix, I would just need an ACK from you.
+> >
+> > Reviewed-by: Paul Moore <paul@paul-moore.com>
+> >
+> > This patch looks good to me, and while we've still got at least two
+> > (maybe three?) more weeks before v6.8 is tagged, I think it would be
+> > good to get this up to Linus ASAP.  I'll hold off for another day, but
+> > if we don't see any comment from John I'll go ahead and merge this and
+> > send it up to Linus with the SELinux fix; I'm sure John wouldn't be
+> > happy if v6.8 went out the door without this fix.
+>
+> I just merged this into lsm/stable-6.8 and once the automated
+> build/test has done it's thing and come back clean I'll send this,
+> along with the associated SELinux fix, up to Linus.  Thanks all.
 
-Add pattern for Renesas Gray Hawk Single board (based on R-Car V4M SoC)
-to fix the below dtbs_check issue:
+In off-list discussions with Micka=C3=ABl today it was noted that this
+patch also needs a fixup to the commit description so I've replaced it
+with the following:
 
-arch/arm64/boot/dts/renesas/r8a779h0-gray-hawk-single.dtb: /: compatible:0: 'anyOf' conditional failed, one must be fixed:
-4695 'renesas,gray-hawk-single' does not match '^renesas,(emev2|r(7s|8a|9a)[a-z0-9]+|rcar|rmobile|rz[a-z0-9]*|sh(7[a-z0-9]+)?|mobile)-[a-z0-9-]+$'
-4696 'renesas,gray-hawk-single' does not match '^renesas,(condor|falcon|gr-peach|salvator|sk-rz|smar(c(2)?)?|spider|white-hawk)(.*)?$'
-4697 'renesas,gray-hawk-single' does not match '^renesas,(can|cpg|dmac|du|(g)?ether(avb)?|gpio|hscif|(r)?i[i2]c|imr|intc|ipmmu|irqc|jpu|mmcif|msiof|mtu2|pci(e)?|pfc|pwm|[rq]spi|rcar_sound|sata|scif[ab]*|sdhi|thermal|tmu|tpu|usb(2|hs)?|vin|xhci)-[a-z0-9-]+$'
-4698 'renesas,gray-hawk-single' does not match '^renesas,(d|s)?bsc(3)?-(r8a73a4|r8a7740|sh73a0)$'
-4699 'renesas,gray-hawk-single' does not match '^renesas,em-(gio|sti|uart)$'
-4700 'renesas,gray-hawk-single' does not match '^renesas,fsi2-(r8a7740|sh73a0)$'
-4701 'renesas,gray-hawk-single' does not match '^renesas,hspi-r8a777[89]$'
-4702 'renesas,gray-hawk-single' does not match '^renesas,sysc-(r8a73a4|r8a7740|rmobile|sh73a0)$'
-4703 'renesas,gray-hawk-single' is not one of ['renesas,imr-lx4', 'renesas,mtu2-r7s72100']
-4704 'renesas,gray-hawk-single' is not one of ['renesas,smp-sram']
-4705 'renesas,gray-hawk-single' does not match '^(?!renesas,.+-.+).+$'
-4706 from schema $id: http://devicetree.org/schemas/soc/renesas/renesas-soc.yaml#
+  "In apparmor_getselfattr() when an invalid AppArmor
+   attribute is requested, or a value hasn't been explicitly
+   set for the requested attribute, the label passed to
+   aa_put_label() is not properly initialized which can cause
+   problems when the pointer value is non-NULL and AppArmor
+   attempts to drop a reference on the bogus label object."
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- Documentation/devicetree/bindings/soc/renesas/renesas-soc.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've updated the commit in lsm/stable-6.8 and I'll be sending it to
+Linus shortly.
 
-diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas-soc.yaml b/Documentation/devicetree/bindings/soc/renesas/renesas-soc.yaml
-index a5fcd471983d..5ddd31f30f26 100644
---- a/Documentation/devicetree/bindings/soc/renesas/renesas-soc.yaml
-+++ b/Documentation/devicetree/bindings/soc/renesas/renesas-soc.yaml
-@@ -37,7 +37,7 @@ properties:
-       anyOf:
-         # Preferred naming style for compatibles of SoC components
-         - pattern: "^renesas,(emev2|r(7s|8a|9a)[a-z0-9]+|rcar|rmobile|rz[a-z0-9]*|sh(7[a-z0-9]+)?|mobile)-[a-z0-9-]+$"
--        - pattern: "^renesas,(condor|falcon|gr-peach|salvator|sk-rz|smar(c(2)?)?|spider|white-hawk)(.*)?$"
-+        - pattern: "^renesas,(condor|falcon|gr-peach|gray-hawk|salvator|sk-rz|smar(c(2)?)?|spider|white-hawk)(.*)?$"
- 
-         # Legacy compatibles
-         #
--- 
-2.34.1
+> John, if this commit is problematic please let me know and I'll send a
+> fix or a revert.
 
+--=20
+paul-moore.com
 
