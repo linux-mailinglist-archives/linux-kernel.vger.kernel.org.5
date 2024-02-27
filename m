@@ -1,183 +1,186 @@
-Return-Path: <linux-kernel+bounces-82613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA617868743
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:35:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A80C7868746
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:37:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D761287926
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:35:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47EB6B25573
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16F6134BC;
-	Tue, 27 Feb 2024 02:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="GMk/iD7H"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F7714007;
+	Tue, 27 Feb 2024 02:36:50 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE29F9F0
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEA236C;
+	Tue, 27 Feb 2024 02:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709001335; cv=none; b=aiBKHpX+EOglQJALZsoh0/C2G+VIKj1C84rqxrDSZg/F7xkC8zvWp8npIJOVzdisNrU/Z6KgoEabJS9A61BXwf+gKwV5seaNDsbxxn4GqkA36ny7ZJSFrngETeUObwptGs9VClPj0U/EDbeNwwn4/J2WyKepMsgAcG1MvjAB9dI=
+	t=1709001410; cv=none; b=eeknyjFHSdCLgiX7QHs8blC3714ISZi8Lc5vhnQJ93R/vTA03LTWHQ2k0y2S3R4i84MbccZ3FOMvMvLOBy0j6ee0CDlXh8i4LjdqRJ6h1sSaqMX0wvmssbUkv4O4m14Ti7xM1KfAHt/nQOxabO66vhQq748UyRbVzyjBVwUhB8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709001335; c=relaxed/simple;
-	bh=+WfWLLdlNtMxWIq9oOlRKvGDVzmoSPZNFK8huJBz8wo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=egfxYceD/B3XQrWJKx68MUTOzD5hXUIWnfDwM9gFiRnVwUzpFGdivj0CIT1Iho4XXjnR2osl3IOFx5NEyZC3AkB5V8A/1d8XoE19VH3EmlNb9EeffxUmKPWp5xNKUT1GIOydIp/wObw3ndhTC+XE7mx2L7eFhgBfUf70JKehExc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=GMk/iD7H; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5129e5b8cecso4652231e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:35:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1709001332; x=1709606132; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pI97VzBaVCf4+xb5j7PxEbProXaTPOOrgDbZrH3Bdpc=;
-        b=GMk/iD7HTgERjfO/cIQnYsn5GI2Ioxh4LoEHIdZ+NpSAr7d8z2cDkdWUHGDbWWIM4l
-         pW2/s93zwkH8EmBHKlz8XpehHrXlL2/RjSb96BQnq+ws9dRZdal0u1hCOQzjBe73OWD5
-         p5y7ppfzBGbTXk9EkrUJVcHLVYjwAek0MGgss6E7RCm+hfmGRCvLhvFl0U2cGxyZ7wZn
-         iKsKrl76lsGzTUAaC71L5S3GQUAe27vxCLyk06PYZW37k3h9JyMMn4ECjoqmmvoBLWsy
-         0oCpXk2Ek6lHwwhBGYOQdGpjcTDZZEFUY6bGW3uLQjskDhRClfs8lct2ecmbec3op4od
-         ha1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709001332; x=1709606132;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pI97VzBaVCf4+xb5j7PxEbProXaTPOOrgDbZrH3Bdpc=;
-        b=bBotuboIccq1gECtlG0g/olgfqD3cps2DDCiv7EXvt5eQ95pzBxNhZr/+bjV3dAys5
-         M0pyQ9VOgyLivJbgc1zhqnHEEsJTcD2NncjPoT6+dnv9XzPsSFoTbX4+3hOMm3UyHX73
-         pBgWx51tKwrGQASzdvkaFvr4Dz1Q8/rO12Gy3j1qkOtPUC3e8VD+bhBAktfhjyRL6KIS
-         kjg5PPh0s9soPKM8uQENbuya4kLh0ZyMvX4rLF2Up61NFqf1RSxTW2RorIU3ux2SE6kr
-         PXDmJ+KIsRcXirEnQ3e2lImA9F5UrtMM64EXiOb8g1JT2RrYpHiFk8+Hsi0sOd/HT+ip
-         Lxvw==
-X-Forwarded-Encrypted: i=1; AJvYcCULH/5P6ghugzKqtai9X65g6F/Jm8OLnYUBl5dWBr6Y5FqnTIRPk5snd9+Qct5DFs7QqPqiZb0o5QKMRD/uP3swLpIT/A4c0TTVpYa9
-X-Gm-Message-State: AOJu0Yx/fAud7AjlVdgn58X2sptp0EZA7FsXNK/SxqpH+y7pZvuDRo4b
-	Ghd4JnIEv6HYbi7f3aQauNj7iNo5gdtZ7VICdEmI0IIR4Fygqd96avOnLDaDBkzHcBSVhxGBdpE
-	tesViG6VG8mNhXLUx+X6JHySGcP/UgjOvUHhpOQ==
-X-Google-Smtp-Source: AGHT+IHJdcA7m7C/cGI4NlpDKJ4xJM64IpsCapG/41px13WYZP3tlzBB7EnOQTt+iHLnJCUSYvpQZ7xxOI1B96jImr0=
-X-Received: by 2002:a05:6512:1187:b0:512:bce5:1e0f with SMTP id
- g7-20020a056512118700b00512bce51e0fmr4693783lfr.64.1709001331988; Mon, 26 Feb
- 2024 18:35:31 -0800 (PST)
+	s=arc-20240116; t=1709001410; c=relaxed/simple;
+	bh=ZomoVMlhkyvEyE01FSrF2sqSUEnt8WowYC/LgMLqUAc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cPx4UjJ99Q5dYRl1hKxKxWkrakhaZGQKBWEQT2kZ5Ej5QvhI63nzvoNOSxh+DA83ofA3tPQSOen8D/LV2wIacYAYhIZRWnuRh1wNK1YS0keGTl0YKARFZrxvKaTGGBsqu+bdsnhG6giDnPBk/uDVwTbBWZFZKI6Smt0GKtSQsc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TkM4x5fVjz1h0jg;
+	Tue, 27 Feb 2024 10:34:25 +0800 (CST)
+Received: from kwepemd100003.china.huawei.com (unknown [7.221.188.180])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6AB5F1A016B;
+	Tue, 27 Feb 2024 10:36:39 +0800 (CST)
+Received: from kwepemd100011.china.huawei.com (7.221.188.204) by
+ kwepemd100003.china.huawei.com (7.221.188.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 27 Feb 2024 10:36:39 +0800
+Received: from M910t.huawei.com (10.110.54.157) by
+ kwepemd100011.china.huawei.com (7.221.188.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 27 Feb 2024 10:36:38 +0800
+From: Changbin Du <changbin.du@huawei.com>
+To: Andrew Morton <akpm@linux-foundation.org>, Luis Chamberlain
+	<mcgrof@kernel.org>
+CC: <linux-modules@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Changbin
+ Du" <changbin.du@huawei.com>, Xiaoyi Su <suxiaoyi@huawei.com>, Eric Chanudet
+	<echanude@redhat.com>, Luis Chamberlain <mcgrof@infradead.org>
+Subject: [PATCH v4] modules: wait do_free_init correctly
+Date: Tue, 27 Feb 2024 10:35:46 +0800
+Message-ID: <20240227023546.2490667-1-changbin.du@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAPKjjnrYvzH8hEk9boaBt-fETX3VD2cjjN-Z6iNgwZpHqYUjWw@mail.gmail.com>
- <77a58302766cb6c8fac45682ede63569df80cd5d.camel@hammerspace.com>
- <1179779e2f74e3e5cb2be30cf89e6362aaab706d.camel@kernel.org>
- <16d8c8e88490ee92750b26f2c438e1329dea0061.camel@hammerspace.com> <3754ac34c55dd82a4957967ec0a4e490cdc0d989.camel@kernel.org>
-In-Reply-To: <3754ac34c55dd82a4957967ec0a4e490cdc0d989.camel@kernel.org>
-From: Zhitao Li <zhitao.li@smartx.com>
-Date: Tue, 27 Feb 2024 10:35:18 +0800
-Message-ID: <CAPKjjnq0=HG5_iC91tjqU_pJp00Q+ffo0m=7Sk-8PbbAPv1+Cw@mail.gmail.com>
-Subject: Re: PROBLEM: NFS client IO fails with ERESTARTSYS when another mount
- point with the same export is unmounted with force [NFS] [SUNRPC]
-To: Trond Myklebust <trondmy@hammerspace.com>, Jeff Layton <jlayton@kernel.org>
-Cc: "chuck.lever@oracle.com" <chuck.lever@oracle.com>, "kolga@netapp.com" <kolga@netapp.com>, 
-	"anna@kernel.org" <anna@kernel.org>, "tom@talpey.com" <tom@talpey.com>, "neilb@suse.de" <neilb@suse.de>, 
-	"Dai.Ngo@oracle.com" <Dai.Ngo@oracle.com>, "huangping@smartx.com" <huangping@smartx.com>, 
-	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd100011.china.huawei.com (7.221.188.204)
 
-Is there any plan for this ERESTARTSYS leak issue?
+The synchronization here is to ensure the ordering of freeing of a module
+init so that it happens before W+X checking. It is worth noting it is not
+that the freeing was not happening, it is just that our sanity checkers
+raced against the permission checkers which assume init memory is already
+gone.
 
---
-Zhitao Li, at SmartX
+Commit 1a7b7d922081 ("modules: Use vmalloc special flag") moved
+calling do_free_init() into a global workqueue instead of relying on it
+being called through call_rcu(..., do_free_init), which used to allowed us
+call do_free_init() asynchronously after the end of a subsequent grace
+period. The move to a global workqueue broke the gaurantees for code which
+needed to be sure the do_free_init() would complete with rcu_barrier().
+To fix this callers which used to rely on rcu_barrier() must now instead
+use flush_work(&init_free_wq).
 
-On Fri, Feb 23, 2024 at 6:31=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
->
-> On Thu, 2024-02-22 at 15:20 +0000, Trond Myklebust wrote:
-> > On Thu, 2024-02-22 at 06:05 -0500, Jeff Layton wrote:
-> > > On Wed, 2024-02-21 at 13:48 +0000, Trond Myklebust wrote:
-> > > > On Wed, 2024-02-21 at 16:20 +0800, Zhitao Li wrote:
-> > > > > [You don't often get email from zhitao.li@smartx.com. Learn why
-> > > > > this
-> > > > > is important at https://aka.ms/LearnAboutSenderIdentification ]
-> > > > >
-> > > > > Hi, everyone,
-> > > > >
-> > > > > - Facts:
-> > > > > I have a remote NFS export and I mount the same export on two
-> > > > > different directories in my OS with the same options. There is an
-> > > > > inflight IO under one mounted directory. And then I unmount
-> > > > > another
-> > > > > mounted directory with force. The inflight IO ends up with
-> > > > > "Unknown
-> > > > > error 512", which is ERESTARTSYS.
-> > > > >
-> > > >
-> > > > All of the above is well known. That's because forced umount
-> > > > affects
-> > > > the entire filesystem. Why are you using it here in the first
-> > > > place? It
-> > > > is not intended for casual use.
-> > > >
-> > >
-> > > While I agree Trond's above statement, the kernel is not supposed to
-> > > leak error codes that high into userland. Are you seeing ERESTARTSYS
-> > > being returned to system calls? If so, which ones?
-> >
-> > The point of forced umount is to kill all RPC calls associated with the
-> > filesystem in order to unblock the umount. Basically, it triggers this
-> > code before the unmount starts:
-> >
-> > void nfs_umount_begin(struct super_block *sb)
-> > {
-> >         struct nfs_server *server;
-> >         struct rpc_clnt *rpc;
-> >
-> >         server =3D NFS_SB(sb);
-> >         /* -EIO all pending I/O */
-> >         rpc =3D server->client_acl;
-> >         if (!IS_ERR(rpc))
-> >                 rpc_killall_tasks(rpc);
-> >         rpc =3D server->client;
-> >         if (!IS_ERR(rpc))
-> >                 rpc_killall_tasks(rpc);
-> > }
-> >
-> > So yes, that does signal all the way up to the application level, and
-> > it is very much intended to do so.
->
-> Returning an error to userland in this situation is fine, but userland
-> programs aren't really equipped to deal with error numbers in this
-> range.
->
-> Emphasis on the first sentence in the comment in include/linux/errno.h:
->
-> -------------------8<-----------------------
-> /*
->  * These should never be seen by user programs.  To return one of ERESTAR=
-T*
->  * codes, signal_pending() MUST be set.  Note that ptrace can observe the=
-se
->  * at syscall exit tracing, but they will never be left for the debugged =
-user
->  * process to see.
->  */
-> #define ERESTARTSYS     512
-> #define ERESTARTNOINTR  513
-> #define ERESTARTNOHAND  514     /* restart if no handler.. */
-> #define ENOIOCTLCMD     515     /* No ioctl command */
-> #define ERESTART_RESTARTBLOCK 516 /* restart by calling sys_restart_sysca=
-ll */
-> #define EPROBE_DEFER    517     /* Driver requests probe retry */
-> #define EOPENSTALE      518     /* open found a stale dentry */
-> #define ENOPARAM        519     /* Parameter not supported */
-> -------------------8<-----------------------
->
-> If these values are leaking into userland, then that seems like a bug.
-> --
-> Jeff Layton <jlayton@kernel.org>
+Without this fix, we still could encounter false positive reports in W+X
+checking since the rcu_barrier() here can not ensure the ordering now.
+
+Even worse, the rcu_barrier() can introduce significant delay. Eric Chanudet
+reported that the rcu_barrier introduces ~0.1s delay on a PREEMPT_RT kernel.
+
+  [    0.291444] Freeing unused kernel memory: 5568K
+  [    0.402442] Run /sbin/init as init process
+
+With this fix, the above delay can be eliminated.
+
+Fixes: 1a7b7d922081 ("modules: Use vmalloc special flag")
+Signed-off-by: Changbin Du <changbin.du@huawei.com>
+Cc: Xiaoyi Su <suxiaoyi@huawei.com>
+Cc: Eric Chanudet <echanude@redhat.com>
+Cc: Luis Chamberlain <mcgrof@infradead.org>
+Tested-by: Eric Chanudet <echanude@redhat.com>
+
+---
+v4:
+  - polish commit msg. (Luis Chamberlain)
+v3:
+  - amend comment in do_init_module() and update commit msg.
+v2:
+  - fix compilation issue for no CONFIG_MODULES found by 0-DAY.
+---
+ include/linux/moduleloader.h | 8 ++++++++
+ init/main.c                  | 5 +++--
+ kernel/module/main.c         | 9 +++++++--
+ 3 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index 001b2ce83832..89b1e0ed9811 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -115,6 +115,14 @@ int module_finalize(const Elf_Ehdr *hdr,
+ 		    const Elf_Shdr *sechdrs,
+ 		    struct module *mod);
+ 
++#ifdef CONFIG_MODULES
++void flush_module_init_free_work(void);
++#else
++static inline void flush_module_init_free_work(void)
++{
++}
++#endif
++
+ /* Any cleanup needed when module leaves. */
+ void module_arch_cleanup(struct module *mod);
+ 
+diff --git a/init/main.c b/init/main.c
+index e24b0780fdff..f0b7e21ac67f 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -99,6 +99,7 @@
+ #include <linux/init_syscalls.h>
+ #include <linux/stackdepot.h>
+ #include <linux/randomize_kstack.h>
++#include <linux/moduleloader.h>
+ #include <net/net_namespace.h>
+ 
+ #include <asm/io.h>
+@@ -1402,11 +1403,11 @@ static void mark_readonly(void)
+ 	if (rodata_enabled) {
+ 		/*
+ 		 * load_module() results in W+X mappings, which are cleaned
+-		 * up with call_rcu().  Let's make sure that queued work is
++		 * up with init_free_wq. Let's make sure that queued work is
+ 		 * flushed so that we don't hit false positives looking for
+ 		 * insecure pages which are W+X.
+ 		 */
+-		rcu_barrier();
++		flush_module_init_free_work();
+ 		mark_rodata_ro();
+ 		rodata_test();
+ 	} else
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 36681911c05a..b0b99348e1a8 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -2489,6 +2489,11 @@ static void do_free_init(struct work_struct *w)
+ 	}
+ }
+ 
++void flush_module_init_free_work(void)
++{
++	flush_work(&init_free_wq);
++}
++
+ #undef MODULE_PARAM_PREFIX
+ #define MODULE_PARAM_PREFIX "module."
+ /* Default value for module->async_probe_requested */
+@@ -2593,8 +2598,8 @@ static noinline int do_init_module(struct module *mod)
+ 	 * Note that module_alloc() on most architectures creates W+X page
+ 	 * mappings which won't be cleaned up until do_free_init() runs.  Any
+ 	 * code such as mark_rodata_ro() which depends on those mappings to
+-	 * be cleaned up needs to sync with the queued work - ie
+-	 * rcu_barrier()
++	 * be cleaned up needs to sync with the queued work by invoking
++	 * flush_module_init_free_work().
+ 	 */
+ 	if (llist_add(&freeinit->node, &init_free_list))
+ 		schedule_work(&init_free_wq);
+-- 
+2.25.1
+
 
