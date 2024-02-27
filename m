@@ -1,153 +1,104 @@
-Return-Path: <linux-kernel+bounces-83238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C56848690A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:33:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE99E8690A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:33:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C9F8B285BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:32:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ABEB1F25C78
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:33:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D078B137C5B;
-	Tue, 27 Feb 2024 12:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EDA13AA20;
+	Tue, 27 Feb 2024 12:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="prlmLAjy"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MohDgq/G"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A95654BF7
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:32:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C03713A87E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709037167; cv=none; b=BMwZzAA0x1o5QICqEpXHZs2lHMGaKiikcqNuffUiPRwQTRKgxJdlx56up7mLlN+LdTg8je0aC1xu8MzRTKoIOJO6GZdJ1xP/rXafEfn3wGLkuZuTcvJM5OV/fBrT6TaIoAJLEO66wuD9CJ3yXPqG0hHuSCBji+kfReBHDtvu6mI=
+	t=1709037170; cv=none; b=q0mNTn70NSii4u4zbMgnPL+Igmm2ZuDXqXLDO3msuDPKlOuCQARM8u6uHPnjdpAXfpE1leYp9haq3rRUdmRnqwE/+AlvBKEtHXP2+VhkoWhAmyf01gBlXZXqDi4slVrYlFMIB02ENtK3ICqkBIXw2KNb7BXl4f94MJqexyGn+OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709037167; c=relaxed/simple;
-	bh=iRPyBsf91aBgQomrNp6NHB0+TRiYOkN18LHNhGZ5bAY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j0HDyiIacJFXv8hZOWaSsHWlV+qTxAGD1rflivpJY1OAB4FlR7LpcKH3igklXXHLuYOfbgdAXFR4LQa6uuPL9UENZRq48R8NDYSbF7c2GYBUxlCQz6sQqoZv7dzZzcM9eTOtKE7T3CcthMVMmzkt84PH/eV+tpdUT8DdMzXeoWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=prlmLAjy; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e4670921a4so2283835b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:32:45 -0800 (PST)
+	s=arc-20240116; t=1709037170; c=relaxed/simple;
+	bh=PSjXZXB/iL1gAI7UZkVx6aFnFooNh3+sIUM9+ah4aho=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ogdDdT1nVc5/EZwK6LVz1iCVxTpr+xRFY06kl1Z+AS5xyaD6kP7FkZWLbewmoEAbrrAt1VeMXe0tKiIB9EzjENSZgHcTeDYywdrMqdiFNTBur57qAq8395xnbu/Y4R7vE+l581GVr9blifHYaeOor6f4pMZtjiIl0U6GDWS8JjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MohDgq/G; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d7881b1843so31889735ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:32:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709037165; x=1709641965; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=r6McJiuv+h7AyXeU5mDp5gY4ceOSplSmKT9ljaBZAeI=;
-        b=prlmLAjy/C/TRxN6wQ49FPKtqoxLaPqhp40puhqd5vZQZOenFq4l/E2FczruDcb+cF
-         kfqm790rrfsUon1jLX9uorsOlogb7bYx5O2EOOdhBB9pe1/afp1gp5pBAPyGenSc0ar4
-         9J/CzfAbxcXfrZGKG/czzv9m1RMFeB9n7Iq/Dxs8DFFYenK2NiKNMhDf+qEPuSB057dm
-         omoOnDj+JQ4L8yxBThjzMBGmSAWdkglBcbzmBU/AVZoPGxibtkcZ2F7L7KBgCDpCwEP8
-         5aZX1FwnzHxBsx+juoesF3hiVfT7b+VgIRDKZ1bHfok2/7cBDK3WNQtEDSddn2KkvHHH
-         3vPg==
+        d=gmail.com; s=20230601; t=1709037169; x=1709641969; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PSjXZXB/iL1gAI7UZkVx6aFnFooNh3+sIUM9+ah4aho=;
+        b=MohDgq/GEFSG0z0E4knRriwRhG2Cc6gHj6KeXGt00rA/pJPGOJ9TfjCKT6xGruRIZX
+         MpGlJCZC0tBNDWyWmbwe7GqrJzxsMBZWqUHifKcPA9bmOD54tPLCgrtlWi6OSOWmZZ6r
+         3fNgGesJxA8xatdtm5mGOVjgkr99P9dDfUXh1pLIH2rq8Z6s2hQBw1sA9q4PzEZJ0bVO
+         zJpcQlA6gcVGUe9kjpj/cJBA4DjovRWGULaw/AG9++kAfzXbaZ9LZq9HcKO8w3jnrAVW
+         4au3B29ij8sQ39evLcNKARBk5x3LZqLzg/YlrQueyLUtPr8/QvWKaqFiAwoeNY/mAKnM
+         cnsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709037165; x=1709641965;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r6McJiuv+h7AyXeU5mDp5gY4ceOSplSmKT9ljaBZAeI=;
-        b=SHDTgXrgxiJxsqQNGm2leyJnpk/X2jCyRZUhduZWqNfzQTcjfGLvYU9sdw3OgjtEKa
-         20w7sLyC72IVr+YaxCogFiHsqJX8TD0T4lCJ+PdS81bHA1psz79VS5iotG1ZjAa3BuDQ
-         wHez7t2ix73qxFh7XyY3UeElowNunIhFnTF+Y+DzD44kbbYQ9N4TH4wIuRrkSL4yV4NI
-         VHk2t+rWuoLnSpdYdHGriJ/qR0GxcQx4TAYi7u+sxdAq9gcH6D2hOgmHlkqGMW/41pMc
-         oA6cn06rsg3+ZvUjGa/Ti+nt0n0z8ldXxg1RN1Em+yIc3jOCC3uT1Xa91zfayU24fBJN
-         uldw==
-X-Forwarded-Encrypted: i=1; AJvYcCUVNbz4MiiQZUGcKUvDEnOfJZM/PznNosX85i7LVRlThmbTN2sde8R/e0sP+kvvYE9kRR7DQwmhPsYdk5DKMwVzW1JPRd+YuC1KSCm5
-X-Gm-Message-State: AOJu0YwCavZp8yHprBDOJhHwAmzEPa/f9slVgc2FeuSjfkp4pqlR/hBt
-	6N4kRkZGFmjXLxj8/jXdRX321H2Ai+in1nrl4VyM24By2KfvWIloTCRFU/3CYw==
-X-Google-Smtp-Source: AGHT+IEFhhrIt7Yi0/j6C6WifjMm92/qMQnfNrHB04A6+0UV4a2UVc5t/CmWxX+vY2RC+MyJMs/Upg==
-X-Received: by 2002:a05:6a21:910c:b0:1a0:cce6:d526 with SMTP id tn12-20020a056a21910c00b001a0cce6d526mr2594508pzb.41.1709037164773;
-        Tue, 27 Feb 2024 04:32:44 -0800 (PST)
-Received: from thinkpad ([117.213.97.177])
-        by smtp.gmail.com with ESMTPSA id fn11-20020a056a002fcb00b006e0737f2bafsm5775175pfb.45.2024.02.27.04.32.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 04:32:44 -0800 (PST)
-Date: Tue, 27 Feb 2024 18:02:30 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Niklas Cassel <cassel@kernel.org>
-Subject: Re: [PATCH v8 09/10] PCI: qcom-ep: Use the generic
- dw_pcie_ep_linkdown() API to handle LINK_DOWN event
-Message-ID: <20240227123230.GP2587@thinkpad>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-9-64c7fd0cfe64@linaro.org>
- <ZdzIada1H95ike0t@lizhi-Precision-Tower-5810>
+        d=1e100.net; s=20230601; t=1709037169; x=1709641969;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PSjXZXB/iL1gAI7UZkVx6aFnFooNh3+sIUM9+ah4aho=;
+        b=cmNzUa+BDnJ1h4UY5lt/L7fdbaC0aAaRZXE3sEOwhQ/2bd1c0FChBOX2Vgr/jc4a0Z
+         A6wdh+4K+k4lB3In1uAMHBQrK/ZUdY3RUOZxUr0T8SvyF9Wex0jWxjbbMiHFYrzlQIiB
+         60gZe6Q4R+wiKL8WzW0jE82z9KVfwLdbo/540lHiLfNWYYoGaOo7YJYtD/g1EsqcySgx
+         oF3C7KSw7eg4+IXvqEL8Bu4Y9xo4GJors7mgRq/4zvaBUa6UcqycqK6OGhL2W8c4J2Tt
+         2h39fVRLDCoIJDn7FM+ijTE2SinOWbaYuI93om/FQ35sRprCvPz5i0JjgTde68dBKawv
+         SgxA==
+X-Forwarded-Encrypted: i=1; AJvYcCWjwjI1AwXvUdorSqDIP/br8j5VHM1R8DqItJGKwacip632F4j0oLbqIOZk0Rg9Ic3KbBCgtbhwNvhfOWbxVj2uC3zBEa5jpSYVVYEj
+X-Gm-Message-State: AOJu0Yy5JgOTN9DqUVdtFxupHroc5N/AKSLEZ/vpnWPrjzH1Ya+EVj8l
+	3BrXmrrgp+OmIhzZBcSBBj+iWPH8BXLxEAUa/rsSHciQ0GSgOpegH8T+ovPMXooTlrVZe4RNBsD
+	5X/I0Tr3EH1q8WG0hAGM1JzondFA=
+X-Google-Smtp-Source: AGHT+IHfI3z9dNBjP91sqj4IoHTWC6qMdTEdL9kDSGMGF49QjbxmXnVai+skXGLKaxzrzGUXuOCsBa5iffEE67iRjUA=
+X-Received: by 2002:a17:903:2b0c:b0:1dc:bb56:9d14 with SMTP id
+ mc12-20020a1709032b0c00b001dcbb569d14mr1519244plb.41.1709037168850; Tue, 27
+ Feb 2024 04:32:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZdzIada1H95ike0t@lizhi-Precision-Tower-5810>
+References: <20240208002841.GA2601476@dev-arch.thelio-3990X>
+ <CANiq72=G--5LW-9sg2PscTL863mFVNdnX7LUQX2Xj02qZs4crA@mail.gmail.com>
+ <20240212234850.GB3221859@dev-arch.thelio-3990X> <20240213025303.GA4006766@dev-arch.thelio-3990X>
+ <CANiq72npYCD-zKqcXPNOAxnKiUCCXGbFQaGo-8=0-171ni+ncQ@mail.gmail.com>
+In-Reply-To: <CANiq72npYCD-zKqcXPNOAxnKiUCCXGbFQaGo-8=0-171ni+ncQ@mail.gmail.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Tue, 27 Feb 2024 13:32:36 +0100
+Message-ID: <CANiq72kcQUuxcno00+QWrstrcfwC+2_Bvh+8dr5kgVkEtrWOEA@mail.gmail.com>
+Subject: Re: Prebuilt LLVM 18.1.0-rc2 uploaded
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: llvm@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Conor Dooley <conor@kernel.org>, Conor Dooley <Conor.Dooley@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 12:20:41PM -0500, Frank Li wrote:
-> On Sat, Feb 24, 2024 at 12:24:15PM +0530, Manivannan Sadhasivam wrote:
-> > Now that the API is available, let's make use of it. It also handles the
-> > reinitialization of DWC non-sticky registers in addition to sending the
-> > notification to EPF drivers.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > index 2fb8c15e7a91..4e45bc4bca45 100644
-> > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
-> > @@ -640,7 +640,7 @@ static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
-> >  	if (FIELD_GET(PARF_INT_ALL_LINK_DOWN, status)) {
-> >  		dev_dbg(dev, "Received Linkdown event\n");
-> >  		pcie_ep->link_status = QCOM_PCIE_EP_LINK_DOWN;
-> > -		pci_epc_linkdown(pci->ep.epc);
-> > +		dw_pcie_ep_linkdown(&pci->ep);
-> 
-> Suppose pci_epc_linkdown() will call dw_pcie_ep_linkdown() ?
-> why need direct call dw_pcie_ep_linkdown() here?
-> 
+On Tue, Feb 13, 2024 at 9:37=E2=80=AFPM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> Thanks Nathan, that was quick!
 
-I've already justified this in the commit message. Here is the excerpt:
+Is it possible to add libclang for the older toolchains? Or are they
+supposed to be immutable?
 
-"It also handles the reinitialization of DWC non-sticky registers in addition
-to sending the notification to EPF drivers."
+Relatedly, Connor reports KCFI not working with LLVM 18:
+https://lore.kernel.org/rust-for-linux/20240227-uncertain-amaze-6197e627ad9=
+5@wendy/
 
-- Mani
+Thanks!
 
--- 
-மணிவண்ணன் சதாசிவம்
+Cheers,
+Miguel
 
