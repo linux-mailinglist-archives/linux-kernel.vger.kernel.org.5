@@ -1,137 +1,178 @@
-Return-Path: <linux-kernel+bounces-84228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84230-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7D3486A3D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E4886A3DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:38:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 055BD1C20C7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:36:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCC871C24741
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE7E556749;
-	Tue, 27 Feb 2024 23:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0255B56763;
+	Tue, 27 Feb 2024 23:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="InXp1LE2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NlvI9rmn";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uhn8s53X";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NlvI9rmn";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="uhn8s53X"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16CA855E48;
-	Tue, 27 Feb 2024 23:36:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A960555E48;
+	Tue, 27 Feb 2024 23:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709076999; cv=none; b=Q0/cdxHNN6zFS9nuvGSuNmsH8a0+Pj9egVB1hISb/XsdQzdnqYR4oleVoGA97xnQOhyxrItQdRF2daxjXzNtlszr0vJzfS82cxShX6xtMuIlEHKcBNDr16pb9BV7D3IJahzCf2QMSPTG6YSFMEdS7cXXimaI8JtYjfH0yoHSL1E=
+	t=1709077099; cv=none; b=Im3ZiFOPgf294GwoScKPhLMSY5f7lfMm0THr56DwxUhoTnLrmnpYBJ22OVf29vdq5FhBfb7pTn6Ttkq2/PlHIHbHQPqRpMhMohTzouI6b8VWm9aNOgJRPQnDAmWrqriCd/ZhCiz4xhIkPEXJPDb+huc66PlJ4Jf8auf6VrcDq3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709076999; c=relaxed/simple;
-	bh=/VRb4MzHv0+QTH7GnhhfKoUNkiWk+9BsaZq59IGyA5M=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=FnTkZc1B3HyKbtlfITSxRmz5dei1Q3krUygj7ApE/ZFRTRao0XVfBPDB2nZl03rrzk3YOvQWGvY0l7FvCPH35jkrDOpOO4KrfEljjUE2VSazdl/7usUUb7OMrdPFZ6W+S91QlxIi7KSKMFVAhIqCgsHO8r3HWYWu6pSTaq5qLzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=InXp1LE2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0F5C433C7;
-	Tue, 27 Feb 2024 23:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709076998;
-	bh=/VRb4MzHv0+QTH7GnhhfKoUNkiWk+9BsaZq59IGyA5M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=InXp1LE2ZQE4DIutfgEWvLKJ1q/QXKsCzvoLz5Sb8i7MsnequWVpZkW5heGmHn/rg
-	 vGWFHT87IHzlXUfF9/VZ1jFjnYf7FCbABCnU4fWZ+y/up/O6b18GslbL5wLVm/6tb6
-	 vuLLE7YELsaHU82jfvBkXUtFOl1OuA6mrSaHbnGvU8AwqjHzLbJ6bkVUfebNXqxnc2
-	 aDmuc05+egn0HoxKyQM0nBNyonBqIC5JeTeOioABy5POiMeMlzU6pU7/yNmEvsfkmk
-	 P5f+DqNMGGQlE52BnipoK1QWEYfhbHVNk1lcKtyBj85moaWQjauhEe7NGpgo6zaWWv
-	 pqqAqCRMU6Niw==
-Date: Tue, 27 Feb 2024 17:36:36 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, vireshk@kernel.org,
-	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_parass@quicinc.com
-Subject: Re: [PATCH v7 7/7] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20240227233636.GA250826@bhelgaas>
+	s=arc-20240116; t=1709077099; c=relaxed/simple;
+	bh=aLQZ8HS/XMEIR8wKVsfYExoeIYXeKU1TdW1WZqUS37g=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=etQtLe3fun/qgmbUxstRXW6s2b1EEI+YQAnLr44IGTuimPuGzFEnwo+HtJLjCeS84ZsCCNFiflkPK5dYYnQdJHBVciR3HNjjT7jddhmbLqRzsol57X8Mw9Pk4mWBmYLe4Fa57lv+OIGjof8soRilg6jSo3LIJqpZ+fl+Toshc50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NlvI9rmn; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uhn8s53X; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NlvI9rmn; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=uhn8s53X; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 76B301FB95;
+	Tue, 27 Feb 2024 23:38:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709077095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9HVWC3SuhyxQFuKW/pPwGjCJddJjno4JKmEKNYaAYI8=;
+	b=NlvI9rmnD0GZ3zkgHwP4FRNU9qk4/ZIqjudTcHZxjIf0mk/2GMLNB9lj81elQ/DSk9HOO5
+	o+3w7/+R0E8dQCWokXUFbokQH/0c8hdlBUjTrT02S3wkeaUBZ6GxICz8yP/1orGD9o2KWw
+	UOaXiUhzzvFbXYl329L/7FntOmoRdR4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709077095;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9HVWC3SuhyxQFuKW/pPwGjCJddJjno4JKmEKNYaAYI8=;
+	b=uhn8s53X6Vqu9Rr4G+pFz7RHTq4g1jw20uNJpV6PLm6YnDoceU4jLiHNyXUt6+DUFE0cPq
+	ZeQ2GIZC0nF5QADQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709077095; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9HVWC3SuhyxQFuKW/pPwGjCJddJjno4JKmEKNYaAYI8=;
+	b=NlvI9rmnD0GZ3zkgHwP4FRNU9qk4/ZIqjudTcHZxjIf0mk/2GMLNB9lj81elQ/DSk9HOO5
+	o+3w7/+R0E8dQCWokXUFbokQH/0c8hdlBUjTrT02S3wkeaUBZ6GxICz8yP/1orGD9o2KWw
+	UOaXiUhzzvFbXYl329L/7FntOmoRdR4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709077095;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9HVWC3SuhyxQFuKW/pPwGjCJddJjno4JKmEKNYaAYI8=;
+	b=uhn8s53X6Vqu9Rr4G+pFz7RHTq4g1jw20uNJpV6PLm6YnDoceU4jLiHNyXUt6+DUFE0cPq
+	ZeQ2GIZC0nF5QADQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F63913ABA;
+	Tue, 27 Feb 2024 23:38:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id UTxmBWdy3mUPNwAAD6G6ig
+	(envelope-from <krisman@suse.de>); Tue, 27 Feb 2024 23:38:15 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
+  jaegeuk@kernel.org,  chao@kernel.org,
+  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  kernel@collabora.com,
+  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
+ Krisman Bertazi <krisman@collabora.com>,  Eric Biggers
+ <ebiggers@google.com>
+Subject: Re: [PATCH v12 6/8] ext4: Log error when lookup of encoded dentry
+ fails
+In-Reply-To: <20240220085235.71132-7-eugen.hristev@collabora.com> (Eugen
+	Hristev's message of "Tue, 20 Feb 2024 10:52:33 +0200")
+Organization: SUSE
+References: <20240220085235.71132-1-eugen.hristev@collabora.com>
+	<20240220085235.71132-7-eugen.hristev@collabora.com>
+Date: Tue, 27 Feb 2024 18:38:13 -0500
+Message-ID: <87y1b54gwq.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223-opp_support-v7-7-10b4363d7e71@quicinc.com>
+Content-Type: text/plain
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=NlvI9rmn;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=uhn8s53X
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.58 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 HAS_ORG_HEADER(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[15];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.07)[95.47%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: -3.58
+X-Rspamd-Queue-Id: 76B301FB95
+X-Spam-Flag: NO
 
-On Fri, Feb 23, 2024 at 08:18:04PM +0530, Krishna chaitanya chundru wrote:
-> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
-> maintains hardware state of a regulator by performing max aggregation of
-> the requests made by all of the clients.
-> 
-> PCIe controller can operate on different RPMh performance state of power
-> domain based up on the speed of the link. And this performance state varies
-> from target to target.
+Eugen Hristev <eugen.hristev@collabora.com> writes:
 
-s/up on/on/ (or "upon" if you prefer) (also below)
+> From: Gabriel Krisman Bertazi <krisman@collabora.com>
+>
+> If the volume is in strict mode, ext4_ci_compare can report a broken
+> encoding name.  This will not trigger on a bad lookup, which is caught
+> earlier, only if the actual disk name is bad.
+>
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+> ---
+>  fs/ext4/namei.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 6e7af8dc4dde..7d357c417475 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -1477,6 +1477,9 @@ static bool ext4_match(struct inode *parent,
+>  			 * only case where it happens is on a disk
+>  			 * corruption or ENOMEM.
+>  			 */
+> +			if (ret == -EINVAL)
+> +				EXT4_ERROR_INODE(parent,
+> +					"Directory contains filename that is invalid UTF-8");
+>  			return false;
+>  		}
+>  		return ret;
 
-I understand changing the performance state based on the link speed,
-but I don't understand the variation from target to target.  Do you
-mean just that the link speed may vary based on the rates supported by
-the downstream device?
+Can you add a patch doing the same for f2fs?
 
-> It is manadate to scale the performance state based up on the PCIe speed
-> link operates so that SoC can run under optimum power conditions.
 
-It sounds like it's more power efficient, but not actually
-*mandatory*.  Maybe something like this?
-
-  The SoC can be more power efficient if we scale the performance
-  state based on the aggregate PCIe link speed.
-
-> Add Operating Performance Points(OPP) support to vote for RPMh state based
-> upon the speed link is operating.
-
-Space before open paren, e.g., "Points (OPP)".
-
-"... based on the link speed."
-
-> OPP can handle ICC bw voting also, so move ICC bw voting through OPP
-> framework if OPP entries are present.
-> 
-> In PCIe certain speeds like GEN1x2 & GEN2x1 or GEN3x2 & GEN4x1 use
-> same bw and frequency and thus the OPP entry, so use frequency based
-> search to reduce number of entries in the OPP table.
-
-GEN1x2, GEN2x1, etc are not "speeds".  I would say:
-
-  Different link configurations may share the same aggregate speed,
-  e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same speed
-  and share the same OPP entry.
-
-> Don't initialize ICC if OPP is supported.
-
-Because?  Maybe this should say something about OPP including the ICC
-voting?
-
-> +		ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-
-Wrap to fit in 80 columns.
-
-> +	 * Use highest OPP here if the OPP table is present. At the end of the probe(),
-> +	 * OPP will be updated using qcom_pcie_icc_opp_update().
-
-Wrap to fit in 80 columns.
-
-> +	/* Skip ICC init if OPP is supported as ICC bw vote is handled by OPP framework */
-
-Wrap to fit in 80 columns.
+-- 
+Gabriel Krisman Bertazi
 
