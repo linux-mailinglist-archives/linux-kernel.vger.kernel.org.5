@@ -1,172 +1,148 @@
-Return-Path: <linux-kernel+bounces-83540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83538-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7170869B0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:49:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E7C0869B03
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:48:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 784B01F2390B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:49:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04E0E2859D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4531468F4;
-	Tue, 27 Feb 2024 15:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9E71468FE;
+	Tue, 27 Feb 2024 15:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Uj8nTtuX";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hY1txy5S"
-Received: from flow5-smtp.messagingengine.com (flow5-smtp.messagingengine.com [103.168.172.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yWiLmoTM"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34771482E3;
-	Tue, 27 Feb 2024 15:48:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11698136659
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709048933; cv=none; b=ZBg4CWtSrc8LmWfWL8jKQzXFNh/Dw9OcRqvuW6VD/4BqJGzckUxQbw2IVyTGU8GEM3J5IACSdAKKIltD4i2Hahu8uDffPKib9D7eSBaE2uBUsLoUAkYSsgwl39M0AaX4cTWvxnD4sYSe/Iwc1LzQQvGxzGvURlMaUrdiq7WLCsQ=
+	t=1709048923; cv=none; b=DPeGRNdFrAfpmOIw9OSeoV8i9qckIFlgFd0lcnr/eZzruHJxTEDV3hL3s1NU3brPQk8aBsBtYlnk5z5hpgHEuk92oIyDux3+2CJkutpwg8wz3PCuy+77nmVBLzZa6hLKTW04DVGY+GdoSmgfCGW4S7ud8+kZFmDifZY0RcqLSD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709048933; c=relaxed/simple;
-	bh=2jqupzrqvGkM46I6Bvk5B+arL4luMkNH22lQhJoirTk=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=B1LamLEP3lgcYXgwJTylSDWCOlmt8mcjzNEjswsfFjE+h0l1LuR//3hKCGEvbRL6ESl46U5j4qwyBXvp+6+HYD3ZHf3SoLtI5BIobLNevdjNYfPADKIvM7mp1cjXJQTm2NtUISQbqS7D7s/OmNqkDcb55umtmqAhqk+WeceT5Tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Uj8nTtuX; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hY1txy5S; arc=none smtp.client-ip=103.168.172.140
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailflow.nyi.internal (Postfix) with ESMTP id 0E22F200094;
-	Tue, 27 Feb 2024 10:48:51 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 27 Feb 2024 10:48:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1709048931;
-	 x=1709056131; bh=ybbnN0+SobfyxbHHH4ZELWrRQvYBzt/PThTgohkZVK8=; b=
-	Uj8nTtuXWeEi/jXfJb5n+JbsF1HSR0x3KgfCm6wqbBwTdbvkhRqJ3Yq98CMAeG5r
-	D/GO+gsxXcyWzUSYVXbRGbhBL/Z62QpHxQL4Nwm51CeelVfQrM0VsRmYU5oQiksk
-	K0/XMoHjN3ofZ1Z5lt03aTV2rHIKloqb+z/hoNnTFtklsNNfr3RZjbgENs0es2gb
-	IDGbBSGW0xc7Je2i9GyV0TikqeTQ8ZIH5rJ4x5Zc8k491PIy0z0afqdlN46J0Dyh
-	GwV1UL/IypRhnck5jK4xrsxLBGUV4OhZP+DMMw5EqYb3GTEee00bKrSNOVOQW2Of
-	C/8GqY9nA4ZbWGv/r1HmIQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709048931; x=
-	1709056131; bh=ybbnN0+SobfyxbHHH4ZELWrRQvYBzt/PThTgohkZVK8=; b=h
-	Y1txy5S4iu4CgzO1d33RQRTVdIFEUhjhCu5bud7oeKr3YK+aS49Q7U3ClfbHqdDi
-	1Qn/NXLKPd6IvD9u+mdo6jUi/KerXGwKqXU19Z54fEINfjHSApkWghFTcS4W/D9z
-	bsuvJAFYYdOULYWSgsXdENf8NuVwaZV5nSsSdhul8qQvwBokhTpI/C4zH6thcdJh
-	bnr/GHXwlUup2+3kPL1y1HI4RcBsijL0XYOj/FHZT6izdSVL9jmjE+Sv7hDo4FzA
-	ReVIikHX+Zzdb6tpZ5dMHS/HBnj9HUKp1GKOSPqZGRRmEAJNIjOaV9BN4ViQqd2y
-	/UEth2/MdcbGXPG2wRf0g==
-X-ME-Sender: <xms:YgTeZTjQ2h_cNZ8jalaG9yLuQqXC07isf9GGcrOmBfNOKOEulyuU8A>
-    <xme:YgTeZQAU0_LLiTKPpNYMDEOZ3KF4sj8-pyoo1S0mcZ4WuXW9vxRtrWSOshLIwEkGN
-    rSu-Vae63C6tVsVR-A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeehgdehiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:YgTeZTHcN2-Yez8UX5mfvZ1mSJnr_0tSCCXpqVxUG-IHqIPIoNvmcg>
-    <xmx:YgTeZQQzrErr268F2CxBpd9lwv9mwfSPdqVRsNCxYMDirZwuyZpTug>
-    <xmx:YgTeZQwVGz3Yu09b5df-6afMzKl0E5RnQicJLgSLEI6srfnAno_efg>
-    <xmx:YwTeZaeeqww0pq-Uj1Spmu0Q0w5FIsyXzvjrxIQzMA-5KGL3vLMjzLwEdE0>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 407DCB6008F; Tue, 27 Feb 2024 10:48:50 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
+	s=arc-20240116; t=1709048923; c=relaxed/simple;
+	bh=xseDL8aqwJ3pS83U9vW3Z+KU8J4IQwtrHyBSKAu00NU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cruo+7eUQxjN+bFNLvUof0fCMz7LG8kGtGTRwxaWrnaCu2xfhbMLmcogPPg9vUwT3W9OdCASXzweIx4fbRBnMceLR6e4e7Tb/fDj5CmG3Cb99EgDNx4asAenTcYANcv/dQJKNQN/aCsCRrerjdyHBIkulemOQAredHnmbFd91hQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yWiLmoTM; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso4750984a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:48:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709048920; x=1709653720; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QXrScq6tyripMTKkpGLAH5gv8RQMW4EU8tt1ciIiraQ=;
+        b=yWiLmoTMnPitBId+2OCuMv04e1MI82G2YUpdygiif5YQjREflCM9iUO1+5lsYetAgT
+         k6wmnJLtwt9yWgQzAKqYxwuYNY/lSu04/NLWZiFf7DWEZdzpP0j9HT/F3DDxdvqcfkA7
+         GTgaWplE2U5B1dRDH7a8P2VymZl1lDbyGJcP4N8ayJR2QBzpyh2BVlC1bGDZP+6hQSPZ
+         zAhdlEVSDRn1LIluGzzPClOJd3HewdSLdv+JHhk5m740xsKbvkMYv49QQmSQ4bNHsWVX
+         YD660DWq8jL+1pT95pmKrVSRiLeQfvr8AXsya84DEtsAcpXTCvPyAIMkvxWcBIL6yPo5
+         3m+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709048920; x=1709653720;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QXrScq6tyripMTKkpGLAH5gv8RQMW4EU8tt1ciIiraQ=;
+        b=OBQVXuWefoLjqHRyq2qJCG0FOUEqlLZ7SwG5Dvp+nOvmYkzbpR+5SCgNX7EWH3E1y4
+         yYokMUDLz58CtZsVCXosKFIgTs+jYB3mGzgvMNSZPoQxgmy64Rc5sg76TtgCoTnSY+og
+         mNH0SAasDx5QGcXpmnAi+a6Hznao9RULZjgeesl4YrovSD2bvQQhxOHX780tvRNStwrJ
+         dPsYOWcT9aDg58bpZqnitERBTKCk2FxEmW++JsVQyiYSYE1sII9euFfqsBmHI5otr7FJ
+         AYJDQIgKrRP3PrBiPf5Q1/OSc517rmjXzs5mRX1IzMoYHfqMxKKor62qIgmyQ8fVPXjO
+         U4vg==
+X-Forwarded-Encrypted: i=1; AJvYcCX7In8F3CGYHmPb5GkXQTGYInesXNPDVAlhuQhR+uNu/Sgyfyn918WRJzyXlDsjIwXOrgzrcRPPxd4k5LQTS4Qu1x6RP8zW1gxKzTl8
+X-Gm-Message-State: AOJu0YymUKzmihmAlEcQWarpdUBe6kKi0rhYx1TUDY1g3mBAsJemTcSM
+	1krC5YjMeeFdJNvu/qFcxFfeqaUQEZbm6FBIdjP0ZAQYrMSeNGoVLtZAMDkCw9U=
+X-Google-Smtp-Source: AGHT+IFR3w95iw5UhtQURQsjMKyr5sxMjOTCvWOcPwiqQuMI6ALcY+8//FtAoUMBN8eZyDhwcIZj5Q==
+X-Received: by 2002:a17:906:140f:b0:a3f:c932:9c67 with SMTP id p15-20020a170906140f00b00a3fc9329c67mr7007741ejc.68.1709048920465;
+        Tue, 27 Feb 2024 07:48:40 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id fj7-20020a1709069c8700b00a381ca0e589sm888216ejc.22.2024.02.27.07.48.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 07:48:40 -0800 (PST)
+Message-ID: <7bcd0a62-becc-40dc-8ff2-710bfde41c46@linaro.org>
+Date: Tue, 27 Feb 2024 16:48:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <1b857914-bc1d-4b9a-b3f1-4eabd8db9810@app.fastmail.com>
-In-Reply-To: <b737a088-c811-45eb-b143-d24e6cdf7eea@csgroup.eu>
-References: <20240226161414.2316610-1-arnd@kernel.org>
- <20240226161414.2316610-2-arnd@kernel.org>
- <764fafb0-2206-4ab1-84ea-ebb7848c8ff2@sifive.com>
- <83450530-c908-4abc-bab7-88c50a3143ff@app.fastmail.com>
- <b737a088-c811-45eb-b143-d24e6cdf7eea@csgroup.eu>
-Date: Tue, 27 Feb 2024 16:48:29 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Christophe Leroy" <christophe.leroy@csgroup.eu>,
- "Samuel Holland" <samuel.holland@sifive.com>,
- "Arnd Bergmann" <arnd@kernel.org>, "Thomas Gleixner" <tglx@linutronix.de>,
- "Vincenzo Frascino" <vincenzo.frascino@arm.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Anna-Maria Gleixner" <anna-maria@linutronix.de>
-Cc: "x86@kernel.org" <x86@kernel.org>,
- "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
- "Andreas Larsson" <andreas@gaisler.com>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- "Max Filippov" <jcmvbkbc@gmail.com>, guoren <guoren@kernel.org>,
- "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
- "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
- "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
- "Jan Kiszka" <jan.kiszka@siemens.com>,
- "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
- "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
- "Richard Weinberger" <richard@nod.at>, "Helge Deller" <deller@gmx.de>,
- "Huacai Chen" <chenhuacai@kernel.org>,
- "Russell King" <linux@armlinux.org.uk>,
- "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
- "Geert Uytterhoeven" <geert@linux-m68k.org>,
- "Vineet Gupta" <vgupta@kernel.org>, "Matt Turner" <mattst88@gmail.com>,
- "linux-snps-arc@lists.infradead.org"
- <linux-snps-arc@lists.infradead.org>,
- "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
- "Kieran Bingham" <kbingham@kernel.org>,
- "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
- "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
- "Andy Lutomirski" <luto@kernel.org>,
- "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "Brian Cain" <bcain@quicinc.com>,
- "Michal Simek" <monstr@monstr.eu>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
- "linux-openrisc@vger.kernel.org" <linux-openrisc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 1/4] arch: consolidate existing CONFIG_PAGE_SIZE_*KB definitions
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/5] arm64: dts: qcom: sm8450: Add mapping to llcc
+ Broadcast_AND region
+Content-Language: en-US
+To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@quicinc.com
+References: <cover.1708551850.git.quic_uchalich@quicinc.com>
+ <8b626c328bfb3ae297a228a6821471c4fcc2ec70.1708551850.git.quic_uchalich@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <8b626c328bfb3ae297a228a6821471c4fcc2ec70.1708551850.git.quic_uchalich@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 27, 2024, at 16:44, Christophe Leroy wrote:
-> Le 27/02/2024 =C3=A0 16:40, Arnd Bergmann a =C3=A9crit=C2=A0:
->> On Mon, Feb 26, 2024, at 17:55, Samuel Holland wrote:
->
->
-> For 256K pages, powerpc has the following help. I think you should hav=
-e=20
-> it too:
->
-> 	  The kernel will only be able to run applications that have been
-> 	  compiled with '-zmax-page-size' set to 256K (the default is 64K) us=
-ing
-> 	  binutils later than 2.17.50.0.3, or by patching the ELF_MAXPAGESIZE
-> 	  definition from 0x10000 to 0x40000 in older versions.
+On 23/02/2024 00:07, Unnathi Chalicheemala wrote:
+> Mapping Broadcast_AND region for LLCC in SM8450.
+> 
 
-I don't think we need to mention pre-2.18 binutils any more, but the
-rest seems useful, changed the text now to
+Nothing improved here.
 
-config PAGE_SIZE_256KB
-        bool "256KiB pages"
-        depends on HAVE_PAGE_SIZE_256KB
-        help
-          256KiB pages have little practical value due to their extreme
-          memory usage.  The kernel will only be able to run applications
-          that have been compiled with '-zmax-page-size' set to 256KiB
-          (the default is 64KiB or 4KiB on most architectures).
+Best regards,
+Krzysztof
 
-      Arnd
 
