@@ -1,135 +1,165 @@
-Return-Path: <linux-kernel+bounces-82665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B38048687F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:47:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 818368687FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:47:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E52D28A3CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:47:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0E231C21BDD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:47:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34ED550A68;
-	Tue, 27 Feb 2024 03:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F2324D9E0;
+	Tue, 27 Feb 2024 03:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BRVO44j3"
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="SLojqN+/"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3D44F21D;
-	Tue, 27 Feb 2024 03:46:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53368364AA;
+	Tue, 27 Feb 2024 03:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709005569; cv=none; b=I5Fo1x+ISCrXBmF5EuMybN3QjGtWhflxMujxXH/4k1e9Z+YbXhksN0fWew4neKli1XX3wx27Q24IW3it5kJyrSSwK49q+wCX1r3a8vB6TM497A+hGireqz9XMFKJZg8xaftBH4oRR6P2Z45xr1d2g8MBa3AQ4JVF8yOaNCCsO90=
+	t=1709005627; cv=none; b=BulhQAqe8HaoaM8elVDs015WiYng8O82hUq/pfqe0aOkuitZyI/fUSCSZkl9QcuRm2E6UpK6anLPBzK3bi2JpeAgi+AfNnqb3DoBW6znVscVuW5OuBQ5dPVq5MFClXB9/Z6o7JxSJmpQMDQ55VAR3teVmgvxO2q+eCsDoL/gijQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709005569; c=relaxed/simple;
-	bh=U0lXaNVTMjzgpymz11YyhWetT7KDSKee0kupvHaq/ak=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KukfAMS+hoQiECSpyDis5u3P9InL4whmDT7+MflfbU61bJVxMRvh73WH0GNbGadjDxtt1d0P8p/gqgYDBrBDVhY1UVfL3Q6yBnYaG1VAa383YEh32GeX/EEC+EG1U7rmdfqzWjBUPuQOH/bOSMqF8pshSAZMF/2iYXUweXgxWQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BRVO44j3; arc=none smtp.client-ip=209.85.166.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3652731b2b7so13811365ab.2;
-        Mon, 26 Feb 2024 19:46:07 -0800 (PST)
+	s=arc-20240116; t=1709005627; c=relaxed/simple;
+	bh=9PDAW0eupiQTDhxoCgq59t3bx65eDmuHAmAkY3TSYHk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cvy24Mxk+98O0ofuJtO9Iu+fSunv6hv7b3g64Pg2wOlQfyenFKXgGwLIJQPbRBC1l/7BpNs+qdDIczhaMQ1n5zkYdrEvkq6uQJT/lw4QJoAZ7GdTf5l3F5FknPmS/MlmZksKuOmMkdkALuxnLyWlNS8lJqF/DRJhq6a6hEGL0Fs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=SLojqN+/; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from [192.168.68.112] (ppp14-2-70-176.adl-apt-pir-bras31.tpg.internode.on.net [14.2.70.176])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 1F7E620127;
+	Tue, 27 Feb 2024 11:46:54 +0800 (AWST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709005567; x=1709610367; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AJfm+NHY1Z+Lw1sZYXXZ3jyQox+hLwhKq3O8TxYABL8=;
-        b=BRVO44j3vwnh2X3MvZNJFoFSab6byM2h/uJ8j7WIdjhYLTxQ21LimqM8LHoS6JbakF
-         osgm/miu8sYAqwPzMaJgriqxCLo7K4nz3RDzn4UqXDqXbkM7sF+OMIUyYkJgW45adFE7
-         e8Wab0TR5rkwWTJeWuAL19slw2Kkq9nM+Q/XxRSQarXbVB6vk0cAd/DV/4L+m/es8Npp
-         wpNHs1CmUqZ55Q/mxEWQnXU1lCTWxswlIcLzIjN5flZ+m9zB2K1K3NjdoQ8vqRu599pL
-         d+yzvwuebNfT9QDk6Qnsygwvt0xoCv39ol4zEDK6xqgPlfoYPm91inBCZ7CrOT+rqtzi
-         wWTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709005567; x=1709610367;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AJfm+NHY1Z+Lw1sZYXXZ3jyQox+hLwhKq3O8TxYABL8=;
-        b=c9Uxm32ahSJSHsF8eNsXLDUqvRMESgfahncBrFmi0Oz4YzD/2c+G6riKStf5tEwcVB
-         hogImQwd/alivmmZhozSqaWVau53foHkMWMf6EuKsWWAbdJqoLdWKdQYXAs68DeM9Y9+
-         D9xmqY1pxWsD8xY0RU7eQSabF0VGtt5bADvHbWiyA7xMq6kdlQsJCwHGKcFzHbgUkPkU
-         jJbgB1GY1dOIo1MVz9+KVQeH2FJX1q+dJQjL3cQ9N+fc7S8wzGaNKLHoESQZZH3OdQJ7
-         OOwpNlRC5wwRIgEvPzqJQxwtoUioWwqQ1YcMMrKzDO7LIB7/S9MgPZhZe6sBOwPtdcjM
-         TTJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUHfDAeUQsyEF9XZEySu+2hWDYAs4NOdxgx/SaW3lGvMXbecoeKqK4oNegl8dz9HOTKQoSStUebJGnWTYgSy4hlzm9FW7QeLGT8EVvGcF/JE0mCbkUXLkSjZs/3UC7HUrSWlHG2pbC7hraBvRYQDrhE3A3CvxpCWhKf0siSX+VsR00LWZc74z1HfnsZ
-X-Gm-Message-State: AOJu0Yw137cpty4vGIWaiv31Gu9NrTzJ/zR9e2qAdXGjrZ2lYZ9amHhl
-	AK76WAQo3eUSn/NpSPWgkaDJuSLSUNl/ir3tqdN+MwiSiiyOQihn
-X-Google-Smtp-Source: AGHT+IHL1bo8nIvPJXhU/N96DuypsbyD1/7pheO1VuJUDwHDG0U2xYsyb1SRuUQCwpJMqpKqxuW6vA==
-X-Received: by 2002:a05:6e02:1bce:b0:365:24d9:9477 with SMTP id x14-20020a056e021bce00b0036524d99477mr12614317ilv.15.1709005567198;
-        Mon, 26 Feb 2024 19:46:07 -0800 (PST)
-Received: from aford-System-Version.lan ([2601:447:d002:5be:1712:c48b:aaa0:cd8b])
-        by smtp.gmail.com with ESMTPSA id w4-20020a92ad04000000b00362b4d251a5sm1891566ilh.25.2024.02.26.19.46.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 19:46:06 -0800 (PST)
-From: Adam Ford <aford173@gmail.com>
-To: dri-devel@lists.freedesktop.org,
-	linux-renesas-soc@vger.kernel.org
-Cc: aford@beaconembedded.com,
-	Adam Ford <aford173@gmail.com>,
-	Frank Binns <frank.binns@imgtec.com>,
-	Matt Coster <matt.coster@imgtec.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] arm64: dts: renesas: r8a77961: Enable GPU
-Date: Mon, 26 Feb 2024 21:45:36 -0600
-Message-ID: <20240227034539.193573-7-aford173@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240227034539.193573-1-aford173@gmail.com>
-References: <20240227034539.193573-1-aford173@gmail.com>
+	d=codeconstruct.com.au; s=2022a; t=1709005617;
+	bh=Yx/R5fkt8EGERdv8FabE1EE9SthXf954n/R2MAjuQug=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=SLojqN+/JevAlu0Fbb/O2ZDM2UC6gVtUYhFOtFS50KZ55S2YJvcZ3Fyu5JIMEMNAt
+	 krhAMKqpde2iCUr93+zS/rotpd+iATzMCeiMkNUniNpEABmz19L8a75JF1xVdVOrwI
+	 4irKXA2cA6oky5Ae82dPvP1bNRH/cx4El7tWU/BAWwQHKoCoMJ476xP4sW0B4oPGhw
+	 ehHH7S5FX2xaqKODU/bZwV1scCiz/nD2N4EgKrX6ahrvje8KB1oG8M92V8wmqs18Ok
+	 w8NHtk/60S1wXPhpYB73yBtsiTdAv4d+WNW1J/6AkcYLG6pgRdWaclHqnJIZKIxuwQ
+	 KVOH2REL0/CDw==
+Message-ID: <b69298f73d4d51546402410b45963f137d3e3c98.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v4] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to
+ DT schema
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: Rob Herring <robh@kernel.org>
+Cc: joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, 
+	linux-aspeed@lists.ozlabs.org, brgl@bgdev.pl, 
+	linux-arm-kernel@lists.infradead.org, linus.walleij@linaro.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, conor+dt@kernel.org
+Date: Tue, 27 Feb 2024 14:16:52 +1030
+In-Reply-To: <20240227034047.GA2644802-robh@kernel.org>
+References: <20240227004414.841391-1-andrew@codeconstruct.com.au>
+	 <170900020204.2360855.790404478830111761.robh@kernel.org>
+	 <20240227034047.GA2644802-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The GPU on the R-Car M3-W+ is a Rogue GX6250 which uses firmware
-rogue_4.45.2.58_v1.fw available from Imagination.
+On Mon, 2024-02-26 at 21:40 -0600, Rob Herring wrote:
+> On Mon, Feb 26, 2024 at 08:16:43PM -0600, Rob Herring wrote:
+> >=20
+> > On Tue, 27 Feb 2024 11:14:14 +1030, Andrew Jeffery wrote:
+> > > Squash warnings such as:
+> > >=20
+> > > ```
+> > > arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@=
+1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspee=
+d,ast2400-gpio']
+> > > ```
+> > >=20
+> > > Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+> > > ---
+> > > v4: Add constraints for gpio-line-names, ngpios as requested by Krzys=
+ztof:
+> > >     https://lore.kernel.org/all/458becdb-fb1e-4808-87b6-3037ec945647@=
+linaro.org/
+> > >=20
+> > >     Add more examples to exercise constraints.
+> > >=20
+> > > v3: https://lore.kernel.org/all/20240226051645.414935-1-andrew@codeco=
+nstruct.com.au/
+> > >=20
+> > >     Base on v6.8-rc6, fix yamllint warning
+> > >=20
+> > >     Rob's bot picked the missing `#interrupt-cells` in the example on=
+ v2[1]. The
+> > >     patch was based on v6.8-rc1, and going back over my shell history=
+ I missed
+> > >     the following output from `make dt_binding_check`:
+> > >=20
+> > >     ```
+> > >     ...
+> > >       LINT    Documentation/devicetree/bindings
+> > >       usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA] [--l=
+ist-files] [-f {parsable,standard,colored,github,auto}] [-s] [--no-warnings=
+] [-v] [FILE_OR_DIR ...]
+> > >       yamllint: error: one of the arguments FILE_OR_DIR - is required
+> > >     ...
+> > >     ```
+> > >=20
+> > >     I've rebased on v6.8-rc6 and no-longer see the issue with the inv=
+ocation
+> > >     of `yamllint`.
+> > >=20
+> > > [1]: https://lore.kernel.org/all/170892197611.2260479.153435625635539=
+59436.robh@kernel.org/
+> > >=20
+> > > v2: https://lore.kernel.org/all/20240226031951.284847-1-andrew@codeco=
+nstruct.com.au/
+> > >=20
+> > >     Address feedback from Krzysztof:
+> > >     https://lore.kernel.org/all/0d1dd262-b6dd-4d71-9239-8b0aec8cceff@=
+linaro.org/
+> > >=20
+> > > v1: https://lore.kernel.org/all/20240220052918.742793-1-andrew@codeco=
+nstruct.com.au/
+> > >=20
+> > >  .../bindings/gpio/aspeed,ast2400-gpio.yaml    | 149 ++++++++++++++++=
+++
+> > >  .../devicetree/bindings/gpio/gpio-aspeed.txt  |  39 -----
+> > >  2 files changed, 149 insertions(+), 39 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,ast=
+2400-gpio.yaml
+> > >  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-aspee=
+d.txt
+> > >=20
+> >=20
+> > My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_chec=
+k'
+> > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> >=20
+> > yamllint warnings/errors:
+> >=20
+> > dtschema/dtc warnings/errors:
+> > In file included from Documentation/devicetree/bindings/gpio/aspeed,ast=
+2400-gpio.example.dts:91:
+> > ./scripts/dtc/include-prefixes/dt-bindings/clock/ast2600-clock.h:14: wa=
+rning: "ASPEED_CLK_GATE_LCLK" redefined
+> >    14 | #define ASPEED_CLK_GATE_LCLK            6
+>=20
+> The examples aren't isolated from each other, so you can't have=20
+> conflicting includes. You'll have to drop some of the examples or drop=
+=20
+> their use of the conflicting include.
 
-When enumerated, it appears as:
-powervr fd000000.gpu: [drm] loaded firmware powervr/rogue_4.45.2.58_v1.fw
-powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
+Thanks. I've reworked the patch to avoid use of the conflicting
+includes. I'm also sorting myself out to avoid repeating the process
+flaw of failing to run `make dt_binding_check` on the patch I ended up
+sending.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
-
-diff --git a/arch/arm64/boot/dts/renesas/r8a77961.dtsi b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
-index 58f9286a5ab5..cc17e624c069 100644
---- a/arch/arm64/boot/dts/renesas/r8a77961.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a77961.dtsi
-@@ -2438,6 +2438,16 @@ gic: interrupt-controller@f1010000 {
- 			resets = <&cpg 408>;
- 		};
- 
-+		gpu: gpu@fd000000 {
-+			compatible = "renesas,r8a77961-gpu", "img,img-axe";
-+			reg = <0 0xfd000000 0 0x20000>;
-+			clocks = <&cpg CPG_MOD 112>;
-+			clock-names = "core";
-+			interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
-+			power-domains = <&sysc R8A77961_PD_3DG_B>;
-+			resets = <&cpg 112>;
-+		};
-+
- 		pciec0: pcie@fe000000 {
- 			compatible = "renesas,pcie-r8a77961",
- 				     "renesas,pcie-rcar-gen3";
--- 
-2.43.0
+Andrew
 
 
