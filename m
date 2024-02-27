@@ -1,72 +1,72 @@
-Return-Path: <linux-kernel+bounces-83694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A07869D65
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:22:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C58D869D67
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:22:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E70E1F22374
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:22:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60AA1B260E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A860A4F1E6;
-	Tue, 27 Feb 2024 17:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D12E13A273;
+	Tue, 27 Feb 2024 17:21:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="tIQ7pkv5";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="69Zp3hJd"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TgekRlJa";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6OR3LJuY"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A01E4DA0C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8644E1D6;
 	Tue, 27 Feb 2024 17:21:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054513; cv=none; b=QuEcwXyfteGxmcg/HNulmel3UgmqJPQ26V4bRC07jVXxzImtMf9eijqLqtivbVOaI1ACSR9cFb+49mgaCCsy99/g+zM1zgnlDxjEMj4DDzUijwUV7T6SXgEQq+VM72oMs6ya2ihPuV50ZhL887UHGSmRjfvEfE/EZP8m7ECy36A=
+	t=1709054513; cv=none; b=A6WgE0k/OAYGAUu35C+voDQKhZab4rJR7hWcMDIZvtTGhco99I1+ohWF2zM4Yc33iey0Z5XABW3Khv3deOqhyXL/DLKt5dELEMV4XQeYNu0G0KsA2XzMQluWQoolwjKzVi/Zrr8jeX68Q4cW3Fy9MtCmSWSArhQNnQ+R0oWue8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709054513; c=relaxed/simple;
-	bh=ZDMZNMBVmcOnabX2LLDwj241TDa566ufyAI1yq1DIS4=;
+	bh=CxxghjzhKMU/aBLaHQZTc1NhUcFMMP7dKr/NX9ASjtM=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=LuOBFVDoUEHrdXjBCb2lEinNdD5Vo55DdT2NIK5uVU3VHv0l2UySyPeM7bnFfXdmSeADLrhLIIQuNmchzamC+XzolEVbJ3JH9rGWqNZKSZhGzzZxC2JhHVM325OBW/Pi3ozL7+rkwK3RTcz8q36wusGEVIl72kCm2bMsM7RwjJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=tIQ7pkv5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=69Zp3hJd; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=LzbsDQ50VUPL/3SAQYED1qfyq93oIpjsQrH86f5TMXhGGB+v2AlQQ1Zq/wX2HjOnkTSx4EsYGQog9NmkysbPmQEkJZm5GKzEDnKpnuhHMGIcJKIVIt4bw2MQ7e8rZ27ZlXJo81qGi4Fn3GHs+PIAZQ6SzwqzTekx1C3OlJD+GWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TgekRlJa; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6OR3LJuY; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 27 Feb 2024 17:21:48 -0000
+Date: Tue, 27 Feb 2024 17:21:49 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709054509;
+	s=2020; t=1709054510;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wm06dIdSkYXtx36LEbu12p51mk8dC/UVyDnkHCaLm7E=;
-	b=tIQ7pkv59P2VZPqj6zz9QtMsWZWpNMnx6qqDcqUlRTLFmiE7wZa54BLwxoIZfTmwK11RnO
-	WamwF8yXldjRIpIED/d7Vk4o2/0fzVN3qvQrqQHY898gtFcXRbq+smk2iK91UG/ZcKnnkO
-	4IIRf1lPQy5oXxdZUVkPJdvS1np4DZWiXHa/ihaIE5RebDwgV1wuLuvxSYt5nMqky02M8o
-	egcUTrSGx0Mc9fwXvNdHb0fypLeXdk7LaGaTT8VJb1bdIuAWEJE+1ZxvdnQ8UjP97gTBZu
-	+EndX8AKJ6fZxtGG0gDo3gLf+eLEAIiiZSE+kNGX4zC/L/dB7hZu8GOXW0afPw==
+	bh=Fr7mcPdFCNDIQFg411hI8iEk1/OnCDyhOTf5daRsrtY=;
+	b=TgekRlJa3K5wfCyEBgeRBoMleaUUabQtXFF5CPSnZjcFHAHddQhXeT0E3COqwfSMXwEY/D
+	95Kc8nTQQkWnc0LE26yOV4xqxVExIOtwCJbsxJ7aXs4qYhvKCei+T6IXUZgIl1HYgNki+A
+	c/f2ujxZgD7Mu9YE0caKP7ttImapP7gw5Qoo9xJLPnOxSnNxl3+/CxHjSYcaA5BDjRhD0t
+	OFvrbdgE0L+m9oWLr1Y+vB9frCo2MdGcJZnem1L9eOGmIqC6lHBcaq1DUXkjdZfzxutbjc
+	L2f/qHTFhA6jbQ5mEcp0Mc/E33D0abXn9Ytj2iWG2FKvj4LmrKQMoH+IW0fJCw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709054509;
+	s=2020e; t=1709054510;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wm06dIdSkYXtx36LEbu12p51mk8dC/UVyDnkHCaLm7E=;
-	b=69Zp3hJdKgwZ5uObTZzY6d46lBBF3oPsmtpJVX7UILrU1C9rg6W2ytLF3YnfJy8gBp7Dnl
-	DPlozZ3TN0v1ZpBQ==
+	bh=Fr7mcPdFCNDIQFg411hI8iEk1/OnCDyhOTf5daRsrtY=;
+	b=6OR3LJuYKoJsB3r/S5THCj/7YaBzlVbTx+6/5TSdsIu4CI774tMlEX8SZm8+i3HvK6r0Xv
+	nt0NU2z2y6+mVrAg==
 From:
  tip-bot2 for Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/renesas-irqc: Convert to
+Subject: [tip: irq/core] irqchip/renesas-intc-irqpin: Convert to
  platform_driver::remove_new() callback
 Cc: u.kleine-koenig@pengutronix.de, Thomas Gleixner <tglx@linutronix.de>,
  x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: =?utf-8?q?=3C2d367ab738ed2e4cf58cffc10d64b0cbe8a1322c=2E17032?=
+In-Reply-To: =?utf-8?q?=3C6dc03cf63382d24f954c167aaa988f8e31d6b89d=2E17032?=
  =?utf-8?q?84359=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
-References: =?utf-8?q?=3C2d367ab738ed2e4cf58cffc10d64b0cbe8a1322c=2E170328?=
+References: =?utf-8?q?=3C6dc03cf63382d24f954c167aaa988f8e31d6b89d=2E170328?=
  =?utf-8?q?4359=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -74,7 +74,7 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170905450886.398.7426592820378676052.tip-bot2@tip-bot2>
+Message-ID: <170905450978.398.7222065170643278037.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -84,15 +84,15 @@ Content-Transfer-Encoding: quoted-printable
 
 The following commit has been merged into the irq/core branch of tip:
 
-Commit-ID:     127806dc0b2aacd4355a977a6d8ba5cc6d64f55e
-Gitweb:        https://git.kernel.org/tip/127806dc0b2aacd4355a977a6d8ba5cc6d6=
-4f55e
+Commit-ID:     be5476f6658ac4cc562b4c4ea4c90acd18ee7a29
+Gitweb:        https://git.kernel.org/tip/be5476f6658ac4cc562b4c4ea4c90acd18e=
+e7a29
 Author:        Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-AuthorDate:    Fri, 22 Dec 2023 23:50:41 +01:00
+AuthorDate:    Fri, 22 Dec 2023 23:50:40 +01:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Tue, 27 Feb 2024 18:12:10 +01:00
 
-irqchip/renesas-irqc: Convert to platform_driver::remove_new() callback
+irqchip/renesas-intc-irqpin: Convert to platform_driver::remove_new() callback
 
 The .remove() callback for a platform driver returns an int which makes
 many driver authors wrongly assume it's possible to do error handling by
@@ -109,26 +109,26 @@ callback to the void returning variant.
 
 Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/2d367ab738ed2e4cf58cffc10d64b0cbe8a1322c.1703=
+Link: https://lore.kernel.org/r/6dc03cf63382d24f954c167aaa988f8e31d6b89d.1703=
 284359.git.u.kleine-koenig@pengutronix.de
 
 ---
- drivers/irqchip/irq-renesas-irqc.c |  9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/irqchip/irq-renesas-intc-irqpin.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/irqchip/irq-renesas-irqc.c b/drivers/irqchip/irq-renesas=
--irqc.c
-index 49b446b..76026e0 100644
---- a/drivers/irqchip/irq-renesas-irqc.c
-+++ b/drivers/irqchip/irq-renesas-irqc.c
-@@ -218,14 +218,13 @@ err_runtime_pm_disable:
+diff --git a/drivers/irqchip/irq-renesas-intc-irqpin.c b/drivers/irqchip/irq-=
+renesas-intc-irqpin.c
+index fa19585..9ad3723 100644
+--- a/drivers/irqchip/irq-renesas-intc-irqpin.c
++++ b/drivers/irqchip/irq-renesas-intc-irqpin.c
+@@ -561,14 +561,13 @@ err0:
  	return ret;
  }
 =20
--static int irqc_remove(struct platform_device *pdev)
-+static void irqc_remove(struct platform_device *pdev)
+-static int intc_irqpin_remove(struct platform_device *pdev)
++static void intc_irqpin_remove(struct platform_device *pdev)
  {
- 	struct irqc_priv *p =3D platform_get_drvdata(pdev);
+ 	struct intc_irqpin_priv *p =3D platform_get_drvdata(pdev);
 =20
  	irq_domain_remove(p->irq_domain);
  	pm_runtime_put(&pdev->dev);
@@ -136,19 +136,21 @@ index 49b446b..76026e0 100644
 -	return 0;
  }
 =20
- static int __maybe_unused irqc_suspend(struct device *dev)
-@@ -248,11 +247,11 @@ MODULE_DEVICE_TABLE(of, irqc_dt_ids);
+ static int __maybe_unused intc_irqpin_suspend(struct device *dev)
+@@ -585,11 +584,11 @@ static SIMPLE_DEV_PM_OPS(intc_irqpin_pm_ops, intc_irqpi=
+n_suspend, NULL);
 =20
- static struct platform_driver irqc_device_driver =3D {
- 	.probe		=3D irqc_probe,
--	.remove		=3D irqc_remove,
-+	.remove_new	=3D irqc_remove,
+ static struct platform_driver intc_irqpin_device_driver =3D {
+ 	.probe		=3D intc_irqpin_probe,
+-	.remove		=3D intc_irqpin_remove,
++	.remove_new	=3D intc_irqpin_remove,
  	.driver		=3D {
--		.name	=3D "renesas_irqc",
-+		.name		=3D "renesas_irqc",
- 		.of_match_table	=3D irqc_dt_ids,
--		.pm	=3D &irqc_pm_ops,
-+		.pm		=3D &irqc_pm_ops,
+-		.name	=3D "renesas_intc_irqpin",
+-		.of_match_table =3D intc_irqpin_dt_ids,
+-		.pm	=3D &intc_irqpin_pm_ops,
++		.name		=3D "renesas_intc_irqpin",
++		.of_match_table	=3D intc_irqpin_dt_ids,
++		.pm		=3D &intc_irqpin_pm_ops,
  	}
  };
 =20
