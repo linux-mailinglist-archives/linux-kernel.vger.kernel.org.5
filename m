@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-83738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FEAA869DD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:37:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 249E3869DD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:37:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 431841C20F55
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:37:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D26C028E462
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8602014A081;
-	Tue, 27 Feb 2024 17:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6AE14AD22;
+	Tue, 27 Feb 2024 17:35:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="a2e/OWr7"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MhnvY/Iw"
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71FEE149DF2;
-	Tue, 27 Feb 2024 17:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DD5149DF2;
+	Tue, 27 Feb 2024 17:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709055318; cv=none; b=WNSSRE6XUWEbB5NB8PxjGhYPiT7z8RaSRSPsmUd+Ar8XHw4AktlpOK0p3ZOHtep9PaiX/BcHLY9vvaTOWVbjLcnKBdNbVIdpKJn4/k3OY7swMjIGWo2o8sEAbcJtMerVOBsnYLkGyr9jxOu6MFgspDPUpS2Kr4Fv9vWe/MbK7VA=
+	t=1709055324; cv=none; b=ArYT5oi+LHbTMyFVyH2WSUsPU76Wx4woLWhd9cjUmF7/zdrWSt6HutgTDdrvIuyf6ImgPjGkktrjGY5Qdu45Ajfzq1clt4IbYLqhnLh6u5nJemWBJUfO198OZUZkScUr9Mcc1TgLUImaSq2h4drDI7dW2fktqA9Yxawo62IP1S8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709055318; c=relaxed/simple;
-	bh=KhxBN8jWvG5UmM5Eex/uDjN8Et+tbE8+N7z+H/1VdYQ=;
+	s=arc-20240116; t=1709055324; c=relaxed/simple;
+	bh=Z5k2hix+Fr7+hFF9XlR19tkcXSwIfZLoKyOcbeHHkBE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e2OnnzcoDrvDifoAwolvhAIlhBL0GzTWbw0JF8SciJZZg7eDtuZtqzOFirvoolvzmnnydK2iAXfRhU22YHU9A649nj7Us7YkmDVcn7KXycO091dj2IY9rWW91t3UrQQsV5oGfuq8dQWzrEj2iaGmPs+/zTCRR9hZbCQiNW4NUMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=a2e/OWr7; arc=none smtp.client-ip=205.220.168.131
+	 MIME-Version:Content-Type; b=f+k6u/Bcz7u9AFtndU1FDJq7P0HYFTF0Laf85X39v93cQSXGVkobsMw3UVagFAygBCR0hLdYBYK2+MNPTgMlqwCwN634t3QlC8ChVyYMjLmTSUatTD7bnFnAtSQZpWFsKTRO9eSem0x2dF6yyfDC8fUTCG3GTKj7ixKESmLtMto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MhnvY/Iw; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RCd4e9024377;
-	Tue, 27 Feb 2024 17:35:08 GMT
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41R9YUO1007412;
+	Tue, 27 Feb 2024 17:35:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=t5MMzmXBYwNKQ5AoEvIhLimv77ikFX8sq/LandotN24=; b=a2
-	e/OWr73q2h+7ahRV7H4gcb/PL5F+JGm82kajRetwBGO4bo/yY0Hlmx0Og3gauKtU
-	0IBmpuyIymodRnpIPBA5DMUw9lT4Cq3rrbWqFAQdSjVOG+GBLQ3+n1mfjdeFgFUi
-	AxEiEXzjdELT+kdoVJzMoPLRZxZFVcUc3Amv36Eb1NwPYaP+9zLE82RFUccYboy5
-	ChlOHVn34S5Tae10wU6CwhyEpCjTwiZsr7snn/BvbbsM8SrwXv8cwNkvNsXqT0Va
-	vlmHcqlxguNkCgR+28VGvyj0MDq8DNpsFUINtbg2o5iw/FuVtgJ7oA63vm6IGLD8
-	iZI3bVaUNAZHMw7uO2hg==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh85qsssb-1
+	qcppdkim1; bh=3DVviJxlVwNwJ3tgr3xc9D3SdLGkFfeDO3OWztz/lP0=; b=Mh
+	nvY/Iw1tO+NOxDIQYGcO+52fRBjG8UGGCk+Dv8XTgqvDGwt0VUcXcMKvLWVu8v17
+	oFawAwPNgZhpLlsP7srAagog3NF+/KLqS1IzWp5kWR9GMOvQiXd5Ykv8fIh6xyD9
+	Nn13axSbm5R+Uw8oY3xU0LDmR9xCWbgsCyYf8yU18S55QPzyW4mBND92XsgUf4jq
+	7uidfan8d24LDYFVtTkTcLmg58+XzkBmIUuDNl8rTCV4JVcqql3uCSviLULswgrw
+	nPlm44rL7btjL3/z/FwpCRn4Ng7Ih7+h20P5ehBlrbF9S9DeDBuNyyCcjt9LZ3zj
+	or7FyS5fhK97rhHEyr2A==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh8auhtj7-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 17:35:08 +0000 (GMT)
+	Tue, 27 Feb 2024 17:35:12 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41RHZ7Zr016603
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41RHZC95029837
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 17:35:07 GMT
+	Tue, 27 Feb 2024 17:35:12 GMT
 Received: from hu-sibis-blr.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 27 Feb 2024 09:35:02 -0800
+ 15.2.1118.40; Tue, 27 Feb 2024 09:35:07 -0800
 From: Sibi Sankar <quic_sibis@quicinc.com>
 To: <sudeep.holla@arm.com>, <cristian.marussi@arm.com>, <rafael@kernel.org>,
         <viresh.kumar@linaro.org>, <morten.rasmussen@arm.com>,
@@ -64,9 +64,9 @@ CC: <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
         <linux-arm-msm@vger.kernel.org>, <nm@ti.com>,
         Sibi Sankar
 	<quic_sibis@quicinc.com>
-Subject: [PATCH V2 1/3] OPP: Extend dev_pm_opp_data with turbo support
-Date: Tue, 27 Feb 2024 23:04:32 +0530
-Message-ID: <20240227173434.650334-2-quic_sibis@quicinc.com>
+Subject: [PATCH V2 2/3] firmware: arm_scmi: Add support for marking certain frequencies as boost
+Date: Tue, 27 Feb 2024 23:04:33 +0530
+Message-ID: <20240227173434.650334-3-quic_sibis@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240227173434.650334-1-quic_sibis@quicinc.com>
 References: <20240227173434.650334-1-quic_sibis@quicinc.com>
@@ -82,61 +82,63 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: SR3vycA0r6i9rU-cGCgXh2je7e1WWqGq
-X-Proofpoint-GUID: SR3vycA0r6i9rU-cGCgXh2je7e1WWqGq
+X-Proofpoint-ORIG-GUID: 9dE-JkPRBvVKzooJpGHXh_vlnrL04KbW
+X-Proofpoint-GUID: 9dE-JkPRBvVKzooJpGHXh_vlnrL04KbW
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-27_03,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- priorityscore=1501 phishscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 lowpriorityscore=0 spamscore=0 suspectscore=0 bulkscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 suspectscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2402120000 definitions=main-2402270135
 
-Let's extend the dev_pm_opp_data with a turbo variable, to allow users to
-specify if it's a boost frequency for a dynamically added OPP.
+All opps above the sustained level/frequency are treated as boost, so mark
+them accordingly.
 
+Suggested-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 ---
 
 v2:
-* Document boost flag. [Lukasz]
+* Remove sustained_freq check. [Pierre]
+* simplify sustained_freq_khz calculation. [Sudeep]
 
- drivers/opp/core.c     | 1 +
- include/linux/pm_opp.h | 2 ++
- 2 files changed, 3 insertions(+)
+ drivers/firmware/arm_scmi/perf.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index c4e0432ae42a..e233734b7220 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -2065,6 +2065,7 @@ int _opp_add_v1(struct opp_table *opp_table, struct device *dev,
- 	/* populate the opp table */
- 	new_opp->rates[0] = data->freq;
- 	new_opp->level = data->level;
-+	new_opp->turbo = data->turbo;
- 	tol = u_volt * opp_table->voltage_tolerance_v1 / 100;
- 	new_opp->supplies[0].u_volt = u_volt;
- 	new_opp->supplies[0].u_volt_min = u_volt - tol;
-diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-index f1ac8bde09cb..065a47382302 100644
---- a/include/linux/pm_opp.h
-+++ b/include/linux/pm_opp.h
-@@ -88,12 +88,14 @@ struct dev_pm_opp_config {
+diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+index 981e327e63e3..caf6191df300 100644
+--- a/drivers/firmware/arm_scmi/perf.c
++++ b/drivers/firmware/arm_scmi/perf.c
+@@ -850,7 +850,7 @@ static int scmi_dvfs_device_opps_add(const struct scmi_protocol_handle *ph,
+ 				     struct device *dev, u32 domain)
+ {
+ 	int idx, ret;
+-	unsigned long freq;
++	unsigned long freq, sustained_freq;
+ 	struct dev_pm_opp_data data = {};
+ 	struct perf_dom_info *dom;
  
- /**
-  * struct dev_pm_opp_data - The data to use to initialize an OPP.
-+ * @turbo: Flag to indicate whether the OPP is to be marked turbo or not.
-  * @level: The performance level for the OPP. Set level to OPP_LEVEL_UNSET if
-  * level field isn't used.
-  * @freq: The clock rate in Hz for the OPP.
-  * @u_volt: The voltage in uV for the OPP.
-  */
- struct dev_pm_opp_data {
-+	bool turbo;
- 	unsigned int level;
- 	unsigned long freq;
- 	unsigned long u_volt;
+@@ -858,12 +858,18 @@ static int scmi_dvfs_device_opps_add(const struct scmi_protocol_handle *ph,
+ 	if (IS_ERR(dom))
+ 		return PTR_ERR(dom);
+ 
++	sustained_freq = dom->sustained_freq_khz * 1000UL;
++
+ 	for (idx = 0; idx < dom->opp_count; idx++) {
+ 		if (!dom->level_indexing_mode)
+ 			freq = dom->opp[idx].perf * dom->mult_factor;
+ 		else
+ 			freq = dom->opp[idx].indicative_freq * dom->mult_factor;
+ 
++		/* All opps above the sustained level/frequency are treated as boost */
++		if (freq > sustained_freq)
++			data.turbo = true;
++
+ 		data.level = dom->opp[idx].perf;
+ 		data.freq = freq;
+ 
 -- 
 2.34.1
 
