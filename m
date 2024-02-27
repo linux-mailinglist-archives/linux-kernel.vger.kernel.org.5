@@ -1,235 +1,362 @@
-Return-Path: <linux-kernel+bounces-82707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A15EE868862
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:47:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EBF868864
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1932A1F22064
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:47:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 975E51C229CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:48:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EE4053E1B;
-	Tue, 27 Feb 2024 04:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A84152F77;
+	Tue, 27 Feb 2024 04:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="DrqMM5k8"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2075.outbound.protection.outlook.com [40.107.220.75])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZMNnHdR5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3E5535A2
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.75
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709009098; cv=fail; b=UrJOYSYTBX3CbunInqTNWvU8Lpo7fhdgsqwCgbxL/7qZUyPKoFS9qBpO+C+PJSl98z0fWLaPgOpqFlhxJdUQKiPxJfv50yg0GLzmyE0kFi8O2xbQ0lu2/0ZHK3X0KOtBtgmI7GNukm0ZjUPSSXfJbLKj/hgiwCTA1qwcpc/rFnM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709009098; c=relaxed/simple;
-	bh=eCsw2/5vfLXerKMm8bAWcUilMVBr3oj/raw505PbIQY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=dafDHNaVt8geV8vWIrNV/9+vHUrYleJ0sWtzJzXnp6MiHOcOSeowdv3uCpJ4mULeb7qAkcJIh/tanOmErsLVnp6l+GD6n+MPjuano9pjaP1BPb1JgVDJrJ26suRX9JdCnqLNUcm0wN6WWinTtFFEgx0FwyFgONVMAdO0fftxB4o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=DrqMM5k8; arc=fail smtp.client-ip=40.107.220.75
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PF6EY+caYYeAm0SPy1eBWlw72pJ6hAN2ebqWm2t4hRJXz7b9YwFcSDPb9uqNBmUM1HLxdbQswDWi9uFNxotbWpTDqvx7puJjJ/fhoQsnDFgB7PfxCAQbY3W3e/FcnWHSz+MSWPt15nllHwvSdKklDFCNMrSwerr6d+Iw+/4zFQm1SG6AR82V9mDU5gPTXid5teXuJnagU+Be7CvjfhfkS82WZUCafq6HAxBpxflaQIc/6e1wfSzi+ns8+HXXJbEfutiAziTkAbxJmQw5MMj4B0F2nb3giw2/ESyHlpd7tPZWCyS4XLmXA2MfSXHm6C0mWJ0zboWKKtgwIqF2+IIC3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vTQdkjIMZ3d4r2gNDfvu6RVGpF+bvxfJk/Lg4ELOmFc=;
- b=W8KQv/BtxzkIUvVrrELBy1SY2JkINTixCDDryQKaPGUwPQHmboGLc47DXmIJy4ff/8rVtLz0MGEMRYSET6PwX19X2+UpxWddj4+UK/n1fZiZ2ZV34hFeNGnz9JbFyqG22fmx0vQSjNObI59eeagZ+nTDpWHrTxNuH8tK3hGecD4IYyHVgSKTZ1AEbbaCBXYVGt4/MfUiQSKTeh1Xa7gPxPTW345p+f+2L1uvpgEa9J5yrVRLaOZoKLUPso0SH1gxQXfjJiF9HW79sazSSOguWxYeHkkleqLpS8Y6YnNivclZhJrlG5A6o1TDxwe+4Ijo+XpHc5jL1Cs5aAfOP5YZ4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ffwll.ch smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vTQdkjIMZ3d4r2gNDfvu6RVGpF+bvxfJk/Lg4ELOmFc=;
- b=DrqMM5k8tI4W5famIxrLoYiPoqK0uqfwiXY9HfpwnVj5czTEfCCRSLtOZrgWIyy5PXLgronrQKDvbJ0vnIHM90HtFFOkE6td9jI6fFOR+/++buj7xqMsMun5qVGcTt9tWJNmrbx2UfRzvZbHBDCcOJdfRgKwtV4CP7gxhCuzpPI=
-Received: from SJ0PR03CA0142.namprd03.prod.outlook.com (2603:10b6:a03:33c::27)
- by MW3PR12MB4570.namprd12.prod.outlook.com (2603:10b6:303:5f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Tue, 27 Feb
- 2024 04:44:54 +0000
-Received: from CO1PEPF000044F0.namprd05.prod.outlook.com
- (2603:10b6:a03:33c:cafe::3) by SJ0PR03CA0142.outlook.office365.com
- (2603:10b6:a03:33c::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
- Transport; Tue, 27 Feb 2024 04:44:53 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1PEPF000044F0.mail.protection.outlook.com (10.167.241.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Tue, 27 Feb 2024 04:44:53 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 26 Feb
- 2024 22:44:52 -0600
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 26 Feb
- 2024 22:44:52 -0600
-Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Mon, 26 Feb 2024 22:44:51 -0600
-From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Date: Mon, 26 Feb 2024 20:44:45 -0800
-Subject: [PATCH 4/4] drm/atomic-helper: Add select_output_bus_format
- callback
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3D7052F6E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709009289; cv=none; b=WCsTYMhKn8kzLsXGJGWmPbujt8PhgdoP3ZrhRQlQ4u/lBBSIDRf8Zssxvvc1md1IM5a70Xs3s8NxMOKV40L7hmWjbQowUhYYZAAj9/LpcIYB8fZEZm1rMv7vnpUOKPtAR/67uJ4dFL+I1NbCJCc+TqL00a/xVUlwHeakMHnkZYQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709009289; c=relaxed/simple;
+	bh=rmaBheVRT7dVz2Ci+SvEzncm3P0Sopk72jLZm6tuZs0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PUIyARKGJ6T0WFdrOk1rTx2xud8Cuo1mP84zhR82nJ4Lwml7e5QaoOul7y7n7iCGlUUFfePLkydnhQ/PUJSc6RHo1QDu3LIpNc54wiweaADcf3jp7p0Jb4Ya6j/rkrgn5l23H4Q5666tZD6I83TMbsEYYxZmkjBw26oQNExi/mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZMNnHdR5; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709009284;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IByj/tHZrS4f8RNKhNTMyLYgiYZedr3yfTZYhDqnqAI=;
+	b=ZMNnHdR5cJeirGVXR5I3f+rgk60oIUHXlM85ygz2UVHPSqx3HY/2jFqJC0OQCLYm3BG7o9
+	DlmF+DfJQK+bBjRo/mop3mKK5VvC6n351JdVeFU/bADfEu42u7N/daO4jO64MLptKq2HhY
+	jXJ0EHGiGKU1ewKgG0fhpvSfbtTn1AQ=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-587-2B3s_676OSCKcN1mYojNuA-1; Mon, 26 Feb 2024 23:48:02 -0500
+X-MC-Unique: 2B3s_676OSCKcN1mYojNuA-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1d4a87da75dso42527745ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:48:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709009282; x=1709614082;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IByj/tHZrS4f8RNKhNTMyLYgiYZedr3yfTZYhDqnqAI=;
+        b=ZAZ2FcAQRQKRv6SHU5HXcGk4eoX9XGJ8qNUmdjhRipuaelJfjQtIbQ5LXiXi+yb8g2
+         g/H9nblegSd2Eq3E0xoV/XUfSvutgWZX1eozg9I4F7aF5hDs+/3mfa0eb6q8rkuAJ6jO
+         YlX7iPfTO/BIvnz9SolYHtlf7k2MMRGTSmmeonLfA36RZh4Y3+2KRUVmkQsNFkMojrmz
+         XW6xgJjhzguIi9ZZXNL7y9DxVGym88cUrrauJI/xlXRW6q59gNr46Qfu4veGwdSAuzrw
+         C+ChwpPMNb6Cf69JQM1glXZWyNSBcVfOahBvvqtu6yUmJW47Av/1lSUt4o/RmKK/BxrC
+         HIBw==
+X-Forwarded-Encrypted: i=1; AJvYcCXMDmWSV5Zf3Lw06hzbTDYBinbS783zMrlmpyvMrXVulQ7SSJEvopuKNanBb5+KmqwyOks2IuJVKNbXh2Snr79HY5O19gdplBmIpbdx
+X-Gm-Message-State: AOJu0Yx07aCNAxL75j0SA7BX8DcGOlnYVUuWveZpFOINWgLG4gpoN6C5
+	zpfc3Fp/PPUuer3s/d73kROWpN7p3q3kf0HAcCw/fq1rYqJX0yK3fMlLZWszHgl4rayufEoCU8A
+	wsCQW3m38sXSo1DBaA/f7nRsj4Mycg3X60c6kb963InrqSqWbxnCGkePqsgyCp+GpXGUMSTg9Qz
+	T/cCssdNVfxFjRWaDLOEqYO2Xvk5HVrh241j4D
+X-Received: by 2002:a17:903:187:b0:1db:e494:4b5d with SMTP id z7-20020a170903018700b001dbe4944b5dmr10739071plg.16.1709009281798;
+        Mon, 26 Feb 2024 20:48:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHFVd5S/1hiFH9Pqg3D7OmbK5D8d9fC1S119oCZD76FbvAgyt7mH00lc1rkQ5oz7NBgiREODpExfA45b/xdMP4=
+X-Received: by 2002:a17:903:187:b0:1db:e494:4b5d with SMTP id
+ z7-20020a170903018700b001dbe4944b5dmr10739062plg.16.1709009281470; Mon, 26
+ Feb 2024 20:48:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240226-dp-live-fmt-v1-4-b78c3f69c9d8@amd.com>
-References: <20240226-dp-live-fmt-v1-0-b78c3f69c9d8@amd.com>
-In-Reply-To: <20240226-dp-live-fmt-v1-0-b78c3f69c9d8@amd.com>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Michal Simek <michal.simek@amd.com>, Andrzej
- Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>, Jernej
- Skrabec <jernej.skrabec@gmail.com>
-CC: <dri-devel@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-X-Mailer: b4 0.12.4
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F0:EE_|MW3PR12MB4570:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5be37ea8-74a2-486d-e251-08dc374ed71d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	o8o6y122jURxHD/aocDiZ44qpbq8cnpBpuxzwXGtZ48sFPbHso4g5OE/4b+J+tjF4AxkrB7KANdbuTG/N5bY95RkysIDYqH8TxfAfPvEh690G5RdlUxSnaa/aFNg15Vw2rfe1HYrMGV1eL9w7FgAEn3Mn+OsDFYSAh12feM6JKNA/EYKz9ScN/GFPvuZXzkdcl0EL4pjSqfgj2qj6mo4351SBSxdweqYwsCHsYOcK7/ZDcaNhQbdccYIKFkQadtNw/1M06zV6A+lnIgxOWYfZTphQtUaBDkn9sVZr/g4hUion1qRZ8wLqRRmMOQva1YwTk5hlkMiIbKfq41/+aFuQP3UWPg3mn6pFX5vNHJ5mgvnHQvR7G2DFPiyXjd/M2+p/LMdjoFPaH784rHhIFSo/FZpE5vWvzgUtL2VWMbPVVQdoIv4UllaKVVJLCX36XJhuKS8qbnHf7vjAC1WXIzWx8hjrqlnJH/0PCUdCx53MtrF6FrKtKjK+8LHB+amw2Qg+zBhEw154EeQjPJwq8YLcw6kkeUu7NEKvVMrue9e5MvXbzCBJ/IoTDOJ3giE9VqVColAIr/pE80em81TzZgpFKjgiwlyulxNjLYR592fjO4ZmUkY9sxJaPmCAogXWkROgA4+313APq3pnv9hxDSu3Bp1GfdCdjYGKfIfpWpx1qt7UyDjCweCqFkib7lpT7H/y5E4fyGEQ3WC9c3nEhv3ZSGQC/bqwaprzQRNyJOFYr97EfEx2w4wmAy2Kk1S+q67UNlePZhxenxxeKilAmfnZQ==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(921011);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 04:44:53.4241
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5be37ea8-74a2-486d-e251-08dc374ed71d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044F0.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4570
+References: <20240222075806.1816400-1-yukuai1@huaweicloud.com> <20240222075806.1816400-11-yukuai1@huaweicloud.com>
+In-Reply-To: <20240222075806.1816400-11-yukuai1@huaweicloud.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Tue, 27 Feb 2024 12:47:50 +0800
+Message-ID: <CALTww28=sZNJESGX5fjuW5TaM0rSO6PoR_GgJZY3e+yF3KWobA@mail.gmail.com>
+Subject: Re: [PATCH md-6.9 10/10] md/raid1: factor out helpers to choose the
+ best rdev from read_balance()
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com, shli@fb.com, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add select_output_bus_format to CRTC atomic helpers callbacks. This
-callback Will allow CRTC to participate in media bus format negotiation
-over connected DRM bridge chain and impose CRTC-specific restrictions.
-A good example is CRTC implemented as FPGA soft IP. This kind of CRTC will
-most certainly support a single output media bus format, as supporting
-multiple runtime options consumes extra FPGA resources. A variety of
-options for FPGA are usually achieved by synthesizing IP with different
-parameters.
+On Thu, Feb 22, 2024 at 4:06=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> The way that best rdev is chosen:
+>
+> 1) If the read is sequential from one rdev:
+>  - if rdev is rotational, use this rdev;
+>  - if rdev is non-rotational, use this rdev until total read length
+>    exceed disk opt io size;
+>
+> 2) If the read is not sequential:
+>  - if there is idle disk, use it, otherwise:
+>  - if the array has non-rotational disk, choose the rdev with minimal
+>    inflight IO;
+>  - if all the underlaying disks are rotational disk, choose the rdev
+>    with closest IO;
+>
+> There are no functional changes, just to make code cleaner and prepare
+> for following refactor.
+>
+> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
+> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/md/raid1.c | 171 ++++++++++++++++++++++++---------------------
+>  1 file changed, 92 insertions(+), 79 deletions(-)
+>
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index 223ef8d06f67..938b0e0170df 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -730,73 +730,68 @@ static bool should_choose_next(struct r1conf *conf,=
+ int disk)
+>                mirror->next_seq_sect - opt_iosize >=3D mirror->seq_start;
+>  }
+>
+> -/*
+> - * This routine returns the disk from which the requested read should
+> - * be done. There is a per-array 'next expected sequential IO' sector
+> - * number - if this matches on the next IO then we use the last disk.
+> - * There is also a per-disk 'last know head position' sector that is
+> - * maintained from IRQ contexts, both the normal and the resync IO
+> - * completion handlers update this position correctly. If there is no
+> - * perfect sequential match then we pick the disk whose head is closest.
+> - *
+> - * If there are 2 mirrors in the same 2 devices, performance degrades
+> - * because position is mirror, not device based.
+> - *
+> - * The rdev for the device selected will have nr_pending incremented.
+> - */
+> -static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *=
+max_sectors)
+> +static bool rdev_readable(struct md_rdev *rdev, struct r1bio *r1_bio)
+>  {
+> -       const sector_t this_sector =3D r1_bio->sector;
+> -       int sectors;
+> -       int best_good_sectors;
+> -       int best_disk, best_dist_disk, best_pending_disk;
+> -       int disk;
+> -       sector_t best_dist;
+> -       unsigned int min_pending;
+> -       struct md_rdev *rdev;
+> +       if (!rdev || test_bit(Faulty, &rdev->flags))
+> +               return false;
+>
+> - retry:
+> -       sectors =3D r1_bio->sectors;
+> -       best_disk =3D -1;
+> -       best_dist_disk =3D -1;
+> -       best_dist =3D MaxSector;
+> -       best_pending_disk =3D -1;
+> -       min_pending =3D UINT_MAX;
+> -       best_good_sectors =3D 0;
+> -       clear_bit(R1BIO_FailFast, &r1_bio->state);
+> +       /* still in recovery */
+> +       if (!test_bit(In_sync, &rdev->flags) &&
+> +           rdev->recovery_offset < r1_bio->sector + r1_bio->sectors)
+> +               return false;
+>
+> -       if (raid1_should_read_first(conf->mddev, this_sector, sectors))
+> -               return choose_first_rdev(conf, r1_bio, max_sectors);
+> +       /* don't read from slow disk unless have to */
+> +       if (test_bit(WriteMostly, &rdev->flags))
+> +               return false;
+> +
+> +       /* don't split IO for bad blocks unless have to */
+> +       if (rdev_has_badblock(rdev, r1_bio->sector, r1_bio->sectors))
+> +               return false;
+> +
+> +       return true;
+> +}
+> +
+> +struct read_balance_ctl {
+> +       sector_t closest_dist;
+> +       int closest_dist_disk;
+> +       int min_pending;
+> +       int min_pending_disk;
+> +       int readable_disks;
+> +};
+> +
+> +static int choose_best_rdev(struct r1conf *conf, struct r1bio *r1_bio)
+> +{
+> +       int disk;
+> +       struct read_balance_ctl ctl =3D {
+> +               .closest_dist_disk      =3D -1,
+> +               .closest_dist           =3D MaxSector,
+> +               .min_pending_disk       =3D -1,
+> +               .min_pending            =3D UINT_MAX,
+> +       };
+>
+>         for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
+> +               struct md_rdev *rdev;
+>                 sector_t dist;
+>                 unsigned int pending;
+>
+> -               rdev =3D conf->mirrors[disk].rdev;
+> -               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED
+> -                   || rdev =3D=3D NULL
+> -                   || test_bit(Faulty, &rdev->flags))
+> -                       continue;
+> -               if (!test_bit(In_sync, &rdev->flags) &&
+> -                   rdev->recovery_offset < this_sector + sectors)
+> -                       continue;
+> -               if (test_bit(WriteMostly, &rdev->flags))
+> +               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED)
+>                         continue;
+> -               if (rdev_has_badblock(rdev, this_sector, sectors))
+> +
+> +               rdev =3D conf->mirrors[disk].rdev;
+> +               if (!rdev_readable(rdev, r1_bio))
+>                         continue;
+>
+> -               if (best_disk >=3D 0)
+> -                       /* At least two disks to choose from so failfast =
+is OK */
+> +               /* At least two disks to choose from so failfast is OK */
+> +               if (ctl.readable_disks++ =3D=3D 1)
+>                         set_bit(R1BIO_FailFast, &r1_bio->state);
+>
+>                 pending =3D atomic_read(&rdev->nr_pending);
+> -               dist =3D abs(this_sector - conf->mirrors[disk].head_posit=
+ion);
+> +               dist =3D abs(r1_bio->sector - conf->mirrors[disk].head_po=
+sition);
+> +
+>                 /* Don't change to another disk for sequential reads */
+>                 if (is_sequential(conf, disk, r1_bio)) {
+> -                       if (!should_choose_next(conf, disk)) {
+> -                               best_disk =3D disk;
+> -                               break;
+> -                       }
+> +                       if (!should_choose_next(conf, disk))
+> +                               return disk;
+>
+>                         /*
+>                          * Add 'pending' to avoid choosing this disk if t=
+here is
+> @@ -810,42 +805,60 @@ static int read_balance(struct r1conf *conf, struct=
+ r1bio *r1_bio, int *max_sect
+>                         dist =3D 0;
+>                 }
+>
+> -               if (min_pending > pending) {
+> -                       min_pending =3D pending;
+> -                       best_pending_disk =3D disk;
+> +               if (ctl.min_pending > pending) {
+> +                       ctl.min_pending =3D pending;
+> +                       ctl.min_pending_disk =3D disk;
+>                 }
+>
+> -               if (dist < best_dist) {
+> -                       best_dist =3D dist;
+> -                       best_dist_disk =3D disk;
+> +               if (dist < ctl.closest_dist) {
+> +                       ctl.closest_dist =3D dist;
+> +                       ctl.closest_dist_disk =3D disk;
+>                 }
+>         }
+>
+> -       /*
+> -        * If all disks are rotational, choose the closest disk. If any d=
+isk is
+> -        * non-rotational, choose the disk with less pending request even=
+ the
+> -        * disk is rotational, which might/might not be optimal for raids=
+ with
+> -        * mixed ratation/non-rotational disks depending on workload.
+> -        */
+> -       if (best_disk =3D=3D -1) {
+> -               if (conf->mddev->nonrot_disks || min_pending =3D=3D 0)
+> -                       best_disk =3D best_pending_disk;
+> -               else
+> -                       best_disk =3D best_dist_disk;
+> -       }
+>
+> -       if (best_disk >=3D 0) {
+> -               rdev =3D conf->mirrors[best_disk].rdev;
+> -               if (!rdev)
+> -                       goto retry;
+> +       if (ctl.min_pending_disk !=3D -1 &&
+> +           (conf->mddev->nonrot_disks || ctl.min_pending =3D=3D 0))
+> +               return ctl.min_pending_disk;
+> +       else
+> +               return ctl.closest_dist_disk;
+> +}
+>
+> -               sectors =3D best_good_sectors;
+> -               update_read_sectors(conf, disk, this_sector, sectors);
+> -       }
+> -       *max_sectors =3D sectors;
+> +/*
+> + * This routine returns the disk from which the requested read should be=
+ done.
+> + *
+> + * 1) If resync is in progress, find the first usable disk and use
+> + * it even if it has some bad blocks.
+> + *
+> + * 2) Now that there is no resync, loop through all disks and skipping s=
+low
+> + * disks and disks with bad blocks for now. Only pay attention to key di=
+sk
+> + * choice.
+> + *
+> + * 3) If we've made it this far, now look for disks with bad blocks and =
+choose
+> + * the one with most number of sectors.
+> + *
+> + * 4) If we are all the way at the end, we have no choice but to use a d=
+isk even
+> + * if it is write mostly.
+> +
+> + * The rdev for the device selected will have nr_pending incremented.
+> + */
+> +static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *=
+max_sectors)
+> +{
+> +       int disk;
+> +
+> +       clear_bit(R1BIO_FailFast, &r1_bio->state);
+>
+> -       if (best_disk >=3D 0)
+> -               return best_disk;
+> +       if (raid1_should_read_first(conf->mddev, r1_bio->sector,
+> +                                   r1_bio->sectors))
+> +               return choose_first_rdev(conf, r1_bio, max_sectors);
+> +
+> +       disk =3D choose_best_rdev(conf, r1_bio);
+> +       if (disk >=3D 0) {
+> +               *max_sectors =3D r1_bio->sectors;
+> +               update_read_sectors(conf, disk, r1_bio->sector,
+> +                                   r1_bio->sectors);
+> +               return disk;
+> +       }
+>
+>         /*
+>          * If we are here it means we didn't find a perfectly good disk s=
+o
+> --
+> 2.39.2
+>
+>
 
-Incorporate select_output_bus_format callback into the format negotiation
-stage to fix the input bus format of the first DRM bridge in the chain.
-
-Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
----
- drivers/gpu/drm/drm_bridge.c             | 19 +++++++++++++++++--
- include/drm/drm_modeset_helper_vtables.h | 31 +++++++++++++++++++++++++++++++
- 2 files changed, 48 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-index 521a71c61b16..453ae3d174b4 100644
---- a/drivers/gpu/drm/drm_bridge.c
-+++ b/drivers/gpu/drm/drm_bridge.c
-@@ -32,6 +32,7 @@
- #include <drm/drm_edid.h>
- #include <drm/drm_encoder.h>
- #include <drm/drm_file.h>
-+#include <drm/drm_modeset_helper_vtables.h>
- #include <drm/drm_of.h>
- #include <drm/drm_print.h>
- 
-@@ -879,7 +880,8 @@ static int select_bus_fmt_recursive(struct drm_bridge *first_bridge,
- 	unsigned int i, num_in_bus_fmts = 0;
- 	struct drm_bridge_state *cur_state;
- 	struct drm_bridge *prev_bridge;
--	u32 *in_bus_fmts;
-+	struct drm_crtc *crtc = crtc_state->crtc;
-+	u32 *in_bus_fmts, in_fmt;
- 	int ret;
- 
- 	prev_bridge = drm_bridge_get_prev_bridge(cur_bridge);
-@@ -933,7 +935,20 @@ static int select_bus_fmt_recursive(struct drm_bridge *first_bridge,
- 		return -ENOMEM;
- 
- 	if (first_bridge == cur_bridge) {
--		cur_state->input_bus_cfg.format = in_bus_fmts[0];
-+		in_fmt = in_bus_fmts[0];
-+		if (crtc->helper_private &&
-+		    crtc->helper_private->select_output_bus_format) {
-+			in_fmt = crtc->helper_private->select_output_bus_format(
-+							crtc,
-+							crtc->state,
-+							in_bus_fmts,
-+							num_in_bus_fmts);
-+			if (!in_fmt) {
-+				kfree(in_bus_fmts);
-+				return -ENOTSUPP;
-+			}
-+		}
-+		cur_state->input_bus_cfg.format = in_fmt;
- 		cur_state->output_bus_cfg.format = out_bus_fmt;
- 		kfree(in_bus_fmts);
- 		return 0;
-diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-index 881b03e4dc28..7c21ae1fe3ad 100644
---- a/include/drm/drm_modeset_helper_vtables.h
-+++ b/include/drm/drm_modeset_helper_vtables.h
-@@ -489,6 +489,37 @@ struct drm_crtc_helper_funcs {
- 				     bool in_vblank_irq, int *vpos, int *hpos,
- 				     ktime_t *stime, ktime_t *etime,
- 				     const struct drm_display_mode *mode);
-+
-+	/**
-+	 * @select_output_bus_format
-+	 *
-+	 * Called by the first connected DRM bridge to negotiate input media
-+	 * bus format. CRTC is expected to pick preferable media formats from
-+	 * the list supported by the DRM bridge chain.
-+	 *
-+	 * This callback is optional.
-+	 *
-+	 * Parameters:
-+	 *
-+	 * crtc:
-+	 *     The CRTC.
-+	 * crcs_state:
-+	 *     New CRTC state.
-+	 * supported_fmts:
-+	 *     List of input bus formats supported by the bridge.
-+	 * num_supported_fmts:
-+	 *     Number of formats in the list.
-+	 *
-+	 * Returns:
-+	 *
-+	 * Preferred bus format from the list or 0 if CRTC doesn't support any
-+	 * from the provided list.
-+	 *
-+	 */
-+	u32 (*select_output_bus_format)(struct drm_crtc *crtc,
-+					struct drm_crtc_state *crtc_state,
-+					const u32 *supported_fmts,
-+					int num_supported_fmts);
- };
- 
- /**
-
--- 
-2.25.1
+Hi
+This patch looks good to me. Thanks very much for the effort. Now the
+read_balance is more easy to read and understand.
+Reviewed-by: Xiao Ni <xni@redhat.com>
 
 
