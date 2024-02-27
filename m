@@ -1,217 +1,146 @@
-Return-Path: <linux-kernel+bounces-83777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD6CA869E7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:01:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55895869E62
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86F9DB25C00
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:55:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7993F1C23FC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AD44EB49;
-	Tue, 27 Feb 2024 17:54:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D0B14AD24;
+	Tue, 27 Feb 2024 17:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="TZyWEU8Y"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="chESIHFZ"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D30B4E1A0
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:54:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E81B314A4DE
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:55:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709056495; cv=none; b=X8POIkx6kUwzzivaDs9A42mmodMtvCNmdaobgIPq2EGl5xiILH+2KZubntKdvnfKVdDXUQEuaEPtKS/VD/HT/B7t9eUZaHLcuzgoV72+2J7t9I9u6fpYK8C91vrzcnaLca1sHdwy7D9v1x/1E2Uhuo/o8KQuC4hwQ5lwVSPtHXk=
+	t=1709056512; cv=none; b=Hos3NRltSNM3nV0IRbeOg2jB/7q3IiRaFpPpH6v5m9YMskse0HAS2Vt/y56toz5VCkKj9DfaaTeGGQHbKMV18W+P/I5ZDBbhxj9SFaxY8Z9xavaJmOxIA8ivPQ/dAi5Y5XRUe60HA5SK89yrxfvCjgoPK6+pjKcDJnfGL2A6E7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709056495; c=relaxed/simple;
-	bh=VUAaY8wxXr5bUffmJpFRqHV2oMwBf/vlf3I5G3UUTGI=;
+	s=arc-20240116; t=1709056512; c=relaxed/simple;
+	bh=4mxpcwtJGmPAx0hGuHiSF19sttpDcfgAzEqkq+js9w0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JHLyqNq7cui4VhHOZY3coagXGLRl3ICIwA3EaPBAXOiRkkwqq7epBDez/fbcPZG/zCn6XUdFYyhNf12lAOx/zq6f/GoS/fZgE5bY5yj22154Y1tsl7garJFVN2aLzV8OKNV0nj5RBzuMkouliO+ER5Cc2CamQsOx2BB9+LphNM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=TZyWEU8Y; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so3154489a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:54:53 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=hXP3bb/i53kTpm9zUb8/QzKyhbSGKh+KsWEIjWxUep+MThYxaU4OdwZF4eXleqyT3W4vx2ehFMv5hHf0EVrm6p41Gp2Sp2b5DFT2C2PY2sXoj9CJ3wVS9jvkRU07q5SyLjqpkMuDMyXAsibE+Cn7c9r3OSvn7MSDg6C1tvZpm6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=chESIHFZ; arc=none smtp.client-ip=209.85.166.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7c788332976so146280039f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:55:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709056493; x=1709661293; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kIdksP1jXgRqd1isvnR0Pk+ChLgtGPiZTFxnnPSsol0=;
-        b=TZyWEU8YoReS0giYCuMX1yk0jFICaJG4jcTNykPXsJyGXS0HB3e575BABK55a37ndj
-         RA9Jq1AZc9Fo0YiGhRES7wMMw1hd5DMFGHQmIbl+3dISOBQtnNoB1PIF0EwBR3Q4ud2U
-         OgUK7jkuXJnp3DaEEKtIqz8fwdYV34vv3uC4+Vykw0v/ZxuLe28u5alurmnyQyn44Lq8
-         SRgnrLEBF004FrIBQTzf3vQhDgxTy0TPu45xbgUTU1pqjb8FghAmkNybbnnA0NFBTSfS
-         +lGFOD9+hnorDVSbGrGzyNybkSBySiIWJ8WSecbsgA7IpVJR2kdD8lNv7Y1XqBwsAeaI
-         JMEA==
+        d=chromium.org; s=google; t=1709056509; x=1709661309; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0z6oy3tLEwRGgu8/omrsseYREQZqlDjlucfwbridRR4=;
+        b=chESIHFZopoekdXZAIn5yr8L36LqKiRAzMmBw0JBzQdug/CTAodhBYAHHvD7wNUm7O
+         yo4UCYJAOc4GbOcIf/OFhVNYZ5ssaZkAGjeQcVoSFwmTwDttR51c8WWCh5ULH12ghuGq
+         2UZsNyck+l4Ae2E9kGCporZr2CKI+1eDAI/b8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709056493; x=1709661293;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kIdksP1jXgRqd1isvnR0Pk+ChLgtGPiZTFxnnPSsol0=;
-        b=CVEoyd7TxUxl4z6L14UVzYIqnPo2jENwt3yuGtN6gV0Y0e1MjojuFsemztX7kznJuk
-         COGBT3YVx6NVuJc46cOs5++tVDi9B1uQ5ebm205IFuncGQZ0jB153cp90Gtvn4F8ucMb
-         3xcEuXwlOqXocdVHclpDmfefYrR3cJFvyWY9sd3wCsOUEaO8yFFLndoH/dNwjkQHAkBe
-         oT7OCi2DhIpepCHRuN9Vpw8o7tIS5n+K4fheee8khIuzm7sNzZd/5UOXx4O4piYw0Y7U
-         rKuPIyyoRSgJm1JlimpGR4+9YUKuC2G0cxqsU0aHgRn3yjcH7h3wSnmew1kEfHs7ehk8
-         97UA==
-X-Forwarded-Encrypted: i=1; AJvYcCWK6hy72TfFfR1m8obpbDnyyYuG3n9nSpPo3gTPAXmNmqFK5bxN0YCU+S7Sf+o2miTDzwOskeLgAJl4SYqrz4o3BW4erNO4v1qMaeey
-X-Gm-Message-State: AOJu0YwGG80xeIcmAEkMlsW9fSMWYqLSoYEgh/LXE0vZ1vMk2rEKG76S
-	Eq1zlx25xn6A/rrI73KgbavNPxwu66JnGKzdbHMdRkc9Y5lUE5het+ikaIg9JYk=
-X-Google-Smtp-Source: AGHT+IFz6f/uoaRRDlAo9FUesEjMdjsM1i3WorOHOm7Rgb/Bu93+PnLqfHQ9b5gv518bhE6IEAiu6A==
-X-Received: by 2002:a17:90a:6f01:b0:299:75aa:8949 with SMTP id d1-20020a17090a6f0100b0029975aa8949mr7822691pjk.22.1709056493179;
-        Tue, 27 Feb 2024 09:54:53 -0800 (PST)
-Received: from ghost (mobile-166-137-160-039.mycingular.net. [166.137.160.39])
-        by smtp.gmail.com with ESMTPSA id n15-20020a17090ade8f00b002995e9aca72sm6856207pjv.29.2024.02.27.09.54.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 09:54:52 -0800 (PST)
-Date: Tue, 27 Feb 2024 09:54:49 -0800
-From: Charlie Jenkins <charlie@rivosinc.com>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	Guenter Roeck <linux@roeck-us.net>,
-	David Laight <David.Laight@aculab.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Helge Deller <deller@gmx.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Parisc List <linux-parisc@vger.kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-Message-ID: <Zd4h6ZhvLSWfWJG/@ghost>
-References: <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
- <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk>
- <ZdzZ5tk459bgUrgz@ghost>
- <ZdzhRntTHApp0doV@shell.armlinux.org.uk>
- <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com>
- <Zd0b8SDT8hrG/0yW@ghost>
- <cdd09f7a-83b2-41ba-a32c-9886dd79c43e@roeck-us.net>
- <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
- <Zd25XWTkDPuIjpF8@shell.armlinux.org.uk>
- <c8ddcc98-acb0-4d2d-828a-8dd12e771b5f@csgroup.eu>
+        d=1e100.net; s=20230601; t=1709056509; x=1709661309;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0z6oy3tLEwRGgu8/omrsseYREQZqlDjlucfwbridRR4=;
+        b=s76j7fADnSQ0BlFxrzk1Y9WQ0XW34f/ZGfT3ElYicN1Z5tAExVDXrW+I+jM0dTwJfv
+         +ld96rbWEZXVBFNbPQU0G3MDIa0LSvhoIwUv8+S8KF8ARvC6DEoUdYLMpRKkuRLiklZQ
+         mYMSx1zSZV8Ec6pugxX0ccjwCkGauY6Nfk9nczW4Awy6p0B+6BZiYpBi/lSeSYhzjb2G
+         e7KTFoTGdCZO7O/pWKv8qP+qJFdD2jj+hIMi5f9vE8AKOeC81A7ccB/T1MmH5K9Z+UfY
+         i5PCdr5rEIE5miw7I3dsjXOD8XOq/IAO8Tiv3+ZvpIDL4cT08sg+J/XPltofTopHdgRY
+         EArQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVzGnqfb+cD7lwdgM1Q1BqR/SuVMlJolats72SH/VyUIQkcbYOg/ZhQ+5L9nGrN4EyiAbD48ezO4StM0fH/IlM8RXu3qOAjmvi2PauA
+X-Gm-Message-State: AOJu0YzSwZC8YGLwMaYLP9LQRRt1FPtzuq2v+7TGMX7m6FmMzBZ9fn2F
+	PDP2Wgi/EJ29FbzIHSNNG43Uy2awfsRlh2A97lXYumGEqnzQ7YxUoEUo8y95XQ==
+X-Google-Smtp-Source: AGHT+IE99IEm1bwDJq2IEwn8DzuSvhEObNZduooC8XEtgQeAr6li7TB9E5Onf6yMe4pPR4UCVj/fTw==
+X-Received: by 2002:a5e:c007:0:b0:7c7:9184:df98 with SMTP id u7-20020a5ec007000000b007c79184df98mr13293582iol.12.1709056509170;
+        Tue, 27 Feb 2024 09:55:09 -0800 (PST)
+Received: from localhost (147.220.222.35.bc.googleusercontent.com. [35.222.220.147])
+        by smtp.gmail.com with UTF8SMTPSA id u14-20020a02b1ce000000b0047464deaba5sm1816183jah.114.2024.02.27.09.55.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 09:55:08 -0800 (PST)
+Date: Tue, 27 Feb 2024 17:55:07 +0000
+From: Matthias Kaehlcke <mka@chromium.org>
+To: Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Helen Koike <helen.koike@collabora.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Russell King <linux@armlinux.org.uk>,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 2/8] usb: misc: onboard_dev: add support for non-hub
+ devices
+Message-ID: <Zd4h-4Nm0Kl-7mqp@google.com>
+References: <20240220-onboard_xvf3500-v4-0-dc1617cc5dd4@wolfvision.net>
+ <20240220-onboard_xvf3500-v4-2-dc1617cc5dd4@wolfvision.net>
+ <ZdZN3FIS4zcKe4Kw@google.com>
+ <174ce57a-3197-4251-831f-205ec5cfeae9@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c8ddcc98-acb0-4d2d-828a-8dd12e771b5f@csgroup.eu>
+In-Reply-To: <174ce57a-3197-4251-831f-205ec5cfeae9@wolfvision.net>
 
-On Tue, Feb 27, 2024 at 11:32:19AM +0000, Christophe Leroy wrote:
-> 
-> 
-> Le 27/02/2024 à 11:28, Russell King (Oracle) a écrit :
-> > On Tue, Feb 27, 2024 at 06:47:38AM +0000, Christophe Leroy wrote:
+On Thu, Feb 22, 2024 at 03:42:26PM +0100, Javier Carrasco wrote:
+> On 21.02.24 20:24, Matthias Kaehlcke wrote:
+> > On Tue, Feb 20, 2024 at 03:05:46PM +0100, Javier Carrasco wrote:
+> >> Most of the functionality this driver provides can be used by non-hub
+> >> devices as well.
 > >>
+> >> To account for the hub-specific code, add a flag to the device data
+> >> structure and check its value for hub-specific code.
+> > 
+> > Please mention that the driver doesn't power off non-hub devices
+> > during system suspend.
+> > 
+> >> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+> >> ---
+> >>  drivers/usb/misc/onboard_usb_dev.c |  3 ++-
+> >>  drivers/usb/misc/onboard_usb_dev.h | 10 ++++++++++
+> >>  2 files changed, 12 insertions(+), 1 deletion(-)
 > >>
-> >> Le 27/02/2024 à 00:48, Guenter Roeck a écrit :
-> >>> On 2/26/24 15:17, Charlie Jenkins wrote:
-> >>>> On Mon, Feb 26, 2024 at 10:33:56PM +0000, David Laight wrote:
-> >>>>> ...
-> >>>>>> I think you misunderstand. "NET_IP_ALIGN offset is what the kernel
-> >>>>>> defines to be supported" is a gross misinterpretation. It is not
-> >>>>>> "defined to be supported" at all. It is the _preferred_ alignment
-> >>>>>> nothing more, nothing less.
-> >>>>
-> >>>> This distinction is arbitrary in practice, but I am open to being proven
-> >>>> wrong if you have data to back up this statement. If the driver chooses
-> >>>> to not follow this, then the driver might not work. ARM defines the
-> >>>> NET_IP_ALIGN to be 2 to pad out the header to be on the supported
-> >>>> alignment. If the driver chooses to pad with one byte instead of 2
-> >>>> bytes, the driver may fail to work as the CPU may stall after the
-> >>>> misaligned access.
-> >>>>
-> >>>>>
-> >>>>> I'm sure I've seen code that would realign IP headers to a 4 byte
-> >>>>> boundary before processing them - but that might not have been in
-> >>>>> Linux.
-> >>>>>
-> >>>>> I'm also sure there are cpu which will fault double length misaligned
-> >>>>> memory transfers - which might be used to marginally speed up code.
-> >>>>> Assuming more than 4 byte alignment for the IP header is likely
-> >>>>> 'wishful thinking'.
-> >>>>>
-> >>>>> There is plenty of ethernet hardware that can only write frames
-> >>>>> to even boundaries and plenty of cpu that fault misaligned accesses.
-> >>>>> There are even cases of both on the same silicon die.
-> >>>>>
-> >>>>> You also pretty much never want a fault handler to fixup misaligned
-> >>>>> ethernet frames (or really anything else for that matter).
-> >>>>> It is always going to be better to check in the code itself.
-> >>>>>
-> >>>>> x86 has just made people 'sloppy' :-)
-> >>>>>
-> >>>>>      David
-> >>>>>
-> >>>>> -
-> >>>>> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes,
-> >>>>> MK1 1PT, UK
-> >>>>> Registration No: 1397386 (Wales)
-> >>>>>
-> >>>>
-> >>>> If somebody has a solution they deem to be better, I am happy to change
-> >>>> this test case. Otherwise, I would appreciate a maintainer resolving
-> >>>> this discussion and apply this fix.
-> >>>>
-> >>> Agreed.
-> >>>
-> >>> I do have a couple of patches which add explicit unaligned tests as well as
-> >>> corner case tests (which are intended to trigger as many carry overflows
-> >>> as possible). Once I get those working reliably, I'll be happy to submit
-> >>> them as additional tests.
-> >>>
-> >>
-> >> The functions definitely have to work at least with and without VLAN,
-> >> which means the alignment cannot be greater than 4 bytes. That's also
-> >> the outcome of the discussion.
+> >> diff --git a/drivers/usb/misc/onboard_usb_dev.c b/drivers/usb/misc/onboard_usb_dev.c
+> >> index 2103af2cb2a6..f43130a6786f 100644
+> >> --- a/drivers/usb/misc/onboard_usb_dev.c
+> >> +++ b/drivers/usb/misc/onboard_usb_dev.c
+> >> @@ -129,7 +129,8 @@ static int __maybe_unused onboard_dev_suspend(struct device *dev)
+> >>  		if (!device_may_wakeup(node->udev->bus->controller))
+> >>  			continue;
+> >>  
+> >> -		if (usb_wakeup_enabled_descendants(node->udev)) {
+> >> +		if (usb_wakeup_enabled_descendants(node->udev) ||
+> >> +		    !onboard_dev->pdata->is_hub) {
 > > 
-> > Thanks for completely ignoring what I've said. No. The alignment ends up
-> > being commonly 2 bytes.
 > > 
-> > As I've said several times, network drivers do _not_ have to respect
-> > NET_IP_ALIGN. There are 32-bit ARM drivers which have a DMA engine in
-> > them which can only DMA to a 32-bit aligned address. This means that
-> > the start of the ethernet header is placed at a 32-bit aligned address
-> > making the IP header misaligned to 32-bit.
-> > 
-> > I don't see what is so difficult to understand about this... but it
-> > seems that my comments on this are being ignored time and time again,
-> > and I can only think that those who are ignoring my comments have
-> > some alterior motive here.
+> > This check isn't dependent on characteristics of the USB devices processed
+> > in this loop, therefore it can be performed at function entry. Please combine
+> > it with the check of 'always_powered_in_suspend'. It's also an option to
+> > omit the check completely, 'always_powered_in_suspend' will never be set for
+> > non-hub devices (assuming the sysfs attribute isn't added).
 > > 
 > 
-> I'm sorry for this misunderstanding. I'm not ignoring what you said at 
-> all. I understood that ARM is able to handle unaligned accesses with 
-> some exception handlers at worst case and that DMA constraints may lead 
-> to the IP header beeing on a 2 bytes alignment only.
-> 
-> However I also understood from others that some architectures can't 
-> handle such a 2 bytes only alignments.
-> 
-> It's been suggested during the discussion that alignment tests should be 
-> added later in a follow-up patch. So for the time being I'm trying to 
-> find a compromise and get the existing tests working on all platforms 
-> but with a smaller alignment than the 16-bytes alignment brought by 
-> Charlie's v10 patch. And a 4 bytes alignment seemed to me to be a good 
-> compromise for this fix. The idea is also to make the fix as minimal as 
-> possible, unlike Charlie's patch that is churning up the tests quite 
-> heavily.
+> The attribute will not be available for non-hub devices in v5. However,
+> if the check is completely removed, will power_off not stay true at the
+> end of the function, always leading to a device power off? As you said,
+> 'always_powered_in_suspend' will not be set for non-hub devices.
 
-Do you have a list of platforms this is failing on? I haven't seen any
-reports that haven't been fixed.
-
-- Charlie
-
-> 
-> But maybe I misunderstood some of the discussion and indeed 2 bytes 
-> alignment would work on all platforms and only an odd alignment is 
-> problematic ?
+Even without the sysfs attribute the field 'always_powered_in_suspend' could
+be set to true by probe() for non-hub devices.
 
