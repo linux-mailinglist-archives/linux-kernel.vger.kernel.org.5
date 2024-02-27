@@ -1,161 +1,129 @@
-Return-Path: <linux-kernel+bounces-83328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98EFA8692DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:39:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCF2D86934C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAACF1C2225C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:39:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31539B2DDD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C7713DBA4;
-	Tue, 27 Feb 2024 13:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F1C13B7AA;
+	Tue, 27 Feb 2024 13:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A5R5q6N5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h9i/VkyK"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DED913B2B8;
-	Tue, 27 Feb 2024 13:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2693478B61
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709041156; cv=none; b=WPw+KVQP2JPBi1lVErDw4ncAvWfA3jjJLFpSpvrQP/JgJ4AHI0dz1Cre6s5HWG9oxifxfVYI7dxyS0quZtck+8g9bf30yWnSSH5K2O8gkQkdIGJ/9WWEbfJ5BgBREvaYcVsYSqBFt+cNSb0M7hyclS6Obf+W1n7LL57U5FNJWoc=
+	t=1709041186; cv=none; b=ISukO8unwL+RpXMHPaA/j3OAxgpaIn0KGMuPJvyx7OMe1qi4vZ68oLnmn+2ceUiGwNiLwZRIx6AY2NrULVoA8RcFo5uKyrJnpD0Tj0Fl2NVQRNUF3sLd3uRO2uDkSM+2p5d/EQdeS1PzitO49jtmGPqLH7SMxwoZ8XtoiKr0r9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709041156; c=relaxed/simple;
-	bh=3G2IKCcYmdE7HxKy3Q0/nm/Ij6/cDDwW4C+TD4+vILk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=S2yYn+U7QoOlla7NSShqXlr6hha1f94IE/CQGpZcaocFDhN1zcangYT+GktAZ8LjhULtYDcVTzX1iWrkD3jH/x/oa06aKYJ3vu4HtyIAicCZnxM2ll/xn8GLY28RkLhJ3rohkyzVHyvklRxulwV71qpPIEZRzKSzYKd0GCrVzPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A5R5q6N5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A450C433C7;
-	Tue, 27 Feb 2024 13:39:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709041155;
-	bh=3G2IKCcYmdE7HxKy3Q0/nm/Ij6/cDDwW4C+TD4+vILk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A5R5q6N5zuG7piLstwEVJyUR9gnTMpDloVlEu6O4G69l6s4NxIcyDu3gKl4ibN6Wg
-	 NVjwC7fuR0NZmDAD9sqoO3OX0CY+GiDXzWPGw4/yS50XA793/4Dnw+8fc64D/KMol4
-	 4E7p7cIvJcPfWMAQEKro1cwhk3SUhiz89HyHtaanudfBLZlL+df/J3p1laip0OKi5G
-	 bZAbsTSEBujGdeT6/lVElPvxNMXDsx9jgvbctg+4PY+nIY2tHbBUHGwqduiONEjApd
-	 XtMaCyGBUtmy6p9k3yRralTQVe6VL6Zj7RUAVLl1AhaOOHlLqQ+Pvt6To9NpgmveFV
-	 YvSMFs8m789Ww==
-From: Christian Brauner <brauner@kernel.org>
-To: John Groves <John@groves.net>
-Cc: Christian Brauner <brauner@kernel.org>,
-	John Groves <jgroves@micron.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Matthew Wilcox <willy@infradead.org>,
-	linux-cxl@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	nvdimm@lists.linux.dev,
-	john@jagalactic.com,
-	Dave Chinner <david@fromorbit.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	dave.hansen@linux.intel.com,
-	gregory.price@memverge.com
-Subject: Re: [RFC PATCH 08/20] famfs: Add famfs_internal.h
-Date: Tue, 27 Feb 2024 14:38:58 +0100
-Message-ID: <20240227-kiesgrube-couch-77ee2f6917c7@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To:  <13556dbbd8d0f51bc31e3bdec796283fe85c6baf.1708709155.git.john@groves.net>
-References: 
+	s=arc-20240116; t=1709041186; c=relaxed/simple;
+	bh=8iPufcibBCJKG0q1/qGL+A/Ni1lovHs1ZR0Ajl86BBo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I7LLe05tdZmfIBkAjCn/p3wvJIZJIaX3eqnb39Ej6wu43nEKqPXAVAxUSNnWZCPAHNGzwHmzaAAgdV/Z3nfekgdKVJl3As1+FiiWVIXg7KMG1LAZcLEWEX/+m3nAzgCdzU/giKhT45V4ytOD4Jsnx3rhNlbc9a3Yzx6J506pW4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h9i/VkyK; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-db3a09e96daso3259484276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:39:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709041184; x=1709645984; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eOWeidPv0GTdG2qvAOJJXPCS/uUkxL4qtXAn43lMC7g=;
+        b=h9i/VkyKODKVyT3q1RsX+zHm90unQ65F+/+Im5lYXh/aDcZfhQuk0r2hRPr6k7Tf6t
+         1dp5Pr8RXo4pVoJ0tl1YDaSwU/TEzbfFB/sO6ALUmpK9teqgmNAqFwlHK5br6+pM3NIz
+         840l3XuJ4CIVFPTqP+RznQ+wEHHsgtAljlFVc5lM2iLLOf8ZD0PnJAKccUO9TB4xZvA0
+         JJUYeyX29n/vq7eL9XT0gsnZgbns87eVkS/3821R1p92dBBxQNLAumteWyazSXsz7VIU
+         MXrDDlOKY+Jqei3pDgJWD4Lv0V8deRAlX/aDxcQPKFYfgm3CmwbS5m2Xpzq0xLo4r3+0
+         mZqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709041184; x=1709645984;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eOWeidPv0GTdG2qvAOJJXPCS/uUkxL4qtXAn43lMC7g=;
+        b=SziZNXw1usMeot6xjdTIey53w0Errhjm4g4kaL2kGljZt+F0P+KGagIOb11MAHHlFJ
+         I83Y8k7LpZoRQ+QTG2ADrQTNw8j7WNNQmRBY21Z95wMEDWWhFBwOy1MhVNMPa0otLwR2
+         2AZjYdPVdzB7GoUhcFKQFYQt93ZqJjDESRRSwz9TUeB18dpxcaF7nbY7NAt1X4C4cnM8
+         rm+p7P1iuETZ+t7R1TIlMdHZOdYjDU30bo0hFfkU0ZYkRBoAwKhG9S6sBadzmvrF9gki
+         1xY82gce6cfzR7w25uUGUYZT+P+mC4syaSydBNby5ZNyKkELAu6hvlPEq/yaorfgv21v
+         GuiA==
+X-Forwarded-Encrypted: i=1; AJvYcCUemQ7FoizGG5b5p6k0dZ8QtofmlDoCFY4WJ8n+SUoRqOnRW1MrOaezF3hg4HvSXFvT/XyS0NdLONvkN9QyV7zykeA5xsstD7hggSFj
+X-Gm-Message-State: AOJu0YyAA5lL702nfmAySZgfi4nXxc4G35gCoqUISbHYw2tzxCf//0o9
+	5yC9ua6I4yXEemUmlluCg4u5HjtoUO8MqrOpD3xUYoPRQYjUfMgVckFoV0KlPSdZXA+n7I+VOle
+	oTZTMGuIVRWO918IKamOaWFaHjw7inEK/oo4l
+X-Google-Smtp-Source: AGHT+IFK/VVwUhiGT2OlyOZOTeeMQ2mEbLEw6tyIu3zG0QccGmUrTQRKql4uWibkgraBEtRrXBYGwjqLNKKTY1ZiYWM=
+X-Received: by 2002:a25:d8d3:0:b0:dbf:23cd:c05c with SMTP id
+ p202-20020a25d8d3000000b00dbf23cdc05cmr2126143ybg.13.1709041183917; Tue, 27
+ Feb 2024 05:39:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2538; i=brauner@kernel.org; h=from:subject:message-id; bh=3G2IKCcYmdE7HxKy3Q0/nm/Ij6/cDDwW4C+TD4+vILk=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTeffoz6FTZHdtipfmL8/7MdlK7nq+/wfbljfIYhyeGD 56HdqwX6ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIZ21GhgczV0x5kLG81Jyl d9K32Npe7WOzhNuPnPL7G8dx/e21/38Y/pmK97xQcpnR2/aqS750iW4a3/8Gg46NRRkcP+4c+hd zjhkA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+References: <20240208152808.3712149-1-howardyen@google.com>
+ <20240213055426.GA22451@lst.de> <CAJDAHvZGnzKPLaovRcq_Os1Fcixp2o1kY9GFV8VXztrmKahejQ@mail.gmail.com>
+ <20240220055241.GA7554@lst.de> <CAJDAHvbOnAvW5f6oJUnuy2_5-vS7uJc13GQSNX_Nc25GJXSp-Q@mail.gmail.com>
+ <20240223063723.GB11004@lst.de>
+In-Reply-To: <20240223063723.GB11004@lst.de>
+From: Howard Yen <howardyen@google.com>
+Date: Tue, 27 Feb 2024 21:39:07 +0800
+Message-ID: <CAJDAHvZ4-mh8uMyq0NiPgWKGt=pS3teoJ0=ofCKZmLeqLXUVgA@mail.gmail.com>
+Subject: Re: [PATCH v3] dma-coherent: add support for multi coherent rmems per dev
+To: Christoph Hellwig <hch@lst.de>
+Cc: m.szyprowski@samsung.com, robin.murphy@arm.com, gregkh@linuxfoundation.org, 
+	andriy.shevchenko@linux.intel.com, rafael@kernel.org, broonie@kernel.org, 
+	james@equiv.tech, james.clark@arm.com, masahiroy@kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 23, 2024 at 11:41:52AM -0600, John Groves wrote:
-> Add the famfs_internal.h include file. This contains internal data
-> structures such as the per-file metadata structure (famfs_file_meta)
-> and extent formats.
-> 
-> Signed-off-by: John Groves <john@groves.net>
-> ---
->  fs/famfs/famfs_internal.h | 53 +++++++++++++++++++++++++++++++++++++++
+On Fri, Feb 23, 2024 at 2:37=E2=80=AFPM Christoph Hellwig <hch@lst.de> wrot=
+e:
+>
+> On Wed, Feb 21, 2024 at 05:27:58PM +0800, Howard Yen wrote:
+> > The reason why I tried to propose this patch is that in the system I'm
+> > working on, where the driver utilizes the coherent reserved memory in
+> > the subsystem for DMA, which has limited memory space as its primary
+> > usage. During the execution of the driver, there is a possibility of
+> > encountering memory depletion scenarios with the primary one.
+> >
+> > To address this issue, I tried to create a patch that enables the
+> > coherent reserved memory driver to support multiple coherent reserved
+> > memory regions per device. This modification aims to provide the
+> > driver with the ability to search for memory from a secondary region
+> > if the primary memory is exhausted, and so on.
+>
+> This all seems pretty vague.  Can you point to your driver submission
+> and explain why it can't just use a larger region instead of multiple
+> smaller ones?
+>
 
-Already mentioned in another reply here but adding a bunch of types such
-as famfs_file_operations that aren't even defines is pretty odd. So you
-should reorder this.
+The reason why it needs multiple regions is that in my system there is
+an always-on subsystem which includes a small size memory, and several
+functions need to run and occupy the memory from the small memory if
+they need to run on the always-on subsystem. These functions must
+allocate the memory from the small memory region, so that they can get
+benefit from the always-on subsystem. So the small memory is split for
+multiple functions which are satisfied with their generic use cases.
+But in specific use cases, they required more memory than their
+pre-allocated memory region, so I tried to propose this patch to give
+it the ability to get the memory from another larger memory to solve
+the issue.
 
->  1 file changed, 53 insertions(+)
->  create mode 100644 fs/famfs/famfs_internal.h
-> 
-> diff --git a/fs/famfs/famfs_internal.h b/fs/famfs/famfs_internal.h
-> new file mode 100644
-> index 000000000000..af3990d43305
-> --- /dev/null
-> +++ b/fs/famfs/famfs_internal.h
-> @@ -0,0 +1,53 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * famfs - dax file system for shared fabric-attached memory
-> + *
-> + * Copyright 2023-2024 Micron Technology, Inc.
-> + *
-> + * This file system, originally based on ramfs the dax support from xfs,
-> + * is intended to allow multiple host systems to mount a common file system
-> + * view of dax files that map to shared memory.
-> + */
-> +#ifndef FAMFS_INTERNAL_H
-> +#define FAMFS_INTERNAL_H
-> +
-> +#include <linux/atomic.h>
-> +#include <linux/famfs_ioctl.h>
-> +
-> +#define FAMFS_MAGIC 0x87b282ff
+I'll upload the next version to show the modification in the driver.
 
-That needs to go into include/uapi/linux/magic.h.
+---
+Best Regards,
 
-> +
-> +#define FAMFS_BLKDEV_MODE (FMODE_READ|FMODE_WRITE)
-> +
-> +extern const struct file_operations      famfs_file_operations;
-> +
-> +/*
-> + * Each famfs dax file has this hanging from its inode->i_private.
-> + */
-> +struct famfs_file_meta {
-> +	int                   error;
-> +	enum famfs_file_type  file_type;
-> +	size_t                file_size;
-> +	enum extent_type      tfs_extent_type;
-> +	size_t                tfs_extent_ct;
-> +	struct famfs_extent   tfs_extents[];  /* flexible array */
-> +};
-> +
-> +struct famfs_mount_opts {
-> +	umode_t mode;
-> +};
-> +
-> +extern const struct iomap_ops             famfs_iomap_ops;
-> +extern const struct vm_operations_struct  famfs_file_vm_ops;
-> +
-> +#define ROOTDEV_STRLEN 80
-> +
-> +struct famfs_fs_info {
-> +	struct famfs_mount_opts  mount_opts;
-> +	struct file             *dax_filp;
-> +	struct dax_device       *dax_devp;
-> +	struct bdev_handle      *bdev_handle;
-> +	struct list_head         fsi_list;
-> +	char                    *rootdev;
-> +};
-> +
-> +#endif /* FAMFS_INTERNAL_H */
-> -- 
-> 2.43.0
-> 
+Howard
 
