@@ -1,141 +1,125 @@
-Return-Path: <linux-kernel+bounces-83594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA54869C07
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:26:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A62B869C08
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:26:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0C091C21B86
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:26:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 550BE28D8D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:26:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C726C149399;
-	Tue, 27 Feb 2024 16:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE68149E03;
+	Tue, 27 Feb 2024 16:25:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="qCDVfIYv"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ik/9Iehb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCF1148314;
-	Tue, 27 Feb 2024 16:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5582149DF3
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:25:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709051147; cv=none; b=g+bL5xMvZupyi2kqdXbDopmVYR/nrRSj4fP0UdT44FrnWOcTBVTtRnxAMz/5t7W5mNCkyOZAttGTpyeuYguD5ueU93DXHbdREEcDnHQR0DQWGzxlGzhJqBDHw+mfU30BrFaNNFyKK2ar3BxwH6vqN51SuxFBSUryu0NPefFr8sY=
+	t=1709051150; cv=none; b=SK4ApVVLoTiMvQGMmRpjHnamqMFYjTVYe1mREzV8vilPw5mBLnfFFsIsvNuHUjCG8PWuhJe92szC/C9RXkh6fEOmKOa3uHdYnWz5FEsVbiAWyHKK9ccu1bRwEoXrbvDietSfaD5a0FYmsWuUlaBgdEbaA1XsbNSxE+11ePtvcAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709051147; c=relaxed/simple;
-	bh=dNU5NFxvimoHiIWcnfxSEUmX/gJDpUSnZiLZ6SQE0MM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o00N+3Luudij+OgsROZtbi2yDeH8GUOIje1GOZXmIVvCvE5VlQxTY/obTTQVqvrRW6DRYsgiwER9OqLn4s4O7Taf1NdSbdvqeAlzGsjwNWwPQepn8Y5wpkaVtpxfG9QP1lPBog7YbE36uua8ZxGi7PfUNrPLRbB/GxOgEHUBgC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=qCDVfIYv; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=/DK9w3brhIW1NFxvU2xPXZWqVBRQidC0n6TtYYYTxoU=;
-	t=1709051144; x=1709483144; b=qCDVfIYv1kqJIjpZ6XnZOl0gO7WAdAHpll4cPgmcZitXerI
-	xwP5qMJy2N0C9U3UKRfwQ5QoCbuFm3BpSPCJzIxSyG9QSZ07ttogw87yZKBrESQfvbMPQy/qAfO5H
-	vgiBJIXPhvJ5rl7dmLHF91vVFIGZfSzQGFE5SHEZloh1StNhiabljZmkZf/+pakWp51hvfgQoA2WX
-	5tNRFRbAoWAmOw6HiuLQnY0kQpWpzfDVmlQ/cT79zMtFnuLo0N6/biBU1vLXe1NJvGcUEh46Q9eyY
-	uyGSufdYwi0P5YAcRLNnsSZ8pdLbB9999buzTgZ9/9juUDCtT4vF1Yvh1YQQSIbw==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rf0Gv-0007OS-RH; Tue, 27 Feb 2024 17:25:37 +0100
-Message-ID: <1d8226cd-df43-4ef6-8425-2db01d513b32@leemhuis.info>
-Date: Tue, 27 Feb 2024 17:25:37 +0100
+	s=arc-20240116; t=1709051150; c=relaxed/simple;
+	bh=TwJ9tw8RWadZtfx4XZWclfYeDuU89AP3djIFCqgZk40=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rn0UtFSq7MktMCSqQRiKeDXENv4qXAJN2SUfEbkL9621ZX840VLjLv7kvDZQ2mOJICSWzjMjNzgKQxVjfDIeGaAsLdLNsO+i6X9m13xHJUm+FvpHWwaainC3MWQ65Ocko7IHT9xHKvkIOTewHBka5ULxoMZBCapmKfs+YcxKlmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ik/9Iehb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CDE0C43399;
+	Tue, 27 Feb 2024 16:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709051149;
+	bh=TwJ9tw8RWadZtfx4XZWclfYeDuU89AP3djIFCqgZk40=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ik/9IehbG84rkjbsM5IKBay6L4asRtyIK4hohM7bYF3vPGWRIc/LE9UKE+TOFn2tk
+	 1kJnMqtDn+rkouzMM0wQE5oe9HRfYziMnJgBGOX3S8a8eF3gFxjoWv4w+VgXI+uGUx
+	 4ru9K6aoSr48GcjpkImtai8/Pr03xu8nWsG5e5jS6nEicdf66OHVqf7DkggcarTZ9Y
+	 dxhPPLigcjpBP+2WJlVTDTM2YzZXpZ+z2+VaV3OwjgE+Cc+31tmaz3+UCzlMR22v6o
+	 pHKIAgHUnJGuYnpolm7wUmg9Sm0AaC+Kf8WqoTS/moInSvSZrADJYUF9VJcZgusDnU
+	 QYCclljk7i4yg==
+Date: Tue, 27 Feb 2024 17:25:46 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Marco Pagani <marpagan@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Guenter Roeck <linux@roeck-us.net>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/test/shmem: set a DMA mask for the mock device
+Message-ID: <ut2c26ig4e6pbtvszmfm34h4ev3oflwkz3mwkjtqaxlpethwfk@w3bnhg4iw4mn>
+References: <20240226110028.28009-1-marpagan@redhat.com>
+ <d65v7jy4natx22lacw6awmg6iecfr2hqk3puuz3qem5dfsvj2x@hh6vp265hm5p>
+ <03915b45-94f6-4863-8b11-d0e9dbd0283a@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH regression fix] misc: lis3lv02d_i2c: Fix regulators
- getting en-/dis-abled twice on suspend/resume
-Content-Language: en-US, de-DE
-To: Hans de Goede <hdegoede@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Eric Piel <eric.piel@tremplin-utc.net>,
- linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
- stable@vger.kernel.org, regressions@lists.linux.dev
-References: <20240220190035.53402-1-hdegoede@redhat.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <20240220190035.53402-1-hdegoede@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709051144;b6afc3ea;
-X-HE-SMSGID: 1rf0Gv-0007OS-RH
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tlwdh5nyakxrjjyg"
+Content-Disposition: inline
+In-Reply-To: <03915b45-94f6-4863-8b11-d0e9dbd0283a@redhat.com>
 
-On 20.02.24 20:00, Hans de Goede wrote:
-> When not configured for wakeup lis3lv02d_i2c_suspend() will call
-> lis3lv02d_poweroff() even if the device has already been turned off
-> by the runtime-suspend handler and if configured for wakeup and
-> the device is runtime-suspended at this point then it is not turned
-> back on to serve as a wakeup source.
->
-> [...]
->
-> Fixes: b1b9f7a49440 ("misc: lis3lv02d_i2c: Add missing setting of the reg_ctrl callback")
-> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> Closes: https://lore.kernel.org/regressions/5fc6da74-af0a-4aac-b4d5-a000b39a63a5@molgen.mpg.de/
-> Cc: stable@vger.kernel.org
-> Cc: regressions@lists.linux.dev
 
-Paul, did you maybe test this? I suppose Greg had no time to review this
-yet due to all the CVE stuff and stable tree maintenance; but with a bit
-of luck a "Tested-by" from your side might motivate him or somebody else
-to look into this.
+--tlwdh5nyakxrjjyg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Ciao, Thorsten
+Hi,
 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/misc/lis3lv02d/lis3lv02d_i2c.c | 21 +++++++++++++--------
->  1 file changed, 13 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
-> index c6eb27d46cb0..15119584473c 100644
-> --- a/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
-> +++ b/drivers/misc/lis3lv02d/lis3lv02d_i2c.c
-> @@ -198,8 +198,14 @@ static int lis3lv02d_i2c_suspend(struct device *dev)
->  	struct i2c_client *client = to_i2c_client(dev);
->  	struct lis3lv02d *lis3 = i2c_get_clientdata(client);
->  
-> -	if (!lis3->pdata || !lis3->pdata->wakeup_flags)
-> +	/* Turn on for wakeup if turned off by runtime suspend */
-> +	if (lis3->pdata && lis3->pdata->wakeup_flags) {
-> +		if (pm_runtime_suspended(dev))
-> +			lis3lv02d_poweron(lis3);
-> +	/* For non wakeup turn off if not already turned off by runtime suspend */
-> +	} else if (!pm_runtime_suspended(dev))
->  		lis3lv02d_poweroff(lis3);
-> +
->  	return 0;
->  }
->  
-> @@ -208,13 +214,12 @@ static int lis3lv02d_i2c_resume(struct device *dev)
->  	struct i2c_client *client = to_i2c_client(dev);
->  	struct lis3lv02d *lis3 = i2c_get_clientdata(client);
->  
-> -	/*
-> -	 * pm_runtime documentation says that devices should always
-> -	 * be powered on at resume. Pm_runtime turns them off after system
-> -	 * wide resume is complete.
-> -	 */
-> -	if (!lis3->pdata || !lis3->pdata->wakeup_flags ||
-> -		pm_runtime_suspended(dev))
-> +	/* Turn back off if turned on for wakeup and runtime suspended*/
-> +	if (lis3->pdata && lis3->pdata->wakeup_flags) {
-> +		if (pm_runtime_suspended(dev))
-> +			lis3lv02d_poweroff(lis3);
-> +	/* For non wakeup turn back on if not runtime suspended */
-> +	} else if (!pm_runtime_suspended(dev))
->  		lis3lv02d_poweron(lis3);
->  
->  	return 0;
+On Mon, Feb 26, 2024 at 04:48:51PM +0100, Marco Pagani wrote:
+>=20
+> On 2024-02-26 12:26, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Mon, Feb 26, 2024 at 12:00:27PM +0100, Marco Pagani wrote:
+> >> Set a DMA mask for the mock device to avoid warnings generated in
+> >> dma_map_sgtable().
+> >>
+> >> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> >> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> >=20
+> > I've submitted last week this patch:
+> > https://lore.kernel.org/all/20240221125324.718192-1-mripard@kernel.org/
+> >=20
+> > Which should be equivalent, but fixes the issue for all users in the
+> > tree.
+>=20
+> Hi, thanks for letting me know. Fixing this issue for all DRM tests that =
+were
+> using platform devices through the helpers makes perfect sense to me. I'm=
+ a
+> little more thoughtful about setting the mask for all KUnit tests that us=
+e fake
+> devices since there may be specific use cases. Just one curiosity: why se=
+tting
+> the default mask manually instead of using one of the dma_set_*() functio=
+ns?
+
+I think the (well, mine at least) expectation is that a kunit device is
+a device that can be used in all reasonable contexts. Setting up the
+device to be able to use any DMA-related function (or functions that use
+a DMA-related function) makes total sense to me.
+
+But it's a discussion worth having I think, so it would make sense to
+raise this point with the kunit maintainers if you feel like it.
+
+Maxime
+
+--tlwdh5nyakxrjjyg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZd4NCgAKCRDj7w1vZxhR
+xZ4CAQCcNmBJJDTGi+MxZl1jfrDVmne9K9B9qaLLqBPB1CQWNgEAiFN54hD4kHil
+62wFp/FuTUoo21Ua0wrq3nbEqpU+1Qg=
+=Y9s/
+-----END PGP SIGNATURE-----
+
+--tlwdh5nyakxrjjyg--
 
