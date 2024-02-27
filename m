@@ -1,227 +1,211 @@
-Return-Path: <linux-kernel+bounces-84144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEC8286A2D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:54:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA40186A2D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:54:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38536B21E35
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:53:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 243D01F22B2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8113255C27;
-	Tue, 27 Feb 2024 22:53:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6203D55C08;
+	Tue, 27 Feb 2024 22:53:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLEw6F33"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yaasuUEj"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E36E54664;
-	Tue, 27 Feb 2024 22:53:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD37955C04
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709074425; cv=none; b=QtmWq/gxvn/aBeCR3WWfRJgaWJxpFO078k40a6AnvuLuCa7+MG9w6gGW1+WVq0pHBAkUFenDMuwCNhS6ttu99vNaLASGrc+tj2dK1K77tcfaRNR0qqkMVXZKHoZDAcCntijLIZnLscym96zyMPTSeMtlaGA1MOBlitfLoVTK1go=
+	t=1709074438; cv=none; b=fsBTv71aw0Em0jtmV2f3kJ6jhlCb3zeGcamZ9yCYAIUqifATk1GwvEmgA6UnBLRfEVNuo94mvfwti5Wf81HL5JyXZpZEuhtC/FSxhTzdTX5z9EWixuloUqp/8if3iH5gU7A6t0HlbSXJ2vXDV/WjOuz5jrG2AuNPbQByMbN5gmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709074425; c=relaxed/simple;
-	bh=DMuZf3Z6sY7althpV6SNiCdHASJoLRAjXzLLI/6q/fM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CKvbE8n6wJ+SbhOY1ijNlV5NWQx1gl3JOQT9ArfbIOfSqRDgM60XpUaaWAaJ2s39e4zdp9re2nBy6Bm4laLb0iaIsDf3uoLTlpgTR0etvFrE3EouhSJgrRz0Q6erD6X1mzL0RDw2H1xg6WrVADDTTaYmYxj4G/B8deG7t3q3uWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VLEw6F33; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B45F7C433C7;
-	Tue, 27 Feb 2024 22:53:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709074425;
-	bh=DMuZf3Z6sY7althpV6SNiCdHASJoLRAjXzLLI/6q/fM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VLEw6F33f9GFY5tJQj0wLbTyuKmJD1JQR3+cudCePUHGmbyouQLc2+hS3TvJPGzRc
-	 tBAuRn7yvpKuGAYQQKxYJZm/0t+I+JUNtEvhNUxOS6TYVAa+UdmM3FDuW40bRyqE2k
-	 tobjy+38ER3l3JltXp1x8NkNm3TvO8T5wOhJ2K9qMzusH5gpMTR4ytsYP8QwL5jUaW
-	 J53p0cUWP+xZZwEfNOT93X/9qgWQOJERrJ3HPDqrEJs8E60Mlx4p1g1UBYFYm0l3IQ
-	 FAgwGZ2vvFU/2xd6llo1nZ5LyY7qOxto2AV4cpKEnEincnxGOKGSaFLSvy9plNjylL
-	 4aDTnSaSFt1BA==
-Received: by pali.im (Postfix)
-	id 1E156828; Tue, 27 Feb 2024 23:53:42 +0100 (CET)
-Date: Tue, 27 Feb 2024 23:53:41 +0100
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To: Armin Wolf <W_Armin@gmx.de>
-Cc: jithu.joseph@intel.com, linux@weissschuh.net, hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com, Dell.Client.Kernel@dell.com,
-	jdelvare@suse.com, linux@roeck-us.net,
-	platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] platform/x86: wmi: Do not instantiate older WMI
- drivers multiple times
-Message-ID: <20240227225341.jqhkq7xmwprtgj7x@pali>
-References: <20240226193557.2888-1-W_Armin@gmx.de>
- <20240226193557.2888-2-W_Armin@gmx.de>
- <20240227203058.eun4ylvhk4t7uogk@pali>
- <a8602a4a-39e1-46c3-9fe9-b6896c75fa73@gmx.de>
+	s=arc-20240116; t=1709074438; c=relaxed/simple;
+	bh=kfxjTq6DQqseSvYTquZuLlr1EJJqrhgcGwQHR67CkrQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X0lo2rSGJ22ArQhA8rjUr386MFnO1dSOMEkHhfc8owNseGqyA5RiG3O6GIOFAtgbzOOBjkvNaoM/F05eGj7oVRnciB8zAztLrfjBhlTKS+WlhqMdXtJ8+fbPi9ZOnIyeiPaQnQrLxTQqme3oXCT2GPzSjVK7rgIFzylQcNZaryc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=yaasuUEj; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d23114b19dso68635741fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:53:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709074435; x=1709679235; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2oQHjmsz9EGNy4DrDwsUCZH3bh0/e8rbFApdWJKuMVY=;
+        b=yaasuUEjg7f3/mijNxWzQV8rWMGFdFDQoMvrRaZA28hYNwAcsR3UerR2YrGqHwZahY
+         IHEvEsoxdItrgExKZ3lfTEw/yRSt0OZHJDnKB4Vf8V8SzuwLs5OeNdab3ZXxYWQ4+cHU
+         GQJc4a3V5Osa6mM7eADcgrBYSHxSy2AUqXEss=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709074435; x=1709679235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2oQHjmsz9EGNy4DrDwsUCZH3bh0/e8rbFApdWJKuMVY=;
+        b=uEkoLumTApKnJNw/hv3ck+2DLQZoAlEXfTohfMaKri48P1M3lGaYx3CqGwKsZxHDzF
+         Fd/Rr6fbFXeShpINZLyf/MhAloJsUK6I62pdPD8rriTmRlWznvYdL8Fttki9NZ/u9P65
+         Qwuajy9yyNxuMDzQhATNiKgxIm/7F+6iI2f5TJRRaDQsUc85MPduw6hdbcMiASGNaztM
+         0BNyEyJxUTd7VPPOoGaja61uzcWQfeJRGtYEYMpQSYAsBJolhz4T+UfhkjlWaS7HHzZz
+         TkpeOHvVh3PJ35juff+kD993vhuffQrjP1lRfnfkzhRsJ39vdoGUvbtpbrkjTkYFHn1H
+         3vHw==
+X-Forwarded-Encrypted: i=1; AJvYcCVBsFxAEqW8LTwPMnpeEkG+HHGYsBWBWaifPdc14FpnZ92L0sZGT9p6hxsJcSIQuya2tq0XsJs90jqNR1pMaU/7d/iG9rEwT4Ei8hxk
+X-Gm-Message-State: AOJu0YzO+V8CNVfAd0991+i6VZE35Ysz2zLKbkI/pRfZljTRZOsp9Nf7
+	kHntK2bTTIKY5MBqShSEsVWIoxjKwYF7nUMB/rwiWCZFYa6Saxe+AO5+2yRSMkrbayXvzTV0ri6
+	6J4WZjvE0Va1OgzRe4l63T/QS1uArt2JKDoKPIg==
+X-Google-Smtp-Source: AGHT+IGGm7gGvKzxmI1hMwWM0uDsCRITuePCgISPDI0i7hlh6f9hazZ1S9F641CXcVa8LRCnEkODeUmOROU8G+sCxeg=
+X-Received: by 2002:a2e:888b:0:b0:2d2:2c28:f174 with SMTP id
+ k11-20020a2e888b000000b002d22c28f174mr6536762lji.42.1709074434802; Tue, 27
+ Feb 2024 14:53:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a8602a4a-39e1-46c3-9fe9-b6896c75fa73@gmx.de>
-User-Agent: NeoMutt/20180716
+References: <20240220183115.74124-1-urezki@gmail.com> <20240220183115.74124-3-urezki@gmail.com>
+ <4b932245-2825-4e53-87a4-44d2892e7c13@joelfernandes.org> <CAEXW_YS700=ipMbgae=+KtHCM1hT=k1dKaW1rrPDJJPh=LCK-g@mail.gmail.com>
+In-Reply-To: <CAEXW_YS700=ipMbgae=+KtHCM1hT=k1dKaW1rrPDJJPh=LCK-g@mail.gmail.com>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Tue, 27 Feb 2024 17:53:41 -0500
+Message-ID: <CAEXW_YT6FgCO8MiFug7Fi93ELJ6LE2W-qKExosbdYyVsJsvO-A@mail.gmail.com>
+Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
+To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>, "Paul E . McKenney" <paulmck@kernel.org>
+Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>, Frederic Weisbecker <frederic@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tuesday 27 February 2024 23:47:11 Armin Wolf wrote:
-> Am 27.02.24 um 21:30 schrieb Pali Rohár:
-> 
-> > On Monday 26 February 2024 20:35:56 Armin Wolf wrote:
-> > > Many older WMI drivers cannot be instantiated multiple times for
-> > > two reasons:
-> > > 
-> > > - they are using the legacy GUID-based WMI API
-> > > - they are singletons (with global state)
-> > > 
-> > > Prevent such WMI drivers from binding to WMI devices with a duplicated
-> > > GUID, as this would mean that the WMI driver will be instantiated at
-> > > least two times (one for the original GUID and one for the duplicated
-> > > GUID).
-> > > WMI drivers which can be instantiated multiple times can signal this
-> > > by setting a flag inside struct wmi_driver.
-> > What do you think about opposite direction? Adding ".singleton = true"
-> > into every driver which is not compatible with duplicated initialization
-> > and having the default value that drivers are not singletons.
-> > 
-> > But if the direction it to not accept new "legacy" drivers and start get
-> > rid of all "legacy" drivers by rewriting them, then it does not matter
-> > if "no_singleton" or "is_singleton" is used...
-> 
-> Hi,
-> 
-> i want to make sure that i wont forget any legacy WMI drivers. This way, the
-> older legacy WMI drivers automatically initialize no_singleton with false.
-> 
-> Also i intent to not accept new legacy WMI drivers.
-
-Ok. In this case it does not matter.
-
-> Thanks,
-> Armin Wolf
-> 
-> > > Tested on a ASUS Prime B650-Plus.
-> > > 
-> > > Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-> > > ---
-> > >   drivers/hwmon/dell-smm-hwmon.c                 |  1 +
-> > >   drivers/platform/x86/dell/dell-wmi-ddv.c       |  1 +
-> > >   drivers/platform/x86/intel/wmi/sbl-fw-update.c |  1 +
-> > >   drivers/platform/x86/intel/wmi/thunderbolt.c   |  1 +
-> > >   drivers/platform/x86/wmi-bmof.c                |  1 +
-> > >   drivers/platform/x86/wmi.c                     | 12 ++++++++++++
-> > >   include/linux/wmi.h                            |  2 ++
-> > >   7 files changed, 19 insertions(+)
-> > > 
-> > > diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-> > > index 6d8c0f328b7b..168d669c4eca 100644
-> > > --- a/drivers/hwmon/dell-smm-hwmon.c
-> > > +++ b/drivers/hwmon/dell-smm-hwmon.c
-> > > @@ -1587,6 +1587,7 @@ static struct wmi_driver dell_smm_wmi_driver = {
-> > >   	},
-> > >   	.id_table = dell_smm_wmi_id_table,
-> > >   	.probe = dell_smm_wmi_probe,
-> > > +	.no_singleton = true,
-> > >   };
-> > > 
-> > >   /*
-> > > diff --git a/drivers/platform/x86/dell/dell-wmi-ddv.c b/drivers/platform/x86/dell/dell-wmi-ddv.c
-> > > index db1e9240dd02..0b2299f7a2de 100644
-> > > --- a/drivers/platform/x86/dell/dell-wmi-ddv.c
-> > > +++ b/drivers/platform/x86/dell/dell-wmi-ddv.c
-> > > @@ -882,6 +882,7 @@ static struct wmi_driver dell_wmi_ddv_driver = {
-> > >   	},
-> > >   	.id_table = dell_wmi_ddv_id_table,
-> > >   	.probe = dell_wmi_ddv_probe,
-> > > +	.no_singleton = true,
-> > >   };
-> > >   module_wmi_driver(dell_wmi_ddv_driver);
-> > > 
-> > > diff --git a/drivers/platform/x86/intel/wmi/sbl-fw-update.c b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
-> > > index 040153ad67c1..75c82c08117f 100644
-> > > --- a/drivers/platform/x86/intel/wmi/sbl-fw-update.c
-> > > +++ b/drivers/platform/x86/intel/wmi/sbl-fw-update.c
-> > > @@ -131,6 +131,7 @@ static struct wmi_driver intel_wmi_sbl_fw_update_driver = {
-> > >   	.probe = intel_wmi_sbl_fw_update_probe,
-> > >   	.remove = intel_wmi_sbl_fw_update_remove,
-> > >   	.id_table = intel_wmi_sbl_id_table,
-> > > +	.no_singleton = true,
-> > >   };
-> > >   module_wmi_driver(intel_wmi_sbl_fw_update_driver);
-> > > 
-> > > diff --git a/drivers/platform/x86/intel/wmi/thunderbolt.c b/drivers/platform/x86/intel/wmi/thunderbolt.c
-> > > index e2ad3f46f356..08df560a2c7a 100644
-> > > --- a/drivers/platform/x86/intel/wmi/thunderbolt.c
-> > > +++ b/drivers/platform/x86/intel/wmi/thunderbolt.c
-> > > @@ -63,6 +63,7 @@ static struct wmi_driver intel_wmi_thunderbolt_driver = {
-> > >   		.dev_groups = tbt_groups,
-> > >   	},
-> > >   	.id_table = intel_wmi_thunderbolt_id_table,
-> > > +	.no_singleton = true,
-> > >   };
-> > > 
-> > >   module_wmi_driver(intel_wmi_thunderbolt_driver);
-> > > diff --git a/drivers/platform/x86/wmi-bmof.c b/drivers/platform/x86/wmi-bmof.c
-> > > index 644d2fd889c0..df6f0ae6e6c7 100644
-> > > --- a/drivers/platform/x86/wmi-bmof.c
-> > > +++ b/drivers/platform/x86/wmi-bmof.c
-> > > @@ -94,6 +94,7 @@ static struct wmi_driver wmi_bmof_driver = {
-> > >   	.probe = wmi_bmof_probe,
-> > >   	.remove = wmi_bmof_remove,
-> > >   	.id_table = wmi_bmof_id_table,
-> > > +	.no_singleton = true,
-> > >   };
-> > > 
-> > >   module_wmi_driver(wmi_bmof_driver);
-> > > diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
-> > > index 29dfe52eb802..349deced87e8 100644
-> > > --- a/drivers/platform/x86/wmi.c
-> > > +++ b/drivers/platform/x86/wmi.c
-> > > @@ -883,6 +883,18 @@ static int wmi_dev_probe(struct device *dev)
-> > >   	struct wmi_driver *wdriver = drv_to_wdrv(dev->driver);
-> > >   	int ret = 0;
-> > > 
-> > > +	/* Some older WMI drivers will break if instantiated multiple times,
-> > > +	 * so they are blocked from probing WMI devices with a duplicated GUID.
-> > > +	 *
-> > > +	 * New WMI drivers should support being instantiated multiple times.
-> > > +	 */
-> > > +	if (test_bit(WMI_GUID_DUPLICATED, &wblock->flags) && !wdriver->no_singleton) {
-> > > +		dev_warn(dev, "Legacy driver %s cannot be instantiated multiple times\n",
-> > > +			 dev->driver->name);
+On Tue, Feb 27, 2024 at 5:50=E2=80=AFPM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
+>
+> On Tue, Feb 27, 2024 at 5:39=E2=80=AFPM Joel Fernandes <joel@joelfernande=
+s.org> wrote:
+> >
+> >
+> >
+> > On 2/20/2024 1:31 PM, Uladzislau Rezki (Sony) wrote:
+> > > A call to a synchronize_rcu() can be optimized from a latency
+> > > point of view. Workloads which depend on this can benefit of it.
+> > >
+> > > The delay of wakeme_after_rcu() callback, which unblocks a waiter,
+> > > depends on several factors:
+> > >
+> > > - how fast a process of offloading is started. Combination of:
+> > >     - !CONFIG_RCU_NOCB_CPU/CONFIG_RCU_NOCB_CPU;
+> > >     - !CONFIG_RCU_LAZY/CONFIG_RCU_LAZY;
+> > >     - other.
+> > > - when started, invoking path is interrupted due to:
+> > >     - time limit;
+> > >     - need_resched();
+> > >     - if limit is reached.
+> > > - where in a nocb list it is located;
+> > > - how fast previous callbacks completed;
+> > >
+> > > Example:
+> > >
+> > > 1. On our embedded devices i can easily trigger the scenario when
+> > > it is a last in the list out of ~3600 callbacks:
+> > >
+> > > <snip>
+> > >   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preemp=
+t CBs=3D3613 bl=3D28
+> > > ...
+> > >   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_pr=
+eempt rhp=3D00000000b2d6dee8 func=3D__free_vm_area_struct.cfi_jt
+> > >   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_pr=
+eempt rhp=3D00000000a446f607 func=3D__free_vm_area_struct.cfi_jt
+> > >   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_pr=
+eempt rhp=3D00000000a5cab03b func=3D__free_vm_area_struct.cfi_jt
+> > >   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_pr=
+eempt rhp=3D0000000013b7e5ee func=3D__free_vm_area_struct.cfi_jt
+> > >   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_pr=
+eempt rhp=3D000000000a8ca6f9 func=3D__free_vm_area_struct.cfi_jt
+> > >   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_pr=
+eempt rhp=3D000000008f162ca8 func=3Dwakeme_after_rcu.cfi_jt
+> > >   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt =
+CBs-invoked=3D3612 idle=3D....
+> > > <snip>
+> > >
+> > > 2. We use cpuset/cgroup to classify tasks and assign them into
+> > > different cgroups. For example "backgrond" group which binds tasks
+> > > only to little CPUs or "foreground" which makes use of all CPUs.
+> > > Tasks can be migrated between groups by a request if an acceleration
+> > > is needed.
+> > >
+> [...]
+> > >   * Initialize a new grace period.  Return false if no grace period r=
+equired.
+> > >   */
+> > > @@ -1432,6 +1711,7 @@ static noinline_for_stack bool rcu_gp_init(void=
+)
+> > >       unsigned long mask;
+> > >       struct rcu_data *rdp;
+> > >       struct rcu_node *rnp =3D rcu_get_root();
+> > > +     bool start_new_poll;
+> > >
+> > >       WRITE_ONCE(rcu_state.gp_activity, jiffies);
+> > >       raw_spin_lock_irq_rcu_node(rnp);
+> > > @@ -1456,10 +1736,24 @@ static noinline_for_stack bool rcu_gp_init(vo=
+id)
+> > >       /* Record GP times before starting GP, hence rcu_seq_start(). *=
+/
+> > >       rcu_seq_start(&rcu_state.gp_seq);
+> > >       ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+> > > +     start_new_poll =3D rcu_sr_normal_gp_init();
+> > >       trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("s=
+tart"));
+> > >       rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
+> > >       raw_spin_unlock_irq_rcu_node(rnp);
+> > >
+> > > +     /*
+> > > +      * The "start_new_poll" is set to true, only when this GP is no=
+t able
+> > > +      * to handle anything and there are outstanding users. It happe=
+ns when
+> > > +      * the rcu_sr_normal_gp_init() function was not able to insert =
+a dummy
+> > > +      * separator to the llist, because there were no left any dummy=
+-nodes.
+> > > +      *
+> > > +      * Number of dummy-nodes is fixed, it could be that we are run =
+out of
+> > > +      * them, if so we start a new pool request to repeat a try. It =
+is rare
+> > > +      * and it means that a system is doing a slow processing of cal=
+lbacks.
+> > > +      */
+> > > +     if (start_new_poll)
+> > > +             (void) start_poll_synchronize_rcu();
 > > > +
-> > > +		return -ENODEV;
-> > > +	}
-> > > +
-> > >   	if (wdriver->notify) {
-> > >   		if (test_bit(WMI_NO_EVENT_DATA, &wblock->flags) && !wdriver->no_notify_data)
-> > >   			return -ENODEV;
-> > > diff --git a/include/linux/wmi.h b/include/linux/wmi.h
-> > > index 781958310bfb..63cca3b58d6d 100644
-> > > --- a/include/linux/wmi.h
-> > > +++ b/include/linux/wmi.h
-> > > @@ -49,6 +49,7 @@ u8 wmidev_instance_count(struct wmi_device *wdev);
-> > >    * @driver: Driver model structure
-> > >    * @id_table: List of WMI GUIDs supported by this driver
-> > >    * @no_notify_data: Driver supports WMI events which provide no event data
-> > > + * @no_singleton: Driver can be instantiated multiple times
-> > >    * @probe: Callback for device binding
-> > >    * @remove: Callback for device unbinding
-> > >    * @notify: Callback for receiving WMI events
-> > > @@ -59,6 +60,7 @@ struct wmi_driver {
-> > >   	struct device_driver driver;
-> > >   	const struct wmi_device_id *id_table;
-> > >   	bool no_notify_data;
-> > > +	bool no_singleton;
-> > > 
-> > >   	int (*probe)(struct wmi_device *wdev, const void *context);
-> > >   	void (*remove)(struct wmi_device *wdev);
-> > > --
-> > > 2.39.2
-> > > 
+> >
+> > Optionally, does it make sense to print a warning if too many retries o=
+ccurred?
+>
+> For future work, I was wondering about slight modification to even
+> avoid this "running out of nodes" issues, why not add a wait node to
+> task_struct and use that. rcu_gp_init() can just use that. Then, there
+> is no limit to how many callers or to the length of the list. And by
+> definition, you cannot have more than 1 caller per task-struct. Would
+> that not work?
+>
+> So in rcu_gp_init(), use the wait node of the first task_struct on the
+> top of the list, mark it as a "special node", perhaps with a flag that
+> says it is also the dummy node.
+>
+> But yeah the new design of the patch is really cool... if you are
+> leaving it alone without going for above suggestion, I can add it to
+> my backlog for future work.
+
+Ouch, let me clarify and sorry for so many messages,  I meant use the
+same storage of the synchronous caller who's on top of the list (its
+rcu_synchronize node) as the "Dummy" demarkation in the list. Not sure
+if that makes sense or it will work, but I'm of the feeling that the
+limit of 5 might not be needed.
 
