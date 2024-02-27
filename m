@@ -1,174 +1,127 @@
-Return-Path: <linux-kernel+bounces-82845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7482E868A7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 039DA868A80
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:09:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8D201F23630
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:08:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B81841F235F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:09:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520EA5733D;
-	Tue, 27 Feb 2024 08:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="j4Pt4hfE"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BFC656461;
+	Tue, 27 Feb 2024 08:09:37 +0000 (UTC)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD00C5675D
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:08:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B9056442;
+	Tue, 27 Feb 2024 08:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709021292; cv=none; b=FlblgT8IP+s3oPARMXkYBjWaFdzFlseMV2JZJMLin+NONWdZwW5T4LVPOt+/WcCHEd9cXw3r+BocnquhZEFfScK02eqydgeUQEBCsF0irhDBQVyYeeGNSXqkpNPJQ20Mlk4ORtZWqBhkCdQsH3xGourYn4UNTkg0L3lT/q0tMyE=
+	t=1709021376; cv=none; b=tZscGh+Jlp9cUy5D2Ft/sYsI6SRemBZOgVEoCRETMsDzJGkr7ih9ZpTHepBv+etAiUQZ30Z3qHzQyKouN1xv5gZmUp1gkiQeojeMj4Q+VGDz7QOPWAhpmIRuDcFJycxR0JXMq6S1u1O3S4L7zZGCm5L5ck3nIlJBYb2mUIiIOJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709021292; c=relaxed/simple;
-	bh=whJn6oRUulaQwJ9k8svjSJYyaK1DlOk/EVrP8cPTcEs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=oy4CsYncv9VyETHZdy+I38ADAlVv49zQzLvGCxSQNj/Nl1nVvHRrKKczyyhleMSzYkukT+PSI3gdw3ASgyTFY1M6N21lxPOMivZuZt9nD/ZHnK1ImVDVfB6ZyINH6HOpMstTBm0TXjwuy1NeIv0vFGVDsNkP0uxbvRzLid52ojo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=j4Pt4hfE; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so4539474a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:08:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709021289; x=1709626089; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iiVrva5DwInjSui+Br+HHATpx+xvm6PVi1TQNYfveV8=;
-        b=j4Pt4hfEmEZyvRdEZWV4F2+aTOi9CrKhoSmM3KJ6+z7bkljwfLsIq9/ELeKJ67A9Kj
-         LzMsZcUtNKs2pRrWOkYa81ww4DD4a81AfkOj5lg9LaGijvDj+elKr9ydFT2q2ClpUZ08
-         xtUeqOY4fFXWhC7u/8upPw4AzRzpod6cUpKRmYfeyAsJzyYBpGqZFgTUthAm0LZnzLIj
-         5pTlq3VDRUU/ygncc4PTuaTcR4nYjtB1jt+hnfZUZCGZKXQzJYS9kMSW9KaxcBFHwxJw
-         IZxdM87sL9M5gPCV+kVUaFpGG9zOzWf0LyfJrTATP+L4SBgQUXffSIAFBrz6g/N9lOAZ
-         nCLQ==
+	s=arc-20240116; t=1709021376; c=relaxed/simple;
+	bh=Cd3nKfsn1CmK7TjQsqqae5bIuxcmc17vi4cKxuDwdXI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eg0FJ1Gtp9qcVQkR2dZh5R9BpO95XrPVRhunSgMdWAGG1J6O+K3Un3IpIAD8ggx6Dzci42JNp/b8G7wD/lL/ZALeROrJ8WeXkVg1ASb6dtUZ9flawf+lOIo9rYBp8sMSEtUoA8Ovtivg048Miog0LgOOS5Qk8LiqxW+rs8qyttk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6089b64f4eeso39945787b3.2;
+        Tue, 27 Feb 2024 00:09:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709021289; x=1709626089;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709021374; x=1709626174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iiVrva5DwInjSui+Br+HHATpx+xvm6PVi1TQNYfveV8=;
-        b=RcCMbXG0+pSRwnlAmhu+Mk57fMskVj/RpakOlQ99ZEy8SH4V5iy8QQxaeoKWwAqmSk
-         hEHJDgKSuXNtjlh66Ec0gvp4fsusEnHPeXkaztluFSsUoaSFu3ulM3C5eqERooDHNjdZ
-         wt8Urtwv6PMtLgB1sTy8CBNHiGvCIjvUMJv1cP1sJec9w2wD+UGHSNciqcbswXq+CyB3
-         PMWR0opgmHEQJQ/dFN2EOGcxima8phgipWgjPDHfwfb05EujcHBfscf3uvknscNaC68T
-         Lng0DNZsTYsGoq4cnjSi+0E95cuZtjZ6NygW7u67fyWO1oC0Ajy1umILJpa1YMyXL9RB
-         81ew==
-X-Forwarded-Encrypted: i=1; AJvYcCXlO6OPp6OyqaO8xyuIydN1c9AXJilB9LqIcMh4gN3E/pWzlT781j8/2q1OlKc/yvQyjGrlDI1pIdfo8cyjhIPn+p6z5on0XnYLT/hM
-X-Gm-Message-State: AOJu0Yyqq1PYdcq8JsaBW+eefkrn9/xxa/CrcmVRG3uX48RZmiYAZTzm
-	a5ePByO+OjRAv9/s72DLu3VjJjozXFyv1GprlowK3UhmqcInBe45t7KSXM1kcoRcaCg7Y0yN2c0
-	P
-X-Google-Smtp-Source: AGHT+IEWM6Nm8SPJY4tlU/DHnXZcjC6HFHDjix8q780UPHj1OCYUYpjhUE82VyM26QICREgDnkRfTQ==
-X-Received: by 2002:aa7:d349:0:b0:565:c34f:df4e with SMTP id m9-20020aa7d349000000b00565c34fdf4emr4938085edr.29.1709021289206;
-        Tue, 27 Feb 2024 00:08:09 -0800 (PST)
-Received: from krzk-bin.. ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id b22-20020aa7dc16000000b00564d7d23919sm509662edu.67.2024.02.27.00.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 00:08:08 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Olof Johansson <olof@lixom.net>,
-	Arnd Bergmann <arnd@arndb.de>,
-	arm@kernel.org,
-	soc@kernel.org
-Cc: Artur Weber <aweber.kernel@gmail.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Peter Griffin <peter.griffin@linaro.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Henrik Grimler <henrik@grimler.se>
-Subject: [PATCH PULL v6.9 3/3] ARM: dts: samsung: exynos4412: decrease memory to account for unusable region
-Date: Tue, 27 Feb 2024 09:07:55 +0100
-Message-Id: <20240227080755.34170-3-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240227080755.34170-1-krzysztof.kozlowski@linaro.org>
-References: <20240227080755.34170-1-krzysztof.kozlowski@linaro.org>
+        bh=FxX6RgMhHn+61tSmT8CWOQW7owJHb+LAZ7EIbG00Oes=;
+        b=Lu0g0/ypkUKMmELukkMQMwZckHBUyfixbsOGqU886lmET27WRZ8DOpMpVVT/denF91
+         p/RWJY4UAXzuRTKxn9jqjJOoHMTyRANSG0tw9cnN14uMqmiIidfQHQWe5x2zd9mZuHEW
+         BDgGOgc1EdqSa/yxwcCtoQ0e9/iQq7vH8OQNdmyxBUYa632tDHgamS0AihmefgkZcT9m
+         q3dYv2yJQ/iK2SNPAkq6tbGvC3mOim7a+Q3+oxSkGxZ/5VqEAawyXQmcdXcCOf4LJIlR
+         uhCd34fhu2If/5rhYhQ6Om/W7V62ZtXPM6dD3FwiDic7YOSM0M+mdGeNxQhLleQo5SrY
+         GoYg==
+X-Forwarded-Encrypted: i=1; AJvYcCV5mnlQt4XXjHgYSXiw23GtSFztKfIMjGGsUQUozWwu7iW5IRCb6aIaKbixnyE7fVU3RZB3uM6yUR39lO2IerJ0Kof3PZ7Iof8EVjH77mx/0GhmnHdu2HcKojwaYoxHpBuXFDJeRaMfp+yMwXjDv6ZcrqL18F5Q4mFvv+wgeu8ASmPFf8QQQtqRAupi
+X-Gm-Message-State: AOJu0Yx4iZGzchE30v/1Mi9UhmNCpaa6bqaNsz15Fe3Q+8F3Rf/OdNsU
+	rI3CRdc7gFhRHbBMunmf7ieatopcRp3KK7gzSg6unKUlWubPDnAL2QhJj0L1gCA=
+X-Google-Smtp-Source: AGHT+IG9+pEFYRnV3Vs/Op0zIXiS8hO6DFhbFYz8aV1rH/fibW9jG9k431KodJjx6pL17YG6jLEf2Q==
+X-Received: by 2002:a81:a107:0:b0:607:e374:762e with SMTP id y7-20020a81a107000000b00607e374762emr1543247ywg.16.1709021373732;
+        Tue, 27 Feb 2024 00:09:33 -0800 (PST)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id n188-20020a0dcbc5000000b006092073cc7csm444717ywd.107.2024.02.27.00.09.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 00:09:32 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60922e16f6fso6683497b3.3;
+        Tue, 27 Feb 2024 00:09:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVSOYlhcHsgL61YZwjN3D9uUKyUgL3kbpL9Ff34zlmFqxQcSYcIsbmuVkdjfvxE+UusoNEn6yrUORBHmz34p20wUUI7p1jxbR9FdFHqVdOe27c+6onwom+D3FXYEJ9G//wS5h2s952Bu3tZXa02Y8PFfdDk9XQOxZNWJ1Ey7eVuAIKVQi0BhEklRZLz
+X-Received: by 2002:a25:8392:0:b0:dcd:1f17:aaea with SMTP id
+ t18-20020a258392000000b00dcd1f17aaeamr1417412ybk.26.1709021372474; Tue, 27
+ Feb 2024 00:09:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-2-aford173@gmail.com>
+ <CAMuHMdWhtu7nuBpC=TSY6rMaReJNgYok535xXotDyKJDT1_Mzw@mail.gmail.com>
+In-Reply-To: <CAMuHMdWhtu7nuBpC=TSY6rMaReJNgYok535xXotDyKJDT1_Mzw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 27 Feb 2024 09:09:20 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdViTAxWk8uvT-tgD4X2MJW5R3R1aqrv1K=FyQLdAciFcg@mail.gmail.com>
+Message-ID: <CAMuHMdViTAxWk8uvT-tgD4X2MJW5R3R1aqrv1K=FyQLdAciFcg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: gpu: powervr-rogue: Add PowerVR support
+ for some Renesas GPUs
+To: Adam Ford <aford173@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
+	aford@beaconembedded.com, Frank Binns <frank.binns@imgtec.com>, 
+	Matt Coster <matt.coster@imgtec.com>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Artur Weber <aweber.kernel@gmail.com>
+Hi Adam,
 
-The last 4 MiB of RAM on those devices is likely used by trustzone
-firmware, and is unusable under Linux. Change the device tree memory
-node accordingly.
+On Tue, Feb 27, 2024 at 8:48=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+> On Tue, Feb 27, 2024 at 4:46=E2=80=AFAM Adam Ford <aford173@gmail.com> wr=
+ote:
+> > Update the binding to add support for various Renesas SoC's with PowerV=
+R
+> > Rogue GX6250 and GX6650 GPUs.  These devices only need one clock, so up=
+date
+> > the table to indicate such like what was done for the ti,am62-gpu.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
 
-The proprietary bootloader (S-BOOT) passes these memory ranges through
-ATAG_MEM; this change allows us to have the correct memory ranges
-without relying on ATAG_MEM.
+> > --- a/Documentation/devicetree/bindings/gpu/img,powervr-rogue.yaml
+> > +++ b/Documentation/devicetree/bindings/gpu/img,powervr-rogue.yaml
 
-Tested-by: Henrik Grimler <henrik@grimler.se> # i9300, i9305
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
-Link: https://lore.kernel.org/r/20240217-exynos4-memsize-fix-v1-1-7858e9c5f844@gmail.com
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm/boot/dts/samsung/exynos4412-i9300.dts   | 2 +-
- arch/arm/boot/dts/samsung/exynos4412-i9305.dts   | 2 +-
- arch/arm/boot/dts/samsung/exynos4412-n710x.dts   | 2 +-
- arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+> > +          - renesas,r8a77951-gpu
+>
+>     ... # PowerVR Series 6XT GX6650 on R-Car H3 ES2.0+
 
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-i9300.dts b/arch/arm/boot/dts/samsung/exynos4412-i9300.dts
-index 61aca5798f38..b79d456e976d 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-i9300.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4412-i9300.dts
-@@ -18,7 +18,7 @@ / {
- 
- 	memory@40000000 {
- 		device_type = "memory";
--		reg = <0x40000000 0x40000000>;
-+		reg = <0x40000000 0x3fc00000>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-i9305.dts b/arch/arm/boot/dts/samsung/exynos4412-i9305.dts
-index 77083f1a8273..1048ef5d9bc3 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-i9305.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4412-i9305.dts
-@@ -11,7 +11,7 @@ / {
- 
- 	memory@40000000 {
- 		device_type = "memory";
--		reg = <0x40000000 0x80000000>;
-+		reg = <0x40000000 0x7fc00000>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-n710x.dts b/arch/arm/boot/dts/samsung/exynos4412-n710x.dts
-index 0a151437fc73..eee1000dea92 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-n710x.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4412-n710x.dts
-@@ -9,7 +9,7 @@ / {
- 
- 	memory@40000000 {
- 		device_type = "memory";
--		reg = <0x40000000 0x80000000>;
-+		reg = <0x40000000 0x7fc00000>;
- 	};
- 
- 	/* bootargs are passed in by bootloader */
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi b/arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi
-index 39a3d1cbe4c3..28a605802733 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi
-+++ b/arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi
-@@ -23,7 +23,7 @@ / {
- 
- 	memory@40000000 {
- 		device_type = "memory";
--		reg = <0x40000000 0x80000000>;
-+		reg = <0x40000000 0x7fc00000>;
- 	};
- 
- 	aliases {
--- 
-2.34.1
+All compatible values for R-Car H3 variants use the r8a7795 "base" value,
+so that should be:
 
+     - renesas,r8a7795-gpu # PowerVR Series 6XT GX6650 on R-Car H3
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
