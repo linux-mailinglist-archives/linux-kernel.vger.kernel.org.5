@@ -1,124 +1,89 @@
-Return-Path: <linux-kernel+bounces-83125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5314868ECB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:29:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF4F2868ECE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:29:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22BA01C24CD9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:29:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F4E2B21DA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9366313A263;
-	Tue, 27 Feb 2024 11:28:47 +0000 (UTC)
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4486B13959D;
+	Tue, 27 Feb 2024 11:29:47 +0000 (UTC)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75EB13A255;
-	Tue, 27 Feb 2024 11:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ADC82A8C1;
+	Tue, 27 Feb 2024 11:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709033327; cv=none; b=O2uNABVrjorLN7Iv+QqOgaabWmi1eOZ8O+BaokSsIZetVEvLX/5A4BPfEFuyu0OQZLLF5c5NEyTZPN//bVqH2pzG31x0Rgso/tmgzhs1tMPTbUAAeGAo91aOE6dS3XVyoz50VZ0tr22z6roCRDN01Yq2bq3/FZbId1GYwuTfM8Y=
+	t=1709033386; cv=none; b=bnQkH8jDmfV1sBStdJFClniIy2cKIM35LqU8EjXkalHMbnIjBTd90WX28rB6OKykvfBbF4+OaXpu6DrHXPDVoa6+rhIKB4ZkLeCPdh9WW5LviFkta4l6p7DLMMJN2Pq+3azyHxBoicVqRCdBQTEpjTM4EMu0zGHqCt+tpdjunQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709033327; c=relaxed/simple;
-	bh=olawrkIf763TyDJBSdS+BMEVTPSM6dh0cJaug71x7i8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kC7EUs2VMkSA2eY4CKzotyZfEDLnzLHJYA8OPDY10vsgs5S75uv3HCGJKHKTS7VRD+OXm/pgvry6cboVb512B65dn5WgvRsgorhVOL/M1CpcZySrVf4A+THNrWL/K7BWOaGTKeF+MdwtN7ZYp8yRiD7++eIrKJwqUMMnN1CuHAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1709033386; c=relaxed/simple;
+	bh=V+F6zmbVlAoo9IrMGZI2jWHzXm7KbYmZjHdMSEjNVDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aEx5k+uJ1htXc71nheImxLSRP2OahK6w97Z2QqPYrzAR19u3IzKKhmgViZFFubV//lRMPrlM/+TDLKELGmPfoxXccc58CR8DcF7EKrFx3kDLUr4EhwVFudwnJutT98srp0o23A06BMl8ike6CXHGvva918W7tqhAidZ70IDv9yI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6e45f7c63f4so380083a34.1;
-        Tue, 27 Feb 2024 03:28:45 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3e8c1e4aa7so414395166b.2;
+        Tue, 27 Feb 2024 03:29:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709033325; x=1709638125;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+5EZQgvYzf+Di85HQE8BTviHNfeUCSHk+RcP+d55ags=;
-        b=EgccJp2U8MEvUZuWMPKGpkkJH7aWu2fYDZArnCRYmQfkMk8wAv278rGIr7vwfwSR1U
-         Cm76DLezNeX/ibuxw3OPUDeHHowpuoQaknUNxCyOPRzMGUa6hhPoWq3Eqscb5+xnitGg
-         jTXaq5WsYS0pqKBKBNQtVEHNuPo7DxcK3brhitS/Bz66PwE1kxOixMebPSiKQZGpkF0O
-         yiFZxV352cBC1fQB6ht3PBX1Eo8/JrzrmisyHXhARGMAcROM/N1qlWuRni5hnLYVuLfk
-         6EAf0BlqLjvANsLh7K7Vj+mn5I9AXfAbc7SNRejxiM3BqJjOdH7noMbl/L3rBm8r3bPS
-         2hFw==
-X-Forwarded-Encrypted: i=1; AJvYcCXzzpnMLauIr92x9/qDCTcAw9oPSOxnZ7lgcknflgQ5zqTKoo7Xi679BdtV+yHlTpWU62svbSgDhnFzccxTBuhU1lcW37pvF+ABlKw79DsKAZlinSLpHwRsTJPqp4jV0IdjZm9FDeA=
-X-Gm-Message-State: AOJu0Yw6ES5Q71Q/97knQ4sY/ANyfOPAkno4l7wgwwOpWb+zVxWif27s
-	WnnoiLi2Dxksb8s6uuguiZAFzaQGwAS739qRcpcUjiaPeNlwXxBArD6K5uOWSqYFC1gTb2UmDfJ
-	kPEHD+tQGEeQe/aMDvpnbpygh2mdw3lLb
-X-Google-Smtp-Source: AGHT+IHlg2LZu8z6kyFlZ6fKhXldHIW301ZiBKZfmt7pdBwtvCOwfWcupoStfpObVcPX8OLs+1PLtrzHQGJE8XJoCxc=
-X-Received: by 2002:a05:6820:2b15:b0:5a0:396d:2489 with SMTP id
- dt21-20020a0568202b1500b005a0396d2489mr9336880oob.1.1709033324837; Tue, 27
- Feb 2024 03:28:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709033383; x=1709638183;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O9YKPmvIW+F1pUtkK1SkTjqUKaUVyqNEYRbY9iC7Xqc=;
+        b=vXSwTUboGV6h2oAjVUNwWYWHRECueesL/8+AIA4WMT2LaPcInMUOqlr73Qq2gSpeiv
+         cotc67q1YGOpQwXok8jfXEhTsnwFVBmuZe2ijnk1dYr0/w6RiXHlybQCbGI4fF0O4uru
+         vcxwjHOtTR1mbonGBT8mfR1CslFYH20Rev6znX2itbJ5FvGPgDl+EZwCFZDkdaDL7DC4
+         COS+xeKN3ZWpBl5RkHAmj7wBgeR0xPKdlQrpc6jGJdLNaD/4vwUo/sy8kUjbJtNQsdk6
+         jPidpiObSZR0YdjcdvhedIH+fombqmcy/sznk6JHIt6kKHrFOqIhtAcr08aucB2ZeZ3l
+         SP0w==
+X-Forwarded-Encrypted: i=1; AJvYcCW0+0lgmgiHawr9q/VGF7WnfeKJUxxAQL0JGdhEmQe13RKtXTevMDn3IKNp0E7PXI9fs7uxidZ79F2/7JMsJV0c+cSzA6cyEMhMze412os=
+X-Gm-Message-State: AOJu0Yx9CQ8G3Ly1n6eBncVTS6DLOp658zafE/IRIKjDdxy5HsszJcDf
+	q2MIvM4KajM6QhnxhXYNtM35vW0stQ4zOze67OvYdtDO80lWTXxz
+X-Google-Smtp-Source: AGHT+IEpqM4v4HjyD4sKb1dtIr4dD5w2+nisl65yLlL1PWP2zeRaEEXYRqX0Sv2IMIye1teOg/9bQg==
+X-Received: by 2002:a17:906:114f:b0:a3e:9bde:edea with SMTP id i15-20020a170906114f00b00a3e9bdeedeamr5107971eja.5.1709033383433;
+        Tue, 27 Feb 2024 03:29:43 -0800 (PST)
+Received: from gmail.com (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id c3-20020a1709060fc300b00a43389c8a1asm665522ejk.113.2024.02.27.03.29.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 03:29:43 -0800 (PST)
+Date: Tue, 27 Feb 2024 03:29:40 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Javier Martinez Canillas <javierm@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>,
+	Kalle Valo <kvalo@kernel.org>, Li Zetao <lizetao1@huawei.com>,
+	linux-wireless@vger.kernel.org
+Subject: Re: [PATCH] wlcore: sdio: warn only once for
+ wl12xx_sdio_raw_{read,write}() failures
+Message-ID: <Zd3HpNvnICtlb4OS@gmail.com>
+References: <20240227002059.379267-1-javierm@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223143833.1509961-1-guanyulin@google.com>
- <CAJZ5v0gM=0rU6a1A6Bh2Ed=4=1AtQ3p5aDJVCOioA6qxGv1jtQ@mail.gmail.com> <CAOuDEK1NdFSZgy8_ebO_zSxbU-gLJHsCzjd6JSr2cckQAFgaTg@mail.gmail.com>
-In-Reply-To: <CAOuDEK1NdFSZgy8_ebO_zSxbU-gLJHsCzjd6JSr2cckQAFgaTg@mail.gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 27 Feb 2024 12:28:33 +0100
-Message-ID: <CAJZ5v0g0WgYWyOfMaq8PhOkCmBFuDRb3XbCxPpcbpJuJza0+cA@mail.gmail.com>
-Subject: Re: [PATCH v3] PM / core: conditionally skip system pm in
- device/driver model
-To: Guan-Yu Lin <guanyulin@google.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, pavel@ucw.cz, len.brown@intel.com, 
-	gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com, 
-	petr.tesarik.ext@huawei.com, rdunlap@infradead.org, james@equiv.tech, 
-	broonie@kernel.org, james.clark@arm.com, masahiroy@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227002059.379267-1-javierm@redhat.com>
 
-On Mon, Feb 26, 2024 at 10:45=E2=80=AFAM Guan-Yu Lin <guanyulin@google.com>=
- wrote:
->
-> On Sat, Feb 24, 2024 at 1:44=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.=
-org> wrote:
-> >
-> > On Fri, Feb 23, 2024 at 3:38=E2=80=AFPM Guan-Yu Lin <guanyulin@google.c=
-om> wrote:
-> > >
-> > > In systems with a main processor and a co-processor, asynchronous
-> > > controller management can lead to conflicts.  One example is the main
-> > > processor attempting to suspend a device while the co-processor is
-> > > actively using it. To address this, we introduce a new sysfs entry
-> > > called "conditional_skip". This entry allows the system to selectivel=
-y
-> > > skip certain device power management state transitions. To use this
-> > > feature, set the value in "conditional_skip" to indicate the type of
-> > > state transition you want to avoid.  Please review /Documentation/ABI=
-/
-> > > testing/sysfs-devices-power for more detailed information.
-> > >
-> > > Signed-off-by: Guan-Yu Lin <guanyulin@google.com>
-> >
-> > Please explain how this is intended to work.  That is, what exactly
-> > you expect to happen when the new attribute is set.
->
-> The sysfs entry 'conditional_skip' for a device indicates which power
-> transitions (e.g. PM_EVENT_SUSPEND) are omitted within the system
-> power management flow. During the processing of an identified power
-> transition, the device's power.entry will not be added to the
-> dpm_prepared_list, preventing the device from undergoing that
-> transition. As 'conditional_skip' is modifiable at runtime, a device's
-> participation in system power management can be dynamically enabled or
-> disabled.
+On Tue, Feb 27, 2024 at 01:20:46AM +0100, Javier Martinez Canillas wrote:
+> Report these failures only once, instead of keep logging the warnings for
+> the same condition every time that a SDIO read or write is attempted. This
+> behaviour is spammy and unnecessarily pollutes the kernel log buffer.
+> 
+> For example, on an AM625 BeaglePlay board where accessing a SDIO WiFi chip
+> fails with an -110 error:
+> 
+>   $ dmesg | grep "sdio write\|read failed (-110)" | wc -l
+>   39
+> 
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-So this idea is completely misguided AFAICS.
-
-First off, why would a device be skipped in system-wide suspend and
-not in hibernation?  Or the other way around?  Or why would it be
-skipped in one phase of hibernation and not in the other?
-
-Second, but not less important, why is skipping a device in
-system-wide transitions a good idea at all?  What about dependencies
-between that device and the other devices in the system?
-
-Generally speaking, system-wide PM is designed to cover the entire
-system and there are good reasons for that.  If you don't want it to
-cover the entire system, you cannot use it at all.
+Reviewed-by: Breno Leitao <leitao@debian.org>
 
