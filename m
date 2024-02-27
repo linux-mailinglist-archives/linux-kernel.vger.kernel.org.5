@@ -1,121 +1,124 @@
-Return-Path: <linux-kernel+bounces-83442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DEF869958
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:57:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4047186996D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33D51283E54
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:57:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB14528DC59
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E728148319;
-	Tue, 27 Feb 2024 14:55:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CBF214A08A;
+	Tue, 27 Feb 2024 14:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="ociEBA5K"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="A1O4NKjr"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D389C146001;
-	Tue, 27 Feb 2024 14:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C7F7145333;
+	Tue, 27 Feb 2024 14:55:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709045740; cv=none; b=MvHFbiTI/HMYPLLrZQsOTdeUOPs7pT3VsVpYdJVpw9h4XN80jMtR47xUVX0xOrTduwbtJIM9wGe0rvF21AGpoYbH5/Ajchz4TKXND+14ZPSQN5IuFlQMQF1UaPZ8ZtmI/KhyIwPbl2a0pjF4rot25FgaKqaXByJce9bQdYX2BUw=
+	t=1709045743; cv=none; b=GrhZ6+ivY8IkiE813djsNcFz+Z5z0SOEoik2IU1lZWZiys8m5NgbRIStWB/5JFrjpYKzBAA4cRI2Rgne9Kw9bN7CYrXt06Pr79eCe3JRKG4J/IOHJ9doIKpC9bvRp32Qqb9tkpUjHWxv9E54AFgs165XP+MsyVA4XMUGPvChpxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709045740; c=relaxed/simple;
-	bh=c6nAddq+joHIj3aBJ5XpAdzF2ktzWSmOTZPUik72jyg=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=bo+uCJK3Vu8yBoZ2BldGKB7Pe/IjQlQ/l0eXovKoviWviPcWvDpkoxlZEXvgSVn2un7BAN4Abeu3XnY4R1SXephwpTrdvWFfQHx2zX1V2CoJTisi451Os2hSBRI6WWDPBv+Aw8MZKGKEiiSvumdrjSDmdHdtykYLRbHWSWXVEHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=ociEBA5K; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1709045743; c=relaxed/simple;
+	bh=e+fny5g6MsS+gSQqeZXuQdFgEBmhF4B9PgE+HZI4muM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=O+1CmD/kqVv70Zyyxe/tStHwLEZWqjGrDhHI5pkZOF3h1dQB9js+clyVd3gXgNEVkLtTImCIQTViZhiwGMiriAo7XgBioRde53RrJXOKbIpimU4wEwWQ8Rzw21r5KY3pZkhDVkYs3+x6ugzWeDq71xh5EpjWMjXXyXjMz0BNQHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=A1O4NKjr; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 716B020010;
+	Tue, 27 Feb 2024 14:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709045739;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JfVmKW7jiq5sw6u952k0VXr2eBJ8dtpMeFQKqMz2C2s=;
+	b=A1O4NKjrVJGeYBkFzPUjLs9xtPtpHWdekfvCprqrhNCnVmSmpzkzDy1drK4NaDwF7xUmSt
+	MtaUM5IuLgLxswvrWjX/6urDSLowQXqC8feGQlfHheHgLoNc7ZTfNQMHskcN7a1hSBfvuc
+	K5eMkZ4PVeLr6qk8GXBYmo/b/JefLUr9Xu/V9DOHVGdqVVPsHcduX1hvBTp9PG0p+XbWf3
+	+myChyyP0ZbDa8wGYoFGAkONLbYChd7VN8CbuvHmJb13fJaParRItGilljMJKQxoon1fKz
+	VM9QU1P9fvMZ1yHUvZRiIxV/Koj925oTLZMoepmeP/LHY9Q1iHhip84JTInlKQ==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Tue, 27 Feb 2024 15:55:27 +0100
+Subject: [PATCH v8 06/10] MAINTAINERS: Map OLB files to Mobileye SoCs
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1709045729;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m+buA9KQcshQo11eLqij6u65fXQy9H9bVSZZKj/86ws=;
-	b=ociEBA5Krod3ExR4KO+TwRlaQsQhio31/u7nVUn5SOGGQyPOonbCNwlQhh5OAbSa1XFGxJ
-	WB7Ti9m8vg1Y1oVLvVW0Tn4lhAyjqCdU3CTH9DTZ02ATz8TWV5526kfE9EklDdzqv4fqoz
-	S324zYaRdlnWk566Mg1rgII2+VpTrbLsGQrleCoivuW6Vtm9FO0T5NeOPM1u0IBbNZgFec
-	g6GumCX2voAPVqqeqcMqH4bEn23soZUH/jpNiY97WXzSY8drPkS7YmNt9yq4ha5pXSCJVt
-	l4YhisH4rgH+E7MX4uMTmYauBNuKFnTj/iYOR91SUz/I+vcU5tzEd2JxKiFgzQ==
-Date: Tue, 27 Feb 2024 15:55:27 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Quentin Schulz <quentin.schulz@theobroma-systems.com>, Quentin Schulz
- <foss+kernel@0leil.net>, Jonathan Cameron <jic23@kernel.org>, Lars-Peter
- Clausen <lars@metafoo.de>, Heiko Stuebner <heiko@sntech.de>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Shreeya Patel <shreeya.patel@collabora.com>, Simon Xue <xxm@rock-chips.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Jonathan Cameron
- <Jonathan.Cameron@huawei.com>, linux-iio@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] iio: adc: rockchip_saradc: replace custom logic with
- devm_reset_control_get_optional_exclusive
-In-Reply-To: <CAHp75VcuRacheLt=sAJz27RMEZqvZ8CAZSPvxgUbSFS-dUAAOg@mail.gmail.com>
-References: <20240223-saradcv2-chan-mask-v1-0-84b06a0f623a@theobroma-systems.com>
- <20240223-saradcv2-chan-mask-v1-3-84b06a0f623a@theobroma-systems.com>
- <CAHp75VfVTJsQDwaPoPgGiT6jnymXAR3WpETqaKai8rXAC70iLw@mail.gmail.com>
- <6f76ffab-69fe-4afb-9d7e-d3cdfe37c28c@theobroma-systems.com>
- <CAHp75Vft3kJEF9JiuEqVsS3biQ6YsuDXON_P3FOZRjtb8NaB2w@mail.gmail.com>
- <d2a7954926e328cbf898aac0a42a6e24@manjaro.org>
- <CAHp75VcuRacheLt=sAJz27RMEZqvZ8CAZSPvxgUbSFS-dUAAOg@mail.gmail.com>
-Message-ID: <509bf12609dce4fb4bdccb657dd75a95@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+Message-Id: <20240227-mbly-clk-v8-6-c57fbda7664a@bootlin.com>
+References: <20240227-mbly-clk-v8-0-c57fbda7664a@bootlin.com>
+In-Reply-To: <20240227-mbly-clk-v8-0-c57fbda7664a@bootlin.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On 2024-02-27 13:48, Andy Shevchenko wrote:
-> On Mon, Feb 26, 2024 at 10:31 PM Dragan Simic <dsimic@manjaro.org> 
-> wrote:
->> On 2024-02-23 15:39, Andy Shevchenko wrote:
->> > On Fri, Feb 23, 2024 at 3:10 PM Quentin Schulz
->> > <quentin.schulz@theobroma-systems.com> wrote:
->> >> On 2/23/24 14:00, Andy Shevchenko wrote:
-> 
-> ...
-> 
->> >> I would still be reachable at that Cc address without having to modify
->> >> the .mailmap after the fact (which won't make it to an earlier version
->> >> of the kernel for example). Some maintainers don't really like this,
->> >> some don't mind, we'll see in which category the IIO maintainer(s)
->> >> fall
->> >> in :) (I don't mind either way just to be clear).
->> >
->> > My point is that Cc and other similar (non-real-tags) stuff is
->> > polluting commit messages. It means that this will be copied to the
->> > Git index to all kernel git repositories in the world from now and
->> > then, This is at bare minimum makes additional burden on git log (and
->> > parsing and so on) and moreover, wastes resources becoming less
->> > environment friendly (no jokes). Using --cc or moving to the behind
->> > the commit message will keep email copied with cleaner commit
->> > messages. Yet, all email tags are available in lore archive
->> > (lore.kernel.org). Please, really reconsider the commit messages
->> > content in the Linux kernel project and elsewhere, it will help to
->> > make the world more friendly.
->> 
->> Believe it or not, I'm working on some patches for Git that, I 
->> believe,
->> should help a lot when it comes to handling Cc: addresses.  Would you
->> like to be included in the list of recipients for those Git patches, 
->> so
->> you could, hopefully, provide some feeback?
-> 
-> You may Cc me if you want to, but I can't guarantee I have time or
-> valuable input to that.
+Add all OLB related (system-controller) files to the MOBILEYE MIPS SOCS
+entry.
 
-Thanks, I'll be happy to have another set of eyes on those Git patches.
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+
+---
+
+This does not follow the standard of adding MAINTAINERS entries with
+file additions. We avoid dependencies inbetween maintainer trees. The
+MOBILEYE MIPS SOCS is added by [0] series. It is currently in
+mips-next [1].
+
+[0]: https://lore.kernel.org/lkml/20240216174227.409400-1-gregory.clement@bootlin.com/
+[1]: https://lore.kernel.org/lkml/ZdSst3fM3EOQGH03@alpha.franken.de/
+---
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d2a6a3937e88..73bd2851eb4c 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14793,10 +14793,18 @@ M:	Gregory CLEMENT <gregory.clement@bootlin.com>
+ M:	Théo Lebrun <theo.lebrun@bootlin.com>
+ L:	linux-mips@vger.kernel.org
+ S:	Maintained
++F:	Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+ F:	Documentation/devicetree/bindings/mips/mobileye.yaml
++F:	Documentation/devicetree/bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml
++F:	Documentation/devicetree/bindings/reset/mobileye,eyeq5-reset.yaml
++F:	Documentation/devicetree/bindings/soc/mobileye/
+ F:	arch/mips/boot/dts/mobileye/
+ F:	arch/mips/configs/eyeq5_defconfig
+ F:	arch/mips/mobileye/board-epm5.its.S
++F:	drivers/clk/clk-eyeq5.c
++F:	drivers/pinctrl/pinctrl-eyeq5.c
++F:	drivers/reset/reset-eyeq5.c
++F:	include/dt-bindings/clock/mobileye,eyeq5-clk.h
+ F:	include/dt-bindings/soc/mobileye,eyeq5.h
+ 
+ MODULE SUPPORT
+
+-- 
+2.44.0
+
 
