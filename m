@@ -1,208 +1,169 @@
-Return-Path: <linux-kernel+bounces-83609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C4EA869C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:32:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ACE27869C32
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:34:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B08A0291647
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:32:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA5D2918A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922331F606;
-	Tue, 27 Feb 2024 16:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEAC81DA4D;
+	Tue, 27 Feb 2024 16:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zwGig5jZ"
-Received: from mail-ej1-f74.google.com (mail-ej1-f74.google.com [209.85.218.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="bQi6gSNI"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C621DA4D
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30EB71CD3E;
+	Tue, 27 Feb 2024 16:34:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709051552; cv=none; b=FXi8RAIzR291NHWI30LAMtQUkRI7xt5u3JxrQDpifxfmorg1wlxBu06uuixL68megobHlgZ1icrM+4X2sW4XSzV9IJIBhXNDYOnx0q1qsOnk+jZtHfx+8iGrPie4RMmWiEVjZ897KToUg59zLI+o5zW1hoSlYclELLcBOxNCQko=
+	t=1709051675; cv=none; b=rBExxNvBihiN68w6LWyXgf5YBGnLfDoC1qSvcFiZBGfPusEjckB5NN6ykMkK/DPbyhZa6JNA8qNZR6x34J9mT/YPY7x8gmgimkxQVkMsZhJQNMFtpo0Z020TBPU9WaUo5rgHbwWr15Y7r+rjyKhss0dGnFZKkHe1zMx546PEQaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709051552; c=relaxed/simple;
-	bh=VwaM4TGE7WzbXuL2owqLIfl8UDopXMwoZLqlae/zpt4=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Cc:Content-Type; b=pSk4MqxKEwHegef3xvpCSZm3+XgEul2GyI2s7KOv+gm6BdrGGGqYMp/dWfM5UHIIUDUayOKLgrQjZiZNf7JkcjRlFzKSnz9GFK3XFhhGu/zJVoDkjFZlkfHx3kO42wDqdY0/2G1M9YJ1Mr1G7kdlmORrUUGmJnssMJA6OKWXb3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--gnoack.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zwGig5jZ; arc=none smtp.client-ip=209.85.218.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--gnoack.bounces.google.com
-Received: by mail-ej1-f74.google.com with SMTP id a640c23a62f3a-a3fb52f121eso225399666b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:32:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709051548; x=1709656348; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:references
-         :mime-version:message-id:in-reply-to:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oGLM6msTnPiYGE047U6w31wTMpGKpq/ku8c4CLDd44M=;
-        b=zwGig5jZorXZGIC12BzDvn5cDFT7Z9W/cCQkpirwon1zXRWMFBExID67fTwyAe8w5E
-         dZ46uC2JK5F0o8MufLNukhcsWvHj2tPPaHLmKZXMS1smYppF6JU/E338pCMwkies+2c8
-         K8hofQSFfPDa1VTGSXJXXomiVtZzZjk9clYRBLq7SqhZl/udxtZD+xsOhYIcEbScZKr4
-         Zb50je3XZ2lIfPpLbjyYGHyM0v9MQxBpRgFmdagmCWmCz94Blj+gywvMEAlY0ilaQvcm
-         YgblPRsWv2z4fQEKBozUFz++qGwZle5bvlwfmE2kOlMMufTcPW0UWJd74zAHhfxXP3O5
-         QoTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709051548; x=1709656348;
-        h=content-transfer-encoding:cc:to:from:subject:references
-         :mime-version:message-id:in-reply-to:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oGLM6msTnPiYGE047U6w31wTMpGKpq/ku8c4CLDd44M=;
-        b=Yd2G/Vhd4+p+TZG6AO3r46m6vXbaOEn6X6+ZOG6XWITuTR0a9bsb9pb7h7kbDTouKS
-         8JeDgDwiDjl9W3kWi3qMFI2U+Pb0jk/WbtHhfceOOki4ogltWzUmC8MMTy25NTa1s/61
-         HmPHh8x9ibManbnEk4udRLb7fgIznFmcp5HJd7VHg2ObyRA3CDS5MhR2tymYeSxOqbmA
-         7mrGmXjn689WwBWK1tTRJzES39zZof5hwIAD44GQJg7BX7s8VWZo68V/6X/N/WFwIAmn
-         4S+XKNx4HZRjQEfQ3sfCcqcov6Mg+boQ3/8rFV+ImuEsf5O+NvQQ825boWL76q4w+dtt
-         kNUg==
-X-Forwarded-Encrypted: i=1; AJvYcCXhLvxebwmvNzuYOdkeQKF9pq6RmB+6x148/L0hx0Z23FjtsNvB/nxWLFoYHpN7tlE0Mw/5z0M41Kfit0E2NTU+BAt+kJHD5HbmOX18
-X-Gm-Message-State: AOJu0Yw6bZQFHeuZcXyxtUwNOuaiqPrQYmc/kO2lTPLnUph8RqPqmhkx
-	qz1udGs2GPRnEBrtriNP4IJauGXSZ1C2APONlHodBe0AopH0AFkeRKo6bUCFxsBecDrKafesXWo
-	zrQ==
-X-Google-Smtp-Source: AGHT+IHxiYuri1W9KUnm7rvgXvnst0dfGu9BH35r2xYwG5xmzTBUc7nx+APscQ4Xryj8t9ypMETY6Vr2jqQ=
-X-Received: from sport.zrh.corp.google.com ([2a00:79e0:9d:4:a340:5a1b:3a37:50cc])
- (user=gnoack job=sendgmr) by 2002:a17:906:9c88:b0:a3e:81de:78c0 with SMTP id
- fj8-20020a1709069c8800b00a3e81de78c0mr31089ejc.3.1709051548382; Tue, 27 Feb
- 2024 08:32:28 -0800 (PST)
-Date: Tue, 27 Feb 2024 17:32:20 +0100
-In-Reply-To: <20240227110550.3702236-1-mic@digikod.net>
-Message-Id: <Zd4OlL1G3t1D3TgC@google.com>
+	s=arc-20240116; t=1709051675; c=relaxed/simple;
+	bh=qEBzGDkMgdmuVcguzq0GaV4UtJ8S4emKApf0/ZnZ10I=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=EfWE56UKDs2Bt3SNTN9VeC7/I4tZzRhd3scjpc8SAU57BHkvCJOlEkWhogRvskxF4RB1SvdOZrD8gYvLWHZIUAAhmRGZDvVIWnM4uOG6fzsW1ZfagGW87SxRcv4ki20EDtSfU6JcLIXBOImtr32owY46hh4FSxjFr/Y/ubWz+wY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=bQi6gSNI; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [IPv6:::1] ([172.56.208.254])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 41RGX2Fr2314875
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Tue, 27 Feb 2024 08:33:04 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 41RGX2Fr2314875
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1709051587;
+	bh=HZEOIHwb3V/1D7cUZ0XGo95NAMXuauNS76pNRRQm74s=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=bQi6gSNI2dHkBGn7f/jCZgoUd4XQubS6qAYN6gV9F9dgEAW/vnJQMK0sB22MR4D8w
+	 ScGNcWkjsOxumSmuy3xxyDRZ0ZHbaF/XHuVneV1M4suypKmwYm7C/SrD2gl79S+c20
+	 827pMMF9fa5pP1BMp1E0zQbKK7reyiUikwP+Iqd82hsIC7Z1h73P+JdYyOf4cNikSX
+	 rOGg7erwmnmmHmQ2soL8cL0zQj6Y6eJ8oMY7mX1uNS1Xx8h5RDAwa2mxhKqnIbwkij
+	 Sc+knQnBy89soQHa2e5NMYPLek/KdPTlQo+/NjBwjOMDhOGSrnj64UuI12rLNM9/kv
+	 k3WRmf5HPf9hA==
+Date: Tue, 27 Feb 2024 08:32:51 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: =?ISO-8859-1?Q?J=FCrgen_Gro=DF?= <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@alien8.de>
+CC: Guixiong Wei <guixiongwei@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kristen Carlson Accardi <kristen@linux.intel.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Guixiong Wei <weiguixiong@bytedance.com>, Jann Horn <jannh@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Chris Wright <chrisw@sous-sol.org>,
+        Jeremy Fitzhardinge <jeremy@xensource.com>,
+        Roland McGrath <roland@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] x86, relocs: Ignore relocations in .notes section
+User-Agent: K-9 Mail for Android
+In-Reply-To: <0443c7c2-1c3f-4cf8-940d-88306956832a@suse.com>
+References: <20240222171840.work.027-kees@kernel.org> <0443c7c2-1c3f-4cf8-940d-88306956832a@suse.com>
+Message-ID: <18FD83CD-CCD3-44DE-A086-2317739BB488@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240227110550.3702236-1-mic@digikod.net>
-Subject: Re: [PATCH v2 1/2] landlock: Extend documentation for kernel support
-From: "=?utf-8?Q?G=C3=BCnther?= Noack" <gnoack@google.com>
-To: "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>
-Cc: Paul Moore <paul@paul-moore.com>, "Serge E . Hallyn" <serge@hallyn.com>, 
-	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>, Shervin Oloumi <enlightened@chromium.org>, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 12:05:49PM +0100, Micka=C3=ABl Sala=C3=BCn wrote:
-> Extend the kernel support section with one subsection for build time
-> configuration and another for boot time configuration.
->=20
-> Extend the boot time subsection with a concrete example.
->=20
-> Update the journalctl command to include the boot option.
->=20
-> Cc: G=C3=BCnther Noack <gnoack@google.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> ---
->=20
-> Changes since v1:
-> * New patch, suggested by Kees Cook.
-> ---
->  Documentation/userspace-api/landlock.rst | 57 +++++++++++++++++++++---
->  1 file changed, 51 insertions(+), 6 deletions(-)
->=20
-> diff --git a/Documentation/userspace-api/landlock.rst b/Documentation/use=
-rspace-api/landlock.rst
-> index 2e3822677061..838cc27db232 100644
-> --- a/Documentation/userspace-api/landlock.rst
-> +++ b/Documentation/userspace-api/landlock.rst
-> +Boot time configuration
-> +-----------------------
-> +
->  If the running kernel does not have ``landlock`` in ``CONFIG_LSM``, then=
- we can
-> -still enable it by adding ``lsm=3Dlandlock,[...]`` to
-> +enable Landlock by adding ``lsm=3Dlandlock,[...]`` to
->  Documentation/admin-guide/kernel-parameters.rst thanks to the bootloader
->  configuration.
+On February 27, 2024 8:13:35 AM PST, "J=C3=BCrgen Gro=C3=9F" <jgross@suse=
+=2Ecom> wrote:
+>On 22=2E02=2E24 18:18, Kees Cook wrote:
+>> When building with CONFIG_XEN_PV=3Dy, =2Etext symbols are emitted into =
+the
+>> =2Enotes section so that Xen can find the "startup_xen" entry point=2E =
+This
+>> information is used prior to booting the kernel, so relocations are not
+>> useful=2E In fact, performing relocations against the =2Enotes section =
+means
+>> that the KASLR base is exposed since /sys/kernel/notes is world-readabl=
+e=2E
+>>=20
+>> To avoid leaking the KASLR base without breaking unprivileged tools tha=
+t
+>> are expecting to read /sys/kernel/notes, skip performing relocations in
+>> the =2Enotes section=2E The values readable in =2Enotes are then identi=
+cal to
+>> those found in System=2Emap=2E
+>>=20
+>> Reported-by: Guixiong Wei <guixiongwei@gmail=2Ecom>
+>> Closes: https://lore=2Ekernel=2Eorg/all/20240218073501=2E54555-1-guixio=
+ngwei@gmail=2Ecom/
+>> Fixes: 5ead97c84fa7 ("xen: Core Xen implementation")
+>> Fixes: da1a679cde9b ("Add /sys/kernel/notes")
+>> Signed-off-by: Kees Cook <keescook@chromium=2Eorg>
+>> ---
+>> Cc: Borislav Petkov <bp@alien8=2Ede>
+>> Cc: Thomas Gleixner <tglx@linutronix=2Ede>
+>> Cc: Ingo Molnar <mingo@redhat=2Ecom>
+>> Cc: Dave Hansen <dave=2Ehansen@linux=2Eintel=2Ecom>
+>> Cc: x86@kernel=2Eorg
+>> Cc: "H=2E Peter Anvin" <hpa@zytor=2Ecom>
+>> Cc: "Peter Zijlstra (Intel)" <peterz@infradead=2Eorg>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation=2Eorg>
+>> Cc: Tony Luck <tony=2Eluck@intel=2Ecom>
+>> Cc: Kristen Carlson Accardi <kristen@linux=2Eintel=2Ecom>
+>> Cc: "J=C3=BCrgen Gro=C3=9F" <jgross@suse=2Ecom>
+>> Cc: Boris Ostrovsky <boris=2Eostrovsky@oracle=2Ecom>
+>> Cc: Stefano Stabellini <sstabellini@kernel=2Eorg>
+>> Cc: Oleksandr Tyshchenko <oleksandr_tyshchenko@epam=2Ecom>
+>> Cc: Guixiong Wei <weiguixiong@bytedance=2Ecom>
+>> Cc: Jann Horn <jannh@google=2Ecom>
+>> ---
+>>   arch/x86/tools/relocs=2Ec | 10 ++++++++++
+>>   1 file changed, 10 insertions(+)
+>>=20
+>> diff --git a/arch/x86/tools/relocs=2Ec b/arch/x86/tools/relocs=2Ec
+>> index a3bae2b24626=2E=2E0811fff23b9c 100644
+>> --- a/arch/x86/tools/relocs=2Ec
+>> +++ b/arch/x86/tools/relocs=2Ec
+>> @@ -733,6 +733,16 @@ static void walk_relocs(int (*process)(struct sect=
+ion *sec, Elf_Rel *rel,
+>>   		if (sec->shdr=2Esh_type !=3D SHT_REL_TYPE) {
+>>   			continue;
+>>   		}
+>> +
+>> +		/*
+>> +		 * Do not perform relocations in =2Enotes section; any
+>> +		 * values there are meant for pre-boot consumption (e=2Eg=2E
+>> +		 * startup_xen)=2E
+>> +		 */
+>> +		if (strcmp(sec_name(sec->shdr=2Esh_info), "=2Enotes") =3D=3D 0) {
+>
+>Instead of a strcmp(), wouldnt't =2E=2E=2E
+>
+>> +			continue;
+>> +		}
+>> +
+>>   		sec_symtab  =3D sec->link;
+>>   		sec_applies =3D &secs[sec->shdr=2Esh_info];
+>>   		if (!(sec_applies->shdr=2Esh_flags & SHF_ALLOC)) {
+>
+>=2E=2E=2E a test of "sec_applies->shdr=2Esh_type =3D=3D SHT_NOTE" work as=
+ well?
+>
+>In the end I'm fine with both variants, so:
+>
+>Reviewed-by: Juergen Gross <jgross@suse=2Ecom>
+>
+>
+>Juergen
 
-I would suggest: s/thanks to/in/
-
-> +For example, if the current built-in configuration is:
-> +
-> +.. code-block:: console
-> +
-> +    $ zgrep -h "^CONFIG_LSM=3D" "/boot/config-$(uname -r)" /proc/config.=
-gz 2>/dev/null
-> +    CONFIG_LSM=3D"lockdown,yama,integrity,apparmor"
-> +
-> +...and if the cmdline doesn't contain ``landlock`` either:
-> +
-> +.. code-block:: console
-> +
-> +    $ sed -n 's/.*\(\<lsm=3D\S\+\).*/\1/p' /proc/cmdline
-> +    lsm=3Dlockdown,yama,integrity,apparmor
-> +
-> +...we should configure the bootloader to set a cmdline extending the ``l=
-sm``
-> +list with the ``landlock,`` prefix::
-
-Nit: Is the double colon at the end of this line accidental?
-(It does not appear before the previous code block.)
-
-> +
-> +  lsm=3Dlandlock,lockdown,yama,integrity,apparmor
-> +
-> +After a reboot, we can check that Landlock is up and running by looking =
-at
-> +kernel logs:
-> +
-> +.. code-block:: console
-> +
-> +    # dmesg | grep landlock || journalctl -kb -g landlock
-> +    [    0.000000] Command line: [...] lsm=3Dlandlock,lockdown,yama,inte=
-grity,apparmor
-> +    [    0.000000] Kernel command line: [...] lsm=3Dlandlock,lockdown,ya=
-ma,integrity,apparmor
-> +    [    0.000000] LSM: initializing lsm=3Dlockdown,capability,landlock,=
-yama,integrity,apparmor
-> +    [    0.000000] landlock: Up and running.
-> +
-> +Note that according to the built time kernel configuration,
-
-s/built time/build time/
-                 ^
-
-It feels like the phrase "according to" could be slightly more specific her=
-e.
-
-To paraphrase Alejandro Colomar, "Note that" is usually redundant.
-https://lore.kernel.org/all/0aafcdd6-4ac7-8501-c607-9a24a98597d7@gmail.com/
-
-I'd suggest:
-
-  The kernel may be configured at build time to always load the ``lockdown`=
-` and
-  ``capability`` LSMs.  In that case, these LSMs will appear at the beginni=
-ng of
-  the ``LSM: initializing`` log line as well, even if they are not configur=
-ed in
-  the boot loader.
-
-> +``lockdown,capability,`` may always stay at the beginning of the ``LSM:
-> +initializing lsm=3D`` list even if they are not configured with the boot=
-loader,
-
-Nit: The man pages spell this in two words as "boot loader".
-
-
-> +which is OK.
-> +
-> +Network support
-> +---------------
-> +
->  To be able to explicitly allow TCP operations (e.g., adding a network ru=
-le with
->  ``LANDLOCK_ACCESS_NET_BIND_TCP``), the kernel must support TCP
->  (``CONFIG_INET=3Dy``).  Otherwise, sys_landlock_add_rule() returns an
->=20
-> base-commit: b4007fd27206c478a4b76e299bddf4a71787f520
-> --=20
-> 2.44.0
->=20
-
-Reviewed-by: G=C3=BCnther Noack <gnoack@google.com>
+A type check would probably be better=2E=2E=2E
 
