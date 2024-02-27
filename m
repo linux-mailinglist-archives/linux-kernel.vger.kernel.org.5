@@ -1,138 +1,149 @@
-Return-Path: <linux-kernel+bounces-82461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225BA8684F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:21:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 806B28684F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:21:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAAEC1F22EF1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:21:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A10D2863C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF55EA2A;
-	Tue, 27 Feb 2024 00:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7180120EE;
+	Tue, 27 Feb 2024 00:21:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EtbmAdUx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kpt4X6zd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180FF161
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:21:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB18B1859;
+	Tue, 27 Feb 2024 00:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708993270; cv=none; b=fGKwC+Ntg6zZjxOLj6r/ksShrtCi21s2OY76iEeGvwYVjcSlowJsHm116msL1fof+C8UBw0pfmENUVFQliRVpw2OzPkis9jMuwTVjlL4z84kexlN6BV1WP2w6kMqDcJSozt8/F8V0jcEkc51vk0xZFR0cE88ujU1HdX0FJLkCs8=
+	t=1708993277; cv=none; b=dDYwd/bJo4q5msuCAU3svpd0lswqdqsWC312PUdvp2GzFdxSgIly3Ly27BmI1rj2RV51mJTkhKfmfarc8V8eefbPCfaozJMY4l5XLSK4mfL5Ima5aTN66p1jWv1vJHrvK1q5kVSGzyIC82edTxr2zyfkS5CWIQDgKDwWkpce+sY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708993270; c=relaxed/simple;
-	bh=fYTwBpg7uMTawTUnQ2BSWuwAUKm59qg1pIXrtXgXbFU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m2F5c5POsMbJ/bpDcZN4ftRBLSpZdgX2QupeViq0rdUf9D7RmcjJ9CczMoBsQlUYDdDPhPbP0TfpT0kh/JwGnwv9nD/EXTu7FxW0as1AxQNL77K3Q3KR1aoOUAlb7495nGwGQpbKqq+L3O1acEaU9EdNd8qDJEg2TtdGqlYtCIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EtbmAdUx; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708993266;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=deu2WpFSMCIwa7mbcBS0LlHiNgXZ/4WozKcv0iuRKBQ=;
-	b=EtbmAdUx3TLx1uxDIteZl3MX4pjw150lSMFNoxCXZK1a9vZ8bBTG2fFDu9F4/Mfj4q6zcX
-	WnuolmZ6gQMGgos5HRGYmgFJ4InES++k36k3DM5J1fuAQ0GdRn7HE6eLNH/KRxtlECAGAQ
-	xt/bEpAQLU2W1L9a1pFttnbII1k7DCM=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-544-GFThb6AFOvKQon_xgJRCJA-1; Mon, 26 Feb 2024 19:21:05 -0500
-X-MC-Unique: GFThb6AFOvKQon_xgJRCJA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33d51bb9353so2024293f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:21:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708993263; x=1709598063;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=deu2WpFSMCIwa7mbcBS0LlHiNgXZ/4WozKcv0iuRKBQ=;
-        b=JGoyjjr3BgVAg3AgEv/fSAKPVNW1Iu7pWaRemexl8kjUPQMw7UgmFQPXn3H5TZFmjW
-         H4jc7s2AhpKHsLGzTkgK0DuOkZOG7v3c3XYEKQoAhgSegLnSl/jGzsw8NWhCLPSR0cCd
-         Lo3zyHC84JrvDthV87Hc42NWxAofljbssE4miCyeBXRR9+bGR7EvjpfL2xSAzi1vgJTu
-         D06vjZk0LHijyogw7p4uMH0YGCG0bXqQDFxgz1qPMHjeYEJ9MaNVIld2NMREFG3dwgCI
-         0LIOFXgu5EOKVzMVlWOvyt0bxqL43O451laND3sr3d/ZES09CU2YusOheM6tik7ZOKVO
-         3zdA==
-X-Gm-Message-State: AOJu0YyVkm/Ldt0enAlnKz8bKqq7WfXKM/sxXvqLxr3RRFnDUftBizFE
-	en0jaM9hS2BCZwkdGipdsrQlHSIK/K3fI3I1yUUDUqo2sKfdRLjzYVCkmNu5VK6fJ4oYZzpTvdr
-	W1AwdZdM1O3l/sZHaZm8jhDJlrqwYD1ls5rfKpqVFHjySzh/uYrROKbQUu16F7UdJx7odM1sWvA
-	SdwxXyhF5i7Vybh0fexAyR+ETHaDXKIOCHvjZ7du/EEAXH
-X-Received: by 2002:a5d:588b:0:b0:33d:d96b:2615 with SMTP id n11-20020a5d588b000000b0033dd96b2615mr3090211wrf.47.1708993263477;
-        Mon, 26 Feb 2024 16:21:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGRfO+KR9IwLDp+vA/SLuUUNQWiLiDHzfpZePGawUDhvo/EwptbYbLO0SUGcBbbRPRC2I4yhw==
-X-Received: by 2002:a5d:588b:0:b0:33d:d96b:2615 with SMTP id n11-20020a5d588b000000b0033dd96b2615mr3090190wrf.47.1708993263000;
-        Mon, 26 Feb 2024 16:21:03 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id f1-20020adfe901000000b0033d8b1ace25sm9720705wrm.2.2024.02.26.16.21.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 16:21:02 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: Nishanth Menon <nm@ti.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Breno Leitao <leitao@debian.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	Li Zetao <lizetao1@huawei.com>,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH] wlcore: sdio: warn only once for wl12xx_sdio_raw_{read,write}() failures
-Date: Tue, 27 Feb 2024 01:20:46 +0100
-Message-ID: <20240227002059.379267-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708993277; c=relaxed/simple;
+	bh=8NaJg0kgxbhEDKrN/5IITu2XOQzRyVbnI1VrY65Y4SI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qT3phgQi6/IUqSnpVEjhMHeoG0AR0KXUcTPP4HUZdi/qzXA9zyok8ke2KlJkDkHyi/eFzp/ohtDuYdNKO6Nh+Egvd0UGNzYYMpDJRXlMLARC/VowrNKoG87rpqNqXtQ1ZOEposguc4OHVCmu+oG4f8wZCOa9gXrgMZdzDV0EfMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kpt4X6zd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE9EC433F1;
+	Tue, 27 Feb 2024 00:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708993277;
+	bh=8NaJg0kgxbhEDKrN/5IITu2XOQzRyVbnI1VrY65Y4SI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Kpt4X6zd6vBGkK34OLhy32XndWxyOgYCqRHFb+cPvtbSkooMCCdhP0/XOpLFGTgQG
+	 KXtFtojWCOS7qzr/uRY5fylOi+Is52NU7T+zDPAETFvZt/h/YKrFMjGPiOKC0GPvyW
+	 ljHUNRRMByzsXZXQAOoJCZvcW/7qQQytIqLptrgiRzBdMrEKYNX0y+X+uY3R7ym0zj
+	 ePqX4PiUi9qfoPMWJ7buWd56t6LRAARsJvDjHrqk2btCHkuCWVIKwANV7DSqC31Fmj
+	 m5uwN5xDJUtVT0qruNr60wckE8zuwWIYuSCGqIDZ5gSjfKG8v6FNY7IV+QuZILppWA
+	 lvBfyCGDCGW3w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id BB9EFCE098C; Mon, 26 Feb 2024 16:21:16 -0800 (PST)
+Date: Mon, 26 Feb 2024 16:21:16 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Bagas Sanjaya <bagasdotme@gmail.com>,
+	Marcus Seyfarth <m.seyfarth@gmail.com>,
+	Tor Vic <torvic9@mailbox.org>
+Subject: Re: [PATCH 5/6] rcu/nocb: Fix WARN_ON_ONCE() in the
+ rcu_nocb_bypass_lock()
+Message-ID: <20c65121-3a78-4c48-87d8-adc7589f8f74@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240201014100.3204532-1-boqun.feng@gmail.com>
+ <20240201014100.3204532-6-boqun.feng@gmail.com>
+ <12387583.O9o76ZdvQC@natalenko.name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <12387583.O9o76ZdvQC@natalenko.name>
 
-Report these failures only once, instead of keep logging the warnings for
-the same condition every time that a SDIO read or write is attempted. This
-behaviour is spammy and unnecessarily pollutes the kernel log buffer.
+On Sat, Feb 24, 2024 at 05:30:29PM +0100, Oleksandr Natalenko wrote:
+> Hello.
+> 
+> On čtvrtek 1. února 2024 2:40:57 CET Boqun Feng wrote:
+> > From: Zqiang <qiang.zhang1211@gmail.com>
+> > 
+> > For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
+> > CONFIG_RCU_LAZY=y, the following scenarios will trigger WARN_ON_ONCE()
+> > in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended() functions:
+> > 
+> >         CPU2                                               CPU11
+> > kthread
+> > rcu_nocb_cb_kthread                                       ksys_write
+> > rcu_do_batch                                              vfs_write
+> > rcu_torture_timer_cb                                      proc_sys_write
+> > __kmem_cache_free                                         proc_sys_call_handler
+> > kmemleak_free                                             drop_caches_sysctl_handler
+> > delete_object_full                                        drop_slab
+> > __delete_object                                           shrink_slab
+> > put_object                                                lazy_rcu_shrink_scan
+> > call_rcu                                                  rcu_nocb_flush_bypass
+> > __call_rcu_commn                                            rcu_nocb_bypass_lock
+> >                                                             raw_spin_trylock(&rdp->nocb_bypass_lock) fail
+> >                                                             atomic_inc(&rdp->nocb_lock_contended);
+> > rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
+> >  WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
+> >                             |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
+> > 
+> > Reproduce this bug with "echo 3 > /proc/sys/vm/drop_caches".
+> > 
+> > This commit therefore uses rcu_nocb_try_flush_bypass() instead of
+> > rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan().  If the nocb_bypass
+> > queue is being flushed, then rcu_nocb_try_flush_bypass will return
+> > directly.
+> > 
+> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
+> >  kernel/rcu/tree_nocb.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> > index 9e8052ba14b9..ffa69a5e18f4 100644
+> > --- a/kernel/rcu/tree_nocb.h
+> > +++ b/kernel/rcu/tree_nocb.h
+> > @@ -1391,7 +1391,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+> >  			rcu_nocb_unlock_irqrestore(rdp, flags);
+> >  			continue;
+> >  		}
+> > -		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
+> > +		rcu_nocb_try_flush_bypass(rdp, jiffies);
+> >  		rcu_nocb_unlock_irqrestore(rdp, flags);
+> >  		wake_nocb_gp(rdp, false);
+> >  		sc->nr_to_scan -= _count;
+> > 
+> 
+> Does this fix [1] [2]?
+> 
+> Thank you.
+> 
+> [1] https://bugzilla.kernel.org/show_bug.cgi?id=217948
+> [2] https://lore.kernel.org/lkml/8461340f-c7c8-4e1e-b7fa-a0e4b9a6c2a8@gmail.com/
 
-For example, on an AM625 BeaglePlay board where accessing a SDIO WiFi chip
-fails with an -110 error:
+It might, but why not apply it to the exact kernel version on which the
+bug appeared and see if it prevents it?
 
-  $ dmesg | grep "sdio write\|read failed (-110)" | wc -l
-  39
-
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-
- drivers/net/wireless/ti/wlcore/sdio.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ti/wlcore/sdio.c b/drivers/net/wireless/ti/wlcore/sdio.c
-index eb5482ed76ae..47ecf33a0fbe 100644
---- a/drivers/net/wireless/ti/wlcore/sdio.c
-+++ b/drivers/net/wireless/ti/wlcore/sdio.c
-@@ -75,8 +75,8 @@ static int __must_check wl12xx_sdio_raw_read(struct device *child, int addr,
- 
- 	sdio_release_host(func);
- 
--	if (WARN_ON(ret))
--		dev_err(child->parent, "sdio read failed (%d)\n", ret);
-+	if (WARN_ON_ONCE(ret))
-+		dev_err_once(child->parent, "sdio read failed (%d)\n", ret);
- 
- 	if (unlikely(dump)) {
- 		printk(KERN_DEBUG "wlcore_sdio: READ from 0x%04x\n", addr);
-@@ -120,8 +120,8 @@ static int __must_check wl12xx_sdio_raw_write(struct device *child, int addr,
- 
- 	sdio_release_host(func);
- 
--	if (WARN_ON(ret))
--		dev_err(child->parent, "sdio write failed (%d)\n", ret);
-+	if (WARN_ON_ONCE(ret))
-+		dev_err_once(child->parent, "sdio write failed (%d)\n", ret);
- 
- 	return ret;
- }
--- 
-2.43.0
-
+							Thanx, Paul
 
