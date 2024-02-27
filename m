@@ -1,120 +1,86 @@
-Return-Path: <linux-kernel+bounces-83109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C28B0868E8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:14:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC72868E91
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D57328408A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:14:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B117B1F2706B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19E1139584;
-	Tue, 27 Feb 2024 11:14:05 +0000 (UTC)
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7263A2E3EB;
+	Tue, 27 Feb 2024 11:16:05 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC02137C38;
-	Tue, 27 Feb 2024 11:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924591386D3
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:16:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709032445; cv=none; b=gSgMORBhfbBBn5DsFsFSPFG6MJ7OIZz5rRPsxZYwTuEy4s+53U0uwJhmMEV7kwFhNlJaQWUtMHLmjnPhOb+WzE1Cx3G4fIZA9DseXEyrroC2d7AELnTkVGL6dVUXFPcL/2BDx+1/qDmDCeVqTwhvk5BmeAafGevUYZ7gTLjwITc=
+	t=1709032565; cv=none; b=bR38Aa3b89ygsYReVf3zYvrBQf9nOi+q8Y0W1H9zbauwv57EJzFM5tmSNocDBE6Xs5nMe4b+ykpvBLgHpH7OEi+63ZX5j4UrSPcmHM5EsTlAv2dRdVkGsqc/VQqaxvNx5ZMVEkJt4uKfnDis3xY6cnjuApT5KyJFkubIfAy/MDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709032445; c=relaxed/simple;
-	bh=MVXIRlrBqlDw6Ivndp/P8xBINKY02FK42546s1P+zn4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D3WksnEuuElTihBnCpIxcn5jxfM32Z782vjaEzb9RjXxs2vj0SNEeOPNMfP+4f02FlCLiZSyG9GXA728P2D7UD9LmojEr3XIVTb4A2z/c9uW55LkTcsdNwITJcbbUTUqpoxJmzVJsHFvGDqzCBZPiFIDc0p1YDCfWaSMI+cSzOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a0b0a2819cso121604eaf.0;
-        Tue, 27 Feb 2024 03:14:03 -0800 (PST)
+	s=arc-20240116; t=1709032565; c=relaxed/simple;
+	bh=7OecGUQhBHbN7Dm2Q/QH7xLRSwFK/plk849Ojtse7H0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=PbpCoBP0e09HSN2w4llGqNcPFPVpzDuKyXPKZjSYQWdFhHrmWE0NLUykyNv7yoelBV7OAE/5qIqLnv0QXKqtB8buBD5eQLHRmZpEH0apGk+oiI9G2U+ucJh3PfYLxzj8c+lGQVXZ8iBxu7tLNB7/kwBwFx3TY5sHIbt6h1Igk60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3659343e9bfso16941285ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:16:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709032443; x=1709637243;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MVXIRlrBqlDw6Ivndp/P8xBINKY02FK42546s1P+zn4=;
-        b=r3blyjUfU3/AKmYMUKaeiGrmtDMFQ6nhk48NTQtFksHnVEsMoUwpWY1wRD3EB/zZGm
-         4X99UzkR/ceZfH1C98BD5+pY2ysQKkQKMY9nFUP3XJmJsPj7jilt3FAkC7npG31VoIR8
-         wB3sa2QlumYSD5FSw+Gu6FoGPgllIfROkQtgNIG5Hw/4qMo2wPeKSh/kTpxHv5Rxmdzv
-         dX1PdrGBj61FiQPJ8Vuz4qiFAFH6k1GRtBsZ1UwZvXajLeZKNji3ruinK1fM/29UNBNj
-         bgtIzVo4mdwUsw1GV2vE/HDHSLwewggR+YREQWzwF6I2fLbnXV2c5gvP7uaGXF5gn2hZ
-         x3yA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYd9lNGbOlBLCp6Nq6XBxOQR5VKM5JmKc7apHvyJQiYUQfpfDfeH50Ur/nz27zu1L7SaOdNmxHTHe/Qsllpbxljye39ZRpzxp/WapDpBBvStBnszZEfYFdBOS/GWE2WnQL+yMLWC4EZw==
-X-Gm-Message-State: AOJu0YwXPsTbHbu54MoSb28lXiF9KqMSxWJLQRWbXCsNDqdnw0zMBB8S
-	WzfA+Y2+cEcNxEveFU2bMOOHJwqIUSoCA6t5xKMgLpu+3sQYD7/ouYtVc6g4CPF98WKkKbcrOOc
-	v/QUIB1fUJ3lNSwmUmy8/Usq3Ovc=
-X-Google-Smtp-Source: AGHT+IHwKvECtDn2ThFyzPDi1di21uzZhb9hT/KQBEm+6WSIlFIx6C8QxuYjWDZbhjciyHLhf6t4SAUVIcyyP1/DCcI=
-X-Received: by 2002:a4a:d996:0:b0:5a0:4216:c5f0 with SMTP id
- k22-20020a4ad996000000b005a04216c5f0mr8840444oou.0.1709032442924; Tue, 27 Feb
- 2024 03:14:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709032562; x=1709637362;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rWmvpWlxS7seJRviuyIByiwj/YWfm4Ys5FDFYB2U+tM=;
+        b=BF3qQbCObvNAGjdlIXch/tlvTBEv0L7I6CtzM2pWffpMrFxsaVmIxCP79tN1elzO+y
+         QxqAm+pfM34BDIF/iCP3YsyfjlhZfPYdEkc12IabsgkBOxxepmp++WVVvyUMYgCEpQRA
+         m2Vx7e9GnrDUGtIeMJR/mhFLhY4sHNixNGmCxXIg2fxTcrHTIBqLsB5NU9hSDjfxTTLx
+         56p4ghtu6BjcU+8Zoek0e+Q5U6UVe9Vb3x5RfiutFBlIcRWRQScWnbS1DsPUinR3KoHJ
+         PvVp6zGrZ+bmzFtjXZFazU1M2cmDd8clRuuRBFdhYD20nvc38eO5UAPjF3IFHxohzJ53
+         w+9g==
+X-Forwarded-Encrypted: i=1; AJvYcCXVsWJiFR8VMrNO4ZibVyITbkDaV/XydRFTBDVyXrlwB0rpk4ppHSUqR1XZRhJZsTDYX4fGJJXCn+vwYXctTYg31/WM6d8Fu5KNnWy8
+X-Gm-Message-State: AOJu0Yy2urtDj5uBQvNFz3wAIpta7Q0zOcWdyEVldTzot/H1rXrdKxx7
+	00iACQ52rKxCqknx7M3VUS2yBHtLeEpuhUckdsrk/T+gTQJhKs0spIUl58eq5EJK73F9qNuTLi1
+	fZvI5dgPpl/H5Xdy3sJC0kLfkth9UWEhh6K7RpqKwIHZlAO7oBNjQAiI=
+X-Google-Smtp-Source: AGHT+IFej/9kVwyuvByimchmMhLwlKOGI/RGbhRCr1goJPzlPQufuu9I34XOtvnwm0UQ4Z/eDQ3D4PSebQHWTwK1BGuE3pX0tOUl
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6021126.lOV4Wx5bFT@kreacher> <3283809.44csPzL39Z@kreacher> <20240227092844.00006d49@Huawei.com>
-In-Reply-To: <20240227092844.00006d49@Huawei.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 27 Feb 2024 12:13:50 +0100
-Message-ID: <CAJZ5v0jCPO9H-dCdew7LoUwg__wFwY60HYphxEgN_-=0Pe87Hg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] ACPI: scan: Make acpi_processor_add() check the
- device enabled bit
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux ACPI <linux-acpi@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Mika Westerberg <mika.westerberg@linux.intel.com>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	"Russell King (Oracle)" <linux@armlinux.org.uk>, kangkang.shen@futurewei.com
+X-Received: by 2002:a05:6e02:1d99:b0:365:1212:3f0 with SMTP id
+ h25-20020a056e021d9900b00365121203f0mr559529ila.6.1709032562688; Tue, 27 Feb
+ 2024 03:16:02 -0800 (PST)
+Date: Tue, 27 Feb 2024 03:16:02 -0800
+In-Reply-To: <20240227105301.1525-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cf0c5906125b26ca@google.com>
+Subject: Re: [syzbot] [dri?] [media?] inconsistent lock state in valid_state (2)
+From: syzbot <syzbot+a225ee3df7e7f9372dbe@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 10:28=E2=80=AFAM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Mon, 26 Feb 2024 17:40:52 +0100
-> "Rafael J. Wysocki" <rjw@rjwysocki.net> wrote:
->
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Modify acpi_processor_add() return an error if _STA returns the enabled
-> > bit clear for the given processor device, so as to avoid using processo=
-rs
-> > that don't decode their resources, as per the ACPI specification. [1]
-> >
-> > Link: https://uefi.org/specs/ACPI/6.5/06_Device_Configuration.html#sta-=
-device-status # [1]
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Sorry for lack of reply on discussion.
+Hello,
 
-No worries.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> Your follow up mails never reached my inbox for some reason
+Reported-and-tested-by: syzbot+a225ee3df7e7f9372dbe@syzkaller.appspotmail.com
 
-/me blames spam filters somewhere.
+Tested on:
 
-> so I just caught up on lore. I'll keep an eye on
-> the archives to make sure I don't miss further discussion.
+commit:         45ec2f5f Merge tag 'mtd/fixes-for-6.8-rc7' of git://gi..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=11500daa180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fad652894fc96962
+dashboard link: https://syzkaller.appspot.com/bug?extid=a225ee3df7e7f9372dbe
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=129f934a180000
 
-Thanks!
-
-> Agreed that functional isn't relevant here so this patch is correct.
-> Also agree that it would be nice to clarify the spec as you mentioned
-> to say that bit 1 is reserved if bit 0 of _STA result is clear.
-> Depending on interpretation it's either a clarification or a relaxation
-> of current statements, so should be uncontroversial (famous last words ;)
-
-Right.
-
-> +CC kangkang so this is on his radar as an ACPI cleanup suggestion.
-> For his reference, discussion is here:
-> https://lore.kernel.org/linux-acpi/CAJZ5v0jjD=3DKN0pOuWZZ8DT5yHdu03KgOSHY=
-e3wB7h2vafNa44w@mail.gmail.com/
->
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-Thanks for all of the reviews!
+Note: testing is done by a robot and is best-effort only.
 
