@@ -1,252 +1,93 @@
-Return-Path: <linux-kernel+bounces-82506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C47D2868587
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:07:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765FD86858C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7AFD3287A77
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:07:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 164861F2294E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0CE4C61;
-	Tue, 27 Feb 2024 01:06:56 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222934C7C;
+	Tue, 27 Feb 2024 01:09:05 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F1C17F8;
-	Tue, 27 Feb 2024 01:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 475D646AF
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708996016; cv=none; b=W+2nKnX4uA8mEE5be8dZZu3uYIBbYot+mGAiWUO7AJ3F7OuX5w1+EI7IC2qlOob3cYX2mVVSLYzWzzozIFZZE0yXC3q1O43xmWhc/NwTc9CVDugx6ux7/GZvsGcKyap3mwkmbDs6DIzA1NX46HF77Nq+Pwkl6xaW+sM5JYq86cE=
+	t=1708996144; cv=none; b=Mw5o3ZWVVqD5C5gfr9uJODT8hcM7M8bK35ANnmyGazVyT/4L6GRtyJhZ0jsX7DBTufmDnM3acrYR3ZoanSrUaBXVlXPv1Jlodr5vKsu8P3RA8GzFao3GcPIkw3ph3hIKeubKnJQxuqjQExggIVgnAQeZOn6M0NqGmw8aKFlRVIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708996016; c=relaxed/simple;
-	bh=ytIdOjWG/yc37fO5pwvQfQZ/gjShqSuo3M/W3NdQsIw=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=sigLqOsSkK7+Hou5MWpliSWhR8oqSBcEfDIy+xb3K4a1asHLxBCkzkdEw1kctlNa/AkOwn5k2aacTE69tI1pT0HmAnF4abO8ybsL2evwHOqwaqLzvN6wzuIx8gIgeZEX9sw9mAr+yiZv9BY/LY3j2Uvy5Y9xVeamriMpuKGUjAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TkK7l4jyqz4f3kKh;
-	Tue, 27 Feb 2024 09:06:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id F39081A016E;
-	Tue, 27 Feb 2024 09:06:46 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g6lNd1l7f8RFQ--.22845S3;
-	Tue, 27 Feb 2024 09:06:46 +0800 (CST)
-Subject: Re: [PATCH md-6.9 06/10] md/raid1: factor out read_first_rdev() from
- read_balance()
-To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com,
- shli@fb.com, linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
- <20240222075806.1816400-7-yukuai1@huaweicloud.com>
- <CALTww2-ypx2YJOeXTzj7Y0EtXMkfrTOAJzzmDnnUK=1irspWtQ@mail.gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <4f2ae964-5030-907e-bc06-4d9e1fc8f3e8@huaweicloud.com>
-Date: Tue, 27 Feb 2024 09:06:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1708996144; c=relaxed/simple;
+	bh=kzoRrXh08bElKHfj1aPeK5wEZBKK/c9vqPFeUCMIWnA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=oafhKke5pJp6TLJlcoYU+tK0pU6TaZ9oux9uDCVppAOkgaAawzfr5b87i/K3ek5JGwqlFHziD3ufvy/IIawM5DkFKw4eeDEwMENSVq5Go9Y0sA2An+6378r0Tn6uhvnKv8eTMORlBsLqKLwJCaFE1chyDUJBhUF+PzjNUEcPLEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3657cf730a0so37934045ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:09:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708996142; x=1709600942;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Aktuv2KRKCqLRwq94WSyQgX3rAr6mzRgiYzRkrGsztc=;
+        b=UwlGUxqyYJBhUMTtpC24qmD1L7ze2xaIG45+yOnLjC7Nd96rVYnNjJsWnmSJMpv1FV
+         odMUPmgGeUhTc5pgbrkkQTFRUoqE3IBKdvu39Ns5q4GjdQY0sM6sUdUE7I+z+NyKMQgr
+         YbVr+zIbqHvB/KjqKzzBDxB/4Du03qt21RqnzTEmAhxh+lZGWZldaqPzdzAq5aSV6IIH
+         6iu41T4w51Fi5yqdBr58L3rH/4Q8qRfo2d4ODdfW66wdagox9ks4u8TkXPKON/W+xBwU
+         CSU2UoCdotRAB5DEouuB3TmZBW6R5ZjBgJ9J+J0+MMqGFzwEGVi/HroLIDuCCzApGGft
+         G2bw==
+X-Forwarded-Encrypted: i=1; AJvYcCX75oLhdjOYW/y8rn0kiRVqKB3jrmC5TMPoKF6gPojYOdd5GL6H8HAUGwKidxs2TDYXv5sVzivaLifdBr8DflENmSfOSjrhirk6lUxU
+X-Gm-Message-State: AOJu0Ywh+7g2dC8RGdCWe97W8T1mdoFOsx/o6OaVdsBC/qwhc6LF+OCU
+	FCv8vmDJ5U0V1bSw6ryT3Eqis70vY5C1fe49eLJJwxrjTp4uKe/3Kh+uHehvW6UXt6NNtD7FjXl
+	uhI2Nv57p2VnJbXG0LiyLMfSDRlmgtes0NR/f4O5ngLex3pztOOK6iaY=
+X-Google-Smtp-Source: AGHT+IE1wkVsYou1Utkg829CH1m2uRacrTIEQTXsrl5dubL6Fav7LdHQpDU/SJebyUC6BahX5BA+F53OQcjQF6i4WPT/D5AWRTlZ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALTww2-ypx2YJOeXTzj7Y0EtXMkfrTOAJzzmDnnUK=1irspWtQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g6lNd1l7f8RFQ--.22845S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw18JrWxGrW3KrW5Ar1rXrb_yoW7CF4Dpw
-	45JFs3tryUX34fZwn8X3yDWrn3t34ftF48GrWxJ3WIgrna9rZ5KFy8Grya9FyUCr45Jw1U
-	Zw1UArW7u3WvkFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Received: by 2002:a05:6638:358a:b0:474:96f7:a3a1 with SMTP id
+ v10-20020a056638358a00b0047496f7a3a1mr45049jal.0.1708996142473; Mon, 26 Feb
+ 2024 17:09:02 -0800 (PST)
+Date: Mon, 26 Feb 2024 17:09:02 -0800
+In-Reply-To: <000000000000cc261105f10682eb@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fea5b1061252ab7d@google.com>
+Subject: Re: [syzbot] [ntfs3?] KASAN: use-after-free Read in ntfs_lookup_inode_by_name
+From: syzbot <syzbot+3625b78845a725e80f61@syzkaller.appspotmail.com>
+To: almaz.alexandrovich@paragon-software.com, anton@tuxera.com, 
+	axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+syzbot suspects this issue was fixed by commit:
 
-在 2024/02/26 22:16, Xiao Ni 写道:
-> On Thu, Feb 22, 2024 at 4:04 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> read_balance() is hard to understand because there are too many status
->> and branches, and it's overlong.
->>
->> This patch factor out the case to read the first rdev from
->> read_balance(), there are no functional changes.
->>
->> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
->> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/md/raid1.c | 63 +++++++++++++++++++++++++++++++++-------------
->>   1 file changed, 46 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
->> index 8089c569e84f..08c45ca55a7e 100644
->> --- a/drivers/md/raid1.c
->> +++ b/drivers/md/raid1.c
->> @@ -579,6 +579,47 @@ static sector_t align_to_barrier_unit_end(sector_t start_sector,
->>          return len;
->>   }
->>
->> +static void update_read_sectors(struct r1conf *conf, int disk,
->> +                               sector_t this_sector, int len)
->> +{
->> +       struct raid1_info *info = &conf->mirrors[disk];
->> +
->> +       atomic_inc(&info->rdev->nr_pending);
->> +       if (info->next_seq_sect != this_sector)
->> +               info->seq_start = this_sector;
->> +       info->next_seq_sect = this_sector + len;
->> +}
->> +
->> +static int choose_first_rdev(struct r1conf *conf, struct r1bio *r1_bio,
->> +                            int *max_sectors)
->> +{
->> +       sector_t this_sector = r1_bio->sector;
->> +       int len = r1_bio->sectors;
->> +       int disk;
->> +
->> +       for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
->> +               struct md_rdev *rdev;
->> +               int read_len;
->> +
->> +               if (r1_bio->bios[disk] == IO_BLOCKED)
->> +                       continue;
->> +
->> +               rdev = conf->mirrors[disk].rdev;
->> +               if (!rdev || test_bit(Faulty, &rdev->flags))
->> +                       continue;
->> +
->> +               /* choose the first disk even if it has some bad blocks. */
->> +               read_len = raid1_check_read_range(rdev, this_sector, &len);
->> +               if (read_len > 0) {
->> +                       update_read_sectors(conf, disk, this_sector, read_len);
->> +                       *max_sectors = read_len;
->> +                       return disk;
->> +               }
-> 
-> Hi Kuai
-> 
-> It needs to update max_sectors even if the bad block starts before
-> this_sector. Because it can't read more than bad_blocks from other
-> member disks. If it reads more data than bad blocks, it will cause
-> data corruption. One rule here is read from the primary disk (the
-> first readable disk) if it has no bad block and read the
-> badblock-data-length data from other disks.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Noted that raid1_check_read_range() will return readable length from
-this rdev, hence if bad block starts before this_sector, 0 is returned,
-and 'len' is updated to the length of badblocks(if not exceed read
-range), and following iteration will find the first disk to read updated
-'len' data and update max_sectors.
+    fs: Block writes to mounted block devices
 
-Thanks,
-Kuai
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16ae7a30180000
+start commit:   cc3c44c9fda2 Merge tag 'drm-fixes-2023-05-12' of git://ano..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=38526bf24c8d961b
+dashboard link: https://syzkaller.appspot.com/bug?extid=3625b78845a725e80f61
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16eae776280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11d273ea280000
 
-> 
-> Best Regards
-> Xiao
-> 
->> +       }
->> +
->> +       return -1;
->> +}
->> +
->>   /*
->>    * This routine returns the disk from which the requested read should
->>    * be done. There is a per-array 'next expected sequential IO' sector
->> @@ -603,7 +644,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>          sector_t best_dist;
->>          unsigned int min_pending;
->>          struct md_rdev *rdev;
->> -       int choose_first;
->>
->>    retry:
->>          sectors = r1_bio->sectors;
->> @@ -613,10 +653,11 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>          best_pending_disk = -1;
->>          min_pending = UINT_MAX;
->>          best_good_sectors = 0;
->> -       choose_first = raid1_should_read_first(conf->mddev, this_sector,
->> -                                              sectors);
->>          clear_bit(R1BIO_FailFast, &r1_bio->state);
->>
->> +       if (raid1_should_read_first(conf->mddev, this_sector, sectors))
->> +               return choose_first_rdev(conf, r1_bio, max_sectors);
->> +
->>          for (disk = 0 ; disk < conf->raid_disks * 2 ; disk++) {
->>                  sector_t dist;
->>                  sector_t first_bad;
->> @@ -662,8 +703,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>                                   * bad_sectors from another device..
->>                                   */
->>                                  bad_sectors -= (this_sector - first_bad);
->> -                               if (choose_first && sectors > bad_sectors)
->> -                                       sectors = bad_sectors;
->>                                  if (best_good_sectors > sectors)
->>                                          best_good_sectors = sectors;
->>
->> @@ -673,8 +712,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>                                          best_good_sectors = good_sectors;
->>                                          best_disk = disk;
->>                                  }
->> -                               if (choose_first)
->> -                                       break;
->>                          }
->>                          continue;
->>                  } else {
->> @@ -689,10 +726,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>
->>                  pending = atomic_read(&rdev->nr_pending);
->>                  dist = abs(this_sector - conf->mirrors[disk].head_position);
->> -               if (choose_first) {
->> -                       best_disk = disk;
->> -                       break;
->> -               }
->>                  /* Don't change to another disk for sequential reads */
->>                  if (conf->mirrors[disk].next_seq_sect == this_sector
->>                      || dist == 0) {
->> @@ -760,13 +793,9 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
->>                  rdev = conf->mirrors[best_disk].rdev;
->>                  if (!rdev)
->>                          goto retry;
->> -               atomic_inc(&rdev->nr_pending);
->> -               sectors = best_good_sectors;
->> -
->> -               if (conf->mirrors[best_disk].next_seq_sect != this_sector)
->> -                       conf->mirrors[best_disk].seq_start = this_sector;
->>
->> -               conf->mirrors[best_disk].next_seq_sect = this_sector + sectors;
->> +               sectors = best_good_sectors;
->> +               update_read_sectors(conf, disk, this_sector, sectors);
->>          }
->>          *max_sectors = sectors;
->>
->> --
->> 2.39.2
->>
->>
-> 
-> .
-> 
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
