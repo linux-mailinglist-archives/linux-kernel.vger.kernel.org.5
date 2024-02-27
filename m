@@ -1,78 +1,76 @@
-Return-Path: <linux-kernel+bounces-82846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 039DA868A80
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:09:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F54E868A84
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:10:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B81841F235F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:09:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 409661C21CFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BFC656461;
-	Tue, 27 Feb 2024 08:09:37 +0000 (UTC)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B032E5646D;
+	Tue, 27 Feb 2024 08:09:57 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B9056442;
-	Tue, 27 Feb 2024 08:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8595467C;
+	Tue, 27 Feb 2024 08:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709021376; cv=none; b=tZscGh+Jlp9cUy5D2Ft/sYsI6SRemBZOgVEoCRETMsDzJGkr7ih9ZpTHepBv+etAiUQZ30Z3qHzQyKouN1xv5gZmUp1gkiQeojeMj4Q+VGDz7QOPWAhpmIRuDcFJycxR0JXMq6S1u1O3S4L7zZGCm5L5ck3nIlJBYb2mUIiIOJU=
+	t=1709021397; cv=none; b=DeQ4Ydt56IjIIckJZyMmnu9AEyCA6NZLthlCVjee9U5SwMfBMyP5YswXjU1WZowc04EOSsZjfbf/+/PgFb2n7nFLBTb6W/e87FzGiDXn4JLKOIVq9VkgtE6o68hGNvnr8/MWfsRLjHgMJeGczuMyBfRRYKf+XwVufdq8kGc6POk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709021376; c=relaxed/simple;
-	bh=Cd3nKfsn1CmK7TjQsqqae5bIuxcmc17vi4cKxuDwdXI=;
+	s=arc-20240116; t=1709021397; c=relaxed/simple;
+	bh=dE27OkOv1DTsp3HB1NDlDgJ5Hqay4jF3HK5PY13Y5do=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eg0FJ1Gtp9qcVQkR2dZh5R9BpO95XrPVRhunSgMdWAGG1J6O+K3Un3IpIAD8ggx6Dzci42JNp/b8G7wD/lL/ZALeROrJ8WeXkVg1ASb6dtUZ9flawf+lOIo9rYBp8sMSEtUoA8Ovtivg048Miog0LgOOS5Qk8LiqxW+rs8qyttk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.174
+	 To:Cc:Content-Type; b=DYDcQCmaMDkASdnnPNiL5gb57FJz6Rg/lGvC8Er6JAy0rqYSAiXP3hFor14E5r/IrVTt8R4jD26KRqOfdVwvH/Zwlye3uik1ZIDmLUOWUw0tSamS34k2UHyazZf5Oft7JWtBXys7JWBxfrV2oqWKcF5ZhHnp74Ow7Rc/FtHSSgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6089b64f4eeso39945787b3.2;
-        Tue, 27 Feb 2024 00:09:35 -0800 (PST)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-607cd210962so35890267b3.2;
+        Tue, 27 Feb 2024 00:09:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709021374; x=1709626174;
+        d=1e100.net; s=20230601; t=1709021394; x=1709626194;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FxX6RgMhHn+61tSmT8CWOQW7owJHb+LAZ7EIbG00Oes=;
-        b=Lu0g0/ypkUKMmELukkMQMwZckHBUyfixbsOGqU886lmET27WRZ8DOpMpVVT/denF91
-         p/RWJY4UAXzuRTKxn9jqjJOoHMTyRANSG0tw9cnN14uMqmiIidfQHQWe5x2zd9mZuHEW
-         BDgGOgc1EdqSa/yxwcCtoQ0e9/iQq7vH8OQNdmyxBUYa632tDHgamS0AihmefgkZcT9m
-         q3dYv2yJQ/iK2SNPAkq6tbGvC3mOim7a+Q3+oxSkGxZ/5VqEAawyXQmcdXcCOf4LJIlR
-         uhCd34fhu2If/5rhYhQ6Om/W7V62ZtXPM6dD3FwiDic7YOSM0M+mdGeNxQhLleQo5SrY
-         GoYg==
-X-Forwarded-Encrypted: i=1; AJvYcCV5mnlQt4XXjHgYSXiw23GtSFztKfIMjGGsUQUozWwu7iW5IRCb6aIaKbixnyE7fVU3RZB3uM6yUR39lO2IerJ0Kof3PZ7Iof8EVjH77mx/0GhmnHdu2HcKojwaYoxHpBuXFDJeRaMfp+yMwXjDv6ZcrqL18F5Q4mFvv+wgeu8ASmPFf8QQQtqRAupi
-X-Gm-Message-State: AOJu0Yx4iZGzchE30v/1Mi9UhmNCpaa6bqaNsz15Fe3Q+8F3Rf/OdNsU
-	rI3CRdc7gFhRHbBMunmf7ieatopcRp3KK7gzSg6unKUlWubPDnAL2QhJj0L1gCA=
-X-Google-Smtp-Source: AGHT+IG9+pEFYRnV3Vs/Op0zIXiS8hO6DFhbFYz8aV1rH/fibW9jG9k431KodJjx6pL17YG6jLEf2Q==
-X-Received: by 2002:a81:a107:0:b0:607:e374:762e with SMTP id y7-20020a81a107000000b00607e374762emr1543247ywg.16.1709021373732;
-        Tue, 27 Feb 2024 00:09:33 -0800 (PST)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id n188-20020a0dcbc5000000b006092073cc7csm444717ywd.107.2024.02.27.00.09.32
+        bh=0oNxsCY0M4jeXi/rHTScBBRSGzK8KOWMJG/0W06N5ho=;
+        b=X775cf4angu6teSLyc4hnsmq6AyqwLGclHnjviMiqSVh6imJNg+/k1LTdtVmKagmzs
+         KY8GD/ocyHiqsPjc+q8UDKibPN3IzOOYrM8ujln00o7YATQ5gDzeEzcQiXh6JxXsh8Lp
+         Y36KiC4srQVEUcxxLoT3CZFPQ3874F1Xb1uh1OWaV8oEchsD09UI87dqZ3FWh32x+Qwu
+         mVUPP2NVMYH2c7ZayNnd6Qk+sRxyX6/k02Nktji4HA4Jx+LKsvggbEM8hQWSH03iOmNg
+         3rZT68BbLg2TuaqCUvxXRQbPq0p6yb0syrouTLAj1ZBSyc6H5OMRgdYB3lA2vawBv30v
+         47Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCUKKGMlnuNQIolKE/+fq558OFIOLHIwq6QqAMWdHxA4ks6OL+irZ5aQLB3r5wA4eK87RwV0eYNcNKA2laxOedF8dF2c2aLNlWBByGEWkBFkdq0gxguprD+tHiepL4E8YfiYuhnjjwkkOI/m9vWxz4F5opuihUcv3/iz1fv8a2tKPH0tvKWosjXk1E5/
+X-Gm-Message-State: AOJu0Yzm0ILlRmeXpEzYUgREI5/u7DI0N4xOggQlX9xckuM+wc66NVRB
+	KAHW+NBIHagCq037Iz/fBwhqpSdMw0TjZT2IbG5A7ByaoAHrSU0YUSgzRKJpCHc=
+X-Google-Smtp-Source: AGHT+IHrjsBvTYqqE3LfEN6w7yrzrPa+WSTxxfXjxF78kdLXJCts7gUiC+00Jj637KQssiWkzGbQHQ==
+X-Received: by 2002:a81:8d07:0:b0:5ff:9676:3658 with SMTP id d7-20020a818d07000000b005ff96763658mr1299386ywg.48.1709021393733;
+        Tue, 27 Feb 2024 00:09:53 -0800 (PST)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id z127-20020a816585000000b0060755a31c0bsm1626366ywb.100.2024.02.27.00.09.52
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 00:09:32 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60922e16f6fso6683497b3.3;
-        Tue, 27 Feb 2024 00:09:32 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVSOYlhcHsgL61YZwjN3D9uUKyUgL3kbpL9Ff34zlmFqxQcSYcIsbmuVkdjfvxE+UusoNEn6yrUORBHmz34p20wUUI7p1jxbR9FdFHqVdOe27c+6onwom+D3FXYEJ9G//wS5h2s952Bu3tZXa02Y8PFfdDk9XQOxZNWJ1Ey7eVuAIKVQi0BhEklRZLz
-X-Received: by 2002:a25:8392:0:b0:dcd:1f17:aaea with SMTP id
- t18-20020a258392000000b00dcd1f17aaeamr1417412ybk.26.1709021372474; Tue, 27
- Feb 2024 00:09:32 -0800 (PST)
+        Tue, 27 Feb 2024 00:09:52 -0800 (PST)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so3985360276.2;
+        Tue, 27 Feb 2024 00:09:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVO4mg4frQZ45h+CqE/OJ4ogUHjmFQ2ornzJHRpb4iD1NYC2OJJ8K0eB7MML+YLZ4bbPuoze3VS05Vng8xD/H42haUPcxWjOzc+fAgRJoMj/E6YfqSJs+Vpxem40tZA33ximBPkBZcKvJZ5d+1iqQp+ZU6fdAjZWdt5xCEASEtJ+zSJfDyaqcZ47N0c
+X-Received: by 2002:a05:6902:4ea:b0:dc2:4397:6ad3 with SMTP id
+ w10-20020a05690204ea00b00dc243976ad3mr1606683ybs.44.1709021392447; Tue, 27
+ Feb 2024 00:09:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-2-aford173@gmail.com>
- <CAMuHMdWhtu7nuBpC=TSY6rMaReJNgYok535xXotDyKJDT1_Mzw@mail.gmail.com>
-In-Reply-To: <CAMuHMdWhtu7nuBpC=TSY6rMaReJNgYok535xXotDyKJDT1_Mzw@mail.gmail.com>
+References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-3-aford173@gmail.com>
+In-Reply-To: <20240227034539.193573-3-aford173@gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 27 Feb 2024 09:09:20 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdViTAxWk8uvT-tgD4X2MJW5R3R1aqrv1K=FyQLdAciFcg@mail.gmail.com>
-Message-ID: <CAMuHMdViTAxWk8uvT-tgD4X2MJW5R3R1aqrv1K=FyQLdAciFcg@mail.gmail.com>
-Subject: Re: [PATCH 1/6] dt-bindings: gpu: powervr-rogue: Add PowerVR support
- for some Renesas GPUs
+Date: Tue, 27 Feb 2024 09:09:40 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWvSvosV6E5P9cY6dum9C-McJ8q0fOZE58zp4TZYUOKBw@mail.gmail.com>
+Message-ID: <CAMuHMdWvSvosV6E5P9cY6dum9C-McJ8q0fOZE58zp4TZYUOKBw@mail.gmail.com>
+Subject: Re: [PATCH 2/6] arm64: dts: renesas: r8a774a1: Enable GPU
 To: Adam Ford <aford173@gmail.com>
 Cc: dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
 	aford@beaconembedded.com, Frank Binns <frank.binns@imgtec.com>, 
@@ -80,36 +78,24 @@ Cc: dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
 	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
 	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Adam,
-
-On Tue, Feb 27, 2024 at 8:48=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Tue, Feb 27, 2024 at 4:46=E2=80=AFAM Adam Ford <aford173@gmail.com> wr=
-ote:
-> > Update the binding to add support for various Renesas SoC's with PowerV=
-R
-> > Rogue GX6250 and GX6650 GPUs.  These devices only need one clock, so up=
-date
-> > the table to indicate such like what was done for the ti,am62-gpu.
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-
-> > --- a/Documentation/devicetree/bindings/gpu/img,powervr-rogue.yaml
-> > +++ b/Documentation/devicetree/bindings/gpu/img,powervr-rogue.yaml
-
-> > +          - renesas,r8a77951-gpu
+On Tue, Feb 27, 2024 at 4:46=E2=80=AFAM Adam Ford <aford173@gmail.com> wrot=
+e:
+> The GPU on the RZ/G2M is a Rogue GX6250 which uses firmware
+> rogue_4.45.2.58_v1.fw available from Imagination.
 >
->     ... # PowerVR Series 6XT GX6650 on R-Car H3 ES2.0+
+> When enumerated, it appears as:
+>   powervr fd000000.gpu: [drm] loaded firmware powervr/rogue_4.45.2.58_v1.=
+fw
+>   powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-All compatible values for R-Car H3 variants use the r8a7795 "base" value,
-so that should be:
-
-     - renesas,r8a7795-gpu # PowerVR Series 6XT GX6650 on R-Car H3
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Gr{oetje,eeting}s,
 
