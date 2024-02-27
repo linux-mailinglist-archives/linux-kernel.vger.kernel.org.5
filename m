@@ -1,250 +1,148 @@
-Return-Path: <linux-kernel+bounces-82915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58527868BBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:09:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4369868BBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:10:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8D731F21785
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:09:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 684361F21B95
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:10:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B32135A5A;
-	Tue, 27 Feb 2024 09:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FFB136641;
+	Tue, 27 Feb 2024 09:10:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jc/xS+DE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="DbP/vRRH"
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE30130E27
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:09:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82CCE130E48;
+	Tue, 27 Feb 2024 09:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709024972; cv=none; b=cGDtdPeOnKXaTBTnX826vtba8S+obLD7NxCToc7xjGBD/8xSPUk+nWHQYuGJi/l9eNFTLQHk7jdQ2uZ7wdvqDstuJL/X3pJ+pef874EJOF8BB29e2L4Ej+xhbbtr/VuLPmvM8sH1gZETNT8/1cXAEyVS8tZaY+r9yneLs6gSLCA=
+	t=1709025007; cv=none; b=dL8sJhHHCEbyR6RzO996MwLzUU1WgedawaA1yCl8q7xGi7x98KlOGIVowqgKMhi5WJWqkuPNrbvZL5W3VN7DdIjrR7Ppzm1ACSjW9hbSb+hos3Qib9KeR/0n2wl1flRyG/Rscq/ddPuXwXwWkIm/3qU0qAEhJqz24OXE+mHLsyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709024972; c=relaxed/simple;
-	bh=Gw1x/vbGsvJML+r/3pYD26OfBQDx+xJPDEc5xPwzsoY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=vDX7skpMsvN4VT6zwdHX+iB26tT+SlHghDaYh4Ibb47nHw4xYVOlE+uFymnIZdQ/reTypd2FpswfOiCIzlmks79ARc/sjB5O5TPKjNZ3hbLJNWnzQgqL9ocNILd5NgpaVIFVHpDxpVtAuidq/R+xXIMZGjKPAqX/Lq4IFKiWJ00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jc/xS+DE; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709024970; x=1740560970;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=Gw1x/vbGsvJML+r/3pYD26OfBQDx+xJPDEc5xPwzsoY=;
-  b=jc/xS+DEQcWnm2R+HuOh30XRTrh2PStGYfi8klBXEmPTbJbQDFwg5Ndt
-   nH+TuyORZCHA8mPZFXyJ/whO8ILiIfseowMD6GchBBGlnSB2A4M1ujYV1
-   ULyj/GQ4DuEJhmQqVh2blBrlzGkL7rwMCf8/6Kswo/yHseIeUO1WMgiT/
-   OKjW84+juOcMcwGec3JHsoDi2aupKDzkI7Wz83GURrgThKeuepLCjkvA3
-   gZPqO548Qs5nycGl8mpEneHfpYob7BrmHBvFxxjQ4lZu9uTexuNpDnD9n
-   VE4s5uZiS486IsUmytfu7vNTe+Bz0/MOKVeIBLjfYgDeaqgXjunShM4Jh
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3472678"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="3472678"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 01:09:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="44464859"
-Received: from bdallmer-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.49.187])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 01:09:26 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Hsin-Yi Wang <hsinyi@chromium.org>, Douglas Anderson
- <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
- <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] drm_edid: Add a function to get EDID base block
-In-Reply-To: <20240223223958.3887423-2-hsinyi@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240223223958.3887423-1-hsinyi@chromium.org>
- <20240223223958.3887423-2-hsinyi@chromium.org>
-Date: Tue, 27 Feb 2024 11:09:22 +0200
-Message-ID: <87wmqqjmt9.fsf@intel.com>
+	s=arc-20240116; t=1709025007; c=relaxed/simple;
+	bh=2QRwkyDopjViBhgivlkaR7KknT+WqiWIyxPXfwZSt8Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kD/NRAxbOlqdSqI1Ai3VcqbVDZvH0HonvGzZz53RKxUx0gQ11ZkOecNLC25bnH8MGRJgY4BrnpnjxJxZQb4+/FoedCuySadDKxo6u8ctkU54DQlcEv15RHDDt2xI0M9/2N7PWgU1bh+c0XEjqGVQd0JalKCPdeL33GJ9vfL1B4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=DbP/vRRH; arc=none smtp.client-ip=115.28.160.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+	t=1709025003; bh=2QRwkyDopjViBhgivlkaR7KknT+WqiWIyxPXfwZSt8Q=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=DbP/vRRH4BosyygfDh5mT7aMTFLMz8aCKTN5MEzw48pICGSPDW6KdryxvvXGaQgC6
+	 BVNH6usoU10utBRYtr14JSVuw4Zz4Cr855oxMIh4vl3wzQHCd4Jt0s849wGSDNwKcO
+	 qsk7/KRaytNeBtRd3UXMDFREBwUNIwgOXwbMGyFY=
+Received: from [28.0.0.1] (unknown [101.230.251.34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 1305A60150;
+	Tue, 27 Feb 2024 17:10:03 +0800 (CST)
+Message-ID: <327808dd-ac34-4c61-9992-38642acc9419@xen0n.name>
+Date: Tue, 27 Feb 2024 17:10:02 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+Content-Language: en-US
+To: maobibo <maobibo@loongson.cn>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240222032803.2177856-1-maobibo@loongson.cn>
+ <20240222032803.2177856-4-maobibo@loongson.cn>
+ <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
+ <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
+ <CAAhV-H7p114hWUVrYRfKiBX3teG8sG7xmEW-Q-QT3i+xdLqDEA@mail.gmail.com>
+ <06647e4a-0027-9c9f-f3bd-cd525d37b6d8@loongson.cn>
+ <85781278-f3e9-4755-8715-3b9ff714fb20@app.fastmail.com>
+ <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
+From: WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 23 Feb 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> It's found that some panels have variants that they share the same panel id
-> although their EDID and names are different. Besides panel id, now we need
-> the hash of entire EDID base block to distinguish these panel variants.
->
-> Add drm_edid_get_base_block to returns the EDID base block, so caller can
-> further use it to get panel id and/or the hash.
+On 2/27/24 11:14, maobibo wrote:
+> 
+> 
+> On 2024/2/27 上午4:02, Jiaxun Yang wrote:
+>>
+>>
+>> 在2024年2月26日二月 上午8:04，maobibo写道：
+>>> On 2024/2/26 下午2:12, Huacai Chen wrote:
+>>>> On Mon, Feb 26, 2024 at 10:04 AM maobibo <maobibo@loongson.cn> wrote:
+>>>>>
+>>>>>
+>>>>>
+>>>>> On 2024/2/24 下午5:13, Huacai Chen wrote:
+>>>>>> Hi, Bibo,
+>>>>>>
+>>>>>> On Thu, Feb 22, 2024 at 11:28 AM Bibo Mao <maobibo@loongson.cn> 
+>>>>>> wrote:
+>>>>>>>
+>>>>>>> Instruction cpucfg can be used to get processor features. And there
+>>>>>>> is trap exception when it is executed in VM mode, and also it is
+>>>>>>> to provide cpu features to VM. On real hardware cpucfg area 0 - 20
+>>>>>>> is used.  Here one specified area 0x40000000 -- 0x400000ff is used
+>>>>>>> for KVM hypervisor to privide PV features, and the area can be 
+>>>>>>> extended
+>>>>>>> for other hypervisors in future. This area will never be used for
+>>>>>>> real HW, it is only used by software.
+>>>>>> After reading and thinking, I find that the hypercall method which is
+>>>>>> used in our productive kernel is better than this cpucfg method.
+>>>>>> Because hypercall is more simple and straightforward, plus we don't
+>>>>>> worry about conflicting with the real hardware.
+>>>>> No, I do not think so. cpucfg is simper than hypercall, hypercall can
+>>>>> be in effect when system runs in guest mode. In some scenario like TCG
+>>>>> mode, hypercall is illegal intruction, however cpucfg can work.
+>>>> Nearly all architectures use hypercall except x86 for its historical
+>>> Only x86 support multiple hypervisors and there is multiple hypervisor
+>>> in x86 only. It is an advantage, not historical reason.
+>>
+>> I do believe that all those stuff should not be exposed to guest user 
+>> space
+>> for security reasons.
+> Can you add PLV checking when cpucfg 0x40000000-0x400000FF is emulated? 
+> if it is user mode return value is zero and it is kernel mode emulated 
+> value will be returned. It can avoid information leaking.
 
-Please reconsider the whole approach here.
+I've suggested this approach in another reply [1], but I've rechecked 
+the manual, and it turns out this behavior is not permitted by the 
+current wording. See LoongArch Reference Manual v1.10, Volume 1, Section 
+2.2.10.5 "CPUCFG":
 
-Please let's not add single-use special case functions to read an EDID
-base block.
+ > CPUCFG 访问未定义的配置字将读回全 0 值。
+ >
+ > Reads of undefined CPUCFG configuration words shall return all-zeroes.
 
-Please consider reading the whole EDID, using the regular EDID reading
-functions, and use that instead.
+This sentence mentions no distinction based on privilege modes, so it 
+can only mean the behavior applies universally regardless of privilege 
+modes.
 
-Most likely you'll only have 1-2 blocks anyway. And you might consider
-caching the EDID in struct panel_edp if reading the entire EDID is too
-slow. (And if it is, this is probably sensible even if the EDID only
-consists of one block.)
+I think if you want to make CPUCFG behavior PLV-dependent, you may have 
+to ask the LoongArch spec editors, internally or in public, for a new 
+spec revision.
 
-Anyway, please do *not* merge this as-is.
+(There are already multiple third-party LoongArch implementers as of 
+late 2023, so any ISA-level change like this would best be coordinated, 
+to minimize surprises.)
 
-BR,
-Jani.
-
->
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/gpu/drm/drm_edid.c        | 55 +++++++++++++++++--------------
->  drivers/gpu/drm/panel/panel-edp.c |  8 +++--
->  include/drm/drm_edid.h            |  3 +-
->  3 files changed, 38 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 923c4423151c..55598ca4a5d1 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -2770,58 +2770,63 @@ static u32 edid_extract_panel_id(const struct edid *edid)
->  }
->  
->  /**
-> - * drm_edid_get_panel_id - Get a panel's ID through DDC
-> - * @adapter: I2C adapter to use for DDC
-> + * drm_edid_get_panel_id - Get a panel's ID from EDID base block
-> + * @base_bock: EDID base block that contains panel ID.
->   *
-> - * This function reads the first block of the EDID of a panel and (assuming
-> + * This function uses the first block of the EDID of a panel and (assuming
->   * that the EDID is valid) extracts the ID out of it. The ID is a 32-bit value
->   * (16 bits of manufacturer ID and 16 bits of per-manufacturer ID) that's
->   * supposed to be different for each different modem of panel.
->   *
-> + * Return: A 32-bit ID that should be different for each make/model of panel.
-> + *         See the functions drm_edid_encode_panel_id() and
-> + *         drm_edid_decode_panel_id() for some details on the structure of this
-> + *         ID.
-> + */
-> +u32 drm_edid_get_panel_id(void *base_block)
-> +{
-> +	return edid_extract_panel_id(base_block);
-> +}
-> +EXPORT_SYMBOL(drm_edid_get_panel_id);
-> +
-> +/**
-> + * drm_edid_get_base_block - Get a panel's EDID base block
-> + * @adapter: I2C adapter to use for DDC
-> + *
-> + * This function returns the first block of the EDID of a panel.
-> + *
->   * This function is intended to be used during early probing on devices where
->   * more than one panel might be present. Because of its intended use it must
-> - * assume that the EDID of the panel is correct, at least as far as the ID
-> - * is concerned (in other words, we don't process any overrides here).
-> + * assume that the EDID of the panel is correct, at least as far as the base
-> + * block is concerned (in other words, we don't process any overrides here).
->   *
->   * NOTE: it's expected that this function and drm_do_get_edid() will both
->   * be read the EDID, but there is no caching between them. Since we're only
->   * reading the first block, hopefully this extra overhead won't be too big.
->   *
-> - * Return: A 32-bit ID that should be different for each make/model of panel.
-> - *         See the functions drm_edid_encode_panel_id() and
-> - *         drm_edid_decode_panel_id() for some details on the structure of this
-> - *         ID.
-> + * Caller should free the base block after use.
->   */
-> -
-> -u32 drm_edid_get_panel_id(struct i2c_adapter *adapter)
-> +void *drm_edid_get_base_block(struct i2c_adapter *adapter)
->  {
->  	enum edid_block_status status;
->  	void *base_block;
-> -	u32 panel_id = 0;
-> -
-> -	/*
-> -	 * There are no manufacturer IDs of 0, so if there is a problem reading
-> -	 * the EDID then we'll just return 0.
-> -	 */
->  
->  	base_block = kzalloc(EDID_LENGTH, GFP_KERNEL);
->  	if (!base_block)
-> -		return 0;
-> +		return NULL;
->  
->  	status = edid_block_read(base_block, 0, drm_do_probe_ddc_edid, adapter);
->  
->  	edid_block_status_print(status, base_block, 0);
->  
-> -	if (edid_block_status_valid(status, edid_block_tag(base_block)))
-> -		panel_id = edid_extract_panel_id(base_block);
-> -	else
-> +	if (!edid_block_status_valid(status, edid_block_tag(base_block))) {
->  		edid_block_dump(KERN_NOTICE, base_block, 0);
-> +		return NULL;
-> +	}
->  
-> -	kfree(base_block);
-> -
-> -	return panel_id;
-> +	return base_block;
->  }
-> -EXPORT_SYMBOL(drm_edid_get_panel_id);
-> +EXPORT_SYMBOL(drm_edid_get_base_block);
->  
->  /**
->   * drm_get_edid_switcheroo - get EDID data for a vga_switcheroo output
-> diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-> index bd71d239272a..f6ddbaa103b5 100644
-> --- a/drivers/gpu/drm/panel/panel-edp.c
-> +++ b/drivers/gpu/drm/panel/panel-edp.c
-> @@ -763,6 +763,7 @@ static const struct edp_panel_entry *find_edp_panel(u32 panel_id);
->  static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
->  {
->  	struct panel_desc *desc;
-> +	void *base_block;
->  	u32 panel_id;
->  	char vend[4];
->  	u16 product_id;
-> @@ -792,8 +793,11 @@ static int generic_edp_panel_probe(struct device *dev, struct panel_edp *panel)
->  		goto exit;
->  	}
->  
-> -	panel_id = drm_edid_get_panel_id(panel->ddc);
-> -	if (!panel_id) {
-> +	base_block = drm_edid_get_base_block(panel->ddc);
-> +	if (base_block) {
-> +		panel_id = drm_edid_get_panel_id(base_block);
-> +		kfree(base_block);
-> +	} else {
->  		dev_err(dev, "Couldn't identify panel via EDID\n");
->  		ret = -EIO;
->  		goto exit;
-> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> index 7923bc00dc7a..56b60f9204d3 100644
-> --- a/include/drm/drm_edid.h
-> +++ b/include/drm/drm_edid.h
-> @@ -410,7 +410,8 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
->  	void *data);
->  struct edid *drm_get_edid(struct drm_connector *connector,
->  			  struct i2c_adapter *adapter);
-> -u32 drm_edid_get_panel_id(struct i2c_adapter *adapter);
-> +void *drm_edid_get_base_block(struct i2c_adapter *adapter);
-> +u32 drm_edid_get_panel_id(void *base_block);
->  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
->  				     struct i2c_adapter *adapter);
->  struct edid *drm_edid_duplicate(const struct edid *edid);
+[1]: 
+https://lore.kernel.org/loongarch/d8994f0f-d789-46d2-bc4d-f9b37fb396ff@xen0n.name/
 
 -- 
-Jani Nikula, Intel
+WANG "xen0n" Xuerui
+
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+
 
