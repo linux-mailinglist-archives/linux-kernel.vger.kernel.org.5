@@ -1,791 +1,332 @@
-Return-Path: <linux-kernel+bounces-82780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1CA5868998
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:08:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8555086899B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61AAB284930
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:08:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A65C21C217C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7514A5465D;
-	Tue, 27 Feb 2024 07:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FzfFSuu8"
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A3A453E01
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEAD654775;
+	Tue, 27 Feb 2024 07:09:01 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3186553E02;
+	Tue, 27 Feb 2024 07:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709017724; cv=none; b=nD3w+4C7RbSDFLhYaibNgWk0EDOk0mLHJJOUjZQWrrXN2GzhOf9rG7vQ28KKt+rq/cTvf1X11Yz3ZXg1id8pBvytQvWS6EDHMq/MhtzoF90hJDo40RsKBVMIMewqyJzvVL/HyFtJbX9RyNPCnv/S+SBjAmw0zL1ZdYzhrh/YUd4=
+	t=1709017741; cv=none; b=mmr9IltrFspMtP1gjfzFpIPNdjcQ0htgpZa+TPfRaGZrNucslel53X9+fygMANoZoKjHau138O6OMI0ju+fm++KJhmng/uVv7WvMjUrRHZsqkduQrSk4NOJ09IlapuxSmIya8x3tjVVCKSdVdzo34dJi7iXVuFVCTiRoenOVk7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709017724; c=relaxed/simple;
-	bh=TTstN1GTRgt+2/kCorVMSWSDJvmQ282RRRozcg2hxWM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qsXrpVM8eTAGhF7mynOJO2DxLMuK4kLxrMLEChX9msX0p/LL5FWomfd4/F6bb4KwP2NlehBkwmBfBYXYhpmICruVeIDTDgj3dlIw/kWE60R+H64krGbgQ6I0v9xGZDOwJkJKFEmzwTXs2a0EAXO7jvpCay5+oaa7mZnWJd27QzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FzfFSuu8; arc=none smtp.client-ip=209.85.222.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7da9bec3038so665369241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:08:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709017721; x=1709622521; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMVfPHhF8ybe+9mUZaXQdJEg9yRCJ8YFPcf9Fmx8kz0=;
-        b=FzfFSuu8tQdTWiu5RcU+YHM0cRu1sHFXX+pBN3lLcfrdgzjUrrzKS+LIw0mUogZihF
-         AvomSSbkAEv+1lQLTRMWCxaldQrn/VnNii0v69jLwinrVhNLymx2O+A13hjHcQU9Td3Z
-         36wotXP6HL2h3PvQTpsTLTN/H9a79R004EY3aTimT7R9ZKiudAcF/pUrMxFZQH9bWrsl
-         nmmdb5ykToaJ2CwFF8OEmH4LU2gMHEkQAoM8e2T93/NjWjNFATACjGdErm/DK7UqHv2L
-         ADS7oRNTBPlJGvVLM3UqDSMgjeKrZ+mXYFualmhHYhp5OHntDVOWWA3iZDGlFihWo55G
-         CG3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709017721; x=1709622521;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gMVfPHhF8ybe+9mUZaXQdJEg9yRCJ8YFPcf9Fmx8kz0=;
-        b=fUamW3RWhiLTVw/a9QpLEq3CvXI2LILFN6/zauKGNd546M9RHqqZYml1d4/xa2ABG0
-         hbouLhCvUZOUk4XdOY5zvu8RSUgNtLSa6Qeg9QAjj4o1vp8qe5RC4qMzlGRAZC1PA5Ze
-         cZY/1UkUztrjs5cUFzPifqPgc2GDjtLAL67dQ4KeVdYAQxTlZVsgT+Gjsv9g1SWK176J
-         VSKPwRiNG1OUQlS70So95Zojh0YEyh1UtIyJ2lbEMDpA340Rm/GDC1ZC7THCE3QzFkVB
-         JBnLBClnvBj+EEBU6Nwz3t59TX5P8R/rDWa0IJRRX6tRuKFvS11U8yQglMdn3dUF5SQ4
-         gHtw==
-X-Forwarded-Encrypted: i=1; AJvYcCWVdmTvFKLnGxNX+ev9lhTU8l0eQlIIgMAVTC7NZ4LE+O/bhTpQGeJQ5B2JI92QHnjYC0nfmQUcjC5OtiriEz/ufgs96KqdFFwC2hui
-X-Gm-Message-State: AOJu0YzkTEkEC8ogsl6L7Y1ilec7bZ3aAElfchuPYVkq9z4SnybrTpKt
-	OSGDYVOaDaqisAroaVb6+dygQN3oaBD7PldE31XLgyMjYv/N5ReacCMT0KBZ+yv6prObqTZvYc/
-	Ar8VcUVQTkOwi6cyxJMxIG/6aPhmVHJLUKu9LSg==
-X-Google-Smtp-Source: AGHT+IHuOGPj32xjXnnHUnBCVv3JkMuR8dkG9XtpF4kSOC3xku8esHpvpiX0Jz41j2/ENqYlpWzzqb3SBjc90KaA46Y=
-X-Received: by 2002:a05:6102:1272:b0:471:e077:c9c5 with SMTP id
- q18-20020a056102127200b00471e077c9c5mr4141880vsg.5.1709017721372; Mon, 26 Feb
- 2024 23:08:41 -0800 (PST)
+	s=arc-20240116; t=1709017741; c=relaxed/simple;
+	bh=tZglC7d8hBqUGbzIh2ATwwNtFTM7TeSlFuGICt6EA04=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=PMSHJb8mE1YVA6GiFUWsK9fKT1aBzT52GAtlnbT3aywxCjhAof8tt+Fncs4x1XiY9JsRc30dMWpw8vgFfi3zuEvoaKvVlLGns4b67u7qjs51djpszBQZSq2iov/4bT3Prc0hisqhxph4qBxg4W/5LPoROm5fpYhLJ8mLNpmDgBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8BxnuuGit1lQdoRAA--.44900S3;
+	Tue, 27 Feb 2024 15:08:54 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxVMyDit1lv2tHAA--.61830S3;
+	Tue, 27 Feb 2024 15:08:51 +0800 (CST)
+Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>, Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240222032803.2177856-1-maobibo@loongson.cn>
+ <20240222032803.2177856-4-maobibo@loongson.cn>
+ <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
+ <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
+ <CAAhV-H7p114hWUVrYRfKiBX3teG8sG7xmEW-Q-QT3i+xdLqDEA@mail.gmail.com>
+ <06647e4a-0027-9c9f-f3bd-cd525d37b6d8@loongson.cn>
+ <85781278-f3e9-4755-8715-3b9ff714fb20@app.fastmail.com>
+ <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
+ <09c5af9b-cc79-4cf2-84f7-276bb188754a@app.fastmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <fc05cf09-bf53-158a-3cc9-eff6f06a220a@loongson.cn>
+Date: Tue, 27 Feb 2024 15:09:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223095133.109046-1-balint.dobszay@arm.com> <20240223095133.109046-3-balint.dobszay@arm.com>
-In-Reply-To: <20240223095133.109046-3-balint.dobszay@arm.com>
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Tue, 27 Feb 2024 12:38:30 +0530
-Message-ID: <CAFA6WYOKtxGTU33BY_z1H01UF41rm6g-LTxUi-DX4CJrV-aT3w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] tee: tstee: Add Trusted Services TEE driver
-To: Balint Dobszay <balint.dobszay@arm.com>
-Cc: op-tee@lists.trustedfirmware.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	jens.wiklander@linaro.org, corbet@lwn.net, sudeep.holla@arm.com, 
-	rdunlap@infradead.org, krzk@kernel.org, gyorgy.szing@arm.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <09c5af9b-cc79-4cf2-84f7-276bb188754a@app.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8BxVMyDit1lv2tHAA--.61830S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3ArWUCr43GrW8Zw43tFyDtwc_yoWftFy3pF
+	WUAF1UGr48Jr1xAw1jqw1UXrnxtr4kGr1xXry5Jw1UAr1Dtr1xJr18Kr4jkFykJw18CF10
+	qF1UJry3uF1UA3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
+	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU466zUUUUU
 
-On Fri, 23 Feb 2024 at 15:22, Balint Dobszay <balint.dobszay@arm.com> wrote:
->
-> The Trusted Services project provides a framework for developing and
-> deploying device Root of Trust services in FF-A Secure Partitions. The
-> FF-A SPs are accessible through the FF-A driver, but this doesn't
-> provide a user space interface. The goal of this TEE driver is to make
-> Trusted Services SPs accessible for user space clients.
->
-> All TS SPs have the same FF-A UUID, it identifies the RPC protocol used
-> by TS. A TS SP can host one or more services, a service is identified by
-> its service UUID. The same type of service cannot be present twice in
-> the same SP. During SP boot each service in an SP is assigned an
-> interface ID, this is just a short ID to simplify message addressing.
-> There is 1:1 mapping between TS SPs and TEE devices, i.e. a separate TEE
-> device is registered for each TS SP. This is required since contrary to
-> the generic TEE design where memory is shared with the whole TEE
-> implementation, in case of FF-A, memory is shared with a specific SP. A
-> user space client has to be able to separately share memory with each SP
-> based on its endpoint ID.
->
-> Signed-off-by: Balint Dobszay <balint.dobszay@arm.com>
-> ---
->  drivers/tee/Kconfig               |   1 +
->  drivers/tee/Makefile              |   1 +
->  drivers/tee/tstee/Kconfig         |  11 +
->  drivers/tee/tstee/Makefile        |   3 +
->  drivers/tee/tstee/core.c          | 490 ++++++++++++++++++++++++++++++
->  drivers/tee/tstee/tstee_private.h |  94 ++++++
->  include/uapi/linux/tee.h          |   1 +
->  7 files changed, 601 insertions(+)
->  create mode 100644 drivers/tee/tstee/Kconfig
->  create mode 100644 drivers/tee/tstee/Makefile
->  create mode 100644 drivers/tee/tstee/core.c
->  create mode 100644 drivers/tee/tstee/tstee_private.h
->
-> diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
-> index 73a147202e88..61b507c18780 100644
-> --- a/drivers/tee/Kconfig
-> +++ b/drivers/tee/Kconfig
-> @@ -15,5 +15,6 @@ if TEE
->
->  source "drivers/tee/optee/Kconfig"
->  source "drivers/tee/amdtee/Kconfig"
-> +source "drivers/tee/tstee/Kconfig"
->
->  endif
-> diff --git a/drivers/tee/Makefile b/drivers/tee/Makefile
-> index 68da044afbfa..5488cba30bd2 100644
-> --- a/drivers/tee/Makefile
-> +++ b/drivers/tee/Makefile
-> @@ -5,3 +5,4 @@ tee-objs += tee_shm.o
->  tee-objs += tee_shm_pool.o
->  obj-$(CONFIG_OPTEE) += optee/
->  obj-$(CONFIG_AMDTEE) += amdtee/
-> +obj-$(CONFIG_ARM_TSTEE) += tstee/
-> diff --git a/drivers/tee/tstee/Kconfig b/drivers/tee/tstee/Kconfig
-> new file mode 100644
-> index 000000000000..d32f91d47398
-> --- /dev/null
-> +++ b/drivers/tee/tstee/Kconfig
-> @@ -0,0 +1,11 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config ARM_TSTEE
-> +       tristate "Arm Trusted Services TEE driver"
-> +       depends on ARM_FFA_TRANSPORT
-> +       default n
-> +       help
-> +         The Trusted Services project provides a framework for developing and
-> +         deploying device Root of Trust services in FF-A Secure Partitions.
-> +         This driver provides an interface to make Trusted Services Secure
-> +         Partitions accessible for user space clients, since the FF-A driver
-> +         doesn't implement a user space interface directly.
-> diff --git a/drivers/tee/tstee/Makefile b/drivers/tee/tstee/Makefile
-> new file mode 100644
-> index 000000000000..5227020ebd30
-> --- /dev/null
-> +++ b/drivers/tee/tstee/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +arm-tstee-objs := core.o
-> +obj-$(CONFIG_ARM_TSTEE) = arm-tstee.o
-> diff --git a/drivers/tee/tstee/core.c b/drivers/tee/tstee/core.c
-> new file mode 100644
-> index 000000000000..2932be017dbe
-> --- /dev/null
-> +++ b/drivers/tee/tstee/core.c
-> @@ -0,0 +1,490 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023, Arm Limited
-> + */
-> +
-> +#define DRIVER_NAME "Arm TSTEE"
-> +#define pr_fmt(fmt) DRIVER_NAME ": " fmt
-> +
-> +#include <linux/arm_ffa.h>
-> +#include <linux/err.h>
-> +#include <linux/errno.h>
-> +#include <linux/kernel.h>
-> +#include <linux/limits.h>
-> +#include <linux/list.h>
-> +#include <linux/mm.h>
-> +#include <linux/module.h>
-> +#include <linux/scatterlist.h>
-> +#include <linux/slab.h>
-> +#include <linux/stat.h>
-> +#include <linux/tee_drv.h>
-> +#include <linux/types.h>
-> +#include <linux/uaccess.h>
-> +
-> +#include "tstee_private.h"
-> +
-> +#define FFA_DIRECT_REQ_ARG_NUM 5
-> +#define FFA_INVALID_MEM_HANDLE U64_MAX
-> +
-> +static void arg_list_to_ffa_data(const u32 *args,
-> +                                struct ffa_send_direct_data *data)
-> +{
-> +       data->data0 = args[0];
-> +       data->data1 = args[1];
-> +       data->data2 = args[2];
-> +       data->data3 = args[3];
-> +       data->data4 = args[4];
-> +}
-> +
-> +static void arg_list_from_ffa_data(const struct ffa_send_direct_data *data,
-> +                                  u32 *args)
-> +{
-> +       args[0] = lower_32_bits(data->data0);
-> +       args[1] = lower_32_bits(data->data1);
-> +       args[2] = lower_32_bits(data->data2);
-> +       args[3] = lower_32_bits(data->data3);
-> +       args[4] = lower_32_bits(data->data4);
-> +}
-> +
-> +static void tstee_get_version(struct tee_device *teedev,
-> +                             struct tee_ioctl_version_data *vers)
-> +{
-> +       struct tstee *tstee = tee_get_drvdata(teedev);
-> +       struct tee_ioctl_version_data v = {
-> +               .impl_id = TEE_IMPL_ID_TSTEE,
-> +               /* FF-A endpoint ID only uses the lower 16 bits */
-> +               .impl_caps = lower_16_bits(tstee->ffa_dev->vm_id),
-> +               .gen_caps = 0,
-> +       };
-> +
-> +       *vers = v;
-> +}
-> +
-> +static int tstee_open(struct tee_context *ctx)
-> +{
-> +       struct ts_context_data *ctxdata;
-> +
-> +       ctxdata = kzalloc(sizeof(*ctxdata), GFP_KERNEL);
-> +       if (!ctxdata)
-> +               return -ENOMEM;
-> +
-> +       mutex_init(&ctxdata->mutex);
-> +       xa_init_flags(&ctxdata->sess_list, XA_FLAGS_ALLOC);
-> +
-> +       ctx->data = ctxdata;
-> +
-> +       return 0;
-> +}
-> +
-> +static void tstee_release(struct tee_context *ctx)
-> +{
-> +       struct ts_context_data *ctxdata = ctx->data;
-> +       struct ts_session *sess;
-> +       unsigned long idx;
-> +
-> +       if (!ctxdata)
-> +               return;
-> +
-> +       xa_for_each(&ctxdata->sess_list, idx, sess) {
-> +               xa_erase(&ctxdata->sess_list, idx);
-> +               kfree(sess);
-> +       }
-> +
-> +       xa_destroy(&ctxdata->sess_list);
-> +       mutex_destroy(&ctxdata->mutex);
-> +
-> +       kfree(ctxdata);
-> +       ctx->data = NULL;
-> +}
-> +
-> +static int tstee_open_session(struct tee_context *ctx,
-> +                             struct tee_ioctl_open_session_arg *arg,
-> +                             struct tee_param *param __always_unused)
-> +{
-> +       struct tstee *tstee = tee_get_drvdata(ctx->teedev);
-> +       struct ffa_device *ffa_dev = tstee->ffa_dev;
-> +       struct ts_context_data *ctxdata = ctx->data;
-> +       struct ffa_send_direct_data ffa_data;
-> +       struct ts_session *sess = NULL;
-> +       u32 ffa_args[FFA_DIRECT_REQ_ARG_NUM] = {};
-> +       u32 sess_id;
-> +       int rc;
-> +
-> +       ffa_args[TS_RPC_CTRL_REG] =
-> +               TS_RPC_CTRL_PACK_IFACE_OPCODE(TS_RPC_MGMT_IFACE_ID,
-> +                                             TS_RPC_OP_SERVICE_INFO);
-> +
-> +       memcpy(ffa_args + TS_RPC_SERVICE_INFO_UUID0, arg->uuid, UUID_SIZE);
-> +
-> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
-> +       rc = ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_data);
-> +       if (rc)
-> +               return rc;
-> +
-> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
-> +
-> +       if (ffa_args[TS_RPC_SERVICE_INFO_RPC_STATUS] != TS_RPC_OK)
-> +               return -ENODEV;
-> +
-> +       if (ffa_args[TS_RPC_SERVICE_INFO_IFACE] > U8_MAX)
-> +               return -EINVAL;
-> +
-> +       sess = kzalloc(sizeof(*sess), GFP_KERNEL);
-> +       if (!sess)
-> +               return -ENOMEM;
-> +
-> +       sess->iface_id = ffa_args[TS_RPC_SERVICE_INFO_IFACE];
-> +
-> +       rc = xa_alloc(&ctxdata->sess_list, &sess_id, sess, xa_limit_32b,
-> +                     GFP_KERNEL);
-> +       if (rc) {
-> +               kfree(sess);
-> +               return rc;
-> +       }
-> +
-> +       arg->session = sess_id;
-> +       arg->ret = 0;
-> +
-> +       return 0;
-> +}
-> +
-> +static int tstee_close_session(struct tee_context *ctx, u32 session)
-> +{
-> +       struct ts_context_data *ctxdata = ctx->data;
-> +       struct ts_session *sess;
-> +
-> +       mutex_lock(&ctxdata->mutex);
-> +       sess = xa_erase(&ctxdata->sess_list, session);
-> +       mutex_unlock(&ctxdata->mutex);
-> +       if (!sess)
-> +               return -EINVAL;
-> +
-> +       kfree(sess);
-> +
-> +       return 0;
-> +}
-> +
-> +static int tstee_invoke_func(struct tee_context *ctx,
-> +                            struct tee_ioctl_invoke_arg *arg,
-> +                            struct tee_param *param)
-> +{
-> +       struct tstee *tstee = tee_get_drvdata(ctx->teedev);
-> +       struct ffa_device *ffa_dev = tstee->ffa_dev;
-> +       struct ts_context_data *ctxdata = ctx->data;
-> +       struct ffa_send_direct_data ffa_data;
-> +       struct tee_shm *shm = NULL;
-> +       struct ts_session *sess;
-> +       u32 req_len, ffa_args[FFA_DIRECT_REQ_ARG_NUM] = {};
-> +       int shm_id, rc;
-> +       u8 iface_id;
-> +       u64 handle;
-> +       u16 opcode;
-> +
-> +       mutex_lock(&ctxdata->mutex);
-> +       sess = xa_load(&ctxdata->sess_list, arg->session);
-> +
-> +       /*
-> +        * Do this while holding the mutex to make sure that the session wasn't
-> +        * closed meanwhile
-> +        */
-> +       if (sess)
-> +               iface_id = sess->iface_id;
-> +
-> +       mutex_unlock(&ctxdata->mutex);
-> +       if (!sess)
-> +               return -EINVAL;
-> +
 
-We can drop usage of mutex here and other places via reusing
-xa_lock(), something like below should work:
 
-        xa_lock(&ctxdata->sess_list);
+On 2024/2/27 下午1:23, Jiaxun Yang wrote:
+> 
+> 
+> 在2024年2月27日二月 上午3:14，maobibo写道：
+>> On 2024/2/27 上午4:02, Jiaxun Yang wrote:
+>>>
+>>>
+>>> 在2024年2月26日二月 上午8:04，maobibo写道：
+>>>> On 2024/2/26 下午2:12, Huacai Chen wrote:
+>>>>> On Mon, Feb 26, 2024 at 10:04 AM maobibo <maobibo@loongson.cn> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 2024/2/24 下午5:13, Huacai Chen wrote:
+>>>>>>> Hi, Bibo,
+>>>>>>>
+>>>>>>> On Thu, Feb 22, 2024 at 11:28 AM Bibo Mao <maobibo@loongson.cn> wrote:
+>>>>>>>>
+>>>>>>>> Instruction cpucfg can be used to get processor features. And there
+>>>>>>>> is trap exception when it is executed in VM mode, and also it is
+>>>>>>>> to provide cpu features to VM. On real hardware cpucfg area 0 - 20
+>>>>>>>> is used.  Here one specified area 0x40000000 -- 0x400000ff is used
+>>>>>>>> for KVM hypervisor to privide PV features, and the area can be extended
+>>>>>>>> for other hypervisors in future. This area will never be used for
+>>>>>>>> real HW, it is only used by software.
+>>>>>>> After reading and thinking, I find that the hypercall method which is
+>>>>>>> used in our productive kernel is better than this cpucfg method.
+>>>>>>> Because hypercall is more simple and straightforward, plus we don't
+>>>>>>> worry about conflicting with the real hardware.
+>>>>>> No, I do not think so. cpucfg is simper than hypercall, hypercall can
+>>>>>> be in effect when system runs in guest mode. In some scenario like TCG
+>>>>>> mode, hypercall is illegal intruction, however cpucfg can work.
+>>>>> Nearly all architectures use hypercall except x86 for its historical
+>>>> Only x86 support multiple hypervisors and there is multiple hypervisor
+>>>> in x86 only. It is an advantage, not historical reason.
+>>>
+>>> I do believe that all those stuff should not be exposed to guest user space
+>>> for security reasons.
+>> Can you add PLV checking when cpucfg 0x40000000-0x400000FF is emulated?
+>> if it is user mode return value is zero and it is kernel mode emulated
+>> value will be returned. It can avoid information leaking.
+> 
+> Please don’t do insane stuff here, applications are not expecting exception from
+> cpucfg.
+Sorry, I do not understand. Can you describe the behavior about cpucfg 
+instruction from applications? Why is there no exception for cpucfg.
+> 
+>>
+>>>
+>>> Also for different implementations of hypervisors they may have different
+>>> PV features behavior, using hypcall to perform feature detection
+>>> can pass more information to help us cope with hypervisor diversity.
+>> How do different hypervisors can be detected firstly?  On x86 MSR is
+>> used for all hypervisors detection and on ARM64 hyperv used
+>> acpi_gbl_FADT and kvm use smc forcely, host mode can execute smc
+>> instruction without exception on ARM64.
+> 
+> That’s hypcall ABI design choices, those information can come from firmware
+> or privileged CSRs on LoongArch.
+Firstly the firmware or privileged CSRs is not relative with hypcall ABI 
+design choices.  With CSR instruction, CSR ID is encoded in CSR 
+instruction, range about CSR ID is 16K; for cpucfg instruction, cpucfg 
+area is passed with register, range is UINT_MAX at least.
 
-        sess = xa_load(&ctxdata->sess_list, arg->session);
-        if (sess)
-                iface_id = sess->iface_id;
+It is difficult to find an area unused by HW for CSR method since the 
+small CSR ID range. However it is easy for cpucfg. Here I doubt whether 
+you really know about LoongArch LVZ.
 
-        xa_unlock(&ctxdata->sess_list);
+> 
+>>
+>> I do not know why hypercall is better than cpucfg on LoongArch, cpucfg
+>> is basic intruction however hypercall is not, it is part of LVZ feature.
+> 
+> KVM can only work with LVZ right?
+Linux kernel need boot well with TCG and KVM mode, hypercall is illegal 
+instruction with TCG mode.
 
--Sumit
+Regards
+Bibo Mao
+> 
+>>
+>>>>
+>>>>> reasons. If we use CPUCFG, then the hypervisor information is
+>>>>> unnecessarily leaked to userspace, and this may be a security issue.
+>>>>> Meanwhile, I don't think TCG mode needs PV features.
+>>>> Besides PV features, there is other features different with real hw such
+>>>> as virtio device, virtual interrupt controller.
+>>>
+>>> Those are *device* level information, they must be passed in firmware
+>>> interfaces to keep processor emulation sane.
+>> File arch/x86/hyperv/hv_apic.c can be referenced, apic features comes
+>> from ms_hyperv.hints and HYPERV_CPUID_ENLIGHTMENT_INFO cpuid info, not
+>> must be passed by firmware interface.
+> 
+> That’s not KVM, that’s Hyper V. At Linux Kernel we enjoy the benefits of better
+> modularity on device abstractions, please don’t break it.
+> 
+> Thanks
+> 
+>>
+>> Regards
+>> Bibo Mao
+>>>
+>>> Thanks
+>>>
+>>>>
+>>>> Regards
+>>>> Bibo Mao
+>>>>
+>>>>>
+>>>>> I consulted with Jiaxun before, and maybe he can give some more comments.
+>>>>>
+>>>>>>
+>>>>>> Extioi virtualization extension will be added later, cpucfg can be used
+>>>>>> to get extioi features. It is unlikely that extioi driver depends on
+>>>>>> PARA_VIRT macro if hypercall is used to get features.
+>>>>> CPUCFG is per-core information, if we really need something about
+>>>>> extioi, it should be in iocsr (LOONGARCH_IOCSR_FEATURES).
+>>>>>
+>>>>>
+>>>>> Huacai
+>>>>>
+>>>>>>
+>>>>>> Regards
+>>>>>> Bibo Mao
+>>>>>>
+>>>>>>>
+>>>>>>> Huacai
+>>>>>>>
+>>>>>>>>
+>>>>>>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>>>>>>>> ---
+>>>>>>>>      arch/loongarch/include/asm/inst.h      |  1 +
+>>>>>>>>      arch/loongarch/include/asm/loongarch.h | 10 ++++++
+>>>>>>>>      arch/loongarch/kvm/exit.c              | 46 +++++++++++++++++---------
+>>>>>>>>      3 files changed, 41 insertions(+), 16 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
+>>>>>>>> index d8f637f9e400..ad120f924905 100644
+>>>>>>>> --- a/arch/loongarch/include/asm/inst.h
+>>>>>>>> +++ b/arch/loongarch/include/asm/inst.h
+>>>>>>>> @@ -67,6 +67,7 @@ enum reg2_op {
+>>>>>>>>             revhd_op        = 0x11,
+>>>>>>>>             extwh_op        = 0x16,
+>>>>>>>>             extwb_op        = 0x17,
+>>>>>>>> +       cpucfg_op       = 0x1b,
+>>>>>>>>             iocsrrdb_op     = 0x19200,
+>>>>>>>>             iocsrrdh_op     = 0x19201,
+>>>>>>>>             iocsrrdw_op     = 0x19202,
+>>>>>>>> diff --git a/arch/loongarch/include/asm/loongarch.h b/arch/loongarch/include/asm/loongarch.h
+>>>>>>>> index 46366e783c84..a1d22e8b6f94 100644
+>>>>>>>> --- a/arch/loongarch/include/asm/loongarch.h
+>>>>>>>> +++ b/arch/loongarch/include/asm/loongarch.h
+>>>>>>>> @@ -158,6 +158,16 @@
+>>>>>>>>      #define  CPUCFG48_VFPU_CG              BIT(2)
+>>>>>>>>      #define  CPUCFG48_RAM_CG               BIT(3)
+>>>>>>>>
+>>>>>>>> +/*
+>>>>>>>> + * cpucfg index area: 0x40000000 -- 0x400000ff
+>>>>>>>> + * SW emulation for KVM hypervirsor
+>>>>>>>> + */
+>>>>>>>> +#define CPUCFG_KVM_BASE                        0x40000000UL
+>>>>>>>> +#define CPUCFG_KVM_SIZE                        0x100
+>>>>>>>> +#define CPUCFG_KVM_SIG                 CPUCFG_KVM_BASE
+>>>>>>>> +#define  KVM_SIGNATURE                 "KVM\0"
+>>>>>>>> +#define CPUCFG_KVM_FEATURE             (CPUCFG_KVM_BASE + 4)
+>>>>>>>> +
+>>>>>>>>      #ifndef __ASSEMBLY__
+>>>>>>>>
+>>>>>>>>      /* CSR */
+>>>>>>>> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+>>>>>>>> index 923bbca9bd22..6a38fd59d86d 100644
+>>>>>>>> --- a/arch/loongarch/kvm/exit.c
+>>>>>>>> +++ b/arch/loongarch/kvm/exit.c
+>>>>>>>> @@ -206,10 +206,37 @@ int kvm_emu_idle(struct kvm_vcpu *vcpu)
+>>>>>>>>             return EMULATE_DONE;
+>>>>>>>>      }
+>>>>>>>>
+>>>>>>>> -static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
+>>>>>>>> +static int kvm_emu_cpucfg(struct kvm_vcpu *vcpu, larch_inst inst)
+>>>>>>>>      {
+>>>>>>>>             int rd, rj;
+>>>>>>>>             unsigned int index;
+>>>>>>>> +
+>>>>>>>> +       rd = inst.reg2_format.rd;
+>>>>>>>> +       rj = inst.reg2_format.rj;
+>>>>>>>> +       ++vcpu->stat.cpucfg_exits;
+>>>>>>>> +       index = vcpu->arch.gprs[rj];
+>>>>>>>> +
+>>>>>>>> +       /*
+>>>>>>>> +        * By LoongArch Reference Manual 2.2.10.5
+>>>>>>>> +        * Return value is 0 for undefined cpucfg index
+>>>>>>>> +        */
+>>>>>>>> +       switch (index) {
+>>>>>>>> +       case 0 ... (KVM_MAX_CPUCFG_REGS - 1):
+>>>>>>>> +               vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
+>>>>>>>> +               break;
+>>>>>>>> +       case CPUCFG_KVM_SIG:
+>>>>>>>> +               vcpu->arch.gprs[rd] = *(unsigned int *)KVM_SIGNATURE;
+>>>>>>>> +               break;
+>>>>>>>> +       default:
+>>>>>>>> +               vcpu->arch.gprs[rd] = 0;
+>>>>>>>> +               break;
+>>>>>>>> +       }
+>>>>>>>> +
+>>>>>>>> +       return EMULATE_DONE;
+>>>>>>>> +}
+>>>>>>>> +
+>>>>>>>> +static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
+>>>>>>>> +{
+>>>>>>>>             unsigned long curr_pc;
+>>>>>>>>             larch_inst inst;
+>>>>>>>>             enum emulation_result er = EMULATE_DONE;
+>>>>>>>> @@ -224,21 +251,8 @@ static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
+>>>>>>>>             er = EMULATE_FAIL;
+>>>>>>>>             switch (((inst.word >> 24) & 0xff)) {
+>>>>>>>>             case 0x0: /* CPUCFG GSPR */
+>>>>>>>> -               if (inst.reg2_format.opcode == 0x1B) {
+>>>>>>>> -                       rd = inst.reg2_format.rd;
+>>>>>>>> -                       rj = inst.reg2_format.rj;
+>>>>>>>> -                       ++vcpu->stat.cpucfg_exits;
+>>>>>>>> -                       index = vcpu->arch.gprs[rj];
+>>>>>>>> -                       er = EMULATE_DONE;
+>>>>>>>> -                       /*
+>>>>>>>> -                        * By LoongArch Reference Manual 2.2.10.5
+>>>>>>>> -                        * return value is 0 for undefined cpucfg index
+>>>>>>>> -                        */
+>>>>>>>> -                       if (index < KVM_MAX_CPUCFG_REGS)
+>>>>>>>> -                               vcpu->arch.gprs[rd] = vcpu->arch.cpucfg[index];
+>>>>>>>> -                       else
+>>>>>>>> -                               vcpu->arch.gprs[rd] = 0;
+>>>>>>>> -               }
+>>>>>>>> +               if (inst.reg2_format.opcode == cpucfg_op)
+>>>>>>>> +                       er = kvm_emu_cpucfg(vcpu, inst);
+>>>>>>>>                     break;
+>>>>>>>>             case 0x4: /* CSR{RD,WR,XCHG} GSPR */
+>>>>>>>>                     er = kvm_handle_csr(vcpu, inst);
+>>>>>>>> --
+>>>>>>>> 2.39.3
+>>>>>>>>
+>>>>>>
+>>>>>>
+>>>
+> 
 
-> +       opcode = lower_16_bits(arg->func);
-> +       shm_id = lower_32_bits(param[0].u.value.a);
-> +       req_len = lower_32_bits(param[0].u.value.b);
-> +
-> +       if (shm_id != 0) {
-> +               shm = tee_shm_get_from_id(ctx, shm_id);
-> +               if (IS_ERR(shm))
-> +                       return PTR_ERR(shm);
-> +
-> +               if (shm->size < req_len) {
-> +                       pr_err("request doesn't fit into shared memory buffer\n");
-> +                       rc = -EINVAL;
-> +                       goto out;
-> +               }
-> +
-> +               handle = shm->sec_world_id;
-> +       } else {
-> +               handle = FFA_INVALID_MEM_HANDLE;
-> +       }
-> +
-> +       ffa_args[TS_RPC_CTRL_REG] = TS_RPC_CTRL_PACK_IFACE_OPCODE(iface_id,
-> +                                                                 opcode);
-> +       ffa_args[TS_RPC_SERVICE_MEM_HANDLE_LSW] = lower_32_bits(handle);
-> +       ffa_args[TS_RPC_SERVICE_MEM_HANDLE_MSW] = upper_32_bits(handle);
-> +       ffa_args[TS_RPC_SERVICE_REQ_LEN] = req_len;
-> +       ffa_args[TS_RPC_SERVICE_CLIENT_ID] = 0;
-> +
-> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
-> +       rc = ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_data);
-> +       if (rc)
-> +               goto out;
-> +
-> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
-> +
-> +       if (ffa_args[TS_RPC_SERVICE_RPC_STATUS] != TS_RPC_OK) {
-> +               pr_err("invoke_func rpc status: %d\n",
-> +                      ffa_args[TS_RPC_SERVICE_RPC_STATUS]);
-> +               rc = -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       arg->ret = ffa_args[TS_RPC_SERVICE_STATUS];
-> +       if (shm && shm->size >= ffa_args[TS_RPC_SERVICE_RESP_LEN])
-> +               param[0].u.value.a = ffa_args[TS_RPC_SERVICE_RESP_LEN];
-> +
-> +out:
-> +       if (shm)
-> +               tee_shm_put(shm);
-> +
-> +       return rc;
-> +}
-> +
-> +static int tstee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
-> +                             struct page **pages, size_t num_pages,
-> +                             unsigned long start __always_unused)
-> +{
-> +       struct tstee *tstee = tee_get_drvdata(ctx->teedev);
-> +       struct ffa_device *ffa_dev = tstee->ffa_dev;
-> +       struct ffa_mem_region_attributes mem_attr = {
-> +               .receiver = tstee->ffa_dev->vm_id,
-> +               .attrs = FFA_MEM_RW,
-> +               .flag = 0,
-> +       };
-> +       struct ffa_mem_ops_args mem_args = {
-> +               .attrs = &mem_attr,
-> +               .use_txbuf = true,
-> +               .nattrs = 1,
-> +               .flags = 0,
-> +       };
-> +       struct ffa_send_direct_data ffa_data;
-> +       struct sg_table sgt;
-> +       u32 ffa_args[FFA_DIRECT_REQ_ARG_NUM] = {};
-> +       int rc;
-> +
-> +       rc = sg_alloc_table_from_pages(&sgt, pages, num_pages, 0,
-> +                                      num_pages * PAGE_SIZE, GFP_KERNEL);
-> +       if (rc)
-> +               return rc;
-> +
-> +       mem_args.sg = sgt.sgl;
-> +       rc = ffa_dev->ops->mem_ops->memory_share(&mem_args);
-> +       sg_free_table(&sgt);
-> +       if (rc)
-> +               return rc;
-> +
-> +       shm->sec_world_id = mem_args.g_handle;
-> +
-> +       ffa_args[TS_RPC_CTRL_REG] =
-> +                       TS_RPC_CTRL_PACK_IFACE_OPCODE(TS_RPC_MGMT_IFACE_ID,
-> +                                                     TS_RPC_OP_RETRIEVE_MEM);
-> +       ffa_args[TS_RPC_RETRIEVE_MEM_HANDLE_LSW] =
-> +                       lower_32_bits(shm->sec_world_id);
-> +       ffa_args[TS_RPC_RETRIEVE_MEM_HANDLE_MSW] =
-> +                       upper_32_bits(shm->sec_world_id);
-> +       ffa_args[TS_RPC_RETRIEVE_MEM_TAG_LSW] = 0;
-> +       ffa_args[TS_RPC_RETRIEVE_MEM_TAG_MSW] = 0;
-> +
-> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
-> +       rc = ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_data);
-> +       if (rc) {
-> +               (void)ffa_dev->ops->mem_ops->memory_reclaim(shm->sec_world_id,
-> +                                                           0);
-> +               return rc;
-> +       }
-> +
-> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
-> +
-> +       if (ffa_args[TS_RPC_RETRIEVE_MEM_RPC_STATUS] != TS_RPC_OK) {
-> +               pr_err("shm_register rpc status: %d\n",
-> +                      ffa_args[TS_RPC_RETRIEVE_MEM_RPC_STATUS]);
-> +               ffa_dev->ops->mem_ops->memory_reclaim(shm->sec_world_id, 0);
-> +               return -EINVAL;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int tstee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
-> +{
-> +       struct tstee *tstee = tee_get_drvdata(ctx->teedev);
-> +       struct ffa_device *ffa_dev = tstee->ffa_dev;
-> +       struct ffa_send_direct_data ffa_data;
-> +       u32 ffa_args[FFA_DIRECT_REQ_ARG_NUM] = {};
-> +       int rc;
-> +
-> +       ffa_args[TS_RPC_CTRL_REG] =
-> +                       TS_RPC_CTRL_PACK_IFACE_OPCODE(TS_RPC_MGMT_IFACE_ID,
-> +                                                     TS_RPC_OP_RELINQ_MEM);
-> +       ffa_args[TS_RPC_RELINQ_MEM_HANDLE_LSW] =
-> +                       lower_32_bits(shm->sec_world_id);
-> +       ffa_args[TS_RPC_RELINQ_MEM_HANDLE_MSW] =
-> +                       upper_32_bits(shm->sec_world_id);
-> +
-> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
-> +       rc = ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_data);
-> +       if (rc)
-> +               return rc;
-> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
-> +
-> +       if (ffa_args[TS_RPC_RELINQ_MEM_RPC_STATUS] != TS_RPC_OK) {
-> +               pr_err("shm_unregister rpc status: %d\n",
-> +                      ffa_args[TS_RPC_RELINQ_MEM_RPC_STATUS]);
-> +               return -EINVAL;
-> +       }
-> +
-> +       rc = ffa_dev->ops->mem_ops->memory_reclaim(shm->sec_world_id, 0);
-> +
-> +       return rc;
-> +}
-> +
-> +static const struct tee_driver_ops tstee_ops = {
-> +       .get_version = tstee_get_version,
-> +       .open = tstee_open,
-> +       .release = tstee_release,
-> +       .open_session = tstee_open_session,
-> +       .close_session = tstee_close_session,
-> +       .invoke_func = tstee_invoke_func,
-> +       .shm_register = tstee_shm_register,
-> +       .shm_unregister = tstee_shm_unregister,
-> +};
-> +
-> +static const struct tee_desc tstee_desc = {
-> +       .name = "tstee-clnt",
-> +       .ops = &tstee_ops,
-> +       .owner = THIS_MODULE,
-> +};
-> +
-> +static int pool_op_alloc(struct tee_shm_pool *pool, struct tee_shm *shm,
-> +                        size_t size, size_t align)
-> +{
-> +       return tee_shm_pool_op_alloc_helper(pool, shm, size, align,
-> +                                           tstee_shm_register);
-> +}
-> +
-> +static void pool_op_free(struct tee_shm_pool *pool, struct tee_shm *shm)
-> +{
-> +       tee_shm_pool_op_free_helper(pool, shm, tstee_shm_unregister);
-> +}
-> +
-> +static void pool_op_destroy_pool(struct tee_shm_pool *pool)
-> +{
-> +       kfree(pool);
-> +}
-> +
-> +static const struct tee_shm_pool_ops pool_ops = {
-> +       .alloc = pool_op_alloc,
-> +       .free = pool_op_free,
-> +       .destroy_pool = pool_op_destroy_pool,
-> +};
-> +
-> +static struct tee_shm_pool *tstee_create_shm_pool(void)
-> +{
-> +       struct tee_shm_pool *pool = kzalloc(sizeof(*pool), GFP_KERNEL);
-> +
-> +       if (!pool)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       pool->ops = &pool_ops;
-> +
-> +       return pool;
-> +}
-> +
-> +static bool tstee_check_rpc_compatible(struct ffa_device *ffa_dev)
-> +{
-> +       struct ffa_send_direct_data ffa_data;
-> +       u32 ffa_args[FFA_DIRECT_REQ_ARG_NUM] = {};
-> +
-> +       ffa_args[TS_RPC_CTRL_REG] =
-> +                       TS_RPC_CTRL_PACK_IFACE_OPCODE(TS_RPC_MGMT_IFACE_ID,
-> +                                                     TS_RPC_OP_GET_VERSION);
-> +
-> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
-> +       if (ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_data))
-> +               return false;
-> +
-> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
-> +
-> +       return ffa_args[TS_RPC_GET_VERSION_RESP] == TS_RPC_PROTOCOL_VERSION;
-> +}
-> +
-> +static int tstee_probe(struct ffa_device *ffa_dev)
-> +{
-> +       struct tstee *tstee;
-> +       int rc;
-> +
-> +       ffa_dev->ops->msg_ops->mode_32bit_set(ffa_dev);
-> +
-> +       if (!tstee_check_rpc_compatible(ffa_dev))
-> +               return -EINVAL;
-> +
-> +       tstee = kzalloc(sizeof(*tstee), GFP_KERNEL);
-> +       if (!tstee)
-> +               return -ENOMEM;
-> +
-> +       tstee->ffa_dev = ffa_dev;
-> +
-> +       tstee->pool = tstee_create_shm_pool();
-> +       if (IS_ERR(tstee->pool)) {
-> +               rc = PTR_ERR(tstee->pool);
-> +               tstee->pool = NULL;
-> +               goto err_free_tstee;
-> +       }
-> +
-> +       tstee->teedev = tee_device_alloc(&tstee_desc, NULL, tstee->pool, tstee);
-> +       if (IS_ERR(tstee->teedev)) {
-> +               rc = PTR_ERR(tstee->teedev);
-> +               tstee->teedev = NULL;
-> +               goto err_free_pool;
-> +       }
-> +
-> +       rc = tee_device_register(tstee->teedev);
-> +       if (rc)
-> +               goto err_unreg_teedev;
-> +
-> +       ffa_dev_set_drvdata(ffa_dev, tstee);
-> +
-> +       return 0;
-> +
-> +err_unreg_teedev:
-> +       tee_device_unregister(tstee->teedev);
-> +err_free_pool:
-> +       tee_shm_pool_free(tstee->pool);
-> +err_free_tstee:
-> +       kfree(tstee);
-> +       return rc;
-> +}
-> +
-> +static void tstee_remove(struct ffa_device *ffa_dev)
-> +{
-> +       struct tstee *tstee = ffa_dev->dev.driver_data;
-> +
-> +       tee_device_unregister(tstee->teedev);
-> +       tee_shm_pool_free(tstee->pool);
-> +       kfree(tstee);
-> +}
-> +
-> +static const struct ffa_device_id tstee_device_ids[] = {
-> +       /* TS RPC protocol UUID: bdcd76d7-825e-4751-963b-86d4f84943ac */
-> +       { TS_RPC_UUID },
-> +       {}
-> +};
-> +
-> +static struct ffa_driver tstee_driver = {
-> +       .name = "arm_tstee",
-> +       .probe = tstee_probe,
-> +       .remove = tstee_remove,
-> +       .id_table = tstee_device_ids,
-> +};
-> +
-> +module_ffa_driver(tstee_driver);
-> +
-> +MODULE_AUTHOR("Balint Dobszay <balint.dobszay@arm.com>");
-> +MODULE_DESCRIPTION("Arm Trusted Services TEE driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/tee/tstee/tstee_private.h b/drivers/tee/tstee/tstee_private.h
-> new file mode 100644
-> index 000000000000..6d24cf0dbbc2
-> --- /dev/null
-> +++ b/drivers/tee/tstee/tstee_private.h
-> @@ -0,0 +1,94 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2023, Arm Limited
-> + */
-> +
-> +#ifndef TSTEE_PRIVATE_H
-> +#define TSTEE_PRIVATE_H
-> +
-> +#include <linux/arm_ffa.h>
-> +#include <linux/bitops.h>
-> +#include <linux/tee_drv.h>
-> +#include <linux/types.h>
-> +#include <linux/uuid.h>
-> +#include <linux/xarray.h>
-> +
-> +/*
-> + * The description of the ABI implemented in this file is available at
-> + * https://trusted-services.readthedocs.io/en/v1.0.0/developer/service-access-protocols.html#abi
-> + */
-> +
-> +/* UUID of this protocol */
-> +#define TS_RPC_UUID UUID_INIT(0xbdcd76d7, 0x825e, 0x4751, \
-> +                             0x96, 0x3b, 0x86, 0xd4, 0xf8, 0x49, 0x43, 0xac)
-> +
-> +/* Protocol version*/
-> +#define TS_RPC_PROTOCOL_VERSION                (1)
-> +
-> +/* Status codes */
-> +#define TS_RPC_OK                      (0)
-> +
-> +/* RPC control register */
-> +#define TS_RPC_CTRL_REG                        (0)
-> +#define OPCODE_MASK                    GENMASK(15, 0)
-> +#define IFACE_ID_MASK                  GENMASK(23, 16)
-> +#define TS_RPC_CTRL_OPCODE(x)          ((u16)(FIELD_GET(OPCODE_MASK, (x))))
-> +#define TS_RPC_CTRL_IFACE_ID(x)                ((u8)(FIELD_GET(IFACE_ID_MASK, (x))))
-> +#define TS_RPC_CTRL_PACK_IFACE_OPCODE(i, o)    \
-> +       (FIELD_PREP(IFACE_ID_MASK, (i)) | FIELD_PREP(OPCODE_MASK, (o)))
-> +#define TS_RPC_CTRL_SAP_RC             BIT(30)
-> +#define TS_RPC_CTRL_SAP_ERR            BIT(31)
-> +
-> +/* Interface ID for RPC management operations */
-> +#define TS_RPC_MGMT_IFACE_ID           (0xff)
-> +
-> +/* Management calls */
-> +#define TS_RPC_OP_GET_VERSION          (0x0000)
-> +#define TS_RPC_GET_VERSION_RESP                (1)
-> +
-> +#define TS_RPC_OP_RETRIEVE_MEM         (0x0001)
-> +#define TS_RPC_RETRIEVE_MEM_HANDLE_LSW (1)
-> +#define TS_RPC_RETRIEVE_MEM_HANDLE_MSW (2)
-> +#define TS_RPC_RETRIEVE_MEM_TAG_LSW    (3)
-> +#define TS_RPC_RETRIEVE_MEM_TAG_MSW    (4)
-> +#define TS_RPC_RETRIEVE_MEM_RPC_STATUS (1)
-> +
-> +#define TS_RPC_OP_RELINQ_MEM           (0x0002)
-> +#define TS_RPC_RELINQ_MEM_HANDLE_LSW   (1)
-> +#define TS_RPC_RELINQ_MEM_HANDLE_MSW   (2)
-> +#define TS_RPC_RELINQ_MEM_RPC_STATUS   (1)
-> +
-> +#define TS_RPC_OP_SERVICE_INFO         (0x0003)
-> +#define TS_RPC_SERVICE_INFO_UUID0      (1)
-> +#define TS_RPC_SERVICE_INFO_UUID1      (2)
-> +#define TS_RPC_SERVICE_INFO_UUID2      (3)
-> +#define TS_RPC_SERVICE_INFO_UUID3      (4)
-> +#define TS_RPC_SERVICE_INFO_RPC_STATUS (1)
-> +#define TS_RPC_SERVICE_INFO_IFACE      (2)
-> +
-> +/* Service call */
-> +#define TS_RPC_SERVICE_MEM_HANDLE_LSW  (1)
-> +#define TS_RPC_SERVICE_MEM_HANDLE_MSW  (2)
-> +#define TS_RPC_SERVICE_REQ_LEN         (3)
-> +#define TS_RPC_SERVICE_CLIENT_ID       (4)
-> +#define TS_RPC_SERVICE_RPC_STATUS      (1)
-> +#define TS_RPC_SERVICE_STATUS          (2)
-> +#define TS_RPC_SERVICE_RESP_LEN                (3)
-> +
-> +struct tstee {
-> +       struct ffa_device *ffa_dev;
-> +       struct tee_device *teedev;
-> +       struct tee_shm_pool *pool;
-> +};
-> +
-> +struct ts_session {
-> +       u8 iface_id;
-> +};
-> +
-> +struct ts_context_data {
-> +       struct xarray sess_list;
-> +       /* Serializes access to the session list */
-> +       struct mutex mutex;
-> +};
-> +
-> +#endif /* TSTEE_PRIVATE_H */
-> diff --git a/include/uapi/linux/tee.h b/include/uapi/linux/tee.h
-> index 23e57164693c..d0430bee8292 100644
-> --- a/include/uapi/linux/tee.h
-> +++ b/include/uapi/linux/tee.h
-> @@ -56,6 +56,7 @@
->   */
->  #define TEE_IMPL_ID_OPTEE      1
->  #define TEE_IMPL_ID_AMDTEE     2
-> +#define TEE_IMPL_ID_TSTEE      3
->
->  /*
->   * OP-TEE specific capabilities
-> --
-> 2.34.1
->
 
