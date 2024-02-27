@@ -1,105 +1,126 @@
-Return-Path: <linux-kernel+bounces-83983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A865486A0F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:41:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF89486A0F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:41:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFD8BB25E1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:41:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52A0028A3D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:41:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B9814DFED;
-	Tue, 27 Feb 2024 20:41:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663E414DFF4;
+	Tue, 27 Feb 2024 20:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PlRbB+Co"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="guZy/hT8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E7F851C4C
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:41:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CC8134B1;
+	Tue, 27 Feb 2024 20:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709066471; cv=none; b=IqSq5owhv21lIWmUBXsldqLCYa69wrowDrNvfgqHxdzRjAgC2PfccLGNaK1NGjxbKC0BZPi4MIUGGD9kqCSnYTEKBnrGf/uQXw20pDDVitXQS8ra3oCHr+QZ6lPMqXEeeRFefSfEhUiF4iSjZUwc0sUdKVX4ivxXZ0rxJSvMc4Y=
+	t=1709066481; cv=none; b=Pa2YbH/FqBsvFpykVvIdFqrn3PSKiwTqzaOWgRpDL8BthnN52Hl3UWsqaSwce1i4c1XyjZOclYlh4QhT5pi8/QPgdbsBaQ1E8onSIFJwlA8GIgKrKpWZQi7LFHbkWMntDWpgKi9rc66j2QeGhkqDDobaD7dOPempHi2Dj3I9HdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709066471; c=relaxed/simple;
-	bh=Kc8/DnEIqj9ihyvhHXZRL9D2xQyaeIUiwEE9a//D3/I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GHtNmjJ7p5jpnV+kOH4z/5z96tHS3EFwsoSaB9AgMjSWBEP3dYOEbDfG8R6fdfmiVYwZaxrD9/kqIwtNjK0hmTUEu9ZWvEseoHDOAcCslDRssEG4Xn9FoW+cQQKnzwxZq3CjMUx3oftEY8scHb0ySz9S/mQ5G7wujYPAzhKQOG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PlRbB+Co; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3122b70439so593681766b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:41:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709066467; x=1709671267; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=juAeacRch3k681Zfd2bjBuM8kFMkd14jsXtMgJ5fuGM=;
-        b=PlRbB+CoW7stIw9cye5TOSecpRUaGisFcwm3tEa6Pik5IoTBEh+3IzDopQhTLHKkNw
-         Pexm7VxxFYMASzhPoM3KvT6yyul0FUpNlJUgNjsfal2e1AxqDfObyLiCPgcCYnHTN8Wg
-         nHgwMVEr0ZrD+yGrZ8G0c8FWFDdRbizKV5hKw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709066467; x=1709671267;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=juAeacRch3k681Zfd2bjBuM8kFMkd14jsXtMgJ5fuGM=;
-        b=d7dLUMpOob1o4k/8ytj8sENhOpZNuah4IDnOE17QdEvDBdSMjtIxiIl2fSuQE5AbnW
-         GiLKgcQUnm+hN9w7FiZAw0LtdUtax7dR85v7D9UoP6QOOCCrTA6dKFRW20j2tDp6ENxb
-         jyy+FfOpkr/OF1an/B8ZH5n42THzRWEoejJdnoOJMwBaptH8W11MsCNVkTQeKpSaAA6F
-         94WrAoe+AahA6y0SfBypgFU3yxvpYhjYq/MNrKqT0sgAY7nNgI6XHpSyHsjD0HgrEc03
-         znOCHsFpWGiIjO/lrw2PBTjRDxDhk7AamwtFoax2EomtD0923G31nXeW28B27Xg1emom
-         TZFA==
-X-Forwarded-Encrypted: i=1; AJvYcCUDllMKe61oH/hWAFK3JOdlgwjhjs9G4l/2Y0/fyMI9Cm8CFZvecw1fYKN4fhQPdW/YTE/M5vGCzaSmgFq5tFnOTQCT6dJqZIHvCTsn
-X-Gm-Message-State: AOJu0YzV7swlNgUUwTFsfHS0HPNNBS3JXR17XYGx2XCjzLNEGSo0WHe7
-	Jk5A5mY7Rw4Dpd3mR7rA40jU0Zc7slTbpTgPZeBSy64nALMijy53c1SqjYmvjSGidX7GVbmOEBq
-	m6RDZNA==
-X-Google-Smtp-Source: AGHT+IFn+7kyAZlKY7b8uSFZeTTDBxZxmsBNGCRIrGKyaLZEhXyCobVvSGQ0ioSOdE9u44p0FWri7g==
-X-Received: by 2002:a17:907:20ee:b0:a3f:8925:50bb with SMTP id rh14-20020a17090720ee00b00a3f892550bbmr7258022ejb.76.1709066467614;
-        Tue, 27 Feb 2024 12:41:07 -0800 (PST)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id q11-20020a17090622cb00b00a431e4d5deasm1099034eja.155.2024.02.27.12.41.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 12:41:06 -0800 (PST)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3122b70439so593679366b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:41:06 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV2Rd6xgwjbL7u410jh9qLZdCva3l5hAo3uPMcX7aKLNQpm8POk6q/EmQ4CZ+cGJMk6wWFBiKwJolgtAC5TBRlUerVSjvmL+F0W/hqF
-X-Received: by 2002:a17:906:b349:b0:a3e:fce7:9393 with SMTP id
- cd9-20020a170906b34900b00a3efce79393mr6662120ejb.10.1709066466422; Tue, 27
- Feb 2024 12:41:06 -0800 (PST)
+	s=arc-20240116; t=1709066481; c=relaxed/simple;
+	bh=C3koc4BLUVBfCv4h3OTG4z56obl5Kil1OhlpatVuxVQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=WJWs77tZfUCf5T0nuIV4FzRnTNBhab0mXtql1r86aJshGIO4TgcuGK5YVdAZ/qYAVWmFFvv5KeltH+ziKzM0mW3GVb1pPtbb0a4JhDJ/qHZBQBUJum3cl95al3wtpReMUlHDiN5zbCoxqQz8C10qGGxzjht+H/tIQPticMPHGuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=guZy/hT8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58B37C433F1;
+	Tue, 27 Feb 2024 20:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709066481;
+	bh=C3koc4BLUVBfCv4h3OTG4z56obl5Kil1OhlpatVuxVQ=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=guZy/hT88vtmqaJOKLgNAcTyuCLhnMzeuczn96zWG6ni0mK+00rJ5FGCHHba6RqJ6
+	 EUQ8hd0rPuRyJ10yBvAQVDFMG7qS0jvLzF3eEwi+SpSw/zjVxjAjmV4sZHEHilV8/z
+	 kGnbXcsb/uLZDhlM/zb+VjOMx9SrdgsaIaSvSQvGua4pTN1JgnBaTw4d+SFoft/h2a
+	 iwnAsXaIfQK2J5Ey3QYFRathYuMTGBpdrdb8+5gKEYehV1Ry7OOlpagHp6dYKyzCji
+	 2UcbLlU99UBKSPJ6W37HhQUwgSSoDHEPctMZ1xFZ/KheN4lUEhOZb0ED9dZXo4sZ6H
+	 dPo8t615ACtBQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <170905252721.2268463.6714121678946763402.stgit@dwillia2-xfh.jf.intel.com>
- <170905253897.2268463.13371523233762430828.stgit@dwillia2-xfh.jf.intel.com>
-In-Reply-To: <170905253897.2268463.13371523233762430828.stgit@dwillia2-xfh.jf.intel.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 27 Feb 2024 12:40:49 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiJJf+FwWNcWEv15hXjK3v3VfPLabj-SqQpMk8qLM0xAg@mail.gmail.com>
-Message-ID: <CAHk-=wiJJf+FwWNcWEv15hXjK3v3VfPLabj-SqQpMk8qLM0xAg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] cleanup: Introduce cond_no_free_ptr()
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: peterz@infradead.org, gregkh@linuxfoundation.org, 
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
-	linux-cxl@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 27 Feb 2024 22:41:14 +0200
+Message-Id: <CZG5I3CPFINS.2ZV8CB5AXCCEX@kernel.org>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
+ <zhiquan1.li@intel.com>, "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
+ try_charge()
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Dave Hansen" <dave.hansen@intel.com>, "Haitao Huang"
+ <haitao.huang@linux.intel.com>, "Huang, Kai" <kai.huang@intel.com>,
+ "tj@kernel.org" <tj@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>,
+ "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
+ "bp@alien8.de" <bp@alien8.de>
+X-Mailer: aerc 0.17.0
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-11-haitao.huang@linux.intel.com>
+ <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
+ <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
+ <op.2jkfeezjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <c913193c0560c4372d2fdb31e9edb28bcb419f50.camel@intel.com>
+ <op.2jlti6g9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <7b53e155-2622-4acb-b7c9-d22e623e4cb3@intel.com>
+ <op.2jqdjjd8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <48faaea8b24f032baa6a858a2909a5b4ace769c6.camel@intel.com>
+ <d9b0df06-da68-4729-8aac-2a77e890e152@intel.com>
+ <op.2jrquskiwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3f4c6d12-7e0f-44ca-920e-ec219904e0aa@intel.com>
+In-Reply-To: <3f4c6d12-7e0f-44ca-920e-ec219904e0aa@intel.com>
 
-On Tue, 27 Feb 2024 at 08:49, Dan Williams <dan.j.williams@intel.com> wrote:
+On Mon Feb 26, 2024 at 11:56 PM EET, Dave Hansen wrote:
+> On 2/26/24 13:48, Haitao Huang wrote:
+> > In case of overcomitting, i.e., sum of limits greater than the EPC
+> > capacity, if one group has a fault, and its usage is not above its own
+> > limit (try_charge() passes), yet total usage of the system has exceeded
+> > the capacity, whether we do global reclaim or just reclaim pages in the
+> > current faulting group.
 >
->     5/ cond_no_free_ptr(rc == 0, return rc, res, name);
+> I don't see _any_ reason to limit reclaim to the current faulting cgroup.
+>
+> >> Last, what is the simplest (least amount of code) thing that the SGX
+> >> cgroup controller could implement here?
+> >=20
+> > I still think the current approach of doing global reclaim is reasonabl=
+e
+> > and simple: try_charge() checks cgroup limit and reclaim within the
+> > group if needed, then do EPC page allocation, reclaim globally if
+> > allocation fails due to global usage reaches the capacity.
+> >=20
+> > I'm not sure how not doing global reclaiming in this case would bring
+> > any benefit.
+> I tend to agree.
+>
+> Kai, I think your examples sound a little bit contrived.  Have actual
+> users expressed a strong intent for doing anything with this series
+> other than limiting bad actors from eating all the EPC?
 
-Ugh. Honestly, this is all too ugly for words.
+I'd consider this from the viewpoint is there anything in the user space
+visible portion of the patch set that would limit tuning the performance
+later on, if required let's say by a workload that acts sub-optimally.
 
-The whole - and only - point for the cond_guard() is to make mistakes
-less likely.
+If not, then most of performance related issues can be only identified
+by actual use of the code.
 
-This is not it. This makes mistakes unreadable and undebuggable.
-
-             Linus
+BR, Jarkko
 
