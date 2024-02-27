@@ -1,134 +1,136 @@
-Return-Path: <linux-kernel+bounces-83584-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3ECB869BD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:16:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AB51869BE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:18:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C82728589D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:16:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD4AD1C22C9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F740148316;
-	Tue, 27 Feb 2024 16:16:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A1B1487D1;
+	Tue, 27 Feb 2024 16:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JKk+tzEO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dnLbJFsR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BC514830B;
-	Tue, 27 Feb 2024 16:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDA91482F5;
+	Tue, 27 Feb 2024 16:18:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709050592; cv=none; b=l7u9wodBiz82hfdvudCjB5g07OJn8foJ+6WZMiCnfZEToNCn+I4uf993l9ZYyHt7N2qHve2WJLOtZ5HosBvEP2nc3psyBuexJAP+kNbLKMS/W/mUwyf0diLJvRlkMPm75h4JJ/vcOztcdHe3JIyuCxVM+SGSYX8AWdVJk1EiIDk=
+	t=1709050706; cv=none; b=DfmlKcOsjgtYNOtC2uDGaSvYeQD15AydW7N+gV31yU/oL3OnvP/ITxtUH501M+Lpe/zARUqMpgLwp2v4QUDw1nOaQpF1m/qQ8fmSt2qGxo8VhmCbRYgWJrLmAEBQlDJ8Ti4pKfS4WrcO/2SFFgzPyFm6fNuCb0m4dMVA6AhQSSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709050592; c=relaxed/simple;
-	bh=zGUhntNawTj0DGtuLkweLbg6UYXMPCtS0OX1qkkifiQ=;
+	s=arc-20240116; t=1709050706; c=relaxed/simple;
+	bh=S3QekCPGG3TBM+vOEI8NezVuo8KDNDTXQNBL2mYsxQw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cS4U1M0yCxn9/5gxnkac0oyrT66uQjPJbOuxFwT334HFAWoatmCwRxemgdeNyqO43SBpSQ4GSr4U+P8okGHjxnlpG8vyjEiOgNMCAv1m5NHZ2uGZ3maL2OZmaRtNQ5D3RSkdXMecXoxwtGIKi13KsWm6gI9SJgewmUT2tagnHM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JKk+tzEO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33A83C43390;
-	Tue, 27 Feb 2024 16:16:30 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=pVlVfBYvr2QNWJLp4KDY0/VnmQ2oBSRfrLP0Kg2xmlQDM/n86TUJo995xvJTf55oNLz6cI+iYLivtY/wTqZMHfi3iZr55p9QMSqGmtyPbLrCV9DyIgWIYjuolZ0b978RKHqvn57n0LbgBGKy3o2uM0Xcrlm9M1i021byXu2VIjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dnLbJFsR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27F03C433C7;
+	Tue, 27 Feb 2024 16:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709050590;
-	bh=zGUhntNawTj0DGtuLkweLbg6UYXMPCtS0OX1qkkifiQ=;
+	s=k20201202; t=1709050706;
+	bh=S3QekCPGG3TBM+vOEI8NezVuo8KDNDTXQNBL2mYsxQw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JKk+tzEOTqPiH84N1aei7YjuFYKaD2ludAQgGbh38eHSYjl0gxaBABPKpyaEF/Gvn
-	 KerupP1LqQ+8viJKEpeej58uFXmYz9YvBlsPKRl/0S3VzE7Uc6Ub3NeFYXVxmXGe/k
-	 WqA528WBDPTEaBFcEtGiblpO1N/85Fh9i3DLyHHjMcH2AYOHTsSdpfaisshEO0jSsW
-	 9O2w64LWzhoOausXZwFoWbKZ90qB9o30yvrW+HcaM/5D6icRCCTpgzyEZNiQ5Ma6kF
-	 j6qa2fqlEaam+s0lg1RsNJ9JOpugEvpLDmplyyJKaJOmYysUitiKBfSTGZQgt97Pb8
-	 GunTz0IzSat7w==
-Date: Tue, 27 Feb 2024 17:16:27 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <Zd4K28_GkRQBn9Ik@localhost.localdomain>
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <Zd0ZtNu+Rt0qXkfS@lothringen>
- <CALm+0cUJ9tMsZpOGby_6B6c=XDBn_CJ6=o2WSFafaCwPzp6_4A@mail.gmail.com>
- <Zd3zptTLlUDCg1L7@localhost.localdomain>
+	b=dnLbJFsREb6KPExRQSL+P4hCQKpjoKhmFKNpqGZA9HBj8Wc9uWWHr6bBpF6CERK1q
+	 W/6afuHi18HSZ/JKNaEYicNaQDMjMA+H8Aos7xrYY7EVjpwCh4wvT8jCjqTKii+yDg
+	 i0/uGS5YMnSrGqVpPBF7T7U4sNmzB7eSRt5s1MVBDPzMhW65lwAPeTvk/MiHFcuPhP
+	 prH8iPPTuQ6UrcrcbrJQI3FFGowe3SMLWDpe4pzFd61XM5VrL5MM1qOuuG/Uqxw+Xb
+	 1L732slS1bPopC5DOnnbfooGjkdAdlFdCABORCJKPB2qQCAoZraSrYLPj0/yw/yIou
+	 mddSw63BaXFdw==
+Date: Tue, 27 Feb 2024 17:18:19 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v3 08/16] bpf/verifier: do_misc_fixups for
+ is_bpf_timer_set_sleepable_cb_kfunc
+Message-ID: <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
+References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
+ <20240221-hid-bpf-sleepable-v3-8-1fb378ca6301@kernel.org>
+ <55177311ccdc24a74811d4a291ee1880044a5227.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zd3zptTLlUDCg1L7@localhost.localdomain>
+In-Reply-To: <55177311ccdc24a74811d4a291ee1880044a5227.camel@gmail.com>
 
-Le Tue, Feb 27, 2024 at 03:37:26PM +0100, Frederic Weisbecker a écrit :
-> Le Tue, Feb 27, 2024 at 02:39:55PM +0800, Z qiang a écrit :
-> > > Can the following race happen?
-> > >
-> > > CPU 0                                                   CPU 1
-> > > -----                                                   -----
-> > >
-> > > // wait_tail == HEAD1
-> > > rcu_sr_normal_gp_cleanup() {
-> > >     // has passed SR_MAX_USERS_WAKE_FROM_GP
-> > >     wait_tail->next = next;
-> > >     // done_tail = HEAD1
-> > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > >     queue_work() {
-> > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
-> > >         __queue_work()
-> > >     }
-> > > }
-> > >
-> > >                                                       set_work_pool_and_clear_pending()
-> > >                                                       rcu_sr_normal_gp_cleanup_work() {
-> > > // new GP, wait_tail == HEAD2
-> > > rcu_sr_normal_gp_cleanup() {
-> > >     // executes all completion, but stop at HEAD1
-> > >     wait_tail->next = HEAD1;
-> > >     // done_tail = HEAD2
-> > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > >     queue_work() {
-> > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
-> > >         __queue_work()
-> > >     }
-> > > }
-> > >                                                           // done = HEAD2
-> > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > >                                                           // head = HEAD1
-> > >                                                           head = done->next;
-> > >                                                           done->next = NULL;
-> > >                                                           llist_for_each_safe() {
-> > >                                                               // completes all callbacks, release HEAD1
-> > >                                                           }
-> > >                                                       }
-> > >                                                       // Process second queue
-> > >                                                       set_work_pool_and_clear_pending()
-> > >                                                       rcu_sr_normal_gp_cleanup_work() {
-> > >                                                           // done = HEAD2
-> > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > >
-> > > // new GP, wait_tail == HEAD3
-> > > rcu_sr_normal_gp_cleanup() {
-> > >     // Finds HEAD2 with ->next == NULL at the end
-> > >     rcu_sr_put_wait_head(HEAD2)
-> > 
-> > It seems that we should move rcu_sr_put_wait_head() from
-> > rcu_sr_normal_gp_cleanup() to
-> > rcu_sr_normal_gp_cleanup_work(), if find wait_head->next == NULL, invoke
-> > rcu_sr_put_wait_head() to release wait_head.
+On Feb 23 2024, Eduard Zingerman wrote:
+> On Wed, 2024-02-21 at 17:25 +0100, Benjamin Tissoires wrote:
+> > This is still a WIP, but I think this can be dropped as we never
+> > get to this instruction. So what should we do here?
 > 
-> Well, rcu_sr_normal_gp_cleanup_work() already put all the wait heads
-> that are _after_ srs_done_tail. But it can't put the srs_done_tail itself
-> without introducing even worse races...
+> As Alexei replied in a separate sub-thread you probably want this
+> for sleepable timers. Here is full source code block:
 > 
+>         if (insn->imm == BPF_FUNC_timer_set_callback ||
+>             is_bpf_timer_set_sleepable_cb_kfunc(insn->imm)) {
+>             ...
+>             struct bpf_insn ld_addrs[2] = {
+>                 BPF_LD_IMM64(BPF_REG_3, (long)prog->aux),
+>             };
+> 
+>             insn_buf[0] = ld_addrs[0];
+>             insn_buf[1] = ld_addrs[1];
+>             insn_buf[2] = *insn;
+>             cnt = 3;
+> 
+>             new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
+>             ...
+>         }
+> 
+> Effectively, it sets up third function call parameter (R3)
+> for timer_set_callback() to be prog->aux.
+> E.g. before bpf_patch_insn_data():
+> 
+>    r1 = ... timer ...
+>    r2 = ... callback address ...
+>    call timer_set_callback
+> 
+> After bpf_patch_insn_data():
+> 
+>    r1 = ... timer ...
+>    r2 = ... callback address ...
+>    r3 = prog->aux ll
+>    call timer_set_callback
+> 
+> This way it won't be necessary to walk stack in search for ctx.aux
+> in bpf_timer_set_sleepable_cb().
 
-(I forgot to mention this race actually concerns the last patch (4/4))
+Hmm, I must still be missing a piece of the puzzle:
+if I declare bpf_timer_set_sleepable_cb() to take a third "aux"
+argument, given that it is declared as kfunc, I also must declare it in
+my bpf program, or I get the following:
+
+# libbpf: extern (func ksym) 'bpf_timer_set_sleepable_cb': func_proto [264] incompatible with vmlinux [18151]
+
+And if I declare it, then I don't know what to pass, given that this is
+purely added by the verifier:
+
+43: (85) call bpf_timer_set_sleepable_cb#18152
+arg#2 pointer type STRUCT bpf_prog_aux must point to scalar, or struct with scalar
+
+Maybe I should teach the verifier that this kfunc only takes 2
+arguments, and the third one is virtual, but that also means that when
+the kfunc definitions are to be included in vmlinux.h, they would also
+have this special case.
+
+(I just tried with a blank u64 instead of the struct bpf_prog_aux*, but
+it crashes with KASAN complaining).
+
+Cheers,
+Benjamin
 
