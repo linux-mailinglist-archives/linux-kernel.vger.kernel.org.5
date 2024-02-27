@@ -1,101 +1,151 @@
-Return-Path: <linux-kernel+bounces-83683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C12D5869D46
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:12:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8A8A869D3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:11:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5617FB2C2D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:10:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74A7C2906FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7DA94F1E5;
-	Tue, 27 Feb 2024 17:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="Bp8e/1d+"
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5A94EB21;
-	Tue, 27 Feb 2024 17:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB264E1CB;
+	Tue, 27 Feb 2024 17:10:19 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDB1D3D541
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709053810; cv=none; b=p+g8QwHXmJW0bqHUpUKTR7pVKjPHnMS/KYqsJG7B8KtujZ/wXGDKfRNQK3OJOcBmNpaR5N6jpc/KEHu6gvatO7Abk8o4+waXENFTrWbPNjt1IcJT42gAxmbpXbzwSPvi+Qi34J1aduwtUeDQKe3EogXe/VM/UvlZg1Zm/2ZDqVc=
+	t=1709053819; cv=none; b=El4x15H0kCCQnualIzektRJUJoIr0MeVZ1v+5K76UspGbLzuwqnTa+lKpnnWAFHR87IMN0fMkYfgtoxkk6DniwL9hiFO/d0i7MGtx4XVUT79EX5DH7kJ6kE4jC587HwXw9SKcR0HmdfsETB+6qSJ/2gsAHI/HVCToUmOBeFTLhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709053810; c=relaxed/simple;
-	bh=gyuDS9EtEKaZucQGaEB4KRJYUmQ89m4Q+KTR4RAwEKU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t6BTxxmsK3KUGg2PIBjIE55lgm4jDpGLfNtJ7IqS8dXigWUIPdfKwWtKf8m7vXnowD3V+TtmEuK2JVig6f71AO4vHTVkWvysqSAEEG4xevAfqk+wlXR+qLsIqi8fhc0oGr2lTZoPnZz1mhaoz0ONpkiV22r5vY/cqJEWqkFdiNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=Bp8e/1d+; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4TkkWF4lXLz9stn;
-	Tue, 27 Feb 2024 18:10:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1709053801;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L3rbyqVBPDOPP9EM6vMSpLtzZtbMxF8srL9v40G0eMw=;
-	b=Bp8e/1d+0s6eBqZSdp+nDUYyWX1I3kndK4tVYRukCkdA303SiPrLBul3QkDt5kyngCAxCH
-	CclK+qmQimTSdZ37SJNF9ZyYlxC93pioBZL4JBPcXSnaSjNn4wsAlRppgX5jrhwJxVS9NX
-	rk+zeg2BZoiI5WjnQfuFp9jTA9Fdr8Fuk9FkmCwPZzIFW+auxXD6VRyLQMgnSl02jeT8oe
-	LaWL0DWKVVRHCLtwmfY2MAoo0lGBlMy6M774uvUCrgTYrqzgVjPMSNZ53L/bAQIBVmkAem
-	RnWbBaahhuYcPF6ChRUiqlfzXlCRTxqpmuqKCms8KauMe4oQE/CatYUOSDAc9Q==
-Date: Tue, 27 Feb 2024 18:09:57 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Matthew Wilcox <willy@infradead.org>, linux-xfs@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, david@fromorbit.com, 
-	chandan.babu@oracle.com, akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com, 
-	hare@suse.de, djwong@kernel.org, gost.dev@samsung.com, linux-mm@kvack.org, 
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 03/13] filemap: align the index to mapping_min_order in
- the page cache
-Message-ID: <mm47tgwkrk3glymx6hzgp5bshnzqwqt26ja46xckfzzbjuwzic@oupjlfibn4nm>
-References: <20240226094936.2677493-1-kernel@pankajraghav.com>
- <20240226094936.2677493-4-kernel@pankajraghav.com>
- <Zdyi6lFDAHXi8GPz@casper.infradead.org>
- <37kubwweih4zwvxzvjbhnhxunrafawdqaqggzcw6xayd6vtrfl@dllnk6n53akf>
- <hjrsbb34ghop4qbb6owmg3wqkxu4l42yrekshwfleeqattscqp@z2epeibc67lt>
- <aajarho6xwi4sphqirwvukofvqy3cl6llpe5fetomj5sz7rgzp@xo2iqdwingtf>
- <vsy43j4pwgh4thcqbhmotap7rgzg5dnet42gd5z6x4yt3zwnu4@5w4ousyue36m>
- <4zpsfvy3e4hkc4avvjjr34rgo7ggpd6hpflptmiauvxwm3dpvk@5wulihwpwbyp>
- <na2k4nnvkseh2yh27eqkbfyouf7vnerd6i7pt4z7f7xsjsm6pu@ry5tvdcr2ggw>
+	s=arc-20240116; t=1709053819; c=relaxed/simple;
+	bh=UwCsJIOu2M88+tQt4C/s+QljzIQ4grBXWdEF0+KLMh4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=GlwHA13PjsewwlJ1CNI1+yLLgvAX9AJoj0GfyBg8/FRtoaNJpWq5nZPkK3TAb0qOfSWUiA9dYTmYLWT2KxY2fscDWg797xPvQyglFTUE2BEzv/TTAWvzwTN7LTKoX2kyh2V2egwcpwGIwUphWGFQ7GuNTmy0cHNoXksh6I/OU90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF400DA7;
+	Tue, 27 Feb 2024 09:10:47 -0800 (PST)
+Received: from [10.1.30.188] (XHFQ2J9959.cambridge.arm.com [10.1.30.188])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB6C93F73F;
+	Tue, 27 Feb 2024 09:10:07 -0800 (PST)
+Message-ID: <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
+Date: Tue, 27 Feb 2024 17:10:06 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <na2k4nnvkseh2yh27eqkbfyouf7vnerd6i7pt4z7f7xsjsm6pu@ry5tvdcr2ggw>
-X-Rspamd-Queue-Id: 4TkkWF4lXLz9stn
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+ <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+In-Reply-To: <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> > 
-> > I have one question while I have you here. 
-> > 
-> > When we have this support in the page cache, do you think bcachefs can make
-> > use of this support to enable bs > ps in bcachefs as it already makes use 
-> > of large folios? 
-> 
-> Yes, of course.
-> 
-> > Do you think it is just a simple mapping_set_large_folios ->
-> > mapping_set_folio_min_order(.., block_size order) or it requires more
-> > effort?
-> 
-> I think that's all that would be required. There's very little in the
-> way of references to PAGE_SIZE in bcachefs.
+Hi David,
 
-Sweet. I will take a look at it once we get this upstream.
+On 26/02/2024 17:41, Ryan Roberts wrote:
+> On 22/02/2024 10:20, David Hildenbrand wrote:
+>> On 22.02.24 11:19, David Hildenbrand wrote:
+>>> On 25.10.23 16:45, Ryan Roberts wrote:
+>>>> As preparation for supporting small-sized THP in the swap-out path,
+>>>> without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
+>>>> which, when present, always implies PMD-sized THP, which is the same as
+>>>> the cluster size.
+>>>>
+>>>> The only use of the flag was to determine whether a swap entry refers to
+>>>> a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
+>>>> Instead of relying on the flag, we now pass in nr_pages, which
+>>>> originates from the folio's number of pages. This allows the logic to
+>>>> work for folios of any order.
+>>>>
+>>>> The one snag is that one of the swap_page_trans_huge_swapped() call
+>>>> sites does not have the folio. But it was only being called there to
+>>>> avoid bothering to call __try_to_reclaim_swap() in some cases.
+>>>> __try_to_reclaim_swap() gets the folio and (via some other functions)
+>>>> calls swap_page_trans_huge_swapped(). So I've removed the problematic
+>>>> call site and believe the new logic should be equivalent.
+>>>
+>>> That is the  __try_to_reclaim_swap() -> folio_free_swap() ->
+>>> folio_swapped() -> swap_page_trans_huge_swapped() call chain I assume.
+>>>
+>>> The "difference" is that you will now (1) get another temporary
+>>> reference on the folio and (2) (try)lock the folio every time you
+>>> discard a single PTE of a (possibly) large THP.
+>>>
+>>
+>> Thinking about it, your change will not only affect THP, but any call to
+>> free_swap_and_cache().
+>>
+>> Likely that's not what we want. :/
+>>
+> 
+> Is folio_trylock() really that expensive given the code path is already locking
+> multiple spinlocks, and I don't think we would expect the folio lock to be very
+> contended?
+> 
+> I guess filemap_get_folio() could be a bit more expensive, but again, is this
+> really a deal-breaker?
+> 
+> 
+> I'm just trying to refamiliarize myself with this series, but I think I ended up
+> allocating a cluster per cpu per order. So one potential solution would be to
+> turn the flag into a size and store it in the cluster info. (In fact I think I
+> was doing that in an early version of this series - will have to look at why I
+> got rid of that). Then we could avoid needing to figure out nr_pages from the folio.
 
---
-Pankaj
+I ran some microbenchmarks to see if these extra operations cause a performance
+issue - it all looks OK to me.
+
+I modified your "pte-mapped-folio-benchmarks" to add a "munmap-swapped-forked"
+mode, which prepares the 1G memory mapping by first paging it out with
+MADV_PAGEOUT, then it forks a child (and keeps that child alive) so that the
+swap slots have 2 references, then it measures the duration of munmap() in the
+parent on the entire range. The idea is that free_swap_and_cache() is called for
+each PTE during munmap(). Prior to my change, swap_page_trans_huge_swapped()
+will return true, due to the child's references, and __try_to_reclaim_swap() is
+not called. After my change, we no longer have this short cut.
+
+In both cases the results are within 1% (confirmed across multiple runs of 20
+seconds each):
+
+mm-stable: Average: 0.004997
+ + change: Average: 0.005037
+
+(these numbers are for Ampere Altra. I also tested on M2 VM - no regression
+their either).
+
+Do you still have a concern about this change?
+
+An alternative is to store the folio size in the cluster, but that won't be
+accurate if the folio is later split or if an entry within the cluster is later
+stolen for an order-0 entry. I think it would still work though; it just means
+that you might get a false positive in those circumstances, which means taking
+the "slow" path. But this is a rare event.
+
+Regardless, I prefer not to do this, since it adds complexity and doesn't
+benefit performance.
+
+Thanks,
+Ryan
+
 
