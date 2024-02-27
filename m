@@ -1,188 +1,217 @@
-Return-Path: <linux-kernel+bounces-83781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67DCC869E60
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:55:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD6CA869E7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:01:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D187B1F26D2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:55:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86F9DB25C00
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74504149E1E;
-	Tue, 27 Feb 2024 17:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AD44EB49;
+	Tue, 27 Feb 2024 17:54:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HyWqEKdG"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="TZyWEU8Y"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA1A4EB4E;
-	Tue, 27 Feb 2024 17:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D30B4E1A0
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709056507; cv=none; b=tBwkcnta07D2Co+X72eiPdKnjp51VVHswAhdiheHeC5BN1RL8bVvXkQw5eOBohKs7jwRlA0x4LFBnNoSiJ3YTtuufGjeJRQYIbuSneKb8dIjYrE24X0FfahZhXyFSjVGXLGAhth7AdDec2CDh5fTkD2JinmUd5bplRR6XebCsbQ=
+	t=1709056495; cv=none; b=X8POIkx6kUwzzivaDs9A42mmodMtvCNmdaobgIPq2EGl5xiILH+2KZubntKdvnfKVdDXUQEuaEPtKS/VD/HT/B7t9eUZaHLcuzgoV72+2J7t9I9u6fpYK8C91vrzcnaLca1sHdwy7D9v1x/1E2Uhuo/o8KQuC4hwQ5lwVSPtHXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709056507; c=relaxed/simple;
-	bh=q9ueplxYhi98+UBEUHecGoVjaUp535cabJ8paga2Ed4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h5BJMzhoEBQGY6t8Uy1tdDnsxL30DBUMQqmeu40Ke8sKM4EA1G9pIncuree6dEYYlixdHSXDD/04d4ujxbiw++sOkUexEW8AYV9oCtq5HWNQ9PS2IjlcyQ7su0yAfLM1iQ1scty4COBqfYpoiGpgcEFwxnJ6loTZ0rkkUuMSSGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HyWqEKdG; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso5718895a12.2;
-        Tue, 27 Feb 2024 09:55:05 -0800 (PST)
+	s=arc-20240116; t=1709056495; c=relaxed/simple;
+	bh=VUAaY8wxXr5bUffmJpFRqHV2oMwBf/vlf3I5G3UUTGI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JHLyqNq7cui4VhHOZY3coagXGLRl3ICIwA3EaPBAXOiRkkwqq7epBDez/fbcPZG/zCn6XUdFYyhNf12lAOx/zq6f/GoS/fZgE5bY5yj22154Y1tsl7garJFVN2aLzV8OKNV0nj5RBzuMkouliO+ER5Cc2CamQsOx2BB9+LphNM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=TZyWEU8Y; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so3154489a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:54:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709056504; x=1709661304; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BVlONAcSg6a81indCcHuuDbeAPV2j9CegTXZdcqHY90=;
-        b=HyWqEKdG0VCSOPx9JYakmYgk75cAXAa7f+gRLOjzeSm8xdoXf5y3f/GPIgMrkz54Pk
-         8KZjioWd2YXdhHEAOFQ4X565n8MlaB5tXOp4LAU50x555QNo/dG2r1YQKjw/hHG3eazK
-         k8PBnExA7qJd5oxmrFlQWzZ+CXIM7yxxhORNux2s83lkC+ncuxeZHsjaZasby6lrfdB7
-         4UcFzZrAkTpHFDfbiFfoPDCMkpC6ZTBQ9hW1CnUgiGWJlxrqYm87oqdpfIcydW6Chzem
-         T8b/cSBf5NP+6Tc2GUtK/qsf10xWlIvqLbV3mnAMY7GRTB7BKk0dSkXtVAR4WkJDcXsA
-         RRTw==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709056493; x=1709661293; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kIdksP1jXgRqd1isvnR0Pk+ChLgtGPiZTFxnnPSsol0=;
+        b=TZyWEU8YoReS0giYCuMX1yk0jFICaJG4jcTNykPXsJyGXS0HB3e575BABK55a37ndj
+         RA9Jq1AZc9Fo0YiGhRES7wMMw1hd5DMFGHQmIbl+3dISOBQtnNoB1PIF0EwBR3Q4ud2U
+         OgUK7jkuXJnp3DaEEKtIqz8fwdYV34vv3uC4+Vykw0v/ZxuLe28u5alurmnyQyn44Lq8
+         SRgnrLEBF004FrIBQTzf3vQhDgxTy0TPu45xbgUTU1pqjb8FghAmkNybbnnA0NFBTSfS
+         +lGFOD9+hnorDVSbGrGzyNybkSBySiIWJ8WSecbsgA7IpVJR2kdD8lNv7Y1XqBwsAeaI
+         JMEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709056504; x=1709661304;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BVlONAcSg6a81indCcHuuDbeAPV2j9CegTXZdcqHY90=;
-        b=cPZWrsXF1J2YuCc6/F3FFkCJFW7ge5t61IGjUuEp1jkl4IfbZTyFWIh5963f0tq6Du
-         jGsXz9p4FXbCw3nCo6lTydXgX/ObaZOHNAQQL/suMHp6Z9YgRxhCVI0/BbDF+T4KRGfJ
-         eY7Q6cjJfrwl9dK442tbw+v/IYmAxQL8KtKhfRtDsPhweaiozi03U77YCg32xRDfGG3w
-         TE/KmjecKHaWlUzbVoHKVAmbBQ/lUZRbDMfUy1B//SdVE+gw1j5kzikXN8ryCgvRCHSC
-         W0uWhYY8B7yzgmO9YbzfM03EWQFjKCisiWQUx0UQgT/9VqTNjNm1lxt7Lg1P1NcdBBdb
-         Zk8A==
-X-Forwarded-Encrypted: i=1; AJvYcCUQW9o9c+hn7hsW/P6GH8xI9Ssj30Qp3wwBHhPSkytYATgNe5HpouBViFJgzfhh45uaXnJqxweqdVqVbVHxe/d0oYl7GbC3YXhxUbkUX+Y8klz5TsU0RXkO0ArrtTInqserD32K
-X-Gm-Message-State: AOJu0YzAX+ZtGzOr19CB2WQGci2bFLj/pZBv1coTKgu8lHSuSMBoBMwR
-	fsPf2a+/+NlpoEquoGiiqauxXy7Zc9nExpOyB3kNRAOcJ6rXEt+0
-X-Google-Smtp-Source: AGHT+IGECCHaGSn58c+BkrzitUFqdhIZub7xSQKgddkNOTBGUkJGxD3D5r28AH2OIM6mtka+N/oTtQ==
-X-Received: by 2002:aa7:cd19:0:b0:564:4a18:45f1 with SMTP id b25-20020aa7cd19000000b005644a1845f1mr7993721edw.17.1709056504041;
-        Tue, 27 Feb 2024 09:55:04 -0800 (PST)
-Received: from fedora.. (cpe-109-60-83-139.zg3.cable.xnet.hr. [109.60.83.139])
-        by smtp.googlemail.com with ESMTPSA id fd1-20020a056402388100b00566439b97c4sm629268edb.44.2024.02.27.09.55.02
+        d=1e100.net; s=20230601; t=1709056493; x=1709661293;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kIdksP1jXgRqd1isvnR0Pk+ChLgtGPiZTFxnnPSsol0=;
+        b=CVEoyd7TxUxl4z6L14UVzYIqnPo2jENwt3yuGtN6gV0Y0e1MjojuFsemztX7kznJuk
+         COGBT3YVx6NVuJc46cOs5++tVDi9B1uQ5ebm205IFuncGQZ0jB153cp90Gtvn4F8ucMb
+         3xcEuXwlOqXocdVHclpDmfefYrR3cJFvyWY9sd3wCsOUEaO8yFFLndoH/dNwjkQHAkBe
+         oT7OCi2DhIpepCHRuN9Vpw8o7tIS5n+K4fheee8khIuzm7sNzZd/5UOXx4O4piYw0Y7U
+         rKuPIyyoRSgJm1JlimpGR4+9YUKuC2G0cxqsU0aHgRn3yjcH7h3wSnmew1kEfHs7ehk8
+         97UA==
+X-Forwarded-Encrypted: i=1; AJvYcCWK6hy72TfFfR1m8obpbDnyyYuG3n9nSpPo3gTPAXmNmqFK5bxN0YCU+S7Sf+o2miTDzwOskeLgAJl4SYqrz4o3BW4erNO4v1qMaeey
+X-Gm-Message-State: AOJu0YwGG80xeIcmAEkMlsW9fSMWYqLSoYEgh/LXE0vZ1vMk2rEKG76S
+	Eq1zlx25xn6A/rrI73KgbavNPxwu66JnGKzdbHMdRkc9Y5lUE5het+ikaIg9JYk=
+X-Google-Smtp-Source: AGHT+IFz6f/uoaRRDlAo9FUesEjMdjsM1i3WorOHOm7Rgb/Bu93+PnLqfHQ9b5gv518bhE6IEAiu6A==
+X-Received: by 2002:a17:90a:6f01:b0:299:75aa:8949 with SMTP id d1-20020a17090a6f0100b0029975aa8949mr7822691pjk.22.1709056493179;
+        Tue, 27 Feb 2024 09:54:53 -0800 (PST)
+Received: from ghost (mobile-166-137-160-039.mycingular.net. [166.137.160.39])
+        by smtp.gmail.com with ESMTPSA id n15-20020a17090ade8f00b002995e9aca72sm6856207pjv.29.2024.02.27.09.54.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 09:55:03 -0800 (PST)
-From: Robert Marko <robimarko@gmail.com>
-To: andrew@lunn.ch,
-	f.fainelli@gmail.com,
-	olteanv@gmail.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Robert Marko <robimarko@gmail.com>
-Subject: [PATCH net-next v2 2/2] net: dsa: mv88e6xxx: add Amethyst specific SMI GPIO function
-Date: Tue, 27 Feb 2024 18:54:22 +0100
-Message-ID: <20240227175457.2766628-3-robimarko@gmail.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240227175457.2766628-1-robimarko@gmail.com>
-References: <20240227175457.2766628-1-robimarko@gmail.com>
+        Tue, 27 Feb 2024 09:54:52 -0800 (PST)
+Date: Tue, 27 Feb 2024 09:54:49 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Guenter Roeck <linux@roeck-us.net>,
+	David Laight <David.Laight@aculab.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Message-ID: <Zd4h6ZhvLSWfWJG/@ghost>
+References: <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
+ <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk>
+ <ZdzZ5tk459bgUrgz@ghost>
+ <ZdzhRntTHApp0doV@shell.armlinux.org.uk>
+ <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com>
+ <Zd0b8SDT8hrG/0yW@ghost>
+ <cdd09f7a-83b2-41ba-a32c-9886dd79c43e@roeck-us.net>
+ <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
+ <Zd25XWTkDPuIjpF8@shell.armlinux.org.uk>
+ <c8ddcc98-acb0-4d2d-828a-8dd12e771b5f@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <c8ddcc98-acb0-4d2d-828a-8dd12e771b5f@csgroup.eu>
 
-The existing mv88e6390_g2_scratch_gpio_set_smi() cannot be used on the
-88E6393X as it requires certain P0_MODE, it also checks the CPU mode
-as it impacts the bit setting value.
+On Tue, Feb 27, 2024 at 11:32:19AM +0000, Christophe Leroy wrote:
+> 
+> 
+> Le 27/02/2024 à 11:28, Russell King (Oracle) a écrit :
+> > On Tue, Feb 27, 2024 at 06:47:38AM +0000, Christophe Leroy wrote:
+> >>
+> >>
+> >> Le 27/02/2024 à 00:48, Guenter Roeck a écrit :
+> >>> On 2/26/24 15:17, Charlie Jenkins wrote:
+> >>>> On Mon, Feb 26, 2024 at 10:33:56PM +0000, David Laight wrote:
+> >>>>> ...
+> >>>>>> I think you misunderstand. "NET_IP_ALIGN offset is what the kernel
+> >>>>>> defines to be supported" is a gross misinterpretation. It is not
+> >>>>>> "defined to be supported" at all. It is the _preferred_ alignment
+> >>>>>> nothing more, nothing less.
+> >>>>
+> >>>> This distinction is arbitrary in practice, but I am open to being proven
+> >>>> wrong if you have data to back up this statement. If the driver chooses
+> >>>> to not follow this, then the driver might not work. ARM defines the
+> >>>> NET_IP_ALIGN to be 2 to pad out the header to be on the supported
+> >>>> alignment. If the driver chooses to pad with one byte instead of 2
+> >>>> bytes, the driver may fail to work as the CPU may stall after the
+> >>>> misaligned access.
+> >>>>
+> >>>>>
+> >>>>> I'm sure I've seen code that would realign IP headers to a 4 byte
+> >>>>> boundary before processing them - but that might not have been in
+> >>>>> Linux.
+> >>>>>
+> >>>>> I'm also sure there are cpu which will fault double length misaligned
+> >>>>> memory transfers - which might be used to marginally speed up code.
+> >>>>> Assuming more than 4 byte alignment for the IP header is likely
+> >>>>> 'wishful thinking'.
+> >>>>>
+> >>>>> There is plenty of ethernet hardware that can only write frames
+> >>>>> to even boundaries and plenty of cpu that fault misaligned accesses.
+> >>>>> There are even cases of both on the same silicon die.
+> >>>>>
+> >>>>> You also pretty much never want a fault handler to fixup misaligned
+> >>>>> ethernet frames (or really anything else for that matter).
+> >>>>> It is always going to be better to check in the code itself.
+> >>>>>
+> >>>>> x86 has just made people 'sloppy' :-)
+> >>>>>
+> >>>>>      David
+> >>>>>
+> >>>>> -
+> >>>>> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes,
+> >>>>> MK1 1PT, UK
+> >>>>> Registration No: 1397386 (Wales)
+> >>>>>
+> >>>>
+> >>>> If somebody has a solution they deem to be better, I am happy to change
+> >>>> this test case. Otherwise, I would appreciate a maintainer resolving
+> >>>> this discussion and apply this fix.
+> >>>>
+> >>> Agreed.
+> >>>
+> >>> I do have a couple of patches which add explicit unaligned tests as well as
+> >>> corner case tests (which are intended to trigger as many carry overflows
+> >>> as possible). Once I get those working reliably, I'll be happy to submit
+> >>> them as additional tests.
+> >>>
+> >>
+> >> The functions definitely have to work at least with and without VLAN,
+> >> which means the alignment cannot be greater than 4 bytes. That's also
+> >> the outcome of the discussion.
+> > 
+> > Thanks for completely ignoring what I've said. No. The alignment ends up
+> > being commonly 2 bytes.
+> > 
+> > As I've said several times, network drivers do _not_ have to respect
+> > NET_IP_ALIGN. There are 32-bit ARM drivers which have a DMA engine in
+> > them which can only DMA to a 32-bit aligned address. This means that
+> > the start of the ethernet header is placed at a 32-bit aligned address
+> > making the IP header misaligned to 32-bit.
+> > 
+> > I don't see what is so difficult to understand about this... but it
+> > seems that my comments on this are being ignored time and time again,
+> > and I can only think that those who are ignoring my comments have
+> > some alterior motive here.
+> > 
+> 
+> I'm sorry for this misunderstanding. I'm not ignoring what you said at 
+> all. I understood that ARM is able to handle unaligned accesses with 
+> some exception handlers at worst case and that DMA constraints may lead 
+> to the IP header beeing on a 2 bytes alignment only.
+> 
+> However I also understood from others that some architectures can't 
+> handle such a 2 bytes only alignments.
+> 
+> It's been suggested during the discussion that alignment tests should be 
+> added later in a follow-up patch. So for the time being I'm trying to 
+> find a compromise and get the existing tests working on all platforms 
+> but with a smaller alignment than the 16-bytes alignment brought by 
+> Charlie's v10 patch. And a 4 bytes alignment seemed to me to be a good 
+> compromise for this fix. The idea is also to make the fix as minimal as 
+> possible, unlike Charlie's patch that is churning up the tests quite 
+> heavily.
 
-This is all irrelevant for Amethyst (MV88E6191X/6193X/6393X) as only
-the default value of the SMI_PHY Config bit is set to CPU_MGD bootstrap
-pin value but it can be changed without restrictions so that GPIO pins
-9 and 10 are used as SMI pins.
+Do you have a list of platforms this is failing on? I haven't seen any
+reports that haven't been fixed.
 
-So, introduce Amethyst specific function and call that if the Amethyst
-family wants to setup the external PHY.
+- Charlie
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- drivers/net/dsa/mv88e6xxx/chip.c            |  5 +++-
- drivers/net/dsa/mv88e6xxx/global2.h         |  2 ++
- drivers/net/dsa/mv88e6xxx/global2_scratch.c | 31 +++++++++++++++++++++
- 3 files changed, 37 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index f9378fca8305..9ed1821184ec 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3712,7 +3712,10 @@ static int mv88e6xxx_mdio_register(struct mv88e6xxx_chip *chip,
- 
- 	if (external) {
- 		mv88e6xxx_reg_lock(chip);
--		err = mv88e6390_g2_scratch_gpio_set_smi(chip, true);
-+		if (chip->info->family == MV88E6XXX_FAMILY_6393)
-+			err = mv88e6393x_g2_scratch_gpio_set_smi(chip, true);
-+		else
-+			err = mv88e6390_g2_scratch_gpio_set_smi(chip, true);
- 		mv88e6xxx_reg_unlock(chip);
- 
- 		if (err)
-diff --git a/drivers/net/dsa/mv88e6xxx/global2.h b/drivers/net/dsa/mv88e6xxx/global2.h
-index 20fefa08f54e..82f9b410de0b 100644
---- a/drivers/net/dsa/mv88e6xxx/global2.h
-+++ b/drivers/net/dsa/mv88e6xxx/global2.h
-@@ -380,6 +380,8 @@ extern const struct mv88e6xxx_gpio_ops mv88e6352_gpio_ops;
- 
- int mv88e6390_g2_scratch_gpio_set_smi(struct mv88e6xxx_chip *chip,
- 				      bool external);
-+int mv88e6393x_g2_scratch_gpio_set_smi(struct mv88e6xxx_chip *chip,
-+				       bool external);
- int mv88e6352_g2_scratch_port_has_serdes(struct mv88e6xxx_chip *chip, int port);
- int mv88e6xxx_g2_atu_stats_set(struct mv88e6xxx_chip *chip, u16 kind, u16 bin);
- int mv88e6xxx_g2_atu_stats_get(struct mv88e6xxx_chip *chip, u16 *stats);
-diff --git a/drivers/net/dsa/mv88e6xxx/global2_scratch.c b/drivers/net/dsa/mv88e6xxx/global2_scratch.c
-index 0e15efd898f2..61ab6cc4fbfc 100644
---- a/drivers/net/dsa/mv88e6xxx/global2_scratch.c
-+++ b/drivers/net/dsa/mv88e6xxx/global2_scratch.c
-@@ -290,6 +290,37 @@ int mv88e6390_g2_scratch_gpio_set_smi(struct mv88e6xxx_chip *chip,
- 	return mv88e6xxx_g2_scratch_write(chip, misc_cfg, val);
- }
- 
-+/**
-+ * mv88e6393x_g2_scratch_gpio_set_smi - set gpio muxing for external smi
-+ * @chip: chip private data
-+ * @external: set mux for external smi, or free for gpio usage
-+ *
-+ * MV88E6191X/6193X/6393X GPIO pins 9 and 10 can be configured as an
-+ * external SMI interface or as regular GPIO-s.
-+ *
-+ * They however have a different register layout then the existing
-+ * function.
-+ */
-+
-+int mv88e6393x_g2_scratch_gpio_set_smi(struct mv88e6xxx_chip *chip,
-+				       bool external)
-+{
-+	int misc_cfg = MV88E6352_G2_SCRATCH_MISC_CFG;
-+	int err;
-+	u8 val;
-+
-+	err = mv88e6xxx_g2_scratch_read(chip, misc_cfg, &val);
-+	if (err)
-+		return err;
-+
-+	if (external)
-+		val &= ~MV88E6352_G2_SCRATCH_MISC_CFG_NORMALSMI;
-+	else
-+		val |= MV88E6352_G2_SCRATCH_MISC_CFG_NORMALSMI;
-+
-+	return mv88e6xxx_g2_scratch_write(chip, misc_cfg, val);
-+}
-+
- /**
-  * mv88e6352_g2_scratch_port_has_serdes - indicate if a port can have a serdes
-  * @chip: chip private data
--- 
-2.43.2
-
+> 
+> But maybe I misunderstood some of the discussion and indeed 2 bytes 
+> alignment would work on all platforms and only an odd alignment is 
+> problematic ?
 
