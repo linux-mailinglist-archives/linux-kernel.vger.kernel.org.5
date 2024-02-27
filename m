@@ -1,164 +1,93 @@
-Return-Path: <linux-kernel+bounces-82985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6D5A868C94
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:43:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF014868C99
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:45:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70E52281F1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:43:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEDBAB25517
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D431384BE;
-	Tue, 27 Feb 2024 09:43:07 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330B51369BB
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:43:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086651369A6;
+	Tue, 27 Feb 2024 09:45:07 +0000 (UTC)
+Received: from mx.socionext.com (mx.socionext.com [202.248.49.38])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF48D1332AA;
+	Tue, 27 Feb 2024 09:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.248.49.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709026987; cv=none; b=Sv222bBTfkZ+YkxApiAK0578ENpwaPzOXjKiaKQb6Ivi9k9vbaXCBTQj9pq0UBC2jItuFX3oU9Ne1EoXJapY2BaXH5DyWc1XRv5zxWbKa7cm7ZMmuV46VNYjYAqmpeAlV6zwbVZrmRMFlZlP3H1XWMao74/kjfS6Eanz4k3x0lo=
+	t=1709027106; cv=none; b=azR8yi6mhQF/NOwL1PQp0qzN8XW6w1811Njbc5W+XpgR9KHzPs/RmGsOgtEcgBw9ERpicIPHdiz3GtULjIwBB6e3Z/+xuqYu+MDiwAqWIHLQsyJCyE5pc6S1LpNPBdL8MDOITg4C2s4Nb/4A5yjhouUcH4mjm7UOfspzplcekME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709026987; c=relaxed/simple;
-	bh=1XTPpshTG3t8hNZuApNCvZ6UkkCZaeQ+3fXnxMkcyTo=;
+	s=arc-20240116; t=1709027106; c=relaxed/simple;
+	bh=WxG9ZhSh/THW/M5a72xK7O/httANrB9iPIhwfUKRXsM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=acMXmkMa618no8g3X1gJRxs1NAZcdPTz97u7NsazyrtJK4EnuOClTRRJd4QfHCrUpttuLKW7M+4ysoTwCGKuJdp9MUCGvtOeZJ8Mb/Y1GiLHNyV7vUcK+0zzbCGxjDW4txCjC0GsMjGtnQKXaE2nyqJPK08Qr6fQDv+ynmvvks4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB5ABDA7;
-	Tue, 27 Feb 2024 01:43:42 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CB2F3F762;
-	Tue, 27 Feb 2024 01:43:03 -0800 (PST)
-Message-ID: <d6699c3a-3df6-46a3-98db-e07c8722f106@arm.com>
-Date: Tue, 27 Feb 2024 10:42:55 +0100
+	 In-Reply-To:Content-Type; b=LTxj8RPQ0gncXcNfikyyUT/MkyqcU07CGVl3B7WdFn+7Yi926uPtdTV2aFV+mcxubjmUk/cbO93bED7zVfdsgUlU/ZrQHv10/fKN4POBGIttecD1gNNSMJ0hEFlj2RORW/LceLBcmPd/ixAFeuIOtzKlI8zi3dc+oFylf7Wi91o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com; spf=pass smtp.mailfrom=socionext.com; arc=none smtp.client-ip=202.248.49.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=socionext.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=socionext.com
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 27 Feb 2024 18:43:53 +0900
+Received: from mail.mfilter.local (mail-arc01.css.socionext.com [10.213.46.36])
+	by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id ED58620584CE;
+	Tue, 27 Feb 2024 18:43:52 +0900 (JST)
+Received: from kinkan2.css.socionext.com ([172.31.9.51]) by m-FILTER with ESMTP; Tue, 27 Feb 2024 18:43:52 +0900
+Received: from [10.212.157.38] (unknown [10.212.157.38])
+	by kinkan2.css.socionext.com (Postfix) with ESMTP id F1918B62A2;
+	Tue, 27 Feb 2024 18:43:51 +0900 (JST)
+Message-ID: <2cb457a6-0039-e4fe-3668-690e6355771d@socionext.com>
+Date: Tue, 27 Feb 2024 18:43:51 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/4] sched/fair: Check a task has a fitting cpu when
- updating misfit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH v2 14/14] serial: 8250_uniphier: Switch to use
+ uart_read_port_properties()
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
+ linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc: Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Ray Jui <rjui@broadcom.com>,
+ Scott Branden <sbranden@broadcom.com>, Al Cooper <alcooperx@gmail.com>,
+ =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+ Paul Cercueil <paul@crapouillou.net>, Vladimir Zapolskiy <vz@mleia.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+References: <20240226142514.1485246-1-andriy.shevchenko@linux.intel.com>
+ <20240226142514.1485246-15-andriy.shevchenko@linux.intel.com>
 Content-Language: en-US
-To: Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>
-Cc: linux-kernel@vger.kernel.org, Pierre Gondois <Pierre.Gondois@arm.com>
-References: <20240220225622.2626569-1-qyousef@layalina.io>
- <20240220225622.2626569-3-qyousef@layalina.io>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <20240220225622.2626569-3-qyousef@layalina.io>
-Content-Type: text/plain; charset=UTF-8
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+In-Reply-To: <20240226142514.1485246-15-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 20/02/2024 23:56, Qais Yousef wrote:
-> If a misfit task is affined to a subset of the possible cpus, we need to
-> verify that one of these cpus can fit it. Otherwise the load balancer
-> code will continuously trigger needlessly leading the balance_interval
-> to increase in return and eventually end up with a situation where real
-> imbalances take a long time to address because of this impossible
-> imbalance situation.
+Hi,
+
+On 2024/02/26 23:19, Andy Shevchenko wrote:
+> Since we have now a common helper to read port properties
+> use it instead of sparse home grown solution.
 > 
-> This can happen in Android world where it's common for background tasks
-> to be restricted to little cores.
-> 
-> Similarly if we can't fit the biggest core, triggering misfit is
-> pointless as it is the best we can ever get on this system.
-> 
-> To be able to detect that; we use asym_cap_list to iterate through
-> capacities in the system to see if the task is able to run at a higher
-> capacity level based on its p->cpus_ptr. We do that when the affinity
-> change, a fair task is forked, or when a task switched to fair policy.
-> We store the max_allowed_capacity in task_struct to allow for cheap
-> comparison in the fast path.
-> 
-> Improve check_misfit_status() function by removing redundant checks.
-> misfit_task_load will be 0 if the task can't move to a bigger CPU. And
-> nohz_load_balance() already checks for cpu_check_capacity() before
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-s/nohz_load_balance()/nohz_balancer_kick() ?
+I confirmed that it works properly.
 
-> calling check_misfit_status().
+Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Tested-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-Isn't there an issue with CPU hotplug.
+Thank you,
 
-On a tri-geared Juno:
-
-root@juno:~# cat /sys/devices/system/cpu/cpu*/cpu_capacity
-513
-1024
-1024
-513
-256
-256
-
-root@juno:~# taskset -pc 0,3-5 $$
-
-[  108.248425] set_task_max_allowed_capacity() [bash 1636]
-max_allowed_capacity=513 nr_cpus_allowed=4 cpus_mask=0,3-5
-
-echo 0 > /sys//devices/system/cpu/cpu0/online
-echo 0 > /sys//devices/system/cpu/cpu3/online
-
-[  134.136887] set_task_max_allowed_capacity() [bash 1639]
-max_allowed_capacity=513 nr_cpus_allowed=4 cpus_mask=0,3-5
-
-
-Cpuset seems to be fine since it set task's cpumask.
-
-[...]
-
-> +/*
-> + * Check the max capacity the task is allowed to run at for misfit detection.
-
-Nitpick: It's rather a setter function so s/check/set here ?
-
-> + */
-> +static void set_task_max_allowed_capacity(struct task_struct *p)
-> +{
-> +	struct asym_cap_data *entry;
-> +
-> +	if (!sched_asym_cpucap_active())
-> +		return;
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(entry, &asym_cap_list, link) {
-> +		cpumask_t *cpumask;
-> +
-> +		cpumask = cpu_capacity_span(entry);
-> +		if (!cpumask_intersects(p->cpus_ptr, cpumask))
-> +			continue;
-> +
-> +		p->max_allowed_capacity = entry->capacity;
-> +		break;
-> +	}
-> +	rcu_read_unlock();
-> +}
-
-[...]
-
-> @@ -9601,16 +9644,10 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
->  				(arch_scale_cpu_capacity(cpu_of(rq)) * 100));
->  }
->  
-> -/*
-> - * Check whether a rq has a misfit task and if it looks like we can actually
-> - * help that task: we can migrate the task to a CPU of higher capacity, or
-> - * the task's current CPU is heavily pressured.
-> - */
-> -static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
-> +/* Check if the rq has a misfit task */
-> +static inline bool check_misfit_status(struct rq *rq, struct sched_domain *sd)
-
-`struct sched_domain *sd` is not needed anymore.
-
-Since there is only 1 user of check_misfit_status() you might remove it
-entirely and use `rq->rq->misfit_task_load` directly in
-nohz_balancer_kick() ?
-
-[...]
+---
+Best Regards
+Kunihiko Hayashi
 
