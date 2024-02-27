@@ -1,283 +1,287 @@
-Return-Path: <linux-kernel+bounces-83574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83575-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6E2869BB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:12:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9EE869BBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0661281950
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:12:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80EE21C20B43
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB86B1487E3;
-	Tue, 27 Feb 2024 16:12:22 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0231148307;
+	Tue, 27 Feb 2024 16:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QHN1Ubxp"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2817014533F
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA29814830E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:12:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709050342; cv=none; b=dGLLOB+P3cqhQvzGtIoFx1cQ2Ak9WSkOXzq6cbP69L57OZiSEOfl+1qkhCk0W36Qf3gjzp+3owEN8YHgDGmo6+CLx1vpiQHHfuEfHQhcmcgQaHI9tT6jC100wZDr9VNgA6hKMMX+h5j4MWvSv//zdF87eSTiCw83x4Go5kpS6P4=
+	t=1709050355; cv=none; b=a+Hiejjb+Q1OMR3pw6Yu4HPf4IvfRnMHum46ytr+Jd+ONL2rjOk1eGjnYXUgPRfMAnDTliCImgsIa9HaagKLEInI5Tj5rS3ESiFD9ZXkzOkd6xExg8FyUf6qCElzUEBPzcwyxkD7X015XaMAkeY79v0t6dgGydIIFs1SsMNdlEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709050342; c=relaxed/simple;
-	bh=BFEQIZVH5Nc8v1KRuh7Tj2bYQ/ne/aCK7lSVlDmIVfo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZOmnjBlvhsaYE91oeMQoVmD3ywqxlrBolKhhXb5ipUhBpg5CygcMcWsMtOgWotduyUi8vlZ8JlpIRPlJwe/1RAYEcz9bYkMVm+VtrJJN/vvoJj4g37FUYGe7suj9rkzdJP7ITYcqNBWKNwcfxBvYvdGbp1zezF3/eTdXFPxew/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36512fcf643so29882565ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:12:20 -0800 (PST)
+	s=arc-20240116; t=1709050355; c=relaxed/simple;
+	bh=ZWFzHKUaRbx0c3fmxooFMoXF2H6+yVg0x+0ZAiLEH/s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Jyn1thZcDAPWzdurwzMaEmOF9hNwHEHOC6F/nx2fdSSFM+H8tUQ5dbFgixC5EklPjjyIMb2GaxUSmNgUZxj3usbsapUlKpjHfD7tTLGbQZFYCzlIUAZVUioogiaDS2IjTjSP/NCGAX8+Sh8roJ9nzmK8aw+5wQb/FcEd8m/LvD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QHN1Ubxp; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6084e809788so29665517b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:12:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709050353; x=1709655153; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dNhcz6LZWcGFo7q9Dz7N+i5BDAre97NpDL4CFWNtFMg=;
+        b=QHN1UbxpzgSeKc+xCb/D6hZEL5COzuERYGzTNe/SAYmBpmqTw4EdWtnzIf632kLNqI
+         Y6ElVv/hOUQcOvffPi/xkTsVsRaEAetrTMOjNpnNAP0Y38HKVx7oeBVVpxPFMzGGMtrc
+         H7d6NyuK3ROKjbJiiZu1FTajS7dFD5u/ghLUwzKypFQfk95XusKRUKLfU64vaaZd61mG
+         hq62+HFKVYF/OD3cCQuPRnofl2wNkiW05c0PlngCCbLARiV11ps1DZ7z+CFHW2dHosUk
+         k8jA3l2d+/l5dJuSItG3Leda3GFMpG4wvlrVHap/hN47/brGsJGR7KVDWmRu4n4PhEMw
+         nWsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709050339; x=1709655139;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9xT8RLq9P4JqKsEIdS744XQR8XzwEfjm7rQQcW82q8o=;
-        b=AH/VUBT/jElp+msVggPsrbUwB5K8FB6xxwA7AWFK1QUOwEZCays3jR0zDOQhGLPdVL
-         pBhpNOKOSdwFC4vq2MYxgmr9Ffz5b+WbHav1CS2tNU86AWf5bZnCgGq+qORompZbZfVh
-         Zft+gJJw1i5Let7Ry6QHfNFEbcwiYPXFFKlVs+IP28sn2LU2O1WeCMvBuOZBkM1tCyLU
-         A9+HTlm1/fQs7pv204TIB9poNB/tlxUENPfeIkcNeg4gp0Um/EBD2vky9GJMXEHBYpyn
-         g2mEDP+nT7Xe7n3kvgkMC4yRlv2ocyQnxvEauom29oZKGAkEM0fMZm4k7Q5NPbJz+D7w
-         Ku3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWbtkG8+3fsOuBmPW0FfjH8NCcGUVR4KbMynUIYjt2g/E7BCkTnMDvykZuwhqdqSd/m8bghDVh2kiLmKYg7DFRCLB3dUldCPrYl44kB
-X-Gm-Message-State: AOJu0YwEvcevu4PS9O8tqKO0Ej09rTLryyzSqW9EVpyzK3Iw0EKEEcn9
-	QM1fI39kp5d0he4tBoJ5hLJTFf9Y8o+WtM/ohbIkqYtc2gWUVSlncYNxlGEvjkHbeUITfYnn9sx
-	uncaajk9LlnhABevam0mZTLZocG3oIvQBaumZFrbPaDM4fYFzBOCpsC4=
-X-Google-Smtp-Source: AGHT+IHi4rUXrlLkS/7yrg6PKExL5vZGjbaK1BSsNHqc3qV3deyIDkZSMGvOfgteU+4uiVl5Uv5anROr+53tJxT2l14iFMNXfyMe
+        d=1e100.net; s=20230601; t=1709050353; x=1709655153;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dNhcz6LZWcGFo7q9Dz7N+i5BDAre97NpDL4CFWNtFMg=;
+        b=eNsOnlkkQierxSowtyXL93hNS0AWjIzJUC7XRq5i8I9o99wtACBVQ4OBBDtJjwqcoz
+         B96nyocU4k+6vMl74Xwui3jY8uAVBbY8/Wn6lRWxQAmNEnOQKyUCOTEdE/yFHrQUmVNw
+         udJhRjAo6MNIZsdb7r9IDzvPfyN9/QuDYqfRdoUul721xrQ4zZ93UzQHDwYkZkCDU6M7
+         /nsFSdaN4V+zi0YkeqR1tiWJxglYUfUpB4We2PgAy1yASGDBr7P/skBPENWCULyg36kY
+         oLQhTfYogIBlA2wquL+p6p04wpVOMEnd0+toLbEPtPsXlGWZjgwvx2HE9FE3Tjr2eHG1
+         C3lw==
+X-Forwarded-Encrypted: i=1; AJvYcCXDAzDf5ErHmmXSyQ8bYvivmZ8tw987KrialLm1zkysvxNl8va4oF+bv53iuGlFqaGlRekwEa09fphEfe2zEuDJ/HvCx5tgJktzz+z0
+X-Gm-Message-State: AOJu0Yy3KWlmqSLAVe9TQAMGnVyfSnpO2TB990/4Y1e3OXOR62ZZHsYk
+	tRy94FGqA3SLW36iBdNqX/q0fzlm/bcOR8YPrPD9BxYXLmWvxe8AHFLfPo//Ng59rDmG9bWsAJ4
+	DmMGN1oFOOVk0c6X5axsUCbBjfip+022gjL/x
+X-Google-Smtp-Source: AGHT+IE3Ib/dLAymrmwvQkYDzdp8TQ37Go/G2wnHE4Xm/9+fqP9Mn0SYQYjmra6zLBDtJRxXpTmBRSRRYI9tV7m3olM=
+X-Received: by 2002:a25:c501:0:b0:dc2:2f3f:2148 with SMTP id
+ v1-20020a25c501000000b00dc22f3f2148mr1714724ybe.29.1709050352173; Tue, 27 Feb
+ 2024 08:12:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:2192:b0:365:2f9d:5f04 with SMTP id
- j18-20020a056e02219200b003652f9d5f04mr733406ila.5.1709050339449; Tue, 27 Feb
- 2024 08:12:19 -0800 (PST)
-Date: Tue, 27 Feb 2024 08:12:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000062e3bd06125f4a28@google.com>
-Subject: [syzbot] [usb?] [input?] WARNING in __input_unregister_device
-From: syzbot <syzbot+b03b0fc32e288051502d@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, linux-input@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, rafael@kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-32-surenb@google.com>
+ <ae4f9958-813a-42c8-8e54-4ef19fd36d6c@suse.cz>
+In-Reply-To: <ae4f9958-813a-42c8-8e54-4ef19fd36d6c@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 27 Feb 2024 08:12:21 -0800
+Message-ID: <CAJuCfpFnqGLj2L5QdnMWYxX6ENqc0Gnkc3pjURu7CmGtNMhE1g@mail.gmail.com>
+Subject: Re: [PATCH v4 31/36] lib: add memory allocations report in show_mem()
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Feb 27, 2024 at 5:18=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> > Include allocations in show_mem reports.
+> >
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>
+> Nit: there's pr_notice() that's shorter than printk(KERN_NOTICE
 
-syzbot found the following issue on:
+I used printk() since other parts of show_mem() used it but I can
+change if that's preferable.
 
-HEAD commit:    9abbc24128bc Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1432aac4180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=af5c6c699e57bbb3
-dashboard link: https://syzkaller.appspot.com/bug?extid=b03b0fc32e288051502d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=147aa106180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150f8e22180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ce13ec3ed5ad/disk-9abbc241.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/256cbd314121/vmlinux-9abbc241.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0af86fb52109/Image-9abbc241.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b03b0fc32e288051502d@syzkaller.appspotmail.com
-
-microsoft 0003:045E:07DA.0009: input,hidraw0: USB HID v0.00 Device [HID 045e:07da] on usb-dummy_hcd.0-1/input0
-usb 1-1: USB disconnect, device number 10
-------------[ cut here ]------------
-add_uevent_var: buffer size too small
-WARNING: CPU: 1 PID: 1394 at lib/kobject_uevent.c:671 add_uevent_var+0x278/0x3c0
-Modules linked in:
-CPU: 1 PID: 1394 Comm: kworker/1:2 Tainted: G    B              6.8.0-rc5-syzkaller-g9abbc24128bc #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: usb_hub_wq hub_event
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : add_uevent_var+0x278/0x3c0
-lr : add_uevent_var+0x274/0x3c0 lib/kobject_uevent.c:671
-sp : ffff800098486c80
-x29: ffff800098486da0 x28: 000000000000000c x27: ffff700013090d9c
-x26: dfff800000000000 x25: ffff0000c8e02a10 x24: 000000000000000c
-x23: 00000000000007f4 x22: 000000000000000c x21: ffff0000c8e02218
-x20: ffff0000c8e02a1c x19: ffff0000c8e02000 x18: 1fffe00036804796
-x17: 0000000000000000 x16: ffff80008ad5bbdc x15: 0000000000000001
-x14: 1fffe00036804802 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : c77e75592b5e9e00
-x8 : c77e75592b5e9e00 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff800098486578 x4 : ffff80008ed715e0 x3 : ffff8000805b98b4
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 00000000fffffff4
-Call trace:
- add_uevent_var+0x278/0x3c0
- kobject_uevent_env+0x4f0/0x874 lib/kobject_uevent.c:588
- kobject_uevent+0x2c/0x3c lib/kobject_uevent.c:642
- device_del+0x6a8/0x87c drivers/base/core.c:3846
- __input_unregister_device+0x454/0x5c0 drivers/input/input.c:2232
- input_unregister_device+0xb0/0xfc drivers/input/input.c:2440
- hidinput_disconnect+0x1fc/0x290 drivers/hid/hid-input.c:2388
- hid_disconnect drivers/hid/hid-core.c:2280 [inline]
- hid_hw_stop+0x88/0x1cc drivers/hid/hid-core.c:2329
- ms_remove+0x28/0x94 drivers/hid/hid-microsoft.c:409
- hid_device_remove+0x1c8/0x2fc
- device_remove drivers/base/dd.c:567 [inline]
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x3e4/0x6a0 drivers/base/dd.c:1295
- device_release_driver+0x28/0x38 drivers/base/dd.c:1318
- bus_remove_device+0x314/0x3b4 drivers/base/bus.c:574
- device_del+0x480/0x87c drivers/base/core.c:3828
- hid_remove_device drivers/hid/hid-core.c:2867 [inline]
- hid_destroy_device+0x70/0x114 drivers/hid/hid-core.c:2887
- usbhid_disconnect+0xa8/0xf0 drivers/hid/usbhid/hid-core.c:1456
- usb_unbind_interface+0x1a4/0x758 drivers/usb/core/driver.c:461
- device_remove drivers/base/dd.c:569 [inline]
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x440/0x6a0 drivers/base/dd.c:1295
- device_release_driver+0x28/0x38 drivers/base/dd.c:1318
- bus_remove_device+0x314/0x3b4 drivers/base/bus.c:574
- device_del+0x480/0x87c drivers/base/core.c:3828
- usb_disable_device+0x354/0x760 drivers/usb/core/message.c:1416
- usb_disconnect+0x290/0x808 drivers/usb/core/hub.c:2267
- hub_port_connect drivers/usb/core/hub.c:5323 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5623 [inline]
- port_event drivers/usb/core/hub.c:5783 [inline]
- hub_event+0x18ec/0x435c drivers/usb/core/hub.c:5865
- process_one_work+0x694/0x1204 kernel/workqueue.c:2633
- process_scheduled_works kernel/workqueue.c:2706 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2787
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-irq event stamp: 71432
-hardirqs last  enabled at (71431): [<ffff80008ae4d56c>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
-hardirqs last  enabled at (71431): [<ffff80008ae4d56c>] _raw_spin_unlock_irq+0x30/0x80 kernel/locking/spinlock.c:202
-hardirqs last disabled at (71432): [<ffff80008ae372c4>] __schedule+0x2bc/0x24b4 kernel/sched/core.c:6625
-softirqs last  enabled at (42430): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (42430): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
-softirqs last disabled at (42421): [<ffff80008002ab48>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
----[ end trace 0000000000000000 ]---
-usb 1-1: new high-speed USB device number 11 using dummy_hcd
-usb 1-1: Using ep0 maxpacket: 16
-usb 1-1: config 0 interface 0 altsetting 0 endpoint 0x81 has an invalid bInterval 0, changing to 7
-usb 1-1: config 0 interface 0 altsetting 0 has 1 endpoint descriptor, different from the interface descriptor's value: 9
-usb 1-1: New USB device found, idVendor=045e, idProduct=07da, bcdDevice= 0.00
-usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
-usb 1-1: config 0 descriptor??
-microsoft 0003:045E:07DA.000A: unknown main item tag 0x0
-microsoft 0003:045E:07DA.000A: unknown main item tag 0x0
-microsoft 0003:045E:07DA.000A: unknown main item tag 0x0
-microsoft 0003:045E:07DA.000A: unknown main item tag 0x0
-HID 045e:07da: Invalid code 65791 type 1
-input: HID 045e:07da as /devices/platform/dummy_hcd.0/usb1/1-1/1-1:0.0/0003:045E:07DA.000A/input/input11
-microsoft 0003:045E:07DA.000A: input,hidraw0: USB HID v0.00 Device [HID 045e:07da] on usb-dummy_hcd.0-1/input0
-usb 1-1: USB disconnect, device number 11
-------------[ cut here ]------------
-add_uevent_var: buffer size too small
-WARNING: CPU: 1 PID: 1394 at lib/kobject_uevent.c:671 add_uevent_var+0x278/0x3c0
-Modules linked in:
-CPU: 1 PID: 1394 Comm: kworker/1:2 Tainted: G    B   W          6.8.0-rc5-syzkaller-g9abbc24128bc #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: usb_hub_wq hub_event
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : add_uevent_var+0x278/0x3c0
-lr : add_uevent_var+0x274/0x3c0 lib/kobject_uevent.c:671
-sp : ffff800098486c80
-x29: ffff800098486da0 x28: 000000000000000c x27: ffff700013090d9c
-x26: dfff800000000000 x25: ffff0001ffb5ea10 x24: 000000000000000c
-x23: 00000000000007f4 x22: 000000000000000c x21: ffff0001ffb5e218
-x20: ffff0001ffb5ea1c x19: ffff0001ffb5e000 x18: 1fffe00036804796
-x17: 0000000000000000 x16: ffff80008ad5bbdc x15: 0000000000000001
-x14: 1fffe00036804802 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : c77e75592b5e9e00
-x8 : c77e75592b5e9e00 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff800098486578 x4 : ffff80008ed715e0 x3 : ffff8000805b98b4
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 00000000fffffff4
-Call trace:
- add_uevent_var+0x278/0x3c0
- kobject_uevent_env+0x4f0/0x874 lib/kobject_uevent.c:588
- kobject_uevent+0x2c/0x3c lib/kobject_uevent.c:642
- device_del+0x6a8/0x87c drivers/base/core.c:3846
- __input_unregister_device+0x454/0x5c0 drivers/input/input.c:2232
- input_unregister_device+0xb0/0xfc drivers/input/input.c:2440
- hidinput_disconnect+0x1fc/0x290 drivers/hid/hid-input.c:2388
- hid_disconnect drivers/hid/hid-core.c:2280 [inline]
- hid_hw_stop+0x88/0x1cc drivers/hid/hid-core.c:2329
- ms_remove+0x28/0x94 drivers/hid/hid-microsoft.c:409
- hid_device_remove+0x1c8/0x2fc
- device_remove drivers/base/dd.c:567 [inline]
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x3e4/0x6a0 drivers/base/dd.c:1295
- device_release_driver+0x28/0x38 drivers/base/dd.c:1318
- bus_remove_device+0x314/0x3b4 drivers/base/bus.c:574
- device_del+0x480/0x87c drivers/base/core.c:3828
- hid_remove_device drivers/hid/hid-core.c:2867 [inline]
- hid_destroy_device+0x70/0x114 drivers/hid/hid-core.c:2887
- usbhid_disconnect+0xa8/0xf0 drivers/hid/usbhid/hid-core.c:1456
- usb_unbind_interface+0x1a4/0x758 drivers/usb/core/driver.c:461
- device_remove drivers/base/dd.c:569 [inline]
- __device_release_driver drivers/base/dd.c:1272 [inline]
- device_release_driver_internal+0x440/0x6a0 drivers/base/dd.c:1295
- device_release_driver+0x28/0x38 drivers/base/dd.c:1318
- bus_remove_device+0x314/0x3b4 drivers/base/bus.c:574
- device_del+0x480/0x87c drivers/base/core.c:3828
- usb_disable_device+0x354/0x760 drivers/usb/core/message.c:1416
- usb_disconnect+0x290/0x808 drivers/usb/core/hub.c:2267
- hub_port_connect drivers/usb/core/hub.c:5323 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5623 [inline]
- port_event drivers/usb/core/hub.c:5783 [inline]
- hub_event+0x18ec/0x435c drivers/usb/core/hub.c:5865
- process_one_work+0x694/0x1204 kernel/workqueue.c:2633
- process_scheduled_works kernel/workqueue.c:2706 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2787
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
-irq event stamp: 71432
-hardirqs last  enabled at (71431): [<ffff80008ae4d56c>] __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
-hardirqs last  enabled at (71431): [<ffff80008ae4d56c>] _raw_spin_unlock_irq+0x30/0x80 kernel/locking/spinlock.c:202
-hardirqs last disabled at (71432): [<ffff80008ae372c4>] __schedule+0x2bc/0x24b4 kernel/sched/core.c:6625
-softirqs last  enabled at (42430): [<ffff80008002189c>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (42430): [<ffff80008002189c>] __do_softirq+0xac8/0xce4 kernel/softirq.c:582
-softirqs last disabled at (42421): [<ffff80008002ab48>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:81
----[ end trace 0000000000000000 ]---
-usb 1-1: new high-speed USB device number 12 using dummy_hcd
-usb 1-1: Using ep0 maxpacket: 16
-usb 1-1: config 0 interface 0 altsetting 0 endpoint 0x81 has an invalid bInterval 0, changing to 7
-usb 1-1: config 0 interface 0 altsetting 0 has 1 endpoint descriptor, different from the interface descriptor's value: 9
-usb 1-1: New USB device found, idVendor=045e, idProduct=07da, bcdDevice= 0.00
-usb 1-1: New USB device strings: Mfr=0, Product=0, SerialNumber=0
-usb 1-1: config 0 descriptor??
-microsoft 0003:045E:07DA.000B: unknown main item tag 0x0
-microsoft 0003:045E:07DA.000B: unknown main item tag 0x0
-microsoft 0003:045E:07DA.000B: unknown main item tag 0x0
-microsoft 0003:045E:07DA.000B: unknown main item tag 0x0
-HID 045e:07da: Invalid code 65791 type 1
-input: HID 045e:07da as /devices/platform/dummy_hcd.0/usb1/1-1/1-1:0.0/0003:045E:07DA.000B/input/input12
-microsoft 0003:045E:07DA.000B: input,hidraw0: USB HID v0.00 Device [HID 045e:07da] on usb-dummy_hcd.0-1/input0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>
+> > ---
+> >  include/linux/alloc_tag.h |  7 +++++++
+> >  include/linux/codetag.h   |  1 +
+> >  lib/alloc_tag.c           | 38 ++++++++++++++++++++++++++++++++++++++
+> >  lib/codetag.c             |  5 +++++
+> >  mm/show_mem.c             | 26 ++++++++++++++++++++++++++
+> >  5 files changed, 77 insertions(+)
+> >
+> > diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
+> > index 29636719b276..85a24a027403 100644
+> > --- a/include/linux/alloc_tag.h
+> > +++ b/include/linux/alloc_tag.h
+> > @@ -30,6 +30,13 @@ struct alloc_tag {
+> >
+> >  #ifdef CONFIG_MEM_ALLOC_PROFILING
+> >
+> > +struct codetag_bytes {
+> > +     struct codetag *ct;
+> > +     s64 bytes;
+> > +};
+> > +
+> > +size_t alloc_tag_top_users(struct codetag_bytes *tags, size_t count, b=
+ool can_sleep);
+> > +
+> >  static inline struct alloc_tag *ct_to_alloc_tag(struct codetag *ct)
+> >  {
+> >       return container_of(ct, struct alloc_tag, ct);
+> > diff --git a/include/linux/codetag.h b/include/linux/codetag.h
+> > index bfd0ba5c4185..c2a579ccd455 100644
+> > --- a/include/linux/codetag.h
+> > +++ b/include/linux/codetag.h
+> > @@ -61,6 +61,7 @@ struct codetag_iterator {
+> >  }
+> >
+> >  void codetag_lock_module_list(struct codetag_type *cttype, bool lock);
+> > +bool codetag_trylock_module_list(struct codetag_type *cttype);
+> >  struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttyp=
+e);
+> >  struct codetag *codetag_next_ct(struct codetag_iterator *iter);
+> >
+> > diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
+> > index cb5adec4b2e2..ec54f29482dc 100644
+> > --- a/lib/alloc_tag.c
+> > +++ b/lib/alloc_tag.c
+> > @@ -86,6 +86,44 @@ static const struct seq_operations allocinfo_seq_op =
+=3D {
+> >       .show   =3D allocinfo_show,
+> >  };
+> >
+> > +size_t alloc_tag_top_users(struct codetag_bytes *tags, size_t count, b=
+ool can_sleep)
+> > +{
+> > +     struct codetag_iterator iter;
+> > +     struct codetag *ct;
+> > +     struct codetag_bytes n;
+> > +     unsigned int i, nr =3D 0;
+> > +
+> > +     if (can_sleep)
+> > +             codetag_lock_module_list(alloc_tag_cttype, true);
+> > +     else if (!codetag_trylock_module_list(alloc_tag_cttype))
+> > +             return 0;
+> > +
+> > +     iter =3D codetag_get_ct_iter(alloc_tag_cttype);
+> > +     while ((ct =3D codetag_next_ct(&iter))) {
+> > +             struct alloc_tag_counters counter =3D alloc_tag_read(ct_t=
+o_alloc_tag(ct));
+> > +
+> > +             n.ct    =3D ct;
+> > +             n.bytes =3D counter.bytes;
+> > +
+> > +             for (i =3D 0; i < nr; i++)
+> > +                     if (n.bytes > tags[i].bytes)
+> > +                             break;
+> > +
+> > +             if (i < count) {
+> > +                     nr -=3D nr =3D=3D count;
+> > +                     memmove(&tags[i + 1],
+> > +                             &tags[i],
+> > +                             sizeof(tags[0]) * (nr - i));
+> > +                     nr++;
+> > +                     tags[i] =3D n;
+> > +             }
+> > +     }
+> > +
+> > +     codetag_lock_module_list(alloc_tag_cttype, false);
+> > +
+> > +     return nr;
+> > +}
+> > +
+> >  static void __init procfs_init(void)
+> >  {
+> >       proc_create_seq("allocinfo", 0444, NULL, &allocinfo_seq_op);
+> > diff --git a/lib/codetag.c b/lib/codetag.c
+> > index b13412ca57cc..7b39cec9648a 100644
+> > --- a/lib/codetag.c
+> > +++ b/lib/codetag.c
+> > @@ -36,6 +36,11 @@ void codetag_lock_module_list(struct codetag_type *c=
+ttype, bool lock)
+> >               up_read(&cttype->mod_lock);
+> >  }
+> >
+> > +bool codetag_trylock_module_list(struct codetag_type *cttype)
+> > +{
+> > +     return down_read_trylock(&cttype->mod_lock) !=3D 0;
+> > +}
+> > +
+> >  struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttyp=
+e)
+> >  {
+> >       struct codetag_iterator iter =3D {
+> > diff --git a/mm/show_mem.c b/mm/show_mem.c
+> > index 8dcfafbd283c..1e41f8d6e297 100644
+> > --- a/mm/show_mem.c
+> > +++ b/mm/show_mem.c
+> > @@ -423,4 +423,30 @@ void __show_mem(unsigned int filter, nodemask_t *n=
+odemask, int max_zone_idx)
+> >  #ifdef CONFIG_MEMORY_FAILURE
+> >       printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_p=
+ages));
+> >  #endif
+> > +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> > +     {
+> > +             struct codetag_bytes tags[10];
+> > +             size_t i, nr;
+> > +
+> > +             nr =3D alloc_tag_top_users(tags, ARRAY_SIZE(tags), false)=
+;
+> > +             if (nr) {
+> > +                     printk(KERN_NOTICE "Memory allocations:\n");
+> > +                     for (i =3D 0; i < nr; i++) {
+> > +                             struct codetag *ct =3D tags[i].ct;
+> > +                             struct alloc_tag *tag =3D ct_to_alloc_tag=
+(ct);
+> > +                             struct alloc_tag_counters counter =3D all=
+oc_tag_read(tag);
+> > +
+> > +                             /* Same as alloc_tag_to_text() but w/o in=
+termediate buffer */
+> > +                             if (ct->modname)
+> > +                                     printk(KERN_NOTICE "%12lli %8llu =
+%s:%u [%s] func:%s\n",
+> > +                                            counter.bytes, counter.cal=
+ls, ct->filename,
+> > +                                            ct->lineno, ct->modname, c=
+t->function);
+> > +                             else
+> > +                                     printk(KERN_NOTICE "%12lli %8llu =
+%s:%u func:%s\n",
+> > +                                            counter.bytes, counter.cal=
+ls, ct->filename,
+> > +                                            ct->lineno, ct->function);
+> > +                     }
+> > +             }
+> > +     }
+> > +#endif
+> >  }
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
 
