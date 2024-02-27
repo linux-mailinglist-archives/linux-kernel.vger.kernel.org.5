@@ -1,109 +1,152 @@
-Return-Path: <linux-kernel+bounces-82495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A491686855A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:58:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C392C86855D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:59:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D295D1C2242D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:58:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63CEC1F225FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21E6C4A39;
-	Tue, 27 Feb 2024 00:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39DB4A1E;
+	Tue, 27 Feb 2024 00:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="spdX/faj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L6iYQapj"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3311847;
-	Tue, 27 Feb 2024 00:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B9D1847;
+	Tue, 27 Feb 2024 00:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708995505; cv=none; b=Wcs52oVbZYxWviusC7mw6lgNJrZm9+4iBVqm+nAwNaWndWPi55FLBRVoCWM/RQcRKg7AYbq62obKLCLu1CuckEl2QdMiRrPBhMlAGkUW8wO6MJcbUTPsHh1LeRaIHkC+vTGBiwDg122TxoJb1a9CzI45XcV1DY0SDGYOrAUSOIs=
+	t=1708995544; cv=none; b=GAy7TUk688FxO6d8DWPRiKNsRAU5hbsB7SnMMcAQ0qsZnREtla5QjbB2BAjygwyFlqo/bD4BC0jYdcUusUxwJW7TOBuZ8jOAB++SjCboJ8ZCNHk2Y0qa/9rfm9sb0l1S1tWroiMaoCh4hJWuN4BN6cXgbbDQqZVtv1T6EeIs4A4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708995505; c=relaxed/simple;
-	bh=qaRGbZw3nMP//+JFjvNcVW+EqA2CwVdYh7gZL5mLkLg=;
+	s=arc-20240116; t=1708995544; c=relaxed/simple;
+	bh=iNi7oNCxJajUUM96pw0C24QuzhG1/xkoRAzNVqrY0oU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ODuiojWSorSYvzZctFMT1bCaqWbzZyuRIqqwMU+GzeNQli+n89jie6WKKuGZe7KCQ2kMGPaysv9I+BYDOHsqQWjm2eP/KP63Cg2zJG3HMvPV0RNiu3y8ZU+Fbvwt8cWdONWsiGIcKOVxPpRjSnp2+JMlS++kqtfh7aOHsSSdd0c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=spdX/faj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E36DAC43394;
-	Tue, 27 Feb 2024 00:58:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708995504;
-	bh=qaRGbZw3nMP//+JFjvNcVW+EqA2CwVdYh7gZL5mLkLg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=spdX/fajxfIgjTyQMaNQ2X1LJ8aV2Fopwm1O6ldTSf/MhZk1FpJWOcwuIXQh7X3vU
-	 919tq201q3FVeruH33Ej9unvbymjO/vB4vp6mcO6i0O6/LSChs9FrjviK3gPq4LCM8
-	 yjrlNWKVWEyQjrCgref8LSGJvAbXxXBIz1THDnajacyTLJyvU354kMAgJDLW/S4Us+
-	 e0GDFCqLfoMcYjZ/QyswH+13yXg5dLCiF4NdS30C9DfRBQc3bbCxs3Q0sesdoJz4Ja
-	 l11CQaAdczcwGWZit/4XB8IRLWOOcHqzsuYUQO2sMrsptADdnA8Y64vyfMAK3XwUSb
-	 g4x9RzckQmUOg==
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412a4a932f4so13126155e9.0;
-        Mon, 26 Feb 2024 16:58:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV+dsz/OMX6ev6RtvZNmfzEZe4VvEzl3WJ/r6AVeFyfvqWhjFUJl+VgPYJEnzBgSq5l+3PD64SSNP0uLobQsGVgpfKflYt5Njqpo0CJkd2Pg/5Sm4EhB6o3u1lODsGXd8UWnu3gXjvevQRxU6tQ8/1aRM1ROhBQNErUKk/bJK1G7RQm3X+7Yq+dhaJFqN1UFmgmtDgE977/kOVLfno2GrIXNw==
-X-Gm-Message-State: AOJu0YwFIh1AfOVQd5cEW22oaswSNlmmHRfoOsuNO4Mnv3rPNgR3an56
-	sf01HVrIsjvcjt8fDxzAOkqPlC5sRzZlcdye3gw1RRMoCjF3ZzJA/RHRnUKlpthdaZ1wWJTGCxT
-	Un8QXqtxFr7TLUk2H7vLhwpj7tDQ=
-X-Google-Smtp-Source: AGHT+IFqjJgJkjMPawllVB8Z7vRbF30E2T+0rElmebjASihu2o/pZv4K7aKT/m1kXdVooPiQbMb0WJiPbiiC5Pfh6/A=
-X-Received: by 2002:a05:600c:a07:b0:412:955e:90e0 with SMTP id
- z7-20020a05600c0a0700b00412955e90e0mr5714587wmp.34.1708995503389; Mon, 26 Feb
- 2024 16:58:23 -0800 (PST)
+	 To:Cc:Content-Type; b=FjF9FSpNDIEixmTqRfGs4t32tN2N+Y7Y6HXyrPY8i7MC08IHBIRRJlrAAcCwV3mULWuodbOPYfpgL3/gxS2XEtDqjQASqIKjrU61jF031v2MfM19SYSnYOooJK4De9m0eC/QEH6PG84v0J/RamuMb5QnmeFFYoBDFzzQ1JDkaSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L6iYQapj; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a431324e84cso216022566b.1;
+        Mon, 26 Feb 2024 16:59:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708995541; x=1709600341; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DOwaET2RQuuUT4UyNMk06oCZiWMp4ZIYJaKx0CPKHVI=;
+        b=L6iYQapjj8hvRVromqQ0dtStNswo4/Wd0Ib5jxBAdEEdCkqbZ5ANOlc/eplEMg267F
+         R5KcmCz7I+vzcc1ZdBpvskrPo+YAM+kPZYTn0xj680BCoEjmt0VNGlnuEPNsafx4iAaj
+         quoJdDGyCc9ci9CIjGut+gkfJ/tUbNmTMmyTiJsS3FapUr5uU066VUCo3r/g9+KLZJF5
+         FkzrxfBdkKkliUa7faESvmTKkGrvEDx4+v8F6YLuW0aUfY2jaS+F5Ojwz/kqfLvsOKFm
+         3atfD6IUzdC6VzCoe2ADPPlGGpPd8uaRTIXsvQblyWs7kWTApksIfolW2ZUYL5W0zu5+
+         HVWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708995541; x=1709600341;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DOwaET2RQuuUT4UyNMk06oCZiWMp4ZIYJaKx0CPKHVI=;
+        b=XjI7rfFyZkObNXGbdVdaDv54tyPPXZ3OScVt54xuy/PHZ8XF35dKZJucEvIOI0ppKo
+         4EG8u8j3GsMCzfngqaffyJnz0PWua433BS8UnJrXxZmFtB90VJ7isftE7l4fs/2gppOj
+         LkaecwNdwmkHWnYdKY0jRykNARwfzxdkb1QbczTFcovhRq5i9QTMdh2UU1ulUPXgZcmO
+         A7Ix5mAUPwnL6uaEO11VNvdWAzB8QXyXrGy7fOlpSFunYAGzPNtEOpbqVkF8+oy3nfVv
+         l0Qa3V/+e0+YDh+jh6Nmh/nOIsbaR+1XWGHg2JKQq6XrEcELFT1NSXEgWKDGheSVVO6K
+         c2sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVqzvg/tTLi4o1sfTAiVdsTLeakKyMvnpOIb+Aq6h0h2TnpZdOufXdbXp02L00hPxWkT2YvBs8JphJpm82hjDn0hFK034D5CPBAA9ZkxC9sjx3P5QTtwe1WKi52MMJg5YZLMiLJ8kBvXcH7hmVbvSGn4UlwLB24DhcKsBlR9MG5jbPw1iY=
+X-Gm-Message-State: AOJu0YyoF8x3KZcFu7VpBiVIJ2Q4mnIxfAUR+IVhK4p2i4wfh9WF1cnt
+	y+xeb3R3yamOzmouP+39+EW3r9maEXc87aGRvjjMWWBZmTL8ASHF4QmkqjcUlcswiT0PlpUYV9C
+	wka/m0iU2jyGIFHwQmavij6w+d+o=
+X-Google-Smtp-Source: AGHT+IGRjjrKCdZCbkwC5KtHDkM2hhrCRhK8651/GdZ7OeoHO23Wi6OTpPZlDDxREygrGBNdzN1mdNi0B5m7uEp6Dro=
+X-Received: by 2002:a17:906:f1ce:b0:a43:a221:81ec with SMTP id
+ gx14-20020a170906f1ce00b00a43a22181ecmr376996ejb.3.1708995540581; Mon, 26 Feb
+ 2024 16:59:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1708709155.git.john@groves.net> <ZdkzJM6sze-p3EWP@bombadil.infradead.org>
- <cc2pabb3szzpm5jxxeku276csqu5vwqgzitkwevfluagx7akiv@h45faer5zpru>
- <Zdy0CGL6e0ri8LiC@bombadil.infradead.org> <w5cqtmdgqtjvbnrg5okdgmxe45vjg5evaxh6gg3gs6kwfqmn5p@wgakpqcumrbt>
-In-Reply-To: <w5cqtmdgqtjvbnrg5okdgmxe45vjg5evaxh6gg3gs6kwfqmn5p@wgakpqcumrbt>
-From: Luis Chamberlain <mcgrof@kernel.org>
-Date: Mon, 26 Feb 2024 16:58:09 -0800
-X-Gmail-Original-Message-ID: <CAB=NE6UvHSvTJJCq-YuBEZNo8F5Kg25aK+2im=V7DgEsTJ8wPg@mail.gmail.com>
-Message-ID: <CAB=NE6UvHSvTJJCq-YuBEZNo8F5Kg25aK+2im=V7DgEsTJ8wPg@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/20] Introduce the famfs shared-memory file system
-To: John Groves <John@groves.net>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com, 
-	gregory.price@memverge.com
+References: <20240225213423.690561-1-chris.packham@alliedtelesis.co.nz>
+ <CAHp75Vc9OBtxdKSmk9Uu9G3j+mfN8+9prTEVx3LyUcdBYFEqwg@mail.gmail.com> <584172eb-4eda-40d1-9ee5-99d0ef944481@alliedtelesis.co.nz>
+In-Reply-To: <584172eb-4eda-40d1-9ee5-99d0ef944481@alliedtelesis.co.nz>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Tue, 27 Feb 2024 02:58:23 +0200
+Message-ID: <CAHp75Vc3NFULXByhAv=1bq0aPsbH+_zVypQwaDGNrtafj+xGaw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] auxdisplay: 7 segment LED display
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: "ojeda@kernel.org" <ojeda@kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, 
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, 
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "andrew@lunn.ch" <andrew@lunn.ch>, 
+	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>, 
+	"sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>, 
+	"geert@linux-m68k.org" <geert@linux-m68k.org>, "pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 1:16=E2=80=AFPM John Groves <John@groves.net> wrote=
-:
->
-> On 24/02/26 07:53AM, Luis Chamberlain wrote:
-> > On Mon, Feb 26, 2024 at 07:27:18AM -0600, John Groves wrote:
-> > > Run status group 0 (all jobs):
-> > >   WRITE: bw=3D29.6GiB/s (31.8GB/s), 29.6GiB/s-29.6GiB/s (31.8GB/s-31.=
-8GB/s), io=3D44.7GiB (48.0GB), run=3D1511-1511msec
+On Tue, Feb 27, 2024 at 2:52=E2=80=AFAM Chris Packham
+<Chris.Packham@alliedtelesis.co.nz> wrote:
+> On 26/02/24 15:23, Andy Shevchenko wrote:
+> > On Sun, Feb 25, 2024 at 11:34=E2=80=AFPM Chris Packham
+> > <chris.packham@alliedtelesis.co.nz> wrote:
+> >> This series adds a driver for a 7 segment LED display.
+> >>
+> >> I'd like to get some feedback on how this could be extended to support=
+ >1
+> >> character. The driver as presented is sufficient for my hardware which=
+ only has
+> >> a single character display but I can see that for this to be generical=
+ly useful
+> >> supporting more characters would be desireable.
+> >>
+> >> Earlier I posted an idea that the characters could be represended by
+> >> sub-nodes[1] but there doesn't seem to be a way of having that and kee=
+ping the
+> >> convenience of using devm_gpiod_get_array() (unless I've missed someth=
+ing).
+> > It seems you didn't know that the tree for auxdisplay has been changed.
+> > Can you rebase your stuff on top of
+> > https://scanmail.trustwave.com/?c=3D20988&d=3Dvfbb5fnU59kvIREfdD-21Pab3=
+0bpMpuTM2Ipv28now&u=3Dhttps%3a%2f%2fgit%2ekernel%2eorg%2fpub%2fscm%2flinux%=
+2fkernel%2fgit%2fandy%2flinux-auxdisplay%2egit%2flog%2f%3fh%3dfor-next%3f
+> > It will reduce your code base by ~50%.
 > >
-> > > This is run on an xfs file system on a SATA ssd.
-> >
-> > To compare more closer apples to apples, wouldn't it make more sense
-> > to try this with XFS on pmem (with fio -direct=3D1)?
-> >
-> >   Luis
+> > WRT subnodes, you can go with device_for_each_child_node() and
+> > retrieve gpio array per digit. It means you will have an array of
+> > arrays of GPIOs.
 >
-> Makes sense. Here is the same command line I used with xfs before, but
-> now it's on /dev/pmem0 (the same 128G, but converted from devdax to pmem
-> because xfs requires that.
+> So would the following work?
 >
-> fio -name=3Dten-256m-per-thread --nrfiles=3D10 -bs=3D2M --group_reporting=
-=3D1 --alloc-size=3D1048576 --filesize=3D256MiB --readwrite=3Dwrite --fallo=
-cate=3Dnone --numjobs=3D48 --create_on_open=3D0 --ioengine=3Dio_uring --dir=
-ect=3D1 --directory=3D/mnt/xfs
+>      count =3D device_get_child_node_count(dev);
+>      struct gpio_descs **chars  =3D devm_kzalloc(dev, sizeof(*chars) *
+> count, GFP_KERNEL);
+>
+>      i =3D 0;
+>      device_for_each_child_node(dev, child) {
+>          chars[i] =3D devm_gpiod_get_array(dev, "segment", GPIOD_OUT_LOW)=
+;
 
-Could you try with mkfs.xfs -d agcount=3D1024
+I see what you meant earlier.
+This should be devm_fwnode_gpiod_get_index(), but we lack the _array
+variant of it...
 
- Luis
+Dunno what to do, maybe adding the _array variant is the good move,
+maybe something else.
+
+>      }
+>
+> I haven't used the child. The devm_gpiod_get_array() will be looking at
+> the fwnode of the parent.
+
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
