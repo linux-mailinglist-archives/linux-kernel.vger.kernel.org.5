@@ -1,139 +1,949 @@
-Return-Path: <linux-kernel+bounces-82887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2846868B35
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:49:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D457C868B43
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42DA41F228C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:49:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 174C0B275BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27924130E2E;
-	Tue, 27 Feb 2024 08:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20FC1130E5E;
+	Tue, 27 Feb 2024 08:51:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="co+35iFF"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nvO1rl9B"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897C312FB34
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5877654BCB;
+	Tue, 27 Feb 2024 08:51:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709023770; cv=none; b=MrHQTBDXoWpJTMKoSjYwU68gRD1YBm9l6UpCKU9FMqq2Bsy8Y0sOsXFD9gyWWhp6qtQeRTGxlOVT/f025BPDjcxnl691MSlCD5moKXdI+rlaxoiYUsqj3SEeYAiMep2TuGn3Ax+sLdNM7ZAA662BexyeG1F6d58NyaWLM5gNIBA=
+	t=1709023870; cv=none; b=JR/wgzlZNQlKNALCYLSyLxs0RcF/rKpAuFvp4/r0csXbzPOnUv9iNGzzaJHzhfu4G+icEvsuW2pjM+SN/CLD8YrBZ9tU6pnqS/0htIbX1R8S58nQOfdFgZ+kBVJMOrYLe5u3piO7U0+oMEG205xV+6aKt+eoOLIvNlO6mSV0Xz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709023770; c=relaxed/simple;
-	bh=c2aw4Hw3anU8sRB0mw812/BpQbNSsLNusQqyDnPMQ+M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uQg5TQzy4pn72Z5bvabcUPJw+yUVPI11vRyqSe4VprUU2QcUj5nPhCIzCx6gO3L2NBStzC+pddZ+LADu2PU7TQivNFfx82cPi+6gGJegMCawnSf1h6yjrWl0PtO1H4i8XvteqKyEPPN74T2/fcXEwlxk3saPAa5eKdOCBn1KOEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=co+35iFF; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 27 Feb 2024 08:49:14 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709023766;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B88acvmk3x+zIRZR32kMKESL53/0EUlRhoWm47p8/0I=;
-	b=co+35iFFA/D2wKUXn7nYHD6NVdDySS+UuNx5G2ngPxXIyl0msY/tX6gEHpymCPeo+6sFQo
-	WesPXGCplfJLDUVn6T0s2Fbj7Vi/qFridYIFJGgAwfFFvVX5IA3TIXXjnTHJB9qOTOkwB9
-	OZ6IXWi9a57oPkJFIWNi73/h0BPEt2Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Ankit Agrawal <ankita@nvidia.com>
-Cc: "wangjinchao@xfusion.com" <wangjinchao@xfusion.com>,
-	"shahuang@redhat.com" <shahuang@redhat.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"ryan.roberts@arm.com" <ryan.roberts@arm.com>,
-	"stefanha@redhat.com" <stefanha@redhat.com>,
-	"yi.l.liu@intel.com" <yi.l.liu@intel.com>,
-	"david@redhat.com" <david@redhat.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	"lpieralisi@kernel.org" <lpieralisi@kernel.org>,
-	"gshan@redhat.com" <gshan@redhat.com>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"rananta@google.com" <rananta@google.com>,
-	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"kevin.tian@intel.com" <kevin.tian@intel.com>,
-	"surenb@google.com" <surenb@google.com>,
-	"ricarkol@google.com" <ricarkol@google.com>,
-	"linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	"ardb@kernel.org" <ardb@kernel.org>,
-	"will@kernel.org" <will@kernel.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"maz@kernel.org" <maz@kernel.org>,
-	"bhe@redhat.com" <bhe@redhat.com>,
-	"reinette.chatre@intel.com" <reinette.chatre@intel.com>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-	"andreyknvl@gmail.com" <andreyknvl@gmail.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>,
-	Dan Williams <danw@nvidia.com>, Andy Currid <acurrid@nvidia.com>,
-	Alistair Popple <apopple@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	John Hubbard <jhubbard@nvidia.com>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	Zhi Wang <zhiw@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>,
-	Vikram Sethi <vsethi@nvidia.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"Tarun Gupta (SW-GPU)" <targupta@nvidia.com>
-Subject: Re: [PATCH v9 0/4] KVM: arm64: Allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <Zd2iCg5A0Zg_EyCm@linux.dev>
-References: <20240224150546.368-1-ankita@nvidia.com>
- <170899100569.1405597.5047894183843333522.b4-ty@linux.dev>
- <SA1PR12MB71992A7E86741878935DC385B0592@SA1PR12MB7199.namprd12.prod.outlook.com>
+	s=arc-20240116; t=1709023870; c=relaxed/simple;
+	bh=h5NrJoJ65Ldmd4pXd19Xip1fAi1vJozZnu4yB0rhOKU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RzMzj2LY+drDlLTkO+OYoFBUYB14ucc9fptHwlQDn2hwpCOCKTmZY7J8pDkhkOVmBWfQ8rX4omM8pRdM6fiydQv7CFAqjTurU/ZuMkGqZSo3a5hJDvxSfM4KTQgZGDtCTVNFD16qyrWMaP4Vxr4iNH8xpyivc/ZaGiJVChCYRsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nvO1rl9B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CAD7C433F1;
+	Tue, 27 Feb 2024 08:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709023869;
+	bh=h5NrJoJ65Ldmd4pXd19Xip1fAi1vJozZnu4yB0rhOKU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nvO1rl9BFL1GF6+1O/Mg3ZGUP6T/tkB5O2/tbLx88YhryGDVBpVko+KyVsekGpuQh
+	 oyZMSRztl48hKmRCoF0Wm4V8gcOs3Ps7kochq/L8DJoSsxbFZidwsmBa9a5SS6alWp
+	 u1+ENRUTfd3dGM55QLqxCDlzxgvWYfVHs5iqLgtAc1+MBL7g/yDayqXa84DZVjEAYW
+	 ZAvotQIIqC8JgsLap4TmFIEZ3T5XPQj1c1BMfu1QupO41HkBfYhB4HDm+qDxZ4Nyr6
+	 bnxnPM1lNB76CU4KkEaiHsxOQHpSanxP2yvQkNv/ZqS0aUM/kZFJ1JIwT4rIsFj1wC
+	 F3o3qCki7xgfw==
+Message-ID: <0a7da896-25bb-41c0-8c0c-bb28184f4bba@kernel.org>
+Date: Tue, 27 Feb 2024 09:50:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <SA1PR12MB71992A7E86741878935DC385B0592@SA1PR12MB7199.namprd12.prod.outlook.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 11/18] ASoC: mediatek: mt8365: Add platform driver
+Content-Language: en-US
+To: Alexandre Mergnat <amergnat@baylibre.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
+ <20240226-audio-i350-v1-11-4fa1cea1667f@baylibre.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20240226-audio-i350-v1-11-4fa1cea1667f@baylibre.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 27, 2024 at 08:45:38AM +0000, Ankit Agrawal wrote:
-> >>
-> >> Currently, KVM for ARM64 maps at stage 2 memory that is considered device
-> >> with DEVICE_nGnRE memory attributes; this setting overrides (per
-> >> ARM architecture [1]) any device MMIO mapping present at stage 1,
-> >> resulting in a set-up whereby a guest operating system cannot
-> >> determine device MMIO mapping memory attributes on its own but
-> >> it is always overridden by the KVM stage 2 default.
-> >>
-> >> [...]
-> >
-> > High time to get this cooking in -next. Looks like there aren't any
-> > conflicts w/ VFIO, but if that changes I've pushed a topic branch to:
-> >
-> >  https://git.kernel.org/pub/scm/linux/kernel/git/oupton/linux.git/log/?h=kvm-arm64/vfio-normal-nc
-> >
-> > Applied to kvmarm/next, thanks!
+On 26/02/2024 15:01, Alexandre Mergnat wrote:
+> Add mt8365 platform driver.
 > 
-> Thanks Oliver for your efforts. Pardon my naivety, but what would the
-> sequence of steps that this series go through next before landing in an
-> rc branch? Also, what is the earliest branch this is supposed to land
-> assuming all goes well?
+> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 
-We should see this showing up in linux-next imminently. Assuming there
-are no issues there, your changes will be sent out as part of the kvmarm
-pull request for 6.9.
+..
 
-At least in kvmarm, /next is used for patches that'll land in the next
-merge window and /fixes is for bugfixes that need to go in the current
-release cycle.
+> +	memif->substream = substream;
+> +
+> +	snd_pcm_hw_constraint_step(substream->runtime, 0,
+> +		SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 16);
+> +
+> +	snd_soc_set_runtime_hwparams(substream, mtk_afe_hardware);
+> +
+> +	ret = snd_pcm_hw_constraint_integer(runtime,
+> +		SNDRV_PCM_HW_PARAM_PERIODS);
+> +	if (ret < 0)
+> +		dev_err(afe->dev, "snd_pcm_hw_constraint_integer failed\n");
+> +
+> +	mt8365_afe_enable_main_clk(afe);
+> +	return ret;
+> +}
+> +
+> +static void mt8365_afe_fe_shutdown(struct snd_pcm_substream *substream,
+> +	struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	int memif_num = snd_soc_rtd_to_cpu(rtd, 0)->id;
+> +	struct mtk_base_afe_memif *memif = &afe->memif[memif_num];
+> +
+> +	dev_dbg(afe->dev, "%s %s\n", __func__, memif->data->name);
 
--- 
-Thanks,
-Oliver
+Drop trace-like prints. Tracing is for this. Before upstreaming driver
+from vendor repository, such stuff should be cleaned.
+
+
+> +
+> +	memif->substream = NULL;
+> +
+> +	mt8365_afe_disable_main_clk(afe);
+> +}
+> +
+> +static int mt8365_afe_fe_hw_params(struct snd_pcm_substream *substream,
+> +	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	struct mt8365_afe_private *afe_priv = afe->platform_priv;
+> +	int dai_id = snd_soc_rtd_to_cpu(rtd, 0)->id;
+> +	struct mt8365_control_data *ctrl_data = &afe_priv->ctrl_data;
+> +	struct mtk_base_afe_memif *memif = &afe->memif[dai_id];
+> +	struct mt8365_fe_dai_data *fe_data = &afe_priv->fe_data[dai_id];
+> +	const size_t request_size = params_buffer_bytes(params);
+> +	unsigned int channels = params_channels(params);
+> +	unsigned int rate = params_rate(params);
+> +	int ret, fs = 0;
+> +	unsigned int base_end_offset = 8;
+> +
+> +	dev_info(afe->dev,
+> +		"%s %s period = %d rate = %d channels = %d\n",
+> +		__func__, memif->data->name, params_period_size(params),
+> +		rate, channels);
+> +
+> +	if (dai_id == MT8365_AFE_MEMIF_VUL2) {
+> +		if (!ctrl_data->bypass_cm1)
+> +			/* configure cm1 */
+> +			mt8365_afe_configure_cm(afe,
+> +				MT8365_CM1, channels, rate);
+> +		else
+> +			regmap_update_bits(afe->regmap, AFE_CM1_CON0,
+> +				CM_AFE_CM1_VUL_SEL, CM_AFE_CM1_VUL_SEL);
+> +	} else if (dai_id == MT8365_AFE_MEMIF_TDM_IN) {
+> +		if (!ctrl_data->bypass_cm2)
+> +			/* configure cm2 */
+> +			mt8365_afe_configure_cm(afe,
+> +				MT8365_CM2, channels, rate);
+> +		else
+> +			regmap_update_bits(afe->regmap, AFE_CM2_CON0,
+> +				CM_AFE_CM2_TDM_SEL, ~CM_AFE_CM2_TDM_SEL);
+> +
+> +		base_end_offset = 4;
+> +	}
+> +
+> +	if (request_size > fe_data->sram_size) {
+> +		ret = snd_pcm_lib_malloc_pages(substream, request_size);
+> +		if (ret < 0) {
+> +			dev_err(afe->dev,
+> +				"%s %s malloc pages %zu bytes failed %d\n",
+> +				__func__, memif->data->name, request_size, ret);
+> +			return ret;
+> +		}
+> +
+> +		fe_data->use_sram = false;
+> +
+> +		mt8365_afe_emi_clk_on(afe);
+> +	} else {
+> +		struct snd_dma_buffer *dma_buf = &substream->dma_buffer;
+> +
+> +		dma_buf->dev.type = SNDRV_DMA_TYPE_DEV;
+> +		dma_buf->dev.dev = substream->pcm->card->dev;
+> +		dma_buf->area = (unsigned char *)fe_data->sram_vir_addr;
+> +		dma_buf->addr = fe_data->sram_phy_addr;
+> +		dma_buf->bytes = request_size;
+> +		snd_pcm_set_runtime_buffer(substream, dma_buf);
+> +
+> +		fe_data->use_sram = true;
+> +	}
+> +
+> +	memif->phys_buf_addr = lower_32_bits(substream->runtime->dma_addr);
+> +	memif->buffer_size = substream->runtime->dma_bytes;
+> +
+> +	/* start */
+> +	regmap_write(afe->regmap, memif->data->reg_ofs_base,
+> +		memif->phys_buf_addr);
+> +	/* end */
+> +	regmap_write(afe->regmap,
+> +		memif->data->reg_ofs_base + base_end_offset,
+> +		memif->phys_buf_addr + memif->buffer_size - 1);
+> +
+> +	/* set channel */
+> +	if (memif->data->mono_shift >= 0) {
+> +		unsigned int mono = (params_channels(params) == 1) ? 1 : 0;
+> +
+> +		if (memif->data->mono_reg < 0)
+> +			dev_info(afe->dev, "%s mono_reg is NULL\n", __func__);
+> +		else
+> +			regmap_update_bits(afe->regmap, memif->data->mono_reg,
+> +				1 << memif->data->mono_shift,
+> +				mono << memif->data->mono_shift);
+> +	}
+> +
+> +	/* set rate */
+> +	if (memif->data->fs_shift < 0)
+> +		return 0;
+> +
+> +	fs = afe->memif_fs(substream, params_rate(params));
+> +
+> +	if (fs < 0)
+> +		return -EINVAL;
+> +
+> +	if (memif->data->fs_reg < 0)
+> +		dev_info(afe->dev, "%s fs_reg is NULL\n", __func__);
+> +	else
+> +		regmap_update_bits(afe->regmap, memif->data->fs_reg,
+> +			memif->data->fs_maskbit << memif->data->fs_shift,
+> +			fs << memif->data->fs_shift);
+> +
+> +	return 0;
+> +}
+> +
+> +static int mt8365_afe_fe_hw_free(struct snd_pcm_substream *substream,
+> +	struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	struct mt8365_afe_private *afe_priv = afe->platform_priv;
+> +	int dai_id = snd_soc_rtd_to_cpu(rtd, 0)->id;
+> +	struct mtk_base_afe_memif *memif = &afe->memif[dai_id];
+> +	struct mt8365_fe_dai_data *fe_data = &afe_priv->fe_data[dai_id];
+> +	int ret = 0;
+> +
+> +	dev_dbg(afe->dev, "%s %s\n", __func__, memif->data->name);
+
+Drop
+
+> +
+> +	if (fe_data->use_sram) {
+> +		snd_pcm_set_runtime_buffer(substream, NULL);
+> +	} else {
+> +		ret = snd_pcm_lib_free_pages(substream);
+> +
+> +		mt8365_afe_emi_clk_off(afe);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int mt8365_afe_fe_prepare(struct snd_pcm_substream *substream,
+> +	struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	int dai_id = snd_soc_rtd_to_cpu(rtd, 0)->id;
+> +	struct mtk_base_afe_memif *memif = &afe->memif[dai_id];
+> +
+> +	/* set format */
+> +	if (memif->data->hd_reg >= 0) {
+> +		switch (substream->runtime->format) {
+> +		case SNDRV_PCM_FORMAT_S16_LE:
+> +			regmap_update_bits(afe->regmap, memif->data->hd_reg,
+> +				3 << memif->data->hd_shift,
+> +				0 << memif->data->hd_shift);
+> +			break;
+> +		case SNDRV_PCM_FORMAT_S32_LE:
+> +			regmap_update_bits(afe->regmap, memif->data->hd_reg,
+> +				3 << memif->data->hd_shift,
+> +				3 << memif->data->hd_shift);
+> +
+> +			if (dai_id == MT8365_AFE_MEMIF_TDM_IN) {
+> +				regmap_update_bits(afe->regmap,
+> +					memif->data->hd_reg,
+> +					3 << memif->data->hd_shift,
+> +					1 << memif->data->hd_shift);
+> +				regmap_update_bits(afe->regmap,
+> +					memif->data->hd_reg,
+> +					1 << memif->data->hd_align_mshift,
+> +					1 << memif->data->hd_align_mshift);
+> +			}
+> +			break;
+> +		case SNDRV_PCM_FORMAT_S24_LE:
+> +			regmap_update_bits(afe->regmap, memif->data->hd_reg,
+> +				3 << memif->data->hd_shift,
+> +				1 << memif->data->hd_shift);
+> +			break;
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	mt8365_afe_irq_direction_enable(afe,
+> +		memif->irq_usage,
+> +		MT8365_AFE_IRQ_DIR_MCU);
+> +
+> +	return 0;
+> +}
+> +
+> +int mt8365_afe_fe_trigger(struct snd_pcm_substream *substream, int cmd,
+> +	struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = snd_soc_substream_to_rtd(substream);
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	struct mt8365_afe_private *afe_priv = afe->platform_priv;
+> +	int dai_id = snd_soc_rtd_to_cpu(rtd, 0)->id;
+> +	struct mt8365_control_data *ctrl_data = &afe_priv->ctrl_data;
+> +
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +		/* enable channel merge */
+> +		if (dai_id == MT8365_AFE_MEMIF_VUL2 &&
+> +		    !ctrl_data->bypass_cm1) {
+> +			regmap_update_bits(afe->regmap,
+> +				AFE_CM1_CON0,
+> +				CM_AFE_CM_ON, CM_AFE_CM_ON);
+> +		} else if (dai_id == MT8365_AFE_MEMIF_TDM_IN &&
+> +			   !ctrl_data->bypass_cm2) {
+> +			regmap_update_bits(afe->regmap,
+> +				AFE_CM2_CON0,
+> +				CM_AFE_CM_ON, CM_AFE_CM_ON);
+> +		}
+> +		break;
+> +	case SNDRV_PCM_TRIGGER_STOP:
+> +	case SNDRV_PCM_TRIGGER_SUSPEND:
+> +		/* disable channel merge */
+> +		if (dai_id == MT8365_AFE_MEMIF_VUL2 &&
+> +		    !ctrl_data->bypass_cm1) {
+> +			regmap_update_bits(afe->regmap,
+> +				AFE_CM1_CON0,
+> +				CM_AFE_CM_ON, ~CM_AFE_CM_ON);
+> +		} else if (dai_id == MT8365_AFE_MEMIF_TDM_IN &&
+> +			   !ctrl_data->bypass_cm2) {
+> +			regmap_update_bits(afe->regmap,
+> +				AFE_CM2_CON0,
+> +				CM_AFE_CM_ON, ~CM_AFE_CM_ON);
+> +		}
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return mtk_afe_fe_trigger(substream, cmd, dai);
+> +}
+> +
+> +static int mt8365_afe_hw_gain1_startup(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +
+> +	mt8365_afe_enable_main_clk(afe);
+> +	return 0;
+> +}
+> +
+> +static void mt8365_afe_hw_gain1_shutdown(struct snd_pcm_substream *substream,
+> +				  struct snd_soc_dai *dai)
+> +{
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	struct mt8365_afe_private *afe_priv = afe->platform_priv;
+> +	struct mt8365_be_dai_data *be =
+> +		&afe_priv->be_data[dai->id - MT8365_AFE_BACKEND_BASE];
+> +
+> +	const unsigned int stream = substream->stream;
+
+Why do you const local scalars? What is the point of this variable anyway?
+
+> +
+> +	if (be->prepared[stream]) {
+> +		regmap_update_bits(afe->regmap, AFE_GAIN1_CON0,
+> +			AFE_GAIN1_CON0_EN_MASK, 0);
+> +		be->prepared[stream] = false;
+> +	}
+> +	mt8365_afe_disable_main_clk(afe);
+> +}
+> +
+> +static int mt8365_afe_hw_gain1_prepare(struct snd_pcm_substream *substream,
+> +				struct snd_soc_dai *dai)
+> +{
+> +	struct snd_pcm_runtime * const runtime = substream->runtime;
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	struct mt8365_afe_private *afe_priv = afe->platform_priv;
+> +	struct mt8365_be_dai_data *be =
+> +		&afe_priv->be_data[dai->id - MT8365_AFE_BACKEND_BASE];
+> +
+> +	const unsigned int rate = runtime->rate;
+> +	const unsigned int stream = substream->stream;
+
+So this const is everywhere? How does it change it from code safety? No
+one expects to overwrite such variables anyway, so there is no increase
+in readability, either.
+
+> +	int fs;
+> +	unsigned int val1 = 0, val2 = 0;
+> +
+> +	if (be->prepared[stream]) {
+> +		dev_info(afe->dev, "%s prepared already\n", __func__);
+> +		return 0;
+> +	}
+> +
+> +	fs = mt8365_afe_fs_timing(rate);
+> +	regmap_update_bits(afe->regmap, AFE_GAIN1_CON0,
+> +		AFE_GAIN1_CON0_MODE_MASK, (unsigned int)fs<<4);
+> +
+> +	regmap_read(afe->regmap, AFE_GAIN1_CON1, &val1);
+> +	regmap_read(afe->regmap, AFE_GAIN1_CUR, &val2);
+> +	if ((val1 & AFE_GAIN1_CON1_MASK) != (val2 & AFE_GAIN1_CUR_MASK))
+> +		regmap_update_bits(afe->regmap, AFE_GAIN1_CUR,
+> +		AFE_GAIN1_CUR_MASK, val1);
+> +
+> +	regmap_update_bits(afe->regmap, AFE_GAIN1_CON0,
+> +		AFE_GAIN1_CON0_EN_MASK, 1);
+> +	be->prepared[stream] = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct snd_pcm_hardware mt8365_hostless_hardware = {
+> +	.info = (SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
+> +		 SNDRV_PCM_INFO_MMAP_VALID),
+> +	.period_bytes_min = 256,
+> +	.period_bytes_max = 4 * 48 * 1024,
+> +	.periods_min = 2,
+> +	.periods_max = 256,
+> +	.buffer_bytes_max = 8 * 48 * 1024,
+> +	.fifo_size = 0,
+> +};
+> +
+> +/* dai ops */
+> +static int mtk_dai_hostless_startup(struct snd_pcm_substream *substream,
+> +				    struct snd_soc_dai *dai)
+> +{
+> +	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+> +	struct snd_pcm_runtime *runtime = substream->runtime;
+> +	int ret;
+> +
+> +	snd_soc_set_runtime_hwparams(substream, &mt8365_hostless_hardware);
+> +
+> +	ret = snd_pcm_hw_constraint_integer(runtime,
+> +					    SNDRV_PCM_HW_PARAM_PERIODS);
+> +	if (ret < 0)
+> +		dev_info(afe->dev, "snd_pcm_hw_constraint_integer failed\n");
+> +	return ret;
+> +}
+> +
+> +/* FE DAIs */
+> +static const struct snd_soc_dai_ops mt8365_afe_fe_dai_ops = {
+> +	.startup	= mt8365_afe_fe_startup,
+> +	.shutdown	= mt8365_afe_fe_shutdown,
+> +	.hw_params	= mt8365_afe_fe_hw_params,
+> +	.hw_free	= mt8365_afe_fe_hw_free,
+> +	.prepare	= mt8365_afe_fe_prepare,
+> +	.trigger	= mt8365_afe_fe_trigger,
+> +};
+> +
+> +static const struct snd_soc_dai_ops mt8365_dai_hostless_ops = {
+> +	.startup = mtk_dai_hostless_startup,
+> +};
+> +
+
+..
+
+> +static int mt8365_afe_cm2_io_input_mux_get(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+> +{
+> +	ucontrol->value.integer.value[0] = mCM2Input;
+> +
+> +	return 0;
+> +}
+> +
+> +static int mt8365_afe_cm2_io_input_mux_put(struct snd_kcontrol *kcontrol,
+> +	struct snd_ctl_elem_value *ucontrol)
+
+Run checkpatch --strict
+
+> +{
+> +	struct snd_soc_dapm_context *dapm =
+> +		snd_soc_dapm_kcontrol_dapm(kcontrol);
+> +	struct snd_soc_component *comp = snd_soc_dapm_to_component(dapm);
+> +	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(comp);
+> +	struct mt8365_afe_private *afe_priv = afe->platform_priv;
+> +	int ret;
+> +
+> +	mCM2Input = ucontrol->value.enumerated.item[0];
+> +
+> +	afe_priv->cm2_mux_input = mCM2Input;
+> +	ret = snd_soc_dapm_put_enum_double(kcontrol, ucontrol);
+> +
+> +	return ret;
+> +}
+> +
+
+..
+
+> +
+> +static const struct regmap_config mt8365_afe_regmap_config = {
+> +	.reg_bits = 32,
+> +	.reg_stride = 4,
+> +	.val_bits = 32,
+> +	.max_register = MAX_REGISTER,
+> +	.cache_type = REGCACHE_NONE,
+> +};
+> +
+> +static irqreturn_t mt8365_afe_irq_handler(int irq, void *dev_id)
+> +{
+> +	struct mtk_base_afe *afe = dev_id;
+> +	unsigned int reg_value;
+> +	unsigned int mcu_irq_mask;
+> +	int i, ret;
+> +
+> +	ret = regmap_read(afe->regmap, AFE_IRQ_MCU_STATUS, &reg_value);
+> +	if (ret) {
+> +		dev_err(afe->dev, "%s irq status err\n", __func__);
+
+I can imagine happy user seeing flooded dmesg on each IRQ with these
+messages...
+
+> +		reg_value = AFE_IRQ_STATUS_BITS;
+> +		goto err_irq;
+> +	}
+> +
+> +	ret = regmap_read(afe->regmap, AFE_IRQ_MCU_EN, &mcu_irq_mask);
+> +	if (ret) {
+> +		dev_err(afe->dev, "%s irq mcu_en err\n", __func__);
+> +		reg_value = AFE_IRQ_STATUS_BITS;
+> +		goto err_irq;
+> +	}
+> +
+> +	/* only clr cpu irq */
+> +	reg_value &= mcu_irq_mask;
+> +
+> +	for (i = 0; i < MT8365_AFE_MEMIF_NUM; i++) {
+> +		struct mtk_base_afe_memif *memif = &afe->memif[i];
+> +		struct mtk_base_afe_irq *mcu_irq;
+> +
+> +		if (memif->irq_usage < 0)
+> +			continue;
+> +
+> +		mcu_irq = &afe->irqs[memif->irq_usage];
+> +
+> +		if (!(reg_value & (1 << mcu_irq->irq_data->irq_clr_shift)))
+> +			continue;
+> +
+> +		snd_pcm_period_elapsed(memif->substream);
+> +	}
+> +
+> +err_irq:
+> +	/* clear irq */
+> +	regmap_write(afe->regmap, AFE_IRQ_MCU_CLR,
+> +		reg_value & AFE_IRQ_STATUS_BITS);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int __maybe_unused mt8365_afe_runtime_suspend(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int mt8365_afe_runtime_resume(struct device *dev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused mt8365_afe_suspend(struct device *dev)
+> +{
+> +	struct mtk_base_afe *afe = dev_get_drvdata(dev);
+> +	struct regmap *regmap = afe->regmap;
+> +	int i;
+> +
+> +	mt8365_afe_enable_main_clk(afe);
+> +
+> +	if (!afe->reg_back_up)
+> +		afe->reg_back_up =
+> +			devm_kcalloc(dev, afe->reg_back_up_list_num,
+> +				     sizeof(unsigned int), GFP_KERNEL);
+> +
+> +	for (i = 0; i < afe->reg_back_up_list_num; i++)
+> +		regmap_read(regmap, afe->reg_back_up_list[i],
+> +			    &afe->reg_back_up[i]);
+> +
+> +	mt8365_afe_disable_main_clk(afe);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused mt8365_afe_resume(struct device *dev)
+> +{
+> +	struct mtk_base_afe *afe = dev_get_drvdata(dev);
+> +	struct regmap *regmap = afe->regmap;
+> +	int i = 0;
+> +
+> +	if (!afe->reg_back_up) {
+> +		dev_dbg(dev, "%s no reg_backup\n", __func__);
+> +		return 0;
+> +	}
+> +
+> +	mt8365_afe_enable_main_clk(afe);
+> +
+> +	for (i = 0; i < afe->reg_back_up_list_num; i++)
+> +		regmap_write(regmap, afe->reg_back_up_list[i],
+> +				 afe->reg_back_up[i]);
+> +
+> +	mt8365_afe_disable_main_clk(afe);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused mt8365_afe_dev_runtime_suspend(struct device *dev)
+> +{
+> +	struct mtk_base_afe *afe = dev_get_drvdata(dev);
+> +
+> +	dev_dbg(afe->dev, "%s suspend %d %d >>\n", __func__,
+> +		pm_runtime_status_suspended(dev), afe->suspended);
+
+Drop silly trace-like prints. Tracing is for this.
+
+> +
+> +	if (pm_runtime_status_suspended(dev) || afe->suspended)
+> +		return 0;
+> +
+> +	mt8365_afe_suspend(dev);
+> +
+> +	afe->suspended = true;
+> +
+> +	dev_dbg(afe->dev, "%s <<\n", __func__);
+
+Drop silly trace-like prints. Tracing is for this.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused mt8365_afe_dev_runtime_resume(struct device *dev)
+> +{
+> +	struct mtk_base_afe *afe = dev_get_drvdata(dev);
+> +
+> +	dev_dbg(afe->dev, "%s suspend %d %d >>\n", __func__,
+> +		pm_runtime_status_suspended(dev), afe->suspended);
+
+Drop silly trace-like prints. Tracing is for this.
+
+> +
+> +	if (pm_runtime_status_suspended(dev) || !afe->suspended)
+> +		return 0;
+> +
+> +	mt8365_afe_resume(dev);
+> +
+> +	afe->suspended = false;
+> +
+> +	dev_dbg(afe->dev, "%s <<\n", __func__);
+
+Drop silly trace-like prints. Tracing is for this.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int mt8365_afe_init_registers(struct mtk_base_afe *afe)
+> +{
+> +	size_t i;
+> +
+> +	static struct {
+> +		unsigned int reg;
+> +		unsigned int mask;
+> +		unsigned int val;
+> +	} init_regs[] = {
+> +		{ AFE_CONN_24BIT, GENMASK(31, 0), GENMASK(31, 0) },
+> +		{ AFE_CONN_24BIT_1, GENMASK(21, 0), GENMASK(21, 0) },
+> +	};
+> +
+> +	mt8365_afe_enable_main_clk(afe);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(init_regs); i++)
+> +		regmap_update_bits(afe->regmap, init_regs[i].reg,
+> +				   init_regs[i].mask, init_regs[i].val);
+> +
+> +	mt8365_afe_disable_main_clk(afe);
+> +
+> +	return 0;
+> +}
+> +
+> +static int mt8365_afe_component_probe(struct snd_soc_component *component)
+> +{
+> +	return mtk_afe_add_sub_dai_control(component);
+> +}
+> +
+> +static const struct snd_soc_component_driver mt8365_afe_component = {
+> +	.name		= AFE_PCM_NAME,
+> +	.probe		= mt8365_afe_component_probe,
+> +	.pointer	= mtk_afe_pcm_pointer,
+> +	.pcm_construct	= mtk_afe_pcm_new,
+> +};
+> +
+> +static const struct snd_soc_component_driver mt8365_afe_pcm_component = {
+> +	.name = "mt8365-afe-pcm-dai",
+> +};
+> +
+> +static int mt8365_dai_memif_register(struct mtk_base_afe *afe)
+> +{
+> +	struct mtk_base_afe_dai *dai;
+> +
+> +	dai = devm_kzalloc(afe->dev, sizeof(*dai), GFP_KERNEL);
+> +	if (!dai)
+> +		return -ENOMEM;
+> +
+> +	list_add(&dai->list, &afe->sub_dais);
+> +
+> +	dai->dai_drivers = mt8365_memif_dai_driver;
+> +	dai->num_dai_drivers = ARRAY_SIZE(mt8365_memif_dai_driver);
+> +
+> +	dai->dapm_widgets = mt8365_memif_widgets;
+> +	dai->num_dapm_widgets = ARRAY_SIZE(mt8365_memif_widgets);
+> +	dai->dapm_routes = mt8365_memif_routes;
+> +	dai->num_dapm_routes = ARRAY_SIZE(mt8365_memif_routes);
+> +	return 0;
+> +}
+> +
+> +typedef int (*dai_register_cb)(struct mtk_base_afe *);
+> +static const dai_register_cb dai_register_cbs[] = {
+> +	mt8365_dai_pcm_register,
+> +	mt8365_dai_i2s_register,
+> +	mt8365_dai_adda_register,
+> +	mt8365_dai_dmic_register,
+> +	mt8365_dai_memif_register,
+> +};
+> +
+> +static int mt8365_afe_pcm_dev_probe(struct platform_device *pdev)
+> +{
+> +	struct mtk_base_afe *afe;
+> +	struct mt8365_afe_private *afe_priv;
+> +	struct device *dev;
+> +	int ret, i, sel_irq;
+> +	unsigned int irq_id;
+> +	struct resource *res;
+> +
+> +	afe = devm_kzalloc(&pdev->dev, sizeof(*afe), GFP_KERNEL);
+> +	if (!afe)
+> +		return -ENOMEM;
+> +	platform_set_drvdata(pdev, afe);
+> +
+> +	afe->platform_priv = devm_kzalloc(&pdev->dev, sizeof(*afe_priv),
+> +					  GFP_KERNEL);
+> +	if (!afe->platform_priv)
+> +		return -ENOMEM;
+> +
+> +	afe_priv = afe->platform_priv;
+> +	afe->dev = &pdev->dev;
+> +	dev = afe->dev;
+> +
+> +	spin_lock_init(&afe_priv->afe_ctrl_lock);
+> +	mutex_init(&afe_priv->afe_clk_mutex);
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	afe->base_addr = devm_ioremap_resource(&pdev->dev, res);
+
+Why not using helper combining these two?
+
+> +	if (IS_ERR(afe->base_addr))
+> +		return PTR_ERR(afe->base_addr);
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +	if (res) {
+> +		afe_priv->afe_sram_vir_addr =
+> +			devm_ioremap_resource(&pdev->dev, res);
+> +		if (!IS_ERR(afe_priv->afe_sram_vir_addr)) {
+> +			afe_priv->afe_sram_phy_addr = res->start;
+> +			afe_priv->afe_sram_size = resource_size(res);
+> +		}
+> +	}
+> +
+> +	/* initial audio related clock */
+> +	ret = mt8365_afe_init_audio_clk(afe);
+> +	if (ret) {
+> +		dev_err(afe->dev, "mt8365_afe_init_audio_clk fail\n");
+
+return dev_err_probe()
+
+> +		return ret;
+> +	}
+> +
+> +	afe->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "top_audio_sel",
+> +		afe->base_addr,	&mt8365_afe_regmap_config);
+> +	if (IS_ERR(afe->regmap))
+> +		return PTR_ERR(afe->regmap);
+> +
+> +	/* memif % irq initialize*/
+> +	afe->memif_size = MT8365_AFE_MEMIF_NUM;
+> +	afe->memif = devm_kcalloc(afe->dev, afe->memif_size,
+> +				  sizeof(*afe->memif), GFP_KERNEL);
+> +	if (!afe->memif)
+> +		return -ENOMEM;
+> +
+> +	afe->irqs_size = MT8365_AFE_IRQ_NUM;
+> +	afe->irqs = devm_kcalloc(afe->dev, afe->irqs_size,
+> +				 sizeof(*afe->irqs), GFP_KERNEL);
+> +	if (!afe->irqs)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < afe->irqs_size; i++)
+> +		afe->irqs[i].irq_data = &irq_data[i];
+> +
+> +	irq_id = platform_get_irq(pdev, 0);
+> +	if (!irq_id) {
+
+That does not look correct. 0 is valid. Look at help of this function.
+
+> +		dev_err(afe->dev, "np %s no irq\n", afe->dev->of_node->name);
+
+return dev_err_probe()
+
+> +		return -ENXIO;
+> +	}
+> +	ret = devm_request_irq(afe->dev, irq_id, mt8365_afe_irq_handler,
+> +			       0, "Afe_ISR_Handle", (void *)afe);
+> +	if (ret) {
+> +		dev_err(afe->dev, "could not request_irq\n");
+
+return dev_err_probe()
+
+> +		return ret;
+> +	}
+> +
+> +	/* init sub_dais */
+> +	INIT_LIST_HEAD(&afe->sub_dais);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(dai_register_cbs); i++) {
+> +		ret = dai_register_cbs[i](afe);
+> +		if (ret) {
+> +			dev_warn(afe->dev, "dai register i %d fail, ret %d\n",
+> +				 i, ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	/* init dai_driver and component_driver */
+> +	ret = mtk_afe_combine_sub_dai(afe);
+> +	if (ret) {
+> +		dev_warn(afe->dev, "mtk_afe_combine_sub_dai fail, ret %d\n",
+> +			 ret);
+> +		return ret;
+> +	}
+> +
+> +	for (i = 0; i < afe->memif_size; i++) {
+> +		afe->memif[i].data = &memif_data[i];
+> +		sel_irq = memif_specified_irqs[i];
+> +		if (sel_irq >= 0) {
+> +			afe->memif[i].irq_usage = sel_irq;
+> +			afe->memif[i].const_irq = 1;
+> +			afe->irqs[sel_irq].irq_occupyed = true;
+> +		} else {
+> +			afe->memif[i].irq_usage = -1;
+> +		}
+> +	}
+> +
+> +	afe->mtk_afe_hardware = &mt8365_afe_hardware;
+> +	afe->memif_fs = mt8365_memif_fs;
+> +	afe->irq_fs = mt8365_irq_fs;
+> +
+> +	pm_runtime_enable(&pdev->dev);
+> +
+> +	pm_runtime_get_sync(&pdev->dev);
+> +	afe->reg_back_up_list = mt8365_afe_backup_list;
+> +	afe->reg_back_up_list_num = ARRAY_SIZE(mt8365_afe_backup_list);
+> +	afe->runtime_resume = mt8365_afe_runtime_resume;
+> +	afe->runtime_suspend = mt8365_afe_runtime_suspend;
+> +
+> +	/* open afe pdn for dapm read/write audio register */
+> +	mt8365_afe_enable_top_cg(afe, MT8365_TOP_CG_AFE);
+> +
+> +	/* Set 26m parent clk */
+> +	mt8365_afe_set_clk_parent(afe,
+> +		afe_priv->clocks[MT8365_CLK_TOP_AUD_SEL],
+> +		afe_priv->clocks[MT8365_CLK_CLK26M]);
+> +
+> +	ret = devm_snd_soc_register_component(&pdev->dev,
+> +					      &mt8365_afe_component, NULL, 0);
+> +	if (ret) {
+> +		dev_warn(dev, "err_platform\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = devm_snd_soc_register_component(&pdev->dev,
+> +					      &mt8365_afe_pcm_component,
+> +					      afe->dai_drivers,
+> +					      afe->num_dai_drivers);
+> +	if (ret) {
+> +		dev_warn(dev, "err_dai_component\n");
+> +		return ret;
+> +	}
+> +
+> +	mt8365_afe_init_registers(afe);
+> +
+> +	dev_info(&pdev->dev, "MT8365 AFE driver initialized.\n");
+
+Drop simple probe success messages everywhere. They are not needed and
+they don't bring useful information.
+
+Best regards,
+Krzysztof
+
 
