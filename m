@@ -1,372 +1,326 @@
-Return-Path: <linux-kernel+bounces-82719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99B53868894
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:24:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A45AA868899
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:24:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20FFF1F235F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:24:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF26282ADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EEF952F8F;
-	Tue, 27 Feb 2024 05:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5878552F8B;
+	Tue, 27 Feb 2024 05:24:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="rsmjLhHN";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EBJ7ruCR"
-Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
+	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="j9CKnrVZ"
+Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E2852F77;
-	Tue, 27 Feb 2024 05:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4765C52F73;
+	Tue, 27 Feb 2024 05:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709011448; cv=none; b=QJSqdeYOO+dhQEIrM8OPrR6ss7uX+EWLMl6WIclqii0UQHMusiDVmrfhvHt+c/2+ekpPDy4FoRv1AVE5Zq4z3gwerOwSFmJ+hgG94XIfk+UVTYnMduKpif4dwiBlqnK1IKNtZoYX6AgFFZzXQhkq23xnqzhGZLBkYfpWZdzUxwQ=
+	t=1709011478; cv=none; b=ZfOBAZai0KQLLjw7sQ3Q4xdn8nEZhLqgBFzE4z+1t2iM3jpWs8mt+woH0xnCbFW4ytiNl2YOVMunQMXSyNNAmreIV8LRTZM/P4a58kKquRbcRxjMQk9qvN2MzUqiqw2hcqXH5fiOIuuHOcLyhUhc6i2lwSwUUrWKYSEprt/cGtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709011448; c=relaxed/simple;
-	bh=u4qQkPHQmIhMRJxmqmu5QD2BAGK772thENCJm+b3kno=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=N1eDzbdAm4je9dORGXzCwVKR7hGB6z9MLJHVN4GCYgKYwVBsH8P4UZoyrmmD+8CC0AsNCNFO8B2D0cbAI41Xga9UT5X7/frrMqZnQKr4Trk2fZaX8d/HDRfLgeYw8Irb/NjfFvu2/mUayR8aLbZ6R0+YzvZVs0JGON7om1nBVHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=rsmjLhHN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=EBJ7ruCR; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 59B9211400D7;
-	Tue, 27 Feb 2024 00:24:05 -0500 (EST)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Tue, 27 Feb 2024 00:24:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1709011445;
-	 x=1709097845; bh=ZAscQhN7898Hcp6Y20dtK5VfrswD/2iy7Gi5PEhuA+A=; b=
-	rsmjLhHNkmdfGEdtxrBZPJR4K5rkmKvR9NJlyUn/ZyMtMC32KiSIhiS0bgByYvgV
-	N8iEIuks+EE8tpB417AJ6FREuJwZHQoCxB3HlhvhznZPB5SBn34WVK6EWrNkbqf3
-	ONbWx8xAAwyR3yW+MQzPyNN33lGFq46yIAwaXWhj5ZLIP7qdPmQtDHWcBFWe602/
-	Tajgdc1ktdicGYaz50pBzoS86QrQcaT2ajQGNdNlRuxqcIWbo6tzJ/9nekkc+JxQ
-	ApivTWzMKZ5+BfOflZvWo99hI36RrF/XHohJYnV/+wTYyVNnVRn8HMSrYpQ2YTq4
-	/eQbfNycHH2Jh2A0mtpiYQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709011445; x=
-	1709097845; bh=ZAscQhN7898Hcp6Y20dtK5VfrswD/2iy7Gi5PEhuA+A=; b=E
-	BJ7ruCRk8Ym0vAj538sBHBp3z9aAesQvacvuY4Cuq9r3touHEaGhFBX8Fu2n23r7
-	gZw1iOwTVmUGsBDabm7rewd1pA7KDldfNFbg5ZsmSUw0tI1Xo+CPFglNmQXZCiqL
-	B0qxUjteUjAA27yzyN/3lx/tadjFSmvnMK9mlTQoVLL/FuKwq38IuRaOo8z2xzvi
-	z7YBkmsWX8iDDzfqeMvGZ+FUlqclXAUAlmABW48dD50c7WdgwyQGZVAOK7cIGOf+
-	ey/BA+NR8WXX/UyklAuTiv5q3Yw/JLbNrdGoUBya6E+KJ9bc1mjDqre90DwUVNyv
-	ixHnHm7jgBbhHS/FtviOw==
-X-ME-Sender: <xms:9HHdZbihNyeo0I0rnOBp7YMeER8bqOir_kMyyjjIlbU2eDzz9XdQew>
-    <xme:9HHdZYBHkZtQc7B89zTyRTG2OkdxwV8t5IC9-CcqLZ_L1YJQ_zwY9oUhoZ2T6jE5x
-    LygKr0SfFnR9qgEuhU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeefgdekvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedflfhi
-    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-    eqnecuggftrfgrthhtvghrnhepudefgeeftedugeehffdtheefgfevffelfefghefhjeeu
-    geevtefhudduvdeihefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:9HHdZbHJeKQodrWd7R7L8SwjUbwjoVtiMq7oIe7y9DUC7vsp2N9GGA>
-    <xmx:9HHdZYRSsj6fvdROoUtgYpJ_7u7FsWR-BIyANC5gebdKqYArlAgdGw>
-    <xmx:9HHdZYx-A64J2UeUR7MsFM22D1dwo9p2v4ceI3vcFx6Mgw7ECtvDWA>
-    <xmx:9XHdZXmAIbDK470CkMwBHI-r2bZG6a5m7Tz53umSchh31rE5X8gAiw>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id C8F0736A0076; Tue, 27 Feb 2024 00:24:04 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
+	s=arc-20240116; t=1709011478; c=relaxed/simple;
+	bh=V0DSwqZ73cUbAFVsP2WPiAwMn722byYB4cV9K90z36w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OdQHOeK6R7wDJevoBLTfErVeYrE/3SHy6WSamNoWWNk6ZWEXpUPtAuOP6gqaf3GFzgLZQw5tUMZDM/TwvZ0RSK3cNiID7Ed2iZpg7i1AIeDirw7lTwIR1vDd9emKU4bQGB431IRrhzW2QOThc3AbPiKe1H8IPn+HpMK3H3RXQwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=j9CKnrVZ; arc=none smtp.client-ip=203.29.241.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
+Received: from localhost.localdomain (ppp14-2-70-176.adl-apt-pir-bras31.tpg.internode.on.net [14.2.70.176])
+	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 8A00A20127;
+	Tue, 27 Feb 2024 13:24:31 +0800 (AWST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=codeconstruct.com.au; s=2022a; t=1709011473;
+	bh=ieH0x/71eQTU7hqiTDI0g7W9s6/WzYsK4gqHwQzd5aU=;
+	h=From:To:Cc:Subject:Date;
+	b=j9CKnrVZfXfvUCYvKuPMJWcgLL/NMro8gw0ccEpZrMn3Hnl6X9KH68t+a/Lg81j/e
+	 OIF7+JJvLWCLQMjAIXRtws8pdHZbiAqaTPjM9GEnpw1C79Jl4yohKoz4kBXS3d56pF
+	 vDnv2GkU9pm6ycTo2qCXMdgGHAEcv1xlV35QV4fwpd7FPVEacAh7k/A/Xu5goTFmc2
+	 jX+5Cq3A6rN6aLzw8pEMBw06rSuTZhvLcXm5g/lpbnoIj//CotsFrkY3bekvz+Gxyw
+	 fnrOZhkNrfZTB+qGaqxBk9CtDKPDZXOp0riNx/Q5JZBa5uCaxnhXFdKcDDBvrDKYsQ
+	 0Ut0SyU/+aELw==
+From: Andrew Jeffery <andrew@codeconstruct.com.au>
+To: linus.walleij@linaro.org,
+	brgl@bgdev.pl,
+	krzysztof.kozlowski+dt@linaro.org
+Cc: Andrew Jeffery <andrew@codeconstruct.com.au>,
+	robh+dt@kernel.org,
+	conor+dt@kernel.org,
+	joel@jms.id.au,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT schema
+Date: Tue, 27 Feb 2024 15:53:53 +1030
+Message-Id: <20240227052353.1060306-1-andrew@codeconstruct.com.au>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <09c5af9b-cc79-4cf2-84f7-276bb188754a@app.fastmail.com>
-In-Reply-To: <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
-References: <20240222032803.2177856-1-maobibo@loongson.cn>
- <20240222032803.2177856-4-maobibo@loongson.cn>
- <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
- <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
- <CAAhV-H7p114hWUVrYRfKiBX3teG8sG7xmEW-Q-QT3i+xdLqDEA@mail.gmail.com>
- <06647e4a-0027-9c9f-f3bd-cd525d37b6d8@loongson.cn>
- <85781278-f3e9-4755-8715-3b9ff714fb20@app.fastmail.com>
- <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
-Date: Tue, 27 Feb 2024 05:23:31 +0000
-From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To: "Bibo Mao" <maobibo@loongson.cn>, "Huacai Chen" <chenhuacai@kernel.org>
-Cc: "Tianrui Zhao" <zhaotianrui@loongson.cn>,
- "Juergen Gross" <jgross@suse.com>, "Paolo Bonzini" <pbonzini@redhat.com>,
- loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, kvm@vger.kernel.org
-Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
+Squash warnings such as:
 
+```
+arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,ast2400-gpio']
+```
 
-=E5=9C=A82024=E5=B9=B42=E6=9C=8827=E6=97=A5=E4=BA=8C=E6=9C=88 =E4=B8=8A=E5=
-=8D=883:14=EF=BC=8Cmaobibo=E5=86=99=E9=81=93=EF=BC=9A
-> On 2024/2/27 =E4=B8=8A=E5=8D=884:02, Jiaxun Yang wrote:
->>=20
->>=20
->> =E5=9C=A82024=E5=B9=B42=E6=9C=8826=E6=97=A5=E4=BA=8C=E6=9C=88 =E4=B8=8A=
-=E5=8D=888:04=EF=BC=8Cmaobibo=E5=86=99=E9=81=93=EF=BC=9A
->>> On 2024/2/26 =E4=B8=8B=E5=8D=882:12, Huacai Chen wrote:
->>>> On Mon, Feb 26, 2024 at 10:04=E2=80=AFAM maobibo <maobibo@loongson.=
-cn> wrote:
->>>>>
->>>>>
->>>>>
->>>>> On 2024/2/24 =E4=B8=8B=E5=8D=885:13, Huacai Chen wrote:
->>>>>> Hi, Bibo,
->>>>>>
->>>>>> On Thu, Feb 22, 2024 at 11:28=E2=80=AFAM Bibo Mao <maobibo@loongs=
-on.cn> wrote:
->>>>>>>
->>>>>>> Instruction cpucfg can be used to get processor features. And th=
-ere
->>>>>>> is trap exception when it is executed in VM mode, and also it is
->>>>>>> to provide cpu features to VM. On real hardware cpucfg area 0 - =
-20
->>>>>>> is used.  Here one specified area 0x40000000 -- 0x400000ff is us=
-ed
->>>>>>> for KVM hypervisor to privide PV features, and the area can be e=
-xtended
->>>>>>> for other hypervisors in future. This area will never be used for
->>>>>>> real HW, it is only used by software.
->>>>>> After reading and thinking, I find that the hypercall method whic=
-h is
->>>>>> used in our productive kernel is better than this cpucfg method.
->>>>>> Because hypercall is more simple and straightforward, plus we don=
-'t
->>>>>> worry about conflicting with the real hardware.
->>>>> No, I do not think so. cpucfg is simper than hypercall, hypercall =
-can
->>>>> be in effect when system runs in guest mode. In some scenario like=
- TCG
->>>>> mode, hypercall is illegal intruction, however cpucfg can work.
->>>> Nearly all architectures use hypercall except x86 for its historical
->>> Only x86 support multiple hypervisors and there is multiple hypervis=
-or
->>> in x86 only. It is an advantage, not historical reason.
->>=20
->> I do believe that all those stuff should not be exposed to guest user=
- space
->> for security reasons.
-> Can you add PLV checking when cpucfg 0x40000000-0x400000FF is emulated=
-?=20
-> if it is user mode return value is zero and it is kernel mode emulated=20
-> value will be returned. It can avoid information leaking.
+Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+---
+v5: Resolve macro definition clashes from aspeed clock headers in examples
+    identified by Rob's bot:
 
-Please don=E2=80=99t do insane stuff here, applications are not expectin=
-g exception from
-cpucfg.
+    https://lore.kernel.org/all/170900020204.2360855.790404478830111761.robh@kernel.org/
 
->
->>=20
->> Also for different implementations of hypervisors they may have diffe=
-rent
->> PV features behavior, using hypcall to perform feature detection
->> can pass more information to help us cope with hypervisor diversity.
-> How do different hypervisors can be detected firstly?  On x86 MSR is=20
-> used for all hypervisors detection and on ARM64 hyperv used=20
-> acpi_gbl_FADT and kvm use smc forcely, host mode can execute smc=20
-> instruction without exception on ARM64.
+    Clearly I missed running `make dt_binding_check` on the final iteration of
+    the v4 patch I sent. Hopefully I'm running out of rakes to step on here!
 
-That=E2=80=99s hypcall ABI design choices, those information can come fr=
-om firmware
-or privileged CSRs on LoongArch.
+v4: https://lore.kernel.org/all/20240227004414.841391-1-andrew@codeconstruct.com.au/
 
->
-> I do not know why hypercall is better than cpucfg on LoongArch, cpucfg=20
-> is basic intruction however hypercall is not, it is part of LVZ featur=
-e.
+    Add constraints for gpio-line-names, ngpios as requested by Krzysztof:
+    https://lore.kernel.org/all/458becdb-fb1e-4808-87b6-3037ec945647@linaro.org/
 
-KVM can only work with LVZ right?
+    Add more examples to exercise constraints.
 
->
->>>
->>>> reasons. If we use CPUCFG, then the hypervisor information is
->>>> unnecessarily leaked to userspace, and this may be a security issue.
->>>> Meanwhile, I don't think TCG mode needs PV features.
->>> Besides PV features, there is other features different with real hw =
-such
->>> as virtio device, virtual interrupt controller.
->>=20
->> Those are *device* level information, they must be passed in firmware
->> interfaces to keep processor emulation sane.
-> File arch/x86/hyperv/hv_apic.c can be referenced, apic features comes=20
-> from ms_hyperv.hints and HYPERV_CPUID_ENLIGHTMENT_INFO cpuid info, not=20
-> must be passed by firmware interface.
+v3: https://lore.kernel.org/all/20240226051645.414935-1-andrew@codeconstruct.com.au/
 
-That=E2=80=99s not KVM, that=E2=80=99s Hyper V. At Linux Kernel we enjoy=
- the benefits of better
-modularity on device abstractions, please don=E2=80=99t break it.
+    Base on v6.8-rc6, fix yamllint warning
 
-Thanks
+    Rob's bot picked the missing `#interrupt-cells` in the example on v2[1]. The
+    patch was based on v6.8-rc1, and going back over my shell history I missed
+    the following output from `make dt_binding_check`:
 
->
-> Regards
-> Bibo Mao
->>=20
->> Thanks
->>=20
->>>
->>> Regards
->>> Bibo Mao
->>>
->>>>
->>>> I consulted with Jiaxun before, and maybe he can give some more com=
-ments.
->>>>
->>>>>
->>>>> Extioi virtualization extension will be added later, cpucfg can be=
- used
->>>>> to get extioi features. It is unlikely that extioi driver depends =
-on
->>>>> PARA_VIRT macro if hypercall is used to get features.
->>>> CPUCFG is per-core information, if we really need something about
->>>> extioi, it should be in iocsr (LOONGARCH_IOCSR_FEATURES).
->>>>
->>>>
->>>> Huacai
->>>>
->>>>>
->>>>> Regards
->>>>> Bibo Mao
->>>>>
->>>>>>
->>>>>> Huacai
->>>>>>
->>>>>>>
->>>>>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->>>>>>> ---
->>>>>>>     arch/loongarch/include/asm/inst.h      |  1 +
->>>>>>>     arch/loongarch/include/asm/loongarch.h | 10 ++++++
->>>>>>>     arch/loongarch/kvm/exit.c              | 46 ++++++++++++++++=
-+---------
->>>>>>>     3 files changed, 41 insertions(+), 16 deletions(-)
->>>>>>>
->>>>>>> diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/=
-include/asm/inst.h
->>>>>>> index d8f637f9e400..ad120f924905 100644
->>>>>>> --- a/arch/loongarch/include/asm/inst.h
->>>>>>> +++ b/arch/loongarch/include/asm/inst.h
->>>>>>> @@ -67,6 +67,7 @@ enum reg2_op {
->>>>>>>            revhd_op        =3D 0x11,
->>>>>>>            extwh_op        =3D 0x16,
->>>>>>>            extwb_op        =3D 0x17,
->>>>>>> +       cpucfg_op       =3D 0x1b,
->>>>>>>            iocsrrdb_op     =3D 0x19200,
->>>>>>>            iocsrrdh_op     =3D 0x19201,
->>>>>>>            iocsrrdw_op     =3D 0x19202,
->>>>>>> diff --git a/arch/loongarch/include/asm/loongarch.h b/arch/loong=
-arch/include/asm/loongarch.h
->>>>>>> index 46366e783c84..a1d22e8b6f94 100644
->>>>>>> --- a/arch/loongarch/include/asm/loongarch.h
->>>>>>> +++ b/arch/loongarch/include/asm/loongarch.h
->>>>>>> @@ -158,6 +158,16 @@
->>>>>>>     #define  CPUCFG48_VFPU_CG              BIT(2)
->>>>>>>     #define  CPUCFG48_RAM_CG               BIT(3)
->>>>>>>
->>>>>>> +/*
->>>>>>> + * cpucfg index area: 0x40000000 -- 0x400000ff
->>>>>>> + * SW emulation for KVM hypervirsor
->>>>>>> + */
->>>>>>> +#define CPUCFG_KVM_BASE                        0x40000000UL
->>>>>>> +#define CPUCFG_KVM_SIZE                        0x100
->>>>>>> +#define CPUCFG_KVM_SIG                 CPUCFG_KVM_BASE
->>>>>>> +#define  KVM_SIGNATURE                 "KVM\0"
->>>>>>> +#define CPUCFG_KVM_FEATURE             (CPUCFG_KVM_BASE + 4)
->>>>>>> +
->>>>>>>     #ifndef __ASSEMBLY__
->>>>>>>
->>>>>>>     /* CSR */
->>>>>>> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit=
-c
->>>>>>> index 923bbca9bd22..6a38fd59d86d 100644
->>>>>>> --- a/arch/loongarch/kvm/exit.c
->>>>>>> +++ b/arch/loongarch/kvm/exit.c
->>>>>>> @@ -206,10 +206,37 @@ int kvm_emu_idle(struct kvm_vcpu *vcpu)
->>>>>>>            return EMULATE_DONE;
->>>>>>>     }
->>>>>>>
->>>>>>> -static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
->>>>>>> +static int kvm_emu_cpucfg(struct kvm_vcpu *vcpu, larch_inst ins=
-t)
->>>>>>>     {
->>>>>>>            int rd, rj;
->>>>>>>            unsigned int index;
->>>>>>> +
->>>>>>> +       rd =3D inst.reg2_format.rd;
->>>>>>> +       rj =3D inst.reg2_format.rj;
->>>>>>> +       ++vcpu->stat.cpucfg_exits;
->>>>>>> +       index =3D vcpu->arch.gprs[rj];
->>>>>>> +
->>>>>>> +       /*
->>>>>>> +        * By LoongArch Reference Manual 2.2.10.5
->>>>>>> +        * Return value is 0 for undefined cpucfg index
->>>>>>> +        */
->>>>>>> +       switch (index) {
->>>>>>> +       case 0 ... (KVM_MAX_CPUCFG_REGS - 1):
->>>>>>> +               vcpu->arch.gprs[rd] =3D vcpu->arch.cpucfg[index];
->>>>>>> +               break;
->>>>>>> +       case CPUCFG_KVM_SIG:
->>>>>>> +               vcpu->arch.gprs[rd] =3D *(unsigned int *)KVM_SIG=
-NATURE;
->>>>>>> +               break;
->>>>>>> +       default:
->>>>>>> +               vcpu->arch.gprs[rd] =3D 0;
->>>>>>> +               break;
->>>>>>> +       }
->>>>>>> +
->>>>>>> +       return EMULATE_DONE;
->>>>>>> +}
->>>>>>> +
->>>>>>> +static int kvm_trap_handle_gspr(struct kvm_vcpu *vcpu)
->>>>>>> +{
->>>>>>>            unsigned long curr_pc;
->>>>>>>            larch_inst inst;
->>>>>>>            enum emulation_result er =3D EMULATE_DONE;
->>>>>>> @@ -224,21 +251,8 @@ static int kvm_trap_handle_gspr(struct kvm_=
-vcpu *vcpu)
->>>>>>>            er =3D EMULATE_FAIL;
->>>>>>>            switch (((inst.word >> 24) & 0xff)) {
->>>>>>>            case 0x0: /* CPUCFG GSPR */
->>>>>>> -               if (inst.reg2_format.opcode =3D=3D 0x1B) {
->>>>>>> -                       rd =3D inst.reg2_format.rd;
->>>>>>> -                       rj =3D inst.reg2_format.rj;
->>>>>>> -                       ++vcpu->stat.cpucfg_exits;
->>>>>>> -                       index =3D vcpu->arch.gprs[rj];
->>>>>>> -                       er =3D EMULATE_DONE;
->>>>>>> -                       /*
->>>>>>> -                        * By LoongArch Reference Manual 2.2.10.5
->>>>>>> -                        * return value is 0 for undefined cpucf=
-g index
->>>>>>> -                        */
->>>>>>> -                       if (index < KVM_MAX_CPUCFG_REGS)
->>>>>>> -                               vcpu->arch.gprs[rd] =3D vcpu->ar=
-ch.cpucfg[index];
->>>>>>> -                       else
->>>>>>> -                               vcpu->arch.gprs[rd] =3D 0;
->>>>>>> -               }
->>>>>>> +               if (inst.reg2_format.opcode =3D=3D cpucfg_op)
->>>>>>> +                       er =3D kvm_emu_cpucfg(vcpu, inst);
->>>>>>>                    break;
->>>>>>>            case 0x4: /* CSR{RD,WR,XCHG} GSPR */
->>>>>>>                    er =3D kvm_handle_csr(vcpu, inst);
->>>>>>> --
->>>>>>> 2.39.3
->>>>>>>
->>>>>
->>>>>
->>
+    ```
+    ...
+      LINT    Documentation/devicetree/bindings
+      usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA] [--list-files] [-f {parsable,standard,colored,github,auto}] [-s] [--no-warnings] [-v] [FILE_OR_DIR ...]
+      yamllint: error: one of the arguments FILE_OR_DIR - is required   
+    ...
+    ```
 
---=20
-- Jiaxun
+    I've rebased on v6.8-rc6 and no-longer see the issue with the invocation
+    of `yamllint`.
+
+[1]: https://lore.kernel.org/all/170892197611.2260479.15343562563553959436.robh@kernel.org/
+
+v2: https://lore.kernel.org/all/20240226031951.284847-1-andrew@codeconstruct.com.au/
+
+    Address feedback from Krzysztof:
+    https://lore.kernel.org/all/0d1dd262-b6dd-4d71-9239-8b0aec8cceff@linaro.org/
+
+v1: https://lore.kernel.org/all/20240220052918.742793-1-andrew@codeconstruct.com.au/
+
+ .../bindings/gpio/aspeed,ast2400-gpio.yaml    | 143 ++++++++++++++++++
+ .../devicetree/bindings/gpio/gpio-aspeed.txt  |  39 -----
+ 2 files changed, 143 insertions(+), 39 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
+
+diff --git a/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
+new file mode 100644
+index 000000000000..1aa28b1817cf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
+@@ -0,0 +1,143 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/aspeed,ast2400-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Aspeed GPIO controller
++
++maintainers:
++  - Andrew Jeffery <andrew@codeconstruct.com.au>
++
++properties:
++  compatible:
++    enum:
++      - aspeed,ast2400-gpio
++      - aspeed,ast2500-gpio
++      - aspeed,ast2600-gpio
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++    description: The clock to use for debounce timings
++
++  gpio-controller: true
++  gpio-line-names: true
++  gpio-ranges: true
++
++  "#gpio-cells":
++    const: 2
++
++  interrupts:
++    maxItems: 1
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++  ngpios: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - "#interrupt-cells"
++  - gpio-controller
++  - "#gpio-cells"
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: aspeed,ast2400-gpio
++    then:
++      properties:
++        gpio-line-names:
++          minItems: 220
++          maxItems: 220
++        ngpios:
++          const: 220
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: aspeed,ast2500-gpio
++    then:
++      properties:
++        gpio-line-names:
++          minItems: 232
++          maxItems: 232
++        ngpios:
++          const: 232
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: aspeed,ast2600-gpio
++    then:
++      properties:
++        gpio-line-names:
++          minItems: 36
++          maxItems: 208
++        ngpios:
++          enum: [ 36, 208 ]
++      required:
++        - ngpios
++
++additionalProperties: false
++
++examples:
++  - |
++    gpio@1e780000 {
++        compatible = "aspeed,ast2400-gpio";
++        reg = <0x1e780000 0x1000>;
++        interrupts = <20>;
++        interrupt-controller;
++        #interrupt-cells = <2>;
++        gpio-controller;
++        #gpio-cells = <2>;
++    };
++  - |
++    gpio: gpio@1e780000 {
++        compatible = "aspeed,ast2500-gpio";
++        reg = <0x1e780000 0x200>;
++        interrupts = <20>;
++        interrupt-controller;
++        #interrupt-cells = <2>;
++        gpio-controller;
++        #gpio-cells = <2>;
++        gpio-ranges = <&pinctrl 0 0 232>;
++    };
++  - |
++    #include <dt-bindings/clock/ast2600-clock.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    gpio0: gpio@1e780000 {
++        compatible = "aspeed,ast2600-gpio";
++        reg = <0x1e780000 0x400>;
++        clocks = <&syscon ASPEED_CLK_APB2>;
++        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
++        interrupt-controller;
++        #interrupt-cells = <2>;
++        #gpio-cells = <2>;
++        gpio-controller;
++        gpio-ranges = <&pinctrl 0 0 208>;
++        ngpios = <208>;
++    };
++    gpio1: gpio@1e780800 {
++        compatible = "aspeed,ast2600-gpio";
++        reg = <0x1e780800 0x800>;
++        clocks = <&syscon ASPEED_CLK_APB1>;
++        interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
++        interrupt-controller;
++        #interrupt-cells = <2>;
++        gpio-controller;
++        #gpio-cells = <2>;
++        gpio-ranges = <&pinctrl 0 208 36>;
++        ngpios = <36>;
++    };
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt b/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
+deleted file mode 100644
+index b2033fc3a71a..000000000000
+--- a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
++++ /dev/null
+@@ -1,39 +0,0 @@
+-Aspeed GPIO controller Device Tree Bindings
+--------------------------------------------
+-
+-Required properties:
+-- compatible		: Either "aspeed,ast2400-gpio", "aspeed,ast2500-gpio",
+-					or "aspeed,ast2600-gpio".
+-
+-- #gpio-cells 		: Should be two
+-			  - First cell is the GPIO line number
+-			  - Second cell is used to specify optional
+-			    parameters (unused)
+-
+-- reg			: Address and length of the register set for the device
+-- gpio-controller	: Marks the device node as a GPIO controller.
+-- interrupts		: Interrupt specifier (see interrupt bindings for
+-			  details)
+-- interrupt-controller	: Mark the GPIO controller as an interrupt-controller
+-
+-Optional properties:
+-
+-- clocks		: A phandle to the clock to use for debounce timings
+-- ngpios		: Number of GPIOs controlled by this controller. Should	be set
+-				  when there are multiple GPIO controllers on a SoC (ast2600).
+-
+-The gpio and interrupt properties are further described in their respective
+-bindings documentation:
+-
+-- Documentation/devicetree/bindings/gpio/gpio.txt
+-- Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+-
+-  Example:
+-	gpio@1e780000 {
+-		#gpio-cells = <2>;
+-		compatible = "aspeed,ast2400-gpio";
+-		gpio-controller;
+-		interrupts = <20>;
+-		reg = <0x1e780000 0x1000>;
+-		interrupt-controller;
+-	};
+
+base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+-- 
+2.39.2
+
 
