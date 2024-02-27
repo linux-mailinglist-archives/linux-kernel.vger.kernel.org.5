@@ -1,220 +1,164 @@
-Return-Path: <linux-kernel+bounces-82617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC0F7868751
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:40:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C12C5868754
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:41:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82B1B2880D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:40:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2AD11C2957B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F861199B4;
-	Tue, 27 Feb 2024 02:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1924E168C6;
+	Tue, 27 Feb 2024 02:41:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RBFHKz4T"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FHvch6Ac"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B384A0A;
-	Tue, 27 Feb 2024 02:40:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC55C125D5
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709001628; cv=none; b=Aspzf5nIcuMvRV+ppiTvtSxCB/JUTTKRjni2UvnheFFvBhau+1nwiBkre9tDs7lCJZnYBXBNcBIslMWuJ0NcsFI1y1ujbOx30OlGDOErjeV9AmymtJrRkLra5/tIR9H14kLGYrT89/vmqolYHyESzruig380UZl1+r7mNRBn4FU=
+	t=1709001666; cv=none; b=FoPIOGpUc3Q0O4qmPKo++79kcpYrThP6wb0vHJrPamQh8fbuMKx9OA3nszMKsi5xsmUotBWK4kFqeS20Q8WHBkjaGpJQcWBCEzdqSg3aFf0xtI/XZ+RBjKldRdJcwX0VXD8UzcsohSNhCj6t8N87YLl7GkvHi3n6hHU8G0+bVZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709001628; c=relaxed/simple;
-	bh=+3yBtuSyoef4VRZjC+MkasTdpTyhRCBQn10mefG5vIk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=F6R8Q5ThYrXSiJpzhb1x/BjdRpqdsQop2ltORgl4/dYRfKkd6xdMHhTZPvYBXX65zl6qyKk8TuUR9MZpNFWI0FkYIx7xQxjvNZ2Dc3x5X/LdAwO85qEcXKM33YnzuefapEaM5XGopsj2ZsGCfhcgQWiepSWQAW60BLcJ2UmBPL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=RBFHKz4T; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41R2e57O028182;
-	Tue, 27 Feb 2024 02:40:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=eTh1LUuFjMQ+78KTec6yYLCg9bDWKozpU0l3hKomSqo=; b=RB
-	FHKz4TAXHItM9F++4PsVEh3BSLGW+1tNsk5i4VsmhtKllgFt7WnmVObmkwKdTN8E
-	G8Xj0hDP6wNMllWeXut+em8C8nJ1vxuJiMq1k5rAgC3bTsHkEM+QOLo5aTa+Bk4P
-	h10eDJ/criHEhmLXrBC4FpJdE8rD8BERGwrAamTm/Wvi7EjZr70z4vvVjBEu/21h
-	+D1E9vJ1sS8RwDhVBpDPzeHcObHBTEpEBdQ4bcsWCHENmEk3osRN49+KF+dsjIjL
-	fKg6NyGjfTA7mbu81ZkWInf1pvdmHIji1aZaKQVIA4XXTcU490P7l4jMQIqCHpHQ
-	tEE2HUcE32J2F6FEzhvQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh6ws8108-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 02:40:23 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41R2eN14028545
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 02:40:23 GMT
-Received: from [10.216.0.207] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
- 2024 18:40:19 -0800
-Message-ID: <99d284b3-3ddb-4928-b4c2-817acc76c241@quicinc.com>
-Date: Tue, 27 Feb 2024 08:10:15 +0530
+	s=arc-20240116; t=1709001666; c=relaxed/simple;
+	bh=GdjVbuKlyr67H96AYnoupjDwfylD1+PwoQv5H1kB2HI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CGRCz2gGw0NmtB33rfZAdJpkai7bdiFHvWvvZxAZNdp/q2C9pZxNGGqcXgAHp8BtDIF6rBajDj1J0R14GOIQ12pVT8lOJADs/tKiAcIrIhwBCKfYDVhhPmBslOLLMwNaFsbzACR2ltEKFNGB1yLNsWpmlIlplQUcOwp8Yw28Va0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FHvch6Ac; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e53f76898fso609987b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709001664; x=1709606464; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+9kPnEQQtmu12UoNhoLVM4of9Nt6V7crsGL0uVHcTJA=;
+        b=FHvch6AcijXBrDSMxajB8xxJUdZDpEtEDPt3krGMz05wZYeKdCHvpCbqWSGSDXsOVD
+         gSiTzQnW5YoXdx4JWvJ9w/EvTQsLGj1BRTKo4STQJxPN3lYdQrYxAryRd/UrFiIRXgBe
+         Q2OESHGtzeh3f08YHjE8rd2ySA+iUcX0useMFj+xNZIHOzcbh0Hqe0cBRPCCxe76OBYt
+         +S/u9DWIEEeFC0yfiogB2fU/+rIDUZnYewQCklebfdjmW/uMAC0bjH2AyMOeVDVDOaib
+         FlQrytUzOIYzYY5kwhy9l3MlIkJJPVPXAQZ9ZNVD1+e3GAZYU0q4X791kStwqbr4B8a7
+         mmIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709001664; x=1709606464;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+9kPnEQQtmu12UoNhoLVM4of9Nt6V7crsGL0uVHcTJA=;
+        b=tYcH8LeiZtFLfo1ssx58HwYpjiDHHuiZz7BZp8mFfUKYp18Z+kTOoMPUyLwl3BWgyz
+         6u83kYBNa+bkBztzHaIXBhPv7XQsa6B5lPZBQN3ANuPmOTjZwPq+f6Qc5IcXM6KvGdPG
+         iu1s5o7pDvhDs1ioPALYpWaWf0OScUrNYJAIc+EnSmlkm25N8iivWsGj9WlVfUxkkCpm
+         vKXjktZU49BmhrumP9GwvraS/fSY5TiAofZNm5OuuxS9nmALjYMVXNLykrMKIAV8b3+X
+         6WUcvNu2TkvMr1DPJ/HkdIrRQY0F9qsFiPFomuVnvlOS2EDC3SLyylCdEDaPFuiWHtWM
+         5BRQ==
+X-Gm-Message-State: AOJu0Yy6w5k4fyYn7i8SczQDjvAQUB69vlzm0S84E77mec+YlqJHx355
+	DaHKqhdHRecK2li5ZHZkitx/g+anfe+yPzIa333MBO4wOXfntPif
+X-Google-Smtp-Source: AGHT+IGiB0yNLS+947SzPqW5TZ7PC1hIalQTf7qMGyIVa2Qhsl/G3WdYUU1A+6vXBy5lSjliOsUZ7w==
+X-Received: by 2002:a17:902:6847:b0:1dc:a834:5e1c with SMTP id f7-20020a170902684700b001dca8345e1cmr3256626pln.11.1709001663911;
+        Mon, 26 Feb 2024 18:41:03 -0800 (PST)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:fae4:3bff:fecb:410])
+        by smtp.gmail.com with ESMTPSA id i3-20020a170902c94300b001d706e373a9sm358616pla.292.2024.02.26.18.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 18:41:03 -0800 (PST)
+From: Barry Song <21cnbao@gmail.com>
+To: akpm@linux-foundation.org,
+	linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org,
+	Barry Song <v-songbaohua@oppo.com>,
+	Lance Yang <ioworker0@gmail.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	David Hildenbrand <david@redhat.com>,
+	Yin Fengwei <fengwei.yin@intel.com>
+Subject: [PATCH] mm: export folio_pte_batch as a couple of modules might need it
+Date: Tue, 27 Feb 2024 15:40:50 +1300
+Message-Id: <20240227024050.244567-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] usb: gadget: ncm: Fix handling of zero block length
- packets
-To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <quic_jackp@quicinc.com>
-References: <20240226112816.2616719-1-quic_kriskura@quicinc.com>
- <CANP3RGf7qsuwcgVpmOoH0QNh-v4PjRh_xj7Rcz=YJ1TbGiPK0Q@mail.gmail.com>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <CANP3RGf7qsuwcgVpmOoH0QNh-v4PjRh_xj7Rcz=YJ1TbGiPK0Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: j_lHkW9uJ5_o6u8QMMxtPZWlQ_w9BUiC
-X-Proofpoint-GUID: j_lHkW9uJ5_o6u8QMMxtPZWlQ_w9BUiC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 spamscore=0 adultscore=0
- priorityscore=1501 bulkscore=0 clxscore=1015 suspectscore=0
- mlxlogscore=975 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2402120000 definitions=main-2402270020
 
+From: Barry Song <v-songbaohua@oppo.com>
 
+madvise and some others might need folio_pte_batch to check if a range
+of PTEs are completely mapped to a large folio with contiguous physcial
+addresses. Let's export it for others to use.
 
-On 2/27/2024 3:26 AM, Maciej Żenczykowski wrote:
-> On Mon, Feb 26, 2024 at 3:28 AM Krishna Kurapati
-> <quic_kriskura@quicinc.com> wrote:
->>
->> While connecting to a Linux host with CDC_NCM_NTB_DEF_SIZE_TX
->> set to 65536, it has been observed that we receive short packets,
->> which come at interval of 5-10 seconds sometimes and have block
->> length zero but still contain 1-2 valid datagrams present.
->>
->> According to the NCM spec:
->>
->> "If wBlockLength = 0x0000, the block is terminated by a
->> short packet. In this case, the USB transfer must still
->> be shorter than dwNtbInMaxSize or dwNtbOutMaxSize. If
->> exactly dwNtbInMaxSize or dwNtbOutMaxSize bytes are sent,
->> and the size is a multiple of wMaxPacketSize for the
->> given pipe, then no ZLP shall be sent.
->>
->> wBlockLength= 0x0000 must be used with extreme care, because
->> of the possibility that the host and device may get out of
->> sync, and because of test issues.
->>
->> wBlockLength = 0x0000 allows the sender to reduce latency by
->> starting to send a very large NTB, and then shortening it when
->> the sender discovers that there’s not sufficient data to justify
->> sending a large NTB"
->>
->> However, there is a potential issue with the current implementation,
->> as it checks for the occurrence of multiple NTBs in a single
->> giveback by verifying if the leftover bytes to be processed is zero
->> or not. If the block length reads zero, we would process the same
->> NTB infintely because the leftover bytes is never zero and it leads
->> to a crash. Fix this by bailing out if block length reads zero.
->>
->> Fixes: 427694cfaafa ("usb: gadget: ncm: Handle decoding of multiple NTB's in unwrap call")
->> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->> ---
->>
->> PS: Although this issue was seen after CDC_NCM_NTB_DEF_SIZE_TX
->> was modified to 64K on host side, I still believe this
->> can come up at any time as per the spec. Also I assumed
->> that the giveback where block length is zero, has only
->> one NTB and not multiple ones.
->>
->>   drivers/usb/gadget/function/f_ncm.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/usb/gadget/function/f_ncm.c b/drivers/usb/gadget/function/f_ncm.c
->> index e2a059cfda2c..355e370e5140 100644
->> --- a/drivers/usb/gadget/function/f_ncm.c
->> +++ b/drivers/usb/gadget/function/f_ncm.c
->> @@ -1337,6 +1337,9 @@ static int ncm_unwrap_ntb(struct gether *port,
->>          VDBG(port->func.config->cdev,
->>               "Parsed NTB with %d frames\n", dgram_counter);
->>
->> +       if (block_len == 0)
->> +               goto done;
->> +
->>          to_process -= block_len;
->>
->>          /*
->> @@ -1351,6 +1354,7 @@ static int ncm_unwrap_ntb(struct gether *port,
->>                  goto parse_ntb;
->>          }
->>
->> +done:
->>          dev_consume_skb_any(skb);
->>
->>          return 0;
->> --
->> 2.34.1
->>
-> 
-> In general this is of course fine (though see Greg's auto-complaint).
-> 
-> I haven't thought too much about this, but I just wonder whether the
-> check for block_len == 0
-> shouldn't be just after block_len is read, ie. somewhere just after:
-> 
-> block_len = get_ncm(&tmp, opts->block_length);
-> 
-> as it is kind of weird to be handling block_len == 0 at the point where
-> you are already theoretically done processing the block...
-> 
-> I guess, as is, this assumes the block isn't actually of length 0,
-> since there's a bunch of following get_ncm() calls...
-> Are those guaranteed to be valid?
-> 
+Cc: Lance Yang <ioworker0@gmail.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Yin Fengwei <fengwei.yin@intel.com>
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+---
+ -v1:
+ at least two jobs madv_free and madv_pageout depend on it. To avoid
+ conflicts and dependencies, after discussing with Lance, we prefer
+ this one can land earlier.
 
-I did get this doubt and tried it. I bailed out as soon as I found out 
-block len is zero without actually processing the datagrams present and 
-when I did that even ping doesn't work. Everything works only when the 
-datagrams in this zero block len NTB are parsed properly.
+ mm/internal.h | 13 +++++++++++++
+ mm/memory.c   | 11 +----------
+ 2 files changed, 14 insertions(+), 10 deletions(-)
 
-> I guess I don't actually see the infinite loop with block_len == 0,
-> since get_ncm() always moves us forward...
-> 
+diff --git a/mm/internal.h b/mm/internal.h
+index 13b59d384845..8e2bc304f671 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -83,6 +83,19 @@ static inline void *folio_raw_mapping(struct folio *folio)
+ 	return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
+ }
+ 
++/* Flags for folio_pte_batch(). */
++typedef int __bitwise fpb_t;
++
++/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
++#define FPB_IGNORE_DIRTY		((__force fpb_t)BIT(0))
++
++/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
++#define FPB_IGNORE_SOFT_DIRTY		((__force fpb_t)BIT(1))
++
++extern int folio_pte_batch(struct folio *folio, unsigned long addr,
++		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
++		bool *any_writable);
++
+ void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+ 						int nr_throttled);
+ static inline void acct_reclaim_writeback(struct folio *folio)
+diff --git a/mm/memory.c b/mm/memory.c
+index 1c45b6a42a1b..319b3be05e75 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -953,15 +953,6 @@ static __always_inline void __copy_present_ptes(struct vm_area_struct *dst_vma,
+ 	set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+ }
+ 
+-/* Flags for folio_pte_batch(). */
+-typedef int __bitwise fpb_t;
+-
+-/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+-#define FPB_IGNORE_DIRTY		((__force fpb_t)BIT(0))
+-
+-/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+-#define FPB_IGNORE_SOFT_DIRTY		((__force fpb_t)BIT(1))
+-
+ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+ {
+ 	if (flags & FPB_IGNORE_DIRTY)
+@@ -982,7 +973,7 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+  * If "any_writable" is set, it will indicate if any other PTE besides the
+  * first (given) PTE is writable.
+  */
+-static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
++int folio_pte_batch(struct folio *folio, unsigned long addr,
+ 		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+ 		bool *any_writable)
+ {
+-- 
+2.34.1
 
-The infinite loop occurs because we keep moving the buffer pointer 
-forward and keep processing the giveback until to_process variable 
-becomes zero or one. In case block length is zero, we never move the 
-buffer pointer forward and never reduce to_process variable and hence 
-keep infinitely processing the same NTB over and over again.
-
-> Maybe your patch *is* correct as is, and you just need a comment
-> explaining *why* block_len == 0 is terminal at the spot you're adding the check.
-> 
-> Also couldn't you fix this without goto, by changing
-> 
->    } else if (to_process > 0) {
-> to
->    } else if (to_process && block_len) {
->      // See NCM spec.  zero block_len means short packet.
-> 
-
-I will test this out once (although I know that looking at it, it would 
-definitely work) and send v2 with this diff.
-
-Thanks for the review.
-
-Regards,
-Krishna,
 
