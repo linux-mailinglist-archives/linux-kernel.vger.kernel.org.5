@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-83316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 942908691D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:30:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E4578691F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:31:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C58F21C23415
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:30:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 190D2293917
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35DCA13DB92;
-	Tue, 27 Feb 2024 13:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F264145B0B;
+	Tue, 27 Feb 2024 13:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eIj/Bfm/"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AKUiUF3v"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B9413B7BE
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C41E13B7AA;
+	Tue, 27 Feb 2024 13:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709040520; cv=none; b=QucpPYyJZu/DdXw7KSmea8PTrxUSgr5uF9bPBMOM/t6qeASBoEF85z6myFfaDGRBiC039mVt+vjtUauop3Kd5kxCQYJQwcc6oQL4ip68V+d9yxwicIVqMxbNZOThjU1Lii7AukSM8M7AHILrOKzI+5jYpGOdAcmlkHP27aqmmGg=
+	t=1709040617; cv=none; b=VqCwOKU5mKwj+eeJUz3qAe6L8E3MXU7NlWg5Z3de8PpQ8Pz5qHV6LKg3IXhrphVRZWUur3qIgHqoSeJouKsmfbERrWid4Fk72qMEbl61Bvaho8wpil1Lq4nuKgNDA/s/kWx7yf9KQViIN9TERJzmmqiK5Jq8G7HaEwLrs8JRZP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709040520; c=relaxed/simple;
-	bh=o2MMtZcg1nPCrRMjPopfyLkNADiPf6kDlW84jMrpkvM=;
+	s=arc-20240116; t=1709040617; c=relaxed/simple;
+	bh=JZfFgS/yM3rcBZz8uNFnHv1QVr+urhx1jnrRRLWNqdM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZHDXaQ99ghAVIGZGH8B29Ny8fsA/+lFNbBCDflfl1GwSGuC6TkkYO9WWNBnjM3QY11uODpGFRBcLRjHC5RN4+07Jq/1ewYGePagfEr54zrl26NKY0PSxu4mfd7Bi0iL4k2YzSyMnjIyDs//+46FWmGNr/xhN8UY0KeOXAmONwII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eIj/Bfm/; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so5746386a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:28:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709040517; x=1709645317; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZEHlAA7YKh1er5ipxQxY0qStrUJA7nuiDKK6J0iKTnQ=;
-        b=eIj/Bfm/YQ5poIjFZA3yeSKKurM2/prx1gTKxGK0ivZ68f74VcYwuXCDqayHJshX5B
-         qkJ8PKjxudZ+09UXSGBXVmqGNb7osDCCPrfxV8L7n5W75fTfnO8tXw+gCICUwYjN2GSg
-         l2ZADx7QHQbVdO4udiKEO6zbHVBNXKvlXb8TiCNQitShI44clchh6dcXuiAkvSI2q6xb
-         WL0zg45HAodo7dGndveV8vUvPjr/TMSLKjGcTlbtN2Q4S+a+vX9zR8dzVNQ/EBbIQqgb
-         uAbyKsVG6CTpf7kybaGhN8YrGkoxLabxQbxfW/BdHMSbdK/pl+tVvPXhvDxl0/XYuP0n
-         jLvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709040517; x=1709645317;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZEHlAA7YKh1er5ipxQxY0qStrUJA7nuiDKK6J0iKTnQ=;
-        b=vs72i0L19lj/4xPb0d0NynDZTtPEP6D/2wnHNhDjqVS24YK1DshhtCBA3GhN+DwDih
-         y1hKx2e5Wxg2bJ/rnwHDznFD+O5O+cM7VR9zMCAQvhB8/wJOVhAivN+5urA1sGgIE0+B
-         fxOmyThWubO6R2Mg+y7qdFYDzJvmyKrVhxzTNWQeqV50DuhrRdt4djOZzb2ZMdQJ8nuN
-         P3bsZzDbQ/4+SmDASGgEyUeZgAd3KARADKpweXA57cMbk6J88AhII1zh/nl0zuQ3H6aT
-         S1Um2p7+Oobnfs6SNqZ3f6aVwvC/jPsHC83VXyoX+P6ufO7CEpfrr1by6zgA+Q9IamTb
-         B2+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUpZE8IlWntYJ4bvkmywdbL0PEsn3WGUxCgKBmnqMufJNMDuAd2vUsC7N+Ac/SCgkjvNgfKGnrSn7gcznNMgZcptiy2pejQhNQ78Xuk
-X-Gm-Message-State: AOJu0YyymcgOMFdz0UJ5UmWrQVNDp6HK8SbWi8I9LxFpVhLqeH96rsvS
-	wRu25QdiFRTBhEqsSF9akmark5vIRdpExU93JJQucv7HggJDh6HLRWw/S+selcY=
-X-Google-Smtp-Source: AGHT+IEQSaUkvKdywYgvDY1uVyrYp7GK0Y3ZU+MxIq70rL2kRL46wtA1NilCuTEjvTxI0baN6YTPWg==
-X-Received: by 2002:a17:906:750:b0:a3f:7fac:6cd2 with SMTP id z16-20020a170906075000b00a3f7fac6cd2mr7064248ejb.43.1709040516287;
-        Tue, 27 Feb 2024 05:28:36 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170906118300b00a412d3d506esm784393eja.17.2024.02.27.05.28.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 05:28:35 -0800 (PST)
-Message-ID: <d611eccd-58be-43a9-aca7-81fda4114cbc@linaro.org>
-Date: Tue, 27 Feb 2024 14:28:34 +0100
+	 In-Reply-To:Content-Type; b=hGl/+p9A98kIt0TZYnLi57CtC5Yv1NEdi0VMdaLm/+Y+7v+CYJP68IFu9jz5FfLtaQ30rH81YCUTwfcxHwmck3a4uPvn5fQlZvuKIKldE1HH0xhuk4CRTdTJCQ8dPid32GdFoDwdD33xKqvr3lnzY1YNp82gqs/pA5ZHO/33bMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AKUiUF3v; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709040615; x=1740576615;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=JZfFgS/yM3rcBZz8uNFnHv1QVr+urhx1jnrRRLWNqdM=;
+  b=AKUiUF3vX+OcbKvBhe65bjuecrao+AzjM87ydNr8I/Lu8zShYkTKlAxB
+   urnvJ5NdWEbHcfspu2S05wmy0HPuLZzaI1TrFbzcBr2GSnXlfTc7+cP1l
+   UWbY0wnXAM8ouWxx/tJIMzVily0DZEqSEKq4+gdd1DVR+PxA+Zw527LvP
+   +doFPY2fyuHCiQAtSMv8IH5WS0au3E5SgsF+tzUs0ZdYacy2qYzj3ltOO
+   gsIEhj464083QO7Lb48wB20CCZ+L73UIwBAE8DxMRjkG3O3Oxk69hCotx
+   64Doyxn94pXyBFlRwUlNvL4r/IB4VaJeajd50nm2I3a0QMe9FQlwfnqVa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3250812"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="3250812"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 05:30:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="7391016"
+Received: from yrasheed-mobl.amr.corp.intel.com (HELO [10.209.51.241]) ([10.209.51.241])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 05:30:14 -0800
+Message-ID: <97b66d4d-f520-46c9-8164-ce5b2e4d5642@intel.com>
+Date: Tue, 27 Feb 2024 05:30:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,205 +62,86 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Convert the Imagination Technologies SPDIF Input
- Controllerto DT schema.
+Subject: Re: [PATCH v2 0/2] x86/cpu: fix invalid MTRR mask values for SEV or
+ TME
 Content-Language: en-US
-To: =?UTF-8?Q?Javier_Garc=C3=ADa?= <javier.garcia.ta@udima.es>
-Cc: daniel.baluta@nxp.com, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240227123602.258190-1-javier.garcia.ta@udima.es>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+To: Yin Fengwei <fengwei.yin@intel.com>, Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+ Zixi Chen <zixchen@redhat.com>, Adam Dunlap <acdunlap@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Xiaoyao Li <xiaoyao.li@intel.com>, Kai Huang <kai.huang@intel.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
+ x86@kernel.org, stable@vger.kernel.org
+References: <20240131230902.1867092-1-pbonzini@redhat.com>
+ <2b5e6d68-007e-48bd-be61-9a354be2ccbf@intel.com>
+ <CABgObfa_7ZAq1Kb9G=ehkzHfc5if3wnFi-kj3MZLE3oYLrArdQ@mail.gmail.com>
+ <CABgObfbetwO=4whrCE+cFfCPJa0nsK=h6sQAaoamJH=UqaJqTg@mail.gmail.com>
+ <CABgObfbUcG5NyKhLOnihWKNVM0OZ7zb9R=ADzq7mjbyOCg3tUw@mail.gmail.com>
+ <eefbce80-18c5-42e7-8cde-3a352d5811de@intel.com>
+ <CABgObfY=3msvJ2M-gHMqawcoaW5CDVDVxCO0jWi+6wrcrsEtAw@mail.gmail.com>
+ <9c4ee2ca-007d-42f3-b23d-c8e67a103ad8@intel.com>
+ <CABgObfYttER8yZBTReO+Cd5VqQCpEY9UdHH5E8BKuA1+2CsimA@mail.gmail.com>
+ <7e118d89-3b7a-4e13-b3de-2acfbf712ad5@intel.com>
+ <3807c397-2eef-4f1d-ae85-4259f061f08e@intel.com>
+ <eff34df2-fdc1-4ee0-bb8d-90da386b7cb6@intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <eff34df2-fdc1-4ee0-bb8d-90da386b7cb6@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 27/02/2024 13:35, Javier García wrote:
-> Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
+On 2/26/24 22:08, Yin Fengwei wrote:
+>>> https://lore.kernel.org/all/20240222183926.517AFCD2@davehans-spike.ostc.intel.com/
+>> If it _also_ fixes the problem, it'll be a strong indication that it's
+>> the right long-term approach.
+> I tried your patchset on a Sapphire machine which is the only one broken machine
+> I can access today. The base commit is 45ec2f5f6ed3 from the latest linus tree.
 > 
-> Signed-off-by: Javier García <javier.garcia.ta@udima.es>
-> ---
->  .../bindings/sound/img,spdif-in.txt           | 41 ----------
->  .../bindings/sound/img,spdif-in.yaml          | 80 +++++++++++++++++++
+> Without your patchset, the system boot hang.
+> With your patchset, the system boot successfully.
 
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
-
-Also no need for full stop in subject.
-
->  2 files changed, 80 insertions(+), 41 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.txt b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
-> deleted file mode 100644
-> index f7ea8c87bf34..000000000000
-> --- a/Documentation/devicetree/bindings/sound/img,spdif-in.txt
-> +++ /dev/null
-> @@ -1,41 +0,0 @@
-
-..
-
-> diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.yaml b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
-> new file mode 100644
-> index 000000000000..d201293d63c7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/img,spdif-in.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Imagination Technologies SPDIF Input Controller
-> +
-> +maintainers:
-> +  - Rob Herring <robh+dt@kernel.org>
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-
-No, unfortunately this cannot be us. Choose someone responsible for
-hardware or Linux drivers at least.
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - img,spdif-in
-> +
-> +  reg:
-> +    description:
-> +      Offset and length of the register set for the device.
-
-Drop description
-
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  dmas:
-> +    maxItems: 1
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rx
-> +
-> +  clocks:
-> +    items:
-> +      - description: The system clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: sys
-> +
-> +  '#sound-dai-cells':
-> +    const: 0
-> +
-> +  resets:
-> +    items:
-> +      - description: Should contain a phandle to the spdif in reset signal, if any
-
-Drop description, it's useless. You don't say anything valuable here.
-Just maxItems: 1
-
-
-> +
-> +  reset-names:
-> +    items:
-> +      - const: rst
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - dmas
-> +  - dma-names
-> +  - clocks
-> +  - clock-names
-> +  - '#sound-dai-cells'
-> +
-> +unevaluatedProperties: false
-
-This alone does not make sense... so it is pointing you to missing $ref
-for dai-common.
-
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/pistachio-clk.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-
-What for?
-
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/mips-gic.h>
-> +    #include <dt-bindings/reset/pistachio-resets.h>
-
-That's not used, so just add resets and reset-names.
-
-> +    spdif_in: spdif-in@18100e00 {
-> +        compatible = "img,spdif-in";
-> +        reg = <0x18100E00 0x100>;
-
-Lowercase hex
-
-> +        interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
-> +        dmas = <&mdc 15 0xffffffff 0>;
-> +        dma-names = "rx";
-> +        clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
-> +        clock-names = "sys";
-> +
-> +        #sound-dai-cells = <0>;
-> +    };
-
-Best regards,
-Krzysztof
-
+Yay!  Thanks for testing.
 
