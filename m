@@ -1,118 +1,166 @@
-Return-Path: <linux-kernel+bounces-82715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD6F5868888
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:14:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F370786888A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:14:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A7221C21CA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:14:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83EC4B23349
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:14:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD4752F82;
-	Tue, 27 Feb 2024 05:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A5152F7C;
+	Tue, 27 Feb 2024 05:14:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HaIdc1OD"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="v5RPXDlA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7343C52F7A
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:14:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 999D0524BB
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709010860; cv=none; b=IJMs19h4FfWoYksb3qy1b6rpvYh7DC0PqGovw3PC9ElDspENLO9vfOJWQ1HGxYHQy/CktAGwSZTvT0Tlxl7th+nFWWIW6tvlgrVWtYxFk4AXgHRbHwuda1OniWgi+FW49iMvxcsO2aMx/isof0g89ULN5Q7ApmRh+yhH1Ls/A4c=
+	t=1709010888; cv=none; b=hGXGuCjnTuJNjpkweilw5DA9Wu69tt4ND6j0uNcFiwvSYkg/VwuYqzeQhaSceKu+MMaRKvBCSS7OmfIhI24l7Db6EzSEOinuBgAsM1dmsvNVSR1tuo2nRDCKj6S2KdtIGAhU+NUEQPgLVnhDhFUoontUhO4f/gHY5DJW4VfHf24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709010860; c=relaxed/simple;
-	bh=Wgvaos4tMDHQHCPQqba3sjMn7hXYBzfhsdVtj292alY=;
-	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V73yQxbK3k1xvT3uxWNBJlBMCkvWS2y6KlaShwbPnW+HGDGrCkLMEFXhq50lajAEpNfOhmb3w8yzgk0bIq1IcHKNbDzaGBZsrN8GQ0J2jXxvzsVWV6EqmeXVGS0U0FljRkSOdKquvQVJaZ3OPPvgXFeWKIPKDkOdWsDvFZ+NNmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HaIdc1OD; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512bde3d197so3551025e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 21:14:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709010857; x=1709615657; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M+BQPLCLZpqrKhiNrmiNzr4nlNlMBixVqIVv6pIcROQ=;
-        b=HaIdc1ODNMxlOsrywwjh3RFkhQkvE3ZYafJeIPdrulpSwzeyUh9AsW00piKpLZwlAn
-         URKPTxrOjN6tp3uNO/23dvbMa8rCNcPWCGKsLEUpR4u+hEhbOUACjMVMgfSSI2VdkKrp
-         BeOJ58jSLmi9W5fgMeWm98PxiiN0y2MQmDwmM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709010857; x=1709615657;
-        h=cc:to:subject:message-id:date:user-agent:from:references
-         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M+BQPLCLZpqrKhiNrmiNzr4nlNlMBixVqIVv6pIcROQ=;
-        b=c0Q/jI7WVPFaRSyRgiPvFivZo/uqO1ANKDx+07RtHcEDoIULxNZW1a+MsRUZhp9o/q
-         6WMSgey1GRaJnPeNPhlPDqwFQFOVy0CGSl3xew6M2etBiEvzC2UyPXIZ/wlk5WJNyZxy
-         cdJmKZRFt4jeEuR3ZPRqVD8iMSnCGql7rAa4Bi2u3fvylUEShCTS6QOO3xhWtPOwwbjY
-         q5MBUcHOrZsYscGExkLTmeOwrWJC3GBG0HXhJDKjPU0m39LK/PeK4yX+i7FUU9cD0wnI
-         BvznWA7qkKpUY36AUl5w09JKWSZsfLDxziZ8v50vpXvOSgdoQ/nYhJaMb1l/bLNswqtg
-         HIuw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgcxKvRIt/7kUK6Z58JDWmNhaDiPeWTkeZ75iVFJh4hM8V4jK8ZEErogcTRoeSn340jLVSQCIWOlA/vNH2qimf1Il+mjT8a10YKxqL
-X-Gm-Message-State: AOJu0YxvcXY5xR7iMT6Kyr+Ur9zQliAVyDeyId/LOx2R+9ileMM1IL0e
-	c0KqmSi6zVpwMxHI3qTLYAcujEZM4pg7Xzs2mLGkJ8Ixj66Jlysq+fiIdtnST/e/GjSajr2EZOE
-	HrHM+Kg9J4YoQK4U6l3m6AV0VxgOhrsvf3YEj
-X-Google-Smtp-Source: AGHT+IEyr7KXQAxsoRvnnHsDV6pqu0w4lJ40YXWqL0S1fUTZrVkMUjLcnZFHznlTZjulbsH6+afvAMnzVzmlCSDcWyk=
-X-Received: by 2002:a05:6512:991:b0:512:ee1f:b5af with SMTP id
- w17-20020a056512099100b00512ee1fb5afmr4441994lft.41.1709010856400; Mon, 26
- Feb 2024 21:14:16 -0800 (PST)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 26 Feb 2024 21:14:15 -0800
+	s=arc-20240116; t=1709010888; c=relaxed/simple;
+	bh=9ug22FuSGdCqHLfKK1jLGa5UY1EagxrgLC31lpxI5NQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rmXrA79guj7XpN/XTGyueNBiXOWJ0N8p+u/90LE/F1SlIiIvZ+SSNttEC/Eo9TRUdKVQHqNlFVdMYF07pPqGa1yIJU5Emg2TMKo4yfY0p6q3DigA+Q6uyd6keO+/WNNnlUtK1+lTv1kdZxra5gNsvBMk80anWk+gkBeRZ94i9hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=v5RPXDlA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DACBAC433F1;
+	Tue, 27 Feb 2024 05:14:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709010888;
+	bh=9ug22FuSGdCqHLfKK1jLGa5UY1EagxrgLC31lpxI5NQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=v5RPXDlA3GFP4rtthRPk4+rLOyzBtsjWMB2wPps8K0Q8tqv3lGT1dQJFus5qfaskX
+	 jT6Z0PmcDiVG1phTZs+bAR2pKITf5ZiY5FB8KfUosglsH7sth8djTs5K4IZc5p3f2p
+	 il2INF3XKh0pGC5LMRHdGnKz9tfS8UaxKnTNbydQ=
+Date: Tue, 27 Feb 2024 06:14:45 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michal Hocko <mhocko@suse.com>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: CVE-2023-52451: powerpc/pseries/memhp: Fix access beyond end of
+ drmem array
+Message-ID: <2024022750-treble-wish-b009@gregkh>
+References: <2024022257-CVE-2023-52451-7bdb@gregkh>
+ <Zdylmz28rZ-mCeiN@tiehlicka>
+ <2024022639-wronged-grafted-6777@gregkh>
+ <ZdytVTOgfvKBBvtn@tiehlicka>
+ <2024022652-defective-fretful-3d13@gregkh>
+ <Zdy-KbmSt0egNV3c@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
-References: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
-From: Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.10
-Date: Mon, 26 Feb 2024 21:14:15 -0800
-Message-ID: <CAE-0n525gwp5kJGgw9Pnz+h2K6FbuqSG79KfMj_EnueZ-RYnuA@mail.gmail.com>
-Subject: Re: [PATCH] pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
-To: Bjorn Andersson <andersson@kernel.org>, 
-	Bjorn Andersson via B4 Relay <devnull+quic_bjorande.quicinc.com@kernel.org>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Johan Hovold <johan+linaro@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	quic_bjorande@quicinc.com
-Cc: linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zdy-KbmSt0egNV3c@tiehlicka>
 
-Quoting Bjorn Andersson via B4 Relay (2024-02-26 17:49:57)
-> From: Bjorn Andersson <quic_bjorande@quicinc.com>
->
-> Commit 'e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable
-> the domain")' aimed to make sure that a power-domain that is being
-> enabled without any particular performance-state requested will at least
-> turn the rail on, to avoid filling DeviceTree with otherwise unnecessary
-> required-opps properties.
->
-> But in the event that aggregation happens on a disabled power-domain, with
-> an enabled peer without performance-state, both the local and peer
-> corner are 0. The peer's enabled_corner is not considered, with the
-> result that the underlying (shared) resource is disabled.
->
-> One case where this can be observed is when the display stack keeps mmcx
-> enabled (but without a particular performance-state vote) in order to
-> access registers and sync_state happens in the rpmhpd driver. As mmcx_ao
-> is flushed the state of the peer (mmcx) is not considered and mmcx_ao
-> ends up turning off "mmcx.lvl" underneath mmcx. This has been observed
-> several times, but has been painted over in DeviceTree by adding an
-> explicit vote for the lowest non-disabled performance-state.
->
-> Fixes: e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable the domain")
-> Reported-by: Johan Hovold <johan@kernel.org>
-> Closes: https://lore.kernel.org/linux-arm-msm/ZdMwZa98L23mu3u6@hovoldconsulting.com/
-> Cc:  <stable@vger.kernel.org>
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
+On Mon, Feb 26, 2024 at 05:36:57PM +0100, Michal Hocko wrote:
+> On Mon 26-02-24 17:12:19, Greg KH wrote:
+> > On Mon, Feb 26, 2024 at 04:25:09PM +0100, Michal Hocko wrote:
+> > > On Mon 26-02-24 16:06:51, Greg KH wrote:
+> > > > On Mon, Feb 26, 2024 at 03:52:11PM +0100, Michal Hocko wrote:
+> > > > > On Thu 22-02-24 17:21:58, Greg KH wrote:
+> > > > > > Description
+> > > > > > ===========
+> > > > > > 
+> > > > > > In the Linux kernel, the following vulnerability has been resolved:
+> > > > > > 
+> > > > > > powerpc/pseries/memhp: Fix access beyond end of drmem array
+> > > > > > 
+> > > > > > dlpar_memory_remove_by_index() may access beyond the bounds of the
+> > > > > > drmem lmb array when the LMB lookup fails to match an entry with the
+> > > > > > given DRC index. When the search fails, the cursor is left pointing to
+> > > > > > &drmem_info->lmbs[drmem_info->n_lmbs], which is one element past the
+> > > > > > last valid entry in the array. The debug message at the end of the
+> > > > > > function then dereferences this pointer:
+> > > > > > 
+> > > > > >         pr_debug("Failed to hot-remove memory at %llx\n",
+> > > > > >                  lmb->base_addr);
+> > > > > 
+> > > > > While this is a reasonable fix and the stable material it is really
+> > > > > unclear to me why it has gained a CVE. Memory hotplug is a privileged
+> > > > > operation. Could you clarify please?
+> > > > 
+> > > > As you know, history has shown us that accessing out of your allocated
+> > > > memory can cause problems, and we can not assume use-cases, as we don't
+> > > > know how everyone uses our codebase, so marking places where we fix
+> > > > out-of-bound memory accesses is resolving a weakness in the codebase,
+> > > > hence a CVE assignment.
+> > > 
+> > > Does that mean that any potentially incorrect input provided by an admin is
+> > > considered CVE now? I guess we would need to ban interfaces like
+> > > /dev/mem and many others.
+> > 
+> > If you have your system set up to prevent admins from accessing /dev/mem
+> > (isn't there a config option for that), and you can access it, then yes,
+> > that would be a CVE-worthy issue.
+> > 
+> > But if you configure your system to allow an admin access to /dev/mem
+> > then you wanted that :)
+> 
+> OK, I thought we are having a serious discussion here. Now I am not
+> really sure about that.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+I am serious, sorry if that came across as not.
+
+> > > > If your systems are not vulnerable to this specific issue, wonderful, no
+> > > > need to take it, but why wouldn't you want to take a fix that resolves a
+> > > > known weakness?
+> > > 
+> > > I have explicitly said, the fix is reasonable. I just do not see a point
+> > > to mark it as CVE. I fail to see any thread model where this would
+> > > matter as it would require untrusted privileged actor to trigger it
+> > > AFAICS. I am happy to be proven wrong here.
+> > 
+> > We can not determine threat models when filing CVEs as we do not know
+> > what your threat model is.  All we can do is determine if this resolves
+> > a weakness in the system.  A use-after-free is a weakness and this
+> > resolves that issue.
+> 
+> Sure, you cannot make any assumptions and nobody questions that. We do
+> have a certain common sense though. And if somebody comes up with a
+> usecase that we haven't anticipated then we can surely assign a CVE.
+> I though that level of control is exactly the reason to own the process
+> by the community.
+> 
+> All that being said I dispute the issue fixed here has any more security
+> relevance than allowing untrusted user to control memory hotplug which
+> could easily result in DoS of the system.
+
+Ok, I traced this call back, and here is the callpath, starting with a
+write to the the 'dlpar' sysfs file (conviently NOT documented in
+Documentation/ABI, and it looks like it violates the "one value per
+file" rule...)
+	dlpar_store()
+	handle_dlpar_errorlog()
+	dlpar_memory()
+	dlpar_memory_remove_by_index()
+
+Yes, the kernel by default sets 'dlpar' to 0644, BUT that means that
+root in a container can cause this use-after-free to happen, or if the
+permissions are changed by userspace, or if you are in "lockdown mode",
+or if you want to attempt the crazy "confidential computing" model, or
+if you have a system which root is possible for some things by normal
+users (there are lots of different security models out there...)
+
+Yes, I will argue that making the sysfs file writable by userspace is
+out of our control, but what is in our control is the fact that there is
+a out-of-bounds write that is fixed here, and we don't want those to be
+able to be triggered by anyone as that is a weakness in our codebase.
+That is what has caused the CVE to be created here, not the fact that
+root can remove memory as that's the normal expected operation to have
+happen here.
+
+However if the maintainer of the code here disputes this, we are more
+than willing to mark this invalid and reject the CVE.
+
+thanks,
+
+greg k-h
 
