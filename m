@@ -1,206 +1,134 @@
-Return-Path: <linux-kernel+bounces-83678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C223F869D2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:09:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FE20869D35
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7605B28EC90
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:09:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4197BB24868
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:08:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F230248CFD;
-	Tue, 27 Feb 2024 17:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC16D4EB2F;
+	Tue, 27 Feb 2024 17:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="QDepQeNF"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2041.outbound.protection.outlook.com [40.107.243.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gZVjHAAr"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFB51EB40;
-	Tue, 27 Feb 2024 17:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709053729; cv=fail; b=UwtBLEKx/75PaT6Pobt2GJLNPPotqq3jsSMo/59paIuDc85KbR6t0OrFVpHaENoust1gFC/4Dx1CwiC91sW6MXMpzGH0Q/WYSsa+CThqjCYGruyFgz1MJ7sNww72gVmTV1Xq0Cgz612CUc3mcPH+sJTHi81wIS5dblJfWLiwIMM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709053729; c=relaxed/simple;
-	bh=/5pyNx3GN9mTyGJvJVwuj6hpiNsHfAvm+cqVb3MwIDE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NFUGsBkZQXm7KoYaWrDawM69T/kUznb+zHXrArMPACH6ki4fCe5toTVPhFOrp6ZBiyCSEWE+yD+memAfG7HsL2krVQVV9Vw/Ymo2tA5av+Qt5nXpaxlItG+xVyNYDyqGVi0TSbOLdfhvXN6LA6sChI2FpVPIL0nJG7lEsAFXGO0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=QDepQeNF; arc=fail smtp.client-ip=40.107.243.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H3RMd1DRP5IO+XCcVBzE20/EGsT51tq86Pv1VsOdPBbvJ82i6UtGPZheQ50F0aElPU+uniSuowakEmfI5ircmzFmpxkEHnq/wtoyyOfQi8snw3bgjetxKbDTvPlxMsiYBdRJg0C0zSQOr4QDa5W0N+fc4/4BMZkRYWwJga1q31zaqKfkLwd+pzeeBHJIACG0FJXefJITXjAtrZM4KQtDgNUbI1+ZueqLx36O+LvX49zFm0BNDowcP5DKLol2RYpc2bMuC8cPt6emmKSHEJvOPUfl3I9FB1sf4ifmd4qU3BUcoA3vCI6n52fajkwuU+1WuZRT75IPdWMOGTK1Uv0otA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=r9lTy8Eh99mrMkUF+FkPuPWHRmJIkmluTdBGkCEyUiw=;
- b=ahl+YiBPBCH9GShIKejajolDPbBG00KV1ugv9CH/OypsjB+6mA7rhj8aR1A1UJWxcqcy4gKE7N3fer1GJRVOEd/twnseatiJA9Nwl7MOCHjaZpLmyl5cgjsNWyCdGWNhgkjPsVO0Caac/VQhXEmnjoKcj5uJC8eiU8RU14AcCtDqwW0cWesDOfxcfb55hM9mriQfnWYQtQfEGgA0cy58NaSxvtIdsuAAifwrHxsLX8vug7/VSezCI2Tc7Yk4v/bYnfb+6B+KIZAPKo+eqTk6uhcf9UCS3Yby/bbHOsIBzpV6oslR8UntisHBoWJ+8qqhLz+9sqR0htE9Uz5QXrJnKA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r9lTy8Eh99mrMkUF+FkPuPWHRmJIkmluTdBGkCEyUiw=;
- b=QDepQeNFCke8wa7wdbVcLtiCVtnXZL3IXCQ29GXokypc18rjP6koXLb5zwgF88I/m96np2VY7k7S4SUpR6B6zDfi1XypGDd/vC+VOUpkwjYOtigMi6i2mCuxzVq4ljwbrOxMbyK7rvKixDpOVHbiSCtC1r8cUtmXqHV66YUTnkk=
-Received: from BN9PR03CA0334.namprd03.prod.outlook.com (2603:10b6:408:f6::9)
- by DS7PR12MB5861.namprd12.prod.outlook.com (2603:10b6:8:78::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Tue, 27 Feb
- 2024 17:08:44 +0000
-Received: from BN2PEPF000044A8.namprd04.prod.outlook.com
- (2603:10b6:408:f6:cafe::b0) by BN9PR03CA0334.outlook.office365.com
- (2603:10b6:408:f6::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
- Transport; Tue, 27 Feb 2024 17:08:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- BN2PEPF000044A8.mail.protection.outlook.com (10.167.243.102) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Tue, 27 Feb 2024 17:08:44 +0000
-Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 27 Feb
- 2024 11:08:43 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
- (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 27 Feb
- 2024 11:08:43 -0600
-Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Tue, 27 Feb 2024 11:08:42 -0600
-From: Lizhi Hou <lizhi.hou@amd.com>
-To: <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-CC: Lizhi Hou <lizhi.hou@amd.com>, <nishads@amd.com>, <sonal.santan@amd.com>,
-	<max.zhen@amd.com>
-Subject: [PATCH V9 0/2] AMD QDMA driver
-Date: Tue, 27 Feb 2024 09:08:27 -0800
-Message-ID: <1709053709-33742-1-git-send-email-lizhi.hou@amd.com>
-X-Mailer: git-send-email 1.8.3.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05BA4E1CB
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709053713; cv=none; b=GUupyQdTiP9iszIHhQARVNaVzJbZx8vhu1pvUwdJLuAHA89vxvGg0SLFTEA6YsRjWAZBXVMrEtOiNXnskQq1YtYZjiNKVTJYIQ9V6cuzpxdrpZ6JHK0TMx7iOp1SxoNiYNo3Di9xxUFRCMryk1wSfVx88fz2pso+XZtNKOXniNU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709053713; c=relaxed/simple;
+	bh=PGntO9HZ7nB0drpm+YsqMGgrsQ12kaan0DEUm5AB9oE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QI8c8u4ZA4giaKPfAVkZZ6CX9+Cqmfet1cKNJmuyfCXnK9ln0l6ml89F6gUziP9UlM/tFS1ctttu9iwaOowHpEuL8Lbx2I72wG6TpCzS1vIFKT9gSPk83IwhEYnuR5U+YnvhB9tRZ/sLblCustJe7VhYEGIO8gTd8T1AF789I30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gZVjHAAr; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso3408625a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:08:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709053711; x=1709658511; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o4T8k/GzPwrI1R62VQXBd8xMeTbbVe30Wb070cxDcDU=;
+        b=gZVjHAArdA1qHhB5tPwJNuEElRgcuFXxI3u79W0AyDEzRagA1YMjeSYMV4650yCiHp
+         koKQYjLCkbBTdZoCqvOhDpCK0py6n65bzF2MZMa2vG0JBxuoMQRFtUVXfzmbwmA5+gPX
+         b8ab/l48e9VyujtsZwxODNvK1IuT70I5julGqt61lHJKRvveuBNIgnE6IoVrVTh/v1is
+         ua1ZLg8CEZgubVnaavnQQMezPyL6N69pDOZqtB0FfJ3nxiKRigBeQgJDSHw7JwJ1lIYr
+         ymywXd9oPWR/Hrf7yCrVewge/FzWsC4h12F+MhraxhChKpyf1DjInqOzVRwM03C1DI5Y
+         tzYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709053711; x=1709658511;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o4T8k/GzPwrI1R62VQXBd8xMeTbbVe30Wb070cxDcDU=;
+        b=Z49VpDMAh8ZLccI/gLe7IWXG17mP2UghKAJB4FmKFnO6mM28dnvYMHrS28G/87ucPY
+         zBXbpHFkwpyrXuXBjsvaNdSgGICeGweJPcnuWCypeVhOyjmtTqU7W8Y/lcCVurv5Yr9u
+         7q/yowVLNq6AKE3SnqGCND0WrmIDUc5klu0rYS1vT3rLBym9bcUN9Yfo7LdtSkiT1e/e
+         lyHvBboiCBa2NY0fRqKrGU2RwwTSPk8ziPoficaVxDRNkeREyBXPQuNNrSelYz4H4Jt+
+         TM0rRvST2AWsT9GdYZD9MgvXj4ekk3oUMAUS7EM7JQ6fYoXEJI4asRWG4kkgt8TP1ca4
+         BF/A==
+X-Forwarded-Encrypted: i=1; AJvYcCUvNOrK/ETwCfiGw9Nx7X7rido2pf94VvaDB0m5zR9NiSWaPslQ3uzd/Kjrb0inlzhjkwztBCnm44Dx0tp7wk/7FmuCNiaGR5ajNnTZ
+X-Gm-Message-State: AOJu0YzoRg9f1j1PZ7bJTw5cFgo7vNhVJzMJlvqfk0nfX/egG/Bv24TJ
+	TX9tzZIoUOMqYqh6TQI0dF/XZuSCoGZZ0o4nEpX2gfXkyQKdyXskC5Ze7HV67fc=
+X-Google-Smtp-Source: AGHT+IHGOOOwOx6ckcP28mlDFlcimec/bT0+8kqrte9hVw72AiMZ3sj24eHALgOXdlaTtDeDW9juig==
+X-Received: by 2002:a17:90a:b014:b0:299:5d2c:9aa1 with SMTP id x20-20020a17090ab01400b002995d2c9aa1mr7690525pjq.5.1709053710806;
+        Tue, 27 Feb 2024 09:08:30 -0800 (PST)
+Received: from p14s ([2604:3d09:148c:c800:77b:bbfe:c3af:16dc])
+        by smtp.gmail.com with ESMTPSA id nb12-20020a17090b35cc00b00296fd5e0de1sm8797823pjb.34.2024.02.27.09.08.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 09:08:30 -0800 (PST)
+Date: Tue, 27 Feb 2024 10:08:27 -0700
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+To: noman pouigt <variksla@gmail.com>
+Cc: linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: Audio dsp recovery using remoteproc
+Message-ID: <Zd4XCwOeJ+exUjN0@p14s>
+References: <CAES_P+_0tWVtn+tyUi1TvkWi4rA-ZBj8e7_pnJd1h_J3S3Cn8Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (SATLEXMB05.amd.com: lizhi.hou@amd.com does not designate
- permitted sender hosts)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN2PEPF000044A8:EE_|DS7PR12MB5861:EE_
-X-MS-Office365-Filtering-Correlation-Id: bbaec3d0-bd68-4eb8-4091-08dc37b6c0f9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	PAciJrppV1X+Tsc1QEYbdxxr7CvBmC1J9EWQlQjP/sFr9pBIpK9/ul7XbteqWgx7gzHTMOtPDhHPD5hllMHcBV1B3LYkAnXZVt0IIad5jMyKLymWdxrZEYq5W9soKAuN1bzh65g1/KhLy68GFjObT6hTFqjWqF/8YqHp2XHsAKBLLJRvMnRax5/qpp2UD3g4rZU9VpjCBTBo3dMauZmr7sl+P9NdXrPsNGR984Cb0vlSwLX9dSb9PM+yNzBB7drVCDFOEZG07SpTTo61lS235pZ1YOaISlp7eDHdOU8PUG1SsksQTbcz/GPuLdHYxKhA3frWx+ForDPej6/Rb/7rsOKrv3PF+gTTsC+LyFHHvfultLKJdmGUF1vOaewiOIdymwIa9VmhyinVEaj/ELU0HAIb1zx8Vr3jheEMW4e3StvrqhzG5ccG3e9s6WhEXtPAIaoehwc4igkwQ/6BnNMz8QsDtsEJ5MN52MGwp9G2eQPJj35ikZpbbQjiK7h3KtBfTQ10VwOF4Y20Ek6NKyYbbLXsCdvWEhUrkD5BdHIIfJ+vIwZSctDHLn4fn+9olk60JTTStrk7XhIkNFvc0qc4mYZKe5HM8egXEPBXa+IVIXKa+hZkVENApKUk5wqR7XgH6WMrVmEBCa3dI4r+AYGE+oVeVijEyoRSta9HS2snjhvbFh4bD3PFisEEHM4ZWnDeVTZljTvnhjYJP42on30wt3SUcfC4kYwfKpRhb3ePedQ=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(230273577357003)(36860700004)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 17:08:44.0435
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bbaec3d0-bd68-4eb8-4091-08dc37b6c0f9
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN2PEPF000044A8.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5861
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAES_P+_0tWVtn+tyUi1TvkWi4rA-ZBj8e7_pnJd1h_J3S3Cn8Q@mail.gmail.com>
 
-Hello,
+Good day,
 
-The QDMA subsystem is used in conjunction with the PCI Express IP block
-to provide high performance data transfer between host memory and the
-card's DMA subsystem.
+On Fri, Feb 16, 2024 at 03:29:56PM -0800, noman pouigt wrote:
+> mailbox to dsp_1 is currently modeling platform pcm driver.
+> mailbox to dsp_2 is also doing the same.
+> 
+> Platform driver callbacks cause IPC to be sent to dsp's.
+> Lifecycle of two dsp's are managed by separate remoteproc
+> drivers. Single sound card is exposed.
+> 
+> Separate watchdog interrupts from the corresponding dsp's
+> are connected to remoteproc to manage crashing of the
+> individual dsp's. How can I restart both the dsp when either
+> of them crashes using the kernel device model? Remoteproc
+> driver currently only restarts the crashed dsp instead of restarting
+> both the dsp. It is needed to bring up the hardware in a consistent
+> state as both the dsp's are connected to a common hardware.
+>
 
-            +-------+       +-------+       +-----------+
-   PCIe     |       |       |       |       |           |
-   Tx/Rx    |       |       |       |  AXI  |           |
- <=======>  | PCIE  | <===> | QDMA  | <====>| User Logic|
-            |       |       |       |       |           |
-            +-------+       +-------+       +-----------+
+Ok
 
-Comparing to AMD/Xilinx XDMA subsystem,
-    https://lore.kernel.org/lkml/Y+XeKt5yPr1nGGaq@matsya/
-the QDMA subsystem is a queue based, configurable scatter-gather DMA
-implementation which provides thousands of queues, support for multiple
-physical/virtual functions with single-root I/O virtualization (SR-IOV),
-and advanced interrupt support. In this mode the IP provides AXI4-MM and
-AXI4-Stream user interfaces which may be configured on a per-queue basis.
+> I thought of making a virtual parent remoteproc device
+> and then managing individual dsp as a subdevice of that parent device
+> but remoteproc device node is associated with the individual elf file i.e.
+> it can manage only a single dsp.
 
-The QDMA has been used for Xilinx Alveo PCIe devices.
-    https://www.xilinx.com/applications/data-center/v70.html
+You are on the right track but perhaps not fully aware of what is already done
+for multi core remote processors.  I suggest you have a thorough look at TI's
+K3R5 driver[1] and one of it's DTB[2].  In the DTB each remote processor loads a
+different firmware file, which seems to be what you are looking for.
 
-This patch series is to provide the platform driver for AMD QDMA subsystem
-to support AXI4-MM DMA transfers. More functions, such as AXI4-Stream
-and SR-IOV, will be supported by future patches.
+Thanks,
+Mathieu
 
-The device driver for any FPGA based PCIe device which leverages QDMA can
-call the standard dmaengine APIs to discover and use the QDMA subsystem
-without duplicating the QDMA driver code in its own driver.
+[1]. https://elixir.bootlin.com/linux/v6.8-rc6/source/drivers/remoteproc/ti_k3_r5_remoteproc.c
+[2]. https://elixir.bootlin.com/linux/v6.8-rc6/source/arch/arm64/boot/dts/ti/k3-am65-mcu.dtsi#L397 
 
-Changes since v8:
-- Replaced dma_alloc_coherent() with dmam_alloc_coherent()
 
-Changes since v7:
-- Fixed smatch warnings
-
-Changes since v6:
-- Added a patch to create amd/ and empty Kconfig/Makefile for AMD drivers
-- Moved source code under amd/qdma/
-- Minor changes for code review comments
-
-Changes since v5:
-- Add more in patch description.
-
-Changes since v4:
-- Convert to use platform driver callback .remove_new()
-
-Changes since v3:
-- Minor changes in Kconfig description.
-
-Changes since v2:
-- A minor change from code review comments.
-
-Changes since v1:
-- Minor changes from code review comments.
-- Fixed kernel robot warning.
-
-Lizhi Hou (1):
-  dmaengine: amd: Add empty Kconfig and Makefile for AMD drivers
-
-Nishad Saraf (1):
-  dmaengine: amd: qdma: Add AMD QDMA driver
-
- MAINTAINERS                            |    8 +
- drivers/dma/Kconfig                    |    2 +
- drivers/dma/Makefile                   |    1 +
- drivers/dma/amd/Kconfig                |   14 +
- drivers/dma/amd/Makefile               |    6 +
- drivers/dma/amd/qdma/Makefile          |    8 +
- drivers/dma/amd/qdma/qdma-comm-regs.c  |   64 ++
- drivers/dma/amd/qdma/qdma.c            | 1162 ++++++++++++++++++++++++
- drivers/dma/amd/qdma/qdma.h            |  265 ++++++
- include/linux/platform_data/amd_qdma.h |   36 +
- 10 files changed, 1566 insertions(+)
- create mode 100644 drivers/dma/amd/Kconfig
- create mode 100644 drivers/dma/amd/Makefile
- create mode 100644 drivers/dma/amd/qdma/Makefile
- create mode 100644 drivers/dma/amd/qdma/qdma-comm-regs.c
- create mode 100644 drivers/dma/amd/qdma/qdma.c
- create mode 100644 drivers/dma/amd/qdma/qdma.h
- create mode 100644 include/linux/platform_data/amd_qdma.h
-
--- 
-2.34.1
-
+> 
+> How can I model remoteproc drivers using linux device model so that when either
+> of them crashes both the dsp's get reloaded by the remoteproc framework.
+> 
+>            MailBox ---- DSP_1 ---
+>          |                                    |
+> Linux                                      ------ common_hw -> speaker/mic
+>           |                                    |
+>             MailBox ---- DSP_2 ---
+> 
 
