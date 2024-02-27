@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-84160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6336286A33C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B46886A33E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:05:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94FC51C24497
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:05:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D0311C236EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6550956745;
-	Tue, 27 Feb 2024 23:04:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D9256B68;
+	Tue, 27 Feb 2024 23:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="p00F9w65"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ED+AuveV"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F362E56741;
-	Tue, 27 Feb 2024 23:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669FF55E4A;
+	Tue, 27 Feb 2024 23:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709075089; cv=none; b=s/UYshg1frNxKE95T/cRmF4STDosGT/FGnXWJBVdOedTOd5QFsfEKmPv4Bpxs3VKLwZrIxO8H/fGn/ArdW0njhB9IdNzp8FjNe9vue292wAJlgSUyZENF7WfVd60x9sYTE6ETQ1Vo4wn+ApepPuxSofH0QsGVAGrOG75OTHJZKY=
+	t=1709075090; cv=none; b=ly9XGRVwenQlGPrZWbPBZMAy8Itey8Fg7ZmvClI6lBy5buPw+M0j893Bl8EaSX3QBdHEC1rNkOBmNadT+I2nH4yz4Q/+4zZqUJv4pwxMSUzDv0EZMI3adj8dCcECPFiiRW+0bhOp5HP+e3KTWwhEWvjpDFN8pOR9WMuzjxFaREY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709075089; c=relaxed/simple;
-	bh=zo9Df9JHxN0K53/19URRHka3gUcLUDl/foFb5EGQk34=;
+	s=arc-20240116; t=1709075090; c=relaxed/simple;
+	bh=NWkBxd8gPCr+WPhzY0sd0MvcNJtL1sjwX5jg1KmL/vE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b+wtMYxLFG9Bnx9Q0o/7B9bANq2Nb77irZbx8kBF1vxVWWPOegoNhbODWIBDotCfp7Z8qayJyiYlS5mrb1bntPtzIIFrJN+GRoSn0mvWqZYwmQFFcdmiUuRyJcYT05TK6j+xta+4/8GtKgPyMb31MTCikwYZJbaQU9IAyCm9JC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=p00F9w65; arc=none smtp.client-ip=217.70.183.195
+	 MIME-Version; b=HoPl8ExSNAJMYkf4ul0hWmrmsIUDVPhQRO1jlgwvdNxlBUSyjTQaGmO8qEunAq54tWU09XTvwUANmp5T1nv0k36BepfwuZdVVikGCIEU+9Fhcgk2y2v7rM83HPybuqWwZEy6WfX4RvMAHBIEqesjK7sQRf9QWpH5Sf+wMGy8HKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ED+AuveV; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B2E2A60003;
-	Tue, 27 Feb 2024 23:04:44 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B386240002;
+	Tue, 27 Feb 2024 23:04:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709075084;
+	t=1709075086;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xPWLS2vYXFua2bug0ohUqf0o99PQKgw61UA1Alu92Xs=;
-	b=p00F9w65LHHP8MlKrCE93I07ZCFGBvO19baUFIUKaSdussHa1PfjLlBo/Jv8Qbx8LR5Vs5
-	HP0sK6QgYYQ90pzv5Pn0HcTMuoSqa6DRWOyAIqKCuOl75IGwtlM4YFyo6dCpI7HKPDq1d7
-	soTG0YS0nxKt685D+vmt/v+StMQn1ab4mg6SXyfUpqt9GMd1EM8cEHP4igle5RbvPQCudC
-	00l0hGRnSr0e++Goa4BZ+CoMc/D7sJAM1YBVlsghnNI9oaMoUGwgRWypHTWejFbFsThgBd
-	bmoL1eLbNvmQYW2sMii7RyNrVW1mAZx5R9lT4g8sdAtZodQuCzWr0RZJSUi/Zg==
+	bh=YzsgrX6QB8QR/FJbpPrgV15wrjsvOL5YD/IkQ9w8ApU=;
+	b=ED+AuveVryI4A5M7J0Ddo1tmKy83fxllXO0YOpK/L+6dqVpXmtCbxAfbleP9mrxhuzoHCC
+	kNtcFaNwNlaN2xeTqWSJ6iYJHCOQ/VGC5DzDPcEhRf8aaU1fJ/D6k8a9GAaeaieDMTTuAY
+	Jdd/tVfZiDti6nYmrq3nCFjxCiVrrjzOyvIge0VPiJPLTsuJEid9madOh78uSt6+Yv+XVC
+	mtlGWAlZMopG8ywGNExzzBoLncNglU9kpXS+n6lf+vjfaikb+9S6sjxVszBqMf81IemOw+
+	hKYrHueQUm+SypQH35dnl7wcQsaya/rpWYVYBsW/6+V+qxmgTYDueyjmnOmepA==
 From: alexandre.belloni@bootlin.com
 To: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc: linux-rtc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 02/12] rtc: ds1511: drop useless computation
-Date: Wed, 28 Feb 2024 00:04:17 +0100
-Message-ID: <20240227230431.1837717-2-alexandre.belloni@bootlin.com>
+Subject: [PATCH 03/12] rtc: ds1511: drop dead code
+Date: Wed, 28 Feb 2024 00:04:18 +0100
+Message-ID: <20240227230431.1837717-3-alexandre.belloni@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240227230431.1837717-1-alexandre.belloni@bootlin.com>
 References: <20240227230431.1837717-1-alexandre.belloni@bootlin.com>
@@ -65,44 +65,69 @@ X-GND-Sasl: alexandre.belloni@bootlin.com
 
 From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-All the callers of ds1511_rtc_set_time will use the same epoch for tm_year
-which is defined as the number of years minus 1900 since POSIX.1-2001.
+The watchdog part of the code is not reachable and should be reimplemented
+properly as a watchdog driver.
 
 Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 ---
- drivers/rtc/rtc-ds1511.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+ drivers/rtc/rtc-ds1511.c | 44 ----------------------------------------
+ 1 file changed, 44 deletions(-)
 
 diff --git a/drivers/rtc/rtc-ds1511.c b/drivers/rtc/rtc-ds1511.c
-index 87c52d20d31a..a646bcf9cd56 100644
+index a646bcf9cd56..fe8dbad51c88 100644
 --- a/drivers/rtc/rtc-ds1511.c
 +++ b/drivers/rtc/rtc-ds1511.c
-@@ -166,24 +166,13 @@ ds1511_wdog_disable(void)
+@@ -122,50 +122,6 @@ rtc_enable_update(void)
+ 	rtc_write((rtc_read(RTC_CMD) | RTC_TE), RTC_CMD);
  }
- #endif
  
 -/*
-- * set the rtc chip's idea of the time.
-- * stupidly, some callers call with year unmolested;
-- * and some call with  year = year - 1900.  thanks.
+- * #define DS1511_WDOG_RESET_SUPPORT
+- *
+- * Uncomment this if you want to use these routines in
+- * some platform code.
 - */
+-#ifdef DS1511_WDOG_RESET_SUPPORT
+-/*
+- * just enough code to set the watchdog timer so that it
+- * will reboot the system
+- */
+-void
+-ds1511_wdog_set(unsigned long deciseconds)
+-{
+-	/*
+-	 * the wdog timer can take 99.99 seconds
+-	 */
+-	deciseconds %= 10000;
+-	/*
+-	 * set the wdog values in the wdog registers
+-	 */
+-	rtc_write(bin2bcd(deciseconds % 100), DS1511_WD_MSEC);
+-	rtc_write(bin2bcd(deciseconds / 100), DS1511_WD_SEC);
+-	/*
+-	 * set wdog enable and wdog 'steering' bit to issue a reset
+-	 */
+-	rtc_write(rtc_read(RTC_CMD) | DS1511_WDE | DS1511_WDS, RTC_CMD);
+-}
+-
+-void
+-ds1511_wdog_disable(void)
+-{
+-	/*
+-	 * clear wdog enable and wdog 'steering' bits
+-	 */
+-	rtc_write(rtc_read(RTC_CMD) & ~(DS1511_WDE | DS1511_WDS), RTC_CMD);
+-	/*
+-	 * clear the wdog counter
+-	 */
+-	rtc_write(0, DS1511_WD_MSEC);
+-	rtc_write(0, DS1511_WD_SEC);
+-}
+-#endif
+-
  static int ds1511_rtc_set_time(struct device *dev, struct rtc_time *rtc_tm)
  {
  	u8 mon, day, dow, hrs, min, sec, yrs, cen;
- 	unsigned long flags;
- 
--	/*
--	 * won't have to change this for a while
--	 */
--	if (rtc_tm->tm_year < 1900)
--		rtc_tm->tm_year += 1900;
--
- 	yrs = rtc_tm->tm_year % 100;
--	cen = rtc_tm->tm_year / 100;
-+	cen = 19 + rtc_tm->tm_year / 100;
- 	mon = rtc_tm->tm_mon + 1;   /* tm_mon starts at zero */
- 	day = rtc_tm->tm_mday;
- 	dow = rtc_tm->tm_wday & 0x7; /* automatic BCD */
 -- 
 2.43.0
 
