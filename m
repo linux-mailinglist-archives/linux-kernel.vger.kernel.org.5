@@ -1,290 +1,273 @@
-Return-Path: <linux-kernel+bounces-83025-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83026-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37F3B868D71
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:23:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B261E868D76
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:24:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E224B28E6E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:23:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4BF01C22F62
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492501386A9;
-	Tue, 27 Feb 2024 10:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E561384B6;
+	Tue, 27 Feb 2024 10:24:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="Qt3Mvm6X"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="rwJ0DVXJ"
+Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23DA8138498
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029417; cv=none; b=sSoI91vt+Vqgk4o2wgt+WLM/Pw19Pw8JkQbB0cKNCNuIlsQBbygcxkO0oRXXOy/dH2GBH398oiMIPalOv22MNPMltchnNDd6ynAY8OSuybdf+GIJUqD0ZH7mHEhOb7AQWolmxhByDiebx9aupCiBgekZGCgV7uFzJ5BLe+fcHPA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029417; c=relaxed/simple;
-	bh=5u+d29M3CDX3NbLVvd9IU8TbBtjbvakMQDSEITp/s8w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dMpT+5GEjOqLxQbf8XAtXkCW1VklpO+bECLAAtQyI4bJ3r8B1HRCVLdTIbEYGvSuVftpUc2eyVJGjjmxlAEaTFT4jGp0jTo+dUhrFGGWIu5vZ6FKBFZMmu4WkKD3EMXydaCe8LCsf+2S8rSEjTnjLP3lZ5v1Sbu/zo08plhoySQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=Qt3Mvm6X; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-3657c437835so7666815ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:23:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709029414; x=1709634214; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wRDnUl47SBcmf8gVz+t2ubWEYD6TUCpoZIdH8z+nNoU=;
-        b=Qt3Mvm6X4sSgNwsf+HUsxufJ4dYMHtUASZzeTM9O7nXQ14f2hmWORYXN/63OihxAua
-         Ew8xXWn4+iR8ESMNw2X9j5C1r4QR5XynpNe740qIjOtJc5HjcRzqDNRkY8ACnjRAQW4p
-         AEcgo57K4CCal/VbCwgAFnE40aA8G3pfkMwjnIJdvnqgi3H1Hqwcmm3Dzd4TuqpLuarh
-         K1YFjDOdaIi5LIMizyBz1PH/Yz95xbxsGdLqNa8u536ZO9/mAGZ4mrL+B1vOluv/U0yj
-         c4X3typK/rF6Sq2l3XlNOXZ1zMzguzFyxgo/7q/klm2obm0KF6ziBbRfbMNb8tbk/Xoy
-         HT/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709029414; x=1709634214;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wRDnUl47SBcmf8gVz+t2ubWEYD6TUCpoZIdH8z+nNoU=;
-        b=rFlv4o5tiNhz28zma9N98Y5iPSXcfHVwgDGokbpYydTeCxIjpetHY9FYak2t0FWYxo
-         9h7mPnLZ+843s3bfinc93tvAgQaih+pTh25gtTxg0ibQmCLDWvZ4mis0ZVU3M38OSk3m
-         Kb64+NRulQP4+X/z0CQs6P0WS7CkuCmk5/gDaYDeC+e5S74ttdXrPxgU2AuHvtg2u5E0
-         X/Y3WpzGSGpPfyDyHGP4A1oMEq75m32woYIM4wEf/5gvIzYUCmEi8fe3vE10LzWTYjPO
-         9NipLujF/D5ICDwCtUivW0EiS/9QX0aICGheEA6yB+osY0JDZmAcPGZ18j8JS0+r178o
-         DHuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW8Sl5oqx2OAvetfhloZzSPfXTByEd69e/f1FyJOH0iTWj3mfQgc1H7Kc73RJnBhA1bshe6rF3zKbKtMPXQ47sU3pFihjOdfepJQx52
-X-Gm-Message-State: AOJu0YyzpdQ11//GLxpb/VpvmX9izvTxXfXJmNHguOpZrVROURvC2viL
-	7ASSe4vgnzROOu+AjYvdZ//nlfcyvFQroPe0Zj0gdkDj8ngaqePtQeaxmyDtgec=
-X-Google-Smtp-Source: AGHT+IFlwjkngqWStTBwNfi9zv2j3kwATePJOcv87F/BtVt3qeg8VtNnjQ+1xDPzFY8KBNxxoIwTKw==
-X-Received: by 2002:a05:6e02:e10:b0:365:1b7c:670 with SMTP id a16-20020a056e020e1000b003651b7c0670mr7885060ilk.8.1709029414201;
-        Tue, 27 Feb 2024 02:23:34 -0800 (PST)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id p6-20020a92c606000000b003642dacafa5sm2063105ilm.29.2024.02.27.02.23.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 02:23:33 -0800 (PST)
-Message-ID: <92b9e9ac-6265-4611-888d-ba74bb871be5@baylibre.com>
-Date: Tue, 27 Feb 2024 11:23:26 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 681C0138492;
+	Tue, 27 Feb 2024 10:23:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709029438; cv=pass; b=AlnfIuFlC4bo1dpbcH3dsQY/J2Oy4dsjs4YJcOLSyEhXK4nqH0FKzgPCfUD4d8ugWdkbK+leTaUy4BV4fi1p5xONBTVlZQk2iQhR0pt/G+wde+TiXWbgc8HdGCFyzJPjL2xlpeCfg8PVGUdbQ+LGtkcs9DNCZZw1mCzqUY9Lg1k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709029438; c=relaxed/simple;
+	bh=i8Z3BJKTqV2tpEnLiU8y6wyHC2OVAz1euRNw4C3obPM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q55IWnehwRdoaeKbg7atuMe12DMVJzNc/U40b29RtP+eICWdsHyNyM1H9P401DwQARlKhSXQzleGoovDiGEi9IEW2gk1dWnFTI+Nh8mJoYV2Ap56pU/tes/1ObAkzOWntssdLCN9uN2WZQlZjmoRgrrqhNDtFNMymiRLG0Pgyco=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=rwJ0DVXJ; arc=pass smtp.client-ip=195.140.195.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sailus)
+	by meesny.iki.fi (Postfix) with ESMTPSA id 4TkYVX4hLfzyRk;
+	Tue, 27 Feb 2024 12:23:48 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+	t=1709029431;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e7CJlVsWqknG0VD0bGsDCpWj600Be6wheaK7cV+aA3M=;
+	b=rwJ0DVXJtnAhe42Af1YIFXFp77CJUlD92dcKhC3JitX+5DvfjefalGkQARQl9oIgIf1r08
+	VJAL4f0eipvO3NkhpNN9PwI/OAQBJzZkEHEGHaf3zpXwYmcNLKVjWCLFcwReSV++PJbyAO
+	2KJb78YlceMtFyBQbQoSaTZaQPUsXB8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=meesny; t=1709029431;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e7CJlVsWqknG0VD0bGsDCpWj600Be6wheaK7cV+aA3M=;
+	b=WJi0u4Wr2KVXQJXA7dm8vI/PfmsJJDbukRMN0AqPfcwXD2RE7b8PVXZGOTx5UqsgGbT78R
+	StL1I7WN17yJ15kK4rnnJoc6Q3BJUfkOZqa6CB38jgrENS21Roe8JYlEPNsmEsJ8tv2fc1
+	bTRhQCoKmS9wFeiuMNahLTkV0t5reAU=
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1709029431; a=rsa-sha256; cv=none;
+	b=YJL/5RLtrNIVyJpo0whQkcfPlKbrn5iuqqqAOEbsqFmOkee0c+GqPRHLKkxlIyjDZZiJFI
+	wwvAJt8V9x0c8nOmyxfSWAMyMV1Zqj9UH+7oySOCS1JQD75fR/bh05UlVoy/9x+hhEDg3X
+	cwHpWgGeN4qFDXBgQEerE+/9c7H124o=
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 1A552634C94;
+	Tue, 27 Feb 2024 12:23:47 +0200 (EET)
+Date: Tue, 27 Feb 2024 10:23:46 +0000
+From: Sakari Ailus <sakari.ailus@iki.fi>
+To: Mehdi Djait <mehdi.djait.k@gmail.com>
+Cc: mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+	conor+dt@kernel.org, linux-media@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
+	maxime.chevallier@bootlin.com, paul.kocialkowski@bootlin.com,
+	michael.riesch@wolfvision.net, laurent.pinchart@ideasonboard.com,
+	Mehdi Djait <mehdi.djait@bootlin.com>
+Subject: Re: [RESEND Patch v13 2/3] media: rockchip: Add a driver for
+ Rockchip's camera interface
+Message-ID: <Zd24MhLYJlSTRysr@valkosipuli.retiisi.eu>
+References: <cover.1707677804.git.mehdi.djait.k@gmail.com>
+ <715d89214d1ed6a8bb16cbb6268718a737485560.1707677804.git.mehdi.djait.k@gmail.com>
+ <Zctwo3s9hso6mQvT@valkosipuli.retiisi.eu>
+ <ZdY5KrTfss4lTjPO@mehdi-archlinux>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/18] ASoC: dt-bindings: mediatek,mt8365-mt6357: Add
- audio sound card document
-Content-Language: en-US
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Lee Jones <lee@kernel.org>,
- Flora Fu <flora.fu@mediatek.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-2-4fa1cea1667f@baylibre.com>
- <e15fdb18-d4de-495f-b90b-ba0e787cbef4@collabora.com>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <e15fdb18-d4de-495f-b90b-ba0e787cbef4@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdY5KrTfss4lTjPO@mehdi-archlinux>
 
+Hi Mehdi,
 
+On Wed, Feb 21, 2024 at 06:55:54PM +0100, Mehdi Djait wrote:
+> Hi Sakari,
+> 
+> Thank you for the review!
+> 
+> On Tue, Feb 13, 2024 at 01:37:39PM +0000, Sakari Ailus wrote:
+> > Hi Mahdi,
+> > 
+> > On Sun, Feb 11, 2024 at 08:03:31PM +0100, Mehdi Djait wrote:
+> > > From: Mehdi Djait <mehdi.djait@bootlin.com>
+> > > 
+> > > This introduces a V4L2 driver for the Rockchip CIF video capture controller.
+> > > 
+> > > This controller supports multiple parallel interfaces, but for now only the
+> > > BT.656 interface could be tested, hence it's the only one that's supported
+> > > in the first version of this driver.
+> > > 
+> > > This controller can be found on RK3066, PX30, RK1808, RK3128 and RK3288,
+> > > but for now it's only been tested on the PX30.
+> > > 
+> > > CIF is implemented as a video node-centric driver.
+> > > 
+> > > Most of this driver was written following the BSP driver from Rockchip,
+> > > removing the parts that either didn't fit correctly the guidelines, or that
+> > > couldn't be tested.
+> > > 
+> > > This basic version doesn't support cropping nor scaling and is only
+> > > designed with one SDTV video decoder being attached to it at any time.
+> > > 
+> > > This version uses the "pingpong" mode of the controller, which is a
+> > > double-buffering mechanism.
+> > > 
+> > > Reviewed-by: Michael Riesch <michael.riesch@wolfvision.net>
+> > > Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> > > Signed-off-by: Mehdi Djait <mehdi.djait.k@gmail.com>
+> > > ---
+> > >  MAINTAINERS                                   |    7 +
+> > >  drivers/media/platform/rockchip/Kconfig       |    1 +
+> > >  drivers/media/platform/rockchip/Makefile      |    1 +
+> > >  drivers/media/platform/rockchip/cif/Kconfig   |   14 +
+> > >  drivers/media/platform/rockchip/cif/Makefile  |    3 +
+> > >  .../media/platform/rockchip/cif/cif-capture.c | 1111 +++++++++++++++++
+> > >  .../media/platform/rockchip/cif/cif-capture.h |   20 +
+> > >  .../media/platform/rockchip/cif/cif-common.h  |  128 ++
+> > >  drivers/media/platform/rockchip/cif/cif-dev.c |  308 +++++
+> > >  .../media/platform/rockchip/cif/cif-regs.h    |  127 ++
+> > >  10 files changed, 1720 insertions(+)
+> > >  create mode 100644 drivers/media/platform/rockchip/cif/Kconfig
+> > >  create mode 100644 drivers/media/platform/rockchip/cif/Makefile
+> > >  create mode 100644 drivers/media/platform/rockchip/cif/cif-capture.c
+> > >  create mode 100644 drivers/media/platform/rockchip/cif/cif-capture.h
+> > >  create mode 100644 drivers/media/platform/rockchip/cif/cif-common.h
+> > >  create mode 100644 drivers/media/platform/rockchip/cif/cif-dev.c
+> > >  create mode 100644 drivers/media/platform/rockchip/cif/cif-regs.h
+> > > 
+> > > +static int cif_start_streaming(struct vb2_queue *queue, unsigned int count)
+> > > +{
+> > > +	struct cif_stream *stream = queue->drv_priv;
+> > > +	struct cif_device *cif_dev = stream->cifdev;
+> > > +	struct v4l2_device *v4l2_dev = &cif_dev->v4l2_dev;
+> > > +	struct v4l2_subdev *sd;
+> > > +	int ret;
+> > > +
+> > > +	if (!cif_dev->remote.sd) {
+> > > +		ret = -ENODEV;
+> > > +		v4l2_err(v4l2_dev, "No remote subdev detected\n");
+> > > +		goto destroy_buf;
+> > > +	}
+> > > +
+> > > +	ret = pm_runtime_resume_and_get(cif_dev->dev);
+> > > +	if (ret < 0) {
+> > > +		v4l2_err(v4l2_dev, "Failed to get runtime pm, %d\n", ret);
+> > > +		goto destroy_buf;
+> > > +	}
+> > > +
+> > > +	sd = cif_dev->remote.sd;
+> > > +
+> > > +	stream->cif_fmt_in = get_input_fmt(cif_dev->remote.sd);
+> > 
+> > You should use the format on the local pad, not get it from a remote
+> > sub-device.
+> > 
+> > Link validation ensures they're the same (or at least compatible).
+> > 
+> > Speaking of which---you don't have link_validate callbacks set for the
+> > sub-device. See e.g. drivers/media/pci/intel/ipu3/ipu3-cio2.c for an
+> > example.
+> > 
+> 
+> ...
+> 
+> > > +	if (!stream->cif_fmt_in)
+> > > +		goto runtime_put;
+> > > +
+> > > +	ret = cif_stream_start(stream);
+> > > +	if (ret < 0)
+> > > +		goto stop_stream;
+> > > +
+> > > +	ret = v4l2_subdev_call(sd, video, s_stream, 1);
+> > > +	if (ret < 0)
+> > > +		goto stop_stream;
+> > > +
+> > > +	return 0;
+> > > +
+> > > +stop_stream:
+> > > +	cif_stream_stop(stream);
+> > > +runtime_put:
+> > > +	pm_runtime_put(cif_dev->dev);
+> > > +destroy_buf:
+> > > +	cif_return_all_buffers(stream, VB2_BUF_STATE_QUEUED);
+> > > +
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +static int cif_set_fmt(struct cif_stream *stream,
+> > > +		       struct v4l2_pix_format *pix)
+> > > +{
+> > > +	struct cif_device *cif_dev = stream->cifdev;
+> > > +	struct v4l2_subdev_format sd_fmt;
+> > > +	struct cif_output_fmt *fmt;
+> > > +	int ret;
+> > > +
+> > > +	if (vb2_is_streaming(&stream->buf_queue))
+> > > +		return -EBUSY;
+> > > +
+> > > +	fmt = find_output_fmt(stream, pix->pixelformat);
+> > > +	if (!fmt)
+> > > +		fmt = &out_fmts[0];
+> > > +
+> > > +	sd_fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
+> > > +	sd_fmt.pad = 0;
+> > > +	sd_fmt.format.width = pix->width;
+> > > +	sd_fmt.format.height = pix->height;
+> > > +
+> > > +	ret = v4l2_subdev_call(cif_dev->remote.sd, pad, set_fmt, NULL, &sd_fmt);
+> > 
+> > The user space is responsible for controlling the sensor i.e. you shouldn't
+> > call set_fmt sub-device op from this driver.
+> > 
+> > As the driver is MC-enabled, generally the sub-devices act as a control
+> > interface and the V4L2 video nodes are a data interface.
+> > 
+> 
+> While this is true for MC-centric (Media Controller) drivers, this driver is
+> video-node-centric (I mentioned this in the commit msg)
+> 
+> From the Kernel Documentation:
+> https://docs.kernel.org/userspace-api/media/v4l/open.html
+> 
+> 1 - The devices that are fully controlled via V4L2 device nodes are
+> called video-node-centric.
+> 
+> 2- Note: A video-node-centric may still provide media-controller and
+> sub-device interfaces as well. However, in that case the media-controller
+> and the sub-device interfaces are read-only and just provide information
+> about the device. The actual configuration is done via the video nodes.
 
-On 26/02/2024 16:30, AngeloGioacchino Del Regno wrote:
-> Il 26/02/24 15:01, Alexandre Mergnat ha scritto:
->> Add soundcard bindings for the MT8365 SoC with the MT6357 audio codec.
->>
->> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
->> ---
->>   .../bindings/sound/mediatek,mt8365-mt6357.yaml     | 127 
->> +++++++++++++++++++++
->>   1 file changed, 127 insertions(+)
->>
->> diff --git 
->> a/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml 
->> b/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml
->> new file mode 100644
->> index 000000000000..f469611ec6b6
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml
->> @@ -0,0 +1,127 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/sound/mediatek,mt8365-mt6357.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Mediatek MT8365 sound card with MT6357 sound codec.
->> +
->> +maintainers:
->> +  - Alexandre Mergnat <amergnat@baylibre.com>
->> +
->> +description:
->> +  This binding describes the MT8365 sound card.
->> +
->> +properties:
->> +  compatible:
->> +    const: mediatek,mt8365-mt6357
->> +
->> +  mediatek,hp-pull-down:
->> +    description:
->> +      Earphone driver positive output stage short to the
->> +      audio reference ground.
->> +      Default value is false.
->> +    type: boolean
->> +
->> +  mediatek,micbias0-microvolt:
->> +    description: |
-> 
-> description: Selects MIC Bias 0 output voltage
-> 
->> +      Selects MIC Bias 0 output voltage.
->> +      [1.7v, 1.8v, 1.9v, 2.0v, 2.1v, 2.5v, 2.6v, 2.7v]
->> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
-> 
-> No, you don't say 0 1 2 3 4 to a property that says "microvolt", that's 
-> simply
-> wrong.
-> 
-> mediatek,micbias0-microvolt = <2100000>;
-> 
-> ...so you want a binding that says
-> enum: [ 1700000, 1800000, this, that, 2700000]
-> 
+Are you sure you even want to do this?
 
-Is it correct if I put "description: Selects MIC Bias 0 output voltage 
-index" ?
+It'll limit what kind of sensors you can attach to the device and even more
+so in the future as we're reworking the sensor APIs to allow better control
+of the sensors, using internal pads (that require MC).
 
->> +
->> +  mediatek,micbias1-microvolt:
->> +    description: |
->> +      Selects MIC Bias 1 output voltage.
->> +      [1.7v, 1.8v, 1.9v, 2.0v, 2.1v, 2.5v, 2.6v, 2.7v]
->> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
-> 
-> same here.
-> 
->> +
->> +  mediatek,platform:
->> +    $ref: /schemas/types.yaml#/definitions/phandle
->> +    description: The phandle of MT8365 ASoC platform.
->> +
->> +  pinctrl-names:
->> +    minItems: 1
->> +    items:
->> +      - const: aud_default
->> +      - const: aud_dmic
->> +      - const: aud_miso_off
->> +      - const: aud_miso_on
->> +      - const: aud_mosi_off
->> +      - const: aud_mosi_on
->> +
->> +  vaud28-supply:
->> +    description:
->> +      2.8 volt supply for the audio codec
->> +
->> +patternProperties:
->> +  "^dai-link-[0-9]+$":
->> +    type: object
->> +    description:
->> +      Container for dai-link level properties and CODEC sub-nodes.
->> +
->> +    properties:
->> +      codec:
->> +        type: object
->> +        description: Holds subnode which indicates codec dai.
->> +
->> +        properties:
->> +          sound-dai:
->> +            maxItems: 1
->> +            description: phandle of the codec DAI
->> +
->> +        additionalProperties: false
->> +
->> +      link-name:
->> +        description:
->> +          This property corresponds to the name of the BE dai-link to 
->> which
->> +          we are going to update parameters in this node.
->> +        items:
->> +          const: 2ND I2S BE
->> +
->> +      sound-dai:
->> +        maxItems: 1
->> +        description: phandle of the CPU DAI
->> +
->> +    additionalProperties: false
->> +
->> +    required:
->> +      - link-name
->> +      - sound-dai
->> +
->> +additionalProperties: false
->> +
->> +required:
->> +  - compatible
->> +  - mediatek,platform
->> +  - pinctrl-names
->> +  - vaud28-supply
->> +
->> +examples:
->> +  - |
->> +    sound {
->> +        compatible = "mediatek,mt8365-mt6357";
->> +        mediatek,platform = <&afe>;
-> 
-> Please:
-> 
-> https://docs.kernel.org/devicetree/bindings/dts-coding-style.html
-
-Is it about the wrong pinctrl-names tab alignment ?
-Also, 2ND I2S BE => 2ND_I2S_BE ?
-Otherwise, I don't get it sorry.
-
-> 
-> Regards,
-> Angelo
-> 
->> +        pinctrl-names = "aud_default",
->> +            "aud_dmic",
->> +            "aud_miso_off",
->> +            "aud_miso_on",
->> +            "aud_mosi_off",
->> +            "aud_mosi_on";
->> +        pinctrl-0 = <&aud_default_pins>;
->> +        pinctrl-1 = <&aud_dmic_pins>;
->> +        pinctrl-2 = <&aud_miso_off_pins>;
->> +        pinctrl-3 = <&aud_miso_on_pins>;
->> +        pinctrl-4 = <&aud_mosi_off_pins>;
->> +        pinctrl-5 = <&aud_mosi_on_pins>;
->> +        vaud28-supply = <&mt6357_vaud28_reg>;
->> +
->> +        /* hdmi interface */
->> +        dai-link-0 {
->> +            sound-dai = <&afe>;
->> +            link-name = "2ND I2S BE";
->> +
->> +            codec {
->> +                sound-dai = <&it66121hdmitx>;
->> +            };
->> +        };
->> +    };
->>
-> 
+There have been some such drivers in the past but many have been already
+converted, or in some cases the newer hardware generation uses MC. Keeping
+API compatibility is a requirement so you can't just "add support" later
+on.
 
 -- 
 Regards,
-Alexandre
+
+Sakari Ailus
 
