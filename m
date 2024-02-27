@@ -1,149 +1,110 @@
-Return-Path: <linux-kernel+bounces-82462-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 806B28684F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:21:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 079928684F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:24:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A10D2863C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:21:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391B51C20FFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:24:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7180120EE;
-	Tue, 27 Feb 2024 00:21:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D63457FF;
+	Tue, 27 Feb 2024 00:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kpt4X6zd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="AGAbgpqS"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB18B1859;
-	Tue, 27 Feb 2024 00:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D4DE161;
+	Tue, 27 Feb 2024 00:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708993277; cv=none; b=dDYwd/bJo4q5msuCAU3svpd0lswqdqsWC312PUdvp2GzFdxSgIly3Ly27BmI1rj2RV51mJTkhKfmfarc8V8eefbPCfaozJMY4l5XLSK4mfL5Ima5aTN66p1jWv1vJHrvK1q5kVSGzyIC82edTxr2zyfkS5CWIQDgKDwWkpce+sY=
+	t=1708993439; cv=none; b=reMDjk/olIJOTFnWr+sMHnw2FAl+0rAgy0xcZyvEGOvWA2SpISxIA/i+woW6FB3I9crOpvTEJwHVhD2xhHv74vM4Wd6UedAea4lWLSYMOGyjqFS37QPPv5EWBfrn4jPbtOEkEMr8e5/TMcOLxdzuvuE89A/FKEiNH0hb5pcWKBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708993277; c=relaxed/simple;
-	bh=8NaJg0kgxbhEDKrN/5IITu2XOQzRyVbnI1VrY65Y4SI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qT3phgQi6/IUqSnpVEjhMHeoG0AR0KXUcTPP4HUZdi/qzXA9zyok8ke2KlJkDkHyi/eFzp/ohtDuYdNKO6Nh+Egvd0UGNzYYMpDJRXlMLARC/VowrNKoG87rpqNqXtQ1ZOEposguc4OHVCmu+oG4f8wZCOa9gXrgMZdzDV0EfMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kpt4X6zd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DE9EC433F1;
-	Tue, 27 Feb 2024 00:21:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708993277;
-	bh=8NaJg0kgxbhEDKrN/5IITu2XOQzRyVbnI1VrY65Y4SI=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Kpt4X6zd6vBGkK34OLhy32XndWxyOgYCqRHFb+cPvtbSkooMCCdhP0/XOpLFGTgQG
-	 KXtFtojWCOS7qzr/uRY5fylOi+Is52NU7T+zDPAETFvZt/h/YKrFMjGPiOKC0GPvyW
-	 ljHUNRRMByzsXZXQAOoJCZvcW/7qQQytIqLptrgiRzBdMrEKYNX0y+X+uY3R7ym0zj
-	 ePqX4PiUi9qfoPMWJ7buWd56t6LRAARsJvDjHrqk2btCHkuCWVIKwANV7DSqC31Fmj
-	 m5uwN5xDJUtVT0qruNr60wckE8zuwWIYuSCGqIDZ5gSjfKG8v6FNY7IV+QuZILppWA
-	 lvBfyCGDCGW3w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id BB9EFCE098C; Mon, 26 Feb 2024 16:21:16 -0800 (PST)
-Date: Mon, 26 Feb 2024 16:21:16 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc: linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	Marcus Seyfarth <m.seyfarth@gmail.com>,
-	Tor Vic <torvic9@mailbox.org>
-Subject: Re: [PATCH 5/6] rcu/nocb: Fix WARN_ON_ONCE() in the
- rcu_nocb_bypass_lock()
-Message-ID: <20c65121-3a78-4c48-87d8-adc7589f8f74@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240201014100.3204532-1-boqun.feng@gmail.com>
- <20240201014100.3204532-6-boqun.feng@gmail.com>
- <12387583.O9o76ZdvQC@natalenko.name>
+	s=arc-20240116; t=1708993439; c=relaxed/simple;
+	bh=/R2KGYx4M73EQiEpagehkCmiSlAuBSA3ugAShXVnUzo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=myIeN+HG/0xb8L4jT6RJz3QwSB9u+cI/mLsY9fCtKyQORgUeTPdVuXpybaId7XxEuAfqQ5g8rUZpWeyvKA+5+kdW/WRRrxd01NZaPn2CF/4vWOLezl7KbrrZ1i3P6U8HN6PZl9hooe93nvDUbUY6HQanBZh7dt8BEEYl5Ly4tfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=AGAbgpqS; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=hZSVzQu3bZY/XxOV798gnatyz5RNs3nX5VK/VPEQ5F4=; b=AGAbgpqSJN0PNMbkqgRXAf2zyn
+	DqLI7mxvbx4vZWaXyqCAenoM/+3kQN1kbvh6mXsJsjD0CStM6uIXVdVeOrJUy+4L217BXaobxX8UC
+	t7Lp5wggQZNNGz70h1JK2IgfbBUhwePC48VoogydpT2M5KXRHtXXEoa7tIhWYDiZv/XN4XD0zg8L+
+	1YLo2o2btpOueNSiclekbbzyxRWfAec19OSMDjq8XjI9aocNpYMY1P11JqvYAfVWRxKxKdjgrGtmW
+	2ayUr2stDENxw3fwS8K7/ypykg6h3wq091xMsk/ARjjtD3mPOOY0UhRhcDDZZsrwkhgCb19LM1GbS
+	2GM8HIfA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1relGD-000000035RB-2XFi;
+	Tue, 27 Feb 2024 00:23:53 +0000
+Message-ID: <ed115040-5417-4770-a9b7-43b5350851b9@infradead.org>
+Date: Mon, 26 Feb 2024 16:23:50 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <12387583.O9o76ZdvQC@natalenko.name>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] ethernet: adi: Move select PHYLIB from NET_VENDOR_ADI
+ to ADIN1110
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <99d4d711acfc020c8987e96145f2f1f323cbaa3b.1708947112.git.geert@linux-m68k.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <99d4d711acfc020c8987e96145f2f1f323cbaa3b.1708947112.git.geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat, Feb 24, 2024 at 05:30:29PM +0100, Oleksandr Natalenko wrote:
-> Hello.
-> 
-> On čtvrtek 1. února 2024 2:40:57 CET Boqun Feng wrote:
-> > From: Zqiang <qiang.zhang1211@gmail.com>
-> > 
-> > For the kernels built with CONFIG_RCU_NOCB_CPU_DEFAULT_ALL=y and
-> > CONFIG_RCU_LAZY=y, the following scenarios will trigger WARN_ON_ONCE()
-> > in the rcu_nocb_bypass_lock() and rcu_nocb_wait_contended() functions:
-> > 
-> >         CPU2                                               CPU11
-> > kthread
-> > rcu_nocb_cb_kthread                                       ksys_write
-> > rcu_do_batch                                              vfs_write
-> > rcu_torture_timer_cb                                      proc_sys_write
-> > __kmem_cache_free                                         proc_sys_call_handler
-> > kmemleak_free                                             drop_caches_sysctl_handler
-> > delete_object_full                                        drop_slab
-> > __delete_object                                           shrink_slab
-> > put_object                                                lazy_rcu_shrink_scan
-> > call_rcu                                                  rcu_nocb_flush_bypass
-> > __call_rcu_commn                                            rcu_nocb_bypass_lock
-> >                                                             raw_spin_trylock(&rdp->nocb_bypass_lock) fail
-> >                                                             atomic_inc(&rdp->nocb_lock_contended);
-> > rcu_nocb_wait_contended                                     WARN_ON_ONCE(smp_processor_id() != rdp->cpu);
-> >  WARN_ON_ONCE(atomic_read(&rdp->nocb_lock_contended))                                          |
-> >                             |_ _ _ _ _ _ _ _ _ _same rdp and rdp->cpu != 11_ _ _ _ _ _ _ _ _ __|
-> > 
-> > Reproduce this bug with "echo 3 > /proc/sys/vm/drop_caches".
-> > 
-> > This commit therefore uses rcu_nocb_try_flush_bypass() instead of
-> > rcu_nocb_flush_bypass() in lazy_rcu_shrink_scan().  If the nocb_bypass
-> > queue is being flushed, then rcu_nocb_try_flush_bypass will return
-> > directly.
-> > 
-> > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> >  kernel/rcu/tree_nocb.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> > index 9e8052ba14b9..ffa69a5e18f4 100644
-> > --- a/kernel/rcu/tree_nocb.h
-> > +++ b/kernel/rcu/tree_nocb.h
-> > @@ -1391,7 +1391,7 @@ lazy_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
-> >  			rcu_nocb_unlock_irqrestore(rdp, flags);
-> >  			continue;
-> >  		}
-> > -		WARN_ON_ONCE(!rcu_nocb_flush_bypass(rdp, NULL, jiffies, false));
-> > +		rcu_nocb_try_flush_bypass(rdp, jiffies);
-> >  		rcu_nocb_unlock_irqrestore(rdp, flags);
-> >  		wake_nocb_gp(rdp, false);
-> >  		sc->nr_to_scan -= _count;
-> > 
-> 
-> Does this fix [1] [2]?
-> 
-> Thank you.
-> 
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=217948
-> [2] https://lore.kernel.org/lkml/8461340f-c7c8-4e1e-b7fa-a0e4b9a6c2a8@gmail.com/
+Hi Geert,
 
-It might, but why not apply it to the exact kernel version on which the
-bug appeared and see if it prevents it?
+On 2/26/24 03:34, Geert Uytterhoeven wrote:
+> The NET_VENDOR_* Kconfig options are used as gatekeepers.  Merely
+> enabling such an option must not enable any other extra code.
+> 
+> Fixes: a9f80df4f5144030 ("net: ethernet: adi: requires PHYLIB support")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>  drivers/net/ethernet/adi/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/adi/Kconfig b/drivers/net/ethernet/adi/Kconfig
+> index c91b4dcef4ec2f5f..760a9a60bc15c184 100644
+> --- a/drivers/net/ethernet/adi/Kconfig
+> +++ b/drivers/net/ethernet/adi/Kconfig
+> @@ -7,7 +7,6 @@ config NET_VENDOR_ADI
+>  	bool "Analog Devices devices"
+>  	default y
+>  	depends on SPI
+> -	select PHYLIB
+>  	help
+>  	  If you have a network (Ethernet) card belonging to this class, say Y.
+>  
+> @@ -22,6 +21,7 @@ config ADIN1110
+>  	tristate "Analog Devices ADIN1110 MAC-PHY"
+>  	depends on SPI && NET_SWITCHDEV
+>  	select CRC8
+> +	select PHYLIB
+>  	help
+>  	  Say yes here to build support for Analog Devices ADIN1110
+>  	  Low Power 10BASE-T1L Ethernet MAC-PHY.
 
-							Thanx, Paul
+I sent the same patch last night (local time):
+https://lore.kernel.org/lkml/20240226074820.29250-1-rdunlap@infradead.org/
+
+Hopefully one of them can be merged soon.
+
+-- 
+#Randy
 
