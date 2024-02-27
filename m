@@ -1,136 +1,230 @@
-Return-Path: <linux-kernel+bounces-83637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B8C1869C99
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:44:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BF7E869CA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:45:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAACA284BC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:44:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B918B287D80
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D425F20B38;
-	Tue, 27 Feb 2024 16:44:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5ACC219ED;
+	Tue, 27 Feb 2024 16:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RGuGLMKl"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B1FOEuLn"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E022C688
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:44:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1DB208AD
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709052249; cv=none; b=tqslgSv6tDPJB23agl13scL5oQpgDbRZtzxajycMElToYVYDhrQbBLBnIqHCDV2epqr0d16rejEkTbuMFAVdswVD2jFeZfSRSjZBHlGwPDGfllli31J40xh/RAl0Jnq32RLZ4Razf8iuDjDEf7HOs9olYzA0jRrpYAgG7Gr2uKo=
+	t=1709052275; cv=none; b=JEQ3jXvvboR0jCRfDaX4BestAk95Twtu9Nmr9TFFW9daMUoNjm9fi7tzk+KYB9NpostT8ouLLhhBkYtG3pkPTLwBq8oZMhReZmIlwJVY5lfQcIfDLCGKAtz7M13tNGCIjDWWoeqUcVxs7HK/z4FgOAswExocM9RSo3fPivHAojs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709052249; c=relaxed/simple;
-	bh=R5Z1nfb4rp2iS0jTSNix4fLmmprNlcKBtCaKntrzuGY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=rJ2hzydIqVW/bE2Japt0h0q6nORsVQ+l8WYAa7lwEYO+jH4aAR0KhEBPktfhgN8aScEGrVrZFzKQnAIFMR1CEw5K22ERpzwdlvrtpwPyv7s45rmts0n9ts6CQ76gb77MF3vrvuYlmv+NyxA+cL6O8PlueL37gBb5I8SeJhAKTUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RGuGLMKl; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D3F6A20002;
-	Tue, 27 Feb 2024 16:44:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709052245;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=76mZ13DHESmZTVSHEaVoshFTsFCTogrCRWvywDtKTWE=;
-	b=RGuGLMKlcnyRzk7Ze4to/gJfeKNYw9LJvr5cm5DiUHmlR2n3X0/rk93nu7DP00MOxMrZ8m
-	jxiv6bMj7wrMRgzFRmkmSZveRWikAa6pqdL0Sr+yoEBoGFy38VoW9wJIYDbTyXs2xZ2kVa
-	7Qty6dttcX32k+zkRIbjaYFPunVj23pEd7w5IonQDcZ9TpVqbNPVrX/QGFM4pMYDu6roVd
-	XbGjLrZS8G8XWaMBj4FFXY5U6XlNeUyi3vA6jKlildBe10In8ry5Okluvap9TGck09eXZU
-	82QKnp9AmhLzhmMhy1nx1hcVYlojf67M4gTi6GwEnE32TkdG/ukdoZV8s293bA==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Thomas Gleixner
- <tglx@linutronix.de>
-Cc: Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH 07/13] irqchip/mvebu-pic: Convert to platform remove
- callback returning void
-In-Reply-To: <df977ad4c02ff913b01cdd6c348e7fae3e08e651.1703284359.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1703284359.git.u.kleine-koenig@pengutronix.de>
- <df977ad4c02ff913b01cdd6c348e7fae3e08e651.1703284359.git.u.kleine-koenig@pengutronix.de>
-Date: Tue, 27 Feb 2024 17:44:04 +0100
-Message-ID: <87r0gxj1rf.fsf@BL-laptop>
+	s=arc-20240116; t=1709052275; c=relaxed/simple;
+	bh=8L9o+rkshv7jCoxYQ1OSs1r5Tuu6hIBgXJukq+nieLU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LoIUHTqtCZ527Shi9TU7t0qjH7mzPVhEA1Zzo8Igl8ExpKOjG7HlIIIvMjQuQEA9pPLoy6yB1OggTNKdczyIxvlZZMVDj0oTE7C7o8JQYrnI5t09IL4JtlFp24N9O6o6WwJjcnSOZdBm+ckfG3ity9WftlGdbZot9/c2v1n9aWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B1FOEuLn; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso15096a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709052272; x=1709657072; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y67+F1ljFr7EvcM7vrsKGJMZCewGN818+2H79M1Cvug=;
+        b=B1FOEuLnt/8hSJBh3wUIemO8PpPk3LCgmYqZWxXZrBQWZCXQfkA1Vey782oxfFvz/T
+         5HIve13wZ/jAsW73fQR4tJUqV4vWVLwKWvXrvc7A+cVFQlJoDVkbQ18a0CFjdLjRgub9
+         0sZIIqd0wdoLyHwKah0tq5kDVJg8H/3R/gm2ejmBWg+QihVzLdMYTma9Qd6CgZDiGVLl
+         C2M9hFc3noLTca+6gTGagUUkkZaRSPBvg1lURs9jXwlsz8LPkZFwfuPPgcDAGCAAuKlx
+         D9uIl1kMgb8naoOEpHLyYuvPi0aMoWicGvp3jjT9SNifY4AQGk5zJ0W9kidwdFv112LK
+         eQHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709052272; x=1709657072;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y67+F1ljFr7EvcM7vrsKGJMZCewGN818+2H79M1Cvug=;
+        b=IgdHeR3ZHkmMKrEgNpOccC5SNVm/BHUUERG4lBS7BkA7qNXSN5fE03Tu0fbVO/Bgo7
+         BvkPF43HoSzPInjZR9wSAV4Yg1Kza8Piz9tuxROEzCiDivlAmB65jqSUed1TLDuCBm7/
+         RqZ6qVsr6NON8/r9idtnrwHB10blBXZXUwagqm0sBY3d4n7bix/+GARTo96CYp+1dbD6
+         kkBdL19uOAokzL57pziywf9KudOcPWlCRliKcbeyr9G+Lnlf1jBt2+0GQ08ZExSMsDe6
+         HqLb133CJKWTJ/jkDIPy/W55eqADhM6A+UxdVUuAV1/kmA3f+A1rkbZog5sEZjbwTehn
+         g2SQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXY31AQkjsFoCUCg78D4z1Gz3HVq/6+47mcMV8IHpBuEiGhqblOMAZuoOS6chiudDgy5smPKTJvhZk26HK6GKS5tXAyVgNJxOGhO9hP
+X-Gm-Message-State: AOJu0YwQkJW3DoBiVwQ+TImRcAvfnx6bDuq7AuSPX+7lwhhNO1vWcmTI
+	/J3tdgbgP6NvRKvEMTl1ScUIhQ7Ozhv+EB4WyvX3xc4kIAeSE8mVU5J3ffUp4TjI5BlAjJBMDSV
+	indT8aOxM53snEv1LMGv3D7HSUESx6XW956bd
+X-Google-Smtp-Source: AGHT+IHJEIutuvD5mT3lzoYNxTYBdXitRMfqCawctD2clmn+EK2ztXIcJWsbARjP3/Zy2n0mCTYUoL9z4fZMXvDxHhg=
+X-Received: by 2002:a50:9ea5:0:b0:55f:8851:d03b with SMTP id
+ a34-20020a509ea5000000b0055f8851d03bmr198565edf.5.1709052271564; Tue, 27 Feb
+ 2024 08:44:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+In-Reply-To: <Zd4DXTyCf17lcTfq@debian.debian>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 27 Feb 2024 17:44:17 +0100
+Message-ID: <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: Yan Zhai <yan@cloudflare.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: gregory.clement@bootlin.com
 
-Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de> writes:
-
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
+On Tue, Feb 27, 2024 at 4:44=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote=
+:
 >
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
+> We noticed task RCUs being blocked when threaded NAPIs are very busy in
+> production: detaching any BPF tracing programs, i.e. removing a ftrace
+> trampoline, will simply block for very long in rcu_tasks_wait_gp. This
+> ranges from hundreds of seconds to even an hour, severely harming any
+> observability tools that rely on BPF tracing programs. It can be
+> easily reproduced locally with following setup:
 >
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
+> ip netns add test1
+> ip netns add test2
 >
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-
-Acked-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-
-Thanks,
-
-Gregory
+> ip -n test1 link add veth1 type veth peer name veth2 netns test2
+>
+> ip -n test1 link set veth1 up
+> ip -n test1 link set lo up
+> ip -n test2 link set veth2 up
+> ip -n test2 link set lo up
+>
+> ip -n test1 addr add 192.168.1.2/31 dev veth1
+> ip -n test1 addr add 1.1.1.1/32 dev lo
+> ip -n test2 addr add 192.168.1.3/31 dev veth2
+> ip -n test2 addr add 2.2.2.2/31 dev lo
+>
+> ip -n test1 route add default via 192.168.1.3
+> ip -n test2 route add default via 192.168.1.2
+>
+> for i in `seq 10 210`; do
+>  for j in `seq 10 210`; do
+>     ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dport 520=
+1
+>  done
+> done
+>
+> ip netns exec test2 ethtool -K veth2 gro on
+> ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threaded'
+> ip netns exec test1 ethtool -K veth1 tso off
+>
+> Then run an iperf3 client/server and a bpftrace script can trigger it:
+>
+> ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
+> ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g -t 100 =
+>/dev/null&
+> bpftrace -e 'kfunc:__napi_poll{@=3Dcount();} interval:s:1{exit();}'
+>
+> Above reproduce for net-next kernel with following RCU and preempt
+> configuraitons:
+>
+> # RCU Subsystem
+> CONFIG_TREE_RCU=3Dy
+> CONFIG_PREEMPT_RCU=3Dy
+> # CONFIG_RCU_EXPERT is not set
+> CONFIG_SRCU=3Dy
+> CONFIG_TREE_SRCU=3Dy
+> CONFIG_TASKS_RCU_GENERIC=3Dy
+> CONFIG_TASKS_RCU=3Dy
+> CONFIG_TASKS_RUDE_RCU=3Dy
+> CONFIG_TASKS_TRACE_RCU=3Dy
+> CONFIG_RCU_STALL_COMMON=3Dy
+> CONFIG_RCU_NEED_SEGCBLIST=3Dy
+> # end of RCU Subsystem
+> # RCU Debugging
+> # CONFIG_RCU_SCALE_TEST is not set
+> # CONFIG_RCU_TORTURE_TEST is not set
+> # CONFIG_RCU_REF_SCALE_TEST is not set
+> CONFIG_RCU_CPU_STALL_TIMEOUT=3D21
+> CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=3D0
+> # CONFIG_RCU_TRACE is not set
+> # CONFIG_RCU_EQS_DEBUG is not set
+> # end of RCU Debugging
+>
+> CONFIG_PREEMPT_BUILD=3Dy
+> # CONFIG_PREEMPT_NONE is not set
+> CONFIG_PREEMPT_VOLUNTARY=3Dy
+> # CONFIG_PREEMPT is not set
+> CONFIG_PREEMPT_COUNT=3Dy
+> CONFIG_PREEMPTION=3Dy
+> CONFIG_PREEMPT_DYNAMIC=3Dy
+> CONFIG_PREEMPT_RCU=3Dy
+> CONFIG_HAVE_PREEMPT_DYNAMIC=3Dy
+> CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=3Dy
+> CONFIG_PREEMPT_NOTIFIERS=3Dy
+> # CONFIG_DEBUG_PREEMPT is not set
+> # CONFIG_PREEMPT_TRACER is not set
+> # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+>
+> An interesting observation is that, while tasks RCUs are blocked,
+> related NAPI thread is still being scheduled (even across cores)
+> regularly. Looking at the gp conditions, I am inclining to cond_resched
+> after each __napi_poll being the problem: cond_resched enters the
+> scheduler with PREEMPT bit, which does not account as a gp for tasks
+> RCUs. Meanwhile, since the thread has been frequently resched, the
+> normal scheduling point (no PREEMPT bit, accounted as a task RCU gp)
+> seems to have very little chance to kick in. Given the nature of "busy
+> polling" program, such NAPI thread won't have task->nvcsw or task->on_rq
+> updated (other gp conditions), the result is that such NAPI thread is
+> put on RCU holdouts list for indefinitely long time.
+>
+> This is simply fixed by mirroring the ksoftirqd behavior: after
+> NAPI/softirq work, raise a RCU QS to help expedite the RCU period. No
+> more blocking afterwards for the same setup.
+>
+> Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop support=
+")
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
 > ---
->  drivers/irqchip/irq-mvebu-pic.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+>  net/core/dev.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
-> diff --git a/drivers/irqchip/irq-mvebu-pic.c b/drivers/irqchip/irq-mvebu-=
-pic.c
-> index ef3d3646ccc2..57e3f99b61f5 100644
-> --- a/drivers/irqchip/irq-mvebu-pic.c
-> +++ b/drivers/irqchip/irq-mvebu-pic.c
-> @@ -167,14 +167,12 @@ static int mvebu_pic_probe(struct platform_device *=
-pdev)
->  	return 0;
->  }
->=20=20
-> -static int mvebu_pic_remove(struct platform_device *pdev)
-> +static void mvebu_pic_remove(struct platform_device *pdev)
->  {
->  	struct mvebu_pic *pic =3D platform_get_drvdata(pdev);
->=20=20
->  	on_each_cpu(mvebu_pic_disable_percpu_irq, pic, 1);
->  	irq_domain_remove(pic->domain);
-> -
-> -	return 0;
->  }
->=20=20
->  static const struct of_device_id mvebu_pic_of_match[] =3D {
-> @@ -185,7 +183,7 @@ MODULE_DEVICE_TABLE(of, mvebu_pic_of_match);
->=20=20
->  static struct platform_driver mvebu_pic_driver =3D {
->  	.probe  =3D mvebu_pic_probe,
-> -	.remove =3D mvebu_pic_remove,
-> +	.remove_new =3D mvebu_pic_remove,
->  	.driver =3D {
->  		.name =3D "mvebu-pic",
->  		.of_match_table =3D mvebu_pic_of_match,
-> --=20
-> 2.42.0
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 275fd5259a4a..6e41263ff5d3 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -6773,6 +6773,10 @@ static int napi_threaded_poll(void *data)
+>                                 net_rps_action_and_irq_enable(sd);
+>                         }
+>                         skb_defer_free_flush(sd);
+> +
+> +                       if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> +                               rcu_softirq_qs();
+> +
+>                         local_bh_enable();
+>
+>                         if (!repoll)
+> --
+> 2.30.2
 >
 
---=20
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Hmm....
+Why napi_busy_loop() does not have a similar problem ?
+
+It is unclear why rcu_all_qs() in __cond_resched() is guarded by
+
+#ifndef CONFIG_PREEMPT_RCU
+     rcu_all_qs();
+#endif
+
+
+Thanks.
 
