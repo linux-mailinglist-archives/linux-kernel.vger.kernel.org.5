@@ -1,105 +1,107 @@
-Return-Path: <linux-kernel+bounces-83269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C5686910E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:57:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE3786911A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:58:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20094B2790D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:57:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 714011F21FB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:58:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBB713AA28;
-	Tue, 27 Feb 2024 12:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tUo8ltF1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C1613A89B;
+	Tue, 27 Feb 2024 12:57:47 +0000 (UTC)
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EF213329D;
-	Tue, 27 Feb 2024 12:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294E0135A5C
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709038617; cv=none; b=bU7XTQcByWv+ouL3ZaEvbjhuBUPgrOQeJ5J5TdrhHO0KoF7HfTYKanb7ojXc9Er7IGPtWFWYR6YZPjZOZNdr8J+mV429NvqhWwKN44mH1wqWJPEZwsugWuobgOC4bSdZ6anHMQhZJRFtwv5Lnhuhm9akx9Q28CB5eXKYgZnHyaM=
+	t=1709038667; cv=none; b=Fwnu8AdyW9CHJePQOS8uYdzUbgSVS5RWzDMca472WKuhUmGaKIKF4k58tsog3l5w0Q5fjnyRVyyqZ7dKM32N66CWmibJnjlU+4K9l+1MWXQ8QHdD+WEXukAlR/N26NBhoXW+0OFs6WFAjk5PoO9wGGM0IbUljuxnjyCz6px1CWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709038617; c=relaxed/simple;
-	bh=apcxIyzn0k7+m12GtqffHekIeQvQq1MA8T3i+VB34z4=;
+	s=arc-20240116; t=1709038667; c=relaxed/simple;
+	bh=rLuWRYY4nrBUkzXuyIyoCtcyMvzxxNjHaMWHuiSTGqo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qSxG86yxnHHAbvrWs6AOLRHloMFs32kPHfNrIbouDk0RxNN0T4duDwnlqwLl8g8sc5u2zHBIp2tPbwwr5pnZjzF5b2pmSzGBHBODQk/uvgx6XfU5Z0HfeSz5jtGfc2B+vs8hqBIzi6seznrrA7BNwNJCwXJuaxAG5h0Lz0/NqdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tUo8ltF1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF135C433F1;
-	Tue, 27 Feb 2024 12:56:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709038616;
-	bh=apcxIyzn0k7+m12GtqffHekIeQvQq1MA8T3i+VB34z4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tUo8ltF1j64VnsC26KES1wChaS26QqTrp61YOIGHMHhZxScak6IKV2RWQtzoE9thm
-	 kLXSfT0/G8rTwU1OGzTfZhdeJ2kxVLGwY7UTk8pVm40tqNJNRAyLTyngpiI0LuGwq+
-	 j03DRUz1EX7GleuhrOf/TcJfotZV3wxhg5aJsI+MPf1FH+r7bkObaWPqM9GDccXHaj
-	 h+UoVYaTSp2WsYWtz/srtLi74k+AEmimwGvMoClPv5LjCq+ub6867ZfXXNsYHrnjLU
-	 bosIgaCA/FmPW04D7tnxCX2iEe/OImYWqYH7uS+ReWNffJzwOSJ6f5oW81VVmVcj5J
-	 J5SPOWmsZH8qA==
-Date: Tue, 27 Feb 2024 12:56:52 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Javier =?iso-8859-1?Q?Garc=EDa?= <javier.garcia.ta@udima.es>
-Cc: daniel.baluta@nxp.com, Liam Girdwood <lgirdwood@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Convert the Imagination Technologies SPDIF Input
- Controllerto DT schema.
-Message-ID: <4b4b4eb8-a160-455f-a787-156d3c933306@sirena.org.uk>
-References: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+	 Content-Type:Content-Disposition:In-Reply-To; b=R84fzr3nZRt/1ZqfLq6ljmcc7+4mZKdBqZUk+ZRNDhTNMNLJU1Pk2v9+HidOZ+xwFxXyqz6Kaq+YZtgr12FsQ0bAKzdvq/7xrxkZcwnYDATru2rFLPVnQ1bxOPyz3SbzCuk+Y1Fi2dgiiiW6jmVnjPPG+lMTxMwe8CD8GcB1LP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
+Received: from local
+	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+	 (Exim 4.96.2)
+	(envelope-from <daniel@makrotopia.org>)
+	id 1rex1I-0004YG-2F;
+	Tue, 27 Feb 2024 12:57:16 +0000
+Date: Tue, 27 Feb 2024 12:57:07 +0000
+From: Daniel Golle <daniel@makrotopia.org>
+To: Zhihao Cheng <chengzhihao1@huawei.com>
+Cc: Richard Weinberger <richard@nod.at>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: ubi: fix NVMEM over UBI volumes on 32-bit systems
+Message-ID: <Zd3cIw5NZOW2KtXe@makrotopia.org>
+References: <186fa96ae25f7033ff8b6f0f7fcfb1e602f556fc.1708971705.git.daniel@makrotopia.org>
+ <ab2b4573-58ce-d895-0aae-69e3647e0a68@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="h+L9bvOLfgbqbaMj"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240227123602.258190-1-javier.garcia.ta@udima.es>
-X-Cookie: Please go away.
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ab2b4573-58ce-d895-0aae-69e3647e0a68@huawei.com>
+
+On Tue, Feb 27, 2024 at 10:23:17AM +0800, Zhihao Cheng wrote:
+> 在 2024/2/27 2:23, Daniel Golle 写道:
+> > A compiler warning related to sizeof(int) != 8 when calling do_div()
+> > is triggered when building on 32-bit platforms.
+> > Address this by using integer types having a well-defined size where
+> > appropriate.
+> > 
+> > Fixes: 3ce485803da1 ("mtd: ubi: provide NVMEM layer over UBI volumes")
+> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> > ---
+> >   drivers/mtd/ubi/nvmem.c | 5 ++++-
+> >   1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
+> > index b7a93c495d172..5820a170d2512 100644
+> > --- a/drivers/mtd/ubi/nvmem.c
+> > +++ b/drivers/mtd/ubi/nvmem.c
+> > @@ -23,14 +23,17 @@ struct ubi_nvmem {
+> >   static int ubi_nvmem_reg_read(void *priv, unsigned int from,
+> >   			      void *val, size_t bytes)
+> >   {
+> > -	int err = 0, lnum = from, offs, bytes_left = bytes, to_read;
+> > +	uint32_t bytes_left, offs, to_read;
+> >   	struct ubi_nvmem *unv = priv;
+> >   	struct ubi_volume_desc *desc;
+> > +	uint64_t lnum = from;
+> > +	int err = 0;
+> >   	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
+> >   	if (IS_ERR(desc))
+> >   		return PTR_ERR(desc);
+> > +	bytes_left = bytes;
+> The 'bytes' is a size_t type, which has 64 bits on 64-bit platforms. This
+> assignment will lead a type truncation, so should we add a explicit type
+> conversion here to avoid compiler warning?
+
+Oh right. I reckon the best is to declare 'bytes' as 'size_t' type as well
+then. I will send v2 with that change shortly.
 
 
---h+L9bvOLfgbqbaMj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Feb 27, 2024 at 01:35:55PM +0100, Javier Garc=EDa wrote:
-> Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
-
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-
-> +title: Imagination Technologies SPDIF Input Controller
-
-> +maintainers:
-> +  - Rob Herring <robh+dt@kernel.org>
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-
-I'm not sure they'd agree with that...
-
---h+L9bvOLfgbqbaMj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXd3BMACgkQJNaLcl1U
-h9BFeAf9F2UrHSUmj5HdrZl50lIgzVj+ydziDWHATv5g06rwiGkOPZBpBwwwPZLn
-AamwLnKbU2jaHXzVfkcpjdsjUHmPVOyZyAY5VKClzx8x/cjQJa+kMyb4HOjfudpy
-adLQrz6l+Vv2N+y49R05UImy+r6NNiYvO6zTyUu/Nxi6efggwqZJ1iWSpC7fU5wd
-HWZ/K0wgvc26vGsy5biTtR2L8MQY+qEEh1Rx3rnG+jUuLWt6K51BobL88b1GyV+b
-gX7BF5vj9Ekj47UtSK4rtqV1BvZeERgmGKjiEgnR3PNXe0yGqMOheKNvvGyI9SuK
-qh7Nc6dNcdzCJmtEM1K5tH8BonlyoQ==
-=lxob
------END PGP SIGNATURE-----
-
---h+L9bvOLfgbqbaMj--
+> >   	offs = do_div(lnum, unv->usable_leb_size);
+> >   	while (bytes_left) {
+> >   		to_read = unv->usable_leb_size - offs;
+> > 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
