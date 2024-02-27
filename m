@@ -1,283 +1,118 @@
-Return-Path: <linux-kernel+bounces-82990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D16A868CAC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:51:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF2A7868CB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8A85280C89
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:51:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 707041F22F2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55586137C34;
-	Tue, 27 Feb 2024 09:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BJB7CVTO"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC80B1369B9
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45760137C30;
+	Tue, 27 Feb 2024 09:52:16 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B14997BAE7;
+	Tue, 27 Feb 2024 09:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709027478; cv=none; b=PuyFslruMKgW+hcijZ/bnrycuhbujz12D96g3Nv8ZusJ/ITtZ5rXWV3KLIcHnpZuK3YN5lfBxEGqkTUMsbWePpLGa6AXHMOV2Vjb4szxJbQcK6fhHIeIgkuMNsqFSvpdu8leR65uoH80Re2XLpV48mrf3FQPbvl3iy5x2V/hcpM=
+	t=1709027535; cv=none; b=b+D9Rh6yVoMuweKenvFuULByrZ5mjhsB1qUWq91lGjSp0evC91vlMTtOUJMXiny++6syQqeVb3B+b3fJV8MdkzDEBHxpaNdYMct7FJizumEfK9J0Gm8VD10wKZLSJ5TtDRS+/sQ73q96KMKVHEVSbW9LfP6B1yVr/oNwDv00y1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709027478; c=relaxed/simple;
-	bh=ThSU5xHCDVx5Eje/Pmo00tRaVsY0FDEDS390scOQpiU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ldh/fb4OngzDRoD06opINeouDsbkYIxOrAtE7Rs4F7UmwXZKB3bKdpWrZB/K2E21s4y75lBWfR8WmTLVjW7vhvRaM+Y18e66tXcDPgERxmBpxwEBBUR4G4pa4AM8dCi9Dg1rcuG7e4Pzic3pL4atcDoP+ROU24zWmNh1mlY4GfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BJB7CVTO; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso3158358276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:51:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709027476; x=1709632276; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GLfwVegLj3NllSkhisIJaN4ho41gslKZMK9c3d+Tq3A=;
-        b=BJB7CVTOSOZyGsyskJtEaMvlLXasyDiknqB1eB5nTdbnGrBP5zcoMvC+hWFa7LVVzc
-         thPhpOHm16ehrRrfUJnmtSItaYh8FpkayxdkP/BnbJx0XnlfHgLJo2x8JpPgYDwBDXoJ
-         Ib/ubaoA5tO5cv8YXVyVz2j1jwsvFcHavaIIoqwY7m/aFTaL/5/yz0U7JOQmoAF44oMd
-         ArUFBiu23U5bvh7PC5/hgs+PlrPR/QsF7rEz9OOpNvnciOS/kN/e3fr6bcZCIShWhq6R
-         MamwZtJLn1Y9+wgv7qAywwKTWBi1dLc8zPAQbQ0uRW8yNsHAJgi62Z861llcjpJSX3VH
-         uo6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709027476; x=1709632276;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GLfwVegLj3NllSkhisIJaN4ho41gslKZMK9c3d+Tq3A=;
-        b=D9/FCs+OcnfOKzb/de58a3dBRK+t84EcVebCkWaoTJSa/i2ElXgaC+u5z7m+U5l0MW
-         j7lokoFMzXDak6qhop5dT5mio3BUEXUysBTUpOAOYOwWVdvc0/b+XYdjbCD5Fp1GtaoA
-         WAZBwcPOlisGQx0IVBOpUMdfIM/pyWQ3XovZJYrMJCEEZStVCHraVKT2puR39SFBbMXF
-         JtOO+vK5k7BLQ/ONFwSvJ/lGPNE5e+m5zZz2hJc/Os5xi5zT4Sa5bf1hT1UgaAOq6WYN
-         tbF3iMneed86wkbirxRPHmHuXNsIN9JbQ86NNG/Rc07VdcR0fSTmvQDk4UlVcvEKODIt
-         SEiw==
-X-Forwarded-Encrypted: i=1; AJvYcCVS7ZOAuoDjY+hsXWX55pKHelNjZkRRMZtEqBDH26/WB3FvjYYi3fopylkHMcqqdLuaG6wVHWWiPvE8aDYV6WFz5oOvKZaYM91D2Won
-X-Gm-Message-State: AOJu0Yzbun//wdyIHHzcOId8Ny79KZms+ATL1ITdmbmC6IiFT3mhxvZ8
-	eJrV3rn14TvSPiotdNOpu4AAuvb98MaY7JdyvcUyd4adlmDfeTWJM26Il/lkQtVfYOAzkhrizjZ
-	elUiW6Oiai3iFWw17tXGAfo2PkIY=
-X-Google-Smtp-Source: AGHT+IEinYi93IuP4wYqcK9lifs9plKOa9iN+CuwNoBD+nMvGgbpqn7mazEDEhomyUZjmrJS0iPzWPmXlqu0U/yXuI8=
-X-Received: by 2002:a25:74d3:0:b0:dcd:5bfa:8184 with SMTP id
- p202-20020a2574d3000000b00dcd5bfa8184mr1600906ybc.39.1709027475695; Tue, 27
- Feb 2024 01:51:15 -0800 (PST)
+	s=arc-20240116; t=1709027535; c=relaxed/simple;
+	bh=Cqn5IP45YhhILCijJAtbO8jWBeRWihbMdcIirdKca3Y=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=mq0bKWtEGutt3mxh566diGaVL9hq0f85KMVNTImoJJ9uaAG5+urcHTBrYdsX0WA8a+Ho2BSmHN+xje6gm2KnbvZIw0yIvik1GuQoF7VfCao7ACjbBMSQ8Y2VIsHCqYmpXmtbvB8qITLsKBl+23qJs5z8XrB0WL7SixyPZkaz3b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8CxLOvKsN1lgeYRAA--.35251S3;
+	Tue, 27 Feb 2024 17:52:10 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxfRPJsN1l2LZHAA--.26685S3;
+	Tue, 27 Feb 2024 17:52:10 +0800 (CST)
+Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+To: Xi Ruoyao <xry111@xry111.site>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240222032803.2177856-1-maobibo@loongson.cn>
+ <20240222032803.2177856-4-maobibo@loongson.cn>
+ <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
+ <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
+ <CAAhV-H7p114hWUVrYRfKiBX3teG8sG7xmEW-Q-QT3i+xdLqDEA@mail.gmail.com>
+ <06647e4a-0027-9c9f-f3bd-cd525d37b6d8@loongson.cn>
+ <85781278-f3e9-4755-8715-3b9ff714fb20@app.fastmail.com>
+ <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
+ <09c5af9b-cc79-4cf2-84f7-276bb188754a@app.fastmail.com>
+ <fc05cf09-bf53-158a-3cc9-eff6f06a220a@loongson.cn>
+ <f1ba53fd2a99949187ca392c6d4488d3d5aeaf88.camel@xry111.site>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <e04a527b-2d9d-cfcd-e6ed-e8bd390649dd@loongson.cn>
+Date: Tue, 27 Feb 2024 17:52:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227024050.244567-1-21cnbao@gmail.com> <61b9dfc9-5522-44fd-89a4-140833ede8af@arm.com>
- <c95215b2-6ec5-4efb-a73b-7be92cda1c83@redhat.com>
-In-Reply-To: <c95215b2-6ec5-4efb-a73b-7be92cda1c83@redhat.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Tue, 27 Feb 2024 17:51:03 +0800
-Message-ID: <CAK1f24nwfyaF3Ly_-mMtf2fMvMgZ5sDVC1t0XsfF41ii6vvL5Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
- need it
-To: David Hildenbrand <david@redhat.com>
-Cc: Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Barry Song <v-songbaohua@oppo.com>, Yin Fengwei <fengwei.yin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <f1ba53fd2a99949187ca392c6d4488d3d5aeaf88.camel@xry111.site>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8DxfRPJsN1l2LZHAA--.26685S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7XrW7tryxtw4kAF48uF4kGrX_yoWfAwbE9r
+	47tr9xAw1qyr4xG3y2y3y7CFW3Ga1DCFyqv3yxGas3W345JFyUWF1xuF1fA3WIqa4UZrn3
+	CF1qq3yaqa4avosvyTuYvTs0mTUanT9S1TB71UUUUjUqnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUbqkYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
+	6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
+	1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
+	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4U
+	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j7BMNUUU
+	UU=
 
-On Tue, Feb 27, 2024 at 5:14=E2=80=AFPM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 27.02.24 10:07, Ryan Roberts wrote:
-> > On 27/02/2024 02:40, Barry Song wrote:
-> >> From: Barry Song <v-songbaohua@oppo.com>
-> >>
-> >> madvise and some others might need folio_pte_batch to check if a range
-> >> of PTEs are completely mapped to a large folio with contiguous physcia=
-l
-> >> addresses. Let's export it for others to use.
-> >>
-> >> Cc: Lance Yang <ioworker0@gmail.com>
-> >> Cc: Ryan Roberts <ryan.roberts@arm.com>
-> >> Cc: David Hildenbrand <david@redhat.com>
-> >> Cc: Yin Fengwei <fengwei.yin@intel.com>
-> >> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> >> ---
-> >>   -v1:
-> >>   at least two jobs madv_free and madv_pageout depend on it. To avoid
-> >>   conflicts and dependencies, after discussing with Lance, we prefer
-> >>   this one can land earlier.
-> >
-> > I think this will also ultimately be useful for mprotect too, though I =
-haven't
-> > looked at it properly yet.
-> >
->
-> Yes, I think we briefly discussed that.
->
-> >>
-> >>   mm/internal.h | 13 +++++++++++++
-> >>   mm/memory.c   | 11 +----------
-> >>   2 files changed, 14 insertions(+), 10 deletions(-)
-> >>
-> >> diff --git a/mm/internal.h b/mm/internal.h
-> >> index 13b59d384845..8e2bc304f671 100644
-> >> --- a/mm/internal.h
-> >> +++ b/mm/internal.h
-> >> @@ -83,6 +83,19 @@ static inline void *folio_raw_mapping(struct folio =
-*folio)
-> >>      return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
-> >>   }
-> >>
-> >> +/* Flags for folio_pte_batch(). */
-> >> +typedef int __bitwise fpb_t;
-> >> +
-> >> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
-> >> +#define FPB_IGNORE_DIRTY            ((__force fpb_t)BIT(0))
-> >> +
-> >> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty=
- bit. */
-> >> +#define FPB_IGNORE_SOFT_DIRTY               ((__force fpb_t)BIT(1))
-> >> +
-> >> +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
-> >> +            pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
-> >> +            bool *any_writable);
-> >> +
-> >>   void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
-> >>                                              int nr_throttled);
-> >>   static inline void acct_reclaim_writeback(struct folio *folio)
-> >> diff --git a/mm/memory.c b/mm/memory.c
-> >> index 1c45b6a42a1b..319b3be05e75 100644
-> >> --- a/mm/memory.c
-> >> +++ b/mm/memory.c
-> >> @@ -953,15 +953,6 @@ static __always_inline void __copy_present_ptes(s=
-truct vm_area_struct *dst_vma,
-> >>      set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
-> >>   }
-> >>
-> >> -/* Flags for folio_pte_batch(). */
-> >> -typedef int __bitwise fpb_t;
-> >> -
-> >> -/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
-> >> -#define FPB_IGNORE_DIRTY            ((__force fpb_t)BIT(0))
-> >> -
-> >> -/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty=
- bit. */
-> >> -#define FPB_IGNORE_SOFT_DIRTY               ((__force fpb_t)BIT(1))
-> >> -
-> >>   static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags=
-)
-> >>   {
-> >>      if (flags & FPB_IGNORE_DIRTY)
-> >> @@ -982,7 +973,7 @@ static inline pte_t __pte_batch_clear_ignored(pte_=
-t pte, fpb_t flags)
-> >>    * If "any_writable" is set, it will indicate if any other PTE besid=
-es the
-> >>    * first (given) PTE is writable.
-> >>    */
-> >
-> > David was talking in Lance's patch thread, about improving the docs for=
- this
-> > function now that its exported. Might be worth syncing on that.
->
-> Here is my take:
->
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->   mm/memory.c | 22 ++++++++++++++++++----
->   1 file changed, 18 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/memory.c b/mm/memory.c
-> index d0b855a1837a8..098356b8805ae 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -971,16 +971,28 @@ static inline pte_t __pte_batch_clear_ignored(pte_t=
- pte, fpb_t flags)
->         return pte_wrprotect(pte_mkold(pte));
->   }
->
-> -/*
-> +/**
-> + * folio_pte_batch - detect a PTE batch for a large folio
-> + * @folio: The large folio to detect a PTE batch for.
-> + * @addr: The user virtual address the first page is mapped at.
-> + * @start_ptep: Page table pointer for the first entry.
-> + * @pte: Page table entry for the first page.
-> + * @max_nr: The maximum number of table entries to consider.
-> + * @flags: Flags to modify the PTE batch semantics.
-> + * @any_writable: Optional pointer to indicate whether any entry except =
-the
-> + *               first one is writable.
-> + *
->    * Detect a PTE batch: consecutive (present) PTEs that map consecutive
-> - * pages of the same folio.
-> + * pages of the same large folio.
->    *
->    * All PTEs inside a PTE batch have the same PTE bits set, excluding th=
-e PFN,
->    * the accessed bit, writable bit, dirty bit (with FPB_IGNORE_DIRTY) an=
-d
->    * soft-dirty bit (with FPB_IGNORE_SOFT_DIRTY).
->    *
-> - * If "any_writable" is set, it will indicate if any other PTE besides t=
-he
-> - * first (given) PTE is writable.
-> + * start_ptep must map any page of the folio. max_nr must be at least on=
-e and
-> + * must be limited by the caller so scanning cannot exceed a single page=
- table.
-> + *
-> + * Return: the number of table entries in the batch.
->    */
->   static inline int folio_pte_batch(struct folio *folio, unsigned long ad=
-dr,
->                 pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
-> @@ -996,6 +1008,8 @@ static inline int folio_pte_batch(struct folio *foli=
-o, unsigned long addr,
->                 *any_writable =3D false;
->
->         VM_WARN_ON_FOLIO(!pte_present(pte), folio);
-> +       VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
-> +       VM_WARN_ON_FOLIO(page_folio(pfn_to_page(pte_pfn(pte))) !=3D folio=
-, folio);
 
-Nit:
-IIUC, the pte that maps to the first page.
- -       VM_WARN_ON_FOLIO(page_folio(pfn_to_page(pte_pfn(pte))) !=3D
-folio, folio);
- +       VM_WARN_ON_FOLIO(pte_pfn(pte) !=3D folio_pfn(folio), folio);
 
->         nr =3D pte_batch_hint(start_ptep, pte);
->         expected_pte =3D __pte_batch_clear_ignored(pte_advance_pfn(pte, n=
-r), flags);
-> --
-> 2.43.2
->
->
-> >
-> >> -static inline int folio_pte_batch(struct folio *folio, unsigned long =
-addr,
-> >> +int folio_pte_batch(struct folio *folio, unsigned long addr,
-> >
-> > fork() is very performance sensitive. Is there a risk we are regressing
-> > performance by making this out-of-line? Although its in the same compil=
-ation
-> > unit so the compiler may well inline it anyway?
->
-> Easy to verify by looking at the generated asm I guess?
->
-> >
-> > Either way, perhaps we are better off making it inline in the header? T=
-hat would
-> > avoid needing to rerun David's micro-benchmarks for fork() and munmap()=
-.
->
-> That way, the compiler can most certainly better optimize it also outside=
- of mm/memory.c
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+On 2024/2/27 下午5:05, Xi Ruoyao wrote:
+> On Tue, 2024-02-27 at 15:09 +0800, maobibo wrote:
+> 
+>> It is difficult to find an area unused by HW for CSR method since the
+>> small CSR ID range.
+> 
+> We may use IOCSR instead.  In kernel/cpu-probe.c there are already some
+> IOCSR reads.
+
+yes, IOCSR can be used and one IOCSR area will be reserved for software. 
+In general CSR/CPUCFG is to describe CPU features and IOCSR is to 
+describe board/device features.
+
+CSR area is limited to 16K, it is difficult for HW guys to reserve 
+special area for software usage. IOCSR/CPUCFG is possible however.
+
+Regards
+Bibo Mao
+> 
+>> It is difficult to find an area unused by HW for CSR method since the
+>> small CSR ID range. However it is easy for cpucfg. Here I doubt whether
+>> you really know about LoongArch LVZ.
+> 
+> It's unfair to accuse the others for not knowing about LVZ considering
+> the lack of public documentation.
+> 
+
 
