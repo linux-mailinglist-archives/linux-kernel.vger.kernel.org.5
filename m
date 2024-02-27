@@ -1,242 +1,104 @@
-Return-Path: <linux-kernel+bounces-83724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35A98869E4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39AA0869E68
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:56:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C25C8B319A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:32:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69F17B31E0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672B41487D6;
-	Tue, 27 Feb 2024 17:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32F24EB32;
+	Tue, 27 Feb 2024 17:30:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KoNnq2XM"
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2082.outbound.protection.outlook.com [40.107.22.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FNhJ3hpw"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3E24CB4B;
-	Tue, 27 Feb 2024 17:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054939; cv=fail; b=lDq1uDoA3R65B5lv5mAUWPhfmB0We8vuFVe1DNPrM69oFxzN4USaDCyvbHLzA6vjHMJ/DKQqMEtaH5ICr5IXdHQBD/+0Bt2jryX3IhLExyC6dp5Wsh2cWw8GXNT0SELC8ib1msybtB4BKTdh1mzqEK1ymKF4qQkqkiV59bZuj/U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054939; c=relaxed/simple;
-	bh=ULzxpz1XWj628ZiUzClZGZP4OJNXGceyfw1pFt/ZySM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=UqbIGujuRRdwxSG6TT1yrehXmaK3UmDwJxJbERmHcwUyOecn34Q7NQKbbOfjFtOFA1yubMJruqgfdHP7q+AKisLROfrLRwlgjiyKMipX43OxninuPv1k5s+47b6KXTNz+oydzt0N2ixcK9mG6/afTpVd1RCYYNhPYGnC74mWyHg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=KoNnq2XM; arc=fail smtp.client-ip=40.107.22.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VaKIzywupAKZGZYrqHX823HPhileXnOn8duwWFzL/hxkWpyESnP9oDVSR7I4kOUgT/WaTDfoJhDeNiQEFDtnKOOBPjBoFu5Npd883JvxrNNT8baAZm2rvdaiPA1rWAqfa/GqZpnH4NgPtbxofMHVPM9BSWHIeuCivt/G8WAszklSZLknfKUx5CttWD8zXDsUh6PpG1mnKzzVJKnyY5HQhZNt2hXo89aVFNlb50AkSVvil+Sk33PPE/2kCpFkF9pZPZbCyHrF2/VhVYUMLZgSTQxUgGv31/ytnIayn5M26boyfAZR0e3bXcORJfm1WQSzSjwqGwZeMRaUktG3PvhYvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oEMWhv3Azer5tvN85bI6IxnywFzvglQ34dZSXB7diqk=;
- b=fO13cv7/HAzq+IALseBfLGD7SrrvlSlWtFgXEQVIDCS6O//ZxFub5zJbiDy1Jl8+oqpUfslX2L3FuztsIma+v5oOs63KpL4ISfkzj/rG2bEyzr9/5qAQdg3DuJ+sDIglmsvkdmSATlm6qQm8XfFsdXfR+tM0E/Vjua8Q44g4Pc/Lnqelb8Ff/LQ26yG01kTJIAfLtSOQvyaGJxbodFX0Y/LQR7QnVkPAj1Yiy1eRC4BYfX3YvtTRskanz5WOxMacVCSSgSXvN6dXgVFk3PAIw8SByoldPbkbOKF2dktMdqCFoZzMiXEJ75rCIIz977/1c2jLTB6zlushAVZ8cUgWUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oEMWhv3Azer5tvN85bI6IxnywFzvglQ34dZSXB7diqk=;
- b=KoNnq2XMvA+V/UMkWjhQEw9sA1XvTaHWQnm7BLaGn/GADMbISbBfqDFexyMK8RLXBJvuTAr2IucVZKHRH2y8zvOsstS5OagU9LPZeIptS0W5gfXphGiIX8+xy5pgDvd/ZhNWUJASz2tyE3fkIkjLCI2VCRuMYHo/EhMSXrOf75A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PAXPR04MB9185.eurprd04.prod.outlook.com (2603:10a6:102:231::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Tue, 27 Feb
- 2024 17:28:54 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
- 17:28:54 +0000
-Date: Tue, 27 Feb 2024 12:28:41 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Niklas Cassel <cassel@kernel.org>
-Subject: Re: [PATCH v8 06/10] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
- API directly from all glue drivers
-Message-ID: <Zd4bybN0malf5uBe@lizhi-Precision-Tower-5810>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-6-64c7fd0cfe64@linaro.org>
- <ZdzEoXwU42rFCF/W@lizhi-Precision-Tower-5810>
- <20240227122141.GN2587@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240227122141.GN2587@thinkpad>
-X-ClientProxiedBy: SJ0PR13CA0001.namprd13.prod.outlook.com
- (2603:10b6:a03:2c0::6) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9C14E1A0
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709055015; cv=none; b=saVsyThnzCOBqax5eHmNT+y5GmzWXzHGi3JvekPMVU7xlxx4CRt/+pHk3tjKxBVzel/Adk/dZAG2nH+y4uRvQ+pfsYDfTL0fH3t4NOSpXiAhhjMwXWIMIiTU1kRSchYOQ3t+k18dsf0ycPzlQJcdrPHrMSrQrs0eRJNQMLYC4RA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709055015; c=relaxed/simple;
+	bh=8+NKIgDuplqSo1ytFo3UoMuMYGOqUqX9fn9PGu7Vej8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=kikCoyBnVg0DSCpdRBtN5uT7yeeTXN5TWC4/pbZi1ghzsndthnoMgndgw/8A7WGgeqq92SEeyga4BpZ18HicAvD29TS7LAuOymsldhC/2VfPlRVtwYj4fxC0pcP6++mfI+knUhI1PgvioD2F1K7/W82xqCETjJxf0vUi4yX1DvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FNhJ3hpw; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-608852fc324so74354337b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:30:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709055013; x=1709659813; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B6AD0bkdjAOp/lWXwKRvybpOt3bz+Spb+REH1Kt9KeA=;
+        b=FNhJ3hpw7fBNPBWtilTToL375qv3hSFwWeS8tSzfAHTQWT9SSFIUXeM6bDxLYePEI2
+         89K9LYSCcy9IYh7JOCPGPBYoccwpnLGtCuajQwD1c5dUU2ky1HEe8o32D5HRmXrW1ZVP
+         QKFVAUMQgWynPAKKQLEy6KABpwosg6Zvd0TjP6zvzsbCP92PVHuhBVU0uNoHdY2DGzH/
+         bL7m1svhwkghBcIjd9rfLCd55uANusItwBdMsL25iN9FVNEgu/ul2DZMz7+XrwgRuKlo
+         QwURat+xO2TzitBcnUaRtb22mEYeGfT4v2s18Aa2dEp7b2i8faSHPmyAhty2T/EYhSyC
+         +Utw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709055013; x=1709659813;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B6AD0bkdjAOp/lWXwKRvybpOt3bz+Spb+REH1Kt9KeA=;
+        b=nAfHeq1kXgsYFm7wWqKw29y9jYsO4cSf/F+FoM41glhJaXVIoE1dlZAHq351BJJdxy
+         mxNeOhzCrTaAdWdOue+Cj5VoX8uP8U8zR6K06DAH0irF7T4S1wPlxvjIua93uZMBK0A2
+         DKObc1jMTQwuWexYOI2PeTBJbW5nJnq91MoIl9/Vi4XYkZZlWPNvINVx6R9as7oleuvu
+         AYI47+3zkV/5HHfJu+Dn359HbiVOWAul2P8VnC8qjlSp4PsQLmEGtljgiICptnjnXFR/
+         kq0oJiF2rSUOf2fXT8Bad60/zeA+B7nYL7r0Xg1Pd1xvEqfXxPd2MEFnkT10Y97ea+Q5
+         7hUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3bQTkUkkYisdy8iQ6W58udLHyb2Ryjui7KWO0SeHIpeV8+FIzdnmKuojqOVdt1XNYa8df5lNRoXmfxmsJfFbExAVwro+Zy6RHOTVe
+X-Gm-Message-State: AOJu0YxolIeQU19k2k/xyo72Eg4SR/wEn/sHJ/8zgatyIX4j4Fo/MKp9
+	sDLbwFvjJgjfTMTPCkeRiKAx+Hbjepr7UtWmc6Vr3Yfbgne5MZdYmF4eVbg1eWwbCDEaq/A7ZON
+	5/Q==
+X-Google-Smtp-Source: AGHT+IHQl47+M65O9sQwAMBDDVepTiqQ/zh20Xdi+gr8WdMeGRRwBphUz6L7sK8iZPfM7Z8V6cSN6FbvT0U=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:7256:0:b0:607:d016:d85c with SMTP id
+ n83-20020a817256000000b00607d016d85cmr643698ywc.9.1709055012763; Tue, 27 Feb
+ 2024 09:30:12 -0800 (PST)
+Date: Tue, 27 Feb 2024 09:30:11 -0800
+In-Reply-To: <20240227141242.GT177224@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB9185:EE_
-X-MS-Office365-Filtering-Correlation-Id: bfbf783c-31d6-420b-37a4-08dc37b99244
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	glg+a7W/oZaK3HSWZ3NrmkF9TlSuznE4thb8Z45Rn4GcGzgw0SZt6gY1n1csrGhEwzLkXvvJzTSOV8wuIA6SPHpwefL03MjL/9xCvbFhRf1LqMpdzFVUOXze7iylkgHguMwEsxLuk5K7FIgV2BYwE9GBySuOikAHikX0TjN9PPLS90pLAsXDRpw60y7Wc8w3ewwgqab3iZdPmwHzQ0pezU1VrxcSowGnoJidJAnVPlTrsltApbrekJN13JWK27WjMn2z3mp9GIFAOOwqRIQJwRrg2JzbxGcQhXEhQwnnMyZzKarb+kVq8LDgFzuj8Uz6KvjQ+QSsdaH4TzLpbfTAPvA6Sly+uoKpAxZtrGEtvhjPub9wHIrvTtpslztnIKE9YhqcuDK+Cxv0fTVnYnhVqL4vQwC/M+Kuwc+Ty7E4zXCd1Yam6syW+98iCWsdt3a7A3kI+eLjjUA7TkneQE3/Mab07wZmcSr6Dbei492SqX/BgUoIV62bKBKMMTipNn+WwVuU7A2z1aPntjXT2rb+E0syMaAiGNgcED+bXB1RWUere5c9F4fyaMPoq+TdQNmGBkp1kOPa/xl8GGjSbARUUsAg5rM6xGCR6CK3TJrNOzL2dgWJ3DsKJeufp4bMhOmbqUpxJkCN5VbrO05U4cpof1raYDkZHDcIfz0qtHpXZpQU9Uv4x6AnaPSY14yijpyZ3UurnmDz2KIXlkRCNLJjYQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?YVBXblIyVmJXbVdyQTdiR1ljVWZ2cE5obW9NZWNqcnhObWxnYlc3bnNRcEE1?=
- =?utf-8?B?VFhJNDNPTU10WDVoMVRHMENubDB3T3NDS0d3NTNzOTdmZTN4cjFRY0dNeGh2?=
- =?utf-8?B?b2ZaQ2lqRlhXYmNVOFI1ekNOT1N1MUZEU3NNemdSdHRLZGh6aUYwOVI0Nzh6?=
- =?utf-8?B?Ui9EenFwM1VDWlFXbXd6QXduME9KcnNKQUhORzRiZzhBcVdzYms2ZWhIQkp5?=
- =?utf-8?B?dlprMnBOODRtOTdhZG5yU1ZEbWluVzltK0JRbjkwYm5BY1RXVnZITW5qclR4?=
- =?utf-8?B?REdrdDdqY1FMbEtFTHJwUlNHVXNRSzdxZWNQSGphZUNkbmhFNEQxMURKcHB1?=
- =?utf-8?B?YndvZkkzUUdBaWZWKzRzWWo0dmxOdFh4SHNDWFhyZU9ZUUp2RjkxaURIWVJz?=
- =?utf-8?B?WllaanlGdWs0ZWZacUx6SUNGWEZUckY1M3hmNVpBdFlUdGR3TFJaYU03OG9O?=
- =?utf-8?B?MGpIb1pHdnAxbDVtc04rZnZFZ2lJcVExUlF2VVdJRW9JRDBJVmR0OE9BdU43?=
- =?utf-8?B?cXNZRkFVcXJzclRVSzhqN0puam1FRG9ZK3FHak92Tk9pQU0yalpQYmxuanl4?=
- =?utf-8?B?cW42WHIzVVZ4M2d3ODk1aVptQXZiaXRQSEhBMnNRa1hETmcrMURZVCtTRDVE?=
- =?utf-8?B?RGp2eHBtMTREVnJ3MmVGL1FKOU9aRitsUnJncHFVTkdxMGRsZUpxNVdPT3Rv?=
- =?utf-8?B?QW9iUnp0d1hlN1hyU1dVRzN1ellMR213Z1Q0dEhSdlUwZ2lvc1dMMGVUZElT?=
- =?utf-8?B?WkpDYldXbFJPSCs1V0F1MkxhZCthYVE2cmVsU2hqMll3UksvTE9UOVBRY1VI?=
- =?utf-8?B?SDluV0pneDRvbzVTN1puSTh2cFdlS0dpeWRKTEo1QXY4VVNpbU9GWW8wVXBl?=
- =?utf-8?B?OExLTkpIUE14SFdRWHR2ZWpIY01nNmNpOXFvSFZ1U3BpVVlnbzNwdFFoY2g2?=
- =?utf-8?B?RkdiWUtGU3NnRllVdWN3dnZadTJHUjFVcWNHVVhJb0FWZ0x2NXpzMzQxaU1E?=
- =?utf-8?B?TGtXUHpudUFkQmgxUzNuODRsck9Nb3RuMk1oL3BtVXRFSklwQ3ZlY2FCQ2FH?=
- =?utf-8?B?NHhsM09OL3hPWU9zVmFLWWhxYzNUQ0h0SVh3RDNpSmtJLzNWZWx1T1JLdXpz?=
- =?utf-8?B?YlEvRi9Lb3hRK096ZmZXQmhUSkFCb3RSOUErU2MxV21yMitnSkZBbjcvZTly?=
- =?utf-8?B?WVlzQWh0SnlBUnRJQWFlaDVZbFJ2cWgvWCtKbjNZODg0cHd1RHFwck01MXFv?=
- =?utf-8?B?cWNwNzQ1VisrRG5Ed2phd3l3NFljUnRsWHBGQUxVZTIvY1dkeExnQ2NHbThx?=
- =?utf-8?B?NGtWMnZra0xsY3p6bXRGSVVRaXg1bENIWWorQkcrN2t5YXV0WC9HL1ZTbEly?=
- =?utf-8?B?MHpEdlhKbnFZVHZHZUl2QXVQcDhFVlVLRm5VaUUxT1dTMEVsV2JkYmxTMFE2?=
- =?utf-8?B?M3NmSS9neEZwWGhpZGVLQWFUeXpDSzZEdWRNc0NGZFJZU2xLdjg2bm0za2dv?=
- =?utf-8?B?ZW5VcEM2UWcwQ0FUeWF6enE1UVhxSWFjUHNVRHZNak5Hd1JCNU96UXV6Y1g3?=
- =?utf-8?B?OHFsempTMy9qYllBQTNBdFNLaE5wSmI4NE5laWpRT0x2enpBOGxtVTNIVGZ0?=
- =?utf-8?B?Rk85cFovMmtIR0FxVDFzNjROMFRYK283TjFqb3psaFd0UTFFVFdSaG9OelNK?=
- =?utf-8?B?clZ4NWtscUwwUFFSV1RHRlhsM2I0M3J4TDZNUTlSUUJVYmU4ak9sd1QyOFpj?=
- =?utf-8?B?SFlvM2JxZmlEQVpyL0lkT2JWaWVQWmdTWGtvSWZaVDVVSHB0WWgzV21GY29X?=
- =?utf-8?B?U3lLampuMjFTQVNXLzhxekwyODJNTFhrZmJLeFZUUVlpSU94amdaYjRvUGto?=
- =?utf-8?B?NGppMSs2T1c3MU5zYThjaFdnck9DMkIzTVcydjZDenVlbUVXUU0wOU1uMmpx?=
- =?utf-8?B?aGtWcDdNUjBFSFhpVVpocEwrdlpMWWR1TlNweGR1VENzVGpxc2xib1hEeXUw?=
- =?utf-8?B?dzFrekpjWGtLeVJTT08wVHA1S2RPVWZkKzJISDliRmdqSkcvczNxRmgrUE1y?=
- =?utf-8?B?MkVjeTB0THYwRDdVSUJRcEhyZjRrejVoZmpZbUEvcnpKS00zVnhGc0M2dFEy?=
- =?utf-8?Q?jQCXtXTpfcfnkY0QrruwF6ial?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bfbf783c-31d6-420b-37a4-08dc37b99244
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 17:28:54.3548
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aJalJliG2TQRThLbSuFCYhqLuHwyJtQs3OsEhLsSf/Ph3zA6mkGoGcipf0rtce/nvAu5HiJt9sQ2eCxK3zEhQQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9185
+Mime-Version: 1.0
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <97bb1f2996d8a7b828cd9e3309380d1a86ca681b.1705965635.git.isaku.yamahata@intel.com>
+ <Zbrj5WKVgMsUFDtb@google.com> <CALzav=diVvCJnJpuKQc7-KeogZw3cTFkzuSWu6PLAHCONJBwhg@mail.gmail.com>
+ <20240226180712.GF177224@ls.amr.corp.intel.com> <Zdzdj6zcDqQJcrNx@google.com> <20240227141242.GT177224@ls.amr.corp.intel.com>
+Message-ID: <Zd4cIxZPABFlt-sE@google.com>
+Subject: Re: [PATCH v18 064/121] KVM: TDX: Create initial guest memory
+From: Sean Christopherson <seanjc@google.com>
+To: Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Cc: David Matlack <dmatlack@google.com>, isaku.yamahata@intel.com, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com, 
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, Sagi Shahar <sagis@google.com>, 
+	Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, hang.yuan@intel.com, 
+	tina.zhang@intel.com, gkirkpatrick@google.com, 
+	Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, Feb 27, 2024 at 05:51:41PM +0530, Manivannan Sadhasivam wrote:
-> On Mon, Feb 26, 2024 at 12:04:33PM -0500, Frank Li wrote:
-> > On Sat, Feb 24, 2024 at 12:24:12PM +0530, Manivannan Sadhasivam wrote:
-> > > Currently, dw_pcie_ep_init_registers() API is directly called by the glue
-> > > drivers requiring active refclk from host. But for the other drivers, it is
-> > > getting called implicitly by dw_pcie_ep_init(). This is due to the fact
-> > > that this API initializes DWC EP specific registers and that requires an
-> > > active refclk (either from host or generated locally by endpoint itsef).
-> > > 
-> > > But, this causes a discrepancy among the glue drivers. So to avoid this
-> > > confusion, let's call this API directly from all glue drivers irrespective
-> > > of refclk dependency. Only difference here is that the drivers requiring
-> > > refclk from host will call this API only after the refclk is received and
-> > > other drivers without refclk dependency will call this API right after
-> > > dw_pcie_ep_init().
-> > > 
-> > > This change will also allow us to remove the "core_init_notifier" flag in
-> > > the later commits.
-> > > 
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > ---
-> > >  drivers/pci/controller/dwc/pci-dra7xx.c           |  7 +++++++
-> > >  drivers/pci/controller/dwc/pci-imx6.c             |  8 ++++++++
-> > >  drivers/pci/controller/dwc/pci-keystone.c         |  9 +++++++++
-> > >  drivers/pci/controller/dwc/pci-layerscape-ep.c    |  7 +++++++
-> > >  drivers/pci/controller/dwc/pcie-designware-ep.c   | 22 ----------------------
-> > >  drivers/pci/controller/dwc/pcie-designware-plat.c |  9 +++++++++
-> > >  drivers/pci/controller/dwc/pcie-rcar-gen4.c       | 12 +++++++++++-
-> > >  drivers/pci/controller/dwc/pcie-uniphier-ep.c     | 13 ++++++++++++-
-> > >  8 files changed, 63 insertions(+), 24 deletions(-)
+On Tue, Feb 27, 2024, Isaku Yamahata wrote:
+> On Mon, Feb 26, 2024 at 10:50:55AM -0800,
+> Sean Christopherson <seanjc@google.com> wrote:
 > 
-> [...]
+> > Please post an RFC for _just_ this functionality, and follow-up in existing,
+> > pre-v19 conversations for anything else that changed between v18 and v19 and might
+> > need additional input/discussion.
 > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > > index ed1f2afd830a..278bdc9b2269 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > > @@ -729,7 +729,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
-> > >  	struct device *dev = pci->dev;
-> > >  	struct platform_device *pdev = to_platform_device(dev);
-> > >  	struct device_node *np = dev->of_node;
-> > > -	const struct pci_epc_features *epc_features;
-> > >  
-> > >  	INIT_LIST_HEAD(&ep->func_list);
-> > >  
-> > > @@ -775,29 +774,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
-> > >  		goto err_exit_epc_mem;
-> > >  	}
-> > >  
-> > > -	if (ep->ops->get_features) {
-> > > -		epc_features = ep->ops->get_features(ep);
-> > > -		if (epc_features->core_init_notifier)
-> > > -			return 0;
-> > > -	}
-> > 
-> > why remove this check?
-> > 
-> 
-> There is no point in keeping this check since we are removing the call to
-> dw_pcie_ep_init_registers() below. But I should've described this change in the
-> commit message.
+> Sure, will post it. My plan is as follow for input/discussion
+> - Review SEV-SNP patches by Paolo for commonality 
+> - RFC patch to KVM_MAP_MEMORY or KVM_FAULTIN_MEMORY
+> - RFC patch for uKVM for confidential VM
 
-Sperated patch will be helpful. This clean up does not related with other
-change.
-
-Frank
-
-> 
-> - Mani
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+uKVM?
 
