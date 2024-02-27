@@ -1,289 +1,109 @@
-Return-Path: <linux-kernel+bounces-83243-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16CBA8690BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:39:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E62828690C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:40:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844CA1F263AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:39:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA0B41C239F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:40:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D553B13AA2C;
-	Tue, 27 Feb 2024 12:38:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D941013A251;
+	Tue, 27 Feb 2024 12:40:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="evMyTP2k"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="jHCgNOSp"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D461CFA9;
-	Tue, 27 Feb 2024 12:38:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8666931A66
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:40:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709037525; cv=none; b=urmoEuqSTsmYY/nTXpprnxvmh+smruOIx4/fad4jg57ZGiIxqIcl+4ak/Dg0og6grVdssZek4x1VUA9WR0rib0ZVW5tfAb2lU/bzoYlGFNjs7EEVrInajCOzV7iRWVzrcuSIcgW0PaUhkmObaoPgFqRFZn2cJ0u7mP3jMrOcxmc=
+	t=1709037604; cv=none; b=FCosibVFnYMkJ4FlKVEssjKe1gqj3lp3EadeFlWRYhPt9klhFyXCb+9AOc4cx0MCePlHPuU9141jBX4PEo0AyuktemWy47se5wHHz0Lehf0SJOq1ngLDxU8YmdtKIlNb/hXbut9KpJLc7RZSHgb7P8mPbLZIYuIEoGK4AB8F+cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709037525; c=relaxed/simple;
-	bh=wIFETi/MZvXW9/FAsIozT825+vybcsyNan5jzXcLPQc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t3KCOza2gHgl5L6KKHPzNkaMj91yW12AfY+FRUvO0FIHeOKsf7o5Z6bSxjt8CyQ4sT8bryyeXoD5I7suKR4tWXvOiZKWyunkgcgManSwgG1zuu1Y/23tQ1aoaqfrdkHbsuf23GAlNU1spiPyNfu4ticZxCVg0UTsNjRIT69f/Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=evMyTP2k; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709037521;
-	bh=wIFETi/MZvXW9/FAsIozT825+vybcsyNan5jzXcLPQc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=evMyTP2kJ2qJhKVWh8x49Jwu/aes3ZGEKemzrZ61lFaUHq/IycOxxot4qKk41kzxl
-	 cqrVwpwI2NQI8YcQOgzdaf/bXWHrbZjaU1J64If8Ew92UnrwNxcp/T8UsMnbar6tMb
-	 1yT36QOG2Ht1R2By9rJ3rSWkkqsaLdTPVC2VTXqOZ+l+PbPg723HKrlFHzIvcjjtMg
-	 TE+w7uKNuh0laf1rPtuaRrPg9XIBZD19vQxaBPoxzvi9cPLcias50byRUGVTT2c6gt
-	 stWeZQARKK5MlueSNvTX44aEHsI3GAuCRJpH4qXv3dcqhIMpFJT0AywZDSBymXtvG+
-	 xRKNlrETnAaAw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D93BE37813B6;
-	Tue, 27 Feb 2024 12:38:39 +0000 (UTC)
-Message-ID: <e0907559-121f-4cdf-8b5a-744295ec85b3@collabora.com>
-Date: Tue, 27 Feb 2024 13:38:39 +0100
+	s=arc-20240116; t=1709037604; c=relaxed/simple;
+	bh=3G5KA/KgvvnP+phbQfXRPEFm6i2mU+y0npJdWX/2CSw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e8+C+UmWutqPqhfeSzFygEf16lI8u7ROZGReQsPQC0qvdzuuCf8w//Zxr+cBOGS68VnwNCf088R/07t8N+tUsQAardbtOGbXpmBVjNDWO+1Bjcim++7lL/kSS6kyxS3pTG1O98H6861tiEYs4dsmevYfWHJdkbEYIWzCFOnzH0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=jHCgNOSp; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3f5808b0dfso576940766b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:40:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709037601; x=1709642401; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3G5KA/KgvvnP+phbQfXRPEFm6i2mU+y0npJdWX/2CSw=;
+        b=jHCgNOSpMBU0VigG4iD9R5XshpWywf40VJuefxMlEEkiR0CaIbxbg70etnyiwxod+x
+         0hIYb4B/gSNipwLL3hwbskrR7vTfQtuloJfKeo73D1n5eAVq1Ms5GkTobq2xBnOaaram
+         xkgybw7b6srTE/Va9lbJZagTp7recqjZRlQoeZYEGg/BenYnYNiVkawQLg0615Jt2ttk
+         wqgUvClBKfpbb0Pgk1tYXfkb9+q8Rt3O1B69x8JAblPpMRR8I3sxdXGkZbYbdgPEdj63
+         0wGtSEz9m883N9k6XMmj4hM4VhncyB0FWh+kgYkgEhl12cOYNaiz5uP2359YhMUxbTdw
+         HBBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709037601; x=1709642401;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3G5KA/KgvvnP+phbQfXRPEFm6i2mU+y0npJdWX/2CSw=;
+        b=Yl0R9eQltIEyRRbn50cyiU3jIb5EpgKOnMQacqMP2XS845pz6iQ+yg5FtwXSAXz8nN
+         W8s4GW3DKeUz56tPVP8aS852S/NGrtyJSvsJbt0w9+N3CgquDczeanqenCE8GmXZwaAw
+         NTohrc/RSDEDFUDFdpErE+4ley9DT4kChRLImU4XI1Mbi7xYiZe/pzWpNqbarroBB8U/
+         8Ofy18duxlPBKcO2yYvLqo3HSBe256VLnUqp7tfEX/45MfCXtLKN5qsQl5D9LYWggbyJ
+         akCbym1dmWGvAi8G02w4pkrayJIQ4jhaerS8J6GxFOKXQs48VMijaqs5EDSRRv6BIMVw
+         QGvA==
+X-Forwarded-Encrypted: i=1; AJvYcCVGA3GbqK6afR9CuQNgZWHhtLxODB1E6SEeCbR6deWzy2D6/UHJEo2FTNbiGo3KPDxkQ+o6KngMrBU4fOLoFuG+Gi80XBuvm8Htd08j
+X-Gm-Message-State: AOJu0YwHCrbNqLoOecPrDqHfUkDPdgkuWh/qGafXN+rBn57lSmxyylVX
+	vDeN/ToGr9slE18sIvmaLIUICV9EqpkDS2qR3NiNJ7mp1sNWyxbGnxX9noyBnqg=
+X-Google-Smtp-Source: AGHT+IFf+1UxKm68Ufr79btEFTW+YSygrKjHq5rNe4O6m6Bv9IEEvxhrtwQV1oX0yXq9DLLJhL5gyQ==
+X-Received: by 2002:a17:906:e0d6:b0:a43:8468:ac0b with SMTP id gl22-20020a170906e0d600b00a438468ac0bmr2629106ejb.7.1709037600854;
+        Tue, 27 Feb 2024 04:40:00 -0800 (PST)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id wr2-20020a170907700200b00a3e881b4b25sm714035ejb.164.2024.02.27.04.39.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 04:40:00 -0800 (PST)
+Date: Tue, 27 Feb 2024 13:39:57 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, rogerq@kernel.org, andrew@lunn.ch,
+	vladimir.oltean@nxp.com, hkallweit1@gmail.com,
+	dan.carpenter@linaro.org, horms@kernel.org, yuehaibing@huawei.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, srk@ti.com
+Subject: Re: [PATCH net-next] net: ethernet: ti: am65-cpsw: Add priv-flag for
+ Switch VLAN Aware mode
+Message-ID: <Zd3YHQRMnv-ZvSWs@nanopsycho>
+References: <20240227082815.2073826-1-s-vadapalli@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/18] ASoC: dt-bindings: mediatek,mt8365-mt6357: Add
- audio sound card document
-Content-Language: en-US
-To: Alexandre Mergnat <amergnat@baylibre.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Lee Jones <lee@kernel.org>,
- Flora Fu <flora.fu@mediatek.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-2-4fa1cea1667f@baylibre.com>
- <e15fdb18-d4de-495f-b90b-ba0e787cbef4@collabora.com>
- <92b9e9ac-6265-4611-888d-ba74bb871be5@baylibre.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <92b9e9ac-6265-4611-888d-ba74bb871be5@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227082815.2073826-1-s-vadapalli@ti.com>
 
-Il 27/02/24 11:23, Alexandre Mergnat ha scritto:
-> 
-> 
-> On 26/02/2024 16:30, AngeloGioacchino Del Regno wrote:
->> Il 26/02/24 15:01, Alexandre Mergnat ha scritto:
->>> Add soundcard bindings for the MT8365 SoC with the MT6357 audio codec.
->>>
->>> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
->>> ---
->>>   .../bindings/sound/mediatek,mt8365-mt6357.yaml     | 127 +++++++++++++++++++++
->>>   1 file changed, 127 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml 
->>> b/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml
->>> new file mode 100644
->>> index 000000000000..f469611ec6b6
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml
->>> @@ -0,0 +1,127 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/sound/mediatek,mt8365-mt6357.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Mediatek MT8365 sound card with MT6357 sound codec.
->>> +
->>> +maintainers:
->>> +  - Alexandre Mergnat <amergnat@baylibre.com>
->>> +
->>> +description:
->>> +  This binding describes the MT8365 sound card.
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: mediatek,mt8365-mt6357
->>> +
->>> +  mediatek,hp-pull-down:
->>> +    description:
->>> +      Earphone driver positive output stage short to the
->>> +      audio reference ground.
->>> +      Default value is false.
->>> +    type: boolean
->>> +
->>> +  mediatek,micbias0-microvolt:
->>> +    description: |
->>
->> description: Selects MIC Bias 0 output voltage
->>
->>> +      Selects MIC Bias 0 output voltage.
->>> +      [1.7v, 1.8v, 1.9v, 2.0v, 2.1v, 2.5v, 2.6v, 2.7v]
->>> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
->>
->> No, you don't say 0 1 2 3 4 to a property that says "microvolt", that's simply
->> wrong.
->>
->> mediatek,micbias0-microvolt = <2100000>;
->>
->> ...so you want a binding that says
->> enum: [ 1700000, 1800000, this, that, 2700000]
->>
-> 
-> Is it correct if I put "description: Selects MIC Bias 0 output voltage index" ?
-> 
+Tue, Feb 27, 2024 at 09:28:15AM CET, s-vadapalli@ti.com wrote:
+>The CPSW Ethernet Switch on TI's K3 SoCs can be configured to operate in
+>VLAN Aware or VLAN Unaware modes of operation. This is different from
+>the ALE being VLAN Aware and Unaware. The Ethernet Switch being VLAN Aware
+>results in the addition/removal/replacement of VLAN tag of packets during
+>egress as described in section "12.2.1.4.6.4.1 Transmit VLAN Processing" of
+>the AM65x Technical Reference Manual available at:
+>https://www.ti.com/lit/ug/spruid7e/spruid7e.pdf
+>In VLAN Unaware mode, packets remain unmodified on egress.
+>
+>The driver currently configures the Ethernet Switch in VLAN Aware mode by
+>default and there is no support to toggle this capability of the Ethernet
+>Switch at runtime. Thus, add support to toggle the capability by exporting
+>it via the ethtool "priv-flags" interface.
 
-No, it's still not correct. You have to pass microvolt values.
-
-The driver will then transform the microvolt values to the index and subsequently
-write the index value to the hardware registers.
-
-The bindings shall be generic, in the sense that they shall not express hardware
-register values... and this is especially true when we have a value that *does*
-actually have means to be expressed in common units.
-
-Besides, in the cases in which there's no common units involved, the values most
-probably won't be suited for devicetree//bindings, so those would be hardcoded in
-the driver as platform data.
-
-This is not the case, so, please keep this property but specify microvolts in the
-bindings (and obviously in devicetree).
-
->>> +
->>> +  mediatek,micbias1-microvolt:
->>> +    description: |
->>> +      Selects MIC Bias 1 output voltage.
->>> +      [1.7v, 1.8v, 1.9v, 2.0v, 2.1v, 2.5v, 2.6v, 2.7v]
->>> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
->>
->> same here.
->>
->>> +
->>> +  mediatek,platform:
->>> +    $ref: /schemas/types.yaml#/definitions/phandle
->>> +    description: The phandle of MT8365 ASoC platform.
->>> +
->>> +  pinctrl-names:
->>> +    minItems: 1
->>> +    items:
->>> +      - const: aud_default
->>> +      - const: aud_dmic
->>> +      - const: aud_miso_off
->>> +      - const: aud_miso_on
->>> +      - const: aud_mosi_off
->>> +      - const: aud_mosi_on
->>> +
->>> +  vaud28-supply:
->>> +    description:
->>> +      2.8 volt supply for the audio codec
->>> +
->>> +patternProperties:
->>> +  "^dai-link-[0-9]+$":
->>> +    type: object
->>> +    description:
->>> +      Container for dai-link level properties and CODEC sub-nodes.
->>> +
->>> +    properties:
->>> +      codec:
->>> +        type: object
->>> +        description: Holds subnode which indicates codec dai.
->>> +
->>> +        properties:
->>> +          sound-dai:
->>> +            maxItems: 1
->>> +            description: phandle of the codec DAI
->>> +
->>> +        additionalProperties: false
->>> +
->>> +      link-name:
->>> +        description:
->>> +          This property corresponds to the name of the BE dai-link to which
->>> +          we are going to update parameters in this node.
->>> +        items:
->>> +          const: 2ND I2S BE
->>> +
->>> +      sound-dai:
->>> +        maxItems: 1
->>> +        description: phandle of the CPU DAI
->>> +
->>> +    additionalProperties: false
->>> +
->>> +    required:
->>> +      - link-name
->>> +      - sound-dai
->>> +
->>> +additionalProperties: false
->>> +
->>> +required:
->>> +  - compatible
->>> +  - mediatek,platform
->>> +  - pinctrl-names
->>> +  - vaud28-supply
->>> +
->>> +examples:
->>> +  - |
->>> +    sound {
->>> +        compatible = "mediatek,mt8365-mt6357";
->>> +        mediatek,platform = <&afe>;
->>
->> Please:
->>
->> https://docs.kernel.org/devicetree/bindings/dts-coding-style.html
-> 
-> Is it about the wrong pinctrl-names tab alignment ?
-> Also, 2ND I2S BE => 2ND_I2S_BE ?
-> Otherwise, I don't get it sorry.
-> 
-
-..as Krzysztof already clarified, won't repeat :-P
-
-Cheers!
-
->>
->> Regards,
->> Angelo
->>
->>> +        pinctrl-names = "aud_default",
->>> +            "aud_dmic",
->>> +            "aud_miso_off",
->>> +            "aud_miso_on",
->>> +            "aud_mosi_off",
->>> +            "aud_mosi_on";
->>> +        pinctrl-0 = <&aud_default_pins>;
->>> +        pinctrl-1 = <&aud_dmic_pins>;
->>> +        pinctrl-2 = <&aud_miso_off_pins>;
->>> +        pinctrl-3 = <&aud_miso_on_pins>;
->>> +        pinctrl-4 = <&aud_mosi_off_pins>;
->>> +        pinctrl-5 = <&aud_mosi_on_pins>;
->>> +        vaud28-supply = <&mt6357_vaud28_reg>;
->>> +
->>> +        /* hdmi interface */
->>> +        dai-link-0 {
->>> +            sound-dai = <&afe>;
->>> +            link-name = "2ND I2S BE";
->>> +
->>> +            codec {
->>> +                sound-dai = <&it66121hdmitx>;
->>> +            };
->>> +        };
->>> +    };
->>>
->>
-> 
-
-
+I don't follow. You have all the means to offload all bridge/vlan
+configurations properly and setup your hw according to that. See mlxsw
+for a reference. I don't see the need for any custom driver knobs.
 
