@@ -1,171 +1,184 @@
-Return-Path: <linux-kernel+bounces-82860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B237E868AB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:25:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 931BB868AB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:26:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3275A1F22AD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:25:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4625C288187
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1699F5646B;
-	Tue, 27 Feb 2024 08:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868605646B;
+	Tue, 27 Feb 2024 08:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="dHrfEq1v"
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HPa8SG1g"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB5B5644F
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 507B15380F;
+	Tue, 27 Feb 2024 08:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709022304; cv=none; b=IeCtEDD/s9b+JOhxlRupAHthE80IqPFikopIYikKGKCux6MnhspcTyg4JQl9r+V9Ic2yoNVUqZPYxwfYsiJiXBmPJZlJ6HF8qBVMYsFrUrHOTpbw6Srb8qhSZiwZoNOk8BtsRW0KrT7riV1FFLa3SUCFvx/meAYGOksl7r1yrPI=
+	t=1709022394; cv=none; b=s7/2vwDJ2iPI68C13+fSwXqr0Zf++YPLvU4u0MX/zO7VnYYKN+b2S6lfj+vRi6OV6ddBQ+kxoNR0X2m2ozdTlg2niKyeLPN8BHS2iTECQuQIPNFZ93Ny52SGZPl7SrkXIyHlKZ2VVLDj3bkim3Fhiuui8zAFzfURxEE+S/z470A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709022304; c=relaxed/simple;
-	bh=EVI7vz5Qsf5hXRlkN8Ggko0P8CCIhLHJjlFi+HodR6Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SRMRr9d+P1yqs3WnUhLsnv1KYClJfERZEQ69DIzNJazCKKyLsy+rU7jW3Sc1QR6N9IU7Lv5jqivUWd8zlNoH+nYcnhbfq9N1mRjr5fFAoL6q1+epQLDe/5XjKu6ihagoflgwWR6wwdYZAD3D8yIp+wtaFefcjhOYT285tr0gu8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=dHrfEq1v; arc=none smtp.client-ip=209.85.221.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4d331ba6078so17979e0c.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:25:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709022301; x=1709627101; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F3oEZ83ksqzh/6Sv0YNt9LyEJ4eUjhxHm5FyNz/Llm4=;
-        b=dHrfEq1v4rBba3ZnKS0wVcQQiTW55EgwCtGAN0kx2vMV/85Pn+nvuyqSYz4xq33lgQ
-         6pyS9PrGpxFNt+wLtsGljCD+0sJf0qo5/rgsOWjDK/c78uorH5V+6s3QyCqUm+mhlCRz
-         eGX5ZMegOvavZ2xckr+Ezwy3Ph8RzfAFuRimACpqUqumvzR/KbvDFoKBcjiQMD1VeZTy
-         QHoztsVcZT57sGJQ36WG36Zi2QNUgLPk1/XXb92dT9Q4KcNnHC7DhDS7L2t/+b/c/jpx
-         4lkFTWRVGanm3NFK23xlLyxHgy8885aLEbWCn7GVbNHGB7Rrugf17gHuQiayHBgmW3vy
-         1WgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709022301; x=1709627101;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F3oEZ83ksqzh/6Sv0YNt9LyEJ4eUjhxHm5FyNz/Llm4=;
-        b=urmUoTZTf/2pf5pT7V0nQXO2Odhc5l9889TNdZFpcY0K5SU/Fcec/QzjByxZ2n6qy6
-         +5sFmYFVWQhzIEQMvq30ZHw01KBh5AWCzgQf4q2+aWo7D4DvzbGCcDp0oPJ+etUrZ0zs
-         OflxkGTPDtlmP+1CVRv3Mfgd8CvNPBZqqSpuOMXIsTl2FG83e5aeLMbAwrX07HNA4o/k
-         5dsGPp6EysRgwyalFOUApZ0vQkFTPPwBbebu1lNmtyL/UllPRwWrzma6RHhn/13gNhKX
-         XWP+tsbq/gjabpPgeUF7K9CaaiPwSZlRXQiSK872vd1nQhP6b3YFKBtcKT83d15k2uYE
-         Nolg==
-X-Forwarded-Encrypted: i=1; AJvYcCUOI0YRDwl4ok6wb5oUK/uv8ob1xYQ4eo12H7cOhaQJGtha5ini7VaQGsTnT93ZCaeIodnwNCvUlsxJ/ktpHLbeO89Lhg39ptpfvq7F
-X-Gm-Message-State: AOJu0YxUX491oOJeUXjxjfNOhVb6zVSaDyKnNizSCSm6b2tbvoLNHI7d
-	CS1Z8GXjk82guyWR7+Ew7VTUND0rb96rje1dvv0q8XvGb/5lUysq4g189A9/UOmJJ8DUhblHKTk
-	p9aczYrabn/TKdVt4pV2NjFfCtaNvnrEux8BNKg==
-X-Google-Smtp-Source: AGHT+IGfKT0WSHnAi9Z8ZhGjHZH5g4Gvo7KWsZdo46pVngPbJr7w6ihyB9HdDw37XGWSuSg0MNM0ZD4/shwz7CPfuAo=
-X-Received: by 2002:a1f:da41:0:b0:4cb:2662:3653 with SMTP id
- r62-20020a1fda41000000b004cb26623653mr5475489vkg.9.1709022301389; Tue, 27 Feb
- 2024 00:25:01 -0800 (PST)
+	s=arc-20240116; t=1709022394; c=relaxed/simple;
+	bh=KAuIHPXGoMr08+UmMoqAbTtZUnHXBoqJWfTMLOUO4Kc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=n/Sd9El+tx/X9mD+v4+H6l+QocoV1mi0fBB6t0gRUEdg/0KvSnIAgy5hHx9bqxtkAW1vk/JSCI80lKHsdurGgi7UzrHh5c5gsK3mBDicbKarMt2IV1bY1HTGdRPrPr7cd+8MsxjHT4VhDonqUhXLu4+3Jrri6vGHluyk772Q6yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HPa8SG1g; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0695F4000C;
+	Tue, 27 Feb 2024 08:26:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709022388;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z0sG1VtgE73QC07jrlA2cghwd9sO1spHGldFaWOgSDY=;
+	b=HPa8SG1gzofjEXTtvQECub3nbC1pFlaSg/+s67PXpFqKkfoD5aZXRxT7+rPHBAbZvtOtI+
+	t7xUqR0wmGJ/+aA4w3C695A+NHZaOHZEjpMga2ndipUcx8aVuS90weh/0NKGhErr/APgmx
+	lc6gmcVj/U5zScde6aA5jTPJil8NCJYM1+URLMbFXt8/e0FD0FqV0ooXLpdQkoeYW36o4k
+	MWaoFQKo422hYYZYBCbx5u5Mnvi8fcaoI1QvofnjMRWP8911R/ZbKiH0STRRrG6Fj6qaT9
+	/okK8KNJe0tTPfYdnBsEj+5EF0FOKd9x4kK8Ng1lkQans63k8KVRMCBZD8iKDw==
+Date: Tue, 27 Feb 2024 09:26:27 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Saravana Kannan <saravanak@google.com>, Kent Gibson
+ <warthog618@gmail.com>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Luca Ceresoli
+ <luca.ceresoli@bootlin.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip
+ device is removed
+Message-ID: <20240227092627.23b883c5@bootlin.com>
+In-Reply-To: <CAGETcx_j4613QjHgX5AJ96Ux6MJSxxhT7DL36yzNv1JCsoxTAA@mail.gmail.com>
+References: <20240220111019.133697-1-herve.codina@bootlin.com>
+	<20240220111019.133697-3-herve.codina@bootlin.com>
+	<20240220142959.GA244726@rigel>
+	<20240222005744.GA3603@rigel>
+	<20240222010530.GA11949@rigel>
+	<CAMRc=MdCm4UXMkzvG17Vd=6ajE+feihgYc66qUNTTKXhN0--dA@mail.gmail.com>
+	<20240222123615.2cbada98@bootlin.com>
+	<CAMRc=McTkVPD-1_5vvPcM2Q15=w+ocki2xTmvQzU-o395A930w@mail.gmail.com>
+	<CAGETcx_j4613QjHgX5AJ96Ux6MJSxxhT7DL36yzNv1JCsoxTAA@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205182810.58382-1-brgl@bgdev.pl> <20240205182810.58382-3-brgl@bgdev.pl>
- <tnylagkmj36lve2ub5voumtkqjdy6j3hr6yyk4mqkaabvc3gdv@voaiu2oqi73o>
- <CAMRc=McmfufqqEvouRCjY1ukVB_ie1r5QEocqRUK0VBheEq5Hg@mail.gmail.com>
- <CAMRc=Mc_iwMzKznfUknm+RwS3jN_GimpirdTDVCPtnYYS_1PNg@mail.gmail.com> <20240226102955.GA19256@hu-kuldsing-hyd.qualcomm.com>
-In-Reply-To: <20240226102955.GA19256@hu-kuldsing-hyd.qualcomm.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 27 Feb 2024 09:24:50 +0100
-Message-ID: <CAMRc=MdfU0=JBrAJMkeg8XV6SWPybY+rDMG5_Cei1haGGsHmpw@mail.gmail.com>
-Subject: Re: [PATCH v7 02/12] firmware: qcom: scm: enable the TZ mem allocator
-To: Kuldeep Singh <quic_kuldsing@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Andy Gross <agross@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
-	Guru Das Srinagesh <quic_gurus@quicinc.com>, Andrew Halaney <ahalaney@redhat.com>, 
-	Maximilian Luz <luzmaximilian@gmail.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Deepti Jaggi <quic_djaggi@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On Mon, Feb 26, 2024 at 11:30=E2=80=AFAM Kuldeep Singh
-<quic_kuldsing@quicinc.com> wrote:
->
-> > > > As we're not moving from the callers freely allocating what they ne=
-ed,
-> > > > to a fixed sized pool of 256kb. Please document why 256kb was choos=
-en,
-> > > > so that we have something to fall back on when someone runs out of =
-this
-> > > > space, or wonders "why not 128kb?".
-> > > >
-> > >
-> > > If you worry about these pools being taken out of the total memory an=
-d
-> > > prefer to have a way to avoid it, I was thinking about another
-> > > build-time mode for the allocator - one where there's no pool but it
-> > > just allocates chunks using dma_alloc_coherent() like before and pool
-> > > size is ignored. Does it sound good?
-> > >
+Hi Bartosz
+
+On Thu, 22 Feb 2024 15:51:15 -0800
+Saravana Kannan <saravanak@google.com> wrote:
+
+> On Thu, Feb 22, 2024 at 4:21 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 > >
-> > Or we could even have an argument for the initial size of the pool and
-> > then once it's exhausted, we'd add a new chunk (maybe twice the size?)
-> > and so on.
->
-> Hi Bartosz,
->
-> Thanks for shmbridge patch series. Few questions.
->
->         1. With current design of every client maintaining it's own pool,
->         For any target, we might end up occupying lot more space by
->         different clients than we actually need.
->
+..
+> > > >
+> > > > The fix for the user-space issue may be more-or-less correct but the problem is
+> > > > deeper and this won't fix it for in-kernel users.
+> > > >
+> > > > Herve: please consider the following DT snippet:
+> > > >
+> > > >       gpio0 {
+> > > >               compatible = "foo";
+> > > >
+> > > >               gpio-controller;
+> > > >               #gpio-cells = <2>;
+> > > >               interrupt-controller;
+> > > >               #interrupt-cells = <1>;
+> > > >               ngpios = <8>;
+> > > >       };
+> > > >
+> > > >       consumer {
+> > > >               compatible = "bar";
+> > > >
+> > > >               interrupts-extended = <&gpio0 0>;
+> > > >       };
+> > > >
+> > > > If you unbind the "gpio0" device after the consumer requested the interrupt,
+> > > > you'll get the same splat. And device links will not help you here (on that
+> > > > note: Saravana: is there anything we could do about it? Have you even
+> > > > considered making the irqchip subsystem use the driver model in any way? Is it
+> > > > even feasible?).  
+> 
+> I did add support to irqchip to use the driver model. See
+> IRQCHIP_PLATFORM_DRIVER_BEGIN() and uses of it.  So this makes sure
+> the probe ordering is correct.
+> 
+> But when I added that support, there was some pushback on making the
+> modules removable[1]. But that's why you'll see that the
+> IRQCHIP_PLATFORM_DRIVER_BEGIN() macro set .suppress_bind_attrs = true.
+> 
+> Do you have a way to unregister an interrupt controller in your
+> example? If so, how do you unregister it? It shouldn't be too hard to
+> extend those macros to add removal support. We could add a
+> IRQCHIP_MATCH2() that also takes in an exit() function op that gets
+> called on device unbind.
+> 
+> [1] - https://lore.kernel.org/lkml/86sghas7so.wl-maz@kernel.org/#t
+> 
+> > > >
+> > > > I would prefer this to be fixed at a lower lever than the GPIOLIB character
+> > > > device.  
+> > >
+> > > I think this use case is covered.
+> > > When the consumer device related to the consumer DT node is added, a
+> > > consumer/supplier relationship is created:
+> > > parse_interrupts() parses the 'interrups-extended' property
+> > >   https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/property.c#L1316
+> > > and so, of_link_to_phandle() creates the consumer/supplier link.
+> > >   https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/property.c#L1316
+> > >
+> > > We that link present, if the supplier is removed, the consumer is removed
+> > > before.
+> > > The consumer should release the interrupt during its remove process (i.e
+> > > explicit in its .remove() or explicit because of a devm_*() call).
+> > >
+> > > At least, it is my understanding.  
+> >
+> > Well, then it doesn't work, because I literally just tried it before
+> > sending my previous email.  
+> 
+> For your gpio0 device, can you see why __device_release_driver()
+> doesn't end up calling device_links_unbind_consumers()?
+> 
+> Also, can you look at
+> /sys/class/devlink/<bus:gpio0-devicename>--<consumer device name>
+> folders and see what the status file says before you try to unbind the
+> gpio0 device? It should say "active".
+> 
+> > Please try it yourself, you'll see.
+> >
+> > Also: an interrupt controller may not even have a device consuming its
+> > DT node (see IRQCHIP_DECLARE()), what happens then?  
+> 
+> Yeah, we are screwed in those cases. Ideally we are rejecting all
+> submissions for irqchip drivers that use IRQCHIP_DECLARE().
+> 
 
-Technically there are only up to two, three in the future with scminvoke.
+I have the feeling that this issue related to your gpio0 driver unbind is out of
+the scope of this series.
 
->         2. Also, there's no option to configure pool size for each client=
- at
->         runtime level and a fixed 256K value is chosen for qcom_scm/qseec=
-om.
+Let move forward with the user-space fix (cdev) related to this series.
+I will sent the v2 to cover the cdev case.
 
-You mean via a module parameter?
+Regards,
+Hervé
 
->         Pool size will be same for each target and thus making it less
->         scalabale if there's adjustment needed at target specific level.
->         Ex: For a low DDR memory target, pool size should scale down acco=
-rdingly
->         as 256K will become a big ask but there's no way to choose specif=
-ic pool
->         size for just one target.
-
-Do we really have any low-DDR platforms that would be affected by this
-change? Even for db401c the 256K is a tiny fraction of the total
-memory.
-
->                 2.1 One way to do configure custom pool size value is to =
-add new
->                 property in qcom_scm/qseecom or client DT node and then c=
-reate
->                 pool of size with this provided value. Though there are w=
-ays to
->                 tackle this, but still clients specifying it's own pool s=
-ize
->                 will always fetch more CMA region than what is actually n=
-eeded.
->
-> Can you please share your ideas as well for upcoming version.
->
-
-I will propose a new solution with several configuration options for
-pools. Including scaling the pool size as needed. I hope to send it
-this week.
-
-Bart
-
-> Regards
-> Kuldeep
+-- 
+Hervé Codina, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
