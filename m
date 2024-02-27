@@ -1,263 +1,172 @@
-Return-Path: <linux-kernel+bounces-83284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7FB869143
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:04:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 733AA869508
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:58:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FBE11C263C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:04:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DA1E28EB2E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E9713A88A;
-	Tue, 27 Feb 2024 13:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5244143C75;
+	Tue, 27 Feb 2024 13:57:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BjzM8JEm"
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ZJ8s+bI+"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2814913AA2A;
-	Tue, 27 Feb 2024 13:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1510654BD4;
+	Tue, 27 Feb 2024 13:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709039064; cv=none; b=VEbSwA1dMEgBaw1cTLDVn9GQow37B2zFXuQmWI9R92nvCRfqZMBL0WA8uF1HnJynxw9a6p14w0x/D4L2bsmRwQtpaNGd66v9cbIYYhgI1hJfDf6IIfuG32gDAGqD2FUBhTIHxLi60DxvHnL12SWGvGJX53Bh1cU5akYQ+X/jZo8=
+	t=1709042272; cv=none; b=o7Dc1QvGnJHHlaf0MIapn58Q07ZYS56LVgz9fH82iEnBBbn6T12KsOxfjBcd1E4d1L6fC+PzBYiL2GB/9YERUW+tkm1XVhGZgKvVs4EhPbw1nqo30Jy5MQTDLmPaDYb37sMM89/4ZGH2S8AUOJ1E+MG2smKIfQBlAgl+hZG1HCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709039064; c=relaxed/simple;
-	bh=Mt/4P+2QS2VZfTkmlXi8V7FiUmQV8Vur/xYbaL/ix50=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DHmFZDTS031R0V0E/c4E6Rqb4SSA8paY+GfyzswS5exQg6CPZdWDE+PIPmnr7Q9f1YktDT8a+TiIOuO8yYQZxysyIJZ7iioE5iFX/m5LltbCjmIxIsBvkv6Ld0/jCRWgHMNXUrltsXdVhib7BiMihbR1uPThcaS5SAjI2iKxGwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BjzM8JEm; arc=none smtp.client-ip=209.85.161.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a04dd6721dso1128958eaf.0;
-        Tue, 27 Feb 2024 05:04:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709039062; x=1709643862; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KmGIhE1/yiAnczVNxJafVkaO2xp7KonC01JesBARNDo=;
-        b=BjzM8JEmU2BOg1BKu+Ms/o82ebOsonEFetDPDQbOrImaz/SmIV4rLmgdsTvxx7ZgY4
-         epBhkexauufQtPyUzloLu6j944wMvhX1ccegSgzs6EjdsWcekyc5FfWLwbvYBGgLO9Hl
-         31j1DY8ruiptpC7E+wmVFQItUkCtakyQsgyCbBDBVQr0v8o1Ah7DcJXLiB6282mampz6
-         gxVQVG/6/trUR/bC3/vANoY5qDXLAmSWsamYGPzq9SJF5P7uFeEY992C3PjWSRvFWRkL
-         okF2eyPxKjGndHJiy0Y/Y9hDaogPD1IbtSWdGWXZ/7Jx/Eq8H6+9yPYXbuX7p+QZ+L9r
-         y0hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709039062; x=1709643862;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KmGIhE1/yiAnczVNxJafVkaO2xp7KonC01JesBARNDo=;
-        b=e9JoMTvXQtrBtDnAfTn6dEA6K1H+doZCyNqWqJZY6AcAIf34VGsOlNIq9CpcipH2Wy
-         seFrEpot00n0rOjN6g5QpWGS8dA3xazcdTlj2cbsqMhvphR+nCU0pnTFZHSsZsQjc1+m
-         6AbqVBHNowC0OYxHZnA8ak30IqgpmJ1kVpOiSV45EaT0xkJB6Gva1Z1LIZGYqOr5d0zG
-         p10tPypCqTm+W9yYwEOUNhkHDEMHV70BeN90YfalVTcKdZO6H5GdlulzwE0i04UM7zrn
-         KVbPvCdWJzRRXAUubUdUOHG8q8I4Yepn+kYQ7qeIvET8Z/FztMEBMA8ZY8VlRMunIiar
-         95hA==
-X-Forwarded-Encrypted: i=1; AJvYcCXZxma0jC9Jpo8OBcoSc/Km57/4LRZjZZJb0doDis9yPpCJTGxFk2/RC/D6G9vsL4qBRpNvlFsB9bpKrG/ZREr1WRpXj7AQeP2XIBmOgHoCwtvWgo0uESdzz4bXtEw4UKT5o6EjsX8HZw==
-X-Gm-Message-State: AOJu0Yz0z85qSkt9jSf1NG0tMHAHqPMZ0ZRsg6waQ/IX8x2KgkbEkSPq
-	0ODZ3plzc04cPO/aXE0o6lYHaszGD5n0an97xNdCH+l5/oacvdt5PWOZFV5iZFBBr5BnY3CInyJ
-	IpRS7rPpSMEdnDC2Jcvsg/YRfW2c=
-X-Google-Smtp-Source: AGHT+IGxJzeAEVxdv8cuiqF70NYJMK21XSZ6TXCxSS4URg5FBbqpRHb9nXTWZ3TQvYRw7dGRitIBE98EwmUuCRyti+o=
-X-Received: by 2002:a4a:7617:0:b0:5a0:3917:5d46 with SMTP id
- t23-20020a4a7617000000b005a039175d46mr8684041ooc.2.1709039061908; Tue, 27 Feb
- 2024 05:04:21 -0800 (PST)
+	s=arc-20240116; t=1709042272; c=relaxed/simple;
+	bh=qZDVWKsRZ13tYfqHavEyQQBiCSQ2cSxwDiG4R8qRmyU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G6Tm5wiClHN+ZkcqQqN7lm9XgMVcHKVaVhkQWmD4elvm7zjygL2OX6/KE3CyLZK51nWBdnpRzD5VnMWlYtcpgxUJ87tBKB2hqiHdU+aQnwsm+R+MPWkWLeugK2Kl/nARMNdraZBb/o8PA36gnH4QnxJIwfXuRjS8mn+zkLpTfvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ZJ8s+bI+; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41RDrPkc029484;
+	Tue, 27 Feb 2024 13:56:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=ku/I6kD09XgVfUmfpi+mf/i9mv58LhPyT2lQKpdjUD0=;
+ b=ZJ8s+bI+H2TScuayOD3QUEKsK0CNbNObyjHGAH/IOk4ux9kGgaDQYJ7c7VMjQ1zH17LC
+ GmQBo2reT45d4vuwXWj0jwoz++HBh5QUn/kk4kiNaG+kyJJDUNK/hKShQnEWe4ZWXGi5
+ cPnhA1mcLc+uyqblPFFyyyl/BqPyXbIzPK+0RqX7cc6exMR+C+CNzXyDMEwxnXuQSEy7
+ SqaiaNsfFEWq38wkpNeerrMoS2BhdCmls0PzKRGRPj8NJT4t+EjTIR+SvDLmB+2t5Btf
+ S+9u83RUL8nmTonO8nqS6bzWVVNx3p9RLHX33olfAO1NFPpqY0jEb+9kOpNiMK3FL3TA uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3whh11826h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 13:56:15 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41RDuElC005801;
+	Tue, 27 Feb 2024 13:56:14 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3whh11825t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 13:56:14 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41RC1Kkv008827;
+	Tue, 27 Feb 2024 13:56:13 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wftstg97s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 13:56:13 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41R7fJhm33292610
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 27 Feb 2024 07:41:21 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 379CB20063;
+	Tue, 27 Feb 2024 07:41:19 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6F4B32004E;
+	Tue, 27 Feb 2024 07:41:18 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.60])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 27 Feb 2024 07:41:18 +0000 (GMT)
+Date: Tue, 27 Feb 2024 08:41:16 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Helge Deller <deller@gmx.de>, Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Richard Weinberger <richard@nod.at>, x86@kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>, Andy Lutomirski <luto@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org
+Subject: Re: [PATCH 3/4] arch: define CONFIG_PAGE_SIZE_*KB on all
+ architectures
+Message-ID: <20240227074116.6127-A-hca@linux.ibm.com>
+References: <20240226161414.2316610-1-arnd@kernel.org>
+ <20240226161414.2316610-4-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240205171930.968-1-linux.amoon@gmail.com> <20240205171930.968-5-linux.amoon@gmail.com>
- <cf47b82c-6307-475b-af3a-eab7f09715f0@linaro.org> <CANAwSgTOpDmZGR33veBWrzr75=xEZ-28iu=GeCzqa0ZPXxDchw@mail.gmail.com>
- <f87069a4-042c-467a-94fb-0b65bfa4758d@linaro.org>
-In-Reply-To: <f87069a4-042c-467a-94fb-0b65bfa4758d@linaro.org>
-From: Anand Moon <linux.amoon@gmail.com>
-Date: Tue, 27 Feb 2024 18:34:05 +0530
-Message-ID: <CANAwSgR1+Fb5Si6yBU6JXCfRiq-XU0xjr-ecVbnALMj7qmv0Sg@mail.gmail.com>
-Subject: Re: [PATCHv1 4/5] arm64: dts: amlogic: Add cache information to the
- Amlogic S922X SoC
-To: neil.armstrong@linaro.org
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kevin Hilman <khilman@baylibre.com>, Jerome Brunet <jbrunet@baylibre.com>, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226161414.2316610-4-arnd@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 8EV26VP00g7C5ttRo4w8rl1MOueZ0nuz
+X-Proofpoint-GUID: I1XborJoqfSI7vSV5Ul-wUT1vQ1jgFOw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=660 phishscore=0 malwarescore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402270107
 
-Hi Niel,
+On Mon, Feb 26, 2024 at 05:14:13PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Most architectures only support a single hardcoded page size. In order
+> to ensure that each one of these sets the corresponding Kconfig symbols,
+> change over the PAGE_SHIFT definition to the common one and allow
+> only the hardware page size to be selected.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+..
+>  arch/s390/Kconfig                  | 1 +
+>  arch/s390/include/asm/page.h       | 2 +-
+..
+> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+> index fe565f3a3a91..b61c74c10050 100644
+> --- a/arch/s390/Kconfig
+> +++ b/arch/s390/Kconfig
+> @@ -199,6 +199,7 @@ config S390
+>  	select HAVE_MOD_ARCH_SPECIFIC
+>  	select HAVE_NMI
+>  	select HAVE_NOP_MCOUNT
+> +	select HAVE_PAGE_SIZE_4KB
+>  	select HAVE_PCI
+>  	select HAVE_PERF_EVENTS
+>  	select HAVE_PERF_REGS
+> diff --git a/arch/s390/include/asm/page.h b/arch/s390/include/asm/page.h
+> index 73b9c3bf377f..ded9548d11d9 100644
+> --- a/arch/s390/include/asm/page.h
+> +++ b/arch/s390/include/asm/page.h
+> @@ -11,7 +11,7 @@
+>  #include <linux/const.h>
+>  #include <asm/types.h>
+>  
+> -#define _PAGE_SHIFT	12
+> +#define _PAGE_SHIFT	CONFIG_PAGE_SHIFT
 
-On Tue, 6 Feb 2024 at 20:31, <neil.armstrong@linaro.org> wrote:
->
-> On 06/02/2024 11:15, Anand Moon wrote:
-> > Hi Neil,
-> >
-> > On Tue, 6 Feb 2024 at 14:30, Neil Armstrong <neil.armstrong@linaro.org>=
- wrote:
-> >>
-> >> On 05/02/2024 18:19, Anand Moon wrote:
-> >>> As per S922X datasheet add missing cache information to the Amlogic
-> >>> S922X SoC.
-> >>>
-> >>> - Each Cortex-A53 core has 32 KB of instruction cache and
-> >>>        32 KB of L1 data cache available.
-> >>> - Each Cortex-A73 core has 64 KB of L1 instruction cache and
-> >>>        64 KB of L1 data cache available.
-> >>> - The little (A53) cluster has 512 KB of unified L2 cache available.
-> >>> - The big (A73) cluster has 1 MB of unified L2 cache available.
-> >>
-> >> Datasheet says:
-> >> The quad core Cortex=E2=84=A2-A73 processor is paired with A53 process=
-or in a big.Little configuration, with each
-> >> core has L1 instruction and data chaches, together with a single share=
-d L2 unified cache with A53
-> >>
-> > Ok,
-> >
-> > Since all the Cortex=E2=84=A2-A73 and Cortex=E2=84=A2-A53 share some im=
-provements in
-> > the architecture with some improvements in cache features
-> > hence I update the changes accordingly.
-> > Also, I checked this in the ARM documentation earlier on this.
->
-> I don't understand, Amlogic states it's a shared L2 cache, but you trust
-> the ARM documentation instead ???
-
-Yes please find the Cortex=E2=84=A2-A73 TRM
-L1 Cache
-https://developer.arm.com/documentation/100048/0002/level-1-memory-system/a=
-bout-the-l1-memory-system?lang=3Den
-L2 Cache
-https://developer.arm.com/documentation/100048/0002/level-2-memory-system/a=
-bout-the-l2-memory-system?lang=3Den
->
-> >
-> >> And there's no indication of the L1 or L2 cache sizes.
-> >
-> > What I feel is in general all the Cortex=E2=84=A2-A73 and Cortex=E2=84=
-=A2-A53 supports
-> > L1 and L2 cache size since it is part of the core features.
-> > but I opted for these size values from a Wikipedia article.
-> >
-> > On my Odroid N2+, I observe the following.
-> >
-> > I have also done some testing on the stress-ng to verify this.
->
->
-> Ok I don't feel confident adding numbers that comes out of thin air,
-> and even more since they are only shared to userspace.
->
-> I think we should only add the numbers which are 100% sure
-
-Best way to let the Amlogic SoC members comment on the CPU  L1/ / L2 cache =
-size.
-But with the lack of pref PMU events we cannot test this feature.
-
->
->
-> This looks pretty, but let's keep exporting verified data.
->
-
-This CPU hardware supports cache this feature, but with missing PMU for thi=
-s cpu
-so its not getting listed hardware events like cache-misses cache-reference=
-s
-
-alarm@archl-on2:~$ sudo perf list
-[sudo] password for alarm:
-
-List of pre-defined events (to be used in -e or -M):
-
-  alignment-faults                                   [Software event]
-  bpf-output                                         [Software event]
-  cgroup-switches                                    [Software event]
-  context-switches OR cs                             [Software event]
-  cpu-clock                                          [Software event]
-  cpu-migrations OR migrations                       [Software event]
-  dummy                                              [Software event]
-  emulation-faults                                   [Software event]
-  major-faults                                       [Software event]
-  minor-faults                                       [Software event]
-  page-faults OR faults                              [Software event]
-  task-clock                                         [Software event]
-  duration_time                                      [Tool event]
-  user_time                                          [Tool event]
-  system_time                                        [Tool event]
-  meson_ddr_bw/chan_1_rw_bytes/                      [Kernel PMU event]
-  meson_ddr_bw/chan_2_rw_bytes/                      [Kernel PMU event]
-  meson_ddr_bw/chan_3_rw_bytes/                      [Kernel PMU event]
-  meson_ddr_bw/chan_4_rw_bytes/                      [Kernel PMU event]
-  meson_ddr_bw/total_rw_bytes/                       [Kernel PMU event]
-  rNNN                                               [Raw hardware
-event descriptor]
-  cpu/t1=3Dv1[,t2=3Dv2,t3 ...]/modifier                  [Raw hardware
-event descriptor]
-       [(see 'man perf-list' on how to encode it)]
-  mem:<addr>[/len][:access]                          [Hardware breakpoint]
-  alarmtimer:alarmtimer_cancel                       [Tracepoint event]
-  alarmtimer:alarmtimer_fired                        [Tracepoint event]
-  alarmtimer:alarmtimer_start                        [Tracepoint event]
-  alarmtimer:alarmtimer_suspend                      [Tracepoint event]
-  asoc:snd_soc_bias_level_done                       [Tracepoint event]
-  asoc:snd_soc_bias_level_start                      [Tracepoint event]
-  asoc:snd_soc_dapm_connected                        [Tracepoint event]
-  asoc:snd_soc_dapm_done                             [Tracepoint event]
-  asoc:snd_soc_dapm_path                             [Tracepoint event]
-  asoc:snd_soc_dapm_start                            [Tracepoint event]
-  asoc:snd_soc_dapm_walk_done                        [Tracepoint event]
-  asoc:snd_soc_dapm_widget_event_done                [Tracepoint event]
-  asoc:snd_soc_dapm_widget_event_start               [Tracepoint event]
-  asoc:snd_soc_dapm_widget_power                     [Tracepoint event]
-  asoc:snd_soc_jack_irq                              [Tracepoint event]
-  asoc:snd_soc_jack_notify                           [Tracepoint event]
-  asoc:snd_soc_jack_report                           [Tracepoint event]
-  binder:binder_alloc_lru_end                        [Tracepoint event]
-  binder:binder_alloc_lru_start                      [Tracepoint event]
-  binder:binder_alloc_page_end                       [Tracepoint event]
-  binder:binder_alloc_page_start                     [Tracepoint event]
-  binder:binder_command                              [Tracepoint event]
-  binder:binder_free_lru_end                         [Tracepoint event]
-  binder:binder_free_lru_start                       [Tracepoint event]
-  binder:binder_ioctl                                [Tracepoint event]
-  binder:binder_ioctl_done                           [Tracepoint event]
-  binder:binder_lock                                 [Tracepoint event]
-  binder:binder_locked                               [Tracepoint event]
-  binder:binder_read_done                            [Tracepoint event]
-  binder:binder_return                               [Tracepoint event]
-  binder:binder_transaction                          [Tracepoint event]
-  binder:binder_transaction_alloc_buf                [Tracepoint event]
-  binder:binder_transaction_buffer_release           [Tracepoint event]
-  binder:binder_transaction_failed_buffer_release    [Tracepoint event]
-  binder:binder_transaction_fd_recv                  [Tracepoint event]
-
-
-[root@archl-on2 alarm]# perf stat -B -e
-cache-references,cache-misses,cycles,instructions,branches,faults,migration=
-s
-sleep 5
-
- Performance counter stats for 'sleep 5':
-
-   <not supported>      cache-references
-   <not supported>      cache-misses
-   <not supported>      cycles
-   <not supported>      instructions
-   <not supported>      branches
-                56      faults
-                 0      migrations
-
-       5.003404106 seconds time elapsed
-
-       0.003396000 seconds user
-       0.000000000 seconds sys
-
-Thanks
-
-
-
--Anand
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
