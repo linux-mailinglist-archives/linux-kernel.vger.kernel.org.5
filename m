@@ -1,100 +1,271 @@
-Return-Path: <linux-kernel+bounces-83896-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0879B869FDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:06:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF3F5869FDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:07:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F18728FB87
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:06:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1623F1C2403D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A89851C28;
-	Tue, 27 Feb 2024 19:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64AF84E1DC;
+	Tue, 27 Feb 2024 19:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="oBcEYDtu"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD9E3D988
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:06:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="mxcgBmlO"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBEB33D988
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709060800; cv=none; b=SCPCcHP2ROdpBXQYdGBGSUGzn9AFL4udrJufb/5pdw6WNAqdDPGvohnJ+WOVVkWDilOriRbCbSNq2aUwYLPDGqWRPR+oHlPT5YEhYE8uwZoIL+ruXdNraQqkVZwGlZo0Hn645hNhbwCh3CRkEt/pg1MzIoExPUZWqptt2I7rJ8Y=
+	t=1709060843; cv=none; b=ug4cSqUPWwz6RNXmpQJYMGIkeMo8BVCXu/jSBZ1NBMyUaxYFNTWv+FvtBqovoqoDPjdThWt7GRpOtGuS1/vVQj2mK2OSwYwgrcrGTGYZ2uSte1U5rpAb0eWKYzEM1S1S0KYjAy70bC7wNu007212bclqug2IzX/jKRkF9A6OWLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709060800; c=relaxed/simple;
-	bh=NV0RUIdXMlo6Z2/AE6LFM7XFkZwaYAIqi+3rgxbOiZg=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=UIsWA42yjSRMzZ7q0C0LDA169N3QGq/A+bimK/oaa4au8G8kB1uMwWshUEtynqUV6yQWDC161phFX9vlbR9xI5x1AjkFgFlEHmc/ZFg1/lTkfJg58RHFRTUppG68PSLNEvqXvq4WMXPi1fo8HqLJbwBfYS3vzNZgCDjpLYf7drM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=oBcEYDtu; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from smtpclient.apple (d66-183-91-182.bchsia.telus.net [66.183.91.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 047D520B74C0;
-	Tue, 27 Feb 2024 11:06:39 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 047D520B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1709060799;
-	bh=3R4L23y6mvT50s2KsDN/kmp17xP0HbiJGH/JfodJIno=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-	b=oBcEYDtusAVrVMGV7XA7J7FM5zrKZ5tex7b9gNLT5hYRG+hsJ4Ps3gynAEeQ/eDOc
-	 188Lo1H6WAu8y7IPLdACuwBRZhl6eaLX/R7Ji2YWNW6KZaU91YEBwJ2Y50hM5nZ1uJ
-	 mltZ4MDQKi6GkmmQIROsBdBhTcoljsaestWHY8kI=
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1709060843; c=relaxed/simple;
+	bh=d4YS6qDnqsxc0ZcDBJA6aOLb3GyoEOHo09+HXgEFdYI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZozKH4LEysLtGtEhpYh2K4I2Jf9ruvnZSyWdBtDCewjJiLxsLPBErpNUHCLNB5nyj77hsZp6x62AMKblHdKTZvCuKIUPmBVAkzJzRgIZqjIdIrnn7hc1wIxb72L4y6HTn1pKGUcvIANvzcMDoYeSzPZhyays8+v9UTSyMxNATcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=mxcgBmlO; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e4c359e48aso2985135b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:07:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709060841; x=1709665641; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ciUcqpYBqZeAizd1bXUZV1jOtaGsZb5b//1Mxq7v5tY=;
+        b=mxcgBmlO1tKx5UsvQ8QK+sEcO/79ZhFgkcWzCCD1ObqYQkdh8ANJ0Q04dT/r2+7Bv0
+         YFyMWMosXDnpAcV5yIX/7cHLLo1+lZdGIpECLS5wPwzSmfRMf3EitYG8M7t6Akwl1arx
+         NBMTiKJoc8pfVDterquBDWBlA3U8LpBdOdaXJdRCMvOroZRiaid8hoX6Tln56iFgnaW+
+         kiHb7b4GLgvYrLVB83ZeLj/m174rgL2mBZt7OJfN3GoBWWKOusqYw+rH1cxULTwsXtru
+         U5GfHlz1++xDQe7zACYpR5MgM/TSYKAYz6suzw0S8mknrgLkVwcEd8rUWPsJM6EiCiXg
+         GdAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709060841; x=1709665641;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ciUcqpYBqZeAizd1bXUZV1jOtaGsZb5b//1Mxq7v5tY=;
+        b=dsiDPvyLYfQjEMgGREO3I+rkkDLdswLSuzYFYUL+qgjRzMNlbk0oW04feJtgw/pRFY
+         Ik/yX+RvOdb2bNope/bSaXlRrO/haHbZtYBwB/8Jl10CCUN9MzEp3T09RyjplrfQbKfq
+         TI2YqsiQmLRAHcZmysSg2AIlSwFon35m1zPHrXi95M5hKCzRJ13KqgocwNRP++ThoxAA
+         gSd8oZLOWiuSFUvUjCdZVU1TmNSiK1PN2HtclXDRsc8f47mpDk23vyVawLEusD8YGt97
+         ybTqXW2a+JwqRC7xEwFSPl7h2eQ5JreA/S1ucNYUn7hhzErOt2yMZXq4GMJJIcrRhoaP
+         mDnw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2pceigVsoYqXLuhMYTDpsclsDFZUYV4yT5jWlLT/c0lvCe+gxy2VjDTiM3bmrjQjsEeeYY5AujcsgDcQtaluarjQ9ZIdKSUHXU1zv
+X-Gm-Message-State: AOJu0Yzw7yzUkZ73olLEmQ3VM82rr7HJPpy6C+am7HsdHRYRf4zdqCwY
+	ysvdwBtHSJff/CLSaO2OhT4T5qsy1FzQ0gje3jC8wxqpvaK/MrzFO/i2gH7P97o=
+X-Google-Smtp-Source: AGHT+IGdfbdJYpa+UF9WJhw2SRg2KEMy3f2W3xCLWpK3KGsImm0f1UFR9UeaLt7yaGZTLy0+GyXbSA==
+X-Received: by 2002:a62:cd4e:0:b0:6e3:79ba:6eed with SMTP id o75-20020a62cd4e000000b006e379ba6eedmr12060537pfg.13.1709060841076;
+        Tue, 27 Feb 2024 11:07:21 -0800 (PST)
+Received: from ghost ([50.213.54.97])
+        by smtp.gmail.com with ESMTPSA id i19-20020aa787d3000000b006e5544046e9sm816658pfo.19.2024.02.27.11.07.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 11:07:20 -0800 (PST)
+Date: Tue, 27 Feb 2024 11:07:18 -0800
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Evan Green <evan@rivosinc.com>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
+	Eric Biggers <ebiggers@kernel.org>,
+	Elliot Berman <quic_eberman@quicinc.com>,
+	Charles Lohr <lohr85@gmail.com>, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] riscv: Set unalignment speed at compile time
+Message-ID: <Zd4y5llkvTfKHf6b@ghost>
+References: <20240216-disable_misaligned_probe_config-v4-0-dc01e581c0ac@rivosinc.com>
+ <20240216-disable_misaligned_probe_config-v4-2-dc01e581c0ac@rivosinc.com>
+ <20240227-condone-impeach-9469dffc6b47@wendy>
+ <Zd4nMa+x28omuhiF@ghost>
+ <CALs-HstdXnRZUaYxHF-a4e+A6-X30RFWP7PKu-6rKBMUVUxs0g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: [PATCH] workqueue: Introduce from_wq() helper for cleaner
- callback declarations
-From: Allen Pais <apais@linux.microsoft.com>
-In-Reply-To: <Zd4xhvh9Drl4qrCV@slm.duckdns.org>
-Date: Tue, 27 Feb 2024 11:06:28 -0800
-Cc: jiangshanlai@gmail.com,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <FDCF9C39-1696-4FE1-9728-31FE879AC36F@linux.microsoft.com>
-References: <20240227185628.5336-1-apais@linux.microsoft.com>
- <Zd4xhvh9Drl4qrCV@slm.duckdns.org>
-To: Tejun Heo <tj@kernel.org>
-X-Mailer: Apple Mail (2.3774.400.31)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALs-HstdXnRZUaYxHF-a4e+A6-X30RFWP7PKu-6rKBMUVUxs0g@mail.gmail.com>
 
->=20
->=20
-> On Tue, Feb 27, 2024 at 06:56:28PM +0000, Allen Pais wrote:
->> To streamline the transition from tasklets to worqueues, a new helper
->> function, from_wq(), is introduced. This helper, inspired by existing
->> from_() patterns, utilizes container_of() and eliminates the =
-redundancy
->> of declaring variable types, leading to more concise and readable =
-code.
->>=20
->> The modified code snippet demonstrates the enhanced clarity achieved
->> with from_wq():
->>=20
->>  void callback(struct work_struct *w)
->>   {
->>     - struct some_data_structure *local =3D container_of(w,
->> 						       struct =
-some_data_structure,
->> 						       work);
->>     + struct some_data_structure *local =3D from_wq(local, w, work);
->=20
-> I'm not necessarily against it but it's a bit meh in terms of how much =
-it
-> saves. Also, can you please name it from_work()?
+On Tue, Feb 27, 2024 at 10:48:39AM -0800, Evan Green wrote:
+> On Tue, Feb 27, 2024 at 10:17 AM Charlie Jenkins <charlie@rivosinc.com> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 11:39:25AM +0000, Conor Dooley wrote:
+> > > On Fri, Feb 16, 2024 at 12:33:19PM -0800, Charlie Jenkins wrote:
+> > > > Introduce Kconfig options to set the kernel unaligned access support.
+> > > > These options provide a non-portable alternative to the runtime
+> > > > unaligned access probe.
+> > > >
+> > > > To support this, the unaligned access probing code is moved into it's
+> > > > own file and gated behind a new RISCV_PROBE_UNALIGNED_ACCESS_SUPPORT
+> > > > option.
+> > > >
+> > > > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > > > ---
+> > > >  arch/riscv/Kconfig                          |  58 +++++-
+> > > >  arch/riscv/include/asm/cpufeature.h         |  30 +++-
+> > > >  arch/riscv/kernel/Makefile                  |   6 +-
+> > > >  arch/riscv/kernel/cpufeature.c              | 255 --------------------------
+> > > >  arch/riscv/kernel/misaligned_access_speed.c | 265 ++++++++++++++++++++++++++++
+> > > >  arch/riscv/kernel/probe_emulated_access.c   |  64 +++++++
+> > > >  arch/riscv/kernel/sys_hwprobe.c             |  25 +++
+> > > >  arch/riscv/kernel/traps_misaligned.c        |  54 +-----
+> > > >  8 files changed, 442 insertions(+), 315 deletions(-)
+> > > >
+> > > > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > > > index bffbd869a068..3cf700adc43b 100644
+> > > > --- a/arch/riscv/Kconfig
+> > > > +++ b/arch/riscv/Kconfig
+> > > > @@ -690,25 +690,71 @@ config THREAD_SIZE_ORDER
+> > > >  config RISCV_MISALIGNED
+> > >
+> > >
+> > > Why can we not make up our minds on what to call this? The majority of
+> > > users are "unaligned" but the file you add and this config option are
+> > > "misaligned."
+> >
+> > We have both everywhere, maybe we (I?) should go in and standardize the
+> > wording everywhere. I personally prefer "misaligned" which means
+> > "incorrectly aligned" over "unaligned" which means "not aligned" because
+> > a 7-bit alignment is still "aligned" along a 7-bit boundary, but it is
+> > certainly incorrectly aligned.
+> >
+> > >
+> > > >     bool "Support misaligned load/store traps for kernel and userspace"
+> > > >     select SYSCTL_ARCH_UNALIGN_ALLOW
+> > > > +   depends on RISCV_PROBE_UNALIGNED_ACCESS || RISCV_EMULATED_UNALIGNED_ACCESS
+> > > >     default y
+> > > >     help
+> > > >       Say Y here if you want the kernel to embed support for misaligned
+> > > >       load/store for both kernel and userspace. When disable, misaligned
+> > > >       accesses will generate SIGBUS in userspace and panic in kernel.
+> > > >
+> > > > +choice
+> > > > +   prompt "Unaligned Accesses Support"
+> > > > +   default RISCV_PROBE_UNALIGNED_ACCESS
+> > > > +   help
+> > > > +     This selects the hardware support for unaligned accesses. This
+> > > > +     information is used by the kernel to perform optimizations. It is also
+> > > > +     exposed to user space via the hwprobe syscall. The hardware will be
+> > > > +     probed at boot by default.
+> > > > +
+> > > > +config RISCV_PROBE_UNALIGNED_ACCESS
+> > > > +   bool "Probe for hardware unaligned access support"
+> > > > +   help
+> > > > +     During boot, the kernel will run a series of tests to determine the
+> > > > +     speed of unaligned accesses. This is the only portable option. This
+> > > > +     probing will dynamically determine the speed of unaligned accesses on
+> > > > +     the boot hardware.
+> > > > +
+> > > > +config RISCV_EMULATED_UNALIGNED_ACCESS
+> > > > +   bool "Assume the CPU expects emulated unaligned memory accesses"
+> > > > +   depends on NONPORTABLE
+> > >
+> > > This is portable too, right?
+> >
+> > I guess so? I think I would prefer to have the probing being the only
+> > portable option.
+> >
+> > >
+> > > > +   select RISCV_MISALIGNED
+> > > > +   help
+> > > > +     Assume that the CPU expects emulated unaligned memory accesses.
+> > > > +     When enabled, this option notifies the kernel and userspace that
+> > > > +     unaligned memory accesses will be emulated by the kernel.
+> > >
+> > > > To enforce
+> > > > +     this expectation, RISCV_MISALIGNED is selected by this option.
+> > >
+> > > Drop this IMO, let Kconfig handle displaying the dependencies.
+> > >
+> >
+> > I was debating if Kconfig handling was enough, so I am glad it is, I
+> > will remove this.
+> >
+> > > > +
+> > > > +config RISCV_SLOW_UNALIGNED_ACCESS
+> > > > +   bool "Assume the CPU supports slow unaligned memory accesses"
+> > > > +   depends on NONPORTABLE
+> > > > +   help
+> > > > +     Assume that the CPU supports slow unaligned memory accesses. When
+> > > > +     enabled, this option improves the performance of the kernel on such
+> > > > +     CPUs.
+> > >
+> > > Does it? Are you sure that generating unaligned accesses on systems
+> > > where they are slow is a performance increase?
+> > > That said, I don't really see this option actually doing anything other
+> > > than setting the value for hwprobe, so I don't actually know what the
+> > > effect of this option actually is on the kernel's performance.
+> > >
+> > > Generally I would like to suggest a change from "CPU" to "system" here,
+> > > since the slow cases that exist are mostly because the unaligned access
+> > > is actually emulated in firmware.
+> >
+> > It would be ideal if "emulated" was used for any case of emulated
+> > accesses (firmware or in the kernel).  Doing emulated accesses will be
+> > orders of magnitude slower than a processor that "slowly" handles the
+> > accesses.
+> >
+> > So even if the processor performs a "slow" access, it could still be
+> > beneficial for the kernel to do the misaligned access rather than manual
+> > do the alignment.
+> >
+> > Currently there is no place that takes into account this "slow" option
+> > but I wanted to leave it open for future optimizations.
+> >
+> > >
+> > > > However, the kernel will run much more slowly, or will not be
+> > > > +     able to run at all, on CPUs that do not support unaligned memory
+> > > > +     accesses.
+> > > > +
+> > > >  config RISCV_EFFICIENT_UNALIGNED_ACCESS
+> > > >     bool "Assume the CPU supports fast unaligned memory accesses"
+> > > >     depends on NONPORTABLE
+> > > >     select DCACHE_WORD_ACCESS if MMU
+> > > >     select HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > > >     help
+> > > > -     Say Y here if you want the kernel to assume that the CPU supports
+> > > > -     efficient unaligned memory accesses.  When enabled, this option
+> > > > -     improves the performance of the kernel on such CPUs.  However, the
+> > > > -     kernel will run much more slowly, or will not be able to run at all,
+> > > > -     on CPUs that do not support efficient unaligned memory accesses.
+> > > > +     Assume that the CPU supports fast unaligned memory accesses. When
+> > > > +     enabled, this option improves the performance of the kernel on such
+> > > > +     CPUs.  However, the kernel will run much more slowly, or will not be
+> > > > +     able to run at all, on CPUs that do not support efficient unaligned
+> > > > +     memory accesses.
+> > > > +
+> > > > +config RISCV_UNSUPPORTED_UNALIGNED_ACCESS
+> > >
+> > > This option needs to be removed. The uabi states that unaligned access
+> > > is supported in userspace, if the cpu or firmware does not implement
+> > > unaligned access then the kernel must emulate it.
+> >
+> > Should it removed from hwprobe as well then?
+> 
+> We had added it as a hwprobe value in this discussion:
+> https://lore.kernel.org/lkml/Y+1VOXyKDDHEuejJ@spud/
+> 
+> Personally I like it as a possible hwprobe value, even if it is in
+> conflict with the uabi. I can't fully defend it, other than as a very
+> forward looking possibility, and as a nice value for people doing
+> weird things off the beaten path. My preference would be to keep it in
+> hwprobe, but I'm fine with not having a Kconfig for it.
+> 
+> -Evan
 
-  I agree :). It does help a little in conversion. Sure, will send out a =
-v2 right away.
+Seems reasonable to me, I will remove it from the Kconfig.
 
-Thanks.
-
->=20
-> Thanks.
->=20
-> --=20
-> tejun
+- Charlie
 
 
