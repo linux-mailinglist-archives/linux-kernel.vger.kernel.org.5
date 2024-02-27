@@ -1,279 +1,321 @@
-Return-Path: <linux-kernel+bounces-82543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D9C86861A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:39:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFDBB868632
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:42:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 479AFB25863
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:39:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F1221C27154
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17AF1CA6B;
-	Tue, 27 Feb 2024 01:39:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A406FC6;
+	Tue, 27 Feb 2024 01:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gOspWpyg"
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ebUesuIW"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E2B525E;
-	Tue, 27 Feb 2024 01:38:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47402525E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:42:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708997940; cv=none; b=CbFJyxPj8Wt07gXMPvBfAmCi9Yg4wiiVZq5n2YYmDoUIIw1bPwSA2/TJvlEIXMMPOL6/E43qSGnuzsbXgx97DCMLdabHa7HFTSvE86ikqEsvf2KGX3STuyJKNVXQQ6Q+0zUigncwm1XJF9fnILxuEv/NRUmbENcyJy/QroZnUQY=
+	t=1708998168; cv=none; b=MxYMu0s7TtfCBJ3npHYlN7i0nnt0oyo18gT1ZKDbvGdGp4Auzrl+LOEoAEhPCfeillonBYj/xfNAP37FmKqt0nVvSgQ1keR/VAd3gpRk+A+/cUpectoQSCjHpdjJ3GmzP7Im/A+SMZBsAp6cbIOj7znBwvtihc9yMFV27V5CPHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708997940; c=relaxed/simple;
-	bh=7cHEtn5/usUauu4n2MbbitQYkJHQNxNkqreUwKPvWKE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N8/KBmn6UKeHLirs+IQJvFAJJEy5Auh+y3/K7YJnVUrCumsMlWMGCbbS12a9rQigYe/ozP/oo4J918BXcBJNEagsF1YdZfN2Lz2PQ3kKvKpcdZqpvA33fq1C06PUcvDcLTykY+R4+ZayqHuhqHiT/+HBjJTDy3ut9OPmRp5xTFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gOspWpyg; arc=none smtp.client-ip=209.85.210.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6ddf26eba3cso3069960a34.0;
-        Mon, 26 Feb 2024 17:38:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708997937; x=1709602737; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uh/X4IvEG/YVTF6TF7CoVpwzdK/+m4nMnD3+Q9DdMTo=;
-        b=gOspWpygAZwBqyfd8CPCQvtiHfbXxwoiAkpxnPuELqSFYql3pxqHSmDzbGVLB8/dqZ
-         F+ZJS9lJ5WkwsHywfYamRnzevzpe7VRM/DU20r18Zhhzis2l/N3fCVikRbf3X4DRQLme
-         N1GIMtmqamd7RtQ5A3qTXx8FgN73h3H9H/4A6O63A/oupNzPWLZpdrXvbfYmMaXcA6xN
-         lCyhZ3MOWoUQgvYpwIvzrSTlz5dle9N5j/rXfZ5lWKLmOAqxKcFodu1IOoMCDJEhdTUl
-         q16H4tZls88oBUxp/7jPkfmicMe2xp/hXBR7qe12T8qI5nYoGu5B3jjCE9FHuNysDtHV
-         GVGg==
+	s=arc-20240116; t=1708998168; c=relaxed/simple;
+	bh=8/lN/s6wZZCZwmm8YocYDJ6JlmhxJ/7EX/J+MLIBITg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=edHy2IEzN7jMwpd1TJQvhQZ4SPxu12+g69LAh49fEywWzt57nDodJYnF4y5MV4l9k80iCQh+sTgbxjiCAoBuG0AhkJ6Sd8aOHCIX6N9RYiD1C3a/8Da0BVt9tEtun9r7a3n/9QqLOtDzNcr+YCW8yaNX0ACBMyhOTqZRLW8+Wzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ebUesuIW; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708998165;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GSzkNQ2ybBAJU6H8pAUDZHXTzCD4MIxGThMlIRlQGM0=;
+	b=ebUesuIWvDvFQT+FqXRj28jvMC3dmUYLIHlvwj/lPlCbhhjbD42/Zx2O5XApbP0g6fYBqc
+	aA6A2DQtIdiVfHeMsbkPK/nvmI13YTmogmvUyx8F3iuVyCOKU7zPCmKoDD0Zv4wZaKJvds
+	TaQiYcq2N+6pdB1jF1EpMHPD3rrQf2o=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-341-JHF_BVUSOp60VhpOLlxoDw-1; Mon, 26 Feb 2024 20:42:43 -0500
+X-MC-Unique: JHF_BVUSOp60VhpOLlxoDw-1
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5d8bdadc79cso3655272a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:42:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708997937; x=1709602737;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708998162; x=1709602962;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uh/X4IvEG/YVTF6TF7CoVpwzdK/+m4nMnD3+Q9DdMTo=;
-        b=rcZ8EGb6Ir3r/kSBAflEAjZsn2hHE2yl9EEgHNYyk9bO9xqIhypiIBrOG7enOQr6Qb
-         mxszHsSISQKy4UbbbTCRHIBHjtRTvt2hgpjri3nGRGcbsClobYWoaW9QTQ6PU51KpeH4
-         Pyh3gumd/3VOKuLRGcS5rDhSy8TnX0348yapUhbl3Xqf+dJpoYdurSmTQsPYMUuMQ9rh
-         j87RpmfAywrmEMytJcqiEQnzKX8Er+TzRiCJ6ncUEu4uN0x2wGTO86PPz0lYse9tnJrg
-         pJ3xMBt6TpIfEZQJVOBN98idC7nwoqCE1Z45hZSxrr8C6PIk63s28Oh+U0YyRtVpQbWd
-         B/vw==
-X-Forwarded-Encrypted: i=1; AJvYcCUMCCxMCvDuThiNUOi/ncxGKC8gX+2TNjxuCqsHEHV6g5U2OAndlO0DH5hPNgz62OKi/bsZIZEanP8OaYWYIzqsnRMUOt8U6NvVCHWNwvWhzSJbG4RhUJ4FEoEUQV5kRjq3z/Bl
-X-Gm-Message-State: AOJu0Yw0hhgBBJTu4AfQBxOVJnuretyOBwoO7158MS1EO1LAFoLP9sZj
-	HuDNnzbi3rm2ANtI6iFU9QoBc/YZp2WwDNQcqIs1TJpv0L5VwW+P
-X-Google-Smtp-Source: AGHT+IHkz2OvZAGja3wN+/HA2CkQlGKBxv7z1G2/NMt1RjLPbPZoLXylBDQnUmQuahGYOUaKXMthrQ==
-X-Received: by 2002:a05:6358:4901:b0:17b:5211:6976 with SMTP id w1-20020a056358490100b0017b52116976mr11619599rwn.6.1708997937489;
-        Mon, 26 Feb 2024 17:38:57 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:31e4])
-        by smtp.gmail.com with ESMTPSA id i6-20020a62c106000000b006e50cb38395sm3301196pfg.53.2024.02.26.17.38.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 17:38:56 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 26 Feb 2024 15:38:55 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: torvalds@linux-foundation.org, mpatocka@redhat.com,
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev,
-	msnitzer@redhat.com, ignat@cloudflare.com, damien.lemoal@wdc.com,
-	bob.liu@oracle.com, houtao1@huawei.com, peterz@infradead.org,
-	mingo@kernel.org, netdev@vger.kernel.org, allen.lkml@gmail.com,
-	kernel-team@meta.com, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH for-6.9] workqueue: Drain BH work items on hot-unplugged CPUs
-Message-ID: <Zd09L9DgerYjezGT@slm.duckdns.org>
-References: <20240130091300.2968534-1-tj@kernel.org>
- <20240130091300.2968534-4-tj@kernel.org>
- <ZcABypwUML6Osiec@slm.duckdns.org>
- <Zdvw0HdSXcU3JZ4g@boqun-archlinux>
+        bh=GSzkNQ2ybBAJU6H8pAUDZHXTzCD4MIxGThMlIRlQGM0=;
+        b=emIhyzuokQxA2Gwu+gkmXSNXPsM74fRlmstgnayTT4dI7R8T6ifrsA6n5D0p3L5Orc
+         /CJY9FP2NLpTxeUo/JfB2RdXSrdSPlP7sMEuhdyxb38AtVLj5I5Dvv6N+xLQ2JKf8dSm
+         MoNBJAKJc5XbWcnWOjUmzkCtHtTE927NEr8UpCPA95n0QZmaGFTPFTBa/UPb9+VSkapf
+         sVRJiUWLukDUI9AcmyrxHensb82v7fv0lhAqQJwkwCXzTIdhpOvBnIs+LvjRWriwMCJz
+         SG9XLJaF5nb2Lu/z2RHuqXzSJ0YfKXurf69seLf5jZ5VFa3b3VrYL5SgUVccTeFMbqIG
+         EOZg==
+X-Forwarded-Encrypted: i=1; AJvYcCWPPiR4pp5y1Es16riuD/QlBgVxZYTD/qc6QErrKIM9SGSGbhHIIF0qH1aJBx8yNs6pu2MdeHjS5cEHfrjZL6qjXYZvEc1p4MMEijKH
+X-Gm-Message-State: AOJu0YxPtz/COB3GGQ5Kc9mgCkLNLJqdkv+/QIA++GXIbV+xRQDL5sfL
+	+9169I33UtyFv77BoPquTgg83Ml836ZBFKema5pv7pEMtpI9RTuo832EV72lJZfQ+xRbuSNicDh
+	X70b46XYPoOjoQX6LYbWiUbn88Gqw6254IQs8a5hIrSdzCtuusgWL1wkaV5yUA4r7riuIpYBSK2
+	cN09lz72hwk+8jw+Z8PVX8vKhsnL/kpyDHaYsd
+X-Received: by 2002:a17:902:6505:b0:1dc:a837:7e19 with SMTP id b5-20020a170902650500b001dca8377e19mr3012078plk.16.1708998162335;
+        Mon, 26 Feb 2024 17:42:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHNkrm797RMGihxLLDh7fquZ8LUsJPZszisKdsZUHK+vtFZEGeyhllggrlxJCSNafyNLGciYVPiVeHfqaS/ERQ=
+X-Received: by 2002:a17:902:6505:b0:1dc:a837:7e19 with SMTP id
+ b5-20020a170902650500b001dca8377e19mr3012070plk.16.1708998162001; Mon, 26 Feb
+ 2024 17:42:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zdvw0HdSXcU3JZ4g@boqun-archlinux>
+References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
+ <20240222075806.1816400-7-yukuai1@huaweicloud.com> <CALTww2-ypx2YJOeXTzj7Y0EtXMkfrTOAJzzmDnnUK=1irspWtQ@mail.gmail.com>
+ <4f2ae964-5030-907e-bc06-4d9e1fc8f3e8@huaweicloud.com> <CALTww2_q3XG5HFCYm3Wp7=fjM04cdWZy34R6MsDVLz-82iO88Q@mail.gmail.com>
+In-Reply-To: <CALTww2_q3XG5HFCYm3Wp7=fjM04cdWZy34R6MsDVLz-82iO88Q@mail.gmail.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Tue, 27 Feb 2024 09:42:30 +0800
+Message-ID: <CALTww296uye5UY8g-rhqdwO=Wcz0=CH0ySNzk2=eNePY8DJU1w@mail.gmail.com>
+Subject: Re: [PATCH md-6.9 06/10] md/raid1: factor out read_first_rdev() from read_balance()
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com, shli@fb.com, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
+	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Boqun pointed out that workqueues aren't handling BH work items on offlined
-CPUs. Unlike tasklet which transfers out the pending tasks from
-CPUHP_SOFTIRQ_DEAD, BH workqueue would just leave them pending which is
-problematic. Note that this behavior is specific to BH workqueues as the
-non-BH per-CPU workers just become unbound when the CPU goes offline.
+On Tue, Feb 27, 2024 at 9:23=E2=80=AFAM Xiao Ni <xni@redhat.com> wrote:
+>
+> On Tue, Feb 27, 2024 at 9:06=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com>=
+ wrote:
+> >
+> > Hi,
+> >
+> > =E5=9C=A8 2024/02/26 22:16, Xiao Ni =E5=86=99=E9=81=93:
+> > > On Thu, Feb 22, 2024 at 4:04=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.=
+com> wrote:
+> > >>
+> > >> From: Yu Kuai <yukuai3@huawei.com>
+> > >>
+> > >> read_balance() is hard to understand because there are too many stat=
+us
+> > >> and branches, and it's overlong.
+> > >>
+> > >> This patch factor out the case to read the first rdev from
+> > >> read_balance(), there are no functional changes.
+> > >>
+> > >> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
+> > >> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
+> > >> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> > >> ---
+> > >>   drivers/md/raid1.c | 63 +++++++++++++++++++++++++++++++++---------=
+----
+> > >>   1 file changed, 46 insertions(+), 17 deletions(-)
+> > >>
+> > >> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> > >> index 8089c569e84f..08c45ca55a7e 100644
+> > >> --- a/drivers/md/raid1.c
+> > >> +++ b/drivers/md/raid1.c
+> > >> @@ -579,6 +579,47 @@ static sector_t align_to_barrier_unit_end(secto=
+r_t start_sector,
+> > >>          return len;
+> > >>   }
+> > >>
+> > >> +static void update_read_sectors(struct r1conf *conf, int disk,
+> > >> +                               sector_t this_sector, int len)
+> > >> +{
+> > >> +       struct raid1_info *info =3D &conf->mirrors[disk];
+> > >> +
+> > >> +       atomic_inc(&info->rdev->nr_pending);
+> > >> +       if (info->next_seq_sect !=3D this_sector)
+> > >> +               info->seq_start =3D this_sector;
+> > >> +       info->next_seq_sect =3D this_sector + len;
+> > >> +}
+> > >> +
+> > >> +static int choose_first_rdev(struct r1conf *conf, struct r1bio *r1_=
+bio,
+> > >> +                            int *max_sectors)
+> > >> +{
+> > >> +       sector_t this_sector =3D r1_bio->sector;
+> > >> +       int len =3D r1_bio->sectors;
+> > >> +       int disk;
+> > >> +
+> > >> +       for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
+> > >> +               struct md_rdev *rdev;
+> > >> +               int read_len;
+> > >> +
+> > >> +               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED)
+> > >> +                       continue;
+> > >> +
+> > >> +               rdev =3D conf->mirrors[disk].rdev;
+> > >> +               if (!rdev || test_bit(Faulty, &rdev->flags))
+> > >> +                       continue;
+> > >> +
+> > >> +               /* choose the first disk even if it has some bad blo=
+cks. */
+> > >> +               read_len =3D raid1_check_read_range(rdev, this_secto=
+r, &len);
+> > >> +               if (read_len > 0) {
+> > >> +                       update_read_sectors(conf, disk, this_sector,=
+ read_len);
+> > >> +                       *max_sectors =3D read_len;
+> > >> +                       return disk;
+> > >> +               }
+> > >
+> > > Hi Kuai
+> > >
+> > > It needs to update max_sectors even if the bad block starts before
+> > > this_sector. Because it can't read more than bad_blocks from other
+> > > member disks. If it reads more data than bad blocks, it will cause
+> > > data corruption. One rule here is read from the primary disk (the
+> > > first readable disk) if it has no bad block and read the
+> > > badblock-data-length data from other disks.
+> >
+> > Noted that raid1_check_read_range() will return readable length from
+> > this rdev, hence if bad block starts before this_sector, 0 is returned,
+> > and 'len' is updated to the length of badblocks(if not exceed read
+> > range), and following iteration will find the first disk to read update=
+d
+> > 'len' data and update max_sectors.
+>
+> Hi Kuai
+>
+> The problem is that choose_first_rdev doesn't return 'len' from
+> max_sectors when bad blocks start before this_sector. In the following
+> iteration, it can't read more than 'len' from other disks to avoid
+> data corruption. I haven't read all the patches. To this patch, it
+> resets best_good_sectors to sectors when it encounters a good member
+> disk without bad blocks.
 
-This patch fixes the issue by draining the pending BH work items from an
-offlined CPU from CPUHP_SOFTIRQ_DEAD. Because work items carry more context,
-it's not as easy to transfer the pending work items from one pool to
-another. Instead, run BH work items which execute the offlined pools on an
-online CPU.
+Sorry, I missed one thing. Beside the point I mentioned above, it
+needs to update 'sectors' which is the the read region to 'len'
+finally. It looks like the raid1_check_read_range needs to modify to
+achieve this.
 
-Note that this assumes that no further BH work items will be queued on the
-offlined CPUs. This assumption is shared with tasklet and should be fine for
-conversions. However, this issue also exists for per-CPU workqueues which
-will just keep executing work items queued after CPU offline on unbound
-workers and workqueue should reject per-CPU and BH work items queued on
-offline CPUs. This will be addressed separately later.
+Regards
+Xiao
+>
+> Regards
+> Xiao
+> >
+> > Thanks,
+> > Kuai
+> >
+> > >
+> > > Best Regards
+> > > Xiao
+> > >
+> > >> +       }
+> > >> +
+> > >> +       return -1;
+> > >> +}
+> > >> +
+> > >>   /*
+> > >>    * This routine returns the disk from which the requested read sho=
+uld
+> > >>    * be done. There is a per-array 'next expected sequential IO' sec=
+tor
+> > >> @@ -603,7 +644,6 @@ static int read_balance(struct r1conf *conf, str=
+uct r1bio *r1_bio, int *max_sect
+> > >>          sector_t best_dist;
+> > >>          unsigned int min_pending;
+> > >>          struct md_rdev *rdev;
+> > >> -       int choose_first;
+> > >>
+> > >>    retry:
+> > >>          sectors =3D r1_bio->sectors;
+> > >> @@ -613,10 +653,11 @@ static int read_balance(struct r1conf *conf, s=
+truct r1bio *r1_bio, int *max_sect
+> > >>          best_pending_disk =3D -1;
+> > >>          min_pending =3D UINT_MAX;
+> > >>          best_good_sectors =3D 0;
+> > >> -       choose_first =3D raid1_should_read_first(conf->mddev, this_s=
+ector,
+> > >> -                                              sectors);
+> > >>          clear_bit(R1BIO_FailFast, &r1_bio->state);
+> > >>
+> > >> +       if (raid1_should_read_first(conf->mddev, this_sector, sector=
+s))
+> > >> +               return choose_first_rdev(conf, r1_bio, max_sectors);
+> > >> +
+> > >>          for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
+> > >>                  sector_t dist;
+> > >>                  sector_t first_bad;
+> > >> @@ -662,8 +703,6 @@ static int read_balance(struct r1conf *conf, str=
+uct r1bio *r1_bio, int *max_sect
+> > >>                                   * bad_sectors from another device.=
+.
+> > >>                                   */
+> > >>                                  bad_sectors -=3D (this_sector - fir=
+st_bad);
+> > >> -                               if (choose_first && sectors > bad_se=
+ctors)
+> > >> -                                       sectors =3D bad_sectors;
+> > >>                                  if (best_good_sectors > sectors)
+> > >>                                          best_good_sectors =3D secto=
+rs;
+> > >>
+> > >> @@ -673,8 +712,6 @@ static int read_balance(struct r1conf *conf, str=
+uct r1bio *r1_bio, int *max_sect
+> > >>                                          best_good_sectors =3D good_=
+sectors;
+> > >>                                          best_disk =3D disk;
+> > >>                                  }
+> > >> -                               if (choose_first)
+> > >> -                                       break;
+> > >>                          }
+> > >>                          continue;
+> > >>                  } else {
+> > >> @@ -689,10 +726,6 @@ static int read_balance(struct r1conf *conf, st=
+ruct r1bio *r1_bio, int *max_sect
+> > >>
+> > >>                  pending =3D atomic_read(&rdev->nr_pending);
+> > >>                  dist =3D abs(this_sector - conf->mirrors[disk].head=
+_position);
+> > >> -               if (choose_first) {
+> > >> -                       best_disk =3D disk;
+> > >> -                       break;
+> > >> -               }
+> > >>                  /* Don't change to another disk for sequential read=
+s */
+> > >>                  if (conf->mirrors[disk].next_seq_sect =3D=3D this_s=
+ector
+> > >>                      || dist =3D=3D 0) {
+> > >> @@ -760,13 +793,9 @@ static int read_balance(struct r1conf *conf, st=
+ruct r1bio *r1_bio, int *max_sect
+> > >>                  rdev =3D conf->mirrors[best_disk].rdev;
+> > >>                  if (!rdev)
+> > >>                          goto retry;
+> > >> -               atomic_inc(&rdev->nr_pending);
+> > >> -               sectors =3D best_good_sectors;
+> > >> -
+> > >> -               if (conf->mirrors[best_disk].next_seq_sect !=3D this=
+_sector)
+> > >> -                       conf->mirrors[best_disk].seq_start =3D this_=
+sector;
+> > >>
+> > >> -               conf->mirrors[best_disk].next_seq_sect =3D this_sect=
+or + sectors;
+> > >> +               sectors =3D best_good_sectors;
+> > >> +               update_read_sectors(conf, disk, this_sector, sectors=
+);
+> > >>          }
+> > >>          *max_sectors =3D sectors;
+> > >>
+> > >> --
+> > >> 2.39.2
+> > >>
+> > >>
+> > >
+> > > .
+> > >
+> >
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Boqun Feng <boqun.feng@gmail.com>
-Link: http://lkml.kernel.org/r/Zdvw0HdSXcU3JZ4g@boqun-archlinux
----
- include/linux/workqueue.h |    1 
- kernel/softirq.c          |    2 +
- kernel/workqueue.c        |   91 ++++++++++++++++++++++++++++++++++++++++++++--
- 3 files changed, 91 insertions(+), 3 deletions(-)
-
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -458,6 +458,7 @@ extern struct workqueue_struct *system_b
- extern struct workqueue_struct *system_bh_highpri_wq;
- 
- void workqueue_softirq_action(bool highpri);
-+void workqueue_softirq_dead(unsigned int cpu);
- 
- /**
-  * alloc_workqueue - allocate a workqueue
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -932,6 +932,8 @@ static void run_ksoftirqd(unsigned int c
- #ifdef CONFIG_HOTPLUG_CPU
- static int takeover_tasklets(unsigned int cpu)
- {
-+	workqueue_softirq_dead(cpu);
-+
- 	/* CPU is dead, so no lock needed. */
- 	local_irq_disable();
- 
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -81,6 +81,7 @@ enum worker_pool_flags {
- 	POOL_BH			= 1 << 0,	/* is a BH pool */
- 	POOL_MANAGER_ACTIVE	= 1 << 1,	/* being managed */
- 	POOL_DISASSOCIATED	= 1 << 2,	/* cpu can't serve workers */
-+	POOL_BH_DRAINING	= 1 << 3,	/* draining after CPU offline */
- };
- 
- enum worker_flags {
-@@ -1218,7 +1219,9 @@ static struct irq_work *bh_pool_irq_work
- static void kick_bh_pool(struct worker_pool *pool)
- {
- #ifdef CONFIG_SMP
--	if (unlikely(pool->cpu != smp_processor_id())) {
-+	/* see drain_dead_softirq_workfn() for BH_DRAINING */
-+	if (unlikely(pool->cpu != smp_processor_id() &&
-+		     !(pool->flags & POOL_BH_DRAINING))) {
- 		irq_work_queue_on(bh_pool_irq_work(pool), pool->cpu);
- 		return;
- 	}
-@@ -3155,6 +3158,7 @@ __acquires(&pool->lock)
- 	struct worker_pool *pool = worker->pool;
- 	unsigned long work_data;
- 	int lockdep_start_depth, rcu_start_depth;
-+	bool bh_draining = pool->flags & POOL_BH_DRAINING;
- #ifdef CONFIG_LOCKDEP
- 	/*
- 	 * It is permissible to free the struct work_struct from
-@@ -3220,7 +3224,9 @@ __acquires(&pool->lock)
- 
- 	rcu_start_depth = rcu_preempt_depth();
- 	lockdep_start_depth = lockdep_depth(current);
--	lock_map_acquire(&pwq->wq->lockdep_map);
-+	/* see drain_dead_softirq_workfn() */
-+	if (!bh_draining)
-+		lock_map_acquire(&pwq->wq->lockdep_map);
- 	lock_map_acquire(&lockdep_map);
- 	/*
- 	 * Strictly speaking we should mark the invariant state without holding
-@@ -3253,7 +3259,8 @@ __acquires(&pool->lock)
- 	trace_workqueue_execute_end(work, worker->current_func);
- 	pwq->stats[PWQ_STAT_COMPLETED]++;
- 	lock_map_release(&lockdep_map);
--	lock_map_release(&pwq->wq->lockdep_map);
-+	if (!bh_draining)
-+		lock_map_release(&pwq->wq->lockdep_map);
- 
- 	if (unlikely((worker->task && in_atomic()) ||
- 		     lockdep_depth(current) != lockdep_start_depth ||
-@@ -3615,6 +3622,84 @@ void workqueue_softirq_action(bool highp
- 		bh_worker(list_first_entry(&pool->workers, struct worker, node));
- }
- 
-+struct wq_drain_dead_softirq_work {
-+	struct work_struct	work;
-+	struct worker_pool	*pool;
-+	struct completion	done;
-+};
-+
-+static void drain_dead_softirq_workfn(struct work_struct *work)
-+{
-+	struct wq_drain_dead_softirq_work *dead_work =
-+		container_of(work, struct wq_drain_dead_softirq_work, work);
-+	struct worker_pool *pool = dead_work->pool;
-+	bool repeat;
-+
-+	/*
-+	 * @pool's CPU is dead and we want to execute its still pending work
-+	 * items from this BH work item which is running on a different CPU. As
-+	 * its CPU is dead, @pool can't be kicked and, as work execution path
-+	 * will be nested, a lockdep annotation needs to be suppressed. Mark
-+	 * @pool with %POOL_BH_DRAINING for the special treatments.
-+	 */
-+	raw_spin_lock_irq(&pool->lock);
-+	pool->flags |= POOL_BH_DRAINING;
-+	raw_spin_unlock_irq(&pool->lock);
-+
-+	bh_worker(list_first_entry(&pool->workers, struct worker, node));
-+
-+	raw_spin_lock_irq(&pool->lock);
-+	pool->flags &= ~POOL_BH_DRAINING;
-+	repeat = need_more_worker(pool);
-+	raw_spin_unlock_irq(&pool->lock);
-+
-+	/*
-+	 * bh_worker() might hit consecutive execution limit and bail. If there
-+	 * still are pending work items, reschedule self and return so that we
-+	 * don't hog this CPU's BH.
-+	 */
-+	if (repeat) {
-+		if (pool->attrs->nice == HIGHPRI_NICE_LEVEL)
-+			queue_work(system_bh_highpri_wq, work);
-+		else
-+			queue_work(system_bh_wq, work);
-+	} else {
-+		complete(&dead_work->done);
-+	}
-+}
-+
-+/*
-+ * @cpu is dead. Drain the remaining BH work items on the current CPU. It's
-+ * possible to allocate dead_work per CPU and avoid flushing. However, then we
-+ * have to worry about draining overlapping with CPU coming back online or
-+ * nesting (one CPU's dead_work queued on another CPU which is also dead and so
-+ * on). Let's keep it simple and drain them synchronously. These are BH work
-+ * items which shouldn't be requeued on the same pool. Shouldn't take long.
-+ */
-+void workqueue_softirq_dead(unsigned int cpu)
-+{
-+	int i;
-+
-+	for (i = 0; i < NR_STD_WORKER_POOLS; i++) {
-+		struct worker_pool *pool = &per_cpu(bh_worker_pools, cpu)[i];
-+		struct wq_drain_dead_softirq_work dead_work;
-+
-+		if (!need_more_worker(pool))
-+			continue;
-+
-+		INIT_WORK(&dead_work.work, drain_dead_softirq_workfn);
-+		dead_work.pool = pool;
-+		init_completion(&dead_work.done);
-+
-+		if (pool->attrs->nice == HIGHPRI_NICE_LEVEL)
-+			queue_work(system_bh_highpri_wq, &dead_work.work);
-+		else
-+			queue_work(system_bh_wq, &dead_work.work);
-+
-+		wait_for_completion(&dead_work.done);
-+	}
-+}
-+
- /**
-  * check_flush_dependency - check for flush dependency sanity
-  * @target_wq: workqueue being flushed
 
