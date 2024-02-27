@@ -1,195 +1,164 @@
-Return-Path: <linux-kernel+bounces-82984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A80C5868C93
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:43:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D5A868C94
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:43:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F59EB26DD2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:43:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70E52281F1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F301369BC;
-	Tue, 27 Feb 2024 09:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QrSerz+x"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2042.outbound.protection.outlook.com [40.107.95.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218081369BB;
-	Tue, 27 Feb 2024 09:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709026978; cv=fail; b=BVZiR8U/3jvTSzISimQc4al8fsdbqKYKgz3M3LpSA48+cge76fRCFnPOm5+8enqjZidm4GN9x1UUAwNyxgByT6MTlL/kh+fcZc/SLVLthUym8fM3PD0Isu4xCcdBHi0dXv7TLpTMpZUy7kU4Fa4hjTYCMAQLmEWJh/NS7cIcLNc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709026978; c=relaxed/simple;
-	bh=HkIKD2NWuJZlgLF/arvg3OF1ouKpccDOD+qoUrMlnwU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=DzqA6KpHgPh6DOmcR50wkkwID0O6Zyg/WIHaPms99K1HAXtzLIzGDZ2lMiycxSxbOB861MlG1OeYY2A7nqnPkUSbIKtE07QBiXUa5ehxPYRzvvI6DX7IDqmzNUsYyV8FXpcNyV55ZnISECFIzzSrReqE8BwKnWuUNfKgUJyctMk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QrSerz+x; arc=fail smtp.client-ip=40.107.95.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZxIauLuDBDWEat9Fe9vPIthV8h9z6DOsXJhBbpkCQPgaOp2JUqn8caHz1CmT2Eon/sQ11fWyLFWLWWr7D6Q8SGEt9PadID6U4oBGVxwSNPvXUfv/r1B3dEcS9BTYNsv5lTXu8CU6TgkKl+aTG1hosN08vz3wUUtU01VqAG3c5N1cn1JUjwArFhhhW1Fk6iFUHsa5crYhZBM3FQtEMwE/VGRlru7/oIaFngi3S2nCqmZCXG0CMA1aWSKVmnfXNuUyeb940UyR6K9dON5dsplMjI9c5dS20ND2SEVDzbBdqGaYa4y7Nagi+0YeQXWKpgWY1jhmGpl/9DcwIlpWWq53jA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HkIKD2NWuJZlgLF/arvg3OF1ouKpccDOD+qoUrMlnwU=;
- b=DbBcf+P10vInRuww/GDY+Dk0ppTDEzYbdcS0q+TqL2tcA09fZGgG0+LcJQPhxGiKZ5b0yqUYPi8NM0WDcCPZ6HYWWml5YoNLEZ47R7RdomTZkYrGamJpXB/au18AaQrPHjdgokMmdlgh9tAwWc/mCLzP7iKH4+JbFDnRB588J1CNb889gZRf16JLaV5qr88EiwKM5AosNPtGi4ZfcPC9hJkZCvklk0yHmY1DFdu3vzbh1Gt5IfGrpYiAOZJ1r7xwWqUHEiOK/FJjIg6cimSs3UFQAvKDMTYkjzegfQ+jZXbpnvdZ2PFzUQ0xPenvj/fLk7tRlcEEyU6vPOAN9SeoxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HkIKD2NWuJZlgLF/arvg3OF1ouKpccDOD+qoUrMlnwU=;
- b=QrSerz+xTLHxt2SixnVENiChWK0Rg4FA/1XIjcblZuPO2lBTleb6S04S9zSuql6S4QhmQbRQr3vNM+oz9FfzPDsFBwf240C7aB5j1OG3qqs7ynOYH/Br/dVT2lBH7F00iVrPQ0h4V0ke8xgl+sn4qEZmFyyIX45KlpP3nEPS1fgPNCX+WcTeLFdPo04TX03MtqoAUrG0PCNjnamhP7AU6VdrGDKvdwOaXXN47iEMpTnLdx71nHjaEv+DTDLNYBjjcK1+TIEM6oEVzi0/QwPAbmKBC0MZU6u5b3w/Zl9Tmwx0vHAEHb4poF2+50MPHoULo18zAGvGCJsbmk5EFHhjyQ==
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
- by DS7PR12MB6238.namprd12.prod.outlook.com (2603:10b6:8:96::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Tue, 27 Feb
- 2024 09:42:54 +0000
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2]) by SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2%5]) with mapi id 15.20.7316.032; Tue, 27 Feb 2024
- 09:42:53 +0000
-From: Ankit Agrawal <ankita@nvidia.com>
-To: Oliver Upton <oliver.upton@linux.dev>
-CC: "wangjinchao@xfusion.com" <wangjinchao@xfusion.com>, "shahuang@redhat.com"
-	<shahuang@redhat.com>, "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"ryan.roberts@arm.com" <ryan.roberts@arm.com>, "stefanha@redhat.com"
-	<stefanha@redhat.com>, "yi.l.liu@intel.com" <yi.l.liu@intel.com>,
-	"david@redhat.com" <david@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-	"lpieralisi@kernel.org" <lpieralisi@kernel.org>, "gshan@redhat.com"
-	<gshan@redhat.com>, "brauner@kernel.org" <brauner@kernel.org>,
-	"rananta@google.com" <rananta@google.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "suzuki.poulose@arm.com"
-	<suzuki.poulose@arm.com>, "kevin.tian@intel.com" <kevin.tian@intel.com>,
-	"surenb@google.com" <surenb@google.com>, "ricarkol@google.com"
-	<ricarkol@google.com>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-	"james.morse@arm.com" <james.morse@arm.com>, "ardb@kernel.org"
-	<ardb@kernel.org>, "will@kernel.org" <will@kernel.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "maz@kernel.org"
-	<maz@kernel.org>, "bhe@redhat.com" <bhe@redhat.com>,
-	"reinette.chatre@intel.com" <reinette.chatre@intel.com>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "andreyknvl@gmail.com"
-	<andreyknvl@gmail.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>, Dan Williams
-	<danw@nvidia.com>, Andy Currid <acurrid@nvidia.com>, Alistair Popple
-	<apopple@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Aniket Agashe
-	<aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>, John Hubbard <jhubbard@nvidia.com>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, Zhi Wang
-	<zhiw@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, Vikram Sethi
-	<vsethi@nvidia.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "Tarun Gupta (SW-GPU)"
-	<targupta@nvidia.com>
-Subject: Re: [PATCH v9 0/4] KVM: arm64: Allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Thread-Topic: [PATCH v9 0/4] KVM: arm64: Allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Thread-Index: AQHaZzMEm+T/CCvzwkOvE3ojID9DN7EdTV0AgACUxr+AAAMkAIAADrtn
-Date: Tue, 27 Feb 2024 09:42:53 +0000
-Message-ID:
- <SA1PR12MB71994CF9EB35225CAB0E909FB0592@SA1PR12MB7199.namprd12.prod.outlook.com>
-References: <20240224150546.368-1-ankita@nvidia.com>
- <170899100569.1405597.5047894183843333522.b4-ty@linux.dev>
- <SA1PR12MB71992A7E86741878935DC385B0592@SA1PR12MB7199.namprd12.prod.outlook.com>
- <Zd2iCg5A0Zg_EyCm@linux.dev>
-In-Reply-To: <Zd2iCg5A0Zg_EyCm@linux.dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|DS7PR12MB6238:EE_
-x-ms-office365-filtering-correlation-id: bdc4181d-0fec-4232-01fa-08dc37787886
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- ycf4UC0PfobR3g+UbwlT+cEYeR/VtZozXinrQOe5StgLzWuNMmkRfbX1FdBn2RFWSKa2DCMDoBCWUp9Lb79XmY6e1rnIxcEc9fVYk2JInRBnzfjj13OYMuu6TJQDTZprl5vi6MB7iG3fJ6f0IUItZ3XBG39hO6byHP2Lgn8xQUtunhIu0tpm4/0F9Z0fExiVnTeaNRHBHW93DOxR23IWxcM5B3UzcSC0nwGeyiVgs1nb0kw0gunJ8M9scZtpwnyzDidit3rImQ6IIkSbUDZvboOGOnJRGsV3RRmGuedpbv1me3v1vPJHMzxbtMopjU8GAfyqVyI29gbdnx6BmrT7Ut8LCgDKZ+Def5CG4Y+fidqIuV/EuA+6G6QvuqEUm9nQg/OjziItoqSpLpLg/9+TK7vzir2E1jM9I7WQLhY6lubVBKoDrza6Ew8jnwEW/QXYDB3DiLW8G04GI6NQaPlB+8VH3vQ1KJQmCt7ngWtF0qVGXwVo+Y+EgW8xDpgsye6X7wzJ3D4eQ6bLOKZIvuFfT7rhXWLvs3QumZTMQi4M/OCA3RRXEA0o1i9Al7YxrG9+VYaNRTmvUrHq4jtTHH5Z663ZyLGOYyX3KMn5jPkAVi28uwqEC301i9lEsHDgKf/hAX/g2OrgnR/xmMj8dnUNMp5IVKz1PZ+Dqi/FgqDg8QHXH/cEmJIlG+tb6sCq29ksIymIm0FZKTzmz5b8K3JoDeZg1yU4fuucnUpgaa1x4RE++7/qq1hYaIOsReL74mGt
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?lTuVybUB+/w3Ga48tz4MNROYKUoNBZNH6RTKFXKwthWKpyTuXyrOvkikb1?=
- =?iso-8859-1?Q?lmeGqWWq646V7CSbjqdQAerMGUNWHM7idyOjjzoApKf7mHlJaCUiGu7qS5?=
- =?iso-8859-1?Q?zlm0zGaxZmZv8p1kNc6cMYwdy/vVFSMUme6vdTD1wqR6rzwRZJA6M0diHs?=
- =?iso-8859-1?Q?oUOoMYBYdwGEZU/yP9+Nl3QeMIVt786WITtM4qQ/0VgGGFtCGkgIilw2ZF?=
- =?iso-8859-1?Q?h17ZQLLMvp8Wya8rjotqmGdtsfEr6DmpDeDwu5fJ1bGdrXrm60vNEqBzdh?=
- =?iso-8859-1?Q?JThwQ1fdz88W+g67gl+U/u2d+hlZWCiwb1x++rb2G54TOCzG021ElcKZsT?=
- =?iso-8859-1?Q?wPRsRQ4It1B8owOYqZHii6q00wgyE1DYE5i7eijbtge+KpvbP5ujJokoWA?=
- =?iso-8859-1?Q?a9t6bJ+pRJ7uj0OeR4nu6DDskhI23LrJdRBhfbW8/cmvPtze0qg2tn25vt?=
- =?iso-8859-1?Q?+yv6nG9cVaP/UWOXtJH4HWgFQuggRhKk2iJ2re5vQgNPicKGcT90JTJQfF?=
- =?iso-8859-1?Q?31a9BMDIhPDNtPBuineRN+lTyNqc1W3nFYPrFanCzxjSi68xQA/icrlrZI?=
- =?iso-8859-1?Q?nexQ+XUUjdQ8xd1Zm7syVpR+r6k9hehJBFKn9YX09UdPT/UFk8FOlS0K/L?=
- =?iso-8859-1?Q?jvktV8vT7PVvKFrVGlxHZO4PjdnMRDXMXUVK8FRebcJ/Pa0T+4N8ujtsNT?=
- =?iso-8859-1?Q?EmOO6FWBB2FWFsQeeriU1d8I2rAk073+JqxU9YJgWYnSY37qA5pu7GE6+a?=
- =?iso-8859-1?Q?/RgXJaEXcvXI2pkHtscmY0u6+VbF1E29JPW5rXryelU0EygbVolKEFdMVh?=
- =?iso-8859-1?Q?99PHdQRW/SSMj80VNND72iMrE3odmmfhXwpZ2Q9aEzHoAkhUyWKY1UUlrg?=
- =?iso-8859-1?Q?4yXJEHa0ufzbovLJn+TYCz++IibfkDEO0xkXObc2udg8WDWBIfbzEfIR6b?=
- =?iso-8859-1?Q?VLcpDZaXDdnaX3heKF/02Xe9dq+sciADu9WXiOeGYv2niI1i1qT+72tc6k?=
- =?iso-8859-1?Q?CdZPr02BVZB54GD6sKyJ+ngefA2o7PubPutqELoprxY7vVXnlNMhmRr1+Z?=
- =?iso-8859-1?Q?YKhixLAcN4RBhArdc2tsjT2kazENsGfjlUmzCkkHAji0xsoyCqEL7NN5H+?=
- =?iso-8859-1?Q?LjH/RXsQsMdZElR6YzbsYlrU7RRQkbWXNIXFxx7rPQ3FCFKXtj4347KerC?=
- =?iso-8859-1?Q?wCjKromfac7XaKhQbU8QWluCh4Y/VsIMrU6gueXo3011kHLmTOeAHQ5hWV?=
- =?iso-8859-1?Q?50591J2+XPnbzer4TKIOL5KfbT2TVFG1bQgGBmo5mSh/eBnpSY+xzhxgh4?=
- =?iso-8859-1?Q?uLIIJB28PODeCqgDXqynDk01R3NCxBPE6i5e4ScwbEnocEfGfgG9JUnW/e?=
- =?iso-8859-1?Q?3hxdfe15U6sSCzhaIfEIu7+/CqHwyy+PYnC9YQplIXUuP99rwbfus52ipx?=
- =?iso-8859-1?Q?VGs6yboaXnefy9KNEEoOavxr8VbaRkHi4MmpNO+lEX7nDVQe9mMRvxErBO?=
- =?iso-8859-1?Q?R6qFRoRfiqfitUgTCj8nSmn2H1RmovMTQ6KEFaij0Vfuiw2zym/Dvw0zu7?=
- =?iso-8859-1?Q?3UlPpthb6zUMMrd4ARjb6N5wmSNwo/VqD5/grqf7QBHElujQAjed/wNi0t?=
- =?iso-8859-1?Q?yqQEt7B3A2stA=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D431384BE;
+	Tue, 27 Feb 2024 09:43:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330B51369BB
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709026987; cv=none; b=Sv222bBTfkZ+YkxApiAK0578ENpwaPzOXjKiaKQb6Ivi9k9vbaXCBTQj9pq0UBC2jItuFX3oU9Ne1EoXJapY2BaXH5DyWc1XRv5zxWbKa7cm7ZMmuV46VNYjYAqmpeAlV6zwbVZrmRMFlZlP3H1XWMao74/kjfS6Eanz4k3x0lo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709026987; c=relaxed/simple;
+	bh=1XTPpshTG3t8hNZuApNCvZ6UkkCZaeQ+3fXnxMkcyTo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=acMXmkMa618no8g3X1gJRxs1NAZcdPTz97u7NsazyrtJK4EnuOClTRRJd4QfHCrUpttuLKW7M+4ysoTwCGKuJdp9MUCGvtOeZJ8Mb/Y1GiLHNyV7vUcK+0zzbCGxjDW4txCjC0GsMjGtnQKXaE2nyqJPK08Qr6fQDv+ynmvvks4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB5ABDA7;
+	Tue, 27 Feb 2024 01:43:42 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8CB2F3F762;
+	Tue, 27 Feb 2024 01:43:03 -0800 (PST)
+Message-ID: <d6699c3a-3df6-46a3-98db-e07c8722f106@arm.com>
+Date: Tue, 27 Feb 2024 10:42:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bdc4181d-0fec-4232-01fa-08dc37787886
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2024 09:42:53.7154
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dKJEt1XmkSTa1z4ziGieTiWA9ZM2tg4p0+UAFH3TV5O7QTyz6rQDT2+Kd9HzEO7irs5AyxacutwZw4kT/7/5GA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6238
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/4] sched/fair: Check a task has a fitting cpu when
+ updating misfit
+Content-Language: en-US
+To: Qais Yousef <qyousef@layalina.io>, Ingo Molnar <mingo@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>
+Cc: linux-kernel@vger.kernel.org, Pierre Gondois <Pierre.Gondois@arm.com>
+References: <20240220225622.2626569-1-qyousef@layalina.io>
+ <20240220225622.2626569-3-qyousef@layalina.io>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <20240220225622.2626569-3-qyousef@layalina.io>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
->> >=0A=
->> > High time to get this cooking in -next. Looks like there aren't any=0A=
->> > conflicts w/ VFIO, but if that changes I've pushed a topic branch to:=
-=0A=
->> >=0A=
->> >=A0 https://git.kernel.org/pub/scm/linux/kernel/git/oupton/linux.git/lo=
-g/?h=3Dkvm-arm64/vfio-normal-nc=0A=
->> >=0A=
->> > Applied to kvmarm/next, thanks!=0A=
->>=0A=
->> Thanks Oliver for your efforts. Pardon my naivety, but what would the=0A=
->> sequence of steps that this series go through next before landing in an=
-=0A=
->> rc branch? Also, what is the earliest branch this is supposed to land=0A=
->> assuming all goes well?=0A=
->=0A=
-> We should see this showing up in linux-next imminently. Assuming there=0A=
-> are no issues there, your changes will be sent out as part of the kvmarm=
-=0A=
-> pull request for 6.9.=0A=
->=0A=
-> At least in kvmarm, /next is used for patches that'll land in the next=0A=
-> merge window and /fixes is for bugfixes that need to go in the current=0A=
-> release cycle.=0A=
-=0A=
-Got it, thanks for the information!=
+On 20/02/2024 23:56, Qais Yousef wrote:
+> If a misfit task is affined to a subset of the possible cpus, we need to
+> verify that one of these cpus can fit it. Otherwise the load balancer
+> code will continuously trigger needlessly leading the balance_interval
+> to increase in return and eventually end up with a situation where real
+> imbalances take a long time to address because of this impossible
+> imbalance situation.
+> 
+> This can happen in Android world where it's common for background tasks
+> to be restricted to little cores.
+> 
+> Similarly if we can't fit the biggest core, triggering misfit is
+> pointless as it is the best we can ever get on this system.
+> 
+> To be able to detect that; we use asym_cap_list to iterate through
+> capacities in the system to see if the task is able to run at a higher
+> capacity level based on its p->cpus_ptr. We do that when the affinity
+> change, a fair task is forked, or when a task switched to fair policy.
+> We store the max_allowed_capacity in task_struct to allow for cheap
+> comparison in the fast path.
+> 
+> Improve check_misfit_status() function by removing redundant checks.
+> misfit_task_load will be 0 if the task can't move to a bigger CPU. And
+> nohz_load_balance() already checks for cpu_check_capacity() before
+
+s/nohz_load_balance()/nohz_balancer_kick() ?
+
+> calling check_misfit_status().
+
+Isn't there an issue with CPU hotplug.
+
+On a tri-geared Juno:
+
+root@juno:~# cat /sys/devices/system/cpu/cpu*/cpu_capacity
+513
+1024
+1024
+513
+256
+256
+
+root@juno:~# taskset -pc 0,3-5 $$
+
+[  108.248425] set_task_max_allowed_capacity() [bash 1636]
+max_allowed_capacity=513 nr_cpus_allowed=4 cpus_mask=0,3-5
+
+echo 0 > /sys//devices/system/cpu/cpu0/online
+echo 0 > /sys//devices/system/cpu/cpu3/online
+
+[  134.136887] set_task_max_allowed_capacity() [bash 1639]
+max_allowed_capacity=513 nr_cpus_allowed=4 cpus_mask=0,3-5
+
+
+Cpuset seems to be fine since it set task's cpumask.
+
+[...]
+
+> +/*
+> + * Check the max capacity the task is allowed to run at for misfit detection.
+
+Nitpick: It's rather a setter function so s/check/set here ?
+
+> + */
+> +static void set_task_max_allowed_capacity(struct task_struct *p)
+> +{
+> +	struct asym_cap_data *entry;
+> +
+> +	if (!sched_asym_cpucap_active())
+> +		return;
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(entry, &asym_cap_list, link) {
+> +		cpumask_t *cpumask;
+> +
+> +		cpumask = cpu_capacity_span(entry);
+> +		if (!cpumask_intersects(p->cpus_ptr, cpumask))
+> +			continue;
+> +
+> +		p->max_allowed_capacity = entry->capacity;
+> +		break;
+> +	}
+> +	rcu_read_unlock();
+> +}
+
+[...]
+
+> @@ -9601,16 +9644,10 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
+>  				(arch_scale_cpu_capacity(cpu_of(rq)) * 100));
+>  }
+>  
+> -/*
+> - * Check whether a rq has a misfit task and if it looks like we can actually
+> - * help that task: we can migrate the task to a CPU of higher capacity, or
+> - * the task's current CPU is heavily pressured.
+> - */
+> -static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
+> +/* Check if the rq has a misfit task */
+> +static inline bool check_misfit_status(struct rq *rq, struct sched_domain *sd)
+
+`struct sched_domain *sd` is not needed anymore.
+
+Since there is only 1 user of check_misfit_status() you might remove it
+entirely and use `rq->rq->misfit_task_load` directly in
+nohz_balancer_kick() ?
+
+[...]
 
