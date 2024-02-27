@@ -1,220 +1,183 @@
-Return-Path: <linux-kernel+bounces-82612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D950C868740
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:35:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA617868743
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9952B22540
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:35:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D761287926
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549F311CBA;
-	Tue, 27 Feb 2024 02:35:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B16F6134BC;
+	Tue, 27 Feb 2024 02:35:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="di71mfYX"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b="GMk/iD7H"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C41F4746E
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE29F9F0
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709001313; cv=none; b=HTosNq6LzcyyNPe/vSjrwJpjUoTd3a6NFWxerO6vE+AvTm2F4BqoSOiv9Jk3ukhqWlpYypItjsR/UOsuwMj6fLzfTfnkzTG2pFTZ+T+ZZrmTr6gUZLsiE0fr/s3WHEXfPhBf7+khk/7oT1KZOmMoVt+Rwlndv0QYsCRL4cTZqcU=
+	t=1709001335; cv=none; b=aiBKHpX+EOglQJALZsoh0/C2G+VIKj1C84rqxrDSZg/F7xkC8zvWp8npIJOVzdisNrU/Z6KgoEabJS9A61BXwf+gKwV5seaNDsbxxn4GqkA36ny7ZJSFrngETeUObwptGs9VClPj0U/EDbeNwwn4/J2WyKepMsgAcG1MvjAB9dI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709001313; c=relaxed/simple;
-	bh=vzU2YaorHwvaPNHI/TTfps8jJxR3eDtvTDV4A/+6TmA=;
+	s=arc-20240116; t=1709001335; c=relaxed/simple;
+	bh=+WfWLLdlNtMxWIq9oOlRKvGDVzmoSPZNFK8huJBz8wo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CFBtMOl7bevw7nHduHqBlWsuvj+QLNOhkDvtJ8r+13HtVvK+6Q6XQcKYBzfCo8gPjhAE7fLJnlbdeaGJVgC11Cd21+HPw5a9K2xy/9Dz5HUzI426bfegt1hjiB0v+UTYGLAOpLNFY4R/hDy1/QO7vv0YQKyUq2mYkp79LteMvOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=di71mfYX; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-565a3910f86so3816812a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:35:11 -0800 (PST)
+	 To:Cc:Content-Type; b=egfxYceD/B3XQrWJKx68MUTOzD5hXUIWnfDwM9gFiRnVwUzpFGdivj0CIT1Iho4XXjnR2osl3IOFx5NEyZC3AkB5V8A/1d8XoE19VH3EmlNb9EeffxUmKPWp5xNKUT1GIOydIp/wObw3ndhTC+XE7mx2L7eFhgBfUf70JKehExc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com; spf=none smtp.mailfrom=smartx.com; dkim=pass (2048-bit key) header.d=smartx-com.20230601.gappssmtp.com header.i=@smartx-com.20230601.gappssmtp.com header.b=GMk/iD7H; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=smartx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=smartx.com
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5129e5b8cecso4652231e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:35:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709001310; x=1709606110; darn=vger.kernel.org;
+        d=smartx-com.20230601.gappssmtp.com; s=20230601; t=1709001332; x=1709606132; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RKnTk+J+FX3ola1FbmaFj80zZDlGsKyOPaOv8pvNq9Y=;
-        b=di71mfYXSxzaYddQXIKT2sQZD9rwqQ82ebdk+bOzsSf24+FRPLxXSzC5xv0T+Mi3fG
-         ub4OXz97CKZe2ShhhDgzYjCVzIbuQDDNGrpnKywGUOH1jP6ZXoWmtvN7cSSCxQ2YmwE6
-         7c7LJ628+RPE1U3oXTfneHHtEGext6/FEza7lyqWiKtclCiMoxtFQZ3VEq9YwND4xp7c
-         0tUiikpvsZPbCR83nxzIfB3iTxNKiuBblTFgDepBDZqCwThqodP3iyVNxKRTi0PZmV9v
-         KXV+elM9jti/DrQpfpJArN4kSLbMLjftjHZVxGJ735Bzwn4c2Hy+4M9G78AjIWvrDtwr
-         j0lw==
+        bh=pI97VzBaVCf4+xb5j7PxEbProXaTPOOrgDbZrH3Bdpc=;
+        b=GMk/iD7HTgERjfO/cIQnYsn5GI2Ioxh4LoEHIdZ+NpSAr7d8z2cDkdWUHGDbWWIM4l
+         pW2/s93zwkH8EmBHKlz8XpehHrXlL2/RjSb96BQnq+ws9dRZdal0u1hCOQzjBe73OWD5
+         p5y7ppfzBGbTXk9EkrUJVcHLVYjwAek0MGgss6E7RCm+hfmGRCvLhvFl0U2cGxyZ7wZn
+         iKsKrl76lsGzTUAaC71L5S3GQUAe27vxCLyk06PYZW37k3h9JyMMn4ECjoqmmvoBLWsy
+         0oCpXk2Ek6lHwwhBGYOQdGpjcTDZZEFUY6bGW3uLQjskDhRClfs8lct2ecmbec3op4od
+         ha1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709001310; x=1709606110;
+        d=1e100.net; s=20230601; t=1709001332; x=1709606132;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RKnTk+J+FX3ola1FbmaFj80zZDlGsKyOPaOv8pvNq9Y=;
-        b=H8lbXmZZyrjc4/3xkeprPbUd3wOzViTklgo/VfmQGvnX3K0+3TYkhe1u+SngMDap4e
-         FF9IazbfzAp9byLsOfuCOvgHvVToaA3m9nem+lmO4EvdWHOnGhNbrZPVzjo6o+RVOe7t
-         pwQ6gS0UDKLCIhuCrLM3Ipk6DiJhy4uJJW5qj/ZS68MzUyvJLHKj4GldX7z+0n12Q4Zc
-         Gpqy223dqBL+IxOwsFO6P6I90zTirP4MP+ghxIOR6cRVf+FtI8ucG9iuSt67ImTRD/B1
-         sWxtkpr1bxlAfALjb5JtgbAWqF/QnHn1Kq3ldF1Habf/L42GxrGbOPqCT/0r2GDcM6uN
-         lDbw==
-X-Forwarded-Encrypted: i=1; AJvYcCW/vO0eRbBGxliCnpnOb8P7O2N9XXxoC3so7HalQE810rcpx2LZtyBHCnmce3IgsIHDrqmfCNhN79W1lVH/BrB1Tkx5Wimd8jdZWSpO
-X-Gm-Message-State: AOJu0YzjViARs6h9aUQsfwX37S6PZA+PYQ/mZ89UxQCML6UcBtTauzUb
-	F5sEe8rkfuBl2LrjJJKqlh7srBzIUxVOK0OeBPDak8OQqbYpHDBZhzR6lsDb8Xq5usz4AU9KfNd
-	C1Si5JXt/N9BEuud7w9wwj4H5Dg5FMwQ+BBY=
-X-Google-Smtp-Source: AGHT+IEXXbKpXmjl9N8hMVutjJqfZLOxImX2rF+nFapa9vIsJj1qUBXl6dHVVXRP2UAScLC8ElOF8tquWZvBP2Qa+dY=
-X-Received: by 2002:aa7:d5d5:0:b0:564:3392:e9db with SMTP id
- d21-20020aa7d5d5000000b005643392e9dbmr5247469eds.33.1709001309894; Mon, 26
- Feb 2024 18:35:09 -0800 (PST)
+        bh=pI97VzBaVCf4+xb5j7PxEbProXaTPOOrgDbZrH3Bdpc=;
+        b=bBotuboIccq1gECtlG0g/olgfqD3cps2DDCiv7EXvt5eQ95pzBxNhZr/+bjV3dAys5
+         M0pyQ9VOgyLivJbgc1zhqnHEEsJTcD2NncjPoT6+dnv9XzPsSFoTbX4+3hOMm3UyHX73
+         pBgWx51tKwrGQASzdvkaFvr4Dz1Q8/rO12Gy3j1qkOtPUC3e8VD+bhBAktfhjyRL6KIS
+         kjg5PPh0s9soPKM8uQENbuya4kLh0ZyMvX4rLF2Up61NFqf1RSxTW2RorIU3ux2SE6kr
+         PXDmJ+KIsRcXirEnQ3e2lImA9F5UrtMM64EXiOb8g1JT2RrYpHiFk8+Hsi0sOd/HT+ip
+         Lxvw==
+X-Forwarded-Encrypted: i=1; AJvYcCULH/5P6ghugzKqtai9X65g6F/Jm8OLnYUBl5dWBr6Y5FqnTIRPk5snd9+Qct5DFs7QqPqiZb0o5QKMRD/uP3swLpIT/A4c0TTVpYa9
+X-Gm-Message-State: AOJu0Yx/fAud7AjlVdgn58X2sptp0EZA7FsXNK/SxqpH+y7pZvuDRo4b
+	Ghd4JnIEv6HYbi7f3aQauNj7iNo5gdtZ7VICdEmI0IIR4Fygqd96avOnLDaDBkzHcBSVhxGBdpE
+	tesViG6VG8mNhXLUx+X6JHySGcP/UgjOvUHhpOQ==
+X-Google-Smtp-Source: AGHT+IHJdcA7m7C/cGI4NlpDKJ4xJM64IpsCapG/41px13WYZP3tlzBB7EnOQTt+iHLnJCUSYvpQZ7xxOI1B96jImr0=
+X-Received: by 2002:a05:6512:1187:b0:512:bce5:1e0f with SMTP id
+ g7-20020a056512118700b00512bce51e0fmr4693783lfr.64.1709001331988; Mon, 26 Feb
+ 2024 18:35:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1707271264-5551-1-git-send-email-zhiguo.niu@unisoc.com>
- <88459a22-a21c-4c3d-8371-31d7d713b536@kernel.org> <CAHJ8P3KYY27M3v=9Lu-yD2ufxU1fdG-bg=G92AbpnLUx0zLz3g@mail.gmail.com>
- <f36ef5d0-8922-449e-b19c-de009c89e712@kernel.org> <CAHJ8P3KS2YAXm=GND8DknZqvGqTvm38Nv_9z1nEq4cTJjir-sA@mail.gmail.com>
- <Zd03RHMKBqv1f6GF@google.com>
-In-Reply-To: <Zd03RHMKBqv1f6GF@google.com>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Tue, 27 Feb 2024 10:34:58 +0800
-Message-ID: <CAHJ8P3Lj_1pa=npkAsMfeStEY3nWgf591tFndKTT_skFYLv+GQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] f2fs: fix panic issue in small capacity device
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: Chao Yu <chao@kernel.org>, Zhiguo Niu <zhiguo.niu@unisoc.com>, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	ke.wang@unisoc.com, hongyu.jin@unisoc.com
+References: <CAPKjjnrYvzH8hEk9boaBt-fETX3VD2cjjN-Z6iNgwZpHqYUjWw@mail.gmail.com>
+ <77a58302766cb6c8fac45682ede63569df80cd5d.camel@hammerspace.com>
+ <1179779e2f74e3e5cb2be30cf89e6362aaab706d.camel@kernel.org>
+ <16d8c8e88490ee92750b26f2c438e1329dea0061.camel@hammerspace.com> <3754ac34c55dd82a4957967ec0a4e490cdc0d989.camel@kernel.org>
+In-Reply-To: <3754ac34c55dd82a4957967ec0a4e490cdc0d989.camel@kernel.org>
+From: Zhitao Li <zhitao.li@smartx.com>
+Date: Tue, 27 Feb 2024 10:35:18 +0800
+Message-ID: <CAPKjjnq0=HG5_iC91tjqU_pJp00Q+ffo0m=7Sk-8PbbAPv1+Cw@mail.gmail.com>
+Subject: Re: PROBLEM: NFS client IO fails with ERESTARTSYS when another mount
+ point with the same export is unmounted with force [NFS] [SUNRPC]
+To: Trond Myklebust <trondmy@hammerspace.com>, Jeff Layton <jlayton@kernel.org>
+Cc: "chuck.lever@oracle.com" <chuck.lever@oracle.com>, "kolga@netapp.com" <kolga@netapp.com>, 
+	"anna@kernel.org" <anna@kernel.org>, "tom@talpey.com" <tom@talpey.com>, "neilb@suse.de" <neilb@suse.de>, 
+	"Dai.Ngo@oracle.com" <Dai.Ngo@oracle.com>, "huangping@smartx.com" <huangping@smartx.com>, 
+	"linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 9:13=E2=80=AFAM Jaegeuk Kim <jaegeuk@kernel.org> wr=
+Is there any plan for this ERESTARTSYS leak issue?
+
+--
+Zhitao Li, at SmartX
+
+On Fri, Feb 23, 2024 at 6:31=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
 ote:
 >
-> On 02/26, Zhiguo Niu wrote:
-> > Dear Chao,
-> >
-> > On Fri, Feb 23, 2024 at 10:38=E2=80=AFAM Chao Yu <chao@kernel.org> wrot=
-e:
+> On Thu, 2024-02-22 at 15:20 +0000, Trond Myklebust wrote:
+> > On Thu, 2024-02-22 at 06:05 -0500, Jeff Layton wrote:
+> > > On Wed, 2024-02-21 at 13:48 +0000, Trond Myklebust wrote:
+> > > > On Wed, 2024-02-21 at 16:20 +0800, Zhitao Li wrote:
+> > > > > [You don't often get email from zhitao.li@smartx.com. Learn why
+> > > > > this
+> > > > > is important at https://aka.ms/LearnAboutSenderIdentification ]
+> > > > >
+> > > > > Hi, everyone,
+> > > > >
+> > > > > - Facts:
+> > > > > I have a remote NFS export and I mount the same export on two
+> > > > > different directories in my OS with the same options. There is an
+> > > > > inflight IO under one mounted directory. And then I unmount
+> > > > > another
+> > > > > mounted directory with force. The inflight IO ends up with
+> > > > > "Unknown
+> > > > > error 512", which is ERESTARTSYS.
+> > > > >
+> > > >
+> > > > All of the above is well known. That's because forced umount
+> > > > affects
+> > > > the entire filesystem. Why are you using it here in the first
+> > > > place? It
+> > > > is not intended for casual use.
+> > > >
 > > >
-> > > On 2024/2/23 10:01, Zhiguo Niu wrote:
-> > > >
-> > > >
-> > > > On Thu, Feb 22, 2024 at 8:30=E2=80=AFPM Chao Yu <chao@kernel.org <m=
-ailto:chao@kernel.org>> wrote:
-> > > >
-> > > >     On 2024/2/7 10:01, Zhiguo Niu wrote:
-> > > >      > A panic issue happened in a reboot test in small capacity de=
-vice
-> > > >      > as following:
-> > > >      > 1.The device size is 64MB, and main area has 24 segments, an=
-d
-> > > >      > CONFIG_F2FS_CHECK_FS is not enabled.
-> > > >      > 2.There is no any free segments left shown in free_segmap_in=
-fo,
-> > > >      > then another write request cause get_new_segment get a out-o=
-f-bound
-> > > >      > segment with segno 24.
-> > > >      > 3.panic happen in update_sit_entry because access invalid bi=
-tmap
-> > > >      > pointer.
-> > > >
-> > > >     Zhiguo,
-> > > >
-> > > >     Can you please try below patch to see whether it can fix your p=
-roblem?
-> > > >
-> > > >     https://lore.kernel.org/linux-f2fs-devel/20240222121851.883141-=
-3-chao@kernel.org <https://lore.kernel.org/linux-f2fs-devel/20240222121851.=
-883141-3-chao@kernel.org>
-> > > >
-> > > >     Thanks,
-> > > >
-> > > >
-> > > > Dear Chao,
-> > > > I need to coordinate the testing resources. The previous testing ha=
-s been stopped because it was fixed with the current patch. In addition, th=
-is requires stability testing to reproduce, so it will take a certain amoun=
-t of time. If there is any situation, I will tell you in time.
-> > >
-> > > Zhiguo, thank you!
+> > > While I agree Trond's above statement, the kernel is not supposed to
+> > > leak error codes that high into userland. Are you seeing ERESTARTSYS
+> > > being returned to system calls? If so, which ones?
 > >
-> > We tested this patch  this weekend on the previous version with
-> > problem, and it can not reproduce panic issues,
-> > so this patch should fix the original issue.
-> > thanks=EF=BC=81
+> > The point of forced umount is to kill all RPC calls associated with the
+> > filesystem in order to unblock the umount. Basically, it triggers this
+> > code before the unmount starts:
+> >
+> > void nfs_umount_begin(struct super_block *sb)
+> > {
+> >         struct nfs_server *server;
+> >         struct rpc_clnt *rpc;
+> >
+> >         server =3D NFS_SB(sb);
+> >         /* -EIO all pending I/O */
+> >         rpc =3D server->client_acl;
+> >         if (!IS_ERR(rpc))
+> >                 rpc_killall_tasks(rpc);
+> >         rpc =3D server->client;
+> >         if (!IS_ERR(rpc))
+> >                 rpc_killall_tasks(rpc);
+> > }
+> >
+> > So yes, that does signal all the way up to the application level, and
+> > it is very much intended to do so.
 >
-Dear Jaegeuk,
-> Hey, do you guys please point out which patches were tested without what?
-This problem occurred during our platform stability testing.
-it can be fixed by my  this patch set, mainly be fixed by:
-f2fs: fix panic issue in update_sit_entry & f2fs: enhance judgment
-conditions of GET_SEGNO
-and Chao's patch can also fix this problems testing without my patch
-> IOWs, which patches should I remove and keep Chao's patch?
-I think chao's patch is more reasonable, it does error handling more comple=
-te.
-but my patch just do some sanity check for return value of GET_SEGNO
-Same as other codes(update_segment_mtime)
-and i think it also needed except this part:
-
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 3bf2ce46fa0907..bb22feeae1cfcb 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -96,7 +96,8 @@ static inline void sanity_check_seg_type(struct
-f2fs_sb_info *sbi,
-(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
-#define GET_SEGNO(sbi, blk_addr) \
-- ((!__is_valid_data_blkaddr(blk_addr)) ? \
-+ ((!__is_valid_data_blkaddr(blk_addr) || \
-+ !f2fs_is_valid_blkaddr(sbi, blk_addr, DATA_GENERIC)) ? \
-NULL_SEGNO : GET_L2R_SEGNO(FREE_I(sbi), \
-GET_SEGNO_FROM_SEG0(sbi, blk_addr)))
-#define CAP_BLKS_PER_SEC(sbi)
-because Chao's patch let new_addr=3Dnull_addr when  get_new_segment
-returns NOSPACE,
-so I think this can be reverted and it also saves code running time.
-How about Chao's opinions?
-thanks!
+> Returning an error to userland in this situation is fine, but userland
+> programs aren't really equipped to deal with error numbers in this
+> range.
 >
-> >
-> > >
-> > > BTW, I've tested this patch for a while, and it looks there is no iss=
-ue w/
-> > > FAULT_NO_SEGMENT fault injection is on.
-> > >
-> > > > btw, Why can=E2=80=99t I see this patch on your branch^^?
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/log/=
-?h=3Ddev-test <https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.g=
-it/log/?h=3Ddev-test>
-> > >
-> > > Too lazy to push patches in time, will do it in this weekend. :P
-> > >
-> > > > thanks=EF=BC=81
-> > > >
-> > > >
-> > > >      >
-> > > >      > More detail shown in following patch sets.
-> > > >      > The three patches are splited here because the modifications=
- are
-> > > >      > relatively independent and more readable.
-> > > >      >
-> > > >      > ---
-> > > >      > Changes of v2: stop checkpoint when get a out-of-bound segme=
-nt
-> > > >      > ---
-> > > >      >
-> > > >      > Zhiguo Niu (4):
-> > > >      >    f2fs: correct counting methods of free_segments in __set_=
-inuse
-> > > >      >    f2fs: fix panic issue in update_sit_entry
-> > > >      >    f2fs: enhance judgment conditions of GET_SEGNO
-> > > >      >    f2fs: stop checkpoint when get a out-of-bounds segment
-> > > >      >
-> > > >      >   fs/f2fs/file.c          |  7 ++++++-
-> > > >      >   fs/f2fs/segment.c       | 21 ++++++++++++++++-----
-> > > >      >   fs/f2fs/segment.h       |  7 ++++---
-> > > >      >   include/linux/f2fs_fs.h |  1 +
-> > > >      >   4 files changed, 27 insertions(+), 9 deletions(-)
-> > > >      >
-> > > >
+> Emphasis on the first sentence in the comment in include/linux/errno.h:
+>
+> -------------------8<-----------------------
+> /*
+>  * These should never be seen by user programs.  To return one of ERESTAR=
+T*
+>  * codes, signal_pending() MUST be set.  Note that ptrace can observe the=
+se
+>  * at syscall exit tracing, but they will never be left for the debugged =
+user
+>  * process to see.
+>  */
+> #define ERESTARTSYS     512
+> #define ERESTARTNOINTR  513
+> #define ERESTARTNOHAND  514     /* restart if no handler.. */
+> #define ENOIOCTLCMD     515     /* No ioctl command */
+> #define ERESTART_RESTARTBLOCK 516 /* restart by calling sys_restart_sysca=
+ll */
+> #define EPROBE_DEFER    517     /* Driver requests probe retry */
+> #define EOPENSTALE      518     /* open found a stale dentry */
+> #define ENOPARAM        519     /* Parameter not supported */
+> -------------------8<-----------------------
+>
+> If these values are leaking into userland, then that seems like a bug.
+> --
+> Jeff Layton <jlayton@kernel.org>
 
