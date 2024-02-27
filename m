@@ -1,131 +1,105 @@
-Return-Path: <linux-kernel+bounces-83258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C6B8690E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:50:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88A138690E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:50:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E35ED281FF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:50:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7371C263D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC4613A883;
-	Tue, 27 Feb 2024 12:50:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B51D13A883;
+	Tue, 27 Feb 2024 12:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bY4lN4vd"
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CTJHD0ws"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 287E1135A5C;
-	Tue, 27 Feb 2024 12:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9771E135A5C;
+	Tue, 27 Feb 2024 12:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709038207; cv=none; b=q0dnfgjYkm3KCQyxp/FVseW6/IOa0m7R4e6A0473SkvmsFyk4No9RmywIfm49nFfij+fBHvLrITCIfMJDYAqjmjElPQCMSt4Hl9VSRZg3AhoIZol8b3Tfd8OMdyIZD/52B0dT+9NaMDiT7eAkVmICkd0BJWYpCtAwN+1P1l4wmM=
+	t=1709038221; cv=none; b=h8Ua3nQW90vSp3DtW5k9C1Qx+JgsCJPDzekcTOUP+xrfD32Q+DiQV43j6Vcur0VHOj4wzQMCLpJGswjpvNfOcUXaiMcDhUwgCFxBn7sa95yb31vI9901DLzr25cQxf+MQpmuiLDYpc5ld0vDoun8uFaE8wVi0TnE58kXX+krXiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709038207; c=relaxed/simple;
-	bh=dBAwc9AUX2eiHfVnP7QKfGIEipxZrMAtd9DEhO5h2zw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pTKpNnEBDedzg31dbUbOfUm9p84mEmaqMG2TUBx44vOILWBoXDi7HFk7v4hiCeEtZVEztKJqPuL1y7pGnf5gGB32vo02H9+lR1oznK3I0qckpKUbqD5t2P340+OTGrv1RB5FBTRzkZ8QM+m8vMy75XCsgWYlscVevyJs8IOIuIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bY4lN4vd; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c1a172e158so384931b6e.0;
-        Tue, 27 Feb 2024 04:50:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709038205; x=1709643005; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=F/8TLN5kAmVzuWnrwCPlCAhzdNiyKR8NIwFU1ivGP6Q=;
-        b=bY4lN4vdBHesuM32kO5e+oGTINVfiVZo5smXjJ5OW+/HpZubQBX2LNkJLG84eZsZ7n
-         AmR96g+vzYchrxskyRdbUkf/lzoEWdwMwS08dvRh1VKQuvHYo8LZtwryPlpyQEO2/XMV
-         gVZD27ESSI0PR0LRf/V/f/bk05TFo6ER12sKbMZkltunJwuc1AvMBsdB4jG0CFLHmFNm
-         AqqZgo9hGhOCJ9YyFK0nEVRF+ALq9DDncWCnF1Aqb8sGqLV53UDaqQhHiT5qb5glXBoU
-         nrPc6JMP3quWh0780Sd5sDmH8IjjyELVc3gM2cqPJGWy7NXFru8GykoprofUc+qnd3FX
-         c/nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709038205; x=1709643005;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F/8TLN5kAmVzuWnrwCPlCAhzdNiyKR8NIwFU1ivGP6Q=;
-        b=I50yw33SeLSamN0zGwslAYUv9d9Ivi5ciMziwWpvNc+HfE4ONaYt6vxwNC6VvYFcvX
-         QNShZ2McJJzO6FYgY6Z1+y9Jlq7Z6XDkA/3o4/hFNqhN3D1cErS7jf9iRWIWgAF57tZP
-         eHSMhKQxkILj6jQ5qHwoCkSXhaEHhC+Bj8vHvFvR8a1KvLzT5gxbAEd3cO+N2jOdu4Vb
-         3kDa/g/cdBZa3ZoQCEwYwAfjgp//uwxPl0Ip/Y4XDVB1F2g8LeXXgXy/0jMO2Fxw9vEM
-         Jsguz2z524yLJ91EGsGvJn/W3NNL0GnyfWu3nYgWYPDzXHWoNx+cM7MDlLPwCZCcmY8D
-         39/A==
-X-Forwarded-Encrypted: i=1; AJvYcCUZ0nrW27eBlZhbYQg8o1CIb/x5FwG3TJPjnkj/GI/F1xcfsziAtTKGByEU5ZcmWKWDzX2AFNd8S+R80x63dTv2A6H1bZtHw6Me9WtfCi3fD8rajkt9NQq5RmSS9GehvOwg8JzHmG0xsQ==
-X-Gm-Message-State: AOJu0YyBjkz5Ow1cqhTkmjY2hjUDZst3I690Nv2UwWU60M4O74fvw29/
-	vifZyoEL/VD5debtxA8shhbc/9EKKdp/aR0OoYjGuh1hoh39np/IUrzcVxk1Q9SMYzyfND/3ke0
-	wvKKiu81SIULmBuZLPFpR0oDDECs=
-X-Google-Smtp-Source: AGHT+IFpf3fUm6FcmrIThs6BXQtgpJXTn3AU43946pENs6vOHlERSeU5iODtj2rnFktpgmREMTo4xF5qQjXehS/m7ew=
-X-Received: by 2002:a05:6808:274b:b0:3c1:9422:8953 with SMTP id
- eh11-20020a056808274b00b003c194228953mr684685oib.25.1709038205105; Tue, 27
- Feb 2024 04:50:05 -0800 (PST)
+	s=arc-20240116; t=1709038221; c=relaxed/simple;
+	bh=Zhxbx7duNjFtsU8C8YK99MgZoIQeeL7kpOUt9GKMLUU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WDDug46XAyL+1dQEmt+dd/oXKP0lvQHHKSWXrO9r/lLnZlkCoDLMJNXyZejO8jvj0yfizvze+v4njAdwrmt8wn0v2PdgX46OQ6+9x+wL6JAnVL9EBFtpy3hB5Kso0QbMJr2kNtIABivhsIDOPOm8ggQ7FkGKrKA3EPI5FDxa6RE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CTJHD0ws; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3D52C433F1;
+	Tue, 27 Feb 2024 12:50:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709038220;
+	bh=Zhxbx7duNjFtsU8C8YK99MgZoIQeeL7kpOUt9GKMLUU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=CTJHD0wsAgcoIW/uHXp3nQWXqI7GNzvWN9H7kkAqR8VCUu3R4Pug5eDEq5QG+kZEB
+	 3aPG/VmwraVimyWx8OLVHIauqiE6MNRfl35Ct0/XllAMO1tn9QX6R142vXh12R6aFi
+	 Hy/UA7LgeRKFxY0Bh6IHu8rjqCUZc0KJlDsJA45ABFAjeKDJlZYIeqEO4FiSZTKEx/
+	 EyVrqP1hiX6+SiAiXUp3X0utDO4mOwl/f53YZ5HLOFEz7JoMHMeoQaGbeD070oo+S8
+	 gam/Oxmiqeob57QSBySQtr6nKh28Gsv9Q3GPWKmO1HeMik/7gSi8/9vXagzA2Di2IX
+	 Qr3Nf+TgRhB2Q==
+Date: Tue, 27 Feb 2024 12:50:15 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>, kernel test robot <lkp@intel.com>,
+	Stephen Warren <swarren@wwwdotorg.org>,
+	linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	kernel@pengutronix.de,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH 2/3] spi: ppc4xx: Fix fallout from rename in struct
+ spi_bitbang
+Message-ID: <76fcc5ec-0180-4f75-aaac-5ae74f2f687a@sirena.org.uk>
+References: <20240210164006.208149-5-u.kleine-koenig@pengutronix.de>
+ <20240210164006.208149-7-u.kleine-koenig@pengutronix.de>
+ <y2my7hxrpnwg72ols6a5w7n6zqz2yaxtswq4zlv6xpguiyaunm@tguc7ua3ypa5>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226182310.4032-1-linux.amoon@gmail.com> <8ceea100f2ef7cce296943ce1397161a@manjaro.org>
-In-Reply-To: <8ceea100f2ef7cce296943ce1397161a@manjaro.org>
-From: Anand Moon <linux.amoon@gmail.com>
-Date: Tue, 27 Feb 2024 18:19:48 +0530
-Message-ID: <CANAwSgQnoBx+th6s254sML+Zw+RZQC6WU9TjfMoWgHxmCqbDcw@mail.gmail.com>
-Subject: Re: [PATCH v1] arm64: dts: rockchip: Add cache information to the
- Rockchip RK3566 and RK3568 SoC
-To: Dragan Simic <dsimic@manjaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3Lb+SU4G2F3AXgps"
+Content-Disposition: inline
+In-Reply-To: <y2my7hxrpnwg72ols6a5w7n6zqz2yaxtswq4zlv6xpguiyaunm@tguc7ua3ypa5>
+X-Cookie: Please go away.
 
-Hi Dragan
 
-On Tue, 27 Feb 2024 at 00:39, Dragan Simic <dsimic@manjaro.org> wrote:
->
-> Hello Anand,
->
-> On 2024-02-26 19:23, Anand Moon wrote:
-> > As per RK3568 Datasheet and TRM add missing cache information to
-> > the Rockchip RK3566 and RK3568 SoC.
-> >
-> > - Each Cortex-A55 core has 32KB of L1 instruction cache available and
-> >       32KB of L1 data cache available with ECC.
-> > - Along with 512KB Unified L3 cache with ECC.
-> >
-> > With adding instruction cache and data cache and a write buffer to
-> > reduce the effect of main memory bandwidth and latency on data
-> > access performance.
-> >
-> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
->
-> I was about to send my own patch that adds the same missing cache
-> information, so please allow me to describe the proposed way to move
-> forward.
->
-> The way I see it, your commit summary and description need a rather
-> complete rewrite, to be more readable, more accurate, and to avoid
-> including an irrelevant (and slightly misleading) description of the
-> general role of caches.
->
-> Also, the changes to the dtsi file would benefit from small touch-ups
-> here and there, for improved consistency, etc.
->
-> With all that in mind, I propose that you withdraw your patch and let
-> me send my patch that will addresses all these issues, of course with
-> a proper tag that lists you as a co-developer.  I think that would
-> save us a fair amount of time going back and forth.
->
-> I hope you agree.
->
+--3Lb+SU4G2F3AXgps
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I have no issue with this,.If you have a better version plz share this.
+On Tue, Feb 27, 2024 at 08:23:06AM +0100, Uwe Kleine-K=F6nig wrote:
 
-Thanks
--Anand
+> Assuming we don't want to have this problem in v6.8, I suggest to revert
+> de4af897ddf2 and reapply it on top of your next branch.
+
+BTW the issue here is that you sent this without comment in the middle
+of a series of fixes the other two of which *do* apply to mainline,
+ideally it would have just been sent separately since it needs to go
+separately but if you *are* going to send a single series like this
+things that are -next only should go after any fixes that are for
+mainline.  My automation does look at where fixes are targeted this
+catches it out.
+
+--3Lb+SU4G2F3AXgps
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXd2ocACgkQJNaLcl1U
+h9AZKgf/ZrkCzZjo1DZFBjTWSNJ7yhirrWXmutciLFiJnkfbMEtL9WjnGGYPMRvp
+R4hebOsiHDlKj4sp8uecP34jCzEoiENNp0jwCTWiijlP/OANnSwFTdR1Y2Q6LdB9
+DKejbC+lFAsSSkTSVVSSBay2bwhOnjUPGt3fh7THxcKR5m97nzw1m29SXHdsWdfj
+JAbHjMwdxwOt4sKiIWaazNhTJiaDnDPWbfEgmGA95kPosTg1fUgE7UKh2N1v8fz2
+/VaIRsG4QEiZnrywnb0gXkknozuUQndaEQEl5XU7vtyu0Imyr68QPNodoGx+6ljG
+mR7uxcDgBbF9iDdYPqeDK3kZBZLSTg==
+=sreQ
+-----END PGP SIGNATURE-----
+
+--3Lb+SU4G2F3AXgps--
 
