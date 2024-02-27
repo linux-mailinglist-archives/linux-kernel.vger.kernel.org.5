@@ -1,210 +1,129 @@
-Return-Path: <linux-kernel+bounces-83405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0202869881
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:37:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 053F1869884
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:37:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86589285BE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:37:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEFA51F220A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:37:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC29517729;
-	Tue, 27 Feb 2024 14:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB4AE13AA2D;
+	Tue, 27 Feb 2024 14:37:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="qzI7svbR"
-Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eyds4r/Z"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D882B41C60
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB36817729;
+	Tue, 27 Feb 2024 14:37:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709044618; cv=none; b=gg3na+jo3wj9JcaYni67cxQLU/7qVhCIh6oz/allHT5c4jYw2M4g3PXR1I+Z56xLGOzHKGpZZl26c2e8X7A7lJ3vvusZEdm5GVqyhWqPS8SIxwMUDy1jQN2c+8/KzuBxovoEngFb1DiHWTRHWUktsclpyX4mKvIdfwc60nyW9io=
+	t=1709044650; cv=none; b=YbZOHU4kStzerV/yTtaxzuDMtMwcOawfsWXCe2ASWzb29Hvs7VNJxIN1H09eM1DV609GERm/eDTgMbzWsXlRYpxFqVaGBcGhu8mUSMDU77G0uk8Swt+AbnHEYy3pSnPLAF0tNKOOVUrlmy5Vx7qDgx5RLDCU0zKSlABLGZfyHsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709044618; c=relaxed/simple;
-	bh=NPUyj3ddPUfzBXhkYiwo+nNzFdgZhK6Hf1WTu8+92AM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uT16MOmBmJVDYVvuQPjN0U4AaFVDVoViLBX8iG/pKRODswzqjsTKoOqgcWrz6QbyWZJ1YtRIn47Oxsyd3cnlJkGbSO2P9wdu1Yh/Kuke/zpGPy/oKb40EYYMR9T+Ly27oMJxgrP/GMkaFmIsZU3o7QITAODNGiE+NhFNVX86sMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=qzI7svbR; arc=none smtp.client-ip=209.85.166.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-3656b1829deso350095ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 06:36:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709044615; x=1709649415; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZEqeC8VDcUMw4k/nA3ZXJ3EGr9xSBa9B/Dq+H5vzllk=;
-        b=qzI7svbRotSQrRWWP5+WqBzp/z6azFCjxOttHW56+5tWnIzL+OrSTPrf7CbOrQdu/E
-         tVIl0oZgF+kzxr6FElxizJl01zj1mHWWvMCxMadwk+iU7rVuHNXffI5h3Y9QkjmQaAvY
-         csoxDihfJPy3Wbiy1RuJU0Uxj0k0MutBVYL4dDsPSMSUlCtD43/Wi0/K7+Kd7COVAr4M
-         sXDM791LBAAKP+oStKocbLlja+ca+zRg5Bi2Xf3eTtmQWsn646B+yAVWufT9XJ/mP3MK
-         NRHoNEDAW2CrE6xr8ucfLrz7lxuUR3Wxye9XAGmun+UPSt7tei7sAfqBqA00KIG/Xcg8
-         sqXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709044615; x=1709649415;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZEqeC8VDcUMw4k/nA3ZXJ3EGr9xSBa9B/Dq+H5vzllk=;
-        b=IYQkfdGy7A9i1jAR9PD64mUXD4bysDX3KcgXUsXYUe3QxpplukoXGq9/tfmqj3+tG2
-         6ZEC977msIBCWGEC+bILO0eNNeBfFmJ+SFjMhDcA+QiVcGhCQzHTBUEFulcDuTzwDJTL
-         UOpMaGoyCaqYaFZfy2G43GPbQiRY7HrFot/1O0F1saOFBg4vG8UlH2OInMZCHUxiVMwx
-         uspT5X74q5zmMtFbqp+JGvE32h8QQ0/guh+bIDjtkag052pkTJ6uoONSI/NMJFmq8eCH
-         NL7zuXN2TPYftCgDikEHMu6cNqRB/Do8hM6LaSNFJOmKk0yEOkOZEuFlusAOiBMUJJr5
-         Ngdw==
-X-Forwarded-Encrypted: i=1; AJvYcCWXhBEqe2xLbp+bADI0/62LYQr30GvTbvjnPxb0PFiS6Do2oeyqF3yfMbEvAgq2Q991LHmZYMbL54M1mFHvOnIH7BzcKY/OSZqhM0iu
-X-Gm-Message-State: AOJu0Yx9MmVlmwgIYZQwdxfrxWF5BNx5w+uvHlk/ncnvVvJ9IFcmFJb1
-	dHH1XJDoARtZ1lGqkuqqW6jHCTzkzLH5Elu8C2UGEiZopovc/zqw/HZzpkDSP8Q=
-X-Google-Smtp-Source: AGHT+IHAGTGvS3GTGaePgaitWfuQcZiIHpq/Vg16qf+u32/Tr6QfUdFpNU0FlZlaFD6FShl4kgjSpw==
-X-Received: by 2002:a05:6e02:214d:b0:365:3fb7:f77 with SMTP id d13-20020a056e02214d00b003653fb70f77mr9990157ilv.3.1709044614968;
-        Tue, 27 Feb 2024 06:36:54 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21e1::1138? ([2620:10d:c090:400::5:6000])
-        by smtp.gmail.com with ESMTPSA id f13-20020aa79d8d000000b006e3d79e74dcsm6120756pfq.141.2024.02.27.06.36.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 06:36:54 -0800 (PST)
-Message-ID: <94284465-0b46-4df4-842e-a0c65dee5908@kernel.dk>
-Date: Tue, 27 Feb 2024 07:36:52 -0700
+	s=arc-20240116; t=1709044650; c=relaxed/simple;
+	bh=1pmCi0aoLbtvh8q1FSw3S4VdL7lpSFQUAUvhYlx8DQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MPSddEKMCbsxXEIjnlF3TRT/sbp67uKnoM2Knd+oNcNZlirbXAZbRNa/eh8yR4YMaZ5gjNRbj2xo7O5ZI7KFg5qnWanx0wunF6byc/Abfz998IwjgoxxZUCfnF7buRRLiDTIMBJjFNj1lGhecIxl4c4vSSIEF82IFPx0mSJVXco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eyds4r/Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 115DCC433C7;
+	Tue, 27 Feb 2024 14:37:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709044649;
+	bh=1pmCi0aoLbtvh8q1FSw3S4VdL7lpSFQUAUvhYlx8DQE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=eyds4r/ZYIenIbutoup39KqYPbXB56SO2F35JRCZSjVTtSJxGVJG89S+bo9ql1XF2
+	 W08OHAMv1vbpPB/mnDzZCIUMAmWgX5ouXBJFdErfqqHb6ynI42M8+CIKItR2UmTW78
+	 aq5HXJIHAmBZJgfgWpMeLjma2znSWjbyhF63Gg/BldwGabFrL3vqba5PXIYFb5UakY
+	 i4CoHnfJLBnJkTc1OY3nUY6hRqllIPy1C2adpTQnQkujQt82AmJq3bUip9Fm+LEqUi
+	 wLWk+FHni3zxgl/5hHfhUu0fEZ8FYFkDFh7ELhLiDfxgyuEQioRTnYhnHR3/Plw8hJ
+	 cY5FAsZOqwOiw==
+Date: Tue, 27 Feb 2024 15:37:26 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Z qiang <qiang.zhang1211@gmail.com>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <Zd3zptTLlUDCg1L7@localhost.localdomain>
+References: <20240220183115.74124-1-urezki@gmail.com>
+ <20240220183115.74124-3-urezki@gmail.com>
+ <Zd0ZtNu+Rt0qXkfS@lothringen>
+ <CALm+0cUJ9tMsZpOGby_6B6c=XDBn_CJ6=o2WSFafaCwPzp6_4A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9] io_uring: Statistics of the true utilization of sq
- threads.
-Content-Language: en-US
-To: Xiaobing Li <xiaobing.li@samsung.com>
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
- io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
- joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
- ruyi.zhang@samsung.com, cliang01.li@samsung.com, xue01.he@samsung.com
-References: <0d0fda8f-36c1-49f4-aef0-527a79a34448@kernel.dk>
- <CGME20240227054554epcas5p3ada1c39620d0156e6db87f05449dd624@epcas5p3.samsung.com>
- <20240227054545.1184805-1-xiaobing.li@samsung.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240227054545.1184805-1-xiaobing.li@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALm+0cUJ9tMsZpOGby_6B6c=XDBn_CJ6=o2WSFafaCwPzp6_4A@mail.gmail.com>
 
-On 2/26/24 10:45 PM, Xiaobing Li wrote:
-> On 2/21/24 10:28, Jens Axboe wrote:
->> On 2/20/24 7:04 PM, Xiaobing Li wrote:
->>> On 2/19/24 14:42, Xiaobing Li wrote:
->>>> diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
->>>> index 976e9500f651..37afc5bac279 100644
->>>> --- a/io_uring/fdinfo.c
->>>> +++ b/io_uring/fdinfo.c
->>>> @@ -55,6 +55,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->>>> 	struct io_ring_ctx *ctx = f->private_data;
->>>> 	struct io_overflow_cqe *ocqe;
->>>> 	struct io_rings *r = ctx->rings;
->>>> +	struct rusage sq_usage;
->>>> 	unsigned int sq_mask = ctx->sq_entries - 1, cq_mask = ctx->cq_entries - 1;
->>>> 	unsigned int sq_head = READ_ONCE(r->sq.head);
->>>> 	unsigned int sq_tail = READ_ONCE(r->sq.tail);
->>>> @@ -64,6 +65,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->>>> 	unsigned int sq_shift = 0;
->>>> 	unsigned int sq_entries, cq_entries;
->>>> 	int sq_pid = -1, sq_cpu = -1;
->>>> +	u64 sq_total_time = 0, sq_work_time = 0;
->>>> 	bool has_lock;
->>>> 	unsigned int i;
->>>>
->>>> @@ -147,10 +149,15 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->>>>
->>>> 		sq_pid = sq->task_pid;
->>>> 		sq_cpu = sq->sq_cpu;
->>>> +		getrusage(sq->thread, RUSAGE_SELF, &sq_usage);
->>>> +		sq_total_time = sq_usage.ru_stime.tv_sec * 1000000 + sq_usage.ru_stime.tv_usec;
->>>> +		sq_work_time = sq->work_time;
->>>> 	}
->>>>
->>>> 	seq_printf(m, "SqThread:\t%d\n", sq_pid);
->>>> 	seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
->>>> +	seq_printf(m, "SqTotalTime:\t%llu\n", sq_total_time);
->>>> +	seq_printf(m, "SqWorkTime:\t%llu\n", sq_work_time);
->>>> 	seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
->>>> 	for (i = 0; has_lock && i < ctx->nr_user_files; i++) {
->>>> 		struct file *f = io_file_from_index(&ctx->file_table, i);
->>>> diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
->>>> index 65b5dbe3c850..006d7fc9cf92 100644
->>>> --- a/io_uring/sqpoll.c
->>>> +++ b/io_uring/sqpoll.c
->>>> @@ -219,10 +219,22 @@ static bool io_sqd_handle_event(struct io_sq_data *sqd)
->>>> 	return did_sig || test_bit(IO_SQ_THREAD_SHOULD_STOP, &sqd->state);
->>>> }
->>>>
->>>> +static void io_sq_update_worktime(struct io_sq_data *sqd, struct rusage *start)
->>>> +{
->>>> +		struct rusage end;
->>>> +
->>>> +		getrusage(current, RUSAGE_SELF, &end);
->>>> +		end.ru_stime.tv_sec -= start->ru_stime.tv_sec;
->>>> +		end.ru_stime.tv_usec -= start->ru_stime.tv_usec;
->>>> +
->>>> +		sqd->work_time += end.ru_stime.tv_usec + end.ru_stime.tv_sec * 1000000;
->>>> +}
->>>> +
->>>> static int io_sq_thread(void *data)
->>>> {
->>>> 	struct io_sq_data *sqd = data;
->>>> 	struct io_ring_ctx *ctx;
->>>> +	struct rusage start;
->>>> 	unsigned long timeout = 0;
->>>> 	char buf[TASK_COMM_LEN];
->>>> 	DEFINE_WAIT(wait);
->>>> @@ -251,6 +263,7 @@ static int io_sq_thread(void *data)
->>>> 		}
->>>>
->>>> 		cap_entries = !list_is_singular(&sqd->ctx_list);
->>>> +		getrusage(current, RUSAGE_SELF, &start);
->>>> 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
->>>> 			int ret = __io_sq_thread(ctx, cap_entries);
->>>>
->>>> @@ -261,8 +274,10 @@ static int io_sq_thread(void *data)
->>>> 			sqt_spin = true;
->>>>
->>>> 		if (sqt_spin || !time_after(jiffies, timeout)) {
->>>> -			if (sqt_spin)
->>>> +			if (sqt_spin) {
->>>> +				io_sq_update_worktime(sqd, &start);
->>>> 				timeout = jiffies + sqd->sq_thread_idle;
->>>> +			}
->>>> 			if (unlikely(need_resched())) {
->>>> 				mutex_unlock(&sqd->lock);
->>>> 				cond_resched();
->>>> diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
->>>> index 8df37e8c9149..4171666b1cf4 100644
->>>> --- a/io_uring/sqpoll.h
->>>> +++ b/io_uring/sqpoll.h
->>>> @@ -16,6 +16,7 @@ struct io_sq_data {
->>>> 	pid_t			task_pid;
->>>> 	pid_t			task_tgid;
->>>>
->>>> +	u64			work_time;
->>>> 	unsigned long		state;
->>>> 	struct completion	exited;
->>>> };
->>>  
->>> Hi, Jens
->>> I have modified the code according to your suggestions.
->>> Do you have any other comments?
->>
->> Out of town this week, I'll check next week. But from a quick look,
->> looks much better now.
->  
-> Hi, Jens
-> Do you have time to check now?
+Le Tue, Feb 27, 2024 at 02:39:55PM +0800, Z qiang a écrit :
+> > Can the following race happen?
+> >
+> > CPU 0                                                   CPU 1
+> > -----                                                   -----
+> >
+> > // wait_tail == HEAD1
+> > rcu_sr_normal_gp_cleanup() {
+> >     // has passed SR_MAX_USERS_WAKE_FROM_GP
+> >     wait_tail->next = next;
+> >     // done_tail = HEAD1
+> >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> >     queue_work() {
+> >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+> >         __queue_work()
+> >     }
+> > }
+> >
+> >                                                       set_work_pool_and_clear_pending()
+> >                                                       rcu_sr_normal_gp_cleanup_work() {
+> > // new GP, wait_tail == HEAD2
+> > rcu_sr_normal_gp_cleanup() {
+> >     // executes all completion, but stop at HEAD1
+> >     wait_tail->next = HEAD1;
+> >     // done_tail = HEAD2
+> >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> >     queue_work() {
+> >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+> >         __queue_work()
+> >     }
+> > }
+> >                                                           // done = HEAD2
+> >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
+> >                                                           // head = HEAD1
+> >                                                           head = done->next;
+> >                                                           done->next = NULL;
+> >                                                           llist_for_each_safe() {
+> >                                                               // completes all callbacks, release HEAD1
+> >                                                           }
+> >                                                       }
+> >                                                       // Process second queue
+> >                                                       set_work_pool_and_clear_pending()
+> >                                                       rcu_sr_normal_gp_cleanup_work() {
+> >                                                           // done = HEAD2
+> >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
+> >
+> > // new GP, wait_tail == HEAD3
+> > rcu_sr_normal_gp_cleanup() {
+> >     // Finds HEAD2 with ->next == NULL at the end
+> >     rcu_sr_put_wait_head(HEAD2)
+> 
+> It seems that we should move rcu_sr_put_wait_head() from
+> rcu_sr_normal_gp_cleanup() to
+> rcu_sr_normal_gp_cleanup_work(), if find wait_head->next == NULL, invoke
+> rcu_sr_put_wait_head() to release wait_head.
 
-Can I ask you to resend it against for-6.9/io_uring? For some reason I
-don't see the original patch on the list.
-
--- 
-Jens Axboe
-
+Well, rcu_sr_normal_gp_cleanup_work() already put all the wait heads
+that are _after_ srs_done_tail. But it can't put the srs_done_tail itself
+without introducing even worse races...
 
