@@ -1,181 +1,111 @@
-Return-Path: <linux-kernel+bounces-84117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A89EF86A24B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:19:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48ACF86A24E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:19:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7BF31C23E73
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:19:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F34691F248BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84FD1534F6;
-	Tue, 27 Feb 2024 22:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC5A153509;
+	Tue, 27 Feb 2024 22:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L2nop85b"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KS8VmaMB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6739F14F961
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:19:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EBA14F961;
+	Tue, 27 Feb 2024 22:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709072351; cv=none; b=tG+9KmH3J0GKvsbSLU/HbfAHmcvJz5KV904iIQUJEou2L6aOVoxEI05kC+2qm+yZh7TfRRHS7eqnVxBOrsawoeq9t3tStSzcMaI2DWM38a+BFwblE4WqiBvuhLLqfT/IwlNHVVxYUOcZsYANorGNpwjhf+wb8QWNfqCCYzJ67hg=
+	t=1709072363; cv=none; b=SsWeVMYvPfPecbkyey+gyeKsla2Jcm696BuotiN/MLx+OOWXefXwc0DsboNJsqHG3ymfgq+XAXK+8LYovWNj9d34h4/NMCwVulqe9EaPExMaKhC0ShGckDgv5WarG7hKxa7vR3Nw8zz591PYn5Ve1W8mHeYgPsEHxFYD2EuKRHo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709072351; c=relaxed/simple;
-	bh=gUm8H8I+QgXLVB74DB6uSSt5ePpLI9Jus5D3udBOKFI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YvK1FrSDkMh6KPvyopIFsFrY4skK75szN7awviEF1R7Q4aTBLtwUboD2B0hekZ5gL4PQiYRQA55ay0qdKG+HpauqOQ18MvxSZsCsL6/KxBZsiLF5qOUaPRphcctge6O8QDRu122zDV2oj9+UTFWZ1p/uHfAG3OiCjkJm+Fs06g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=L2nop85b; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc1ff58fe4so43000095ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:19:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709072350; x=1709677150; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=YXno1hnt7boGnl19WCbZvgiFqTnjZ41kOP+QrpWStfo=;
-        b=L2nop85bNPThTi4hpL6vrutfMntxeT00M5VDsoZO6lsJbZLsMh4JEZippvUrU9LnG/
-         8j4c9JFbW4IXJw7ApmaFS+atdkbK4U3zkYzsIuLAjxFwHeuxKXTQkWRhu0MH8H5UG85z
-         PD60B8UtqnIQzkuRjaruJGgI3yzYP6WkF0mQw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709072350; x=1709677150;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YXno1hnt7boGnl19WCbZvgiFqTnjZ41kOP+QrpWStfo=;
-        b=qoOunOFBTnTSSsGqskcpOvi5EEwy+tJGdDQN3+7s/Etwt20g+NZu1HPsp3rri0Umr5
-         eGdCPsyz26VTQQU69P8o1cO18jVr13SZhtQHuW8V6AS3yS56eTTUiDq+K6HaT6IYVShQ
-         jAEJx5ztIfoQClqxsVG2rQkIdvZCanJmLKMvsQaJeOIw+iRmEpvmRnqj+IL/QReWL4Lz
-         BemGh+zeKXWRXHThRCmxIdgOwq0N8kO/q4SdiFrmS++7cxIUUE2AZwVI5vQX9xiFdT+5
-         UfdfWJQRjuB5rLOY/suqhwOU26jCfh7MoRqKX+1Kny7eIfhQhMmLkmCBQWKmHL3o8N2I
-         VUXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUOKnGxmY+uc7zTNKPEuq84RSC6tkjaJnTw4LO2lOOanQzpcyV49Vnte+AzKSC8VxAit0cS0yezVRR2sLl78C4M2o0fM/QskmerH6Yt
-X-Gm-Message-State: AOJu0YyW8KhcDvdhkDxK9BLVo2DkhAdHaHV5Ec2fTQN9HqiSfKv4Y7QZ
-	3UZVCrNL+xH8cWknUhejfHfVCDhtv4o5j+sbq5+i8wLeXVF0S2eqzfoc4XUepA==
-X-Google-Smtp-Source: AGHT+IG+T1sHKc1Q9CDhQJZHUfw1f78cfUc7tp8sJTwGJrblb9ZLNC6Lovyr5+eIAS7QGdDeOkubAQ==
-X-Received: by 2002:a17:902:b7c4:b0:1dc:b01e:99d0 with SMTP id v4-20020a170902b7c400b001dcb01e99d0mr4732223plz.1.1709072349723;
-        Tue, 27 Feb 2024 14:19:09 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id la3-20020a170902fa0300b001db5432449esm2022819plb.18.2024.02.27.14.19.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 14:19:08 -0800 (PST)
-Date: Tue, 27 Feb 2024 14:19:07 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Guenter Roeck <linux@roeck-us.net>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: stackinit unit test failures on m68k
-Message-ID: <202402271401.CB43AB2E8@keescook>
-References: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
- <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
+	s=arc-20240116; t=1709072363; c=relaxed/simple;
+	bh=o9svJsP9nzZVOUnXBU3iRQDLYitUEw+4EwfW5E0njzo=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=P1B6P+39UhsTCV9suG5fm38HmlkOo5fE8/XNb6mZGCXOX6j3/wZl0VzsnRycYQ+hC6cdTYlWrHIfrMGWC+JupLe2chgN+hlzCwYhWc1m0aUFuE0aj4oAqbXIB42K2ARppzIJUcqW4plVVP+ERs/w7yWluCNYww9MWlQa+ZmD6c0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KS8VmaMB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C97C433C7;
+	Tue, 27 Feb 2024 22:19:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709072362;
+	bh=o9svJsP9nzZVOUnXBU3iRQDLYitUEw+4EwfW5E0njzo=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=KS8VmaMBkpXv9qmsgAQsQ5t6hh1qpU7R7Hl6HsLUvFVI5Qi8zQvw+shX26X6EzRhY
+	 5M8oeuGQBQ31mzlfrPnQY9yCmXylxGyA6cg4ofniswej5i2KkwVF21bfLLlkWJNw1y
+	 IeibV7Y5A3vcDOAa0JuXoLPCLVg99HB9dWUrFQbmfOxHRBVTqlfvegK60GDSlEyn4n
+	 2Uu2cf1K1QFSImx88D2lNPVw7W8LXeJRLUunB7TqWPHszC6kYZxemtj+a63egyuBGn
+	 af2kzpJhzS9wYKCswKu1r9kHFx++IQkGlU5EA1dXRc7U1OfacFHXfOe3gSXdkCCmFf
+	 bDwH4CLyOKCfQ==
+Date: Tue, 27 Feb 2024 16:19:21 -0600
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: pavel@ucw.cz, linux-kernel@vger.kernel.org, lee@kernel.org, 
+ robh+dt@kernel.org, gregory.clement@bootlin.com, conor+dt@kernel.org, 
+ ojeda@kernel.org, tzimmermann@suse.de, devicetree@vger.kernel.org, 
+ javierm@redhat.com, krzysztof.kozlowski+dt@linaro.org, 
+ linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ geert@linux-m68k.org, andrew@lunn.ch, andy@kernel.org, 
+ sebastian.hesselbarth@gmail.com, robin@protonic.nl
+In-Reply-To: <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
+References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz>
+ <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
+Message-Id: <170907236007.645402.4701945428447873129.robh@kernel.org>
+Subject: Re: [PATCH v2 2/4] dt-bindings: auxdisplay: Add bindings for
+ generic 7 segment LED
 
-On Mon, Feb 12, 2024 at 09:34:02AM +0100, Geert Uytterhoeven wrote:
-> Hi Günter,
+
+On Wed, 28 Feb 2024 10:22:42 +1300, Chris Packham wrote:
+> Add bindings for a generic 7 segment LED display using GPIOs.
 > 
-> On Mon, Feb 12, 2024 at 12:06 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> > I see the following stackinit unit test failures on m68k when running
-> > the q800 emulation.
-> >
-> >     # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
-> >     Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
-> > stack fill missed target!? (fill 16 wide, target offset by -12)
-> >
-> >     # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
-> >     Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
-> > stack fill missed target!? (fill 16 wide, target offset by -12)
-> >
-> > Do you happen to know if this a problem with the test, with m68k, or maybe
-> > with the configuration ? My configuration is based on mac_defconfig with
-> > various test options enabled. I use gcc 11.4 to build the image. I tried
-> > with qemu v8.1 and v8.2.
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
 > 
-> Thanks, I see the same failures in the logs of my last testrun on ARAnyM, too.
-> I haven't looked into the details yet.
+> Notes:
+>     Changes in v2:
+>     - Use compatible = "generic-gpio-7seg" to keep checkpatch.pl happy
 > 
-> Only two failures does look like a nice improvement, compared to the
-> previous time I ran that test ;-)
+>  .../auxdisplay/generic-gpio-7seg.yaml         | 40 +++++++++++++++++++
+>  1 file changed, 40 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/auxdisplay/generic-gpio-7seg.yaml
 > 
-> https://lore.kernel.org/all/CAMuHMdX_g1tbiUL9PUQdqaegrEzCNN3GtbSvSBFYAL4TzvstFg@mail.gmail.com
 
-This is complaining that the stack frames across subsequent calls to the
-same leaf function don't end up putting the same variable in the same
-place.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-It's a rather difficult set of macros used try many different
-combinations, but it's specifically talking about the "leaf_..."
-function at line 208 of lib/stackinit_kunit.c. This test passes for all
-the integral types, but seems to fail for a character array.
+yamllint warnings/errors:
 
-It is basically doing this:
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/auxdisplay/generic-gpio-7seg.yaml: $id: Cannot determine base path from $id, relative path/filename doesn't match actual path or filename
+ 	 $id: http://devicetree.org/schemas/auxdisplay/generic,gpio-7seg.yaml
+ 	file: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/auxdisplay/generic-gpio-7seg.yaml
 
-static void *fill_start, *target_start;
-static size_t fill_size, target_size;
+doc reference errors (make refcheckdocs):
 
-static noinline int leaf_char_array_none(unsigned long sp, bool fill,
-                                  unsigned char *arg)
-{
-        char buf[32];
-        unsigned char var[16];
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240227212244.262710-3-chris.packham@alliedtelesis.co.nz
 
-        target_start = &var;
-        target_size = sizeof(var);
-        /*
-         * Keep this buffer around to make sure we've got a
-         * stack frame of SOME kind...
-         */
-        memset(buf, (char)(sp & 0xff), sizeof(buf));
-        /* Fill variable with 0xFF. */
-        if (fill) {
-                fill_start = &var;
-                fill_size = sizeof(var);
-                memset(fill_start,
-                       (char)((sp & 0xff) | forced_mask),
-                       fill_size);
-        }
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-        /* Silence "never initialized" warnings. */
-	do_nothing_char_array(var);
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-        /* Exfiltrate "var". */
-        memcpy(check_buf, target_start, target_size);
+pip3 install dtschema --upgrade
 
-        return (int)buf[0] | (int)buf[sizeof(buf) - 1];
-}
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
-and it's called as:
-
-
-        ignored = leaf_char_array_none((unsigned long)&ignored, 1, zero);
-	...
-        ignored = leaf_char_array_none((unsigned long)&ignored, 0, zero);
-
-The first call remembers where "var" is in the stack frame via the
-fill_start assignment, and the second call records where "var" is via
-the target_start assignment.
-
-The complaint is that it _changes_ between the two calls. ... Oh, I
-think I see what's happened. Between the two calls, the stack grows (and
-is for some reason not reclaimed) due to the KUNIT checks between the two
-leaf calls. Yes, moving that fixes it.
-
-I'll send a patch!
-
--Kees
-
--- 
-Kees Cook
 
