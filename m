@@ -1,436 +1,291 @@
-Return-Path: <linux-kernel+bounces-83543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 349BC869B1E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DAA25869B04
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:49:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF93B2849A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92624285BFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:49:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF711474AD;
-	Tue, 27 Feb 2024 15:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73F61482E0;
+	Tue, 27 Feb 2024 15:48:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xrlNT/AV"
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IERhslfA"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3091468F1
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155B41474B1
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:48:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709049003; cv=none; b=RddFyWmboxf/M7NVHyVAWot2mQMexeK27y0VF5eZ7u7650AIKifdRnPTwBXT9fwb4ceN/nvgM0BlR+HpJhaHnynVG+pEiqfcc9g3V3Q6JvGuMnUvUknMZmxx50BpAr4cn6qXUy25jujM2F8QOocmlDq5ECq4GOH8/mi7coa6GoM=
+	t=1709048928; cv=none; b=BLLvpOjgxe+1EywTuoSDsI6bsNwCKlAyW/nDsMJ7JygvHIan205ZSD9LkKvYG7ls+gozSZhHg2MPDc9UhQe/5ZT1Uq6Y+knkvRdTxNwqUUQ24ZY4nlWfs0HGKfyhmHlcWTK+gw/SQIYs8mUY4f000B82k9rSa3VqEqQt2ouy3X4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709049003; c=relaxed/simple;
-	bh=vIkQQpslZuckwTFsbaZ9JcwKjcTdPDrI3rJXKYsiiT0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q7BhJ3Jj2v0q/+gyrqY3vtUGMwa5yFsIcGWpvc6bXmjElP9FLHm5F7sDiEffS+ivoBsm16irZnJ66wOYLPasR3ngaBvjWShVWbwDqH0IWMAqpSdGpr6oer0ARBFE9v4Y2o5vS5FAOkRK1OY7FWeznC8li/hwcfUAZMK3ljLshpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xrlNT/AV; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-59fcb025b99so1854018eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:50:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709048999; x=1709653799; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GtuZKFPbk53MrmXfvLeh2XdFMq7EjplJgU6ouCpiVEc=;
-        b=xrlNT/AVAxvD4sTlgKA1Y9lc0w9784grdtJLRWa+PnsvM6i2m2F2/eX23WOnGKPvX3
-         xh5ZP6xJnJw5IUa7PBlQ8Ogd9stjTLqC/vx9qtpKy2FvO6N3s15Zm6U6V1swB27+7TTo
-         lU/EpCFXWAgXiSTN50Ya/0S1oGLxNK9yxZ3MVsSXfXzCFX2ECHbU49Suqd4P+ACvcgrL
-         uCu8nn3KuyFTi7YVDLwSaynxoS7Z1g3QIWlmRoh+qdJfyljGY47ilm0nZgWM4QI21xwr
-         IgwnHX4BdIDID3oako+4Zfy958ZZez5o5UNzmtSa6vUAX7iV/LKEWDYUt6OqsvkNAT2o
-         a46g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709048999; x=1709653799;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GtuZKFPbk53MrmXfvLeh2XdFMq7EjplJgU6ouCpiVEc=;
-        b=gMn3VHOQqwZAOARE6qEu0Ve77rS9sP7a5MaNkBthbRZ1l9auqEOe9uSPehd00hGtj6
-         BhkNfSCrjdUc+DCF+OIVbuWMUcfIV0MB1YTks5Z8rg73PR7bcLsnNPmQ4ry07fId3L9d
-         xqMunNpGJxVQt0BfnxK/daOiFenNGn0FfTIfksZSa6ms+J4F+bJwxL0u8oE7BUZrEugC
-         BdCE03yeWCv/8MO81qVO5+vwgomttgOVqoSO3Fq0DgDwRArJtXcpoCOC710BSGs89GKD
-         /2LOhwGDYXrlsSacm86hUg2ghULQJUoNIOPeQ5LcpWZBB5z+4An3FRK28/gITg0O6O99
-         Hbpw==
-X-Forwarded-Encrypted: i=1; AJvYcCXrIJNRLti1/UOUfXoE7/ethaV8Dk+ana76zb1cBhADkgY0MazgDXHmq10gCxLlg7u0YeLiFysisBeO8+n05w8QKIGKzkKfSz7zOCgQ
-X-Gm-Message-State: AOJu0YwYUTO53T/H7kSuzqXIEToLaJJuypcsCM2gDyXp2u3MyaO9I9Pp
-	dYiycUUVK+Hj6jmLvhGEEIcfwjggSD5bhCIYsGqQb+b0Qb0yagMI8pkLXDusRwld3zar5ZruFHW
-	XoQoFRRzZnh3OhRjKw/w0KeLosimDqIoQYp7Adg==
-X-Google-Smtp-Source: AGHT+IFTqn0uGGW1Ksta/QYf76E2hpgCveYOh5cApCHYBXc/4krcUBwVqN0vqfNRuuh2crjF+7+P7Osxc0of4YqErDs=
-X-Received: by 2002:a4a:2453:0:b0:5a0:be6c:9e0a with SMTP id
- v19-20020a4a2453000000b005a0be6c9e0amr406499oov.4.1709048999505; Tue, 27 Feb
- 2024 07:49:59 -0800 (PST)
+	s=arc-20240116; t=1709048928; c=relaxed/simple;
+	bh=i9u+dH97zSEs1MAnJLs4Et4BvaFS2eYMv/edXCLeuA8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N5rmkF34dx3xT6IINqH3dFA4JkOARAax9T8ueYAD7cINbyU8C2ZmJItbdSIBN9nJKaPkt/BhngoqH00BIFR2Bk8i+YO+OJ7ZYn6+kjTVTdj7P2UNgQzsPaIMg+dyEloRXg6NAlVMSbPgPDw2yjNELvo3ykwGptbJMTUHOgos9S8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IERhslfA; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709048924;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wlhecyX4wcvqsYqsTlIlSWKDqo0GLSZ3uSP1tPTi8UA=;
+	b=IERhslfAZ7cihYEZWSmK1KfWiPHVK3pYqxG/142ScPwsZn+abzj2D63xpnEap6mv8ef8No
+	RCh/ONJDfWdPm8krztYRKERpLaGhIAzANuACTX3AsBvyUluQaD0a00FkltqyxAgfjjRGK/
+	evWchOAZ0SvLtMCu2k6ShJrzOhy/DSY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-222-ymtI2wXdMNyMZSVJv2jKPg-1; Tue, 27 Feb 2024 10:48:43 -0500
+X-MC-Unique: ymtI2wXdMNyMZSVJv2jKPg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5102F84ACA3;
+	Tue, 27 Feb 2024 15:48:42 +0000 (UTC)
+Received: from bfoster (unknown [10.22.32.137])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 12BA52166B33;
+	Tue, 27 Feb 2024 15:48:42 +0000 (UTC)
+Date: Tue, 27 Feb 2024 10:50:23 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	djwong@kernel.org
+Subject: Re: [PATCH 03/21] bcachefs: btree write buffer knows how to
+ accumulate bch_accounting keys
+Message-ID: <Zd4Ev8XPzn5AJ8K9@bfoster>
+References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
+ <20240225023826.2413565-4-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223095133.109046-1-balint.dobszay@arm.com>
- <20240223095133.109046-2-balint.dobszay@arm.com> <CAFA6WYNW9-7gCZQSEaV=Gcr+GLdu25rQ8MpTg9yNpX7OwyZ0Tg@mail.gmail.com>
-In-Reply-To: <CAFA6WYNW9-7gCZQSEaV=Gcr+GLdu25rQ8MpTg9yNpX7OwyZ0Tg@mail.gmail.com>
-From: Jens Wiklander <jens.wiklander@linaro.org>
-Date: Tue, 27 Feb 2024 16:49:48 +0100
-Message-ID: <CAHUa44G70L9CnQD6V3ivWf1hYfK0iWFt-cfg98-JGB-s8TVd-A@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] tee: optee: Move pool_op helper functions
-To: Sumit Garg <sumit.garg@linaro.org>
-Cc: Balint Dobszay <balint.dobszay@arm.com>, op-tee@lists.trustedfirmware.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, corbet@lwn.net, sudeep.holla@arm.com, 
-	rdunlap@infradead.org, krzk@kernel.org, gyorgy.szing@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240225023826.2413565-4-kent.overstreet@linux.dev>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Tue, Feb 27, 2024 at 7:06=E2=80=AFAM Sumit Garg <sumit.garg@linaro.org> =
-wrote:
->
-> Hi Balint,
->
-> On Fri, 23 Feb 2024 at 15:22, Balint Dobszay <balint.dobszay@arm.com> wro=
-te:
-> >
-> > Move the pool alloc and free helper functions from the OP-TEE driver to
-> > the TEE subsystem, since these could be reused in other TEE drivers.
-> > This patch is not supposed to change behavior, it's only reorganizing
-> > the code.
-> >
-> > Suggested-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > Signed-off-by: Balint Dobszay <balint.dobszay@arm.com>
-> > ---
-> >  drivers/tee/optee/core.c          | 64 ------------------------------
-> >  drivers/tee/optee/ffa_abi.c       |  6 +--
-> >  drivers/tee/optee/optee_private.h | 12 ------
-> >  drivers/tee/optee/smc_abi.c       | 11 +++---
-> >  drivers/tee/tee_shm.c             | 65 +++++++++++++++++++++++++++++++
-> >  include/linux/tee_drv.h           | 11 ++++++
-> >  6 files changed, 85 insertions(+), 84 deletions(-)
-> >
-> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > index 3aed554bc8d8..9390f21f9902 100644
-> > --- a/drivers/tee/optee/core.c
-> > +++ b/drivers/tee/optee/core.c
-> > @@ -9,7 +9,6 @@
-> >  #include <linux/crash_dump.h>
-> >  #include <linux/errno.h>
-> >  #include <linux/io.h>
-> > -#include <linux/mm.h>
-> >  #include <linux/module.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/string.h>
-> > @@ -17,69 +16,6 @@
-> >  #include <linux/types.h>
-> >  #include "optee_private.h"
-> >
-> > -int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_s=
-hm *shm,
-> > -                              size_t size, size_t align,
-> > -                              int (*shm_register)(struct tee_context *=
-ctx,
-> > -                                                  struct tee_shm *shm,
-> > -                                                  struct page **pages,
-> > -                                                  size_t num_pages,
-> > -                                                  unsigned long start)=
-)
-> > -{
-> > -       size_t nr_pages =3D roundup(size, PAGE_SIZE) / PAGE_SIZE;
-> > -       struct page **pages;
-> > -       unsigned int i;
-> > -       int rc =3D 0;
-> > -
-> > -       /*
-> > -        * Ignore alignment since this is already going to be page alig=
-ned
-> > -        * and there's no need for any larger alignment.
-> > -        */
-> > -       shm->kaddr =3D alloc_pages_exact(nr_pages * PAGE_SIZE,
-> > -                                      GFP_KERNEL | __GFP_ZERO);
-> > -       if (!shm->kaddr)
-> > -               return -ENOMEM;
-> > -
-> > -       shm->paddr =3D virt_to_phys(shm->kaddr);
-> > -       shm->size =3D nr_pages * PAGE_SIZE;
-> > -
-> > -       pages =3D kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
-> > -       if (!pages) {
-> > -               rc =3D -ENOMEM;
-> > -               goto err;
-> > -       }
-> > -
-> > -       for (i =3D 0; i < nr_pages; i++)
-> > -               pages[i] =3D virt_to_page((u8 *)shm->kaddr + i * PAGE_S=
-IZE);
-> > -
-> > -       shm->pages =3D pages;
-> > -       shm->num_pages =3D nr_pages;
-> > -
-> > -       if (shm_register) {
-> > -               rc =3D shm_register(shm->ctx, shm, pages, nr_pages,
-> > -                                 (unsigned long)shm->kaddr);
-> > -               if (rc)
-> > -                       goto err;
-> > -       }
-> > -
-> > -       return 0;
-> > -err:
-> > -       free_pages_exact(shm->kaddr, shm->size);
-> > -       shm->kaddr =3D NULL;
-> > -       return rc;
-> > -}
-> > -
-> > -void optee_pool_op_free_helper(struct tee_shm_pool *pool, struct tee_s=
-hm *shm,
-> > -                              int (*shm_unregister)(struct tee_context=
- *ctx,
-> > -                                                    struct tee_shm *sh=
-m))
-> > -{
-> > -       if (shm_unregister)
-> > -               shm_unregister(shm->ctx, shm);
-> > -       free_pages_exact(shm->kaddr, shm->size);
-> > -       shm->kaddr =3D NULL;
-> > -       kfree(shm->pages);
-> > -       shm->pages =3D NULL;
-> > -}
-> > -
-> >  static void optee_bus_scan(struct work_struct *work)
-> >  {
-> >         WARN_ON(optee_enumerate_devices(PTA_CMD_GET_DEVICES_SUPP));
-> > diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-> > index ecb5eb079408..ee11918a2b35 100644
-> > --- a/drivers/tee/optee/ffa_abi.c
-> > +++ b/drivers/tee/optee/ffa_abi.c
-> > @@ -374,14 +374,14 @@ static int optee_ffa_shm_unregister_supp(struct t=
-ee_context *ctx,
-> >  static int pool_ffa_op_alloc(struct tee_shm_pool *pool,
-> >                              struct tee_shm *shm, size_t size, size_t a=
-lign)
-> >  {
-> > -       return optee_pool_op_alloc_helper(pool, shm, size, align,
-> > -                                         optee_ffa_shm_register);
-> > +       return tee_shm_pool_op_alloc_helper(pool, shm, size, align,
-> > +                                           optee_ffa_shm_register);
-> >  }
-> >
-> >  static void pool_ffa_op_free(struct tee_shm_pool *pool,
-> >                              struct tee_shm *shm)
-> >  {
-> > -       optee_pool_op_free_helper(pool, shm, optee_ffa_shm_unregister);
-> > +       tee_shm_pool_op_free_helper(pool, shm, optee_ffa_shm_unregister=
-);
-> >  }
-> >
-> >  static void pool_ffa_op_destroy_pool(struct tee_shm_pool *pool)
-> > diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/opte=
-e_private.h
-> > index 7a5243c78b55..a153285a1919 100644
-> > --- a/drivers/tee/optee/optee_private.h
-> > +++ b/drivers/tee/optee/optee_private.h
-> > @@ -283,18 +283,6 @@ int optee_cancel_req(struct tee_context *ctx, u32 =
-cancel_id, u32 session);
-> >  int optee_enumerate_devices(u32 func);
-> >  void optee_unregister_devices(void);
-> >
-> > -int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_s=
-hm *shm,
-> > -                              size_t size, size_t align,
-> > -                              int (*shm_register)(struct tee_context *=
-ctx,
-> > -                                                  struct tee_shm *shm,
-> > -                                                  struct page **pages,
-> > -                                                  size_t num_pages,
-> > -                                                  unsigned long start)=
-);
-> > -void optee_pool_op_free_helper(struct tee_shm_pool *pool, struct tee_s=
-hm *shm,
-> > -                              int (*shm_unregister)(struct tee_context=
- *ctx,
-> > -                                                    struct tee_shm *sh=
-m));
-> > -
-> > -
-> >  void optee_remove_common(struct optee *optee);
-> >  int optee_open(struct tee_context *ctx, bool cap_memref_null);
-> >  void optee_release(struct tee_context *ctx);
-> > diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-> > index a37f87087e5c..b0c616b6870d 100644
-> > --- a/drivers/tee/optee/smc_abi.c
-> > +++ b/drivers/tee/optee/smc_abi.c
-> > @@ -592,19 +592,20 @@ static int pool_op_alloc(struct tee_shm_pool *poo=
-l,
-> >          * to be registered with OP-TEE.
-> >          */
-> >         if (shm->flags & TEE_SHM_PRIV)
-> > -               return optee_pool_op_alloc_helper(pool, shm, size, alig=
-n, NULL);
-> > +               return tee_shm_pool_op_alloc_helper(pool, shm, size, al=
-ign,
-> > +                                                   NULL);
-> >
-> > -       return optee_pool_op_alloc_helper(pool, shm, size, align,
-> > -                                         optee_shm_register);
-> > +       return tee_shm_pool_op_alloc_helper(pool, shm, size, align,
-> > +                                           optee_shm_register);
-> >  }
-> >
-> >  static void pool_op_free(struct tee_shm_pool *pool,
-> >                          struct tee_shm *shm)
-> >  {
-> >         if (!(shm->flags & TEE_SHM_PRIV))
-> > -               optee_pool_op_free_helper(pool, shm, optee_shm_unregist=
-er);
-> > +               tee_shm_pool_op_free_helper(pool, shm, optee_shm_unregi=
-ster);
-> >         else
-> > -               optee_pool_op_free_helper(pool, shm, NULL);
-> > +               tee_shm_pool_op_free_helper(pool, shm, NULL);
-> >  }
-> >T
-> >  static void pool_op_destroy_pool(struct tee_shm_pool *pool)
-> > diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-> > index 731d9028b67f..641aad92ffe2 100644
-> > --- a/drivers/tee/tee_shm.c
-> > +++ b/drivers/tee/tee_shm.c
-> > @@ -202,6 +202,71 @@ struct tee_shm *tee_shm_alloc_priv_buf(struct tee_=
-context *ctx, size_t size)
-> >  }
-> >  EXPORT_SYMBOL_GPL(tee_shm_alloc_priv_buf);
-> >
-> > +int tee_shm_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee=
-_shm *shm,
->
-> I don't see the first argument (struct tee_shm_pool *pool) being used,
-> so drop that. Also, we can just rename it as
-> tee_dyn_shm_alloc_helper().
->
-> > +                                size_t size, size_t align,
-> > +                                int (*shm_register)(struct tee_context=
- *ctx,
-> > +                                                    struct tee_shm *sh=
-m,
-> > +                                                    struct page **page=
-s,
-> > +                                                    size_t num_pages,
-> > +                                                    unsigned long star=
-t))
-> > +{
-> > +       size_t nr_pages =3D roundup(size, PAGE_SIZE) / PAGE_SIZE;
-> > +       struct page **pages;
-> > +       unsigned int i;
-> > +       int rc =3D 0;
-> > +
-> > +       /*
-> > +        * Ignore alignment since this is already going to be page alig=
-ned
-> > +        * and there's no need for any larger alignment.
-> > +        */
-> > +       shm->kaddr =3D alloc_pages_exact(nr_pages * PAGE_SIZE,
-> > +                                      GFP_KERNEL | __GFP_ZERO);
-> > +       if (!shm->kaddr)
-> > +               return -ENOMEM;
-> > +
-> > +       shm->paddr =3D virt_to_phys(shm->kaddr);
-> > +       shm->size =3D nr_pages * PAGE_SIZE;
-> > +
-> > +       pages =3D kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
-> > +       if (!pages) {
-> > +               rc =3D -ENOMEM;
-> > +               goto err;
-> > +       }
-> > +
-> > +       for (i =3D 0; i < nr_pages; i++)
-> > +               pages[i] =3D virt_to_page((u8 *)shm->kaddr + i * PAGE_S=
-IZE);
-> > +
-> > +       shm->pages =3D pages;
-> > +       shm->num_pages =3D nr_pages;
-> > +
-> > +       if (shm_register) {
-> > +               rc =3D shm_register(shm->ctx, shm, pages, nr_pages,
-> > +                                 (unsigned long)shm->kaddr);
-> > +               if (rc)
-> > +                       goto err;
-> > +       }
-> > +
-> > +       return 0;
-> > +err:
-> > +       free_pages_exact(shm->kaddr, shm->size);
-> > +       shm->kaddr =3D NULL;
-> > +       return rc;
-> > +}
-> > +EXPORT_SYMBOL_GPL(tee_shm_pool_op_alloc_helper);
-> > +
-> > +void tee_shm_pool_op_free_helper(struct tee_shm_pool *pool, struct tee=
-_shm *shm,
->
-> Ditto tee_shm_pool_op_free_helper() -> tee_dyn_shm_free_helper()
->
-> > +                                int (*shm_unregister)(struct tee_conte=
-xt *ctx,
-> > +                                                      struct tee_shm *=
-shm))
-> > +{
-> > +       if (shm_unregister)
-> > +               shm_unregister(shm->ctx, shm);
-> > +       free_pages_exact(shm->kaddr, shm->size);
-> > +       shm->kaddr =3D NULL;
-> > +       kfree(shm->pages);
-> > +       shm->pages =3D NULL;
-> > +}
-> > +EXPORT_SYMBOL_GPL(tee_shm_pool_op_free_helper);
-> > +
-> >  static struct tee_shm *
-> >  register_shm_helper(struct tee_context *ctx, struct iov_iter *iter, u3=
-2 flags,
-> >                     int id)
-> > diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-> > index 911ddf92dcee..4cf402424e71 100644
-> > --- a/include/linux/tee_drv.h
-> > +++ b/include/linux/tee_drv.h
-> > @@ -275,6 +275,17 @@ void *tee_get_drvdata(struct tee_device *teedev);
-> >  struct tee_shm *tee_shm_alloc_priv_buf(struct tee_context *ctx, size_t=
- size);
-> >  struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size=
-_t size);
-> >
-> > +int tee_shm_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee=
-_shm *shm,
-> > +                                size_t size, size_t align,
-> > +                                int (*shm_register)(struct tee_context=
- *ctx,
-> > +                                                    struct tee_shm *sh=
-m,
-> > +                                                    struct page **page=
-s,
-> > +                                                    size_t num_pages,
-> > +                                                    unsigned long star=
-t));
-> > +void tee_shm_pool_op_free_helper(struct tee_shm_pool *pool, struct tee=
-_shm *shm,
-> > +                                int (*shm_unregister)(struct tee_conte=
-xt *ctx,
-> > +                                                      struct tee_shm *=
-shm));
-> > +
->
-> These rather belong to drivers/tee/tee_private.h as we shouldn't
-> expose them to other kernel client drivers.
+On Sat, Feb 24, 2024 at 09:38:05PM -0500, Kent Overstreet wrote:
+> Teach the btree write buffer how to accumulate accounting keys - instead
+> of having the newer key overwrite the older key as we do with other
+> updates, we need to add them together.
+> 
+> Also, add a flag so that write buffer flush knows when journal replay is
+> finished flushing accounting, and teach it to hold accounting keys until
+> that flag is set.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> ---
+>  fs/bcachefs/bcachefs.h           |  1 +
+>  fs/bcachefs/btree_write_buffer.c | 66 +++++++++++++++++++++++++++-----
+>  fs/bcachefs/recovery.c           |  3 ++
+>  3 files changed, 61 insertions(+), 9 deletions(-)
+> 
+..
+> diff --git a/fs/bcachefs/btree_write_buffer.c b/fs/bcachefs/btree_write_buffer.c
+> index b77e7b382b66..002a0762fc85 100644
+> --- a/fs/bcachefs/btree_write_buffer.c
+> +++ b/fs/bcachefs/btree_write_buffer.c
+> @@ -5,6 +5,7 @@
+>  #include "btree_update.h"
+>  #include "btree_update_interior.h"
+>  #include "btree_write_buffer.h"
+> +#include "disk_accounting.h"
+>  #include "error.h"
+>  #include "journal.h"
+>  #include "journal_io.h"
+> @@ -123,7 +124,9 @@ static noinline int wb_flush_one_slowpath(struct btree_trans *trans,
+>  
+>  static inline int wb_flush_one(struct btree_trans *trans, struct btree_iter *iter,
+>  			       struct btree_write_buffered_key *wb,
+> -			       bool *write_locked, size_t *fast)
+> +			       bool *write_locked,
+> +			       bool *accounting_accumulated,
+> +			       size_t *fast)
+>  {
+>  	struct btree_path *path;
+>  	int ret;
+> @@ -136,6 +139,16 @@ static inline int wb_flush_one(struct btree_trans *trans, struct btree_iter *ite
+>  	if (ret)
+>  		return ret;
+>  
+> +	if (!*accounting_accumulated && wb->k.k.type == KEY_TYPE_accounting) {
+> +		struct bkey u;
+> +		struct bkey_s_c k = bch2_btree_path_peek_slot_exact(btree_iter_path(trans, iter), &u);
+> +
+> +		if (k.k->type == KEY_TYPE_accounting)
+> +			bch2_accounting_accumulate(bkey_i_to_accounting(&wb->k),
+> +						   bkey_s_c_to_accounting(k));
 
-This is the right place, this .h file is for TEE drivers too.
+So it looks like we're accumulating from the btree key into the write
+buffer key. Is this so the following code will basically insert a new
+btree key based on the value of the write buffer key?
 
-Cheers,
-Jens
+> +	}
+> +	*accounting_accumulated = true;
+> +
+>  	/*
+>  	 * We can't clone a path that has write locks: unshare it now, before
+>  	 * set_pos and traverse():
+> @@ -248,8 +261,9 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  	struct journal *j = &c->journal;
+>  	struct btree_write_buffer *wb = &c->btree_write_buffer;
+>  	struct btree_iter iter = { NULL };
+> -	size_t skipped = 0, fast = 0, slowpath = 0;
+> +	size_t overwritten = 0, fast = 0, slowpath = 0, could_not_insert = 0;
+>  	bool write_locked = false;
+> +	bool accounting_replay_done = test_bit(BCH_FS_accounting_replay_done, &c->flags);
+>  	int ret = 0;
+>  
+>  	bch2_trans_unlock(trans);
+> @@ -284,17 +298,29 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  
+>  	darray_for_each(wb->sorted, i) {
+>  		struct btree_write_buffered_key *k = &wb->flushing.keys.data[i->idx];
+> +		bool accounting_accumulated = false;
 
->
-> -Sumit
->
-> >  struct tee_shm *tee_shm_register_kernel_buf(struct tee_context *ctx,
-> >                                             void *addr, size_t length);
-> >
-> > --
-> > 2.34.1
-> >
+Should this live within the interior flush loop?
+
+>  
+>  		for (struct wb_key_ref *n = i + 1; n < min(i + 4, &darray_top(wb->sorted)); n++)
+>  			prefetch(&wb->flushing.keys.data[n->idx]);
+>  
+>  		BUG_ON(!k->journal_seq);
+>  
+> +		if (!accounting_replay_done &&
+> +		    k->k.k.type == KEY_TYPE_accounting) {
+> +			slowpath++;
+> +			continue;
+> +		}
+> +
+>  		if (i + 1 < &darray_top(wb->sorted) &&
+>  		    wb_key_eq(i, i + 1)) {
+>  			struct btree_write_buffered_key *n = &wb->flushing.keys.data[i[1].idx];
+>  
+> -			skipped++;
+> +			if (k->k.k.type == KEY_TYPE_accounting &&
+> +			    n->k.k.type == KEY_TYPE_accounting)
+> +				bch2_accounting_accumulate(bkey_i_to_accounting(&n->k),
+> +							   bkey_i_to_s_c_accounting(&k->k));
+> +
+> +			overwritten++;
+>  			n->journal_seq = min_t(u64, n->journal_seq, k->journal_seq);
+>  			k->journal_seq = 0;
+>  			continue;
+> @@ -325,7 +351,8 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  				break;
+>  			}
+>  
+> -			ret = wb_flush_one(trans, &iter, k, &write_locked, &fast);
+> +			ret = wb_flush_one(trans, &iter, k, &write_locked,
+> +					   &accounting_accumulated, &fast);
+>  			if (!write_locked)
+>  				bch2_trans_begin(trans);
+>  		} while (bch2_err_matches(ret, BCH_ERR_transaction_restart));
+> @@ -361,8 +388,15 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  			if (!i->journal_seq)
+>  				continue;
+>  
+> -			bch2_journal_pin_update(j, i->journal_seq, &wb->flushing.pin,
+> -						bch2_btree_write_buffer_journal_flush);
+> +			if (!accounting_replay_done &&
+> +			    i->k.k.type == KEY_TYPE_accounting) {
+> +				could_not_insert++;
+> +				continue;
+> +			}
+> +
+> +			if (!could_not_insert)
+> +				bch2_journal_pin_update(j, i->journal_seq, &wb->flushing.pin,
+> +							bch2_btree_write_buffer_journal_flush);
+
+Hmm.. so this is sane because the slowpath runs in journal sorted order,
+right?
+
+>  
+>  			bch2_trans_begin(trans);
+>  
+> @@ -375,13 +409,27 @@ static int bch2_btree_write_buffer_flush_locked(struct btree_trans *trans)
+>  					btree_write_buffered_insert(trans, i));
+>  			if (ret)
+>  				goto err;
+> +
+> +			i->journal_seq = 0;
+> +		}
+> +
+
+		/*
+		 * Condense the remaining keys <reasons reasons>...??
+		 */
+
+> +		if (could_not_insert) {
+> +			struct btree_write_buffered_key *dst = wb->flushing.keys.data;
+> +
+> +			darray_for_each(wb->flushing.keys, i)
+> +				if (i->journal_seq)
+> +					*dst++ = *i;
+> +			wb->flushing.keys.nr = dst - wb->flushing.keys.data;
+>  		}
+>  	}
+>  err:
+> +	if (ret || !could_not_insert) {
+> +		bch2_journal_pin_drop(j, &wb->flushing.pin);
+> +		wb->flushing.keys.nr = 0;
+> +	}
+> +
+>  	bch2_fs_fatal_err_on(ret, c, "%s: insert error %s", __func__, bch2_err_str(ret));
+> -	trace_write_buffer_flush(trans, wb->flushing.keys.nr, skipped, fast, 0);
+> -	bch2_journal_pin_drop(j, &wb->flushing.pin);
+> -	wb->flushing.keys.nr = 0;
+> +	trace_write_buffer_flush(trans, wb->flushing.keys.nr, overwritten, fast, 0);
+
+I feel like the last time I looked at the write buffer stuff the flush
+wasn't reentrant in this way. I.e., the flush switched out the active
+buffer and so had to process all entries in the current buffer (or
+something like that). Has something changed or do I misunderstand?
+
+>  	return ret;
+>  }
+>  
+> diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
+> index 6829d80bd181..b8289af66c8e 100644
+> --- a/fs/bcachefs/recovery.c
+> +++ b/fs/bcachefs/recovery.c
+> @@ -228,6 +228,8 @@ static int bch2_journal_replay(struct bch_fs *c)
+>  			goto err;
+>  	}
+>  
+> +	set_bit(BCH_FS_accounting_replay_done, &c->flags);
+> +
+
+I assume this ties into the question on the previous patch..
+
+Related question.. if the write buffer can't flush during journal
+replay, is there concern/risk of overflowing it?
+
+Brian
+
+>  	/*
+>  	 * First, attempt to replay keys in sorted order. This is more
+>  	 * efficient - better locality of btree access -  but some might fail if
+> @@ -1204,6 +1206,7 @@ int bch2_fs_initialize(struct bch_fs *c)
+>  	 * set up the journal.pin FIFO and journal.cur pointer:
+>  	 */
+>  	bch2_fs_journal_start(&c->journal, 1);
+> +	set_bit(BCH_FS_accounting_replay_done, &c->flags);
+>  	bch2_journal_set_replay_done(&c->journal);
+>  
+>  	ret = bch2_fs_read_write_early(c);
+> -- 
+> 2.43.0
+> 
+
 
