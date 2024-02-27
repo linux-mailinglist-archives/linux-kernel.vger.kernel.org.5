@@ -1,122 +1,90 @@
-Return-Path: <linux-kernel+bounces-84119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07C7B86A250
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:20:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A27F186A297
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39C621C22307
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:19:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38586B230BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55B71534EF;
-	Tue, 27 Feb 2024 22:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE381552EA;
+	Tue, 27 Feb 2024 22:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FLpKLYHB"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PJ7RkUro"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4D54CE17
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37104CE17;
+	Tue, 27 Feb 2024 22:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709072394; cv=none; b=bAmlnUZem41wN6rxM2S0ooyRqXEg7BgrERpds/x2xYDOl4en0mmwn0Al81Sc/EGufu/pNFki44K3Uc8oNFkPQyVsmRr1DxC3W1zAYYDyQTr52qi+a0oN2sNyV6eAl3DTEUbEYr8lfz/Uf/pzsDlFGpfJFcz7q/ijAWKJBqvPNiw=
+	t=1709072398; cv=none; b=bO2Rkwmy23aOlBpbmWddrCHECM/NrTE7prcABvD7KpDl68kl6e35AVP/bMROFkLKYpgo4awRljNuewUbCTlWZtlQYmmWpD30N0gmnWqO5O0Ik7H3Kczo6Fe133GfFSD9ZakZRed20tBu7T7MrGH+ToC+54q+9XlRpqMkIdg4ENc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709072394; c=relaxed/simple;
-	bh=zz+unVt7q5p60XbIw7tQi7Q0UZeD5a+xqYylMLrjnu0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ak8nyWn7ejr88WlDOUheWCVkHqGDvk7YQyRZuvQkhYtYb1qnXQotJ8j8oFMjnjDkDPBCi6A57BzNK8ILcJcwKLUoLulZSBatcCmzXvFl/fPgBCLkkrv0bLHon9LVvAPiUGeI5sbKguQEJDn5i6XF2jF8c2RGWZoVvH7DQXwr4zk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FLpKLYHB; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dc1e7c0e29so25475695ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:19:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709072392; x=1709677192; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=siqoqedRmX2wPOUVHojbCwdAvexAbFGkcd6CPRaGDIY=;
-        b=FLpKLYHBsZ8q8icyQVUQQY93fWi7+xWrN7vFipf9htxpuiNTqYSJ/IcOe5vXoP/SXK
-         S9MB7cJa/3n2QB2n7otH3XQ/TLL7k0lxQddrP5LIf9qt2ZXlLDP29v5lsPRn5jOaGZDR
-         xrvkhrRtw/pYBeJK0hM02QtIKvnnPOoIPsADE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709072392; x=1709677192;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=siqoqedRmX2wPOUVHojbCwdAvexAbFGkcd6CPRaGDIY=;
-        b=S2NQudM0/G4t6WMJvzWTF67tXIdKBXja8U1q7D/J93amEmivU9ufCPUR9bDW4XdjZW
-         JD/CHY5fY1QSVywg4wE08G/QC/kzIxGPAScAKsL2TrnEEgMZ0KLTOSgC0URE2T/FOcEt
-         og9D0nQmWAPae2qMRkMDpGetrcHvZ67HZSx+p9FMOXGSoEXkbLfs+++7oj6b7uYPDzMo
-         X9aDm2TYFwK84wLYVStpW4Mbk1jGFFMP/sj4GBJJpQOZ85ngSnZu7ZleZlemO2ss62Uu
-         LI9/5TBeF9/r1ljG8rM6vWMzgXIt/U7b0wsFHUP8LBmX0MrhaMec4dCqSHs8+0gWNyuT
-         uKCg==
-X-Forwarded-Encrypted: i=1; AJvYcCUiRyU+RrS3i5tv9pY+8+82VcORBchOQ/egocsy4X9PW6SVze6rSmxJaeNeD/dR7YPQbIkdZfJmyTcd3sb6QvSzErulwF+TEzB6iUgI
-X-Gm-Message-State: AOJu0Yz+ltin+enYJwlj3oL4d/DborpUjj0jIOAdIuJnUftiEpvx0wd/
-	66GRPqp6h3IiQqAobFAKRPExaD2YqWtsBAHPqiRlWLX2lV8m2/dmLb9pA24dFw==
-X-Google-Smtp-Source: AGHT+IH1lcjzhqQizUXuOPIrr9G1+WlHe9Wkmz7qQRPWhtBpFB1p3i5u5gHC00NhNR/XxtpIWOdy9g==
-X-Received: by 2002:a17:902:dac6:b0:1dc:c445:b253 with SMTP id q6-20020a170902dac600b001dcc445b253mr1771550plx.36.1709072391882;
-        Tue, 27 Feb 2024 14:19:51 -0800 (PST)
-Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:ff74:aba4:ea8d:f18e])
-        by smtp.gmail.com with ESMTPSA id f13-20020a170903104d00b001dc78455383sm2006780plc.223.2024.02.27.14.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 14:19:51 -0800 (PST)
-From: Douglas Anderson <dianders@chromium.org>
-To: dri-devel@lists.freedesktop.org
-Cc: Rob Clark <robdclark@chromium.org>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Dave Airlie <airlied@redhat.com>,
-	David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	=?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
-	Sean Paul <sean@poorly.run>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/udl: Add ARGB8888 as a format
-Date: Tue, 27 Feb 2024 14:19:29 -0800
-Message-ID: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+	s=arc-20240116; t=1709072398; c=relaxed/simple;
+	bh=P/0Lp3p6cjbqRs5cbmbM4sQpMmROWRh/vOmI9Hf8Tec=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=tWCMocXGnebNAro5FGduDvpUoHrGyG6TjgNW3D5bk2lWi7W3c1/c4rs2P9GfyWof6rJxoR+sZwjDPEO204d4lT1+6Gf+J3D6eQUAwu9RlKHA8pcgEBRr9Oswg8QbWZ1EmAilELt59uDwjNKiiCjAexmX9IGP4IMICpp3MmSUwe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PJ7RkUro; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71C6DC433F1;
+	Tue, 27 Feb 2024 22:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709072397;
+	bh=P/0Lp3p6cjbqRs5cbmbM4sQpMmROWRh/vOmI9Hf8Tec=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=PJ7RkUroYvPF+8SdbsWVu1elpR9/MXJeixdEofD456gkMjrAUcbbpX7TRtY6bjn1M
+	 tEKUw9n9bFqsMvhGBLQS+z5m2drpwEuwEqXT9+yoiaNpU+ltulYnNtpLiNlzl4wAE2
+	 Czyy3s+sd0H+am7RI0+2C3yKQtGdoal2Dyfla7yW71J889W6ym2SxEgExeVeyzg2nu
+	 ElnN4ALHeD5mqHrZBkzBc0MfWRC2J60dU3Srzk18ooRK5jvtTEhs/0ENMsBlfoujiu
+	 jDvZSNYwmpbaU1QDgL/lZhzz5UpvonwWmpnZeVpjDa8acmgIJRwcQM8Pte6km9uabK
+	 YI11CnWXrwYPg==
+Message-ID: <b622146261a3719ae9168d80aeb680ef.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240227075835.33513-1-krzysztof.kozlowski@linaro.org>
+References: <20240227075835.33513-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [GIT PULL] clk: samsung: drivers for v6.9
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Chanwoo Choi <cw00.choi@samsung.com>, linux-clk@vger.kernel.org, Sylwester Nawrocki <snawrocki@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>, Peter Griffin <peter.griffin@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Michael Turquette <mturquette@baylibre.com>
+Date: Tue, 27 Feb 2024 14:19:55 -0800
+User-Agent: alot/0.10
 
-Even though the UDL driver converts to RGB565 internally (see
-pixel32_to_be16() in udl_transfer.c), it advertises XRGB8888 for
-compatibility. Let's add ARGB8888 to that list.
+Quoting Krzysztof Kozlowski (2024-02-26 23:58:35)
+> Hi,
+>=20
+> On top of the previous fixes pull request - my previous tag
+> samsung-clk-fixes-6.8 - due to context dependencies.
+>=20
+> Best regards,
+> Krzysztof
+>=20
+>=20
+> The following changes since commit d76c762e7ee04af79e1c127422e0bbcb5f1230=
+18:
+>=20
+>   clk: samsung: clk-gs101: comply with the new dt cmu_misc clock names (2=
+024-01-22 11:40:12 +0100)
+>=20
+> are available in the Git repository at:
+>=20
+>   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/sam=
+sung-clk-6.9
+>=20
+> for you to fetch changes up to 61f4399c74d0677ee64e42f7b8d4ab01ee39de45:
+>=20
+>   clk: samsung: Add CPU clock support for Exynos850 (2024-02-25 17:07:34 =
++0100)
+>=20
+> ----------------------------------------------------------------
 
-This makes UDL devices work on ChromeOS again after commit
-c91acda3a380 ("drm/gem: Check for valid formats"). Prior to that
-commit things were "working" because we'd silently treat the ARGB8888
-that ChromeOS wanted as XRGB8888.
-
-Fixes: c91acda3a380 ("drm/gem: Check for valid formats")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/gpu/drm/udl/udl_modeset.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/udl/udl_modeset.c b/drivers/gpu/drm/udl/udl_modeset.c
-index 7702359c90c2..0f8d3678770e 100644
---- a/drivers/gpu/drm/udl/udl_modeset.c
-+++ b/drivers/gpu/drm/udl/udl_modeset.c
-@@ -253,6 +253,7 @@ static int udl_handle_damage(struct drm_framebuffer *fb,
- static const uint32_t udl_primary_plane_formats[] = {
- 	DRM_FORMAT_RGB565,
- 	DRM_FORMAT_XRGB8888,
-+	DRM_FORMAT_ARGB8888,
- };
- 
- static const uint64_t udl_primary_plane_fmtmods[] = {
--- 
-2.44.0.rc1.240.g4c46232300-goog
-
+Thanks. Pulled into clk-next
 
