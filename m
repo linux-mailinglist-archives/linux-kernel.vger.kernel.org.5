@@ -1,150 +1,343 @@
-Return-Path: <linux-kernel+bounces-83308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29AC18691A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:23:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C88C48691A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53EFFB28FF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:23:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DDBC283A01
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:23:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B95E413B2A7;
-	Tue, 27 Feb 2024 13:22:54 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7091332A7
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:22:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C526713B2A9;
+	Tue, 27 Feb 2024 13:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rWW3cyIs"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF4CB13A87C
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709040174; cv=none; b=A5u7e8godFVDTDqKl/r9RghQwNWiDHl3tN7SUmm6xnbHIi8v/1yflx/GbgrT5hTiP2O1lMMxkOEwr6QAldHHCdOMvfFG/A9drrDvJAh7PYCEOY33Fj8h0xhYRTl0orUJtVsOMljWI7jkJBdi+1zMVI19qAWo/bI0e0UU882VFIY=
+	t=1709040216; cv=none; b=jjWZnO6eomLvtPxQIxJvwxHmhfvzYV5Wa+IUtuKt0WX5ycIOo1WrjfOjCn2umjO3wrflB/1CPharMnuNu3rw/b/DXD++ip7E6UZwwNVObvMO/xlTmVG8pIkoWCTfW4pIoZqOrrH0w9F/y0e6nY6KTGVGLCK2DZgxP1F2p/N8ydY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709040174; c=relaxed/simple;
-	bh=lFl7whs//Mq1ga5t4xx9WBQo46JRkdrWTfODsqllbKA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BJkvjHhh39zIYcn5GuzZrRpRagH8tjJ0w8nzGcOiuv0gVo+uMMZ7s++Q6YgZpw/FAu0uMnya2wDwVdrFaQy2nuGA7OjrNUx5SDvL0GqhynIiXDzQ8hy51N9TviakNVvlN7Fdx6AYFuFQqmaTtKohfHjTX9We3BaI8zEzKgXQKjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5EA8ADA7;
-	Tue, 27 Feb 2024 05:23:29 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C03BA3F73F;
-	Tue, 27 Feb 2024 05:22:49 -0800 (PST)
-Message-ID: <5a94049b-5527-4c05-bce5-e15edebd1b81@arm.com>
-Date: Tue, 27 Feb 2024 13:22:48 +0000
+	s=arc-20240116; t=1709040216; c=relaxed/simple;
+	bh=xpxiqCQQ3K6pyTYrJI595L9Z2x7eviwccCbJdPeo4Vw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rRqeut91ps5axLQyrlxp9VvcrT6KJYZBaRvhLDbpJVlBqiUjsPAJh83zhin5sIYREx+bAITEDR0UjZ06qq3P0zOMTpHqZKtF4WHYazxlEptWLJc9/lLK9pPYMT10kzxQ38e297jGc/Ke7svJuUtZh7MpnihYWMRziHpLRWhhaYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rWW3cyIs; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d28e465655so25714431fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:23:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709040213; x=1709645013; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tION+eRfh44NM536dssXS05yQfBojvVk3yfrsfxB50E=;
+        b=rWW3cyIsI8i2DfrzOCBm2BBfH5TGNLHbqkUf19q2msR9KMnF26hxaPa1UmCwM57qWh
+         t5jXFWf7riRlMvuq1uGf1xsVVpmCjWbA0hAIH7RP3SS3bXXuxpehnw5naDOiOfT5UoKT
+         1hA7ETIcK1eZtPx1ue+W2pbZ2jvHv1noYDvuIDxgXcqvGfSyir4jljgwvt557Q1YP5yM
+         sKC6eC80D3w5Z5aUmKbnVGHsEP49ZhuIpqCEcjgMvxdPL2mvKdwyOMuefMLq7VQpFTEQ
+         oLzkmWLy0tmMFdRssQQYvajyrJWUZWFEEVTznoyohX+YqjoImE5pvtyHLeHfN5awXI97
+         jlWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709040213; x=1709645013;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tION+eRfh44NM536dssXS05yQfBojvVk3yfrsfxB50E=;
+        b=umcTzksF5LT8wJswsvyJD+BM/XQWREfKQOifG62E20ICSxRrHZ0VICr+n1Diz2QStn
+         6RHkszP8DjzMbNk3FdMM0DqyNepg0zTokMy9YMmtiE/zV+E4e7EJwJywFbl3gaTEXnGq
+         9JxJTdIBOPOrfzpP8YiRyOQnds437M1pdXVNuI6yBA3/286uUGR8gvVWOqo1pKkqAgQQ
+         csUAHBnM47+iZylYSfnKwvtPrcPcwYl6UHrboYVoloyT1yttXePw4CuBOQ4jWWXSFaY8
+         ESazAeiQYKDWbISCWiRIEVohiINQDPBaNBs3LtpC5RoJzFrAZ1Tm8GXan/xigKaQjMBd
+         o+2g==
+X-Forwarded-Encrypted: i=1; AJvYcCXfpelBT4vHyOK2KgxKwGgF5K+m5Gbw7Fq0FIK0tjuYs/dZEchINHMEAkDizUTj7OeJvFpOrA55sRgAM1HShJmC8gg3kR7VLv4keman
+X-Gm-Message-State: AOJu0Ywos/K21XMXKjNko5Qj8Ns8soCEwHuN71pNkhLXWlmRVCGaXw4P
+	aiu9WJBR8dEsZgP6q8mhYXPh1hOlFEw3cZntz9iX3wRd/6aPTeWd6qSYleg5kfnY/iFOnMwiPyX
+	TocFf8/EhqOBaRbo/KOuEa9iP5gsnLsifsmLLVg==
+X-Google-Smtp-Source: AGHT+IE/6ReSwzGYn3SyexSXV7z8MzYspaiUyckr5Y+U7BEy6L2CuW0SXzat8pmrO/gSPnsQi8KKJfxD7BeQvRTwCjE=
+X-Received: by 2002:a2e:a1cc:0:b0:2d2:6608:3d05 with SMTP id
+ c12-20020a2ea1cc000000b002d266083d05mr5390365ljm.52.1709040213091; Tue, 27
+ Feb 2024 05:23:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/5] iommu/dma: Force swiotlb_max_mapping_size on an
- untrusted device
-Content-Language: en-GB
-To: Michael Kelley <mhklinux@outlook.com>, Will Deacon <will@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "kernel-team@android.com" <kernel-team@android.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- Dexuan Cui <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-References: <20240221113504.7161-1-will@kernel.org>
- <20240221113504.7161-6-will@kernel.org>
- <6be819d8-f1f9-4833-81c3-32220617f0c5@arm.com>
- <SN6PR02MB4157CD26C1D9BAC64208D9D8D45A2@SN6PR02MB4157.namprd02.prod.outlook.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <SN6PR02MB4157CD26C1D9BAC64208D9D8D45A2@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240215030002.281456-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20240215030002.281456-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAC_iWj+p6gmcb4-_-f8Kr4Ds6EmSsq2D4GK1XymyybX7i1TMFw@mail.gmail.com> <7bd53417-af59-43a8-965e-f63dfc827f3c@linux.intel.com>
+In-Reply-To: <7bd53417-af59-43a8-965e-f63dfc827f3c@linux.intel.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Tue, 27 Feb 2024 15:22:57 +0200
+Message-ID: <CAC_iWjK3sXq1O4tgR0vEr9n2erfrr+9hqU+xUqiMK-TQa0t-hg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] efi/libstub: Add Confidential Computing (CC)
+ measurement support
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 26/02/2024 9:11 pm, Michael Kelley wrote:
-> From: Robin Murphy <robin.murphy@arm.com> Sent: Monday, February 26, 2024 11:36 AM
->>
->> On 21/02/2024 11:35 am, Will Deacon wrote:
->>> From: Nicolin Chen <nicolinc@nvidia.com>
->>>
->>> The swiotlb does not support a mapping size > swiotlb_max_mapping_size().
->>> On the other hand, with a 64KB PAGE_SIZE configuration, it's observed that
->>> an NVME device can map a size between 300KB~512KB, which certainly failed
->>> the swiotlb mappings, though the default pool of swiotlb has many slots:
->>>       systemd[1]: Started Journal Service.
->>>    => nvme 0000:00:01.0: swiotlb buffer is full (sz: 327680 bytes), total 32768 (slots), used 32 (slots)
->>>       note: journal-offline[392] exited with irqs disabled
->>>       note: journal-offline[392] exited with preempt_count 1
->>>
->>> Call trace:
->>> [    3.099918]  swiotlb_tbl_map_single+0x214/0x240
->>> [    3.099921]  iommu_dma_map_page+0x218/0x328
->>> [    3.099928]  dma_map_page_attrs+0x2e8/0x3a0
->>> [    3.101985]  nvme_prep_rq.part.0+0x408/0x878 [nvme]
->>> [    3.102308]  nvme_queue_rqs+0xc0/0x300 [nvme]
->>> [    3.102313]  blk_mq_flush_plug_list.part.0+0x57c/0x600
->>> [    3.102321]  blk_add_rq_to_plug+0x180/0x2a0
->>> [    3.102323]  blk_mq_submit_bio+0x4c8/0x6b8
->>> [    3.103463]  __submit_bio+0x44/0x220
->>> [    3.103468]  submit_bio_noacct_nocheck+0x2b8/0x360
->>> [    3.103470]  submit_bio_noacct+0x180/0x6c8
->>> [    3.103471]  submit_bio+0x34/0x130
->>> [    3.103473]  ext4_bio_write_folio+0x5a4/0x8c8
->>> [    3.104766]  mpage_submit_folio+0xa0/0x100
->>> [    3.104769]  mpage_map_and_submit_buffers+0x1a4/0x400
->>> [    3.104771]  ext4_do_writepages+0x6a0/0xd78
->>> [    3.105615]  ext4_writepages+0x80/0x118
->>> [    3.105616]  do_writepages+0x90/0x1e8
->>> [    3.105619]  filemap_fdatawrite_wbc+0x94/0xe0
->>> [    3.105622]  __filemap_fdatawrite_range+0x68/0xb8
->>> [    3.106656]  file_write_and_wait_range+0x84/0x120
->>> [    3.106658]  ext4_sync_file+0x7c/0x4c0
->>> [    3.106660]  vfs_fsync_range+0x3c/0xa8
->>> [    3.106663]  do_fsync+0x44/0xc0
->>>
->>> Since untrusted devices might go down the swiotlb pathway with dma-iommu,
->>> these devices should not map a size larger than swiotlb_max_mapping_size.
->>>
->>> To fix this bug, add iommu_dma_max_mapping_size() for untrusted devices to
->>> take into account swiotlb_max_mapping_size() v.s. iova_rcache_range() from
->>> the iommu_dma_opt_mapping_size().
->>
->> On the basis that this is at least far closer to correct than doing nothing,
->>
->> Acked-by: Robin Murphy <robin.murphy@arm.com>
->>
->> TBH I'm scared to think about theoretical correctness for all the
->> interactions between the IOVA granule and min_align_mask, since just the
->> SWIOTLB stuff is bad enough, even before you realise the ways that the
->> IOVA allocation isn't necessarily right either. However I reckon as long
->> as we don't ever see a granule smaller than IO_TLB_SIZE, and/or a
->> min_align_mask larger than a granule, then this should probably work
->> well enough as-is.
->>
-> 
-> I'm not convinced.  The conditions you describe are reasonable
-> and reflect upstream code today. But there can still be a failure
-> due to attempting to allocate a "too large" swiotlb buffer. It
-> happens with a granule of 64K and min_align_mask of 4K - 1 (the
-> NVMe case) when the offset passed to iommu_dma_map_page()
-> is non-zero modulo 4K.  With this patch, the size passed into
-> iommu_dma_map_page() is limited to 252K, but it gets rounded
-> up to 256K.  Then swiotlb_tbl_map_single() adds the offset
-> modulo 4K.  The result exceeds the 256K limit in swiotlb and
-> the mapping fails.
-> 
-> The case I describe is a reasonable case that happens in the real
-> world.  As is, this patch will work most of the time because for
-> large xfers the offset is typically at least 4K aligned. But not always.
+Hi,
 
-Indeed that's what my "probably [...] well enough" meant to imply.
+Thanks for taking a shot at this.
 
-I think there's proving to be sufficient complexity here that if it 
-turns out we do manage to still hit real-world issues with the coarse 
-approximation, that will be the point when any further effort would be 
-better spent on finally tackling the thing that's always been on the 
-to-do list, where we'd only bounce the unaligned start and/or end 
-granules while mapping the rest of the buffer in place.
+[...]
 
-Cheers,
-Robin.
+> >> +               return status;
+> >> +
+> >> +       evt->event_data = (struct efi_tcg2_event){
+> >> +               .event_size                     = size,
+> >> +               .event_header.header_size       = sizeof(evt->event_data.event_header),
+> >> +               .event_header.header_version    = EFI_TCG2_EVENT_HEADER_VERSION,
+> >> +               .event_header.pcr_index         = events[event].pcr_index,
+> >> +               .event_header.event_type        = EV_EVENT_TAG,
+> >> +       };
+> >> +
+> >> +       evt->tagged_event = (struct efi_tcg2_tagged_event){
+> >> +               .tagged_event_id                = events[event].event_id,
+> >> +               .tagged_event_data_size         = events[event].event_data_len,
+> >> +       };
+> >> +
+> >> +       memcpy(evt->tagged_event_data, events[event].event_data,
+> >> +              events[event].event_data_len);
+> >> +
+> >> +       status = efi_call_proto(tcg2, hash_log_extend_event, 0,
+> >> +                               load_addr, load_size, &evt->event_data);
+> > The struct filling/memcpying looks similar across the 2 functions.  I
+> > wonder if it makes sense to have a common function for that, with an
+> > argument for the event data type.
+>
+> If we want to use helper function, the updated code looks like below.
+>
+> Are you fine with this version? (compile-tested only)
+>
+> +struct efi_tcg2_measured_event {
+> +       efi_tcg2_event_t        event_data;
+> +       efi_tcg2_tagged_event_t tagged_event;
+> +       u8                      tagged_event_data[];
+> +};
+> +
+> +struct efi_cc_measured_event {
+> +       efi_cc_event_t  event_data;
+> +       efi_tcg2_tagged_event_t tagged_event;
+> +       u8                      tagged_event_data[];
+> +};
+> +
+> +static void efi_tcg2_event_init(struct efi_tcg2_measured_event *evt,
+> +                               size_t size,
+> +                               enum efistub_event event)
+> +{
+> +       evt->event_data = (struct efi_tcg2_event){
+> +               .event_size                     = size,
+> +               .event_header.header_size       = sizeof(evt->event_data.event_header),
+> +               .event_header.header_version    = EFI_TCG2_EVENT_HEADER_VERSION,
+> +               .event_header.pcr_index         = events[event].pcr_index,
+> +               .event_header.event_type        = EV_EVENT_TAG,
+> +       };
+> +
+> +       evt->tagged_event = (struct efi_tcg2_tagged_event){
+> +               .tagged_event_id                = events[event].event_id,
+> +               .tagged_event_data_size         = events[event].event_data_len,
+> +       };
+> +
+> +       memcpy(evt->tagged_event_data, events[event].event_data,
+> +              events[event].event_data_len);
+> +}
+> +
+> +static efi_status_t tcg2_efi_measure(efi_tcg2_protocol_t *tcg2,
+> +                                    unsigned long load_addr,
+> +                                    unsigned long load_size,
+> +                                    enum efistub_event event)
+> +{
+> +       struct efi_tcg2_measured_event *evt;
+> +       efi_status_t status;
+> +       size_t size;
+> +
+> +       size = sizeof(*evt) + events[event].event_data_len;
+> +
+> +       status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size,
+> +                            (void **)&evt);
+> +       if (status != EFI_SUCCESS)
+> +               return status;
+> +
+> +       efi_tcg2_event_init(evt, size, event);
+> +
+> +       status = efi_call_proto(tcg2, hash_log_extend_event, 0,
+> +                               load_addr, load_size, &evt->event_data);
+> +       efi_bs_call(free_pool, evt);
+> +
+> +       return status;
+> +}
+>
+> +
+> +static efi_status_t cc_efi_measure(efi_cc_protocol_t *cc,
+> +                                  unsigned long load_addr,
+> +                                  unsigned long load_size,
+> +                                  enum efistub_event event)
+> +{
+> +       struct efi_cc_measured_event *evt;
+> +       efi_cc_mr_index_t mr;
+> +       efi_status_t status;
+> +       size_t size;
+> +
+> +       status = efi_call_proto(cc, map_pcr_to_mr_index, events[event].pcr_index, &mr);
+> +       if (status != EFI_SUCCESS) {
+> +               efi_debug("CC_MEASURE: PCR to MR mapping failed\n");
+> +               return status;
+> +       }
+> +
+> +       size = sizeof(*evt) + events[event].event_data_len;
+> +
+> +       status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size, (void **)&evt);
+> +       if (status != EFI_SUCCESS)
+> +               return status;
+> +
+> +       efi_tcg2_event_init((struct efi_tcg2_measured_event *)evt, size, event);
+> +
+> +       evt->event_data = (struct efi_cc_event){
+> +               .event_header.header_size       = sizeof(evt->event_data.event_header),
+> +               .event_header.header_version    = EFI_CC_EVENT_HEADER_VERSION,
+> +               .event_header.mr_index          = mr,
+> +       };
+> +
+> +       status = efi_call_proto(cc, hash_log_extend_event, 0,
+> +                               load_addr, load_size, &evt->event_data);
+> +
+> +       efi_bs_call(free_pool, evt);
+> +
+> +       return status;
+> +}
+>
+
+Yes, I think looks cleaner. Ard thoughts?
+
+Thanks
+/Ilias
+>
+> >
+> >> +       efi_bs_call(free_pool, evt);
+> >> +
+> >> +       return status;
+> >> +}
+> >> +
+> >> +static efi_status_t cc_efi_measure(efi_cc_protocol_t *cc,
+> >> +                                  unsigned long load_addr,
+> >> +                                  unsigned long load_size,
+> >> +                                  enum efistub_event event)
+> >> +{
+> >> +       struct efi_measured_event {
+> >> +               efi_cc_event_t  event_data;
+> >> +               efi_tcg2_tagged_event_t tagged_event;
+> >> +               u8                      tagged_event_data[];
+> >> +       } *evt;
+> >> +       size_t size = sizeof(*evt) + events[event].event_data_len;
+> >> +       efi_cc_mr_index_t mr;
+> >> +       efi_status_t status;
+> >> +
+> >> +       status = efi_call_proto(cc, map_pcr_to_mr_index, events[event].pcr_index, &mr);
+> >> +       if (status != EFI_SUCCESS) {
+> >> +               efi_err("CC_MEASURE: PCR to MR mapping failed\n");
+> >> +               return status;
+> >> +       }
+> >> +
+> >> +       status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size, (void **)&evt);
+> >> +       if (status != EFI_SUCCESS) {
+> >> +               efi_err("CC_MEASURE: Allocating event struct failed\n");
+> >> +               return status;
+> >> +       }
+> >> +
+> >> +       evt->event_data = (struct efi_cc_event){
+> >> +               .event_size                     = size,
+> >> +               .event_header.header_size       = sizeof(evt->event_data.event_header),
+> >> +               .event_header.header_version    = EFI_CC_EVENT_HEADER_VERSION,
+> >> +               .event_header.mr_index          = mr,
+> >> +               .event_header.event_type        = EV_EVENT_TAG,
+> >> +       };
+> >> +
+> >> +       evt->tagged_event = (struct efi_tcg2_tagged_event){
+> >> +               .tagged_event_id                = events[event].event_id,
+> >> +               .tagged_event_data_size         = events[event].event_data_len,
+> >> +       };
+> >> +
+> >> +       memcpy(evt->tagged_event_data, events[event].event_data,
+> >> +              events[event].event_data_len);
+> >> +
+> >> +       status = efi_call_proto(cc, hash_log_extend_event, 0,
+> >> +                               load_addr, load_size, &evt->event_data);
+> >> +
+> >> +       efi_bs_call(free_pool, evt);
+> >> +
+> >> +       return status;
+> >> +}
+> >>  static efi_status_t efi_measure_tagged_event(unsigned long load_addr,
+> >>                                              unsigned long load_size,
+> >>                                              enum efistub_event event)
+> >>  {
+> >>         efi_guid_t tcg2_guid = EFI_TCG2_PROTOCOL_GUID;
+> >> +       efi_guid_t cc_guid = EFI_CC_MEASUREMENT_PROTOCOL_GUID;
+> >> +       efi_cc_protocol_t *cc = NULL;
+> >>         efi_tcg2_protocol_t *tcg2 = NULL;
+> >>         efi_status_t status;
+> >>
+> >>         efi_bs_call(locate_protocol, &tcg2_guid, NULL, (void **)&tcg2);
+> >>         if (tcg2) {
+> >> -               struct efi_measured_event {
+> >> -                       efi_tcg2_event_t        event_data;
+> >> -                       efi_tcg2_tagged_event_t tagged_event;
+> >> -                       u8                      tagged_event_data[];
+> >> -               } *evt;
+> >> -               int size = sizeof(*evt) + events[event].event_data_len;
+> >> -
+> >> -               status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size,
+> >> -                                    (void **)&evt);
+> >> +               status = tcg2_efi_measure(tcg2, load_addr, load_size, event);
+> >>                 if (status != EFI_SUCCESS)
+> >>                         goto fail;
+> >>
+> >> -               evt->event_data = (struct efi_tcg2_event){
+> >> -                       .event_size                     = size,
+> >> -                       .event_header.header_size       = sizeof(evt->event_data.event_header),
+> >> -                       .event_header.header_version    = EFI_TCG2_EVENT_HEADER_VERSION,
+> >> -                       .event_header.pcr_index         = events[event].pcr_index,
+> >> -                       .event_header.event_type        = EV_EVENT_TAG,
+> >> -               };
+> >> -
+> >> -               evt->tagged_event = (struct efi_tcg2_tagged_event){
+> >> -                       .tagged_event_id                = events[event].event_id,
+> >> -                       .tagged_event_data_size         = events[event].event_data_len,
+> >> -               };
+> >> -
+> >> -               memcpy(evt->tagged_event_data, events[event].event_data,
+> >> -                      events[event].event_data_len);
+> >> -
+> >> -               status = efi_call_proto(tcg2, hash_log_extend_event, 0,
+> >> -                                       load_addr, load_size, &evt->event_data);
+> >> -               efi_bs_call(free_pool, evt);
+> >> +               return EFI_SUCCESS;
+> >> +       }
+> >>
+> >> +       efi_bs_call(locate_protocol, &cc_guid, NULL, (void **)&cc);
+> >> +       if (cc) {
+> >> +               status = cc_efi_measure(cc, load_addr, load_size, event);
+> >>                 if (status != EFI_SUCCESS)
+> >>                         goto fail;
+> >> +
+> >>                 return EFI_SUCCESS;
+> >>         }
+> >>
+> > [...]
+> >
+> > Thanks
+> > /Ilias
+>
+> --
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
+>
 
