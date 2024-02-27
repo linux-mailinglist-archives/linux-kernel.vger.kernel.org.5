@@ -1,122 +1,181 @@
-Return-Path: <linux-kernel+bounces-84116-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84117-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9094D86A24A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:17:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A89EF86A24B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:19:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C0BC284AB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:17:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7BF31C23E73
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69724151CD9;
-	Tue, 27 Feb 2024 22:17:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84FD1534F6;
+	Tue, 27 Feb 2024 22:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I1ZSqTq+"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L2nop85b"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331284F208
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:17:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6739F14F961
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709072258; cv=none; b=N9kIR36bv7A2edCr5xsFfvr7HOAH4zJpJF1/rE/OKJqWKWVS+NiACF0gTLeJXHJ08MFuFTFxbnYccsR5+gcvu5FaDDaISZvdsZ29GynP2GRhT/S4WXwX2b9JloSdjhxRHT8VmOdv49b35mJymx/ow9r+Tc2ZpGUJZGE/60wF5Cw=
+	t=1709072351; cv=none; b=tG+9KmH3J0GKvsbSLU/HbfAHmcvJz5KV904iIQUJEou2L6aOVoxEI05kC+2qm+yZh7TfRRHS7eqnVxBOrsawoeq9t3tStSzcMaI2DWM38a+BFwblE4WqiBvuhLLqfT/IwlNHVVxYUOcZsYANorGNpwjhf+wb8QWNfqCCYzJ67hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709072258; c=relaxed/simple;
-	bh=aR5t2Wfku+THDivp53lV36poeGH4/NI+Gq8iHybN7bk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s44wXh/RZPFqgms2PV2FjOkMcuyoYXo0sKnxqleXERi8X7JNCp3tH9MHx6H3QHP/Pi5CJ2ZmYvXmJaTl9hENkgmQJcV7hnB+7O9tmcIvNvuQ0dCqJ2qdgN2tE7P82PiZIbCvfZ3V5S6IlCwZy3x4cn3tQChXoBSR3mU31Rxokms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I1ZSqTq+; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-412a3903586so21249055e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:17:36 -0800 (PST)
+	s=arc-20240116; t=1709072351; c=relaxed/simple;
+	bh=gUm8H8I+QgXLVB74DB6uSSt5ePpLI9Jus5D3udBOKFI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YvK1FrSDkMh6KPvyopIFsFrY4skK75szN7awviEF1R7Q4aTBLtwUboD2B0hekZ5gL4PQiYRQA55ay0qdKG+HpauqOQ18MvxSZsCsL6/KxBZsiLF5qOUaPRphcctge6O8QDRu122zDV2oj9+UTFWZ1p/uHfAG3OiCjkJm+Fs06g4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=L2nop85b; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc1ff58fe4so43000095ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:19:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709072255; x=1709677055; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jL1OrywmYVgdUyq4Qpu3yOEeDXFaEcSGIdQX1BM8BP4=;
-        b=I1ZSqTq+O6yzQATL9A2vwhelVnIvz7JluDbRA0Mwg40VwUDQ6+1Z1CwwumiT2PZm9V
-         mi7ksrs845myGS+cNHawPzPtzdQVI9tcPf/k2lZ4z6sv/skUeSDbA71SgrkhmNZn8wqI
-         c/Z2Btye1TpxmoafJmjUcAUuhkLdUYVtJElUUCXo41ho7NXCAkSHannpCTtd7y0Vampc
-         7MjFmDe2gQMM1jXKGWAMDHwLUOmi1ijN3VCe/jxbENTIWGQLnSuLuP+ZxnWhOn+oW5Ev
-         hipzygTnjBZkfv8sbhtvRjUvO2mEEKXIZthqmRGm2FQxxAsgNagzMzZgrMGZp2cc/zce
-         8qfA==
+        d=chromium.org; s=google; t=1709072350; x=1709677150; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YXno1hnt7boGnl19WCbZvgiFqTnjZ41kOP+QrpWStfo=;
+        b=L2nop85bNPThTi4hpL6vrutfMntxeT00M5VDsoZO6lsJbZLsMh4JEZippvUrU9LnG/
+         8j4c9JFbW4IXJw7ApmaFS+atdkbK4U3zkYzsIuLAjxFwHeuxKXTQkWRhu0MH8H5UG85z
+         PD60B8UtqnIQzkuRjaruJGgI3yzYP6WkF0mQw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709072255; x=1709677055;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1709072350; x=1709677150;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jL1OrywmYVgdUyq4Qpu3yOEeDXFaEcSGIdQX1BM8BP4=;
-        b=kZQPyqWuGg+yU86bWnArOKZplkSVU2/KaqaV/LOEIWaVTY4F/nM9I0/ff6IZCGFPF6
-         7j6TUVpIr1aCmWElg1CeLzDwngIfwWgNIp09km8jzZSZyiAl6qtoC2Ys2KzG4S7drrY3
-         Gb8/y9emXRHYR97hV+NkjvnXRVsHEMd8qDwjchO1FolapAPtbuZKk4o3c9BXWZIFj74L
-         5ehtUvDedCa68qJHqxf8AcyXvLHIPOKiR2o84V/XkUI4nyFMp8tz0UT82T2VxfgX2x4w
-         Egs3VEVeYFuWqcm4nHpyBEyYrnWYHgvHh87OShkZpg6H02UoYqsL8rxY9H/MIWTYhzb9
-         9cNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWKHZg62MY85qXumKOoFvzpCfgDqL73ZPqCRl9aExpm1btKMxc32Q7Sd1A2/AYyryKrotxAREfC6ToySyGDjYZos6/QwrUUbwK4PDOG
-X-Gm-Message-State: AOJu0YynkZSsJaBG7iT5/wEu5dXuA2ho7N3akkJxTaB7yWOnDsdru3o9
-	uvaoRn8l+Pk1AM7FwdOulFKmT9sA0+1sTjPyV4KB7ZYF6z57c11r
-X-Google-Smtp-Source: AGHT+IHQ/oHFxiN6KJDBu9GX112uZI8SoNaVjD7teKCAcFdClHDhdK7NfXhX5gnjzn7G8naRwqf+5g==
-X-Received: by 2002:a05:600c:1914:b0:412:8c96:b15f with SMTP id j20-20020a05600c191400b004128c96b15fmr8088331wmq.37.1709072255506;
-        Tue, 27 Feb 2024 14:17:35 -0800 (PST)
-Received: from ?IPV6:2a06:c701:736b:f200:73a5:2235:8954:9b7c? ([2a06:c701:736b:f200:73a5:2235:8954:9b7c])
-        by smtp.gmail.com with ESMTPSA id a26-20020a5d457a000000b0033dd56b002asm8380083wrc.73.2024.02.27.14.17.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 14:17:34 -0800 (PST)
-Message-ID: <38e1b141-f7ef-40fe-be8a-97d9f9273a8f@gmail.com>
-Date: Wed, 28 Feb 2024 00:17:33 +0200
+        bh=YXno1hnt7boGnl19WCbZvgiFqTnjZ41kOP+QrpWStfo=;
+        b=qoOunOFBTnTSSsGqskcpOvi5EEwy+tJGdDQN3+7s/Etwt20g+NZu1HPsp3rri0Umr5
+         eGdCPsyz26VTQQU69P8o1cO18jVr13SZhtQHuW8V6AS3yS56eTTUiDq+K6HaT6IYVShQ
+         jAEJx5ztIfoQClqxsVG2rQkIdvZCanJmLKMvsQaJeOIw+iRmEpvmRnqj+IL/QReWL4Lz
+         BemGh+zeKXWRXHThRCmxIdgOwq0N8kO/q4SdiFrmS++7cxIUUE2AZwVI5vQX9xiFdT+5
+         UfdfWJQRjuB5rLOY/suqhwOU26jCfh7MoRqKX+1Kny7eIfhQhMmLkmCBQWKmHL3o8N2I
+         VUXA==
+X-Forwarded-Encrypted: i=1; AJvYcCUOKnGxmY+uc7zTNKPEuq84RSC6tkjaJnTw4LO2lOOanQzpcyV49Vnte+AzKSC8VxAit0cS0yezVRR2sLl78C4M2o0fM/QskmerH6Yt
+X-Gm-Message-State: AOJu0YyW8KhcDvdhkDxK9BLVo2DkhAdHaHV5Ec2fTQN9HqiSfKv4Y7QZ
+	3UZVCrNL+xH8cWknUhejfHfVCDhtv4o5j+sbq5+i8wLeXVF0S2eqzfoc4XUepA==
+X-Google-Smtp-Source: AGHT+IG+T1sHKc1Q9CDhQJZHUfw1f78cfUc7tp8sJTwGJrblb9ZLNC6Lovyr5+eIAS7QGdDeOkubAQ==
+X-Received: by 2002:a17:902:b7c4:b0:1dc:b01e:99d0 with SMTP id v4-20020a170902b7c400b001dcb01e99d0mr4732223plz.1.1709072349723;
+        Tue, 27 Feb 2024 14:19:09 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id la3-20020a170902fa0300b001db5432449esm2022819plb.18.2024.02.27.14.19.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 14:19:08 -0800 (PST)
+Date: Tue, 27 Feb 2024 14:19:07 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: stackinit unit test failures on m68k
+Message-ID: <202402271401.CB43AB2E8@keescook>
+References: <a0d10d50-2720-4ecd-a2c6-c2c5e5aeee65@roeck-us.net>
+ <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] staging: pi433: Remove a duplicated F_OSC define
-Content-Language: en-US
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: gregkh@linuxfoundation.org, luca.ceresoli@bootlin.com,
- benjamin.tissoires@redhat.com, elder@linaro.org, robh@kernel.org,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240225173341.1278918-1-ikobh7@gmail.com>
- <20240225173341.1278918-2-ikobh7@gmail.com>
- <ZdykDGo9fMw5fEdp@smile.fi.intel.com>
-From: Shahar Avidar <ikobh7@gmail.com>
-In-Reply-To: <ZdykDGo9fMw5fEdp@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXMsxRRMV8g6+9vTy_4o8HF49SUh2deNdFjgKwDLEWrxQ@mail.gmail.com>
 
-On 26/02/2024 16:45, Andy Shevchenko wrote:
-> On Sun, Feb 25, 2024 at 07:33:38PM +0200, Shahar Avidar wrote:
->> F_OSC is already defined & only used by rf69.c source file
->> Also fix define comment
+On Mon, Feb 12, 2024 at 09:34:02AM +0100, Geert Uytterhoeven wrote:
+> Hi Günter,
 > 
-> You missed periods at the end of the sentences.
+> On Mon, Feb 12, 2024 at 12:06 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> > I see the following stackinit unit test failures on m68k when running
+> > the q800 emulation.
+> >
+> >     # test_char_array_zero: ASSERTION FAILED at lib/stackinit_kunit.c:333
+> >     Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
+> > stack fill missed target!? (fill 16 wide, target offset by -12)
+> >
+> >     # test_char_array_none: ASSERTION FAILED at lib/stackinit_kunit.c:343
+> >     Expected stackinit_range_contains(fill_start, fill_size, target_start, target_size) to be true, but is false
+> > stack fill missed target!? (fill 16 wide, target offset by -12)
+> >
+> > Do you happen to know if this a problem with the test, with m68k, or maybe
+> > with the configuration ? My configuration is based on mac_defconfig with
+> > various test options enabled. I use gcc 11.4 to build the image. I tried
+> > with qemu v8.1 and v8.2.
+> 
+> Thanks, I see the same failures in the logs of my last testrun on ARAnyM, too.
+> I haven't looked into the details yet.
+> 
+> Only two failures does look like a nice improvement, compared to the
+> previous time I ran that test ;-)
+> 
+> https://lore.kernel.org/all/CAMuHMdX_g1tbiUL9PUQdqaegrEzCNN3GtbSvSBFYAL4TzvstFg@mail.gmail.com
 
-Thank you for noticing.
+This is complaining that the stack frames across subsequent calls to the
+same leaf function don't end up putting the same variable in the same
+place.
 
->> -#define F_OSC	  32000000 /* in Hz */
->> +#define F_OSC	  32000000 /* Hz */
-> 
-> Instead of having a comment you can
-> 
->    #include <linux/units.h>
->    ...
->    #define F_OSC	  (32 * HZ_PER_MHZ)
-> 
-> which will be more robust code (no need to count 0s).
-> 
+It's a rather difficult set of macros used try many different
+combinations, but it's specifically talking about the "leaf_..."
+function at line 208 of lib/stackinit_kunit.c. This test passes for all
+the integral types, but seems to fail for a character array.
 
-All comments are fixed in v2 which was just sent.
-Please note I sent the updated patchset twice, I forgot to add v2 the 
-first time...
+It is basically doing this:
+
+static void *fill_start, *target_start;
+static size_t fill_size, target_size;
+
+static noinline int leaf_char_array_none(unsigned long sp, bool fill,
+                                  unsigned char *arg)
+{
+        char buf[32];
+        unsigned char var[16];
+
+        target_start = &var;
+        target_size = sizeof(var);
+        /*
+         * Keep this buffer around to make sure we've got a
+         * stack frame of SOME kind...
+         */
+        memset(buf, (char)(sp & 0xff), sizeof(buf));
+        /* Fill variable with 0xFF. */
+        if (fill) {
+                fill_start = &var;
+                fill_size = sizeof(var);
+                memset(fill_start,
+                       (char)((sp & 0xff) | forced_mask),
+                       fill_size);
+        }
+
+        /* Silence "never initialized" warnings. */
+	do_nothing_char_array(var);
+
+        /* Exfiltrate "var". */
+        memcpy(check_buf, target_start, target_size);
+
+        return (int)buf[0] | (int)buf[sizeof(buf) - 1];
+}
+
+and it's called as:
+
+
+        ignored = leaf_char_array_none((unsigned long)&ignored, 1, zero);
+	...
+        ignored = leaf_char_array_none((unsigned long)&ignored, 0, zero);
+
+The first call remembers where "var" is in the stack frame via the
+fill_start assignment, and the second call records where "var" is via
+the target_start assignment.
+
+The complaint is that it _changes_ between the two calls. ... Oh, I
+think I see what's happened. Between the two calls, the stack grows (and
+is for some reason not reclaimed) due to the KUNIT checks between the two
+leaf calls. Yes, moving that fixes it.
+
+I'll send a patch!
+
+-Kees
 
 -- 
-Regards,
-
-Shahar
-
+Kees Cook
 
