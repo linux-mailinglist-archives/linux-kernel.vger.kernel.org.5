@@ -1,212 +1,113 @@
-Return-Path: <linux-kernel+bounces-83019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE8D868D2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:19:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0392B868D4D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:20:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03B51B262CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:19:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8B9A28B0ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD6C1384AB;
-	Tue, 27 Feb 2024 10:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48BD13849F;
+	Tue, 27 Feb 2024 10:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cpyVIP79";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UuxALrSs";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cpyVIP79";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UuxALrSs"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f9wkRx0F"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C0E138484;
-	Tue, 27 Feb 2024 10:18:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6191138493;
+	Tue, 27 Feb 2024 10:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029134; cv=none; b=faLOVWTGVn8KJ/9dMrbr2iWhdyWhMVVTXpNr2TYyO1NlappalXJBSXuz0n6vrUahLQ3YiTRG8BvQwaw0Qi8mubAKCAeMU7s2pPdBv0l1mz4JruaWNheGIYPNc47NcPobp82hHQQBc8I7tP5Z/Cktm81M9FyD7Zu22Di2V6KaRGU=
+	t=1709029218; cv=none; b=PWbXC5QAQof5Jm9IH+/6sU6xubKH0f0tWJtrjMRW+o3Lh1EdC4hVl24E4aUyjOHKQVt+UBZdklhdeCQkdZk7jFWrUkPldVihx1h+wfv/poNfQuaJGcZUg4M87R9hkufgA3liSFmNbwd8pQeTPdjQY0iWLdA5wWY0+WY/Kmk5reU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029134; c=relaxed/simple;
-	bh=1kT4IadTcD9s8wVa7TvXCimMRyY5zCB8d4SK3JfJKpI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qgKJ2Fm289+Puk/7nac/sGMJuaegQ8skLupDzr47ksHrGhQIS/WQeUD973FLkW51H3dRglAf+/y6/fk3KiQiH5A+Yqo/HAfdbbcdpObIkUWcwRT/Cd7CLDqZ9tMGxl4gCJsmbenq+vFxkgc5iTwhnIawoSu03xXn0vWe8OhkR+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cpyVIP79; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UuxALrSs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cpyVIP79; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UuxALrSs; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 5FBE01F44F;
-	Tue, 27 Feb 2024 10:18:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709029129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q4pT87ICIgMrimfBYIsFt4403+jQ655os57F8M8rAV0=;
-	b=cpyVIP79rj0/sBrJvpdZDSi/YWGaVzMxOeOUTFZkxXRW5dBBpVG2nrSet3ziaxNcNhCRul
-	fsn2i6ZDMFIR8vZKMy1rHahvaELrlR9TdV1JOh9wud8P37gKHfMGsbCuw8Lz1zGjf4dOM9
-	gotsrvN12NpBYdL5ELH484nyYHkPZRY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709029129;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q4pT87ICIgMrimfBYIsFt4403+jQ655os57F8M8rAV0=;
-	b=UuxALrSs0P8mLarP5bjo/PfJ0N2IwYv6LH6qdRMTKIyww8fRC4dOnMwu5xagQtZCCFsHZf
-	6lKfIVVRnWShjTBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709029129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q4pT87ICIgMrimfBYIsFt4403+jQ655os57F8M8rAV0=;
-	b=cpyVIP79rj0/sBrJvpdZDSi/YWGaVzMxOeOUTFZkxXRW5dBBpVG2nrSet3ziaxNcNhCRul
-	fsn2i6ZDMFIR8vZKMy1rHahvaELrlR9TdV1JOh9wud8P37gKHfMGsbCuw8Lz1zGjf4dOM9
-	gotsrvN12NpBYdL5ELH484nyYHkPZRY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709029129;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q4pT87ICIgMrimfBYIsFt4403+jQ655os57F8M8rAV0=;
-	b=UuxALrSs0P8mLarP5bjo/PfJ0N2IwYv6LH6qdRMTKIyww8fRC4dOnMwu5xagQtZCCFsHZf
-	6lKfIVVRnWShjTBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B14DF13A65;
-	Tue, 27 Feb 2024 10:18:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UH3gKQi33WXqfQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 27 Feb 2024 10:18:48 +0000
-Message-ID: <4e648451-31a8-4293-bc14-e7ea01c889b1@suse.cz>
-Date: Tue, 27 Feb 2024 11:19:20 +0100
+	s=arc-20240116; t=1709029218; c=relaxed/simple;
+	bh=2jY/Q1QEdmyK669q6iJw5r6Thx2kyp1FRQuFTYB/9Iw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ExvY4Zf7GWacYrMsB9NKAr7sQMNjkB31jnWGpbmnNdUjFgqGAcNkXMEhTa7nPU3adA5lTP26DDPjQSNGCMoD9dQ+EUMfe8kjPUhFcfiid0skPf00eGcPziivEqlBNms8KnpoSks4SCGXz/CL0ijG6wbh96sj3z/5khRM4p0KBrw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f9wkRx0F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67763C433C7;
+	Tue, 27 Feb 2024 10:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709029217;
+	bh=2jY/Q1QEdmyK669q6iJw5r6Thx2kyp1FRQuFTYB/9Iw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=f9wkRx0FWSM2Wi52xH7nRkker4XhCGXaRgHzeCLII7LrF1VubvPUlD6iDr8kXVXXk
+	 f3PQo3/+5cpsS8bcUPnrQjSwUwMxm1/cUo3NiIndBLIefEUsJLD1Fq0+PW4PR/LtLh
+	 4V2Xe+InmM6OLon5IMkmoYZpChSCOspnGsyZKVkVcaAOOxcySK/ZLW8MYkc/YTwJg5
+	 SEQSVjEYDmaySbhHzheqltJDyyo55JuTkFQUInllIMR9bOvgiBzoazVRJ/FbHAu9g2
+	 B/1/wrQB4Zdxr4cg89M3DUSdfmh5umaOIVC7tPWU07bY3kPGec5cnjQl/yWUipyIKc
+	 sJqnpu3EJGBGg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1reuZQ-000000004LH-1P1i;
+	Tue, 27 Feb 2024 11:20:20 +0100
+Date: Tue, 27 Feb 2024 11:20:20 +0100
+From: Johan Hovold <johan@kernel.org>
+To: "Regzbot (on behalf of Thorsten Leemhuis)" <regressions@leemhuis.info>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: Linux regressions report  for mainline [2024-02-25]
+Message-ID: <Zd23ZKlNnDKPaU9I@hovoldconsulting.com>
+References: <170886726066.1516351.14377022830495300698@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 21/36] lib: add codetag reference into slabobj_ext
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240221194052.927623-1-surenb@google.com>
- <20240221194052.927623-22-surenb@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240221194052.927623-22-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=cpyVIP79;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UuxALrSs
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.02 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[74];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.02)[51.67%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,linux.dev:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -0.02
-X-Rspamd-Queue-Id: 5FBE01F44F
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170886726066.1516351.14377022830495300698@leemhuis.info>
 
-On 2/21/24 20:40, Suren Baghdasaryan wrote:
-> To store code tag for every slab object, a codetag reference is embedded
-> into slabobj_ext when CONFIG_MEM_ALLOC_PROFILING=y.
+On Sun, Feb 25, 2024 at 01:21:46PM +0000, Regzbot (on behalf of Thorsten Leemhuis) wrote:
+
+> Johan Hovold also deals with multiple issues affecting Lenovo ThinkPad
+> X13s, but he send out patch series to fix some or all of those[1], so
+> with a bit of luck those issues will soon be fixed as well.
+> https://lore.kernel.org/lkml/ZctVmLK4zTwcpW3A@hovoldconsulting.com/
+
+> [1]
+> https://lore.kernel.org/lkml/20240217150228.5788-1-johan+linaro@kernel.org/
+
+This series addresses a use-after-free in the PMIC glink driver caused
+by DRM bridge changes in rc1 and which can result in the internal
+display not showing up on boot.
+
+The DRM/SoC fixes here have now been merged to drm-misc for 6.8.
+
+> https://lore.kernel.org/lkml/20240223152124.20042-1-johan+linaro@kernel.org/
+
+This series is unrelated to the DRM regressions and deals with PCIe ASPM
+issues.
+
+> [ *NEW* ] drm/msm/dp: runtime PM cause internal eDP display on the Lenovo ThinkPad X13s to not always show up on boot (2/2 regressions)
+> ---------------------------------------------------------------------------------------------------------------------------------------
+> https://linux-regtracking.leemhuis.info/regzbot/regression/lore/faad839a-4c28-449f-bd87-845b47a1a6a1@leemhuis.info/
+> https://lore.kernel.org/regressions/faad839a-4c28-449f-bd87-845b47a1a6a1@leemhuis.info/
 > 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> By Johan Hovold; 2 days ago; 5 activities, latest 2 days ago.
+> Introduced in 5814b8bf086a (v6.8-rc1)
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Noteworthy links:
+> * drm/msm: Second DisplayPort regression in 6.8-rc1
+>   https://lore.kernel.org/lkml/ZdMwZa98L23mu3u6@hovoldconsulting.com/
+>   6 days ago, by Johan Hovold; thread monitored.
 
-> ---
->  include/linux/memcontrol.h | 5 +++++
->  lib/Kconfig.debug          | 1 +
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index f3584e98b640..2b010316016c 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1653,7 +1653,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
->   * if MEMCG_DATA_OBJEXTS is set.
->   */
->  struct slabobj_ext {
-> +#ifdef CONFIG_MEMCG_KMEM
->  	struct obj_cgroup *objcg;
-> +#endif
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> +	union codetag_ref ref;
-> +#endif
->  } __aligned(8);
->  
->  static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item idx)
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 7bbdb0ddb011..9ecfcdb54417 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -979,6 +979,7 @@ config MEM_ALLOC_PROFILING
->  	depends on !DEBUG_FORCE_WEAK_PER_CPU
->  	select CODE_TAGGING
->  	select PAGE_EXTENSION
-> +	select SLAB_OBJ_EXT
->  	help
->  	  Track allocation source code and record total allocation size
->  	  initiated at that code location. The mechanism can be used to track
+This regression is the most severe one as it triggers hard resets on
+boot occasionally (I just tried updating the regzbot title).
+
+This turned out to be due to a long-standing issue in a Qualcomm PM
+domain driver. Bjorn A posted a fix over night which addresses this:
+
+	https://lore.kernel.org/linux-arm-msm/20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com/T/#u
+
+But also with these fixes, there are still a couple of regressions
+related to the Qualcomm DRM runtime PM rework in 6.8-rc1. I'll send
+separate reports to track those.
+
+Johan
 
