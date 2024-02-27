@@ -1,246 +1,497 @@
-Return-Path: <linux-kernel+bounces-82750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B40DE868916
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:39:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 549B7868918
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 416371F24965
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08B34284C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAAE553391;
-	Tue, 27 Feb 2024 06:39:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mACDuYgs"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F78A535C8;
+	Tue, 27 Feb 2024 06:39:22 +0000 (UTC)
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FED028366;
-	Tue, 27 Feb 2024 06:39:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620CE37145;
+	Tue, 27 Feb 2024 06:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709015959; cv=none; b=heuePHfkWSx126dg9SVtGlszB4zQ4nyON5l37Jri4v4XC2rpZczz1ZuzCZLWc1Ovd5zSU2DDUCyuOG+29eP6Bli2RtCq3hcSBmwOFew/puQjHQZbBpfQEkyVgjF28wDxPyLNS7Dw52ez1Eu8LOchsSAcWIp00MjdeWL3fvvAoKA=
+	t=1709015961; cv=none; b=N7+BncGePorHlFUuugiv2h1BQ6LkB2v+FhAbcAJGJficpKjzP/XMKohF/yFkQ37Ib3EnbvFLeBCgHo0xZycuTVIgppMuxvwJoBjDgWKJ31JUd/9Y5XtyF0mA/K0R+OZKgvEAX1kh4prS/6HYJYoZfTJIXnUh/JaLXPe1VtrcYYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709015959; c=relaxed/simple;
-	bh=TpNm43UZalOh5CHEZxpB1myqjdM6GwK0aB5cvWnf9j4=;
+	s=arc-20240116; t=1709015961; c=relaxed/simple;
+	bh=R6EdHF9/U5YZm4C5cKXx3XqJqmaYB1m+UdFHorhDED0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o4Il0qefrINhp8BLcSAb+Okyza0RSESgg+5XDG36Nw7dITxDbOdqKsgYDJ0WHnF69Ga0Mw1ei+Gh8Y/LUcCCkSbjquOyZLR/pClEXRlio6giiJ7/KgfngEt/F+VE2R3xZIRESFwo83CMOL2g6PULwF7M+UM8rBJB8EaO1xjfO5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mACDuYgs; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 To:Cc:Content-Type; b=hvsdjc0GWV6tcu1Oip+VvNFZI1QRhrZuMvo0hLuYPTVLllRl8zK8DdS1I4bz/2dAHVvNwrxNppfGs0YRDF/d32RX2RvYEKhDO2bJ8C4ySVaBj25LgT5tHItwDCtFXuTAuZAtqqX3sko/E+LNEc4o9lRV8VVf8EG2W1nDS6ggams=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4395b7bfe5so99732166b.0;
-        Mon, 26 Feb 2024 22:39:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709015956; x=1709620756; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KeKhwBEW4l3tPZAIKnepBwuS085ALdBkSGDT8/kB2nM=;
-        b=mACDuYgsyZUagMZvC3i2BarvkoajedpqTZdHi9DOPLwVdszTQPdOJ9Qm9sNcytdZzB
-         xMG6YVrVWtEI8s6UJxS5MP9/uYDOnaDo+9RFTufYOmLFZhj2yLpkvxfg2U4ksWYSCyWV
-         yYbMVfMxh3NnyY+CVUICKz7Zn/68mH0Ztmk+Xvx7KRlbiuk3Tj7tVQAi5sR+75V6cJwI
-         MUhj49Q6oqFhx/MqCpbDia+uQVIKxI/GpRmU8ciAr4fNNhNZ6eHHiYZE/XKBfn/a3GUq
-         HlkEkt5ZELLM6XcS9CjLKImATkskbYiUUNKrNLBG97uM6C9/yTNJUYLMucWhYNDVpAMJ
-         rNOw==
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6da4a923b1bso3058386b3a.2;
+        Mon, 26 Feb 2024 22:39:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709015956; x=1709620756;
+        d=1e100.net; s=20230601; t=1709015959; x=1709620759;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KeKhwBEW4l3tPZAIKnepBwuS085ALdBkSGDT8/kB2nM=;
-        b=sCPz1RDFCy/vZFa7AR3P0ZltGHTiaqf0yPrsvYw/vFZVDt8fnDM+BNfFAzmYmPceLa
-         O2ubd2MX4n8SXwGif6AnT8Nh23i0FEF4mzP621XsJ93pTBCgamqvzMVVrfHD+KDowCX0
-         7/ehrTg3ca1KSddD+5d4PtlunVgJBgdRrvuDHBkJbdKSABTWxzspBE6bTmadIgEpqg1f
-         t/46mCjoFwjcPBV+ZfNgpGRwsTpn1l5jFMcYpTVm+bXh0mGsjRbaaJK8pCExdMSRT149
-         5r558fc0CH5po7kK7cbFG13QUgj5lC8tJyaK2yYU2xBccmbgYlGhb9lOLCvikGsjdKYd
-         zBXg==
-X-Forwarded-Encrypted: i=1; AJvYcCWDKv6aaHUBsXTvKPIFcZ+u0PcxT+D7h4qy9eSvxd1IAsfcK1y1KMmfy4RVnftPHCMgGlCTqTrdp34eNgchiafmj623BK3MLDNgwiMwl0QI2ExnKG7GHbYBO2L9JxAEHjzUtAk2OcRaKPgYP4DpyHd+fnevoyelQsKl1AmeJ5vj+drWYVh+jF9M
-X-Gm-Message-State: AOJu0Yy/Rr0mmnOPE2Vu2GPyiCADRKgGlM79ajx+BTetYh7b23y2xRIj
-	KaQGeS2l50Z0TWUkbFrHSYDBXkI0UpffdzikW5d/Ly056qXCawUUI0XdJYg6peQAP1OZr93SqLA
-	e1Qt5GN50OmQ5ZYzKNCIZIW4XUW0=
-X-Google-Smtp-Source: AGHT+IHN1QUtTaBkDh60yky4tJwi5Htl8PaJXfavM7yPRCg/hL/daSBc0cvs6PEmbTXUpBAwTZbCcN9cEda7+zl+Fos=
-X-Received: by 2002:a17:906:f0c5:b0:a43:9e1f:240e with SMTP id
- dk5-20020a170906f0c500b00a439e1f240emr785440ejb.60.1709015956229; Mon, 26 Feb
- 2024 22:39:16 -0800 (PST)
+        bh=WOOtXRsrQNdGcOq5AMB8/CDD2LeeemzfK7SDv2AxfVY=;
+        b=tLAuwn7fHSitPut2JWXOUgKh1U8pP+cotq4yUMU/xTlaZNPFuYiZo9adHwqaitY4wE
+         VqySjHeLrElf3VaaYs1nUHPqOD9NVZOVbR2LUDdWIbMywTFRmPYu7D+rs1vkj9OCMwtk
+         uMOwriuydaCofRgWqcmL9Fd+nkEDn6CdmIdItqGY5HRyNcF/RGIeaO4Y86VgVkMk19en
+         3eQ5xtp9JZowhkr5+he4EtZiY6bbH/kpvUcWmlSw83J+Hhf7BfNFVewCHOZxYRESGvVM
+         6Rh7wJKpn9fvByYk+dpBcwN8Z/E3RFzZ15tss7ajh4lR/AFg2ovVkkqAJ941mLb8AY13
+         z3jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJkG1uEwtfgvi3Ki1qsJ3jWusMUmUyUGYzSsslmq+0l3mOPwuNLzRlEnjpDpdUdjfpH1D/E2ZN9q6ZlIuLk2/eBnpjALDQVcG5MbMP0k+LGe7sPsU3n0sfcTwMHJnA51r6RkbwIPllhregnnbZT82M4fpCbk/5ktPZcLkEG3p0HCQNNw==
+X-Gm-Message-State: AOJu0Yzqs0VITqgz7wrF61R9FHWzLkkGqRwxph2+I0zcbhv4oEeVWmKI
+	i+Y1AtggcJjr/f19scB9WIG0/VcDamgBF9Jfk92nwM8ZvLVF64mAvmUpZKeJexvW8ppR88ukWQ0
+	P9Be28lTz7BLjuaqHJjjVUUf3Vks=
+X-Google-Smtp-Source: AGHT+IHIlsxCcK+m01cq7HCfK5M0vFENt/Lj9Y9piuUcl/h9uaihKMh7Qe/8WHPgVTB9+pEFrpeLNyO6utNXSouzhPY=
+X-Received: by 2002:a05:6a20:d391:b0:1a0:e4ac:9c7a with SMTP id
+ iq17-20020a056a20d39100b001a0e4ac9c7amr1692598pzb.1.1709015958545; Mon, 26
+ Feb 2024 22:39:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202402271050366715988@zte.com.cn> <CANn89iL-y9e_VFpdw=sZtRnKRu_tnUwqHuFQTJvJsv-nz1xPDw@mail.gmail.com>
-In-Reply-To: <CANn89iL-y9e_VFpdw=sZtRnKRu_tnUwqHuFQTJvJsv-nz1xPDw@mail.gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Tue, 27 Feb 2024 14:38:38 +0800
-Message-ID: <CAL+tcoDCq=ER65e7fHgLYZd9=XCnaHFLyGt4inXyKznB3S465Q@mail.gmail.com>
-Subject: Re: [PATCH] net/ipv4: add tracepoint for icmp_send
-To: Eric Dumazet <edumazet@google.com>
-Cc: xu.xin16@zte.com.cn, davem@davemloft.net, rostedt@goodmis.org, 
-	mhiramat@kernel.org, dsahern@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, yang.yang29@zte.com.cn, he.peilin@zte.com.cn, 
-	liu.chun2@zte.com.cn, jiang.xuexin@zte.com.cn, zhang.yunkai@zte.com.cn
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-2-irogers@google.com>
+In-Reply-To: <20240214063708.972376-2-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 26 Feb 2024 22:39:07 -0800
+Message-ID: <CAM9d7ciB8JAgU9P6qKh-VdVCjH0ZK+Q-n6mdXTO_nRAv6kSSyA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/6] perf report: Sort child tasks by tid
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 1:49=E2=80=AFPM Eric Dumazet <edumazet@google.com> =
-wrote:
+On Tue, Feb 13, 2024 at 10:37=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
 >
-> On Tue, Feb 27, 2024 at 3:50=E2=80=AFAM <xu.xin16@zte.com.cn> wrote:
-> >
-> > From: xu xin <xu.xin16@zte.com.cn>
-> >
-> > Introduce a tracepoint for icmp_send, which can help users to get more
-> > detail information conveniently when icmp abnormal events happen.
-> >
-> > 1. Giving an usecase example:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > When an application experiences packet loss due to an unreachable UDP
-> > destination port, the kernel will send an exception message through the
-> > icmp_send function. By adding a trace point for icmp_send, developers o=
-r
-> > system administrators can obtain the detailed information easily about =
-the
-> > UDP packet loss, including the type, code, source address, destination
-> > address, source port, and destination port. This facilitates the
-> > trouble-shooting of packet loss issues especially for those complicated
-> > network-service applications.
-> >
-> > 2. Operation Instructions:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> > Switch to the tracing directory.
-> >         cd /sys/kernel/debug/tracing
-> > Filter for destination port unreachable.
-> >         echo "type=3D=3D3 && code=3D=3D3" > events/icmp/icmp_send/filte=
-r
-> > Enable trace event.
-> >         echo 1 > events/icmp/icmp_send/enable
-> >
-> > 3. Result View:
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >  udp_client_erro-11370   [002] ...s.12   124.728002:  icmp_send:
-> > icmp_send: type=3D3, code=3D3.From 127.0.0.1:41895 to 127.0.0.1:6666 ul=
-en=3D23
-> > skbaddr=3D00000000589b167a
-> >
-> > Signed-off-by: He Peilin <he.peilin@zte.com.cn>
-> > Reviewed-by: xu xin <xu.xin16@zte.com.cn>
-> > Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
-> > Cc: Yang Yang <yang.yang29@zte.com.cn>
-> > Cc: Liu Chun <liu.chun2@zte.com.cn>
-> > Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
-> > ---
-> >  include/trace/events/icmp.h | 57 +++++++++++++++++++++++++++++++++++++=
-++++++++
-> >  net/ipv4/icmp.c             |  4 ++++
-> >  2 files changed, 61 insertions(+)
-> >  create mode 100644 include/trace/events/icmp.h
-> >
-> > diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
-> > new file mode 100644
-> > index 000000000000..3d9af5769bc3
-> > --- /dev/null
-> > +++ b/include/trace/events/icmp.h
-> > @@ -0,0 +1,57 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#undef TRACE_SYSTEM
-> > +#define TRACE_SYSTEM icmp
-> > +
-> > +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
-> > +#define _TRACE_ICMP_H
-> > +
-> > +#include <linux/icmp.h>
-> > +#include <linux/tracepoint.h>
-> > +
-> > +TRACE_EVENT(icmp_send,
-> > +
-> > +               TP_PROTO(const struct sk_buff *skb, int type, int code)=
-,
-> > +
-> > +               TP_ARGS(skb, type, code),
-> > +
-> > +               TP_STRUCT__entry(
-> > +                               __field(__u16, sport)
-> > +                               __field(__u16, dport)
-> > +                               __field(unsigned short, ulen)
-> > +                               __field(const void *, skbaddr)
-> > +                               __field(int, type)
-> > +                               __field(int, code)
-> > +                               __array(__u8, saddr, 4)
-> > +                               __array(__u8, daddr, 4)
-> > +               ),
-> > +
-> > +               TP_fast_assign(
-> > +                               // Get UDP header
-> > +                               struct udphdr *uh =3D udp_hdr(skb);
-> > +                               struct iphdr *iph =3D ip_hdr(skb);
-> > +                               __be32 *p32;
-> > +
-> > +                               __entry->sport =3D ntohs(uh->source);
-> > +                               __entry->dport =3D ntohs(uh->dest);
-> > +                               __entry->ulen =3D ntohs(uh->len);
-> > +                               __entry->skbaddr =3D skb;
-> > +                               __entry->type =3D type;
-> > +                               __entry->code =3D code;
-> > +
-> > +                               p32 =3D (__be32 *) __entry->saddr;
-> > +                               *p32 =3D iph->saddr;
-> > +
-> > +                               p32 =3D (__be32 *) __entry->daddr;
-> > +                               *p32 =3D  iph->daddr;
-> > +               ),
-> > +
+> Commit 91e467bc568f ("perf machine: Use hashtable for machine
+> threads") made the iteration of thread tids unordered. The perf report
+> --tasks output now shows child threads in an order determined by the
+> hashing. For example, in this snippet tid 3 appears after tid 256 even
+> though they have the same ppid 2:
 >
-> FYI, ICMP can be generated for many other protocols than UDP.
+> ```
+> $ perf report --tasks
+> %      pid      tid     ppid  comm
+>          0        0       -1 |swapper
+>          2        2        0 | kthreadd
+>        256      256        2 |  kworker/12:1H-k
+>     693761   693761        2 |  kworker/10:1-mm
+>    1301762  1301762        2 |  kworker/1:1-mm_
+>    1302530  1302530        2 |  kworker/u32:0-k
+>          3        3        2 |  rcu_gp
+> ...
+> ```
 >
-> > +               TP_printk("icmp_send: type=3D%d, code=3D%d. From %pI4:%=
-u to %pI4:%u ulen=3D%d skbaddr=3D%p",
-> > +                       __entry->type, __entry->code,
-> > +                       __entry->saddr, __entry->sport, __entry->daddr,
-> > +                       __entry->dport, __entry->ulen, __entry->skbaddr=
-)
-> > +);
-> > +
-> > +#endif /* _TRACE_ICMP_H */
-> > +
-> > +/* This part must be outside protection */
-> > +#include <trace/define_trace.h>
-> > diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
-> > index e63a3bf99617..437bdb7e2650 100644
-> > --- a/net/ipv4/icmp.c
-> > +++ b/net/ipv4/icmp.c
-> > @@ -92,6 +92,8 @@
-> >  #include <net/inet_common.h>
-> >  #include <net/ip_fib.h>
-> >  #include <net/l3mdev.h>
-> > +#define CREATE_TRACE_POINTS
-> > +#include <trace/events/icmp.h>
-> >
-> >  /*
-> >   *     Build xmit assembly blocks
-> > @@ -599,6 +601,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, =
-int code, __be32 info,
-> >         struct net *net;
-> >         struct sock *sk;
-> >
-> > +       trace_icmp_send(skb_in, type, code);
+> The output is easier to read if threads appear numerically
+> increasing. To allow for this, read all threads into a list then sort
+> with a comparator that orders by the child task's of the first common
+> parent. The list creation and deletion are created as utilities on
+> machine.  The indentation is possible by counting the number of
+> parents a child has.
 >
-> I think you missed many sanity checks between lines 622 and 676
-[...]
+> With this change the output for the same data file is now like:
+> ```
+> $ perf report --tasks
+> %      pid      tid     ppid  comm
+>          0        0       -1 |swapper
+>          1        1        0 | systemd
+>        823      823        1 |  systemd-journal
+>        853      853        1 |  systemd-udevd
+>       3230     3230        1 |  systemd-timesyn
+>       3236     3236        1 |  auditd
+>       3239     3239     3236 |   audisp-syslog
+>       3321     3321        1 |  accounts-daemon
+> ...
+> ```
 >
-> Honestly, a kprobe BPF based solution would be less risky, and less
-> maintenance for us.
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/builtin-report.c | 203 ++++++++++++++++++++----------------
+>  tools/perf/util/machine.c   |  30 ++++++
+>  tools/perf/util/machine.h   |  10 ++
+>  3 files changed, 155 insertions(+), 88 deletions(-)
 >
+> diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+> index 8e16fa261e6f..b48f1d5309e3 100644
+> --- a/tools/perf/builtin-report.c
+> +++ b/tools/perf/builtin-report.c
+> @@ -59,6 +59,7 @@
+>  #include <linux/ctype.h>
+>  #include <signal.h>
+>  #include <linux/bitmap.h>
+> +#include <linux/list_sort.h>
+>  #include <linux/string.h>
+>  #include <linux/stringify.h>
+>  #include <linux/time64.h>
+> @@ -828,35 +829,6 @@ static void tasks_setup(struct report *rep)
+>         rep->tool.no_warn =3D true;
+>  }
+>
+> -struct task {
+> -       struct thread           *thread;
+> -       struct list_head         list;
+> -       struct list_head         children;
+> -};
+> -
+> -static struct task *tasks_list(struct task *task, struct machine *machin=
+e)
+> -{
+> -       struct thread *parent_thread, *thread =3D task->thread;
+> -       struct task   *parent_task;
+> -
+> -       /* Already listed. */
+> -       if (!list_empty(&task->list))
+> -               return NULL;
+> -
+> -       /* Last one in the chain. */
+> -       if (thread__ppid(thread) =3D=3D -1)
+> -               return task;
+> -
+> -       parent_thread =3D machine__find_thread(machine, -1, thread__ppid(=
+thread));
+> -       if (!parent_thread)
+> -               return ERR_PTR(-ENOENT);
+> -
+> -       parent_task =3D thread__priv(parent_thread);
+> -       thread__put(parent_thread);
+> -       list_add_tail(&task->list, &parent_task->children);
+> -       return tasks_list(parent_task, machine);
+> -}
+> -
+>  struct maps__fprintf_task_args {
+>         int indent;
+>         FILE *fp;
+> @@ -900,89 +872,144 @@ static size_t maps__fprintf_task(struct maps *maps=
+, int indent, FILE *fp)
+>         return args.printed;
+>  }
+>
+> -static void task__print_level(struct task *task, FILE *fp, int level)
+> +static int thread_level(struct machine *machine, const struct thread *th=
+read)
+>  {
+> -       struct thread *thread =3D task->thread;
+> -       struct task *child;
+> -       int comm_indent =3D fprintf(fp, "  %8d %8d %8d |%*s",
+> -                                 thread__pid(thread), thread__tid(thread=
+),
+> -                                 thread__ppid(thread), level, "");
+> +       struct thread *parent_thread;
+> +       int res;
+>
+> -       fprintf(fp, "%s\n", thread__comm_str(thread));
+> +       if (thread__tid(thread) <=3D 0)
+> +               return 0;
+>
+> -       maps__fprintf_task(thread__maps(thread), comm_indent, fp);
+> +       if (thread__ppid(thread) <=3D 0)
+> +               return 1;
+>
+> -       if (!list_empty(&task->children)) {
+> -               list_for_each_entry(child, &task->children, list)
+> -                       task__print_level(child, fp, level + 1);
+> +       parent_thread =3D machine__find_thread(machine, -1, thread__ppid(=
+thread));
+> +       if (!parent_thread) {
+> +               pr_err("Missing parent thread of %d\n", thread__tid(threa=
+d));
+> +               return 0;
+>         }
+> +       res =3D 1 + thread_level(machine, parent_thread);
+> +       thread__put(parent_thread);
+> +       return res;
+>  }
+>
+> -static int tasks_print(struct report *rep, FILE *fp)
+> +static void task__print_level(struct machine *machine, struct thread *th=
+read, FILE *fp)
+>  {
+> -       struct perf_session *session =3D rep->session;
+> -       struct machine      *machine =3D &session->machines.host;
+> -       struct task *tasks, *task;
+> -       unsigned int nr =3D 0, itask =3D 0, i;
+> -       struct rb_node *nd;
+> -       LIST_HEAD(list);
+> +       int level =3D thread_level(machine, thread);
+> +       int comm_indent =3D fprintf(fp, "  %8d %8d %8d |%*s",
+> +                                 thread__pid(thread), thread__tid(thread=
+),
+> +                                 thread__ppid(thread), level, "");
+>
+> -       /*
+> -        * No locking needed while accessing machine->threads,
+> -        * because --tasks is single threaded command.
+> -        */
+> +       fprintf(fp, "%s\n", thread__comm_str(thread));
+>
+> -       /* Count all the threads. */
+> -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++)
+> -               nr +=3D machine->threads[i].nr;
+> +       maps__fprintf_task(thread__maps(thread), comm_indent, fp);
+> +}
+>
+> -       tasks =3D malloc(sizeof(*tasks) * nr);
+> -       if (!tasks)
+> -               return -ENOMEM;
+> +static int task_list_cmp(void *priv, const struct list_head *la, const s=
+truct list_head *lb)
 
-I agreed. I wonder if we can remove some trace_* at the very beginning
-of its caller function since they can be easily replaced with bpf
-tools and then we make less effort to maintain them, say,
-trace_tcp_probe(), trace_tcp_rcv_space_adjust, etc.
+I'm a little afraid that this comparison logic becomes complex.
+But I think it's better than having a tree of thread relationship.
+Just a comment that explains why we need this would be nice.
+
+
+> +{
+> +       struct machine *machine =3D priv;
+> +       struct thread_list *task_a =3D list_entry(la, struct thread_list,=
+ list);
+> +       struct thread_list *task_b =3D list_entry(lb, struct thread_list,=
+ list);
+> +       struct thread *a =3D task_a->thread;
+> +       struct thread *b =3D task_b->thread;
+> +       int level_a, level_b, res;
+> +
+> +       /* Compare a and b to root. */
+> +       if (thread__tid(a) =3D=3D thread__tid(b))
+> +               return 0;
+>
+> -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> -               struct threads *threads =3D &machine->threads[i];
+> +       if (thread__tid(a) =3D=3D 0)
+> +               return -1;
+>
+> -               for (nd =3D rb_first_cached(&threads->entries); nd;
+> -                    nd =3D rb_next(nd)) {
+> -                       task =3D tasks + itask++;
+> +       if (thread__tid(b) =3D=3D 0)
+> +               return 1;
+>
+> -                       task->thread =3D rb_entry(nd, struct thread_rb_no=
+de, rb_node)->thread;
+> -                       INIT_LIST_HEAD(&task->children);
+> -                       INIT_LIST_HEAD(&task->list);
+> -                       thread__set_priv(task->thread, task);
+> -               }
+> +       /* If parents match sort by tid. */
+> +       if (thread__ppid(a) =3D=3D thread__ppid(b)) {
+> +               return thread__tid(a) < thread__tid(b)
+> +                       ? -1
+> +                       : (thread__tid(a) > thread__tid(b) ? 1 : 0);
+
+Can it be simply like this?  We know tid(a) !=3D tid(b).
+
+  return thread__tid(a) < thread__tid(b) ? -1 : 1;
+
+
+>         }
+>
+>         /*
+> -        * Iterate every task down to the unprocessed parent
+> -        * and link all in task children list. Task with no
+> -        * parent is added into 'list'.
+> +        * Find a and b such that if they are a child of each other a and=
+ b's
+> +        * tid's match, otherwise a and b have a common parent and distin=
+ct
+> +        * tid's to sort by. First make the depths of the threads match.
+>          */
+> -       for (itask =3D 0; itask < nr; itask++) {
+> -               task =3D tasks + itask;
+> -
+> -               if (!list_empty(&task->list))
+> -                       continue;
+> -
+> -               task =3D tasks_list(task, machine);
+> -               if (IS_ERR(task)) {
+> -                       pr_err("Error: failed to process tasks\n");
+> -                       free(tasks);
+> -                       return PTR_ERR(task);
+> +       level_a =3D thread_level(machine, a);
+> +       level_b =3D thread_level(machine, b);
+> +       a =3D thread__get(a);
+> +       b =3D thread__get(b);
+> +       for (int i =3D level_a; i > level_b; i--) {
+> +               struct thread *parent =3D machine__find_thread(machine, -=
+1, thread__ppid(a));
+> +
+> +               thread__put(a);
+> +               if (!parent) {
+> +                       pr_err("Missing parent thread of %d\n", thread__t=
+id(a));
+> +                       thread__put(b);
+> +                       return -1;
+>                 }
+> +               a =3D parent;
+> +       }
+> +       for (int i =3D level_b; i > level_a; i--) {
+> +               struct thread *parent =3D machine__find_thread(machine, -=
+1, thread__ppid(b));
+>
+> -               if (task)
+> -                       list_add_tail(&task->list, &list);
+> +               thread__put(b);
+> +               if (!parent) {
+> +                       pr_err("Missing parent thread of %d\n", thread__t=
+id(b));
+> +                       thread__put(a);
+> +                       return 1;
+> +               }
+> +               b =3D parent;
+> +       }
+> +       /* Search up to a common parent. */
+> +       while (thread__ppid(a) !=3D thread__ppid(b)) {
+> +               struct thread *parent;
+> +
+> +               parent =3D machine__find_thread(machine, -1, thread__ppid=
+(a));
+> +               thread__put(a);
+> +               if (!parent)
+> +                       pr_err("Missing parent thread of %d\n", thread__t=
+id(a));
+> +               a =3D parent;
+> +               parent =3D machine__find_thread(machine, -1, thread__ppid=
+(b));
+> +               thread__put(b);
+> +               if (!parent)
+> +                       pr_err("Missing parent thread of %d\n", thread__t=
+id(b));
+> +               b =3D parent;
+> +               if (!a || !b)
+> +                       return !a && !b ? 0 : (!a ? -1 : 1);
+
+Wouldn't it leak a refcount if either a or b is NULL (not both)?
+
+
+> +       }
+> +       if (thread__tid(a) =3D=3D thread__tid(b)) {
+> +               /* a is a child of b or vice-versa, deeper levels appear =
+later. */
+> +               res =3D level_a < level_b ? -1 : (level_a > level_b ? 1 :=
+ 0);
+> +       } else {
+> +               /* Sort by tid now the parent is the same. */
+> +               res =3D thread__tid(a) < thread__tid(b) ? -1 : 1;
+>         }
+> +       thread__put(a);
+> +       thread__put(b);
+> +       return res;
+> +}
+> +
+> +static int tasks_print(struct report *rep, FILE *fp)
+> +{
+> +       struct machine *machine =3D &rep->session->machines.host;
+> +       LIST_HEAD(tasks);
+> +       int ret;
+>
+> -       fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppid", "comm");
+> +       ret =3D machine__thread_list(machine, &tasks);
+> +       if (!ret) {
+> +               struct thread_list *task;
+
+Do we really need this thread_list?  Why not use an
+array of threads directly?
 
 Thanks,
-Jason
+Namhyung
+
+>
+> -       list_for_each_entry(task, &list, list)
+> -               task__print_level(task, fp, 0);
+> +               list_sort(machine, &tasks, task_list_cmp);
+>
+> -       free(tasks);
+> -       return 0;
+> +               fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppid", =
+"comm");
+> +
+> +               list_for_each_entry(task, &tasks, list)
+> +                       task__print_level(machine, task->thread, fp);
+> +       }
+> +       thread_list__delete(&tasks);
+> +       return ret;
+>  }
+>
+>  static int __cmd_report(struct report *rep)
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index 3da92f18814a..7872ce92c9fc 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -3261,6 +3261,36 @@ int machines__for_each_thread(struct machines *mac=
+hines,
+>         return rc;
+>  }
+>
+> +
+> +static int thread_list_cb(struct thread *thread, void *data)
+> +{
+> +       struct list_head *list =3D data;
+> +       struct thread_list *entry =3D malloc(sizeof(*entry));
+> +
+> +       if (!entry)
+> +               return -ENOMEM;
+> +
+> +       entry->thread =3D thread__get(thread);
+> +       list_add_tail(&entry->list, list);
+> +       return 0;
+> +}
+> +
+> +int machine__thread_list(struct machine *machine, struct list_head *list=
+)
+> +{
+> +       return machine__for_each_thread(machine, thread_list_cb, list);
+> +}
+> +
+> +void thread_list__delete(struct list_head *list)
+> +{
+> +       struct thread_list *pos, *next;
+> +
+> +       list_for_each_entry_safe(pos, next, list, list) {
+> +               thread__zput(pos->thread);
+> +               list_del(&pos->list);
+> +               free(pos);
+> +       }
+> +}
+> +
+>  pid_t machine__get_current_tid(struct machine *machine, int cpu)
+>  {
+>         if (cpu < 0 || (size_t)cpu >=3D machine->current_tid_sz)
+> diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+> index 1279acda6a8a..b738ce84817b 100644
+> --- a/tools/perf/util/machine.h
+> +++ b/tools/perf/util/machine.h
+> @@ -280,6 +280,16 @@ int machines__for_each_thread(struct machines *machi=
+nes,
+>                               int (*fn)(struct thread *thread, void *p),
+>                               void *priv);
+>
+> +struct thread_list {
+> +       struct list_head         list;
+> +       struct thread           *thread;
+> +};
+> +
+> +/* Make a list of struct thread_list based on threads in the machine. */
+> +int machine__thread_list(struct machine *machine, struct list_head *list=
+);
+> +/* Free up the nodes within the thread_list list. */
+> +void thread_list__delete(struct list_head *list);
+> +
+>  pid_t machine__get_current_tid(struct machine *machine, int cpu);
+>  int machine__set_current_tid(struct machine *machine, int cpu, pid_t pid=
+,
+>                              pid_t tid);
+> --
+> 2.43.0.687.g38aa6559b0-goog
+>
 
