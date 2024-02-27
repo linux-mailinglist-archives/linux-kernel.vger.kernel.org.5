@@ -1,171 +1,252 @@
-Return-Path: <linux-kernel+bounces-83627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5928869C75
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 19938869C7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:41:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F94C1F22CB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:41:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C8D51F26477
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:41:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FCBF2C6A4;
-	Tue, 27 Feb 2024 16:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CED3149E1D;
+	Tue, 27 Feb 2024 16:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="PALDAHN2"
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QKD7Q0CU"
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19E8208B0
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720CF2134A
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709051933; cv=none; b=N5bPPgJ5S8Yyq+fJcXuXTncGj+gcOUM9UaEdfAWyPs4XVSGva1++dvoOKybAeoUrvgxk7gQn0598JW50bk4DVXFvGI3S2sMriHjRIYWVKzk4lDwD+uYdHyCYfiygzrAsZUS7ocCPQqCfIRMvsL6w/xTor8C3imy0NjLfbUAHaXg=
+	t=1709051952; cv=none; b=DxFSYrk26qUdRZgE4cAFM5+saWDCp4cC8hwpiWhN3hqQJ2g8WugLTFdA4htyQGAZjWaesKgC6g2iLzdANX63blxvtbtkTTQCFjuRC+ba7EadSg/6iKTCZmDGbvfoTsj4UNjuOd+5WFwF/U47wayfd+5hLT5br4xXQ9SgyVppRzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709051933; c=relaxed/simple;
-	bh=JK2bmcfEsaCOTSZSTZsc9hhbD20YHy0y1PqEbB5xuAM=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=KpURJwFInLwHfvNNhcx5o7q+aZ+aN0a9wfXAlfNBKh/PMUjlLhwkxFZkxyiT+oYlMCTSkXfs+XouN4U9vzxJUvSAeJ8+wM8dQFCd3l0d0JjtcztvuSJdPwJfi9jF2PlZilLW5YxoZkPwy68FIsoeu9oEqJR90DpECrL+L+hMfAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=PALDAHN2; arc=none smtp.client-ip=209.85.166.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-365ab9e9e31so2591875ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:38:51 -0800 (PST)
+	s=arc-20240116; t=1709051952; c=relaxed/simple;
+	bh=NgpWdnxiLbFqNexAmzcqA9YP7ocmvHBLOxsvEhPCKvg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bTsV/f/ebKAuGx59bCKgeilRS+be2S3htWzPENBJIYSKt3MHWr6iTKiRQ3/4O+hnZC+S+wwxKVazQLMIKE0BLrVmW9kk5zImvCrnRZH/byZweP1tHrU06iIEydLPnKGYOYxa/ayakNkR24A6kAnFlVN4C1T3dYc4OTqdbRTykP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QKD7Q0CU; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-60922e16f6fso12242617b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:39:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1709051930; x=1709656730; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HBYvHRNVmUQHuF4u6D8aV99gBzMfLHOJu7wZkaD6DE8=;
-        b=PALDAHN2NG3U1Td9o9NV8wdNnO3RAja5cGWEYEj8cVsp910fsX5PHNemR6h9jp+26E
-         lwhHuumvwnLyaeDbj9ekV3vocnquVVEXs3BqrMyaDXqUyXTYTaKaXFnMzVY46BMfi7ej
-         50yG9iZoTrV+jilOmDS4h8DTQJFbWGotU8KOBo+/pmnRc67NAC85+iqNE1XJBNwK3HOg
-         gcUF3EUnnI7DgY1gZfifDxMtYseS2WX2CkTwTg0MOdI+fRcn9SjpkGB4eXR5hObAuPCp
-         ZHQWYwvfrkaE2tFjYT+bvkKO+7VMRPjRCtpMj+PHHsaG7KbIbSAW1HXKk6gPTn7ifa48
-         02mQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709051930; x=1709656730;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1709051948; x=1709656748; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HBYvHRNVmUQHuF4u6D8aV99gBzMfLHOJu7wZkaD6DE8=;
-        b=r9ndhD3yaj6OgwyUEnOBuBXalMJYO0ZwLsZcuuuln7XA9mQD6CjCeY2GZiYlRJ+44L
-         VWwPiUKiOVgN8cR3PUIGOciRf1zCS7RqonCeIV2ELW9a9PFddmiuaQixxW1oPwkPhOIu
-         k4k28GXh+e0q6Y88s8Mu7cnz/P0omVTmUoeZ13Ggb/85boqsZ74TSvt5ZoutWLJkfwES
-         21N/hfbpT6wLvD38kZO5b0PYVF6Ubq7KPNKJYR1eEWAxu++e7VbzyhZPtRHKlxCHMZbS
-         +6p+RI1xtko4RTfljjPXPGmqOT3zVIaABU5E2hPxhHmHXOR7mUDQVjdIUwAaip6IWUDR
-         C36A==
-X-Forwarded-Encrypted: i=1; AJvYcCVtLLdhkQ66MPhREwY5BacGAjOP3YIFLbuGvOrEG/Vjdb5EBR189X71mi2qad1lFUgKEPB2ltAsUWEu6iXL3ky78DcgXfWv+s06gP+E
-X-Gm-Message-State: AOJu0YymP3wOCxgnYULcznzZ085pCa92eTZ2oSRE7ZaXDsycQ024XRCE
-	aPWeTsil4XXyYBwDnAYVMQzzINS1Lld+N8s0CeAVNUm8rFckpnUNZvbuGUc8FHQ=
-X-Google-Smtp-Source: AGHT+IF/piMzSGTcKm+9pvDU30C2+pCT5esgldW0sjMlovL7AeIarCO2Czmdb8PlN8+u1fgjCQQDcg==
-X-Received: by 2002:a05:6e02:1bce:b0:365:24d9:9477 with SMTP id x14-20020a056e021bce00b0036524d99477mr14656459ilv.15.1709051930522;
-        Tue, 27 Feb 2024 08:38:50 -0800 (PST)
-Received: from localhost ([50.213.54.97])
-        by smtp.gmail.com with ESMTPSA id ls22-20020a056a00741600b006e533caee00sm3465541pfb.155.2024.02.27.08.38.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 08:38:50 -0800 (PST)
-Date: Tue, 27 Feb 2024 08:38:50 -0800 (PST)
-X-Google-Original-Date: Tue, 27 Feb 2024 08:38:48 PST (-0800)
-Subject:     Re: [PATCH] riscv: deprecate CONFIG_MMU=n
-In-Reply-To: <a49546e8-6749-4458-98da-67fd37b7df18@rivosinc.com>
-CC: lohr85@gmail.com, Conor Dooley <conor@kernel.org>, samuel.holland@sifive.com,
-  Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-  linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>, ajones@ventanamicro.com,
-  dlemoal@kernel.org, Bjorn Topel <bjorn@rivosinc.com>, Atish Patra <atishp@rivosinc.com>
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: cleger@rivosinc.com
-Message-ID: <mhng-a3b495e6-aca6-4137-a3c1-8fcacafd8596@palmer-ri-x1c9a>
+        bh=z/ds6xBAyNMUyUudVMgCcZQOOdZHJrbf6LFZuMELU1U=;
+        b=QKD7Q0CU+PmNSO7RJww0aB+q3R7zUuzk7/y1EuKmJFnj7MkMmhvOdGPLJ/dOhGOi/j
+         SqDwkcPkraX8yTXe804U9TSSRoF6+z6sgaBoWk+hpR/ZxiTDheObd6jWF+A7MtkSz++w
+         Av2kDuZInsSMRm2hAAUb4BLDauRLOBm4yx8tXlbBX9PUbwx8iyfnP7ev0xXkMYZMZ8in
+         Gbz0hc9sqnLaZbD8ji4kT71KIkoKUtZoTysPK6cwhRxOd+XLYxh0Dk+hke3ItkHhX3MX
+         QnLp0UhMtRJxMw5uYVO4j5oLc6fuvHGwfsRshcOlf2JGk4vHAkKCVDhhP4gfz0Gy661o
+         lNdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709051948; x=1709656748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z/ds6xBAyNMUyUudVMgCcZQOOdZHJrbf6LFZuMELU1U=;
+        b=FIOf99c4C413vQNWmAl9S9MxfT7+W9zhKBSI+ymQYwuS0hhy2vHJVWb8a7dZ7imJoZ
+         taIePk5tFx2ShlD78KP+BfG3U2nYXT19z2MVqJuiqA4y9sW7R7o56nlJs5UqWK6inw18
+         Rv5pD8tmcHXT27P9xizLW5KLdFbEOd76eepypsSB3krV1PwQUau5Eolp7zcuASpZMCwK
+         7Z4H7NqMm/pziO6LCGeWXjnTMAg1WB0TlcE/lfhbSbddusCJMPRg8rDoSAjIuHBkRUJ0
+         zQ6nCuin+kBSuHhOtV0cpEFGgnkXU8sam0/qZd6wlufLmq5kPlOpS6LlH0xOsKxGo2Pe
+         hNIA==
+X-Forwarded-Encrypted: i=1; AJvYcCWRaWBVbFh3OaDxDcOaxycIB4ES0Ork+Tel4JP1zqs7ql4QlV131bs3+5nWiqx7oR0JhueyTZxqHamAtc5qF96xBnxePuCWCa+rhlp0
+X-Gm-Message-State: AOJu0YwLD+EQ4g7vMyR1sSZT+5UnQPL/SikxJ0Jm2zfEnqsKyqQ8VAuk
+	M/87XLcPVMic+ra9wjG3RWbyzKgbFfG+BbJmVl2OEH57SagV0OysWoAUEGMm+/V3zS8pHeCjbLs
+	bZO7dzRMDNYU1TOYRv6+9AiPSVNXvRTpFSglQ
+X-Google-Smtp-Source: AGHT+IGYsfj1hpFG2qZ+lv3Tc2gaVahH2B+pghzlhO4uZB2pAxOqLV3b7HUJfJpPshrzze8w4TdCoPFLjSNMBWpeWIM=
+X-Received: by 2002:a0d:cc52:0:b0:609:2c38:4dd2 with SMTP id
+ o79-20020a0dcc52000000b006092c384dd2mr1712145ywd.42.1709051948102; Tue, 27
+ Feb 2024 08:39:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-20-surenb@google.com>
+ <2daf5f5a-401a-4ef7-8193-6dca4c064ea0@suse.cz>
+In-Reply-To: <2daf5f5a-401a-4ef7-8193-6dca4c064ea0@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 27 Feb 2024 08:38:54 -0800
+Message-ID: <CAJuCfpGt+zfFzfLSXEjeTo79gw2Be-UWBcJq=eL1qAnPf9PaiA@mail.gmail.com>
+Subject: Re: [PATCH v4 19/36] mm: create new codetag references during page splitting
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 27 Feb 2024 01:11:41 PST (-0800), cleger@rivosinc.com wrote:
+On Tue, Feb 27, 2024 at 2:10=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
 >
+> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> > When a high-order page is split into smaller ones, each newly split
+> > page should get its codetag. The original codetag is reused for these
+> > pages but it's recorded as 0-byte allocation because original codetag
+> > already accounts for the original high-order allocated page.
 >
-> On 26/02/2024 20:00, Charles Lohr wrote:
->> WOAH! Please DO NOT deprecate NOMMU. I use the NOMMU build constantly
->> and NOMMU Linux on RISC-V is the avenue used by many FPGA soft cores
->> for Linux, as well as some limited systems.
+> This was v3 but then you refactored (for the better) so the commit log
+> could reflect it?
 
-OK.
+Yes, technically mechnism didn't change but I should word it better.
+Smth like this:
 
-I just build test this stuff, as I don't really have a use for it 
-personally.  I figured if nobody's reporting bugs then probably it's 
-broken and nobody's noticed because nobody's using it.
+When a high-order page is split into smaller ones, each newly split
+page should get its codetag. After the split each split page will be
+referencing the original codetag. The codetag's "bytes" counter
+remains the same because the amount of allocated memory has not
+changed, however the "calls" counter gets increased to keep the
+counter correct when these individual pages get freed.
 
->> I get new copies of the kernel when there are releases and test them
->> frequently to make sure everything is still working as expected.
-
-I'd actually expected it to be broken, but I guess we managed to avoid 
-screwing things up ;)
-
->> For us we just don't care about XIP. I mean if someone did push it
->> through to fruition, I'd also test and use it, but I urge you please
->> do not deprecate this.  While it's sometimes needed a bit of a
->> creative build to get everything working, I've never needed to patch
->> anything in the kernel beyond patching in a custom console for serial
->> output.
->>
 >
-> Hey Charles,
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 >
-> No worries, we actually did not expected NOMMU to have *so many* users.
-> I guess deprecating stuff is a good way to have immediate feedback ;).
-> Having FDPIC psABI to be merged upstream could also probably be a
-> positive point toward a better NOMMU support.
+> I was going to R-b, but now I recalled the trickiness of
+> __free_pages() for non-compound pages if it loses the race to a
+> speculative reference. Will the codetag handling work fine there?
 
-Ya, that's probably the right way to do it.  Touching anything in the 
-psABI is pretty miserable, though, so I don't really want to force 
-people to do it...
+I think so. Each non-compoud page has its individual reference to its
+codetag and will decrement it whenever the page is freed. IIUC the
+logic in  __free_pages(), when it loses race to a speculative
+reference it will free all pages except for the first one and the
+first one will be freed when the last put_page() happens. If prior to
+this all these pages were split from one page then all of them will
+have their own reference which points to the same codetag. Every time
+one of these pages are freed that codetag's "bytes" and "calls"
+counters will be decremented. I think accounting will work correctly
+irrespective of where these pages are freed, in __free_pages() or by
+put_page().
 
->> I am happy to discuss the possibility of me and or one of the other
->> RISC-V soft (FPGA) core people stepping up to try to be more active,
->> but so far we've just been very well serviced by the current NOMMU
->> Linux setup.
 >
-> It could probably be nice to have some feedback/Tested-by: from NOMMU
-> users for new releases then.
-
-Having more upstream interaction from users is always appreciated, 
-that's the best way to prove people are using the code.  If you guys 
-have the time it'd be great to get this into some sort of CI, ideally 
-running on some real platform.
-
-> Thanks,
->
-> Clément
->
->>
->> Charles
->>
->>
->> On Mon, Feb 26, 2024 at 8:03 AM Conor Dooley <conor@kernel.org> wrote:
->>>
->>> On Mon, Feb 26, 2024 at 04:25:24PM +0100, Clément Léger wrote:
->>>> I guess I could also mark XIP as deprecated.
->>>
->>> I'm not so sure, people recently added XIP support to QEMU (and sent
->>> kernel fixes in December). XIP is also not nearly as much of a problem
->>> to support, there's far less that it does differently, the main barrier
->>> was the inability to test it which is no longer the case.
->>> That said, XIP is gonna kill itself off I feel as it does not support
->>> runtime patching and therefore is extremely limited on extensions, given
->>> we use alternatives for all of that (although I suppose if someone has a
->>> usecase they could make nasty macros worse and implement a compiletime
->>> switch in the alternatives too).
->>>
->>> Cheers,
->>> Conor.
->>>
->>> _______________________________________________
->>> linux-riscv mailing list
->>> linux-riscv@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> > ---
+> >  include/linux/pgalloc_tag.h | 30 ++++++++++++++++++++++++++++++
+> >  mm/huge_memory.c            |  2 ++
+> >  mm/page_alloc.c             |  2 ++
+> >  3 files changed, 34 insertions(+)
+> >
+> > diff --git a/include/linux/pgalloc_tag.h b/include/linux/pgalloc_tag.h
+> > index b49ab955300f..9e6ad8e0e4aa 100644
+> > --- a/include/linux/pgalloc_tag.h
+> > +++ b/include/linux/pgalloc_tag.h
+> > @@ -67,11 +67,41 @@ static inline void pgalloc_tag_sub(struct page *pag=
+e, unsigned int order)
+> >       }
+> >  }
+> >
+> > +static inline void pgalloc_tag_split(struct page *page, unsigned int n=
+r)
+> > +{
+> > +     int i;
+> > +     struct page_ext *page_ext;
+> > +     union codetag_ref *ref;
+> > +     struct alloc_tag *tag;
+> > +
+> > +     if (!mem_alloc_profiling_enabled())
+> > +             return;
+> > +
+> > +     page_ext =3D page_ext_get(page);
+> > +     if (unlikely(!page_ext))
+> > +             return;
+> > +
+> > +     ref =3D codetag_ref_from_page_ext(page_ext);
+> > +     if (!ref->ct)
+> > +             goto out;
+> > +
+> > +     tag =3D ct_to_alloc_tag(ref->ct);
+> > +     page_ext =3D page_ext_next(page_ext);
+> > +     for (i =3D 1; i < nr; i++) {
+> > +             /* Set new reference to point to the original tag */
+> > +             alloc_tag_ref_set(codetag_ref_from_page_ext(page_ext), ta=
+g);
+> > +             page_ext =3D page_ext_next(page_ext);
+> > +     }
+> > +out:
+> > +     page_ext_put(page_ext);
+> > +}
+> > +
+> >  #else /* CONFIG_MEM_ALLOC_PROFILING */
+> >
+> >  static inline void pgalloc_tag_add(struct page *page, struct task_stru=
+ct *task,
+> >                                  unsigned int order) {}
+> >  static inline void pgalloc_tag_sub(struct page *page, unsigned int ord=
+er) {}
+> > +static inline void pgalloc_tag_split(struct page *page, unsigned int n=
+r) {}
+> >
+> >  #endif /* CONFIG_MEM_ALLOC_PROFILING */
+> >
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 94c958f7ebb5..86daae671319 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -38,6 +38,7 @@
+> >  #include <linux/sched/sysctl.h>
+> >  #include <linux/memory-tiers.h>
+> >  #include <linux/compat.h>
+> > +#include <linux/pgalloc_tag.h>
+> >
+> >  #include <asm/tlb.h>
+> >  #include <asm/pgalloc.h>
+> > @@ -2899,6 +2900,7 @@ static void __split_huge_page(struct page *page, =
+struct list_head *list,
+> >       /* Caller disabled irqs, so they are still disabled here */
+> >
+> >       split_page_owner(head, nr);
+> > +     pgalloc_tag_split(head, nr);
+> >
+> >       /* See comment in __split_huge_page_tail() */
+> >       if (PageAnon(head)) {
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index 58c0e8b948a4..4bc5b4720fee 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -2621,6 +2621,7 @@ void split_page(struct page *page, unsigned int o=
+rder)
+> >       for (i =3D 1; i < (1 << order); i++)
+> >               set_page_refcounted(page + i);
+> >       split_page_owner(page, 1 << order);
+> > +     pgalloc_tag_split(page, 1 << order);
+> >       split_page_memcg(page, 1 << order);
+> >  }
+> >  EXPORT_SYMBOL_GPL(split_page);
+> > @@ -4806,6 +4807,7 @@ static void *make_alloc_exact(unsigned long addr,=
+ unsigned int order,
+> >               struct page *last =3D page + nr;
+> >
+> >               split_page_owner(page, 1 << order);
+> > +             pgalloc_tag_split(page, 1 << order);
+> >               split_page_memcg(page, 1 << order);
+> >               while (page < --last)
+> >                       set_page_refcounted(last);
 
