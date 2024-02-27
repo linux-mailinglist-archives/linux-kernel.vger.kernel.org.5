@@ -1,103 +1,108 @@
-Return-Path: <linux-kernel+bounces-83239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE99E8690A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:33:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43C158690AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ABEB1F25C78
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:33:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEC361F25F40
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EDA13AA20;
-	Tue, 27 Feb 2024 12:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4DD13957E;
+	Tue, 27 Feb 2024 12:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MohDgq/G"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBZelrBl"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C03713A87E
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944B01CFA9;
+	Tue, 27 Feb 2024 12:34:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709037170; cv=none; b=q0mNTn70NSii4u4zbMgnPL+Igmm2ZuDXqXLDO3msuDPKlOuCQARM8u6uHPnjdpAXfpE1leYp9haq3rRUdmRnqwE/+AlvBKEtHXP2+VhkoWhAmyf01gBlXZXqDi4slVrYlFMIB02ENtK3ICqkBIXw2KNb7BXl4f94MJqexyGn+OY=
+	t=1709037269; cv=none; b=hdfQAyK9NqqbFNqbNrcq0JOG7vdmX9PjEQH75qLSrOyatCpOez2wFt741gy9NiVgH22FR3akC1bXihxDUO3DquXw5U4N85yxTORFgduNjCKG2QQAXkDb4JtA986ll+93e/o+CPN3e9yGSET//qXueUfqCta2yrnQjuvV2q9MEvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709037170; c=relaxed/simple;
-	bh=PSjXZXB/iL1gAI7UZkVx6aFnFooNh3+sIUM9+ah4aho=;
+	s=arc-20240116; t=1709037269; c=relaxed/simple;
+	bh=N9j9qlONozduTz+bniTZX4spLz7Dtuw1zBMBtIuIeC0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ogdDdT1nVc5/EZwK6LVz1iCVxTpr+xRFY06kl1Z+AS5xyaD6kP7FkZWLbewmoEAbrrAt1VeMXe0tKiIB9EzjENSZgHcTeDYywdrMqdiFNTBur57qAq8395xnbu/Y4R7vE+l581GVr9blifHYaeOor6f4pMZtjiIl0U6GDWS8JjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MohDgq/G; arc=none smtp.client-ip=209.85.214.177
+	 To:Cc:Content-Type; b=MAvtQ/rpmKIwFMeDnzZ0QkosGlyx7O+Vd2rOjDzTdOst3WxmIS+Jt1qiABT76JG/YSAaELO2oJXVfYUlX++PhTj6onoO3gcAJNgdgyP60XqZ33PaWo/otdvHUXtc9AeZo4f4NPXmKxiaeNiaNQ1c6q8S9P5su4GKeeMWzavUAvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBZelrBl; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d7881b1843so31889735ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:32:49 -0800 (PST)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2997a92e23bso2887446a91.3;
+        Tue, 27 Feb 2024 04:34:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709037169; x=1709641969; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709037267; x=1709642067; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PSjXZXB/iL1gAI7UZkVx6aFnFooNh3+sIUM9+ah4aho=;
-        b=MohDgq/GEFSG0z0E4knRriwRhG2Cc6gHj6KeXGt00rA/pJPGOJ9TfjCKT6xGruRIZX
-         MpGlJCZC0tBNDWyWmbwe7GqrJzxsMBZWqUHifKcPA9bmOD54tPLCgrtlWi6OSOWmZZ6r
-         3fNgGesJxA8xatdtm5mGOVjgkr99P9dDfUXh1pLIH2rq8Z6s2hQBw1sA9q4PzEZJ0bVO
-         zJpcQlA6gcVGUe9kjpj/cJBA4DjovRWGULaw/AG9++kAfzXbaZ9LZq9HcKO8w3jnrAVW
-         4au3B29ij8sQ39evLcNKARBk5x3LZqLzg/YlrQueyLUtPr8/QvWKaqFiAwoeNY/mAKnM
-         cnsA==
+        bh=N9j9qlONozduTz+bniTZX4spLz7Dtuw1zBMBtIuIeC0=;
+        b=SBZelrBlMCrAok/Ji5IEEIJ0HuE10ktW936bNSRp7GdMIR5e+y4QvpsYvEucM5xjeu
+         mKdxLMsjdQIalqDWPrC4t2jI6azU5RQJjnWHjz9N4uTEswRgLHcDs7uHx6A2vWPRLu2x
+         vYLZQb3dpdY4C8cdspbbw79YWR0oPeMC5x8PD7iQaOGd+f6WdxH16hGFJUwYUI/M/nVp
+         FaagOgWF8MIchQBZlC92uGDpHeowb555aiKuff+BubVIEfdqOExTTdV83W5qsZAiVSeg
+         TTttIMqUmApTIYcKSQhqSpziL6By7gLclakfPzID3zOEjzxf6FkGgYXFe3TSaC679HBe
+         IIqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709037169; x=1709641969;
+        d=1e100.net; s=20230601; t=1709037267; x=1709642067;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PSjXZXB/iL1gAI7UZkVx6aFnFooNh3+sIUM9+ah4aho=;
-        b=cmNzUa+BDnJ1h4UY5lt/L7fdbaC0aAaRZXE3sEOwhQ/2bd1c0FChBOX2Vgr/jc4a0Z
-         A6wdh+4K+k4lB3In1uAMHBQrK/ZUdY3RUOZxUr0T8SvyF9Wex0jWxjbbMiHFYrzlQIiB
-         60gZe6Q4R+wiKL8WzW0jE82z9KVfwLdbo/540lHiLfNWYYoGaOo7YJYtD/g1EsqcySgx
-         oF3C7KSw7eg4+IXvqEL8Bu4Y9xo4GJors7mgRq/4zvaBUa6UcqycqK6OGhL2W8c4J2Tt
-         2h39fVRLDCoIJDn7FM+ijTE2SinOWbaYuI93om/FQ35sRprCvPz5i0JjgTde68dBKawv
-         SgxA==
-X-Forwarded-Encrypted: i=1; AJvYcCWjwjI1AwXvUdorSqDIP/br8j5VHM1R8DqItJGKwacip632F4j0oLbqIOZk0Rg9Ic3KbBCgtbhwNvhfOWbxVj2uC3zBEa5jpSYVVYEj
-X-Gm-Message-State: AOJu0Yy5JgOTN9DqUVdtFxupHroc5N/AKSLEZ/vpnWPrjzH1Ya+EVj8l
-	3BrXmrrgp+OmIhzZBcSBBj+iWPH8BXLxEAUa/rsSHciQ0GSgOpegH8T+ovPMXooTlrVZe4RNBsD
-	5X/I0Tr3EH1q8WG0hAGM1JzondFA=
-X-Google-Smtp-Source: AGHT+IHfI3z9dNBjP91sqj4IoHTWC6qMdTEdL9kDSGMGF49QjbxmXnVai+skXGLKaxzrzGUXuOCsBa5iffEE67iRjUA=
-X-Received: by 2002:a17:903:2b0c:b0:1dc:bb56:9d14 with SMTP id
- mc12-20020a1709032b0c00b001dcbb569d14mr1519244plb.41.1709037168850; Tue, 27
- Feb 2024 04:32:48 -0800 (PST)
+        bh=N9j9qlONozduTz+bniTZX4spLz7Dtuw1zBMBtIuIeC0=;
+        b=uO+F8ZftviYg1B1Av0GTIAzZmaTq4QfL0Qa+xteX7YJq3dWo6IvUlWEOO0uc9Wde0P
+         kQ2YEvixO+XoiMcinQlOcSC8iALGaH4rh+U9g3Iq1TYyXgyVc+xIOOug0Zlt/a+Q9c8C
+         FZVdG6sEfdcl3JRFkIT44aOp6R1Ut9oJFH20hGfawK8BjKqxXMu4LsnwhzNINkROJ/Mi
+         VGALXQmJPJB3pHpUI0PmXNMsSlIXrt54+zd1rLu762am5RaxSkfjHU+6llatOoEY2bqf
+         EbuS4zaGvvqAU2hAFywr88BMURBhKRLdsTrIDecNf8rDuTonm1sG3gwXk7CdQ2rpIU9Y
+         z91Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV13V7aDEi27eSWyemQ7TcL7ZpvgZK0/hzmplO14Q+UMAMg5IDpgndtRMFus1AUPFoIUxCEyFnr/OFQR41jq3XonhvNloib1UIxxFT9eUrgPzKswE2GVEmueZ27MBCVtzK8oJckBDtvAgTz1CcVkNy4NFmCwabpK7+dGGXVcs/RuxKKkgWOL4OP+Fx40I8FeQ+ErQEJGLhjnfaIM4459EM=
+X-Gm-Message-State: AOJu0Yy+8ZO4uMbZebHD84QGA9riTQmoSxOKrWYoTPNcdnGsogBq2HyI
+	sgRRFnt/trEac0P/cWDNK0wlSONYiyRChVEJu5whlsYpLmChf2gKsoIyF3lik3yXkE07K0aJvxo
+	0rw8qnJ6smy3Z0B9mdD70W5R3ccY=
+X-Google-Smtp-Source: AGHT+IEuXAPX9FOqOhNJb3Owku+lxeLjmPjbeDLcLvCF79H6OR73WYykC8gycjj0GEybh553JRImPRMosUkl+JhzaAA=
+X-Received: by 2002:a17:90a:5804:b0:299:389e:b611 with SMTP id
+ h4-20020a17090a580400b00299389eb611mr5540528pji.47.1709037266902; Tue, 27 Feb
+ 2024 04:34:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208002841.GA2601476@dev-arch.thelio-3990X>
- <CANiq72=G--5LW-9sg2PscTL863mFVNdnX7LUQX2Xj02qZs4crA@mail.gmail.com>
- <20240212234850.GB3221859@dev-arch.thelio-3990X> <20240213025303.GA4006766@dev-arch.thelio-3990X>
- <CANiq72npYCD-zKqcXPNOAxnKiUCCXGbFQaGo-8=0-171ni+ncQ@mail.gmail.com>
-In-Reply-To: <CANiq72npYCD-zKqcXPNOAxnKiUCCXGbFQaGo-8=0-171ni+ncQ@mail.gmail.com>
+References: <20240223-leverage-walmart-5424542cd8bd@spud> <20240223-perjury-preshow-fc2cf73d552e@spud>
+ <CANiq72=mCnm0mKOw5K44PmZ+jF=67jxEEkcXP-E0O8CaUrps=w@mail.gmail.com> <20240227-uncertain-amaze-6197e627ad95@wendy>
+In-Reply-To: <20240227-uncertain-amaze-6197e627ad95@wendy>
 From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 27 Feb 2024 13:32:36 +0100
-Message-ID: <CANiq72kcQUuxcno00+QWrstrcfwC+2_Bvh+8dr5kgVkEtrWOEA@mail.gmail.com>
-Subject: Re: Prebuilt LLVM 18.1.0-rc2 uploaded
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: llvm@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	Conor Dooley <conor@kernel.org>, Conor Dooley <Conor.Dooley@microchip.com>
+Date: Tue, 27 Feb 2024 13:34:14 +0100
+Message-ID: <CANiq72=geBobqM0Dc2yv=NjAc3MWXhOrDHfuJ84TgQ+XVxBo0w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] rust: make mutually exclusive with CFI_CLANG
+To: Conor Dooley <conor.dooley@microchip.com>, Nathan Chancellor <nathan@kernel.org>
+Cc: Conor Dooley <conor@kernel.org>, Matthew Maurer <mmaurer@google.com>, 
+	linux-riscv@lists.infradead.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
+	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, stable@vger.kernel.org, 
+	Sami Tolvanen <samitolvanen@google.com>, Ramon de C Valle <rcvalle@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 9:37=E2=80=AFPM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
+On Tue, Feb 27, 2024 at 11:54=E2=80=AFAM Conor Dooley
+<conor.dooley@microchip.com> wrote:
 >
-> Thanks Nathan, that was quick!
+> I did try to test it but I ran into too many toolchain issues - my
+> older copies of LLVM (pre 17) are not multiarch as I built them by hand
+> with PGO for x86 and RISC-V. My LLVM 17 is from kernel.org and has no
+> libclang. And then the copy of LLVM 18 on kernel.org apparently does not
+> support kcfi at all. I gave up there, but I don't see how this would not
 
-Is it possible to add libclang for the older toolchains? Or are they
-supposed to be immutable?
-
-Relatedly, Connor reports KCFI not working with LLVM 18:
-https://lore.kernel.org/rust-for-linux/20240227-uncertain-amaze-6197e627ad9=
-5@wendy/
-
-Thanks!
+I asked Nathan to add libclang a few days ago, and he very quickly did
+it for LLVM 18 -- though I don't know the plan for the others. I just
+pinged in that thread.
 
 Cheers,
 Miguel
