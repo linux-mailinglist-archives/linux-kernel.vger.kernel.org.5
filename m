@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-83771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ABA2869E49
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:50:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66D6869E87
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:02:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC28F28461E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:50:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35178B23159
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6324C4EB32;
-	Tue, 27 Feb 2024 17:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C504EB45;
+	Tue, 27 Feb 2024 17:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MiavqekT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="Hb7BBLUO"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC994E1CB
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:50:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B84D4E1CE;
+	Tue, 27 Feb 2024 17:52:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709056219; cv=none; b=K5RNL4AIUD4rDpBWdrgoLZpjNeO53suYAPJAnTXknZCOeJWJtv4SuXWF1pPn1g3dWsqjImccaBO/pDUN0yYt+8fRU5yQ+vkJ7NZLUc5S5oZTFYHlXWtqKgE4dVImdU+/FoKYPzoIOdLkPvVTL3NStU/AekoQUFqehFE0M7T8aXc=
+	t=1709056356; cv=none; b=gmw1D7UVFf7gTHXQzUcTM48x4IUuMrpJuKD27sJGYUGoMATbA7cgRdKsNPwaaYYflp7lxp9Wzdb6KImJI4wgcp+qJDZ8Q2ba+pn1yQ6epnrcXzqLlFQwMXRIvWExdHV8wqSjPvdKI1XETXpZgd1ZnkSWFtKUV+gOvlXNSLzJHlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709056219; c=relaxed/simple;
-	bh=DDIKRf6Ufecl9u57nNBqnT2apz/dSFBQ9/B2HzYZIKc=;
+	s=arc-20240116; t=1709056356; c=relaxed/simple;
+	bh=z6Srg+Vh46wEIB5dHoHRTrSg7iyoYuRE0sA4Shr/40g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uL330ZwkPdDT/ljKznWaf+PSoSUjJUaz0E+I+iO2UNrIgLKEldTNdzZHQdaszv61pOf0d6eifQPKRiC11JDliEF9RuyCl142vC/K0HoW5lqwS3gpwud7epUgv5jpaNBTZDdG95gIvpUysWY3/GJ6zmkpWINseE/qzjPw2dFu9vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MiavqekT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226DDC433F1;
-	Tue, 27 Feb 2024 17:50:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709056219;
-	bh=DDIKRf6Ufecl9u57nNBqnT2apz/dSFBQ9/B2HzYZIKc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MiavqekT8D8nUaX8Elm1x2Eu9AMmI2cT+u3IkMJ9CSglk2muojEs+Y49uOoEuqYv1
-	 mbPo+W/3LR01UUG7RnQgOSrJMzzZ+lLZxueIEWbCTFbxuIsP7YELh1pGfcuD7W+NW0
-	 nZN4yT37tv0ebz6G6jckbv6AVNrpBWoQYzpTYxFtmiTDqCYG5fzlYetCOgjh4tr8mt
-	 zQRi4DSaVHM/6/gnShQkQyVfvSo9b2bB3/4G2qeGRdW5td0adH84w2IySP2V4BMS1F
-	 YupOmDsM9mSqb8QR2kG7XkIBohQ9D2lU70KdApgbqz+WIhpqbxt+No8jCL/0SKPmlJ
-	 xvYBKRJCnCaJQ==
-Date: Tue, 27 Feb 2024 09:50:17 -0800
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Chao Yu <chao@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] f2fs: fix to don't call f2fs_stop_checkpoint in
- spinlock coverage
-Message-ID: <Zd4g2SgQn3v_ZJMj@google.com>
-References: <20240222121851.883141-1-chao@kernel.org>
- <20240222121851.883141-2-chao@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=b5bXN9pM5GQYGcXWWtJGYOkdyVzUMiTsenEzrQRgnpMI/KV7fHmq+L0oAkO2p52lnmDCHWQNEaL8BtKbmFlYkqmUWbn4H+vgpUUjBM31XZ475tSypyJy1yJ6iq2gZ5BudYkIP667RL70Wxrzg+Cripk4sYOLP+NYdk91OBvSaHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=Hb7BBLUO; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 2CEE6214FB;
+	Tue, 27 Feb 2024 18:52:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1709056344;
+	bh=z6Srg+Vh46wEIB5dHoHRTrSg7iyoYuRE0sA4Shr/40g=; h=From:To:Subject;
+	b=Hb7BBLUOOdkNBts7HjwLNM+P67T14SZBkaZ8/Ih8bk87WMhHzBfitFq79il1qaPBm
+	 jnqjrlaLcLjG24nYxkab+x8N0Cjy29m2TJgfQQckbzcK3yBKJxB2CQGGB9VQo/28um
+	 rf8YFmLqnErMCOp4dXSt4Om+QuRrl2EnhRzOUGfKJSQqaLtvpcT3ZtCbcJdaC22huc
+	 guo7LkRrM3aF916DIdmQJf9pYIT3EPPOQz3WSOFZbncaDzaMUvBOD8VCSCKFNIxLM1
+	 9usLOWxa33OmRBJ5DdmT1xYwWaMUVno31LpeGudu2MripQTsWYQQ6dauQsPIC/EOaD
+	 iD2VM267FvsPA==
+Date: Tue, 27 Feb 2024 18:52:19 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: David Lin <yu-hao.lin@nxp.com>
+Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	briannorris@chromium.org, kvalo@kernel.org, francesco@dolcini.it,
+	tsung-hsien.hsieh@nxp.com
+Subject: Re: [PATCH v8 0/2]  wifi: mwifiex: add code to support host mlme
+Message-ID: <20240227175219.GA11034@francesco-nb>
+References: <20231222032123.1036277-1-yu-hao.lin@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,60 +59,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240222121851.883141-2-chao@kernel.org>
+In-Reply-To: <20231222032123.1036277-1-yu-hao.lin@nxp.com>
 
-On 02/22, Chao Yu wrote:
-> f2fs_stop_checkpoint(, false) is complex and it may sleep, so we should
-> move it outside segmap_lock spinlock coverage in get_new_segment().
+On Fri, Dec 22, 2023 at 11:21:21AM +0800, David Lin wrote:
+> This series add host based MLME support to the mwifiex driver, this
+> enables WPA3 support in both client and AP mode.
+> To enable WPA3, a firmware with corresponding V2 Key API support is
+> required.
+> The feature is currently only enabled on NXP IW416 (SD8978), and it
+> was internally validated by the NXP QA team. Other NXP Wi-Fi chips
+> supported in current mwifiex are not affected by this change.
 
-Chao, I merged this patch into
+I did test this series with 88W8997, using SDIO interface, 16.68.1.p197
+firmware. Host MLME is disabled in this specific combination, I just
+wanted to verify that no obvious regression was introduced, and I was
+not able to see any difference in behavior nor in performances.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev-test&id=f3b576d209983b5d6e1cb130bfc8ca1f0bbcad6d
+Tested-by: Francesco Dolcini <francesco.dolcini@toradex.com> # 88W8997-SD
 
-> 
-> Signed-off-by: Chao Yu <chao@kernel.org>
-> ---
->  fs/f2fs/segment.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index d0209ea77dd2..8edc42071e6f 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -2646,6 +2646,7 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->  	unsigned int old_zoneno = GET_ZONE_FROM_SEG(sbi, *newseg);
->  	bool init = true;
->  	int i;
-> +	int ret = 0;
->  
->  	spin_lock(&free_i->segmap_lock);
->  
-> @@ -2671,9 +2672,8 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->  		secno = find_first_zero_bit(free_i->free_secmap,
->  							MAIN_SECS(sbi));
->  		if (secno >= MAIN_SECS(sbi)) {
-> -			f2fs_stop_checkpoint(sbi, false,
-> -				STOP_CP_REASON_NO_SEGMENT);
-> -			f2fs_bug_on(sbi, 1);
-> +			ret = -ENOSPC;
-> +			goto out_unlock;
->  		}
->  	}
->  	segno = GET_SEG_FROM_SEC(sbi, secno);
-> @@ -2704,7 +2704,13 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->  	f2fs_bug_on(sbi, test_bit(segno, free_i->free_segmap));
->  	__set_inuse(sbi, segno);
->  	*newseg = segno;
-> +out_unlock:
->  	spin_unlock(&free_i->segmap_lock);
-> +
-> +	if (ret) {
-> +		f2fs_stop_checkpoint(sbi, false, STOP_CP_REASON_NO_SEGMENT);
-> +		f2fs_bug_on(sbi, 1);
-> +	}
->  }
->  
->  static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
-> -- 
-> 2.40.1
+Francesco
+
+
 
