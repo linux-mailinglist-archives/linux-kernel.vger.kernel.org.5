@@ -1,98 +1,145 @@
-Return-Path: <linux-kernel+bounces-83081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D50B4868E26
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:55:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3444D868E13
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:53:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90709288D53
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:55:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A59F1C21B72
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DEC139563;
-	Tue, 27 Feb 2024 10:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9442F139574;
+	Tue, 27 Feb 2024 10:53:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q1fH9cOH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GzM7CDvo"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175D913AA4A
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:54:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3100D1386CE
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:53:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709031267; cv=none; b=LkUPoQhXgY30bOCs/h9bBrKfAx7B9JisKZPaF63IrjymeMUIyXuZcdPcES0kQmVfFjLqec+FxvBpAnzw8Gz42i3Np8Aq7jrrZpTX/WwPBlAq+s5IGvk/ZjVyf1RmDz2FqrKcocMqoOomKCUlgHneaZl0yubxPQNnUrR3DeyjUe4=
+	t=1709031192; cv=none; b=Sap2Dkj6yJ0yWFtEFvgoUfRzCo2A93uYK0G8O4C0yunOT61N4bDJAVfN8zh1MXSFHtWSO5S2GoeYFHFBbdGMTJXM1BS605yeGXczHvRyQD2Xijmoh83oAxwDO0tA4oPbzT4eM2eQbj2kCXirhomFRC+B3EtE8SE1Mej8aDCpB+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709031267; c=relaxed/simple;
-	bh=Ien1MAZxVCekAISXfiL/0KSTQDGPU/3AIJR+J8RGIQQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=upz1F6DgMVYplTMs6hx/r+gBp7njdUINSDng+OPVZiVQPcY2bGDrVdyKAkoNN0cdKZfKNP98ufMUBdD6PEr3/Uirzqr5fJgb9NkOegijxR3sDblKboMBwVTCGm9qkqFMvi+m1ue0pNaGTaEA594WWZzWqqL0ZwtqCAkfoy/6Tu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q1fH9cOH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CDDAC433F1;
-	Tue, 27 Feb 2024 10:54:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709031266;
-	bh=Ien1MAZxVCekAISXfiL/0KSTQDGPU/3AIJR+J8RGIQQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q1fH9cOHAEhe7lvjbLWTfOLNgfV6pS9O4SHZG1qXmCV5eje7iqBAaT9/Gf0BeE8ME
-	 ABZO5fwUCWsK6bDOZ11oWgxFwmai0H01nvte6ixzmAR3vdEa0cp1KA/9AdQTbKmAfb
-	 Gm/x1CX7M2crBI7T4+ZDiZ1yYxV6wieZ7tQnFIgyqSIKZRzi8RztLTN+g2ZxoLwSps
-	 8Zf9owXsMHHltSIC5QUdUYZmF1zZjohugo3RokqeBwaxuuRpGuTn66wFAMsoklUtab
-	 7EKZzKnX0Dv7eGe9w4f6g7r5Xx6oisCaUYuAE5E73fpRzC2MD8XFZaSyzqXbwOMlCk
-	 RJol+uimoeiEA==
-From: Christian Brauner <brauner@kernel.org>
-To: jlayton@kernel.org,
-	jack@suse.cz,
-	zhouchengming@bytedance.com,
-	chengming.zhou@linux.dev
-Cc: Christian Brauner <brauner@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	vbabka@suse.cz,
-	roman.gushchin@linux.dev,
-	Xiongwei.Song@windriver.com
-Subject: Re: [PATCH] sysv: remove SLAB_MEM_SPREAD flag usage
-Date: Tue, 27 Feb 2024 11:52:52 +0100
-Message-ID: <20240227-fungieren-groschen-60f2174931ab@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240224135158.830266-1-chengming.zhou@linux.dev>
-References: <20240224135158.830266-1-chengming.zhou@linux.dev>
+	s=arc-20240116; t=1709031192; c=relaxed/simple;
+	bh=1e54Ewk7dKSI2j2rLaGO4VOlLiMm104HLmVcrEPRgZs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mrkY8ke/PF955PFSvgFbdZLdYZk+zoO+K1LV9tNFbw7TyODX2wsM2K7wOxl97SOmiLbyJIz7iBLa4bf/WaBOuLdQHePfQwM35x7BaSxnbxlsnah+r9THZkIQPFt8FGiXygJXZdORoH49ja9VzGbyNrZB0VAjuaYei2ANM3EWklQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GzM7CDvo; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709031189;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1/R0zYYMzMrd102J3JgHM4IsC1fahdOwS+2IaXy3PeY=;
+	b=GzM7CDvoX4hH3SCYJfL9BKwe9rvqrymoAJpuUmiCViApwToLZYGanC5gvAhUcofVAcjlrm
+	5V39+14uquxj+E/ytqRh91M9vTY8kzRnmozoVt0jAI4I9vtA5eBPtXynny82TD6Aitk/YR
+	slmZzR9ffIwcEE04uSG9Dbs5o8sRLiM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-96-3FvsOudxP5y2P_M0yYeEmA-1; Tue,
+ 27 Feb 2024 05:53:06 -0500
+X-MC-Unique: 3FvsOudxP5y2P_M0yYeEmA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A73F33C1E9C4;
+	Tue, 27 Feb 2024 10:53:05 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.2])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 74B271C06713;
+	Tue, 27 Feb 2024 10:53:01 +0000 (UTC)
+Date: Tue, 27 Feb 2024 18:52:57 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Hari Bathini <hbathini@linux.ibm.com>
+Cc: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	Kexec-ml <kexec@lists.infradead.org>,
+	lkml <linux-kernel@vger.kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sourabh Jain <sourabhjain@linux.ibm.com>,
+	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Dave Young <dyoung@redhat.com>
+Subject: Re: [PATCH linux-next v2 1/3] kexec/kdump: make struct crash_mem
+ available without CONFIG_CRASH_DUMP
+Message-ID: <Zd2/CRHtB4kETwtp@MiWiFi-R3L-srv>
+References: <20240226103010.589537-1-hbathini@linux.ibm.com>
+ <20240226103010.589537-2-hbathini@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1022; i=brauner@kernel.org; h=from:subject:message-id; bh=Ien1MAZxVCekAISXfiL/0KSTQDGPU/3AIJR+J8RGIQQ=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTe3S+pw3qE544Usw1X/sZAvntubhrybur5wdpVp5YUx 1973BzfUcrCIMbFICumyOLQbhIut5ynYrNRpgbMHFYmkCEMXJwCMBFVB4Z/9mv9fUOtClY/cUw7 3i+2+Y68fs3sxrfuPU+Uvk+ZvHvSI4b/Doa3fauqnvc4mHr/N9x7490OgydHuEpVvpYs0vsjrM3 JDQA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226103010.589537-2-hbathini@linux.ibm.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Sat, 24 Feb 2024 13:51:58 +0000, chengming.zhou@linux.dev wrote:
-> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> its usage so we can delete it from slab. No functional change.
+On 02/26/24 at 04:00pm, Hari Bathini wrote:
+> struct crash_mem defined under include/linux/crash_core.h represents
+> a list of memory ranges. While it is used to represent memory ranges
+> for kdump kernel, it can also be used for other kind of memory ranges.
+> In fact, KEXEC_FILE_LOAD syscall in powerpc uses this structure to
+> represent reserved memory ranges and exclude memory ranges needed to
+> find the right memory regions to load kexec kernel. So, make the
+
+We may be able to refactor code to make struct crash_mem only used for
+crash handling, or get another data structure for loading kexec kernel.
+Anyway, for the time being, this is the simplest way we can take. Thanks
+for the work on ppc to make crash split out from the kexec code.
+
+Acked-by: Baoquan He <bhe@redhat.com>
+
+> definition of crash_mem structure available for !CONFIG_CRASH_DUMP
+> case too.
 > 
+> Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+> ---
+> 
+> * No changes in v2.
+> 
+>  include/linux/crash_core.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+> index 23270b16e1db..d33352c2e386 100644
+> --- a/include/linux/crash_core.h
+> +++ b/include/linux/crash_core.h
+> @@ -8,6 +8,12 @@
+>  
+>  struct kimage;
+>  
+> +struct crash_mem {
+> +	unsigned int max_nr_ranges;
+> +	unsigned int nr_ranges;
+> +	struct range ranges[] __counted_by(max_nr_ranges);
+> +};
+> +
+>  #ifdef CONFIG_CRASH_DUMP
+>  
+>  int crash_shrink_memory(unsigned long new_size);
+> @@ -51,12 +57,6 @@ static inline unsigned int crash_get_elfcorehdr_size(void) { return 0; }
+>  /* Alignment required for elf header segment */
+>  #define ELF_CORE_HEADER_ALIGN   4096
+>  
+> -struct crash_mem {
+> -	unsigned int max_nr_ranges;
+> -	unsigned int nr_ranges;
+> -	struct range ranges[] __counted_by(max_nr_ranges);
+> -};
+> -
+>  extern int crash_exclude_mem_range(struct crash_mem *mem,
+>  				   unsigned long long mstart,
+>  				   unsigned long long mend);
+> -- 
+> 2.43.2
 > 
 
-Updated commit message to point to slab removal.
-
----
-
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] sysv: remove SLAB_MEM_SPREAD flag usage
-      https://git.kernel.org/vfs/vfs/c/8d6e17b745c2
 
