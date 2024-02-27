@@ -1,161 +1,245 @@
-Return-Path: <linux-kernel+bounces-82550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5967F86863E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:45:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49381868667
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B9471C238FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:45:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7C5928EA38
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7875D53E;
-	Tue, 27 Feb 2024 01:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909B3EAF1;
+	Tue, 27 Feb 2024 01:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T5VWn8dP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XgHHq85p"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E1A2916;
-	Tue, 27 Feb 2024 01:45:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF9C5C82
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:50:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708998349; cv=none; b=o/yMwPzMqufWkUzk/rjBp6W2M44mlXauMqRiTdTKy3bUtZVnHCk9CJJ+3Y8Ia0dYe1MWQpTa8DK/CQx3Xk7K83++FX6uy0LP99NG6K1C/Cpkx+S3fJQacJMkdRi9hgC9OZW8nVUcay+rOetq1JnPK7I78M7VepbbVBwzWFTogOM=
+	t=1708998639; cv=none; b=t4xAmG2x/icodCtQr6J9xEAq4I6N4VmRH9cM0ojTcMCB/NM5zT8fB80LN3opeEXtc+NkZylHURPL6AfbZkvZxNTW01fVIdPzeMSpUfQwKyz5KWKtx7Edwu9UVWQCRiRrzmkVedEwh+ffQc4btH1oedQAFjyx2YNyfvFxiKS1S+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708998349; c=relaxed/simple;
-	bh=SCXTahozD0TxiPX08IBsjicUaCXkNVF/+0u0TFeGY0I=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=gFVcC15jdQlKc9qpygUl5zHFTgUy2K3GwCz2IoYj1PxGT4yiC2dExQxOVidKn8eSsBBSU1sAR0ZZ1r/SiI0xx8PRE0xRp4KRLKzxXgPqOjUdjuJMN5+RpzpATo0K1HSd8s7wo0gxovmvbSipjgrdBnAIyIQwHtLhhYGa4TDZYwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T5VWn8dP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 91AB6C433F1;
-	Tue, 27 Feb 2024 01:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708998348;
-	bh=SCXTahozD0TxiPX08IBsjicUaCXkNVF/+0u0TFeGY0I=;
-	h=From:Date:Subject:To:Cc:Reply-To:From;
-	b=T5VWn8dPeHK/BBBoReSynEEv2vsnw2mgT+50PP5WMZn5QWRppdg3qhNAtJWbVG8mw
-	 K2qZXAuICBrlc4chwCrYja/aWcxhztOBun55O6kdCGDPnt7nMywIX2xe0/Ev8KzFyA
-	 TzxH9xeeNsFGfC6+U0jBvGZzWPiSubayJsafM68G3BYVg9a5uq6ePqLOVmhb2YKDMz
-	 ZoXpx7xEF4SQghz8q/x5yxByMhwaWi+7/vlRfTlnrXZFQeoIPiDM3a+8OPn9bLivfU
-	 qyN123mGd6GlLAcE7qiKGbUNiE2GptW8L82QXeisl4DEuraUijFLwkK7la6UE/2Nwy
-	 dCq5Wgr7oNZuw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75FB0C48BF6;
-	Tue, 27 Feb 2024 01:45:48 +0000 (UTC)
-From:
- Bjorn Andersson via B4 Relay <devnull+quic_bjorande.quicinc.com@kernel.org>
-Date: Mon, 26 Feb 2024 17:49:57 -0800
-Subject: [PATCH] pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
+	s=arc-20240116; t=1708998639; c=relaxed/simple;
+	bh=gAQlvGhS6nER+GNSg1JbNb1rqkJQCpq+MwxvFfPc8Ng=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B0Gb33zhw53XvlMIG4ozDrV02j5pur9tYQQHdQ1Rb7f/4nKsnCnSaQcxDBEyWRq99Zs5YG+Dau0MZ2MHNOci0q23MkzbEBco5biPPRrG0HLVl57mueZFHr4XcAwY/CiYFXu0QxBHWNzQF7Yj1tzTqeIb2rLopzaZDNkT6TgdMJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XgHHq85p; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708998637;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vTTITb2cSjdmzEUUDSvzoi0Me6vG5i4YZ5c4Xa5F5Ak=;
+	b=XgHHq85pIbfRVTanrY5aW/IhBff5jDHRL1ymCmiBpiIDRroNDYPVPWsrunC48OLpuQ65P6
+	yjcJHVg0WeaayZth2GxWilv6eYDQFcyWRc1U1EzjCTj5xaKXjKjyAjc6p9capit8xd+76/
+	hJgPgVsMXUKO5kBgxMMClve8xVnYfMA=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-325-mr6dco8vNAW6UX1069ttKw-1; Mon, 26 Feb 2024 20:50:35 -0500
+X-MC-Unique: mr6dco8vNAW6UX1069ttKw-1
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1dc435b3e87so28030845ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:50:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708998635; x=1709603435;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vTTITb2cSjdmzEUUDSvzoi0Me6vG5i4YZ5c4Xa5F5Ak=;
+        b=jM/90XkLL9Oh/aOlgfJEuQpERwuCqpAEchQZzhUOyTR/MPfte5OdeURoR4WTORcSK7
+         WgSb/vZT97r1EAe+DDP8GtzKomYmnI8tcz18R19dw3vt3LiIBoae2uftjedkv9TjFNlR
+         RxOpfxJ/uMI+AK9kFn8mupu02xH6AY+JH45qzpdSgv+Ybg4fa5sXDIX4QHSbtB2oa775
+         2BdhFE02suzpmJ9fPZX1o8e/Vkb0rN+fH6mMDCNjjfu9R9+beE6WXAED9YhrGe6nOMgO
+         PAoEPtU3LXmHC8hsaJSGRSQOdR37kv+7gJ/UIQiRVAPSFDy3cW6S+jWQLV0dl1xHJKen
+         BhGg==
+X-Forwarded-Encrypted: i=1; AJvYcCVsY/A105XpE8CBsj4yj+jqAf5FWm/osJeu2pm4MkdsxXKTsZkL3gMTl9WFt6EdepauiD13rKFBgAtGDgu05AzgwjgLqR3Korh2vucx
+X-Gm-Message-State: AOJu0YzXi5Hwx8fmr6bhoAAAV8xWln80gADM+wbvNmsBd6RELD4571CI
+	zpwryqOB8+iZBlRcWRyMmHzAxCv/PNptlyfmAy+WrpXQfkpZPv9q77RTpqpLkQwMhfw6e1+ebCI
+	p/rM5giXXxR44YnR9uANhEyQrlch/4FkFIbHqLpBlBoJZTQbgNVkK6BDZx6xDB3lrMoK2n7lXPp
+	1QLcLUqrjmG4QWDZfIs5o6Vdi6D2/lGdkx4sOV
+X-Received: by 2002:a17:902:ced1:b0:1dc:a00c:5442 with SMTP id d17-20020a170902ced100b001dca00c5442mr5072565plg.43.1708998634855;
+        Mon, 26 Feb 2024 17:50:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFtkIUDwNPdnbq7WXdG192cZoWa/oJN4PKqmmAq+7eH8nhOsVmQDO3AQHqZstow/xCSVVoQyLfe3Pg8i6DVi1k=
+X-Received: by 2002:a17:902:ced1:b0:1dc:a00c:5442 with SMTP id
+ d17-20020a170902ced100b001dca00c5442mr5072555plg.43.1708998634550; Mon, 26
+ Feb 2024 17:50:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAMQ/3WUC/x2MwQqDMBAFf0X27EIMbWz9FfEQ40tdaGPYgBTEf
- zd4nIGZgwpUUGhoDlLsUmRLFbq2obD69AHLUpmssQ9jrWPNvzUvjOTnLzhsmqAc5c/hCdNH9PP
- 75ajmWVH1vR6n87wAZf/r0WoAAAA=
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Ulf Hansson <ulf.hansson@linaro.org>, Stephen Boyd <swboyd@chromium.org>, 
- Johan Hovold <johan+linaro@kernel.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>, 
- stable@vger.kernel.org, Bjorn Andersson <quic_bjorande@quicinc.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3004;
- i=quic_bjorande@quicinc.com; h=from:subject:message-id;
- bh=8TOgtVhYO01rdpfAVMwK9WI6pflXIuB4DQQcEbm8Zmw=;
- b=owEBgwJ8/ZANAwAIAQsfOT8Nma3FAcsmYgBl3T/r3KXQprzkHna4SseXUKD0ooMTxVhZKDW9m
- mWQ0+8CJmiJAkkEAAEIADMWIQQF3gPMXzXqTwlm1SULHzk/DZmtxQUCZd0/6xUcYW5kZXJzc29u
- QGtlcm5lbC5vcmcACgkQCx85Pw2ZrcUW4w//YlZS5dc2FBsqrTddOHzidbibnEQwzDs1tWPmyqH
- jKcngixr+2OP4XYmR/HEBprSaEe/UXls884Ema6ucg5EQtpOIrMqfxWHEptQljfkVwuhHxiav5y
- hR9pSDgBfIkmZYnlp+AI8VM+pQyqQB3nTZ0mgu1YTxtEIomgOZ8ifzTXMPvSrtWtU0pEXDpzE8y
- amaeZShoEQMs238EpgfWhbFTKWqPlUKCdVmjyjIZ/TAnE4haRDpKnCInDvpGaTXJSeK+X1cdzAu
- Iduu4QSFutGx/mTaLJF3I4UqWzUrFmEy/apAtGhOGnpNTkrAjR/euygJQY9OREp0OEvM+FEfjzj
- yn0Xi/zNqMBnEzn5vd7340NM6wSq6oHBJp9dmzLyIAimCcN9A5z769c8SZ+hacWXEZlNqdizJ34
- Wv8iaWi/Rkzc7XUG/Tlx+jtdEqS1313uA1f3HPDfr3VtQ+mN4t7Ex3z4qLFKaslXbunA4AEBLK9
- INzGCitwuDBUSh2NtR0fu5ZOAiQCb7g+gIMON1aDQcD39lbnwfX8rMxYv9zNYZvtnr7z4NbUkAF
- 0G/5IeNCRrIoQ42hHlRhVCkG5WnjZRGZbgLEIxHyxLHVUnNPXs+bCCftycKzr4BIUDfIK9W4TGz
- /ltQREquxuqJMmPH8tYwmHjE2s2CdDyeBQHzWutRavxA=
-X-Developer-Key: i=quic_bjorande@quicinc.com; a=openpgp;
- fpr=05DE03CC5F35EA4F0966D5250B1F393F0D99ADC5
-X-Endpoint-Received:
- by B4 Relay for quic_bjorande@quicinc.com/default with auth_id=118
-X-Original-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-Reply-To: <quic_bjorande@quicinc.com>
+References: <20240222075806.1816400-1-yukuai1@huaweicloud.com> <20240222075806.1816400-9-yukuai1@huaweicloud.com>
+In-Reply-To: <20240222075806.1816400-9-yukuai1@huaweicloud.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Tue, 27 Feb 2024 09:50:23 +0800
+Message-ID: <CALTww285P14E8oucJuLunNL8H+hGeVa4LRpjurP1is3xjqTLQg@mail.gmail.com>
+Subject: Re: [PATCH md-6.9 08/10] md/raid1: factor out choose_bb_rdev() from read_balance()
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: paul.e.luse@linux.intel.com, song@kernel.org, neilb@suse.com, shli@fb.com, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-
-Commit 'e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable
-the domain")' aimed to make sure that a power-domain that is being
-enabled without any particular performance-state requested will at least
-turn the rail on, to avoid filling DeviceTree with otherwise unnecessary
-required-opps properties.
-
-But in the event that aggregation happens on a disabled power-domain, with
-an enabled peer without performance-state, both the local and peer
-corner are 0. The peer's enabled_corner is not considered, with the
-result that the underlying (shared) resource is disabled.
-
-One case where this can be observed is when the display stack keeps mmcx
-enabled (but without a particular performance-state vote) in order to
-access registers and sync_state happens in the rpmhpd driver. As mmcx_ao
-is flushed the state of the peer (mmcx) is not considered and mmcx_ao
-ends up turning off "mmcx.lvl" underneath mmcx. This has been observed
-several times, but has been painted over in DeviceTree by adding an
-explicit vote for the lowest non-disabled performance-state.
-
-Fixes: e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable the domain")
-Reported-by: Johan Hovold <johan@kernel.org>
-Closes: https://lore.kernel.org/linux-arm-msm/ZdMwZa98L23mu3u6@hovoldconsulting.com/
-Cc:  <stable@vger.kernel.org>
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
-This issue is the root cause of a display regression on SC8280XP boards,
-resulting in the system often resetting during boot. It was exposed by
-the refactoring of the DisplayPort driver in v6.8-rc1.
----
- drivers/pmdomain/qcom/rpmhpd.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pmdomain/qcom/rpmhpd.c b/drivers/pmdomain/qcom/rpmhpd.c
-index 3078896b1300..47df910645f6 100644
---- a/drivers/pmdomain/qcom/rpmhpd.c
-+++ b/drivers/pmdomain/qcom/rpmhpd.c
-@@ -692,6 +692,7 @@ static int rpmhpd_aggregate_corner(struct rpmhpd *pd, unsigned int corner)
- 	unsigned int active_corner, sleep_corner;
- 	unsigned int this_active_corner = 0, this_sleep_corner = 0;
- 	unsigned int peer_active_corner = 0, peer_sleep_corner = 0;
-+	unsigned int peer_enabled_corner;
- 
- 	if (pd->state_synced) {
- 		to_active_sleep(pd, corner, &this_active_corner, &this_sleep_corner);
-@@ -701,9 +702,11 @@ static int rpmhpd_aggregate_corner(struct rpmhpd *pd, unsigned int corner)
- 		this_sleep_corner = pd->level_count - 1;
- 	}
- 
--	if (peer && peer->enabled)
--		to_active_sleep(peer, peer->corner, &peer_active_corner,
-+	if (peer && peer->enabled) {
-+		peer_enabled_corner = max(peer->corner, peer->enable_corner);
-+		to_active_sleep(peer, peer_enabled_corner, &peer_active_corner,
- 				&peer_sleep_corner);
-+	}
- 
- 	active_corner = max(this_active_corner, peer_active_corner);
- 
-
----
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-change-id: 20240226-rpmhpd-enable-corner-fix-c5e07fe7b986
-
-Best regards,
--- 
-Bjorn Andersson <quic_bjorande@quicinc.com>
+On Thu, Feb 22, 2024 at 4:06=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> read_balance() is hard to understand because there are too many status
+> and branches, and it's overlong.
+>
+> This patch factor out the case to read the rdev with bad blocks from
+> read_balance(), there are no functional changes.
+>
+> Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
+> Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/md/raid1.c | 79 ++++++++++++++++++++++++++++------------------
+>  1 file changed, 48 insertions(+), 31 deletions(-)
+>
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index bc2f8fcbe5b3..4694e0e71e36 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -620,6 +620,44 @@ static int choose_first_rdev(struct r1conf *conf, st=
+ruct r1bio *r1_bio,
+>         return -1;
+>  }
+>
+> +static int choose_bb_rdev(struct r1conf *conf, struct r1bio *r1_bio,
+> +                         int *max_sectors)
+> +{
+> +       sector_t this_sector =3D r1_bio->sector;
+> +       int best_disk =3D -1;
+> +       int best_len =3D 0;
+> +       int disk;
+> +
+> +       for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
+> +               struct md_rdev *rdev;
+> +               int len;
+> +               int read_len;
+> +
+> +               if (r1_bio->bios[disk] =3D=3D IO_BLOCKED)
+> +                       continue;
+> +
+> +               rdev =3D conf->mirrors[disk].rdev;
+> +               if (!rdev || test_bit(Faulty, &rdev->flags) ||
+> +                   test_bit(WriteMostly, &rdev->flags))
+> +                       continue;
+> +
+> +               /* keep track of the disk with the most readable sectors.=
+ */
+> +               len =3D r1_bio->sectors;
+> +               read_len =3D raid1_check_read_range(rdev, this_sector, &l=
+en);
+> +               if (read_len > best_len) {
+> +                       best_disk =3D disk;
+> +                       best_len =3D read_len;
+> +               }
+> +       }
+> +
+> +       if (best_disk !=3D -1) {
+> +               *max_sectors =3D best_len;
+> +               update_read_sectors(conf, best_disk, this_sector, best_le=
+n);
+> +       }
+> +
+> +       return best_disk;
+> +}
+> +
+>  static int choose_slow_rdev(struct r1conf *conf, struct r1bio *r1_bio,
+>                             int *max_sectors)
+>  {
+> @@ -707,8 +745,6 @@ static int read_balance(struct r1conf *conf, struct r=
+1bio *r1_bio, int *max_sect
+>
+>         for (disk =3D 0 ; disk < conf->raid_disks * 2 ; disk++) {
+>                 sector_t dist;
+> -               sector_t first_bad;
+> -               int bad_sectors;
+>                 unsigned int pending;
+>
+>                 rdev =3D conf->mirrors[disk].rdev;
+> @@ -721,36 +757,8 @@ static int read_balance(struct r1conf *conf, struct =
+r1bio *r1_bio, int *max_sect
+>                         continue;
+>                 if (test_bit(WriteMostly, &rdev->flags))
+>                         continue;
+> -               /* This is a reasonable device to use.  It might
+> -                * even be best.
+> -                */
+> -               if (is_badblock(rdev, this_sector, sectors,
+> -                               &first_bad, &bad_sectors)) {
+> -                       if (best_dist < MaxSector)
+> -                               /* already have a better device */
+> -                               continue;
+> -                       if (first_bad <=3D this_sector) {
+> -                               /* cannot read here. If this is the 'prim=
+ary'
+> -                                * device, then we must not read beyond
+> -                                * bad_sectors from another device..
+> -                                */
+> -                               bad_sectors -=3D (this_sector - first_bad=
+);
+> -                               if (best_good_sectors > sectors)
+> -                                       best_good_sectors =3D sectors;
+> -
+> -                       } else {
+> -                               sector_t good_sectors =3D first_bad - thi=
+s_sector;
+> -                               if (good_sectors > best_good_sectors) {
+> -                                       best_good_sectors =3D good_sector=
+s;
+> -                                       best_disk =3D disk;
+> -                               }
+> -                       }
+> +               if (rdev_has_badblock(rdev, this_sector, sectors))
+>                         continue;
+> -               } else {
+> -                       if ((sectors > best_good_sectors) && (best_disk >=
+=3D 0))
+> -                               best_disk =3D -1;
+> -                       best_good_sectors =3D sectors;
+> -               }
+>
+>                 if (best_disk >=3D 0)
+>                         /* At least two disks to choose from so failfast =
+is OK */
+> @@ -834,6 +842,15 @@ static int read_balance(struct r1conf *conf, struct =
+r1bio *r1_bio, int *max_sect
+>         if (best_disk >=3D 0)
+>                 return best_disk;
+>
+> +       /*
+> +        * If we are here it means we didn't find a perfectly good disk s=
+o
+> +        * now spend a bit more time trying to find one with the most goo=
+d
+> +        * sectors.
+> +        */
+> +       disk =3D choose_bb_rdev(conf, r1_bio, max_sectors);
+> +       if (disk >=3D 0)
+> +               return disk;
+> +
+>         return choose_slow_rdev(conf, r1_bio, max_sectors);
+>  }
+>
+> --
+> 2.39.2
+>
+>
+Hi
+This patch looks good to me.
+Reviewed-by: Xiao Ni <xni@redhat.com>
 
 
