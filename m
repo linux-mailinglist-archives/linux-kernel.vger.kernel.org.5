@@ -1,187 +1,422 @@
-Return-Path: <linux-kernel+bounces-83842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39667869F1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:29:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41ECF869F20
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E954628B9A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:29:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C15721F2DEE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BB8146015;
-	Tue, 27 Feb 2024 18:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1011474A9;
+	Tue, 27 Feb 2024 18:29:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="avDc06aR"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RBCEivyU"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F80A3D541
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:28:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2F31DFD6;
+	Tue, 27 Feb 2024 18:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709058540; cv=none; b=RcjfSZMHV7blbIFS2u+1S6l+d/FFtoOJ3tBpKt3KXATWq5cPS2QEMAEf2c4/Lrw3UnoK21gq5h9DrqaWVitxmcF8leHKKrRe99zTTzT7iB9jjRXoI+P5cVDNfMMmCp30hQKqFZtfJWxh3Xr99UoC/WLJgEoqYl22Poj7ELZI8Eg=
+	t=1709058584; cv=none; b=TOQ8Au5Ne/dFU6NLjoaBEaqvWixx+oEP4piamS1W+HgddBioaBnmHK0W12SstI9G/yrkrsODDjEkVw5qU3SmJaEBRF8AbEHeCfz60fROu42d/NvuGr51AECSN0UzeJym8hgPWFztzRconM0mPwBfAo7jI/z9Aj2ady3E06hUrUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709058540; c=relaxed/simple;
-	bh=RWSPVHwB5Dq0Z/lIjJDobhDIPRP8aEV5Wk3poCrZaEk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rsl0M/Vcfd3Tc4RjR5RmFkB3A8vGUl1ZRdjUq/J9SWL/s5X9cDzNhrU3GJgYp0Oz6Y8XEx+N4wPaLUynnxYLQ+kLqgiF+xGwWa95FpbACLZv5fl8fp6UgBba6wJ/lYrkFoShDnrDQIm6MZt7xqmYrpgnE3A8GM5Tsmpn8QaThdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=avDc06aR; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709058537;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RAirFKPVqfCxuOSfdLRYPU9/LUc1bLX2BGDNlapPAr0=;
-	b=avDc06aR09uOjBgKTDHr1VLQtJV/8//FIvT8PGdEyahkPDDmuFPXXUpsFM/IW49wgR8CRr
-	IIsn0rLq/drUgC5Nc1zypNcTmmRIAsF2HOTR06KEKf2JMfsL1u7mOJQ5TJrfxntfWADJ5d
-	VUMK6O/L10WyTNLqLPwWt2ksEgTDXzQ=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-438-xnE3zyZwPVWVI0oDFD7czA-1; Tue, 27 Feb 2024 13:28:51 -0500
-X-MC-Unique: xnE3zyZwPVWVI0oDFD7czA-1
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-5a05c6e6715so3730557eaf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:28:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709058530; x=1709663330;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RAirFKPVqfCxuOSfdLRYPU9/LUc1bLX2BGDNlapPAr0=;
-        b=nrKTG1Tep46n5Xo9l1SQ2ifENtEV0mFVDttp/P2lS0L3zRGnt/HM7CRrQas9CdJafk
-         udC0WUxBCX4ASK/piBD/DhzKkT/pIcMOUcmJprUL2xr53UQZIbHUnaV66Ve2YlmpO5TU
-         Fs75htssdFGW4MOdbm04w4rwZk/LaPJ1wcwz6bbvlr1+i3JMdk7xPn/9MvuQbEjwn04G
-         PbCAIETAMwJytD7cEYsiN9TBmOLm/eYv8Dc3jYlBQQNV6HcLM7T5r6GGeFDJbZtQdoe8
-         ZQQg5BtK/NJDb02btqNbkQ8VWzzWCvdu4A8k8enZohs2RJMnhtfqj2zJZh0W62Q2oc3C
-         YH0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWInwZpz/Sg1xj1aSElceqJTkG2dn6IkBfRqkW0TLPRpTcEjYw3Q70Q+EI2mJc3UjnKAsCRZFUR1SxWynHp9NCq1OFL30gf7oS9ZUee
-X-Gm-Message-State: AOJu0Yz5+pPLqhe1NrjzRDxdsujxpFfjswrEBhLHBKqyZ/Jy6uz4sM7A
-	QMeD5ydMyDnD5FeMHr/QVS8LGToCfFz8d5yImfDI67DF3iECfPWpL+WtwCGJ4p6y5XYILAfqX+q
-	+jYe7vdoMvBpFdMo75q76CQ0/x5FQwd/0wbJ2A56oF6m+OhOFcGPQwdTcCajlcA==
-X-Received: by 2002:a05:6359:4c0e:b0:17b:af7b:febb with SMTP id kj14-20020a0563594c0e00b0017baf7bfebbmr5069276rwc.1.1709058530707;
-        Tue, 27 Feb 2024 10:28:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEgqEXoocghrQ/7CjgIprLgqs1b2AG+6YTCqmF73tfMuRcN0udjDL1Day+68KH+VjEqYYYQJQ==
-X-Received: by 2002:a05:6359:4c0e:b0:17b:af7b:febb with SMTP id kj14-20020a0563594c0e00b0017baf7bfebbmr5069250rwc.1.1709058529985;
-        Tue, 27 Feb 2024 10:28:49 -0800 (PST)
-Received: from [10.0.0.33] (modemcable096.103-83-70.mc.videotron.ca. [70.83.103.96])
-        by smtp.gmail.com with ESMTPSA id qq1-20020a0562142c0100b0068cdc0a0d42sm4380989qvb.25.2024.02.27.10.28.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 10:28:49 -0800 (PST)
-Message-ID: <d5000215-68fa-4320-b5ce-639143e8f52c@redhat.com>
-Date: Tue, 27 Feb 2024 13:28:48 -0500
+	s=arc-20240116; t=1709058584; c=relaxed/simple;
+	bh=YN4ZzoiB5K1lflq/sbWOsRUhDHVsGICZilvWp2J0wLQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y6v9hi4/D5G7/UBoCq1ahWU/HbPyyid8NGkoh1OMmg3ZOfl7weoXIhWkrbKds2oUuM6ZwMdMY1WycUbRmcuSHsQF62x8oqIUCNNH+jsMTKVndbQAaBFvrKJFU8UQL+QdWvZc23XkiuP81d3U1LUomIR/zS+pKkZ5wfaKbBIWNGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RBCEivyU; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709058580;
+	bh=YN4ZzoiB5K1lflq/sbWOsRUhDHVsGICZilvWp2J0wLQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RBCEivyUZVu7LUfCU4gbMs7//qgxfttPORIfmuUKOQPBdp02XAotFZ0NecIYwGyB0
+	 Y1E2Zu6hHOW7vBDmoIAyYBi/JR06g+B5oo9locuC8UXrnksEt5azool0GA3ZPMyjk5
+	 iwNUqlOxG7ZGF2R/w7q8d8wDNJHxhezOrb3aC/HXqzQoG2B8OaxDiygRpXZxX1Why3
+	 hSxEvxtKGBN3pmlWipvZUYXoI1bc8eb9SfS4ad/kLRpFnaY+SGJHX1kANdEy4pFDOp
+	 n+khmDdbwnIwt+Ne68v3az9RGJhuCjzA/eRv3Go/qy0RCv/WfZpsviojNWkyGj7T/d
+	 BKYDkTMSM5QBA==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: alarumbe)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 49D53378000B;
+	Tue, 27 Feb 2024 18:29:40 +0000 (UTC)
+Date: Tue, 27 Feb 2024 18:29:39 +0000
+From: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To: Steven Price <steven.price@arm.com>
+Cc: Boris Brezillon <boris.brezillon@collabora.com>, 
+	Rob Herring <robh@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Jonathan Corbet <corbet@lwn.net>, kernel@collabora.com, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] drm/panfrost: Replace fdinfo's profiling debugfs knob
+ with sysfs
+Message-ID: <eul246zgqqrweo6a3yacw4ukgoj3ixszlfdz42bgtzmivroyp4@2xevze2efqew>
+References: <20240221161237.2478193-1-adrian.larumbe@collabora.com>
+ <3769e867-64a8-4862-9791-da106eaa8501@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] platform/mellanox: mlxbf-pmc: Fix module loading
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Hans de Goede <hdegoede@redhat.com>
-Cc: shravankr@nvidia.com, davthompson@nvidia.com, ndalvi@redhat.com,
- LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
-References: <cover.1708635408.git.luizcap@redhat.com>
- <170895404513.2243.14840310263795846559.b4-ty@linux.intel.com>
- <def1a153-3cfb-431d-a7d2-a13bb7d65f4f@redhat.com>
- <29863354-4efe-d199-a9d4-7daf83f6cde9@linux.intel.com>
- <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
- <eea32e56-2ea3-4a11-b1b9-8dd46dac7d72@redhat.com>
- <4f6169e5-dee6-2188-f0a5-601b516be5fe@linux.intel.com>
-Content-Language: en-US, en-CA
-From: Luiz Capitulino <luizcap@redhat.com>
-In-Reply-To: <4f6169e5-dee6-2188-f0a5-601b516be5fe@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3769e867-64a8-4862-9791-da106eaa8501@arm.com>
 
-On 2024-02-27 08:18, Ilpo Järvinen wrote:
-> On Mon, 26 Feb 2024, Hans de Goede wrote:
-> 
->> Hi Luiz,
->>
->> On 2/26/24 17:10, Luiz Capitulino wrote:
->>> On 2024-02-26 11:04, Ilpo Järvinen wrote:
->>>> On Mon, 26 Feb 2024, Luiz Capitulino wrote:
->>>>
->>>>> On 2024-02-26 08:27, Ilpo Järvinen wrote:
->>>>>> On Thu, 22 Feb 2024 15:57:28 -0500, Luiz Capitulino wrote:
->>>>>>
->>>>>>> The mlxbf-pmc driver fails to load when the firmware reports a new but not
->>>>>>> yet implemented performance block. I can reproduce this today with a
->>>>>>> Bluefield-3 card and UEFI version 4.6.0-18-g7d063bb-BId13035, since this
->>>>>>> reports the new clock_measure performance block.
->>>>>>>
->>>>>>> This[1] patch from Shravan implements the clock_measure support and will
->>>>>>> solve the issue. But this series avoids the situation by ignoring and
->>>>>>> logging unsupported performance blocks.
->>>>>>>
->>>>>>> [...]
->>>>>>
->>>>>>
->>>>>> Thank you for your contribution, it has been applied to my local
->>>>>> review-ilpo branch. Note it will show up in the public
->>>>>> platform-drivers-x86/review-ilpo branch only once I've pushed my
->>>>>> local branch there, which might take a while.
->>>>>
->>>>> Thank you Ilpo and thanks Hans for the review.
->>>>>
->>>>> The only detail is that we probably want this merged for 6.8 since
->>>>> the driver doesn't currently load with the configuration mentioned above.
->>>>
->>>> Oh, sorry, I missed the mention in the coverletter.
->>>>
->>>> So you'd want I drop these from review-ilpo branch as there they end
->>>> up into for-next branch, and they should go through Hans instead who
->>>> handles fixes branch for this cycle?
->>>
->>> If that's the path to get this series merged for this cycle then yes,
->>> but let's see if Hans agrees (sorry that I didn't know this before
->>> posting).
->>
->> Hmm, new hw enablement typically goes through -next and not to
->> the current fixes branch. And AFAICT this is new hw enablement,
->> not a regression / bug-fix.
->>
->> Is there any special reason why this needs to be in 6.8 ?
-> 
-> To me it sounded like fix to 1a218d312e65 ("platform/mellanox: mlxbf-pmc:
-> Add Mellanox BlueField PMC driver") and 423c3361855c ("platform/mellanox:
-> mlxbf-pmc: Add support for BlueField-3") although not explicitly marked as
-> such.
-> 
-> But I'm fine with taking these through for-next, it's relatively late into
-> the cycle already anyway.
-> 
->> For RHEL kernels you can cherry-pick patches from -next
->> as necessary.
-> 
-> It's also possible to send them later directly to stable folks once
-> Linus' tree has them after the next merge window if you feel they're
-> useful for stable inclusion.
+Hi Steve,
 
-Fair enough. Let's proceed with the original plan of having them merged
-in the for-next branch. Sorry for the noise this discussion may have
-caused.
+On 21.02.2024 16:52, Steven Price wrote:
+> On 21/02/2024 16:12, Adrián Larumbe wrote:
+> > Debugfs isn't always available in production builds that try to squeeze
+> > every single byte out of the kernel image, but we still need a way to
+> > toggle the timestamp and cycle counter registers so that jobs can be
+> > profiled for fdinfo's drm engine and cycle calculations.
+> > 
+> > Drop the debugfs knob and replace it with a sysfs file that accomplishes
+> > the same functionality, and document its ABI in a separate file.
+> > 
+> > Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+> > ---
+> >  .../testing/sysfs-driver-panfrost-profiling   | 10 +++
+> >  Documentation/gpu/panfrost.rst                |  9 +++
+> >  drivers/gpu/drm/panfrost/Makefile             |  5 +-
+> >  drivers/gpu/drm/panfrost/panfrost_debugfs.c   | 21 ------
+> >  drivers/gpu/drm/panfrost/panfrost_debugfs.h   | 14 ----
+> >  drivers/gpu/drm/panfrost/panfrost_device.h    |  5 +-
+> >  drivers/gpu/drm/panfrost/panfrost_drv.c       | 14 ++--
+> >  drivers/gpu/drm/panfrost/panfrost_job.c       |  2 +-
+> >  drivers/gpu/drm/panfrost/panfrost_sysfs.c     | 74 +++++++++++++++++++
+> >  drivers/gpu/drm/panfrost/panfrost_sysfs.h     | 15 ++++
+> >  10 files changed, 124 insertions(+), 45 deletions(-)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> >  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> >  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> >  create mode 100644 drivers/gpu/drm/panfrost/panfrost_sysfs.c
+> >  create mode 100644 drivers/gpu/drm/panfrost/panfrost_sysfs.h
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-driver-panfrost-profiling b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > new file mode 100644
+> > index 000000000000..ce54069714f3
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-driver-panfrost-profiling
+> > @@ -0,0 +1,10 @@
+> > +What:		/sys/bus/.../drivers/panfrost/.../drm/../profiling/status
+> > +Date:		February 2024
+> > +KernelVersion:	6.8.0
+> > +Contact:	Adrian Larumbe <adrian.larumbe@collabora.com>
+> > +Description:
+> > +                Get/set drm fdinfo's engine and cycles profiling status.
+> > +                Valid values are:
+> > +		0: Disable fdinfo job profiling sources. This disables both the GPU's
+> > +                timestamp and cycle counter registers.
+> > +		1: Enable the above.
+> 
+> Minor point, but if we're going to eventually come up with a generic way
+> of doing this, then we're going to have to think about backwards
+> compatibility for this sysfs file. I would expect in this new world '0'
+> would mean "default behaviour; off unless the new-fangled thing enables
+> profiling" and '1' means "force on".
+> 
+> In which case perhaps wording like the below would be clearer:
+> 
+> 0: Don't enable fdinfo job profiling sources.
+> 1: Enable fdinfo job profiling sources, this enables both the GPU's
+>    timestamp and cycle counter registers.
+> 
+> Or am I being too picky over the wording ;)
 
-- Luiz
+I'm alright with this kind of wording, to keep things as generic as
+possible. Initially I thought just mentioning 0 and 1 as potential toggle values
+would be enough, and then every driver could describe their own profiling/status
+sysfs knob in similar terms, depending on what profiling resouces they act upon.
 
+> One other small issue below...
 > 
->>> One additional detail is that this series is on top of linux-next, which
->>> has two additional mlxbf-pmc changes:
->>>
->>> * https://lore.kernel.org/lkml/39be055af3506ce6f843d11e45d71620f2a96e26.1707808180.git.shravankr@nvidia.com/
->>> * https://lore.kernel.org/lkml/d8548c70339a29258a906b2b518e5c48f669795c.1707808180.git.shravankr@nvidia.com/
->>
->> Hmm, those are not small patches, any other reason
->> why this really should go to -next IMHO.
+> > diff --git a/Documentation/gpu/panfrost.rst b/Documentation/gpu/panfrost.rst
+> > index b80e41f4b2c5..be4ac282ef63 100644
+> > --- a/Documentation/gpu/panfrost.rst
+> > +++ b/Documentation/gpu/panfrost.rst
+> > @@ -38,3 +38,12 @@ the currently possible format options:
+> >  
+> >  Possible `drm-engine-` key names are: `fragment`, and  `vertex-tiler`.
+> >  `drm-curfreq-` values convey the current operating frequency for that engine.
+> > +
+> > +Users must bear in mind that engine and cycle sampling are disabled by default,
+> > +because of power saving concerns. `fdinfo` users and benchmark applications which
+> > +query the fdinfo file must make sure to toggle the job profiling status of the
+> > +driver by writing into the appropriate sysfs node::
+> > +
+> > +    echo <N> > /sys/bus/platform/drivers/panfrost/[a-f0-9]*.gpu/drm/card1/profiling
+> > +
+> > +Where `N` is either `0` or `1`, depending on the desired enablement status.
+> > diff --git a/drivers/gpu/drm/panfrost/Makefile b/drivers/gpu/drm/panfrost/Makefile
+> > index 2c01c1e7523e..6e718595d8a6 100644
+> > --- a/drivers/gpu/drm/panfrost/Makefile
+> > +++ b/drivers/gpu/drm/panfrost/Makefile
+> > @@ -10,8 +10,7 @@ panfrost-y := \
+> >  	panfrost_job.o \
+> >  	panfrost_mmu.o \
+> >  	panfrost_perfcnt.o \
+> > -	panfrost_dump.o
+> > -
+> > -panfrost-$(CONFIG_DEBUG_FS) += panfrost_debugfs.o
+> > +	panfrost_dump.o \
+> > +	panfrost_sysfs.o
+> >  
+> >  obj-$(CONFIG_DRM_PANFROST) += panfrost.o
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.c b/drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> > deleted file mode 100644
+> > index 72d4286a6bf7..000000000000
+> > --- a/drivers/gpu/drm/panfrost/panfrost_debugfs.c
+> > +++ /dev/null
+> > @@ -1,21 +0,0 @@
+> > -// SPDX-License-Identifier: GPL-2.0
+> > -/* Copyright 2023 Collabora ltd. */
+> > -/* Copyright 2023 Amazon.com, Inc. or its affiliates. */
+> > -
+> > -#include <linux/debugfs.h>
+> > -#include <linux/platform_device.h>
+> > -#include <drm/drm_debugfs.h>
+> > -#include <drm/drm_file.h>
+> > -#include <drm/panfrost_drm.h>
+> > -
+> > -#include "panfrost_device.h"
+> > -#include "panfrost_gpu.h"
+> > -#include "panfrost_debugfs.h"
+> > -
+> > -void panfrost_debugfs_init(struct drm_minor *minor)
+> > -{
+> > -	struct drm_device *dev = minor->dev;
+> > -	struct panfrost_device *pfdev = platform_get_drvdata(to_platform_device(dev->dev));
+> > -
+> > -	debugfs_create_atomic_t("profile", 0600, minor->debugfs_root, &pfdev->profile_mode);
+> > -}
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_debugfs.h b/drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> > deleted file mode 100644
+> > index c5af5f35877f..000000000000
+> > --- a/drivers/gpu/drm/panfrost/panfrost_debugfs.h
+> > +++ /dev/null
+> > @@ -1,14 +0,0 @@
+> > -/* SPDX-License-Identifier: GPL-2.0 */
+> > -/*
+> > - * Copyright 2023 Collabora ltd.
+> > - * Copyright 2023 Amazon.com, Inc. or its affiliates.
+> > - */
+> > -
+> > -#ifndef PANFROST_DEBUGFS_H
+> > -#define PANFROST_DEBUGFS_H
+> > -
+> > -#ifdef CONFIG_DEBUG_FS
+> > -void panfrost_debugfs_init(struct drm_minor *minor);
+> > -#endif
+> > -
+> > -#endif  /* PANFROST_DEBUGFS_H */
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+> > index 62f7e3527385..56c8e5551335 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_device.h
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+> > @@ -130,7 +130,10 @@ struct panfrost_device {
+> >  	struct list_head scheduled_jobs;
+> >  
+> >  	struct panfrost_perfcnt *perfcnt;
+> > -	atomic_t profile_mode;
+> > +	struct kobj_profiling {
+> > +		struct kobject base;
+> > +		atomic_t profile_mode;
+> > +	} profiling;
+> >  
+> >  	struct mutex sched_lock;
+> >  
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> > index a926d71e8131..6db1ea453514 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> > @@ -20,7 +20,7 @@
+> >  #include "panfrost_job.h"
+> >  #include "panfrost_gpu.h"
+> >  #include "panfrost_perfcnt.h"
+> > -#include "panfrost_debugfs.h"
+> > +#include "panfrost_sysfs.h"
+> >  
+> >  static bool unstable_ioctls;
+> >  module_param_unsafe(unstable_ioctls, bool, 0600);
+> > @@ -600,10 +600,6 @@ static const struct drm_driver panfrost_drm_driver = {
+> >  
+> >  	.gem_create_object	= panfrost_gem_create_object,
+> >  	.gem_prime_import_sg_table = panfrost_gem_prime_import_sg_table,
+> > -
+> > -#ifdef CONFIG_DEBUG_FS
+> > -	.debugfs_init		= panfrost_debugfs_init,
+> > -#endif
+> >  };
+> >  
+> >  static int panfrost_probe(struct platform_device *pdev)
+> > @@ -663,8 +659,14 @@ static int panfrost_probe(struct platform_device *pdev)
+> >  	if (err)
+> >  		goto err_out2;
+> >  
+> > +	err = panfrost_sysfs_init(pfdev);
+> > +	if (err)
+> > +		goto err_out3;
+> > +
+> >  	return 0;
+> >  
+> > +err_out3:
+> > +	panfrost_gem_shrinker_cleanup(ddev);
+> >  err_out2:
+> >  	drm_dev_unregister(ddev);
+> >  err_out1:
+> > @@ -681,6 +683,8 @@ static void panfrost_remove(struct platform_device *pdev)
+> >  	struct panfrost_device *pfdev = platform_get_drvdata(pdev);
+> >  	struct drm_device *ddev = pfdev->ddev;
+> >  
+> > +	panfrost_sysfs_cleanup(pfdev);
+> > +
+> >  	drm_dev_unregister(ddev);
+> >  	panfrost_gem_shrinker_cleanup(ddev);
+> >  
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+> > index 0c2dbf6ef2a5..49413dfda2ea 100644
+> > --- a/drivers/gpu/drm/panfrost/panfrost_job.c
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+> > @@ -243,7 +243,7 @@ static void panfrost_job_hw_submit(struct panfrost_job *job, int js)
+> >  	subslot = panfrost_enqueue_job(pfdev, js, job);
+> >  	/* Don't queue the job if a reset is in progress */
+> >  	if (!atomic_read(&pfdev->reset.pending)) {
+> > -		if (atomic_read(&pfdev->profile_mode)) {
+> > +		if (atomic_read(&pfdev->profiling.profile_mode)) {
+> >  			panfrost_cycle_counter_get(pfdev);
+> >  			job->is_profiled = true;
+> >  			job->start_time = ktime_get();
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_sysfs.c b/drivers/gpu/drm/panfrost/panfrost_sysfs.c
+> > new file mode 100644
+> > index 000000000000..072d3bf349d2
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_sysfs.c
+> > @@ -0,0 +1,74 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright 2023 Collabora ltd. */
+> > +/* Copyright 2023 Amazon.com, Inc. or its affiliates. */
+> > +
+> > +#include <linux/platform_device.h>
+> > +#include <drm/drm_file.h>
+> > +#include <drm/panfrost_drm.h>
+> > +
+> > +#include "panfrost_device.h"
+> > +#include "panfrost_gpu.h"
+> > +#include "panfrost_sysfs.h"
+> > +
+> > +static ssize_t
+> > +profiling_show(struct kobject *kobj, struct kobj_attribute *attr, char *buf)
+> > +{
+> > +	atomic_t *profile_mode =
+> > +		&container_of(kobj, struct {
+> > +			struct kobject base;
+> > +			atomic_t profile_mode; },
+> > +			base)->profile_mode;
 > 
-> Those two linked patches are totally unrelated.
-> 
-> 
+> Yuck! ;) That's likely to catch people out if they modify the struct in
+> the header file.
 
+Sorry about this abomination. I think it slipped through the cracks after a
+first patch draft in which I didn't want to make the kobject-holding structure a
+global declaration.
+
+> Why not "struct kobj_profiling" rather than that inline struct. I'd also
+> argue that kobj_profiling isn't a great name and I'd suggest something
+> with 'panfrost' in the name. Or you could just use the parent struct
+> panfrost_device and not bother naming this sub-struct, e.g.
+> 
+> &container_of(kobj, struct panfrost_device,
+>               profiling.base)->profiling.profile_mode;
+
+This is a much better way of doing things than mine. Thanks!
+
+> Thanks,
+> Steve
+> 
+> > +
+> > +	return sysfs_emit(buf, "%d\n", atomic_read(profile_mode));
+> > +}
+> > +
+> > +static ssize_t
+> > +profiling_store(struct kobject *kobj, struct kobj_attribute *attr,
+> > +	       const char *buf, size_t count)
+> > +{
+> > +	atomic_t *profile_mode =
+> > +		&container_of(kobj, struct {
+> > +			struct kobject base;
+> > +			atomic_t profile_mode; },
+> > +			base)->profile_mode;
+> > +	int err, value;
+> > +
+> > +	err = kstrtoint(buf, 0, &value);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	atomic_set(profile_mode, !!value);
+> > +
+> > +	return count;
+> > +}
+> > +
+> > +static const struct kobj_attribute profiling_status =
+> > +__ATTR(status, 0644, profiling_show, profiling_store);
+> > +
+> > +static const struct kobj_type kobj_profile_type = {
+> > +	.sysfs_ops = &kobj_sysfs_ops,
+> > +};
+> > +
+> > +int panfrost_sysfs_init(struct panfrost_device *pfdev)
+> > +{
+> > +	struct device *kdev = pfdev->ddev->primary->kdev;
+> > +	int err;
+> > +
+> > +	kobject_init(&pfdev->profiling.base, &kobj_profile_type);
+> > +
+> > +	err = kobject_add(&pfdev->profiling.base, &kdev->kobj, "%s", "profiling");
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	err = sysfs_create_file(&pfdev->profiling.base, &profiling_status.attr);
+> > +	if (err)
+> > +		kobject_del(&pfdev->profiling.base);
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +void panfrost_sysfs_cleanup(struct panfrost_device *pfdev)
+> > +{
+> > +	sysfs_remove_file(&pfdev->profiling.base, &profiling_status.attr);
+> > +	kobject_del(&pfdev->profiling.base);
+> > +}
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_sysfs.h b/drivers/gpu/drm/panfrost/panfrost_sysfs.h
+> > new file mode 100644
+> > index 000000000000..5fc9c8c1091a
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/panfrost/panfrost_sysfs.h
+> > @@ -0,0 +1,15 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Copyright 2023 Collabora ltd.
+> > + * Copyright 2023 Amazon.com, Inc. or its affiliates.
+> > + */
+> > +
+> > +#ifndef PANFROST_SYSFS_H
+> > +#define PANFROST_SYSFS_H
+> > +
+> > +struct panfrost_device;
+> > +
+> > +int panfrost_sysfs_init(struct panfrost_device *pfdev);
+> > +void panfrost_sysfs_cleanup(struct panfrost_device *pfdev);
+> > +
+> > +#endif  /* PANFROST_SYSFS_H */
 
