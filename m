@@ -1,141 +1,132 @@
-Return-Path: <linux-kernel+bounces-83266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 594938690FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:54:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C39088690EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:53:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCBD7B24763
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:54:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0068A1C2399A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F5F13AA42;
-	Tue, 27 Feb 2024 12:54:12 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE51513AA20;
+	Tue, 27 Feb 2024 12:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YfqxeQy8"
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABF1955E63
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954E813A88D
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:53:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709038452; cv=none; b=OBsYgiqJmcsYfJuh+Ys37yJmh46U0ITJ9NJfCrWQMa5+09p5CLCny5oXsrE0mSeFruezZnrsCLFF+wLN06bARBLKeYa6EpKUqqZhlP0+Ws36MAPcF7tJfglOPQBSSUzRHCoCuboor/02dZ+W0FounKKsMHOMna3TBv3D1DJu8BM=
+	t=1709038399; cv=none; b=rDZJFnzD6lFLls5mSDrdric191ENhCdzF2B13HeDzPc/1DJyODWjNlxbudzqitdzAM15dqAhvisyhAb95RDJUcLWBqUFk8xHldyPirZbSURapYwfyaf2qXcU6cBZr8MKkW9IUKPT6lDEFuDImCPMfnf/rSLRXl/B+5Zc5gaL3H8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709038452; c=relaxed/simple;
-	bh=DDg8SNYYRHT/ZFNymojeroVxG1EQZrDGaP+SnpQoRVo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jXE6nRivyePub7YwFWeB5H/ELHGw9116uwRwvw5/hhOoLpSdr9I6bKebVrQi1E6vRooyDn3oLfbANccUTGSGn51QAO0cMSC8HVeCYOjq8uvY+lnoYnhwY1IFe3xDM5eO+5WzsHN5WF1ElVAYRjTQH9rwvo+NBUUmSg5TAJZwhHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TkcnM4TnRz1h0gk;
-	Tue, 27 Feb 2024 20:51:51 +0800 (CST)
-Received: from dggpeml500002.china.huawei.com (unknown [7.185.36.158])
-	by mail.maildlp.com (Postfix) with ESMTPS id A2E5518005F;
-	Tue, 27 Feb 2024 20:54:05 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500002.china.huawei.com (7.185.36.158) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 27 Feb 2024 20:54:05 +0800
-From: Junhao He <hejunhao3@huawei.com>
-To: <will@kernel.org>, <jonathan.cameron@huawei.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linuxarm@huawei.com>, <yangyicong@huawei.com>, <prime.zeng@hisilicon.com>,
-	<hejunhao3@huawei.com>
-Subject: [PATCH v2] drivers/perf: hisi: Enable HiSilicon Erratum 162700402 quirk for HIP09
-Date: Tue, 27 Feb 2024 20:52:31 +0800
-Message-ID: <20240227125231.53127-1-hejunhao3@huawei.com>
-X-Mailer: git-send-email 2.33.0
+	s=arc-20240116; t=1709038399; c=relaxed/simple;
+	bh=9v2YqYFq6Eba9WIeYwnHuas7fhnenBEEd3lTTms3eAQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=CAtl0YvVivgQud5CaQIPutOVAz6tFRoxefCEvi+v2fdzEmhEZanGP2WHvarVlJmOlIgHWjUetaTuEr5iZHAl2g/5e4vGXfrbNDJ54GGJ8FvVSzSLCDsp5WlWJ4Sf8l3ixH+tkjfgyhZDowVJpZGsQKsQbUbz9fAaIFKxfDSjM9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YfqxeQy8; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bba50cd318so3078900b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:53:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709038396; x=1709643196; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uoA1zhsK924eVhGPcbYMs8zJoN9s6XNb2dqpxg85Fdo=;
+        b=YfqxeQy86hS5BT0SThjq7zkJcwUFk9cjRm04zcSmQyXMfk24TaTVn4BjerLXnEiRWg
+         +D3d8YtFbbeCyuYTnaK0Lbsau3Ai6MZnMX7/Yz8V+P1bNpSy4gPgGX70jUj/NmAZpO0c
+         PO4N2WH8aCHHEFVuofmM6nrQAuX+9fa0GXBYXViW47TVucMpaqvHHlAqoYogH7A2jqrv
+         fwz88KlvvJXAbm4dpGfCZqTq6Dlvoqds5sAEFGkT5UBEwVZvALx6wlFlLPSV5Whcr6l6
+         lETtkEEYs9s8LTIcyT65ZZHgbfmCKGTBekhfcvA05F7W2WVsaoOCKYOeRwPHeGaXYKry
+         o5HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709038396; x=1709643196;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uoA1zhsK924eVhGPcbYMs8zJoN9s6XNb2dqpxg85Fdo=;
+        b=if+1LjU1N6cGql2nZUEtWOdXDCwWMlNDeD3SSu/7V/OU9/BS9/oXvM6zBbSmPSwR9F
+         nTU9psNBf+QrYVnUcxAeUqOWBs4vnRBU412h3UnKgwpE85q2Q0dOAZ5BfNm7/o6Aum9W
+         SaPzpOpNxusT6n3pHL32CMATPS65WOfrMNCW8hdbFyuunlfd8wMhGsEH6CFZDWS4GG23
+         lnPlpaUcLb7vXgdiCl2Em1GOFD84Ngvk0O+miG9cNnhidsWBkek+sIssC/HkMrEAg0EG
+         Zy9n0TBLPUJcV6sUs4KcCSeecskBlXzkmU/S3SRzjiw8AHHrHERXbTI+SyDTObxICWRv
+         eXUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVO49w0JNcWzIXvF7flPaTN5WdqHFtv/ZGZEbQRb/He0QXXFG0wXlCIVz5j33ny0C8U/AT71L7c7wrmmeELy7DI3LDlmavlGBamniCW
+X-Gm-Message-State: AOJu0YxdV04FwYT94oSLDsm8MHDQUJ5u6l4VdLELJy9rmHFX5dTYNI6i
+	q7qDpMJ//ZVBqqo58WuD7/msoj6vunsvEY32f6i8RjXarpPSVvVxmklfx5HF77xScWf9zce0Urq
+	wWQ0=
+X-Google-Smtp-Source: AGHT+IFXt0AWM4aki4nvdSvJ0KxEyjUS84ufrgN7stn3/bYNGPNiDnA2HKV39diFQRffFKURdQ50NA==
+X-Received: by 2002:a05:6870:c903:b0:21f:c9f5:c326 with SMTP id hj3-20020a056870c90300b0021fc9f5c326mr13577354oab.51.1709038396654;
+        Tue, 27 Feb 2024 04:53:16 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id r7-20020aa78b87000000b006e48b04d8c0sm5841193pfd.64.2024.02.27.04.53.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 04:53:16 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH 0/3] arm64: dts: qcom: sm8[456]50: add missing
+ qcom,non-secure-domain property
+Date: Tue, 27 Feb 2024 13:53:03 +0100
+Message-Id: <20240227-topic-sm8x50-upstream-fastrpc-non-secure-domain-v1-0-15c4c864310f@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500002.china.huawei.com (7.185.36.158)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAC/b3WUC/x2Nuw7CMAwAf6XyjKUkpSrwK4jBSlzwkIfsFlWq+
+ u9EbHfL3QHGKmzwGA5Q/opJLV38ZYD4ofJmlNQdggtXF8KMa20S0fJtnxxuzVZlyrhQhxax1IL
+ GcVPGVDNJQQp+nCn5ux8n6NWmvMj+Pz5f5/kD393u5YEAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=864;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=9v2YqYFq6Eba9WIeYwnHuas7fhnenBEEd3lTTms3eAQ=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl3ds1XklfY59Ruwag5ecZYZOVvtWytUcFbBZV2xD/
+ 8+QY4kOJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZd3bNQAKCRB33NvayMhJ0ZkQEA
+ CRf9vi9+UcJwUwn8iSQg/ZuJijJ4px5h3/5QM3sdEr/jOgtKNOlgqjEznjVjf6/lrdCNtB+pxyxYrj
+ 1LSD+gAjqx8wOI3RifOG+PPZkmwCZ9VZx1YsvdE8/8XjNhAuPSaeqKGjowuylMbP3wPB3+kCk9paB8
+ pRit8jXWme+NUfIcIbLOO3fX4VLriy5ZyBpdKmJmaprRH4my30H6eQPaI1KlurwKYlpTNrVaCveUKW
+ 7joOGTK52UiHLk+VZqiWDgxYhuFizPvUlBfjp8HH5rnIxdivOCobZEa40lfS+ef8OKjiyDXjIPaZOC
+ DYVHf9EMkr7peWDL4FgpHhNszDfGYHXE/45HjgG5v/X5kXz+o4AlcZWdLNIofwncpWC+vnoFhvi0kN
+ rhK4fgDlvhNj1x6A/onOTGOhgjCSjJPFItD4I5Bbh+u+1Wtv+deke8Zidl6IFBcPyhwNm1gncCuakP
+ c7sY5AUHsaBNRVGy0L/5MB+SVuEyRcrV6mRG5VqRUJJX9yaYtRJzIlcm8Fn1oQU7T08i8wboVS7V+0
+ oTEPA+4vug77UJ6UQwYOxDO85HbB3lDq/kmmr1hHY4gZqj5kul/lspkCZOo9nI8Z1+v8BYpu3ZMrKR
+ WRmAU1rZtmo89LREGpz7dWq7cbBUuxANo4ALpc6EILKmEA+psuw1+UnEpFoA==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-HiSilicon UC PMU v2 suffers the erratum 162700402 that the PMU counter
-cannot be set due to the lack of clock under power saving mode. This will
-lead to error or inaccurate counts. The clock can be enabled by the PMU
-global enabling control.
+By default the DSP domains are non secure, add the missing
+qcom,non-secure-domain property to SM8450, SM8550 and SM8650
+in order to mark them as non-secure.
 
-This patch tries to fix this by set the UC PMU enable before set event
-period to turn on the clock, and then restore the UC PMU configuration.
-The counter register can hold its value without a clock.
-
-Signed-off-by: Junhao He <hejunhao3@huawei.com>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
+Neil Armstrong (3):
+      arm64: dts: qcom: sm8450: add missing qcom,non-secure-domain property
+      arm64: dts: qcom: sm8550: add missing qcom,non-secure-domain property
+      arm64: dts: qcom: sm8650: add missing qcom,non-secure-domain property
 
-Changes since V1:
-- Updated the comment regarding the quirk function.
-- Extract write counter normal to a helper function.
-Link: https://lore.kernel.org/all/20240207094245.34195-1-hejunhao3@huawei.com/
+ arch/arm64/boot/dts/qcom/sm8450.dtsi | 3 +++
+ arch/arm64/boot/dts/qcom/sm8550.dtsi | 2 ++
+ arch/arm64/boot/dts/qcom/sm8650.dtsi | 4 ++++
+ 3 files changed, 9 insertions(+)
+---
+base-commit: 22ba90670a51a18c6b36d285fddf92b9887c0bc3
+change-id: 20240227-topic-sm8x50-upstream-fastrpc-non-secure-domain-a2137ad19135
 
- drivers/perf/hisilicon/hisi_uncore_uc_pmu.c | 42 ++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
-index 636fb79647c8..481dcc9e8fbf 100644
---- a/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
-+++ b/drivers/perf/hisilicon/hisi_uncore_uc_pmu.c
-@@ -287,12 +287,52 @@ static u64 hisi_uc_pmu_read_counter(struct hisi_pmu *uc_pmu,
- 	return readq(uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
- }
- 
--static void hisi_uc_pmu_write_counter(struct hisi_pmu *uc_pmu,
-+static bool hisi_uc_pmu_get_glb_en_state(struct hisi_pmu *uc_pmu)
-+{
-+	u32 val;
-+
-+	val = readl(uc_pmu->base + HISI_UC_EVENT_CTRL_REG);
-+	return !!FIELD_GET(HISI_UC_EVENT_GLB_EN, val);
-+}
-+
-+static void hisi_uc_pmu_write_counter_normal(struct hisi_pmu *uc_pmu,
- 				      struct hw_perf_event *hwc, u64 val)
- {
- 	writeq(val, uc_pmu->base + HISI_UC_CNTR_REGn(hwc->idx));
- }
- 
-+static void hisi_uc_pmu_write_counter_quirk_v2(struct hisi_pmu *uc_pmu,
-+				      struct hw_perf_event *hwc, u64 val)
-+{
-+	hisi_uc_pmu_start_counters(uc_pmu);
-+	hisi_uc_pmu_write_counter_normal(uc_pmu, hwc, val);
-+	hisi_uc_pmu_stop_counters(uc_pmu);
-+}
-+
-+static void hisi_uc_pmu_write_counter(struct hisi_pmu *uc_pmu,
-+				      struct hw_perf_event *hwc, u64 val)
-+{
-+	bool enable = hisi_uc_pmu_get_glb_en_state(uc_pmu);
-+	bool erratum = uc_pmu->identifier == HISI_PMU_V2;
-+
-+	/*
-+	 * HiSilicon UC PMU v2 suffers the erratum 162700402 that the
-+	 * PMU counter cannot be set due to the lack of clock under power
-+	 * saving mode. This will lead to error or inaccurate counts.
-+	 * The clock can be enabled by the PMU global enabling control.
-+	 * The irq handler and pmu_start() will call the function to set
-+	 * period. If the function under irq context, the PMU has been
-+	 * enabled therefore we set counter directly. Other situations
-+	 * the PMU is disabled, we need to enable it to turn on the
-+	 * counter clock to set period, and then restore PMU enable
-+	 * status, the counter can hold its value without a clock.
-+	 */
-+	if (enable || !erratum)
-+		hisi_uc_pmu_write_counter_normal(uc_pmu, hwc, val);
-+	else
-+		hisi_uc_pmu_write_counter_quirk_v2(uc_pmu, hwc, val);
-+}
-+
- static void hisi_uc_pmu_enable_counter_int(struct hisi_pmu *uc_pmu,
- 					   struct hw_perf_event *hwc)
- {
+Best regards,
 -- 
-2.33.0
+Neil Armstrong <neil.armstrong@linaro.org>
 
 
