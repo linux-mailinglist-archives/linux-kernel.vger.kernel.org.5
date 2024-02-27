@@ -1,159 +1,162 @@
-Return-Path: <linux-kernel+bounces-84114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F00D86A242
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:15:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EEC486A27B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:30:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CF1E2889AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:15:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53FACB3199C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:15:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4DA156961;
-	Tue, 27 Feb 2024 22:14:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D750153512;
+	Tue, 27 Feb 2024 22:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="YIEt4nxW"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+ExSpaz"
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB85915531C
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EC5914A4C1;
+	Tue, 27 Feb 2024 22:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709072053; cv=none; b=vAA21pFva7eIn0wDMCQrpD+QSnpuMxu8/aZ6S+Aax8NkiNv2eF+XHoSaOtOtnmtQ37OtnRp7f/aDlZaDb4dW6+iwPpmjZ/lY1kqeytuTSV+hj8/FBnt5TvZkRGd+1snRqX5SIujG+zCM83nGf6njllAcKTCzByAMNkz0z29j9Bw=
+	t=1709072126; cv=none; b=Wlz2z3RsOR4I+uRNKWDSjc+p+9pY5beZa2Us+QdomVr28no7y+AbF5/yfvWpy+bN1oWX1lc8xrjhTVnNelNxoYYx64iaQwjbJR1M3ADAvHUoYvuvddDrvW2kZKyhpGh2RpHv33cSrVXow3+zGH/mloJmLop4Q5eFmpmXH6g3pfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709072053; c=relaxed/simple;
-	bh=zqNdet0cnYxR5tdxAeiTzCtzka8qTvfd46LDjmjCpT0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IYYJ3Dd1m3y8Kh9U0Jg/vG87YLAx++cSpZzAa727Je1SvrSkJvUqMO68nsZp/qqkh6TmbUe2pJ/q9UieSd7ruDo5b8OpOfUqJZbStheLjrSFZhRET+eFrLbeqfBfn6JXCsRe3du7pFaPZ/KaRCVTkaHN+GSlGlFl4CSFj8DpgRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=YIEt4nxW; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso5040093276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:14:10 -0800 (PST)
+	s=arc-20240116; t=1709072126; c=relaxed/simple;
+	bh=H0bRBi5Hvxdu8BhZUiSwQ4zqP2aNAbrTGOFlAL9HJGk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CRJpILg9Q4wNWrAqybdiom4aIepTM505+F7ye0tU9YU7fLv2L3Iu6FrHy3kJneI7Bf9jH/sATwo3GtFSFHAjBlhmlj5Le/GBlggFDDeuvwAEHF4ro9DJ3Zs6UcHaFwgPSJ0JLr0KLYxSqZCL0WAkKgzyH5OiL7F0ug81vJVaTb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+ExSpaz; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-21fa086008fso2470019fac.0;
+        Tue, 27 Feb 2024 14:15:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1709072050; x=1709676850; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z1lHK46c00j9c5AVxNh7l6QQvoesmPrCexEpKozkdkw=;
-        b=YIEt4nxWg3rkcDVhUOT6Zj42MVF2gBuH1EaoEe/1JWOqTJ7u2CvVNRdJyEtlgrBKvA
-         s21VglZjwQG46dFhvSO1DFGs+YIcX7hjYvImwrk7y+FLT4kQJC2erxQN9ATlE0zSTHzj
-         IRf0dnxsvbBvBeh4cm60uErg+EkTiRl8mgHAUQLasO/2aLCN4sWeix6b2F7/1vgLrj9M
-         ATpN37NbOsk8XyVuD0i4Rka/oCZgoaEC7hab2FGOxpEsmtQxLdQj8wwTaf5RglKzoXAD
-         Sbd2U/xT584UbN3Sg9QI3sMGaiAIr0Oq75zG+hTHFdhP7kUeM8MXWODAkd3WW2xawk9B
-         LAbw==
+        d=gmail.com; s=20230601; t=1709072123; x=1709676923; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QeQuoKsMqjADISGm2Hn4uU+Ji8iXgLUMY646RY4awK4=;
+        b=E+ExSpaz512qXQYvzThd7vyHe4ps4Hxku54ysZaNCyn91FkpMVRQlTb1ZjZbOPh2j8
+         XJXXJmk+09cDNR1z30ZF3itqcHMVxWTESiKxvjBNnnRZzKWjyWavlotKls6UOOHziV5K
+         W8J8+7WbJQx5iF2vEhU4pA7wHwBa/ejWZbeawudDh/ncuSc3q7fw/25QZOCxUAMCbFSV
+         +oBuYZhiblPhbUK54pvRAPwvZ9IVqyS9khSkhNEcKVEm2O1q1CnLoDUXYGV8L6UZUIK0
+         mFgRN1K3Ygta5JFKXnkMO0PJPwZtZ7UyfsbdV2v5S/wubz/bE0QX802c5HalMqcZ/Yas
+         8FuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709072050; x=1709676850;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709072123; x=1709676923;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=z1lHK46c00j9c5AVxNh7l6QQvoesmPrCexEpKozkdkw=;
-        b=mVhIuoPdcpiPsoC8MozpZSHNlS1QsgcZG6U8PCWASY2LfXi8W9ZAG+p6dllhgZJoTv
-         HsFmN+HvN/jceSuMmPwYLoZ1EoOfLXodLGzfICPYxEnBOMjar6u07cLNRmmtmPJM7Whl
-         CZIyeEfSrzHoDVsU2ofig/leiPqZDt3QzRbxF9WPaCRJ/qp1gv3P5DvbV4iCTLMJwOaI
-         Y/SD3cQ1/uCk5Y8BCdLm7gViFBmEGLy6e/OvEaOnNsXXiF9negAqZY1cYLqvG10W/W0x
-         3ZaCGjNlR4Ayj05n6Q6Ui3chlouOg6ou6fTNoI0IPprxA5EGxHiIc0fc17uAD5MIuQki
-         Gilw==
-X-Forwarded-Encrypted: i=1; AJvYcCU3HuQUomgloeNFWnqGCa+n2rLE/4Dgm941DXmqlDJRIb9cyeu3K2B64Uep2xIslBCytw1mbwuMwfqO7XVcyQcJ4oUgEMe8ImTNObc7
-X-Gm-Message-State: AOJu0Ywh/9FSGOHFrIE3uYdLKBlKtk+ahM2WgFnhMPewQNyona7Aa+/d
-	egxRAUNyPibAr7Psf96VM8TcLsY4pBtKqoyPKDXl3AGb3LdkLeo0GyCTcB34nJ5P9o+gtmyzkFD
-	ZsMQCw9uni4+akpCaSc7/iUAlGiLu330/FZ2i
-X-Google-Smtp-Source: AGHT+IGRVvvOY/VqcmO82mSRPFB0J3eVmQ9MxGbLqbRmchF/0OyQlRzjMchsC/uFbZTJZUF0dxbNTvAoF7VQECE+/vI=
-X-Received: by 2002:a05:6902:100a:b0:dcc:1f6a:d755 with SMTP id
- w10-20020a056902100a00b00dcc1f6ad755mr838760ybt.39.1709072049607; Tue, 27 Feb
- 2024 14:14:09 -0800 (PST)
+        bh=QeQuoKsMqjADISGm2Hn4uU+Ji8iXgLUMY646RY4awK4=;
+        b=H0KFeOGx1C4Stnm0+uocBq79iPgcs4+fD78F4CF4QzQ7QFIfbkeAxcTZEbWbk1mA1b
+         bf4OnYXyGM3bafX9m0oXW5kjgsZcTkSi/bFFjgf287MABxh8+h0+7OY1py16A9XVULRK
+         +mnbcrh3/y09O6TAjP+jM9NE0BdA1zueBHx84JYQkNQoCBLQoSATtRAuYOZKwI0g0qFF
+         rnLmtFlfLtnolf/ZjVGcBk7CmSz6pcJiRQFNzlQ4+0PLakyAEnVVt6/9OPPO+Qv3WGdz
+         1/yG+UKWMTxOI/NiPKTAZG4Sr1smWDsk6rzuxY0H78uwa9A6J6azCvrT5JBt57/qNOKQ
+         fZwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVu0K0uozfvVS0Apd4r2i3KlRjvgL7w1HbWLcaqjpyYGICzKZs7JTBS9c0RheIgamdpCeb3e7sO3ojlzD/RXITE+hG6hSrHuuaAYDsioL+SW20TgetleZXDSZofYqKR3TacbgavZrALzO0psNGNtUlaU7nj+88H21bLfdJJGX7mc3Vx5mqB0bpY8ozZzrmP12X6ps8HgGB80zoanJVh38Rk9g==
+X-Gm-Message-State: AOJu0YwhNMX1qk7uePPSKg52E61jBcyLsoLFqXEtjpKQePTcJbGCAWyW
+	dY7ekQxNOSQRNR5io+BSJaqoG/coQKLsyCNDkGFeTLP6sPY/uSpxwm4dU546nr4=
+X-Google-Smtp-Source: AGHT+IG+nWjzy1vXAWmi7d4mreq3B1aqw1Sej/iFVDg9WGc8pdhcR0YbATO4JmgBoO6xtBE1Kqr+ZQ==
+X-Received: by 2002:a05:6870:c112:b0:21f:ccef:a4d0 with SMTP id f18-20020a056870c11200b0021fccefa4d0mr10576079oad.21.1709072123242;
+        Tue, 27 Feb 2024 14:15:23 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id gq27-20020a056870d91b00b0021fb8dc5cabsm2257249oab.47.2024.02.27.14.15.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 14:15:22 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Tue, 27 Feb 2024 16:15:21 -0600
+From: John Groves <John@groves.net>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 17/20] famfs: Add module stuff
+Message-ID: <ydr7ziya3e5evsdbofcqgestidkrjv7opsb6behlcs5oew4kbo@zhyhhzuh26ma>
+References: <cover.1708709155.git.john@groves.net>
+ <e633fb92d3c20ba446e60c2c161cf07074aef374.1708709155.git.john@groves.net>
+ <20240226134748.00003f57@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223190546.3329966-1-mic@digikod.net> <20240223190546.3329966-2-mic@digikod.net>
- <CAHC9VhQGLmeL4Buh3ZzS3LuZ9Grut9s7KEq2q04DYUMCftrVkg@mail.gmail.com>
- <CAHC9VhTUux1j9awg8pBhHv_4-ZZH0_txnEp5jQuiRpAcZy79uQ@mail.gmail.com>
- <CAHC9VhQHpZZDOoPcCqRQJeDc_DOh8XGvhFF3M2wZse4ygCXZJA@mail.gmail.com> <CAHC9VhQL9REbeyP6Lp=0HT=0LryPnAOKAbBF4gH9c=cBbJxaFg@mail.gmail.com>
-In-Reply-To: <CAHC9VhQL9REbeyP6Lp=0HT=0LryPnAOKAbBF4gH9c=cBbJxaFg@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 27 Feb 2024 17:13:58 -0500
-Message-ID: <CAHC9VhR2=bzVqHtcPH7-cSQRBnfphzzBQ4n9agXWMtasK9wh7Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] AppArmor: Fix lsm_get_self_attr()
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	John Johansen <john.johansen@canonical.com>
-Cc: Casey Schaufler <casey@schaufler-ca.com>, James Morris <jmorris@namei.org>, 
-	"Serge E . Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226134748.00003f57@Huawei.com>
 
-On Tue, Feb 27, 2024 at 5:09=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
-ote:
-> On Tue, Feb 27, 2024 at 11:01=E2=80=AFAM Paul Moore <paul@paul-moore.com>=
- wrote:
-> > On Mon, Feb 26, 2024 at 2:59=E2=80=AFPM Paul Moore <paul@paul-moore.com=
-> wrote:
-> > > On Fri, Feb 23, 2024 at 4:07=E2=80=AFPM Paul Moore <paul@paul-moore.c=
-om> wrote:
-> > > > On Fri, Feb 23, 2024 at 2:06=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <m=
-ic@digikod.net> wrote:
-> > > > >
-> > > > > aa_getprocattr() may not initialize the value's pointer in some c=
-ase.
-> > > > > As for proc_pid_attr_read(), initialize this pointer to NULL in
-> > > > > apparmor_getselfattr() to avoid an UAF in the kfree() call.
-> > > > >
-> > > > > Cc: Casey Schaufler <casey@schaufler-ca.com>
-> > > > > Cc: John Johansen <john.johansen@canonical.com>
-> > > > > Cc: Paul Moore <paul@paul-moore.com>
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Fixes: 223981db9baf ("AppArmor: Add selfattr hooks")
-> > > > > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> > > > > ---
-> > > > >  security/apparmor/lsm.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > If you like John, I can send this up to Linus with the related SELi=
-nux
-> > > > fix, I would just need an ACK from you.
-> > >
-> > > Reviewed-by: Paul Moore <paul@paul-moore.com>
-> > >
-> > > This patch looks good to me, and while we've still got at least two
-> > > (maybe three?) more weeks before v6.8 is tagged, I think it would be
-> > > good to get this up to Linus ASAP.  I'll hold off for another day, bu=
-t
-> > > if we don't see any comment from John I'll go ahead and merge this an=
-d
-> > > send it up to Linus with the SELinux fix; I'm sure John wouldn't be
-> > > happy if v6.8 went out the door without this fix.
-> >
-> > I just merged this into lsm/stable-6.8 and once the automated
-> > build/test has done it's thing and come back clean I'll send this,
-> > along with the associated SELinux fix, up to Linus.  Thanks all.
->
-> In off-list discussions with Micka=C3=ABl today it was noted that this
-> patch also needs a fixup to the commit description so I've replaced it
-> with the following:
->
->   "In apparmor_getselfattr() when an invalid AppArmor
->    attribute is requested, or a value hasn't been explicitly
->    set for the requested attribute, the label passed to
->    aa_put_label() is not properly initialized which can cause
->    problems when the pointer value is non-NULL and AppArmor
->    attempts to drop a reference on the bogus label object."
->
-> I've updated the commit in lsm/stable-6.8 and I'll be sending it to
-> Linus shortly.
->
-> > John, if this commit is problematic please let me know and I'll send a
-> > fix or a revert.
+On 24/02/26 01:47PM, Jonathan Cameron wrote:
+> On Fri, 23 Feb 2024 11:42:01 -0600
+> John Groves <John@Groves.net> wrote:
+> 
+> > This commit introduces the module init and exit machinery for famfs.
+> > 
+> > Signed-off-by: John Groves <john@groves.net>
+> I'd prefer to see this from the start with the functionality of the module
+> built up as you go + build logic in place.  Makes it easy to spot places
+> where the patches aren't appropriately self constrained. 
+> > ---
+> >  fs/famfs/famfs_inode.c | 44 ++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 44 insertions(+)
+> > 
+> > diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
+> > index ab46ec50b70d..0d659820e8ff 100644
+> > --- a/fs/famfs/famfs_inode.c
+> > +++ b/fs/famfs/famfs_inode.c
+> > @@ -462,4 +462,48 @@ static struct file_system_type famfs_fs_type = {
+> >  	.fs_flags	  = FS_USERNS_MOUNT,
+> >  };
+> >  
+> > +/*****************************************************************************************
+> > + * Module stuff
+> 
+> I'd drop these drivers structure comments. They add little beyond
+> a high possibility of being wrong after the code has evolved a bit.
 
-I also just realized that both this patch and the SELinux have the
-stable kernel marking which shouldn't be necessary as the LSM syscalls
-are only present in the v6.8-rcX kernels.  I'm going to drop the
-stable tagging, but leave the 'Fixes:' tag of course.
+Probably will do with the module-ops-up refactor for v2
 
---=20
-paul-moore.com
+> 
+> > + */
+> > +static struct kobject *famfs_kobj;
+> > +
+> > +static int __init init_famfs_fs(void)
+> > +{
+> > +	int rc;
+> > +
+> > +#if defined(CONFIG_DEV_DAX_IOMAP)
+> > +	pr_notice("%s: Your kernel supports famfs on /dev/dax\n", __func__);
+> > +#else
+> > +	pr_notice("%s: Your kernel does not support famfs on /dev/dax\n", __func__);
+> > +#endif
+> > +	famfs_kobj = kobject_create_and_add(MODULE_NAME, fs_kobj);
+> > +	if (!famfs_kobj) {
+> > +		pr_warn("Failed to create kobject\n");
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> > +	rc = sysfs_create_group(famfs_kobj, &famfs_attr_group);
+> > +	if (rc) {
+> > +		kobject_put(famfs_kobj);
+> > +		pr_warn("%s: Failed to create sysfs group\n", __func__);
+> > +		return rc;
+> > +	}
+> > +
+> > +	return register_filesystem(&famfs_fs_type);
+> 
+> If this fails, do we not leak the kobj and sysfs groups?
+
+Good catch, thanks! Fixed for now- but the kobj is also likely to go away. Will
+endeavor to get it right...
+
+Thanks,
+John
+
 
