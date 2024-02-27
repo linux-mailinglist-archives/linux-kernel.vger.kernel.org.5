@@ -1,272 +1,394 @@
-Return-Path: <linux-kernel+bounces-84236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4CA986A3F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:50:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D34886A3F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A44B1F270FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:50:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEF441F2161D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A530256761;
-	Tue, 27 Feb 2024 23:50:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9022756763;
+	Tue, 27 Feb 2024 23:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DFhjIZ8n"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G64+lhZF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2B6856460;
-	Tue, 27 Feb 2024 23:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709077832; cv=fail; b=bdCviWzyZT56voiILSLy6seg+15+wk+Oh831nmrogdQG18/cxIgMAJnT6KfwqIkYbXAHIRZCW9M2CL6tYqwxadIDMiQXykOClGC1TcIlSN4Ko5YqB4zbNi+WSdhmbmqOXW8mYuK0bS84xtNcLzCS1YPeHatl4eYYTwRW5TWQy4E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709077832; c=relaxed/simple;
-	bh=qvJJPDbK5/q3U+euHZk52UVRXjjwp4NABxnvS1eUuHk=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=CzrtzR6oCOcaa30Cko44Rj3jEPv/pUnhCmU7jVHxbwNQeBu/qLshd4UIjLuKwGhQIj62zqiNGTW+P00ByteyaWfEQQOS5KJmPqfVuZG+ri/0AADIXnbd1BmdPMfI69KjgZLaYyb57saUb8TXD2aW73CTJFvNaXwYJ5ZTyepGpZ8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DFhjIZ8n; arc=fail smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709077830; x=1740613830;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=qvJJPDbK5/q3U+euHZk52UVRXjjwp4NABxnvS1eUuHk=;
-  b=DFhjIZ8nlfIzffwdh9DMlVO4UGSvIZbC8oMPSYE+LO+U4NtHlapqie2G
-   074cMOT1M6pU9941yWIswVpfBYKwPHjjNStsNqysqMQ2lRASq3cz/XrD4
-   o5cOTX4CiYEYI3A1PhkOy4+5qsRkuwGQel2StbfGhDlaSf3uY3TzQm7p9
-   vPUqLOkg7vASK88fcJGmnBj1Dgb06YRGKbtNzRpL7Hmfr3MT8LlXWnguu
-   6OGuN2SpKREdwfo/tHNNVzkIKwodBduvaix862eKIv8eJAkOeh9UPb9oT
-   Ng/6TBRXwN5l+aleK65zWVe+/3qWqhPXKqKwvOr7O72YY4m2I6OAHd/mv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3614773"
-X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
-   d="scan'208";a="3614773"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 15:50:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
-   d="scan'208";a="7164708"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Feb 2024 15:50:23 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 27 Feb 2024 15:50:22 -0800
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 27 Feb 2024 15:50:21 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 27 Feb 2024 15:50:21 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 27 Feb 2024 15:50:21 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dX7gA4s2abcvpQwZmWHWtQUcOHIer1ARG7Wn1WeNOrB1d+WEDHrIK/ACyVjRmYBT8F7rwp1K8f8LzVaFqma4Ev7JcYsoYvu2Q1NKfMPno4b1SbPw8ot5aDws4z+1lKKajsG1z77KulwlVYZJ35I9t7znoYWc5zJN9+AwaZVtNx2kHkLxhD60PcG1yeECKdIJycY6WzpuReVLTu70ynoGUuT35kDpyEZIbgboBY4wOndf/XGL8CC7G3OpKGlFpj3AbZQsOwq8rLY24Y4PU17OnudoCcXlXDYnUmwRnUl0YbKXxXP1vh3J/RKBZu9FnnjLMnVYRyLsYwDoMlH4juFYqQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8olyBYQCH3Z2xsMn+UBRBhd6o+M/VTbINhoApAwBYWo=;
- b=FDsSp6vLlvfgkSRJpbT6XtvmGxkDLb6eCkSk+h0iVno1dAQiCYdFHq32rY1b+sZmHz+UlIa/KlT9MJe3BdY2CWRuujZX5uSsFgfxYj1M/mBUUQcyHbsIdnkJsinxQqJNC5869Uk24iXuxweoAz8nyzpiVgDj10AptwM5F1igFga+uaUXJ3IXNvEWeNEXw956JBWhd47B+yY/Zbpk+UBIsqs3RSJ5Ipr6oow+Tbhck9bP6G7pYAJ9Wb0Hkb/NDbB1CSwhNUtUguR5//t8C4+5kEgovNAZkiVIQv7jpXWt18lEpJuJTJln7JCxr+GyJGL76vETFOpNw5mimcaApdWVkg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by LV8PR11MB8770.namprd11.prod.outlook.com (2603:10b6:408:202::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Tue, 27 Feb
- 2024 23:50:18 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7339.024; Tue, 27 Feb 2024
- 23:50:18 +0000
-Message-ID: <9b20589b-6220-4ae7-bfc4-4a826b7114b1@intel.com>
-Date: Tue, 27 Feb 2024 15:50:15 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
- Monitoring Counters (ABMC)
-Content-Language: en-US
-To: <babu.moger@amd.com>, James Morse <james.morse@arm.com>, <corbet@lwn.net>,
-	<fenghua.yu@intel.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-	<bp@alien8.de>, <dave.hansen@linux.intel.com>
-CC: <x86@kernel.org>, <hpa@zytor.com>, <paulmck@kernel.org>,
-	<rdunlap@infradead.org>, <tj@kernel.org>, <peterz@infradead.org>,
-	<yanjiewtw@gmail.com>, <kim.phillips@amd.com>, <lukas.bulwahn@gmail.com>,
-	<seanjc@google.com>, <jmattson@google.com>, <leitao@debian.org>,
-	<jpoimboe@kernel.org>, <rick.p.edgecombe@intel.com>,
-	<kirill.shutemov@linux.intel.com>, <jithu.joseph@intel.com>,
-	<kai.huang@intel.com>, <kan.liang@linux.intel.com>,
-	<daniel.sneddon@linux.intel.com>, <pbonzini@redhat.com>,
-	<sandipan.das@amd.com>, <ilpo.jarvinen@linux.intel.com>,
-	<peternewman@google.com>, <maciej.wieczor-retman@intel.com>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<eranian@google.com>
-References: <20231201005720.235639-1-babu.moger@amd.com>
- <cover.1705688538.git.babu.moger@amd.com>
- <2f373abf-f0c0-4f5d-9e22-1039a40a57f0@arm.com>
- <474ebe02-2d24-4ce3-b26a-46c520efd453@amd.com>
- <b6bb6a59-67c2-47bc-b8d3-04cf8fd21219@intel.com>
- <3fe3f235-d8a6-453b-b69d-6b7f81c07ae1@amd.com>
- <9b94b97e-4a8c-415e-af7a-d3f832592cf9@intel.com>
- <1ae73c9a-cec4-4496-86c6-3ffcef7940d6@amd.com>
- <32a588e2-7b09-4257-b838-4268583a724d@intel.com>
- <088878bd-7533-492d-838c-6b39a93aad4d@amd.com>
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <088878bd-7533-492d-838c-6b39a93aad4d@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P222CA0004.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::9) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539295647B;
+	Tue, 27 Feb 2024 23:51:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709077884; cv=none; b=rk2uTxJCpb+9t7EMFU9Q2ua1sh4XFZ9iXpZoLm3rup7n8FWka8rozQr6CdXf4qhUWB4c2gtSMW/8Amb9Pk4qJHmt3P08cIefeVPWiGAjWOEKeE/dF1n0tv18gcNknJ1moGglRVV+2V+8DD9kWS6CjJ8VVVMkfbt88AnJCeIlPv8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709077884; c=relaxed/simple;
+	bh=WVAAKQqrRnrV4SpBi+EW+XHsNxi3byUAf6Oa0vKcS3g=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=RfqI94e6YHVwx1UvsTarVTToYSde4juZsmyosmdgd1tFUEjfEBb+9bYU12czjyXfRGtJ34CKveMZuoXb0shHjmx63Yb9+w5Sym7bW+nEXF5NrX64of+IYDyTN92nPihisOFA9U8I7OApfPdAZdmRi3kU2Mr3Z3rnykIWMC67R+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G64+lhZF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39C12C433F1;
+	Tue, 27 Feb 2024 23:51:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709077883;
+	bh=WVAAKQqrRnrV4SpBi+EW+XHsNxi3byUAf6Oa0vKcS3g=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=G64+lhZFkCVEK8x7ceCZN2uq9u4pQhx8JJwoC8xWMPzE5kIVoVo29j1esgiVhgiL5
+	 6Aluj185YyW12Xnu5ga+Cp0eGoF31fmF+ggaC0ZeMetFvywu0lguPshAZg0bJWlHwx
+	 iqi0m0ngX2XoViauFLPor6VBJ1aGPFHoGKZiWqNkHpltMvEFIRqi+EYKF7xZwMRWVU
+	 85uJLX0kOFbYs/NFDCOALr8RiQtwxKhd98rYjsuoKWr9E86xwnsRslAfDSgTt32Kc2
+	 bVM86fcOKE5Tr0V6ZAEBeaLKizAR1yadZeN2vOI/NJJFB0kTKR4IRFoEVV33o/oLTP
+	 kzPkABn1w83ZA==
+From: SeongJae Park <sj@kernel.org>
+To: Honggyu Kim <honggyu.kim@sk.com>
+Cc: sj@kernel.org,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	akpm@linux-foundation.org,
+	apopple@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	dave.jiang@intel.com,
+	hyeongtak.ji@sk.com,
+	kernel_team@skhynix.com,
+	linmiaohe@huawei.com,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	lizhijian@cn.fujitsu.com,
+	mathieu.desnoyers@efficios.com,
+	mhiramat@kernel.org,
+	rakie.kim@sk.com,
+	rostedt@goodmis.org,
+	surenb@google.com,
+	yangx.jy@fujitsu.com,
+	ying.huang@intel.com,
+	ziy@nvidia.com,
+	42.hyeyoo@gmail.com
+Subject: Re: [RFC PATCH v2 0/7] DAMON based 2-tier memory management for CXL memory
+Date: Tue, 27 Feb 2024 15:51:20 -0800
+Message-Id: <20240227235121.153277-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240226140555.1615-1-honggyu.kim@sk.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|LV8PR11MB8770:EE_
-X-MS-Office365-Filtering-Correlation-Id: ea52a20b-2635-4bc0-4206-08dc37eeda2b
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GgAPTy3i2eJxle8Z6x2LTzv0DpUf2bgD1QFaslb8gCY4PFD1wScpT/r5txvDDuQkgKXqhq7noxMcjM3YtlyTG4QCwC2TNm43UW5AhtCwjV6EAcF108f/Z2U/YVAG8BRLqW5s981U4mfdkXhWqziBXknk2051rBYpsOzBqzbCGXcxdrKyhTv/x8wUUh9Op7x8lAgwXCQUVc53q1pjTOxJIV3YM1ZuF3v/GCxMUxMcULO9m0VfZUoczHXootSwrWo/ikDpNMancyY3/xqoHEuNPyvqH2H00Hb3T/rpv2UXyc4UAa18cAMJ36D3dZvb77olDKhoK8e4iDABBwBikPIsa7ZNBRLSXeMTMfGUtSq8Eb7RcgjtiRJfCCuMb3JJ4cRBMdhYQx5aXLx5CIsJSt6fNmvkhfMpU1r4a3ANCrhhRANMIHtemE7Im6RuhYNbANJYJ/S+UJwZDPZuThM0SbsJvaCyIn+RcSwrjDzcCoTut0/ose2XKKel/VVP3m5GLpd3IxpINRGN6aq6hKbGQXiFb0Hhef1KDYnVBV73R1lgV9jcHzV3gMrT000ssONf5wU9mGKzr4AO6XhdYgb1k/Lxj5xFXS73QRV6G4YaLgriwcDK/yW8T3Y6PsRukJUkzxKhXCBLAzys0RqGPcCtTZ7CFw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QXlqWUord28zRkJhUVBIemlmOTRZaVdvOEpsa2h3Vld5c2xNNUJqMXJTN2Zq?=
- =?utf-8?B?ZFg4OGY4NlhieGdkeitrMERYOXhwS01JejB6RXdLT0EzQ1ZpbUlpU0FpTjdM?=
- =?utf-8?B?T2s0Uzc4RkRXeWhTNFpvck93aWtXL2FMSjU4bERiQllpaHRQMWdpQzgzdzgx?=
- =?utf-8?B?YmM2QU9JMEg2bWdSMGdncExuZW5xVHJKQ0FUZlR2V0NCc0N5Z0FUUENvWUhT?=
- =?utf-8?B?Y0RBYkd6dHpzTXNMbCsxelltd3BUVHVWbTBUSU5nNlFOZ0x4NVlLYlEyNXJD?=
- =?utf-8?B?YkdmeEFEUUNJb0J5UGFFTUVZemdFaWxCVzMxS2RONnY3RGtwTDM4aHhYeU85?=
- =?utf-8?B?TlUxOXZuekcra2JFRURROGZWQ1NSZW96YUgzYzRSMEZOb2VoTmJrK3BiclhI?=
- =?utf-8?B?ZEU4cmQrUC81S0JsTDhHcnFNb25xUHJjdWdid3BaMlFyelMrYUFYT0F5NE5T?=
- =?utf-8?B?a3ptcmpBWGtISGQrTmVpaVFrL00wUXlWNERQcko5VGxlSGxCNnZjZ3QwMFFz?=
- =?utf-8?B?bHdrcFViVFlPUDRMQlFlMnA1b0lrVFdvTzdBK1ZqT3ZTMzNTWFpiY2xoVGVR?=
- =?utf-8?B?QlQyOU5FcUNxMVRNdkdnMEkyOTFYTTh0WERqRlVQdzJ6OXVuTlZxcFZ6elRR?=
- =?utf-8?B?VjBsTFNjSGJaeUp4MzJCdWxsVmphQmd6L3VDT1pWcWtjSXpWbm8vbnhFb1RP?=
- =?utf-8?B?NUg2dHhubXJheVZGeVVDY1l2bzJyTkFoU0hveEdOY2NKQWw5YmVrckY1cDdD?=
- =?utf-8?B?d2VoS0N0SGljMS9ISmZrSnVBMi9SendHalRkNFBZV05pZllvckw3bXJzbEY5?=
- =?utf-8?B?a0VOT280OTZoWU9QUENEc1E0S0JxOXZwSVNrZHdBNGVEYTNHMzQ4bXNFMFhQ?=
- =?utf-8?B?cWpuc2o2Z0J1UURWL0NYbVVTcVpZYWNUbEJ2VFY1R05CNVVhZ0lkU1JoNTlp?=
- =?utf-8?B?YkMveDhveXUvRmd2UGxUY1VBVnNzMkszRHRmbyt5RFNYQ3d3cmlyYkgrQ3hj?=
- =?utf-8?B?SkE4Y21UaTkvQnNvVFFDN0dBL2VCTEZoWFk4cXIvZEdPZ0FhV1VvM2dHWXl6?=
- =?utf-8?B?blV4bHhEdG1DQ2pkSzE4Z2p3MDEvUDUvS2V5YmZLZlF1cGtnRFBsdDZoazZW?=
- =?utf-8?B?Y1d5Qkp6d2t0R0xyWG5PNDBvQkJOZE5Xay9GZjFXN1gxTEE0TFlncnFWM0pN?=
- =?utf-8?B?cjJLelRVaDd0THpqdkJFTG1nMEhYbDlVbVlwMVdCdi9UWXljZnI0RzFwbHpY?=
- =?utf-8?B?a25EcWRBa3A2MTZ2NkE3ZFRtcVpjUW1LNGJzSStzdGMydit4T0JCbTVwTUlE?=
- =?utf-8?B?RmZKNlhwU3htWUwwYVUxZHZKR09PMURlbkY2ZkhCby9pMzZNVmk1eDhFcERw?=
- =?utf-8?B?Nm8rRXpPK294Q0Vid0hCYkJ4Q2k4am1hZ0svYncxZDVONTZORUtXRWVxM2Nu?=
- =?utf-8?B?Qld5MXR2akZOaTM1ZUE5dW9ORnNwZnhoTGtSVGdRMTV1eWVZQnN1Q1d2YWNS?=
- =?utf-8?B?VjBBRXZUOWsyTUdCZS96dEFLNWRzTmZpVTZJSEZXbmkyZEx6MUVqeXBlZTZk?=
- =?utf-8?B?R2E2SG0xMDNIZ3hOTjBQMmJ4bFJnRFZoMEZmZHFKeHFpQS93MjNLZzZicXFM?=
- =?utf-8?B?THBqeHZYTE53Y1Z3cSs2N0VOejVBMkRBQkd2UjN6MEE5UjFNRjdNWktIZ1J3?=
- =?utf-8?B?bmdwMk04bW5QTWhMd1AyQjUwaDBhdmZWcjdZKzNJTzlYczMzUk5hY1pGdzRi?=
- =?utf-8?B?cDY5UlBWc0tyUWowZ1ZUeFVuc0FDTWFoSVhFODkydW9FcGtBY2xxWlhXUEk5?=
- =?utf-8?B?NDhLU0E5TE1EanNlSjlzR1FhbllnSVRvK3JuMmtOODg2emxlcFhRemZzMVYr?=
- =?utf-8?B?REtWNjZZcldTcXl5OVlURmZwWGpTTXkvN2puMEtGOUhvaU8zM2d6RndFWXU1?=
- =?utf-8?B?T282V213VVRKdGF6bG14cVkrQnBhWitzQ3pSYzZzRWVoVTlJYTl5aVpheGVF?=
- =?utf-8?B?dkU5SzJVNUJBR1lJYm9JY0ZwVi9lajU2R2dQQi9PYWtJRVFzTnQ2ZVQ1TlRX?=
- =?utf-8?B?RXh2bkx1eEIrdzF4QXhIME1TOGZlVXRwdHlyRlYvc2xqMnQ2SFB1V1RpalFj?=
- =?utf-8?B?aUJEK29qc2I1cG5iVjNWTitac0xraVNVSGt6bldTdFlPY0k2dThCWVZrYVFI?=
- =?utf-8?B?MWc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea52a20b-2635-4bc0-4206-08dc37eeda2b
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 23:50:18.3493
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZbAWk8V8SFlYnmbtcvXCC2ITDNQJztsvCnnIj29CMGPgv9BEvucze78zKVtjnq2GrmGpbp5LCtwjdLWw5QKIEXSZytVq6yijx7ypr3nzXfs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR11MB8770
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-Hi Babu,
+On Mon, 26 Feb 2024 23:05:46 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
 
-On 2/27/2024 10:12 AM, Moger, Babu wrote:
-> On 2/26/24 15:20, Reinette Chatre wrote:
->> On 2/26/2024 9:59 AM, Moger, Babu wrote:
->>> On 2/23/24 16:21, Reinette Chatre wrote:
-
->>>> Apart from the "default behavior" there are two options to consider ...
->>>> (a) the "original" behavior(? I do not know what to call it) - this would be
->>>>     where user space wants(?) to have the current non-ABMC behavior on an ABMC
->>>>     system, where the previous "num_rmids" monitor groups can be created but
->>>>     the counters are reset unpredictably ... should this still be supported
->>>>     on ABMC systems though?
->>>
->>> I would say yes. For some reason user(hardware or software issues) is not
->>> able to use ABMC mode, they have an option to go back to legacy mode.
->>
->> I see. Should this perhaps be protected behind the resctrl "debug" mount option?
+> There was an RFC IDEA "DAMOS-based Tiered-Memory Management" previously
+> posted at [1].
 > 
-> The debug option gives wrong impression. It is better to keep the option
-> open to enable the feature in normal mode.
-
-You mentioned that it would only be needed when there are hardware or
-software issues ... so debug does sound appropriate. Could you please give
-an example of how debug option gives wrong impression? Why would you want
-users to keep using "legacy" mode on an ABMC system?
-
-..
-
->> For example, if I understand correctly, theoretically, when ABMC is enabled then
->> "num_rmids" can be U32_MAX (after a quick look it is not clear to me why r->num_rmid
->> is not unsigned, tbd if number of directories may also be limited by kernfs).
->> User space could theoretically create more monitor groups than the number of
->> rmids that a resource claims to support using current upstream enumeration.
+> It says there is no implementation of the demote/promote DAMOS action
+> are made.  This RFC is about its implementation for physical address
+> space.
 > 
-> CPU or task association still uses PQR_ASSOC(MSR C8Fh). There are only 11
-> bits(depends on specific h/w) to represent RMIDs. So, we cannot create
-> more than this limit(r->num_rmid).
 > 
-> In case of ABMC, h/w uses another counter(mbm_assignable_counters) with
-> RMID to assign the monitoring. So, assignment limit is
-> mbm_assignable_counters. The number of mon groups limit is still r->num_rmid.
-
-I see. Thank you for clarifying. This does make enabling simpler and one
-less user interface item that needs changing.
-
-..
-
->>> 2. /sys/fs/resctrl/monitor_state.
->>> This can used to individually assign or unassign the counters in each group.
->>>
->>> When assigned:
->>> #cat /sys/fs/resctrl/monitor_state
->>> 0=total-assign,local-assign;1=total-assign,local-assign
->>>
->>> When unassigned:
->>> #cat /sys/fs/resctrl/monitor_state
->>> 0=total-unassign,local-unassign;1=total-unassign,local-unassign
->>>
->>>
->>> Thoughts?
->>
->> How do you expect this interface to be used? I understand the mechanics
->> of this interface but on a higher level, do you expect user space to
->> once in a while assign a new counter to a single event or monitor group
->> (for which a fine grained interface works) or do you expect user space to
->> shift multiple counters across several monitor events at intervals?
+> Introduction
+> ============
 > 
-> I think we should provide both the options. I was thinking of providing
-> fine grained interface first.
+> With the advent of CXL/PCIe attached DRAM, which will be called simply
+> as CXL memory in this cover letter, some systems are becoming more
+> heterogeneous having memory systems with different latency and bandwidth
+> characteristics.  They are usually handled as different NUMA nodes in
+> separate memory tiers and CXL memory is used as slow tiers because of
+> its protocol overhead compared to local DRAM.
+> 
+> In this kind of systems, we need to be careful placing memory pages on
+> proper NUMA nodes based on the memory access frequency.  Otherwise, some
+> frequently accessed pages might reside on slow tiers and it makes
+> performance degradation unexpectedly.  Moreover, the memory access
+> patterns can be changed at runtime.
+> 
+> To handle this problem, we need a way to monitor the memory access
+> patterns and migrate pages based on their access temperature.  The
+> DAMON(Data Access MONitor) framework and its DAMOS(DAMON-based Operation
+> Schemes) can be useful features for monitoring and migrating pages.
+> DAMOS provides multiple actions based on DAMON monitoring results and it
+> can be used for proactive reclaim, which means swapping cold pages out
+> with DAMOS_PAGEOUT action, but it doesn't support migration actions such
+> as demotion and promotion between tiered memory nodes.
+> 
+> This series supports two new DAMOS actions; DAMOS_DEMOTE for demotion
+> from fast tiers and DAMOS_PROMOTE for promotion from slow tiers.  This
+> prevents hot pages from being stuck on slow tiers, which makes
+> performance degradation and cold pages can be proactively demoted to
+> slow tiers so that the system can increase the chance to allocate more
+> hot pages to fast tiers.
+> 
+> The DAMON provides various tuning knobs but we found that the proactive
+> demotion for cold pages is especially useful when the system is running
+> out of memory on its fast tier nodes.
+> 
+> Our evaluation result shows that it reduces the performance slowdown
+> compared to the default memory policy from 15~17% to 4~5% when the
+> system runs under high memory pressure on its fast tier DRAM nodes.
+> 
+> 
+> DAMON configuration
+> ===================
+> 
+> The specific DAMON configuration doesn't have to be in the scope of this
+> patch series, but some rough idea is better to be shared to explain the
+> evaluation result.
+> 
+> The DAMON provides many knobs for fine tuning but its configuration file
+> is generated by HMSDK[2].  It includes gen_config.py script that
+> generates a json file with the full config of DAMON knobs and it creates
+> multiple kdamonds for each NUMA node when the DAMON is enabled so that
+> it can run hot/cold based migration for tiered memory.
 
-Could you please provide a motivation for why two interfaces, one inefficient
-and one not, should be created and maintained? Users can still do fine grained
-assignment with a global assignment interface.
+I was feeling a bit confused from here since DAMON doesn't receive parameters
+via a file.  To my understanding, the 'configuration file' means the input file
+for DAMON user-space tool, damo, not DAMON.  Just a trivial thing, but making
+it clear if possible could help readers in my opinion.
 
-Reinette
+> 
+> 
+> Evaluation Workload
+> ===================
+> 
+> The performance evaluation is done with redis[3], which is a widely used
+> in-memory database and the memory access patterns are generated via
+> YCSB[4].  We have measured two different workloads with zipfian and
+> latest distributions but their configs are slightly modified to make
+> memory usage higher and execution time longer for better evaluation.
+> 
+> The idea of evaluation using these demote and promote actions covers
+> system-wide memory management rather than partitioning hot/cold pages of
+> a single workload.  The default memory allocation policy creates pages
+> to the fast tier DRAM node first, then allocates newly created pages to
+> the slow tier CXL node when the DRAM node has insufficient free space.
+> Once the page allocation is done then those pages never move between
+> NUMA nodes.  It's not true when using numa balancing, but it is not the
+> scope of this DAMON based 2-tier memory management support.
+> 
+> If the working set of redis can be fit fully into the DRAM node, then
+> the redis will access the fast DRAM only.  Since the performance of DRAM
+> only is faster than partially accessing CXL memory in slow tiers, this
+> environment is not useful to evaluate this patch series.
+> 
+> To make pages of redis be distributed across fast DRAM node and slow
+> CXL node to evaluate our demote and promote actions, we pre-allocate
+> some cold memory externally using mmap and memset before launching
+> redis-server.  We assumed that there are enough amount of cold memory in
+> datacenters as TMO[5] and TPP[6] papers mentioned.
+> 
+> The evaluation sequence is as follows.
+> 
+> 1. Turn on DAMON with DAMOS_DEMOTE action for DRAM node and
+>    DAMOS_PROMOTE action for CXL node.  It demotes cold pages on DRAM
+>    node and promotes hot pages on CXL node in a regular interval.
+> 2. Allocate a huge block of cold memory by calling mmap and memset at
+>    the fast tier DRAM node, then make the process sleep to make the fast
+>    tier has insufficient memory for redis-server.
+> 3. Launch redis-server and load prebaked snapshot image, dump.rdb.  The
+>    redis-server consumes 52GB of anon pages and 33GB of file pages, but
+>    due to the cold memory allocated at 2, it fails allocating the entire
+>    memory of redis-server on the fast tier DRAM node so it partially
+>    allocates the remaining on the slow tier CXL node.  The ratio of
+>    DRAM:CXL depends on the size of the pre-allocated cold memory.
+> 4. Run YCSB to make zipfian or latest distribution of memory accesses to
+>    redis-server, then measure its execution time when it's completed.
+> 5. Repeat 4 over 50 times to measure the average execution time for each
+>    run.
+> 6. Increase the cold memory size then repeat goes to 2.
+> 
+> For each test at 4 took about a minute so repeating it 50 times almost
+> took about 1 hour for each test with a specific cold memory from 440GB
+> to 500GB in 10GB increments for each evaluation.  So it took about more
+> than 10 hours for both zipfian and latest workloads to get the entire
+> evaluation results.  Repeating the same test set multiple times doesn't
+> show much difference so I think it might be enough to make the result
+> reliable.
+> 
+> 
+> Evaluation Results
+> ==================
+> 
+> All the result values are normalized to DRAM-only execution time because
+> the workload cannot be faster than DRAM-only unless the workload hits
+> the bandwidth peak but our redis test doesn't go beyond the bandwidth
+> limit.
+> 
+> So the DRAM-only execution time is the ideal result without affected by
+> the gap between DRAM and CXL performance difference.  The NUMA node
+> environment is as follows.
+> 
+>   node0 - local DRAM, 512GB with a CPU socket (fast tier)
+>   node1 - disabled
+>   node2 - CXL DRAM, 96GB, no CPU attached (slow tier)
+> 
+> The following is the result of generating zipfian distribution to
+> redis-server and the numbers are averaged by 50 times of execution.
+> 
+>   1. YCSB zipfian distribution read only workload
+>   memory pressure with cold memory on node0 with 512GB of local DRAM.
+>   =============+================================================+=========
+>                |       cold memory occupied by mmap and memset  |
+>                |   0G  440G  450G  460G  470G  480G  490G  500G |
+>   =============+================================================+=========
+>   Execution time normalized to DRAM-only values                 | GEOMEAN
+>   -------------+------------------------------------------------+---------
+>   DRAM-only    | 1.00     -     -     -     -     -     -     - | 1.00
+>   CXL-only     | 1.21     -     -     -     -     -     -     - | 1.21
+>   default      |    -  1.09  1.10  1.13  1.15  1.18  1.21  1.21 | 1.15
+>   DAMON 2-tier |    -  1.02  1.04  1.05  1.04  1.05  1.05  1.06 | 1.04
+>   =============+================================================+=========
+>   CXL usage of redis-server in GB                               | AVERAGE
+>   -------------+------------------------------------------------+---------
+>   DRAM-only    |  0.0     -     -     -     -     -     -     - |  0.0
+>   CXL-only     | 52.6     -     -     -     -     -     -     - | 52.6
+>   default      |    -  19.4  26.1  32.3  38.5  44.7  50.5  50.3 | 37.4
+>   DAMON 2-tier |    -   0.1   1.6   5.2   8.0   9.1  11.8  13.6 |  7.1
+>   =============+================================================+=========
+> 
+> Each test result is based on the exeuction environment as follows.
+> 
+>   DRAM-only   : redis-server uses only local DRAM memory.
+>   CXL-only    : redis-server uses only CXL memory.
+>   default     : default memory policy(MPOL_DEFAULT).
+>                 numa balancing disabled.
+>   DAMON 2-tier: DAMON enabled with DAMOS_DEMOTE for DRAM nodes and
+>                 DAMOS_PROMOTE for CXL nodes.
+> 
+> The above result shows the "default" execution time goes up as the size
+> of cold memory is increased from 440G to 500G because the more cold
+> memory used, the more CXL memory is used for the target redis workload
+> and this makes the execution time increase.
+> 
+> However, "DAMON 2-tier" result shows less slowdown because the
+> DAMOS_DEMOTE action at DRAM node proactively demotes pre-allocated cold
+> memory to CXL node and this free space at DRAM increases more chance to
+> allocate hot or warm pages of redis-server to fast DRAM node.  Moreover,
+> DEMOS_PROMOTE action at CXL node also promotes hot pages of redis-server
+> to DRAM node actively.
+> 
+> As a result, it makes more memory of redis-server stay in DRAM node
+> compared to "default" memory policy and this makes the performance
+> improvement.
+> 
+> The following result of latest distribution workload shows similar data.
+> 
+>   2. YCSB latest distribution read only workload
+>   memory pressure with cold memory on node0 with 512GB of local DRAM.
+>   =============+================================================+=========
+>                |       cold memory occupied by mmap and memset  |
+>                |   0G  440G  450G  460G  470G  480G  490G  500G |
+>   =============+================================================+=========
+>   Execution time normalized to DRAM-only values                 | GEOMEAN
+>   -------------+------------------------------------------------+---------
+>   DRAM-only    | 1.00     -     -     -     -     -     -     - | 1.00
+>   CXL-only     | 1.18     -     -     -     -     -     -     - | 1.18
+>   default      |    -  1.16  1.15  1.17  1.18  1.16  1.18  1.15 | 1.17
+>   DAMON 2-tier |    -  1.04  1.04  1.05  1.05  1.06  1.05  1.06 | 1.05
+>   =============+================================================+=========
+>   CXL usage of redis-server in GB                               | AVERAGE
+>   -------------+------------------------------------------------+---------
+>   DRAM-only    |  0.0     -     -     -     -     -     -     - |  0.0
+>   CXL-only     | 52.6     -     -     -     -     -     -     - | 52.6
+>   default      |    -  19.3  26.1  32.2  38.5  44.6  50.5  50.6 | 37.4
+>   DAMON 2-tier |    -   1.3   3.8   7.0   4.1   9.4  12.5  16.7 |  7.8
+>   =============+================================================+=========
+> 
+> In summary of both results, our evaluation shows that "DAMON 2-tier"
+> memory management reduces the performance slowdown compared to the
+> "default" memory policy from 15~17% to 4~5% when the system runs with
+> high memory pressure on its fast tier DRAM nodes.
+> 
+> The similar evaluation was done in another machine that has 256GB of
+> local DRAM and 96GB of CXL memory.  The performance slowdown is reduced
+> from 20~24% for "default" to 5~7% for "DAMON 2-tier".
+> 
+> Having these DAMOS_DEMOTE and DAMOS_PROMOTE actions can make 2-tier
+> memory systems run more efficiently under high memory pressures.
+
+Thank you for running the tests again with the new version of the patches and
+sharing the results!
+
+> 
+> Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
+> Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+> Signed-off-by: Rakie Kim <rakie.kim@sk.com>
+> 
+> [1] https://lore.kernel.org/damon/20231112195602.61525-1-sj@kernel.org
+> [2] https://github.com/skhynix/hmsdk
+> [3] https://github.com/redis/redis/tree/7.0.0
+> [4] https://github.com/brianfrankcooper/YCSB/tree/0.17.0
+> [5] https://dl.acm.org/doi/10.1145/3503222.3507731
+> [6] https://dl.acm.org/doi/10.1145/3582016.3582063
+> 
+> Changes from RFC:
+>   1. Move most of implementation from mm/vmscan.c to mm/damon/paddr.c.
+>   2. Simplify some functions of vmscan.c and used in paddr.c, but need
+>      to be reviewed more in depth.
+>   3. Refactor most functions for common usage for both promote and
+>      demote actions and introduce an enum migration_mode for its control.
+>   4. Add "target_nid" sysfs knob for migration destination node for both
+>      promote and demote actions.
+>   5. Move DAMOS_PROMOTE before DAMOS_DEMOTE and move then even above
+>      DAMOS_STAT.
+
+Thank you very much for addressing many of my comments.
+
+> 
+> Honggyu Kim (3):
+>   mm/damon: refactor DAMOS_PAGEOUT with migration_mode
+>   mm: make alloc_demote_folio externally invokable for migration
+>   mm/damon: introduce DAMOS_DEMOTE action for demotion
+> 
+> Hyeongtak Ji (4):
+>   mm/memory-tiers: add next_promotion_node to find promotion target
+>   mm/damon: introduce DAMOS_PROMOTE action for promotion
+>   mm/damon/sysfs-schemes: add target_nid on sysfs-schemes
+>   mm/damon/sysfs-schemes: apply target_nid for promote and demote
+>     actions
+
+Honggyu joined DAMON Beer/Coffee/Tea Chat[1] yesterday, and we discussed about
+this patchset in high level.  Sharing the summary here for open discussion.  As
+also discussed on the first version of this patchset[2], we want to make single
+action for general page migration with minimum changes, but would like to keep
+page level access re-check.  We also agreed the previously proposed DAMOS
+filter-based approach could make sense for the purpose.
+
+Because I was anyway planning making such DAMOS filter for not only
+promotion/demotion but other types of DAMOS action, I will start developing the
+page level access re-check results based DAMOS filter.  Once the implementation
+of the prototype is done, I will share the early implementation.  Then, Honggyu
+will adjust their implementation based on the filter, and run their tests again
+and share the results.
+
+[1] https://lore.kernel.org/damon/20220810225102.124459-1-sj@kernel.org/
+[2] https://lore.kernel.org/damon/20240118171756.80356-1-sj@kernel.org
+
+
+Thanks,
+SJ
+
+> 
+>  include/linux/damon.h          |  15 +-
+>  include/linux/memory-tiers.h   |  11 ++
+>  include/linux/migrate_mode.h   |   1 +
+>  include/linux/vm_event_item.h  |   1 +
+>  include/trace/events/migrate.h |   3 +-
+>  mm/damon/core.c                |   5 +-
+>  mm/damon/dbgfs.c               |   2 +-
+>  mm/damon/lru_sort.c            |   3 +-
+>  mm/damon/paddr.c               | 282 ++++++++++++++++++++++++++++++++-
+>  mm/damon/reclaim.c             |   3 +-
+>  mm/damon/sysfs-schemes.c       |  39 ++++-
+>  mm/internal.h                  |   1 +
+>  mm/memory-tiers.c              |  43 +++++
+>  mm/vmscan.c                    |  10 +-
+>  mm/vmstat.c                    |   1 +
+>  15 files changed, 404 insertions(+), 16 deletions(-)
+> 
+> 
+> base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+> -- 
+> 2.34.1
 
