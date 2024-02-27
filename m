@@ -1,236 +1,105 @@
-Return-Path: <linux-kernel+bounces-83323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD28E869286
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:36:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFFC8692A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83CA2286F9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:36:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BB0C1F2D4FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:37:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D936E13DBA4;
-	Tue, 27 Feb 2024 13:35:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F388913EFE9;
+	Tue, 27 Feb 2024 13:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Si4g5Sei";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nTgrsNPt";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Si4g5Sei";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nTgrsNPt"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oGUhtyOl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34BEB1332A7;
-	Tue, 27 Feb 2024 13:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A61D13B79F;
+	Tue, 27 Feb 2024 13:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709040954; cv=none; b=DvxX1szfwG4ztvYFOgXJfyZoFIFLymLWyMcQepGpkaPglLI22E6p3rTkIwmsmu2WapPH/ATDSDlWBqosF+yh5UQtwtmYNV1GgwFVG6WwcsZM9HtYL3qZ0k/7/6MfHSFrxSno15cI5Zj6cuVPBU02eQHmF/wREnAYfX08eol0QFA=
+	t=1709041039; cv=none; b=P3l97krUudpeqsbFfdg4m1PWMSA5BsXOem/SCnPjRJmTeJTFHRDBjucRjJ5k0cMQJhy8oHDy+OjUVk41rNHx04nAh+zxdu+lA8gT7Rn7wT3k+y0NBu3DzQB8dWmisa5oeo1Rfgxk68ckya0GK0Hps3E8yXEQyQExV7f9mUgn06w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709040954; c=relaxed/simple;
-	bh=IeeH8FW7appcHAym5VvThxokOlHOzDrVEXH8nPsBLP8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TrikIlBZvEatgXUMcSqAMsbhUP/Pimp8D1lY+GJ6nYeDVMEygFQL7enTDBHWglqWf/wnoSeEBSOORB9lHpUY0zPEX+i74PTCX7dxDoP+tyQxKypJ7cvypvcV/cxe2YtnWDb2cj28emrZRRkXYIyP6ePg43CSck3pgDDD7wmr2Wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Si4g5Sei; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nTgrsNPt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Si4g5Sei; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nTgrsNPt; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5CB6622445;
-	Tue, 27 Feb 2024 13:35:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709040951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1BLeq7Vl9qJ6EYRJ54haTpHogCVSh3EPlNJp9vn1oU=;
-	b=Si4g5SeiWxr+Fxmg1mh1nKy7S726J5ngIFb3w5n1326Q+tVr5DbAT5m8N+TG2LIB03edoG
-	pcPuoEhcH+pjcb1S0qhxhtrOr9QQprUkGb+KMJgzqH9/+7TTJ4JA1h8XNMYT/lWVAPhSWF
-	ZXzwdohp08cA5HsNxeTq8KMrTzwp3Ls=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709040951;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1BLeq7Vl9qJ6EYRJ54haTpHogCVSh3EPlNJp9vn1oU=;
-	b=nTgrsNPt3BuR2Za3gx0Z1aZPJwCD4atXB95fQMBDER1s+A+MPzLOFn2uXXsSiMpEUe42Xp
-	nTNV5F9Y6gXm2tDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709040951; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1BLeq7Vl9qJ6EYRJ54haTpHogCVSh3EPlNJp9vn1oU=;
-	b=Si4g5SeiWxr+Fxmg1mh1nKy7S726J5ngIFb3w5n1326Q+tVr5DbAT5m8N+TG2LIB03edoG
-	pcPuoEhcH+pjcb1S0qhxhtrOr9QQprUkGb+KMJgzqH9/+7TTJ4JA1h8XNMYT/lWVAPhSWF
-	ZXzwdohp08cA5HsNxeTq8KMrTzwp3Ls=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709040951;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=k1BLeq7Vl9qJ6EYRJ54haTpHogCVSh3EPlNJp9vn1oU=;
-	b=nTgrsNPt3BuR2Za3gx0Z1aZPJwCD4atXB95fQMBDER1s+A+MPzLOFn2uXXsSiMpEUe42Xp
-	nTNV5F9Y6gXm2tDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0512013A58;
-	Tue, 27 Feb 2024 13:35:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id B094ADbl3WX2MAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 27 Feb 2024 13:35:50 +0000
-Message-ID: <67453a56-d4c2-4dc8-a5db-0a4665e40856@suse.cz>
-Date: Tue, 27 Feb 2024 14:36:14 +0100
+	s=arc-20240116; t=1709041039; c=relaxed/simple;
+	bh=H1c/bi5IfYB1iSUBfPU6PzkgJpun/PjAJmV416IBnMo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E4ffLRmMZJs/wTS27sJ7I28BQ8gTp9FtxwfMtn8dBNUFTELJjZj2sLNlZjzStt+w5zUBa+SXwpSuxkcu3SKW7ClWWyVWGGCT2tgIAPBZEHI0JnciD9VCEcxNasObYp0vJy+hoNjpND7bC7VwoqRtnKRqfkqtajvePhXgr8eAP/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oGUhtyOl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05AD9C433A6;
+	Tue, 27 Feb 2024 13:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709041039;
+	bh=H1c/bi5IfYB1iSUBfPU6PzkgJpun/PjAJmV416IBnMo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=oGUhtyOleFDlVprD+BHiw5msYy/xXs7n8MPnqXIQXA7gm9Hx35qZCdT4MhSOkx4hP
+	 rz+kq2hfyJ9mFuFg2rQVbGqBXf+nptZOB8OM7UT6xaUH3iMMaxxSmajFqxPHBnzAR2
+	 Z9GJJwS9G96S3zO0litfHxufug7uCe1lCZFFT56C87WkeQDL+I4v4QXuX8grK9DK9D
+	 3pWJdu1qsuFeWnfa5CV7khEuxTM+E2w8PI8eWAJ2bCM15KQYtu69N3jg2cCT2OyII3
+	 zJcPL97J4E6ztRARi9eXcpjCj5XiuknpZeMhbq6LZztKrzW9e2bfKWRYyIWLElKDeT
+	 ca9EXgFPfgyVw==
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d299b4ad6aso6253751fa.1;
+        Tue, 27 Feb 2024 05:37:18 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVgNfEOMMgUcZ8yAb6NZ8shSj9KY9s0ABYFaEi7uD7kPospD1lnx4ZSNAefMnvc/t+sMkndaZp2/AoJmmm2KJ0CFN+0wTI2vxBcEo6UtaLioKehCGJMJZgBUrFp99G53tRc8SEQFbHCtuZnHdVOhmLQR7SeALudoOQn/MAX3gSdabBvhGrg4fveyM3Nn30+OVkJ67Se7Ej7AWcM0akpaBZDA0dH
+X-Gm-Message-State: AOJu0YyXmFy4A9xiTp1WE9AbjH6NS0kh5XVFQejDAI9s4b/wZG3KzF+8
+	xJsAiqytGo9z7N4s2VyOC7IsaO5dl8MZH3VdMe8pNgD0z7dykXzb+zRNShNb7Wzc3Ln9XLHU4lB
+	iVkT9Xu7T68Vq8/JfhbOM7IzQIQ==
+X-Google-Smtp-Source: AGHT+IG5QHJKq6z8x6+mL6APDMaMcHT+R6XCLzJCa5meAUVodTB8s4RdbL4+VxRoHLTrkZTvWB3wRm4Tes8nApxV0wo=
+X-Received: by 2002:a05:6512:1317:b0:512:f4f6:9343 with SMTP id
+ x23-20020a056512131700b00512f4f69343mr3796213lfu.26.1709041037258; Tue, 27
+ Feb 2024 05:37:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/36] Memory allocation profiling
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240221194052.927623-1-surenb@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240221194052.927623-1-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Si4g5Sei;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nTgrsNPt
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[74];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -3.00
-X-Rspamd-Queue-Id: 5CB6622445
-X-Spam-Flag: NO
+References: <20240129092512.23602-1-quic_tengfan@quicinc.com> <20240129092512.23602-2-quic_tengfan@quicinc.com>
+In-Reply-To: <20240129092512.23602-2-quic_tengfan@quicinc.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Tue, 27 Feb 2024 07:37:05 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJfsWaj9OPkvc34rBvx7W_3v9+1kZqNu6QKDsA=iWAA4w@mail.gmail.com>
+Message-ID: <CAL_JsqJfsWaj9OPkvc34rBvx7W_3v9+1kZqNu6QKDsA=iWAA4w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: qcom: update compatible name
+ for match with driver
+To: Tengfei Fan <quic_tengfan@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, linus.walleij@linaro.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/21/24 20:40, Suren Baghdasaryan wrote:
-> Overview:
-> Low overhead [1] per-callsite memory allocation profiling. Not just for
-> debug kernels, overhead low enough to be deployed in production.
-> 
-> Example output:
->   root@moria-kvm:~# sort -rn /proc/allocinfo
->    127664128    31168 mm/page_ext.c:270 func:alloc_page_ext
->     56373248     4737 mm/slub.c:2259 func:alloc_slab_page
->     14880768     3633 mm/readahead.c:247 func:page_cache_ra_unbounded
->     14417920     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
->     13377536      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
->     11718656     2861 mm/filemap.c:1919 func:__filemap_get_folio
->      9192960     2800 kernel/fork.c:307 func:alloc_thread_stack_node
->      4206592        4 net/netfilter/nf_conntrack_core.c:2567 func:nf_ct_alloc_hashtable
->      4136960     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod] func:ctagmod_start
->      3940352      962 mm/memory.c:4214 func:alloc_anon_folio
->      2894464    22613 fs/kernfs/dir.c:615 func:__kernfs_new_node
->      ...
-> 
-> Since v3:
->  - Dropped patch changing string_get_size() [2] as not needed
->  - Dropped patch modifying xfs allocators [3] as non needed,
->    per Dave Chinner
->  - Added Reviewed-by, per Kees Cook
->  - Moved prepare_slab_obj_exts_hook() and alloc_slab_obj_exts() where they
->    are used, per Vlastimil Babka
->  - Fixed SLAB_NO_OBJ_EXT definition to use unused bit, per Vlastimil Babka
->  - Refactored patch [4] into other patches, per Vlastimil Babka
->  - Replaced snprintf() with seq_buf_printf(), per Kees Cook
->  - Changed output to report bytes, per Andrew Morton and Pasha Tatashin
->  - Changed output to report [module] only for loadable modules,
->    per Vlastimil Babka
->  - Moved mem_alloc_profiling_enabled() check earlier, per Vlastimil Babka
->  - Changed the code to handle page splitting to be more understandable,
->    per Vlastimil Babka
->  - Moved alloc_tagging_slab_free_hook(), mark_objexts_empty(),
->    mark_failed_objexts_alloc() and handle_failed_objexts_alloc(),
->    per Vlastimil Babka
->  - Fixed loss of __alloc_size(1, 2) in kvmalloc functions,
->    per Vlastimil Babka
->  - Refactored the code in show_mem() to avoid memory allocations,
->    per Michal Hocko
->  - Changed to trylock in show_mem() to avoid blocking in atomic context,
->    per Tetsuo Handa
->  - Added mm mailing list into MAINTAINERS, per Kees Cook
->  - Added base commit SHA, per Andy Shevchenko
->  - Added a patch with documentation, per Jani Nikula
->  - Fixed 0day bugs
->  - Added benchmark results [5], per Steven Rostedt
->  - Rebased over Linux 6.8-rc5
-> 
-> Items not yet addressed:
->  - An early_boot option to prevent pageext overhead. We are looking into
->    ways for using the same sysctr instead of adding additional early boot
->    parameter.
+On Mon, Jan 29, 2024 at 3:25=E2=80=AFAM Tengfei Fan <quic_tengfan@quicinc.c=
+om> wrote:
+>
+> Use compatible name "qcom,sm4450-tlmm" instead of "qcom,sm4450-pinctrl"
+> to match the compatible name in sm4450 pinctrl driver.
+>
+> Fixes: 7bf8b78f86db ("dt-bindings: pinctrl: qcom: Add SM4450 pinctrl")
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+>  Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.y=
+aml b/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+> index bb08ca5a1509..bb675c8ec220 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.yaml
+> @@ -17,7 +17,7 @@ allOf:
+>
+>  properties:
+>    compatible:
+> -    const: qcom,sm4450-pinctrl
+> +    const: qcom,sm4450-tlmm
 
-I have reviewed the parts that integrate the tracking with page and slab
-allocators, and besides some details to improve it seems ok to me. The
-early boot option seems coming so that might eventually be suitable for
-build-time enablement in a distro kernel.
+I think you forgot to update the example:
 
-The macros (and their potential spread to upper layers to keep the
-information useful enough) are of course ugly, but guess it can't be
-currently helped and I'm unable to decide whether it's worth it or not.
-That's up to those providing their success stories I guess. If there's
-at least a path ahead to replace that part with compiler support in the
-future, great. So I'm not against merging this. BTW, do we know Linus's
-opinion on the macros approach?
+Documentation/devicetree/bindings/pinctrl/qcom,sm4450-tlmm.example.dtb:
+/example-0/pinctrl@f100000: failed to match any schema with
+compatible: ['qcom,sm4450-tlmm']
 
