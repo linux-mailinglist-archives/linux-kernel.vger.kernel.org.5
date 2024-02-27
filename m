@@ -1,265 +1,198 @@
-Return-Path: <linux-kernel+bounces-82838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9329868A6C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:04:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 978D7868A6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:05:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5665A1F24E70
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:04:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EE8A1F24E7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D6C354BD8;
-	Tue, 27 Feb 2024 08:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA77C56458;
+	Tue, 27 Feb 2024 08:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bC7XFkJi"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AGu/0dR9"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2185655E71
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4502B55E57;
+	Tue, 27 Feb 2024 08:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709021066; cv=none; b=oIaZVHOJ5SOK8CVHaN0UgmWUDoGaCsKhEbn80W+lhMVLXjx8C4Zjl3SpJ+7F9UQ1MOhjUm3lpOJWY7L9l9AuhMnn7K0fpJVs6nhzrztTN7YpBSK+W0UOFz+/TikpfZi8GXsLokNdMPpZQ1K85djJFHt0ND7dHmsOZ3QcXzz0LVg=
+	t=1709021103; cv=none; b=GRx6XUJ3abBQx/6GEpEn4II5iyl8NXzgBVX+Bs/1HNd8gNnbfksOrDvKgkrg3xEGUVzaXnza12lYFsDYXUG1KcwXk8UYDnm92jZejiSKWmWxwW9KBGkBGnXFt3U+qxyUh6me4K/YXpQeK1fVUuUgpN9KsWCbjJxtRMR+9JvQwws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709021066; c=relaxed/simple;
-	bh=wyMi2gEFt1yFU5BXu8guM740xjoh82psvEi+ghM6YQU=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=Eoi4e9ikZzKREMVkSiMoQUHjw2I0JTgqKBIQgfvGrBhE+yX+Da6KtyJaaN1lVzq5ImrB8XzfOAJd86SB5UXLmJIm6fW1JUCgf+DuI4r6bRXiJmJX4GK9MVNYy0AsY4IHskk5+uuzb66hRzKajYLEI2g+TlBbV/LX5OpUwR1Cdcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bC7XFkJi; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709021064; x=1740557064;
-  h=date:from:to:cc:subject:message-id;
-  bh=wyMi2gEFt1yFU5BXu8guM740xjoh82psvEi+ghM6YQU=;
-  b=bC7XFkJiHauOkff+uVOhFo2a/lyiz2qqx7pbarAJdCN+ReIyk76lJ98B
-   M0pegCl5XLAyNDEN/4HWTlkA6E8+mqTU/p5C6GvgsBV3fuNXLPAmsKbUI
-   XskF+V4djrhwlsLNF8QBTV1EIO2h2zmHI+tSrAcB7RmnGkfIzwBdBMG+5
-   UZNG2pkBdVA5pKJRsKFQwl4PLtpHykCgBpXR+lNnpSs2Zpiym06IbWoC4
-   x3kwthVCylLnIRjl3MqI9BVu8SZWYSMBA4wpK2N/Sq28c290xcJtUfrOC
-   8zY02TJ84twerklXu1/cGRieuV5kPwc9TqXfmIOdqXOQXYhVjp4H/1VCJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="20794774"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="20794774"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 00:04:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="37984659"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 27 Feb 2024 00:04:22 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1resRo-000B2l-06;
-	Tue, 27 Feb 2024 08:04:20 +0000
-Date: Tue, 27 Feb 2024 16:03:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:irq/msi] BUILD SUCCESS
- 1abea7339b404bd79bb26976471e3bf8e6080f47
-Message-ID: <202402271643.wOPTwTaB-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709021103; c=relaxed/simple;
+	bh=dLc6qzpdn0QcbWH35jBWzBShMzWwsYYOLtQdcDNpS08=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W/Nz7Irf/5UeFpWxgwN6THAs1djuvKz3Boj+istMyblBbC/GZ6msm97csNZEhpQcvI+zrbRFS2WfyauAavlrsqo1sRp5HOHbBA5OQBVZFOvjY7X/xuHX9Jfxa5zymK+0YzGtne45ydlS+HYL5iufDt/imQ0HAUSN73+f7UDqCus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AGu/0dR9; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5656e5754ccso4902155a12.0;
+        Tue, 27 Feb 2024 00:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709021099; x=1709625899; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8IQYfg/jEbKsFfnP7Ml8GxrhHj0pSAVN9Eix4gdEtcY=;
+        b=AGu/0dR97o7ALNRJBJIjtnL5ZqtzEjPFZqxQK5A/DUANqvjIQxm+fenlNu4NEdeVc1
+         56S+zMHoyyW5ZbXoxyb5HKhJndiV3J+ZH2onDEbXYh5bmHWyYU0rUTy/GwNXBPNRgtoz
+         waToFSeg1FMvCP8J8bgMnQI8Sgly6DRls3/iIynK2sCQtNhSUyB7LO5+ZYuljS9EBHNZ
+         N0EglxP1KNIIA53u0yMJTvAzHqY2or9DgHoz9+pzEdVvPCIgIfrhB1g5UzhiHf6cPuSi
+         gTV9wusuJpdOLIzdTIwSLvEVn0UoN6hyu2ENvlJEYa9qOgb86zNjsN2U/Bbfwi2lCywz
+         6mdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709021099; x=1709625899;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8IQYfg/jEbKsFfnP7Ml8GxrhHj0pSAVN9Eix4gdEtcY=;
+        b=td+t7iXRDl8Jd9pD7qFLHY6utvGj7ErOrrFSOtq3oe+Lrv4bur02JKCgkVn7Khiqc3
+         0Zk9pxSkzIqAJsoqnSvHR0QAQma1Auf/1Hq5fIHoKDFFx23fSIr57XU1aIsiTEtxajFm
+         z0AQ3oeoroCOPostDJbwskdG6VEhD8Sr2z8pCHX25kNfpEfofl+GrnlrDhdwhF75Tlks
+         LdkKlKJhyOFenW2y5roRWrf41JZMnkV4yRs92OZ1bFgfAs4JgAn59j7KafTPGdmeXKhG
+         quZQOUBVSYbtmPlKaqa2uzPOt5GHcRAYxFGUUibLHCr9yVVDH0wFRA5WtvwQNsj5ZdQ2
+         dr2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVIKMOe3Dtv5e0O3XhROtOWNFCMDCH5VnjBXk0wvluiR+UBMop3YEvrhxvG5cHBUJidWXfr5eE3lTN0QiG+Qon0D0V877R/GwaAtfaWofqF2f2CmhXnoMWgTgfmfpqT1SaNjtGN00q1wrJaGq9v2nfTVMCwUoEwyT8B1lxJ9dyflU75BDKo82a65E/f5zaxkebBLkGfvMxHreEHY3SA1t+5KqO4
+X-Gm-Message-State: AOJu0YzU+Iay7eir6jpjxAgYXFkfupFH/gNVjCyKiV7i1Jn8Xu0H4pjY
+	OnnMeTl9LfOIUjbPidHerCnoYWW0GwnCOfM1jWKWP6xD0aEh+i5DRSNU8eeFehu9Q2FI1ZlWkKu
+	dsbgTjn02EFbrHeqiPiJQ5u49xts2tNLxP2OQmA==
+X-Google-Smtp-Source: AGHT+IFlufugla77dD0j6LnZaS9EwyRoI4OBtOt4iPjnpLBqDX7T/t9hkHQLyVLsNt3OF+TRgbh8PTkCNXKpThlby/o=
+X-Received: by 2002:a17:906:5fce:b0:a3e:73c9:7acc with SMTP id
+ k14-20020a1709065fce00b00a3e73c97accmr5824341ejv.33.1709021099415; Tue, 27
+ Feb 2024 00:04:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240226104653.54877-1-lukas.bulwahn@gmail.com> <43df625f-bd32-4dd9-a960-6d0f5c0304c7@infradead.org>
+In-Reply-To: <43df625f-bd32-4dd9-a960-6d0f5c0304c7@infradead.org>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date: Tue, 27 Feb 2024 09:04:48 +0100
+Message-ID: <CAKXUXMxSnEEYCtvxVN6Z_QuDTEpLiq=Zsz+=g=kNzwKuLeH=Pg@mail.gmail.com>
+Subject: Re: [PATCH] docs: submit-checklist: structure by category
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org, linux-doc@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/msi
-branch HEAD: 1abea7339b404bd79bb26976471e3bf8e6080f47  irqchip/riscv-intc: Fix low-level interrupt handler setup for AIA
+On Tue, Feb 27, 2024 at 1:41=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
+>
+> Hi Lukas,
+>
+> I'll review the file changes separately. This is just replying
+> to the patch description comments.
+>
+>
+> On 2/26/24 02:46, Lukas Bulwahn wrote:
+(snipped)
+>
+> > Note that the previous first point still remains the first list even af=
+ter
+> > reordering. Based on some vague memory, the first point was important t=
+o
+> > Randy to stay the first one in any reordering.
+>
+> Yes, I have said that. Stephen Rothwell wanted it to be first in the list=
+.
+>
 
-elapsed time: 1049m
+I have adjusted my commit message:
 
-configs tested: 177
-configs skipped: 3
+Note that the previous first point still remains the first list even after
+reordering. Randy confirmed that it was important to Stephen Rothwell to
+keep 'include what you use' to be the first in the list.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>
+> > While at it, the reference to CONFIG_SLUB_DEBUG was replaced by
+> > CONFIG_DEBUG_SLAB.
+>
+> I don't understand this comment. DEBUG_SLAB is gone.
+> I think those 2 symbols might be reversed in your comments. ?
+>
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240227   gcc  
-arc                   randconfig-002-20240227   gcc  
-arc                    vdk_hs38_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                        keystone_defconfig   gcc  
-arm                   randconfig-001-20240227   gcc  
-arm                   randconfig-002-20240227   gcc  
-arm                   randconfig-003-20240227   gcc  
-arm                   randconfig-004-20240227   gcc  
-arm                         socfpga_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240227   clang
-arm64                 randconfig-002-20240227   gcc  
-arm64                 randconfig-003-20240227   gcc  
-arm64                 randconfig-004-20240227   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240227   gcc  
-csky                  randconfig-002-20240227   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240227   clang
-hexagon               randconfig-002-20240227   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240227   gcc  
-i386         buildonly-randconfig-002-20240227   gcc  
-i386         buildonly-randconfig-003-20240227   clang
-i386         buildonly-randconfig-004-20240227   gcc  
-i386         buildonly-randconfig-005-20240227   gcc  
-i386         buildonly-randconfig-006-20240227   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240227   gcc  
-i386                  randconfig-002-20240227   gcc  
-i386                  randconfig-003-20240227   clang
-i386                  randconfig-004-20240227   clang
-i386                  randconfig-005-20240227   clang
-i386                  randconfig-006-20240227   gcc  
-i386                  randconfig-011-20240227   clang
-i386                  randconfig-012-20240227   clang
-i386                  randconfig-013-20240227   clang
-i386                  randconfig-014-20240227   clang
-i386                  randconfig-015-20240227   clang
-i386                  randconfig-016-20240227   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240227   gcc  
-loongarch             randconfig-002-20240227   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                        stmark2_defconfig   gcc  
-m68k                           sun3_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240227   gcc  
-nios2                 randconfig-002-20240227   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240227   gcc  
-parisc                randconfig-002-20240227   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                        cell_defconfig   gcc  
-powerpc                      ep88xc_defconfig   gcc  
-powerpc                 mpc837x_rdb_defconfig   gcc  
-powerpc               randconfig-001-20240227   clang
-powerpc               randconfig-002-20240227   gcc  
-powerpc               randconfig-003-20240227   clang
-powerpc64             randconfig-001-20240227   clang
-powerpc64             randconfig-002-20240227   gcc  
-powerpc64             randconfig-003-20240227   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240227   gcc  
-riscv                 randconfig-002-20240227   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240227   gcc  
-s390                  randconfig-002-20240227   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240227   gcc  
-sh                    randconfig-002-20240227   gcc  
-sh                           se7343_defconfig   gcc  
-sh                           se7722_defconfig   gcc  
-sh                             sh03_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240227   gcc  
-sparc64               randconfig-002-20240227   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240227   clang
-um                    randconfig-002-20240227   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240227   clang
-x86_64       buildonly-randconfig-002-20240227   gcc  
-x86_64       buildonly-randconfig-003-20240227   clang
-x86_64       buildonly-randconfig-004-20240227   clang
-x86_64       buildonly-randconfig-005-20240227   clang
-x86_64       buildonly-randconfig-006-20240227   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240227   clang
-x86_64                randconfig-002-20240227   clang
-x86_64                randconfig-003-20240227   gcc  
-x86_64                randconfig-004-20240227   gcc  
-x86_64                randconfig-005-20240227   gcc  
-x86_64                randconfig-006-20240227   gcc  
-x86_64                randconfig-011-20240227   gcc  
-x86_64                randconfig-012-20240227   gcc  
-x86_64                randconfig-013-20240227   clang
-x86_64                randconfig-014-20240227   gcc  
-x86_64                randconfig-015-20240227   gcc  
-x86_64                randconfig-016-20240227   gcc  
-x86_64                randconfig-071-20240227   gcc  
-x86_64                randconfig-072-20240227   clang
-x86_64                randconfig-073-20240227   gcc  
-x86_64                randconfig-074-20240227   clang
-x86_64                randconfig-075-20240227   clang
-x86_64                randconfig-076-20240227   clang
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                          iss_defconfig   gcc  
-xtensa                randconfig-001-20240227   gcc  
-xtensa                randconfig-002-20240227   gcc  
+I must have mixed them up while writing down the commit message; so
+now it reads:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+While at it, replace the reference to the obsolete CONFIG_DEBUG_SLAB with
+CONFIG_SLUB_DEBUG.
+
+That is what is happening in the file.
+
+>
+> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> > ---
+> > So far, no point disappeared and nothing new was added.
+> >
+>
+> That's a good start IMO.
+>
+> > Points/Ideas for further improvements (based on my knowledge and judgem=
+ent):
+> >
+> >   - The Review Kconfig changes makes sense, but I am not sure if they a=
+re
+> >     so central during review. If we keep it, let us see if there are ot=
+her
+> >     parts for review that are also important similar to Kconfig changes=
+.
+> >
+> >   - Concerning checking with tools, checkpatch probably still makes sen=
+se;
+> >     it pointed out in several places. If sparse and checkstack are real=
+ly
+> >     the next two tools to point out, I am not so sure about.
+>
+> I doubt that ckeckstack is important since gcc & clang warn us about
+> stack usage.
+>
+
+So, I might drop this later on and replace it with something more
+important to ask.
+
+I have put it on my todo list (but others are welcome as well to pick it up=
+):
+
+KTODO: Investigate if the make checkstack tool is really obsolete, as
+gcc and clang are already set up to warn about large stack usage just
+as well as make checkstack does.
+
+Present how it was investigated and which kind of "benchmark" was set
+up and how the results were evaluated. If make checkstack is really
+obsolete, create a patch to remove the tool from the repository, and
+add some documentation to explain how kernel developers can check for
+large stack usage.
+
+> >     sparse has a lot of false positives nowadays, and many things are n=
+ot
+> >     fixed just because sparse complains about it.
+> >     And I have never used make checkstack and have not found much
+> >     documentation about it.
+> >     So, maybe other tools deserve to be mentioned here instead?
+> >
+
+If make checkstack is removed from the list, this might give rise to
+another linting/static analysis tool worth mentioning. The candidates
+that come to my mind are clang-tidy or smatch. I need to check,
+though, if the installation guides for those tools and the setup for
+the kernel sources are clear enough to actually promote running these
+tools.
+
+But maybe there is another tool worth mentioning. I know about the
+coverity setup, but this is not really suitable for checking
+individual patches.
+
+Randy, I will wait for your review and feedback on the file changes
+and then send out a v2 patch. So far, the changes are only changes to
+the commit message.
+
+
+Lukas
 
