@@ -1,129 +1,152 @@
-Return-Path: <linux-kernel+bounces-83006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B2FE868CEF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:07:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A8BE868CF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:08:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C5CC1C221CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:07:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFFE2285E69
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D554137C50;
-	Tue, 27 Feb 2024 10:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8978138485;
+	Tue, 27 Feb 2024 10:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="j8N+B2rP"
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Sm0n5pQF"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DE854BF6;
-	Tue, 27 Feb 2024 10:06:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B02613699F;
+	Tue, 27 Feb 2024 10:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709028413; cv=none; b=HCJTJ1uMWOMzH7ypoZ91dekDd7PK14TCgaXsBtm+E2Bba9DE+6A1bbou8COoJM04ZHom5bE5Vd1w30BhWXGqPeuUvL59R+Junb5ujbJGfZNUjLZrj3nN247VgBJqD3mX45BnMXge8t26GgZGxvEI3idSDcjR+1NjudsKs+o1TKo=
+	t=1709028496; cv=none; b=CBPpsfNSWs0+NhfviOIpkV9GgXsV8f26lFxEF2/yQpxq6ZL2drl8ZWqXfboeowkt9/DNuatFuvIgLJxHi9NV+NUEEtT2tNp/5zNJWukCCuldV9MMTzRqqpOA/caDNXHvBojju0GJ3c7lfsAmDPJ1LpwXZXJPIlT5LeHZsx3YNKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709028413; c=relaxed/simple;
-	bh=7u0x9ez1yMCB7JX91p3n82D4CUmjf1MNdgM4EC09iUU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=leeU0tQlqPu3x8e7cuZsDKQh3FxWlITbgNQPkqtLqRxUISZMVYISknLIjoD4sAFy/s07hcio+vdUsA1DPNQTJ7zmaRBlzzkdlDykYXg6qbTnrijXnC7RXCeYbGE2hISFb2T0t8xg1ZtFmHaIPn5iae2vyNkxemPq8JUAQOciIzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=j8N+B2rP; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4TkY6p279pz9sQT;
-	Tue, 27 Feb 2024 11:06:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1709028402;
+	s=arc-20240116; t=1709028496; c=relaxed/simple;
+	bh=gayX3MThRtKAbxiT63s1KOxQeJc59MH4mNLhm21wvus=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=H+VKAqoM62FmadKG8l7GM4+ymUCYjuhNDhRSQGtatYEw9oNH1OdlEpRByzM7aDEykKc5OZps2xH+HIfIkrV7JQGlqlWXwOFvxxZdjXU8nNt0d58hK92BODU8nL6Z/lZ0Yrgw5ER4okXPpoRMrKhYqS1e8zoPZl3aYU6I8K5nq+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Sm0n5pQF; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B79C240008;
+	Tue, 27 Feb 2024 10:08:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709028486;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GPizpXQfLZMMYkc4+cJdFUeRkcKBpv3GClb5bK+Zygo=;
-	b=j8N+B2rP1wM2vqfcQ5wXsuK6VWRk3AETdPUfaEKIuzJtLXSdXO5bdkXIamNLmxiB91c1hy
-	gIuslA4/0417HwlXiOU/fq7GpBzCLIV3lITwTvK8CTLO54VdJFocmMQ6aeLbvmzuwk9O9z
-	NZGjEV8r/FP+HlnRpRmWJeiHrpGKy4mVBOhGK+1zvx+7zLPragr4/t/Wevbcxz+Fih80kO
-	k+WTFm8AAfYxrVFMc63ZFxAWd6WVuthoyIzksqNZWDDugScrWqtjaUnK3pciOD3eGgR4NY
-	XfCyKRA3uDcpwd4SG7Ja0wpC/a5s6PEK5ftYa5sr91MdQ+wbe+5pKT3I7MUxZA==
-Date: Tue, 27 Feb 2024 11:06:37 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, david@fromorbit.com, chandan.babu@oracle.com, 
-	akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com, hare@suse.de, 
-	djwong@kernel.org, gost.dev@samsung.com, linux-mm@kvack.org, 
-	Pankaj Raghav <p.raghav@samsung.com>
-Subject: Re: [PATCH 03/13] filemap: align the index to mapping_min_order in
- the page cache
-Message-ID: <37kubwweih4zwvxzvjbhnhxunrafawdqaqggzcw6xayd6vtrfl@dllnk6n53akf>
-References: <20240226094936.2677493-1-kernel@pankajraghav.com>
- <20240226094936.2677493-4-kernel@pankajraghav.com>
- <Zdyi6lFDAHXi8GPz@casper.infradead.org>
+	bh=xvLaYo71E/i5pWv7T61eLjy9zgmIF4EWr3dIPInc76E=;
+	b=Sm0n5pQFxXJLkiaB1TAaCuo0oEs+Mv9KG/JGBjQ91ZO5oPkAegydRj38YtkVb6gEQ8TBGh
+	Obumgxy9ZP2JClMj0wIprCxMKrLtD29lZbBFNu28M5SXXAIA7WmTQlSepiTjtAQLUjuVGS
+	o2Xadk0RaiA/446C7RrtFdY6k1bGuhNfDT2LnpRmSZhKlfWR4Awkf1q7LGu3R31kltysjQ
+	j9H7+dpJUj6qS67T7BAy03eSeUkLRY8t9H3mK2smKAzwQJrbW1hNhgsYHhAZe8QEr7Sl7x
+	hQ9dJnLSqTGkOzOQaCofynCSP9bfxCY6/ZtUXDA8dN/3eMNMvsJqwL7nEM0uKg==
+Date: Tue, 27 Feb 2024 11:08:02 +0100
+From: Maxime Chevallier <maxime.chevallier@bootlin.com>
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, Richard Cochran
+ <richardcochran@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit
+ <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-leds@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+Subject: Re: [PATCH v2 5/6] net: phy: DP83640: Explicitly disabling PHY
+ Control Frames
+Message-ID: <20240227110802.552bff55@device-28.home>
+In-Reply-To: <20240227093945.21525-6-bastien.curutchet@bootlin.com>
+References: <20240227093945.21525-1-bastien.curutchet@bootlin.com>
+	<20240227093945.21525-6-bastien.curutchet@bootlin.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zdyi6lFDAHXi8GPz@casper.infradead.org>
-X-Rspamd-Queue-Id: 4TkY6p279pz9sQT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: maxime.chevallier@bootlin.com
 
-On Mon, Feb 26, 2024 at 02:40:42PM +0000, Matthew Wilcox wrote:
-> On Mon, Feb 26, 2024 at 10:49:26AM +0100, Pankaj Raghav (Samsung) wrote:
-> > From: Luis Chamberlain <mcgrof@kernel.org>
-> > 
-> > Supporting mapping_min_order implies that we guarantee each folio in the
-> > page cache has at least an order of mapping_min_order. So when adding new
-> > folios to the page cache we must ensure the index used is aligned to the
-> > mapping_min_order as the page cache requires the index to be aligned to
-> > the order of the folio.
+Hi Bastien,
+
+On Tue, 27 Feb 2024 10:39:44 +0100
+Bastien Curutchet <bastien.curutchet@bootlin.com> wrote:
+
+> The PHY offers a PHY control frame feature that allows to access PHY
+> registers through the MAC transmit data interface. This functionality
+> is not handled by the driver but can be enabled via hardware strap or
+> register access.
 > 
-> This seems like a remarkably complicated way of achieving:
+> Disable the feature in config_init() to save some latency on MII packets.
 > 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 5603ced05fb7..36105dad4440 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2427,9 +2427,11 @@ static int filemap_update_page(struct kiocb *iocb,
+> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
+> ---
+>  drivers/net/phy/dp83640.c     | 6 ++++++
+>  drivers/net/phy/dp83640_reg.h | 4 ++++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/drivers/net/phy/dp83640.c b/drivers/net/phy/dp83640.c
+> index 16c9fda50b19..b371dea23937 100644
+> --- a/drivers/net/phy/dp83640.c
+> +++ b/drivers/net/phy/dp83640.c
+> @@ -1120,6 +1120,7 @@ static int dp83640_config_init(struct phy_device *phydev)
+>  {
+>  	struct dp83640_private *dp83640 = phydev->priv;
+>  	struct dp83640_clock *clock = dp83640->clock;
+> +	int val;
+>  
+>  	if (clock->chosen && !list_empty(&clock->phylist))
+>  		recalibrate(clock);
+> @@ -1135,6 +1136,11 @@ static int dp83640_config_init(struct phy_device *phydev)
+>  	ext_write(0, phydev, PAGE4, PTP_CTL, PTP_ENABLE);
+>  	mutex_unlock(&clock->extreg_lock);
+>  
+> +	/* Disable unused PHY control frames */
+> +	phy_write(phydev, PAGESEL, 0);
+> +	val = phy_read(phydev, PCFCR) & ~PCF_EN;
+> +	phy_write(phydev, PCFCR, val);
+
+Use phy_modify instead, and you might also want to look at the paging.
+The ext_write before apparently does some page-management itself through
+the clock struct (?).
+
+> +
+>  	return 0;
 >  }
 >  
->  static int filemap_create_folio(struct file *file,
-> -		struct address_space *mapping, pgoff_t index,
-> +		struct address_space *mapping, loff_t pos,
->  		struct folio_batch *fbatch)
->  {
-> +	pgoff_t index;
-> +	unsigned int min_order;
->  	struct folio *folio;
->  	int error;
+> diff --git a/drivers/net/phy/dp83640_reg.h b/drivers/net/phy/dp83640_reg.h
+> index bf34d422d91e..b5adb8958c08 100644
+> --- a/drivers/net/phy/dp83640_reg.h
+> +++ b/drivers/net/phy/dp83640_reg.h
+> @@ -10,6 +10,7 @@
+>  #define PHYCR                     0x0019 /* PHY Control Register */
+>  #define PHYCR2                    0x001c /* PHY Control Register 2 */
+>  #define EDCR                      0x001D /* Energy Detect Control Register */
+> +#define PCFCR                     0x001F /* PHY Control Frames Control Register */
 >  
-> @@ -2451,6 +2453,8 @@ static int filemap_create_folio(struct file *file,
->  	 * well to keep locking rules simple.
->  	 */
->  	filemap_invalidate_lock_shared(mapping);
-> +	min_order = mapping_min_folio_order(mapping);
-> +	index = (pos >> (min_order + PAGE_SHIFT)) << min_order;
+>  #define PAGE4                     0x0004
+>  #define PTP_CTL                   0x0014 /* PTP Control Register */
+> @@ -68,6 +69,9 @@
+>  /* Bit definitions for the EDCR register */
+>  #define ED_EN		          BIT(15) /* Enable Energy Detect Mode */
+>  
+> +/* Bit definitions for the PCFCR register */
+> +#define PCF_EN                    BIT(0)  /* Enable PHY Control Frames */
+> +
+>  /* Bit definitions for the PTP_CTL register */
+>  #define TRIG_SEL_SHIFT            (10)    /* PTP Trigger Select */
+>  #define TRIG_SEL_MASK             (0x7)
 
-That is some cool mathfu. I will add a comment here as it might not be
-that obvious to some people (i.e me).
+Thanks,
 
-Thanks.
-
->  	error = filemap_add_folio(mapping, folio, index,
->  			mapping_gfp_constraint(mapping, GFP_KERNEL));
->  	if (error == -EEXIST)
-> @@ -2511,8 +2515,7 @@ static int filemap_get_pages(struct kiocb *iocb, size_t count,
->  	if (!folio_batch_count(fbatch)) {
->  		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_WAITQ))
->  			return -EAGAIN;
-> -		err = filemap_create_folio(filp, mapping,
-> -				iocb->ki_pos >> PAGE_SHIFT, fbatch);
-> +		err = filemap_create_folio(filp, mapping, iocb->ki_pos, fbatch);
->  		if (err == AOP_TRUNCATED_PAGE)
->  			goto retry;
->  		return err;
+Maxime
 
