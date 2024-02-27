@@ -1,97 +1,150 @@
-Return-Path: <linux-kernel+bounces-82474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82476-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4214F86850E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:39:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD205868516
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:41:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 738441C2179A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:39:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44A11B2358A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:41:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819671859;
-	Tue, 27 Feb 2024 00:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBEEC7FF;
+	Tue, 27 Feb 2024 00:41:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UxEr2dFE"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="E9Pw2iwk"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4956F7FF
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD18C136A;
+	Tue, 27 Feb 2024 00:41:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708994348; cv=none; b=saSpLdhEltK2ps+5+RTKoGA2VVOFStHO+DJw1tZVSQf1LbF+rtAwUSfOZX5F3YTNtjLk0iIaUFc+5Q6pn9FxWZm11DQUuASkOC9PHbbNWjjAGA/ng1DYCHOLzWkJl3mxyGZ4HejfbDEUwEXPVsVUaaufA5bHQigHS7QwJhRWmPY=
+	t=1708994500; cv=none; b=SPEwa4LPvoQz9LQZyFVaHUEXFjxVVo79NUuC42VthElamH5E2bHxa4WZwyRe6UaBeZHcaUtoHIrOfewvzdI4+J4gxtFmCfkUwgOH27u4D3McJPYEXgfUwxKwdtwIPwupJkpVY+iK+blP98+D9YZXeZJ+ER12ho6+NKeU6PJMAwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708994348; c=relaxed/simple;
-	bh=AhrhA0X8avLtGyybofw8r1o+S07uog51OtbaDma0OpA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bL4U1XPjr7DMBhkhp3JfW0vBqanJle3v3Z0fsZpe0IMD7kEmq7ENNVIbfA0erXe1hUmeFrw6jNNgwPc4EFcx3DUVeYQAmaU5UOaF4Vawyw402pnD50pBpopvlbQBj07tJLnS3HomODAQQOOtsYYgxPXGzyqfqhCXhPS/4sm+/1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UxEr2dFE; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-412a2c2ce88so13335e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:39:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708994346; x=1709599146; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AhrhA0X8avLtGyybofw8r1o+S07uog51OtbaDma0OpA=;
-        b=UxEr2dFEwcUavdUPR8MIesb1pyxx7G1tkQKMfQUrDoxs0C5+rAyCWK/HlXoX+AUryZ
-         ZRcXlUMXuyus5SfvYo/9wlW9/NhMfebjUzMFYHICx9hYFGgTt5StAiYhM1UDpPHG1IW4
-         V1HawqvwXp+gxx9Q8hYWcri+ST97kRKPImhLkrZTHRGKSYww6H2I0vcwKgqexdoOzDp1
-         ztQNP7nX9uaPoHT7PqmtoWQrqMVlpw4aELlDyBaGf/OGMbov/SV/lZrxLqsNVASXreeS
-         Y49KekUN7gZsX8hjrjLVZkE3vACciVRtxkbk1rS1JBamTZDx+25qlg0iN6bG4YmKSUWj
-         WTGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708994346; x=1709599146;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AhrhA0X8avLtGyybofw8r1o+S07uog51OtbaDma0OpA=;
-        b=Po4O2xupiDZ2/1cQYpXOfvKtPQxF55oQ73zadZgIl7gTs7Nl5DL6HlHhPA+Aq7tqZY
-         I6rnO1tqzBBr1lW0xuB9dBG6LW1mOPtG4trVSxXJ6dvbAm8cRIW9olA6nRxCxkNGlHz8
-         fop0EroPXyV8kqvKzCPDwLoTWG5we74wTVF9jNlXUzeyC1pKilKOYIDhfyN5wwX1HsDY
-         PxB9vNPAqrOuHlTQeiT/KI8OhCNrEheNBr8n3bNXQOak2FsnJq54rq6/14Xg70srJbxv
-         /vlbUrpTWBuhnKu0qKMm2l++Lf2jzlGMo961WLlOHEerjM37VnRLmzDfdzWm1t5iTdp/
-         9I6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX1lS5mySs2Y6zE/qof3zX/uJqTi5YIDt235qsweJq2ot7nKdrk3UQHkE2V0Xee1iox1Svm+oNbtI4fna2QU6GstvEZgdWa8rC5BzWQ
-X-Gm-Message-State: AOJu0Yxf/WWm7gUwmVci5+nT2Si3eiAThzwyYRVTrur2HGS2+Hnws4r9
-	8ujEN/Rsl4Sd04KFlhi5YkvIrxy/r3rb19IMEXkPD4pUAu3zA91ljdslEXaMUPLi01tZSIk4Sxi
-	UOCIgTQzsMm9F3H+UwUsmKdYkjnf956oly7RU
-X-Google-Smtp-Source: AGHT+IEnyBDnhYmsBfNFkYuwY2a3M5LFXYnqw6HaS9U6td/mUiCJUzbjhRP86gOsUbFbHfGuNU8aNOrZNbdM0Ay62/M=
-X-Received: by 2002:a05:600c:518d:b0:412:a390:3440 with SMTP id
- fa13-20020a05600c518d00b00412a3903440mr49520wmb.3.1708994345708; Mon, 26 Feb
- 2024 16:39:05 -0800 (PST)
+	s=arc-20240116; t=1708994500; c=relaxed/simple;
+	bh=OCMg9lVSRi1dM4mQ/dHVKSvIT2dNp6Xad44VFS/XxqA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=C7iy0I6PwV0N3QUS5+N4hTY5cSKH6FzZ+gUuqwBEvI7vIPGLAWR1FUPnT201w+CAsPy4+HLsxvhITf5mgp0CPBIi1X/rumd+SjuPq3oh92X03dStYFLmV1hVZhz8wPkye+/48QxNS87eZfTCjFla5fkgYIYufHp5TCO2ilyKhhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=E9Pw2iwk; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=E3yLeoY54L7an1gZ4crtQOnqHhnFkPcsPYy0GYM/xeQ=; b=E9Pw2iwkGDsfhccy5Lx+Hx4Mlg
+	70ogJLDoMrg4GWhsksRjSilxhaGGnPUV9B0gNqASn5zii8g91A1xK/BiMkQge0f3CvchoM2ifOUTA
+	rV7oYrED8mzqWgjAiArJdUZF2AyUc2gMfrI4WaHMWNj+BpA0EtnYQz7F4COSKeX3YoKtx+mLMkWcZ
+	61mtJJyNA/6QYOLjRYnpD7t1gEPXBOa+L7JXPQG8hs1tWtdu4/ksWYVEBHrIH7n9SDw9mIAitqJrR
+	qFVz9dVCE1rakSnVmhDSR5WJIT+OopKjwuMSfFk56SnUy7GjmT1GoOyFGzKEpCzpWOjoTRhSqWwg+
+	Kj7ixWXA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1relXN-000000038CT-14fW;
+	Tue, 27 Feb 2024 00:41:37 +0000
+Message-ID: <43df625f-bd32-4dd9-a960-6d0f5c0304c7@infradead.org>
+Date: Mon, 26 Feb 2024 16:41:36 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223010328.2826774-1-jthies@google.com> <20240223010328.2826774-4-jthies@google.com>
- <CACeCKacHYxdvdzaRxRMREeXWfbunhSy-3q+sSKHbJ+u9XXQukQ@mail.gmail.com>
-In-Reply-To: <CACeCKacHYxdvdzaRxRMREeXWfbunhSy-3q+sSKHbJ+u9XXQukQ@mail.gmail.com>
-From: Jameson Thies <jthies@google.com>
-Date: Mon, 26 Feb 2024 16:38:53 -0800
-Message-ID: <CAMFSARdAOTbPpiah=aqk6DFoNLWahdquSrPNXQmAiALKOCAxhg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] usb: typec: ucsi: Register SOP/SOP' Discover Identity Responses
-To: Prashant Malani <pmalani@chromium.org>
-Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org, 
-	bleung@google.com, abhishekpandit@chromium.org, andersson@kernel.org, 
-	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
-	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
-	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] docs: submit-checklist: structure by category
+Content-Language: en-US
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet
+ <corbet@lwn.net>, workflows@vger.kernel.org, linux-doc@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240226104653.54877-1-lukas.bulwahn@gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240226104653.54877-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-> Please consider using two commands to retrieve the data. This will
-> allow you to support UCSI 1.x too.
+Hi Lukas,
 
-> Nit: I'd probably call memset before setting con->cable to NULL.
+I'll review the file changes separately. This is just replying
+to the patch description comments.
 
-> And the same here.
 
-Thanks for your feedback. I'll apply these changes in a v2 version of
-this series.
+On 2/26/24 02:46, Lukas Bulwahn wrote:
+> While going through the submit checklist, the list order seemed rather
+> random, probably just by historical coincidences of always adding yet the
+> next point someone thought of at the end of the list.
+
+Probably.
+
+> Structure and order them by the category of such activity,
+> reviewing, documenting, checking with tools, building and testing.
+> 
+> As the diff of the reordering is large:
+> Review code now includes previous points 1, 5 and 22.
+> Review Kconfig includes previous 6, 7 and 8.
+> Documenting includes previous 11, 15, 16, 17, 18 and 23.
+> Checking with tools includes previous 5, 9 and 10.
+> Building includes previous 2, 3, 20 and 24.
+> Testing includes previous 12, 13, 14, 19 and 21.
+> 
+..
+
+> 
+> The recommendation to test with the -mm patchset (previous 21, now
+> testing, point 5) was updated to the current state of affairs to test with
+> a recent tag of linux-next.
+
+ack.
+
+> Note that the previous first point still remains the first list even after
+> reordering. Based on some vague memory, the first point was important to
+> Randy to stay the first one in any reordering.
+
+Yes, I have said that. Stephen Rothwell wanted it to be first in the list.
+
+
+> While at it, the reference to CONFIG_SLUB_DEBUG was replaced by
+> CONFIG_DEBUG_SLAB.
+
+I don't understand this comment. DEBUG_SLAB is gone.
+I think those 2 symbols might be reversed in your comments. ?
+
+
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> So far, no point disappeared and nothing new was added.
+> 
+
+That's a good start IMO.
+
+> Points/Ideas for further improvements (based on my knowledge and judgement):
+> 
+>   - The Review Kconfig changes makes sense, but I am not sure if they are
+>     so central during review. If we keep it, let us see if there are other
+>     parts for review that are also important similar to Kconfig changes.
+>    
+>   - Concerning checking with tools, checkpatch probably still makes sense;
+>     it pointed out in several places. If sparse and checkstack are really
+>     the next two tools to point out, I am not so sure about.
+
+I doubt that ckeckstack is important since gcc & clang warn us about
+stack usage.
+
+>     sparse has a lot of false positives nowadays, and many things are not
+>     fixed just because sparse complains about it.
+>     And I have never used make checkstack and have not found much
+>     documentation about it.
+>     So, maybe other tools deserve to be mentioned here instead?
+> 
+> I am happy to get feedback---I will work through submitting-patches next
+> and do some clean-up there. While doing that, I might learn what really
+> should go into a better future 'submit-checklist' documentation.
+> 
+>  Documentation/process/submit-checklist.rst | 157 +++++++++++----------
+>  1 file changed, 84 insertions(+), 73 deletions(-)
+
+
+-- 
+#Randy
 
