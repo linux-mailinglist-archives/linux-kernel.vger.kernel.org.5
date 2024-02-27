@@ -1,121 +1,145 @@
-Return-Path: <linux-kernel+bounces-83876-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83877-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AEB2869FCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:04:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7B5869FB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 988C7B2A25C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:58:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0BC11F2ED59
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706FB14A081;
-	Tue, 27 Feb 2024 18:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 907754F8B1;
+	Tue, 27 Feb 2024 18:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d0RXiuux"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="exwa89re"
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4DC4F896
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7497F1E894;
+	Tue, 27 Feb 2024 18:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709060234; cv=none; b=Sr44M1h4e0+DDxYvwpA7vYKkBYD3oBqgPRYD70Nr6Skj1CoRpbjtgCVv3Ou62inIi1dpEgFGzgIRH9ZDjpIywWayIGcnPxdO6er9sgWo6M+MJcrB0HZogE/PT1mlDgoyLnzWbXCjKeLj2oM5fX1FrpcvxLpwWMwDGJljWLnQ+AE=
+	t=1709060326; cv=none; b=LCS3jI1q0IOQevhIBuiZpoSL6yaM0Wyjhd+vWuQd7nJdxZ2YIyJV42p1MaVcvuTpgvHPZzzDxXsUoYZzQeVQ2Fi0oauXSYSCl9+HgB7rISlkAvwQs9GPpHwuBPxR0wEvqz0v7bWPdYFnyGsAgpbXJ9rb2he4boaLgsazfQ6fVjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709060234; c=relaxed/simple;
-	bh=7bDI1xqKClmZu2LPydV/rKtOY3Pk36/Y/7eFyMlkBAo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CFZvqpWsOxN72LoLlGM4PhCy8Ky3z1AKTcJOZXMC95Av2rEiVM0nsPgOzirRgcqlznGViyo3cK2VVn+YqCg7btGz+OPtDXujqPSyDq9ojlFhTE26rcNwcX+abZTloSL4G/rKCGEkIUPHSa8fD6mclCn5LIbAmy1SH2sHOikqlvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d0RXiuux; arc=none smtp.client-ip=209.85.222.46
+	s=arc-20240116; t=1709060326; c=relaxed/simple;
+	bh=Zs76+O63hWdcrw9stSfkc95Kxt2nX61aPPSt8OGVGIo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VDzA5NQ+CYUQdwPz9r7LSmphQ+c9nuo6LVEAcCxoadkEumcu/oV2oucVWmVcvR1JABCP3oosSVvaXFFLvFG5wbsiOWnOmnTclkURS5sddlmSSNra+zvFARERQHv5ZECBG9zlk9BmjAXYdv9W19KF41DzZPVeEr4ssCY8iDUfk0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=exwa89re; arc=none smtp.client-ip=209.85.160.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7dac7cfbea0so193689241.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:57:13 -0800 (PST)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42e8ea2caedso10844231cf.3;
+        Tue, 27 Feb 2024 10:58:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709060232; x=1709665032; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7bDI1xqKClmZu2LPydV/rKtOY3Pk36/Y/7eFyMlkBAo=;
-        b=d0RXiuuxe2LdK+dWXitetYxezIqjAJ+StcCpW7nJ30xWymwgfMaemXy+BHGxmYKnfe
-         Xd4IuckLq8MiRELjlXy3UteqxdQ2V1XMXa+iycrMw710egDZRBHOrETs+HKu7+XcAzm5
-         UoN4/ThLC5vBaKZ1etJ4LsAd9Gjtup84fj3ZqQp3Ce4pNlS3M4OP0ec6ZlxSEkWCiwVQ
-         TLtG64P7YPjJ+LALK6zgV8Kd8xrCL4A3gCnqcJ2sZhbPqf0ZlWMJ4Lq2LgN6/hsCa5sr
-         L870zH+T9A+izH1QN1QPdaasj6GONn492iwq92W5nh4LWDRKvFd6jJytu+mPenfEbST9
-         rtdQ==
+        d=gmail.com; s=20230601; t=1709060324; x=1709665124; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k+K4Qa3o+E8D+LDjXO92NrOsZYJ4mnIsJi9fWR3KCCs=;
+        b=exwa89reGe+s1Smf1re/bsP29Dzy8Ga9xtU63wFTW927DDkMM2RAZRexFcgIQeyMB3
+         51IufLQPdcTPD6i/BNIDwcA2DoPBKNwWeRbjOK/Rz2tVC365elKifZXXvlmTtY36/Fkd
+         bLTC4yi3WLgfSfJmnVWNvmjzOlt3ujrwCTHEfOYEJ2cdQnQbX2/LdlNZrpIaNY5iZmX3
+         enzMTu2gDwSpuJ+1gy9SPnZONpm2hbxE0s2YtWzXWKWA3RHCtNR6zsuKBcqLbOHw+HIV
+         KOwVG33kbpkUdd230F8ZVb1Z2rFjRFnrscCx/uzPnp/MTBDV9l61/n9s8L7qz6oKGdwT
+         Tp/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709060232; x=1709665032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7bDI1xqKClmZu2LPydV/rKtOY3Pk36/Y/7eFyMlkBAo=;
-        b=NQBMoGTtJdYZAd4CuFfo5gPiuDslitF6gLCu1XKzqbLcGlWFqqINlTvsvvpgQPh6/I
-         zbAvPOOGAU7BGhQF9pQGQ17f5VkXlQJHfkJsrgTho1mMwhtU4SS00TpKST9iG+evDWyL
-         qRhgVXGkonrQOcm9l9a6okkK9DFK3jIVObGobluAg2XBIzn9vC2ZEtFFehybs+PzLW6e
-         s8c7ww479q/USNO/YnVG4atUhMcOP5qc3Z3na2O1fShou7BG9JNAyIKvHXC5PSmdB6IK
-         MZNbL+QDKCh6xQLfrJadhGNPFVGnAjd9nD2OpUdf5dqT9fwVjkrKXRhKshdsAjT9QrPc
-         Nt2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUmmDczWksnqJCVokfRhBRqnhhbdFHoMA0FamMGtEWXgkDqefmAMsEB5Ul3ZJOUu8fIvaCjL/Ksm2JCu4G9VeTHWnmlaoPX6n1oMqfO
-X-Gm-Message-State: AOJu0YwL17/Z3zUKLvzsAgr6gMBd5Q2p03aJNCxSacCC7nPLWVPyRZdZ
-	n6ky0IHkHHMS45AO+XaNfbfS8jYDc7JylMurVHHzrMCcpBmUARvz558BPgWmuZYR1IOGBpyOsf+
-	j/V3ZHS+Revuwatzo/0bLhGIiH5k=
-X-Google-Smtp-Source: AGHT+IFI0YgIIOGA9JXPsfi6w0tZFAzpyfy2Ov7owXRmf5vfZnvBgPfma/FnOvSe9vaFciOzIzi2AJpgR+oux7j04jg=
-X-Received: by 2002:a05:6102:f0f:b0:470:547b:6f98 with SMTP id
- v15-20020a0561020f0f00b00470547b6f98mr10672145vss.18.1709060232084; Tue, 27
- Feb 2024 10:57:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709060324; x=1709665124;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k+K4Qa3o+E8D+LDjXO92NrOsZYJ4mnIsJi9fWR3KCCs=;
+        b=LuhEFHnVxAEzyVrm9Y+WaQxkcINY1xaYSWRxw/H62PUbCT57C8ceJb3LYRdiPHMEK0
+         vDkDo5WDvQhGsBh3A9V8zpVlrHOY2LX7SuPQKuoiU3gGvcJnht3PFlYibPJh+dnwF+aN
+         kmg2jupI8PUFobHewAm9dqPPFlTKN3olLAhJe8FRE9DhQVwshwf2gdPegczgk9JZpYPr
+         bwR5tp/+RqY9Ue6pFz/XshmLyu6b8i1+IeN9ybey31QIc8MgkE9yOer/H9lUsTQFXVxs
+         356jqV2i7X7r/aOLxMfqGjIOWBGlJO8pBDUv8LjjFwhQWKgNQiAYrJ4b2bHsI4zpjHoo
+         qdSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWNEpCpkzUL7vR5CVhrdHOGNkGZPZ+zf7SGs8LoJwau2GdVJ8wjdPjYqPVNzHLSA7UHIFCoMe4Q5GAKcL6/DcTyScYsEhHPbdQmWKYTRqYmlHb0GLqc1acssW3Z4Kpt/icIccI6
+X-Gm-Message-State: AOJu0YzLQseCqrcY0J8TCWMKKfgc3oQNSSratzBHsfsLHNq2SZ/SOnpX
+	xVz92lcdK7WDHfatsQc4zvR4X8m1EPOOBryF6wcL8pCTrIRlfmcq
+X-Google-Smtp-Source: AGHT+IHOBBtm+y6Xvne+idIykd5zAmxoipMES/7eQNeUSWqu7AW7Hu/sFYLt2Cug3EoyhvuTfhH4EA==
+X-Received: by 2002:ac8:5f92:0:b0:42e:8f05:97b9 with SMTP id j18-20020ac85f92000000b0042e8f0597b9mr5649563qta.46.1709060324481;
+        Tue, 27 Feb 2024 10:58:44 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d20-20020ac851d4000000b0042e0620d2afsm3816973qtn.72.2024.02.27.10.58.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 10:58:43 -0800 (PST)
+Message-ID: <cfaa0f4b-f9ef-459e-a174-3062b2d3b514@gmail.com>
+Date: Tue, 27 Feb 2024 10:58:39 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231025144546.577640-1-ryan.roberts@arm.com> <20240118111036.72641-1-21cnbao@gmail.com>
- <20240118111036.72641-7-21cnbao@gmail.com> <3a3461fc-4b30-4ba1-94c9-c048d08d40c0@arm.com>
-In-Reply-To: <3a3461fc-4b30-4ba1-94c9-c048d08d40c0@arm.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Wed, 28 Feb 2024 07:57:00 +1300
-Message-ID: <CAGsJ_4xFgcf8+ZqKUqQ3gQt63JXtn-VifAk5mTA6dopYvNqGqA@mail.gmail.com>
-Subject: Re: [PATCH RFC 6/6] mm: madvise: don't split mTHP for MADV_PAGEOUT
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, mhocko@suse.com, shy828301@gmail.com, 
-	wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org, 
-	ying.huang@intel.com, yuzhao@google.com, surenb@google.com, 
-	steven.price@arm.com, Chuanhua Han <hanchuanhua@oppo.com>, 
-	Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5.10 000/122] 5.10.211-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240227131558.694096204@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240227131558.694096204@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 3:40=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> On 18/01/2024 11:10, Barry Song wrote:
-> > From: Chuanhua Han <hanchuanhua@oppo.com>
-> >
-> > MADV_PAGEOUT and MADV_FREE are common cases in Android. Ryan's patchset=
- has
-> > supported swapping large folios out as a whole for vmscan case. This pa=
-tch
-> > extends the feature to madvise.
-> >
-> > If madvised range covers the whole large folio, we don't split it. Othe=
-rwise,
-> > we still need to split it.
-> >
-> > This patch doesn't depend on ARM64's CONT-PTE, alternatively, it define=
-s one
-> > helper named pte_range_cont_mapped() to check if all PTEs are contiguou=
-sly
-> > mapped to a large folio.
->
-> I'm going to rework this patch and integrate it into my series if that's =
-ok with
-> you?
+On 2/27/24 05:26, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.211 release.
+> There are 122 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.211-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-This is perfect. Please integrate it into your swap-out series which is the
-perfect place for this MADV_PAGEOUT.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-Thanks
-Barry
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+
+Same warning as what Daniel reported for ARM 32-bit:
+
+In file included from ./include/linux/kernel.h:15,
+                  from ./include/linux/list.h:9,
+                  from ./include/linux/module.h:12,
+                  from net/ipv4/arp.c:74:
+net/ipv4/arp.c: In function 'arp_req_get':
+/include/linux/minmax.h:20:35: warning: comparison of distinct pointer 
+types lacks a cast
+    20 |         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+       |                                   ^~
+/include/linux/minmax.h:26:18: note: in expansion of macro '__typecheck'
+    26 |                 (__typecheck(x, y) && __no_side_effects(x, y))
+       |                  ^~~~~~~~~~~
+/include/linux/minmax.h:36:31: note: in expansion of macro '__safe_cmp'
+    36 |         __builtin_choose_expr(__safe_cmp(x, y), \
+       |                               ^~~~~~~~~~
+/include/linux/minmax.h:45:25: note: in expansion of macro '__careful_cmp'
+    45 | #define min(x, y)       __careful_cmp(x, y, <)
+       |                         ^~~~~~~~~~~~~
+net/ipv4/arp.c:1108:32: note: in expansion of macro 'min'
+  1108 |                                min(dev->addr_len, 
+sizeof(r->arp_ha.sa_data_min)));
+       |                                ^~~
+
+-- 
+Florian
+
 
