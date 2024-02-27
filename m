@@ -1,109 +1,235 @@
-Return-Path: <linux-kernel+bounces-83240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C158690AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:34:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA79C8690C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:39:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEC361F25F40
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:34:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EFDF284452
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4DD13957E;
-	Tue, 27 Feb 2024 12:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B0813A896;
+	Tue, 27 Feb 2024 12:39:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBZelrBl"
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	dkim=pass (1024-bit key) header.d=udima.es header.i=@udima.es header.b="SORrIfKN"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944B01CFA9;
-	Tue, 27 Feb 2024 12:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823CD13A258
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:39:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709037269; cv=none; b=hdfQAyK9NqqbFNqbNrcq0JOG7vdmX9PjEQH75qLSrOyatCpOez2wFt741gy9NiVgH22FR3akC1bXihxDUO3DquXw5U4N85yxTORFgduNjCKG2QQAXkDb4JtA986ll+93e/o+CPN3e9yGSET//qXueUfqCta2yrnQjuvV2q9MEvw=
+	t=1709037569; cv=none; b=qySezkxrjohLkXPERo+9VwJrPad/9hjzjQsajCc3Zve4bWOr2Li/D4ALz0MvJJ/9/8QzAa5CBMSLAz0OPYxL6jah1MurAEa5T6CkjefUkHbmV8gy7gsduwbf3XBDF6RbYZ436QBDvFyApWrBNLaxaL2Xh3s1i9OPNhLVIjCComQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709037269; c=relaxed/simple;
-	bh=N9j9qlONozduTz+bniTZX4spLz7Dtuw1zBMBtIuIeC0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MAvtQ/rpmKIwFMeDnzZ0QkosGlyx7O+Vd2rOjDzTdOst3WxmIS+Jt1qiABT76JG/YSAaELO2oJXVfYUlX++PhTj6onoO3gcAJNgdgyP60XqZ33PaWo/otdvHUXtc9AeZo4f4NPXmKxiaeNiaNQ1c6q8S9P5su4GKeeMWzavUAvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBZelrBl; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2997a92e23bso2887446a91.3;
-        Tue, 27 Feb 2024 04:34:27 -0800 (PST)
+	s=arc-20240116; t=1709037569; c=relaxed/simple;
+	bh=IglaxdcZLU76jtprsOmWHg7k//GQ0hgdjNnuOUMEAVE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A3ROdBuzCQVO3XyjpU2reQgynp0VGjTBDesod398heupWtxqo/1PyzidZfy9VlTFOXu9yVdbkkZ73E440frYPIPJ6ueCOiAjHQIpY+cXgEY+PMS8rB+etHubGD8Ls6ngnzY1+vdiuyOQg/CRLwjAexFiKBPi1vhcHSeRI7dXdfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=udima.es; spf=pass smtp.mailfrom=udima.es; dkim=pass (1024-bit key) header.d=udima.es header.i=@udima.es header.b=SORrIfKN; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=udima.es
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=udima.es
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33d26da3e15so2379279f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:39:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709037267; x=1709642067; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N9j9qlONozduTz+bniTZX4spLz7Dtuw1zBMBtIuIeC0=;
-        b=SBZelrBlMCrAok/Ji5IEEIJ0HuE10ktW936bNSRp7GdMIR5e+y4QvpsYvEucM5xjeu
-         mKdxLMsjdQIalqDWPrC4t2jI6azU5RQJjnWHjz9N4uTEswRgLHcDs7uHx6A2vWPRLu2x
-         vYLZQb3dpdY4C8cdspbbw79YWR0oPeMC5x8PD7iQaOGd+f6WdxH16hGFJUwYUI/M/nVp
-         FaagOgWF8MIchQBZlC92uGDpHeowb555aiKuff+BubVIEfdqOExTTdV83W5qsZAiVSeg
-         TTttIMqUmApTIYcKSQhqSpziL6By7gLclakfPzID3zOEjzxf6FkGgYXFe3TSaC679HBe
-         IIqw==
+        d=udima.es; s=google; t=1709037564; x=1709642364; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ulSh+zGZ8+dyF926zcKrRhp4LS8bqP+HSdasdk27iBg=;
+        b=SORrIfKN823y17rLyenkBj+/iROfbZGuBLb81Yrk6DPdYExXqlvZphXiwfPPLFETNg
+         tUk+Ke1aN29TvDYVkdjy/kpv3ZucL2PLbnwoZLpeW7jH3bWzvyyTK2pIsher5NvZQbp0
+         ZVi4yObKoBeatg8talaP0a8S1IGCquZJiS+wA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709037267; x=1709642067;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N9j9qlONozduTz+bniTZX4spLz7Dtuw1zBMBtIuIeC0=;
-        b=uO+F8ZftviYg1B1Av0GTIAzZmaTq4QfL0Qa+xteX7YJq3dWo6IvUlWEOO0uc9Wde0P
-         kQ2YEvixO+XoiMcinQlOcSC8iALGaH4rh+U9g3Iq1TYyXgyVc+xIOOug0Zlt/a+Q9c8C
-         FZVdG6sEfdcl3JRFkIT44aOp6R1Ut9oJFH20hGfawK8BjKqxXMu4LsnwhzNINkROJ/Mi
-         VGALXQmJPJB3pHpUI0PmXNMsSlIXrt54+zd1rLu762am5RaxSkfjHU+6llatOoEY2bqf
-         EbuS4zaGvvqAU2hAFywr88BMURBhKRLdsTrIDecNf8rDuTonm1sG3gwXk7CdQ2rpIU9Y
-         z91Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV13V7aDEi27eSWyemQ7TcL7ZpvgZK0/hzmplO14Q+UMAMg5IDpgndtRMFus1AUPFoIUxCEyFnr/OFQR41jq3XonhvNloib1UIxxFT9eUrgPzKswE2GVEmueZ27MBCVtzK8oJckBDtvAgTz1CcVkNy4NFmCwabpK7+dGGXVcs/RuxKKkgWOL4OP+Fx40I8FeQ+ErQEJGLhjnfaIM4459EM=
-X-Gm-Message-State: AOJu0Yy+8ZO4uMbZebHD84QGA9riTQmoSxOKrWYoTPNcdnGsogBq2HyI
-	sgRRFnt/trEac0P/cWDNK0wlSONYiyRChVEJu5whlsYpLmChf2gKsoIyF3lik3yXkE07K0aJvxo
-	0rw8qnJ6smy3Z0B9mdD70W5R3ccY=
-X-Google-Smtp-Source: AGHT+IEuXAPX9FOqOhNJb3Owku+lxeLjmPjbeDLcLvCF79H6OR73WYykC8gycjj0GEybh553JRImPRMosUkl+JhzaAA=
-X-Received: by 2002:a17:90a:5804:b0:299:389e:b611 with SMTP id
- h4-20020a17090a580400b00299389eb611mr5540528pji.47.1709037266902; Tue, 27 Feb
- 2024 04:34:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709037564; x=1709642364;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ulSh+zGZ8+dyF926zcKrRhp4LS8bqP+HSdasdk27iBg=;
+        b=SYhjBZZXHqOE5A6Qom2NyRfVlRc000EfaGfe9rCaFEa5StNgwcm8AKQKSnxA9UAOR0
+         oV5nkWkzi4gCn93iMbEGIH8hzsa2y7JotaL+EdU1/Po8ZLA+7qi1IcUezpriBhQ8E6sT
+         ZWIPDGmoAyh5ED5YRQALmKmQYZX81CIAnFdvdzqSrTjVjnBnUn2tlGDgrbhXxM75e0YW
+         U6jljCsF/28pUp2fHUQzKkyz6qZgCE37Y7fW4ASobtmRD9FIj/9oHVRlYKdF42hAFW/5
+         90zpZ4TQB9zJjeKF2NqQCATsDUlz1hTkOxeviADji8Fk14YK/YT8QH8cnUzfPYM823tz
+         jFXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVEG6rfCprNzjNnz+jOxYFrRo9UpcoMZWa22sKXJKdVdl46Rdxcn7mCWI4xGmr4RV3DSQUHFNIPHC2BjSch/Qgqi6Is3fZ6VGZiix6H
+X-Gm-Message-State: AOJu0Yz31ZE60O4Becndsogw3dxd4vHS3pT1n4OOMvIuoZ81fZtOAKOf
+	zCPd7PSXkDrJlQaFjhVvbVu+n+SsDDDKhQftzya4LWIGoQ1bcULpk6i+TPUlbrU=
+X-Google-Smtp-Source: AGHT+IEmHNL+YaOOg3Qorj9DIRtr3BjF7dDzlkl0TJwo1yMeS3zmaiUNv0d+QEC07JdkBi5KsJphoQ==
+X-Received: by 2002:adf:d1c3:0:b0:33d:7ec9:f5d0 with SMTP id b3-20020adfd1c3000000b0033d7ec9f5d0mr9918938wrd.2.1709037563746;
+        Tue, 27 Feb 2024 04:39:23 -0800 (PST)
+Received: from portatil76.udima ([79.116.0.170])
+        by smtp.googlemail.com with ESMTPSA id bw1-20020a0560001f8100b0033af3a43e91sm11444061wrb.46.2024.02.27.04.39.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 04:39:23 -0800 (PST)
+From: =?UTF-8?q?Javier=20Garc=C3=ADa?= <javier.garcia.ta@udima.es>
+To: 
+Cc: daniel.baluta@nxp.com,
+	javier.garcia.ta@udima.es,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
+Date: Tue, 27 Feb 2024 13:35:55 +0100
+Message-ID: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223-leverage-walmart-5424542cd8bd@spud> <20240223-perjury-preshow-fc2cf73d552e@spud>
- <CANiq72=mCnm0mKOw5K44PmZ+jF=67jxEEkcXP-E0O8CaUrps=w@mail.gmail.com> <20240227-uncertain-amaze-6197e627ad95@wendy>
-In-Reply-To: <20240227-uncertain-amaze-6197e627ad95@wendy>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 27 Feb 2024 13:34:14 +0100
-Message-ID: <CANiq72=geBobqM0Dc2yv=NjAc3MWXhOrDHfuJ84TgQ+XVxBo0w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] rust: make mutually exclusive with CFI_CLANG
-To: Conor Dooley <conor.dooley@microchip.com>, Nathan Chancellor <nathan@kernel.org>
-Cc: Conor Dooley <conor@kernel.org>, Matthew Maurer <mmaurer@google.com>, 
-	linux-riscv@lists.infradead.org, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, stable@vger.kernel.org, 
-	Sami Tolvanen <samitolvanen@google.com>, Ramon de C Valle <rcvalle@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 11:54=E2=80=AFAM Conor Dooley
-<conor.dooley@microchip.com> wrote:
->
-> I did try to test it but I ran into too many toolchain issues - my
-> older copies of LLVM (pre 17) are not multiarch as I built them by hand
-> with PGO for x86 and RISC-V. My LLVM 17 is from kernel.org and has no
-> libclang. And then the copy of LLVM 18 on kernel.org apparently does not
-> support kcfi at all. I gave up there, but I don't see how this would not
+Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
 
-I asked Nathan to add libclang a few days ago, and he very quickly did
-it for LLVM 18 -- though I don't know the plan for the others. I just
-pinged in that thread.
+Signed-off-by: Javier García <javier.garcia.ta@udima.es>
+---
+ .../bindings/sound/img,spdif-in.txt           | 41 ----------
+ .../bindings/sound/img,spdif-in.yaml          | 80 +++++++++++++++++++
+ 2 files changed, 80 insertions(+), 41 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.yaml
 
-Cheers,
-Miguel
+diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.txt b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
+deleted file mode 100644
+index f7ea8c87bf34..000000000000
+--- a/Documentation/devicetree/bindings/sound/img,spdif-in.txt
++++ /dev/null
+@@ -1,41 +0,0 @@
+-Imagination Technologies SPDIF Input Controller
+-
+-Required Properties:
+-
+-  - compatible : Compatible list, must contain "img,spdif-in"
+-
+-  - #sound-dai-cells : Must be equal to 0
+-
+-  - reg : Offset and length of the register set for the device
+-
+-  - dmas: Contains an entry for each entry in dma-names.
+-
+-  - dma-names: Must include the following entry:
+-	"rx"
+-
+-  - clocks : Contains an entry for each entry in clock-names
+-
+-  - clock-names : Includes the following entries:
+-	"sys"	The system clock
+-
+-Optional Properties:
+-
+-  - resets: Should contain a phandle to the spdif in reset signal, if any
+-
+-  - reset-names: Should contain the reset signal name "rst", if a
+-	reset phandle is given
+-
+-  - interrupts : Contains the spdif in interrupt, if present
+-
+-Example:
+-
+-spdif_in: spdif-in@18100e00 {
+-	compatible = "img,spdif-in";
+-	reg = <0x18100E00 0x100>;
+-	interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
+-	dmas = <&mdc 15 0xffffffff 0>;
+-	dma-names = "rx";
+-	clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
+-	clock-names = "sys";
+-	#sound-dai-cells = <0>;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.yaml b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
+new file mode 100644
+index 000000000000..d201293d63c7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/img,spdif-in.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Imagination Technologies SPDIF Input Controller
++
++maintainers:
++  - Rob Herring <robh+dt@kernel.org>
++  - Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
++
++properties:
++  compatible:
++    enum:
++      - img,spdif-in
++
++  reg:
++    description:
++      Offset and length of the register set for the device.
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  dmas:
++    maxItems: 1
++
++  dma-names:
++    items:
++      - const: rx
++
++  clocks:
++    items:
++      - description: The system clock
++
++  clock-names:
++    items:
++      - const: sys
++
++  '#sound-dai-cells':
++    const: 0
++
++  resets:
++    items:
++      - description: Should contain a phandle to the spdif in reset signal, if any
++
++  reset-names:
++    items:
++      - const: rst
++
++required:
++  - compatible
++  - reg
++  - dmas
++  - dma-names
++  - clocks
++  - clock-names
++  - '#sound-dai-cells'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/pistachio-clk.h>
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/mips-gic.h>
++    #include <dt-bindings/reset/pistachio-resets.h>
++    spdif_in: spdif-in@18100e00 {
++        compatible = "img,spdif-in";
++        reg = <0x18100E00 0x100>;
++        interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
++        dmas = <&mdc 15 0xffffffff 0>;
++        dma-names = "rx";
++        clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
++        clock-names = "sys";
++
++        #sound-dai-cells = <0>;
++    };
+-- 
+2.43.0
+
 
