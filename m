@@ -1,155 +1,120 @@
-Return-Path: <linux-kernel+bounces-82970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3834868C64
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:38:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6204868C6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:40:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 845EE1F21B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:38:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E870E1C23109
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:40:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF4C136990;
-	Tue, 27 Feb 2024 09:38:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399CB7BAE7;
+	Tue, 27 Feb 2024 09:40:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b="etPMcNZ6"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="TxJJHgRB"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A48135A75
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:38:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C565513699A;
+	Tue, 27 Feb 2024 09:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709026696; cv=none; b=HtQZ4IeHK1KyBZHJTfBM6qWE/IsYWe1ufobXV8ose14hPTxbxHtt1vYJ5XxYQlyCybNVxFO0H/xTB8p3HhXbh8FeWaWWu7544QOs5stdDvB44bsDdOANSFR6+ByDJDef9tNsMWy2qVWaMHk49+qp9Mlbb52aQD+m2rEziNcaCaQ=
+	t=1709026812; cv=none; b=kE7p7+sex8DLj5DNbPYLwvZTbkLEb/5v8df2g5AAjnkztPWmw/T19nq8naD5HWHHigKJVs8RtIfHkOVFSF71yYEj4j3QB9In8jyTtJjlGMunBRKvnebP40F3LykM+9REkctzqcGmBzxSu8cTVPum4yIUweujyWQW9YQrUYWywEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709026696; c=relaxed/simple;
-	bh=AxKvYrQWY9/F5dWJHbr0zeRC2wATwh2Xzpa4vVOSC4g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kL/Wnt6xQTiWFLICIylnJj0PG1zAsV7j+jISOGVFZakbAfw14S5HUoGuGPvP7J7koUB7MRSu5oWYyQ0Fqtjz4w6r6eAyT6+VvUNeDGid9yjVCijI7w11y/4fQdTgE3vXZWxRSxK4G7Ow2GRBqK9lHoH0ym8EupV9ODrL5aroIqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk; spf=pass smtp.mailfrom=rasmusvillemoes.dk; dkim=pass (1024-bit key) header.d=rasmusvillemoes.dk header.i=@rasmusvillemoes.dk header.b=etPMcNZ6; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rasmusvillemoes.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rasmusvillemoes.dk
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d269dc3575so37021621fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:38:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google; t=1709026693; x=1709631493; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=34nlE/jYLVlVaZ7lND+aFhIBs6PO2OjuB13sd0/fnLU=;
-        b=etPMcNZ60xMu5HUAkGh8wzD5Vc5kjz0ObDGHlTTFZhpM666lh2t3u2aPnzehCWIn0g
-         eSogmq9RxX8dbewKkhA8RDDgUeE/fQt+kOnvbYlIbZPqODz6frM16ugpkpyz+g9h+WeE
-         XK1QBhMChA9hLYaidr8J3+HpAsKjaXNHLweRQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709026693; x=1709631493;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=34nlE/jYLVlVaZ7lND+aFhIBs6PO2OjuB13sd0/fnLU=;
-        b=OZ7VVldUabP8rX1+xI/v/JZbBqlVSuvnymm1P5XInyDLf8sBBrZLYAaty1H8UZd02N
-         3PLeewdpjeNFNLabKlTE5lvmSo22paeA1iVwDRg08d/1TWQTGT+l0PwREDPa3mdYncHg
-         MIGr7WNceFvdjJ7EmQtvGogOpXw+b7a37FbteE4/d+MGXdxlVXMdISJ0jN93t2zREFXi
-         +YbyMIDOwkjwT9SQGUA9+7dHQsCcwYSoIUGbr+PzVpxhPgBhFLu4dC8j0ndxlWEKGWsG
-         O0dvHs9eODIAkIdaYEQ/8H11ZIpWzWOL9dj1un9UdRniaLRK3wyAJc9rTfr9PnycOD3d
-         32pg==
-X-Forwarded-Encrypted: i=1; AJvYcCURJKUp4QWfI+smdDQNxsVbWL7qDjrggEwFuvMb8MH9Hbixiue8CzWy2PIXxTrbeaWQfpomEVFqLys+orP7S+HIUGojKmDn+V0ORsEl
-X-Gm-Message-State: AOJu0YyGMeHmWUbiH5QaqVQUOkzISqLqWxZC8iegFL/jzJU60GWuBvZk
-	ihw1ZVVmoGoIs33GWdDt4Yp6ntDeLXLNtSVuJQDYSrv7jo1zQTli7/hYMzoc9vw=
-X-Google-Smtp-Source: AGHT+IFIS3pGCJaWAL8RMc5RJT5ivWEGBl+2mS/Sffs1nscQknt84kpwUa3IyS43C3isau2OTSqjwA==
-X-Received: by 2002:a2e:a165:0:b0:2d2:3fa3:5af8 with SMTP id u5-20020a2ea165000000b002d23fa35af8mr2877025ljl.3.1709026692679;
-        Tue, 27 Feb 2024 01:38:12 -0800 (PST)
-Received: from [172.16.11.116] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id p18-20020a2e7412000000b002d0f8b3e259sm1128939ljc.65.2024.02.27.01.38.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 01:38:12 -0800 (PST)
-Message-ID: <1013ff2d-76b2-41f9-a5d4-39a567a3b0cc@rasmusvillemoes.dk>
-Date: Tue, 27 Feb 2024 10:38:10 +0100
+	s=arc-20240116; t=1709026812; c=relaxed/simple;
+	bh=8r24iKPhibOS40zxMGUMNspSc4hHZnzNSAnmzkFnOuQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u5wupXkC8BC1x4zgsJl/LkEHziJWfIt889GUNw6ZVROqogDNYlHDkF6WP/CQaglQdH893uv1IoN6PmqS2Sgq0bKyXSB4MV+HkaeqTdeXTFdEdqymuHKZVG4wUf/LUJCyfurOolMbfrB1qHfXx0rSqpod/1tEJvkG6fsbWBV6hTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=TxJJHgRB; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPA id 2F16A1BF20D;
+	Tue, 27 Feb 2024 09:39:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709026801;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=6AJf+zzN7UHsiDVB1kdGMfmPws28cjDW3HCy8ItyxK8=;
+	b=TxJJHgRBlziCllHZOJT4RWWHW7gaP3x6pfe/Ui3GaJsL45Xar59xbK+U5IWRw5W6t1GCid
+	AWjoJB8O5pXFF4NIjfuHb78p/K/JgkOXAufKjW49BLNuqZh1GQ2wikgW6rNTmxI38A8JaY
+	ZqYTfx5rN4nrh4g/g0URnJ0majjlVNsVROBWVtca43tea+0oTmnuZSZ5JGQYFs2+jWYJGy
+	fCxZpLdrQq1IshfWDlv/xP3ZDKNM8TZAhVmiDgZobjyMehuPRfb6I0ySq7bCSOffyDnaWM
+	rQBbkukWN3Fi3ElTonkCO4jDt6Ng1pELeivZsBhXiptLzCW1Fxno7sHuy6aghA==
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-leds@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	herve.codina@bootlin.com,
+	maxime.chevallier@bootlin.com,
+	christophercordahi@nanometrics.ca
+Subject: [PATCH v2 0/6] net: phy: Add TI's DP83640 device tree binding
+Date: Tue, 27 Feb 2024 10:39:39 +0100
+Message-ID: <20240227093945.21525-1-bastien.curutchet@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/12] drm/i915: Indicate which pipe failed the fastset
- check overall
-Content-Language: en-US, da
-To: Jani Nikula <jani.nikula@linux.intel.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: intel-gfx@lists.freedesktop.org, Petr Mladek <pmladek@suse.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Sergey Senozhatsky <senozhatsky@chromium.org>, linux-kernel@vger.kernel.org
-References: <20240215164055.30585-1-ville.syrjala@linux.intel.com>
- <20240215164055.30585-2-ville.syrjala@linux.intel.com>
- <ZdfApN1h97GTfL1t@intel.com> <Zdj2ONs8BZ6959Xb@intel.com>
- <87bk83mfwp.fsf@intel.com>
-From: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-In-Reply-To: <87bk83mfwp.fsf@intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-On 26/02/2024 15.57, Jani Nikula wrote:
+Hi everyone,
 
-> Personally I suck at remembering even the standard printf conversion
-> specifiers, let alone all the kernel extensions. I basically have to
-> look them up every time. I'd really love some %{name} format for named
-> pointer things. And indeed preferrably without the %p. Just %{name}.
+This patch series adds small features to the TI PHY DP83640 :
+  - Add LED handling through /sys/class/leds to use the three
+    configuration modes offered by PHY.
+  - Add Energy Detect Mode handling through ethtool's
+    {get/set}_phy_tunable()
+  - Add a device tree attribute to be able to override the hardware
+    strap configuration if needed. This attribute allows to
+    enable/disable fiber mode.
 
-Sorry to spoil the fun, but that's a non-starter.
+Change log v1 -> v2 :
+  - LED Configuration is now done through /sys/class/leds insted of DT
+  - Energy Detect Mode is done from {set/get}_phy_tunable() instead of DT
+  - The DT property to enable/disable PHY control frames is dropped,
+    the feature is disabled directly in driver as it is not handled
+    anyway.
+  - The CLK_OUT pin handling has been dropped.
 
-foo.c: In function ‘foo’:
-foo.c:5:24: warning: unknown conversion type character ‘{’ in format
-[-Wformat=]
-    5 |         printf("Hello %{function} World\n", &foo);
-      |                        ^
+Bastien Curutchet (6):
+  dt-bindings: net: Add bindings for PHY DP83640
+  leds: trigger: Create a new LED netdev trigger for collision
+  net: phy: DP83640: Add LED handling
+  net: phy: DP83640: Add EDPD management
+  net: phy: DP83640: Explicitly disabling PHY Control Frames
+  net: phy: DP83640: Add fiber mode enabling/disabling from device tree
 
-You can't start accepting stuff that -Wformat will warn about. We're not
-going to start building with Wno-format.
+ .../testing/sysfs-class-led-trigger-netdev    |  11 +
+ .../devicetree/bindings/net/ti,dp83640.yaml   |  77 +++++
+ drivers/leds/trigger/ledtrig-netdev.c         |   4 +
+ drivers/net/phy/dp83640.c                     | 299 ++++++++++++++++++
+ drivers/net/phy/dp83640_reg.h                 |  24 ++
+ include/linux/leds.h                          |   1 +
+ 6 files changed, 416 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/ti,dp83640.yaml
 
-> And then we could discuss adding support for drm specific things. I
-> guess one downside is that the functions to do this would have to be in
-> vsprintf.c instead of drm. Unless we add some code in drm for this
-> that's always built-in.
+-- 
+2.43.0
 
-If people can be trusted to write callbacks with the proper semantics
-for snprintf [1], we could do a generic
-
-typedef char * (*printf_callback)(char *buf, char *end, void *ctx);
-
-struct printf_ext {
-  printf_callback cb;
-  void *ctx;
-};
-
-#define PRINTF_EXT(callback, context) &(struct printf_ext){ .cb =
-callback, .ctx = context }
-
-// in drm-land
-
-char* my_drm_gizmo_formatter(char *buf, char *end, void *ctx)
-{
-  struct drm_gizmo *dg = ctx;
-  ....
-  return buf;
-}
-#define pX_gizmo(dg) PRINTF_EXT(my_drm_gizmo_formatter, dg)
-
-   printk("error: gizmo %pX in wrong state!\n", pX_gizmo(dg));
-
-Then vsprintf.c doesn't need to know anything about any particular
-subsystem. And if a subsystem breaks snprintf semantics, they get to
-keep the pieces. With a little more macro magic, one might even be able
-to throw in some type safety checks.
-
-Rasmus
-
-[1] You can't sleep, you can't allocate memory, you probably can't even
-take any raw spinlocks, you must attempt to do the full formatting so
-you can tell how much room would be needed, but you must of course not
-write anything beyond end. Calling vsnprintf() to format various integer
-members is probably ok, but recursively using %pX to print full
-subobjects is likely a bad idea.
 
