@@ -1,120 +1,210 @@
-Return-Path: <linux-kernel+bounces-83472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 027C18699E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B82438699E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:10:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3120C1C23081
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:09:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA1731C241C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C601E149000;
-	Tue, 27 Feb 2024 15:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9597814A4DD;
+	Tue, 27 Feb 2024 15:07:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UgLCqJl5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LlOiVQRF"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B0E1487EF;
-	Tue, 27 Feb 2024 15:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436CF14A4C1;
+	Tue, 27 Feb 2024 15:07:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709046422; cv=none; b=KGHQ4Phrgw7cjIyXxgaCLEIZVwssGKzgA9ozoGk+93rtJByD/tZDd2TBmnr81rAMCJB92erbWxibuRg3q/dS0IcDN/i53dTcAx/AwLLMLghBiKB4ODJ0FtvO8olwBgW+YaBoC1a40W5Zb/y9JP7bYkNxg4U5fhIY4ZZaoeS8Rdo=
+	t=1709046453; cv=none; b=fJUv12b8Gu/pqU87vm84gEsFlRozl4u4InuNjv7LW7ORiyvaYsIrsZn43cHyDUHoNWeIJ76XvYaXpoEyeaRIIXSha9suvnN3Mobd74KM+h+FziEkljmt22XU4cOXk45GzvO348oZoOiGA/1pBWdvPVKdNNT++SmZMTuEF4d8iZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709046422; c=relaxed/simple;
-	bh=me+PaR02OqhyQDVfheZnctQBFyoYjMvRYEUCFZryMNo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RIv3G5va8UhzNRQ+G/dWyoCYTUmhTvPa4nP4XNeCcBHO0yq+vc7VUkX/kVdKb62TXo+gUzj4pMgZvw2Ncbu9ZKUA5Kb9n83+918MaXebYMpixslmRBSsGAn1pLfopDqELLQp0Nvd+/49yKWOfM8NtvCeFjQrXH66PbEHkWS3fkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UgLCqJl5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADE7EC433C7;
-	Tue, 27 Feb 2024 15:06:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709046421;
-	bh=me+PaR02OqhyQDVfheZnctQBFyoYjMvRYEUCFZryMNo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UgLCqJl5Tjup29jLQDrfmHzJGcqm6Vn0A8QXbh+nlYBzo2ztnaVO69jw/ROGGmueY
-	 Q9CPhg0EF4DmsduPBINCvhKNEiGUEtH2sTIg7deV+MJ6/U8qYhCiUAdMgk8XbPVToj
-	 9wtNHmraZWYT1fxgj94MCWn8gj21ORbqXgMnPCijB49ft1u4dQcyICfaz2g+vmNMMs
-	 rZZsVNAfiQZ0jA3ObE7SKMxvTqvsNl4f5z1q0W1ZwJwQ5UCk+f8WCRJyArGfEyJdrh
-	 OINmmHKU5aIdMSwoD6cUeaIBcBAd4w8YASgdaCcJMogfF+vg1YgDVX3fDIbOTvokyG
-	 yiquWurwJIAEA==
-Date: Tue, 27 Feb 2024 15:06:53 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Alexandre Mergnat <amergnat@baylibre.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-	Nicolas Belin <nbelin@baylibre.com>,
-	Fabien Parent <fparent@baylibre.com>
-Subject: Re: [PATCH 00/18] Add audio support for the MediaTek Genio 350-evk
- board
-Message-ID: <4ffde184-cf68-4b71-b81d-9b5894529926@sirena.org.uk>
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
+	s=arc-20240116; t=1709046453; c=relaxed/simple;
+	bh=nbBHPd7hWnt+9fYQpHo+4Cb/SCBb82djYs8mBUn7M3s=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=b0NmLj+y1MXJOXdSHAPBv12ugay1lig64DKfyosXwmMXIoe4OYl9ELHJgodfDJUE0Zkor0K/JPtnscrEeuAO6WdLbyjw5kVqlLuoZGResu1eQCVjcK0Je/EPq9yp5H6Nw7QlU0Ev1im93JuXpqf5K5QlJsFh1I63cErQLSjGXoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LlOiVQRF; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RBjuWF011343;
+	Tue, 27 Feb 2024 15:07:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=u9sTptxpOGNQHmo+HL35UVlPPUynBEERtiX8yI981Ko=; b=Ll
+	OiVQRFHPm/nyxkkAPb8BD/BVtUdTA1VVFij/PheD0+xu8Ux2Yr3p7L2C9gTL3SQF
+	KSBhl+k8G1Y1DbD4T4BsJw3C/3Zw6c29fuLBhENUtWqsyZh6xDHT9528ELrR1+r5
+	YR4fPZrz8biPemT4XkP0cu76Vs+k+pkQhbjkNUfVCz+xrLL6rf9RAAO+n4btn03y
+	6Y7RQHgA9S/Ezlsnl78Hm5zQrqtGZWUc6g05dmnWV8ohPEXkTv05ut92bIkCipMI
+	+cmBR+GekmpJCwsbpYc7Oct6TamabQ0HtQ/iQRNJvc/z+yhw4tUAfaSlzBLGu7qU
+	XK+oLcfqntKWmreJo0+g==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whd7b0s58-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 15:07:15 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41RF74Pp021840
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 15:07:04 GMT
+Received: from [10.216.43.248] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 27 Feb
+ 2024 07:07:01 -0800
+Message-ID: <9f084781-2233-4b36-8b1c-db1fa9a9db49@quicinc.com>
+Date: Tue, 27 Feb 2024 20:36:56 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Z6rJHLYKeV1xaopM"
-Content-Disposition: inline
-In-Reply-To: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
-X-Cookie: Please go away.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] watchdog: qcom: fine tune the max timeout value
+ calculation
+Content-Language: en-US
+From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+To: Guenter Roeck <linux@roeck-us.net>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Wim Van
+ Sebroeck <wim@linux-watchdog.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240116-wdt-v2-1-501c7694c3f0@quicinc.com>
+ <2c4f9829-138d-41a5-8810-d13cf749fded@roeck-us.net>
+ <67ed3805-40cb-4f00-9d0d-b0fd012d6221@quicinc.com>
+In-Reply-To: <67ed3805-40cb-4f00-9d0d-b0fd012d6221@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: eq9d10-VwcsDL5E0n_LL7x96ZGksmBKy
+X-Proofpoint-ORIG-GUID: eq9d10-VwcsDL5E0n_LL7x96ZGksmBKy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-27_01,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 spamscore=0 adultscore=0 malwarescore=0
+ mlxscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402270117
 
 
---Z6rJHLYKeV1xaopM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 03:01:38PM +0100, Alexandre Mergnat wrote:
-> This serie aim to add the following audio support for the Genio 350-evk:
-> - Playback
->   - 2ch Headset Jack (Earphone)
->   - 1ch Line-out Jack (Speaker)
->   - 8ch HDMI Tx
-> - Capture
->   - 1ch DMIC (On-board Digital Microphone)
->   - 1ch AMIC (On-board Analogic Microphone)
->   - 1ch Headset Jack (External Analogic Microphone)=20
->=20
-> Of course, HDMI playback need the MT8365 display patches [1] and a DTS
-> change documented in "mediatek,mt8365-mt6357.yaml".
+On 2/3/2024 12:07 PM, Kathiravan Thirumoorthy wrote:
+> 
+> 
+> On 1/16/2024 8:32 PM, Guenter Roeck wrote:
+>> On 1/16/24 00:22, Kathiravan Thirumoorthy wrote:
+>>> To determine the max_timeout value, the below calculation is used.
+>>>
+>>>     max_timeout = 0x10000000 / clk_rate
+>>>
+>>> cat 
+>>> /sys/devices/platform/soc@0/b017000.watchdog/watchdog/watchdog0/max_timeout
+>>> 8388
+>>>
+>>> However, this is not valid for all the platforms. IPQ SoCs starting from
+>>> IPQ40xx and recent Snapdragron SoCs also has the bark and bite time 
+>>> field
+>>> length of 20bits, which can hold max up to 32 seconds if the clk_rate is
+>>> 32KHz.
+>>>
+>>> If the user tries to configure the timeout more than 32s, then the value
+>>> will be truncated and the actual value will not be reflected in the HW.
+>>>
+>>> To avoid this, lets add a variable called max_tick_count in the 
+>>> device data,
+>>> which defines max counter value of the WDT controller. Using this, 
+>>> max-timeout
+>>> will be calculated in runtime for various WDT contorllers.
+>>>
+>>> With this change, we get the proper max_timeout as below and restricts
+>>> the user from configuring the timeout higher than this.
+>>>
+>>> cat 
+>>> /sys/devices/platform/soc@0/b017000.watchdog/watchdog/watchdog0/max_timeout
+>>> 32
+>>>
+>>> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+>>
+>> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> 
+> Guenter / Will, Can this be picked for v6.9? I don't see this in linux- 
+> next yet, so please consider this as a gentle reminder!
 
-Given the number of custom controls here could you please post the
-output of mixer-test and pcm-test from a system with this driver running
-next time you post, this will help with review since it checks a bunch
-of things around the new controls.
 
---Z6rJHLYKeV1xaopM
-Content-Type: application/pgp-signature; name="signature.asc"
+Guenter / Will, Gentle Reminder... is this change queued for v6.9?
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXd+o0ACgkQJNaLcl1U
-h9D7bgf9HvLTv1/D7ibf9xpiO/7Y8mdR7blZxSERHC0VJyzegzQI6g+LO1qHYqc3
-w9Kt0UwtxRgeVFwzBejVVYpZ72d9DoqN3nS4osApKoOChjapCsvasw+uqAodEk5j
-he8RYvVZ5UJWO6P1D5+DkvesptWMDXHFbcoASdlGpEURjMBSLgIOZPnhsZumU0tf
-AzDfDa1BwQwuIS/hg7ebHpzFlevB7SEUANSppMJ3Jp7/SbgTPt9w+/+lERnOiAh1
-G86yCidp9TlgUpb92TVwFyOcdnXT13VmhCwZ/7xwye2IVNnv4CXmFgPk8C4TyNdW
-s1HkIR6EuDYgEsxPOSQt7+eWhweHYg==
-=/HK9
------END PGP SIGNATURE-----
-
---Z6rJHLYKeV1xaopM--
+> 
+>>
+>>> ---
+>>> Changes in v2:
+>>> - drop the minimum timeout change from 30s to 32s
+>>> - Link to v1: 
+>>> https://lore.kernel.org/r/20240111-wdt-v1-1-28c648b3b1f3@quicinc.com
+>>> ---
+>>>   drivers/watchdog/qcom-wdt.c | 7 +++++--
+>>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
+>>> index 9e790f0c2096..006f9c61aa64 100644
+>>> --- a/drivers/watchdog/qcom-wdt.c
+>>> +++ b/drivers/watchdog/qcom-wdt.c
+>>> @@ -41,6 +41,7 @@ static const u32 reg_offset_data_kpss[] = {
+>>>   struct qcom_wdt_match_data {
+>>>       const u32 *offset;
+>>>       bool pretimeout;
+>>> +    u32 max_tick_count;
+>>>   };
+>>>   struct qcom_wdt {
+>>> @@ -177,11 +178,13 @@ static const struct watchdog_info 
+>>> qcom_wdt_pt_info = {
+>>>   static const struct qcom_wdt_match_data match_data_apcs_tmr = {
+>>>       .offset = reg_offset_data_apcs_tmr,
+>>>       .pretimeout = false,
+>>> +    .max_tick_count = 0x10000000U,
+>>>   };
+>>>   static const struct qcom_wdt_match_data match_data_kpss = {
+>>>       .offset = reg_offset_data_kpss,
+>>>       .pretimeout = true,
+>>> +    .max_tick_count = 0xFFFFFU,
+>>>   };
+>>>   static int qcom_wdt_probe(struct platform_device *pdev)
+>>> @@ -236,7 +239,7 @@ static int qcom_wdt_probe(struct platform_device 
+>>> *pdev)
+>>>        */
+>>>       wdt->rate = clk_get_rate(clk);
+>>>       if (wdt->rate == 0 ||
+>>> -        wdt->rate > 0x10000000U) {
+>>> +        wdt->rate > data->max_tick_count) {
+>>>           dev_err(dev, "invalid clock rate\n");
+>>>           return -EINVAL;
+>>>       }
+>>> @@ -260,7 +263,7 @@ static int qcom_wdt_probe(struct platform_device 
+>>> *pdev)
+>>>       wdt->wdd.ops = &qcom_wdt_ops;
+>>>       wdt->wdd.min_timeout = 1;
+>>> -    wdt->wdd.max_timeout = 0x10000000U / wdt->rate;
+>>> +    wdt->wdd.max_timeout = data->max_tick_count / wdt->rate;
+>>>       wdt->wdd.parent = dev;
+>>>       wdt->layout = data->offset;
+>>>
+>>> ---
+>>> base-commit: 9e21984d62c56a0f6d1fc6f76b646212cfd7fe88
+>>> change-id: 20240111-wdt-5bd079ecf14d
+>>>
+>>> Best regards,
+>>
+> 
 
