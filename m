@@ -1,119 +1,221 @@
-Return-Path: <linux-kernel+bounces-83092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9182868E52
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A418B868E4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:04:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EB581F2433A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:05:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EBB01F244A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA0B1386D8;
-	Tue, 27 Feb 2024 11:05:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LEmUNOZh"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0938D1386CB;
+	Tue, 27 Feb 2024 11:04:36 +0000 (UTC)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9091386CC
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B9C130ADF;
+	Tue, 27 Feb 2024 11:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709031933; cv=none; b=kL1n4fgCIVxCc8oDDCEyyTbGbHcwu7MqRwfiQzrauMSJrgtOznPEKJba7/Bp8r75dCRJkPB67Z/vFhDgc3rfWLQCpPGLANWPc00/5Ts8ZOaftLyxDRcA0wX0cbOv2eWq5U4Ytgc5QYIxDFs33EDCePlSJtApaThPPe8p4diK5CA=
+	t=1709031875; cv=none; b=FbMeGegxyAk3/HK7IewypU6w2dmiZ4WFYtcBbmluY3oY8bXWuKiqSw5kf8yANOFvLQSMI564VYsVJQxgtWNlrK+U49d3Ww740f6P2wS+DBxCIFYiNgDAI2QxSzZRAiYnyzpqcwUZsUdZeHjKSfLOZrRM59V3gsnczqASQ8rK6U8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709031933; c=relaxed/simple;
-	bh=0RYBig305OHqvLLkrKNyAb2MuH/1VgLPeQ2Uv68/Eoc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r5amTVbNbzmiPXA4ZIAHkngXR3yK+vppRoaaUkcb3g2ez9RlhF9ytHzMLMODZ39pb0tRYFEfoyhZLH/oNqcbbO9sbkZQr2EoFL7dum9YUfmLAfAKWwh/z5hO17qq7eynXlXI+59j1WzZ2LZJAlpDvxiAdXM5BC+pAQfEI+cvTJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LEmUNOZh; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a36126ee41eso493241966b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:05:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709031929; x=1709636729; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JK61QB9o1xWii2ErgvXw3zRrKGKsozSxgEdvjx0laIw=;
-        b=LEmUNOZh/3Quf9TE4JWyY8JAacOyGLiWaylwSZb1czQ9C7W8oPcSeDzg2ZEbU4p+mf
-         +0hz8PE7RRJlb7Yc0VWAICo8nF/ukH2fs7E+NqVWhV85k8wocienIgGkFyvZQXSgzR4q
-         thc/JXJmzRLwSCA+2IB5PaVxsYw6z1oTW4yptORC7aw+I5faLI72+wSq4tU+6gNNHnrk
-         oWXcQQorTXMbuzkOmvPV5hD+RfHRKTPwGcUcJL0Y6lLAfGL0xbU3rj2dpRgQZ1c0z4ER
-         bWueGeHjuTxMt2x1bY0bMJgNLR7rAMOKrqDpEy7rvTC7pROUhTE2CXaCThJtlK8mT8K3
-         il7A==
+	s=arc-20240116; t=1709031875; c=relaxed/simple;
+	bh=kM9J1nLU0MN3h/U6de1ypqHdb9KiOVaBWFUfIh6BRAU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=A1YsIHAWWR1F1L+MhZ77NI9TvH6Vnt8G+79U32TZ8dBkj8JGJN6MKd6qpb4C9Xl5rbaEAVj+ypdcNnxTVgWUUGi29j7RSfBU+7pgpnXOIjbl1aoFMuKykYiX1+edJrUMcdoOmQvfs735YVkbDN9qtn+089xEgKcNQy0pt0Kaj3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-608d55ab7b0so28052607b3.1;
+        Tue, 27 Feb 2024 03:04:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709031929; x=1709636729;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JK61QB9o1xWii2ErgvXw3zRrKGKsozSxgEdvjx0laIw=;
-        b=Kn0q+O4hfEO+/GYZVVgOWpFK1itmsr6jblaD1vsjdRoeH6zr8jM9Z6SoZiPtTB2C/n
-         HIKvOPQ5m3pBZ3aZww/3G9UA7Pmk0BENeoev1EQomqM+zXuA08wbUosQJ/KPRC1FOY/q
-         xkDAMvdRhsjGmCVSXOkLGbN27u+utYnMpBgIPgzLzMg+KlZRH5YL/ikq5d/1YtK/vXKt
-         kECDkpt4YJ49Qq0RRstHyngugpW5F1s4+/19oVCk3yRw0TZpUAl8Yyg8N0m/P3h+IVXv
-         UYru2nKa/HBls2xaFp6Yx8sT8pOHqoWH94R+bdqQTwlh7dlnDfF5/4kXA1MHYvVfUnem
-         2BBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUIyswyOVqL+kNw18r7yo9r4nBgGq0v4V8/GB2w70kUqLuMsHcttcqd/6Tp82Cnhei7OQOav8N/DjIYOxJGfiENQBR65Im5PpZ4+yMV
-X-Gm-Message-State: AOJu0YyM/z4D1DYTk0MOB1XGL4/BKvydDFvOAA4wy+X/xgabDE4I59X6
-	RyqAMbIghION/ASs+JdYL1INrjHsP6UeoHjSVI+8wwINmJ1ynzehVzWAQpuK890JnS/46VZlbdj
-	2
-X-Google-Smtp-Source: AGHT+IFkYbx8S7y1b8p7Kwr6a013ebLwdNvpHNqD9tmb0yy8Mo7cYn4LsFkmA1ywlo+7gQwmHMxqqw==
-X-Received: by 2002:a17:906:1808:b0:a3f:56da:5a40 with SMTP id v8-20020a170906180800b00a3f56da5a40mr6701159eje.23.1709031929608;
-        Tue, 27 Feb 2024 03:05:29 -0800 (PST)
-Received: from hackbox.lan ([188.24.162.93])
-        by smtp.gmail.com with ESMTPSA id rs15-20020a170907036f00b00a3ed811cff9sm643504ejb.154.2024.02.27.03.05.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 03:05:29 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Mike Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>
-Cc: imx@lists.linux.dev,
-	NXP Linux Team <linux-imx@nxp.com>,
-	linux-clk@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] clk: imx: Updates for v6.9
-Date: Tue, 27 Feb 2024 13:04:16 +0200
-Message-Id: <20240227110416.259133-1-abel.vesa@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1709031870; x=1709636670;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xPv5tY8IlTb3U7rQdZHsbYJc9/8vKc1NrUUSdhaGOUc=;
+        b=VKrkAjnyb828d55QjKTklmegqGMpRZ+rFoMG0mIbakmQCUkO6xGGPRtlQpxD2toC9u
+         dJmgozYZjTCKDuFlh7ChVT/x99h8VVTIPYpWeZGKl9W4tFuVcefEX4QVl+/1fE1sjc8i
+         iVIkMyqTIg6pqmDFhYDWfBXRZh5us95n6MecZqqLg2HlNBKWzcENaEgObqweJlEnFqX+
+         E+ZvlIWrxVbL25DbxMl3LVd+6HJPRxoqcuKJap+XXMh/uaTRPIk/YLqfQzzmzIl8PbJh
+         w9SNv1gW01ek37igxjPJbH/sPhzFt574a/2v+JZBYHuUOpkN6rx1d/vAnw56r0+g5x54
+         +jDw==
+X-Forwarded-Encrypted: i=1; AJvYcCWccuPISk8l5VDXR7oiwJMfuPIuOy9RkAnV4Wt+DwCYL19AELNkNF5eLjrMoVGhhqwNLOnIr0WT/jPYuvTtTfqduovs4QQHtFd3YQ/QJ178NWzHn0XsSmkt3Xubu9vAE0GAhnvN3ItD0Pwq83tM1QX8UVIS7IC1W32lZt3IeVc8JK05KfgrfYQL5ayD
+X-Gm-Message-State: AOJu0Yx+WLwhl/g6A11SDHNh0Lx0Tv1Y06XykGqJDEC1KBehhj0IrIli
+	UqUIJ9I9McGHPaNYgZxq2ShVvvoqJLeYP96g7ScaiqyT4CfsSySJFEF/YvAJ2xM=
+X-Google-Smtp-Source: AGHT+IH3nCYhdCtPIrVCOl+x/iPQwL95EBbhEfcIaTCO16G06irj1ZTLMNBrOgF2kdlsuO0tVG/K5A==
+X-Received: by 2002:a81:8d0b:0:b0:608:20df:8b15 with SMTP id d11-20020a818d0b000000b0060820df8b15mr1428538ywg.3.1709031870309;
+        Tue, 27 Feb 2024 03:04:30 -0800 (PST)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
+        by smtp.gmail.com with ESMTPSA id c62-20020a0dda41000000b006078c48a265sm1714178ywe.6.2024.02.27.03.04.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 03:04:29 -0800 (PST)
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc74435c428so3645352276.2;
+        Tue, 27 Feb 2024 03:04:29 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVyCV38Vc5aakNCF24Jf7+Ile8DTWMLrtAPEEvygQUvhHc1SFlwLw9wPhsmhwG8yEqTgxDLgllqKSF2kKtHRG3LU5uThYccg+4JPh/3eRzr7PIwWEDbSaFNcKYwl0ZbyamH18W2/Ab5kGXkvMknoK2RHZQhs41DA5ct2SVhYUGn4GRA1Swq//HuJr9c
+X-Received: by 2002:a5b:ecc:0:b0:dc6:c32f:6126 with SMTP id
+ a12-20020a5b0ecc000000b00dc6c32f6126mr1590255ybs.22.1709031869487; Tue, 27
+ Feb 2024 03:04:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-3-aford173@gmail.com>
+ <39aead3b-b809-4c9c-8a5d-c0be2b36ea47@imgtec.com>
+In-Reply-To: <39aead3b-b809-4c9c-8a5d-c0be2b36ea47@imgtec.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 27 Feb 2024 12:04:17 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW5vWg=tpB9PCRXmdBmLtt0wNN9dOEN1Lp_N7R68jz0tA@mail.gmail.com>
+Message-ID: <CAMuHMdW5vWg=tpB9PCRXmdBmLtt0wNN9dOEN1Lp_N7R68jz0tA@mail.gmail.com>
+Subject: Re: [PATCH 2/6] arm64: dts: renesas: r8a774a1: Enable GPU
+To: Matt Coster <Matt.Coster@imgtec.com>
+Cc: Adam Ford <aford173@gmail.com>, 
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
+	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, Adam Ford <aford@beaconembedded.com>, 
+	Frank Binns <Frank.Binns@imgtec.com>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+Hi Matt,
 
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+On Tue, Feb 27, 2024 at 10:31=E2=80=AFAM Matt Coster <Matt.Coster@imgtec.co=
+m> wrote:
+>
+> Hi Adam,
+>
+> Thanks for these patches! I'll just reply to this one patch, but my
+> comments apply to them all.
+>
+> On 27/02/2024 03:45, Adam Ford wrote:
+> > The GPU on the RZ/G2M is a Rogue GX6250 which uses firmware
+> > rogue_4.45.2.58_v1.fw available from Imagination.
+> >
+> > When enumerated, it appears as:
+> >   powervr fd000000.gpu: [drm] loaded firmware powervr/rogue_4.45.2.58_v=
+1.fw
+> >   powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
+>
+> These messages are printed after verifying the firmware blob=E2=80=99s he=
+aders,
+> *before* attempting to upload it to the device. Just because they appear
+> in dmesg does *not* imply the device is functional beyond the handful of
+> register reads in pvr_load_gpu_id().
+>
+> Since Mesa does not yet have support for this GPU, there=E2=80=99s not a =
+lot
+> that can be done to actually test these bindings.
 
-are available in the Git repository at:
+OK.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git/ tags/clk-imx-6.9
+> When we added upstream support for the first GPU (the AXE core in TI=E2=
+=80=99s
+> AM62), we opted to wait until userspace was sufficiently progressed to
+> the point it could be used for testing. This thought process still
+> applies when adding new GPUs.
+>
+> Our main concern is that adding bindings for GPUs implies a level of
+> support that cannot be tested. That in turn may make it challenging to
+> justify UAPI changes if/when they=E2=80=99re needed to actually make thes=
+e GPUs
+> functional.
 
-for you to fetch changes up to 13269dc6c70444528f0093585e3559cd2f38850a:
+I guess that applies to "[PATCH 00/11] Device tree support for
+Imagination Series5 GPU", too, which has been in linux-next for about
+a month?
+https://lore.kernel.org/all/20240109171950.31010-1-afd@ti.com/
 
-  clk: imx: imx8mp: Fix SAI_MCLK_SEL definition (2024-02-26 11:05:58 +0200)
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > diff --git a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi b/arch/arm64/boo=
+t/dts/renesas/r8a774a1.dtsi
+> > index a8a44fe5e83b..8923d9624b39 100644
+> > --- a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+> > @@ -2352,6 +2352,16 @@ gic: interrupt-controller@f1010000 {
+> >                       resets =3D <&cpg 408>;
+> >               };
+> >
+> > +             gpu: gpu@fd000000 {
+> > +                     compatible =3D "renesas,r8a774a1-gpu", "img,img-a=
+xe";
+>
+> The GX6250 is *not* an AXE core - it shouldn=E2=80=99t be listed as compa=
+tible
+> with one. For prior art, see [1] where we added support for the MT8173
+> found in Elm Chromebooks R13 (also a Series6XT GPU).
 
-----------------------------------------------------------------
-i.MX clocks changes for 6.9
+IC. And the bindings in [2].
 
-- Minor clean-ups and error handling improvements in both composite-8m
-  and SCU clock drivers
-- Fix for SAI_MCLK_SEL definition for i.MX8MP
+>
+> > +                     reg =3D <0 0xfd000000 0 0x20000>;
+> > +                     clocks =3D <&cpg CPG_MOD 112>;
+> > +                     clock-names =3D "core";
+>
+> Series6XT cores have three clocks (see [1] again). I don=E2=80=99t have a
+> Renesas TRM to hand =E2=80=93 do you know if their docs go into detail on=
+ the
+> GPU integration?
 
-----------------------------------------------------------------
-Markus Elfring (3):
-      clk: imx: composite-8m: Less function calls in __imx8m_clk_hw_composite() after error detection
-      clk: imx: composite-8m: Delete two unnecessary initialisations in __imx8m_clk_hw_composite()
-      clk: imx: scu: Use common error handling code in imx_clk_scu_alloc_dev()
+Not really. The diagram in the Hardware User's Manual just shows the
+following clock inputs:
+  - Clock (ZG=CF=95) from CPG,
+  - Clock (S3D1=CF=95) from CPG,
+  - MSTP (ST112) from CPG.
 
-Shengjiu Wang (1):
-      clk: imx: imx8mp: Fix SAI_MCLK_SEL definition
+ZG is the main (programmable) 3DGE clock, running at up to 600 MHz.
+S3D1 is the fixed 266 MHz AXI bus clock.
+MSTP112 is the gateable module clock (part of the SYSC/CPG clock
+domain), and its parent is ZG.
 
- drivers/clk/imx/clk-composite-8m.c    | 16 +++++++++-------
- drivers/clk/imx/clk-imx8mp-audiomix.c | 11 ++++++++---
- drivers/clk/imx/clk-scu.c             | 22 ++++++++++------------
- 3 files changed, 27 insertions(+), 22 deletions(-)
+According to the sources:
+  - "core" is the primary clock used by the entire GPU core, so we use
+    MSTP112 for that.
+  - "sys" is the optional system bus clock, so that could be S3D1,
+  - "mem" is the optional memory clock, no idea what that would map to.
+
+But IMHO the two optional clocks do not matter at all (the driver
+doesn't care about their rates, and just enables them together with
+the core clock), and S3D1 is always-on, so I'd just limit clocks to
+a single item.
+
+Just wondering: is the availability of 1 clock specific to AXE, or to
+the AXE integration on AM62x?
+
+> +                     interrupts =3D <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
+> +                     power-domains =3D <&sysc R8A774A1_PD_3DG_B>;
+> +                     resets =3D <&cpg 112>;
+> +             };
+
+> [1]: https://gitlab.freedesktop.org/imagination/linux/-/blob/b3506b8bc45e=
+d6d4005eb32a994df0e33d6613f1/arch/arm64/boot/dts/mediatek/mt8173.dtsi#L993-=
+1006
+
+[2] https://gitlab.freedesktop.org/imagination/linux/-/blob/b3506b8bc45ed6d=
+4005eb32a994df0e33d6613f1/Documentation/devicetree/bindings/gpu/img,powervr=
+yaml
+
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
