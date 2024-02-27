@@ -1,120 +1,102 @@
-Return-Path: <linux-kernel+bounces-83516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B34B869A8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:38:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27909869A95
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:40:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42FEC1C240EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:38:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E050B262E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F81A145B19;
-	Tue, 27 Feb 2024 15:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517FE146001;
+	Tue, 27 Feb 2024 15:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="A4emScMR"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="v2SmpFKz";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IhZEy9ao"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E96145333;
-	Tue, 27 Feb 2024 15:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FEE145B15;
+	Tue, 27 Feb 2024 15:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709048327; cv=none; b=j4jLuYXnGpVUZYnUAHDDzIHXVipN1BVkYaZ+a65C5XhYrbWrAmYCm8JEbD2+dXZfL3adhi4eDHKtg/91dWvdLc/cmNyU594fQ0eiBycXzQRdp9lTJdB5voWSh49EXB/ioi20Fg8HtdY+jcQRvtS/KAAwsl43QM0mtZtuM+mOVSE=
+	t=1709048384; cv=none; b=XamJ8lB59RAwwWAOOKMID+Cc+DIZFDbLcG8nT7yvMzgV20pTSrEW2OmotclpxiAUgeLWZhKiVbXIO+qKWZHSjiE20mDj6csJDV7ghYJa2s7ddeEGREGwkWWeyrb+Ap9NdS+tsMGWVGZD0xutiq8CZqE1rqZChF2Loy45VvGsoBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709048327; c=relaxed/simple;
-	bh=QBsMYy9pwrh5P4TfAHnB2k/9xmLO73IG0uXxRrYpT14=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uY7v9HYjnAOBPINQGsa5tQKZENsrwI8ZSwG4c3340sP4NeICX4iAPjK0/TrWmH2dhcWXHAnPfUrLfqNXtoIutwnckDDzZqaZNapPhpV5J3+q8we4Xm4mjFvfe9Dtf8j1M3Ao/F9qjCuxE1VkZmtTPYfmyHDHkMq6w7xcHazXnGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=A4emScMR; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=vnd2pbpFP2291J6ZbnrPd0ojsH0sCTz1YbhiBOPu5Zo=; b=A4emScMRSC9y0pQJS/PHvQNV+e
-	t3rpzBrMLITiRYpDmspI2QrSdqHU6Qa/xhaKvKYYZmh0v2/K50PGu54X1BqkIAMfkhGd8IZ9Z6l73
-	uiwSElPtoENwTuI3G7Am/HYaFMl/UQ8yUIoaBIkqQe3p2Sc7Czzh0NwoI6sLztwvVgzXBd5Uba92s
-	mra4/CyL9fdzrq4Ajcu7KtitaMSr/thNeTxuDwIH3GFS0pMswb2ytiZC+c2L32ZbvNowz5xLcCPGT
-	b2dlHNB5uvEysEfgOYOP+0uMQz38vyXwDJn85eLyJhhCTBEaGy8+zQEAK46hzGx9Q1cuhQg3eKrqd
-	LcE2o54g==;
-Received: from [12.229.247.3] (helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rezXW-00000005oEH-0TMV;
-	Tue, 27 Feb 2024 15:38:42 +0000
-Date: Tue, 27 Feb 2024 07:38:40 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Will Deacon <will@kernel.org>
-Cc: Michael Kelley <mhklinux@outlook.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"kernel-team@android.com" <kernel-team@android.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Nicolin Chen <nicolinc@nvidia.com>
-Subject: Re: [PATCH v4 1/5] swiotlb: Fix double-allocation of slots due to
- broken alignment handling
-Message-ID: <Zd4CANmJdW_t69S2@infradead.org>
-References: <20240221113504.7161-1-will@kernel.org>
- <20240221113504.7161-2-will@kernel.org>
- <SN6PR02MB4157089980E6FC58D5557BCED4572@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240223124742.GB10641@willie-the-truck>
+	s=arc-20240116; t=1709048384; c=relaxed/simple;
+	bh=vaOJT+3H/y/38JTvBaPdIy4/VKhioCNN1HHrb3AU4V4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=PgdVSquSCRXIAaPl6n18oeOqYvf21hkwgRXWF2N/62W+WnP/fWFA6V0LeUQpjU7QdCNjHWRtI9oPRcHQige2oS7EVtw/iUPClMTE0NKBLicTNHUTcs7oAuqpIKyNUZ2Xnh5JHU6oOc550358iN4KZpe5pnwX0aGZxJv3DIvpKd0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=v2SmpFKz; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IhZEy9ao; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709048381;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cJMEmPknjHVafP7auP6NstYIZApeLwl7NpSBBPTsJRw=;
+	b=v2SmpFKzyLlxe1n8O3ssVGgCw9zIymjESWdlflsdtoIpFV9ck8Gh8f5Z5p76E0Wov9JppI
+	pUympLPPwSdDUxSpTfJZ7W94UZ3YgkntkZcy5VnTvCUWuvfFbRCCoxuQaBrBeBzjhuMh0A
+	Rw7TvUa8M14b/KRF/9ToCMGjDVMZctCYp+iRh1bz3RsEcHGvsg2XigCu+1QMJGJ5PvfPUr
+	sewGURBL9sdJJp9sgM9RUP1QN6zwl+2XAcqYzpn6j1nMn8nAHbM0iciZY0IbJn4z+SbLyQ
+	mO557zUUhekJSYxGLyFzf0mNLWWa7aKV3evVDYSH5Dpnaw3H2Zo5o1ZNfYEYLA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709048381;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cJMEmPknjHVafP7auP6NstYIZApeLwl7NpSBBPTsJRw=;
+	b=IhZEy9ao54ToXTf1lT6k5ns9ArJc7ZXbJm66qT+o+NH7VygNsznWpxxr8KbIgROKCMTqGb
+	NHYGdj3aYBjzzZAA==
+To: Bitao Hu <yaoma@linux.alibaba.com>, dianders@chromium.org,
+ liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
+ kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
+ tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+ jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCHv10 3/4] genirq: Avoid summation loops for /proc/interrupts
+In-Reply-To: <e78357ae-7b00-446c-b010-3bd770892c9e@linux.alibaba.com>
+References: <20240226020939.45264-1-yaoma@linux.alibaba.com>
+ <20240226020939.45264-4-yaoma@linux.alibaba.com> <87le769s0w.ffs@tglx>
+ <e78357ae-7b00-446c-b010-3bd770892c9e@linux.alibaba.com>
+Date: Tue, 27 Feb 2024 16:39:41 +0100
+Message-ID: <87a5nlapc2.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223124742.GB10641@willie-the-truck>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 
-On Fri, Feb 23, 2024 at 12:47:43PM +0000, Will Deacon wrote:
-> > >  	/*
-> > >  	 * For allocations of PAGE_SIZE or larger only look for page aligned
-> > >  	 * allocations.
-> > >  	 */
-> > >  	if (alloc_size >= PAGE_SIZE)
-> > > -		iotlb_align_mask |= ~PAGE_MASK;
-> > > -	iotlb_align_mask &= ~(IO_TLB_SIZE - 1);
-> > > -
-> > > -	/*
-> > > -	 * For mappings with an alignment requirement don't bother looping to
-> > > -	 * unaligned slots once we found an aligned one.
-> > > -	 */
-> > > -	stride = (iotlb_align_mask >> IO_TLB_SHIFT) + 1;
-> > > +		stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
-> > 
-> > Is this special handling of alloc_size >= PAGE_SIZE really needed?
-> 
-> I've been wondering that as well, but please note that this code (and the
-> comment) are in the upstream code, so I was erring in favour of keeping
-> that while fixing the bugs. We could have an extra patch dropping it if
-> we can convince ourselves that it's not adding anything, though.
+On Tue, Feb 27 2024 at 19:20, Bitao Hu wrote:
+> On 2024/2/27 17:26, Thomas Gleixner wrote:
+>> 
+>> and then let kstat_irqs() and show_interrupts() use it. See?
+>
+> I have a concern. kstat_irqs() uses for_each_possible_cpu() for
+> summation. However, show_interrupts() uses for_each_online_cpu(),
+> which means it only outputs interrupt statistics for online cpus.
+> If we use for_each_possible_cpu() in show_interrupts() to calculate
+> 'any_count', there could be a problem with the following scenario:
+> If an interrupt has a count of zero on online cpus but a non-zero
+> count on possible cpus, then 'any_count' would not be zero, and the
+> statistics for that interrupt would be output, which is not the
+> desired behavior for show_interrupts(). Therefore, I think it's not
+> good to have kstat_irqs() and show_interrupts() both use the same
+> logic. What do you think?
 
-This special casing goes back to before git history.  It obviously is not
-needed, but it might have made sense back then.  If people come up with
-a good argument I'm totally fine with removing it, but I also think we
-need to get the fixes here in ASAP, so things that are just cleanups
-probably aren't priority right now.
+Good point. But you simply can have
 
-> > While the iommu_dma_map_page() case can already fail due to
-> > "too large" requests because of not setting a max mapping size,
-> > this patch can cause smaller requests to fail as well until Patch 4
-> > gets applied.  That might be problem to avoid, perhaps by
-> > merging the Patch 4 changes into this patch.
-> 
-> I'll leave this up to Christoph. Personally, I'm keen to avoid having
-> a giant patch trying to fix all the SWIOTLB allocation issues in one go,
-> as it will inevitably get reverted due to a corner case that we weren't
-> able to test properly, breaking the common cases at the same time.
+unsigned int kstat_irq_desc(struct irq_desc *desc, const struct cpumask *mask)
 
-Let's keep it split.
+and hand in the appropriate cpumask, which still shares the code, no?
 
+Thanks,
+
+        tglx
 
