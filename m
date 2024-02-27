@@ -1,224 +1,151 @@
-Return-Path: <linux-kernel+bounces-83331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5164F86931B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:42:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 331D3869314
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:41:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 073A6287920
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:42:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDA571F22967
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B681419AA;
-	Tue, 27 Feb 2024 13:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0342913DB92;
+	Tue, 27 Feb 2024 13:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nOlo8Z/R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="bBQMnjYS"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1D513AA4C;
-	Tue, 27 Feb 2024 13:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 820992F2D;
+	Tue, 27 Feb 2024 13:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709041300; cv=none; b=omMQyGXnVUD+KsfWpE5O20ZYKGyzQ6bt1usE3Hcww/owHpdF3EmIh9KtfEYfWCszSMfmd0fQ314L+IU3LIv4OU5OTGrridjoUuuDPhA5zqvR/bDGryrR+vLGnvq6v57vlULQJjOMg8QrUAPuZ73z1jiaN0MVIi+wtZorlTwMxHw=
+	t=1709041294; cv=none; b=ayc3L4R1Gj+qUsPsLePjlb1m+Sf+ngrQyvBZmk8D7+UtTL/BYhCzh4RoyxlixFeXFXu1/Th3MQXM9dHNPi8kObCjdVtUF+3lFi3ZSWt/WKwHqGjYh5RSTvWVBJ1blufsAuAFSj6uh/ZzyA+Yv817Qq1s3pCB6KjZtgJcEO/ObiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709041300; c=relaxed/simple;
-	bh=ZeSUM3z3GiUVvHCrkzq+QtV/032258+nd5zG5NeETjk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cKfg1zKx/kr5nnDEpJALpC6x8ywy1VCYfBXZMhjfjO1kdO4PCv8lzliHWeRAAVUF/RcJOfnNI6fBRhvIP4/JEreYQ5zvVVooMQ0zzm0tU32ix+LI7zvAWppOC7kasKIAQqexrisX6eK6JpjCQlI9PMnvm9UmN+Idma5abSQu4mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nOlo8Z/R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E5CC43394;
-	Tue, 27 Feb 2024 13:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709041299;
-	bh=ZeSUM3z3GiUVvHCrkzq+QtV/032258+nd5zG5NeETjk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nOlo8Z/R8XdRFHQ9eNWITjtSX+KKIe8oYY4tEdnmje2PGhHvGIXTVCWTmv991gE5y
-	 OcGTD38890/yrE0qoUSqyMzZTr4HbzO+3GuYEYUzbxbi1lYHmef95LQWKFxLfSjKmk
-	 0G+ebJc6Tp4fTxZOED7YKpvDdlVEn/GfaUPWl5QzGb1XTe/HVhLMA8ZbQLnR+0wkuz
-	 K3HPfMGsgzDerzFlS5+c0kOKgGh6TM3hrx1Nytcm9dkDfrieFEsGJLXcZB80JYTvMZ
-	 sye/K3BpPRsmGlEuaTXqyVMWEex4BWh8JBAI890MxtETG4ELs2vPPR5Bx1mMxhVgY0
-	 PRa7sBaAFoXqg==
-From: Christian Brauner <brauner@kernel.org>
-To: John Groves <John@groves.net>
-Cc: Christian Brauner <brauner@kernel.org>,
-	John Groves <jgroves@micron.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Matthew Wilcox <willy@infradead.org>,
-	linux-cxl@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	nvdimm@lists.linux.dev,
-	john@jagalactic.com,
-	Dave Chinner <david@fromorbit.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	dave.hansen@linux.intel.com,
-	gregory.price@memverge.com
-Subject: Re: [RFC PATCH 10/20] famfs: famfs_open_device() & dax_holder_operations
-Date: Tue, 27 Feb 2024 14:39:20 +0100
-Message-ID: <20240227-aufhalten-funkspruch-91b2807d93a7@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To:  <74359fdc83688fb1aac1cb2c336fbd725590a131.1708709155.git.john@groves.net>
-References: 
+	s=arc-20240116; t=1709041294; c=relaxed/simple;
+	bh=5u5tAoSnP+fgrFG9HWWLZrfA/Q1EvEkQTUTzPe58IaM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SQ+LH7ZG1bhaO8m8Eo0/FWFVrmT9MspbIueby/LQfSzkHw9pT6WBp/OhTvNAlcLMIXql8g3O+BP3Kwc3v1YRaI5tuXO2Zs6VOVEOB6CEz9SQkiwUiiNeU/iKpf22jg116/B8HWXY3lYDwC1fx2Lshjm4OarGTEFmXu97uSevN04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=bBQMnjYS; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1709041281; x=1709646081; i=w_armin@gmx.de;
+	bh=5u5tAoSnP+fgrFG9HWWLZrfA/Q1EvEkQTUTzPe58IaM=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=bBQMnjYS9HssAUH49/ieREQwg7MvFi0AlG1ViLFcJvbKjCjfrjyIcjbqf16WaK3n
+	 yRwdR4I9v1gtYRW/zs0pNbRzU1EOIf25ND503yhv1U97D6KXq5Lk3IsY1BMS0CqCp
+	 xDV6n5A8IR0fjCo/Hz+0dOT1MCC4LHSHg7hDW9FC2VIrMZZ2AGbCb5JiE3h+eBAEN
+	 Ks9aT3Mk6ly1nHEfUT0oOR7ndLBLnRHQSDvYCR4HPHk4ESfeu6pyrrX9G1EMBYA4s
+	 tndjxlq2yFHBAFzTIcWkU7+bdpURcIqimVZq7I2rHy3scahlUop04WWWXBx+EtMiB
+	 1OEW3snGOzHxbnN8wg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N8obG-1qrmkR0YQY-015pjB; Tue, 27
+ Feb 2024 14:41:21 +0100
+Message-ID: <9cdc844a-ba39-4215-b21e-1e1629edc549@gmx.de>
+Date: Tue, 27 Feb 2024 14:41:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4531; i=brauner@kernel.org; h=from:subject:message-id; bh=ZeSUM3z3GiUVvHCrkzq+QtV/032258+nd5zG5NeETjk=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTefVbbFrY/zvbXyYiz8ct0Fa9WT52cm84y/dcD5ZRch 9eFkWvcO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYi387I8PxSN4tJ7K7M99va o9umi8pFib9szmKPXn6vUfny9F6vVQy/mN/Ln0vb/4WHkXHVhpufFP4L3LU02X//SQxPzGbBsIf PWQE=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] platform/x86/amd/pmf: Do not use readl() for
+ policy buffer access
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Shyam-sundar.S-k@amd.com,
+ Mika Westerberg <mika.westerberg@linux.intel.com>,
+ sathyanarayanan.kuppuswamy@linux.intel.com,
+ Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20240223163901.13504-1-W_Armin@gmx.de>
+ <20240223163901.13504-2-W_Armin@gmx.de>
+ <e2b81849-3435-3efb-f2da-b74ac7f99a50@linux.intel.com>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <e2b81849-3435-3efb-f2da-b74ac7f99a50@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JeUudHQ5pVWclUwEZ92R41Un4vqTi4Zt4ZM4rzRZQt+q/Ov/a0x
+ Y5ptzKU5OBaqr3s08JO5zz3d98FS15PUbBNGA0KKYgwC0rbICPePaKik8RXrKmp5pbU6ii6
+ qL2aWrfcT7ar2kI+PntWnGknT86kBp/Hd4/E/WqNxmtbqAQCofADl/9VnsNmdGg5Sa2qiwT
+ 23a25WLKXVIrmJ2dSOdAw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:jGXMkxGEvM8=;nEpE8Pav61acMaOjKg8A/6YVz9I
+ hcJitECHEWEGlY7MYueYYKm9DaIsBMWQfq3/Wnr+Ql3TERk+KI/vQAHcElpWP2uHuhnFVjGZ1
+ CSmiMWt2QWjoipA1LCOiki1YIbMtxqP6tw+ZORwNzVCRXfNUh40/E5bK3kR1uzUAi34Lun6FI
+ 8hjgpAOs3kJ4ffisIshU2TTRbgpyrnWeYNEYv80tNXr5RWgURCEmeEZD21L4LataEVhb4hqli
+ haLkxYcaCMPQYL98eIy4aYIxfQic6ceyDp3xFxMa1pQgolXyGZm8o/7NJ004HJ2FO3/GSM001
+ n6ijoJcoi9iJ3CN7iH0t74cQrcvjFU8JvFQ3bm4LUTll22Gvn/2SckJ6vSMZT/CqGMQYMhih0
+ ljOsRTu2dfHEX0xfhZvF13sOgq2DPPY6Bo/K8cs2cwR0wfy+C82qB4712GkbGE/n6Hjnhu4BA
+ rTguqaeL/rHrk7nIP1dUOR1CVxgAdvjA9InLaMlQrMYs/wwWFCRwSO2HfClZKCIUx+Gkpil9X
+ j1EOm4OLI+m7ACIGjvu98ezpidfFcBuu3M8Pb9EDJAJkLdl07sZoPrsZixY0uAgiR9IOHMsdW
+ UH55S/F0rA/tLvakWBYK9f2I6nP/zYebRpAQdPYUMR0yhy3nvmALz8QQjxv6wfAtltIdBKfRs
+ bMrCo+ihRp5f6mGX6fqSBIBC3/vIELRvEQdUvJ/ALlZgU+YrohRibZhBk8te5IXcnRxgM21DM
+ 1vPxtxHRq0Faegn3XqJR1NtG5M0irkB51A2HymwZaQZGiK202mddsv03ZxOc0mV4CeoB9GRFk
+ 8aFClDsdXcxWUz4RJ7/sEdybsy0SIxe7cuVpGHcx9kRLs=
 
-On Fri, Feb 23, 2024 at 11:41:54AM -0600, John Groves wrote:
-> Famfs works on both /dev/pmem and /dev/dax devices. This commit introduces
-> the function that opens a block (pmem) device and the struct
-> dax_holder_operations that are needed for that ABI.
-> 
-> In this commit, support for opening character /dev/dax is stubbed. A
-> later commit introduces this capability.
-> 
-> Signed-off-by: John Groves <john@groves.net>
-> ---
->  fs/famfs/famfs_inode.c | 83 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 83 insertions(+)
-> 
-> diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
-> index 3329aff000d1..82c861998093 100644
-> --- a/fs/famfs/famfs_inode.c
-> +++ b/fs/famfs/famfs_inode.c
-> @@ -68,5 +68,88 @@ static const struct super_operations famfs_ops = {
->  	.show_options	= famfs_show_options,
->  };
->  
-> +/***************************************************************************************
-> + * dax_holder_operations for block dax
-> + */
-> +
-> +static int
-> +famfs_blk_dax_notify_failure(
-> +	struct dax_device	*dax_devp,
-> +	u64			offset,
-> +	u64			len,
-> +	int			mf_flags)
-> +{
-> +
-> +	pr_err("%s: dax_devp %llx offset %llx len %lld mf_flags %x\n",
-> +	       __func__, (u64)dax_devp, (u64)offset, (u64)len, mf_flags);
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +const struct dax_holder_operations famfs_blk_dax_holder_ops = {
-> +	.notify_failure		= famfs_blk_dax_notify_failure,
-> +};
-> +
-> +static int
-> +famfs_open_char_device(
-> +	struct super_block *sb,
-> +	struct fs_context  *fc)
-> +{
-> +	pr_err("%s: Root device is %s, but your kernel does not support famfs on /dev/dax\n",
-> +	       __func__, fc->source);
-> +	return -ENODEV;
-> +}
-> +
-> +/**
-> + * famfs_open_device()
-> + *
-> + * Open the memory device. If it looks like /dev/dax, call famfs_open_char_device().
-> + * Otherwise try to open it as a block/pmem device.
-> + */
-> +static int
-> +famfs_open_device(
+Am 27.02.24 um 13:59 schrieb Ilpo J=C3=A4rvinen:
 
-I'm confused why that function is added here but it's completely unclear
-in what wider context it's called. This is really hard to follow.
+> On Fri, 23 Feb 2024, Armin Wolf wrote:
+>
+>> The policy buffer is allocated using normal memory allocation
+>> functions, so readl() should not be used on it.
+>>
+>> Use get_unaligned_le32() instead.
+>>
+>> Compile-tested only.
+>>
+>> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+>> ---
+>>   drivers/platform/x86/amd/pmf/tee-if.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x=
+86/amd/pmf/tee-if.c
+>> index 16973bebf55f..3220b6580270 100644
+>> --- a/drivers/platform/x86/amd/pmf/tee-if.c
+>> +++ b/drivers/platform/x86/amd/pmf/tee-if.c
+>> @@ -11,6 +11,7 @@
+>>   #include <linux/debugfs.h>
+>>   #include <linux/tee_drv.h>
+>>   #include <linux/uuid.h>
+>> +#include <asm/unaligned.h>
+>>   #include "pmf.h"
+>>
+>>   #define MAX_TEE_PARAM	4
+>> @@ -249,8 +250,8 @@ static int amd_pmf_start_policy_engine(struct amd_p=
+mf_dev *dev)
+>>   	u32 cookie, length;
+>>   	int res;
+>>
+>> -	cookie =3D readl(dev->policy_buf + POLICY_COOKIE_OFFSET);
+>> -	length =3D readl(dev->policy_buf + POLICY_COOKIE_LEN);
+>> +	cookie =3D get_unaligned_le32(dev->policy_buf + POLICY_COOKIE_OFFSET)=
+;
+>> +	length =3D get_unaligned_le32(dev->policy_buf + POLICY_COOKIE_LEN);
+> I don't understand you need _unaligned_ here, the offsets should be dwor=
+d
+> aligned, no?
+>
+> #define POLICY_COOKIE_OFFSET      0x10
+> #define POLICY_COOKIE_LEN         0x14
+>
+Hi,
 
-> +	struct super_block *sb,
-> +	struct fs_context  *fc)
-> +{
-> +	struct famfs_fs_info *fsi = sb->s_fs_info;
-> +	struct dax_device    *dax_devp;
-> +	u64 start_off = 0;
-> +	struct bdev_handle   *handlep;
-> +
-> +	if (fsi->dax_devp) {
-> +		pr_err("%s: already mounted\n", __func__);
-> +		return -EALREADY;
-> +	}
-> +
-> +	if (strstr(fc->source, "/dev/dax")) /* There is probably a better way to check this */
-> +		return famfs_open_char_device(sb, fc);
-> +
-> +	if (!strstr(fc->source, "/dev/pmem")) { /* There is probably a better way to check this */
+you are right about this.
 
-Yeah, this is not just a bit ugly but also likely wrong because:
+However i just noticed that the driver does not validate that the policy b=
+uffer is big enough
+before accessing the data.
 
-sudo mount --bind /dev/pmem /opt/muhaha
+I will prepare a separate patch series to address this.
 
-fsconfig(fd_fs, FSCONFIG_SET_STRING, "source", "/opt/muhaha", [...])
+Thanks,
+Armin Wolf
 
-or a simple mknod to create that device somewhere else. You likely want:
-
-lookup_bdev(fc->source, &dev);
-
-if (!DEVICE_NUMBER_SOMETHING_SOMETHING_SANE(dev))
-	return invalfc(fc, "SOMETHING SOMETHING...
-
-bdev_open_by_dev(dev, ....)
-
-(This reminds me that I should get back to making it possible to specify
-"source" as a file descriptor instead of a mere string with the new
-mount api...)
-
-> +		pr_err("%s: primary backing dev (%s) is not pmem\n",
-> +		       __func__, fc->source);
-> +		return -EINVAL;
-> +	}
-> +
-> +	handlep = bdev_open_by_path(fc->source, FAMFS_BLKDEV_MODE, fsi, &fs_holder_ops);
-
-Hm, I suspected that FAMFS_BLKDEV_MODE would be wrong based on:
-https://lore.kernel.org/r/13556dbbd8d0f51bc31e3bdec796283fe85c6baf.1708709155.git.john@groves.net
-
-It's defined as FMODE_READ | FMODE_WRITE which is wrong. But these
-helpers want BLOCK_OPEN_READ | BLOCK_OPEN_WRITE.
-
-> +	if (IS_ERR(handlep->bdev)) {
-
-@bdev_handle will be gone as of v6.9 so you might want to wait until
-then to resend.
-
-> +		pr_err("%s: failed blkdev_get_by_path(%s)\n", __func__, fc->source);
-> +		return PTR_ERR(handlep->bdev);
-> +	}
-> +
-> +	dax_devp = fs_dax_get_by_bdev(handlep->bdev, &start_off,
-> +				      fsi  /* holder */,
-> +				      &famfs_blk_dax_holder_ops);
-> +	if (IS_ERR(dax_devp)) {
-> +		pr_err("%s: unable to get daxdev from handlep->bdev\n", __func__);
-> +		bdev_release(handlep);
-> +		return -ENODEV;
-> +	}
-> +	fsi->bdev_handle = handlep;
-> +	fsi->dax_devp    = dax_devp;
-> +
-> +	pr_notice("%s: root device is block dax (%s)\n", __func__, fc->source);
-> +	return 0;
-> +}
-> +
-> +
->  
->  MODULE_LICENSE("GPL");
-> -- 
-> 2.43.0
-> 
 
