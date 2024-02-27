@@ -1,209 +1,201 @@
-Return-Path: <linux-kernel+bounces-83935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B763186A040
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:31:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE9BE86A03A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C0A1285175
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:31:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2BBA1C285CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7678914939C;
-	Tue, 27 Feb 2024 19:31:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE8A524CF;
+	Tue, 27 Feb 2024 19:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="om43j2Kg"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2052.outbound.protection.outlook.com [40.107.21.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGw4P102"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B126A14900A;
-	Tue, 27 Feb 2024 19:31:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709062277; cv=fail; b=fmEoOsE3XR2a4YBPe6aOGrqDNDwgXq7NcUZHkeJyaMtX25aVFJnIEnyfpXP6z0gIiMmnLNgy1Sd3VoqZCGFRWHbLob+6ottie/0UJeJ/rmX+SxYjdEWXJSejij4c945s28/nNpzrXEB9NjOjqDcFGSQmjswrNiRJP/YEIvpwaWw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709062277; c=relaxed/simple;
-	bh=+wseBTlpnPrjswo5b2561s+EapgVyK/Xp4y6z+dDaiU=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VKusOzwtiqhw7nAKq25zAqdNo2ePZqm/V38jVDF656ntDAzUgb5YbEIRKh4YUVQUrtSzJ59SM3xHFWbogrblmXHQvsxYgF+l+h6XH17v1nxRDu4RCx71KktLJCFy4bskIRpIGSx1MmDtOE8hGH6aoTliEKLH3sUi1OXbJq3RAdU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=om43j2Kg; arc=fail smtp.client-ip=40.107.21.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=occfNMNsuQ3ZV4gB135ZaTu2dIod2KH56bSWESx9nSDPQKv2oesU9TR7lhUi1In6HAWCXDUp5TymTvi3VhYicXPozqpacj5xItuUZq3RDFI4Hgb+DDScOk4RqIVUbVqLCDS/eroFJOxyQX+/PmPc4eeuhK1TONCb6ingRNDhOuenGabi1ZjOlxdQa5JBe3RJzU6b9Q8nXyYW7xJF8X3d5k16iDd6zOgjKtRv3tK1wnLvB7VAwi7ZXMTb5krVgKgArc2j0kJq4PHK90BWWv+7t3cqws4EuMU1cID66GNmPDSz1Sb/wDi3ygbBPGFFg+gFdN/FWFi+gs5F544VVXXFKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=En3DJakeUn6x/tBA5jMtPHbdJDMvB93OvXU+bO31jE0=;
- b=Ss8YyhQ0nVM/yS5OSucV+v0vx0F6oeBMo1VeJjHbktkyMOETHBMMDklbgSFEeJuefILXOUjYGbBZvpu9CJkQ8gkncjBZ6T3R9Efh0qxNKTlzYT57BY1RRqJAUk74NXGiU6IaxLSWqO7EbZDTNivC0hT1LzLRNDSdFrCnD6rrdBYaM6gi407zb7R4H0MSHYOEmx4Ou5SfdHA4IR1u0DjfU7MCoTisZvNb1Irt7Ddo7PEgd1iVJwnbfSfv6/uUtFqqISLiH65pWuN8g56QU78HeLwupRkXUx4VoHTvSPbJP4nuyw+Xp232H7KcaZRarPWSx5m7DUXa2ZKdDdswDVLRPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=En3DJakeUn6x/tBA5jMtPHbdJDMvB93OvXU+bO31jE0=;
- b=om43j2Kgt3gvdVElfCneDcy3BWIH11iVHUsCqkEOQBmqT8Z4DQlzWE25XPWqVTx1duOPdbpdSTGCP8QJj1wfufCzzOenKlZbSlyxlX7N055KWD1bVHQfmoUlgPyf86PYSUIS/pk3QCLoezCSk5mxkSadYTVeCd9ULvH4dhmKPh4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by PA1PR04MB10283.eurprd04.prod.outlook.com (2603:10a6:102:463::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Tue, 27 Feb
- 2024 19:31:15 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
- 19:31:15 +0000
-From: Frank Li <Frank.Li@nxp.com>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	imx@lists.linux.dev (open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE),
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 3/3] arm64: dts: imx8qm-mek: add flexspi0 support
-Date: Tue, 27 Feb 2024 14:30:48 -0500
-Message-Id: <20240227193049.457426-3-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240227193049.457426-1-Frank.Li@nxp.com>
-References: <20240227193049.457426-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BYAPR06CA0056.namprd06.prod.outlook.com
- (2603:10b6:a03:14b::33) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6979C51C47;
+	Tue, 27 Feb 2024 19:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709062266; cv=none; b=lAfQxp2eXoVz0SsG1bz0KCby0FjE+CHyfL5AKvvgicm3ZUUoQumy+DpT0Q5Veu9z5Lm7Uu0n3927FM4TEH/0UvyvjuWqf9w42pPiFTB8DIvuJDoLR3fafQu/8wmgNbOUzfQ66UXgw2lxeD0n002rnpw49Cui1s5o+0qi2/t/PVA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709062266; c=relaxed/simple;
+	bh=jRt2ErvqSzfBRw4qU7ZkjZB4KBrabD4zHUYZOHAS1Ps=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kmAmev1f8RY4zQ8fGf/zdQlMPVuov2DWu3r2dxmF+vB6/KhtuWYe2i50mARtcRozE+dENMOa1kT1NSHCuyV/eX/10gIqjYzNd2da8gwUr3JgYk1nWZ3gmy8DO9PVtDPRFqkuB9U8cShgCQxVWEotkCdz2t7wbukI2Bkbpv9HDtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NGw4P102; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29a6dcfdd30so3290372a91.0;
+        Tue, 27 Feb 2024 11:31:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709062264; x=1709667064; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=SOzRQZDqFOKE0709SryCfXzGSfSwCPxusfHN66yeJh0=;
+        b=NGw4P102KSPLUUNsT/W6ilNiZWOgzWL2Zts/QHN1ZFwaeO8wiE05oLMCtA9D0yecq3
+         l//9KGAh0tov664LKO1E3FPYqfAool3ev/7PkDK6qyjHikNR4PGVf85ie8EiO+vBaxn6
+         YTFfvPDqk51jGvlNF44ASATG5eATjdEH5pGqHx8UDwnAYGWJLmU6tsE3kVZl7vDDNhhW
+         gHjhDCdWdG0ueiYJOucJ2k7U5CwkBnWkV+R2unxmDa1IjvRPPhjf9Sk6j6KGZnVHXcug
+         1mEi4i0ldRZYaAER8HYm4DOg4z9nJFjT+Zca44rjsLz+y331YaqHN5UvYm04Qb5LeTOp
+         aqQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709062264; x=1709667064;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SOzRQZDqFOKE0709SryCfXzGSfSwCPxusfHN66yeJh0=;
+        b=s7/ygYvj/DcdeaSJrrl9sM41gaJq+FSV3J8dXDY2SyjtD14RyOfMwdnbOftysrms4D
+         IdXnyVRBhIsT7pAEPaFSTchRFuw7YsGrdDThDr/0fbCch/Vn71F0eu163oriYdZ892aV
+         2KiL/lpqakjh3B5CF1SlffzACEKVKFujTINKWq25ESOz77ybl2/hppzdxVa5o53+tOXC
+         AVF5TznICPRZn0g7SQ9q+eQobJVBtaFCGhYKT7sJRcAzNZOitMgpNNxMVCGksZaDE2Ks
+         vCvy5ZQENhaVmnuW83yjhQgIkfN+prQJYAkT6AMH4q1Hr3iH9zX89DthrIWxZd8hfe+z
+         XHng==
+X-Forwarded-Encrypted: i=1; AJvYcCXy1UTiJavnXI5y49awsp4VPr0Ot9daAGs57PF6ES1reooYgJ96xMX9Cudm+b3/h6zTTM+GU7LHBzdkTN+4A+ZJy8qyAggHjpbkCo44nxQqYI1iKHE5Y6iL9JQkqqM2h2y3Zmc1hDa1F/q9
+X-Gm-Message-State: AOJu0YwoRTON45vgInggWy55N4eYH9l7KeJwlr2w/YBExm7hNmTvwrUw
+	NLG+d49KNyC+j66bjh0MsBGeCGXEUUIKGMBORX2tq9vmznYC3/ol
+X-Google-Smtp-Source: AGHT+IHXc41QF3pfortbftHo1Fg1AxzNn+X3btZslW63Fmd7QwatNdjj2HSja71TrfiICLVNsbnnNQ==
+X-Received: by 2002:a17:90a:4a8f:b0:299:14c6:4fc7 with SMTP id f15-20020a17090a4a8f00b0029914c64fc7mr8802820pjh.13.1709062263598;
+        Tue, 27 Feb 2024 11:31:03 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id ge5-20020a17090b0e0500b0029a4bacfb13sm736047pjb.0.2024.02.27.11.31.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 11:31:02 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <4d5ce145-22be-4683-b3a9-4de77da87b76@roeck-us.net>
+Date: Tue, 27 Feb 2024 11:31:01 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA1PR04MB10283:EE_
-X-MS-Office365-Filtering-Correlation-Id: 19d49b5a-e74e-433d-9c97-08dc37caa9a5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	hZYyKkYc9iFe8DKfp1nA+w1FS6xxZX1qTuX7/zdeXv++ab1422oShuqJPCcMP0zjQjili2dZ913hMyqF6tGpyKyisF3jEwkDQWy2FdRsnHyrzKEknyDhnkZ1FKaScaO3rpclvMkIWPrZUcqjON+SY2B8sjL4ueMxLZMnI4HX67V/4Fg43Br1HYWQ/Pgy7otylCi6NfNAxikQCOobW4hl03GEPvcTgnQlUdltYmcoiJW6kGR4iZOQHt0UVbCb60efndBTLYi0zw3DLuaL71lrLBHGudbQlf2PRI0YOWyx3m2DNr0RLBi2rn1fKJloZL5u5YPLQ3gasuB8g7xxU/j30l8V7uYarGMKacQoy3E9BBU1J3ru6rVaLeJ8xH3pspr7VwT/wG3Myqtr2vbVm8SiHvX+BHzgvMi6ejYtXACl4DQ/pomgbs4oEswYJovso9BrIgMjUwvsdNh6MsvoMo7giXiydkiI36l0aJYc24B60qxNlh1Rr96RvY5/+oWxdXjmUGcp+Gpd1qeyFSaepsYOi/EoWSBzrU+qoAFqCK6J2c15xRWTWMYfrE1jUy8eo8sa8n72vtQ+momBHKObWJmf2JweDhssnRMxz/twfEVDqxHSsnGVuNwBcxehd9/Megv7hwShqslKzh5kWHJ3SPuomYU2nsovYfGM2NAbFfuSX7q07e/M3/oyD+cA0N7piI/IPYimNF0dG1XWpPFnVti29GdE9aHja9ILBPWhS+Z/kQI=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(921011)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?8i2jeggvOlqjzYkNjAFOw6zGloPoLYnm1PNZXmptSz3pmbvG8dk1PNLkVsVc?=
- =?us-ascii?Q?KFKZB6o8Ve4RhSGN0BvKZG7+J/VlTT4omv7ZC9u6CEPJJFPXoDvpYPsb7oul?=
- =?us-ascii?Q?Y3PSKNnjMLVMf7RAObSjRBjAqSPnljPmJp64D8a/uy1ChKcYa7uFHt6HFJI/?=
- =?us-ascii?Q?ubtqy2oHAUwrcEEk9vOdRx/FGWmloPdDYbuqG//QVBUgvFMSRWTh7gjAXN1a?=
- =?us-ascii?Q?EatfcptfIqHLHzYVi5KC7zfOp74Yq+rSiD124lfB8Z+176BfpoEi0XpGiZ7H?=
- =?us-ascii?Q?6M94KY6bqZqtD5YMjfC1S40524wExiZwbuLEMeigVGV6fYdhY8+jznri+t3d?=
- =?us-ascii?Q?bsf8I/bRR2yKF5v6MKyYd134oO8/IYIlfBzQoK2A+vPXtihA72CSXY1RwzRN?=
- =?us-ascii?Q?Xdu0EqAgtNTpOSqbEmVeAotaS6BzRkIAFqjzFXbXWkQl7CAmxTBNAEO+vozy?=
- =?us-ascii?Q?nMQEi5Hs+5AkbT3ghmS/+s2G/PMQrarDaUpaZyYXYOKc6Q9059vwjcgBEXQW?=
- =?us-ascii?Q?KQZITurEp3wcTI3fniN2K3WhUUUqqmt7LXOBuv2aCfhstTlYgu3qb06NadsO?=
- =?us-ascii?Q?OSKD0GuKqEDShGMueolytzaQ8W9ekMXUiLO8qN/tndxheoFrVNcZLtjqzPGY?=
- =?us-ascii?Q?rIBjESP3wl2ujC5NHYMsfVSwKzaSf+lhcG2BgJgOgsEeM6LgFX8RF9GJ4Z6a?=
- =?us-ascii?Q?GtK5sGPjgBIJiIsLlzzSDm0KhKQwRoOLikUJq/dFaPYWTAHAACvglWozz41H?=
- =?us-ascii?Q?D9TNAlDZT9++8IAD2fhmiCBo0kYy/R2+HjSexbabJXxYJDFaoSRgy0kIWkZW?=
- =?us-ascii?Q?R0KycAIlwrLdYHeINCAFnyKZUfkKpkQXq72efFCqC8ag93+c+Xcmfhun7fRC?=
- =?us-ascii?Q?eKLdtYBx1obVNOCYHd57JPIppxHNjFRM+KoEw1uvWUH/9pE4AyT2MTvPXF29?=
- =?us-ascii?Q?AHUHuKrwPoi1zEC4iQhPS1w32d1I4XCQQw8DN2oknePkGS8lLmQ/smlfDRMC?=
- =?us-ascii?Q?TtzbgcrRJsVG1fh8SHTq7/+7OKtCIwgCDwLKr1psrAn1Cdifm38ddnzOkF2t?=
- =?us-ascii?Q?kYB+7lDE+TYqXgNor0sUWipH4akb0ccI1shtRjDp+VnhnM25Ii8ogLV+KjzU?=
- =?us-ascii?Q?/th+MnxtgZNzDLplbYXny81WvzLpWtWhfb7N3jEPq0Uy5gxlkTW+7iT1O4g1?=
- =?us-ascii?Q?SqxbiTJJ/t9NbiJrbWQJyhaibN6NJlN0k2OgeMdpNcJNHZl4aIJ2wDm+iNPm?=
- =?us-ascii?Q?opO4jY6exBqfg+UZso/zeJDSECZoEw7NZLAbZtMn3OdDRdFj2ri8pE9wdjYj?=
- =?us-ascii?Q?2MZxXc4noPBYSoPaIJkSVgCeobSI1o3cx0Uh/dLu9DglHSRybOIc6gy8CIWk?=
- =?us-ascii?Q?I2rNfebXAN2WUsj0+43Y0pTRVF2Y+ksAi/VSSw3G1orIw9Yg3Uggxg/jIgq2?=
- =?us-ascii?Q?PWg4KsLZmphdad6fABCLuN5sFo55A22zDxni1zEwwfy6WtAUkWaiH0WNuYYF?=
- =?us-ascii?Q?NV2VhOwm6ish+eleTqjB+k/f3lmDotzQP7eI7T3KLXxBnkqIEV63ny479gFk?=
- =?us-ascii?Q?bWZXhE2IfPuooosQeSHjA4ZYo68jCsK3ysHYvB3U?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 19d49b5a-e74e-433d-9c97-08dc37caa9a5
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 19:31:15.0258
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: coUiz6ixloBAjHm7mtUefrkoqu0Tz6jQh/zw45bFGvsU06k7ZWVbuPgsfjHhNPojr+Z6iWNB3LQ5XH2mmbW1qw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA1PR04MB10283
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Content-Language: en-US
+To: Charlie Jenkins <charlie@rivosinc.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+ David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Parisc List <linux-parisc@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Palmer Dabbelt <palmer@rivosinc.com>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
+ <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk> <ZdzZ5tk459bgUrgz@ghost>
+ <ZdzhRntTHApp0doV@shell.armlinux.org.uk>
+ <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com> <Zd0b8SDT8hrG/0yW@ghost>
+ <cdd09f7a-83b2-41ba-a32c-9886dd79c43e@roeck-us.net>
+ <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
+ <Zd25XWTkDPuIjpF8@shell.armlinux.org.uk>
+ <c8ddcc98-acb0-4d2d-828a-8dd12e771b5f@csgroup.eu> <Zd4h6ZhvLSWfWJG/@ghost>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <Zd4h6ZhvLSWfWJG/@ghost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add flexspi0 support for imx8qm-mek board.
+On 2/27/24 09:54, Charlie Jenkins wrote:
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
----
+>> It's been suggested during the discussion that alignment tests should be
+>> added later in a follow-up patch. So for the time being I'm trying to
+>> find a compromise and get the existing tests working on all platforms
+>> but with a smaller alignment than the 16-bytes alignment brought by
+>> Charlie's v10 patch. And a 4 bytes alignment seemed to me to be a good
+>> compromise for this fix. The idea is also to make the fix as minimal as
+>> possible, unlike Charlie's patch that is churning up the tests quite
+>> heavily.
+> 
+> Do you have a list of platforms this is failing on? I haven't seen any
+> reports that haven't been fixed.
+> 
 
-Notes:
-    Change from v1 to v2
-    - use flash to fixed dtb_check warning
-    - remove usued property nxp,fspi-dll-slvdly = <4>;
+This is what I carry locally on top of v6.8-rc6:
 
- arch/arm64/boot/dts/freescale/imx8qm-mek.dts | 37 ++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+097b149e4acb parisc: More csum_ipv6_magic fixes
+15bf67a115eb kunit: Fix again checksum tests on big endian CPUs
+bebe776d36ea parisc: Fix csum_ipv6_magic on 64-bit systems
+523208f03063 parisc: Fix csum_ipv6_magic on 32-bit systems
+a9dda1971c72 parisc: Fix ip_fast_csum
+2ad0a6850b64 Revert "sh: Handle calling csum_partial with misaligned data"
+7113cc414860 lib: checksum: Use aligned accesses for ip_fast_csum and csum_ipv6_magic tests
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts b/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-index 66e0400d7bf8a..5c6b39c6933fc 100644
---- a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
-@@ -100,6 +100,22 @@ spidev0: spi@0 {
- 	};
- };
- 
-+&flexspi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_flexspi0>;
-+	status = "okay";
-+
-+	flash0: flash@0 {
-+		reg = <0>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-max-frequency = <133000000>;
-+		spi-tx-bus-width = <8>;
-+		spi-rx-bus-width = <8>;
-+	};
-+};
-+
- &fec1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_fec1>;
-@@ -198,6 +214,27 @@ IMX8QM_SPI2_CS0_LSIO_GPIO3_IO10		0x21
- 		>;
- 	};
- 
-+	pinctrl_flexspi0: flexspi0grp {
-+		fsl,pins = <
-+			IMX8QM_QSPI0A_DATA0_LSIO_QSPI0A_DATA0     0x06000021
-+			IMX8QM_QSPI0A_DATA1_LSIO_QSPI0A_DATA1     0x06000021
-+			IMX8QM_QSPI0A_DATA2_LSIO_QSPI0A_DATA2     0x06000021
-+			IMX8QM_QSPI0A_DATA3_LSIO_QSPI0A_DATA3     0x06000021
-+			IMX8QM_QSPI0A_DQS_LSIO_QSPI0A_DQS         0x06000021
-+			IMX8QM_QSPI0A_SS0_B_LSIO_QSPI0A_SS0_B     0x06000021
-+			IMX8QM_QSPI0A_SS1_B_LSIO_QSPI0A_SS1_B     0x06000021
-+			IMX8QM_QSPI0A_SCLK_LSIO_QSPI0A_SCLK       0x06000021
-+			IMX8QM_QSPI0B_SCLK_LSIO_QSPI0B_SCLK       0x06000021
-+			IMX8QM_QSPI0B_DATA0_LSIO_QSPI0B_DATA0     0x06000021
-+			IMX8QM_QSPI0B_DATA1_LSIO_QSPI0B_DATA1     0x06000021
-+			IMX8QM_QSPI0B_DATA2_LSIO_QSPI0B_DATA2     0x06000021
-+			IMX8QM_QSPI0B_DATA3_LSIO_QSPI0B_DATA3     0x06000021
-+			IMX8QM_QSPI0B_DQS_LSIO_QSPI0B_DQS         0x06000021
-+			IMX8QM_QSPI0B_SS0_B_LSIO_QSPI0B_SS0_B     0x06000021
-+			IMX8QM_QSPI0B_SS1_B_LSIO_QSPI0B_SS1_B     0x06000021
-+		>;
-+	};
-+
- 	pinctrl_lpuart0: lpuart0grp {
- 		fsl,pins = <
- 			IMX8QM_UART0_RX_DMA_UART0_RX				0x06000020
--- 
-2.34.1
+I also have
+0dd01a364cb7 lib: checksum: Add some corner cases to IPv6 checksum tests
+e767cce6598b lib: checksum: Add tests for unaligned IPv6 addresses
+
+which I may submit or not depending on the outcome of this discussion.
+
+In other words, parisc and sh4 are currently known to be broken in the
+upstream kernel, with fixes pending. On top of that, arm:mps2-an385
+(probably all arm:nommu systems) crashes hard if csum_ipv6_magic()
+is called with an unaligned address.
+
+This is the "known" list of failures. I don't currently run kunit tests
+on nios2 or riscv32, for example, nor on any architectures with no qemu
+support.
+
+On a side note, most architectures don't handle "len + proto" overflows.
+While 'len' is a 32-bit parameter, IPv6 only allows for a 16-bit length
+field. Many implementations of csum_ipv6_magic() specifically do
+not handle such overflows because that would be pointless and require
+extra code for no good reason. The current test code doesn't generate
+such overflows, but its 'len' parameter is almost always larger than
+16 bit and thus not realistic. Maybe it would make sense to limit
+the range of 'len' to 16 bit when calling csum_ipv6_magic().
+
+Thanks,
+Guenter
 
 
