@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-83808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84289869ECF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:17:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7334869ED1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C02F283BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:17:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45A311F23EC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:17:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B0E1487E3;
-	Tue, 27 Feb 2024 18:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA78B149DEF;
+	Tue, 27 Feb 2024 18:16:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LJSQ0Jke"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HvBrCYbW"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86DB8145FF9
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8401487DC
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709057817; cv=none; b=OveAwgiLAwoqzLUBBRrNwTfayJ8EfExk3Zsmmj9rZ3z4hb9tydbZ5wnpE/xo8UBUk1pVLTuO4mzB0YE8g4Io5s0ORPia1Fs+S+4SK/NxdiAtZAWxucofVP5wJdU29/H52nga96ECKOeNza8FbDGPT7oCY870gMkkUoG5jwRCib4=
+	t=1709057819; cv=none; b=pCSOpecwxVYbKTQDxQGOdWBmXXJ122SXhisq5kCXllKMbnsA+UlAwMawIaF1HGJsrbyHUikFuxRutubfpoaUeao2Fs83rrOmXzznofU+oc0NHO2CO+AIaeAYLq0GN/nvl3Aq53HyJcWaSCov2ee8uPoMoS7GPHB4xU3xSqfzvsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709057817; c=relaxed/simple;
-	bh=S6F/Ky7eP00etA13aVi6LSez70wEvbCqE2JWP4lJSJ4=;
+	s=arc-20240116; t=1709057819; c=relaxed/simple;
+	bh=yc+q4KsjIiSfEwY6TeHFKJsFn5r2uXtVujdyv1Did04=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kH8zujeso3kxzj9TkPTAVjenXmA8fz3KTD1zZp825tVJsBp0r3vE6lGEwI77e+tNb3KuHSQX4x5jg2/nvwd3dPW61v2FWoGPjLYDuNtBCBOqOfh8Llug5okpmY9b6DtzLGb8b/CMiZE+0uLU/0jOaefpl857UVBcYAMM6OttXcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LJSQ0Jke; arc=none smtp.client-ip=192.198.163.8
+	 MIME-Version; b=nQWbGD7sBLaFrJiwIDRUh0t+p5QXeLR+qdDxjdWTdacPYJt/JlM4ig4sf4BFGhtwilWRMezMsAJvlt7p9b5rEuuhKT5R2zVesDU2e9IuJR0712xGdo8oZdwYQ6T2G+LIzbkma+LdZzMlh67EKKCWUOI9V4dvSgCr38FK6xGfQ8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HvBrCYbW; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709057815; x=1740593815;
+  t=1709057817; x=1740593817;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=S6F/Ky7eP00etA13aVi6LSez70wEvbCqE2JWP4lJSJ4=;
-  b=LJSQ0Jke0sk3DjeuNbjGISEzjE2YWKtAetLm9uaF+hGkLyDKCyYK/TqO
-   p6XEqv+Su6ij7ePxZ5REz4syz8WZec2HbLON9+r3Gbvw003heVVfp9qiy
-   HPck+bFYiJRjVU9O2SAC+g7L2g6XO1xawzHZ+1cJdLdbvw3csB4HLIgzm
-   hq5VEH2IZwR+rUb4ySSx8dOsVVySPUBgXk1KG/HUrKGTppEswZ+Nz6enk
-   zfOsNqfdyxSzE8O8ynqNu2RsXJUoREPE6d3D6LvAOmgDbyPrfl+LeVez2
-   vX7J0R2h6Y7/juHlizIXsnicEkvvtZ/wCbGWx2r01FpgIWLaQXw6Liwa+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="20966039"
+  bh=yc+q4KsjIiSfEwY6TeHFKJsFn5r2uXtVujdyv1Did04=;
+  b=HvBrCYbW2VVHmRB2bee0lpx1XcOFj9Re3d3deFpAvsUP1UFGsnkqptFl
+   8bCummoO31c8ANDVxVC9tw6/vsS/9EJ0MR4tmpE/fgAdC0NfD+y/zL6KD
+   t2Nn8rT8tzyCZiROwLi/f16rHr/kFGozReowJi24OTwtELozV3Ct83jSx
+   u1MZf9YQGOWASEkoyJwxmGZObpvnjI9UMB4cWX8SxrC1x7sKXSqDKHeLg
+   1rceeMFOKGWCyconhV+F9iu5R1sI1O3xQlyyq8Wg6URA+98QcpdpDCNYG
+   gMreoOQlNZSoUiygBQfgmJHy4I2F1D8LpgqbgTW4gkKaroWBik6UAyIqR
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="20966060"
 X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="20966039"
+   d="scan'208";a="20966060"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 10:16:25 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="937032705"
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="937032709"
 X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="937032705"
+   d="scan'208";a="937032709"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 27 Feb 2024 10:16:20 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 50D76426; Tue, 27 Feb 2024 20:16:19 +0200 (EET)
+	id 5D3F8445; Tue, 27 Feb 2024 20:16:19 +0200 (EET)
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -78,9 +78,9 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	linux-coco@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv8 02/16] x86/apic: Mark acpi_mp_wake_* variables as __ro_after_init
-Date: Tue, 27 Feb 2024 20:16:02 +0200
-Message-ID: <20240227181616.3032032-3-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv8 03/16] cpu/hotplug: Add support for declaring CPU offlining not supported
+Date: Tue, 27 Feb 2024 20:16:03 +0200
+Message-ID: <20240227181616.3032032-4-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240227181616.3032032-1-kirill.shutemov@linux.intel.com>
 References: <20240227181616.3032032-1-kirill.shutemov@linux.intel.com>
@@ -92,32 +92,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-acpi_mp_wake_mailbox_paddr and acpi_mp_wake_mailbox initialized once
-during ACPI MADT init and never changed.
+The ACPI MADT mailbox wakeup method doesn't allow to offline CPU after
+it got woke up.
+
+Currently offlining hotplug is prevented based on the confidential
+computing attribute which is set for Intel TDX. But TDX is not
+the only possible user of the wake up method. The MADT wakeup can be
+implemented outside of a confidential computing environment. Offline
+support is a property of the wakeup method, not the CoCo implementation.
+
+Introduce cpu_hotplug_disable_offlining() that can be called to indicate
+that CPU offlining should be disabled.
+
+This function is going to replace CC_ATTR_HOTPLUG_DISABLED for ACPI
+MADT wakeup method.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Acked-by: Kai Huang <kai.huang@intel.com>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/acpi/madt_wakeup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/cpu.h |  2 ++
+ kernel/cpu.c        | 13 ++++++++++++-
+ 2 files changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
-index 7f164d38bd0b..cf79ea6f3007 100644
---- a/arch/x86/kernel/acpi/madt_wakeup.c
-+++ b/arch/x86/kernel/acpi/madt_wakeup.c
-@@ -6,10 +6,10 @@
- #include <asm/processor.h>
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index dcb89c987164..aa89ef93a884 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -139,6 +139,7 @@ extern void cpus_read_lock(void);
+ extern void cpus_read_unlock(void);
+ extern int  cpus_read_trylock(void);
+ extern void lockdep_assert_cpus_held(void);
++extern void cpu_hotplug_disable_offlining(void);
+ extern void cpu_hotplug_disable(void);
+ extern void cpu_hotplug_enable(void);
+ void clear_tasks_mm_cpumask(int cpu);
+@@ -154,6 +155,7 @@ static inline void cpus_read_lock(void) { }
+ static inline void cpus_read_unlock(void) { }
+ static inline int  cpus_read_trylock(void) { return true; }
+ static inline void lockdep_assert_cpus_held(void) { }
++static inline void cpu_hotplug_disable_offlining(void) { }
+ static inline void cpu_hotplug_disable(void) { }
+ static inline void cpu_hotplug_enable(void) { }
+ static inline int remove_cpu(unsigned int cpu) { return -EPERM; }
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index e6ec3ba4950b..7c28a07afe8b 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -484,6 +484,8 @@ static int cpu_hotplug_disabled;
  
- /* Physical address of the Multiprocessor Wakeup Structure mailbox */
--static u64 acpi_mp_wake_mailbox_paddr;
-+static u64 acpi_mp_wake_mailbox_paddr __ro_after_init;
+ DEFINE_STATIC_PERCPU_RWSEM(cpu_hotplug_lock);
  
- /* Virtual address of the Multiprocessor Wakeup Structure mailbox */
--static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-+static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox __ro_after_init;
- 
- static int acpi_wakeup_cpu(u32 apicid, unsigned long start_ip)
++static bool cpu_hotplug_offline_disabled __ro_after_init;
++
+ void cpus_read_lock(void)
  {
+ 	percpu_down_read(&cpu_hotplug_lock);
+@@ -543,6 +545,14 @@ static void lockdep_release_cpus_lock(void)
+ 	rwsem_release(&cpu_hotplug_lock.dep_map, _THIS_IP_);
+ }
+ 
++/* Declare CPU offlining not supported */
++void cpu_hotplug_disable_offlining(void)
++{
++	cpu_maps_update_begin();
++	cpu_hotplug_offline_disabled = true;
++	cpu_maps_update_done();
++}
++
+ /*
+  * Wait for currently running CPU hotplug operations to complete (if any) and
+  * disable future CPU hotplug (from sysfs). The 'cpu_add_remove_lock' protects
+@@ -1522,7 +1532,8 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
+ 	 * If the platform does not support hotplug, report it explicitly to
+ 	 * differentiate it from a transient offlining failure.
+ 	 */
+-	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED))
++	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED) ||
++	    cpu_hotplug_offline_disabled)
+ 		return -EOPNOTSUPP;
+ 	if (cpu_hotplug_disabled)
+ 		return -EBUSY;
 -- 
 2.43.0
 
