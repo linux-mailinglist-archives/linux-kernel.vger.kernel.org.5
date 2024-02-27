@@ -1,203 +1,122 @@
-Return-Path: <linux-kernel+bounces-83016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B47868D23
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:17:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA81F868D27
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:18:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4E481F271BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:17:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17D321C22594
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CD41384A3;
-	Tue, 27 Feb 2024 10:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90276138493;
+	Tue, 27 Feb 2024 10:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YYsNtmEp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2SXuPYm8";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YYsNtmEp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2SXuPYm8"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lTXVqAEC"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CFC0137C4D;
-	Tue, 27 Feb 2024 10:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2437E138484;
+	Tue, 27 Feb 2024 10:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029054; cv=none; b=MH2rAUbnnLFDJeGWicsWypl47ExQJFrR9qHNdpwHYt9v6j/0KLsA3mb18tZjpsXQRHDrstFsHJZCtnGo9PwlD0ywwxUg+AJ+IoCwmC9wWq3JeBIWTwprA4P/V6ABiahd6MFX5jeu9L+/1s9gHGO58HdMCYxT50ec5FR3gHZ1O/s=
+	t=1709029104; cv=none; b=jbzSijQtgdUZINne6j5CMRa122GRU9xCiqA0eKMQDvpMuMDIuyFgiDBNzK/7GHyLZFVCHNSXO/ziIusHCyxZd7Mz45/LSihYlS2+bVrqgt8lPLpZzJld9VK/lM6hotbdX/78cbBgaOWBWVzGGAtrXlrGdM4/SSWnwmtZOyey41c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029054; c=relaxed/simple;
-	bh=uAT8fOjHimP1s8p52C/iiBFIjHSNXhLdNgmVkCGq/SM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fab0nSI6baoxsnA61c8VS4+Ha5fAz8vazIgc+7wtxItlJv6fewEGlQJVF0LYEr5m3DHIPHj9Mr86txP2ncy/ASAmJ1KRg2mCrAHmrZdstr5YnMwxkqt6VkvDm8GDtUd1Tbw5jbmPNZ3t4yN3ULu0/np7kV2jracaXCLI4ECF1nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YYsNtmEp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2SXuPYm8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YYsNtmEp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2SXuPYm8; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7A41F22722;
-	Tue, 27 Feb 2024 10:17:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709029050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CWojS/ZBMHmeYzh+o2egixF9yHAOBC8s1LHQ5pVRk5E=;
-	b=YYsNtmEpB6yRtMeGZZynoZ9Gj6zOZN0ULuXprkdjnd3ebaDESlEU2nLaRURpU8A+daBzAj
-	q5qsf17lVyVqjSa9FjAf9H7PJ0EsGhR3WKCEVnnJptbgqi/r1Loqr9T7gw3THvUs+fzbz/
-	VcQDuFxYk7woWEtGLS3UcznYheAjCKY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709029050;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CWojS/ZBMHmeYzh+o2egixF9yHAOBC8s1LHQ5pVRk5E=;
-	b=2SXuPYm80fYChAQrn/4DmTfrCVV9IvIAJ/vSXwLtFn07gSD61WET7VJEU8BHJ+hWwQda1g
-	PUlKDb6Vwsq+CuAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709029050; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CWojS/ZBMHmeYzh+o2egixF9yHAOBC8s1LHQ5pVRk5E=;
-	b=YYsNtmEpB6yRtMeGZZynoZ9Gj6zOZN0ULuXprkdjnd3ebaDESlEU2nLaRURpU8A+daBzAj
-	q5qsf17lVyVqjSa9FjAf9H7PJ0EsGhR3WKCEVnnJptbgqi/r1Loqr9T7gw3THvUs+fzbz/
-	VcQDuFxYk7woWEtGLS3UcznYheAjCKY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709029050;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CWojS/ZBMHmeYzh+o2egixF9yHAOBC8s1LHQ5pVRk5E=;
-	b=2SXuPYm80fYChAQrn/4DmTfrCVV9IvIAJ/vSXwLtFn07gSD61WET7VJEU8BHJ+hWwQda1g
-	PUlKDb6Vwsq+CuAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F5E913A65;
-	Tue, 27 Feb 2024 10:17:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id oUVMCrq23WXqfQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 27 Feb 2024 10:17:30 +0000
-Message-ID: <49c33680-2a08-4d59-86ba-72f8850099a5@suse.cz>
-Date: Tue, 27 Feb 2024 11:18:02 +0100
+	s=arc-20240116; t=1709029104; c=relaxed/simple;
+	bh=+XdkE4DgIHAhgkKhHEoE2TV6/xi1f4rWmM/JoiflBKU=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=NPdkVfTwVlYgxWvEliAz90wtVlnwwi+Ozzs2MsRqFjk36YYtsMm8Oy7ITd7b6yvSzaH6/Uyx5WjXJWzCIEh42++kY5TXJ7DEtvvNeEU/BkB4CtUvWWe+QUvT/+S8P+nsT2ugMycLFJtIpVvx84AOxsuHgHciOpS/LMz/fQl1B/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lTXVqAEC; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709029103; x=1740565103;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=+XdkE4DgIHAhgkKhHEoE2TV6/xi1f4rWmM/JoiflBKU=;
+  b=lTXVqAECt5ZgimA/0Njvzu5qUTE1M2S9PLdDhrxHsY7avgt6lD1P4FY5
+   NzfipyJ6GV4ati+Iv6Z9f5livT3GOXfFbH42OYnf53L750f55oMGnTBvl
+   k05dHRgR4WIKs9tq5YQ23TihubUkNp6jwXnVx0eYGzsxmg5FONr6h+gVO
+   h6vdokT3Hmko1rJDhZ5QpbyBUW9K5DXoRfr+KCwEMU0Vh9ftmmjy/oD7A
+   hX00gOoqrSO0uTalx9ioRrodXOXj+StOmJ0BXZDvGKIp/zqCjZjcCI4oy
+   PbIF6U11QRKGMALzNMvRL3S1u/FolakQYHR/JflqdMnipBEV03kE75vRj
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3914919"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="3914919"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 02:18:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="6853286"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.61])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 02:18:20 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 27 Feb 2024 12:18:16 +0200 (EET)
+To: Szilard Fabian <szfabian@bluemarch.art>
+cc: LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org, 
+    jwoithe@just42.net, Hans de Goede <hdegoede@redhat.com>, W_Armin@gmx.de
+Subject: Re: [PATCH v4] platform/x86/fujitsu-laptop: Add battery charge
+ control support
+In-Reply-To: <170834440647.4050.13047961348645894978.b4-ty@linux.intel.com>
+Message-ID: <a4b35e55-1f29-6c98-745c-df6896e49270@linux.intel.com>
+References: <20240129163502.161409-2-szfabian@bluemarch.art> <20240129175714.164326-2-szfabian@bluemarch.art> <20240207023031.56805-2-szfabian@bluemarch.art> <20240215203012.228758-2-szfabian@bluemarch.art>
+ <170834440647.4050.13047961348645894978.b4-ty@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 20/36] mm/page_ext: enable early_page_ext when
- CONFIG_MEM_ALLOC_PROFILING_DEBUG=y
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240221194052.927623-1-surenb@google.com>
- <20240221194052.927623-21-surenb@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240221194052.927623-21-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.09
-X-Spamd-Result: default: False [-0.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-0.30)[75.07%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_GT_50(0.00)[74];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Type: multipart/mixed; BOUNDARY="8323328-957297465-1709028876=:1099"
+Content-ID: <8b80bf93-d78a-388a-e88d-a911f9418556@linux.intel.com>
 
-On 2/21/24 20:40, Suren Baghdasaryan wrote:
-> For all page allocations to be tagged, page_ext has to be initialized
-> before the first page allocation. Early tasks allocate their stacks
-> using page allocator before alloc_node_page_ext() initializes page_ext
-> area, unless early_page_ext is enabled. Therefore these allocations will
-> generate a warning when CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled.
-> Enable early_page_ext whenever CONFIG_MEM_ALLOC_PROFILING_DEBUG=y to
-> ensure page_ext initialization prior to any page allocation. This will
-> have all the negative effects associated with early_page_ext, such as
-> possible longer boot time, therefore we enable it only when debugging
-> with CONFIG_MEM_ALLOC_PROFILING_DEBUG enabled and not universally for
-> CONFIG_MEM_ALLOC_PROFILING.
-> 
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+--8323328-957297465-1709028876=:1099
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <20edec04-805c-ce6f-95c4-8d07e40e6e6f@linux.intel.com>
 
-> ---
->  mm/page_ext.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/mm/page_ext.c b/mm/page_ext.c
-> index 3c58fe8a24df..e7d8f1a5589e 100644
-> --- a/mm/page_ext.c
-> +++ b/mm/page_ext.c
-> @@ -95,7 +95,16 @@ unsigned long page_ext_size;
->  
->  static unsigned long total_usage;
->  
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> +/*
-> + * To ensure correct allocation tagging for pages, page_ext should be available
-> + * before the first page allocation. Otherwise early task stacks will be
-> + * allocated before page_ext initialization and missing tags will be flagged.
-> + */
-> +bool early_page_ext __meminitdata = true;
-> +#else
->  bool early_page_ext __meminitdata;
-> +#endif
->  static int __init setup_early_page_ext(char *str)
->  {
->  	early_page_ext = true;
+On Mon, 19 Feb 2024, Ilpo J=E4rvinen wrote:
+
+> On Thu, 15 Feb 2024 20:31:43 +0000, Szilard Fabian wrote:
+>=20
+> > This patch adds battery charge control support on Fujitsu notebooks
+> > via the S006 method of the FUJ02E3 ACPI device. With this method it's
+> > possible to set charge_control_end_threshold between 50 and 100%.
+> >=20
+> > Tested on Lifebook E5411 and Lifebook U728. Sadly I can't test this
+> > patch on a dual battery one, but I didn't find any clue about
+> > independent battery charge control on dual battery Fujitsu notebooks
+> > either. And by that I mean checking the DSDT table of various Lifebook
+> > notebooks and reverse engineering FUJ02E3.dll.
+> >=20
+> > [...]
+>=20
+>=20
+> Thank you for your contribution, it has been applied to my local
+> review-ilpo branch. Note it will show up in the public
+> platform-drivers-x86/review-ilpo branch only once I've pushed my
+> local branch there, which might take a while.
+>=20
+> The list of commits applied:
+> [1/1] platform/x86/fujitsu-laptop: Add battery charge control support
+>       commit: 9b716ef48c90446b8d6d86726c6c3f0141e53091
+
+Hi,
+
+Can you please take a look at the two build failures LKP has brought up.=20
+They looked like some depends on and/or select clauses missing from=20
+Kconfig.
+
+I'll be merging the patches that fix those into the original commit so=20
+don't spend too much fine-tuning the commit message.
+
+--=20
+ i.
+--8323328-957297465-1709028876=:1099--
 
