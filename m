@@ -1,258 +1,279 @@
-Return-Path: <linux-kernel+bounces-83315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B93C8691D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:29:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 942908691D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:30:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8893F1F23A30
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:29:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C58F21C23415
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0600145B0F;
-	Tue, 27 Feb 2024 13:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35DCA13DB92;
+	Tue, 27 Feb 2024 13:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XqhMdDGw"
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eIj/Bfm/"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1B0145320;
-	Tue, 27 Feb 2024 13:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B9413B7BE
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709040514; cv=none; b=f4ja+QGoqSJj1lKCJzLieSsdgGR/diefmiTST77ICljb7gMlD9dv1ro2CqfR9FmaswTneEVqXimVbEJUqMVhDCW8W37qjUjND1gqnhlV4KCe8fZGBj3nAM711qHG96/NG2DJLaT0k8QTuGnk5Di4QEG6StQwsg8HihJfAi3jyS8=
+	t=1709040520; cv=none; b=QucpPYyJZu/DdXw7KSmea8PTrxUSgr5uF9bPBMOM/t6qeASBoEF85z6myFfaDGRBiC039mVt+vjtUauop3Kd5kxCQYJQwcc6oQL4ip68V+d9yxwicIVqMxbNZOThjU1Lii7AukSM8M7AHILrOKzI+5jYpGOdAcmlkHP27aqmmGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709040514; c=relaxed/simple;
-	bh=zru7ObNNKkQqccBKGdjO4JlNuuwVy5ujT0QSm0dUZfY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dOTITVbzkRWM3JQgmlgPldnVEEqlW3XUqz956DbjDsn2K91/Hyr0lmKWRTwM6KMJ7+l1gGdjoHt2b+jdZsldaqyrAWtND9+md0qh4yAF5SUBVDOVROxXF0AplSNTecDvN3Xe3szJrLZOlxUgob9fPJuDQc3hq0OCb6fT1pyxUK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XqhMdDGw; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-42e7e8e7c09so5959381cf.1;
-        Tue, 27 Feb 2024 05:28:31 -0800 (PST)
+	s=arc-20240116; t=1709040520; c=relaxed/simple;
+	bh=o2MMtZcg1nPCrRMjPopfyLkNADiPf6kDlW84jMrpkvM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZHDXaQ99ghAVIGZGH8B29Ny8fsA/+lFNbBCDflfl1GwSGuC6TkkYO9WWNBnjM3QY11uODpGFRBcLRjHC5RN4+07Jq/1ewYGePagfEr54zrl26NKY0PSxu4mfd7Bi0iL4k2YzSyMnjIyDs//+46FWmGNr/xhN8UY0KeOXAmONwII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=eIj/Bfm/; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so5746386a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:28:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709040510; x=1709645310; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sA3eGpdy0V1trjnCYXdrUG6FXIcsye2wJjLbDY0NJk8=;
-        b=XqhMdDGwh8qeJuw5TKIfabet8iRADsTgCEWViON/4WPjJbZDOe8h/NDobRN1wZQdUq
-         +Y7p795dCNDcwH7f0F20HHz9SmOcJPcGiloAaUqbZ2Hxp8nambdOSG3nCaaXGEZETwrB
-         BzZr73CjF1LEqHiPG8Il17bfLxzO3Ab9D9YM5wGOHoa3AX3fLtdzwbjbCrYpqZhGVzU1
-         DeZRwm///ooTMDHZC8/LI4r6GRatsfmrie38CBmHmdEz2L4LyCg1RY29L4DsJsInepgZ
-         oZ+wPmdceobvJjfwxcWJCwWPM9e/fQdJZ034prVwjvLq0i+o3QoNI4+W8x/V5WrkwSnm
-         3Jaw==
+        d=linaro.org; s=google; t=1709040517; x=1709645317; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZEHlAA7YKh1er5ipxQxY0qStrUJA7nuiDKK6J0iKTnQ=;
+        b=eIj/Bfm/YQ5poIjFZA3yeSKKurM2/prx1gTKxGK0ivZ68f74VcYwuXCDqayHJshX5B
+         qkJ8PKjxudZ+09UXSGBXVmqGNb7osDCCPrfxV8L7n5W75fTfnO8tXw+gCICUwYjN2GSg
+         l2ZADx7QHQbVdO4udiKEO6zbHVBNXKvlXb8TiCNQitShI44clchh6dcXuiAkvSI2q6xb
+         WL0zg45HAodo7dGndveV8vUvPjr/TMSLKjGcTlbtN2Q4S+a+vX9zR8dzVNQ/EBbIQqgb
+         uAbyKsVG6CTpf7kybaGhN8YrGkoxLabxQbxfW/BdHMSbdK/pl+tVvPXhvDxl0/XYuP0n
+         jLvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709040510; x=1709645310;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sA3eGpdy0V1trjnCYXdrUG6FXIcsye2wJjLbDY0NJk8=;
-        b=Me92wfj+UPknIJtr4k6NmfkLZg/ELobuXnDuSoukYFoAqNVfNDAyseKByNVAKKBgip
-         mNEmRZH35KO8zrkEQHaIlnET+LCV9rcV3jsMy7+ubMGD6MWuKzz1kXUU0fmTj/sa+HMm
-         Sp3klKAhqd7CSLGqLhAZYlcYwh101oD2//oNZyKKvkkBIF6A6sAHDIpuXbI6gtPkFtNf
-         VYexkoiuTxQ1aoJ63GWhPKJe65BH6S4pmuowP9M9Dk9iXuFVqxD6UmvUx5GlLntpcfX7
-         ichoRmn9881T+/1XcWXDvELjxJYl9MeO5MUDvns09EAbEQPc05DW5nTY7QDpj2kb87jq
-         aSsA==
-X-Forwarded-Encrypted: i=1; AJvYcCXZXq/A7TYlBqpY2xdTxBE4F8CeMR22DaT/5m+y2blYiFoNwfSGKTeF9kkG2NTKJXQyme+7jm3pEpA/OS7kA2aivu/stKthYxT0G5qbRKFOkJBAXU42xWa0JcLHe628ta+/0jYl7/Zw4fQXOxfOrRMrQ6HOj/rfCdX2VDbrukacNQN/Q9lYkUeJF4Y5NgqTAUqTnDLHQDvZj0UDEIOkiGaLd2ouYu0ZaURUB/zu4REdSZntts+Crfr0Adb4Z8BfbdnL++teniDceORYkm9l+Z8E8PupZ90J4MZE68EoSZfJn5KgNttFfoLeU5MNcmq0zLf8sNlar5DD89zZSsw0OVVqKGqolTk1zxqXr32aPeTQ1P3vR9WrfA6i7o9cF8U=
-X-Gm-Message-State: AOJu0YwNr0XY4GJw0tMeZryvjZ2m5kGzO8U7ILUDtcAfI8IxU31VehxK
-	oVCTEUIBBmePyHxVO95rML3jOno09dMe0rTlq9tGGYs66ybiXjmezP1VV9j8KlR+PaYbSDSH34e
-	kiI1JSQ1q8zfD2MiEtFCHLWILWx0=
-X-Google-Smtp-Source: AGHT+IHd1fYGCovL5jMrwGyPD3t9BUZlBl4i58kM3c7T6/2cjncdv2UjHD2jwvbN+FNdJ7hm/vJBg7tdpkEc9efldco=
-X-Received: by 2002:ac8:5bd2:0:b0:42e:8a6b:5d00 with SMTP id
- b18-20020ac85bd2000000b0042e8a6b5d00mr4856001qtb.26.1709040510180; Tue, 27
- Feb 2024 05:28:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709040517; x=1709645317;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZEHlAA7YKh1er5ipxQxY0qStrUJA7nuiDKK6J0iKTnQ=;
+        b=vs72i0L19lj/4xPb0d0NynDZTtPEP6D/2wnHNhDjqVS24YK1DshhtCBA3GhN+DwDih
+         y1hKx2e5Wxg2bJ/rnwHDznFD+O5O+cM7VR9zMCAQvhB8/wJOVhAivN+5urA1sGgIE0+B
+         fxOmyThWubO6R2Mg+y7qdFYDzJvmyKrVhxzTNWQeqV50DuhrRdt4djOZzb2ZMdQJ8nuN
+         P3bsZzDbQ/4+SmDASGgEyUeZgAd3KARADKpweXA57cMbk6J88AhII1zh/nl0zuQ3H6aT
+         S1Um2p7+Oobnfs6SNqZ3f6aVwvC/jPsHC83VXyoX+P6ufO7CEpfrr1by6zgA+Q9IamTb
+         B2+w==
+X-Forwarded-Encrypted: i=1; AJvYcCUpZE8IlWntYJ4bvkmywdbL0PEsn3WGUxCgKBmnqMufJNMDuAd2vUsC7N+Ac/SCgkjvNgfKGnrSn7gcznNMgZcptiy2pejQhNQ78Xuk
+X-Gm-Message-State: AOJu0YyymcgOMFdz0UJ5UmWrQVNDp6HK8SbWi8I9LxFpVhLqeH96rsvS
+	wRu25QdiFRTBhEqsSF9akmark5vIRdpExU93JJQucv7HggJDh6HLRWw/S+selcY=
+X-Google-Smtp-Source: AGHT+IEQSaUkvKdywYgvDY1uVyrYp7GK0Y3ZU+MxIq70rL2kRL46wtA1NilCuTEjvTxI0baN6YTPWg==
+X-Received: by 2002:a17:906:750:b0:a3f:7fac:6cd2 with SMTP id z16-20020a170906075000b00a3f7fac6cd2mr7064248ejb.43.1709040516287;
+        Tue, 27 Feb 2024 05:28:36 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id n3-20020a170906118300b00a412d3d506esm784393eja.17.2024.02.27.05.28.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 05:28:35 -0800 (PST)
+Message-ID: <d611eccd-58be-43a9-aca7-81fda4114cbc@linaro.org>
+Date: Tue, 27 Feb 2024 14:28:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org> <20240221-idmap-fscap-refactor-v2-20-3039364623bd@kernel.org>
-In-Reply-To: <20240221-idmap-fscap-refactor-v2-20-3039364623bd@kernel.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 27 Feb 2024 15:28:18 +0200
-Message-ID: <CAOQ4uxjvrFuz2iCiO9dsOnear+qN=M+GFW-eEOZU5uCzBkTwLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 20/25] ovl: add fscaps handlers
-To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>, 
-	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, 
-	James Morris <jmorris@namei.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
-	Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	audit@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Convert the Imagination Technologies SPDIF Input
+ Controllerto DT schema.
+Content-Language: en-US
+To: =?UTF-8?Q?Javier_Garc=C3=ADa?= <javier.garcia.ta@udima.es>
+Cc: daniel.baluta@nxp.com, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 21, 2024 at 11:25=E2=80=AFPM Seth Forshee (DigitalOcean)
-<sforshee@kernel.org> wrote:
->
-> Add handlers which read fs caps from the lower or upper filesystem and
-> write/remove fs caps to the upper filesystem, performing copy-up as
-> necessary.
->
-> While fscaps only really make sense on regular files, the general policy
-> is to allow most xattr namespaces on all different inode types, so
-> fscaps handlers are installed in the inode operations for all types of
-> inodes.
->
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+On 27/02/2024 13:35, Javier García wrote:
+> Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
+> 
+> Signed-off-by: Javier García <javier.garcia.ta@udima.es>
 > ---
->  fs/overlayfs/dir.c       |  2 ++
->  fs/overlayfs/inode.c     | 72 ++++++++++++++++++++++++++++++++++++++++++=
-++++++
->  fs/overlayfs/overlayfs.h |  5 ++++
->  3 files changed, 79 insertions(+)
->
-> diff --git a/fs/overlayfs/dir.c b/fs/overlayfs/dir.c
-> index 0f8b4a719237..4ff360fe10c9 100644
-> --- a/fs/overlayfs/dir.c
-> +++ b/fs/overlayfs/dir.c
-> @@ -1307,6 +1307,8 @@ const struct inode_operations ovl_dir_inode_operati=
-ons =3D {
->         .get_inode_acl  =3D ovl_get_inode_acl,
->         .get_acl        =3D ovl_get_acl,
->         .set_acl        =3D ovl_set_acl,
-> +       .get_fscaps     =3D ovl_get_fscaps,
-> +       .set_fscaps     =3D ovl_set_fscaps,
->         .update_time    =3D ovl_update_time,
->         .fileattr_get   =3D ovl_fileattr_get,
->         .fileattr_set   =3D ovl_fileattr_set,
-> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
-> index c63b31a460be..7a8978ea6fe1 100644
-> --- a/fs/overlayfs/inode.c
-> +++ b/fs/overlayfs/inode.c
-> @@ -568,6 +568,72 @@ int ovl_set_acl(struct mnt_idmap *idmap, struct dent=
-ry *dentry,
->  }
->  #endif
->
-> +int ovl_get_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +                  struct vfs_caps *caps)
-> +{
-> +       int err;
-> +       const struct cred *old_cred;
-> +       struct path realpath;
-> +
-> +       ovl_path_real(dentry, &realpath);
-> +       old_cred =3D ovl_override_creds(dentry->d_sb);
-> +       err =3D vfs_get_fscaps(mnt_idmap(realpath.mnt), realpath.dentry, =
-caps);
-> +       revert_creds(old_cred);
-> +       return err;
-> +}
-> +
-> +int ovl_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> +                  const struct vfs_caps *caps, int setxattr_flags)
-> +{
-> +       int err;
-> +       struct ovl_fs *ofs =3D OVL_FS(dentry->d_sb);
-> +       struct dentry *upperdentry =3D ovl_dentry_upper(dentry);
-> +       struct dentry *realdentry =3D upperdentry ?: ovl_dentry_lower(den=
-try);
-> +       const struct cred *old_cred;
-> +
-> +       /*
-> +        * If the fscaps are to be remove from a lower file, check that t=
-hey
-> +        * exist before copying up.
-> +        */
+>  .../bindings/sound/img,spdif-in.txt           | 41 ----------
+>  .../bindings/sound/img,spdif-in.yaml          | 80 +++++++++++++++++++
 
-Don't you need to convert -ENODATA to 0 return value in this case?
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
 
-> +       if (!caps && !upperdentry) {
-> +               struct path realpath;
-> +               struct vfs_caps lower_caps;
-> +
-> +               ovl_path_lower(dentry, &realpath);
-> +               old_cred =3D ovl_override_creds(dentry->d_sb);
-> +               err =3D vfs_get_fscaps(mnt_idmap(realpath.mnt), realdentr=
-y,
-> +                                    &lower_caps);
-> +               revert_creds(old_cred);
-> +               if (err)
-> +                       goto out;
-> +       }
-> +
-> +       err =3D ovl_want_write(dentry);
-> +       if (err)
-> +               goto out;
-> +
+Also no need for full stop in subject.
 
-ovl_want_write() should after ovl_copy_up(), see:
-162d06444070 ("ovl: reorder ovl_want_write() after ovl_inode_lock()")
+>  2 files changed, 80 insertions(+), 41 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.txt b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
+> deleted file mode 100644
+> index f7ea8c87bf34..000000000000
+> --- a/Documentation/devicetree/bindings/sound/img,spdif-in.txt
+> +++ /dev/null
+> @@ -1,41 +0,0 @@
 
+..
 
-> +       err =3D ovl_copy_up(dentry);
-> +       if (err)
-> +               goto out_drop_write;
-> +       upperdentry =3D ovl_dentry_upper(dentry);
+> diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.yaml b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
+> new file mode 100644
+> index 000000000000..d201293d63c7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
+> @@ -0,0 +1,80 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/sound/img,spdif-in.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +       old_cred =3D ovl_override_creds(dentry->d_sb);
-> +       if (!caps)
-> +               err =3D vfs_remove_fscaps(ovl_upper_mnt_idmap(ofs), upper=
-dentry);
-> +       else
-> +               err =3D vfs_set_fscaps(ovl_upper_mnt_idmap(ofs), upperden=
-try,
-> +                                    caps, setxattr_flags);
-> +       revert_creds(old_cred);
+> +title: Imagination Technologies SPDIF Input Controller
 > +
-> +       /* copy c/mtime */
-> +       ovl_copyattr(d_inode(dentry));
+> +maintainers:
+> +  - Rob Herring <robh+dt@kernel.org>
+> +  - Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+
+No, unfortunately this cannot be us. Choose someone responsible for
+hardware or Linux drivers at least.
+
 > +
-> +out_drop_write:
-> +       ovl_drop_write(dentry);
-> +out:
-> +       return err;
-> +}
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - img,spdif-in
 > +
->  int ovl_update_time(struct inode *inode, int flags)
->  {
->         if (flags & S_ATIME) {
-> @@ -747,6 +813,8 @@ static const struct inode_operations ovl_file_inode_o=
-perations =3D {
->         .get_inode_acl  =3D ovl_get_inode_acl,
->         .get_acl        =3D ovl_get_acl,
->         .set_acl        =3D ovl_set_acl,
-> +       .get_fscaps     =3D ovl_get_fscaps,
-> +       .set_fscaps     =3D ovl_set_fscaps,
->         .update_time    =3D ovl_update_time,
->         .fiemap         =3D ovl_fiemap,
->         .fileattr_get   =3D ovl_fileattr_get,
-> @@ -758,6 +826,8 @@ static const struct inode_operations ovl_symlink_inod=
-e_operations =3D {
->         .get_link       =3D ovl_get_link,
->         .getattr        =3D ovl_getattr,
->         .listxattr      =3D ovl_listxattr,
-> +       .get_fscaps     =3D ovl_get_fscaps,
-> +       .set_fscaps     =3D ovl_set_fscaps,
->         .update_time    =3D ovl_update_time,
->  };
->
-> @@ -769,6 +839,8 @@ static const struct inode_operations ovl_special_inod=
-e_operations =3D {
->         .get_inode_acl  =3D ovl_get_inode_acl,
->         .get_acl        =3D ovl_get_acl,
->         .set_acl        =3D ovl_set_acl,
-> +       .get_fscaps     =3D ovl_get_fscaps,
-> +       .set_fscaps     =3D ovl_set_fscaps,
->         .update_time    =3D ovl_update_time,
->  };
->
+> +  reg:
+> +    description:
+> +      Offset and length of the register set for the device.
+
+Drop description
+
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  dmas:
+> +    maxItems: 1
+> +
+> +  dma-names:
+> +    items:
+> +      - const: rx
+> +
+> +  clocks:
+> +    items:
+> +      - description: The system clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: sys
+> +
+> +  '#sound-dai-cells':
+> +    const: 0
+> +
+> +  resets:
+> +    items:
+> +      - description: Should contain a phandle to the spdif in reset signal, if any
+
+Drop description, it's useless. You don't say anything valuable here.
+Just maxItems: 1
 
 
-Sorry, I did not understand the explanation why fscaps ops are needed
-for non regular files. It does not look right to me.
+> +
+> +  reset-names:
+> +    items:
+> +      - const: rst
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - dmas
+> +  - dma-names
+> +  - clocks
+> +  - clock-names
+> +  - '#sound-dai-cells'
+> +
+> +unevaluatedProperties: false
 
-Thanks,
-Amir.
+This alone does not make sense... so it is pointing you to missing $ref
+for dai-common.
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/pistachio-clk.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+
+What for?
+
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/mips-gic.h>
+> +    #include <dt-bindings/reset/pistachio-resets.h>
+
+That's not used, so just add resets and reset-names.
+
+> +    spdif_in: spdif-in@18100e00 {
+> +        compatible = "img,spdif-in";
+> +        reg = <0x18100E00 0x100>;
+
+Lowercase hex
+
+> +        interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
+> +        dmas = <&mdc 15 0xffffffff 0>;
+> +        dma-names = "rx";
+> +        clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
+> +        clock-names = "sys";
+> +
+> +        #sound-dai-cells = <0>;
+> +    };
+
+Best regards,
+Krzysztof
+
 
