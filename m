@@ -1,79 +1,66 @@
-Return-Path: <linux-kernel+bounces-83845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A15E6869F24
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:32:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB2F8869F27
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:32:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 575F328E247
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:32:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20E641F2B4F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:32:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3880C383B5;
-	Tue, 27 Feb 2024 18:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426824EB36;
+	Tue, 27 Feb 2024 18:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LNerlRoW"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s2a9klJj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295821E49E
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438843F9D4;
+	Tue, 27 Feb 2024 18:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709058740; cv=none; b=ey6wgpeCB/V849dfqx3lX0oUj0cOTLs/ENKzEB1uDSIeGWmH2vRdswDKHhA6rS7gT5qMO54se1ItPuxe6CjUl8UpmGcK27APVyWVmQTsn3N5irXOpBbLSY0GRlt1+AGAjPdtAFgZhCFxRf3kiHx/brWaavCWiWLkICy82JC6WDk=
+	t=1709058743; cv=none; b=tO+Ot53xBCaSalz+WX0UnpUrq3bwzHJjFzCSKCj3GV6KoPmlHduDk9mEDFy5FP6NKTq+Trl1eCHiE5kbyqEzK20W9m4ooLUOsVQYu1+6zDwa6si7PVp7h4e45TxN6xmic3ayZYagf0szp9y5ASh4HyQpiyADqVa/K3aTTKkHhS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709058740; c=relaxed/simple;
-	bh=QxMC8lWIN6vJn152m1rPforyXWdFMHJtVlYfboqMgWE=;
+	s=arc-20240116; t=1709058743; c=relaxed/simple;
+	bh=j/7lHjnuycVswY8Vitw2LTYF5LfHLWpvyXDyXoKHN58=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jueVbpJs/v58inRJi2HgsArrV54rXF33DUJ4ZWMdOp5b1VDNY6YJEXtgx1igo3IbGMzPtX1kVF151QEyop+lHo2BOOSdHQOuIEXiZnqqwlaQt/QU2FJEuhlKcmuJXQ7gL7IN5TJZlvTrtDno7BNKeymczssmGzFGxIcjf8rWmKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LNerlRoW; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709058738; x=1740594738;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=QxMC8lWIN6vJn152m1rPforyXWdFMHJtVlYfboqMgWE=;
-  b=LNerlRoWlRcULwSCzW7DE6Xla7kjdXOtyMirexvJbtWrHrBfuIDsSO5r
-   lTnmjkbCAn+70jxhOSnsbGXdiVnhGL9rNemcKG6Jrqp/CbKNgHN4VGEyQ
-   fggYKfapw3q+0bbmScXiZDM+rnrUnRWNhTEOOUyTDj+NiOeACH9nDaJTe
-   wr1FuCLEFpth0wcB/KNPh5dGaIM8WnpxiHc+9Av0wrMMjYaK1u7C+4BNI
-   beo9mpve3NSArgDmSqrqUmErG2J9isfwc9y/ZXA35/0AC2ODMyKCRnbs+
-   ssJg62y5e/TtrZjW30PVAssKtjVCmiV0J5JVOwsFvUCD7uh318EAb5li3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14858916"
-X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="14858916"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 10:32:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="827770836"
-X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="827770836"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 27 Feb 2024 10:32:13 -0800
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 27 Feb 2024 20:32:12 +0200
-Date: Tue, 27 Feb 2024 20:32:12 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>,
-	Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	intel-gfx@lists.freedesktop.org, Petr Mladek <pmladek@suse.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/12] drm/i915: Indicate which pipe failed the fastset
- check overall
-Message-ID: <Zd4qrLVWcacza747@intel.com>
-References: <20240215164055.30585-1-ville.syrjala@linux.intel.com>
- <20240215164055.30585-2-ville.syrjala@linux.intel.com>
- <ZdfApN1h97GTfL1t@intel.com>
- <Zdj2ONs8BZ6959Xb@intel.com>
- <87bk83mfwp.fsf@intel.com>
- <1013ff2d-76b2-41f9-a5d4-39a567a3b0cc@rasmusvillemoes.dk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ap8op6hPrQROF7breBwKv2YTmVUYPp2ez4Jj1qUG0ju2l978SWu4MTW2hFmDLcpa7PQ7kae/fUwtI4kWPouucTlQPmwKw4Q5sRy9vSxQpYwTDN7Kl/aZrrtQ0r9qkECm/OYIeFaaEg8B3fTCi32lToGG0PRWbeA0akap6eabjmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s2a9klJj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEF36C433F1;
+	Tue, 27 Feb 2024 18:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709058743;
+	bh=j/7lHjnuycVswY8Vitw2LTYF5LfHLWpvyXDyXoKHN58=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=s2a9klJj3z3nhiKK0y/N8gc+m+4m4iyE1BtWkSjHjSU7e2IL/LxESGgjBL+OTe+Rq
+	 GGaEvDOjNb/bZQgtfeKzedXU7Jis+zS8R/dprDKA2hVy66kvzGv0Gnv961G6lHZCov
+	 H3FF5M1ydr0rbtAEbYiXHksatSJMieHyCNXMu5fCW/jLKk5PqCK9dAf8p114mLDeb6
+	 70Gmsssm/4ceeSpVuh6T9t3izM8bc2veqz/22RRFf9QCDeYxzU2nKcJZNzgIsV6Z3+
+	 C6KtFZD9DoJ6h0mFeHvKl2aygAMe6P9w5Pum+egPHmAsXvd2dUwZa5G/WrRmtDc5zM
+	 5334H7P6Uf+1w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 80AB9CE0D68; Tue, 27 Feb 2024 10:32:22 -0800 (PST)
+Date: Tue, 27 Feb 2024 10:32:22 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Eric Dumazet <edumazet@google.com>
+Cc: Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <Zd4DXTyCf17lcTfq@debian.debian>
+ <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,91 +70,168 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1013ff2d-76b2-41f9-a5d4-39a567a3b0cc@rasmusvillemoes.dk>
-X-Patchwork-Hint: comment
+In-Reply-To: <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
 
-On Tue, Feb 27, 2024 at 10:38:10AM +0100, Rasmus Villemoes wrote:
-> On 26/02/2024 15.57, Jani Nikula wrote:
-> 
-> > Personally I suck at remembering even the standard printf conversion
-> > specifiers, let alone all the kernel extensions. I basically have to
-> > look them up every time. I'd really love some %{name} format for named
-> > pointer things. And indeed preferrably without the %p. Just %{name}.
-> 
-> Sorry to spoil the fun, but that's a non-starter.
-> 
-> foo.c: In function ‘foo’:
-> foo.c:5:24: warning: unknown conversion type character ‘{’ in format
-> [-Wformat=]
->     5 |         printf("Hello %{function} World\n", &foo);
->       |                        ^
-> 
-> You can't start accepting stuff that -Wformat will warn about. We're not
-> going to start building with Wno-format.
+On Tue, Feb 27, 2024 at 05:44:17PM +0100, Eric Dumazet wrote:
+> On Tue, Feb 27, 2024 at 4:44 PM Yan Zhai <yan@cloudflare.com> wrote:
+> >
+> > We noticed task RCUs being blocked when threaded NAPIs are very busy in
+> > production: detaching any BPF tracing programs, i.e. removing a ftrace
+> > trampoline, will simply block for very long in rcu_tasks_wait_gp. This
+> > ranges from hundreds of seconds to even an hour, severely harming any
+> > observability tools that rely on BPF tracing programs. It can be
+> > easily reproduced locally with following setup:
+> >
+> > ip netns add test1
+> > ip netns add test2
+> >
+> > ip -n test1 link add veth1 type veth peer name veth2 netns test2
+> >
+> > ip -n test1 link set veth1 up
+> > ip -n test1 link set lo up
+> > ip -n test2 link set veth2 up
+> > ip -n test2 link set lo up
+> >
+> > ip -n test1 addr add 192.168.1.2/31 dev veth1
+> > ip -n test1 addr add 1.1.1.1/32 dev lo
+> > ip -n test2 addr add 192.168.1.3/31 dev veth2
+> > ip -n test2 addr add 2.2.2.2/31 dev lo
+> >
+> > ip -n test1 route add default via 192.168.1.3
+> > ip -n test2 route add default via 192.168.1.2
+> >
+> > for i in `seq 10 210`; do
+> >  for j in `seq 10 210`; do
+> >     ip netns exec test2 iptables -I INPUT -s 3.3.$i.$j -p udp --dport 5201
+> >  done
+> > done
+> >
+> > ip netns exec test2 ethtool -K veth2 gro on
+> > ip netns exec test2 bash -c 'echo 1 > /sys/class/net/veth2/threaded'
+> > ip netns exec test1 ethtool -K veth1 tso off
+> >
+> > Then run an iperf3 client/server and a bpftrace script can trigger it:
+> >
+> > ip netns exec test2 iperf3 -s -B 2.2.2.2 >/dev/null&
+> > ip netns exec test1 iperf3 -c 2.2.2.2 -B 1.1.1.1 -u -l 1500 -b 3g -t 100 >/dev/null&
+> > bpftrace -e 'kfunc:__napi_poll{@=count();} interval:s:1{exit();}'
+> >
+> > Above reproduce for net-next kernel with following RCU and preempt
+> > configuraitons:
+> >
+> > # RCU Subsystem
+> > CONFIG_TREE_RCU=y
+> > CONFIG_PREEMPT_RCU=y
+> > # CONFIG_RCU_EXPERT is not set
+> > CONFIG_SRCU=y
+> > CONFIG_TREE_SRCU=y
+> > CONFIG_TASKS_RCU_GENERIC=y
+> > CONFIG_TASKS_RCU=y
+> > CONFIG_TASKS_RUDE_RCU=y
+> > CONFIG_TASKS_TRACE_RCU=y
+> > CONFIG_RCU_STALL_COMMON=y
+> > CONFIG_RCU_NEED_SEGCBLIST=y
+> > # end of RCU Subsystem
+> > # RCU Debugging
+> > # CONFIG_RCU_SCALE_TEST is not set
+> > # CONFIG_RCU_TORTURE_TEST is not set
+> > # CONFIG_RCU_REF_SCALE_TEST is not set
+> > CONFIG_RCU_CPU_STALL_TIMEOUT=21
+> > CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=0
+> > # CONFIG_RCU_TRACE is not set
+> > # CONFIG_RCU_EQS_DEBUG is not set
+> > # end of RCU Debugging
+> >
+> > CONFIG_PREEMPT_BUILD=y
+> > # CONFIG_PREEMPT_NONE is not set
+> > CONFIG_PREEMPT_VOLUNTARY=y
+> > # CONFIG_PREEMPT is not set
+> > CONFIG_PREEMPT_COUNT=y
+> > CONFIG_PREEMPTION=y
+> > CONFIG_PREEMPT_DYNAMIC=y
+> > CONFIG_PREEMPT_RCU=y
+> > CONFIG_HAVE_PREEMPT_DYNAMIC=y
+> > CONFIG_HAVE_PREEMPT_DYNAMIC_CALL=y
+> > CONFIG_PREEMPT_NOTIFIERS=y
+> > # CONFIG_DEBUG_PREEMPT is not set
+> > # CONFIG_PREEMPT_TRACER is not set
+> > # CONFIG_PREEMPTIRQ_DELAY_TEST is not set
+> >
+> > An interesting observation is that, while tasks RCUs are blocked,
+> > related NAPI thread is still being scheduled (even across cores)
+> > regularly. Looking at the gp conditions, I am inclining to cond_resched
+> > after each __napi_poll being the problem: cond_resched enters the
+> > scheduler with PREEMPT bit, which does not account as a gp for tasks
+> > RCUs. Meanwhile, since the thread has been frequently resched, the
+> > normal scheduling point (no PREEMPT bit, accounted as a task RCU gp)
+> > seems to have very little chance to kick in. Given the nature of "busy
+> > polling" program, such NAPI thread won't have task->nvcsw or task->on_rq
+> > updated (other gp conditions), the result is that such NAPI thread is
+> > put on RCU holdouts list for indefinitely long time.
+> >
+> > This is simply fixed by mirroring the ksoftirqd behavior: after
+> > NAPI/softirq work, raise a RCU QS to help expedite the RCU period. No
+> > more blocking afterwards for the same setup.
+> >
+> > Fixes: 29863d41bb6e ("net: implement threaded-able napi poll loop support")
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> >  net/core/dev.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 275fd5259a4a..6e41263ff5d3 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -6773,6 +6773,10 @@ static int napi_threaded_poll(void *data)
+> >                                 net_rps_action_and_irq_enable(sd);
+> >                         }
+> >                         skb_defer_free_flush(sd);
 
-Are there any sensible looking characters we could use for
-this? Ideally I'd like to have something to bracket the
-outsides, and perhaps a namespace separator in the middle.
+Please put a comment here stating that RCU readers cannot cross
+this point.
 
-Or are we really forced into having essentially a random set
-of characters following just a %p/etc.?
+I need to add lockdep to rcu_softirq_qs() to catch placing this in an
+RCU read-side critical section.  And a header comment noting that from
+an RCU perspective, it acts as a momentary enabling of preemption.
 
+> > +                       if (!IS_ENABLED(CONFIG_PREEMPT_RT))
+> > +                               rcu_softirq_qs();
+> > +
+> >                         local_bh_enable();
+> >
+> >                         if (!repoll)
+> > --
+> > 2.30.2
+> >
 > 
-> > And then we could discuss adding support for drm specific things. I
-> > guess one downside is that the functions to do this would have to be in
-> > vsprintf.c instead of drm. Unless we add some code in drm for this
-> > that's always built-in.
+> Hmm....
+> Why napi_busy_loop() does not have a similar problem ?
 > 
-> If people can be trusted to write callbacks with the proper semantics
-> for snprintf [1], we could do a generic
+> It is unclear why rcu_all_qs() in __cond_resched() is guarded by
+> 
+> #ifndef CONFIG_PREEMPT_RCU
+>      rcu_all_qs();
+> #endif
 
-Yeah, I was at some point thinking that having a version of
-register_printf_function() for printk() might be nice. The dangers
-being that we get conflicts between subsystems (*), or that it gets
-totally out of hand, or as you point out below people will start
-to do questionable things in there.
+The theory is that PREEMPT_RCU kernels have preemption, and get their
+quiescent states that way.
 
-(*) My earlier "include a subsystem namespace in the format" 
-idea was basically how I was thinking of avoiding conflicts.
+The more recent practice involves things like PREEMPT_DYNAMIC and maybe
+soon PREEMPT_AUTO, which might require adjustments, so thank you for
+pointing this out!
 
-> 
-> typedef char * (*printf_callback)(char *buf, char *end, void *ctx);
-> 
-> struct printf_ext {
->   printf_callback cb;
->   void *ctx;
-> };
-> 
-> #define PRINTF_EXT(callback, context) &(struct printf_ext){ .cb =
-> callback, .ctx = context }
-> 
-> // in drm-land
-> 
-> char* my_drm_gizmo_formatter(char *buf, char *end, void *ctx)
-> {
->   struct drm_gizmo *dg = ctx;
->   ....
->   return buf;
-> }
-> #define pX_gizmo(dg) PRINTF_EXT(my_drm_gizmo_formatter, dg)
-> 
->    printk("error: gizmo %pX in wrong state!\n", pX_gizmo(dg));
-> 
-> Then vsprintf.c doesn't need to know anything about any particular
-> subsystem. And if a subsystem breaks snprintf semantics, they get to
-> keep the pieces. With a little more macro magic, one might even be able
-> to throw in some type safety checks.
-> 
-> Rasmus
-> 
-> [1] You can't sleep, you can't allocate memory, you probably can't even
-> take any raw spinlocks, you must attempt to do the full formatting so
-> you can tell how much room would be needed, but you must of course not
-> write anything beyond end. Calling vsnprintf() to format various integer
-> members is probably ok, but recursively using %pX to print full
-> subobjects is likely a bad idea.
+Back on the patch, my main other concern is that someone somewhere might
+be using something like synchronize_rcu() to wait for all in-progress
+softirq handlers to complete.  But I don't know of such a thing, and if
+there is, there are workarounds, including synchronize_rcu_tasks().
 
--- 
-Ville Syrjälä
-Intel
+So something to be aware of, not (as far as I know) something to block
+this commit.
+
+With the added comment:
+
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
+
+							Thanx, Paul
 
