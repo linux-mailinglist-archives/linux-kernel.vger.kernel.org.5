@@ -1,116 +1,150 @@
-Return-Path: <linux-kernel+bounces-82800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC1FC8689D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:28:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E7458689D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CF77B22A96
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:28:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 343C21C21DB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B3F54BD4;
-	Tue, 27 Feb 2024 07:28:10 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661A454BF7;
+	Tue, 27 Feb 2024 07:28:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="crayPIgt"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CECFEAD5;
-	Tue, 27 Feb 2024 07:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277E75467A;
+	Tue, 27 Feb 2024 07:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709018890; cv=none; b=KWfNyNyDPRdAlR0Fggm6m5VXls3n0/kUSufEpzJIKuTp3TpixcVfyaOai4FxC+ALHImoQbHlaVjJs9m2Kc5NYAmjswZfZfsJEo390/VEZLMKqZrKD8uxsCs3Oed4y86j9IKgeKsurBsnqPqv3MTqQR5BDZOyEkZwTU9TXrFAWGg=
+	t=1709018904; cv=none; b=ohkVX78L2Tu1ansXuLcPq7ZhbTEtm4Fk5fkeGj0myKGGhOegoEMZplbEbRBh5LPLgYSXLpytl+FXudz7FVlBM38sPIOJaykFjhsyysP3p51APWh1yvyINqToTexSa6h22tKJEu5yxNE03tsMiGvb52coiPWvPhIvk75bQkSJVwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709018890; c=relaxed/simple;
-	bh=hvL0sbx6R2Sh77C67/IR4/MDaL+YF2p9oTYtxx9nnWs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=jafyANWARaYJiGPjqDRlGG2MXb053e7xO3krcT9Guf1PHu5bJ0ewKVned7fgexNcyF2yt115GeckccgxuOrK5f4NtuzACea/2RdnRU2hFUtsApYngSXsJAx2LtywzD90YuslQFLOQpQ3HtVtPBpTImeIqPGCZ1eAE1TvJuUpfhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TkTZ12bpwzNlnQ;
-	Tue, 27 Feb 2024 15:26:33 +0800 (CST)
-Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id B2B32140F0A;
-	Tue, 27 Feb 2024 15:28:02 +0800 (CST)
-Received: from [10.67.120.168] (10.67.120.168) by
- kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 27 Feb 2024 15:28:02 +0800
-Message-ID: <f8e36e04-2318-89e0-f65e-155575d52c5e@hisilicon.com>
-Date: Tue, 27 Feb 2024 15:28:01 +0800
+	s=arc-20240116; t=1709018904; c=relaxed/simple;
+	bh=1/iCSINOM9ktWkzosjfbZRxEXx1qwuEmh0fqu+UCCps=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BoGnfUxjevIVW/FGeTy8wpuCXKj+WWgGy0zhS5t1/tBIefajzItfow5ZMS0Zpc5AleT2dTAeW/+lZ9i/PuUxj0p35P/TXTrhWYnIy2S2NCLv5ejoad0LhSYMlUrjZjhsLXeCbBdKB/F0Q1S1XLG3WBUO+fhe2e6VQsk2NFO/rsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=crayPIgt; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3e85a76fa8so364327066b.1;
+        Mon, 26 Feb 2024 23:28:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709018901; x=1709623701; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zI30shSOvui+UA44wihEn+kkOQkF830aXh8hZ+sdOqY=;
+        b=crayPIgtPu6xX654pJ6a3WoMUrJOxlsmbjVVzCIMHUieRyc246rzFENqHFv58t/PyM
+         6DAyL8PJhkn9LDC3wVBDdmQpQKWnyGJkOlQwEV6Yur7zo54PWRuRulX6trMdH7+Znw24
+         FnM/m08HAIUSOHmbUJR2W5FBQsb91gLZLRpQM0YHw+utKBIoFC5A4iWSAP4DV35smPib
+         Cqn6s6gqR4eP6DojpvARdNNiXVLDuGxYF5bGAEr8b1jON2ySl2LZo70LhT1AtDBk1y3/
+         kulMqCizUjMO2n5QD4k0LU7i5mrEtQoXjQ/fOesB/e5Us71dMrm5GvRYj4d9xwgDLEmh
+         swug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709018901; x=1709623701;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zI30shSOvui+UA44wihEn+kkOQkF830aXh8hZ+sdOqY=;
+        b=Ur/U4Sa16M+HBXXrEHHJDmpqh+DkxluTnuREHYu3ug6oVSU1opdNZPwMQ05YP8D4lz
+         5AtFjAoyxbiFoPOI/rsfMwVVLJAHgWopR8R+cNVwJA8e2BTZYPVcXFM1cCgG8NVl4vqJ
+         Oh6fHuOBIP0O0bXRgFih1qGlLaNUuHZwShz3DZvjUiNhNBT2Bv/OikCOjklrFQie/vlQ
+         dbvuC08x+qo3WKAZIMYjw2GrA7sshaGfSLjkesf9t++HF6N5KGrjlvmmAdlPEYZMa8fd
+         0STzgAoXjHzmnOz+7+EZ8euu/2azXUastnZtMzahuATAOlHPia87UZEkBqFxhSZNOASx
+         2QLA==
+X-Forwarded-Encrypted: i=1; AJvYcCXj6DWwopVX94eOOjsreq9lVmnsTVXBIEB7xhFcg64VR6PSodQ8vJE2swtRU7p6wq1olSPYZkc1cyTF1Wg0iTJamGB1RvMcv8cUNKwnioNsVVsKedzafoECwRtDhzeThJjqFOzC4MJ5gutBgTj9gABXCn/X466F46BP13IORy5ToWPUJWvt0GQuV260S1cD7EHC8d5iGHQkH1vKWJz7CkaLFzXm
+X-Gm-Message-State: AOJu0Yy97oEH9JBg63EJXOSeLo04uJsLiiT1/8sS7AfNbC8JU3ltEqSw
+	1UosZ0lTgukoDTHdYyLqqrchf/UhVr4hpnhw/DXlKEFFdg8SPC8cFH4UWJO+XolwFk0knU7LqY9
+	gaWa/BDbFzsF5z9b0At1jWh0l0aX/cMuso7Wb2A==
+X-Google-Smtp-Source: AGHT+IEg2zGbhLsEmK2ifI6SjC4f7kPzu91OBzps+VEwu7WS+AfN3IpeWRons2+BVRC69ODcSaX8fDa9Gqy3tZ2gFQk=
+X-Received: by 2002:a17:906:2318:b0:a43:ab98:d36a with SMTP id
+ l24-20020a170906231800b00a43ab98d36amr644131eja.17.1709018901441; Mon, 26 Feb
+ 2024 23:28:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v2 for-next 2/2] RDMA/hns: Support userspace configuring
- congestion control algorithm with QP granularity
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: <leon@kernel.org>, <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-	<linux-kernel@vger.kernel.org>
-References: <20240208035038.94668-1-huangjunxian6@hisilicon.com>
- <20240208035038.94668-3-huangjunxian6@hisilicon.com>
- <20240221155248.GD13491@ziepe.ca>
- <26ea175c-fa31-720c-2ac3-41abcb4d398a@hisilicon.com>
- <20240226140647.GB3220539@ziepe.ca>
-Content-Language: en-US
-From: Junxian Huang <huangjunxian6@hisilicon.com>
-In-Reply-To: <20240226140647.GB3220539@ziepe.ca>
+References: <20240226104653.54877-1-lukas.bulwahn@gmail.com> <87o7c3mlwb.fsf@intel.com>
+In-Reply-To: <87o7c3mlwb.fsf@intel.com>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date: Tue, 27 Feb 2024 08:28:10 +0100
+Message-ID: <CAKXUXMz-aTN3qrOmacWT_12awUT4wYTH8sr7SEc4B6XiYtz-BA@mail.gmail.com>
+Subject: Re: [PATCH] docs: submit-checklist: structure by category
+To: Jani Nikula <jani.nikula@intel.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org, linux-doc@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemi500006.china.huawei.com (7.221.188.68)
+Content-Transfer-Encoding: quoted-printable
 
-Problems below will be fixed in next version.
+Hi Jani,
 
-Thanks,
-Junxian
+On Mon, Feb 26, 2024 at 1:48=E2=80=AFPM Jani Nikula <jani.nikula@intel.com>=
+ wrote:
+>
+> On Mon, 26 Feb 2024, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> > diff --git a/Documentation/process/submit-checklist.rst b/Documentation=
+/process/submit-checklist.rst
+> > index b1bc2d37bd0a..7d8dba942fe8 100644
+> > --- a/Documentation/process/submit-checklist.rst
+> > +++ b/Documentation/process/submit-checklist.rst
+> > @@ -11,110 +11,121 @@ These are all above and beyond the documentation =
+that is provided in
+> >  and elsewhere regarding submitting Linux kernel patches.
+> >
+> >
+> > +*Review your code:*
+>
+> If you're adding subheadings, maybe consider making them actual
+> subheadings instead of just italicizing them.
+>
+> The top heading should probably be modified to follow the guidelines in
+> Documentation/doc-guide/sphinx.rst. This should be a separate change.
+>
 
-On 2024/2/26 22:06, Jason Gunthorpe wrote:
-> On Thu, Feb 22, 2024 at 03:06:20PM +0800, Junxian Huang wrote:
->>>> +enum hns_roce_congest_type_flags {
->>>> +	HNS_ROCE_CREATE_QP_FLAGS_DCQCN = 1 << 0,
->>>> +	HNS_ROCE_CREATE_QP_FLAGS_LDCP = 1 << 1,
->>>> +	HNS_ROCE_CREATE_QP_FLAGS_HC3 = 1 << 2,
->>>> +	HNS_ROCE_CREATE_QP_FLAGS_DIP = 1 << 3,
->>>> +};
->>>
->>> Why are these bit flags if they are exclusive?
->>>
->>
->> Our FW uses bit flags. Although there is no direct relationship between
->> FW and ABI, but from the perspective of readability, bit flags are also
->> used consistently here in ABI.
-> 
-> Don't do that in uapi.
-> 
->>>> +enum hns_roce_create_qp_comp_mask {
->>>> +	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
->>>
->>> Why 1<<1 not 1<<0?
->>
->> This is to keep consistent with our internal ABI, there are some
->> features not upstream yet.
-> 
-> Nope, pack them tightly. Don't keep an "internal ABI"
-> 
->>>> @@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
->>>>  	__u32	reserved;
->>>>  	__u32	config;
->>>>  	__u32	max_inline_data;
->>>> +	__u8	reserved0;
->>>> +	__u8	congest_type;
->>>
->>> Why this layout?
->>
->> Same as the 1<<1 issue, to keep consistent with our internal ABI.
-> 
-> Same answer
-> 
-> Jason
+I have done that. In my humble personal opinion, at the moment, the
+subheadings look a bit too large in the HTML view compared to the few
+points below.
+However, I am planning to add more points to the checklist anyway when
+I understand and have summarized the essence of the other documents
+for patch submissions (submitting-patches and howto).
+
+So, let us make them subheadings.
+
+> > +
+> >  1) If you use a facility then #include the file that defines/declares
+> >     that facility.  Don't depend on other header files pulling in ones
+> >     that you use.
+> >
+> > -2) Builds cleanly:
+> > +2) Check your patch for general style as detailed in
+> > +   :ref:`Documentation/process/coding-style.rst <codingstyle>`.
+> >
+> > -  a) with applicable or modified ``CONFIG`` options ``=3Dy``, ``=3Dm``=
+, and
+> > -     ``=3Dn``.  No ``gcc`` warnings/errors, no linker warnings/errors.
+> > +3) All memory barriers {e.g., ``barrier()``, ``rmb()``, ``wmb()``} nee=
+d a
+> > +   comment in the source code that explains the logic of what they are=
+ doing
+> > +   and why.
+>
+> I think we should just remove all the manually updated bullet
+> numbering. Either make them bulleted lists with "*" or autonumbered
+> lists with "#.". See [1]. This should be a separate change.
+>
+
+Done that. I used "#." to still have the numbering in place.
+
+The two changes are straightforward, and I will send them out as a v2
+series, once Randy has had time to provide his feedback on the content
+of the v1 patch and I have included his review remarks.
+
+
+Lukas
 
