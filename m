@@ -1,305 +1,1002 @@
-Return-Path: <linux-kernel+bounces-82776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82777-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AAC586898A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:06:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8224868992
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:07:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EB911C2164F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:06:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43EF21F265BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:07:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63AF554645;
-	Tue, 27 Feb 2024 07:06:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QPx8K1ea"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564055465D;
+	Tue, 27 Feb 2024 07:07:20 +0000 (UTC)
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900D253E32
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4C015AF1;
+	Tue, 27 Feb 2024 07:07:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709017586; cv=none; b=fnJahYpI0aB0mHizeCRwYMF8spKtdzFWKR6XRFceICN3+6rgGQW7SCuJ6Gg5wRFAXpDhbS+P2Li8tZPCHhETwLPSxcm6G4Z/+zW2scok8ssyrFWMiXJn6BcjL+To/0kz8Y0w5QwiksmcMmrrQDJCj7fIBwqL+MVQ+/WEs6VTtew=
+	t=1709017638; cv=none; b=Tez714/VF2Ui2uqGfqXDGgl52KULiBSMStbsOQDZW9oM/fPOpdMwvlxvTiijmjIFhZHT2XXqFEXNxGIq0dtUX7f8LuARUian2v157kNkjGgGxW1l2fWgTaJoCzpqdnkQleTIPJ+wAb/sCkrbTw2n6d6A8fjVJvpegbZ3Ed7o+iQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709017586; c=relaxed/simple;
-	bh=TmTOt+hyHAifX2R0VSXHdchHMKRvzNoke2wPc8Ndato=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C+ox9pNQLd0Ims5KyZkBGanGqzq/85BYITWq5GgVsEPG2lEpaMgLdBM+6efeOa3SQxETQ2zl/h/Yjz6sotv1njbWJKA3B1rktLGzMx7Lx4Gdcw0ZARKm5pIpjiSiVbDxQ8mCCjFulHrdhK2HtW6bvq6mMFLsS3s1XiVJ27Dsoys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QPx8K1ea; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-563f675be29so4083915a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:06:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709017582; x=1709622382; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vLCxLnglQud6AafcMTZGxWqddfDheQOqmiuHd+EOBrk=;
-        b=QPx8K1ea+WO3K6OFeWl6S9PLsQj57L+TF8mVy/zgqpj4dZBBheF+ag/e1B8cWquf7M
-         GJFWIuUWQXm+tTNyq8Yl0DWJ3Dh8MOWRBjbHUo0V04+fMdpo4NVR+jOjhfFaeLpBlJYi
-         c1yZbOZb8AbAB/HYT3x8IOlsJtqf0i0SiFLQhHHX36LILSWLa1gInWy3Omh0xsmndfpb
-         wOP7mydp5ShnJy+sdjbleb03rOyl81VheMNl1tiPWGdwuDMEBWbwExvJxoyhXuqN5VAW
-         SJZxIhQR2HNyvAym38GEp1nGbKLd9jdTjF/lgrFX8KVYHJMmq5DJzFZUXq+hPAiYDteH
-         GzWg==
+	s=arc-20240116; t=1709017638; c=relaxed/simple;
+	bh=RtdlcsnRiYuYtt0xmMEk2gk2XrMH/RJKczoCcz8nErQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ondtDlhZWjhZ7OjA+4eydFr66UCCN/b0mcadqHth5aqdbmJpOkL9UgLslENWmkr+mBpZMP8dQRl4OH0yUFc+JWjG8bUOpPxFjxB3CejsBvx5Tm4/nlG0NifzPbV1KpXzRXkhB1uKGjPOEiGb6pFtW51BC/63X+oXBtd/IvFkxME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so3371052a12.1;
+        Mon, 26 Feb 2024 23:07:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709017582; x=1709622382;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vLCxLnglQud6AafcMTZGxWqddfDheQOqmiuHd+EOBrk=;
-        b=EKqGLKbrOqcg8cb8R5Zk1TSmUMPzUgYEyDE0cpKKJSNz6HU/pLiZVCXbAgKcNnrsNc
-         UrBum6BY4dF4G1vVzy5p4GZh4//j+Qn4xLrut/HPD6n02RbkXC3jz6mB0zE3fGyO67sC
-         We0MO+rjAeUfzUkchAz2N1A7tg7L1ZrROqEXqm3qdKF56YG5mdU5sy2bs7cy+IZ6yEas
-         IyhgubMeJhyidv6irHHW31g5UVIbp4P5oqeJrDhNsNxuNbqc59XUJAOjyAVikzFvhs4G
-         ABQc/17tYEgM8EbFEc17KwfvymRK0/kg62epK5HJINalWi9cdZjEGnrqB1tDdjIgDo3R
-         VQFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUKnMPNrRA0m/HlnbfDZprrivT/btyqOb8Boao14SBVY1GmGlfy8CDevoHIqHY+IbLxZxf82XwhI6mx9BGSuU2crRhzFE5nYNrO5QFp
-X-Gm-Message-State: AOJu0YzX1aJhXipwgPorkLSstVbJV4+wnc6BTZmHyGvbuLHEnT0SQIab
-	zpT7dPAx1c5V0LmDsH0DRyh9nyWhl1hgBZ/MLBtVAOLugbLfwQm52mrpb0ZAOB0=
-X-Google-Smtp-Source: AGHT+IH3nPjxyLxePuzG85v10xOwBHg/CBPZEZjd12HuCqZJPvxpHQEs182DxeMGYt2iwDOWsPmcwg==
-X-Received: by 2002:a05:6402:78f:b0:565:ced9:2657 with SMTP id d15-20020a056402078f00b00565ced92657mr4158876edy.7.1709017582311;
-        Mon, 26 Feb 2024 23:06:22 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id r11-20020a056402018b00b0056608214577sm472173edv.16.2024.02.26.23.06.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 23:06:21 -0800 (PST)
-Message-ID: <f69ef2ad-8ace-40c8-b923-4dde20eda2ec@linaro.org>
-Date: Tue, 27 Feb 2024 08:06:20 +0100
+        d=1e100.net; s=20230601; t=1709017636; x=1709622436;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dbu/WUmrCQnOLqsNn6SF1G6bUhHMTMaciKowenIIaV8=;
+        b=LS5gZn8xK2BBNImBj3Ju7lNcXCAfqaBrRyasLamelo++AG9IDFdisqcHX+GWofxWVe
+         Cl/l3DCfjyCVUfOIHu8MG7jmXAz1RsJAn/GJ1xdsL75+TG8o88mCxxaam9eOOROFzprv
+         bL2PWM+Wl/D0zZ7ncNarK4YtrMQN+Zuwsfh/Vt9iDdriPG4iPzhnrOczuXxte6GBYMIK
+         XSzd2tzBFgTvO3VtNVSxHLB5f9OHgJhtiOfj8hZqWjchvtWwgfq4DRe0ij4MLUDzFt+4
+         FHsPx8RG+/IQu+0EJZvbZZqb8mNdgGxdlGvH62+qrSluyhTB3sbwhyqgKW+5xXD8C46H
+         OqhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV1DgJ3KWI0irtocq/W07LVmioWhx0VXnjRNXQ1Jg3hA3Akc+mULqEfYDn5z/WBTu3A1dh4+Rsa8XOsHS0lusLXTbsoEJ9nRpCTYGdZGIt6hIY0e9Fd0QTEp+KlDQSGzxk/1nGfYvEQBlA6DO7UOo2QjXQkIVEmZajl2jxe0qeUeMyi3Q==
+X-Gm-Message-State: AOJu0Yxo1Ine11/NZ6Y9/PyCwL6CHggkKhYwhCSbjzmp4qP18xtjutSO
+	7ATZkVe75fMK0hcoNP5UrUgjYuaZ0O/pCTAApdb1fjfdAw70dBPz+ftK3DSKPC+8EpJUxDmyhIP
+	/zPYkbpugEgtPs5xFhEY0I0lY0Oo=
+X-Google-Smtp-Source: AGHT+IGtrlCAS3zlFHo7VoCxCSeE1rVnmkPfx2kZNPcvDffJ0DJZECWnPObSKICtNAFElDQdbsOZmAfEGcNSLs01cQY=
+X-Received: by 2002:a17:90a:e4f:b0:299:699b:c5de with SMTP id
+ p15-20020a17090a0e4f00b00299699bc5demr7339939pja.19.1709017635661; Mon, 26
+ Feb 2024 23:07:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT
- schema
-Content-Language: en-US
-To: Andrew Jeffery <andrew@codeconstruct.com.au>, linus.walleij@linaro.org,
- brgl@bgdev.pl, krzysztof.kozlowski+dt@linaro.org
-Cc: robh+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
- linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-References: <20240227052353.1060306-1-andrew@codeconstruct.com.au>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240227052353.1060306-1-andrew@codeconstruct.com.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
+In-Reply-To: <20240214063708.972376-5-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 26 Feb 2024 23:07:04 -0800
+Message-ID: <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 27/02/2024 06:23, Andrew Jeffery wrote:
-> Squash warnings such as:
-> 
-> ```
-> arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,ast2400-gpio']
-> ```
-> 
-> Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+On Tue, Feb 13, 2024 at 10:37=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> Move threads out of machine and move thread_rb_node into the C
+> file. This hides the implementation of threads from the rest of the
+> code allowing for it to be refactored.
+>
+> Locking discipline is tightened up in this change.
+
+Doesn't look like a simple code move.  Can we split the locking
+change from the move to make the reviewer's life a bit easier? :)
+
+Thanks,
+Namhyung
+
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
 > ---
-> v5: Resolve macro definition clashes from aspeed clock headers in examples
->     identified by Rob's bot:
-> 
->     https://lore.kernel.org/all/170900020204.2360855.790404478830111761.robh@kernel.org/
-> 
->     Clearly I missed running `make dt_binding_check` on the final iteration of
->     the v4 patch I sent. Hopefully I'm running out of rakes to step on here!
-> 
-> v4: https://lore.kernel.org/all/20240227004414.841391-1-andrew@codeconstruct.com.au/
-> 
->     Add constraints for gpio-line-names, ngpios as requested by Krzysztof:
->     https://lore.kernel.org/all/458becdb-fb1e-4808-87b6-3037ec945647@linaro.org/
-> 
->     Add more examples to exercise constraints.
-
-No, one or two examples (if there are quite different) is enough.
-
-> 
-> v3: https://lore.kernel.org/all/20240226051645.414935-1-andrew@codeconstruct.com.au/
-> 
->     Base on v6.8-rc6, fix yamllint warning
-> 
->     Rob's bot picked the missing `#interrupt-cells` in the example on v2[1]. The
->     patch was based on v6.8-rc1, and going back over my shell history I missed
->     the following output from `make dt_binding_check`:
-> 
->     ```
->     ...
->       LINT    Documentation/devicetree/bindings
->       usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA] [--list-files] [-f {parsable,standard,colored,github,auto}] [-s] [--no-warnings] [-v] [FILE_OR_DIR ...]
->       yamllint: error: one of the arguments FILE_OR_DIR - is required   
->     ...
->     ```
-> 
->     I've rebased on v6.8-rc6 and no-longer see the issue with the invocation
->     of `yamllint`.
-> 
-> [1]: https://lore.kernel.org/all/170892197611.2260479.15343562563553959436.robh@kernel.org/
-> 
-> v2: https://lore.kernel.org/all/20240226031951.284847-1-andrew@codeconstruct.com.au/
-> 
->     Address feedback from Krzysztof:
->     https://lore.kernel.org/all/0d1dd262-b6dd-4d71-9239-8b0aec8cceff@linaro.org/
-> 
-> v1: https://lore.kernel.org/all/20240220052918.742793-1-andrew@codeconstruct.com.au/
-> 
->  .../bindings/gpio/aspeed,ast2400-gpio.yaml    | 143 ++++++++++++++++++
->  .../devicetree/bindings/gpio/gpio-aspeed.txt  |  39 -----
->  2 files changed, 143 insertions(+), 39 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
->  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
+>  tools/perf/util/Build                 |   1 +
+>  tools/perf/util/bpf_lock_contention.c |   8 +-
+>  tools/perf/util/machine.c             | 287 ++++----------------------
+>  tools/perf/util/machine.h             |  20 +-
+>  tools/perf/util/thread.c              |   2 +-
+>  tools/perf/util/thread.h              |   6 -
+>  tools/perf/util/threads.c             | 244 ++++++++++++++++++++++
+>  tools/perf/util/threads.h             |  35 ++++
+>  8 files changed, 325 insertions(+), 278 deletions(-)
+>  create mode 100644 tools/perf/util/threads.c
+>  create mode 100644 tools/perf/util/threads.h
+>
+> diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> index 8027f450fa3e..a0e8cd68d490 100644
+> --- a/tools/perf/util/Build
+> +++ b/tools/perf/util/Build
+> @@ -71,6 +71,7 @@ perf-y +=3D ordered-events.o
+>  perf-y +=3D namespaces.o
+>  perf-y +=3D comm.o
+>  perf-y +=3D thread.o
+> +perf-y +=3D threads.o
+>  perf-y +=3D thread_map.o
+>  perf-y +=3D parse-events-flex.o
+>  perf-y +=3D parse-events-bison.o
+> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_=
+lock_contention.c
+> index 31ff19afc20c..3992c8a9fd96 100644
+> --- a/tools/perf/util/bpf_lock_contention.c
+> +++ b/tools/perf/util/bpf_lock_contention.c
+> @@ -210,7 +210,7 @@ static const char *lock_contention_get_name(struct lo=
+ck_contention *con,
+>
+>                 /* do not update idle comm which contains CPU number */
+>                 if (pid) {
+> -                       struct thread *t =3D __machine__findnew_thread(ma=
+chine, /*pid=3D*/-1, pid);
+> +                       struct thread *t =3D machine__findnew_thread(mach=
+ine, /*pid=3D*/-1, pid);
+>
+>                         if (t =3D=3D NULL)
+>                                 return name;
+> @@ -302,9 +302,9 @@ int lock_contention_read(struct lock_contention *con)
+>                 return -1;
+>
+>         if (con->aggr_mode =3D=3D LOCK_AGGR_TASK) {
+> -               struct thread *idle =3D __machine__findnew_thread(machine=
+,
+> -                                                               /*pid=3D*=
+/0,
+> -                                                               /*tid=3D*=
+/0);
+> +               struct thread *idle =3D machine__findnew_thread(machine,
+> +                                                             /*pid=3D*/0=
+,
+> +                                                             /*tid=3D*/0=
+);
+>                 thread__set_comm(idle, "swapper", /*timestamp=3D*/0);
+>         }
+>
+> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+> index e072b2115b64..e668a97255f8 100644
+> --- a/tools/perf/util/machine.c
+> +++ b/tools/perf/util/machine.c
+> @@ -43,9 +43,6 @@
+>  #include <linux/string.h>
+>  #include <linux/zalloc.h>
+>
+> -static void __machine__remove_thread(struct machine *machine, struct thr=
+ead_rb_node *nd,
+> -                                    struct thread *th, bool lock);
+> -
+>  static struct dso *machine__kernel_dso(struct machine *machine)
+>  {
+>         return map__dso(machine->vmlinux_map);
+> @@ -58,35 +55,6 @@ static void dsos__init(struct dsos *dsos)
+>         init_rwsem(&dsos->lock);
+>  }
+>
+> -static void machine__threads_init(struct machine *machine)
+> -{
+> -       int i;
+> -
+> -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> -               struct threads *threads =3D &machine->threads[i];
+> -               threads->entries =3D RB_ROOT_CACHED;
+> -               init_rwsem(&threads->lock);
+> -               threads->nr =3D 0;
+> -               threads->last_match =3D NULL;
+> -       }
+> -}
+> -
+> -static int thread_rb_node__cmp_tid(const void *key, const struct rb_node=
+ *nd)
+> -{
+> -       int to_find =3D (int) *((pid_t *)key);
+> -
+> -       return to_find - (int)thread__tid(rb_entry(nd, struct thread_rb_n=
+ode, rb_node)->thread);
+> -}
+> -
+> -static struct thread_rb_node *thread_rb_node__find(const struct thread *=
+th,
+> -                                                  struct rb_root *tree)
+> -{
+> -       pid_t to_find =3D thread__tid(th);
+> -       struct rb_node *nd =3D rb_find(&to_find, tree, thread_rb_node__cm=
+p_tid);
+> -
+> -       return rb_entry(nd, struct thread_rb_node, rb_node);
+> -}
+> -
+>  static int machine__set_mmap_name(struct machine *machine)
+>  {
+>         if (machine__is_host(machine))
+> @@ -120,7 +88,7 @@ int machine__init(struct machine *machine, const char =
+*root_dir, pid_t pid)
+>         RB_CLEAR_NODE(&machine->rb_node);
+>         dsos__init(&machine->dsos);
+>
+> -       machine__threads_init(machine);
+> +       threads__init(&machine->threads);
+>
+>         machine->vdso_info =3D NULL;
+>         machine->env =3D NULL;
+> @@ -221,27 +189,11 @@ static void dsos__exit(struct dsos *dsos)
+>
+>  void machine__delete_threads(struct machine *machine)
+>  {
+> -       struct rb_node *nd;
+> -       int i;
+> -
+> -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> -               struct threads *threads =3D &machine->threads[i];
+> -               down_write(&threads->lock);
+> -               nd =3D rb_first_cached(&threads->entries);
+> -               while (nd) {
+> -                       struct thread_rb_node *trb =3D rb_entry(nd, struc=
+t thread_rb_node, rb_node);
+> -
+> -                       nd =3D rb_next(nd);
+> -                       __machine__remove_thread(machine, trb, trb->threa=
+d, false);
+> -               }
+> -               up_write(&threads->lock);
+> -       }
+> +       threads__remove_all_threads(&machine->threads);
+>  }
+>
+>  void machine__exit(struct machine *machine)
+>  {
+> -       int i;
+> -
+>         if (machine =3D=3D NULL)
+>                 return;
+>
+> @@ -254,12 +206,7 @@ void machine__exit(struct machine *machine)
+>         zfree(&machine->current_tid);
+>         zfree(&machine->kallsyms_filename);
+>
+> -       machine__delete_threads(machine);
+> -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> -               struct threads *threads =3D &machine->threads[i];
+> -
+> -               exit_rwsem(&threads->lock);
+> -       }
+> +       threads__exit(&machine->threads);
+>  }
+>
+>  void machine__delete(struct machine *machine)
+> @@ -526,7 +473,7 @@ static void machine__update_thread_pid(struct machine=
+ *machine,
+>         if (thread__pid(th) =3D=3D thread__tid(th))
+>                 return;
+>
+> -       leader =3D __machine__findnew_thread(machine, thread__pid(th), th=
+read__pid(th));
+> +       leader =3D machine__findnew_thread(machine, thread__pid(th), thre=
+ad__pid(th));
+>         if (!leader)
+>                 goto out_err;
+>
+> @@ -560,160 +507,55 @@ static void machine__update_thread_pid(struct mach=
+ine *machine,
+>         goto out_put;
+>  }
+>
+> -/*
+> - * Front-end cache - TID lookups come in blocks,
+> - * so most of the time we dont have to look up
+> - * the full rbtree:
+> - */
+> -static struct thread*
+> -__threads__get_last_match(struct threads *threads, struct machine *machi=
+ne,
+> -                         int pid, int tid)
+> -{
+> -       struct thread *th;
+> -
+> -       th =3D threads->last_match;
+> -       if (th !=3D NULL) {
+> -               if (thread__tid(th) =3D=3D tid) {
+> -                       machine__update_thread_pid(machine, th, pid);
+> -                       return thread__get(th);
+> -               }
+> -               thread__put(threads->last_match);
+> -               threads->last_match =3D NULL;
+> -       }
+> -
+> -       return NULL;
+> -}
+> -
+> -static struct thread*
+> -threads__get_last_match(struct threads *threads, struct machine *machine=
+,
+> -                       int pid, int tid)
+> -{
+> -       struct thread *th =3D NULL;
+> -
+> -       if (perf_singlethreaded)
+> -               th =3D __threads__get_last_match(threads, machine, pid, t=
+id);
+> -
+> -       return th;
+> -}
+> -
+> -static void
+> -__threads__set_last_match(struct threads *threads, struct thread *th)
+> -{
+> -       thread__put(threads->last_match);
+> -       threads->last_match =3D thread__get(th);
+> -}
+> -
+> -static void
+> -threads__set_last_match(struct threads *threads, struct thread *th)
+> -{
+> -       if (perf_singlethreaded)
+> -               __threads__set_last_match(threads, th);
+> -}
+> -
+>  /*
+>   * Caller must eventually drop thread->refcnt returned with a successful
+>   * lookup/new thread inserted.
+>   */
+> -static struct thread *____machine__findnew_thread(struct machine *machin=
+e,
+> -                                                 struct threads *threads=
+,
+> -                                                 pid_t pid, pid_t tid,
+> -                                                 bool create)
+> +static struct thread *__machine__findnew_thread(struct machine *machine,
+> +                                               pid_t pid,
+> +                                               pid_t tid,
+> +                                               bool create)
+>  {
+> -       struct rb_node **p =3D &threads->entries.rb_root.rb_node;
+> -       struct rb_node *parent =3D NULL;
+> -       struct thread *th;
+> -       struct thread_rb_node *nd;
+> -       bool leftmost =3D true;
+> +       struct thread *th =3D threads__find(&machine->threads, tid);
+> +       bool created;
+>
+> -       th =3D threads__get_last_match(threads, machine, pid, tid);
+> -       if (th)
+> +       if (th) {
+> +               machine__update_thread_pid(machine, th, pid);
+>                 return th;
+> -
+> -       while (*p !=3D NULL) {
+> -               parent =3D *p;
+> -               th =3D rb_entry(parent, struct thread_rb_node, rb_node)->=
+thread;
+> -
+> -               if (thread__tid(th) =3D=3D tid) {
+> -                       threads__set_last_match(threads, th);
+> -                       machine__update_thread_pid(machine, th, pid);
+> -                       return thread__get(th);
+> -               }
+> -
+> -               if (tid < thread__tid(th))
+> -                       p =3D &(*p)->rb_left;
+> -               else {
+> -                       p =3D &(*p)->rb_right;
+> -                       leftmost =3D false;
+> -               }
+>         }
+> -
+>         if (!create)
+>                 return NULL;
+>
+> -       th =3D thread__new(pid, tid);
+> -       if (th =3D=3D NULL)
+> -               return NULL;
+> -
+> -       nd =3D malloc(sizeof(*nd));
+> -       if (nd =3D=3D NULL) {
+> -               thread__put(th);
+> -               return NULL;
+> -       }
+> -       nd->thread =3D th;
+> -
+> -       rb_link_node(&nd->rb_node, parent, p);
+> -       rb_insert_color_cached(&nd->rb_node, &threads->entries, leftmost)=
+;
+> -       /*
+> -        * We have to initialize maps separately after rb tree is updated=
+.
+> -        *
+> -        * The reason is that we call machine__findnew_thread within
+> -        * thread__init_maps to find the thread leader and that would scr=
+ewed
+> -        * the rb tree.
+> -        */
+> -       if (thread__init_maps(th, machine)) {
+> -               pr_err("Thread init failed thread %d\n", pid);
+> -               rb_erase_cached(&nd->rb_node, &threads->entries);
+> -               RB_CLEAR_NODE(&nd->rb_node);
+> -               free(nd);
+> -               thread__put(th);
+> -               return NULL;
+> -       }
+> -       /*
+> -        * It is now in the rbtree, get a ref
+> -        */
+> -       threads__set_last_match(threads, th);
+> -       ++threads->nr;
+> -
+> -       return thread__get(th);
+> -}
+> +       th =3D threads__findnew(&machine->threads, pid, tid, &created);
+> +       if (created) {
+> +               /*
+> +                * We have to initialize maps separately after rb tree is
+> +                * updated.
+> +                *
+> +                * The reason is that we call machine__findnew_thread wit=
+hin
+> +                * thread__init_maps to find the thread leader and that w=
+ould
+> +                * screwed the rb tree.
+> +                */
+> +               if (thread__init_maps(th, machine)) {
+> +                       pr_err("Thread init failed thread %d\n", pid);
+> +                       threads__remove(&machine->threads, th);
+> +                       thread__put(th);
+> +                       return NULL;
+> +               }
+> +       } else
+> +               machine__update_thread_pid(machine, th, pid);
+>
+> -struct thread *__machine__findnew_thread(struct machine *machine, pid_t =
+pid, pid_t tid)
+> -{
+> -       return ____machine__findnew_thread(machine, machine__threads(mach=
+ine, tid), pid, tid, true);
+> +       return th;
+>  }
+>
+> -struct thread *machine__findnew_thread(struct machine *machine, pid_t pi=
+d,
+> -                                      pid_t tid)
+> +struct thread *machine__findnew_thread(struct machine *machine, pid_t pi=
+d, pid_t tid)
+>  {
+> -       struct threads *threads =3D machine__threads(machine, tid);
+> -       struct thread *th;
+> -
+> -       down_write(&threads->lock);
+> -       th =3D __machine__findnew_thread(machine, pid, tid);
+> -       up_write(&threads->lock);
+> -       return th;
+> +       return __machine__findnew_thread(machine, pid, tid, /*create=3D*/=
+true);
+>  }
+>
+> -struct thread *machine__find_thread(struct machine *machine, pid_t pid,
+> -                                   pid_t tid)
+> +struct thread *machine__find_thread(struct machine *machine, pid_t pid, =
+pid_t tid)
+>  {
+> -       struct threads *threads =3D machine__threads(machine, tid);
+> -       struct thread *th;
+> -
+> -       down_read(&threads->lock);
+> -       th =3D  ____machine__findnew_thread(machine, threads, pid, tid, f=
+alse);
+> -       up_read(&threads->lock);
+> -       return th;
+> +       return __machine__findnew_thread(machine, pid, tid, /*create=3D*/=
+false);
+>  }
+>
+>  /*
+> @@ -1127,23 +969,13 @@ static int machine_fprintf_cb(struct thread *threa=
+d, void *data)
+>         return 0;
+>  }
+>
+> -static size_t machine__threads_nr(const struct machine *machine)
+> -{
+> -       size_t nr =3D 0;
+> -
+> -       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++)
+> -               nr +=3D machine->threads[i].nr;
+> -
+> -       return nr;
+> -}
+> -
+>  size_t machine__fprintf(struct machine *machine, FILE *fp)
+>  {
+>         struct machine_fprintf_cb_args args =3D {
+>                 .fp =3D fp,
+>                 .printed =3D 0,
+>         };
+> -       size_t ret =3D fprintf(fp, "Threads: %zu\n", machine__threads_nr(=
+machine));
+> +       size_t ret =3D fprintf(fp, "Threads: %zu\n", threads__nr(&machine=
+->threads));
+>
+>         machine__for_each_thread(machine, machine_fprintf_cb, &args);
+>         return ret + args.printed;
+> @@ -2069,36 +1901,9 @@ int machine__process_mmap_event(struct machine *ma=
+chine, union perf_event *event
+>         return 0;
+>  }
+>
+> -static void __machine__remove_thread(struct machine *machine, struct thr=
+ead_rb_node *nd,
+> -                                    struct thread *th, bool lock)
+> -{
+> -       struct threads *threads =3D machine__threads(machine, thread__tid=
+(th));
+> -
+> -       if (!nd)
+> -               nd =3D thread_rb_node__find(th, &threads->entries.rb_root=
+);
+> -
+> -       if (threads->last_match && RC_CHK_EQUAL(threads->last_match, th))
+> -               threads__set_last_match(threads, NULL);
+> -
+> -       if (lock)
+> -               down_write(&threads->lock);
+> -
+> -       BUG_ON(refcount_read(thread__refcnt(th)) =3D=3D 0);
+> -
+> -       thread__put(nd->thread);
+> -       rb_erase_cached(&nd->rb_node, &threads->entries);
+> -       RB_CLEAR_NODE(&nd->rb_node);
+> -       --threads->nr;
+> -
+> -       free(nd);
+> -
+> -       if (lock)
+> -               up_write(&threads->lock);
+> -}
+> -
+>  void machine__remove_thread(struct machine *machine, struct thread *th)
+>  {
+> -       return __machine__remove_thread(machine, NULL, th, true);
+> +       return threads__remove(&machine->threads, th);
+>  }
+>
+>  int machine__process_fork_event(struct machine *machine, union perf_even=
+t *event,
+> @@ -3232,23 +3037,7 @@ int machine__for_each_thread(struct machine *machi=
+ne,
+>                              int (*fn)(struct thread *thread, void *p),
+>                              void *priv)
+>  {
+> -       struct threads *threads;
+> -       struct rb_node *nd;
+> -       int rc =3D 0;
+> -       int i;
+> -
+> -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> -               threads =3D &machine->threads[i];
+> -               for (nd =3D rb_first_cached(&threads->entries); nd;
+> -                    nd =3D rb_next(nd)) {
+> -                       struct thread_rb_node *trb =3D rb_entry(nd, struc=
+t thread_rb_node, rb_node);
+> -
+> -                       rc =3D fn(trb->thread, priv);
+> -                       if (rc !=3D 0)
+> -                               return rc;
+> -               }
+> -       }
+> -       return rc;
+> +       return threads__for_each_thread(&machine->threads, fn, priv);
+>  }
+>
+>  int machines__for_each_thread(struct machines *machines,
+> diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
+> index b738ce84817b..e28c787616fe 100644
+> --- a/tools/perf/util/machine.h
+> +++ b/tools/perf/util/machine.h
+> @@ -7,6 +7,7 @@
+>  #include "maps.h"
+>  #include "dsos.h"
+>  #include "rwsem.h"
+> +#include "threads.h"
+>
+>  struct addr_location;
+>  struct branch_stack;
+> @@ -28,16 +29,6 @@ extern const char *ref_reloc_sym_names[];
+>
+>  struct vdso_info;
+>
+> -#define THREADS__TABLE_BITS    8
+> -#define THREADS__TABLE_SIZE    (1 << THREADS__TABLE_BITS)
+> -
+> -struct threads {
+> -       struct rb_root_cached  entries;
+> -       struct rw_semaphore    lock;
+> -       unsigned int           nr;
+> -       struct thread          *last_match;
+> -};
+> -
+>  struct machine {
+>         struct rb_node    rb_node;
+>         pid_t             pid;
+> @@ -48,7 +39,7 @@ struct machine {
+>         char              *root_dir;
+>         char              *mmap_name;
+>         char              *kallsyms_filename;
+> -       struct threads    threads[THREADS__TABLE_SIZE];
+> +       struct threads    threads;
+>         struct vdso_info  *vdso_info;
+>         struct perf_env   *env;
+>         struct dsos       dsos;
+> @@ -69,12 +60,6 @@ struct machine {
+>         bool              trampolines_mapped;
+>  };
+>
+> -static inline struct threads *machine__threads(struct machine *machine, =
+pid_t tid)
+> -{
+> -       /* Cast it to handle tid =3D=3D -1 */
+> -       return &machine->threads[(unsigned int)tid % THREADS__TABLE_SIZE]=
+;
+> -}
+> -
+>  /*
+>   * The main kernel (vmlinux) map
+>   */
+> @@ -220,7 +205,6 @@ bool machine__is(struct machine *machine, const char =
+*arch);
+>  bool machine__normalized_is(struct machine *machine, const char *arch);
+>  int machine__nr_cpus_avail(struct machine *machine);
+>
+> -struct thread *__machine__findnew_thread(struct machine *machine, pid_t =
+pid, pid_t tid);
+>  struct thread *machine__findnew_thread(struct machine *machine, pid_t pi=
+d, pid_t tid);
+>
+>  struct dso *machine__findnew_dso_id(struct machine *machine, const char =
+*filename, struct dso_id *id);
+> diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
+> index c59ab4d79163..1aa8962dcf52 100644
+> --- a/tools/perf/util/thread.c
+> +++ b/tools/perf/util/thread.c
+> @@ -26,7 +26,7 @@ int thread__init_maps(struct thread *thread, struct mac=
+hine *machine)
+>         if (pid =3D=3D thread__tid(thread) || pid =3D=3D -1) {
+>                 thread__set_maps(thread, maps__new(machine));
+>         } else {
+> -               struct thread *leader =3D __machine__findnew_thread(machi=
+ne, pid, pid);
+> +               struct thread *leader =3D machine__findnew_thread(machine=
+, pid, pid);
+>
+>                 if (leader) {
+>                         thread__set_maps(thread, maps__get(thread__maps(l=
+eader)));
+> diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
+> index 0df775b5c110..4b8f3e9e513b 100644
+> --- a/tools/perf/util/thread.h
+> +++ b/tools/perf/util/thread.h
+> @@ -3,7 +3,6 @@
+>  #define __PERF_THREAD_H
+>
+>  #include <linux/refcount.h>
+> -#include <linux/rbtree.h>
+>  #include <linux/list.h>
+>  #include <stdio.h>
+>  #include <unistd.h>
+> @@ -30,11 +29,6 @@ struct lbr_stitch {
+>         struct callchain_cursor_node    *prev_lbr_cursor;
+>  };
+>
+> -struct thread_rb_node {
+> -       struct rb_node rb_node;
+> -       struct thread *thread;
+> -};
+> -
+>  DECLARE_RC_STRUCT(thread) {
+>         /** @maps: mmaps associated with this thread. */
+>         struct maps             *maps;
+> diff --git a/tools/perf/util/threads.c b/tools/perf/util/threads.c
 > new file mode 100644
-> index 000000000000..1aa28b1817cf
+> index 000000000000..d984ec939c7b
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
-> @@ -0,0 +1,143 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/gpio/aspeed,ast2400-gpio.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +++ b/tools/perf/util/threads.c
+> @@ -0,0 +1,244 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "threads.h"
+> +#include "machine.h"
+> +#include "thread.h"
 > +
-> +title: Aspeed GPIO controller
+> +struct thread_rb_node {
+> +       struct rb_node rb_node;
+> +       struct thread *thread;
+> +};
 > +
-> +maintainers:
-> +  - Andrew Jeffery <andrew@codeconstruct.com.au>
+> +static struct threads_table_entry *threads__table(struct threads *thread=
+s, pid_t tid)
+> +{
+> +       /* Cast it to handle tid =3D=3D -1 */
+> +       return &threads->table[(unsigned int)tid % THREADS__TABLE_SIZE];
+> +}
 > +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - aspeed,ast2400-gpio
-> +      - aspeed,ast2500-gpio
-> +      - aspeed,ast2600-gpio
+> +void threads__init(struct threads *threads)
+> +{
+> +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> +               struct threads_table_entry *table =3D &threads->table[i];
 > +
-> +  reg:
-> +    maxItems: 1
+> +               table->entries =3D RB_ROOT_CACHED;
+> +               init_rwsem(&table->lock);
+> +               table->nr =3D 0;
+> +               table->last_match =3D NULL;
+> +       }
+> +}
 > +
-> +  clocks:
-> +    maxItems: 1
-> +    description: The clock to use for debounce timings
+> +void threads__exit(struct threads *threads)
+> +{
+> +       threads__remove_all_threads(threads);
+> +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> +               struct threads_table_entry *table =3D &threads->table[i];
 > +
-> +  gpio-controller: true
-> +  gpio-line-names: true
-
-min/maxItems
-
-
-> +  gpio-ranges: true
+> +               exit_rwsem(&table->lock);
+> +       }
+> +}
 > +
-> +  "#gpio-cells":
-> +    const: 2
+> +size_t threads__nr(struct threads *threads)
+> +{
+> +       size_t nr =3D 0;
 > +
-> +  interrupts:
-> +    maxItems: 1
+> +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> +               struct threads_table_entry *table =3D &threads->table[i];
 > +
-> +  interrupt-controller: true
+> +               down_read(&table->lock);
+> +               nr +=3D table->nr;
+> +               up_read(&table->lock);
+> +       }
+> +       return nr;
+> +}
 > +
-> +  "#interrupt-cells":
-> +    const: 2
+> +/*
+> + * Front-end cache - TID lookups come in blocks,
+> + * so most of the time we dont have to look up
+> + * the full rbtree:
+> + */
+> +static struct thread *__threads_table_entry__get_last_match(struct threa=
+ds_table_entry *table,
+> +                                                           pid_t tid)
+> +{
+> +       struct thread *th, *res =3D NULL;
 > +
-> +  ngpios: true
-
-minimum/maximum.
-
-
+> +       th =3D table->last_match;
+> +       if (th !=3D NULL) {
+> +               if (thread__tid(th) =3D=3D tid)
+> +                       res =3D thread__get(th);
+> +       }
+> +       return res;
+> +}
 > +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupt-controller
-> +  - "#interrupt-cells"
-> +  - gpio-controller
-> +  - "#gpio-cells"
+> +static void __threads_table_entry__set_last_match(struct threads_table_e=
+ntry *table,
+> +                                                 struct thread *th)
+> +{
+> +       thread__put(table->last_match);
+> +       table->last_match =3D thread__get(th);
+> +}
 > +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: aspeed,ast2400-gpio
-> +    then:
-> +      properties:
-> +        gpio-line-names:
-> +          minItems: 220
-> +          maxItems: 220
-> +        ngpios:
-> +          const: 220
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: aspeed,ast2500-gpio
-> +    then:
-> +      properties:
-> +        gpio-line-names:
-> +          minItems: 232
-> +          maxItems: 232
-> +        ngpios:
-> +          const: 232
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: aspeed,ast2600-gpio
-> +    then:
-> +      properties:
-> +        gpio-line-names:
-> +          minItems: 36
-> +          maxItems: 208
-> +        ngpios:
-> +          enum: [ 36, 208 ]
-> +      required:
-> +        - ngpios
-Best regards,
-Krzysztof
-
+> +static void threads_table_entry__set_last_match(struct threads_table_ent=
+ry *table,
+> +                                               struct thread *th)
+> +{
+> +       down_write(&table->lock);
+> +       __threads_table_entry__set_last_match(table, th);
+> +       up_write(&table->lock);
+> +}
+> +
+> +struct thread *threads__find(struct threads *threads, pid_t tid)
+> +{
+> +       struct threads_table_entry *table  =3D threads__table(threads, ti=
+d);
+> +       struct rb_node **p;
+> +       struct thread *res =3D NULL;
+> +
+> +       down_read(&table->lock);
+> +       res =3D __threads_table_entry__get_last_match(table, tid);
+> +       if (res)
+> +               return res;
+> +
+> +       p =3D &table->entries.rb_root.rb_node;
+> +       while (*p !=3D NULL) {
+> +               struct rb_node *parent =3D *p;
+> +               struct thread *th =3D rb_entry(parent, struct thread_rb_n=
+ode, rb_node)->thread;
+> +
+> +               if (thread__tid(th) =3D=3D tid) {
+> +                       res =3D thread__get(th);
+> +                       break;
+> +               }
+> +
+> +               if (tid < thread__tid(th))
+> +                       p =3D &(*p)->rb_left;
+> +               else
+> +                       p =3D &(*p)->rb_right;
+> +       }
+> +       up_read(&table->lock);
+> +       if (res)
+> +               threads_table_entry__set_last_match(table, res);
+> +       return res;
+> +}
+> +
+> +struct thread *threads__findnew(struct threads *threads, pid_t pid, pid_=
+t tid, bool *created)
+> +{
+> +       struct threads_table_entry *table  =3D threads__table(threads, ti=
+d);
+> +       struct rb_node **p;
+> +       struct rb_node *parent =3D NULL;
+> +       struct thread *res =3D NULL;
+> +       struct thread_rb_node *nd;
+> +       bool leftmost =3D true;
+> +
+> +       *created =3D false;
+> +       down_write(&table->lock);
+> +       p =3D &table->entries.rb_root.rb_node;
+> +       while (*p !=3D NULL) {
+> +               struct thread *th;
+> +
+> +               parent =3D *p;
+> +               th =3D rb_entry(parent, struct thread_rb_node, rb_node)->=
+thread;
+> +
+> +               if (thread__tid(th) =3D=3D tid) {
+> +                       __threads_table_entry__set_last_match(table, th);
+> +                       res =3D thread__get(th);
+> +                       goto out_unlock;
+> +               }
+> +
+> +               if (tid < thread__tid(th))
+> +                       p =3D &(*p)->rb_left;
+> +               else {
+> +                       leftmost =3D false;
+> +                       p =3D &(*p)->rb_right;
+> +               }
+> +       }
+> +       nd =3D malloc(sizeof(*nd));
+> +       if (nd =3D=3D NULL)
+> +               goto out_unlock;
+> +       res =3D thread__new(pid, tid);
+> +       if (!res)
+> +               free(nd);
+> +       else {
+> +               *created =3D true;
+> +               nd->thread =3D thread__get(res);
+> +               rb_link_node(&nd->rb_node, parent, p);
+> +               rb_insert_color_cached(&nd->rb_node, &table->entries, lef=
+tmost);
+> +               ++table->nr;
+> +               __threads_table_entry__set_last_match(table, res);
+> +       }
+> +out_unlock:
+> +       up_write(&table->lock);
+> +       return res;
+> +}
+> +
+> +void threads__remove_all_threads(struct threads *threads)
+> +{
+> +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> +               struct threads_table_entry *table =3D &threads->table[i];
+> +               struct rb_node *nd;
+> +
+> +               down_write(&table->lock);
+> +               __threads_table_entry__set_last_match(table, NULL);
+> +               nd =3D rb_first_cached(&table->entries);
+> +               while (nd) {
+> +                       struct thread_rb_node *trb =3D rb_entry(nd, struc=
+t thread_rb_node, rb_node);
+> +
+> +                       nd =3D rb_next(nd);
+> +                       thread__put(trb->thread);
+> +                       rb_erase_cached(&trb->rb_node, &table->entries);
+> +                       RB_CLEAR_NODE(&trb->rb_node);
+> +                       --table->nr;
+> +
+> +                       free(trb);
+> +               }
+> +               assert(table->nr =3D=3D 0);
+> +               up_write(&table->lock);
+> +       }
+> +}
+> +
+> +void threads__remove(struct threads *threads, struct thread *thread)
+> +{
+> +       struct rb_node **p;
+> +       struct threads_table_entry *table  =3D threads__table(threads, th=
+read__tid(thread));
+> +       pid_t tid =3D thread__tid(thread);
+> +
+> +       down_write(&table->lock);
+> +       if (table->last_match && RC_CHK_EQUAL(table->last_match, thread))
+> +               __threads_table_entry__set_last_match(table, NULL);
+> +
+> +       p =3D &table->entries.rb_root.rb_node;
+> +       while (*p !=3D NULL) {
+> +               struct rb_node *parent =3D *p;
+> +               struct thread_rb_node *nd =3D rb_entry(parent, struct thr=
+ead_rb_node, rb_node);
+> +               struct thread *th =3D nd->thread;
+> +
+> +               if (RC_CHK_EQUAL(th, thread)) {
+> +                       thread__put(nd->thread);
+> +                       rb_erase_cached(&nd->rb_node, &table->entries);
+> +                       RB_CLEAR_NODE(&nd->rb_node);
+> +                       --table->nr;
+> +                       free(nd);
+> +                       break;
+> +               }
+> +
+> +               if (tid < thread__tid(th))
+> +                       p =3D &(*p)->rb_left;
+> +               else
+> +                       p =3D &(*p)->rb_right;
+> +       }
+> +       up_write(&table->lock);
+> +}
+> +
+> +int threads__for_each_thread(struct threads *threads,
+> +                            int (*fn)(struct thread *thread, void *data)=
+,
+> +                            void *data)
+> +{
+> +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> +               struct threads_table_entry *table =3D &threads->table[i];
+> +               struct rb_node *nd;
+> +
+> +               for (nd =3D rb_first_cached(&table->entries); nd; nd =3D =
+rb_next(nd)) {
+> +                       struct thread_rb_node *trb =3D rb_entry(nd, struc=
+t thread_rb_node, rb_node);
+> +                       int rc =3D fn(trb->thread, data);
+> +
+> +                       if (rc !=3D 0)
+> +                               return rc;
+> +               }
+> +       }
+> +       return 0;
+> +
+> +}
+> diff --git a/tools/perf/util/threads.h b/tools/perf/util/threads.h
+> new file mode 100644
+> index 000000000000..ed67de627578
+> --- /dev/null
+> +++ b/tools/perf/util/threads.h
+> @@ -0,0 +1,35 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef __PERF_THREADS_H
+> +#define __PERF_THREADS_H
+> +
+> +#include <linux/rbtree.h>
+> +#include "rwsem.h"
+> +
+> +struct thread;
+> +
+> +#define THREADS__TABLE_BITS    8
+> +#define THREADS__TABLE_SIZE    (1 << THREADS__TABLE_BITS)
+> +
+> +struct threads_table_entry {
+> +       struct rb_root_cached  entries;
+> +       struct rw_semaphore    lock;
+> +       unsigned int           nr;
+> +       struct thread          *last_match;
+> +};
+> +
+> +struct threads {
+> +       struct threads_table_entry table[THREADS__TABLE_SIZE];
+> +};
+> +
+> +void threads__init(struct threads *threads);
+> +void threads__exit(struct threads *threads);
+> +size_t threads__nr(struct threads *threads);
+> +struct thread *threads__find(struct threads *threads, pid_t tid);
+> +struct thread *threads__findnew(struct threads *threads, pid_t pid, pid_=
+t tid, bool *created);
+> +void threads__remove_all_threads(struct threads *threads);
+> +void threads__remove(struct threads *threads, struct thread *thread);
+> +int threads__for_each_thread(struct threads *threads,
+> +                            int (*fn)(struct thread *thread, void *data)=
+,
+> +                            void *data);
+> +
+> +#endif /* __PERF_THREADS_H */
+> --
+> 2.43.0.687.g38aa6559b0-goog
+>
 
