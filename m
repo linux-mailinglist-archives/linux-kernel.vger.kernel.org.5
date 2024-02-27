@@ -1,49 +1,92 @@
-Return-Path: <linux-kernel+bounces-83020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5B40868D38
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:19:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DE8D868D2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85F2E1F2764F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:19:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03B51B262CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B18138492;
-	Tue, 27 Feb 2024 10:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD6C1384AB;
+	Tue, 27 Feb 2024 10:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="tffeR8d1"
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cpyVIP79";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UuxALrSs";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cpyVIP79";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UuxALrSs"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC621384B2;
-	Tue, 27 Feb 2024 10:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C0E138484;
+	Tue, 27 Feb 2024 10:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029158; cv=none; b=ffRYTdBoLVJ6led6zz6jLFRsc6fSMpyXb1IrrnZifbC5KWoTtNo6A4+lL46iiePNIqHFv78TzPI1bCkjm8APMmCQcmUSmEWhJaHHK5bAFuUVGEVZAFgXa8FsfdPM2UnOAKWxLtE6Rb7PkM8CY2hypYLiNyxgEFL1FWsDBsN/XbY=
+	t=1709029134; cv=none; b=faLOVWTGVn8KJ/9dMrbr2iWhdyWhMVVTXpNr2TYyO1NlappalXJBSXuz0n6vrUahLQ3YiTRG8BvQwaw0Qi8mubAKCAeMU7s2pPdBv0l1mz4JruaWNheGIYPNc47NcPobp82hHQQBc8I7tP5Z/Cktm81M9FyD7Zu22Di2V6KaRGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029158; c=relaxed/simple;
-	bh=5sc9exolwsywzwMysiUeFzXsXrPi7FzwPMd2B6e7iUY=;
+	s=arc-20240116; t=1709029134; c=relaxed/simple;
+	bh=1kT4IadTcD9s8wVa7TvXCimMRyY5zCB8d4SK3JfJKpI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i3Oy4B7t0wTEQ/wwXw4vzQyoRnFY0IvljJdkxiqli88+B13wi3Il0rPnMxs7oWC0FSPrOndVMjFKr5F4dhs2EWkvh7kmT044QSRdg0a2AAtIOPGUyo6V43owv+Si3g0NuDAMciu9ZkGfpgBFW9oc23vCDC9MqvTHTHGnZfQvsKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=tffeR8d1; arc=none smtp.client-ip=115.28.160.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-	t=1709029150; bh=5sc9exolwsywzwMysiUeFzXsXrPi7FzwPMd2B6e7iUY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tffeR8d1ZzdwRnjSiWrkYFvpX3d4HLSjHQ3sTPsEVs8BVq9o/Y1zdlByr5Z/hdKAT
-	 n/2hX6ox08LvFhIwV5llcB2iIro+K/jAiVXOEm9QZiJETQ6UyAS/tHnJdpEQJbnn3v
-	 hdlrI2QJ4mTlPtVm3UdAARIg1qEF3AhBTDQ92vMc=
-Received: from [28.0.0.1] (unknown [101.230.251.34])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 In-Reply-To:Content-Type; b=qgKJ2Fm289+Puk/7nac/sGMJuaegQ8skLupDzr47ksHrGhQIS/WQeUD973FLkW51H3dRglAf+/y6/fk3KiQiH5A+Yqo/HAfdbbcdpObIkUWcwRT/Cd7CLDqZ9tMGxl4gCJsmbenq+vFxkgc5iTwhnIawoSu03xXn0vWe8OhkR+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cpyVIP79; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UuxALrSs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cpyVIP79; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UuxALrSs; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 3489160121;
-	Tue, 27 Feb 2024 18:19:10 +0800 (CST)
-Message-ID: <431111f3-d84a-4311-986d-eebd91559cd3@xen0n.name>
-Date: Tue, 27 Feb 2024 18:19:09 +0800
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5FBE01F44F;
+	Tue, 27 Feb 2024 10:18:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709029129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q4pT87ICIgMrimfBYIsFt4403+jQ655os57F8M8rAV0=;
+	b=cpyVIP79rj0/sBrJvpdZDSi/YWGaVzMxOeOUTFZkxXRW5dBBpVG2nrSet3ziaxNcNhCRul
+	fsn2i6ZDMFIR8vZKMy1rHahvaELrlR9TdV1JOh9wud8P37gKHfMGsbCuw8Lz1zGjf4dOM9
+	gotsrvN12NpBYdL5ELH484nyYHkPZRY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709029129;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q4pT87ICIgMrimfBYIsFt4403+jQ655os57F8M8rAV0=;
+	b=UuxALrSs0P8mLarP5bjo/PfJ0N2IwYv6LH6qdRMTKIyww8fRC4dOnMwu5xagQtZCCFsHZf
+	6lKfIVVRnWShjTBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709029129; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q4pT87ICIgMrimfBYIsFt4403+jQ655os57F8M8rAV0=;
+	b=cpyVIP79rj0/sBrJvpdZDSi/YWGaVzMxOeOUTFZkxXRW5dBBpVG2nrSet3ziaxNcNhCRul
+	fsn2i6ZDMFIR8vZKMy1rHahvaELrlR9TdV1JOh9wud8P37gKHfMGsbCuw8Lz1zGjf4dOM9
+	gotsrvN12NpBYdL5ELH484nyYHkPZRY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709029129;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q4pT87ICIgMrimfBYIsFt4403+jQ655os57F8M8rAV0=;
+	b=UuxALrSs0P8mLarP5bjo/PfJ0N2IwYv6LH6qdRMTKIyww8fRC4dOnMwu5xagQtZCCFsHZf
+	6lKfIVVRnWShjTBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B14DF13A65;
+	Tue, 27 Feb 2024 10:18:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id UH3gKQi33WXqfQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 27 Feb 2024 10:18:48 +0000
+Message-ID: <4e648451-31a8-4293-bc14-e7ea01c889b1@suse.cz>
+Date: Tue, 27 Feb 2024 11:19:20 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,135 +94,119 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+Subject: Re: [PATCH v4 21/36] lib: add codetag reference into slabobj_ext
 Content-Language: en-US
-To: maobibo <maobibo@loongson.cn>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
- Huacai Chen <chenhuacai@kernel.org>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
- Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
- linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
- kvm@vger.kernel.org
-References: <20240222032803.2177856-1-maobibo@loongson.cn>
- <20240222032803.2177856-4-maobibo@loongson.cn>
- <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
- <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
- <CAAhV-H7p114hWUVrYRfKiBX3teG8sG7xmEW-Q-QT3i+xdLqDEA@mail.gmail.com>
- <06647e4a-0027-9c9f-f3bd-cd525d37b6d8@loongson.cn>
- <85781278-f3e9-4755-8715-3b9ff714fb20@app.fastmail.com>
- <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
- <327808dd-ac34-4c61-9992-38642acc9419@xen0n.name>
- <62cc24fd-025a-53c6-1c8e-2d20de54d297@loongson.cn>
-From: WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <62cc24fd-025a-53c6-1c8e-2d20de54d297@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-22-surenb@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240221194052.927623-22-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=cpyVIP79;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UuxALrSs
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.02 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[74];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.02)[51.67%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,linux.dev:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -0.02
+X-Rspamd-Queue-Id: 5FBE01F44F
+X-Spam-Flag: NO
 
-On 2/27/24 18:12, maobibo wrote:
+On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> To store code tag for every slab object, a codetag reference is embedded
+> into slabobj_ext when CONFIG_MEM_ALLOC_PROFILING=y.
 > 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+>  include/linux/memcontrol.h | 5 +++++
+>  lib/Kconfig.debug          | 1 +
+>  2 files changed, 6 insertions(+)
 > 
-> On 2024/2/27 下午5:10, WANG Xuerui wrote:
->> On 2/27/24 11:14, maobibo wrote:
->>>
->>>
->>> On 2024/2/27 上午4:02, Jiaxun Yang wrote:
->>>>
->>>>
->>>> 在2024年2月26日二月 上午8:04，maobibo写道：
->>>>> On 2024/2/26 下午2:12, Huacai Chen wrote:
->>>>>> On Mon, Feb 26, 2024 at 10:04 AM maobibo <maobibo@loongson.cn> wrote:
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> On 2024/2/24 下午5:13, Huacai Chen wrote:
->>>>>>>> Hi, Bibo,
->>>>>>>>
->>>>>>>> On Thu, Feb 22, 2024 at 11:28 AM Bibo Mao <maobibo@loongson.cn> 
->>>>>>>> wrote:
->>>>>>>>>
->>>>>>>>> Instruction cpucfg can be used to get processor features. And 
->>>>>>>>> there
->>>>>>>>> is trap exception when it is executed in VM mode, and also it is
->>>>>>>>> to provide cpu features to VM. On real hardware cpucfg area 0 - 20
->>>>>>>>> is used.  Here one specified area 0x40000000 -- 0x400000ff is used
->>>>>>>>> for KVM hypervisor to privide PV features, and the area can be 
->>>>>>>>> extended
->>>>>>>>> for other hypervisors in future. This area will never be used for
->>>>>>>>> real HW, it is only used by software.
->>>>>>>> After reading and thinking, I find that the hypercall method 
->>>>>>>> which is
->>>>>>>> used in our productive kernel is better than this cpucfg method.
->>>>>>>> Because hypercall is more simple and straightforward, plus we don't
->>>>>>>> worry about conflicting with the real hardware.
->>>>>>> No, I do not think so. cpucfg is simper than hypercall, hypercall 
->>>>>>> can
->>>>>>> be in effect when system runs in guest mode. In some scenario 
->>>>>>> like TCG
->>>>>>> mode, hypercall is illegal intruction, however cpucfg can work.
->>>>>> Nearly all architectures use hypercall except x86 for its historical
->>>>> Only x86 support multiple hypervisors and there is multiple hypervisor
->>>>> in x86 only. It is an advantage, not historical reason.
->>>>
->>>> I do believe that all those stuff should not be exposed to guest 
->>>> user space
->>>> for security reasons.
->>> Can you add PLV checking when cpucfg 0x40000000-0x400000FF is 
->>> emulated? if it is user mode return value is zero and it is kernel 
->>> mode emulated value will be returned. It can avoid information leaking.
->>
->> I've suggested this approach in another reply [1], but I've rechecked 
->> the manual, and it turns out this behavior is not permitted by the 
->> current wording. See LoongArch Reference Manual v1.10, Volume 1, 
->> Section 2.2.10.5 "CPUCFG":
->>
->>  > CPUCFG 访问未定义的配置字将读回全 0 值。
->>  >
->>  > Reads of undefined CPUCFG configuration words shall return all-zeroes.
->>
->> This sentence mentions no distinction based on privilege modes, so it 
->> can only mean the behavior applies universally regardless of privilege 
->> modes.
->>
->> I think if you want to make CPUCFG behavior PLV-dependent, you may 
->> have to ask the LoongArch spec editors, internally or in public, for a 
->> new spec revision.
-> No, CPUCFG behavior between CPUCFG0-CPUCFG21 is unchanged, only that it 
-> can be defined by software since CPUCFG 0x400000000 is used by software.
-
-The 0x40000000 range is not mentioned in the manuals. I know you've 
-confirmed privately with HW team but this needs to be properly 
-documented for public projects to properly rely on.
-
->> (There are already multiple third-party LoongArch implementers as of 
->> late 2023, so any ISA-level change like this would best be 
->> coordinated, to minimize surprises.)
-> With document Vol 4-23
-> https://www.intel.com/content/dam/develop/external/us/en/documents/335592-sdm-vol-4.pdf
-> 
-> There is one line "MSR address range between 40000000H - 400000FFH is 
-> marked as a specially reserved range. All existing and
-> future processors will not implement any features using any MSR in this 
-> range."
-
-Thanks for providing this info, now at least we know why it's this 
-specific range of 0x400000XX that's chosen.
-
-> 
-> It only says that it is reserved, it does not say detailed software 
-> behavior. Software behavior is defined in hypervisor such as:
-> https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/main/tlfs/Requirements%20for%20Implementing%20the%20Microsoft%20Hypervisor%20Interface.pdf
-> https://kb.vmware.com/s/article/1009458
-> 
-> If hypercall method is used, there should be ABI also like aarch64:
-> https://documentation-service.arm.com/static/6013e5faeee5236980d08619
-
-Yes proper documentation of public API surface is always necessary 
-*before* doing real work. Because right now the hypercall provider is 
-Linux KVM, maybe we can document the existing and planned hypercall 
-usage and ABI in the kernel docs along with code changes.
-
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index f3584e98b640..2b010316016c 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1653,7 +1653,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+>   * if MEMCG_DATA_OBJEXTS is set.
+>   */
+>  struct slabobj_ext {
+> +#ifdef CONFIG_MEMCG_KMEM
+>  	struct obj_cgroup *objcg;
+> +#endif
+> +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> +	union codetag_ref ref;
+> +#endif
+>  } __aligned(8);
+>  
+>  static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item idx)
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 7bbdb0ddb011..9ecfcdb54417 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -979,6 +979,7 @@ config MEM_ALLOC_PROFILING
+>  	depends on !DEBUG_FORCE_WEAK_PER_CPU
+>  	select CODE_TAGGING
+>  	select PAGE_EXTENSION
+> +	select SLAB_OBJ_EXT
+>  	help
+>  	  Track allocation source code and record total allocation size
+>  	  initiated at that code location. The mechanism can be used to track
 
