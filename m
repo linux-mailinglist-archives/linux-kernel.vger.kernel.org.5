@@ -1,198 +1,147 @@
-Return-Path: <linux-kernel+bounces-82585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 681748686AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6834C8686BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BCD11C22728
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:18:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99CCC1C22480
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE50D1B28D;
-	Tue, 27 Feb 2024 02:17:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52BC1CAA4;
+	Tue, 27 Feb 2024 02:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f+whmAct"
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H+9nkeUF"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADFF11CAF
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:17:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806B01B962
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709000264; cv=none; b=ZyEVDFRNUVjjyegMLdRENLBfMoaAYcaebMHHU2+euRoGl79SXeFlZz3pRToFy7qigmuhhjMqlJprZNceH2y4jFC3pEBOV5NKDWlW3MPEBb3aOQcll3YOd9yyJsllg4X9yQUUOlOHjWXFhqGt8X0ygKMm+aCZ2dQtRmIja5rRE1g=
+	t=1709000323; cv=none; b=WB+gIB7A3ET5OO2o3hIkFqUnb2ICEXnfya+BC50uLlfHOFVSP6pi00UDl4i9sMPPyBEcxWol5dn5c8SSz6eG3rcOJEMDZiom/zhB8PkRHJAWxXNiOQwjh339bRta8dfeqCvCJCSDZ2x59V91tR8pQC35yJ/S25f5Xl4oGDUp1AI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709000264; c=relaxed/simple;
-	bh=JR9kUlDXtLnfWUZv6yt+had/5Xksma4HemKo2amFd74=;
+	s=arc-20240116; t=1709000323; c=relaxed/simple;
+	bh=j/0cvRHoeBDj4WwAVW0/51nHWj3Sa52fkTHqCjmTzTQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ACawUpQ/2XUaosGRXf3ZjkXAjTZTXbsYAGiR2TMmYfd/dNcXPiYjxeTGs4rK2yHFwHv2ClAx7dsFCltAvcfyRW9Pt6/QN3aTGmOb5gG1ZmG9OdOBN4XDJzXwLu0DpTYhRgVkIFH9sTruiR9T3s/ERv+8dtexVlV2IzrIfwyOpf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f+whmAct; arc=none smtp.client-ip=209.85.222.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7d643a40a91so2216969241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:17:42 -0800 (PST)
+	 To:Cc:Content-Type; b=RPqIkQ8P/WY9N6/LAPdtL/1d2k/LPpKVlIiroagR8timUJE4BVfCkXhhDw0vZYrA976gVN0hnyx+iKDGJGkLMMsVwSjYQ+pmOkWLE5lc+Stj9lmQU5m3yU/SvW2PQHmF+e336Axo/EnLoBbYt7ASQAoGCHDrM60S+QBOigxmD3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=H+9nkeUF; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbed179f0faso2213417276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 18:18:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709000261; x=1709605061; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709000320; x=1709605120; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ReCSL7lbirgRScT6I2z3qdqNs57J7V9jRqJOBCMvkWQ=;
-        b=f+whmActHDWI0MdsomaWl8KQUEi/qLfrhwX5ySp321FGjKX3Pp8ZOU3N/htoA1P3gB
-         L8312bGKF/UNQpK6jDQp096xXAV1wQpBf4RhwqSKwN2UI/+OINfip2fyL2J+cbItFBae
-         4RRGbqON3+eHchKSyyIypkFL7WUcbLtwoaouFWbTDhfsBBmfwnbR3SApNzWf2yOb1M9B
-         0pzHc0JfNR4b+jd/ao/WV/SNyNlEGV/jFzw3EFUzKfMm9Y8Mpx+TjZuphhZUk/PxCfLZ
-         DwVt4/bQYb3xUAVQuB7x3wyy8TOw2eJXyHjtsRyRFRqswXmvxNHSdc1SUJhZ8G4HMeWI
-         3OxA==
+        bh=j/0cvRHoeBDj4WwAVW0/51nHWj3Sa52fkTHqCjmTzTQ=;
+        b=H+9nkeUFe6YGaQVdIIkOJYSMA6nrRlzcV9tD12aPokNpRb6v1XUs2RpNlRU+hf3Zcp
+         vTrCHGdeC4l1H6GsmK5SPi64buNftgPZF48f/h1eqoAm1OvMRNFKXrqIva8JO2w6GvcI
+         gmtC6KTOhqkdj3MRkR/6Uv6ITLmuP6Jg4J5Fj7rWNoljMrBTIaO2zaNuRZe61qMo/Hgf
+         fTTZ/DorjfoQY20nvUPHWCUuhPXIhElA2LLs5YwmTsZ7WLHcUNpRBDVwxW0eeEOb77RX
+         BgYH5lEsL51eUJ14hYIop64vKoufACRdl/enbTEvqwK0K/1bwWzFLcnf5Av6Pr2H4tqg
+         JMYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709000261; x=1709605061;
+        d=1e100.net; s=20230601; t=1709000320; x=1709605120;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ReCSL7lbirgRScT6I2z3qdqNs57J7V9jRqJOBCMvkWQ=;
-        b=S4+P2CypeqB6Epj6GTlhAj5Yi19HZAeEA2f1OUqOFe8aylBiBgYOx7N4RJ7XojQaRs
-         v/Simr87U9x3l0R78+GHJyUM5jJou/2TEcLBcRUnqVwXshUkRVy4pM7L9kkG2+CrNJnj
-         luvnlYXy+eBGG6BpdHLS2R2IyQKeQWaU8GTBauXG/O+RE6ojzR9pF/LFKZo30Q+isZ7x
-         KT4000f1+BOpHUOztU20mt1jY//egIRgQUwfOHor1MBZ2tVA0TgE/KyCJyIM54CS7DpP
-         aHKGWejzEmwAP2B1S9m/6IqN1wlUWzcrmWVeBfIQrRt2g5KdnCRyqnEJkzCLaKArLEa0
-         8XhA==
-X-Forwarded-Encrypted: i=1; AJvYcCVDIk3cVhXPNs27CmqSxCqB9NZtwZkd9dI9zAVicLychAzzDWD5A3UnnQTFzdfXMSWqsk2d/N65odns4COUGu115WgY5fDATfAXxGwU
-X-Gm-Message-State: AOJu0YwmB7t0eWPpW91M0V2GGqP69fr96TclwafX9nsCOM5SYbpAFc5R
-	rCeFkNBYs8zsL61DtWU2sfXvso7WD+O0Ynbe/m9155JNk0gd2XR6r2jli8ndkEM8Gijt10kiSDL
-	1wZAyyX9la48VdqaPmy3JdpXMk4s=
-X-Google-Smtp-Source: AGHT+IEk8kkUHQ8MJb1uXCKzpyAgxVOkjWfhWRHsXmy6Twh6aR2kkc//jeCTboYwBMdncRdSMRaUzssHG+fNi+RnZc0=
-X-Received: by 2002:a05:6102:809:b0:470:432c:282e with SMTP id
- g9-20020a056102080900b00470432c282emr6224724vsb.18.1709000261519; Mon, 26 Feb
- 2024 18:17:41 -0800 (PST)
+        bh=j/0cvRHoeBDj4WwAVW0/51nHWj3Sa52fkTHqCjmTzTQ=;
+        b=OM+UmsEdPU6c049U7AtST8GkzlCt7+f7zVG4C7HKngzmnuMgj7O2mm3Z2zUGp8exdC
+         q4mwFW927abdjL+g4qOhAR52mMQA7cSOF9aGKrXAXHWQitck1QegXEb4Pdvy4thHUZpT
+         HsqlGitDLsnnH0oZcidshzX0AptDsNrGRtkXlA7ymRDurLa5NM5yIaHjZWSpu0fU6Pns
+         VDag90+BPBgnspupSvTNpSSJbC+GYK00GqU1Z24B6iH/qc7Ha45gIB74tnSWazMMlq/O
+         FZeSbwmwSjQJh+hWSqQnUmsKX+043u5Qnmv2xBE0rHJMDQwc2wYGHTorIsZuWF3p34q6
+         VtOw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwPSPMuJz1kVrGRuYhjFqNKmNjS207N/BP+if7O1HXeSR+j7DxDX8B51CCkZPz6HNpD0YNb8LoCP5BPeNZWP/ene8GNbLS43VMaUWb
+X-Gm-Message-State: AOJu0YzwqyPKtHtdXThzrwUH1Vb3yPPdH7LonI/H01HVYAVP1s9l9LkP
+	VyCeewQ4zpwHwYJl5TM/BSc6V+HCsgAqiSX9ZlSi0C7TSAS2biXG/i/yZN5U8FzvOaqkhG+QCZH
+	47q519FtmLokiubp3lRhU39KYIqVMp3OPgJNhCw==
+X-Google-Smtp-Source: AGHT+IEcmheK8V87a+vvv/FdIjCu0EFJdE0B0tDEQcJVpBAHV8SGp9so8ZQQFLEoUEmqaLeQ7wW8GoVhlVhZcXH7lh4=
+X-Received: by 2002:a25:680a:0:b0:dc6:ab85:ba89 with SMTP id
+ d10-20020a25680a000000b00dc6ab85ba89mr671508ybc.25.1709000320490; Mon, 26 Feb
+ 2024 18:18:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAGsJ_4zera4+bWuXHKjdU3QdiR3sqcUQB3gF08DPD49OCT4S9w@mail.gmail.com>
- <20240226083714.26187-1-ioworker0@gmail.com> <9bcf5141-7376-441e-bbe3-779956ef28b9@redhat.com>
- <CAK1f24mdwjz2J5VmeYSDwb4jMbrXUVCSF_0pOcWSVt1cfa0FhQ@mail.gmail.com>
- <318be511-06de-423e-8216-af869f27f849@arm.com> <CAGsJ_4z+0yXUDYwxKNAqYwxAAYpfKpKd2u_dVTDP3b-KPOQT1g@mail.gmail.com>
- <19758162-be5f-4dc4-b316-77b0115d12ce@intel.com>
-In-Reply-To: <19758162-be5f-4dc4-b316-77b0115d12ce@intel.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 27 Feb 2024 15:17:30 +1300
-Message-ID: <CAGsJ_4wx72KOazANBvnGcjdZse8W9+PW5_fspP9=QuX3X_7msg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
-To: Yin Fengwei <fengwei.yin@intel.com>
-Cc: Ryan Roberts <ryan.roberts@arm.com>, Lance Yang <ioworker0@gmail.com>, 
-	David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, mhocko@suse.com, minchan@kernel.org, peterx@redhat.com, 
-	shy828301@gmail.com, songmuchun@bytedance.com, wangkefeng.wang@huawei.com, 
-	zokeefe@google.com
+References: <20240223223958.3887423-1-hsinyi@chromium.org> <CAA8EJpre_HOY1xzOZPv5gPiJ-kEZEJiEm8oyYzXTiPj66vY8aw@mail.gmail.com>
+ <CAD=FV=WjZZfHBdMVG3R_iT9bskP3AyHrRsSK6Hfw9h4tEZBHFg@mail.gmail.com>
+In-Reply-To: <CAD=FV=WjZZfHBdMVG3R_iT9bskP3AyHrRsSK6Hfw9h4tEZBHFg@mail.gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 27 Feb 2024 04:18:29 +0200
+Message-ID: <CAA8EJpoyahPpwYdS7rLFfwcwF9Bn4gcx1VssDcnZ+suUT-ua5Q@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Match panel hash for overridden mode
+To: Doug Anderson <dianders@chromium.org>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 2:51=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.com>=
- wrote:
+On Tue, 27 Feb 2024 at 03:00, Doug Anderson <dianders@chromium.org> wrote:
 >
+> Hi,
 >
->
-> On 2/27/24 04:49, Barry Song wrote:
-> > On Tue, Feb 27, 2024 at 2:04=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.=
-com> wrote:
-> >>
-> >> On 26/02/2024 08:55, Lance Yang wrote:
-> >>> Hey David,
-> >>>
-> >>> Thanks for your suggestion!
-> >>>
-> >>> On Mon, Feb 26, 2024 at 4:41=E2=80=AFPM David Hildenbrand <david@redh=
-at.com> wrote:
-> >>>>
-> >>> [...]
-> >>>>> On Mon, Feb 26, 2024 at 12:00=E2=80=AFPM Barry Song <21cnbao@gmail.=
-com> wrote:
-> >>>>> [...]
-> >>>>>> On Mon, Feb 26, 2024 at 1:33=E2=80=AFAM Lance Yang <ioworker0@gmai=
-l.com> wrote:
-> >>>>> [...]
-> >>> [...]
-> >>>>> +static inline bool pte_range_cont_mapped(pte_t *pte, unsigned long=
- nr)
-> >>>>> +{
-> >>>>> +     pte_t pte_val;
-> >>>>> +     unsigned long pfn =3D pte_pfn(pte);
-> >>>>> +     for (int i =3D 0; i < nr; i++) {
-> >>>>> +             pte_val =3D ptep_get(pte + i);
-> >>>>> +             if (pte_none(pte_val) || pte_pfn(pte_val) !=3D (pfn +=
- i))
-> >>>>> +                     return false;
-> >>>>> +     }
-> >>>>> +     return true;
-> >>>>> +}
-> >>>>
-> >>>> I dislike the "cont mapped" terminology.
-> >>>>
-> >>>> Maybe folio_pte_batch() does what you want?
-> >>>
-> >>> folio_pte_batch() is a good choice. Appreciate it!
-> >>
-> >> Agreed, folio_pte_batch() is likely to be widely useful for this chang=
-e and
-> >> others, so suggest exporting it from memory.c and reusing as is if pos=
-sible.
+> On Mon, Feb 26, 2024 at 4:37=E2=80=AFPM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
 > >
-> > I actually missed folio_pte_batch() in cont-pte series and re-invented
-> > a function
-> > to check if a large folio is entirely mapped in MADV_PAGEOUT[1]. export=
-ing
-> > folio_pte_batch() will also benefit that case. The problem space is sam=
-e.
+> > On Sat, 24 Feb 2024 at 00:40, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> > >
+> > > This series is a follow up for 1a5e81de180e ("Revert "drm/panel-edp: =
+Add
+> > > auo_b116xa3_mode""). It's found that 2 different AUO panels use the s=
+ame
+> > > product id. One of them requires an overridden mode, while the other =
+should
+> > > use the mode directly from edid.
+> > >
+> > > Since product id match is no longer sufficient, EDP_PANEL_ENTRY2 is e=
+xtended
+> > > to check the crc hash of the entire edid base block.
 > >
-> > [1] https://lore.kernel.org/linux-mm/20240118111036.72641-7-21cnbao@gma=
-il.com/
-> I am wondering whether we can delay large folio split till page reclaim p=
-hase
-> for madvise cases.
+> > Do you have these EDIDs posted somewhere? Can we use something less
+> > cryptic than hash for matching the panel, e.g. strings from Monitor
+> > Descriptors?
 >
-> Like if we hit folio which is partially mapped to the range, don't split =
-it but
-> just unmap the mapping part from the range. Let page reclaim decide wheth=
-er
-> split the large folio or not (If it's not mapped to any other range,it wi=
-ll be
-> freed as whole large folio. If part of it still mapped to other range,pag=
-e reclaim
-> can decide whether to split it or ignore it for current reclaim cycle).
+> We could try it if need be. I guess I'm worried that if panel vendors
+> ended up re-using the panel ID for two different panels that they
+> might also re-use the name field too. Hashing the majority of the
+> descriptor's base block makes us more likely not to mix two panels up.
+> In general it feels like the goal is that if there is any doubt that
+> we shouldn't override the mode and including more fields in the hash
+> works towards that goal.
 
-Yes, we can. but we still have to play the ptes check game to avoid adding
-folios multiple times to reclaim the list.
-
-I don't see too much difference between splitting in madvise and splitting
-in vmscan.  as our real purpose is avoiding splitting entirely mapped
-large folios. for partial mapped large folios, if we split in madvise, then
-we don't need to play the game of skipping folios while iterating PTEs.
-if we don't split in madvise, we have to make sure the large folio is only
-added in reclaimed list one time by checking if PTEs belong to the
-previous added folio.
+My main concern is that hash (or crc) is a non-obvious thing: even if
+we have EDID in the commit message, it takes some effort to calculate
+the value. If for any reason we decide to change the hashed bytes
+(e.g. by dropping any of the fields) it will be an error-prone process
+to update existing hash values. On the contrary, the 'strings' are
+easy to check / compare without any additional tools.
 
 >
-> Splitting does work here. But it just drops all the benefits of large fol=
-io.
->
->
-> Regards
-> Yin, Fengwei
->
-> >
-> >>
-> >>>
-> >>> Best,
-> >>> Lance
-> >>>
-> >>>>
-> >>>> --
-> >>>> Cheers,
-> >>>>
-> >>>> David / dhildenb
-> >
-Thanks
-Barry
+> I guess one thing that might help would be to make it a policy that
+> any time a panel is added to this list that a full EDID is included in
+> the commit message. That would mean that if we ever needed to change
+> things we could. What do you think?
+
+Definitely, that sounds like a good idea.
+
+> That being said, if everyone thinks that the "name" field is enough,
+> we could do it. I think that in the one case that we ran into it would
+> have been enough...
+
+Yes, I'd suggest using the string unless at some point we see two
+panels sharing both panel_id and names.
+
+--=20
+With best wishes
+Dmitry
 
