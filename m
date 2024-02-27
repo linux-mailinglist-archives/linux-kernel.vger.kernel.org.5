@@ -1,127 +1,80 @@
-Return-Path: <linux-kernel+bounces-83370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2E438695D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:05:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEE0D8695F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 791EF1F2BFCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:05:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CCFE1C20D8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:07:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A3FC145B0F;
-	Tue, 27 Feb 2024 14:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B78F1420D4;
+	Tue, 27 Feb 2024 14:06:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Rts4oMyt"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y/hRbMnn"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3354213DBB3;
-	Tue, 27 Feb 2024 14:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F2E21420A2;
+	Tue, 27 Feb 2024 14:06:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709042716; cv=none; b=aaW6X4XaZON5UnnD2wto85PnKa1+f1wXyFPChaXBsHGp57X97gAn6kHs4oNl0pR3QynCvyZZ650wUjUKM/REts64TKUjrdlNUVx9WnXp4rEyHuTxs4IdmuDfcwM3Ebp6BVCg/bFixxtrLUmoC3qwqWH98j32X92CJOgmsTKBgqA=
+	t=1709042788; cv=none; b=h2ObwSof7JJtf6RJqjDw+FWLc9MUdRlqe7q7v6xvd2ea9Y2aUr2JCqcLv82GIfPnKM53rRBRH11r6EZlTwQ/rlBoZXbYoRF1ZXDdDRND/VNYruwBSa8pV8EQW9e/y2MMKYoTVwY19vzVNX3Lga9wWi2CnFxEdGDG/iLW7WT/PLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709042716; c=relaxed/simple;
-	bh=xX2I1MKb6pDRYs2bp7Zf7ZhxShvaggxGHP0EN8JRI64=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=H3zLYLY3F1HxX6derOecVxrSGZ/Zrp5OfdvZVBC452ENBCVYReM7C+Gn3rHmDAHgB7MbxFOzWlB4v4uChLbo3rBQ5W48+HT6pWGLJmT64EcbLusDDuChCqLSrdEgO0nRxwgFqXNodrD6vRjYo16PLjjXbcfLBozLcUaxdy2iqDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Rts4oMyt; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1709042704; x=1709647504; i=w_armin@gmx.de;
-	bh=xX2I1MKb6pDRYs2bp7Zf7ZhxShvaggxGHP0EN8JRI64=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=Rts4oMytgLEJC4i0r9yHabZImMvVlWFY1rY0IqtybjaB3I5hb3RcNDAy+i9N9Ixo
-	 dAstM8OPZDXGxikJjZ8KeR5V0Dtsh3ziaKFKJDHZCDwnU6XjEePhCxVCJiRzvqSIM
-	 f3oMmuILYYM8TOFwiP3UUa96CVKCjivb0hSX83s0ktvvoFzd2z3MRWwxZDNJD1WXo
-	 2YUGP7jYaOdvfoTbLxNgxl2/22PkAfD3t7p3XMgb8aX8Ch27LU/N4OO6WdjrsmTFH
-	 BPVNbqBJVnL/7Vhv6MGNwLB2by65PebVzxtaVDfCAHgLkUhRLlfvYOHg6PLugr+9h
-	 +UgU+nKzrGCKH2XYRw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1MNbox-1rGzJD2dBb-00P2SH; Tue, 27 Feb 2024 15:05:04 +0100
-From: Armin Wolf <W_Armin@gmx.de>
-To: Shyam-sundar.S-k@amd.com
-Cc: hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] platform/x86/amd/pmf: Fix possible out-of-bound memory accesses
-Date: Tue, 27 Feb 2024 15:05:00 +0100
-Message-Id: <20240227140500.98077-2-W_Armin@gmx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240227140500.98077-1-W_Armin@gmx.de>
-References: <20240227140500.98077-1-W_Armin@gmx.de>
+	s=arc-20240116; t=1709042788; c=relaxed/simple;
+	bh=fim3gdliVyWO1z5CFYSVECFfVAjlYEqkkbZSlHGibs0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JNwVZ9MTleLGoAoJmn9E+WMbdqrVQzgozMVOuEsAZrdQoDxyJ9TiHELrgTeN5MfRZQxKz1vrIirA4XfOP8rl1zY3Tx6sUvr2LrhWjy4YbP0fqw/P3uUIqcrDUKle//BXxGa5OdRY3IcIcbSIkvFp450iXAMlm34V2JzbENndxmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y/hRbMnn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25491C43390;
+	Tue, 27 Feb 2024 14:06:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709042788;
+	bh=fim3gdliVyWO1z5CFYSVECFfVAjlYEqkkbZSlHGibs0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Y/hRbMnnVAx1in8hmqY5Y+OGqH1RMKQF6Mvho03kx97cV93tY8sTXQWut8MkF94m8
+	 p4zuSWUBpMYzmj1AdmBgMScfWGBxPtq6GwGq/DSeSp1mfg0T1W5u3FqUct+65veapd
+	 HCqr5Tw2LXyrmAKJub3vLOPsVhDF4TD4AVw5h+qWqB4tgEpB6YD0yLEW782DcS+KXR
+	 tO5KoVCCcxsDLw/PlilVv7hL51kMG+Qc5oXUC17smgfTJuyB+khzrZNDvJ/R9v2s7E
+	 7FkZ6xJXpFovWTJvllm+a2LHi/QcaSLV9NzX6hyU+ZlmXaE4fbyUkniDzLTtYlbFYz
+	 p2ApkX514kDGA==
+Date: Tue, 27 Feb 2024 15:06:23 +0100
+From: Alexey Gladkov <legion@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Jiri Slaby <jirislaby@kernel.org>,
+	linux-api@vger.kernel.org
+Subject: Re: [RFC PATCH v2 3/5] sticon: Allow to get max font width and height
+Message-ID: <Zd3sX5OwVj4q9Y9h@example.org>
+References: <cover.1708011391.git.legion@kernel.org>
+ <cover.1708960303.git.legion@kernel.org>
+ <07c0cb7f0c175460561957190e48a6e01a74a676.1708960303.git.legion@kernel.org>
+ <2024022755-viewable-breeding-0bff@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jTFha4DE5UVuluwTxez9gJWlcTStg4nlPLWHYN5H20dNqMcKDtg
- sgqehJe9I+VoFfMEBHqsOlMuImr4i9GufkMFDRx1Y1tO276Hk/wWVlrOqjt8Sfl9HrlHHvJ
- RWCmJFAYcIfVKouXWFyxqztHIySuEs//kZq3CWrwit3xXMWAFhZwpnb/iLfhqYj62XtNxxW
- oJSLh6S6CW/DM6S7GDt5Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:9tVv3i1dTRo=;TY1sbJ9+jK9Iu4IsjEmYxohd2C2
- Ub/plmOEOZc9Grc8iZBCXWKWwZ11Sd/eE7n4lwiMA4pSGppNvfV2n6UfMMy/CCBC1znh9da5E
- lb/w/GBoZ7RZmRscVWvDIuO6lOpVfxP0rUDXJx5sbfch6ncR0EgkF1mWKECpStA+KK2CK3JUL
- aVuyyffvQ1EdXKdNHD8izBy63HBqEtodh9bLFIJgZuBtztbni9ajpylwqmbX/rN2TGujA0uFJ
- 6JFkrb4c7BAoWwlY5j8NtdjpBkRtNMvVa/yKlr9sD2vo9vOVq/Ze+46NSKpPf6dcyu/0yPNNe
- kUp2Y+RXvlJ2qQazTpTezA5uDQgLBeOGudWq82S4chesRwJGfn631g41GvI/1IWFyo6vco3S+
- gcDlHTPT3HCvpRoDdmssCb2Hgo9D+yVXDeT0RsnLEh2F5yoeSm+aMEc4G3AeaMCOyy5PJBqes
- +WuCfvEWQoVDPwbRleJJ1IQsWUmVWuYSiwXD1Xag5flfT1MSZU9FBqRXybQDjrtJUoZRf5LWy
- wtzKG97ZLFRkH9Zu60rhTPqFC2IaPIC8jSKU7Xh6OqG3wfyiee23Tp/863HYiwKkFMHaiIo7X
- yVTMsdnDyx83DsuLvrHcZ7QrkY4qb7IEuQ3mnmBlyYdyCwqfCikGCoxDgKuO6lJsDJGG2sHwj
- 5L9T7GPUCMeIfiWsO1FbX9EscV6uGvAFfvGOXO0Mc3JGWadiOafUG0uf+YJC5Q4kmkxhPsqaN
- /OzHdHXQ6q12CGXE9ca4YLjHq/sX7gAB+YF8Tl7m6jMM8KFl4pWnkUjihAZ7xbctG0IY2Pzfa
- NK+Qzh/RN8Hfp0wvwxmdrMDkUFRQoSndXKvqJM9c4Lgo0=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024022755-viewable-breeding-0bff@gregkh>
 
-The length of the policy buffer is not validated before accessing it,
-which means that multiple out-of-bounds memory accesses can occur.
+On Tue, Feb 27, 2024 at 06:52:17AM +0100, Greg Kroah-Hartman wrote:
+> On Mon, Feb 26, 2024 at 04:21:12PM +0100, Alexey Gladkov wrote:
+> > Signed-off-by: Alexey Gladkov <legion@kernel.org>
+> 
+> For obvious reasons, I can't take patches without any changelog text at
+> all, and you don't want me to :(
 
-This is especially bad since userspace can load policy binaries over
-debugfs.
+It's just an RFC. I'm not sure if this is the best solution or if I added
+the new ioctl correctly.
 
-Compile-tested only.
+If you think that this approach is acceptable, then I will send a proper 
+patches.
 
-Signed-off-by: Armin Wolf <W_Armin@gmx.de>
-=2D--
- drivers/platform/x86/amd/pmf/tee-if.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x86/=
-amd/pmf/tee-if.c
-index 70d09103ab18..f2f9204b3a11 100644
-=2D-- a/drivers/platform/x86/amd/pmf/tee-if.c
-+++ b/drivers/platform/x86/amd/pmf/tee-if.c
-@@ -249,12 +249,18 @@ static int amd_pmf_start_policy_engine(struct amd_pm=
-f_dev *dev)
- 	u32 cookie, length;
- 	int res;
-
-+	if (dev->policy_sz < POLICY_COOKIE_LEN)
-+		return -EINVAL;
-+
- 	cookie =3D dev->policy_buf[POLICY_COOKIE_OFFSET];
- 	length =3D dev->policy_buf[POLICY_COOKIE_LEN];
-
- 	if (cookie !=3D POLICY_SIGN_COOKIE || !length)
- 		return -EINVAL;
-
-+	if (dev->policy_sz < length + 512)
-+		return -EINVAL;
-+
- 	/* Update the actual length */
- 	dev->policy_sz =3D length + 512;
- 	res =3D amd_pmf_invoke_cmd_init(dev);
-=2D-
-2.39.2
+-- 
+Rgrds, legion
 
 
