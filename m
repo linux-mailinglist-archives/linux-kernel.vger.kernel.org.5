@@ -1,99 +1,110 @@
-Return-Path: <linux-kernel+bounces-83265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D7A98690FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:54:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DB97869100
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DA50B216BB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:54:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD3B1285296
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BF913A275;
-	Tue, 27 Feb 2024 12:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFF3B13A895;
+	Tue, 27 Feb 2024 12:54:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NJdNs6LS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZYdqAWsy"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F51413AA20;
-	Tue, 27 Feb 2024 12:53:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4A61E535;
+	Tue, 27 Feb 2024 12:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709038435; cv=none; b=QeHOzdM6k8P1Q1vDQ74wYfySuxhcViOxFup1GrynS+6L7ilTSFPX86isMyWAMy7B2PU1T5ZB+DUyr6sLlsVq3wK/d1yOTk59ft+56m2taNiMsuLKwGRMFv/6vxEG6KiQ40hQwswTSga056a0fRT/tb5+Ri5fXzA+/hW342kRUVk=
+	t=1709038479; cv=none; b=IoxcSXDwcRQb/0XizbTAJIyXq6EbRB9ZCrD3NazY9a4B0jG9UoNItwyqgs9q2+R4CArpcnoctb0Bt/cgickxRetZAQSdOi916LyxB/XDUuKaKaHLDAlFK4a8QL0VlzsI+4e+HVvKVjJPpzK9RmZ+8w5nmRsSc5YxaWYvq2W51tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709038435; c=relaxed/simple;
-	bh=9fNjD41K3hBKyAANYYkPJsBtf97N81Pzxj9XAun8H0c=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=AH+8r23DdoW2D8RsTnhRaqjE7mwiPnyg23g4fxuifgOmraRxPsQmVBnTkjy6kzW7+oeAyxahYf0v/L8SQpn7Eia6x75D/rnX7dniOXpT+ncmgGluaQ6ZDpOy2Af6o6fNivykcNlrG01BrUnNmx/CmKLeRy4eOahzE1LofV82cHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NJdNs6LS; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709038434; x=1740574434;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=9fNjD41K3hBKyAANYYkPJsBtf97N81Pzxj9XAun8H0c=;
-  b=NJdNs6LSyxdrGtfVAqw+kGNs/cF4528uxnUxY4CnzCZyG9mEcRmZD8wq
-   zKR8gOb/bwnaf5p/Swi0hyDWySd3+G3IYcvCaflwYcTHop+ema3Eh2rDf
-   1btxf7P6w1j1AMKvZ7dg2nuAPZjbk/YF78+Av5fUGHKCneudJkxcrjQrb
-   EYDEqNBzGtmzxtH4EFA/cU2cr5HKMhF+aWG9nauneluQ/ophXmpLiSIAU
-   7gUOLfxTeQquGutfHwZYrwyxsZgQDXuRMi0PhcQUGyuxPyPpHDY3btHXj
-   HEoEcEYw6v1lphxFN7D3zk49fUKxi5uoJMHW2atuF+W6ZWGy7m85yYePx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="6323974"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="6323974"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 04:53:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="11801003"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.61])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 04:53:51 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 27 Feb 2024 14:53:47 +0200 (EET)
-To: Szilard Fabian <szfabian@bluemarch.art>
-cc: LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org, 
-    jwoithe@just42.net, Hans de Goede <hdegoede@redhat.com>, W_Armin@gmx.de
-Subject: Re: [PATCH v5] platform/x86/fujitsu-laptop: Add battery charge
- control support
-In-Reply-To: <20240227120435.429687-2-szfabian@bluemarch.art>
-Message-ID: <b797d581-a2a7-b95c-4853-b874667c1df5@linux.intel.com>
-References: <20240129163502.161409-2-szfabian@bluemarch.art> <20240129175714.164326-2-szfabian@bluemarch.art> <20240207023031.56805-2-szfabian@bluemarch.art> <20240215203012.228758-2-szfabian@bluemarch.art> <20240227120435.429687-2-szfabian@bluemarch.art>
+	s=arc-20240116; t=1709038479; c=relaxed/simple;
+	bh=hzcl8ETz418dMjd6G20Lpf/mTOdZjZj2Qy8qFzLW91I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=k+ic8ilC9Sru8fJo7ZPc09KN2IDnfjIcQF4HJjmdMTqzU9uNhzMWy1IzxvdEekFH0vWG5fIOkEYG67qPgNc8ZqxKK1dpXK5Owp3oZgD2AhuCFa6TobRmjUv2kiCmGfsrtDj7nR9BbsIeV5Yyam6HBz11c6NuSLRIUbPUhlkP848=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZYdqAWsy; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a293f2280c7so633615366b.1;
+        Tue, 27 Feb 2024 04:54:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709038476; x=1709643276; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fu6wnvLt7SL5MDp9Rtohqbab7bq75miqKe0wHBxnz5c=;
+        b=ZYdqAWsyIqS2Nm+mxy/HDSGfFg28D9B0Tt/VF4lYYN28MGGma5Vw4Dt6E35440rOUS
+         X1DLhVxL5PTH0k5tK7ua0/SFUrjHZhadA6orsXu6qwSxpYPlFUQHCGyPp1HKRwrLJ+Bi
+         Oom0HI+gJjjitXCa1fLMijynOKiM4h4rVrMCOlNSwFcupEJSTR7jBhMC3K67PrI5ee0t
+         eb2NXvHS2LPwfj9c1rm3d/KDT23IGFIrnW4/GOQLkFsw8mE5swkRb8GCJ5h+EbpgcpB7
+         oSxZxVIrUgcNZS4ruIOkNhEdD664AHdRoGqwAZugx0nhkg/S5hXapJkpU5Q6fVRYLcNS
+         4F1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709038476; x=1709643276;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Fu6wnvLt7SL5MDp9Rtohqbab7bq75miqKe0wHBxnz5c=;
+        b=rP24YP0HlrmJTFLIsVr/gODl8AD625Vdsruoco9HLSEkfPeTjO0Lqza6YFRVCqlxQb
+         AdeZ1k1Griv8HYPMBWSfap+opW2obRO0x+bYDco4OxnHj2b6gAd/Akbg3Job4EtVRhvp
+         Lo5uYS4UwgtFAjlH3vPtXaubgmeEZEHMRaOIulmue2KkoJX8wrvj2oygXFVA79sxrYxl
+         jFKwODaTkK/mcp5A/QnKiWhnITD0c84Iv4su+ChVVqC8Mz5QDEXplDpcDTgE0ISrwkto
+         F5s/iw5NKdeCcGEsurdOJisEsKbQgrtOwLSwOZbmEm6Uz1ZFEtkeygr4msLrgMWEuQ2e
+         g1vA==
+X-Forwarded-Encrypted: i=1; AJvYcCUjHKhW71y3mq+2k0dvDETjWUjy+wNwdqjDCU83rEqTPndo/Iiz0rBXzoSbcvwLh+hsn4+x9Osn5R6yz9Wwrms5KO9GbzopO2+qBikSSQ9+xctbFO5t57ggK9w1Iclu8TKtrlhwurIH8w==
+X-Gm-Message-State: AOJu0Yymxk8EiUBMHg1sn9qeE/iDLcRhd04JJ2VqmqkvvvnbSSuIIfy8
+	KgOoxPdBcqJnCNXeWhUKEBKF7QckEHki4QYGdtHrjrQyKceLLMB2516HQ1JTPPDfsjfHg0UKF4G
+	7Ehm7uIpfI0hNNd2KYhLVeMoSqKc=
+X-Google-Smtp-Source: AGHT+IF4BkL4UQx6+4pVk9ZzaBlJ7bwex+QDUbRui4NuhDaik48pgZL9E2yleH+qiS3w9aoTwufqHq9Nmlhk7ZfBnLY=
+X-Received: by 2002:a17:906:35cd:b0:a43:2aef:b5ea with SMTP id
+ p13-20020a17090635cd00b00a432aefb5eamr4451060ejb.66.1709038475924; Tue, 27
+ Feb 2024 04:54:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+In-Reply-To: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Tue, 27 Feb 2024 14:54:23 +0200
+Message-ID: <CAEnQRZD1chD+14iFc=m1zY17rEQXGB9AQTxLZnhcPg7VVmR=PA@mail.gmail.com>
+Subject: Re: [PATCH] Convert the Imagination Technologies SPDIF Input
+ Controllerto DT schema.
+To: =?UTF-8?Q?Javier_Garc=C3=ADa?= <javier.garcia.ta@udima.es>
+Cc: daniel.baluta@nxp.com, Liam Girdwood <lgirdwood@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 27 Feb 2024, Szilard Fabian wrote:
+Few comments:
 
-> This patch adds battery charge control support on Fujitsu notebooks
-> via the S006 method of the FUJ02E3 ACPI device. With this method it's
-> possible to set charge_control_end_threshold between 50 and 100%.
-> 
-> Tested on Lifebook E5411 and Lifebook U728. Sadly I can't test this
-> patch on a dual battery one, but I didn't find any clue about
-> independent battery charge control on dual battery Fujitsu notebooks
-> either. And by that I mean checking the DSDT table of various Lifebook
-> notebooks and reverse engineering FUJ02E3.dll.
-> 
-> Signed-off-by: Szilard Fabian <szfabian@bluemarch.art>
-> ---
-> v5:
-> * add ACPI_BATTERY dependency into Kconfig
+Subject should contain a prefix e.g:
 
-Thanks. My intention was that you'd send a new patch on top of what is 
-already applied. But it doesn't matter anymore, I took the relevant line 
-out of it and squashed it into the original commit.
+ASoC: dt-bindings: img,spdif-in: Convert Imagination ....
 
+Also do not add a '.' at the end of the subject line.
 
--- 
- i.
+one more comment inline:
 
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/pistachio-clk.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/mips-gic.h>
+> +    #include <dt-bindings/reset/pistachio-resets.h>
+> +    spdif_in: spdif-in@18100e00 {
+
+Node name should be generic:
+
+e.g spdif_in: spdif@18100....
 
