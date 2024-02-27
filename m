@@ -1,165 +1,195 @@
-Return-Path: <linux-kernel+bounces-83512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83513-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB9A869A80
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:36:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF423869A87
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:36:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7362D2886CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:36:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3642428917E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:36:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE10145B01;
-	Tue, 27 Feb 2024 15:36:22 +0000 (UTC)
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D9B6145351;
+	Tue, 27 Feb 2024 15:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="uDKjm25n"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D521DFF5;
-	Tue, 27 Feb 2024 15:36:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.233
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709048181; cv=none; b=GCbw7/sUvCs7pE/3C50YKCxPshVEqqe9uuiUrMHlfpeWkNcjXeN/JP6boFaVKncCMRa9VJ9rX9e+GuBhPqQALd8VR7AXoMpTPWt9GypzLZFxg1MamPmjoUBGmvoBxWsmWklWHv18foZKX19vmcj5gh9Wt4D63BYGIp8eFxaF8Nc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709048181; c=relaxed/simple;
-	bh=YrHLHMpFjmFGzgowBWH/3W3TMycwyDVhBWgkPqBFGzY=;
-	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
-	 Content-Type:Subject; b=t+ovZnKI8wQLto50ZC2p5GcKfxjDNLs1NVXswxwQjoGgi+8Y9fJEgBYtaL/0qmcwaqb6d1lEXaQJKJTdQm0JBjGYkz54HZQT5ky1E9UyqZfr2IQVS1wlVN6h2/UpgL1Ixjf5DOnjOxVIFEZA3QBx6zozRIft2QiJ04iyWSaLpWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
-Received: from in02.mta.xmission.com ([166.70.13.52]:55678)
-	by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1rezV2-008pdi-Mz; Tue, 27 Feb 2024 08:36:08 -0700
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:42208 helo=email.froward.int.ebiederm.org.xmission.com)
-	by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.93)
-	(envelope-from <ebiederm@xmission.com>)
-	id 1rezV1-009PTZ-Ga; Tue, 27 Feb 2024 08:36:08 -0700
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Jan Bujak <j@exia.io>,  Pedro Falcato <pedro.falcato@gmail.com>,
-  linux-mm@kvack.org,  linux-kernel@vger.kernel.org,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,
-  linux-fsdevel@vger.kernel.org
-References: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
-	<CAKbZUD2=W0Ng=rFVDn3UwSxtGQ5c13tRwkpqm54pPCJO0BraWA@mail.gmail.com>
-	<f2ee9602-0a32-4f0c-a69b-274916abe27f@exia.io>
-	<202402261821.F2812C9475@keescook>
-Date: Tue, 27 Feb 2024 09:35:39 -0600
-In-Reply-To: <202402261821.F2812C9475@keescook> (Kees Cook's message of "Mon,
-	26 Feb 2024 18:23:15 -0800")
-Message-ID: <878r35rkc4.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6433214534C;
+	Tue, 27 Feb 2024 15:36:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709048202; cv=fail; b=towPv9J9gHzPi/tNJ460kQQV7JOmeB3Ccf+Az37caTnYpR2t6wbtHuSf+wfUGcoSEtVLafd0W5sJugIGbW4FkhJsdgVWauaZ2C5ay4SQXf0A6TtncdpPlhO4KmsQdOA32PfshKRfFJ2C2qPs9TeezzzsX9jtUSXRTg6R6Sp1ZHc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709048202; c=relaxed/simple;
+	bh=PcCtbggSoMDEcQOVP8lJ+9Snj3UKd1r6LG/bcEnJPBI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=maqT+r5iZPKKVyz03zZgUWEOch+khAnfZ6OShkKUqMDSX4IeA9yxQcNnsB6HU7SZVriTuqYmRDYmrC9E538zdEUHbeurq9e3XApmszuUqW8tlGovI7jWWZYItJ2kyNwoMajU26Rry8qKW6ECyKNj9uTYF19UyxAXJPe5twJAwu0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=uDKjm25n; arc=fail smtp.client-ip=40.107.236.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KX7dzAeMdHXXTxk+k4Aj9WvwpT5IbB1DUouk+akAJoQCF87k987TBtxqrhA7Zl8l/eZ45q/avZqCYjgw9ih2Xm90jq/jB6js+fU8iZXVadtoAThKzUckjep77QBB11K3Qke0yf8l3RtLWDb+Wrcxez7KAZb/aFOXLimUfybDzYKAm8HMN8XT5sPKuZCwIseyTNfN6YSGV9skQSMa2TGk1IceFkbiDC5VJGQl5GJKcnbbbgYxVnmvSlXgHRsOuaKCE+ECsL/THHXmvO93GzQu2APR8LBJn2M0dm+3tqSlpnMyEbMNLJo75Q3OxrMYIGiQXkAvAMXNViEEcLoHahY7OQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hhdG5P+enhd9fsvVuqNHsAKATySyARznzDQgeibv1tA=;
+ b=Yr2PV96XX/wJfPnFCSgl5P0jSVpkURJjH7Y1/E8e4KnJly8VGqmuziRpsnk0B1kcqkATPQYlMq+1XLF9RROb+CbOCrFV6+m1gUomaEv/tbdBUCxmOvC2C9QXvRbPXxbPZBv8QMUk03oEROdH7NM9i3VCwMmvEadUDWouhvS1rzE1ShrGvFkaVp4jM4U45new1UdxQyCMUVI4sZ3cMWGiZEFQgycb0Z/Ylp2VzQVpBkXjcVifdCFps2k2++IkFuaMMl2vHGGueX9PpJxNRaoXiWkrP9R6U6h2yC5cMrfQ5FFFS6eYKwlEgf50+NNz72fOZuxOyoulZLBvKfCdXaRoZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hhdG5P+enhd9fsvVuqNHsAKATySyARznzDQgeibv1tA=;
+ b=uDKjm25n9+ldwiUf8LS7gkc/X6+Lqo5CtidXvqsiAFBjV8EMnQEflA7FiXZGvtNKV/1HhW/RiXU9GIYRvBLf7OiNwFMxgkIKUPY/RU+sxRuACedLSYKvm5sw5LDWYtlGRdcGI0nhgAkJLYwltmeQWMelEkaWofMAjwHbeXIqpqA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by DS7PR12MB8289.namprd12.prod.outlook.com (2603:10b6:8:d8::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7316.36; Tue, 27 Feb 2024 15:36:37 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::a1d0:2930:8c24:1ee1]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::a1d0:2930:8c24:1ee1%4]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
+ 15:36:37 +0000
+Message-ID: <f1964180-458f-4c22-90f6-bda2aee5dbf8@amd.com>
+Date: Tue, 27 Feb 2024 09:36:34 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cpufreq: amd-pstate: adjust min/max limit perf
+Content-Language: en-US
+To: Meng Li <li.meng@amd.com>, "Rafael J . Wysocki"
+ <rafael.j.wysocki@intel.com>, Huang Rui <ray.huang@amd.com>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+ linux-acpi@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+ linux-kselftest@vger.kernel.org, Nathan Fontenot <nathan.fontenot@amd.com>,
+ Deepak Sharma <deepak.sharma@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ Shimmer Huang <shimmer.huang@amd.com>, Perry Yuan <Perry.Yuan@amd.com>,
+ Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>,
+ Borislav Petkov <bp@alien8.de>
+References: <20240227073924.3573398-1-li.meng@amd.com>
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <20240227073924.3573398-1-li.meng@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN7PR04CA0221.namprd04.prod.outlook.com
+ (2603:10b6:806:127::16) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1rezV1-009PTZ-Ga;;;mid=<878r35rkc4.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX1+N1hetAe26OvEK48+xJsS4k19zKBNTClY=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Level: 
-X-Spam-Virus: No
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-	*      [score: 0.4092]
-	*  0.7 XMSubLong Long Subject
-	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-	*      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
-	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
-X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Kees Cook <keescook@chromium.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 392 ms - load_scoreonly_sql: 0.03 (0.0%),
-	signal_user_changed: 4.0 (1.0%), b_tie_ro: 2.8 (0.7%), parse: 0.65
-	(0.2%), extract_message_metadata: 11 (2.7%), get_uri_detail_list: 1.43
-	(0.4%), tests_pri_-2000: 17 (4.3%), tests_pri_-1000: 1.85 (0.5%),
-	tests_pri_-950: 0.99 (0.3%), tests_pri_-900: 0.75 (0.2%),
-	tests_pri_-90: 112 (28.5%), check_bayes: 110 (28.0%), b_tokenize: 6
-	(1.4%), b_tok_get_all: 8 (2.1%), b_comp_prob: 1.76 (0.4%),
-	b_tok_touch_all: 91 (23.1%), b_finish: 0.75 (0.2%), tests_pri_0: 232
-	(59.2%), check_dkim_signature: 0.37 (0.1%), check_dkim_adsp: 4.9
-	(1.2%), poll_dns_idle: 3.2 (0.8%), tests_pri_10: 2.6 (0.7%),
-	tests_pri_500: 7 (1.9%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: Recent-ish changes in binfmt_elf made my program segfault
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|DS7PR12MB8289:EE_
+X-MS-Office365-Filtering-Correlation-Id: 838d68bf-5516-41da-42b2-08dc37a9e2de
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	eD4n9rN81DfqDIEnMpeWBPpkcDY4sdlW9mP2aYY/VxZ9Df93qe6ZXoLCieXt/hHAdpk5G6UnP2ow9/YoL5R6+9NIVmq+bizoDMcvqmQ+/cQqowoKRUZB/gUAudCfQh3e0TaPQJjSkYFgLW+yooNLkX4+CLPAmRDLdh+mVKk9P+u4eByTcfWTy4W1X5iWBBWyCeRmkKbqMw2E93fqOcDOQu6D1q+aoo2KhPpxlhjwDX1YaZ87Yx1PmW/orXNP7zaZx5lD6Sqz50QLWaSsUhFA5/p459PS5sYMaY6yvOuWHD03a9W+7T6u6J47iEnZILGoaaHiYnm8PBdnDIP/8I9wTWMeU57GPy4xBakrK82OtHN/ws2aaD6gkj26XBMLgwX1a18AukWOM3Wb1/OAYCUePgi6bDoIa+miG9JJGceVvklBN1XNjN/XR2xuYF7fkbVzo6EjPPDtMTkgDzm3modtzmEdnyiJHp78bAH6vNp9dwu2CH6DQo65hP2YHJaUuNHlClL7NE8jq6az+CxXLkrENEEcZQzhlQF15s1sV9E0752ZnAFOkrTbFSKK5aSAKVExQQ6+NVoxk6/lDXXJC4BBL0dNXZ3YplW59EetPvz73QyQY4oBt5MpwCH9lomPwUD1zp+r/HkwxUcUAiz2P03apg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?OFpoK1dIQTlNZnVnRVhielFobkpDMjlLZ0VZM2JTY3BiNGZxUnU2RXB3SUd5?=
+ =?utf-8?B?dUtUa3VBd2lENExGdDF5Tk5KNXRHQWE1V1VBVkdaUTRnTkxRbFJVaGIvS0lX?=
+ =?utf-8?B?Rm50SWlzdlFOTkRyTlVYZmtURngxU2NDOEl5aHM5UkhVQmd3b3lKV1h6ZFBy?=
+ =?utf-8?B?OGRacEVGY3pmcm1iQ3hISElxTVlyWEdpZEF5MlYxS1J6OTNlNUpReEdpdk5x?=
+ =?utf-8?B?ckpTRWwvRSs1M2M0M2pwbS9CdjFON0MySWh6NTR0U1lPcERTOEJ4b2twcnNB?=
+ =?utf-8?B?QW0wVnQ4WXNBa0Rtb2JFell6UCt4eVBiOUZzNU1uaytvWEkwR29HTmNjUENm?=
+ =?utf-8?B?eFBXaWhmNUhzZkJNR2VHbWJYNFpCeVJobnR1YldMdDNDNTAzeHo0enlRREZ2?=
+ =?utf-8?B?TFlrZ0E1WEx1TlZmaTNOR1lya1BoQXA5cThzV3hLcGZ5TUtnVlp4dHBMUXp4?=
+ =?utf-8?B?U1ZIdHg2YkFLOU55SXU5WGFxbnR6MWVQV3Z0T3luNGdqV2NXYnB4RFprZzh5?=
+ =?utf-8?B?NllNNnJkNlp6aTBscEhTaG5tdUhDeHNubGNHb3A1bU1ZR1FFT0NmU0xSdDVV?=
+ =?utf-8?B?OU55L3RSblhMMUF4LzI3UUpvYlpwZllCLy92OTFoVHJ6TVliOXo5eUpZNHli?=
+ =?utf-8?B?Z0JIRHRkN2drTy8rb0I1V1hsS01lUFdieWpMbEw1V2VIenhXN3NvOU9UendE?=
+ =?utf-8?B?U1hJZFRhdnZQbjhOOENLWXhKY2VSZ2kydDMweE8yZzhRNDNRK0ZiYXpUUUY5?=
+ =?utf-8?B?QzRBRTdkMGhRQnd0eGh1aGQxUGc0WVAwNUsxVmJSS2lGSmVOdmltaDVXeE96?=
+ =?utf-8?B?VkpxR0NrUG04YkF2blpVR3UreElkcENwemkyTVNUT0VoWk55RmJjaG9JM0Ft?=
+ =?utf-8?B?NVVaais5RHQ1cnhmUVpUMnlYUVJDQ09OZ010cWl2SFVRbUZIL3l6ekVLSmJm?=
+ =?utf-8?B?WE5SSURwRTRyeFJQU3VOMDVzbFg3cVZGcnRHS213TjlVTlhNNCsrbjNIL1Rv?=
+ =?utf-8?B?a0pPVG8zalRrZko4cy9JeVZwWC9ab2oyQk1Sb1hvaXFxajI1dlZlbWRkVjhN?=
+ =?utf-8?B?eTVLbk9yZ2ZPUlNINFZjdUxncUlJMUxicHJIblpER3RaMGNQRkxKVlVua0ZK?=
+ =?utf-8?B?MVp5a0h4L0xiQUtZVy9KYm91cThrU0N4TFROQ3NQYUVPaVlVeUgydEtyVDZT?=
+ =?utf-8?B?cEhEWGh6b2VBUXJsdFU0bEpuZXM1SVptMVp6Q0pjb0tUSW0xeFhmZ2JKZWJO?=
+ =?utf-8?B?SW95SUdCTmdDbENFcHdaUXVQZnVhYk0yaUlQTm1pNisrdnQ5R29uTlhUczVr?=
+ =?utf-8?B?K3prMjhHbGhaaWdCV0xnbWpnTWZRZHhleEpZRTR3dTUvdGJqZVF2MXdKVlA3?=
+ =?utf-8?B?VG90dlAwOVVadTNqa1ZLM2MrVWpzTnNua0dYY3cxVmVhWE5NaHZUaGhhY1JV?=
+ =?utf-8?B?ZmRkMU12ZTNZWFM2azRyVmN1R01mUVoxODJEb3dhK1VTZnMzRThOdWFUMTdG?=
+ =?utf-8?B?T3RpeWMyY3FwNTFDTUtVUnR5cjluaUlTVXhTSW1sZDFLV0JnOVVwWVZobG1o?=
+ =?utf-8?B?T1N4ZFVVUmhQVkN4ZHlwRlRmSVh1UHA2UnNETU9oWmoxV2ZyWWtZYTM2RlZr?=
+ =?utf-8?B?dFdhb3BqZUxMVmo4T3dFbUQvL1hISHFiaFdqUlVWd0xVWWJQVG9uYUZ3WFpR?=
+ =?utf-8?B?aVF3bGsyb1pnRGRWbjRxNFhOVWV4QXpzckZ2clpHVlh2N09UM3JvZTBMdVM5?=
+ =?utf-8?B?bWpjMU9wMXkvNUMvbm81ODZlenhRZ0dWVmdXSk1ldGFDZ094QXZvY3JTZkQv?=
+ =?utf-8?B?NnpPTXVRWWs3UHFNbTNrYVdYVEtNemM2ZXpsZitkdWw1V0JmbHVLYUZ6eG9s?=
+ =?utf-8?B?RVp5eW1Sbms3OG9SbWlwWWxyREVHdyt1V1VJMm9saFg5MjBLeDNkbFg4dGR6?=
+ =?utf-8?B?VUdNRGJPTXJwN0JIaDd5RFJPOE83cVcrQWhWc2pqZXpXTTMrMzhmbFIxQlRv?=
+ =?utf-8?B?TnQ0MVRHUG4raWpDUThGOHdMVGw0S3l5Wktva0ZROHV1V1NXcVQ1cXBHcnpw?=
+ =?utf-8?B?UllyM1hMTlpaQndYVGdLTE9mdjQyUTh1amdtRjYxazZhUjdmREtqUkpGSUlF?=
+ =?utf-8?Q?sSZWVMdz0aPdrJjK6laLTcECa?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 838d68bf-5516-41da-42b2-08dc37a9e2de
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 15:36:37.6400
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 77FanXQQMeB3187hML3K0CYGRChwQ95UjBEoounWYIiyEjZ2nrnvVveMd11lyO6t5Ie6Ebb/UibY76zVfpkNgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8289
 
-Kees Cook <keescook@chromium.org> writes:
+On 2/27/2024 01:39, Meng Li wrote:
+> The min/max limit perf values calculated based on frequency
+> may exceed the reasonable range of perf(highest perf, lowest perf).
+> 
+> Signed-off-by: Meng Li <li.meng@amd.com>
+Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+>   drivers/cpufreq/amd-pstate.c | 15 ++++++++++++++-
+>   1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index aa5e57e27d2b..2015c9fcc3c9 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -484,12 +484,19 @@ static int amd_pstate_verify(struct cpufreq_policy_data *policy)
+>   
+>   static int amd_pstate_update_min_max_limit(struct cpufreq_policy *policy)
+>   {
+> -	u32 max_limit_perf, min_limit_perf;
+> +	u32 max_limit_perf, min_limit_perf, lowest_perf;
+>   	struct amd_cpudata *cpudata = policy->driver_data;
+>   
+>   	max_limit_perf = div_u64(policy->max * cpudata->highest_perf, cpudata->max_freq);
+>   	min_limit_perf = div_u64(policy->min * cpudata->highest_perf, cpudata->max_freq);
+>   
+> +	lowest_perf = READ_ONCE(cpudata->lowest_perf);
+> +	if (min_limit_perf < lowest_perf)
+> +		min_limit_perf = lowest_perf;
+> +
+> +	if (max_limit_perf < min_limit_perf)
+> +		max_limit_perf = min_limit_perf;
+> +
+>   	WRITE_ONCE(cpudata->max_limit_perf, max_limit_perf);
+>   	WRITE_ONCE(cpudata->min_limit_perf, min_limit_perf);
+>   	WRITE_ONCE(cpudata->max_limit_freq, policy->max);
+> @@ -1387,6 +1394,12 @@ static void amd_pstate_epp_update_limit(struct cpufreq_policy *policy)
+>   	max_limit_perf = div_u64(policy->max * cpudata->highest_perf, cpudata->max_freq);
+>   	min_limit_perf = div_u64(policy->min * cpudata->highest_perf, cpudata->max_freq);
+>   
+> +	if (min_limit_perf < min_perf)
+> +		min_limit_perf = min_perf;
+> +
+> +	if (max_limit_perf < min_limit_perf)
+> +		max_limit_perf = min_limit_perf;
+> +
+>   	WRITE_ONCE(cpudata->max_limit_perf, max_limit_perf);
+>   	WRITE_ONCE(cpudata->min_limit_perf, min_limit_perf);
+>   
 
-> On Tue, Jan 23, 2024 at 12:23:27AM +0900, Jan Bujak wrote:
->> On 1/22/24 23:54, Pedro Falcato wrote:
->> > Hi!
->> > 
->> > Where did you get that linker script?
->> > 
->> > FWIW, I catched this possible issue in review, and this was already
->> > discussed (see my email and Eric's reply):
->> > https://lore.kernel.org/all/CAKbZUD3E2if8Sncy+M2YKncc_Zh08-86W6U5wR0ZMazShxbHHA@mail.gmail.com/
->> > 
->> > This was my original testcase
->> > (https://github.com/heatd/elf-bug-questionmark), which convinced the
->> > loader to map .data over a cleared .bss. Your bug seems similar, but
->> > does the inverse: maps .bss over .data.
->> > 
->> 
->> I wrote the linker script myself from scratch.
->
-> Do you still need this addressed, or have you been able to adjust the
-> linker script? (I ask to try to assess the priority of needing to fix
-> this behavior change...)
-
-Kees, I haven't had a chance to test this yet but it occurred to me
-that there is an easy way to handle this.  In our in-memory copy
-of the elf program headers we can just merge the two segments
-together.
-
-I believe the diff below accomplishes that, and should fix issue.
-
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 5397b552fbeb..01df7dd1f3b4 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -924,6 +926,31 @@ static int load_elf_binary(struct linux_binprm *bprm)
- 	elf_ppnt = elf_phdata;
- 	for (i = 0; i < elf_ex->e_phnum; i++, elf_ppnt++)
- 		switch (elf_ppnt->p_type) {
-+		case PT_LOAD:
-+		{
-+			/*
-+			 * Historically linux ignored all but the
-+			 * final .bss segment.  Now that linux honors
-+			 * all .bss segments, a .bss segment that
-+			 * logically is not overlapping but is
-+			 * overlapping when it's edges are rounded up
-+			 * to page size causes programs to fail.
-+			 *
-+			 * Handle that case by merging .bss segments
-+			 * into the segment they follow.
-+			 */
-+			if (((i + 1) >= elf_ex->e_phnum) ||
-+			    (elf_ppnt[1].p_type != PT_LOAD) ||
-+			    (elf_ppnt[1].p_filesz != 0))
-+				continue;
-+			unsigned long end =
-+				elf_ppnt[0].p_vaddr + elf_ppnt[0].p_memsz;
-+			if (elf_ppnt[1].p_vaddr != end)
-+				continue;
-+			elf_ppnt[0].p_memsz += elf_ppnt[1].p_memsz;
-+			elf_ppnt[1].p_type = PT_NULL;
-+			break;
-+		}
- 		case PT_GNU_STACK:
- 			if (elf_ppnt->p_flags & PF_X)
- 				executable_stack = EXSTACK_ENABLE_X;
 
