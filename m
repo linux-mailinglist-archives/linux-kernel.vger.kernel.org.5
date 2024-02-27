@@ -1,314 +1,197 @@
-Return-Path: <linux-kernel+bounces-83303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE65286919A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:19:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EAC08691A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:20:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4CF6291E20
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:19:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2B6BB259B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF0D113EFE0;
-	Tue, 27 Feb 2024 13:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB2413B2A9;
+	Tue, 27 Feb 2024 13:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t+9keHML";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GRvXGAM1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="F9IZKXKZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qeLIL82+"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o8YEaViT"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C747D13B29C;
-	Tue, 27 Feb 2024 13:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342C813AA51
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709039918; cv=none; b=J6HhOwqO8aLyhKHRzbqDAUW0XdAKFLlFrwtTYh0fAJumKPeRJFN8WJ3tnyHY+Ff2CEiBgBfSaveztJ8OQ+eP/kI3tsGId1FbiEiEzhQQq3AQroo2pqd535BgzHQz0HXNkBPNIgU+mVBT9T5G+Y/i5l9ySB7pyh4OzxVvyuawYaw=
+	t=1709040012; cv=none; b=mGcQrgPnurv9DJTjkN/a5zoTfwWo6GY0DsZTuHJ8zJs4vt4akmtzhsobi8lTI4ZxYpLmSVGrsq0icyEbtYeGjyPZXAQcxCL5MmwDrYeQ0Oe2tD470+hWIhDD6ZVV5RiO/cbB8bKjqfBWzovCRSx6QG5IMyAxe8APNfxUK6zfFkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709039918; c=relaxed/simple;
-	bh=3gcuV61t2Hf8iIU8GS9e4WnOjtwy66ob4TygKymP7vI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IrPhu2RKmpZTUucBCEEV2XJTBmLYYLnuOxs79OpuXnpQzbDUS75pI3Vo139VHtkzbe++WQ2ORJ/KcW67j6Z6Qt6/Brz+dTpZrI9Wh4zcsq5mXLNwCQwwKIOt6hWOsbKE9pnLjp+SCXFjBotoykA18TmkQYyeI7VvlS4qSX+quXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=t+9keHML; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GRvXGAM1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=F9IZKXKZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qeLIL82+; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CD386222B1;
-	Tue, 27 Feb 2024 13:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709039914; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b5fxnH3MZSXNsSIAXZNKwmzfwaEYfCce0iXFeFygkQg=;
-	b=t+9keHMLh4mZ9U9FQ87VKQu8qlErdV098YFQ27/heTmhZppg6tdPU6yJ9Eo76VKzqONnnB
-	1DBPJEyQqJV/UxcctxZ22Xq3EhU0hSfd5ki6CR8KBtRG2fx3ZgjUmb8S2H5X+dAnVF5Svw
-	CMbh1JgO3q0lxv2gMts6lsIDlkbCUZg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709039914;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b5fxnH3MZSXNsSIAXZNKwmzfwaEYfCce0iXFeFygkQg=;
-	b=GRvXGAM18yVMX0BW2K+RwWRfUhc/w+IroW6mjGbZVcLNZgZY0hFKcOseHovdH82tnqfTto
-	OlaadaQpT0hAOkDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709039913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b5fxnH3MZSXNsSIAXZNKwmzfwaEYfCce0iXFeFygkQg=;
-	b=F9IZKXKZt1gaRwhJRkHRlaQl1OHHL8G72P9VbBh9roM6E3f52yS+BVAhXmn3S2584WUvxJ
-	ENH/CybjETOcGt4IQKTDzjQUBrSJRyTn/xgopePYT59Kc+3X6u6ghbXOY8evc12MXdxiqu
-	DD9NtaFXXx+SvDohX/QhkhPtG+o3fsw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709039913;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b5fxnH3MZSXNsSIAXZNKwmzfwaEYfCce0iXFeFygkQg=;
-	b=qeLIL82+HCy8ZAeUFMjZFYLviW9bzTdgWX6Cj9qpRxpNfNN2rVWl2yY3EOP1Z6qmCjOMY8
-	DkkhqX5V+tGh6EAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 31E4C13A58;
-	Tue, 27 Feb 2024 13:18:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Pt1+Cyjh3WWwLAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 27 Feb 2024 13:18:32 +0000
-Message-ID: <ae4f9958-813a-42c8-8e54-4ef19fd36d6c@suse.cz>
-Date: Tue, 27 Feb 2024 14:19:04 +0100
+	s=arc-20240116; t=1709040012; c=relaxed/simple;
+	bh=UCc+QXpK/pxCYv6oqRhkjlslZVn9Vi3dZm4sUsqmYXI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sZH23W7mMgaR3noOuhPK1uPp35MpqOvOYj+MRTB5k1QU6Y/EKhW67Ff0trMP96ncllQNFCrJhT8Pa4ly2UkOFIG0ydU4uFkV4BGEa4g64Ysf42kfek9zNgjrgSQn/knSCR3knNKBC1UQ5Ws5gy9RhuU74ggCVHuWLdTrThZ+y1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o8YEaViT; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d220e39907so67219641fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:20:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709040007; x=1709644807; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vlr5GxTuTyoOqcx2wy9fcrF4X1fQdHiiP+0pPjt3du4=;
+        b=o8YEaViTzRsCM3yNL6D38U0y955k1Yq82BaB9YXlSg8ZRhlEfoYE9bF5yO9LzfSiZa
+         FUY/+LEELHeuhqrfSBUvOu+0ubD99/MeqhAbm7qlt33PQGaC14YW6FDzSUrnc0WpLSO0
+         uLgE00EnIEivUFCR2hB3R2Kty2HbcWLkBbnex0Snw2nWhJHys8K77b0zpAhXeHPKEVT5
+         xT4vQO6e4Hn9XhLn7R6PhhbOO/9aDeo0vJXqf33aSKi2Wqjdjy8WnAiVEP2HtBCKbt4Q
+         x3H7G2ZUCbnQfwvBdBcI31dObwJY6ELxlq3FopP+A0yfQ1VYBRa49PhPLUR6ZBgIvyvL
+         hmVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709040007; x=1709644807;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vlr5GxTuTyoOqcx2wy9fcrF4X1fQdHiiP+0pPjt3du4=;
+        b=XZYNSxWi5lV60HpZW/juOAmNSJg4gjFKKEj9v9Cil9cvhEpVyPnrqLSHyiB/hd4E9M
+         2AdBY5IKPCygsc80PxFZNr108OW9H8R+t6gmvxvWdjw/nH2Q0LvaR0DS1tC+yCvhy3TV
+         +/QAZEPBTimGT/ekjle33nLtNEmUjPKtvwzoxQX10RAf8VXEr2hk0sysYCQQ20S+1Adj
+         fieT/tl+IYa3iG1zeJdgDgbVK5hkIuCLo04xgfXeMyeo2re1B++E41Us5M03fwafGEAh
+         Gb8ifE8TgI9Cwek8EuJUHBQGrKV+RkeclYfyym0hRpDJzBfWH8VREMj1tUyS4TjRlNK4
+         CDuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVQfqjDdlgHXKiS06s2axNfE7RCUtAK09xZlI+7ifB3sZiES/S7AgwY4ZpzzP6Qf7e+PnNjzyd/epaZHvC25W1OwXjHwrEPijhUcxgo
+X-Gm-Message-State: AOJu0YwShnlzbUi3nys/XY200ifwCasRobLdr/zrT1z7KQnuDa27D78H
+	b9MLAMEYyYht0nw7QXT3nDUfQf39dPBZuvWy7+mf6gJ2EQMgjCdPHtx9nUBSAYKM8u1f7hUxwSp
+	37FDX5R1zl+UM5MjE0swc1MjkyXvb3dKzZkHtBA==
+X-Google-Smtp-Source: AGHT+IGQ5qKugw7EolCixjBBZt98DHlZp0AHzKrqvDtOPvC40Yids/u0deBUUEQVxTX4vweQHoEHToV3hUoy2m4wmRs=
+X-Received: by 2002:a05:651c:48c:b0:2d2:5cca:cf6f with SMTP id
+ s12-20020a05651c048c00b002d25ccacf6fmr5999084ljc.18.1709040007508; Tue, 27
+ Feb 2024 05:20:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 31/36] lib: add memory allocations report in show_mem()
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240221194052.927623-1-surenb@google.com>
- <20240221194052.927623-32-surenb@google.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240221194052.927623-32-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=F9IZKXKZ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qeLIL82+
-X-Spamd-Result: default: False [1.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.00)[11.51%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[74];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,linux.dev:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.20
-X-Rspamd-Queue-Id: CD386222B1
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+References: <20240215030002.281456-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20240215030002.281456-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAC_iWjJ_TS66KG7uGOQFiKGfZNKjnod6u7zua4LVK-EJHEUv8w@mail.gmail.com>
+ <7feb889f-f78e-4caa-a2f4-9d41acf6ca76@linux.intel.com> <CAC_iWj+9eWesWD62krdhLwj58fpjptpnnG5JpUJUpFsg7_GzOA@mail.gmail.com>
+ <3b8113ac-e44c-4b11-b494-9e473352037a@linux.intel.com>
+In-Reply-To: <3b8113ac-e44c-4b11-b494-9e473352037a@linux.intel.com>
+From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date: Tue, 27 Feb 2024 15:19:31 +0200
+Message-ID: <CAC_iWjLXNBJz2RgRb3vbM_hetnw3hoWpG+sKM1gfiGo=z6tLxA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] efi/libstub: Add get_event_log() support for CC platforms
+To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/21/24 20:40, Suren Baghdasaryan wrote:
-> Include allocations in show_mem reports.
-> 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+On Sat, 24 Feb 2024 at 09:31, Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+>
+> On 2/23/24 5:24 AM, Ilias Apalodimas wrote:
+> > Apologies for the late reply,
+> >
+> >
+> > On Mon, 19 Feb 2024 at 09:34, Kuppuswamy Sathyanarayanan
+> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+> >> Hi Ilias,
+> >>
+> >> On 2/18/24 11:03 PM, Ilias Apalodimas wrote:
+> >>> On Thu, 15 Feb 2024 at 05:02, Kuppuswamy Sathyanarayanan
+> >>> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+> >>>> To allow event log info access after boot, EFI boot stub extracts
+> >>>> the event log information and installs it in an EFI configuration
+> >>>> table. Currently, EFI boot stub only supports installation of event
+> >>>> log only for TPM 1.2 and TPM 2.0 protocols. Extend the same support
+> >>>> for CC protocol. Since CC platform also uses TCG2 format, reuse TPM2
+> >>>> support code as much as possible.
+> >>>>
+> >>>> Link: https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#efi-cc-measurement-protocol [1]
+> >>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> >>> [...]
+> >>>
+> >>>> +void efi_retrieve_eventlog(void)
+> >>>> +{
+> >>>> +       efi_physical_addr_t log_location = 0, log_last_entry = 0;
+> >>>> +       efi_guid_t cc_guid = EFI_CC_MEASUREMENT_PROTOCOL_GUID;
+> >>>> +       efi_guid_t tpm2_guid = EFI_TCG2_PROTOCOL_GUID;
+> >>>> +       int version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
+> >>>> +       efi_tcg2_protocol_t *tpm2 = NULL;
+> >>>> +       efi_cc_protocol_t *cc = NULL;
+> >>>> +       efi_bool_t truncated;
+> >>>> +       efi_status_t status;
+> >>>> +
+> >>>> +       status = efi_bs_call(locate_protocol, &tpm2_guid, NULL, (void **)&tpm2);
+> >>>> +       if (status == EFI_SUCCESS) {
+> >>>> +               status = efi_call_proto(tpm2, get_event_log, version, &log_location,
+> >>>> +                                       &log_last_entry, &truncated);
+> >>>> +
+> >>>> +               if (status != EFI_SUCCESS || !log_location) {
+> >>>> +                       version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
+> >>>> +                       status = efi_call_proto(tpm2, get_event_log, version,
+> >>>> +                                               &log_location, &log_last_entry,
+> >>>> +                                               &truncated);
+> >>>> +                       if (status != EFI_SUCCESS || !log_location)
+> >>>> +                               return;
+> >>>> +               }
+> >>>> +
+> >>>> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
+> >>>> +                                          truncated);
+> >>>> +               return;
+> >>>> +       }
+> >>>> +
+> >>>> +       status = efi_bs_call(locate_protocol, &cc_guid, NULL, (void **)&cc);
+> >>>> +       if (status == EFI_SUCCESS) {
+> >>>> +               version = EFI_CC_EVENT_LOG_FORMAT_TCG_2;
+> >>>> +               status = efi_call_proto(cc, get_event_log, version, &log_location,
+> >>>> +                                       &log_last_entry, &truncated);
+> >>>> +               if (status != EFI_SUCCESS || !log_location)
+> >>>> +                       return;
+> >>>> +
+> >>>> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
+> >>>> +                                          truncated);
+> >>>> +               return;
+> >>>> +       }
+> >>>> +}
+> >>> [...]
+> >>>
+> >>> I haven't looked into CC measurements much, but do we always want to
+> >>> prioritize the tcg2 protocol? IOW if you have firmware that implements
+> >>> both, shouldn't we prefer the CC protocol for VMs?
+> >> According the UEFI specification, sec "Conidential computing", if a firmware implements
+> >> the TPM, then it should be used and CC interfaces should not be published. So I think
+> >> we should check for TPM first, if it does not exist then try for CC.
+> > Ok thanks, that makes sense. That document also says the services
+> > should be implemented on a virtual firmware.
+> > I am unsure at the moment though if it's worth checking that and
+> > reporting an error otherwise. Thoughts?
+>
+> IMO, it is not fatal for the firmware to implement both protocols. Although, it
+> violates the specification, does it makes sense to return error and skip
+> measurements? I think for such case, we can add a warning and proceed
+> with TPM if it exists.
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+If you have a TPM, the current code wouldn't even look for CC (which
+we agreed is correct).
+The question is, should we care if a firmware exposes the CC protocol,
+but isn't virtualized
 
-Nit: there's pr_notice() that's shorter than printk(KERN_NOTICE
-
-> ---
->  include/linux/alloc_tag.h |  7 +++++++
->  include/linux/codetag.h   |  1 +
->  lib/alloc_tag.c           | 38 ++++++++++++++++++++++++++++++++++++++
->  lib/codetag.c             |  5 +++++
->  mm/show_mem.c             | 26 ++++++++++++++++++++++++++
->  5 files changed, 77 insertions(+)
-> 
-> diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
-> index 29636719b276..85a24a027403 100644
-> --- a/include/linux/alloc_tag.h
-> +++ b/include/linux/alloc_tag.h
-> @@ -30,6 +30,13 @@ struct alloc_tag {
->  
->  #ifdef CONFIG_MEM_ALLOC_PROFILING
->  
-> +struct codetag_bytes {
-> +	struct codetag *ct;
-> +	s64 bytes;
-> +};
-> +
-> +size_t alloc_tag_top_users(struct codetag_bytes *tags, size_t count, bool can_sleep);
-> +
->  static inline struct alloc_tag *ct_to_alloc_tag(struct codetag *ct)
->  {
->  	return container_of(ct, struct alloc_tag, ct);
-> diff --git a/include/linux/codetag.h b/include/linux/codetag.h
-> index bfd0ba5c4185..c2a579ccd455 100644
-> --- a/include/linux/codetag.h
-> +++ b/include/linux/codetag.h
-> @@ -61,6 +61,7 @@ struct codetag_iterator {
->  }
->  
->  void codetag_lock_module_list(struct codetag_type *cttype, bool lock);
-> +bool codetag_trylock_module_list(struct codetag_type *cttype);
->  struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttype);
->  struct codetag *codetag_next_ct(struct codetag_iterator *iter);
->  
-> diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
-> index cb5adec4b2e2..ec54f29482dc 100644
-> --- a/lib/alloc_tag.c
-> +++ b/lib/alloc_tag.c
-> @@ -86,6 +86,44 @@ static const struct seq_operations allocinfo_seq_op = {
->  	.show	= allocinfo_show,
->  };
->  
-> +size_t alloc_tag_top_users(struct codetag_bytes *tags, size_t count, bool can_sleep)
-> +{
-> +	struct codetag_iterator iter;
-> +	struct codetag *ct;
-> +	struct codetag_bytes n;
-> +	unsigned int i, nr = 0;
-> +
-> +	if (can_sleep)
-> +		codetag_lock_module_list(alloc_tag_cttype, true);
-> +	else if (!codetag_trylock_module_list(alloc_tag_cttype))
-> +		return 0;
-> +
-> +	iter = codetag_get_ct_iter(alloc_tag_cttype);
-> +	while ((ct = codetag_next_ct(&iter))) {
-> +		struct alloc_tag_counters counter = alloc_tag_read(ct_to_alloc_tag(ct));
-> +
-> +		n.ct	= ct;
-> +		n.bytes = counter.bytes;
-> +
-> +		for (i = 0; i < nr; i++)
-> +			if (n.bytes > tags[i].bytes)
-> +				break;
-> +
-> +		if (i < count) {
-> +			nr -= nr == count;
-> +			memmove(&tags[i + 1],
-> +				&tags[i],
-> +				sizeof(tags[0]) * (nr - i));
-> +			nr++;
-> +			tags[i] = n;
-> +		}
-> +	}
-> +
-> +	codetag_lock_module_list(alloc_tag_cttype, false);
-> +
-> +	return nr;
-> +}
-> +
->  static void __init procfs_init(void)
->  {
->  	proc_create_seq("allocinfo", 0444, NULL, &allocinfo_seq_op);
-> diff --git a/lib/codetag.c b/lib/codetag.c
-> index b13412ca57cc..7b39cec9648a 100644
-> --- a/lib/codetag.c
-> +++ b/lib/codetag.c
-> @@ -36,6 +36,11 @@ void codetag_lock_module_list(struct codetag_type *cttype, bool lock)
->  		up_read(&cttype->mod_lock);
->  }
->  
-> +bool codetag_trylock_module_list(struct codetag_type *cttype)
-> +{
-> +	return down_read_trylock(&cttype->mod_lock) != 0;
-> +}
-> +
->  struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttype)
->  {
->  	struct codetag_iterator iter = {
-> diff --git a/mm/show_mem.c b/mm/show_mem.c
-> index 8dcfafbd283c..1e41f8d6e297 100644
-> --- a/mm/show_mem.c
-> +++ b/mm/show_mem.c
-> @@ -423,4 +423,30 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
->  #ifdef CONFIG_MEMORY_FAILURE
->  	printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
->  #endif
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> +	{
-> +		struct codetag_bytes tags[10];
-> +		size_t i, nr;
-> +
-> +		nr = alloc_tag_top_users(tags, ARRAY_SIZE(tags), false);
-> +		if (nr) {
-> +			printk(KERN_NOTICE "Memory allocations:\n");
-> +			for (i = 0; i < nr; i++) {
-> +				struct codetag *ct = tags[i].ct;
-> +				struct alloc_tag *tag = ct_to_alloc_tag(ct);
-> +				struct alloc_tag_counters counter = alloc_tag_read(tag);
-> +
-> +				/* Same as alloc_tag_to_text() but w/o intermediate buffer */
-> +				if (ct->modname)
-> +					printk(KERN_NOTICE "%12lli %8llu %s:%u [%s] func:%s\n",
-> +					       counter.bytes, counter.calls, ct->filename,
-> +					       ct->lineno, ct->modname, ct->function);
-> +				else
-> +					printk(KERN_NOTICE "%12lli %8llu %s:%u func:%s\n",
-> +					       counter.bytes, counter.calls, ct->filename,
-> +					       ct->lineno, ct->function);
-> +			}
-> +		}
-> +	}
-> +#endif
->  }
+Thanks
+/Ilias
+>
+> >
+> > Thanks
+> > /Ilias
+> >> https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#confidential-computing
+> >>
+> >>> Thanks
+> >>> /Ilias
+> >> --
+> >> Sathyanarayanan Kuppuswamy
+> >> Linux Kernel Developer
+> >>
+> --
+> Sathyanarayanan Kuppuswamy
+> Linux Kernel Developer
+>
 
