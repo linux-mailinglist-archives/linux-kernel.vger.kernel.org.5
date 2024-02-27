@@ -1,126 +1,103 @@
-Return-Path: <linux-kernel+bounces-83984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF89486A0F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:41:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB1586A0F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52A0028A3D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:41:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BB0F1C245E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663E414DFF4;
-	Tue, 27 Feb 2024 20:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="guZy/hT8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264D414EFED;
+	Tue, 27 Feb 2024 20:41:27 +0000 (UTC)
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98CC8134B1;
-	Tue, 27 Feb 2024 20:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D9414DFFD;
+	Tue, 27 Feb 2024 20:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709066481; cv=none; b=Pa2YbH/FqBsvFpykVvIdFqrn3PSKiwTqzaOWgRpDL8BthnN52Hl3UWsqaSwce1i4c1XyjZOclYlh4QhT5pi8/QPgdbsBaQ1E8onSIFJwlA8GIgKrKpWZQi7LFHbkWMntDWpgKi9rc66j2QeGhkqDDobaD7dOPempHi2Dj3I9HdI=
+	t=1709066486; cv=none; b=fYxvDy7vDDjuaewkQHBhNMivF/2ZhJ9Mp0pLQET3mgYn/FuAmCQ1bz1GUkeKMtAn1QqEtG7sDKYQFAGMle1SXqoqOAsrTpnaSR+5Pt5NnEvETRJQqhozUcS3jAVyW+bdGxRdR9Oh1X9r9Awo2/a2LPrvlUMePi00nwpS7I+yHSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709066481; c=relaxed/simple;
-	bh=C3koc4BLUVBfCv4h3OTG4z56obl5Kil1OhlpatVuxVQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=WJWs77tZfUCf5T0nuIV4FzRnTNBhab0mXtql1r86aJshGIO4TgcuGK5YVdAZ/qYAVWmFFvv5KeltH+ziKzM0mW3GVb1pPtbb0a4JhDJ/qHZBQBUJum3cl95al3wtpReMUlHDiN5zbCoxqQz8C10qGGxzjht+H/tIQPticMPHGuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=guZy/hT8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58B37C433F1;
-	Tue, 27 Feb 2024 20:41:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709066481;
-	bh=C3koc4BLUVBfCv4h3OTG4z56obl5Kil1OhlpatVuxVQ=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=guZy/hT88vtmqaJOKLgNAcTyuCLhnMzeuczn96zWG6ni0mK+00rJ5FGCHHba6RqJ6
-	 EUQ8hd0rPuRyJ10yBvAQVDFMG7qS0jvLzF3eEwi+SpSw/zjVxjAjmV4sZHEHilV8/z
-	 kGnbXcsb/uLZDhlM/zb+VjOMx9SrdgsaIaSvSQvGua4pTN1JgnBaTw4d+SFoft/h2a
-	 iwnAsXaIfQK2J5Ey3QYFRathYuMTGBpdrdb8+5gKEYehV1Ry7OOlpagHp6dYKyzCji
-	 2UcbLlU99UBKSPJ6W37HhQUwgSSoDHEPctMZ1xFZ/KheN4lUEhOZb0ED9dZXo4sZ6H
-	 dPo8t615ACtBQ==
+	s=arc-20240116; t=1709066486; c=relaxed/simple;
+	bh=jAqu3eZCLfAw08fyoxhcQMIAzo4phS5xxsvpvRyTAAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D/VQL5cC14TzM1eF/fBub6HLA7Z+Q11XBpv18CQz6xagEnmcRgNGKLmGBDbjS4MHH81Kbnnd8fMXeoK+7ODnEXFgVA33KirEFek+ooT00Fv6J5XFublZzkXc7DsWa2afwHMWReU+1psf5Fv81l+TxL4TkMQctgdYMmp6X4g/Ndc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 3DBAE2800B49D;
+	Tue, 27 Feb 2024 21:41:16 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 307815D825B; Tue, 27 Feb 2024 21:41:16 +0100 (CET)
+Date: Tue, 27 Feb 2024 21:41:16 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Alexey Kardashevskiy <aik@amd.com>
+Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH kernel v2] pci/doe: Support discovery version
+Message-ID: <20240227204116.GA30259@wunner.de>
+References: <20240226033114.3100118-1-aik@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 27 Feb 2024 22:41:14 +0200
-Message-Id: <CZG5I3CPFINS.2ZV8CB5AXCCEX@kernel.org>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>,
- "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
- <zhiquan1.li@intel.com>, "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
- try_charge()
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Dave Hansen" <dave.hansen@intel.com>, "Haitao Huang"
- <haitao.huang@linux.intel.com>, "Huang, Kai" <kai.huang@intel.com>,
- "tj@kernel.org" <tj@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>,
- "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
- "mkoutny@suse.com" <mkoutny@suse.com>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
- "bp@alien8.de" <bp@alien8.de>
-X-Mailer: aerc 0.17.0
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-11-haitao.huang@linux.intel.com>
- <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
- <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
- <op.2jkfeezjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <c913193c0560c4372d2fdb31e9edb28bcb419f50.camel@intel.com>
- <op.2jlti6g9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <7b53e155-2622-4acb-b7c9-d22e623e4cb3@intel.com>
- <op.2jqdjjd8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <48faaea8b24f032baa6a858a2909a5b4ace769c6.camel@intel.com>
- <d9b0df06-da68-4729-8aac-2a77e890e152@intel.com>
- <op.2jrquskiwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <3f4c6d12-7e0f-44ca-920e-ec219904e0aa@intel.com>
-In-Reply-To: <3f4c6d12-7e0f-44ca-920e-ec219904e0aa@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226033114.3100118-1-aik@amd.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon Feb 26, 2024 at 11:56 PM EET, Dave Hansen wrote:
-> On 2/26/24 13:48, Haitao Huang wrote:
-> > In case of overcomitting, i.e., sum of limits greater than the EPC
-> > capacity, if one group has a fault, and its usage is not above its own
-> > limit (try_charge() passes), yet total usage of the system has exceeded
-> > the capacity, whether we do global reclaim or just reclaim pages in the
-> > current faulting group.
->
-> I don't see _any_ reason to limit reclaim to the current faulting cgroup.
->
-> >> Last, what is the simplest (least amount of code) thing that the SGX
-> >> cgroup controller could implement here?
-> >=20
-> > I still think the current approach of doing global reclaim is reasonabl=
-e
-> > and simple: try_charge() checks cgroup limit and reclaim within the
-> > group if needed, then do EPC page allocation, reclaim globally if
-> > allocation fails due to global usage reaches the capacity.
-> >=20
-> > I'm not sure how not doing global reclaiming in this case would bring
-> > any benefit.
-> I tend to agree.
->
-> Kai, I think your examples sound a little bit contrived.  Have actual
-> users expressed a strong intent for doing anything with this series
-> other than limiting bad actors from eating all the EPC?
+On Mon, Feb 26, 2024 at 02:31:14PM +1100, Alexey Kardashevskiy wrote:
+> Does PCI_DOE_DATA_OBJECT_DISC_REQ_3_DISCOVER_VER need to be in pci-regs.h?
 
-I'd consider this from the viewpoint is there anything in the user space
-visible portion of the patch set that would limit tuning the performance
-later on, if required let's say by a workload that acts sub-optimally.
+Yes that's fine.
 
-If not, then most of performance related issues can be only identified
-by actual use of the code.
 
-BR, Jarkko
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -1144,6 +1144,7 @@
+>  #define PCI_DOE_DATA_OBJECT_HEADER_2_LENGTH		0x0003ffff
+>  
+>  #define PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX		0x000000ff
+> +#define PCI_DOE_DATA_OBJECT_DISC_REQ_3_DISCOVER_VER	0x0000ff00
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_VID		0x0000ffff
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL		0x00ff0000
+>  #define PCI_DOE_DATA_OBJECT_DISC_RSP_3_NEXT_INDEX	0xff000000
+
+"DISCOVER" duplicates the preceding "DISC", maybe just
+"PCI_DOE_DATA_OBJECT_DISC_REQ_3_VERSION" for simplicity?
+
+
+> -static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 *index, u16 *vid,
+> +static int pci_doe_discovery(struct pci_doe_mb *doe_mb, u8 capver, u8 *index, u16 *vid,
+>  			     u8 *protocol)
+>  {
+> +	u32 disver = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_DISCOVER_VER,
+> +				(capver >= 2) ? 2 : 0);
+>  	u32 request_pl = FIELD_PREP(PCI_DOE_DATA_OBJECT_DISC_REQ_3_INDEX,
+> -				    *index);
+> +				    *index) | disver;
+
+Hm, why use a separate "disver" variable?  This could be combined
+into a single statement.
+
+Subject should probably be "PCI/DOE: Support discovery version 2".
+
+Otherwise LGTM.
+
+Thanks,
+
+Lukas
 
