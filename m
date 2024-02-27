@@ -1,94 +1,96 @@
-Return-Path: <linux-kernel+bounces-82878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99A23868B0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:44:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4B90868B0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 500B71F22AA1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:44:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D66E01C22046
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBDA130E3B;
-	Tue, 27 Feb 2024 08:44:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC9A130E2E;
+	Tue, 27 Feb 2024 08:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tBJkNZwO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="vhUfu7Uk"
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B4012FF96;
-	Tue, 27 Feb 2024 08:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B07987E761;
+	Tue, 27 Feb 2024 08:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709023481; cv=none; b=nQfMnuEnGaTMViFwJ+KEmBs62UuiY5GNU4CEhWM2A0nLja4O1UZ1MuolyXjVJSzqo6UAWYkgiEhE2kT5cHX/WVHv0HmVtAeNLGRzFh/gbmnewBq22NPYXlHf0280N+bxcBnkNH4g9yGCFzedUN0iRPq2MrpX2jhWUmRM0lzdzXA=
+	t=1709023496; cv=none; b=eHfPCoHJTsexPDx1UVGSpRMxMKW1qVRFI/WTrAHZPJ0nd4kytGyfO/lNze+1LT/ZNXpkHp2I5mHU3m9hIyFMzg+e+NjcMYWqqXDneoNo6p7tEMt2CzLSii3lLnn5L+/mzwKuSVqQxkX2LPfl++kjkam6oQqPK/QEn2ECDxsXvO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709023481; c=relaxed/simple;
-	bh=a+VjVdkI+y+r54z7Rzx7n/1mu+d3oTctW5X/n1/51Ik=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=dYCX2NIaMkp00FccHNUPpwqQ2enfN2c7OE7Db+zb/7A7qYLBeNSowbEHGkhhs7+W8WRpFPi06xcPPY8gNnTfE/UoPsb7go1URsFFigC0Rw7w8KWy7bUOks9xBjOuY7JfCcGtGK5mCYNOcXLZbzgZ6XmrYZ5Y70FyNeMTnSYdwww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tBJkNZwO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7784DC43390;
-	Tue, 27 Feb 2024 08:44:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709023481;
-	bh=a+VjVdkI+y+r54z7Rzx7n/1mu+d3oTctW5X/n1/51Ik=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:From;
-	b=tBJkNZwOC3fVeFfMocdY3TuBMY1jMqdFoOXjMfpKH+XvxCBXCWJoLgkkEW8LcBzD4
-	 nlQHH23HVtEBCjlKj2nMr20hd+kristV1roU6pG4+JAMUeX2WNt3ZnnSo77SUs4g8N
-	 /atRBwvgiYSRRwPl1fU5bQnScSDA3bGXRwc7TuP+n85mp4wkFL0kEY93oUD8pYSqFD
-	 nucSYrzBm4AKFAA2U5LMnjVJmSDhERmPGVyhybOJ8Q8wu+sl5awYEcCKdvZGJff6bY
-	 6cfQq66TNQGpIyTHhVnBomXlQ+Oxp3F/5i/FjCjtG44+C041wQB9GwxXfloGdQhOjg
-	 T+wsR1QY/huXg==
-References: <20240227102827.313113cd@canb.auug.org.au>
-User-agent: mu4e 1.10.8; emacs 27.1
-From: Chandan Babu R <chandanbabu@kernel.org>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Christian Brauner <brauner@kernel.org>, "Darrick J. Wong"
- <djwong@kernel.org>, David Chinner <david@fromorbit.com>,
- linux-xfs@vger.kernel.org, Dave Chinner <dchinner@redhat.com>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing
- List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the vfs-brauner tree with the xfs tree
-Date: Tue, 27 Feb 2024 14:14:08 +0530
-In-reply-to: <20240227102827.313113cd@canb.auug.org.au>
-Message-ID: <878r36l2iz.fsf@debian-BULLSEYE-live-builder-AMD64>
+	s=arc-20240116; t=1709023496; c=relaxed/simple;
+	bh=F6Dw1yhuXSn9tDcHzMLVsOx+fa7VDnyjl31zCJLzb7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uoHJqNXk7EYHVbCnTFQI5N+7PCsm1h7a7z0BTKFxPuEIVjsLquxVUs0dhN+fxL0OOCm7fgbuj7JRYaoN7q2je+dojuH0tDjn1EI7+goVXGMWMzzFbEfXaPhF65zh9uYTKHzNLcbwh+p6CvqDpPBrcKFQHPMvcZIxSgZD9MZkgT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=vhUfu7Uk; arc=none smtp.client-ip=80.241.56.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TkWJL6wn2z9t0M;
+	Tue, 27 Feb 2024 09:44:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1709023491;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=28mM1L7VoPpQ2Bxti5OxSfSjhM5DSY0iAhB3xAG9DsE=;
+	b=vhUfu7Ukkzc0sJ3NR4BGYejf5reNNcHuMppL3CH2U9H7P/14zED8PWIe58sugXnGExZkI8
+	yWE9fwlD0rlXjqEW4HgHb1ItUC84CCTD2HKudIo/vn1WQs2xO4gDIQVTcUXPpW4nwpdQY6
+	RiKmh/OvoFKM7M0FnU/Nyw4HAGNa4lHRCiDRD4mRBdQNNRCNX1q2B0vaSi8nehFSqKLoWr
+	kScyJxMdKaa0STuFn5cqUJDhIdUsjXjV2q/qDojeo8kXV6/WwDgUc7JXWz4FlO2bAQWBHe
+	BFikc0eFXVid62NyhvTPH4xx3QiyPOSeWygvw5gXSH9O8iqdS9vtJ4DH/jzjUA==
+Date: Tue, 27 Feb 2024 09:44:46 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, david@fromorbit.com, chandan.babu@oracle.com, 
+	akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com, hare@suse.de, 
+	djwong@kernel.org, gost.dev@samsung.com, linux-mm@kvack.org, 
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 12/13] xfs: make the calculation generic in
+ xfs_sb_validate_fsb_count()
+Message-ID: <uw6wet56alvrcj6erv3fwn3hqjsyijhk4ke7f54yowt3mzkreh@hiov5ttykytu>
+References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+ <20240226094936.2677493-13-kernel@pankajraghav.com>
+ <ZdyQdGkSIw9OsSqc@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdyQdGkSIw9OsSqc@casper.infradead.org>
+X-Rspamd-Queue-Id: 4TkWJL6wn2z9t0M
 
-On Tue, Feb 27, 2024 at 10:28:27 AM +1100, Stephen Rothwell wrote:
-> [[PGP Signed Part:No public key for 015042F34957D06C created at 2024-02-27T04:58:27+0530 using RSA]]
-> Hi all,
->
-> Today's linux-next merge of the vfs-brauner tree got a conflict in:
->
->   fs/xfs/xfs_buf.c
->
-> between commits:
->
->   d4c75a1b40cd ("xfs: convert remaining kmem_free() to kfree()")
->   5076a6040ca1 ("xfs: support in-memory buffer cache targets")
->
-> from the xfs tree and commit:
->
->   1b9e2d90141c ("xfs: port block device access to files")
->
-> from the vfs-brauner tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+On Mon, Feb 26, 2024 at 01:21:56PM +0000, Matthew Wilcox wrote:
+> On Mon, Feb 26, 2024 at 10:49:35AM +0100, Pankaj Raghav (Samsung) wrote:
+> > +	if (check_mul_overflow(nblocks, (1 << sbp->sb_blocklog), &bytes))
+> 
+> Why would you not use check_shl_overflow()?
 
-The resolution looks good to me. Thanks for fixing it up.
-
--- 
-Chandan
+This looks better than check_mul_overflow. I will use this in the next
+version.
+> 
+> > +		return -EFBIG;
+> > +
+> > +	mapping_count = bytes >> PAGE_SHIFT;
+> >  	/* Limited by ULONG_MAX of page cache index */
+> > -	if (nblocks >> (PAGE_SHIFT - sbp->sb_blocklog) > ULONG_MAX)
+> > +	if (mapping_count > ULONG_MAX)
+> >  		return -EFBIG;
+> >  	return 0;
+> >  }
+> > -- 
+> > 2.43.0
+> > 
 
