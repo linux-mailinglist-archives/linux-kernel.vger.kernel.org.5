@@ -1,163 +1,146 @@
-Return-Path: <linux-kernel+bounces-83381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E01C8696A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:14:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D80986969A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:13:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61B14B29381
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:14:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE1261F2E5AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9122414533E;
-	Tue, 27 Feb 2024 14:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09FD1145B17;
+	Tue, 27 Feb 2024 14:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ae5IGL4z"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PXShywRK"
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E4D813B797;
-	Tue, 27 Feb 2024 14:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C583F14534E;
+	Tue, 27 Feb 2024 14:13:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709043201; cv=none; b=GGagJ9nDI3rIj6rwf2klzWsFGU4fsB4K5fKcY9ZOLMfOw7VeVg/KE6GObHMD93JEUbGqELrKB1O637PynjKaFyQ0jlzKZNkQ2aWtKaeX3lAaX/L2Wg7pkP2AwCXRCvGtL0FgTbvfv881pBIuJaT84T2zyz8ep9nWcH1FIS6+g1s=
+	t=1709043184; cv=none; b=RB4cUuRqur60Pc9RwaQe1v4UW8cfa9PtaQFw7B5YpRqtQ8OWOYMvUJbjTXubl1rXaMELkiRwMmfmv6zlzj5F1uB8UABiaWZISPUCXBXXLcLmdmZbwVcP8GBI5aFFqx5pBMJxuBuDwhG3pb9xHEt8B/wKLIkW5Q983kOZvs5WlaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709043201; c=relaxed/simple;
-	bh=mUuwmlC0meHZASaEIz5WA4LuGQ0Dr67URk+uNV/EgD8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=otsexT7/s6mGLaezXUeYHLis80pVvANB+dUgCeNfgdfQvjFtPPlEgG0WZF67AorokwhO8FkyiEB2xRPSsrazSNQYtnc990VdaK2t1iM27GUpQ84YjOvb9yVFjSvjuUKyPtqdH3BOGH59rx/npDQQkxlHRHakdV2G8UqQfON2mvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ae5IGL4z; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41RED0Cm064396;
-	Tue, 27 Feb 2024 08:13:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1709043180;
-	bh=89TgnGcV7AWusBNJIhZxYRDeSlSzPcr0Ty7C/sjjwMQ=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=ae5IGL4z5LmTchav//6gcnweNsR0f5yZ34OmA5EpMpCAEMVBOpAtkC4Dr7SkdtWYz
-	 woLcVnujhS1I3y0E3kIGL3xdkc412smFXhW+iN+FaMGwlyt4k7Aw/1bpWikz2QnHna
-	 mV6U6gmYpqCCx1rmVjyLATMyMNBZ3TaZWvTBw8UU=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41RED01U055730
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 27 Feb 2024 08:13:00 -0600
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 27
- Feb 2024 08:13:00 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 27 Feb 2024 08:13:00 -0600
-Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41RECuKD000420;
-	Tue, 27 Feb 2024 08:12:56 -0600
-Message-ID: <c4f9bbf2-a30e-44bb-91ee-8e6ab209115b@ti.com>
-Date: Tue, 27 Feb 2024 19:42:55 +0530
+	s=arc-20240116; t=1709043184; c=relaxed/simple;
+	bh=vdy2/jshL3R4Tx8oyk8z07nWJMHJ6K0TNsRxmG/PSc0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sGH5qUBqYYuVLwF+8IOeYXIiNVPtd4kyn7OG6NbKs3YxDQZ71falCpDsV4JcWtBuqJ+uzzd+k7GJh4jFcuSRqDTIUbleFZAE23HIp2TMoe1MQz/kwxgglao75RyhW6/Cre89GLOgGWeAIwDtjHuOvihZJLgO84FCDDpxuaoqzrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PXShywRK; arc=none smtp.client-ip=209.85.160.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-214c940145bso2426895fac.1;
+        Tue, 27 Feb 2024 06:13:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709043181; x=1709647981; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PGb5zgEK6C2hj+4mYKhczrOkyb0sOdrGR3mLsPhWNC8=;
+        b=PXShywRK049W3X5LmVSZqPmEQ5LKw/FOKJ6bjKwtye8eAoHggbrsC61K5WWMK+0ARz
+         YizcDV+k7O4Yxig5AAJj44TuyfMqMnJFKSrObesIMObzSWwZ8TdcBwwEWRKLJjG0ZKiu
+         LSq5rZ3qwHpEihc+/IX88V0vlyIke0pNpHQJLOUdQ5NUiMYmKGoHHRqwPx6dqSOM4qDy
+         cU4EL38m9y4Ny3wzls+OuJtLB8Jx1bkzq6lxP7NHQB/ODGQ5MYX+6FbXGEMkzSRnYO9z
+         EGo+7VizKiSkxsLEzbqNSf4P7E7U0JvzEiFgSjC8UNz/4VD6T5JvDNaILvh1cQ/eyIup
+         rnUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709043181; x=1709647981;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PGb5zgEK6C2hj+4mYKhczrOkyb0sOdrGR3mLsPhWNC8=;
+        b=aeufsoWK5GvPe0dkDl7M2mcs6Op/eroHvBkKHn0MjX+e/uHx0gYOK5ehlNMCxGCFBT
+         L3h5Ii050l7DImlOpdk6CBUE4IPBjtClascaguA9BDBcrUPOvhpIsiG+vc5Yx1DEOXM8
+         uVMaEMW7Ry/dlhQVRT/keeQmAkT4oT8IJLFK/3TQ1/hSWAKS2Ac3Wcbe0iaxqIfBSOxn
+         0WJ1PpPkRsh1u5Ct/yPJCGZ8iRhopZ+k0sA/exymM4RN4XyasFxZdE7qo1z3Vj952ag4
+         KDR9h1ZM1l/e/szcn8WMOlKmbK5UWRSg7OhyUVpF9mANm3uMMeWDUgAgSNnrInEpwiYh
+         H5kA==
+X-Forwarded-Encrypted: i=1; AJvYcCUt3yc2m2bMFkGteqoew1Bhl38+A1zLiW3APQ9Ct1MvLlq0AmOB/C+dN8V05tNePJKu9iCJq9ljxbNO9VWjWAq2ZP4QdeUdM+qD+8SMtCtv6hILZm+ZcFjdVZf2Yfh2apzsdlv9Ls3Dnedl6+gMnHLKkNWE3IvwZFYuhG4Ogkh5QGlelLOdoibt4xV3B3RkKM9W7624ETOCJXdiOF55SMmxVQ==
+X-Gm-Message-State: AOJu0Yw/VDFCyqm6XrgBjcpuB4S9l9u1LEp1ky+uZRQdPCO2NFv5A7uV
+	m/ZoMV8nGwTZaxTe9aZUv3/gs9g+ZO8sdQShiA7nt0J+S2tCUg6z
+X-Google-Smtp-Source: AGHT+IH8/5KlM61VXYvgT2KPkGjl5A/QR3/+KkQX0L9Vg1IRz6Sl1T6Dy9r6eVf85Z1umiZN01LQ1Q==
+X-Received: by 2002:a05:6870:8291:b0:21e:b3aa:1906 with SMTP id q17-20020a056870829100b0021eb3aa1906mr9462866oae.4.1709043180684;
+        Tue, 27 Feb 2024 06:13:00 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id eu3-20020a0568303d0300b006e2e64d2e14sm1507666otb.75.2024.02.27.06.12.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 06:13:00 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Tue, 27 Feb 2024 08:12:57 -0600
+From: John Groves <John@groves.net>
+To: Christian Brauner <brauner@kernel.org>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nvdimm@lists.linux.dev, john@jagalactic.com, Dave Chinner <david@fromorbit.com>, 
+	Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 08/20] famfs: Add famfs_internal.h
+Message-ID: <doozhoqznmwg74tc4uvmg2qwzwvga7hyoajb4naso7ptiddmvs@ysxldif4k6rn>
+References: <13556dbbd8d0f51bc31e3bdec796283fe85c6baf.1708709155.git.john@groves.net>
+ <20240227-kiesgrube-couch-77ee2f6917c7@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/4] arm64: dts: ti: k3-am64-main: Add ICSSG IEP nodes
-Content-Language: en-US
-To: Josua Mayer <josua@solid-run.com>, Nishanth Menon <nm@ti.com>,
-        Tero Kristo
-	<kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC: Yazan Shhady <yazan.shhady@solid-run.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>,
-        Grygorii Strashko
-	<grygorii.strashko@ti.com>,
-        MD Danish Anwar <danishanwar@ti.com>
-References: <20240219-add-am64-som-v7-0-0e6e95b0a05d@solid-run.com>
- <20240219-add-am64-som-v7-2-0e6e95b0a05d@solid-run.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <20240219-add-am64-som-v7-2-0e6e95b0a05d@solid-run.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227-kiesgrube-couch-77ee2f6917c7@brauner>
 
-
-
-On 19/02/24 20:33, Josua Mayer wrote:
-> From: Suman Anna <s-anna@ti.com>
+On 24/02/27 02:38PM, Christian Brauner wrote:
+> On Fri, Feb 23, 2024 at 11:41:52AM -0600, John Groves wrote:
+> > Add the famfs_internal.h include file. This contains internal data
+> > structures such as the per-file metadata structure (famfs_file_meta)
+> > and extent formats.
+> > 
+> > Signed-off-by: John Groves <john@groves.net>
+> > ---
+> >  fs/famfs/famfs_internal.h | 53 +++++++++++++++++++++++++++++++++++++++
 > 
-> The ICSSG IP on AM64x SoCs have two Industrial Ethernet Peripherals (IEPs)
-> to manage/generate Industrial Ethernet functions such as time stamping.
-> Each IEP sub-module is sourced from an internal clock mux that can be
-> derived from either of the IP instance's ICSSG_IEP_GCLK or from another
-> internal ICSSG CORE_CLK mux. Add both the IEP nodes for both the ICSSG
-> instances. The IEP clock is currently configured to be derived
-> indirectly from the ICSSG_ICLK running at 250 MHz.
+> Already mentioned in another reply here but adding a bunch of types such
+> as famfs_file_operations that aren't even defines is pretty odd. So you
+> should reorder this.
+
+Acknowledged, thanks. V2 will phase in only what is needed by the
+code in each patch.
+
 > 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
-> Signed-off-by: Josua Mayer <josua@solid-run.com>
-> ---
-
-This patch is already picked as part of different series:
-
-https://lore.kernel.org/all/20240215103036.2825096-2-danishanwar@ti.com/
-
->  arch/arm64/boot/dts/ti/k3-am64-main.dtsi | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
+> >  1 file changed, 53 insertions(+)
+> >  create mode 100644 fs/famfs/famfs_internal.h
+> > 
+> > diff --git a/fs/famfs/famfs_internal.h b/fs/famfs/famfs_internal.h
+> > new file mode 100644
+> > index 000000000000..af3990d43305
+> > --- /dev/null
+> > +++ b/fs/famfs/famfs_internal.h
+> > @@ -0,0 +1,53 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * famfs - dax file system for shared fabric-attached memory
+> > + *
+> > + * Copyright 2023-2024 Micron Technology, Inc.
+> > + *
+> > + * This file system, originally based on ramfs the dax support from xfs,
+> > + * is intended to allow multiple host systems to mount a common file system
+> > + * view of dax files that map to shared memory.
+> > + */
+> > +#ifndef FAMFS_INTERNAL_H
+> > +#define FAMFS_INTERNAL_H
+> > +
+> > +#include <linux/atomic.h>
+> > +#include <linux/famfs_ioctl.h>
+> > +
+> > +#define FAMFS_MAGIC 0x87b282ff
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> index e348114f42e0..9d2dad8ae8df 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-> @@ -1244,6 +1244,18 @@ icssg0_iepclk_mux: iepclk-mux@30 {
->  			};
->  		};
->  
-> +		icssg0_iep0: iep@2e000 {
-> +			compatible = "ti,am654-icss-iep";
-> +			reg = <0x2e000 0x1000>;
-> +			clocks = <&icssg0_iepclk_mux>;
-> +		};
-> +
-> +		icssg0_iep1: iep@2f000 {
-> +			compatible = "ti,am654-icss-iep";
-> +			reg = <0x2f000 0x1000>;
-> +			clocks = <&icssg0_iepclk_mux>;
-> +		};
-> +
->  		icssg0_mii_rt: mii-rt@32000 {
->  			compatible = "ti,pruss-mii", "syscon";
->  			reg = <0x32000 0x100>;
-> @@ -1385,6 +1397,18 @@ icssg1_iepclk_mux: iepclk-mux@30 {
->  			};
->  		};
->  
-> +		icssg1_iep0: iep@2e000 {
-> +			compatible = "ti,am654-icss-iep";
-> +			reg = <0x2e000 0x1000>;
-> +			clocks = <&icssg1_iepclk_mux>;
-> +		};
-> +
-> +		icssg1_iep1: iep@2f000 {
-> +			compatible = "ti,am654-icss-iep";
-> +			reg = <0x2f000 0x1000>;
-> +			clocks = <&icssg1_iepclk_mux>;
-> +		};
-> +
->  		icssg1_mii_rt: mii-rt@32000 {
->  			compatible = "ti,pruss-mii", "syscon";
->  			reg = <0x32000 0x100>;
-> 
+> That needs to go into include/uapi/linux/magic.h.
 
--- 
-Regards
-Vignesh
+Done for v2.
+
+Thank you,
+John
+
 
