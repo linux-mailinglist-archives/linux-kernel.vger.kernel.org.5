@@ -1,55 +1,53 @@
-Return-Path: <linux-kernel+bounces-83127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2DF6868ED1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1EEF868ED2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D7B81C24CB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:31:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 295AC1C25334
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6AD139597;
-	Tue, 27 Feb 2024 11:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4ABD13A255;
+	Tue, 27 Feb 2024 11:31:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f6i9GP5H"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JDi9+qXm"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C16592A8C1
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218E613A241
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709033492; cv=none; b=goHdRRgiZp72CpGN6mhCdSNyCo9S+uZVrbtq21lMZXFnqsJVODrWEYUmfHNygq20nURKae0XkxWYT5/vdJryz5XYmwh5kT9jyU7e0X5+uFNap0vMbaOAhFmQTVK9ce6Wq3AFw3B2Ee6y2HPOCtv4w1dWY5V3fELFPvZ01siW604=
+	t=1709033494; cv=none; b=cQUlz+6cGMuHGgUmHliJjsORb39xdoWn3KktmPcbPJGVIdSqbAnr96yWl4Zgb6lWejd00egNCWFWiQ2eohIzqaKGRoHiu2vSYaNbcvif3XWRTYwViKXTeUAPg+Up+/1iCAIniwAOOeDbkRg+cDj0i5EFAiNF87GwlF0v/Nt1CS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709033492; c=relaxed/simple;
-	bh=sGTB8CRdqXo2csxvM3ZA6uP3ffXhX15EUcNcGEjFAQc=;
+	s=arc-20240116; t=1709033494; c=relaxed/simple;
+	bh=Cr7MmxgTuDem0OxZOABddEuZGeXEks8j30PVFs4liZI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=e4ke1DA2uhUjknW9aKaGYlH7tJptvFDHaWW/Epo31ZiPvYJABg7YLth+pObrSwReXv9ugEASO20Gu7jyxeZZqhXMbrgbHe16ykQO+p1LWMXFjtxCrU/ik1nCgWdkxL0CKnolht29OVNufssLNjA81JsYkBaBc/jsBakjd+LBgac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f6i9GP5H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 390F6C433C7;
-	Tue, 27 Feb 2024 11:31:31 +0000 (UTC)
+	 MIME-Version:Content-Type; b=h0IHBQypj4FY30eslfTiufB82ZWHL07h0mgPqtBDqbq7SvNhrZoeS7BvTSmdShT0z9BgUj3poRO64DBBFY7CgREaTZsFhE5ix9hD9GoZJDmd3DWLhpXB075LGG069oPVNpBU8e68e5j5nih8qpXQe5VrvE7YRmuNOqNrlBgrpso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JDi9+qXm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C1EC43390;
+	Tue, 27 Feb 2024 11:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709033492;
-	bh=sGTB8CRdqXo2csxvM3ZA6uP3ffXhX15EUcNcGEjFAQc=;
+	s=k20201202; t=1709033493;
+	bh=Cr7MmxgTuDem0OxZOABddEuZGeXEks8j30PVFs4liZI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=f6i9GP5HcbBCTezUVkSYb2B3+Ms8OthdRmXo8SCngsVWt2xjAsdf5e/gc1rDK8fdD
-	 3exfbDFs1clsOKk+bpLyoIpEBCEDZkWXyiWvmKfClzQvRPdERzDPui5N+TLfjY45+r
-	 DPP5yFs+ZMwhI8SW9vAbugKt20OwNS9uvVeb7GMqniEsG2fVvXhD8zmahIse5CCise
-	 hvEb5Zsv4AMnGY57vhrDLmJnV8JVrw/+n2wuipkU6j6iAYNuuFhUha2cmXVcJiTRzd
-	 EnWtV0to7uLpJVFQ5imzjTvKVCY5Yzx10X8HFEv12ire0acuYBFhdtB5OF2VZAu2Z6
-	 YyDK7bMgeEiyw==
+	b=JDi9+qXmXf40vcG+5maWgeJwM+Oq9unUqGJnwRvnSGI8WEIfNg9myiFpc0p5iH0WX
+	 UH6wn2j+c9AvzyGEtZj8RDwDH4QFSskBE3AJL0oeTRad6mTJm+2dmkyE982uAE1aez
+	 gk/MEmrAxiykmrBGAL83AbBCne5ksYLwlhZkrbJkNL1hXlOaAy7FPWJmLqrwFdWLBm
+	 GL5Ls78xPzyRKoXmVnGQSRcPf4QcEqaGM66tVlfQiuHBnKsptkyLXcyTLNhHomc6O+
+	 zjYHuchzH1kyR1vDPIMNhqkwh35T3B5oN0PNP4j1ZKpA7zBDhsK4mlQs8yhX3Ky3i8
+	 h0EU3XmVcbcYw==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, 
- Support Opensource <support.opensource@diasemi.com>, 
- Lee Jones <lee@kernel.org>, Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-kernel@vger.kernel.org
-In-Reply-To: <20240220-descriptors-regulators-v1-0-097f608694be@linaro.org>
-References: <20240220-descriptors-regulators-v1-0-097f608694be@linaro.org>
-Subject: Re: [PATCH 0/5] Convert some regulator drivers to GPIO descriptors
-Message-Id: <170903349096.16921.1513708498792696039.b4-ty@kernel.org>
-Date: Tue, 27 Feb 2024 11:31:30 +0000
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Markus Reichl <m.reichl@fivetechno.de>
+In-Reply-To: <20240225-regulator-mp8859-v1-0-68ee2c839ded@kernel.org>
+References: <20240225-regulator-mp8859-v1-0-68ee2c839ded@kernel.org>
+Subject: Re: [PATCH 0/8] regulator: mp8859: Cleanups and enhancements
+Message-Id: <170903349247.16921.2831732986732449411.b4-ty@kernel.org>
+Date: Tue, 27 Feb 2024 11:31:32 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,10 +58,11 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.13-dev-a684c
 
-On Tue, 20 Feb 2024 09:36:23 +0100, Linus Walleij wrote:
-> Despite the work to convert the regulator core to GPIO
-> descriptors, there are some outliers that use legacy GPIO
-> numbers in various ways. Convert them all over.
+On Sun, 25 Feb 2024 14:59:26 +0000, Mark Brown wrote:
+> I had cause to look at the MP8859 driver together with the datasheet and
+> noticed a few small issues and missing features.  This series deals with
+> many of these issues, the device also has support for interrupts which
+> are not implemented here.
 > 
 > 
 
@@ -73,16 +72,22 @@ Applied to
 
 Thanks!
 
-[1/5] regulator: max8973: Finalize switch to GPIO descriptors
-      commit: 4d52f575e258c6f93f4180c21afda8634b0d2af5
-[2/5] regulator: da9055: Fully convert to GPIO descriptors
-      commit: e450a2b3a335332d4a51fe10c9fff8150c6e2364
-[3/5] regulator: lp8788-buck: Fully convert to GPIO descriptors
-      commit: 95daa868f22b509ad641bf003d9d441d6a2fa505
-[4/5] regulator: max8997: Convert to GPIO descriptors
-      commit: 84618d5e31cfd01fc3f53a8c2ebb68bc43d8b760
-[5/5] regulator: max8998: Convert to GPIO descriptors
-      commit: f25828a1eae1ee1a9257e2818b237b8208bd383e
+[1/8] regulator: mp8859: Specify register accessibility and enable caching
+      commit: b65e9149bdb76e9b09f6fb76fea1f10bde256619
+[2/8] regulator: mp8859: Validate and log device identifier information
+      commit: 6c848d772eee0f03b72542f35e1a66469030390f
+[3/8] regulator: mp8859: Support enable control
+      commit: b79d93d99e084bf1abafba2b7aabff6a06defcd0
+[4/8] regulator: mp8859: Support mode operations
+      commit: 673d06a858864c7dca9dd5c36a78f5f7fda793af
+[5/8] regulator: mp8859: Support active discharge control
+      commit: d7217c91bbde48ee60d3ce67cda6557f56c6b639
+[6/8] regulator: mp8859: Support status and error readback
+      commit: 4317ecadbeeab5464a8c34b27b73e2d2f81ef718
+[7/8] regulator: mp8859: Report slew rate
+      commit: 6df0921e9013622091c283aa2a5be8c5d1ca3642
+[8/8] regulator: mp8859: Implement set_current_limit()
+      commit: c8e794cfb05344af7b9ae920b5548a25a7e91fe9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
