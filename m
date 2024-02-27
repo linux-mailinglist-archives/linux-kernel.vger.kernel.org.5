@@ -1,115 +1,176 @@
-Return-Path: <linux-kernel+bounces-83302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11D79869197
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:18:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 606CD86919C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:19:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80A79B21B86
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:18:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 913381C27E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D528613B293;
-	Tue, 27 Feb 2024 13:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E43C13B790;
+	Tue, 27 Feb 2024 13:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="dBFLCaLq"
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nx26+HnF"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8BE513B28B
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88B613B293;
+	Tue, 27 Feb 2024 13:18:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709039917; cv=none; b=UK/o+MxjqaaORb0Oc8X2jicf8qel/xbg3E+phNWhxk0+hHWQyTJx9h5TDlWypoOYQMGeiu+OU4MhiYYTLKKfZEvZZWr3ksnCkq+wiBNeMSF4CXdbVnbZOZO+HPcBf7RWWgmKW104XfNln66tzQKe91bvT7BGVMtybYs0Oq0J2cg=
+	t=1709039936; cv=none; b=KpoWvU7VTF3o6tftY4AYvJgKeNQWTe6lJ/z3fq/TUPWEVRHzWGAYyeTRpcBXHN8MqMTrcVqXi4JPGy1edbFdkRX9vxmP1B/cjuvkXaMhW8RAO4t4tUT+pxMwv2UEWozuxe/1hPRBeEVO9favWBpQ59JZJe4w53BoBQ8Ay0ByBPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709039917; c=relaxed/simple;
-	bh=XIdqyDQpxejpU6Xbxt+vThMLN3OZbO3x1VzJ061nang=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GNOSzKQ0WkyG/saVicxpMXRt64SnAwYzku7TaAOYnNM9MNLN7DxyctEU84VTchSLJEYqYZ08friOtrCAbkr4bU0JloZYv0g6c7VjmakjsjN7voJivTRUrIolQzu0W7OUC+JSXlg/mWUFRtVZ4+KSuPUcO5zkpVqCF3LAzn9tAmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=dBFLCaLq; arc=none smtp.client-ip=209.85.222.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d5fce59261so2769299241.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:18:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709039914; x=1709644714; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/MJvKpz29jkQyBneNtGPQJRAHLJnHtGshFmhRL3AhTM=;
-        b=dBFLCaLqv6bPiBHvUYsU+VvHWDUN0oTzVzKfcFe8xX3uSQIyIiRORBZgO92CrdMDG7
-         ypK6++bcvNE/aBeZ42xFosgiyO9tJgMrLrRHQxepe5ORWcl+OuwNcWujSmKtLMPUkv6w
-         PlXu6bY1ILuKYmUNZ4r0HUBFb/irZh9YyYMpxLtwCrz5f0PAffMzwFqi2grFNNpnwHId
-         JcS0orFVmvPTiYiMDio2KEiXciKUbyDVM3497V2eYQ2vzMnl2R+Hhr6C79eOtpBjICOq
-         Cg426IHU6N20NL32DbI+PPGAQ/p5qZts6+2hcLxPr9ULoGGqt4irDp1fqO0GCsV2bDo5
-         I+Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709039914; x=1709644714;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/MJvKpz29jkQyBneNtGPQJRAHLJnHtGshFmhRL3AhTM=;
-        b=moLygR5qwQEYMvQdJdeiXMqQHG92h4n+nd+6duFDZfS9P1aVZJ33HviP1Zexc+qquX
-         cExA3spVlm5QL8idKuQvWijD7JhhUXxS/udbQ/0BRRgnbxzU2A++/Skb8l/ym/ZsC/Q6
-         +BPZQ6DSm9JbHykJKk1/8C1FVIfUc8KHrm5mCgQjFI9VR+JUCtY7ZqVXp5zWYFsM12v4
-         6L98E+prVlSpPALmxxdxL/BJElSK9LFA4OpTXO5AqDNhelp/KJcpeGXzXn1/rATrWvTn
-         Am1kzZTsXQe+tGXYsGku4klUtfe+NbhHNjyHTW2gfR5vgdwCAl3Cde/5TetxRHOGftY0
-         fIDg==
-X-Forwarded-Encrypted: i=1; AJvYcCWRp5dsKSmX1gtqZSzZoK1CTnoPUFFCKgTX6NxsqkFtMjAaQGfi6AuDsHG/beSO5Bqk/XwxLhStfjQo4JqxlsAStJHAFWQTaKQRBkLQ
-X-Gm-Message-State: AOJu0Yygg+8B9Mn3AwvcqhRPWeY5QRserUQ7lZdzhflxbGlSTZji36PJ
-	Vl288PkqtcAKT6DhDuCNAI1iRE7PGpf4tRlepx7jomjEVeA7NVdnTGgOx1tsbKdt1TJAsXH3D3D
-	fSoe4yG1jCfy8Fb+pbNzDr23WWolkyK2Ql+DV3A==
-X-Google-Smtp-Source: AGHT+IGFmZ4niK8yNBEqazbNpJaXrpKFX2pVzYNeNDBMOldwUgZekD8G6UAhaKmwhhECxJf9gr9cCnrgYNlum2RUL8o=
-X-Received: by 2002:a1f:e602:0:b0:4d0:36e3:40c3 with SMTP id
- d2-20020a1fe602000000b004d036e340c3mr7050322vkh.13.1709039914615; Tue, 27 Feb
- 2024 05:18:34 -0800 (PST)
+	s=arc-20240116; t=1709039936; c=relaxed/simple;
+	bh=m0XFN8Tee5EPflDKGWSpbSuSJDww3Edcr17LM7LJoBE=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=i6G8p7pCqOxlgsv/XQ6BqYFCESoQSxgUyXOn1iyL9a+Q3oxnDm7wZVQb1dDOY/ek0Iw3+R4k6JvVR1Mf4ONj0k72RUFt8elY9Uo7XZ36MZwEDxx7nuhrzoUxWlTsAPX0lYPCdU9c8lY4GgENA5vGWjxkpG0SsYfdJrLtcG6Glko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nx26+HnF; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709039935; x=1740575935;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=m0XFN8Tee5EPflDKGWSpbSuSJDww3Edcr17LM7LJoBE=;
+  b=nx26+HnFe7Cp+otwS6OPf7Vg8g1aX4kCq/7jvXOqaqxmrwkEWqORaAGf
+   d0wyFLZFdhXyRSaluyJkYIanyj9uvbBOeyqvIxcSQ+KLQZqc495ez6TNK
+   CPjuR78xRFKcmaJRwz7Se5CjiGfy151Z7s/gF5fQJoXgecR4FEBiU27JT
+   FDGFrEoLybz3f/ZWmgWdMqxz9ov8ZtqsPwSvZDqYvS9QMQGc398ymkkVj
+   apalnyW+ybWQT7azP4sbxvaVf76gxERomsClXSYicSlQSFUtJzEPwrc2t
+   fN2y1PS3KuK/DYLBm7HbysliP73aRlWXFrZhEC1ojz6M4RDKYCT2KbW5g
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3496076"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="3496076"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 05:18:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="7080184"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.61])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 05:18:52 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 27 Feb 2024 15:18:48 +0200 (EET)
+To: Hans de Goede <hdegoede@redhat.com>
+cc: Luiz Capitulino <luizcap@redhat.com>, shravankr@nvidia.com, 
+    davthompson@nvidia.com, ndalvi@redhat.com, 
+    LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
+Subject: Re: [PATCH 0/2] platform/mellanox: mlxbf-pmc: Fix module loading
+In-Reply-To: <eea32e56-2ea3-4a11-b1b9-8dd46dac7d72@redhat.com>
+Message-ID: <4f6169e5-dee6-2188-f0a5-601b516be5fe@linux.intel.com>
+References: <cover.1708635408.git.luizcap@redhat.com> <170895404513.2243.14840310263795846559.b4-ty@linux.intel.com> <def1a153-3cfb-431d-a7d2-a13bb7d65f4f@redhat.com> <29863354-4efe-d199-a9d4-7daf83f6cde9@linux.intel.com> <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
+ <eea32e56-2ea3-4a11-b1b9-8dd46dac7d72@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223065254.3795204-1-swboyd@chromium.org>
-In-Reply-To: <20240223065254.3795204-1-swboyd@chromium.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 27 Feb 2024 14:18:22 +0100
-Message-ID: <CAMRc=McvYEuK-0bfF67qDbb5FS017NcMkOGaLtWucx3LYL0DMQ@mail.gmail.com>
-Subject: Re: [PATCH v2] gpiolib: Pass consumer device through to core in devm_fwnode_gpiod_get_index()
-To: Stephen Boyd <swboyd@chromium.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org, 
-	patches@lists.linux.dev, linux-gpio@vger.kernel.org, 
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; BOUNDARY="8323328-606387716-1708967518=:1203"
+Content-ID: <4d35180d-b1ce-72eb-222c-57381c067c0a@linux.intel.com>
 
-On Fri, Feb 23, 2024 at 7:52=E2=80=AFAM Stephen Boyd <swboyd@chromium.org> =
-wrote:
->
-> This devm API takes a consumer device as an argument to setup the devm
-> action, but throws it away when calling further into gpiolib. This leads
-> to odd debug messages like this:
->
->  (NULL device *): using DT '/gpio-keys/switch-pen-insert' for '(null)' GP=
-IO lookup
->
-> Let's pass the consumer device down, by directly calling what
-> fwnode_gpiod_get_index() calls but pass the device used for devm. This
-> changes the message to look like this instead:
->
->  gpio-keys gpio-keys: using DT '/gpio-keys/switch-pen-insert' for '(null)=
-' GPIO lookup
->
-> Note that callers of fwnode_gpiod_get_index() will still see the NULL
-> device pointer debug message, but there's not much we can do about that
-> because the API doesn't take a struct device.
->
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Fixes: 8eb1f71e7acc ("gpiolib: consolidate GPIO lookups")
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Applied, thanks!
+--8323328-606387716-1708967518=:1203
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <79410032-c4ee-96e4-c036-57960da3b45a@linux.intel.com>
 
-Bart
+On Mon, 26 Feb 2024, Hans de Goede wrote:
+
+> Hi Luiz,
+>=20
+> On 2/26/24 17:10, Luiz Capitulino wrote:
+> > On 2024-02-26 11:04, Ilpo J=E4rvinen wrote:
+> >> On Mon, 26 Feb 2024, Luiz Capitulino wrote:
+> >>
+> >>> On 2024-02-26 08:27, Ilpo J=E4rvinen wrote:
+> >>>> On Thu, 22 Feb 2024 15:57:28 -0500, Luiz Capitulino wrote:
+> >>>>
+> >>>>> The mlxbf-pmc driver fails to load when the firmware reports a new =
+but not
+> >>>>> yet implemented performance block. I can reproduce this today with =
+a
+> >>>>> Bluefield-3 card and UEFI version 4.6.0-18-g7d063bb-BId13035, since=
+ this
+> >>>>> reports the new clock_measure performance block.
+> >>>>>
+> >>>>> This[1] patch from Shravan implements the clock_measure support and=
+ will
+> >>>>> solve the issue. But this series avoids the situation by ignoring a=
+nd
+> >>>>> logging unsupported performance blocks.
+> >>>>>
+> >>>>> [...]
+> >>>>
+> >>>>
+> >>>> Thank you for your contribution, it has been applied to my local
+> >>>> review-ilpo branch. Note it will show up in the public
+> >>>> platform-drivers-x86/review-ilpo branch only once I've pushed my
+> >>>> local branch there, which might take a while.
+> >>>
+> >>> Thank you Ilpo and thanks Hans for the review.
+> >>>
+> >>> The only detail is that we probably want this merged for 6.8 since
+> >>> the driver doesn't currently load with the configuration mentioned ab=
+ove.
+> >>
+> >> Oh, sorry, I missed the mention in the coverletter.
+> >>
+> >> So you'd want I drop these from review-ilpo branch as there they end
+> >> up into for-next branch, and they should go through Hans instead who
+> >> handles fixes branch for this cycle?
+> >=20
+> > If that's the path to get this series merged for this cycle then yes,
+> > but let's see if Hans agrees (sorry that I didn't know this before
+> > posting).
+>=20
+> Hmm, new hw enablement typically goes through -next and not to
+> the current fixes branch. And AFAICT this is new hw enablement,
+> not a regression / bug-fix.
+>=20
+> Is there any special reason why this needs to be in 6.8 ?
+
+To me it sounded like fix to 1a218d312e65 ("platform/mellanox: mlxbf-pmc:=
+=20
+Add Mellanox BlueField PMC driver") and 423c3361855c ("platform/mellanox:=
+=20
+mlxbf-pmc: Add support for BlueField-3") although not explicitly marked as=
+=20
+such.
+
+But I'm fine with taking these through for-next, it's relatively late into=
+=20
+the cycle already anyway.
+
+> For RHEL kernels you can cherry-pick patches from -next
+> as necessary.
+
+It's also possible to send them later directly to stable folks once=20
+Linus' tree has them after the next merge window if you feel they're=20
+useful for stable inclusion.
+
+> > One additional detail is that this series is on top of linux-next, whic=
+h
+> > has two additional mlxbf-pmc changes:
+> >=20
+> > * https://lore.kernel.org/lkml/39be055af3506ce6f843d11e45d71620f2a96e26=
+=2E1707808180.git.shravankr@nvidia.com/
+> > * https://lore.kernel.org/lkml/d8548c70339a29258a906b2b518e5c48f669795c=
+=2E1707808180.git.shravankr@nvidia.com/
+>=20
+> Hmm, those are not small patches, any other reason
+> why this really should go to -next IMHO.
+
+Those two linked patches are totally unrelated.
+
+
+--=20
+ i.
+--8323328-606387716-1708967518=:1203--
 
