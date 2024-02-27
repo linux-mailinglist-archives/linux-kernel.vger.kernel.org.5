@@ -1,183 +1,283 @@
-Return-Path: <linux-kernel+bounces-83215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65FF586905B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:24:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EAE386905E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:24:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5B40B213DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:24:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F07311F2ADC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:24:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4AC51419B1;
-	Tue, 27 Feb 2024 12:21:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GewXukva"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBB7213F006
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:21:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 428C213A878;
+	Tue, 27 Feb 2024 12:22:47 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E9E13958B
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:22:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709036517; cv=none; b=JqJdfXbbSKYBbHJz9irfOkbQV34oIGkd6qg6z+8BqPCGVkr8j8QMI3yEow0/0g4mZSikXi0kRKbCPkMsQE8WZAfh+mipsyc555EapIqBpXJ8KRQHmZnV04FpHPWoWZRa4M9to+mF8RtOK9R1umkRM4wBg/oNmjVhTcAdUL7jeq8=
+	t=1709036566; cv=none; b=lJuMpv55WB3EnpAXdULLTXkMVXqGjPccALuQeSG5aOXBj72gwaGj15e5gm0+ajHAJbwd0CFUmiKBT6VRn5U8ib3XQHj5g6+X7Pj9DWMO5WCaR4Jj9ApQkTeVgeGf88AcFeW729bxUKzuFNsCzRWT4FVh83lvxSTF1iTFek5vuI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709036517; c=relaxed/simple;
-	bh=OS7E+/QQezCuwcjLO9iExKTfqPQ2LbBPhoHoghWs9UE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FfyXT0ts7rISe59D+W2MQKgimRHBrLGEwQX6YjHTk9aJxrNs+2dDD9i9cOeJZJKjvlVFCGOBNBQ2dGu5barPlgyIuqE3vNRICcVaD6io7QoQMJP0YT/IB0nw3RMJ8cCTkCF6i8+eHh5rILb8c8or93F1YrXo4vnFzyITOuhtNw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GewXukva; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dcad814986so13795195ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:21:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709036515; x=1709641315; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Fox2FOTrnn7H7ARtUpilsDQjBFro1sbb1UtQfPOSFHk=;
-        b=GewXukvadPyjq8mmPdVrgdexPxxyZVm5taQLw4UE8uzO1qUZywn25e1hJOamHZRCwn
-         yY+fYRQ8cx2oj0K3Cn0m0LlooL1bgs+2XFfZJwLd2QmFcpgqANpbYHXxKYXJRTtr/IY5
-         54ykV2o0Lwwn2FjqEAhg5xUQj9vmNHZ24yruwhr6w7w6Nw/fz8WwRIg/HvWqz6JmzNTK
-         NGvIyAFIELJm2LZ539C/VM+BNa1k9PKPHXKVhOxVPtyXRJBTFys9lI3XaxtMM3MXeo/N
-         as6NuVHKMzRAOzFJ9NXZBZFLeLvQptX86wJ0CeHmULxbgBk9ACo8WuXLMj05/Bnsad29
-         hBMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709036515; x=1709641315;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fox2FOTrnn7H7ARtUpilsDQjBFro1sbb1UtQfPOSFHk=;
-        b=q2mmM6069SIbN48E4i6wmpMJ3lRQWXC1s8cRCzg4cM3vCmClxdp9A0QV9BfevS2zk9
-         VPGgp4acWrS2HDW83ySofkOwtJlJ2URcSB83yVsJu9w/3gkLDFlKHu17HSl7VcvLRHuU
-         2Rety1HhqikBOkAxHM66zUZruPwrF/U9T/UTrj5ph1l+ZJRWN2tphqV1Mxr7oRJfE8Mh
-         eKxR6mykEGvdTgYHcc8Y7GCjIiWghI2cH5mh77mg6SJ4DAAixdo5IXUPy1pXvhGIhSTT
-         o5F25BVGKNOemEU4SHjzI5fBnFrSQpCsEoVgVf/HfTtpvDC50vDwvHoUZusyZcO1E1Rw
-         xWgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUa/NC7m636+ySRGkC31iXiarZ9u/Ni0m1SH4zv4yxbSpjxwriqJE4SrVA5f3n5f7Q0uPleD5CqWB0vbqEQ4qO/xMWMJP8bJhlrPR41
-X-Gm-Message-State: AOJu0YzWbaKBzw8OoyOITsSjro1LcISODuEfl8OmCLc0J677uHNzJxRF
-	zqN8CBNu3NB4UKpx86Eb71m9ex0cIwV7LalfeUBdhGiCMvdC2WcHXovIxzidew==
-X-Google-Smtp-Source: AGHT+IHOZyIvtu9udPjddxeRBkjckef05G60ZrgUBTNS/Hn/UgLmDOmQzD5ShaYiOTnnINlgtxpJEw==
-X-Received: by 2002:a17:903:181:b0:1dc:b173:f27b with SMTP id z1-20020a170903018100b001dcb173f27bmr4528891plg.32.1709036515334;
-        Tue, 27 Feb 2024 04:21:55 -0800 (PST)
-Received: from thinkpad ([117.213.97.177])
-        by smtp.gmail.com with ESMTPSA id h8-20020a170902b94800b001dba356b96esm1406270pls.306.2024.02.27.04.21.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 04:21:54 -0800 (PST)
-Date: Tue, 27 Feb 2024 17:51:41 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-	Niklas Cassel <cassel@kernel.org>
-Subject: Re: [PATCH v8 06/10] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
- API directly from all glue drivers
-Message-ID: <20240227122141.GN2587@thinkpad>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-6-64c7fd0cfe64@linaro.org>
- <ZdzEoXwU42rFCF/W@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1709036566; c=relaxed/simple;
+	bh=bxTT6QCGxLPCfoIx4ZxFSkQ8XMQcRsLmgOD3i629X1A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TRoqSIg/dUhnv4MXrtSD2BeN+xrUG90N5LpIFVJFvUQI0I/s+EHsLv+LhP12seCh3BSBNHcQVjTzppvn/iiCXJzMzV88fxu+H0cP4a4NjRpSbN8thdbl5PQvlmfUNIFO6nPajqHw7X9Jj+ctvFe093LpbOG56aeddRdX3nLOAPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D93EADA7;
+	Tue, 27 Feb 2024 04:23:21 -0800 (PST)
+Received: from [10.1.30.188] (XHFQ2J9959.cambridge.arm.com [10.1.30.188])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 453053F73F;
+	Tue, 27 Feb 2024 04:22:41 -0800 (PST)
+Message-ID: <bafb4ab0-ebf5-4736-8a9d-a70a06c92013@arm.com>
+Date: Tue, 27 Feb 2024 12:22:39 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZdzEoXwU42rFCF/W@lizhi-Precision-Tower-5810>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 6/6] mm: madvise: don't split mTHP for MADV_PAGEOUT
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ david@redhat.com, linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org, mhocko@suse.com, shy828301@gmail.com,
+ wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
+ ying.huang@intel.com, yuzhao@google.com, surenb@google.com,
+ steven.price@arm.com, Chuanhua Han <hanchuanhua@oppo.com>,
+ Barry Song <v-songbaohua@oppo.com>
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20240118111036.72641-1-21cnbao@gmail.com>
+ <20240118111036.72641-7-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240118111036.72641-7-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 26, 2024 at 12:04:33PM -0500, Frank Li wrote:
-> On Sat, Feb 24, 2024 at 12:24:12PM +0530, Manivannan Sadhasivam wrote:
-> > Currently, dw_pcie_ep_init_registers() API is directly called by the glue
-> > drivers requiring active refclk from host. But for the other drivers, it is
-> > getting called implicitly by dw_pcie_ep_init(). This is due to the fact
-> > that this API initializes DWC EP specific registers and that requires an
-> > active refclk (either from host or generated locally by endpoint itsef).
-> > 
-> > But, this causes a discrepancy among the glue drivers. So to avoid this
-> > confusion, let's call this API directly from all glue drivers irrespective
-> > of refclk dependency. Only difference here is that the drivers requiring
-> > refclk from host will call this API only after the refclk is received and
-> > other drivers without refclk dependency will call this API right after
-> > dw_pcie_ep_init().
-> > 
-> > This change will also allow us to remove the "core_init_notifier" flag in
-> > the later commits.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pci-dra7xx.c           |  7 +++++++
-> >  drivers/pci/controller/dwc/pci-imx6.c             |  8 ++++++++
-> >  drivers/pci/controller/dwc/pci-keystone.c         |  9 +++++++++
-> >  drivers/pci/controller/dwc/pci-layerscape-ep.c    |  7 +++++++
-> >  drivers/pci/controller/dwc/pcie-designware-ep.c   | 22 ----------------------
-> >  drivers/pci/controller/dwc/pcie-designware-plat.c |  9 +++++++++
-> >  drivers/pci/controller/dwc/pcie-rcar-gen4.c       | 12 +++++++++++-
-> >  drivers/pci/controller/dwc/pcie-uniphier-ep.c     | 13 ++++++++++++-
-> >  8 files changed, 63 insertions(+), 24 deletions(-)
+Hi Barry,
 
-[...]
+I've scanned through this patch as part of trying to understand the races you
+have reported (It's going to take me a while to fully understand it all :) ). In
+the meantime I have a few comments on this patch...
 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > index ed1f2afd830a..278bdc9b2269 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> > @@ -729,7 +729,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
-> >  	struct device *dev = pci->dev;
-> >  	struct platform_device *pdev = to_platform_device(dev);
-> >  	struct device_node *np = dev->of_node;
-> > -	const struct pci_epc_features *epc_features;
-> >  
-> >  	INIT_LIST_HEAD(&ep->func_list);
-> >  
-> > @@ -775,29 +774,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
-> >  		goto err_exit_epc_mem;
-> >  	}
-> >  
-> > -	if (ep->ops->get_features) {
-> > -		epc_features = ep->ops->get_features(ep);
-> > -		if (epc_features->core_init_notifier)
-> > -			return 0;
-> > -	}
+On 18/01/2024 11:10, Barry Song wrote:
+> From: Chuanhua Han <hanchuanhua@oppo.com>
 > 
-> why remove this check?
+> MADV_PAGEOUT and MADV_FREE are common cases in Android. Ryan's patchset has
+> supported swapping large folios out as a whole for vmscan case. This patch
+> extends the feature to madvise.
 > 
+> If madvised range covers the whole large folio, we don't split it. Otherwise,
+> we still need to split it.
+> 
+> This patch doesn't depend on ARM64's CONT-PTE, alternatively, it defines one
+> helper named pte_range_cont_mapped() to check if all PTEs are contiguously
+> mapped to a large folio.
+> 
+> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
+> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  include/asm-generic/tlb.h | 10 +++++++
+>  include/linux/pgtable.h   | 60 +++++++++++++++++++++++++++++++++++++++
+>  mm/madvise.c              | 48 +++++++++++++++++++++++++++++++
+>  3 files changed, 118 insertions(+)
+> 
+> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+> index 129a3a759976..f894e22da5d6 100644
+> --- a/include/asm-generic/tlb.h
+> +++ b/include/asm-generic/tlb.h
+> @@ -608,6 +608,16 @@ static inline void tlb_flush_p4d_range(struct mmu_gather *tlb,
+>  		__tlb_remove_tlb_entry(tlb, ptep, address);	\
+>  	} while (0)
+>  
+> +#define tlb_remove_nr_tlb_entry(tlb, ptep, address, nr)			\
+> +	do {                                                    	\
+> +		int i;							\
+> +		tlb_flush_pte_range(tlb, address,			\
+> +				PAGE_SIZE * nr);			\
+> +		for (i = 0; i < nr; i++)				\
+> +			__tlb_remove_tlb_entry(tlb, ptep + i,		\
+> +					address + i * PAGE_SIZE);	\
+> +	} while (0)
 
-There is no point in keeping this check since we are removing the call to
-dw_pcie_ep_init_registers() below. But I should've described this change in the
-commit message.
+David has recently added tlb_remove_tlb_entries() which does the same thing.
 
-- Mani
+> +
+>  #define tlb_remove_huge_tlb_entry(h, tlb, ptep, address)	\
+>  	do {							\
+>  		unsigned long _sz = huge_page_size(h);		\
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index 37fe83b0c358..da0c1cf447e3 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -320,6 +320,42 @@ static inline pgd_t pgdp_get(pgd_t *pgdp)
+>  }
+>  #endif
+>  
+> +#ifndef pte_range_cont_mapped
+> +static inline bool pte_range_cont_mapped(unsigned long start_pfn,
+> +					 pte_t *start_pte,
+> +					 unsigned long start_addr,
+> +					 int nr)
+> +{
+> +	int i;
+> +	pte_t pte_val;
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		pte_val = ptep_get(start_pte + i);
+> +
+> +		if (pte_none(pte_val))
+> +			return false;
+> +
+> +		if (pte_pfn(pte_val) != (start_pfn + i))
+> +			return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +#endif
 
--- 
-மணிவண்ணன் சதாசிவம்
+David has recently added folio_pte_batch() which does a similar thing (as
+discussed in other context).
+
+> +
+> +#ifndef pte_range_young
+> +static inline bool pte_range_young(pte_t *start_pte, int nr)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < nr; i++)
+> +		if (pte_young(ptep_get(start_pte + i)))
+> +			return true;
+> +
+> +	return false;
+> +}
+> +#endif
+
+I wonder if this should come from folio_pte_batch()?
+
+> +
+>  #ifndef __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+>  static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
+>  					    unsigned long address,
+> @@ -580,6 +616,23 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+>  }
+>  #endif
+>  
+> +#define __HAVE_ARCH_PTEP_GET_AND_CLEAR_RANGE_FULL
+> +static inline pte_t ptep_get_and_clear_range_full(struct mm_struct *mm,
+> +						  unsigned long start_addr,
+> +						  pte_t *start_pte,
+> +						  int nr, int full)
+> +{
+> +	int i;
+> +	pte_t pte;
+> +
+> +	pte = ptep_get_and_clear_full(mm, start_addr, start_pte, full);
+> +
+> +	for (i = 1; i < nr; i++)
+> +		ptep_get_and_clear_full(mm, start_addr + i * PAGE_SIZE,
+> +					start_pte + i, full);
+> +
+> +	return pte;
+> +}
+
+David has recently added get_and_clear_full_ptes(). Your version isn't gathering
+access/dirty, which may be ok for your case, but not ok in general.
+
+>  
+>  /*
+>   * If two threads concurrently fault at the same page, the thread that
+> @@ -995,6 +1048,13 @@ static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+>  })
+>  #endif
+>  
+> +#ifndef pte_nr_addr_end
+> +#define pte_nr_addr_end(addr, size, end)				\
+> +({	unsigned long __boundary = ((addr) + size) & (~(size - 1));	\
+> +	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
+> +})
+> +#endif
+> +
+>  /*
+>   * When walking page tables, we usually want to skip any p?d_none entries;
+>   * and any p?d_bad entries - reporting the error before resetting to none.
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 912155a94ed5..262460ac4b2e 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -452,6 +452,54 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>  		if (folio_test_large(folio)) {
+>  			int err;
+>  
+> +			if (!folio_test_pmd_mappable(folio)) {
+> +				int nr_pages = folio_nr_pages(folio);
+> +				unsigned long folio_size = PAGE_SIZE * nr_pages;
+> +				unsigned long start_addr = ALIGN_DOWN(addr, nr_pages * PAGE_SIZE);;
+
+I doubt it is correct to align down here. Couldn't you be going outside the
+bounds that the user supplied?
+
+nit: you've defined folio_size, why not use it here?
+nit: double semi-colon.
+
+> +				unsigned long start_pfn = page_to_pfn(folio_page(folio, 0));
+> +				pte_t *start_pte = pte - (addr - start_addr) / PAGE_SIZE;
+
+I think start_pte could be off the start of the pgtable and into random memory
+in some corner cases (and outside the protection of the PTL)? You're assuming
+that the folio is fully and contigously mapped and correctly aligned. mremap
+(and other things) could break that assumption.
+
+> +				unsigned long next = pte_nr_addr_end(addr, folio_size, end);
+> +
+> +				if (!pte_range_cont_mapped(start_pfn, start_pte, start_addr, nr_pages))
+> +					goto split;
+> +
+> +				if (next - addr != folio_size) {
+> +					goto split;
+> +				} else {
+> +					/* Do not interfere with other mappings of this page */
+> +					if (folio_estimated_sharers(folio) != 1)
+> +						goto skip;
+> +
+> +					VM_BUG_ON(addr != start_addr || pte != start_pte);
+> +
+> +					if (pte_range_young(start_pte, nr_pages)) {
+> +						ptent = ptep_get_and_clear_range_full(mm, start_addr, start_pte,
+> +										      nr_pages, tlb->fullmm);
+> +						ptent = pte_mkold(ptent);
+> +
+> +						set_ptes(mm, start_addr, start_pte, ptent, nr_pages);
+> +						tlb_remove_nr_tlb_entry(tlb, start_pte, start_addr, nr_pages);
+> +					}
+> +
+> +					folio_clear_referenced(folio);
+> +					folio_test_clear_young(folio);
+> +					if (pageout) {
+> +						if (folio_isolate_lru(folio)) {
+> +							if (folio_test_unevictable(folio))
+> +								folio_putback_lru(folio);
+> +							else
+> +								list_add(&folio->lru, &folio_list);
+> +						}
+> +					} else
+> +						folio_deactivate(folio);
+> +				}
+> +skip:
+> +				pte += (next - PAGE_SIZE - (addr & PAGE_MASK))/PAGE_SIZE;
+> +				addr = next - PAGE_SIZE;
+> +				continue;
+> +
+> +			}
+> +split:
+>  			if (folio_estimated_sharers(folio) != 1)
+>  				break;
+>  			if (pageout_anon_only_filter && !folio_test_anon(folio))
+
 
