@@ -1,152 +1,174 @@
-Return-Path: <linux-kernel+bounces-83856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E74869F52
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:47:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C413869F59
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:48:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 763DD1C21099
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:47:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E7D01C22CD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B624EB5E;
-	Tue, 27 Feb 2024 18:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C263D51C28;
+	Tue, 27 Feb 2024 18:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="tZatd4uG"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="R77E8hBV"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1E71F61D
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100EB4F8BB
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709059647; cv=none; b=fl+M7psXF4pSBVzXqw70e6VHFzIfvaAc2zzWJmxDwVU3lpHszLAPCVEraWUDV3ZVPQHcW2rskKQTPxhd6mlPdMb3WcM+BZQT9V+hUnWQ78MGLjIKoUBXvOIjwcLPAbslPkCt3egC9PGskzimZ/6mc6j9OYbLLy75NjMAa9BLUVY=
+	t=1709059686; cv=none; b=AXmxMDDyulljJXUzeuTz4C+Wg8s/gCW5AvQm6vfEPTI/ubm28mpiblbpmKUC5qyj6ZNpC4SJnJQjN8UeW/TTcehb8W4EMmsRhA47ds5fVwaDGAHULT6IsBOn+GTVkjOJ2oCfT5lfbLKsuAF2VKm42m6SKAownLbYblUjEyDRvqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709059647; c=relaxed/simple;
-	bh=OCLERH5BUNWNqVAWRAIL2bEHXqesBK/d6BgnZQmH44Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ajiMZ2Re+SUygsI/WZSUDAkF34AA+X1CtuZl/TGEzj+fmEV8saFj7M+BeaedKV9bLwv0KbYVZY657fZvFdPKX7V7LQnxytILS4A8opR7J1Rd2lmN0VAdBZEzctO4WgxRjc8wOZODMlXnMchPaMrKqflhtrvgZOYjSeuIgrzWa90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=tZatd4uG; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TkmgV1bw0zDqZN;
-	Tue, 27 Feb 2024 18:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1709059638; bh=OCLERH5BUNWNqVAWRAIL2bEHXqesBK/d6BgnZQmH44Y=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=tZatd4uGVm2YCRCBLMi8R93U94cS4xMt6Tr0tv1rUgnjpt08yWOu9QkJu0fv1F/Of
-	 x+IOUwY9RvRuyw8wFgzxvyRS2Fh02r+AQ99roFn/R0Qptyxvgx6Kep2eSaSHEbdsTG
-	 21zlNb4GepAfgsCyp8mQogVleFOtaCx80+IFy3PA=
-X-Riseup-User-ID: 4842AE2A53495A92D3F8DE93B2A9FBC67B6744533455E55C8FD1A06C80127020
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4TkmgM5zShzJpbF;
-	Tue, 27 Feb 2024 18:47:11 +0000 (UTC)
-Message-ID: <592e5da7-7aac-4735-ae8f-625402e381ae@riseup.net>
-Date: Tue, 27 Feb 2024 15:47:08 -0300
+	s=arc-20240116; t=1709059686; c=relaxed/simple;
+	bh=eopTjD6dnBhQmGbU1b50iW81wisqf1duKytlAiZoS+I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y7+jM0ql/WlUqwq0likq3rWkfaGWyDGr33+5HDmXFC0PtII2yS74/C1jRHrlNDV2OGzd5VbbcYh9C/pvTYolqAkI41ygtocNEo65lxd7ozMc/j/YKFPlKxgaVOrpfeNEq523lcNGXfUhzVDd01n6t6XeO63iLlF0SlDAow8nyf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=R77E8hBV; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so3793776b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:48:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709059682; x=1709664482; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Q8ShmjsBfirtuVXn7YN7NE2+9S2ssUe4qcNu7gqy8zk=;
+        b=R77E8hBVMGqBGagFYRfwRcGo/Qk+s0Bpxn/QeEk4KyPQeYsl4IpIRxtCmy29ksnqPU
+         3kRR25neRJUdEb2imXR1R0g4q9JBJkejJRjpurELLRsyK691fkcTL5wmkz06KN8fz0u2
+         oOZAwczL8HsPOzQS4asKKlqZmKlLbz1Sd8IV8niWe2V0uK4Q2eaYcFSYfg9rwc4IeCdf
+         SUipNY8f1Atcesj+CjQ/oekZSzSb1/ssEjVSQZIbArUXYPOn0lFBqzYEKyno90GZcsvJ
+         K8/d1Sugq/CvIj5Y7yBAA/EMgnoXgdF8bL795rBUXLEDvr9drmK65/yWRXjOdObt2HJQ
+         fYXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709059682; x=1709664482;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q8ShmjsBfirtuVXn7YN7NE2+9S2ssUe4qcNu7gqy8zk=;
+        b=HX8psFHU7nOrGWYNElmlxF685ien67pNxJpHgO4/HRd1SFV27Jez7yHR7ohSd9uuPz
+         m7KxoffVcvg7xTG4l8EmuD7vQZe76UgIjvVnzGyw43IlFO75Z+DwNnswkiY1NtCKXR0q
+         vrYt6/GpWBDWztN6Y3deddflAYY1mtUfJToItVyQ4lYXmTA2jbT0uKHQb1c+Cqt/Or8i
+         iFnbTGtGAuvOrVun3fMSOUHys6qATqy5rZ48YM9OuObU/Cz5Nqd+4jBjFn7vuHmWYMm4
+         I/Mp4Vge6K5UU1HDD6bk8qGHymh4XDoAdHHVVKdwTmwAVHkUglpcI1Kd0Jrl3pXirVyY
+         P06Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVkZ5F7a4o3HJqJ3yCzagaP52tq5HzHGK4SJbCxgHBy9fhpij9GSnZ2gsZHOA+BJJ/UZ408UtIK7Oeea0wRRPIhK/yb8iWy3ql6e3hq
+X-Gm-Message-State: AOJu0Ywn+8KZ7hl/swGVCjlPoGWmTf3Ac7WWQE9tjBZlVYK+6UohyIvt
+	s7fz2Pcxm3xL+99/usBgMSXsm02ZERFe9G2RnpNGVIjuZOInx4l5YJHuJujiAA==
+X-Google-Smtp-Source: AGHT+IGkys0fKbeS9Jt1kuxo+kV1ICMy26+vP7tNYAsfOhXbaH/LE978wltzQSZ6voKtVRqGdPcHyg==
+X-Received: by 2002:a05:6a21:920b:b0:1a0:adbc:7a96 with SMTP id tl11-20020a056a21920b00b001a0adbc7a96mr3099279pzb.36.1709059682411;
+        Tue, 27 Feb 2024 10:48:02 -0800 (PST)
+Received: from thinkpad ([117.213.97.177])
+        by smtp.gmail.com with ESMTPSA id km8-20020a17090327c800b001d8f81ecebesm1845645plb.192.2024.02.27.10.47.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 10:48:02 -0800 (PST)
+Date: Wed, 28 Feb 2024 00:17:46 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kishon Vijay Abraham I <kishon@ti.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	Niklas Cassel <cassel@kernel.org>
+Subject: Re: [PATCH v8 09/10] PCI: qcom-ep: Use the generic
+ dw_pcie_ep_linkdown() API to handle LINK_DOWN event
+Message-ID: <20240227184746.GU2587@thinkpad>
+References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
+ <20240224-pci-dbi-rework-v8-9-64c7fd0cfe64@linaro.org>
+ <ZdzIada1H95ike0t@lizhi-Precision-Tower-5810>
+ <20240227123230.GP2587@thinkpad>
+ <Zd4dFyM78Nc1f7fk@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 3/9] drm/vkms: write/update the documentation for pixel
- conversion and pixel write functions
-Content-Language: en-US
-To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- pekka.paalanen@haloniitty.fi, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
- miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
- seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
-References: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
- <20240226-yuv-v3-3-ff662f0994db@bootlin.com>
- <406988be-48a4-4762-9c03-7a27c8e7b91e@riseup.net>
- <Zd35csjqRMstzElA@localhost.localdomain>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <Zd35csjqRMstzElA@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zd4dFyM78Nc1f7fk@lizhi-Precision-Tower-5810>
 
-
-
-On 27/02/24 12:02, Louis Chauvet wrote:
-> Le 26/02/24 - 10:07, Arthur Grillo a écrit :
->>
->>
->> On 26/02/24 05:46, Louis Chauvet wrote:
->>> Add some documentation on pixel conversion functions.
->>> Update of outdated comments for pixel_write functions.
->>>
->>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
->>> ---
->>>  drivers/gpu/drm/vkms/vkms_composer.c |  4 +++
->>>  drivers/gpu/drm/vkms/vkms_drv.h      | 13 ++++++++
->>>  drivers/gpu/drm/vkms/vkms_formats.c  | 58 ++++++++++++++++++++++++++++++------
->>>  3 files changed, 66 insertions(+), 9 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
->>> index c6d9b4a65809..5b341222d239 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_composer.c
->>> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
->>> @@ -189,6 +189,10 @@ static void blend(struct vkms_writeback_job *wb,
->>>  
->>>  	size_t crtc_y_limit = crtc_state->base.crtc->mode.vdisplay;
->>>  
->>> +	/*
->>> +	 * The planes are composed line-by-line. It is a necessary complexity to avoid poor
->>> +	 * blending performance.
->>
->> At this moment in the series, you have not yet reintroduced the
->> line-by-line algorithm yet. Maybe it's better to add this comment when
->> you do.
+On Tue, Feb 27, 2024 at 12:34:15PM -0500, Frank Li wrote:
+> On Tue, Feb 27, 2024 at 06:02:30PM +0530, Manivannan Sadhasivam wrote:
+> > On Mon, Feb 26, 2024 at 12:20:41PM -0500, Frank Li wrote:
+> > > On Sat, Feb 24, 2024 at 12:24:15PM +0530, Manivannan Sadhasivam wrote:
+> > > > Now that the API is available, let's make use of it. It also handles the
+> > > > reinitialization of DWC non-sticky registers in addition to sending the
+> > > > notification to EPF drivers.
+> > > > 
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > ---
+> > > >  drivers/pci/controller/dwc/pcie-qcom-ep.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > > index 2fb8c15e7a91..4e45bc4bca45 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > > +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> > > > @@ -640,7 +640,7 @@ static irqreturn_t qcom_pcie_ep_global_irq_thread(int irq, void *data)
+> > > >  	if (FIELD_GET(PARF_INT_ALL_LINK_DOWN, status)) {
+> > > >  		dev_dbg(dev, "Received Linkdown event\n");
+> > > >  		pcie_ep->link_status = QCOM_PCIE_EP_LINK_DOWN;
+> > > > -		pci_epc_linkdown(pci->ep.epc);
+> > > > +		dw_pcie_ep_linkdown(&pci->ep);
+> > > 
+> > > Suppose pci_epc_linkdown() will call dw_pcie_ep_linkdown() ?
+> > > why need direct call dw_pcie_ep_linkdown() here?
+> > > 
+> > 
+> > I've already justified this in the commit message. Here is the excerpt:
+> > 
+> > "It also handles the reinitialization of DWC non-sticky registers in addition
+> > to sending the notification to EPF drivers."
 > 
-> Is it better with this:
-> 
-> 	/*
-> 	 * The planes are composed line-by-line to avoid heavy memory usage. It is a necessary
-> 	 * complexity to avoid poor blending performance.
-> 	 *
-> 	 * The function vkms_compose_row is used to read a line, pixel-by-pixel, into the staging
-> 	 * buffer.
-> 	 */
->  
->> Also, I think it's good to give more context, like:
->> "The planes are composed line-by-line, instead of pixel-by-pixel"
-> 
-> And after PATCHv3 5/9:
-> 
-> 	/*
-> 	 * The planes are composed line-by-line to avoid heavy memory usage. It is a necessary
-> 	 * complexity to avoid poor blending performance.
-> 	 *
-> 	 * The function pixel_read_line callback is used to read a line, using an efficient 
-> 	 * algorithm for a specific format, into the staging buffer.
-> 	 */
+> API function name is too similar. It is hard to know difference from API
+> naming. It'd better to know what function do from function name.
 > 
 
-Hi,
+In reality we cannot name a function based on everything it does. The naming is
+mostly based on what is the primary motive of the API and here it is handling
+Link down event. Maybe dw_pcie_ep_handle_linkdown() would be an apt one, but
+that's out of scope of this series (since changing that would also require
+changes to other similar APIs).
 
-This looks good to me.
+- Mani
 
-Best Regards,
-~Arthur Grillo
+> Frank
+> > 
+> > - Mani
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
 
-> Kind regards,
-> Louis Chauvet
-> 
->> Best Regards,
->> ~Arthur Grillo
-> 
-> [...]
-> 
+-- 
+மணிவண்ணன் சதாசிவம்
 
