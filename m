@@ -1,89 +1,120 @@
-Return-Path: <linux-kernel+bounces-83794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0815E869E8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:05:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09F5E869E93
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:07:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91454B253D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:04:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 905FD28DED5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D79137C21;
-	Tue, 27 Feb 2024 18:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FAA514690A;
+	Tue, 27 Feb 2024 18:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=rwarsow@gmx.de header.b="LdPcER21"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=aurel32.net header.i=@aurel32.net header.b="B7+p+wRe"
+Received: from hall.aurel32.net (hall.aurel32.net [195.154.113.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81DAEEEDD;
-	Tue, 27 Feb 2024 18:03:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C69D4F213;
+	Tue, 27 Feb 2024 18:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.154.113.88
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709057031; cv=none; b=d5cRm5VAcQ1er+7oodnxlHxbOCH9hXnH2iNWC0tHh2KPYIGtuEkazOlRiYRaJ4jvCAf41ydCAD2eOktnDZNz6k3Eb8AfAkkIN9HXz8lUTTLwh8nhesgfoz6n9CQCnEY4iPNBObNr9dBxpYf5Bz0BTLGIJja2xXmkZS6ZI164WY4=
+	t=1709057234; cv=none; b=YR4LvseAwm8/o62KwkXsOk+WM8ddopUl3Y1txZ+i5S7kbqL2cWe1R++GJscIQPbeIa41/LAY03y3EAF2RAYQIDY4EiouRvHl4t3aB7W8f7ovMz2g+c1en5AyOIfvAt7qG5AgSKwpxEvGRVtwMdyzBTOeaypsEnNexTkxekicOSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709057031; c=relaxed/simple;
-	bh=dmMdDLN3YgL1qMEqV22WwccWKGPvTDnUyQtKaq9KA84=;
-	h=Message-ID:Date:MIME-Version:From:To:Cc:Subject:Content-Type; b=XtvGynPG73P+xCqITvo2PrSRiL7b7xe+xDrksh4/u5csqXD9dD0bWp7FHYvxwwuqNDRbtzhZDE7xJScQj9pA1HSIW1jttpKc1XXr/AExgGLSVb6AihJgCNmEZi70f8U7JiR8JdPkHF9b6AQg7zJMHs8Vsveg0jRyM3yqjkec9XE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=rwarsow@gmx.de header.b=LdPcER21; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1709057026; x=1709661826; i=rwarsow@gmx.de;
-	bh=dmMdDLN3YgL1qMEqV22WwccWKGPvTDnUyQtKaq9KA84=;
-	h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
-	b=LdPcER21e1OgRbRUHraPYNKN3kvMQQx1XT3prCz7AsJeDW8IYc4+DBtVnc733qQp
-	 vhpISzyW/7TpUHFfJ4XvosYo7ETw1y1RNCxSZLuKuMNposGch0V3h6pNxZyKHe5/r
-	 /+YXdvwZFc/9QC696rFQYn51ac3ayHzdDipI7IkEsag1a0dv9pf/7r1MqzLEwQNXY
-	 k6UNf81FDHLHsaCkiWZe1/rDdEalMjNuy9tzLwlbMG7RM0OZx9TPutefCBAO7pFIK
-	 ObznwIVKjyUYbOq0AeSom57ZjZPRZnhwCHdVz6Khi7+3zhyDvw/VS8NkEIkEIA/vb
-	 hmSFbcrRh6Ds87Sn/A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([46.142.34.255]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M2wGi-1rbjUD4AbE-003OOm; Tue, 27
- Feb 2024 19:03:46 +0100
-Message-ID: <3c7a1942-44a9-4211-ad5d-53bd7f1ca7b3@gmx.de>
-Date: Tue, 27 Feb 2024 19:03:45 +0100
+	s=arc-20240116; t=1709057234; c=relaxed/simple;
+	bh=EDGc4T90gSY2gzBl84gNJRzHa6ffsk6idxwQzqrzpco=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lVbd44uRf5gL3rM/0xLjaxLli2K/iBeRwe0R5kL51VQuyykEHbgpGt+jh6yOBpLWc4clQXncLAN121Jqb4QS+AmdwbjVEXCGk44uUKjcpAudmQeRzopnqpMfTNJRdOstmQXJZhp9pktK/mi5H5VVACgjVJFjCNm4xXUm2G49tsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aurel32.net; spf=pass smtp.mailfrom=aurel32.net; dkim=pass (2048-bit key) header.d=aurel32.net header.i=@aurel32.net header.b=B7+p+wRe; arc=none smtp.client-ip=195.154.113.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aurel32.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aurel32.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
+	; s=202004.hall; h=In-Reply-To:Content-Type:MIME-Version:References:
+	Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:From:Reply-To:
+	Subject:Content-ID:Content-Description:X-Debbugs-Cc;
+	bh=cCXTnPPUlwvk/cW+Q4SojvQKobQ4NrfAODoD6AwFqkE=; b=B7+p+wReujVPyD97CCYJ3zpaa4
+	x2kte552EqPOHJrblcwDoKNvonak17Y34QCJkH0Y3z1Yxv/h35uaYjeMHX1Mgxx/jMeXGXgYRLBBB
+	kGQ0ugTuhcRwwL+3DARJaYzlL04zk5WS1pJpP/vpqymTC5QXv3hluQ1owY0Wnv7qXcKAPXXg0U3K/
+	fswEK8jf+r5mmH0LfYVPmLKfjE4q+MZWC5UzD8PGvFXcQbDm5kNfky7mP41n9yNU9R0SrK6vOyb7s
+	7ERL+dqalYI2mOBehgZbarvMzJf8SW/4bpY/ymOKkTcUBUaPMFZ4Y3hoG9jLdkg7Er/4RpTneR7DA
+	83MOZJ3Q==;
+Received: from ohm.aurel32.net ([2001:bc8:30d7:111::2] helo=ohm.rr44.fr)
+	by hall.aurel32.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <aurelien@aurel32.net>)
+	id 1rf1qt-005Xko-1r;
+	Tue, 27 Feb 2024 19:06:51 +0100
+Date: Tue, 27 Feb 2024 19:06:50 +0100
+From: Aurelien Jarno <aurelien@aurel32.net>
+To: Minda Chen <minda.chen@starfivetech.com>
+Cc: Conor Dooley <conor@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Mason Huo <mason.huo@starfivetech.com>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+Subject: Re: [PATCH v15,RESEND 00/23] Refactoring Microchip PCIe driver and
+ add StarFive PCIe
+Message-ID: <Zd4kuuh_1xWoZBrn@aurel32.net>
+Mail-Followup-To: Minda Chen <minda.chen@starfivetech.com>,
+	Conor Dooley <conor@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Daire McNamara <daire.mcnamara@microchip.com>,
+	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Mason Huo <mason.huo@starfivetech.com>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+	Kevin Xie <kevin.xie@starfivetech.com>
+References: <20240227103522.80915-1-minda.chen@starfivetech.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Ronald Warsow <rwarsow@gmx.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.7 000/334] 6.7.7-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:bVmj9tepv6wPyW6HA9HBKMcNO6C37FkNuoJcQNkIvsBP205SgEn
- MsoVmdeLzo77beZLT8UZ8yJOH6og79z17IYdDQWb9L9EUs+kYsuT/FssbaAr0KtH1x+ntm5
- pqTTeYFrd/Cb8vSK72yox7Z4A/ZAIdDMhWXSynX9D4MGBJI6uWJ2utiZ090+GK2O7GihQ0M
- WJvKpqwqAAityy8ohVg1Q==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:zv9euh28s8g=;yTFb0hyn3nt1PDC1OBPAHET3ETG
- qMZxiO1vhYag+pzetChTJyEUVP3QNAa0OPq8a9YvE3fE/kCW3o1J8OHTirDCFEu5rAjMKrHu8
- 1ywi4oPxigWIj+1WQxGJAbUvDpScRZNxdDSwVOYQQO0+URg0ZWU/TE4FXN9NxxfJl2Kgl/dVg
- vusi+WVLy+Nk+Cv8F/SLFh9HEkcMDNsJwOg51OhFgEcUQWjUc//clXjb1amP0p3usXJar2VJd
- gnAw1V3qDvSGK26bddiGbNcDtXM+dy7AejOKROogTFYG9u/rNKJQVxEMVFMCKHk+yddux13Je
- u8756wbwLXnd3g3MLJgVD/WtIGwIN3cOcVpj9W+cZnWYFd/lmBaWAIzSIVpvSFf7Rhz2qKgq+
- 6eKGBZ4Hy1BqBWfGpbPf9r/bhsQRMK72aVCekrS1/6k3GkEwLquVpZ2qhaNNxIpOELO7TAVMe
- jbTPP738KroHNRip02GgOE4/yrOYoEt0eRwqbrR69oS/TxHnjERMN0aKxgi8QUoOO/FNbKuIC
- QYXjsUeI7KWXucNZm59QHeN5M6PdcTbNYVAk8Wuxs++a2NXWgISL2z3Ne1Spj24NUiFrGDkUn
- 4aAPp4nEFlnJwxDwQSPrNNo54/0ZNnKq9GQS/kJmz6Skht1LnVPomGwaTpMMMiM/m9lD8BdzG
- K1+eoJ9GojbHaAP2IyCiM2rfbSGI3VbKC41VQT+ivUhthl+Ee5auJJzDEhIUmU0AMarLejnZ6
- cbMtSKe2KUgpiIZSLVTXAY3ucE7Q7ihXJw7UaJ5TyjujzSyWmUO5ZfzU50Qo96CzHRXzE1XcF
- /UOO2l9YTh2gkhckOWgU8mkvLXCt+Htb7xPUt5Fz4Qn94=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227103522.80915-1-minda.chen@starfivetech.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-Hi Greg
+On 2024-02-27 18:34, Minda Chen wrote:
+> This patchset final purpose is add PCIe driver for StarFive JH7110 SoC.
+> JH7110 using PLDA XpressRICH PCIe IP. Microchip PolarFire Using the
+> same IP and have commit their codes, which are mixed with PLDA
+> controller codes and Microchip platform codes.
+> 
+> For re-use the PLDA controller codes, I request refactoring microchip
+> codes, move PLDA common codes to PLDA files.
+> Desigware and Cadence is good example for refactoring codes.
+> 
 
-*no* regressions here on x86_64 (RKL, Intel 11th Gen. CPU)
+Thanks for the resend, I confirm that now the mail threading is correct.
 
-Thanks
-
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
-
+-- 
+Aurelien Jarno                          GPG: 4096R/1DDD8C9B
+aurelien@aurel32.net                     http://aurel32.net
 
