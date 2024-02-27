@@ -1,176 +1,169 @@
-Return-Path: <linux-kernel+bounces-82810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227308689FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:38:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93AE6868A01
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:40:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D78B02897ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:38:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3E42B227A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:40:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D37954F82;
-	Tue, 27 Feb 2024 07:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 796E855E6D;
+	Tue, 27 Feb 2024 07:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ldapwmYw"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2+s3DIBQ"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2087.outbound.protection.outlook.com [40.107.243.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48D61E89A;
-	Tue, 27 Feb 2024 07:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709019509; cv=none; b=k7Na8KIttF0dU8i6fe8ENl6K7x+8lQamL4YfMszh7fYMoVpvWmxy/7FtdVP9TvPda4QBUtZAf+E+Ta8m+PZ1b2AHxvyWFll6iIWcjCg/8iNyP2wklWcOaeS3OTUCwJbZGn/y2ju4IUUH5nidrJafZF3N4ENXcZ9LL9khONzSzNQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709019509; c=relaxed/simple;
-	bh=8P7wEXB4wTBPTemmiBXHngBFEUVYIia1gN+EfoUB+0U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=G8nIrzoMEmg/AVSPXD6ENsMnlqiUwfIyqIlQpQqU5SySb4iZBEtAV1RFqzYS+xBMEG7gLQ3iNgA7sLA0Lu/ufrpbc8NlaE5VLNGj4ZKHJ/md3KLNytzzzC4KbhDuo69hzBUkB8sVgVcJE8tJ836FfdWfxEai1B9I/qP3XVjdxBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ldapwmYw; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41R7Mca8027755;
-	Tue, 27 Feb 2024 07:38:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=nU88DR30Nj5YQI+Bz1I/p5HrTkiLJwjFVYR+uGcIayg=; b=ld
-	apwmYw6vIj/SUgJJAvqkoqhIe3atBGsY1mbECLE7WkoLf19ON2oEJPofQj6qjJ/r
-	O9+RMQc2wUzb7fgRaG/3K5JNRuQ1DQmhp9V4mxs9CQg8o/gcAH6oBdgZEDacAJzs
-	414yLN8tvfP4rzzMdx1bRHcjddy9C/+UWDYuoA+qoISniq0cINFEj+lRVlzoxFI2
-	gD04UZtuwtT7qvfqaylIqHbYOd32EHO2wccB/Y5GdQ+EgGFqijaJV+4iomhTPYei
-	PkjdkTiJFs9ZIdanoLJKixSWll39tO3ReacTonQ/U6nYLKy6/9Sp94JmK85Xarg7
-	VYZX0r5o418BxTPkVoyw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh232s4xt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 07:38:16 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41R7cFK9019448
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 07:38:15 GMT
-Received: from [10.216.14.152] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
- 2024 23:38:10 -0800
-Message-ID: <3b4d553c-401e-da56-4554-47c4cf040e8c@quicinc.com>
-Date: Tue, 27 Feb 2024 13:08:05 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92F454F95;
+	Tue, 27 Feb 2024 07:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709019600; cv=fail; b=YlCO/RZ2WeFlcq2fcZXqYxxrYYSPAT3PwdIfR1bwqFDzod29NFW8QHi2TPszeIPsOkjpodDbl8COynPvDyJFWeFTX5QQoTvIBAOFoJTfbXzloaNDvwbLSShVa/n22ny4zkzdUIh8H7jBywskYLFrV34WNo1E53/CLPQ8nUuVF58=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709019600; c=relaxed/simple;
+	bh=Yz3G3Ts7bvjNPaenbCkoZodvCZN9SQ9omF0RnlMrY2U=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iMHAz2y30bGeWr7yk8hoMPoipNUwqMWJ/HPccePVVx5VEoNdBzgpGICPJzhsnbxGjD3FLYhtHn5hcG4sLK8i0ZCEbTJaaH2hArZq1gf6nJxm29olk3DKtery5A+J28c55kK1r7CclgfOv91IQBg5SZ3QvmfXlP8oaCT52TlTLBE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2+s3DIBQ; arc=fail smtp.client-ip=40.107.243.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JJmYZ8fo7sn4CghnoKF2FcuYy14f7VhCW8PoSKJNLtIsmFkolP2JbDQSzzD2PIrwxa5tCPZWjqV+gb+LnLEzP/XFwsd/6gItGPbuPmkQGeGxQkFSBTUi+e2qhPdJtSRLc+nvgcJ+n6DedN7IjMKlSEvBDmFxZo81jDn9w+tfBP1GVCbJJu9zUhYA03/NV7GjI365csfDNKW6LoiJa/7ZqzLv0yR9q3sKWQn9hZ9nD72hSaGXFSVZoiXhga2jUQ58DnFITlMMIxfO7BHiMYN9+VkECnk780nkNcW+CHtszJJUxpc3KLZqknbYV9XqNV4hYk8rPgvO8uyw1NwRmZkpAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=DltwduLNgEfdqdfL67TzkuGukkI/LSD+thPg1GrHSP8=;
+ b=H7LPKHCI75EbjXPh9z79l+WsBlxI2LQtcjtYDMmjJheq474i0xSLiZQAerHHWzXyPwv81lvhlUxawe0+28UVquazZCLDR1dEng7UWRx4iGN9DrwxulhQkL9oV5ECNbku+gus3lQt89hAtWnZDTreVYX4ob/b6UghV6pY902agcYYMiDwyeqDPlivVoMW9CY/H63LxtybkoqCv6s/KQ2SqFx/Om38qMr4pXJzDOozXm/TZwj/re57/NdbhZ0fX6VkddKse0vwxSXucHhvLffU1ONY9FDwqv4NUkbARCQzolWkrZjQc+RZBNh1Jcowq0amSsam3tFhYm140XgJgOmzOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DltwduLNgEfdqdfL67TzkuGukkI/LSD+thPg1GrHSP8=;
+ b=2+s3DIBQk+DABrPUGsT+r+a+QYNnpUUMjkT1UkA2hqJQmP7WijIIVydnQC/2upTPaGp1Arig+rLLIHpAGcRqz9NoMkI6wmCwRC2lpPvLHBxcciyQRd/NnFI2IXiO0ViyZmqtDT+IwT93WmAWhr3JG765TBPz2P0wA6tzLwMzRKQ=
+Received: from CY5PR19CA0104.namprd19.prod.outlook.com (2603:10b6:930:83::21)
+ by SA3PR12MB9159.namprd12.prod.outlook.com (2603:10b6:806:3a0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Tue, 27 Feb
+ 2024 07:39:55 +0000
+Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
+ (2603:10b6:930:83:cafe::be) by CY5PR19CA0104.outlook.office365.com
+ (2603:10b6:930:83::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.50 via Frontend
+ Transport; Tue, 27 Feb 2024 07:39:55 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Tue, 27 Feb 2024 07:39:55 +0000
+Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 27 Feb
+ 2024 01:39:49 -0600
+From: Meng Li <li.meng@amd.com>
+To: "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>, Huang Rui
+	<ray.huang@amd.com>
+CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<x86@kernel.org>, <linux-acpi@vger.kernel.org>, Shuah Khan
+	<skhan@linuxfoundation.org>, <linux-kselftest@vger.kernel.org>, "Nathan
+ Fontenot" <nathan.fontenot@amd.com>, Deepak Sharma <deepak.sharma@amd.com>,
+	Alex Deucher <alexander.deucher@amd.com>, Mario Limonciello
+	<mario.limonciello@amd.com>, Shimmer Huang <shimmer.huang@amd.com>, "Perry
+ Yuan" <Perry.Yuan@amd.com>, Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar
+	<viresh.kumar@linaro.org>, Borislav Petkov <bp@alien8.de>, Meng Li
+	<li.meng@amd.com>
+Subject: [PATCH] cpufreq: amd-pstate: adjust min/max limit perf
+Date: Tue, 27 Feb 2024 15:39:24 +0800
+Message-ID: <20240227073924.3573398-1-li.meng@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH] PCI: dwc: Enable runtime pm of the host bridge
-Content-Language: en-US
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-CC: Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel
-	<gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
-        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
-        <quic_parass@quicinc.com>
-References: <20240219-runtime_pm_enable-v1-1-d39660310504@quicinc.com>
- <20240226155305.GJ8422@thinkpad>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240226155305.GJ8422@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: oGDMTX3oJ701THTMqleJNtchrlA0al0W
-X-Proofpoint-GUID: oGDMTX3oJ701THTMqleJNtchrlA0al0W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- mlxlogscore=970 impostorscore=0 phishscore=0 mlxscore=0 bulkscore=0
- adultscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402270060
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|SA3PR12MB9159:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1b4e8e8c-fd83-49d2-9c12-08dc37674a85
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ADOHcWBtVy8+awhDpXNDG51PAeLRdhpWKCmDI1I11sDsEjdHDD18hfAj+UvOJxrElVjn+vkuRCnRNUhskKusg5n81opgG43P6cQb18epEmy+Xy0Phepg4i8CYoXVmnIKkc7fLEMeNA8dNYUEG4sLHdf4XuBMGHBlnwYZu13TXH8wWKJXdrK8ok8/crwL/bT8Qzkk/kg9GO1weOz+DMnyqMOstNSNEEc8mlYKTBdrawKdHW8RQNHDFyVWolpx7omkfA7vLDfJV8lfBwUlBTpE6hoj24WkMWjolfdMy0a5AtY4XsBCqTor+0IYe4DBHhUbUNXH6nOjc7RuHxFw80uA8YOKljG2E957Ub2VCnLTYF11XkbJ3zeLp+XfS5ZFb9Il5quRpT3oEA7ECfDuVVEcjtJto2Uk9w2NusJzoYVKGSO6JrgXaU38jSr9NEoYX3KTaj1P13aIdoRSEgvdEp/wh9xLGRfvPAifK+YzBrd2n+7NdXQ/mc0VLjOnEKLvjSTF7VJBDft4CEabwMY+3IH20bbBOH+v+sqTT4RQ5abWDYTeHJr82rwG1dlhT2w0S7UGWE3aWtHi3wO4iEoAyYL/HEioTulFqYJ/YI3AtLbRHRaH0/J0IrlB1F5qtOyHbHhnwjNz8L0IeYuaZYJLjvwG0SomWuHQ6U77Os40xoyNRDtMEMJAsdIsVnORHqXEaxz9Zros5J5d+P3jQLLw+iiM58CyyDWuiTcb+eOSX1mbMX/YKJ3wRrpJGcTl8d3OBGoG
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 07:39:55.0103
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b4e8e8c-fd83-49d2-9c12-08dc37674a85
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EE37.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB9159
 
+The min/max limit perf values calculated based on frequency
+may exceed the reasonable range of perf(highest perf, lowest perf).
 
+Signed-off-by: Meng Li <li.meng@amd.com>
+---
+ drivers/cpufreq/amd-pstate.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-On 2/26/2024 9:23 PM, Manivannan Sadhasivam wrote:
-> On Mon, Feb 19, 2024 at 06:51:10PM +0530, Krishna chaitanya chundru wrote:
->> Currently controller driver goes to runtime suspend irrespective
->> of the child(pci-pci bridge & endpoint driver) runtime state.
->> This is because the runtime pm is not being enabled for the host
->> bridge dev which maintains parent child relationship.
->>
-> 
-> You should describe the parent-child topology first. Maybe a simple flow like
-> below will help:
-> 
-> 	PCIe Controller
-> 	      |
-> 	PCIe Host bridge
-> 	      |
-> 	PCI-PCI bridge
-> 	      |
-> 	PCIe endpoint
-> 
-> Also explain the fact that since runtime PM is disabled for host bridge, the
-> state of the child devices under the host bridge is not taken into account by
-> PM framework for the top level parent, PCIe controller. So PM framework, allows
-> the controller driver to enter runtime PM irrespective of the state of the
-> devices under the host bridge. And this causes the topology breakage and also
-> possible PM issues.
-> 
-> - Mani
->
-ACK.
+diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+index aa5e57e27d2b..2015c9fcc3c9 100644
+--- a/drivers/cpufreq/amd-pstate.c
++++ b/drivers/cpufreq/amd-pstate.c
+@@ -484,12 +484,19 @@ static int amd_pstate_verify(struct cpufreq_policy_data *policy)
+ 
+ static int amd_pstate_update_min_max_limit(struct cpufreq_policy *policy)
+ {
+-	u32 max_limit_perf, min_limit_perf;
++	u32 max_limit_perf, min_limit_perf, lowest_perf;
+ 	struct amd_cpudata *cpudata = policy->driver_data;
+ 
+ 	max_limit_perf = div_u64(policy->max * cpudata->highest_perf, cpudata->max_freq);
+ 	min_limit_perf = div_u64(policy->min * cpudata->highest_perf, cpudata->max_freq);
+ 
++	lowest_perf = READ_ONCE(cpudata->lowest_perf);
++	if (min_limit_perf < lowest_perf)
++		min_limit_perf = lowest_perf;
++
++	if (max_limit_perf < min_limit_perf)
++		max_limit_perf = min_limit_perf;
++
+ 	WRITE_ONCE(cpudata->max_limit_perf, max_limit_perf);
+ 	WRITE_ONCE(cpudata->min_limit_perf, min_limit_perf);
+ 	WRITE_ONCE(cpudata->max_limit_freq, policy->max);
+@@ -1387,6 +1394,12 @@ static void amd_pstate_epp_update_limit(struct cpufreq_policy *policy)
+ 	max_limit_perf = div_u64(policy->max * cpudata->highest_perf, cpudata->max_freq);
+ 	min_limit_perf = div_u64(policy->min * cpudata->highest_perf, cpudata->max_freq);
+ 
++	if (min_limit_perf < min_perf)
++		min_limit_perf = min_perf;
++
++	if (max_limit_perf < min_limit_perf)
++		max_limit_perf = min_limit_perf;
++
+ 	WRITE_ONCE(cpudata->max_limit_perf, max_limit_perf);
+ 	WRITE_ONCE(cpudata->min_limit_perf, min_limit_perf);
+ 
+-- 
+2.34.1
 
-- Krishna Chaitanya.
->> So enable pm runtime for the host bridge, so that controller driver
->> goes to suspend only when all child devices goes to runtime suspend.
->>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-designware-host.c | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
->> index d5fc31f8345f..57756a73df30 100644
->> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
->> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
->> @@ -16,6 +16,7 @@
->>   #include <linux/of_pci.h>
->>   #include <linux/pci_regs.h>
->>   #include <linux/platform_device.h>
->> +#include <linux/pm_runtime.h>
->>   
->>   #include "../../pci.h"
->>   #include "pcie-designware.h"
->> @@ -505,6 +506,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
->>   	if (pp->ops->post_init)
->>   		pp->ops->post_init(pp);
->>   
->> +	pm_runtime_set_active(&bridge->dev);
->> +	pm_runtime_enable(&bridge->dev);
->> +
->>   	return 0;
->>   
->>   err_stop_link:
->>
->> ---
->> base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
->> change-id: 20240219-runtime_pm_enable-bdc17914bd50
->>
->> Best regards,
->> -- 
->> Krishna chaitanya chundru <quic_krichai@quicinc.com>
->>
-> 
 
