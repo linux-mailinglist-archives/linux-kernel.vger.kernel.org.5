@@ -1,335 +1,473 @@
-Return-Path: <linux-kernel+bounces-83344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A334B8693DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:49:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C29D869423
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59369292EBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:49:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FA3E1C2513B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC131419BE;
-	Tue, 27 Feb 2024 13:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF90143C48;
+	Tue, 27 Feb 2024 13:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ezYz7Fw3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=folker-schwesinger.de header.i=@folker-schwesinger.de header.b="GpCOX4CV"
+Received: from www522.your-server.de (www522.your-server.de [195.201.215.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AEE13B7AA
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880C51419B5;
+	Tue, 27 Feb 2024 13:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.215.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709041642; cv=none; b=Aw9deoDUpG0Ocb9ku11o1S/e04JvqN4dLp/S9wEJPvB257omEuY6VNu18s+yxaecY11CQ3oB/ax6Fj4b4SgJsma3cdwGx19A+DGuCq1uVLebHZ+l422sX/gXJCIbt8QdYNjNFV5fbSp7MbZgpgcbliHrlXKQmrYBAjANPyPE1OM=
+	t=1709041812; cv=none; b=oJkDOLE2RPZS9r4D3Vp2dpB4Nc62LsIaRG9OMcBLX7VflVOZo7vC1osIvk0kb45mwzqSyXgpdDTSjsstNfh13PnC4h0DhHMi6z2XWsENfoA3cN/5LbkMnHhn3ZMa7B6ry3M85hpz2MjpeqLcCSYmSpGHI7MMSgFyUe0/F5oPpEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709041642; c=relaxed/simple;
-	bh=roxPi8rz4oNq2vNNNxEbsD8R+MWfx531DvbZ2mENdBo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c/jNYfFa2gsXL/MicszK9YEX6Ru8UQOss9IES/7xyy8rCnANr19E0YuJMbyOcg0CDfHWY/IFbML9S8699lRHv4ffDZEmq8jdSJ7MKcqwPYRXWiiImA2EbYV3xbVfv2Wrj0jTjpm8Lzsuspie5bx2XoATmjap+e5IpwygmZI5Kc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ezYz7Fw3; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709041639;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hTVBC0lkZuIsWB3rrhjB8rqd7JwC06vqd7+76BYU8ms=;
-	b=ezYz7Fw3t3tTBNX1V6aRqlnALqblL4K9+X6eyyhSPulEbEgryJkoRzNRBnyZYQh3UMN160
-	QR7Z1X7xPhsMBxxeraza0QyIbeDJTGLhujVYFKrS22F1VmYdumBrPTa5vKq7N+wPK0grvC
-	Utj+CkRctf1b/JwOlANDs88Iee+DOMw=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-529-oepdoXqqP--xFTCsqkRNEw-1; Tue, 27 Feb 2024 08:47:18 -0500
-X-MC-Unique: oepdoXqqP--xFTCsqkRNEw-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-512d6a5c0f0so3625737e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:47:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709041636; x=1709646436;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hTVBC0lkZuIsWB3rrhjB8rqd7JwC06vqd7+76BYU8ms=;
-        b=ULYWxU+mB+SYX9AqM5sp6GCTRjUp8aGMhXObG667mZmXRNLxDQFb2qvbL2B0g43FYo
-         Z0Ds7tsYNZcfIHyicGUC1yFB+1SnPfn+SMr4dtg91r1WhGfGYdkAaTE26DVERkj3ssGM
-         JbiaXNJm/irDhT7p7myXnrYzVGGqFN+Ctz3yit8LfwpHUtx647//gIgbBCha7YrFs0tD
-         BO+j1F43kYOdSPSmC6R54PZrr+w3kxj7MYQASQzglT+V6U5znrnUQTiopJG67JD160Qp
-         szNdlKzNDl0YmOUrFoTDU6ujXxuNuaB/j5f32AxGY2Bc6+Tv7iJIbE0eZkr8LbmFWNPB
-         9W6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUKmxSfFSWAhNuucapI+Itt+6THo74eRSPhCUowecPrQVGjvhtyhR/GOzF3rKmll4A5Qes8oX9SEFk5sjiIzXtlN5SOUy+VdKtvy0Nt
-X-Gm-Message-State: AOJu0YzUGLIF56JG89rRvFP1rU2g2PXLHN7rO2xhHknXpUfes7upf6o+
-	Gdc5Kmq9c8DVTNK2axuUBnG/Uwd9QRKlVaZG+oNTXDS1LzXUFk0rAnNI12gw9h/PW9eVEBC9GB4
-	lQeUPuwfNaVu+2JIMZQa5dP848jKULVYAcDs34Sw+vTF0wtnH9fedcvTTonA76gjN0c4VkA==
-X-Received: by 2002:ac2:5d24:0:b0:512:e4f4:b562 with SMTP id i4-20020ac25d24000000b00512e4f4b562mr5674293lfb.31.1709041636299;
-        Tue, 27 Feb 2024 05:47:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGLf7Vwour/XjLoxR2iw6tIoak85hY2uSnJmHhcKtZd8K/kuXb6PkldJJSdOoGoEaALcMMGrQ==
-X-Received: by 2002:ac2:5d24:0:b0:512:e4f4:b562 with SMTP id i4-20020ac25d24000000b00512e4f4b562mr5674270lfb.31.1709041635850;
-        Tue, 27 Feb 2024 05:47:15 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id xa9-20020a170907b9c900b00a3e7a2d9ac4sm783359ejc.6.2024.02.27.05.47.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 05:47:15 -0800 (PST)
-Message-ID: <f3cdd944-5e68-49e5-bae8-4bc1f9f59131@redhat.com>
-Date: Tue, 27 Feb 2024 14:47:14 +0100
+	s=arc-20240116; t=1709041812; c=relaxed/simple;
+	bh=q4u13XzA9qJ66uV6VD7ZUVjIF0Fb1JW0HbjOY6Qq9oc=;
+	h=Content-Type:Mime-Version:Date:Message-Id:From:To:Subject:Cc:
+	 References:In-Reply-To; b=MUObk6pa35rBz7Ap4ikOWCneHT9LcKRxnn0vU+UjCOrkT7hArFV/K82UafiFzgjEeyjFSSZRl3jUgYzYsu265EXwOqQEb3TflNuj+/dLIknbQ2fEYJp+fRbeghs+oQCCmC22P5T6VEwxMZ2bZIdknodBIGNY1Dc10+D4ntvrY98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=folker-schwesinger.de; spf=pass smtp.mailfrom=folker-schwesinger.de; dkim=pass (2048-bit key) header.d=folker-schwesinger.de header.i=@folker-schwesinger.de header.b=GpCOX4CV; arc=none smtp.client-ip=195.201.215.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=folker-schwesinger.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=folker-schwesinger.de
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=folker-schwesinger.de; s=default2212; h=In-Reply-To:References:Cc:Subject:
+	To:From:Message-Id:Date:Mime-Version:Content-Type:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=ZoFnwyyqpkmN7wUmnVL2jSnmFU13TXHhzttEWLx+f0M=; b=GpCOX4CVHDOxu3YkAuOsGmybfJ
+	421lBNcWs93BImwW0rXQecFJ9A773Ui4NZny+VLTjmXcXd+9yvBN7QZPe98ZqNgD6TGT7BQ8khqow
+	Vt7P55+IJ++ptEnOU/NqqqsI7QojnlY6W9YQiNx/Wbaaux26K3d4TsVXH8lkO9b2aDHPDleHVPTUD
+	h4rhW+/Acqmil4R1EJooHKNp8VV6OfrOtHmFmmF9RADBgtX+I/MW5NYaXCtXOPCKhE7OmxwPPZ5Uo
+	hDiittfMfECihXnbDfoZfPPOk5a+NSO7gxy0PqhgKn11gca9oa174PQmd+L3d2feKgFaxf09foK0y
+	pUdBw5Cg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www522.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <dev@folker-schwesinger.de>)
+	id 1rexqN-000NE3-DM; Tue, 27 Feb 2024 14:50:03 +0100
+Received: from [141.24.82.26] (helo=localhost)
+	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <dev@folker-schwesinger.de>)
+	id 1rexqG-000ARa-Dr; Tue, 27 Feb 2024 14:50:02 +0100
+Content-Type: multipart/signed;
+ boundary=a28cd9b61c5d2d4fe176afa94e55817a89ff6f22a51f0e36bb0d0210ba45;
+ micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] fbcon: Defer console takeover for splash screens to
- first switch
-Content-Language: en-US, nl
-To: Daniel van Vugt <daniel.van.vugt@canonical.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
- Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
- Jani Nikula <jani.nikula@intel.com>, Danilo Krummrich <dakr@redhat.com>,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, Sebastien Bacher <seb128@ubuntu.com>
-References: <20240202085408.23251-1-daniel.van.vugt@canonical.com>
- <20240202085408.23251-2-daniel.van.vugt@canonical.com>
- <7817a2a2-b07d-4e9d-85e6-c11c5720d66e@redhat.com>
- <39ffe230-36ac-484a-8fc1-0a12d6c38d82@canonical.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <39ffe230-36ac-484a-8fc1-0a12d6c38d82@canonical.com>
+Mime-Version: 1.0
+Date: Tue, 27 Feb 2024 13:49:56 +0000
+Message-Id: <CZFWR6D40B2F.V7QM56KOG2R6@folker-schwesinger.de>
+From: "Folker Schwesinger" <dev@folker-schwesinger.de>
+To: "Christopher Obbard" <chris.obbard@collabora.com>, "Alban Browaeys"
+ <alban.browaeys@gmail.com>, "Doug Anderson" <dianders@chromium.org>,
+ "Jensen Huang" <jensenhuang@friendlyarm.com>
+Subject: Re: [PATCH] arm64: dts: rockchip: add enable-strobe-pulldown to
+ emmc phy on rk3399
+Cc: =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Vinod Koul" <vkoul@kernel.org>,
+ "Chris Ruehl" <chris.ruehl@gtsys.com.hk>, "Brian Norris"
+ <briannorris@chromium.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
+ TREE BINDINGS" <devicetree@vger.kernel.org>, "Linux ARM"
+ <linux-arm-kernel@lists.infradead.org>, "open list:ARM/Rockchip SoC..."
+ <linux-rockchip@lists.infradead.org>, "LKML"
+ <linux-kernel@vger.kernel.org>, "Kishon Vijay Abraham I"
+ <kishon@kernel.org>
+X-Mailer: aerc 0.17.0-67-g66bbc5303578
+References: <20220822074139.3810-1-jensenhuang@friendlyarm.com>
+ <23552842.6Emhk5qWAg@diego>
+ <CAD=FV=W-ajJDfYcP3P8Jyk_KgsUAbdTtmwiNXqJ=Ab2ojgrUGw@mail.gmail.com>
+ <CAMpZ1qEe7xFr+XaXsS_hWDLnGGA8PfzQiToOjY1N_1ctyQ+KxA@mail.gmail.com>
+ <CAD=FV=U-=2GpQTb0N1p3Qe2TAb=JhyZJw2V8T-qbLs5TYhW7qA@mail.gmail.com>
+ <7873090c4aad382813a65e35157d8684e8842974.camel@gmail.com>
+ <CZFS45VOLIKW.2VS3M3VOMBT8V@folker-schwesinger.de>
+ <eafd8d8c0cbcaca1b190f84ec17a1dcd7aec0306.camel@collabora.com>
+In-Reply-To: <eafd8d8c0cbcaca1b190f84ec17a1dcd7aec0306.camel@collabora.com>
+X-Authenticated-Sender: dev@folker-schwesinger.de
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27198/Tue Feb 27 10:33:00 2024)
+
+--a28cd9b61c5d2d4fe176afa94e55817a89ff6f22a51f0e36bb0d0210ba45
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
 Hi,
 
-On 2/27/24 02:06, Daniel van Vugt wrote:
-> On 27/2/24 02:23, Hans de Goede wrote:
->> Hi All,
->>
->> On 2/2/24 09:53, Daniel van Vugt wrote:
->>> Until now, deferred console takeover only meant defer until there is
->>> output. But that risks stepping on the toes of userspace splash screens,
->>> as console messages may appear before the splash screen. So check for the
->>> "splash" parameter (as used by Plymouth) and if present then extend the
->>> deferral until the first switch.
->>
->> Daniel, thank you for your patch but I do not believe that this
->> is the right solution. Deferring fbcon takeover further then
->> after the first text is output means that any errors about e.g.
->> a corrupt initrd or the kernel erroring out / crashing will not
->> be visible.
-> 
-> That's not really correct. If a boot failure has occurred after the splash then
-> pressing escape shows the log.
+On Tue Feb 27, 2024 at 11:38 AM CET, Christopher Obbard wrote:
+> Hi,
+>
+> On Tue, 2024-02-27 at 10:11 +0000, Folker Schwesinger wrote:
+> > Hi,
+> >=20
+> > On Tue Feb 27, 2024 at 3:05 AM CET, Alban Browaeys wrote:
+> > > Le mercredi 24 ao=C3=BBt 2022 =C3=A0 07:57 -0700, Doug Anderson a =C3=
+=A9crit=C2=A0:
+> > > > On Tue, Aug 23, 2022 at 8:11 PM Jensen Huang
+> > > > <jensenhuang@friendlyarm.com> wrote:
+> > > > > I realized that only some devices may be affected, so I considere=
+d
+> > > > > modifying rk3399-nanopi4.dtsi only,
+> > > > > but other boards without external pull-down should still need thi=
+s
+> > > > > patch.
+> > > >=20
+> > > > I guess the other alternative would be to change how the dt propert=
+y
+> > > > works. You could say:
+> > > >=20
+> > > > 1. If `enable-strobe-pulldown` is set then enable the strobe
+> > > > pulldown.
+> > > >=20
+> > > > 2. If `enable-strobe-pulldown` is not set then don't touch the pin =
+in
+> > > > the kernel.
+> > > >=20
+> > > > 3. If someone later needs to explicitly disable the strobe pulldown
+> > > > they could add a new property like `disable-strobe-pulldown`.
+> > > >=20
+> > > >=20
+> > > > Obviously there are tradeoffs between that and what you've done and
+> > > > I'm happy to let others make the call of which they'd prefer.
+> > > >=20
+> > >=20
+> > > Christopher could you try "ROCK Pi 4" and "ROCK Pi 4+" with=20
+> > > "enable-strobe-pulldown" instead of disabling HS400 as you did in Jul=
+y
+> > > 2023?
+> > >=20
+> >=20
+> > with the following applied, the EMMC related errors are gone. dmesg onl=
+y
+> > shows "Purging ... bytes" during my tests:
+> >=20
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> > b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> > index f2279aa6ca9e..ae0fb87e1a8b 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> > @@ -647,8 +647,10 @@ &saradc {
+> > =C2=A0&sdhci {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 max-frequency =3D <150000000=
+>;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bus-width =3D <8>;
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mmc-hs200-1_8v;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mmc-hs400-1_8v;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mmc-hs400-enhanced-strobe;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 non-removable;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rockchip,enable-strobe-pulldown;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 status =3D "okay";
+> > =C2=A0};
+> >=20
+> > For testing I ran dd three times in a row:
+> >=20
+> > dd if=3D/dev/zero of=3D./zero.bin bs=3D1M count=3D5000
+> >=20
+> > I tested this on both a Rock 4SE board and a Rock Pi 4B+ board with the
+> > same results.
+>
+> Just for the record, all Rock 4 board schematics have no external strobe
+> pulldown resistor on the board, so we should be good to enable this.
+>
+> I wonder what other boards this could be enabled for ?
+>
+>
+> It seemed to be the case on some eMMC it would work, others it wouldn't.
 
-Hmm, I guess this is with the latest plymouth which has a builtin terminal
-emulator for kernels without VT support ? Pressing ESC does not to a VC
-switch and AFAICT that is what you are triggering on to allow fbcon takeover
-after this patches.
+I remember the different reports from the Radxa forums. Personally, I
+did test different eMMCs (3 Foresee, 1 Samsung) last year and all
+those did not work.
+https://lists.infradead.org/pipermail/linux-rockchip/2023-July/039567.html
 
-> If a boot failure has occurred before the splash
-> then it can be debugged visually by rebooting without the "splash" parameter.
+The enable-strobe-pulldown test above was done using one of the Foresee
+modules and with the on-board eMMC of the 4B+.
+Unfortunately, I don't have all the eMMCs from last year any more.
+However, I could test with another Foresee, in case this is regarded a
+valuable data point.
 
-Which requires the user to know this and requires the user to know how to
-edit kernel cmdline parameters in e.g. grub. This is not a good user
-experience. We want inexperienced users to just be able to point
-a phone camera at the screen and take a picture of the errors.
+> I haven't yet tested the above diff here as yet, but I can do that this w=
+eek
+> on multiple boards & eMMC combos.
+>
+> The diff above is also missing a fixes tag (and also be fixed for rk3399-=
+rock-
+> 4c-plus.dts).
+
+I only included the diff to explicitly show what I did for testing. It
+was not meant to be a patch for inclusion as the below question still
+remains:
+=20
+> > > Could the behavior be reverted to let the vendor kernel default for t=
+he
+> > > default case (ie enable pulldown)?
+
+If there's consensus on whether to enable the pulldown by default in the
+driver or in all the respective DTS, I'd be happy to offer a proper patch.
+
+> > >=20
+> > > I believe 99% of the boards are now broken with this new internal
+> > > pulldown behavior (all=C2=A0 these with internal pulldown). More on t=
+hat
+> > > later but to sum up, nobody=C2=A0 complained because downstream kerne=
+ls like
+> > > Armbian all disabled HS400 for all boards, at least for rk3399.
+> > >=20
+> > >=20
+> > > Do we really want to ask 99% of the board dts to add this "enable-
+> > > strobe-pulldown" in their dts?
+> > > Chris, was your custom board not working with the vender kernel defau=
+lt
+> > > to enable unconditionaly?
+> > > What was the rationale to=C2=A0 choose the opposite default from the =
+vendor
+> > > kernel one?
+> > >=20
+> > >=20
+> > > As told in the commit that introduced this new behavior the default f=
+or
+> > > the vendor kernel was the opposite of what was introduced in the Linu=
+x
+> > > kernel:
+> > > "
+> > > https://github.com/torvalds/linux/commit/8b5c2b45b8f0a11c9072da0f7baf=
+9ee986d3151e
+> > >=20
+> > > commit 8b5c2b45b8f0a11c9072da0f7baf9ee986d3151e
+> > > Author: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+> > > Date:=C2=A0=C2=A0 Sun Nov 29 13:44:14 2020 +0800
+> > >=20
+> > > phy: rockchip: set pulldown for strobe line in dts
+> > >=20
+> > > This patch add support to set the internal pulldown via dt property
+> > > and allow simplify the board design for the trace from emmc-phy to
+> > > the eMMC chipset.
+> > > Default to not set the pull-down.
+> > >=20
+> > > This patch was inspired from the 4.4 tree of the
+> > > Rockchip SDK, where it is enabled unconditional.
+> > > The patch had been tested with our rk3399 customized board.
+> > > "
+> > >=20
+> > >=20
+> > >=20
+> > > For RK3588 I see this commit which makes me believe the internal
+> > > pulldown case is the most common "
+> > > commit 37f3d6108730713c411827ab4af764909f4dfc78
+> > > Author: Sam Edwards <cfsworks@gmail.com>
+> > > Date:=C2=A0=C2=A0 Tue Dec 5 12:29:00 2023 -0800
+> > >=20
+> > >=20
+> > > arm64: dts: rockchip: Fix eMMC Data Strobe PD on rk3588
+> > >=20
+> > > JEDEC standard JESD84-B51 defines the eMMC Data Strobe line, which is
+> > > currently used only in HS400 mode, as a device->host clock signal tha=
+t
+> > > "is used only in read operation. The Data Strobe is always High-Z (no=
+t
+> > > driven by the device and pulled down by RDS) or Driven Low in write
+> > > operation, except during CRC status response." RDS is a pull-down
+> > > resistor specified in the 10K-100K ohm range. Thus per the standard,
+> > > the
+> > > Data Strobe is always pulled to ground (by the eMMC and/or RDS) durin=
+g
+> > > write operations.
+> > >=20
+> > > Evidently, the eMMC host controller in the RK3588 considers an active
+> > > voltage on the eMMC-DS line during a write to be an error.
+> > >=20
+> > > The default (i.e. hardware reset, and Rockchip BSP) behavior for the
+> > > RK3588 is to activate the eMMC-DS pin's builtin pull-down. As a resul=
+t,
+> > > many RK3588 board designers do not bother adding a dedicated RDS
+> > > resistor, instead relying on the RK3588's internal bias. The current
+> > > devicetree, however, disables this bias (`pcfg_pull_none`), breaking
+> > > HS400-mode writes for boards without a dedicated RDS, but with an eMM=
+C
+> > > chip that chooses to High-Z (instead of drive-low) the eMMC-DS line.
+> > > (The Turing RK1 is one such board.)
+> > >=20
+> > > Fix this by changing the bias in the (common) emmc_data_strobe case t=
+o
+> > > reflect the expected hardware/BSP behavior. This is unlikely to cause
+> > > regressions elsewhere: the pull-down is only relevant for High-Z eMMC=
+s,
+> > > and if this is redundant with a (dedicated) RDS resistor, the effecti=
+ve
+> > > result is only a lower resistance to ground -- where the range of
+> > > tolerance is quite high. If it does, it's better fixed in the specifi=
+c
+> > > devicetrees.
+> > > "
+> > >=20
+> > >=20
+> > >=20
+> > >=20
+> > >=20
+> > >=20
+> > > Lately two other upstream dts disabled HS400 due to this new behavior=
+ I
+> > > believe:
+> > > "
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/comm=
+it/arch/arm64/boot/dts/rockchip?id=3D2bd1d2dd808c60532283e9cf05110bf1bf2f90=
+79
+> > > author	Christopher Obbard <chris.obbard@collabora.com>	2023-
+> > > 07-05 15:42:55 +0100
+> > > committer	Heiko Stuebner <heiko@sntech.de>	2023-07-10
+> > > 15:43:24 +0200
+> > > commit	2bd1d2dd808c60532283e9cf05110bf1bf2f9079 (patch)
+> > > tree	57cbf7eaa91deb68f143577d5d1dbc0d9141480e
+> > > /arch/arm64/boot/dts/rockchip
+> > > parent	cee572756aa2cb46e959e9797ad4b730b78a050b (diff)
+> > > download	linux-2bd1d2dd808c60532283e9cf05110bf1bf2f9079.tar.gz
+> > > arm64: dts: rockchip: Disable HS400 for eMMC on ROCK 4C+
+> > >=20
+> > >=20
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/comm=
+it/arch/arm64/boot/dts/rockchip?id=3Dcee572756aa2cb46e959e9797ad4b730b78a05=
+0b
+> > > author	Christopher Obbard <chris.obbard@collabora.com>	2023-
+> > > 07-05 15:42:54 +0100
+> > > committer	Heiko Stuebner <heiko@sntech.de>	2023-07-10
+> > > 15:43:24 +0200
+> > > commit	cee572756aa2cb46e959e9797ad4b730b78a050b (patch)
+> > > tree	cf3ed8ff6230cbde04353503417c1a75ba15c249
+> > > /arch/arm64/boot/dts/rockchip
+> > > parent	5ce6971e5279c569defc2f2ac800692049bbaa90 (diff)
+> > > download	linux-cee572756aa2cb46e959e9797ad4b730b78a050b.tar.gz
+> > > arm64: dts: rockchip: Disable HS400 for eMMC on ROCK Pi 4
+> > > "
+> > >=20
+> > >=20
+> > > All Armbian RK3399 boards, as far as I know, had to disable HS400, I
+> > > also believe due to this commit.
+> > >=20
+> > > You can also search google for "running cqe recovery rk3399 armbian".
+> > >=20
+> > >=20
+> > > This was never reported upstream though. But as HS400 is disabled
+> > > everywhere nobody notice the regression nowadays.
+> > >=20
+> > >=20
+> > > >=20
+> > > > > BR,
+> > > > > Jensen
+> > > > >=20
+> > > > > On Tue, Aug 23, 2022 at 10:13 PM Doug Anderson
+> > > > > <dianders@chromium.org> wrote:
+> > > > > >=20
+> > > > > > Hi,
+> > > > > >=20
+> > > > > > On Tue, Aug 23, 2022 at 4:53 AM Heiko St=C3=BCbner <heiko@sntec=
+h.de>
+> > > > > > wrote:
+> > > > > > >=20
+> > > > > > > Am Montag, 22. August 2022, 09:41:39 CEST schrieb Jensen Huan=
+g:
+> > > > > > > > Internal pull-down for strobe line (GRF_EMMCPHY_CON2[9]) wa=
+s
+> > > > > > > > disabled
+> > > > > > > > by commit 8b5c2b45b8f0, which causes I/O error in HS400 mod=
+e.
+> > > > > > > >=20
+> > > > > > > > Tested on NanoPC-T4.
+> > > > > > > >=20
+> > > > > > > > Fixes: 8b5c2b45b8f0 ("phy: rockchip: set pulldown for strob=
+e
+> > > > > > > > line in dts")
+> > > > > > > > Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
+> > > > > > >=20
+> > > > > > > ok, so this looks like it restores previous functionality.
+> > > > > > >=20
+> > > > > > > I'm just wondering as the "offending" patch is from 2020, why
+> > > > > > > this
+> > > > > > > only turns up now. Any ideas?
+> > > > > >=20
+> > >=20
+> > > Probbaly because the introduction of PROBE_DEFERRED in regulator core
+> > > before that (in 5.10.60) already broke at least my board HS400 due to
+> > > double init. Thus why it took me so long to see this new pulldown
+> > > behavior commit. I was testing every regulator core double init fixup
+> > > patchset while not understanding why reverting the PROBE_DEFERRED
+> > > commit on 5.10.60 worked but not on newer kernels (ie this new pulldo=
+wn
+> > > behavior was introduced in 5.11...).
+> > >=20
+> > >=20
+> > >=20
+> > >=20
+> > > > > > Ah, I see. So before the offending patch we used to just leave
+> > > > > > the
+> > > > > > pull state at whatever the default was when the kernel was
+> > > > > > booted.
+> > > > > > After the offending patch we chose a default.
+> > > > > >=20
+> > > > > > On kevin I see an external pull down on this line. Enabling bot=
+h
+> > > > > > the
+> > > > > > internal and external is probably not a huge deal, it'll just
+> > > > > > affect
+> > > > > > the strength of the pull.
+> > > > > >=20
+> > > > > > On bob I _think_ the external pull down is also stuffed.
+> > > > > >=20
+> > > > > > ...so I guess that would explain why it didn't cause a problem
+> > > > > > for at
+> > > > > > least those two boards?
+> > > > > >=20
+> > > > > > -Doug
+> > >=20
+> > >=20
+> > > In my opinion it is about these board already being broken by the
+> > > regulator core change, so nobody noticed the second regression. When
+> > > the first regression was fixed, it was very hard to correlate the sti=
+ll
+> > > broken behavior to the second regression.
+> > >=20
+> > >=20
+> > > I confirm that on Helios64, setting "enable-strobe-pulldown" fixes th=
+e
+> > > EMMC error I had when writing with HS400ES enabled:
+> > > mmc1: running CQE recovery=20
+> > > mmc1: cqhci: spurious TCN for tag 12
+> > >=20
+> > > It also took me so long to report upstream as my board code (rk3399-
+> > > kobol-helios64.dts) is not completely upstreamed yet so I use an
+> > > Armbian patched kernel.
+> > >=20
+> > >=20
+> > >=20
+> > > Alban
+> > >=20
+> > >=20
+> > >=20
+> > > _______________________________________________
+> > > Linux-rockchip mailing list
+> > > Linux-rockchip@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-rockchip
+> >=20
+>
+> _______________________________________________
+> Linux-rockchip mailing list
+> Linux-rockchip@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rockchip
 
 
->> When the kernel e.g. oopses or panics because of not finding
->> its rootfs (I tested the latter option when writing the original
->> deferred fbcon takeover code) then fbcon must takeover and
->> print the messages from the dying kernel so that the user has
->> some notion of what is going wrong.
-> 
-> Indeed, just reboot without the "splash" parameter to do that.
+--a28cd9b61c5d2d4fe176afa94e55817a89ff6f22a51f0e36bb0d0210ba45
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Again not something beginning Linux users will be able to do,
-what happened to "Ubuntu: Linux for Human Beings" ?
+-----BEGIN PGP SIGNATURE-----
 
->> And since your patch seems to delay switching till the first
->> vc-switch this means that e.g. even after say gdm refusing
->> to start because of issues there still will be no text
->> output. This makes debugging various issues much harder.
-> 
-> I've debugged many gdm failures and it is never useful to use the console for
-> those. Reboot and get the system journal instead.
+iJAEABYKADgWIQQFbmi0A2l3pTuK+esCQHEyPYq7fQUCZd3ohBocZGV2QGZvbGtl
+ci1zY2h3ZXNpbmdlci5kZQAKCRACQHEyPYq7fQz5AP9/BGNF0GahmiwOo8OWC1SI
+6cti0mJ/Fp2RM2aJDm9m3AEA64Jy7P72DwSuv4Qagg9IeAHiRehuFqEq1Calmk89
+WwY=
+=fX3i
+-----END PGP SIGNATURE-----
 
-But users will not see any errors now, meaning they don't
-even know where to begin with troubleshooting ...
-
->> Moreover Fedora has been doing flickerfree boot for many
->> years without needing this.
-> 
-> I believe Fedora has a mostly working solution, but not totally reliable, as
-> mentioned in the commit message:
-> 
-> "even systems whose splash exists in initrd may not be not immune because they
->  still rely on racing against all possible kernel messages that might
->  trigger the fbcon takeover"
-
-Only very serious kernel errors like oopses or panics will
-trigger the takeover and that is *exactly* what we want.
-
-There is a race where plymouth may hide such vary serious
-messages, if plymouth does manage to start before the errors,
-but that is actually an existing issue which we don't want
-to make bigger by *always* hiding such errors.
-
->> The kernel itself will be quiet as long as you set
->> CONFIG_CONSOLE_LOGLEVEL_QUIET=3 Ubuntu atm has set this
->> to 4 which means any kernel pr_err() or dev_err()
->> messages will get through and since there are quite
->> a few false positives of those Ubuntu really needs
->> to set CONFIG_CONSOLE_LOGLEVEL_QUIET=3 to fix part of:
->> https://bugs.launchpad.net/bugs/1970069
-> 
-> Incorrect. In my testing some laptops needed log level as low as 2 to go quiet.
-> And the Ubuntu kernel team is never going to fix all those for non-sponsored
-> devices.
-
-Notice that atm Ubuntu's kernel is using the too high
-CONFIG_CONSOLE_LOGLEVEL_QUIET=4 with
-CONFIG_CONSOLE_LOGLEVEL_QUIET=3 getting any errors logged
-to the console should be very very rare.
-
-The only thing I can think of is if the kernel oopses
-/ WARN()s early on but the cause is innocent enough
-that the boot happily continues.
-
-In that case actually showing the oops/WARN() is a good
-thing.
-
-For all the years Fedora has had flickerfree boot I have
-seen zero bug reports about this. If you have examples
-of this actually being a problem please file bugs for
-them (launchpad or bugzilla.kernel.org is fine) and
-then lets take a look at those bugs and fix them.
-
-These should be so rare that I'm not worried about this
-becoming a never ending list of bugs (unlike pr_err() /
-dev_err() messages of which there are simply too many).
-
->> After that it is "just" a matter of not making userspace
->> output anything unless it has errors to report.
->>
->> systemd already is quiet by default (only logging
->> errors) when quiet is on the kernel commandline.
-> 
-> Unfortunately not true for Ubuntu. We carry a noisy systemd patch which I'm
-> told we can't remove in the short term:
-> 
-> https://bugs.launchpad.net/ubuntu/+source/plymouth/+bug/1970069/comments/39
-
-Well then make the patch less noisy? Suppressing non
-error message unless in debug mode should be easy
-even with a downstream patch.
-
-> Thanks for your input, but I respectfully disagree and did consider these
-> points already.
-
-Sorry, but your real problem here seems to be your
-noisy downstream systemd patch. I'm not going to ack
-a kernel patch which I consider a bad idea because
-Ubuntu has a non standard systemd patch which is
-to trigger happy with spamming the console.
-
-So this is still a NACK from me.
-
-Regards,
-
-Hans
-
-
-
-
-
->>> Closes: https://bugs.launchpad.net/bugs/1970069
->>> Cc: Mario Limonciello <mario.limonciello@amd.com>
->>> Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
->>> ---
->>>  drivers/video/fbdev/core/fbcon.c | 32 +++++++++++++++++++++++++++++---
->>>  1 file changed, 29 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
->>> index 63af6ab034..5b9f7635f7 100644
->>> --- a/drivers/video/fbdev/core/fbcon.c
->>> +++ b/drivers/video/fbdev/core/fbcon.c
->>> @@ -76,6 +76,7 @@
->>>  #include <linux/crc32.h> /* For counting font checksums */
->>>  #include <linux/uaccess.h>
->>>  #include <asm/irq.h>
->>> +#include <asm/cmdline.h>
->>>  
->>>  #include "fbcon.h"
->>>  #include "fb_internal.h"
->>> @@ -146,6 +147,7 @@ static inline void fbcon_map_override(void)
->>>  
->>>  #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
->>>  static bool deferred_takeover = true;
->>> +static int initial_console = -1;
->>>  #else
->>>  #define deferred_takeover false
->>>  #endif
->>> @@ -3341,7 +3343,7 @@ static void fbcon_register_existing_fbs(struct work_struct *work)
->>>  	console_unlock();
->>>  }
->>>  
->>> -static struct notifier_block fbcon_output_nb;
->>> +static struct notifier_block fbcon_output_nb, fbcon_switch_nb;
->>>  static DECLARE_WORK(fbcon_deferred_takeover_work, fbcon_register_existing_fbs);
->>>  
->>>  static int fbcon_output_notifier(struct notifier_block *nb,
->>> @@ -3358,6 +3360,21 @@ static int fbcon_output_notifier(struct notifier_block *nb,
->>>  
->>>  	return NOTIFY_OK;
->>>  }
->>> +
->>> +static int fbcon_switch_notifier(struct notifier_block *nb,
->>> +				 unsigned long action, void *data)
->>> +{
->>> +	struct vc_data *vc = data;
->>> +
->>> +	WARN_CONSOLE_UNLOCKED();
->>> +
->>> +	if (vc->vc_num != initial_console) {
->>> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
->>> +		dummycon_register_output_notifier(&fbcon_output_nb);
->>> +	}
->>> +
->>> +	return NOTIFY_OK;
->>> +}
->>>  #endif
->>>  
->>>  static void fbcon_start(void)
->>> @@ -3370,7 +3387,14 @@ static void fbcon_start(void)
->>>  
->>>  	if (deferred_takeover) {
->>>  		fbcon_output_nb.notifier_call = fbcon_output_notifier;
->>> -		dummycon_register_output_notifier(&fbcon_output_nb);
->>> +		fbcon_switch_nb.notifier_call = fbcon_switch_notifier;
->>> +		initial_console = fg_console;
->>> +
->>> +		if (cmdline_find_option_bool(boot_command_line, "splash"))
->>> +			dummycon_register_switch_notifier(&fbcon_switch_nb);
->>> +		else
->>> +			dummycon_register_output_notifier(&fbcon_output_nb);
->>> +
->>>  		return;
->>>  	}
->>>  #endif
->>> @@ -3417,8 +3441,10 @@ void __exit fb_console_exit(void)
->>>  {
->>>  #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
->>>  	console_lock();
->>> -	if (deferred_takeover)
->>> +	if (deferred_takeover) {
->>>  		dummycon_unregister_output_notifier(&fbcon_output_nb);
->>> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
->>> +	}
->>>  	console_unlock();
->>>  
->>>  	cancel_work_sync(&fbcon_deferred_takeover_work);
->>
-> 
-
+--a28cd9b61c5d2d4fe176afa94e55817a89ff6f22a51f0e36bb0d0210ba45--
 
