@@ -1,197 +1,181 @@
-Return-Path: <linux-kernel+bounces-83306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EAC08691A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:20:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 349F98691A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:20:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2B6BB259B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:20:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58B931C28344
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB2413B2A9;
-	Tue, 27 Feb 2024 13:20:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E130A13B2AC;
+	Tue, 27 Feb 2024 13:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o8YEaViT"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="knzFP1iE"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342C813AA51
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B0813B293;
+	Tue, 27 Feb 2024 13:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709040012; cv=none; b=mGcQrgPnurv9DJTjkN/a5zoTfwWo6GY0DsZTuHJ8zJs4vt4akmtzhsobi8lTI4ZxYpLmSVGrsq0icyEbtYeGjyPZXAQcxCL5MmwDrYeQ0Oe2tD470+hWIhDD6ZVV5RiO/cbB8bKjqfBWzovCRSx6QG5IMyAxe8APNfxUK6zfFkg=
+	t=1709040030; cv=none; b=cVEQs0nXx1AruRRQyJ680rKQGLJUtNlRdxYmCMpWlIWEj8R/pOD0IXXI2nG2Q3dDCNyJX9vMZpGW+4GuTIyjJ0+7szc8UB6Uiw8nvmTDBZUX21IlEXeyG5lhqh2uoOw7YLH/3EK8hed6mtLARUqKc0UsiwokY6+BHsGzAxGszjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709040012; c=relaxed/simple;
-	bh=UCc+QXpK/pxCYv6oqRhkjlslZVn9Vi3dZm4sUsqmYXI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sZH23W7mMgaR3noOuhPK1uPp35MpqOvOYj+MRTB5k1QU6Y/EKhW67Ff0trMP96ncllQNFCrJhT8Pa4ly2UkOFIG0ydU4uFkV4BGEa4g64Ysf42kfek9zNgjrgSQn/knSCR3knNKBC1UQ5Ws5gy9RhuU74ggCVHuWLdTrThZ+y1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o8YEaViT; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d220e39907so67219641fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:20:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709040007; x=1709644807; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vlr5GxTuTyoOqcx2wy9fcrF4X1fQdHiiP+0pPjt3du4=;
-        b=o8YEaViTzRsCM3yNL6D38U0y955k1Yq82BaB9YXlSg8ZRhlEfoYE9bF5yO9LzfSiZa
-         FUY/+LEELHeuhqrfSBUvOu+0ubD99/MeqhAbm7qlt33PQGaC14YW6FDzSUrnc0WpLSO0
-         uLgE00EnIEivUFCR2hB3R2Kty2HbcWLkBbnex0Snw2nWhJHys8K77b0zpAhXeHPKEVT5
-         xT4vQO6e4Hn9XhLn7R6PhhbOO/9aDeo0vJXqf33aSKi2Wqjdjy8WnAiVEP2HtBCKbt4Q
-         x3H7G2ZUCbnQfwvBdBcI31dObwJY6ELxlq3FopP+A0yfQ1VYBRa49PhPLUR6ZBgIvyvL
-         hmVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709040007; x=1709644807;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vlr5GxTuTyoOqcx2wy9fcrF4X1fQdHiiP+0pPjt3du4=;
-        b=XZYNSxWi5lV60HpZW/juOAmNSJg4gjFKKEj9v9Cil9cvhEpVyPnrqLSHyiB/hd4E9M
-         2AdBY5IKPCygsc80PxFZNr108OW9H8R+t6gmvxvWdjw/nH2Q0LvaR0DS1tC+yCvhy3TV
-         +/QAZEPBTimGT/ekjle33nLtNEmUjPKtvwzoxQX10RAf8VXEr2hk0sysYCQQ20S+1Adj
-         fieT/tl+IYa3iG1zeJdgDgbVK5hkIuCLo04xgfXeMyeo2re1B++E41Us5M03fwafGEAh
-         Gb8ifE8TgI9Cwek8EuJUHBQGrKV+RkeclYfyym0hRpDJzBfWH8VREMj1tUyS4TjRlNK4
-         CDuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQfqjDdlgHXKiS06s2axNfE7RCUtAK09xZlI+7ifB3sZiES/S7AgwY4ZpzzP6Qf7e+PnNjzyd/epaZHvC25W1OwXjHwrEPijhUcxgo
-X-Gm-Message-State: AOJu0YwShnlzbUi3nys/XY200ifwCasRobLdr/zrT1z7KQnuDa27D78H
-	b9MLAMEYyYht0nw7QXT3nDUfQf39dPBZuvWy7+mf6gJ2EQMgjCdPHtx9nUBSAYKM8u1f7hUxwSp
-	37FDX5R1zl+UM5MjE0swc1MjkyXvb3dKzZkHtBA==
-X-Google-Smtp-Source: AGHT+IGQ5qKugw7EolCixjBBZt98DHlZp0AHzKrqvDtOPvC40Yids/u0deBUUEQVxTX4vweQHoEHToV3hUoy2m4wmRs=
-X-Received: by 2002:a05:651c:48c:b0:2d2:5cca:cf6f with SMTP id
- s12-20020a05651c048c00b002d25ccacf6fmr5999084ljc.18.1709040007508; Tue, 27
- Feb 2024 05:20:07 -0800 (PST)
+	s=arc-20240116; t=1709040030; c=relaxed/simple;
+	bh=EBs4betfL1RKBwgp2ebp0GSA1ZBOXqHaPeKzovpf0VQ=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=b7VL5I+WUKLIronVdBbRMJCncCVVNt8cabyBGp7+8AQ6UiEP6jNUsza868Xo2z18IaEN3pcvo8+wYaaSLApI21mdHJhY5Ato5J11Gd7ohaa5oVV+Iux36mwts5tfjqrbTYYLYNgF+nhj7cReLtAs3tc+TzVpiVKFwwAYUVmM10o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=knzFP1iE; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709040029; x=1740576029;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=EBs4betfL1RKBwgp2ebp0GSA1ZBOXqHaPeKzovpf0VQ=;
+  b=knzFP1iEAzacT7ZcxRN6oDO9Vm+E2ld+63fRT/GmUZOwhZ+PSymWzuAe
+   hZ56HiryZ0mPcUJnejSca8Qy8gJqU10ALCU/x6FQo0hJ4RDEQL028ECGn
+   cqLY4Dxo9GqAQmKzBVTnMEHgOmRATWjoBlpiH7YX3gX/5knO1Z6I4abiv
+   TXDTn3xAzboj+7QlA5LlwdVOyrcQWqJ5iMS0tLQjnnI7+t4n6aE7SuNZ8
+   4m7s2S9HTuTQ0A9spt5R5slyAFrME56FeH99HYo0xcv1RC3eK5squwjyA
+   1OeDB3/KGo+QxAxfwBxxwSAHbKdw5SHMETocMQem1IE9o3wMVX8VwZo1r
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="13928489"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="13928489"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 05:20:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="11643767"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.61])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 05:20:25 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 27 Feb 2024 15:20:22 +0200 (EET)
+To: Luiz Capitulino <luizcap@redhat.com>
+cc: shravankr@nvidia.com, davthompson@nvidia.com, ndalvi@redhat.com, 
+    LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org, 
+    Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 0/2] platform/mellanox: mlxbf-pmc: Fix module loading
+In-Reply-To: <eaef16d8-d43a-49c8-b1a0-450ab4c1ba9f@redhat.com>
+Message-ID: <4bb37259-5626-b32f-f21b-b88df52d4afb@linux.intel.com>
+References: <cover.1708635408.git.luizcap@redhat.com> <170895404513.2243.14840310263795846559.b4-ty@linux.intel.com> <def1a153-3cfb-431d-a7d2-a13bb7d65f4f@redhat.com> <29863354-4efe-d199-a9d4-7daf83f6cde9@linux.intel.com> <1608d86a-24e8-403b-b199-ce23f8411cfd@redhat.com>
+ <8a05120e-fcdf-f7f2-6b60-22e3ee819d37@linux.intel.com> <eaef16d8-d43a-49c8-b1a0-450ab4c1ba9f@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215030002.281456-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20240215030002.281456-3-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAC_iWjJ_TS66KG7uGOQFiKGfZNKjnod6u7zua4LVK-EJHEUv8w@mail.gmail.com>
- <7feb889f-f78e-4caa-a2f4-9d41acf6ca76@linux.intel.com> <CAC_iWj+9eWesWD62krdhLwj58fpjptpnnG5JpUJUpFsg7_GzOA@mail.gmail.com>
- <3b8113ac-e44c-4b11-b494-9e473352037a@linux.intel.com>
-In-Reply-To: <3b8113ac-e44c-4b11-b494-9e473352037a@linux.intel.com>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Tue, 27 Feb 2024 15:19:31 +0200
-Message-ID: <CAC_iWjLXNBJz2RgRb3vbM_hetnw3hoWpG+sKM1gfiGo=z6tLxA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] efi/libstub: Add get_event_log() support for CC platforms
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="8323328-1367976222-1709040022=:1099"
 
-On Sat, 24 Feb 2024 at 09:31, Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
->
->
-> On 2/23/24 5:24 AM, Ilias Apalodimas wrote:
-> > Apologies for the late reply,
-> >
-> >
-> > On Mon, 19 Feb 2024 at 09:34, Kuppuswamy Sathyanarayanan
-> > <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> >> Hi Ilias,
-> >>
-> >> On 2/18/24 11:03 PM, Ilias Apalodimas wrote:
-> >>> On Thu, 15 Feb 2024 at 05:02, Kuppuswamy Sathyanarayanan
-> >>> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
-> >>>> To allow event log info access after boot, EFI boot stub extracts
-> >>>> the event log information and installs it in an EFI configuration
-> >>>> table. Currently, EFI boot stub only supports installation of event
-> >>>> log only for TPM 1.2 and TPM 2.0 protocols. Extend the same support
-> >>>> for CC protocol. Since CC platform also uses TCG2 format, reuse TPM2
-> >>>> support code as much as possible.
-> >>>>
-> >>>> Link: https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#efi-cc-measurement-protocol [1]
-> >>>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> >>> [...]
-> >>>
-> >>>> +void efi_retrieve_eventlog(void)
-> >>>> +{
-> >>>> +       efi_physical_addr_t log_location = 0, log_last_entry = 0;
-> >>>> +       efi_guid_t cc_guid = EFI_CC_MEASUREMENT_PROTOCOL_GUID;
-> >>>> +       efi_guid_t tpm2_guid = EFI_TCG2_PROTOCOL_GUID;
-> >>>> +       int version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
-> >>>> +       efi_tcg2_protocol_t *tpm2 = NULL;
-> >>>> +       efi_cc_protocol_t *cc = NULL;
-> >>>> +       efi_bool_t truncated;
-> >>>> +       efi_status_t status;
-> >>>> +
-> >>>> +       status = efi_bs_call(locate_protocol, &tpm2_guid, NULL, (void **)&tpm2);
-> >>>> +       if (status == EFI_SUCCESS) {
-> >>>> +               status = efi_call_proto(tpm2, get_event_log, version, &log_location,
-> >>>> +                                       &log_last_entry, &truncated);
-> >>>> +
-> >>>> +               if (status != EFI_SUCCESS || !log_location) {
-> >>>> +                       version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
-> >>>> +                       status = efi_call_proto(tpm2, get_event_log, version,
-> >>>> +                                               &log_location, &log_last_entry,
-> >>>> +                                               &truncated);
-> >>>> +                       if (status != EFI_SUCCESS || !log_location)
-> >>>> +                               return;
-> >>>> +               }
-> >>>> +
-> >>>> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
-> >>>> +                                          truncated);
-> >>>> +               return;
-> >>>> +       }
-> >>>> +
-> >>>> +       status = efi_bs_call(locate_protocol, &cc_guid, NULL, (void **)&cc);
-> >>>> +       if (status == EFI_SUCCESS) {
-> >>>> +               version = EFI_CC_EVENT_LOG_FORMAT_TCG_2;
-> >>>> +               status = efi_call_proto(cc, get_event_log, version, &log_location,
-> >>>> +                                       &log_last_entry, &truncated);
-> >>>> +               if (status != EFI_SUCCESS || !log_location)
-> >>>> +                       return;
-> >>>> +
-> >>>> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
-> >>>> +                                          truncated);
-> >>>> +               return;
-> >>>> +       }
-> >>>> +}
-> >>> [...]
-> >>>
-> >>> I haven't looked into CC measurements much, but do we always want to
-> >>> prioritize the tcg2 protocol? IOW if you have firmware that implements
-> >>> both, shouldn't we prefer the CC protocol for VMs?
-> >> According the UEFI specification, sec "Conidential computing", if a firmware implements
-> >> the TPM, then it should be used and CC interfaces should not be published. So I think
-> >> we should check for TPM first, if it does not exist then try for CC.
-> > Ok thanks, that makes sense. That document also says the services
-> > should be implemented on a virtual firmware.
-> > I am unsure at the moment though if it's worth checking that and
-> > reporting an error otherwise. Thoughts?
->
-> IMO, it is not fatal for the firmware to implement both protocols. Although, it
-> violates the specification, does it makes sense to return error and skip
-> measurements? I think for such case, we can add a warning and proceed
-> with TPM if it exists.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-If you have a TPM, the current code wouldn't even look for CC (which
-we agreed is correct).
-The question is, should we care if a firmware exposes the CC protocol,
-but isn't virtualized
+--8323328-1367976222-1709040022=:1099
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Thanks
-/Ilias
->
-> >
-> > Thanks
-> > /Ilias
-> >> https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#confidential-computing
-> >>
-> >>> Thanks
-> >>> /Ilias
-> >> --
-> >> Sathyanarayanan Kuppuswamy
-> >> Linux Kernel Developer
-> >>
-> --
-> Sathyanarayanan Kuppuswamy
-> Linux Kernel Developer
->
+On Mon, 26 Feb 2024, Luiz Capitulino wrote:
+
+> On 2024-02-26 11:59, Ilpo J=C3=A4rvinen wrote:
+> > On Mon, 26 Feb 2024, Luiz Capitulino wrote:
+> >=20
+> > > On 2024-02-26 11:04, Ilpo J=C3=A4rvinen wrote:
+> > > > On Mon, 26 Feb 2024, Luiz Capitulino wrote:
+> > > >=20
+> > > > > On 2024-02-26 08:27, Ilpo J=C3=A4rvinen wrote:
+> > > > > > On Thu, 22 Feb 2024 15:57:28 -0500, Luiz Capitulino wrote:
+> > > > > >=20
+> > > > > > > The mlxbf-pmc driver fails to load when the firmware reports =
+a new
+> > > > > > > but
+> > > > > > > not
+> > > > > > > yet implemented performance block. I can reproduce this today=
+ with
+> > > > > > > a
+> > > > > > > Bluefield-3 card and UEFI version 4.6.0-18-g7d063bb-BId13035,
+> > > > > > > since
+> > > > > > > this
+> > > > > > > reports the new clock_measure performance block.
+> > > > > > >=20
+> > > > > > > This[1] patch from Shravan implements the clock_measure suppo=
+rt
+> > > > > > > and
+> > > > > > > will
+> > > > > > > solve the issue. But this series avoids the situation by igno=
+ring
+> > > > > > > and
+> > > > > > > logging unsupported performance blocks.
+> > > > > > >=20
+> > > > > > > [...]
+> > > > > >=20
+> > > > > >=20
+> > > > > > Thank you for your contribution, it has been applied to my loca=
+l
+> > > > > > review-ilpo branch. Note it will show up in the public
+> > > > > > platform-drivers-x86/review-ilpo branch only once I've pushed m=
+y
+> > > > > > local branch there, which might take a while.
+> > > > >=20
+> > > > > Thank you Ilpo and thanks Hans for the review.
+> > > > >=20
+> > > > > The only detail is that we probably want this merged for 6.8 sinc=
+e
+> > > > > the driver doesn't currently load with the configuration mentione=
+d
+> > > > > above.
+> > > >=20
+> > > > Oh, sorry, I missed the mention in the coverletter.
+> > > >=20
+> > > > So you'd want I drop these from review-ilpo branch as there they en=
+d
+> > > > up into for-next branch, and they should go through Hans instead wh=
+o
+> > > > handles fixes branch for this cycle?
+> > >=20
+> > > If that's the path to get this series merged for this cycle then yes,
+> > > but let's see if Hans agrees (sorry that I didn't know this before
+> > > posting).
+> > >=20
+> > > One additional detail is that this series is on top of linux-next, wh=
+ich
+> > > has two additional mlxbf-pmc changes:
+> > >=20
+> > > *
+> > > https://lore.kernel.org/lkml/
+39be055af3506ce6f843d11e45d71620f2a96e26.1707808180.git.shravankr@nvidia.co=
+m/
+> > > *
+> > > https://lore.kernel.org/lkml/d8548c70339a29258a906b2b518e5c48f669795c=
+=2E1707808180.git.shravankr@nvidia.com/
+> > >=20
+> > > Maybe those two should be included for 6.8 as well?
+> >=20
+> > Those look a new feature to me so they belong to for-next. So no, they
+> > will not end up into 6.8 (to fixes branch). If the 2 patches in this
+> > series do not apply without some for-next targetting dependencies, you
+> > should rebase on top of fixes branch and send a new version.
+>=20
+> Understood.
+>=20
+> > About those two patches, please also see my reply. I intentionally only=
+ 2
+> > patches of that series because I wanted to see sysfs documentation firs=
+t
+> > so you should resend those two patches to for-next with sysfs
+> > documentation.
+>=20
+> I'm actually not author of the other patches :)
+
+Ah, sorry. I didn't pay enough attention to that. :-)
+
+
+--=20
+ i.
+
+--8323328-1367976222-1709040022=:1099--
 
