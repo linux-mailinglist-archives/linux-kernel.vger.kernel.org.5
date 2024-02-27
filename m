@@ -1,100 +1,107 @@
-Return-Path: <linux-kernel+bounces-82944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DA5868C0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:19:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82530868C42
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:30:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 625BD1F22CC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:19:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A357228317F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B65813664B;
-	Tue, 27 Feb 2024 09:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EEEE13699E;
+	Tue, 27 Feb 2024 09:19:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="FZ9fUI1F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jPM2wtJT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E4A15D0;
-	Tue, 27 Feb 2024 09:19:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E98A13664A;
+	Tue, 27 Feb 2024 09:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709025585; cv=none; b=K1/LZxav9TyWweSU0X3VON56Y5R7cLXxbl3kHLRVQ2KL58ap9qENaPpe6usODzIb80g/LG5g9pY51x9no94TXFbIHGQg5B2Fl3LtrjEk0lV41sSAfCnkPkN5fja4mdL5D6Mg90JMahBIxYcezGyr1yngjHifysJKz6IZey/vuTk=
+	t=1709025595; cv=none; b=kRjQJBpM4JLvEJHjMr9fRl0WIXVMeTPXiFETvlVcQloEq52DFxwkkH4vblNpho96u5SYusuhF/uRQs3pxRE+yM43GTOTGy7MeBPr8VA+unft2RE8Efhikcq42VMLjpG13VAjUMRFkhCyu8lwA0eDv7HWVTbSKXn353OZ3pYkexQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709025585; c=relaxed/simple;
-	bh=mWuQqMS4uz9qq4fM6oWFzkCwnWqLgdXy4FqN58EEn4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N29ntVRvZCgXblh6WKAAZznnbhsSA+cpTJXAysAkxdCe1+eZ2naCFd80cMu1NqEmQ6PbAkJ5WXdkX8Q04IasOOASVD+v/tcA1Yy8r4kLVouednvGM8GSE7JTCNlLlaNCacph5fBHOlPd9nx1z87GfVpvVLO0YMYVrIV8762ASmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=FZ9fUI1F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B2D7C433F1;
-	Tue, 27 Feb 2024 09:19:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709025584;
-	bh=mWuQqMS4uz9qq4fM6oWFzkCwnWqLgdXy4FqN58EEn4c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FZ9fUI1FOL0OHcqIyA1oNWr2JN4APMm470UwK4REcPHycyrp7PaHwnZsss+fZcKTm
-	 lrQGaD6NgMzQ9yDMzvqFPwsarXiQshHptPGTnPOvse+em35/zAQrgi1D2t96j00G/S
-	 NYQUFFjozZswRZAfsvZC8/hZibXJH7PqT0ewI2H0=
-Date: Tue, 27 Feb 2024 10:19:41 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: SeongJae Park <sj@kernel.org>
-Cc: stable@vger.kernel.org, damon@lists.linux.dev, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 6.1.y] mm/damon/reclaim: fix quota stauts loss due to
- online tunings
-Message-ID: <2024022731-varying-underpaid-c855@gregkh>
-References: <2024022643-scorn-filtrate-8677@gregkh>
- <20240227051335.168121-1-sj@kernel.org>
+	s=arc-20240116; t=1709025595; c=relaxed/simple;
+	bh=4FKpQ2YxhRM1cS9JvwGrN9mJcPARYZbWsBsplFmE57w=;
+	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
+	 Cc:Message-ID:Date; b=fEeA84JfLENS1BPQgC0BKwZxPQZZv9y807U23SuNHDtIR4drXCmMmvUHKwxFBj8hyViROmS2V9zOKJz49HyTtnJfjJm5Lotk6/AmJQhsdFZXNRJ41j4PwI27FMT0jNYEScjeIoIjaa3CiHoc/Qm/NMJn0cWb9f+7j9x8YNCl5wI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jPM2wtJT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FEACC433F1;
+	Tue, 27 Feb 2024 09:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709025595;
+	bh=4FKpQ2YxhRM1cS9JvwGrN9mJcPARYZbWsBsplFmE57w=;
+	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+	b=jPM2wtJTHyWKh4fNtYM9y0G1BAyPnS/qGRUR/VbivdAJTPr7wGgbuuqenpnx+Te2X
+	 b/2ePMzsnfZWFfvZtKjuNvKLq9kIkzPYhBYJ703NFRQNusIT1AWV8ATgJjrY0IcpS9
+	 bgTKUDEEAzRqBBKgjJdTSd5wUxfMn2h9heYZ9D3H6DLfqWlqXR8gGYTX16I0eRj24d
+	 pcHUikBx7/0JgxKXaQ2kS974YfcU59GQh72M4Yc/CP/4tdUtEkiV/Nx/s7WsqWgZbQ
+	 wWcvZW65ZdwnZYRKWlbaOR+yRCOsTdKgmTqpriFzw7jT8Vjq9vkfat5IxsFo2t5JG+
+	 wX14nOE3RDc4g==
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227051335.168121-1-sj@kernel.org>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] wifi: brcmfmac: fweh: Fix boot crash on Raspberry
+ Pi 4
+From: Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <Zc+3PFCUvLoVlpg8@neat>
+References: <Zc+3PFCUvLoVlpg8@neat>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Arend van Spriel <arend.vanspriel@broadcom.com>,
+ Nathan Chancellor <nathan@kernel.org>, linux-wireless@vger.kernel.org,
+ brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com,
+ linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ linux-hardening@vger.kernel.org
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <170902559101.3280425.2706190192200235643.kvalo@kernel.org>
+Date: Tue, 27 Feb 2024 09:19:53 +0000 (UTC)
 
-On Mon, Feb 26, 2024 at 09:13:35PM -0800, SeongJae Park wrote:
-> Patch series "mm/damon: fix quota status loss due to online tunings".
-> 
-> DAMON_RECLAIM and DAMON_LRU_SORT is not preserving internal quota status
-> when applying new user parameters, and hence could cause temporal quota
-> accuracy degradation.  Fix it by preserving the status.
-> 
-> This patch (of 2):
-> 
-> For online parameters change, DAMON_RECLAIM creates new scheme based on
-> latest values of the parameters and replaces the old scheme with the new
-> one.  When creating it, the internal status of the quota of the old
-> scheme is not preserved.  As a result, charging of the quota starts from
-> zero after the online tuning.  The data that collected to estimate the
-> throughput of the scheme's action is also reset, and therefore the
-> estimation should start from the scratch again.  Because the throughput
-> estimation is being used to convert the time quota to the effective size
-> quota, this could result in temporal time quota inaccuracy.  It would be
-> recovered over time, though.  In short, the quota accuracy could be
-> temporarily degraded after online parameters update.
-> 
-> Fix the problem by checking the case and copying the internal fields for
-> the status.
-> 
-> Link: https://lkml.kernel.org/r/20240216194025.9207-1-sj@kernel.org
-> Link: https://lkml.kernel.org/r/20240216194025.9207-2-sj@kernel.org
-> Fixes: e035c280f6df ("mm/damon/reclaim: support online inputs update")
-> Signed-off-by: SeongJae Park <sj@kernel.org>
-> Cc: <stable@vger.kernel.org>	[5.19+]
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> (cherry picked from commit 1b0ca4e4ff10a2c8402e2cf70132c683e1c772e4)
-> ---
->  mm/damon/reclaim.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
-Now queued up, thanks.
+> Fix boot crash on Raspberry Pi by moving the update to `event->datalen`
+> before data is copied into flexible-array member `data` via `memcpy()`.
+> 
+> Flexible-array member `data` was annotated with `__counted_by(datalen)`
+> in commit 62d19b358088 ("wifi: brcmfmac: fweh: Add __counted_by for
+> struct brcmf_fweh_queue_item and use struct_size()"). The intention of
+> this is to gain visibility into the size of `data` at run-time through
+> its _counter_ (in this case `datalen`), and with this have its accesses
+> bounds-checked at run-time via CONFIG_FORTIFY_SOURCE and
+> CONFIG_UBSAN_BOUNDS.
+> 
+> To effectively accomplish the above, we shall update the counter
+> (`datalen`), before the first access to the flexible array (`data`),
+> which was also done in the mentioned commit.
+> 
+> However, commit edec42821911 ("wifi: brcmfmac: allow per-vendor event
+> handling") inadvertently caused a buffer overflow, detected by
+> FORTIFY_SOURCE. It moved the `event->datalen = datalen;` update to after
+> the first `data` access, at which point `event->datalen` was not yet
+> updated from zero (after calling `kzalloc()`), leading to the overflow
+> issue.
+> 
+> This fix repositions the `event->datalen = datalen;` update before
+> accessing `data`, restoring the intended buffer overflow protection. :)
+> 
+> Fixes: edec42821911 ("wifi: brcmfmac: allow per-vendor event handling")
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Closes: https://gist.github.com/nathanchance/e22f681f3bfc467f15cdf6605021aaa6
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-greg k-h
+Arend, ack?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/Zc+3PFCUvLoVlpg8@neat/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
 
