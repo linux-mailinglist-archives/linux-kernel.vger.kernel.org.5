@@ -1,109 +1,276 @@
-Return-Path: <linux-kernel+bounces-83057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BFDA868DED
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:47:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B4A868DF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:48:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91217B27608
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:47:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A334C288AC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718441386BB;
-	Tue, 27 Feb 2024 10:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y0VpuCvd"
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7873D137C36;
-	Tue, 27 Feb 2024 10:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFE91386B2;
+	Tue, 27 Feb 2024 10:48:35 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D00143AAF
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709030816; cv=none; b=LuUXgZzW77uvOb/1VJM+WpX/64VWuCx4a3pQ2SnNOUejMl1FJMZapBRUEpbGx4WAK0ylFd92tTClDKg1q7bQUihoTt2iM7GMS+4iNnGCkpHRVISPvj34RKZf97QfSjtyRBMJfGIDO0xPN2fU77Igja3lTTWEoq77cgg5S93xozg=
+	t=1709030914; cv=none; b=g9rlC+MsNyBEi2VTw60VjfW906/aXMlkD/A/ZFOTCBovYOW93Xu9uHC3mDwKAKSAwpAleYa3rD9qqrIjngg/OaQNNaFsWdRCa8WpKKycJrEObcAtRnFOlnh/glI3DLosrtdvVSYOF7+cEdYHngVf5UD+cZ8mau1xvLXenWPZ2wY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709030816; c=relaxed/simple;
-	bh=XHyReOttpij5I54r5x4WgZ+cIyUHaBfTMin6OfRWlGU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B/bRKfKIRC7H3Tv8z7J7dXq7GXmFw1282UuNk2O7suUbFEwpRrL1B6KkqDj0fCmbbO/YXp9DRm6P9FpZouKhnm7BygNbEtUIgW8QEsmuLqOh5n7CHOzo2oodEW032+PY7Ga5qDsZN1KKBhevVvFXBjdF3DMcLNR7SnGt4n6XovE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y0VpuCvd; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-29996cc6382so2780508a91.3;
-        Tue, 27 Feb 2024 02:46:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709030815; x=1709635615; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XHyReOttpij5I54r5x4WgZ+cIyUHaBfTMin6OfRWlGU=;
-        b=Y0VpuCvdBt7C1P4kfCsaRV6cDqPio2fHc6Zm+TSwT0nPq5r5Y3nJGqMzGPzZkKpuFH
-         //QPWPoLf4ZCtxJvqj/7MAvZma1FfqPGozfoK7v6Ts0pUK4IPFJpAYnN68/6KEbMNm92
-         IX6ZsnOuGtHioByp/x5EnDazkB2/bGkx9ZHTxA7uztHCP08GT+PGMxyZRykbSpDX/jY8
-         Ar3D7/EgId+u/ce84Xk3FerDVWlMayvqPCP9X7rbil61XGhVV2i5KtqrUSkei3R2DYZT
-         2LWX/rG6318GlSPAWercAIH+Ytj/r3N0KExrWjI5CW5sTIIJIxnCjmKuadv1Vq4327/d
-         pEoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709030815; x=1709635615;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XHyReOttpij5I54r5x4WgZ+cIyUHaBfTMin6OfRWlGU=;
-        b=tKi8IJT0Jz5ze/GtUF+2YVifKUpqoF8xmng+xraIGsHCM83yXoRl5JTNeIED9mCU5k
-         cp/ths5hRJtWOcsZFJ+vT78KOzHAxie+gMMVt1nl5iz2Hzj3LsGGbUeXc6CD02aIuQ8+
-         wo5WCc5xb0h/Ap5mWxieVm1MKQUnuPTK3rYpk92y3NRvGt9/q4CrCScykbkg6O7sbBha
-         HWjQS4R4bory2Oc8ynTfdl4rSwC73j5OTHRxGNWtVIZpB1dTsDqpJVcn95IZ3qMWTlzR
-         xac43oxmWNOWe/b07xAqusN2nCDHjUjFx8BwPXBDIRk6uGdGqTBx+48e8nhRZw8V7+ac
-         ikVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4QJ5rf6vbtDLgcZ7MVihOA8Z6Ax5p06uTnLs7WAaTzAKqUARrtWnnn9tP9CfzqXbxoiPDXQj1nI2SR+QBoIQ8JKPZJBAbH7TIPRURzXE8fpshl1J0pB/M69ASGrLFqy2P3wyfdn2MB6eVL8xPz/EXjfjR0EDXaib8/GiV9/Zdz641cS0qv+M=
-X-Gm-Message-State: AOJu0Yz105ynEUacs47HD2UM3aLG6Acbknfqa3yPZ6XX/sMOQQ6uuxWP
-	wGz1X7nhL88++q3pHnZAl/OXYWeXwS0+dxTnyke7qeKv5ou6EIXpRJ1KlpLM9ER1mNSctd+5xPL
-	95dpBN7ZOVWZwYPvCRGDSGgdU/1Y=
-X-Google-Smtp-Source: AGHT+IHM+6rRS1JfIDKhTWqLKrWosGlB3CKAX90C0/Xd3mVu0FyLDdjQsn5XBbm5H/3r+xFgrsAmb7KF3ofv00QMlG8=
-X-Received: by 2002:a17:90a:e018:b0:29a:ce5f:4da1 with SMTP id
- u24-20020a17090ae01800b0029ace5f4da1mr3644307pjy.8.1709030814815; Tue, 27 Feb
- 2024 02:46:54 -0800 (PST)
+	s=arc-20240116; t=1709030914; c=relaxed/simple;
+	bh=G1C0fQNr8UkQIExRGexWXqds8c9/LSQcxBuWVz/qjzI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UANOnTsQbTD75HmO7tXw/yubph9r5avqw73X7G6cpL0C3MeJyXzeMDkwvG5zpLfPb/31Z4DPPpCn4MRMn46JTGcBott8Ys9A+1oxA2oYMobOsyzO8XUkE435XvdVO1tf5313esi3NhJxPurZURCIYjbPBq+XYw8KbfYh8/kLnPQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7110BDA7;
+	Tue, 27 Feb 2024 02:49:08 -0800 (PST)
+Received: from [10.1.30.188] (XHFQ2J9959.cambridge.arm.com [10.1.30.188])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C5C213F762;
+	Tue, 27 Feb 2024 02:48:28 -0800 (PST)
+Message-ID: <f0a5d9c5-5d09-46ac-9d43-ac96738ededf@arm.com>
+Date: Tue, 27 Feb 2024 10:48:27 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223-leverage-walmart-5424542cd8bd@spud> <20240223-employee-pessimism-03ba0b58db6b@spud>
- <CANiq72ngEZskjH0f=8+cJuQsFTK227bGCxe5G0STMHuPbZYnXg@mail.gmail.com> <20240227-resolved-deceit-4a59a6af5b71@wendy>
-In-Reply-To: <20240227-resolved-deceit-4a59a6af5b71@wendy>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 27 Feb 2024 11:46:42 +0100
-Message-ID: <CANiq72mwM+4Oh-H5WmRoqQ_nE1w-eJ1wn-nEwS=BR9JRwzxMMQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] scripts: generate_rust_target: enable building on RISC-V
-To: Conor Dooley <conor.dooley@microchip.com>
-Cc: Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm: make folio_pte_batch available outside of
+ mm/memory.c
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
+ David Hildenbrand <david@redhat.com>, Lance Yang <ioworker0@gmail.com>,
+ Yin Fengwei <fengwei.yin@intel.com>
+References: <20240227104201.337988-1-21cnbao@gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20240227104201.337988-1-21cnbao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 27, 2024 at 11:17=E2=80=AFAM Conor Dooley
-<conor.dooley@microchip.com> wrote:
->
-> Sure, I'll take a look.
+On 27/02/2024 10:42, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
+> 
+> madvise, mprotect and some others might need folio_pte_batch to check if
+> a range of PTEs are completely mapped to a large folio with contiguous
+> physical addresses. Let's make it available in mm/internal.h.
+> 
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Cc: Lance Yang <ioworker0@gmail.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: Yin Fengwei <fengwei.yin@intel.com>
+> [david@redhat.com: improve the doc for the exported func]
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 
-Thanks!
+Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
 
-> Nah, I think that is silly. Either this goes in as-is, and there's
-> fixup done by Linus, or the thing should be converted to match arm64,
-> assuming that that is possible.
+> ---
+>  -v2:
+>  * inline folio_pte_batch according to Ryan and David;
+>  * improve the doc, thanks to David's work on this;
+>  * fix tags of David and add David's s-o-b;
+>  -v1:
+>  https://lore.kernel.org/all/20240227024050.244567-1-21cnbao@gmail.com/
+> 
+>  mm/internal.h | 90 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  mm/memory.c   | 76 -------------------------------------------
+>  2 files changed, 90 insertions(+), 76 deletions(-)
+> 
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 13b59d384845..fa9e2f7db506 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -83,6 +83,96 @@ static inline void *folio_raw_mapping(struct folio *folio)
+>  	return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
+>  }
+>  
+> +/* Flags for folio_pte_batch(). */
+> +typedef int __bitwise fpb_t;
+> +
+> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+> +#define FPB_IGNORE_DIRTY		((__force fpb_t)BIT(0))
+> +
+> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+> +#define FPB_IGNORE_SOFT_DIRTY		((__force fpb_t)BIT(1))
+> +
+> +static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+> +{
+> +	if (flags & FPB_IGNORE_DIRTY)
+> +		pte = pte_mkclean(pte);
+> +	if (likely(flags & FPB_IGNORE_SOFT_DIRTY))
+> +		pte = pte_clear_soft_dirty(pte);
+> +	return pte_wrprotect(pte_mkold(pte));
+> +}
+> +
+> +/**
+> + * folio_pte_batch - detect a PTE batch for a large folio
+> + * @folio: The large folio to detect a PTE batch for.
+> + * @addr: The user virtual address the first page is mapped at.
+> + * @start_ptep: Page table pointer for the first entry.
+> + * @pte: Page table entry for the first page.
+> + * @max_nr: The maximum number of table entries to consider.
+> + * @flags: Flags to modify the PTE batch semantics.
+> + * @any_writable: Optional pointer to indicate whether any entry except the
+> + *		  first one is writable.
+> + *
+> + * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+> + * pages of the same large folio.
+> + *
+> + * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN,
+> + * the accessed bit, writable bit, dirty bit (with FPB_IGNORE_DIRTY) and
+> + * soft-dirty bit (with FPB_IGNORE_SOFT_DIRTY).
+> + *
+> + * start_ptep must map any page of the folio. max_nr must be at least one and
+> + * must be limited by the caller so scanning cannot exceed a single page table.
+> + *
+> + * Return: the number of table entries in the batch.
+> + */
+> +static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+> +		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+> +		bool *any_writable)
+> +{
+> +	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+> +	const pte_t *end_ptep = start_ptep + max_nr;
+> +	pte_t expected_pte, *ptep;
+> +	bool writable;
+> +	int nr;
+> +
+> +	if (any_writable)
+> +		*any_writable = false;
+> +
+> +	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+> +	VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
+> +	VM_WARN_ON_FOLIO(page_folio(pfn_to_page(pte_pfn(pte))) != folio, folio);
+> +
+> +	nr = pte_batch_hint(start_ptep, pte);
+> +	expected_pte = __pte_batch_clear_ignored(pte_advance_pfn(pte, nr), flags);
+> +	ptep = start_ptep + nr;
+> +
+> +	while (ptep < end_ptep) {
+> +		pte = ptep_get(ptep);
+> +		if (any_writable)
+> +			writable = !!pte_write(pte);
+> +		pte = __pte_batch_clear_ignored(pte, flags);
+> +
+> +		if (!pte_same(pte, expected_pte))
+> +			break;
+> +
+> +		/*
+> +		 * Stop immediately once we reached the end of the folio. In
+> +		 * corner cases the next PFN might fall into a different
+> +		 * folio.
+> +		 */
+> +		if (pte_pfn(pte) >= folio_end_pfn)
+> +			break;
+> +
+> +		if (any_writable)
+> +			*any_writable |= writable;
+> +
+> +		nr = pte_batch_hint(ptep, pte);
+> +		expected_pte = pte_advance_pfn(expected_pte, nr);
+> +		ptep += nr;
+> +	}
+> +
+> +	return min(ptep - start_ptep, max_nr);
+> +}
+> +
+>  void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>  						int nr_throttled);
+>  static inline void acct_reclaim_writeback(struct folio *folio)
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 1c45b6a42a1b..a7bcc39de56b 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -953,82 +953,6 @@ static __always_inline void __copy_present_ptes(struct vm_area_struct *dst_vma,
+>  	set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+>  }
+>  
+> -/* Flags for folio_pte_batch(). */
+> -typedef int __bitwise fpb_t;
+> -
+> -/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+> -#define FPB_IGNORE_DIRTY		((__force fpb_t)BIT(0))
+> -
+> -/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+> -#define FPB_IGNORE_SOFT_DIRTY		((__force fpb_t)BIT(1))
+> -
+> -static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+> -{
+> -	if (flags & FPB_IGNORE_DIRTY)
+> -		pte = pte_mkclean(pte);
+> -	if (likely(flags & FPB_IGNORE_SOFT_DIRTY))
+> -		pte = pte_clear_soft_dirty(pte);
+> -	return pte_wrprotect(pte_mkold(pte));
+> -}
+> -
+> -/*
+> - * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+> - * pages of the same folio.
+> - *
+> - * All PTEs inside a PTE batch have the same PTE bits set, excluding the PFN,
+> - * the accessed bit, writable bit, dirty bit (with FPB_IGNORE_DIRTY) and
+> - * soft-dirty bit (with FPB_IGNORE_SOFT_DIRTY).
+> - *
+> - * If "any_writable" is set, it will indicate if any other PTE besides the
+> - * first (given) PTE is writable.
+> - */
+> -static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+> -		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+> -		bool *any_writable)
+> -{
+> -	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
+> -	const pte_t *end_ptep = start_ptep + max_nr;
+> -	pte_t expected_pte, *ptep;
+> -	bool writable;
+> -	int nr;
+> -
+> -	if (any_writable)
+> -		*any_writable = false;
+> -
+> -	VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+> -
+> -	nr = pte_batch_hint(start_ptep, pte);
+> -	expected_pte = __pte_batch_clear_ignored(pte_advance_pfn(pte, nr), flags);
+> -	ptep = start_ptep + nr;
+> -
+> -	while (ptep < end_ptep) {
+> -		pte = ptep_get(ptep);
+> -		if (any_writable)
+> -			writable = !!pte_write(pte);
+> -		pte = __pte_batch_clear_ignored(pte, flags);
+> -
+> -		if (!pte_same(pte, expected_pte))
+> -			break;
+> -
+> -		/*
+> -		 * Stop immediately once we reached the end of the folio. In
+> -		 * corner cases the next PFN might fall into a different
+> -		 * folio.
+> -		 */
+> -		if (pte_pfn(pte) >= folio_end_pfn)
+> -			break;
+> -
+> -		if (any_writable)
+> -			*any_writable |= writable;
+> -
+> -		nr = pte_batch_hint(ptep, pte);
+> -		expected_pte = pte_advance_pfn(expected_pte, nr);
+> -		ptep += nr;
+> -	}
+> -
+> -	return min(ptep - start_ptep, max_nr);
+> -}
+> -
+>  /*
+>   * Copy one present PTE, trying to batch-process subsequent PTEs that map
+>   * consecutive pages of the same folio by copying them as well.
 
-Ah, so you are going for 6.9 too? I can give the series a try on my
-side in that case. When do you plan to apply them?
-
-Cheers,
-Miguel
 
