@@ -1,145 +1,123 @@
-Return-Path: <linux-kernel+bounces-83088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D0BA868E45
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB38D868E43
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:01:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D3F41F22E01
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:02:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BB641F23F84
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FA11386D4;
-	Tue, 27 Feb 2024 11:01:56 +0000 (UTC)
-Received: from azure-sdnproxy.icoremail.net (azure-sdnproxy.icoremail.net [207.46.229.174])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CE121386AE;
-	Tue, 27 Feb 2024 11:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.46.229.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F33139567;
+	Tue, 27 Feb 2024 11:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="r+VjwLIs"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 297DC2A8C1;
+	Tue, 27 Feb 2024 11:01:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709031715; cv=none; b=pohvIqVlkRT0KO1mwPqN3XIXReULA7XDNILyx1qurFc8bVdTpHTYyo2TowLnvIIzi0sRZ3Xg+/XQUXNiquWWbqxW1cvb3CGQ7fkAHvE/WRVyNEu/koImdxxBAlKANWanA+R5fS+8/+uvd6z0iBzp1Xabx55ECGI3VJ5VgQ+fCwY=
+	t=1709031696; cv=none; b=G9X9dsUfRi0YV8KMrqcAxcCufNsap/DGEVRh7EfH8rBoa1C7FUl+vPyJ608px502+xwUx2hvfMLj1htNSRauThfm2cTWHzdkXTV9V80r18AyIDkyP807ccdpq7KNLce4nBBc9s6f354m8Y/QoFNZZcZZc+fyZ2ORn+719aOYaqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709031715; c=relaxed/simple;
-	bh=MzzTNS9G71t2d0M0T7B+kJ7LHbvG1oqr4ucnMfdFsnU=;
-	h=From:To:Subject:Date:Message-Id; b=AIwpMJF0Ls/IU+pKmb6rUNug4oj9B3lpTdmktKU0niJsUxdhL3rKXair/Mi5+wMfUXeTSkXOMPFk8aBRo7zIevOgqt5387raBPjs1ugWzRm61pB9JxXm0uZxjci8CA/aHA2XCj3qJ+cdjmzmQoSBUY/tUMpjMRD1TwOlLQhaodw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=207.46.229.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from localhost.localdomain (unknown [39.174.92.167])
-	by mail-app3 (Coremail) with SMTP id cC_KCgD32TMDwd1lowWhAQ--.41758S4;
-	Tue, 27 Feb 2024 19:01:25 +0800 (CST)
-From: Lin Ma <linma@zju.edu.cn>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	idosch@nvidia.com,
-	razor@blackwall.org,
-	jiri@resnulli.us,
-	lucien.xin@gmail.com,
-	linma@zju.edu.cn,
-	edwin.peer@broadcom.com,
-	amcohen@nvidia.com,
-	pctammela@mojatatu.com,
-	liuhangbin@gmail.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net v1] rtnetlink: fix error logic of IFLA_BRIDGE_FLAGS writing back
-Date: Tue, 27 Feb 2024 19:01:13 +0800
-Message-Id: <20240227110113.573334-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cC_KCgD32TMDwd1lowWhAQ--.41758S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFW8WFWDXr1fWFy3ZFWrKrg_yoW5JFy3pF
-	WfKa47XF4DArn7ZrsrtF4DZa4avrs7GFW8ur4Ykw10yr1jqF1ruFWkKFyfuFyakFZ7AFy7
-	XF12kFW5W3ZxCFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
-	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
-	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
-	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUOv38UUUUU
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+	s=arc-20240116; t=1709031696; c=relaxed/simple;
+	bh=ZTyUOOdI9D1cGi850Kq0719pmJ7x8j7pILQUq+KdEs0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NxRhjiqQ18YR/TRu5acbQ5ar3Ygig9Eg6so+JveEnT3DeVlcuiuKlFWq3ZwXBmbm3tZXZLZKy+pR2BJwCKTEmkgH9Mm1axOFeJ6PqG5IlLcw+UVDqFoUgHZelZDySsG6dN0rCZD3qS/iR5V3gYXAghkXYeRaEc7MIxEq4auSgdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=r+VjwLIs; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=+DaaHFV+R3CLw59EEXA62uKFGD7Wf52WpiZ2P8WI0uY=; b=r+VjwLIsY/7RMcdO/5MqVjxj66
+	bqMv285lAJ0GkQpN0DxrfTNOm94RquYl6/8BdSas6kacDXR7lmNPmhiAWqgZwjxwXSsDRFtdpkgTc
+	ZuwHQE/EWwEX2o8KdRqD45D9x7oSVy5lelN9gBnvAJCZ2zYrKSodBZOLNrtqmfln4FFjrfPt2obnU
+	YtWyepUT1BT5DaG4kVoIbBnl6TaWswn5lzKjlzZAwkyr+8d7ImMpbXY0KJ+/f0N/aQFqGmMtld9xT
+	bUJ/0Li63j25PPkeLuvC6pFIhCWjUtYP/20Rx/p/MH33kd6SC/HsmodCvEzLtcIFSjeifVPzvhCLp
+	eO9qw+DQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48690)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1revD4-0007th-1A;
+	Tue, 27 Feb 2024 11:01:18 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1revD2-0007LK-9g; Tue, 27 Feb 2024 11:01:16 +0000
+Date: Tue, 27 Feb 2024 11:01:16 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	herve.codina@bootlin.com, maxime.chevallier@bootlin.com,
+	christophercordahi@nanometrics.ca
+Subject: Re: [PATCH v2 6/6] net: phy: DP83640: Add fiber mode
+ enabling/disabling from device tree
+Message-ID: <Zd3A/OzmfLRWDtjg@shell.armlinux.org.uk>
+References: <20240227093945.21525-1-bastien.curutchet@bootlin.com>
+ <20240227093945.21525-7-bastien.curutchet@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227093945.21525-7-bastien.curutchet@bootlin.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-In the commit d73ef2d69c0d ("rtnetlink: let rtnl_bridge_setlink checks
-IFLA_BRIDGE_MODE length"), an adjustment was made to the old loop logic
-in the function `rtnl_bridge_setlink` to enable the loop to also check
-the length of the IFLA_BRIDGE_MODE attribute. However, this adjustment
-removed the `break` statement and led to an error logic of the flags
-writing back at the end of this function.
+On Tue, Feb 27, 2024 at 10:39:45AM +0100, Bastien Curutchet wrote:
+> @@ -1141,6 +1147,17 @@ static int dp83640_config_init(struct phy_device *phydev)
+>  	val = phy_read(phydev, PCFCR) & ~PCF_EN;
+>  	phy_write(phydev, PCFCR, val);
+>  
+> +	if (dp83640->fiber != FIBER_MODE_DEFAULT) {
+> +		val = phy_read(phydev, PCSR) & ~FX_EN;
+> +		if (dp83640->fiber == FIBER_MODE_ENABLE)
+> +			val |= FX_EN;
+> +		phy_write(phydev, PCSR, val);
 
-if (have_flags)
-    memcpy(nla_data(attr), &flags, sizeof(flags));
-    // attr should point to IFLA_BRIDGE_FLAGS NLA !!!
+		val = 0;
+		if (dp83640->fiber == FIBER_MODE_ENABLE)
+			val = FX_EN;
 
-Before the mentioned commit, the `attr` is granted to be IFLA_BRIDGE_FLAGS.
-However, this is not necessarily true fow now as the updated loop will let
-the attr point to the last NLA, even an invalid NLA which could cause
-overflow writes.
+		phy_modify(phydev, PCSR, FX_EN, val);
 
-This patch introduces a new variable `br_flag` to save the NLA pointer
-that points to IFLA_BRIDGE_FLAGS and uses it to resolve the mentioned
-error logic.
+> +
+> +		/* Write SOFT_RESET bit to ensure configuration */
+> +		val = phy_read(phydev, PHYCR2) | SOFT_RESET;
+> +		phy_write(phydev, PHYCR2, val);
 
-Fixes: d73ef2d69c0d ("rtnetlink: let rtnl_bridge_setlink checks IFLA_BRIDGE_MODE length")
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
----
- net/core/rtnetlink.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+		phy_set_bits(phydev, PHYCR2, SOFT_RESET);
 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 9c4f427f3a50..e9f16e5e3515 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -5169,10 +5169,9 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	struct net *net = sock_net(skb->sk);
- 	struct ifinfomsg *ifm;
- 	struct net_device *dev;
--	struct nlattr *br_spec, *attr = NULL;
-+	struct nlattr *br_spec, *attr, *br_flag = NULL;
- 	int rem, err = -EOPNOTSUPP;
- 	u16 flags = 0;
--	bool have_flags = false;
- 
- 	if (nlmsg_len(nlh) < sizeof(*ifm))
- 		return -EINVAL;
-@@ -5190,11 +5189,11 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 	br_spec = nlmsg_find_attr(nlh, sizeof(struct ifinfomsg), IFLA_AF_SPEC);
- 	if (br_spec) {
- 		nla_for_each_nested(attr, br_spec, rem) {
--			if (nla_type(attr) == IFLA_BRIDGE_FLAGS && !have_flags) {
-+			if (nla_type(attr) == IFLA_BRIDGE_FLAGS && !br_flag) {
- 				if (nla_len(attr) < sizeof(flags))
- 					return -EINVAL;
- 
--				have_flags = true;
-+				br_flag = attr;
- 				flags = nla_get_u16(attr);
- 			}
- 
-@@ -5238,8 +5237,8 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
- 		}
- 	}
- 
--	if (have_flags)
--		memcpy(nla_data(attr), &flags, sizeof(flags));
-+	if (br_flag)
-+		memcpy(nla_data(br_flag), &flags, sizeof(flags));
- out:
- 	return err;
- }
+..
+> +#else
+> +static int dp83640_of_init(struct phy_device *phydev)
+> +{
+> +	dp83640->fiber = FIBER_MODE_DEFAULT;
+
+This hasn't been build tested - dp83640 won't exist here.
+
 -- 
-2.17.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
