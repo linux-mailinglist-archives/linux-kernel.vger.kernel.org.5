@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-83816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F540869EDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:18:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B84869EDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:18:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CB771F2AC14
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:18:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 710A21F2ABEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 012BB14EFD8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5E614EFE1;
 	Tue, 27 Feb 2024 18:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ecb1cKDv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NvuYTpxm"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F0D14AD23
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:17:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39225145FF9
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709057824; cv=none; b=cLweYUwMqFRMBIc51x2WVYTEcHLaWONkDr+jStnc1YX8xOdLmOiwhSa5SjCQ3LeoJ4GvGDzMPeq9E1ynMggXyhmq0kb5VSBmieMuBvvKgaIAbxrvMKoew+VCslDnuJlBdWH02jLgjrBkbRcp4tXNezc9xER0ORfZNL1wYlKfUa8=
+	t=1709057824; cv=none; b=eGFKgv7lbL3y5eVZGDtpAF5PdFb6sszMpahsQ5TL2mHz2pYa/jY1+MpSe5pYpJUVdxCLNYS7cJL0g0g3njHPjOGgimjrwKkkT0DX/oiMxziYw6NNnMx0zyYNMnqcJHJl7Ib7R6aQEvoYuptlC9svPFmCqvpClP8jWLklQ6zR3Qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709057824; c=relaxed/simple;
-	bh=SxAJq8PySGkIldIS+Dq+6BevKxjnV/qVUXBP60oIUiw=;
+	bh=ttorKfrAsCfwHjNDg0dNsgpEDrTBddN8JkJtVUzul2k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PiQYFBpIE58zkVfKnDSt6CPj8UtMzCf8erSe4bhn5uTfmnxzs61f0o4F9KaWqSX80qEwsBXHzn6HSxyMonbdtgzzX3y/NQG/keyRph3xthUxz2yeI7WLfH3taBB9yHu0paKr0j1iARuK7G2iJH9mMmNfbsSO2/Acr50YVYGvtlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ecb1cKDv; arc=none smtp.client-ip=192.198.163.8
+	 MIME-Version; b=ILQXysfmMJzNk+VyP0d2UKa7M0t+zW25cxtvSFFcAiON4cDEIaL/3ZK/Apotj/eO+Kt8vmSfJxJFCIxUP4JzSxkpQ0C4D4N+26M91kMHEzRKTxM0Me21tQcTA9eq5+utorAiwjytEN63g10kI0INq3Jy9ggu7sa638TmCUK/X4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NvuYTpxm; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709057822; x=1740593822;
+  t=1709057821; x=1740593821;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=SxAJq8PySGkIldIS+Dq+6BevKxjnV/qVUXBP60oIUiw=;
-  b=Ecb1cKDvnj7O98b7Hvr9yu/Vt8vpwVAbyH4g7/3jNVmEocMX8soHTFn5
-   4c4at/LK02mTCLIcj+3kl1Xn9lK7npmd/N4fc5JtUvd+RxeZwhQqyvEev
-   0yYBgH14VGniu6GZIBEgVVh7tpI6GhEMuSjQ3mAE0Jqb4CSTTt+Hp3dnb
-   RfvkYXxRzqJclPZXcYtOXZfrY6t89flpb2SGnS7Xxy8o/gzvPTJ0JAdwC
-   /ph72sHtUykNVmMoaY2K4O4SXz4c3kxWW3lA/jJKYxtPjWb2YeY/e8+W6
-   whwYNXp4BZsSs15llJZagkjOCwMGSPw30hHz/b0bHE8k4SZVUa1nxC+Xr
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="20966140"
+  bh=ttorKfrAsCfwHjNDg0dNsgpEDrTBddN8JkJtVUzul2k=;
+  b=NvuYTpxmDxBZlriaQQenUPBNvomz4hQD6aovLdNxLcYs0f6YB55sDUv0
+   sS/mjQRzZsTA58bOfD+wsEZm6RchzWv2WZ9x/1gCSuRAka+wvAC3Jj3pv
+   nj+Wz8jrcA9iFhS2fzlQ79JINxVdi5/6PM5iWKw38Vj8QmMSA/3gMNv8N
+   Cz6g3l/zRkMR+CfbryjOCEkYZoCcLlxTP6rXOky3NV9UNjmOq6Hqj9prz
+   XvN6RKOrRu80ntDf7hOtxSi62ITLlK8kU+iOsz3n7hcJrcYsiw45JPDaf
+   jhh68gbGAdrgXRmKQYuTiPxk67gzZ4xf1/6stRvZeLAwpNG8Lq8nN+2hy
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="20966127"
 X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="20966140"
+   d="scan'208";a="20966127"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 10:16:31 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="937032732"
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="937032733"
 X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="937032732"
+   d="scan'208";a="937032733"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 27 Feb 2024 10:16:26 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 94635692; Tue, 27 Feb 2024 20:16:19 +0200 (EET)
+	id A06DF812; Tue, 27 Feb 2024 20:16:19 +0200 (EET)
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -78,9 +78,9 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	linux-coco@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv8 07/16] x86/mm: Return correct level from lookup_address() if pte is none
-Date: Tue, 27 Feb 2024 20:16:07 +0200
-Message-ID: <20240227181616.3032032-8-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv8 08/16] x86/tdx: Account shared memory
+Date: Tue, 27 Feb 2024 20:16:08 +0200
+Message-ID: <20240227181616.3032032-9-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240227181616.3032032-1-kirill.shutemov@linux.intel.com>
 References: <20240227181616.3032032-1-kirill.shutemov@linux.intel.com>
@@ -92,75 +92,123 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-lookup_address() only returns correct page table level for the entry if
-the entry is not none.
+The kernel will convert all shared memory back to private during kexec.
+The direct mapping page tables will provide information on which memory
+is shared.
 
-Make the helper to always return correct 'level'. It allows to implement
-iterator over kernel page tables using lookup_address().
+It is extremely important to convert all shared memory. If a page is
+missed, it will cause the second kernel to crash when it accesses it.
 
-Add one more entry into enum pg_level to indicate size of VA covered by
-one PGD entry in 5-level paging mode.
+Keep track of the number of shared pages. This will allow for
+cross-checking against the shared information in the direct mapping and
+reporting if the shared bit is lost.
+
+Include a debugfs interface that allows for the check to be performed at
+any point.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 ---
- arch/x86/include/asm/pgtable_types.h | 1 +
- arch/x86/mm/pat/set_memory.c         | 8 ++++----
- 2 files changed, 5 insertions(+), 4 deletions(-)
+ arch/x86/coco/tdx/tdx.c | 69 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-index 0b748ee16b3d..3f648ffdfbe5 100644
---- a/arch/x86/include/asm/pgtable_types.h
-+++ b/arch/x86/include/asm/pgtable_types.h
-@@ -548,6 +548,7 @@ enum pg_level {
- 	PG_LEVEL_2M,
- 	PG_LEVEL_1G,
- 	PG_LEVEL_512G,
-+	PG_LEVEL_256T,
- 	PG_LEVEL_NUM
- };
+diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
+index 26fa47db5782..fd212c9bad89 100644
+--- a/arch/x86/coco/tdx/tdx.c
++++ b/arch/x86/coco/tdx/tdx.c
+@@ -5,6 +5,7 @@
+ #define pr_fmt(fmt)     "tdx: " fmt
  
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index f92da8c9a86d..3612e3167147 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -666,32 +666,32 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
- 	pud_t *pud;
- 	pmd_t *pmd;
+ #include <linux/cpufeature.h>
++#include <linux/debugfs.h>
+ #include <linux/export.h>
+ #include <linux/io.h>
+ #include <asm/coco.h>
+@@ -38,6 +39,13 @@
  
--	*level = PG_LEVEL_NONE;
-+	*level = PG_LEVEL_256T;
+ #define TDREPORT_SUBTYPE_0	0
  
- 	if (pgd_none(*pgd))
- 		return NULL;
++static atomic_long_t nr_shared;
++
++static inline bool pte_decrypted(pte_t pte)
++{
++	return cc_mkdec(pte_val(pte)) == pte_val(pte);
++}
++
+ /* Called from __tdx_hypercall() for unrecoverable failure */
+ noinstr void __noreturn __tdx_hypercall_failed(void)
+ {
+@@ -821,6 +829,11 @@ static int tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
+ 	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc))
+ 		return -EIO;
  
-+	*level = PG_LEVEL_512G;
- 	p4d = p4d_offset(pgd, address);
- 	if (p4d_none(*p4d))
- 		return NULL;
++	if (enc)
++		atomic_long_sub(numpages, &nr_shared);
++	else
++		atomic_long_add(numpages, &nr_shared);
++
+ 	return 0;
+ }
  
--	*level = PG_LEVEL_512G;
- 	if (p4d_large(*p4d) || !p4d_present(*p4d))
- 		return (pte_t *)p4d;
+@@ -896,3 +909,59 @@ void __init tdx_early_init(void)
  
-+	*level = PG_LEVEL_1G;
- 	pud = pud_offset(p4d, address);
- 	if (pud_none(*pud))
- 		return NULL;
- 
--	*level = PG_LEVEL_1G;
- 	if (pud_large(*pud) || !pud_present(*pud))
- 		return (pte_t *)pud;
- 
-+	*level = PG_LEVEL_2M;
- 	pmd = pmd_offset(pud, address);
- 	if (pmd_none(*pmd))
- 		return NULL;
- 
--	*level = PG_LEVEL_2M;
- 	if (pmd_large(*pmd) || !pmd_present(*pmd))
- 		return (pte_t *)pmd;
- 
+ 	pr_info("Guest detected\n");
+ }
++
++#ifdef CONFIG_DEBUG_FS
++static int tdx_shared_memory_show(struct seq_file *m, void *p)
++{
++	unsigned long addr, end;
++	unsigned long found = 0;
++
++	addr = PAGE_OFFSET;
++	end  = PAGE_OFFSET + get_max_mapped();
++
++	while (addr < end) {
++		unsigned long size;
++		unsigned int level;
++		pte_t *pte;
++
++		pte = lookup_address(addr, &level);
++		size = page_level_size(level);
++
++		if (pte && pte_decrypted(*pte))
++			found += size / PAGE_SIZE;
++
++		addr += size;
++
++		cond_resched();
++	}
++
++	seq_printf(m, "Number of shared pages in kernel page tables:  %16lu\n",
++		   found);
++	seq_printf(m, "Number of pages accounted as shared:           %16ld\n",
++		   atomic_long_read(&nr_shared));
++	return 0;
++}
++
++static int tdx_shared_memory_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, tdx_shared_memory_show, NULL);
++}
++
++static const struct file_operations tdx_shared_memory_fops = {
++	.open           = tdx_shared_memory_open,
++	.read           = seq_read,
++	.llseek         = seq_lseek,
++	.release        = single_release,
++};
++
++static __init int debug_tdx_shared_memory(void)
++{
++	if (!cpu_feature_enabled(X86_FEATURE_TDX_GUEST))
++		return 0;
++
++	debugfs_create_file("tdx_shared_memory", 0400, arch_debugfs_dir,
++			    NULL, &tdx_shared_memory_fops);
++	return 0;
++}
++fs_initcall(debug_tdx_shared_memory);
++#endif
 -- 
 2.43.0
 
