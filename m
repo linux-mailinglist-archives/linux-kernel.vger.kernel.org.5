@@ -1,129 +1,224 @@
-Return-Path: <linux-kernel+bounces-83329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF2D86934C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:43:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5164F86931B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:42:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31539B2DDD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:39:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 073A6287920
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F1C13B7AA;
-	Tue, 27 Feb 2024 13:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B681419AA;
+	Tue, 27 Feb 2024 13:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="h9i/VkyK"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nOlo8Z/R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2693478B61
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:39:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1D513AA4C;
+	Tue, 27 Feb 2024 13:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709041186; cv=none; b=ISukO8unwL+RpXMHPaA/j3OAxgpaIn0KGMuPJvyx7OMe1qi4vZ68oLnmn+2ceUiGwNiLwZRIx6AY2NrULVoA8RcFo5uKyrJnpD0Tj0Fl2NVQRNUF3sLd3uRO2uDkSM+2p5d/EQdeS1PzitO49jtmGPqLH7SMxwoZ8XtoiKr0r9c=
+	t=1709041300; cv=none; b=omMQyGXnVUD+KsfWpE5O20ZYKGyzQ6bt1usE3Hcww/owHpdF3EmIh9KtfEYfWCszSMfmd0fQ314L+IU3LIv4OU5OTGrridjoUuuDPhA5zqvR/bDGryrR+vLGnvq6v57vlULQJjOMg8QrUAPuZ73z1jiaN0MVIi+wtZorlTwMxHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709041186; c=relaxed/simple;
-	bh=8iPufcibBCJKG0q1/qGL+A/Ni1lovHs1ZR0Ajl86BBo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I7LLe05tdZmfIBkAjCn/p3wvJIZJIaX3eqnb39Ej6wu43nEKqPXAVAxUSNnWZCPAHNGzwHmzaAAgdV/Z3nfekgdKVJl3As1+FiiWVIXg7KMG1LAZcLEWEX/+m3nAzgCdzU/giKhT45V4ytOD4Jsnx3rhNlbc9a3Yzx6J506pW4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=h9i/VkyK; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-db3a09e96daso3259484276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:39:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709041184; x=1709645984; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eOWeidPv0GTdG2qvAOJJXPCS/uUkxL4qtXAn43lMC7g=;
-        b=h9i/VkyKODKVyT3q1RsX+zHm90unQ65F+/+Im5lYXh/aDcZfhQuk0r2hRPr6k7Tf6t
-         1dp5Pr8RXo4pVoJ0tl1YDaSwU/TEzbfFB/sO6ALUmpK9teqgmNAqFwlHK5br6+pM3NIz
-         840l3XuJ4CIVFPTqP+RznQ+wEHHsgtAljlFVc5lM2iLLOf8ZD0PnJAKccUO9TB4xZvA0
-         JJUYeyX29n/vq7eL9XT0gsnZgbns87eVkS/3821R1p92dBBxQNLAumteWyazSXsz7VIU
-         MXrDDlOKY+Jqei3pDgJWD4Lv0V8deRAlX/aDxcQPKFYfgm3CmwbS5m2Xpzq0xLo4r3+0
-         mZqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709041184; x=1709645984;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eOWeidPv0GTdG2qvAOJJXPCS/uUkxL4qtXAn43lMC7g=;
-        b=SziZNXw1usMeot6xjdTIey53w0Errhjm4g4kaL2kGljZt+F0P+KGagIOb11MAHHlFJ
-         I83Y8k7LpZoRQ+QTG2ADrQTNw8j7WNNQmRBY21Z95wMEDWWhFBwOy1MhVNMPa0otLwR2
-         2AZjYdPVdzB7GoUhcFKQFYQt93ZqJjDESRRSwz9TUeB18dpxcaF7nbY7NAt1X4C4cnM8
-         rm+p7P1iuETZ+t7R1TIlMdHZOdYjDU30bo0hFfkU0ZYkRBoAwKhG9S6sBadzmvrF9gki
-         1xY82gce6cfzR7w25uUGUYZT+P+mC4syaSydBNby5ZNyKkELAu6hvlPEq/yaorfgv21v
-         GuiA==
-X-Forwarded-Encrypted: i=1; AJvYcCUemQ7FoizGG5b5p6k0dZ8QtofmlDoCFY4WJ8n+SUoRqOnRW1MrOaezF3hg4HvSXFvT/XyS0NdLONvkN9QyV7zykeA5xsstD7hggSFj
-X-Gm-Message-State: AOJu0YyAA5lL702nfmAySZgfi4nXxc4G35gCoqUISbHYw2tzxCf//0o9
-	5yC9ua6I4yXEemUmlluCg4u5HjtoUO8MqrOpD3xUYoPRQYjUfMgVckFoV0KlPSdZXA+n7I+VOle
-	oTZTMGuIVRWO918IKamOaWFaHjw7inEK/oo4l
-X-Google-Smtp-Source: AGHT+IFK/VVwUhiGT2OlyOZOTeeMQ2mEbLEw6tyIu3zG0QccGmUrTQRKql4uWibkgraBEtRrXBYGwjqLNKKTY1ZiYWM=
-X-Received: by 2002:a25:d8d3:0:b0:dbf:23cd:c05c with SMTP id
- p202-20020a25d8d3000000b00dbf23cdc05cmr2126143ybg.13.1709041183917; Tue, 27
- Feb 2024 05:39:43 -0800 (PST)
+	s=arc-20240116; t=1709041300; c=relaxed/simple;
+	bh=ZeSUM3z3GiUVvHCrkzq+QtV/032258+nd5zG5NeETjk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cKfg1zKx/kr5nnDEpJALpC6x8ywy1VCYfBXZMhjfjO1kdO4PCv8lzliHWeRAAVUF/RcJOfnNI6fBRhvIP4/JEreYQ5zvVVooMQ0zzm0tU32ix+LI7zvAWppOC7kasKIAQqexrisX6eK6JpjCQlI9PMnvm9UmN+Idma5abSQu4mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nOlo8Z/R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E5CC43394;
+	Tue, 27 Feb 2024 13:41:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709041299;
+	bh=ZeSUM3z3GiUVvHCrkzq+QtV/032258+nd5zG5NeETjk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=nOlo8Z/R8XdRFHQ9eNWITjtSX+KKIe8oYY4tEdnmje2PGhHvGIXTVCWTmv991gE5y
+	 OcGTD38890/yrE0qoUSqyMzZTr4HbzO+3GuYEYUzbxbi1lYHmef95LQWKFxLfSjKmk
+	 0G+ebJc6Tp4fTxZOED7YKpvDdlVEn/GfaUPWl5QzGb1XTe/HVhLMA8ZbQLnR+0wkuz
+	 K3HPfMGsgzDerzFlS5+c0kOKgGh6TM3hrx1Nytcm9dkDfrieFEsGJLXcZB80JYTvMZ
+	 sye/K3BpPRsmGlEuaTXqyVMWEex4BWh8JBAI890MxtETG4ELs2vPPR5Bx1mMxhVgY0
+	 PRa7sBaAFoXqg==
+From: Christian Brauner <brauner@kernel.org>
+To: John Groves <John@groves.net>
+Cc: Christian Brauner <brauner@kernel.org>,
+	John Groves <jgroves@micron.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	Matthew Wilcox <willy@infradead.org>,
+	linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	nvdimm@lists.linux.dev,
+	john@jagalactic.com,
+	Dave Chinner <david@fromorbit.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	dave.hansen@linux.intel.com,
+	gregory.price@memverge.com
+Subject: Re: [RFC PATCH 10/20] famfs: famfs_open_device() & dax_holder_operations
+Date: Tue, 27 Feb 2024 14:39:20 +0100
+Message-ID: <20240227-aufhalten-funkspruch-91b2807d93a7@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To:  <74359fdc83688fb1aac1cb2c336fbd725590a131.1708709155.git.john@groves.net>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208152808.3712149-1-howardyen@google.com>
- <20240213055426.GA22451@lst.de> <CAJDAHvZGnzKPLaovRcq_Os1Fcixp2o1kY9GFV8VXztrmKahejQ@mail.gmail.com>
- <20240220055241.GA7554@lst.de> <CAJDAHvbOnAvW5f6oJUnuy2_5-vS7uJc13GQSNX_Nc25GJXSp-Q@mail.gmail.com>
- <20240223063723.GB11004@lst.de>
-In-Reply-To: <20240223063723.GB11004@lst.de>
-From: Howard Yen <howardyen@google.com>
-Date: Tue, 27 Feb 2024 21:39:07 +0800
-Message-ID: <CAJDAHvZ4-mh8uMyq0NiPgWKGt=pS3teoJ0=ofCKZmLeqLXUVgA@mail.gmail.com>
-Subject: Re: [PATCH v3] dma-coherent: add support for multi coherent rmems per dev
-To: Christoph Hellwig <hch@lst.de>
-Cc: m.szyprowski@samsung.com, robin.murphy@arm.com, gregkh@linuxfoundation.org, 
-	andriy.shevchenko@linux.intel.com, rafael@kernel.org, broonie@kernel.org, 
-	james@equiv.tech, james.clark@arm.com, masahiroy@kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4531; i=brauner@kernel.org; h=from:subject:message-id; bh=ZeSUM3z3GiUVvHCrkzq+QtV/032258+nd5zG5NeETjk=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTefVbbFrY/zvbXyYiz8ct0Fa9WT52cm84y/dcD5ZRch 9eFkWvcO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYi387I8PxSN4tJ7K7M99va o9umi8pFib9szmKPXn6vUfny9F6vVQy/mN/Ln0vb/4WHkXHVhpufFP4L3LU02X//SQxPzGbBsIf PWQE=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 23, 2024 at 2:37=E2=80=AFPM Christoph Hellwig <hch@lst.de> wrot=
-e:
->
-> On Wed, Feb 21, 2024 at 05:27:58PM +0800, Howard Yen wrote:
-> > The reason why I tried to propose this patch is that in the system I'm
-> > working on, where the driver utilizes the coherent reserved memory in
-> > the subsystem for DMA, which has limited memory space as its primary
-> > usage. During the execution of the driver, there is a possibility of
-> > encountering memory depletion scenarios with the primary one.
-> >
-> > To address this issue, I tried to create a patch that enables the
-> > coherent reserved memory driver to support multiple coherent reserved
-> > memory regions per device. This modification aims to provide the
-> > driver with the ability to search for memory from a secondary region
-> > if the primary memory is exhausted, and so on.
->
-> This all seems pretty vague.  Can you point to your driver submission
-> and explain why it can't just use a larger region instead of multiple
-> smaller ones?
->
+On Fri, Feb 23, 2024 at 11:41:54AM -0600, John Groves wrote:
+> Famfs works on both /dev/pmem and /dev/dax devices. This commit introduces
+> the function that opens a block (pmem) device and the struct
+> dax_holder_operations that are needed for that ABI.
+> 
+> In this commit, support for opening character /dev/dax is stubbed. A
+> later commit introduces this capability.
+> 
+> Signed-off-by: John Groves <john@groves.net>
+> ---
+>  fs/famfs/famfs_inode.c | 83 ++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 83 insertions(+)
+> 
+> diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
+> index 3329aff000d1..82c861998093 100644
+> --- a/fs/famfs/famfs_inode.c
+> +++ b/fs/famfs/famfs_inode.c
+> @@ -68,5 +68,88 @@ static const struct super_operations famfs_ops = {
+>  	.show_options	= famfs_show_options,
+>  };
+>  
+> +/***************************************************************************************
+> + * dax_holder_operations for block dax
+> + */
+> +
+> +static int
+> +famfs_blk_dax_notify_failure(
+> +	struct dax_device	*dax_devp,
+> +	u64			offset,
+> +	u64			len,
+> +	int			mf_flags)
+> +{
+> +
+> +	pr_err("%s: dax_devp %llx offset %llx len %lld mf_flags %x\n",
+> +	       __func__, (u64)dax_devp, (u64)offset, (u64)len, mf_flags);
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +const struct dax_holder_operations famfs_blk_dax_holder_ops = {
+> +	.notify_failure		= famfs_blk_dax_notify_failure,
+> +};
+> +
+> +static int
+> +famfs_open_char_device(
+> +	struct super_block *sb,
+> +	struct fs_context  *fc)
+> +{
+> +	pr_err("%s: Root device is %s, but your kernel does not support famfs on /dev/dax\n",
+> +	       __func__, fc->source);
+> +	return -ENODEV;
+> +}
+> +
+> +/**
+> + * famfs_open_device()
+> + *
+> + * Open the memory device. If it looks like /dev/dax, call famfs_open_char_device().
+> + * Otherwise try to open it as a block/pmem device.
+> + */
+> +static int
+> +famfs_open_device(
 
-The reason why it needs multiple regions is that in my system there is
-an always-on subsystem which includes a small size memory, and several
-functions need to run and occupy the memory from the small memory if
-they need to run on the always-on subsystem. These functions must
-allocate the memory from the small memory region, so that they can get
-benefit from the always-on subsystem. So the small memory is split for
-multiple functions which are satisfied with their generic use cases.
-But in specific use cases, they required more memory than their
-pre-allocated memory region, so I tried to propose this patch to give
-it the ability to get the memory from another larger memory to solve
-the issue.
+I'm confused why that function is added here but it's completely unclear
+in what wider context it's called. This is really hard to follow.
 
-I'll upload the next version to show the modification in the driver.
+> +	struct super_block *sb,
+> +	struct fs_context  *fc)
+> +{
+> +	struct famfs_fs_info *fsi = sb->s_fs_info;
+> +	struct dax_device    *dax_devp;
+> +	u64 start_off = 0;
+> +	struct bdev_handle   *handlep;
+> +
+> +	if (fsi->dax_devp) {
+> +		pr_err("%s: already mounted\n", __func__);
+> +		return -EALREADY;
+> +	}
+> +
+> +	if (strstr(fc->source, "/dev/dax")) /* There is probably a better way to check this */
+> +		return famfs_open_char_device(sb, fc);
+> +
+> +	if (!strstr(fc->source, "/dev/pmem")) { /* There is probably a better way to check this */
 
----
-Best Regards,
+Yeah, this is not just a bit ugly but also likely wrong because:
 
-Howard
+sudo mount --bind /dev/pmem /opt/muhaha
+
+fsconfig(fd_fs, FSCONFIG_SET_STRING, "source", "/opt/muhaha", [...])
+
+or a simple mknod to create that device somewhere else. You likely want:
+
+lookup_bdev(fc->source, &dev);
+
+if (!DEVICE_NUMBER_SOMETHING_SOMETHING_SANE(dev))
+	return invalfc(fc, "SOMETHING SOMETHING...
+
+bdev_open_by_dev(dev, ....)
+
+(This reminds me that I should get back to making it possible to specify
+"source" as a file descriptor instead of a mere string with the new
+mount api...)
+
+> +		pr_err("%s: primary backing dev (%s) is not pmem\n",
+> +		       __func__, fc->source);
+> +		return -EINVAL;
+> +	}
+> +
+> +	handlep = bdev_open_by_path(fc->source, FAMFS_BLKDEV_MODE, fsi, &fs_holder_ops);
+
+Hm, I suspected that FAMFS_BLKDEV_MODE would be wrong based on:
+https://lore.kernel.org/r/13556dbbd8d0f51bc31e3bdec796283fe85c6baf.1708709155.git.john@groves.net
+
+It's defined as FMODE_READ | FMODE_WRITE which is wrong. But these
+helpers want BLOCK_OPEN_READ | BLOCK_OPEN_WRITE.
+
+> +	if (IS_ERR(handlep->bdev)) {
+
+@bdev_handle will be gone as of v6.9 so you might want to wait until
+then to resend.
+
+> +		pr_err("%s: failed blkdev_get_by_path(%s)\n", __func__, fc->source);
+> +		return PTR_ERR(handlep->bdev);
+> +	}
+> +
+> +	dax_devp = fs_dax_get_by_bdev(handlep->bdev, &start_off,
+> +				      fsi  /* holder */,
+> +				      &famfs_blk_dax_holder_ops);
+> +	if (IS_ERR(dax_devp)) {
+> +		pr_err("%s: unable to get daxdev from handlep->bdev\n", __func__);
+> +		bdev_release(handlep);
+> +		return -ENODEV;
+> +	}
+> +	fsi->bdev_handle = handlep;
+> +	fsi->dax_devp    = dax_devp;
+> +
+> +	pr_notice("%s: root device is block dax (%s)\n", __func__, fc->source);
+> +	return 0;
+> +}
+> +
+> +
+>  
+>  MODULE_LICENSE("GPL");
+> -- 
+> 2.43.0
+> 
 
