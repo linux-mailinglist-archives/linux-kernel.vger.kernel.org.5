@@ -1,161 +1,122 @@
-Return-Path: <linux-kernel+bounces-83713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64CEB869D94
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:28:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C0A6869D92
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05FFA1F21CDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:28:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 378C8285E41
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A90614A08F;
-	Tue, 27 Feb 2024 17:23:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D3C149DE6;
+	Tue, 27 Feb 2024 17:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XJOxg1si"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SUvVlJzc";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UlmowWHr"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DD81487EB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902FA14830F;
 	Tue, 27 Feb 2024 17:23:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054637; cv=none; b=N2m/UOBKMGiswoYqPAmSMNRC60vZX4uTax9um6eGUpLt5O7ndtEtiy9BRW1kaFwJQ0sv/VjrjjxxeeaXz1CmD93k7Fq1NiDxRrV4/578qgZpHWk6RkW/6PRCRMoKv3BHmUdG+NsXRv/XnGDkm/L1h4McSsbiXG8+o0wCygIUF/s=
+	t=1709054635; cv=none; b=qQsAvIfCIpHFfpQ9Z4D5/Ron2BKDEqxMun+mEjvuwEtDcWtvJjhrfCu4z0aIQo6adl9uW9qNUg2yrYLz0cS7yw1bf53F8wSLxU5g1idUm8SYBDZHwaYkDfdlVbcjeOGR+VvO+Mr+pC9joC3AHjIe/xN19tYi1x0GkzmqwBhmCSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054637; c=relaxed/simple;
-	bh=JKaLeWJMv2PiLodxVF66I8/DgXnvXTCAEkmR/iAlsMA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=I+kR6AS/Wkud+VRHLtaP7eoxvRSPvz6riBQ/AlZxZZig6k9PAulG9tbGrxS0YN6zMOonOl/B6V/p2xrHG1t3TH70yRKRLGeNA/FZC+Al5Xs0bDgtmO3Rj/fC6HtdFWikwO4vRQo8/ITT3BW950GRHd7JRfKtBywpHafL9Tjcrbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XJOxg1si; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B123D60003;
-	Tue, 27 Feb 2024 17:23:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709054631;
+	s=arc-20240116; t=1709054635; c=relaxed/simple;
+	bh=xlZyVCMWEBnGE08Ta5ctgjEj5TmCCEbtRLDLkzlk01o=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=V4TRKJltlN+0hdyzyAEdQfwZduo8E9O6JUEbI0UwuIvHcooYX5KdWPhNd5+fRSjS44leH6MRExSTqaGG7r3aHJsZFl73PLggZ2v8h9CzAAEOEGx/y353rwsiSVC0iYgphGKwBqFrsSOlBzmtEX43bEfDuwXa4Faow3PRMmWbFwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SUvVlJzc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UlmowWHr; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709054632;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sl3yY0W8c5HJd45w2Vd535hfLRJOaX7Ck1Cj7Bauwxc=;
-	b=XJOxg1siDRaJgIfy64860PCWq4wFV5cuCinGiDdOwRKiX6ANk4dFMOr6WfOJNhFT5AGfE9
-	VMTvHBOM6oJR+7rYkkhDC6WHj3ZtnfRiN6kJqubVDYic5KDv2689jr8KNswAaPYxbxcRdd
-	asKmhwLumJQj2RdBlxr5Qpo9RcIec+VDhW4WKUbLm0Y81D3FYRO9+jtyH6ugJI1hoo71Ag
-	5zK2I1mZ7fcsPo2eka09VbAOmflI8GtvuX9hR+5MhmbaNS5NnDd2g+LkJq58p33//0SSrW
-	3INvr9x8HcV6KbqqEMfe/JkiZo7d4Jd7FpFiCxvjC09wD5ezQiDNaQzySvVrPw==
-Date: Tue, 27 Feb 2024 18:23:46 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Adam Ford <aford173@gmail.com>
-Cc: Marco Felsch <m.felsch@pengutronix.de>,
- linux-arm-kernel@lists.infradead.org, linux-phy@lists.infradead.org, Marek
- Vasut <marex@denx.de>, Kishon Vijay Abraham I <kishon@kernel.org>, Conor
- Dooley <conor+dt@kernel.org>, Fabio Estevam <festevam@gmail.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>, Will Deacon
- <will@kernel.org>, Rob Herring <robh@kernel.org>, imx@lists.linux.dev,
- Sascha Hauer <s.hauer@pengutronix.de>, aford@beaconembedded.com,
- linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Catalin Marinas
- <catalin.marinas@arm.com>, Shawn Guo <shawnguo@kernel.org>,
- devicetree@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>
-Subject: Re: [PATCH V6 5/6] arm64: dts: imx8mp: add HDMI display pipeline
-Message-ID: <20240227182346.6e67cc88@booty>
-In-Reply-To: <CAHCN7xKnEvrfYMZau95e7aknTkdqrQLfgWZTfb6mS3Yt5BT6+Q@mail.gmail.com>
-References: <20240226234532.80114-1-aford173@gmail.com>
-	<20240226234532.80114-6-aford173@gmail.com>
-	<20240227083301.4saxxuv4n6aoqnl6@pengutronix.de>
-	<CAHCN7xKnEvrfYMZau95e7aknTkdqrQLfgWZTfb6mS3Yt5BT6+Q@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	bh=rTtdD3Xrcr26050qG/wJhYNywK18VvSVk9OIhhpRR5U=;
+	b=SUvVlJzcuaVjWbGSnWliEzygA3VxbmZ0H4NCvZ/rAZLBfErplr0sn7Jr3snH8lkQ0xqa8w
+	6IbOmh8InLS8dLpo0QjO2O0PIKuuzX4C3qUE3EU31jwHLQwD5pFB4DBNJmCxtT3fEOf9Cp
+	DJaSWMW8HlAP8ytXJioapKPuHQkoa1A8Gui/VIkge0XKV1SQNFg/pMh7UfpDbvoOlokI56
+	wz5+oPh6eqvggEt1SchfB5TiKC2l7JTErf7k6b0rA9cYHRbD9wLC7KEeQ1Oj9+rBirKf/I
+	cVJZ+44B6wFMYPyzb92qPHTxJlQIkZdHYYqbC5qWmSJAdGRBzw2ggVbAb3kHbg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709054632;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rTtdD3Xrcr26050qG/wJhYNywK18VvSVk9OIhhpRR5U=;
+	b=UlmowWHraF9oHUzTRAnyGgarSO+vqPI8Xl6VoKziX0/l+ZfNBqgcsQDmPcA8PEISLLhYJZ
+	G8kvs+J8SdcNzxCA==
+To: mikhail.v.gavrilov@gmail.com, Mathias Nyman
+ <mathias.nyman@linux.intel.com>, Linux regressions mailing list
+ <regressions@lists.linux.dev>
+Cc: "Christian A. Ehrhardt" <lk@c--e.de>, niklas.neronin@linux.intel.com,
+ Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, Greg KH
+ <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, x86@kernel.org,
+ netdev@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: This is the fourth time I've tried to find what led to the
+ regression of outgoing network speed and each time I find the merge commit
+ 8c94ccc7cd691472461448f98e2372c75849406c
+In-Reply-To: <098670097a6fd59f3e254c5294882f3fa12e3c65.camel@gmail.com>
+References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
+ <e7b96819-edf7-1f9f-7b01-e2e805c99b33@linux.intel.com>
+ <CABXGCsPjW_Gr4fGBzYSkr_4tsn0fvuT72G-YJYXcb1a4kX=CQw@mail.gmail.com>
+ <2d87509a-1515-520c-4b9e-bba4cd4fa2c6@linux.intel.com>
+ <CABXGCsPdXqRG6v97KDGy+o59xc3ayaq3rLj267veC7YcKVp8ww@mail.gmail.com>
+ <1126ed0a-bfc1-a752-1b5e-f1339d7a8aa5@linux.intel.com>
+ <CABXGCsN5_O3iKDOyYxtsGTGDA6fw4962CjzXLSnOK3rscELq+Q@mail.gmail.com>
+ <a026ecd8-6fba-017d-d673-0d0759a37ed8@linux.intel.com>
+ <CABXGCsOgy8H4GGcNU1jRE+SzRqwnPeNuy_3xBukjwB-bPxeZrQ@mail.gmail.com>
+ <CABXGCsOd=E428ixUOw+msRpnaubgx5-cVU7TDXwRUCdrM5Oicw@mail.gmail.com>
+ <34d7ab1b-ab12-489d-a480-5e6ccc41bfc3@infradead.org>
+ <10487018-49b8-4b27-98a1-07cee732290d@infradead.org>
+ <4f34b6a8-4415-6ea4-8090-262847d606c6@linux.intel.com>
+ <3ea25443-1275-4c67-90e0-b637212d32b5@leemhuis.info>
+ <1e719367-01ae-565a-2199-0ff7e260422b@linux.intel.com>
+ <410817b8-1cf9-4285-b20b-f1fa0513cee8@leemhuis.info>
+ <acc2b877-4b42-fd4d-867b-603dae95d09d@linux.intel.com>
+ <87r0gz9jxp.ffs@tglx>
+ <098670097a6fd59f3e254c5294882f3fa12e3c65.camel@gmail.com>
+Date: Tue, 27 Feb 2024 18:23:51 +0100
+Message-ID: <87y1b595y0.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: luca.ceresoli@bootlin.com
+Content-Type: text/plain
 
-On Tue, 27 Feb 2024 07:51:58 -0600
-Adam Ford <aford173@gmail.com> wrote:
+On Tue, Feb 27 2024 at 22:08, mikhail.v.gavrilov@gmail.com wrote:
+> On Mon, 2024-02-26 at 19:09 +0100, Thomas Gleixner wrote:
+>> we don't have any information about the overall workload,
+>
+> During measurements nothing was running except iperf3
 
-> On Tue, Feb 27, 2024 at 2:33=E2=80=AFAM Marco Felsch <m.felsch@pengutroni=
-x.de> wrote:
-> >
-> > Hi Adam,
-> >
-> > thanks a lot for pushing this topic.
-> >
-> > On 24-02-26, Adam Ford wrote: =20
-> > > From: Lucas Stach <l.stach@pengutronix.de>
-> > >
-> > > This adds the DT nodes for all the peripherals that make up the
-> > > HDMI display pipeline.
-> > >
-> > > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
-> > > Tested-by: Marek Vasut <marex@denx.de>
-> > > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
-> > > ---
-> > > V6:  Make LCDIF3 disabled by default
-> > >
-> > > V5:  No change
-> > >
-> > > V3:  Re-ordered the HDMI parts to properly come after irqstree_hdmi
-> > >      inside AIPS4.  Change size of LCDIF3 and PVI to match TRM sizes
-> > >      of 4KB.
-> > >
-> > > V2:  I took this from Lucas' original submission with the following:
-> > >      Removed extra clock from HDMI-TX since it is now part of the
-> > >      power domain
-> > >      Added interrupt-parent to PVI
-> > >      Changed the name of the HDMI tranmitter to fsl,imx8mp-hdmi-tx
-> > >      Added ports to HDMI-tx
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 95 +++++++++++++++++++++=
-++
-> > >  1 file changed, 95 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/b=
-oot/dts/freescale/imx8mp.dtsi
-> > > index 18bfa7d9aa7f..637b0265b0f1 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > > @@ -1940,6 +1940,101 @@ irqsteer_hdmi: interrupt-controller@32fc2000 {
-> > >                               clock-names =3D "ipg";
-> > >                               power-domains =3D <&hdmi_blk_ctrl IMX8M=
-P_HDMIBLK_PD_IRQSTEER>;
-> > >                       };
-> > > +
-> > > +                     hdmi_pvi: display-bridge@32fc4000 {
-> > > +                             compatible =3D "fsl,imx8mp-hdmi-pvi";
-> > > +                             reg =3D <0x32fc4000 0x1000>;
-> > > +                             interrupt-parent =3D <&irqsteer_hdmi>;
-> > > +                             interrupts =3D <12>;
-> > > +                             power-domains =3D <&hdmi_blk_ctrl IMX8M=
-P_HDMIBLK_PD_PVI>; =20
-> >
-> > this node should be 'status =3D "disabled";' as reported by Luca else t=
-his
-> > node will EPROBE_DEFER. With that beeing fixed you can add my: =20
->=20
-> sorry I missed that one...and I though I was done...sigh.  I hope it's
-> not too late to get this into the next release.
-> >
-> > Tested-by: Marco Felsch <m.felsch@pengutronix.de>
-> > =20
->=20
-> I'll push a V7 tonight and add your tested-by.  Thanks for testing.
+Ok.
 
-And with that fixed you can add to v7:
+> I don't know how else to help you. What information to provide.
 
- Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+If we want to understand why CPU0 is problematic, then you need to use
+tracing to capture what's going on on CPU0 vs. other CPUs.
 
-Luca
+> About repeatability my "unlucky" scenario.
+> I have two MSI MPG B650I EDGE WIFI motherboards and this problem
+> happened both at the same time.
 
---=20
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Sure. The probe order and the number of interrupts are probably exactly
+the same. As the spreading algorithm is very basic, it will result in
+exactly the same setup for both.
+
+> It seems the problem has always been there, we just never noticed it.
+
+Exactly.
+
+Thanks,
+
+        tglx
 
