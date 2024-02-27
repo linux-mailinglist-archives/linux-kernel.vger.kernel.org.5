@@ -1,202 +1,161 @@
-Return-Path: <linux-kernel+bounces-83707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 404CC869D98
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:29:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5607C869D83
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1AC6B2EDDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:26:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C25CAB2C0ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:24:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C3414F97A;
-	Tue, 27 Feb 2024 17:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97A514AD02;
+	Tue, 27 Feb 2024 17:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="a6mjFSxp"
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2055.outbound.protection.outlook.com [40.107.6.55])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mGCv5zMw";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ahxP/0/V"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E07814EFEC;
-	Tue, 27 Feb 2024 17:22:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054546; cv=fail; b=Y+an3t0P1SdbouRtX5b72DoZ+6UW5KCmjcx6+m7XAtnkan4BBFxnp8R6x8ZCqTqlAFOe37QtY7kasdbkYz5NYou3zA2gWJiJim5dXOFmGgLHq7BxEG7HOspzb3hTsBc924FH11jJCvSQrenZ/zdUTJxF5OI/wooCF8DKUr32g6E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054546; c=relaxed/simple;
-	bh=1SY1nKChJ4s31bmrpysVWazodvllDv9ahLCc/bCrYcQ=;
-	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
-	 To:Cc:MIME-Version; b=mn8mmxIrXeBoM6zb8d5b+VO2F/3AdBbQ4UfV7yCsB9fIe1KkwTZcg6azFOr/e+Dk+t1/kKSI3JgzYVe7RBe4btgX2fbUxCShK9DxyURkxL4ULrNYlDWTbnWJPwQMwFtCrIszKlEeZzODR3IYXAU0lzkPsh6Q2CqvdZBp2mCNxro=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=a6mjFSxp; arc=fail smtp.client-ip=40.107.6.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XoLSCS9K9KZO/Nh3FfGUibTfKLXAvOjfZyePh/dQwpS9dvhJhLhNNV+GghZU1vQ9CHmaF268kQKTv7arPRm4pz26qAKVmI/Yu2f/wy4VkqiPbGJ8H4V6g25un1oUNyl3p7FP9FA47QmLu6TrDXm4ATODU50OxmKOS9POGpCNIfnuyd4bBzsPPUEFhlObSv9xqsEbp9AdE2hOkxXukxJTuPJazAxjcvalPeb0ayvLvGkYEG2B7xj2L2fHVYUplcIT6KuYRg49nUsmM2vFvSlyurAIlKj3eneF03pJ9ZlnlhSoc6qqXIqjm5YAfbTtU8VIuO+ulaRNNuXefRs90xbTcg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O3UHH8qhH5HTx8E0tLZorZnJnKCrjOdx/qvKkcds5Vg=;
- b=f9/a7ZG2PXSfw9gsM2d3YXm8GuhB3fRyrXpITKNfu6Rye1t3WoU8N7UzT/FksWwFVygs1wrKE6TTkJBvtlcfo/XnyxkU60wiXuTJrLELffvg0lVzSCtZqQSC+Bgq4VUQel8efTaS16j5gRwNqxw6OfL1cfWsH458RxEIRd3MNWK5gxePDdusXfqHKVvsgQYfQ3FMeXqRjn74SUxK+ZjUc2Yl56sQ51V2hXl6eJwNSwgLxPZBBsyxjyS/cZiarHFiwCJyc0ZlMH6CvbqgWpgXVZH8FFXSb56490ID7hjbiD7u/VjhkZs0Q+Fc774JFTO1L5BjClLPxNSRq8d0XvNzFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O3UHH8qhH5HTx8E0tLZorZnJnKCrjOdx/qvKkcds5Vg=;
- b=a6mjFSxpn/kNrTXIwvhzuKp0tMreeOxL6ZHLpdJfymLcQCFqq9Skom6hNde2jw5JKYvJ7EKlxDKEJrSyFnbZdIB31dwYMiYECEl93Ngp0DDnZo4rVq5q5G8MRlb4u/Zg7ctNEShWXTn81KPL80tsZ9LIoszJytdRCztUykKUGYE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AS1PR04MB9408.eurprd04.prod.outlook.com (2603:10a6:20b:4d8::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Tue, 27 Feb
- 2024 17:22:20 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
- 17:22:20 +0000
-From: Frank Li <Frank.Li@nxp.com>
-Date: Tue, 27 Feb 2024 12:21:55 -0500
-Subject: [PATCH 3/5] dmaengine: fsl-edma: clean up chclk and
- FSL_EDMA_DRV_HAS_CHCLK
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240227-8ulp_edma-v1-3-7fcfe1e265c2@nxp.com>
-References: <20240227-8ulp_edma-v1-0-7fcfe1e265c2@nxp.com>
-In-Reply-To: <20240227-8ulp_edma-v1-0-7fcfe1e265c2@nxp.com>
-To: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Peng Fan <peng.fan@nxp.com>
-Cc: imx@lists.linux.dev, dmaengine@vger.kernel.org, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- Frank Li <Frank.Li@nxp.com>
-X-Mailer: b4 0.13-dev-c87ef
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709054529; l=1717;
- i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
- bh=1SY1nKChJ4s31bmrpysVWazodvllDv9ahLCc/bCrYcQ=;
- b=SUHRhItUXSezjubWHAqVf5qJ/rX0X9GklyZ6dfXPFRI2EpL9uu/bCUzk8zGIHM+CqbjaL0+NO
- WQwPdHi16j9DW4K+Fmcv35VW4exNZ8FF0g/18SvmWA/tk2GgvAuBBXO
-X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
- pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
-X-ClientProxiedBy: SJ0PR13CA0059.namprd13.prod.outlook.com
- (2603:10b6:a03:2c2::34) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DFF0149DF3;
+	Tue, 27 Feb 2024 17:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709054519; cv=none; b=MtT13nmfINl/NPOJA813q5XRdLx7mpnrwXh9PNQlS8jaIw5dHhGbVah4WMsXW+ucnvQ0ld6/QG3T8+ZanTXaWyerpe29Ycs+N9oD5kyimIJakJgTaVYHmlWhxWu8lMBhQt50eZFMTVTJkH8Y96ZfDt8VARcFs5se7UYyMa7TI10=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709054519; c=relaxed/simple;
+	bh=yBia7iFXnSkBkPGE5Bmhn6YjuNem06IVGXexDC03CnA=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=QaqkpV4ybkuHTvnSjxhFFf7bRUcP8DOA8EysCDs9C6ZEqgi3JOnHx0QmKBWXeaYtl1KxWr2N0z1MZKls819mWJ2mkWHHe83+1pZihRVco5KUoa7dknhnzzFW4yCKxaCLswDDwmsHI2SgGCWfu1pd11oZ882o1U9GviagnWwoYKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mGCv5zMw; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ahxP/0/V; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 27 Feb 2024 17:21:55 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709054516;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QgOnFrCZwQRBYgC32DiNVf4dHEsJCOH2FKLwFRaMliM=;
+	b=mGCv5zMw0zkwzYWox2buCSjkQ1QGSRVWID8gLgvwdIxTVfhmL5e7NA4Kfq4On5zC39NR4l
+	QgDKHrYXD5h6y4NxcSgQTYL5uMuyHectN6DumRC4kzx915/np5vm9Rtd2TJ65/TEUxOMoL
+	v+Si3erRwdHtbuY8xWx5tL8b2fLBZ10tk+1LcgKMIBfnQb+sipvkg9krDGYFHenQk1/6I0
+	yyQNQ2WAdkqDZyyOyhxVgM4Tbh+L0tTRdT0BeYN6PE+cwgalWHKb385qtl05alWff5nfQG
+	CZxD23upAcCAQnGJQDJZQH+uzc6oMLWOZ5XYzZnd/iJkwbHq+yntEDgckiLKPw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709054516;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QgOnFrCZwQRBYgC32DiNVf4dHEsJCOH2FKLwFRaMliM=;
+	b=ahxP/0/V/9n9gK2lqdDYeyIdTvGJjDZ7m1vO/h5e3dJAPhAY/Ku3WIAZZcAhQG9FMIuEY3
+	HQMVi6yedpfG2yBA==
+From:
+ tip-bot2 for Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/core] irqchip/imx-irqsteer: Convert to
+ platform_driver::remove_new() callback
+Cc: u.kleine-koenig@pengutronix.de, Thomas Gleixner <tglx@linutronix.de>,
+ x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: =?utf-8?q?=3Cc0e5afe62256860150d25bcf644f2b8d62794c86=2E17032?=
+ =?utf-8?q?84359=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
+References: =?utf-8?q?=3Cc0e5afe62256860150d25bcf644f2b8d62794c86=2E170328?=
+ =?utf-8?q?4359=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS1PR04MB9408:EE_
-X-MS-Office365-Filtering-Correlation-Id: deaba51c-722e-4109-19de-08dc37b8a774
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VeBPVa2j9ithHeMPnCgKcEMO7HeItGwsuj4ywfcK+ZeNVcwGD+ONMqxXv1KvwYTgBOKAunJhnWm8ARGTDkKY/nFi0QMekM1AOedDLfeb5Pn2/Xcz/cqxhEZ20Wrb/D8VC8/5sV3L1bR5S6XR5XbUCCG+Ar2z1s3ylc61wC5E6JO3GsxgjVyDNbO6JShEGijpSLWVx5XZahyHWIkhrFjSRHpN7U0SRmY5QvO8wyrViPCfq/cnwg9CT3D2TP1kDM/2nYfJV9VHfAyNm13fHuqaZMibMip1jK5h3W4adK8toeIczYv3pCGxZQVunsI+LGT9TEaTi5yMGhkIq5Qc31IcX4VOz3LBTqqTQv7ccDhn/df7zVXa8g8D61IIAJE9KKfjxhK7HxsoUSxgjk32G86aovyov0eT2hZPQPbMUtiGeoLI0x6gCOzSG1jYen847EmuXHZOkzG8YILel1sYgydMnzU1OU6kla4kGRY9xQ+Q1b+H2Pp4iZwyoExmz8ua+4mroOSodCALeagqVesvtjzf64nkURszSaG5WNsiwsxzsP0uD9+Zp3qmetc61uKb+t0KPx5CJedlp6TT+5LA0TSgZHyTGIUYbQdY7mnHiMoMFlV5UDuTWJFhMiDzcHxCh3nmOi5F604C8m61vRd0UnYSoDXTR5plMeOfHhaGFbxfETscYpxWDOriU505LVaVOkZ2aNJM4lyPfX01G0fnoPDrB2L57t8yuAKhKgGO/6zo53Y=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dWpSMExJUkpVMnFHcUZvaTRzcDJkclRrOXBiVlBFZGt1UWlGdDRMZ3VRbHEv?=
- =?utf-8?B?aWUrMGZqdFhtbitSZEtCeTk2cUhMSWt6eG15V01NaHdOYkZzTnVMVGhTWm9O?=
- =?utf-8?B?MDB6YlNrS1BzSnhFeDRHaGFZVDhJSTF3eVh4V1VmWVh0N2kyQjZMTnF2Z0tR?=
- =?utf-8?B?Y1d2bmRoajFEOVNCMlVtcE5PVzllMEhkelIwZVNXaWNvVmVqUXJkZ2NUem9B?=
- =?utf-8?B?dFZYM0tEYnpVY0p0OUVEdHp3c0JDcEY4S1plWHlYSVlDd0MvbVFKb0dGbUJX?=
- =?utf-8?B?dkttWkQ2a0JCSGM2ZHFGS3FIYnhBeDdVWWp4cmdGTE0wK1cwbERUbDFhQmdt?=
- =?utf-8?B?U09VSDA5Q3NWaU9Mb2hielVpZk51Z3RCUUJ6eldsQVBGbWJKRHVmOEwzQytF?=
- =?utf-8?B?NCs4dFYybi8wL0NIMXpDTVZIYzl6VzUxUEtrL2srOWNlcEV2clNQbnVOWXps?=
- =?utf-8?B?eXJuT1llbUVYWk1lRGEwQTYxdnkwR3JtbVpzeVlNSldpK0lJU2k1MzNWMVRG?=
- =?utf-8?B?SDVCVFJ0ZWxoa2FGcjJIdytmdXdiZ1RiWG9VWXdyd0ZiTkhveVFZdlRUNjcx?=
- =?utf-8?B?WmgvWGhLdnJsSmVVSTJoY0Z3OTFyNk0reURpUk92SFVvNXN4c3h1c0Y1cHhh?=
- =?utf-8?B?ZmhMQzlkNkxRRE9wcDl2T0hQeFpkVjdINmhyQjV2SlQrQitvYkhlM0txRWxN?=
- =?utf-8?B?eVJMK2R1MzIzRWk2WXA1TThlbkVyZDBhcStZbHp6ZEJ6RjlFNzdIeitLYnF4?=
- =?utf-8?B?Z0Vvems0bGc3NHNMT0hhVkxyREZSbHZzSWo3Ri9uUTdWYnpyQlF1ZmJGd2F2?=
- =?utf-8?B?YUpuYWphT3h6azJMRFlvbE9rdVVLR3lIZGc5MFB1RnNkbTh2L0NzQ2dJUjZL?=
- =?utf-8?B?cWpnNmxGa2JKVWFMY3hRUElYakQ4OWY0QS9ZbnYxMkVLb2pXL2VyQjZQY0xP?=
- =?utf-8?B?QnJrenBPV1VFSnlHTHA0TE9hYkdYU3dEaUNUUEMyaU9mZWhrZU5WYVlEa255?=
- =?utf-8?B?cUFscEd5L0VLZ2NFUEIvZXBaRTlzRGpMb3g0S09zYkJQRTcrUGk1RXZ5c21E?=
- =?utf-8?B?UW9EeUFjMm9oY3gzUllSSEo4NU4yVys1Z0tybU1YRmYvV2t1SEhIcHNGV2l4?=
- =?utf-8?B?UndobStoYXlzNWVIb29XZ1JTaGZoMkpFeTdWNzl3d2l6UktmeW12VDRwN0ps?=
- =?utf-8?B?VjlWcHUwbVRTQmVyU1RPcnRTeEJHckNkTHpLaG8yWXJ0aTRpNDNpYms1N2hQ?=
- =?utf-8?B?UU4wSktLV2RJaU5GYmdaOWhheFh5QUFEdkRpYWtKZVBXUXFvYlJXSHhIbDBr?=
- =?utf-8?B?TU9LMmQwQk5oemNPRGoxM25ielRnYnhyWnM3VC8vMFlZWGw0NzEzaklsY3dl?=
- =?utf-8?B?REExdnh3aCtUQlpEamVaK0dQQmpFL0dRY1ZRQ0QzbVN6NTI4MlBjWE9FR1cy?=
- =?utf-8?B?aHhaS1h5SzNJdklTTmMvQXE3elRqS0RSdldncGt3aHl1UmdoZmJPYllYaGtJ?=
- =?utf-8?B?UXB4UHBpbnkwdTM3WjgwOXYwNmdSRDNQamFnN0VzV3VwWVJwbG0xUFVQc2E4?=
- =?utf-8?B?VFhNazh4clh6blU1RzdEM0UwamtvMnpPZmFQanBOUW9aS09ITlRjazU0aEo2?=
- =?utf-8?B?VWdHUzlLSXcreG9wL20wQ0RnWW5UWXZRaDQzUUVMNGpuem92L05KTDRxd0s3?=
- =?utf-8?B?bTZJU0Z4cTNPZkpCQVNCV2htSTB6YjJoUi9LdWxLbEFSL0NHeUdrR3ExRCtm?=
- =?utf-8?B?VHBROStRdTZTRy83eHc2RGVYYlBTUlZ5TFhOZzI2VzEyb29saDJzaE9waXpq?=
- =?utf-8?B?UTNGUzZobzQ4TGc0U1d0ZjJiYXR4Q1UxN1hUUEZPdnZuMUppYWVvYzYrZUNN?=
- =?utf-8?B?SzVCZFUxdWdDMG1taU5WQVh6S3kwdVRrd1lWSzNXM2FkN1VoZGFvdzVyeHha?=
- =?utf-8?B?YzI1bFhwT2NTTUU5djJzTE85Vy9TSHkzbWZ4L2JUREgxekptY1YzU2RSK1lN?=
- =?utf-8?B?RDVaUFJOakNBckRmN25meEtRbmZ3T2h5cmQwN1NzbWVlVVhMK052Q0xRK1Q2?=
- =?utf-8?B?UGgwN24xU2JxL25SMngvNXBOdXc3bHV6S1dEeTh1b0FZVVNGZmN0UmhQcGZy?=
- =?utf-8?Q?/jRU1nCVC8k6/Ebuu10kHvxgQ?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: deaba51c-722e-4109-19de-08dc37b8a774
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 17:22:20.4362
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JmdGKF/ojjGK5bDJJTKt/A1Fu59HuEXqadQmflGBS8TaB0t7WFTZCP2W/mO8b8DGRK+n58I/ihtEuyta6VbVAg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9408
+Message-ID: <170905451528.398.16822133116774035735.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-No device currently utilizes chclk and FSL_EDMA_DRV_HAS_CHCLK features.
-Removes these unused features.
+The following commit has been merged into the irq/core branch of tip:
 
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Commit-ID:     5fcf3688e8755cb81fa48fc0fe724cde877491c3
+Gitweb:        https://git.kernel.org/tip/5fcf3688e8755cb81fa48fc0fe724cde877=
+491c3
+Author:        Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+AuthorDate:    Fri, 22 Dec 2023 23:50:34 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 27 Feb 2024 18:12:09 +01:00
+
+irqchip/imx-irqsteer: Convert to platform_driver::remove_new() callback
+
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
+
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
+
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
+
+Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/c0e5afe62256860150d25bcf644f2b8d62794c86.1703=
+284359.git.u.kleine-koenig@pengutronix.de
+
 ---
- drivers/dma/fsl-edma-common.h | 2 --
- drivers/dma/fsl-edma-main.c   | 8 --------
- 2 files changed, 10 deletions(-)
+ drivers/irqchip/irq-imx-irqsteer.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.h
-index 4cf1de9f0e512..532f647e540e7 100644
---- a/drivers/dma/fsl-edma-common.h
-+++ b/drivers/dma/fsl-edma-common.h
-@@ -192,7 +192,6 @@ struct fsl_edma_desc {
- #define FSL_EDMA_DRV_WRAP_IO		BIT(3)
- #define FSL_EDMA_DRV_EDMA64		BIT(4)
- #define FSL_EDMA_DRV_HAS_PD		BIT(5)
--#define FSL_EDMA_DRV_HAS_CHCLK		BIT(6)
- #define FSL_EDMA_DRV_HAS_CHMUX		BIT(7)
- /* imx8 QM audio edma remote local swapped */
- #define FSL_EDMA_DRV_QUIRK_SWAPPED	BIT(8)
-@@ -237,7 +236,6 @@ struct fsl_edma_engine {
- 	void __iomem		*muxbase[DMAMUX_NR];
- 	struct clk		*muxclk[DMAMUX_NR];
- 	struct clk		*dmaclk;
--	struct clk		*chclk;
- 	struct mutex		fsl_edma_mutex;
- 	const struct fsl_edma_drvdata *drvdata;
- 	u32			n_chans;
-diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
-index 2148a7f1ae843..41c71c360ff1f 100644
---- a/drivers/dma/fsl-edma-main.c
-+++ b/drivers/dma/fsl-edma-main.c
-@@ -483,14 +483,6 @@ static int fsl_edma_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	if (drvdata->flags & FSL_EDMA_DRV_HAS_CHCLK) {
--		fsl_edma->chclk = devm_clk_get_enabled(&pdev->dev, "mp");
--		if (IS_ERR(fsl_edma->chclk)) {
--			dev_err(&pdev->dev, "Missing MP block clock.\n");
--			return PTR_ERR(fsl_edma->chclk);
--		}
--	}
+diff --git a/drivers/irqchip/irq-imx-irqsteer.c b/drivers/irqchip/irq-imx-irq=
+steer.c
+index bd95433..20cf7a9 100644
+--- a/drivers/irqchip/irq-imx-irqsteer.c
++++ b/drivers/irqchip/irq-imx-irqsteer.c
+@@ -231,7 +231,7 @@ out:
+ 	return ret;
+ }
+=20
+-static int imx_irqsteer_remove(struct platform_device *pdev)
++static void imx_irqsteer_remove(struct platform_device *pdev)
+ {
+ 	struct irqsteer_data *irqsteer_data =3D platform_get_drvdata(pdev);
+ 	int i;
+@@ -243,8 +243,6 @@ static int imx_irqsteer_remove(struct platform_device *pd=
+ev)
+ 	irq_domain_remove(irqsteer_data->domain);
+=20
+ 	clk_disable_unprepare(irqsteer_data->ipg_clk);
 -
- 	ret = of_property_read_variable_u32_array(np, "dma-channel-mask", chan_mask, 1, 2);
- 
- 	if (ret > 0) {
-
--- 
-2.34.1
-
+-	return 0;
+ }
+=20
+ #ifdef CONFIG_PM
+@@ -307,11 +305,11 @@ static const struct of_device_id imx_irqsteer_dt_ids[] =
+=3D {
+=20
+ static struct platform_driver imx_irqsteer_driver =3D {
+ 	.driver =3D {
+-		.name =3D "imx-irqsteer",
+-		.of_match_table =3D imx_irqsteer_dt_ids,
+-		.pm =3D &imx_irqsteer_pm_ops,
++		.name		=3D "imx-irqsteer",
++		.of_match_table	=3D imx_irqsteer_dt_ids,
++		.pm		=3D &imx_irqsteer_pm_ops,
+ 	},
+-	.probe =3D imx_irqsteer_probe,
+-	.remove =3D imx_irqsteer_remove,
++	.probe		=3D imx_irqsteer_probe,
++	.remove_new	=3D imx_irqsteer_remove,
+ };
+ builtin_platform_driver(imx_irqsteer_driver);
 
