@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-84045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 069FB86A1A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 044BC86A1A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B9221F2D363
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:28:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 857B91F2D458
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE44814F99A;
-	Tue, 27 Feb 2024 21:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0057915AAD6;
+	Tue, 27 Feb 2024 21:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lZejuTK7"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LkAEIAH2"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8DFD15957C
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 21:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D0E315959E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 21:25:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709069119; cv=none; b=l9n2IuWFuLkiDwpFmFBHm3jgQL8Knd6+V9WN05n3WOs3ctIJ+JtQdXKmyuqECaf606jaJZ0IOImO/2dRIoOTMfh36hywicM63R2eNlApBNWJFYT6BTj7St6cM8B7/ppCOx/wYKrCq90ma3I0MWDIgndlnPSIJCVj5Mo70HL+NUg=
+	t=1709069120; cv=none; b=DwGBDKUBhAx2hi8tvZQu3FJc1tuAMrBsQo5QBld1GugOLqXet9GoE45d/JV6+w7UnJAEeKOQ44/nZJvbGJVBcPjrBFhTOgxYbUVlZpnIbw7qrHtNJrYGx+XRos+lQhaJDhSqIfq3MT8/vXlqsJd6Zm3/tVHMSCu2yNqUjBxMREg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709069119; c=relaxed/simple;
-	bh=Qtq8KGe7CLg0f1T+K6clfMVgP4YdYp22V2UayvUSbDw=;
+	s=arc-20240116; t=1709069120; c=relaxed/simple;
+	bh=dUEuhxA1AlDC3wetWnBXvKm2CT6y7iSHZ1ZynKz3iIA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OgC5GaOokClwBjGHYULu52MTBI50E1ypgawrCL0V//tzebosVOxCt5IzIdIyGspSF8/TRCZtCX/Zrqr0ukHXZ8ZcFlnjKG7qmhKQchP1SOwLPsAsf7ebaOwmauAuAY7TgzIaXq2P+0ILk7+fk6wKd5MQZmLBQiabiP/av2Qfgvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lZejuTK7; arc=none smtp.client-ip=198.175.65.16
+	 MIME-Version; b=sMDJ2weRjoSuBodoRAmepH54NeZQojh3fN3r24lgr9P9Q+Wmu0cJ8MB/uQ0oenwSSFR8A9zzMQX7bxREbqU5RP2hlk5hj7q9v7GuIIcH0zaEulEJA36ZvFceTwedius7Evzljq/URS1iU2ucoS80b+0a6W0xuL7eGDWFjeNim6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.helo=mgamail.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LkAEIAH2; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.helo=mgamail.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709069118; x=1740605118;
+  t=1709069120; x=1740605120;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Qtq8KGe7CLg0f1T+K6clfMVgP4YdYp22V2UayvUSbDw=;
-  b=lZejuTK7FpwKHfi/2dKNx5X2KtkMGoUbrrpfM7Ba3EMAzU9fAifrbrVl
-   LJEwYUnxqAhw5Mti9frH4Y/G8iUt3jao0iv9CegAUDPBKRYbcX6GqCEvD
-   ghEIrmIt/xb3bM7279QoJHpi8c3LM7h3XqeOWxWfshNZbukgbmqFO/BX9
-   bxtlGsHBWCoUfvOBJtMtIZ6LFVbKTt8I8AF77duizdVYkbxOdsji6C0Yu
-   43cmNWAxUKLl+D5UQQ3ntAmDyydtl5H3ARyG8SMBjETCWdXxMMkECIbBX
-   xfYldRlfi0bMW2Wocj6HXwLawKIIe0g3swaSWivDmASGyqtaIuxEbmjST
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3567073"
+  bh=dUEuhxA1AlDC3wetWnBXvKm2CT6y7iSHZ1ZynKz3iIA=;
+  b=LkAEIAH2t740lJlbSKfA5DWxq33xe4JeMi7DpIfc8aX7FMiYX4PcraIf
+   qxHtfdp3+dqx4QBhhYY1mxiqOdilZufuSBXvS3Cf0lkkVDy4eojSnVYpB
+   sHi0BzGkIKf32t3p9n9u/hean/FPFzqzGRW22JxdMJZckpIMEPLr8/r7i
+   h2ARjwh6iax8Fq/hctXrgll5PVFS46mmnyxBn3/lOlheJxq+XE/cwa8E+
+   RqH8GO+/DLPkp8HQfAIwGQjuGo0hVzUyzE5TUPX3ebrqrTd6LW/jAcxjD
+   Ao3VK96CqF2F3d2s3P4S7usKAk0FF1KEVdELnDLZ7CdHwCqUDghnzCj7H
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3567076"
 X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="3567073"
+   d="scan'208";a="3567076"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 13:25:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="937032920"
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="937032924"
 X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="937032920"
+   d="scan'208";a="937032924"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga001.fm.intel.com with ESMTP; 27 Feb 2024 13:25:02 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 2AD0B631; Tue, 27 Feb 2024 23:24:56 +0200 (EET)
+	id 3CC85781; Tue, 27 Feb 2024 23:24:56 +0200 (EET)
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -79,9 +79,9 @@ Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
 	Dave Hansen <dave.hansen@intel.com>
-Subject: [PATCHv8 06/17] x86/mm: Make x86_platform.guest.enc_status_change_*() return errno
-Date: Tue, 27 Feb 2024 23:24:41 +0200
-Message-ID: <20240227212452.3228893-7-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv8 07/17] x86/mm: Return correct level from lookup_address() if pte is none
+Date: Tue, 27 Feb 2024 23:24:42 +0200
+Message-ID: <20240227212452.3228893-8-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
 References: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
@@ -93,199 +93,109 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-TDX is going to have more than one reason to fail
-enc_status_change_prepare().
+Currently, lookup_address() returns two things:
+  1. A "pte_t" (which might be a p[g4um]d_t)
+  2. The 'level' of the page tables where the "pte_t" was found
+     (returned via a pointer)
 
-Change the callback to return errno instead of assuming -EIO;
-enc_status_change_finish() changed too to keep the interface symmetric.
+If no pte_t is found, 'level' is essentially garbage.
+
+Always fill out the level.  For NULL "pte_t"s, fill in the level where
+the p*d_none() entry was found mirroring the "found" behavior.
+
+Always filling out the level allows using lookup_address() to precisely
+skip over holes when walking kernel page tables.
+
+Add one more entry into enum pg_level to indicate the size of the VA
+covered by one PGD entry in 5-level paging mode.
+
+Update comments for lookup_address() and lookup_address_in_pgd() to
+reflect changes in the interface.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Reviewed-by: Baoquan He <bhe@redhat.com>
 Reviewed-by: Dave Hansen <dave.hansen@intel.com>
 ---
- arch/x86/coco/tdx/tdx.c         | 20 +++++++++++---------
- arch/x86/hyperv/ivm.c           |  9 +++------
- arch/x86/include/asm/x86_init.h |  4 ++--
- arch/x86/kernel/x86_init.c      |  4 ++--
- arch/x86/mm/mem_encrypt_amd.c   |  8 ++++----
- arch/x86/mm/pat/set_memory.c    |  9 +++++----
- 6 files changed, 27 insertions(+), 27 deletions(-)
+ arch/x86/include/asm/pgtable_types.h |  1 +
+ arch/x86/mm/pat/set_memory.c         | 16 ++++++++--------
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-index c1cb90369915..26fa47db5782 100644
---- a/arch/x86/coco/tdx/tdx.c
-+++ b/arch/x86/coco/tdx/tdx.c
-@@ -798,28 +798,30 @@ static bool tdx_enc_status_changed(unsigned long vaddr, int numpages, bool enc)
- 	return true;
- }
- 
--static bool tdx_enc_status_change_prepare(unsigned long vaddr, int numpages,
--					  bool enc)
-+static int tdx_enc_status_change_prepare(unsigned long vaddr, int numpages,
-+					 bool enc)
- {
- 	/*
- 	 * Only handle shared->private conversion here.
- 	 * See the comment in tdx_early_init().
- 	 */
--	if (enc)
--		return tdx_enc_status_changed(vaddr, numpages, enc);
--	return true;
-+	if (enc && !tdx_enc_status_changed(vaddr, numpages, enc))
-+		return -EIO;
-+
-+	return 0;
- }
- 
--static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
-+static int tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
- 					 bool enc)
- {
- 	/*
- 	 * Only handle private->shared conversion here.
- 	 * See the comment in tdx_early_init().
- 	 */
--	if (!enc)
--		return tdx_enc_status_changed(vaddr, numpages, enc);
--	return true;
-+	if (!enc && !tdx_enc_status_changed(vaddr, numpages, enc))
-+		return -EIO;
-+
-+	return 0;
- }
- 
- void __init tdx_early_init(void)
-diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-index 7dcbf153ad72..49b4f427268f 100644
---- a/arch/x86/hyperv/ivm.c
-+++ b/arch/x86/hyperv/ivm.c
-@@ -510,13 +510,12 @@ static int hv_mark_gpa_visibility(u16 count, const u64 pfn[],
-  * with host. This function works as wrap of hv_mark_gpa_visibility()
-  * with memory base and size.
-  */
--static bool hv_vtom_set_host_visibility(unsigned long kbuffer, int pagecount, bool enc)
-+static int hv_vtom_set_host_visibility(unsigned long kbuffer, int pagecount, bool enc)
- {
- 	enum hv_mem_host_visibility visibility = enc ?
- 			VMBUS_PAGE_NOT_VISIBLE : VMBUS_PAGE_VISIBLE_READ_WRITE;
- 	u64 *pfn_array;
- 	int ret = 0;
--	bool result = true;
- 	int i, pfn;
- 
- 	pfn_array = kmalloc(HV_HYP_PAGE_SIZE, GFP_KERNEL);
-@@ -530,17 +529,15 @@ static bool hv_vtom_set_host_visibility(unsigned long kbuffer, int pagecount, bo
- 		if (pfn == HV_MAX_MODIFY_GPA_REP_COUNT || i == pagecount - 1) {
- 			ret = hv_mark_gpa_visibility(pfn, pfn_array,
- 						     visibility);
--			if (ret) {
--				result = false;
-+			if (ret)
- 				goto err_free_pfn_array;
--			}
- 			pfn = 0;
- 		}
- 	}
- 
-  err_free_pfn_array:
- 	kfree(pfn_array);
--	return result;
-+	return ret;
- }
- 
- static bool hv_vtom_tlb_flush_required(bool private)
-diff --git a/arch/x86/include/asm/x86_init.h b/arch/x86/include/asm/x86_init.h
-index f062715578a0..17104ebab359 100644
---- a/arch/x86/include/asm/x86_init.h
-+++ b/arch/x86/include/asm/x86_init.h
-@@ -148,8 +148,8 @@ struct x86_init_acpi {
-  * @enc_cache_flush_required	Returns true if a cache flush is needed before changing page encryption status
-  */
- struct x86_guest {
--	bool (*enc_status_change_prepare)(unsigned long vaddr, int npages, bool enc);
--	bool (*enc_status_change_finish)(unsigned long vaddr, int npages, bool enc);
-+	int (*enc_status_change_prepare)(unsigned long vaddr, int npages, bool enc);
-+	int (*enc_status_change_finish)(unsigned long vaddr, int npages, bool enc);
- 	bool (*enc_tlb_flush_required)(bool enc);
- 	bool (*enc_cache_flush_required)(void);
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 0b748ee16b3d..3f648ffdfbe5 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -548,6 +548,7 @@ enum pg_level {
+ 	PG_LEVEL_2M,
+ 	PG_LEVEL_1G,
+ 	PG_LEVEL_512G,
++	PG_LEVEL_256T,
+ 	PG_LEVEL_NUM
  };
-diff --git a/arch/x86/kernel/x86_init.c b/arch/x86/kernel/x86_init.c
-index a37ebd3b4773..f0f54e109eb9 100644
---- a/arch/x86/kernel/x86_init.c
-+++ b/arch/x86/kernel/x86_init.c
-@@ -131,8 +131,8 @@ struct x86_cpuinit_ops x86_cpuinit = {
  
- static void default_nmi_init(void) { };
- 
--static bool enc_status_change_prepare_noop(unsigned long vaddr, int npages, bool enc) { return true; }
--static bool enc_status_change_finish_noop(unsigned long vaddr, int npages, bool enc) { return true; }
-+static int enc_status_change_prepare_noop(unsigned long vaddr, int npages, bool enc) { return 0; }
-+static int enc_status_change_finish_noop(unsigned long vaddr, int npages, bool enc) { return 0; }
- static bool enc_tlb_flush_required_noop(bool enc) { return false; }
- static bool enc_cache_flush_required_noop(void) { return false; }
- static bool is_private_mmio_noop(u64 addr) {return false; }
-diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
-index 70b91de2e053..d314e577836d 100644
---- a/arch/x86/mm/mem_encrypt_amd.c
-+++ b/arch/x86/mm/mem_encrypt_amd.c
-@@ -283,7 +283,7 @@ static void enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool enc)
- #endif
- }
- 
--static bool amd_enc_status_change_prepare(unsigned long vaddr, int npages, bool enc)
-+static int amd_enc_status_change_prepare(unsigned long vaddr, int npages, bool enc)
- {
- 	/*
- 	 * To maintain the security guarantees of SEV-SNP guests, make sure
-@@ -292,11 +292,11 @@ static bool amd_enc_status_change_prepare(unsigned long vaddr, int npages, bool
- 	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP) && !enc)
- 		snp_set_memory_shared(vaddr, npages);
- 
--	return true;
-+	return 0;
- }
- 
- /* Return true unconditionally: return value doesn't matter for the SEV side */
--static bool amd_enc_status_change_finish(unsigned long vaddr, int npages, bool enc)
-+static int amd_enc_status_change_finish(unsigned long vaddr, int npages, bool enc)
- {
- 	/*
- 	 * After memory is mapped encrypted in the page table, validate it
-@@ -308,7 +308,7 @@ static bool amd_enc_status_change_finish(unsigned long vaddr, int npages, bool e
- 	if (!cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
- 		enc_dec_hypercall(vaddr, npages << PAGE_SHIFT, enc);
- 
--	return true;
-+	return 0;
- }
- 
- static void __init __set_clr_pte_enc(pte_t *kpte, int level, bool enc)
 diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index e9b448d1b1b7..f92da8c9a86d 100644
+index f92da8c9a86d..0d2267ad4e0e 100644
 --- a/arch/x86/mm/pat/set_memory.c
 +++ b/arch/x86/mm/pat/set_memory.c
-@@ -2152,8 +2152,9 @@ static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
- 		cpa_flush(&cpa, x86_platform.guest.enc_cache_flush_required());
+@@ -657,7 +657,8 @@ static inline pgprot_t verify_rwx(pgprot_t old, pgprot_t new, unsigned long star
  
- 	/* Notify hypervisor that we are about to set/clr encryption attribute. */
--	if (!x86_platform.guest.enc_status_change_prepare(addr, numpages, enc))
--		return -EIO;
-+	ret = x86_platform.guest.enc_status_change_prepare(addr, numpages, enc);
-+	if (ret)
-+		return ret;
+ /*
+  * Lookup the page table entry for a virtual address in a specific pgd.
+- * Return a pointer to the entry and the level of the mapping.
++ * Return a pointer to the entry (or NULL if the entry does not exist) and
++ * the level of the entry.
+  */
+ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+ 			     unsigned int *level)
+@@ -666,32 +667,32 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+ 	pud_t *pud;
+ 	pmd_t *pmd;
  
- 	ret = __change_page_attr_set_clr(&cpa, 1);
+-	*level = PG_LEVEL_NONE;
++	*level = PG_LEVEL_256T;
  
-@@ -2168,8 +2169,8 @@ static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
+ 	if (pgd_none(*pgd))
+ 		return NULL;
  
- 	/* Notify hypervisor that we have successfully set/clr encryption attribute. */
- 	if (!ret) {
--		if (!x86_platform.guest.enc_status_change_finish(addr, numpages, enc))
--			ret = -EIO;
-+		ret = x86_platform.guest.enc_status_change_finish(addr,
-+								  numpages, enc);
- 	}
++	*level = PG_LEVEL_512G;
+ 	p4d = p4d_offset(pgd, address);
+ 	if (p4d_none(*p4d))
+ 		return NULL;
  
- 	return ret;
+-	*level = PG_LEVEL_512G;
+ 	if (p4d_large(*p4d) || !p4d_present(*p4d))
+ 		return (pte_t *)p4d;
+ 
++	*level = PG_LEVEL_1G;
+ 	pud = pud_offset(p4d, address);
+ 	if (pud_none(*pud))
+ 		return NULL;
+ 
+-	*level = PG_LEVEL_1G;
+ 	if (pud_large(*pud) || !pud_present(*pud))
+ 		return (pte_t *)pud;
+ 
++	*level = PG_LEVEL_2M;
+ 	pmd = pmd_offset(pud, address);
+ 	if (pmd_none(*pmd))
+ 		return NULL;
+ 
+-	*level = PG_LEVEL_2M;
+ 	if (pmd_large(*pmd) || !pmd_present(*pmd))
+ 		return (pte_t *)pmd;
+ 
+@@ -704,9 +705,8 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+  * Lookup the page table entry for a virtual address. Return a pointer
+  * to the entry and the level of the mapping.
+  *
+- * Note: We return pud and pmd either when the entry is marked large
+- * or when the present bit is not set. Otherwise we would return a
+- * pointer to a nonexisting mapping.
++ * Note: the function returns p4d, pud or pmd either when the entry is marked
++ * large or when the present bit is not set. Otherwise it returns NULL.
+  */
+ pte_t *lookup_address(unsigned long address, unsigned int *level)
+ {
 -- 
 2.43.0
 
