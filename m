@@ -1,184 +1,291 @@
-Return-Path: <linux-kernel+bounces-83022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2609868D61
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:21:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE07868D64
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:22:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5033B1F22B5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:21:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A424C28E1F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EEA41384AF;
-	Tue, 27 Feb 2024 10:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDFA13849C;
+	Tue, 27 Feb 2024 10:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=eckelmann.de header.i=@eckelmann.de header.b="a5y/i2Fq"
-Received: from DEU01-FR2-obe.outbound.protection.outlook.com (mail-fr2deu01on2112.outbound.protection.outlook.com [40.107.135.112])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WuAe0qpw"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B051384A7
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:21:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.135.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029293; cv=fail; b=Mb1uiWWzh4cQcSsV0qki7DPSq/44Kj/TlvHT3VINkSxES0oZ2MSVYoL9dnsgXjZSycKZrxNaxCXd95KuFD5FKH6ynFSvrreSo3TRb5hUGLJlJ+196+WwWwL4iqYKKF0I+x/9ppf5i7MPEA0OEE6N3oqwIq88FrOm8GtPytZPSt8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029293; c=relaxed/simple;
-	bh=i/nJ1lu1ck1eKJJJY3qDWvqlGFMnwdaNdHw9NtVOwyY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=KUl9nnZfrRLe5i8XwX07pf0pH+eawUvIHshAnU1N1Iu1eYSC4ZvKeWAOg3m1xqblJr5ncU+u1Oe7iXK/GaR4HIwII0iKnRxjJI4j2BPOkkn04GJvaaYleghItKBzJkqfPHR98KbxEuoWdi3vd9SaNh/hRpyg+v/qlX+P1fozajY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eckelmann.de; spf=pass smtp.mailfrom=eckelmann.de; dkim=pass (1024-bit key) header.d=eckelmann.de header.i=@eckelmann.de header.b=a5y/i2Fq; arc=fail smtp.client-ip=40.107.135.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eckelmann.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eckelmann.de
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MvrLWSUoMuJeDWgXXWq5p36anVGny10/rPwg+uyHOeunZiRrfR+yV6moKGx9anllvSNY40ygrXf8Zbm60hSroNsV7qmaf6MNm2U02QTInGI6Wi6AEBiuN8A5/Snm1r6a03Hxarl6tS+tlMjU+ZiQPlf6+DYy4X9tOzehpgGwdqes6fT2YavZE4X2J28O+Xe7f6tocGTk9Hc/pPT8pWVvOS/FlNzQKtw6vwq6xhOoopGNScRLK4kejYuM4MZLzoneQBSYYPPmfMKALhGMB5O35DFqcDRzSqiWg/oZT+vM1o7VDmOdOsfYrYO6stArrqP+uaOpA2iN84KzMYccK94ZWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=R5vo74ZzwUGR5gFdRgwiSkBeLziGo/Mr6tFY1EMBc2I=;
- b=hD5QogvRhR2NVjgRSQcB+mX2M9xJHAeCz83CK3NS/n1/SXDDp3wY93scsJIUZ/LLCPuf14mIgviFCaic+4xNDsPvmjEmXSYEeExbEndTPNbtSqbT8ECw89B77OqM2567vrbjswtrRJ2YjFHBCxdZ4jYXQIHs3JAR8QmYNaMWRTzbQhk62GLSwXHkNJAzPMhBsSYbcRDCjS3z26F8bTf2DPiBQWeMDxVBa6L3PQCPNE2clFVbw1QNhvuvvlpVuV/gdIr3wxzM2Nkk29lOTOa1+LPlKgWsRox65EHWITZrCNma8ifSW9AN7j5WiSTM2AItsxjtNRAzfKKw1wB6vfnDaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=eckelmann.de; dmarc=pass action=none header.from=eckelmann.de;
- dkim=pass header.d=eckelmann.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eckelmann.de;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R5vo74ZzwUGR5gFdRgwiSkBeLziGo/Mr6tFY1EMBc2I=;
- b=a5y/i2FqWC07niZtqYEIjRF+ZAB47Sy3J/7YYrSXmNniDqkkAsEAYxAlf6KsVojTCKapDBMHWK1oJJUqSn5so7Chk7uppuJtpOZ6T1wNGdcG8QaINqt1dSyu0yaYgiwTtkKdFas0la7Y2wWHCXzkKCqunTNdQ5au5f4Rvg2b7VU=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=eckelmann.de;
-Received: from FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:da::13)
- by FR6P281MB4000.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:116::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Tue, 27 Feb
- 2024 10:21:28 +0000
-Received: from FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
- ([fe80::f812:c649:c5e1:509c]) by FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
- ([fe80::f812:c649:c5e1:509c%7]) with mapi id 15.20.7316.037; Tue, 27 Feb 2024
- 10:21:27 +0000
-Date: Tue, 27 Feb 2024 11:21:24 +0100
-From: Thorsten Scherer <T.Scherer@eckelmann.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] siox: Move some complexity into the core
-Message-ID: <lkgvr2t4wzw4jkfg523zcek6y2v5l7kj6onw77yffvvs7i2gfy@6ectsjpcg64t>
-References: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
-X-ClientProxiedBy: FR4P281CA0167.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b7::8) To FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:da::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F002138492
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709029332; cv=none; b=Bk5uQwvofRS/QPW3hWmg+qGyDt+/sgefQueW4JBsr/VfsDkexGvVe9aoA7Bu7G/IVtS4Pcgm/Z+3Um09OnuTA3SyXrevD42R6xcnSwJY0lqv+rBqApC+PVaR2YegDoiZ6SG7Q6M0H2YemszEyHyGO2lPRdsoUhmVm5FrrC/ytm4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709029332; c=relaxed/simple;
+	bh=cmWxvGCVhYTkbWiKq2bJiR26WUpAeY/TtzgpuaJj1/g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CP4MBJDV7oF2b+KdOqOOHqBPnCdTKwAGJQbehZ6xKPiG4Qrb3JAtgAPAWsTo0F2WuW5DSgGQ6tmA3hOPzRcZbXMFAjHCXoqKJwc7Cu4gLLT8uDehRWmr9ViXmI27kXJw0pZymwmkVUgzLogaKDBze76vyjja6S+HGs9V3/RJb4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WuAe0qpw; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcbc00f6c04so4159670276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:22:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709029329; x=1709634129; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RVqspSV8bn52+VvDaD9TtJ1YOvvJ6e4K2RuUE7mf/l4=;
+        b=WuAe0qpw7mLtky04XUCn4uwT/rEpOVdhVOUwzkWhBzM8bHAhVGrlqOS5nHzZvv72qU
+         UURqS8iyiVpukAAv7wgFFkITZ+qIH3BdN87Ipox5clI5C6kb9TZJnHqCYWywIyjNAjVi
+         /SaG80YhJgDRkrc7ALl3j2UGCHAB1Nr0Mc8VUsE2vKJ0B9fWSuoHYeMJwK9ryQJSu4IH
+         91gnuSYMZHSeGRc4hWYK7r/eo/XbpucLxonTnlJpLbto7WfOPxFi5kNNC4rZ/jTBc1LU
+         EYeiNUJc+vJhw7Lf4UwQK1snTbBaMiV932Y7DO8fBdMRplbSfpsIJxTs6HpzTWPByOXm
+         YYxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709029329; x=1709634129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RVqspSV8bn52+VvDaD9TtJ1YOvvJ6e4K2RuUE7mf/l4=;
+        b=MgSCEbrq2WwbH1MD42cHVllFNrBrHioczqUjfrTpOq5klALKqrr2pEGGbVWzLF8XyJ
+         Fg3ytt1fT/44TGgJsQ3CyV3o2Z2rDIch34kBd4p025d+UUoL+hWXEm50xnUmYwIgMYNX
+         W2YJQukiJSYsiDpTmWc1DRUyjvHB5o0bZLGte+t8snBTNzEG02FokDit5tCUjxXbWXNr
+         hRP1c9Urc1uoC2YfeRF8xPFeSy8y37y3uOHKq/27J5VVCUPBwnI19ZEWa4+vvSf+Ev8U
+         ctj5ARqxaB0nuEoQXzuJxvLq2KSQaxS/5cS/bsU0KS0oEU3uZQKR9ReDm9H9hn1HY29z
+         ULXA==
+X-Forwarded-Encrypted: i=1; AJvYcCVq1Q7+iB3p0W5No81jWkDdoJqVOEZm3sV4br93JS4I3V7vyhNK9YKlD8qb+JlAynRYdILsXg3wNFuc07e2AXa5HoP7RR3iNeCaes/Y
+X-Gm-Message-State: AOJu0Yw/16jXBpXft9CFHy+69rWgh+0V1M+0SVfwMZY8rozJv6XkAS1L
+	7AbEPz1YW6e3PYvzKZsI7yyWAjdZhYF64qu0WXmcN/vUA9PP5wtsvWR9flMSIoG4Rqpq8C/6T7p
+	RUF/1CQOsUA9A53aOgXr4GIf9bSU=
+X-Google-Smtp-Source: AGHT+IETJjY/UIWO4RH1eSLrcFb2JcXGvEThD2ZUfMF0v7Hk5cFqhNEY+0DG7mhX4z3+ttuEjHe+5usQfemEPH+/WTY=
+X-Received: by 2002:a25:dcc8:0:b0:dcc:f0a:e495 with SMTP id
+ y191-20020a25dcc8000000b00dcc0f0ae495mr1512825ybe.3.1709029329482; Tue, 27
+ Feb 2024 02:22:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: FR4P281MB3510:EE_|FR6P281MB4000:EE_
-X-MS-Office365-Filtering-Correlation-Id: 85fb7257-3c85-4b9e-4874-08dc377ddb80
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	0yVpR8xaE8Glv/zsNYCurZAzThZqi/lkqN/+9eYbonkKUKRhTYeWsI8CRAOR7c0yONEy3phv7mUhIwYTWd5DYu8QRS3StHZPtr7Mo0iSTwS094udlfqlOhteFhZ4QmdPa48dfKNz+c61gI106YlOTmWLrsxJtj6UfCWA/Jc+R1JPPwf7OAgFYUkQVrjC/6c41kBl8VeCPlIxFwFwaobVY1uz8ry2z7iDWgTo8zeeLewd5Qm9ZxU7559IjJZ0flNQUPResAh3F3rvCTEmp7Q8RCylBY0DQYQT6IIcti/2ppWu0IqsTZFmEcMd+KdX6W5Mcv0ThXIjGuw1JmtdYER7x79r7rghtrDPgV3Y1teMRweuqvHWqquYvhhZ4wtbj+bAwXoB3dpX+yk6bv2vo/1plBktBGkSCqQFN+so8UT3j1eQG1cirZwSVTVp9psWKMJFEJ40QZ41dnTgyimVknf/zzR99u8LyiBjy2q/pSvRZCd+9CQBZb7LbLS3GYmkaTxuMGLeNpZ3fgp+hAXPwR0E3fo76X3tS3/t/rvzsySlcLYuaDNUx/hvsBcbm1VEeoYP3w1iCHzdXmveirkTFiDXEyXYEAXhmtOsw/e/M33vdyaaPBHANqj8JoyEMzOe3xKz7dwEEnhbgwOHY96qr4kYHA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?iso-8859-1?Q?qkyPDPswgYfJYbO6gp5QVccVNINfbdg5HfX4qU/rFYUMkyS2XH8JJVrXRE?=
- =?iso-8859-1?Q?IK9aOz23SBNaitXTQRe5UN7l+TyQyt4ECC0IikyhkdbnykYDAkw7H9qpog?=
- =?iso-8859-1?Q?SefBDl+Del6sv2nstW5YJvU6e7vGLBlkqdmpC+nhlfi8fM75SERcCMORzX?=
- =?iso-8859-1?Q?Jq3Pl4w/92/5ZUPYH6COvxG4vPi0TteIJhhQ6Abl3a17fuwN1W1M9C1R+4?=
- =?iso-8859-1?Q?7IQjrJeA1egncBWuSDyHUN4y9mr7LDPYc00Iowrh/0+WuBSmw2LJxoRrkn?=
- =?iso-8859-1?Q?DuIXSAm8HFdQQqXwqtU1ev86Itu1YFxI9JVfrDPx2698F5zvoil+dppbor?=
- =?iso-8859-1?Q?EGFoWzVAfNzKC78+HovkwrheEFFObOWYaD59BeOw0z5LW6L2lDxN9erU3Y?=
- =?iso-8859-1?Q?FlPh5GeJsLqiHt/FGtWeqsgUd0jfekpB0w6Olb7EBYatZjzyAy/clxBeJs?=
- =?iso-8859-1?Q?nsIvVPca7D6qn/NpHPHkbPRd+Lxbz1mpbaPd02hhmTdu/C6/jxOb0PB1a3?=
- =?iso-8859-1?Q?qSEYgD/VYg162tkqgeiitH3uiW7F2/X/Omu4/Cry6SxEC/Bl9vNEnad4gU?=
- =?iso-8859-1?Q?B18NCzjBkVUC/2TMFxLrCk3APVJBlY7GPdaIs+P4eIF3V2sD9GDBZ+JjNj?=
- =?iso-8859-1?Q?vUxZmuQayu+rIrRrMhars9ItEqEDSelyl5pIiR/xoRzwVjl01EmFiMmPMH?=
- =?iso-8859-1?Q?XExKmJ7Cw8tGT/KDbaR9Ds1dVM74Vwgmhf3+laGjAhMEDZc+pZGWM8XMpU?=
- =?iso-8859-1?Q?ft+PkDDu76D3XYPKJVXFBHrzKu0PyXxiAgpjUVPjAKvZvLUeH7d25pgo/+?=
- =?iso-8859-1?Q?mpYi5Zi5EO73pOmXdpeJ7fsLE4s8kdxUyw0H2ok2wxgk7Q+HJmDUJx/G0E?=
- =?iso-8859-1?Q?tGdne2hygtA3xKkiz+f9a/eRzv614LCR0mRTK2QOLFZc4unq+KMbxoH2bc?=
- =?iso-8859-1?Q?QzN6iaLgb6FVbTFA5H0lBjQB2csumhxAVNk1AuBxyZpYLO2sfbNqMoEBVl?=
- =?iso-8859-1?Q?qZAeMattle4yY+TFYHcMxeKpYypzNShuBYGNAJ0t9AsE7ProqVKA0mOOD+?=
- =?iso-8859-1?Q?Mxi8a6kpFi4TGq0TsubJsN/wum8U/srMSY9UW+XsT7kw6sE7RZTjbttBmE?=
- =?iso-8859-1?Q?vLP1xuS7GVgd7UrL/1NwPO+7OF5S4fz65JM1gbVWR8Zo6vdKahEDZwdlkq?=
- =?iso-8859-1?Q?bamscEn1UVbjUzxUZjFynbDbCs8i9RoTB3Ixdbr1IA6uE6d/NlA/P2uGIb?=
- =?iso-8859-1?Q?wOwASfZUxWaS9rpXkylzcacVhOH8vbv+rJ0shXef/iZX7YAtHwOh2oFzje?=
- =?iso-8859-1?Q?VUU1RrltBc9lrs3vWsrqY7MR+gCUdgLClwihiXC+b4BdHHc4J5fIWs3xnI?=
- =?iso-8859-1?Q?FmO5K3AJJNHb1/QlnLfvVrOFZarl99coPbUb3Y2eIIFCgOR7NBHo5rr3J6?=
- =?iso-8859-1?Q?+5X+pCkCzXcQZvYwKCW+wiPLuk1sq56pSqgEotQfdQMSZw8Z+ql9fQZ9ko?=
- =?iso-8859-1?Q?6JsMEjiw1Ts6ZiwbFGMFED1GQO6xM42Odz6BB7VOfgvL3mh6VKLHmmF4As?=
- =?iso-8859-1?Q?r0Nke0WpICSQBUqh4vqTRtYASGIkAc5voUwRFcdHqNdqj1Ohdy17YdhVun?=
- =?iso-8859-1?Q?sxIsSVFJAxbysUXecZ7ommUC9pTBXj7f+G?=
-X-OriginatorOrg: eckelmann.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85fb7257-3c85-4b9e-4874-08dc377ddb80
-X-MS-Exchange-CrossTenant-AuthSource: FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 10:21:27.4953
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 62e24f58-823c-4d73-8ff2-db0a5f20156c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pky7cUfQe/oZW/gtstBGjKxJwbc2a9pcSujziCxFcOtLAJz27mC86+FPpJ1Kl31vySjvSbiHXj29ezGXu42Zfw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR6P281MB4000
+References: <20240227024050.244567-1-21cnbao@gmail.com> <61b9dfc9-5522-44fd-89a4-140833ede8af@arm.com>
+ <c95215b2-6ec5-4efb-a73b-7be92cda1c83@redhat.com>
+In-Reply-To: <c95215b2-6ec5-4efb-a73b-7be92cda1c83@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Tue, 27 Feb 2024 18:21:58 +0800
+Message-ID: <CAK1f24mOc+Y_UCA2nSC7VbNQMy0DahULz-6JsEPMqTyoAA+MoA@mail.gmail.com>
+Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
+ need it
+To: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Barry Song <v-songbaohua@oppo.com>, Yin Fengwei <fengwei.yin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello Uwe, Hello Greg,
+On Tue, Feb 27, 2024 at 5:14=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 27.02.24 10:07, Ryan Roberts wrote:
+> > On 27/02/2024 02:40, Barry Song wrote:
+> >> From: Barry Song <v-songbaohua@oppo.com>
+> >>
+> >> madvise and some others might need folio_pte_batch to check if a range
+> >> of PTEs are completely mapped to a large folio with contiguous physcia=
+l
+> >> addresses. Let's export it for others to use.
+> >>
+> >> Cc: Lance Yang <ioworker0@gmail.com>
+> >> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> >> Cc: David Hildenbrand <david@redhat.com>
+> >> Cc: Yin Fengwei <fengwei.yin@intel.com>
+> >> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> >> ---
+> >>   -v1:
+> >>   at least two jobs madv_free and madv_pageout depend on it. To avoid
+> >>   conflicts and dependencies, after discussing with Lance, we prefer
+> >>   this one can land earlier.
+> >
+> > I think this will also ultimately be useful for mprotect too, though I =
+haven't
+> > looked at it properly yet.
+> >
+>
+> Yes, I think we briefly discussed that.
+>
+> >>
+> >>   mm/internal.h | 13 +++++++++++++
+> >>   mm/memory.c   | 11 +----------
+> >>   2 files changed, 14 insertions(+), 10 deletions(-)
+> >>
+> >> diff --git a/mm/internal.h b/mm/internal.h
+> >> index 13b59d384845..8e2bc304f671 100644
+> >> --- a/mm/internal.h
+> >> +++ b/mm/internal.h
+> >> @@ -83,6 +83,19 @@ static inline void *folio_raw_mapping(struct folio =
+*folio)
+> >>      return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
+> >>   }
+> >>
+> >> +/* Flags for folio_pte_batch(). */
+> >> +typedef int __bitwise fpb_t;
+> >> +
+> >> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+> >> +#define FPB_IGNORE_DIRTY            ((__force fpb_t)BIT(0))
+> >> +
+> >> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty=
+ bit. */
+> >> +#define FPB_IGNORE_SOFT_DIRTY               ((__force fpb_t)BIT(1))
+> >> +
+> >> +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
+> >> +            pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+> >> +            bool *any_writable);
+> >> +
+> >>   void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+> >>                                              int nr_throttled);
+> >>   static inline void acct_reclaim_writeback(struct folio *folio)
+> >> diff --git a/mm/memory.c b/mm/memory.c
+> >> index 1c45b6a42a1b..319b3be05e75 100644
+> >> --- a/mm/memory.c
+> >> +++ b/mm/memory.c
+> >> @@ -953,15 +953,6 @@ static __always_inline void __copy_present_ptes(s=
+truct vm_area_struct *dst_vma,
+> >>      set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+> >>   }
+> >>
+> >> -/* Flags for folio_pte_batch(). */
+> >> -typedef int __bitwise fpb_t;
+> >> -
+> >> -/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+> >> -#define FPB_IGNORE_DIRTY            ((__force fpb_t)BIT(0))
+> >> -
+> >> -/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty=
+ bit. */
+> >> -#define FPB_IGNORE_SOFT_DIRTY               ((__force fpb_t)BIT(1))
+> >> -
+> >>   static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags=
+)
+> >>   {
+> >>      if (flags & FPB_IGNORE_DIRTY)
+> >> @@ -982,7 +973,7 @@ static inline pte_t __pte_batch_clear_ignored(pte_=
+t pte, fpb_t flags)
+> >>    * If "any_writable" is set, it will indicate if any other PTE besid=
+es the
+> >>    * first (given) PTE is writable.
+> >>    */
+> >
+> > David was talking in Lance's patch thread, about improving the docs for=
+ this
+> > function now that its exported. Might be worth syncing on that.
+>
+> Here is my take:
+>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>   mm/memory.c | 22 ++++++++++++++++++----
+>   1 file changed, 18 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/memory.c b/mm/memory.c
+> index d0b855a1837a8..098356b8805ae 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -971,16 +971,28 @@ static inline pte_t __pte_batch_clear_ignored(pte_t=
+ pte, fpb_t flags)
+>         return pte_wrprotect(pte_mkold(pte));
+>   }
+>
+> -/*
+> +/**
+> + * folio_pte_batch - detect a PTE batch for a large folio
+> + * @folio: The large folio to detect a PTE batch for.
+> + * @addr: The user virtual address the first page is mapped at.
+> + * @start_ptep: Page table pointer for the first entry.
+> + * @pte: Page table entry for the first page.
 
-On Mon, Feb 19, 2024 at 08:46:28AM +0100, Uwe Kleine-K=F6nig wrote:
-> Hello,
->=20
-> the reference handling in siox is a bit strange. With
-> siox_master_alloc() to get a reference on the master that is passed to
-> the core calling siox_master_register(). So until siox_master_register()
-> is called successfully the driver has to call siox_master_put() in the
-> error path, but on remove siox_master_unregister cares for that. While
-> that technically works, it's unusual and surprising to use. This serie's
-> first patch cleans that up and then introduces devm functions to make it
-> even easier to use.
->=20
-> A nice (and intended) side effect is that the gpio bus driver gets rid
-> of it's remove callback, so I don't have to adapt it for my quest that
-> changes the prototype of .remove().
+Nit:
 
-I only compile tested this as I currently do not have access to test
-hardware.
+- * @pte: Page table entry for the first page.
++ * @pte: Page table entry for the first page that must be the first subpag=
+e of
++ *               the folio excluding arm64 for now.
 
-The series looks sensible.
+IIUC, pte_batch_hint is always 1 excluding arm64 for now.
+I'm not sure if this modification will be helpful?
 
-Acked-by: Thorsten Scherer <t.scherer@eckelmann.de>
+Thanks,
+Lance
 
-@gregkh: Would you please pick up Uwe's series as well?
-
-Thank you both.
-
-Best regards
-Thorsten
-
-> Best regards
-> Uwe
->=20
-> Uwe Kleine-K=F6nig (4):
->   siox: Don't pass the reference on a master in siox_master_register()
->   siox: Provide a devm variant of siox_master_alloc()
->   siox: Provide a devm variant of siox_master_register()
->   siox: bus-gpio: Simplify using devm_siox_* functions
->=20
->  drivers/siox/siox-bus-gpio.c | 62 ++++++++++++------------------------
->  drivers/siox/siox-core.c     | 45 ++++++++++++++++++++++++++
->  drivers/siox/siox.h          |  4 +++
->  3 files changed, 69 insertions(+), 42 deletions(-)
->=20
->=20
-> base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
-> --=20
-> 2.43.0
->=20
+> + * @max_nr: The maximum number of table entries to consider.
+> + * @flags: Flags to modify the PTE batch semantics.
+> + * @any_writable: Optional pointer to indicate whether any entry except =
+the
+> + *               first one is writable.
+> + *
+>    * Detect a PTE batch: consecutive (present) PTEs that map consecutive
+> - * pages of the same folio.
+> + * pages of the same large folio.
+>    *
+>    * All PTEs inside a PTE batch have the same PTE bits set, excluding th=
+e PFN,
+>    * the accessed bit, writable bit, dirty bit (with FPB_IGNORE_DIRTY) an=
+d
+>    * soft-dirty bit (with FPB_IGNORE_SOFT_DIRTY).
+>    *
+> - * If "any_writable" is set, it will indicate if any other PTE besides t=
+he
+> - * first (given) PTE is writable.
+> + * start_ptep must map any page of the folio. max_nr must be at least on=
+e and
+> + * must be limited by the caller so scanning cannot exceed a single page=
+ table.
+> + *
+> + * Return: the number of table entries in the batch.
+>    */
+>   static inline int folio_pte_batch(struct folio *folio, unsigned long ad=
+dr,
+>                 pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+> @@ -996,6 +1008,8 @@ static inline int folio_pte_batch(struct folio *foli=
+o, unsigned long addr,
+>                 *any_writable =3D false;
+>
+>         VM_WARN_ON_FOLIO(!pte_present(pte), folio);
+> +       VM_WARN_ON_FOLIO(!folio_test_large(folio) || max_nr < 1, folio);
+> +       VM_WARN_ON_FOLIO(page_folio(pfn_to_page(pte_pfn(pte))) !=3D folio=
+, folio);
+>
+>         nr =3D pte_batch_hint(start_ptep, pte);
+>         expected_pte =3D __pte_batch_clear_ignored(pte_advance_pfn(pte, n=
+r), flags);
+> --
+> 2.43.2
+>
+>
+> >
+> >> -static inline int folio_pte_batch(struct folio *folio, unsigned long =
+addr,
+> >> +int folio_pte_batch(struct folio *folio, unsigned long addr,
+> >
+> > fork() is very performance sensitive. Is there a risk we are regressing
+> > performance by making this out-of-line? Although its in the same compil=
+ation
+> > unit so the compiler may well inline it anyway?
+>
+> Easy to verify by looking at the generated asm I guess?
+>
+> >
+> > Either way, perhaps we are better off making it inline in the header? T=
+hat would
+> > avoid needing to rerun David's micro-benchmarks for fork() and munmap()=
+.
+>
+> That way, the compiler can most certainly better optimize it also outside=
+ of mm/memory.c
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
