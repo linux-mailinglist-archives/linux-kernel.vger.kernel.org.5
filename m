@@ -1,111 +1,122 @@
-Return-Path: <linux-kernel+bounces-84118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48ACF86A24E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:19:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07C7B86A250
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:20:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F34691F248BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:19:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39C621C22307
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACC5A153509;
-	Tue, 27 Feb 2024 22:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B55B71534EF;
+	Tue, 27 Feb 2024 22:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KS8VmaMB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FLpKLYHB"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7EBA14F961;
-	Tue, 27 Feb 2024 22:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4D54CE17
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709072363; cv=none; b=SsWeVMYvPfPecbkyey+gyeKsla2Jcm696BuotiN/MLx+OOWXefXwc0DsboNJsqHG3ymfgq+XAXK+8LYovWNj9d34h4/NMCwVulqe9EaPExMaKhC0ShGckDgv5WarG7hKxa7vR3Nw8zz591PYn5Ve1W8mHeYgPsEHxFYD2EuKRHo=
+	t=1709072394; cv=none; b=bAmlnUZem41wN6rxM2S0ooyRqXEg7BgrERpds/x2xYDOl4en0mmwn0Al81Sc/EGufu/pNFki44K3Uc8oNFkPQyVsmRr1DxC3W1zAYYDyQTr52qi+a0oN2sNyV6eAl3DTEUbEYr8lfz/Uf/pzsDlFGpfJFcz7q/ijAWKJBqvPNiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709072363; c=relaxed/simple;
-	bh=o9svJsP9nzZVOUnXBU3iRQDLYitUEw+4EwfW5E0njzo=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=P1B6P+39UhsTCV9suG5fm38HmlkOo5fE8/XNb6mZGCXOX6j3/wZl0VzsnRycYQ+hC6cdTYlWrHIfrMGWC+JupLe2chgN+hlzCwYhWc1m0aUFuE0aj4oAqbXIB42K2ARppzIJUcqW4plVVP+ERs/w7yWluCNYww9MWlQa+ZmD6c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KS8VmaMB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37C97C433C7;
-	Tue, 27 Feb 2024 22:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709072362;
-	bh=o9svJsP9nzZVOUnXBU3iRQDLYitUEw+4EwfW5E0njzo=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=KS8VmaMBkpXv9qmsgAQsQ5t6hh1qpU7R7Hl6HsLUvFVI5Qi8zQvw+shX26X6EzRhY
-	 5M8oeuGQBQ31mzlfrPnQY9yCmXylxGyA6cg4ofniswej5i2KkwVF21bfLLlkWJNw1y
-	 IeibV7Y5A3vcDOAa0JuXoLPCLVg99HB9dWUrFQbmfOxHRBVTqlfvegK60GDSlEyn4n
-	 2Uu2cf1K1QFSImx88D2lNPVw7W8LXeJRLUunB7TqWPHszC6kYZxemtj+a63egyuBGn
-	 af2kzpJhzS9wYKCswKu1r9kHFx++IQkGlU5EA1dXRc7U1OfacFHXfOe3gSXdkCCmFf
-	 bDwH4CLyOKCfQ==
-Date: Tue, 27 Feb 2024 16:19:21 -0600
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	s=arc-20240116; t=1709072394; c=relaxed/simple;
+	bh=zz+unVt7q5p60XbIw7tQi7Q0UZeD5a+xqYylMLrjnu0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ak8nyWn7ejr88WlDOUheWCVkHqGDvk7YQyRZuvQkhYtYb1qnXQotJ8j8oFMjnjDkDPBCi6A57BzNK8ILcJcwKLUoLulZSBatcCmzXvFl/fPgBCLkkrv0bLHon9LVvAPiUGeI5sbKguQEJDn5i6XF2jF8c2RGWZoVvH7DQXwr4zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FLpKLYHB; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dc1e7c0e29so25475695ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:19:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709072392; x=1709677192; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=siqoqedRmX2wPOUVHojbCwdAvexAbFGkcd6CPRaGDIY=;
+        b=FLpKLYHBsZ8q8icyQVUQQY93fWi7+xWrN7vFipf9htxpuiNTqYSJ/IcOe5vXoP/SXK
+         S9MB7cJa/3n2QB2n7otH3XQ/TLL7k0lxQddrP5LIf9qt2ZXlLDP29v5lsPRn5jOaGZDR
+         xrvkhrRtw/pYBeJK0hM02QtIKvnnPOoIPsADE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709072392; x=1709677192;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=siqoqedRmX2wPOUVHojbCwdAvexAbFGkcd6CPRaGDIY=;
+        b=S2NQudM0/G4t6WMJvzWTF67tXIdKBXja8U1q7D/J93amEmivU9ufCPUR9bDW4XdjZW
+         JD/CHY5fY1QSVywg4wE08G/QC/kzIxGPAScAKsL2TrnEEgMZ0KLTOSgC0URE2T/FOcEt
+         og9D0nQmWAPae2qMRkMDpGetrcHvZ67HZSx+p9FMOXGSoEXkbLfs+++7oj6b7uYPDzMo
+         X9aDm2TYFwK84wLYVStpW4Mbk1jGFFMP/sj4GBJJpQOZ85ngSnZu7ZleZlemO2ss62Uu
+         LI9/5TBeF9/r1ljG8rM6vWMzgXIt/U7b0wsFHUP8LBmX0MrhaMec4dCqSHs8+0gWNyuT
+         uKCg==
+X-Forwarded-Encrypted: i=1; AJvYcCUiRyU+RrS3i5tv9pY+8+82VcORBchOQ/egocsy4X9PW6SVze6rSmxJaeNeD/dR7YPQbIkdZfJmyTcd3sb6QvSzErulwF+TEzB6iUgI
+X-Gm-Message-State: AOJu0Yz+ltin+enYJwlj3oL4d/DborpUjj0jIOAdIuJnUftiEpvx0wd/
+	66GRPqp6h3IiQqAobFAKRPExaD2YqWtsBAHPqiRlWLX2lV8m2/dmLb9pA24dFw==
+X-Google-Smtp-Source: AGHT+IH1lcjzhqQizUXuOPIrr9G1+WlHe9Wkmz7qQRPWhtBpFB1p3i5u5gHC00NhNR/XxtpIWOdy9g==
+X-Received: by 2002:a17:902:dac6:b0:1dc:c445:b253 with SMTP id q6-20020a170902dac600b001dcc445b253mr1771550plx.36.1709072391882;
+        Tue, 27 Feb 2024 14:19:51 -0800 (PST)
+Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:ff74:aba4:ea8d:f18e])
+        by smtp.gmail.com with ESMTPSA id f13-20020a170903104d00b001dc78455383sm2006780plc.223.2024.02.27.14.19.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 14:19:51 -0800 (PST)
+From: Douglas Anderson <dianders@chromium.org>
+To: dri-devel@lists.freedesktop.org
+Cc: Rob Clark <robdclark@chromium.org>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Dave Airlie <airlied@redhat.com>,
+	David Airlie <airlied@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	=?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
+	Sean Paul <sean@poorly.run>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/udl: Add ARGB8888 as a format
+Date: Tue, 27 Feb 2024 14:19:29 -0800
+Message-ID: <20240227141928.1.I24ac8d51544e4624b7e9d438d95880c4283e611b@changeid>
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: pavel@ucw.cz, linux-kernel@vger.kernel.org, lee@kernel.org, 
- robh+dt@kernel.org, gregory.clement@bootlin.com, conor+dt@kernel.org, 
- ojeda@kernel.org, tzimmermann@suse.de, devicetree@vger.kernel.org, 
- javierm@redhat.com, krzysztof.kozlowski+dt@linaro.org, 
- linux-leds@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- geert@linux-m68k.org, andrew@lunn.ch, andy@kernel.org, 
- sebastian.hesselbarth@gmail.com, robin@protonic.nl
-In-Reply-To: <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
-References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz>
- <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
-Message-Id: <170907236007.645402.4701945428447873129.robh@kernel.org>
-Subject: Re: [PATCH v2 2/4] dt-bindings: auxdisplay: Add bindings for
- generic 7 segment LED
+Content-Transfer-Encoding: 8bit
 
+Even though the UDL driver converts to RGB565 internally (see
+pixel32_to_be16() in udl_transfer.c), it advertises XRGB8888 for
+compatibility. Let's add ARGB8888 to that list.
 
-On Wed, 28 Feb 2024 10:22:42 +1300, Chris Packham wrote:
-> Add bindings for a generic 7 segment LED display using GPIOs.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
-> 
-> Notes:
->     Changes in v2:
->     - Use compatible = "generic-gpio-7seg" to keep checkpatch.pl happy
-> 
->  .../auxdisplay/generic-gpio-7seg.yaml         | 40 +++++++++++++++++++
->  1 file changed, 40 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/auxdisplay/generic-gpio-7seg.yaml
-> 
+This makes UDL devices work on ChromeOS again after commit
+c91acda3a380 ("drm/gem: Check for valid formats"). Prior to that
+commit things were "working" because we'd silently treat the ARGB8888
+that ChromeOS wanted as XRGB8888.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Fixes: c91acda3a380 ("drm/gem: Check for valid formats")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-yamllint warnings/errors:
+ drivers/gpu/drm/udl/udl_modeset.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/auxdisplay/generic-gpio-7seg.yaml: $id: Cannot determine base path from $id, relative path/filename doesn't match actual path or filename
- 	 $id: http://devicetree.org/schemas/auxdisplay/generic,gpio-7seg.yaml
- 	file: /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/auxdisplay/generic-gpio-7seg.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240227212244.262710-3-chris.packham@alliedtelesis.co.nz
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+diff --git a/drivers/gpu/drm/udl/udl_modeset.c b/drivers/gpu/drm/udl/udl_modeset.c
+index 7702359c90c2..0f8d3678770e 100644
+--- a/drivers/gpu/drm/udl/udl_modeset.c
++++ b/drivers/gpu/drm/udl/udl_modeset.c
+@@ -253,6 +253,7 @@ static int udl_handle_damage(struct drm_framebuffer *fb,
+ static const uint32_t udl_primary_plane_formats[] = {
+ 	DRM_FORMAT_RGB565,
+ 	DRM_FORMAT_XRGB8888,
++	DRM_FORMAT_ARGB8888,
+ };
+ 
+ static const uint64_t udl_primary_plane_fmtmods[] = {
+-- 
+2.44.0.rc1.240.g4c46232300-goog
 
 
