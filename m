@@ -1,106 +1,148 @@
-Return-Path: <linux-kernel+bounces-84211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A59E86A3C6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:34:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B6E586A39E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:30:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0529B2655B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:30:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED7CE1F2407E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28D645732A;
-	Tue, 27 Feb 2024 23:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18E45811E;
+	Tue, 27 Feb 2024 23:25:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CLOFHpjf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Kh+uxOPi"
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BEE556B71;
-	Tue, 27 Feb 2024 23:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2738158100
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:25:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709076157; cv=none; b=i5RE2j8xz8dQcGVKp0Bolh76477+mwu2DGN6+Fb9XjhzPai8FDu9T4BwwB+9rCvQv6xOKPEInpW0HdtJ+nH5vCk4XflA1eb1zCCcF2EL6qtd0iPOCFaOZUTv16nqgRofekgAKjqsdXFeg0KpNxRlAKATt7FtHwqKvz4bO7UJOjo=
+	t=1709076302; cv=none; b=C+jRdxeACywo1dYqio7cjM1yyvgvIug5rXi9uP04YKzQR13K2KaDEr6ZapEmV0irOAv9dSAKKOFDkKsC49K//wjc/YaNTjp0O8fHFsvr58qcyZAH4NSZdh3QxvrOEQ1RcCmoFIXODkIXPcjuv4yH94zotKLsAqL8JDBYTbIU6PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709076157; c=relaxed/simple;
-	bh=LAf/7ZQIyaKEaPAbEIeoxEYJIciVBx9bL3fJcDzt+1E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=oYviBPWXVEtf+9TBcKZhd3ieyDMOIq4jVzJ7eU1zPJM1RznPCpGfYKssfpJgESsD4hLqm3ahmNbFGmAZOFu865j6xIJJRMWWROprXueoWCW3XVI3wIvIi9Vx+02OtJGL8Dj6JHxiLL9Zdmas07zXfxr98BOX/vTQNZoBeH7MHoY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CLOFHpjf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A48D6C433F1;
-	Tue, 27 Feb 2024 23:22:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709076156;
-	bh=LAf/7ZQIyaKEaPAbEIeoxEYJIciVBx9bL3fJcDzt+1E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=CLOFHpjf9zIIqBZHK7Hh4NtlLW8Dbl11MFex2P55uBFSPYYxhpKfxPiwtstGfS8TM
-	 AT0hKGyTH7/LkeG3Vji0fm+6k5p2fm97EPn1RDdNCL0RhUjHO0C4SRwI5jzVNBDa4n
-	 9BEJqpuaqT8cyFtSNwdziRC/my23uyjpQnsblwMAyUPb1eFZ1reCkLJOc2kUV/p6wZ
-	 geD6qLDTCrqxgJ+rYEaTOvRiMfLB58KNxTfEpUtxqvFuRQuIileNBuNDNVhNDXJ+9Q
-	 AGJZ83+7M6UppXkIp3+AAhtNiA9uSgycA5Uv1Sl6XB1mtBQhV+1IkT07Ftt8BQ/V8a
-	 pUtcaMqLLD9EA==
-Date: Tue, 27 Feb 2024 17:22:35 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, vireshk@kernel.org,
-	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_parass@quicinc.com,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH v7 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
- path
-Message-ID: <20240227232235.GA251235@bhelgaas>
+	s=arc-20240116; t=1709076302; c=relaxed/simple;
+	bh=HDwa7fbuH1aZDEzp5Ac6iY2RB5pkOpyq5qK/4yKHkbI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fg8HufLgdRR4/4iB4kFKhhWDzxs4BEXq7A8Nz33jNTbP1fxImLPdjbca7IHoik7MTOLHIvtgK/56vET45+D2EuXij5sICp5vtr++jvr/zPQ2Nq4878d5evXqz00g5zd/li/ULuYdTmf0M+8RvLBLRgp5qw+DRCRf+42td7F0ljY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Kh+uxOPi; arc=none smtp.client-ip=209.85.166.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-3651ee59db4so1083175ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:25:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1709076300; x=1709681100; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wvIY3k15tE0HcJm4Yzmaclwism7ZYGDgLaZ5F1IOoes=;
+        b=Kh+uxOPig0hkA0IOU0u2kAKdbxe+m8QAosuBOGvLzIsQn66kAy+K4i+PRVs4JPHw07
+         fgQYU/A+NjtIeojqksBpXmIleVIbSvCV54M2CqvbAmyFFgKbMb3PcWAj4K9RBebBC8Z5
+         5ZuUTk0HfNBmPXJnxXd1gAHVfrn+MDDQ/ZAK0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709076300; x=1709681100;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wvIY3k15tE0HcJm4Yzmaclwism7ZYGDgLaZ5F1IOoes=;
+        b=IMSl49jFLGg2XvFCBwnSCOT40OeYnDZXopCDMhfiGKEx8j/avYxKMaa9z2/gtnF6Be
+         oxWzeR0gxKDeEGpQmRllKsMNHoD2XQWhYwIP5bU31KUVSXh7r1fofkeV122b5cFE4vNF
+         LZ7F5vXqEGXM2P59sYaQMBoAxDF8otq6QEZuqhQqF0NrTqdoL4yzzBu5iwptoY437dTM
+         viPvDaVabNUp+vrHX0tN05dYeb8hEED8GbTELkyBjYgwXL7VXuPDl5rWxnTMqnA2oqVZ
+         a2INbgeBKd6SszImkMjYAl3AtoOF7hx04AmghniXlLV7nab+RQrWzJql7ieuWe+fKa8Y
+         TDMw==
+X-Forwarded-Encrypted: i=1; AJvYcCVMgp/jtIgH3nFg1Husst0b3/2l/GUp8varhPU4XQs7sqddk5L56B8Pfu3a0l7tJoEbzf8DOTmt7y2TrV3/6i7mAy35G7Dlb+2w0Bqt
+X-Gm-Message-State: AOJu0Yx917MnRvTxnyX0msSQ/guIl66qGsp0pn28R9sDhpiLXuIzPm81
+	pd2lX9jyeSqJMYLkJ+nLrKnT9fD1iOEbfJXk4l4K/nPMEQvTNlMnWdgIA6uflIQ=
+X-Google-Smtp-Source: AGHT+IH7h7vSS9kJq/Hsu1hvzmsVL1Hoh2ZLb1ktpG8OlizpzOEJEClNfjMsljDl+J9cw2Cp6ZyxBA==
+X-Received: by 2002:a05:6602:38d:b0:7c7:8933:2fec with SMTP id f13-20020a056602038d00b007c789332fecmr10945119iov.2.1709076300126;
+        Tue, 27 Feb 2024 15:25:00 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id q10-20020a02cf0a000000b004743021012asm1964451jar.2.2024.02.27.15.24.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 15:24:59 -0800 (PST)
+Message-ID: <ba023321-dd6e-4163-8924-092c87aa17fc@linuxfoundation.org>
+Date: Tue, 27 Feb 2024 16:24:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223-opp_support-v7-3-10b4363d7e71@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/9] drm: tests: Fix invalid printf format specifiers in
+ KUnit tests
+Content-Language: en-US
+To: David Gow <davidgow@google.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ Guenter Roeck <linux@roeck-us.net>, Rae Moar <rmoar@google.com>,
+ Matthew Auld <matthew.auld@intel.com>,
+ Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Kees Cook <keescook@chromium.org>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mcanal@igalia.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Willem de Bruijn <willemb@google.com>, Florian Westphal <fw@strlen.de>,
+ Cassio Neri <cassio.neri@gmail.com>,
+ Javier Martinez Canillas <javierm@redhat.com>,
+ Arthur Grillo <arthur.grillo@usp.br>,
+ Brendan Higgins <brendan.higgins@linux.dev>,
+ Daniel Latypov <dlatypov@google.com>, Stephen Boyd <sboyd@kernel.org>,
+ David Airlie <airlied@gmail.com>, Maxime Ripard <mripard@kernel.org>,
+ "David S . Miller" <davem@davemloft.net>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org,
+ linux-rtc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kunit-dev@googlegroups.com, linux-hardening@vger.kernel.org,
+ netdev@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+ Justin Stitt <justinstitt@google.com>
+References: <20240221092728.1281499-1-davidgow@google.com>
+ <20240221092728.1281499-8-davidgow@google.com>
+ <20240221212952.bqw4rdz2i2yf3now@google.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240221212952.bqw4rdz2i2yf3now@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23, 2024 at 08:18:00PM +0530, Krishna chaitanya chundru wrote:
-> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
-> ICC(interconnect consumers) path should be voted otherwise it may
-> lead to NoC(Network on chip) timeout. We are surviving because of
-> other driver vote for this path.
-> As there is less access on this path compared to PCIe to mem path
-> add minimum vote i.e 1KBps bandwidth always.
+On 2/21/24 14:29, Justin Stitt wrote:
+> Hi,
+> 
+> On Wed, Feb 21, 2024 at 05:27:20PM +0800, David Gow wrote:
+>> The drm_buddy_test's alloc_contiguous test used a u64 for the page size,
+>> which was then updated to be an 'unsigned long' to avoid 64-bit
+>> multiplication division helpers.
+>>
+>> However, the variable is logged by some KUNIT_ASSERT_EQ_MSG() using the
+>> '%d' or '%llu' format specifiers, the former of which is always wrong,
+>> and the latter is no longer correct now that ps is no longer a u64. Fix
+>> these to all use '%lu'.
+>>
+>> Also, drm_mm_test calls KUNIT_FAIL() with an empty string as the
+>> message. gcc warns if a printf format string is empty (apparently), so
+> 
+> clang does too; under -Wformat-zero-length
+> 
+>> give these some more detailed error messages, which should be more
+>> useful anyway.
+>>
+>> Fixes: a64056bb5a32 ("drm/tests/drm_buddy: add alloc_contiguous test")
+>> Fixes: fca7526b7d89 ("drm/tests/drm_buddy: fix build failure on 32-bit targets")
+>> Fixes: fc8d29e298cf ("drm: selftest: convert drm_mm selftest to KUnit")
+>> Signed-off-by: David Gow <davidgow@google.com>
+> 
+> Reviewed-by: Justin Stitt <justinstitt@google.com>
 
-Add blank line between paragraphs or wrap into a single paragraph.
+David,
 
-Add space before open paren, e.g., "ICC (interconnect consumers)",
-"NoC (Network on Chip)".
+Please send this on top of Linux 6.9-rc6 - this one doesn't
+apply as is due to conflict between this one and fca7526b7d89
 
-> In suspend remove the disable this path after register space access
-> is done.
+I think if we can fix this here - we won't problems during pull
+request merge.
 
-"... remove the disable this path ..." has too many verbs :)
-Maybe "When suspending, disable this path ..."?
+thanks,
+-- Shuah
 
-> +	 * The config space, BAR space and registers goes through cpu-pcie path.
-> +	 * Set peak bandwidth to 1KBps as recommended by HW team for this path all the time.
 
-Wrap to fit in 80 columns.
-
-> +	/* Remove cpu path vote after all the register access is done */
-
-One of the other patches has s/cpu/CPU/ in it.  Please do the same
-here.
-
-Bjorn
 
