@@ -1,118 +1,138 @@
-Return-Path: <linux-kernel+bounces-83203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C59E786902B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:19:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E117F869034
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 657811F21DF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:19:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9736E1F21D56
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:20:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F1013A88B;
-	Tue, 27 Feb 2024 12:13:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E9A145330;
+	Tue, 27 Feb 2024 12:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A7RzuOTH"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="DboDdjeu"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B6113A877;
-	Tue, 27 Feb 2024 12:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E25F13B2A5
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709035986; cv=none; b=BEWCLxQWV1bwA18tKItZc0C2q2omtN6GUGOBVw66QBjqmaS6Bdu95UnwbpU4LpRgE4NcGC5BLE614gGrdZ6nkr56OetKqE2RIhnO1qhsdkp/+bfEFFgLsPaiM6A++aJtUDrJ9K/MUdGimO+FVdkr4ANp6ET+tYX59FKjINxX2Bk=
+	t=1709036080; cv=none; b=ot4J4nW6bPQRu0/pnx9S/VkxSXx4duRT1nVpt4ZYV7D2Dyy0RxijHRlopDBjsHGFqzvKFFIJ70ACyIu7+RG3J721Dxu0lmXW3sBFNUe+B3AZRQDgfRmP+TohTKYh0JW2OaCPaqn+I2r5uaVMPLtPzSvdgQeDtmYJrR6NDxt17Ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709035986; c=relaxed/simple;
-	bh=PNfuFy5Ba+D5qLkPXV/F9tZVKt/ke8CC3TLHGloyd2k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mgM1DsJkUa9/Tdtri+bw0ikMfdU0rrAF1xxfxPAxvkCv66W9KfSgQc+nxnfYATv2gkExG5p6WkIWZG2MhN0oUHQAMwjjPQMIsAYp6qnLquicrOtkoULgkAHjY7ZRv+97aJmt80Hw5Eml8kqJxh2smgnjz+QQvjuQTiiHf91qpDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A7RzuOTH; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso3310671a12.2;
-        Tue, 27 Feb 2024 04:13:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709035984; x=1709640784; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PNfuFy5Ba+D5qLkPXV/F9tZVKt/ke8CC3TLHGloyd2k=;
-        b=A7RzuOTHT5lz7H92/ApnlKWkrpzABYAqTtBJob3puaeqDP3j8uvkkM9vaZcbzzr4hP
-         cve7C/GSu3+ilq18saUNgNNoPyo3fSND4ON7zrzCnc77KlD1aNtaaFlxBe/YvKrJbco7
-         56zQGnTMnTS9FITUmEqIhGQrbrnAkqXk4I1h7AbLgAe3cJMHuQzUUfvsPp9JUICBaehF
-         epGbY+0dzpdC45ddGFmVVt87yy3LJZx0B9GHy7Ncr1ssIexs51tiL0Qi4aWzhp+Bv7wS
-         mnV16H+SW6GonNihM0Lx3jRvgCUhrX3l1s/2ciKaOGi3iWfjSx8l9b8fQYps+b0cshkd
-         gSUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709035984; x=1709640784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PNfuFy5Ba+D5qLkPXV/F9tZVKt/ke8CC3TLHGloyd2k=;
-        b=vn+5+BZ52UbCI2vApJKwl06WFhO14jP+mpeKw5CD4NQ6B0F7Fuv/gsj2H82N/hAMpI
-         DyXKoRBxRqfKEcVLy3f+I5chlujJHQz1NEeOesNLz6DpAfpUf1d00HLEQ5feKi8gtvAI
-         gg+t8dV9yY4LtdMCxZqVYw9PxgOMTqy0rfzka2F1Fata0+UnLqhTcrrU8EhVa04EOj8c
-         XEx5dv/QYnwMs2Ev63MeeumVUw1xmu0mQ5tApEoFiNVYKx22ElZAWC+xsgsubBg4Rcwg
-         0t3Y37aGy9ob+HK66SKWfDY1XoaEJcUKrpiDhyVT3/llgaUzRBCMFjVs6U5dMpmZQGsC
-         wVug==
-X-Forwarded-Encrypted: i=1; AJvYcCVWi65WapItJITmttdmeB1zFHEUfmoBDk9a9wLxlScZ9L7BS9v8si3N4yn9llAGxIw6xMaYJdaaXkLbWgU3yZnrT0UWYcbveGY5uHELGC3YB9fQT8mVsxgE1HLaAWSMyUX+jKM+Ha0+ez+r5lyyVV+Gn+C31eCgNCChtxZKiH6ylplaccNxzzU=
-X-Gm-Message-State: AOJu0YwiBLOXS/XAMfAdjMPcFdTgyi2eVrTGGumAW09QTQ2vubzkw3mb
-	bX4dHtDYNX4f75/nBGhHhobzspqLKciQ80zqG2m7SVE7AP5hvynq68DHjGomewkrTWZ3mW/CQjk
-	TQkfQFin9zpvbC7EDDpjxu5R1ZOk=
-X-Google-Smtp-Source: AGHT+IEZrxxC5KTd1mUmyNpa02ckU0dvc0XT6naKz7W71hSie5HLJAV5L6JVbDjYli/t99gdzmOA0c0J+BbxKw9TRZg=
-X-Received: by 2002:a17:90a:1b85:b0:299:6a7f:3f55 with SMTP id
- w5-20020a17090a1b8500b002996a7f3f55mr6019384pjc.45.1709035984277; Tue, 27 Feb
- 2024 04:13:04 -0800 (PST)
+	s=arc-20240116; t=1709036080; c=relaxed/simple;
+	bh=fSrXRCpTEpQRkMIDKSjqJaiu1Qp1gr1z2GJ9vNCAs4U=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LpUrYid9/7cmxr5crch56ln9KklkJlqgAhd7rFhuSz3B2xWq/NgXQfr/K9LIw/QyqwTulBB4iM/5vmRIGp3TSDovtawW4rdZgXyzT/1mE0dYviOeAlpfLX1khs3bkmYLzC+9cjdYuPNi7VNZtxbrfjFPdcc9amgR316KcFfx9Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=DboDdjeu; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709036078; x=1740572078;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fSrXRCpTEpQRkMIDKSjqJaiu1Qp1gr1z2GJ9vNCAs4U=;
+  b=DboDdjeuC6RiJ6vEbzJGatvgfWYtudz2SgZ64FtuvTPArPUYRl02oE2k
+   vs5ug0WTNtWHhCJMqLfNMBOyBvJyc8IbLJR+J7rcvbBTquQvKQmKHgEGv
+   mz7R2v8Wg161vvjm2T/4xv//vESICe2FV9SooOxcrDmRatiHfEMVkoXye
+   W3uUl7is+J//exSdhUKP7QWHjgyfi7p7FoAYQDcoyk8ro1bOyn5r8MGFa
+   eKyF6y0DOzE7ztdQ0ZxnX++FPzCJH74s+4DmhUGbf1KmZ8Z5IWvFB52Pg
+   PiIWlPnptLoksuSBb0vwncHIi5EnQ+IQhD8GvbzNiYGcjWL1PBkHUj/Vg
+   w==;
+X-CSE-ConnectionGUID: EC6mGCUkTgeb01x5BvwdWA==
+X-CSE-MsgGUID: AaXkTeu7TIif8MCz6FcBNA==
+X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
+   d="asc'?scan'208";a="16882459"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 05:14:37 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 05:14:28 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 27 Feb 2024 05:14:28 -0700
+Date: Tue, 27 Feb 2024 12:13:45 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+CC: Palmer Dabbelt <palmer@dabbelt.com>, <linux-riscv@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] riscv: 64-bit NOMMU fixes and enhancements
+Message-ID: <20240227-footage-porridge-949a43ee8ecb@wendy>
+References: <20240227003630.3634533-1-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223-leverage-walmart-5424542cd8bd@spud> <20240223-employee-pessimism-03ba0b58db6b@spud>
- <CANiq72ngEZskjH0f=8+cJuQsFTK227bGCxe5G0STMHuPbZYnXg@mail.gmail.com>
- <20240227-resolved-deceit-4a59a6af5b71@wendy> <CANiq72mwM+4Oh-H5WmRoqQ_nE1w-eJ1wn-nEwS=BR9JRwzxMMQ@mail.gmail.com>
- <20240227-glove-underwire-f562a56cf2c7@wendy>
-In-Reply-To: <20240227-glove-underwire-f562a56cf2c7@wendy>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 27 Feb 2024 13:12:51 +0100
-Message-ID: <CANiq72=f03_bw9B8ww8UxHkVyP2F7ZPyvC+KWCyhO3Nk1yqdaw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] scripts: generate_rust_target: enable building on RISC-V
-To: Conor Dooley <conor.dooley@microchip.com>
-Cc: Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Tom Rix <trix@redhat.com>, 
-	rust-for-linux@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="CO1sGIa2Mft349oV"
+Content-Disposition: inline
+In-Reply-To: <20240227003630.3634533-1-samuel.holland@sifive.com>
+
+--CO1sGIa2Mft349oV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 12:05=E2=80=AFPM Conor Dooley
-<conor.dooley@microchip.com> wrote:
->
-> My point though was more
-> that either this was acceptable for v6.9 or would be v6.10 material
-> with the same mechanism as arm64. Rebasing after v6.9-rc1 but not
-> adapting to that way of doing things is what seemed silly to me, since
-> if a resend is required then the other improvements should be carried
-> out at the same time.
+On Mon, Feb 26, 2024 at 04:34:45PM -0800, Samuel Holland wrote:
+> This series aims to improve support for NOMMU, specifically by making it
+> easier to test NOMMU kernels in QEMU and on various widely-available
+> hardware (errata permitting). After all, everything supports Svbare...
+>=20
+> After applying this series, a NOMMU kernel based on defconfig (changing
+> only the three options below*) boots to userspace on QEMU when passed as
+> -kernel.
+>=20
+>   # CONFIG_RISCV_M_MODE is not set
+>   # CONFIG_MMU is not set
+>   CONFIG_NONPORTABLE=3Dy
+>=20
+> *if you are using LLD, you must also disable BPF_SYSCALL and KALLSYMS,
+> because LLD bails on out-of-range references to undefined weak symbols.
 
-If avoiding the `target.json` is possible, definitely.
-
-I didn't want to assume it is, though -- e.g. the native integer
-widths you have is 64 but the built-in targets use 32:64 (perhaps
-there is a way to tweak it with an LLVM param via `-Cllvm-args`, but I
-don't see any obvious way from a quick look; `opt` does have it,
-though).
-
-(That is why we supported `target.json`, since it gives the most
-freedom in the beginning.)
+That's not new to these patches though, right? IIRC that's an existing
+issue.
 
 Cheers,
-Miguel
+Conor.
+
+>=20
+>=20
+> Samuel Holland (4):
+>   riscv: Fix TASK_SIZE on 64-bit NOMMU
+>   riscv: Fix loading 64-bit NOMMU kernels past the start of RAM
+>   riscv: Remove MMU dependency from Zbb and Zicboz
+>   riscv: Allow NOMMU kernels to run in S-mode
+>=20
+>  arch/riscv/Kconfig               | 17 ++++++++++-------
+>  arch/riscv/include/asm/page.h    |  2 +-
+>  arch/riscv/include/asm/pgtable.h |  2 +-
+>  arch/riscv/mm/init.c             |  2 +-
+>  4 files changed, 13 insertions(+), 10 deletions(-)
+>=20
+> --=20
+> 2.43.0
+>=20
+
+--CO1sGIa2Mft349oV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd3R+QAKCRB4tDGHoIJi
+0n0qAP4husn7Rq5mjuLx/yxtyV7nKMyhO3tT1JDLr71TEIcUmAD/a+xbAGs6K7dA
+FvSbJPEadfhLnQI2kFIU0j/68ieDFwM=
+=prhB
+-----END PGP SIGNATURE-----
+
+--CO1sGIa2Mft349oV--
 
