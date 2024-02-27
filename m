@@ -1,198 +1,112 @@
-Return-Path: <linux-kernel+bounces-82839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 978D7868A6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:05:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85CC1868A72
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:07:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EE8A1F24E7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:05:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E25292825D0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA77C56458;
-	Tue, 27 Feb 2024 08:05:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AGu/0dR9"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4502B55E57;
-	Tue, 27 Feb 2024 08:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C189356477;
+	Tue, 27 Feb 2024 08:07:05 +0000 (UTC)
+Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C36255E62;
+	Tue, 27 Feb 2024 08:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.89.151.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709021103; cv=none; b=GRx6XUJ3abBQx/6GEpEn4II5iyl8NXzgBVX+Bs/1HNd8gNnbfksOrDvKgkrg3xEGUVzaXnza12lYFsDYXUG1KcwXk8UYDnm92jZejiSKWmWxwW9KBGkBGnXFt3U+qxyUh6me4K/YXpQeK1fVUuUgpN9KsWCbjJxtRMR+9JvQwws=
+	t=1709021225; cv=none; b=QiDiFaPeMALAwbQmpiOg1hRX+CUigXqluWwJG24T5K1EY3e3k+mfPnaFsqgd0ahQ6jiYH5BH+fuyMVB6RhncOwgKSOhgn24/+i7K/U6pbFl0OlqiU8PKG0vExIRXCKcvy/G6tTZu5DnPzzo8LwSiUmNwXjZU9G2Ie2KH1//10O8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709021103; c=relaxed/simple;
-	bh=dLc6qzpdn0QcbWH35jBWzBShMzWwsYYOLtQdcDNpS08=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W/Nz7Irf/5UeFpWxgwN6THAs1djuvKz3Boj+istMyblBbC/GZ6msm97csNZEhpQcvI+zrbRFS2WfyauAavlrsqo1sRp5HOHbBA5OQBVZFOvjY7X/xuHX9Jfxa5zymK+0YzGtne45ydlS+HYL5iufDt/imQ0HAUSN73+f7UDqCus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AGu/0dR9; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5656e5754ccso4902155a12.0;
-        Tue, 27 Feb 2024 00:05:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709021099; x=1709625899; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8IQYfg/jEbKsFfnP7Ml8GxrhHj0pSAVN9Eix4gdEtcY=;
-        b=AGu/0dR97o7ALNRJBJIjtnL5ZqtzEjPFZqxQK5A/DUANqvjIQxm+fenlNu4NEdeVc1
-         56S+zMHoyyW5ZbXoxyb5HKhJndiV3J+ZH2onDEbXYh5bmHWyYU0rUTy/GwNXBPNRgtoz
-         waToFSeg1FMvCP8J8bgMnQI8Sgly6DRls3/iIynK2sCQtNhSUyB7LO5+ZYuljS9EBHNZ
-         N0EglxP1KNIIA53u0yMJTvAzHqY2or9DgHoz9+pzEdVvPCIgIfrhB1g5UzhiHf6cPuSi
-         gTV9wusuJpdOLIzdTIwSLvEVn0UoN6hyu2ENvlJEYa9qOgb86zNjsN2U/Bbfwi2lCywz
-         6mdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709021099; x=1709625899;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8IQYfg/jEbKsFfnP7Ml8GxrhHj0pSAVN9Eix4gdEtcY=;
-        b=td+t7iXRDl8Jd9pD7qFLHY6utvGj7ErOrrFSOtq3oe+Lrv4bur02JKCgkVn7Khiqc3
-         0Zk9pxSkzIqAJsoqnSvHR0QAQma1Auf/1Hq5fIHoKDFFx23fSIr57XU1aIsiTEtxajFm
-         z0AQ3oeoroCOPostDJbwskdG6VEhD8Sr2z8pCHX25kNfpEfofl+GrnlrDhdwhF75Tlks
-         LdkKlKJhyOFenW2y5roRWrf41JZMnkV4yRs92OZ1bFgfAs4JgAn59j7KafTPGdmeXKhG
-         quZQOUBVSYbtmPlKaqa2uzPOt5GHcRAYxFGUUibLHCr9yVVDH0wFRA5WtvwQNsj5ZdQ2
-         dr2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVIKMOe3Dtv5e0O3XhROtOWNFCMDCH5VnjBXk0wvluiR+UBMop3YEvrhxvG5cHBUJidWXfr5eE3lTN0QiG+Qon0D0V877R/GwaAtfaWofqF2f2CmhXnoMWgTgfmfpqT1SaNjtGN00q1wrJaGq9v2nfTVMCwUoEwyT8B1lxJ9dyflU75BDKo82a65E/f5zaxkebBLkGfvMxHreEHY3SA1t+5KqO4
-X-Gm-Message-State: AOJu0YzU+Iay7eir6jpjxAgYXFkfupFH/gNVjCyKiV7i1Jn8Xu0H4pjY
-	OnnMeTl9LfOIUjbPidHerCnoYWW0GwnCOfM1jWKWP6xD0aEh+i5DRSNU8eeFehu9Q2FI1ZlWkKu
-	dsbgTjn02EFbrHeqiPiJQ5u49xts2tNLxP2OQmA==
-X-Google-Smtp-Source: AGHT+IFlufugla77dD0j6LnZaS9EwyRoI4OBtOt4iPjnpLBqDX7T/t9hkHQLyVLsNt3OF+TRgbh8PTkCNXKpThlby/o=
-X-Received: by 2002:a17:906:5fce:b0:a3e:73c9:7acc with SMTP id
- k14-20020a1709065fce00b00a3e73c97accmr5824341ejv.33.1709021099415; Tue, 27
- Feb 2024 00:04:59 -0800 (PST)
+	s=arc-20240116; t=1709021225; c=relaxed/simple;
+	bh=bn8lBdZvB6L2HQkh78StuFH3Cwbf8lGTxYiUbBqrdUk=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=MhhROsfbMTK/tFR0hsqv/aZepUxNNg7ynpxeqw/tAaq3N0d8qbgbUP4rnmQaogheUqC+Y/hjNaw3Ff7SiYJwgrIzcqk9F30Srk41P3aTiTY13g0WWY3JjDERaAPQRK11jd/jVUTLTY4dFTQ6Mk3F6Fhr61g+8QT+VgtwuT6Ydo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=159.89.151.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from ubuntu.localdomain (unknown [218.12.19.154])
+	by mail-app2 (Coremail) with SMTP id by_KCgBnF6b2l91l841JAg--.21305S2;
+	Tue, 27 Feb 2024 16:06:27 +0800 (CST)
+From: Duoming Zhou <duoming@zju.edu.cn>
+To: linux-kernel@vger.kernel.org
+Cc: brcm80211-dev-list.pdl@broadcom.com,
+	brcm80211@lists.linux.dev,
+	linux-wireless@vger.kernel.org,
+	justinstitt@google.com,
+	john@keeping.me.uk,
+	quic_alokad@quicinc.com,
+	marcan@marcan.st,
+	johannes.berg@intel.com,
+	linus.walleij@linaro.org,
+	kvalo@kernel.org,
+	arend.vanspriel@broadcom.com,
+	Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH] wifi: brcm80211: handle pmk_op allocation failure
+Date: Tue, 27 Feb 2024 16:06:13 +0800
+Message-Id: <20240227080613.34001-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:by_KCgBnF6b2l91l841JAg--.21305S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF43XrW3XrWUAry8Wr13twb_yoW8GFWkpw
+	s7GFyqyr1UWw4Skw45tFyvvryFga17K3sYkr4jy3s3uFZ3Gr1rJr48KFyFvFnYyr4ay3y2
+	vFWktF98Wr4DWw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
+	6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+	n2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4l
+	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+	C2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQEAWXc3dIQZQAcsd
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240226104653.54877-1-lukas.bulwahn@gmail.com> <43df625f-bd32-4dd9-a960-6d0f5c0304c7@infradead.org>
-In-Reply-To: <43df625f-bd32-4dd9-a960-6d0f5c0304c7@infradead.org>
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date: Tue, 27 Feb 2024 09:04:48 +0100
-Message-ID: <CAKXUXMxSnEEYCtvxVN6Z_QuDTEpLiq=Zsz+=g=kNzwKuLeH=Pg@mail.gmail.com>
-Subject: Re: [PATCH] docs: submit-checklist: structure by category
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org, linux-doc@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 1:41=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
->
-> Hi Lukas,
->
-> I'll review the file changes separately. This is just replying
-> to the patch description comments.
->
->
-> On 2/26/24 02:46, Lukas Bulwahn wrote:
-(snipped)
->
-> > Note that the previous first point still remains the first list even af=
-ter
-> > reordering. Based on some vague memory, the first point was important t=
-o
-> > Randy to stay the first one in any reordering.
->
-> Yes, I have said that. Stephen Rothwell wanted it to be first in the list=
-.
->
+The kzalloc() in brcmf_pmksa_v3_op() will return null if the
+physical memory has run out. As a result, if we dereference
+the null value, the null pointer dereference bug will happen.
 
-I have adjusted my commit message:
+Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
+for pmk_op.
 
-Note that the previous first point still remains the first list even after
-reordering. Randy confirmed that it was important to Stephen Rothwell to
-keep 'include what you use' to be the first in the list.
+Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V3 operations")
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
->
-> > While at it, the reference to CONFIG_SLUB_DEBUG was replaced by
-> > CONFIG_DEBUG_SLAB.
->
-> I don't understand this comment. DEBUG_SLAB is gone.
-> I think those 2 symbols might be reversed in your comments. ?
->
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index 28d6a30cc01..3b420b33188 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -4322,6 +4322,10 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
+ 	int ret;
+ 
+ 	pmk_op = kzalloc(sizeof(*pmk_op), GFP_KERNEL);
++	if (!pmk_op) {
++		ret = -ENOMEM;
++		goto out;
++	}
+ 	pmk_op->version = cpu_to_le16(BRCMF_PMKSA_VER_3);
+ 
+ 	if (!pmksa) {
+@@ -4340,6 +4344,7 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
+ 	pmk_op->length = cpu_to_le16(length);
+ 
+ 	ret = brcmf_fil_iovar_data_set(ifp, "pmkid_info", pmk_op, sizeof(*pmk_op));
++out:
+ 	kfree(pmk_op);
+ 	return ret;
+ }
+-- 
+2.17.1
 
-I must have mixed them up while writing down the commit message; so
-now it reads:
-
-While at it, replace the reference to the obsolete CONFIG_DEBUG_SLAB with
-CONFIG_SLUB_DEBUG.
-
-That is what is happening in the file.
-
->
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> > So far, no point disappeared and nothing new was added.
-> >
->
-> That's a good start IMO.
->
-> > Points/Ideas for further improvements (based on my knowledge and judgem=
-ent):
-> >
-> >   - The Review Kconfig changes makes sense, but I am not sure if they a=
-re
-> >     so central during review. If we keep it, let us see if there are ot=
-her
-> >     parts for review that are also important similar to Kconfig changes=
-.
-> >
-> >   - Concerning checking with tools, checkpatch probably still makes sen=
-se;
-> >     it pointed out in several places. If sparse and checkstack are real=
-ly
-> >     the next two tools to point out, I am not so sure about.
->
-> I doubt that ckeckstack is important since gcc & clang warn us about
-> stack usage.
->
-
-So, I might drop this later on and replace it with something more
-important to ask.
-
-I have put it on my todo list (but others are welcome as well to pick it up=
-):
-
-KTODO: Investigate if the make checkstack tool is really obsolete, as
-gcc and clang are already set up to warn about large stack usage just
-as well as make checkstack does.
-
-Present how it was investigated and which kind of "benchmark" was set
-up and how the results were evaluated. If make checkstack is really
-obsolete, create a patch to remove the tool from the repository, and
-add some documentation to explain how kernel developers can check for
-large stack usage.
-
-> >     sparse has a lot of false positives nowadays, and many things are n=
-ot
-> >     fixed just because sparse complains about it.
-> >     And I have never used make checkstack and have not found much
-> >     documentation about it.
-> >     So, maybe other tools deserve to be mentioned here instead?
-> >
-
-If make checkstack is removed from the list, this might give rise to
-another linting/static analysis tool worth mentioning. The candidates
-that come to my mind are clang-tidy or smatch. I need to check,
-though, if the installation guides for those tools and the setup for
-the kernel sources are clear enough to actually promote running these
-tools.
-
-But maybe there is another tool worth mentioning. I know about the
-coverity setup, but this is not really suitable for checking
-individual patches.
-
-Randy, I will wait for your review and feedback on the file changes
-and then send out a v2 patch. So far, the changes are only changes to
-the commit message.
-
-
-Lukas
 
