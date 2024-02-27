@@ -1,148 +1,130 @@
-Return-Path: <linux-kernel+bounces-83538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E7C0869B03
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:48:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E01B869B0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04E0E2859D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:48:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43E1F1F25874
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:49:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9E71468FE;
-	Tue, 27 Feb 2024 15:48:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EC9148FE5;
+	Tue, 27 Feb 2024 15:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yWiLmoTM"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YO5g2sSg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11698136659
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:48:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F62A1482E3
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709048923; cv=none; b=DPeGRNdFrAfpmOIw9OSeoV8i9qckIFlgFd0lcnr/eZzruHJxTEDV3hL3s1NU3brPQk8aBsBtYlnk5z5hpgHEuk92oIyDux3+2CJkutpwg8wz3PCuy+77nmVBLzZa6hLKTW04DVGY+GdoSmgfCGW4S7ud8+kZFmDifZY0RcqLSD4=
+	t=1709048939; cv=none; b=t9wHXJE0aE2VBIcJuqh5qupjcNS9Cm4rI7caPdk3j3S44wNOPTV7ZVSf33IDK/ZPPWBer0fdv+ACUz3AFZ07TWoX0sPRlX7oao4tKmZGfDkN1hpz1u1RDHYoL7kPuPsIAtwrlbrImg3qOXEqrZ/u01Sg7ilq4fYDtFiR5Bow3SQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709048923; c=relaxed/simple;
-	bh=xseDL8aqwJ3pS83U9vW3Z+KU8J4IQwtrHyBSKAu00NU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cruo+7eUQxjN+bFNLvUof0fCMz7LG8kGtGTRwxaWrnaCu2xfhbMLmcogPPg9vUwT3W9OdCASXzweIx4fbRBnMceLR6e4e7Tb/fDj5CmG3Cb99EgDNx4asAenTcYANcv/dQJKNQN/aCsCRrerjdyHBIkulemOQAredHnmbFd91hQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yWiLmoTM; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso4750984a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:48:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709048920; x=1709653720; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QXrScq6tyripMTKkpGLAH5gv8RQMW4EU8tt1ciIiraQ=;
-        b=yWiLmoTMnPitBId+2OCuMv04e1MI82G2YUpdygiif5YQjREflCM9iUO1+5lsYetAgT
-         k6wmnJLtwt9yWgQzAKqYxwuYNY/lSu04/NLWZiFf7DWEZdzpP0j9HT/F3DDxdvqcfkA7
-         GTgaWplE2U5B1dRDH7a8P2VymZl1lDbyGJcP4N8ayJR2QBzpyh2BVlC1bGDZP+6hQSPZ
-         zAhdlEVSDRn1LIluGzzPClOJd3HewdSLdv+JHhk5m740xsKbvkMYv49QQmSQ4bNHsWVX
-         YD660DWq8jL+1pT95pmKrVSRiLeQfvr8AXsya84DEtsAcpXTCvPyAIMkvxWcBIL6yPo5
-         3m+w==
+	s=arc-20240116; t=1709048939; c=relaxed/simple;
+	bh=up+DCN5ChGl/E+3j2L4zs+YPx9EtncoGLVBvu8pAspA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O0Ks2kp3bLiK2U8fHUOXKtjTNgQJrMkxYmTeErgipAH4evvHE/YKoBmCdlCEFNzW+pKDQvwWXkPglKJHUweEK0+P/BHxHUz89SiMdyJWqQfIOj/cqeddAnL8tCj5f+5j2kERR0Pl8Va9Y7SvdZOnglMC92WEAZ/vVBa32sSlvqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YO5g2sSg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709048937;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/xbnPq7RXIvNg+PfYUQ/SxQLN6DLHw3idVYtn+kLNDc=;
+	b=YO5g2sSgOA9ZUeviweCeFCQ4DH0bxYJCawiNTNqm0voftXnIsfR1qJVAVEHMRrCJ427qG6
+	39PGcW0pYoPvkFmHQIl/SeZY0sAGoFtXWXm8OHkWvM9pGNspHNnMrM5Be82GBym1yMH9WT
+	3uLjAXEE1CU9fN9DGZnmR5zFclMe1MQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-256-ndtj2l53OwmyEkRUSmQ0xA-1; Tue, 27 Feb 2024 10:48:55 -0500
+X-MC-Unique: ndtj2l53OwmyEkRUSmQ0xA-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33d29de76abso2335288f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:48:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709048920; x=1709653720;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QXrScq6tyripMTKkpGLAH5gv8RQMW4EU8tt1ciIiraQ=;
-        b=OBQVXuWefoLjqHRyq2qJCG0FOUEqlLZ7SwG5Dvp+nOvmYkzbpR+5SCgNX7EWH3E1y4
-         yYokMUDLz58CtZsVCXosKFIgTs+jYB3mGzgvMNSZPoQxgmy64Rc5sg76TtgCoTnSY+og
-         mNH0SAasDx5QGcXpmnAi+a6Hznao9RULZjgeesl4YrovSD2bvQQhxOHX780tvRNStwrJ
-         dPsYOWcT9aDg58bpZqnitERBTKCk2FxEmW++JsVQyiYSYE1sII9euFfqsBmHI5otr7FJ
-         AYJDQIgKrRP3PrBiPf5Q1/OSc517rmjXzs5mRX1IzMoYHfqMxKKor62qIgmyQ8fVPXjO
-         U4vg==
-X-Forwarded-Encrypted: i=1; AJvYcCX7In8F3CGYHmPb5GkXQTGYInesXNPDVAlhuQhR+uNu/Sgyfyn918WRJzyXlDsjIwXOrgzrcRPPxd4k5LQTS4Qu1x6RP8zW1gxKzTl8
-X-Gm-Message-State: AOJu0YymUKzmihmAlEcQWarpdUBe6kKi0rhYx1TUDY1g3mBAsJemTcSM
-	1krC5YjMeeFdJNvu/qFcxFfeqaUQEZbm6FBIdjP0ZAQYrMSeNGoVLtZAMDkCw9U=
-X-Google-Smtp-Source: AGHT+IFR3w95iw5UhtQURQsjMKyr5sxMjOTCvWOcPwiqQuMI6ALcY+8//FtAoUMBN8eZyDhwcIZj5Q==
-X-Received: by 2002:a17:906:140f:b0:a3f:c932:9c67 with SMTP id p15-20020a170906140f00b00a3fc9329c67mr7007741ejc.68.1709048920465;
-        Tue, 27 Feb 2024 07:48:40 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id fj7-20020a1709069c8700b00a381ca0e589sm888216ejc.22.2024.02.27.07.48.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 07:48:40 -0800 (PST)
-Message-ID: <7bcd0a62-becc-40dc-8ff2-710bfde41c46@linaro.org>
-Date: Tue, 27 Feb 2024 16:48:39 +0100
+        d=1e100.net; s=20230601; t=1709048934; x=1709653734;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/xbnPq7RXIvNg+PfYUQ/SxQLN6DLHw3idVYtn+kLNDc=;
+        b=JrvqiBDQDYea/odTYU1WfQ2tkILCx3ojG3KFpfTUgGOcXif2RrrR0qa1bFO7KX0YEP
+         7RVyfVVB7niKB097nNyf8MfrO5NmwjdkakZmT+QNPWAkclbY3+rW/tCJBohOqiAS37WL
+         Gug9Lf6oVR3EypmkptTqMrj1sBTDl8WHCuZ9dLtczCAsbHos3cfGljlfAzHLaceSaIY7
+         dTwN4EDqaTFmm9eaeH4F95C9NZVLM5oufeVUEXPRvxcMz9jFIk2ZLs817wycvCtZVf2u
+         x7cUd5exubs1svgV+Dg1M0bmfL8yuGs4yA8BEGO2pCwyMiBFbG5TkpRf9ScfgUPvnTuW
+         AlAg==
+X-Forwarded-Encrypted: i=1; AJvYcCWrEqvSimlgGnZ+pV6vDFPTx7ivYiDJEtljBM2dwmpPVnAGegAJ1FaZQsl4G8g98jQymwWakcJ1x8QnQjFOcu/XVKY9LSUPZpQPoZo6
+X-Gm-Message-State: AOJu0Yyijkkx1tvamq2Hly1CCWfHrSF1Azho8nBDnsXptWixa3ceHczZ
+	tIl2AOmAukio7nmVefkOLttcf6nRnOnGmBteE1HDGLzNsydo42gFnNj2B5YSqwbCEUTuwNwHIvh
+	uad5uDYY9W4IssyBQewynv2a84b7wlqoFjCd8dLlforK5GScv0LhABVNWc+9Orw==
+X-Received: by 2002:adf:e702:0:b0:33d:509c:5692 with SMTP id c2-20020adfe702000000b0033d509c5692mr7613812wrm.31.1709048934563;
+        Tue, 27 Feb 2024 07:48:54 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHhhMpgy8POimkjUANc+4RteuVbX4FX4SRQYH18i2c3XpSnO3gd/o0FCmDM1lLUaZunxWosww==
+X-Received: by 2002:adf:e702:0:b0:33d:509c:5692 with SMTP id c2-20020adfe702000000b0033d509c5692mr7613789wrm.31.1709048934215;
+        Tue, 27 Feb 2024 07:48:54 -0800 (PST)
+Received: from redhat.com ([2.52.10.44])
+        by smtp.gmail.com with ESMTPSA id t9-20020adfeb89000000b0033dbeb2eb4dsm11575355wrn.110.2024.02.27.07.48.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 07:48:53 -0800 (PST)
+Date: Tue, 27 Feb 2024 10:48:49 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Cindy Lu <lulu@redhat.com>, Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Xie Yongji <xieyongji@bytedance.com>,
+	Maxime Coquelin <maxime.coquelin@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] vduse: Fix off by one in vduse_dev_mmap()
+Message-ID: <20240227104743-mutt-send-email-mst@kernel.org>
+References: <e26476e0-68ae-412d-a5d9-4996bc30d038@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/5] arm64: dts: qcom: sm8450: Add mapping to llcc
- Broadcast_AND region
-Content-Language: en-US
-To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@quicinc.com
-References: <cover.1708551850.git.quic_uchalich@quicinc.com>
- <8b626c328bfb3ae297a228a6821471c4fcc2ec70.1708551850.git.quic_uchalich@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8b626c328bfb3ae297a228a6821471c4fcc2ec70.1708551850.git.quic_uchalich@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e26476e0-68ae-412d-a5d9-4996bc30d038@moroto.mountain>
 
-On 23/02/2024 00:07, Unnathi Chalicheemala wrote:
-> Mapping Broadcast_AND region for LLCC in SM8450.
+On Tue, Feb 27, 2024 at 06:21:46PM +0300, Dan Carpenter wrote:
+> The dev->vqs[] array has "dev->vq_num" elements.  It's allocated in
+> vduse_dev_init_vqs().  Thus, this > comparison needs to be >= to avoid
+> reading one element beyond the end of the array.
 > 
+> Fixes: 316ecd1346b0 ("vduse: Add file operation for mmap")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Nothing improved here.
 
-Best regards,
-Krzysztof
+Oh wow and does this not come from userspace? If yes we
+need the speculation magic macro when using the index, do we not?
+
+> ---
+>  drivers/vdpa/vdpa_user/vduse_dev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
+> index b7a1fb88c506..9150c8281953 100644
+> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> @@ -1532,7 +1532,7 @@ static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
+>  	if ((vma->vm_flags & VM_SHARED) == 0)
+>  		return -EINVAL;
+>  
+> -	if (index > dev->vq_num)
+> +	if (index >= dev->vq_num)
+>  		return -EINVAL;
+>  
+>  	vq = dev->vqs[index];
+> -- 
+> 2.43.0
 
 
