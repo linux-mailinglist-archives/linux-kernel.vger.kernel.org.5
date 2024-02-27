@@ -1,133 +1,225 @@
-Return-Path: <linux-kernel+bounces-82510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FD5868591
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:10:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58196868593
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:10:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21C631C20F72
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:10:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D88E28723D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88FF56139;
-	Tue, 27 Feb 2024 01:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4A14A29;
+	Tue, 27 Feb 2024 01:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FgCAthic"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jiMpAJF5"
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AF5F5667;
-	Tue, 27 Feb 2024 01:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E7C46AF
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708996201; cv=none; b=EyqAWqVxcpa9rW2lmOpbtcriRQipJMw/72qOBl5xPWoLMcsFBFkGlU6p43E8LlR8/kiHsQNnUJHExQm+Ipa1UEtM1kaObOzi1r55jSWfy+CFHWqAOrCllgwVduzMmFCoUR51f3D6GsPyaibcEswsNwSIy2YevX59SBTLf54OL8w=
+	t=1708996223; cv=none; b=Hbii4OEiJQucmitVAZrXC+1NiH+Q/d+NZg3rHSMFEFr8Fy9IbkXCxOAer7TckJ8Vh1ycPgKv3DV7AGLSZcMaQODobF9xr18eoYBs/IJkseqnk7OvUrLkkrkLhwntO3W2zxdAFESuGQZQrRspCvX7ysXYKHndJh4Vl/v7RJbOWz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708996201; c=relaxed/simple;
-	bh=u3pF9IuPzcNrvYdAT+1cDQgD9k9JyQ4Z1midFjBg6YQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hkTnduhKZwG1yyI3JAd5LQ65Y+9gDBT/u/VmKlAp80iYdljaUIRVbeA38KteJ9OEKpSDXAqzJLsIN3DVvXF291YKEQ/2kUiJtUZTNRs/jr6J/Z7Vu8nDS/LqRsTK/UnaRw8lO1sDO/LS9keBMebW021HbCLF6QqS/FDft0ceuTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FgCAthic; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=gwiXT85stAdWTOUd6txuILwVivp2eGJBqmUEFcS5o58=; b=FgCAthicwmPNlQ+DMbEELBmK/I
-	qUAzdjuLcWA2Bys4HwHthcbpwBzlNPwaS/tovAfOoew9JrEZFYjESxt+zGf8GkFapHxP9/SO/esq9
-	bHcF/VwthH48hoKJXxy0LWHTdE9TbOnF3bJGbQkXPrKGnVbI83gQmS7rAZ+UCvS+MTjuKDVqPWq7L
-	6H023rd4HQlenEZ+ZGEIPQvCzTnNks64kjPFKDR1Fk3MSf2LLPo/wY2dO1IMuuj+Ffy/jw98te5qy
-	uxfagMnu+cQOjpgWnSf3CSb/QQb3G83xIV4aotv3un7jMKOheFwwVwCguDPGSOq/EvcNaNR/DoSr6
-	eX/RJ77w==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1relyf-00000003Dq6-1hGA;
-	Tue, 27 Feb 2024 01:09:59 +0000
-Message-ID: <7624c14e-0f5c-435c-9f6e-3d59b4e27aa2@infradead.org>
-Date: Mon, 26 Feb 2024 17:09:49 -0800
+	s=arc-20240116; t=1708996223; c=relaxed/simple;
+	bh=Ytyl4TVZNmNqQ43ehwWTlsuZ6vB1tt0Eh7x5v7/DaBE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nATz5LOf835qTZIXpSaqlvpjDBpnSQiHK2StFL9087fgfpWeQec1wJbVmyoBAwr+EIfOGGAcbn64MHc5uMFcjXG3C07eFALGAUm2b5lmCrQWudOmGdqN2PzZwqcyqLFy9LfOk2WSvTLWp0Ta+1KloiK32CVxunqanedynXjhdtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jiMpAJF5; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e432514155so1853007a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:10:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708996221; x=1709601021; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2nONMEgiFSJu48ujRsgQ7k5P30oEYUyNKo29jK5bJDE=;
+        b=jiMpAJF5w3TG+sa2o8ZDGtJayg7f3xq13iwKIS44hO7F+SQbmyoKjLAGpIEW7YAtXz
+         lGEnDXoULkF52IezwuzMmX0yoN/86rl68dW3ymelCiqs1+0c3A4+9VWPnpK7a54JlwYh
+         glI34MzWvLbBClOeMuSTfHRd3Zwh2V/y4L6o0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708996221; x=1709601021;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2nONMEgiFSJu48ujRsgQ7k5P30oEYUyNKo29jK5bJDE=;
+        b=exaWioayMM2wBk6AQJDpHMBNXD/AYVIHQfZkQnwbFllFJkmDEjLha+kYZSXBb3w0fp
+         WmMjaZZaWBysWcJeLMGAGQG4SmyWlEkFLv0i4gQnPG706wCsrHhU0AcgPuVl7EyHT4hv
+         jIpli4UnTv4ZkJ9kdsDem7sDHYELbgxPrq03OM4z3LgmGG+RKqWjbgLKXjw4Xhd4XGU9
+         MAVN+4Eo6mY4WLl68acVWpT5Bt5l9+D97Xe75Co/8lxOPKpFP5dFG+Q4zg0yekvEPyhk
+         OZoA853WptXAUrj2TmnvQlAx3jshPWTg2N3ytWLlsnpV1qDuSGCMtn0LvWOU9v/LgCMB
+         l7iQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDuLlmwHStFhuOVvE+3g+fXyHCshEBfGSubrQBNM9gNkEOC7r4Og+/2IyCEcmHczVkHmJ8/ppnKKorUTsnVB328lwMR285DzCBKvJn
+X-Gm-Message-State: AOJu0Yx6SxK922+G+S0J1UnLjxRrxdhN2QtJqOv+XNdmJ6PPFoiarZLG
+	/GrahQ2lJaqyxny2w/DxeDAcKhzTkSMvXjHVDfahx/kYg9hBUkuoYifzvbUcEXrrSY/Jt3byKYt
+	ERCnqnHJtn6Fa9HBxt9nXbjIXrZN89v1qEHJs
+X-Google-Smtp-Source: AGHT+IFws5Kxdb14MQ1Ej+HyXspa2sh+2n9Wu72IIuj/Ruv+O9s0INJzZGTh7MdiL1GKFOMwujxIFZOuAcC7yoIIv08=
+X-Received: by 2002:a9d:6c43:0:b0:6e4:8086:571 with SMTP id
+ g3-20020a9d6c43000000b006e480860571mr8748620otq.26.1708996221486; Mon, 26 Feb
+ 2024 17:10:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: Tree for Feb 26 (drivers/mtd/ubi/nvmem.c)
-Content-Language: en-US
-To: Stephen Rothwell <sfr@canb.auug.org.au>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, linux-mtd@lists.infradead.org
-References: <20240226175509.37fa57da@canb.auug.org.au>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240226175509.37fa57da@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240223223958.3887423-1-hsinyi@chromium.org> <CAA8EJpre_HOY1xzOZPv5gPiJ-kEZEJiEm8oyYzXTiPj66vY8aw@mail.gmail.com>
+In-Reply-To: <CAA8EJpre_HOY1xzOZPv5gPiJ-kEZEJiEm8oyYzXTiPj66vY8aw@mail.gmail.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+Date: Mon, 26 Feb 2024 17:09:55 -0800
+Message-ID: <CAJMQK-gfKbdPhYJeCJ5UX0dNrx3y-EmLsTiv9nj+U3Rmej38pw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Match panel hash for overridden mode
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Douglas Anderson <dianders@chromium.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Feb 26, 2024 at 4:37=E2=80=AFPM Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Sat, 24 Feb 2024 at 00:40, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> >
+> > This series is a follow up for 1a5e81de180e ("Revert "drm/panel-edp: Ad=
+d
+> > auo_b116xa3_mode""). It's found that 2 different AUO panels use the sam=
+e
+> > product id. One of them requires an overridden mode, while the other sh=
+ould
+> > use the mode directly from edid.
+> >
+> > Since product id match is no longer sufficient, EDP_PANEL_ENTRY2 is ext=
+ended
+> > to check the crc hash of the entire edid base block.
+>
+> Do you have these EDIDs posted somewhere? Can we use something less
+> cryptic than hash for matching the panel, e.g. strings from Monitor
+> Descriptors?
+>
+
+Panel 1:
+
+00 ff ff ff ff ff ff 00 06 af 5c 40 00 00 00 00
+00 1a 01 04 95 1a 0e 78 02 99 85 95 55 56 92 28
+22 50 54 00 00 00 01 01 01 01 01 01 01 01 01 01
+01 01 01 01 01 01 12 1b 56 5a 50 00 19 30 30 20
+46 00 00 90 10 00 00 18 00 00 00 0f 00 00 00 00
+00 00 00 00 00 00 00 00 00 20 00 00 00 fe 00 41
+55 4f 0a 20 20 20 20 20 20 20 20 20 00 00 00 fe
+00 42 31 31 36 58 41 4b 30 31 2e 30 20 0a 00 cc
+
+----------------
+
+Block 0, Base EDID:
+  EDID Structure Version & Revision: 1.4
+  Vendor & Product Identification:
+    Manufacturer: AUO
+    Model: 16476
+    Made in: 2016
+  Basic Display Parameters & Features:
+    Digital display
+    Bits per primary color channel: 6
+    DisplayPort interface
+    Maximum image size: 26 cm x 14 cm
+    Gamma: 2.20
+    Supported color formats: RGB 4:4:4
+    First detailed timing includes the native pixel format and
+preferred refresh rate
+  Color Characteristics:
+    Red  : 0.5839, 0.3330
+    Green: 0.3378, 0.5712
+    Blue : 0.1582, 0.1328
+    White: 0.3134, 0.3291
+  Established Timings I & II: none
+  Standard Timings: none
+  Detailed Timing Descriptors:
+    DTD 1:  1366x768    60.020 Hz 683:384  47.596 kHz   69.300 MHz
+(256 mm x 144 mm)
+                 Hfront   48 Hsync  32 Hback  10 Hpol N
+                 Vfront    4 Vsync   6 Vback  15 Vpol N
+    Manufacturer-Specified Display Descriptor (0x0f): 00 0f 00 00 00
+00 00 00 00 00 00 00 00 00 00 20 '............... '
+    Alphanumeric Data String: 'AUO'
+    Alphanumeric Data String: 'B116XAK01.0 '
+Checksum: 0xcc
 
 
+Panel 2:
 
-On 2/25/24 22:55, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Changes since 20240223:
-> 
+00 ff ff ff ff ff ff 00 06 af 5c 40 00 00 00 00
+00 19 01 04 95 1a 0e 78 02 99 85 95 55 56 92 28
+22 50 54 00 00 00 01 01 01 01 01 01 01 01 01 01
+01 01 01 01 01 01 ce 1d 56 ea 50 00 1a 30 30 20
+46 00 00 90 10 00 00 18 d4 17 56 ea 50 00 1a 30
+30 20 46 00 00 90 10 00 00 18 00 00 00 fe 00 41
+55 4f 0a 20 20 20 20 20 20 20 20 20 00 00 00 fe
+00 42 31 31 36 58 41 4e 30 34 2e 30 20 0a 00 94
 
-on powerpc32:
+----------------
 
-In file included from ./arch/powerpc/include/generated/asm/div64.h:1,
-                 from ../include/linux/math.h:6,
-                 from ../include/linux/kernel.h:27,
-                 from ../arch/powerpc/include/asm/page.h:11,
-                 from ../arch/powerpc/include/asm/thread_info.h:13,
-                 from ../include/linux/thread_info.h:60,
-                 from ../arch/powerpc/include/asm/ptrace.h:342,
-                 from ../arch/powerpc/include/asm/hw_irq.h:12,
-                 from ../arch/powerpc/include/asm/irqflags.h:12,
-                 from ../include/linux/irqflags.h:18,
-                 from ../include/asm-generic/cmpxchg-local.h:6,
-                 from ../arch/powerpc/include/asm/cmpxchg.h:755,
-                 from ../arch/powerpc/include/asm/atomic.h:11,
-                 from ../include/linux/atomic.h:7,
-                 from ../include/linux/rcupdate.h:25,
-                 from ../include/linux/rbtree.h:24,
-                 from ../drivers/mtd/ubi/ubi.h:14,
-                 from ../drivers/mtd/ubi/nvmem.c:7:
-./drivers/mtd/ubi/nvmem.c: In function 'ubi_nvmem_reg_read':
-./include/asm-generic/div64.h:222:35: warning: comparison of distinct pointer types lacks a cast
-  222 |         (void)(((typeof((n)) *)0) == ((uint64_t *)0));  \
-      |                                   ^~
-./drivers/mtd/ubi/nvmem.c:34:16: note: in expansion of macro 'do_div'
-   34 |         offs = do_div(lnum, unv->usable_leb_size);
-      |                ^~~~~~
-In file included from ../include/linux/build_bug.h:5,
-                 from ../include/linux/container_of.h:5,
-                 from ../include/linux/list.h:5,
-                 from ../drivers/mtd/ubi/ubi.h:13:
-./include/asm-generic/div64.h:234:32: warning: right shift count >= width of type [-Wshift-count-overflow]
-  234 |         } else if (likely(((n) >> 32) == 0)) {          \
-      |                                ^~
-./include/linux/compiler.h:76:45: note: in definition of macro 'likely'
-   76 | # define likely(x)      __builtin_expect(!!(x), 1)
-      |                                             ^
-./drivers/mtd/ubi/nvmem.c:34:16: note: in expansion of macro 'do_div'
-   34 |         offs = do_div(lnum, unv->usable_leb_size);
-      |                ^~~~~~
-./include/asm-generic/div64.h:238:36: error: passing argument 1 of '__div64_32' from incompatible pointer type [-Werror=incompatible-pointer-types]
-  238 |                 __rem = __div64_32(&(n), __base);       \
-      |                                    ^~~~
-      |                                    |
-      |                                    int *
-./drivers/mtd/ubi/nvmem.c:34:16: note: in expansion of macro 'do_div'
-   34 |         offs = do_div(lnum, unv->usable_leb_size);
-      |                ^~~~~~
-./include/asm-generic/div64.h:213:38: note: expected 'uint64_t *' {aka 'long long unsigned int *'} but argument is of type 'int *'
-  213 | extern uint32_t __div64_32(uint64_t *dividend, uint32_t divisor);
-      |                            ~~~~~~~~~~^~~~~~~~
+Block 0, Base EDID:
+  EDID Structure Version & Revision: 1.4
+  Vendor & Product Identification:
+    Manufacturer: AUO
+    Model: 16476
+    Made in: 2015
+  Basic Display Parameters & Features:
+    Digital display
+    Bits per primary color channel: 6
+    DisplayPort interface
+    Maximum image size: 26 cm x 14 cm
+    Gamma: 2.20
+    Supported color formats: RGB 4:4:4
+    First detailed timing includes the native pixel format and
+preferred refresh rate
+  Color Characteristics:
+    Red  : 0.5839, 0.3330
+    Green: 0.3378, 0.5712
+    Blue : 0.1582, 0.1328
+    White: 0.3134, 0.3291
+  Established Timings I & II: none
+  Standard Timings: none
+  Detailed Timing Descriptors:
+    DTD 1:  1366x768    60.059824 Hz 683:384   47.688 kHz
+76.300000 MHz (256 mm x 144 mm)
+                 Hfront   48 Hsync  32 Hback  154 Hpol N
+                 Vfront    4 Vsync   6 Vback   16 Vpol N
+    DTD 2:  1366x768    48.016373 Hz 683:384   38.125 kHz
+61.000000 MHz (256 mm x 144 mm)
+                 Hfront   48 Hsync  32 Hback  154 Hpol N
+                 Vfront    4 Vsync   6 Vback   16 Vpol N
+    Alphanumeric Data String: 'AUO'
+    Alphanumeric Data String: 'B116XAN04.0 '
+Checksum: 0x94
+
+In this example, Descriptors can also be used to distinguish. But it's
+possible that the name field is also reused by mistake, for the same
+reason as model id is reused.
 
 
-
-
--- 
-#Randy
+> >
+> > Hsin-Yi Wang (2):
+> >   drm_edid: Add a function to get EDID base block
+> >   drm/panel: panel-edp: Match with panel hash for overridden modes
+> >
+> >  drivers/gpu/drm/drm_edid.c        | 55 +++++++++++++++-------------
+> >  drivers/gpu/drm/panel/panel-edp.c | 60 ++++++++++++++++++++++++++-----
+> >  include/drm/drm_edid.h            |  3 +-
+> >  3 files changed, 84 insertions(+), 34 deletions(-)
+> >
+> > --
+> > 2.44.0.rc0.258.g7320e95886-goog
+> >
+>
+>
+> --
+> With best wishes
+> Dmitry
 
