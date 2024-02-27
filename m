@@ -1,128 +1,116 @@
-Return-Path: <linux-kernel+bounces-83463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07B3F8699DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:09:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 816B18699DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:08:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACFB2B2AB3A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:05:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B801288240
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:08:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7747B149DEE;
-	Tue, 27 Feb 2024 15:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395B514690E;
+	Tue, 27 Feb 2024 15:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="id7cz+2Y"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mQPZKf7o"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B18F1487F0
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A9211468E3
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:06:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709046138; cv=none; b=sSKwRhSl6j58FgrVIyd0PndFPbM1R1RHUVgq3lS0XVWwkUxO0b8LFFQVmG4trS2kGGSChiTIl16VjS1m0WsKJ3+KHD86lT6KQuxoqH5JY7ZMECXy+oiaavAxAx1U/J41ahDBHcaG/9u2qRBX8PMThXn7tiZibmPRW5ADiV/v5V8=
+	t=1709046397; cv=none; b=a6b1i3zN3t/lm+QFTMY48IDWz0543n5seq5rpj1u2I5GD69BSAP+05xDSorTHI4bhoY5F7HDdM/495bwfKwTNONOqgbGo2/k7f0OKW6Dv9bXcrVomVBFB3VLkXb6ZHDcDbGUSjNxPpOtVD4KdT9rOnFyRJxa3lJiiOlEBzyNIss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709046138; c=relaxed/simple;
-	bh=OLpthbutP2C2A6Fu0ZsUKf3bnm7e8Nl1D2jO/yNOCZc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KWix5gRZUSvt1myPtPTAKU34pBa1qmNr3PmO4Zt7HG1QdNh90KW3sc9p+Q7TJzIOmeETfNp886rk/g5dHR3EoVDzq4sIO2SreBqmx3NTg/10hH3fnwRT0chtciZM28Ws9oG5eyIaplSKbnIn3M2TRSPnboEAMeLN+2uAIH56Mjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=id7cz+2Y; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C24A61C0004;
-	Tue, 27 Feb 2024 15:02:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709046135;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BxX/T5aZao8IAh+tvJ+h1jgz8NA+Qb+ugAuRUGDGBxA=;
-	b=id7cz+2Y6DwUH4pY84bMuhCorW2eM7EdsL89UxxR1WAfCzOrFgCfHQM+D/C2zTjCI0ZMeK
-	RJ1yQojPN6Z07XLBGxWxAZlYI/64t0gZowYTYMMhxPrzpMpOQlWAiKgJwNCHgSLB5LWg07
-	lG/nlHSa9qwqoXa/ZLcY0ZIyzY+ygh3eDaTeIF+41bBY1rnPZOY1Ucdt0tUBW522D4e9XH
-	SZM9CoNBc5KK8ZVJs5Pgj3sun2Bv7w0jugfPqxw9Z/PlXfa3Nwa2+BYW68RDpJHd+Lgayh
-	fOLaAEE759cCbBgZf78mkT3HvtcTNPZYMXVKXjCBi+66Twum2kPDMUIOoO4guw==
-Date: Tue, 27 Feb 2024 16:02:13 +0100
-From: Louis Chauvet <louis.chauvet@bootlin.com>
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
-	thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH v2 9/9] drm/vkms: Create KUnit tests for YUV conversions
-Message-ID: <Zd35ddQZbl3frcLm@localhost.localdomain>
-Mail-Followup-To: Arthur Grillo <arthurgrillo@riseup.net>,
-	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
-	Melissa Wen <melissa.srw@gmail.com>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-	Haneen Mohammed <hamohammed.sa@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
-	thomas.petazzoni@bootlin.com
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
- <20240223-yuv-v2-9-aa6be2827bb7@bootlin.com>
- <4406ec1c-fcfc-4d06-bec2-a428058d32cc@riseup.net>
+	s=arc-20240116; t=1709046397; c=relaxed/simple;
+	bh=Dg60Guh5xxI2n2BEEUudJcXx9ZZbzM3OrI5eLHlaYD4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HfcKyJ4geq4BdOnhv1f3kpEVCq5pGQXndC1c66FcLXWEtrv2rShX7Ru0uo7v/tvdt+c7R/MYPZss8ccY3Tow8cnI7bP9rZdtHjnP0Uv0X5z5unmO/BxX+ZCnba5enlk9g3qxLhtuCvF2YwosbZ4pYANh5G7uhpVmlOaVDkjCPQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mQPZKf7o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ADB6C433C7;
+	Tue, 27 Feb 2024 15:06:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709046396;
+	bh=Dg60Guh5xxI2n2BEEUudJcXx9ZZbzM3OrI5eLHlaYD4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mQPZKf7o95NPmtnoEHmArkHnuRYhdJFIV+T8FTIKZDbTeA3Mok+A4lfMFvYfm3+Sb
+	 bBROEG1uMnZZe/PjJ9CspUT6iGMRSo+64mzKLJGxxASE8z8TKfajIlghsIieSK2gs7
+	 SnlJmPTQk7Hs4PIJ3o006PP3bjp6xsv1rnbji76Gl179z7PSE+1BksUNXVO617MZxx
+	 9u5HtS0x0s3lwnZyPOYQrzvvNjSAIWJCd1YrYrzex3RGhl97CIGxqHvNINw791E6Hm
+	 YG6f9jQK1o29f2ov91vo+Yvo/27yqB5x3TYHS4Z379c8KwCGkaAaboypw8ZFJpaY+8
+	 aOoJlelss7ctg==
+Message-ID: <655ba4a1-4f73-4ef4-aff3-0b439e65a9c9@kernel.org>
+Date: Tue, 27 Feb 2024 08:06:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Net:cache didn't flush when ipv6 rule changed
+Content-Language: en-US
+To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>,
+ "davem@davemloft.net" <davem@davemloft.net>,
+ "kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com"
+ <pabeni@redhat.com>, "edumazet@google.com" <edumazet@google.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>
+References: <3efcbaf0872481d1a842eb9e18fa368b4b94d940.camel@mediatek.com>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <3efcbaf0872481d1a842eb9e18fa368b4b94d940.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4406ec1c-fcfc-4d06-bec2-a428058d32cc@riseup.net>
-X-GND-Sasl: louis.chauvet@bootlin.com
 
-Le 26/02/24 - 13:39, Arthur Grillo a �crit :
+On 2/26/24 6:11 AM, Lena Wang (王娜) wrote:
+
+> diff --git a/net/ipv6/fib6_rules.c b/net/ipv6/fib6_rules.c
+> index 7523c4baef35..bec2cf4436e1 100644
+> --- a/net/ipv6/fib6_rules.c
+> +++ b/net/ipv6/fib6_rules.c
+> @@ -449,6 +449,15 @@ static size_t fib6_rule_nlmsg_payload(struct
+> fib_rule *rule)
+>                + nla_total_size(16); /* src */
+>  }
 > 
-> 
-> On 23/02/24 08:37, Louis Chauvet wrote:
-> > From: Arthur Grillo <arthurgrillo@riseup.net>
-> > 
-> > Create KUnit tests to test the conversion between YUV and RGB. Test each
-> > conversion and range combination with some common colors.
-> > 
-> > Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
-> > [Louis Chauvet: fix minor formating issues (whitespace, double line)]
-> > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
-> > ---
-> >  drivers/gpu/drm/vkms/Makefile                 |   1 +
-> >  drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
-> >  drivers/gpu/drm/vkms/tests/Makefile           |   3 +
-> >  drivers/gpu/drm/vkms/tests/vkms_format_test.c | 155 ++++++++++++++++++++++++++
-> >  drivers/gpu/drm/vkms/vkms_formats.c           |   9 +-
-> >  drivers/gpu/drm/vkms/vkms_formats.h           |   5 +
-> >  6 files changed, 175 insertions(+), 2 deletions(-)
-> 
-> You need to add the CONFIG_DRM_VKMS_KUNIT_TESTS config to
-> drivers/gpu/drm/vkms/Kconfig, like my previous patch did.
+> +static void fib6_rule_flush_cache(struct fib_rules_ops *ops)
+> +{
+> +       struct net *net = ops->fro_net;
+> +       if (!net)
+> +               return;
+> +       rt_genid_bump_ipv6(net);
+> +       return;
+> +}
 
-I don't know how I merged your patch, but I missed the Kconfig file, 
-it was not intended, sorry.
+This can be written as a 1-liner - the same way as the IPv4 flush cache:
 
-Kind regards,
-Louis Chauvet
- 
-[...]
+static void fib6_rule_flush_cache(struct fib_rules_ops *ops)
+{
+	rt_genid_bump_ipv6(ops->fro_net);
+}
 
--- 
-Louis Chauvet, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+
+> +
+>  static const struct fib_rules_ops __net_initconst
+> fib6_rules_ops_template = {
+>         .family                 = AF_INET6,
+>         .rule_size              = sizeof(struct fib6_rule),
+> @@ -461,6 +470,7 @@ static const struct fib_rules_ops __net_initconst
+> fib6_rules_ops_template = {
+>         .compare                = fib6_rule_compare,
+>         .fill                   = fib6_rule_fill,
+>         .nlmsg_payload          = fib6_rule_nlmsg_payload,
+> +       .flush_cache    = fib6_rule_flush_cache,
+
+this should be tabs and the columns should align with existing code.
+
+
+
+>         .nlgroup                = RTNLGRP_IPV6_RULE,
+>         .owner                  = THIS_MODULE,
+>         .fro_net                = &init_net,
+> --
+> 2.18.0
+
 
