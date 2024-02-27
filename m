@@ -1,116 +1,112 @@
-Return-Path: <linux-kernel+bounces-83498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E47869A3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:22:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1F11869A45
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:24:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B502628EBBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:22:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FA961C217E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F2D14532C;
-	Tue, 27 Feb 2024 15:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ri3l2R7A"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA4E4D5A3
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:21:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC3454FB1;
+	Tue, 27 Feb 2024 15:24:22 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6C8F13DBA4;
+	Tue, 27 Feb 2024 15:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709047318; cv=none; b=ZqWHFewAlcL5MADUKbsiLhjoab2cssKneVgsi/2RRkkzL18C/LptknNmgykknIvfxzIwZfhgYSIDq+lf5FLxrbVy8DASsIOyg94TIYIFCJxwC12uT7QskHszXJU9xY0/1ocINJZW0ulc6PtNk5IMq9202tIExyITaOxvNPuUp5s=
+	t=1709047462; cv=none; b=NlC+lcaYdFPEeRzTkrk9anCsLW2dihhCU8reMD451DvDw6udW1Lb1bGlSX2SNzjGWrSwNcxrXPkjrp9oCrKU0Xn2BJBte+r6Pi4iLyfbHbBmTtGHDEEXApd8U2idvubG1UXQ9f5FCs0Ln92zEjBz6TUj5+Ss+BrMVB9MQWU0jkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709047318; c=relaxed/simple;
-	bh=QsD3Iiv/LhOTtgVgR1olwTS+toXhr/zliUNlH+elpAo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=m75eEfEcKt7F0JU8a/+eG3p1y13biKQVQ5aQzmwej/fI73ghphVij/OYWlAwWK0rhPVOfO84TbWINeY9O7EvcD9DeGBwTdE33jpQ/49+rRECg01glXKgBjVobSKJsS/GqTfdPKsieEpihvbGfuGua6AeF3bQdebzSRpa+b9JuBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ri3l2R7A; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d066f8239so3192588f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:21:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709047311; x=1709652111; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oAR0191YpG6gmNK9RS3NwTYy2tpEgrl20yHlWytzXZU=;
-        b=ri3l2R7A+XrPEGDg6IcfpybA9G2bLkWtL9ROxsuL+Bs9als04aADEZjU6hoLdwWmxW
-         DI1YwI6IpAeWNUkGBFLgwaQqRpQKetF6mIT+UwHGaviO2aPiYCgB3hDNeWLruViR+r4X
-         ++HMzuE1EZ7fvxbMUk2E1q3IJoIUDw3yjXXiXCz2BMhMU1md//636IORhVO0U5pDAi7d
-         7kzLuNr8YUPxlUZ4lez7BBG3lPDRcGjBMqw2/+p1vCIrCrKf/sKlOLFjPayhyYtMQAQ8
-         +XSBdiT1IZ2L6lEA4xgjY2A3994vSge7hRfNEzO6v4D6XTf2dLqlqJbvdv1A0i0LgmnG
-         WVHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709047311; x=1709652111;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oAR0191YpG6gmNK9RS3NwTYy2tpEgrl20yHlWytzXZU=;
-        b=Vi4yatT/Dkl09WYD4JOjlI7781rDZ9Yx5KCFCkyyvemKnQv1UlGSfHBI+CGLFgAYLH
-         FyVf9My8uUh6Tm95r9XEH89rfNcx5gpKMobVcFg8W/pf4/zJruq+8RZ0XUZVlUlUlUeU
-         0SoBEDu29CXOTlLecjdYBSAZKJT8X16Ge7kNx+w3w9LQCwCUUHFGoD3FHFc5olod2JQc
-         QEnendj6QMvup5nn0o7P/1dBJY4omC2VuSCaJId6ENOEO3qLkRSh2oxJMJJMcxhXj4o2
-         IH7ExRHcWEn/o+kz5o/kHPwAhBN85pnr9ZomTZrsSz2OdK5KNJvwbUyfeE6RKXPd9reb
-         Qdxw==
-X-Forwarded-Encrypted: i=1; AJvYcCUj2KdyK8NZxNJ11wD79dhVBOtBwzD1gjukYjEhiYufo42xxUBpeFumfRN66ZuAO6kAQAfI2VrLXLR9vDfG/gnApEKvZDKDB5Ly0De1
-X-Gm-Message-State: AOJu0Yx8sNTPE5mtwbszI92UrlRhPxqxEQutlbnkOJEYggy9XajhUOuB
-	j2jGBv1vfc7SDxKlhxNzh0q5ixejbIM8jG0+uV8VB47rTUnjFXp2HR+JzvqHERw=
-X-Google-Smtp-Source: AGHT+IGx3UJwCU3OwYophAFSeMY+HT7j8jGN+JsrR+9BGVpaMQSzmvZQht8iS1eq9Il37PGPrMeIYg==
-X-Received: by 2002:a5d:4f01:0:b0:33d:87e9:5905 with SMTP id c1-20020a5d4f01000000b0033d87e95905mr6160029wru.28.1709047311631;
-        Tue, 27 Feb 2024 07:21:51 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id k2-20020a5d6d42000000b0033b79d385f6sm11579719wri.47.2024.02.27.07.21.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 07:21:51 -0800 (PST)
-Date: Tue, 27 Feb 2024 18:21:46 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Cindy Lu <lulu@redhat.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Xie Yongji <xieyongji@bytedance.com>,
-	Maxime Coquelin <maxime.coquelin@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] vduse: Fix off by one in vduse_dev_mmap()
-Message-ID: <e26476e0-68ae-412d-a5d9-4996bc30d038@moroto.mountain>
+	s=arc-20240116; t=1709047462; c=relaxed/simple;
+	bh=/Uwsd+biNsWqGl6YO5r7MlVVEdSRgIgi42i+iiL7RY8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WERz+ganPnDpVaX+ewbTZL48oc/s/Z8a4ANj1vufjP1nguBpqcLVDfbh/Zi0kwme0QRjJjdwvsgOIg3jo329iGVfz1iXfekj9tW8Y/rEsZGm5z+VvIJt9t07pMlMUDzJY5cEqr9IBrSAFja1dQE9s9nrHLTe9QpVCcxC1iooNGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7BA75DA7;
+	Tue, 27 Feb 2024 07:24:57 -0800 (PST)
+Received: from bogus (unknown [10.57.94.75])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B445E3F762;
+	Tue, 27 Feb 2024 07:24:16 -0800 (PST)
+Date: Tue, 27 Feb 2024 15:24:15 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Cristian Marussi <cristian.marussi@arm.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+	AKASHI Takahiro <takahiro.akashi@linaro.org>,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH v4 3/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <20240227152415.xpa3y6226vrqfguk@bogus>
+References: <20240223-pinctrl-scmi-v4-0-10eb5a379274@nxp.com>
+ <20240223-pinctrl-scmi-v4-3-10eb5a379274@nxp.com>
+ <CACRpkdZLuWwecacBAimT=Vj67dGabzBH-7aaqzoyj1B1sY6o_A@mail.gmail.com>
+ <ZdhYc90uy7yuYrx2@pluto>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZdhYc90uy7yuYrx2@pluto>
 
-The dev->vqs[] array has "dev->vq_num" elements.  It's allocated in
-vduse_dev_init_vqs().  Thus, this > comparison needs to be >= to avoid
-reading one element beyond the end of the array.
+On Fri, Feb 23, 2024 at 08:33:55AM +0000, Cristian Marussi wrote:
+> On Fri, Feb 23, 2024 at 09:28:12AM +0100, Linus Walleij wrote:
+> > On Fri, Feb 23, 2024 at 2:08 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+> > 
+> > > From: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> > >
+> > > Add basic implementation of the SCMI v3.2 pincontrol protocol.
+> > >
+> > > Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
+> > > Tested-by: Cristian Marussi <cristian.marussi@arm.com>
+> > > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > > Signed-off-by: Oleksii Moisieiev <oleksii_moisieiev@epam.com>
+> > > Co-developed-by: Peng Fan <peng.fan@nxp.com>
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > 
+> > This looks ripe for merging for me, there are clearly dependencies in the SCMI
+> > firmware tree so I can't apply this to the pin control tree, but if
+> > someone creates
+> > an immutable branch from the SCMI firmware repo (based off v6.8-rc1 or so)
+> > I'm happy to also pull the branch into pin control.
+> > 
+> 
+> Well, AFAIK there is another upcoming change in the v3.2 SCMI spec and
+> I am not sure if this series accounts for it...indeed the v3.2 -bet4 was
+> still pending fr feedback AFAIK (and I doubt latest changes are in since
+> they have been discussed like yesterday...)....but I maybe wrong, I will
+> chase for the final spec and look into this to verify if it is
+> compliant...
+> 
+> Anyway, given the particularly long history of changes in PINCTRL v3.2
+> SCMI I would wait to have the final spec officially frozen at this
+> point before merging....
+> 
 
-Fixes: 316ecd1346b0 ("vduse: Add file operation for mmap")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/vdpa/vdpa_user/vduse_dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
++1, this is one reason I have been avoiding to look at pinmux changes yet.
+I want to see the spec changes settle to be comfortable to merge any changes.
+I think it should be fine as v6.10 material.
 
-diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-index b7a1fb88c506..9150c8281953 100644
---- a/drivers/vdpa/vdpa_user/vduse_dev.c
-+++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-@@ -1532,7 +1532,7 @@ static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
- 	if ((vma->vm_flags & VM_SHARED) == 0)
- 		return -EINVAL;
- 
--	if (index > dev->vq_num)
-+	if (index >= dev->vq_num)
- 		return -EINVAL;
- 
- 	vq = dev->vqs[index];
 -- 
-2.43.0
-
+Regards,
+Sudeep
 
