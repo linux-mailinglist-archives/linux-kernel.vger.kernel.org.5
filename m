@@ -1,138 +1,98 @@
-Return-Path: <linux-kernel+bounces-82673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60374868813
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:51:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF0FD868818
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:55:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A95B28E612
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:51:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76E3E283116
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:55:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BC84D131;
-	Tue, 27 Feb 2024 03:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CD74D11B;
+	Tue, 27 Feb 2024 03:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gr18jKrY"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mTrLlMjX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2052D199B4
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EEA4CDE0;
+	Tue, 27 Feb 2024 03:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709005907; cv=none; b=VS1f0Mm35556C23uWs1fQMXC12YbNSUetzt3p8p2P/nOkz7meKfmkQBWGPA0dNXoOPeFDti9W5y83fXX5XBTSedvn0K21aEDyWXsIihclCzEZU8aNbrzTyCysH0JRS81GbunNSvWYUr6cFG9zKnYpHOf9xvh/OmYJw+MVedGBmw=
+	t=1709006104; cv=none; b=JO/mgZI2cs02g7N1WGe5HhchqbJ/CnwXsrD68TQBcg86z5gKkSuzr2CRYGOA/9B9JKU/NKnWAJ8mST9oiB++4uXuTXnirly8q8Gu4HdIh1OGUMnqdh2gnZptozYDJ592DU38nSO2JEWgoUG+LMIPSDeKf9KVmGVJ/Apf4E27rRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709005907; c=relaxed/simple;
-	bh=jyTFedxemoJdbhZ2y1imcmJRvPeOxYPV59O1HswSVbA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fN0MmrdSpdKE9+5vLc1h3r94WbIW3U2r2hYcgG6hWRSID4cqHaNOc1XUOhxUZBFKgnbJPezwxQZN84T7KKaqMqWcbC87OfMzX5gc95QugEohJFXvoJ5yOavl+ZmiXI6vHxMxTde4MYxCAcVvp8s6Oj7askxzPmVXTfb5N0orw6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gr18jKrY; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dca160163dso15962485ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:51:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709005905; x=1709610705; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gs6SqwqU20wxdOxc0g113G0JKB/kw5agZtCRYieg9ro=;
-        b=gr18jKrYEoHNCf8K+Nm6kHKFsZYnQPhguk6s7IpoB+MpT/4y8lR/6E8pTGgqfOfWJG
-         6Q5aA3hItRrtqpWlYZpgO+vH44g6/mTOcdgANlVBexaxGLNy0vKbeTSoBlBSovNA5kQJ
-         2dDg2rjg8+wCOjCjsnBmXIucvf1m6R4I680UO/MWw3N5GCa1z1Vd4bueVB14QIRVBfIP
-         IjqofnRHXPaTq6BTUXVlSG9zYUi9X5B1qEKC3cL9Wyq2oAywzWWTqHSbbGXNlTmu3ILW
-         JwrmE21shLDjW93JfgDMWBbpmM4zVxN3gN8D17dHAGOGnymSc3m4w9FbIcgS/lbxkTrn
-         xrhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709005905; x=1709610705;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gs6SqwqU20wxdOxc0g113G0JKB/kw5agZtCRYieg9ro=;
-        b=IGXWxeLiNNDSTTgzZy9XrtMi3b9QTa64KltCd3Dcct0u1up/1pssQgSjkFCw3W7qZI
-         4LI66lBZZ8r5FmHOwvjaN1fzb9Xq5ANpPKpONRrhWAp9ry8ns33jEZT++WeFU7G+ErHd
-         6Z449ig/XEvBmg8v5aeTKwqJLHwxBUK5Xiva3rDID3a5ot/9EYtu2LDa3Q1faqsmfb8D
-         kTw3yReqOB37QdftxTopkyosLVW3Wo11gNowqSqIV8fzAq+K3nTQfTcVagp963Agb6J7
-         7TPyH0fa5m7rdzz9jtwh3xGKWZutKf7M1vg7fPApJgw2APbC1GqxUTOSrttLbg9VX0Xu
-         GXBw==
-X-Forwarded-Encrypted: i=1; AJvYcCVlykeJOHbRQ8ebqpgcA8cKYmQvL0/crb4542SPYuJkv9gjQxgd8o13I34K5otZeD0f0vjVc11RuI/QCyQrb7WI0uKkyM44wGlUX/b5
-X-Gm-Message-State: AOJu0Ywvwl9kIvyUKZ61x7hfbkUg3WtWdx09QdXmcLnUus5kAwidjP/w
-	IpaT+ziqJi9FIuDpNsF6zu4xId2BS0RolNOC/IZGvkW6zigVQ+RQ
-X-Google-Smtp-Source: AGHT+IFUJaqZlI0Vq/9WwW8Wl/li66JCXaHzA+eLWv4EOWIFuTvi0IVAvLpFfcTvB/5Hgvo4GB8e/Q==
-X-Received: by 2002:a17:902:d587:b0:1dc:ae92:7e9 with SMTP id k7-20020a170902d58700b001dcae9207e9mr3507796plh.62.1709005905360;
-        Mon, 26 Feb 2024 19:51:45 -0800 (PST)
-Received: from LancedeMBP.lan ([112.10.225.117])
-        by smtp.gmail.com with ESMTPSA id x18-20020a170902821200b001d949393c50sm433519pln.187.2024.02.26.19.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 19:51:45 -0800 (PST)
-From: Lance Yang <ioworker0@gmail.com>
-To: akpm@linux-foundation.org
-Cc: shy828301@gmail.com,
-	mhocko@suse.com,
-	zokeefe@google.com,
-	david@redhat.com,
-	songmuchun@bytedance.com,
-	peterx@redhat.com,
-	minchan@kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Lance Yang <ioworker0@gmail.com>
-Subject: [PATCH 1/1] mm/khugepaged: keep mm in mm_slot without MMF_DISABLE_THP check
-Date: Tue, 27 Feb 2024 11:51:35 +0800
-Message-Id: <20240227035135.54593-1-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.33.1
+	s=arc-20240116; t=1709006104; c=relaxed/simple;
+	bh=GapRhH6Ok62RJMtMFM7fqvjgxBgjNKUulRJwiJTDpRY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GJJVt8SUDpE8e97A1hY1wA0HY3xX6Gh3t5D0+b5qjQ1rDDK+XBSRsN6ECClfgl/dFH3Vd/XBkj67Qqx2CbkJz2b156IxTX8L0lformJB0h2sfXGVz/oG3nLm3g+Dp11HHzjpBeWIlIyRYo6HL9ADQWI3PUvQHrr/vgxYg/8aQoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mTrLlMjX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE542C43394;
+	Tue, 27 Feb 2024 03:55:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709006104;
+	bh=GapRhH6Ok62RJMtMFM7fqvjgxBgjNKUulRJwiJTDpRY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=mTrLlMjX/+85j1Qik9LUrEUIPSGS/IIWHxZbi/K6RhtrnbpBYdwh7KC+WHJZk1dJH
+	 o136O7M9cCBrJRyTK5ZO4VAmu4ouLE1ArFofsbFxNRJ+a8c2dfHpjLJ6efsr1LcuWX
+	 qyaDnrxqCwCRikGfwfnV+0I76TIaC1zVWppLh6VDVe0pR5ONXcdSG0dFHywNw8voFA
+	 hBlNEQnsbdtWOP1zT1Ix/hRig9SravsJ0aIZoDLincjCTXjIpiZ28gtJP4LLiXMINC
+	 MqTI70oc9oTlnw52Xn6U51t1XFpHPT7h4m43I/Vwg8dotyrQfOcOoUoFHnbNZ3aKBF
+	 zD0HaymskfPoQ==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-512ff385589so1917052e87.1;
+        Mon, 26 Feb 2024 19:55:03 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXCuQK0vAlB3sbjL3aPPEq3FvP1Cw1AF6oojkyv3sKFKSupwCHQnTFZE0v1DEmUwfOrHiQE0aAI6jRtKr32gj5Ua3TQQHX15H2rZFuTAvfz/c4NAF9SH2YwU0t0GpOhC3Zw+ZnNBUVbq10fl1u5wSstBWc65Z1HZ3lGztmC5zGvquXcngnqaYX9GHAWaPHc2tljPKidCniLT33rpUV72j36fkdrRK65+n4=
+X-Gm-Message-State: AOJu0Yy0Oz5Q08ETrEv68ElEV6e0DRd59vZLb5jyKTbyG55G94ZWIYi7
+	EkQK23YnKZwJF9JSEFrjWFPnZFr4ek49QpLTYDUjh4BLHcdAbTbvy6tvSHJrpvMej48K0v9Rohi
+	nwMaX2Tz19hbt8OcwoZnX3aiHUQ==
+X-Google-Smtp-Source: AGHT+IEa5SEn2U+j2tz2rEkGzuP63uIymMu+x3njmMP2xVTj3Tb+5qkgznrNTzN48OXftf7xrzekiuie5b0+ROvcOPY=
+X-Received: by 2002:a05:6512:2241:b0:513:34b:67ec with SMTP id
+ i1-20020a056512224100b00513034b67ecmr965394lfu.58.1709006102187; Mon, 26 Feb
+ 2024 19:55:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240226055615.79195-1-raihan1999ahamed@gmail.com>
+ <20240226195516.174737-1-raihan1999ahamed@gmail.com> <20240226195516.174737-2-raihan1999ahamed@gmail.com>
+In-Reply-To: <20240226195516.174737-2-raihan1999ahamed@gmail.com>
+From: Rob Herring <robh+dt@kernel.org>
+Date: Mon, 26 Feb 2024 21:54:48 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+Z5UA1jEJSL0tRSXrC+Juud6ZMXtvR9ne5Cn_-cw9UzA@mail.gmail.com>
+Message-ID: <CAL_Jsq+Z5UA1jEJSL0tRSXrC+Juud6ZMXtvR9ne5Cn_-cw9UzA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] arm64: dts: qcom: msm8953-lenovo-kuntao: Add
+ initial device tree
+To: Raihan Ahamed <raihan1999ahamed@gmail.com>
+Cc: krzysztof.kozlowski+dt@linaro.org, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>, 
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Previously, we removed the mm from mm_slot and dropped mm_count
-if the MMF_THP_DISABLE flag was set. However, we didn't re-add
-the mm back after clearing the MMF_THP_DISABLE flag. Additionally,
-We add a check for the MMF_THP_DISABLE flag in hugepage_vma_revalidate().
+On Mon, Feb 26, 2024 at 1:56=E2=80=AFPM Raihan Ahamed
+<raihan1999ahamed@gmail.com> wrote:
+>
+> Lenovo P2 is a handset using the MSM8953 SoC released in 2016
+>
+> Add a device tree with initial support for:
+>
+> - GPIO keys
+> - SDHCI (internal and external storage)
+> - USB Device Mode
+> - WCNSS (WiFi/BT)
+> - Regulators
+>
+> Acked-by: Rob Herring <robh+dt@kernel.org>
+> Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Fixes: 879c6000e191 ("mm/khugepaged: bypassing unnecessary scans with MMF_DISABLE_THP check")
+We gave no such tag. I'd suggest you go read what these mean.
 
-Signed-off-by: Lance Yang <ioworker0@gmail.com>
-Suggested-by: Yang Shi <shy828301@gmail.com>
----
- mm/khugepaged.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 2771fc043b3b..1c0073daad82 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -920,7 +920,7 @@ static int hugepage_vma_revalidate(struct mm_struct *mm, unsigned long address,
- {
- 	struct vm_area_struct *vma;
- 
--	if (unlikely(hpage_collapse_test_exit(mm)))
-+	if (unlikely(hpage_collapse_test_exit_or_disable(mm)))
- 		return SCAN_ANY_PROCESS;
- 
- 	*vmap = vma = find_vma(mm, address);
-@@ -1428,7 +1428,7 @@ static void collect_mm_slot(struct khugepaged_mm_slot *mm_slot)
- 
- 	lockdep_assert_held(&khugepaged_mm_lock);
- 
--	if (hpage_collapse_test_exit_or_disable(mm)) {
-+	if (hpage_collapse_test_exit(mm)) {
- 		/* free mm_slot */
- 		hash_del(&slot->hash);
- 		list_del(&slot->mm_node);
-@@ -2456,7 +2456,7 @@ static unsigned int khugepaged_scan_mm_slot(unsigned int pages, int *result,
- 	 * Release the current mm_slot if this mm is about to die, or
- 	 * if we scanned all vmas of this mm.
- 	 */
--	if (hpage_collapse_test_exit_or_disable(mm) || !vma) {
-+	if (hpage_collapse_test_exit(mm) || !vma) {
- 		/*
- 		 * Make sure that if mm_users is reaching zero while
- 		 * khugepaged runs here, khugepaged_exit will find
--- 
-2.33.1
-
+Rob
 
