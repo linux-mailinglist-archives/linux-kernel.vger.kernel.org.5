@@ -1,251 +1,175 @@
-Return-Path: <linux-kernel+bounces-83031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9A57868D8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:27:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4227868D95
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:29:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 480E0B26957
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:27:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 61BEF287449
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FBCC13849B;
-	Tue, 27 Feb 2024 10:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDDB21384BA;
+	Tue, 27 Feb 2024 10:29:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EDyFxiEv"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="nJOIxtZ5"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981F6137C34
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9837E1386C7;
+	Tue, 27 Feb 2024 10:29:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029647; cv=none; b=gEbWx6zH/H+yl6GdAPEY8T7+r2T6O670mxJJdkVTlofAIMg0RhcquQQxnxkl72TBk8XR2Ck0QHelPf93zOS7MwtWPCBTRW7DcXot7lplsAXhRn8D1b0GsIue5SBzIL2YqTeuH/0EnOlJU393wiQKhsYptFhnrrzaFtEzixZK7nM=
+	t=1709029743; cv=none; b=hFjLIb00hpu/FR5eVPCvhMSqSjmBALpArWttLPVhI/cosj3VpODeoBswQ5rgeo6gbP8xGcCzJIu45WTHCLwL+u/9QPTXBP295Kp9hAU6iuA/qFKcywbza030tPzmBhsTNZ86fkI+fFgpDumCd2AQm9352Wk0IMagyLe6XPHxF6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029647; c=relaxed/simple;
-	bh=G4iqX+oyoPN+omrb02F98TLbPkjsf8+9ji0b/QArkGo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=pJYIEz3Ci1p1k9VXz8eo/viMQKMJr7AjrcuK67b6bzoutqqqtFps+QOIN4zVxMeA7Nf0lTJL3sPO4Pxcs/NZfILJEMtKWCjpCEJ9VByPCSGlUq31fu252IE8haLTGhkF32i9FfNfqGsqQCTBVJYKkyc4xhHQ9JE+27jx/u/m0bU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EDyFxiEv; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709029645; x=1740565645;
-  h=date:from:to:cc:subject:message-id;
-  bh=G4iqX+oyoPN+omrb02F98TLbPkjsf8+9ji0b/QArkGo=;
-  b=EDyFxiEvsU/yOSY65kks+25jiFtHK7VeeWNCdGA3BmCpv2giznlXy+aV
-   GupL1G/SHwCH0AK/TxPcTGnn8fjIPSOul0djF5e2vp450p6mpn5qySlEO
-   bhhDaEVVFLAofunbM0xWxjqXtTfzN6/qglbrPv2yV3TgCZ45JXkkY2vN/
-   5XCZyZTdD1GvCEDLABNOeo299KkKiS0AAzO8SSL+y/fD9o3NysoU1yjCK
-   x9WPDwk/7jiKe9EHxkZ5PU66LDNLfKdcMtKN3KWCpz7lBr4psVhtSbgSb
-   kcR6iZsbASn7Ziy5wEHgOGKioA0rsbkttTBhGqRYVWHCs3faNeKyQhOn7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3489175"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="3489175"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 02:27:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="7141111"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 27 Feb 2024 02:27:23 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1reugC-000B8t-1y;
-	Tue, 27 Feb 2024 10:27:20 +0000
-Date: Tue, 27 Feb 2024 18:27:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:irq/core] BUILD SUCCESS
- e4e535036173addff38d6b295a231a553d1e0d3a
-Message-ID: <202402271809.NaWBDsF2-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709029743; c=relaxed/simple;
+	bh=2nSH7ifbYm3tqDkxI8g0ViATvBk6HRIg3r24rsscvwk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fLHJjBiIYM5JCY0QxQpOhTz3dSUm30/rhSSuz0G2lizuM8sw31beIq6WCX0a4e46KSCe0uo2ZrUdUVdy1qgGSidXePOEEK/qQ5RX+MdhEP6UGdn4UCC6HqWIp1yGkcxLJWQtftc7dsmIoulY8NqfWZTEGoCca1c663pDUP9Q00k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=nJOIxtZ5; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=AaMsMZWiwvSaJp1atd6FKd0pROFWF3fPGtmIY0iqYYs=; b=nJOIxtZ52FqIAVUFl2d7cP0vTC
+	F1ANU0h5omGFVqaHz+i1HZQ/9eCovQVlWBEKYvHWcTgj/WlJK5s9ngZ2ESModv77AqFeEFgfOYNhM
+	WuunX11xsvZ1EFu00Byzj9MB2hE2+TuhPu6d9p6pJcC4XIZ7tcmnEOZdLNgYiubkOCbQxMEt1a2wR
+	l5lRgW/fVcaLTA6xaKpEElQO/kDQrISXdGzbUm3M4GGs3itlVmricP/bMq29RcArGak8WDOnK3xyi
+	7KK4fDE0xQatqYO1vGATvNtgxUAr8Wj3DEWWPkYSbrodbniRmVPfY0Kap03XGhONynL7yldslsE1S
+	lXYyXE9w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55912)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1reuhc-0007lc-2j;
+	Tue, 27 Feb 2024 10:28:48 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1reuhZ-0007JB-VJ; Tue, 27 Feb 2024 10:28:46 +0000
+Date: Tue, 27 Feb 2024 10:28:45 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Guenter Roeck <linux@roeck-us.net>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	David Laight <David.Laight@aculab.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Helge Deller <deller@gmx.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Parisc List <linux-parisc@vger.kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
+ and csum_ipv6_magic tests
+Message-ID: <Zd25XWTkDPuIjpF8@shell.armlinux.org.uk>
+References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
+ <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
+ <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
+ <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk>
+ <ZdzZ5tk459bgUrgz@ghost>
+ <ZdzhRntTHApp0doV@shell.armlinux.org.uk>
+ <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com>
+ <Zd0b8SDT8hrG/0yW@ghost>
+ <cdd09f7a-83b2-41ba-a32c-9886dd79c43e@roeck-us.net>
+ <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
-branch HEAD: e4e535036173addff38d6b295a231a553d1e0d3a  irqchip: Add StarFive external interrupt controller
+On Tue, Feb 27, 2024 at 06:47:38AM +0000, Christophe Leroy wrote:
+> 
+> 
+> Le 27/02/2024 à 00:48, Guenter Roeck a écrit :
+> > On 2/26/24 15:17, Charlie Jenkins wrote:
+> >> On Mon, Feb 26, 2024 at 10:33:56PM +0000, David Laight wrote:
+> >>> ...
+> >>>> I think you misunderstand. "NET_IP_ALIGN offset is what the kernel
+> >>>> defines to be supported" is a gross misinterpretation. It is not
+> >>>> "defined to be supported" at all. It is the _preferred_ alignment
+> >>>> nothing more, nothing less.
+> >>
+> >> This distinction is arbitrary in practice, but I am open to being proven
+> >> wrong if you have data to back up this statement. If the driver chooses
+> >> to not follow this, then the driver might not work. ARM defines the
+> >> NET_IP_ALIGN to be 2 to pad out the header to be on the supported
+> >> alignment. If the driver chooses to pad with one byte instead of 2
+> >> bytes, the driver may fail to work as the CPU may stall after the
+> >> misaligned access.
+> >>
+> >>>
+> >>> I'm sure I've seen code that would realign IP headers to a 4 byte
+> >>> boundary before processing them - but that might not have been in
+> >>> Linux.
+> >>>
+> >>> I'm also sure there are cpu which will fault double length misaligned
+> >>> memory transfers - which might be used to marginally speed up code.
+> >>> Assuming more than 4 byte alignment for the IP header is likely
+> >>> 'wishful thinking'.
+> >>>
+> >>> There is plenty of ethernet hardware that can only write frames
+> >>> to even boundaries and plenty of cpu that fault misaligned accesses.
+> >>> There are even cases of both on the same silicon die.
+> >>>
+> >>> You also pretty much never want a fault handler to fixup misaligned
+> >>> ethernet frames (or really anything else for that matter).
+> >>> It is always going to be better to check in the code itself.
+> >>>
+> >>> x86 has just made people 'sloppy' :-)
+> >>>
+> >>>     David
+> >>>
+> >>> -
+> >>> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, 
+> >>> MK1 1PT, UK
+> >>> Registration No: 1397386 (Wales)
+> >>>
+> >>
+> >> If somebody has a solution they deem to be better, I am happy to change
+> >> this test case. Otherwise, I would appreciate a maintainer resolving
+> >> this discussion and apply this fix.
+> >>
+> > Agreed.
+> > 
+> > I do have a couple of patches which add explicit unaligned tests as well as
+> > corner case tests (which are intended to trigger as many carry overflows
+> > as possible). Once I get those working reliably, I'll be happy to submit
+> > them as additional tests.
+> > 
+> 
+> The functions definitely have to work at least with and without VLAN, 
+> which means the alignment cannot be greater than 4 bytes. That's also 
+> the outcome of the discussion.
 
-elapsed time: 1193m
+Thanks for completely ignoring what I've said. No. The alignment ends up
+being commonly 2 bytes.
 
-configs tested: 163
-configs skipped: 3
+As I've said several times, network drivers do _not_ have to respect
+NET_IP_ALIGN. There are 32-bit ARM drivers which have a DMA engine in
+them which can only DMA to a 32-bit aligned address. This means that
+the start of the ethernet header is placed at a 32-bit aligned address
+making the IP header misaligned to 32-bit.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240227   gcc  
-arc                   randconfig-002-20240227   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240227   gcc  
-arm                   randconfig-002-20240227   gcc  
-arm                   randconfig-003-20240227   gcc  
-arm                   randconfig-004-20240227   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240227   clang
-arm64                 randconfig-002-20240227   gcc  
-arm64                 randconfig-003-20240227   gcc  
-arm64                 randconfig-004-20240227   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240227   gcc  
-csky                  randconfig-002-20240227   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240227   clang
-hexagon               randconfig-002-20240227   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240227   gcc  
-i386         buildonly-randconfig-002-20240227   gcc  
-i386         buildonly-randconfig-003-20240227   clang
-i386         buildonly-randconfig-004-20240227   gcc  
-i386         buildonly-randconfig-005-20240227   gcc  
-i386         buildonly-randconfig-006-20240227   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240227   gcc  
-i386                  randconfig-002-20240227   gcc  
-i386                  randconfig-003-20240227   clang
-i386                  randconfig-004-20240227   clang
-i386                  randconfig-005-20240227   clang
-i386                  randconfig-006-20240227   gcc  
-i386                  randconfig-011-20240227   clang
-i386                  randconfig-012-20240227   clang
-i386                  randconfig-013-20240227   clang
-i386                  randconfig-014-20240227   clang
-i386                  randconfig-015-20240227   clang
-i386                  randconfig-016-20240227   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240227   gcc  
-loongarch             randconfig-002-20240227   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240227   gcc  
-nios2                 randconfig-002-20240227   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240227   gcc  
-parisc                randconfig-002-20240227   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240227   clang
-powerpc               randconfig-002-20240227   gcc  
-powerpc               randconfig-003-20240227   clang
-powerpc64             randconfig-001-20240227   clang
-powerpc64             randconfig-002-20240227   gcc  
-powerpc64             randconfig-003-20240227   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240227   gcc  
-riscv                 randconfig-002-20240227   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240227   gcc  
-s390                  randconfig-002-20240227   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240227   gcc  
-sh                    randconfig-002-20240227   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240227   gcc  
-sparc64               randconfig-002-20240227   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240227   clang
-um                    randconfig-002-20240227   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240227   clang
-x86_64       buildonly-randconfig-002-20240227   gcc  
-x86_64       buildonly-randconfig-003-20240227   clang
-x86_64       buildonly-randconfig-004-20240227   clang
-x86_64       buildonly-randconfig-005-20240227   clang
-x86_64       buildonly-randconfig-006-20240227   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240227   clang
-x86_64                randconfig-002-20240227   clang
-x86_64                randconfig-003-20240227   gcc  
-x86_64                randconfig-004-20240227   gcc  
-x86_64                randconfig-005-20240227   gcc  
-x86_64                randconfig-006-20240227   gcc  
-x86_64                randconfig-011-20240227   gcc  
-x86_64                randconfig-012-20240227   gcc  
-x86_64                randconfig-013-20240227   clang
-x86_64                randconfig-014-20240227   gcc  
-x86_64                randconfig-015-20240227   gcc  
-x86_64                randconfig-016-20240227   gcc  
-x86_64                randconfig-071-20240227   gcc  
-x86_64                randconfig-072-20240227   clang
-x86_64                randconfig-073-20240227   gcc  
-x86_64                randconfig-074-20240227   clang
-x86_64                randconfig-075-20240227   clang
-x86_64                randconfig-076-20240227   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240227   gcc  
-xtensa                randconfig-002-20240227   gcc  
+I don't see what is so difficult to understand about this... but it
+seems that my comments on this are being ignored time and time again,
+and I can only think that those who are ignoring my comments have
+some alterior motive here.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
