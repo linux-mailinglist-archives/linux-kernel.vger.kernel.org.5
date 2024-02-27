@@ -1,227 +1,201 @@
-Return-Path: <linux-kernel+bounces-82482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82483-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91AA8868526
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:48:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 745BD868528
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07A321F2210C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:48:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E05391F22142
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1D61859;
-	Tue, 27 Feb 2024 00:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1CD1879;
+	Tue, 27 Feb 2024 00:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="f/s9uHkM"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FzVhjTFj"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355B74A22
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708994921; cv=none; b=UEMw2jrQZMXE09/Hz+7iUWt6ZmPIekTYZ7GE6DQBeknCUBroIav0CQXWBed4SaOP7T5IJ4Gvf/eI7UHREJ3kJuDaszaOlEhJad/czJT5n9ru7mutrU0nCUdxvDIF08MbG6obCsfx1BarkxeWyf5V8aCiA0lj9OvdVEDWO/m6Zh8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708994921; c=relaxed/simple;
-	bh=1d5ZkL9n1t8/7gU9h2KWeJ28p1lq19jfuE6mDI7FasA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qasc4qkGxolqeqw/WqS8PxwYkJHOmFhHYkzOJdiysv60qSeOdngDdgUQtccfDGUX1liDKDRqd0RlM4uG3ATsQ2wK8ikL8jj6EslOWf2154uQf5cOqWeTiy5l/Q+wsJLWbJbv/0ymaD4pQf7lfSTW9EvdhJ21weUAbCS3PZFKgVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=f/s9uHkM; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc0e5b223eso30921735ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:48:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708994919; x=1709599719; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HEv2j8AE2R1WryNqIlQAju++XXgILMVuNPnvcySZm4w=;
-        b=f/s9uHkMDWX3yBFa336bVUbwZ9bEJcqPdIY+qrW9PtaaMy/Z9Ki9vhdMABCOoIC7uF
-         KKCC+YNR6Pe8nvjw5oPKwB5jPDmLp4vBK2DbzgtNYy8FPK19s5QEzgLrZ4FAt8mZtg6n
-         seE96dJPjnqy10NcFkGQEWuoob61BFiSV34gA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708994919; x=1709599719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HEv2j8AE2R1WryNqIlQAju++XXgILMVuNPnvcySZm4w=;
-        b=xCc20I+vCGpzx1NQTzSNkyLJ5ygcv1XTI6yfkIZ5WsCxJVa8trzybgyCe88wkIPWLp
-         dP6NYePttJf7i+sWsiOESpldp68mDO86KTzJhtItJ42kfT2YiREVIzlV1vnMBLjz1w5I
-         N5Atm8sfCkUCrUvgfD5z6nUs7+lVqxHR5dBf6+i58++4Dd2EC/eSOvc3kyoqDaPeKOKs
-         9L4lNie47d2G7F7lZX91fjMUVToJ4hRqejHLVgNq5L4+5QEsdumNJuK/yWP6x8sYHPh2
-         +N3dNC0C9p75KhkfaEs4V09rY5Ixplc4PIOdp6GV9X6DswThJtu64SSyVV3tC9hMYjMo
-         KIAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUjxTNj2NmLpq3vqahr9lbZdXEXaTtMSVqwgyy2pAyyUxaS49l/EJoOJo6YKWZOXdsxin+3XEYnr7gJnzUm+TVi/RWk8elGrtyviwAG
-X-Gm-Message-State: AOJu0YyGg47UBgfK6oIvRJ5Ev/ej27uYrOmccgb2IpfR5FTiQKm++tOb
-	pivNnIEQ01aOB40Ybb3oYyWvSVFhm8TlgiEMxKmxt76kNbp2SiyBm4sHLAyojzc8k4mCdEV7Zw0
-	=
-X-Google-Smtp-Source: AGHT+IHGJtdVOQpGyp67EsMcKEw8vdfeBxtaDugOps7hSmbzF/cwPxXouymJyTiqq1Ez9gjFIz6aew==
-X-Received: by 2002:a17:902:aa42:b0:1dc:771f:ae56 with SMTP id c2-20020a170902aa4200b001dc771fae56mr7798438plr.29.1708994919507;
-        Mon, 26 Feb 2024 16:48:39 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p3-20020a170902e34300b001db8a5ea0a3sm283583plc.94.2024.02.26.16.48.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 16:48:38 -0800 (PST)
-Date: Mon, 26 Feb 2024 16:48:38 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Jacob Keller <jacob.e.keller@intel.com>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	gustavoars@kernel.org, Peter Rosin <peda@axentia.se>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: Re: [PATCH v2] mux: convert mux_chip->mux to flexible array
-Message-ID: <202402261647.CCCF97AF@keescook>
-References: <20240226212925.3781744-1-jacob.e.keller@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42AA615CB;
+	Tue, 27 Feb 2024 00:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708994957; cv=fail; b=rIAVV6sNNs78Cre13i4iVfxevS/IYXgKRGy46k7jP6XYXWS19gCZS2R07q5H6LKwsG3edkBvQKhJQQmTk/HDh7Go267kOmJE1IGv9SfA8lOTNWU5Pb+RciY/+MaG5hJdOxnyYcG/W84p6sLyXyQcSKbLQGGGbcLBVh2ELRNqsT0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708994957; c=relaxed/simple;
+	bh=T8H7TZBhPvh+WHsKSWp5lFovGTDaKq/z640vtosiytw=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=mDZPJEhV2y4L09EOJDaUTTn84A1diWTu52oPDvdMoLWOhGLcwWra+cB0Nau6xDTl2cVerX5qIxIwmbT6nwE91E96IG5WWwooUHSgbaDzlFxIUhmPOfnwQ6w+UN3LFPqlNtplS1g/1NJ25I4g5uWXRsqmkTMq5y42aap1np2VhRc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FzVhjTFj; arc=fail smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708994955; x=1740530955;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=T8H7TZBhPvh+WHsKSWp5lFovGTDaKq/z640vtosiytw=;
+  b=FzVhjTFjgpANSl6Sj+AQdJNpKvgj9jnkTcAWB7JDPvUAVOa6YvlFY/Xn
+   O6Ara4p0QjPtEYqaj9NRcT/m4KlDrZolOsyHISeBxYucJSc7EXgs7Ssul
+   rVD9qxddkFJWD2+kPk7iRyX4yo1PCyiuhKEhuN3jbs/lHaHIxcyP2Iy+1
+   eeYooVtsCaWPFjCSuoDZtNbBinZSfZTZzap0CsllTVh67N/tzbQA4FrG3
+   hyvsykuOF97nLU2z98TkWC63MABwRXaLb74oy9ZZoaTui+sJpZQXEItcb
+   iiNOyiJTBvCITlQQWfigiG9X4ZtEgmYZl6uplhNKJ+VsGcoEId8dudONU
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3475926"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="3475926"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 16:49:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="11633330"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Feb 2024 16:49:13 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 26 Feb 2024 16:49:12 -0800
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 26 Feb 2024 16:49:11 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 26 Feb 2024 16:49:11 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 26 Feb 2024 16:49:10 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O+PAgGpjkz/X9LiY4C345mAApU8sTIx4pawYTZ45K8uDbrHsa09CdLHyV3p3f88NZpAm6uWxknzO+iC5gw9jOgFWaHcRxRrGFbBvjGeFTYvRKB3kuQ0mFsdNS57t3mxxT3neWXCrOYzlVhnIV5Pob0EAiOSCMPktjW4VWR2yOLz9jQKj7rzL5eQB53/Q2UW2/3/Rv6VcnQCC/sYb/BSVmjacIheIDnjIiaxfyZERkmUO1ZlJB36LtEsrsir6nUnaNN4lXRnlqLPwimdKTwec2wr5zeXSQVt/ubjkJ47mAzmzEr4epjSbOumRCOthp1aDlmeTZ9knj4SN2TG7AdKz2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=++3u/2IXRpRxtTZGM8lLEQiWwvRkZ8Ngd0FNJtlrz34=;
+ b=TTZl24OBNT8Qv+B3MMGrLrmbl2foEBd8jOQ7gQKpf1nlMyqzrRbZk6JTEfFbpYHRCvPyI3yQaX+P1AFn6VJvwh2lb5hMg8hUyz2s2j7YioZovmDj7tpICXzZyI8TFKWGDE4vkQzXVsSCY7/Gd7hKnFfegHzuetqDyFUZt9zuIh+IV4p6bTaI7FBBlTcRYNCt0FacFMweAcDCZL+kN+o4NMs44ONApxdXQPRUOKSCdNOJj7hQHS5N15kYhJmYH+F2Ol0OQUtdtfMbAmWvLpcVDI1vtSNC5BCxJw0CM0D8Ak3wFQ5WfdWAOK21/LnIdqq5dy9h/+wCNPFhLCeIlTS2EQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by SJ0PR11MB5182.namprd11.prod.outlook.com (2603:10b6:a03:2ae::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.10; Tue, 27 Feb
+ 2024 00:49:08 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7339.024; Tue, 27 Feb 2024
+ 00:49:08 +0000
+Message-ID: <eaf4ff10-6bf3-4181-8ed0-895fccd2bad4@intel.com>
+Date: Mon, 26 Feb 2024 16:49:05 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/3] selftests/resctrl: Simplify test cleanup functions
+Content-Language: en-US
+To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
+	<shuah@kernel.org>, <fenghua.yu@intel.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<ilpo.jarvinen@linux.intel.com>
+References: <cover.1708949785.git.maciej.wieczor-retman@intel.com>
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <cover.1708949785.git.maciej.wieczor-retman@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0099.namprd03.prod.outlook.com
+ (2603:10b6:303:b7::14) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226212925.3781744-1-jacob.e.keller@intel.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SJ0PR11MB5182:EE_
+X-MS-Office365-Filtering-Correlation-Id: dcef9397-33f0-40d0-feb8-08dc372de7b3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cLpQMv716dfbQNYn/aVTdLhcpWdfpv3MwVwLKFOlMUqc5UgwjiBnu0T0NV1s64QxCXazNqzEmalTeIqaU3/U56J4b/1vb48kGJ+r3dlY6Chl3nZ+GU9Mjjs4Uy81dRMpEQNuN+ZWSLiBn4EQY1IbEhfPKzQh/wJp9DTOt9CvDu7qQzrasU7F+BMux1AY+w+3ZjQYDH+8+FaYSH69i8pivPJULovh4ZYQG0DsLxFtBY8XdcXuJz5pa+KLeBnxaPnJ8SqzCQIgp7t4ohb+NDrPKVFXKRVwKgTypcj+bL28ZyTSEaNzlXauff9wVbhgEyd5f+KqDdE9waz7bBL1v5u2VRGO7dt+JCOE3zkcJWyqtrQSEuH5CCy7iFGbDPDhnJrLt9KDt3MpgXS3J7ctdVMiPs+N/wOsYMJ7M7mTjbIoFrOlawzgS2hqeqA/bIwJ7GxCrglNfmApRldKm0emzFIWXqqTAQ8ccDSGUj3YV1ryLryqi1QQkp71RFdsSEsHYX8GD3zLa7Sxrl3JhT9c5Yo478Eil4aV363d9KAu+MPafWZ9pJtso5CXEn/ChoMX7CawZB667MU9PpBWcXnPV0Q/lOr4t1ucSpFxKmVVGYTmd90OOKYV7nnaqV5h6WkrRygp0eBr/HrVYqWoIv0/HyDmCg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Nzl0K0RJbEV5MGdwU0ZOWnFoNGZKS0xQZnRFRVE4dWhSZEJZSkEyNE5MTHB3?=
+ =?utf-8?B?VW4zK29pbHltY3RKM2ZyNDJySDdQVG52U0JCRnhYbEhUcWhXZ1VzOUVkNEZD?=
+ =?utf-8?B?Nks3aHU1ZmFMTWtNUFdvU2FZSE1QOERaUmFuaHl2MzRCamxxNFlUakFsQlM1?=
+ =?utf-8?B?ZE95ZGNTc2E3V1JLMTFjdVEyd0xYWkZRdzRoUjVERk1NU055MWRGLzQ1cHRt?=
+ =?utf-8?B?TFRtR2RSb0hSbjc3eWErbWt6a1lON3N6REIzaCtiT0NFVElFZk9tMDhObjZD?=
+ =?utf-8?B?eFUyYU05Q0ZoaVVoa3J2b3J5TC9EZCtlc0J1Vi9uTGg4M2I4REl5Q1lOTGU5?=
+ =?utf-8?B?MDFTVXdIK2FwRFNSY0FpbVI4OThrRjdTUWdZRWdTR2ZDVlBJRmxhb0x2SGF4?=
+ =?utf-8?B?UmlsakNhTVBRRjhRK0ZwZ3UyblBmb2wrYVh2UWhiU0xEanFzQWRhL3EzUUE4?=
+ =?utf-8?B?bGMvb09NRTloL05LQlZJcXQxelhMN2R1WFAyTnFVWU10RC92Q3JZbEhkTVZI?=
+ =?utf-8?B?QU50bElrMjJwOVp5dHV2TTJIWlNPSEVRWFl4Z2lWZ0R6Q2JCUjkwckNodTFp?=
+ =?utf-8?B?MjZIRXgwa3V4TXhoWm1Da25EZWtwTmZ6ektEa0ppeUxraHAzM2MreXZpWnd0?=
+ =?utf-8?B?RG9sZGNBbjhOcFFucFJxeHgzVWVGUy9zYVAyQ3J5RXloMUlKMmlDWDQwTW9B?=
+ =?utf-8?B?UEE1c2N1dWRNa2x0SWFjdDhaeERSTHdmSDkrbTJ4Y2ZhUDY1Ny9zSGprVmNO?=
+ =?utf-8?B?aC9ncmpNRjE4K0c4SGVMeERqVVY1RE5FWUU2MERJT2trNGJCRmVaM0p4TERn?=
+ =?utf-8?B?UzZRbVBhUGxWNkVKTTBMMjFMbWJNYzg1MUI2cytScjJaVi9BWU5VZC9KMzl4?=
+ =?utf-8?B?UCtMek5CNHhlaGtEL1Y2d3BvNkxyQnNQcWJDUTJxWHNzV2ZNZWYreDRWNFZh?=
+ =?utf-8?B?TmdGNTNSN1ZmL2JjemUwem1vUFBNTFFVSE1SazY2U0FhdUVyNi8rQ2tLbkZx?=
+ =?utf-8?B?dGltUEY0ZTBtb1lXWE1Yd2w4SWNMQW5nSldaQkxtc1hvTm52YzRsZEI2RTZT?=
+ =?utf-8?B?dGF6K2xoajFuMnBuV1E3a1pnZVVScGhFdmJuTzU1bTYrRjd3OVE0bVRCaDhh?=
+ =?utf-8?B?K2l1d0srWjdveVVPVDRPT0dHcnRtelhRa1NqNXlGNC91TWRrS3RRd2RKQTBD?=
+ =?utf-8?B?Q1BKMDJSNWVvNUtFT3JLcXFJRHo3WGtaMGR1c0Mrem10Um4xeGxrYjNuTW1t?=
+ =?utf-8?B?WlhEdzZjSEZrNk16RW1DcU8vT0Y3dEpMaGRPWEMxSTFzeGhEdDVFOVl6TWY5?=
+ =?utf-8?B?RkFSRHIrQ3FuYjZsakdyU1h1Q0NtMU1OQ1RUT2J3STRqcVhUME1BcmRRK1J3?=
+ =?utf-8?B?S3JjNWlGYWJiU2RQSU1zRnFjRUtTTlRQekVDNnJzbjgrQU8wT3FKNFcvVjc2?=
+ =?utf-8?B?Vk1YS2FPRnZQUjRQNWU3ZSs5U1JGRUZLL1p0YXNJTXpvbEFKdUZLd3lwcXo4?=
+ =?utf-8?B?anNGY2FUdk9ORjF2SGZXM3E5WVY5MTNNeXI1dHFsb2dOVnQ4TUdYNnc0cGR1?=
+ =?utf-8?B?QXgvUHNyTXBtMTgya3RjbUNkN2NYUXNMMTJjNTlXZU9nOEpiOWJrUFJRSWZj?=
+ =?utf-8?B?cnR1M2NaRnJKbkVicDFIQUNJY1lpMjFtQzhiOUV0eitodnFTOWJFTmJCdjdM?=
+ =?utf-8?B?bk9OWXI0a1dxc2RieC9Kc21vTFkyQk9KTGE5VUVxVUR6WXYwWnJocGxPM0pX?=
+ =?utf-8?B?dit3dk1KamNhNTk1VVJEZjJJb1hpLytYblFDc0pYRGVtWjNrdWJ3L29pRFpV?=
+ =?utf-8?B?eTVmRUFxbHBIcUFUNldKUEl5ZXJsWllnSXNORnJTWVFLdFd3V1hwVjJlRkto?=
+ =?utf-8?B?dzJuWjhZWUtvVkRxL0EwSHVRTDNHVndPTkR2WStsbnpHQzZHUmxITWY4ZFp6?=
+ =?utf-8?B?VHFsdmpieEZuMUJ0cnFPY2h1c29XeUV1QUJBaTk1ZlVSc0RZTXdGbEFpWkJH?=
+ =?utf-8?B?SHMrOUtYNnk5NDZTLzdWN1JsSkFFM0xnRE41dnNwVjZ1MG96Q0JjdmdHQmFS?=
+ =?utf-8?B?R0pZam9jWTFpYmdQNVZnaWZLSXhIWHJIR2NQQVdyTitZamRlK1RMc1ZQMU40?=
+ =?utf-8?B?anZnSUNEWlp0eVROTHJzLzdEdmhvKzhoVUVoTVlXYlBGWlRtcTBGOXpTOExQ?=
+ =?utf-8?B?VUE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: dcef9397-33f0-40d0-feb8-08dc372de7b3
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 00:49:08.1453
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0N7nhAMJRdboVdv3QpZVsVC9gISeF/hwWsdIGCUQyaQRG7R5NP7Ccr1HMk9fFgl9HV6CM218w+6CZ4w6BpAUVwEcRvGa5iI6Gv44Nbeyr9Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5182
+X-OriginatorOrg: intel.com
 
-On Mon, Feb 26, 2024 at 01:29:25PM -0800, Jacob Keller wrote:
-> The mux_chip structure size is over allocated to additionally include both
-> the array of mux controllers as well as a device specific private area.
-> The controllers array is then pointed to by assigning mux_chip->mux to the
-> first block of extra memory, while the private area is extracted via
-> mux_chip_priv() and points to the area just after the controllers.
-> 
-> The size of the mux_chip allocation uses direct multiplication and addition
-> rather than the <linux/overflow.h> helpers. In addition, the mux_chip->mux
-> struct member wastes space by having to store the pointer as part of the
-> structures.
-> 
-> Convert struct mux_chip to use a flexible array member for the mux
-> controller array. Use struct_size() and size_add() to compute the size of
-> the structure while protecting against overflow.
-> 
-> After converting the mux pointer, notice that two 4-byte holes remain in
-> the structure layout due to the alignment requirements for the dev
-> sub-structure and the ops pointer.
-> 
-> These can be easily fixed through re-ordering the id field to the 4-byte
-> hole just after the controllers member.
-> 
-> This changes the layout from:
-> 
-> struct mux_chip {
->         unsigned int               controllers;          /*     0     4 */
-> 
->         /* XXX 4 bytes hole, try to pack */
-> 
->         struct mux_control *       mux;                  /*     8     8 */
->         struct device              dev __attribute__((__aligned__(8))); /*    16  1488 */
-> 
->         /* XXX last struct has 3 bytes of padding */
-> 
->         /* --- cacheline 23 boundary (1472 bytes) was 32 bytes ago --- */
->         int                        id;                   /*  1504     4 */
-> 
->         /* XXX 4 bytes hole, try to pack */
-> 
->         const struct mux_control_ops  * ops;             /*  1512     8 */
-> 
->         /* size: 1520, cachelines: 24, members: 5 */
->         /* sum members: 1512, holes: 2, sum holes: 8 */
->         /* paddings: 1, sum paddings: 3 */
->         /* forced alignments: 1 */
->         /* last cacheline: 48 bytes */
-> } __attribute__((__aligned__(8)));
-> 
-> To the following:
-> 
-> struct mux_chip {
->         unsigned int               controllers;          /*     0     4 */
->         int                        id;                   /*     4     4 */
->         struct device              dev __attribute__((__aligned__(8))); /*     8  1488 */
-> 
->         /* XXX last struct has 3 bytes of padding */
-> 
->         /* --- cacheline 23 boundary (1472 bytes) was 24 bytes ago --- */
->         const struct mux_control_ops  * ops;             /*  1496     8 */
->         struct mux_control         mux[];                /*  1504     0 */
-> 
->         /* size: 1504, cachelines: 24, members: 5 */
->         /* paddings: 1, sum paddings: 3 */
->         /* forced alignments: 1 */
->         /* last cacheline: 32 bytes */
-> } __attribute__((__aligned__(8)));
-> 
-> This both removes risk of overflowing and performing an under-allocation,
-> as well as saves 16 bytes of otherwise wasted space for every mux_chip.
+Hi Maciej,
 
-This looks like a great clean-up, thank you!
-
+On 2/26/2024 5:05 AM, Maciej Wieczor-Retman wrote:
+> Cleaning up after tests is implemented separately for individual tests
+> and called at the end of each test execution. Since these functions are
+> very similar and a more generalized test framework was introduced a
+> function pointer in the resctrl_test struct can be used to reduce the
+> amount of function calls.
 > 
-> Signed-off-by: Jacob Keller <jacob.e.keller@intel.com>
-> ---
-> Changes since v1:
-> * Rebased and updated the commit message slightly.
+> These functions are also all called in the ctrl-c handler because the
+> handler isn't aware which test is currently running. Since the handler
+> is implemented with a sigaction no function parameters can be passed
+> there but information about what test is currently running can be passed
+> with a global variable.
 > 
->  drivers/mux/core.c         |  7 +++----
->  include/linux/mux/driver.h | 10 +++++-----
->  2 files changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/mux/core.c b/drivers/mux/core.c
-> index 775816112932..9225abca7897 100644
-> --- a/drivers/mux/core.c
-> +++ b/drivers/mux/core.c
-> @@ -98,13 +98,12 @@ struct mux_chip *mux_chip_alloc(struct device *dev,
->  	if (WARN_ON(!dev || !controllers))
->  		return ERR_PTR(-EINVAL);
->  
-> -	mux_chip = kzalloc(sizeof(*mux_chip) +
-> -			   controllers * sizeof(*mux_chip->mux) +
-> -			   sizeof_priv, GFP_KERNEL);
-> +	mux_chip = kzalloc(size_add(struct_size(mux_chip, mux, controllers),
-> +				    sizeof_priv),
-> +			   GFP_KERNEL);
->  	if (!mux_chip)
->  		return ERR_PTR(-ENOMEM);
->  
-> -	mux_chip->mux = (struct mux_control *)(mux_chip + 1);
->  	mux_chip->dev.class = &mux_class;
->  	mux_chip->dev.type = &mux_type;
->  	mux_chip->dev.parent = dev;
-> diff --git a/include/linux/mux/driver.h b/include/linux/mux/driver.h
-> index 18824064f8c0..84dc0d3e79d6 100644
-> --- a/include/linux/mux/driver.h
-> +++ b/include/linux/mux/driver.h
-> @@ -56,18 +56,18 @@ struct mux_control {
->  /**
->   * struct mux_chip -	Represents a chip holding mux controllers.
->   * @controllers:	Number of mux controllers handled by the chip.
-> - * @mux:		Array of mux controllers that are handled.
-> - * @dev:		Device structure.
->   * @id:			Used to identify the device internally.
-> + * @dev:		Device structure.
->   * @ops:		Mux controller operations.
-> + * @mux:		Flexible array of mux controllers that are handled.
->   */
->  struct mux_chip {
->  	unsigned int controllers;
-> -	struct mux_control *mux;
-> -	struct device dev;
->  	int id;
-> -
-> +	struct device dev;
->  	const struct mux_control_ops *ops;
-> +
-> +	struct mux_control mux[];
+> Series applies cleanly on top of kselftests/next.
 
-This can gain the __counted_by annotation as well:
+Could you please rebase again? This series does not apply cleanly when
+I tested with latest kselftest/next at
+ae638551ab64 ("selftests/resctrl: Add non-contiguous CBMs CAT test")
 
-	struct mux_control mux[] __counted_by(controllers);
+With this addressed, for the whole series:
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
 
-With that:
+Thank you very much.
 
-	Reviewed-by: Kees Cook <keescook@chromium.org>
-
--Kees
-
--- 
-Kees Cook
+Reinette
 
