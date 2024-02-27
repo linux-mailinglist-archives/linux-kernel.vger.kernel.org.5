@@ -1,709 +1,187 @@
-Return-Path: <linux-kernel+bounces-82828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BAA7868A31
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:51:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 092D9868A3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 413C7283C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:51:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6718C1F221AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD93F56444;
-	Tue, 27 Feb 2024 07:51:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B489356468;
+	Tue, 27 Feb 2024 07:52:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fVLDMNd5"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD7E55E72;
-	Tue, 27 Feb 2024 07:51:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="U4Is6RTm"
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2D554FA6;
+	Tue, 27 Feb 2024 07:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709020263; cv=none; b=BNe3VrkiHZTOhUvKr6XtL/U3ut7DN7YTy6cHjJBevXZmrVCuFOS7SDGjQ8kDl2iYjjXrBLH35cB+sRJs/DZeFKlm8ZJKL1tzixVoKJf9fqyrSbl/BDk12Zqz/yAQb3xVQrg/1bj5a5gJs9jIa/Lioi2IyP7JIriWfGriXVC/U/I=
+	t=1709020375; cv=none; b=CiybxGFQMIQCFASwpKlB+3Dob+Ra3d4gXZL23K+dGKWoOu04hDX7E/DZzefnx7+MTK6xkFb/dVWcc1m3UaeEzulhvGZwZyqUfAu+pQHE5WlCOC9h1XcEC4na0t6fhn+ajSbeLvFBtfnvJSq+OJJ3Dx1ZLxdFmTmIpRG6Re3S8Q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709020263; c=relaxed/simple;
-	bh=MSOJ8ZFDhKFgkirQrVH/2GJCpiRPNubVm7xYZjelF1Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DqCaXiJTYCE2bPwL+PJfMxmvueQeBPM/GiuSok/hJL/UOIamc0N1nx5PPbCJLTW0lZRYXOPEEYCl5b/zHcntSBjWAN2T8I2bam4THbyRqaNex3jv2gNoDoL4ENvDRXuy3vArVlY8c9lI+b0mLcLEhLyj7xfT3NqzeVMSl9/W9v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fVLDMNd5; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dcad814986so11891135ad.0;
-        Mon, 26 Feb 2024 23:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709020261; x=1709625061; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r2VYVXJnj9cKclestkfNf6hcU+oqGaERfKkHy/xWa9k=;
-        b=fVLDMNd5+BRTIiN1sAp1cqenMgOMUt5Vt4ecB5o84hZz1fYhA8Kg5jRMep9oJxnNmo
-         XYJm86mFMP4kRKxOuTCqOQG/KAHVlnDPyTnWNMD8Kgsan4PRP2iXKYgRwqASZ6MzJ9/k
-         DI7KPQyQLyZJMzA6criaTN8lHYR3tOAcI8dii6+ZLV4Mja55nVne8iHMaSrU1tDwfw+I
-         D671mHPkfYOwfsqR6B5nLf7zmJuBHOqBuHPhy+RCH6ir7d38ev6yepwCG9/IQXANKwUL
-         Vv1XjIRO2C8PEyK22g4ZfV8Nr8rt4axLElxJYGFmK22r7ZM0wekmsy/hzatFazEeVDjN
-         kyGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709020261; x=1709625061;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r2VYVXJnj9cKclestkfNf6hcU+oqGaERfKkHy/xWa9k=;
-        b=ZeInfXwrLPlY/W9QXaxCwfkiwwnipwH34mGsqanbwpLzT9OuFdK3AJGJFaqOGY69aJ
-         MiYBiwkNUlbn52/TOjxtdD1yUh7rc/LBkIQu7O6stGpzQp6Q/EX0GUSKYX03A8/mf4yt
-         G3PwlnKQA+qRr/7iqh1ZTU3/FgmX3HBYhstwi/v2SE3ctdSqSvkK8aM13pMvsfJIQx5/
-         EJpdJUKlfFVamgIkxfTfK8m3bqfsCy7UDdwKnzXjzZvg4pgnIS8UiTmRv2pcHS3ghcVL
-         gIyeXstSUVDxDvgQ7H1O2noSfFczMt2vQ4jgubN2RBeC/MX80xApUn1nL/OiPTe18jKg
-         OiEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWkvzNyJClCGl+R7vcH3WyIXy/T1Ti4jPVZ8ukqAi41xg2JRDoN4MRog+m4qpBG8HT2hSUnABH21HODdQ8xsmTmoIkRjTonk1pSBtwgwjWZuXl9qEVZPNr8A78+DD4J+9hVDpDR9ovCug==
-X-Gm-Message-State: AOJu0Ywr85veql6WBYNjjusgX34T7dgTuis2tKZdLOT/K0LduBv6zInJ
-	labyKyE2lziVafl4k/6ldvOP+H9p208c3bRt6bf0P62DTvYr9qq/
-X-Google-Smtp-Source: AGHT+IHJkGnDC/kKrOo5Q6JHbF0bAE2OAkej8TjluSp9sJRo5Ivq7jx8HJkWBzaRXADQiycTobfnCQ==
-X-Received: by 2002:a17:903:1246:b0:1dc:2f2e:139f with SMTP id u6-20020a170903124600b001dc2f2e139fmr12523357plh.39.1709020261048;
-        Mon, 26 Feb 2024 23:51:01 -0800 (PST)
-Received: from localhost.localdomain (125-229-150-10.hinet-ip.hinet.net. [125.229.150.10])
-        by smtp.gmail.com with ESMTPSA id ja13-20020a170902efcd00b001dc8db3150asm892658plb.199.2024.02.26.23.50.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 23:51:00 -0800 (PST)
-From: Kelly Hung <ppighouse@gmail.com>
-X-Google-Original-From: Kelly Hung <Kelly_Hung@asus.com>
-To: robh+dt@kernel.org
-Cc: krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	joel@jms.id.au,
-	andrew@codeconstruct.com.au,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	openbmc@lists.ozlabs.org,
-	kelly_hung@asus.com,
-	Allenyy_Hsu@asus.com,
-	Kelly Hung <Kelly_Hung@asus.com>
-Subject: [PATCH v3 2/2] ARM: dts: aspeed: x4tf: Add dts for asus x4tf project
-Date: Tue, 27 Feb 2024 15:50:51 +0800
-Message-Id: <20240227075051.1577877-2-Kelly_Hung@asus.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240227075051.1577877-1-Kelly_Hung@asus.com>
-References: <20240227075051.1577877-1-Kelly_Hung@asus.com>
+	s=arc-20240116; t=1709020375; c=relaxed/simple;
+	bh=d10zgy4neqJ3ueg8XosuA6C9v5ZcqlEmDmszYPd2sbA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k6b2wZANw5evKj18uxPL16HHr2jFMpB8W/qCUWAmKLc2Xbys/CqpdC01el/CV2EgrG8UcAsMl2XflIIP0RksAgt8pUAUSUGV9aCLfPGpZFUSPzF7XnVk+ZHX13brE0EtWTd8SugksT5IygqeUCBEnBLSUgCvtwJCfMZZQIcOK88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=U4Is6RTm; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+	Content-Type; bh=q49RmB2IAyp4hUQXDCmAUSmSnBjebnDcngrqPkKrLcI=;
+	b=U4Is6RTmWrIlT64AZWufkJFalusLdotPc7BZ/JNnkOYQ0Le41r11iu7ZJE/58t
+	jpJSEnBb6xW06nGbqCYJMALUFroBQUVAWZfZEMuU6zc17JHg6oehimPHXxqbfJtw
+	z7r8vd+vrg6ggrWKIUNbMylSfR8pzpd7XdvMpatxNY+x4=
+Received: from [192.168.198.19] (unknown [175.2.16.90])
+	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wD3f8x+lN1lIsQ4AA--.10558S2;
+	Tue, 27 Feb 2024 15:51:41 +0800 (CST)
+Message-ID: <3399d2af-3d42-4ac1-9b74-8475bec25f7f@163.com>
+Date: Tue, 27 Feb 2024 15:51:25 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] PM: hibernate: Fix level3 translation fault in
+ swsusp_save()
+Content-Language: en-US
+To: Mike Rapoport <rppt@kernel.org>, David Hildenbrand <david@redhat.com>
+Cc: rafael@kernel.org, pavel@ucw.cz, len.brown@intel.com,
+ keescook@chromium.org, tony.luck@intel.com, gpiccoli@igalia.com,
+ akpm@linux-foundation.org, ardb@kernel.org, wangkefeng.wang@huawei.com,
+ catalin.marinas@arm.com, will@kernel.org, linux-pm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+ Yaxiong Tian <tianyaxiong@kylinos.cn>, xiongxin <xiongxin@kylinos.cn>
+References: <20240226034225.48689-1-13327272236@163.com>
+ <8d70939f-ca14-4167-9647-b8f44ddcbb98@redhat.com>
+ <ZdxWcG2XCqBum3_R@kernel.org>
+From: Yaxiong Tian <13327272236@163.com>
+In-Reply-To: <ZdxWcG2XCqBum3_R@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3f8x+lN1lIsQ4AA--.10558S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtr1UJF4DWFy5Aw47uF1xZrb_yoWxXr1DpF
+	4UGF1DKws7AF17Ar48tFW5ur18Xw4avanxJr1UJws7JF17Cr15Xr1UKryYgFyDtw4rArsF
+	qFZ8tw4FyFn8GaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07juD73UUUUU=
+X-CM-SenderInfo: jprtjjaxsxjjitw6il2tof0z/1tbiRQ6RJWXAkomgpwAAsG
 
-Base on aspeed-g6.dtsi and can boot into BMC console.
 
-Signed-off-by: Kelly Hung <Kelly_Hung@asus.com>
----
- arch/arm/boot/dts/aspeed/Makefile             |   1 +
- .../boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts  | 581 ++++++++++++++++++
- 2 files changed, 582 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
-
-diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-index d3ac20e31..32c41f3d9 100644
---- a/arch/arm/boot/dts/aspeed/Makefile
-+++ b/arch/arm/boot/dts/aspeed/Makefile
-@@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
- 	aspeed-bmc-asrock-e3c246d4i.dtb \
- 	aspeed-bmc-asrock-romed8hm3.dtb \
-+	aspeed-bmc-asus-x4tf.dtb \
- 	aspeed-bmc-bytedance-g220a.dtb \
- 	aspeed-bmc-delta-ahe50dc.dtb \
- 	aspeed-bmc-facebook-bletchley.dtb \
-diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
-new file mode 100644
-index 000000000..7bf23f395
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asus-x4tf.dts
-@@ -0,0 +1,581 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+// Copyright 2024 ASUS Corp.
-+
-+/dts-v1/;
-+
-+#include "aspeed-g6.dtsi"
-+#include "aspeed-g6-pinctrl.dtsi"
-+#include <dt-bindings/i2c/i2c.h>
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+
-+/ {
-+	model = "ASUS-X4TF";
-+	compatible = "asus,x4tf-bmc", "aspeed,ast2600";
-+
-+	aliases {
-+		serial4 = &uart5;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial4:115200n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x40000000>;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges;
-+
-+		video_engine_memory: video {
-+			size = <0x04000000>;
-+			alignment = <0x01000000>;
-+			compatible = "shared-dma-pool";
-+			reusable;
-+		};
-+	};
-+
-+	iio-hwmon {
-+		compatible = "iio-hwmon";
-+		io-channels = <&adc0 0>, <&adc0 1>, <&adc0 2>, <&adc0 3>,
-+				<&adc0 4>, <&adc0 5>, <&adc0 6>, <&adc0 7>,
-+				<&adc1 0>, <&adc1 1>, <&adc1 2>, <&adc1 3>,
-+				<&adc1 4>, <&adc1 5>, <&adc1 6>, <&adc1 7>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-heartbeat {
-+			gpios = <&gpio0 ASPEED_GPIO(P, 7) GPIO_ACTIVE_LOW>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		led-uid {
-+			gpios = <&gpio0 ASPEED_GPIO(P, 1) (GPIO_ACTIVE_LOW | GPIO_OPEN_DRAIN)>;
-+			default-state = "off";
-+		};
-+
-+		led-status_Y {
-+			gpios = <&gpio1 ASPEED_GPIO(B, 1) GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+
-+		led-sys_boot_status {
-+			gpios = <&gpio1 ASPEED_GPIO(B, 0) GPIO_ACTIVE_LOW>;
-+			default-state = "off";
-+		};
-+	};
-+};
-+
-+&adc0 {
-+	vref = <2500>;
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc0_default &pinctrl_adc1_default
-+		&pinctrl_adc2_default &pinctrl_adc3_default
-+		&pinctrl_adc4_default &pinctrl_adc5_default
-+		&pinctrl_adc6_default &pinctrl_adc7_default>;
-+};
-+
-+&adc1 {
-+	vref = <2500>;
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_adc8_default &pinctrl_adc9_default
-+		&pinctrl_adc10_default &pinctrl_adc11_default
-+		&pinctrl_adc12_default &pinctrl_adc13_default
-+		&pinctrl_adc14_default &pinctrl_adc15_default>;
-+};
-+
-+&peci0 {
-+	status = "okay";
-+};
-+
-+&lpc_snoop {
-+	snoop-ports = <0x80>;
-+	status = "okay";
-+};
-+
-+&mac2 {
-+	status = "okay";
-+	phy-mode = "rmii";
-+	use-ncsi;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii3_default>;
-+};
-+
-+&mac3 {
-+	status = "okay";
-+	phy-mode = "rmii";
-+	use-ncsi;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii4_default>;
-+};
-+
-+&fmc {
-+	status = "okay";
-+
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc";
-+		spi-max-frequency = <50000000>;
-+#include "openbmc-flash-layout-64.dtsi"
-+	};
-+};
-+
-+&spi1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+
-+	flash@0 {
-+		status = "okay";
-+		label = "bios";
-+		spi-max-frequency = <50000000>;
-+	};
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+
-+	temperature-sensor@48 {
-+		compatible = "ti,tmp75";
-+		reg = <0x48>;
-+	};
-+
-+	temperature-sensor@49 {
-+		compatible = "ti,tmp75";
-+		reg = <0x49>;
-+	};
-+
-+	pca9555_4_20: gpio@20 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x20>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	pca9555_4_22: gpio@22 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x22>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	pca9555_4_24: gpio@24 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x24>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names =
-+		/*A0 - A3 0*/	"", "STRAP_BMC_BATTERY_GPIO1", "", "",
-+		/*A4 - A7 4*/	"", "", "", "",
-+		/*B0 - B7 8*/	"", "", "", "", "", "", "", "";
-+	};
-+
-+	pca9555_4_26: gpio@26 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x26>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	i2c-mux@70 {
-+		compatible = "nxp,pca9546";
-+		status = "okay";
-+		reg = <0x70>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		channel_1: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		channel_2: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		channel_3: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		channel_4: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+	};
-+};
-+
-+&i2c5 {
-+	status = "okay";
-+
-+	pca9555_5_24: gpio@24 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x24>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	i2c-mux@70  {
-+		compatible = "nxp,pca9546";
-+		status = "okay";
-+		reg = <0x70 >;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		channel_5: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			pca9555_5_5_20: gpio@20 {
-+				compatible = "nxp,pca9555";
-+				reg = <0x20>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
-+				gpio-line-names =
-+					"", "", "", "", "", "", "", "",
-+					"", "", "SYS_FAN6", "SYS_FAN5",
-+					"SYS_FAN4", "SYS_FAN3",
-+					"SYS_FAN2", "SYS_FAN1";
-+			};
-+
-+			pca9555_5_5_21: gpio@21 {
-+				compatible = "nxp,pca9555";
-+				reg = <0x21>;
-+				gpio-controller;
-+				#gpio-cells = <2>;
-+			};
-+
-+			power-monitor@44 {
-+				compatible = "ti,ina219";
-+				reg = <0x44>;
-+				shunt-resistor = <2>;
-+			};
-+		};
-+
-+		channel_6: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		channel_7: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		channel_8: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+	};
-+};
-+
-+&i2c6 {
-+	status = "okay";
-+
-+	pca9555_6_27: gpio@27 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x27>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	pca9555_6_20: gpio@20 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x20>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+		gpio-line-names =
-+		/*A0 0*/	"", "", "", "", "", "", "", "",
-+		/*B0 8*/	"Drive_NVMe1", "Drive_NVMe2", "", "",
-+		/*B4 12*/	"", "", "", "";
-+	};
-+
-+	pca9555_6_21: gpio@21 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x21>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+};
-+
-+&i2c7 {
-+	status = "okay";
-+
-+	i2c-mux@70 {
-+		compatible = "nxp,pca9546";
-+		status = "okay";
-+		reg = <0x70>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		idle-state = <1>;
-+
-+		channel_9: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+
-+			temperature-sensor@48 {
-+				compatible = "ti,tmp75";
-+				reg = <0x48>;
-+			};
-+
-+			temperature-sensor@49 {
-+				compatible = "ti,tmp75";
-+				reg = <0x49>;
-+			};
-+
-+			power-monitor@40 {
-+				compatible = "ti,ina219";
-+				reg = <0x40>;
-+				shunt-resistor = <2>;
-+			};
-+
-+			power-monitor@41 {
-+				compatible = "ti,ina219";
-+				reg = <0x41>;
-+				shunt-resistor = <5>;
-+			};
-+		};
-+
-+		channel_10: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		channel_11: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		channel_12: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+	};
-+
-+	i2c-mux@71 {
-+		compatible = "nxp,pca9546";
-+		status = "okay";
-+		reg = <0x71>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		i2c-mux-idle-disconnect;
-+
-+		channel_13: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		channel_14: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+
-+		channel_15: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		channel_16: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+	};
-+};
-+
-+&i2c8 {
-+	status = "okay";
-+
-+	i2c-mux@70 {
-+		compatible = "nxp,pca9546";
-+		status = "okay";
-+		reg = <0x70>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		i2c-mux-idle-disconnect;
-+
-+		channel_17: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		channel_18: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+
-+			temperature-sensor@48 {
-+				compatible = "ti,tmp75";
-+				reg = <0x48>;
-+			};
-+
-+			power-monitor@41 {
-+				compatible = "ti,ina219";
-+				reg = <0x41>;
-+				shunt-resistor = <5>;
-+			};
-+		};
-+
-+		channel_19: i2c@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <2>;
-+		};
-+
-+		channel_20: i2c@3 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <3>;
-+		};
-+	};
-+};
-+
-+&i2c9 {
-+	status = "okay";
-+};
-+
-+&i2c10 {
-+	status = "okay";
-+};
-+
-+&i2c11 {
-+	status = "okay";
-+};
-+
-+&i2c14 {
-+	status = "okay";
-+	multi-master;
-+
-+	eeprom@50 {
-+		compatible = "atmel,24c08";
-+		reg = <0x50>;
-+	};
-+
-+	eeprom@51 {
-+		compatible = "atmel,24c08";
-+		reg = <0x51>;
-+	};
-+};
-+
-+&sgpiom0 {
-+	status = "okay";
-+	ngpios = <128>;
-+};
-+
-+&video {
-+	status = "okay";
-+	memory-region = <&video_engine_memory>;
-+};
-+
-+&sdc {
-+	status = "okay";
-+};
-+
-+&lpc_snoop {
-+	status = "okay";
-+	snoop-ports = <0x80>;
-+};
-+
-+&kcs1 {
-+	aspeed,lpc-io-reg = <0xca0>;
-+	status = "okay";
-+};
-+
-+&kcs2 {
-+	aspeed,lpc-io-reg = <0xca8>;
-+	status = "okay";
-+};
-+
-+&kcs3 {
-+	aspeed,lpc-io-reg = <0xca2>;
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	status = "okay";
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&uart_routing {
-+	status = "okay";
-+};
-+
-+&vhub {
-+	status = "okay";
-+};
-+
-+&gpio0 {
-+	gpio-line-names =
-+	/*A0 0*/	"", "", "", "", "", "", "", "",
-+	/*B0 8*/	"", "", "", "", "", "", "PS_PWROK", "",
-+	/*C0 16*/	"", "", "", "", "", "", "", "",
-+	/*D0 24*/	"", "", "", "", "", "", "", "",
-+	/*E0 32*/	"", "", "", "", "", "", "", "",
-+	/*F0 40*/	"", "", "", "", "", "", "", "",
-+	/*G0 48*/	"", "", "", "", "", "", "", "",
-+	/*H0 56*/	"", "", "", "", "", "", "", "",
-+	/*I0 64*/	"", "", "", "", "", "", "", "",
-+	/*J0 72*/	"", "", "", "", "", "", "", "",
-+	/*K0 80*/	"", "", "", "", "", "", "", "",
-+	/*L0 88*/	"", "", "", "", "", "", "", "",
-+	/*M0 96*/	"", "", "", "", "", "", "", "",
-+	/*N0 104*/	"", "", "", "",
-+	/*N4 108*/	"POST_COMPLETE", "ESR1_GPIO_AST_SPISEL", "", "",
-+	/*O0 112*/	"", "", "", "", "", "", "", "",
-+	/*P0 120*/	"ID_BUTTON", "ID_OUT", "POWER_BUTTON", "POWER_OUT",
-+	/*P4 124*/	"RESET_BUTTON", "RESET_OUT", "", "HEARTBEAT",
-+	/*Q0 128*/	"", "", "", "", "", "", "", "",
-+	/*R0 136*/	"", "", "", "", "", "", "", "",
-+	/*S0 144*/	"", "", "", "", "", "", "", "",
-+	/*T0 152*/	"", "", "", "", "", "", "", "",
-+	/*U0 160*/	"", "", "", "", "", "", "", "",
-+	/*V0 168*/	"", "", "", "", "", "", "", "",
-+	/*W0 176*/	"", "", "", "", "", "", "", "",
-+	/*X0 184*/	"", "", "", "", "", "", "", "",
-+	/*Y0 192*/	"", "", "", "", "", "", "", "",
-+	/*Z0 200*/	"", "", "", "", "", "", "", "";
-+};
--- 
-2.25.1
+在 2024/2/26 17:14, Mike Rapoport 写道:
+> On Mon, Feb 26, 2024 at 09:37:06AM +0100, David Hildenbrand wrote:
+>> On 26.02.24 04:42, Yaxiong Tian wrote:
+>>> From: Yaxiong Tian <tianyaxiong@kylinos.cn>
+>>>
+>>> On ARM64 machines using UEFI, if the linear map is not set (can_set_direct_map()
+>>> return false), swsusp_save() will fail due to can't finding the map table
+>>> under the nomap memory.such as:
+> can_set_direct_map() has nothing to do with presence or absence of the
+> linear map.
+>
+> Do you mean that kernel_page_present() presumes that a page is present when
+> can_set_direct_map() returns false even for NOMAP ranges?
+Yes， in swsusp_save()->copy_data_pages()->page_is_saveable(),
+kernel_page_present() presumes that a page is present when 
+can_set_direct_map()
+returns false even for NOMAP ranges.So NOMAP pages will saved in 
+after,and then
+cause level3 translation fault in this pages.
+>>> [   48.532162] Unable to handle kernel paging request at virtual address ffffff8000000000
+>>> [   48.532162] Mem abort info:
+>>> [   48.532162]   ESR = 0x0000000096000007
+>>> [   48.532162]   EC = 0x25: DABT (current EL), IL = 32 bits
+>>> [   48.532162]   SET = 0, FnV = 0
+>>> [   48.532162]   EA = 0, S1PTW = 0
+>>> [   48.532162]   FSC = 0x07: level 3 translation fault
+>>> [   48.532162] Data abort info:
+>>> [   48.532162]   ISV = 0, ISS = 0x00000007, ISS2 = 0x00000000
+>>> [   48.532162]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+>>> [   48.532162]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+>>> [   48.532162] swapper pgtable: 4k pages, 39-bit VAs, pgdp=00000000eeb0b000
+>>> [   48.532162] [ffffff8000000000] pgd=180000217fff9803, p4d=180000217fff9803, pud=180000217fff9803, pmd=180000217fff8803, pte=0000000000000000
+>>> [   48.532162] Internal error: Oops: 0000000096000007 [#1] SMP
+>>> [   48.532162] Internal error: Oops: 0000000096000007 [#1] SMP
+>>> [   48.532162] Modules linked in: xt_multiport ipt_REJECT nf_reject_ipv4 xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bpfilter rfkill at803x snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg dwmac_generic stmmac_platform snd_hda_codec stmmac joydev pcs_xpcs snd_hda_core phylink ppdev lp parport ramoops reed_solomon ip_tables x_tables nls_iso8859_1 vfat multipath linear amdgpu amdxcp drm_exec gpu_sched drm_buddy hid_generic usbhid hid radeon video drm_suballoc_helper drm_ttm_helper ttm i2c_algo_bit drm_display_helper cec drm_kms_helper drm
+>>> [   48.532162] CPU: 0 PID: 3663 Comm: systemd-sleep Not tainted 6.6.2+ #76
+>>> [   48.532162] Source Version: 4e22ed63a0a48e7a7cff9b98b7806d8d4add7dc0
+>>> [   48.532162] Hardware name: Greatwall GW-XXXXXX-XXX/GW-XXXXXX-XXX, BIOS KunLun BIOS V4.0 01/19/2021
+>>> [   48.532162] pstate: 600003c5 (nZCv DAIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>>> [   48.532162] pc : swsusp_save+0x280/0x538
+>>> [   48.532162] lr : swsusp_save+0x280/0x538
+>>> [   48.532162] sp : ffffffa034a3fa40
+>>> [   48.532162] x29: ffffffa034a3fa40 x28: ffffff8000001000 x27: 0000000000000000
+>>> [   48.532162] x26: ffffff8001400000 x25: ffffffc08113e248 x24: 0000000000000000
+>>> [   48.532162] x23: 0000000000080000 x22: ffffffc08113e280 x21: 00000000000c69f2
+>>> [   48.532162] x20: ffffff8000000000 x19: ffffffc081ae2500 x18: 0000000000000000
+>>> [   48.532162] x17: 6666662074736420 x16: 3030303030303030 x15: 3038666666666666
+>>> [   48.532162] x14: 0000000000000b69 x13: ffffff9f89088530 x12: 00000000ffffffea
+>>> [   48.532162] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffffffc08193f0d0
+>>> [   48.532162] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 0000000000000001
+>>> [   48.532162] x5 : ffffffa0fff09dc8 x4 : 0000000000000000 x3 : 0000000000000027
+>>> [   48.532162] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 000000000000004e
+>>> [   48.532162] Call trace:
+>>> [   48.532162]  swsusp_save+0x280/0x538
+>>> [   48.532162]  swsusp_arch_suspend+0x148/0x190
+>>> [   48.532162]  hibernation_snapshot+0x240/0x39c
+>>> [   48.532162]  hibernate+0xc4/0x378
+>>> [   48.532162]  state_store+0xf0/0x10c
+>>> [   48.532162]  kobj_attr_store+0x14/0x24
+>>>
+>>> QEMU ARM64 using UEFI also has the problem by setting can_set_direct_map()
+>>> return false.
+> Huh?
+> Why would you do that?
+I discovered this problem when upgrading from 5.4 to 6.6 using the 5.4 
+configuration.
+So I using latest linux-next code,find the problem still exist.To rule 
+out the effects
+of a particular machine，I also use qemu to check it.
+>
+>>> Since the NOMAP regions are now marked as PageReserved(), pfn walkers
+>>> and the rest of core mm will treat them as unusable memory. So this
+>>> regions should not saved in hibernation.
+>>>
+>>> This problem may cause by changes to pfn_valid() logic in commit
+>>> a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify pfn_valid()").
+>>>
+>>> So to fix it, we add pfn_is_map_memory() check in saveable_page(). It
+>>> make such regisons don't save in hibernation.
+>>>
+>>> Fixes: a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify pfn_valid()")
+>>> Co-developed-by: xiongxin <xiongxin@kylinos.cn>
+>>> Signed-off-by: xiongxin <xiongxin@kylinos.cn>
+>>> Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+>>> ---
+>>>    kernel/power/snapshot.c | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+>>> index 0f12e0a97e43..a06e3b1869d2 100644
+>>> --- a/kernel/power/snapshot.c
+>>> +++ b/kernel/power/snapshot.c
+>>> @@ -1400,7 +1400,7 @@ static struct page *saveable_page(struct zone *zone, unsigned long pfn)
+>>>    		return NULL;
+>>>    	if (PageReserved(page)
+>>> -	    && (!kernel_page_present(page) || pfn_is_nosave(pfn)))
+>>> +	    && (!kernel_page_present(page) || pfn_is_nosave(pfn) || !pfn_is_map_memory(pfn)))
+> I think adding the check for !pfn_is_map_memory() to arm64::pfn_is_nosave()
+> is the best way to fix this.
+Thinks, I also think this is the best modification.
+>>>    		return NULL;
+>>>    	if (page_is_guard(page))
+>> On top of which tree does this apply?
+>>
+>> All occurrences of pfn_is_map_memory() are in arch/arm64, how does this
+>> compile on other architectures?
+>>
+>> -- 
+>> Cheers,
+>>
+>> David / dhildenb
+>>
 
 
