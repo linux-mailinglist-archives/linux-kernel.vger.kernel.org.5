@@ -1,130 +1,147 @@
-Return-Path: <linux-kernel+bounces-83541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E01B869B0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:49:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2508F869B19
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:50:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43E1F1F25874
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:49:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DCB61C24617
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44EC9148FE5;
-	Tue, 27 Feb 2024 15:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B34F146E9A;
+	Tue, 27 Feb 2024 15:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YO5g2sSg"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DX2emaFm"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F62A1482E3
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC9A145FF8
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:49:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709048939; cv=none; b=t9wHXJE0aE2VBIcJuqh5qupjcNS9Cm4rI7caPdk3j3S44wNOPTV7ZVSf33IDK/ZPPWBer0fdv+ACUz3AFZ07TWoX0sPRlX7oao4tKmZGfDkN1hpz1u1RDHYoL7kPuPsIAtwrlbrImg3qOXEqrZ/u01Sg7ilq4fYDtFiR5Bow3SQ=
+	t=1709048962; cv=none; b=H0H5NoJCiVOq8QQGTBXg9wuseIB2U4VfvoQ4x28evx7jNh+U/46tso4+XQtFy1OXPjzuqgy8S6KwesmBCTT3ULhB2hVXXUlpyvlN6ZNZSN3vUvpkieYZMhU9D7DkP1M9FV+1LzaVLd6In8DV4+HhlO5ylwPWlHLG+8Rno2CE2BQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709048939; c=relaxed/simple;
-	bh=up+DCN5ChGl/E+3j2L4zs+YPx9EtncoGLVBvu8pAspA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O0Ks2kp3bLiK2U8fHUOXKtjTNgQJrMkxYmTeErgipAH4evvHE/YKoBmCdlCEFNzW+pKDQvwWXkPglKJHUweEK0+P/BHxHUz89SiMdyJWqQfIOj/cqeddAnL8tCj5f+5j2kERR0Pl8Va9Y7SvdZOnglMC92WEAZ/vVBa32sSlvqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YO5g2sSg; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709048937;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/xbnPq7RXIvNg+PfYUQ/SxQLN6DLHw3idVYtn+kLNDc=;
-	b=YO5g2sSgOA9ZUeviweCeFCQ4DH0bxYJCawiNTNqm0voftXnIsfR1qJVAVEHMRrCJ427qG6
-	39PGcW0pYoPvkFmHQIl/SeZY0sAGoFtXWXm8OHkWvM9pGNspHNnMrM5Be82GBym1yMH9WT
-	3uLjAXEE1CU9fN9DGZnmR5zFclMe1MQ=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-256-ndtj2l53OwmyEkRUSmQ0xA-1; Tue, 27 Feb 2024 10:48:55 -0500
-X-MC-Unique: ndtj2l53OwmyEkRUSmQ0xA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33d29de76abso2335288f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:48:55 -0800 (PST)
+	s=arc-20240116; t=1709048962; c=relaxed/simple;
+	bh=TZRTc92NV02tibdsdZpuxS+R8ZdV2sfCy6eMJQHgnks=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UTRoRemW1poMge/avp7cS2wUIgXpqPW0MmCZMHYdsp/rjttBQ00jAANhdJzHJtjbqghsOXOq6Qi4Icyl/wwmKLeRAP65b3n+iG5JVpV+cMs53JCog+fkaGobKRMP9GPL6Mq7APWSZKhNiF9YQKsDy8datnJllzlV99K25Eb5dkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DX2emaFm; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3e550ef31cso503004266b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:49:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709048959; x=1709653759; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TZRTc92NV02tibdsdZpuxS+R8ZdV2sfCy6eMJQHgnks=;
+        b=DX2emaFmo2hhRTEvkpVpF0UomoE/TpFJB2OKdqWvmtcrXadgdkLUXaLstHVdgKF0mv
+         6xRPtewu//iMvgVLpf2X7jROw9044Co2KDAfgE4dN/BCFIfrwAYx74z/ilMcmbpO5mKo
+         0UG4Kk/brLHXl1t1+lFzj5682uqL62MpE88GqkAbarx479/o41oGXv9jB7YEQ8fpSHBK
+         N2X716bOD5r1VrILKADmAOOG9Oe+1EPJbJPgGiZjY8DdMzh26KFvVtDyVaLMa4gifJe2
+         Z4ykFN9+XsghEQZK9dmetCkzee4MaohJfOnty/YYpDy/RC5p5UZi9HOwAfA9Y9UOrW5c
+         IsTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709048934; x=1709653734;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/xbnPq7RXIvNg+PfYUQ/SxQLN6DLHw3idVYtn+kLNDc=;
-        b=JrvqiBDQDYea/odTYU1WfQ2tkILCx3ojG3KFpfTUgGOcXif2RrrR0qa1bFO7KX0YEP
-         7RVyfVVB7niKB097nNyf8MfrO5NmwjdkakZmT+QNPWAkclbY3+rW/tCJBohOqiAS37WL
-         Gug9Lf6oVR3EypmkptTqMrj1sBTDl8WHCuZ9dLtczCAsbHos3cfGljlfAzHLaceSaIY7
-         dTwN4EDqaTFmm9eaeH4F95C9NZVLM5oufeVUEXPRvxcMz9jFIk2ZLs817wycvCtZVf2u
-         x7cUd5exubs1svgV+Dg1M0bmfL8yuGs4yA8BEGO2pCwyMiBFbG5TkpRf9ScfgUPvnTuW
-         AlAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWrEqvSimlgGnZ+pV6vDFPTx7ivYiDJEtljBM2dwmpPVnAGegAJ1FaZQsl4G8g98jQymwWakcJ1x8QnQjFOcu/XVKY9LSUPZpQPoZo6
-X-Gm-Message-State: AOJu0Yyijkkx1tvamq2Hly1CCWfHrSF1Azho8nBDnsXptWixa3ceHczZ
-	tIl2AOmAukio7nmVefkOLttcf6nRnOnGmBteE1HDGLzNsydo42gFnNj2B5YSqwbCEUTuwNwHIvh
-	uad5uDYY9W4IssyBQewynv2a84b7wlqoFjCd8dLlforK5GScv0LhABVNWc+9Orw==
-X-Received: by 2002:adf:e702:0:b0:33d:509c:5692 with SMTP id c2-20020adfe702000000b0033d509c5692mr7613812wrm.31.1709048934563;
-        Tue, 27 Feb 2024 07:48:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHhhMpgy8POimkjUANc+4RteuVbX4FX4SRQYH18i2c3XpSnO3gd/o0FCmDM1lLUaZunxWosww==
-X-Received: by 2002:adf:e702:0:b0:33d:509c:5692 with SMTP id c2-20020adfe702000000b0033d509c5692mr7613789wrm.31.1709048934215;
-        Tue, 27 Feb 2024 07:48:54 -0800 (PST)
-Received: from redhat.com ([2.52.10.44])
-        by smtp.gmail.com with ESMTPSA id t9-20020adfeb89000000b0033dbeb2eb4dsm11575355wrn.110.2024.02.27.07.48.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 07:48:53 -0800 (PST)
-Date: Tue, 27 Feb 2024 10:48:49 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Cindy Lu <lulu@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Xie Yongji <xieyongji@bytedance.com>,
-	Maxime Coquelin <maxime.coquelin@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] vduse: Fix off by one in vduse_dev_mmap()
-Message-ID: <20240227104743-mutt-send-email-mst@kernel.org>
-References: <e26476e0-68ae-412d-a5d9-4996bc30d038@moroto.mountain>
+        d=1e100.net; s=20230601; t=1709048959; x=1709653759;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TZRTc92NV02tibdsdZpuxS+R8ZdV2sfCy6eMJQHgnks=;
+        b=S0pdDI+lkC8LndTPys037HbsnT6p3sqYU7mSqjGRd45g7wCc1vD1SRinvV2Mn6Q2Ht
+         ozgPxfcOca7QAeBe7VlXcUjyq1Jpn7gj4Kv4WmB0rORMmL7zA7GO1O770Y2rhKXrHLlV
+         LForosWODtSu8avDREYNforQ7aAC9xwMrt9ieyE1ACIF0NvJyyuxT5URF0auTCVsTNhJ
+         cnSLK8+uqnhxe7HaTQ8a0nJXgEg7+Zpvss2wDFeyuw9S+7LLClh1+MwVgRhG61DbH7gP
+         ppvhWD/RM1z/vu7E8gJLoJxHqKSaCMMQFVGf5r7rbvzm3gwpULTY019ovv8qxU2jo4PW
+         vtWg==
+X-Forwarded-Encrypted: i=1; AJvYcCXX9kqqwFgztVwkr6SSK39oOFej17JfCAwdaaNyQX97U0Yb/BhhNxuBkGxRBSa/eUamWUVaJ9Sdeh6PH/TP23zSrdkJ9I+4mNvfgVhJ
+X-Gm-Message-State: AOJu0Yzeww4zi/Nipa2Rcp23iXHgzSjZ8MSQB6kfiYY0Iu+m0//zGFof
+	0BJCI2tZ/zGb2eFuEO/NweivEwia5utUZHUTAvitAQydF/KSrgLqx+PyjYTEMcs=
+X-Google-Smtp-Source: AGHT+IGuDhn1Ay29M02Vspet+EOwdXa3kd3kmbpHRaGOu6H9hzFNLBIeHKhRvtS3kp5de/hxmitfXg==
+X-Received: by 2002:a17:906:d04c:b0:a3f:adcf:7f58 with SMTP id bo12-20020a170906d04c00b00a3fadcf7f58mr6678789ejb.21.1709048959294;
+        Tue, 27 Feb 2024 07:49:19 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id fj7-20020a1709069c8700b00a381ca0e589sm888216ejc.22.2024.02.27.07.49.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 07:49:18 -0800 (PST)
+Message-ID: <4e5129de-ce1d-448c-9264-b7470c3feb49@linaro.org>
+Date: Tue, 27 Feb 2024 16:49:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e26476e0-68ae-412d-a5d9-4996bc30d038@moroto.mountain>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/5] arm64: dts: qcom: sm8550: Add mapping to llcc
+ Broadcast_AND region
+Content-Language: en-US
+To: Unnathi Chalicheemala <quic_uchalich@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@quicinc.com
+References: <cover.1708551850.git.quic_uchalich@quicinc.com>
+ <d36f8c70e103bd6f740ebfaa512d246188aadf10.1708551850.git.quic_uchalich@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <d36f8c70e103bd6f740ebfaa512d246188aadf10.1708551850.git.quic_uchalich@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 27, 2024 at 06:21:46PM +0300, Dan Carpenter wrote:
-> The dev->vqs[] array has "dev->vq_num" elements.  It's allocated in
-> vduse_dev_init_vqs().  Thus, this > comparison needs to be >= to avoid
-> reading one element beyond the end of the array.
-> 
-> Fixes: 316ecd1346b0 ("vduse: Add file operation for mmap")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+On 23/02/2024 00:07, Unnathi Chalicheemala wrote:
+> Mapping Broadcast_AND region for LLCC in SM8550.
 
+I don't understand this sentence and I still do not know why.
 
-Oh wow and does this not come from userspace? If yes we
-need the speculation magic macro when using the index, do we not?
-
-> ---
->  drivers/vdpa/vdpa_user/vduse_dev.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-> index b7a1fb88c506..9150c8281953 100644
-> --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> @@ -1532,7 +1532,7 @@ static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
->  	if ((vma->vm_flags & VM_SHARED) == 0)
->  		return -EINVAL;
->  
-> -	if (index > dev->vq_num)
-> +	if (index >= dev->vq_num)
->  		return -EINVAL;
->  
->  	vq = dev->vqs[index];
-> -- 
-> 2.43.0
+Best regards,
+Krzysztof
 
 
