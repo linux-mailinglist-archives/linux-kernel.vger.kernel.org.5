@@ -1,131 +1,136 @@
-Return-Path: <linux-kernel+bounces-83672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ADC7869D1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 361EE869D26
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:08:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B662028B315
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:05:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3C2228D719
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82A7249F5;
-	Tue, 27 Feb 2024 17:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929EF481AD;
+	Tue, 27 Feb 2024 17:07:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="RZWe+Ivl"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jbKvmj1z"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 233B747F60
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841FD2032D;
+	Tue, 27 Feb 2024 17:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709053495; cv=none; b=EG5zCzrJ4nqwxYPromq8tKoicHCW4DV56+0nhf6uPlBcFDuUcIYPNgUWxed3r4r9FTUzTS2U2E9136yO8yIswMn2BRwjiw2Wewx6DsUpoAGiyhj1B/0TU1QjXP8oHpYYsvRYJeW88nkYSqBq1sc6eu4nvZ+D85Tn7smNeRVab0s=
+	t=1709053673; cv=none; b=BPgxJ12Pwc2ozZcFOh41YKfklaP91zZbE4tU4xywCp3pvjZz1lFCJ93xAv1VyVyFy59ZEUOLtZYhtRfktQ7+jq//SqXBzFEGBLh70a+NsTAZVknPlA4nFJuSMADErKKZhCUWKLx6dA6dwJOeiqdO72nybuRBFP6VRn15liCE964=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709053495; c=relaxed/simple;
-	bh=nx3Al3sJLVHlvfnNiUefu/fSlBGWeq90iTuG8ElMJVI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F4dJd2BfUYpRFLix5es0jl2RLq09ApEc0PcWhnNBNq/th2Ow3akBDt1FsCa5sM/ATUROhLeMX17BWxdO9zdlZrHokB+H2Evdh/oeYJH+NN6B5yFbVjC54W3HKVZuexHA75BwKtiqug5x5RwXk/O/gCJb6T2JIqphTRX2vieDrX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=RZWe+Ivl; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=nx3A
-	l3sJLVHlvfnNiUefu/fSlBGWeq90iTuG8ElMJVI=; b=RZWe+IvlEXiNRgwQBlBr
-	HkeuLQlomaOzt17btM8FfRjYYXz3GxFr9/zMIUUmAYdMi944hjqvJ6n1YYD/421j
-	IAJ0Fy4gEbKYmsPmAAwLkD9BlkG/fVGmFIEg0cx3oeWCRBJr4gfIZ6DeaPo7i7rU
-	hgyz3v8BnPUXTrABKnkLDBhaejAUAiV/qndSkX11xH0QRyV34l29hMAF6gN/Pxyt
-	kZIYL8ltx8O8ESK60+lQeYkJJyzijLo4Ge+qQm5/9PN7gX/37Zt4vYeNBZRZdlig
-	T9o2CB+cbVIyoVuE440kLAtcQ6NSNZisaw76X7iZOQuY4xoAHZ1qnXFozdWiq9FF
-	Iw==
-Received: (qmail 1670908 invoked from network); 27 Feb 2024 18:04:42 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 27 Feb 2024 18:04:42 +0100
-X-UD-Smtp-Session: l3s3148p1@CKOvBWASTKUujnu9
-Date: Tue, 27 Feb 2024 18:04:41 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-i3c@lists.infradead.org,
-	linux-sound@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: i2c: Remove obsolete i2c.txt
-Message-ID: <Zd4WKY966qe4DC3i@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Rob Herring <robh@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-i3c@lists.infradead.org,
-	linux-sound@vger.kernel.org
-References: <20240222174343.3482354-2-robh@kernel.org>
+	s=arc-20240116; t=1709053673; c=relaxed/simple;
+	bh=ZeJc8F1uJuWbjXK4VVGQdxZ+8idBvr+K++iQcOg5o38=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q4pBYH+z0fvlA6l3nznE/12nU/2Kjju8EfF7bdR751jv0V71VMf0/dK4oCGv3Jm/5pePSTZOjzaTMjh6G+htd4C+bdOqmvyCjr3F8wGdrAOrJYLYVJcjihAVbIfGfmotDYvg2xwTdyFRspUOCTOyAGQdPFoiSaVsg9aSsFHzv8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jbKvmj1z; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so3707427a12.1;
+        Tue, 27 Feb 2024 09:07:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709053672; x=1709658472; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=99jfUjuSInpmxbhq4i5jzlqwDHbrA15fgcjI2V7Oals=;
+        b=jbKvmj1zc9qWpdruJudh/hR+hxG3T9Bn4wnJi5RoUW4LWDrg+zZe3VIfvoCHx72TM6
+         lzwe/jJqkppP7fOBoXuIFKNYyHWfzLxEusLGFSodTPM8UDFh4A3IZXw1IFwijZ+Xub3S
+         yp+WpwUccC0e7XAOgGAtEqf/gRd3Eb2LhAtYnQF79z3hTEIpLF1uauoY4yqxYIggrlTI
+         87JgK01u9N+n9emYQQdyQLZAu5Tzx/5laG7nOREaS4hFFAN1P3wsuNt61kjf2VuTMOh2
+         baQc9y9zaPryCxdmKR8kNpo0Ar3gOhyV2bVl/5kRIjSWkJ0WB4q5Id8dk6+8LV5XgNxB
+         Dl2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709053672; x=1709658472;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=99jfUjuSInpmxbhq4i5jzlqwDHbrA15fgcjI2V7Oals=;
+        b=P/UE8tUrqz8ltYFQFRdVTUKvSzcUD0/QvSXh82hqwp4uJA+qpyRH0JkFz/uTYmxNWb
+         XPXbZSUoGLYdpSFxQv7XdrHMNQw40qjG/Di4uGSRYgMVqskWJa6Mm8GJoHShn+qTJVtq
+         dZu24JbAOCQKQuaRHkHMkUYeKhLv1Gnr3WhWDDW7e6u/kHw+CdruoBF1t4v5YR9S/XjF
+         bdq/+IzelOXOpihwqSD0Y4BNj8lDZn0VW9GlPg8Uty/KmNxY32w4a9T3CTjzvabz7B3O
+         /SvRVv1UaLgPmtwPVH+BPkeRt70o1mVvtPdnxvW0fGze3W8iFdNQiZ6Q62PfV54yGFKx
+         rlmw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxYddWJDt3H2/qSLI2DDqF22A+rAWDMEyXmZ3pqFXjg/P+h7WgXFrfBpR4K/RS4hkg+jskgs3Jg3rNHOEKmF2Q04A9
+X-Gm-Message-State: AOJu0YyzIRFlEH62VCPlrjqEgAM7zRnpjCl3bipcAOest1p0etXE2La1
+	AO6uvY8yIIw5WZOjOKId3raRLY3JYgFlOfl+TZww1CTlu4Cwe9TfJW/z34EoCtJp3lcZuyhEpbq
+	EFJVz/Q9q+7IWjQolH6Bo7aGjlUs=
+X-Google-Smtp-Source: AGHT+IHTBLSoZTfa3M5/2UvGsTYIpeCfQhJ06lMLp5v4/09xfG85K0T6kpDQRVpfBDGQ03DtwlARkFL1clgMtD/yIFY=
+X-Received: by 2002:a17:90b:8d8:b0:299:3e54:83fe with SMTP id
+ ds24-20020a17090b08d800b002993e5483femr8471960pjb.36.1709053671772; Tue, 27
+ Feb 2024 09:07:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="J5qK8c/j+dsQwcO0"
-Content-Disposition: inline
-In-Reply-To: <20240222174343.3482354-2-robh@kernel.org>
-
-
---J5qK8c/j+dsQwcO0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240226143630.33643-1-jiangshanlai@gmail.com>
+ <20240226143630.33643-16-jiangshanlai@gmail.com> <Zd34GHtHlnpPtg5v@infradead.org>
+In-Reply-To: <Zd34GHtHlnpPtg5v@infradead.org>
+From: Lai Jiangshan <jiangshanlai@gmail.com>
+Date: Wed, 28 Feb 2024 01:07:40 +0800
+Message-ID: <CAJhGHyDdsm3BT4fL3Z_H5-_m4VpDi9FnG6GCcrup6YfMr_MBCw@mail.gmail.com>
+Subject: Re: [RFC PATCH 15/73] mm/vmalloc: Add a helper to reserve a
+ contiguous and aligned kernel virtual area
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Hou Wenlong <houwenlong.hwl@antgroup.com>, 
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Sean Christopherson <seanjc@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
+	kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org, 
+	Kees Cook <keescook@chromium.org>, Juergen Gross <jgross@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Uladzislau Rezki <urezki@gmail.com>, 
+	Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 10:43:42AM -0700, Rob Herring wrote:
-> Everything in i2c.txt is covered by schemas/i2c/i2c-controller.yaml in
-> dtschema project, so remove i2c.txt and update links to it in the tree.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Hello
 
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On Tue, Feb 27, 2024 at 10:56=E2=80=AFPM Christoph Hellwig <hch@infradead.o=
+rg> wrote:
+>
+> On Mon, Feb 26, 2024 at 10:35:32PM +0800, Lai Jiangshan wrote:
+> > From: Hou Wenlong <houwenlong.hwl@antgroup.com>
+> >
+> > PVM needs to reserve a contiguous and aligned kernel virtual area for
+>
+> Who is "PVM", and why does it need aligned virtual memory space?
 
+PVM stands for Pagetable-based Virtual Machine. It is a new pure
+software-implemented virtualization solution. The details are in the
+cover letter:
+https://lore.kernel.org/lkml/20240226143630.33643-1-jiangshanlai@gmail.com/
 
---J5qK8c/j+dsQwcO0
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm sorry for not CC'ing you on the cover letter (I haven't made/found a pr=
+oper
+script to generate all cc-recipients for the cover letter.) nor elaborating
+the reason in the changelog.
 
------BEGIN PGP SIGNATURE-----
+One of the core designs in PVM is the "Exclusive address space separation",
+with which in the higher half of the address spaces (where the most signifi=
+cant
+bits in the addresses are 1s), the address ranges that a PVM guest is
+allowed are exclusive from the host kernel.  So PVM hypervisor has to use
+get_vm_area_align() to reserve a huge range (normally 16T) with the
+alignment 512G (PGDIR_SIZE) for all the guests to accommodate the
+whole guest kernel space. The reserved range cannot be used by the
+host.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXeFiUACgkQFA3kzBSg
-KbY1UxAAs23gIOVvLkCmeyrbAAN7i3d7cIQP2kzKq9Z4iouxjZavNTtUoLQI3Dkk
-i2BhJMPBbngmCwt4X+FDvI5qNRbBLNmX11fyuXpND15iRR6dPZ4jPm7VvMBxy62h
-CrNy9H6KK6ydfsaaRCKZvx6SuvcRcPd+rZeHSFLh6/3ESldx7JA/dAtCsFI6KUxF
-58lIqJZg++rAfqxaa2lJJFu180EMRcJzRmGx/c14ySOtYszfEU/KMnSFxdLlStBu
-S74TiQ8Aif+WUILLavWSCBiXJ3L6eiba+0fS0m+68z3x4UbpiMX8J1Zs4wq0TF+I
-wkPJl9iI0EhNZCy2T0l+iAFCBkLG84w9iyd3eQuTyp6Wl2y1jlbw7B4h57P/8CK+
-SWI/E6NdS3Gda5CwQw4zqAMlTv1VaJXpOlJv4MohCy1VfzaK/q/9bR9w9WVFOf0T
-N4ub2OU3EmKrLvxZfJPPbWgSNsS4zuDrZ1EoC7LYP7+Wx15ktYux9a8pRNC2RwhL
-xrRYAR7lPkZwz3IVgrhAFeIssOsWD0C4qOeXvX27cd2mqnDa9xWHIGd1ZEAaiLm7
-5tbuk7aF9qizAL35XAeM7/zZnIvGGNDPeu696we834v6Ud5ThnMqjVTnmDgdBT6h
-ftuE2WjABe5yP+zBZtKDrNFl0Cf1UtJ6DXn7TyDGkdV1GB0IYBk=
-=PXn7
------END PGP SIGNATURE-----
+The rationale of this core design is also in the cover letter.
 
---J5qK8c/j+dsQwcO0--
+Thanks
+Lai
+
+>
+> > +extern struct vm_struct *get_vm_area_align(unsigned long size, unsigne=
+d long align,
+>
+> No need for the extern here.
+>
 
