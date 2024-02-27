@@ -1,130 +1,138 @@
-Return-Path: <linux-kernel+bounces-82891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087D1868B4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:53:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA8C9868B63
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A12A1C22B5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:53:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96FEE287452
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 041E4133419;
-	Tue, 27 Feb 2024 08:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A713B136670;
+	Tue, 27 Feb 2024 08:55:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="bwkd6Fsd"
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [80.241.56.171])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="1UT8AN/A"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A88A4130AF8;
-	Tue, 27 Feb 2024 08:53:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF757BAE7;
+	Tue, 27 Feb 2024 08:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709024020; cv=none; b=X4GnoTZGQYl9EwZWL97NuO8UEh2DJn8pyA6xFTyVu66BLnhqEluMG8VH8kXUifxnxq/C309xpSVvxLQOZ0el5X29mCllHslSiOsjS5eMep6EgxNGTz9X2CoFR4RTALsuIpYaZKdcV7BhGsFDBbJyWvlfTughcDyZw8YrAFLAOQs=
+	t=1709024109; cv=none; b=pHKzFIdHBQyxsIDKh1bMVbgx5g/T6DWrnsWGqdRE8GaY2QG0In1pe9h9YXsGZ2ia/CJKbbc9bXNDQYYPR2WtDzQ195dzAI8C+/zn+feefqL8zJMYTsMqxiy8CPHYTSCwrA4LjBgOYlkKyBwLOWZVofk0dw0FgYDRWvpR7Fl04LA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709024020; c=relaxed/simple;
-	bh=lzCwQyJEpw1qZT/9M5wpgWtO9LJVM/qhBJBKrIpwRL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rbc77wNoq4K0a2DsomzqTx8TIHrBrbAOKK6ZnKwVvIhvh2W5r+9+uTypLWolg2OV2YGMA224/w3JtGaznXWp9qLmryA2WE8byp+ZT7+vkYHpgmuxxmGD+8IEnA3x7uyNMCdLsZV0Ius22JkRRBuO1TziNZ8XpoGxmicpa/iq3XM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=bwkd6Fsd; arc=none smtp.client-ip=80.241.56.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [IPv6:2001:67c:2050:b231:465::202])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4TkWVR1BWbz9sq8;
-	Tue, 27 Feb 2024 09:53:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
-	s=MBO0001; t=1709024015;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xG7fSz4uiTp34cw0D1g4RsXUHnXCjcPMxUY/Xls6pRo=;
-	b=bwkd6Fsd51NLXnw7/z4WN4Vs9Rq95oo0ECbijUAdGiZjRV8oRKfHkJ+OlRoEwAYUgii4pS
-	MJ6N8K30jVn6Q2b2nLufYhRyspVwGc571+3xnbsWTGqyQylWKNt3/WAB4+3jj22X+uXNGp
-	er7tF/crJ2UnX2wo0x2jAtNDMop+kVMFZZoocmy0PIlDCVAHiGHsq6Xj4hsygm0AemiHN5
-	81IoGf4NY68rYwbeGrdPcrCypTL6kXf9Aq/uHW/fN7QnjwTfj2ooIhy0VjwxMNpP0fLB15
-	6sEDSjk7gxfDiRshE2FVkzv1AJ6fy03HKMgo+Ks7Ky8MNax3pJbMCjpHC+WUYw==
-Date: Tue, 27 Feb 2024 09:53:31 +0100
-From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, chandan.babu@oracle.com, akpm@linux-foundation.org, 
-	mcgrof@kernel.org, ziy@nvidia.com, hare@suse.de, djwong@kernel.org, 
-	gost.dev@samsung.com, linux-mm@kvack.org, willy@infradead.org, 
-	Dave Chinner <dchinner@redhat.com>
-Subject: Re: [PATCH 11/13] xfs: expose block size in stat
-Message-ID: <4ojxfvnqw6d5dytkcw55olpbdcbwy2pgs7d6mchg6nmgt3icbi@rvzrifqb5x3k>
-References: <20240226094936.2677493-1-kernel@pankajraghav.com>
- <20240226094936.2677493-12-kernel@pankajraghav.com>
- <ZdyHoOHBQ19JJap2@dread.disaster.area>
+	s=arc-20240116; t=1709024109; c=relaxed/simple;
+	bh=WoJYGL2TCnkr2w1VlrLBVfG92mEtbt6KEliQlVa4KHQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ISDZx+QJiBnj8CtVVKrxtI4FanTIsc8SB1Da2HcqYo2MI4PWPmPTtyniOrE1GOsPNQkRt+iWQedZYJOKYdJ1B9fvGyaTZgSZDCPIXY2X3YVs00B611svbIaiYv6iMrxgNQiT6P+L9i8rFt8fNaYI/1mwYR6Dj0jqd+/2UsdH6fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=1UT8AN/A; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709024108; x=1740560108;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WoJYGL2TCnkr2w1VlrLBVfG92mEtbt6KEliQlVa4KHQ=;
+  b=1UT8AN/AnsMhR7Nwq6MSV7adnExMBihos/+JW3t8FDl5u3Kpg092vPxR
+   oINp5VWK7v7U4uJJ6gYJ0hMn1ayEdIru7aQ59Lm9UPqL3zQ27HKiZ+Omv
+   nkVUClQhaoak/Do/isO7SFD9s91jcMUiVohQTDO6Vh0vBC9UR2YXMEPco
+   QO0ifMOJ4Lli0gj2XIhU9xgmEAjZ8ELrrpeFuTm7hNpvF2WwWnXe7g/zt
+   pPNm1jx5eIjB202krE79MBP1/MIz7zpxQ1ix2kdDIT7GbJHacfBhq/fI8
+   7kOBYBK/2ZN2V7o3MGgXrxCXVFv4xorsHviotOFJq22KOEY68lBue90ba
+   g==;
+X-CSE-ConnectionGUID: qD79kU+kQWmT4/4KcnQg6g==
+X-CSE-MsgGUID: cXEwV6uyTb+fwDN6W0wmcg==
+X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
+   d="asc'?scan'208";a="16875102"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 01:55:00 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 01:54:46 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 27 Feb 2024 01:54:43 -0700
+Date: Tue, 27 Feb 2024 08:54:01 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: JiSheng Teoh <jisheng.teoh@starfivetech.com>
+CC: Conor Dooley <conor+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+	"linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>, Leyfoon
+ Tan <leyfoon.tan@starfivetech.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Palmer Dabbelt <palmer@dabbelt.com>, Rob
+ Herring <robh+dt@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Emil Renner Berthing <kernel@esmil.dk>,
+	Albert Ou <aou@eecs.berkeley.edu>, Paul Walmsley <paul.walmsley@sifive.com>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Xingyu Wu
+	<xingyu.wu@starfivetech.com>, Guenter Roeck <linux@roeck-us.net>, Wim Van
+ Sebroeck <wim@linux-watchdog.org>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>
+Subject: Re: [PATCH v5 1/2] dt-bindings: watchdog: starfive,jh7100-wdt: Add
+ compatible for JH8100
+Message-ID: <20240227-arrange-theft-021133800c24@wendy>
+References: <20231221084358.3458713-1-jisheng.teoh@starfivetech.com>
+ <20231221084358.3458713-2-jisheng.teoh@starfivetech.com>
+ <170319257135.88357.1722653226891421278.robh@kernel.org>
+ <ZQ0PR01MB11603A15E27E344ADA11AC43EB59A@ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="5/NNhPt6yL350ZtX"
+Content-Disposition: inline
+In-Reply-To: <ZQ0PR01MB11603A15E27E344ADA11AC43EB59A@ZQ0PR01MB1160.CHNPR01.prod.partner.outlook.cn>
+
+--5/NNhPt6yL350ZtX
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZdyHoOHBQ19JJap2@dread.disaster.area>
-X-Rspamd-Queue-Id: 4TkWVR1BWbz9sq8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 11:44:16PM +1100, Dave Chinner wrote:
-> On Mon, Feb 26, 2024 at 10:49:34AM +0100, Pankaj Raghav (Samsung) wrote:
-> > From: Dave Chinner <dchinner@redhat.com>
-> > 
-> > For block size larger than page size, the unit of efficient IO is
-> > the block size, not the page size. Leaving stat() to report
-> > PAGE_SIZE as the block size causes test programs like fsx to issue
-> > illegal ranges for operations that require block size alignment
-> > (e.g. fallocate() insert range). Hence update the preferred IO size
-> > to reflect the block size in this case.
-> > 
-> > Signed-off-by: Dave Chinner <dchinner@redhat.com>
-> > dd2d535e3fb29d ("xfs: cleanup calculating the stat optimal I/O size")]
-> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> 
-> Something screwed up there, and you haven't put your own SOB on
-> this.
-Oops. I will add it.
+On Tue, Feb 27, 2024 at 01:57:43AM +0000, JiSheng Teoh wrote:
+> > On Thu, 21 Dec 2023 16:43:57 +0800, Ji Sheng Teoh wrote:
+> > > Add "starfive,jh8100-wdt" compatible string for StarFive's JH8100
+> > > watchdog.
+> > > Since JH8100 watchdog only has 1 reset signal, update binding document
+> > > to support one reset for "starfive,jh8100-wdt" compatible.
+> > >
+> > > Signed-off-by: Ley Foon Tan <leyfoon.tan@starfivetech.com>
+> > > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> > > ---
+> > >  .../watchdog/starfive,jh7100-wdt.yaml         | 40 ++++++++++++++---=
+--
+> > >  1 file changed, 31 insertions(+), 9 deletions(-)
+> > >
+> >=20
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+>=20
+> Hi Conor, since this patch is reviewed, could you help to pick this
+> dt-bindings patch for riscv-dt-for-next branch?
 
-> 
-> > ---
-> >  fs/xfs/xfs_iops.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > index a0d77f5f512e..1b4edfad464f 100644
-> > --- a/fs/xfs/xfs_iops.c
-> > +++ b/fs/xfs/xfs_iops.c
-> > @@ -543,7 +543,7 @@ xfs_stat_blksize(
-> >  			return 1U << mp->m_allocsize_log;
-> >  	}
-> >  
-> > -	return PAGE_SIZE;
-> > +	return max_t(unsigned long, PAGE_SIZE, mp->m_sb.sb_blocksize);
-> >  }
-> 
-> This function returns a uint32_t, same type as
-> mp->m_sb.sb_blocksize. The comparision should use uint32_t casts,
-> not unsigned long.
-> 
-Yeah. Something like this instead of using unsigned long:
+Ideally I would not and it would go via the watchdog tree.
 
-return max_t(uint32_t, PAGE_SIZE, mp->m_sb.sb_blocksize);
+Failing that, I'd rather Rob take it.
 
-> ALso, this bears no resemblence to the original patch I wrote back in
-> 2018. Please remove my SOB from it - you can state that "this change
-> is based on a patch originally from Dave Chinner" to credit the
-> history of it, but it's certainly not the patch I wrote 6 years ago
-> and so my SOB does not belong on it.
-Ok.
+Thanks,
+Conor.
 
-> 
-> -Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+--5/NNhPt6yL350ZtX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd2jGwAKCRB4tDGHoIJi
+0o02AQDUgzrn6JnUOaFQ4y/ICrPh1DIxb6FFKMBBGx82o4xb8QEA2JRBmceCzOh8
+/YRRWMvcMwl2ARgGcFNuZBE0hbOttgU=
+=x9oX
+-----END PGP SIGNATURE-----
+
+--5/NNhPt6yL350ZtX--
 
