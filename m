@@ -1,185 +1,140 @@
-Return-Path: <linux-kernel+bounces-82647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E988687A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:18:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304EE8687AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C18881F25C9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:18:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62B731C219EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE1F1B962;
-	Tue, 27 Feb 2024 03:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620501CD03;
+	Tue, 27 Feb 2024 03:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dQmTrVV2"
-Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZBA3rHCJ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA576FC6
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0761EB31;
+	Tue, 27 Feb 2024 03:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709003910; cv=none; b=a1afUtb2Yg2OHJtBr/0F8dpYH9RgxxLdXDz8j2ypcpa8xq1sFlD2XxMcLCp03Fy37dlLuiNVqANXIF1uf+dVxngUJIxyDYJDzS18Y+fzXKRrgjVoKpS2s6ZcX9KmQKKHGUy7EyCgpwaf51MxUHpe5drqMvi75myh8Wsn0e/rD6Y=
+	t=1709003957; cv=none; b=JCZQnyb2dq/k0ObnRO1FQOSigxm+icxnW8pZYR4DezmgsUfypntqLKTM5YQ0XVlWg0qGIiiUizO7Ij9sdT6oqsGJdTHf215NELcFmrJJyUDpQYjj4Pc17oKyl4PNG4Xeihq+xNxWQo5VM0ub+PVv2KM3dQ86BDTZko9xGDTppEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709003910; c=relaxed/simple;
-	bh=KjPHTiSTwg32S1R3S8oshUP2UzgRbl2OG36gTs7izEE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JHjEmF1x36MJK09C+noj/G7t50Nv4osKFYFAOlmklsypMNUlkFmBcYkAYlQ8NrdgXGEwnpBv4jvZIDJQn9PJBydviUR7kzYdY15pWGAB00Pb0n2lDPUrJpoTP5u+dFtR51I7D0rukRCp/1i8UAmw4Pfta3O5h/yyJp5fG7cErBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dQmTrVV2; arc=none smtp.client-ip=209.85.222.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7d2e21181c1so2523221241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:18:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709003908; x=1709608708; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MJZD2KtLrf71EHvovaXk1j0WO0+M7+xSSk4VodUZBz8=;
-        b=dQmTrVV2lCz893yKAnTcqrcomG/wp3nN9qGsmWD5kkP8IbObWTU5Umvq7X3gDF0i/+
-         Nmw1XDudFzsu8/U6P6Tmzvj0BZjw8gKtE+G6VUpvTDdExqq5/nDE8BqYBm+qbAvYQXeK
-         1W9slgdTONVvHQA3cQ1NrYdnsDxGxOQWTQ6kyp0XiQN+ybD6tupAk3RTPaX5wiObB7NO
-         jfZAl2PojNUoZKOeBfLmn45Z/R1PaIaRr+posRD2X+6mIT/BvmfR+mzQHsF0C9FuN+qH
-         Y4+ibP0wOpAj8bz5rCyKYn2lu6bTQ54+12fB/mRACZWETs5jMG+yViiKKxLF4FJHz/jG
-         vX9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709003908; x=1709608708;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MJZD2KtLrf71EHvovaXk1j0WO0+M7+xSSk4VodUZBz8=;
-        b=fuvHuoLzVYo4jDGBqIIRa1r4pSY39XcCMCuWJAg8beFLz4QPUg/zb4N5/DATUPhvhe
-         44W4iKUaRPpMWQZxu9VE8llkPZfIRzaFQL9zWGHpRCOGPUUfPW7K8wfzaQ4uHLuLDrev
-         lepBfqO/W+DkBDBByLCi3j9tDp7ZdLZRekdLjVHNLrfIZKtTEIPPOE9spHsqgG6uVfsl
-         oychQ8Tm8DEGu65Ml1DcdLAinCLtGkpncan7teVKzJvNaw/unq1qunyJ5e6uh6iL6ouD
-         QUgKbj+2GYJRZG0+G3zrkc3KHJTKuyqpuQYNYVfoWcCISy5971tkarhoQaN2/Fw7rmbg
-         mkRQ==
-X-Gm-Message-State: AOJu0Yw8tRB1I2TVaO+DNgXOBVeHQj46c25MaEJMGB5bJF8a81zVKkP+
-	kBpAEvSMSW/KpW7JQ6kCvyxw0vK13k13u5qNs47V8NVqUYAdZXWpCFwMsfc4Kkl7gUjLJ+pDHUc
-	I2OSm114Xs4+bitoPv52q/g5Mges=
-X-Google-Smtp-Source: AGHT+IFs5rDr+LuGs9pbJ463izehId6OYEso4XQoI7Xjg8YIH59ntMm6AwuRqaiP2Afn7zDCUuO5FWl8zKOx3RYW6Dw=
-X-Received: by 2002:a1f:6283:0:b0:4d1:34a1:d94f with SMTP id
- w125-20020a1f6283000000b004d134a1d94fmr5573937vkb.6.1709003907709; Mon, 26
- Feb 2024 19:18:27 -0800 (PST)
+	s=arc-20240116; t=1709003957; c=relaxed/simple;
+	bh=HyQeAkfIsrXp7lnK7bPc8oR0V4wM6K6OMlQPcGXMiCA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bMsCJnmZ6ayBj6psaR+ijZew/WlshXS6p57HzgymN8azXpgOPEI1Vw/l/pWXwJKJe5SPkR0sBIWsPIaaMecc+vZhOQCksyLmHV/kHEdHWTus1KdIymPhkc53soKf80x+pj83FgmEWo/RThRFnTOxmXMwgQEOHjwWUqjFylluGnU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZBA3rHCJ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QNsnxr009857;
+	Tue, 27 Feb 2024 03:19:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=y2+n+K4VEk1Ekg1azTwyrDXlJqc1pengbDN8GywlNTw=; b=ZB
+	A3rHCJaWDsBiegF2zvodsukg1pD1JG4gPWKXNA3srNI2ikI5wRk7yRFRWelAVHIM
+	HqcYH9wkb8lC0wd5Vy5y4KUTtg8Nafx8UaboGI8VUWW3rdlRzl9eTpapvwyGwiEb
+	DNRmO1CXDGLmgnJIlIxQlyjjHun/Maoa5l4pv3XdLt7aILg5uPIVQl7FKqmktppm
+	CBf7wX/rHXyZ0UTTA6l3eOXaKlEZeAGCloZ+TrsT1H/EKUd83PdspvRhTRxX52EI
+	Ndldz8e+1CBAtUmTjaVd/sX5iEr8gfOnrixvEYDBOyTJODcUIPXS5XfC0w696rsN
+	BKLYER30F4DanIvfav5g==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxq2r7k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 03:19:08 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41R3J7ae006121
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 03:19:07 GMT
+Received: from [10.110.56.192] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
+ 2024 19:19:06 -0800
+Message-ID: <adb2956b-c600-4e86-8c56-87ceb70162d6@quicinc.com>
+Date: Mon, 26 Feb 2024 19:19:05 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227024050.244567-1-21cnbao@gmail.com>
-In-Reply-To: <20240227024050.244567-1-21cnbao@gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 27 Feb 2024 16:18:16 +1300
-Message-ID: <CAGsJ_4yF+kuTtN4YmtwSvfcCRqixvzL5qT0BLLfTg9nLLsReZg@mail.gmail.com>
-Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
- need it
-To: akpm@linux-foundation.org, linux-mm@kvack.org, 
-	David Hildenbrand <david@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>
-Cc: linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
-	Lance Yang <ioworker0@gmail.com>, Yin Fengwei <fengwei.yin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
+Content-Language: en-US
+To: <quic_bjorande@quicinc.com>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Ulf Hansson
+	<ulf.hansson@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Johan Hovold
+	<johan+linaro@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Johan Hovold <johan@kernel.org>,
+        <stable@vger.kernel.org>
+References: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qZ-77PHJpcQJTzmczVJLxZopCVLGS0C9
+X-Proofpoint-ORIG-GUID: qZ-77PHJpcQJTzmczVJLxZopCVLGS0C9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0 adultscore=0
+ spamscore=0 clxscore=1011 malwarescore=0 impostorscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402270025
 
-On Tue, Feb 27, 2024 at 3:41=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
-e:
->
-> From: Barry Song <v-songbaohua@oppo.com>
->
-> madvise and some others might need folio_pte_batch to check if a range
-> of PTEs are completely mapped to a large folio with contiguous physcial
-> addresses. Let's export it for others to use.
->
-> Cc: Lance Yang <ioworker0@gmail.com>
-> Cc: Ryan Roberts <ryan.roberts@arm.com>
-> Cc: David Hildenbrand <david@redhat.com>
 
-Hi David, Ryan,
 
-Sorry, I realize I just made a mistake and your tags should be both
-Suggested-by. Please feel
-free to review the patch and give comments. I will fix the tags
-together with addressing your
-review comments in v2.
-
-> Cc: Yin Fengwei <fengwei.yin@intel.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+On 2/26/2024 5:49 PM, Bjorn Andersson via B4 Relay wrote:
+> From: Bjorn Andersson <quic_bjorande@quicinc.com>
+> 
+> Commit 'e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable
+> the domain")' aimed to make sure that a power-domain that is being
+> enabled without any particular performance-state requested will at least
+> turn the rail on, to avoid filling DeviceTree with otherwise unnecessary
+> required-opps properties.
+> 
+> But in the event that aggregation happens on a disabled power-domain, with
+> an enabled peer without performance-state, both the local and peer
+> corner are 0. The peer's enabled_corner is not considered, with the
+> result that the underlying (shared) resource is disabled.
+> 
+> One case where this can be observed is when the display stack keeps mmcx
+> enabled (but without a particular performance-state vote) in order to
+> access registers and sync_state happens in the rpmhpd driver. As mmcx_ao
+> is flushed the state of the peer (mmcx) is not considered and mmcx_ao
+> ends up turning off "mmcx.lvl" underneath mmcx. This has been observed
+> several times, but has been painted over in DeviceTree by adding an
+> explicit vote for the lowest non-disabled performance-state.
+> 
+> Fixes: e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable the domain")
+> Reported-by: Johan Hovold <johan@kernel.org>
+> Closes: https://lore.kernel.org/linux-arm-msm/ZdMwZa98L23mu3u6@hovoldconsulting.com/
+> Cc:  <stable@vger.kernel.org>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 > ---
->  -v1:
->  at least two jobs madv_free and madv_pageout depend on it. To avoid
->  conflicts and dependencies, after discussing with Lance, we prefer
->  this one can land earlier.
->
->  mm/internal.h | 13 +++++++++++++
->  mm/memory.c   | 11 +----------
->  2 files changed, 14 insertions(+), 10 deletions(-)
->
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 13b59d384845..8e2bc304f671 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -83,6 +83,19 @@ static inline void *folio_raw_mapping(struct folio *fo=
-lio)
->         return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
->  }
->
-> +/* Flags for folio_pte_batch(). */
-> +typedef int __bitwise fpb_t;
-> +
-> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
-> +#define FPB_IGNORE_DIRTY               ((__force fpb_t)BIT(0))
-> +
-> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bi=
-t. */
-> +#define FPB_IGNORE_SOFT_DIRTY          ((__force fpb_t)BIT(1))
-> +
-> +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
-> +               pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
-> +               bool *any_writable);
-> +
->  void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
->                                                 int nr_throttled);
->  static inline void acct_reclaim_writeback(struct folio *folio)
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 1c45b6a42a1b..319b3be05e75 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -953,15 +953,6 @@ static __always_inline void __copy_present_ptes(stru=
-ct vm_area_struct *dst_vma,
->         set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
->  }
->
-> -/* Flags for folio_pte_batch(). */
-> -typedef int __bitwise fpb_t;
-> -
-> -/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
-> -#define FPB_IGNORE_DIRTY               ((__force fpb_t)BIT(0))
-> -
-> -/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bi=
-t. */
-> -#define FPB_IGNORE_SOFT_DIRTY          ((__force fpb_t)BIT(1))
-> -
->  static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
->  {
->         if (flags & FPB_IGNORE_DIRTY)
-> @@ -982,7 +973,7 @@ static inline pte_t __pte_batch_clear_ignored(pte_t p=
-te, fpb_t flags)
->   * If "any_writable" is set, it will indicate if any other PTE besides t=
-he
->   * first (given) PTE is writable.
->   */
-> -static inline int folio_pte_batch(struct folio *folio, unsigned long add=
-r,
-> +int folio_pte_batch(struct folio *folio, unsigned long addr,
->                 pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
->                 bool *any_writable)
->  {
-> --
-> 2.34.1
->
+> This issue is the root cause of a display regression on SC8280XP boards,
+> resulting in the system often resetting during boot. It was exposed by
+> the refactoring of the DisplayPort driver in v6.8-rc1.
+> ---
+>   drivers/pmdomain/qcom/rpmhpd.c | 7 +++++--
+>   1 file changed, 5 insertions(+), 2 deletions(-)
+> 
 
-Thanks
-Barry
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
