@@ -1,259 +1,102 @@
-Return-Path: <linux-kernel+bounces-83108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18133868E8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:13:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4E5868E8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:14:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FF68283FF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:13:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3968E1C2333B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6BD1139583;
-	Tue, 27 Feb 2024 11:13:37 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 864A5130ADF;
-	Tue, 27 Feb 2024 11:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A5713A24C;
+	Tue, 27 Feb 2024 11:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="AO/xkNcV"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4B0130ADF
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:14:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709032417; cv=none; b=N6Zr+Vu8BraTE04eiCjRkoLNEXO55Qnqy+bH3uW+KpaxqUaL/CwcGAy2W9KzC9sZvhOL+sXjM/7/xM4lWhfftS3IptoW5WJ11/m1rHXp8X3+wrtoVH75NOlrsY/z6DmiI7vR1EMAvdZ/LT9HzqKaX0s1wAoa7ifLww1YbGQsqeY=
+	t=1709032446; cv=none; b=IMRq4XbOeo3cGgo8onYxNv153hit5hbEHMj/9bg1GIaIBPfiA8HOm1gki15syZq0ft2zjzVsTlvDcUVpsWAjkAFceSbLp8wQ9FLF6QeeFEEcYkodsJ+Jt+0rt4A+j5H9IPvCfQazGdw9gu9pmauTrL7DIq0TF35G85irulINgRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709032417; c=relaxed/simple;
-	bh=G3st7TS0Quj4TMM2kMls6eyZQXybBvZhsZY1mqdTgNc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kJzaenfyHrt5ay+bD3JRnjNL68+dqrYQH82J9gCm2ioDHzrQXuwAUt2PGtYu9eYoy9p+q79tPyGrLqAcidjtNrTOQhXW46aqwBhSv2EONsWQqwB8ssyQ6xBtSFbcfw0tY5+YJZqnjsKCHATAamCI3cbyYNOst5yiiVGELj7jTxw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3FD18DA7;
-	Tue, 27 Feb 2024 03:14:12 -0800 (PST)
-Received: from [10.163.48.107] (unknown [10.163.48.107])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D7203F6C4;
-	Tue, 27 Feb 2024 03:13:27 -0800 (PST)
-Message-ID: <b134c30d-d855-41bb-a260-9f6437b77697@arm.com>
-Date: Tue, 27 Feb 2024 16:43:25 +0530
+	s=arc-20240116; t=1709032446; c=relaxed/simple;
+	bh=xb3Ql6xT74CAOQFb23o6aeaQuso1t6kO3YOXaRZgSMo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p3E+t7+Wb97DyDfjfcIyX3hbEaUYQTa2wEnGJUt3LlO9XEwjiZF7MDBDbR7NtN4IIY9WdO69hnXRDre1/LG/rqCYyMhvaSuIo4SIUtA5cvgDZrg/LyKJSG/D2BBmdflIZoPqE0La1nIY9jvFoBIwl8fYeF5dAAX/vURpUR4H5n0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=AO/xkNcV; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 348FE40E019E;
+	Tue, 27 Feb 2024 11:14:01 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id AgoBXzs2zQv7; Tue, 27 Feb 2024 11:13:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709032438; bh=99TMyWukII079j6mPAdkD+OQGFzvrXC2zWsz+T4V/+c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AO/xkNcVx0vGn6QhDuF7PuTPIbOCxbZb84R59KxJGH7Pk5SptW8/bspueiZAxPcmj
+	 DTqzs+9+cKNzJFbOcZDfLoF9xyzkUN4PfWEMm/MsJsZsNFJcMwByPbB0DMYOhLdT7J
+	 CAnJBAdf8Ktrb3C+fzQ9WeL2+5kovQw+4RoIQkTb2Wdxa3hogrhk6cciEntvQp9Uin
+	 CUvv2nHpLbx9yzPfEwA1KAVlmqc+KWFlUq2C5JaUhI8hhomeE9CYZeHm523z0kSJMH
+	 L4GRXz59JYyOwYy1G9QEIwG1dvwzPrkyb59TxdjSt8f+yfXCunU4uQiOT1EAGjDfeG
+	 I8mdGBFrW/cdaHfj/5y7VQKKFhda/quH+sKWtaF8rqcmJpd6ApGrx4ZJ+JC9d7YEdh
+	 uFbo3akQ270OH5Fy72yYUCTPq7mPudr78L//5qy726ueJoRjCDnBb/GA8hZJSwBvNu
+	 cs6l0jLOS4Yi4mHwpBT073RdCawk+5tSxkfnCkpBFLuf+3XBF48UAd/JrG5E8XmEpE
+	 T6VAi65XYPZqOKUlbsg8OvBDLf2Z1LMMxqkgHECwwpvMgf9Ul3mUKkW+MRjzb1CkS3
+	 7wuBO9u+MM/uZgt5zGs0YPdnK39cTe/8Qs6Ww8nAwIj7hjRmwv9EAX/Dt1vv/H7n17
+	 tZMmRjLBu79QfGtZvRVzNJes=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B2E7740E016B;
+	Tue, 27 Feb 2024 11:13:49 +0000 (UTC)
+Date: Tue, 27 Feb 2024 12:13:44 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: intel-gfx@lists.freedesktop.org, ville.syrjala@linux.intel.com,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	lkml <linux-kernel@vger.kernel.org>
+Subject: Re: BUG: sleeping function called from invalid context at
+ drivers/gpu/drm/i915/gem/i915_gem_pages.c:526
+Message-ID: <20240227111344.GCZd3D6CibmN8KLWgl@fat_crate.local>
+References: <20240227100342.GAZd2zfmYcPS_SndtO@fat_crate.local>
+ <87jzmqjir5.fsf@intel.com>
+ <20240227105356.GBZd2_RL9hjC_LupZB@fat_crate.local>
+ <87h6hujhrz.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V16 2/8] KVM: arm64: Prevent guest accesses into BRBE
- system registers/instructions
-Content-Language: en-US
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- will@kernel.org, catalin.marinas@arm.com, Mark Brown <broonie@kernel.org>,
- James Clark <james.clark@arm.com>, Rob Herring <robh@kernel.org>,
- Marc Zyngier <maz@kernel.org>, Suzuki Poulose <suzuki.poulose@arm.com>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- linux-perf-users@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>,
- James Morse <james.morse@arm.com>, kvmarm@lists.linux.dev
-References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
- <20240125094119.2542332-3-anshuman.khandual@arm.com>
- <ZdYCUi9YVDNDz7fr@FVFF77S0Q05N>
- <ab50e67e-3d06-4ba7-a5f8-4684e9ef98a4@arm.com>
- <Zd2zy0oUk8XvoDJM@FVFF77S0Q05N>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <Zd2zy0oUk8XvoDJM@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87h6hujhrz.fsf@intel.com>
 
+On Tue, Feb 27, 2024 at 12:58:08PM +0200, Jani Nikula wrote:
+> Let's see what Ville says, but in the end bisection might be the
+> quickest way to find the regression. Though I understand it can be
+> tedious for you personally.
 
+Ha, I can do it in parallel with the gazillion other things. :-)
 
-On 2/27/24 15:34, Mark Rutland wrote:
-> On Fri, Feb 23, 2024 at 12:58:48PM +0530, Anshuman Khandual wrote:
->>
->>
->> On 2/21/24 19:31, Mark Rutland wrote:
->>> On Thu, Jan 25, 2024 at 03:11:13PM +0530, Anshuman Khandual wrote:
->>>> Currently BRBE feature is not supported in a guest environment. This hides
->>>> BRBE feature availability via masking ID_AA64DFR0_EL1.BRBE field.
->>>
->>> Does that means that a guest can currently see BRBE advertised in the
->>> ID_AA64DFR0_EL1.BRB field, or is that hidden by the regular cpufeature code
->>> today?
->>
->> IIRC it is hidden, but will have to double check. When experimenting for BRBE
->> guest support enablement earlier, following changes were need for the feature
->> to be visible in ID_AA64DFR0_EL1.
->>
->> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
->> index 646591c67e7a..f258568535a8 100644
->> --- a/arch/arm64/kernel/cpufeature.c
->> +++ b/arch/arm64/kernel/cpufeature.c
->> @@ -445,6 +445,7 @@ static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
->>  };
->>  
->>  static const struct arm64_ftr_bits ftr_id_aa64dfr0[] = {
->> +       S_ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_IMP),
->>         S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_DoubleLock_SHIFT, 4, 0),
->>         ARM64_FTR_BITS(FTR_HIDDEN, FTR_NONSTRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_PMSVer_SHIFT, 4, 0),
->>         ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_CTX_CMPs_SHIFT, 4, 0),
->>
->> Should we add the following entry - explicitly hiding BRBE from the guest
->> as a prerequisite patch ?
->>
->> S_ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64DFR0_EL1_BRBE_SHIFT, 4, ID_AA64DFR0_EL1_BRBE_NI)
-> 
-> Is it visbile currently, or is it hidden currently?
-> 
-> * If it is visible before this patch, that's a latent bug that we need to go
->   fix first, and that'll require more coordination.
-> 
-> * If it is not visible before this patch, there's no problem in the code, but
->   the commit message needs to explicitly mention that's the case as the commit
->   message currently implies it is visible by only mentioning hiding it.
-> 
-> ... so can you please double check as you suggested above? We should be able to
-> explain why it is or is not visible today.
+It'll take a lot longer, though.
 
-It is currently hidden i.e following code returns 1 in the host
-but returns 0 inside the guest.
+-- 
+Regards/Gruss,
+    Boris.
 
-aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
-brbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_EL1_BRBE_SHIFT);
-
-Hence - will update the commit message here as suggested.
-
-> 
-> Mark.
-> 
->>>> This also blocks guest accesses into BRBE system registers and instructions
->>>> as if the underlying hardware never implemented FEAT_BRBE feature.
->>>>
->>>> Cc: Marc Zyngier <maz@kernel.org>
->>>> Cc: Oliver Upton <oliver.upton@linux.dev>
->>>> Cc: James Morse <james.morse@arm.com>
->>>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>> Cc: Will Deacon <will@kernel.org>
->>>> Cc: kvmarm@lists.linux.dev
->>>> Cc: linux-arm-kernel@lists.infradead.org
->>>> Cc: linux-kernel@vger.kernel.org
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> ---
->>>> Changes in V16:
->>>>
->>>> - Added BRB_INF_SRC_TGT_EL1 macro for corresponding BRB_[INF|SRC|TGT] expansion
->>>>
->>>>  arch/arm64/kvm/sys_regs.c | 56 +++++++++++++++++++++++++++++++++++++++
->>>>  1 file changed, 56 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
->>>> index 30253bd19917..6a06dc2f0c06 100644
->>>> --- a/arch/arm64/kvm/sys_regs.c
->>>> +++ b/arch/arm64/kvm/sys_regs.c
->>>> @@ -1304,6 +1304,11 @@ static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
->>>>  	return 0;
->>>>  }
->>>>  
->>>> +#define BRB_INF_SRC_TGT_EL1(n)					\
->>>> +	{ SYS_DESC(SYS_BRBINF##n##_EL1), undef_access },	\
->>>> +	{ SYS_DESC(SYS_BRBSRC##n##_EL1), undef_access },	\
->>>> +	{ SYS_DESC(SYS_BRBTGT##n##_EL1), undef_access }		\
->>>
->>> With the changes suggested on the previous patch, this would need to change to be:
->>>
->>> 	#define BRB_INF_SRC_TGT_EL1(n)					\
->>> 		{ SYS_DESC(SYS_BRBINF_EL1(n)), undef_access },	\
->>> 		{ SYS_DESC(SYS_BRBSRC_EL1(n)), undef_access },	\
->>> 		{ SYS_DESC(SYS_BRBTGT_EL1(n)), undef_access }	\
->>
->> Sure, already folded back in these above changes.
->>
->>>
->>>
->>> ... which would also be easier for backporting (if necessary), since those
->>> definitions have existed for a while.
->>>
->>> Otherwise (modulo Suzuki's comment about rebasing), this looks good to me.
->>
->> Okay.
->>
->>>
->>> Mark.
->>>
->>>>  /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
->>>>  #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
->>>>  	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
->>>> @@ -1707,6 +1712,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
->>>>  	/* Hide SPE from guests */
->>>>  	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
->>>>  
->>>> +	/* Hide BRBE from guests */
->>>> +	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
->>>> +
->>>>  	return val;
->>>>  }
->>>>  
->>>> @@ -2195,6 +2203,8 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>>>  	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
->>>>  	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
->>>>  	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
->>>> +	{ SYS_DESC(OP_BRB_IALL), undef_access },
->>>> +	{ SYS_DESC(OP_BRB_INJ), undef_access },
->>>>  
->>>>  	DBG_BCR_BVR_WCR_WVR_EL1(0),
->>>>  	DBG_BCR_BVR_WCR_WVR_EL1(1),
->>>> @@ -2225,6 +2235,52 @@ static const struct sys_reg_desc sys_reg_descs[] = {
->>>>  	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
->>>>  	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
->>>>  
->>>> +	/*
->>>> +	 * BRBE branch record sysreg address space is interleaved between
->>>> +	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
->>>> +	 */
->>>> +	BRB_INF_SRC_TGT_EL1(0),
->>>> +	BRB_INF_SRC_TGT_EL1(16),
->>>> +	BRB_INF_SRC_TGT_EL1(1),
->>>> +	BRB_INF_SRC_TGT_EL1(17),
->>>> +	BRB_INF_SRC_TGT_EL1(2),
->>>> +	BRB_INF_SRC_TGT_EL1(18),
->>>> +	BRB_INF_SRC_TGT_EL1(3),
->>>> +	BRB_INF_SRC_TGT_EL1(19),
->>>> +	BRB_INF_SRC_TGT_EL1(4),
->>>> +	BRB_INF_SRC_TGT_EL1(20),
->>>> +	BRB_INF_SRC_TGT_EL1(5),
->>>> +	BRB_INF_SRC_TGT_EL1(21),
->>>> +	BRB_INF_SRC_TGT_EL1(6),
->>>> +	BRB_INF_SRC_TGT_EL1(22),
->>>> +	BRB_INF_SRC_TGT_EL1(7),
->>>> +	BRB_INF_SRC_TGT_EL1(23),
->>>> +	BRB_INF_SRC_TGT_EL1(8),
->>>> +	BRB_INF_SRC_TGT_EL1(24),
->>>> +	BRB_INF_SRC_TGT_EL1(9),
->>>> +	BRB_INF_SRC_TGT_EL1(25),
->>>> +	BRB_INF_SRC_TGT_EL1(10),
->>>> +	BRB_INF_SRC_TGT_EL1(26),
->>>> +	BRB_INF_SRC_TGT_EL1(11),
->>>> +	BRB_INF_SRC_TGT_EL1(27),
->>>> +	BRB_INF_SRC_TGT_EL1(12),
->>>> +	BRB_INF_SRC_TGT_EL1(28),
->>>> +	BRB_INF_SRC_TGT_EL1(13),
->>>> +	BRB_INF_SRC_TGT_EL1(29),
->>>> +	BRB_INF_SRC_TGT_EL1(14),
->>>> +	BRB_INF_SRC_TGT_EL1(30),
->>>> +	BRB_INF_SRC_TGT_EL1(15),
->>>> +	BRB_INF_SRC_TGT_EL1(31),
->>>> +
->>>> +	/* Remaining BRBE sysreg addresses space */
->>>> +	{ SYS_DESC(SYS_BRBCR_EL1), undef_access },
->>>> +	{ SYS_DESC(SYS_BRBFCR_EL1), undef_access },
->>>> +	{ SYS_DESC(SYS_BRBTS_EL1), undef_access },
->>>> +	{ SYS_DESC(SYS_BRBINFINJ_EL1), undef_access },
->>>> +	{ SYS_DESC(SYS_BRBSRCINJ_EL1), undef_access },
->>>> +	{ SYS_DESC(SYS_BRBTGTINJ_EL1), undef_access },
->>>> +	{ SYS_DESC(SYS_BRBIDR0_EL1), undef_access },
->>>> +
->>>>  	{ SYS_DESC(SYS_MDCCSR_EL0), trap_raz_wi },
->>>>  	{ SYS_DESC(SYS_DBGDTR_EL0), trap_raz_wi },
->>>>  	// DBGDTR[TR]X_EL0 share the same encoding
->>>> -- 
->>>> 2.25.1
->>>>
+https://people.kernel.org/tglx/notes-about-netiquette
 
