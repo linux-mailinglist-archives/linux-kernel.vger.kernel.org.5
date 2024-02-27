@@ -1,91 +1,199 @@
-Return-Path: <linux-kernel+bounces-83071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4699A868E14
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:53:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8ED7868E12
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:53:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8A3F1F22B94
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:53:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 262861C219DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CCE81386CB;
-	Tue, 27 Feb 2024 10:53:27 +0000 (UTC)
-Received: from mail114-241.sinamail.sina.com.cn (mail114-241.sinamail.sina.com.cn [218.30.114.241])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B11951386AE
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:53:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.241
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E031386C1;
+	Tue, 27 Feb 2024 10:53:10 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07E5DDB8
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709031206; cv=none; b=X1/DtUpjjIiTweBqxZQv3Cf9ASEfbYWJzI9JFJOCqcJAX2fKuhiiRywgpmZRVTUspWnSH3nhOXC53IrU4bsWcSmW3GRfcqUYVcnwGCkOzRD7RCdO2wnu8BIk4m5DvzM4cUvNWvJvGBJ/BrL2RY0MBRwO+FrCYYYSPFRq7nq9wlw=
+	t=1709031190; cv=none; b=UqczvkIqQeYaZenvhAdiIMXSuwgIjVirrOUwnpq5dlNebKcJKcIdoB6OC0XsS9JoSVSq/CanmN1UZSQ4h8u55JK7C8hn1TcZDNpdlyGKGyoTkrnPSaSXUBYa7qRs9M1GLoXUvEqYXHGMZAcWguMfr93Hm2ih5C03sQAyvfIYCJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709031206; c=relaxed/simple;
-	bh=up80Ewx5Z1o1h8/iNPfmvLnaFsEZXQywW6b0ZaDSuDE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LEtfbbGpuUSdKrfr+3kXcqxz40lvMz8dmzvVndiQaTJ5uqTtVm8DRcsB5/UCkGVpiQrAotrb5EFNlKSVNdhfqGQF4owyfs70LRUG7CIE5Rj25Ng+ozctj/etNBqluZ+ZOcjfYRi1/3QBhB1SRDpw/oKHVaFSjRamn4Lsl80N8rw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.241
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.50.169])
-	by sina.com (172.16.235.24) with ESMTP
-	id 65DDBF1500006C5B; Tue, 27 Feb 2024 18:53:11 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 87445445089294
-X-SMAIL-UIID: 118B64FADD7F4FC1B4574058270DEBD8-20240227-185311-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+a225ee3df7e7f9372dbe@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [dri?] [media?] inconsistent lock state in valid_state (2)
-Date: Tue, 27 Feb 2024 18:53:01 +0800
-Message-Id: <20240227105301.1525-1-hdanton@sina.com>
-In-Reply-To: <00000000000066a91a0612527e6d@google.com>
-References: 
+	s=arc-20240116; t=1709031190; c=relaxed/simple;
+	bh=4173aevZicLQ7+bQhgyhKa7Q3an6+yhm2Hu3Jx4RqZA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YRNCGKbGE1Sz0k/6gQbiJHRhvbrWi2VkprrKtwyBV1ZSEmkDJsPiHpjzMWSzDlzsypGMnw1k1iKbkGswbBC8+6jOiOFGk40USEIxY/i2/LyljjnhV1TDBOMnXb1DxSHYkTs8WK+6oJ1EreCTTVvKfkaSxTpjp1vx/YkX5UCKT74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA6DBFEC;
+	Tue, 27 Feb 2024 02:53:45 -0800 (PST)
+Received: from [10.1.30.188] (XHFQ2J9959.cambridge.arm.com [10.1.30.188])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8F5F3F6C4;
+	Tue, 27 Feb 2024 02:53:05 -0800 (PST)
+Message-ID: <dc2ac3e5-a354-4447-a7da-26cae0c57b0d@arm.com>
+Date: Tue, 27 Feb 2024 10:53:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
+ need it
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>, Lance Yang <ioworker0@gmail.com>
+Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ Barry Song <v-songbaohua@oppo.com>, Yin Fengwei <fengwei.yin@intel.com>
+References: <20240227024050.244567-1-21cnbao@gmail.com>
+ <61b9dfc9-5522-44fd-89a4-140833ede8af@arm.com>
+ <c95215b2-6ec5-4efb-a73b-7be92cda1c83@redhat.com>
+ <CAK1f24mOc+Y_UCA2nSC7VbNQMy0DahULz-6JsEPMqTyoAA+MoA@mail.gmail.com>
+ <dbce43b4-cf69-41d0-af6c-fdfc3032fedb@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <dbce43b4-cf69-41d0-af6c-fdfc3032fedb@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On Mon, 26 Feb 2024 16:56:17 -0800
-> syzbot has found a reproducer for the following issue on:
+On 27/02/2024 10:30, David Hildenbrand wrote:
+> On 27.02.24 11:21, Lance Yang wrote:
+>> On Tue, Feb 27, 2024 at 5:14 PM David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>> On 27.02.24 10:07, Ryan Roberts wrote:
+>>>> On 27/02/2024 02:40, Barry Song wrote:
+>>>>> From: Barry Song <v-songbaohua@oppo.com>
+>>>>>
+>>>>> madvise and some others might need folio_pte_batch to check if a range
+>>>>> of PTEs are completely mapped to a large folio with contiguous physcial
+>>>>> addresses. Let's export it for others to use.
+>>>>>
+>>>>> Cc: Lance Yang <ioworker0@gmail.com>
+>>>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>>>>> Cc: David Hildenbrand <david@redhat.com>
+>>>>> Cc: Yin Fengwei <fengwei.yin@intel.com>
+>>>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>>>> ---
+>>>>>    -v1:
+>>>>>    at least two jobs madv_free and madv_pageout depend on it. To avoid
+>>>>>    conflicts and dependencies, after discussing with Lance, we prefer
+>>>>>    this one can land earlier.
+>>>>
+>>>> I think this will also ultimately be useful for mprotect too, though I haven't
+>>>> looked at it properly yet.
+>>>>
+>>>
+>>> Yes, I think we briefly discussed that.
+>>>
+>>>>>
+>>>>>    mm/internal.h | 13 +++++++++++++
+>>>>>    mm/memory.c   | 11 +----------
+>>>>>    2 files changed, 14 insertions(+), 10 deletions(-)
+>>>>>
+>>>>> diff --git a/mm/internal.h b/mm/internal.h
+>>>>> index 13b59d384845..8e2bc304f671 100644
+>>>>> --- a/mm/internal.h
+>>>>> +++ b/mm/internal.h
+>>>>> @@ -83,6 +83,19 @@ static inline void *folio_raw_mapping(struct folio *folio)
+>>>>>       return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
+>>>>>    }
+>>>>>
+>>>>> +/* Flags for folio_pte_batch(). */
+>>>>> +typedef int __bitwise fpb_t;
+>>>>> +
+>>>>> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+>>>>> +#define FPB_IGNORE_DIRTY            ((__force fpb_t)BIT(0))
+>>>>> +
+>>>>> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+>>>>> +#define FPB_IGNORE_SOFT_DIRTY               ((__force fpb_t)BIT(1))
+>>>>> +
+>>>>> +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>>>> +            pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+>>>>> +            bool *any_writable);
+>>>>> +
+>>>>>    void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>>>>>                                               int nr_throttled);
+>>>>>    static inline void acct_reclaim_writeback(struct folio *folio)
+>>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>>> index 1c45b6a42a1b..319b3be05e75 100644
+>>>>> --- a/mm/memory.c
+>>>>> +++ b/mm/memory.c
+>>>>> @@ -953,15 +953,6 @@ static __always_inline void __copy_present_ptes(struct
+>>>>> vm_area_struct *dst_vma,
+>>>>>       set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+>>>>>    }
+>>>>>
+>>>>> -/* Flags for folio_pte_batch(). */
+>>>>> -typedef int __bitwise fpb_t;
+>>>>> -
+>>>>> -/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+>>>>> -#define FPB_IGNORE_DIRTY            ((__force fpb_t)BIT(0))
+>>>>> -
+>>>>> -/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+>>>>> -#define FPB_IGNORE_SOFT_DIRTY               ((__force fpb_t)BIT(1))
+>>>>> -
+>>>>>    static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+>>>>>    {
+>>>>>       if (flags & FPB_IGNORE_DIRTY)
+>>>>> @@ -982,7 +973,7 @@ static inline pte_t __pte_batch_clear_ignored(pte_t
+>>>>> pte, fpb_t flags)
+>>>>>     * If "any_writable" is set, it will indicate if any other PTE besides the
+>>>>>     * first (given) PTE is writable.
+>>>>>     */
+>>>>
+>>>> David was talking in Lance's patch thread, about improving the docs for this
+>>>> function now that its exported. Might be worth syncing on that.
+>>>
+>>> Here is my take:
+>>>
+>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>> ---
+>>>    mm/memory.c | 22 ++++++++++++++++++----
+>>>    1 file changed, 18 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/mm/memory.c b/mm/memory.c
+>>> index d0b855a1837a8..098356b8805ae 100644
+>>> --- a/mm/memory.c
+>>> +++ b/mm/memory.c
+>>> @@ -971,16 +971,28 @@ static inline pte_t __pte_batch_clear_ignored(pte_t
+>>> pte, fpb_t flags)
+>>>          return pte_wrprotect(pte_mkold(pte));
+>>>    }
+>>>
+>>> -/*
+>>> +/**
+>>> + * folio_pte_batch - detect a PTE batch for a large folio
+>>> + * @folio: The large folio to detect a PTE batch for.
+>>> + * @addr: The user virtual address the first page is mapped at.
+>>> + * @start_ptep: Page table pointer for the first entry.
+>>> + * @pte: Page table entry for the first page.
+>>
+>> Nit:
+>>
+>> - * @pte: Page table entry for the first page.
+>> + * @pte: Page table entry for the first page that must be the first subpage of
+>> + *               the folio excluding arm64 for now.
+>>
+>> IIUC, pte_batch_hint is always 1 excluding arm64 for now.
+>> I'm not sure if this modification will be helpful?
 > 
-> HEAD commit:    d206a76d7d27 Linux 6.8-rc6
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1704b3e2180000
+> IIRC, Ryan made sure that this also works when passing another subpage, after
+> when cont-pte is set. Otherwise this would already be broken for fork/zap.
+> 
+> So I don't think this comment would actually be correct.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+Indeed, the spec for the function is exactly the same for arm64 as for other
+arches. It's just that arm64 can accelerate the implementation by skipping
+forward to the next contpte boundary when the current pte is part of a contpte
+block.
 
---- x/drivers/dma-buf/sync_debug.c
-+++ y/drivers/dma-buf/sync_debug.c
-@@ -107,15 +107,16 @@ static void sync_print_fence(struct seq_
- static void sync_print_obj(struct seq_file *s, struct sync_timeline *obj)
- {
- 	struct list_head *pos;
-+	unsigned long flags;
- 
- 	seq_printf(s, "%s: %d\n", obj->name, obj->value);
- 
--	spin_lock_irq(&obj->lock);
-+	spin_lock_irqsave(&obj->lock, flags);
- 	list_for_each(pos, &obj->pt_list) {
- 		struct sync_pt *pt = container_of(pos, struct sync_pt, link);
- 		sync_print_fence(s, &pt->base, false);
- 	}
--	spin_unlock_irq(&obj->lock);
-+	spin_unlock_irqrestore(&obj->lock, flags);
- }
- 
- static void sync_print_sync_file(struct seq_file *s,
---
+There is no requirement for pte (or addr or start_ptep) to point to the first
+subpage of a folio - they can point to any subpage.
+
+pte, addr and start_ptep must all refer to the same entry, but I think that's
+clear from the existing text.
+
+
 
