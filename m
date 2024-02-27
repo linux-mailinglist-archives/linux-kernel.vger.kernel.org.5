@@ -1,206 +1,322 @@
-Return-Path: <linux-kernel+bounces-83311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEB148691B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:25:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 774CF8693A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 668081F2A826
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:25:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1B78291444
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:47:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9307C13B2A9;
-	Tue, 27 Feb 2024 13:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88AE1468F4;
+	Tue, 27 Feb 2024 13:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="hKJ7ztT7"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZuXcsUyH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E671454FA5;
-	Tue, 27 Feb 2024 13:25:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCD11419B5;
+	Tue, 27 Feb 2024 13:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709040329; cv=none; b=rFxP/8tyJMr/zR3TU20izz7ONR/fj/+9rlpq4O0SDGXqoTevLQlc4LzgfxyBhN21t4Fbq9oCdTHp3GJR5uLHRqH75aCIiHWxllXRi//5RU4iFghNwUMtaeLoPsvNdYq1+w4yBKIFLRzrpZm5SzU4PPZR5a2UmsdHzPprQpAisIw=
+	t=1709041531; cv=none; b=kd5ZAwJmaKk5Um7wVScQ5oAJ2W7Mp8NmoNvv5kct11Vy8ltMUNYwmyZvysQtTBRBrrIXCVCfmyIyuMwyOHuosh21n2d4Hg8DbGqOv1Oaun7PnjfJSt6ghrbHR3dqxjeZ/5H7eoKvOGWl2aN/x8JbVa4emA2VX36FJc5z2qBnn78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709040329; c=relaxed/simple;
-	bh=LalD/cF8ER2QGrSSamZ0LcrPWPij47eqMs8pqC0hGZo=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=SrNQIPRYZo8j6Uozq3Aj9J4KiiiQRTjtgEJI/5hsOe+E8oHuPwIygoseTLTYN3KPPg0JqTQfkH2z8VY3V2SkdK2u/bP4CMFAUGLaP2PVUV3hF/1ETd9UTsgFZn3ouj9f2qnKfnixlUeaRwJN/nodaZ68yGdXNF4zhmC/bfEdu80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=hKJ7ztT7; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41RDNHQ4018871;
-	Tue, 27 Feb 2024 13:25:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=l73Um2k+xIDmUDZDQ+01dABYhKtHgm6tZjAs+ByVLzk=;
- b=hKJ7ztT7BBJz5Tfs60llFnLb2NbSJPIpXML7O8dvpvxFROuuUAVYXUDsRUySOP1Z9ZIt
- EnxOyF+L2EJ/1jD+UIHtAj2WlPEwgX0UZvR/YDk+lTdaXzO0ngVpNWGl+Su6eCTNuNMO
- WE6Ip9eTlUQLf57Z5DxnB4BeuKOIQan3SFcONJTe+zFEbsltjbKNFirA5K7Ht/jfGyxs
- FADgez+KpxKBm1OEkNNqGU0mybUYS+/iLDIqq42LUwTxVmx2f+7qFJgZybrpvXHSwnv7
- vxt0VnqDvt74mdH1KvJ7cd6T3qdCFR6W03rXTIdEqXVFfGOxQigpFWzTzu3o2S1YGu3u Xg== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3whg9d8p0r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 13:25:26 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41RBcNdm012328;
-	Tue, 27 Feb 2024 13:25:25 GMT
-Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wfwg27c1c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 13:25:25 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41RDPMWW44237204
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 27 Feb 2024 13:25:25 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A84F35804E;
-	Tue, 27 Feb 2024 13:25:22 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id ED64658064;
-	Tue, 27 Feb 2024 13:25:21 +0000 (GMT)
-Received: from [9.61.171.103] (unknown [9.61.171.103])
-	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 27 Feb 2024 13:25:21 +0000 (GMT)
-Message-ID: <3b5a812d-3832-6f34-a528-c67e59d76e65@linux.ibm.com>
-Date: Tue, 27 Feb 2024 08:25:21 -0500
+	s=arc-20240116; t=1709041531; c=relaxed/simple;
+	bh=oI0YsBN5IXwuXiTa5ndwSnjgtw+sgMN08yHCIlyYX10=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FmAL5a+QQ9smr9ym6lSFHguePXIoF1Z/SVQNNa8uwM7IfCKB6mHcbh8yad2PjYxHIwmPXc2qhv0eKQSi8mP/mCoOhUC5VvdI/JIJKF35lgcXx4m7SB/W7a+uE3Ad9aQw//FHbDAzaLsHMz+emJTGFzhz0XE6Fa1o+NTWZJDn/M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZuXcsUyH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BDE6C433F1;
+	Tue, 27 Feb 2024 13:45:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709041531;
+	bh=oI0YsBN5IXwuXiTa5ndwSnjgtw+sgMN08yHCIlyYX10=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZuXcsUyHmo8oqNEIdD+THb111+C01CSaADZ4RSpzhSNHUJXEBEZshSZR9F3c0zEEq
+	 yEXzKrvpbmGidezHoht7aFbQOa9qBSoaFUoYWDnb6XGrda2/jEo6eyvsupGLS5ns4c
+	 vuSmcJTPAFhbR2+Uutxa6nYlmC9pT4htMIz5fCE4=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com
+Subject: [PATCH 4.19 00/52] 4.19.308-rc1 review
+Date: Tue, 27 Feb 2024 14:25:47 +0100
+Message-ID: <20240227131548.514622258@linuxfoundation.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] s390/vfio-ap: handle hardware checkstop state on queue
- reset operation
-From: "Jason J. Herne" <jjherne@linux.ibm.com>
-To: linux-s390@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, pasic@linux.ibm.com, akrowiak@linux.ibm.com,
-        borntraeger@de.ibm.com, agordeev@linux.ibm.com, gor@linux.ibm.com
-References: <20240215153144.14747-1-jjherne@linux.ibm.com>
-Content-Language: en-US
-In-Reply-To: <20240215153144.14747-1-jjherne@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: BTLB_ajivKs51ie7Tr4wUmVk1P6WtsAi
-X-Proofpoint-ORIG-GUID: BTLB_ajivKs51ie7Tr4wUmVk1P6WtsAi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_11,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 malwarescore=0 clxscore=1015 mlxscore=0 impostorscore=0
- bulkscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402270103
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.308-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.308-rc1
+X-KernelTest-Deadline: 2024-02-29T13:15+00:00
+Content-Transfer-Encoding: 8bit
 
-Polite Ping :)
+This is the start of the stable review cycle for the 4.19.308 release.
+There are 52 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Patch already has R-b.
-Thanks for taking a look.
+Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+Anything received after that time might be too late.
 
-On 2/15/24 10:31 AM, Jason J. Herne wrote:
-> Update vfio_ap_mdev_reset_queue() to handle an unexpected checkstop (hardware error) the
-> same as the deconfigured case. This prevents unexpected and unhelpful warnings in the
-> event of a hardware error.
-> 
-> We also stop lying about a queue's reset response code. This was originally done so we
-> could force vfio_ap_mdev_filter_matrix to pass a deconfigured device through to the guest
-> for the hotplug scenario. vfio_ap_mdev_filter_matrix is instead modified to allow
-> passthrough for all queues with reset state normal, deconfigured, or checkstopped. In the
-> checkstopped case we choose to pass the device through and let the error state be
-> reflected at the guest level.
-> 
-> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
-> Reviewed-by: Anthony Krowiak <akrowiak@linux.ibm.com>
-> ---
->   drivers/s390/crypto/vfio_ap_ops.c | 35 ++++++++++++++++---------------
->   1 file changed, 18 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 983b3b16196c..fc169bc61593 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -659,6 +659,21 @@ static bool vfio_ap_mdev_filter_cdoms(struct ap_matrix_mdev *matrix_mdev)
->   			     AP_DOMAINS);
->   }
->   
-> +static bool _queue_passable(struct vfio_ap_queue *q)
-> +{
-> +	if (!q)
-> +		return false;
-> +
-> +	switch (q->reset_status.response_code) {
-> +	case AP_RESPONSE_NORMAL:
-> +	case AP_RESPONSE_DECONFIGURED:
-> +	case AP_RESPONSE_CHECKSTOPPED:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
->   /*
->    * vfio_ap_mdev_filter_matrix - filter the APQNs assigned to the matrix mdev
->    *				to ensure no queue devices are passed through to
-> @@ -687,7 +702,6 @@ static bool vfio_ap_mdev_filter_matrix(struct ap_matrix_mdev *matrix_mdev,
->   	unsigned long apid, apqi, apqn;
->   	DECLARE_BITMAP(prev_shadow_apm, AP_DEVICES);
->   	DECLARE_BITMAP(prev_shadow_aqm, AP_DOMAINS);
-> -	struct vfio_ap_queue *q;
->   
->   	bitmap_copy(prev_shadow_apm, matrix_mdev->shadow_apcb.apm, AP_DEVICES);
->   	bitmap_copy(prev_shadow_aqm, matrix_mdev->shadow_apcb.aqm, AP_DOMAINS);
-> @@ -716,8 +730,7 @@ static bool vfio_ap_mdev_filter_matrix(struct ap_matrix_mdev *matrix_mdev,
->   			 * hardware device.
->   			 */
->   			apqn = AP_MKQID(apid, apqi);
-> -			q = vfio_ap_mdev_get_queue(matrix_mdev, apqn);
-> -			if (!q || q->reset_status.response_code) {
-> +			if (!_queue_passable(vfio_ap_mdev_get_queue(matrix_mdev, apqn))) {
->   				clear_bit_inv(apid, matrix_mdev->shadow_apcb.apm);
->   
->   				/*
-> @@ -1691,6 +1704,7 @@ static int apq_status_check(int apqn, struct ap_queue_status *status)
->   	switch (status->response_code) {
->   	case AP_RESPONSE_NORMAL:
->   	case AP_RESPONSE_DECONFIGURED:
-> +	case AP_RESPONSE_CHECKSTOPPED:
->   		return 0;
->   	case AP_RESPONSE_RESET_IN_PROGRESS:
->   	case AP_RESPONSE_BUSY:
-> @@ -1747,14 +1761,6 @@ static void apq_reset_check(struct work_struct *reset_work)
->   				memcpy(&q->reset_status, &status, sizeof(status));
->   				continue;
->   			}
-> -			/*
-> -			 * When an AP adapter is deconfigured, the
-> -			 * associated queues are reset, so let's set the
-> -			 * status response code to 0 so the queue may be
-> -			 * passed through (i.e., not filtered)
-> -			 */
-> -			if (status.response_code == AP_RESPONSE_DECONFIGURED)
-> -				q->reset_status.response_code = 0;
->   			if (q->saved_isc != VFIO_AP_ISC_INVALID)
->   				vfio_ap_free_aqic_resources(q);
->   			break;
-> @@ -1781,12 +1787,7 @@ static void vfio_ap_mdev_reset_queue(struct vfio_ap_queue *q)
->   		queue_work(system_long_wq, &q->reset_work);
->   		break;
->   	case AP_RESPONSE_DECONFIGURED:
-> -		/*
-> -		 * When an AP adapter is deconfigured, the associated
-> -		 * queues are reset, so let's set the status response code to 0
-> -		 * so the queue may be passed through (i.e., not filtered).
-> -		 */
-> -		q->reset_status.response_code = 0;
-> +	case AP_RESPONSE_CHECKSTOPPED:
->   		vfio_ap_free_aqic_resources(q);
->   		break;
->   	default:
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.308-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.308-rc1
+
+Andrii Nakryiko <andriin@fb.com>
+    scripts/bpf: Fix xdp_md forward declaration typo
+
+Bart Van Assche <bvanassche@acm.org>
+    fs/aio: Restrict kiocb_set_cancel_fn() to I/O submitted via libaio
+
+Oliver Upton <oliver.upton@linux.dev>
+    KVM: arm64: vgic-its: Test for valid IRQ in MOVALL handler
+
+Oliver Upton <oliver.upton@linux.dev>
+    KVM: arm64: vgic-its: Test for valid IRQ in its_sync_lpi_pending_table()
+
+Vidya Sagar <vidyas@nvidia.com>
+    PCI/MSI: Prevent MSI hardware interrupt number truncation
+
+Jason Gunthorpe <jgg@nvidia.com>
+    s390: use the correct count for __iowrite64_copy()
+
+Wolfram Sang <wsa+renesas@sang-engineering.com>
+    packet: move from strlcpy with unused retval to strscpy
+
+Vasiliy Kovalev <kovalev@altlinux.org>
+    ipv6: sr: fix possible use-after-free and null-ptr-deref
+
+Arnd Bergmann <arnd@arndb.de>
+    nouveau: fix function cast warnings
+
+Randy Dunlap <rdunlap@infradead.org>
+    scsi: jazz_esp: Only build if SCSI core is builtin
+
+Gianmarco Lusvardi <glusvardi@posteo.net>
+    bpf, scripts: Correct GPL license name
+
+Andrii Nakryiko <andriin@fb.com>
+    scripts/bpf: teach bpf_helpers_doc.py to dump BPF helper definitions
+
+Arnd Bergmann <arnd@arndb.de>
+    RDMA/srpt: fix function pointer cast warnings
+
+Bart Van Assche <bvanassche@acm.org>
+    RDMA/srpt: Make debug output more detailed
+
+Jason Gunthorpe <jgg@ziepe.ca>
+    RDMA/ulp: Use dev_name instead of ibdev->name
+
+Bart Van Assche <bvanassche@acm.org>
+    RDMA/srpt: Support specifying the srpt_service_guid parameter
+
+Kalesh AP <kalesh-anakkur.purayil@broadcom.com>
+    RDMA/bnxt_re: Return error for SRQ resize
+
+Zhipeng Lu <alexious@zju.edu.cn>
+    IB/hfi1: Fix a memleak in init_credit_return
+
+Xu Yang <xu.yang_2@nxp.com>
+    usb: roles: don't get/set_role() when usb_role_switch is unregistered
+
+Krishna Kurapati <quic_kriskura@quicinc.com>
+    usb: gadget: ncm: Avoid dropping datagrams of properly parsed NTBs
+
+Nikita Shubin <nikita.shubin@maquefel.me>
+    ARM: ep93xx: Add terminator to gpiod_lookup_table
+
+Tom Parkin <tparkin@katalix.com>
+    l2tp: pass correct message length to ip6_append_data
+
+Vasiliy Kovalev <kovalev@altlinux.org>
+    gtp: fix use-after-free and null-ptr-deref in gtp_genl_dump_pdp()
+
+Mikulas Patocka <mpatocka@redhat.com>
+    dm-crypt: don't modify the data when using authenticated encryption
+
+Roman Gushchin <guro@fb.com>
+    mm: memcontrol: switch to rcu protection in drain_all_stock()
+
+Daniel Vacek <neelx@redhat.com>
+    IB/hfi1: Fix sdma.h tx->num_descs off-by-one error
+
+Geert Uytterhoeven <geert+renesas@glider.be>
+    pmdomain: renesas: r8a77980-sysc: CR7 must be always on
+
+Alexandra Winter <wintera@linux.ibm.com>
+    s390/qeth: Fix potential loss of L3-IP@ in case of network issues
+
+Yi Sun <yi.sun@unisoc.com>
+    virtio-blk: Ensure no requests in virtqueues before deleting vqs.
+
+Takashi Sakamoto <o-takashi@sakamocchi.jp>
+    firewire: core: send bus reset promptly on gap count error
+
+Zhang Rui <rui.zhang@intel.com>
+    hwmon: (coretemp) Enlarge per package core count limit
+
+Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+    regulator: pwm-regulator: Add validity checks in continuous .get_voltage
+
+Baokun Li <libaokun1@huawei.com>
+    ext4: avoid allocating blocks from corrupted group in ext4_mb_find_by_goal()
+
+Baokun Li <libaokun1@huawei.com>
+    ext4: avoid allocating blocks from corrupted group in ext4_mb_try_best_found()
+
+Conrad Kostecki <conikost@gentoo.org>
+    ahci: asm1166: correct count of reported ports
+
+Fullway Wang <fullwaywang@outlook.com>
+    fbdev: sis: Error out if pixclock equals zero
+
+Fullway Wang <fullwaywang@outlook.com>
+    fbdev: savage: Error out if pixclock equals zero
+
+Felix Fietkau <nbd@nbd.name>
+    wifi: mac80211: fix race condition on enabling fast-xmit
+
+Michal Kazior <michal@plume.com>
+    wifi: cfg80211: fix missing interfaces when dumping
+
+Vinod Koul <vkoul@kernel.org>
+    dmaengine: shdma: increase size of 'dev_id'
+
+Dmitry Bogdanov <d.bogdanov@yadro.com>
+    scsi: target: core: Add TMF to tmr_list handling
+
+Cyril Hrubis <chrubis@suse.cz>
+    sched/rt: Disallow writing invalid values to sched_rt_period_us
+
+Cyril Hrubis <chrubis@suse.cz>
+    sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
+
+Cyril Hrubis <chrubis@suse.cz>
+    sched/rt: Fix sysctl_sched_rr_timeslice intial value
+
+Lokesh Gidra <lokeshgidra@google.com>
+    userfaultfd: fix mmap_changing checking in mfill_atomic_hugetlb
+
+Ryusuke Konishi <konishi.ryusuke@gmail.com>
+    nilfs2: replace WARN_ONs for invalid DAT metadata block requests
+
+GONG, Ruiqi <gongruiqi1@huawei.com>
+    memcg: add refcnt for pcpu stock to avoid UAF problem in drain_all_stock()
+
+Aaro Koskinen <aaro.koskinen@nokia.com>
+    net: stmmac: fix notifier registration
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    stmmac: no need to check return value of debugfs_create functions
+
+Jamal Hadi Salim <jhs@mojatatu.com>
+    net/sched: Retire dsmark qdisc
+
+Jamal Hadi Salim <jhs@mojatatu.com>
+    net/sched: Retire ATM qdisc
+
+Jamal Hadi Salim <jhs@mojatatu.com>
+    net/sched: Retire CBQ qdisc
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                          |    4 +-
+ arch/arm/mach-ep93xx/core.c                       |    1 +
+ arch/s390/pci/pci.c                               |    2 +-
+ drivers/ata/ahci.c                                |    5 +
+ drivers/block/virtio_blk.c                        |    7 +-
+ drivers/dma/sh/shdma.h                            |    2 +-
+ drivers/firewire/core-card.c                      |   18 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c |    8 +-
+ drivers/hwmon/coretemp.c                          |    2 +-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c          |    5 +-
+ drivers/infiniband/hw/hfi1/pio.c                  |    6 +-
+ drivers/infiniband/hw/hfi1/sdma.c                 |    2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_verbs.c        |    2 +-
+ drivers/infiniband/ulp/iser/iser_verbs.c          |    9 +-
+ drivers/infiniband/ulp/isert/ib_isert.c           |    2 +-
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_vema.c   |    3 +-
+ drivers/infiniband/ulp/srp/ib_srp.c               |   10 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.c             |   52 +-
+ drivers/md/dm-crypt.c                             |    6 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h      |    2 -
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |   65 +-
+ drivers/net/gtp.c                                 |   10 +-
+ drivers/pci/msi.c                                 |    2 +-
+ drivers/regulator/pwm-regulator.c                 |    3 +
+ drivers/s390/net/qeth_l3_main.c                   |    9 +-
+ drivers/scsi/Kconfig                              |    2 +-
+ drivers/soc/renesas/r8a77980-sysc.c               |    3 +-
+ drivers/target/target_core_device.c               |    5 -
+ drivers/target/target_core_transport.c            |    4 +
+ drivers/usb/gadget/function/f_ncm.c               |   10 +-
+ drivers/usb/roles/class.c                         |   12 +-
+ drivers/video/fbdev/savage/savagefb_driver.c      |    3 +
+ drivers/video/fbdev/sis/sis_main.c                |    2 +
+ fs/aio.c                                          |    9 +-
+ fs/ext4/mballoc.c                                 |   13 +-
+ fs/nilfs2/dat.c                                   |   27 +-
+ include/linux/fs.h                                |    2 +
+ include/rdma/rdma_vt.h                            |    2 +-
+ kernel/sched/rt.c                                 |   10 +-
+ kernel/sysctl.c                                   |    5 +
+ mm/memcontrol.c                                   |   23 +-
+ mm/userfaultfd.c                                  |   14 +-
+ net/ipv6/seg6.c                                   |   20 +-
+ net/l2tp/l2tp_ip6.c                               |    2 +-
+ net/mac80211/sta_info.c                           |    2 +
+ net/mac80211/tx.c                                 |    2 +-
+ net/packet/af_packet.c                            |    4 +-
+ net/sched/Kconfig                                 |   42 -
+ net/sched/Makefile                                |    3 -
+ net/sched/sch_atm.c                               |  708 --------
+ net/sched/sch_cbq.c                               | 1823 ---------------------
+ net/sched/sch_dsmark.c                            |  519 ------
+ net/wireless/nl80211.c                            |    1 +
+ scripts/bpf_helpers_doc.py                        |  157 +-
+ virt/kvm/arm/vgic/vgic-its.c                      |    5 +
+ 55 files changed, 412 insertions(+), 3259 deletions(-)
+
+
 
