@@ -1,86 +1,118 @@
-Return-Path: <linux-kernel+bounces-83994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22A0086A12B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:52:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 418CA86A129
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:52:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C582D1F2351A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:52:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0AB5284A77
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1144A154441;
-	Tue, 27 Feb 2024 20:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E6E153514;
+	Tue, 27 Feb 2024 20:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tYZW7V8/"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ca5UUYww"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A62214F988
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25EA152DE9;
+	Tue, 27 Feb 2024 20:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709067079; cv=none; b=pMNgGBjE3aT3hBENZ3eZZWpcuox/EeKvVrxw38RoBGh4+7p5V8z8KpaF9iFusuJ2R29UJWkjwTSHLLBlibFYHLKFcq/VbXy2JJWQEEz2BLHIgtl1aqYdAfPoJqdFGOHS5CcUrf68iA2x3xb6ZtH6baMhlroT60M28J0Fd9/jPRo=
+	t=1709067078; cv=none; b=mSYjjm8YLFlEJGB/W9WHmfOqFi/0Pm1C4jhwK3sYkwrWccNtgbxXQ/oJVCDMYNBPhBeOhJLDCntJ30sK25UrZi3h6wqpSlhiHzIbPmDPsM7D84W4hVoM/2SZRK36diYsJpwORdwvMmkk9NviwDWiCdAKigWa97sJqJX4W+Av6oM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709067079; c=relaxed/simple;
-	bh=Ce4kaCaB0Xmj+UrWJOre3mHw7WLbByKBtK0VhdyFGLg=;
+	s=arc-20240116; t=1709067078; c=relaxed/simple;
+	bh=cd8fCWScGdOm33tO38jM+0CahWaRNuRPqV225L5QbWs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fz4XiRqD2XPJ9J2v1zGFaGDWb+x6p4uMzg6scW6WrRa2FOslVOgA4qBU2JwSH5RP3z6DpUYuVDhiQAbyKi8khJPHWfTXnDTpfpdGFGUPzGovAIiRyYJpvxsKjpKZI1x9Z0B4kdd8JWfALHcmILtoy8TlzjYvn6VzNhRy/ekFb1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tYZW7V8/; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=pehzdoB8wsh8SgroFElaiUc6/flpbKrMg0Us2dS9mCA=; b=tYZW7V8/4fYkqfd2EQxkkhF4Lb
-	RJvdrjCOM33klyU0JVjGcHQkY6IjnYCI9vT5YaWogebG+C6j/zJZgfqdaeI1HWzuaz/4+INBxUceC
-	Y/CeSxOVBFmcP1PaAKzJf0tpLcak8g6i8pTVuPdpnLybUXYoHrCgxMenfisPEwAm8YO9anKhLszmj
-	8SC8K3jp+WO35Y8SjwLbBfIcyR/zvksdcBoroN7/ODQ74lnHWiMYuw4tAV3IM9PvDOrSTHGP0aHlp
-	HOavkUf2Zw/n4niD2AbuRJV9eqsyVPejXCBzyJcHk7hrctDVyG71anr9Vcr5uRYX+dN5aSTczy2m/
-	bIOXEFjQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rf4Pw-00000003LmO-3QiL;
-	Tue, 27 Feb 2024 20:51:12 +0000
-Date: Tue, 27 Feb 2024 20:51:12 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	akpm@linux-foundation.org, sidhartha.kumar@oracle.com
-Subject: Re: [PATCH] mm/cma: convert cma_alloc() to return folio
-Message-ID: <Zd5LQHoSAqC9HFv8@casper.infradead.org>
-References: <20240227181338.59932-1-jianfeng.w.wang@oracle.com>
- <Zd4xR9sojA-4Mdwm@casper.infradead.org>
- <cf6c758a-42a9-4d4c-a1f7-71f4fc09e8a0@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z+mLNOnSNsBDcoQKmHCFgidO3eRS+NTeJBhzCPh5XSW09mYTCgRlNCCanTa3751HiaN4UhSsH5UgETWdDAdgJJhPo1vu9QggvKGN99hcabaKqHkRsIQd2LgC7CzmfFk6gR8ETk8Ze7pT3TqKCksM4OYUPsv/0V9hhS+P83fPYmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ca5UUYww; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D613C433A6;
+	Tue, 27 Feb 2024 20:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709067078;
+	bh=cd8fCWScGdOm33tO38jM+0CahWaRNuRPqV225L5QbWs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ca5UUYwwuQyu8P+1DIwei3ARFoRRUd3UkXWSNvsR26hcnDv61YhkNJl1tjaJkRZTq
+	 Vz7fgo8jtUQpPknIGKZaSQqAN06bB7KDWCJ3A0MhEB0fJjp/6BFg1HE62+I0YNjlwU
+	 UDj7D0cpxlpCoCrIBj9MGYV6c/77xAV4mwwlLJlKfBCQOHCD0SSEr0TnSWCt8Vsf61
+	 Hs/khhKjRK59rls+kudR3mRNlWvGdRQ+gIbi83/+Wm2jfxcLvEkI8Rw7SxV+HEi6el
+	 Cacy49X79zZcNfvxz67VA/0hneBVNrQD+/EmFcR0UeunkOG2FJH4vRkPyu0XlP82vE
+	 1wwiPUoX6Efrw==
+Received: by pali.im (Postfix)
+	id B36CD828; Tue, 27 Feb 2024 21:51:15 +0100 (CET)
+Date: Tue, 27 Feb 2024 21:51:15 +0100
+From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To: Jean Delvare <jdelvare@suse.de>
+Cc: Hans de Goede <hdegoede@redhat.com>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	Andi Shyti <andi.shyti@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+	linux-i2c@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>,
+	Marius Hoch <mail@mariushoch.de>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	Dell.Client.Kernel@dell.com, Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: Ideas for a generic solution to support accelerometer lis3lv02d
+ in Dell laptops/notebooks?
+Message-ID: <20240227205115.szb32h7hxjjr6z3l@pali>
+References: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
+ <a1128471-bbff-4124-a7e5-44de4b1730b7@redhat.com>
+ <20231223125350.xqggx3nyzyjjmnut@pali>
+ <20240213150708.57148f6a@endymion.delvare>
+ <20240215181633.2aevovw6wkxq5si2@pali>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cf6c758a-42a9-4d4c-a1f7-71f4fc09e8a0@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240215181633.2aevovw6wkxq5si2@pali>
+User-Agent: NeoMutt/20180716
 
-On Tue, Feb 27, 2024 at 11:26:02AM -0800, Jianfeng Wang wrote:
-> 
-> 
-> On 2/27/24 11:00 AM, Matthew Wilcox wrote:
-> > On Tue, Feb 27, 2024 at 10:13:38AM -0800, Jianfeng Wang wrote:
-> >> Change cma_alloc() to return struct folio. This further increases the
-> >> usage of folios in mm/hugetlb.
+On Thursday 15 February 2024 19:16:33 Pali Rohár wrote:
+> On Tuesday 13 February 2024 15:07:08 Jean Delvare wrote:
+> > On Sat, 23 Dec 2023 13:53:50 +0100, Pali Rohár wrote:
+> > > smbus is not really bus which provides discovering and identifying
+> > > devices on the bus.
 > > 
-> > I love the idea, but I don't think this works.  The memory returned
-> > from cma_alloc() isn't set up to be a folio, is it?  That is, it
-> > doesn't have compound_head initialised so that page_folio() on
-> > consecutive pages will return the same pointer.
+> > For completeness, SMBus version 2.0 actually added support for device
+> > discovery and even dynamic slave address allocation. This is explained
+> > in chapter 5, section 5.6 (SMBus Address resolution protocol).
+> > 
+> > Unfortunately, this is an optional feature which requires active
+> > cooperation from each device connected to the bus. If any device on the
+> > bus supports SMBus ARP then you should get an answer when probing
+> > (7-bit) I2C address 0x61.
+> > 
+> > Long ago I had a plan to add support for SMBus ARP to the kernel, but
+> > gave up because I couldn't find any system implementing it. If the
+> > accelerometer device in Dell laptops supported ARP then we could use it
+> > to figure out the device's address, unfortunately this doesn't seem to
+> > be the case.
+> > 
+> > -- 
+> > Jean Delvare
+> > SUSE L3 Support
 > 
-> Thanks for review.
-> cma_alloc() returns an array of order-0 pages. So, this commit makes
-> cma_alloc() return an array of folios (each an order-0 page) rather
-> than a compound page. Functions that use cma_alloc() do not expect
-> a compound page as well.
+> According to my notes, accelerometer in Dell laptops should use
+> LNG3DMTR-LGA16-3x3 chipset. From what I found it should be
+> pin-compatible with LIS302DL, just in different package.
+> 
+> ST LIS302DL datasheet is on the website:
+> https://www.st.com/resource/en/datasheet/lis302dl.pdf
+> 
+> It is dual i2c and SPI bus support chipset. But in the datasheet there
+> is nothing about SMBus, looks like this is designed for i2c usage. So I
+> highly doubt that chipset supports SMBus version 2.0 with ARP extension.
 
-No, this is not the way.
+Now I checked i2c address 0x61 and nothing responds to it.
+
+> Anyway, SMBus ARP is new thing to me, I have never heard about it or its
+> usage before. Has anybody else found some device which supports it?
+> Would be interesting to know if this is not just another standard which
+> was not publicly deployed yet.
 
