@@ -1,121 +1,124 @@
-Return-Path: <linux-kernel+bounces-83883-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42DAB869FC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:02:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFA32869FC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:03:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC6B71F2D0B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:02:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C72D1C28BD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EEBC148319;
-	Tue, 27 Feb 2024 19:01:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1453314AD08;
+	Tue, 27 Feb 2024 19:01:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="evB+libN"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C7j13T3W"
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3749B50277;
-	Tue, 27 Feb 2024 19:01:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF1914A4C5
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709060501; cv=none; b=rnzamQj+mCFr0iJfS0x50kvkmJidIhLtH7BnMXwQ36OlY88jUK1D7TUSQXRjUUXByfUr+XUyZweW+4GRzG2DL5avtKRihz6mncM/TLjrQi5IXfefzyUNpfpP4NNiLlJwrGpgF9/ywgQTirA8HfP0FaH8hcE3CxhnWUHDfp3xZNA=
+	t=1709060514; cv=none; b=cmLDOzv4TvwkVH5o5HGTdl2kC1lf9SZIve0nJzU/mb2ga4lo6+gj87Pa4sYEWHJpBXLr706RzOj97M3VS2Ds6cU45+wfWogAfncIewuVfw9mpuc0dnaY03p8MTRAHPapiEtniZZlV/T+Q2DvUIrRT9kmOFDrnbHknJsgfHgWpMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709060501; c=relaxed/simple;
-	bh=mPV8+XATiMCdPLjzfUpMB+cAZDzcYLpuh1vBO6V5R0A=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EG308cjb7KI79TI0tTS3xoQ1Pv8/FxSZIRalFtm6TBR9xMSUcuS39zW/wO+/t5jP8RECKyXHIar8uCTbfAbPu9EnydwMcWuq56HR92fiTiHLg2tTtucNAZdzikiycQ99lxuVSgM6h5oX5SbsvIQLZeWsPUWEnFTbHJAJtuK3L2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=evB+libN; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709060500; x=1740596500;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=mPV8+XATiMCdPLjzfUpMB+cAZDzcYLpuh1vBO6V5R0A=;
-  b=evB+libNKX/c8RULx+IUS/8nGb88Mfk+e9PNyUfICTkkHR2DxFX6fiE9
-   ezHAVAnW88xhpJB20t3UgHSG3K2TjIQ35Rl9rzfwR3s7Spw2KsbdnVuT7
-   tVIKdPJuXx4zVkLU5nLYY3MtrnyiGP4ISz9Yph3hovbFZqMhq4Wg+Wa5b
-   LHwmMD04g7Fwf2KzqgAIZ8/g8MdJEwAZXT1mJiTlTc3s2fE//k7aUcKUR
-   RjdWVw7ubBZolUeNGetCLaAYw2c/jhap1LXYrKaptdlaFCOsfCUACx84z
-   P8xdqMo7WQg7O8mRzGQ2bQLmaS4HmhhTC0yuCPj6V84Xb4rnFMahRflhZ
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14063664"
-X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="14063664"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 11:01:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="7120055"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 11:01:37 -0800
-Received: from debox1-desk4.lan (unknown [10.251.6.149])
-	by linux.intel.com (Postfix) with ESMTP id 52C2B580B9A;
-	Tue, 27 Feb 2024 11:01:37 -0800 (PST)
-From: "David E. Box" <david.e.box@linux.intel.com>
-To: david.e.box@linux.intel.com,
-	rajvi.jingar@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Subject: [PATCH V2 3/3] platform/x86/intel/pmc/arl: Put GNA device in D3
-Date: Tue, 27 Feb 2024 11:01:34 -0800
-Message-Id: <20240227190134.1592072-3-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240227190134.1592072-1-david.e.box@linux.intel.com>
-References: <20240227190134.1592072-1-david.e.box@linux.intel.com>
+	s=arc-20240116; t=1709060514; c=relaxed/simple;
+	bh=Rx+0X1wSqJUpMVKZm9J8XVb9jpuLH2CRv1pKzGbSCkw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bSQTrbJ139lKeAIFAsehHqcWiUBQmwJ6vUirhgy6tmHnbeN/+jkZSt7FypsP3lccBKZGCdtuCS72TSVQeLLBk+32QYza//nVyuPfm+opJn5hUIqRur8ofRFTRjb2bc3itE/ZkwQsACNM+R14B0PyEnfihfhNmIi6+YE+1bJ2yyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C7j13T3W; arc=none smtp.client-ip=209.85.221.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4cb26623d8dso770111e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:01:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709060511; x=1709665311; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WfFFXzSpX0Mc4KzxGc+Bs2TXLtROHHndagwLfCtpLgk=;
+        b=C7j13T3Wbu4FlEkB4/5mku1lnEEnpzd6yzGlZJrRC7zMdim+Pa2WUu0LQJCjwjnR6L
+         UC7scjjBG6lc5drVFkZVE+Sn2YnBn6ZY6OQ7MFFSB51YywaY4JcoFQWdw83X8rmd911E
+         RnC1/S9dNxiolRevVlm4Jl+3aH2tuxFqFSDWgAUFGBKnkxaHVUkuDj+vUoL+ikzztjQN
+         HrXbQwAWw4Qx1NmsuK8GmEL48tTmwfFs4i8yJ6dyCJNipYlCnIyI80eV0bbQe6tUTtL0
+         VbyFIWorBEY18ROcZlNLg10c9Mj85xdDj505q2tN+WEwu1wjN5QwrTvFM1JgJO4W+ElL
+         8htw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709060511; x=1709665311;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WfFFXzSpX0Mc4KzxGc+Bs2TXLtROHHndagwLfCtpLgk=;
+        b=RkXQ+9f1Ihfy6BylFcKHKL5FNjedC/GgrzZWHDx0BSYvr/5oeWaOUl8jbskfg5MomR
+         4MskcD+YeZtP+Q6ldU87nxB1rP7skOV3GXKpp9eAKCiPQE4ZsqFH6WBulELJnxKk4+MI
+         +eSqlBW0+ZWTPzZq2bcclR2qOCnKw2CmadXtiqp7Rbfb/2r7SThQyQDgFAmQfoqr0J1U
+         PQMRCoHNUkMQGXezLGL2wKAaAz/wwYWpRSnrOrURYgdoKBoYSQuQCqT5vcBPU5R9h41m
+         hedWFFx5vbcENz1VyPursAZpjQ5ca8YD9NK8Q7DVEflbqACSMHYrX224acEc+zLhZOT1
+         UJPA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpcktEuUTMM0fykADYXPxgN25evVlUD8+9pfzxUdkHMHTw0e0RjJ9QsuKnGyVUTJoa2SuzVF3t31IYMaRFb4b4SLMY/3vFKKcPicf0
+X-Gm-Message-State: AOJu0YzGF2BaxOozvNV6SDohwHlTUB/8bmJO4NOKM1L1v9XQW7/jtuci
+	OABBdwm34gJiPgo4uhB1ECU1/r4jUGvSYZMYreIbcF6pGhT6PrwzsfiCT62Xv779R/XUAwKT66y
+	abYSRn+64209H38M6imW/k8nYozc2skYhXBoxjA==
+X-Google-Smtp-Source: AGHT+IEeakGXngQCMim18TnOJiecyRkKHreCK/SntmFGZkjnj7s5owwh/pYnzNyyAQ8cB8qjcq7plWYQixSZBYqlppY=
+X-Received: by 2002:a1f:6681:0:b0:4d3:384e:937c with SMTP id
+ a123-20020a1f6681000000b004d3384e937cmr610147vkc.8.1709060511570; Tue, 27 Feb
+ 2024 11:01:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240227024050.244567-1-21cnbao@gmail.com> <Zd4HEjS6vpIvwfR9@infradead.org>
+In-Reply-To: <Zd4HEjS6vpIvwfR9@infradead.org>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 28 Feb 2024 08:01:40 +1300
+Message-ID: <CAGsJ_4xTtLzUKSY7EzEK0Ho61mWH35kHkidBRpjLd+_3_yOaUQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
+ need it
+To: Christoph Hellwig <hch@infradead.org>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
+	Lance Yang <ioworker0@gmail.com>, Ryan Roberts <ryan.roberts@arm.com>, 
+	David Hildenbrand <david@redhat.com>, Yin Fengwei <fengwei.yin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-As is the case on Meteor Lake, the Gaussian & Neural Accelerator (GNA)
-device is powered by BIOS to D0 by default. If no driver is loaded, this
-will cause the Package C state to be limited to PC2, leading to
-significant power consumption and decrease in batter life.  Put the GNA
-device in D3 by default if no driver is loaded for it.
+On Wed, Feb 28, 2024 at 5:00=E2=80=AFAM Christoph Hellwig <hch@infradead.or=
+g> wrote:
+>
+> On Tue, Feb 27, 2024 at 03:40:50PM +1300, Barry Song wrote:
+> > From: Barry Song <v-songbaohua@oppo.com>
+> >
+> > madvise and some others might need folio_pte_batch to check if a range
+> > of PTEs are completely mapped to a large folio with contiguous physcial
+> > addresses. Let's export it for others to use.
+>
+> It doesn't look exported to me in the patch (and that's a good thing!).
+>
+> But even for making it non-static you probably want to include that in
+> the series actually making use of it.
 
-Fixes: 83f168a1a437 ("platform/x86/intel/pmc: Add Arrow Lake S support to intel_pmc_core driver")
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
+at least two parallel jobs[1][2] (maybe more ) need it right now.
+Getting this one pulled in early
+will help build a common base for them and avoid duplicates&conflicts in th=
+em.
 
-V2 - Better explain the issue in the changelog and spell out GNA.
+[1] https://lore.kernel.org/linux-mm/20240118111036.72641-7-21cnbao@gmail.c=
+om/
+[2] https://lore.kernel.org/linux-mm/20240225123215.86503-1-ioworker0@gmail=
+com/
+>
+> > +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
+> > +             pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+> > +             bool *any_writable);
+>
+> no need for the extern here.
 
- drivers/platform/x86/intel/pmc/arl.c | 2 ++
- 1 file changed, 2 insertions(+)
+Yes. this has been moved to internal.h as "static inline" in v2:
+https://lore.kernel.org/linux-mm/20240227104201.337988-1-21cnbao@gmail.com/
 
-diff --git a/drivers/platform/x86/intel/pmc/arl.c b/drivers/platform/x86/intel/pmc/arl.c
-index 683ae828276b..34b4cd23bfe5 100644
---- a/drivers/platform/x86/intel/pmc/arl.c
-+++ b/drivers/platform/x86/intel/pmc/arl.c
-@@ -673,6 +673,7 @@ static struct pmc_info arl_pmc_info_list[] = {
- };
- 
- #define ARL_NPU_PCI_DEV			0xad1d
-+#define ARL_GNA_PCI_DEV			0xae4c
- /*
-  * Set power state of select devices that do not have drivers to D3
-  * so that they do not block Package C entry.
-@@ -680,6 +681,7 @@ static struct pmc_info arl_pmc_info_list[] = {
- static void arl_d3_fixup(void)
- {
- 	pmc_core_set_device_d3(ARL_NPU_PCI_DEV);
-+	pmc_core_set_device_d3(ARL_GNA_PCI_DEV);
- }
- 
- static int arl_resume(struct pmc_dev *pmcdev)
--- 
-2.34.1
-
+Thanks
+Barry
 
