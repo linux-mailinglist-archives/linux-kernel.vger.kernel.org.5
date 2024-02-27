@@ -1,184 +1,102 @@
-Return-Path: <linux-kernel+bounces-82893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23D15868B5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:55:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FAB4868B55
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:55:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 471091C22DE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:55:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19AACB21723
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBD8135A7E;
-	Tue, 27 Feb 2024 08:55:05 +0000 (UTC)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A9E6133297;
+	Tue, 27 Feb 2024 08:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QC/kb2no"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F01413329C;
-	Tue, 27 Feb 2024 08:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA66A3D68
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709024104; cv=none; b=rXEOmqdir3uTTu3+eOpc76QHyNblSp9u4M2C/q9a1KASrpYIH8/aw5RlExBrHHS2qvvxcmJ4jYTOMkC4qSVG/27iPti3vQ6TlmYYE7v1lx8JaAOCESZbu82vdEJMo7h7ToBwGpbGSLGGhRVz/EOEbz+3FRbvYeV6Bt2XPjL7zhY=
+	t=1709024102; cv=none; b=dRWmQ3mZFj3Ba/NitJR5+yXUI93CIyM4L1vzP2EnbtpuN2j21HmI8xJlMF83ssRvgfDYXxsxMKae2XDZdN9mmlkYd7HOxSxguZauCFr3yaef0xWflz103daDMxdRKf3iDrzfviJ0HuytoQf30bWyn+a6e+tuUo8dD/i6RLbEn94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709024104; c=relaxed/simple;
-	bh=w0gu9IMca9J/tT97UVi+QQlbmYRnY/qPlnzkCAmcRmM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uDiLqt78d1pZ2S1Tb1FkKLnx94mBZ8nwKeznG/HyqexNmR5AVq9p5ZotplVzTYu9G8EJ+Qoo+Xp0n+fgYX1SWImlyuJisl0TexJ7oJ4MkKqXIyQPz8/oGrfx7YxsNjhpQ6qD/r5q8xsjowjC9YXLaFCiM3ZyrPTtpZoPOLEbQu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcd94fb9e4dso4335346276.2;
-        Tue, 27 Feb 2024 00:55:02 -0800 (PST)
+	s=arc-20240116; t=1709024102; c=relaxed/simple;
+	bh=e65miCkicj1NdvFVKAgHu/VbuyPfNh0KeRITNON5WD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XKr+w6/94jM/oGUd09gx9odTz6GRsgpzJIU1zb6nQK6xCDzcwR/k+XpvvttBNRBNg9LnLQBfIBcz6oNdoElF0RGGZ7jtcU0PkKtBYSCWDGoNlcTxCPXdswxDCGPg2MtyniILCtDDGXry432ZUQOiVpYwMsbSllZwYNz9/28j7iM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QC/kb2no; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-412a3ebad2aso15295075e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:55:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709024099; x=1709628899; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HoOFxtqK/5ZaKWmPUt4ourSkgleZpPjmZJgHHXaK8e8=;
+        b=QC/kb2noP3iC4aPpTCHslNJtkbdFwLDhz1MVQhG9YrNYCfVihVayu7gwpa2+/LS4ys
+         AA7U2tR2PG80iWlrgpf3wKJERUKsaYoEfQglS6tcFqykYSo8+0zh5rg+BNIQch/BNu0A
+         MIyjqTlBjF5CNSH1gLQCC0FEMYSNIi09Tw+jONgEAL20XzzGPygm3s/X6HABPRH9rrzP
+         7Zcu27tspztJ2spU/LzAx0qE+BUut6wmDRkG+KdqmjrzWPJUnvjhd73F3jGX3zOmpnsE
+         I00sH/NwhNl2UiwwT9YSSiWgLaJXHFcuqy+YPEX4Z/E5ibKRGxFnyxDmXoyxM6cFvmZX
+         mZDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709024100; x=1709628900;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LF4kXg8LPe/h8pV/74EqYHGgPgOEfsUWLG6ibzoE1S0=;
-        b=f2Bg3EyEtGlCwM51M/62aDzXI4s7OGN63gXUOY79QcnhwQKmabr8C6iSut1C/PbJ5h
-         vNbj8atfcnADyY3EQOLs4Ud9k3jfv3i2Rg5YsCkR7anpEc+GfB9oxZwi6k9gTRnS2jYh
-         Y8DRycFjh6a7fmNVCw4wiktzlPWgAKSuJcoAvl8hds+S6i05+hY5qP7syy8dBfSH0i8i
-         NBtCYNYJgIEfElp9an2LXRZKWBf4ocCHevhGSXNeioJhfQGsbQSBQb03JzZ/QRAHQmhm
-         z+6UUqlYlM8WmvcJ2Pmn0wx98+JSrFDJ2yi02eRoAQUngq6XHOCz4NC/xuR9rCwRvurS
-         lYgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUAGt9Dcq91INDN10ya1N6dqpPJqHuOx2L8xtJYWp/wzBEabARyS+UjF9Brm6D2hNWCG4tXKmQ2wC7Qugqr3tXznNa1E5n7kSRRq5gFf2nrodn0DZzIRv9b+eIHmKwGPNQ9PZQOVdTzO1RRQl0lvsfsI11pZTel4qKPlKk3u+0TXZcjBprfpYKXQ/DFGH6rkxK4qQWwUDDj5IB1C4SveTauUKzE9V9wjVXUzyQTrJz5GdS8dv6LS7rNpPy1FRyl8Z191gQTKPXGAQs7w965O+VS8nFMcLsndb/cqcgA34DTvsL+ftPSzrAxztqzBW1z33tpifalPFdefau3/gKbqEA+6+ROeOTm4gmm0+U5oreqV0ze9pwwTh2bZkoy6xgoWHyRv+SpmKW18a5LTK4iIoQ1VhxFitr4ZqNd1F97x3Cdad5ILhQS8zkIqbpdyRcHCWE=
-X-Gm-Message-State: AOJu0YzWmuwlu7gkPURT/33OGJKANODIOewWj/gxwWqyPjjRcFSBXulx
-	Q4ZJCA+orBZrvGFDSrUKyKiZWdaockOs7dksLtWF+PMkG3efvlwBEQT6rCUQvSs9Fg==
-X-Google-Smtp-Source: AGHT+IF6fBlPBGIbNwe5pvR/i412ulu8I80HirEh6M7o+3rMg/zmoNs20O9HToW4iddaXBJQVt0CZA==
-X-Received: by 2002:a25:9183:0:b0:dce:2e9:a637 with SMTP id w3-20020a259183000000b00dce02e9a637mr1556137ybl.20.1709024099622;
+        d=1e100.net; s=20230601; t=1709024099; x=1709628899;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HoOFxtqK/5ZaKWmPUt4ourSkgleZpPjmZJgHHXaK8e8=;
+        b=rtM74d4h+NCbOODj/BIh5IYpIPKl9zT6l483KqA7likoNosu0tKVS5+tDquVKMuB3E
+         Al34lJr50nLV1ZgnSCTwlR9/O3e/t5d73J67d+ea7zTq6gFb1rbMo/N5y3d6mh+RDjnt
+         nwCIF5121aRjmagcKS/ckyZ6OGYxtFzZcfREaZW0FI78SEf7m4Al3OY0J9SrEoATz/6Z
+         5VaO9cmOxHIK539a/T0gpnZsCPTWo7kiSXXtDxez8cCsIiZmLzLMa+Q2vH9lwj4uBih8
+         yqhvVYv31+5ZnSQzMEjF7GrMFI3g1HdEQTizxLUcS8NlIOaYoGVJ7RUOqxkC2LRbeWyG
+         bK6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUwV/crAa8qyOsOKtG0bwDcqmTqsgW65asyYuQJF/BDDb2Of45KnyrCLUwokH3ahQZ1UJ8xIDP8OHY5U7l1l4uO9NkbgAyWXWngqh53
+X-Gm-Message-State: AOJu0Yx+izJde6WQ3eaMv0Pxrc8WQRVaC5k/PQixNcBcoXJjxGzKsvzW
+	ea43IDPPYStK/EJzBxLf68BZiozF715U68TP8mOEPehOr/E/cyo142VIiKHMSYg/Cqvwtsusiqg
+	y
+X-Google-Smtp-Source: AGHT+IEcssd0DZn1GwRIx6uxtu/6p9Ar/DTRb8JebvM7osNUBQzyWw5I8ki+RUWt518g6UqWWYW8cg==
+X-Received: by 2002:a5d:468d:0:b0:33d:14a7:c4b with SMTP id u13-20020a5d468d000000b0033d14a70c4bmr6212734wrq.40.1709024099075;
         Tue, 27 Feb 2024 00:54:59 -0800 (PST)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id g12-20020a5b070c000000b00dcc70082018sm1291748ybq.37.2024.02.27.00.54.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id u14-20020a056000038e00b0033dca6f8b44sm8036668wrf.16.2024.02.27.00.54.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 27 Feb 2024 00:54:58 -0800 (PST)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-607f8894550so28540027b3.1;
-        Tue, 27 Feb 2024 00:54:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVQZCNJPwsKHzVL3sGFO3bHYzIrdeYQOocmHIYrBsXWmqB37JGuO7UqeVv9/r24m5spmut7clWRl4Hz/3TFFOA3fkg3CFgxYxKFpSCL9eE5joi3Rumf/+dCYaYeoNOA0Z6KSdqMrWUD27RPvLyEzN/MatMAA4QwgXDmg5WP1XL2aOhdhSh4a+xpa4JIFtIo2BB7k6RXEdnjO16nZUSZy/5hrn5LqatGXRIkSOhZDbY4QmcyX3evPE5xCDhfFxSc0gVxMuzidZWcXezgd8p+psAOi8EaiizwLeZL9vmE/EZfc49rmH7kLzL07l/JomWkToy5znlAxXXa/dNm71JRNCZ1McORDfGKwdXr8kNG8zj2kYCW1N62DOBXtq5LWweLQ00waimg6FQSsJ/UdLmZYJ1omR2it5DDDcnDdSOOuNJvY9sDUNU2l/4LKGu5na6j5iI=
-X-Received: by 2002:a25:71c3:0:b0:dcf:2b44:f38d with SMTP id
- m186-20020a2571c3000000b00dcf2b44f38dmr1589302ybc.49.1709024097788; Tue, 27
- Feb 2024 00:54:57 -0800 (PST)
+Date: Tue, 27 Feb 2024 11:54:54 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Michael Harris <michaelharriscode@gmail.com>
+Cc: gregkh@linuxfoundation.org, hdegoede@redhat.com,
+	Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: rtl8723bs: hal_btcoex: fixed styling issues
+Message-ID: <da4ff70d-6c64-40b6-aae4-3aab87da2a1c@moroto.mountain>
+References: <20240227080943.13032-1-michaelharriscode@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240226161414.2316610-1-arnd@kernel.org> <20240226161414.2316610-4-arnd@kernel.org>
-In-Reply-To: <20240226161414.2316610-4-arnd@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 27 Feb 2024 09:54:46 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdWRBQF95fJ+NkPUdvpu5VfRm2WyTnvdqB1Xe7d4vsvY2g@mail.gmail.com>
-Message-ID: <CAMuHMdWRBQF95fJ+NkPUdvpu5VfRm2WyTnvdqB1Xe7d4vsvY2g@mail.gmail.com>
-Subject: Re: [PATCH 3/4] arch: define CONFIG_PAGE_SIZE_*KB on all architectures
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Vincenzo Frascino <vincenzo.frascino@arm.com>, 
-	Kees Cook <keescook@chromium.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
-	Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>, 
-	Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Guo Ren <guoren@kernel.org>, Brian Cain <bcain@quicinc.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Michal Simek <monstr@monstr.eu>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller <deller@gmx.de>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Andreas Larsson <andreas@gaisler.com>, 
-	Richard Weinberger <richard@nod.at>, x86@kernel.org, Max Filippov <jcmvbkbc@gmail.com>, 
-	Andy Lutomirski <luto@kernel.org>, Jan Kiszka <jan.kiszka@siemens.com>, 
-	Kieran Bingham <kbingham@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org, 
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org, 
-	linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org, 
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-um@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227080943.13032-1-michaelharriscode@gmail.com>
 
-Hi Arnd,
+On Tue, Feb 27, 2024 at 12:09:43AM -0800, Michael Harris wrote:
+> Fixed various checkpatch.pl styling issues: spaces before tabs, constants being on left side of comparisons, unnecessary braces, etc.
+> 
+> Signed-off-by: Michael Harris <michaelharriscode@gmail.com>
 
-On Mon, Feb 26, 2024 at 5:15=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Most architectures only support a single hardcoded page size. In order
-> to ensure that each one of these sets the corresponding Kconfig symbols,
-> change over the PAGE_SHIFT definition to the common one and allow
-> only the hardware page size to be selected.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Please run checkpatch.pl on your patches.
 
-Thanks for your patch!
+WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
+#12: 
+Fixed various checkpatch.pl styling issues: spaces before tabs, constants being on left side of comparisons, unnecessary braces, etc.
 
-> --- a/arch/m68k/Kconfig
-> +++ b/arch/m68k/Kconfig
-> @@ -84,12 +84,15 @@ config MMU
->
->  config MMU_MOTOROLA
->         bool
-> +       select HAVE_PAGE_SIZE_4KB
->
->  config MMU_COLDFIRE
-> +       select HAVE_PAGE_SIZE_8KB
+regards,
+dan carpenter
 
-I think you can do without this...
-
->         bool
->
->  config MMU_SUN3
->         bool
-> +       select HAVE_PAGE_SIZE_8KB
->         depends on MMU && !MMU_MOTOROLA && !MMU_COLDFIRE
->
->  config ARCH_SUPPORTS_KEXEC
-> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
-> index 9dcf245c9cbf..c777a129768a 100644
-> --- a/arch/m68k/Kconfig.cpu
-> +++ b/arch/m68k/Kconfig.cpu
-> @@ -30,6 +30,7 @@ config COLDFIRE
->         select GENERIC_CSUM
->         select GPIOLIB
->         select HAVE_LEGACY_CLK
-> +       select HAVE_PAGE_SIZE_8KB if !MMU
-
-... if you would drop the !MMU-dependency here.
-
->
->  endchoice
->
-> @@ -45,6 +46,7 @@ config M68000
->         select GENERIC_CSUM
->         select CPU_NO_EFFICIENT_FFS
->         select HAVE_ARCH_HASH
-> +       select HAVE_PAGE_SIZE_4KB
-
-Perhaps replace this by
-
-    config M68KCLASSIC
-            bool "Classic M68K CPU family support"
-            select HAVE_ARCH_PFN_VALID
-  +         select HAVE_PAGE_SIZE_4KB if !MMU
-
-so it covers all 680x0 CPUs without MMU?
-
->         select LEGACY_TIMER_TICK
->         help
->           The Freescale (was Motorola) 68000 CPU is the first generation =
-of
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
