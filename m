@@ -1,170 +1,122 @@
-Return-Path: <linux-kernel+bounces-82865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82870-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E725F868AC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:31:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECBF6868AD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:36:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2AD21C21127
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:31:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 883571F21C58
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A9D77F2E;
-	Tue, 27 Feb 2024 08:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350D3130AD3;
+	Tue, 27 Feb 2024 08:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="FDMdmr3K"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="p3MkRpx5"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5741F77F28
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD687B3D3
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:36:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709022702; cv=none; b=qifDbLeajEOmsqqda9MvrDPzduXv1POH7ankBBuVAQszHFe9hbWmeHpQxx6aINZjiP9Pd/ggCA/WnLfAIGlEKRyXXtJ3m3/AIzwnR5BlsycREF17VKGECoBmr48cGkSNdU/Msw2ivOjC3+zs1qB8XZwId8GmiRW3c4B5t068DH8=
+	t=1709022988; cv=none; b=HWPYb76hs92WcATLRgnfkekg82sBYWTS2WRdRntxlBzHKxDWbvU2GXLzK6SeDnZQrpH2jchRq79iiQexUu1nmYmfoJO0ZI4tEySKsFhtmNj26rsIZ4z88tZ4tYt0CNZ1UlHh9QD/rWx4afiIViuopuAkFQimCGXhh9GaMYIZ52g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709022702; c=relaxed/simple;
-	bh=jDcbjm051a2tWQp8mL4nW0pJ4OpF8SkO3jnpo60IyWI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V1hFY4Jsiyi8CmLbNvtUvT/k+KWWqpIBrxR/JoUbWiOy+qfC+coJDxybGGhR8Wg+bXw3uXuCivITRVOzMm72iAVfnidx/gE7n8C42T4lpXnYw8hrC1RX45Z0l13ryDhnOlKvXJopad6F14/JC4gXBmLyRDfv6Iv0oFzHhQ3tqNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FDMdmr3K; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3e5d82ad86so552281566b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:31:40 -0800 (PST)
+	s=arc-20240116; t=1709022988; c=relaxed/simple;
+	bh=tBm5IIGFhkgiqabszftedxFLBNT4N4zs7aN7ZnS5cF0=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=pfiBgV69CzBUO2NAfy6m9NPhLt3CzynwyQNi6p6CUXPm1wYHqzyA8rGC5ueyclPnrd6XTAtEUAKzG0jA9nce18kpWjLxHlYUZdf745JW4EPYLoXunVXHyfsJW5W5blgos0iTvPskIxeu0ZCt89nTeNH+arSPbpqx5KBoAsVg5ZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=p3MkRpx5; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3e8c1e4aa7so388869466b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:36:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709022699; x=1709627499; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TWWjdMDDlRbFnAQIhSeSTyA3KAYjkYko4A1TtZtt+H4=;
-        b=FDMdmr3KSIObla6tr5cpWU8/WvK6jUhXBFd4fZ4PKjVrz7m7KR6REXxNEG2jm6r6ff
-         h8q8NvTaxF7SERE8CMYtoE9FQxSRtIRSn40uAeBtZIqPjfhltezD+3/DQu2I4MqAlmw4
-         J2ADb1hZT8SyrHVmtUnQHqjuORE7w+BgWvjQ0tOCGGjv3IdhVjJbGe5dO++mCJwH7yqG
-         BpaWcN+WR/kx9V2yCg+EA7Fg8Tmlx9j/Ht2dM6jAWQ1AKxST99qPZHzPD/e9TJaCYE2n
-         KRwHdw4NUAvTKM5dc3PtKYBHct8U4ob5tb49mJ3kkM2iZz/fchdarjVnTDsxGgYBJs4o
-         PdVA==
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1709022984; x=1709627784; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=tBm5IIGFhkgiqabszftedxFLBNT4N4zs7aN7ZnS5cF0=;
+        b=p3MkRpx5VREXJOooask2Br8TOUkyDZYl/l0UMQyjnwqe4Ky7hzSk7soSnuZaNmnGFP
+         TOGRx1rW8rZwuXgnvAUF16AifvepYlW5SiFjiz9gUWXZkbw4O+5OrRrs8yRwYLdGD1Ax
+         oDseHewatyh8+ZG0iwtA6vdcC28bCXguxcsTHWXMv1+WgQP0NFgd6UMInRNBLODDNCJi
+         yazVQHrbPIWFm6YUyn0ypsmjwZrLGUUnNquVAYHg6vVABS3ddMFP/T1W1GTe/NIjyFA/
+         juU7cnmPfdTDXEH700c+XXWIOefma1P0YwG3sFiKCUDqEllPSXwG5Ed0ZiX7L96WPvUT
+         6G9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709022699; x=1709627499;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TWWjdMDDlRbFnAQIhSeSTyA3KAYjkYko4A1TtZtt+H4=;
-        b=f4AFwbfWJ4jfKESrlTc3vshNgRtEO/JKZUBFFtDy3LRcA+jQgaQAtmfcoFvFkS54Bd
-         J9GAAEe1UC3A5eHFiKReBgorOXK9LQwHvPEt3Jg9W1vrla1HBMTLDLWhQGWuNzsRJKSz
-         vYm1LOEaYBBRDdNIbGLJzGk/5fCDxOGkkG9zqm6QH+StwzHbdRxv0VwGx4NS1ncpGpAv
-         8556Ez3dU6Ii1pB9tKEkJe2MpTAp8srrBpsI+cStTtg4/bu2FbcYboQ+D2plgJ6S/4gw
-         MEvvDQjeiagRKuAvZ37g++9Dd9kGFm+FeIQ4aU/aqpj0KvU1QjWRhhsBc8gmw+w9LiBE
-         eaoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVroT64QP45hwBXEtFzMPiWQ/ArM92x7h5bfgZpQzqqiD4LbYchxwYALSpyN+LT2oSctz2qp+ApW8v+19UymbmvTLfSuKJf3vU7jN06
-X-Gm-Message-State: AOJu0YzkO07GKUv1PUMcHvBYBNiCBMp0DLXFl6kI9IOgwteAPg+K9HNK
-	iIJkqdbW6Vn8bkpUqh9x6f6s3jxBg5xr6VirDw3qN9yfdEa/4hLAvXA3gIUQF4KSOXprscfm1tZ
-	VYKIUEVQRsU7NxXMrDJi2o0/WXJ3CAEjs4h9Z
-X-Google-Smtp-Source: AGHT+IEywMFCEF6R2EVKftvTDUWpnQPHNLoR6/60VpqwpXfH1fWVVUY+TrWJGh0aKLi+cUFG+WVi9V07kMYmfjg2/r8=
-X-Received: by 2002:a17:906:7243:b0:a43:a628:ff31 with SMTP id
- n3-20020a170906724300b00a43a628ff31mr909690ejk.26.1709022698526; Tue, 27 Feb
- 2024 00:31:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709022984; x=1709627784;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tBm5IIGFhkgiqabszftedxFLBNT4N4zs7aN7ZnS5cF0=;
+        b=RguamruRBwifhaGp5fHxxWT3tMOfg6ZYZEF87ZhI/PWv8vqVC4LpaQhsK6TYlNcyu8
+         ZWeHjOZz9n4J5WgpE9Vk9/caXd/Vh0rTAHNQ6/eVYKCz6Gud+UsSd8ZU3Ou9gMgBKwcO
+         J6QGSXhB3RM8cshyu+ZD52SrUCtgOKDNJL78zEyHKX3MusXpsBxxpPjbNZJ6ZgiUPKVM
+         Y5B4pCLgccJFdYXDsW9t/pznqCF2kHtleraioFjU4mOgKT+DbEhX01yZsfWwx92IuRHK
+         SwYAyhZFIgfQal6hTSIO6o9glNEme7uPM0D6di5j6rwujD6cGCuOP9/weA8Xf3KgobQl
+         Ifbg==
+X-Forwarded-Encrypted: i=1; AJvYcCXqpKMiQLJVWYnKuqk8f+dikrr1mEgbIniZy47owlCqpxJAVyUGBV2vsC9vr9JcE5L5NWap8hrNlhpFYaCOCakoTZs76WELryaRuTyP
+X-Gm-Message-State: AOJu0YyQwla0atOWOL4RbQFICALh63FsX7YJd5Z4sYdR/60rtkxAiC4y
+	UXSybf/aB52kjEbVcQAclE9Qt+Csu+NxbnevF5wrWVTIffynviYSXh931d7e380=
+X-Google-Smtp-Source: AGHT+IEmSlqSqeopobEyVgC92+uCi8Y34RHVrtsYAkNKK7bVxD/WCyfc9qMKmBQUExQLWATnFTHthg==
+X-Received: by 2002:a17:906:c7d4:b0:a43:20c0:6f7a with SMTP id dc20-20020a170906c7d400b00a4320c06f7amr4112372ejb.48.1709022984519;
+        Tue, 27 Feb 2024 00:36:24 -0800 (PST)
+Received: from localhost ([79.142.230.34])
+        by smtp.gmail.com with ESMTPSA id hu11-20020a170907a08b00b00a3fcbd4eb2esm532864ejc.1.2024.02.27.00.36.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 00:36:24 -0800 (PST)
+References: <20240208-alice-mm-v2-0-d821250204a6@google.com>
+ <20240208-alice-mm-v2-4-d821250204a6@google.com>
+User-agent: mu4e 1.10.8; emacs 29.2
+From: Andreas Hindborg <nmi@metaspace.dk>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn?=
+ Roy Baron
+ <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, Kees
+ Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, Andrew
+ Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Arve =?utf-8?B?SGrDuG5uZXbDpWc=?=
+ <arve@android.com>, Todd Kjos
+ <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes
+ <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren
+ Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ rust-for-linux@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v2 4/4] rust: add abstraction for `struct page`
+Date: Tue, 27 Feb 2024 09:32:27 +0100
+In-reply-to: <20240208-alice-mm-v2-4-d821250204a6@google.com>
+Message-ID: <87h6hu9udb.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206042408.224138-1-joychakr@google.com> <2024020647-submarine-lucid-ea7b@gregkh>
- <CAOSNQF3jk+85-P+NB-1w=nQwJr1BBO9OQuLbm6s8PiXrFMQdjg@mail.gmail.com>
- <2024020637-handpick-pamphlet-bacb@gregkh> <CAOSNQF2_qy51Z01DKO1MB-d+K4EaXGDkof1T4pHNO10U_Hm0WQ@mail.gmail.com>
- <2024020734-curliness-licking-44c1@gregkh> <CAOSNQF2WKang6DpGoVztybkEbtL=Uhc5J-WLvyfRhT3MGWgiaA@mail.gmail.com>
- <CAOSNQF2d27vYTtWwoDY8ALHWo3+eTeBz7e=koNodphVVmeThMQ@mail.gmail.com> <2024022737-haiku-rental-5e7b@gregkh>
-In-Reply-To: <2024022737-haiku-rental-5e7b@gregkh>
-From: Joy Chakraborty <joychakr@google.com>
-Date: Tue, 27 Feb 2024 14:01:25 +0530
-Message-ID: <CAOSNQF1_7p61pgGBcb0QWmCLCBfNAk2-gQ4qFybfbbxON3n5pw@mail.gmail.com>
-Subject: Re: [PATCH v2] nvmem: rmem: Fix return value of rmem_read()
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Nicolas Saenz Julienne <nsaenz@kernel.org>, linux-kernel@vger.kernel.org, manugautam@google.com, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Tue, Feb 27, 2024 at 1:02=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Tue, Feb 27, 2024 at 12:27:09PM +0530, Joy Chakraborty wrote:
-> > On Wed, Feb 7, 2024 at 8:33=E2=80=AFPM Joy Chakraborty <joychakr@google=
-com> wrote:
-> > >
-> > > On Wed, Feb 7, 2024 at 3:04=E2=80=AFPM Greg Kroah-Hartman
-> > > <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Tue, Feb 06, 2024 at 05:22:15PM +0530, Joy Chakraborty wrote:
-> > > > > > > Userspace will see a false error with nvmem cell reads from
-> > > > > > > nvmem_cell_attr_read() in current code, which should be fixed=
- on
-> > > > > > > returning 0 for success.
-> > > > > >
-> > > > > > So maybe fix this all up to allow the read to return the actual=
- amount
-> > > > > > read?  That feels more "correct" to me.
-> > > > > >
-> > > > >
-> > > > > If I change the behavior of the nvmem_reg_read_t callback to nega=
-tive
-> > > > > for error and number of bytes actually read for success then, oth=
-er
-> > > > > than the core driver I would also have to change all the
-> > > > > nvmem-provider drivers.
-> > > > > Is it okay to do so ?
-> > > >
-> > > > Sure, why not?  That seems like the correct fix to me, right?
-> > >
-> > > Sure, I can do that.
-> > >
-> > > Is it okay to change the if checks on the return code to "if (rc < 0)=
-"
-> > > instead of "if (rc)" as a fix for the immediate issue with how return
-> > > value from rmem is handled which can be applied to older kernels.
-> > > In a separate patch I can change the definition of nvmem_reg_read_t()
-> > > to return ssize_t instead of int and make corresponding changes to
-> > > nvmem-provider drivers.
-> > >
-> > > Does that sound okay ?
-> >
-> > Hi Greg,
-> >
-> > Sent a patch https://lore.kernel.org/all/20240219113149.2437990-2-joych=
-akr@google.com/
-> > to change the return type for read/write callbacks.
-> > Do I mark that with the "Fixes:" tag as well ?
->
-> Is it actually fixing a bug?  Or just evolving the api to be more
-> correct over time?  I think the latter.
 
-It is more of the latter i.e. evolving the API to be correct but
-indirectly it ends up fixing this bug where positive value returned by
-this rmem driver is treated as an error in nvmem core.
+Hi Alice,
 
->
-> > It affects a lot of files so might not be able to easily pick to an
-> > older kernel when needed.
->
-> What is it fixing that older kernels need?
+Alice Ryhl <aliceryhl@google.com> writes:
 
-It is fixing the handling of a positive value returned by this rmem
-driver which will be treated as an error in older kernels as the nvmem
-core expects 0 on success without changing API behavior.
+> Adds a new struct called `Page` that wraps a pointer to `struct page`.
+> This struct is assumed to hold ownership over the page, so that Rust
+> code can allocate and manage pages directly.
 
->
-> And do not worry about stable kernels while doing development, only
-> take that into consideration after your changes are accepted.
+<cut>
 
-Got it, thank you for your input .
+> +/// A bitwise shift for the page size.
+> +pub const PAGE_SHIFT: usize = bindings::PAGE_SHIFT as usize;
+> +/// The number of bytes in a page.
+> +pub const PAGE_SIZE: usize = 1 << PAGE_SHIFT;
 
->
-> thanks,
->
-> greg k-h
+For consistency, could we get page size from bindings as well? The folio
+patches already do this [1].
 
-Thanks
-Joy
+BR Andreas
+
+
+[1] https://lore.kernel.org/rust-for-linux/20231018122518.128049-10-wedsonaf@gmail.com/
 
