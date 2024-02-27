@@ -1,180 +1,186 @@
-Return-Path: <linux-kernel+bounces-83667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA479869D07
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:01:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33796869D02
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:00:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00DAA1C25236
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:01:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD16928326C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:00:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA224C63D;
-	Tue, 27 Feb 2024 17:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB913839C;
+	Tue, 27 Feb 2024 17:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b="YomI9yAF";
-	dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b="Sw+v6nCX"
-Received: from mta-04.yadro.com (mta-04.yadro.com [89.207.88.248])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mEZVkleo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA272C6A8
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:01:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.207.88.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE632421D;
+	Tue, 27 Feb 2024 17:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709053279; cv=none; b=LuCA+gmvT+BkrJ/Vh9cTI1NSaS4ePjKj+v/ka5jXUQnw3ygX9T/QQTnkjHk/irIBU1QBw9Lv+N+LVnFOx8Fqna52nKRbxI08VFcSnblP4RGbfwuzNO+WVpqHeQ0Vpx5GZQ+fwv4R7xvji1uKGZtc0gyFRqnj5fCa3Ghxxrie6Vc=
+	t=1709053217; cv=none; b=BgyM/NQyKzeDRInc9zSwkfL6EqS5Qzwgli+NHPgrJHldJ/yASPD7IivseeLOQAaoyBNTHwY7bGfnI1FqupxNYu7iO3iT3OG1aYw0xYmyxJgYQYV3tGFVu6eOIt9Emjv6ftc7Et6SBnj5fGDT/B2sQlRR6jkuB6zZhOpId+xldhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709053279; c=relaxed/simple;
-	bh=Wc36hb848H6AezPZUzkfq3Obvb02VGA/gbMjVQzW1ZI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=riTVrn1qLb5TGjhyArn6QaeBduFgwjsOmiYxQzfZB8A53JrkHeRSpHnnUEhMO4encA0CZWAimQ7PhldrtEsj8AiOpDvS9RDcd7/OL5j6DNHVpr6292Jdsdkim6UE8lOsgcj2eXRCHfIcBDAlP6JoXSnLfyinzIuj39g21OZJ4HI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=syntacore.com; spf=fail smtp.mailfrom=syntacore.com; dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b=YomI9yAF; dkim=pass (2048-bit key) header.d=syntacore.com header.i=@syntacore.com header.b=Sw+v6nCX; arc=none smtp.client-ip=89.207.88.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=syntacore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=syntacore.com
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-04.yadro.com BA0A9C002E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syntacore.com;
-	s=mta-04; t=1709053275;
-	bh=58gVXq+fU1x+uUoPziMkIzpX3sjFEwU5Vn/YTcTbObo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=YomI9yAFG8F/frgktYSH7jplWkGnY9i/2jh26JfW2wGrqzSCguhuoPSqj1nnB1/zm
-	 kbJ6d/TswN+97CFwWKo0BuDceoEzUSrMSR4q1gqzYCRXc/4pY8W3PQvL9PIWlxd4zb
-	 Pg+NwfQ4oZMF9A4VOf2fzJecRHDPMDHh886oov221qUBHa9uEoXrr+Zpkdv0mYeMl0
-	 rAVVxJlTjBnwaVCFn6Ujd7GALRtqg2rDHdZHI4+GPNSFZk+jzVZWCTw57d7s8hQBIl
-	 xoGZdjXn0q3wxbUXW5BTekDwJc2PsW+ligZ+4lZ1nMUpL/po6oDD8rruwFT2+rjkiB
-	 J+i+8Qhe1xzeQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syntacore.com;
-	s=mta-03; t=1709053275;
-	bh=58gVXq+fU1x+uUoPziMkIzpX3sjFEwU5Vn/YTcTbObo=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=Sw+v6nCXYfNqRDiz9nMh9YSb7rEs/WY+Qyhfw7oXQn3mTol5l8A2Kq/zZd3tLY8X/
-	 5yvyyu5VxMQWDVZjMo5xTG1CkrTT8iBHXdcqK6zdFHOkpC7heLfOSY5rlKjKQy+Cyt
-	 bO3GoBUru16lY8itxcjYSvzmhYNyuDn/4easMam88Xcw+aEKlYWL/qv+vARXE7Lyvu
-	 mlkkuGOYlQAzokvMiUZG7LnE9BbOqz7X/oLh5RBJ4QkHWVcGiixnqU7u9Bh3RMMjQx
-	 WyCXFdNcaugoMQWkaLpKHuW7CedrQ0719Byz6wNWmwv0qruydnf6CCDpPVO8HGRWUi
-	 AhpNC0x7Y6K5w==
-From: Vadim Shakirov <vadim.shakirov@syntacore.com>
-To: <linux-riscv@lists.infradead.org>
-CC: Vadim Shakirov <vadim.shakirov@syntacore.com>, Atish Patra
-	<atishp@atishpatra.org>, Anup Patel <anup@brainfault.org>, Will Deacon
-	<will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Atish Patra <atishp@rivosinc.com>
-Subject: [PATCH v2,RESEND 2/2] drivers: perf: ctr_get_width function for legacy is not defined
-Date: Tue, 27 Feb 2024 20:00:02 +0300
-Message-ID: <20240227170002.188671-3-vadim.shakirov@syntacore.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240227170002.188671-1-vadim.shakirov@syntacore.com>
-References: <20240227170002.188671-1-vadim.shakirov@syntacore.com>
+	s=arc-20240116; t=1709053217; c=relaxed/simple;
+	bh=Rtg/wJB+BwOfbLpXE7ewLdRK21mvIkgnQ8NFpKpylzg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Uuhj1ExzJvovrYUwgzsKyufpsEiaYyj41b/bCFqHxrs7zNHPLNyhX4Iga/tZzF9luL3ha3rAOtfC0GnhlvOHKjzkht2/85tX/OCoQ6vGFYreJb058FyNYYXEpoP3uhWHsN1ewPbVAVlv2cPIwvJ48I3TJiJeGUttGC4LheFAeDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mEZVkleo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99DA7C433F1;
+	Tue, 27 Feb 2024 17:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709053217;
+	bh=Rtg/wJB+BwOfbLpXE7ewLdRK21mvIkgnQ8NFpKpylzg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mEZVkleoAOhydHqEWHg/rQfg/pNdE3CSGBgWQPF8/NJIv8K3UrpYePZbTNCCm2uNf
+	 A07aYmhkG2OxxOI4hy+BI4cpj0H/6nQjkSCQ9JiFfrvfzldGbQ3VKf/eHzx9cPSWhq
+	 J/w/GXftvQZYCfEutbIu7/HIeJhwiKZU8f4EaWp7YdeRh0AH+SKWnPvUO30c7lvUzz
+	 vZrO1FKHgPBXGn/vr2dpjcBaqVAqx+0x3ytQV1y5OyR3GXUVfBMfTFs/Rmf1xu8ULY
+	 24WLz6N4GqSW3UaH+/AJCULFkhFmaLKgJK2dhTNUfaDEJt/3qnHhwWsD5C/Byhl+Gq
+	 yw1U2w14cQlLg==
+Date: Tue, 27 Feb 2024 17:00:12 +0000
+From: Simon Horman <horms@kernel.org>
+To: Piotr Wejman <piotrwejman90@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: stmmac: fix rx queue priority assignment
+Message-ID: <20240227170012.GC277116@kernel.org>
+References: <20240226093144.31965-1-piotrwejman90@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: T-Exch-05.corp.yadro.com (172.17.10.109) To
- S-Exch-01.corp.yadro.com (10.78.5.241)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226093144.31965-1-piotrwejman90@gmail.com>
 
-With parameters CONFIG_RISCV_PMU_LEGACY=y and CONFIG_RISCV_PMU_SBI=n
-linux kernel crashes when you try perf record:
+On Mon, Feb 26, 2024 at 10:31:44AM +0100, Piotr Wejman wrote:
+> The driver should ensure that same priority is not mapped to multiple
+> rx queues. Currently rx_queue_priority() function is adding
+> priorities for a queue without clearing them from others.
+> 
+> >From DesignWare Cores Ethernet Quality-of-Service
+> Databook, section 17.1.29 MAC_RxQ_Ctrl2:
+> "[...]The software must ensure that the content of this field is
+> mutually exclusive to the PSRQ fields for other queues, that is,
+> the same priority is not mapped to multiple Rx queues[...]"
+> 
+> After this patch, rx_queue_priority() function will:
+> - assign desired priorities to a queue
+> - remove those priorities from all other queues
+> The write sequence of CTRL2 and CTRL3 registers is done in the way to
+> ensure this order.
+> 
+> Signed-off-by: Piotr Wejman <piotrwejman90@gmail.com>
+> ---
+> Changes in v2:
+>   - Add some comments
+>   - Apply same changes to dwxgmac2_rx_queue_prio()
+>   - Revert "Rename prio argument to prio_mask"
+>   - Link to v1: https://lore.kernel.org/netdev/20240219102405.32015-1-piotrwejman90@gmail.com/T/#u
+> 
+>  .../net/ethernet/stmicro/stmmac/dwmac4_core.c | 42 +++++++++++++++----
+>  .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 40 ++++++++++++++----
+>  2 files changed, 66 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+> index 6b6d0de09619..76ec0c1da250 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+> @@ -92,19 +92,43 @@ static void dwmac4_rx_queue_priority(struct mac_device_info *hw,
+>  				     u32 prio, u32 queue)
+>  {
+>  	void __iomem *ioaddr = hw->pcsr;
+> -	u32 base_register;
+> -	u32 value;
+> +	u32 clear_mask = 0;
+> +	u32 ctrl2, ctrl3;
+> +	int i;
+>  
+> -	base_register = (queue < 4) ? GMAC_RXQ_CTRL2 : GMAC_RXQ_CTRL3;
+> -	if (queue >= 4)
+> -		queue -= 4;
+> +	ctrl2 = readl(ioaddr + GMAC_RXQ_CTRL2);
+> +	ctrl3 = readl(ioaddr + GMAC_RXQ_CTRL3);
+> +	
+> +	/* The software must ensure that the same priority
+> +	 * is not mapped to multiple Rx queues.
+> +	 */
+> +	for (i = 0; i < 4; i++)
+> +		clear_mask |= ((prio << GMAC_RXQCTRL_PSRQX_SHIFT(i)) &
+> +						GMAC_RXQCTRL_PSRQX_MASK(i));
+>  
+> -	value = readl(ioaddr + base_register);
+> +	ctrl2 &= ~clear_mask;
+> +	ctrl3 &= ~clear_mask;
+>  
+> -	value &= ~GMAC_RXQCTRL_PSRQX_MASK(queue);
+> -	value |= (prio << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
+> +	/* Assign new priorities to a queue and
+> +	 * clear them from others queues.
+> +	 * The CTRL2 and CTRL3 registers write sequence is done
+> +	 * in the way to ensure this order.
+> +	 */
+> +	if (queue < 4) {
+> +		ctrl2 |= (prio << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
+>  						GMAC_RXQCTRL_PSRQX_MASK(queue);
+> -	writel(value, ioaddr + base_register);
+> +
+> +		writel(ctrl2, ioaddr + GMAC_RXQ_CTRL2);
+> +		writel(ctrl3, ioaddr + GMAC_RXQ_CTRL3);
+> +	} else {
+> +		queue -= 4;
+> +
+> +		ctrl3 |= (prio << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
+> +						GMAC_RXQCTRL_PSRQX_MASK(queue);
+> +
+> +		writel(ctrl3, ioaddr + GMAC_RXQ_CTRL3);
+> +		writel(ctrl2, ioaddr + GMAC_RXQ_CTRL2);
+> +	}
+>  }
 
-$ perf record ls
-[ 46.749286] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
-[ 46.750199] Oops [#1]
-[ 46.750342] Modules linked in:
-[ 46.750608] CPU: 0 PID: 107 Comm: perf-exec Not tainted 6.6.0 #2
-[ 46.750906] Hardware name: riscv-virtio,qemu (DT)
-[ 46.751184] epc : 0x0
-[ 46.751430] ra : arch_perf_update_userpage+0x54/0x13e
-[ 46.751680] epc : 0000000000000000 ra : ffffffff8072ee52 sp : ff2000000022b8f0
-[ 46.751958] gp : ffffffff81505988 tp : ff6000000290d400 t0 : ff2000000022b9c0
-[ 46.752229] t1 : 0000000000000001 t2 : 0000000000000003 s0 : ff2000000022b930
-[ 46.752451] s1 : ff600000028fb000 a0 : 0000000000000000 a1 : ff600000028fb000
-[ 46.752673] a2 : 0000000ae2751268 a3 : 00000000004fb708 a4 : 0000000000000004
-[ 46.752895] a5 : 0000000000000000 a6 : 000000000017ffe3 a7 : 00000000000000d2
-[ 46.753117] s2 : ff600000028fb000 s3 : 0000000ae2751268 s4 : 0000000000000000
-[ 46.753338] s5 : ffffffff8153e290 s6 : ff600000863b9000 s7 : ff60000002961078
-[ 46.753562] s8 : ff60000002961048 s9 : ff60000002961058 s10: 0000000000000001
-[ 46.753783] s11: 0000000000000018 t3 : ffffffffffffffff t4 : ffffffffffffffff
-[ 46.754005] t5 : ff6000000292270c t6 : ff2000000022bb30
-[ 46.754179] status: 0000000200000100 badaddr: 0000000000000000 cause: 000000000000000c
-[ 46.754653] Code: Unable to access instruction at 0xffffffffffffffec.
-[ 46.754939] ---[ end trace 0000000000000000 ]---
-[ 46.755131] note: perf-exec[107] exited with irqs disabled
-[ 46.755546] note: perf-exec[107] exited with preempt_count 4
+Hi Piotr,
 
-This happens because in the legacy case the ctr_get_width function was not
-defined, but it is used in arch_perf_update_userpage.
+Sorry if I am on the wrong track here, but this seems a little odd to me.
 
-Also remove extra check in riscv_pmu_ctr_get_width_mask
+My reading is that each byte of GMAC_RXQ_CTRL2 and GMAC_RXQ_CTRL3
+hold the priority value - an integer in the range of 0-255 - for
+each of 8 queues.
 
-Signed-off-by: Vadim Shakirov <vadim.shakirov@syntacore.com>
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
----
- drivers/perf/riscv_pmu.c        | 18 +++++-------------
- drivers/perf/riscv_pmu_legacy.c |  8 +++++++-
- 2 files changed, 12 insertions(+), 14 deletions(-)
+This corresponds with the way that the queue is set both before and
+after this patch.
 
-diff --git a/drivers/perf/riscv_pmu.c b/drivers/perf/riscv_pmu.c
-index 0dda70e1ef90..c78a6fd6c57f 100644
---- a/drivers/perf/riscv_pmu.c
-+++ b/drivers/perf/riscv_pmu.c
-@@ -150,19 +150,11 @@ u64 riscv_pmu_ctr_get_width_mask(struct perf_event *event)
- 	struct riscv_pmu *rvpmu = to_riscv_pmu(event->pmu);
- 	struct hw_perf_event *hwc = &event->hw;
- 
--	if (!rvpmu->ctr_get_width)
--	/**
--	 * If the pmu driver doesn't support counter width, set it to default
--	 * maximum allowed by the specification.
--	 */
--		cwidth = 63;
--	else {
--		if (hwc->idx == -1)
--			/* Handle init case where idx is not initialized yet */
--			cwidth = rvpmu->ctr_get_width(0);
--		else
--			cwidth = rvpmu->ctr_get_width(hwc->idx);
--	}
-+	if (hwc->idx == -1)
-+		/* Handle init case where idx is not initialized yet */
-+		cwidth = rvpmu->ctr_get_width(0);
-+	else
-+		cwidth = rvpmu->ctr_get_width(hwc->idx);
- 
- 	return GENMASK_ULL(cwidth, 0);
- }
-diff --git a/drivers/perf/riscv_pmu_legacy.c b/drivers/perf/riscv_pmu_legacy.c
-index a85fc9a15f03..fa0bccf4edf2 100644
---- a/drivers/perf/riscv_pmu_legacy.c
-+++ b/drivers/perf/riscv_pmu_legacy.c
-@@ -37,6 +37,12 @@ static int pmu_legacy_event_map(struct perf_event *event, u64 *config)
- 	return pmu_legacy_ctr_get_idx(event);
- }
- 
-+/* cycle & instret are always 64 bit, one bit less according to SBI spec */
-+static int pmu_legacy_ctr_get_width(int idx)
-+{
-+	return 63;
-+}
-+
- static u64 pmu_legacy_read_ctr(struct perf_event *event)
- {
- 	struct hw_perf_event *hwc = &event->hw;
-@@ -111,7 +117,7 @@ static void pmu_legacy_init(struct riscv_pmu *pmu)
- 	pmu->ctr_stop = NULL;
- 	pmu->event_map = pmu_legacy_event_map;
- 	pmu->ctr_get_idx = pmu_legacy_ctr_get_idx;
--	pmu->ctr_get_width = NULL;
-+	pmu->ctr_get_width = pmu_legacy_ctr_get_width;
- 	pmu->ctr_clear_idx = NULL;
- 	pmu->ctr_read = pmu_legacy_read_ctr;
- 	pmu->event_mapped = pmu_legacy_event_mapped;
--- 
-2.34.1
+But the code immediately above treats these bytes as bit fields.
+
+Consider the case where all queues are initialised to 0
+(I have no idea if this is valid queue values).
+
+Now suppose we wish to set Queue 0 to Priority 7.
+Then my my reading we will end up with.
+
+clear_mask = 0x07070707
+ctrl0 = (0x00000000 & ~clear_mask) | 0x00000007 = 0x00000007
+ctrl3 =  0x00000000 & ~clear_mask               = 0x00000000
+
+So far so good, but now suppose we now wish to set Queue 1 to Priority 9.
+Then we get:
+
+clear_mask = 0x09090909
+ctrl0 = (0x00000007 & ~clear_mask) | 0x00000900 = 0x00000906
+ctrl3 =  0x00000000 & ~clear_mask               = 0x00000000
+
+Now queue 0 seems to have priority 6.
+
+..
 
 
