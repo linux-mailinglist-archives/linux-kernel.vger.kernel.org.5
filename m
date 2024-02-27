@@ -1,173 +1,132 @@
-Return-Path: <linux-kernel+bounces-82754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45EE586891B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:42:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3B2C868921
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:47:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68737B2200F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:42:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 994A228482D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1F653388;
-	Tue, 27 Feb 2024 06:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA04537EE;
+	Tue, 27 Feb 2024 06:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PVv2flGc"
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="B/F9pSkr"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF08A52F9F
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 06:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F3984DA0F;
+	Tue, 27 Feb 2024 06:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709016141; cv=none; b=iVU9EPnILqy4il3bCR0tRcJN8pjpONRdm2JPXvruZ732Bm+I6bH6sVFt/Oal+R7Q9G01LYqi5e8vxPYhxkfRUyKNXZrHUHB6n8ubXyhOruhJQoo2koCjZnSEh+lKhFWuDCvtyMGhMR5lbld4GEGUxJE1P940e/b5fAiXVJglBfI=
+	t=1709016450; cv=none; b=tx/zVCVOMkAVhXn87/a1CGANwujm4XAcejbc7J2v4RZi9X8OxgIjigAuTGVs2WPHUtEIao8MxH6BVZdipeiYVRb2FIddiq3dhz50sjnnxFUAQWUvVzHJnGGbTczGpcXr6pz8/4vov7CQnYVgxS+F/dI7kYV9SNj5twMRe7jKB+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709016141; c=relaxed/simple;
-	bh=Uib/1OUtvJBqORrJxaK4n1l7PpWQm5dI5eVX4VwcOds=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aCXlS5nqla8zmeJmT5MeXD5pUJrrzGmSISi67nD9TxCaNcOieUg6tNgfb3rJXF5hofyNoRv2iFTKWNZGZXueyDckHiUorCOWFJm77aN/1p+f8FtsW8B9ukbfLYkSTAIPimuSJfXEzOwLO8TWHuoEGJNbVtrK1krOkPLiv98akeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PVv2flGc; arc=none smtp.client-ip=209.85.221.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4d16e766fb0so339647e0c.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 22:42:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709016139; x=1709620939; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KMU9qADzbYYxkLIXU2ki+0Gre6TmTJY0ABFyENCubko=;
-        b=PVv2flGc8FiRszZouSYnD2BWfLJIRnnzK59hjp634VhFjtX6Lyu67czcDjBgq3gLIY
-         Y8wy5zsOuMusL6uwz1rf0wH1Z5KOCIxf8cB6sn+pEx6wKiyArC2tOaUbyJsHnjtCD3a3
-         lx7WP5A3SJ3qP4CFNkBVP8Q7YYGLQEJNehVTjKT2OBe1ZRgNm9opfD0e9NlenqAy0q7l
-         88AVd884X23euY5bPE+yfdr8Twb0akDe7ufmL2DFv8TwYV2ny7mVD18tS3NbaG+J/4E/
-         X+/6gMSQNEu00xjNTnuf2VNhSBHAQCLDgyU/9sfqdo2473lPYAYF7gc8gQQVECYkWiOl
-         w4Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709016139; x=1709620939;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KMU9qADzbYYxkLIXU2ki+0Gre6TmTJY0ABFyENCubko=;
-        b=Bfhb94TL5XPa6p/lFxF5YTQdAMDS1tt0nHBhxpt6LGwnLFkDsliNvcROkOz6q/P9Lx
-         ebmkrdxRJZsNqKsugTu37G0cRNLNHPwgcCkOQP8th2uZosckz4dWo9uzMiBEQ3UUgqQ3
-         O8DyOGB4SSZsEJYPe0+07A5qF6ptSE16ZBgNMGhQOVT32afcBqiRClDTg0JzlCYbrD2Y
-         1zROUcRgyT7a9lwL+RP9d7fn56kJ+2zFDKygOenROA7peESILTW9st3Xiy0voLw32Drh
-         oDxEm80nYkWrwlBcs0x0/mXjDeKKeQluUeyOtvrTQe7jM05APoBmyj6Q9s3hVjWDzJt8
-         5PiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3DXe/ndMsHZ+rxRDTdh2gd/4F6bRmd4jt0DouGnzIk2PyY6l5IqbDG8lli9GtFLb+MmPSFnzNQ3q31bcRyWdN5CoPmFZFdtPHR4I9
-X-Gm-Message-State: AOJu0Yzyd+GW55DZSmppHmr9B+Ko6g1JMXpBEcsWebiUwgkdk1Y7XvMa
-	QmiOm0KIRrNECOR1b7yXOI3pzwqOXqb9NlMw5jq7rYTDSb11eckHBEpLVuCU+h10i4ed1/YCZbC
-	NLfZSOqqRM6cYH5wQByXCUEFvGu8=
-X-Google-Smtp-Source: AGHT+IH3nWgTZlwiHtzk+iQibAStqjW8Pp9ieq6LHUZrwCOg1URru80WCQL+F7gaFu7RIzEbjqYZLX/SPGHtFvtIexY=
-X-Received: by 2002:a1f:48c3:0:b0:4c9:98f8:83d7 with SMTP id
- v186-20020a1f48c3000000b004c998f883d7mr5516735vka.0.1709016138630; Mon, 26
- Feb 2024 22:42:18 -0800 (PST)
+	s=arc-20240116; t=1709016450; c=relaxed/simple;
+	bh=CgqML60LicyyecSPHKCPprKS1ES+SeKDnEDVlBXLz+M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=bvj3ESsKBPU6UevD/SwvOxc3buc5RrAg7tnkkU8MAMc8qITc9Xyp+/6TXnKOfRS8O4salE2T1CgKm/4gWrmvLP4/GOa+I3HNNYKOxM2xmv0JE9OJOTvpqy0Dlu4k53RtsBRm9skhSv+kQ2na9bbv4N4MhOA1wVIp3R6CETyea/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=B/F9pSkr; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41R3wHqX023578;
+	Tue, 27 Feb 2024 06:47:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=GVlRqYEBafsXxkeD2Y5NwpTYZnw3z1chquQtrnGlgUY=; b=B/
+	F9pSkrmMx82dYnZO/1ukdnneQ+OqtWOciuzC8HmMAQpIpP3Yr2fToO2jcXOWymi/
+	L2WqiXpcuqW6SDSmEknq2ExYE19jff0vxOBRVszKqc7QcJqZUjMOHY7rdAUrvHFB
+	1fOFoqoZHkKFfBygYdzdzG45MVGGyjJprx0Zital6PRAj6Z7UIES8LusZciZV9x8
+	PvPPfaxuYTrgj75MROvGtm7W7uXp+nsStAldNA6r5v3tM/DmZkuGWGyo23hX+556
+	DJY37Awv+A5mwO9cGwDU+/WhvMrmyCjOa2Ppa+B0KLxUV/K90sT3RZV4BSiAJ+cB
+	m6JkxdsLq5NgOc1B4upQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh89t0a00-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 06:47:24 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41R6lNSO030718
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 06:47:23 GMT
+Received: from [10.214.66.209] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
+ 2024 22:47:17 -0800
+Message-ID: <09b7aa90-1cbb-42e0-a3e7-62d4c7ec9afb@quicinc.com>
+Date: Tue, 27 Feb 2024 12:16:55 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAGsJ_4zera4+bWuXHKjdU3QdiR3sqcUQB3gF08DPD49OCT4S9w@mail.gmail.com>
- <20240226083714.26187-1-ioworker0@gmail.com> <9bcf5141-7376-441e-bbe3-779956ef28b9@redhat.com>
- <CAK1f24mdwjz2J5VmeYSDwb4jMbrXUVCSF_0pOcWSVt1cfa0FhQ@mail.gmail.com>
- <318be511-06de-423e-8216-af869f27f849@arm.com> <CAGsJ_4z+0yXUDYwxKNAqYwxAAYpfKpKd2u_dVTDP3b-KPOQT1g@mail.gmail.com>
- <19758162-be5f-4dc4-b316-77b0115d12ce@intel.com> <CAGsJ_4wx72KOazANBvnGcjdZse8W9+PW5_fspP9=QuX3X_7msg@mail.gmail.com>
- <3c56d7b8-b76d-4210-b431-ee6431775ba7@intel.com> <CAGsJ_4xu1kz5VD-CcNFvP0A1nPKDojV8Gy1HPvNKuQ_RAw=26g@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xu1kz5VD-CcNFvP0A1nPKDojV8Gy1HPvNKuQ_RAw=26g@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 27 Feb 2024 19:42:07 +1300
-Message-ID: <CAGsJ_4yAu-m_gYZUSWEGbW4ZMiAPayuZacPN2fYAYXk4Ts_6eg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
-To: Yin Fengwei <fengwei.yin@intel.com>
-Cc: Ryan Roberts <ryan.roberts@arm.com>, Lance Yang <ioworker0@gmail.com>, 
-	David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, mhocko@suse.com, minchan@kernel.org, peterx@redhat.com, 
-	shy828301@gmail.com, songmuchun@bytedance.com, wangkefeng.wang@huawei.com, 
-	zokeefe@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: arm: qcom: Document rb5gen2-hdk board
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20240202133638.4720-1-quic_wasimn@quicinc.com>
+ <20240202133638.4720-2-quic_wasimn@quicinc.com>
+ <c9dcbb3b-90eb-4e41-93cf-859d74cf57ea@linaro.org>
+Content-Language: en-US
+From: Wasim Nazir <quic_wasimn@quicinc.com>
+In-Reply-To: <c9dcbb3b-90eb-4e41-93cf-859d74cf57ea@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: g5pvopohDWHGDmQ_z0JgyWWlsqGCm1qN
+X-Proofpoint-GUID: g5pvopohDWHGDmQ_z0JgyWWlsqGCm1qN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 mlxscore=0 phishscore=0
+ adultscore=0 spamscore=0 impostorscore=0 bulkscore=0 mlxlogscore=783
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402270053
 
-On Tue, Feb 27, 2024 at 7:40=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
-e:
->
-> On Tue, Feb 27, 2024 at 7:14=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.co=
-m> wrote:
-> >
-> >
-> >
-> > On 2/27/24 10:17, Barry Song wrote:
-> > >> Like if we hit folio which is partially mapped to the range, don't s=
-plit it but
-> > >> just unmap the mapping part from the range. Let page reclaim decide =
-whether
-> > >> split the large folio or not (If it's not mapped to any other range,=
-it will be
-> > >> freed as whole large folio. If part of it still mapped to other rang=
-e,page reclaim
-> > >> can decide whether to split it or ignore it for current reclaim cycl=
-e).
-> > > Yes, we can. but we still have to play the ptes check game to avoid a=
-dding
-> > > folios multiple times to reclaim the list.
-> > >
-> > > I don't see too much difference between splitting in madvise and spli=
-tting
-> > > in vmscan.  as our real purpose is avoiding splitting entirely mapped
-> > > large folios. for partial mapped large folios, if we split in madvise=
-, then
-> > > we don't need to play the game of skipping folios while iterating PTE=
-s.
-> > > if we don't split in madvise, we have to make sure the large folio is=
- only
-> > > added in reclaimed list one time by checking if PTEs belong to the
-> > > previous added folio.
-> >
-> > If the partial mapped large folio is unmapped from the range, the relat=
-ed PTE
-> > become none. How could the folio be added to reclaimed list multiple ti=
-mes?
->
-> in case we have 16 PTEs in a large folio.
-> PTE0 present
-> PTE1 present
-> PTE2 present
-> PTE3  none
-> PTE4 present
-> PTE5 none
-> PTE6 present
-> ....
-> the current code is scanning PTE one by one.
-> while scanning PTE0, we have added the folio. then PTE1, PTE2, PTE4, PTE6=
-..
->
-> there are all kinds of possibilities for unmapping.
->
 
-not to mention we have all kinds of possibilities like
 
-PTE0 present for large folio1
-PTE1 present for large folio1
-PTE2 present for another folio2
-PTE3 present for another folio3
-PTE4 present for large folio1
-..
+On 2/2/2024 8:04 PM, Krzysztof Kozlowski wrote:
+> On 02/02/2024 14:36, Wasim Nazir wrote:
+>> Document board bindings for Rb5 gen2 hardware development kit.
+>> Rb5gen2-HDK is using Rb5 gen2 SOM which is based on QCS8550 SoC.
+>> RB5gen2-HDK is development kit used for IOT solutions.
+>>
+>> Signed-off-by: Wasim Nazir <quic_wasimn@quicinc.com>
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> index 9cee874a8eae..ce5b5dfe0e46 100644
+>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> @@ -104,6 +104,7 @@ description: |
+>>           qcp
+>>           qrd
+>>           rb2
+>> +        rb5gen2-hdk
+> 
+> I think we decided to stop growing this, especially that "rb5gen2-hdk"
+> does not look generic type of a board.
+> 
+Will remove this in next patch version.
 
-> so what we can do is recording we have added the folio while scanning PTE=
-0,
-> then skipping this folios for all other PTEs.
->
-> otherwise, we can split it while scanning PTE0, then we will meet
-> different folios
-> afterwards.
->
-> >
-> >
-> > Regards
-> > Yin, Fengwei
->
-> Thanks
-> Barry
+>> --
+>> 2.43.0
+>>
+> 
+> Best regards,
+> Krzysztof
+> 
+
+Thanks & regards,
+Wasim
 
