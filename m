@@ -1,133 +1,171 @@
-Return-Path: <linux-kernel+bounces-82702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D757E86885C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:46:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD18C86885E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:46:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E3DA1F25BFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:46:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96CB4288201
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:46:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0C85820C;
-	Tue, 27 Feb 2024 04:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75EE152F7B;
+	Tue, 27 Feb 2024 04:44:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="QUmZVm4g"
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="T7UNKP/Q"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2052.outbound.protection.outlook.com [40.107.220.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A5557870
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:42:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709008945; cv=none; b=CjWcmjTbMsbBASsxGvqBA0FaorW4Z4K8YHF8pyoU55ebr6e4jRR+QnzwFWh43uH+9+2nqnZa89J1EGDyL4wxqDv5XzTQ8pps/FvhsOQbtugbiacUyuoCFbn5YWoyFMBma3sen9XtkDWPDWOkdJ4/k13pSUTe1ZXF9+X/QudCW1Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709008945; c=relaxed/simple;
-	bh=2x3h9Zz+k71/dtUWPgZcEE0hufSyTRHoquJITrslrK8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r/NEzHLtlvd6RjqYH39bB+zR/9LMpdGSMPfI3O8fmKzTpErqm/Cw3/bqAAjEpXJbfifb/kVpTg+CKJX1JZ56padiOsuJbc4IQNENS5Bn6rbsasN3CYCRUr4o2a+ueQipIomQvtdRMSZKW+czX3fsOuaPdkd1HZOpO54NnUVKvbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=QUmZVm4g; arc=none smtp.client-ip=209.85.160.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-21eea6aab5eso2722611fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:42:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1709008943; x=1709613743; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EUsBKbDxqX+aAoY4bQ5ZPw9Nd6OhOWFvUHLj7z72e6s=;
-        b=QUmZVm4g3WuuryGYGtIz7lgXBycoxLYckIu46DYykpbzG/LALQJghiiNhGemiAd8uV
-         GCGF1+tJDN88FHq1z7PpHdk024sl67Azc7dK4/zmgYF1UnpdozVKDc58HJfaeBJhTPB8
-         +EeYQJk81WGyiJXOK3XB7T6kvrpANXt3PJukloP24cgSdzf5I/x0VSuqsPG3DJrCVahD
-         VrxtJcoMxrwtlF+B+zOGxbSCbSjVyXYtq9oIDn4BTcwNT/aEyc3uOANXIN8KeyHwbtcf
-         8/gYVCZ50+JyLtZjikhxP4bUgnj/UtgS9R/4alRuBXNoDw5jmCm+NLJptzwLiW8UVdoR
-         73rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709008943; x=1709613743;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EUsBKbDxqX+aAoY4bQ5ZPw9Nd6OhOWFvUHLj7z72e6s=;
-        b=nufLUrrdVwSocE01c1ljO+lVtnCjAdOxx6u3XH2oOCFTcPW+1PFg4SSu9wxI/j9JYO
-         wkfq+0JYpWPK45YHQiwcRr10io8tXKIbvZW+Px2tCPv1zqm2qCc9QIqs9de7UWKOAtt5
-         cB9iGfjbIvBjhQT1gY8h7k9vJ2MEyyqt9rb0qt+iSXDHvwMe1t+qi9fxgAo0ww9sOhxH
-         j5GNL4Hq67VCHQv3m1NQ2buiK+Xh+0ENnP77Mswqyaub7EdkyXhWUl90yK1wbPgAalf1
-         8HPCwc7YDZTOzSj+XhGPPwZszY9HG1vTrFpSOEyQ4FCZ3rfCELfwwnEOQumWJLvCvwGF
-         yFkA==
-X-Forwarded-Encrypted: i=1; AJvYcCXwaCdySKwHmYJ+3g/d2P+MdIZ+YGlsay8osCSJNJA29MSrnLfPp55wPZduvu4rJqL7hTlYl08aDO2SWaTl1mBfU6QVUismfSDJnZrD
-X-Gm-Message-State: AOJu0YyPAe1etYQwW0z87KV1BuNDpuSdGAAJAXcH5OwmH0tq16oFsIKh
-	16GBlRGg5WipWRDmvIttQUvUbQWzwyBoUrDkmNT0dAv9kMI/99xNaMWDMA03E/A=
-X-Google-Smtp-Source: AGHT+IHa3byya7dIvQDMqOR4n54Cfq1D2QEr97DUOwPKNmDLsK6jgR2+BFqesK8mx+OEknImw3w/4Q==
-X-Received: by 2002:a05:6870:e390:b0:21e:dd7a:2d3e with SMTP id x16-20020a056870e39000b0021edd7a2d3emr12450237oad.22.1709008943675;
-        Mon, 26 Feb 2024 20:42:23 -0800 (PST)
-Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id e30-20020aa798de000000b006e4ecc3e394sm4899782pfm.79.2024.02.26.20.42.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 20:42:22 -0800 (PST)
-From: Tree Davies <tdavies@darkphysics.net>
-To: gregkh@linuxfoundation.org,
-	philipp.g.hortmann@gmail.com,
-	anjan@momi.ca
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH v2 20/20] Staging: rtl8192e: Rename function MgntQuery_MgntFrameTxRate
-Date: Mon, 26 Feb 2024 20:41:57 -0800
-Message-Id: <20240227044157.407379-21-tdavies@darkphysics.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240227044157.407379-1-tdavies@darkphysics.net>
-References: <20240227044157.407379-1-tdavies@darkphysics.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EAEC524D1
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709009092; cv=fail; b=D+SflOTQVOW/zJQvzvb7xxrW6HMBCs3eULECYwkBCIXXww9mLqN5Zl3ghWeZNWx9tSsZPCYdcv1go0rmFLP9/VDdx+O2HoXyecUNbAeMU30rkhq27828PHhx472UTKY/dvtoPHyoSwakwPNtA3oNXOK0k+ulrPpnVzKXrxPEYDs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709009092; c=relaxed/simple;
+	bh=K1qFsPtwFx3lSt2S3zKA+fw2x+d7A1JDrP48m1zVeNU=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=mvm4vk7C+Oyiw8aocZPtHuf2kGfl8kb+zuJTQf+BEnozRlmeEzPMjV/r7SDE+Fxb4OyVUIXD0M8XEm+ihH22VWqzDJ4zDskLiTLw5967p+9vohJfAoZ/L66uSkl9iXue7JkBRzLBbWUHkfNt3lhbX+xSeYLxyvImdgAQrMz2azE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=T7UNKP/Q; arc=fail smtp.client-ip=40.107.220.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=W2MZK7zth1G5To0mergEyxdJ0J47hqDKluHgCzDFjwNoYVntpYyhq63QKtx4qqJFoZxqZArMTptb2egk4khvPn1e9oP5wHODap0ZbghEZYwStiJw0zKRyTD5OOGL6O3O0MPlMIQcekqdLwJ5pcCYUDQ9UuNqFecGK+mLJoR1XRyl2m9vk55/LhVl9sKlrnALXy/hiobkXAAUpuRy21e7fZBLTq2wjCqExfcQtcLIRFLIhzi8+XMeBgr3g5xoEcE6gUhR4u2HcFlU6IAevxixvlD6S0Oq4vOddbnCAylNWfSBdBkVM6vInb5ZX85vbzpSQGwOWb5U5vyslXNAeDqMAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oe+X+W+ARwGtqVkJTlJFM4EWlLatO5T/57/b00K3lV0=;
+ b=IsXjFAQGa0fVT1Tel2fZV7Bj5JZKMRn6jXmbSWCBjTGq9+mq0vIwSKekaWgSWZ5LSH3S5dKUWvXsjZS9mArI1Po/QQIUwZk/Zqvjdsd7ipdD2+SbjyLrIMGk16S4P25Iqw0V1GPeYMtMcRzYQ5AYdVj+8TK3UvNZU+I6fXAuIEzSA/G+skxTJ4hFEvQxA2x7YeSUCh0cwSnkalrZThVWjPCguZdn6xOUAI0rIxgofwepSpCDZ+pG9PHvBg3+1C57Cmnz0uYQCf2BdSV8E3thynmHdS9eDcFxxXvNLM5ttWITKmIBjhvGmOmHXzO6gomsZ9HCw/yXWKwHijKw9Lekow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=ffwll.ch smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oe+X+W+ARwGtqVkJTlJFM4EWlLatO5T/57/b00K3lV0=;
+ b=T7UNKP/QfNpuNSvJjPxxaU1YNXgXQrMXhU4yCYT2THYfPOTMXrdLHBSC7u/mOgMuu1EShemPjcvxqHo7UypbO4RA0jN1LmaD+zMe02En+WttFAPnG/UPhiHE8cuPwBWyPbT1nlLrr2aLl3K0OUfMrTM6ali2XaR5mCkBbQcmKE0=
+Received: from MW4PR04CA0067.namprd04.prod.outlook.com (2603:10b6:303:6b::12)
+ by LV8PR12MB9232.namprd12.prod.outlook.com (2603:10b6:408:182::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.33; Tue, 27 Feb
+ 2024 04:44:48 +0000
+Received: from CO1PEPF000044F5.namprd05.prod.outlook.com
+ (2603:10b6:303:6b:cafe::78) by MW4PR04CA0067.outlook.office365.com
+ (2603:10b6:303:6b::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.50 via Frontend
+ Transport; Tue, 27 Feb 2024 04:44:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ CO1PEPF000044F5.mail.protection.outlook.com (10.167.241.75) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Tue, 27 Feb 2024 04:44:48 +0000
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 26 Feb
+ 2024 22:44:47 -0600
+Received: from xsjanatoliy50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Mon, 26 Feb 2024 22:44:45 -0600
+From: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Subject: [PATCH 0/4] Setting live video input format for ZynqMP DPSUB
+Date: Mon, 26 Feb 2024 20:44:41 -0800
+Message-ID: <20240226-dp-live-fmt-v1-0-b78c3f69c9d8@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALlo3WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIyMz3ZQC3ZzMslTdtNwSXTMTQ1Nzc+Mk00QzCyWgjoKi1LTMCrBp0bG
+ 1tQAILsqTXQAAAA==
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Michal Simek <michal.simek@amd.com>,
+	"Andrzej Hajda" <andrzej.hajda@intel.com>, Neil Armstrong
+	<neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Jonas Karlman
+	<jonas@kwiboo.se>, "Jernej Skrabec" <jernej.skrabec@gmail.com>
+CC: <dri-devel@lists.freedesktop.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+X-Mailer: b4 0.12.4
+Received-SPF: None (SATLEXMB03.amd.com: anatoliy.klymenko@amd.com does not
+ designate permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044F5:EE_|LV8PR12MB9232:EE_
+X-MS-Office365-Filtering-Correlation-Id: 91f2c835-3b3e-4702-6b1b-08dc374ed3e7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	iBxB9KelphFWmp075UmIZ7EYwqorCWPaE46KdJv9MQDNAoCycEcmnB8j6NqBlnDt8vd+vSpYxp8cVqDteXk5Q/8omHSZpIYnVb3wd3beGBk5TLRMkhUXRNZWVNuw3bTUfyEvRDbYIqMQxR7rZs6qQnhK90DYk3Hw/6yRFMIxGVibt400UzaFiTTyRqNTlVdRIdpAoq6L9PLZCi2JRXMvNFET1esxd+2oX4JmfcXWi1QITtkX9IvdMjezPhES+4dWUWf4E1xyrN/dhR4Tk4m/Gueq3Xpe6KB5mIXXE8v6/S6xOvdv6ObVKcTjgf7+IQ+vMkSP0RDOOP6TmXAA61y7vIvYZ9Sv7TFSM8IUbiFcV6++yzKSpr9tS3p0aQL7MfjDOy0PCBYu23I1rM7tdGX/TDXsx90Zrt1du8XersZRQvFT1ZyxQ8O/L3FDNjboVp+HaI2VJTvH6ZmHhXja1nfb85ql8hHoqew5Wm9RJ082zZ69nLuO7UMxOOLkIdZ0JWS7l/JeL89GdWpMjbMtmufZo1LVOfJscMwRSFqyPAPB0BuRZncbQSo20HMLzJEPUUMWecVu1t4z2ExN4VNU63lo/He6zER+rn32Xt1SOdTXDnnQW50RnlMXRwZ1BxYH+gdBiCh6SXG1X66RF/iojjDDPFKQOC9mWXul9MDYHCFEK9iHFGqR0hLLSmjo/GxOzcefI913aMsob9PGlJfsSwUGd+6Ff6PtB7Q/JLMoiBvz4dFKXDN0qI8QrgbE1ZlYJ81ei+KdZF3Zuntf70FPCM6kXA==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(921011);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 04:44:48.0184
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91f2c835-3b3e-4702-6b1b-08dc374ed3e7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000044F5.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9232
 
-Rename function MgntQuery_MgntFrameTxRate to mgnt_query_mgnt_frame_tx_rate
-to fix checkpatch warning Avoid CamelCase.
+Implement live video input format setting for ZynqMP DPSUB.
 
-Signed-off-by: Tree Davies <tdavies@darkphysics.net>
+ZynqMP DPSUB can operate in 2 modes: DMA-based and live.
+
+In the live mode, DPSUB receives a live video signal from FPGA-based CRTC.
+DPSUB acts as a DRM encoder bridge in such a scenario. To properly tune
+into the incoming video signal, DPSUB should be programmed with the proper
+media bus format. This patch series addresses this task.
+
+Patch 1/4: Set the DPSUB layer mode of operation prior to enabling the
+layer. Allows to use layer operational mode before its enablement.
+
+Patch 2/4: Announce supported input media bus formats via
+drm_bridge_funcs.atomic_get_input_bus_fmts callback.
+
+Patch 3/4: Program DPSUB live video input format based on selected bus
+config in the new atomic bridge state.
+
+Patch 4/4: New optional CRTC atomic helper proposal that will allow CRTC
+to participate in DRM bridge chain format negotiation and impose format
+restrictions. Incorporate this callback into the DRM bridge format
+negotiation process.
+
+Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
 ---
-v2: no changes
- drivers/staging/rtl8192e/rtllib_softmac.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Anatoliy Klymenko (4):
+      drm: xlnx: zynqmp_dpsub: Set layer mode during creation
+      drm: xlnx: zynqmp_dpsub: Anounce supported input formats
+      drm: xlnx: zynqmp_dpsub: Set input live format
+      drm/atomic-helper: Add select_output_bus_format callback
 
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index afa789fd1266..97fdca828da7 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -163,7 +163,7 @@ u8 mgnt_query_tx_rate_exclude_cck_rates(struct rtllib_device *ieee)
- 	return query_rate;
- }
- 
--static u8 MgntQuery_MgntFrameTxRate(struct rtllib_device *ieee)
-+static u8 mgnt_query_mgnt_frame_tx_rate(struct rtllib_device *ieee)
- {
- 	struct rt_hi_throughput *ht_info = ieee->ht_info;
- 	u8 rate;
-@@ -201,7 +201,7 @@ inline void softmac_mgmt_xmit(struct sk_buff *skb, struct rtllib_device *ieee)
- 	if (ieee->disable_mgnt_queue)
- 		tcb_desc->queue_index = HIGH_QUEUE;
- 
--	tcb_desc->data_rate = MgntQuery_MgntFrameTxRate(ieee);
-+	tcb_desc->data_rate = mgnt_query_mgnt_frame_tx_rate(ieee);
- 	tcb_desc->ratr_index = 7;
- 	tcb_desc->tx_dis_rate_fallback = 1;
- 	tcb_desc->tx_use_drv_assinged_rate = 1;
-@@ -277,7 +277,7 @@ softmac_ps_mgmt_xmit(struct sk_buff *skb,
- 	if (ieee->disable_mgnt_queue)
- 		tcb_desc->queue_index = HIGH_QUEUE;
- 
--	tcb_desc->data_rate = MgntQuery_MgntFrameTxRate(ieee);
-+	tcb_desc->data_rate = mgnt_query_mgnt_frame_tx_rate(ieee);
- 	tcb_desc->ratr_index = 7;
- 	tcb_desc->tx_dis_rate_fallback = 1;
- 	tcb_desc->tx_use_drv_assinged_rate = 1;
+ drivers/gpu/drm/drm_bridge.c             |  19 +++++-
+ drivers/gpu/drm/xlnx/zynqmp_disp.c       | 109 +++++++++++++++++++++++++++++--
+ drivers/gpu/drm/xlnx/zynqmp_disp.h       |  25 +++----
+ drivers/gpu/drm/xlnx/zynqmp_disp_regs.h  |   8 +--
+ drivers/gpu/drm/xlnx/zynqmp_dp.c         |  16 +++--
+ drivers/gpu/drm/xlnx/zynqmp_kms.c        |   2 +-
+ include/drm/drm_modeset_helper_vtables.h |  31 +++++++++
+ 7 files changed, 182 insertions(+), 28 deletions(-)
+---
+base-commit: bfa4437fd3938ae2e186e7664b2db65bb8775670
+change-id: 20240226-dp-live-fmt-6415773b5a68
+
+Best regards,
 -- 
-2.39.2
+Anatoliy Klymenko <anatoliy.klymenko@amd.com>
 
 
