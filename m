@@ -1,111 +1,133 @@
-Return-Path: <linux-kernel+bounces-83457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99D558699A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:02:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A5898699AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54D02292CA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:02:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C14F1C240CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D922F149DED;
-	Tue, 27 Feb 2024 14:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="DoNs7ATA"
-Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2E514AD08;
+	Tue, 27 Feb 2024 14:58:22 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F3C1474D7;
-	Tue, 27 Feb 2024 14:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775BB1487EF
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 14:58:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709045885; cv=none; b=A+b9eM5dGPaX4/p4hT0zaOnLrDiw1b1SQvK1DGGLw1cmA6Edx8pjtnRgzWxs/c2oygudTiF2YyUo5U2uaVMLK8HPZRwO5j/cXjDTcQ0wBWc1WQz8qfsBnJjj9329dg/J8F3tANBaxuqZt/jUB1zRdAYdylLIOwAhW68nAn6TRA4=
+	t=1709045902; cv=none; b=E3tfvawQZ6UK2pciuF762YryuChqlyo9VOz4/OFIADh/CcW8jUpR7QWqk9CTFn9LZfeV7bVrmNxPqJZRfBbGU8/yns7NmKtfz81KyXwl+R3JlEZ6+MEPBVKXo/BL4bebkpVdHo6MeeArXsdjFi6xyoja4+NfHJUwThQ5Dw/MxJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709045885; c=relaxed/simple;
-	bh=y1Ygv47ECIb/VfxJUSJLmULU1TrWL/0eo2q14QVsgbw=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=qSdtThfUbQh13PrQ/90MOrUmmCBjXsKP4n6CrB35ggrelsia4f3Ql8EwI71vZdfMtq2Z0zcdSjIQmu3+4WcpdaHzjhddRWx4n0oEx5zjo82ittEPY+hWuab4I3oCNo7aSPyA8TKJ0OzAQ2MvnITWaSmeMYrMDGMaIiI62hMBWhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=DoNs7ATA; arc=none smtp.client-ip=116.203.91.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
+	s=arc-20240116; t=1709045902; c=relaxed/simple;
+	bh=v6CtZFIkskFMZP/tfuYcxsRVOqDtKP5Ax0Lc0N+SkrU=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=efXCzEBDe0eChlB2blHgtV8b+UzC3XofM69lMdPvxTbeU3oNPLWzXqx5knmrFWODaLEtF7V09hMt+OSxKaQuvp/DxguNRprNXOha18OPfJk1BrQ14xnKAI15U5aut54efnUBtFBwjw3bTrL61FCv2S6Lj2UMWoRRgQqQMxh+Hgo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c7842d0340so474421039f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 06:58:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709045899; x=1709650699;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AnxpxdbEEupdGdQ67wxP7la7rz90oqHR6d7BHkK4Pxk=;
+        b=dUpmuwhykwzBgWNiKaejAT3lr+ASU/EQ2mu2Awqq58srj25CkBZD0zIZTXXAvkkxLy
+         LktSXK1NPXjaS95wB5nvMHC9azajnLpVIpE4PommP4NCLQNkX0MHN3lWtNP+2lxe485l
+         1cFqckHJr8/0WjzlMl/jNLlUovDJPbURXXZYDMHeibPpjfd68Fj4XeEmQ9xWk+QFpG2r
+         E3NQNOaE34qYKf7ql4Mu1aRgmBBnd88sI0F4C3L06YMVWkITERe15wSllWwDBFVKls9g
+         qbke64/cpdUXcS1GIPFu7TqIOSqODsaKZMuUNS+PAHnvolvLqjJ2ZQ06tpQvkeoh9loU
+         D3BA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOQaMBd4Ssbb7wvuxLGfM99qDNN7I+79ClAqIqF0O5GcYjJOjwQJZDr8Yp4Z1gMkiDe8I6j70ljmN98KOjH8t3CEbVKIBWSk0Fgs8R
+X-Gm-Message-State: AOJu0YydmdtRWnsNLO1HK+onZEXCUzu3N44xDcVrtwF3LS3c8a0ULFy9
+	Cwo7AzIPngcSRsEHMJBMGDJHsA9CHGjQ9uSUaeJ48uiccFb+6zT8/HBj1Zc4bHc/mGIjLGDc4gZ
+	qGIgp5B/ttQRBjLW7tcPQLmquCMd3OQcUDEbv/7FFtRMsdZfI6Em8o0I=
+X-Google-Smtp-Source: AGHT+IF/Ls8IgqyUvBX1SZoLCecsLftlei40N9hwPdoSs4z3YEAKoVzw/T7dIpahfEU7otPMnmtKHalq3FZUtrb+NXc71nNmIPPr
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
-	t=1709045880;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JTZuVi0d9uvRZL4My10OcZy9FBePsZQVwsZhJKzdOL4=;
-	b=DoNs7ATAI7kNuKmqWQm1bN1fJwd8ZKY0K+/yD1DzuW7xgfvgw085ZOa2rLbXEDfuKVk5eg
-	srCPtSdxKNKeetNpEEgERqTKNRJhl01qdjIWrF6mqwLnL911EQzC9pOB2B0RB+RhwGfI+V
-	aClodNXyGmn3uX4EbE1IaAdiJWLtv8l0sFoBva7b/FMoo/kEbvZNDXIKly3UXMPftKJCA3
-	LiOFFyDaOYXrbbcvBKBC+Ea9cL63jHxLMlniykE9TxQWcgADEZg2IPCCc77GRE4P5HcYUN
-	aq/ErBLdPaNAPly9K2A59/SrjU2IsgIiVHHqLGWNkvBc9IzHVL0bVtOb9MVyuA==
-Date: Tue, 27 Feb 2024 15:58:00 +0100
-From: Dragan Simic <dsimic@manjaro.org>
-To: Anand Moon <linux.amoon@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] arm64: dts: rockchip: Add cache information to the
- Rockchip RK3566 and RK3568 SoC
-In-Reply-To: <CANAwSgQnoBx+th6s254sML+Zw+RZQC6WU9TjfMoWgHxmCqbDcw@mail.gmail.com>
-References: <20240226182310.4032-1-linux.amoon@gmail.com>
- <8ceea100f2ef7cce296943ce1397161a@manjaro.org>
- <CANAwSgQnoBx+th6s254sML+Zw+RZQC6WU9TjfMoWgHxmCqbDcw@mail.gmail.com>
-Message-ID: <4676da62ec0fc0fe89318baea0678e0c@manjaro.org>
-X-Sender: dsimic@manjaro.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
+X-Received: by 2002:a05:6638:3714:b0:474:7eb2:f12 with SMTP id
+ k20-20020a056638371400b004747eb20f12mr290417jav.2.1709045899611; Tue, 27 Feb
+ 2024 06:58:19 -0800 (PST)
+Date: Tue, 27 Feb 2024 06:58:19 -0800
+In-Reply-To: <00000000000080c6c805f915ade0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c0550506125e4118@google.com>
+Subject: Re: [syzbot] [rds?] WARNING in rds_conn_connect_if_down
+From: syzbot <syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com>
+To: allison.henderson@oracle.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org, 
+	netdev@vger.kernel.org, pabeni@redhat.com, rds-devel@oss.oracle.com, 
+	santosh.shilimkar@oracle.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-02-27 13:49, Anand Moon wrote:
-> On Tue, 27 Feb 2024 at 00:39, Dragan Simic <dsimic@manjaro.org> wrote:
->> On 2024-02-26 19:23, Anand Moon wrote:
->> > As per RK3568 Datasheet and TRM add missing cache information to
->> > the Rockchip RK3566 and RK3568 SoC.
->> >
->> > - Each Cortex-A55 core has 32KB of L1 instruction cache available and
->> >       32KB of L1 data cache available with ECC.
->> > - Along with 512KB Unified L3 cache with ECC.
->> >
->> > With adding instruction cache and data cache and a write buffer to
->> > reduce the effect of main memory bandwidth and latency on data
->> > access performance.
->> >
->> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
->> 
->> I was about to send my own patch that adds the same missing cache
->> information, so please allow me to describe the proposed way to move
->> forward.
->> 
->> The way I see it, your commit summary and description need a rather
->> complete rewrite, to be more readable, more accurate, and to avoid
->> including an irrelevant (and slightly misleading) description of the
->> general role of caches.
->> 
->> Also, the changes to the dtsi file would benefit from small touch-ups
->> here and there, for improved consistency, etc.
->> 
->> With all that in mind, I propose that you withdraw your patch and let
->> me send my patch that will addresses all these issues, of course with
->> a proper tag that lists you as a co-developer.  I think that would
->> save us a fair amount of time going back and forth.
->> 
->> I hope you agree.
-> 
-> I have no issue with this,.If you have a better version plz share this.
+syzbot has found a reproducer for the following issue on:
 
-Thank you, I'll send my patch within the next couple of days.
+HEAD commit:    25d434257464 Merge branch 'pcs-xpcs-cleanups'
+git tree:       net-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11f0034a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=57c41f64f37f51c5
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4faee732755bba9838e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11cbd722180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10ff934a180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2731aa9fb143/disk-25d43425.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d1daf5663559/vmlinux-25d43425.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/798446e4189b/bzImage-25d43425.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5244 at net/rds/connection.c:931 rds_conn_connect_if_down+0x95/0xb0 net/rds/connection.c:931
+Modules linked in:
+CPU: 0 PID: 5244 Comm: syz-executor403 Not tainted 6.8.0-rc5-syzkaller-01592-g25d434257464 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:rds_conn_connect_if_down+0x95/0xb0 net/rds/connection.c:931
+Code: 00 4c 89 f0 48 c1 e8 03 42 80 3c 38 00 74 08 4c 89 f7 e8 2e c3 42 f7 49 8b 3e 5b 41 5e 41 5f e9 f1 fa ff ff e8 ac 49 e0 f6 90 <0f> 0b 90 eb cb 89 d9 80 e1 07 38 c1 7c a9 48 89 df e8 75 c2 42 f7
+RSP: 0018:ffffc900042cf8a0 EFLAGS: 00010293
+RAX: ffffffff8ab323c4 RBX: 0000000000000002 RCX: ffff888021100000
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000000
+RBP: ffffc900042cfad0 R08: ffffffff8ab3238b R09: ffffffff8ab44361
+R10: 0000000000000002 R11: ffff888021100000 R12: ffff8880746ee000
+R13: ffff88802e39a6c0 R14: ffff8880260f2000 R15: dffffc0000000000
+FS:  00007f8c89bff6c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000002069d000 CR3: 000000002989a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rds_sendmsg+0x1409/0x2280 net/rds/send.c:1319
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f8c89c84519
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 1a 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8c89bff218 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f8c89d0e428 RCX: 00007f8c89c84519
+RDX: 0000000000000000 RSI: 0000000020000800 RDI: 0000000000000003
+RBP: 00007f8c89d0e420 R08: 00007ffeca3c5797 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f8c89d0e42c
+R13: 00007f8c89cdb4f4 R14: 732e79726f6d656d R15: 00007ffeca3c5798
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
