@@ -1,156 +1,152 @@
-Return-Path: <linux-kernel+bounces-82928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98775868BDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:13:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4AE7868BE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:13:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 530E2281C60
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:13:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D74A71C21F91
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120A813A89E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44CFF13AA22;
 	Tue, 27 Feb 2024 09:10:22 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7931713A883
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A46313A87C
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:10:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709025021; cv=none; b=n82SLpW5WZLOmCRdCnWOgc1RCU3dWqD/61PBm7ZGvuHiNZuD7DHniE1ccCdXasjSgZdrkNLBgePgkQCOlMyEa4BV+/Vi4BsaLKhXBN1IZp+UsB0bMhGTCUP/GLysfwVBzar4ROPuswl+m7HHg1SwUleC4h2NujpqAoVrvhsFxcY=
+	t=1709025021; cv=none; b=aL8GiHOsB5WOynxh9WOAziqTpwgRRH+7lDgBul5uEs9wdVZekZwYuDYrMJncusEkZiuzlL7Jgei+46pQ0iYTTXsO+NHa6EgrT94a5pXeItb15S4jQbkdZ6PxYHyM9eS2yHgFnmBmYWJWom4nJBnIil04Rokc9gDYauooCOoTuPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709025021; c=relaxed/simple;
-	bh=Jly1x0TaVXR1mzGdvscOnLLDnoZKk+aCmpg0T7pCgPo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=k9DcBMfsA1BtCTyBPXXUMrB2yo6d+Zj7/R2AFvYkFKBTr8BdMYIEXj8tF/qC/CS5l+KqyZP7YkI4JAW0fQHWj/92DbDMUMrqs4dPE1xvbCdIlCmzpdRmmhMcMf+hHREVw/unfgOW/DlNOwgV8KdMJcdozlcVeZaXSvSPB2x/lYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-128-E934HnI0OCyPXoda2PTIuw-1; Tue, 27 Feb 2024 09:10:11 +0000
-X-MC-Unique: E934HnI0OCyPXoda2PTIuw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 27 Feb
- 2024 09:10:09 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 27 Feb 2024 09:10:09 +0000
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'kernel test robot' <lkp@intel.com>, "'linux-kernel@vger.kernel.org'"
-	<linux-kernel@vger.kernel.org>, 'Linus Torvalds'
-	<torvalds@linux-foundation.org>, 'Netdev' <netdev@vger.kernel.org>,
-	"'dri-devel@lists.freedesktop.org'" <dri-devel@lists.freedesktop.org>
-CC: "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>, "'Jens
- Axboe'" <axboe@kernel.dk>, "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-	'Christoph Hellwig' <hch@infradead.org>, "'linux-btrfs@vger.kernel.org'"
-	<linux-btrfs@vger.kernel.org>, 'Andrew Morton' <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>, 'Andy Shevchenko'
-	<andriy.shevchenko@linux.intel.com>, "'David S . Miller'"
-	<davem@davemloft.net>, 'Dan Carpenter' <dan.carpenter@linaro.org>, "'Jani
- Nikula'" <jani.nikula@linux.intel.com>
-Subject: RE: [PATCH next v2 03/11] minmax: Simplify signedness check
-Thread-Topic: [PATCH next v2 03/11] minmax: Simplify signedness check
-Thread-Index: AdpoCqfCgp/0gHjwSqumBl0qZkMqdgBEnDuAAA9N+TA=
-Date: Tue, 27 Feb 2024 09:10:09 +0000
-Message-ID: <291975e1412548daa70abfe747dfd893@AcuMS.aculab.com>
-References: <8657dd5c2264456f8a005520a3b90e2b@AcuMS.aculab.com>
- <202402270937.9kmO5PFt-lkp@intel.com>
-In-Reply-To: <202402270937.9kmO5PFt-lkp@intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	bh=iKt/FJSJlIUobet9tOnZhP4EyVnmjjds2m/Rz82uPuw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BUjs7gGFNoGG2qczk+tkhVOVp/CQMomp3Po4XeGcUFK8MfHl5wwjStYDSS9QPjgAWiiJQ+8wDZOQiB3+qTQ6whbpvMrxh3Nn4U9E4xk6BT8APJKS2aIuc+AUk6U0bopb6ynLVUcV+tYr8ttlVutgPyLEWr0deOI2lUEb0/8jyIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE808DA7;
+	Tue, 27 Feb 2024 01:10:56 -0800 (PST)
+Received: from [10.57.67.4] (unknown [10.57.67.4])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B01243F762;
+	Tue, 27 Feb 2024 01:10:15 -0800 (PST)
+Message-ID: <f6ee8263-ab8b-40f8-a40c-2badee58ae17@arm.com>
+Date: Tue, 27 Feb 2024 09:10:13 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] madvise:madvise_cold_or_pageout_pte_range(): allow split
+ while folio_estimated_sharers = 0
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
+ Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
+ David Hildenbrand <david@redhat.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>,
+ Matthew Wilcox <willy@infradead.org>, Minchan Kim <minchan@kernel.org>,
+ Vishal Moola <vishal.moola@gmail.com>, Yang Shi <shy828301@gmail.com>
+References: <20240221085036.105621-1-21cnbao@gmail.com>
+ <71fa4302-2df6-4e55-a5a8-7609476c41d4@arm.com>
+ <CAGsJ_4wj_xcrMkw9+W79TpO73nPQx+rs=zPj7_5kWVMAvHUGTA@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4wj_xcrMkw9+W79TpO73nPQx+rs=zPj7_5kWVMAvHUGTA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-From: kernel test robot
-> Sent: 27 February 2024 01:34
->=20
-> kernel test robot noticed the following build warnings:
->=20
-> [auto build test WARNING on drm-misc/drm-misc-next]
-> [also build test WARNING on linux/master mkl-can-next/testing kdave/for-n=
-ext akpm-mm/mm-nonmm-unstable
-> axboe-block/for-next linus/master v6.8-rc6 next-20240226]
-> [cannot apply to next-20240223 dtor-input/next dtor-input/for-linus horms=
--ipvs/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->=20
-> url:    https://github.com/intel-lab-lkp/linux/commits/David-Laight/minma=
-x-Put-all-the-clamp-
-> definitions-together/20240226-005902
-> base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-> patch link:    https://lore.kernel.org/r/8657dd5c2264456f8a005520a3b90e2b=
-%40AcuMS.aculab.com
-> patch subject: [PATCH next v2 03/11] minmax: Simplify signedness check
-> config: alpha-defconfig (https://download.01.org/0day-ci/archive/20240227=
-/202402270937.9kmO5PFt-
-> lkp@intel.com/config)
-> compiler: alpha-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-
-> ci/archive/20240227/202402270937.9kmO5PFt-lkp@intel.com/reproduce)
->=20
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202402270937.9kmO5PFt-lkp=
-@intel.com/
->=20
-> All warnings (new ones prefixed by >>):
->=20
->    In file included from include/linux/kernel.h:28,
->                     from include/linux/cpumask.h:10,
->                     from include/linux/smp.h:13,
->                     from include/linux/lockdep.h:14,
->                     from include/linux/spinlock.h:63,
->                     from include/linux/swait.h:7,
->                     from include/linux/completion.h:12,
->                     from include/linux/crypto.h:15,
->                     from include/crypto/aead.h:13,
->                     from include/crypto/internal/aead.h:11,
->                     from crypto/skcipher.c:12:
->    crypto/skcipher.c: In function 'skcipher_get_spot':
-> >> include/linux/minmax.h:31:70: warning: ordered comparison of pointer w=
-ith integer zero [-Wextra]
->       31 |         (is_unsigned_type(typeof(x)) || (__is_constexpr(x) ? (=
-x) + 0 >=3D 0 : 0))
+On 26/02/2024 21:17, Barry Song wrote:
+> On Tue, Feb 27, 2024 at 2:46 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 21/02/2024 08:50, Barry Song wrote:
+>>> From: Barry Song <v-songbaohua@oppo.com>
+>>>
+>>> The purpose is stopping splitting large folios whose mapcount are 2 or
+>>> above. Folios whose estimated_shares = 0 should be still perfect and
+>>> even better candidates than estimated_shares = 1.
+>>>
+>>> Consider a pte-mapped large folio with 16 subpages, if we unmap 1-15,
+>>> the current code will split folios and reclaim them while madvise goes
+>>> on this folio; but if we unmap subpage 0, we will keep this folio and
+>>> break. This is weird.
+>>>
+>>> For pmd-mapped large folios, we can still use "= 1" as the condition
+>>> as anyway we have the entire map for it. So this patch doesn't change
+>>> the condition for pmd-mapped large folios.
+>>> This also explains why we had been using "= 1" for both pmd-mapped and
+>>> pte-mapped large folios before commit 07e8c82b5eff ("madvise: convert
+>>> madvise_cold_or_pageout_pte_range() to use folios"), because in the
+>>> past, we used the mapcount of the specific subpage, since the subpage
+>>> had pte present, its mapcount wouldn't be 0.
+>>>
+>>> The problem can be quite easily reproduced by writing a small program,
+>>> unmapping the first subpage of a pte-mapped large folio vs. unmapping
+>>> anyone other than the first subpage.
+>>>
+>>> Fixes: 2f406263e3e9 ("madvise:madvise_cold_or_pageout_pte_range(): don't use mapcount() against large folio for sharing check")
+>>> Cc: Yin Fengwei <fengwei.yin@intel.com>
+>>> Cc: Yu Zhao <yuzhao@google.com>
+>>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>>> Cc: David Hildenbrand <david@redhat.com>
+>>> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>> Cc: Matthew Wilcox <willy@infradead.org>
+>>> Cc: Minchan Kim <minchan@kernel.org>
+>>> Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+>>> Cc: Yang Shi <shy828301@gmail.com>
+>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>>> ---
+>>>  mm/madvise.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/mm/madvise.c b/mm/madvise.c
+>>> index cfa5e7288261..abde3edb04f0 100644
+>>> --- a/mm/madvise.c
+>>> +++ b/mm/madvise.c
+>>> @@ -453,7 +453,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>>>               if (folio_test_large(folio)) {
+>>>                       int err;
+>>>
+>>> -                     if (folio_estimated_sharers(folio) != 1)
+>>> +                     if (folio_estimated_sharers(folio) > 1)
+>>>                               break;
+>>>                       if (pageout_anon_only_filter && !folio_test_anon(folio))
+>>>                               break;
+>>
+>> I wonder if we should change all the instances:
+>>
+>> folio_estimated_sharers() != 1   ->   folio_estimated_sharers() > 1
+>> folio_estimated_sharers() == 1   ->   folio_estimated_sharers() <= 1
+>>
+>> It shouldn't cause a problem for the pmd case, and there are definitely other
+>> cases where it will help. e.g. madvise_free_pte_range().
+> 
+> right. My test case covered PAGEOUT only and I agree madvise_free and
+> others have
+> exactly the same issue. for pmd case, it doesn't matter whether we
+> change the condition
+> or not because we have already pmd-mapped in the page table.
+> 
+> And good to know David will have a wrapper in folio_mapped_shared()  to more
+> widely address this issue.
+> 
+>>
+>> Regardless:
+>>
+>> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
+>>
+> 
+> Thanks though we might have missed your tag as this one has been
+> in mm-stable.
 
-Hmmm -Wextra isn't normally set.
-But I do wish the compiler would do dead code elimination before
-these warnings.
+No problem! I've been out on holiday so a bit behind on where everything is.
 
-Apart from stopping code using min()/max() for pointer types
-(all the type checking is pointless) I think that __is_constextr()
-can be implemented using _Generic (instead of sizeof(type)) and then the
-true/false return values can be specified and need not be the same types.
-That test can then be:
-=09(__if_constexpr(x, x, -1) >=3D 0)
-(The '+ 0' is there to convert bool to int and won't be needed
-for non-constant bool.)
-
-I may drop the last few patches until MIN/MAX have been removed
-from everywhere else to free up the names.
-
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+> 
+> Best regards,
+> Barry
 
 
