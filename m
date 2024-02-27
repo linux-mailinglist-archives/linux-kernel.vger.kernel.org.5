@@ -1,154 +1,197 @@
-Return-Path: <linux-kernel+bounces-82677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FFF386882C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:22:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79ADB868836
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:25:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC9D31F23C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:22:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D3B71C2268A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 288214D9E4;
-	Tue, 27 Feb 2024 04:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5770B4DA0B;
+	Tue, 27 Feb 2024 04:25:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="iDThSa7G"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Dpq+4pku"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F31441B962
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5841EEEA;
+	Tue, 27 Feb 2024 04:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709007761; cv=none; b=ZB7jt43q8yYlU1zpoBNtgGcg1QWlJwif8cQMf+7FWWItD4E+pJei6wYsWC5LY7//cJB9+SuwG4leL3JPUr7MJ05yGmHaY5yOUEOT6SxiX/+/jaGXPzHv3HnrAzi2+EvJz4GzJEDMGaYHX8xUwVQTFOcnQ1ukiJrrD/Rc+et+fAs=
+	t=1709007915; cv=none; b=Sa8eS59fzHL5jK0KpVzdQhK9MQe/Eoo7w05Bn4k9ZQpDR4GUdMuLMQeFVh9ibnphKnzhkHiJGMTKTW/Oefcz9n/Ym6JBSDJbXv7oa2dRpfrOItIlkQr1wjFOjy8pluam10NMwXfQwaqdgQ2GYkDiffz0qMgRsyCJs3LEObof2II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709007761; c=relaxed/simple;
-	bh=6jNFMRONjBC5hI101lH7xzU+lTU1NDVXO/PbyiENPmk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=r+CQbTG0kvwTuWf54dWvY/sPwSo9KlFAqkur1eoLwIzy4+VcI8K6lu1GlzJr1HEta7ksBFhIMnKP/GMGQUyCE6GDS1aU4Nk/hWR7qCigRN8RwgmOZFCP1O/90+n0qe0H9MTKoQMnN2/YLb0zCDkbWAbGe5KB5NswCFHZ9JcSAUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=iDThSa7G; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id A4B112C0546;
-	Tue, 27 Feb 2024 17:22:36 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1709007756;
-	bh=6jNFMRONjBC5hI101lH7xzU+lTU1NDVXO/PbyiENPmk=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=iDThSa7GAGxVyVFYzyylfpzl7NK13suc3cJNBGsZ2Ljiluqw7jzeZJJaQ3USXreL8
-	 +Kcn2S5R7msC1inaG9ytTxDMUaGCHiaFM5Qdy0ybvBQD/vtmUZW169xVD3SqhK5LuI
-	 zQWgPhU1Y7R1L/zzVEhVm9/jsb8DxyhzM92jRkYksdJ7IZ/dZmmzVho6ISL6VC6+pi
-	 pJEkKS9PsC1wo00CZvpQLJn3yP5svYnldDA8HlLL2I983t/NNFVfLDm54u9wDdAZHu
-	 fsZvlVB0qBQfnSp/Chiq8QocMCENhEcwqTxmLGF4JqQBgfKMAZYAexQTSE/6tE+8u9
-	 cvNX3ZI+OW56Q==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65dd638c0001>; Tue, 27 Feb 2024 17:22:36 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.40; Tue, 27 Feb 2024 17:22:36 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
- SMTP Server (TLS) id 15.0.1497.48; Tue, 27 Feb 2024 17:22:36 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.040; Tue, 27 Feb 2024 17:22:36 +1300
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-CC: "antoniu.miclaus@analog.com" <antoniu.miclaus@analog.com>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "jdelvare@suse.com"
-	<jdelvare@suse.com>, "linux@roeck-us.net" <linux@roeck-us.net>,
-	"linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>, Ibrahim Tilki
-	<Ibrahim.Tilki@analog.com>, Zeynep Arslanbenzer
-	<Zeynep.Arslanbenzer@analog.com>
-Subject: Re: [PATCH v8 1/2] rtc: max31335: Add support for additional chips
-Thread-Topic: [PATCH v8 1/2] rtc: max31335: Add support for additional chips
-Thread-Index: AQHaaTSXXsc2JlLE/USpTZyAh1r7Yg==
-Date: Tue, 27 Feb 2024 04:22:35 +0000
-Message-ID: <ce50b1bc-0786-454e-9498-0b5ddbea0e2a@alliedtelesis.co.nz>
-References: <20240227010312.3305966-1-chris.packham@alliedtelesis.co.nz>
- <20240227010312.3305966-2-chris.packham@alliedtelesis.co.nz>
- <20240227022919856ffa1d@mail.local>
-In-Reply-To: <20240227022919856ffa1d@mail.local>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <225F68B96E1BA144A07C34DCAF01936C@atlnz.lc>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1709007915; c=relaxed/simple;
+	bh=FKx34NGx56OfaqqlnsM4Id57tKe3ZjT0UUYkPNqbYHM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=JtrWRpvVSB2kJioHjSANSg+DxO3mh4CWyv9BhTKsoMW8sRzFtOg5pA4vOk6fiRE1GYhxp4t/ph/Lt0JwZkH2z9KmOB8Dv5xBPppxzMuNhKmjXnTtw84kk8rmWTNskvlCnxIA3jy/MlviUgh4HzdQrXFU2yoOizUC3EbKQI8woXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Dpq+4pku; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41R4OdoS033202;
+	Mon, 26 Feb 2024 22:24:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709007879;
+	bh=lLf2MHGq1G+iPHOKjhL3F0LbLV6mSmAfmkVSCh2uWNk=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=Dpq+4pku6oqrWEHcenPaq4SqrU18W/ebYfWi9ZY1axN7c6e8AyQtHItaBVQmvuQ9P
+	 ffpBvmc0+00mKNxWWjkDpbAN/CCGUtOp0Xq5ULCfuDUO8a4k7nunOOBkvRnRDgRTvv
+	 D5u2h63VZ591yN06t5HMJgx3JLATF1FxgRzn1df0=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41R4Odgu004999
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 26 Feb 2024 22:24:39 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 26
+ Feb 2024 22:24:39 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 26 Feb 2024 22:24:39 -0600
+Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41R4OWTk077058;
+	Mon, 26 Feb 2024 22:24:33 -0600
+Message-ID: <37ab0886-0cd1-4188-9177-8b7ef0ad9eca@ti.com>
+Date: Tue, 27 Feb 2024 09:54:30 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65dd638c a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=sVLDwT0inrkDDW06gAMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/8] dt-bindings: usb: ti,j721e-usb: drop useless
+ compatible list
+Content-Language: en-US
+To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Conor Dooley
+	<conor.dooley@microchip.com>
+CC: Conor Dooley <conor@kernel.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, Roger Quadros <rogerq@kernel.org>,
+        Peter Chen
+	<peter.chen@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>, Nishanth Menon
+	<nm@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Thomas Petazzoni
+	<thomas.petazzoni@bootlin.com>,
+        =?UTF-8?Q?Gr=C3=A9gory_Clement?=
+	<gregory.clement@bootlin.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Alan Stern
+	<stern@rowland.harvard.edu>, <linux-usb@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20240223-j7200-usb-suspend-v3-0-b41c9893a130@bootlin.com>
+ <20240223-j7200-usb-suspend-v3-1-b41c9893a130@bootlin.com>
+ <20240223-clarity-variably-206b01b7276a@spud>
+ <CZEXXXQDZZWB.1M5CTZAFVO4YP@bootlin.com>
+ <20240226-portable-rockslide-e501667a0d9a@wendy>
+ <CZF33W51MC4M.3GUBZFQXT39DB@bootlin.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <CZF33W51MC4M.3GUBZFQXT39DB@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-SGkgQWxleGFuZHJlLA0KDQpGaXJzdCBvZmYgYXBvbG9naWVzIGlmIEkndmUgc3RydWNrIGEgbmVy
-dmUsIHRoYXQgd2FzIG5ldmVyIG15IGludGVudGlvbi4gDQpJIHRob3VnaHQgY2xlYW5pbmcgdXAg
-YW4gaW5mbGlnaHQgcGF0Y2ggc2VyaWVzIHRvIGdldCBpdCBsYW5kZWQgd291bGQgYmUgDQphIHN0
-cmFpZ2h0IGZvcndhcmQgdGhpbmcuDQoNCk9uIDI3LzAyLzI0IDE1OjI5LCBBbGV4YW5kcmUgQmVs
-bG9uaSB3cm90ZToNCj4gT24gMjcvMDIvMjAyNCAxNDowMzowOSsxMzAwLCBDaHJpcyBQYWNraGFt
-IHdyb3RlOg0KPj4gLQltYXgzMTMzNS0+Y2xrb3V0LmNsayA9IGRldm1fY2xrX2dldF9lbmFibGVk
-KGRldiwgTlVMTCk7DQo+PiAtCWlmIChJU19FUlIobWF4MzEzMzUtPmNsa291dC5jbGspKQ0KPj4g
-LQkJcmV0dXJuIGRldl9lcnJfcHJvYmUoZGV2LCBQVFJfRVJSKG1heDMxMzM1LT5jbGtvdXQuY2xr
-KSwNCj4+IC0JCQkJICAgICAiY2Fubm90IGVuYWJsZSBjbGtvdXRcbiIpOw0KPiBUaGlzIGlzIHNv
-IHVnbHkgYW5kIHNob3VsZCBoYXZlIG5ldmVyIHBhc3NlZC4gSSB3ZW50IHdlYWsgaW4gZnJvbnQg
-b2YNCj4gQW50b25pdSdzIGluc2lzdGFuY2UgYnV0IEknbSB2ZXJ5IGNsb3NlIGZyb20gcmlwcGlu
-ZyBvdXQgdGhlIHdob2xlDQo+IGRyaXZlciBmcm9tIHRoZSBrZXJuZWwgbm93Lg0KPg0KPiBTZXJp
-b3VzbHksIHJlYWQgYWxsIHRoZSBjb21tZW50cyB0aGF0IGhhdmUgYmVlbiBtYWRlIGFyb3VuZCB0
-aGUgSVJRL2Nsaw0KPiBzdHVmZiBhbmQgY29tZSBiYWNrIHdpdGggYSBwcm9wZXIgc29sdXRpb24u
-DQoNClllYWggSSdtIG9ubHkganVzdCBnZXR0aW5nIHRvIGdyaXBzIHdpdGggdGhpcy4NCg0KTm8g
-aWRlYSBhYm91dCB0aGUgTUFYMzEzMzUgaXRzZWxmIGJ1dCBmcm9tIHRoZSBNQVgzMTMzNCBpdCBs
-b29rcyBsaWtlIA0KdGhlIGFsYXJtMSBpbnRlcnJ1cHQgd2lsbCBtb3ZlIGZyb20gSU5UQSB0byBJ
-TlRCLiBJIHRoaW5rIHJhdGhlciB0aGFuIA0KbWVzc2luZyBhYm91dCB3aXRoIHRoZSBjbG9jayBz
-dHVmZiB3ZSdkIGJlIGJldHRlciBvZmYgd2l0aCBhIA0KcGluLTYtZnVuY3Rpb24gPSAiYWxhcm0x
-IiB8ICJjbGtvdXQiIHByb3BlcnR5Lg0KDQo+DQo+PiArc3RhdGljIGludCBtYXgzMTMzNV9pcnFf
-aW5pdChzdHJ1Y3QgZGV2aWNlICpkZXYsIGNvbnN0IGNoYXIgKmRldm5hbWUpDQo+PiArew0KPj4g
-KwlzdHJ1Y3QgbWF4MzEzMzVfZGF0YSAqbWF4MzEzMzUgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsN
-Cj4+ICsJaW50IHJldDsNCj4+ICsNCj4+ICsJc3dpdGNoIChtYXgzMTMzNS0+aWQpIHsNCj4+ICsJ
-Y2FzZSBJRF9NQVgzMTMyODoNCj4+ICsJCWJyZWFrOw0KPj4gKwljYXNlIElEX01BWDMxMzMxOg0K
-Pj4gKwljYXNlIElEX01BWDMxMzM0Og0KPj4gKwkJaWYgKG1heDMxMzM1LT5jbGtvdXQuY2xrKSB7
-DQo+PiArCQkJLyoNCj4+ICsJCQkgKiBpbnRlcnJ1cHQgbXV4aW5nIGRlcGVuZHMgb24gY2xrb3V0
-IHNvIGVuYWJsZSBjbGtvdXQNCj4+ICsJCQkgKiBpZiBjb25maWd1cmVkIGJlZm9yZSByZXF1ZXN0
-aW5nIGludGVycnVwdA0KPj4gKwkJCSAqLw0KPj4gKwkJCXJldCA9IGNsa19wcmVwYXJlX2VuYWJs
-ZShtYXgzMTMzNS0+Y2xrb3V0LmNsayk7DQo+IERvIEkgZ2V0IHRoaXMgcmlnaHQgdGhhdCB0aGlz
-IGlzIGFib3V0IGVuYWJsaW5nIGl0cyBvd24gb3V0cHV0IGNsb2NrPw0KPiBXaHkgd291bGQgeW91
-IG5lZWQgdG8gZG8gdGhhdD8gU29tZXRoaW5nIGVsc2UgbXVzdCBiZSB0aGUgY29uc3VtZXIsIG5v
-dA0KPiB0aGUgcHJvdmlkZXIgaXRzZWxmLg0KDQpJIGRvbid0IHRoaW5rIGl0IGRvZXMuIEl0J3Mg
-anVzdCB0aGF0IGJhc2VkIG9uIHRoZSBFTkNMS08gc2V0dGluZyBhbGFybTEgDQp3aWxsIGJlIG91
-dHB1dCBvbiBhIGRpZmZlcmVudCBwaW4uIEkgZG9uJ3QgdGhpbmsgdGhlcmUncyByZWFsbHkgYSBw
-cm9wZXIgDQp3YXkgb2YgZGlzYWJsaW5nIENMS09VVCBkeW5hbWljYWxseS4gRWl0aGVyIGl0J3Mg
-ZW5hYmxlZCBhbmQgYWxsIHRoZSANCmludGVycnVwdHMgYXJlIG9uIHRoZSBJTlRBIHBpbiBvciBp
-dCdzIGRpc2FibGVkIGFuZCBhbGFybTEgaXMgbW92ZWQgdG8gDQp0aGUgSU5UQi4gWW91IGNhbiBj
-aGFuZ2UgdGhlIGNsa291dCBmcmVxdWVuY3kgYnV0IG5vdCBvdXRyaWdodCBkaXNhYmxlIA0KaXQg
-KHdpdGhvdXQgaGF2aW5nIGEgc2lkZS1lZmZlY3QgdGhhdCBpbXBhY3RzIHRoZSBpbnRlcnJ1cHQg
-YXNzaWdubWVudCkuDQoNClNvIEkgdGhpbmsgbXkgc3VnZ2VzdGlvbiBvZiBtYWtpbmcgaXQgcGFy
-dCBvZiB0aGUgaGFyZHdhcmUgZGVzY3JpcHRpb24gDQppcyBwcm9iYWJseSB0aGUgc2Vuc2libGUg
-dGhpbmcgdG8gZG8uIEl0IGFmZmVjdHMgaG93IHRoZSBpbnRlcnJ1cHRzIGFyZSANCnBoeXNpY2Fs
-bHkgY29ubmVjdGVkIHNvIEkgdGhpbmsgaXQgZG9lcyBiZWxvbmcgaW4gdGhlIGRldmljZSB0cmVl
-Lg0KDQo+DQo+PiArCQkJaWYgKHJldCkNCj4+ICsJCQkJcmV0dXJuIGRldl9lcnJfcHJvYmUoZGV2
-LCByZXQsDQo+PiArCQkJCQkJICAgICAiY2Fubm90IGVuYWJsZSBjbGtvdXRcbiIpOw0KPj4gKwkJ
-fQ0KPj4gKwkJYnJlYWs7DQo+PiArCWRlZmF1bHQ6DQo+PiArCQlpZiAobWF4MzEzMzUtPmNsa2lu
-KSB7DQo+PiArCQkJaWYgKG1heDMxMzM1LT5jbGtvdXQuY2xrICYmIG1heDMxMzM1LT5pcnEgPiAw
-KQ0KPj4gKwkJCQlyZXR1cm4gZGV2X2Vycl9wcm9iZShkZXYsIC1FT1BOT1RTVVBQLA0KPj4gKwkJ
-CQkJCSAgICAgImlycSBub3QgcG9zc2libGUgd2hlbiBib3RoIGNsa2luIGFuZCBjbGtvdXQgYXJl
-IGNvbmZpZ3VyZWRcbiIpOw0KPiBUaGlzIGlzIG5vdCB0cnVlLCB0aGUgUlRDIGlzIGFsd2F5cyBh
-IGNsb2NrIHByb3ZpZGVyLiBXaGF0IGlzIG5vdA0KPiBwb3NzaWJsZSBpcyBtdXhpbmcgdGhlIGNs
-b2NrIG9uIHRoZSBwaW4gaW4gYSBmZXcgY29uZmlndXJhdGlvbnMuDQoNClllYWggSSBkb24ndCB1
-bmRlcnN0YW5kIHRoYXQgZWl0aGVyLiBOb3Qgc3VyZSB3aGF0IGNsa2luIGhhcyB0byBkbyB3aXRo
-IA0KYW55dGhpbmcgaGVyZS4gVGhlIGNsa291dCBzdHVmZiBhZmZlY3RzIHdoaWNoIGlycSBwaW5z
-IGFyZSBpbiBwbGF5Lg0K
+
+
+On 26/02/24 20:05, Théo Lebrun wrote:
+> Hello,
+> 
+> On Mon Feb 26, 2024 at 12:56 PM CET, Conor Dooley wrote:
+>> On Mon, Feb 26, 2024 at 11:33:06AM +0100, Théo Lebrun wrote:
+>>> Hello Conor,
+>>>
+>>> On Fri Feb 23, 2024 at 7:12 PM CET, Conor Dooley wrote:
+>>>> On Fri, Feb 23, 2024 at 05:05:25PM +0100, Théo Lebrun wrote:
+>>>>> Compatible can be A or B, not A or B or A+B. Remove last option.
+>>>>> A=ti,j721e-usb and B=ti,am64-usb.
+>>>>>
+>>>>> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+>>>>> ---
+>>>>>  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 9 +++------
+>>>>>  1 file changed, 3 insertions(+), 6 deletions(-)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+>>>>> index 95ff9791baea..949f45eb45c2 100644
+>>>>> --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
+>>>>> @@ -11,12 +11,9 @@ maintainers:
+>>>>>  
+>>>>>  properties:
+>>>>>    compatible:
+>>>>> -    oneOf:
+>>>>> -      - const: ti,j721e-usb
+>>>>> -      - const: ti,am64-usb
+>>>>> -      - items:
+>>>>> -          - const: ti,j721e-usb
+>>>>> -          - const: ti,am64-usb
+>>>>
+>>>> Correct, this makes no sense. The devices seem to be compatible though,
+>>>> so I would expect this to actually be:
+>>>> oneOf:
+>>>>   - const: ti,j721e-usb
+>>>>   - items:
+>>>>       - const: ti,am64-usb
+>>>>       - const: ti,j721e-usb
+>>>
+>>> I need your help to grasp what that change is supposed to express? Would
+>>> you mind turning it into english sentences?
+>>> A=ti,j721e-usb and B=ti,am64-usb. My understanding of your proposal is
+>>> that a device can either be compat with A or B. But B is compatible
+>>> with A so you express it as a list of items. If B is compat with A then
+>>> A is compat with B. Does the order of items matter?
+>>
+>> The two devices are compatible with each other, based on an inspection of
+>> the driver and the existing "A+B" setup. If this was a newly submitted
+>> binding, "B" would not get approved because "A+B" allows support without
+>> software changes and all that jazz.
+>>
+>> Your patch says that allowing "A", "B" and "A+B" makes no sense and you
+>> suggest removing "A+B". I am agreeing that it makes no sense to allow
+>> all 3 of these situations.
+>>
+>> What I also noticed is other problems with the binding. What should have
+>> been "A+B" is actually documented as "B+A", but that doesn't make sense
+>> when the originally supported device is "A".
+>>
+>> Therefore my suggestion was to only allow "A" and "A+B", which is what
+>> we would (hopefully) tell you to do were you submitting the am64 support
+>> as a new patch today.
+> 
+> Thank you for the in-depth explanation! It makes much more sense now,
+> especially the handling of historic stuff that ideally wouldn't have
+> been done this way but that won't be changed from now on.
+> 
+
+IIRC, idea behind adding new compatible for AM64 even though register
+map is very much compatible is just being future proof as AM64 and J721e
+belong to different product groups and thus have differences wrt SoC
+level integration etc which may need SoC specific handling later on.
+
+I don't see any DT (now or in the past) using
+
+compatible = B,A or compatible = A,B
+
+So do we really need A+B to be supported by binding?
+
+Also, note that AM64 SoC support was added long after J721e. So ideally
+should be B+A if at all we need a fallback compatible.
+
+Regards
+Vignesh
+-- 
+Regards
+Vignesh
 
