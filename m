@@ -1,121 +1,93 @@
-Return-Path: <linux-kernel+bounces-83791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70842869E7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:00:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23279869E82
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:02:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 103CF1F2BB3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:00:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C56CE289256
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:02:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BEFC4F5EC;
-	Tue, 27 Feb 2024 18:00:39 +0000 (UTC)
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87ABF145346;
+	Tue, 27 Feb 2024 18:02:03 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5292B4EB44;
-	Tue, 27 Feb 2024 18:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06114E1DC;
+	Tue, 27 Feb 2024 18:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709056839; cv=none; b=k1rkI7LGDP2f7MZmEjnWakRQyKrUG59sPEnI+A+pXrwS7+k/KqTqL9E4sI3RYpPyDbhOHYu0v1T4E2yl7RRZYCw5k6VWX+myud6e5UVSNdh0pt2D0nFMNeTTeEBX968i8FXjT8PC/2ciKIRy1AP4+OPg4C4YSiJyu78pDcW7OVY=
+	t=1709056922; cv=none; b=jkJd6KtwUkgGKtRwXdd+Gh7UH6NzVAi+x2TvdggDmaYP9ir+7Wt9c6629poPxdHJyDyXPjJxufn1dz0Tqc3utU7xQ4ETJrfAF8w8FdQY6eyIjg0ZDroHs/eOVP6Tgm1CG1w3gHJHqPLwcmoQQXdo+MPlrfuqRN09g2pX3z+32zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709056839; c=relaxed/simple;
-	bh=HMLqiLNT5rGKC/cGZ6H4NNZrrQDJZ8PPrqMkNXuLyAc=;
+	s=arc-20240116; t=1709056922; c=relaxed/simple;
+	bh=gUaJw7navpSvwR7rIR3frdEMxjbCPmRD2IOryPdpKMg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BHhZWA/Z8jB4td/OLQFcaMEO+Fcj4sxtON2Jw2o4k2x3cZFZenyKMVyYvzlW06LA2SE7BLAnBNz36ppbSDEQ1wIy34WjF+PW9ll0UCg2ASpfTaRfRrmzjSLpmh9Af6tKfXYEbCoQn8g16C07NBEPf2LgPisDkqFyhBLYptN1VCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 377DE1C0082; Tue, 27 Feb 2024 19:00:35 +0100 (CET)
-Date: Tue, 27 Feb 2024 19:00:34 +0100
-From: Pavel Machek <pavel@denx.de>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 5.15 000/245] 5.15.150-rc1 review
-Message-ID: <Zd4jQrJLf44KxKWM@duo.ucw.cz>
-References: <20240227131615.098467438@linuxfoundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HX2TFqbtpuaAm7qnMF1c9Ia85T+N9xlVS/d3JXSKR6b6MMSHs2baTlHLykwDotsoqT9ctX6q0mVGQXQ4EbhXE9aPaUOzVTqGkfLqT6yC3Db+uaTgW3+O1rhcQTvOitxkch0kK/oNJCnBDaC/JoL0QlnAAEmBtdkJSbGbpWKqzKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2202BC433F1;
+	Tue, 27 Feb 2024 18:01:58 +0000 (UTC)
+Date: Tue, 27 Feb 2024 18:01:56 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Puranjay Mohan <puranjay12@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>, Will Deacon <will@kernel.org>,
+	bpf <bpf@vger.kernel.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] arm64: stacktrace: Implement
+ arch_bpf_stack_walk() for the BPF JIT
+Message-ID: <Zd4jlPW2H7EvdlfM@arm.com>
+References: <20240201125225.72796-1-puranjay12@gmail.com>
+ <20240201125225.72796-2-puranjay12@gmail.com>
+ <ZdegTX9x2ye-7xIt@arm.com>
+ <CAADnVQLGGTshMiQAWwJ9UzrEVDR4Z8yk+ki9pUqKLgcH0DRAjA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9s0xY+6wLOv2nWYy"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240227131615.098467438@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQLGGTshMiQAWwJ9UzrEVDR4Z8yk+ki9pUqKLgcH0DRAjA@mail.gmail.com>
 
+On Thu, Feb 22, 2024 at 06:04:35PM -0800, Alexei Starovoitov wrote:
+> On Thu, Feb 22, 2024 at 11:28 AM Catalin Marinas
+> <catalin.marinas@arm.com> wrote:
+> > On Thu, Feb 01, 2024 at 12:52:24PM +0000, Puranjay Mohan wrote:
+> > > This will be used by bpf_throw() to unwind till the program marked as
+> > > exception boundary and run the callback with the stack of the main
+> > > program.
+> > >
+> > > This is required for supporting BPF exceptions on ARM64.
+> > >
+> > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > > ---
+> > >  arch/arm64/kernel/stacktrace.c | 26 ++++++++++++++++++++++++++
+> > >  1 file changed, 26 insertions(+)
+[...]
+> > I guess you want this to be merged via the bpf tree?
+> 
+> We typically take bpf jit patches through bpf-next, since
+> we do cross arch jits refactoring from time to time,
+> but nothing like this is pending for this merge window,
+> so if you want it to go through arm64 tree that's fine with us.
 
---9s0xY+6wLOv2nWYy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I don't have any preference. I can add it on top of the other arm64
+patches if there are no dependencies on it from your side.
 
-Hi!
-
-> This is the start of the stable review cycle for the 5.15.150 release.
-> There are 245 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
-> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
-> Anything received after that time might be too late.
-
-We get build errors on risc-v:
-
-  CC      drivers/clocksource/dummy_timer.o
-2773  CC      net/sunrpc/timer.o
-2774  CC      drivers/firmware/efi/libstub/lib-fdt_rw.o
-2775In file included from ./include/linux/list.h:9,
-2776                 from ./include/linux/module.h:12,
-2777                 from drivers/net/ethernet/realtek/r8169_main.c:12:
-2778drivers/net/ethernet/realtek/r8169_main.c:5512:23: error: 'rtl8169_pm_o=
-ps' undeclared here (not in a function); did you mean 'rtl8169_poll'?
-2779 5512 |  .driver.pm =3D pm_ptr(&rtl8169_pm_ops),
-2780      |                       ^~~~~~~~~~~~~~
-2781./include/linux/kernel.h:46:38: note: in definition of macro 'PTR_IF'
-2782   46 | #define PTR_IF(cond, ptr) ((cond) ? (ptr) : NULL)
-2783      |                                      ^~~
-2784drivers/net/ethernet/realtek/r8169_main.c:5512:15: note: in expansion o=
-f macro 'pm_ptr'
-2785 5512 |  .driver.pm =3D pm_ptr(&rtl8169_pm_ops),
-2786      |               ^~~~~~
-2787  CC      net/sunrpc/xdr.o
-2788  CC      drivers/clocksource/timer-riscv.o
-2789make[4]: *** [scripts/Makefile.build:289: drivers/net/ethernet/realtek/=
-r8169_main.o] Error 1
-2790make[4]: *** Waiting for unfinished jobs....
-2791  CC      drivers/mmc/core/sdio_bus.o
-2792  CC      net/sunrpc/sunrpc_syms.o
-2793  CC      fs/fhandle.o
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/pipelines/1=
-192614164
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---9s0xY+6wLOv2nWYy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZd4jQgAKCRAw5/Bqldv6
-8sLFAJ0QUN7KR2m75k1T8lOY1T21lGXAeQCdHEuBygosXiY/oDuPaRX4gxtXBFw=
-=sWUz
------END PGP SIGNATURE-----
-
---9s0xY+6wLOv2nWYy--
+-- 
+Catalin
 
