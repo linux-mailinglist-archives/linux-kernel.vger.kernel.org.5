@@ -1,143 +1,118 @@
-Return-Path: <linux-kernel+bounces-82766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77A2F86896B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D05FA86896F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:58:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 277461F22B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:57:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80D281F2465C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F31537FC;
-	Tue, 27 Feb 2024 06:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94AE65380E;
+	Tue, 27 Feb 2024 06:58:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZxQ2axHO"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LA4AB5KD"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80CF853E00
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 06:57:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4680537145;
+	Tue, 27 Feb 2024 06:58:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709017046; cv=none; b=Q3H/JQz1PhljtpwWdhhucmlH3vhLTtQLkeJRRzBo8f1q4IsDt6G8SeQcbDO9U7xMufLlJ1XaGe3ZjUCVv8gnQHQzwknW1KfRbr/AAntlQTXKuWKBaeqcV8cc7uS9dzvk6cMmfvqEoZCyB5krf0HOdJPo2RhSTwN2PbiKTs4wlh8=
+	t=1709017101; cv=none; b=mSZFi8GGeGT/D5tnE0mocV7XmiixRO6NAdPEJWTMdOg6yy5Ui+YJeQmNibC2SKkLvUr3tX0gKONfdpQngJFAO9HImHqz0gMZxJ+OnqMKQ3sp4Th4dXQz4PMGRfQ009WmRqqULBGe+iY2iCh8zUQyLxwityw9Iv4yLdiFkhbN8hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709017046; c=relaxed/simple;
-	bh=CPG65n+GxI/uy0eM/O2KvuN3DhTq+x5b9cRnvJbLDFY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ohQW9VTLDdnVcJNpc+zkY4fQToJUFuTiq/nq8O4wpbRFAamzmW6HaSJ8C9lzW/3I/0q/1PXOFtNAPWJLdrlFeb5d3UmWB6D7dLEGXdq7tTYfgV5ArkvxSkq8c89OXk9LmNJ+ACxkCg9u4IbKPR4tlciBAUudSo5q/tFfUoei7SQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZxQ2axHO; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-512e39226efso5335572e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 22:57:24 -0800 (PST)
+	s=arc-20240116; t=1709017101; c=relaxed/simple;
+	bh=WtF19yLgcWljmZ+iyA1mPaSgemYf7xN//8nTZWsmsII=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dQ8YAq2wzFZZK0o2XgQb88BMWNlM1DugQa1NGivD91exmyvwTMPjFYWHqwpMH9rNLbngn3tbygtjBM23VZzBYGfwQN6ERQ4VjrXLgcMBtcKbY3FkfVIbZ3rQ5NFnMRLSl63hjV+qZB3kR0hIHC1iOL1KAmyYStM+weFAIQO+tpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LA4AB5KD; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so595892066b.0;
+        Mon, 26 Feb 2024 22:58:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709017043; x=1709621843; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OYVZLW/axFzRuDYyrPmP2hajXo30/Cydh9CnWHBpngI=;
-        b=ZxQ2axHO8NG3FnItsxegruRxMRzZy+EUVf+HXidsq/+BjMhGTvbzrIl6IbpZz8WkpB
-         RzNvWKBWdlgT9p0YWwvZTVURNSCUGwpHfHEvj12KF93F2EoRISOGGItY0H+ZikqAc58N
-         badCtj8jWvVAIJ31jlQE9X2miT5UVvr4cPoJsq8qAVbxq1VraUtFB8RemyFZOIZYs1xu
-         XLlDYyfIzbZEyRj0hbS2mN93/DjKYbV8aM1AYYPpqPVm3s/s55pYPHt2qqrYiaUlwUTK
-         ypVVb8w14nVMLWkblcwaQW5YvvwBqbLHmMvpEadaBT5A/TWM1KF5lAH7isW9XjDjqBQ8
-         LUBQ==
+        d=gmail.com; s=20230601; t=1709017098; x=1709621898; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+6Wuj7eZKvpR0/h7AmWg9U26NtZOIIFRnTuYstw2M8A=;
+        b=LA4AB5KDE4zANvxEIQBcJzeXX5CaaGV4McmZp8a95CJzo+1UPTnOjAuoteqiwzbc+k
+         fQehdntBAv5aIwVKTIQ95X2Ag9QCZpl/C3KB2vg51Yf3I1gbilmZT7co1uZVLuhq8pHN
+         KpoHThYeMtZLeU5Mg4QqTvfcxRj5QGzrzvi8DZY8loA8DabWRVHklgxX5VKqKjqJC0Ol
+         ZHGIzA2IrcOQmAmns8o60TuwD2x7XNqa4BeM9Fx68c/68rV9InIAGiDokV9q5Zr1KTfD
+         q4DboF5iaf3uBlgM5/+alYe8BszrAW/rqwA56czeHrhdYMxhHMQMJgEAmTg0jUoQlZQq
+         zUTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709017043; x=1709621843;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OYVZLW/axFzRuDYyrPmP2hajXo30/Cydh9CnWHBpngI=;
-        b=uyfsl3QrY79DsB1tyIUL7CpS14e8vE8kwkpiVJPDXQfVyh9fxYxBXnaLdDABgO5OqC
-         moIVfVoQ7BveM414cBgRWd4pJAYrSIh7iQYcq5t9xtb1AzyMSc/Es59q0kYcahO8U6BN
-         RXTuDPg+a2i6fy3vZ2QlZRqhnM/jjMmsfnaWYrfLQPJLiGAXJX4ocS7IhnWg4OI+T4hG
-         UejSeNDDGSwcpg+EJebSSJGMGJTfhtAHWmb7UGmrdjNVJn1DmJef4ozgkPOUWwX//UKi
-         N3aT3/99Fe34LStnhBE8RXUP4hhDMGMu/tFp8oPjs3na6blKLFqMNXon2HzwlJoeoWzc
-         Yjfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWGHaOQqfV4NNcvHD1ORPS8525lJDtP+FJdW7o10v/qFW05vLsQQzYzG6XamlhV7goCRPPi2K8f+y+rQJZ9BU2TJbmTWvqbdNMgIYTx
-X-Gm-Message-State: AOJu0YwGhJ0ELBpSWBIGa2ZA2cRtCJ9Y730IlV6IlaofBYzgh1PvnCLd
-	s7Xi2BC2/mvemcrkR06U3lsnIdTLmJpt5oiQM9GXZmMsY0iJJPWwYLwdXEZBcrycrcCa+XNGsv+
-	bO+/81qM4tyb3sMDGdMar9oVGxO03oPpj7QSgeYYmvV8hZng9Xmrb
-X-Google-Smtp-Source: AGHT+IF4r+KTMpwjEC8S0vMDfPTig3AUlP4fC1ph9rIWf4P50aRwWGKchYxwX6V4YHAUYeLPfpJ3I+D8/BQPTcdvGRQ=
-X-Received: by 2002:ac2:518f:0:b0:512:d713:1de2 with SMTP id
- u15-20020ac2518f000000b00512d7131de2mr5515712lfi.40.1709017042492; Mon, 26
- Feb 2024 22:57:22 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709017098; x=1709621898;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+6Wuj7eZKvpR0/h7AmWg9U26NtZOIIFRnTuYstw2M8A=;
+        b=QQC7HHOTFgYjnpZ12eZgFrKGevicpXKa+Kzm1m3cayE0yApm8f/gnLikk3wYu1Z4Db
+         7uLY1hmYJxXsgpk+HepZu8rsKe54dqhYqlIeVezagGjMPR6O/OoclyWew+4XRduAymGy
+         y7swZHyLsAHBK5WJFXt5vt5af1DmtLWjIDvtZ0f7mKXEjJ+5JV0RrDELy7v4yDKbtuM8
+         +3C4un6WeZhqWi+h9T/+cv172aLjszuam8uogzxOZy06qxb5tEU/JP2aUaQJy0eSMwGn
+         VvGbjQBOoYvyBIyIFOBr07M9gJY3i8Q8YzMYwd7TBSfUoJDkP+jzMEcahxy6kfRU5X1I
+         tDYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUAHutBPuki0TRtptzHB5ks28LrxYXKue3WtkDjg3cR3yu1M/VTeR0vMvV6VdThoSJVnqwdajJXAhd+zPQyiLx9A4JIMyHZBPh2X1E9WH0InZjYHMK7Vn5KMgW9wCXU8D06l07cwDN5YQ==
+X-Gm-Message-State: AOJu0YwmLByWHK+jr7aL1j/w9CO9aiNMb7FTd9aaH9GYJgu0RI8h5cF/
+	1LCPg9mT6yYzhXlcx2xVcHBqqa5KTBGDqxD1X8YTtFBTvhwNx6fL
+X-Google-Smtp-Source: AGHT+IGpHfRMSHULnORjFlnpR1xNs3zY8fsQONJ/NXogsHFRrBuYKu2sEJmESEmUMGp1mUYjiifsVQ==
+X-Received: by 2002:a17:907:9813:b0:a43:ab6f:ef6b with SMTP id ji19-20020a170907981300b00a43ab6fef6bmr910378ejc.32.1709017098442;
+        Mon, 26 Feb 2024 22:58:18 -0800 (PST)
+Received: from [192.168.3.110] (IN-84-15-189-254.bitemobile.lt. [84.15.189.254])
+        by smtp.gmail.com with ESMTPSA id pw11-20020a17090720ab00b00a3f963c66a8sm454038ejb.121.2024.02.26.22.58.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 22:58:18 -0800 (PST)
+Message-ID: <3f629079-6809-4cae-bd4d-8b0ee4860196@gmail.com>
+Date: Tue, 27 Feb 2024 08:58:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206042408.224138-1-joychakr@google.com> <2024020647-submarine-lucid-ea7b@gregkh>
- <CAOSNQF3jk+85-P+NB-1w=nQwJr1BBO9OQuLbm6s8PiXrFMQdjg@mail.gmail.com>
- <2024020637-handpick-pamphlet-bacb@gregkh> <CAOSNQF2_qy51Z01DKO1MB-d+K4EaXGDkof1T4pHNO10U_Hm0WQ@mail.gmail.com>
- <2024020734-curliness-licking-44c1@gregkh> <CAOSNQF2WKang6DpGoVztybkEbtL=Uhc5J-WLvyfRhT3MGWgiaA@mail.gmail.com>
-In-Reply-To: <CAOSNQF2WKang6DpGoVztybkEbtL=Uhc5J-WLvyfRhT3MGWgiaA@mail.gmail.com>
-From: Joy Chakraborty <joychakr@google.com>
-Date: Tue, 27 Feb 2024 12:27:09 +0530
-Message-ID: <CAOSNQF2d27vYTtWwoDY8ALHWo3+eTeBz7e=koNodphVVmeThMQ@mail.gmail.com>
-Subject: Re: [PATCH v2] nvmem: rmem: Fix return value of rmem_read()
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Rob Herring <robh@kernel.org>, 
-	Nicolas Saenz Julienne <nsaenz@kernel.org>, linux-kernel@vger.kernel.org, manugautam@google.com, 
-	stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] gpio: 74x164: Enable output pins after registers are
+ reset
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linus.walleij@linaro.org, brgl@bgdev.pl, u.kleine-koenig@pengutronix.de,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240226134656.608559-1-arturas.moskvinas@gmail.com>
+ <ZdyZnqS_jKelbs6G@smile.fi.intel.com>
+From: Arturas Moskvinas <arturas.moskvinas@gmail.com>
+In-Reply-To: <ZdyZnqS_jKelbs6G@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 7, 2024 at 8:33=E2=80=AFPM Joy Chakraborty <joychakr@google.com=
-> wrote:
->
-> On Wed, Feb 7, 2024 at 3:04=E2=80=AFPM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Tue, Feb 06, 2024 at 05:22:15PM +0530, Joy Chakraborty wrote:
-> > > > > Userspace will see a false error with nvmem cell reads from
-> > > > > nvmem_cell_attr_read() in current code, which should be fixed on
-> > > > > returning 0 for success.
-> > > >
-> > > > So maybe fix this all up to allow the read to return the actual amo=
-unt
-> > > > read?  That feels more "correct" to me.
-> > > >
-> > >
-> > > If I change the behavior of the nvmem_reg_read_t callback to negative
-> > > for error and number of bytes actually read for success then, other
-> > > than the core driver I would also have to change all the
-> > > nvmem-provider drivers.
-> > > Is it okay to do so ?
-> >
-> > Sure, why not?  That seems like the correct fix to me, right?
->
-> Sure, I can do that.
->
-> Is it okay to change the if checks on the return code to "if (rc < 0)"
-> instead of "if (rc)" as a fix for the immediate issue with how return
-> value from rmem is handled which can be applied to older kernels.
-> In a separate patch I can change the definition of nvmem_reg_read_t()
-> to return ssize_t instead of int and make corresponding changes to
-> nvmem-provider drivers.
->
-> Does that sound okay ?
+Hello,
 
-Hi Greg,
+On 2/26/24 16:01, Andy Shevchenko wrote:
+> On Mon, Feb 26, 2024 at 03:46:56PM +0200, Arturas Moskvinas wrote:
+>> Move output enabling after chip registers are cleared.
+> Does this fix anything? If so, maybe elaborate a bit the potential behavioural
+> changes on the real lines.
 
-Sent a patch https://lore.kernel.org/all/20240219113149.2437990-2-joychakr@=
-google.com/
-to change the return type for read/write callbacks.
-Do I mark that with the "Fixes:" tag as well ?
-It affects a lot of files so might not be able to easily pick to an
-older kernel when needed.
+Chip outputs are enabled[1] before actual reset is performed[2] which 
+might cause pin output value to flip flop if previous pin value was set 
+to 1 in chip. Change fixes that behavior by making sure chip is fully 
+reset before all outputs are enabled.
 
-Thanks
-Joy
+Flip-flop can be noticed when module is removed and inserted again and 
+one of the pins was changed to 1 before removal. 100 microsecond 
+flipping is noticeable on oscilloscope (100khz SPI bus).
 
-> >
-> > thanks,
-> >
-> > greg k-h
->
-> Thanks
-> Joy
+For a properly reset chip - output is enabled around 100 microseconds 
+(on 100khz SPI bus) later during probing process hence should be 
+irrelevant behavioral change.
+
+[1] - 
+https://elixir.bootlin.com/linux/v6.7.4/source/drivers/gpio/gpio-74x164.c#L130
+[2] - 
+https://elixir.bootlin.com/linux/v6.7.4/source/drivers/gpio/gpio-74x164.c#L150
+
+Arturas Moskvinas
 
