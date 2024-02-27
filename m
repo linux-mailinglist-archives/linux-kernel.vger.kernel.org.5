@@ -1,107 +1,94 @@
-Return-Path: <linux-kernel+bounces-82465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80D338684FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:28:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE36B8684FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:29:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEE93284C10
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:28:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F4C0B233EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5E8A23;
-	Tue, 27 Feb 2024 00:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2CCEEA4;
+	Tue, 27 Feb 2024 00:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NkHvVptb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g8EUuULo"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0218236D;
-	Tue, 27 Feb 2024 00:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AAFC36D
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:29:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708993678; cv=none; b=k9HMMIhxBglm6IHfeJMATuNJvyuVPEFxNYI3niwZDa0NwgfdZxr7YOLKYBCjsrOheO7wp+IzQUiC3E1FbT01n/1XI8iiKdw1khYegR3wd886FToVtVMzRf4+vR7guMKdEjAVo8zeOmEDINLQn5QYMm8N+fCnSk6CH06K9OevD5k=
+	t=1708993750; cv=none; b=ITlS96YQrO8g9W0nhpn3zjIKr3Y2n0lKi3RfryT5luUHAIJX7qRRHUA16M21P4S1IfkoQx58WUkZLIHFwL2lU9g3f9/I4+k9stx6rmeGfkB5ellx4A8+FrzDuUdgUIgdczr8QSCeY2ok3H+TRrEURNCrywPaA5gpikP3pVsg/qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708993678; c=relaxed/simple;
-	bh=C+Zj4ZeRl9xniul0YQKQvDPTEYnuZcbWMVmxB4YKIx4=;
+	s=arc-20240116; t=1708993750; c=relaxed/simple;
+	bh=ShKKi6TlgSxWUVIb93iZNgwwSea0qBzgXYFrAL077W8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nqta7OdEIvwP8gtxaLFyYsDQ8UGF9gHs/p5+6u3AdnjXsqi0JvRflQBYF4kInrjSAPaa7oiltB1M5e2zlzdKWialhrq3HJV3By43siSxZ7w3Jhdckw9VrY2tOyDon21SXehK/kpqBjMvGI24KdVQaAIK3B6nX5KWFB8hqPbHvdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NkHvVptb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D53EC433F1;
-	Tue, 27 Feb 2024 00:27:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708993677;
-	bh=C+Zj4ZeRl9xniul0YQKQvDPTEYnuZcbWMVmxB4YKIx4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NkHvVptbCa+YYCoeu9gbS7T8svI//6e2fW16F86blmbRjli3ub+4RuexZOZ44W/HN
-	 0eWoIQaG0pMogT43b3pXqApDemu88EaqZM3iEzPWHGSE6Uw+Qh9B1ydgXmA4bn7i4o
-	 ugn1NR6NMI+YMfjyvFlmOt0QbMnopgrkNnJYGB+Atrsf97Q0tclPhE9QouoK/l12I7
-	 Wgce593jWf3VdRNHrVgIWj9KyHdepJytMeppch5q1Yj/2aJN5BPL6Ox3z3BxIdaZqv
-	 MBfK+P6KSwiHlMhSEkhuV4HnGApdkVDNy93RGPSg/MYuFw8uT/t8SDax4bCYYT9ugP
-	 KVA4dBDSxArzg==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512fe342841so1260271e87.0;
-        Mon, 26 Feb 2024 16:27:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVnVM75WUq9Lu2elP/B9k3462xTefJObiMf6FYdW22FfOPpylt6Wg7WLikeQtk5/DKqsxdNQe1pM2tOw6k5QBibKGktmst0tLJDna2LnSBUJ3jGYnXfkDhAy6b8cUhmJqocOKXE3yEqHw==
-X-Gm-Message-State: AOJu0Yw5i+Cxrkb2U50Gh9kmtnUT/Ryg97cdPSFxIbXY8DRNHZqK0VRb
-	ytjxCsx72Heiq2/leEg8ZrZIT3yhPk16QobGsNjbTeulsky8lWaX8uXXzgUH/kcdYBY5QHudDrj
-	lK07Q7ZSOnSNdBA/BPorLSfMf9Mw=
-X-Google-Smtp-Source: AGHT+IEs+1Bn+/oBw+BUvr3HUrMB2elDEsi0IlffSIp5wGuK7riMbQ3u2yWmhC3iYeotiZ8y8N5sey2PafUeH8H9hEI=
-X-Received: by 2002:a05:6512:3b07:b0:512:f6d8:834f with SMTP id
- f7-20020a0565123b0700b00512f6d8834fmr2470425lfv.8.1708993675689; Mon, 26 Feb
- 2024 16:27:55 -0800 (PST)
+	 To:Cc:Content-Type; b=UaUZna5wiQG94fDf5c+VtJU/O4xHP6rJz3mLacDTgJqSwEuXyf/A1waWImG3V8x0ALSdQXYO+/LCl/NmU0OHhfip7mI/17ILbSrCokd6lm1G6qjehMOHXMfeKItLzXkZxdt7ZSTgfWFOohFt6W+UhpZdnhh62Rl2gmSW1ZdTjiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g8EUuULo; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4129a748420so18955e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:29:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708993747; x=1709598547; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ShKKi6TlgSxWUVIb93iZNgwwSea0qBzgXYFrAL077W8=;
+        b=g8EUuULom+3XOmcrPap6hK5iYmBa2nsLr0VBh8jOVLzJWYkEcx3lE06JI1M15Vxqh7
+         i/vXsdqzS9aK0EQVztcw9LA9o/9O1J5OQ2y3lsrowNrGXy1TbTatRet9dHp/ZaZGBmC9
+         oOClmakX7SCLamV0T+bSyVbnqRkjvAuNVkbp08SA1jLtrwfaYdw8QiHcMT2/vsvOpP5m
+         s+LB4zSrmohDmH6GGWxFpmdO2gZg+/fJQMOvJCdzKxDg1vH49b3jhVfaN9Ko9bzCGpgi
+         d+n9Lc+5mfvoRRzMayWL9MaTAknSm9jVgOuoJlbpQZmTJ3t+V3M0QKdcZj1doKS4hBYh
+         pxzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708993747; x=1709598547;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ShKKi6TlgSxWUVIb93iZNgwwSea0qBzgXYFrAL077W8=;
+        b=Jg27lKv34CzzJAWOGi3WTBm4gOPUI095Wpc1dTxGWqTfErduiBtP0JS7BKwpHdUm5Z
+         8gePJi3TeyiVuKR2DcLywpTSCComZi08Ql7Gp4o2H9Q9I4nyffzCB18Zo8jBkRX+hoPy
+         sgQ05n0VrDsAjQQ/hHivBRW+HTFJsoLOjIKHK94/squAH1XcPGLOSSZM04JI+Ns+7jjP
+         O3S1VWq2Ybrb83/THGVeqNeMll1BD8it61U/Vo6yFYNRisHMup8FtDgDMIeZcfCUQYXp
+         +i9qe1bg+mH6yCHOw3Vr34PJDEM5KdWGBJacNEwQiE4+IQv3PRL5lESgdTEQn1zXhK13
+         AYsw==
+X-Forwarded-Encrypted: i=1; AJvYcCWhA5/Fkvpm7vFDH9GvLCo7FWv/srUTEM1+2sogGJqUPbj/FfMbjNaG38gOKbYUSqE0TadRb1GFPRaZIBziAUN69ANWfdKpOf5yrgaO
+X-Gm-Message-State: AOJu0YyjvhBAtVZb0Ce8rfK9LYfDTBioMbc3HMTV9W+lQXQZiv1TYnlv
+	GnGpozA/NQFcBKeuoV+nQfx1pUSgT9GWVx751z9+PK+6yo/fAvhflEaS8CFjvZ5agcjRQlQdoZh
+	MMLqfAYRHRsgp0hRPuHP9L8fxdyIH6LH+afaO
+X-Google-Smtp-Source: AGHT+IEHBIxVsYsqqx1KNVOvqC0cQcgpUH2DaF+E/L7XUVB3GgMGSN5f+p6Y+/0OBfhDM1iBRyndhoFvC+Yz2LrOIZg=
+X-Received: by 2002:a05:600c:a3a3:b0:412:9829:2dd5 with SMTP id
+ hn35-20020a05600ca3a300b0041298292dd5mr46040wmb.7.1708993746739; Mon, 26 Feb
+ 2024 16:29:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
-In-Reply-To: <20240222075806.1816400-1-yukuai1@huaweicloud.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 26 Feb 2024 16:27:43 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4JM7YbGtKsd35hNgSsaF2=Er+y5TRNBBRNJDxDWjJ6vQ@mail.gmail.com>
-Message-ID: <CAPhsuW4JM7YbGtKsd35hNgSsaF2=Er+y5TRNBBRNJDxDWjJ6vQ@mail.gmail.com>
-Subject: Re: [PATCH md-6.9 00/10] md/raid1: refactor read_balance() and some
- minor fix
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: paul.e.luse@linux.intel.com, neilb@suse.com, shli@fb.com, 
-	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
-	yi.zhang@huawei.com, yangerkun@huawei.com
+References: <20240223010328.2826774-1-jthies@google.com> <CAA8EJpqwAg-qenTq3MZCb74rn8rRaMxrsnmZGMwff+ABGENEGg@mail.gmail.com>
+In-Reply-To: <CAA8EJpqwAg-qenTq3MZCb74rn8rRaMxrsnmZGMwff+ABGENEGg@mail.gmail.com>
+From: Jameson Thies <jthies@google.com>
+Date: Mon, 26 Feb 2024 16:28:54 -0800
+Message-ID: <CAMFSARfs4x2+rkdk_Ns4dSbKUZ_YbAvjsxUa+395b+wLwrNzPA@mail.gmail.com>
+Subject: Re: [PATCH 0/4] usb: typec: ucsi: Expand SOP/SOP' Discovery
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: heikki.krogerus@linux.intel.com, linux-usb@vger.kernel.org, 
+	pmalani@chromium.org, bleung@google.com, abhishekpandit@chromium.org, 
+	andersson@kernel.org, fabrice.gasnier@foss.st.com, gregkh@linuxfoundation.org, 
+	hdegoede@redhat.com, neil.armstrong@linaro.org, rajaram.regupathy@intel.com, 
+	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Kuai and Paul,
+> First and the most obvious comment: 6.6 is four months old. I see that
+> your base commit is the usb-testing tip, however you declare that you
+> tested only on 6.6. Now I'm confused. Did you test your patches on top
+> of usb-testing before sending them?
 
-On Thu, Feb 22, 2024 at 12:03=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> =
-wrote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> The orignial idea is that Paul want to optimize raid1 read
-> performance([1]), however, we think that the orignial code for
-> read_balance() is quite complex, and we don't want to add more
-> complexity. Hence we decide to refactor read_balance() first, to make
-> code cleaner and easier for follow up.
->
-> Before this patchset, read_balance() has many local variables and many
-> braches, it want to consider all the scenarios in one iteration. The
-> idea of this patch is to devide them into 4 different steps:
->
-> 1) If resync is in progress, find the first usable disk, patch 5;
-> Otherwise:
-> 2) Loop through all disks and skipping slow disks and disks with bad
-> blocks, choose the best disk, patch 10. If no disk is found:
-> 3) Look for disks with bad blocks and choose the one with most number of
-> sectors, patch 8. If no disk is found:
-> 4) Choose first found slow disk with no bad blocks, or slow disk with
-> most number of sectors, patch 7.
-
-Thanks for your great work in this set. It looks great.
-
-Please address feedback from folks and send v2. We can still get this in
-6.9 merge window.
-
-Thanks,
-Song
+Hi Dmitry, sorry for the confusion. I tested this on a v6.6 kernel build
+with a few dependent commits cherry-picked to it. I'll re-validate the
+series on top of usb-testing.
 
