@@ -1,185 +1,119 @@
-Return-Path: <linux-kernel+bounces-83926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE3A86A029
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:27:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47ABC86A02D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:28:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D65162908C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:27:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A0FF1C23F07
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEE5D51C50;
-	Tue, 27 Feb 2024 19:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7649F524D0;
+	Tue, 27 Feb 2024 19:27:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="fYp5rZ+f"
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ifsdkVcA"
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FE951C39
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:27:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60544149DE2;
+	Tue, 27 Feb 2024 19:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709062039; cv=none; b=TfvHZU2i7it0aF8LRMyBmWcK/XQHNUkGvZWMUJCFar6eSKwlcN2ooeXbBUC6T7CqqPb1gZscmVZVnw10NBpSTmEAdvmgTjjROrYk/5lfzExKMplJwkV2xuXZnOvO71zcJFQnagRpg9wyVIbq/it007uNJfrq9xT3yQ6fFIHgW+c=
+	t=1709062053; cv=none; b=bmg4dbTkLZlfCQBHbJRT6Rx5O/Pixa9RJQds6rxn5I56Y1RhpTePDT98bZfu1DaMx39ISUuTDD+QQ6jjxj3niTV+De+hstYpNpJuQyHXHtA79u0G5iBPp22kFK6Zo+VSJw9+dJr7oxH9hg9Cl+IUoynKIpPSLIo1kiXLRkiEqs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709062039; c=relaxed/simple;
-	bh=HIKKzEVIfU4FOsnh3wR+y/aXx4vwP82xvrWjzqt/EUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c7m7zSAAlyhUf2l5QaD7Z61jbjxCc8M1KX6i2/qoFxjSkSZZ0kzKt+DHSgMXFwlJroO24COtQeeSOLbpssTtF3fkSpE0ZTkt1CxdWYuMeW9ygfNg/q0QiTG4WT9EWMfDTt/Q02QyCeL/MNKay4VMUfstXCJ0TIv7xONmkxbDCrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=fYp5rZ+f; arc=none smtp.client-ip=209.85.221.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4cb26623d0aso1169770e0c.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:27:17 -0800 (PST)
+	s=arc-20240116; t=1709062053; c=relaxed/simple;
+	bh=XrtQdVMbRSzYjsznNaecSFZDnk2DEQW08+pU7w7QjkU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WbzPlCw7sh38YNWPD8vojKx6I5vgOO+yxT13eWpc15fj+25QIzsB73Drp8JlwC1amGbX4EbDPdHVES3naACXXSn5iICiCJHo8P4v1DG3PlJXbj0wYUSlXp6NNNR+a68uyoyD3W9y5hG+zA0rx7VuTuiPqhCC/c58Itf+un4IAHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ifsdkVcA; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bbbc6b4ed1so3816995b6e.2;
+        Tue, 27 Feb 2024 11:27:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709062037; x=1709666837; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CZo+bB1dk8cpOA97BbHSLAQyCTqe94gEN503/zLlktA=;
-        b=fYp5rZ+fVw+uHT8xRt9OFYTFI6Vx5geo23hTpgTkzOcFMKxpm6g3pSyoCmwQlcsMID
-         nCwIt9fOLikM676TCorWS/ubvRk2AnNpAkb85h0zxvPLtKD1Ww1uI541LG9gp42MIJw4
-         ONCtzXnINAKgeUcLArp27wIyA3AZzU4Gb4/HZFRUnUAB/NHBK0lZZZ8ojROxyOZ9R6K8
-         QQuOwsBImZxYPhT4miLymMwgvzInkRAZWns6Ic4b1eKe5Hf2VBL3biTvxsEzHqfjPucc
-         0EFbDh02w59aBbFDkZpsYpQtrLhIfKAiamq360YlenGoPCorbEfJ6Iif32cq4pIrXMFl
-         38Bg==
+        d=gmail.com; s=20230601; t=1709062051; x=1709666851; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wCrWUksx7vOTzvehmJl4wWEPKb6RL3b7eNiwdpGdi+k=;
+        b=ifsdkVcA8ejXY1XFazfUhHmoGg9xrF2fxAR+T05EK71wuyVTp1cZaEnoGRmTkwB0S6
+         Kxg/HXnQ5nqQhaMSiT7xKWDpdepcIe0Yiu3LVjBmguDBHckdc8dfUrm23AxQ+TGK67tt
+         PLxVeQNcvovJEKMce2860F2OQZ7KnzE4kGUoHh7aQwAzF4q7mgxUzqeFe4Up2bbd0y1d
+         pLCzvH/SJY8HWea4uyzgiOkfshTN8y+LT7MTUW+i3EZZVHhmDeT47ShDjMmq0FmpgtZ9
+         TDePxMPFcmBpIB49OZA/EZHJiHFU/OlOHMWarSMTe2AQP+wnjoOLQime2PlH3Hz9GUHa
+         wPHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709062037; x=1709666837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CZo+bB1dk8cpOA97BbHSLAQyCTqe94gEN503/zLlktA=;
-        b=GTKymDNnE/+yKeZVSM7KcqmvZW20TClU7Sekb39VzciN1z9Gwdud5O+mpIOpUcZ1N1
-         zK9JXVrZsE4HNBdcxsrb0CKRWYR7Lo1ivPnXSyOZM9QeYjMzshqIrcuIlntTNqNwBEE1
-         Adqo3js9Dq+3p8tz1RdGKdkzS3dMIuxIyIcQKYnUh7VYlRobneBt8kZwZu3UdMohje4l
-         uqzMG7LOgOUXnR9UWWFbm7UmQ2h9rohn9FVMX4sRjPTkDN8x1yVLPS2NgS/Bu4vF8Q/O
-         BYigJIQMUvpNH6tvzlnk7WFGpP8XPWWqbG6QFbJzxecsUkm5AJvkdktC5DuhodbGABJ+
-         SNXA==
-X-Forwarded-Encrypted: i=1; AJvYcCXuF43m5OPsfGnJMk7fHTo4aAO0p/bH69x70Paz6bPGUkE6eWP3SrEhN4fy/9xC4/m+nLMNrr+KeK5Dgj1r3o++sCLrEC+Ug5Fi+hhO
-X-Gm-Message-State: AOJu0Yzb/qGg96SkFT6eNBR3ipA6AP3HYoN+CAFi9pcHYVoVgXIRtDA6
-	psriTCXzYPU4rdzewoMcMdb1NW0FlquDFVLs2j08YBUXnKYOnl0fKL3kpwZSm3GKslVkk0sczQQ
-	B5cdQk72JWLedLJt5GXnTyYLj8DC0qG+1pNwJfg==
-X-Google-Smtp-Source: AGHT+IEFGbWoEN34BxbHYqCqI7hjM/e4fBTxXm7fwvkcvPpFoesBxi9UGIlnKHbze7e/t3KXzySdRKQfPqIwzXwj+fA=
-X-Received: by 2002:a1f:eb81:0:b0:4c9:44a0:84e6 with SMTP id
- j123-20020a1feb81000000b004c944a084e6mr7210453vkh.6.1709062036773; Tue, 27
- Feb 2024 11:27:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709062051; x=1709666851;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wCrWUksx7vOTzvehmJl4wWEPKb6RL3b7eNiwdpGdi+k=;
+        b=DZqeKMhQ3HJfwxvITYEdREp0Vj+c6/afQicve+J7XW3FXj7q4ZOU3ifLlG9TsNWrl/
+         8tbF+ZxsAIizZ2R5X6xCooFSk0iT9/CUCfUwiXIAioCk6C9zEnE2Ix6qXGeqbNWX9mDz
+         cY/ZnNKFKws4BLGzLJakiIeg7Rlv3sq2vek4thG61kCGuBOicoTJYDfh+VRBMQagFC8z
+         EYGQqBJzWzgGbilGVnEmcmmlw/9r0g560GZ3ezorT0D+yY7glIp3bgDSNpDaj2r1NBpd
+         Zm4qkO9qFdKyEOuMPacVVpx6IAP+IoAR+uCIXsMu8WeVgm8w62rjfHo3FJdmhFL0f0pL
+         7N4A==
+X-Forwarded-Encrypted: i=1; AJvYcCWqnvfTwG/bIPpByEjunCJAB8KadncaDIoTdEm0jtmcZg+0er9wDwcxPvZhqtlwty9JWjGYOYTVbfaw0pltPtpg/y8dnEFmaCvCSXUdqsfCww1+1lZv85Y+LHXEsPuE2O1aJNx4
+X-Gm-Message-State: AOJu0YyilnFldIlwb/kb7Uj+Kesa84hKGXrhSKRxZLc+RjZQzboiB9y6
+	CjONDDdZHr/tiyq1RBDp5UPle3OmmGKzpXk8P+aJnslRwLDPG/tX
+X-Google-Smtp-Source: AGHT+IGKqibhDTaKHF9hHxyC6qvdkGJmUJhcVVJrA2OOZkmB37nOSFGRqE279uAV1IDj1tnRcZlMSg==
+X-Received: by 2002:a05:6808:1244:b0:3c0:4357:1d20 with SMTP id o4-20020a056808124400b003c043571d20mr3288891oiv.47.1709062051366;
+        Tue, 27 Feb 2024 11:27:31 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id b12-20020a05620a0f8c00b00787c1102df8sm3860584qkn.127.2024.02.27.11.27.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 11:27:30 -0800 (PST)
+Message-ID: <10ff67a8-074f-401a-9344-2c19ede9f628@gmail.com>
+Date: Tue, 27 Feb 2024 11:27:25 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220111019.133697-1-herve.codina@bootlin.com>
- <20240220111019.133697-3-herve.codina@bootlin.com> <20240220142959.GA244726@rigel>
- <20240222005744.GA3603@rigel> <20240222010530.GA11949@rigel>
- <CAMRc=MdCm4UXMkzvG17Vd=6ajE+feihgYc66qUNTTKXhN0--dA@mail.gmail.com>
- <20240222123615.2cbada98@bootlin.com> <CAMRc=McTkVPD-1_5vvPcM2Q15=w+ocki2xTmvQzU-o395A930w@mail.gmail.com>
- <CAGETcx_j4613QjHgX5AJ96Ux6MJSxxhT7DL36yzNv1JCsoxTAA@mail.gmail.com>
-In-Reply-To: <CAGETcx_j4613QjHgX5AJ96Ux6MJSxxhT7DL36yzNv1JCsoxTAA@mail.gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 27 Feb 2024 20:27:05 +0100
-Message-ID: <CAMRc=Mf5fRWoOMsJ41vzvE=-vp3wi-Obw=j5fBk3DuQaZNQP2Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip device
- is removed
-To: Saravana Kannan <saravanak@google.com>
-Cc: Herve Codina <herve.codina@bootlin.com>, Kent Gibson <warthog618@gmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/195] 6.1.80-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com
+References: <20240227131610.391465389@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240227131610.391465389@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 23, 2024 at 12:51=E2=80=AFAM Saravana Kannan <saravanak@google.=
-com> wrote:
->
+On 2/27/24 05:24, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.80 release.
+> There are 195 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.80-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-[snip]
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-> > > >
-> > > > If you unbind the "gpio0" device after the consumer requested the i=
-nterrupt,
-> > > > you'll get the same splat. And device links will not help you here =
-(on that
-> > > > note: Saravana: is there anything we could do about it? Have you ev=
-en
-> > > > considered making the irqchip subsystem use the driver model in any=
- way? Is it
-> > > > even feasible?).
->
-> I did add support to irqchip to use the driver model. See
-> IRQCHIP_PLATFORM_DRIVER_BEGIN() and uses of it.  So this makes sure
-> the probe ordering is correct.
->
-> But when I added that support, there was some pushback on making the
-> modules removable[1]. But that's why you'll see that the
-> IRQCHIP_PLATFORM_DRIVER_BEGIN() macro set .suppress_bind_attrs =3D true.
->
-> Do you have a way to unregister an interrupt controller in your
-> example? If so, how do you unregister it? It shouldn't be too hard to
-> extend those macros to add removal support. We could add a
-> IRQCHIP_MATCH2() that also takes in an exit() function op that gets
-> called on device unbind.
->
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-The provider in my example is a GPIO chip that registers its own IRQ
-domain. The domain is destroyed when the GPIO controller is
-unregistered but interrupts can be requested orthogonally to the GPIO
-subsystem and we don't have the knowledge about any interrupt users as
-the .to_irq() callback is never called. Let me know if anything can be
-done in this case.
-
-I used the gpio-sim testing module for it (instantiated over DT) but
-any such GPIO chip that is also an interrupt-controller would behave
-the same.
-
-> [1] - https://lore.kernel.org/lkml/86sghas7so.wl-maz@kernel.org/#t
->
-> > > >
-> > > > I would prefer this to be fixed at a lower lever than the GPIOLIB c=
-haracter
-> > > > device.
-> > >
-> > > I think this use case is covered.
-> > > When the consumer device related to the consumer DT node is added, a
-> > > consumer/supplier relationship is created:
-> > > parse_interrupts() parses the 'interrups-extended' property
-> > >   https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/propert=
-y.c#L1316
-> > > and so, of_link_to_phandle() creates the consumer/supplier link.
-> > >   https://elixir.bootlin.com/linux/v6.8-rc1/source/drivers/of/propert=
-y.c#L1316
-> > >
-> > > We that link present, if the supplier is removed, the consumer is rem=
-oved
-> > > before.
-> > > The consumer should release the interrupt during its remove process (=
-i.e
-> > > explicit in its .remove() or explicit because of a devm_*() call).
-> > >
-> > > At least, it is my understanding.
-> >
-> > Well, then it doesn't work, because I literally just tried it before
-> > sending my previous email.
->
-> For your gpio0 device, can you see why __device_release_driver()
-> doesn't end up calling device_links_unbind_consumers()?
->
-
-It never gets into the while (device_links_busy(dev)) loop.
-
-> Also, can you look at
-> /sys/class/devlink/<bus:gpio0-devicename>--<consumer device name>
-> folders and see what the status file says before you try to unbind the
-> gpio0 device? It should say "active".
->
-
-It says "available".
-
-If you have some board supported upstream you could use for testing, I
-think I could prepare you a DT snippet for testing.
-
-Bart
-
-[snip]
 
