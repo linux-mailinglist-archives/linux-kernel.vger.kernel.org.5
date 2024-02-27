@@ -1,150 +1,96 @@
-Return-Path: <linux-kernel+bounces-82476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD205868516
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:41:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6893486851A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44A11B2358A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:41:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 134EA1F22287
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBEEC7FF;
-	Tue, 27 Feb 2024 00:41:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404891FA6;
+	Tue, 27 Feb 2024 00:44:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="E9Pw2iwk"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qYYuNqNG"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD18C136A;
-	Tue, 27 Feb 2024 00:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E82E815C0
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708994500; cv=none; b=SPEwa4LPvoQz9LQZyFVaHUEXFjxVVo79NUuC42VthElamH5E2bHxa4WZwyRe6UaBeZHcaUtoHIrOfewvzdI4+J4gxtFmCfkUwgOH27u4D3McJPYEXgfUwxKwdtwIPwupJkpVY+iK+blP98+D9YZXeZJ+ER12ho6+NKeU6PJMAwA=
+	t=1708994662; cv=none; b=CvBUDzK1zfC5lMGQcHakqTU3iTkg+UDTvR71gOf87Cd4R0TH12vELFJopwEzLKcyOs4OinTohw6l2Xo16fx/5+cXHN2i1xpreACZQXRIEPdtY3VGKIzaUpv0uHDQaAUo4EYs0+ujLhg0olKC7hoA3HTPslxueZ57uznZOTwTbTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708994500; c=relaxed/simple;
-	bh=OCMg9lVSRi1dM4mQ/dHVKSvIT2dNp6Xad44VFS/XxqA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C7iy0I6PwV0N3QUS5+N4hTY5cSKH6FzZ+gUuqwBEvI7vIPGLAWR1FUPnT201w+CAsPy4+HLsxvhITf5mgp0CPBIi1X/rumd+SjuPq3oh92X03dStYFLmV1hVZhz8wPkye+/48QxNS87eZfTCjFla5fkgYIYufHp5TCO2ilyKhhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=E9Pw2iwk; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=E3yLeoY54L7an1gZ4crtQOnqHhnFkPcsPYy0GYM/xeQ=; b=E9Pw2iwkGDsfhccy5Lx+Hx4Mlg
-	70ogJLDoMrg4GWhsksRjSilxhaGGnPUV9B0gNqASn5zii8g91A1xK/BiMkQge0f3CvchoM2ifOUTA
-	rV7oYrED8mzqWgjAiArJdUZF2AyUc2gMfrI4WaHMWNj+BpA0EtnYQz7F4COSKeX3YoKtx+mLMkWcZ
-	61mtJJyNA/6QYOLjRYnpD7t1gEPXBOa+L7JXPQG8hs1tWtdu4/ksWYVEBHrIH7n9SDw9mIAitqJrR
-	qFVz9dVCE1rakSnVmhDSR5WJIT+OopKjwuMSfFk56SnUy7GjmT1GoOyFGzKEpCzpWOjoTRhSqWwg+
-	Kj7ixWXA==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1relXN-000000038CT-14fW;
-	Tue, 27 Feb 2024 00:41:37 +0000
-Message-ID: <43df625f-bd32-4dd9-a960-6d0f5c0304c7@infradead.org>
-Date: Mon, 26 Feb 2024 16:41:36 -0800
+	s=arc-20240116; t=1708994662; c=relaxed/simple;
+	bh=gSk0jPbGl+HjDshv3rSpDXIHqKc8HJrNcPn2WG1YEoI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nz92hL0W603xPhyo1yGzczMY9NUAlkeZ55YFErrVv3VUVqziLSJ5zTEfGvayq3zF8ZBpZSOyPx63HkC9UKjH3ydQ0vSspipqjca++gxCwyBrnts33LsbY5I1vyyG5sRkHJxVsS2uNlRG8l3qkiKuqnCR8TxYQMMto5q7QQhUAYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qYYuNqNG; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-564e4477b7cso2685a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:44:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708994659; x=1709599459; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=gSk0jPbGl+HjDshv3rSpDXIHqKc8HJrNcPn2WG1YEoI=;
+        b=qYYuNqNGso48P+oF+/Ys+fBGPIcRCQQZwCtPjhdfXp7BnAIlYZrDwL7rhGwvx7LvYd
+         nu5D6eePdWNE0eqJVgulQJxwFP7TCq9AuWbSocwa8hdyXJ8w1+L18aB5nuWqddM+2J6X
+         g3tNpGUpgTAkZ4mXpYnZ7GqDwkEaBV1iccOeufUiQGtmzVV6Sg25f5FnLrgH+2IRU7Xq
+         rBKm8IjkYyqXI16t48SkfW1UjWuTN/9EM+NnjrgF0fizpj3BtznLTyf7BeudqqaG+gE+
+         1wP3CNs+2qJQV88sHARCNyRsUA1FTvqC+hhqoVEbFA3PUI6QwVMXVnPkOCPBFJJmpqVO
+         +bmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708994659; x=1709599459;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gSk0jPbGl+HjDshv3rSpDXIHqKc8HJrNcPn2WG1YEoI=;
+        b=kRfxYwo15UtA1/5szT5u8grkSStZbnbL1HKlhbQRECD07ttmYWdolde6l3VXPKIFte
+         FR7fu0qmNQBG3tqoPU/SmWxLaSgfDwj0qNQnwlDWdwRP+CCGhcm+T98EEr8Tk/VSBd7n
+         76s9puxY76AulcalcoQtyQY4o84yLi/wvUPNzs4dXtB/l28X7rRWh5t1MxNB9PUlv+cK
+         sK6zRsZpaoU66bK4tnEa1c+AqNtgbaKOghc0fTmDqZgoZYa3cbOZPkYgcDumz8N0dOt5
+         JSHAoEYH5zwuXoy08gPk+QgLUdtutfFhfJZPvnlpqDqJogasFzs8ivPT+p5sCeaE/GS+
+         lWtw==
+X-Forwarded-Encrypted: i=1; AJvYcCVSk0Ujry5DkpCBIpmIbPyejivvKOmgvPeJqU58Fyzpel77NZGSihFRJenJx5HczYcsUJYwv+zQ/qnu7CgodP4V0sT00v1YhZnF2DCy
+X-Gm-Message-State: AOJu0YzoHync09VPSFrFMwGHdsyXN0U2cK1rtH9Px81I9F1qwq8iUkKs
+	vdu945TOPfm5eg6pSbzlDuLaK/nfQRSgcmiU65o/N19uVAp5FZg6Mnr6t58ZFNRTu8YSpCEiy9h
+	z90sHWyqNfWFKpN3QQqWNGIr8c5nNdcNQ/S2F
+X-Google-Smtp-Source: AGHT+IH0TGhvLEaxXJan8b1HSughaTUqrXuvQfnsKfMFkcgQyIrRkMMYBuRXm+SaXFlfzJtvf3G/sVUgzyttCL1astY=
+X-Received: by 2002:a50:9e2a:0:b0:565:4c2a:c9b6 with SMTP id
+ z39-20020a509e2a000000b005654c2ac9b6mr123760ede.0.1708994659218; Mon, 26 Feb
+ 2024 16:44:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs: submit-checklist: structure by category
-Content-Language: en-US
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, workflows@vger.kernel.org, linux-doc@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240226104653.54877-1-lukas.bulwahn@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240226104653.54877-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240223010328.2826774-1-jthies@google.com> <20240223010328.2826774-5-jthies@google.com>
+ <ZdxU3dB2/GVlxWFe@kuha.fi.intel.com>
+In-Reply-To: <ZdxU3dB2/GVlxWFe@kuha.fi.intel.com>
+From: Jameson Thies <jthies@google.com>
+Date: Mon, 26 Feb 2024 16:44:07 -0800
+Message-ID: <CAMFSARf0CSTeBQ0_4zbJJgRUmvKD9vPiObwOBMjj5fKTbtQWng@mail.gmail.com>
+Subject: Re: [PATCH 4/4] usb: typec: ucsi: Register SOP' alternate modes with
+ cable plug
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com, 
+	abhishekpandit@chromium.org, andersson@kernel.org, 
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
+	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
+	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Lukas,
+> Is there a plan to do the same for the SOP Double Prime for advanced active
+> cables with two plugs?
 
-I'll review the file changes separately. This is just replying
-to the patch description comments.
-
-
-On 2/26/24 02:46, Lukas Bulwahn wrote:
-> While going through the submit checklist, the list order seemed rather
-> random, probably just by historical coincidences of always adding yet the
-> next point someone thought of at the end of the list.
-
-Probably.
-
-> Structure and order them by the category of such activity,
-> reviewing, documenting, checking with tools, building and testing.
-> 
-> As the diff of the reordering is large:
-> Review code now includes previous points 1, 5 and 22.
-> Review Kconfig includes previous 6, 7 and 8.
-> Documenting includes previous 11, 15, 16, 17, 18 and 23.
-> Checking with tools includes previous 5, 9 and 10.
-> Building includes previous 2, 3, 20 and 24.
-> Testing includes previous 12, 13, 14, 19 and 21.
-> 
-..
-
-> 
-> The recommendation to test with the -mm patchset (previous 21, now
-> testing, point 5) was updated to the current state of affairs to test with
-> a recent tag of linux-next.
-
-ack.
-
-> Note that the previous first point still remains the first list even after
-> reordering. Based on some vague memory, the first point was important to
-> Randy to stay the first one in any reordering.
-
-Yes, I have said that. Stephen Rothwell wanted it to be first in the list.
-
-
-> While at it, the reference to CONFIG_SLUB_DEBUG was replaced by
-> CONFIG_DEBUG_SLAB.
-
-I don't understand this comment. DEBUG_SLAB is gone.
-I think those 2 symbols might be reversed in your comments. ?
-
-
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> So far, no point disappeared and nothing new was added.
-> 
-
-That's a good start IMO.
-
-> Points/Ideas for further improvements (based on my knowledge and judgement):
-> 
->   - The Review Kconfig changes makes sense, but I am not sure if they are
->     so central during review. If we keep it, let us see if there are other
->     parts for review that are also important similar to Kconfig changes.
->    
->   - Concerning checking with tools, checkpatch probably still makes sense;
->     it pointed out in several places. If sparse and checkstack are really
->     the next two tools to point out, I am not so sure about.
-
-I doubt that ckeckstack is important since gcc & clang warn us about
-stack usage.
-
->     sparse has a lot of false positives nowadays, and many things are not
->     fixed just because sparse complains about it.
->     And I have never used make checkstack and have not found much
->     documentation about it.
->     So, maybe other tools deserve to be mentioned here instead?
-> 
-> I am happy to get feedback---I will work through submitting-patches next
-> and do some clean-up there. While doing that, I might learn what really
-> should go into a better future 'submit-checklist' documentation.
-> 
->  Documentation/process/submit-checklist.rst | 157 +++++++++++----------
->  1 file changed, 84 insertions(+), 73 deletions(-)
-
-
--- 
-#Randy
+Hey Benson, I am not currently planning to add support for SOP double
+prime discovery. I currently don't see how information about the second
+plug would impact mode entry decisions. But, we could always follow up
+and add that if we find a reason to.
 
