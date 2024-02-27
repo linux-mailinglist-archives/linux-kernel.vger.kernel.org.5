@@ -1,453 +1,178 @@
-Return-Path: <linux-kernel+bounces-83962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17CC486A09E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:01:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12EFF86A09F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:01:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5FE1F2263F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:01:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EE421F27140
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:01:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEFE14A0A0;
-	Tue, 27 Feb 2024 20:01:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D8014AD23;
+	Tue, 27 Feb 2024 20:01:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="ekH4nyvL"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="DSnYKMAH"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F6961487D3
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FF514AD07
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709064091; cv=none; b=RfqmUOIDRB5Oi/8g2ipjGYnywzk1LDoEtfPLH7VtGsAS5ipyRw0/Ir7CM6VzmArEU9MiviZb6hcJMUROWDOtQ64nGFeW8Bdod+v+JI9ZFx/+KlBf1N/ugi59foCbyJJ/wVLpMs7ANm+yahwbIBlh2R0Jxx8iZk5fxro9N1+uFHA=
+	t=1709064098; cv=none; b=QHZNlNkcrL1GxqgReBJtv1tDDlQ7Js3vrwHEl8uKwReP2T/DacVQxTKc+Jem00qO6whv5R3+Q2c20azDO0pCjkZH3M3IXwUNOKPi1vGrHO4DWv27FL/2DkZ3po9GVO5rU3xA+Mtq2+BnDU+IBHxIY7E8UPcqY5kF8ZkJC3rw0lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709064091; c=relaxed/simple;
-	bh=vmR4dIKhoSX8635LCRCEUUdcaKUFX4ukfyHHMirTY98=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=awQSXyIZ6VQpjBwgeIh+SeSqBxA/yk4hG5I0A620FhfQVcJqf5iqnQiczV4zDMVBNXuW2/OBoG9VChXRlyFagm1QNqP/FalE61BgrxUbraeNwrsIXPSIVDBxbcnwgTu/F/ZPrLjhgTfbSUnWkE3yEKF7xZCqtFkZeARfrocEk4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=ekH4nyvL; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TkpK365ywzDqSr;
-	Tue, 27 Feb 2024 20:01:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1709064088; bh=vmR4dIKhoSX8635LCRCEUUdcaKUFX4ukfyHHMirTY98=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=ekH4nyvLUQ5EOervJs9Z0xx29WGijK2KW0peRVIKcM3vzzJfIFpb2ZD3P8BR67PsG
-	 63U082hHouYUljPTHfT9UMejIAJAhfPtURduRdTUvdpA+McDwmFzFqcNIsMNaW2rTN
-	 wAVgcadUal87ICRnN0am2x+Y6X/djfnCZjQ4UJo8=
-X-Riseup-User-ID: 7F6E206D49ECB5C6BB751B109C13E980F53C3D2B43A20E6F61CC74B6010DDF58
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4TkpJy0zmZzJrWB;
-	Tue, 27 Feb 2024 20:01:21 +0000 (UTC)
-Message-ID: <b23da076-0bfb-48b2-9386-383a6dec1868@riseup.net>
-Date: Tue, 27 Feb 2024 17:01:18 -0300
+	s=arc-20240116; t=1709064098; c=relaxed/simple;
+	bh=gLyw//m6G9pBImmWZWYlwzKQS/S2+z6YvepUOugVK9s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aw/eCs4d5Xx9RHRJoYnJAk+QezP2K5AUD9LbPhMod1unG4JgLkZB9GNrUJwJrlCnPynK0tR5BShEmzbGlvFE6V4BhCdqhbe5cYCBzMUv3+wYAFueE/lr4E6Ghx98NcK7i8hahL76wxMaHPR2Vjzjz83217XJnrpA09amaKhhDSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=DSnYKMAH; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7c788332976so151229439f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1709064096; x=1709668896; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JCoSqCHOuyJdrEXgcSRyyHnAhXtrU9sHKBBcP3u4W04=;
+        b=DSnYKMAHlaMCu9vajPvhP+L1Uwzx2jYVlT5KxViIHh8kwCZeEgZHdhdFFhrZ9HOorQ
+         VbBkqG5t7u4K8IpPYEY2ph9ALnnyBPun3JnyrVtT/t3+wP2bHuh/gIFlR5z7e/QUZnMO
+         WQKMgsGIw2ii9XUIfJcvv/mYrMtbHu7zDpN/07zP0dRDLryup/Q3LGIU2fFJkYnGDYXj
+         5cd2KsGa/IygzuV6gQvoE0osETFputy3pDM4MkQBJiVq7uxZd6WtzgbDakK2KjD4MjLM
+         Aj1Zk51h2GQpnmJHNhP4JTuWzycEQNqUOBTWX2k0fztLMXMuATam+ZSJ4d/mx7FMqwEo
+         D+LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709064096; x=1709668896;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JCoSqCHOuyJdrEXgcSRyyHnAhXtrU9sHKBBcP3u4W04=;
+        b=HZ45Wv8NRkpFU+HYQWjs4c5x+iwCaB5qJqwAkD3A4dbWWQW532vut/RfTFdPEz1W1R
+         S68fW3JytS7HPkk+trZLWxIfIUxdyO3qZp5r649ukiK3ruT4LJWGq5pX53O1kdYZT3nA
+         e7Ez0bIYbT7Yp4eQue0h5lzrtIEmx04IbWElEpv340p3QoceVwo48KgQIdivPvWIN91T
+         WBmaToGJm2EOYZ6qTrX7uC1hFOZpyedE71mrfZSckyVnyaSsGRPYSb4VW5BmyXMa3QI6
+         8NYF7PhmHY8m8HdrSNuSRybefjWLO3egAAStLzpO/T1wowed1/2W/wjIQd0nQAYAtURk
+         ys3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXKkNYgYtO96EFmOZ5TZxVgtvYnG/+pTywZBYB3wpBi5F5pIRk/HvYn2iLnY3LrTHyVy7cNe2KGhL0+8NmpW9jpf9/mVNF5coUWWimA
+X-Gm-Message-State: AOJu0Yw48TBhSGDSXEVDcun8uqnI3TYX+oWu7Cjp+2q3cP+QwHHi3Gni
+	lArHqL0WU8yup0+LFsp4yVt2jojtJ/rFl65PfFdriHh7uDoZxns0s3IXBGsveyo=
+X-Google-Smtp-Source: AGHT+IG5+tdMrZ2ON9H8ZpGLg3GIka4FUXbeapzA9mauWtoPzhwuW9kisXtyN8OVl6ignL92UATEaA==
+X-Received: by 2002:a6b:3f8a:0:b0:7c7:97a0:d2f4 with SMTP id m132-20020a6b3f8a000000b007c797a0d2f4mr11694640ioa.9.1709064095809;
+        Tue, 27 Feb 2024 12:01:35 -0800 (PST)
+Received: from [100.64.0.1] ([170.85.6.200])
+        by smtp.gmail.com with ESMTPSA id y90-20020a029563000000b004740d29b120sm1936267jah.111.2024.02.27.12.01.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 12:01:35 -0800 (PST)
+Message-ID: <33f16905-baab-47e8-a92f-d2543b69d704@sifive.com>
+Date: Tue, 27 Feb 2024 14:01:34 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 6/9] drm/vkms: Add YUV support
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -fixes v3 1/2] riscv: Fix enabling cbo.zero when running
+ in M-mode
 Content-Language: en-US
-To: Pekka Paalanen <pekka.paalanen@collabora.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
- <20240223-yuv-v2-6-aa6be2827bb7@bootlin.com>
- <20240226141916.1627bbbd.pekka.paalanen@collabora.com>
- <Zd35c_CJbhY46TjQ@localhost.localdomain>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <Zd35c_CJbhY46TjQ@localhost.localdomain>
+To: Alexandre Ghiti <alex@ghiti.fr>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-kernel@vger.kernel.org,
+ Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org,
+ Stefan O'Rear <sorear@fastmail.com>, stable@vger.kernel.org,
+ Andrew Jones <ajones@ventanamicro.com>
+References: <20240214090206.195754-1-samuel.holland@sifive.com>
+ <20240214090206.195754-2-samuel.holland@sifive.com>
+ <20240214-661604d82db4ef137540b762@orel>
+ <579c9f3f-8c28-4e4e-88ce-9f266597b7bd@ghiti.fr>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <579c9f3f-8c28-4e4e-88ce-9f266597b7bd@ghiti.fr>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+Hi Alex,
 
-
-On 27/02/24 12:02, Louis Chauvet wrote:
-> Hi Pekka,
+On 2024-02-27 1:48 PM, Alexandre Ghiti wrote:
+> Hi Samuel,
 > 
-> For all the comment related to the conversion part, maybe Arthur have an 
-> opinion on it, I took his patch as a "black box" (I did not want to 
-> break (and debug) it).
-> 
-> Le 26/02/24 - 14:19, Pekka Paalanen a écrit :
->> On Fri, 23 Feb 2024 12:37:26 +0100
->> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
->>
->>> From: Arthur Grillo <arthurgrillo@riseup.net>
+> On 14/02/2024 10:28, Andrew Jones wrote:
+>> On Wed, Feb 14, 2024 at 01:01:56AM -0800, Samuel Holland wrote:
+>>> When the kernel is running in M-mode, the CBZE bit must be set in the
+>>> menvcfg CSR, not in senvcfg.
 >>>
->>> Add support to the YUV formats bellow:
->>>
->>> - NV12
->>> - NV16
->>> - NV24
->>> - NV21
->>> - NV61
->>> - NV42
->>> - YUV420
->>> - YUV422
->>> - YUV444
->>> - YVU420
->>> - YVU422
->>> - YVU444
->>>
->>> The conversion matrices of each encoding and range were obtained by
->>> rounding the values of the original conversion matrices multiplied by
->>> 2^8. This is done to avoid the use of fixed point operations.
->>>
->>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
->>> [Louis Chauvet: Adapted Arthur's work and implemented the read_line_t
->>> callbacks for yuv formats]
->>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+>>> Cc: <stable@vger.kernel.org>
+>>> Fixes: 43c16d51a19b ("RISC-V: Enable cbo.zero in usermode")
+>>> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+>>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 >>> ---
->>>  drivers/gpu/drm/vkms/vkms_composer.c |   2 +-
->>>  drivers/gpu/drm/vkms/vkms_drv.h      |   6 +-
->>>  drivers/gpu/drm/vkms/vkms_formats.c  | 289 +++++++++++++++++++++++++++++++++--
->>>  drivers/gpu/drm/vkms/vkms_formats.h  |   4 +
->>>  drivers/gpu/drm/vkms/vkms_plane.c    |  14 +-
->>>  5 files changed, 295 insertions(+), 20 deletions(-)
 >>>
->>> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
->>> index e555bf9c1aee..54fc5161d565 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_composer.c
->>> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
->>> @@ -312,7 +312,7 @@ static void blend(struct vkms_writeback_job *wb,
->>>  			 * buffer [1]
->>>  			 */
->>>  			current_plane->pixel_read_line(
->>> -				current_plane->frame_info,
->>> +				current_plane,
->>>  				x_start,
->>>  				y_start,
->>>  				direction,
->>> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
->>> index ccc5be009f15..a4f6456cb971 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_drv.h
->>> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
->>> @@ -75,6 +75,8 @@ enum pixel_read_direction {
->>>  	READ_RIGHT
->>>  };
->>>  
->>> +struct vkms_plane_state;
->>> +
->>>  /**
->>>  <<<<<<< HEAD
->>>   * typedef pixel_read_line_t - These functions are used to read a pixel line in the source frame,
->>> @@ -87,8 +89,8 @@ enum pixel_read_direction {
->>>   * @out_pixel: Pointer where to write the pixel value. Pixels will be written between x_start and
->>>   *  x_end.
->>>   */
->>> -typedef void (*pixel_read_line_t)(struct vkms_frame_info *frame_info, int x_start, int y_start, enum
->>> -	pixel_read_direction direction, int count, struct pixel_argb_u16 out_pixel[]);
->>> +typedef void (*pixel_read_line_t)(struct vkms_plane_state *frame_info, int x_start, int y_start,
->>> +	enum pixel_read_direction direction, int count, struct pixel_argb_u16 out_pixel[]);
+>>> (no changes since v1)
+>>>
+>>>   arch/riscv/include/asm/csr.h   | 2 ++
+>>>   arch/riscv/kernel/cpufeature.c | 2 +-
+>>>   2 files changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+>>> index 510014051f5d..2468c55933cd 100644
+>>> --- a/arch/riscv/include/asm/csr.h
+>>> +++ b/arch/riscv/include/asm/csr.h
+>>> @@ -424,6 +424,7 @@
+>>>   # define CSR_STATUS    CSR_MSTATUS
+>>>   # define CSR_IE        CSR_MIE
+>>>   # define CSR_TVEC    CSR_MTVEC
+>>> +# define CSR_ENVCFG    CSR_MENVCFG
+>>>   # define CSR_SCRATCH    CSR_MSCRATCH
+>>>   # define CSR_EPC    CSR_MEPC
+>>>   # define CSR_CAUSE    CSR_MCAUSE
+>>> @@ -448,6 +449,7 @@
+>>>   # define CSR_STATUS    CSR_SSTATUS
+>>>   # define CSR_IE        CSR_SIE
+>>>   # define CSR_TVEC    CSR_STVEC
+>>> +# define CSR_ENVCFG    CSR_SENVCFG
+>>>   # define CSR_SCRATCH    CSR_SSCRATCH
+>>>   # define CSR_EPC    CSR_SEPC
+>>>   # define CSR_CAUSE    CSR_SCAUSE
+>>> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+>>> index 89920f84d0a3..c5b13f7dd482 100644
+>>> --- a/arch/riscv/kernel/cpufeature.c
+>>> +++ b/arch/riscv/kernel/cpufeature.c
+>>> @@ -950,7 +950,7 @@ arch_initcall(check_unaligned_access_all_cpus);
+>>>   void riscv_user_isa_enable(void)
+>>>   {
+>>>       if (riscv_cpu_has_extension_unlikely(smp_processor_id(),
+>>> RISCV_ISA_EXT_ZICBOZ))
+>>> -        csr_set(CSR_SENVCFG, ENVCFG_CBZE);
+>>> +        csr_set(CSR_ENVCFG, ENVCFG_CBZE);
+>>>   }
+>>>     #ifdef CONFIG_RISCV_ALTERNATIVE
+>>> -- 
+>>> 2.43.0
+>>>
+>> After our back and forth on how we determine the existence of the *envcfg
+>> CSRs, I wonder if we shouldn't put a comment above this
+>> riscv_user_isa_enable() function capturing the [current] decision.
 >>
->> This is the second or third time in this one series changing this type.
->> Could you not do the change once, in its own patch if possible?
-> 
-> Sorry, this is not a change here, but a wrong formatting (missed when 
-> rebasing).
-> 
-> Do you think that it make sense to re-order my patches and put this 
-> typedef at the end? This way it is never updated.
-> 
->>>  
->>>  /**
->>>   * vkms_plane_state - Driver specific plane state
->>> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
->>> index 46daea6d3ee9..515c80866a58 100644
->>> --- a/drivers/gpu/drm/vkms/vkms_formats.c
->>> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
->>> @@ -33,7 +33,8 @@ static size_t packed_pixels_offset(const struct vkms_frame_info *frame_info, int
->>>  	 */
->>>  	return fb->offsets[plane_index] +
->>>  	       (y / drm_format_info_block_width(format, plane_index)) * fb->pitches[plane_index] +
->>> -	       (x / drm_format_info_block_height(format, plane_index)) * format->char_per_block[plane_index];
->>> +	       (x / drm_format_info_block_height(format, plane_index)) *
->>> +	       format->char_per_block[plane_index];
+>> Something like
 >>
->> Shouldn't this be in the patch that added this code in the first place?
-> 
-> Same as above, a wrong formatting, I will remove this change and keep 
-> everything on one line (even if it's more than 100 chars, it is easier to 
-> read).
-> 
->>>  }
->>>  
->>>  /**
->>> @@ -84,6 +85,32 @@ static int get_step_1x1(struct drm_framebuffer *fb, enum pixel_read_direction di
->>>  	}
->>>  }
->>>  
->>> +/**
->>> + * get_subsampling() - Get the subsampling value on a specific direction
->>
->> subsampling divisor
-> 
-> Thanks for this precision.
-> 
->>> + */
->>> +static int get_subsampling(const struct drm_format_info *format,
->>> +			   enum pixel_read_direction direction)
->>> +{
->>> +	if (direction == READ_LEFT || direction == READ_RIGHT)
->>> +		return format->hsub;
->>> +	else if (direction == READ_DOWN || direction == READ_UP)
->>> +		return format->vsub;
->>> +	return 1;
->>
->> In this and the below function, personally I'd prefer switch-case, with
->> a cannot-happen-scream after the switch, so the compiler can warn about
->> unhandled enum values.
-> 
-> As for the previous patch, I did not know about this compiler feature, 
-> thanks!
-> 
->>> +}
->>> +
->>> +/**
->>> + * get_subsampling_offset() - Get the subsampling offset to use when incrementing the pixel counter
->>> + */
->>> +static int get_subsampling_offset(const struct drm_format_info *format,
->>> +				  enum pixel_read_direction direction, int x_start, int y_start)
->>
->> 'start' values as "increments" for a pixel counter? Is something
->> misnamed here?
->>
->> Is it an increment or an offset?
-> 
-> I don't really know how to name the function. I'm open to suggestions
-> x_start and y_start are really the coordinate of the starting reading point.
-> 
-> To explain what it does:
-> 
-> When using subsampling, you have to read the next pixel of planes[1..4] 
-> not at the same "speed" as plane[0]. But I can't only rely on 
-> "read_pixel_count % subsampling == 0", because it means that the pixel 
-> incrementation on planes[1..4] may not be aligned with the buffer (if 
-> hsub=2 and the start pixel is 1, I need to increment planes[1..4] only 
-> for x=2,4,6... not 1,3,5...).
-> 
-> A way to ensure this is to add an "offset" to count, which ensure that the 
-> count % subsampling == 0 on the correct pixel.
-> 
-> I made an error, the switch case must be (as count is always counting up, 
-> for "inverted" reading direction a negative number ensure that 
-> %subsampling == 0 on the correct pixel):
-> 
-> 	switch (direction) {
-> 	case READ_UP:
-> 		return -y_start;
-> 	case READ_DOWN:
-> 		return y_start;
-> 	case READ_LEFT:
-> 		return -x_start;
-> 	case READ_RIGHT:
-> 		return x_start;
-> 	}
-> 
->>> +{
->>> +	if (direction == READ_RIGHT || direction == READ_LEFT)
->>> +		return x_start;
->>> +	else if (direction == READ_DOWN || direction == READ_UP)
->>> +		return y_start;
->>> +	return 0;
->>> +}
->>> +
-> 
-> [...]
-> 
->>> +static void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pixel_yuv_u8 *yuv_u8,
->>> +			       enum drm_color_encoding encoding, enum drm_color_range range)
->>> +{
->>> +	static const s16 bt601_full[3][3] = {
->>> +		{ 256, 0,   359 },
->>> +		{ 256, -88, -183 },
->>> +		{ 256, 454, 0 },
->>> +	};
-> 
-> [...]
-> 
->>> +
->>> +	u8 r = 0;
->>> +	u8 g = 0;
->>> +	u8 b = 0;
->>> +	bool full = range == DRM_COLOR_YCBCR_FULL_RANGE;
->>> +	unsigned int y_offset = full ? 0 : 16;
->>> +
->>> +	switch (encoding) {
->>> +	case DRM_COLOR_YCBCR_BT601:
->>> +		ycbcr2rgb(full ? bt601_full : bt601,
->>
->> Doing all these conditional again pixel by pixel is probably
->> inefficient. Just like with the line reading functions, you could pick
->> the matrix in advance.
-> 
-> I don't think the performance impact is huge (it's only a pair of if), but 
-> yes, it's an easy optimization. 
-> 
-> I will create a conversion_matrix structure:
-> 
-> 	struct conversion_matrix {
-> 		s16 matrix[3][3];
-> 		u16 y_offset;
-> 	}
-> 
-> I will create a `get_conversion_matrix_to_argb_u16` function to get this 
-> structure from a format+encoding+range.
-> 
-> I will also add a field `conversion_matrix` in struct vkms_plane_state to 
-> get this matrix only once per plane setup.
+>>   /*
+>>    * While the [ms]envcfg CSRs weren't defined until priv spec 1.12,
+>>    * they're assumed to be present when an extension is present which
+>>    * specifies [ms]envcfg bit(s). Hence, we don't do any additional
+>>    * priv spec version checks or CSR probes here.
+>>    */
 > 
 > 
->>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
->>> +		break;
->>> +	case DRM_COLOR_YCBCR_BT709:
->>> +		ycbcr2rgb(full ? rec709_full : rec709,
->>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
->>> +		break;
->>> +	case DRM_COLOR_YCBCR_BT2020:
->>> +		ycbcr2rgb(full ? bt2020_full : bt2020,
->>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
->>> +		break;
->>> +	default:
->>> +		pr_warn_once("Not supported color encoding\n");
->>> +		break;
->>> +	}
->>> +
->>> +	argb_u16->r = r * 257;
->>> +	argb_u16->g = g * 257;
->>> +	argb_u16->b = b * 257;
->>
->> I wonder. Using 8-bit fixed point precision seems quite coarse for
->> 8-bit pixel formats, and it's going to be insufficient for higher bit
->> depths. Was supporting e.g. 10-bit YUV considered? There is even
->> deeper, too, like DRM_FORMAT_P016.
-> 
-> It's a good point, as I explained above, I took the conversion part as a 
-> "black box" to avoid breaking (and debugging) stuff. I think it's easy to 
-> switch to s32 bits matrix with 16.16 bits (or anything with more than 16 bits in 
-> the float part).
-> 
-> Maybe Arthur have an opinion on this?
+> I was about to read the whole discussion in v2 to understand the v3...thank you
+> Drew :) I think it really makes sense to add this comment, do you intend to do
+> so Samuel?
 
-Yeah, I too don't see why not we could do that. The 8-bit precision was
-sufficient for those formats, but as well noted by Pekka this could be a
-problem for higher bit depths. I just need to make my terrible python
-script spit those values XD.
+Yes, I am about to send a v4 with the changes from the previous discussion,
+including a RISCV_ISA_EXT_XLINUXENVCFG bit specifically for the presence of the
+[ms]envcfg CSR and a comment like the above.
 
-> Just to be sure, the DRM subsystem don't have such matrix somewhere? It 
-> can be nice to avoid duplicating them.
+Regards,
+Samuel
 
-As to my knowledge it does not exist on DRM, I think those are normally
-on the hardware itself (*please* correct me if I'm wrong).
-
-But, v4l2 has a similar table on
-drivers/media/common/v4l2-tpg/v4l2-tpg-core.c (Actually, I started my
-code based on this), unfortunately it's only 8-bit too.
-
-Best Regards,
-~Arthur Grillo
-
-> 
->>> +} + /* * The following functions are read_line function for each
->>> pixel format supported by VKMS. * @@ -142,13 +250,13 @@ static void
->>> RGB565_to_argb_u16(struct pixel_argb_u16 *out_pixel, const u16 *pixe
->>> * [1]:
->>> https://lore.kernel.org/dri-devel/d258c8dc-78e9-4509-9037-a98f7f33b3a3@riseup.net/
->>> */
->>>  
->>> -static void ARGB8888_read_line(struct vkms_frame_info *frame_info,
->>> int x_start, int y_start, +static void ARGB8888_read_line(struct
->>> vkms_plane_state *plane, int x_start, int y_start, enum
->>> pixel_read_direction direction, int count, struct pixel_argb_u16
->>> out_pixel[]) { -	u8 *src_pixels = packed_pixels_addr(frame_info,
->>> x_start, y_start, 0); +	u8 *src_pixels =
->>> packed_pixels_addr(plane->frame_info, x_start, y_start, 0);
->>>  
->>> -	int step = get_step_1x1(frame_info->fb, direction, 0); +
->>> int step = get_step_1x1(plane->frame_info->fb, direction, 0);
->>
->> These are the kind of changes I would not expect to see in a patch
->> adding YUV support. There are a lot of them, too.
-> 
-> I will put it directly this change in PATCHv2 5/9.
-> 
-> [...]
-> 
->>> +static void semi_planar_yuv_read_line(struct vkms_plane_state
->>> *plane, int x_start, int y_start, +
->>> enum pixel_read_direction direction, int count, +
->>> struct pixel_argb_u16 out_pixel[]) +{ +	u8 *y_plane =
->>> packed_pixels_addr(plane->frame_info, x_start, y_start, 0); +
->>> u8 *uv_plane = packed_pixels_addr(plane->frame_info, +
->>> x_start / plane->frame_info->fb->format->hsub, +
->>> y_start / plane->frame_info->fb->format->vsub, +
->>> 1); +	struct pixel_yuv_u8 yuv_u8; +	int step_y =
->>> get_step_1x1(plane->frame_info->fb, direction, 0); +	int
->>> step_uv = get_step_1x1(plane->frame_info->fb, direction, 1); +
->>> int subsampling = get_subsampling(plane->frame_info->fb->format,
->>> direction); +	int subsampling_offset =
->>> get_subsampling_offset(plane->frame_info->fb->format, direction, +
->>> x_start, y_start); // 0 + +	for (int i = 0; i < count; i++) { +
->>> yuv_u8.y = y_plane[0]; +		yuv_u8.u = uv_plane[0]; +
->>> yuv_u8.v = uv_plane[1]; + +		yuv_u8_to_argb_u16(out_pixel,
->>> &yuv_u8, plane->base.base.color_encoding, +
->>> plane->base.base.color_range);
->>
->> Oh, so this was the reason to change the read-line function
->> signature. Maybe just stash a pointer to the right matrix and the
->> right y_offset in frame_info instead?
-> 
-> Yes, that why I changed the signature. I think I will keep this
-> signature and put the conversion_matrix inside the vkms_plane_state,
-> for me it make more sense to have pixel_read_line and
-> conversion_matrix in the same structure.
-> 
->>> +		out_pixel += 1; +		y_plane += step_y; +
->>> if ((i + subsampling_offset + 1) % subsampling == 0) +
->>> uv_plane += step_uv; +	} +} + +static void
->>> semi_planar_yvu_read_line(struct vkms_plane_state *plane, int
->>> x_start, int y_start, +				      enum
->>> pixel_read_direction direction, int count, +
->>> struct pixel_argb_u16 out_pixel[]) +{ +	u8 *y_plane =
->>> packed_pixels_addr(plane->frame_info, x_start, y_start, 0); +
->>> u8 *vu_plane = packed_pixels_addr(plane->frame_info, +
->>> x_start / plane->frame_info->fb->format->hsub, +
->>> y_start / plane->frame_info->fb->format->vsub, +
->>> 1); +	struct pixel_yuv_u8 yuv_u8; +	int step_y =
->>> get_step_1x1(plane->frame_info->fb, direction, 0); +	int
->>> step_vu = get_step_1x1(plane->frame_info->fb, direction, 1); +
->>> int subsampling = get_subsampling(plane->frame_info->fb->format,
->>> direction); +	int subsampling_offset =
->>> get_subsampling_offset(plane->frame_info->fb->format, direction, +
->>> x_start, y_start); +	for (int i = 0; i < count; i++) { +
->>> yuv_u8.y = y_plane[0]; +		yuv_u8.u = vu_plane[1]; +
->>> yuv_u8.v = vu_plane[0];
->>
->> You could swap matrix columns instead of writing this whole new
->> function for UV vs. VU. Just an idea.
-> 
-> I was not happy with this duplication too, but I did not think about
-> switching columns. That's a good idea, thanks!
->  
-> Kind regards, Louis Chauvet
-> 
-> [...]
-> 
 
