@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-83726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A3DF869DB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:33:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6118A869DB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:33:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5191E283F1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:32:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E045D1F22405
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710F6149E08;
-	Tue, 27 Feb 2024 17:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F3A31509AB;
+	Tue, 27 Feb 2024 17:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A86V4NUH"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cqgul2B7"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3711487D5
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C680814900E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054942; cv=none; b=Sx1SuvKVPnguqYqjaJcqwtmBys17D28oNP4fudPJDiRkAAlSrBtrigRHNIY9Kx6k9eQ+o9Fiqdgyyi1UQdAeFE50wgT/VZfhuqOqt6Fb1b4ZFFId14BtlqZtEBVnZMLyXN7kTHniC0OB5svLjSGhmyt/rLG9rJTpTpsIarSsGz8=
+	t=1709054943; cv=none; b=AiwpJ3YoX0RXvUSdBOfgilvQz1rBL9XcQOdUUgyMO09uGfZSJB3w49kHo8SGHt1WzAKLlmj/ZCHl5fJBglG6xs73ytBEjRgmWRT+Ya6Cz14IjaOQ4JYyy406ZIZjoBQptmR4hKbOLkhxPGiGcsWbD8B4WcoOKWrqOv510qGj8zA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054942; c=relaxed/simple;
-	bh=8j9O7fbKpKNgOozhCUm0J0cL4Ud8NkaLUeQFgeTAH3A=;
+	s=arc-20240116; t=1709054943; c=relaxed/simple;
+	bh=nQAuvr5KrAyXm9br1ei0161GC9yr4LeaeUrXjWzVG4w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B66xUzN9IRV50XOjAbw2y255ItMYUwoPDEKz3YyHkmM5zkFIZI43ZxZ0BOT9oX/pYl+3bHnM9QDgEMaDRkDkfSF5q6DHfzl0su75V06JlZKCcKFAKUmnHztGgbrdQlcPfk8hmcNIXO/Yl5fFQsgU7A2nPnwISf/Kv+kkvCPpTI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A86V4NUH; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version; b=HHHeiQ5T6QdnkSQV3h6WLwciaYhPvUQWqe01WEIpKU6VLBDxbLWHepagMSDoZX1qk/pYdywiBNaWhAA4JdbnCd1xZFfbYEkMf675Qc9+p+rU+A2Oso4mySmeizg2y+B+98QVd9Ys/9afds5qkabN7DU2Aq1d/dGgWX9G6XyZW+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cqgul2B7; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc0e5b223eso37825725ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:29:00 -0800 (PST)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e54ffdd0b5so445860b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:29:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709054939; x=1709659739; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709054941; x=1709659741; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d0Ekf56kJLi7dYIIZeSuDI3c9Him+81uK7xWqIKuLwY=;
-        b=A86V4NUHuv9Ubxn+ZS2r9HHY8SlyJJg5gxpuqvRhrWmc8iAB8FaqOtmGqAYvpNnQfY
-         eu+sSyNNr3QfZvGl0NGhRXKfWUr8QNDGi0k2Oot+uPcaw8VaRgAscfDP9nG6yS6uhQpE
-         50fdMjewSHSIuoVDKpVPKqMzxtnREi1h8ecBjHVlaWOGizyuIESFrkwvf+Cvjizjwi9v
-         ChYlLiMwMTR50HxCWgUwYjsa6lvE6WbksZz2gBvjPgEpwaRDFGWxpxapgD5Y/WJApqOd
-         F7Ca/Y0QFWiqzjturLKJJ49gK/VaU4NfpcRJ8IFMAPZa2wow9XpA9R3r4Ui5BMVhbVTD
-         fmtA==
+        bh=H8L0w+filKhnx5ou6lK4ASaEc5Nqt4aefqvsq9AGbtU=;
+        b=Cqgul2B7/dVm6QUywWqUzWDAlC96bLPRrPLY5P+8TTjMXs91egg+tW8EAct5cL8kfr
+         NHNh7M1MYpnAng/NNGVD7iGRfoYJH2rayYLHHTvHbVTy7eVlYNmfzowo3BTXvcHJ7jkp
+         Rk7g2YqSQdb+Enh4u+0jO0NzfmuXQAiRJ1J+8JUVm5SBuSp6CfUqdCn24ChqVpYBBSLF
+         C96rfzW1MnFS+/gd0M4t210HuPy/0rPfGGIzSODdo8ACSdI/sSOKxyJtbK9sILrbVXV0
+         S0SFtQJ0TPHuaTeLYrKqpOtBFYPQlBw04ihZszg3Wj5I8/9uswnfaE6joKK1sgf+lQMr
+         5Yew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709054939; x=1709659739;
+        d=1e100.net; s=20230601; t=1709054941; x=1709659741;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=d0Ekf56kJLi7dYIIZeSuDI3c9Him+81uK7xWqIKuLwY=;
-        b=rp8Jal/WUUp4HsVnxkuQ4/pD9Jq7OdaU5vYZuxJsdSldTSbtl7PTR4JSo0Ou3W6AmB
-         u574eYpXuvLDtc5OfINum3b3ON3aOlfiD0DUEALel2axpdY8Bg5NT4f5J3J+HVfW+/Tr
-         vX80Ikq2mQtHIJLjkPYKZxvn7x7pozUcXv/ZXcZyHHzb88dz4YqabzNjFD87Ly+af7iE
-         hhUIpMYOq4bap2cFmgraBz0vOfu4LiUISz0+JtPebrdSxOo8ze9jBq8ThpNAgN6MR7p7
-         dWq3LFo+PX3gjGECnMyD4q1M4Lws5DIi12q39Eaw5cNfR/dg7vCRsu/u9ZX7niyu2we1
-         ZLnw==
-X-Forwarded-Encrypted: i=1; AJvYcCUf2MwroITCvsoqKGDysxzK2ryPKRUNJe/RPi24++X9zBZvOayRwfm+Kzb8G9fpvuE27mf3xrQa7LLQUSa3xqpPF49xzpi6eqZ2olQI
-X-Gm-Message-State: AOJu0YzuJruL4evXNhWU8b7RIluFWHG81wk+OKlX4+ePGWt0QE314792
-	BInFNc7jt3ewUwtZv2rrTnknc+nIaicEF0K9BgWYZQKPyV/BeyMW
-X-Google-Smtp-Source: AGHT+IEG+dyFdnH9myUOOre3RO56815OOw3bS4c8OZh3Ktbj1JePS8kkFf71o4vNVDzD5HawFaqTzA==
-X-Received: by 2002:a17:902:ef8d:b0:1dc:1ca9:daf9 with SMTP id iz13-20020a170902ef8d00b001dc1ca9daf9mr8300287plb.12.1709054939240;
-        Tue, 27 Feb 2024 09:28:59 -0800 (PST)
+        bh=H8L0w+filKhnx5ou6lK4ASaEc5Nqt4aefqvsq9AGbtU=;
+        b=DzW073HixGfkD6xjDX5jr3j5G2HYyoThTBYUAvL8hMc5gqvCScQlN45+zAhVfHUeiq
+         p8Klhe3grFPiiB7Fh9rv4ySKy/Bo6bn8rcU1cDhD2wkFkxE+xPWpctgjteYIhfnrVGMY
+         AFU/aBLDUpUTBaVKe5al2lEyz7wQy4+eJIhdgqyUedkXhuptfdgo7RR9agZsUoYWxhBt
+         HRlXrluyYXpePNU/UamwadJcm5br86XydyAs3RWoAPykZ3Ndv4BWUAPPyDADeLDpFwhu
+         p6ZR+9e9s61hsBV7mgX33xlUiD0a1hRw1X4qmvF7dy4HIymSh1Aguc24YpmtXMy65lu1
+         je7A==
+X-Forwarded-Encrypted: i=1; AJvYcCVhVjnUNMx5Mrh8FO0NccWuMEmgKjdtBWTaCD61FLitfRksGIpB7RVDRtAqv6UqY/93t6LOXISc/LU8OE5CT+1fjF/59d/8Apd5Vdkc
+X-Gm-Message-State: AOJu0YxRm5jCec6nsvmESWQ2O5RQhm3xtSZJi3jdQoiazFizE/gn7aHs
+	Jby5zMuZmWIMzESgehBXLFaLoX8IiKZGhUCijCjeQMyqK98K5tGw
+X-Google-Smtp-Source: AGHT+IF557UZPZ1WHG+OK9aQFeJ47WCN1/dfNTYHSF6Qd5qcndVYrHQgDBScqxhXYCy68svHS6dc+Q==
+X-Received: by 2002:aa7:88d4:0:b0:6e5:456b:bff9 with SMTP id k20-20020aa788d4000000b006e5456bbff9mr4338406pff.12.1709054940927;
+        Tue, 27 Feb 2024 09:29:00 -0800 (PST)
 Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id mq11-20020a170902fd4b00b001dc8f1e06eesm1768959plb.291.2024.02.27.09.28.58
+        by smtp.gmail.com with ESMTPSA id a17-20020aa78e91000000b006e554afa254sm626033pfr.38.2024.02.27.09.29.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 09:28:58 -0800 (PST)
+        Tue, 27 Feb 2024 09:29:00 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: jiangshanlai@gmail.com
@@ -79,9 +79,9 @@ Cc: torvalds@linux-foundation.org,
 	romain.perier@gmail.com,
 	mingo@kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 2/6] workqueue: Implement disable/enable for (delayed) work items
-Date: Tue, 27 Feb 2024 07:28:13 -1000
-Message-ID: <20240227172852.2386358-3-tj@kernel.org>
+Subject: [PATCH 3/6] workqueue: Remove WORK_OFFQ_CANCELING
+Date: Tue, 27 Feb 2024 07:28:14 -1000
+Message-ID: <20240227172852.2386358-4-tj@kernel.org>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240227172852.2386358-1-tj@kernel.org>
 References: <20240227172852.2386358-1-tj@kernel.org>
@@ -93,371 +93,335 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While (delayed) work items could be flushed and canceled, there was no way
-to prevent them from being queued in the future. While this didn't lead to
-functional deficiencies, it sometimes required a bit more effort from the
-workqueue users to e.g. sequence shutdown steps with more care.
+cancel[_delayed]_work_sync() guarantees that it can shut down
+self-requeueing work items. To achieve that, it grabs and then holds
+WORK_STRUCT_PENDING bit set while flushing the currently executing instance.
+As the PENDING bit is set, all queueing attempts including the
+self-requeueing ones fail and once the currently executing instance is
+flushed, the work item should be idle as long as someone else isn't actively
+queueing it.
 
-Workqueue is currently in the process of replacing tasklet which does
-support disabling and enabling. The feature is used relatively widely to,
-for example, temporarily suppress main path while a control plane operation
-(reset or config change) is in progress.
+This means that the cancel_work_sync path may hold the PENDING bit set while
+flushing the target work item. This isn't a problem for the queueing path -
+it can just fail which is the desired effect. It doesn't affect flush. It
+doesn't matter to cancel_work either as it can just report that the work
+item has successfully canceled. However, if there's another cancel_work_sync
+attempt on the work item, it can't simply fail or report success and that
+would breach the guarantee that it should provide. cancel_work_sync has to
+wait for and grab that PENDING bit and go through the motions.
 
-To enable easy conversion of tasklet users and as it seems like an inherent
-useful feature, this patch implements disabling and enabling of work items.
+WORK_OFFQ_CANCELING and wq_cancel_waitq are what implement this
+cancel_work_sync to cancel_work_sync wait mechanism. When a work item is
+being canceled, WORK_OFFQ_CANCELING is also set on it and other
+cancel_work_sync attempts wait on the bit to be cleared using the wait
+queue.
 
-- A work item carries 16bit disable count in work->data while not queued.
-  The access to the count is synchronized by the PENDING bit like all other
-  parts of work->data.
+While this works, it's an isolated wart which doesn't jive with the rest of
+flush and cancel mechanisms and forces enable_work() and disable_work() to
+require a sleepable context, which hampers their usability.
 
-- If the count is non-zero, the work item cannot be queued. Any attempt to
-  queue the work item fails and returns %false.
+Now that a work item can be disabled, we can use that to block queueing
+while cancel_work_sync is in progress. Instead of holding PENDING the bit,
+it can temporarily disable the work item, flush and then re-enable it as
+that'd achieve the same end result of blocking queueings while canceling and
+thus enable canceling of self-requeueing work items.
 
-- disable_work[_sync](), enable_work(), disable_delayed_work[_sync]() and
-  enable_delayed_work() are added.
+- WORK_OFFQ_CANCELING and the surrounding mechanims are removed.
 
-v3: enable_work() was using local_irq_enable() instead of
-    local_irq_restore() to undo IRQ-disable by work_grab_pending(). This is
-    awkward now and will become incorrect as enable_work() will later be
-    used from IRQ context too. (Lai)
+- work_grab_pending() is now simpler, no longer has to wait for a blocking
+  operation and thus can be called from any context.
 
-v2: Lai noticed that queue_work_node() wasn't checking the disable count.
-    Fixed. queue_rcu_work() is updated to trigger warning if the inner work
-    item is disabled.
+- With work_grab_pending() simplified, no need to use try_to_grab_pending()
+  directly. All users are converted to use work_grab_pending().
+
+- __cancel_work_sync() is updated to __cancel_work() with
+  WORK_CANCEL_DISABLE to cancel and plug racing queueing attempts. It then
+  flushes and re-enables the work item if necessary.
+
+- These changes allow disable_work() and enable_work() to be called from any
+  context.
+
+v2: Lai pointed out that mod_delayed_work_on() needs to check the disable
+    count before queueing the delayed work item. Added
+    clear_pending_if_disabled() call.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 ---
- include/linux/workqueue.h |  18 +++-
- kernel/workqueue.c        | 177 +++++++++++++++++++++++++++++++++++---
- 2 files changed, 182 insertions(+), 13 deletions(-)
+ include/linux/workqueue.h |   4 +-
+ kernel/workqueue.c        | 140 ++++++--------------------------------
+ 2 files changed, 20 insertions(+), 124 deletions(-)
 
 diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index e15fc77bf2e2..f25915e47efb 100644
+index f25915e47efb..86483743ad28 100644
 --- a/include/linux/workqueue.h
 +++ b/include/linux/workqueue.h
-@@ -51,20 +51,23 @@ enum work_bits {
- 	 * data contains off-queue information when !WORK_STRUCT_PWQ.
+@@ -52,10 +52,9 @@ enum work_bits {
  	 *
  	 * MSB
--	 * [ pool ID ] [ OFFQ flags ] [ STRUCT flags ]
--	 *                 1 bit        4 or 5 bits
-+	 * [ pool ID ] [ disable depth ] [ OFFQ flags ] [ STRUCT flags ]
-+	 *                  16 bits          1 bit        4 or 5 bits
+ 	 * [ pool ID ] [ disable depth ] [ OFFQ flags ] [ STRUCT flags ]
+-	 *                  16 bits          1 bit        4 or 5 bits
++	 *                  16 bits          0 bits       4 or 5 bits
  	 */
  	WORK_OFFQ_FLAG_SHIFT	= WORK_STRUCT_FLAG_BITS,
- 	WORK_OFFQ_CANCELING_BIT = WORK_OFFQ_FLAG_SHIFT,
+-	WORK_OFFQ_CANCELING_BIT = WORK_OFFQ_FLAG_SHIFT,
  	WORK_OFFQ_FLAG_END,
  	WORK_OFFQ_FLAG_BITS	= WORK_OFFQ_FLAG_END - WORK_OFFQ_FLAG_SHIFT,
  
-+	WORK_OFFQ_DISABLE_SHIFT	= WORK_OFFQ_FLAG_SHIFT + WORK_OFFQ_FLAG_BITS,
-+	WORK_OFFQ_DISABLE_BITS	= 16,
-+
- 	/*
- 	 * When a work item is off queue, the high bits encode off-queue flags
- 	 * and the last pool it was on. Cap pool ID to 31 bits and use the
- 	 * highest number to indicate that no pool is associated.
- 	 */
--	WORK_OFFQ_POOL_SHIFT	= WORK_OFFQ_FLAG_SHIFT + WORK_OFFQ_FLAG_BITS,
-+	WORK_OFFQ_POOL_SHIFT	= WORK_OFFQ_DISABLE_SHIFT + WORK_OFFQ_DISABLE_BITS,
- 	WORK_OFFQ_LEFT		= BITS_PER_LONG - WORK_OFFQ_POOL_SHIFT,
- 	WORK_OFFQ_POOL_BITS	= WORK_OFFQ_LEFT <= 31 ? WORK_OFFQ_LEFT : 31,
+@@ -99,7 +98,6 @@ enum wq_misc_consts {
  };
-@@ -98,6 +101,7 @@ enum wq_misc_consts {
+ 
  /* Convenience constants - of type 'unsigned long', not 'enum'! */
- #define WORK_OFFQ_CANCELING	(1ul << WORK_OFFQ_CANCELING_BIT)
+-#define WORK_OFFQ_CANCELING	(1ul << WORK_OFFQ_CANCELING_BIT)
  #define WORK_OFFQ_FLAG_MASK	(((1ul << WORK_OFFQ_FLAG_BITS) - 1) << WORK_OFFQ_FLAG_SHIFT)
-+#define WORK_OFFQ_DISABLE_MASK	(((1ul << WORK_OFFQ_DISABLE_BITS) - 1) << WORK_OFFQ_DISABLE_SHIFT)
+ #define WORK_OFFQ_DISABLE_MASK	(((1ul << WORK_OFFQ_DISABLE_BITS) - 1) << WORK_OFFQ_DISABLE_SHIFT)
  #define WORK_OFFQ_POOL_NONE	((1ul << WORK_OFFQ_POOL_BITS) - 1)
- #define WORK_STRUCT_NO_POOL	(WORK_OFFQ_POOL_NONE << WORK_OFFQ_POOL_SHIFT)
- #define WORK_STRUCT_PWQ_MASK	(~((1ul << WORK_STRUCT_PWQ_SHIFT) - 1))
-@@ -556,6 +560,14 @@ extern bool flush_delayed_work(struct delayed_work *dwork);
- extern bool cancel_delayed_work(struct delayed_work *dwork);
- extern bool cancel_delayed_work_sync(struct delayed_work *dwork);
- 
-+extern bool disable_work(struct work_struct *work);
-+extern bool disable_work_sync(struct work_struct *work);
-+extern bool enable_work(struct work_struct *work);
-+
-+extern bool disable_delayed_work(struct delayed_work *dwork);
-+extern bool disable_delayed_work_sync(struct delayed_work *dwork);
-+extern bool enable_delayed_work(struct delayed_work *dwork);
-+
- extern bool flush_rcu_work(struct rcu_work *rwork);
- 
- extern void workqueue_set_max_active(struct workqueue_struct *wq,
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index ecd46fbed60b..a2f2847d464b 100644
+index a2f2847d464b..07e77130227c 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -98,6 +98,7 @@ enum worker_flags {
+@@ -495,12 +495,6 @@ static struct workqueue_attrs *unbound_std_wq_attrs[NR_STD_WORKER_POOLS];
+ /* I: attributes used when instantiating ordered pools on demand */
+ static struct workqueue_attrs *ordered_wq_attrs[NR_STD_WORKER_POOLS];
  
- enum work_cancel_flags {
- 	WORK_CANCEL_DELAYED	= 1 << 0,	/* canceling a delayed_work */
-+	WORK_CANCEL_DISABLE	= 1 << 1,	/* canceling to disable */
- };
- 
- enum wq_internal_consts {
-@@ -393,6 +394,7 @@ struct wq_pod_type {
- 
- struct work_offq_data {
- 	u32			pool_id;
-+	u32			disable;
- 	u32			flags;
- };
- 
-@@ -907,12 +909,15 @@ static void work_offqd_unpack(struct work_offq_data *offqd, unsigned long data)
- 
- 	offqd->pool_id = shift_and_mask(data, WORK_OFFQ_POOL_SHIFT,
- 					WORK_OFFQ_POOL_BITS);
-+	offqd->disable = shift_and_mask(data, WORK_OFFQ_DISABLE_SHIFT,
-+					WORK_OFFQ_DISABLE_BITS);
- 	offqd->flags = data & WORK_OFFQ_FLAG_MASK;
- }
- 
- static unsigned long work_offqd_pack_flags(struct work_offq_data *offqd)
+-/*
+- * Used to synchronize multiple cancel_sync attempts on the same work item. See
+- * work_grab_pending() and __cancel_work_sync().
+- */
+-static DECLARE_WAIT_QUEUE_HEAD(wq_cancel_waitq);
+-
+ /*
+  * I: kthread_worker to release pwq's. pwq release needs to be bounced to a
+  * process context while holding a pool lock. Bounce to a dedicated kthread
+@@ -782,11 +776,6 @@ static int work_next_color(int color)
+  * corresponding to a work.  Pool is available once the work has been
+  * queued anywhere after initialization until it is sync canceled.  pwq is
+  * available only while the work item is queued.
+- *
+- * %WORK_OFFQ_CANCELING is used to mark a work item which is being
+- * canceled.  While being canceled, a work item may have its PENDING set
+- * but stay off timer and worklist for arbitrarily long and nobody should
+- * try to steal the PENDING bit.
+  */
+ static inline void set_work_data(struct work_struct *work, unsigned long data)
  {
--	return (unsigned long)offqd->flags;
-+	return ((unsigned long)offqd->disable << WORK_OFFQ_DISABLE_SHIFT) |
-+		((unsigned long)offqd->flags);
+@@ -920,13 +909,6 @@ static unsigned long work_offqd_pack_flags(struct work_offq_data *offqd)
+ 		((unsigned long)offqd->flags);
  }
  
- static bool work_is_canceling(struct work_struct *work)
-@@ -2405,6 +2410,21 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
+-static bool work_is_canceling(struct work_struct *work)
+-{
+-	unsigned long data = atomic_long_read(&work->data);
+-
+-	return !(data & WORK_STRUCT_PWQ) && (data & WORK_OFFQ_CANCELING);
+-}
+-
+ /*
+  * Policy functions.  These define the policies on how the global worker
+  * pools are managed.  Unless noted otherwise, these functions assume that
+@@ -2055,8 +2037,6 @@ static void pwq_dec_nr_in_flight(struct pool_workqueue *pwq, unsigned long work_
+  *  1		if @work was pending and we successfully stole PENDING
+  *  0		if @work was idle and we claimed PENDING
+  *  -EAGAIN	if PENDING couldn't be grabbed at the moment, safe to busy-retry
+- *  -ENOENT	if someone else is canceling @work, this state may persist
+- *		for arbitrarily long
+  *  ========	================================================================
+  *
+  * Note:
+@@ -2152,26 +2132,9 @@ static int try_to_grab_pending(struct work_struct *work, u32 cflags,
+ fail:
  	rcu_read_unlock();
+ 	local_irq_restore(*irq_flags);
+-	if (work_is_canceling(work))
+-		return -ENOENT;
+-	cpu_relax();
+ 	return -EAGAIN;
  }
  
-+static bool clear_pending_if_disabled(struct work_struct *work)
-+{
-+	unsigned long data = *work_data_bits(work);
-+	struct work_offq_data offqd;
-+
-+	if (likely((data & WORK_STRUCT_PWQ) ||
-+		   !(data & WORK_OFFQ_DISABLE_MASK)))
-+		return false;
-+
-+	work_offqd_unpack(&offqd, data);
-+	set_work_pool_and_clear_pending(work, offqd.pool_id,
-+					work_offqd_pack_flags(&offqd));
-+	return true;
-+}
-+
+-struct cwt_wait {
+-	wait_queue_entry_t	wait;
+-	struct work_struct	*work;
+-};
+-
+-static int cwt_wakefn(wait_queue_entry_t *wait, unsigned mode, int sync, void *key)
+-{
+-	struct cwt_wait *cwait = container_of(wait, struct cwt_wait, wait);
+-
+-	if (cwait->work != key)
+-		return 0;
+-	return autoremove_wake_function(wait, mode, sync, key);
+-}
+-
  /**
-  * queue_work_on - queue work on specific cpu
-  * @cpu: CPU number to execute work on
-@@ -2427,7 +2447,8 @@ bool queue_work_on(int cpu, struct workqueue_struct *wq,
- 
- 	local_irq_save(irq_flags);
- 
--	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-+	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)) &&
-+	    !clear_pending_if_disabled(work)) {
- 		__queue_work(cpu, wq, work);
- 		ret = true;
- 	}
-@@ -2505,7 +2526,8 @@ bool queue_work_node(int node, struct workqueue_struct *wq,
- 
- 	local_irq_save(irq_flags);
- 
--	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-+	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)) &&
-+	    !clear_pending_if_disabled(work)) {
- 		int cpu = select_numa_node_cpu(node);
- 
- 		__queue_work(cpu, wq, work);
-@@ -2587,7 +2609,8 @@ bool queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
- 	/* read the comment in __queue_work() */
- 	local_irq_save(irq_flags);
- 
--	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-+	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)) &&
-+	    !clear_pending_if_disabled(work)) {
- 		__queue_delayed_work(cpu, wq, dwork, delay);
- 		ret = true;
- 	}
-@@ -2660,7 +2683,12 @@ bool queue_rcu_work(struct workqueue_struct *wq, struct rcu_work *rwork)
+  * work_grab_pending - steal work item from worklist and disable irq
+  * @work: work item to steal
+@@ -2181,7 +2144,7 @@ static int cwt_wakefn(wait_queue_entry_t *wait, unsigned mode, int sync, void *k
+  * Grab PENDING bit of @work. @work can be in any stable state - idle, on timer
+  * or on worklist.
+  *
+- * Must be called in process context. IRQ is disabled on return with IRQ state
++ * Can be called from any context. IRQ is disabled on return with IRQ state
+  * stored in *@irq_flags. The caller is responsible for re-enabling it using
+  * local_irq_restore().
+  *
+@@ -2190,41 +2153,14 @@ static int cwt_wakefn(wait_queue_entry_t *wait, unsigned mode, int sync, void *k
+ static bool work_grab_pending(struct work_struct *work, u32 cflags,
+ 			      unsigned long *irq_flags)
  {
- 	struct work_struct *work = &rwork->work;
+-	struct cwt_wait cwait;
+ 	int ret;
  
--	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-+	/*
-+	 * rcu_work can't be canceled or disabled. Warn if the user reached
-+	 * inside @rwork and disabled the inner work.
-+	 */
-+	if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)) &&
-+	    !WARN_ON_ONCE(clear_pending_if_disabled(work))) {
- 		rwork->wq = wq;
- 		call_rcu_hurry(&rwork->rcu, rcu_work_rcufn);
- 		return true;
-@@ -4183,20 +4211,46 @@ bool flush_rcu_work(struct rcu_work *rwork)
+-	might_sleep();
+-repeat:
+-	ret = try_to_grab_pending(work, cflags, irq_flags);
+-	if (likely(ret >= 0))
+-		return ret;
+-	if (ret != -ENOENT)
+-		goto repeat;
+-
+-	/*
+-	 * Someone is already canceling. Wait for it to finish. flush_work()
+-	 * doesn't work for PREEMPT_NONE because we may get woken up between
+-	 * @work's completion and the other canceling task resuming and clearing
+-	 * CANCELING - flush_work() will return false immediately as @work is no
+-	 * longer busy, try_to_grab_pending() will return -ENOENT as @work is
+-	 * still being canceled and the other canceling task won't be able to
+-	 * clear CANCELING as we're hogging the CPU.
+-	 *
+-	 * Let's wait for completion using a waitqueue. As this may lead to the
+-	 * thundering herd problem, use a custom wake function which matches
+-	 * @work along with exclusive wait and wakeup.
+-	 */
+-	init_wait(&cwait.wait);
+-	cwait.wait.func = cwt_wakefn;
+-	cwait.work = work;
+-
+-	prepare_to_wait_exclusive(&wq_cancel_waitq, &cwait.wait,
+-				  TASK_UNINTERRUPTIBLE);
+-	if (work_is_canceling(work))
+-		schedule();
+-	finish_wait(&wq_cancel_waitq, &cwait.wait);
+-
+-	goto repeat;
++	while (true) {
++		ret = try_to_grab_pending(work, cflags, irq_flags);
++		if (ret >= 0)
++			return ret;
++		cpu_relax();
++	}
  }
- EXPORT_SYMBOL(flush_rcu_work);
  
-+static void work_offqd_disable(struct work_offq_data *offqd)
-+{
-+	const unsigned long max = (1lu << WORK_OFFQ_DISABLE_BITS) - 1;
-+
-+	if (likely(offqd->disable < max))
-+		offqd->disable++;
-+	else
-+		WARN_ONCE(true, "workqueue: work disable count overflowed\n");
-+}
-+
-+static void work_offqd_enable(struct work_offq_data *offqd)
-+{
-+	if (likely(offqd->disable > 0))
-+		offqd->disable--;
-+	else
-+		WARN_ONCE(true, "workqueue: work disable count underflowed\n");
-+}
-+
- static bool __cancel_work(struct work_struct *work, u32 cflags)
+ /**
+@@ -2642,19 +2578,14 @@ bool mod_delayed_work_on(int cpu, struct workqueue_struct *wq,
+ 			 struct delayed_work *dwork, unsigned long delay)
  {
- 	struct work_offq_data offqd;
+ 	unsigned long irq_flags;
+-	int ret;
++	bool ret;
+ 
+-	do {
+-		ret = try_to_grab_pending(&dwork->work, WORK_CANCEL_DELAYED,
+-					  &irq_flags);
+-	} while (unlikely(ret == -EAGAIN));
++	ret = work_grab_pending(&dwork->work, WORK_CANCEL_DELAYED, &irq_flags);
+ 
+-	if (likely(ret >= 0)) {
++	if (!clear_pending_if_disabled(&dwork->work))
+ 		__queue_delayed_work(cpu, wq, dwork, delay);
+-		local_irq_restore(irq_flags);
+-	}
+ 
+-	/* -ENOENT from try_to_grab_pending() becomes %true */
++	local_irq_restore(irq_flags);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mod_delayed_work_on);
+@@ -4235,16 +4166,7 @@ static bool __cancel_work(struct work_struct *work, u32 cflags)
  	unsigned long irq_flags;
  	int ret;
  
--	do {
--		ret = try_to_grab_pending(work, cflags, &irq_flags);
--	} while (unlikely(ret == -EAGAIN));
-+	if (cflags & WORK_CANCEL_DISABLE) {
-+		ret = work_grab_pending(work, cflags, &irq_flags);
-+	} else {
-+		do {
-+			ret = try_to_grab_pending(work, cflags, &irq_flags);
-+		} while (unlikely(ret == -EAGAIN));
- 
--	if (unlikely(ret < 0))
--		return false;
-+		if (unlikely(ret < 0))
-+			return false;
-+	}
+-	if (cflags & WORK_CANCEL_DISABLE) {
+-		ret = work_grab_pending(work, cflags, &irq_flags);
+-	} else {
+-		do {
+-			ret = try_to_grab_pending(work, cflags, &irq_flags);
+-		} while (unlikely(ret == -EAGAIN));
+-
+-		if (unlikely(ret < 0))
+-			return false;
+-	}
++	ret = work_grab_pending(work, cflags, &irq_flags);
  
  	work_offqd_unpack(&offqd, *work_data_bits(work));
-+
-+	if (cflags & WORK_CANCEL_DISABLE)
-+		work_offqd_disable(&offqd);
-+
- 	set_work_pool_and_clear_pending(work, offqd.pool_id,
- 					work_offqd_pack_flags(&offqd));
- 	local_irq_restore(irq_flags);
-@@ -4213,6 +4267,10 @@ static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
- 	ret = work_grab_pending(work, cflags, &irq_flags);
  
- 	work_offqd_unpack(&offqd, *work_data_bits(work));
-+
-+	if (cflags & WORK_CANCEL_DISABLE)
-+		work_offqd_disable(&offqd);
-+
- 	offqd.flags |= WORK_OFFQ_CANCELING;
- 	set_work_pool_and_keep_pending(work, offqd.pool_id,
- 				       work_offqd_pack_flags(&offqd));
-@@ -4312,6 +4370,105 @@ bool cancel_delayed_work_sync(struct delayed_work *dwork)
+@@ -4259,22 +4181,9 @@ static bool __cancel_work(struct work_struct *work, u32 cflags)
+ 
+ static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
+ {
+-	struct work_offq_data offqd;
+-	unsigned long irq_flags;
+ 	bool ret;
+ 
+-	/* claim @work and tell other tasks trying to grab @work to back off */
+-	ret = work_grab_pending(work, cflags, &irq_flags);
+-
+-	work_offqd_unpack(&offqd, *work_data_bits(work));
+-
+-	if (cflags & WORK_CANCEL_DISABLE)
+-		work_offqd_disable(&offqd);
+-
+-	offqd.flags |= WORK_OFFQ_CANCELING;
+-	set_work_pool_and_keep_pending(work, offqd.pool_id,
+-				       work_offqd_pack_flags(&offqd));
+-	local_irq_restore(irq_flags);
++	ret = __cancel_work(work, cflags | WORK_CANCEL_DISABLE);
+ 
+ 	/*
+ 	 * Skip __flush_work() during early boot when we know that @work isn't
+@@ -4283,19 +4192,8 @@ static bool __cancel_work_sync(struct work_struct *work, u32 cflags)
+ 	if (wq_online)
+ 		__flush_work(work, true);
+ 
+-	work_offqd_unpack(&offqd, *work_data_bits(work));
+-
+-	/*
+-	 * smp_mb() at the end of set_work_pool_and_clear_pending() is paired
+-	 * with prepare_to_wait() above so that either waitqueue_active() is
+-	 * visible here or !work_is_canceling() is visible there.
+-	 */
+-	offqd.flags &= ~WORK_OFFQ_CANCELING;
+-	set_work_pool_and_clear_pending(work, WORK_OFFQ_POOL_NONE,
+-					work_offqd_pack_flags(&offqd));
+-
+-	if (waitqueue_active(&wq_cancel_waitq))
+-		__wake_up(&wq_cancel_waitq, TASK_NORMAL, 1, work);
++	if (!(cflags & WORK_CANCEL_DISABLE))
++		enable_work(work);
+ 
+ 	return ret;
  }
- EXPORT_SYMBOL(cancel_delayed_work_sync);
- 
-+/**
-+ * disable_work - Disable and cancel a work item
-+ * @work: work item to disable
-+ *
-+ * Disable @work by incrementing its disable count and cancel it if currently
-+ * pending. As long as the disable count is non-zero, any attempt to queue @work
-+ * will fail and return %false. The maximum supported disable depth is 2 to the
-+ * power of %WORK_OFFQ_DISABLE_BITS, currently 65536.
-+ *
-+ * Must be called from a sleepable context. Returns %true if @work was pending,
-+ * %false otherwise.
-+ */
-+bool disable_work(struct work_struct *work)
-+{
-+	return __cancel_work(work, WORK_CANCEL_DISABLE);
-+}
-+EXPORT_SYMBOL_GPL(disable_work);
-+
-+/**
-+ * disable_work_sync - Disable, cancel and drain a work item
-+ * @work: work item to disable
-+ *
-+ * Similar to disable_work() but also wait for @work to finish if currently
-+ * executing.
-+ *
-+ * Must be called from a sleepable context. Returns %true if @work was pending,
-+ * %false otherwise.
-+ */
-+bool disable_work_sync(struct work_struct *work)
-+{
-+	return __cancel_work_sync(work, WORK_CANCEL_DISABLE);
-+}
-+EXPORT_SYMBOL_GPL(disable_work_sync);
-+
-+/**
-+ * enable_work - Enable a work item
-+ * @work: work item to enable
-+ *
-+ * Undo disable_work[_sync]() by decrementing @work's disable count. @work can
-+ * only be queued if its disable count is 0.
-+ *
-+ * Must be called from a sleepable context. Returns %true if the disable count
-+ * reached 0. Otherwise, %false.
-+ */
-+bool enable_work(struct work_struct *work)
-+{
-+	struct work_offq_data offqd;
-+	unsigned long irq_flags;
-+
-+	work_grab_pending(work, 0, &irq_flags);
-+
-+	work_offqd_unpack(&offqd, *work_data_bits(work));
-+	work_offqd_enable(&offqd);
-+	set_work_pool_and_clear_pending(work, offqd.pool_id,
-+					work_offqd_pack_flags(&offqd));
-+	local_irq_restore(irq_flags);
-+
-+	return !offqd.disable;
-+}
-+EXPORT_SYMBOL_GPL(enable_work);
-+
-+/**
-+ * disable_delayed_work - Disable and cancel a delayed work item
-+ * @dwork: delayed work item to disable
-+ *
-+ * disable_work() for delayed work items.
-+ */
-+bool disable_delayed_work(struct delayed_work *dwork)
-+{
-+	return __cancel_work(&dwork->work,
-+			     WORK_CANCEL_DELAYED | WORK_CANCEL_DISABLE);
-+}
-+EXPORT_SYMBOL_GPL(disable_delayed_work);
-+
-+/**
-+ * disable_delayed_work_sync - Disable, cancel and drain a delayed work item
-+ * @dwork: delayed work item to disable
-+ *
-+ * disable_work_sync() for delayed work items.
-+ */
-+bool disable_delayed_work_sync(struct delayed_work *dwork)
-+{
-+	return __cancel_work_sync(&dwork->work,
-+				  WORK_CANCEL_DELAYED | WORK_CANCEL_DISABLE);
-+}
-+EXPORT_SYMBOL_GPL(disable_delayed_work_sync);
-+
-+/**
-+ * enable_delayed_work - Enable a delayed work item
-+ * @dwork: delayed work item to enable
-+ *
-+ * enable_work() for delayed work items.
-+ */
-+bool enable_delayed_work(struct delayed_work *dwork)
-+{
-+	return enable_work(&dwork->work);
-+}
-+EXPORT_SYMBOL_GPL(enable_delayed_work);
-+
- /**
-  * schedule_on_each_cpu - execute a function synchronously on each online CPU
-  * @func: the function to call
+@@ -4379,8 +4277,8 @@ EXPORT_SYMBOL(cancel_delayed_work_sync);
+  * will fail and return %false. The maximum supported disable depth is 2 to the
+  * power of %WORK_OFFQ_DISABLE_BITS, currently 65536.
+  *
+- * Must be called from a sleepable context. Returns %true if @work was pending,
+- * %false otherwise.
++ * Can be called from any context. Returns %true if @work was pending, %false
++ * otherwise.
+  */
+ bool disable_work(struct work_struct *work)
+ {
+@@ -4411,8 +4309,8 @@ EXPORT_SYMBOL_GPL(disable_work_sync);
+  * Undo disable_work[_sync]() by decrementing @work's disable count. @work can
+  * only be queued if its disable count is 0.
+  *
+- * Must be called from a sleepable context. Returns %true if the disable count
+- * reached 0. Otherwise, %false.
++ * Can be called from any context. Returns %true if the disable count reached 0.
++ * Otherwise, %false.
+  */
+ bool enable_work(struct work_struct *work)
+ {
 -- 
 2.43.2
 
