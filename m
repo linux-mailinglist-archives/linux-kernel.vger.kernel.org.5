@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-82699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DFD8868859
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5446686885A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:45:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A32451F24A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:45:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C153A1F2518E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06D757322;
-	Tue, 27 Feb 2024 04:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB22E57885;
+	Tue, 27 Feb 2024 04:42:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="a9jfnqXI"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="F3GzW5st"
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7892E52F95
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B25E55E5E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709008942; cv=none; b=jFQNnsWcKEE/2wWH2lvpdzDYX9ZpBJLofjLyDw1IMhb3QRd/driBaAxdE3GrhPAAT4sWEzWXe7VetKdWcHVpD5qtDJJXjeR+zdu/TYPnioueKgHZMYRWLw7pv9mm6OJoR8eahLwUVjRVDd1YpchvHQa7iJCkPvHxEFxCEgWGvqo=
+	t=1709008944; cv=none; b=lCnoi611FkHA03l7m9WCp3HjKMrsL39M2rNm5AYDpkB8RkFG/bejNieMSYDfeFEnkqv0LnTKxVY0OwbyulMz2tCayHpyKzlKpmsGmRfEbZ8fVWnl6dfegsUaegZR07tjApguXKE/7/uuEBdYVf5m7AIjlpTp1BZjHBqOhixjriw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709008942; c=relaxed/simple;
-	bh=BF/sv0OBJ+auhhZiLNMXTsH8e8AmZBwl76hXFCd5Spg=;
+	s=arc-20240116; t=1709008944; c=relaxed/simple;
+	bh=GCNq+oVNnt+RZlMwVce8p37iY6XXUp2uX11yzmD+FkY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q1xU+SVBF8AfXZ/umB1K6Mu9Klm4bXlprDez1aDWy4ZhsZ8M2viPrrp79Ga3HlQkNAUAkraQvZ83/6M/pVyVqj7VvCcoHWWJslE+WTGdau+t1bfFv61xFIjWlrstzDxXElvn76i+/iuc9KxkVZkZxPlm0a81vAH6kgLPc8xxDYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=a9jfnqXI; arc=none smtp.client-ip=209.85.210.179
+	 MIME-Version; b=JGwGg1GIDuzszJL5AQtw/NaVIR8FbBnjewhjuSpMrl0QnPdQ2mXLQynd6vF7ExOKdk2PcahlzkClcQk2Xpg4riOa+fXalFHqv5SCNnVl3dUXcr+zIRing/SNx+w20gMwsfWKYqvYLDI5VUjyZYVgXTVVI7PoElru95uEHkekJq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=F3GzW5st; arc=none smtp.client-ip=209.85.160.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e4f3cbb518so1153772b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:42:21 -0800 (PST)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-21ea1aae402so1995153fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:42:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=darkphysics.net; s=google; t=1709008941; x=1709613741; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kWeyU698U5yeL22d4/joOw8xFVDMJsDJjbUrJw2JctY=;
-        b=a9jfnqXI7I35H87E0V1TkdD8v5jxZg/BLMtLvqtf/26AbltWuuFl+/4Jl4mNt55W0k
-         yY3x6AfQZVsA00+Y/EVR1x0xS39cu45zmSqOVGraUPN2zk1G9XesahMUK75bEtKPnFyu
-         oL74r320F5o5ZVlMkXdq/MtYTlzJKvlTSr4hHSJC6z0b+F6GZPbkv6vmhtgMadZr1A2C
-         dTQ4wbNqBhi4Y46NOlHBx8A3R2DxBNOzBMZ88KcUqCpotNbNcK3prspfbyvuxwKvyLnS
-         J4GYmQjjz0YH1quWaELLLtAzBuqKVXUZWNZjENTDqV9uS78nywkAauEjT7V0itmfKq3S
-         GADw==
+        bh=YHS2iHHeZrTRnRLklghWgHy9r146lY/Nmb3FNJzmtMk=;
+        b=F3GzW5stMoGbL6xcnrwfm4xHa2UeQqdAGDBZwMFciaRfJMm31opA7Ml5ObgeKEUjtn
+         gnJpkWWFAgHquEvCOGpFvmuU5ZCu2wX1k1RCCLVzS9UeYPXG68zkHpWf99Z3Q0GF7ITW
+         Fx9X+6y4r7/SpdZynnXaymPdoHolRhECu7B7F7j0Jr8SP00+Xph2yzN2+5wxRB+MzG8b
+         fu0PJHxfqZlYvlc22DGoXSAdUd3MmAwo43cxUnKykizWNJx1YTT9kz4XD2L+aieNpSuq
+         7EQPE8R9gXpqm+XOdPkEOzz5FkwwscQazveVHluYC7SbJoEBniFgeN6Wv8ZytETZevMw
+         5POg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1709008941; x=1709613741;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kWeyU698U5yeL22d4/joOw8xFVDMJsDJjbUrJw2JctY=;
-        b=YbJZ6CN0fuor0aMyiQ2GlX926rEZJPR7+VsnndUDtlAWziP1FhZ8QOXz3lnu2xFIa1
-         IRwtXZoz4ogm5Ii63EtS2I6FlB0/Nult0KZy22vohlPk62JJChvpYpY3PYY/Z6UCU6mj
-         LMn9XF7mXItlR4xOnw62ZhtoF9Xmg1ZoEmtGAc+8hPN2W/Rv7EkglvcfbxbKI8Z+0TOo
-         ikVlWamve5Itb9KvrpH+wdQZa9Cz4AXgk06XQuwyAz6p5fOGJV7y0bUvAShqGFNQ+fT5
-         riypAjQc+xFwJN/61jlf61s2ZOVTbakfJcvtZ9S+Wkv4iC2N2DyT4N9cfvCZLK7OrRxU
-         gdqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXiL0BGRh2CXpkZ1UkH6prdOK98s6HUj8mmjLZMWLBFoPzAb0xYWARNNYdHBx/MCr9dSwg7qudyIgsn4OpcSeVgVyW6Dm4MM2yWPNuH
-X-Gm-Message-State: AOJu0YwmSgIr2lgFGZdWfc0JaIkQVjhIkOOk+1hwsACoydMPLYwXLyIm
-	ARS404WbuEyhOuNfp6Ej89dFCifiL5Cdx+uB3rqi6OZLiw54SQGDvO1u54QpRqI=
-X-Google-Smtp-Source: AGHT+IHPRE944yFD9VtGqCj/eXEhX45IWPacIf2hxIVECOn/sy17eCcM8px+aYUvMT4VA6Ye4ySO7w==
-X-Received: by 2002:a05:6a00:3d54:b0:6e5:3b52:d4bc with SMTP id lp20-20020a056a003d5400b006e53b52d4bcmr3542618pfb.15.1709008940787;
-        Mon, 26 Feb 2024 20:42:20 -0800 (PST)
+        bh=YHS2iHHeZrTRnRLklghWgHy9r146lY/Nmb3FNJzmtMk=;
+        b=s/SKaJImfQrx3S5LQgaXroXdi6IoAiM/EUYBSb3tg7NeL0Sxp29SjkjEP/nMZOTnip
+         yQiIV4gFrlYF+hB3zrcHptBA1zjEAILBAc/DolBGSFcFJWtP/2/Qa6zcqTVN4D2eucla
+         bdidramjnUVdNhCRmvwMxwO//icT4Dv4wzE9NdxndFYjxJyQxA8GBSSkqNVph7YFuyBx
+         ZK0f0wsVc3oLFNCNCj/cY2SUD1+EHt2NKmEK7Yb2yYcZopLY66ZPGIZLgxf9T1dLGbDH
+         uKs4T6ct6EAkaEDSQhCj0ZTYMsiCjhSc6bRHVvVFU6XZkUbFxUWxfeFc5ulNYO65x6mD
+         E0lg==
+X-Forwarded-Encrypted: i=1; AJvYcCWWnrwMctCsNcwXdvMdFywDcnyxhe/U+kSFune6DPQ9+9NlT59pElYmodUea372J5/tU0Idqx6KPbDCBSY/RV3Bk2BhvA4nrH40ouyj
+X-Gm-Message-State: AOJu0YwGcdoLyEb1ro6RdDSXqekfEMjNCcZp9UOwkRbvXXT7J0oqz3c/
+	OMaO3p63ZUzHc/FSWaaDawNYO2t4ktFfrWxJDt2AFv5BhQBRDom2lfRtERI2wNc=
+X-Google-Smtp-Source: AGHT+IG/mgkan0BMJNDF/FisSsjPJe78YViGAJ404w6kJK8YEcbudpCIZokvAlwynNiKTI473SQX2w==
+X-Received: by 2002:a05:6870:63a5:b0:21e:4e29:a001 with SMTP id t37-20020a05687063a500b0021e4e29a001mr10426983oap.2.1709008941699;
+        Mon, 26 Feb 2024 20:42:21 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id e30-20020aa798de000000b006e4ecc3e394sm4899782pfm.79.2024.02.26.20.42.20
+        by smtp.gmail.com with ESMTPSA id e30-20020aa798de000000b006e4ecc3e394sm4899782pfm.79.2024.02.26.20.42.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 20:42:20 -0800 (PST)
+        Mon, 26 Feb 2024 20:42:21 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -73,9 +73,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH v2 17/20] Staging: rtl8192e: Rename varoable asSta
-Date: Mon, 26 Feb 2024 20:41:54 -0800
-Message-Id: <20240227044157.407379-18-tdavies@darkphysics.net>
+Subject: [PATCH v2 18/20] Staging: rtl8192e: Rename reference AllowAllDestAddrHandler
+Date: Mon, 26 Feb 2024 20:41:55 -0800
+Message-Id: <20240227044157.407379-19-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240227044157.407379-1-tdavies@darkphysics.net>
 References: <20240227044157.407379-1-tdavies@darkphysics.net>
@@ -87,37 +87,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename variable asSta to addr as it references bssid addr,
-and fixes checkpatch warning Avoid CamelCase,
+Rename variable AllowAllDestAddrHandler to allow_all_dest_addr_handler
+to fix checkpatch warning Avoid CamelCase,
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
-v2: no changes
- drivers/staging/rtl8192e/rtllib_softmac.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+v2: Fix checkpatch alignment warning
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c | 2 +-
+ drivers/staging/rtl8192e/rtllib.h            | 5 +++--
+ drivers/staging/rtl8192e/rtllib_softmac.c    | 4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+index f99cc5b639fe..fc5014f719d7 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+@@ -661,7 +661,7 @@ static void _rtl92e_init_priv_handler(struct net_device *dev)
+ 						rtl92e_is_halfn_supported_by_ap;
+ 
+ 	priv->rtllib->set_hw_reg_handler = rtl92e_set_reg;
+-	priv->rtllib->AllowAllDestAddrHandler = rtl92e_set_monitor_mode;
++	priv->rtllib->allow_all_dest_addr_handler = rtl92e_set_monitor_mode;
+ 	priv->rtllib->init_gain_handler = rtl92e_init_gain;
+ 	priv->rtllib->rtllib_ips_leave_wq = rtl92e_rtllib_ips_leave_wq;
+ 	priv->rtllib->rtllib_ips_leave = rtl92e_rtllib_ips_leave;
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index a5925fe75a6a..d2f192fa9304 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1493,8 +1493,9 @@ struct rtllib_device {
+ 					   u8 Operation);
+ 	void (*set_hw_reg_handler)(struct net_device *dev, u8 variable, u8 *val);
+ 
+-	void (*AllowAllDestAddrHandler)(struct net_device *dev,
+-					bool bAllowAllDA, bool WriteIntoReg);
++	void (*allow_all_dest_addr_handler)(struct net_device *dev,
++					    bool bAllowAllDA,
++					    bool WriteIntoReg);
+ 
+ 	void (*rtllib_ips_leave_wq)(struct net_device *dev);
+ 	void (*rtllib_ips_leave)(struct net_device *dev);
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 567891123960..d19895220878 100644
+index d19895220878..c335b24fa08b 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -2238,14 +2238,14 @@ u8 rtllib_ap_sec_type(struct rtllib_device *ieee)
+@@ -355,7 +355,7 @@ void rtllib_enable_net_monitor_mode(struct net_device *dev,
+ 
+ 	netdev_info(dev, "========>Enter Monitor Mode\n");
+ 
+-	ieee->AllowAllDestAddrHandler(dev, true, !init_state);
++	ieee->allow_all_dest_addr_handler(dev, true, !init_state);
  }
  
- static void rtllib_mlme_disassociate_request(struct rtllib_device *rtllib,
--					     u8 *asSta, u8 rsn)
-+					     u8 *addr, u8 rsn)
- {
- 	u8 i;
- 	u8	op_mode;
+ /* Disables network monitor mode. Only packets destinated to
+@@ -367,7 +367,7 @@ void rtllib_disable_net_monitor_mode(struct net_device *dev, bool init_state)
  
--	remove_peer_ts(rtllib, asSta);
-+	remove_peer_ts(rtllib, addr);
+ 	netdev_info(dev, "========>Exit Monitor Mode\n");
  
--	if (memcmp(rtllib->current_network.bssid, asSta, 6) == 0) {
-+	if (memcmp(rtllib->current_network.bssid, addr, 6) == 0) {
- 		rtllib->link_state = MAC80211_NOLINK;
+-	ieee->AllowAllDestAddrHandler(dev, false, !init_state);
++	ieee->allow_all_dest_addr_handler(dev, false, !init_state);
+ }
  
- 		for (i = 0; i < 6; i++)
+ static void rtllib_send_probe(struct rtllib_device *ieee)
 -- 
 2.39.2
 
