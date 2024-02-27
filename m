@@ -1,209 +1,140 @@
-Return-Path: <linux-kernel+bounces-83759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9C18869E23
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:44:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADAA869E2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:45:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 580A11F24DC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 725B11F25054
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2494C63D;
-	Tue, 27 Feb 2024 17:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446B24EB34;
+	Tue, 27 Feb 2024 17:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="GTW7VrNV"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="odgz/RyR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE262557F;
-	Tue, 27 Feb 2024 17:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7808C4D9EF;
+	Tue, 27 Feb 2024 17:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709055879; cv=none; b=o0jc+KvG9yIX1WEKHh5lsfgBD0YBsBtpG8YH4VPp0TMj8GPw+4vXkDmImxYXHPbxe+c9eti8+e45MbqKyJN/8CO483fDdCa+05ZeLRzZgpeZU+Q5cO18uXE93cpxnoxY06Gbk76z2sv85u86lG4sFJvd3vZDssfvMzEOcJsWKM4=
+	t=1709055920; cv=none; b=PSezO5029gxv/OGLvUfw5WXjj5ec+WQvRIsod4LdSjMemVBvjcgAbiUhCoss/Lm71Fj0hoj4ud4t+XtbPTPEag6/eJd7IOrYnPE9T+qmMy0z9Uni0RI69pyfhm+UW1KZGaI3nTmCRoTxBTQdlqwtXriWDJx8i8J0LSHjNj43GFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709055879; c=relaxed/simple;
-	bh=kdp5O1cIEITIktgt384DfDxhL1geSIF8EMcBpT5bIc4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ukwW0ZqLFRFBSqo8BUUHkAeKiY4Bro3ykohJ17tBl/0n97iiyKryloQIuTdTKtg+VRsRB/1j1jcXBsFWon/MpdJqbF9wSriekY4S9bekyGQuWdasHkBaq7eQFPihC3KZhWGG4lF1BM2N8VnNIokZBqTDf6dYFzyjwgEomWFLJdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=GTW7VrNV; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RBi3K0029671;
-	Tue, 27 Feb 2024 18:44:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	selector1; bh=ZKduf9VukNB9GBil78oMEdLFb1eDrPFu/obW2gUDxi8=; b=GT
-	W7VrNVOHVlekUom1ghEc7syzR22wSOzNMR4KhEH6FnUfWVy3FAUsauLzn/u5LW8B
-	qrYNf5siWD0a6Ya7l5iByf2o+DW2VqV+oHHyPCYZZd0V+DLjTDxBbVfmpkO0elSm
-	OWrC0vVO4oLDpYbyX1foWxyZAlEEVVZh7ydyUFpsIZa0fE0X9woJbQEwBEuEF80x
-	YowXwha/s2fdw30aFR8Z6mY8ccUNxKvayeK2YSzh1whgNgjj3aDukUsYk0EIoLkp
-	SN7gOXNR1hCJj+hnOxE/yAKzFRc63cZ7I8DiNH30qRU3xqXlI4S1RIzPkUFbnHRt
-	APtvf4GpWfarRqEzTc4Q==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3whf4b9dpq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 18:44:23 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D992F4002D;
-	Tue, 27 Feb 2024 18:44:17 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4474F2ADF56;
-	Tue, 27 Feb 2024 18:43:52 +0100 (CET)
-Received: from [10.252.26.109] (10.252.26.109) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 27 Feb
- 2024 18:43:49 +0100
-Message-ID: <09262390-388f-402f-99e6-ea6229107119@foss.st.com>
-Date: Tue, 27 Feb 2024 18:43:49 +0100
+	s=arc-20240116; t=1709055920; c=relaxed/simple;
+	bh=sOFkxAkKRZFKZTlMH2xddSerrSsW//EcW35qssmo0cM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=VCL3qiz6yHKOIHs5MyZcutBFm8qbpeVoAYOYAOjx9Y4CUQzMGsoi/aiOWuk3dMfQEHePb2YYj2kexq6hm8ikayP9IPuJWgHHjLQk+QoEFABCLnr5pZNSR08nMd7vBziqvCadYY8tT4r5XwpOk26j7G3IFaxUdwl+tT3MZlNLHwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=odgz/RyR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 892D4C433C7;
+	Tue, 27 Feb 2024 17:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709055920;
+	bh=sOFkxAkKRZFKZTlMH2xddSerrSsW//EcW35qssmo0cM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=odgz/RyR61B1LTk3iZ2wf8hg4+Tg26rV/BsA1Y4fyayjEJ2dVu7D3I2IydS8E/Xxr
+	 d950H3PGOJGzaJbNgMX6RY6B2y+8Lhm7ebvMV0nNIg0Ik9jHabTPgwjr/6DNDqc6yH
+	 x+Zan6+8KB0iEI2z5a704e3IS/FnEH6btH6/QhmpevvOD0WNuV7vrL2+o1R/noClWx
+	 mrO6asxJ3xOwlUAFig7Q03pJ/eIJFlPl1K01nw7WlKe7H3dmVozNub7qdweUGVbQ5l
+	 roV33GBhragydZXzBY0a8gfDRe6hXb9hpH74pzod47kUR7LQ3VlHqCtCiWrtBL6MVm
+	 25sIjQvIUsFHg==
+From: SeongJae Park <sj@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com,
+	damon@lists.linux.dev,
+	SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.6 000/299] 6.6.19-rc1 review
+Date: Tue, 27 Feb 2024 09:45:17 -0800
+Message-Id: <20240227174517.170160-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240227131625.847743063@linuxfoundation.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 10/10] counter: stm32-timer-cnt: add support for
- capture events
-Content-Language: en-US
-To: William Breathitt Gray <william.gray@linaro.org>
-CC: <lee@kernel.org>, <alexandre.torgue@foss.st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20231220145726.640627-1-fabrice.gasnier@foss.st.com>
- <20231220145726.640627-11-fabrice.gasnier@foss.st.com>
- <ZZxyDbYC9oHNKcGF@ubuntu-server-vm-macos>
-From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-In-Reply-To: <ZZxyDbYC9oHNKcGF@ubuntu-server-vm-macos>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-27_05,2024-02-27_01,2023-05-22_02
 
-On 1/8/24 23:07, William Breathitt Gray wrote:
-> On Wed, Dec 20, 2023 at 03:57:26PM +0100, Fabrice Gasnier wrote:
->> +	/*
->> +	 * configure channel in input capture mode, map channel 1 on TI1, channel2 on TI2...
->> +	 * Select both edges / non-inverted to trigger a capture.
->> +	 */
-> 
-> I suggest defining a new local variable 'cc' to point to stm32_cc[ch]. I
-> think that's make the code look nicer here to avoid all the array index
-> syntax every time you access stm32_cc[ch].
+Hello,
 
-Hi William,
+On Tue, 27 Feb 2024 14:21:51 +0100 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Thanks for suggesting.
-Done.
+> This is the start of the stable review cycle for the 6.6.19 release.
+> There are 299 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.19-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
 
-> 
->> +	if (enable) {
->> +		/* first clear possibly latched capture flag upon enabling */
->> +		regmap_read(priv->regmap, TIM_CCER, &ccer);
->> +		if (!(ccer & stm32_cc[ch].ccer_bits)) {
-> 
-> Try regmap_test_bits() here instead of using regmap_read().
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-Done,
+Tested-by: SeongJae Park <sj@kernel.org>
 
-> 
->> +			sr = ~TIM_SR_CC_IF(ch);
->> +			regmap_write(priv->regmap, TIM_SR, sr);
-> 
-> Eliminate 'sr' by regmap_write(priv->regmap, TIM_SR, ~TIM_SR_CC_IF(ch)).
-> 
->> @@ -366,6 +460,12 @@ static int stm32_count_events_configure(struct counter_device *counter)
->>  				regmap_write(priv->regmap, TIM_SR, (u32)~TIM_SR_UIF);
->>  			dier |= TIM_DIER_UIE;
->>  			break;
->> +		case COUNTER_EVENT_CAPTURE:
->> +			ret = stm32_count_capture_configure(counter, event_node->channel, true);
->> +			if (ret)
->> +				return ret;
->> +			dier |= TIM_DIER_CC_IE(event_node->channel);
-> 
-> Ah, now I understand why the previous patch OR'd TIM_DIER_UIE to dier.
-> Apologies for the noise.
-> 
->> @@ -374,6 +474,15 @@ static int stm32_count_events_configure(struct counter_device *counter)
->>  
->>  	regmap_write(priv->regmap, TIM_DIER, dier);
->>  
->> +	/* check for disabled capture events */
->> +	for (i = 0 ; i < priv->nchannels; i++) {
->> +		if (!(dier & TIM_DIER_CC_IE(i))) {
->> +			ret = stm32_count_capture_configure(counter, i, false);
->> +			if (ret)
->> +				return ret;
->> +		}
-> 
-> Would for_each_clear_bitrange() in linux/find.h work for this loop?
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 3c05aa9775af ("Linux 6.6.19-rc1")
 
-I had a look, but it requires to add some variables, for start and stop
-bit in the bitmap. For now, I've kept the simple BIT macro and bit ops.
+Thanks,
+SJ
 
-> 
->> @@ -504,7 +620,7 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void *ptr)
->>  	 * Some status bits in SR don't match with the enable bits in DIER. Only take care of
->>  	 * the possibly enabled bits in DIER (that matches in between SR and DIER).
->>  	 */
->> -	dier &= TIM_DIER_UIE;
->> +	dier &= (TIM_DIER_UIE | TIM_DIER_CC1IE | TIM_DIER_CC2IE | TIM_DIER_CC3IE | TIM_DIER_CC4IE);
-> 
-> Again, sorry for the noise on the previous patch; this makes sense now.
-> 
->> @@ -515,6 +631,15 @@ static irqreturn_t stm32_timer_cnt_isr(int irq, void *ptr)
->>  		clr &= ~TIM_SR_UIF;
->>  	}
->>  
->> +	/* Check capture events */
->> +	for (i = 0 ; i < priv->nchannels; i++) {
->> +		if (sr & TIM_SR_CC_IF(i)) {
-> 
-> Would for_each_set_bitrange() in linux/find.h work for this loop?
+[...]
 
-same.
+---
 
-> 
->> +			counter_push_event(counter, COUNTER_EVENT_CAPTURE, i);
->> +			clr &= ~TIM_SR_CC_IF(i);
-> 
-> Perhaps u32p_replace_bits(&clr, 0, TIM_SR_CC_IF(i)) is clearer here.
-
-I've hit some build issue with TIM_SR_CC_IF(i) macro, e.g.:
-/include/linux/bitfield.h:165:17: error: call to ‘__bad_mask’ declared
-with attribute error: bad bitfield mask
-  165 |                 __bad_mask();
-
-So I've kept the simple bit operation here.
-
-Thanks & Best Regards,
-Fabrice
-
-> 
->> @@ -627,8 +752,11 @@ static int stm32_timer_cnt_probe(struct platform_device *pdev)
->>  		}
->>  	} else {
->>  		for (i = 0; i < priv->nr_irqs; i++) {
->> -			/* Only take care of update IRQ for overflow events */
->> -			if (i != STM32_TIMERS_IRQ_UP)
->> +			/*
->> +			 * Only take care of update IRQ for overflow events, and cc for
->> +			 * capture events.
->> +			 */
->> +			if (i != STM32_TIMERS_IRQ_UP && i != STM32_TIMERS_IRQ_CC)
->>  				continue;
-> 
-> Okay, I see now why you have this check. This should be fine as it'll
-> makes adding support in the future for the other IRQs a less invasive
-> change.
-> 
-> William Breathitt Gray
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_m68k.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
 
