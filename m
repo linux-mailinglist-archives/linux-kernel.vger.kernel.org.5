@@ -1,139 +1,118 @@
-Return-Path: <linux-kernel+bounces-82714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADB1A868884
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:13:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD6F5868888
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:14:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67CCA2845B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:13:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A7221C21CA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB4552F7E;
-	Tue, 27 Feb 2024 05:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD4752F82;
+	Tue, 27 Feb 2024 05:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bjMyloyL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HaIdc1OD"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECD052F72;
-	Tue, 27 Feb 2024 05:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7343C52F7A
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709010821; cv=none; b=SoG2iiAFBFO4987RhIxOzH67jrFdinP6DemoYlJPWPqKe+Dwqn9R5SeEnKVEgiv4boU1sPwJ+w7M5YJxx98QgptYRV/KHzaq3P9LNlZFsrtDLEhT84JEubmcunxlPyEI8yVvNP1+zhYY994iObq/IoC38bchpSXKJ4BQ9UINFZM=
+	t=1709010860; cv=none; b=IJMs19h4FfWoYksb3qy1b6rpvYh7DC0PqGovw3PC9ElDspENLO9vfOJWQ1HGxYHQy/CktAGwSZTvT0Tlxl7th+nFWWIW6tvlgrVWtYxFk4AXgHRbHwuda1OniWgi+FW49iMvxcsO2aMx/isof0g89ULN5Q7ApmRh+yhH1Ls/A4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709010821; c=relaxed/simple;
-	bh=FblEoF14u0FQ5LBEx30aLU8aFDWw7vRlULlYczoacwY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=l8F/MNdpZgKqZ8WYtYmVLKlcio94xD0LvBPcN9znsj3lhTwbJHk6Afr0hdaStDXW4xAzwMDSrhQXgtY4iHXokTLc4jFcqObSxQHIdQDvwUudq+vpi7qSEQ5SDFDJSb3h/ap46cyN63nrDyl3gGKeri2Nu9989MsTXsE7rWY/onw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bjMyloyL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78257C433F1;
-	Tue, 27 Feb 2024 05:13:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709010821;
-	bh=FblEoF14u0FQ5LBEx30aLU8aFDWw7vRlULlYczoacwY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bjMyloyL3BblhgsKsNDeWWpXsxnbABWai9BH1FJqr4x4pd8ecOCvRPaTq1UMvd8h3
-	 t/4/E3QEr8muoqLmo6aN/FyoRVhUpIGUdJswHHrGcaUDEZBiQ5LVgYuz90ptW9HGiu
-	 IAWjKA7XnrS/aQpyCuXeYLxCdACLeJlTcvmm41QgTvtMPYq3R4rM0e9at/SE44CpSQ
-	 q7hASP1AxOpMXazqp1bQ+8CR9y3zMGyxVFIHtMXjCo1DoiQWplwncG6eS2mqnQGVqX
-	 QxFBMxUQRhdThwZj9ozJFZkf5RRXLxN2PDZAVyHTfFB4zXFh0wZKS6FxSxnmyS/t5a
-	 aMIq/g2UUyRUQ==
-From: SeongJae Park <sj@kernel.org>
-To: stable@vger.kernel.org
-Cc: sj@kernel.org,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 6.1.y] mm/damon/reclaim: fix quota stauts loss due to online tunings
-Date: Mon, 26 Feb 2024 21:13:35 -0800
-Message-Id: <20240227051335.168121-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <2024022643-scorn-filtrate-8677@gregkh>
-References: <2024022643-scorn-filtrate-8677@gregkh>
+	s=arc-20240116; t=1709010860; c=relaxed/simple;
+	bh=Wgvaos4tMDHQHCPQqba3sjMn7hXYBzfhsdVtj292alY=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V73yQxbK3k1xvT3uxWNBJlBMCkvWS2y6KlaShwbPnW+HGDGrCkLMEFXhq50lajAEpNfOhmb3w8yzgk0bIq1IcHKNbDzaGBZsrN8GQ0J2jXxvzsVWV6EqmeXVGS0U0FljRkSOdKquvQVJaZ3OPPvgXFeWKIPKDkOdWsDvFZ+NNmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HaIdc1OD; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512bde3d197so3551025e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 21:14:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709010857; x=1709615657; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M+BQPLCLZpqrKhiNrmiNzr4nlNlMBixVqIVv6pIcROQ=;
+        b=HaIdc1ODNMxlOsrywwjh3RFkhQkvE3ZYafJeIPdrulpSwzeyUh9AsW00piKpLZwlAn
+         URKPTxrOjN6tp3uNO/23dvbMa8rCNcPWCGKsLEUpR4u+hEhbOUACjMVMgfSSI2VdkKrp
+         BeOJ58jSLmi9W5fgMeWm98PxiiN0y2MQmDwmM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709010857; x=1709615657;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M+BQPLCLZpqrKhiNrmiNzr4nlNlMBixVqIVv6pIcROQ=;
+        b=c0Q/jI7WVPFaRSyRgiPvFivZo/uqO1ANKDx+07RtHcEDoIULxNZW1a+MsRUZhp9o/q
+         6WMSgey1GRaJnPeNPhlPDqwFQFOVy0CGSl3xew6M2etBiEvzC2UyPXIZ/wlk5WJNyZxy
+         cdJmKZRFt4jeEuR3ZPRqVD8iMSnCGql7rAa4Bi2u3fvylUEShCTS6QOO3xhWtPOwwbjY
+         q5MBUcHOrZsYscGExkLTmeOwrWJC3GBG0HXhJDKjPU0m39LK/PeK4yX+i7FUU9cD0wnI
+         BvznWA7qkKpUY36AUl5w09JKWSZsfLDxziZ8v50vpXvOSgdoQ/nYhJaMb1l/bLNswqtg
+         HIuw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgcxKvRIt/7kUK6Z58JDWmNhaDiPeWTkeZ75iVFJh4hM8V4jK8ZEErogcTRoeSn340jLVSQCIWOlA/vNH2qimf1Il+mjT8a10YKxqL
+X-Gm-Message-State: AOJu0YxvcXY5xR7iMT6Kyr+Ur9zQliAVyDeyId/LOx2R+9ileMM1IL0e
+	c0KqmSi6zVpwMxHI3qTLYAcujEZM4pg7Xzs2mLGkJ8Ixj66Jlysq+fiIdtnST/e/GjSajr2EZOE
+	HrHM+Kg9J4YoQK4U6l3m6AV0VxgOhrsvf3YEj
+X-Google-Smtp-Source: AGHT+IEyr7KXQAxsoRvnnHsDV6pqu0w4lJ40YXWqL0S1fUTZrVkMUjLcnZFHznlTZjulbsH6+afvAMnzVzmlCSDcWyk=
+X-Received: by 2002:a05:6512:991:b0:512:ee1f:b5af with SMTP id
+ w17-20020a056512099100b00512ee1fb5afmr4441994lft.41.1709010856400; Mon, 26
+ Feb 2024 21:14:16 -0800 (PST)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 26 Feb 2024 21:14:15 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
+References: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Mon, 26 Feb 2024 21:14:15 -0800
+Message-ID: <CAE-0n525gwp5kJGgw9Pnz+h2K6FbuqSG79KfMj_EnueZ-RYnuA@mail.gmail.com>
+Subject: Re: [PATCH] pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
+To: Bjorn Andersson <andersson@kernel.org>, 
+	Bjorn Andersson via B4 Relay <devnull+quic_bjorande.quicinc.com@kernel.org>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Johan Hovold <johan+linaro@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>, 
+	quic_bjorande@quicinc.com
+Cc: linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Patch series "mm/damon: fix quota status loss due to online tunings".
+Quoting Bjorn Andersson via B4 Relay (2024-02-26 17:49:57)
+> From: Bjorn Andersson <quic_bjorande@quicinc.com>
+>
+> Commit 'e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable
+> the domain")' aimed to make sure that a power-domain that is being
+> enabled without any particular performance-state requested will at least
+> turn the rail on, to avoid filling DeviceTree with otherwise unnecessary
+> required-opps properties.
+>
+> But in the event that aggregation happens on a disabled power-domain, with
+> an enabled peer without performance-state, both the local and peer
+> corner are 0. The peer's enabled_corner is not considered, with the
+> result that the underlying (shared) resource is disabled.
+>
+> One case where this can be observed is when the display stack keeps mmcx
+> enabled (but without a particular performance-state vote) in order to
+> access registers and sync_state happens in the rpmhpd driver. As mmcx_ao
+> is flushed the state of the peer (mmcx) is not considered and mmcx_ao
+> ends up turning off "mmcx.lvl" underneath mmcx. This has been observed
+> several times, but has been painted over in DeviceTree by adding an
+> explicit vote for the lowest non-disabled performance-state.
+>
+> Fixes: e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable the domain")
+> Reported-by: Johan Hovold <johan@kernel.org>
+> Closes: https://lore.kernel.org/linux-arm-msm/ZdMwZa98L23mu3u6@hovoldconsulting.com/
+> Cc:  <stable@vger.kernel.org>
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+> ---
 
-DAMON_RECLAIM and DAMON_LRU_SORT is not preserving internal quota status
-when applying new user parameters, and hence could cause temporal quota
-accuracy degradation.  Fix it by preserving the status.
-
-This patch (of 2):
-
-For online parameters change, DAMON_RECLAIM creates new scheme based on
-latest values of the parameters and replaces the old scheme with the new
-one.  When creating it, the internal status of the quota of the old
-scheme is not preserved.  As a result, charging of the quota starts from
-zero after the online tuning.  The data that collected to estimate the
-throughput of the scheme's action is also reset, and therefore the
-estimation should start from the scratch again.  Because the throughput
-estimation is being used to convert the time quota to the effective size
-quota, this could result in temporal time quota inaccuracy.  It would be
-recovered over time, though.  In short, the quota accuracy could be
-temporarily degraded after online parameters update.
-
-Fix the problem by checking the case and copying the internal fields for
-the status.
-
-Link: https://lkml.kernel.org/r/20240216194025.9207-1-sj@kernel.org
-Link: https://lkml.kernel.org/r/20240216194025.9207-2-sj@kernel.org
-Fixes: e035c280f6df ("mm/damon/reclaim: support online inputs update")
-Signed-off-by: SeongJae Park <sj@kernel.org>
-Cc: <stable@vger.kernel.org>	[5.19+]
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-(cherry picked from commit 1b0ca4e4ff10a2c8402e2cf70132c683e1c772e4)
----
- mm/damon/reclaim.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/mm/damon/reclaim.c b/mm/damon/reclaim.c
-index 162c9b1ca00f..cc337e94acfd 100644
---- a/mm/damon/reclaim.c
-+++ b/mm/damon/reclaim.c
-@@ -141,9 +141,20 @@ static struct damos *damon_reclaim_new_scheme(void)
- 			&damon_reclaim_wmarks);
- }
- 
-+static void damon_reclaim_copy_quota_status(struct damos_quota *dst,
-+		struct damos_quota *src)
-+{
-+	dst->total_charged_sz = src->total_charged_sz;
-+	dst->total_charged_ns = src->total_charged_ns;
-+	dst->charged_sz = src->charged_sz;
-+	dst->charged_from = src->charged_from;
-+	dst->charge_target_from = src->charge_target_from;
-+	dst->charge_addr_from = src->charge_addr_from;
-+}
-+
- static int damon_reclaim_apply_parameters(void)
- {
--	struct damos *scheme;
-+	struct damos *scheme, *old_scheme;
- 	int err = 0;
- 
- 	err = damon_set_attrs(ctx, &damon_reclaim_mon_attrs);
-@@ -154,6 +165,11 @@ static int damon_reclaim_apply_parameters(void)
- 	scheme = damon_reclaim_new_scheme();
- 	if (!scheme)
- 		return -ENOMEM;
-+	if (!list_empty(&ctx->schemes)) {
-+		damon_for_each_scheme(old_scheme, ctx)
-+			damon_reclaim_copy_quota_status(&scheme->quota,
-+					&old_scheme->quota);
-+	}
- 	damon_set_schemes(ctx, &scheme, 1);
- 
- 	return damon_set_region_biggest_system_ram_default(target,
--- 
-2.39.2
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
