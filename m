@@ -1,104 +1,127 @@
-Return-Path: <linux-kernel+bounces-83978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87CE586A0DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:32:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C87AD86A0E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:33:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5F331C253CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:32:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82E9C287974
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABAE14DFE0;
-	Tue, 27 Feb 2024 20:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F314114DFEF;
+	Tue, 27 Feb 2024 20:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gf0SlyF7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hERC8G3L"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AFA8134B1;
-	Tue, 27 Feb 2024 20:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D134DA0C;
+	Tue, 27 Feb 2024 20:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709065916; cv=none; b=L8EqYndQNQw5/a2mP1L2pO7QvwUxEc52vaq4xkUMGZ5nyw4Xh2ctcx5KxR7+BbjMzh3/dm79XQWqT8sla+0kpG0+hagVSkwZveyH3QWrl8S7ic0h3JKlL054YD11BB/C3xC2pyeegxDc7EsYpwVwZmggO2C8NaakVvU+POlV+Sk=
+	t=1709065975; cv=none; b=jPdNN2XF9gj4Iaq58FhPvXuFa6w3aO5PjwfqM6o5rqhC4S+rdTMuWaUnZ3VrlQgOybwST4uSCTHG1beIqtSmkvADDo0XR3PrVFA6MpNY8VYIgeREderJP8lE3BXmpuFljv1ht+t13xL8ueeuBdp0dpArZTEO9Az1n6lbKoXoJFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709065916; c=relaxed/simple;
-	bh=fnVlCrmOpBZf3giskThx7p/gnI8js0oR22HyRkAsQ+Q=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=EvJ6fFrW3GrJljK/RvAtmovORokELqOf5xsNzi99J5se1cBYng7OcoQrluioJiwvYdc8ioHTeHEfeleTRWjs/G3Bq/1O67S55v9RXV5Bbfc5Suwdbzunr0d043ePGOS98o5Kr0+xJwvMCpSSZUAN3u0RyDXNLEx+WBP5MufObyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gf0SlyF7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81124C433F1;
-	Tue, 27 Feb 2024 20:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709065915;
-	bh=fnVlCrmOpBZf3giskThx7p/gnI8js0oR22HyRkAsQ+Q=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=gf0SlyF7XhMTKfjg7swqje5YhC8369WV1Qx37qrq3VKAvDKFzvpwXkPat/8ebcl0i
-	 RsOFY6L5Sm5msTqucaM8L1ihzJBXbOIdSEt3GJmEnKeJ5ySKBuuZ1+iELQWmUHXLG0
-	 ZaHOjaDZHJpsx1rj57rLLLRSbekK8/C1vlAb5R3zUyVKedzGN7ZOeoDxnn+6S9yBQV
-	 iz7QLGGNSQvaxUa5mam4P+oJ61wBZK0Y4NFYN0fY6PcF8uvLtAczLkh84Xz2loMQNU
-	 INIJlvWAlRbPiM/h/kTpY9tMvZg0jbsrkTVtiJagxGNtET4FNRdW9Q8HwGV7RJzxHk
-	 z1PbqNReHbAtA==
+	s=arc-20240116; t=1709065975; c=relaxed/simple;
+	bh=myVqhclYaoWabykXKhyPBJrb51yvHqqkiErwFvJjMk4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZOjSz11kTybERg17NwmdpvmfJd/iUTz1xmSIAcEggZReXTUaLv39aZIwAmg5gdXSvxXFdO+Qd6YaMa5qEUOqIaQQuCREGpwijuA/U8qQGcSVAmRxvHtuVIQSxmtN8cQIYc+YE/z5XlyDCPHvXQzXui+qLNm7nDFJ9niUaoHW1i8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hERC8G3L; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DE5001BF204;
+	Tue, 27 Feb 2024 20:32:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709065969;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wvxfxWjaLutlzwBuNGZe/hZYj/M5jqDhw7tveByHAzE=;
+	b=hERC8G3LaA8JY7wMbCyhJKrjL4sPlqLlanim3qsGSCgJw5Dl1oT5pZcsXGkVC0cWuGMOcU
+	j+ofXy4OyaXeQpxREaWY6IPtb+yupGSYwKfByF7MPTbFflprTXL6aDLQ7ARST491n4ykMh
+	TyB9G8z6wFuiAN2sm15XUMgWe3NKOFVr2DrPPs5JOlv4KCeAi026PEfUMCVxIBut/YEWne
+	mZqvk8vuGznc2J9QmsdTn+fkXzTPKzOjHT5Qp55HUuStQOd+ytAO3QwH87yxDEqEMePaR0
+	InWrTLvihxQ3e7Hw82nSd1SIpOr8QPhzxBofMlGmbbxPvCT/YskO5LBQWBfujA==
+Date: Tue, 27 Feb 2024 21:32:43 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: David Gow <davidgow@google.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Guenter Roeck <linux@roeck-us.net>, Rae Moar <rmoar@google.com>,
+	Matthew Auld <matthew.auld@intel.com>,
+	Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Kees Cook <keescook@chromium.org>,
+	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Florian Westphal <fw@strlen.de>,
+	Cassio Neri <cassio.neri@gmail.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Arthur Grillo <arthur.grillo@usp.br>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Daniel Latypov <dlatypov@google.com>,
+	Stephen Boyd <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org, linux-rtc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+	linux-hardening@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 5/9] rtc: test: Fix invalid format specifier.
+Message-ID: <20240227203243070e7d85@mail.local>
+References: <20240221092728.1281499-1-davidgow@google.com>
+ <20240221092728.1281499-6-davidgow@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 27 Feb 2024 22:31:52 +0200
-Message-Id: <CZG5AX6QHHQW.YPMIE23V9P2B@kernel.org>
-Cc: <linux-integrity@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Add TPM DT bindings to TPM maintainers
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Rob Herring" <robh@kernel.org>, "Peter Huewe" <peterhuewe@gmx.de>,
- "Jason Gunthorpe" <jgg@ziepe.ca>
-X-Mailer: aerc 0.17.0
-References: <20240130215917.2473250-1-robh@kernel.org>
- <CAL_JsqJetnzuBcKQMoswuL1X-uwi=meL1EaMOD2LVBg_T_Zn3A@mail.gmail.com>
-In-Reply-To: <CAL_JsqJetnzuBcKQMoswuL1X-uwi=meL1EaMOD2LVBg_T_Zn3A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221092728.1281499-6-davidgow@google.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Tue Feb 27, 2024 at 4:54 PM EET, Rob Herring wrote:
-> On Tue, Jan 30, 2024 at 3:59=E2=80=AFPM Rob Herring <robh@kernel.org> wro=
-te:
-> >
-> > Bindings for a given device class generally go to the respective
-> > subsystem maintainers. Add the TPM bindings to the TPM
-> > maintainers entry.
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  MAINTAINERS | 1 +
-> >  1 file changed, 1 insertion(+)
->
-> Ping!
->
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 97f51d5ec1cf..e5e3dd672018 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -22040,6 +22040,7 @@ S:      Maintained
-> >  W:     https://kernsec.org/wiki/index.php/Linux_Kernel_Integrity
-> >  Q:     https://patchwork.kernel.org/project/linux-integrity/list/
-> >  T:     git git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-=
-tpmdd.git
-> > +F:     Documentation/devicetree/bindings/tpm/
-> >  F:     drivers/char/tpm/
-> >
-> >  TPS546D24 DRIVER
-> > --
-> > 2.43.0
-> >
+Hello,
 
-Somehow went out of my radar, sorry.
+On 21/02/2024 17:27:18+0800, David Gow wrote:
+> 'days' is a s64 (from div_s64), and so should use a %lld specifier.
+> 
+> This was found by extending KUnit's assertion macros to use gcc's
+> __printf attribute.
+> 
+> Fixes: 1d1bb12a8b18 ("rtc: Improve performance of rtc_time64_to_tm(). Add tests.")
+> Signed-off-by: David Gow <davidgow@google.com>
 
-Thanks, it does make sense. I can pick the patches but it would be
-good if you can check them still.
+Who do you expect to take this patch?
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.ogr>
+> ---
+>  drivers/rtc/lib_test.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rtc/lib_test.c b/drivers/rtc/lib_test.c
+> index d5caf36c56cd..225c859d6da5 100644
+> --- a/drivers/rtc/lib_test.c
+> +++ b/drivers/rtc/lib_test.c
+> @@ -54,7 +54,7 @@ static void rtc_time64_to_tm_test_date_range(struct kunit *test)
+>  
+>  		days = div_s64(secs, 86400);
+>  
+> -		#define FAIL_MSG "%d/%02d/%02d (%2d) : %ld", \
+> +		#define FAIL_MSG "%d/%02d/%02d (%2d) : %lld", \
+>  			year, month, mday, yday, days
+>  
+>  		KUNIT_ASSERT_EQ_MSG(test, year - 1900, result.tm_year, FAIL_MSG);
+> -- 
+> 2.44.0.rc0.258.g7320e95886-goog
+> 
+> 
 
-BR, Jarkko
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
