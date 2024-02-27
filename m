@@ -1,111 +1,119 @@
-Return-Path: <linux-kernel+bounces-83448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DAFC869976
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:58:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC35A869964
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:57:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 248641F2BFAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:58:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14A991C21398
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:57:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133D4145B37;
-	Tue, 27 Feb 2024 14:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19865149DE3;
+	Tue, 27 Feb 2024 14:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CA5TOEJG"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="evodVOok"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD171487D6;
-	Tue, 27 Feb 2024 14:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709045744; cv=none; b=sTgHCgDWfvyA4e4H+TS+mOfawwUw7WJGKQ4SVrLJHEMlpNxBggSnE2RLvGT2Fs1b/sYHI5FybwTJWvypeb46egM5fOka5wMucAetvDT/CEJbSeQeTDT0PnxSrbbemAlnE+/m/goK9hxP6ElrAyCBxSOoe9/k2klNzLmOnw6AFyc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709045744; c=relaxed/simple;
-	bh=na5iUFUdCcxo/XeKMDsWD2m8gyrN1SLEJxFdOBZFpes=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=SnDZqUPda1asElFAd4oV/iI2HTKIe0N3ml8njD2w3/sXjoPj7NuSXleuKkETSF0bT0OsKrRUEIXs83Ff2m/C6Jmuq8ZG0KpQRwV18Acj+wEXYX5uOulirUaiS9ETKa4bOAQJLZEGD+Xyv/cjXHfk5iFAILUaocWg/LYSDnAduDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CA5TOEJG; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 627FB20002;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6D31474B0;
 	Tue, 27 Feb 2024 14:55:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709045740;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YnALdwStqz9eKISqFy6qQHCMwj31QlMpXRX8xAVY3EI=;
-	b=CA5TOEJGwdunwWTZTWjVnvvQlRANwYYWeXzmQU9H6pkot6bVEJXg8BWt7wwvq+Lz/wI0Bp
-	qNVE45M4wOrZQC3AMgfonszmOCCBS3r4k414ucDRW8CKejiHULFfq3zEuNFI0eUpA9ZMp4
-	TV6bqv1bkdiKXr23oPaHrIW7RZmRA9RO1LNLOfMoFH0HHwY9WP8VrYFopTkZIkY9roE8F3
-	vizvdk3MawZ3YeqthUcJCF/TvKTuifuwego8XSUG9O3hLDw37G2HZqLBAjJe0RZmbYtAns
-	U6ywAkbwpjstvzfnt6TN2639uScwAVUkIAO1FkDeKNaINbM83eGOonCJfwLj+A==
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Tue, 27 Feb 2024 15:55:28 +0100
-Subject: [PATCH v8 07/10] MIPS: mobileye: eyeq5: add OLB syscon node
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709045742; cv=none; b=TbqD3+Mdry68r1WFyGbaIJjP+sqQ8KvOVX57RD9fRABXOr10UqATGfY7fb5xVEp5sC6M9XLhehZDcb/meEq09j2RPMOBUQhe18WczIstXFEXZQ3qmR9WPoz7ERU4Q/FQWH3ar9LJV6DvoPQcRXeS9Cfpt/f2JOSptZUP6acCHFI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709045742; c=relaxed/simple;
+	bh=oDC1PgzmL9mgKX+1+lda1htyATJjhYL0q5N6OZj/SJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ObJbCiIyYFCfs0jJ/5WNUM08i5EL0HVpitMxQsluF293qks3CoU6Y5qoxD7apxmlnD42jL20ljhJSvYuEDyyE0yamc0Cfb/M5cmJCeHdtCE2OlDSwcZl7w84exZOA7pQZUlude8XUUbw9iIO33rG8znmAN2omz+O32KwXTGUDoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=evodVOok; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709045740; x=1740581740;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oDC1PgzmL9mgKX+1+lda1htyATJjhYL0q5N6OZj/SJY=;
+  b=evodVOokAKtIqFWVr4N2beSfFKJqG2GSB1MTBGRfSQOrbUlPe7eNyV9Z
+   2iGo1riZII0mHvhIvsqJOcy+vAweHLBcbC0GkaqfI0vSIiqvELLGTTgYP
+   cmpkB2f21w/QQeHf99NqdYN2JwRfRzwlaPzCXFNr66cSuP2FHflym8t6G
+   YzstYxvsKE+3LaU8ciXouRBOhREbWhueJ6bCptcHVVW+br7VCQlvqS6At
+   +nJ7JGgmeg+eCMOwOvUpNGT6r5IMFHV9yPvcDiSif5Lf1mvHcCWAS9qdt
+   y8g/Fywdq0hktdf5IbOXaYbz/a9Wbp/yJihLehcbWixKUHtZJ3NyOR8rt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14537591"
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="14537591"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 06:55:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="913914293"
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="913914293"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 06:55:33 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1reyri-00000007yFl-0rGB;
+	Tue, 27 Feb 2024 16:55:30 +0200
+Date: Tue, 27 Feb 2024 16:55:29 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
+	Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH v2 14/14] serial: 8250_uniphier: Switch to use
+ uart_read_port_properties()
+Message-ID: <Zd334bOasYXT37gW@smile.fi.intel.com>
+References: <20240226142514.1485246-1-andriy.shevchenko@linux.intel.com>
+ <20240226142514.1485246-15-andriy.shevchenko@linux.intel.com>
+ <2cb457a6-0039-e4fe-3668-690e6355771d@socionext.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240227-mbly-clk-v8-7-c57fbda7664a@bootlin.com>
-References: <20240227-mbly-clk-v8-0-c57fbda7664a@bootlin.com>
-In-Reply-To: <20240227-mbly-clk-v8-0-c57fbda7664a@bootlin.com>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
- Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2cb457a6-0039-e4fe-3668-690e6355771d@socionext.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The OLB ("Other Logic Block") is a syscon region hosting the clock,
-reset and pin controllers. It contains registers such as I2C speed mode
-that need to be accessible by other nodes.
+On Tue, Feb 27, 2024 at 06:43:51PM +0900, Kunihiko Hayashi wrote:
+> Hi,
+> 
+> On 2024/02/26 23:19, Andy Shevchenko wrote:
+> > Since we have now a common helper to read port properties
+> > use it instead of sparse home grown solution.
+> > 
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> I confirmed that it works properly.
+> 
+> Reviewed-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Tested-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- arch/mips/boot/dts/mobileye/eyeq5.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index 6cc5980e2fa1..e82d2a57f6da 100644
---- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -100,6 +100,14 @@ uart2: serial@a00000 {
- 			clock-names = "uartclk", "apb_pclk";
- 		};
- 
-+		olb: system-controller@e00000 {
-+			compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-+			reg = <0 0xe00000 0x0 0x400>;
-+			ranges = <0x0 0x0 0xe00000 0x400>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+		};
-+
- 		gic: interrupt-controller@140000 {
- 			compatible = "mti,gic";
- 			reg = <0x0 0x140000 0x0 0x20000>;
+Thank you for testing!
 
 -- 
-2.44.0
+With Best Regards,
+Andy Shevchenko
+
 
 
