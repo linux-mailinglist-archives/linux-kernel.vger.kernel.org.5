@@ -1,141 +1,261 @@
-Return-Path: <linux-kernel+bounces-82831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BACD8868A3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:53:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAE23868A40
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A8571F22691
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:53:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC33A1C21CF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C195F55E71;
-	Tue, 27 Feb 2024 07:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552AC55E5A;
+	Tue, 27 Feb 2024 07:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="HOkk93Ix"
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZX5UgahU"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F7054F8A;
-	Tue, 27 Feb 2024 07:52:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D304652F62
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709020373; cv=none; b=uB9UIi46qlpffNTUnXzaL6IZv/VLZKRaeZw1j2F/ZIIjN20lyuQEcanpD4zZEFAYsmSyZKVkxS78mzpL6kkEY8H6zb9SHz8gYctGaP3HmWQ6quEkPuMMsPhM8TkvStnlusAcdTaXRkE0txGUulh3E1+SYVm7miniPQoXMwjE3Jk=
+	t=1709020490; cv=none; b=jEsnrRjH6TEJqaoE3y7q5DtftUS48IEIDaC/WggWvX/aw1XcQUgRfyf250b6RjWgLSJWmb1c47LGmmEndKH2QQPZikUiBnIImsTz3+fuQnWiCRjhQIykl/CWCj3VMXK/gHd+Jh9RTIvznbJ9ksjgtyR9DViaOiRUFj9bJyI/I34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709020373; c=relaxed/simple;
-	bh=rM5Amilsj86n+rDVaxHQye/6y7/8IQuzFzrGrKh23Iw=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=hX+PxNI9IEqxnjOAMGRq4H6/Jg8wijVnXtXGnljXbX98NWxHUnTj3X/+dOWT/XoEBBsVw13VsV+9ZRMA4fdu2gpMOcTZVLomdXEu73/GRXfPmqL0G/5beBXOU5AUM984RNPKeD8XXgmmrcTYvIAYKSgFKXwB3vFjivez3kF+N5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=HOkk93Ix; arc=none smtp.client-ip=115.28.160.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-	t=1709020369; bh=rM5Amilsj86n+rDVaxHQye/6y7/8IQuzFzrGrKh23Iw=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=HOkk93Ixf+EXfa+wrwsxgBtyXbhDpxeNtEqgk+dbNSORf5f65bzErFKW2k2zV4U8/
-	 ZyYNW1jyQswLvGo85MKCzX2HaRC4DhQvcQ+OQoXyl+JxVrY+u0H56d6B+90h4EHGhY
-	 gkf4UtRedo6hFBN5MPhxnzqdUZfpHnWNWiuh1/10=
-Received: from [28.0.0.1] (unknown [101.230.251.34])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 9674C6012F;
-	Tue, 27 Feb 2024 15:52:48 +0800 (CST)
-Message-ID: <48fd3c4d-9b72-4515-9a95-d241857915b4@xen0n.name>
-Date: Tue, 27 Feb 2024 15:52:47 +0800
+	s=arc-20240116; t=1709020490; c=relaxed/simple;
+	bh=GkZ92CAna9X0NDsm+ZKR/ivReuccpU3/8Dr3mAAHUeQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n8RdjVv9lO2BXUnfxhu0d0QMfm8Ve1ME6XaAzfQOsxBmmkw3rgEaOfg4M75sg6Bk1uL+f6/UWW77M17UVrZSN5LPLNWAA3ncybajFUUHFFsYn8Dks5kWplW/lzsX3q5Unvlj4p7g89P6jrsHBAbinrFfdU35dYxyDNoJCsfU6eY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZX5UgahU; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-471e395f6baso378819137.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:54:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709020487; x=1709625287; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/LGdQMg4v/47ebBCPE8p52p0nFqyTAE6s0wWMTEuF4s=;
+        b=ZX5UgahUcn3UpxNE9Suga9akeEOZKIa9GQkTuzAeyR6pKE5xC9CDTYrdQ0J70D6PVD
+         PWg22ALjE6nhmLwq/Zyxi8elKk7TNhiFvFSOOmQlu2jOwob8HqUm/y41z01CzDIuiLW6
+         m6/RicxP5iDXQ1zdjVw55JUtpjmbmcmsWq+QI8e0MDfx6AlEVQtEzxzPZxHh5DuE3CMX
+         EHPq8a2kjEJ4fAa49PhPrPajqzxd3yn61oxWBuKEmcZ7uuR789Svpc5dvNNrl2tAXY1J
+         /W7nNvlUjLpWCjZ4CMapX63JqUJA00n5GVqe7VIOjKHeUikeAc6+vTJffLpOcEMpfx/j
+         UIGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709020487; x=1709625287;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/LGdQMg4v/47ebBCPE8p52p0nFqyTAE6s0wWMTEuF4s=;
+        b=S8kfLfru1LzcyHz0UCt1VEjMAUNYiOXmoqmb3t5TcXeeBs55o3lN8qK8HQt78HWhmU
+         /+6Hz0cL5DeJ/rRdEeYW2Vj+s9os3xWvHK10E4Wb3P1ZyxA+n7B9z7X/O7fJ1Q5hj4Ol
+         eWDsva4VwDuS4GZyTErWTL9o4pudpKQMp8C/O7N0zvJLpVgmMvh8QlMwajKmU/2W+I5d
+         VNSwGqk6tO4S4fPqcQUban46rnZDcvZd6ONoRlCoR4TcLAYqSOwTs6FYQmCbkK77mEFj
+         phWcZWD1SUSY8rxuDWXB7V+2aBxzbkbOFU5wlZw+dxQ1lJazsgaeuQkMGLroZe9shZ5O
+         tm/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU/v0DFbL+IJ+4+C5BFIYRTnG8U88S16DhatfAKbanQSK2rwuv4pAsfBI5lY2WLs19J4p8GW9cPh6MqXfASOwBA9n255xh6zvMt5I0l
+X-Gm-Message-State: AOJu0Yx/LIOHLqsY0nZMh0+34lqfyx8Xcu3QVhvlPEExij5dBEwMelXX
+	FQrZwnJSuzFgm+i1Zbvzot6EaTrsXjHwHC5gOUa2F7c5C06naXs585rxYDirWNQh8unmzbe8gaz
+	NqrT5oTPoiXu9Tfj4wMNdkMxS12k=
+X-Google-Smtp-Source: AGHT+IF98DWS9zVjEyWiQ8fTdCdqJFfECqUTHMssPpb3Vg9a44Qi64zbHW9JxYLjN2AEkVeTA8HdDMwtlrl916iEJtM=
+X-Received: by 2002:a67:fc84:0:b0:470:3afd:81dd with SMTP id
+ x4-20020a67fc84000000b004703afd81ddmr6721902vsp.4.1709020487627; Mon, 26 Feb
+ 2024 23:54:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] loongarch/crypto: Clean up useless assignment operations
-Content-Language: en-US
-From: WANG Xuerui <kernel@xen0n.name>
-To: WangYuli <wangyuli@uniontech.com>, herbert@gondor.apana.org.au,
- davem@davemloft.net, chenhuacai@kernel.org
-Cc: linux-crypto@vger.kernel.org, loongarch@lists.linux.dev,
- linux-kernel@vger.kernel.org, Guan Wentao <guanwentao@uniontech.com>
-References: <20240226080328.334021-1-wangyuli@uniontech.com>
- <48afa638-9145-40ee-9868-fa82a1fce271@xen0n.name>
-In-Reply-To: <48afa638-9145-40ee-9868-fa82a1fce271@xen0n.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CAGsJ_4zera4+bWuXHKjdU3QdiR3sqcUQB3gF08DPD49OCT4S9w@mail.gmail.com>
+ <20240226083714.26187-1-ioworker0@gmail.com> <9bcf5141-7376-441e-bbe3-779956ef28b9@redhat.com>
+ <CAK1f24mdwjz2J5VmeYSDwb4jMbrXUVCSF_0pOcWSVt1cfa0FhQ@mail.gmail.com>
+ <318be511-06de-423e-8216-af869f27f849@arm.com> <CAGsJ_4z+0yXUDYwxKNAqYwxAAYpfKpKd2u_dVTDP3b-KPOQT1g@mail.gmail.com>
+ <19758162-be5f-4dc4-b316-77b0115d12ce@intel.com> <CAGsJ_4wx72KOazANBvnGcjdZse8W9+PW5_fspP9=QuX3X_7msg@mail.gmail.com>
+ <3c56d7b8-b76d-4210-b431-ee6431775ba7@intel.com> <CAGsJ_4xu1kz5VD-CcNFvP0A1nPKDojV8Gy1HPvNKuQ_RAw=26g@mail.gmail.com>
+ <6ea0020a-8f4b-44d1-a3b2-7c2905d32772@intel.com> <CAGsJ_4x6Otb9LUvnxAaPLnQ2MPPng0xpG-vJmFL7pNm10FDhZA@mail.gmail.com>
+ <CAGsJ_4xndYM8=7v+EV_aWX+_qgA1UPmm38n+ujbQXJLzCPKfog@mail.gmail.com> <009e5633-decb-4c21-b5fc-58984fbade96@intel.com>
+In-Reply-To: <009e5633-decb-4c21-b5fc-58984fbade96@intel.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 27 Feb 2024 20:54:36 +1300
+Message-ID: <CAGsJ_4yftgfD7MsNd5iej8_wTrYeTsAFfW7xmqrj-Q_w8-oqMg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm/madvise: enhance lazyfreeing with mTHP in madvise_free
+To: Yin Fengwei <fengwei.yin@intel.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, Lance Yang <ioworker0@gmail.com>, 
+	David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, mhocko@suse.com, minchan@kernel.org, peterx@redhat.com, 
+	shy828301@gmail.com, songmuchun@bytedance.com, wangkefeng.wang@huawei.com, 
+	zokeefe@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/26/24 16:15, WANG Xuerui wrote:
-> On 2/26/24 16:03, WangYuli wrote:
->> Both crc32 and crc32c hw accelerated funcs will calculate the
->> remaining len. Those codes are derived from
->> arch/mips/crypto/crc32-mips.c and "len -= sizeof(u32)" is not
->> necessary for 64-bit CPUs.
+On Tue, Feb 27, 2024 at 8:42=E2=80=AFPM Yin Fengwei <fengwei.yin@intel.com>=
+ wrote:
+>
+>
+>
+> On 2/27/24 15:21, Barry Song wrote:
+> > On Tue, Feb 27, 2024 at 8:11=E2=80=AFPM Barry Song <21cnbao@gmail.com> =
+wrote:
+> >>
+> >> On Tue, Feb 27, 2024 at 8:02=E2=80=AFPM Yin Fengwei <fengwei.yin@intel=
+com> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 2/27/24 14:40, Barry Song wrote:
+> >>>> On Tue, Feb 27, 2024 at 7:14=E2=80=AFPM Yin Fengwei <fengwei.yin@int=
+el.com> wrote:
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>> On 2/27/24 10:17, Barry Song wrote:
+> >>>>>>> Like if we hit folio which is partially mapped to the range, don'=
+t split it but
+> >>>>>>> just unmap the mapping part from the range. Let page reclaim deci=
+de whether
+> >>>>>>> split the large folio or not (If it's not mapped to any other ran=
+ge,it will be
+> >>>>>>> freed as whole large folio. If part of it still mapped to other r=
+ange,page reclaim
+> >>>>>>> can decide whether to split it or ignore it for current reclaim c=
+ycle).
+> >>>>>> Yes, we can. but we still have to play the ptes check game to avoi=
+d adding
+> >>>>>> folios multiple times to reclaim the list.
+> >>>>>>
+> >>>>>> I don't see too much difference between splitting in madvise and s=
+plitting
+> >>>>>> in vmscan.  as our real purpose is avoiding splitting entirely map=
+ped
+> >>>>>> large folios. for partial mapped large folios, if we split in madv=
+ise, then
+> >>>>>> we don't need to play the game of skipping folios while iterating =
+PTEs.
+> >>>>>> if we don't split in madvise, we have to make sure the large folio=
+ is only
+> >>>>>> added in reclaimed list one time by checking if PTEs belong to the
+> >>>>>> previous added folio.
+> >>>>>
+> >>>>> If the partial mapped large folio is unmapped from the range, the r=
+elated PTE
+> >>>>> become none. How could the folio be added to reclaimed list multipl=
+e times?
+> >>>>
+> >>>> in case we have 16 PTEs in a large folio.
+> >>>> PTE0 present
+> >>>> PTE1 present
+> >>>> PTE2 present
+> >>>> PTE3  none
+> >>>> PTE4 present
+> >>>> PTE5 none
+> >>>> PTE6 present
+> >>>> ....
+> >>>> the current code is scanning PTE one by one.
+> >>>> while scanning PTE0, we have added the folio. then PTE1, PTE2, PTE4,=
+ PTE6...
+> >>> No. Before detect the folio is fully mapped to the range, we can't ad=
+d folio
+> >>> to reclaim list because the partial mapped folio shouldn't be added. =
+We can
+> >>> only scan PTE15 and know it's fully mapped.
+> >>
+> >> you never know PTE15 is the last one mapping to the large folio, PTE15=
+ can
+> >> be mapping to a completely different folio with PTE0.
+> >>
+> >>>
+> >>> So, when scanning PTE0, we will not add folio. Then when hit PTE3, we=
+ know
+> >>> this is a partial mapped large folio. We will unmap it. Then all 16 P=
+TEs
+> >>> become none.
+> >>
+> >> I don't understand why all 16PTEs become none as we set PTEs to none.
+> >> we set PTEs to swap entries till try_to_unmap_one called by vmscan.
+> >>
+> >>>
+> >>> If the large folio is fully mapped, the folio will be added to reclai=
+m list
+> >>> after scan PTE15 and know it's fully mapped.
+> >>
+> >> our approach is calling pte_batch_pte while meeting the first pte, if
+> >> pte_batch_pte =3D 16,
+> >> then we add this folio to reclaim_list and skip the left 15 PTEs.
+> >
+> > Let's compare two different implementation, for partial mapped large fo=
+lio
+> > with 8 PTEs as below,
+> >
+> > PTE0 present for large folio1
+> > PTE1 present for large folio1
+> > PTE2 present for another folio2
+> > PTE3 present for another folio3
+> > PTE4 present for large folio1
+> > PTE5 present for large folio1
+> > PTE6 present for another folio4
+> > PTE7 present for another folio5
+> >
+> > If we don't split in madvise(depend on vmscan to split after adding
+> > folio1), we will have
+> Let me clarify something here:
+>
+> I prefer that we don't split large folio here. Instead, we unmap the
+> large folio from this VMA range (I think you missed the unmap operation
+> I mentioned).
 
-It's ultimately unrelated to the width of the running CPU, but rather 
-the LoongArch ISA specification. You should mention that because the 
-LoongArch ISA manual implies that CRC instructions are only available on 
-LA64-compatible implementations, the code can assume 64-bit operation, 
-so the 32-bit codepath can be guaranteed to execute only once.
+I don't understand why we unmap as this is a MADV_PAGEOUT not
+an unmap. unmapping totally changes the semantics. Would you like
+to show pseudo code?
 
->>
->> Removing it can make context code style more unified and improve
->> code readability.
+for MADV_PAGEOUT on swap-out, the last step is writing swap entries
+to replace PTEs which are present. I don't understand how an unmap
+can be involved in this process.
 
-"Remove it to improve readability." should do it?
+>
+> The intention is trying best to avoid splitting the large folio. If
+> the folio is only partially mapped to this VMA range, it's likely it
+> will be reclaimed as whole large folio. Which brings benefit for lru
+> and zone lock contention comparing to splitting large folio.
 
->>
->> Suggested-by: Guan Wentao <guanwentao@uniontech.com>
->> Signed-off-by: WangYuli <wangyuli@uniontech.com>
->> ---
->>   arch/loongarch/crypto/crc32-loongarch.c | 2 --
->>   1 file changed, 2 deletions(-)
->>
->> diff --git a/arch/loongarch/crypto/crc32-loongarch.c 
->> b/arch/loongarch/crypto/crc32-loongarch.c
->> index a49e507af38c..3eebea3a7b47 100644
->> --- a/arch/loongarch/crypto/crc32-loongarch.c
->> +++ b/arch/loongarch/crypto/crc32-loongarch.c
->> @@ -44,7 +44,6 @@ static u32 crc32_loongarch_hw(u32 crc_, const u8 *p, 
->> unsigned int len)
->>           CRC32(crc, value, w);
->>           p += sizeof(u32);
->> -        len -= sizeof(u32);
->>       }
->>       if (len & sizeof(u16)) {
->> @@ -80,7 +79,6 @@ static u32 crc32c_loongarch_hw(u32 crc_, const u8 
->> *p, unsigned int len)
->>           CRC32C(crc, value, w);
->>           p += sizeof(u32);
->> -        len -= sizeof(u32);
->>       }
->>       if (len & sizeof(u16)) {
-> 
-> Sure, but IIRC Loongson still has hopes in having 32-bit-only models 
-> support upstream? The possibility cannot be ruled out because from 
-> public information (e.g. the 2023-11-28 news event), Loongson is known 
-> to be actively licensing their reduced 32-bit-only IP cores to third 
-> parties.
-> 
-> Ultimately whether we want to imply 64-bit operation with the crc32 
-> module is up to Loongson to decide, and I think Huacai may have 
-> something to add, but IMO at least we could gate the statement with 
-> #ifdef's so we don't outright lose 32-bit compatibility with this code.
-> 
+which also brings negative side effects such as redundant I/O.
+For example, if you have only one subpage left in a large folio,
+pageout will still write nr_pages subpages into swap, then immediately
+free them in swap.
 
-I was wrong in assuming that LA32 must contain CRC insns that operate on 
-at most 32 bits. In fact this is wrong -- the LA32 subset omits a lot of 
-32-bit operations for no apparent reason (perhaps implementation 
-simplicity but outsiders cannot confirm). So by definition the code 
-cannot be ported to LA32, and the changes are correct.
+>
+> The thing I am not sure is unmapping from specific VMA range is not
+> available and whether it's worthy to add it.
 
-But for the same reason, the commit message is misleading. See above.
-And with the nits addressed:
+I think we might have the possibility to have some complex code to
+add folio1, folio2, folio3, folio4 and folio5 in the above example into
+reclaim_list while avoiding splitting folio1. but i really don't understand
+how unmap will work.
 
-Reviewed-by: WANG Xuerui <git@xen0n.name>
+>
+> > to make sure folio1, folio2, folio3, folio4, folio5 are added to
+> > reclaim_list by doing a complex
+> > game while scanning these 8 PTEs.
+> >
+> > if we split in madvise, they become:
+> >
+> > PTE0 present for large folioA  - splitted from folio 1
+> > PTE1 present for large folioB - splitted from folio 1
+> > PTE2 present for another folio2
+> > PTE3 present for another folio3
+> > PTE4 present for large folioC - splitted from folio 1
+> > PTE5 present for large folioD - splitted from folio 1
+> > PTE6 present for another folio4
+> > PTE7 present for another folio5
+> >
+> > we simply add the above 8 folios into reclaim_list one by one.
+> >
+> > I would vote for splitting for partial mapped large folio in madvise.
+> >
 
--- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
-
+Thanks
+Barry
 
