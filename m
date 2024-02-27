@@ -1,191 +1,167 @@
-Return-Path: <linux-kernel+bounces-83532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1BA0869AF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:46:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8FDA869AF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:46:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9746B28737D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:46:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7D911C20E40
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6658514830A;
-	Tue, 27 Feb 2024 15:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98CC6146908;
+	Tue, 27 Feb 2024 15:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iTOF9Tnn"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a0NP/5Lv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0BF148307
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA128145B09;
+	Tue, 27 Feb 2024 15:46:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709048733; cv=none; b=ZMc+xgutJzhwABlJNuN1Zv8BVu48YhFyhOO1urzunONLfCmYSf+fXNlMR2wXhWF+IkYy6oblleIyBt8+tBzsDOdSUGxguuE37hfugpG4oIEMYI6SmBumOrZaUBB44q/ZifEg/ib8jfidK/1qG812ni8kypPPbavZ9tHBUx+RvO8=
+	t=1709048788; cv=none; b=CX8DW8WjeHtFHyGLg/kiek5yLbXf+76laCl24cg1omjXEgjwKs7/WnvndujICUz6d04TTgDN9zJhowrJk0tc9UCxXLEsQdP9uREnDTnt4H9d898+Unn13vIpDGdPdHQVeTgQik14DTGVa8IJy+Elyac0YPtgR2wOFA3IKmAkTOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709048733; c=relaxed/simple;
-	bh=WL4S7ITcX0W562vCYQL/BAfa3AQ+jSPoIO/45kxyXCY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=troME3t4jfhNfb8mVvCz6b8Cm+aFzBrWQxZMua0staMb0u9e8L+JMZ1r9twlA9yCE9n5uvbhI+Imzn0Unz9CQDzQfidq5XMgjNWxc1VHB6ZDEQx1e9eosbq/RUWgLLNAoJneGaAtsrp7HYsvETHfJ1n+oSBuxz/y1/lVq3G1LOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iTOF9Tnn; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-564372fb762so6329767a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709048728; x=1709653528; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VBBMvdnMJOUDqC6FIoouvKX0VetpmJxPih6JNYsSQqg=;
-        b=iTOF9TnnfIdZMhaDIe08j0Mmdb4Hz+qH171Jdb9IKQT09s2xjZxLcRgCxn1oBXz3Vd
-         xWjfwcoAZmyyVncWrfCaSC6MEXjRYibOpk3xXIp8CMuhVBiIqB6WBaSkXUf+7mSvZmso
-         PprVrg9a8P04fu66Lhl8OY7j7tcGF/bwYUJtKYh5lejt8Y4WIFH3rmJ/AAey5LuZb2zg
-         V1OETZdr1aybje9VaMAzmlr7PUv92mnBCECUIeWr6++hlEY9B5ds3VZ2nWbjwjh6ebVb
-         ciOle8H3cnGm0+/iLcUpAqHL2EqcCBKkqkdEoEO1Wz3iYinTm/rdcUnHORZfr9Az+48+
-         SDxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709048728; x=1709653528;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VBBMvdnMJOUDqC6FIoouvKX0VetpmJxPih6JNYsSQqg=;
-        b=PfIh1VfqipRW7EboaE4g1NPSf3WLa7K97ln0DjSRZrDj60h1KWrTwmRKKpoOQgEAF9
-         JelL6pAgHoZGum90E42ysYLMxvmq7uwwMhkGFDlA8R41hJjXjTEfQALcYZ6EHFJ0ITbS
-         pGIiBQK5fYMNF0PzXe2/XYbVUjBzG82ExaWNSTGUY3Y9bZKjrofqn6V5ppJTXqg6E6BE
-         vNIc0n3LZHJxWwycOjpQMzO6v1R2Elo3FjccTwJs7IYvPpPmZyjK4p+w1RiFsu5QD7tV
-         BvoE54+zeO+Rr48L/Klas7nzRZCCf2ZyuoTUY5tFCkKaY/KmoOsEiFuarjsWwUWGSQrL
-         fXZw==
-X-Forwarded-Encrypted: i=1; AJvYcCXEtfa3NbRR0hRxgmV+radWIzQcJWC9RacHQWgsksIxhhyTo5vyW4OTUqUNUAofBMkdq6E2W77zRVzeJiCizyObe/dnaD02PoPxKnuX
-X-Gm-Message-State: AOJu0YxyZ0kF2a0hfPaJ6kdV4bh+Omzad8xW0J0fvJ3cR6ZPKu9aXw+R
-	RknHNeNAVkOrZQJ87IhOTd6FeUzaerHs+xdDSObL1enegd3AZM8iQsWE9TQtwYA=
-X-Google-Smtp-Source: AGHT+IHNbipslc95HASX7Ib0Sl25Od2irZzLHYoJTEds0ENDEj3TAKm3Sszg9Ae5BwU/365YzwHFnA==
-X-Received: by 2002:aa7:c419:0:b0:565:a000:ec93 with SMTP id j25-20020aa7c419000000b00565a000ec93mr5932319edq.20.1709048727858;
-        Tue, 27 Feb 2024 07:45:27 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id df1-20020a05640230a100b00564f3657a5csm878349edb.75.2024.02.27.07.45.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 07:45:27 -0800 (PST)
-Message-ID: <a90dcd83-d158-4ec1-9186-0658c108afef@linaro.org>
-Date: Tue, 27 Feb 2024 16:45:25 +0100
+	s=arc-20240116; t=1709048788; c=relaxed/simple;
+	bh=NBx9tvmKwEqoQnhtitPC+pDa9PzOIcQYFJVbd2LxzdU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IUZblNeCPmk6EDrLGItdSdJtoLLCdk9EHTxDcaIAQLOYjfF3+N4WO8sTrfhwskI4iy2HdEL97Xv7Rwy8rzVio7PkWGaZ1QPVFSeK2ikQERxx94ZS/GMoDQzrpI5oKUf8LxbjbINQ6OquJGVeM5pYxlgGm8GrdT66620o2xxf58M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a0NP/5Lv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B4CFC433F1;
+	Tue, 27 Feb 2024 15:46:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709048788;
+	bh=NBx9tvmKwEqoQnhtitPC+pDa9PzOIcQYFJVbd2LxzdU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=a0NP/5LvisMSpubv7WhZLqjoPbQzydNaAKz27SrNhnhKQC5xhsGBXugMa0Fp6fht3
+	 y6a8eA4xwqUPQR36iF9x3/CdXiSsTUw/m9jWvnImhfMHUj5/+CI6bK6Hqf4i9xil3Z
+	 v0UOqNH9gK9aKeujipZGRz6rK98sEsf8cfjMv5heyWgKT4sYaJpYaUe0bWM6qBDT1A
+	 4PaPMaFLE+M5bp9UQaHACG3m5PruDxyQSmxs0kXftMtONsnttZVRR3V+TUXPRWMiz9
+	 fBbFq9TAfzgueW2xj2ujZ5dJ8B4J/7XlklL1KebQ27m2z42EjzkbkgRz3mEypkvUIx
+	 ZW0AGqLBN8WuQ==
+Date: Tue, 27 Feb 2024 15:46:21 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: linux-kernel@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	perex@perex.cz, tiwai@suse.com, 13916275206@139.com,
+	mohit.chawla@ti.com, soyer@irl.hu, jkhuang3@ti.com, tiwai@suse.de,
+	pdjuandi@ti.com, manisha.agrawal@ti.com, s-hari@ti.com,
+	aviel@ti.com, hnagalla@ti.com, praneeth@ti.com
+Subject: Re: [PATCH v6 1/4] ASoc: PCM6240: Create PCM6240 Family driver code
+Message-ID: <0cba2632-5d79-488a-9eec-dbed4208971b@sirena.org.uk>
+References: <20240223123809.503-1-shenghao-ding@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] dt-bindings: display: msm: dp-controller: document
- X1E80100 compatible
-Content-Language: en-US
-To: Abel Vesa <abel.vesa@linaro.org>, Rob Clark <robdclark@gmail.com>,
- Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kuogee Hsieh <quic_khsieh@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Johan Hovold <johan@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240222-x1e80100-display-refactor-connector-v2-0-bd4197dfceab@linaro.org>
- <20240222-x1e80100-display-refactor-connector-v2-1-bd4197dfceab@linaro.org>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240222-x1e80100-display-refactor-connector-v2-1-bd4197dfceab@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-On 22/02/2024 16:55, Abel Vesa wrote:
-> Add the X1E80100 to the list of compatibles and document the is-edp
-> flag. The controllers are expected to operate in DP mode by default,
-> and this flag can be used to select eDP mode.
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> index ae53cbfb2193..ed11852e403d 100644
-> --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> @@ -27,6 +27,7 @@ properties:
->            - qcom,sdm845-dp
->            - qcom,sm8350-dp
->            - qcom,sm8650-dp
-> +          - qcom,x1e80100-dp
->        - items:
->            - enum:
->                - qcom,sm8150-dp
-> @@ -73,6 +74,11 @@ properties:
->        - description: phy 0 parent
->        - description: phy 1 parent
->  
-> +  is-edp:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Tells the controller to switch to eDP mode
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="q/NIaDdKYiyeWvDU"
+Content-Disposition: inline
+In-Reply-To: <20240223123809.503-1-shenghao-ding@ti.com>
+X-Cookie: Please go away.
 
 
-DP controller cannot be edp, so property "is-edp" is confusing. Probably
-you want to choose some phy mode, so you should rather use "phy-mode"
-property. I am sure we've been here...
+--q/NIaDdKYiyeWvDU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Anyway, if you define completely new property without vendor prefix,
-that's a generic property, so you need to put it in some common schema
-for all Display Controllers, not only Qualcomm.
+On Fri, Feb 23, 2024 at 08:38:04PM +0800, Shenghao Ding wrote:
 
+> +static const char *const pcmdev_ctrl_name[] = {
+> +	"%s-i2c-%d-dev%d-ch%d-ana-gain",
+> +	"%s-i2c-%d-dev%d-ch%d-digi-gain",
+> +	"%s-i2c-%d-dev%d-ch%d-fine-gain",
+> +};
 
-Best regards,
-Krzysztof
+So, I see why you're doing this naming thing for the per-device controls
+- the device can (and is designed to) allow controlling multiple amps
+with a single I2C write.  However this is resulting in something that's
+really awkward from an ALSA point of view, the names that are being
+generated are very much not idiomatic for control names and probably
+aren't going to be terribly meaningful for end users since they're not
+associated with where the relevant outputs physically are.  We could
+require machines to provide names for everything but that's probably
+going to be a miserable experience on x86 and is unhelpful even with DT
+so having a default seems to make sense.
 
+I think these should look more like ALSA names, so "I2C %d Device %d..."
+though that does make things a bit longer.
+
+> +static const char *const pcmdev_ctrl_name_with_prefix[] = {
+> +	"%s-dev%d-ch%d-ana-gain",
+> +	"%s-dev%d-ch%d-digi-gain",
+> +	"%s-dev%d-ch%d-fine-gain",
+> +};
+
+For these I'm not clear why we don't just use the name, what's the goal
+in having the device number in there?
+
+I think it would make sense to do a version the driver with no user
+visible controls (or at least none that need this name generation stuff)
+and then make the controls an incremental patch, the driver would
+obviously need both bits to be properly useful but it'd mean that the
+simple bit could get reviewed and possibly merged separately to the
+complicated bit which would probably be easier.
+
+Please also send the output of mixer-test from a machine with this
+driver in it as part of the cover letter, it'll make it easier to tell
+what's going on.
+
+> +	if (comp->name_prefix) {
+> +	/* There's name_prefix defined in DTS. Bin file name will be
+> +	 * name_prefix.bin stores the firmware including register setting and
+> +	 * params for different filters inside chips, it must be copied into
+
+The comment should be indented like it's inside the if ().
+
+> +	} else {
+> +	/* There's NO name_prefix defined in DTS. Bin file name will be
+> +	 * device-name[defined in pcmdevice_i2c_id]-i2c-bus_id[0,1,...,N]-
+> +	 * sum[1,...,4]dev.bin stores the firmware including register setting
+> +	 * and params for different filters inside chips, it must be copied
+> +	 * into firmware folder. The same types of pcmdevices sitting on the
+> +	 * same i2c bus will be aggregated as one single codec, all of them
+> +	 * share the same bin file.
+> +	 */
+> +		scnprintf(pcm_dev->bin_name, PCMDEVICE_BIN_FILENAME_LEN,
+> +			"%s-i2c-%d-%udev.bin", pcm_dev->dev_name, adap->nr,
+> +			pcm_dev->ndev);
+> +	}
+
+You could also do this as a fallback (ie, try the specified name first
+then fall bakc to the bus based numbering), that way if a name is added
+later it won't break people's installs on upgrade.
+
+> +static const struct regmap_config pcmdevice_i2c_regmap = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.cache_type = REGCACHE_MAPLE,
+> +	.ranges = pcmdevice_ranges,
+> +	.num_ranges = ARRAY_SIZE(pcmdevice_ranges),
+> +	.max_register = 256 * 128,
+> +};
+
+Shouldn't there be some volatile registers if we have interrupts?
+
+--q/NIaDdKYiyeWvDU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXeA8wACgkQJNaLcl1U
+h9C3Hwf9Gmdxf4Cz4ZF49QuHRx9unEzbCoT6YJxHKoeWCY8Dv+nxvafUfp8NqeXG
+eGHw314ytCKdPKj65J0ef3jupWrB3Z4euByOjCBvtRRriVqmCPMdhaCVFA8kKr9U
+SyiqAm1z9t9LCeKVcFcKsh6Bc8H+oqx4E1z7IJ91TUhfD+1kK/c2iFyIDb1hjZis
+1TXj1840PpqIH62vmfWeYv08SpEKNryODarBU/DZXyDtNewADHC2MLYOJF29PMhb
+GeGwOckFtxAwHkkrtwAkaM6V9bRSQ843E4UmDMH60Cm6XlweK32rP1TGsrUR7llO
+4vWck8vZ4ivdI5DSDA9rN/KXP62dWA==
+=J6Xo
+-----END PGP SIGNATURE-----
+
+--q/NIaDdKYiyeWvDU--
 
