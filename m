@@ -1,102 +1,200 @@
-Return-Path: <linux-kernel+bounces-83571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F050869BFA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:24:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7914F869BC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:13:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD7CCB2CDC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:10:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BF94B2D78C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1341474DC;
-	Tue, 27 Feb 2024 16:10:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C25EA14830E;
+	Tue, 27 Feb 2024 16:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kh/nTfR1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0MeJ45Tx"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFD54146E8D;
-	Tue, 27 Feb 2024 16:10:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EE10146E8D
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709050219; cv=none; b=LZvlzEAp2bFVHZgmORmdI1hxMmLCeZapIBNWlJyxmfU4bG6HEbymTvi1YgcVgWEFtRHgbypwnIwDwtp1jX7nfE1+OAvIdDiR18ktetB8JrzlFQH0TlEU9Ec0+rveaS1LsyjZN2AIrS6VVTWCoL9qlZmwx1qHWoTlC+ayHz8G86s=
+	t=1709050259; cv=none; b=GLpDQKNNalIy3YLJg6+fcc4bgWa+CQcfNalsHLgPVYeIo8WsdMBPyGNGm2LHhhdhWY1tNmBixyjOgnKk2wSyjGsTh9VKn1XvrYWKUmw0sqjlc0A+QN2GsYC/lKRil9dexOuWaDpSEyH/p/AefadhM8zr13QkShOCzyMDqSdsHpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709050219; c=relaxed/simple;
-	bh=cN+V1mjBJaEyjI2HaATBxgd/1peblTgEH/q3L/Z12ag=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=XkQv3z+1P3S4fMEEgTjrGXEeGmdC9HdJDrfxk4t2+5TJJwNLnOyar19i2iMGnx2y/ByOdj1/MOsEbN1dx5oOcjv/hSKFP0Tum7uP6BlcFOoAljJUNxaHrA/BK5mT/KDMtIOFfbPJnIPAVtqh3tZjEFeEZPFcc09GUa/RMJkoGDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kh/nTfR1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 688D5C433C7;
-	Tue, 27 Feb 2024 16:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709050219;
-	bh=cN+V1mjBJaEyjI2HaATBxgd/1peblTgEH/q3L/Z12ag=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Kh/nTfR1g7N/a4Z1HS9yyw7PCkABwUuz4oRVzyIoxnXWQpZ2aiiMog3OwwGtxW5Iv
-	 SlrooLi9nUTXV8f8eY86kjjrB/RRQiGmZTAyHPbNZg0e4JvMzb3TP5HWifH2hKq+tQ
-	 WhI96RDzEQ3pMzNTez5jUYCket9p6M3rUU52wfVIZT5wVwk9wGEiMQL80+KTtpHCDx
-	 thOXQT9rSzV1wqi/RKPnNODUK31ALXGM20UVoyWKvUHSgkeRSygGLKF++GFkbVqZsg
-	 Ch8rT9GKKZbansHF4ZlUfDqo8CzE800H47arHb4sgTeKHVKTaYXZOA87xwVDgvmSVM
-	 vlAj3QWh3zgcQ==
-From: Mark Brown <broonie@kernel.org>
-To: tiwai@suse.com, Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
- linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
-In-Reply-To: <20240227100042.99-1-rf@opensource.cirrus.com>
-References: <20240227100042.99-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: cs35l56: Prevent bad sign extension in
- cs35l56_read_silicon_uid()
-Message-Id: <170905021816.83159.8702222315975677755.b4-ty@kernel.org>
-Date: Tue, 27 Feb 2024 16:10:18 +0000
+	s=arc-20240116; t=1709050259; c=relaxed/simple;
+	bh=nDxGfqMt13C5jtHaHc4vC6L/CJ5CyAlKFCiqHu/Q5AM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oHbgjL9eZXPNOtdL6vVYuMj46XcE6tsZIjtsoo+1x0xn+OxGmCoWXkKfF5EzunBo3Bne7nMGqDyf/z5tgIUJWyyEYLeqkKYl4m3DGUp8mwWRfVbJ//gj+a+y3rDkwFg3EGNydPn8EPWXLUIYHHAEQSlBYkhtot+81Gauvij8IMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0MeJ45Tx; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc6d8bd618eso4573940276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:10:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709050256; x=1709655056; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3997VUdAcSrw6hJXGBCDEHFxh3lqzFAtRC+eH0EMEcI=;
+        b=0MeJ45TxvkJ0MVWsxEjyDkxWLXiNjVF26WeLwFNYNBOtgGxIyhcsLzKS5TnhhLEcwU
+         JiYijcgJmv82zeOo368b8sXVs4teBembBml1GYON/0lHis18lzZl9dcUQ8frrRQLvgPA
+         opbdtJxDUXDakZ8nbyT63op1sUOTPpmzjXJk9u+W70IKUJdsCednB9x4nZPklt5yV16N
+         PmFU75Lks+InLPBNLRG+u2lSzn3rqWq1EpcldoETVmpVTP77iMVONauUt6eH4wAUG4LI
+         pUJRmFY9N+5QY0tcA/q7rdOK4EgYSXmVoMjkpSjcetAIdORSwoOw5EChfdvZJ28Qtkqz
+         dbZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709050256; x=1709655056;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3997VUdAcSrw6hJXGBCDEHFxh3lqzFAtRC+eH0EMEcI=;
+        b=QJwW+7dNUaW/uPUIn3+h2s67Piebhv4W2XvDibZVH/+mChIl/pwELJAtlo1JssuZ9D
+         NFPcb/Sh5Jxt2TcSKb1mEJ65gcoVnULxsK0gJspcsaDAdmkHEUUFc6rnDyJUiqOluir8
+         9GGLIUOt6dSfrLhyRLvyn8r+SmiASifchVkZMcNOR8NzS6G+d1IU46SuXFhFKJKqQaPy
+         ij0XxRbPqyZQnDQRxpHKCQv/hRd9dLrVz2wOU2h7wQn9IS/dX/+YzW8pIeJv0BPDm6Re
+         E8rWu4ULrX0ptK2BOHBxdYpr7jZZ5kj8KHps17HANOJnsz1rnl/9PMeBvG7/7liqAxPk
+         06ow==
+X-Forwarded-Encrypted: i=1; AJvYcCWzKTzQ5zBHQsnqZ3xzi56SMkxK7/YtRLSzH5m353Hv0DvxNQGa2pdDSIuk0cJhV++ocs8VRHTL8QC4HUubcFj0obsKThWaasUJxZbM
+X-Gm-Message-State: AOJu0YyYNPG8QfKIxGy3u7OfNhPrrk4Rq09fA6hENzeFfugXpuyH6IRF
+	cWcgyLirlXdjTqbc+0J12YwBr9U6ekYQ6/2X5Mevb7L9cvf3/hrsB/4KEwIA3+ycWfWlhSyAONb
+	HO3XktPWTcQnQbZdVPkz6j844Nn7qmkiiZ1MQ
+X-Google-Smtp-Source: AGHT+IEHPBI8sanvwTrodqkBZscFpfJ5hxIGD0OGV0J9ftpRl85Uhg0i/fQvfgLElKHDPIfjBMGZnSSbq41lp7tF8gc=
+X-Received: by 2002:a25:874c:0:b0:dcb:d8d1:2d52 with SMTP id
+ e12-20020a25874c000000b00dcbd8d12d52mr2322309ybn.31.1709050255947; Tue, 27
+ Feb 2024 08:10:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+References: <20240221194052.927623-1-surenb@google.com> <67453a56-d4c2-4dc8-a5db-0a4665e40856@suse.cz>
+In-Reply-To: <67453a56-d4c2-4dc8-a5db-0a4665e40856@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 27 Feb 2024 08:10:43 -0800
+Message-ID: <CAJuCfpHLEzCzATZ2ZP74--9mfYh-g-2csZ9A9oyaWWEQGNuGpg@mail.gmail.com>
+Subject: Re: [PATCH v4 00/36] Memory allocation profiling
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 27 Feb 2024 10:00:42 +0000, Richard Fitzgerald wrote:
-> Cast u8 values to u32 when using them to build a 32-bit unsigned value
-> that is then stored in a u64. This avoids the possibility of a bad sign
-> extension where the u8 is implicitly extended to an int, thus changing it
-> from an unsigned to a signed value.
-> 
-> Whether this is a real problem is debatable, but it does no harm to
-> ensure that the u8 are cast to a suitable type for shifting.
-> 
-> [...]
+On Tue, Feb 27, 2024 at 5:35=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> > Overview:
+> > Low overhead [1] per-callsite memory allocation profiling. Not just for
+> > debug kernels, overhead low enough to be deployed in production.
+> >
+> > Example output:
+> >   root@moria-kvm:~# sort -rn /proc/allocinfo
+> >    127664128    31168 mm/page_ext.c:270 func:alloc_page_ext
+> >     56373248     4737 mm/slub.c:2259 func:alloc_slab_page
+> >     14880768     3633 mm/readahead.c:247 func:page_cache_ra_unbounded
+> >     14417920     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
+> >     13377536      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
+> >     11718656     2861 mm/filemap.c:1919 func:__filemap_get_folio
+> >      9192960     2800 kernel/fork.c:307 func:alloc_thread_stack_node
+> >      4206592        4 net/netfilter/nf_conntrack_core.c:2567 func:nf_ct=
+_alloc_hashtable
+> >      4136960     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod] fu=
+nc:ctagmod_start
+> >      3940352      962 mm/memory.c:4214 func:alloc_anon_folio
+> >      2894464    22613 fs/kernfs/dir.c:615 func:__kernfs_new_node
+> >      ...
+> >
+> > Since v3:
+> >  - Dropped patch changing string_get_size() [2] as not needed
+> >  - Dropped patch modifying xfs allocators [3] as non needed,
+> >    per Dave Chinner
+> >  - Added Reviewed-by, per Kees Cook
+> >  - Moved prepare_slab_obj_exts_hook() and alloc_slab_obj_exts() where t=
+hey
+> >    are used, per Vlastimil Babka
+> >  - Fixed SLAB_NO_OBJ_EXT definition to use unused bit, per Vlastimil Ba=
+bka
+> >  - Refactored patch [4] into other patches, per Vlastimil Babka
+> >  - Replaced snprintf() with seq_buf_printf(), per Kees Cook
+> >  - Changed output to report bytes, per Andrew Morton and Pasha Tatashin
+> >  - Changed output to report [module] only for loadable modules,
+> >    per Vlastimil Babka
+> >  - Moved mem_alloc_profiling_enabled() check earlier, per Vlastimil Bab=
+ka
+> >  - Changed the code to handle page splitting to be more understandable,
+> >    per Vlastimil Babka
+> >  - Moved alloc_tagging_slab_free_hook(), mark_objexts_empty(),
+> >    mark_failed_objexts_alloc() and handle_failed_objexts_alloc(),
+> >    per Vlastimil Babka
+> >  - Fixed loss of __alloc_size(1, 2) in kvmalloc functions,
+> >    per Vlastimil Babka
+> >  - Refactored the code in show_mem() to avoid memory allocations,
+> >    per Michal Hocko
+> >  - Changed to trylock in show_mem() to avoid blocking in atomic context=
+,
+> >    per Tetsuo Handa
+> >  - Added mm mailing list into MAINTAINERS, per Kees Cook
+> >  - Added base commit SHA, per Andy Shevchenko
+> >  - Added a patch with documentation, per Jani Nikula
+> >  - Fixed 0day bugs
+> >  - Added benchmark results [5], per Steven Rostedt
+> >  - Rebased over Linux 6.8-rc5
+> >
+> > Items not yet addressed:
+> >  - An early_boot option to prevent pageext overhead. We are looking int=
+o
+> >    ways for using the same sysctr instead of adding additional early bo=
+ot
+> >    parameter.
+>
+> I have reviewed the parts that integrate the tracking with page and slab
+> allocators, and besides some details to improve it seems ok to me. The
+> early boot option seems coming so that might eventually be suitable for
+> build-time enablement in a distro kernel.
 
-Applied to
+Thanks for reviewing Vlastimil!
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+>
+> The macros (and their potential spread to upper layers to keep the
+> information useful enough) are of course ugly, but guess it can't be
+> currently helped and I'm unable to decide whether it's worth it or not.
+> That's up to those providing their success stories I guess. If there's
+> at least a path ahead to replace that part with compiler support in the
+> future, great. So I'm not against merging this. BTW, do we know Linus's
+> opinion on the macros approach?
 
-Thanks!
+We haven't run it by Linus specifically but hopefully we will see a
+comment from him on the mailing list at some point.
 
-[1/1] ASoC: cs35l56: Prevent bad sign extension in cs35l56_read_silicon_uid()
-      commit: cb9d8a2c6cb7cbb0fc919defe4fae741bfcae9de
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
 
