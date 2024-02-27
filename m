@@ -1,287 +1,242 @@
-Return-Path: <linux-kernel+bounces-83730-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90D03869DB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:33:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35A98869E4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E6411F226B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:33:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C25C8B319A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C0714A4C9;
-	Tue, 27 Feb 2024 17:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672B41487D6;
+	Tue, 27 Feb 2024 17:29:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hAtYfpe6"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KoNnq2XM"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2082.outbound.protection.outlook.com [40.107.22.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74D4F152E15
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054948; cv=none; b=ZOQm3/L9xKs/9VjQter9QooEVuneuWiymGTIpckKYFabFwO0ih4U1voI1jJ1uNbqS2c9FA27NyFp25xUNI628dixzFj9UfuE4SAo/I8EWQfpOXdBUsByWUhdUFxOJtjx1TNiNWuDlrLY0CyypJDjh3LYnwOK7E7y2+PjpvVHDxk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054948; c=relaxed/simple;
-	bh=nDGxDIbhTaR2385iAsGzN/VEKZ6fYazF2B4H7Rt3wtk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lHRjVkAC3RgVYyRdFkwA9XF6stwYpT2wdOyRZ0U/jXy0bQ1FU64SeouzFC84sM/ZTKoGU1aJJ6zVilJSDigNhZ5IkB/EJrKukNSxcnmRt0rJJVGrXtzHL9sMgrcr1w2Jy9OOJWElgo6cWjn+Wd4FPFEFxI/PfudTUXv1iBYo764=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hAtYfpe6; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5dca1efad59so4257398a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:29:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709054946; x=1709659746; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=znKiBDk/+YyZPZxI19sZt/T09kGaOnS9hAUBe89oizg=;
-        b=hAtYfpe6maCwWI7nkMej5Wg4K+PbFvn8jnBL2dsBmRwzub1TtMxIn5OfyUOcjmTABw
-         Uypy0qSQNavvLSq8rnuX/M79KQMbipIB+XQF4hJkFmOTQaBQhFurIFtxtcD77PcTMs3W
-         VWrC0UCCq1A81yMAo2qLoTy4dH9xjvNEsJkiao3G+wMfrIfoJrDD5udu0PJNkyign/Ti
-         1dFOkh5MpmkSnpjziEvsYlcDnTrloYEIiQhT97XQ6lUT+iuOenvH2Q2Gt7Aq41shE+8h
-         KwBvK0dNZ6QylQPYgi2g//bEWkAgs+lqB9N4IMMSpHFz2GElG6DZ+W2S42etbq9uTyaV
-         BXEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709054946; x=1709659746;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=znKiBDk/+YyZPZxI19sZt/T09kGaOnS9hAUBe89oizg=;
-        b=h9XM+vErg9OOyeq+uhXaN5kOlleFFbQaL+tAarT/1XckgUlUHZRj86TVU2EHgpqpkW
-         k5P92otI2nGHZ6mPuV0xLWrl36RDeEMOWuuCbpM9VDecng+5shEc7j8q1kG8dU5+CKIn
-         Wo09Ex043cidqBRh8xqtmoLwKW8yancaQM9GFDcsWV8Gbn76nnUw0BflkwVwRVo3Iw3f
-         TjrS6Al03in7JDCaCcgR9eZBC684h+j9X+pIOfe5Hcp6FZlpPFQaylsNjByZSW6hjnQp
-         msc8uRGGIr2PpPFGx90i0vR4uRsfPmKK+1EkKfm6O2iWIGcM3H5/3wm4UQAvjzbKRGct
-         0vEg==
-X-Forwarded-Encrypted: i=1; AJvYcCUAxiIw67/MU/AzkZTAxDhC1i4fY5vp6YAnh5foxjt9ytlaogZzDbSyZw0oSAHc2Qp4FAmia0QyKwGTIN+NtDVsL9K1HU1lIO+S+BkP
-X-Gm-Message-State: AOJu0Yxzjisp/PvkzILdqrL9obaqsAeNVVmguy+iU6IHAJYEo+iznK97
-	6ogd2VGrZa3TqtQl8xOVMmOd6GwkMMAILEykAxN+P3qRjwFK4NAz
-X-Google-Smtp-Source: AGHT+IFkj+Mw5clXxdtZCclQkvmeFtrbGuicLN7eYl1DfWYG99qAXAUPOrywmUjwtmnBTj8z2z43bA==
-X-Received: by 2002:a17:902:a386:b0:1dc:ad9d:9e7b with SMTP id x6-20020a170902a38600b001dcad9d9e7bmr4198872pla.59.1709054945777;
-        Tue, 27 Feb 2024 09:29:05 -0800 (PST)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id x21-20020a1709027c1500b001dbc3f2e7e8sm1775141pll.98.2024.02.27.09.29.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 09:29:05 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-From: Tejun Heo <tj@kernel.org>
-To: jiangshanlai@gmail.com
-Cc: torvalds@linux-foundation.org,
-	linux-kernel@vger.kernel.org,
-	allen.lkml@gmail.com,
-	kernel-team@meta.com,
-	boqun.feng@gmail.com,
-	tglx@linutronix.de,
-	peterz@infradead.org,
-	romain.perier@gmail.com,
-	mingo@kernel.org,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 6/6] r8152: Convert from tasklet to BH workqueue
-Date: Tue, 27 Feb 2024 07:28:17 -1000
-Message-ID: <20240227172852.2386358-7-tj@kernel.org>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240227172852.2386358-1-tj@kernel.org>
-References: <20240227172852.2386358-1-tj@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3E24CB4B;
+	Tue, 27 Feb 2024 17:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709054939; cv=fail; b=lDq1uDoA3R65B5lv5mAUWPhfmB0We8vuFVe1DNPrM69oFxzN4USaDCyvbHLzA6vjHMJ/DKQqMEtaH5ICr5IXdHQBD/+0Bt2jryX3IhLExyC6dp5Wsh2cWw8GXNT0SELC8ib1msybtB4BKTdh1mzqEK1ymKF4qQkqkiV59bZuj/U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709054939; c=relaxed/simple;
+	bh=ULzxpz1XWj628ZiUzClZGZP4OJNXGceyfw1pFt/ZySM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=UqbIGujuRRdwxSG6TT1yrehXmaK3UmDwJxJbERmHcwUyOecn34Q7NQKbbOfjFtOFA1yubMJruqgfdHP7q+AKisLROfrLRwlgjiyKMipX43OxninuPv1k5s+47b6KXTNz+oydzt0N2ixcK9mG6/afTpVd1RCYYNhPYGnC74mWyHg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=KoNnq2XM; arc=fail smtp.client-ip=40.107.22.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VaKIzywupAKZGZYrqHX823HPhileXnOn8duwWFzL/hxkWpyESnP9oDVSR7I4kOUgT/WaTDfoJhDeNiQEFDtnKOOBPjBoFu5Npd883JvxrNNT8baAZm2rvdaiPA1rWAqfa/GqZpnH4NgPtbxofMHVPM9BSWHIeuCivt/G8WAszklSZLknfKUx5CttWD8zXDsUh6PpG1mnKzzVJKnyY5HQhZNt2hXo89aVFNlb50AkSVvil+Sk33PPE/2kCpFkF9pZPZbCyHrF2/VhVYUMLZgSTQxUgGv31/ytnIayn5M26boyfAZR0e3bXcORJfm1WQSzSjwqGwZeMRaUktG3PvhYvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=oEMWhv3Azer5tvN85bI6IxnywFzvglQ34dZSXB7diqk=;
+ b=fO13cv7/HAzq+IALseBfLGD7SrrvlSlWtFgXEQVIDCS6O//ZxFub5zJbiDy1Jl8+oqpUfslX2L3FuztsIma+v5oOs63KpL4ISfkzj/rG2bEyzr9/5qAQdg3DuJ+sDIglmsvkdmSATlm6qQm8XfFsdXfR+tM0E/Vjua8Q44g4Pc/Lnqelb8Ff/LQ26yG01kTJIAfLtSOQvyaGJxbodFX0Y/LQR7QnVkPAj1Yiy1eRC4BYfX3YvtTRskanz5WOxMacVCSSgSXvN6dXgVFk3PAIw8SByoldPbkbOKF2dktMdqCFoZzMiXEJ75rCIIz977/1c2jLTB6zlushAVZ8cUgWUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oEMWhv3Azer5tvN85bI6IxnywFzvglQ34dZSXB7diqk=;
+ b=KoNnq2XMvA+V/UMkWjhQEw9sA1XvTaHWQnm7BLaGn/GADMbISbBfqDFexyMK8RLXBJvuTAr2IucVZKHRH2y8zvOsstS5OagU9LPZeIptS0W5gfXphGiIX8+xy5pgDvd/ZhNWUJASz2tyE3fkIkjLCI2VCRuMYHo/EhMSXrOf75A=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PAXPR04MB9185.eurprd04.prod.outlook.com (2603:10a6:102:231::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Tue, 27 Feb
+ 2024 17:28:54 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
+ 17:28:54 +0000
+Date: Tue, 27 Feb 2024 12:28:41 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kishon Vijay Abraham I <kishon@ti.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	Niklas Cassel <cassel@kernel.org>
+Subject: Re: [PATCH v8 06/10] PCI: dwc: ep: Call dw_pcie_ep_init_registers()
+ API directly from all glue drivers
+Message-ID: <Zd4bybN0malf5uBe@lizhi-Precision-Tower-5810>
+References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
+ <20240224-pci-dbi-rework-v8-6-64c7fd0cfe64@linaro.org>
+ <ZdzEoXwU42rFCF/W@lizhi-Precision-Tower-5810>
+ <20240227122141.GN2587@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240227122141.GN2587@thinkpad>
+X-ClientProxiedBy: SJ0PR13CA0001.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c0::6) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB9185:EE_
+X-MS-Office365-Filtering-Correlation-Id: bfbf783c-31d6-420b-37a4-08dc37b99244
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	glg+a7W/oZaK3HSWZ3NrmkF9TlSuznE4thb8Z45Rn4GcGzgw0SZt6gY1n1csrGhEwzLkXvvJzTSOV8wuIA6SPHpwefL03MjL/9xCvbFhRf1LqMpdzFVUOXze7iylkgHguMwEsxLuk5K7FIgV2BYwE9GBySuOikAHikX0TjN9PPLS90pLAsXDRpw60y7Wc8w3ewwgqab3iZdPmwHzQ0pezU1VrxcSowGnoJidJAnVPlTrsltApbrekJN13JWK27WjMn2z3mp9GIFAOOwqRIQJwRrg2JzbxGcQhXEhQwnnMyZzKarb+kVq8LDgFzuj8Uz6KvjQ+QSsdaH4TzLpbfTAPvA6Sly+uoKpAxZtrGEtvhjPub9wHIrvTtpslztnIKE9YhqcuDK+Cxv0fTVnYnhVqL4vQwC/M+Kuwc+Ty7E4zXCd1Yam6syW+98iCWsdt3a7A3kI+eLjjUA7TkneQE3/Mab07wZmcSr6Dbei492SqX/BgUoIV62bKBKMMTipNn+WwVuU7A2z1aPntjXT2rb+E0syMaAiGNgcED+bXB1RWUere5c9F4fyaMPoq+TdQNmGBkp1kOPa/xl8GGjSbARUUsAg5rM6xGCR6CK3TJrNOzL2dgWJ3DsKJeufp4bMhOmbqUpxJkCN5VbrO05U4cpof1raYDkZHDcIfz0qtHpXZpQU9Uv4x6AnaPSY14yijpyZ3UurnmDz2KIXlkRCNLJjYQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?YVBXblIyVmJXbVdyQTdiR1ljVWZ2cE5obW9NZWNqcnhObWxnYlc3bnNRcEE1?=
+ =?utf-8?B?VFhJNDNPTU10WDVoMVRHMENubDB3T3NDS0d3NTNzOTdmZTN4cjFRY0dNeGh2?=
+ =?utf-8?B?b2ZaQ2lqRlhXYmNVOFI1ekNOT1N1MUZEU3NNemdSdHRLZGh6aUYwOVI0Nzh6?=
+ =?utf-8?B?Ui9EenFwM1VDWlFXbXd6QXduME9KcnNKQUhORzRiZzhBcVdzYms2ZWhIQkp5?=
+ =?utf-8?B?dlprMnBOODRtOTdhZG5yU1ZEbWluVzltK0JRbjkwYm5BY1RXVnZITW5qclR4?=
+ =?utf-8?B?REdrdDdqY1FMbEtFTHJwUlNHVXNRSzdxZWNQSGphZUNkbmhFNEQxMURKcHB1?=
+ =?utf-8?B?YndvZkkzUUdBaWZWKzRzWWo0dmxOdFh4SHNDWFhyZU9ZUUp2RjkxaURIWVJz?=
+ =?utf-8?B?WllaanlGdWs0ZWZacUx6SUNGWEZUckY1M3hmNVpBdFlUdGR3TFJaYU03OG9O?=
+ =?utf-8?B?MGpIb1pHdnAxbDVtc04rZnZFZ2lJcVExUlF2VVdJRW9JRDBJVmR0OE9BdU43?=
+ =?utf-8?B?cXNZRkFVcXJzclRVSzhqN0puam1FRG9ZK3FHak92Tk9pQU0yalpQYmxuanl4?=
+ =?utf-8?B?cW42WHIzVVZ4M2d3ODk1aVptQXZiaXRQSEhBMnNRa1hETmcrMURZVCtTRDVE?=
+ =?utf-8?B?RGp2eHBtMTREVnJ3MmVGL1FKOU9aRitsUnJncHFVTkdxMGRsZUpxNVdPT3Rv?=
+ =?utf-8?B?QW9iUnp0d1hlN1hyU1dVRzN1ellMR213Z1Q0dEhSdlUwZ2lvc1dMMGVUZElT?=
+ =?utf-8?B?WkpDYldXbFJPSCs1V0F1MkxhZCthYVE2cmVsU2hqMll3UksvTE9UOVBRY1VI?=
+ =?utf-8?B?SDluV0pneDRvbzVTN1puSTh2cFdlS0dpeWRKTEo1QXY4VVNpbU9GWW8wVXBl?=
+ =?utf-8?B?OExLTkpIUE14SFdRWHR2ZWpIY01nNmNpOXFvSFZ1U3BpVVlnbzNwdFFoY2g2?=
+ =?utf-8?B?RkdiWUtGU3NnRllVdWN3dnZadTJHUjFVcWNHVVhJb0FWZ0x2NXpzMzQxaU1E?=
+ =?utf-8?B?TGtXUHpudUFkQmgxUzNuODRsck9Nb3RuMk1oL3BtVXRFSklwQ3ZlY2FCQ2FH?=
+ =?utf-8?B?NHhsM09OL3hPWU9zVmFLWWhxYzNUQ0h0SVh3RDNpSmtJLzNWZWx1T1JLdXpz?=
+ =?utf-8?B?YlEvRi9Lb3hRK096ZmZXQmhUSkFCb3RSOUErU2MxV21yMitnSkZBbjcvZTly?=
+ =?utf-8?B?WVlzQWh0SnlBUnRJQWFlaDVZbFJ2cWgvWCtKbjNZODg0cHd1RHFwck01MXFv?=
+ =?utf-8?B?cWNwNzQ1VisrRG5Ed2phd3l3NFljUnRsWHBGQUxVZTIvY1dkeExnQ2NHbThx?=
+ =?utf-8?B?NGtWMnZra0xsY3p6bXRGSVVRaXg1bENIWWorQkcrN2t5YXV0WC9HL1ZTbEly?=
+ =?utf-8?B?MHpEdlhKbnFZVHZHZUl2QXVQcDhFVlVLRm5VaUUxT1dTMEVsV2JkYmxTMFE2?=
+ =?utf-8?B?M3NmSS9neEZwWGhpZGVLQWFUeXpDSzZEdWRNc0NGZFJZU2xLdjg2bm0za2dv?=
+ =?utf-8?B?ZW5VcEM2UWcwQ0FUeWF6enE1UVhxSWFjUHNVRHZNak5Hd1JCNU96UXV6Y1g3?=
+ =?utf-8?B?OHFsempTMy9qYllBQTNBdFNLaE5wSmI4NE5laWpRT0x2enpBOGxtVTNIVGZ0?=
+ =?utf-8?B?Rk85cFovMmtIR0FxVDFzNjROMFRYK283TjFqb3psaFd0UTFFVFdSaG9OelNK?=
+ =?utf-8?B?clZ4NWtscUwwUFFSV1RHRlhsM2I0M3J4TDZNUTlSUUJVYmU4ak9sd1QyOFpj?=
+ =?utf-8?B?SFlvM2JxZmlEQVpyL0lkT2JWaWVQWmdTWGtvSWZaVDVVSHB0WWgzV21GY29X?=
+ =?utf-8?B?U3lLampuMjFTQVNXLzhxekwyODJNTFhrZmJLeFZUUVlpSU94amdaYjRvUGto?=
+ =?utf-8?B?NGppMSs2T1c3MU5zYThjaFdnck9DMkIzTVcydjZDenVlbUVXUU0wOU1uMmpx?=
+ =?utf-8?B?aGtWcDdNUjBFSFhpVVpocEwrdlpMWWR1TlNweGR1VENzVGpxc2xib1hEeXUw?=
+ =?utf-8?B?dzFrekpjWGtLeVJTT08wVHA1S2RPVWZkKzJISDliRmdqSkcvczNxRmgrUE1y?=
+ =?utf-8?B?MkVjeTB0THYwRDdVSUJRcEhyZjRrejVoZmpZbUEvcnpKS00zVnhGc0M2dFEy?=
+ =?utf-8?Q?jQCXtXTpfcfnkY0QrruwF6ial?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bfbf783c-31d6-420b-37a4-08dc37b99244
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 17:28:54.3548
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aJalJliG2TQRThLbSuFCYhqLuHwyJtQs3OsEhLsSf/Ph3zA6mkGoGcipf0rtce/nvAu5HiJt9sQ2eCxK3zEhQQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9185
 
-tasklet is being replaced by BH workqueue. No noticeable behavior or
-performance changes are expected. The following is how the two APIs map:
+On Tue, Feb 27, 2024 at 05:51:41PM +0530, Manivannan Sadhasivam wrote:
+> On Mon, Feb 26, 2024 at 12:04:33PM -0500, Frank Li wrote:
+> > On Sat, Feb 24, 2024 at 12:24:12PM +0530, Manivannan Sadhasivam wrote:
+> > > Currently, dw_pcie_ep_init_registers() API is directly called by the glue
+> > > drivers requiring active refclk from host. But for the other drivers, it is
+> > > getting called implicitly by dw_pcie_ep_init(). This is due to the fact
+> > > that this API initializes DWC EP specific registers and that requires an
+> > > active refclk (either from host or generated locally by endpoint itsef).
+> > > 
+> > > But, this causes a discrepancy among the glue drivers. So to avoid this
+> > > confusion, let's call this API directly from all glue drivers irrespective
+> > > of refclk dependency. Only difference here is that the drivers requiring
+> > > refclk from host will call this API only after the refclk is received and
+> > > other drivers without refclk dependency will call this API right after
+> > > dw_pcie_ep_init().
+> > > 
+> > > This change will also allow us to remove the "core_init_notifier" flag in
+> > > the later commits.
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  drivers/pci/controller/dwc/pci-dra7xx.c           |  7 +++++++
+> > >  drivers/pci/controller/dwc/pci-imx6.c             |  8 ++++++++
+> > >  drivers/pci/controller/dwc/pci-keystone.c         |  9 +++++++++
+> > >  drivers/pci/controller/dwc/pci-layerscape-ep.c    |  7 +++++++
+> > >  drivers/pci/controller/dwc/pcie-designware-ep.c   | 22 ----------------------
+> > >  drivers/pci/controller/dwc/pcie-designware-plat.c |  9 +++++++++
+> > >  drivers/pci/controller/dwc/pcie-rcar-gen4.c       | 12 +++++++++++-
+> > >  drivers/pci/controller/dwc/pcie-uniphier-ep.c     | 13 ++++++++++++-
+> > >  8 files changed, 63 insertions(+), 24 deletions(-)
+> 
+> [...]
+> 
+> > > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > index ed1f2afd830a..278bdc9b2269 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > @@ -729,7 +729,6 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+> > >  	struct device *dev = pci->dev;
+> > >  	struct platform_device *pdev = to_platform_device(dev);
+> > >  	struct device_node *np = dev->of_node;
+> > > -	const struct pci_epc_features *epc_features;
+> > >  
+> > >  	INIT_LIST_HEAD(&ep->func_list);
+> > >  
+> > > @@ -775,29 +774,8 @@ int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+> > >  		goto err_exit_epc_mem;
+> > >  	}
+> > >  
+> > > -	if (ep->ops->get_features) {
+> > > -		epc_features = ep->ops->get_features(ep);
+> > > -		if (epc_features->core_init_notifier)
+> > > -			return 0;
+> > > -	}
+> > 
+> > why remove this check?
+> > 
+> 
+> There is no point in keeping this check since we are removing the call to
+> dw_pcie_ep_init_registers() below. But I should've described this change in the
+> commit message.
 
-- tasklet_setup/init()		-> INIT_WORK()
-- tasklet_schedule()		-> queue_work(system_bh_wq, ...)
-- tasklet_hi_schedule()		-> queue_work(system_bh_highpri_wq, ...)
-- tasklet_disable_nosync()	-> disable_work()
-- tasklet_disable[_in_atomic]()	-> disable_work_sync()
-- tasklet_enable()		-> enable_work() + queue_work()
-- tasklet_kill()		-> cancel_work_sync()
+Sperated patch will be helpful. This clean up does not related with other
+change.
 
-Note that unlike tasklet_enable(), enable_work() doesn't queue the work item
-automatically according to whether the work item was queued while disabled.
-While the caller can track this separately, unconditionally scheduling the
-work item after enable_work() returns %true should work for most users.
+Frank
 
-r8152 conversion has been tested by repeatedly forcing the device to go
-through resets using usbreset under iperf3 generated traffic.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- drivers/net/usb/r8152.c | 44 ++++++++++++++++++++++-------------------
- 1 file changed, 24 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 9bf2140fd0a1..24e284b9eb38 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -882,7 +882,7 @@ struct r8152 {
- #ifdef CONFIG_PM_SLEEP
- 	struct notifier_block pm_notifier;
- #endif
--	struct tasklet_struct tx_tl;
-+	struct work_struct tx_work;
- 
- 	struct rtl_ops {
- 		void (*init)(struct r8152 *tp);
-@@ -1948,7 +1948,7 @@ static void write_bulk_callback(struct urb *urb)
- 		return;
- 
- 	if (!skb_queue_empty(&tp->tx_queue))
--		tasklet_schedule(&tp->tx_tl);
-+		queue_work(system_bh_wq, &tp->tx_work);
- }
- 
- static void intr_callback(struct urb *urb)
-@@ -2746,9 +2746,9 @@ static void tx_bottom(struct r8152 *tp)
- 	} while (res == 0);
- }
- 
--static void bottom_half(struct tasklet_struct *t)
-+static void bottom_half(struct work_struct *work)
- {
--	struct r8152 *tp = from_tasklet(tp, t, tx_tl);
-+	struct r8152 *tp = container_of(work, struct r8152, tx_work);
- 
- 	if (test_bit(RTL8152_INACCESSIBLE, &tp->flags))
- 		return;
-@@ -2942,7 +2942,7 @@ static netdev_tx_t rtl8152_start_xmit(struct sk_buff *skb,
- 			schedule_delayed_work(&tp->schedule, 0);
- 		} else {
- 			usb_mark_last_busy(tp->udev);
--			tasklet_schedule(&tp->tx_tl);
-+			queue_work(system_bh_wq, &tp->tx_work);
- 		}
- 	} else if (skb_queue_len(&tp->tx_queue) > tp->tx_qlen) {
- 		netif_stop_queue(netdev);
-@@ -6824,11 +6824,12 @@ static void set_carrier(struct r8152 *tp)
- 	} else {
- 		if (netif_carrier_ok(netdev)) {
- 			netif_carrier_off(netdev);
--			tasklet_disable(&tp->tx_tl);
-+			disable_work_sync(&tp->tx_work);
- 			napi_disable(napi);
- 			tp->rtl_ops.disable(tp);
- 			napi_enable(napi);
--			tasklet_enable(&tp->tx_tl);
-+			enable_work(&tp->tx_work);
-+			queue_work(system_bh_wq, &tp->tx_work);
- 			netif_info(tp, link, netdev, "carrier off\n");
- 		}
- 	}
-@@ -6864,7 +6865,7 @@ static void rtl_work_func_t(struct work_struct *work)
- 	/* don't schedule tasket before linking */
- 	if (test_and_clear_bit(SCHEDULE_TASKLET, &tp->flags) &&
- 	    netif_carrier_ok(tp->netdev))
--		tasklet_schedule(&tp->tx_tl);
-+		queue_work(system_bh_wq, &tp->tx_work);
- 
- 	if (test_and_clear_bit(RX_EPROTO, &tp->flags) &&
- 	    !list_empty(&tp->rx_done))
-@@ -6971,7 +6972,7 @@ static int rtl8152_open(struct net_device *netdev)
- 		goto out_unlock;
- 	}
- 	napi_enable(&tp->napi);
--	tasklet_enable(&tp->tx_tl);
-+	enable_work(&tp->tx_work);
- 
- 	mutex_unlock(&tp->control);
- 
-@@ -6999,7 +7000,7 @@ static int rtl8152_close(struct net_device *netdev)
- #ifdef CONFIG_PM_SLEEP
- 	unregister_pm_notifier(&tp->pm_notifier);
- #endif
--	tasklet_disable(&tp->tx_tl);
-+	disable_work_sync(&tp->tx_work);
- 	clear_bit(WORK_ENABLE, &tp->flags);
- 	usb_kill_urb(tp->intr_urb);
- 	cancel_delayed_work_sync(&tp->schedule);
-@@ -8421,7 +8422,7 @@ static int rtl8152_pre_reset(struct usb_interface *intf)
- 		return 0;
- 
- 	netif_stop_queue(netdev);
--	tasklet_disable(&tp->tx_tl);
-+	disable_work_sync(&tp->tx_work);
- 	clear_bit(WORK_ENABLE, &tp->flags);
- 	usb_kill_urb(tp->intr_urb);
- 	cancel_delayed_work_sync(&tp->schedule);
-@@ -8466,7 +8467,8 @@ static int rtl8152_post_reset(struct usb_interface *intf)
- 	}
- 
- 	napi_enable(&tp->napi);
--	tasklet_enable(&tp->tx_tl);
-+	enable_work(&tp->tx_work);
-+	queue_work(system_bh_wq, &tp->tx_work);
- 	netif_wake_queue(netdev);
- 	usb_submit_urb(tp->intr_urb, GFP_KERNEL);
- 
-@@ -8625,12 +8627,13 @@ static int rtl8152_system_suspend(struct r8152 *tp)
- 
- 		clear_bit(WORK_ENABLE, &tp->flags);
- 		usb_kill_urb(tp->intr_urb);
--		tasklet_disable(&tp->tx_tl);
-+		disable_work_sync(&tp->tx_work);
- 		napi_disable(napi);
- 		cancel_delayed_work_sync(&tp->schedule);
- 		tp->rtl_ops.down(tp);
- 		napi_enable(napi);
--		tasklet_enable(&tp->tx_tl);
-+		enable_work(&tp->tx_work);
-+		queue_work(system_bh_wq, &tp->tx_work);
- 	}
- 
- 	return 0;
-@@ -9387,11 +9390,12 @@ static int rtl8152_change_mtu(struct net_device *dev, int new_mtu)
- 		if (netif_carrier_ok(dev)) {
- 			netif_stop_queue(dev);
- 			napi_disable(&tp->napi);
--			tasklet_disable(&tp->tx_tl);
-+			disable_work_sync(&tp->tx_work);
- 			tp->rtl_ops.disable(tp);
- 			tp->rtl_ops.enable(tp);
- 			rtl_start_rx(tp);
--			tasklet_enable(&tp->tx_tl);
-+			enable_work(&tp->tx_work);
-+			queue_work(system_bh_wq, &tp->tx_work);
- 			napi_enable(&tp->napi);
- 			rtl8152_set_rx_mode(dev);
- 			netif_wake_queue(dev);
-@@ -9819,8 +9823,8 @@ static int rtl8152_probe_once(struct usb_interface *intf,
- 	mutex_init(&tp->control);
- 	INIT_DELAYED_WORK(&tp->schedule, rtl_work_func_t);
- 	INIT_DELAYED_WORK(&tp->hw_phy_work, rtl_hw_phy_work_func_t);
--	tasklet_setup(&tp->tx_tl, bottom_half);
--	tasklet_disable(&tp->tx_tl);
-+	INIT_WORK(&tp->tx_work, bottom_half);
-+	disable_work(&tp->tx_work);
- 
- 	netdev->netdev_ops = &rtl8152_netdev_ops;
- 	netdev->watchdog_timeo = RTL8152_TX_TIMEOUT;
-@@ -9954,7 +9958,7 @@ static int rtl8152_probe_once(struct usb_interface *intf,
- 	unregister_netdev(netdev);
- 
- out1:
--	tasklet_kill(&tp->tx_tl);
-+	cancel_work_sync(&tp->tx_work);
- 	cancel_delayed_work_sync(&tp->hw_phy_work);
- 	if (tp->rtl_ops.unload)
- 		tp->rtl_ops.unload(tp);
-@@ -10010,7 +10014,7 @@ static void rtl8152_disconnect(struct usb_interface *intf)
- 		rtl_set_unplug(tp);
- 
- 		unregister_netdev(tp->netdev);
--		tasklet_kill(&tp->tx_tl);
-+		cancel_work_sync(&tp->tx_work);
- 		cancel_delayed_work_sync(&tp->hw_phy_work);
- 		if (tp->rtl_ops.unload)
- 			tp->rtl_ops.unload(tp);
--- 
-2.43.2
-
+> 
+> - Mani
+> 
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
