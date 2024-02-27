@@ -1,326 +1,137 @@
-Return-Path: <linux-kernel+bounces-82720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45AA868899
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:24:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFD468688A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:32:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AF26282ADD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:24:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C371C1C215A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5878552F8B;
-	Tue, 27 Feb 2024 05:24:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="j9CKnrVZ"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4765C52F73;
-	Tue, 27 Feb 2024 05:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A62352F91;
+	Tue, 27 Feb 2024 05:32:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF221AACE
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709011478; cv=none; b=ZfOBAZai0KQLLjw7sQ3Q4xdn8nEZhLqgBFzE4z+1t2iM3jpWs8mt+woH0xnCbFW4ytiNl2YOVMunQMXSyNNAmreIV8LRTZM/P4a58kKquRbcRxjMQk9qvN2MzUqiqw2hcqXH5fiOIuuHOcLyhUhc6i2lwSwUUrWKYSEprt/cGtM=
+	t=1709011922; cv=none; b=EB9PbfyWibspAOOUOjnlygZgTfSAa2mO8m0dy93NLK+yMIlV2LsJQQnYva5SlROg5IboOZSCMjwa8NZLZD/Hhqm/0Ha1G+Yxs0Mh7Ms4i3N54ABRZK8EZAWOdRgLGWwNZPtd29qy3/Zk5WQgi9zQOTh77BQlbYKYzAYcvWLph1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709011478; c=relaxed/simple;
-	bh=V0DSwqZ73cUbAFVsP2WPiAwMn722byYB4cV9K90z36w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OdQHOeK6R7wDJevoBLTfErVeYrE/3SHy6WSamNoWWNk6ZWEXpUPtAuOP6gqaf3GFzgLZQw5tUMZDM/TwvZ0RSK3cNiID7Ed2iZpg7i1AIeDirw7lTwIR1vDd9emKU4bQGB431IRrhzW2QOThc3AbPiKe1H8IPn+HpMK3H3RXQwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=j9CKnrVZ; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from localhost.localdomain (ppp14-2-70-176.adl-apt-pir-bras31.tpg.internode.on.net [14.2.70.176])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 8A00A20127;
-	Tue, 27 Feb 2024 13:24:31 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1709011473;
-	bh=ieH0x/71eQTU7hqiTDI0g7W9s6/WzYsK4gqHwQzd5aU=;
-	h=From:To:Cc:Subject:Date;
-	b=j9CKnrVZfXfvUCYvKuPMJWcgLL/NMro8gw0ccEpZrMn3Hnl6X9KH68t+a/Lg81j/e
-	 OIF7+JJvLWCLQMjAIXRtws8pdHZbiAqaTPjM9GEnpw1C79Jl4yohKoz4kBXS3d56pF
-	 vDnv2GkU9pm6ycTo2qCXMdgGHAEcv1xlV35QV4fwpd7FPVEacAh7k/A/Xu5goTFmc2
-	 jX+5Cq3A6rN6aLzw8pEMBw06rSuTZhvLcXm5g/lpbnoIj//CotsFrkY3bekvz+Gxyw
-	 fnrOZhkNrfZTB+qGaqxBk9CtDKPDZXOp0riNx/Q5JZBa5uCaxnhXFdKcDDBvrDKYsQ
-	 0Ut0SyU/+aELw==
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: linus.walleij@linaro.org,
-	brgl@bgdev.pl,
-	krzysztof.kozlowski+dt@linaro.org
-Cc: Andrew Jeffery <andrew@codeconstruct.com.au>,
-	robh+dt@kernel.org,
-	conor+dt@kernel.org,
-	joel@jms.id.au,
-	linux-gpio@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v5] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT schema
-Date: Tue, 27 Feb 2024 15:53:53 +1030
-Message-Id: <20240227052353.1060306-1-andrew@codeconstruct.com.au>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709011922; c=relaxed/simple;
+	bh=MULxpeaD/ViV6fujeZYHcokbWGSluuQ/LDYbbkn2tfQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QZKETCqB8Aud91QPdhfvldZHkqWUxW5Y6BWZM1QYpUbsULEpF//cRANVAHXO/a7uBOp/JnsBYEp89sDnJSXyOnw/jQ5ono+D/OAznPb92ZepWcxCM3Icop1WoOSGnrRN19MS22L2/Z71EbHAoNen24wCHI5uNjAHe/7ERlm0oDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8DD2DA7;
+	Mon, 26 Feb 2024 21:32:36 -0800 (PST)
+Received: from [10.163.48.107] (unknown [10.163.48.107])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D06B3F6C4;
+	Mon, 26 Feb 2024 21:31:56 -0800 (PST)
+Message-ID: <c37bd84e-d4f7-42df-a333-f2ad6ebc9527@arm.com>
+Date: Tue, 27 Feb 2024 11:01:54 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64/hw_breakpoint: Determine lengths from generic perf
+ breakpoint macros
+Content-Language: en-US
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ broonie@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+ linux-kernel@vger.kernel.org
+References: <20240223113102.4027779-1-anshuman.khandual@arm.com>
+ <20240223125224.GC10641@willie-the-truck>
+ <1901fadb-1d71-4374-be8c-00935bb27854@arm.com>
+ <ZdxwTkUALQfqjagf@FVFF77S0Q05N>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <ZdxwTkUALQfqjagf@FVFF77S0Q05N>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Squash warnings such as:
 
-```
-arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,ast2400-gpio']
-```
 
-Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
----
-v5: Resolve macro definition clashes from aspeed clock headers in examples
-    identified by Rob's bot:
+On 2/26/24 16:34, Mark Rutland wrote:
+> On Mon, Feb 26, 2024 at 08:19:39AM +0530, Anshuman Khandual wrote:
+>> On 2/23/24 18:22, Will Deacon wrote:
+>>> On Fri, Feb 23, 2024 at 05:01:02PM +0530, Anshuman Khandual wrote:
+>>>> Both platform i.e ARM_BREAKPOINT_LEN_X and generic i.e HW_BREAKPOINT_LEN_X
+>>>> macros are used interchangeably to convert event->attr.bp_len and platform
+>>>> breakpoint control arch_hw_breakpoint_ctrl->len. Let's be consistent while
+>>>> deriving one from the other. This does not cause any functional changes.
+>>>>
+>>>> Cc: Will Deacon <will@kernel.org>
+>>>> Cc: Mark Rutland <mark.rutland@arm.com>
+>>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>>> Cc: linux-arm-kernel@lists.infradead.org
+>>>> Cc: linux-kernel@vger.kernel.org
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> ---
+>>>> This applies on v6.8-rc5
+>>>>
+>>>>  arch/arm64/kernel/hw_breakpoint.c | 16 ++++++++--------
+>>>>  1 file changed, 8 insertions(+), 8 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
+>>>> index 35225632d70a..1ab9fc865ddd 100644
+>>>> --- a/arch/arm64/kernel/hw_breakpoint.c
+>>>> +++ b/arch/arm64/kernel/hw_breakpoint.c
+>>>> @@ -301,28 +301,28 @@ static int get_hbp_len(u8 hbp_len)
+>>>>  
+>>>>  	switch (hbp_len) {
+>>>>  	case ARM_BREAKPOINT_LEN_1:
+>>>> -		len_in_bytes = 1;
+>>>> +		len_in_bytes = HW_BREAKPOINT_LEN_1;
+>>>
+>>> I don't think we should do this. The HW_BREAKPOINT_LEN_* definitions are
+>>> part of the user ABI and, although they correspond to the length in bytes,
+>>> that's not necessarily something we should rely on.
+>>
+>> Why should not we rely on the user ABI macros if these byte lengths were
+>> initially derived from them. 
+> 
+> Why should we change the clear:
+> 	
+> 	len_in_bytes = 1;
+> 
+> ... to the longer, and less clear:
+> 
+> 	len_in_bytes = HW_BREAKPOINT_LEN_1;
+> 
+> ... ?
+> 
+>> But also there are similar conversions in arch_bp_generic_fields().
+> 
+> Those are specifically for converting from the rch_hw_breakpoint_ctrl encodings
+> to the perf_event_attr encodings. There we don't care about the specific value
+> of the byte, just that we're using the correct encoding.
+> 
+>> These hard coded raw byte length numbers seems cryptic, where as in reality
+>> these are just inter converted from generic HW breakpoints lengths.
+> 
+> There are three distinct concepts here:
+> 
+> 1. The length in bytes, as returned above by get_hbp_len()
+> 
+> 2. The length as encoded in the ARM_BREAKPOINT_LEN_* encoding
+> 
+> 3. The length as encoded in the HW_BREAKPOINT_LEN_* encoding.
+> 
+> I think you're arguing that since 1 and 3 happen to have the values we should
+> treat them as the same thing. I think that Will and I believe that they should
+> be kept distinct because they are distinct concepts.
+> 
+> I don't think this needs to change, and can be left as-is.
 
-    https://lore.kernel.org/all/170900020204.2360855.790404478830111761.robh@kernel.org/
-
-    Clearly I missed running `make dt_binding_check` on the final iteration of
-    the v4 patch I sent. Hopefully I'm running out of rakes to step on here!
-
-v4: https://lore.kernel.org/all/20240227004414.841391-1-andrew@codeconstruct.com.au/
-
-    Add constraints for gpio-line-names, ngpios as requested by Krzysztof:
-    https://lore.kernel.org/all/458becdb-fb1e-4808-87b6-3037ec945647@linaro.org/
-
-    Add more examples to exercise constraints.
-
-v3: https://lore.kernel.org/all/20240226051645.414935-1-andrew@codeconstruct.com.au/
-
-    Base on v6.8-rc6, fix yamllint warning
-
-    Rob's bot picked the missing `#interrupt-cells` in the example on v2[1]. The
-    patch was based on v6.8-rc1, and going back over my shell history I missed
-    the following output from `make dt_binding_check`:
-
-    ```
-    ...
-      LINT    Documentation/devicetree/bindings
-      usage: yamllint [-h] [-] [-c CONFIG_FILE | -d CONFIG_DATA] [--list-files] [-f {parsable,standard,colored,github,auto}] [-s] [--no-warnings] [-v] [FILE_OR_DIR ...]
-      yamllint: error: one of the arguments FILE_OR_DIR - is required   
-    ...
-    ```
-
-    I've rebased on v6.8-rc6 and no-longer see the issue with the invocation
-    of `yamllint`.
-
-[1]: https://lore.kernel.org/all/170892197611.2260479.15343562563553959436.robh@kernel.org/
-
-v2: https://lore.kernel.org/all/20240226031951.284847-1-andrew@codeconstruct.com.au/
-
-    Address feedback from Krzysztof:
-    https://lore.kernel.org/all/0d1dd262-b6dd-4d71-9239-8b0aec8cceff@linaro.org/
-
-v1: https://lore.kernel.org/all/20240220052918.742793-1-andrew@codeconstruct.com.au/
-
- .../bindings/gpio/aspeed,ast2400-gpio.yaml    | 143 ++++++++++++++++++
- .../devicetree/bindings/gpio/gpio-aspeed.txt  |  39 -----
- 2 files changed, 143 insertions(+), 39 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-
-diff --git a/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
-new file mode 100644
-index 000000000000..1aa28b1817cf
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/aspeed,ast2400-gpio.yaml
-@@ -0,0 +1,143 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/aspeed,ast2400-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Aspeed GPIO controller
-+
-+maintainers:
-+  - Andrew Jeffery <andrew@codeconstruct.com.au>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - aspeed,ast2400-gpio
-+      - aspeed,ast2500-gpio
-+      - aspeed,ast2600-gpio
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+    description: The clock to use for debounce timings
-+
-+  gpio-controller: true
-+  gpio-line-names: true
-+  gpio-ranges: true
-+
-+  "#gpio-cells":
-+    const: 2
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  "#interrupt-cells":
-+    const: 2
-+
-+  ngpios: true
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+  - "#interrupt-cells"
-+  - gpio-controller
-+  - "#gpio-cells"
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: aspeed,ast2400-gpio
-+    then:
-+      properties:
-+        gpio-line-names:
-+          minItems: 220
-+          maxItems: 220
-+        ngpios:
-+          const: 220
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: aspeed,ast2500-gpio
-+    then:
-+      properties:
-+        gpio-line-names:
-+          minItems: 232
-+          maxItems: 232
-+        ngpios:
-+          const: 232
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: aspeed,ast2600-gpio
-+    then:
-+      properties:
-+        gpio-line-names:
-+          minItems: 36
-+          maxItems: 208
-+        ngpios:
-+          enum: [ 36, 208 ]
-+      required:
-+        - ngpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio@1e780000 {
-+        compatible = "aspeed,ast2400-gpio";
-+        reg = <0x1e780000 0x1000>;
-+        interrupts = <20>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+    };
-+  - |
-+    gpio: gpio@1e780000 {
-+        compatible = "aspeed,ast2500-gpio";
-+        reg = <0x1e780000 0x200>;
-+        interrupts = <20>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        gpio-ranges = <&pinctrl 0 0 232>;
-+    };
-+  - |
-+    #include <dt-bindings/clock/ast2600-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    gpio0: gpio@1e780000 {
-+        compatible = "aspeed,ast2600-gpio";
-+        reg = <0x1e780000 0x400>;
-+        clocks = <&syscon ASPEED_CLK_APB2>;
-+        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        #gpio-cells = <2>;
-+        gpio-controller;
-+        gpio-ranges = <&pinctrl 0 0 208>;
-+        ngpios = <208>;
-+    };
-+    gpio1: gpio@1e780800 {
-+        compatible = "aspeed,ast2600-gpio";
-+        reg = <0x1e780800 0x800>;
-+        clocks = <&syscon ASPEED_CLK_APB1>;
-+        interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-controller;
-+        #interrupt-cells = <2>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        gpio-ranges = <&pinctrl 0 208 36>;
-+        ngpios = <36>;
-+    };
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt b/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-deleted file mode 100644
-index b2033fc3a71a..000000000000
---- a/Documentation/devicetree/bindings/gpio/gpio-aspeed.txt
-+++ /dev/null
-@@ -1,39 +0,0 @@
--Aspeed GPIO controller Device Tree Bindings
---------------------------------------------
--
--Required properties:
--- compatible		: Either "aspeed,ast2400-gpio", "aspeed,ast2500-gpio",
--					or "aspeed,ast2600-gpio".
--
--- #gpio-cells 		: Should be two
--			  - First cell is the GPIO line number
--			  - Second cell is used to specify optional
--			    parameters (unused)
--
--- reg			: Address and length of the register set for the device
--- gpio-controller	: Marks the device node as a GPIO controller.
--- interrupts		: Interrupt specifier (see interrupt bindings for
--			  details)
--- interrupt-controller	: Mark the GPIO controller as an interrupt-controller
--
--Optional properties:
--
--- clocks		: A phandle to the clock to use for debounce timings
--- ngpios		: Number of GPIOs controlled by this controller. Should	be set
--				  when there are multiple GPIO controllers on a SoC (ast2600).
--
--The gpio and interrupt properties are further described in their respective
--bindings documentation:
--
--- Documentation/devicetree/bindings/gpio/gpio.txt
--- Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
--
--  Example:
--	gpio@1e780000 {
--		#gpio-cells = <2>;
--		compatible = "aspeed,ast2400-gpio";
--		gpio-controller;
--		interrupts = <20>;
--		reg = <0x1e780000 0x1000>;
--		interrupt-controller;
--	};
-
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
--- 
-2.39.2
-
+Fair enough, but just wondering how about deriving len_in_bytes from
+hweight_long(ARM_BREAKPOINT_LEN_*) instead ? This also drops the hard
+coding using the platform macros itself, without going to user ABI.
 
