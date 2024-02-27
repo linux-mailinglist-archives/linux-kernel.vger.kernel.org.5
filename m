@@ -1,207 +1,453 @@
-Return-Path: <linux-kernel+bounces-83961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0CE386A09B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:00:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17CC486A09E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:01:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D339F1C21791
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:00:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B5FE1F2263F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A7B14A09D;
-	Tue, 27 Feb 2024 20:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEFE14A0A0;
+	Tue, 27 Feb 2024 20:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DNbAUla7"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="ekH4nyvL"
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 307AD149E13;
-	Tue, 27 Feb 2024 20:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F6961487D3
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709064034; cv=none; b=TblhL8vZfarfxaNHXaulPCydRjpIfc9I4WZZYzLGunZjQMRlGDKEBU2psz03GEmt7cS6YGk115Kl74v/YDr3HZO6OV6aMjp4E9gSQWx1mmV5GdHyCf0XAnmY1dlBPQNEKZqZOW/t/bE0/DA0f0r85srNtnrZ9NGw6b6ZTL/nzpU=
+	t=1709064091; cv=none; b=RfqmUOIDRB5Oi/8g2ipjGYnywzk1LDoEtfPLH7VtGsAS5ipyRw0/Ir7CM6VzmArEU9MiviZb6hcJMUROWDOtQ64nGFeW8Bdod+v+JI9ZFx/+KlBf1N/ugi59foCbyJJ/wVLpMs7ANm+yahwbIBlh2R0Jxx8iZk5fxro9N1+uFHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709064034; c=relaxed/simple;
-	bh=qN5L2PGsTQDXHqMBD1e0lPG74QqIglLLcjIiJj0SYpE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VYilfSy9C83lsepvnVcmCcXNR9EiFoE+aejFVF/YNf0hzX9vAReG4r0v+7tM7phE3gCo9Z5ufP63qKzb5A23VbpCbuo2VEi+nDExnjRC+DjFlxICpuNRbSxTucNGrXCo3daNmNoK4Vah0U3cqZu0tUFoQIBcGMitSPVftzjUBoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=DNbAUla7; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41RFYXq3007452;
-	Tue, 27 Feb 2024 20:00:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=y6O98lHszAGPvBLwNIUE/BqlQQTZxbNIpPnzH6KjfQo=;
- b=DNbAUla7t50OPjccyBAKSK3of9X8aSP6Ef3WWXtrklUP7TYm9vYWxDSdZ9rFTn58DrYG
- Ows+UOoMJdpCZcGAFYwfeJBO1B8zyl4XZKcBY8Dxbc5OXhb/zhm1fQ9mpMXw2qnNi0xc
- +sYU/ZcGlDvkoPa35XnJR5nzVHKt0sm4k+GxEYS2mfBXYltAFukDt8ofQOQeollHy4Uq
- PtViNSACv4v+qccDWYJauNWVMHs/okLzKk6pFxoNEza/ZTIShhoyOlfKlUy0+IbRiY/F
- 9pG/9jYTZjii0F4neQvdiTArGJGOFpHcVkIh/XwrlT2Bvp62vEi2aqeXo6tN6qolueL9 5Q== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf90v88et-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 27 Feb 2024 20:00:26 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41RJpvXn022324;
-	Tue, 27 Feb 2024 20:00:26 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6w80t82-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 27 Feb 2024 20:00:26 +0000
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41RJo1MX036408;
-	Tue, 27 Feb 2024 20:00:25 GMT
-Received: from mbpatil.us.oracle.com (mbpatil.us.oracle.com [10.211.44.53])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3wf6w80t76-1;
-	Tue, 27 Feb 2024 20:00:25 +0000
-From: Manjunath Patil <manjunath.b.patil@oracle.com>
-To: dledford@redhat.com, jgg@ziepe.ca
-Cc: manjunath.b.patil@oracle.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rama.nichanamatlu@oracle.com
-Subject: [PATCH RFC] RDMA/cm: add timeout to cm_destroy_id wait
-Date: Tue, 27 Feb 2024 12:00:17 -0800
-Message-Id: <20240227200017.308719-1-manjunath.b.patil@oracle.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1709064091; c=relaxed/simple;
+	bh=vmR4dIKhoSX8635LCRCEUUdcaKUFX4ukfyHHMirTY98=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=awQSXyIZ6VQpjBwgeIh+SeSqBxA/yk4hG5I0A620FhfQVcJqf5iqnQiczV4zDMVBNXuW2/OBoG9VChXRlyFagm1QNqP/FalE61BgrxUbraeNwrsIXPSIVDBxbcnwgTu/F/ZPrLjhgTfbSUnWkE3yEKF7xZCqtFkZeARfrocEk4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=ekH4nyvL; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4TkpK365ywzDqSr;
+	Tue, 27 Feb 2024 20:01:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1709064088; bh=vmR4dIKhoSX8635LCRCEUUdcaKUFX4ukfyHHMirTY98=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=ekH4nyvLUQ5EOervJs9Z0xx29WGijK2KW0peRVIKcM3vzzJfIFpb2ZD3P8BR67PsG
+	 63U082hHouYUljPTHfT9UMejIAJAhfPtURduRdTUvdpA+McDwmFzFqcNIsMNaW2rTN
+	 wAVgcadUal87ICRnN0am2x+Y6X/djfnCZjQ4UJo8=
+X-Riseup-User-ID: 7F6E206D49ECB5C6BB751B109C13E980F53C3D2B43A20E6F61CC74B6010DDF58
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4TkpJy0zmZzJrWB;
+	Tue, 27 Feb 2024 20:01:21 +0000 (UTC)
+Message-ID: <b23da076-0bfb-48b2-9386-383a6dec1868@riseup.net>
+Date: Tue, 27 Feb 2024 17:01:18 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 6/9] drm/vkms: Add YUV support
+Content-Language: en-US
+To: Pekka Paalanen <pekka.paalanen@collabora.com>,
+ Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com
+References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
+ <20240223-yuv-v2-6-aa6be2827bb7@bootlin.com>
+ <20240226141916.1627bbbd.pekka.paalanen@collabora.com>
+ <Zd35c_CJbhY46TjQ@localhost.localdomain>
+From: Arthur Grillo <arthurgrillo@riseup.net>
+In-Reply-To: <Zd35c_CJbhY46TjQ@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-27_07,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 mlxscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2402270155
-X-Proofpoint-GUID: _JW5GF8p2fQTKM1jVIloorocTAordXkc
-X-Proofpoint-ORIG-GUID: _JW5GF8p2fQTKM1jVIloorocTAordXkc
 
-Add timeout to cm_destroy_id, so that userspace can trigger any data
-collection that would help in analyzing the cause of delay in destroying
-the cm_id.
 
-New noinline function helps dtrace/ebpf programs to hook on to it.
-Existing functionality isn't changed except triggering a probe-able new
-function at every timeout interval.
 
-We have seen cases where CM messages stuck with MAD layer (either due to
-software bug or faulty HCA), leading to cm_id getting stuck in the
-following call stack. This patch helps in resolving such issues faster.
+On 27/02/24 12:02, Louis Chauvet wrote:
+> Hi Pekka,
+> 
+> For all the comment related to the conversion part, maybe Arthur have an 
+> opinion on it, I took his patch as a "black box" (I did not want to 
+> break (and debug) it).
+> 
+> Le 26/02/24 - 14:19, Pekka Paalanen a écrit :
+>> On Fri, 23 Feb 2024 12:37:26 +0100
+>> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+>>
+>>> From: Arthur Grillo <arthurgrillo@riseup.net>
+>>>
+>>> Add support to the YUV formats bellow:
+>>>
+>>> - NV12
+>>> - NV16
+>>> - NV24
+>>> - NV21
+>>> - NV61
+>>> - NV42
+>>> - YUV420
+>>> - YUV422
+>>> - YUV444
+>>> - YVU420
+>>> - YVU422
+>>> - YVU444
+>>>
+>>> The conversion matrices of each encoding and range were obtained by
+>>> rounding the values of the original conversion matrices multiplied by
+>>> 2^8. This is done to avoid the use of fixed point operations.
+>>>
+>>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+>>> [Louis Chauvet: Adapted Arthur's work and implemented the read_line_t
+>>> callbacks for yuv formats]
+>>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+>>> ---
+>>>  drivers/gpu/drm/vkms/vkms_composer.c |   2 +-
+>>>  drivers/gpu/drm/vkms/vkms_drv.h      |   6 +-
+>>>  drivers/gpu/drm/vkms/vkms_formats.c  | 289 +++++++++++++++++++++++++++++++++--
+>>>  drivers/gpu/drm/vkms/vkms_formats.h  |   4 +
+>>>  drivers/gpu/drm/vkms/vkms_plane.c    |  14 +-
+>>>  5 files changed, 295 insertions(+), 20 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+>>> index e555bf9c1aee..54fc5161d565 100644
+>>> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+>>> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+>>> @@ -312,7 +312,7 @@ static void blend(struct vkms_writeback_job *wb,
+>>>  			 * buffer [1]
+>>>  			 */
+>>>  			current_plane->pixel_read_line(
+>>> -				current_plane->frame_info,
+>>> +				current_plane,
+>>>  				x_start,
+>>>  				y_start,
+>>>  				direction,
+>>> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+>>> index ccc5be009f15..a4f6456cb971 100644
+>>> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+>>> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+>>> @@ -75,6 +75,8 @@ enum pixel_read_direction {
+>>>  	READ_RIGHT
+>>>  };
+>>>  
+>>> +struct vkms_plane_state;
+>>> +
+>>>  /**
+>>>  <<<<<<< HEAD
+>>>   * typedef pixel_read_line_t - These functions are used to read a pixel line in the source frame,
+>>> @@ -87,8 +89,8 @@ enum pixel_read_direction {
+>>>   * @out_pixel: Pointer where to write the pixel value. Pixels will be written between x_start and
+>>>   *  x_end.
+>>>   */
+>>> -typedef void (*pixel_read_line_t)(struct vkms_frame_info *frame_info, int x_start, int y_start, enum
+>>> -	pixel_read_direction direction, int count, struct pixel_argb_u16 out_pixel[]);
+>>> +typedef void (*pixel_read_line_t)(struct vkms_plane_state *frame_info, int x_start, int y_start,
+>>> +	enum pixel_read_direction direction, int count, struct pixel_argb_u16 out_pixel[]);
+>>
+>> This is the second or third time in this one series changing this type.
+>> Could you not do the change once, in its own patch if possible?
+> 
+> Sorry, this is not a change here, but a wrong formatting (missed when 
+> rebasing).
+> 
+> Do you think that it make sense to re-order my patches and put this 
+> typedef at the end? This way it is never updated.
+> 
+>>>  
+>>>  /**
+>>>   * vkms_plane_state - Driver specific plane state
+>>> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+>>> index 46daea6d3ee9..515c80866a58 100644
+>>> --- a/drivers/gpu/drm/vkms/vkms_formats.c
+>>> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
+>>> @@ -33,7 +33,8 @@ static size_t packed_pixels_offset(const struct vkms_frame_info *frame_info, int
+>>>  	 */
+>>>  	return fb->offsets[plane_index] +
+>>>  	       (y / drm_format_info_block_width(format, plane_index)) * fb->pitches[plane_index] +
+>>> -	       (x / drm_format_info_block_height(format, plane_index)) * format->char_per_block[plane_index];
+>>> +	       (x / drm_format_info_block_height(format, plane_index)) *
+>>> +	       format->char_per_block[plane_index];
+>>
+>> Shouldn't this be in the patch that added this code in the first place?
+> 
+> Same as above, a wrong formatting, I will remove this change and keep 
+> everything on one line (even if it's more than 100 chars, it is easier to 
+> read).
+> 
+>>>  }
+>>>  
+>>>  /**
+>>> @@ -84,6 +85,32 @@ static int get_step_1x1(struct drm_framebuffer *fb, enum pixel_read_direction di
+>>>  	}
+>>>  }
+>>>  
+>>> +/**
+>>> + * get_subsampling() - Get the subsampling value on a specific direction
+>>
+>> subsampling divisor
+> 
+> Thanks for this precision.
+> 
+>>> + */
+>>> +static int get_subsampling(const struct drm_format_info *format,
+>>> +			   enum pixel_read_direction direction)
+>>> +{
+>>> +	if (direction == READ_LEFT || direction == READ_RIGHT)
+>>> +		return format->hsub;
+>>> +	else if (direction == READ_DOWN || direction == READ_UP)
+>>> +		return format->vsub;
+>>> +	return 1;
+>>
+>> In this and the below function, personally I'd prefer switch-case, with
+>> a cannot-happen-scream after the switch, so the compiler can warn about
+>> unhandled enum values.
+> 
+> As for the previous patch, I did not know about this compiler feature, 
+> thanks!
+> 
+>>> +}
+>>> +
+>>> +/**
+>>> + * get_subsampling_offset() - Get the subsampling offset to use when incrementing the pixel counter
+>>> + */
+>>> +static int get_subsampling_offset(const struct drm_format_info *format,
+>>> +				  enum pixel_read_direction direction, int x_start, int y_start)
+>>
+>> 'start' values as "increments" for a pixel counter? Is something
+>> misnamed here?
+>>
+>> Is it an increment or an offset?
+> 
+> I don't really know how to name the function. I'm open to suggestions
+> x_start and y_start are really the coordinate of the starting reading point.
+> 
+> To explain what it does:
+> 
+> When using subsampling, you have to read the next pixel of planes[1..4] 
+> not at the same "speed" as plane[0]. But I can't only rely on 
+> "read_pixel_count % subsampling == 0", because it means that the pixel 
+> incrementation on planes[1..4] may not be aligned with the buffer (if 
+> hsub=2 and the start pixel is 1, I need to increment planes[1..4] only 
+> for x=2,4,6... not 1,3,5...).
+> 
+> A way to ensure this is to add an "offset" to count, which ensure that the 
+> count % subsampling == 0 on the correct pixel.
+> 
+> I made an error, the switch case must be (as count is always counting up, 
+> for "inverted" reading direction a negative number ensure that 
+> %subsampling == 0 on the correct pixel):
+> 
+> 	switch (direction) {
+> 	case READ_UP:
+> 		return -y_start;
+> 	case READ_DOWN:
+> 		return y_start;
+> 	case READ_LEFT:
+> 		return -x_start;
+> 	case READ_RIGHT:
+> 		return x_start;
+> 	}
+> 
+>>> +{
+>>> +	if (direction == READ_RIGHT || direction == READ_LEFT)
+>>> +		return x_start;
+>>> +	else if (direction == READ_DOWN || direction == READ_UP)
+>>> +		return y_start;
+>>> +	return 0;
+>>> +}
+>>> +
+> 
+> [...]
+> 
+>>> +static void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pixel_yuv_u8 *yuv_u8,
+>>> +			       enum drm_color_encoding encoding, enum drm_color_range range)
+>>> +{
+>>> +	static const s16 bt601_full[3][3] = {
+>>> +		{ 256, 0,   359 },
+>>> +		{ 256, -88, -183 },
+>>> +		{ 256, 454, 0 },
+>>> +	};
+> 
+> [...]
+> 
+>>> +
+>>> +	u8 r = 0;
+>>> +	u8 g = 0;
+>>> +	u8 b = 0;
+>>> +	bool full = range == DRM_COLOR_YCBCR_FULL_RANGE;
+>>> +	unsigned int y_offset = full ? 0 : 16;
+>>> +
+>>> +	switch (encoding) {
+>>> +	case DRM_COLOR_YCBCR_BT601:
+>>> +		ycbcr2rgb(full ? bt601_full : bt601,
+>>
+>> Doing all these conditional again pixel by pixel is probably
+>> inefficient. Just like with the line reading functions, you could pick
+>> the matrix in advance.
+> 
+> I don't think the performance impact is huge (it's only a pair of if), but 
+> yes, it's an easy optimization. 
+> 
+> I will create a conversion_matrix structure:
+> 
+> 	struct conversion_matrix {
+> 		s16 matrix[3][3];
+> 		u16 y_offset;
+> 	}
+> 
+> I will create a `get_conversion_matrix_to_argb_u16` function to get this 
+> structure from a format+encoding+range.
+> 
+> I will also add a field `conversion_matrix` in struct vkms_plane_state to 
+> get this matrix only once per plane setup.
+> 
+> 
+>>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
+>>> +		break;
+>>> +	case DRM_COLOR_YCBCR_BT709:
+>>> +		ycbcr2rgb(full ? rec709_full : rec709,
+>>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
+>>> +		break;
+>>> +	case DRM_COLOR_YCBCR_BT2020:
+>>> +		ycbcr2rgb(full ? bt2020_full : bt2020,
+>>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
+>>> +		break;
+>>> +	default:
+>>> +		pr_warn_once("Not supported color encoding\n");
+>>> +		break;
+>>> +	}
+>>> +
+>>> +	argb_u16->r = r * 257;
+>>> +	argb_u16->g = g * 257;
+>>> +	argb_u16->b = b * 257;
+>>
+>> I wonder. Using 8-bit fixed point precision seems quite coarse for
+>> 8-bit pixel formats, and it's going to be insufficient for higher bit
+>> depths. Was supporting e.g. 10-bit YUV considered? There is even
+>> deeper, too, like DRM_FORMAT_P016.
+> 
+> It's a good point, as I explained above, I took the conversion part as a 
+> "black box" to avoid breaking (and debugging) stuff. I think it's easy to 
+> switch to s32 bits matrix with 16.16 bits (or anything with more than 16 bits in 
+> the float part).
+> 
+> Maybe Arthur have an opinion on this?
 
-kernel: ... INFO: task XXXX:56778 blocked for more than 120 seconds.
-..
-	Call Trace:
-	__schedule+0x2bc/0x895
-	schedule+0x36/0x7c
-	schedule_timeout+0x1f6/0x31f
- 	? __slab_free+0x19c/0x2ba
-	wait_for_completion+0x12b/0x18a
-	? wake_up_q+0x80/0x73
-	cm_destroy_id+0x345/0x610 [ib_cm]
-	ib_destroy_cm_id+0x10/0x20 [ib_cm]
-	rdma_destroy_id+0xa8/0x300 [rdma_cm]
-	ucma_destroy_id+0x13e/0x190 [rdma_ucm]
-	ucma_write+0xe0/0x160 [rdma_ucm]
-	__vfs_write+0x3a/0x16d
-	vfs_write+0xb2/0x1a1
-	? syscall_trace_enter+0x1ce/0x2b8
-	SyS_write+0x5c/0xd3
-	do_syscall_64+0x79/0x1b9
-	entry_SYSCALL_64_after_hwframe+0x16d/0x0
+Yeah, I too don't see why not we could do that. The 8-bit precision was
+sufficient for those formats, but as well noted by Pekka this could be a
+problem for higher bit depths. I just need to make my terrible python
+script spit those values XD.
 
-Signed-off-by: Manjunath Patil <manjunath.b.patil@oracle.com>
----
- drivers/infiniband/core/cm.c | 38 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+> Just to be sure, the DRM subsystem don't have such matrix somewhere? It 
+> can be nice to avoid duplicating them.
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index ff58058aeadc..03f7b80efa77 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -34,6 +34,20 @@ MODULE_AUTHOR("Sean Hefty");
- MODULE_DESCRIPTION("InfiniBand CM");
- MODULE_LICENSE("Dual BSD/GPL");
- 
-+static unsigned long cm_destroy_id_wait_timeout_sec = 10;
-+
-+static struct ctl_table_header *cm_ctl_table_header;
-+static struct ctl_table cm_ctl_table[] = {
-+	{
-+		.procname	= "destroy_id_wait_timeout_sec",
-+		.data		= &cm_destroy_id_wait_timeout_sec,
-+		.maxlen		= sizeof(cm_destroy_id_wait_timeout_sec),
-+		.mode		= 0644,
-+		.proc_handler	= proc_doulongvec_minmax,
-+	},
-+	{ }
-+};
-+
- static const char * const ibcm_rej_reason_strs[] = {
- 	[IB_CM_REJ_NO_QP]			= "no QP",
- 	[IB_CM_REJ_NO_EEC]			= "no EEC",
-@@ -1025,10 +1039,20 @@ static void cm_reset_to_idle(struct cm_id_private *cm_id_priv)
- 	}
- }
- 
-+static noinline void cm_destroy_id_wait_timeout(struct ib_cm_id *cm_id)
-+{
-+	struct cm_id_private *cm_id_priv;
-+
-+	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
-+	pr_err("%s: cm_id=%p timed out. state=%d refcnt=%d\n", __func__,
-+	       cm_id, cm_id->state, refcount_read(&cm_id_priv->refcount));
-+}
-+
- static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- {
- 	struct cm_id_private *cm_id_priv;
- 	struct cm_work *work;
-+	int ret;
- 
- 	cm_id_priv = container_of(cm_id, struct cm_id_private, id);
- 	spin_lock_irq(&cm_id_priv->lock);
-@@ -1135,7 +1159,14 @@ static void cm_destroy_id(struct ib_cm_id *cm_id, int err)
- 
- 	xa_erase(&cm.local_id_table, cm_local_id(cm_id->local_id));
- 	cm_deref_id(cm_id_priv);
--	wait_for_completion(&cm_id_priv->comp);
-+	do {
-+		ret = wait_for_completion_timeout(&cm_id_priv->comp,
-+						  msecs_to_jiffies(
-+				cm_destroy_id_wait_timeout_sec * 1000));
-+		if (!ret) /* timeout happened */
-+			cm_destroy_id_wait_timeout(cm_id);
-+	} while (!ret);
-+
- 	while ((work = cm_dequeue_work(cm_id_priv)) != NULL)
- 		cm_free_work(work);
- 
-@@ -4505,6 +4536,10 @@ static int __init ib_cm_init(void)
- 	ret = ib_register_client(&cm_client);
- 	if (ret)
- 		goto error3;
-+	cm_ctl_table_header = register_net_sysctl(&init_net,
-+						  "net/ib_cm", cm_ctl_table);
-+	if (!cm_ctl_table_header)
-+		pr_warn("ib_cm: couldn't register sysctl path, using default values\n");
- 
- 	return 0;
- error3:
-@@ -4522,6 +4557,7 @@ static void __exit ib_cm_cleanup(void)
- 		cancel_delayed_work(&timewait_info->work.work);
- 	spin_unlock_irq(&cm.lock);
- 
-+	unregister_net_sysctl_table(cm_ctl_table_header);
- 	ib_unregister_client(&cm_client);
- 	destroy_workqueue(cm.wq);
- 
--- 
-2.31.1
+As to my knowledge it does not exist on DRM, I think those are normally
+on the hardware itself (*please* correct me if I'm wrong).
 
+But, v4l2 has a similar table on
+drivers/media/common/v4l2-tpg/v4l2-tpg-core.c (Actually, I started my
+code based on this), unfortunately it's only 8-bit too.
+
+Best Regards,
+~Arthur Grillo
+
+> 
+>>> +} + /* * The following functions are read_line function for each
+>>> pixel format supported by VKMS. * @@ -142,13 +250,13 @@ static void
+>>> RGB565_to_argb_u16(struct pixel_argb_u16 *out_pixel, const u16 *pixe
+>>> * [1]:
+>>> https://lore.kernel.org/dri-devel/d258c8dc-78e9-4509-9037-a98f7f33b3a3@riseup.net/
+>>> */
+>>>  
+>>> -static void ARGB8888_read_line(struct vkms_frame_info *frame_info,
+>>> int x_start, int y_start, +static void ARGB8888_read_line(struct
+>>> vkms_plane_state *plane, int x_start, int y_start, enum
+>>> pixel_read_direction direction, int count, struct pixel_argb_u16
+>>> out_pixel[]) { -	u8 *src_pixels = packed_pixels_addr(frame_info,
+>>> x_start, y_start, 0); +	u8 *src_pixels =
+>>> packed_pixels_addr(plane->frame_info, x_start, y_start, 0);
+>>>  
+>>> -	int step = get_step_1x1(frame_info->fb, direction, 0); +
+>>> int step = get_step_1x1(plane->frame_info->fb, direction, 0);
+>>
+>> These are the kind of changes I would not expect to see in a patch
+>> adding YUV support. There are a lot of them, too.
+> 
+> I will put it directly this change in PATCHv2 5/9.
+> 
+> [...]
+> 
+>>> +static void semi_planar_yuv_read_line(struct vkms_plane_state
+>>> *plane, int x_start, int y_start, +
+>>> enum pixel_read_direction direction, int count, +
+>>> struct pixel_argb_u16 out_pixel[]) +{ +	u8 *y_plane =
+>>> packed_pixels_addr(plane->frame_info, x_start, y_start, 0); +
+>>> u8 *uv_plane = packed_pixels_addr(plane->frame_info, +
+>>> x_start / plane->frame_info->fb->format->hsub, +
+>>> y_start / plane->frame_info->fb->format->vsub, +
+>>> 1); +	struct pixel_yuv_u8 yuv_u8; +	int step_y =
+>>> get_step_1x1(plane->frame_info->fb, direction, 0); +	int
+>>> step_uv = get_step_1x1(plane->frame_info->fb, direction, 1); +
+>>> int subsampling = get_subsampling(plane->frame_info->fb->format,
+>>> direction); +	int subsampling_offset =
+>>> get_subsampling_offset(plane->frame_info->fb->format, direction, +
+>>> x_start, y_start); // 0 + +	for (int i = 0; i < count; i++) { +
+>>> yuv_u8.y = y_plane[0]; +		yuv_u8.u = uv_plane[0]; +
+>>> yuv_u8.v = uv_plane[1]; + +		yuv_u8_to_argb_u16(out_pixel,
+>>> &yuv_u8, plane->base.base.color_encoding, +
+>>> plane->base.base.color_range);
+>>
+>> Oh, so this was the reason to change the read-line function
+>> signature. Maybe just stash a pointer to the right matrix and the
+>> right y_offset in frame_info instead?
+> 
+> Yes, that why I changed the signature. I think I will keep this
+> signature and put the conversion_matrix inside the vkms_plane_state,
+> for me it make more sense to have pixel_read_line and
+> conversion_matrix in the same structure.
+> 
+>>> +		out_pixel += 1; +		y_plane += step_y; +
+>>> if ((i + subsampling_offset + 1) % subsampling == 0) +
+>>> uv_plane += step_uv; +	} +} + +static void
+>>> semi_planar_yvu_read_line(struct vkms_plane_state *plane, int
+>>> x_start, int y_start, +				      enum
+>>> pixel_read_direction direction, int count, +
+>>> struct pixel_argb_u16 out_pixel[]) +{ +	u8 *y_plane =
+>>> packed_pixels_addr(plane->frame_info, x_start, y_start, 0); +
+>>> u8 *vu_plane = packed_pixels_addr(plane->frame_info, +
+>>> x_start / plane->frame_info->fb->format->hsub, +
+>>> y_start / plane->frame_info->fb->format->vsub, +
+>>> 1); +	struct pixel_yuv_u8 yuv_u8; +	int step_y =
+>>> get_step_1x1(plane->frame_info->fb, direction, 0); +	int
+>>> step_vu = get_step_1x1(plane->frame_info->fb, direction, 1); +
+>>> int subsampling = get_subsampling(plane->frame_info->fb->format,
+>>> direction); +	int subsampling_offset =
+>>> get_subsampling_offset(plane->frame_info->fb->format, direction, +
+>>> x_start, y_start); +	for (int i = 0; i < count; i++) { +
+>>> yuv_u8.y = y_plane[0]; +		yuv_u8.u = vu_plane[1]; +
+>>> yuv_u8.v = vu_plane[0];
+>>
+>> You could swap matrix columns instead of writing this whole new
+>> function for UV vs. VU. Just an idea.
+> 
+> I was not happy with this duplication too, but I did not think about
+> switching columns. That's a good idea, thanks!
+>  
+> Kind regards, Louis Chauvet
+> 
+> [...]
+> 
 
