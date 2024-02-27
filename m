@@ -1,122 +1,185 @@
-Return-Path: <linux-kernel+bounces-83018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA81F868D27
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:18:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5B40868D38
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:19:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17D321C22594
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:18:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85F2E1F2764F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90276138493;
-	Tue, 27 Feb 2024 10:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B18138492;
+	Tue, 27 Feb 2024 10:19:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lTXVqAEC"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="tffeR8d1"
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2437E138484;
-	Tue, 27 Feb 2024 10:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC621384B2;
+	Tue, 27 Feb 2024 10:19:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029104; cv=none; b=jbzSijQtgdUZINne6j5CMRa122GRU9xCiqA0eKMQDvpMuMDIuyFgiDBNzK/7GHyLZFVCHNSXO/ziIusHCyxZd7Mz45/LSihYlS2+bVrqgt8lPLpZzJld9VK/lM6hotbdX/78cbBgaOWBWVzGGAtrXlrGdM4/SSWnwmtZOyey41c=
+	t=1709029158; cv=none; b=ffRYTdBoLVJ6led6zz6jLFRsc6fSMpyXb1IrrnZifbC5KWoTtNo6A4+lL46iiePNIqHFv78TzPI1bCkjm8APMmCQcmUSmEWhJaHHK5bAFuUVGEVZAFgXa8FsfdPM2UnOAKWxLtE6Rb7PkM8CY2hypYLiNyxgEFL1FWsDBsN/XbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029104; c=relaxed/simple;
-	bh=+XdkE4DgIHAhgkKhHEoE2TV6/xi1f4rWmM/JoiflBKU=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=NPdkVfTwVlYgxWvEliAz90wtVlnwwi+Ozzs2MsRqFjk36YYtsMm8Oy7ITd7b6yvSzaH6/Uyx5WjXJWzCIEh42++kY5TXJ7DEtvvNeEU/BkB4CtUvWWe+QUvT/+S8P+nsT2ugMycLFJtIpVvx84AOxsuHgHciOpS/LMz/fQl1B/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lTXVqAEC; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709029103; x=1740565103;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=+XdkE4DgIHAhgkKhHEoE2TV6/xi1f4rWmM/JoiflBKU=;
-  b=lTXVqAECt5ZgimA/0Njvzu5qUTE1M2S9PLdDhrxHsY7avgt6lD1P4FY5
-   NzfipyJ6GV4ati+Iv6Z9f5livT3GOXfFbH42OYnf53L750f55oMGnTBvl
-   k05dHRgR4WIKs9tq5YQ23TihubUkNp6jwXnVx0eYGzsxmg5FONr6h+gVO
-   h6vdokT3Hmko1rJDhZ5QpbyBUW9K5DXoRfr+KCwEMU0Vh9ftmmjy/oD7A
-   hX00gOoqrSO0uTalx9ioRrodXOXj+StOmJ0BXZDvGKIp/zqCjZjcCI4oy
-   PbIF6U11QRKGMALzNMvRL3S1u/FolakQYHR/JflqdMnipBEV03kE75vRj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3914919"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="3914919"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 02:18:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="6853286"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.61])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 02:18:20 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 27 Feb 2024 12:18:16 +0200 (EET)
-To: Szilard Fabian <szfabian@bluemarch.art>
-cc: LKML <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org, 
-    jwoithe@just42.net, Hans de Goede <hdegoede@redhat.com>, W_Armin@gmx.de
-Subject: Re: [PATCH v4] platform/x86/fujitsu-laptop: Add battery charge
- control support
-In-Reply-To: <170834440647.4050.13047961348645894978.b4-ty@linux.intel.com>
-Message-ID: <a4b35e55-1f29-6c98-745c-df6896e49270@linux.intel.com>
-References: <20240129163502.161409-2-szfabian@bluemarch.art> <20240129175714.164326-2-szfabian@bluemarch.art> <20240207023031.56805-2-szfabian@bluemarch.art> <20240215203012.228758-2-szfabian@bluemarch.art>
- <170834440647.4050.13047961348645894978.b4-ty@linux.intel.com>
+	s=arc-20240116; t=1709029158; c=relaxed/simple;
+	bh=5sc9exolwsywzwMysiUeFzXsXrPi7FzwPMd2B6e7iUY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i3Oy4B7t0wTEQ/wwXw4vzQyoRnFY0IvljJdkxiqli88+B13wi3Il0rPnMxs7oWC0FSPrOndVMjFKr5F4dhs2EWkvh7kmT044QSRdg0a2AAtIOPGUyo6V43owv+Si3g0NuDAMciu9ZkGfpgBFW9oc23vCDC9MqvTHTHGnZfQvsKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=tffeR8d1; arc=none smtp.client-ip=115.28.160.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+	t=1709029150; bh=5sc9exolwsywzwMysiUeFzXsXrPi7FzwPMd2B6e7iUY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tffeR8d1ZzdwRnjSiWrkYFvpX3d4HLSjHQ3sTPsEVs8BVq9o/Y1zdlByr5Z/hdKAT
+	 n/2hX6ox08LvFhIwV5llcB2iIro+K/jAiVXOEm9QZiJETQ6UyAS/tHnJdpEQJbnn3v
+	 hdlrI2QJ4mTlPtVm3UdAARIg1qEF3AhBTDQ92vMc=
+Received: from [28.0.0.1] (unknown [101.230.251.34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 3489160121;
+	Tue, 27 Feb 2024 18:19:10 +0800 (CST)
+Message-ID: <431111f3-d84a-4311-986d-eebd91559cd3@xen0n.name>
+Date: Tue, 27 Feb 2024 18:19:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-957297465-1709028876=:1099"
-Content-ID: <8b80bf93-d78a-388a-e88d-a911f9418556@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+Content-Language: en-US
+To: maobibo <maobibo@loongson.cn>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240222032803.2177856-1-maobibo@loongson.cn>
+ <20240222032803.2177856-4-maobibo@loongson.cn>
+ <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
+ <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
+ <CAAhV-H7p114hWUVrYRfKiBX3teG8sG7xmEW-Q-QT3i+xdLqDEA@mail.gmail.com>
+ <06647e4a-0027-9c9f-f3bd-cd525d37b6d8@loongson.cn>
+ <85781278-f3e9-4755-8715-3b9ff714fb20@app.fastmail.com>
+ <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
+ <327808dd-ac34-4c61-9992-38642acc9419@xen0n.name>
+ <62cc24fd-025a-53c6-1c8e-2d20de54d297@loongson.cn>
+From: WANG Xuerui <kernel@xen0n.name>
+In-Reply-To: <62cc24fd-025a-53c6-1c8e-2d20de54d297@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 2/27/24 18:12, maobibo wrote:
+> 
+> 
+> On 2024/2/27 下午5:10, WANG Xuerui wrote:
+>> On 2/27/24 11:14, maobibo wrote:
+>>>
+>>>
+>>> On 2024/2/27 上午4:02, Jiaxun Yang wrote:
+>>>>
+>>>>
+>>>> 在2024年2月26日二月 上午8:04，maobibo写道：
+>>>>> On 2024/2/26 下午2:12, Huacai Chen wrote:
+>>>>>> On Mon, Feb 26, 2024 at 10:04 AM maobibo <maobibo@loongson.cn> wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2024/2/24 下午5:13, Huacai Chen wrote:
+>>>>>>>> Hi, Bibo,
+>>>>>>>>
+>>>>>>>> On Thu, Feb 22, 2024 at 11:28 AM Bibo Mao <maobibo@loongson.cn> 
+>>>>>>>> wrote:
+>>>>>>>>>
+>>>>>>>>> Instruction cpucfg can be used to get processor features. And 
+>>>>>>>>> there
+>>>>>>>>> is trap exception when it is executed in VM mode, and also it is
+>>>>>>>>> to provide cpu features to VM. On real hardware cpucfg area 0 - 20
+>>>>>>>>> is used.  Here one specified area 0x40000000 -- 0x400000ff is used
+>>>>>>>>> for KVM hypervisor to privide PV features, and the area can be 
+>>>>>>>>> extended
+>>>>>>>>> for other hypervisors in future. This area will never be used for
+>>>>>>>>> real HW, it is only used by software.
+>>>>>>>> After reading and thinking, I find that the hypercall method 
+>>>>>>>> which is
+>>>>>>>> used in our productive kernel is better than this cpucfg method.
+>>>>>>>> Because hypercall is more simple and straightforward, plus we don't
+>>>>>>>> worry about conflicting with the real hardware.
+>>>>>>> No, I do not think so. cpucfg is simper than hypercall, hypercall 
+>>>>>>> can
+>>>>>>> be in effect when system runs in guest mode. In some scenario 
+>>>>>>> like TCG
+>>>>>>> mode, hypercall is illegal intruction, however cpucfg can work.
+>>>>>> Nearly all architectures use hypercall except x86 for its historical
+>>>>> Only x86 support multiple hypervisors and there is multiple hypervisor
+>>>>> in x86 only. It is an advantage, not historical reason.
+>>>>
+>>>> I do believe that all those stuff should not be exposed to guest 
+>>>> user space
+>>>> for security reasons.
+>>> Can you add PLV checking when cpucfg 0x40000000-0x400000FF is 
+>>> emulated? if it is user mode return value is zero and it is kernel 
+>>> mode emulated value will be returned. It can avoid information leaking.
+>>
+>> I've suggested this approach in another reply [1], but I've rechecked 
+>> the manual, and it turns out this behavior is not permitted by the 
+>> current wording. See LoongArch Reference Manual v1.10, Volume 1, 
+>> Section 2.2.10.5 "CPUCFG":
+>>
+>>  > CPUCFG 访问未定义的配置字将读回全 0 值。
+>>  >
+>>  > Reads of undefined CPUCFG configuration words shall return all-zeroes.
+>>
+>> This sentence mentions no distinction based on privilege modes, so it 
+>> can only mean the behavior applies universally regardless of privilege 
+>> modes.
+>>
+>> I think if you want to make CPUCFG behavior PLV-dependent, you may 
+>> have to ask the LoongArch spec editors, internally or in public, for a 
+>> new spec revision.
+> No, CPUCFG behavior between CPUCFG0-CPUCFG21 is unchanged, only that it 
+> can be defined by software since CPUCFG 0x400000000 is used by software.
 
---8323328-957297465-1709028876=:1099
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <20edec04-805c-ce6f-95c4-8d07e40e6e6f@linux.intel.com>
+The 0x40000000 range is not mentioned in the manuals. I know you've 
+confirmed privately with HW team but this needs to be properly 
+documented for public projects to properly rely on.
 
-On Mon, 19 Feb 2024, Ilpo J=E4rvinen wrote:
+>> (There are already multiple third-party LoongArch implementers as of 
+>> late 2023, so any ISA-level change like this would best be 
+>> coordinated, to minimize surprises.)
+> With document Vol 4-23
+> https://www.intel.com/content/dam/develop/external/us/en/documents/335592-sdm-vol-4.pdf
+> 
+> There is one line "MSR address range between 40000000H - 400000FFH is 
+> marked as a specially reserved range. All existing and
+> future processors will not implement any features using any MSR in this 
+> range."
 
-> On Thu, 15 Feb 2024 20:31:43 +0000, Szilard Fabian wrote:
->=20
-> > This patch adds battery charge control support on Fujitsu notebooks
-> > via the S006 method of the FUJ02E3 ACPI device. With this method it's
-> > possible to set charge_control_end_threshold between 50 and 100%.
-> >=20
-> > Tested on Lifebook E5411 and Lifebook U728. Sadly I can't test this
-> > patch on a dual battery one, but I didn't find any clue about
-> > independent battery charge control on dual battery Fujitsu notebooks
-> > either. And by that I mean checking the DSDT table of various Lifebook
-> > notebooks and reverse engineering FUJ02E3.dll.
-> >=20
-> > [...]
->=20
->=20
-> Thank you for your contribution, it has been applied to my local
-> review-ilpo branch. Note it will show up in the public
-> platform-drivers-x86/review-ilpo branch only once I've pushed my
-> local branch there, which might take a while.
->=20
-> The list of commits applied:
-> [1/1] platform/x86/fujitsu-laptop: Add battery charge control support
->       commit: 9b716ef48c90446b8d6d86726c6c3f0141e53091
+Thanks for providing this info, now at least we know why it's this 
+specific range of 0x400000XX that's chosen.
 
-Hi,
+> 
+> It only says that it is reserved, it does not say detailed software 
+> behavior. Software behavior is defined in hypervisor such as:
+> https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/main/tlfs/Requirements%20for%20Implementing%20the%20Microsoft%20Hypervisor%20Interface.pdf
+> https://kb.vmware.com/s/article/1009458
+> 
+> If hypercall method is used, there should be ABI also like aarch64:
+> https://documentation-service.arm.com/static/6013e5faeee5236980d08619
 
-Can you please take a look at the two build failures LKP has brought up.=20
-They looked like some depends on and/or select clauses missing from=20
-Kconfig.
+Yes proper documentation of public API surface is always necessary 
+*before* doing real work. Because right now the hypercall provider is 
+Linux KVM, maybe we can document the existing and planned hypercall 
+usage and ABI in the kernel docs along with code changes.
 
-I'll be merging the patches that fix those into the original commit so=20
-don't spend too much fine-tuning the commit message.
+-- 
+WANG "xen0n" Xuerui
 
---=20
- i.
---8323328-957297465-1709028876=:1099--
+Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+
 
