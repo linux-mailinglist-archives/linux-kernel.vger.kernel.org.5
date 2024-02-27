@@ -1,262 +1,191 @@
-Return-Path: <linux-kernel+bounces-83671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B669E869D16
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:04:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B453869D1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 906F41C22232
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:04:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA4FBB2AE4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:55:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F16A38DD5;
-	Tue, 27 Feb 2024 17:04:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F1D249F5;
+	Tue, 27 Feb 2024 16:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=udima.es header.i=@udima.es header.b="m4BDBgQa"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfR4fyGL"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F41E249F5
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36F9208AD;
+	Tue, 27 Feb 2024 16:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709053470; cv=none; b=FikmtguWqCM48+5ONbIMHXUWLFaVu91alAy8nmeJIiPRp9bqShb+jUj46HP79jEDEMwnTNJhFesGhs0QOKQwCVmuRF5PComIXCm/btfdtq2p16cPBobxYc3CcG0D3DckeQs/2vafGFsnM4GtMYPvIzReMBGv5HCb2scbjma6n20=
+	t=1709052913; cv=none; b=X2AP3w3ZCruUoYidzTj3KFH0jhb6odjWgsAEjTXRHZcDIyfCzPaU1f+/EtLDmcreTumSScCBLmPD8i5FUq2/WaTvoeBDU9eu9wRQP3C3vOcvBFqetCTpN/ZHvqsN85eR1negfYzffo6rTn8mJHyRQjkHiLSB+X8opwFKzAH6wDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709053470; c=relaxed/simple;
-	bh=3Bc4JcS7h3uh1nH/uBs22YCORPrgVtcxn5c73BZBvQs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Fowp4C+pwvC2jqYSmyIRzRpSC3VTbcpXXVJmO+cKU08DEJHw+3+HI8HeclvBxkOpOTiAcgCdOcbyY0ELNN9cEp12460DZmtTlwqSaaFAvRoWFbJDpstVnvKvH/jOcdN35Z/1mWl9/P8BzwQStH5eEYx6OMuZGjdpk9CSwwiXQCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=udima.es; spf=pass smtp.mailfrom=udima.es; dkim=pass (1024-bit key) header.d=udima.es header.i=@udima.es header.b=m4BDBgQa; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=udima.es
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=udima.es
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412ad940fe8so6100165e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:04:27 -0800 (PST)
+	s=arc-20240116; t=1709052913; c=relaxed/simple;
+	bh=E3P+/Pu/JFwXdRA5On7mNX59HYdJgkRhGHToAT9Vi40=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=IIftaCQw4IxIu+kKRR7OwkSFN/bfZZKuO7l52yQ9kKQ4r3zdVZq9/kSTkZn7NPEGI3ar37br3KlV2Pl2/EDKnZBdQ6j8SA4zl7OagI++jMFD/fjog1TrBEWUgAogPRkcESbsnELOHx+APN8RjRV37ALmDg1A9hA5pF5IS1o41J8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfR4fyGL; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3e7f7b3d95so520011166b.3;
+        Tue, 27 Feb 2024 08:55:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=udima.es; s=google; t=1709053466; x=1709658266; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=95wAwQRxYUW01FCwrYdkBVJ1oY3jiTOrAj5JhsuFKJA=;
-        b=m4BDBgQad81TVza+0OI/6wCY4KyKoA+RnRkwbPHmJtBa18ydRGofiWs4VL2hTQHU0X
-         dE+p887HVmMBmoLTWD5bcg+Uf2oTNfNG6c1AS2JVvOHY/S5ZU/9Qy5bm6Mx7S7OP1hq2
-         IaoM9mZ2I67UhPfioAlTexQrHSmQvA2ZLHqJ4=
+        d=gmail.com; s=20230601; t=1709052910; x=1709657710; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=E3P+/Pu/JFwXdRA5On7mNX59HYdJgkRhGHToAT9Vi40=;
+        b=OfR4fyGLrFAeRcBLeeEvQsNEuKFogGR4t+r6qBZAlISDmKEvql+CS3cR2A/m+CF4TY
+         dh9ZctN53JDKMCir7iiyAm8XDJzpszu4AeyZHcqKUXukJRrvkD7oNtfXCMKQb3mzawqG
+         Q57E+R3eMl02RkejvgEtkqip3aTn5mrU/K/OWqEn+xktU/Ku/UZzS4FfsKBjuOMGitAP
+         aLKqoRiHKrhn61nJPj/A6h2L45dkcrbyCr68I+IV5N5SqFbkYOQYxPHdSDOLARkCHaT5
+         H9KWZIYT2R+0Krk9yO+BDcMaaNYpQalAG6tpQ+au/mtQODQddZjDJhSV5/SqDPOCGEpJ
+         Cbww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709053466; x=1709658266;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=95wAwQRxYUW01FCwrYdkBVJ1oY3jiTOrAj5JhsuFKJA=;
-        b=tlK6dfg4Iu2pFoNtss4hywYqSBRX38tkZzEuiyDBIe57yHdEqV5Ee3bmuMUKLVBhs3
-         1fBJKfxBiNfyiLt35yVtiZUsIAIZ7/cXb/k7Ru5g8I9ta+qhsNntciAXmUCV+gkXiIh1
-         sxjrKLa6MA6Qj8GvbBiquM4EfXCSMkE7BXEgLoHmLCdzl1hcC9ejG5jrvqVtuShkYuBT
-         IlidUX7/0Trwng7Ej+x5rZ0mjoVTJyqZAW6QX6wLVwDbIEaRqOCYykvFOgh9aEv7s6CZ
-         bSPKp0S0u8Q4l9MposOBnbCHKymeKbJX1F1ckvq2AabzjQqUG1r8TesXXXqYatSLcqSU
-         lcAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUTECNAxljAQ9Dy5J1OD9G4YI09Nc+hdgHiq9tm3in4NJvay6M5inCfsaMvEHCLXQd51JNMil+1lqUhxirBmuYtJX1yVktbAektkByL
-X-Gm-Message-State: AOJu0YyRhF183UHUfVmkIvmQvJdYbh2y9X0qHiIg5LXdNZh//2Xz772x
-	Yo09CWh69WTODrl76gg+YnK9QosKCGmU6RJ4j/cZ5ZQz0yfscZabGRlTi0DbDoQ=
-X-Google-Smtp-Source: AGHT+IGB1KvOAfDXWLVJwto/yIheyZ7CkEm/iZR711gDYwaMLA+8/p2ysr7MGqvci2mwbSoHCmzwMA==
-X-Received: by 2002:a05:600c:3508:b0:412:b0ed:f18f with SMTP id h8-20020a05600c350800b00412b0edf18fmr640238wmq.21.1709053466496;
-        Tue, 27 Feb 2024 09:04:26 -0800 (PST)
-Received: from portatil76.udima ([79.116.0.170])
-        by smtp.googlemail.com with ESMTPSA id j12-20020a05600c190c00b00412a5a24745sm6316878wmq.27.2024.02.27.09.04.25
+        d=1e100.net; s=20230601; t=1709052910; x=1709657710;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=E3P+/Pu/JFwXdRA5On7mNX59HYdJgkRhGHToAT9Vi40=;
+        b=MqKnrib9RIjl8SN/qFrpJZ/eXREWe2UhDtow1Lq72uImhDpTlMhh0HngLDjWQZZa8+
+         rE5r57mSFzqnLiosBhFXVXRES+x0pzSizI8eTinpl+lPMqa1ikE72FLVpzb5LuClN9ci
+         5zX4MQ+WPUd9OV3uH4brWhdsWHBQZnBzpTKf3P1jOS5kUEQxXyXAaqvv5UFMDu3uHy9E
+         bDNFZNxHb4/jYqkgMx4IHu+hU5E3PZF2Lj78qBI/d+4Q1rUldfuNZ1+niJ/niK6UWSo5
+         MksQ3LGTPusLYG8P9JY5+EySPkgm0VjmF23emx511hVFkiMfu3QAIMZI6I95qZSbb/Ro
+         AHEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGzq/yAYHZ1QDDeHHgmyftJ2GIpBInpO4uqqDx9YADHHrEXvNfmHp5X+O/tKmD0tWNQspF+LoX/0GYhxFFPGiC6gNrIUUqPvn9S7iu4rKeo0hhTlPVZtL9f9d4W7fEkguhmYkI8XfkVA==
+X-Gm-Message-State: AOJu0YzNA65qvJaBhs+8kIeivMvCP1Oy5huOCDphhOtygxdrQTHlGIs/
+	DHQnqX0qfxh5wMW8m73HaoGTJD1CW1xRP2DFZGy314HBV5Ec4UxC
+X-Google-Smtp-Source: AGHT+IGgkz9gMLdSkT1c2s4FwwOKv3tkCjUdASPcAvBHbgtmS2qxRRbHPVgNiBVanVURTKWSS9DoIQ==
+X-Received: by 2002:a17:907:b9c7:b0:a3f:da1c:ae4c with SMTP id xa7-20020a170907b9c700b00a3fda1cae4cmr7538523ejc.54.1709052910006;
+        Tue, 27 Feb 2024 08:55:10 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id o4-20020a170906358400b00a3ec0600ddasm938935ejb.148.2024.02.27.08.55.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 09:04:26 -0800 (PST)
-From: =?UTF-8?q?Javier=20Garc=C3=ADa?= <javier.garcia.ta@udima.es>
-To: 
-Cc: daniel.baluta@nxp.com,
-	javier.garcia.ta@udima.es,
-	daniel.baluta@gmail.com,
-	broonie@kernel.org,
-	krzysztof.kozlowski@linaro.org,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] ASoC: dt-bindings: img,spdif-in: Convert to dtschema
-Date: Tue, 27 Feb 2024 18:03:56 +0100
-Message-ID: <20240227170400.705862-1-javier.garcia.ta@udima.es>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240227123602.258190-1-javier.garcia.ta@udima.es>
-References: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+        Tue, 27 Feb 2024 08:55:08 -0800 (PST)
+Message-ID: <86f2262d059db84070745e299d96dde3e6078220.camel@gmail.com>
+Subject: Re: [PATCH 2/2] of: overlay: Synchronize of_overlay_remove() with
+ the devlink removals
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Herve Codina <herve.codina@bootlin.com>, Saravana Kannan
+	 <saravanak@google.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>, Nuno Sa
+	 <nuno.sa@analog.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
+ <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen
+ <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini
+ <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>,  linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>,  Steen Hegelund
+ <steen.hegelund@microchip.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Android Kernel Team
+ <kernel-team@android.com>
+Date: Tue, 27 Feb 2024 17:55:07 +0100
+In-Reply-To: <20240227162422.76a00f11@bootlin.com>
+References: <20231130174126.688486-1-herve.codina@bootlin.com>
+	 <20231130174126.688486-3-herve.codina@bootlin.com>
+	 <CAGETcx_zB95nyTpi-_kYW_VqnPqMEc8mS9sewSwRNVr0x=7+kA@mail.gmail.com>
+	 <20240227162422.76a00f11@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
+On Tue, 2024-02-27 at 16:24 +0100, Herve Codina wrote:
+> Hi Saravana, Luca, Nuno,
+>=20
+> On Tue, 20 Feb 2024 16:37:05 -0800
+> Saravana Kannan <saravanak@google.com> wrote:
+>=20
+> ...
+>=20
+> > >=20
+> > > diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> > > index a9a292d6d59b..5c5f808b163e 100644
+> > > --- a/drivers/of/overlay.c
+> > > +++ b/drivers/of/overlay.c
+> > > @@ -1202,6 +1202,12 @@ int of_overlay_remove(int *ovcs_id)
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 goto out;
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > >=20
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Wait for any ongoing de=
+vice link removals before removing some of
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * nodes
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device_link_wait_removal();
+> > > +=C2=A0=20
+> >=20
+> > Nuno in his patch[1] had this "wait" happen inside
+> > __of_changeset_entry_destroy(). Which seems to be necessary to not hit
+> > the issue that Luca reported[2] in this patch series. Is there any
+> > problem with doing that?
+> >=20
+> > Luca for some reason did a unlock/lock(of_mutex) in his test patch and
+> > I don't think that's necessary.
+>=20
+> I think the unlock/lock in Luca's case and so in Nuno's case is needed.
+>=20
+> I do the device_link_wait_removal() wihout having the of_mutex locked.
+>=20
+> Now, suppose I do the device_link_wait_removal() call with the of_mutex l=
+ocked.
+> The following flow is allowed and a deadlock is present.
+>=20
+> of_overlay_remove()
+> =C2=A0 lock(of_mutex)
+> =C2=A0=C2=A0=C2=A0=C2=A0 device_link_wait_removal()
+>=20
+> And, from the workqueue jobs execution:
+> =C2=A0 ...
+> =C2=A0=C2=A0=C2=A0 device_put()
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 some_driver->remove()
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 of_overlay_remove() <--- The j=
+ob will never end.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 It is waiting for of_mutex.
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Deadlock
+>=20
 
-Signed-off-by: Javier García <javier.garcia.ta@udima.es>
----
-Changes since v1 and v2:
-  - re-written the subject inline to include relevant prefix
+We may need some input from Saravana (and others) on this. I might be missi=
+ng
+something but can a put_device() lead into a driver remove callback? Driver=
+ code is
+not device code and put_device() leads to device_release() which will eithe=
+r call the
+device=C2=A0->release(), ->type->release() or the class ->dev_release(). An=
+d, IMO, calling
+of_overlay_remove() or something like that (like something that would lead =
+to
+unbinding a device from it's driver) in a device release callback would be =
+at the
+very least very questionable. Typically, what you see in there is of_node_p=
+ut() and
+things like kfree() of the device itself or any other data.
 
-  - Node name changed to spdif@18100e00 to be more generic
+The driver remove callback should be called when unbinding the device from =
+it's
+drivers and devlinks should also be removed after device_unbind_cleanup() (=
+i.e, after
+the driver remove callback).
 
-  - Added maintainers from Documentation/devicetree/bindings/sound/ who
-    should be added to the maintainers list?
+Having said the above, the driver core has lots of subtleties so, again, I =
+can be
+missing something. But at this point I'm still not seeing any deadlock...
 
-  - Drop reg description
-
-  - Drop resets description
-
-  - Added $ref for dai-common.yaml
-
-  - Removed unused dt-bindigs/gpio/gpio.h include
-
-  - Added reset and reset-names in the example
-
-  - changed example hex to be lowercase
-
- .../bindings/sound/img,spdif-in.txt           | 41 ----------
- .../bindings/sound/img,spdif-in.yaml          | 81 +++++++++++++++++++
- 2 files changed, 81 insertions(+), 41 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.txt
- create mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.txt b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
-deleted file mode 100644
-index f7ea8c87bf34..000000000000
---- a/Documentation/devicetree/bindings/sound/img,spdif-in.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--Imagination Technologies SPDIF Input Controller
--
--Required Properties:
--
--  - compatible : Compatible list, must contain "img,spdif-in"
--
--  - #sound-dai-cells : Must be equal to 0
--
--  - reg : Offset and length of the register set for the device
--
--  - dmas: Contains an entry for each entry in dma-names.
--
--  - dma-names: Must include the following entry:
--	"rx"
--
--  - clocks : Contains an entry for each entry in clock-names
--
--  - clock-names : Includes the following entries:
--	"sys"	The system clock
--
--Optional Properties:
--
--  - resets: Should contain a phandle to the spdif in reset signal, if any
--
--  - reset-names: Should contain the reset signal name "rst", if a
--	reset phandle is given
--
--  - interrupts : Contains the spdif in interrupt, if present
--
--Example:
--
--spdif_in: spdif-in@18100e00 {
--	compatible = "img,spdif-in";
--	reg = <0x18100E00 0x100>;
--	interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
--	dmas = <&mdc 15 0xffffffff 0>;
--	dma-names = "rx";
--	clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
--	clock-names = "sys";
--	#sound-dai-cells = <0>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.yaml b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
-new file mode 100644
-index 000000000000..ab8f96cc37cd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
-@@ -0,0 +1,81 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/img,spdif-in.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Imagination Technologies SPDIF Input Controller
-+
-+maintainers:
-+  - Liam Girdwood <lgirdwood@gmail.com>
-+  - Mark Brown <broonie@kernel.org>
-+
-+allOf:
-+  - $ref: dai-common.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - img,spdif-in
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 1
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+
-+  clocks:
-+    items:
-+      - description: The system clock
-+
-+  clock-names:
-+    items:
-+      - const: sys
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  resets:
-+    maxItems: 1
-+
-+  reset-names:
-+    items:
-+      - const: rst
-+
-+required:
-+  - compatible
-+  - reg
-+  - dmas
-+  - dma-names
-+  - clocks
-+  - clock-names
-+  - '#sound-dai-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/pistachio-clk.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/interrupt-controller/mips-gic.h>
-+    #include <dt-bindings/reset/pistachio-resets.h>
-+    spdif_in: spdif@18100e00 {
-+        compatible = "img,spdif-in";
-+        reg = <0x18100e00 0x100>;
-+        interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
-+        dmas = <&mdc 15 0xffffffff 0>;
-+        dma-names = "rx";
-+        clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
-+        clock-names = "sys";
-+        resets = <&pistachio_reset PISTACHIO_RESET_SPDIF_IN>;
-+        reset-names = "rst";
-+
-+        #sound-dai-cells = <0>;
-+    };
--- 
-2.43.0
+- Nuno S=C3=A1
 
 
