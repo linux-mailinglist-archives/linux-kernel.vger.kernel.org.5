@@ -1,142 +1,72 @@
-Return-Path: <linux-kernel+bounces-83241-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83242-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E37BD8690B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AF0AA8690B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:38:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 852F5B2103A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:37:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07C27B264F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE61F136667;
-	Tue, 27 Feb 2024 12:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="hqnyz1zy"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0E11CD3B;
-	Tue, 27 Feb 2024 12:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 107961386A4;
+	Tue, 27 Feb 2024 12:38:45 +0000 (UTC)
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2800846C;
+	Tue, 27 Feb 2024 12:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.164.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709037448; cv=none; b=HFEj8AtQAnf6LzYcPgGJru9Fl2TIVwrpWpIeGUSEESe6CEN9tloy6waFqXD33YH9Da6tVajGY/8QUavkN5iOyqErjdCZaIZQJi3wkRE6A1iH/AVXXUqjyizomoyMliIhFla20taPPVdAmLqGJHX6Ouh3GnXha4IYIO6EKZ2AUX0=
+	t=1709037524; cv=none; b=RCswz7McYHa7fV1dG+iLUG9swsev+DFUww1/NdFzfKWu6sa8gXdzlELA3owXdItiHj8Z09VPdBjhGymyeYArkvWpPiJTVOES4Lgv52WZXlU7pPe4m/J37kjMrC59C//5RTLWO3pD8P24tCmPFf46IR4CeN2LsulY4yzvmcDT16c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709037448; c=relaxed/simple;
-	bh=vL3h/IKG2Lc53EUgGT8KSBiS7JMMvvCh4EzUmuDxQuI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PrshsZqcllTisn67flBj+K2kIqhnyyr8DRAVpnGCqiTPiuhYmk4R/kUO2tZPguQNP97t3uxMPf3SJlbDfyLdvghyQX7xLaZeqTkVvD+stcxmnb97H8KuAgfweJoaEwB4DaadzY9G8ZTMoSUjI3woEJSVjGkBT90qZZpP4+Lc/x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=hqnyz1zy; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709037446; x=1740573446;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vL3h/IKG2Lc53EUgGT8KSBiS7JMMvvCh4EzUmuDxQuI=;
-  b=hqnyz1zyUmFx0mZVDgnVpoyeyc98LDGtGQqep23JBNikKIOmNQtYPZZw
-   Cpuaj2zj+Tzm0OaYn44FFbNiuhZfKCPVdGz4bqc/rVeOuj93HTV9CN3ID
-   0vqVDPNwN1LlkGgg6dO0qVneqptTd78uraVSU1GLMEt8UF5bFzo2ii90Q
-   RNP9MJ7o1yZboZmqIZe/ZRdV97d7QsDFyiK0FAlxRLtdXL66fleo2VY86
-   50RQy2yTVxaNjlJRWxY329KQi+Izk05Pvl1r85tnpjmce0o3oXpAzA1SS
-   pmFp//244xdLHXb8kLtfifufNI+wMWrmwzWBCHmBDOkH0qH7QZB1Jxv9Z
-   Q==;
-X-CSE-ConnectionGUID: RIjtrF0uTky5IbYLb0NUFw==
-X-CSE-MsgGUID: VyN+l4VUTNyBBErAHgla5w==
-X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
-   d="asc'?scan'208";a="16883354"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 05:37:25 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 27 Feb 2024 05:37:09 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 27 Feb 2024 05:37:06 -0700
-Date: Tue, 27 Feb 2024 12:36:23 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-CC: Conor Dooley <conor@kernel.org>, <linux-riscv@lists.infradead.org>, Miguel
- Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida
- Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo
-	<gary@garyguo.net>, =?iso-8859-1?Q?Bj=F6rn?= Roy Baron
-	<bjorn3_gh@protonmail.com>, Jonathan Corbet <corbet@lwn.net>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Nathan
- Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>, <rust-for-linux@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<llvm@lists.linux.dev>
-Subject: Re: [PATCH v2 2/3] scripts: generate_rust_target: enable building on
- RISC-V
-Message-ID: <20240227-swarm-serpent-2010b255f68a@wendy>
-References: <20240223-leverage-walmart-5424542cd8bd@spud>
- <20240223-employee-pessimism-03ba0b58db6b@spud>
- <CANiq72ngEZskjH0f=8+cJuQsFTK227bGCxe5G0STMHuPbZYnXg@mail.gmail.com>
- <20240227-resolved-deceit-4a59a6af5b71@wendy>
- <CANiq72mwM+4Oh-H5WmRoqQ_nE1w-eJ1wn-nEwS=BR9JRwzxMMQ@mail.gmail.com>
- <20240227-glove-underwire-f562a56cf2c7@wendy>
- <CANiq72=f03_bw9B8ww8UxHkVyP2F7ZPyvC+KWCyhO3Nk1yqdaw@mail.gmail.com>
+	s=arc-20240116; t=1709037524; c=relaxed/simple;
+	bh=lsujM0mv8FITF/UZaPoIrOCMeB/1vyXYKbmZ+sN6L/c=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=JoDlh59a+3UbB1bYygOIygdiucBjRK1AlnIT9/mJcKg9Gxim2vcggif54onxpwZWCgPg4cQBhKqlk3gZ6IWRHT0z3rkJ96yEugq3BBnc01/U1OfU6+1YvnQSsdM4iE1LtMeH5V327rIltPwszlXLDrIM99xvXN3NyGGlqNsLBUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=162.243.164.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from linma$zju.edu.cn ( [42.120.103.50] ) by
+ ajax-webmail-mail-app3 (Coremail) ; Tue, 27 Feb 2024 20:38:15 +0800
+ (GMT+08:00)
+Date: Tue, 27 Feb 2024 20:38:15 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: "Lin Ma" <linma@zju.edu.cn>
+To: "Jiri Pirko" <jiri@resnulli.us>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, idosch@nvidia.com, razor@blackwall.org,
+	lucien.xin@gmail.com, edwin.peer@broadcom.com, amcohen@nvidia.com,
+	pctammela@mojatatu.com, liuhangbin@gmail.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2] rtnetlink: fix error logic of IFLA_BRIDGE_FLAGS
+ writing back
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version 2023.4-cmXT5 build
+ 20231205(37e20f0e) Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
+In-Reply-To: <Zd3WMs8-nw5SPTZE@nanopsycho>
+References: <20240227121128.608110-1-linma@zju.edu.cn>
+ <Zd3WMs8-nw5SPTZE@nanopsycho>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="lgqlciDgvTDbCOgO"
-Content-Disposition: inline
-In-Reply-To: <CANiq72=f03_bw9B8ww8UxHkVyP2F7ZPyvC+KWCyhO3Nk1yqdaw@mail.gmail.com>
+Message-ID: <5c404af1.2163.18dea92a3e9.Coremail.linma@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:cC_KCgC3nzu4191laZahAQ--.39268W
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUEEmXc3dIXPAACsP
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
---lgqlciDgvTDbCOgO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+PiAKPiBodHRwczovL3d3dy5rZXJuZWwub3JnL2RvYy9odG1sL3Y2LjYvcHJvY2Vzcy9tYWludGFp
+bmVyLW5ldGRldi5odG1sP2hpZ2hsaWdodD1uZXR3b3JrI3RsLWRyCj4gCj4gImRvbid0IHJlcG9z
+dCB5b3VyIHBhdGNoZXMgd2l0aGluIG9uZSAyNGggcGVyaW9kIgoKQXBvbG9naXplIGZvciB0aGlz
+IG1pc3Rha2UsIGFuZCBJIHByb21pc2UgdG8gYmUgbW9yZSBjYXJlZnVsCmluIHRoZSBmdXR1cmUu
+IFRoYW5rIHlvdSBmb3IgYnJpbmdpbmcgdGhpcyB0byBteSBhdHRlbnRpb24KClJlZ2FyZHMKTGlu
 
-On Tue, Feb 27, 2024 at 01:12:51PM +0100, Miguel Ojeda wrote:
-> On Tue, Feb 27, 2024 at 12:05=E2=80=AFPM Conor Dooley
-> <conor.dooley@microchip.com> wrote:
-> >
-> > My point though was more
-> > that either this was acceptable for v6.9 or would be v6.10 material
-> > with the same mechanism as arm64. Rebasing after v6.9-rc1 but not
-> > adapting to that way of doing things is what seemed silly to me, since
-> > if a resend is required then the other improvements should be carried
-> > out at the same time.
->=20
-> If avoiding the `target.json` is possible, definitely.
->=20
-> I didn't want to assume it is, though -- e.g. the native integer
-> widths you have is 64 but the built-in targets use 32:64 (perhaps
-> there is a way to tweak it with an LLVM param via `-Cllvm-args`, but I
-> don't see any obvious way from a quick look; `opt` does have it,
-> though).
-
-Looking closer at those targets, all of them enable compressed
-instructors, but we support hardware that does not support them.
-I think that means we are stuck with the custom targets.
-
-I could badger Palmer to pick this up tomorrow, provided you're okay
-with the gist of this series.
-
-Cheers,
-Conor.
-
---lgqlciDgvTDbCOgO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd3XRwAKCRB4tDGHoIJi
-0pwnAQDKxa0TynZPieVRztR0zcy3tmhfLcVSi9lF1+smiaRObwD/S98C/1BHyqaa
-o69/XjNcE1BNOR9mwoXX9xRD9UA01Qc=
-=I1HU
------END PGP SIGNATURE-----
-
---lgqlciDgvTDbCOgO--
 
