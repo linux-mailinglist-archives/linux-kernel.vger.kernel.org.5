@@ -1,235 +1,88 @@
-Return-Path: <linux-kernel+bounces-82503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F749868576
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:03:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E17886857B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:04:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9836B2246F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:03:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E7C71C22FA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95E09610D;
-	Tue, 27 Feb 2024 01:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317EB4689;
+	Tue, 27 Feb 2024 01:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="SXdnW8ZR"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="W3B52p5r"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA244C61
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A09E4A0A;
+	Tue, 27 Feb 2024 01:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708995802; cv=none; b=EEsl2vQsESQARpPNY9DcoPeJ75pJFsz6ZsrnaAl55golGCmQVF5DK8v1IzqP18sOvGMg78Xg0c+gVlefN8YhJ6cGb6kSaHX1nDdMLdzywu8bmqE9l8mWbzW1yaJee8Kv6IfDstYiO7I/stNBZLxaA6D8Y7Au6Chh0lY6RcuuoJc=
+	t=1708995846; cv=none; b=L4TM3dT+5YsWQfZrGzEsSpVv8xqvqU4DXkxduaRfauYTBIvLNkpCEVIVkSvOezM85RhlFhjHkt925fKgllYFn/P5ezJpI0tEFrDTLm2IdVZqzJXzGjCOEGPpwALHyIQs4omW8OFN/CPhhz1PYIJjFKNR8AY/hUb3Rq32BSuWIvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708995802; c=relaxed/simple;
-	bh=RwCvkBpjWjZdDzoyR0sUhIz+j7ms5wHaCth84P3MKYs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OtUUiuxooq+1kuKWSPGJ45ORSMJiOARPFfQUiPmtgCqkiziptpupPqQAQwcRpd7s6vs9bqkGEJAkcs4so+JyWhyeMD9EVWCy1z2gBQsT99hjHu++rkfkSk7GWr3btzN3mN+dPKqLQpZZo6nqrT6hfsQMwEy+q1C+bY2WFFQ4bfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=SXdnW8ZR; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9BB282C0657;
-	Tue, 27 Feb 2024 14:03:19 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1708995799;
-	bh=wH2e4GGOGFrvrqcOtz3dw/t+ACqpEAmKW5pshoxQMl0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SXdnW8ZRYoXWowI1tt+OTin8WfwlTlcBB2mrxkVTqzTyOw8LvdkjK5Xb2Yf7SfuGn
-	 +EvGUPa5UEh1saNoNzZtgOHT9md7UIiKzsRTUInUc6g/PFWzX3vLNRYqflSF0TKHK+
-	 AwU1dN46bOca0yPL7hVN0JUBtVSFykmPQi7dZeW/BuPI/Inp7riL68YxlmH1WZz4Aj
-	 9QhujcQKBrn1IiZr0/ROUMHyCg2KZL9qhRJM0m0f7Lgh9hdlUoymXJLfaVtSqnm3VT
-	 DpP5s/PrD4KV/ysdvtbYx+RLWs5PnHbhiXeiU3j0ptf93Kw2i553x6b4v3uHZZYU/N
-	 9K6sYPTu5dKvg==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65dd34d70000>; Tue, 27 Feb 2024 14:03:19 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 4793E13ED8D;
-	Tue, 27 Feb 2024 14:03:19 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 445FF2807DC; Tue, 27 Feb 2024 14:03:19 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: antoniu.miclaus@analog.com,
-	alexandre.belloni@bootlin.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	jdelvare@suse.com,
-	linux@roeck-us.net
-Cc: linux-rtc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v8 2/2] dt-bindings: rtc: add max313xx RTCs
-Date: Tue, 27 Feb 2024 14:03:10 +1300
-Message-ID: <20240227010312.3305966-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240227010312.3305966-1-chris.packham@alliedtelesis.co.nz>
-References: <20240227010312.3305966-1-chris.packham@alliedtelesis.co.nz>
+	s=arc-20240116; t=1708995846; c=relaxed/simple;
+	bh=4BTA21RCMV1i4P9pEyAxk3Awr2viSqjmI/Pdmb6nk6g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cvM5y2Lpwq/Vq3Mc4U5MYeZAaNKM4XMHd1fxZ3oysS39yxC7kOSjK4QZkwQ50hUgG5LNmo3JRbqv8Tv9uBVsvSBCz6WeVkxm0DlQNTe1zzwnyg3Cxl2zMNImZhrimGvtc/tvHikJJJcAxBi1H5BzlR79XBfdSR1GTa6i0r1txUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=W3B52p5r; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=RVftSLZVJrorIFus3RabCSPKATUQtwl5EIiqBrEipvw=; b=W3B52p5rkWx27A4Lch5cd/W3XE
+	CQzIIB0ZeiYi3nNcKYxtf7lSJz75VbIih+2o2567cQH38ClJ82qNVUhPaiqInGBX3FSogPuWcHDoz
+	yTCc70jLDRXyxHPghUARld7Eampuhrruh5ZlEsZkO9KJ+DDYYXHsND0hN6vl992YJdvzOS+NZhcQr
+	e2HFkWFyZGf2hgGB+MTcBy9K14+qB0zxLQKn34kmdnSedR0jXmjTT66z+9B1In8Ky0pCorJxYDy2C
+	McNS5v/m+hqQigS5j2uQNlyCdr30L16vVbAJwbEIkpzTnaHGctBOi4qFdcXSfiR7pjJOt9vkE8aHY
+	Bnxcn6qw==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1relt6-00000003CmL-1pZM;
+	Tue, 27 Feb 2024 01:04:04 +0000
+Message-ID: <ca59236d-4f5c-4605-b443-8f62d71da643@infradead.org>
+Date: Mon, 26 Feb 2024 17:04:04 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Feb 26 (drivers/gpu/drm/xe)
+Content-Language: en-US
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ intel-gfx@lists.freedesktop.org, intel-xe@lists.freedesktop.org
+References: <20240226175509.37fa57da@canb.auug.org.au>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240226175509.37fa57da@canb.auug.org.au>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65dd34d7 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=gAnH3GRIAAAA:8 a=gEfo2CItAAAA:8 a=ZcN8bhqOFn-iYlg87JMA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=oVHKYsEdi7-vN-J5QA_j:22 a=sptkURWiP4Gy88Gu7hUp:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
+Content-Transfer-Encoding: 7bit
 
-From: Ibrahim Tilki <Ibrahim.Tilki@analog.com>
 
-Add devicetree binding documentation for Analog Devices MAX313XX RTCs.
-This combines the new models with the existing max31335 binding.
 
-Signed-off-by: Ibrahim Tilki <Ibrahim.Tilki@analog.com>
-Signed-off-by: Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- .../devicetree/bindings/rtc/adi,max31335.yaml | 88 ++++++++++++++++---
- 1 file changed, 78 insertions(+), 10 deletions(-)
+On 2/25/24 22:55, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Changes since 20240223:
+> 
 
-diff --git a/Documentation/devicetree/bindings/rtc/adi,max31335.yaml b/Do=
-cumentation/devicetree/bindings/rtc/adi,max31335.yaml
-index 0125cf6727cc..ad8d6fec9a2b 100644
---- a/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
-+++ b/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
-@@ -1,36 +1,54 @@
- # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+# Copyright 2022 Analog Devices Inc.
- %YAML 1.2
- ---
- $id: http://devicetree.org/schemas/rtc/adi,max31335.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
-=20
--title: Analog Devices MAX31335 RTC
-+title: Analog Devices MAX313XX series I2C RTCs
-=20
- maintainers:
-   - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+  - Chris Packham <chris.packham@alliedtelesis.co.nz>
-=20
--description:
--  Analog Devices MAX31335 I2C RTC =C2=B12ppm Automotive Real-Time Clock =
-with
--  Integrated MEMS Resonator.
--
--allOf:
--  - $ref: rtc.yaml#
-+description: Analog Devices MAX313XX series I2C RTCs.
-=20
- properties:
-   compatible:
--    const: adi,max31335
-+    enum:
-+      - adi,max31328
-+      - adi,max31329
-+      - adi,max31331
-+      - adi,max31334
-+      - adi,max31335
-+      - adi,max31341
-+      - adi,max31342
-+      - adi,max31343
-=20
-   reg:
--    maxItems: 1
-+    description: I2C address of the RTC
-+    items:
-+      - enum: [0x68, 0x69]
-=20
-   interrupts:
-+    description:
-+      Alarm1 interrupt line of the RTC. Some of the RTCs have two interr=
-upt
-+      lines and alarm1 interrupt muxing depends on the clockin/clockout
-+      configuration.
-     maxItems: 1
-=20
-   "#clock-cells":
-     description:
--      RTC can be used as a clock source through its clock output pin.
-+      RTC can be used as a clock source through its clock output pin whe=
-n
-+      supplied.
-     const: 0
-=20
-+  clocks:
-+    description:
-+      RTC uses this clock for clock input when supplied. Clock has to pr=
-ovide
-+      one of these four frequencies - 1Hz, 50Hz, 60Hz or 32.768kHz.
-+    maxItems: 1
-+
-   adi,tc-diode:
-     description:
-       Select the diode configuration for the trickle charger.
-@@ -48,6 +66,56 @@ required:
-   - compatible
-   - reg
-=20
-+allOf:
-+  - $ref: rtc.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31328
-+              - adi,max31342
-+
-+    then:
-+      properties:
-+        aux-voltage-chargeable: false
-+        trickle-resistor-ohms: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31328
-+              - adi,max31331
-+              - adi,max31334
-+              - adi,max31335
-+              - adi,max31343
-+
-+    then:
-+      properties:
-+        clocks: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31341
-+              - adi,max31342
-+
-+    then:
-+      properties:
-+        reg:
-+          items:
-+            - const: 0x69
-+
-+    else:
-+      properties:
-+        reg:
-+          items:
-+            - const: 0x68
-+
- unevaluatedProperties: false
-=20
- examples:
---=20
-2.43.2
+on powerpc32 or i386:
 
+./drivers/gpu/drm/xe/xe_ggtt.c: In function 'xe_ggtt_set_pte':
+./drivers/gpu/drm/xe/xe_ggtt.c:78:9: error: implicit declaration of function 'writeq'; did you mean 'writel'? [-Werror=implicit-function-declaration]
+   78 |         writeq(pte, &ggtt->gsm[addr >> XE_PTE_SHIFT]);
+      |         ^~~~~~
+      |         writel
+
+
+-- 
+#Randy
 
