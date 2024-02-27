@@ -1,112 +1,236 @@
-Return-Path: <linux-kernel+bounces-82841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85CC1868A72
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:07:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68113868A70
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E25292825D0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:07:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E82901F24A56
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C189356477;
-	Tue, 27 Feb 2024 08:07:05 +0000 (UTC)
-Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C36255E62;
-	Tue, 27 Feb 2024 08:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.89.151.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B35F56441;
+	Tue, 27 Feb 2024 08:07:04 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4365355E57
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709021225; cv=none; b=QiDiFaPeMALAwbQmpiOg1hRX+CUigXqluWwJG24T5K1EY3e3k+mfPnaFsqgd0ahQ6jiYH5BH+fuyMVB6RhncOwgKSOhgn24/+i7K/U6pbFl0OlqiU8PKG0vExIRXCKcvy/G6tTZu5DnPzzo8LwSiUmNwXjZU9G2Ie2KH1//10O8=
+	t=1709021223; cv=none; b=rH7CyZTyLGOnDcM6TfWigk0+gdFAMDCVAJUdYD+PZ9Xh189qMm+a47dCV53NSgfP2PRYtHoIv5pHrQlb6pJj45ESSJD+IW4aQmU66jGAzL5EtOKRJrFhreRrufH1u4zdCnLaMb7aFAkVwz5JidhW3TpzdIZtAEJ28mqkH6uWLuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709021225; c=relaxed/simple;
-	bh=bn8lBdZvB6L2HQkh78StuFH3Cwbf8lGTxYiUbBqrdUk=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=MhhROsfbMTK/tFR0hsqv/aZepUxNNg7ynpxeqw/tAaq3N0d8qbgbUP4rnmQaogheUqC+Y/hjNaw3Ff7SiYJwgrIzcqk9F30Srk41P3aTiTY13g0WWY3JjDERaAPQRK11jd/jVUTLTY4dFTQ6Mk3F6Fhr61g+8QT+VgtwuT6Ydo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=159.89.151.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [218.12.19.154])
-	by mail-app2 (Coremail) with SMTP id by_KCgBnF6b2l91l841JAg--.21305S2;
-	Tue, 27 Feb 2024 16:06:27 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-kernel@vger.kernel.org
-Cc: brcm80211-dev-list.pdl@broadcom.com,
-	brcm80211@lists.linux.dev,
-	linux-wireless@vger.kernel.org,
-	justinstitt@google.com,
-	john@keeping.me.uk,
-	quic_alokad@quicinc.com,
-	marcan@marcan.st,
-	johannes.berg@intel.com,
-	linus.walleij@linaro.org,
-	kvalo@kernel.org,
-	arend.vanspriel@broadcom.com,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH] wifi: brcm80211: handle pmk_op allocation failure
-Date: Tue, 27 Feb 2024 16:06:13 +0800
-Message-Id: <20240227080613.34001-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:by_KCgBnF6b2l91l841JAg--.21305S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF43XrW3XrWUAry8Wr13twb_yoW8GFWkpw
-	s7GFyqyr1UWw4Skw45tFyvvryFga17K3sYkr4jy3s3uFZ3Gr1rJr48KFyFvFnYyr4ay3y2
-	vFWktF98Wr4DWw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9j14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26rxl
-	6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4l
-	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-	C2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwQEAWXc3dIQZQAcsd
+	s=arc-20240116; t=1709021223; c=relaxed/simple;
+	bh=el6qsNeaAwUNsgLqdmCw9AHZGV8d1vDRZODuQmwejPE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cjY4cNMtV7AVHOrrkbifFgLs6QcJODTJdtLSHULVaVBBuELpBKyIAs6MBe/5WaT7k9wHtktOJw1Q5qAbly4yTJ1r9WRZuAEbvAY9O6+s3fRgkgzX4wkDJSTroaaasfWp/LbuWmlNpWxA4bWL118HXTZul5ssEnL9IZcmvH/xQhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TkVQv59Cqz1xpYd;
+	Tue, 27 Feb 2024 16:05:27 +0800 (CST)
+Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
+	by mail.maildlp.com (Postfix) with ESMTPS id A9D211400F4;
+	Tue, 27 Feb 2024 16:06:56 +0800 (CST)
+Received: from [10.67.109.211] (10.67.109.211) by
+ dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Tue, 27 Feb 2024 16:06:56 +0800
+Message-ID: <2397d8dd-8053-4167-9aac-f5d7c05a98da@huawei.com>
+Date: Tue, 27 Feb 2024 16:06:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+CC: Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, Andrew
+ Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov"
+	<kirill.shutemov@linux.intel.com>, Geert Uytterhoeven
+	<geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, Mike Rapoport
+	<rppt@kernel.org>, Rob Herring <robh@kernel.org>, Thomas Gleixner
+	<tglx@linutronix.de>, Linus Walleij <linus.walleij@linaro.org>
+References: <20240220081527.23408-1-liuyuntao12@huawei.com>
+ <1342759e-b967-4ec4-98d5-48146f81f695@app.fastmail.com>
+ <38c09a4b-69cc-4dc5-8a68-e5f5597613ac@huawei.com>
+ <30b01c65-12f2-4ee0-81d5-c7a2da2c36b4@app.fastmail.com>
+ <4e9396ca-460b-49ca-818e-73f0a8997b15@huawei.com>
+ <58297ee9-4f33-4b3b-bd00-b44e86965892@app.fastmail.com>
+From: "liuyuntao (F)" <liuyuntao12@huawei.com>
+In-Reply-To: <58297ee9-4f33-4b3b-bd00-b44e86965892@app.fastmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemd100004.china.huawei.com (7.185.36.20)
 
-The kzalloc() in brcmf_pmksa_v3_op() will return null if the
-physical memory has run out. As a result, if we dereference
-the null value, the null pointer dereference bug will happen.
 
-Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
-for pmk_op.
 
-Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V3 operations")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 5 +++++
- 1 file changed, 5 insertions(+)
+On 2024/2/23 0:04, Arnd Bergmann wrote:
+> On Thu, Feb 22, 2024, at 12:24, liuyuntao (F) wrote:
+>>
+>> The position of the caret has been moved below the right brace
+>> of { KEEP(*(.vectors.bhb.loop8)) }, indicating that lld is treating
+>> the entire `KEEP(*(.vectors))` as a file name. This could potentially be
+>> a bug in lld. Perhaps we can temporarily
+>> enable the DCE option only when option LD_IS_LLD is disabled,
+>> like risc-v:
+>>
+>> `select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD`.
+> 
+> I would really like to see this working with lld if at all
+> possible, as it allows the combination of gc-sections with
+> lto and CONFIG_TRIM_UNUSED_KSYMS.
+> 
+> I experimented with lld myself now and I did get a booting
+> kernel even without the the KEEP() on the vectors. I also
+> see that this is the only use of OVERLAY in the kernel, so
+> I hope that we can find a way to make it work with existing
+> lld after all, either without the KEEP or without the OVERLAY.
+> 
+> Did you see any problems without the KEEP() on the vectors?
+> 
+>       Arnd
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 28d6a30cc01..3b420b33188 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -4322,6 +4322,10 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
- 	int ret;
- 
- 	pmk_op = kzalloc(sizeof(*pmk_op), GFP_KERNEL);
-+	if (!pmk_op) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
- 	pmk_op->version = cpu_to_le16(BRCMF_PMKSA_VER_3);
- 
- 	if (!pmksa) {
-@@ -4340,6 +4344,7 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
- 	pmk_op->length = cpu_to_le16(length);
- 
- 	ret = brcmf_fil_iovar_data_set(ifp, "pmkid_info", pmk_op, sizeof(*pmk_op));
-+out:
- 	kfree(pmk_op);
- 	return ret;
- }
+Hi, Arnd. I have added a global symbol g_keep1 in .vectors, g_keep2 in 
+vectors.bhb.loop8 and g_keep3 in .vectors.bhb.bpiall respectively. I 
+also added another section to reference these three global symbols, to 
+prevent these sections from being removed during linking with --gc-sections.
+
+It worked,but there should be a better way to achieve it. the patch:
+
+diff --git a/arch/arm/include/asm/vmlinux.lds.h 
+b/arch/arm/include/asm/vmlinux.lds.h
+index f2ff79f740ab..d60f6e83a9f7 100644
+--- a/arch/arm/include/asm/vmlinux.lds.h
++++ b/arch/arm/include/asm/vmlinux.lds.h
+@@ -125,13 +125,13 @@
+         __vectors_lma = .;                                              \
+         OVERLAY 0xffff0000 : NOCROSSREFS AT(__vectors_lma) {            \
+                 .vectors {                                              \
+-                       KEEP(*(.vectors))                               \
++                       *(.vectors)                                     \
+                 }                                                       \
+                 .vectors.bhb.loop8 {                                    \
+-                       KEEP(*(.vectors.bhb.loop8))                     \
++                       *(.vectors.bhb.loop8)                           \
+                 }                                                       \
+                 .vectors.bhb.bpiall {                                   \
+-                       KEEP(*(.vectors.bhb.bpiall))                    \
++                       *(.vectors.bhb.bpiall)                          \
+                 }                                                       \
+         }                                                               \
+         ARM_LMA(__vectors, .vectors);                                   \
+diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
+index 6150a716828c..84536e805da0 100644
+--- a/arch/arm/kernel/entry-armv.S
++++ b/arch/arm/kernel/entry-armv.S
+@@ -1075,6 +1075,9 @@ THUMB(    .reloc  ., R_ARM_THM_PC12, 
+L__vector_swi               )
+         W(b)    vector_addrexcptn
+         W(b)    vector_irq
+         W(b)    vector_fiq
++       .global g_keep1
++       g_keep1:
++               .word 0
+
+  #ifdef CONFIG_HARDEN_BRANCH_HISTORY
+         .section .vectors.bhb.loop8, "ax", %progbits
+@@ -1088,6 +1091,9 @@ THUMB(    .reloc  ., R_ARM_THM_PC12, 
+L__vector_bhb_loop8_swi     )
+         W(b)    vector_addrexcptn
+         W(b)    vector_bhb_loop8_irq
+         W(b)    vector_bhb_loop8_fiq
++       .global g_keep2
++       g_keep2:
++               .word 0
+
+         .section .vectors.bhb.bpiall, "ax", %progbits
+         W(b)    vector_rst
+@@ -1100,6 +1106,9 @@ THUMB(    .reloc  ., R_ARM_THM_PC12, 
+L__vector_bhb_bpiall_swi    )
+         W(b)    vector_addrexcptn
+         W(b)    vector_bhb_bpiall_irq
+         W(b)    vector_bhb_bpiall_fiq
++       .global g_keep3
++       g_keep3:
++               .word 0
+  #endif
+
+         .data
+@@ -1108,3 +1117,8 @@ THUMB(    .reloc  ., R_ARM_THM_PC12, 
+L__vector_bhb_bpiall_swi    )
+         .globl  cr_alignment
+  cr_alignment:
+         .space  4
++
++.section .keep_vectors, "ax", %progbits
++       LDR r0, =g_keep1
++       LDR r1, =g_keep2
++       LDR r2, =g_keep3
+diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
+index 01a887c1141a..5cdfb4ba3ac4 100644
+--- a/arch/arm/kernel/vmlinux.lds.S
++++ b/arch/arm/kernel/vmlinux.lds.S
+@@ -62,6 +62,7 @@ SECTIONS
+         .text : {                       /* Real text segment            */
+                 _stext = .;             /* Text and read-only data      */
+                 ARM_TEXT
++               KEEP(*(.keep_vectors))
+         }
+
+  #ifdef CONFIG_DEBUG_ALIGN_RODATA
 -- 
-2.17.1
+2.34.1
 
+ > I would really like to see this working with lld if at all
+ > possible, as it allows the combination of gc-sections with
+ > lto and CONFIG_TRIM_UNUSED_KSYMS.
+Then, I enabled config CONFIG_LTO_CLANG_THIN in arm32, but
+came across a link failure using clang/lld:
+
+following symbols must have non local/private scope:
+free_mem_end_ptr
+free_mem_ptr
+malloc_count
+malloc_ptr
+output_data
+
+in file arch/arm/boot/compressed/Makefile:
+# We need to prevent any GOTOFF relocs being used with references
+# to symbols in the .bss section since we cannot relocate them
+# independently from the rest at run time.  This can be achieved by
+# ensuring that no private .bss symbols exist, as global symbols
+# always have a GOT entry which is what we need.
+# The .data section is already discarded by the linker script so no need
+# to bother about it here.
+check_for_bad_syms = \
+bad_syms=$$($(NM) $@ | sed -n 's/^.\{8\} [bc] \(.*\)/\1/p') && \
+[ -z "$$bad_syms" ] || \
+   ( echo "following symbols must have non local/private scope:" >&2; \
+     echo "$$bad_syms" >&2; false )
+
+Turn on the config CONFIG_LTO_CLANG_THIN , use nm to check the type of 
+these symbols as 'b', turn off the config type to 'B'. I tried to 
+explicitly declare these variables using 
+__attribute__((visibility("default")), but it didn't take effect on the 
+variable `output_data`.
+ld.lld: warning: 
+thinlto-cache/llvmcache-285C4672B80361F1DA67C743A5C8350FDDEEC8E3:(.data.malloc_ptr) 
+is being placed in '.data.':
+
+ld.lld: warning: 
+thinlto-cache/llvmcache-285C4672B80361F1DA67C743A5C8350FDDEEC8E3:(.data.malloc_ptr) 
+is being placed in '.data.'
+ld.lld: warning: 
+thinlto-cache/llvmcache-285C4672B80361F1DA67C743A5C8350FDDEEC8E3:(.data.malloc_count) 
+is being placed in '.dat'
+following symbols must have non local/private scope:
+output_data
 
