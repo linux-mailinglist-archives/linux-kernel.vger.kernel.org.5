@@ -1,120 +1,117 @@
-Return-Path: <linux-kernel+bounces-84014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A919C86A15B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:10:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76BAB86A15D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 22:11:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A982285708
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:10:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1738A1F21E9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:11:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C1914EFE1;
-	Tue, 27 Feb 2024 21:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7774814F968;
+	Tue, 27 Feb 2024 21:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0dmzrqdT";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cAvb9J+M"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tjcvql2q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62A114E2CB;
-	Tue, 27 Feb 2024 21:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B28DE14EFF4;
+	Tue, 27 Feb 2024 21:11:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709068243; cv=none; b=EtvaKEsh2vHLy6l7abWeS5GfmjnIZ/25ckNaUu/g4Iyr/7/2U2mQ/jA9tgV4jDfunaw2t4SKyJtjsM5bQBQD5fLngor71oOhQfhs96vlSp0ZW62IdemRrZxgtGk5OV32EqfnTdg8UU8u7NmI6HhnMI2X3iA3T+6pE79Dmouye0Q=
+	t=1709068300; cv=none; b=BJy3A3SKUHObRuWP+jLyz9b8W05Dc5uvwSfH+4etr5nRD0JEiiCgLQG9srQXn3pOfuiqYjbqZe/LN4V77Iq9qSENf61aQzwSREAwSryP2Jt26seQZ+zA3lVG/2JPKobkEfuQMZbnw9c628Z3hdIgtQsFqI9MJnM/FZlEOrd5UI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709068243; c=relaxed/simple;
-	bh=S4GdbO49TODBoF2qIft6qhlyqP1y99edZKcPkvMCGcY=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=VLH70taiSnABjSc4CWze6UdWXbRlSX3sNQ2tcpr8N8vXNLPxA8WzOn9VU2S6jS0h2rtegUyEu5RWER9epDFSbGSCDtyf/9PgXoOXmeibgr9YJ/0D24awK4hCCF/EHOQLeO/KP9B09YdQRD81mg9r/IZrlyRpDMk6G3VccxzQrxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0dmzrqdT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cAvb9J+M; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 27 Feb 2024 21:10:38 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709068239;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X9XQzuPcg4Z8FBC2oPdLLw3y5A64T8oxe7MO93WVZuQ=;
-	b=0dmzrqdTyrcsqCfaIEniw09bfP2BMYv+8VoLAKwGSMYV2XklrBVU94yZBoAClnrVKeXksy
-	NQn2NmmtECWxUmC7xmZSu9kUcKr2Eh9pORkcI7zqGjDspVL3gu5ZHUE6xrsaY4s2h9OT3t
-	Bx+/AZkbhe0SRLpGSevlZQOL01W3AWFYAY/VZamCAPzTE40jvTh+/90Tn0eLmbmz22GZYJ
-	G4JyBiFGwzghJ6qY/RIgwmQy3BRNKwhbGAKp5lx88beUK/JSm+hRdmv3h4EtCntZV0Rkmo
-	xt4AWS04hU1iEJAqtUq4dTApuM7WOVS6g32+AAohD2Ho8QvTRYgCXI4SIgssxw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709068239;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X9XQzuPcg4Z8FBC2oPdLLw3y5A64T8oxe7MO93WVZuQ=;
-	b=cAvb9J+Msk+982e0k2HzztE3wszc/0OOLj6BypBZVSq6PT2eiNPXyEm1Y8yA3e1WHs8Y/+
-	N/D13G6ii5b43kCQ==
-From: "tip-bot2 for Xin Li (Intel)" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/cleanups] x86/nmi: Remove an unnecessary IS_ENABLED(CONFIG_SMP)
-Cc: "H. Peter Anvin (Intel)" <hpa@zytor.com>, "Xin Li (Intel)" <xin@zytor.com>,
- Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240201094604.3918141-1-xin@zytor.com>
-References: <20240201094604.3918141-1-xin@zytor.com>
+	s=arc-20240116; t=1709068300; c=relaxed/simple;
+	bh=3GOPQWzlpl/NCJMRQDoGYUrGg6h8l1hMdmnNxjsJtqE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t3VW9xJrbO6Vvn/KKPevAOSFoDrVYH2L0eLC6HhaeTnE5TAUcjsEfFD4156ZBqfeGkByj0ovit8QQYzamychjuGhog9bxz0lFzOYjZAEmSVt62cehezV2IB51fsO7tfzFElYyMmalYewFdbhRhqvwZYXQ3KI+i8Pmz/P+ZWHo90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tjcvql2q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36E7FC43390;
+	Tue, 27 Feb 2024 21:11:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709068300;
+	bh=3GOPQWzlpl/NCJMRQDoGYUrGg6h8l1hMdmnNxjsJtqE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=tjcvql2qES5K0OIzzeGu/5anJPBD1HIMPUD0G6LlAGYpGN5CU+R8NSTlhGNHSaAtV
+	 Dp/vpm+NM0VoeUxzIeVV1+Q37c2CYjeZRENnPZDs04ZAGm7p8lrONQxDjeCWcDPZq4
+	 g3ciWDXOFpYGEBtjbpy1Lk6YjOqwIc0eYjMkDPWVFTFL4I6tB0tYrLCukYd27iUhG0
+	 Q9o+EcWtAJErVGwxTKnteqGZ/AXnn/eGuw0GiWa/nxSX1NGZ199rI1H2UvD3Qbxwgv
+	 KCUtUW7jAmirWVunN837Ak6YBlCPrgH6POGxWTLm5pWozfA4A4jPc+8Op0nifhf2Tb
+	 s9xaO4tiJm9OA==
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513143d3c42so1060909e87.3;
+        Tue, 27 Feb 2024 13:11:40 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW+/qE3JZo7Wud566cuB2wyA9S5e7a+N6m2G3U5/pKJlFXfFN1h5FdT1GI7uU6knG5zKun6xFmntnw0hpHeHWTRmRAFpmTLZC+6vUGQ+6JvxDmUYLdU+pd1rev1VR55nMQTV9QDVPNDBA==
+X-Gm-Message-State: AOJu0YyP+qAViFyTgDwiWW56rbeC4By20HbpES6K2puSoF/o2pJSSOgM
+	4HSjGTFC39w38W9uhkDn7B+6De5UPjfrRq184H2TXPF0Z+7LBd46cGdo8J2+31fwsTIZfA9DEb7
+	7OuN6Hdb8oQ4l/KOV2QMv4rVbHjc=
+X-Google-Smtp-Source: AGHT+IFCCAMw+/0CQY67zz5dcFZZA6Oh2/9pIcTZvE3Y3RQnHeGnPMR/zOtcUoABuvX2PbDAaFYrfzKiGj90QUOP9aY=
+X-Received: by 2002:ac2:5dd4:0:b0:513:17bf:87d5 with SMTP id
+ x20-20020ac25dd4000000b0051317bf87d5mr474653lfq.63.1709068298248; Tue, 27 Feb
+ 2024 13:11:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170906823829.398.9069313978857543037.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240227120327.1432511-1-yukuai1@huaweicloud.com>
+In-Reply-To: <20240227120327.1432511-1-yukuai1@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 27 Feb 2024 13:11:26 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4PRcbQbjoXQ_F=V4DxAJp9v_ybWHgwueCLA+iU52J7mQ@mail.gmail.com>
+Message-ID: <CAPhsuW4PRcbQbjoXQ_F=V4DxAJp9v_ybWHgwueCLA+iU52J7mQ@mail.gmail.com>
+Subject: Re: [PATCH md-6.9 v2 00/10] md/raid1: refactor read_balance() and
+ some minor fix
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: xni@redhat.com, paul.e.luse@linux.intel.com, shli@fb.com, neilb@suse.com, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai3@huawei.com, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Tue, Feb 27, 2024 at 4:09=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> Changes in v2:
+>  - add new conter in conf for patch 2;
+>  - fix the case choose next idle while there is no other idle disk in
+>  patch 3;
+>  - add some review tag from Xiao Ni for patch 1, 4-8
+>
+> The original idea is that Paul want to optimize raid1 read
+> performance([1]), however, we think that the original code for
+> read_balance() is quite complex, and we don't want to add more
+> complexity. Hence we decide to refactor read_balance() first, to make
+> code cleaner and easier for follow up.
+>
+> Before this patchset, read_balance() has many local variables and many
+> branches, it want to consider all the scenarios in one iteration. The
+> idea of this patch is to divide them into 4 different steps:
+>
+> 1) If resync is in progress, find the first usable disk, patch 5;
+> Otherwise:
+> 2) Loop through all disks and skipping slow disks and disks with bad
+> blocks, choose the best disk, patch 10. If no disk is found:
+> 3) Look for disks with bad blocks and choose the one with most number of
+> sectors, patch 8. If no disk is found:
+> 4) Choose first found slow disk with no bad blocks, or slow disk with
+> most number of sectors, patch 7.
+>
+> Note that step 3) and step 4) are super code path, and performance
+> should not be considered.
+>
+> And after this patchset, we'll continue to optimize read_balance for
+> step 2), specifically how to choose the best rdev to read.
+>
+> [1] https://lore.kernel.org/all/20240102125115.129261-1-paul.e.luse@linux=
+intel.com/
 
-Commit-ID:     47403a4b49767f1d533e4dc5f5cf5cc957f22a5e
-Gitweb:        https://git.kernel.org/tip/47403a4b49767f1d533e4dc5f5cf5cc957f22a5e
-Author:        Xin Li (Intel) <xin@zytor.com>
-AuthorDate:    Thu, 01 Feb 2024 01:46:04 -08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 27 Feb 2024 22:00:50 +01:00
+v2 looks good to me. Thanks! I will give Xiao some more time to review
+it one more time before pushing it to md-6.9.
 
-x86/nmi: Remove an unnecessary IS_ENABLED(CONFIG_SMP)
-
-IS_ENABLED(CONFIG_SMP) is unnecessary here: smp_processor_id() should
-always return zero on UP, and arch_cpu_is_offline() reduces to
-!(cpu == 0), so this is a statically false condition on UP.
-
-Suggested-by: H. Peter Anvin (Intel) <hpa@zytor.com>
-Signed-off-by: Xin Li (Intel) <xin@zytor.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240201094604.3918141-1-xin@zytor.com
-
----
- arch/x86/kernel/nmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/nmi.c b/arch/x86/kernel/nmi.c
-index 17e955a..44fe569 100644
---- a/arch/x86/kernel/nmi.c
-+++ b/arch/x86/kernel/nmi.c
-@@ -502,7 +502,7 @@ DEFINE_IDTENTRY_RAW(exc_nmi)
- 	if (IS_ENABLED(CONFIG_NMI_CHECK_CPU))
- 		raw_atomic_long_inc(&nsp->idt_calls);
- 
--	if (IS_ENABLED(CONFIG_SMP) && arch_cpu_is_offline(smp_processor_id())) {
-+	if (arch_cpu_is_offline(smp_processor_id())) {
- 		if (microcode_nmi_handler_enabled())
- 			microcode_offline_nmi_handler();
- 		return;
+Song
 
