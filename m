@@ -1,145 +1,160 @@
-Return-Path: <linux-kernel+bounces-82943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B641C868C0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:19:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76F62868C0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:20:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9E031C223B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:19:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ABCD1C223FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405B4136648;
-	Tue, 27 Feb 2024 09:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CEE513667F;
+	Tue, 27 Feb 2024 09:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HymjBdRT"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LrYgYKBI"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D440015D0;
-	Tue, 27 Feb 2024 09:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA34C136663;
+	Tue, 27 Feb 2024 09:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709025553; cv=none; b=o44W7lp/LmM7FvJXCS94jUGyKCohMHeHMNvSIE+jRbpJqYvfkBN08rv6j7AmKfVmuCxpXJ3axKTcN6hYzekkYgLS/d1d3lvmB8/Lhnj1k+0dZOrvm/ILjPK2rudBKSHe/Uqe7W+dbgItj7aOni5mz9lxf0UsWIKFrZ+gvTZCZnI=
+	t=1709025588; cv=none; b=OwHWQfgEY6dPSfmdI+e2JX9eMw05M30SSjuw4PIIJV3ec94k4bvzs0+v+RtYF85OkbT88u3ntiqWGLUq3mo7ajrkFSirZXudBMFKj/jMTRmjGlkSLCpmRU4CIhhj7N+FKDRGXkuMR/2ppXrHrpgp6MiHokmX9iYEBA0vrygcjzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709025553; c=relaxed/simple;
-	bh=2rvKWBsOe5u09Fm07C6Vhkn/eWWGe34DDiMGSkmn9Vg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VkqXJEMXDXxpAAkz1uCzwFYyP1Y3jLPjvP0v4rJRnjo6xBda17SSq5Q0mu7mH+UuK+kPCAPrvswebUT2WIkm38ew2TAx2Ad4p/LnYSh1xQQMGRj7D1BZDoEtqCfPDtEdNqzhWmgQt+cQX7IujWJgGONodLn//dnywKWK2plgZVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HymjBdRT; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412ae376419so2028265e9.3;
-        Tue, 27 Feb 2024 01:19:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709025550; x=1709630350; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4OJtlxBTGwU2hkLw+f6HomonbgUEkZ6XExKyA+CTZ+E=;
-        b=HymjBdRT4p/Q+XTvR4eH6i/WJ1eFgCzXTuPUoYH0jibxhRNjblhSP8MTTf3eJq/m7W
-         Mt2LK1ZdkwElaVsMlbwvTHUd0ZC0o8jIVgtybMn2hhnRCQjfyYqBtMlZr7Xwq9vuSNti
-         YfhlNmWWxnhX7uXGAqyG84ga7euBgjw+DGckFFkXBE3zZ9P2G0oz0JHPT8/NsYH2PcMn
-         UpcWXn55PR3fAv/Hfz+nCUPipjuZZ3ZPaJoVFEYwbqut/tqs3uG475iN05Ji3kidhcSS
-         jV6B3WVaQ/xc4XmzbVetQ4ejgQsZV88FHOlu6syz11H222jpGKRUty4YnuaP6Pfez4Wp
-         xthA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709025550; x=1709630350;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4OJtlxBTGwU2hkLw+f6HomonbgUEkZ6XExKyA+CTZ+E=;
-        b=BHj7JFB8LG+UaDqwnfPlYGZbDF3R8B1jzmr3kDFWw2jS7ADqsCx+M0Hn/e5XaLU8Nl
-         xggs3FLwhAegTZJ0qSwxwuwH+A53rljUXsQ38nZe+kKbXJDe7xubDzXQwBg/IT1k/COz
-         T1wbRnVTGoNJUqd19SjqZ+eXki6+2MZDZyhM2VqjMgaNAgpNGOlsmfjmmgivAbWXj2Xe
-         +GAwwV+5I7rU5QQb/J97dWTmckxh8rckXpngP80Nul/SU0Z2LQ3bjmRwQOmQn+IKKv0T
-         m3fJ3Dzdeyg8AelcXiG4gVUpHR7jdrdLfK9gi8C4KsGnK25qBiJtP/HELSsCCXMeiaAg
-         GXjg==
-X-Forwarded-Encrypted: i=1; AJvYcCWeJVvyl7JrM1QXQM7SBenM/ge0gUDPh/GNaIRdUdObZoOl0ggVLgnOHJO94bJoEw0FfKJLcMJC6zAMkobo5Zm3izQqPvVBuGyKfStBkUfFdP0=
-X-Gm-Message-State: AOJu0YwXbvDrRdOJQFHQG2H94+SSmt57r26mcNsyHBehe7watc/9Boux
-	iTZmeVLDVIbYpNitXzOnWC6GrDGfA2QnPuhUaHAip29Pd0ph6EP3
-X-Google-Smtp-Source: AGHT+IHo04C8KEdcciAWhLv4DtImgXgPjfgRBYtchRH2qs/BWZhaTvu8jXxY7kHGbTjic1XqsbVm+g==
-X-Received: by 2002:a05:600c:3acf:b0:411:c329:6515 with SMTP id d15-20020a05600c3acf00b00411c3296515mr6086729wms.24.1709025549984;
-        Tue, 27 Feb 2024 01:19:09 -0800 (PST)
-Received: from gmail.com (1F2EF054.nat.pool.telekom.hu. [31.46.240.84])
-        by smtp.gmail.com with ESMTPSA id a20-20020a05600c225400b00410df4bf22esm14502533wmm.38.2024.02.27.01.19.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 01:19:09 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Tue, 27 Feb 2024 10:19:07 +0100
-From: Ingo Molnar <mingo@kernel.org>
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Subject: Re: [tip: x86/apic] smp: Provide 'setup_max_cpus' definition on UP
- too
-Message-ID: <Zd2pCxSm0FKJ8DZn@gmail.com>
-References: <170894808668.398.2149303099223176501.tip-bot2@tip-bot2>
- <20240226150234.GCZdyoCtNj8lFwViAW@fat_crate.local>
+	s=arc-20240116; t=1709025588; c=relaxed/simple;
+	bh=C/oFzRJOAX2fab2jouBghp4z46x7LVa76qoFEBIuBbo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rC9SfvY7FLBovNOskdgfHlfknL+5AQmemcY84dhyKwiBE+s8AeH+lmC/y3CRpY7/d4f0XSJuwBEpzwWznANLz6WR+3JUPbKctoAt11bKlAaDiyQMXaAfuug2uQQFmJShM6UgpKSHN7XlTAMp9bDYQNrg9n9P7SKdR3usLFFK2+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LrYgYKBI; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709025583;
+	bh=C/oFzRJOAX2fab2jouBghp4z46x7LVa76qoFEBIuBbo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LrYgYKBI6DOH/pc/J7Ecmx7ttT5KIkffirla/dzc3bn81fLzhQgOIG0tqaHxOQO6G
+	 AHPdsi75rlq8QALWaEZFFOLMnlrwoXdsyiKk1xsOWeCWk0onAN0CikzdPDo16tMImq
+	 YWJoWwdmHwyZJ2+OdFQqiXuT0KSOEPJFHGHxbPSZta5y8ETLSOXTSr2mLb5OQZNC3s
+	 s+odA/MNkmLG6eIeSllVJiRBIhw9QL149crogYPIumL5bSoOWKlU6Pj6wpLYakO+TV
+	 pp6ucS/gstI4ep3IVMV1VXKk+6DvsLdZwz2Eq67loRYD2p2//hDR5NVtGUB+d7f1pL
+	 x82SfNoMjKwAg==
+Received: from eldfell (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pq)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 132A13781FA4;
+	Tue, 27 Feb 2024 09:19:43 +0000 (UTC)
+Date: Tue, 27 Feb 2024 11:19:41 +0200
+From: Pekka Paalanen <pekka.paalanen@collabora.com>
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, Melissa Wen
+ <melissa.srw@gmail.com>, =?UTF-8?B?TWHDrXJh?= Canal
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>, Daniel
+ Vetter <daniel@ffwll.ch>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/vkms: Add information on how to benchmark
+Message-ID: <20240227111941.061a2892.pekka.paalanen@collabora.com>
+In-Reply-To: <20240226-bench-vkms-v1-1-515ef91b11c8@riseup.net>
+References: <20240226-bench-vkms-v1-1-515ef91b11c8@riseup.net>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240226150234.GCZdyoCtNj8lFwViAW@fat_crate.local>
+Content-Type: multipart/signed; boundary="Sig_/Al3K0O_fW7VTKwg+hyaw9T9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/Al3K0O_fW7VTKwg+hyaw9T9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-* Borislav Petkov <bp@alien8.de> wrote:
+On Mon, 26 Feb 2024 17:42:11 -0300
+Arthur Grillo <arthurgrillo@riseup.net> wrote:
 
-> On Mon, Feb 26, 2024 at 11:48:06AM -0000, tip-bot2 for Ingo Molnar wrote:
-> > The following commit has been merged into the x86/apic branch of tip:
-> > 
-> > Commit-ID:     429bb0269058e2e1f4ab69a0d33d374933aa15b9
-> > Gitweb:        https://git.kernel.org/tip/429bb0269058e2e1f4ab69a0d33d374933aa15b9
-> > Author:        Ingo Molnar <mingo@kernel.org>
-> > AuthorDate:    Mon, 26 Feb 2024 12:07:31 +01:00
-> > Committer:     Ingo Molnar <mingo@kernel.org>
-> > CommitterDate: Mon, 26 Feb 2024 12:13:40 +01:00
-> > 
-> > smp: Provide 'setup_max_cpus' definition on UP too
-> > 
-> > This was already defined locally by init/main.c, but let's make
-> > it generic, as arch/x86/kernel/cpu/topology.c is going to make
-> > use of it to have more uniform code.
-> > 
-> > [ Keep it a C variable, not a define, because there's
-> >   some namespace overlap for the 'setup_max_cpus' token
-> >   in existing function argument names. ]
-> > 
-> > Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: linux-kernel@vger.kernel.org
-> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
-> > --
-> > ---
-> >  include/linux/smp.h | 2 ++
-> >  init/main.c         | 1 -
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> That one needs some work:
-> 
-> $ grep setup_max_cpus 13-37-17-randconfig-x86_64-2517.log
-> ...
-> ./include/linux/smp.h:221:27: warning: ‘setup_max_cpus’ defined but not used [-Wunused-const-variable=]
-> $ grep setup_max_cpus 13-37-17-randconfig-x86_64-2517.log  | wc -l
-> 122
-> 
-> very noisy.
+> Now that we have a defined benchmark for testing the driver, add
+> documentation on how to run it.
+>=20
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+> ---
+>  Documentation/gpu/vkms.rst | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
+> index ba04ac7c2167..6d07f79f77ff 100644
+> --- a/Documentation/gpu/vkms.rst
+> +++ b/Documentation/gpu/vkms.rst
+> @@ -89,6 +89,12 @@ You can also run subtests if you do not want to run th=
+e entire test::
+>    sudo ./build/tests/kms_flip --run-subtest basic-plain-flip --device "s=
+ys:/sys/devices/platform/vkms"
+>    sudo IGT_DEVICE=3D"sys:/sys/devices/platform/vkms" ./build/tests/kms_f=
+lip --run-subtest basic-plain-flip
+> =20
+> +If you are developing features that may affect performance, you can run =
+the kms_fb_stress
 
-Yeah, a bit sad.
+s/can/must/
 
-So I resolved this all with using #define and (first) fixing a namespace 
-collision that broke with the #define:
+> +benchmark::
 
-  4c8a49854130 smp: Avoid 'setup_max_cpus' namespace collision/shadowing
-  3c2f8859ae1c smp: Provide 'setup_max_cpus' definition on UP too
-  6be4ec29685c x86/apic: Build the x86 topology enumeration functions on UP APIC builds too
+before and after, and report the numbers.
+
+> +
+> +  sudo ./build/benchmarks/kms_fb_stress --device "sys:/sys/devices/platf=
+orm/vkms"
+> +  sudo IGT_DEVICE=3D"sys:/sys/devices/platform/vkms" ./build/benchmarks/=
+kms_fb_stress
+
+Do people need to run both commands?
+
+Anyway, a good idea.
+
+Acked-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+
 
 Thanks,
+pq
 
-	Ingo
+> +
+>  TODO
+>  =3D=3D=3D=3D
+> =20
+>=20
+> ---
+> base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
+> change-id: 20240226-bench-vkms-5b8b7aab255e
+>=20
+> Best regards,
+
+
+--Sig_/Al3K0O_fW7VTKwg+hyaw9T9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXdqS0ACgkQI1/ltBGq
+qqfGJRAApGG99tBnUJJr8a9IT2dsMQqZ46B5JVGCsYV1IR8pQOa7XIuuXgla19vF
+HcIiUw0SZDclUtRiK5K1p1S6VPR65Yr0wrfBGlmjJDOOoWuGwEcfPbs8e7KThpxr
+pA55UAzznjP2jXpY70ef5FE4wAbM7Q48zdEjoOd7OREkKMPjuMW0IfuQdGZp7YjZ
+RzPZPhnqVChBkRwYD5mWs8Au/gMZkaIMedg8hyAhimO6h1GDNA2GMqEFr1DSYv8A
+TBG/mkIWlCGmb+j6+V7EQzoDZODASTjtf+KRqDlQnfpZB63UnOvt83mqABUM1wYt
+ltVilQfRO3gUJYbqZchCKj5kce91amQydbnlwgtdeue5JZUYx9XUk6Pz9lOysysV
+UpCbYTKytIrS+owxhxbsCcsq0P2xeV9g+jT07ZjLU9K78XnKMeL4Tzf+8ssEfWKS
+zVmBDhaKA0l2RRBB+Md9sQqwmyCufAAz05mmXOduYSvJhZPolp2vqVpVEkrIfQ76
+Xmuw1AeC4Iz/3zAdlSL0sQ8xauwT+A/MPGaeNEfxBYjMKZj6Q8adQlQ0yFhTCcF/
++co2b/dSFYu5Pvb0G6nwH9kXGYutsM/BEeY5cXWeqez2U0tegbRSjWX8kxRdQU1i
+cRAfOOIvgzpqMyWHbPrWPf5KVDV0erWwhuVcIfQuEEfWIsKGPao=
+=FQV+
+-----END PGP SIGNATURE-----
+
+--Sig_/Al3K0O_fW7VTKwg+hyaw9T9--
 
