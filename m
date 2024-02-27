@@ -1,148 +1,152 @@
-Return-Path: <linux-kernel+bounces-83855-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00336869F50
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:46:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43E74869F52
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:47:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A054B23625
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:46:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 763DD1C21099
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465534F883;
-	Tue, 27 Feb 2024 18:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B624EB5E;
+	Tue, 27 Feb 2024 18:47:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bOGEpQ2j"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="tZatd4uG"
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BFE199AB;
-	Tue, 27 Feb 2024 18:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1E71F61D
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709059573; cv=none; b=atAEz+ofhYvQmt2sIGYP82GC1KbZH48VYXTR8m5lBQwOdqWDf6u5zR2zmz0szQemZlN8CvOFwwDGzgjpmJFKtWnfp8kN34PfZvT9lZ/G6VqM+iRFJk/2K4JbrZl1E8etyiZImI5sAkbpPm97FfGF8Uqqx6wga9egTX1aMckq/AI=
+	t=1709059647; cv=none; b=fl+M7psXF4pSBVzXqw70e6VHFzIfvaAc2zzWJmxDwVU3lpHszLAPCVEraWUDV3ZVPQHcW2rskKQTPxhd6mlPdMb3WcM+BZQT9V+hUnWQ78MGLjIKoUBXvOIjwcLPAbslPkCt3egC9PGskzimZ/6mc6j9OYbLLy75NjMAa9BLUVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709059573; c=relaxed/simple;
-	bh=oBC8oewI5RJBOPEM4QXOFwZ7+y3ncKl/QjRjP524klg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=MtC9DDuQ6znY8UeVKFZ0/F5OAnLbldLiH72Z1Qf0EELnSfXi/SG48HlrVE3Ch6kWCO0x257V0vwZqBBpwpxnhryVuTRia2MDgCC2TQG9qOKk3KubD7L/mGTfW9yIXQC0Ame6HODidPKlZCnG4Ojhatx07J2SxkFgffbpuzIcYYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bOGEpQ2j; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RExOxW022713;
-	Tue, 27 Feb 2024 18:45:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ij4CQGNgDIwyFGI+QSDhuNH/glFVWYAyh+qT7nJHK4g=; b=bO
-	GEpQ2jLpmbsjN+Gg6JqEhFhz5N5l2O69ti2P2UlCplO8nFAgZnunEp7azIPfh844
-	pfHqFEvV2AZPs2cmw9cQqFDxhW9PRDZJjhucNW72+Cekk0qBALdFcgIz7SxD5sF4
-	pmaixUqaT+45ACmLVgpc1qX/GURA7hDrBMrgdOUqUmMMcoG0j0Q40vw2rUDdBb5J
-	inZqFQWsDMqPS6zP++e4FWk861YX1HJpkczsU3Za2T282JT47tD9bGM/eGrXKG7A
-	mbO9aqfzKMfXh5H58/oWMF9EK1fiEPvNDWuoxji2F9U2rHYRKMZ03wV+CA1stlZ5
-	/kE8fzkx32NsrEcFBYYg==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whd7b1b3u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 18:45:46 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41RIjk95027971
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 18:45:46 GMT
-Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 27 Feb
- 2024 10:45:42 -0800
-Message-ID: <17c06c23-49b3-4db9-a021-82904eae6a7d@quicinc.com>
-Date: Tue, 27 Feb 2024 10:45:41 -0800
+	s=arc-20240116; t=1709059647; c=relaxed/simple;
+	bh=OCLERH5BUNWNqVAWRAIL2bEHXqesBK/d6BgnZQmH44Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ajiMZ2Re+SUygsI/WZSUDAkF34AA+X1CtuZl/TGEzj+fmEV8saFj7M+BeaedKV9bLwv0KbYVZY657fZvFdPKX7V7LQnxytILS4A8opR7J1Rd2lmN0VAdBZEzctO4WgxRjc8wOZODMlXnMchPaMrKqflhtrvgZOYjSeuIgrzWa90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=tZatd4uG; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4TkmgV1bw0zDqZN;
+	Tue, 27 Feb 2024 18:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1709059638; bh=OCLERH5BUNWNqVAWRAIL2bEHXqesBK/d6BgnZQmH44Y=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=tZatd4uGVm2YCRCBLMi8R93U94cS4xMt6Tr0tv1rUgnjpt08yWOu9QkJu0fv1F/Of
+	 x+IOUwY9RvRuyw8wFgzxvyRS2Fh02r+AQ99roFn/R0Qptyxvgx6Kep2eSaSHEbdsTG
+	 21zlNb4GepAfgsCyp8mQogVleFOtaCx80+IFy3PA=
+X-Riseup-User-ID: 4842AE2A53495A92D3F8DE93B2A9FBC67B6744533455E55C8FD1A06C80127020
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4TkmgM5zShzJpbF;
+	Tue, 27 Feb 2024 18:47:11 +0000 (UTC)
+Message-ID: <592e5da7-7aac-4735-ae8f-625402e381ae@riseup.net>
+Date: Tue, 27 Feb 2024 15:47:08 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v2] net: stmmac: dwmac-qcom-ethqos: Update link
- clock rate only for RGMII
+Subject: Re: [PATCH v3 3/9] drm/vkms: write/update the documentation for pixel
+ conversion and pixel write functions
 Content-Language: en-US
-To: Sarosh Hasan <quic_sarohasa@quicinc.com>, Vinod Koul <vkoul@kernel.org>,
-        Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu
-	<joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Prasad Sodagudi
-	<psodagud@quicinc.com>,
-        Andrew Halaney <ahalaney@redhat.com>, Rob Herring
-	<robh@kernel.org>
-CC: <kernel@quicinc.com>, Sneh Shah <quic_snehshah@quicinc.com>,
-        Suraj Jaiswal
-	<quic_jsuraj@quicinc.com>
-References: <20240226094226.14276-1-quic_sarohasa@quicinc.com>
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <20240226094226.14276-1-quic_sarohasa@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: kWK47h9DpFMyS7UTOUICurYLrPe2mflX
-X-Proofpoint-ORIG-GUID: kWK47h9DpFMyS7UTOUICurYLrPe2mflX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-27_05,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- mlxlogscore=999 priorityscore=1501 spamscore=0 adultscore=0 malwarescore=0
- mlxscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2402270145
+To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ pekka.paalanen@haloniitty.fi, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
+ miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com,
+ seanpaul@google.com, marcheu@google.com, nicolejadeyee@google.com
+References: <20240226-yuv-v3-0-ff662f0994db@bootlin.com>
+ <20240226-yuv-v3-3-ff662f0994db@bootlin.com>
+ <406988be-48a4-4762-9c03-7a27c8e7b91e@riseup.net>
+ <Zd35csjqRMstzElA@localhost.localdomain>
+From: Arthur Grillo <arthurgrillo@riseup.net>
+In-Reply-To: <Zd35csjqRMstzElA@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-On 2/26/2024 1:42 AM, Sarosh Hasan wrote:
-> Updating link clock rate for different speeds is only needed when
-> using RGMII, as that mode requires changing clock speed when the link
-> speed changes. Let's restrict updating the link clock speed in
-> ethqos_update_link_clk() to just RGMII. Other modes such as SGMII
-> only need to enable the link clock (which is already done in probe).
+On 27/02/24 12:02, Louis Chauvet wrote:
+> Le 26/02/24 - 10:07, Arthur Grillo a écrit :
+>>
+>>
+>> On 26/02/24 05:46, Louis Chauvet wrote:
+>>> Add some documentation on pixel conversion functions.
+>>> Update of outdated comments for pixel_write functions.
+>>>
+>>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+>>> ---
+>>>  drivers/gpu/drm/vkms/vkms_composer.c |  4 +++
+>>>  drivers/gpu/drm/vkms/vkms_drv.h      | 13 ++++++++
+>>>  drivers/gpu/drm/vkms/vkms_formats.c  | 58 ++++++++++++++++++++++++++++++------
+>>>  3 files changed, 66 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+>>> index c6d9b4a65809..5b341222d239 100644
+>>> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+>>> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+>>> @@ -189,6 +189,10 @@ static void blend(struct vkms_writeback_job *wb,
+>>>  
+>>>  	size_t crtc_y_limit = crtc_state->base.crtc->mode.vdisplay;
+>>>  
+>>> +	/*
+>>> +	 * The planes are composed line-by-line. It is a necessary complexity to avoid poor
+>>> +	 * blending performance.
+>>
+>> At this moment in the series, you have not yet reintroduced the
+>> line-by-line algorithm yet. Maybe it's better to add this comment when
+>> you do.
 > 
-> Signed-off-by: Sarosh Hasan <quic_sarohasa@quicinc.com>
-Reviewed-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
-
-> ---
-> v2 changelog:
-> - Addressed Konrad Dybcio comment on optimizing the patch
-> ---
->  drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c | 3 +++
->  1 file changed, 3 insertions(+)
+> Is it better with this:
 > 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> index 31631e3f89d0..c182294a6515 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
-> @@ -169,6 +169,9 @@ static void rgmii_dump(void *priv)
->  static void
->  ethqos_update_link_clk(struct qcom_ethqos *ethqos, unsigned int speed)
->  {
-> +	if (!phy_interface_mode_is_rgmii(ethqos->phy_mode))
-> +		return;
-> +
->  	switch (speed) {
->  	case SPEED_1000:
->  		ethqos->link_clk_rate =  RGMII_1000_NOM_CLK_FREQ;
+> 	/*
+> 	 * The planes are composed line-by-line to avoid heavy memory usage. It is a necessary
+> 	 * complexity to avoid poor blending performance.
+> 	 *
+> 	 * The function vkms_compose_row is used to read a line, pixel-by-pixel, into the staging
+> 	 * buffer.
+> 	 */
+>  
+>> Also, I think it's good to give more context, like:
+>> "The planes are composed line-by-line, instead of pixel-by-pixel"
+> 
+> And after PATCHv3 5/9:
+> 
+> 	/*
+> 	 * The planes are composed line-by-line to avoid heavy memory usage. It is a necessary
+> 	 * complexity to avoid poor blending performance.
+> 	 *
+> 	 * The function pixel_read_line callback is used to read a line, using an efficient 
+> 	 * algorithm for a specific format, into the staging buffer.
+> 	 */
+> 
+
+Hi,
+
+This looks good to me.
+
+Best Regards,
+~Arthur Grillo
+
+> Kind regards,
+> Louis Chauvet
+> 
+>> Best Regards,
+>> ~Arthur Grillo
+> 
+> [...]
+> 
 
