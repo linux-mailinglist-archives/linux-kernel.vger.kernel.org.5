@@ -1,137 +1,92 @@
-Return-Path: <linux-kernel+bounces-82480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC41C868521
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:45:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 064A9868502
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:30:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62661282AF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:45:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 668E6B229DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C6723D0;
-	Tue, 27 Feb 2024 00:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038D61FBB;
+	Tue, 27 Feb 2024 00:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=delyan.me header.i=@delyan.me header.b="jUfkWOjo"
-Received: from chi120.greengeeks.net (chi120.greengeeks.net [173.236.97.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eR2s4e5z"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E818A17FF
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.236.97.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B902A15CB
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708994718; cv=none; b=VIH/d+pjuv42zsxT/bmPhds+0g+6lClOKEpDT3oB4MtYdN5Grq8fGwXUQWqpxYRPyXcQmdQ94PeyAuh9EFxCYOg9hX0/lWWevxaepm/eunE9MYW6BtFPUkW2/KcQXHHxyN78DShrlJr597q5zgCw2M6aQPTTvIyoUQoJiz0/fjo=
+	t=1708993812; cv=none; b=GVGJr/xSdPcSTdOmlBGXozJbvQzGO6/B1VOLSOKVIlFPTLYMjvNwMcsXhPqo5eahqpD8qL85q9iSeIkoXX9GIhXcrHG9PP/F2WQjKMAaR63vF1YGL/I1uJks/+3XtsGhV9qa2rzzHfqwx4Zx56mN4veRRjnU9K6cdTh2pcFNQE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708994718; c=relaxed/simple;
-	bh=7+H2MX6xwa9i7NO5yIxjPjOVCwU6yvq3m4R7rDSH9sI=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OygHIFSsfoB9xNFFgH51SeB5d3ctl7jtv4DARGZjnF53zHWT/7nTKBsYifF9ScJldZqrYhDpQ5uJspPqvcdg75tz/A5waGd11jJIGBerYdOCbBX4MyYJHlsPs1aHOmGOInB5L72wS445CP7lqzgyy9RRBXX21+C2hizl1WlY7uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=delyan.me; spf=pass smtp.mailfrom=delyan.me; dkim=pass (2048-bit key) header.d=delyan.me header.i=@delyan.me header.b=jUfkWOjo; arc=none smtp.client-ip=173.236.97.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=delyan.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=delyan.me
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=delyan.me;
-	s=default; h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:
-	In-Reply-To:Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=Ha1SPmpwr7o54xPSvG08jcbF74dcwj7k4612WTVV0U8=; b=jUfkWOjooy8nEg3LDdIRlCFl3T
-	9oTNHNnU6XlTufwazPK/ZcOPMCzguudgV540s6qU8j9twtm29PeR+vrnjfGItzAkYLHEIiBwC0ZYc
-	lRB1l7QNOHKe5EdGZ4wayI2/di1KlJdG57gVi1h3UMQh5UVRH4ahdYVrcmC6pE3l1JSX5JMWdPYhA
-	Czyl13mSiZMZ0KU71xmuC189fz1CZwu3C+wVk3E69rZS4bGlDHMqjoLT0RYV2pL/wexfUl5CvB1dQ
-	2zDxCMcDU9gtWWOivLraekvQZX2ZJSMgAVuYCt4Oqkxi/Q92vKSoiNlctQGO8fBkjKgi2PLoXgS1w
-	E0MyPpiw==;
-Received: from c-98-47-236-196.hsd1.ca.comcast.net ([98.47.236.196]:39084 helo=discovery.localnet)
-	by chi120.greengeeks.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <delyan@delyan.me>)
-	id 1relLo-0001lg-3B;
-	Mon, 26 Feb 2024 18:29:39 -0600
-From: Delyan Kratunov <delyan@delyan.me>
-To: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Posix process cpu timer inaccuracies
-Date: Mon, 26 Feb 2024 16:29:38 -0800
-Message-ID: <4547873.LvFx2qVVIh@discovery>
-In-Reply-To: <87cyt0gr9r.ffs@tglx>
-References: <87cyt0gr9r.ffs@tglx>
+	s=arc-20240116; t=1708993812; c=relaxed/simple;
+	bh=yVPBQDUjuD+tYmrS/kcvNQbeUvNqDeWFlaS8iuf711I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nEblxgNQmgJY/GghBe2EyzG5IIaFy03VQoXf6U6iVa+9NO3gfU8OvwESE7/wFLbhwod2hU4WJRMxyzhRdiJDfHtMf9TpN0PPkngyN41ec7iF8Plfbsbq2fzU6p+Kum7v9WtqLY8eP7QZUpegxxNuCXfCH8cKjwNAonFOFHMRX5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eR2s4e5z; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412a2c2ce88so11715e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:30:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708993809; x=1709598609; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yVPBQDUjuD+tYmrS/kcvNQbeUvNqDeWFlaS8iuf711I=;
+        b=eR2s4e5znwsnPT9pGFOtWGAbncU1XdkeBcPNPQ1VhkOwzVISpnKdhOwFUQ1uaxwdLb
+         1FlQvJStbDGhyVgajge0XyQcoXKH9a2Q17yTN/Zrdgkh0Ek0NDLTTcXOwhXoXmpEe7Q0
+         PnhO7GEKmYxZfT6pwsIBKcON3utHf0qY0yBCFfAeCU1/KFQgMfzpIN/o5PcIdhPBsMHA
+         s+eWaSisFhUs9ivsrhI0ZYLObf1L8g4+ISgdjql0bq16wLS4mMUIw5bwrVW7y6XSSClh
+         Ouxpw/ysxsJUEnpSfUqnkmxtJuxqPbB2aD1LBIRuMIRjFPNSsEcffXBS8G1MSBH5PQ4M
+         IBiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708993809; x=1709598609;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yVPBQDUjuD+tYmrS/kcvNQbeUvNqDeWFlaS8iuf711I=;
+        b=SMRkAWSo/yBLWCuSGeJ/tdUutBRtE/1t2f2McFnOMdXQ6jKeLB3mM810NTpZV4Vdbb
+         IAT/YmSAK4JUcOHdYSe+Jnd4PDWxJboI4BWYYUPb5NGHXtuXTN2aSCI91c0sGmgQhuEN
+         SUtUvgJq/TdktyeqftnJ3ddIH36KKZ+tCuTnAO85lWkBCs36D8CqRJrGuve4FFdmxx6g
+         Y3ycQfK6pycq46MjtcI38s9ipIU2f6TcUDHt4gnk8AFnKvNZTmIPSncb9QjJo63f6f8Z
+         GtLbE+AmiUoutM5Ua+7XwyCjSiAjir+ASIoNi+4CSnBaYq15+UC9qMba/YJ5y9pLFY+h
+         LUhw==
+X-Forwarded-Encrypted: i=1; AJvYcCXldq91TqVvLIbVI4z4EnwSyRSQybY71o0QF5AXjzM/GqA3nmHhH1yoQ2sT/Htul1FOPhNzazkT7WVicyHToJhEzuMnqkKCKaG1/qXx
+X-Gm-Message-State: AOJu0Yy7Nm23X9dm+avrnO586EUhQjXo1JNXzqJj12cxUL152lRzoeop
+	VxCt1csfanNtrIbp3a5kI8laCLol352CBf72qMFxQq4+6j/rPU0a3IxedWXzBiGO1lw4iXYXndh
+	VTgABkPbrtruCA0MoOyFnK0Tu+AoP0rLMCXv5
+X-Google-Smtp-Source: AGHT+IETEJC6f2+EyT5GONac3YZaKpAj1sMifOOHbQn+MKI1RFrZIS7AeXrjdAUkcx1iBNdjj2pwYCdvplZy/5AoYzs=
+X-Received: by 2002:a05:600c:1e15:b0:412:a0b4:c7e8 with SMTP id
+ ay21-20020a05600c1e1500b00412a0b4c7e8mr47082wmb.5.1708993809089; Mon, 26 Feb
+ 2024 16:30:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - chi120.greengeeks.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - delyan.me
-X-Get-Message-Sender-Via: chi120.greengeeks.net: authenticated_id: delyan@delyan.me
-X-Authenticated-Sender: chi120.greengeeks.net: delyan@delyan.me
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20240223010328.2826774-1-jthies@google.com> <20240223010328.2826774-2-jthies@google.com>
+ <ZdxQaTmhF9q7A4p3@kuha.fi.intel.com>
+In-Reply-To: <ZdxQaTmhF9q7A4p3@kuha.fi.intel.com>
+From: Jameson Thies <jthies@google.com>
+Date: Mon, 26 Feb 2024 16:29:57 -0800
+Message-ID: <CAMFSARftofJ=iox6zy_23PhaiHgKgtwcc1Qrc0RqPvCmCeePkg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] usb: typec: ucsi: Clean up UCSI_CABLE_PROP macros
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com, 
+	abhishekpandit@chromium.org, andersson@kernel.org, 
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com, 
+	gregkh@linuxfoundation.org, hdegoede@redhat.com, neil.armstrong@linaro.org, 
+	rajaram.regupathy@intel.com, saranya.gopal@intel.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Thanks for your detailed response, Thomas, I appreciate you taking the time 
-with my random side quest!
+> This is missing CC stable.
 
-> [...]
->
-> That's wishful thinking and there is no way to ensure that.
-> Just for the record: setitimer() has been marked obsolescent in the
-> POSIX standard issue 7 in 2018. The replacement is timer_settime() which
-> has a few interesting properties vs. the overrun handling.
-
-This is a great point and I think it overrides anything I have to say about 
-setitimer. Overall, I have nothing to rehash on the process signal delivery 
-point, I understand the situation now, thanks to your thorough explanation!
-
-> [...]
-> I don't know and those assumptions have been clearly wrong at the point
-> where the tool was written.
-
-That was my impression as well, thanks for confirming. (I've found at least 3 
-tools with this same incorrect belief)
-
-> [...]
-> > they still have the same distribution issues.
-> 
-> CLOCK_THREAD_CPUTIME_ID exists for a reason and user space can correlate
-> the thread data nicely.
-> 
-> Aside of that there are PMUs and perf which solve all the problems you
-> are trying to solve in one go.
-
-Absolutely, the ability to write a profiler with perf_event_open is not in 
-question at all. However, not every situation allows for PMU or 
-perf_event_open access. Timers could form a nice middle ground, in exactly the 
-way people have tried to use them.
-
-I'd like to push back a little on the "CLOCK_THREAD_CPUTIME_ID fixes things" 
-point, though. From an application and library point of view, the per-thread 
-clocks are harder to use - you need to either orchestrate every thread to 
-participate voluntarily or poll the thread ids and create timers from another 
-thread. In perf_event_open, this is solved via the .inherit/.inherit_thread 
-bits.
-
-More importantly, they don't work for all workloads. If I have 10 threads that 
-each run for 5ms, a 10ms process timer would fire 5 times, while per-thread 
-10ms timers would never fire. You can easily imagine an application that 
-accrues all its cpu time in a way that doesn't generate a single signal (in 
-the extreme, threads only living a single tick).
-
-Overall, what I want to establish is whether there's a path to achieve the 
-_assumed_ interface that these tools expect - process-wide cpu signals that 
-correlate with where cpu time is spent - through any existing or extended 
-timer API. This interface would be imminently useful, as people have clearly,
-albeit misguidedly, demonstrated.
-
-If the answer is definitely "no," I'd like to at least add some notes to the 
-man pages.
-
--- Delyan
-
-
+Ack. I'm planning a v2 version of this series to address the other
+comments and will CC stable there.
 
