@@ -1,136 +1,128 @@
-Return-Path: <linux-kernel+bounces-83313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0DA98691BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:27:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DB128691C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:27:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 994F128F457
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:27:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 718691C22DCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E08C13B78E;
-	Tue, 27 Feb 2024 13:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE46F13B2A7;
+	Tue, 27 Feb 2024 13:27:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZCWgK8nC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YiYsfqrN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6DD13B2A9;
-	Tue, 27 Feb 2024 13:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222A913A25D;
+	Tue, 27 Feb 2024 13:27:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709040423; cv=none; b=nUXwBj177d0xgRsKpbVpdKgzNtD8Vr9HWGfABGdUsxUt3hUc3GUZyKnkl5XaMcyNzPQtGGXAMuzVv/DjZbVUdjv/MGf0VJynEkARmmid+myLJ0VaAnF/02RN1Cn9zIQiRPZtGy3YNun+zXjp6j8HZq7P6+9C5LZXnILwMdCCRoc=
+	t=1709040428; cv=none; b=Nh5FtIS1vq3Mjx2AEPAhaW7qUEByV9pMMQBDxjjEhMFX8j/Cb6fFAWSpM8msDCnCwaCoG6ZYz6wNcPsRGMhqVUq8R8gCw0hUQnHexIEssnFBYfvKkQX6rzGkE/zPx3ZjNHdSrbIwsXATycX47DtkwbzvYWrCkyaRHXFGtYWZ3k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709040423; c=relaxed/simple;
-	bh=yYxg/i0g4KAnPdT2UJlvna1xTvMCnP9hCbmuoj80UwA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BsrilDFPPDPT/FIAlz4+mXW03AjjOxYVjixp5pNpU11MdL6s4yT/GMAQV/iR9ogrVc6buwFBQ7QAEGRn/IU9Ev+/yaRpfSyTi15jnwrhA2dTi1wnriKW34B3Pf+9jkM/xUaXcEx/Px97WXuH6kWAAfEcdakZ9/EwZc93kuFkg+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZCWgK8nC; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709040423; x=1740576423;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=yYxg/i0g4KAnPdT2UJlvna1xTvMCnP9hCbmuoj80UwA=;
-  b=ZCWgK8nCXuePHi0NFc8UXT0onrfVWoLJVUvzBcJJsq0kxU1M9OvnFo00
-   ze4RFePYxBQYpZpJVTyrKcFPo0jtVoV/+TjlPLTIPZjJMRheNVub0SoQh
-   ztGtcquomAWDd5fPZFdiKDLLbX468dFRQppF49xQe/evG8Pf2pyvxn9ty
-   VdSh0DhWfLLBpP3LamMDwct23kNQ74WNqwIQwJp0NnkxCD41LkL7NfkwO
-   vXobss1lM7V9qTSonQIASt79RKAeaPqOv0Yk73US+AtXJea0ZzNJ4PtDV
-   JN/jldqNAPIbSdPq9UeJNF77HUxkRmQzfQDrUPk48kQ1weSplK1mjTkk4
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3507308"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="3507308"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 05:27:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="38075100"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 05:26:55 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with ESMTP id 031C511F855;
-	Tue, 27 Feb 2024 15:26:52 +0200 (EET)
-Date: Tue, 27 Feb 2024 13:26:51 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Zhi Mao <zhi.mao@mediatek.com>, mchehab@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	laurent.pinchart@ideasonboard.com, shengnan.wang@mediatek.com,
-	yaya.chang@mediatek.com, 10572168@qq.com,
-	Project_Global_Chrome_Upstream_Group@mediatek.com,
-	yunkec@chromium.org, conor+dt@kernel.org, matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	jacopo.mondi@ideasonboard.com, hverkuil-cisco@xs4all.nl,
-	heiko@sntech.de, jernej.skrabec@gmail.com, macromorgan@hotmail.com,
-	linus.walleij@linaro.org, hdegoede@redhat.com,
-	tomi.valkeinen@ideasonboard.com, gerald.loacker@wolfvision.net,
-	bingbu.cao@intel.com, dan.scally@ideasonboard.com,
-	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v6 2/2] media: i2c: Add GC08A3 image sensor driver
-Message-ID: <Zd3jG2HC3mR0dQR3@kekkonen.localdomain>
-References: <20240227013221.21512-1-zhi.mao@mediatek.com>
- <20240227013221.21512-3-zhi.mao@mediatek.com>
- <CAHp75VciCJuoOwC8ozanWYqSCM=vWpiaqymJ2-gQfrSt5Ts6fQ@mail.gmail.com>
+	s=arc-20240116; t=1709040428; c=relaxed/simple;
+	bh=mQuoPMjiuf8ynXjuDbiiuc6MSut0kX4NXC2fBVQm6FQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RqYVIs7BLwIEROh3UN3Cc+DJlndYlC8P3k2XFlYhsaPW8MP1+yQFTT9/kD1xPhrQqqAeCum2SLDK5z7VoTrOW3XfeQ1hGDEpkMlHku8HuUAqmxPtQCLko9cp6WwIU5FYzHwUgtXoB/lzjxDY97uuRLBqRxqQM6FC59g1OXS5F7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YiYsfqrN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C53CC43390;
+	Tue, 27 Feb 2024 13:27:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709040427;
+	bh=mQuoPMjiuf8ynXjuDbiiuc6MSut0kX4NXC2fBVQm6FQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YiYsfqrNmxelw6OLCadO4d24dF73YVqv4GXCnzuNjZu47FB3rTy1hLVSKKAefEn1s
+	 ZMDN8gvO4BI8MI5h5oSI9qx85Gz8zdwEdyk5aGSjNSqYu1swE/C6/dcwxG2Ssf/V6p
+	 XH2rJg1Gc/o2ziShAi0h6jOS0LMybeZg5kh1ao5XhYDLQh3aICvvUNI7NjFpGLeW7u
+	 X5l5k1SHu5oQ2RzsIRiRv47fR/9KGDtu3DeKi7G+RXf8Dg2gnwpuJv/NZCdkH1BCD0
+	 85J66xJ7KqCX83NhABKxeyFSWFJHqZObxs8XA1oRVABAdLOzaeGmnowo8GwAvfctE+
+	 IU+Mjg83pNh8A==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512fe342841so1770883e87.0;
+        Tue, 27 Feb 2024 05:27:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVysh9KTj7+CwVyW2d8AJbZqez+bRdfLq2PvE4eI6DJBrEhoOr4Dj/PXISrpyOMtJLOdrLOaBStyo6ODZ/i1Xw0e6a6mpYeLIbp22PdwJcpjARlF4/XDQnLocx7rrErruJqqIkZHzB/r8djJu2A2iKgzrKX6P4dVompyJpIH6xQ1XkJ11gVOkwAIUcRTJfLjxOrIiPWwlRqTxBbRz4BlYvB1HW3cKe10qF2AtIwozTWhwrCU8zo+OaYLcm1iDy21Ji992M/U2JB2gIujvWb9IQEHe5VMDgmQbOn
+X-Gm-Message-State: AOJu0YxmAxNKZNPuYfZvSQ5Vjveg/uKVOFtFjdsIJRBle3omyhOESyQm
+	T5G1SBqZhgS7r9JYZ5YJb1wW+jlWUw3p7dfUC227j0BzNDTzOb2SYH1EbWX3ZPWLj3yy4gNWofR
+	oYO0/sJreaY/i6fhgmZjkJPPBtg==
+X-Google-Smtp-Source: AGHT+IGSECgtfha3Slu/bp01d2++70z6Ndl3JBsL88LZ7J9E4A1ZYVnx89bJzdpkH8hy8sv4XeL5Ccsb8VUnBLV0130=
+X-Received: by 2002:ac2:5611:0:b0:513:7b1:848c with SMTP id
+ v17-20020ac25611000000b0051307b1848cmr545044lfd.18.1709040425849; Tue, 27 Feb
+ 2024 05:27:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VciCJuoOwC8ozanWYqSCM=vWpiaqymJ2-gQfrSt5Ts6fQ@mail.gmail.com>
+References: <20240222174343.3482354-2-robh@kernel.org> <ZdemsdGQE0RtilCd@shikoro>
+ <CAL_JsqKpn6jqktRLQUx7HMrJG0PZeiOZ=hQnHpZK6AHcM22CLQ@mail.gmail.com> <Zdkda5jf072mENvK@shikoro>
+In-Reply-To: <Zdkda5jf072mENvK@shikoro>
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 27 Feb 2024 07:26:52 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+Wus0CFpD3+b1Ewfv0e7iCE35gzsAwahBxErex6tY5Ww@mail.gmail.com>
+Message-ID: <CAL_Jsq+Wus0CFpD3+b1Ewfv0e7iCE35gzsAwahBxErex6tY5Ww@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: i2c: Remove obsolete i2c.txt
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Andi Shyti <andi.shyti@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, 
+	Jonathan Hunter <jonathanh@nvidia.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, linux-gpio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org, 
+	linux-i3c@lists.infradead.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andy,
-
-On Tue, Feb 27, 2024 at 02:46:54PM +0200, Andy Shevchenko wrote:
-> On Tue, Feb 27, 2024 at 3:33 AM Zhi Mao <zhi.mao@mediatek.com> wrote:
+On Fri, Feb 23, 2024 at 4:34=E2=80=AFPM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> Hi Rob,
+>
+> > > * In the schema, "clock-frequency" has a minimum of 1kHz and a maximu=
+m
+> > >   of 3MHz. Why? The specs do not say anything about a minimum freq an=
+d
+> > >   fastest speed mentioned in the docs is 5Mhz (Ultra fast mode).
 > >
-> > Add a V4L2 sub-device driver for Galaxycore GC08A3 image sensor.
-> 
-> ...
-> 
-> > +/*
-> > + * gc08a3.c - gc08a3 sensor driver
-> 
-> Drop the filename from the file, it's impractical (esp. if the file
-> will be renamed for some reason in the future).
-> 
-> > + *
-> > + * Copyright 2023 MediaTek
+> > IIRC, the high speed mode originally topped out at 3MHz. I guess
+> > that's been revised.
+>
+> Hs-mode has a max of 3.4MHz...
+>
+> >
+> > We can drop the minimum.
+>
+> ... but I see you changed min/max now to 1/5000000. That's what I would
+> have suggested as well.
+>
+>
+> > > * new binding "i2c-scl-clk-low-timeout-us" has a description which I =
+do
+> > >   not understand. What is a waiting state?
+> >
+> > Shrug. May have to look at the MPC h/w that uses the property.
+>
+> I will also have another look. My gut feeling is that the binding is
+> okay, only the description might need an update.
+>
+> > >
+> > > * new binding "no-detect" is broken. At the least, it should be named
+> > >   something like "bus-fully-described" and then the OS can decide to
+> > >   leave out auto-detection mechanisms. If you are interested in the
+> > >   latter, you can simply disable class based instantiation on the hos=
+t
+> > >   controller. No need to describe this in DT.
+> >
+> > I've reverted the property now.
+>
+> Cool, thanks!
 
-You could update the year.
+I don't think there's anything else to discuss on this patch, can I
+get your ack?
 
-..
-
-> 
-> > +       endpoint =
-> > +               fwnode_graph_get_endpoint_by_id(dev_fwnode(dev), 0, 0,
-> > +                                               FWNODE_GRAPH_ENDPOINT_NEXT);
-> > +       if (!endpoint) {
-> 
-> Strictly speaking dev_fwnode(dev) might be NULL or an error pointer. I
-> dunno how the graph is implemented there and if it's possible to get
-> an error pointer out of it. At least this probably needs to be aligned
-> there at some point.
-
-This is fine---the fwnode API returns errors (for functions that can) for
-NULL or error pointer fwnodes.
-
-The patches are in my tree already, please post a patch on top of this that
-I can squash.
-
--- 
-Regards,
-
-Sakari Ailus
+Rob
 
