@@ -1,167 +1,148 @@
-Return-Path: <linux-kernel+bounces-83115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EDE868E99
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:18:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BEF1868E9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 780B428385E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:18:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06635B23AD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:20:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E924D139592;
-	Tue, 27 Feb 2024 11:18:14 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD25139583;
+	Tue, 27 Feb 2024 11:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="x1yqMzDr"
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA05137C38;
-	Tue, 27 Feb 2024 11:18:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F7452A8C1;
+	Tue, 27 Feb 2024 11:20:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709032694; cv=none; b=ZOVtq+u/WGf2LkJ0EgmshExEiLVc2am4ir24uayrDdkpKWhmIbSDethQSXfpus3UYvk6FwMxx9lRwHhTqnuWTX/csVzLAW+1c0/e6a6hEI+abefl8k/mLB/Lk+vQ37HVTMHMFiW8nuxxzWkhU0s9P8JWrOfkWL0FnisSDIr8YkQ=
+	t=1709032815; cv=none; b=ptQrWN19+0PqkwXoHAZMFrw2iFF2sYMADfCEm30GGlFsrwWAsJ3al2WfBTlqQvktppOVZx5UuQTXWVRS/Tmx0jWylrc3i0nDc6pKX5tYhxR33aTL4b6YU3+rmV5Msx+qfiyklq6pivlfzvV/A1EpaSDEUNH61TRxYIf1ZiV5aPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709032694; c=relaxed/simple;
-	bh=G58AunBYkCt/gms7o+OJA0kSa7jWnIXDwId2W/wpJyY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UXb4kYlcLK9bQ6mP8nW1J9NN1iIvZCFzAbQJVbWh+8iu6HMd2ONA3XkRfhpJWajmQFA9o3QgiOGI0J/mka772zwR5MbM756VCT0qZGnI9buGEko0RsPoPSCFxap2oTJX/DPeddBmMWoOkNsuL042jsusRN3LB3+cR70eCePDxTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-607e60d01b2so20555167b3.1;
-        Tue, 27 Feb 2024 03:18:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709032691; x=1709637491;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DjZve7pGUlAuiB1y5Evv/dfTmjlQGRjAirpVZxXZfKE=;
-        b=qTeg0+Nvl3RI2ibWi5eDrV+iiVJaB4vT6ZzWQHuSCdWdGo2C8pL7dQ6Z4I4yhJBBUR
-         +IrnNSGO5WkK/T4qDyLIPdHlGgkde4TWfzjfTYPU+v0OGFzMC0Tw5GUbT2PE+vPT1DGX
-         NNYDnfdP+qRofUx9A7WvGho6Xon9VHEYpZrTGCkm/auVOYrYdK6eH5wnoA5BVk+Nftua
-         PrjCNKRQjhk6zhWFRm+R+xcZ3N2qjXQRVaQGmOXnXJSu4oNk36cMnonYVxFaiAj9w7Ki
-         Wcwaf9kGAEEUKpqz56H0i9ktAGvqq/UYzd3zoIcn9My3zlRhlV85jcLg6QDAZJWNF83n
-         iECw==
-X-Forwarded-Encrypted: i=1; AJvYcCV17XSGGYQhkvA14SjIhIC9Ue/OTdjRXcqG5pQykoNYgecVAuK9NGQwVc7mC/pr/uQjHN12N4fo7+ptYv4Dg94VglLr2ljdSva5Do0EJgJls5XVXaqcYzARTcRqn1i2pNtfKnRZuwDJ5zA3
-X-Gm-Message-State: AOJu0YyhxC4cTrb1QuaD9ngHzqJfgmzoyKih434YWiwhlOeTm3R8B/OG
-	/7KtTvo7MdYRKZg+kKSgGrOOEWqFiGYShMahK/fgy0k7r2J0e6AUXdqevbP0S/E=
-X-Google-Smtp-Source: AGHT+IFzG+Tn29xVPiMOUoH/5hkruSItmYuA5oPtOMfe3j2K2LFWINOdZHtc2d97CcEBMje0HflCKA==
-X-Received: by 2002:a81:e40d:0:b0:608:718c:c4e7 with SMTP id r13-20020a81e40d000000b00608718cc4e7mr1629852ywl.43.1709032691326;
-        Tue, 27 Feb 2024 03:18:11 -0800 (PST)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id u187-20020a8184c4000000b00608a212f5cesm1717182ywf.86.2024.02.27.03.18.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 03:18:10 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3891671276.1;
-        Tue, 27 Feb 2024 03:18:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXI5ssxUd6I6uLR4zQ+/OyB9IOzSfPNKhR4gOhj4O8HEngwFssMq69/64iSiGhV/rDX9xU5YjV9iArkQeBi8+0LtVFKfNjRW1llzHeXTaeqBuZq3J/wqfGjNNAMU4R15mNOxyKwG2bSfNA/
-X-Received: by 2002:a5b:5d1:0:b0:dbf:487b:1fe7 with SMTP id
- w17-20020a5b05d1000000b00dbf487b1fe7mr1859795ybp.17.1709032690695; Tue, 27
- Feb 2024 03:18:10 -0800 (PST)
+	s=arc-20240116; t=1709032815; c=relaxed/simple;
+	bh=kdPMwJOhfJgg9gGm+J+k23KPey7iTw4bgo1JgzYNRwc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ovpzm591lP2m9ey7EgoaELQ7S4TNoPBNy6d3BErfzp8ZunK9TZLlzcchpU2FzJFxu1ERrFSkJW3AkB2y8FcuqkHikdkcryq0ufXZTNxMHboU9861FHR0vgD1k9SoLoU16/0DTevMulSnsPSmptdzAsi1YdF5U21oeMZyV3iTCcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=x1yqMzDr; arc=none smtp.client-ip=115.124.30.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709032804; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=Ep8dMZzmk15xqlqQL7RaK3mkeF/5/DFYGYZbEAf2sXs=;
+	b=x1yqMzDr2lT01JeB/L60w3/wEY6ufBlomdmj+d59DifYCmNlub89c5m1CCjlrzRp7evZCpYfau5ZulZpsVtifU3V/uHteJSTY6aDNIGnsSqLW01GTIgGoZRV7HuDS8+/5qY3VhND0Fqbm4nsrShoKxdbr9+jS5Qce3rcLHwJXoM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W1MauK8_1709032801;
+Received: from 30.178.67.122(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W1MauK8_1709032801)
+          by smtp.aliyun-inc.com;
+          Tue, 27 Feb 2024 19:20:02 +0800
+Message-ID: <e78357ae-7b00-446c-b010-3bd770892c9e@linux.alibaba.com>
+Date: Tue, 27 Feb 2024 19:20:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
-In-Reply-To: <20240223-fix_sparse_errors_checksum_tests-v10-1-b6a45914b7d8@rivosinc.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 27 Feb 2024 12:17:58 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW16fs2rtHkwyGK_+Fhgi5LOFVYb6vPN4mTw3Fhjv1sqg@mail.gmail.com>
-Message-ID: <CAMuHMdW16fs2rtHkwyGK_+Fhgi5LOFVYb6vPN4mTw3Fhjv1sqg@mail.gmail.com>
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Guenter Roeck <linux@roeck-us.net>, David Laight <David.Laight@aculab.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Helge Deller <deller@gmx.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, 
-	Parisc List <linux-parisc@vger.kernel.org>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, Arnd Bergmann <arnd@arndb.de>, 
-	linux-kernel@vger.kernel.org, Palmer Dabbelt <palmer@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv10 3/4] genirq: Avoid summation loops for /proc/interrupts
+Content-Language: en-US
+To: Thomas Gleixner <tglx@linutronix.de>, dianders@chromium.org,
+ liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
+ kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
+ tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+ jan.kiszka@siemens.com
+Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <20240226020939.45264-1-yaoma@linux.alibaba.com>
+ <20240226020939.45264-4-yaoma@linux.alibaba.com> <87le769s0w.ffs@tglx>
+From: Bitao Hu <yaoma@linux.alibaba.com>
+In-Reply-To: <87le769s0w.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Charlie,
+Hi,
 
-Thanks for your patch!
+On 2024/2/27 17:26, Thomas Gleixner wrote:
+> On Mon, Feb 26 2024 at 10:09, Bitao Hu wrote:
+>> We could use the irq_desc::tot_count member to avoid the summation
+>> loop for interrupts which are not marked as 'PER_CPU' interrupts in
+>> 'show_interrupts'. This could reduce the time overhead of reading
+>> /proc/interrupts.
+> 
+> "Could" is not really a technical term. Either we do or we do not. Also
+> please provide context for your change and avoid the 'We'.
+OK.
+> 
+>> --- a/include/linux/irqdesc.h
+>> +++ b/include/linux/irqdesc.h
+>> @@ -121,6 +121,8 @@ static inline void irq_unlock_sparse(void) { }
+>>   extern struct irq_desc irq_desc[NR_IRQS];
+>>   #endif
+>>
+>> +extern bool irq_is_nmi(struct irq_desc *desc);
+>> +
+> 
+> If at all this wants to be in kernel/irq/internal.h. There is zero
+> reason to expose this globally.
+> 
+>> -static bool irq_is_nmi(struct irq_desc *desc)
+>> +bool irq_is_nmi(struct irq_desc *desc)
+>>   {
+>>   	return desc->istate & IRQS_NMI;
+>>   }
+> 
+> If at all this really wants to be a static inline in internals.h, but
+> instead of blindly copying code this can be done smarter:
+> 
+> unsigned int kstat_irq_desc(struct irq_desc *desc)
+> {
+> 	unsigned int sum = 0;
+> 	int cpu;
+> 
+> 	if (!irq_settings_is_per_cpu_devid(desc) &&
+> 	    !irq_settings_is_per_cpu(desc) &&
+> 	    !irq_is_nmi(desc))
+> 		return data_race(desc->tot_count);
+> 
+> 	for_each_possible_cpu(cpu)
+> 		sum += data_race(*per_cpu_ptr(desc->kstat_irqs, cpu));
+> 	return sum;
+> }
+> 
+> and then let kstat_irqs() and show_interrupts() use it. See?
 
-On Fri, Feb 23, 2024 at 11:12=E2=80=AFPM Charlie Jenkins <charlie@rivosinc.=
-com> wrote:
-> The test cases for ip_fast_csum and csum_ipv6_magic were not properly
-> aligning the IP header, which were causing failures on architectures
-> that do not support misaligned accesses like some ARM platforms. To
-> solve this, align the data along (14 + NET_IP_ALIGN) bytes which is the
-> standard alignment of an IP header and must be supported by the
-> architecture.
->
-> Furthermore, all architectures except the m68k pad "struct
-> csum_ipv6_magic_data" to 44 bits. To make compatible with the m68k,
-> manually pad this structure to 44 bits.
+I have a concern. kstat_irqs() uses for_each_possible_cpu() for
+summation. However, show_interrupts() uses for_each_online_cpu(),
+which means it only outputs interrupt statistics for online cpus.
+If we use for_each_possible_cpu() in show_interrupts() to calculate
+'any_count', there could be a problem with the following scenario:
+If an interrupt has a count of zero on online cpus but a non-zero
+count on possible cpus, then 'any_count' would not be zero, and the
+statistics for that interrupt would be output, which is not the
+desired behavior for show_interrupts(). Therefore, I think it's not
+good to have kstat_irqs() and show_interrupts() both use the same
+logic. What do you think?
 
-s/bits/bytes/ everywhere
+> 
+> With that a proper changelog would be:
+> 
+>     show_interrupts() unconditionally accumulates the per CPU interrupt
+>     statistics to determine whether an interrupt was ever raised.
+> 
+>     This can be avoided for all interrupts which are not strictly per CPU
+>     and not of type NMI because those interrupts provide already an
+>     accumulated counter. The required logic is already implemented in
+>     kstat_irqs().
+> 
+>     Split the inner access logic out of kstat_irqs() and use it for
+>     kstat_irqs() and show_interrupts() to avoid the accumulation loop
+>     when possible.
+> 
 
->
-> Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_cs=
-um")
-> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-> ---
-> The ip_fast_csum and csum_ipv6_magic tests did not work on all
-> architectures due to differences in misaligned access support.
-> Fix those issues by changing endianness of data and aligning the data.
->
-> This patch relies upon a patch from Christophe:
->
-> [PATCH net] kunit: Fix again checksum tests on big endian CPUs
->
-> https://lore.kernel.org/lkml/73df3a9e95c2179119398ad1b4c84cdacbd8dfb6.170=
-8684443.git.christophe.leroy@csgroup.eu/t/
-> ---
-> Changes in v10:
-> - Christophe Leroy graciously decided to re-write my patch to fit his
->   style so I have dropped my endianness+sparse changes and have based by
->   alignment fixes on his patch. The link to his patch can be seen above.
-> - I dropped Guenter's tested-by but kept his reviewed-by since only the b=
-ase
->   was changed.
-> - Link to v9: https://lore.kernel.org/r/20240221-fix_sparse_errors_checks=
-um_tests-v9-0-bff4d73ab9d1@rivosinc.com
-
-> --- a/lib/checksum_kunit.c
-> +++ b/lib/checksum_kunit.c
-
-> @@ -595,28 +473,31 @@ static void test_ip_fast_csum(struct kunit *test)
->  static void test_csum_ipv6_magic(struct kunit *test)
->  {
->  #if defined(CONFIG_NET)
-> -       const struct in6_addr *saddr;
-> -       const struct in6_addr *daddr;
-> +       struct csum_ipv6_magic_data {
-> +               const struct in6_addr saddr;
-> +               const struct in6_addr daddr;
-> +               __le32 len;
-> +               __wsum csum;
-> +               unsigned char proto;
-> +               unsigned char pad[3];
-> +       } *data;
-
-If having a size of 44 bytes is critical, you really want to add a
-BUILD_BUG_ON() check for that.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Best Regards,
+	Bitao Hu
 
