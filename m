@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-82929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4AE7868BE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:13:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1A75868BE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D74A71C21F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:13:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7833EB29B53
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44CFF13AA22;
-	Tue, 27 Feb 2024 09:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACDBC136666;
+	Tue, 27 Feb 2024 09:11:40 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A46313A87C
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8265136657
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709025021; cv=none; b=aL8GiHOsB5WOynxh9WOAziqTpwgRRH+7lDgBul5uEs9wdVZekZwYuDYrMJncusEkZiuzlL7Jgei+46pQ0iYTTXsO+NHa6EgrT94a5pXeItb15S4jQbkdZ6PxYHyM9eS2yHgFnmBmYWJWom4nJBnIil04Rokc9gDYauooCOoTuPs=
+	t=1709025100; cv=none; b=TxqzIvoXr+qvg9uq3YFNQ8pZVaZcaxqUvuBrJRGpkKpSG4YZPXX3bo9uJkyf3fZ+jCnMY49hr8qlw+UtwjJsX9TKb5i3kjgYt+tjv0t1A7bxWtw79VITJ1TOrkLomId7uCbRQ5eT+i1l55amuyRUpuOp9mRszno30t1KSuOmgi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709025021; c=relaxed/simple;
-	bh=iKt/FJSJlIUobet9tOnZhP4EyVnmjjds2m/Rz82uPuw=;
+	s=arc-20240116; t=1709025100; c=relaxed/simple;
+	bh=qMLHym6yNvFLmUfm3UsVaWLkuqL0S1B5ZeBX1KCN1VA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BUjs7gGFNoGG2qczk+tkhVOVp/CQMomp3Po4XeGcUFK8MfHl5wwjStYDSS9QPjgAWiiJQ+8wDZOQiB3+qTQ6whbpvMrxh3Nn4U9E4xk6BT8APJKS2aIuc+AUk6U0bopb6ynLVUcV+tYr8ttlVutgPyLEWr0deOI2lUEb0/8jyIc=
+	 In-Reply-To:Content-Type; b=meNAQsRIUOdpyijGy40kCVluJNaupELcV1267j3ZAgN9VRaBo34BC6D0FJDbLX7lszyuwkDtE2wGsa+yGqf7egWxRt8S/Wo9zHMY0f+wtwwhKr0lTQ3imx31JiDghhjxvppJJFMnHkZmnCT0TmbM/LulIdwkc/kBsTDdu4n21tM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE808DA7;
-	Tue, 27 Feb 2024 01:10:56 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C163DA7;
+	Tue, 27 Feb 2024 01:12:15 -0800 (PST)
 Received: from [10.57.67.4] (unknown [10.57.67.4])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B01243F762;
-	Tue, 27 Feb 2024 01:10:15 -0800 (PST)
-Message-ID: <f6ee8263-ab8b-40f8-a40c-2badee58ae17@arm.com>
-Date: Tue, 27 Feb 2024 09:10:13 +0000
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB49E3F762;
+	Tue, 27 Feb 2024 01:11:35 -0800 (PST)
+Message-ID: <4c3d1891-e784-4599-9640-4ff092ba7a31@arm.com>
+Date: Tue, 27 Feb 2024 09:11:35 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,112 +41,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] madvise:madvise_cold_or_pageout_pte_range(): allow split
- while folio_estimated_sharers = 0
+Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
+ need it
 Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
- Yin Fengwei <fengwei.yin@intel.com>, Yu Zhao <yuzhao@google.com>,
- David Hildenbrand <david@redhat.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>,
- Matthew Wilcox <willy@infradead.org>, Minchan Kim <minchan@kernel.org>,
- Vishal Moola <vishal.moola@gmail.com>, Yang Shi <shy828301@gmail.com>
-References: <20240221085036.105621-1-21cnbao@gmail.com>
- <71fa4302-2df6-4e55-a5a8-7609476c41d4@arm.com>
- <CAGsJ_4wj_xcrMkw9+W79TpO73nPQx+rs=zPj7_5kWVMAvHUGTA@mail.gmail.com>
+To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+ linux-mm@kvack.org, David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>,
+ Lance Yang <ioworker0@gmail.com>, Yin Fengwei <fengwei.yin@intel.com>
+References: <20240227024050.244567-1-21cnbao@gmail.com>
+ <CAGsJ_4yF+kuTtN4YmtwSvfcCRqixvzL5qT0BLLfTg9nLLsReZg@mail.gmail.com>
 From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4wj_xcrMkw9+W79TpO73nPQx+rs=zPj7_5kWVMAvHUGTA@mail.gmail.com>
+In-Reply-To: <CAGsJ_4yF+kuTtN4YmtwSvfcCRqixvzL5qT0BLLfTg9nLLsReZg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 26/02/2024 21:17, Barry Song wrote:
-> On Tue, Feb 27, 2024 at 2:46 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+On 27/02/2024 03:18, Barry Song wrote:
+> On Tue, Feb 27, 2024 at 3:41 PM Barry Song <21cnbao@gmail.com> wrote:
 >>
->> On 21/02/2024 08:50, Barry Song wrote:
->>> From: Barry Song <v-songbaohua@oppo.com>
->>>
->>> The purpose is stopping splitting large folios whose mapcount are 2 or
->>> above. Folios whose estimated_shares = 0 should be still perfect and
->>> even better candidates than estimated_shares = 1.
->>>
->>> Consider a pte-mapped large folio with 16 subpages, if we unmap 1-15,
->>> the current code will split folios and reclaim them while madvise goes
->>> on this folio; but if we unmap subpage 0, we will keep this folio and
->>> break. This is weird.
->>>
->>> For pmd-mapped large folios, we can still use "= 1" as the condition
->>> as anyway we have the entire map for it. So this patch doesn't change
->>> the condition for pmd-mapped large folios.
->>> This also explains why we had been using "= 1" for both pmd-mapped and
->>> pte-mapped large folios before commit 07e8c82b5eff ("madvise: convert
->>> madvise_cold_or_pageout_pte_range() to use folios"), because in the
->>> past, we used the mapcount of the specific subpage, since the subpage
->>> had pte present, its mapcount wouldn't be 0.
->>>
->>> The problem can be quite easily reproduced by writing a small program,
->>> unmapping the first subpage of a pte-mapped large folio vs. unmapping
->>> anyone other than the first subpage.
->>>
->>> Fixes: 2f406263e3e9 ("madvise:madvise_cold_or_pageout_pte_range(): don't use mapcount() against large folio for sharing check")
->>> Cc: Yin Fengwei <fengwei.yin@intel.com>
->>> Cc: Yu Zhao <yuzhao@google.com>
->>> Cc: Ryan Roberts <ryan.roberts@arm.com>
->>> Cc: David Hildenbrand <david@redhat.com>
->>> Cc: Kefeng Wang <wangkefeng.wang@huawei.com>
->>> Cc: Matthew Wilcox <willy@infradead.org>
->>> Cc: Minchan Kim <minchan@kernel.org>
->>> Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
->>> Cc: Yang Shi <shy828301@gmail.com>
->>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->>> ---
->>>  mm/madvise.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/mm/madvise.c b/mm/madvise.c
->>> index cfa5e7288261..abde3edb04f0 100644
->>> --- a/mm/madvise.c
->>> +++ b/mm/madvise.c
->>> @@ -453,7 +453,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->>>               if (folio_test_large(folio)) {
->>>                       int err;
->>>
->>> -                     if (folio_estimated_sharers(folio) != 1)
->>> +                     if (folio_estimated_sharers(folio) > 1)
->>>                               break;
->>>                       if (pageout_anon_only_filter && !folio_test_anon(folio))
->>>                               break;
+>> From: Barry Song <v-songbaohua@oppo.com>
 >>
->> I wonder if we should change all the instances:
+>> madvise and some others might need folio_pte_batch to check if a range
+>> of PTEs are completely mapped to a large folio with contiguous physcial
+>> addresses. Let's export it for others to use.
 >>
->> folio_estimated_sharers() != 1   ->   folio_estimated_sharers() > 1
->> folio_estimated_sharers() == 1   ->   folio_estimated_sharers() <= 1
->>
->> It shouldn't cause a problem for the pmd case, and there are definitely other
->> cases where it will help. e.g. madvise_free_pte_range().
+>> Cc: Lance Yang <ioworker0@gmail.com>
+>> Cc: Ryan Roberts <ryan.roberts@arm.com>
+>> Cc: David Hildenbrand <david@redhat.com>
 > 
-> right. My test case covered PAGEOUT only and I agree madvise_free and
-> others have
-> exactly the same issue. for pmd case, it doesn't matter whether we
-> change the condition
-> or not because we have already pmd-mapped in the page table.
+> Hi David, Ryan,
 > 
-> And good to know David will have a wrapper in folio_mapped_shared()  to more
-> widely address this issue.
-> 
->>
->> Regardless:
->>
->> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
->>
-> 
-> Thanks though we might have missed your tag as this one has been
-> in mm-stable.
+> Sorry, I realize I just made a mistake and your tags should be both
+> Suggested-by. Please feel
+> free to review the patch and give comments. I will fix the tags
+> together with addressing your
+> review comments in v2.
 
-No problem! I've been out on holiday so a bit behind on where everything is.
+Don't worry about it. Don't feel you need to update it on my account.
 
 > 
-> Best regards,
+>> Cc: Yin Fengwei <fengwei.yin@intel.com>
+>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+>> ---
+>>  -v1:
+>>  at least two jobs madv_free and madv_pageout depend on it. To avoid
+>>  conflicts and dependencies, after discussing with Lance, we prefer
+>>  this one can land earlier.
+>>
+>>  mm/internal.h | 13 +++++++++++++
+>>  mm/memory.c   | 11 +----------
+>>  2 files changed, 14 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/mm/internal.h b/mm/internal.h
+>> index 13b59d384845..8e2bc304f671 100644
+>> --- a/mm/internal.h
+>> +++ b/mm/internal.h
+>> @@ -83,6 +83,19 @@ static inline void *folio_raw_mapping(struct folio *folio)
+>>         return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
+>>  }
+>>
+>> +/* Flags for folio_pte_batch(). */
+>> +typedef int __bitwise fpb_t;
+>> +
+>> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+>> +#define FPB_IGNORE_DIRTY               ((__force fpb_t)BIT(0))
+>> +
+>> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+>> +#define FPB_IGNORE_SOFT_DIRTY          ((__force fpb_t)BIT(1))
+>> +
+>> +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
+>> +               pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+>> +               bool *any_writable);
+>> +
+>>  void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>>                                                 int nr_throttled);
+>>  static inline void acct_reclaim_writeback(struct folio *folio)
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 1c45b6a42a1b..319b3be05e75 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -953,15 +953,6 @@ static __always_inline void __copy_present_ptes(struct vm_area_struct *dst_vma,
+>>         set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+>>  }
+>>
+>> -/* Flags for folio_pte_batch(). */
+>> -typedef int __bitwise fpb_t;
+>> -
+>> -/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+>> -#define FPB_IGNORE_DIRTY               ((__force fpb_t)BIT(0))
+>> -
+>> -/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bit. */
+>> -#define FPB_IGNORE_SOFT_DIRTY          ((__force fpb_t)BIT(1))
+>> -
+>>  static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+>>  {
+>>         if (flags & FPB_IGNORE_DIRTY)
+>> @@ -982,7 +973,7 @@ static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+>>   * If "any_writable" is set, it will indicate if any other PTE besides the
+>>   * first (given) PTE is writable.
+>>   */
+>> -static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
+>> +int folio_pte_batch(struct folio *folio, unsigned long addr,
+>>                 pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+>>                 bool *any_writable)
+>>  {
+>> --
+>> 2.34.1
+>>
+> 
+> Thanks
 > Barry
 
 
