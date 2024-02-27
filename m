@@ -1,395 +1,182 @@
-Return-Path: <linux-kernel+bounces-83034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F865868D93
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:29:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7964C868D10
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:12:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB0D21F21711
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:29:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A6D01C22B26
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 071D21384B3;
-	Tue, 27 Feb 2024 10:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=folker-schwesinger.de header.i=@folker-schwesinger.de header.b="HkhlJ2wu"
-Received: from www522.your-server.de (www522.your-server.de [195.201.215.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5ADF1386B8;
-	Tue, 27 Feb 2024 10:28:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.215.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6988D137C5C;
+	Tue, 27 Feb 2024 10:12:05 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204EA137C21;
+	Tue, 27 Feb 2024 10:12:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029738; cv=none; b=DDv9Ab7bCf41i6pmYbitNpt3Iorj9SgqkaXHJ2GV4y/9jBl4iMSj+NtlawQ0T8/twziUI0QelX2MdRkWIFE3De+tz8Gl2vqJqWfsZBdp/p1xg+RTfgr+EYt1jz5/XP6XFg89ulvbrKWq5btQsO2OjLj2vPT8kwPlaVOEU+3jXQ8=
+	t=1709028724; cv=none; b=ZbNi++gcEaHuapdIJX9scUzJ0QfVz8iEBDjsZIiIEXkJVAxP1eitJI5+ks2LbsyelKmdxRsBWcnvjktZ3qnB9fnoZ597XTAtywYj5lVu3yCss/8rn8Pq5R5poM3xl2yxIuvH+eKwjGBKXXUEQBtvT6raBQXcmlPIxkH+4wOQaJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029738; c=relaxed/simple;
-	bh=o8YIeJU+n/G7IXYLjmkc4hcOPkZILpLoQGQUS0tBt1M=;
-	h=Content-Type:Date:Message-Id:Subject:Cc:From:To:Mime-Version:
-	 References:In-Reply-To; b=R3Za22wi2BcFaHyyq+5zntHv0OWNME6jRKh5CTYwgmLiStcVgk+vlJad7eMHCjh/4jb8OjHSPOTzoNCL3pNrob4FGf30RDYBDl0qXSiNgA1uY3pD03bjIZvqtdSqBX8k3aijG1rkNBJ5wDyKZt2Og1lgeUQ3liKO3jPqjeohsMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=folker-schwesinger.de; spf=pass smtp.mailfrom=folker-schwesinger.de; dkim=pass (2048-bit key) header.d=folker-schwesinger.de header.i=@folker-schwesinger.de header.b=HkhlJ2wu; arc=none smtp.client-ip=195.201.215.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=folker-schwesinger.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=folker-schwesinger.de
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=folker-schwesinger.de; s=default2212; h=In-Reply-To:References:
-	Content-Transfer-Encoding:Mime-Version:To:From:Cc:Subject:Message-Id:Date:
-	Content-Type:Sender:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=DV0hhtLlv0q18AeIA77X31I3Oe8+chKq2Az9f3uPrR0=; b=HkhlJ2wuYDyg2CmhZG0ynsdxcv
-	Tcr467UnQkXegZVcKUIRvP3xlNfPEkXJqA7G+B5Nem70WrbOgI+opbkavcPe9/HFq7lJaO5CmYATj
-	ijcc8i/cBK8tJ12CnyGw76pSrf7MTWqnHyW67GhBhSUUCjLJMv3G0f4OmJ5WsqwQy3S/XMN2yPbBe
-	zZVMH8uDn3eugUI7Gaiw88vzrxhs/xwaipch6C4oBurPivAZYuCn1L9GBqe+/GMTYUclt2l3l8Bg7
-	maqZ2PRku/CRmR30wJ5gZnz3jyYP3Lr5+E8IaPZ7iK8EYw2aJGwkNMLfxvv2ssrqmx2NjHTjDRVlI
-	7LLrhbdg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www522.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <dev@folker-schwesinger.de>)
-	id 1reuRH-0004q3-AJ; Tue, 27 Feb 2024 11:11:55 +0100
-Received: from [141.24.82.26] (helo=localhost)
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <dev@folker-schwesinger.de>)
-	id 1reuRA-00EtiY-1v;
-	Tue, 27 Feb 2024 11:11:54 +0100
-Content-Type: multipart/signed;
- boundary=fb2c8dd55ef9719f9d11be5e04c0ac8d4ca5dd24af240fce5463600e99f0;
- micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Tue, 27 Feb 2024 10:11:48 +0000
-Message-Id: <CZFS45VOLIKW.2VS3M3VOMBT8V@folker-schwesinger.de>
-Subject: Re: [PATCH] arm64: dts: rockchip: add enable-strobe-pulldown to
- emmc phy on rk3399
-Cc: =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Vinod Koul" <vkoul@kernel.org>,
- "Chris Ruehl" <chris.ruehl@gtsys.com.hk>, "Brian Norris"
- <briannorris@chromium.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
- TREE BINDINGS" <devicetree@vger.kernel.org>, "Linux ARM"
- <linux-arm-kernel@lists.infradead.org>, "open list:ARM/Rockchip SoC..."
- <linux-rockchip@lists.infradead.org>, "LKML"
- <linux-kernel@vger.kernel.org>, "Kishon Vijay Abraham I"
- <kishon@kernel.org>, "Christopher Obbard" <chris.obbard@collabora.com>
-From: "Folker Schwesinger" <dev@folker-schwesinger.de>
-To: "Alban Browaeys" <alban.browaeys@gmail.com>, "Doug Anderson"
- <dianders@chromium.org>, "Jensen Huang" <jensenhuang@friendlyarm.com>
+	s=arc-20240116; t=1709028724; c=relaxed/simple;
+	bh=yvo/znSVftTP+XSaKaQEJ14+kGB/7U2oUxek34UNtRo=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=PTLr9J6zwNm9A/IK3BHOLWmZwPDQkSjzOWyvQFCOEiyvsQrDIvbGrZW/Uwr97FmCG1fWWv3r2CpIx2t0h2uhYOm6SgJEeuIiCbu3dniZyC0eeHg4wTvkQNDpxLGcKER9IcMxjzRqUOv8yYJt3VCx48JDJaZob1YpfN3P/etGGAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8Cx77twtd1lTegRAA--.25993S3;
+	Tue, 27 Feb 2024 18:12:00 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX89ntd1lCcBHAA--.58294S3;
+	Tue, 27 Feb 2024 18:11:53 +0800 (CST)
+Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm hypervisor
+To: WANG Xuerui <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240222032803.2177856-1-maobibo@loongson.cn>
+ <20240222032803.2177856-4-maobibo@loongson.cn>
+ <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
+ <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
+ <CAAhV-H7p114hWUVrYRfKiBX3teG8sG7xmEW-Q-QT3i+xdLqDEA@mail.gmail.com>
+ <06647e4a-0027-9c9f-f3bd-cd525d37b6d8@loongson.cn>
+ <85781278-f3e9-4755-8715-3b9ff714fb20@app.fastmail.com>
+ <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
+ <327808dd-ac34-4c61-9992-38642acc9419@xen0n.name>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <62cc24fd-025a-53c6-1c8e-2d20de54d297@loongson.cn>
+Date: Tue, 27 Feb 2024 18:12:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: aerc 0.17.0-67-g66bbc5303578
-References: <20220822074139.3810-1-jensenhuang@friendlyarm.com>
- <23552842.6Emhk5qWAg@diego>
- <CAD=FV=W-ajJDfYcP3P8Jyk_KgsUAbdTtmwiNXqJ=Ab2ojgrUGw@mail.gmail.com>
- <CAMpZ1qEe7xFr+XaXsS_hWDLnGGA8PfzQiToOjY1N_1ctyQ+KxA@mail.gmail.com>
- <CAD=FV=U-=2GpQTb0N1p3Qe2TAb=JhyZJw2V8T-qbLs5TYhW7qA@mail.gmail.com>
- <7873090c4aad382813a65e35157d8684e8842974.camel@gmail.com>
-In-Reply-To: <7873090c4aad382813a65e35157d8684e8842974.camel@gmail.com>
-X-Authenticated-Sender: dev@folker-schwesinger.de
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27197/Mon Feb 26 10:31:34 2024)
-
---fb2c8dd55ef9719f9d11be5e04c0ac8d4ca5dd24af240fce5463600e99f0
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-Hi,
-
-On Tue Feb 27, 2024 at 3:05 AM CET, Alban Browaeys wrote:
-> Le mercredi 24 ao=C3=BBt 2022 =C3=A0 07:57 -0700, Doug Anderson a =C3=A9c=
-rit=C2=A0:
-> > On Tue, Aug 23, 2022 at 8:11 PM Jensen Huang
-> > <jensenhuang@friendlyarm.com> wrote:
-> > > I realized that only some devices may be affected, so I considered
-> > > modifying rk3399-nanopi4.dtsi only,
-> > > but other boards without external pull-down should still need this
-> > > patch.
-> >=20
-> > I guess the other alternative would be to change how the dt property
-> > works. You could say:
-> >=20
-> > 1. If `enable-strobe-pulldown` is set then enable the strobe
-> > pulldown.
-> >=20
-> > 2. If `enable-strobe-pulldown` is not set then don't touch the pin in
-> > the kernel.
-> >=20
-> > 3. If someone later needs to explicitly disable the strobe pulldown
-> > they could add a new property like `disable-strobe-pulldown`.
-> >=20
-> >=20
-> > Obviously there are tradeoffs between that and what you've done and
-> > I'm happy to let others make the call of which they'd prefer.
-> >=20
->
-> Christopher could you try "ROCK Pi 4" and "ROCK Pi 4+" with=20
-> "enable-strobe-pulldown" instead of disabling HS400 as you did in July
-> 2023?
->
-
-with the following applied, the EMMC related errors are gone. dmesg only
-shows "Purging ... bytes" during my tests:
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm6=
-4/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-index f2279aa6ca9e..ae0fb87e1a8b 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-@@ -647,8 +647,10 @@ &saradc {
- &sdhci {
-        max-frequency =3D <150000000>;
-        bus-width =3D <8>;
--       mmc-hs200-1_8v;
-+       mmc-hs400-1_8v;
-+       mmc-hs400-enhanced-strobe;
-        non-removable;
-+       rockchip,enable-strobe-pulldown;
-        status =3D "okay";
- };
-
-For testing I ran dd three times in a row:
-
-dd if=3D/dev/zero of=3D./zero.bin bs=3D1M count=3D5000
-
-I tested this on both a Rock 4SE board and a Rock Pi 4B+ board with the
-same results.
-
->
-> Could the behavior be reverted to let the vendor kernel default for the
-> default case (ie enable pulldown)?
->
->
->
->
-> I believe 99% of the boards are now broken with this new internal
-> pulldown behavior (all  these with internal pulldown). More on that
-> later but to sum up, nobody  complained because downstream kernels like
-> Armbian all disabled HS400 for all boards, at least for rk3399.
->
->
-> Do we really want to ask 99% of the board dts to add this "enable-
-> strobe-pulldown" in their dts?
-> Chris, was your custom board not working with the vender kernel default
-> to enable unconditionaly?
-> What was the rationale to  choose the opposite default from the vendor
-> kernel one?
->
->
-> As told in the commit that introduced this new behavior the default for
-> the vendor kernel was the opposite of what was introduced in the Linux
-> kernel:
-> "
-> https://github.com/torvalds/linux/commit/8b5c2b45b8f0a11c9072da0f7baf9ee9=
-86d3151e
->
-> commit 8b5c2b45b8f0a11c9072da0f7baf9ee986d3151e
-> Author: Chris Ruehl <chris.ruehl@gtsys.com.hk>
-> Date:   Sun Nov 29 13:44:14 2020 +0800
->
-> phy: rockchip: set pulldown for strobe line in dts
->
-> This patch add support to set the internal pulldown via dt property
-> and allow simplify the board design for the trace from emmc-phy to
-> the eMMC chipset.
-> Default to not set the pull-down.
->
-> This patch was inspired from the 4.4 tree of the
-> Rockchip SDK, where it is enabled unconditional.
-> The patch had been tested with our rk3399 customized board.
-> "
->
->
->
-> For RK3588 I see this commit which makes me believe the internal
-> pulldown case is the most common "
-> commit 37f3d6108730713c411827ab4af764909f4dfc78
-> Author: Sam Edwards <cfsworks@gmail.com>
-> Date:   Tue Dec 5 12:29:00 2023 -0800
->
->
-> arm64: dts: rockchip: Fix eMMC Data Strobe PD on rk3588
->
-> JEDEC standard JESD84-B51 defines the eMMC Data Strobe line, which is
-> currently used only in HS400 mode, as a device->host clock signal that
-> "is used only in read operation. The Data Strobe is always High-Z (not
-> driven by the device and pulled down by RDS) or Driven Low in write
-> operation, except during CRC status response." RDS is a pull-down
-> resistor specified in the 10K-100K ohm range. Thus per the standard,
-> the
-> Data Strobe is always pulled to ground (by the eMMC and/or RDS) during
-> write operations.
->
-> Evidently, the eMMC host controller in the RK3588 considers an active
-> voltage on the eMMC-DS line during a write to be an error.
->
-> The default (i.e. hardware reset, and Rockchip BSP) behavior for the
-> RK3588 is to activate the eMMC-DS pin's builtin pull-down. As a result,
-> many RK3588 board designers do not bother adding a dedicated RDS
-> resistor, instead relying on the RK3588's internal bias. The current
-> devicetree, however, disables this bias (`pcfg_pull_none`), breaking
-> HS400-mode writes for boards without a dedicated RDS, but with an eMMC
-> chip that chooses to High-Z (instead of drive-low) the eMMC-DS line.
-> (The Turing RK1 is one such board.)
->
-> Fix this by changing the bias in the (common) emmc_data_strobe case to
-> reflect the expected hardware/BSP behavior. This is unlikely to cause
-> regressions elsewhere: the pull-down is only relevant for High-Z eMMCs,
-> and if this is redundant with a (dedicated) RDS resistor, the effective
-> result is only a lower resistance to ground -- where the range of
-> tolerance is quite high. If it does, it's better fixed in the specific
-> devicetrees.
-> "
->
->
->
->
->
->
-> Lately two other upstream dts disabled HS400 due to this new behavior I
-> believe:
-> "
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/a=
-rch/arm64/boot/dts/rockchip?id=3D2bd1d2dd808c60532283e9cf05110bf1bf2f9079
-> author	Christopher Obbard <chris.obbard@collabora.com>	2023-
-> 07-05 15:42:55 +0100
-> committer	Heiko Stuebner <heiko@sntech.de>	2023-07-10
-> 15:43:24 +0200
-> commit	2bd1d2dd808c60532283e9cf05110bf1bf2f9079 (patch)
-> tree	57cbf7eaa91deb68f143577d5d1dbc0d9141480e
-> /arch/arm64/boot/dts/rockchip
-> parent	cee572756aa2cb46e959e9797ad4b730b78a050b (diff)
-> download	linux-2bd1d2dd808c60532283e9cf05110bf1bf2f9079.tar.gz
-> arm64: dts: rockchip: Disable HS400 for eMMC on ROCK 4C+
->
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/a=
-rch/arm64/boot/dts/rockchip?id=3Dcee572756aa2cb46e959e9797ad4b730b78a050b
-> author	Christopher Obbard <chris.obbard@collabora.com>	2023-
-> 07-05 15:42:54 +0100
-> committer	Heiko Stuebner <heiko@sntech.de>	2023-07-10
-> 15:43:24 +0200
-> commit	cee572756aa2cb46e959e9797ad4b730b78a050b (patch)
-> tree	cf3ed8ff6230cbde04353503417c1a75ba15c249
-> /arch/arm64/boot/dts/rockchip
-> parent	5ce6971e5279c569defc2f2ac800692049bbaa90 (diff)
-> download	linux-cee572756aa2cb46e959e9797ad4b730b78a050b.tar.gz
-> arm64: dts: rockchip: Disable HS400 for eMMC on ROCK Pi 4
-> "
->
->
-> All Armbian RK3399 boards, as far as I know, had to disable HS400, I
-> also believe due to this commit.
->
-> You can also search google for "running cqe recovery rk3399 armbian".
->
->
-> This was never reported upstream though. But as HS400 is disabled
-> everywhere nobody notice the regression nowadays.
->
->
-> >=20
-> > > BR,
-> > > Jensen
-> > >=20
-> > > On Tue, Aug 23, 2022 at 10:13 PM Doug Anderson
-> > > <dianders@chromium.org> wrote:
-> > > >=20
-> > > > Hi,
-> > > >=20
-> > > > On Tue, Aug 23, 2022 at 4:53 AM Heiko St=C3=BCbner <heiko@sntech.de=
->
-> > > > wrote:
-> > > > >=20
-> > > > > Am Montag, 22. August 2022, 09:41:39 CEST schrieb Jensen Huang:
-> > > > > > Internal pull-down for strobe line (GRF_EMMCPHY_CON2[9]) was
-> > > > > > disabled
-> > > > > > by commit 8b5c2b45b8f0, which causes I/O error in HS400 mode.
-> > > > > >=20
-> > > > > > Tested on NanoPC-T4.
-> > > > > >=20
-> > > > > > Fixes: 8b5c2b45b8f0 ("phy: rockchip: set pulldown for strobe
-> > > > > > line in dts")
-> > > > > > Signed-off-by: Jensen Huang <jensenhuang@friendlyarm.com>
-> > > > >=20
-> > > > > ok, so this looks like it restores previous functionality.
-> > > > >=20
-> > > > > I'm just wondering as the "offending" patch is from 2020, why
-> > > > > this
-> > > > > only turns up now. Any ideas?
-> > > >=20
->
-> Probbaly because the introduction of PROBE_DEFERRED in regulator core
-> before that (in 5.10.60) already broke at least my board HS400 due to
-> double init. Thus why it took me so long to see this new pulldown
-> behavior commit. I was testing every regulator core double init fixup
-> patchset while not understanding why reverting the PROBE_DEFERRED
-> commit on 5.10.60 worked but not on newer kernels (ie this new pulldown
-> behavior was introduced in 5.11...).
->
->
->
->
-> > > > Ah, I see. So before the offending patch we used to just leave
-> > > > the
-> > > > pull state at whatever the default was when the kernel was
-> > > > booted.
-> > > > After the offending patch we chose a default.
-> > > >=20
-> > > > On kevin I see an external pull down on this line. Enabling both
-> > > > the
-> > > > internal and external is probably not a huge deal, it'll just
-> > > > affect
-> > > > the strength of the pull.
-> > > >=20
-> > > > On bob I _think_ the external pull down is also stuffed.
-> > > >=20
-> > > > ...so I guess that would explain why it didn't cause a problem
-> > > > for at
-> > > > least those two boards?
-> > > >=20
-> > > > -Doug
->
->
-> In my opinion it is about these board already being broken by the
-> regulator core change, so nobody noticed the second regression. When
-> the first regression was fixed, it was very hard to correlate the still
-> broken behavior to the second regression.
->
->
-> I confirm that on Helios64, setting "enable-strobe-pulldown" fixes the
-> EMMC error I had when writing with HS400ES enabled:
-> mmc1: running CQE recovery=20
-> mmc1: cqhci: spurious TCN for tag 12
->
-> It also took me so long to report upstream as my board code (rk3399-
-> kobol-helios64.dts) is not completely upstreamed yet so I use an
-> Armbian patched kernel.
->
->
->
-> Alban
->
->
->
-> _______________________________________________
-> Linux-rockchip mailing list
-> Linux-rockchip@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-rockchip
+MIME-Version: 1.0
+In-Reply-To: <327808dd-ac34-4c61-9992-38642acc9419@xen0n.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8AxX89ntd1lCcBHAA--.58294S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxZw1rCFy7Xw18urWUXryDXFc_yoWrArykpF
+	W8AF47KF48tFs2yw4ktw17Xr4ayrW8CF4xXFn8Ar1DArs0yr1ftr40yr4YkF9rJr18CF15
+	Zr42qFy7Zw1DA3gCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4SoGDU
+	UUU
 
 
---fb2c8dd55ef9719f9d11be5e04c0ac8d4ca5dd24af240fce5463600e99f0
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+On 2024/2/27 下午5:10, WANG Xuerui wrote:
+> On 2/27/24 11:14, maobibo wrote:
+>>
+>>
+>> On 2024/2/27 上午4:02, Jiaxun Yang wrote:
+>>>
+>>>
+>>> 在2024年2月26日二月 上午8:04，maobibo写道：
+>>>> On 2024/2/26 下午2:12, Huacai Chen wrote:
+>>>>> On Mon, Feb 26, 2024 at 10:04 AM maobibo <maobibo@loongson.cn> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 2024/2/24 下午5:13, Huacai Chen wrote:
+>>>>>>> Hi, Bibo,
+>>>>>>>
+>>>>>>> On Thu, Feb 22, 2024 at 11:28 AM Bibo Mao <maobibo@loongson.cn> 
+>>>>>>> wrote:
+>>>>>>>>
+>>>>>>>> Instruction cpucfg can be used to get processor features. And there
+>>>>>>>> is trap exception when it is executed in VM mode, and also it is
+>>>>>>>> to provide cpu features to VM. On real hardware cpucfg area 0 - 20
+>>>>>>>> is used.  Here one specified area 0x40000000 -- 0x400000ff is used
+>>>>>>>> for KVM hypervisor to privide PV features, and the area can be 
+>>>>>>>> extended
+>>>>>>>> for other hypervisors in future. This area will never be used for
+>>>>>>>> real HW, it is only used by software.
+>>>>>>> After reading and thinking, I find that the hypercall method 
+>>>>>>> which is
+>>>>>>> used in our productive kernel is better than this cpucfg method.
+>>>>>>> Because hypercall is more simple and straightforward, plus we don't
+>>>>>>> worry about conflicting with the real hardware.
+>>>>>> No, I do not think so. cpucfg is simper than hypercall, hypercall can
+>>>>>> be in effect when system runs in guest mode. In some scenario like 
+>>>>>> TCG
+>>>>>> mode, hypercall is illegal intruction, however cpucfg can work.
+>>>>> Nearly all architectures use hypercall except x86 for its historical
+>>>> Only x86 support multiple hypervisors and there is multiple hypervisor
+>>>> in x86 only. It is an advantage, not historical reason.
+>>>
+>>> I do believe that all those stuff should not be exposed to guest user 
+>>> space
+>>> for security reasons.
+>> Can you add PLV checking when cpucfg 0x40000000-0x400000FF is 
+>> emulated? if it is user mode return value is zero and it is kernel 
+>> mode emulated value will be returned. It can avoid information leaking.
+> 
+> I've suggested this approach in another reply [1], but I've rechecked 
+> the manual, and it turns out this behavior is not permitted by the 
+> current wording. See LoongArch Reference Manual v1.10, Volume 1, Section 
+> 2.2.10.5 "CPUCFG":
+> 
+>  > CPUCFG 访问未定义的配置字将读回全 0 值。
+>  >
+>  > Reads of undefined CPUCFG configuration words shall return all-zeroes.
+> 
+> This sentence mentions no distinction based on privilege modes, so it 
+> can only mean the behavior applies universally regardless of privilege 
+> modes.
+> 
+> I think if you want to make CPUCFG behavior PLV-dependent, you may have 
+> to ask the LoongArch spec editors, internally or in public, for a new 
+> spec revision.
+No, CPUCFG behavior between CPUCFG0-CPUCFG21 is unchanged, only that it 
+can be defined by software since CPUCFG 0x400000000 is used by software. >
+> (There are already multiple third-party LoongArch implementers as of 
+> late 2023, so any ISA-level change like this would best be coordinated, 
+> to minimize surprises.)
+With document Vol 4-23
+https://www.intel.com/content/dam/develop/external/us/en/documents/335592-sdm-vol-4.pdf
 
-iJAEABYKADgWIQQFbmi0A2l3pTuK+esCQHEyPYq7fQUCZd21ZBocZGV2QGZvbGtl
-ci1zY2h3ZXNpbmdlci5kZQAKCRACQHEyPYq7ffAYAP468MofYR9FFvB2pB7XR7Fh
-73JXWpLb04W35HufTd50+gEArlC52Kj/w0WATTmOjmJN37mBeTIsw6b1ypE3dkFj
-KAU=
-=cvJ2
------END PGP SIGNATURE-----
+There is one line "MSR address range between 40000000H - 400000FFH is 
+marked as a specially reserved range. All existing and
+future processors will not implement any features using any MSR in this 
+range."
 
---fb2c8dd55ef9719f9d11be5e04c0ac8d4ca5dd24af240fce5463600e99f0--
+It only says that it is reserved, it does not say detailed software 
+behavior. Software behavior is defined in hypervisor such as:
+https://github.com/MicrosoftDocs/Virtualization-Documentation/blob/main/tlfs/Requirements%20for%20Implementing%20the%20Microsoft%20Hypervisor%20Interface.pdf
+https://kb.vmware.com/s/article/1009458
+
+If hypercall method is used, there should be ABI also like aarch64:
+https://documentation-service.arm.com/static/6013e5faeee5236980d08619
+
+Regards
+Bibo Mao
+
+> 
+> [1]: 
+> https://lore.kernel.org/loongarch/d8994f0f-d789-46d2-bc4d-f9b37fb396ff@xen0n.name/ 
+> 
+> 
+
 
