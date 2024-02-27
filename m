@@ -1,234 +1,206 @@
-Return-Path: <linux-kernel+bounces-83294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60189869174
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:13:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B00869181
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:15:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D42461F21F51
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:13:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97B11290FC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:15:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C7613B299;
-	Tue, 27 Feb 2024 13:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C811613B791;
+	Tue, 27 Feb 2024 13:14:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="ImQ4DNw3"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bToqdiQ2"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E68B13AA35
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D0113AA2B;
+	Tue, 27 Feb 2024 13:14:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709039580; cv=none; b=kH0apTTsgmaKHspN8jA1qlgYaDmHdSggBLoOlX2agcdcergt8aHvN+0CoPz8Ex8zMolVp34IUCbTmXvkPxkUGbKNxZ2PeEASMIo4O+YEMJ9tHv/DDLDaZJL0lQHUHOzw2ejnhCFkcl/tS9nP5OV62nC+ept3khKRkB9oR9AP/lU=
+	t=1709039697; cv=none; b=eWlZOUGz74q1oLIL9UMGQARWL59xsjwr560EpuQ2WeEyHh6qGIiVz4x7enfFnBjzSjhWPQ20T0vFWbs2rpGqTBj59r/ZN0jN5MhBf78YppuBcLjtNGX/VTyYq4aEZhWMoIzJ7u9DlUzDpB6aLK0u4ZPBXvoSlTqPQZb5atqyJoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709039580; c=relaxed/simple;
-	bh=r/94iCN20Fk2NhI03wn/nZawp0Hom6G4UHrshYpmT20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hTqyFoDgnMgFq8aoJvoPAYjlWsqev8a8pwhTrAsGu6EcX/jjIanrcyjC7U7owILwsg0a7Kr3QzVTEAxDUmecBq71wTF1KLablqiXOWMp9r95Qg58UcCm4lSSjNpsFwU4xBsPy+6bbw/frD5Evy9FLnUkyJZcnvyIVTj2f18G/b0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=ImQ4DNw3; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e554f4e0bfso109896b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:12:58 -0800 (PST)
+	s=arc-20240116; t=1709039697; c=relaxed/simple;
+	bh=NJNXI+K3JHWpjNDnBECTCpd1UuaOUMZ/inEaVKjUMxk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UP2KzJ1UR8U+rK5CyW76d4tSckqlzzcwAU9FEqpdugYmpto42wndyTabgSQTaWcQMKJUtXnCGFrNPJm2U0cMPN02c9Z2PgVeMVfiXRGuUjmqEv5+XXDqWhcJLs0Q1PJosICokv10xfQ1WL9x3Mv1zn7j89JkYgs4l0I7APYSV5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bToqdiQ2; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3e550ef31cso480847666b.3;
+        Tue, 27 Feb 2024 05:14:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tweaklogic.com; s=google; t=1709039578; x=1709644378; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jCk7kBUbkEDCNNZZvLnoeTcO/DOClexbrTDxgBd3Qvk=;
-        b=ImQ4DNw3IgF7FYTNz8ieFU4J3racq6Wg3KLhmFvh1qWLyOSAEf2G3hBKGr7gvzPW6m
-         ApXSF5r7CgtdUzmICdIFAjbtVXs0ZR2tKhhXUvJgUkxEvgFm0XN/9ljJoaB1lwwnGCgu
-         16b2LVFPyo5wTGi/Y1qk1OUSrGo4kM5lM5o+lnt74U7Wv8Q2e3vT3lFT7Pl+DgyuRlDd
-         wP9+x6fuuK3BFV8vhZp905mD1UkNbLNH0cVp0i4SMvHxNVweqQridBhrtbBU1kM/vxje
-         RsG2kAWv3FbVbQdaAaxGfTCh6kmL6908QfXbxrWbMz75kNpIVXNx0bCDo2SehpxVAKrr
-         Bh9A==
+        d=gmail.com; s=20230601; t=1709039693; x=1709644493; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=t2pGOKrAqj7OeT3MchT4Kc1lyx+483hvEbxm3Ejyu9c=;
+        b=bToqdiQ25F+2xGzmpKqB1/GlkJ+/QMnVpEjj3eGROO2sMwuFODQkM296h5YUIZ5WL8
+         V9FbKSYy9YvIe++oyv66hgqeUFnydk6vVADUIu5VklAlRMI+xOTWk55pmurjyRDe9X4I
+         CDKMTgIrvhGo5pNvryXuemU0qw1ZE9oLJuVnFDp6HYgv7Gy5nkXPEPshtIzpIHSgm0gn
+         mKBG25pmY2YcpsiSBuL3FBVIOlNJCNfku/gZOPmy6ouzpTSgS+KT3W/Na8lqYwfzpFIV
+         PA14cvsJFFBHvlyD0CatOSOmR5BXscctRFm87plMGGjT+RITk2flr9dlrXX9Z9Jp5DIO
+         RseA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709039578; x=1709644378;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jCk7kBUbkEDCNNZZvLnoeTcO/DOClexbrTDxgBd3Qvk=;
-        b=lqou+UeDmFFouzeK6JbYJxyuQ5cBvl0JohBOhup8sdIZuArbGXyb9cILOurBOMSiUL
-         96aC77sxgSLgORiZV1oSJgLV4C02aG7crZShK+Nh6YrjcZR6GZs/mR80YJ1s4j+MBIRy
-         RX/BSw0YOOG8QeBqylXu7nfTq7gjMewfBk5XoJQ3TJsh7erYu6rRS58qiay+WlyMDzCc
-         5Kju5/sWi3WWR9bHBWkKAtF9PPPvE6byStpAxWsvykZ+Z8bwSArrc8An/eDd1ynVLp3f
-         Ndpuo4mKk0Oq1XbAP7dMEPCxnTYxLOkJBL13hksRHFrdiKHm6ql626RbnebdkCdtqBZE
-         6F4A==
-X-Forwarded-Encrypted: i=1; AJvYcCXFBbW54IyPyS59pTDmxAnmAu9gDT5Sxu0JCXPu10lobc82xzmJbffDlbl5UlxbUadDyJQNkN4tom1pHOSG9zsV0vS7SvaC7OwyfY4/
-X-Gm-Message-State: AOJu0YwGfqoEX0DxW/6ZUhgcE9H/bunkijHBf54yxzx/ZUS0AqwN+pdn
-	agnDvzNhVIiv/Z6vNHjZFfb+ENi76TFNjBYjxfdpWYt/zPYyx9YYR5HS+MGj6y4=
-X-Google-Smtp-Source: AGHT+IElVotDjmybxm6A/bANYneip6rEcVYA8BZjYqYHCjXxGr1LIAXaukd9DC+7GRyLF3yr1NzIBA==
-X-Received: by 2002:a05:6a21:350f:b0:1a0:f096:5022 with SMTP id zc15-20020a056a21350f00b001a0f0965022mr2427341pzb.46.1709039577571;
-        Tue, 27 Feb 2024 05:12:57 -0800 (PST)
-Received: from [192.168.20.11] ([180.150.112.31])
-        by smtp.gmail.com with ESMTPSA id i4-20020a632204000000b005dc26144d96sm5723883pgi.75.2024.02.27.05.12.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 05:12:57 -0800 (PST)
-Message-ID: <a94b86fe-0896-47ba-a597-0cd59a0665a2@tweaklogic.com>
-Date: Tue, 27 Feb 2024 23:42:48 +1030
+        d=1e100.net; s=20230601; t=1709039693; x=1709644493;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=t2pGOKrAqj7OeT3MchT4Kc1lyx+483hvEbxm3Ejyu9c=;
+        b=abJmfi1TYC6RctlkBQWDKGgihFaDKKduLk+ZBaRly1OgY66zqx4fLRgqunKhUI4WVB
+         7dvLvRqrYRagBJD/h/3K/oDrlM/pz/5Rsw45iRtSn52L0st5HTYZ5cUPKDvSSpPievi4
+         J3QHm8QtJUcsskRLA5W8uV4L3Ktt0IbkvtvXTyjlUyWgxvrcnbajWEidwJtfH3PDKFci
+         4I5BK9s/zD5ZhWe6nys1SM50zQdpICX2LLcYM0iVSI2Y7TczZcLwcTb96Dy2jaVtwQOX
+         3ig6j3lsjuwWAyNUypW9idkvEs68sR95BpTUJ50U/XIZG/kMbWy9aiWLtSnl/yLC7/YB
+         g2MA==
+X-Forwarded-Encrypted: i=1; AJvYcCVwdflHjeHOtXhVLBLpDZ4i5fVRKV/XDchWnDa+QKl4hwmfPucacPBfnLqxSnop1qZ41nWwS3Eecfn/5V/O/bA7hINav2tCTl/I
+X-Gm-Message-State: AOJu0YxNcZV7axpCNaOCeGWfUul9YootkZTEWDi7EXXmFNG3Ufz2tvNZ
+	Z2FCCqPV5UW1D4xybrjfMewGF8uQAQpyciJ5dTIAq6XMJtS7vdOuQs0RAKDN7eU=
+X-Google-Smtp-Source: AGHT+IFLwwFsptDyZtJy5UYi91r9lc64KxsgXBxKVSpRNTPSwAtLZ1fB931GcwyG4HnDgliqI3WdYg==
+X-Received: by 2002:a17:906:ce36:b0:a3f:4fd7:3cf5 with SMTP id sd22-20020a170906ce3600b00a3f4fd73cf5mr6324320ejb.17.1709039693265;
+        Tue, 27 Feb 2024 05:14:53 -0800 (PST)
+Received: from lola.. ([2a02:810d:7e40:14b0:d371:e319:5dd0:9b35])
+        by smtp.gmail.com with ESMTPSA id pj11-20020a170906d78b00b00a42ffa7d4cfsm760600ejb.88.2024.02.27.05.14.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 05:14:52 -0800 (PST)
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To: Jonathan Corbet <corbet@lwn.net>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Vegard Nossum <vegard.nossum@oracle.com>,
+	Akira Yokosawa <akiyks@gmail.com>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] docs: drop the version constraints for sphinx and dependencies
+Date: Tue, 27 Feb 2024 14:14:10 +0100
+Message-ID: <20240227131410.35269-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 5/5] iio: light: Add support for APDS9306 Light Sensor
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Lars-Peter Clausen <lars@metafoo.de>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Matti Vaittinen <mazziesaccount@gmail.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>,
- Javier Carrasco <javier.carrasco.cruz@gmail.com>,
- Matt Ranostay <matt@ranostay.sg>,
- Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240218054826.2881-1-subhajit.ghosh@tweaklogic.com>
- <20240218054826.2881-6-subhajit.ghosh@tweaklogic.com>
- <20240224151340.3f2f51e8@jic23-huawei>
-Content-Language: en-US
-From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-In-Reply-To: <20240224151340.3f2f51e8@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 25/2/24 01:43, Jonathan Cameron wrote:
-> On Sun, 18 Feb 2024 16:18:26 +1030
-> Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
-> 
->> Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
->> It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
->> channel approximates the response of the human-eye providing direct
->> read out where the output count is proportional to ambient light levels.
->> It is internally temperature compensated and rejects 50Hz and 60Hz flicker
->> caused by artificial light sources. Hardware interrupt configuration is
->> optional. It is a low power device with 20 bit resolution and has
->> configurable adaptive interrupt mode and interrupt persistence mode.
->> The device also features inbuilt hardware gain, multiple integration time
->> selection options and sampling frequency selection options.
->>
->> This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for
->> Scales, Gains and Integration time implementation.
->>
->> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
-> I applied this but then got some build warnings that made me look
-> more closely at the int_src handling.
-> 
-> This is confusing because of the less than helpful datasheet defintion
-> of a 2 bit register that takes values 0 and 1 only.
-> 
-> I thought about trying to fix this up whilst applying but the event code
-> issue is too significant to do without a means to test it.
-> 
-> Jonathan
-> 
+As discussed (see Links), there is some inertia to move to the recent
+Sphinx versions for the doc build environment.
 
->> +static int apds9306_read_data(struct apds9306_data *data, int *val, int reg)
->> +{
->> +	struct device *dev = data->dev;
->> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
->> +	struct apds9306_regfields *rf = &data->rf;
->> +	int ret, delay, intg_time, intg_time_idx, repeat_rate_idx, int_src;
->> +	int status = 0;
->> +	u8 buff[3];
->> +
->> +	ret = pm_runtime_resume_and_get(data->dev);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = regmap_field_read(rf->intg_time, &intg_time_idx);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = regmap_field_read(rf->repeat_rate, &repeat_rate_idx);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = regmap_field_read(rf->int_src, &int_src);
->> +	if (ret)
->> +		return ret;
->> +
->> +	intg_time = iio_gts_find_int_time_by_sel(&data->gts, intg_time_idx);
->> +	if (intg_time < 0)
->> +		return intg_time;
->> +
->> +	/* Whichever is greater - integration time period or sampling period. */
->> +	delay = max(intg_time, apds9306_repeat_rate_period[repeat_rate_idx]);
->> +
->> +	/*
->> +	 * Clear stale data flag that might have been set by the interrupt
->> +	 * handler if it got data available flag set in the status reg.
->> +	 */
->> +	data->read_data_available = 0;
->> +
->> +	/*
->> +	 * If this function runs parallel with the interrupt handler, either
->> +	 * this reads and clears the status registers or the interrupt handler
->> +	 * does. The interrupt handler sets a flag for read data available
->> +	 * in our private structure which we read here.
->> +	 */
->> +	ret = regmap_read_poll_timeout(data->regmap, APDS9306_MAIN_STATUS_REG,
->> +				       status, data->read_data_available ||
->> +				       (status & (APDS9306_ALS_DATA_STAT_MASK |
->> +						  APDS9306_ALS_INT_STAT_MASK)),
->> +				       APDS9306_ALS_READ_DATA_DELAY_US, delay * 2);
->> +
->> +	if (ret)
->> +		return ret;
->> +
->> +	/* If we reach here before the interrupt handler we push an event */
->> +	if ((status & APDS9306_ALS_INT_STAT_MASK))
->> +		iio_push_event(indio_dev, IIO_UNMOD_EVENT_CODE(IIO_LIGHT,
->> +			       int_src, IIO_EV_TYPE_THRESH, IIO_EV_DIR_EITHER),
-> 
-> You are pushing an event on channel 0 or 1 (which is non obvious as that
-> int_src is a 2 bit value again).  However you don't use indexed channels
-> so this is wrong.
-> It's also pushing IIO_LIGHT for both channels which makes no sense as you
-> only have one IIO_LIGHT channel.
-Hi Jonathan,
+As first step, drop the version constraints and the related comments.
+Then, the sphinx-pre-install script will fail though with:
 
-For the above fix I am supplying the second parameter to IIO_UNMOD_EVENT_CODE()
-as "0" which gives me the below output from userspace:
-/iio_event_monitor /dev/iio:device0
-Event: time: xx, type: illuminance, channel: 0, evtype: thresh, direction: either
-Event: time: yy, type: intensity, channel: 0, evtype: thresh, direction: either
+  Can't get default sphinx version from ./Documentation/sphinx/requirements.txt at ./scripts/sphinx-pre-install line 305.
 
-As I do not have indexed channels, I have used zero for both Light and Intensity
-channel numbers. Should I make the intensity type as channel one for the output
-to look like this?
-Event: time: xx, type: illuminance, channel: 0, evtype: thresh, direction: either
-Event: time: yy, type: intensity, channel: 1, evtype: thresh, direction: either
+The script simply expects to parse a version constraint with Sphinx in the
+requirements.txt. That version is used in the script for suggesting the
+virtualenv directory name.
 
-What do you think?
+To suggest a virtualenv directory name, when there is no version given in
+the requirements.txt, one could try to guess the version that would be
+downloaded with 'pip install -r Documentation/sphinx/requirements.txt'.
+However, there seems no simple way to get that version without actually
+setting up the venv and running pip. So, instead, name the directory with
+the fixed name 'sphinx_latest'.
 
-Regards,
-Subhajit Ghosh
-> 
-> 
->> +			       iio_get_time_ns(indio_dev));
->> +
->> +	ret = regmap_bulk_read(data->regmap, reg, buff, sizeof(buff));
->> +	if (ret) {
->> +		dev_err_ratelimited(dev, "read data failed\n");
->> +		return ret;
->> +	}
->> +
->> +	*val = get_unaligned_le24(&buff);
->> +
->> +	pm_runtime_mark_last_busy(data->dev);
->> +	pm_runtime_put_autosuspend(data->dev);
->> +
->> +	return 0;
->> +}
->> +
-> 
-> ...
+Finally update the Sphinx build documentation to reflect this directory
+name change.
 
+Link: https://lore.kernel.org/linux-doc/874jf4m384.fsf@meer.lwn.net/
+Link: https://lore.kernel.org/linux-doc/20240226093854.47830-1-lukas.bulwahn@gmail.com/
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ Documentation/doc-guide/sphinx.rst    | 11 ++++++-----
+ Documentation/sphinx/requirements.txt |  8 +++-----
+ scripts/sphinx-pre-install            | 19 +++----------------
+ 3 files changed, 12 insertions(+), 26 deletions(-)
+
+diff --git a/Documentation/doc-guide/sphinx.rst b/Documentation/doc-guide/sphinx.rst
+index 709e19821a16..8081ebfe48bc 100644
+--- a/Documentation/doc-guide/sphinx.rst
++++ b/Documentation/doc-guide/sphinx.rst
+@@ -48,13 +48,14 @@ or ``virtualenv``, depending on how your distribution packaged Python 3.
+       on the Sphinx version, it should be installed separately,
+       with ``pip install sphinx_rtd_theme``.
+ 
+-In summary, if you want to install Sphinx version 2.4.4, you should do::
++In summary, if you want to install the latest version of Sphinx, you
++should do::
+ 
+-       $ virtualenv sphinx_2.4.4
+-       $ . sphinx_2.4.4/bin/activate
+-       (sphinx_2.4.4) $ pip install -r Documentation/sphinx/requirements.txt
++       $ virtualenv sphinx_latest
++       $ . sphinx_latest/bin/activate
++       (sphinx_latest) $ pip install -r Documentation/sphinx/requirements.txt
+ 
+-After running ``. sphinx_2.4.4/bin/activate``, the prompt will change,
++After running ``. sphinx_latest/bin/activate``, the prompt will change,
+ in order to indicate that you're using the new environment. If you
+ open a new shell, you need to rerun this command to enter again at
+ the virtual environment before building the documentation.
+diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
+index 5d47ed443949..1f3b98eee2c9 100644
+--- a/Documentation/sphinx/requirements.txt
++++ b/Documentation/sphinx/requirements.txt
+@@ -1,6 +1,4 @@
+-# jinja2>=3.1 is not compatible with Sphinx<4.0
+-jinja2<3.1
+-# alabaster>=0.7.14 is not compatible with Sphinx<=3.3
+-alabaster<0.7.14
+-Sphinx==2.4.4
++jinja2
++alabaster
++Sphinx
+ pyyaml
+diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
+index de0de5dd676e..4c781617ffe6 100755
+--- a/scripts/sphinx-pre-install
++++ b/scripts/sphinx-pre-install
+@@ -280,8 +280,6 @@ sub get_sphinx_version($)
+ 
+ sub check_sphinx()
+ {
+-	my $default_version;
+-
+ 	open IN, $conf or die "Can't open $conf";
+ 	while (<IN>) {
+ 		if (m/^\s*needs_sphinx\s*=\s*[\'\"]([\d\.]+)[\'\"]/) {
+@@ -293,18 +291,7 @@ sub check_sphinx()
+ 
+ 	die "Can't get needs_sphinx version from $conf" if (!$min_version);
+ 
+-	open IN, $requirement_file or die "Can't open $requirement_file";
+-	while (<IN>) {
+-		if (m/^\s*Sphinx\s*==\s*([\d\.]+)$/) {
+-			$default_version=$1;
+-			last;
+-		}
+-	}
+-	close IN;
+-
+-	die "Can't get default sphinx version from $requirement_file" if (!$default_version);
+-
+-	$virtenv_dir = $virtenv_prefix . $default_version;
++	$virtenv_dir = $virtenv_prefix . "latest";
+ 
+ 	my $sphinx = get_sphinx_fname();
+ 	if ($sphinx eq "") {
+@@ -318,8 +305,8 @@ sub check_sphinx()
+ 	die "$sphinx didn't return its version" if (!$cur_version);
+ 
+ 	if ($cur_version lt $min_version) {
+-		printf "ERROR: Sphinx version is %s. It should be >= %s (recommended >= %s)\n",
+-		       $cur_version, $min_version, $default_version;
++		printf "ERROR: Sphinx version is %s. It should be >= %s\n",
++		       $cur_version, $min_version;
+ 		$need_sphinx = 1;
+ 		return;
+ 	}
+-- 
+2.43.2
 
 
