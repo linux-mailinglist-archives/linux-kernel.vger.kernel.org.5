@@ -1,137 +1,114 @@
-Return-Path: <linux-kernel+bounces-82721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFD468688A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:32:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ABBB8688B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:36:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C371C1C215A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:32:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91C69B2430E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A62352F91;
-	Tue, 27 Feb 2024 05:32:02 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF221AACE
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6825336E;
+	Tue, 27 Feb 2024 05:35:49 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A3C52F95
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709011922; cv=none; b=EB9PbfyWibspAOOUOjnlygZgTfSAa2mO8m0dy93NLK+yMIlV2LsJQQnYva5SlROg5IboOZSCMjwa8NZLZD/Hhqm/0Ha1G+Yxs0Mh7Ms4i3N54ABRZK8EZAWOdRgLGWwNZPtd29qy3/Zk5WQgi9zQOTh77BQlbYKYzAYcvWLph1g=
+	t=1709012149; cv=none; b=DdiDbaNPyj9nT1uk4mo0ZimqQQg7hWbOKyq5KgdobILTfAvzmd11ZTYvhY2sOA7YYLxof/U2bnZal+nDnsb4lJK8PgnZVjMVGAyV1H3F0niFRD1GhDJbV+54jk5MO8g6CP8AiTp+S+zki/ggmX1cINx63yYXHMdJa9ZNucTDMi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709011922; c=relaxed/simple;
-	bh=MULxpeaD/ViV6fujeZYHcokbWGSluuQ/LDYbbkn2tfQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QZKETCqB8Aud91QPdhfvldZHkqWUxW5Y6BWZM1QYpUbsULEpF//cRANVAHXO/a7uBOp/JnsBYEp89sDnJSXyOnw/jQ5ono+D/OAznPb92ZepWcxCM3Icop1WoOSGnrRN19MS22L2/Z71EbHAoNen24wCHI5uNjAHe/7ERlm0oDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8DD2DA7;
-	Mon, 26 Feb 2024 21:32:36 -0800 (PST)
-Received: from [10.163.48.107] (unknown [10.163.48.107])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8D06B3F6C4;
-	Mon, 26 Feb 2024 21:31:56 -0800 (PST)
-Message-ID: <c37bd84e-d4f7-42df-a333-f2ad6ebc9527@arm.com>
-Date: Tue, 27 Feb 2024 11:01:54 +0530
+	s=arc-20240116; t=1709012149; c=relaxed/simple;
+	bh=4DdQpD7qe+yF9pbBdc/REKtzDvw2NiDp7vBjTxEljjw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SWstNPpBYVQWr0ILKh5kcw+1mNpoWUNGybcBvlRQkSAdvwc+pOm72fV7E50JEwAio7WL3Q5a0dgu4hRT1Uv/6j6p+NOp2OzxmFX9kt0SNHVp+8My5CQy5WT2TI6LfW2M/pe6jkvBXucfNsOMWoZJU5MCmohkRgHMDOJsckcPs6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ore@pengutronix.de>)
+	id 1req7x-0001wq-Az; Tue, 27 Feb 2024 06:35:41 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1req7u-0038HM-3k; Tue, 27 Feb 2024 06:35:38 +0100
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1req7u-00AVXW-03;
+	Tue, 27 Feb 2024 06:35:38 +0100
+Date: Tue, 27 Feb 2024 06:35:38 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	netdev@vger.kernel.org, Clark Wang <xiaoning.wang@nxp.com>,
+	linux-kernel@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+	Shenwei Wang <shenwei.wang@nxp.com>, Wei Fang <wei.fang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>, kernel@pengutronix.de,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH net-next v6 5/8] net: phy: Immediately call adjust_link
+ if only tx_lpi_enabled changes
+Message-ID: <Zd10qUJzq-2nG7b7@pengutronix.de>
+References: <20240223094425.691209-6-o.rempel@pengutronix.de>
+ <Zdh1nMWZDynP/AMc@shell.armlinux.org.uk>
+ <84e1368d-ec6a-48af-945b-509528c45dff@lunn.ch>
+ <Zdic+ua5LnWxjLPn@shell.armlinux.org.uk>
+ <6af3406a-7968-41e5-bf6e-71d020d8b28a@broadcom.com>
+ <Zdot-Mqw1z4ZEo8v@pengutronix.de>
+ <c6b0716d-f093-4aba-8453-c89a562ab581@lunn.ch>
+ <e679f467-d4cd-4a1e-9bfc-92e2c9bf35d4@broadcom.com>
+ <ZdzQG6t2slqEyH0m@shell.armlinux.org.uk>
+ <fe071598-64eb-4dd2-8926-d4d0954e7e7e@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64/hw_breakpoint: Determine lengths from generic perf
- breakpoint macros
-Content-Language: en-US
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
- broonie@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
- linux-kernel@vger.kernel.org
-References: <20240223113102.4027779-1-anshuman.khandual@arm.com>
- <20240223125224.GC10641@willie-the-truck>
- <1901fadb-1d71-4374-be8c-00935bb27854@arm.com>
- <ZdxwTkUALQfqjagf@FVFF77S0Q05N>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <ZdxwTkUALQfqjagf@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <fe071598-64eb-4dd2-8926-d4d0954e7e7e@lunn.ch>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
+On Mon, Feb 26, 2024 at 07:59:28PM +0100, Andrew Lunn wrote:
+> On Mon, Feb 26, 2024 at 05:53:31PM +0000, Russell King (Oracle) wrote:
+> > On Mon, Feb 26, 2024 at 09:50:02AM -0800, Florian Fainelli wrote:
+> > > This is the source of the concern, we don't know which MAC drivers we might
+> > > end-up breaking by calling adjust_link(link == 1) twice in a row, hopefully
+> > > none, because they should be well written to only update the parameters that
+> > > need updating, but who knows?
+> > 
+> > Just quickly... There are some (I went through a bunch.) They don't
+> > support EEE. I haven't been through all though, so there could be
+> > some which support EEE and where adjust_link() with phydev->link=true
+> > twice in a row could result in badness.
+> 
+> So i think we all agree the MAC needs to see a down/up, even if the
+> link itself never went down. Anything else is too risky and will
+> probably break something somewhere.
 
+Means, this patch should be dropped. Are there other changes required?
 
-On 2/26/24 16:34, Mark Rutland wrote:
-> On Mon, Feb 26, 2024 at 08:19:39AM +0530, Anshuman Khandual wrote:
->> On 2/23/24 18:22, Will Deacon wrote:
->>> On Fri, Feb 23, 2024 at 05:01:02PM +0530, Anshuman Khandual wrote:
->>>> Both platform i.e ARM_BREAKPOINT_LEN_X and generic i.e HW_BREAKPOINT_LEN_X
->>>> macros are used interchangeably to convert event->attr.bp_len and platform
->>>> breakpoint control arch_hw_breakpoint_ctrl->len. Let's be consistent while
->>>> deriving one from the other. This does not cause any functional changes.
->>>>
->>>> Cc: Will Deacon <will@kernel.org>
->>>> Cc: Mark Rutland <mark.rutland@arm.com>
->>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
->>>> Cc: linux-arm-kernel@lists.infradead.org
->>>> Cc: linux-kernel@vger.kernel.org
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> ---
->>>> This applies on v6.8-rc5
->>>>
->>>>  arch/arm64/kernel/hw_breakpoint.c | 16 ++++++++--------
->>>>  1 file changed, 8 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
->>>> index 35225632d70a..1ab9fc865ddd 100644
->>>> --- a/arch/arm64/kernel/hw_breakpoint.c
->>>> +++ b/arch/arm64/kernel/hw_breakpoint.c
->>>> @@ -301,28 +301,28 @@ static int get_hbp_len(u8 hbp_len)
->>>>  
->>>>  	switch (hbp_len) {
->>>>  	case ARM_BREAKPOINT_LEN_1:
->>>> -		len_in_bytes = 1;
->>>> +		len_in_bytes = HW_BREAKPOINT_LEN_1;
->>>
->>> I don't think we should do this. The HW_BREAKPOINT_LEN_* definitions are
->>> part of the user ABI and, although they correspond to the length in bytes,
->>> that's not necessarily something we should rely on.
->>
->> Why should not we rely on the user ABI macros if these byte lengths were
->> initially derived from them. 
-> 
-> Why should we change the clear:
-> 	
-> 	len_in_bytes = 1;
-> 
-> ... to the longer, and less clear:
-> 
-> 	len_in_bytes = HW_BREAKPOINT_LEN_1;
-> 
-> ... ?
-> 
->> But also there are similar conversions in arch_bp_generic_fields().
-> 
-> Those are specifically for converting from the rch_hw_breakpoint_ctrl encodings
-> to the perf_event_attr encodings. There we don't care about the specific value
-> of the byte, just that we're using the correct encoding.
-> 
->> These hard coded raw byte length numbers seems cryptic, where as in reality
->> these are just inter converted from generic HW breakpoints lengths.
-> 
-> There are three distinct concepts here:
-> 
-> 1. The length in bytes, as returned above by get_hbp_len()
-> 
-> 2. The length as encoded in the ARM_BREAKPOINT_LEN_* encoding
-> 
-> 3. The length as encoded in the HW_BREAKPOINT_LEN_* encoding.
-> 
-> I think you're arguing that since 1 and 3 happen to have the values we should
-> treat them as the same thing. I think that Will and I believe that they should
-> be kept distinct because they are distinct concepts.
-> 
-> I don't think this needs to change, and can be left as-is.
-
-Fair enough, but just wondering how about deriving len_in_bytes from
-hweight_long(ARM_BREAKPOINT_LEN_*) instead ? This also drops the hard
-coding using the platform macros itself, without going to user ABI.
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
