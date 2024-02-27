@@ -1,118 +1,96 @@
-Return-Path: <linux-kernel+bounces-83993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 418CA86A129
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC15286A12D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:53:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0AB5284A77
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:52:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60C8E288A61
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E6E153514;
-	Tue, 27 Feb 2024 20:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97E1214EFEB;
+	Tue, 27 Feb 2024 20:51:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ca5UUYww"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eSh5QlaE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25EA152DE9;
-	Tue, 27 Feb 2024 20:51:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D408F4DA0C
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:51:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709067078; cv=none; b=mSYjjm8YLFlEJGB/W9WHmfOqFi/0Pm1C4jhwK3sYkwrWccNtgbxXQ/oJVCDMYNBPhBeOhJLDCntJ30sK25UrZi3h6wqpSlhiHzIbPmDPsM7D84W4hVoM/2SZRK36diYsJpwORdwvMmkk9NviwDWiCdAKigWa97sJqJX4W+Av6oM=
+	t=1709067117; cv=none; b=etE3fVGRsnfVzMXEfY0vXaVbVzAfgI1zBSysnAknK7INEyu4hlKLzmvd3kR/9Y4lTj0SqKYKJ3yOW1+H9BWPfk13XR+SNAilrU6fniWiKG+YoWsKnMT7HPMSRGK84+bjsPEk7EUKWPeSlCOGzgR6Lo5GQBvtGsUzuT6uiEwCFm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709067078; c=relaxed/simple;
-	bh=cd8fCWScGdOm33tO38jM+0CahWaRNuRPqV225L5QbWs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z+mLNOnSNsBDcoQKmHCFgidO3eRS+NTeJBhzCPh5XSW09mYTCgRlNCCanTa3751HiaN4UhSsH5UgETWdDAdgJJhPo1vu9QggvKGN99hcabaKqHkRsIQd2LgC7CzmfFk6gR8ETk8Ze7pT3TqKCksM4OYUPsv/0V9hhS+P83fPYmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ca5UUYww; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D613C433A6;
-	Tue, 27 Feb 2024 20:51:18 +0000 (UTC)
+	s=arc-20240116; t=1709067117; c=relaxed/simple;
+	bh=QhwLpnKe75p3FHs0ebjZdxIlXMliF5uLtZwMEXQcIOM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=s9/zArH++O9qYRy1ckBL26KSgN9hiHF0rSGistH67RVvbvKv0CePLFOIKIK8rEt//cu8ZlxTpQT3BY71cb2S/5hPFbSrW1y2VnPlLkqumfOW2sR1tYi+8KVf96P5C7hTUh1wpymKUb6/gCMrkQTMSMNb3IMPG9YD81R20W2M/Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eSh5QlaE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B627C433F1;
+	Tue, 27 Feb 2024 20:51:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709067078;
-	bh=cd8fCWScGdOm33tO38jM+0CahWaRNuRPqV225L5QbWs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ca5UUYwwuQyu8P+1DIwei3ARFoRRUd3UkXWSNvsR26hcnDv61YhkNJl1tjaJkRZTq
-	 Vz7fgo8jtUQpPknIGKZaSQqAN06bB7KDWCJ3A0MhEB0fJjp/6BFg1HE62+I0YNjlwU
-	 UDj7D0cpxlpCoCrIBj9MGYV6c/77xAV4mwwlLJlKfBCQOHCD0SSEr0TnSWCt8Vsf61
-	 Hs/khhKjRK59rls+kudR3mRNlWvGdRQ+gIbi83/+Wm2jfxcLvEkI8Rw7SxV+HEi6el
-	 Cacy49X79zZcNfvxz67VA/0hneBVNrQD+/EmFcR0UeunkOG2FJH4vRkPyu0XlP82vE
-	 1wwiPUoX6Efrw==
-Received: by pali.im (Postfix)
-	id B36CD828; Tue, 27 Feb 2024 21:51:15 +0100 (CET)
-Date: Tue, 27 Feb 2024 21:51:15 +0100
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To: Jean Delvare <jdelvare@suse.de>
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	Andi Shyti <andi.shyti@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-	linux-i2c@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Marius Hoch <mail@mariushoch.de>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Dell.Client.Kernel@dell.com, Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: Ideas for a generic solution to support accelerometer lis3lv02d
- in Dell laptops/notebooks?
-Message-ID: <20240227205115.szb32h7hxjjr6z3l@pali>
-References: <4820e280-9ca4-4d97-9d21-059626161bfc@molgen.mpg.de>
- <a1128471-bbff-4124-a7e5-44de4b1730b7@redhat.com>
- <20231223125350.xqggx3nyzyjjmnut@pali>
- <20240213150708.57148f6a@endymion.delvare>
- <20240215181633.2aevovw6wkxq5si2@pali>
+	s=k20201202; t=1709067117;
+	bh=QhwLpnKe75p3FHs0ebjZdxIlXMliF5uLtZwMEXQcIOM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=eSh5QlaEklbj3USqjdl4SbrYSjThOhf0azwzjroNE7tRsAkFp/gXtAC5lPwk3f5RS
+	 A3MiP4ou6kXf2gIt7Y+wa9TKziO9wmAXIxO86SaEbyFrHqtsECmgqw8NBM1b9W9IFB
+	 I2ZrnJg3FsNVUBbOgwha7V/h3Td7Awa0fbkcnsbdKpsSA2iiU5qqFfeyQTFYnVakp6
+	 EeH4wObiMF9QrZAQbbJxD5PNOHDu1NUtx3qlbWL3rLIqos0LPHV9LKooUxzLCODgbI
+	 cEU6mKwtkvlfZ4uo4ac/AuCb5QBm+eLAB/X92Q8aXgqi/ZVhT/VhncTQ3fVi7ac+1b
+	 rwkdbJ4FYuKAA==
+From: Mark Brown <broonie@kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, 
+ Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, 
+ linux-amlogic@lists.infradead.org
+In-Reply-To: <20240227150826.573581-1-jbrunet@baylibre.com>
+References: <20240227150826.573581-1-jbrunet@baylibre.com>
+Subject: Re: [PATCH v2] ASoC: meson: axg-fifo: use FIELD helpers
+Message-Id: <170906711616.430898.9659038339252148422.b4-ty@kernel.org>
+Date: Tue, 27 Feb 2024 20:51:56 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240215181633.2aevovw6wkxq5si2@pali>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-a684c
 
-On Thursday 15 February 2024 19:16:33 Pali Rohár wrote:
-> On Tuesday 13 February 2024 15:07:08 Jean Delvare wrote:
-> > On Sat, 23 Dec 2023 13:53:50 +0100, Pali Rohár wrote:
-> > > smbus is not really bus which provides discovering and identifying
-> > > devices on the bus.
-> > 
-> > For completeness, SMBus version 2.0 actually added support for device
-> > discovery and even dynamic slave address allocation. This is explained
-> > in chapter 5, section 5.6 (SMBus Address resolution protocol).
-> > 
-> > Unfortunately, this is an optional feature which requires active
-> > cooperation from each device connected to the bus. If any device on the
-> > bus supports SMBus ARP then you should get an answer when probing
-> > (7-bit) I2C address 0x61.
-> > 
-> > Long ago I had a plan to add support for SMBus ARP to the kernel, but
-> > gave up because I couldn't find any system implementing it. If the
-> > accelerometer device in Dell laptops supported ARP then we could use it
-> > to figure out the device's address, unfortunately this doesn't seem to
-> > be the case.
-> > 
-> > -- 
-> > Jean Delvare
-> > SUSE L3 Support
+On Tue, 27 Feb 2024 16:08:25 +0100, Jerome Brunet wrote:
+> Use FIELD_GET() and FIELD_PREP() helpers instead of doing it manually.
 > 
-> According to my notes, accelerometer in Dell laptops should use
-> LNG3DMTR-LGA16-3x3 chipset. From what I found it should be
-> pin-compatible with LIS302DL, just in different package.
 > 
-> ST LIS302DL datasheet is on the website:
-> https://www.st.com/resource/en/datasheet/lis302dl.pdf
-> 
-> It is dual i2c and SPI bus support chipset. But in the datasheet there
-> is nothing about SMBus, looks like this is designed for i2c usage. So I
-> highly doubt that chipset supports SMBus version 2.0 with ARP extension.
 
-Now I checked i2c address 0x61 and nothing responds to it.
+Applied to
 
-> Anyway, SMBus ARP is new thing to me, I have never heard about it or its
-> usage before. Has anybody else found some device which supports it?
-> Would be interesting to know if this is not just another standard which
-> was not publicly deployed yet.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: meson: axg-fifo: use FIELD helpers
+      commit: 9e6f39535c794adea6ba802a52c722d193c28124
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
 
