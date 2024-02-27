@@ -1,115 +1,145 @@
-Return-Path: <linux-kernel+bounces-83834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D97B9869F07
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:26:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C2C3869F0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:26:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1126C1C262DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:26:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FE8A1C27F29
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:26:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68163145FF9;
-	Tue, 27 Feb 2024 18:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 945E31448C7;
+	Tue, 27 Feb 2024 18:26:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="LYxPeK5W"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wd0SMEJG"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176B33D541;
-	Tue, 27 Feb 2024 18:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65CE9249EB
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:26:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709058373; cv=none; b=UUqfA0ha5+9N1QsPfOK2kc38cDr+joJNX4NRlrW/mLSWRkX4o0+pTOtF8chA+Xv38/VKJKot0lCNblWN/Y54rTB/wGmsgxNm7TUDuWk4l2V35AucTZlO75zJSMXRmzzouWIz5zl+s/64HzkWiFlqQQVxCWYkqcVVOVmf4cfpNAg=
+	t=1709058406; cv=none; b=oij1SH1R83kyH7m07Z0jf9G7FAijpA4C/3Xy7YUJFvyKyGiExuR397a59lFF8BhI3BxwddnV6rrSXFduYAD1SFMowMqTwFdgoBkRTkAomT6Y3oRcs7ineD7pUT1ANGQfZ2NPOEtZjJLEnXq6tjl1I6hrv0FV3du28fIYUfAO0hM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709058373; c=relaxed/simple;
-	bh=q54Zb8zuIF+rT8dKLPGT5h8/ppybmYT9EgPGBzXLu7s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GtblPZVqeObHGBMBXUApyD2MtHctZlOgz5JLEZNmczTKOdoEJtW7LKJsYeb0LpmC2MUeju/L4j8Wlpz5k+b5q5yESNvHE5PzHXaIBuT7CiJjZzS3sEKfm4x4ySKc83iWSQh/Q8FPHPdZg7wDzThHjh3QakVUpdkx9wOB72k4qlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=LYxPeK5W; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6865840E0196;
-	Tue, 27 Feb 2024 18:26:07 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Cp6QDiXg8qpd; Tue, 27 Feb 2024 18:26:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709058361; bh=q5+4QNmqIGJdtL57QmnH1XXYBYtR2lIOJJG5PsvH/5o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LYxPeK5W22m5gA3wH4jg/WUsRabTiz0FMsXAKdT8IS1k/VpQyO8OtPFuqiDJLdm+l
-	 UQ5fIzE+fsLYNJaMx4BJYI9Bn1AebGgCzfy+BxfzPaZ5BdLwrCQ89dMkODleadbNt+
-	 bFauUNkFoIeKA4p965xcM+TpRgpuNcmT7+zd7TDa4Oo3VzgstHd0yTgZOO9bcDwgoi
-	 dQjdZ1rts70abUQu5sZBXCmnz2mAlobzSlPDYOM1TKCnR7LkQhsuz+IvOQQ2q/iuEE
-	 /2nYuaYM3E5m1rkoFL3AvQblCjCHe8EugCJ/Z3yClgxcd3B7I2ADyT8sBQjGU/Q/W7
-	 ygB1RV2DpdSM9UWcYlN3FhZFMIc7BXHT206LrGXtyaLhfVDtS252MWs8yy86k3fFz6
-	 3sciYo3+w0mkRI9Vt80YquOWlpiy1ECLt78tYHdTz6z+sKD4c2dyyjjetaWkSIB19A
-	 BJm62F+LmpEEAfa5ns1OtfpRZZ1Kk7rtemg+oYN1xQoGOprQSwk9LBI+gJC6nxDA0H
-	 qFutaZFgmrn+jfhYzE2DuZ6sD8q4q8bOyOu/lVpoeFkKQVCZGgYpFiQdonkY5iyBeA
-	 cZ/05n45y41DgYjBvFlCZ8rAkE3cJ9mRxG6HqUZswAUJBqXp9Dlfj7e9UUUnDnatN5
-	 9rYv+MZCxJzv7+g3VdE7VaeI=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 28B7140E016C;
-	Tue, 27 Feb 2024 18:25:50 +0000 (UTC)
-Date: Tue, 27 Feb 2024 19:25:44 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Nikunj A Dadhania <nikunj@amd.com>
-Cc: linux-kernel@vger.kernel.org, thomas.lendacky@amd.com, x86@kernel.org,
-	kvm@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-	dave.hansen@linux.intel.com, pgonda@google.com, seanjc@google.com,
-	pbonzini@redhat.com
-Subject: Re: [PATCH v8 01/16] virt: sev-guest: Use AES GCM crypto library
-Message-ID: <20240227182544.GEZd4pKN5ASvSx4_dO@fat_crate.local>
-References: <20240215113128.275608-1-nikunj@amd.com>
- <20240215113128.275608-2-nikunj@amd.com>
+	s=arc-20240116; t=1709058406; c=relaxed/simple;
+	bh=DPFonq905yyLK2Tj/ujCOMLw+6BX6JS4fJ8yXU1Ig1M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YPNwfPv2+ySlYVg+harH5qKSiYAZLhrSa1AeXPAmuzFZbTRDUyA3NqW4fqD5G1kBcJnA8Muf6ltNI89jPZv/7OwbirNUaaYeyeKA9MKRzJ96FXiAn6q155BXMbSsW+8HJnFjcqa7H4XWeOVOvFsxRDhjR5L03S4D+Wly0zY/Vds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wd0SMEJG; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-428405a0205so17441cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:26:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709058404; x=1709663204; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DPFonq905yyLK2Tj/ujCOMLw+6BX6JS4fJ8yXU1Ig1M=;
+        b=wd0SMEJGS7iKwQ6zM5YklxdhM4CU/gMya350Irc/y2Aka8IpcImDIYLWS5OAbE1fLu
+         xQ0XDCxxv5cBRnz7sK/W5dltj0CuYWzErKPbBWnywYcz1czP/iWe14ui1kVHKaQGoCEy
+         gqQZYSUGnn1Ju6pPhy4AaWjFiVRafxmM2F6zvvSoUe5UgkhGkEOxXAgXN2OSuvVUQetf
+         6zWhi88oLdodvOloE2kB13i6VQHjpWm1IuoauHvMYYPCnXr192R3TD2G6CzvUGQLy3L/
+         FW2cwpDHBeyxM5v4kwDTP5h2YijgqFG91BWaRcGgaFoJgooFo+U82qklWerXW99I/eMX
+         2o9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709058404; x=1709663204;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DPFonq905yyLK2Tj/ujCOMLw+6BX6JS4fJ8yXU1Ig1M=;
+        b=v7V9ogz8+nGgOnmCGPB1NsqAcFby8pF7ETxyb5LMoy3TK3gm82ksBwuW4wDGX1JR7N
+         A38hijvxXKjUHqXfE0zX+nH5CRFrnHq3v5+R0qDseJxb4HHPkkSo+WbtrL2cOtbXVUw2
+         g800s3trDjG6Z1IsCggwRiQTe85FI+QPjsN0DjqtzU3I1JPIeK5K4KNpvRwAbt+FPThn
+         OKVvCP3NTfxWUwXV+YoHxhfuSF5Y+xr9WgGZdYbc1crksG3oxu+FkZsduMNeHkkW+LsK
+         MkyYs7XBqVK3cHnuveXB6YIZfRYYtcw5nh06VBLqOG1CiAU1txuMNvl3y6OGB6DZVkks
+         Tciw==
+X-Forwarded-Encrypted: i=1; AJvYcCWYEk5GeuElkyjherEhr++HEenvf+J1POZYUOCyzDuGaaS8Cs8ts/HLIHB4OguXEDahmY7OfrxOkZ/LNNZAw67UL3+lr/h67MWWlqCR
+X-Gm-Message-State: AOJu0Yx/w7QeiheQOc8STYN4Ux7yBNZ5W3GKAL7XjGJGxN3ihJuR7AXr
+	kzgZr9VaJuXu1cZxG7zLAbQNdxXp0jpvon1FmCWnwgVySVN+xpdTEPHaJ8UwoZ6A3R5RtUMjaqU
+	bcKApNcUV4fqh6up6bjbCNCrb3GfOm+E62IgP
+X-Google-Smtp-Source: AGHT+IFf1ss8vs+iGe1sB+8r4oQ30VmGM2hD18Sc4fCMrxUtrPtK3ae+1eVgSnDUvqGK4rMq/0f/X+xyYtZ7yrvxTxE=
+X-Received: by 2002:ac8:7f42:0:b0:42e:7b12:9688 with SMTP id
+ g2-20020ac87f42000000b0042e7b129688mr307667qtk.17.1709058404169; Tue, 27 Feb
+ 2024 10:26:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240215113128.275608-2-nikunj@amd.com>
+References: <20231201005720.235639-1-babu.moger@amd.com> <cover.1705688538.git.babu.moger@amd.com>
+ <2f373abf-f0c0-4f5d-9e22-1039a40a57f0@arm.com> <474ebe02-2d24-4ce3-b26a-46c520efd453@amd.com>
+ <b6bb6a59-67c2-47bc-b8d3-04cf8fd21219@intel.com> <3fe3f235-d8a6-453b-b69d-6b7f81c07ae1@amd.com>
+ <9b94b97e-4a8c-415e-af7a-d3f832592cf9@intel.com> <1ae73c9a-cec4-4496-86c6-3ffcef7940d6@amd.com>
+ <32a588e2-7b09-4257-b838-4268583a724d@intel.com> <088878bd-7533-492d-838c-6b39a93aad4d@amd.com>
+In-Reply-To: <088878bd-7533-492d-838c-6b39a93aad4d@amd.com>
+From: Peter Newman <peternewman@google.com>
+Date: Tue, 27 Feb 2024 10:26:32 -0800
+Message-ID: <CALPaoCgxSAWPYGcmnZZS7M31M+gMJQ-vWd+Q5Zn1Y548bxi2Kw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
+ Monitoring Counters (ABMC)
+To: babu.moger@amd.com
+Cc: Reinette Chatre <reinette.chatre@intel.com>, James Morse <james.morse@arm.com>, corbet@lwn.net, 
+	fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org, 
+	peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com, 
+	lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com, 
+	leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com, 
+	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com, kai.huang@intel.com, 
+	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com, 
+	pbonzini@redhat.com, sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com, 
+	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, eranian@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 05:01:13PM +0530, Nikunj A Dadhania wrote:
-> The sev-guest driver encryption code uses Crypto API for SNP guest
-> messaging to interact with AMD Security processor. For enabling SecureTSC,
-> SEV-SNP guests need to send a TSC_INFO request guest message before the
-> smpboot phase starts. Details from the TSC_INFO response will be used to
-> program the VMSA before the secondary CPUs are brought up. The Crypto API
-> is not available this early in the boot phase.
-> 
-> In preparation of moving the encryption code out of sev-guest driver to
-> support SecureTSC and make reviewing the diff easier, start using AES GCM
-> library implementation instead of Crypto API.
-> 
-> Drop __enc_payload() and dec_payload() helpers as both are pretty small and
-> can be moved to the respective callers.
-> 
-> CC: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
-> Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-> Tested-by: Peter Gonda <pgonda@google.com>
-> ---
->  drivers/virt/coco/sev-guest/Kconfig     |   4 +-
->  drivers/virt/coco/sev-guest/sev-guest.c | 175 ++++++------------------
->  drivers/virt/coco/sev-guest/sev-guest.h |   3 +
->  3 files changed, 43 insertions(+), 139 deletions(-)
+Hi Babu,
 
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+On Tue, Feb 27, 2024 at 10:12=E2=80=AFAM Moger, Babu <babu.moger@amd.com> w=
+rote:
+>
+> On 2/26/24 15:20, Reinette Chatre wrote:
+> >
+> > For example, if I understand correctly, theoretically, when ABMC is ena=
+bled then
+> > "num_rmids" can be U32_MAX (after a quick look it is not clear to me wh=
+y r->num_rmid
+> > is not unsigned, tbd if number of directories may also be limited by ke=
+rnfs).
+> > User space could theoretically create more monitor groups than the numb=
+er of
+> > rmids that a resource claims to support using current upstream enumerat=
+ion.
+>
+> CPU or task association still uses PQR_ASSOC(MSR C8Fh). There are only 11
+> bits(depends on specific h/w) to represent RMIDs. So, we cannot create
+> more than this limit(r->num_rmid).
+>
+> In case of ABMC, h/w uses another counter(mbm_assignable_counters) with
+> RMID to assign the monitoring. So, assignment limit is
+> mbm_assignable_counters. The number of mon groups limit is still r->num_r=
+mid.
 
--- 
-Regards/Gruss,
-    Boris.
+That is not entirely true. As long as you don't need to maintain
+bandwidth counts for unassigned monitoring groups, there's no need to
+allocate a HW RMID to a monitoring group.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+In my soft-ABMC prototype, where a limited number of HW RMIDs are
+allocated to assigned monitoring groups, I was forced to replace the
+HW RMID value stored in the task_struct to a pointer to the struct
+mongroup, since the RMID value assigned to the mongroup would
+frequently change, resulting in excessive walks down the tasklist to
+find all of the tasks using the previous value.
+
+However, the number of hardware monitor group identifiers supported
+(i.e., RMID, PARTID:PMG) is usually high enough that I don't think
+there's much motivation to support unlimited monitoring groups. In
+both soft-RMID and soft-ABMC, I didn't bother supporting more groups
+than num_rmids, because the number was large enough.
+
+-Peter
 
