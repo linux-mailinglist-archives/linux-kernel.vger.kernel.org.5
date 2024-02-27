@@ -1,286 +1,142 @@
-Return-Path: <linux-kernel+bounces-82909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F563868BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:07:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5E3868BAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2555A288909
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:07:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B56ED288C9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F8F136659;
-	Tue, 27 Feb 2024 09:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B1B713698E;
+	Tue, 27 Feb 2024 09:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uPVimYY0"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SOUWJKmx"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF76135A76
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9012F130E27
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:06:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709024808; cv=none; b=GnPptEos7xioLuTN6sJOI/VQmHf/4jo3LljQRdOhivLLZlX9NOP+hBxG4u+32GNUSxSEPtqqV5WHwta48gpxtEbRdCAVD07xOmkiLUXWCAPgBdPi91FlU9Cuh1Lub51oG6f6AVkLgJkylQuyvRKzrvCE7vcZW71srrBGeipXNOU=
+	t=1709024810; cv=none; b=MZfOpZYx9+AW2u/nOB7ID5RJaWmiTbXNA0T90kp/1HPAAOJ1JyNygZdtx59ynjaXXdiXCJustZ9DqrFfFSuR7Vv1krab13WL7kH7UETvtXxNSONik9X0RhVnrYezEWKtqfwPqfMeO9THLrpWNc++lPmx+No0Bk+C1qhIstoEWVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709024808; c=relaxed/simple;
-	bh=dpNCzHlcYCYV7LeOLMvXF8fh7wgPwNlXfNPIl3AIj30=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lyyISewOT0TdItPEGxCjt3rlAY4uz1Fs+jJQ8fM3/gArnRPYCPRrXtAAwegVV7+DRX2Ui4JZbbDJhxBD6ucZCU/Zx5Dbpe4578uWet02rQTFuosCqSbsYDE7GSk+JJRBqY/2EUjG9nEIaUyz/7MK3Oczu3cR0sg5rMwDNXpgTNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uPVimYY0; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5655c7dd3b1so6425081a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:06:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709024805; x=1709629605; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aWMOyAMGj4BPUfVQH/f9CThvYEhtc8ZUIoj4aNclbDw=;
-        b=uPVimYY03n6NOdnUv5TR16GTyHXAKmLbs+gWD7ZP/cLS/mYyPbflKFDf9EHJYp4kBw
-         4cqMNwK2HI2yj/4hzMH4n9s2Y23pFPiP/40vD6DqH1BH+5Mh5pQv5Xq5PYcghu0001k+
-         KPrpS/iTSM8CfUZRDgdF3T+MW4WR+TBClLQ7ASkZpYB06ZwCLCsVevfkYzlyNS+gqef9
-         UTtjdE+PMnsZDXVXirZ5DlI8NDIBXklT0DHAmPFw3ZmVG8ZeYvQ9l/+U6/KBcgPMWIbd
-         pvTFPxdcMTDdc62c4atpU3lOUikBHWRZ50h735yiu7Y40X9zxtfpvel8BF8W6aVJ+w1G
-         PzfA==
+	s=arc-20240116; t=1709024810; c=relaxed/simple;
+	bh=nWDZ2zj8RhLA+e/LR6ZW41Ft+IJodiJtEXLpMcaC7rM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=auYadoqYUMNYumMRXwFGT7R1Cc4epeE+/tkFbJy52X2PHRfmB+Yg76jbZepsHcHGB6HQ25f50RnRMRHXJcyr4xM+w9P1gVvNCV57IL172ekGwRD4lc7bAlOd8PtQRBuOyaDmuYGPCK45jDZTLR3fgZ99FM5PBfaWr3tWpR2VT/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SOUWJKmx; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709024806;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=nWDZ2zj8RhLA+e/LR6ZW41Ft+IJodiJtEXLpMcaC7rM=;
+	b=SOUWJKmxtkEj0BjH3MU9Lo2+Ti9wam+HtF7gxOG0COyco51Fg+KnxufmSxDtatw/MEfxH7
+	Uk0p8NJfmUgRuHDHaD8476gsqWObg/wzT6PtVtVt1gBpkqx2VYduDXwxF9F5hPzyWqv1Zq
+	NKrvwVYZijhwEs5+Q1YBtyKm/m8ut1s=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-626--md08Yf5ObmEQyIU4Pv4xw-1; Tue, 27 Feb 2024 04:06:44 -0500
+X-MC-Unique: -md08Yf5ObmEQyIU4Pv4xw-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41296f8d1e6so6211125e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:06:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709024805; x=1709629605;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1709024804; x=1709629604;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aWMOyAMGj4BPUfVQH/f9CThvYEhtc8ZUIoj4aNclbDw=;
-        b=Uc6YRKGEvQrH2aHDreUlQUm2Ud3Wh8UJQtCvJhxcKEICKTEixm5mob+OVCLFjkSngh
-         pl7LI42+Zt53pz93tOqlN8Drn23NQngXT9AFEo08ecqWVNMhLEtitNQ0MMv99XETKcY4
-         oICdFD+bvXQPKFgc+7rk1NwMYz71C8A3eK9bO38HLPaqQ9szfFehF5UU7q3jgfh1U94k
-         tKKgsEYJs401azYdO19uUXyXRro8c3FjHw1hYP2RP9BS2Kgbpo+unhNUVGnME2pxluUL
-         fX/DBBoeWoJi3xjzDP1oCAWOSymS+5OzWNoOpMh4hIqO1NKKkjzVrLYBwJfenSR7OGxW
-         BE3g==
-X-Forwarded-Encrypted: i=1; AJvYcCV4IUNX3D/hbwtOJnCa9r3LyMdkuC61Ij4MuKK8KQBuPCaRL9mb0QXXHlUYx7e0Vs//SLMtBSk8yvJWstdESU6rDyMGqMsNy01fB3J8
-X-Gm-Message-State: AOJu0YyhMli6Lm9WV8u0KgR+mzfnWcFe/j3i4diVXikRDjuZYgPY3zuc
-	hdIaCwzwUfY1LszsTt4KXK+W5wADIKh1vxjeX6neK0Vx8zcMSuqe+ZyYvhAwzbM=
-X-Google-Smtp-Source: AGHT+IEovXgAKdcS8TSAMgvRMulbwgj3LkU/1bchkBdxalI2nz+zFL8jWTP4iUK9IOgaIRhW10dMuA==
-X-Received: by 2002:a17:906:4a4a:b0:a43:a1b5:66f with SMTP id a10-20020a1709064a4a00b00a43a1b5066fmr1249287ejv.10.1709024804807;
-        Tue, 27 Feb 2024 01:06:44 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id h19-20020a170906719300b00a3e92467f22sm547354ejk.163.2024.02.27.01.06.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 01:06:44 -0800 (PST)
-Message-ID: <16739065-4187-4e51-b7f0-4a55de101744@linaro.org>
-Date: Tue, 27 Feb 2024 10:06:40 +0100
+        bh=nWDZ2zj8RhLA+e/LR6ZW41Ft+IJodiJtEXLpMcaC7rM=;
+        b=RoAbBkElPz2EIEVnJF2lg/k8Ck/XJSTKZj8ICnsu0GaW7EfceWnnf9yjXcVf3B+YZT
+         VwbWbZJla/y7nrRZODZX1C0qIxT6IJmPwU3EJwRh1FUYd2kC47oiWuWsp2Cs+rSNSbfB
+         ZHmEeLft5WwizYjop+5zA4J2VOjVWcNq5fK+husRs9VXQVpxtcL3WDWyGSCQST78xHFd
+         8mKkF/IQSUXgFiq3e+BgxmDHRosmngqGwAoEgRmpyttKvmxIcuUihFGpK7doO9OnmJrY
+         h4YB0D5wKdlj5+J9tuAiEQzFkagSx194uQu59GHMPq1j09qOy0zMJoEimeT47daj2fJJ
+         kiGQ==
+X-Gm-Message-State: AOJu0YxdXSDSyODcmfdmW4R4iHZzRQZ+IA8CeFVWyhk0Rjkf45oWuVSv
+	ENsaWurl6dgSbEY52FpDxkubklwLlycxbTJLY1VofcTKs7eFdUydIZSJaBWJnpkmldlhHpHMPIf
+	+16AHxe1Rs5PWB2Kfg6C2guTjt4objw80UXlOZox/gzDQ6vzSr68G/yrsebVaRg==
+X-Received: by 2002:a05:600c:358c:b0:412:abf5:cbf3 with SMTP id p12-20020a05600c358c00b00412abf5cbf3mr904754wmq.0.1709024803817;
+        Tue, 27 Feb 2024 01:06:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEoXMfjmhwggIZxieJMwcs+RNL0SfQa1Py2WMPLW1H146ut3MmM/ee0UCUiiLw8hHx6iG1STQ==
+X-Received: by 2002:a05:600c:358c:b0:412:abf5:cbf3 with SMTP id p12-20020a05600c358c00b00412abf5cbf3mr904738wmq.0.1709024803484;
+        Tue, 27 Feb 2024 01:06:43 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-245-60.dyn.eolo.it. [146.241.245.60])
+        by smtp.gmail.com with ESMTPSA id h13-20020a05600c314d00b00412a466f0c3sm6273243wmo.15.2024.02.27.01.06.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 01:06:43 -0800 (PST)
+Message-ID: <f0eeaab76d6386e22b88d9526ec7a53ae7e98ef5.camel@redhat.com>
+Subject: Re: [PATCH net] kunit: Fix again checksum tests on big endian CPUs
+From: Paolo Abeni <pabeni@redhat.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Charlie Jenkins
+ <charlie@rivosinc.com>, Palmer Dabbelt <palmer@dabbelt.com>, Erhard Furtner
+ <erhard_f@mailbox.org>, Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "David S. Miller" <davem@davemloft.net>,  Jakub Kicinski <kuba@kernel.org>
+Date: Tue, 27 Feb 2024 10:06:41 +0100
+In-Reply-To: <c434b94a-2072-4b74-a222-0906579a351e@csgroup.eu>
+References: 
+	<73df3a9e95c2179119398ad1b4c84cdacbd8dfb6.1708684443.git.christophe.leroy@csgroup.eu>
+	 <c434b94a-2072-4b74-a222-0906579a351e@csgroup.eu>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/18] ASoC: dt-bindings: mediatek,mt8365-mt6357: Add
- audio sound card document
-Content-Language: en-US
-To: Alexandre Mergnat <amergnat@baylibre.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-2-4fa1cea1667f@baylibre.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240226-audio-i350-v1-2-4fa1cea1667f@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 26/02/2024 15:01, Alexandre Mergnat wrote:
-> Add soundcard bindings for the MT8365 SoC with the MT6357 audio codec.
-> 
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
-> ---
->  .../bindings/sound/mediatek,mt8365-mt6357.yaml     | 127 +++++++++++++++++++++
->  1 file changed, 127 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml b/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml
-> new file mode 100644
-> index 000000000000..f469611ec6b6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/mediatek,mt8365-mt6357.yaml
-> @@ -0,0 +1,127 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/mediatek,mt8365-mt6357.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Mediatek MT8365 sound card with MT6357 sound codec.
+On Sat, 2024-02-24 at 07:44 +0000, Christophe Leroy wrote:
+> Hi,
+>=20
+> Le 23/02/2024 =C3=A0 11:41, Christophe Leroy a =C3=A9crit=C2=A0:
+> > Commit b38460bc463c ("kunit: Fix checksum tests on big endian CPUs")
+> > fixed endianness issues with kunit checksum tests, but then
+> > commit 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and
+> > ip_fast_csum") introduced new issues on big endian CPUs. Those issues
+> > are once again reflected by the warnings reported by sparse.
+> >=20
+> > So, fix them with the same approach, perform proper conversion in
+> > order to support both little and big endian CPUs. Once the conversions
+> > are properly done and the right types used, the sparse warnings are
+> > cleared as well.
+> >=20
+> > Reported-by: Erhard Furtner <erhard_f@mailbox.org>
+> > Fixes: 6f4c45cbcb00 ("kunit: Add tests for csum_ipv6_magic and ip_fast_=
+csum")
+> > Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>=20
+> netdev checkpatch complains about "1 blamed authors not CCed:=20
+> palmer@rivosinc.com; 1 maintainers not CCed: palmer@rivosinc.com "
+>=20
+> Palmer was copied but as Palmer Dabbelt <palmer@dabbelt.com>. Hope it is=
+=20
+> not a show stopper.
 
-Drop full stop. This is title.
+No, it's not.
 
-> +
-> +maintainers:
-> +  - Alexandre Mergnat <amergnat@baylibre.com>
-> +
-> +description:
-> +  This binding describes the MT8365 sound card.
+Acked-by: Paolo Abeni <pabeni@redhat.com>
 
-Say something useful. There is no need to say that binding is a binding
-describing something. Or just drop it if this is obvious.
+I *think* this, despite the subject prefix, should go via Andrew's tree
+to avoid conflicts.
 
+@Andrew does the above fits you?
 
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,mt8365-mt6357
-> +
-> +  mediatek,hp-pull-down:
-> +    description:
-> +      Earphone driver positive output stage short to the
-> +      audio reference ground.
-> +      Default value is false.
+Cheers,
 
-That's obvious, isn't it? Drop.
-
-> +    type: boolean
-> +
-> +  mediatek,micbias0-microvolt:
-> +    description: |
-> +      Selects MIC Bias 0 output voltage.
-> +      [1.7v, 1.8v, 1.9v, 2.0v, 2.1v, 2.5v, 2.6v, 2.7v]
-> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
-
-0 is 0V, not 1.7! That's total mess. You use here microvolts. Look at
-property name.
-
-> +
-> +  mediatek,micbias1-microvolt:
-> +    description: |
-> +      Selects MIC Bias 1 output voltage.
-> +      [1.7v, 1.8v, 1.9v, 2.0v, 2.1v, 2.5v, 2.6v, 2.7v]
-> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
-> +
-> +  mediatek,platform:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: The phandle of MT8365 ASoC platform.
-> +
-> +  pinctrl-names:
-> +    minItems: 1
-> +    items:
-> +      - const: aud_default
-
-Drop redundant parts. aud looks like block name.
-
-> +      - const: aud_dmic
-> +      - const: aud_miso_off
-> +      - const: aud_miso_on
-> +      - const: aud_mosi_off
-> +      - const: aud_mosi_on
-> +
-> +  vaud28-supply:
-> +    description:
-> +      2.8 volt supply for the audio codec
-> +
-> +patternProperties:
-> +  "^dai-link-[0-9]+$":
-> +    type: object
-> +    description:
-> +      Container for dai-link level properties and CODEC sub-nodes.
-> +
-> +    properties:
-> +      codec:
-> +        type: object
-> +        description: Holds subnode which indicates codec dai.
-> +
-> +        properties:
-> +          sound-dai:
-> +            maxItems: 1
-> +            description: phandle of the codec DAI
-> +
-> +        additionalProperties: false
-> +
-> +      link-name:
-> +        description:
-> +          This property corresponds to the name of the BE dai-link to which
-> +          we are going to update parameters in this node.
-> +        items:
-> +          const: 2ND I2S BE
-> +
-> +      sound-dai:
-> +        maxItems: 1
-> +        description: phandle of the CPU DAI
-> +
-> +    additionalProperties: false
-> +
-> +    required:
-> +      - link-name
-> +      - sound-dai
-> +
-> +additionalProperties: false
-
-This goes after required: block. See example schema.
-
-> +
-> +required:
-> +  - compatible
-> +  - mediatek,platform
-> +  - pinctrl-names
-> +  - vaud28-supply
-> +
-
-
-Best regards,
-Krzysztof
+Paolo
 
 
