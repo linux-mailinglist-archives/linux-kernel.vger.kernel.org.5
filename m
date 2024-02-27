@@ -1,148 +1,142 @@
-Return-Path: <linux-kernel+bounces-83703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1547869D77
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD58869D8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:27:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41F211F253B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:24:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C8FC1F2296B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6EE514DFEF;
-	Tue, 27 Feb 2024 17:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5B4145FE6;
+	Tue, 27 Feb 2024 17:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sjZPwv+j";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ETpDwKwr"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZCTy7ll7"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B2814AD2E;
-	Tue, 27 Feb 2024 17:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D55F13A884;
+	Tue, 27 Feb 2024 17:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054521; cv=none; b=ZfalHVOaXSNlOTPOVX7svQkdfUNEALMPgawjz1UAZY7I7j8LCUUVapUSYNJMJ0KhlRPoeKgvOVp6khFKdSIyXB7jkvMLVDijfPw7Iyo43PJDUVQWVBZ+DEljTbx2LhTiXisvb0PPxYN004MUkUmf2hHr5rTLZ8/rUBbMnYkyI8Q=
+	t=1709054572; cv=none; b=HbA2pVsKoRScba5O0uzcSYs188CmyA/eVnD+Z7/LPyyCvnhuBez94u75iue/afQKxKBf1FBNnZOEh+jgQLJR8ZVs1ybYQI2YbkRmiZHnUatVpDWZP+Rsf8nHkPXNcnOURNX6ePwIUIaDGZSoBdPuMebgoXjtgPkh5LSlUg06f4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054521; c=relaxed/simple;
-	bh=R8g2H2I6plpx5pN/lj3b8Pe/c6VrII1cU21kCQQ1spo=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=FZT/1CzuvsN0BdGYXnxb4SdJNaMpUDwDr2KCRH/hL/dRorll/KPw0AAtRkASnRXDFJdevnaka/XBK2RDsDChS6+EM1r9vVv3nCLMgLDyp8LhC3XA+8WugIqB887eoXs99QfuUtPtOlTdAVrnQkXwsEbVIyXE/yhXqRZqHNdhz9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sjZPwv+j; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ETpDwKwr; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 27 Feb 2024 17:21:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709054517;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7dnpyg4THHby13IlGSuMEKZU58Q5gGYrPricbeVgsSs=;
-	b=sjZPwv+jxr3JngkAFnU5otlOO3Q1UPADmdIkq4F1Wa8F2n0/oytk3qvK7CJqapL7AzECkl
-	hSSN+9nECKFTSnrSNnAJjGCppLMOXxwL0noSPk+/aw87T9hGgNPE0PCB+l/r42KtaTzyks
-	/MgyWpMBIh81ekb+CJSd4yZ51JMWt/aOhSVUAKVobrTrqDMYZb8PCtymS7DzdH5gHfu1H9
-	uQiJPD6hBPPoEbycv5mutbxQCrBjNnyUk8u2BXKBthFJlEx26ux/ph+Qycvv6E/6xos9EO
-	AvQ/y9JCDUT4OnexWUsIces5zJALKVrUQB04hmlAAoo9t0CTiPbRoYBLJy6V9Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709054517;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7dnpyg4THHby13IlGSuMEKZU58Q5gGYrPricbeVgsSs=;
-	b=ETpDwKwroD8WcJO+r8FoEJLqXqyXMuI7IDXTZlbWSBSXPJqBCFT5K6yluCWBFDe9e6y8YZ
-	RPosSgDOrpQWAQCA==
-From:
- tip-bot2 for Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/imgpdc: Convert to
- platform_driver::remove_new() callback
-Cc: u.kleine-koenig@pengutronix.de, Thomas Gleixner <tglx@linutronix.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: =?utf-8?q?=3C472fc6f6bcd54b73f8af206d079a80cb8744d0ca=2E17032?=
- =?utf-8?q?84359=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
-References: =?utf-8?q?=3C472fc6f6bcd54b73f8af206d079a80cb8744d0ca=2E170328?=
- =?utf-8?q?4359=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
+	s=arc-20240116; t=1709054572; c=relaxed/simple;
+	bh=OZd+QJFTU/LwgL/Zknn60/sBgfvG6r1OawibkMwoaGU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XbZE8uL7AGM6Vgk6U4wEpVhROd/dBvPlfLT6nV7wGt1tGKaUDhohMKffXNosS8wcErA4elPeJRW7s++SQf/TqRSFjh6Uqth4mBXP9zZaQOe9KbtNJ0dDraNhS1vQUra26JQlZwr+zB4rjyiuo17KN5k1Ef6L/S9q4E+5YM1OvNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZCTy7ll7; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RBX79s001966;
+	Tue, 27 Feb 2024 17:22:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=g5/OtNFrU+q0HQTPqi/YEqGkmh+JvEMc5GWZqEAuWTI=; b=ZC
+	Ty7ll71rN8DODt66sNrLm4IsEKMm6JRxG05CVnpfRXo6OegPCKDvFzQ4GxX0CMA7
+	4HNUafYKe5AudJDKFjmcea1gMW0KGeT6PdWPywzN1AVEplxwVG0CooOWxTp/myOt
+	2mjU2d+DqRe2gTvEHJH23s5DgpDKagmG76roSWmoOHbXcJ+Svi3c2aE5FNC5/HgH
+	aFhE3aMXbor6h74LbXirvAOe7/ZsQPsAPM2netNnHAdy0bdZLdhLkcwKAt6Jqqo6
+	SCMqsHjNKWyeU7bOtGu69TrxoBzgWC/IxrmU5iFyQKYepTgcuOKquSWi7keqMaIQ
+	pneMgdpWLPJqaymHobug==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh64h22ex-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 17:22:23 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41RHMMUH001769
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 17:22:22 GMT
+Received: from [10.71.110.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 27 Feb
+ 2024 09:22:21 -0800
+Message-ID: <9336c99d-ca56-4d01-b9b2-18539ef0b725@quicinc.com>
+Date: Tue, 27 Feb 2024 09:22:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170905451714.398.2278907850835414879.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/7] arm64: Unconditionally call
+ unflatten_device_tree()
+Content-Language: en-US
+To: Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <patches@lists.linux.dev>,
+        <linux-um@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+        <kunit-dev@googlegroups.com>, <linux-kselftest@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+        Catalin
+ Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>
+References: <20240217010557.2381548-1-sboyd@kernel.org>
+ <20240217010557.2381548-6-sboyd@kernel.org>
+From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
+In-Reply-To: <20240217010557.2381548-6-sboyd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: U-zGZIHscjx7uttOwzY-n83UKqVrV9ux
+X-Proofpoint-GUID: U-zGZIHscjx7uttOwzY-n83UKqVrV9ux
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-27_03,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ bulkscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 phishscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402270134
 
-The following commit has been merged into the irq/core branch of tip:
+On 2/16/2024 5:05 PM, Stephen Boyd wrote:
 
-Commit-ID:     b7357ec21df979b9f72bac61df195dd30eab3381
-Gitweb:        https://git.kernel.org/tip/b7357ec21df979b9f72bac61df195dd30ea=
-b3381
-Author:        Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-AuthorDate:    Fri, 22 Dec 2023 23:50:32 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 27 Feb 2024 18:12:09 +01:00
+> Call this function unconditionally so that we can populate an empty DTB
+> on platforms that don't boot with a firmware provided or builtin DTB.
+> When ACPI is in use, unflatten_device_tree() ignores the
+> 'initial_boot_params' pointer so the live DT on those systems won't be
+> whatever that's pointing to. Similarly, when kexec copies the DT data
+> the previous kernel to the new one on ACPI systems,
+> of_kexec_alloc_and_setup_fdt() will ignore the live DT (the empty root
+> one) and copy the 'initial_boot_params' data.
+>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 
-irqchip/imgpdc: Convert to platform_driver::remove_new() callback
+This change looks good to me. I am working on a patch set that will benefit from this.
+Reviewed-by: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
+Regards,
+Oreoluwa
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
-
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
-
-Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/472fc6f6bcd54b73f8af206d079a80cb8744d0ca.1703=
-284359.git.u.kleine-koenig@pengutronix.de
-
----
- drivers/irqchip/irq-imgpdc.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/irqchip/irq-imgpdc.c b/drivers/irqchip/irq-imgpdc.c
-index 5831be4..b42ed68 100644
---- a/drivers/irqchip/irq-imgpdc.c
-+++ b/drivers/irqchip/irq-imgpdc.c
-@@ -461,12 +461,11 @@ err_generic:
- 	return ret;
- }
-=20
--static int pdc_intc_remove(struct platform_device *pdev)
-+static void pdc_intc_remove(struct platform_device *pdev)
- {
- 	struct pdc_intc_priv *priv =3D platform_get_drvdata(pdev);
-=20
- 	irq_domain_remove(priv->domain);
--	return 0;
- }
-=20
- static const struct of_device_id pdc_intc_match[] =3D {
-@@ -479,8 +478,8 @@ static struct platform_driver pdc_intc_driver =3D {
- 		.name		=3D "pdc-intc",
- 		.of_match_table	=3D pdc_intc_match,
- 	},
--	.probe =3D pdc_intc_probe,
--	.remove =3D pdc_intc_remove,
-+	.probe		=3D pdc_intc_probe,
-+	.remove_new	=3D pdc_intc_remove,
- };
-=20
- static int __init pdc_intc_init(void)
+> ---
+>  arch/arm64/kernel/setup.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> index 42c690bb2d60..0d210720d47d 100644
+> --- a/arch/arm64/kernel/setup.c
+> +++ b/arch/arm64/kernel/setup.c
+> @@ -351,8 +351,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+>  	/* Parse the ACPI tables for possible boot-time configuration */
+>  	acpi_boot_table_init();
+>  
+> -	if (acpi_disabled)
+> -		unflatten_device_tree();
+> +	unflatten_device_tree();
+>  
+>  	bootmem_init();
 
