@@ -1,56 +1,72 @@
-Return-Path: <linux-kernel+bounces-83682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E576869D3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C12D5869D46
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:12:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8ADE8B2C1E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:10:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5617FB2C2D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30D648CFD;
-	Tue, 27 Feb 2024 17:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7DA94F1E5;
+	Tue, 27 Feb 2024 17:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j9+Q5INA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b="Bp8e/1d+"
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDA22032D;
-	Tue, 27 Feb 2024 17:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5A94EB21;
+	Tue, 27 Feb 2024 17:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709053782; cv=none; b=l3UBLf7BLEIf4cpXW8R2PKOHbszOFDmVZuQFQsSGMz7MnfFiZ2loLPJIKyMyN4/FS1NOVTf9qeiOilWgR9gg6SHKBOgXa79S4HAWY2TA0OexewwFL0kdfQLj2d6+oRFqzENlS8ma7e1QkKL1xivnt8AbdkMOe+8jbOVDQuvE6Hs=
+	t=1709053810; cv=none; b=p+g8QwHXmJW0bqHUpUKTR7pVKjPHnMS/KYqsJG7B8KtujZ/wXGDKfRNQK3OJOcBmNpaR5N6jpc/KEHu6gvatO7Abk8o4+waXENFTrWbPNjt1IcJT42gAxmbpXbzwSPvi+Qi34J1aduwtUeDQKe3EogXe/VM/UvlZg1Zm/2ZDqVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709053782; c=relaxed/simple;
-	bh=4eAE/rmlFIWtGLRSUy3wjOLJtCVhswfMdn3Xe+j3sN8=;
+	s=arc-20240116; t=1709053810; c=relaxed/simple;
+	bh=gyuDS9EtEKaZucQGaEB4KRJYUmQ89m4Q+KTR4RAwEKU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I7kww5F+wfbuHI9cjCGTWLVpTUqNdGwm5RcZS1v/TJB3ScMRKy5KY7tVj+v/+6+APjp08oPT1XLqtlbVL3WXUrDxSv2+DXwO0fsm8+ZRRcoMkgxhG33EQ00WBh198McqJpUwwRs57cHaStPY/44W4YnopTI0v3j5doBiTfy/ic8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j9+Q5INA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC3AEC43399;
-	Tue, 27 Feb 2024 17:09:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709053781;
-	bh=4eAE/rmlFIWtGLRSUy3wjOLJtCVhswfMdn3Xe+j3sN8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j9+Q5INA5mpuh4Urf0cy8QAwO1cSFpyAydp2ANsepioldiChOyY7wx73EOYhv4z5+
-	 3OLnTU140Q7A2fbdtbPl1aWK+XAd9dJWmSY/YVOQlA9ysk4jVC8a35nY1yzAYxSobp
-	 fuHLMkCA4c4WstOZG5ZHqbGtMebTpArXnyoROH+tiSVTye6GZYia3SEB2+00YG3sA5
-	 c9eqLaeiv3ly9taPmXOkRDrB4li/9dOq0BzHUAuYV4yjkqOabnYOIsMZHIV9yIL2V2
-	 KAkIS7cBk9EnGpxc/1BlpO8OYAp5t7CL2zLnVaALayYPauz7CuscWsX0mFB6DLa2NB
-	 BLSrMumPZhtgQ==
-Date: Tue, 27 Feb 2024 17:09:37 +0000
-From: Simon Horman <horms@kernel.org>
-To: Chengming Zhou <chengming.zhou@linux.dev>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, vbabka@suse.cz,
-	Xiongwei.Song@windriver.com
-Subject: Re: [PATCH] net: remove SLAB_MEM_SPREAD flag usage
-Message-ID: <20240227170937.GD277116@kernel.org>
-References: <20240224134943.829751-1-chengming.zhou@linux.dev>
- <bda53361-d334-411b-8ac1-069d41025804@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t6BTxxmsK3KUGg2PIBjIE55lgm4jDpGLfNtJ7IqS8dXigWUIPdfKwWtKf8m7vXnowD3V+TtmEuK2JVig6f71AO4vHTVkWvysqSAEEG4xevAfqk+wlXR+qLsIqi8fhc0oGr2lTZoPnZz1mhaoz0ONpkiV22r5vY/cqJEWqkFdiNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com; spf=pass smtp.mailfrom=pankajraghav.com; dkim=pass (2048-bit key) header.d=pankajraghav.com header.i=@pankajraghav.com header.b=Bp8e/1d+; arc=none smtp.client-ip=80.241.56.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pankajraghav.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pankajraghav.com
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4TkkWF4lXLz9stn;
+	Tue, 27 Feb 2024 18:10:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pankajraghav.com;
+	s=MBO0001; t=1709053801;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L3rbyqVBPDOPP9EM6vMSpLtzZtbMxF8srL9v40G0eMw=;
+	b=Bp8e/1d+0s6eBqZSdp+nDUYyWX1I3kndK4tVYRukCkdA303SiPrLBul3QkDt5kyngCAxCH
+	CclK+qmQimTSdZ37SJNF9ZyYlxC93pioBZL4JBPcXSnaSjNn4wsAlRppgX5jrhwJxVS9NX
+	rk+zeg2BZoiI5WjnQfuFp9jTA9Fdr8Fuk9FkmCwPZzIFW+auxXD6VRyLQMgnSl02jeT8oe
+	LaWL0DWKVVRHCLtwmfY2MAoo0lGBlMy6M774uvUCrgTYrqzgVjPMSNZ53L/bAQIBVmkAem
+	RnWbBaahhuYcPF6ChRUiqlfzXlCRTxqpmuqKCms8KauMe4oQE/CatYUOSDAc9Q==
+Date: Tue, 27 Feb 2024 18:09:57 +0100
+From: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Matthew Wilcox <willy@infradead.org>, linux-xfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, david@fromorbit.com, 
+	chandan.babu@oracle.com, akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com, 
+	hare@suse.de, djwong@kernel.org, gost.dev@samsung.com, linux-mm@kvack.org, 
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 03/13] filemap: align the index to mapping_min_order in
+ the page cache
+Message-ID: <mm47tgwkrk3glymx6hzgp5bshnzqwqt26ja46xckfzzbjuwzic@oupjlfibn4nm>
+References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+ <20240226094936.2677493-4-kernel@pankajraghav.com>
+ <Zdyi6lFDAHXi8GPz@casper.infradead.org>
+ <37kubwweih4zwvxzvjbhnhxunrafawdqaqggzcw6xayd6vtrfl@dllnk6n53akf>
+ <hjrsbb34ghop4qbb6owmg3wqkxu4l42yrekshwfleeqattscqp@z2epeibc67lt>
+ <aajarho6xwi4sphqirwvukofvqy3cl6llpe5fetomj5sz7rgzp@xo2iqdwingtf>
+ <vsy43j4pwgh4thcqbhmotap7rgzg5dnet42gd5z6x4yt3zwnu4@5w4ousyue36m>
+ <4zpsfvy3e4hkc4avvjjr34rgo7ggpd6hpflptmiauvxwm3dpvk@5wulihwpwbyp>
+ <na2k4nnvkseh2yh27eqkbfyouf7vnerd6i7pt4z7f7xsjsm6pu@ry5tvdcr2ggw>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,37 +75,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bda53361-d334-411b-8ac1-069d41025804@linux.dev>
+In-Reply-To: <na2k4nnvkseh2yh27eqkbfyouf7vnerd6i7pt4z7f7xsjsm6pu@ry5tvdcr2ggw>
+X-Rspamd-Queue-Id: 4TkkWF4lXLz9stn
 
-On Mon, Feb 26, 2024 at 04:55:01PM +0800, Chengming Zhou wrote:
-> On 2024/2/24 21:49, chengming.zhou@linux.dev wrote:
-> > From: Chengming Zhou <zhouchengming@bytedance.com>
 > > 
-> > The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> > its usage so we can delete it from slab. No functional change.
-> 
-> Update changelog to make it clearer:
-> 
-> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
-> removed as of v6.8-rc1, so it became a dead flag since the commit
-> 16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"). And the
-> series[1] went on to mark it obsolete explicitly to avoid confusion
-> for users. Here we can just remove all its users, which has no any
-> functional change.
-> 
-> [1] https://lore.kernel.org/all/20240223-slab-cleanup-flags-v2-1-02f1753e8303@suse.cz/
-> 
-> Thanks!
-> 
+> > I have one question while I have you here. 
 > > 
-> > Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> > When we have this support in the page cache, do you think bcachefs can make
+> > use of this support to enable bs > ps in bcachefs as it already makes use 
+> > of large folios? 
+> 
+> Yes, of course.
+> 
+> > Do you think it is just a simple mapping_set_large_folios ->
+> > mapping_set_folio_min_order(.., block_size order) or it requires more
+> > effort?
+> 
+> I think that's all that would be required. There's very little in the
+> way of references to PAGE_SIZE in bcachefs.
 
-Thanks Chengming Zhou,
+Sweet. I will take a look at it once we get this upstream.
 
-this seems reasonable to me. But I think it would be best to post
-a v2 of this patch with the updated patch description (which is very
-helpful, BTW).
-
--- 
-pw-bot: changes-requested
+--
+Pankaj
 
