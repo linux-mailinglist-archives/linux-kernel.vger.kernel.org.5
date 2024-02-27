@@ -1,153 +1,461 @@
-Return-Path: <linux-kernel+bounces-83208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C996F869041
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:21:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DD6786903F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:21:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59AE2B22452
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:21:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2BA11C250C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD7C2145356;
-	Tue, 27 Feb 2024 12:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A47D713DB90;
+	Tue, 27 Feb 2024 12:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="EKstzD34"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XiPlDdlM"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB4313F006
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED0A13B2A5;
+	Tue, 27 Feb 2024 12:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709036355; cv=none; b=JF/FbITNRGPQLiJvpUBBZOlXzHfnzr5eMsbgTA/lerr89O4eSJY5v9fau8Bi/Fsl6aCmmc6PNcepz8CIqHgenGEtORoZxJg9Mmsaj1yXG+/I59bKuC8WhkaRg38On4pW+NJiLiJOng8HxmWd+rFeiUzzMXlNCj7g7m0U7ny9RmM=
+	t=1709036351; cv=none; b=dcj+IjFLccU4at+DK/KiAmJehuEEcbC6rzX3Fgq//h1o7L1RCDy/qRnFipUjwLac94ohI4bttJ9vwB8MbORBc/Yx+tkMr1mbO5kwnSdNkGHxAkpI2Ub1ypLm6+W7v0EINSWrqlQw0F7g/hUlrvLEBrLGtYHDF5wdIRY+Q0/9XGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709036355; c=relaxed/simple;
-	bh=NoB2fJENJEF1lOceRXQJkFncagd38TF5dH+WfCPzLgc=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oneDWpkd6KXyFqGwxB/fnLCb3/hwlqLRMmTPm0s0q71CXaxhauYT9xtrwIwRk970NVPX1bMubmjzMdbunw6WHQFFinmwH8J1aUDtpOLWIaQ/737gDssnHcUgYm3POsdyxV4dV8CuqnBBTL49mrddHyJpsFMs3y5K+DJkX+7Icro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=EKstzD34; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709036353; x=1740572353;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NoB2fJENJEF1lOceRXQJkFncagd38TF5dH+WfCPzLgc=;
-  b=EKstzD34UG1TzfB1itbONbaGaTJDm7XfK8mMZ3UuhQG3nkGacEIUKcyF
-   m6i5U9DtnA+LxfMAoUOlrK0kJ8nTNX9fLJavak17bcbxD1P7eYpttQbdp
-   M4Vm37BHQCM+VCg6DWAbJ2wP3+8bg4pZO+sdhFocu2UY9Q8/eyaLZHECI
-   +yr7PiKDZjkV8P6TBwqdZO7dUGXXxH+F857n7kRyWefn+TbK6cXiA1Wmd
-   zmDdURU69UDpJcFNNRaFGYfXeQit5VsF6BL6mKId6Hq5GFXY+XPmVC2wA
-   GaH3MugIBGjnstRMI//bIQU6FOyGoeu0uiJimnAffKyhCA3ytnAmI48P/
-   w==;
-X-CSE-ConnectionGUID: gwxo7JWySZyq7n71kTiPrQ==
-X-CSE-MsgGUID: aUX90sfwTdW/vMLuEfjRDg==
-X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
-   d="asc'?scan'208";a="17414830"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 05:19:11 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 27 Feb 2024 05:19:03 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 27 Feb 2024 05:19:02 -0700
-Date: Tue, 27 Feb 2024 12:18:19 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-CC: Palmer Dabbelt <palmer@dabbelt.com>, <linux-riscv@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/4] riscv: Fix loading 64-bit NOMMU kernels past the
- start of RAM
-Message-ID: <20240227-unfitting-rectangle-cd0f23a4f3f1@wendy>
-References: <20240227003630.3634533-1-samuel.holland@sifive.com>
- <20240227003630.3634533-3-samuel.holland@sifive.com>
+	s=arc-20240116; t=1709036351; c=relaxed/simple;
+	bh=+tAJLc4gOObaF0V5QjxZ6s6onijd+n2DVJhu4lZ65CI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NCei2aoFVlUlfwCfwMgrKdu4K512ktciEJXqR2G1RW02hm70PrHt+3zQpFa+SYLM9OuphtTsu8CKHlrZnGV/jQmdPdJ16LGbWftiy9hI7O3Jjtv1+VYIwlzY7gNnmZOAOubAlVRpXGD9WNp4pExenp5GLzoBVKJBA8Eem1CaK64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XiPlDdlM; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709036348;
+	bh=+tAJLc4gOObaF0V5QjxZ6s6onijd+n2DVJhu4lZ65CI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XiPlDdlM75Nrqrz9GkoHeKShxYwgA4V0LTzIxaYodSfoicp+fKg1QVHDzT0HmRCou
+	 Ns//JUH87NIshIuNb9oxhV0QxY8o6Y15ED8IO9YvQz+BON1URl/g8zqNyDnmG2XAEa
+	 ol8TCasLzjNxWtUcxu5yeBuL6QfTCpHDhNZjonGFJMEq2m46vEVrRJSNyvnNPamqb/
+	 xodVcjTSz+UOO42ss6rn2cDbg+vVFB0r7qY5Z0QaWDMgo/TcXAPTW/RmAs1LKyc3/N
+	 qfnmi+iewoN5FH5nUBXXA18cu5GmFD/TrQWTkJ2T7EX8v207cT+n+AzVufzQ9okCus
+	 2Etbb9aPAIDzg==
+Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1292337813B6;
+	Tue, 27 Feb 2024 12:19:05 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: kernel@collabora.com,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] selftests/dmabuf-heap: conform test to TAP format output
+Date: Tue, 27 Feb 2024 17:19:09 +0500
+Message-ID: <20240227121920.1905095-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="tfS8TWg82l+tp82L"
-Content-Disposition: inline
-In-Reply-To: <20240227003630.3634533-3-samuel.holland@sifive.com>
+Content-Transfer-Encoding: 8bit
 
---tfS8TWg82l+tp82L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Conform the layout, informational and status messages to TAP. No
+functional change is intended other than the layout of output messages.
 
-On Mon, Feb 26, 2024 at 04:34:47PM -0800, Samuel Holland wrote:
-> commit 3335068f8721 ("riscv: Use PUD/P4D/PGD pages for the linear
-> mapping") added logic to allow using RAM below the kernel load address.
-> However, this does not work for NOMMU, where PAGE_OFFSET is fixed to the
-> kernel load address. Since that range of memory corresponds to PFNs
-> below ARCH_PFN_OFFSET, mm initialization runs off the beginning of
-> mem_map and corrupts adjacent kernel memory. Fix this by restoring the
-> previous behavior for NOMMU kernels.
->=20
-> Fixes: 3335068f8721 ("riscv: Use PUD/P4D/PGD pages for the linear mapping=
-")
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+Changes since v1:
+- Update some more error handling code
+---
+ .../selftests/dmabuf-heaps/dmabuf-heap.c      | 217 +++++++-----------
+ 1 file changed, 81 insertions(+), 136 deletions(-)
 
-This commit was a year ago, why has nobody reported this as being an
-issue before?
+diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+index 890a8236a8ba7..41a8485cad5d0 100644
+--- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
++++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+@@ -15,6 +15,7 @@
+ #include <linux/dma-buf.h>
+ #include <linux/dma-heap.h>
+ #include <drm/drm.h>
++#include "../kselftest.h"
+ 
+ #define DEVPATH "/dev/dma_heap"
+ 
+@@ -90,14 +91,13 @@ static int dmabuf_heap_open(char *name)
+ 	char buf[256];
+ 
+ 	ret = snprintf(buf, 256, "%s/%s", DEVPATH, name);
+-	if (ret < 0) {
+-		printf("snprintf failed!\n");
+-		return ret;
+-	}
++	if (ret < 0)
++		ksft_exit_fail_msg("snprintf failed!\n");
+ 
+ 	fd = open(buf, O_RDWR);
+ 	if (fd < 0)
+-		printf("open %s failed!\n", buf);
++		ksft_exit_fail_msg("open %s failed: %s\n", buf, strerror(errno));
++
+ 	return fd;
+ }
+ 
+@@ -140,7 +140,7 @@ static int dmabuf_sync(int fd, int start_stop)
+ 
+ #define ONE_MEG (1024 * 1024)
+ 
+-static int test_alloc_and_import(char *heap_name)
++static void test_alloc_and_import(char *heap_name)
+ {
+ 	int heap_fd = -1, dmabuf_fd = -1, importer_fd = -1;
+ 	uint32_t handle = 0;
+@@ -148,16 +148,12 @@ static int test_alloc_and_import(char *heap_name)
+ 	int ret;
+ 
+ 	heap_fd = dmabuf_heap_open(heap_name);
+-	if (heap_fd < 0)
+-		return -1;
+ 
+-	printf("  Testing allocation and importing:  ");
++	ksft_print_msg("Testing allocation and importing:\n");
+ 	ret = dmabuf_heap_alloc(heap_fd, ONE_MEG, 0, &dmabuf_fd);
+-	if (ret) {
+-		printf("FAIL (Allocation Failed!)\n");
+-		ret = -1;
+-		goto out;
+-	}
++	if (ret)
++		ksft_exit_fail_msg("FAIL (Allocation Failed!)\n");
++
+ 	/* mmap and write a simple pattern */
+ 	p = mmap(NULL,
+ 		 ONE_MEG,
+@@ -165,11 +161,8 @@ static int test_alloc_and_import(char *heap_name)
+ 		 MAP_SHARED,
+ 		 dmabuf_fd,
+ 		 0);
+-	if (p == MAP_FAILED) {
+-		printf("FAIL (mmap() failed)\n");
+-		ret = -1;
+-		goto out;
+-	}
++	if (p == MAP_FAILED)
++		ksft_exit_fail_msg("FAIL (mmap() failed)\n");
+ 
+ 	dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_START);
+ 	memset(p, 1, ONE_MEG / 2);
+@@ -179,31 +172,28 @@ static int test_alloc_and_import(char *heap_name)
+ 	importer_fd = open_vgem();
+ 	if (importer_fd < 0) {
+ 		ret = importer_fd;
+-		printf("(Could not open vgem - skipping):  ");
++		ksft_test_result_skip("Could not open vgem\n");
+ 	} else {
+ 		ret = import_vgem_fd(importer_fd, dmabuf_fd, &handle);
+-		if (ret < 0) {
+-			printf("FAIL (Failed to import buffer)\n");
+-			goto out;
+-		}
++		ksft_test_result(ret >= 0, "Import buffer\n");
+ 	}
+ 
+ 	ret = dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_START);
+ 	if (ret < 0) {
+-		printf("FAIL (DMA_BUF_SYNC_START failed!)\n");
++		ksft_print_msg("FAIL (DMA_BUF_SYNC_START failed!)\n");
+ 		goto out;
+ 	}
+ 
+ 	memset(p, 0xff, ONE_MEG);
+ 	ret = dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_END);
+ 	if (ret < 0) {
+-		printf("FAIL (DMA_BUF_SYNC_END failed!)\n");
++		ksft_print_msg("FAIL (DMA_BUF_SYNC_END failed!)\n");
+ 		goto out;
+ 	}
+ 
+ 	close_handle(importer_fd, handle);
+-	ret = 0;
+-	printf(" OK\n");
++	ksft_test_result_pass("%s\n", __func__);
++	return;
+ out:
+ 	if (p)
+ 		munmap(p, ONE_MEG);
+@@ -214,35 +204,30 @@ static int test_alloc_and_import(char *heap_name)
+ 	if (heap_fd >= 0)
+ 		close(heap_fd);
+ 
+-	return ret;
++	ksft_test_result_fail("%s\n", __func__);
+ }
+ 
+-static int test_alloc_zeroed(char *heap_name, size_t size)
++static void test_alloc_zeroed(char *heap_name, size_t size)
+ {
+ 	int heap_fd = -1, dmabuf_fd[32];
+ 	int i, j, ret;
+ 	void *p = NULL;
+ 	char *c;
+ 
+-	printf("  Testing alloced %ldk buffers are zeroed:  ", size / 1024);
++	ksft_print_msg("Testing alloced %ldk buffers are zeroed:\n", size / 1024);
+ 	heap_fd = dmabuf_heap_open(heap_name);
+-	if (heap_fd < 0)
+-		return -1;
+ 
+ 	/* Allocate and fill a bunch of buffers */
+ 	for (i = 0; i < 32; i++) {
+ 		ret = dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]);
+-		if (ret < 0) {
+-			printf("FAIL (Allocation (%i) failed)\n", i);
+-			goto out;
+-		}
++		if (ret)
++			ksft_exit_fail_msg("FAIL (Allocation (%i) failed)\n", i);
++
+ 		/* mmap and fill with simple pattern */
+ 		p = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, dmabuf_fd[i], 0);
+-		if (p == MAP_FAILED) {
+-			printf("FAIL (mmap() failed!)\n");
+-			ret = -1;
+-			goto out;
+-		}
++		if (p == MAP_FAILED)
++			ksft_exit_fail_msg("FAIL (mmap() failed!)\n");
++
+ 		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_START);
+ 		memset(p, 0xff, size);
+ 		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_END);
+@@ -255,23 +240,19 @@ static int test_alloc_zeroed(char *heap_name, size_t size)
+ 	/* Allocate and validate all buffers are zeroed */
+ 	for (i = 0; i < 32; i++) {
+ 		ret = dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]);
+-		if (ret < 0) {
+-			printf("FAIL (Allocation (%i) failed)\n", i);
+-			goto out;
+-		}
++		if (ret < 0)
++			ksft_exit_fail_msg("FAIL (Allocation (%i) failed)\n", i);
+ 
+ 		/* mmap and validate everything is zero */
+ 		p = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, dmabuf_fd[i], 0);
+-		if (p == MAP_FAILED) {
+-			printf("FAIL (mmap() failed!)\n");
+-			ret = -1;
+-			goto out;
+-		}
++		if (p == MAP_FAILED)
++			ksft_exit_fail_msg("FAIL (mmap() failed!)\n");
++
+ 		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_START);
+ 		c = (char *)p;
+ 		for (j = 0; j < size; j++) {
+ 			if (c[j] != 0) {
+-				printf("FAIL (Allocated buffer not zeroed @ %i)\n", j);
++				ksft_print_msg("FAIL (Allocated buffer not zeroed @ %i)\n", j);
+ 				break;
+ 			}
+ 		}
+@@ -283,16 +264,8 @@ static int test_alloc_zeroed(char *heap_name, size_t size)
+ 		close(dmabuf_fd[i]);
+ 
+ 	close(heap_fd);
+-	printf("OK\n");
+-	return 0;
+-
+-out:
+-	while (i > 0) {
+-		close(dmabuf_fd[i]);
+-		i--;
+-	}
+-	close(heap_fd);
+-	return ret;
++	ksft_test_result_pass("%s\n", __func__);
++	return;
+ }
+ 
+ /* Test the ioctl version compatibility w/ a smaller structure then expected */
+@@ -360,126 +333,98 @@ static int dmabuf_heap_alloc_newer(int fd, size_t len, unsigned int flags,
+ 	return ret;
+ }
+ 
+-static int test_alloc_compat(char *heap_name)
++static void test_alloc_compat(char *heap_name)
+ {
+-	int heap_fd = -1, dmabuf_fd = -1;
+-	int ret;
++	int ret, heap_fd = -1, dmabuf_fd = -1;
+ 
+ 	heap_fd = dmabuf_heap_open(heap_name);
+-	if (heap_fd < 0)
+-		return -1;
+ 
+-	printf("  Testing (theoretical)older alloc compat:  ");
++	ksft_print_msg("Testing (theoretical) older alloc compat:\n");
+ 	ret = dmabuf_heap_alloc_older(heap_fd, ONE_MEG, 0, &dmabuf_fd);
+-	if (ret) {
+-		printf("FAIL (Older compat allocation failed!)\n");
+-		ret = -1;
+-		goto out;
+-	}
+-	close(dmabuf_fd);
+-	printf("OK\n");
++	if (dmabuf_fd >= 0)
++		close(dmabuf_fd);
++	ksft_test_result(!ret, "dmabuf_heap_alloc_older\n");
+ 
+-	printf("  Testing (theoretical)newer alloc compat:  ");
++	ksft_print_msg("Testing (theoretical) newer alloc compat:\n");
+ 	ret = dmabuf_heap_alloc_newer(heap_fd, ONE_MEG, 0, &dmabuf_fd);
+-	if (ret) {
+-		printf("FAIL (Newer compat allocation failed!)\n");
+-		ret = -1;
+-		goto out;
+-	}
+-	printf("OK\n");
+-out:
+ 	if (dmabuf_fd >= 0)
+ 		close(dmabuf_fd);
+-	if (heap_fd >= 0)
+-		close(heap_fd);
++	ksft_test_result(!ret, "dmabuf_heap_alloc_newer\n");
+ 
+-	return ret;
++	close(heap_fd);
+ }
+ 
+-static int test_alloc_errors(char *heap_name)
++static void test_alloc_errors(char *heap_name)
+ {
+ 	int heap_fd = -1, dmabuf_fd = -1;
+ 	int ret;
+ 
+ 	heap_fd = dmabuf_heap_open(heap_name);
+-	if (heap_fd < 0)
+-		return -1;
+ 
+-	printf("  Testing expected error cases:  ");
++	ksft_print_msg("Testing expected error cases:\n");
+ 	ret = dmabuf_heap_alloc(0, ONE_MEG, 0x111111, &dmabuf_fd);
+-	if (!ret) {
+-		printf("FAIL (Did not see expected error (invalid fd)!)\n");
+-		ret = -1;
+-		goto out;
+-	}
++	ksft_test_result(ret, "Error expected on invalid fd\n");
+ 
+ 	ret = dmabuf_heap_alloc(heap_fd, ONE_MEG, 0x111111, &dmabuf_fd);
+-	if (!ret) {
+-		printf("FAIL (Did not see expected error (invalid heap flags)!)\n");
+-		ret = -1;
+-		goto out;
+-	}
++	ksft_test_result(ret, "Error expected on invalid heap flags\n");
+ 
+ 	ret = dmabuf_heap_alloc_fdflags(heap_fd, ONE_MEG,
+ 					~(O_RDWR | O_CLOEXEC), 0, &dmabuf_fd);
+-	if (!ret) {
+-		printf("FAIL (Did not see expected error (invalid fd flags)!)\n");
+-		ret = -1;
+-		goto out;
+-	}
++	ksft_test_result(ret, "Error expected on invalid heap flags\n");
+ 
+-	printf("OK\n");
+-	ret = 0;
+-out:
+ 	if (dmabuf_fd >= 0)
+ 		close(dmabuf_fd);
+ 	if (heap_fd >= 0)
+ 		close(heap_fd);
++}
+ 
+-	return ret;
++static int numer_of_heaps(void)
++{
++	DIR *d = opendir(DEVPATH);
++	struct dirent *dir;
++	int heaps = 0;
++
++	while ((dir = readdir(d))) {
++		if (!strncmp(dir->d_name, ".", 2))
++			continue;
++		if (!strncmp(dir->d_name, "..", 3))
++			continue;
++		heaps++;
++	}
++
++	return heaps;
+ }
+ 
+ int main(void)
+ {
+-	DIR *d;
+ 	struct dirent *dir;
+-	int ret = -1;
++	DIR *d;
++
++	ksft_print_header();
+ 
+ 	d = opendir(DEVPATH);
+ 	if (!d) {
+-		printf("No %s directory?\n", DEVPATH);
+-		return -1;
++		ksft_print_msg("No %s directory?\n", DEVPATH);
++		return KSFT_SKIP;
+ 	}
+ 
+-	while ((dir = readdir(d)) != NULL) {
++	ksft_set_plan(9 * numer_of_heaps());
++
++	while ((dir = readdir(d))) {
+ 		if (!strncmp(dir->d_name, ".", 2))
+ 			continue;
+ 		if (!strncmp(dir->d_name, "..", 3))
+ 			continue;
+ 
+-		printf("Testing heap: %s\n", dir->d_name);
+-		printf("=======================================\n");
+-		ret = test_alloc_and_import(dir->d_name);
+-		if (ret)
+-			break;
+-
+-		ret = test_alloc_zeroed(dir->d_name, 4 * 1024);
+-		if (ret)
+-			break;
+-
+-		ret = test_alloc_zeroed(dir->d_name, ONE_MEG);
+-		if (ret)
+-			break;
+-
+-		ret = test_alloc_compat(dir->d_name);
+-		if (ret)
+-			break;
+-
+-		ret = test_alloc_errors(dir->d_name);
+-		if (ret)
+-			break;
++		ksft_print_msg("Testing heap: %s\n", dir->d_name);
++		ksft_print_msg("=======================================\n");
++		test_alloc_and_import(dir->d_name);
++		test_alloc_zeroed(dir->d_name, 4 * 1024);
++		test_alloc_zeroed(dir->d_name, ONE_MEG);
++		test_alloc_compat(dir->d_name);
++		test_alloc_errors(dir->d_name);
+ 	}
+ 	closedir(d);
+ 
+-	return ret;
++	ksft_finished();
+ }
+-- 
+2.42.0
 
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
->=20
->  arch/riscv/include/asm/page.h | 2 +-
->  arch/riscv/mm/init.c          | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index 57e887bfa34c..94b3d6930fc3 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -89,7 +89,7 @@ typedef struct page *pgtable_t;
->  #define PTE_FMT "%08lx"
->  #endif
-> =20
-> -#ifdef CONFIG_64BIT
-> +#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
->  /*
->   * We override this value as its generic definition uses __pa too early =
-in
->   * the boot process (before kernel_map.va_pa_offset is set).
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index fa34cf55037b..0c00efc75643 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -232,7 +232,7 @@ static void __init setup_bootmem(void)
->  	 * In 64-bit, any use of __va/__pa before this point is wrong as we
->  	 * did not know the start of DRAM before.
->  	 */
-> -	if (IS_ENABLED(CONFIG_64BIT))
-> +	if (IS_ENABLED(CONFIG_64BIT) && IS_ENABLED(CONFIG_MMU))
->  		kernel_map.va_pa_offset =3D PAGE_OFFSET - phys_ram_base;
-> =20
->  	/*
-> --=20
-> 2.43.0
->=20
-
---tfS8TWg82l+tp82L
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd3TCwAKCRB4tDGHoIJi
-0s/zAQCS852scSonjy1Gj7apcbh2fxvVfWDrwwOmuGUBrmho0QEA44dOATliF775
-3hhKWqWXuZEZSrQinzVHcHmNhWBkywA=
-=Sol7
------END PGP SIGNATURE-----
-
---tfS8TWg82l+tp82L--
 
