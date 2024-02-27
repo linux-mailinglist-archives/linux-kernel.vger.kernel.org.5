@@ -1,194 +1,105 @@
-Return-Path: <linux-kernel+bounces-82829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BA7D868A33
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:52:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1F77868A37
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:52:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8D471F22275
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:52:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C3DFB22F84
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63C355E5E;
-	Tue, 27 Feb 2024 07:51:52 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239D756444;
+	Tue, 27 Feb 2024 07:52:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="AEnNtpe2"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7907A52F92;
-	Tue, 27 Feb 2024 07:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CA555E5A
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709020312; cv=none; b=BXmDxCV9bdlEaCfh+WRSw5AW0slddfXdVtchcQ2L3y9M1xJKO+lnfoNIpmSI8ElGtwk/ZBJuUNLw3acQg71DOGMWZ57EZ/ZYhpnyuaPJcNKPtGWiCqVcmj+bJhKV9Yw4FUcjGTAuS/Rie5EsKe3FJx5HhL8iv3MDBVzCF+SDt34=
+	t=1709020336; cv=none; b=gyGgDliQSkTbq3sHYwS5Jb53cc/YKyPEKwE79z9RdGF3rJfaMvJCiH+F+TILH/Rm/txXaPKNKuxMkr0M5p0mrV/hv1DNlZcLTNFm6A+QCONorNq5B16SqZDAlWzceLPRRprgwrkS+ZK7A0dJ96QUynONsnm3BSWUiAomx4HKAp4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709020312; c=relaxed/simple;
-	bh=TFqOwc2aOQP4CIgMGbjw84ou/9XfyykH27j7p3Ed0r0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=aLHfmgjQ7H+T98xk+6DLYRSuq89iARjQzo6zea5gRmeWERubGK6yeR50hzFy0qMuR8PV3M+emYhCKifh0R42j5NMH0EhUQNkhb+DlQG4SD5WBaSG2/hl5ujXu1nxo5k3CX/rIrbXecyMMbZkEX2ZmNY8WENd37QjAF/+dkGI70o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TkV4W6FSlz1h0B8;
-	Tue, 27 Feb 2024 15:49:31 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id B24E71400F4;
-	Tue, 27 Feb 2024 15:51:45 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 27 Feb 2024 15:51:45 +0800
-Message-ID: <d957454e-6516-f7e5-57fb-63f4687325ed@huawei.com>
-Date: Tue, 27 Feb 2024 15:51:44 +0800
+	s=arc-20240116; t=1709020336; c=relaxed/simple;
+	bh=9i5bdvauffTPJLJAtxK7D8dzjqmk1o8q6vh9OmqQgHY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nd9GVaGh7TLj6rwYK1uQnNlTstCWkfC7pKjc3Q+iyY2+RZkolaIPU0rjmNMqurlQSToJxaj69srzw96VEzMaOEO6EunZ/wy/Kl77yeDxpzDGY0wW+nBZP0t8z/fJVecdNdRJHmL9diIcdlODaTSvXj/cvg26zhYXFnLapCPV9QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=AEnNtpe2; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e54ffdd0b5so25800b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:52:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709020334; x=1709625134; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ENJj/6O9DH4cxRE/TQEbtaKBpIfwOdtzioRhc7Nl6I8=;
+        b=AEnNtpe2p9wUfimLtrhNE0O5NILodGNRrUixx63KP9vqnPgmGOjZQ+GXBqpk9W9Y+X
+         BB9K83vxGgmnh3tQACS4Z6PR98BFUYGe4XpG/xp1UG3RV8ULxl0eFdMq24Cr2uNw+O+n
+         b8KGPO7R2a/XPS7zVfmjn3peJ/CdePSpVcIp8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709020334; x=1709625134;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ENJj/6O9DH4cxRE/TQEbtaKBpIfwOdtzioRhc7Nl6I8=;
+        b=L1My/Q6oeRh+VPctjM2MEZxhZjA/GxMHY9Cm8t1gOmbL+VIIpxNaITui9U9x5VxHiD
+         w9xGtwF80bHsE2XOXLClz/7MzRt/0CcBB1iSlxP/XL3BcxbHvFsaWvGccmwx6EHKDpsD
+         Ho5r59RD8YLN9Ey5nz2WusZnURAvdlNrrgd6YTLzuJpkVL4lrbjJWtK0Awg46/jtzG2L
+         nz8ljGTUqnz5nwUb6MJ9Xu5ZB24eBVDRfvIhxb29T6YaE7xIllLk1NrexiPMZHbAWd3S
+         dAhKIjq393S1HnqQo40WmBGQn45cqgYktiLJjbB4SI65kf6Rkx4PaDuknzEfg8hpLomE
+         HUdA==
+X-Forwarded-Encrypted: i=1; AJvYcCXmRsRgtIXdw7113PVeyQ84KKwUt0VZTs7YrHafr5LNqARQDXCqVW2VwF3JrWXV0zf9yql4ENei1Zd23bNVS9vdJA7COqUsayDYuOGy
+X-Gm-Message-State: AOJu0YzUv1TsNDTeiIgxUArYc7ahmPvbj6D1PMuJsu5azl4EKyeZgmHv
+	eiDar1vnjKIryQ+EmyJIwMm13x7EDDog8VKxGmjDK1YFly47TKgDbRPaPZwfyg==
+X-Google-Smtp-Source: AGHT+IHoSiz3A+hlmxfNO+hdIrVvlJj1VC+1EonpCetHm1MwdjZTWc/oUEw7NbQj6yQqC4qDRXxp0A==
+X-Received: by 2002:a17:902:d4c3:b0:1dc:b6ef:e233 with SMTP id o3-20020a170902d4c300b001dcb6efe233mr1675638plg.50.1709020334115;
+        Mon, 26 Feb 2024 23:52:14 -0800 (PST)
+Received: from google.com ([2401:fa00:8f:203:f4f0:fb4d:aa01:9068])
+        by smtp.gmail.com with ESMTPSA id i8-20020a17090332c800b001da2f9d04b0sm901544plr.15.2024.02.26.23.52.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 23:52:13 -0800 (PST)
+Date: Tue, 27 Feb 2024 16:52:09 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: chengming.zhou@linux.dev
+Cc: minchan@kernel.org, senozhatsky@chromium.org, akpm@linux-foundation.org,
+	hannes@cmpxchg.org, nphamcs@gmail.com, yosryahmed@google.com,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH] mm/zsmalloc: don't need to save tag bit in handle
+Message-ID: <20240227075209.GA11972@google.com>
+References: <20240227030045.3443702-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH] ext4: fix uninitialized ratelimit_state->lock access in
- __ext4_fill_super()
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>, Baokun
- Li <libaokun1@huawei.com>
-References: <20240102133730.1098120-1-libaokun1@huawei.com>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240102133730.1098120-1-libaokun1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227030045.3443702-1-chengming.zhou@linux.dev>
 
-A gentle ping.
+On (24/02/27 03:00), chengming.zhou@linux.dev wrote:
+> 
+> We only need to save the position (pfn + obj_idx) in the handle, don't
+> need to save tag bit in handle. So one more bit can be used as obj_idx.
 
-On 2024/1/2 21:37, Baokun Li wrote:
-> In the following concurrency we will access the uninitialized rs->lock:
->
-> ext4_fill_super
->    ext4_register_sysfs
->     // sysfs registered msg_ratelimit_interval_ms
->                               // Other processes modify rs->interval to
->                               // non-zero via msg_ratelimit_interval_ms
->    ext4_orphan_cleanup
->      ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
->        __ext4_msg
->          ___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state)
->            if (!rs->interval)  // do nothing if interval is 0
->              return 1;
->            raw_spin_trylock_irqsave(&rs->lock, flags)
->              raw_spin_trylock(lock)
->                _raw_spin_trylock
->                  __raw_spin_trylock
->                    spin_acquire(&lock->dep_map, 0, 1, _RET_IP_)
->                      lock_acquire
->                        __lock_acquire
->                          register_lock_class
->                            assign_lock_key
->                              dump_stack();
->    ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
->      raw_spin_lock_init(&rs->lock);
->      // init rs->lock here
->
-> and get the following dump_stack:
->
-> =========================================================
-> INFO: trying to register non-static key.
-> The code is fine but needs lockdep annotation, or maybe
-> you didn't initialize this object before use?
-> turning off the locking correctness validator.
-> CPU: 12 PID: 753 Comm: mount Tainted: G E 6.7.0-rc6-next-20231222 #504
-> [...]
-> Call Trace:
->   dump_stack_lvl+0xc5/0x170
->   dump_stack+0x18/0x30
->   register_lock_class+0x740/0x7c0
->   __lock_acquire+0x69/0x13a0
->   lock_acquire+0x120/0x450
->   _raw_spin_trylock+0x98/0xd0
->   ___ratelimit+0xf6/0x220
->   __ext4_msg+0x7f/0x160 [ext4]
->   ext4_orphan_cleanup+0x665/0x740 [ext4]
->   __ext4_fill_super+0x21ea/0x2b10 [ext4]
->   ext4_fill_super+0x14d/0x360 [ext4]
-> [...]
-> =========================================================
->
-> Normally interval is 0 until s_msg_ratelimit_state is initialized, so
-> ___ratelimit() does nothing. But registering sysfs precedes initializing
-> rs->lock, so it is possible to change rs->interval to a non-zero value
-> via the msg_ratelimit_interval_ms interface of sysfs while rs->lock is
-> uninitialized, and then a call to ext4_msg triggers the problem by
-> accessing an uninitialized rs->lock. Therefore register sysfs after all
-> initializations are complete to avoid such problems.
->
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->   fs/ext4/super.c | 22 ++++++++++------------
->   1 file changed, 10 insertions(+), 12 deletions(-)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 0980845c8b8f..1db23b0e8a4f 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5564,19 +5564,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->   	if (err)
->   		goto failed_mount6;
->   
-> -	err = ext4_register_sysfs(sb);
-> -	if (err)
-> -		goto failed_mount7;
-> -
->   	err = ext4_init_orphan_info(sb);
->   	if (err)
-> -		goto failed_mount8;
-> +		goto failed_mount7;
->   #ifdef CONFIG_QUOTA
->   	/* Enable quota usage during mount. */
->   	if (ext4_has_feature_quota(sb) && !sb_rdonly(sb)) {
->   		err = ext4_enable_quotas(sb);
->   		if (err)
-> -			goto failed_mount9;
-> +			goto failed_mount8;
->   	}
->   #endif  /* CONFIG_QUOTA */
->   
-> @@ -5602,7 +5598,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->   		ext4_msg(sb, KERN_INFO, "recovery complete");
->   		err = ext4_mark_recovery_complete(sb, es);
->   		if (err)
-> -			goto failed_mount10;
-> +			goto failed_mount9;
->   	}
->   
->   	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev))
-> @@ -5619,15 +5615,17 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->   	atomic_set(&sbi->s_warning_count, 0);
->   	atomic_set(&sbi->s_msg_count, 0);
->   
-> +	/* Register sysfs after all initializations are complete. */
-> +	err = ext4_register_sysfs(sb);
-> +	if (err)
-> +		goto failed_mount9;
-> +
->   	return 0;
->   
-> -failed_mount10:
-> +failed_mount9:
->   	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
-> -failed_mount9: __maybe_unused
-> +failed_mount8: __maybe_unused
->   	ext4_release_orphan_info(sb);
-> -failed_mount8:
-> -	ext4_unregister_sysfs(sb);
-> -	kobject_put(&sbi->s_kobj);
->   failed_mount7:
->   	ext4_unregister_li_request(sb);
->   failed_mount6:
+[..]
 
+> mm/zsmalloc: don't need to save tag bit in handle
 
+Does this mean "don't need to reserve LSB for tag"?
+We still save allocated tag in the handle, that's what
+
+	handle |= OBJ_ALLOCATED_TAG;
+
+does.
+
+> Actually, the tag bit is only useful in zspage's memory space, to tell
+> if an object is allocated or not.
+
+I'm not completely sure if I follow this sentence.
 
