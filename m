@@ -1,46 +1,68 @@
-Return-Path: <linux-kernel+bounces-83368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 098278695C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C8AAC869644
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:09:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B67C1C22A22
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:05:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06D6A1C20D8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA29C145327;
-	Tue, 27 Feb 2024 14:05:05 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7A313EFF4;
+	Tue, 27 Feb 2024 14:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eQrFWlet"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37ACA13B2BA;
-	Tue, 27 Feb 2024 14:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21AC13A26F;
+	Tue, 27 Feb 2024 14:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709042705; cv=none; b=PVSqughDCpNWRdfbg2m6OFXqB0H3EIflKNcTM9hShzqDUQBDsHW//HF9inNVl9CygE+zn5tBTGCkq5bRnIGPDB+bgsyD/FIEN6SzKwxVRpJfKc08LnzB4wP/NQYpBm8HBVb3p3YNwq+Cuylsjh5sZjQ0SDPOib/cxEbzoVWW65Q=
+	t=1709042989; cv=none; b=UXNFnRzHyIPGsvkF7Xx20UflY/zHK3oarDmtTPnmfnrDGScGA0jr/sg3XK/7CrS2okdMZgHHs/biSoZ0kY4TeiqxQL1wThwkUCM9K/yYRvP0TP+wdeM5maJf5ri4cbxeU5euiLIn0citOiRpNyLYzx4hki+Db/RDzqSgcYDx66A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709042705; c=relaxed/simple;
-	bh=35GpseE5cIbySIWv/O/c8vhnBYQWjwpsy9ZTCo11obQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jC5iJKZS1t6tu/yIMe/o6AFFdWwW7M7SH8scWG6KDKjFDSZtAnlcJnhWgNdE7hd22Vlr8v1823Z98vXKszIqUbbabI0onOaoCTlizVLhuS6UxKoLNNA9ReOMm5uJ6qxsw5QFKvh/JXRjFBvGo9igngdC0mvyJKbin6bTO7YU4Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B4DC433F1;
-	Tue, 27 Feb 2024 14:05:03 +0000 (UTC)
-Date: Tue, 27 Feb 2024 09:07:05 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: <xu.xin16@zte.com.cn>
-Cc: <davem@davemloft.net>, <mhiramat@kernel.org>, <dsahern@kernel.org>,
- <edumazet@google.com>, <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-trace-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
- <yang.yang29@zte.com.cn>, <he.peilin@zte.com.cn>, <liu.chun2@zte.com.cn>,
- <jiang.xuexin@zte.com.cn>, <zhang.yunkai@zte.com.cn>
-Subject: Re: [PATCH] net/ipv4: add tracepoint for icmp_send
-Message-ID: <20240227090705.1ed08b64@gandalf.local.home>
-In-Reply-To: <202402271050366715988@zte.com.cn>
-References: <202402271050366715988@zte.com.cn>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709042989; c=relaxed/simple;
+	bh=wV6QZR2qT4rRd6CSyxNn9IloQC3bXp4VXdMAoWg5Uq8=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=QS2srbsQYX45ILQeHcmX1XkbLUNYjw/fiaQByfd63jI5WWk9rHtXBVoXx1goHSRM74qmkaIPEMOb06ZzCFoQ/kgG49KNVEC/1NTiozqJfiid1KZ3ezydD9nucGNLiAx4rOjVm1z7YckoBdMcZ0ww4Ws4Ei5AJ7e9s8IdQjxbCHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eQrFWlet; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709042988; x=1740578988;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=wV6QZR2qT4rRd6CSyxNn9IloQC3bXp4VXdMAoWg5Uq8=;
+  b=eQrFWletTNwsflYvemO5EnBkYkICjTVZ/EO2LaglZyWg+c+WCdMD4yHg
+   yMOjWCuG33NfjOyEVdQPzwBMDJn/Ocd9Q59q04gcjF14zbSwtTKKcoIWN
+   F/qMzJ2OiGbTTcpp+hmnUF/lqMxmOoQ9YxvuRf/I+a6Da9pFH13juHzb/
+   8LKC8AbAQKDQ7p+cPP27G9Y02Gf0bRAClMThpZUeR2fwE1O0gGdWaTD/G
+   OpJeAQAK9AnRdihjrDjzuHX6jcRuuhayp20cHLHybHJhbmf1F2VQXHpOu
+   xeTsysAFC1AaBy4Qq4FJBXfPrlXnIiZqGtxO25gvysh91kWZPrsV0jJrW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3938482"
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="3938482"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 06:09:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="30226639"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.34.61])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 06:09:45 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 27 Feb 2024 16:09:41 +0200 (EET)
+To: Armin Wolf <W_Armin@gmx.de>
+cc: Shyam-sundar.S-k@amd.com, Hans de Goede <hdegoede@redhat.com>, 
+    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] platform/x86/amd/pmf: Do not use readl() for policy
+ buffer access
+In-Reply-To: <20240227140500.98077-1-W_Armin@gmx.de>
+Message-ID: <7867a727-9bdf-2e48-2a90-c1f31b312c9f@linux.intel.com>
+References: <20240227140500.98077-1-W_Armin@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,121 +70,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 
-On Tue, 27 Feb 2024 10:50:36 +0800 (CST)
-<xu.xin16@zte.com.cn> wrote:
+On Tue, 27 Feb 2024, Armin Wolf wrote:
 
->  include/trace/events/icmp.h | 57 +++++++++++++++++++++++++++++++++++++++++++++
->  net/ipv4/icmp.c             |  4 ++++
->  2 files changed, 61 insertions(+)
->  create mode 100644 include/trace/events/icmp.h
+> The policy buffer is allocated using normal memory allocation
+> functions, so readl() should not be used on it.
 > 
-> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
-> new file mode 100644
-> index 000000000000..3d9af5769bc3
-> --- /dev/null
-> +++ b/include/trace/events/icmp.h
-> @@ -0,0 +1,57 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM icmp
-> +
-> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_ICMP_H
-> +
-> +#include <linux/icmp.h>
-> +#include <linux/tracepoint.h>
-> +
-> +TRACE_EVENT(icmp_send,
-> +
-> +		TP_PROTO(const struct sk_buff *skb, int type, int code),
-> +
-> +		TP_ARGS(skb, type, code),
-> +
-> +		TP_STRUCT__entry(
-> +				__field(__u16, sport)
-
-2 bytes
-
-> +				__field(__u16, dport)
-
-2 bytes
-
-> +				__field(unsigned short, ulen)
-
-2 bytes
-
-[ 2 byte hole for alignment ]
-
-> +				__field(const void *, skbaddr)
-
-4/8 bytes
-
-It's best to keep the holes at the end of the TP_STRUCT__entry().
-
-That is, I would move ulen to the end of the structure. It doesn't affect
-anything else.
-
--- Steve
-
-> +				__field(int, type)
-> +				__field(int, code)
-> +				__array(__u8, saddr, 4)
-> +				__array(__u8, daddr, 4)
-> +		),
-> +
-> +		TP_fast_assign(
-> +				// Get UDP header
-> +				struct udphdr *uh = udp_hdr(skb);
-> +				struct iphdr *iph = ip_hdr(skb);
-> +				__be32 *p32;
-> +
-> +				__entry->sport = ntohs(uh->source);
-> +				__entry->dport = ntohs(uh->dest);
-> +				__entry->ulen = ntohs(uh->len);
-> +				__entry->skbaddr = skb;
-> +				__entry->type = type;
-> +				__entry->code = code;
-> +
-> +				p32 = (__be32 *) __entry->saddr;
-> +				*p32 = iph->saddr;
-> +
-> +				p32 = (__be32 *) __entry->daddr;
-> +				*p32 =  iph->daddr;
-> +		),
-> +
-> +		TP_printk("icmp_send: type=%d, code=%d. From %pI4:%u to %pI4:%u ulen=%d skbaddr=%p",
-> +			__entry->type, __entry->code,
-> +			__entry->saddr, __entry->sport, __entry->daddr,
-> +			__entry->dport, __entry->ulen, __entry->skbaddr)
-> +);
-> +
-> +#endif /* _TRACE_ICMP_H */
-> +
-> +/* This part must be outside protection */
-> +#include <trace/define_trace.h>
-> diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
-> index e63a3bf99617..437bdb7e2650 100644
-> --- a/net/ipv4/icmp.c
-> +++ b/net/ipv4/icmp.c
-> @@ -92,6 +92,8 @@
->  #include <net/inet_common.h>
->  #include <net/ip_fib.h>
->  #include <net/l3mdev.h>
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/icmp.h>
+> Compile-tested only.
 > 
->  /*
->   *	Build xmit assembly blocks
-> @@ -599,6 +601,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
->  	struct net *net;
->  	struct sock *sk;
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> ---
+>  drivers/platform/x86/amd/pmf/tee-if.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> +	trace_icmp_send(skb_in, type, code);
-> +
->  	if (!rt)
->  		goto out;
+> diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x86/amd/pmf/tee-if.c
+> index 16973bebf55f..70d09103ab18 100644
+> --- a/drivers/platform/x86/amd/pmf/tee-if.c
+> +++ b/drivers/platform/x86/amd/pmf/tee-if.c
+> @@ -249,8 +249,8 @@ static int amd_pmf_start_policy_engine(struct amd_pmf_dev *dev)
+>  	u32 cookie, length;
+>  	int res;
 > 
+> -	cookie = readl(dev->policy_buf + POLICY_COOKIE_OFFSET);
+> -	length = readl(dev->policy_buf + POLICY_COOKIE_LEN);
+> +	cookie = dev->policy_buf[POLICY_COOKIE_OFFSET];
+> +	length = dev->policy_buf[POLICY_COOKIE_LEN];
+
+Hmm, the next question is, is it okay to get just 8 bits instead the full 
+dword (the policy_buf is unsigned char *)?
+
+-- 
+ i.
 
 
