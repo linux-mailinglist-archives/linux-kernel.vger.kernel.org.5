@@ -1,177 +1,148 @@
-Return-Path: <linux-kernel+bounces-83199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B47D9869022
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:18:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64484869029
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:19:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91AB82818F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:18:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88EB51C21B64
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A121015098B;
-	Tue, 27 Feb 2024 12:11:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="UbZhegny"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F2214F9D5;
-	Tue, 27 Feb 2024 12:11:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F45143C7B;
+	Tue, 27 Feb 2024 12:12:04 +0000 (UTC)
+Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F911420C4;
+	Tue, 27 Feb 2024 12:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.89.151.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709035867; cv=none; b=dLS7XSDEjsDEnbC3ZqLrvWCJPDcCgwlWBf9OYo4ad/epvS+yaC07K2/eJ2gDnnurq4JDpo96pU62UcRfjdv1kOBbfK+2L4/t3ywt2g85eLz1563c3tzobUa7YZ3VLeWOrEmQTatGA19IjONM4haxWluALr4dMupfNmt28BaF7/o=
+	t=1709035924; cv=none; b=cD2Vt1M3OBeCIMo9gtqPeHZdELYwRavsVG+HD1vwW/LhK4sILgyiWaA1Of2mk9lI5+cu1FzYZ7oaLXzddu4jwN3BWj2T4PcbyAmv76tgqAF5a/S/0cCoBWJep3B9QffoN6/E2TsOazIcdyt3fGBG17zP9m3qnCXY4ea3ivesvus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709035867; c=relaxed/simple;
-	bh=8bxWkdHWjuivwKz8TBybuK02NLszyCe4cZF3c/Vh6Zg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h+N0zXxAlrSro60GCa0l+VHXv2y7Z3UhbZeLEo9+B8kThm8Sad4Btexar4X4YNaSbmh0vUSd0HlxhPAdfQTmmQADYCdRxPLd7Kv8xAPDsUiXqL4nI8Zctqc99w+23NC0gRpw8ZP6EPAgFLAmE+bR5PcdLWq1HeVG3cifdq38RMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=UbZhegny; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709035864;
-	bh=8bxWkdHWjuivwKz8TBybuK02NLszyCe4cZF3c/Vh6Zg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UbZhegny3dX5c5Ge2uf8Vf0e4f5bvOx9G2h0WeuWNKBmlSmVZVJ4pSer12jNuDAgl
-	 XLGCdiHd5iIgtvrCebyFu9KAwn93c7avtXOxTOoXDDm+QGKtf78g0Tmr7+qf9YDBTZ
-	 WNcMQ5QlycAGFk3qX+VPdvxvOEvaS7GKC1QqBXikVtWwDBnuTi6IHOiqEmzS/qK5A7
-	 YZCxu2h1AuTGBMdZrrfTCkrbdQHR2rnwLiJ2dtwrzHd+k0E++sOWc2DqSFjleIt1f+
-	 2kWgp4GRvH2dh/X+5niD+4XmJGqYERLi1TyOUQ/oU8s3Y+cAN+g2QMyWYjpbltqeYW
-	 gRBO63LnWu6AQ==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 195D837820EF;
-	Tue, 27 Feb 2024 12:11:02 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: broonie@kernel.org
-Cc: wenst@chromium.org,
-	lgirdwood@gmail.com,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	matthias.bgg@gmail.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	trevor.wu@mediatek.com,
-	maso.huang@mediatek.com,
-	xiazhengqiao@huaqin.corp-partner.google.com,
-	arnd@arndb.de,
-	kuninori.morimoto.gx@renesas.com,
-	shraash@google.com,
-	amergnat@baylibre.com,
-	nicolas.ferre@microchip.com,
-	u.kleine-koenig@pengutronix.de,
-	dianders@chromium.org,
-	frank.li@vivo.com,
-	allen-kh.cheng@mediatek.com,
-	eugen.hristev@collabora.com,
-	claudiu.beznea@tuxon.dev,
-	jarkko.nikula@bitmer.com,
-	jiaxin.yu@mediatek.com,
-	alpernebiyasak@gmail.com,
-	ckeepax@opensource.cirrus.com,
-	zhourui@huaqin.corp-partner.google.com,
-	nfraprado@collabora.com,
-	alsa-devel@alsa-project.org,
-	shane.chien@mediatek.com,
-	linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	kernel@collabora.com,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 22/22] arm64: dts: mediatek: mt8186-corsola: Specify sound DAI links and routing
-Date: Tue, 27 Feb 2024 13:09:39 +0100
-Message-ID: <20240227120939.290143-23-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
-References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
+	s=arc-20240116; t=1709035924; c=relaxed/simple;
+	bh=PRbPf7BCbHwK2buRz5uodWE7f30oFbcZYo5Q4brrAI0=;
+	h=From:To:Subject:Date:Message-Id; b=iAC/sgcYIPoNB4azTdQN6Sfbo8vSrb9jFCUqiYs+n9ysRj7V6+gLp6vK14PJoFMHcuoa9nkhtyx2xz4gQ0BcR1HcnxXvsFo7c8jg3yQK+H2Bb1fQRv50kMDfWdLQ7/+gOiWhj6wnUiSmbJ6edCL/2aT0Q8MFuqCObO7ZzREZ8l0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=159.89.151.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from localhost.localdomain (unknown [125.120.153.166])
+	by mail-app2 (Coremail) with SMTP id by_KCgCXTa550d1lORdMAg--.22855S4;
+	Tue, 27 Feb 2024 20:11:38 +0800 (CST)
+From: Lin Ma <linma@zju.edu.cn>
+To: davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	idosch@nvidia.com,
+	razor@blackwall.org,
+	jiri@resnulli.us,
+	lucien.xin@gmail.com,
+	linma@zju.edu.cn,
+	edwin.peer@broadcom.com,
+	amcohen@nvidia.com,
+	pctammela@mojatatu.com,
+	liuhangbin@gmail.com,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net v2] rtnetlink: fix error logic of IFLA_BRIDGE_FLAGS writing back
+Date: Tue, 27 Feb 2024 20:11:28 +0800
+Message-Id: <20240227121128.608110-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID:by_KCgCXTa550d1lORdMAg--.22855S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr4ftw47Cw4fWr4xuFyDWrg_yoW5Gw18pF
+	4rKa42qF4kJrn7Zr47JF4UZayavrs7GFW8Cr4Yyw10yr1aqF1ruFZ7KFy3uFyayFZrAr17
+	XF1qyFW5XanxCFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUQID7UUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-The drivers and bindings acquired support for specifying audio hardware
-and links in device tree: describe and link the sound related HW of this
-machine.
+In the commit d73ef2d69c0d ("rtnetlink: let rtnl_bridge_setlink checks
+IFLA_BRIDGE_MODE length"), an adjustment was made to the old loop logic
+in the function `rtnl_bridge_setlink` to enable the loop to also check
+the length of the IFLA_BRIDGE_MODE attribute. However, this adjustment
+removed the `break` statement and led to an error logic of the flags
+writing back at the end of this function.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+if (have_flags)
+    memcpy(nla_data(attr), &flags, sizeof(flags));
+    // attr should point to IFLA_BRIDGE_FLAGS NLA !!!
+
+Before the mentioned commit, the `attr` is granted to be IFLA_BRIDGE_FLAGS.
+However, this is not necessarily true fow now as the updated loop will let
+the attr point to the last NLA, even an invalid NLA which could cause
+overflow writes.
+
+This patch introduces a new variable `br_flag` to save the NLA pointer
+that points to IFLA_BRIDGE_FLAGS and uses it to resolve the mentioned
+error logic.
+
+Fixes: d73ef2d69c0d ("rtnetlink: let rtnl_bridge_setlink checks IFLA_BRIDGE_MODE length")
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
 ---
- .../boot/dts/mediatek/mt8186-corsola.dtsi     | 42 ++++++++++++++++---
- 1 file changed, 37 insertions(+), 5 deletions(-)
+v1 -> v2: rename the br_flag to br_flags_attr which offers better
+          description suggested by Nikolay.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-index 3dea28f1d806..0bdb83c3e560 100644
---- a/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8186-corsola.dtsi
-@@ -42,7 +42,7 @@ backlight_lcd0: backlight-lcd0 {
- 		default-brightness-level = <576>;
- 	};
+ net/core/rtnetlink.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+index 9c4f427f3a50..ae86f751efc3 100644
+--- a/net/core/rtnetlink.c
++++ b/net/core/rtnetlink.c
+@@ -5169,10 +5169,9 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	struct net *net = sock_net(skb->sk);
+ 	struct ifinfomsg *ifm;
+ 	struct net_device *dev;
+-	struct nlattr *br_spec, *attr = NULL;
++	struct nlattr *br_spec, *attr, *br_flags_attr = NULL;
+ 	int rem, err = -EOPNOTSUPP;
+ 	u16 flags = 0;
+-	bool have_flags = false;
  
--	bt-sco-codec {
-+	bt-sco {
- 		compatible = "linux,bt-sco";
- 		#sound-dai-cells = <0>;
- 	};
-@@ -223,12 +223,44 @@ sound: sound {
- 		mediatek,adsp = <&adsp>;
- 		mediatek,platform = <&afe>;
+ 	if (nlmsg_len(nlh) < sizeof(*ifm))
+ 		return -EINVAL;
+@@ -5190,11 +5189,11 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	br_spec = nlmsg_find_attr(nlh, sizeof(struct ifinfomsg), IFLA_AF_SPEC);
+ 	if (br_spec) {
+ 		nla_for_each_nested(attr, br_spec, rem) {
+-			if (nla_type(attr) == IFLA_BRIDGE_FLAGS && !have_flags) {
++			if (nla_type(attr) == IFLA_BRIDGE_FLAGS && !br_flags_attr) {
+ 				if (nla_len(attr) < sizeof(flags))
+ 					return -EINVAL;
  
--		playback-codecs {
--			sound-dai = <&it6505dptx>, <&rt1019p>;
-+		audio-routing =
-+			"Headphone", "HPOL",
-+			"Headphone", "HPOR",
-+			"IN1P", "Headset Mic",
-+			"Speakers", "Speaker",
-+			"HDMI1", "TX";
-+
-+		hs-playback-dai-link {
-+			link-name = "I2S0";
-+			dai-format = "i2s";
-+			mediatek,clk-provider = "cpu";
-+			codec {
-+				sound-dai = <&rt5682s 0>;
-+			};
-+		};
-+
-+		hs-capture-dai-link {
-+			link-name = "I2S1";
-+			dai-format = "i2s";
-+			mediatek,clk-provider = "cpu";
-+			codec {
-+				sound-dai = <&rt5682s 0>;
-+			};
- 		};
+-				have_flags = true;
++				br_flags_attr = attr;
+ 				flags = nla_get_u16(attr);
+ 			}
  
--		headset-codec {
--			sound-dai = <&rt5682s 0>;
-+		spk-share-dai-link {
-+			link-name = "I2S2";
-+			mediatek,clk-provider = "cpu";
-+		};
-+
-+		spk-hdmi-playback-dai-link {
-+			link-name = "I2S3";
-+			dai-format = "i2s";
-+			mediatek,clk-provider = "cpu";
-+			/* RT1019P and IT6505 connected to the same I2S line */
-+			codec {
-+				sound-dai = <&it6505dptx>, <&rt1019p>;
-+			};
- 		};
- 	};
+@@ -5238,8 +5237,8 @@ static int rtnl_bridge_setlink(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		}
+ 	}
  
+-	if (have_flags)
+-		memcpy(nla_data(attr), &flags, sizeof(flags));
++	if (br_flags_attr)
++		memcpy(nla_data(br_flags_attr), &flags, sizeof(flags));
+ out:
+ 	return err;
+ }
 -- 
-2.44.0
+2.17.1
 
 
