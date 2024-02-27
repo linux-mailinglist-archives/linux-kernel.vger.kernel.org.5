@@ -1,201 +1,116 @@
-Return-Path: <linux-kernel+bounces-83770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B8D8869E48
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:50:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ABA2869E49
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:50:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACEF51C22F61
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:50:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC28F28461E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F0124EB32;
-	Tue, 27 Feb 2024 17:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6324C4EB32;
+	Tue, 27 Feb 2024 17:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="S98oTVF/"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MiavqekT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1494E1CE
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC994E1CB
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:50:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709056206; cv=none; b=DY72OG4oHRerY+OvMJclCZlzDAbv8GTSDj2o5WgHIR3LgKQxV9fxHIlr7DAsct9WiyRSc0J8T5l/1fECD34v5XODykh5BZiH269lKDF2pafZt8E2dB5EHcssqqvEzc05e5r2zAzr4dBRG2zMFC8DmKK/btlrOb/JQ+ke28LvCvU=
+	t=1709056219; cv=none; b=K5RNL4AIUD4rDpBWdrgoLZpjNeO53suYAPJAnTXknZCOeJWJtv4SuXWF1pPn1g3dWsqjImccaBO/pDUN0yYt+8fRU5yQ+vkJ7NZLUc5S5oZTFYHlXWtqKgE4dVImdU+/FoKYPzoIOdLkPvVTL3NStU/AekoQUFqehFE0M7T8aXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709056206; c=relaxed/simple;
-	bh=i9+aThPZgLldzijKsM2Ydwnx/AxPAA5Q+suNNuHCYdg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LgplUbgDuJbNv3K9HY5YP4AAgbSbkDNJ+8ivNopGuP8bDjEaMqoFylWgyqAGap8y8bUZ3FJFGkq1/UcVMG57pgESIt4hsobat+fdq2f1LKkzbKueqR169mDcP04WnuDG5/yKNYYgTLNWVc/NTsAP8YxX4TyP1m2i9H/zQ0eV9Z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=S98oTVF/; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41RH1v9t015869;
-	Tue, 27 Feb 2024 17:49:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=0Ia0QL8JqTJDFrtsrADg0HqWz/7ziWmL83LyNxIblqY=;
- b=S98oTVF/XSnI3OxA8yMg4fJLEx1bAKyMmiaVukj1W2xpx6kpZygfGbL1MJkP6yc3l31y
- vthNStnXc3XaM/98CjC85L6WMAXihmzXNLjTLbWHF50JS7cYuWBi+gZuSr5Juu3hi5Mb
- pgVeZUAJPAQhrT84kNMbjs99hXGTCtNKE9KfguuR6LYaJ1T04a0XK+dVZMyRkQyjhFf4
- ctlfDX/s+kA+s1ovlEiYGvkzfK7X/dbcuJljC4HqD/ITfiK2PUDX4W5HsQS2KGX5oZGs
- kK5/zg9W87qVyohKuSc6yV8C57p5y12BuJgJfMTfQMsAu+t7+aV6m4Yzpql+jD48qoJb LQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3whkseh8xs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 17:49:50 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41RH387B020965;
-	Tue, 27 Feb 2024 17:49:50 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3whkseh8xf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 17:49:50 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41RGGKIq024127;
-	Tue, 27 Feb 2024 17:49:49 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wfw0k8wws-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 17:49:49 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41RHnk1Z37028582
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 27 Feb 2024 17:49:48 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 6C3DC58051;
-	Tue, 27 Feb 2024 17:49:46 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4410658065;
-	Tue, 27 Feb 2024 17:49:42 +0000 (GMT)
-Received: from [9.43.122.193] (unknown [9.43.122.193])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 27 Feb 2024 17:49:41 +0000 (GMT)
-Message-ID: <42d5da16-b0d6-48f6-8da3-356f1717bb06@linux.ibm.com>
-Date: Tue, 27 Feb 2024 23:19:40 +0530
+	s=arc-20240116; t=1709056219; c=relaxed/simple;
+	bh=DDIKRf6Ufecl9u57nNBqnT2apz/dSFBQ9/B2HzYZIKc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uL330ZwkPdDT/ljKznWaf+PSoSUjJUaz0E+I+iO2UNrIgLKEldTNdzZHQdaszv61pOf0d6eifQPKRiC11JDliEF9RuyCl142vC/K0HoW5lqwS3gpwud7epUgv5jpaNBTZDdG95gIvpUysWY3/GJ6zmkpWINseE/qzjPw2dFu9vk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MiavqekT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226DDC433F1;
+	Tue, 27 Feb 2024 17:50:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709056219;
+	bh=DDIKRf6Ufecl9u57nNBqnT2apz/dSFBQ9/B2HzYZIKc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MiavqekT8D8nUaX8Elm1x2Eu9AMmI2cT+u3IkMJ9CSglk2muojEs+Y49uOoEuqYv1
+	 mbPo+W/3LR01UUG7RnQgOSrJMzzZ+lLZxueIEWbCTFbxuIsP7YELh1pGfcuD7W+NW0
+	 nZN4yT37tv0ebz6G6jckbv6AVNrpBWoQYzpTYxFtmiTDqCYG5fzlYetCOgjh4tr8mt
+	 zQRi4DSaVHM/6/gnShQkQyVfvSo9b2bB3/4G2qeGRdW5td0adH84w2IySP2V4BMS1F
+	 YupOmDsM9mSqb8QR2kG7XkIBohQ9D2lU70KdApgbqz+WIhpqbxt+No8jCL/0SKPmlJ
+	 xvYBKRJCnCaJQ==
+Date: Tue, 27 Feb 2024 09:50:17 -0800
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+To: Chao Yu <chao@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] f2fs: fix to don't call f2fs_stop_checkpoint in
+ spinlock coverage
+Message-ID: <Zd4g2SgQn3v_ZJMj@google.com>
+References: <20240222121851.883141-1-chao@kernel.org>
+ <20240222121851.883141-2-chao@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] sched/fair: Add EAS checks before updating
- overutilized
-Content-Language: en-US
-To: Chen Yu <yu.c.chen@intel.com>
-Cc: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        nysal@linux.ibm.com, aboorvad@linux.ibm.com, srikar@linux.vnet.ibm.com,
-        vschneid@redhat.com, pierre.gondois@arm.com, morten.rasmussen@arm.com,
-        qyousef@layalina.io
-References: <20240223150707.410417-1-sshegde@linux.ibm.com>
- <20240223150707.410417-2-sshegde@linux.ibm.com>
- <Zd4RlJJfruTs4Kiu@chenyu5-mobl2>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <Zd4RlJJfruTs4Kiu@chenyu5-mobl2>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: y1f_8uyAX7FLqf533c3wyZJaYCxDB-22
-X-Proofpoint-ORIG-GUID: vSDXGdv01Xke14sKbEqRdjDgL2SNZtb0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-27_05,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 clxscore=1011 spamscore=0 mlxlogscore=999
- suspectscore=0 mlxscore=0 impostorscore=0 adultscore=0 priorityscore=1501
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2402270137
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222121851.883141-2-chao@kernel.org>
 
+On 02/22, Chao Yu wrote:
+> f2fs_stop_checkpoint(, false) is complex and it may sleep, so we should
+> move it outside segmap_lock spinlock coverage in get_new_segment().
 
+Chao, I merged this patch into
 
-On 2/27/24 10:15 PM, Chen Yu wrote:
-
-> On 2024-02-23 at 20:37:06 +0530, Shrikanth Hegde wrote:
->> Overutilized field of root domain is only used for EAS(energy aware scheduler)
->> to decide whether to do regular load balance or EAS aware load balance. It
->> is not used if EAS not possible.
->>
->> Currently enqueue_task_fair and task_tick_fair accesses, sometime updates
->> this field. In update_sd_lb_stats it is updated often.
->> Which causes cache contention due to load/store tearing and burns
->> a lot of cycles.
-> 
-> Looks like a typical cache false sharing: CPU1 updates the rd->overutilized,
-> which invalid the cache line when CPU2 access adjacent rd->overload.
-> This changes looks good to me, just some minor questions:
-
-Thanks for taking a look and reviewing it. 
+https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev-test&id=f3b576d209983b5d6e1cb130bfc8ca1f0bbcad6d
 
 > 
->> Hence add EAS check before updating this field.
->> EAS check is optimized at compile time or it is static branch.
->> Hence it shouldn't cost much.
->>
->> With the patch, both enqueue_task_fair and newidle_balance don't show
->> up as hot routines in perf profile.
->>
->> 6.8-rc4:
->> 7.18%  swapper          [kernel.vmlinux]              [k] enqueue_task_fair
->> 6.78%  s                [kernel.vmlinux]              [k] newidle_balance
->> +patch:
->> 0.14%  swapper          [kernel.vmlinux]              [k] enqueue_task_fair
->> 0.00%  swapper          [kernel.vmlinux]              [k] newidle_balance
->>
->> While here, Fix updating overutilized as either SG_OVERUTILIZED or 0
->> instead. Current code can make it 0, 1 or 2. This shouldn't alter the
->> functionality.
+> Signed-off-by: Chao Yu <chao@kernel.org>
+> ---
+>  fs/f2fs/segment.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
 > 
-> Just wonder where 1 comes from? In current code we either write SG_OVERUTILIZED
-> or sg_status & SG_OVERUTILIZED.
-
-Thanks for catching this, Silly mistake. 
-Because of if conditions around I wrongly thought it would be 1. 
-
-I will correct that and send a next version soon.
-
-> 
->>
->> Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point indicator")
->> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
->> ---
->>  kernel/sched/fair.c | 36 +++++++++++++++++++++++++-----------
->>  1 file changed, 25 insertions(+), 11 deletions(-)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 8e30e2bb77a0..9529d9ef2c5b 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -6670,15 +6670,30 @@ static inline bool cpu_overutilized(int cpu)
->>  	return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min, rq_util_max, cpu);
->>  }
->>
->> -static inline void update_overutilized_status(struct rq *rq)
->> +static inline void update_rd_overutilized_status(struct root_domain *rd,
->> +						 int status)
->>  {
->> -	if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu)) {
->> -		WRITE_ONCE(rq->rd->overutilized, SG_OVERUTILIZED);
->> -		trace_sched_overutilized_tp(rq->rd, SG_OVERUTILIZED);
->> +	if (sched_energy_enabled()) {
->> +		WRITE_ONCE(rd->overutilized, status);
->> +		trace_sched_overutilized_tp(rd, !!status);
-> 
-> Is this !!status intentional? The original one is SG_OVERUTILIZED = 2,
-> now it is either 0 or 1.
-> 
-
-Yes. this is intentional. To convert into to bool.
-The tracepoint hook currently defines the second argument as bool.
-
-include/trace/events/sched.h
-DECLARE_TRACE(sched_overutilized_tp,                                               
-        TP_PROTO(struct root_domain *rd, bool overutilized),                       
-        TP_ARGS(rd, overutilized));  
-
-> thanks,
-> Chenyu
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index d0209ea77dd2..8edc42071e6f 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -2646,6 +2646,7 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+>  	unsigned int old_zoneno = GET_ZONE_FROM_SEG(sbi, *newseg);
+>  	bool init = true;
+>  	int i;
+> +	int ret = 0;
+>  
+>  	spin_lock(&free_i->segmap_lock);
+>  
+> @@ -2671,9 +2672,8 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+>  		secno = find_first_zero_bit(free_i->free_secmap,
+>  							MAIN_SECS(sbi));
+>  		if (secno >= MAIN_SECS(sbi)) {
+> -			f2fs_stop_checkpoint(sbi, false,
+> -				STOP_CP_REASON_NO_SEGMENT);
+> -			f2fs_bug_on(sbi, 1);
+> +			ret = -ENOSPC;
+> +			goto out_unlock;
+>  		}
+>  	}
+>  	segno = GET_SEG_FROM_SEC(sbi, secno);
+> @@ -2704,7 +2704,13 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+>  	f2fs_bug_on(sbi, test_bit(segno, free_i->free_segmap));
+>  	__set_inuse(sbi, segno);
+>  	*newseg = segno;
+> +out_unlock:
+>  	spin_unlock(&free_i->segmap_lock);
+> +
+> +	if (ret) {
+> +		f2fs_stop_checkpoint(sbi, false, STOP_CP_REASON_NO_SEGMENT);
+> +		f2fs_bug_on(sbi, 1);
+> +	}
+>  }
+>  
+>  static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
+> -- 
+> 2.40.1
 
