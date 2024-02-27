@@ -1,218 +1,349 @@
-Return-Path: <linux-kernel+bounces-82802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82803-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A1CB8689DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:30:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA2778689DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:31:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C52A4B2109A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:30:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F994286FFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122A754BCB;
-	Tue, 27 Feb 2024 07:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 957A85465C;
+	Tue, 27 Feb 2024 07:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MdDDaeS8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dsIiSInm"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 682545465C
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:30:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30DB254BC4
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709019047; cv=none; b=bGiKn4MXreOEWbR5zBPzMB9ditvj2+w8GFOdGhhVXNFOpg1qXuPK0ybUfv1DCKdsSoDi4jKQUMk1p3cvrbtShC8hUFx9WnfyzLnL62kAZ/Z/aoDdhskzKbYdcoLAw12FgM46zi397Epo45YFn/xZz3+thETkxhAPX1mDySsbHEw=
+	t=1709019070; cv=none; b=kdHD1x1yjICoH2L4mYbBM9QTzP2VbTNEDbZj7ARo199d1qkaAm5twtGWL3h1HIUKI52CEelWhJXgxfithh70GQ8hv0KfsbrOY8Ge29Rd5bQ5U3C2TDidgEItM6oioNxzg+X6Hq5Hly7BALjlJ/U9y9VUCCDiAymFhVIvbwX/QCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709019047; c=relaxed/simple;
-	bh=UG0pDruJUwk7q3K1OBN3R/tIp99LwGpGbKRlgqO+O+s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QNRZEvv9wpGC+m9ykrWm7+ssiXTN7TeIN+UaEFlaXAr5f30x8ywoMxmMhdeOpoOCUeWaocHgn2uZE8XqD1l0A+PNFKywQ1xrtuLKbhEtpYFvL3wsko53p4dWxsxBHKciACVz6Ot84zU4OeRHfMgTo/ulfHbIfvX9NkkERo638AE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MdDDaeS8; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709019044;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=0FLHhXl/pe218+lrlBh72jWb7X2XaeyQjRpFsnQ2nO0=;
-	b=MdDDaeS8BT6yMFc8VVocUAZiheM0c9oVAoyhUKoDv/mDIAkvURDZ7RBXbhVzfP5dZnlBIk
-	0OPnZy2AdYFHJPUxRCxbEeHgaua0aB3J/iiRGNwKOgKzk7oGWiLEy5CiU3++U+Le/Sc3bM
-	e/mXqRapjTfoJ6X88FZcHSuVNtoSITY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-27-ABiFt-haOLCtyX7Vi4Bp7A-1; Tue, 27 Feb 2024 02:30:42 -0500
-X-MC-Unique: ABiFt-haOLCtyX7Vi4Bp7A-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33d9f425eaaso1626837f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:30:42 -0800 (PST)
+	s=arc-20240116; t=1709019070; c=relaxed/simple;
+	bh=8hTm1e4DO3B+HFmKMCy0K5Gm6U/GBdM1sitK6NR5BhA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pq1uLsE4MpZQB6S9ubrqAgxIKnuJy4MKxmkXF2R8Ana2XPHcG70TDU405ELhErOZg5FhGtz04xoNGixNlDJi9zJRFtztJye3tsIczPCm/63wnCyjXZl/Ll37QwRvVZ2bLwmmLBpkVqQ70BlMf8GX+SpCXOBfxwMFzFs058smuoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dsIiSInm; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so3187861b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:31:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709019064; x=1709623864; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=g+3fVWuCL3ljJ78bEEHq6LmM/Y1cfdKgtrCzN5F26e0=;
+        b=dsIiSInm1eRYjRmE3R+cs6adJUxUQ5HhGlq2Ly3ihbyOXqjig7TaUkY0iyxubtHOLD
+         6jFdp52M5IyQkOy2gipajJgsidpIoH3LI45/tI9ORH9SX+I9rSFN1wynvtG6tfEbGOZN
+         EixeHUW0+vFT7BUMBL6gJHLUx0+O/PIbXwYzZ0uFH6VnYorYyMXCkyhurs3pidW+yYLc
+         kckiQOnn2BobHc7YLpfrC6eZJdKFmuYbjXVbLkzVBVMh7uK/U8SgEkXGnDRDx8jpGpfJ
+         u3pleacP8DZRlT8x3Z5hI7MFlfxGm5FpVCy4sXhXJsumlYh+pQxvO3AwWkKmKXpniunf
+         zkzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709019041; x=1709623841;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0FLHhXl/pe218+lrlBh72jWb7X2XaeyQjRpFsnQ2nO0=;
-        b=Keikkogu9agORyvfQkzbY2HQ4O2Rc79aBwsYipWE5GB+jO+nxuhMpSA6MLVSzCh+0c
-         h0AY+sImqg5p7OsYw5bnzt/u2PbJgt1nQWJd/SbKOg/l2AFKn67Venp5xDKOrkPi6CnM
-         W8OcppbecZRD8HlnH9dx/zXY8cBSqtC9NqaA88zVl/KGw7OdCjqlXv8JF5MtdSUv1vBg
-         XHu4LoCgWtDA0uOMWcZx2jAjF6lE23RES9/KtkH4T4ekZgt9ek5fmzh41NsmSDOG7LlV
-         wi2byJfm3psKrclLDGryDKW0MWpp30Pzu4P6vsn/lUjEL0L7lx0aYUB9XC3LAeV/IIKY
-         cvIw==
-X-Forwarded-Encrypted: i=1; AJvYcCWF8SMlSC7rGj0nQtn2bNoKYSMWDfhBR0GzZt66XZ93Affv3HptgFSkhfRvtSc/4nN8rGR5IHXB6s4GMG4cxuVehe8xmKT52oDVdsUm
-X-Gm-Message-State: AOJu0YxWumiUYEjGjLYFMyjI06qLd9f/i1XjmA5Bgtcs//8MiLgs9a53
-	ubbxbdgxWD/EMIcYSoWZj5TRRUAEiAhYuMHd7cTbYlzfCX2lqChn9kOCCdyBRCq4FH8eHGhNWik
-	xBiL0Y7G3v3T25mYVsccDNYWw7nbsTIUhMzzaXrE+tYkGHjWAGlaXpWhkzLKKGA==
-X-Received: by 2002:adf:dd81:0:b0:33d:22f4:179b with SMTP id x1-20020adfdd81000000b0033d22f4179bmr5676941wrl.21.1709019041691;
-        Mon, 26 Feb 2024 23:30:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG0O3nedFb5GrNQy3wL4qTLCkE0b/Wzl7VKOb7cAX/eHbtx92laQAKSmhi0CPRZdMMvyy4X8w==
-X-Received: by 2002:adf:dd81:0:b0:33d:22f4:179b with SMTP id x1-20020adfdd81000000b0033d22f4179bmr5676919wrl.21.1709019041245;
-        Mon, 26 Feb 2024 23:30:41 -0800 (PST)
-Received: from ?IPV6:2003:cb:c707:7600:5c18:5a7d:c5b7:e7a9? (p200300cbc70776005c185a7dc5b7e7a9.dip0.t-ipconnect.de. [2003:cb:c707:7600:5c18:5a7d:c5b7:e7a9])
-        by smtp.gmail.com with ESMTPSA id t9-20020adfeb89000000b0033dbeb2eb4dsm10297686wrn.110.2024.02.26.23.30.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Feb 2024 23:30:40 -0800 (PST)
-Message-ID: <90471b2f-826e-4275-a9a3-ec673c3e6af8@redhat.com>
-Date: Tue, 27 Feb 2024 08:30:38 +0100
+        d=1e100.net; s=20230601; t=1709019064; x=1709623864;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g+3fVWuCL3ljJ78bEEHq6LmM/Y1cfdKgtrCzN5F26e0=;
+        b=Grhj23HA0HSEs3a69ZLJ9KKoQPPzbLYv4Lh3UFIVTMthnY8Z0MEDSvOjbsXGRnurNE
+         Ti+aso5/GXks/WplAoZsHwqiiwdy1KMsLOVjnfQ0LmRfk+n+P0olocCG6pXxsARGimra
+         ECNH0qaSVcueJQKAA3vVbSm5SWDi0Hpc9K4W1VKZnJ+MoDGpFY9/s1Mh8foFwYZqLeNx
+         fK5jx6QwgJHrZ5Zy2qv/HmPoZsGbpvo//kMmedOxwBRIC6Dy/wR4Wr2V99Q9VTIxTdmG
+         XGaH35hmJLuLFw58S5IHibQWvcJsa/S5sIEwidDqSIA/ViXpSIktYs8DOfoo2Pwo9MW+
+         lEPw==
+X-Forwarded-Encrypted: i=1; AJvYcCXT13K23RrcyTJEvHVDmYhRgc+tIv29nB57S5nRzBzU6whZZhyrtxaA/Tx9c6FAX2Qg1HLNkEoMvD4jCPj3BNX4XEfxrQacruuUDLa4
+X-Gm-Message-State: AOJu0Yx9MWpRy+tUZ4TvSMtzAfVKxVX5ojRGJxfNqc2O/JGut4qQ4QQq
+	DJObUfsJM3/9IETp4wQbPU3wZhZwxFHi7TXIUAyRGIlOplKPltkPqimjxJOyXw==
+X-Google-Smtp-Source: AGHT+IGsiEj/LOmY9J+SHSBDy/ugJbIp1TEHoUhukzvmCy97nYqQmJjP0j05uKAyQJzUBlgHzrTfJQ==
+X-Received: by 2002:a05:6a20:c6cb:b0:19e:a23d:b507 with SMTP id gw11-20020a056a20c6cb00b0019ea23db507mr1305173pzb.58.1709019064283;
+        Mon, 26 Feb 2024 23:31:04 -0800 (PST)
+Received: from thinkpad ([117.213.97.177])
+        by smtp.gmail.com with ESMTPSA id bx33-20020a056a02052100b005dc507e8d13sm4311175pgb.91.2024.02.26.23.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 23:31:03 -0800 (PST)
+Date: Tue, 27 Feb 2024 13:00:57 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Lukas Wunner <lukas@wunner.de>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	quic_krichai@quicinc.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3] PCI: Add D3 support for PCI bridges in DT based
+ platforms
+Message-ID: <20240227073057.GF2587@thinkpad>
+References: <20240222040629.GB3374@thinkpad>
+ <20240226233930.GA215487@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] mm/memory: Fix boundary check for next PFN in
- folio_pte_batch()
-Content-Language: en-US
-To: Lance Yang <ioworker0@gmail.com>, akpm@linux-foundation.org
-Cc: ryan.roberts@arm.com, 21cnbao@gmail.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240227070418.62292-1-ioworker0@gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240227070418.62292-1-ioworker0@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240226233930.GA215487@bhelgaas>
 
-On 27.02.24 08:04, Lance Yang wrote:
-> Previously, in folio_pte_batch(), only the upper boundary of the
-> folio was checked using '>=' for comparison. This led to
-> incorrect behavior when the next PFN exceeded the lower boundary
-> of the folio, especially in corner cases where the next PFN might
-> fall into a different folio.
-
-Which commit does this fix?
-
-The introducing commit (f8d937761d65c87e9987b88ea7beb7bddc333a0e) is 
-already in mm-stable, so we would need a Fixes: tag. Unless, Ryan's 
-changes introduced a problem.
-
-BUT
-
-I don't see what is broken. :)
-
-Can you please give an example/reproducer?
-
-We know that the first PTE maps the folio. By incrementing the PFN using 
-pte_next_pfn/pte_advance_pfn, we cannot suddenly get a lower PFN.
-
-So how would pte_advance_pfn(folio_start_pfn + X) suddenly give us a PFN 
-lower than folio_start_pfn?
-
-Note that we are not really concerned about any kind of 
-pte_advance_pfn() overflow that could generate PFN=0. I convinces myself 
-that that that is something we don't have to worry about.
-
-
-[I also thought about getting rid of the pte_pfn(pte) >= folio_end_pfn 
-and instead limiting end_ptep. But that requires more work before the 
-loop and feels more like a micro-optimization.]
-
+On Mon, Feb 26, 2024 at 05:39:30PM -0600, Bjorn Helgaas wrote:
+> On Thu, Feb 22, 2024 at 09:36:29AM +0530, Manivannan Sadhasivam wrote:
+> > On Wed, Feb 21, 2024 at 12:20:00PM -0600, Bjorn Helgaas wrote:
+> > > On Wed, Feb 21, 2024 at 10:49:58AM +0530, Manivannan Sadhasivam wrote:
+> > > > On Tue, Feb 20, 2024 at 04:02:40PM -0600, Bjorn Helgaas wrote:
+> > > > > On Wed, Feb 14, 2024 at 05:16:09PM +0530, Manivannan Sadhasivam wrote:
+> > > > > > Currently, PCI core will enable D3 support for PCI bridges only when the
+> > > > > > following conditions are met:
+> > > > > 
+> > > > > Whenever I read "D3", I first have to figure out whether we're talking
+> > > > > about D3hot or D3cold.  Please save me the effort :)
+> > > > 
+> > > > Both actually, that's why I used "D3" as in the spec. I should've explicitly
+> > > > mentioned that in the commit message.
+> > > > 
+> > > > > > 1. Platform is ACPI based
+> > > > > > 2. Thunderbolt controller is used
+> > > > > > 3. pcie_port_pm=force passed in cmdline
+> > > > > 
+> > > > > Are these joined by "AND" or "OR"?  I guess probably "OR"?
+> > > > > 
+> > > > > "... all the following conditions are met" or "... one of the
+> > > > > following conditions is met" would clarify this.
+> > > > 
+> > > > Will use "one of the..."
+> > > > 
+> > > > > > While options 1 and 2 do not apply to most of the DT based
+> > > > > > platforms, option 3 will make the life harder for distro
+> > > > > > maintainers. Due to this, runtime PM is also not getting enabled
+> > > > > > for the bridges.
+> > > > > > 
+> > > > > > To fix this, let's make use of the "supports-d3" property [1] in
+> > > > > > the bridge DT nodes to enable D3 support for the capable
+> > > > > > bridges. This will also allow the capable bridges to support
+> > > > > > runtime PM, thereby conserving power.
+> > > > > 
+> > > > > Looks like "supports-d3" was added by
+> > > > > https://github.com/devicetree-org/dt-schema/commit/4548397d7522.
+> > > > > The commit log mentions "platform specific ways", which suggests maybe
+> > > > > this is D3cold, since D3hot should be supported via PMCSR without any
+> > > > > help from the platform.
+> > > > > 
+> > > > > So I *guess* this really means "platform provides some non-architected
+> > > > > way to put devices in D3cold and bring them back to D0"?
+> > > > 
+> > > > By reading the comments and git log of the pci_bridge_d3_possible()
+> > > > function in drivers/pci/pci.c, we can understand that some of the
+> > > > old bridges do not support both D3hot and D3cold. And to
+> > > > differentiate such bridges, platforms have to notify the OS using
+> > > > some ways.
+> > > > 
+> > > > ACPI has its own implementation [1] and DT uses "supports-d3"
+> > > > property.
+> > > > 
+> > > > And yes, in an ideal world PMCSR should be sufficient for D3hot, but
+> > > > you know the PCI vendors more than me ;)
+> > > 
+> > > So it sounds like this is supposed to cover two cases:
+> > > 
+> > >   1) D3hot doesn't work per spec.  This sounds like a hardware
+> > >      defect in the device that should be a quirk based on
+> > >      Vendor/Device ID, not something in DT.  I don't actually know if
+> > >      this is common, although there are several existing quirks that
+> > >      mention issues with D3.
+> > > 
+> > 
+> > I'd love to use quirks if we started from that. But right now, quirks are not
+> > used and there are multiple checks based on various factors [1], including
+> > relying on ACPI. So that's the reason I went with DT based approach.
+> > 
+> > If quirks has to be used now, then it has to be used for both ACPI and DT based
+> > platforms. For DT it won't be an issue since nobody bothered until now, but for
+> > ACPI, we need to add quirks for all the bridges in the wild which is not
+> > feasible.
+> > 
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pci.c#n3116
+> > 
+> > >   2) The platform doesn't support putting the bridge in D3cold and
+> > >      back to D0.  I don't understand this either because I assumed DT
+> > >      would describe *hardware*, and "supports-d3" might imply the
+> > >      presence of hardware power control, but doesn't tell us how to
+> > >      operate it, and it must be up to a native driver to know how to
+> > >      do it.
+> > 
+> > "supports-d3" implies that both D3hot and D3cold works as in the
+> > spec and the OS can handle it appropriately. If this is absent, then
+> > OS should not transition the bridge to any of the D3 states. I don't
+> > understand what is the confusion here. This is similar to what we
+> > already have for ACPI (whether or not it is correct is another
+> > topic).
 > 
-> Signed-off-by: Lance Yang <ioworker0@gmail.com>
-> ---
->   mm/memory.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
+> What does "the OS can handle it appropriately" mean?  Whatever it
+> means, it sounds like a property of the OS, not a property of the
+> device.
 > 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 642b4f2be523..e5291d1e8c37 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -986,12 +986,15 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->   		pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
->   		bool *any_writable)
->   {
-> -	unsigned long folio_end_pfn = folio_pfn(folio) + folio_nr_pages(folio);
-> +	unsigned long folio_start_pfn, folio_end_pfn;
->   	const pte_t *end_ptep = start_ptep + max_nr;
->   	pte_t expected_pte, *ptep;
->   	bool writable;
->   	int nr;
->   
-> +	folio_start_pfn = folio_pfn(folio);
-> +	folio_end_pfn = folio_start_pfn + folio_nr_pages(folio);
-> +
->   	if (any_writable)
->   		*any_writable = false;
->   
-> @@ -1015,7 +1018,7 @@ static inline int folio_pte_batch(struct folio *folio, unsigned long addr,
->   		 * corner cases the next PFN might fall into a different
->   		 * folio.
->   		 */
-> -		if (pte_pfn(pte) >= folio_end_pfn)
-> +		if (pte_pfn(pte) >= folio_end_pfn || pte_pfn(pte) < folio_start_pfn)
->   			break;
->   
->   		if (any_writable)
+
+"appropiately" means as per the PCIe spec.
+
+> I don't know what "D3cold works as in the spec" means, either.  The
+> spec says how D3cold affects internal device state, but it doesn't say
+> anything about how to put devices in D3cold or back in D0.
+> 
+> > > These are two vastly different scenarios, and I would really like to
+> > > untangle them so they aren't conflated.  I see that you're extending
+> > > platform_pci_bridge_d3(), which apparently has that conflation baked
+> > > into it already, but my personal experience is that this is really
+> > > hard to maintain.
+> > 
+> > I do agree that it is not in a good shape, but there is no better
+> > solution other than making use of the DT property. If you have any
+> > better idea, please suggest.
+> 
+> The longer this goes on the worse shape we are in because we're always
+> adding new special cases.
+> 
+> The fundamental problem I have is that "supports-d3" doesn't say
+> anything specific other than "current Linux can put the device in
+> D3hot or D3cold and get it back out again".  I think DT should tell us
+> characteristics of the device or the platform, e.g., "PMCSR doesn't
+> work to enter/leave D3hot on this device" or "regulator X controls
+> main power to the device to enter/leave D3cold".
+> 
+> But right now it sounds like a mixture of "PMCSR works correctly to
+> enter/leave D3hot" and "some unspecified software can control main
+> power to this device".
+> 
+> Putting devices in D3cold and back in D0 needs some kind of platform
+> support like ACPI methods or a native power management driver that
+> knows how to control power on a specific platform.  That's completely
+> different from D3hot, where the PCI spec tells us all we need to know.
+> 
+
+Ok, I got the issue. TBH, I added the device tree property based on the existing
+quirks for the ACPI devices. But none of the DT based platforms I'm aware of
+(even the legacy Qcom MSM8996 chipset released in early 2016) doesn't have any
+issue with D3hot. But I'm just nervous to assume it is the case for all the DT
+based platforms in the wild.
+
+But to proceed further, what is your preference? Should we ammend the DT
+property to make it explicit that the propery only focuses on the D3hot
+capability of the bridge and it works as per the spec (PMCSR) or bite the bullet
+and enable D3hot for all the non-ACPI platforms?
+
+We can add quirks for the bridges later on if we happen to receive any bug
+report.
+
+- Mani
+
+> > > > > > Ideally, D3 support should be enabled by default for the more recent PCI
+> > > > > > bridges, but we do not have a sane way to detect them.
+> > > > > > 
+> > > > > > [1] https://github.com/devicetree-org/dt-schema/blob/main/dtschema/schemas/pci/pci-pci-bridge.yaml#L31
+> > > 
+> > > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pci-acpi.c#n976
+> > > > 
+> > > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > > ---
+> > > > > > This patch is tested on Qcom SM8450 based development board with an out-of-tree
+> > > > > > DT patch.
+> > > > > > 
+> > > > > > NOTE: I will submit the DT patches adding this property for applicable bridges
+> > > > > > in Qcom SoCs separately.
+> > > > > > 
+> > > > > > Changes in v3:
+> > > > > > - Fixed kdoc, used of_property_present() and dev_of_node() (Lukas)
+> > > > > > - Link to v2: https://lore.kernel.org/r/20240214-pcie-qcom-bridge-v2-1-9dd6dbb1b817@linaro.org
+> > > > > > 
+> > > > > > Changes in v2:
+> > > > > > - Switched to DT based approach as suggested by Lukas.
+> > > > > > - Link to v1: https://lore.kernel.org/r/20240202-pcie-qcom-bridge-v1-0-46d7789836c0@linaro.org
+> > > > > > ---
+> > > > > >  drivers/pci/of.c  | 12 ++++++++++++
+> > > > > >  drivers/pci/pci.c |  3 +++
+> > > > > >  drivers/pci/pci.h |  6 ++++++
+> > > > > >  3 files changed, 21 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> > > > > > index 51e3dd0ea5ab..24b0107802af 100644
+> > > > > > --- a/drivers/pci/of.c
+> > > > > > +++ b/drivers/pci/of.c
+> > > > > > @@ -786,3 +786,15 @@ u32 of_pci_get_slot_power_limit(struct device_node *node,
+> > > > > >  	return slot_power_limit_mw;
+> > > > > >  }
+> > > > > >  EXPORT_SYMBOL_GPL(of_pci_get_slot_power_limit);
+> > > > > > +
+> > > > > > +/**
+> > > > > > + * of_pci_bridge_d3 - Check if the bridge is supporting D3 states or not
+> > > > > > + *
+> > > > > > + * @node: device tree node of the bridge
+> > > > > > + *
+> > > > > > + * Return: %true if the bridge is supporting D3 states, %false otherwise.
+> > > > > > + */
+> > > > > > +bool of_pci_bridge_d3(struct device_node *node)
+> > > > > > +{
+> > > > > > +	return of_property_present(node, "supports-d3");
+> > > > > > +}
+> > > > > > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > > > > > index d8f11a078924..8678fba092bb 100644
+> > > > > > --- a/drivers/pci/pci.c
+> > > > > > +++ b/drivers/pci/pci.c
+> > > > > > @@ -1142,6 +1142,9 @@ static inline bool platform_pci_bridge_d3(struct pci_dev *dev)
+> > > > > >  	if (pci_use_mid_pm())
+> > > > > >  		return false;
+> > > > > >  
+> > > > > > +	if (dev_of_node(&dev->dev))
+> > > > > > +		return of_pci_bridge_d3(dev->dev.of_node);
+> > > > > > +
+> > > > > >  	return acpi_pci_bridge_d3(dev);
+> > > > > >  }
+> > > > > >  
+> > > > > > diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> > > > > > index 2336a8d1edab..10387461b1fe 100644
+> > > > > > --- a/drivers/pci/pci.h
+> > > > > > +++ b/drivers/pci/pci.h
+> > > > > > @@ -635,6 +635,7 @@ int of_pci_get_max_link_speed(struct device_node *node);
+> > > > > >  u32 of_pci_get_slot_power_limit(struct device_node *node,
+> > > > > >  				u8 *slot_power_limit_value,
+> > > > > >  				u8 *slot_power_limit_scale);
+> > > > > > +bool of_pci_bridge_d3(struct device_node *node);
+> > > > > >  int pci_set_of_node(struct pci_dev *dev);
+> > > > > >  void pci_release_of_node(struct pci_dev *dev);
+> > > > > >  void pci_set_bus_of_node(struct pci_bus *bus);
+> > > > > > @@ -673,6 +674,11 @@ of_pci_get_slot_power_limit(struct device_node *node,
+> > > > > >  	return 0;
+> > > > > >  }
+> > > > > >  
+> > > > > > +static inline bool of_pci_bridge_d3(struct device_node *node)
+> > > > > > +{
+> > > > > > +	return false;
+> > > > > > +}
+> > > > > > +
+> > > > > >  static inline int pci_set_of_node(struct pci_dev *dev) { return 0; }
+> > > > > >  static inline void pci_release_of_node(struct pci_dev *dev) { }
+> > > > > >  static inline void pci_set_bus_of_node(struct pci_bus *bus) { }
+> > > > > > 
+> > > > > > ---
+> > > > > > base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+> > > > > > change-id: 20240131-pcie-qcom-bridge-b6802a9770a3
+> > > > > > 
+> > > > > > Best regards,
+> > > > > > -- 
+> > > > > > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > > 
+> > > > 
+> > > > -- 
+> > > > மணிவண்ணன் சதாசிவம்
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
 
 -- 
-Cheers,
-
-David / dhildenb
-
+மணிவண்ணன் சதாசிவம்
 
