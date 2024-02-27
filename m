@@ -1,111 +1,115 @@
-Return-Path: <linux-kernel+bounces-83880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B377A869FBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:01:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA4E869FBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2419C1F24EA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:01:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B05701C28685
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE9034F8B1;
-	Tue, 27 Feb 2024 19:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7FB51009;
+	Tue, 27 Feb 2024 19:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WBd/DPGl"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BYpMobqR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14C21E894
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:01:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E661E894;
+	Tue, 27 Feb 2024 19:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709060490; cv=none; b=Dckfii+U8TRaOEkjgJeP0I1ZjRWN5g8N4NB3VB4KDLuFXP8TPUU8LyolEe7ywZ5/B3PSG+ZUl4OG6QU5TzqwYiPFyHsO0bBGOODTkAnO5cl3WgUV/ixXCixW+mujPP5jg1CbWH5XSqQlRts2UX34mn+pgZ5ilZ6z+98bJUQKfBQ=
+	t=1709060501; cv=none; b=Yki7BDVrnxoGPKHLrZxdhoZfFw7oOIaQixIWP28p+rHTTYVt5Z21K/wsMKpJvVejFZF5V3dHOQeHbQbzwg+vSB/WXW/1C/NhElf+6o7K/i5htLyYMhH6mn/OYFEohGkPtM+lMKrZXMpF/0jkKFd9+rqAnmho5WZYPplIDBWIPAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709060490; c=relaxed/simple;
-	bh=SFqUZKS3btSbaCVDcjF20U6jeyelHzTX5jo8GjDl914=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l2MN24i61pm885kkX4g8364Od6uIJEeAlyX3oZK5OcFunpj5c8pPItXBkGAiyJd5pB/e2iZArtw6tHQfqpYJDHa7OXZVk8OJTs9PBpc7RVw7DfVRPPKQAjtSvOnybOtmRLwTfSoUtnpg8/XUMllGZOpJOOCCd3+QEw6N7Uv4PXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WBd/DPGl; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d93edfa76dso40357745ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:01:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709060488; x=1709665288; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R+XYa+6xdty24fg8M4aMK8wsLqrMuV3Nkbfx/C4KTQw=;
-        b=WBd/DPGlm08/174v24c3yzS3yIGLagt1XLAkL2xKYqkZmI52xfHnRMGno2dKTyS8f1
-         zisGQ7rB7wmvlU10cmXwiQ8EnLyAhAdOA5bfDt8EdhwNA7zLLyj16XxrcLNXgv2aBiEA
-         QC5i6HETWl03q8U9SIXEcHGJ31Hgabtx0fozbnJ5mch+wBdy2jdnnBqRW1qjYzGK1tF2
-         TxRFtkSefGgjjr/USRjSYv05bU+jyhsJHdQQLsXXQXaiPz9qo7fX8OVAq7pjLxLve1zI
-         DH088HGhE0YvfHQG6+Zo8YPajsQCGBVGZ/UeUrq8FeblNBVNU2OvHTWWoTwaPgYoSMGj
-         6Tow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709060488; x=1709665288;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R+XYa+6xdty24fg8M4aMK8wsLqrMuV3Nkbfx/C4KTQw=;
-        b=FXEdb2pC1vfkDpxY45CkwT4Ymm+K4ypnt3QQorw5SLn32UhhYRzcNHyKcY9Khjl7Vd
-         O3dZ2ryPd1/rbQ26GK+g5XBW0trDzSQ2HoUtoylqocll4+iwWdBA5/DQq1LWYVLD5zXH
-         PT82Tadc0b+rX4c7Zh9WVe9wWsImKnGbeUAK5M0qiU2B8fIdOxwtd/7elp3mgndJbBf9
-         O0YhViQA9Rg4duoTkDWl0/mYdlDODHo+CTTpljjTj9/Rohds5yjhf+iRSh8ijgZN/+lS
-         IAPlOv9hYd/PuuUy5LRBLfbEhqQ9YIC45Fw6mdvLM+4ZEUUcE5+89q6NV95okWogSUsR
-         zWbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWdq/mi3dUQMWN1kBDakBATcRJXajyB6VtpepDjulihX8i7WQoPjQrMZpp9hoy0GP4C0mZxyMDOOvdgNwb5rV0WquU3u+o/78RDcEzx
-X-Gm-Message-State: AOJu0YxXwOsCFrkpijOyEfbQ5VIPiflFjSsNAF0TBOIUNOFtSMRZW0J2
-	sWITxVWGobKR5vbQN+tU//smFikxrqV/Zb2t8xvnkQQynyrU4GB7Bs3RhbM99bM=
-X-Google-Smtp-Source: AGHT+IF+N1Dn96il0wvwHxygBW9Cfb4LN9lDUfvdPRZrA6rHyAmyr/leIL9C7sutkgAtT4RWVybiXg==
-X-Received: by 2002:a17:902:fc87:b0:1db:4941:f703 with SMTP id mf7-20020a170902fc8700b001db4941f703mr12832574plb.15.1709060488029;
-        Tue, 27 Feb 2024 11:01:28 -0800 (PST)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id h1-20020a170902b94100b001dcc3b0b612sm421448pls.287.2024.02.27.11.01.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 11:01:27 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 27 Feb 2024 09:01:26 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Allen Pais <apais@linux.microsoft.com>
-Cc: jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] workqueue: Introduce from_wq() helper for cleaner
- callback declarations
-Message-ID: <Zd4xhvh9Drl4qrCV@slm.duckdns.org>
-References: <20240227185628.5336-1-apais@linux.microsoft.com>
+	s=arc-20240116; t=1709060501; c=relaxed/simple;
+	bh=1jD16RvjY0XylQTcKSUd8r17c2C6yBRNbcx+ZdpItzc=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type; b=HaTKWq3Lj/A/23hpiYsEkmnH7ey+lvQqYpKRs8PCVD2Psc7C7SyxxDAJAGjSHoT78F5xyl0sQ2pfKfmL3Xnby5XzO0ibfnAOB+WMSBhAFOoUsm4v5zYYlMFXJOAxP4TF3cz1Y4HkebPDS/z4CSTj4YL2qZyUm8+WRnHP3CWAQyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BYpMobqR; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709060499; x=1740596499;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1jD16RvjY0XylQTcKSUd8r17c2C6yBRNbcx+ZdpItzc=;
+  b=BYpMobqRBb8lTbnwTMiSVDLSo6H6dQyGfgaagka6JGMELGzHxNzH22t5
+   2eGVQ4gUS0jKBui0wI8PpW8I00GCAaw6VFJuE+SNWi3hDf+fwhH/1vhfC
+   sqBAMZyqvFn+h1FVK6lnPHu9w6atapLo19CPrbFz9vG/hHpluR6FhCcVE
+   44KfYzIj7Ax1frEZSZUH0KCaOWLrJGJl8RcgEMxAhR1IfzEI8RS1lBicI
+   peb98Ig8d30+4m2iUpOtz4KjC+g6AdPMm141H/R0OqfaqWedrIr4Ac1cF
+   0vYc7YDaQw5zmL22dfeY5WDQ8R2kGSxEX3b/2P+n7tNJyKOinqq1vrM2g
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3293079"
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="3293079"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 11:01:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
+   d="scan'208";a="11725838"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 11:01:37 -0800
+Received: from debox1-desk4.lan (unknown [10.251.6.149])
+	by linux.intel.com (Postfix) with ESMTP id D5D41580DEF;
+	Tue, 27 Feb 2024 11:01:36 -0800 (PST)
+From: "David E. Box" <david.e.box@linux.intel.com>
+To: david.e.box@linux.intel.com,
+	rajvi.jingar@linux.intel.com,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Subject: [PATCH V2 1/3] platform/x86/intel/vsec: Remove nuisance message
+Date: Tue, 27 Feb 2024 11:01:32 -0800
+Message-Id: <20240227190134.1592072-1-david.e.box@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227185628.5336-1-apais@linux.microsoft.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 06:56:28PM +0000, Allen Pais wrote:
-> To streamline the transition from tasklets to worqueues, a new helper
-> function, from_wq(), is introduced. This helper, inspired by existing
-> from_() patterns, utilizes container_of() and eliminates the redundancy
-> of declaring variable types, leading to more concise and readable code.
-> 
-> The modified code snippet demonstrates the enhanced clarity achieved
-> with from_wq():
-> 
->   void callback(struct work_struct *w)
->    {
->      - struct some_data_structure *local = container_of(w,
-> 						       struct some_data_structure,
-> 						       work);
->      + struct some_data_structure *local = from_wq(local, w, work);
+intel_vsec_walk_header() is used to configure features from devices that
+don't provide a PCI VSEC or DVSEC structure. Some of these features may
+be unsupported and fail to load. Ignore them silently as we do for
+unsupported features described by VSEC/DVSEC.
 
-I'm not necessarily against it but it's a bit meh in terms of how much it
-saves. Also, can you please name it from_work()?
+Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
 
-Thanks.
+V2 - no changes
 
+ drivers/platform/x86/intel/vsec.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/platform/x86/intel/vsec.c b/drivers/platform/x86/intel/vsec.c
+index 778eb0aa3479..0fdfaf3a4f5c 100644
+--- a/drivers/platform/x86/intel/vsec.c
++++ b/drivers/platform/x86/intel/vsec.c
+@@ -236,10 +236,7 @@ static bool intel_vsec_walk_header(struct pci_dev *pdev,
+ 
+ 	for ( ; *header; header++) {
+ 		ret = intel_vsec_add_dev(pdev, *header, info);
+-		if (ret)
+-			dev_info(&pdev->dev, "Could not add device for VSEC id %d\n",
+-				 (*header)->id);
+-		else
++		if (!ret)
+ 			have_devices = true;
+ 	}
+ 
+
+base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
 -- 
-tejun
+2.34.1
+
 
