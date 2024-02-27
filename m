@@ -1,231 +1,364 @@
-Return-Path: <linux-kernel+bounces-83859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72815869F69
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:49:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12BD1869F85
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D6D8283FDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:49:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75A621F27FA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B04C50A73;
-	Tue, 27 Feb 2024 18:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75234524D0;
+	Tue, 27 Feb 2024 18:51:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tQfCeqYa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rE2q19TX"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8D0F50271
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8430651C28
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:51:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709059739; cv=none; b=F1YWe6Axx11h2u1+qiR4+xnQkrOkHNKKr0JgPBVNJN79ehHCDh+/2UJWHBgXPuic9G1TvvqqWJflBYyNWdYeFWs5DzXC5WN/GdvBaIJKnc4/Yj09onoLdtCF3JHSLH+dSOXGTGcJwQ/DuXe46iMEanEN+QcONsPhoqfofMdndqo=
+	t=1709059872; cv=none; b=nPiXuOPfgAXSjL0z66TDJapOdaIFAYUqwS733RvqcPcqRhstzsGPkhbk4Xu1BUfHoRwTn16ES/Z2hAUsYf5CjFVh4nnGkNDm5+wotRNAbm7pGEoWG8Vv1gUdcJYbjV5IRNldVb5rFwlkwNfwVBgtHF1Bu7kSOUaSYhBT6sJhQSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709059739; c=relaxed/simple;
-	bh=3bZUA0mL+b5Ms2RdOItLD/BcXnPrmdEm8B0J9fdbpro=;
+	s=arc-20240116; t=1709059872; c=relaxed/simple;
+	bh=m8BCJCDCVjUu1aX9u8678gH0B9TMigZhFp4TpDpGOtU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MmIv6SKT4uF9zCnBxKRnBAUpcWzpxbj1yQXo96voo7UZDVHe3KUhss4p+jFfT9dzPEL5CHzwb7sas3AZiFqow1yPeDc6vlXjpVXqQL6r7HJOIZlcwHly6iBixkb6P0TlmZu4dLUzRBPbfczG2brS+2L20PpymYNpwN6d2AHiHPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tQfCeqYa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A742C433C7;
-	Tue, 27 Feb 2024 18:48:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709059739;
-	bh=3bZUA0mL+b5Ms2RdOItLD/BcXnPrmdEm8B0J9fdbpro=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tQfCeqYal5q1ALky8inZXZXX8AxgIO96wdUR0M2z3O0ev720Vtt8aoVETZ6CZS+h8
-	 sxnDorXrg+c4E3Mzp2KVs8Deu6OHA0Xzzm2Vo//3oCNDovwj7NMXp5t5kDShnrb/uh
-	 RomFQQ4oiW1kumVYVHVEKlgUqxkxnQ2f91bdhNbdPpS9epECSpRjZcjYvCmDKA5DOl
-	 xLNQhaMDwFpx9Bd5SiQR2FRroM6jYcOQMVU6zUybdX20+qLYI0+DjfCx7ayFta6iZq
-	 0CFXb/A59MtJRRLjXjq8lB08vtaSUN7khXLuneo1/efVjlzh9duveIFJtjhSxZmZ0T
-	 IxbE33UdY6+cw==
-Date: Tue, 27 Feb 2024 18:48:54 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Charlie Jenkins <charlie@rivosinc.com>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, linux-kernel@vger.kernel.org,
-	Eric Biggers <ebiggers@kernel.org>, Evan Green <evan@rivosinc.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Jisheng Zhang <jszhang@kernel.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>,
-	linux-riscv@lists.infradead.org, Charles Lohr <lohr85@gmail.com>
-Subject: Re: [PATCH v4 2/2] riscv: Set unalignment speed at compile time
-Message-ID: <20240227-citable-scanning-1fd48c96b758@spud>
-References: <20240216-disable_misaligned_probe_config-v4-0-dc01e581c0ac@rivosinc.com>
- <20240216-disable_misaligned_probe_config-v4-2-dc01e581c0ac@rivosinc.com>
- <20240227-condone-impeach-9469dffc6b47@wendy>
- <Zd4nMa+x28omuhiF@ghost>
+	 Content-Type:Content-Disposition:In-Reply-To; b=G2//c5YUpMMFqUZI7ao7yymaUNUietMcyJ6oeoe+k38ihFX3yuwAgodRW0R6V22Mv70xVx4pEm8q9hiLmrFAhkQTkxlELMc07fAtk1oBeyCBkAiT+rrHCs0kYKRg4S1WPKWp6VzLQR463gV/aaZlCLzXL9dV72lk9PXuXaoLWLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rE2q19TX; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dc99a75be6so22781725ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:51:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709059870; x=1709664670; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ZzsUzPaeQV0xVaYYOa5fkl+D3bB3KmqWtFdIBMocqZs=;
+        b=rE2q19TXF19nFEFo162gIW2eIUbGHpXw3tXaHA4YI4gHEjLslGklZXmA8MZ6sXioWs
+         CWT6yQxpjR7nLjbSDZrTtWRbNzJfjuwssWl3V7xhG16yk0ClN7YBrq1DS0MqTBqQHuYV
+         9veaVXZykqxeaymfPrMLZk26deeHC+AZVHzQcFq7hnzmztHWuHsn1z2OAEkMnb0D2zex
+         P8ALrEboDuyAU7HD49sxq3RIIcOZo6RNDg2WRQAT4d4YX8frXNZCeYRwKUHYJxCuU3hc
+         WI2vLjV6KwZYiO9FKo9rXT+Hd6Mr5pQIQH8JWIqR4QELIeLWPTDU7ihrAJ3Udqgz0eTl
+         S5iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709059870; x=1709664670;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZzsUzPaeQV0xVaYYOa5fkl+D3bB3KmqWtFdIBMocqZs=;
+        b=iCTm3VXAi//QkOPQP1HMLc2TUlLNzkns2oKgKEo8hyr3sXYOYaHlSYCyPIcIPgZEq5
+         ac0c7BQZGzkgWh6NW4ixl1YyC/Q5JjVtOiLF8muaArfB2rxVjSN/kvxVqptS3BKrF3GA
+         GimazGLkA3W7tpfJN7F5l6kmpdfalQ7XdZ3AHCCX3K/sawnEpJE/S4Zw28QVzC9QRsaG
+         M6Ypyl8+CVaL4+R+5IwpdF3RUnn3A4tq/fZplfGLOHvwFYdC1yDJcGIV7JSdd/o5SVM1
+         NlbRUy0ycftfhvaOHP+Pml/fc1Z9EhKcfMNCAbujT6kN25svQoawAcfZhNdmwFrV+SnT
+         t/jg==
+X-Forwarded-Encrypted: i=1; AJvYcCWz6/vZoFMLMfh+9hNmj9k0OV5jcZqJ0w4AUVJ7GddpnMmvkLqD7us+5atbka1dJijGRCvFbbM1yPxsngBee/K/VSNb3ZX2Hw88UkQe
+X-Gm-Message-State: AOJu0YzgaoUKOkngLF3P6D144cgKn53vqLTRpEeV8RsLL1OGuDJ7WOxU
+	v02J1qKI+yXSPJIM/SZKB63cQlcEvUgV14iIHZU+1adQ818IQITzST4n+0DLig==
+X-Google-Smtp-Source: AGHT+IFMrquxHELSuk64r8EzaLnPYxdhtlQPf9g7u2EtEZHnTxtPf52KDLuAlSX+ap+F1qbMBmUq7w==
+X-Received: by 2002:a17:903:449:b0:1da:2c01:fef5 with SMTP id iw9-20020a170903044900b001da2c01fef5mr10095757plb.56.1709059869792;
+        Tue, 27 Feb 2024 10:51:09 -0800 (PST)
+Received: from thinkpad ([117.213.97.177])
+        by smtp.gmail.com with ESMTPSA id c3-20020a170902d90300b001db93340f9bsm1828147plz.205.2024.02.27.10.50.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 10:51:09 -0800 (PST)
+Date: Wed, 28 Feb 2024 00:20:50 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Jingoo Han <jingoohan1@gmail.com>,
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Marek Vasut <marek.vasut+renesas@gmail.com>,
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kishon Vijay Abraham I <kishon@ti.com>,
+	Vidya Sagar <vidyas@nvidia.com>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Minghuan Lian <minghuan.Lian@nxp.com>,
+	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	Niklas Cassel <cassel@kernel.org>
+Subject: Re: [PATCH v8 08/10] PCI: dwc: ep: Add a generic
+ dw_pcie_ep_linkdown() API to handle LINK_DOWN event
+Message-ID: <20240227185050.GV2587@thinkpad>
+References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
+ <20240224-pci-dbi-rework-v8-8-64c7fd0cfe64@linaro.org>
+ <ZdzH2lOSwBsIp/Jc@lizhi-Precision-Tower-5810>
+ <20240227123024.GO2587@thinkpad>
+ <Zd4bLZb2z4TEoR1a@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="A7lTG7rB6ssaDl7T"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zd4nMa+x28omuhiF@ghost>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zd4bLZb2z4TEoR1a@lizhi-Precision-Tower-5810>
 
+On Tue, Feb 27, 2024 at 12:26:05PM -0500, Frank Li wrote:
+> On Tue, Feb 27, 2024 at 06:00:24PM +0530, Manivannan Sadhasivam wrote:
+> > On Mon, Feb 26, 2024 at 12:18:18PM -0500, Frank Li wrote:
+> > > On Sat, Feb 24, 2024 at 12:24:14PM +0530, Manivannan Sadhasivam wrote:
+> > > > The PCIe link can go to LINK_DOWN state in one of the following scenarios:
+> > > > 
+> > > > 1. Fundamental (PERST#)/hot/warm reset
+> > > > 2. Link transition from L2/L3 to L0
+> > > 
+> > > From L0 to L2/l3
+> > > 
+> > 
+> > I don't understand what you mean here. Link down won't happen while moving from
+> > L0 to L2/L3, it is the opposite.
+> 
+> Strange, why there are not linkdown from L0 to L2/l3. But have linkdown
+> from L2/l3 to L0? when linkup happen? Any document show these?
+> 
 
---A7lTG7rB6ssaDl7T
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Refer PCIe Spec 5.0, Figure 5-1 Link Power Management State Flow Diagram.
 
-On Tue, Feb 27, 2024 at 10:17:21AM -0800, Charlie Jenkins wrote:
-> On Tue, Feb 27, 2024 at 11:39:25AM +0000, Conor Dooley wrote:
-> > On Fri, Feb 16, 2024 at 12:33:19PM -0800, Charlie Jenkins wrote:
+- Mani
 
-> > > +config RISCV_EMULATED_UNALIGNED_ACCESS
-> > > +	bool "Assume the CPU expects emulated unaligned memory accesses"
-> > > +	depends on NONPORTABLE
-> >=20
-> > This is portable too, right?
->=20
-> I guess so? I think I would prefer to have the probing being the only
-> portable option.
+> Frank
+> 
+> > 
+> > > > 
+> > > > In those cases, LINK_DOWN causes some non-sticky DWC registers to loose the
+> > > > state (like REBAR, PTM_CAP etc...). So the drivers need to reinitialize
+> > > > them to function properly once the link comes back again.
+> > > > 
+> > > > This is not a problem for drivers supporting PERST# IRQ, since they can
+> > > > reinitialize the registers in the PERST# IRQ callback. But for the drivers
+> > > > not supporting PERST#, there is no way they can reinitialize the registers
+> > > > other than relying on LINK_DOWN IRQ received when the link goes down. So
+> > > > let's add a DWC generic API dw_pcie_ep_linkdown() that reinitializes the
+> > > > non-sticky registers and also notifies the EPF drivers about link going
+> > > > down.
+> > > > 
+> > > > This API can also be used by the drivers supporting PERST# to handle the
+> > > > scenario (2) mentioned above.
+> > > > 
+> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > ---
+> > > >  drivers/pci/controller/dwc/pcie-designware-ep.c | 111 ++++++++++++++----------
+> > > >  drivers/pci/controller/dwc/pcie-designware.h    |   5 ++
+> > > >  2 files changed, 72 insertions(+), 44 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > > index 278bdc9b2269..fed4c2936c78 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > > +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+> > > > @@ -14,14 +14,6 @@
+> > > >  #include <linux/pci-epc.h>
+> > > >  #include <linux/pci-epf.h>
+> > > >  
+> > > > -void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
+> > > > -{
+> > > > -	struct pci_epc *epc = ep->epc;
+> > > > -
+> > > > -	pci_epc_linkup(epc);
+> > > > -}
+> > > > -EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
+> > > > -
+> > > 
+> > > No sure why git remove this block and add these back.
+> > > 
+> > 
+> > Because, we are adding dw_pcie_ep_linkdown() API way below and it makes sense to
+> > move this API also to keep it ordered. Maybe I should've described it in commit
+> > message.
+> > 
+> > - Mani
+> > 
+> > > 
+> > > >  void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep)
+> > > >  {
+> > > >  	struct pci_epc *epc = ep->epc;
+> > > > @@ -603,19 +595,56 @@ static unsigned int dw_pcie_ep_find_ext_capability(struct dw_pcie *pci, int cap)
+> > > >  	return 0;
+> > > >  }
+> > > >  
+> > > > +static void dw_pcie_ep_init_non_sticky_registers(struct dw_pcie *pci)
+> > > > +{
+> > > > +	unsigned int offset, ptm_cap_base;
+> > > > +	unsigned int nbars;
+> > > > +	u32 reg, i;
+> > > > +
+> > > > +	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
+> > > > +	ptm_cap_base = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_PTM);
+> > > > +
+> > > > +	dw_pcie_dbi_ro_wr_en(pci);
+> > > > +
+> > > > +	if (offset) {
+> > > > +		reg = dw_pcie_readl_dbi(pci, offset + PCI_REBAR_CTRL);
+> > > > +		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
+> > > > +			PCI_REBAR_CTRL_NBAR_SHIFT;
+> > > > +
+> > > > +		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
+> > > > +			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
+> > > > +	}
+> > > > +
+> > > > +	/*
+> > > > +	 * PTM responder capability can be disabled only after disabling
+> > > > +	 * PTM root capability.
+> > > > +	 */
+> > > > +	if (ptm_cap_base) {
+> > > > +		dw_pcie_dbi_ro_wr_en(pci);
+> > > > +		reg = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
+> > > > +		reg &= ~PCI_PTM_CAP_ROOT;
+> > > > +		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, reg);
+> > > > +
+> > > > +		reg = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
+> > > > +		reg &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
+> > > > +		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, reg);
+> > > > +		dw_pcie_dbi_ro_wr_dis(pci);
+> > > > +	}
+> > > > +
+> > > > +	dw_pcie_setup(pci);
+> > > > +	dw_pcie_dbi_ro_wr_dis(pci);
+> > > > +}
+> > > > +
+> > > >  int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
+> > > >  {
+> > > >  	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+> > > >  	struct dw_pcie_ep_func *ep_func;
+> > > >  	struct device *dev = pci->dev;
+> > > >  	struct pci_epc *epc = ep->epc;
+> > > > -	unsigned int offset, ptm_cap_base;
+> > > > -	unsigned int nbars;
+> > > >  	u8 hdr_type;
+> > > >  	u8 func_no;
+> > > > -	int i, ret;
+> > > >  	void *addr;
+> > > > -	u32 reg;
+> > > > +	int ret;
+> > > >  
+> > > >  	hdr_type = dw_pcie_readb_dbi(pci, PCI_HEADER_TYPE) &
+> > > >  		   PCI_HEADER_TYPE_MASK;
+> > > > @@ -678,38 +707,7 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
+> > > >  	if (ep->ops->init)
+> > > >  		ep->ops->init(ep);
+> > > >  
+> > > > -	offset = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_REBAR);
+> > > > -	ptm_cap_base = dw_pcie_ep_find_ext_capability(pci, PCI_EXT_CAP_ID_PTM);
+> > > > -
+> > > > -	dw_pcie_dbi_ro_wr_en(pci);
+> > > > -
+> > > > -	if (offset) {
+> > > > -		reg = dw_pcie_readl_dbi(pci, offset + PCI_REBAR_CTRL);
+> > > > -		nbars = (reg & PCI_REBAR_CTRL_NBAR_MASK) >>
+> > > > -			PCI_REBAR_CTRL_NBAR_SHIFT;
+> > > > -
+> > > > -		for (i = 0; i < nbars; i++, offset += PCI_REBAR_CTRL)
+> > > > -			dw_pcie_writel_dbi(pci, offset + PCI_REBAR_CAP, 0x0);
+> > > > -	}
+> > > > -
+> > > > -	/*
+> > > > -	 * PTM responder capability can be disabled only after disabling
+> > > > -	 * PTM root capability.
+> > > > -	 */
+> > > > -	if (ptm_cap_base) {
+> > > > -		dw_pcie_dbi_ro_wr_en(pci);
+> > > > -		reg = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
+> > > > -		reg &= ~PCI_PTM_CAP_ROOT;
+> > > > -		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, reg);
+> > > > -
+> > > > -		reg = dw_pcie_readl_dbi(pci, ptm_cap_base + PCI_PTM_CAP);
+> > > > -		reg &= ~(PCI_PTM_CAP_RES | PCI_PTM_GRANULARITY_MASK);
+> > > > -		dw_pcie_writel_dbi(pci, ptm_cap_base + PCI_PTM_CAP, reg);
+> > > > -		dw_pcie_dbi_ro_wr_dis(pci);
+> > > > -	}
+> > > > -
+> > > > -	dw_pcie_setup(pci);
+> > > > -	dw_pcie_dbi_ro_wr_dis(pci);
+> > > > +	dw_pcie_ep_init_non_sticky_registers(pci);
+> > > >  
+> > > >  	return 0;
+> > > >  
+> > > > @@ -720,6 +718,31 @@ int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep)
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(dw_pcie_ep_init_registers);
+> > > >  
+> > > > +void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
+> > > > +{
+> > > > +	struct pci_epc *epc = ep->epc;
+> > > > +
+> > > > +	pci_epc_linkup(epc);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(dw_pcie_ep_linkup);
+> > > > +
+> > > > +void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep)
+> > > > +{
+> > > > +	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+> > > > +	struct pci_epc *epc = ep->epc;
+> > > > +
+> > > > +	/*
+> > > > +	 * Initialize the non-sticky DWC registers as they would've reset post
+> > > > +	 * LINK_DOWN. This is specifically needed for drivers not supporting
+> > > > +	 * PERST# as they have no way to reinitialize the registers before the
+> > > > +	 * link comes back again.
+> > > > +	 */
+> > > > +	dw_pcie_ep_init_non_sticky_registers(pci);
+> > > > +
+> > > > +	pci_epc_linkdown(epc);
+> > > > +}
+> > > > +EXPORT_SYMBOL_GPL(dw_pcie_ep_linkdown);
+> > > > +
+> > > >  int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+> > > >  {
+> > > >  	int ret;
+> > > > diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> > > > index f8e5431a207b..152969545b0a 100644
+> > > > --- a/drivers/pci/controller/dwc/pcie-designware.h
+> > > > +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> > > > @@ -668,6 +668,7 @@ static inline void __iomem *dw_pcie_own_conf_map_bus(struct pci_bus *bus,
+> > > >  
+> > > >  #ifdef CONFIG_PCIE_DW_EP
+> > > >  void dw_pcie_ep_linkup(struct dw_pcie_ep *ep);
+> > > > +void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep);
+> > > >  int dw_pcie_ep_init(struct dw_pcie_ep *ep);
+> > > >  int dw_pcie_ep_init_registers(struct dw_pcie_ep *ep);
+> > > >  void dw_pcie_ep_init_notify(struct dw_pcie_ep *ep);
+> > > > @@ -688,6 +689,10 @@ static inline void dw_pcie_ep_linkup(struct dw_pcie_ep *ep)
+> > > >  {
+> > > >  }
+> > > >  
+> > > > +static inline void dw_pcie_ep_linkdown(struct dw_pcie_ep *ep)
+> > > > +{
+> > > > +}
+> > > > +
+> > > >  static inline int dw_pcie_ep_init(struct dw_pcie_ep *ep)
+> > > >  {
+> > > >  	return 0;
+> > > > 
+> > > > -- 
+> > > > 2.25.1
+> > > > 
+> > 
+> > -- 
+> > மணிவண்ணன் சதாசிவம்
 
-I dunno, I think there could be value to someone in always emulating
-this in the kernel and I don't think that should relegate them to the
-naughty step, given it can work everywhere.
-
-
-> > > +config RISCV_SLOW_UNALIGNED_ACCESS
-> > > +	bool "Assume the CPU supports slow unaligned memory accesses"
-> > > +	depends on NONPORTABLE
-> > > +	help
-> > > +	  Assume that the CPU supports slow unaligned memory accesses. When
-> > > +	  enabled, this option improves the performance of the kernel on su=
-ch
-> > > +	  CPUs.
-> >=20
-> > Does it? Are you sure that generating unaligned accesses on systems
-> > where they are slow is a performance increase?
-> > That said, I don't really see this option actually doing anything other
-> > than setting the value for hwprobe, so I don't actually know what the
-> > effect of this option actually is on the kernel's performance.
-> >=20
-> > Generally I would like to suggest a change from "CPU" to "system" here,
-> > since the slow cases that exist are mostly because the unaligned access
-> > is actually emulated in firmware.
->=20
-> It would be ideal if "emulated" was used for any case of emulated
-> accesses (firmware or in the kernel).  Doing emulated accesses will be
-> orders of magnitude slower than a processor that "slowly" handles the
-> accesses.
->=20
-> So even if the processor performs a "slow" access, it could still be
-> beneficial for the kernel to do the misaligned access rather than manual
-> do the alignment.
-
-Right. But, at least from a probing perspective, SLOW is what gets
-selected when firmware emulates the unaligned access so to userspace
-seeing slow means that the performance could be horrifically bad:
-
-|     rzfive:
-|         cpu0: Ratio of byte access time to unaligned word access is
-| 1.05, unaligned accesses are fast
-|=20
-|     icicle:
-|=20
-|         cpu1: Ratio of byte access time to unaligned word access is
-| 0.00, unaligned accesses are slow
-|         cpu2: Ratio of byte access time to unaligned word access is
-| 0.00, unaligned accesses are slow
-|         cpu3: Ratio of byte access time to unaligned word access is
-| 0.00, unaligned accesses are slow
-|=20
-|         cpu0: Ratio of byte access time to unaligned word access is
-| 0.00, unaligned accesses are slow
-|=20
-|     k210:
-|=20
-|         cpu1: Ratio of byte access time to unaligned word access is
-| 0.02, unaligned accesses are slow
-|         cpu0: Ratio of byte access time to unaligned word access is
-| 0.02, unaligned accesses are slow
-|=20
-|     starlight:
-|=20
-|         cpu1: Ratio of byte access time to unaligned word access is
-| 0.01, unaligned accesses are slow
-|         cpu0: Ratio of byte access time to unaligned word access is
-| 0.02, unaligned accesses are slow
-|=20
-|     vexriscv/orangecrab:
-|=20
-|         cpu0: Ratio of byte access time to unaligned word access is
-| 0.00, unaligned accesses are slow
- https://lore.kernel.org/all/CAMuHMdVtXGjP8VFMiv-7OMFz1XvfU1cz=3DFw4jL3fcp4=
-wO1etzQ@mail.gmail.com/
-
-> Currently there is no place that takes into account this "slow" option
-> but I wanted to leave it open for future optimizations.
-
-I don't think you can really do much optimisation if you detect that it
-is slow, and since this option is analogous to detecting slow I dunno if
-you can do anything here either? This option really just seems to me to
-mean "don't do any optimisations for unaligned being fast but also don't
-emulate it in the kernel".
-
-> > > However, the kernel will run much more slowly, or will not be
-> > > +	  able to run at all, on CPUs that do not support unaligned memory
-> > > +	  accesses.
-> > > +
-> > >  config RISCV_EFFICIENT_UNALIGNED_ACCESS
-> > >  	bool "Assume the CPU supports fast unaligned memory accesses"
-> > >  	depends on NONPORTABLE
-> > >  	select DCACHE_WORD_ACCESS if MMU
-> > >  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
-> > >  	help
-> > > -	  Say Y here if you want the kernel to assume that the CPU supports
-> > > -	  efficient unaligned memory accesses.  When enabled, this option
-> > > -	  improves the performance of the kernel on such CPUs.  However, the
-> > > -	  kernel will run much more slowly, or will not be able to run at a=
-ll,
-> > > -	  on CPUs that do not support efficient unaligned memory accesses.
-> > > +	  Assume that the CPU supports fast unaligned memory accesses. When
-> > > +	  enabled, this option improves the performance of the kernel on su=
-ch
-> > > +	  CPUs.  However, the kernel will run much more slowly, or will not=
- be
-> > > +	  able to run at all, on CPUs that do not support efficient unalign=
-ed
-> > > +	  memory accesses.
-> > > +
-> > > +config RISCV_UNSUPPORTED_UNALIGNED_ACCESS
-> >=20
-> > This option needs to be removed. The uabi states that unaligned access
-> > is supported in userspace, if the cpu or firmware does not implement
-> > unaligned access then the kernel must emulate it.
->=20
-> Should it removed from hwprobe as well then?
-
-No, I actually suggested that it be documented etc. Originally
-"UNSUPPORTED" was "UNKNOWN" and nothing more than the default value but
-I suggested that it be documented since that would allow a system that
-did not have the same uabi problem to use all the same defines.
-Technically it is possible for unaligned access to be unsupported, if
-you have a kernel that does not have the emulator but does have the
-hwprobe stuff supported. I think there was about a 6 month period where
-this was the case, so combine that with firmware that does not do the
-emulation and unaligned accesses are unsupported.
-
-Cheers,
-Conor.
-
---A7lTG7rB6ssaDl7T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd4ulgAKCRB4tDGHoIJi
-0kuJAP9MYXtRJnS8kVEPM3J3GBXPiW1BrtrqVqpMeqaykH3O9AEAp8BCDPdp8oIV
-kh1+j1M36s5fTlWCuPBx975g86gHVwk=
-=Gp5I
------END PGP SIGNATURE-----
-
---A7lTG7rB6ssaDl7T--
+-- 
+மணிவண்ணன் சதாசிவம்
 
