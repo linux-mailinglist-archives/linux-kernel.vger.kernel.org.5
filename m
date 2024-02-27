@@ -1,140 +1,110 @@
-Return-Path: <linux-kernel+bounces-83589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE427869BF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:21:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 860E9869BF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C4281C2087C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:21:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 209DA1F2282D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:22:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838BF149E04;
-	Tue, 27 Feb 2024 16:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550AA14830B;
+	Tue, 27 Feb 2024 16:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MvcvmJCd"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bwO859o9"
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2881487E0;
-	Tue, 27 Feb 2024 16:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2943148300
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:22:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709050840; cv=none; b=HAGJPHr5p82528JTZ5iAh0xdUn03wgXDPGBWLkVAGt5dMKdY5GpqJ59CJQIkc09BrrS1CxjKClKf+yo2SCogOufJoB/spimKxaR3nshXjvkf0A90oTv46Y6UrC614Xur7Ul3N3zqsW/YKx94qAwzDFhJdCOerCZW+P04ihquixM=
+	t=1709050954; cv=none; b=i0GqLiWcHE1f5gNmuK90czqS95+ARFn20rFhmF2eGD4ooSRy0krKOZE++glvNIF1tlqbBHGRxufFRTYKASmshtsw9Y61MUU9IVL0kyK35VVtNuaC7tFV4t7eed5v1mMbdNoKlWDWUJaDtjspPXxAf1O5TVgA8FyM+ug0UR7mESI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709050840; c=relaxed/simple;
-	bh=VWJnljO5roj8jgQx0F8UPygZZWNqRqDHuffrxf6uMJM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VUO+X/3gpE37pIFo/SLLQV61ojeNFqiRDVHzZB3bZkrJandCba7oPBt/ZpeUDZl3PSYfWkHJGQxbVb0Yd7e0JoxSignXquT0za88cu+6dt4DaB6/wlS0z79f0eswaHQ3y0DwmQKAU7Zj4+2C6CQD3xqNM/O5+tyu/j482o4RvSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MvcvmJCd; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a293f2280c7so678158066b.1;
-        Tue, 27 Feb 2024 08:20:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709050837; x=1709655637; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Azg6H0FwOctwfvAjeTgtmxVXq63+kkt8Z6mGZ51a5Cc=;
-        b=MvcvmJCdAfeSeN2EIpR87kU4wP1mJ9aPu196RqYz0IkzCOer8AEXZB0Eu4wmq5nlz4
-         xbUXn9q6RTJLKyIloaptzqrfu3YHbiRHIRFNlegP+jUeoPP4+emAwt85Jrs8/8MBa2vx
-         MglWPGqrxMnme4cKLK4BREh/6roPVW2g3e86Pcf/6OBy1zZ4/Q8WMxmsajCmMDvTEdcU
-         49xPffFDBBYBByLOYoocQPZwMfdY521tqRWH3ealRN2Bk33+SVtYGc6yffb5+llHJ8p7
-         8Os5ZKbPn98jGG42Q850IivAAvNp7gegjzb0ADQcjv+P/cENetC7zNwMCUsAbBQ0TnBM
-         FSQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709050837; x=1709655637;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Azg6H0FwOctwfvAjeTgtmxVXq63+kkt8Z6mGZ51a5Cc=;
-        b=hVuRm4A00EUT5txkxFiySKvFU8JeGANRo2G/l+4TgOpW+IOU3iYP8BcFumf6VhpY6W
-         HlqGYZ/ghmHcGSTtFL6mH8gpG9yrhliig2ihoOsO8W9BpOstAxVxWMRq0rZQWNZXwCQa
-         Ygs42HHq7Re8RIKPbdLKrilMQzMFOXbbq0veeuXGkX+PzdJFvNcSBZ+//kdli+Z9wmzD
-         L3v1d8FDnm+AFFGCHRmLa54REPfLuhl118blcbjybdZIhym7mTAqDwemvkzkvOW32DA+
-         t4wuKrdrfcV4onazA3HLrwL4qbbRtAh78c8Gh1iauppIn+GI/VdttGjV0xTLaVOuzCnf
-         RWQw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8O1qwB/bjCrSCdBm0S082GlMgW8aUF3AM+sVxxrzYz9SC0n19+1sBLMt1NGx0fcWn1G/7fJCdOlyktZVC/KbM2JqxnvgzyYR2xAb/Aaxxtk7tepfK1jj4ep7bXAOu8w4ebuBWFzEe062prZWff67UfEjotcPxN7hxEXR5b9w9a0ym4Q==
-X-Gm-Message-State: AOJu0YyK10+ehA9BKpjAqzeaXrzQ1mpiwEdhP5BfMkIbfEKM6Ie2OIoD
-	IJ9aMaH8BN+5k8quZUthmZTAvIkb812ghmyvs0GUMm4xLeqeLiJM
-X-Google-Smtp-Source: AGHT+IF+TlKW6J/+J0lHc8CKuUmEDfhVXbMwNHUYkfNX+BtCQjj+whPWY++yKwPNKePOTIHHAPtzug==
-X-Received: by 2002:a17:906:1818:b0:a3f:9629:d305 with SMTP id v24-20020a170906181800b00a3f9629d305mr6688585eje.28.1709050837616;
-        Tue, 27 Feb 2024 08:20:37 -0800 (PST)
-Received: from fedora.. (cpe-109-60-83-139.zg3.cable.xnet.hr. [109.60.83.139])
-        by smtp.googlemail.com with ESMTPSA id tb25-20020a1709078b9900b00a43df459013sm107570ejc.131.2024.02.27.08.20.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 08:20:37 -0800 (PST)
-From: Robert Marko <robimarko@gmail.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	netdev@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ansuelsmth@gmail.com
-Cc: Robert Marko <robimarko@gmail.com>
-Subject: [PATCH net-next 2/2] net: phy: qcom: qca808x: fill in possible_interfaces
-Date: Tue, 27 Feb 2024 17:19:29 +0100
-Message-ID: <20240227162030.2728618-3-robimarko@gmail.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240227162030.2728618-1-robimarko@gmail.com>
-References: <20240227162030.2728618-1-robimarko@gmail.com>
+	s=arc-20240116; t=1709050954; c=relaxed/simple;
+	bh=mpaHnrQXVxhzTPAmuA5VRi7J9LYcCMPR3gS0wa9laMA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BwAW4H/NazNbg9pjpqOQu+my0VZVejuZki6ofVSVhIp0kbqKAugHMdlSM8GvuZhRG+fsMtVOBtULVP2/3TROaNBp8zKSwi3SRqg3waaT63V272DnMnMsM04jFltcTSc3/1/Q9Q2bJ0l3bPBsQb824tFFJpAyBLuyfNVcWInI6LA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bwO859o9; arc=none smtp.client-ip=95.215.58.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 27 Feb 2024 11:22:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709050950;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZpwdoTPDbBoPf3QYWjOhHZc19Xb5Er/Lboo1nmZhqcA=;
+	b=bwO859o9nXk2p9RatAo3p5C1/sszAl7urqmVyqYIj76c/O++eLQ2fFVcxbPxk+/xgYiBF1
+	d/ZtnwEjP6Tl3Ey6WYdXoJAHfQ682oQonvYCCwO5IXX8NTU2/eiI2L2EhFkFB+aWXpZbUi
+	pNflFYXlz5yMYfcD+4N3ENtkARdq5p4=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: Matthew Wilcox <willy@infradead.org>, linux-xfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, david@fromorbit.com, 
+	chandan.babu@oracle.com, akpm@linux-foundation.org, mcgrof@kernel.org, ziy@nvidia.com, 
+	hare@suse.de, djwong@kernel.org, gost.dev@samsung.com, linux-mm@kvack.org, 
+	Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH 03/13] filemap: align the index to mapping_min_order in
+ the page cache
+Message-ID: <hjrsbb34ghop4qbb6owmg3wqkxu4l42yrekshwfleeqattscqp@z2epeibc67lt>
+References: <20240226094936.2677493-1-kernel@pankajraghav.com>
+ <20240226094936.2677493-4-kernel@pankajraghav.com>
+ <Zdyi6lFDAHXi8GPz@casper.infradead.org>
+ <37kubwweih4zwvxzvjbhnhxunrafawdqaqggzcw6xayd6vtrfl@dllnk6n53akf>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37kubwweih4zwvxzvjbhnhxunrafawdqaqggzcw6xayd6vtrfl@dllnk6n53akf>
+X-Migadu-Flow: FLOW_OUT
 
-Currently QCA808x driver does not fill the possible_interfaces.
-2.5G QCA808x support SGMII and 2500Base-X while 1G model only supports
-SGMII, so fill the possible_interfaces accordingly.
+On Tue, Feb 27, 2024 at 11:06:37AM +0100, Pankaj Raghav (Samsung) wrote:
+> On Mon, Feb 26, 2024 at 02:40:42PM +0000, Matthew Wilcox wrote:
+> > On Mon, Feb 26, 2024 at 10:49:26AM +0100, Pankaj Raghav (Samsung) wrote:
+> > > From: Luis Chamberlain <mcgrof@kernel.org>
+> > > 
+> > > Supporting mapping_min_order implies that we guarantee each folio in the
+> > > page cache has at least an order of mapping_min_order. So when adding new
+> > > folios to the page cache we must ensure the index used is aligned to the
+> > > mapping_min_order as the page cache requires the index to be aligned to
+> > > the order of the folio.
+> > 
+> > This seems like a remarkably complicated way of achieving:
+> > 
+> > diff --git a/mm/filemap.c b/mm/filemap.c
+> > index 5603ced05fb7..36105dad4440 100644
+> > --- a/mm/filemap.c
+> > +++ b/mm/filemap.c
+> > @@ -2427,9 +2427,11 @@ static int filemap_update_page(struct kiocb *iocb,
+> >  }
+> >  
+> >  static int filemap_create_folio(struct file *file,
+> > -		struct address_space *mapping, pgoff_t index,
+> > +		struct address_space *mapping, loff_t pos,
+> >  		struct folio_batch *fbatch)
+> >  {
+> > +	pgoff_t index;
+> > +	unsigned int min_order;
+> >  	struct folio *folio;
+> >  	int error;
+> >  
+> > @@ -2451,6 +2453,8 @@ static int filemap_create_folio(struct file *file,
+> >  	 * well to keep locking rules simple.
+> >  	 */
+> >  	filemap_invalidate_lock_shared(mapping);
+> > +	min_order = mapping_min_folio_order(mapping);
+> > +	index = (pos >> (min_order + PAGE_SHIFT)) << min_order;
+> 
+> That is some cool mathfu. I will add a comment here as it might not be
+> that obvious to some people (i.e me).
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- drivers/net/phy/qcom/qca808x.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/net/phy/qcom/qca808x.c b/drivers/net/phy/qcom/qca808x.c
-index 16c94e77646f..bd36f5b90391 100644
---- a/drivers/net/phy/qcom/qca808x.c
-+++ b/drivers/net/phy/qcom/qca808x.c
-@@ -170,6 +170,16 @@ static bool qca808x_is_1g_only(struct phy_device *phydev)
- 		return false;
- }
- 
-+static void qca808x_fill_possible_interfaces(struct phy_device *phydev)
-+{
-+	unsigned long *possible = phydev->possible_interfaces;
-+
-+	__set_bit(PHY_INTERFACE_MODE_SGMII, possible);
-+
-+	if (!qca808x_is_1g_only(phydev))
-+		__set_bit(PHY_INTERFACE_MODE_2500BASEX, possible);
-+}
-+
- static int qca808x_probe(struct phy_device *phydev)
- {
- 	struct device *dev = &phydev->mdio.dev;
-@@ -234,6 +244,8 @@ static int qca808x_config_init(struct phy_device *phydev)
- 		}
- 	}
- 
-+	qca808x_fill_possible_interfaces(phydev);
-+
- 	/* Configure adc threshold as 100mv for the link 10M */
- 	return at803x_debug_reg_mask(phydev, QCA808X_PHY_DEBUG_ADC_THRESHOLD,
- 				     QCA808X_ADC_THRESHOLD_MASK,
--- 
-2.43.2
-
+you guys are both wrong, just use rounddown()
 
