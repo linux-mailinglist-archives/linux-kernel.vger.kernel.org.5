@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-82650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97F8C8687C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:21:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A30CD8687C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:21:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9EE21C22C38
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:21:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ECE0B2745A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283461CD3E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EA481DA4D;
 	Tue, 27 Feb 2024 03:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ds6+qhyd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GGZalQiN"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1E91B949;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82DE1B7E9;
 	Tue, 27 Feb 2024 03:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709004030; cv=none; b=lPbXziJ4TJ75dY7PkKvuuZSBBxVXBaH+15dXDDPDn4p6ZeobF8sy1LP/JdQoow3Pig6t4T+OhUSrIaSBUnH9h9yf1lXo4LpM9o/hTwPOvBRXBiob98Ro+RzSLW5lDE9QJNCHGxggTgk+aZBnYf0FJxPL7zd8GZERlDIPYcJvvP0=
+	t=1709004031; cv=none; b=IxOTh+BGCwLXRjyeSUUJ+fwuC9FS+tvqptP0Z0GB66+ezn9s+klu1NofDh7doMEljRFM7pxAg7rb655uPrPDDKw5iQHFpq9E9pAUTYBRg8d5zsZGzlcmqMYhBzRG6YvGqIQmOvS+wXVGrN4ISPHCSi3eS1OtpWsTIvkrJ2J1rXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709004030; c=relaxed/simple;
-	bh=s2eioNfukDMALIYmsfTbL/3nVLukiMf2+0qLoHY9ES8=;
+	s=arc-20240116; t=1709004031; c=relaxed/simple;
+	bh=aEWeFJ2eAgzcvr+OaHdaIiM7TBOw2JHpdO912FAxBrQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=AyPDmorH+dsUhtG4MRNGrSYYF40EXcH+IOT1fDHKMu8vgkxjU5hbp3ALQlxLBT7ev6yy2UMzF6qHY/b7caJenq8GaEtPvq239CT3C3aW9mJAd108b9BquwgCi+H07bpH3KuSnfURIhpha5SJ5HtPZvF7KPv8WaYCY8rUr4kxyMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ds6+qhyd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 75D2BC43394;
+	 In-Reply-To:To:Cc; b=HiDNt3fnVXuGP2LZk9qZX6eq0d0c0aHWyi4s/80M34OXbJbLQ0J+BReyCNw8eAKY9rCvr6VjJ7pN8M4WAekOtB54cMsOofMp24ivlAhmBNBf5UmI1QFYq+WU5u3l5DwZNV0a4VpiDqu6rL8hyOpmG68YqCbm5Pz0yNEydiltP6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GGZalQiN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 601C6C433F1;
 	Tue, 27 Feb 2024 03:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709004030;
-	bh=s2eioNfukDMALIYmsfTbL/3nVLukiMf2+0qLoHY9ES8=;
+	bh=aEWeFJ2eAgzcvr+OaHdaIiM7TBOw2JHpdO912FAxBrQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ds6+qhydg6HvWtNREWG8A+IjqexZMZ7YWnTYjxMV+C485aQAvxyCnH9eGyGicW580
-	 Sgm2PDzkvNPOd80rCdTMHbuHKt+5DbsdufrqTDeeD4Njtfkh8LJk3B6lgk2TXA+MVF
-	 dVQ274u4amFeRIN3El/DsS4hhzl6rB9hOamyu7JahaHjIdp+EBDan3VUMui1u9PdBD
-	 48sa5tgNPsjZxIyzWlm7NbHmk6YIj3BC+a4/dm3+PrMnoeoMSzIvSHl3/KWA7wwJCV
-	 6Z31sUvzHAu1jbE0DSdlq45nI6xzz3Xcc83t7QIRqIPAAkwWQDxbGm1QW2fqDrQLxe
-	 1alt0e3SzRnBw==
+	b=GGZalQiNOWNgvr31MEFJ81Scx/q8IuKaZAqiPFZE+SD8pSdQWwG3CioqZpDlRQUAD
+	 jKvVifURv7BOpc25WdOU3fYy6BfTMtetonGpoamgfDO3hXxtvjNyuDx94vkioJxfvV
+	 MubNjVgf5u85jr4mrAuCzosl1CeEkeDYgrDKshVma4vowdYyZfX9/uNolq5oS00HY6
+	 VdQ/8vtg8n+7bDwLjb5y8Yg2i9Qutge32EjMjVf5A2q9l0zWeu9yL5HgzRZ4UWdsvX
+	 1U/1FgMqGQhy/VrktEoQPhkUCFsQrCXfoN9l9KW3KzU1jxRXAX9mECe7VQa53IR0gn
+	 sUUzlKI2AvVrA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 55D29D8C976;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3DB28D88FB2;
 	Tue, 27 Feb 2024 03:20:30 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,51 +51,59 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/8] mptcp: various small improvements
+Subject: Re: [PATCH v4 00/39] Add support for sam9x7 SoC family
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170900403034.25082.12541895722139534693.git-patchwork-notify@kernel.org>
+ <170900403024.25082.9031028983461362329.git-patchwork-notify@kernel.org>
 Date: Tue, 27 Feb 2024 03:20:30 +0000
-References: <20240223-upstream-net-next-20240223-misc-improvements-v1-0-b6c8a10396bd@kernel.org>
-In-Reply-To: <20240223-upstream-net-next-20240223-misc-improvements-v1-0-b6c8a10396bd@kernel.org>
-To: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang@kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- shuah@kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, tanggeliang@kylinos.cn
+References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+In-Reply-To: <20240223171342.669133-1-varshini.rajendran@microchip.com>
+To: Varshini Rajendran <varshini.rajendran@microchip.com>
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, nicolas.ferre@microchip.com,
+ alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev,
+ mturquette@baylibre.com, sboyd@kernel.org, herbert@gondor.apana.org.au,
+ davem@davemloft.net, andi.shyti@kernel.org, tglx@linutronix.de,
+ tudor.ambarus@linaro.org, miquel.raynal@bootlin.com, richard@nod.at,
+ vigneshr@ti.com, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ linus.walleij@linaro.org, sre@kernel.org, u.kleine-koenig@pengutronix.de,
+ p.zabel@pengutronix.de, olivia@selenic.com, radu_nicolae.pirea@upb.ro,
+ richard.genoud@gmail.com, gregkh@linuxfoundation.org, jirislaby@kernel.org,
+ lgirdwood@gmail.com, broonie@kernel.org, wim@linux-watchdog.org,
+ linux@roeck-us.net, linux@armlinux.org.uk, andrei.simion@microchip.com,
+ mihai.sain@microchip.com, andre.przywara@arm.com, neil.armstrong@linaro.org,
+ tony@atomide.com, durai.manickamkr@microchip.com, geert+renesas@glider.be,
+ arnd@arndb.de, Jason@zx2c4.com, rdunlap@infradead.org, rientjes@google.com,
+ vbabka@suse.cz, mripard@kernel.org, codrin.ciubotariu@microchip.com,
+ eugen.hristev@collabora.com, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, linux-gpio@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-pwm@vger.kernel.org, linux-rtc@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-watchdog@vger.kernel.org
 
 Hello:
 
-This series was applied to netdev/net-next.git (main)
+This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Fri, 23 Feb 2024 21:17:52 +0100 you wrote:
-> This series brings various small improvements to MPTCP and its
-> selftests:
+On Fri, 23 Feb 2024 22:43:42 +0530 you wrote:
+> This patch series adds support for the new SoC family - sam9x7.
+>  - The device tree, configs and drivers are added
+>  - Clock driver for sam9x7 is added
+>  - Support for basic peripherals is added
+>  - Target board SAM9X75 Curiosity is added
 > 
-> Patch 1 prints an error if there are duplicated subtests names. It is
-> important to have unique (sub)tests names in TAP, because some CI
-> environments drop (sub)tests with duplicated names.
+>  Changes in v4:
 > 
 > [...]
 
 Here is the summary with links:
-  - [net-next,1/8] selftests: mptcp: lib: catch duplicated subtest entries
-    https://git.kernel.org/netdev/net-next/c/9da74836740d
-  - [net-next,2/8] mptcp: token kunit: set protocol
-    https://git.kernel.org/netdev/net-next/c/28de50eeb734
-  - [net-next,3/8] mptcp: check the protocol in tcp_sk() with DEBUG_NET
-    https://git.kernel.org/netdev/net-next/c/dcc03f270d1e
-  - [net-next,4/8] mptcp: check the protocol in mptcp_sk() with DEBUG_NET
-    https://git.kernel.org/netdev/net-next/c/14d29ec5302c
-  - [net-next,5/8] selftests: mptcp: netlink: drop duplicate var ret
-    https://git.kernel.org/netdev/net-next/c/488ccbe76cb4
-  - [net-next,6/8] selftests: mptcp: simult flows: define missing vars
-    https://git.kernel.org/netdev/net-next/c/fccf7c922459
-  - [net-next,7/8] selftests: mptcp: join: change capture/checksum as bool
-    https://git.kernel.org/netdev/net-next/c/8c6f6b4bb53a
-  - [net-next,8/8] selftests: mptcp: diag: change timeout_poll to 30
-    https://git.kernel.org/netdev/net-next/c/e8ddc5f255c3
+  - [v4,01/39] dt-bindings: net: cdns,macb: add sam9x7 ethernet interface
+    https://git.kernel.org/netdev/net-next/c/5c237967e632
 
 You are awesome, thank you!
 -- 
