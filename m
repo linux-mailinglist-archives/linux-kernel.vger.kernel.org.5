@@ -1,163 +1,134 @@
-Return-Path: <linux-kernel+bounces-83598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43A50869C15
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:28:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADFDD869C17
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44BF41C21ACB
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:28:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 247C31F22189
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95AE51487EB;
-	Tue, 27 Feb 2024 16:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5AD31487D5;
+	Tue, 27 Feb 2024 16:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PALDXWLI"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VAj5g07b"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28942145321;
-	Tue, 27 Feb 2024 16:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E57145321;
+	Tue, 27 Feb 2024 16:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709051279; cv=none; b=ITURFkYBmI3AdTjsQljs8r7U4sf0Z34blO9nr4qfH96aepwW8WPt6d9wPfkBIX3nsydCgrrvHsGsYAG7hxQzi1UEmoixu4KZS4Yv1fPOR6BPBNjRUyXzbPwMPAuFn5a21/xYTruMav2v0CK25R9xEQ5A6rmDpg68oH9CGv3hIh0=
+	t=1709051291; cv=none; b=NRu4t4KpM5sY3kdaDGPVbjv3MBZHvg9r0jFFW7NasQjJ9RxO09UVhICrWhtcBntgQrKMXRMuxalTKEeToxPiN/quvrDYwenH8zHG5mFupP0TOZXtiC/Us29dxRyEfunggWxLGmOy+qW1EzzPf40GYWlZ8RxOv3Ggp/h4D+W1tmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709051279; c=relaxed/simple;
-	bh=YktS9dxlM50RHOnP7vVul3eD1UdiPaSXTO3fwBv+RJg=;
-	h=From:Subject:To:Cc:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=uGc/MglIYMKBcZfD9MwKdWpdp9CNs27xVCGTaCsW4FLD0Az0Gd557el3bKgmlUqrFjGxqwxYBNpxCX8MRkQG80r5VxN+iDBQVXnzdI7/yklqm8BhoIl8zUX6yQrDHs5WxIlHufmZOnVXuH3Erx3R9FjKsOZtWJhQmXqT2YRZB6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PALDXWLI; arc=none smtp.client-ip=209.85.167.49
+	s=arc-20240116; t=1709051291; c=relaxed/simple;
+	bh=gxRtFtSYjnlTrJJn3q7eEW0xJvelWZEgyZ88iY2xwfM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BQM3XyKXrJC3JyoFZi/x7bFmJ3FEeYEghd7MeLibxZj+ozJrLHledjCR7reLxunMIEc4XiCRwIhLdA65RxwcEU6irCDqY1qLjeVIc8H9m5cCmqk2uuN2JdyQ9VE3QfsT6cDieFtZY+yTcxYW53diNyVgPEF809+rCZGQMX8QsEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VAj5g07b; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512f5484a37so4138754e87.3;
-        Tue, 27 Feb 2024 08:27:57 -0800 (PST)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so5246451a12.0;
+        Tue, 27 Feb 2024 08:28:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709051276; x=1709656076; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:references:cc:to:subject:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pAD8RHKxb4G97R9G/dSDm2p0nboqUuatq3J8Tyt7hHw=;
-        b=PALDXWLIETybPoknflqESM5QvOpIpGLxCr3cBGDtPy2BkJapPLqxdUm7BJep6oDxkI
-         Awl+uY9X1T1TQl/mSPaKotoTgxBnGnVgZ0/l9jvCt7/u9AzjUp4UprLgIq/yZNYIjNul
-         ZZJFa45fxrJoTy6+z1fovd3ltn6AKnATmVtHoEmAHbO7crxK0kl9gpSMHU+RpXpTFjzK
-         J4p8amYiec9Idoew74mmwmNBZDGk9zRdGsUnTTJG/a8lJyh8jvmCAAY6eW270O3MfoDj
-         QpBaq2LfM6+5kIm2wpA/PKYNlPTGgGs1Vduf2P67tuGITlJbzG/j3YLW6+dpklSXrO/h
-         gMjQ==
+        d=gmail.com; s=20230601; t=1709051288; x=1709656088; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M0dTpHR1K23pB61bzvysNHvrksQiS977Ao80yDg/2EM=;
+        b=VAj5g07bYTxruMJ1tS1EuN4sc1+h9xFPBX1J4SW9aerhhTbeBp6dXglHlYZ4Y7jcev
+         lQb72QQfTYqDCzKIidma5Wi/KLPiiuUwEgcIHVPiPzQA6Y2N5t0VfEArQ+Y+/ihwr+3b
+         LqUqfmVCAGNDG7kF2Mj/a7y9DbragoOU5jzeFg395CEa9Oj1Qi7JzUDpvu2hhqPUq2UX
+         QvwKgjK2WrHr3Nxd9+DzTKsCY+Gzuav65q7y47La0r53+gBTHo/EWjF6VVMeqZ1khiL1
+         ggnq6RGWbiXw4vp3lEPUtrC5gSZceJlt3rBDzNeu9hfcDIhkisZ0Ul+2nvtLme69hJ6b
+         gPNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709051276; x=1709656076;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:references:cc:to:subject:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pAD8RHKxb4G97R9G/dSDm2p0nboqUuatq3J8Tyt7hHw=;
-        b=duDVZ95sHaijtatfduZMJSgg7mLUsL53yOMobd9xfb7qcQeRLGsytGHirUqmHd3tEl
-         jtSHs32H99DET1/GKj1nN9jyQdIGT7hIgwHSRk5V9NSn588+iGj2LHusVKoQ05UklTBl
-         jZmOdZ8+/dJv/K53Rpez6lWSWVxLy/yKtU75JJNOSsp4F2iGiA8pmeNQ2lD/yVBnn1TO
-         sPtjl67yMC2h+PHlkvHbmPOidLA1oHHS8YIX3SaAc1PiqjNwLbKOv+tQb22i5dpDyBjt
-         84gfzdkhzkHOOGrfBvWws6N5c8OAnD0UeYoOLFsKOXGxPrv2ObcALrFedrzL2fpIi7BX
-         zH3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVJIa3drgi/vXKANhdOhA022m8fLwLx4VyB7adNauGKKm/8Q6cDI2H8EO89ZHwv62WdsFAZPpGBvsj1GseyJ/VSMld5F6mCszWWlhfwF85g1NVfPMNU3bpwzCEKw/Vl1yRuj49YLA5RVD5XsMMbimNkMevfnNm98aa1utaZS53eDuWfgg==
-X-Gm-Message-State: AOJu0YzYois/TsvxG5dFPj3jTBCXzaMnV39IEg3qzjS2xvtrc+BRUnUI
-	q49ksPNDOZjTQOD/rjHMCFgOfmCtYwGH7p/MLElQ3c8kc9jl1vHK
-X-Google-Smtp-Source: AGHT+IFpwoAicjquFREyBDbKYQUFCXwCwdKRl7/9LNLPcrPsJ5bojUYGEl8JJyGvR0rQSkxAnasFMw==
-X-Received: by 2002:a05:6512:1317:b0:512:f59e:f425 with SMTP id x23-20020a056512131700b00512f59ef425mr7507569lfu.10.1709051276022;
-        Tue, 27 Feb 2024 08:27:56 -0800 (PST)
-Received: from [192.168.1.105] ([178.176.72.204])
-        by smtp.gmail.com with ESMTPSA id v15-20020a056512096f00b005129994f013sm1236235lft.184.2024.02.27.08.27.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 08:27:55 -0800 (PST)
-From: Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Subject: Re: [PATCH v3 4/8] usb: cdns3-ti: support reset-on-resume behavior
-To: =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Roger Quadros <rogerq@kernel.org>,
- Peter Chen <peter.chen@kernel.org>, Pawel Laszczak <pawell@cadence.com>,
- Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
- Tero Kristo <kristo@kernel.org>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- =?UTF-8?Q?Gr=c3=a9gory_Clement?= <gregory.clement@bootlin.com>,
- Kevin Hilman <khilman@kernel.org>, Alan Stern <stern@rowland.harvard.edu>,
- linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240223-j7200-usb-suspend-v3-0-b41c9893a130@bootlin.com>
- <20240223-j7200-usb-suspend-v3-4-b41c9893a130@bootlin.com>
- <b778d2e8-3fcf-afe4-2e48-0348be19a085@gmail.com>
- <CZEXIZWQO1XB.1YY4P72A2K1HJ@bootlin.com>
-Message-ID: <20c29fee-691d-686c-83c9-578e15b5ba79@gmail.com>
-Date: Tue, 27 Feb 2024 19:27:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        d=1e100.net; s=20230601; t=1709051288; x=1709656088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M0dTpHR1K23pB61bzvysNHvrksQiS977Ao80yDg/2EM=;
+        b=VIZxYjyLythc5S9/gfddo/5uvboI26guj/WuSZadXnSVvrLLLeaEg1r0dKDOJQ8BN7
+         nwThDEmsMwltMTEgH/fjwt/BC2ZqwvjibKnxkNucQT3nVcvGZAvJp9RJ+Q8Y9ag4KGuM
+         2+cDsFNCZ8ZxOkl1Jki0jdKNiLsgaCmB9put/nu8VcMlKuL6PCZbLJTXCG7WSojklS/j
+         qk7OjKX/vnk76ZMdfHGGXwZnoJQoLQ7o+o/mIkF8GwlmRrNakMWZwQLmwDsLk8/4EXRw
+         FkqHzJ6DRaUCvNqH/gWoQhADhv/x8K8AzTFM2kauConIfOdqHPoXAMuIwqSmYsmctKPp
+         BU+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWAN2QZivaQkHETFgqi/blMelIfTfSwSUVI40fkUqfOGL8tz35SMR/hVg56eMcSKXrT+t4CPWqZqv0FbLAapWzZEtP7J8Xd7fmXNisKsyyIGcvqDLrRSOtOz0oPgrFiWdqo0UN8YpbBFA==
+X-Gm-Message-State: AOJu0YxpEan7hBfthZ2PMkQzUAoVImANxwHje9DUFah/heFO8UhQjGbI
+	3xiHo9F/qKbTsS3WP1ZD1IlHjm1nqGhs0Qf0mHqGj3ZMFUE+LqjtMVvW39uNQZCYOdpNw5OaMmq
+	UxSDBqoDb4iPzHQzxaTQ/TIN6AnU=
+X-Google-Smtp-Source: AGHT+IGzJBW8k7ldwen5EXjuSmgR3l2IjW+yccX6qBQwDIsY+xoBXnRY/aIUOm+e4NHYEM1QabbatXe2pbsUDCTTnSo=
+X-Received: by 2002:a17:906:5804:b0:a43:a7:c683 with SMTP id
+ m4-20020a170906580400b00a4300a7c683mr5916386ejq.42.1709051287508; Tue, 27 Feb
+ 2024 08:28:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CZEXIZWQO1XB.1YY4P72A2K1HJ@bootlin.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20240227123602.258190-1-javier.garcia.ta@udima.es> <20240227160952.615291-1-javier.garcia.ta@udima.es>
+In-Reply-To: <20240227160952.615291-1-javier.garcia.ta@udima.es>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Date: Tue, 27 Feb 2024 18:27:55 +0200
+Message-ID: <CAEnQRZDY5Jfj6d008goccsWwwUuUuryw1s8xJH6EyGXEiqnovw@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: dt-bindings: img,spdif-in: Convert to dtschema
+To: =?UTF-8?Q?Javier_Garc=C3=ADa?= <javier.garcia.ta@udima.es>
+Cc: daniel.baluta@nxp.com, broonie@kernel.org, krzysztof.kozlowski@linaro.org, 
+	Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, "Damien.Horsley" <Damien.Horsley@imgtec.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/26/24 1:13 PM, Théo Lebrun wrote:
-[...]
+This looks much better than v1. Make sure you have addressed all
+comments from the previous version
+and add a short log under the scissor line explaining what you have changed=
+.
 
->>> Add match data support, with one boolean to indicate whether the
->>> hardware resets after a system-wide suspend. If hardware resets, we
->>> force execute ->runtime_resume() at system-wide resume to run the
->>> hardware init sequence.
->>>
->>> No compatible exploits this functionality, just yet.
->>>
->>> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
->>> ---
->>>  drivers/usb/cdns3/cdns3-ti.c | 27 +++++++++++++++++++++++++++
->>>  1 file changed, 27 insertions(+)
->>>
->>> diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
->>> index 4c8a557e6a6f..f76327566798 100644
->>> --- a/drivers/usb/cdns3/cdns3-ti.c
->>> +++ b/drivers/usb/cdns3/cdns3-ti.c
->> [...]
->>> @@ -220,8 +226,29 @@ static int cdns_ti_runtime_resume(struct device *dev)
->>>  	return 0;
->>>  }
->>>  
->>> +static int cdns_ti_suspend(struct device *dev)
->>> +{
->>> +	struct cdns_ti *data = dev_get_drvdata(dev);
->>> +
->>> +	if (data->match_data && data->match_data->reset_on_resume)
->>> +		return pm_runtime_force_suspend(dev);
->>> +	else
->>
->>    Pointless *else* after *return*...
-> 
-> Indeed! I used this form explicitely as it reads nicely: "if reset on
-> reset, force suspend, else do nothing". It also prevents the error of
+Few comments inline:
 
-   s/reset/resume/ here? :-)
 
-> adding behavior below the if-statement without seeing that it won't
-> apply to both cases.
+On Tue, Feb 27, 2024 at 6:13=E2=80=AFPM Javier Garc=C3=ADa <javier.garcia.t=
+a@udima.es> wrote:
+>
+> Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
+>
+> Signed-off-by: Javier Garc=C3=ADa <javier.garcia.ta@udima.es>
+> ---
+^ this is the scissor line. Here you add the change log.
 
-   You were going to add stuff after the final *return*? :-)
+Changes since v1:
+- re-written the subject inline to include relevant prefix
+- removed header file as it is not used
+- ....etc
 
-> If you do believe it would make the code better I'll happily change it
-> for the next revision, I do not mind.
 
-   Up to you!
-   This is a thing people usually complain about when reviewing
-patches. I even thought checkpatch.pl would complain as well, but it
-didn't... :-)
+> +$id: http://devicetree.org/schemas/sound/img,spdif-in.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Imagination Technologies SPDIF Input Controller
+> +
+> +maintainers:
+> +  - Liam Girdwood <lgirdwood@gmail.com>
+> +  - Mark Brown <broonie@kernel.org>
 
-> Thanks for the review Sergey!
-> 
-> --
-> Théo Lebrun, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
+Please do not blindly add people here. The most proper candidate for this
+is the people who wrote the original file.
 
-MBR, Swrgey
+Using git log we can find Damien.Horsley <Damien.Horsley@imgtec.com>
+
+Damien,
+
+Is it OK to add you as a maintainer for this file as you wrote the
+original driver?
+
+Other than this looks good to me as far as i can tell.
+
+thanks,
+Daniel.
 
