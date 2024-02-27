@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-82659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A4E8687E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:46:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86618687E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:46:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EC661F23024
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:46:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5127DB22B93
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3853495CC;
-	Tue, 27 Feb 2024 03:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1834D5A2;
+	Tue, 27 Feb 2024 03:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z8TZ5Fnl"
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nibPEp29"
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB79E2B9AE;
-	Tue, 27 Feb 2024 03:45:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A553339BF;
+	Tue, 27 Feb 2024 03:45:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709005559; cv=none; b=NfvJo3uH3MgIxp6daEO0KQfM0m0XgHtVVo4rmtTIs682bUYy9LWe4tkDE5LJtdlmCl/+a0himtCPfrkITfBfj4VbjVMWqsHnkOS93NjvYwq+0rqZCLSvcAy2ioJ+8qMMeIMjzqKkmHOo1LHH1ra4IjEbuhRVyI1YKgIwOFo6FIQ=
+	t=1709005560; cv=none; b=g/uWWZ065ggOxE0dcNsiy/xaZwDmvtP8icO7ayLqt8akc45INnxNCk0DphGZUBDUHgmHTQgxh7cZ6yJdQu5mcjaSpNpnjKHg9U0skPLXjgHxga5JZ/pzg61lDxFbJvHyur+WdVHSsqGHFI3dNlCAPzpf0kWcPcwaLWmuPMRUOdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709005559; c=relaxed/simple;
-	bh=vcai9d1SaHknWypx9g0oBQddWEqztQWNUPqi7bp1fLU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jgPshzcLVC32y4kemjqLMJnPmeXTroXSwWYe6l9trrKmMsLgKz3zknAj8eS+SrwZfRPqnAavZPlxYOGok21upEVQm/p182hOXpRKJQpbO5p3X/zd/MX66/9YOFEDRXS4UpeUFqKvkZZhoJJTwwkjLmmzrLkyEafLVrF6bGDnIJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z8TZ5Fnl; arc=none smtp.client-ip=209.85.166.181
+	s=arc-20240116; t=1709005560; c=relaxed/simple;
+	bh=PKqroATuQmkXfdeKNmcaZSx60NSv+Ro2hJXFdpkmcSs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=IKEgvneKe6zlNZlZzKxHj9C3FT/RzFcAzIOUEAioKM8h/mXpuyYKU/u42qGxG8/grV+A2gZJeB+WkaQXzjnQVcRCW00s3wd1H1djDKKm7eRXDQ2aNQyYysXvH1upiJMybIq2fBl2C4/uurXahI+AMRfTplQxuTA3tAeMNMqSmOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nibPEp29; arc=none smtp.client-ip=209.85.166.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-36517219a19so12634125ab.1;
-        Mon, 26 Feb 2024 19:45:57 -0800 (PST)
+Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-36517375cc6so9649725ab.1;
+        Mon, 26 Feb 2024 19:45:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709005557; x=1709610357; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wl0bBkvRiqQeuBTLPhRoK2WWUUi11l8F15u5KFX7dWY=;
-        b=Z8TZ5Fnlg2OmPpbZ8Z7DE59CLKXi6uBIJT5IMxa/9Xr+zCQUioxm/cBQ4Q2k4pHrOl
-         nK3xfNDvZpMGYaTGFwXU66PuiyLJp7+jxCcE7BSCT4FpYPuzmI2no9ruEluN4cztq153
-         NgMeayEBtiQuIAz3P+4ZmDq6ZjOneudMZHcyf1cNDfvARqXb0tVK61G/6BEUCj2StYwW
-         5sOOZzG4UGGiED8O9mYtMvPGH2VAoHOHEhd38axYESyrP/SYrr+gY8mmijzBwOup1eXP
-         7ap0y4B3MD4fU1jAaiD1UigVWc2TBiavjhtpNq6Bpa0kSZIFVGE9mWW/qgMxQX1ulku7
-         eyNg==
+        d=gmail.com; s=20230601; t=1709005558; x=1709610358; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ucD/+p4K6+j2ZE6i/N6HFdJPDZilTnGBi4Fcog1oUsI=;
+        b=nibPEp29q5L6NSZn1CxCs+UB13moAr9MOVYZtaC60PJyveelBh65Di3RskCeWz5Fl4
+         d7yMKhY0cEXRmv85XOBDiQ/b3zS6E1YXZZU426u7rf57q3kWYFWzosHIcrmoKtUx8Qt+
+         RKI6Li/w6VlskxrCyDyvDLrY81ZH133pLudUwgJtSPRaBRVi/XEZTmwh3LmA6P9nqrKW
+         2FGmQ8c/edxCc+FJqBfaW1SuiGfpzAAmCWAa5cFUWAB0zojhDtMyJ7A/qdSEbItstsGT
+         dQlBGayScuop5gMlyfLTEAL/vipklMi5LzJRJZ8YqFL7u3XwdBxXdH+KPz5AClcNCtj0
+         TJzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709005557; x=1709610357;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wl0bBkvRiqQeuBTLPhRoK2WWUUi11l8F15u5KFX7dWY=;
-        b=B4ykBnn5YkWBVlN+ihN8JZ4dd+0RV5powiLpZRb/bdDq4wM9lREQUSxMICFahdtks4
-         40f31SxgIsMfBLl6Fg0oLldAA0Dl2Jjl8uQ8PcA1MnvhEN629mjwx51GlagYym4CbdWq
-         D9Pub0VkXkwsPWNkHIdAh/x2cE5fDhCDgQa5lnWxWYQ4Rpihyo6wEyJgxHwXpLNN8LM7
-         0dAJYz47VTERz9N6aMV/dSxNFvQMWRDVa2etVtZ3cMhz3rOO26WCtqaSEMcJ9Kg6vbnt
-         14DTPs5LsNU0HrHK+Prn++aIfIuu+K6XwT1XC/nKUKXBnZo0lSUKa67GldjcHww8ux7r
-         EbhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXwuuhI8/ex7FR6RKp7hczmvKhC4dVkNRoY+ZiyhmqZzpwIihPdYx7XPCZTffL1yYlOyWDRbbBM1bO3uUUXF7HAUr81KyHCL58q5p39FutW5wMNMayA9l+N7rCOi3qUaAo1nI0nzL7cb0j1uKNFbpvKcuFlY93oVN7vbxNcmunuPBUuNhRmA7dAZs/P
-X-Gm-Message-State: AOJu0YxU8HDbTLfClZCtugpPegkhgGqxcKfwf0fusrG6n7G8IIJ9HcSU
-	aRQ8oQZkiM4E7D3t0zi1uF4nFwUU7REmGoB3zXocbdJ8EfREJo0pGfSNj9nh8Vu4N7+K
-X-Google-Smtp-Source: AGHT+IF5iCsGO7Lh19DB7/toWuvvr5zyzgW6mtDlHlNqxuxd8xI4191wlLaB8IhucWBfHVJ3P+Nsjw==
-X-Received: by 2002:a92:ab03:0:b0:365:858:d6d1 with SMTP id v3-20020a92ab03000000b003650858d6d1mr8892141ilh.1.1709005556933;
-        Mon, 26 Feb 2024 19:45:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709005558; x=1709610358;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ucD/+p4K6+j2ZE6i/N6HFdJPDZilTnGBi4Fcog1oUsI=;
+        b=oTQDhJsI3U2opDPsUpw4gwDTgEvu/1gguS0c9vcWotSMVeUs2M+0CUNz60Q16sMOjF
+         4Uf5AT+pbaYQYJA+WWgXn08siQZ/zkNnSbgabZcp+ph53GxzaHKRNXPo6x6Mg9xHzn2m
+         vpKy0SFVt/puiCKob0A2akcIP5QNQvPLcH5AJc2vjEWXIQV55Qc5sCsx4SwMoPHyZMjy
+         C5o5yg1rrB0VUaCDsPdeQnkjiA45aIYBF3fBM1LaT7wZ7YjVtc1vDIqv5Pt2NO4+1WGa
+         mJyp6FhpeeGjJKbOg98wf4g1zu2w9f9Nt8ZvohRCyGYOnIM1NkzQfpac3Ljpno6nEmc0
+         1uUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWLnijTruHKv8uW+2eaxDmj8pCvwyhDcIS9Pu0g9V2hRj3onnqbuG+nj8/AXUSe9VPITp6GB/T4lwqhyc8hqjLZn31oIFD87wY1W68bi+8FA+Tv7IFTBG5dAtJVRVv7PZO+zwjwkyMmgbrfFU1cO7zz3jYfriMv/1B7FaTyqNkIJrqLvyRvut8jgZJr
+X-Gm-Message-State: AOJu0Yy/mLfSq+JgzerEtCS+Tipl7wzrVLEYoQUKb9WwK/b46ehtby7/
+	RUZBJ1xPaWBPtx0wqZpMR5ThXuraj0f93AWRzuMzxpFSapgMEj/c
+X-Google-Smtp-Source: AGHT+IEEX+eGY8wwb+gRh5Rwva/dPaMluotD4yi0XNwRuMV8qyLsDXz+GtY5HhmQ4McOBOW+ph9nRg==
+X-Received: by 2002:a92:c8c4:0:b0:365:16cd:66 with SMTP id c4-20020a92c8c4000000b0036516cd0066mr9677139ilq.31.1709005558600;
+        Mon, 26 Feb 2024 19:45:58 -0800 (PST)
 Received: from aford-System-Version.lan ([2601:447:d002:5be:1712:c48b:aaa0:cd8b])
-        by smtp.gmail.com with ESMTPSA id w4-20020a92ad04000000b00362b4d251a5sm1891566ilh.25.2024.02.26.19.45.55
+        by smtp.gmail.com with ESMTPSA id w4-20020a92ad04000000b00362b4d251a5sm1891566ilh.25.2024.02.26.19.45.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 19:45:56 -0800 (PST)
+        Mon, 26 Feb 2024 19:45:58 -0800 (PST)
 From: Adam Ford <aford173@gmail.com>
 To: dri-devel@lists.freedesktop.org,
 	linux-renesas-soc@vger.kernel.org
@@ -83,10 +85,12 @@ Cc: aford@beaconembedded.com,
 	Magnus Damm <magnus.damm@gmail.com>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/6] gpu: powervr-rogue: Add PowerVR support for some Renesas devices
-Date: Mon, 26 Feb 2024 21:45:30 -0600
-Message-ID: <20240227034539.193573-1-aford173@gmail.com>
+Subject: [PATCH 1/6] dt-bindings: gpu: powervr-rogue: Add PowerVR support for some Renesas GPUs
+Date: Mon, 26 Feb 2024 21:45:31 -0600
+Message-ID: <20240227034539.193573-2-aford173@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240227034539.193573-1-aford173@gmail.com>
+References: <20240227034539.193573-1-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,30 +99,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Renesas has used a few variants of the Power VR GPU in their R-Car
-and RZ/G2 families.  While there is still some work to do at the Mesa
-level,  adding these device tree nodes allows the Power VR driver
-to enumerate and load the respective firmware located:
+Update the binding to add support for various Renesas SoC's with PowerVR
+Rogue GX6250 and GX6650 GPUs.  These devices only need one clock, so update
+the table to indicate such like what was done for the ti,am62-gpu.
 
-https://gitlab.freedesktop.org/imagination/linux-firmware/-/tree/powervr/powervr?ref_type=heads
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Adam Ford (6):
-  dt-bindings: gpu: powervr-rogue: Add PowerVR support for some Renesas
-    GPUs
-  arm64: dts: renesas: r8a774a1: Enable GPU
-  arm64: dts: renesas: r8a774e1: Enable GPU
-  arm64: dts: renesas: r8a77951: Enable GPU
-  arm64: dts: renesas: r8a77960: Enable GPU
-  arm64: dts: renesas: r8a77961: Enable GPU
-
- .../devicetree/bindings/gpu/img,powervr-rogue.yaml  | 13 ++++++++++++-
- arch/arm64/boot/dts/renesas/r8a774a1.dtsi           | 10 ++++++++++
- arch/arm64/boot/dts/renesas/r8a774e1.dtsi           | 10 ++++++++++
- arch/arm64/boot/dts/renesas/r8a77951.dtsi           | 10 ++++++++++
- arch/arm64/boot/dts/renesas/r8a77960.dtsi           | 10 ++++++++++
- arch/arm64/boot/dts/renesas/r8a77961.dtsi           | 10 ++++++++++
- 6 files changed, 62 insertions(+), 1 deletion(-)
-
+diff --git a/Documentation/devicetree/bindings/gpu/img,powervr-rogue.yaml b/Documentation/devicetree/bindings/gpu/img,powervr-rogue.yaml
+index 256e252f8087..7c75104df09f 100644
+--- a/Documentation/devicetree/bindings/gpu/img,powervr-rogue.yaml
++++ b/Documentation/devicetree/bindings/gpu/img,powervr-rogue.yaml
+@@ -14,6 +14,11 @@ properties:
+   compatible:
+     items:
+       - enum:
++          - renesas,r8a774a1-gpu
++          - renesas,r8a774e1-gpu
++          - renesas,r8a77951-gpu
++          - renesas,r8a77960-gpu
++          - renesas,r8a77961-gpu
+           - ti,am62-gpu
+       - const: img,img-axe # IMG AXE GPU model/revision is fully discoverable
+ 
+@@ -51,7 +56,13 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: ti,am62-gpu
++            enum:
++              - ti,am62-gpu
++              - renesas,r8a774a1-gpu
++              - renesas,r8a774e1-gpu
++              - renesas,r8a77951-gpu
++              - renesas,r8a77960-gpu
++              - renesas,r8a77961-gpu
+     then:
+       properties:
+         clocks:
 -- 
 2.43.0
 
