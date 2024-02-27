@@ -1,128 +1,108 @@
-Return-Path: <linux-kernel+bounces-83949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ACDF86A074
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DB3886A075
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79E0C1C250CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:48:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DF401C23DD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD067146908;
-	Tue, 27 Feb 2024 19:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="JRmQXmkH"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2289376;
-	Tue, 27 Feb 2024 19:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B97A5143C48;
+	Tue, 27 Feb 2024 19:48:58 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828AB524D0
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709063285; cv=none; b=B6yo5ACl49GWfC94Rauz+TedT1Is7ppx4/sCKcQ3jPGwqxyXE0h/eEinS46qRWLSXCd+qMO47MuJKDE79V1MMmRzSi5QJH/kThR9JRFz2gY/xU6pBlazfQWgAs0K88f0HOtxQxPBhAXPqtG1sOWCyQ2xSfIcVl5Vi2KPv+gfYVg=
+	t=1709063338; cv=none; b=D6s3hO4c0olxeXV5f0uB+iUDCrjRT4nPtbpigHFz/hb252vmK+Plx2tni0IOV4IXz16BNZ7qscuRKIZMEmbKIhjyq2Pka0Y+eaRQxwqgtrvkr5Q0fqtfAAjrvKBn0a2ZbUhfW0p8ZVjDywzKmYh1UlGS52D6j/JTAUey43BLqog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709063285; c=relaxed/simple;
-	bh=cQSTUu5LkB56EjEev4yXhVQ+5usKXvWwwDpoqGek2iE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UoZ1NpG+uEjCW/fSv0E7DpK69nOsz5FD5dpgUi5R34/4sKVUbci5QHecaHzTrbHoI2EE2+JppY+y8e3L5jTvJt88zZjnMObO7ao5+D/MMscYf7ofX9Lv2RrE7K3rwUWmMHc0+uMa5VWdsqZlr5B3klk/CRxq2/r8jalvq/iQn6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=JRmQXmkH; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 72B4D40E016B;
-	Tue, 27 Feb 2024 19:48:01 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id TEX1hY_PYP_v; Tue, 27 Feb 2024 19:47:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709063278; bh=iXEaBzgpa8zPzF57Rt7KVzOuTB1RAKm+nxEDYvsotJw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JRmQXmkH0yeZlAWsRr+M9KuVO+ov/E1YblREoeaE7TA93DJ5DIqvwmZS6HXb7cYCP
-	 LnkMV0YS7Ld08EmOL7FxlqAlAy9tHoA9YZpfREec4EQljVGFccaMQylfbDKe9P8HgL
-	 DDsCE8LwjOb88oytyLNPDhrR4IaRbes1qe1jUNnpU1MArDUhvsKm7r4iM/OWvEKhiZ
-	 DGYVGJynXZNBaC3ZAFVIc2AwZBsKWNOGoZZ67YpP724NxkRiqz4pDBfUZYoNiVjrZO
-	 nWby0J2W4zkH7LZ2jKCAsxhsMpmJjB6rjMa14iJxwcZE6eA5d8bQi6wrd6UOnU7Hxj
-	 KJzRz348hE3Xy3cBBkphdBh/ND9yri17XFgs9K+q/+PMoaFwMqq3MRjXTDQtXQ4elg
-	 V29JxYyiDuSg47KZODu2QSLtwa7UTBvsxxCjVGV0UcKLWlPs9DzkknTKaI6aGzSXtE
-	 ry49Gcmb3Ul/CojZfbmCLN/dmki+AiNiOjiQihocZKetKISDVajuIiYXVUV5KJgMZW
-	 17/hAFCyybNrzxew1arvI5jmi3CK1FRKhM+uqQbdsln3q2EGFWfTpYyo5Y3vwB13cU
-	 344rPAGnrF1los60656EE4YgDX2UsMV8vrDrLt8Uu86KX13n2H+HMuyKePlgJ+Ve0J
-	 8ZAGMKgNGrJSdZc/8rvJDmF0=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 62A8A40E016C;
-	Tue, 27 Feb 2024 19:47:48 +0000 (UTC)
-Date: Tue, 27 Feb 2024 20:47:47 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: John Allen <john.allen@amd.com>
-Cc: kvm@vger.kernel.org, weijiang.yang@intel.com,
-	rick.p.edgecombe@intel.com, seanjc@google.com,
-	thomas.lendacky@amd.com, pbonzini@redhat.com, mlevitsk@redhat.com,
-	linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v2 7/9] x86/sev-es: Include XSS value in GHCB CPUID
- request
-Message-ID: <20240227194747.GFZd48Y6dzDY0dVObV@fat_crate.local>
-References: <20240226213244.18441-1-john.allen@amd.com>
- <20240226213244.18441-8-john.allen@amd.com>
+	s=arc-20240116; t=1709063338; c=relaxed/simple;
+	bh=djPZd5I/pMg6e5I9NCeoqTVSDgCYM/N+fPrTMqPZHO4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UlwEsSMBz709lTxTh0ESmBXJzTSnUu2ecDXkdTPqqeym9IKcQnlB2H4+ssVANiHYqEpi+edvMUswyhzH/OyLe0iB/PllLPvY2Xbh5qZZlZchrx8nx2ZVOHe+4ElprB6BbMyjaYLZvkWZ32LITPndndAOsExk2ympjAwrgScKut0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D4BBADA7;
+	Tue, 27 Feb 2024 11:49:28 -0800 (PST)
+Received: from pluto.. (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E4A563F762;
+	Tue, 27 Feb 2024 11:48:47 -0800 (PST)
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: sudeep.holla@arm.com,
+	james.quinlan@broadcom.com,
+	f.fainelli@gmail.com,
+	vincent.guittot@linaro.org,
+	peng.fan@oss.nxp.com,
+	michal.simek@amd.com,
+	quic_sibis@quicinc.com,
+	quic_nkela@quicinc.com,
+	mturquette@baylibre.com,
+	sboyd@kernel.org,
+	souvik.chakravarty@arm.com,
+	Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH 0/5] Rework SCMI Clock driver clk_ops setup procedure
+Date: Tue, 27 Feb 2024 19:48:07 +0000
+Message-ID: <20240227194812.1209532-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240226213244.18441-8-john.allen@amd.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 26, 2024 at 09:32:42PM +0000, John Allen wrote:
-> When a guest issues a cpuid instruction for Fn0000000D_x0B
-> (CetUserOffset), the hypervisor may intercept and access the guest XSS
-> value. For SEV-ES, this is encrypted and needs to be included in the
-> GHCB to be visible to the hypervisor.  The rdmsr instruction needs to be
-> called directly as the code may be used in early boot in which case the
-> rdmsr wrappers should be avoided as they are incompatible with the
-> decompression boot phase.
-> 
-> Signed-off-by: John Allen <john.allen@amd.com>
-> ---
-> v2:
->   - Use raw_rdmsr instead of calling rdmsr directly.
-> ---
->  arch/x86/kernel/sev-shared.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-> index 1d24ec679915..10ac130cc953 100644
-> --- a/arch/x86/kernel/sev-shared.c
-> +++ b/arch/x86/kernel/sev-shared.c
-> @@ -966,6 +966,13 @@ static enum es_result vc_handle_cpuid(struct ghcb *ghcb,
->  		/* xgetbv will cause #GP - use reset value for xcr0 */
->  		ghcb_set_xcr0(ghcb, 1);
->  
-> +	if (has_cpuflag(X86_FEATURE_SHSTK) && regs->ax == 0xd && regs->cx <= 1) {
-> +		struct msr m;
-> +
-> +		raw_rdmsr(MSR_IA32_XSS, &m);
-> +		ghcb_set_xss(ghcb, m.q);
-> +	}
-> +
->  	ret = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_CPUID, 0, 0);
->  	if (ret != ES_OK)
->  		return ret;
-> -- 
+Hi,
 
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+a small series to review how the SCMI Clock driver chooses and sets up the
+CLK operations to associate to a clock when registering with CLK framework.
+
+SCMI clocks exposed by the platform sports a growing number of clock
+properties since SCMI v3.2: discovered SCMI clocks could be restricted in
+terms of capability to set state/rate/parent/duty_cycle and the platform
+itself can have a varying support in terms of atomic support.
+
+Knowing upfront which operations are NOT allowed on some clocks helps
+avoiding needless message exchanges.
+
+As a result, the SCMI Clock driver, when registering resources with the
+CLK framework, aims to provide only the specific clk_ops as known to be
+certainly supported by the specific SCMI clock resource.
+
+Using static pre-compiled clk_ops structures to fulfill all the possible
+(and possibly growing) combinations of clock features is cumbersome and
+error-prone (there are 32 possible combinations as of now to account for
+the above mentioned clock features variation).
+
+This rework introduces a dynamic allocation mechanism to be able to
+configure the required clk_ops at run-time when the SCMI clocks are
+enumerated.
+
+Only one single clk_ops is generated for each of the features combinations
+effectively found in the set of returned SCMI resources.
+
+Based on sudeep/for-linux-next.
+
+Thanks,
+Cristian
+
+Cristian Marussi (5):
+  clk: scmi: Allocate CLK operations dynamically
+  clk: scmi: Add support for state control restricted clocks
+  clk: scmi: Add support for rate change restricted clocks
+  clk: scmi: Add support for re-parenting restricted clocks
+  clk: scmi: Add support for get/set duty_cycle operations
+
+ drivers/clk/clk-scmi.c | 226 ++++++++++++++++++++++++++++++++---------
+ 1 file changed, 179 insertions(+), 47 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.43.0
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
