@@ -1,320 +1,171 @@
-Return-Path: <linux-kernel+bounces-83481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AE97869A08
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:13:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18AB7869A11
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:15:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B412328DE34
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:13:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0BA4285748
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:15:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970BA1482EF;
-	Tue, 27 Feb 2024 15:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7CE61420C9;
+	Tue, 27 Feb 2024 15:15:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="laO9OWYA"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NbA7JDtq"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B53C4145FF4;
-	Tue, 27 Feb 2024 15:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29D231A66;
+	Tue, 27 Feb 2024 15:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709046708; cv=none; b=V7r+1+Gfxr03h8R8tns+I40GekcCY+I6dee3v94YJxMA5iHo2c6gg/Ovcd/5dJMJjIQL1L67IAhhx5wESoNITQ37mViTzjIw1B/stJ5I+xh9aKDGlCl2ebuN+t2ywqnAWRruZEdErYvCTo4eDp59gs46L9QuCWDfVxetd7dJjCY=
+	t=1709046922; cv=none; b=h9R5qtrn8jucvOZ/+bPNToItvrXos1120iA9y5VeKL8tb9ZIyGYsED8lorNmbHkrs32mYbYEOi2Qkq6wICvfszEoMcSNOJzqLHrQL6MtDB85tHwH83Iw/fUdK6CMAkQxy4znvcnz6OSqzl+3c0ARgL63ih50luInd4zGoCtXycU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709046708; c=relaxed/simple;
-	bh=uXkdZ+nGgZ8dBlwogGYG/znpIjVGxCyU2Z1+CR/AVIE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Lm9uZ0h4p4qYHPsEw/XJsRFpfbgq8y5QxXVeXGS1drvRNylfHV0ZaMDW9yVox+aO4HbdyvK05mQyUMsS7z5oKc1zt2SSOkhZRuz4oFwcV+pIzS7H77ilii4MTv0GYXiI8dDPAijqOFtA95M7+GRwyHxxC0hHjKjmW/dMv+67r9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=laO9OWYA; arc=none smtp.client-ip=209.85.221.50
+	s=arc-20240116; t=1709046922; c=relaxed/simple;
+	bh=nTpTux08+pm9Ctei9x7DzzD8A1zBDKvgVXhNbZ0Su9Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZGu4FNZzytjtHV4RaZHUFUQwRZZi/+eW065a9C1OO/ACdWdSe5WkcHKI32aCLp7/bV0fsNaiIoNcDahB6Q2McJELFT6lxC3VQLnw0KWZKCAfNL8QknrgGdE8eK2NIhFCMgdskpGcd/fqDHelW1qIoCjHQP5jSScYOMQX89rKHPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NbA7JDtq; arc=none smtp.client-ip=209.85.215.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33d6fe64a9bso3348660f8f.0;
-        Tue, 27 Feb 2024 07:11:46 -0800 (PST)
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce942efda5so3471284a12.2;
+        Tue, 27 Feb 2024 07:15:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709046705; x=1709651505; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1709046920; x=1709651720; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YgUZYYEewWOr0eZgCM/D+yRszpCU2Zn6RVKpSWiScZI=;
-        b=laO9OWYAnLP2pdH5x5Zu8gfMadrLUJjXCkBtFFrZ3pqPReFmMLF1KCBY43p5dOeRX6
-         QhknXVyz2Q7vj2ZaE4qzvMCuZEujGunbiLWxD/qe5Rtkl18+yPgyMhd0htdz/c87drOb
-         /Yy+y5VqYHaVRxa79zH3ugUCHDqjfUqFO4l1Y+9NS8m9KjV+V18yhg8PDiuAihJqZ30X
-         qLuUi0nmuflyF3owGI2Z4/+CiHUJ13sV+OA/OMlki1ecikJ4ItxxwkOvuaTi0GIPKEpv
-         SMz6ZVTeQ68vXfKEgOsa+SA9Z5DChMAVnuAd6P0zvMyABtF0Hv54gCgOnG1F2iuOZl+m
-         qDVQ==
+        bh=9KotY222o/b+zG4JFnMehrQPIDESD06t7QB65RoOyrY=;
+        b=NbA7JDtqFGK0m5v0yuURR/44SwHCxmfETOjWYIkGEWO47b34wMx1qFjCGWLMfk80Zv
+         VV6n62awBKskCa86Jfnzy9d5XbH+jV72Pdw7gs+SN5Hn9xvKyb39VHtUQMcYqHYMOBq+
+         k4d/VWffzucIT2bNjZBkTzBFPi7POb7FU+kTPWQpalSp7nmqWMbLSkuFsKOizYD+uOWQ
+         a67IoriPZj1HoRkrbVBNexd9rgnKo5NbKc/OevCWZEPwUxvUExUAnM20Rgzt42awxtvS
+         ZXrTTVnTalLEDqRM7aJbPL4I8nHC/cGaPUHwNtYsE+Mf7b3MhbWnZa8JaOfpZZiYjHXp
+         mC4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709046705; x=1709651505;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709046920; x=1709651720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YgUZYYEewWOr0eZgCM/D+yRszpCU2Zn6RVKpSWiScZI=;
-        b=XQKIauqn9BOol4IUuy9PTtROBuJzPsOmmy8w9jo+GcK6sltBSBgz+jGVh1MXLBXt/N
-         lbhDiBYTIezGG7yLxbIDWuqo9pKKWxiO2PMt4cgtAKtXIP2HGmQ1wI/+nCja0c22PUHT
-         RqYKJKy983GASpXQ3kEu9mgocAka1LToSLv65lV/Al+9OfzCwnZgCqc+BCAkBHQrHV7G
-         mjezjJ+2a2mbOWP5/Uxw20q125Co8F36n+C+TsrzeCvigRbkC0MUxXBoPQAhROkUUBcr
-         oBLEyp27wCEJZuvvhdseYCeSHNcBBHgZlVYVI7RpNaW8E6I2zwkzkjlY6+BzOs844XAR
-         iC3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVffLIVKjI9Mk77Nc8IV7iGKXyk8oVJLSjTa8dUGYZWygREkgJXvBBUtzws+GC6+U40+IEABIv9te4YncEembAKeQq2aOE2Oso7FYccxmRz22QUE8h+mYoicDKcZuHeSUmD
-X-Gm-Message-State: AOJu0YzZrNfLxYXEhHjR+5G/PuENFXuZm9y+JJEjy8XUzNe4tgTIHJhN
-	e7HPMYB6MunUx3c2xl0l+F5wNy+k5dTPANs7kJtIcGOdl2VYEkwN
-X-Google-Smtp-Source: AGHT+IGLirqfah9d4iGWTMCqewDLhnmBg8hi2Iy2nBqKNPhbA3EjAa6SiYGrHFnWv/yqvMG7UwDjxA==
-X-Received: by 2002:a5d:58cd:0:b0:33d:b872:1c1b with SMTP id o13-20020a5d58cd000000b0033db8721c1bmr7385349wrf.23.1709046704756;
-        Tue, 27 Feb 2024 07:11:44 -0800 (PST)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id bq7-20020a5d5a07000000b0033cddadde6esm11917259wrb.80.2024.02.27.07.11.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Feb 2024 07:11:44 -0800 (PST)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org (open list),
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
-	Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next 1/1] arm64/cfi,bpf: Support kCFI + BPF on arm64
-Date: Tue, 27 Feb 2024 15:11:15 +0000
-Message-Id: <20240227151115.4623-2-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240227151115.4623-1-puranjay12@gmail.com>
-References: <20240227151115.4623-1-puranjay12@gmail.com>
+        bh=9KotY222o/b+zG4JFnMehrQPIDESD06t7QB65RoOyrY=;
+        b=grRSScRPQPR6qFU9c3wqpJeTN1kseDzRUujua9FR7haay3kaAIsP4e4+aao+2IhgpJ
+         Wzv2eCOIxXTHTWpco7zQllrqb+Kwv9cmGTNNljOch4J0GSlIt9PoeQRPcuV8ShhabQWg
+         5WmCpcIrAhiz97Oi0/xQxSSHipjQNFTSrIht/0sdZl0u1A7xl54uW2uiW5vl3VxYvWpZ
+         JWSzTkbkwR6jNclgRdKpTyogwMwIkrffDvyaLs3+kfJd2rqq7qOGGBM7Z47TbvnBNgcs
+         Xa63OCf/ks9EQ2V/JP/d7morbETDI3EWqIlrOZu3tj2ivKGH8LaejG5bQz8bVBtA3QqL
+         F1MQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3/TG5lhAWB1fLcOJPDjnqOeEJDqFd4MGZjzsUSyfAp4V+EA8GbZ8latopjH0ftS2j1ar2+78uBgCPtPhnQynZMjDwo7JOTd3bVdLu46vpc02YiC75thlfuqVrgpvAAsJOaxR7wZl5eh/MqyUh+h+1BY6iyRyu04kBjS/S2t55Kt+BV035fQZVpGH3
+X-Gm-Message-State: AOJu0YzS8k6LkQiqDRsaZzIXjmtRrURZ21eVRO+JbZyFqCTp8pYddxu1
+	P0rTDwPq+CQH9xu22Xj649YeloniYUktNIoRMgvFpRQ2m/Oa40CnSdLrOvDAZL7hDW0Bokg72+j
+	VklmHarKaeJQE4DCHNONzdCXx5IU=
+X-Google-Smtp-Source: AGHT+IFg140Xg2hJz4kVw5bMZewe8s6YfvknB2EKDdvjRIwTASEpsh/NjQy08I9J/xD8cQEN3HS8ShDPQkI9AnWiGGA=
+X-Received: by 2002:a17:90a:9317:b0:299:3c25:4248 with SMTP id
+ p23-20020a17090a931700b002993c254248mr8646073pjo.38.1709046919772; Tue, 27
+ Feb 2024 07:15:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-5-aford173@gmail.com>
+ <CAMuHMdWNQ=_NHPybAhhLJJCytT4y583ROY-meuLyKPN8_Qa1HA@mail.gmail.com>
+In-Reply-To: <CAMuHMdWNQ=_NHPybAhhLJJCytT4y583ROY-meuLyKPN8_Qa1HA@mail.gmail.com>
+From: Adam Ford <aford173@gmail.com>
+Date: Tue, 27 Feb 2024 09:15:08 -0600
+Message-ID: <CAHCN7xJUBT8hMNEtFhne-wr8mOYe9JZcc=LS9Utt9TyOQQF5=A@mail.gmail.com>
+Subject: Re: [PATCH 4/6] arm64: dts: renesas: r8a77951: Enable GPU
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
+	aford@beaconembedded.com, Frank Binns <frank.binns@imgtec.com>, 
+	Matt Coster <matt.coster@imgtec.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently, bpf_dispatcher_*_func() is marked with `__nocfi` therefore
-calling BPF programs from this interface doesn't cause CFI warnings.
+On Tue, Feb 27, 2024 at 2:11=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+>
+> Hi Adam,
+>
+> Thanks for your patch!
+>
+> On Tue, Feb 27, 2024 at 4:46=E2=80=AFAM Adam Ford <aford173@gmail.com> wr=
+ote:
+> > The GPU on the R-Car H3 is a Rogue GX6650 which uses firmware
+> > rogue_4.46.6.61_v1.fw available from Imagination.
+>
+> s/61/62/
+>
+> >
+> > When enumerated, it appears as:
+> > powervr fd000000.gpu: [drm] loaded firmware powervr/rogue_4.46.6.62_v1.=
+fw
+> > powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
+>
+> Do you have a different build number?
 
-When BPF programs are called directly from C: from BPF helpers or
-struct_ops, CFI warnings are generated.
+I don't actually have this board.  I just copy-pasted what I thought
+it was.  If you have  build number that's more appropriate, I can use
+that in the future.
 
-Implement proper CFI prologues for the BPF programs and callbacks and
-drop __nocfi for arm64. Fix the trampoline generation code to emit kCFI
-prologue when a struct_ops trampoline is being prepared.
-
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- arch/arm64/include/asm/cfi.h    | 23 ++++++++++++++
- arch/arm64/kernel/alternative.c | 54 +++++++++++++++++++++++++++++++++
- arch/arm64/net/bpf_jit_comp.c   | 26 ++++++++++++----
- 3 files changed, 97 insertions(+), 6 deletions(-)
- create mode 100644 arch/arm64/include/asm/cfi.h
-
-diff --git a/arch/arm64/include/asm/cfi.h b/arch/arm64/include/asm/cfi.h
-new file mode 100644
-index 000000000000..670e191f8628
---- /dev/null
-+++ b/arch/arm64/include/asm/cfi.h
-@@ -0,0 +1,23 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_ARM64_CFI_H
-+#define _ASM_ARM64_CFI_H
-+
-+#ifdef CONFIG_CFI_CLANG
-+#define __bpfcall
-+static inline int cfi_get_offset(void)
-+{
-+	return 4;
-+}
-+#define cfi_get_offset cfi_get_offset
-+extern u32 cfi_bpf_hash;
-+extern u32 cfi_bpf_subprog_hash;
-+extern u32 cfi_get_func_hash(void *func);
-+#else
-+#define cfi_bpf_hash 0U
-+#define cfi_bpf_subprog_hash 0U
-+static inline u32 cfi_get_func_hash(void *func)
-+{
-+	return 0;
-+}
-+#endif /* CONFIG_CFI_CLANG */
-+#endif /* _ASM_ARM64_CFI_H */
-diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternative.c
-index 8ff6610af496..350057a28abe 100644
---- a/arch/arm64/kernel/alternative.c
-+++ b/arch/arm64/kernel/alternative.c
-@@ -13,6 +13,7 @@
- #include <linux/elf.h>
- #include <asm/cacheflush.h>
- #include <asm/alternative.h>
-+#include <asm/cfi.h>
- #include <asm/cpufeature.h>
- #include <asm/insn.h>
- #include <asm/module.h>
-@@ -298,3 +299,56 @@ noinstr void alt_cb_patch_nops(struct alt_instr *alt, __le32 *origptr,
- 		updptr[i] = cpu_to_le32(aarch64_insn_gen_nop());
- }
- EXPORT_SYMBOL(alt_cb_patch_nops);
-+
-+#ifdef CONFIG_CFI_CLANG
-+struct bpf_insn;
-+
-+/* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
-+extern unsigned int __bpf_prog_runX(const void *ctx,
-+				    const struct bpf_insn *insn);
-+
-+/*
-+ * Force a reference to the external symbol so the compiler generates
-+ * __kcfi_typid.
-+ */
-+__ADDRESSABLE(__bpf_prog_runX);
-+
-+/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
-+asm (
-+"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
-+"	.type	cfi_bpf_hash,@object				\n"
-+"	.globl	cfi_bpf_hash					\n"
-+"	.p2align	2, 0x0					\n"
-+"cfi_bpf_hash:							\n"
-+"	.long	__kcfi_typeid___bpf_prog_runX			\n"
-+"	.size	cfi_bpf_hash, 4					\n"
-+"	.popsection						\n"
-+);
-+
-+/* Must match bpf_callback_t */
-+extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
-+
-+__ADDRESSABLE(__bpf_callback_fn);
-+
-+/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
-+asm (
-+"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
-+"	.type	cfi_bpf_subprog_hash,@object			\n"
-+"	.globl	cfi_bpf_subprog_hash				\n"
-+"	.p2align	2, 0x0					\n"
-+"cfi_bpf_subprog_hash:						\n"
-+"	.word	__kcfi_typeid___bpf_callback_fn			\n"
-+"	.size	cfi_bpf_subprog_hash, 4				\n"
-+"	.popsection						\n"
-+);
-+
-+u32 cfi_get_func_hash(void *func)
-+{
-+	u32 hash;
-+
-+	if (get_kernel_nofault(hash, func - cfi_get_offset()))
-+		return 0;
-+
-+	return hash;
-+}
-+#endif
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index cfd5434de483..fb02862e1a3a 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -17,6 +17,7 @@
- #include <asm/asm-extable.h>
- #include <asm/byteorder.h>
- #include <asm/cacheflush.h>
-+#include <asm/cfi.h>
- #include <asm/debug-monitors.h>
- #include <asm/insn.h>
- #include <asm/patching.h>
-@@ -157,6 +158,12 @@ static inline void emit_bti(u32 insn, struct jit_ctx *ctx)
- 		emit(insn, ctx);
- }
- 
-+static inline void emit_kcfi(u32 hash, struct jit_ctx *ctx)
-+{
-+	if (IS_ENABLED(CONFIG_CFI_CLANG))
-+		emit(hash, ctx);
-+}
-+
- /*
-  * Kernel addresses in the vmalloc space use at most 48 bits, and the
-  * remaining bits are guaranteed to be 0x1. So we can compose the address
-@@ -285,7 +292,7 @@ static bool is_lsi_offset(int offset, int scale)
- /* Tail call offset to jump into */
- #define PROLOGUE_OFFSET (BTI_INSNS + 2 + PAC_INSNS + 8)
- 
--static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
-+static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf, bool is_subprog)
- {
- 	const struct bpf_prog *prog = ctx->prog;
- 	const bool is_main_prog = !bpf_is_subprog(prog);
-@@ -296,7 +303,6 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	const u8 fp = bpf2a64[BPF_REG_FP];
- 	const u8 tcc = bpf2a64[TCALL_CNT];
- 	const u8 fpb = bpf2a64[FP_BOTTOM];
--	const int idx0 = ctx->idx;
- 	int cur_offset;
- 
- 	/*
-@@ -322,6 +328,8 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf)
- 	 *
- 	 */
- 
-+	emit_kcfi(is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash, ctx);
-+	const int idx0 = ctx->idx;
- 	/* bpf function may be invoked by 3 instruction types:
- 	 * 1. bl, attached via freplace to bpf prog via short jump
- 	 * 2. br, attached via freplace to bpf prog via long jump
-@@ -1575,7 +1583,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	 * BPF line info needs ctx->offset[i] to be the offset of
- 	 * instruction[i] in jited image, so build prologue first.
- 	 */
--	if (build_prologue(&ctx, was_classic)) {
-+	if (build_prologue(&ctx, was_classic, bpf_is_subprog(prog))) {
- 		prog = orig_prog;
- 		goto out_off;
- 	}
-@@ -1614,7 +1622,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	ctx.idx = 0;
- 	ctx.exentry_idx = 0;
- 
--	build_prologue(&ctx, was_classic);
-+	build_prologue(&ctx, was_classic, bpf_is_subprog(prog));
- 
- 	if (build_body(&ctx, extra_pass)) {
- 		bpf_jit_binary_free(header);
-@@ -1654,9 +1662,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		jit_data->image = image_ptr;
- 		jit_data->header = header;
- 	}
--	prog->bpf_func = (void *)ctx.image;
-+	prog->bpf_func = (void *)ctx.image + cfi_get_offset();
- 	prog->jited = 1;
--	prog->jited_len = prog_size;
-+	prog->jited_len = prog_size - cfi_get_offset();
- 
- 	if (!prog->is_func || extra_pass) {
- 		int i;
-@@ -1905,6 +1913,12 @@ static int prepare_trampoline(struct jit_ctx *ctx, struct bpf_tramp_image *im,
- 	/* return address locates above FP */
- 	retaddr_off = stack_size + 8;
- 
-+	if (flags & BPF_TRAMP_F_INDIRECT) {
-+		/*
-+		 * Indirect call for bpf_struct_ops
-+		 */
-+		emit_kcfi(cfi_get_func_hash(func_addr), ctx);
-+	}
- 	/* bpf trampoline may be invoked by 3 instruction types:
- 	 * 1. bl, attached to bpf prog or kernel function via short jump
- 	 * 2. br, attached to bpf prog or kernel function via long jump
--- 
-2.40.1
-
+adam
+>
+> On Salvator-XS with R-Car H3 ES2.0:
+>
+>     powervr fd000000.gpu: [drm] loaded firmware powervr/rogue_4.46.6.62_v=
+1.fw
+>     powervr fd000000.gpu: [drm] FW version v1.0 (build 6538781 OS)
+>     [drm] Initialized powervr 1.0.0 20230904 for fd000000.gpu on minor 1
+>
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+>
+> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> > --- a/arch/arm64/boot/dts/renesas/r8a77951.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/r8a77951.dtsi
+> > @@ -2771,6 +2771,16 @@ gic: interrupt-controller@f1010000 {
+> >                         resets =3D <&cpg 408>;
+> >                 };
+> >
+> > +               gpu: gpu@fd000000 {
+> > +                       compatible =3D "renesas,r8a77951-gpu", "img,img=
+-axe";
+>
+> renesas,r8a7795-gpu
+>
+> > +                       reg =3D <0 0xfd000000 0 0x20000>;
+> > +                       clocks =3D <&cpg CPG_MOD 112>;
+> > +                       clock-names =3D "core";
+> > +                       interrupts =3D <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH=
+>;
+> > +                       power-domains =3D <&sysc R8A7795_PD_3DG_E>;
+> > +                       resets =3D <&cpg 112>;
+> > +               };
+> > +
+> >                 pciec0: pcie@fe000000 {
+> >                         compatible =3D "renesas,pcie-r8a7795",
+> >                                      "renesas,pcie-rcar-gen3";
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
+8k.org
+>
+> In personal conversations with technical people, I call myself a hacker. =
+But
+> when I'm talking to journalists I just say "programmer" or something like=
+ that.
+>                                 -- Linus Torvalds
 
