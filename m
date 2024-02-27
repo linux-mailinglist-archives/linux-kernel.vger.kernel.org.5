@@ -1,122 +1,131 @@
-Return-Path: <linux-kernel+bounces-83009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E5F4868CF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:09:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E28CF868CF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C35A1C22927
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:09:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E2F5285DEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA764137C42;
-	Tue, 27 Feb 2024 10:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F663137C47;
+	Tue, 27 Feb 2024 10:08:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="fosvEXlF"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MeRFFber"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CF356458
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 148961369BF
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709028567; cv=none; b=rvvPYHcglFYI+J0c871LfOLtMDSHQfIWEwd/WzMUqhEsF3ybtjialMo1Yhnwt1zQdxfx8fdNmf0GobuxxqasSlvSjZIa4mzvjrPRFw1PKO8iSFXB/IZNdR0ULKgGEcgmvkt87jPbUc1q2rk797MWGPE9+xB/XWeEmbLP56p8sFs=
+	t=1709028504; cv=none; b=lhC3Y7b7uNqQdjTRqrnJOpILLZMTiA6/KUxNUL1Np8nAEUoSGnVHrPCEeFru55VxmlOKoEVPJBpbJTd0EEVDIopMJO1KR45WbiujtWVVjQSRcEABAv2BjSjGX9UyJtuW2jcVHgE5wcc5Mkp0ZEvTwFPhXm8SN4uEy5KU3uk4qJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709028567; c=relaxed/simple;
-	bh=hvfreTcuHcxoFQ0KJA1kYkXp7+c+Esbac0GIM/2ZX8c=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CPERYWwGuEKrrNkNxJiz8AehBGK/nqi7s0Q0cVjktQ7+gZUSa/eqBuKz1l9Zk4W91k1+HkO8Pk8h6WVeKg3AL0XuSvgy41IT3ozF4aodMn9uRyGlhD5tC6DAipT23DmfJPcnSYnxD0bUNZIv2Evo6Iu323TEpS6ko0Qy/P0Osvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=fosvEXlF; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709028565; x=1740564565;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hvfreTcuHcxoFQ0KJA1kYkXp7+c+Esbac0GIM/2ZX8c=;
-  b=fosvEXlFRK/w4olJPqWPtAhw9b9rEgKIk82+70bleO2gjIESV2Y4VJJX
-   2/JNNyp2Tw42zamVYM5XbxXhyMC8+41RE5lkcRPYjqxc4mFLY/knxaHAs
-   loMG5iEI3to4j5wpP5wnD/EMrtOvs7M5f6+YOXNLnpZ/ngISDjuZX6IfY
-   X6GWMiLNhxSYioWKWhgXRZPGcUkVFJEIxrWgtIx06G96Ff1FSVOuQqVPJ
-   GiJOMH8KEArtCCv/2r08GXZpDPzZ3cCDWdwBGOkhM/mql/qGlgzE/p0f8
-   rR4AvFUW7/1R6myoVmmAD6/Rt1jyKcbq+oV0+YOoKuNzYFfYtooI5I5aq
-   g==;
-X-CSE-ConnectionGUID: SBLw0WqLRt+rblbhvO8YGw==
-X-CSE-MsgGUID: z7auoLxmSJeEZY5hePRAFg==
-X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
-   d="asc'?scan'208";a="184152299"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 03:09:23 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 27 Feb 2024 03:09:02 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 27 Feb 2024 03:09:00 -0700
-Date: Tue, 27 Feb 2024 10:08:18 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-CC: Conor Dooley <conor@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Paul
- Walmsley <paul.walmsley@sifive.com>, Greentime Hu <greentime.hu@sifive.com>,
-	<linux-riscv@lists.infradead.org>, Green Wan <green.wan@sifive.com>, Albert
- Ou <aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Update SiFive driver maintainers
-Message-ID: <20240227-serrated-oyster-552459d0fd5b@wendy>
-References: <20240215234941.1663791-1-samuel.holland@sifive.com>
+	s=arc-20240116; t=1709028504; c=relaxed/simple;
+	bh=OI4MKF6CdNpT7v2xjTJZcmr2tJKCwXVfHLHQP+OK1IM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ekpN+SN8pV3FjKg8eZ3VSWTpVZJM9OScNyWrZeOjj7rjXlL0xJSZgMPPXS29OGvv4w6AE1rOpBpId/jYZu1M2XRWUQxwjCOAFL2+jwreWVic2GbYECxamnKiZPKDqJ4HhIh8pyYPOeCTHfgXeIpxr8k7njNzUcKdvynvasUyNyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MeRFFber; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5661b7b1f51so1824377a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:08:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709028501; x=1709633301; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ooc5SS3j03ORm6wAIXAzAUPoc8fJQ9XOTzT5/SJVA8Y=;
+        b=MeRFFberdKlzYsgoyxeKcHQ6ozmK+MMplb95efJQew4W7qlKcZkZ87JD40yTy3n+zQ
+         D0Vt+gMzHUCNV40OmTJSGr+8j8wwITJGtUJn14jzkduNHBS1QpA3coTb64w4mWGESBmj
+         Zpr+aJQSxt+A+9peqfq8F5e/n5ZX0TCexE+CFfjTUi2VBMO7QAdmqwelRhEIokO6z4R3
+         xaMCZpStaj7ps2qupOCuDkyebY1uayxr4yM9rSFovwHWGdPsGKDfokNVQ9Our8XmLws3
+         XMzJI8yW34J2QFtpeE9ST2ds/8xDW3zu3iYNFGsPK2WE/pm/ZVhIZM747utN1qaSC28b
+         gZEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709028501; x=1709633301;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ooc5SS3j03ORm6wAIXAzAUPoc8fJQ9XOTzT5/SJVA8Y=;
+        b=BLWEaceJEnPzkigOiX3ieYdMgpEmB1c8YAo3jlxObrdYZiLH9phulZwTNM71alwj/r
+         GOGrUu7hYi06biGGGcxJw9U6FzZdS73dPx3MJI7G5sRO8YRMoAd7HX3NzpTnvV1p8DDS
+         4talEOYWqPG5PUYaG/FrYO2OU/zMvyzL8shB2Ri/x4iYgQzmWEvCawFjfWuI7cLvsE7r
+         p8wcpQQVSFklSfcpy5o8dO/AqclTbD2ye34sLUNOX4oHrL9KPkTa87Rh0NAKqjROU+6y
+         fDYt2UC7vb5cwkDM7mRJObtx7lS9RsRKn5nYC7flfIxNoIFgXqhsRPpMLkqpvziPlLD4
+         ww4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWQAEaRCiLrSQQe9Vf5A1jZZ2nLlyEvutF3qFboGGizevGJJ/v1pJSf7BErC2KznmuGHHyLcxrEeSCPCBPhp8tAxXrJ9STm9pT+GOob
+X-Gm-Message-State: AOJu0YwOfBGiZrV+XFFKiZ8o7nR519Mp2ZwIRRFMGc+oUt7t8cU2M0IB
+	dzBgEHQgZDJ+nOCKJ/56sBxBN33yNtyeSLl2bOGCAMrowkjRM6aqb164jUjtu1g=
+X-Google-Smtp-Source: AGHT+IE1EiV8Igbb2EVKLcncUtmKcFbSvxFWmJNfpS/Isp1yWRgR1sxzZOpH5nj0WUOH1E7n+jeMtQ==
+X-Received: by 2002:a17:906:7d86:b0:a3c:36ae:6c96 with SMTP id v6-20020a1709067d8600b00a3c36ae6c96mr5271008ejo.42.1709028501368;
+        Tue, 27 Feb 2024 02:08:21 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.202])
+        by smtp.gmail.com with ESMTPSA id tb16-20020a1709078b9000b00a43d1968921sm5696ejc.190.2024.02.27.02.08.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 02:08:20 -0800 (PST)
+Message-ID: <ddc5c922-8587-492c-93b0-9fd6f584d081@linaro.org>
+Date: Tue, 27 Feb 2024 10:08:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="SBC0JjNyRNyQOcrm"
-Content-Disposition: inline
-In-Reply-To: <20240215234941.1663791-1-samuel.holland@sifive.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mtd: spi-nor: Add support for BoHong bh25q128as
+Content-Language: en-US
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Michael Walle <mwalle@kernel.org>, Pratyush Yadav <pratyush@kernel.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ David Bauer <mail@david-bauer.net>
+References: <20240220200325.19089-1-ansuelsmth@gmail.com>
+ <f7c45e7b-993c-444b-8710-042da7512bbf@linaro.org>
+ <65d9d08f.df0a0220.988bb.3177@mx.google.com>
+ <CZEVS9033HET.1NPH0K6PQLR87@kernel.org>
+ <4d117770-6e0c-412f-ac1a-d9ba84b5b4ba@linaro.org>
+ <65ddac61.5d0a0220.a0c6e.35bf@mx.google.com>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <65ddac61.5d0a0220.a0c6e.35bf@mx.google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---SBC0JjNyRNyQOcrm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Palmer,
 
-On Thu, Feb 15, 2024 at 03:49:11PM -0800, Samuel Holland wrote:
-> Add myself as a maintainer for the various SiFive drivers, since I have
-> been performing cleanup activity on these drivers and reviewing patches
-> to them for a while now. Remove Palmer as a maintainer, as he is focused
-> on overall RISC-V architecture support.
->=20
-> Collapse some duplicate entries into the main SiFive drivers entry:
->  - Conor is already maintainer of standalone cache drivers as a whole,
->    and these files are also covered by the "sifive" file name regex.
->  - Paul's git tree has not been updated since 2018, and all file names
->    matching the "fu540" pattern also match the "sifive" pattern.
->  - Green has not been active on the LKML for a couple of years.
->=20
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+On 2/27/24 09:33, Christian Marangi wrote:
+> On Mon, Feb 26, 2024 at 10:53:34AM +0200, Tudor Ambarus wrote:
+>>
+>>
+>> On 26.02.2024 10:51, Michael Walle wrote:
+>>> Hi,
+>>>
+>>> On Sat Feb 24, 2024 at 12:18 PM CET, Christian Marangi wrote:
+>>>> The user just tested this and It seems there is a problem in JEDEC id?
+>>>>
+>>>> [    0.726451] spi spi0.0: setup: ignoring unsupported mode bits a00
+>>>
+>>> What SPI controller is used in this case?
+>>>
+>>>> [    0.732850] spi-nor spi0.0: unrecognized JEDEC id bytes: 68 40 18 68 40 18
+>>>> [    0.739725] spi-nor: probe of spi0.0 failed with error -2
+>>>
+>>> And what kernel version is this? This should only happen if the SFDP
+>>> header is wrong, but according to your dump, it is correct.
+>>>
+>>
+>> I assume the test was done on an older kernel, where the identification
+>> of the flash based on SFDP is not yet available.
+> 
+> The test has been done on 5.15 and 6.1. The support for this was
+> introduced later? Can you point me to the commits so I can backport
+> them?
+> 
 
-Can you take this please?
+Use git blame.
 
-Thanks,
-Conor.
-
---SBC0JjNyRNyQOcrm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd20kQAKCRB4tDGHoIJi
-0rJpAQDmB+X3sH1dX2qB3MVFD0cMSzwbYZyArsjbCPMjRzjZ/gEAh6EQ75gAuT1R
-TSHM+vKfGb5UkWJtMQTn+gzQUlFHIQ8=
-=dCM9
------END PGP SIGNATURE-----
-
---SBC0JjNyRNyQOcrm--
+773bbe104497 ("mtd: spi-nor: add generic flash driver")
 
