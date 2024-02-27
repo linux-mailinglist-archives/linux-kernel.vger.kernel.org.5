@@ -1,145 +1,193 @@
-Return-Path: <linux-kernel+bounces-82785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74C528689A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:13:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 253008689AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:15:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F7CFB268C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:13:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFC4D282127
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:15:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B5C548ED;
-	Tue, 27 Feb 2024 07:12:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF1754BC9;
+	Tue, 27 Feb 2024 07:15:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P5RWbdMm"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="T4hFv5Ae"
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F8954746;
-	Tue, 27 Feb 2024 07:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8EB653E36
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:15:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709017958; cv=none; b=hGEezwmqOPJaRfo2C1Qzb2xAoNXtzri3XntAUF6XTP87u8U1STY5IJJ9o0W9EkHKOgwJ2y/cvw99HIO3e9h9divWyueD1boSiWx9XEa/4OQMYrXX8Wn2IB8K0AZflApJmOqog8V6o5jrO2LCQKvaQDrlnJUrKBRlW3wD8YkF0m4=
+	t=1709018105; cv=none; b=Jf1dmgkidD/FDBfHGbqwgqJxN2jeyoaxgPcUvsU4lF0dGIkr2Zf2AD3QOKdgcGkaN2rdO/59NTDmCs6HJdu0h/Xs1nDRX1FrgtQodx3hVKoN78vzXNcwoWeaO0sk6DilvojcuxkaUOtEi2oM/RvLYzPP73qzWF5s282dIGijGa8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709017958; c=relaxed/simple;
-	bh=JYd1+gvQmxdWC7GENXNwKzhJ4WIfgamBg/U20rCMJ0E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hI7QYvz4wE5CSmeJub7Ls+N1kT8/kbE8o56iOZYAW2wWTLcYUrCPIT0L0LYbsUVzZ2mDNHWc1kpoXUFvwPwbjU5Xsd2f6f9RcTZvQLZdILwHdiMs9vpsFaF5iEojZxojyeSLHbjVFc23AwmkKzIhyLA0FR0MKD9oZNoSZfFW+4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P5RWbdMm; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709017957; x=1740553957;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=JYd1+gvQmxdWC7GENXNwKzhJ4WIfgamBg/U20rCMJ0E=;
-  b=P5RWbdMmyl3hBhuFclX5fQ7mTNirGw3ViI3Y9TiTJPPw/BFQoPCoRRDe
-   7sSHnDdvNJ0IjcGIWVyTvAUu7lKV9W9P2FYdwEwp+qec8mr7eIIz8aV8z
-   G//DU2/+WSr1em/dn8Pfwfqr8j1ePAOADGyer7ldw0OQxPs1EadL7Z5aA
-   7pY8xuh3z3FMunsomoaZfVwnBwzwtb2fwJKsDO1gHSCNMVAiiblMdIAkl
-   htCPAMt21Y7ROPwgZMQ8eRZfz+0PjB8m91+m5yZylB/P+n7KQtV+8OdPX
-   V5THV4vt3kulfuEoNu07zCcxQpDlI0B01hezoas0gx76w6r9wBNWGWkNs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3503098"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="3503098"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 23:12:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="6909305"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 23:12:33 -0800
-Message-ID: <81f2dfa4-14c6-423c-96ee-b11b8a4670ed@linux.intel.com>
-Date: Tue, 27 Feb 2024 15:12:31 +0800
+	s=arc-20240116; t=1709018105; c=relaxed/simple;
+	bh=TeIqcp3WpttmFHIW3XnvocYFn3BQTg7igUcNSN1yPAg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KZuCln2fa0pabfTiuTGDLbT5EVzhnmO4AZgxJh6zEFmtlSfXCQdPa3f+dhJqzbWe1MeWneGLNfdjw428J7/NTnNNRnZxbr/ww4XhWuqFsLMM1zzJDR9UC2j1XmAHeGnXchPAaMwporq6aRYmEBXwexhbB5vwy/nUTZ+K1wHWQ/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=T4hFv5Ae; arc=none smtp.client-ip=209.85.222.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7d5c890c67fso1855296241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:15:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709018102; x=1709622902; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=N8vWHZRUeld7g6+ZkMc+yQ/mSTYD3W0qvbbr+ouei6I=;
+        b=T4hFv5Aeq+zHMIhM5lDvZR9G/zr9s97povMah85OLDAUwxLy653guUUsWllm33nmmW
+         /wRMYfCMZNUgHShbhJl/KAPc7fO4ZI9GcoTvBT/xA1foLcjbrka8ga98Sp/RLo7o4QAP
+         FRcttEwKrNy94uR7YpJKJeNbwX1D6HBTr7tshx42Qo8sjgfZ46yjXZF5kw/FCvbckWZP
+         cbuxO3dxqa7qVJxrTI7dyZfT59ATbkuFKKJ0O7YRpb0n9xKnZkZKT6g17m4DJOlku/6D
+         9zpU7r+LgQ0yza3tMp0IU1wr00fjKRJbJMzhqAPUsVkI3XWeU/8UFZ039ZF0JfY2jGgc
+         vBTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709018103; x=1709622903;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N8vWHZRUeld7g6+ZkMc+yQ/mSTYD3W0qvbbr+ouei6I=;
+        b=qg4FNwDrWe2d4IfUDJkiqhmvNlULSggHD2csenhS/k0gnama2b4s4PeKT+0ebLsXb+
+         vKjrwRdblIIbkGmq68Y3Ud9GUA33pseTS/MoM5C5JYOobHLLS1scl+UBlyQsusBQanwh
+         8uYnuUnsNw4xpJoeVa+LVFNU1RsSgDpLupWSQakp0qyf74t0/e4aUHFUMN2StLNHk+FJ
+         Qivdrbe+cFz8Ef+qHE3prFI1z9U9ZV+6MhPnVyEeN9NHv51lT4XnkhFtGxAIDCa+N+RF
+         eFIsSKMqcDzJKfZbMHz0KS1g0hMICKWd+3ihh6wer5CJf4+DqEKDV9rZ++vFTSvmYWia
+         qGZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPb2XRbfZMgAz/s7dgcOr887XUxFI203jm4od9rLZTbtGjvIP75opnOZtiqSFuFE+gwWy7NgnQCIkZVpo6cV9zvEcKZ1ElZMFgEe3p
+X-Gm-Message-State: AOJu0Yxdbvb9di0hZ06SVp/8O2u60YGE3AhKkjtivAn1Tvptjb+aaXJL
+	3EgqYff0REdOvctJvWOiufuCS7uF32XUpxbmnOMxb14SpIYB/060Ul/3X/GWTwivE7EHc92W6hS
+	bT+N8pMzpDwD/ngZasYY0YI/rzDfWk4ywfKXL2g==
+X-Google-Smtp-Source: AGHT+IETqLQ6OmJoJdnFc8F84miMDQkGhVQSfNUHRAERey1hj1gfrnCVpeEojfYJc5ISMOnuLCiw+y72t9vB98e04w8=
+X-Received: by 2002:a05:6102:2751:b0:471:fc79:bf0d with SMTP id
+ p17-20020a056102275100b00471fc79bf0dmr2907031vsu.2.1709018102699; Mon, 26 Feb
+ 2024 23:15:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] PCI/DPC: Clean up DPC vs AER/EDR ownership and
- Kconfig
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Matthew W Carlis <mattc@purestorage.com>,
- Keith Busch <kbusch@kernel.org>, Lukas Wunner <lukas@wunner.de>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Bjorn Helgaas <bhelgaas@google.com>
-References: <20240222221521.32159-1-helgaas@kernel.org>
- <89984f11-b84e-4da0-ab5b-f2048461aae0@linux.intel.com>
- <52245cb8-879e-4997-a1b5-cdfbd702dee7@linux.intel.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <52245cb8-879e-4997-a1b5-cdfbd702dee7@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240223095133.109046-1-balint.dobszay@arm.com> <20240223095133.109046-4-balint.dobszay@arm.com>
+In-Reply-To: <20240223095133.109046-4-balint.dobszay@arm.com>
+From: Sumit Garg <sumit.garg@linaro.org>
+Date: Tue, 27 Feb 2024 12:44:51 +0530
+Message-ID: <CAFA6WYP4WVv2H4_2PAn_BOUpYYbG1SDcWL0Gmd6c0ECiH62c_w@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] Documentation: tee: Add TS-TEE driver
+To: Balint Dobszay <balint.dobszay@arm.com>
+Cc: op-tee@lists.trustedfirmware.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	jens.wiklander@linaro.org, corbet@lwn.net, sudeep.holla@arm.com, 
+	rdunlap@infradead.org, krzk@kernel.org, gyorgy.szing@arm.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2/27/2024 2:35 PM, Kuppuswamy Sathyanarayanan wrote:
-> Hi,
+On Fri, 23 Feb 2024 at 15:23, Balint Dobszay <balint.dobszay@arm.com> wrote:
 >
-> On 2/26/24 10:18 PM, Ethan Zhao wrote:
->> On 2/23/2024 6:15 AM, Bjorn Helgaas wrote:
->>> From: Bjorn Helgaas <bhelgaas@google.com>
->>>
->>> Previously we could request control of DPC without AER, which is illegal
->>> per spec.  Also, we could enable CONFIG_PCIE_DPC without CONFIG_PCIE_EDR,
->>> which is also illegal.  This series addresses both.
->> I have a question here, how to understand the relationship EDR & AER ?
->> somewhere EDR touches AER status without checking _OSC granted bits,
->> such as
->>     pci_aer_raw_clear_status(edev);
+> Add documentation for the Trusted Services TEE driver.
 >
-> Which_OSC bits?
+> Signed-off-by: Balint Dobszay <balint.dobszay@arm.com>
+> ---
+>  Documentation/tee/index.rst  |  1 +
+>  Documentation/tee/ts-tee.rst | 71 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 72 insertions(+)
+>  create mode 100644 Documentation/tee/ts-tee.rst
 >
-> EDR code will only get triggered if OS advertises the EDR support (which
-> also means OS supports AER and DPC), and both AER and DPC is owned by
-> the firmware. During the EDR notification, the OS is allowed to touch AER
 
-Means no need to check if host->native_aer ? why checked in
-pcie_do_recovery() ?
+Acked-by: Sumit Garg <sumit.garg@linaro.org>
 
-Thanks,
-Ethan
+-Sumit
 
-> and DPC registers. So there is no problem with EDR code using AER routines.
+> diff --git a/Documentation/tee/index.rst b/Documentation/tee/index.rst
+> index a23bd08847e5..4be6e69d7837 100644
+> --- a/Documentation/tee/index.rst
+> +++ b/Documentation/tee/index.rst
+> @@ -10,6 +10,7 @@ TEE Subsystem
+>     tee
+>     op-tee
+>     amd-tee
+> +   ts-tee
 >
+>  .. only::  subproject and html
 >
->> sometimes EDR calling AER with host->native_aer checked, like
->>
->> pcie_do_recovery()
->> {
->>   ...
->>   if (host->native_aer || pcie_ports_native) {
->>          pcie_clear_device_status(dev);
->>          pci_aer_clear_nonfatal_status(dev);
->>      }
->>   ...
->> }
->>
->> That is really confusing. could we do some cleanup to eliminate it ?
->> such as seperate AER code into common code and runtime part.
->>
->>
->> Thanks,
->> Ethan
->>   
->>
->>> Bjorn Helgaas (3):
->>>     PCI/DPC: Request DPC only if also requesting AER
->>>     PCI/DPC: Remove CONFIG_PCIE_EDR
->>>     PCI/DPC: Encapsulate pci_acpi_add_edr_notifier()
->>>
->>>    drivers/acpi/pci_root.c   | 22 ++++++++++++----------
->>>    drivers/pci/pci.h         |  4 ++++
->>>    drivers/pci/pcie/Kconfig  | 14 ++++----------
->>>    drivers/pci/pcie/Makefile |  5 ++++-
->>>    drivers/pci/pcie/dpc.c    | 10 ----------
->>>    include/linux/pci-acpi.h  |  8 --------
->>>    6 files changed, 24 insertions(+), 39 deletions(-)
->>>
+> diff --git a/Documentation/tee/ts-tee.rst b/Documentation/tee/ts-tee.rst
+> new file mode 100644
+> index 000000000000..843e34422648
+> --- /dev/null
+> +++ b/Documentation/tee/ts-tee.rst
+> @@ -0,0 +1,71 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=================================
+> +TS-TEE (Trusted Services project)
+> +=================================
+> +
+> +This driver provides access to secure services implemented by Trusted Services.
+> +
+> +Trusted Services [1] is a TrustedFirmware.org project that provides a framework
+> +for developing and deploying device Root of Trust services in FF-A [2] S-EL0
+> +Secure Partitions. The project hosts the reference implementation of the Arm
+> +Platform Security Architecture [3] for Arm A-profile devices.
+> +
+> +The FF-A Secure Partitions (SP) are accessible through the FF-A driver [4] which
+> +provides the low level communication for this driver. On top of that the Trusted
+> +Services RPC protocol is used [5]. To use the driver from user space a reference
+> +implementation is provided at [6], which is part of the Trusted Services client
+> +library called libts [7].
+> +
+> +All Trusted Services (TS) SPs have the same FF-A UUID; it identifies the TS RPC
+> +protocol. A TS SP can host one or more services (e.g. PSA Crypto, PSA ITS, etc).
+> +A service is identified by its service UUID; the same type of service cannot be
+> +present twice in the same SP. During SP boot each service in the SP is assigned
+> +an "interface ID". This is just a short ID to simplify message addressing.
+> +
+> +The generic TEE design is to share memory at once with the Trusted OS, which can
+> +then be reused to communicate with multiple applications running on the Trusted
+> +OS. However, in case of FF-A, memory sharing works on an endpoint level, i.e.
+> +memory is shared with a specific SP. User space has to be able to separately
+> +share memory with each SP based on its endpoint ID; therefore a separate TEE
+> +device is registered for each discovered TS SP. Opening the SP corresponds to
+> +opening the TEE device and creating a TEE context. A TS SP hosts one or more
+> +services. Opening a service corresponds to opening a session in the given
+> +tee_context.
+> +
+> +Overview of a system with Trusted Services components::
+> +
+> +   User space                  Kernel space                   Secure world
+> +   ~~~~~~~~~~                  ~~~~~~~~~~~~                   ~~~~~~~~~~~~
+> +   +--------+                                               +-------------+
+> +   | Client |                                               | Trusted     |
+> +   +--------+                                               | Services SP |
+> +      /\                                                    +-------------+
+> +      ||                                                          /\
+> +      ||                                                          ||
+> +      ||                                                          ||
+> +      \/                                                          \/
+> +   +-------+                +----------+--------+           +-------------+
+> +   | libts |                |  TEE     | TS-TEE |           |  FF-A SPMC  |
+> +   |       |                |  subsys  | driver |           |   + SPMD    |
+> +   +-------+----------------+----+-----+--------+-----------+-------------+
+> +   |      Generic TEE API        |     |  FF-A  |     TS RPC protocol     |
+> +   |      IOCTL (TEE_IOC_*)      |     | driver |        over FF-A        |
+> +   +-----------------------------+     +--------+-------------------------+
+> +
+> +References
+> +==========
+> +
+> +[1] https://www.trustedfirmware.org/projects/trusted-services/
+> +
+> +[2] https://developer.arm.com/documentation/den0077/
+> +
+> +[3] https://www.arm.com/architecture/security-features/platform-security
+> +
+> +[4] drivers/firmware/arm_ffa/
+> +
+> +[5] https://trusted-services.readthedocs.io/en/v1.0.0/developer/service-access-protocols.html#abi
+> +
+> +[6] https://git.trustedfirmware.org/TS/trusted-services.git/tree/components/rpc/ts_rpc/caller/linux/ts_rpc_caller_linux.c?h=v1.0.0
+> +
+> +[7] https://git.trustedfirmware.org/TS/trusted-services.git/tree/deployments/libts/arm-linux/CMakeLists.txt?h=v1.0.0
+> --
+> 2.34.1
+>
 
