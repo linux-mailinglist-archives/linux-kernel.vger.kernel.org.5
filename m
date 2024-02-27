@@ -1,294 +1,268 @@
-Return-Path: <linux-kernel+bounces-83117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9BD5868EAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:21:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 331DE868EAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:22:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED8FB1C22A79
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:21:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2DC41F27756
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:22:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0039313A252;
-	Tue, 27 Feb 2024 11:21:40 +0000 (UTC)
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E2613A27E;
+	Tue, 27 Feb 2024 11:21:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="PwUopaxn"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C0122A8C1;
-	Tue, 27 Feb 2024 11:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1009D1386DC
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:21:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709032899; cv=none; b=hmym1+yeT8I8X9bD14IMgjZ3Y1QOlxTB2dsXRyRz1TmmSHAeVLrBGZy9wXPpOTOUZO/sS8Za2sIv+iR3kNFk86Yo+Y9OwTV9bcHrh9l6sgWeQXHVLiwqIrc1ZrL0t2KoNPGChhEEG3R00xpQX9KcljX36PZ3wxzdDpUrPvU3TfY=
+	t=1709032900; cv=none; b=GUS7yvYXfZUtwTYMqXW3JEOz/hlx70UT1QU5aSa5ge5LDT0iXVJzc2SOWDRk65jMyIQlwQ35eLcaW9lm23c8k2yznrsZIvZb9bN6kkJlZ28MgPIgq65+Fh1z0kwmkB9L9x3Umlw5j8cK8GwB00wZsxMmyKoTQrmblPAoz8ziYyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709032899; c=relaxed/simple;
-	bh=RaWEV72BqNmmOYLtb7IS8wMv+m+y+FZZl/ZP+h5IzIc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZOicVBJgvlacq8Za14nKTv02rxEv7ydkevyRYY3llp6rhchxU+fO5soiGKhlO/UsKUOvw3OqDKL/PLxSMMDQANpu5OND0qWrZTolF5jJ0xByN3YhmHDPW8jvTMIgAcdNEllVJUpOxG15A+Nji0Zphu0TR6PX52vjupiePQ1WQ9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6e4aa4877a9so37095a34.0;
-        Tue, 27 Feb 2024 03:21:37 -0800 (PST)
+	s=arc-20240116; t=1709032900; c=relaxed/simple;
+	bh=q+JE+gfa+vTWmIk+VHtlhXq1+91T/oOEtzdNtc7TUc0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Csx+DVkrqtDhgV0RYRKjxNMmBVMjp4KNAjQwi8MAFrX7gOIc3iyTTSi25yoFRPKhjyZInOUqSFGSdBVvCI5xqw/LcP0RbqZ6Ac6hyqxy6lZtTDLywn+0SqNEjbbjoUN8PQPYaR6SZ9Yvks8YfKNscPy1vlFVDNrLpLwVxYsOuDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=PwUopaxn; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dc13fb0133so30564375ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:21:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1709032897; x=1709637697; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RMCMqYQnJBwBPF2LoFDTbr+p2c3Y8rSPrvmj0YvFUOs=;
+        b=PwUopaxnIPJ/5ftr4BqnxJkdlR/CgimoGOSAXiXpJht2byIKF5fXhx8KnCjt8r9K8R
+         deQTCQqMSdnZaCjU+wcNjaeHouiGgn4jwB9zMejqvlM41kigQS+bLGosJv6stGkiMXah
+         8ybVVuusYFdcVx99X9T0HvRS68ZgtDY8Mo1co=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709032896; x=1709637696;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VJa7MEOXe9perm2OgBKMzPUDW7pCOyIoOUv/oJgjUmw=;
-        b=Ptt1TZt/4Mvw22VF3ycC047q5A/Vmk3mlb16kbV+ET4Fv7V4zHdq/j95RxBd1dn6zQ
-         0omI1WpWrv4xx4i8XJGuMD2zCVgEU1M7N7qWKFlAEDbyRDoGqZmBEKfCWvlpvKFUIv7S
-         hc91aNQl+hr6j0NVQHl4aS12XKKdKCFHF3xNTknl2muZS1LQ/ghJk0tgGPNlaJlytKmm
-         wWUvEDb3qBM8oyObAZfeKHtKji/rns0I2ZSFjAC2wU4R6nkvPJjaPj0GO4CYzlqICJcb
-         FQ2DpHHBT8gbHugj3ja6LXUVuTyE2/negxNPADN65IPopxJnX5hJKV6wfndY1jvZW6ml
-         0Iog==
-X-Forwarded-Encrypted: i=1; AJvYcCW/9QmpdCTeb3CoPURwqRu/mh+PuU3mo83KW2Q29QZwNuEBjJAXuKReGrrhBbf5A5xV9d0MRvhdzxelcNfwrxJeH0zvYMFleNlSERJUTYZ2l0J9Md0zqZ4vLjkXrnIklFbMnVBDoM9Nbpp1N+f/DhRKGlhDGcujxyWdjbimKGoR8pzY7U4=
-X-Gm-Message-State: AOJu0YwjOlhJaALmuqk00Cy2Kng7cnc75ECPYaZgC2Rt9hY5/E2yehUw
-	XbPiOl63hf5ruc6ntDnkzuvOksakQOHaRZPSPbNaixzuv0F/NbuvtZhxlWjwGbaqDbUWLbULj8M
-	TamWYjqBBh2fXE4PH4koaJZ6RtznyVJIb
-X-Google-Smtp-Source: AGHT+IG9R13m5DR4gqp8WyHLIwyWyY0kzDaW1HOcNY3cc8IEXbuXqtoRojPV8BUhSKwMbh395KfY6gadg4eji0L5rKk=
-X-Received: by 2002:a05:6820:2b15:b0:5a0:396d:2489 with SMTP id
- dt21-20020a0568202b1500b005a0396d2489mr9325087oob.1.1709032896476; Tue, 27
- Feb 2024 03:21:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709032897; x=1709637697;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=RMCMqYQnJBwBPF2LoFDTbr+p2c3Y8rSPrvmj0YvFUOs=;
+        b=ntxM4iJXJ4yp8MgSvn029HKTJqG3xy3Tq2m99E9NnmHpYfnTRDa8sAIk5parYgIVN0
+         DMFurf/nkJdETrCUgBp9byzMf5iy2SVm/JmmziSlWppi+3PZgu8XXkf33T4BvNuOKxL8
+         MrUYlwQCquct3JZF4LMmclGRiR6u8mDRVJOskrUZBJcl2HXnqK1o7COCII/Q5p7dNo5V
+         XrQ4hFXaA1pMyWaIPFr8E9TudxBr27x/H0qm8af9UnlzVHDDLhIErp3supDTusZH7Gfm
+         6hHl3EEBojC0qL+Eqw1Is41P6MXf6Zz1j0O45rvrMs8B+spAj6uszIJonfQi3RSvio21
+         EZgA==
+X-Forwarded-Encrypted: i=1; AJvYcCVXh8K6IWUpbV2qbeKVT3BAIcPUrno4tGHzRVSkyESWI6qRu0COjgZfbsve+KqUPL7TDj3ql5+7NbFkxxVAyjHrHB3t8zC/MkeLESn8
+X-Gm-Message-State: AOJu0YwsFhc3otM+F3k62V4GJOw9c8eIVrw9E9t2qP3TAgCbJxqxDQJF
+	Y7C12Xms+vmJEJSR0Eb4vmPZ46osHp5sgzn2GLHNwan+bmC/QQEjOdtfAjczAA==
+X-Google-Smtp-Source: AGHT+IHNOO6c5LUy+ZeLjAopaBAvczytLJXq8nStdqrIzyWFGz7r6oUNPNt3l6sBvq80YGMJjc/+2g==
+X-Received: by 2002:a17:902:eb89:b0:1dc:a5fd:6de9 with SMTP id q9-20020a170902eb8900b001dca5fd6de9mr4986194plg.12.1709032897233;
+        Tue, 27 Feb 2024 03:21:37 -0800 (PST)
+Received: from [192.168.178.55] (f215227.upc-f.chello.nl. [80.56.215.227])
+        by smtp.gmail.com with ESMTPSA id g17-20020a170902c99100b001d6ee9d8957sm1300606plc.281.2024.02.27.03.21.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 03:21:36 -0800 (PST)
+Message-ID: <87166784-79ab-4eb4-ad1e-af4bc31757b7@broadcom.com>
+Date: Tue, 27 Feb 2024 12:21:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6017196.lOV4Wx5bFT@kreacher> <2173914.irdbgypaU6@kreacher> <5779195.DvuYhMxLoT@kreacher>
-In-Reply-To: <5779195.DvuYhMxLoT@kreacher>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 27 Feb 2024 12:21:25 +0100
-Message-ID: <CAJZ5v0j1vzUuNNVihQghiN_ZbEWwxZh9u+Jf1EpBwLJpXry7nA@mail.gmail.com>
-Subject: Re: [PATCH v2.1 2/9] thermal: core: Add flags to struct thermal_trip
-To: Linux PM <linux-pm@vger.kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Lukasz Luba <lukasz.luba@arm.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>, 
-	netdev@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>, 
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>, linux-wireless@vger.kernel.org, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Manaf Meethalavalappu Pallikunhi <quic_manafm@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] wifi: brcm80211: handle pmk_op allocation failure
+To: Duoming Zhou <duoming@zju.edu.cn>, linux-kernel@vger.kernel.org
+Cc: brcm80211-dev-list.pdl@broadcom.com, brcm80211@lists.linux.dev,
+ linux-wireless@vger.kernel.org, justinstitt@google.com, john@keeping.me.uk,
+ quic_alokad@quicinc.com, marcan@marcan.st, johannes.berg@intel.com,
+ linus.walleij@linaro.org, kvalo@kernel.org, Joe Perches <joe@perches.com>
+References: <20240227080613.34001-1-duoming@zju.edu.cn>
+From: Arend van Spriel <arend.vanspriel@broadcom.com>
+Autocrypt: addr=arend.vanspriel@broadcom.com; keydata=
+ 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
+In-Reply-To: <20240227080613.34001-1-duoming@zju.edu.cn>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000c661c206125b3a92"
 
-On Thu, Feb 22, 2024 at 8:48=E2=80=AFPM Rafael J. Wysocki <rjw@rjwysocki.ne=
-t> wrote:
->
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> In order to allow thermal zone creators to specify the writability of
-> trip point temperature and hysteresis on a per-trip basis, add a flags
-> field to struct thermal_trip and define flags to represent the desired
-> trip properties.
->
-> Also make thermal_zone_device_register_with_trips() set the
-> THERMAL_TRIP_FLAG_RW_TEMP flag for all trips covered by the writable
-> trips mask passed to it and modify the thermal sysfs code to look at
-> the trip flags instead of using the writable trips mask directly or
-> checking the presence of the .set_trip_hyst() zone callback.
->
-> Additionally, make trip_point_temp_store() and trip_point_hyst_store()
-> fail with an error code if the trip passed to one of them has
-> THERMAL_TRIP_FLAG_RW_TEMP or THERMAL_TRIP_FLAG_RW_HYST,
-> respectively, clear in its flags.
->
-> No intentional functional impact.
->
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+--000000000000c661c206125b3a92
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-AFAICS this patch addresses all of the review comments and because the
-rest of the series (depending on it) has been approved, I'm applying
-the whole series including this patch.
+On 2/27/2024 9:06 AM, Duoming Zhou wrote:
+> The kzalloc() in brcmf_pmksa_v3_op() will return null if the
+> physical memory has run out. As a result, if we dereference
+> the null value, the null pointer dereference bug will happen.
+> 
+> Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
+> for pmk_op.
 
+NAK (see below)
+
+Also this issue was reported earlier by Joe Perches. Not sure if he 
+wants to be mentioned as such.
+
+> Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V3 operations")
+> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
 > ---
->
-> v2 -> v2.1:
->    * Don't add redundant checks in 3 places (Daniel).
->    * Define THERMAL_TRIP_FLAG_RW as the combination of the _RW_ trip flag=
-s (Daniel).
->
-> v1 -> v2:
->    * Rename trip flags (Stanislaw).
->
-> ---
->  drivers/thermal/thermal_core.c  |    9 ++++++++-
->  drivers/thermal/thermal_core.h  |    2 +-
->  drivers/thermal/thermal_sysfs.c |   18 +++++++++---------
->  include/linux/thermal.h         |    8 ++++++++
->  4 files changed, 26 insertions(+), 11 deletions(-)
->
-> Index: linux-pm/include/linux/thermal.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/include/linux/thermal.h
-> +++ linux-pm/include/linux/thermal.h
-> @@ -64,15 +64,23 @@ enum thermal_notify_event {
->   * @threshold: trip crossing notification threshold miliCelsius
->   * @type: trip point type
->   * @priv: pointer to driver data associated with this trip
-> + * @flags: flags representing binary properties of the trip
->   */
->  struct thermal_trip {
->         int temperature;
->         int hysteresis;
->         int threshold;
->         enum thermal_trip_type type;
-> +       u8 flags;
->         void *priv;
->  };
->
-> +#define THERMAL_TRIP_FLAG_RW_TEMP      BIT(0)
-> +#define THERMAL_TRIP_FLAG_RW_HYST      BIT(1)
-> +
-> +#define THERMAL_TRIP_FLAG_RW   (THERMAL_TRIP_FLAG_RW_TEMP | \
-> +                                THERMAL_TRIP_FLAG_RW_HYST)
-> +
->  struct thermal_zone_device_ops {
->         int (*bind) (struct thermal_zone_device *,
->                      struct thermal_cooling_device *);
-> Index: linux-pm/drivers/thermal/thermal_core.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/thermal/thermal_core.c
-> +++ linux-pm/drivers/thermal/thermal_core.c
-> @@ -1278,6 +1278,7 @@ thermal_zone_device_register_with_trips(
->                                         int passive_delay, int polling_de=
-lay)
->  {
->         struct thermal_zone_device *tz;
-> +       struct thermal_trip *trip;
->         int id;
->         int result;
->         struct thermal_governor *governor;
-> @@ -1356,13 +1357,19 @@ thermal_zone_device_register_with_trips(
->         tz->devdata =3D devdata;
->         memcpy(tz->trips, trips, num_trips * sizeof(*trips));
->         tz->num_trips =3D num_trips;
-> +       for_each_trip(tz, trip) {
-> +               if (mask & 1)
-> +                       trip->flags |=3D THERMAL_TRIP_FLAG_RW_TEMP;
-> +
-> +               mask >>=3D 1;
-> +       }
->
->         thermal_set_delay_jiffies(&tz->passive_delay_jiffies, passive_del=
-ay);
->         thermal_set_delay_jiffies(&tz->polling_delay_jiffies, polling_del=
-ay);
->
->         /* sys I/F */
->         /* Add nodes that are always present via .groups */
-> -       result =3D thermal_zone_create_device_groups(tz, mask);
-> +       result =3D thermal_zone_create_device_groups(tz);
->         if (result)
->                 goto remove_id;
->
-> Index: linux-pm/drivers/thermal/thermal_core.h
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/thermal/thermal_core.h
-> +++ linux-pm/drivers/thermal/thermal_core.h
-> @@ -131,7 +131,7 @@ void thermal_zone_trip_updated(struct th
->  int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
->
->  /* sysfs I/F */
-> -int thermal_zone_create_device_groups(struct thermal_zone_device *, int)=
-;
-> +int thermal_zone_create_device_groups(struct thermal_zone_device *tz);
->  void thermal_zone_destroy_device_groups(struct thermal_zone_device *);
->  void thermal_cooling_device_setup_sysfs(struct thermal_cooling_device *)=
-;
->  void thermal_cooling_device_destroy_sysfs(struct thermal_cooling_device =
-*cdev);
-> Index: linux-pm/drivers/thermal/thermal_sysfs.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/thermal/thermal_sysfs.c
-> +++ linux-pm/drivers/thermal/thermal_sysfs.c
-> @@ -392,17 +392,16 @@ static const struct attribute_group *the
->  /**
->   * create_trip_attrs() - create attributes for trip points
->   * @tz:                the thermal zone device
-> - * @mask:      Writeable trip point bitmap.
->   *
->   * helper function to instantiate sysfs entries for every trip
->   * point and its properties of a struct thermal_zone_device.
->   *
->   * Return: 0 on success, the proper error value otherwise.
->   */
-> -static int create_trip_attrs(struct thermal_zone_device *tz, int mask)
-> +static int create_trip_attrs(struct thermal_zone_device *tz)
->  {
-> +       const struct thermal_trip *trip;
->         struct attribute **attrs;
-> -       int indx;
->
->         /* This function works only for zones with at least one trip */
->         if (tz->num_trips <=3D 0)
-> @@ -437,7 +436,9 @@ static int create_trip_attrs(struct ther
->                 return -ENOMEM;
->         }
->
-> -       for (indx =3D 0; indx < tz->num_trips; indx++) {
-> +       for_each_trip(tz, trip) {
-> +               int indx =3D thermal_zone_trip_id(tz, trip);
-> +
->                 /* create trip type attribute */
->                 snprintf(tz->trip_type_attrs[indx].name, THERMAL_NAME_LEN=
-GTH,
->                          "trip_point_%d_type", indx);
-> @@ -458,7 +459,7 @@ static int create_trip_attrs(struct ther
->                                                 tz->trip_temp_attrs[indx]=
-name;
->                 tz->trip_temp_attrs[indx].attr.attr.mode =3D S_IRUGO;
->                 tz->trip_temp_attrs[indx].attr.show =3D trip_point_temp_s=
-how;
-> -               if (mask & (1 << indx)) {
-> +               if (trip->flags & THERMAL_TRIP_FLAG_RW_TEMP) {
->                         tz->trip_temp_attrs[indx].attr.attr.mode |=3D S_I=
-WUSR;
->                         tz->trip_temp_attrs[indx].attr.store =3D
->                                                         trip_point_temp_s=
-tore;
-> @@ -473,7 +474,7 @@ static int create_trip_attrs(struct ther
->                                         tz->trip_hyst_attrs[indx].name;
->                 tz->trip_hyst_attrs[indx].attr.attr.mode =3D S_IRUGO;
->                 tz->trip_hyst_attrs[indx].attr.show =3D trip_point_hyst_s=
-how;
-> -               if (tz->ops.set_trip_hyst) {
-> +               if (trip->flags & THERMAL_TRIP_FLAG_RW_HYST) {
->                         tz->trip_hyst_attrs[indx].attr.attr.mode |=3D S_I=
-WUSR;
->                         tz->trip_hyst_attrs[indx].attr.store =3D
->                                         trip_point_hyst_store;
-> @@ -505,8 +506,7 @@ static void destroy_trip_attrs(struct th
->         kfree(tz->trips_attribute_group.attrs);
->  }
->
-> -int thermal_zone_create_device_groups(struct thermal_zone_device *tz,
-> -                                     int mask)
-> +int thermal_zone_create_device_groups(struct thermal_zone_device *tz)
->  {
->         const struct attribute_group **groups;
->         int i, size, result;
-> @@ -522,7 +522,7 @@ int thermal_zone_create_device_groups(st
->                 groups[i] =3D thermal_zone_attribute_groups[i];
->
->         if (tz->num_trips) {
-> -               result =3D create_trip_attrs(tz, mask);
-> +               result =3D create_trip_attrs(tz);
->                 if (result) {
->                         kfree(groups);
->
->
->
->
->
+>   drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> index 28d6a30cc01..3b420b33188 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+> @@ -4322,6 +4322,10 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
+>   	int ret;
+>   
+>   	pmk_op = kzalloc(sizeof(*pmk_op), GFP_KERNEL);
+> +	if (!pmk_op) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+
+There is really no need to introduce a new label for this. Although you 
+can kfree() a NULL pointer there is no need to do so when you know 
+already it is NULL. Just return -ENOMEM and be done with it.
+
+Regards,
+Arend
+
+>   	pmk_op->version = cpu_to_le16(BRCMF_PMKSA_VER_3);
+>   
+>   	if (!pmksa) {
+> @@ -4340,6 +4344,7 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg80211_pmksa *pmksa,
+>   	pmk_op->length = cpu_to_le16(length);
+>   
+>   	ret = brcmf_fil_iovar_data_set(ifp, "pmkid_info", pmk_op, sizeof(*pmk_op));
+> +out:
+>   	kfree(pmk_op);
+>   	return ret;
+>   }
+
+--000000000000c661c206125b3a92
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+2Gzj3QNJRLsZu1TLyOyBBIr/BE7UiY3RabgRzknBGAPmzhS+fmyM8OtM5BYBsFBrSUFtZZO2p/tf
+Nbc24J2zf2peoZ8MK+7WQqummYlOnz+FyDkA9EybeNMcS5C+xi/PAgMBAAGjggHdMIIB2TAOBgNV
+HQ8BAf8EBAMCBaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJl
+Lmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYI
+KwYBBQUHMAGGNWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24y
+Y2EyMDIwME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
+dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqG
+OGh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3Js
+MCcGA1UdEQQgMB6BHGFyZW5kLnZhbnNwcmllbEBicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYIKwYB
+BQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFIikAXd8CEtv
+ZbDflDRnf3tuStPuMA0GCSqGSIb3DQEBCwUAA4IBAQCdS5XCYx6k2GGZui9DlFsFm75khkqAU7rT
+zBX04sJU1+B1wtgmWTVIzW7ugdtDZ4gzaV0S9xRhpDErjJaltxPbCylb1DEsLj+AIvBR34caW6ZG
+sQk444t0HPb29HnWYj+OllIGMbdJWr0/P95ZrKk2bP24ub3ZP/8SyzrohfIba9WZKMq6g2nTLZE3
+BtkeSGJx/8dy0h8YmRn+adOrxKXHxhSL8BNn8wsmIZyYWe6fRcBtO3Ks2DOLyHCdkoFlN8x9VUQF
+N2ulEgqCbRKkx+qNirW86eF138lr1gRxzclu/38ko//MmkAYR/+hP3WnBll7zbpIt0jc9wyFkSqH
+p8a1MYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1z
+YTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIMTv1t
+bpIzNUky46LXMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCALuUlj37d9AFOB425S
+sRANuxKpgzBMRYU5uEOG0yN5sjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJ
+BTEPFw0yNDAyMjcxMTIxMzdaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCGSAFl
+AwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEBBzAL
+BglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEA3BsIA3jfXlT9Ad4+f00zDDfOGlRl0m8fyd5K
+z4K1g3d9/pxvNKO0ee+TnH7kisYAEUYNy16+jqd5jHsf91BgH7pVKNTupoSjqnEcC6ghIsoife3n
+UD+OCOu0a+woDrhy6WgMn3tM6ryHfIDNAMOk5qDe5iH6YS084ynt4N6kbnTTsvjj1ft6M3Ug8mnV
+FxR/vx1TVYiHYX1BGwDtebJaLb7PvRw0PmbfMOSRYTwVeUC42zQdLqpPvQib/av7SwyxunI9oy6i
+geG5nVKTSSNSBSQzpaq248oVGdEdnT47J2hC5Ow0+lpBdqHwfvjiIciQ/ahAj4OjNKffzgTFrXNk
+sg==
+--000000000000c661c206125b3a92--
 
