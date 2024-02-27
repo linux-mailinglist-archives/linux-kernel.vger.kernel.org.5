@@ -1,162 +1,183 @@
-Return-Path: <linux-kernel+bounces-82931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 694BA868BE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:14:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 273A8868BCB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CAAA1C223BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:14:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF18C1F21B95
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E517913666A;
-	Tue, 27 Feb 2024 09:11:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="VwFNZ9b9"
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D17137C2F;
+	Tue, 27 Feb 2024 09:10:13 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA2C136657
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:11:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D0013666E;
+	Tue, 27 Feb 2024 09:10:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709025118; cv=none; b=J6NVl4ftRFx18q9BcuBgfBnlCQhCtEUqlZgz12KG033UdnVQHGxg7SWgmUT3V9IYbTDdZC523w9GKG5NOarVAnQdFp8ey1hd/oxFuHjtTUJQZPwV0MJ7FOyMVbZpv1KnVMQurwpQoTWHQlxw4NadCX8ZGTXHnn8LLtcYAky9WCY=
+	t=1709025013; cv=none; b=eu9cDPWsom2RAaxFxxaONgacSu24I8wn3RTZNS21G96zZI/wBbCMHgWgLFxZcSOMGplpktlDM9jHisiIrEIf5WoFaOOvOE7Np4fx64Cb+sjmnOetf/eWsyraH93kt7PMwEMq4PNif7uY1RrQHJxfxJ5eFVjNucn7kH5yalfX424=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709025118; c=relaxed/simple;
-	bh=oDlesCYRQ+W+skiSLRxgDIQGbf/zMO64VKoY9TJLA2Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XTQ9Y7Yq3p3nX8fDl1RixS35JVhArLuOoU8GyADN+kBFAn1nEKeDbZgeS9WwpPhZJxlrQwArmHRK7aLzHg4vthnZCwNrX4O7bhA4DGyuhFYz/6VL07U0p7Mihub/V3bHXxaaFXGTtRx306jqdkzj0Kr+k/cthAXLBJOOGmUljEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=VwFNZ9b9; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e495e7d697so771087a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:11:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709025115; x=1709629915; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Iqmg1xIpurv53FgVspQqGn5e7v8oRKUqp2bPRQGCv1w=;
-        b=VwFNZ9b91bCyca8XnK+dkWiuaA2T0w8Nk+MGf+tXO2ckt98jsDsxj4IKGAsy7rVJOH
-         W9k56OJhT7jW4brzlK5GDLINqHTSmizV1FTqtCKK9GKAXzorn+Y6ZN75ANLJWkcVkYWh
-         vC08bZoP09jLCAd7k8Bb6+bTxcl1rB8bEeAgTuWfzODdST8W4laWKVqUjvxC872mi90D
-         aopzQJtzi8Lhd6ELCBWMiYjPoUII0FVcu/JkwbSv7rUJxh4YQlUveZRO5qyMGwjqboPR
-         Qc/6eWm7XPz5CxawYmQ2HEdLG/t73HWfn5/8OcX6WPqqyaSbiQfZ4DuDC4fQVNBr6zbE
-         2mlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709025115; x=1709629915;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Iqmg1xIpurv53FgVspQqGn5e7v8oRKUqp2bPRQGCv1w=;
-        b=NJQA1gYCN/O/K8sq0Hhins6LfGu3pLGakzCFuW+67tmU/QtLDx88rGYSBdRy2kjUaM
-         4Ro4/uLx/4WX9wAsv2ORgtMdg6kODmS7vmVJhNY8N7yMIKIZrFwK9Hbtha9Z3pR/hi6U
-         kqfUH4yHSvEMo6zVjFeH4tXgjJVmCV4x9h4PhmwdK/569pdixyHG+Lns/DjHLA+l4t0X
-         8DVFyAZrTjwJMfA9UJPCG/TqEW8njTEBIsLy5CxTjc2ERGVaphmzj1mL23oYPhhpFS6y
-         pnNzs2cREeVHD+QOECOYa6HcohYRfs8CY2e3o2z/H84psaXc42cyE6GYAhgRuIFd34h+
-         RCGg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8XVrUDVPkqI+AkiVgWfRpJ89zkfaXO82K3vOqfv2qf/2Jeiqnmikug021VBP6nl16Iuu8Lp0nEzeBxuAn2opa8g0NB93yvqolGMtd
-X-Gm-Message-State: AOJu0YwxbQY7dT7DU/9Ns17Qlc8TzNWIrwWlxLEh/Bf4mzKXaixV/nau
-	Cw+AxbAv1RW/mQ3k4Dz6t0uYAb2fR/tZdDI2SPC53TAlDgGHQJ2/51D7vJ52oOM=
-X-Google-Smtp-Source: AGHT+IHl56rwr930B3wadTCG40VLh8Pqx/IvnBbhnZLNnBMwNU6D0iq/HaPHH32q8T7UEoPk01A0xw==
-X-Received: by 2002:a4a:d0d4:0:b0:5a0:3aeb:ae3f with SMTP id u20-20020a4ad0d4000000b005a03aebae3fmr9524072oor.0.1709025115072;
-        Tue, 27 Feb 2024 01:11:55 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:999:a3a0:bf35:904f:7a0e:6c9a? ([2a01:e0a:999:a3a0:bf35:904f:7a0e:6c9a])
-        by smtp.gmail.com with ESMTPSA id fa29-20020a056a002d1d00b006e47b5b67d1sm979347pfb.77.2024.02.27.01.11.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 01:11:54 -0800 (PST)
-Message-ID: <a49546e8-6749-4458-98da-67fd37b7df18@rivosinc.com>
-Date: Tue, 27 Feb 2024 10:11:41 +0100
+	s=arc-20240116; t=1709025013; c=relaxed/simple;
+	bh=GQePeHmLBXBOXIAO3Kr28EekfNyWO9K0IjzdXcsDa/c=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UHFqT01zUwTEaJfPnW3NhEURsbznocL+WoxPpyRocqTHNcF4/ijsbxhXlIGWYgA02NAY4TzhZc3ZC0hy0OXjNOOWN9/ae5EC6yw8oOHy28JlzNyfvim/sPKam9mp4CnmPZEHCFQOsk0Kuwo46fd3FZ7As6C+S95yOtdwgFXsqxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TkWqq2TCbz1xpPH;
+	Tue, 27 Feb 2024 17:08:39 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5A2821400F4;
+	Tue, 27 Feb 2024 17:10:08 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 27 Feb
+ 2024 17:10:07 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<ritesh.list@gmail.com>, <ojaswin@linux.ibm.com>, <adobriyan@gmail.com>,
+	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH v2 3/9] ext4: refactor out ext4_generic_attr_show()
+Date: Tue, 27 Feb 2024 17:11:42 +0800
+Message-ID: <20240227091148.178435-4-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20240227091148.178435-1-libaokun1@huawei.com>
+References: <20240227091148.178435-1-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: deprecate CONFIG_MMU=n
-To: Charles Lohr <lohr85@gmail.com>, Conor Dooley <conor@kernel.org>
-Cc: Samuel Holland <samuel.holland@sifive.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- Conor Dooley <conor.dooley@microchip.com>,
- Andrew Jones <ajones@ventanamicro.com>, Damien Le Moal <dlemoal@kernel.org>,
- =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
- Atish Patra <atishp@rivosinc.com>
-References: <20240226140649.293254-1-cleger@rivosinc.com>
- <40dee2c1-ff24-40b2-a13c-6934139ba869@sifive.com>
- <ea356036-5a0b-47ea-aafb-f9813cc6ec9b@rivosinc.com>
- <20240226-pajamas-okay-51e16426b0f5@spud>
- <CAGu26P_v9FjYq9Bncvfd-dBhdHQevvN3HpO1nqjA2hYFCpG7hg@mail.gmail.com>
-Content-Language: en-US
-From: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <CAGu26P_v9FjYq9Bncvfd-dBhdHQevvN3HpO1nqjA2hYFCpG7hg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
+Refactor out the function ext4_generic_attr_show() to handle the reading
+of values of various common types, with no functional changes.
 
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/sysfs.c | 74 +++++++++++++++++++++----------------------------
+ 1 file changed, 32 insertions(+), 42 deletions(-)
 
-On 26/02/2024 20:00, Charles Lohr wrote:
-> WOAH! Please DO NOT deprecate NOMMU. I use the NOMMU build constantly
-> and NOMMU Linux on RISC-V is the avenue used by many FPGA soft cores
-> for Linux, as well as some limited systems.
-> 
-> I get new copies of the kernel when there are releases and test them
-> frequently to make sure everything is still working as expected.
-> 
-> For us we just don't care about XIP. I mean if someone did push it
-> through to fruition, I'd also test and use it, but I urge you please
-> do not deprecate this.  While it's sometimes needed a bit of a
-> creative build to get everything working, I've never needed to patch
-> anything in the kernel beyond patching in a custom console for serial
-> output.
-> 
+diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+index 2b1c529b7fdf..7f455b5f22c0 100644
+--- a/fs/ext4/sysfs.c
++++ b/fs/ext4/sysfs.c
+@@ -366,13 +366,42 @@ static ssize_t __print_tstamp(char *buf, __le32 lo, __u8 hi)
+ #define print_tstamp(buf, es, tstamp) \
+ 	__print_tstamp(buf, (es)->tstamp, (es)->tstamp ## _hi)
+ 
++static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
++				      struct ext4_sb_info *sbi, char *buf)
++{
++	void *ptr = calc_ptr(a, sbi);
++
++	if (!ptr)
++		return 0;
++
++	switch (a->attr_id) {
++	case attr_inode_readahead:
++	case attr_pointer_ui:
++		if (a->attr_ptr == ptr_ext4_super_block_offset)
++			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
++		return sysfs_emit(buf, "%u\n", *((unsigned int *) ptr));
++	case attr_pointer_ul:
++		return sysfs_emit(buf, "%lu\n", *((unsigned long *) ptr));
++	case attr_pointer_u8:
++		return sysfs_emit(buf, "%u\n", *((unsigned char *) ptr));
++	case attr_pointer_u64:
++		if (a->attr_ptr == ptr_ext4_super_block_offset)
++			return sysfs_emit(buf, "%llu\n", le64_to_cpup(ptr));
++		return sysfs_emit(buf, "%llu\n", *((unsigned long long *) ptr));
++	case attr_pointer_string:
++		return sysfs_emit(buf, "%.*s\n", a->attr_size, (char *) ptr);
++	case attr_pointer_atomic:
++		return sysfs_emit(buf, "%d\n", atomic_read((atomic_t *) ptr));
++	}
++	return 0;
++}
++
+ static ssize_t ext4_attr_show(struct kobject *kobj,
+ 			      struct attribute *attr, char *buf)
+ {
+ 	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
+ 						s_kobj);
+ 	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
+-	void *ptr = calc_ptr(a, sbi);
+ 
+ 	switch (a->attr_id) {
+ 	case attr_delayed_allocation_blocks:
+@@ -391,45 +420,6 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
+ 		return sysfs_emit(buf, "%llu\n",
+ 				(unsigned long long)
+ 			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
+-	case attr_inode_readahead:
+-	case attr_pointer_ui:
+-		if (!ptr)
+-			return 0;
+-		if (a->attr_ptr == ptr_ext4_super_block_offset)
+-			return sysfs_emit(buf, "%u\n",
+-					le32_to_cpup(ptr));
+-		else
+-			return sysfs_emit(buf, "%u\n",
+-					*((unsigned int *) ptr));
+-	case attr_pointer_ul:
+-		if (!ptr)
+-			return 0;
+-		return sysfs_emit(buf, "%lu\n",
+-				*((unsigned long *) ptr));
+-	case attr_pointer_u8:
+-		if (!ptr)
+-			return 0;
+-		return sysfs_emit(buf, "%u\n",
+-				*((unsigned char *) ptr));
+-	case attr_pointer_u64:
+-		if (!ptr)
+-			return 0;
+-		if (a->attr_ptr == ptr_ext4_super_block_offset)
+-			return sysfs_emit(buf, "%llu\n",
+-					le64_to_cpup(ptr));
+-		else
+-			return sysfs_emit(buf, "%llu\n",
+-					*((unsigned long long *) ptr));
+-	case attr_pointer_string:
+-		if (!ptr)
+-			return 0;
+-		return sysfs_emit(buf, "%.*s\n", a->attr_size,
+-				(char *) ptr);
+-	case attr_pointer_atomic:
+-		if (!ptr)
+-			return 0;
+-		return sysfs_emit(buf, "%d\n",
+-				atomic_read((atomic_t *) ptr));
+ 	case attr_feature:
+ 		return sysfs_emit(buf, "supported\n");
+ 	case attr_first_error_time:
+@@ -438,9 +428,9 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
+ 		return print_tstamp(buf, sbi->s_es, s_last_error_time);
+ 	case attr_journal_task:
+ 		return journal_task_show(sbi, buf);
++	default:
++		return ext4_generic_attr_show(a, sbi, buf);
+ 	}
+-
+-	return 0;
+ }
+ 
+ static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
+-- 
+2.31.1
 
-Hey Charles,
-
-No worries, we actually did not expected NOMMU to have *so many* users.
-I guess deprecating stuff is a good way to have immediate feedback ;).
-Having FDPIC psABI to be merged upstream could also probably be a
-positive point toward a better NOMMU support.
-
-> I am happy to discuss the possibility of me and or one of the other
-> RISC-V soft (FPGA) core people stepping up to try to be more active,
-> but so far we've just been very well serviced by the current NOMMU
-> Linux setup.
-
-It could probably be nice to have some feedback/Tested-by: from NOMMU
-users for new releases then.
-
-Thanks,
-
-Clément
-
-> 
-> Charles
-> 
-> 
-> On Mon, Feb 26, 2024 at 8:03 AM Conor Dooley <conor@kernel.org> wrote:
->>
->> On Mon, Feb 26, 2024 at 04:25:24PM +0100, Clément Léger wrote:
->>> I guess I could also mark XIP as deprecated.
->>
->> I'm not so sure, people recently added XIP support to QEMU (and sent
->> kernel fixes in December). XIP is also not nearly as much of a problem
->> to support, there's far less that it does differently, the main barrier
->> was the inability to test it which is no longer the case.
->> That said, XIP is gonna kill itself off I feel as it does not support
->> runtime patching and therefore is extremely limited on extensions, given
->> we use alternatives for all of that (although I suppose if someone has a
->> usecase they could make nasty macros worse and implement a compiletime
->> switch in the alternatives too).
->>
->> Cheers,
->> Conor.
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
