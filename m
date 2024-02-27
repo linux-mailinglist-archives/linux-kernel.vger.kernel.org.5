@@ -1,161 +1,138 @@
-Return-Path: <linux-kernel+bounces-83733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1E7869DBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:35:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F8DE869DC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:35:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E140F2855B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:35:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF19F2849A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61B04EB4D;
-	Tue, 27 Feb 2024 17:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=candelatech.com header.i=@candelatech.com header.b="i2K1txuE"
-Received: from dispatch1-us1.ppe-hosted.com (dispatch1-us1.ppe-hosted.com [148.163.129.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1B848CFD;
+	Tue, 27 Feb 2024 17:31:47 +0000 (UTC)
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FDFE2836D
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.129.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 118104EB4C;
+	Tue, 27 Feb 2024 17:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709055086; cv=none; b=KK2aj8nsM0tn51ve+MFWgUqg9rKIKwX0Td2pH45uDx6PzI48HarPR36HZaHRnGGnT2rHdTAsu4QSLD/bO+ZtY0GwCt4/Tu2SShCFn9PEPqzQvSGZ/M4kh2sUDZ10xzWua5uxeTkbHfhI2r0asF3o3aTswp6Rcc3deQfr2J6r4bs=
+	t=1709055107; cv=none; b=Qn2w9MGQle+21Om1xg1f+PSLtsRBHsqo4Gip9j2e9dVFI8Uzfw7ge5bok6GflxabmE69jsYjGZITmH0gcAmFTEeZvidfdBYy3wbEWPDmhnoKL/PGbhXl6OQA5Mb4uZNaPfCPf+SFCaaHZDzQECAyY29NOsV8U6q0hkUb024Ewck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709055086; c=relaxed/simple;
-	bh=9QJ0p6m//VqRaNyLV/QrLceScK2lqm09h/eJV1eZ+Ok=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=L1Zk9GGRjEJCoBtpIEOJa8jUHi8Yp1bRxWkN6gVMFBadPt35qiJDSFKrd2PuJm6aEb7+wDI3trpTZD/Qx64a+sfKNSenYWeT1WvxpbQgDwOLpm417w5lE8PT1pXVz+dz1K8MkPk25gpHNZuUZdFJnSn98VB13vKhbMEwEGnDE9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=candelatech.com; spf=pass smtp.mailfrom=candelatech.com; dkim=pass (1024-bit key) header.d=candelatech.com header.i=@candelatech.com header.b=i2K1txuE; arc=none smtp.client-ip=148.163.129.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=candelatech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=candelatech.com
-X-Virus-Scanned: Proofpoint Essentials engine
-Received: from mail3.candelatech.com (mail2.candelatech.com [208.74.158.173])
-	by mx1-us1.ppe-hosted.com (PPE Hosted ESMTP Server) with ESMTP id 58D0CC4006A
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:31:22 +0000 (UTC)
-Received: from [192.168.100.159] (unknown [50.251.239.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by mail3.candelatech.com (Postfix) with ESMTPSA id 0FC5113C2B0
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:31:21 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail3.candelatech.com 0FC5113C2B0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=candelatech.com;
-	s=default; t=1709055081;
-	bh=9QJ0p6m//VqRaNyLV/QrLceScK2lqm09h/eJV1eZ+Ok=;
-	h=Date:To:From:Subject:From;
-	b=i2K1txuE7z8O/yxh+kW6GOS9XgG6LdOOsTC8euSdU95LkxRWh3ChAnUNfwhV35pqZ
-	 F4cwZA6b6yHvhPUO5tUWoN0X4GWLmeA9Bl7X1wVQY25/I98nnxm5tYmuP2jcZQWGdA
-	 TdAs3wUSqiOGhtjsmASw3WWOe7L9USuKrqQIn2Ok=
-Message-ID: <73a2db13-1be4-8b86-e46f-5ac423fd3352@candelatech.com>
-Date: Tue, 27 Feb 2024 09:31:20 -0800
+	s=arc-20240116; t=1709055107; c=relaxed/simple;
+	bh=N4qrca1gfNLM7XkrrAkeiIRez2lQIublb/jwq59mkcY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Acr3wva4AHXSlP2JA056regS4qTt4G6DESGAnQiAzMXdEj4ljeiMq0EcggvDuPF7mrzqXkKKHRMM6fVwx7b9k38UUILRoDKlX35R65P7+xpChwsrLIxGnFY6BtYTmpfW8SPRJzgbLYSZ40B8S/pXNj1085kH341HTCau3mksgxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc9222b337so26716125ad.2;
+        Tue, 27 Feb 2024 09:31:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709055105; x=1709659905;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iPTm1iNR6NeamAnZRn8ji0Wn/OzjaL8ol//B5bTYhxE=;
+        b=H8YXRpSsMSARCT8EkE56YPxIO3BhN/vkBea6Tu8GTn9XtmJfJzHlsll3TlKlMTtCxO
+         LSoMqv9qW5T6ixbu3ByoJMsDUUFQNWg17SVhAaufmPPBkaUxb4cSA3WVYWrBol97WL3p
+         YX1O37rNWR50lEZWwByz5h2LMDkPbtmRfg0d+V1j5QD727JeEtV0N7Vb/wiW6zoKuiSF
+         wRKOYAH4IwYn3fhy7Ta9P26BLpz0fU/RriAWATIX6MbSyyWY7HtKq71FtXi2QzXsBnGS
+         t2DQx4MsJR3Vj9AwFdhy77zGdbeS05b/0M5+kMGU2HIINMQSknYyHyqQGy3nBG+91oZj
+         9L1A==
+X-Forwarded-Encrypted: i=1; AJvYcCV+Ch6HqYEF2YCfKD11RDaGTrmzDKR3922h09noKaxuHWKBeyVxYaPl/8PoWvj8MtHEG9Swb7HHPt9NwFzlxn3uNS5Ypb1VWzo4fCqP4E38F9OBZcc4+IHmL4IvhRcbpy6GcfuoS7pg1eaFKWsreaEiZ+t0K4uF6j6Eo7Yoqbg56v7B7Q==
+X-Gm-Message-State: AOJu0YyXsCElPHyA/Soif6SLA0iYrdJiPj6VFBOh6voBQfZT5nqWFFnp
+	+YYfxoSiltFclfVWJAQMGnK5xq8EZuvuytR9/DjxRzoIJKnPT5KmRO9JyUJxtWdyooLmCxkrppf
+	Ek+fepnWHML72/AQkTkK6yB9Qc0M=
+X-Google-Smtp-Source: AGHT+IEYnA++zMUlSPGbKP161F1yBAC/gQGUg58ZRFIL5eD1XfGpeOtD1G827LxcOTVtzAYilTC/PZifSULEVoZx0LM=
+X-Received: by 2002:a17:902:6e16:b0:1dc:82bc:c073 with SMTP id
+ u22-20020a1709026e1600b001dc82bcc073mr8293776plk.41.1709055105322; Tue, 27
+ Feb 2024 09:31:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To: LKML <linux-kernel@vger.kernel.org>
-From: Ben Greear <greearb@candelatech.com>
-Subject: lockdep reports invalid wait context, dmar fault and serial console
- related.
-Organization: Candela Technologies
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-MDID: 1709055083-lyFPnjR1URAS
-X-MDID-O:
- us5;ut7;1709055083;lyFPnjR1URAS;<greearb@candelatech.com>;c71d53d8b4bf163c84f4470b0e4d7294
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
+ <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com> <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+In-Reply-To: <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 27 Feb 2024 09:31:33 -0800
+Message-ID: <CAM9d7chXtmfaC73ykiwn+RqJmy5jZFWFaV_QNs10c_Td+zmLBQ@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Mon, Feb 26, 2024 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> On Mon, Feb 26, 2024 at 11:07=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> >
+> > On Tue, Feb 13, 2024 at 10:37=E2=80=AFPM Ian Rogers <irogers@google.com=
+> wrote:
+> > >
+> > > Move threads out of machine and move thread_rb_node into the C
+> > > file. This hides the implementation of threads from the rest of the
+> > > code allowing for it to be refactored.
+> > >
+> > > Locking discipline is tightened up in this change.
+> >
+> > Doesn't look like a simple code move.  Can we split the locking
+> > change from the move to make the reviewer's life a bit easier? :)
+>
+> Not sure I follow. Take threads_nr as an example.
+>
+> The old code is in machine.c, so:
+> -static size_t machine__threads_nr(const struct machine *machine)
+> -{
+> -       size_t nr =3D 0;
+> -
+> -       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++)
+> -               nr +=3D machine->threads[i].nr;
+> -
+> -       return nr;
+> -}
+>
+> The new code is in threads.c:
+> +size_t threads__nr(struct threads *threads)
+> +{
+> +       size_t nr =3D 0;
+> +
+> +       for (int i =3D 0; i < THREADS__TABLE_SIZE; i++) {
+> +               struct threads_table_entry *table =3D &threads->table[i];
+> +
+> +               down_read(&table->lock);
+> +               nr +=3D table->nr;
+> +               up_read(&table->lock);
+> +       }
+> +       return nr;
+> +}
+>
+> So it is a copy paste from one file to the other. The only difference
+> is that the old code failed to take a lock when reading "nr" so the
+> locking is added. I wanted to make sure all the functions in threads.c
+> were properly correct wrt locking, semaphore creation and destruction,
+> etc.  We could have a broken threads.c and fix it in the next change,
+> but given that's a bug it could make bisection more difficult.
+> Ultimately I thought the locking changes were small enough to not
+> warrant being on their own compared to the advantages of having a sane
+> threads abstraction.
 
-I saw this splat while running a lockdep kernel.  The DMAR warning is related to mtk7915
-driver, but aside from filling logs, it appears to not be a serious problem.  I have also
-not seen any obvious actual problems related to the serial console in this case.  Never
-the less, maybe someone with knowledge in this area with have a more informed understanding
-of how important this is.
-
-[    2.706497] DMAR: DRHD: handling fault status reg 3
-
-[    2.706552] =============================
-[    2.706552] [ BUG: Invalid wait context ]
-[    2.706553] 6.7.5+ #3 Not tainted
-[    2.706554] -----------------------------
-[    2.706555] swapper/0/0 is trying to lock:
-[    2.706556] ffffffff83db4cf8 (&port_lock_key){-.-.}-{3:3}, at: serial8250_console_write+0x82/0x480
-[    2.706563] other info that might help us debug this:
-[    2.706563] context-{2:2}
-[    2.706564] 4 locks held by swapper/0/0:
-[    2.706565]  #0: ffff888108065c70 (&iommu->register_lock){-...}-{2:2}, at: dmar_fault+0x1d/0x310
-[    2.706568]  #1: ffffffff8296a480 (console_lock){+.+.}-{0:0}, at: _printk+0x53/0x70
-[    2.706572]  #2: ffffffff8296a4d0 (console_srcu){....}-{0:0}, at: console_flush_all+0x84/0x510
-[    2.706576]  #3: ffffffff8288a260 (console_owner){-...}-{0:0}, at: console_flush_all+0x1fa/0x510
-[    2.706579] stack backtrace:
-[    2.706579] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.7.5+ #3
-[    2.706581] Hardware name: Default string Default string/SKYBAY, BIOS 5.12 08/04/2020
-[    2.706581] Call Trace:
-[    2.706582]  <IRQ>
-[    2.706583]  dump_stack_lvl+0x57/0x90
-[    2.706588]  __lock_acquire+0x9cc/0x2380
-[    2.706590]  ? stack_trace_save+0x46/0x70
-[    2.706595]  ? save_trace+0x4e/0x330
-[    2.706597]  lock_acquire+0xc6/0x2b0
-[    2.706598]  ? serial8250_console_write+0x82/0x480
-[    2.706600]  _raw_spin_lock_irqsave+0x3f/0x60
-[    2.706604]  ? serial8250_console_write+0x82/0x480
-[    2.706605]  serial8250_console_write+0x82/0x480
-[    2.706606]  ? console_flush_all+0x1fa/0x510
-[    2.706608]  ? console_flush_all+0x1e8/0x510
-[    2.706610]  ? lock_release+0xc5/0x270
-[    2.706612]  console_flush_all+0x222/0x510
-[    2.706613]  ? console_flush_all+0x1fa/0x510
-[    2.706615]  ? console_flush_all+0x1fa/0x510
-[    2.706617]  console_unlock+0x3f/0x140
-[    2.706619]  vprintk_emit+0xa1/0x320
-[    2.706621]  ? lock_release+0xc5/0x270
-[    2.706622]  _printk+0x53/0x70
-[    2.706624]  ? ___ratelimit+0x85/0x110
-[    2.706626]  dmar_fault+0x2f0/0x310
-[    2.706627]  ? find_held_lock+0x2b/0x80
-[    2.706628]  __handle_irq_event_percpu+0x7c/0x230
-[    2.706630]  handle_irq_event+0x2f/0x70
-[    2.706631]  handle_edge_irq+0x7c/0x210
-[    2.706634]  __common_interrupt+0x3d/0xe0
-[    2.706636]  common_interrupt+0x7d/0xa0
-[    2.706639]  </IRQ>
-[    2.706639]  <TASK>
-[    2.706640]  asm_common_interrupt+0x22/0x40
-[    2.706641] RIP: 0010:cpuidle_enter_state+0xf6/0x4f0
-[    2.706643] Code: c0 48 0f a3 05 fb fd c0 00 0f 82 f8 02 00 00 31 ff e8 4e 55 30 ff 45 84 ff 0f 85 c8 02 00 00 e8 30 9c 3e ff fb 0f 1f 44 00 00 <45> 85 f6 0f 
-88 e7 01 00 00 49 63 d6 48 8d 04 52 48 8d 04 82 49 8d
-[    2.706645] RSP: 0018:ffffffff82803e28 EFLAGS: 00000206
-[    2.706646] RAX: 0000000000008a3f RBX: ffffe8ffffa262f0 RCX: 000000000000001f
-[    2.706647] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81ee0ef0
-[    2.706647] RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000000000001
-[    2.706648] R10: ffffffff828254c0 R11: ffffffff82825ed0 R12: ffffffff829ee520
-[    2.706649] R13: 00000000a15167b5 R14: 0000000000000004 R15: 0000000000000000
-[    2.706650]  ? cpuidle_enter_state+0xf0/0x4f0
-[    2.706652]  ? cpuidle_enter_state+0xf0/0x4f0
-[    2.706653]  cpuidle_enter+0x24/0x40
-[    2.706656]  do_idle+0x1e8/0x240
-[    2.706660]  cpu_startup_entry+0x21/0x30
-[    2.706662]  rest_init+0xe0/0x180
-[    2.706663]  arch_call_rest_init+0x5/0x20
-[    2.706667]  start_kernel+0x860/0xa70
-[    2.706669]  ? load_ucode_intel_bsp+0x46/0x80
-[    2.706671]  x86_64_start_reservations+0x14/0x30
-[    2.706674]  x86_64_start_kernel+0x79/0x80
-[    2.706676]  secondary_startup_64_no_verify+0x178/0x17b
-[    2.706681]  </TASK>
-[    2.708867] systemd-journald[267]: /etc/systemd/journald.conf:1: Assignment outside of section. Ignoring.
-[    2.710908] DMAR: [DMA Read NO_PASID] Request device [15:00.0] fault addr 0xffff1000 [fault reason 0x06] PTE Read access is not set
+I can see some other differences like machine__findnew_thread()
+which I think is due to the locking change.  Maybe we can fix the
+problem before moving the code and let the code move simple.
 
 Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Namhyung
 
