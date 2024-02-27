@@ -1,113 +1,218 @@
-Return-Path: <linux-kernel+bounces-83027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F525868D7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:25:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9600868D88
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:27:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FDA21F26B09
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:25:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A129E1C232DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC28913849D;
-	Tue, 27 Feb 2024 10:24:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E5DB1384A6;
+	Tue, 27 Feb 2024 10:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="X3o4ZMum"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B9p0gjWx"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 902FF137C42;
-	Tue, 27 Feb 2024 10:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4288F138480
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 10:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709029499; cv=none; b=jNE7IP8vw6XoYG9pOJFU1YUBIo87YAp6emEiIMtzj6tydS2OVG7zjzoRPUl5tHL9w3WvFAv7NSYU+YaEMTja+8hwH1m9HXSmEeMlWaMSPhOGJ0Nm5yukiJ6JQA7K1Qu0hHUzFYhNKCdRbPTscd88Lq9E0/p5vno5aKWpdn7vRz8=
+	t=1709029637; cv=none; b=IGa0dpGSyLC/86ICf8yPAfZQzPaUZwLDsIr/yw41uvOlz6o6arJk19ELFXasIkYCuJu1aW5FpPq8b/TfdY15tgEDN6gsVQQBx+K27CcMp//7mXmbDSGzs80OKGMBaef3+DcQ3eDondmOimf7kBwadZfEKxsMh03XX4xJTmXcRJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709029499; c=relaxed/simple;
-	bh=Nnpde2MjTfV728iSxOzMQcbJzt7c4u2O0FM7Rw5PJgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NRSWtc9PXT+GYYiEzKldkpmdDjllIzR1EvzsAZQ20HpxRQXkkT97SHCSzOrSc0kuaKBBmunUExsGT8weKVXYZfLio9r9tLsKQZNCYWgNaNrKDLUpBhc36GcKAwb0LzgwdOy3HoLHIx+jc44JKnxDrLvJgImJwNhNGLGMsRIu69M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=X3o4ZMum; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=JCdHzu2wkDIMV3N9KhEnaZn7nt+SUq/lt3fcc9JJLCM=; b=X3o4ZMumh+WSsbya++ZFhtGQtB
-	3jMjGFRyAKDrQ6bMJQKbd5y2qsY7D3/VmDpfzHkMH6PakulAFqF4HNgsDc+owbvCfZ25CP4XYfCH8
-	UI1Bniqs7Jl4UNl7QATUXCDQ4jt5ilvkda3mO8VTmuqAWYPbOZo1ZNyepxPTNnIe0Hn8zYSQ1TKht
-	bIHEJ2YbLwz0NAk4PA2pJ8O6+fUsmTVV+IlhQK6S+xBqMUsrvHTTA032uvVTQJ9WktNmcvAj3bs18
-	X05XBlfCFGcbmJCi8KFVH92pbunbs7dz9v//Po5GYryvsw2rE6JPZ2AUOoV+6jgR8tKVzoKMDTHe2
-	k+PD2pug==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36722)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1reudi-0007kH-1R;
-	Tue, 27 Feb 2024 10:24:46 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1reudc-0007J2-Nc; Tue, 27 Feb 2024 10:24:40 +0000
-Date: Tue, 27 Feb 2024 10:24:40 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Zev Weiss <zev@bewilderbeest.net>
-Cc: linux-parisc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Helge Deller <deller@gmx.de>, Florent Revest <revest@chromium.org>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Yin Fengwei <fengwei.yin@intel.com>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Yang Shi <yang@os.amperecomputing.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	Stefan Roesch <shr@devkernel.io>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
-	openbmc@lists.ozlabs.org, Sam James <sam@gentoo.org>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH RESEND 1/2] prctl: Generalize PR_SET_MDWE support check
- to be per-arch
-Message-ID: <Zd24aCps4xD28c74@shell.armlinux.org.uk>
-References: <20240227013546.15769-4-zev@bewilderbeest.net>
- <20240227013546.15769-5-zev@bewilderbeest.net>
+	s=arc-20240116; t=1709029637; c=relaxed/simple;
+	bh=9oQUf5HtHLbBgNp93aBOqPZ+Lw8npwFe56RH4fdl4fM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jQKB2pBO6pW2XXNYXrQZu1KunoIMsnYsMA8NpSmxA59Pl01p2p8OC6MnHpc4m18ZdlH+4whQtxDM6+Gt7x83RTa1hRe1itGIbUfif027+lp+XVDHBMHwVWTHisuCbSX9aH/+T6eXlqiHLXr/c9kASE8I0XWxT5qjukU2vurQt9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B9p0gjWx; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709029635;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=gQu9FLk/3cBXcFdzQEmdwe1pIwKjfdRR38sSE0OqhrQ=;
+	b=B9p0gjWx+cKVY+ic7nMCR1IcW/JraU77EafwVwXEK+YXH6b/w51j1ASxBw+Q8nXRKNSPPT
+	O+TXtpvmo3hguezujj5RsjoMN9rcRdXyPj/x8RHo3u6/yuFJ9Fg5clPLYoJTjiHHB1oCP9
+	jnk79TpE9Q8XwusKwbdEdZiD8GX67TU=
+Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com
+ [209.85.160.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-454-9ze-NtA7P32fmlsrPuCQiQ-1; Tue, 27 Feb 2024 05:27:13 -0500
+X-MC-Unique: 9ze-NtA7P32fmlsrPuCQiQ-1
+Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-21fde24a4d7so2496047fac.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 02:27:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709029633; x=1709634433;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gQu9FLk/3cBXcFdzQEmdwe1pIwKjfdRR38sSE0OqhrQ=;
+        b=S2TgwJvMrtiph3pkPY+46NDxqzWoqvIINrc5WRsfCPfBDXJi/udmTFI9eFMHv9MTfO
+         OSBRkgZYRQWB60fAW7uo/DQQ4Nw0GjQxftr8J+s/mIHxO3L1bin+ZD+hTc7BQHMq4NKZ
+         MUrW1eqTjFYXG20wcidg+rnG9/Ec0NsUHIF2uCEQqaO08dJfxzLr/GMZnWF4nzislss1
+         HsJYmsPCF0CRv9yyVJuFvqDwBbtk+GyR5SiKcsX+8NKO55Le7ojhSPqiumpXNPs4eE1C
+         9hUqemcrJbyB2Mckh/mesG/vOeoB4kv/ufM3p77U6sRIQ6lbg+9xSfFZIL4/c0SKaB5t
+         MKXA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/t8JDJaVrwIL4SKit1CTUIe07IY6U97bEJIClPQFTedaqQ1Rl0mBdiiLYBJdUX8bBOBjyvEY74AITs8EjrfwPtjKG3xU6VWr0Kn/2
+X-Gm-Message-State: AOJu0Yw6DDvW40lsv96X/r52WFcezeBc/oQDenrYux7tevZfXNapoVXD
+	67H0mRbDspBvqs0twu1A/MtRcyyHIKdPelUOTFyAvE4DZCXJBPXkyvO6YhmPDn4YiYGq49M0CUn
+	uef5YjhwVcRN1D3RAU7wW4QlT7roPB/pLKIpfUkYYQwOspUEY4Y4B3QykEmQ0/A==
+X-Received: by 2002:a05:6871:152:b0:21e:95dd:b212 with SMTP id z18-20020a056871015200b0021e95ddb212mr10831629oab.57.1709029633181;
+        Tue, 27 Feb 2024 02:27:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEuYm+F2VGPZSJNEZUnoABzHJO2xHUmHprAk8tZITwrmte+ZXCg73IBeXoBZXMsTUu67pLzeA==
+X-Received: by 2002:a05:6871:152:b0:21e:95dd:b212 with SMTP id z18-20020a056871015200b0021e95ddb212mr10831622oab.57.1709029632857;
+        Tue, 27 Feb 2024 02:27:12 -0800 (PST)
+Received: from ?IPV6:2003:cb:c707:7600:5c18:5a7d:c5b7:e7a9? (p200300cbc70776005c185a7dc5b7e7a9.dip0.t-ipconnect.de. [2003:cb:c707:7600:5c18:5a7d:c5b7:e7a9])
+        by smtp.gmail.com with ESMTPSA id z20-20020aa785d4000000b006e4c3a6da36sm5546717pfn.202.2024.02.27.02.27.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 02:27:12 -0800 (PST)
+Message-ID: <abb00aef-378c-481a-a885-327a99aa7b09@redhat.com>
+Date: Tue, 27 Feb 2024 11:27:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227013546.15769-5-zev@bewilderbeest.net>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] vfio/type1: unpin PageReserved page
+Content-Language: en-US
+To: Alex Williamson <alex.williamson@redhat.com>,
+ Yisheng Xie <ethan.xys@linux.alibaba.com>, akpm@linux-foundation.org
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20240226160106.24222-1-ethan.xys@linux.alibaba.com>
+ <20240226091438.1fc37957.alex.williamson@redhat.com>
+ <e10ace3f-78d3-4843-8028-a0e1cd107c15@linux.alibaba.com>
+ <20240226103238.75ad4b24.alex.williamson@redhat.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240226103238.75ad4b24.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 26, 2024 at 05:35:41PM -0800, Zev Weiss wrote:
-> There exist systems other than PARISC where MDWE may not be feasible
-> to support; rather than cluttering up the generic code with additional
-> arch-specific logic let's add a generic function for checking MDWE
-> support and allow each arch to override it as needed.
+On 26.02.24 18:32, Alex Williamson wrote:
+> On Tue, 27 Feb 2024 01:14:54 +0800
+> Yisheng Xie <ethan.xys@linux.alibaba.com> wrote:
 > 
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-> Cc: <stable@vger.kernel.org> # v6.3+
+>> 在 2024/2/27 00:14, Alex Williamson 写道:
+>>> On Tue, 27 Feb 2024 00:01:06 +0800
+>>> Yisheng Xie<ethan.xys@linux.alibaba.com>  wrote:
+>>>   
+>>>> We meet a warning as following:
+>>>>    WARNING: CPU: 99 PID: 1766859 at mm/gup.c:209 try_grab_page.part.0+0xe8/0x1b0
+>>>>    CPU: 99 PID: 1766859 Comm: qemu-kvm Kdump: loaded Tainted: GOE  5.10.134-008.2.x86_64 #1
+>>>                                                                      ^^^^^^^^
+>>>
+>>> Does this issue reproduce on mainline?  Thanks,
+>>
+>> I have check the code of mainline, the logical seems the same as my
+>> version.
+>>
+>> so I think it can reproduce if i understand correctly.
+> 
+> I obviously can't speak to what's in your 5.10.134-008.2 kernel, but I
+> do know there's a very similar issue resolved in v6.0 mainline and
+> included in v5.10.146 of the stable tree.  Please test.  Thanks,
 
-PA-RISC folk need to ack/review-by this patch. Alternatively, it needs
-to be restructured to add the arch_memory_deny_write_exec_supported()
-override without touching the PA-RISC code, which then makes the Arm
-patch independent of the status of the PA-RISC patch. That will allow
-the Arm issue to be solved even if an ack is not forthcoming for the
-PA-RISC parts.
+This commit, to be precise:
 
-Alternatively, I wonder whether akpm would be willing to pick up this
-patch set as-is.
+commit 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4
+Author: Alex Williamson <alex.williamson@redhat.com>
+Date:   Mon Aug 29 21:05:40 2022 -0600
+
+     vfio/type1: Unpin zero pages
+     
+     There's currently a reference count leak on the zero page.  We increment
+     the reference via pin_user_pages_remote(), but the page is later handled
+     as an invalid/reserved page, therefore it's not accounted against the
+     user and not unpinned by our put_pfn().
+     
+     Introducing special zero page handling in put_pfn() would resolve the
+     leak, but without accounting of the zero page, a single user could
+     still create enough mappings to generate a reference count overflow.
+     
+     The zero page is always resident, so for our purposes there's no reason
+     to keep it pinned.  Therefore, add a loop to walk pages returned from
+     pin_user_pages_remote() and unpin any zero pages.
+
+
+BUT
+
+in the meantime, we also have
+
+commit c8070b78751955e59b42457b974bea4a4fe00187
+Author: David Howells <dhowells@redhat.com>
+Date:   Fri May 26 22:41:40 2023 +0100
+
+     mm: Don't pin ZERO_PAGE in pin_user_pages()
+     
+     Make pin_user_pages*() leave a ZERO_PAGE unpinned if it extracts a pointer
+     to it from the page tables and make unpin_user_page*() correspondingly
+     ignore a ZERO_PAGE when unpinning.  We don't want to risk overrunning a
+     zero page's refcount as we're only allowed ~2 million pins on it -
+     something that userspace can conceivably trigger.
+     
+     Add a pair of functions to test whether a page or a folio is a ZERO_PAGE.
+
+
+So the unpin_user_page_* won't do anything with the shared zeropage.
+
+(likely, we could revert 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Cheers,
+
+David / dhildenb
+
 
