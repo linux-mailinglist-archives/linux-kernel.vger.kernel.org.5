@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-83995-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3034C86A12C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:53:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7892786A12E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54BAB1C248F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:53:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18D9B1F241D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03CAC14EFDA;
-	Tue, 27 Feb 2024 20:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D4914F963;
+	Tue, 27 Feb 2024 20:52:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="wymAGB67"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="O/ACh58K"
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0E36156985
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34AD48CFC
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709067085; cv=none; b=oOUdZb6GNZQ+0cZRv7Mx1XkPfiJyfLhW6ZixCT3ZHkd0xGLeZbObvE5AaCuKFO4aqzKtZLzh29anBHZ6MjQtUZMwhW/1ghcRMArXeE29G8PbDgJRlfTASwQMa7uqcOdkGKJwqcUiEZmguMlVIOQxhu15JBt/kUuixr8646fjqaQ=
+	t=1709067144; cv=none; b=DWKvcl5SxisuxxR/bUZByUpw31EUt5rYo0MHA2sySCwiA6GZbsOhA8SJ23Isiaj0EKeZyx2hkoaxI3BgCGgA5MNV0eIp2yIo39WT3AIGFryxD6uf0alTvoICl4+vh7BAdjer3rB2GuTHdOJXT101YR6CaigeaDKHZiVvFV9K3Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709067085; c=relaxed/simple;
-	bh=YfetGUHw90TINhyDyoOkqomfVnThTiY+r2jyOXe193w=;
+	s=arc-20240116; t=1709067144; c=relaxed/simple;
+	bh=JsQ1nGdibb8WX0Sy1YuZgdzxR6vLTyCS9HB+mk8bneU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Z8KClKa5mYVIDOcylMj/U5GnMVfsHXT3HHDeAYaKLuDOwnKIbz9CeybZNQZwhMA33L0Am1iqgB7c349z+fwea7+tUfJMK5vgmCN9ZwUG2scwZhR0JVaWn6xoe7Oz+gXZjHm/3b0xFUGAb0DUe4T8iMYFgZonyHazDNeTZ0zsq3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=wymAGB67; arc=none smtp.client-ip=209.85.221.44
+	 MIME-Version; b=NJp+zN+flhBLTx0HnOzHK2y2ylUEfILdCGhKahQ3MgVXZgZkmov1CgTdjHmHHP5UBllpi/pfedM7C786E0odZHFFaqekvhdpPCiH2qv4hSNz9d3vNBQNmqGvhoNXLaeXyKgqOq/ZtkYIYqHhozR9siyU7y2iroJ/DTWiFKtJgng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=O/ACh58K; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-3392b045e0aso3870845f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:51:21 -0800 (PST)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d28468666so4111205f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:52:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709067080; x=1709671880; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709067141; x=1709671941; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wS3Fbtccf2xLgZAcGdUt297LbB3kw/tfByr2NgsnNkM=;
-        b=wymAGB67y2g14ZjVuSLbpsCPR3IiRxkjYIIop/swNmry9Cdle69shGKDDPYM4YrT0d
-         cNT6vNiS+P+QR+ewVNcBAKFPCwAhaAOYok46pR8UOMBAaofD7zMW7YGsKrgXJhJsvCbT
-         eiK74EpqG2TROivwhpcZMr7tvkKXiJYThwX8w4Tep5Dwa/X8BG1e86RiwAhn3VN6x+hP
-         4Ko/l9bdDqSdTYwA1kb2cXCDg60LyodN62UEGQE1yrJw4k+Hlddeyc4hwLclJxad8Sbf
-         rHj5vbhA99lkhAAFq60FlH5z+TwLEtZtHZLrkAkf4w0rtQ+qyVotYaSWRXuNrTtj8AVf
-         1VtA==
+        bh=FzfPm4MGmy+twyI4zc1gm3KO2QTVwDkS4GmOlB/j8Xc=;
+        b=O/ACh58KQp//yOLDqxJlq9hSIMjQauD04mbLhyKQa6Yuo++Kb2Iz9bK2PdzpbqFeJ0
+         6aAQ4FBDq3F2h5zDizfBfla9HkeW6+mDU2Ib9HcZOOxbgWsIMHl3sVZAhOou9cAKdjoi
+         Z/7NS284XeCm2OMlg5XNAeFF6PpZI7+dTV7I18h8hK1dH7cw8COeGv6XxRNso0kq35V8
+         pL05BAka4XLOhQX/zgQyTvMuSQ4mejI2brh4HeAU2Al7DgbKx/7NJIgVycJaVcKHsKl6
+         6XxL07G1bMbUzzv/+5P4iBhqfUNnylxsfuhmyQtvXj7AwcDgkfVdbX7fguwjomyZVnlh
+         GwMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709067080; x=1709671880;
+        d=1e100.net; s=20230601; t=1709067141; x=1709671941;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wS3Fbtccf2xLgZAcGdUt297LbB3kw/tfByr2NgsnNkM=;
-        b=n/2Xzyb9/nrtTOs0zHonTXqfv0sumFtu5407awct+cVPTucGEERS+MsoubibYzmmS+
-         RAymXAfzFu4O5mZiHK9qVVMdfeF5WIt26Dt9BxHoIf/wmYVQO7oVPBEoxjI4wir8IsPr
-         Rxx6JI6YPW7N0gj3Kn53BVtLLgzUb1xyvqSVT6XqMH+LsQ0NJgXT1l7uXJcpuNmeEnJ6
-         UTCqPE9KeWXKERcwlrErnMbQUogDicVdQojvp1XXqYS7wAqa1Pgk3UaBHx1l70bWyYhL
-         KcGwraiPo0lpr/EF2nAb9OABfk2VqNdO1EzfzJzKP+IbHxFJ8nFW8+N1FMgZKjCHADkJ
-         J1SA==
-X-Forwarded-Encrypted: i=1; AJvYcCWHGfdip845Vuk1S4n/lo1MKFpPDxamKsvYQYNjvRb+daJGpGcE5it62WYRMIU8HaxjFclNm8WglP5Mve5xF61wRQLZBRpXsPCjO5vM
-X-Gm-Message-State: AOJu0YwKdd7VHIGJeuSU1jJnT5klSJhV84nTTHgZkUTsISW7K/hs2CJS
-	yBCbgX6Ah+vhxj0aedFmcOC1ij1ob5extkB6CYjSEwBQp4NG2GQ6h+T8g8DWUEw=
-X-Google-Smtp-Source: AGHT+IHzShpzx0Q/2mn+wkknfDNqSJfPuVlQTcePThpcQE0N9o+mPidgxMz5BYc0SI6qcOtmJFBdmQ==
-X-Received: by 2002:adf:e582:0:b0:33d:f3c9:a526 with SMTP id l2-20020adfe582000000b0033df3c9a526mr1830243wrm.67.1709067080216;
-        Tue, 27 Feb 2024 12:51:20 -0800 (PST)
+        bh=FzfPm4MGmy+twyI4zc1gm3KO2QTVwDkS4GmOlB/j8Xc=;
+        b=drNMlNIGnotrkoMUY5EzCODXu8J8mjcqePkEvFfZylbm4GDMSLcpSnvrAu/4DvUGMS
+         gBiDw0vnWENEr9aBOKMhj7sv5cY8sTuyIjGMN1AsvareBlpD3fwIpFKc3NATjnoy7wXO
+         nae5sxFnAo0FAmsxX9uUNm784I6yVGHnnxvCPw3a0f0lN0tvOpIJEbZStzMIXJBAjoJ7
+         GyLmdorZUwL0PPmYrBNqtmw23l77vDAAYyQdyL060vVQgQUVwbuTcEAJp57ARIZG9AS5
+         icvo5pIAQXYvaPkVraHhBR8/w4nfVwkbJkXdy6/R5u43yD03MWHHT3d2TDFXmUKxHEW8
+         r+Pg==
+X-Forwarded-Encrypted: i=1; AJvYcCW7JytsczSdVMjDIJFRg0t6+Xj/wF/HdAwQxGvC4XDachiuXSSFVptOo9yz+6WIrm0F/Dst7ptqT86vbDq0rzdsa9zzcG2M949/uQ88
+X-Gm-Message-State: AOJu0Yz1GanSnoR0NQkfz2wXbw6sfNZxzNsBFUN1BZSRfU9KuwkcGqKC
+	39hKjo0Y474Mi8qx056PBdm87IdMPGJ6DKT7KgBMh+J9aeXdUdvVtrgO/yIqnS0=
+X-Google-Smtp-Source: AGHT+IFncYLlF2rT6hN0L/p/TQJ5LNx4aKQQWd8sjTrt7kQ6BYHBKX2Y0keQQEflI2wLg+Jl/BzNrA==
+X-Received: by 2002:adf:f08d:0:b0:33d:1eea:4346 with SMTP id n13-20020adff08d000000b0033d1eea4346mr7362784wro.37.1709067141078;
+        Tue, 27 Feb 2024 12:52:21 -0800 (PST)
 Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id v26-20020adfa1da000000b0033dfd3a8cd3sm35135wrv.30.2024.02.27.12.51.19
+        by smtp.gmail.com with ESMTPSA id bw1-20020a0560001f8100b0033af3a43e91sm12539544wrb.46.2024.02.27.12.52.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 12:51:19 -0800 (PST)
+        Tue, 27 Feb 2024 12:52:20 -0800 (PST)
 From: Alexandre Ghiti <alexghiti@rivosinc.com>
 To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
@@ -76,9 +76,9 @@ To: Paul Walmsley <paul.walmsley@sifive.com>,
 	linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
-Subject: [PATCH -fixes 1/2] Revert "riscv: mm: support Svnapot in huge vmap"
-Date: Tue, 27 Feb 2024 21:50:15 +0100
-Message-Id: <20240227205016.121901-2-alexghiti@rivosinc.com>
+Subject: [PATCH -fixes 2/2] riscv: Fix pte_leaf_size() for NAPOT
+Date: Tue, 27 Feb 2024 21:50:16 +0100
+Message-Id: <20240227205016.121901-3-alexghiti@rivosinc.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240227205016.121901-1-alexghiti@rivosinc.com>
 References: <20240227205016.121901-1-alexghiti@rivosinc.com>
@@ -90,111 +90,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This reverts commit ce173474cf19fe7fbe8f0fc74e3c81ec9c3d9807.
+pte_leaf_size() must be reimplemented to add support for NAPOT mappings.
 
-We cannot correctly deal with NAPOT mappings in vmalloc/vmap because if
-some part of a NAPOT mapping is unmapped, the remaining mapping is not
-updated accordingly. For example:
-
-ptr = vmalloc_huge(64 * 1024, GFP_KERNEL);
-vunmap_range((unsigned long)(ptr + PAGE_SIZE),
-	     (unsigned long)(ptr + 64 * 1024));
-
-leads to the following kernel page table dump:
-
-0xffff8f8000ef0000-0xffff8f8000ef1000    0x00000001033c0000         4K PTE N   ..     ..   D A G . . W R V
-
-Meaning the first entry which was not unmapped still has the N bit set,
-which, if accessed first and cached in the TLB, could allow access to the
-unmapped range.
-
-That's because the logic to break the NAPOT mapping does not exist and
-likely won't. Indeed, to break a NAPOT mapping, we first have to clear
-the whole mapping, flush the TLB and then set the new mapping ("break-
-before-make" equivalent). That works fine in userspace since we can handle
-any pagefault occurring on the remaining mapping but we can't handle a kernel
-pagefault on such mapping.
-
-So fix this by reverting the commit that introduced the vmap/vmalloc
-support.
-
-Fixes: ce173474cf19 ("riscv: mm: support Svnapot in huge vmap")
+Fixes: 82a1a1f3bfb6 ("riscv: mm: support Svnapot in hugetlb page")
 Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 ---
- arch/riscv/include/asm/vmalloc.h | 61 +-------------------------------
- 1 file changed, 1 insertion(+), 60 deletions(-)
+ arch/riscv/include/asm/pgtable.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/riscv/include/asm/vmalloc.h b/arch/riscv/include/asm/vmalloc.h
-index 924d01b56c9a..51f6dfe19745 100644
---- a/arch/riscv/include/asm/vmalloc.h
-+++ b/arch/riscv/include/asm/vmalloc.h
-@@ -19,65 +19,6 @@ static inline bool arch_vmap_pmd_supported(pgprot_t prot)
- 	return true;
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 0c94260b5d0c..89f5f1bd6e46 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -439,6 +439,10 @@ static inline pte_t pte_mkhuge(pte_t pte)
+ 	return pte;
  }
  
--#ifdef CONFIG_RISCV_ISA_SVNAPOT
--#include <linux/pgtable.h>
-+#endif
- 
--#define arch_vmap_pte_range_map_size arch_vmap_pte_range_map_size
--static inline unsigned long arch_vmap_pte_range_map_size(unsigned long addr, unsigned long end,
--							 u64 pfn, unsigned int max_page_shift)
--{
--	unsigned long map_size = PAGE_SIZE;
--	unsigned long size, order;
--
--	if (!has_svnapot())
--		return map_size;
--
--	for_each_napot_order_rev(order) {
--		if (napot_cont_shift(order) > max_page_shift)
--			continue;
--
--		size = napot_cont_size(order);
--		if (end - addr < size)
--			continue;
--
--		if (!IS_ALIGNED(addr, size))
--			continue;
--
--		if (!IS_ALIGNED(PFN_PHYS(pfn), size))
--			continue;
--
--		map_size = size;
--		break;
--	}
--
--	return map_size;
--}
--
--#define arch_vmap_pte_supported_shift arch_vmap_pte_supported_shift
--static inline int arch_vmap_pte_supported_shift(unsigned long size)
--{
--	int shift = PAGE_SHIFT;
--	unsigned long order;
--
--	if (!has_svnapot())
--		return shift;
--
--	WARN_ON_ONCE(size >= PMD_SIZE);
--
--	for_each_napot_order_rev(order) {
--		if (napot_cont_size(order) > size)
--			continue;
--
--		if (!IS_ALIGNED(size, napot_cont_size(order)))
--			continue;
--
--		shift = napot_cont_shift(order);
--		break;
--	}
--
--	return shift;
--}
--
--#endif /* CONFIG_RISCV_ISA_SVNAPOT */
--#endif /* CONFIG_HAVE_ARCH_HUGE_VMAP */
- #endif /* _ASM_RISCV_VMALLOC_H */
++#define pte_leaf_size(pte)	(pte_napot(pte) ?				\
++					napot_cont_size(napot_cont_order(pte)) :\
++					PAGE_SIZE)
++
+ #ifdef CONFIG_NUMA_BALANCING
+ /*
+  * See the comment in include/asm-generic/pgtable.h
 -- 
 2.39.2
 
