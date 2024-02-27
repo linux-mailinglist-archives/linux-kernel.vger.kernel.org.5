@@ -1,172 +1,130 @@
-Return-Path: <linux-kernel+bounces-82986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9874868C95
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:44:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A48E1868CA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:46:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EAE51F21F6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:44:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EAD92844D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 840DE1369A2;
-	Tue, 27 Feb 2024 09:43:58 +0000 (UTC)
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DD11137C21;
+	Tue, 27 Feb 2024 09:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bnFZzcs8"
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B268136989
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7C856466
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709027038; cv=none; b=p+Ga3EX12o5B0ZszZ7Ij/xUiAhZixw97rbgB/tUiIDqDdzcBEzLsiSgdaGBItkvbfa18rgaZClh/4yYkUTqJITYDUi23RIzKw1beIhW7SCmSMQhM9hHes89KfALfgY3ymEK7UUZUlfk4b9mje6hvYxobLLh2pwsbjJX20IwXaVw=
+	t=1709027169; cv=none; b=dCxFe5IF3TFDGzcy9BwJaYacsvrYVG3YdeUVM5+uzx07dj+t5KqLKUURGpWbcK011dvcJgpQ1SamZGFcioPgMIclEteRZJBc9IAYRZAUHkImV50hLgdErq7t5zfjoqLLObQqH6FdX0uSCkGEPWU/G1RQpylfsa8m6vxCzKw3d2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709027038; c=relaxed/simple;
-	bh=eY9mLWvWENbzvvnDFf61NURLD+YUY43q8xe+W2oscqU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JytAbcgjdUXwXH2rYFUpl4/Mz3U9ogmS9Bq6Rh2ugRg+SOnASIxjwhO6KVRxl9Qkdhc08Q9RtXHn+fdwisA/MHK9J2pyqJYFp85bTJDxL/XuQuWVRvx0GXCMYAjLdpLhgBf62vGBu4gbcArqopPa4oEYFy8KA724gYPbF3xRoYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33d6f1f17e5so2824241f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:43:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709027035; x=1709631835;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BZtneY2221lsZSEsmdoaC1eV3+M74BwSZ3O0IWrGErE=;
-        b=KX0MoAJ4tdqnjmi7t6mZpHihaqNXoFB92wF3gOwLBVFn9FPIXH8Kis7gysemKUxQox
-         lgMGe2PcFMeSHyFYjhsDDopI4vGQva4+knEaNh0UmRWUPQc4VCglrk+/6xIFn1VzCwAt
-         oplTPSzDwfMLIQJO2etZKDufVmzOTpgCpoM/hJRTO1OnsjxpL/XXVQF6hT1Nueya7miS
-         bYXXfaLFkQpaPmw6ji9OJua2+79jXV0f62f0Ww2i+LA8qytQy4HMV2t1UzZV7/74HQBB
-         V1ASswrpfSWlXxQbbajul2Hz6/YtIjopBgzHjgPIbCV2gPnLT49PBvSNw+cXprnhaQYx
-         WaLw==
-X-Forwarded-Encrypted: i=1; AJvYcCUNKmC8czV8h0nMzf3M/x9W4YPiU+HTDUlP+V24kgr0l9SDI+c6uXNEmiO6BugJ6ky67ubeZrUsObM1a4UgTb9DnbSrnif5VfAXlYxc
-X-Gm-Message-State: AOJu0Yyd8jXfqcHGqzYzSHQ9fPmt/9H3Rm5SMWwkTVDA4HVxHIXSaydP
-	xuEH0wnSta8wDnK4eGJnhL+Zw1Zc1nX+mMldFKKt5/q5JcOGmNPcoYLFKUSN
-X-Google-Smtp-Source: AGHT+IEDGtE8I8A1QnL0Ktxr53lZ37S+YmKxSgo1/2HMyXIysJdbv/A72aHQ2284EM1mBFbv2C4yfg==
-X-Received: by 2002:adf:e6c8:0:b0:33d:6334:e14 with SMTP id y8-20020adfe6c8000000b0033d63340e14mr5938816wrm.11.1709027034445;
-        Tue, 27 Feb 2024 01:43:54 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id by6-20020a056000098600b0033d568f8310sm10976586wrb.89.2024.02.27.01.43.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 01:43:54 -0800 (PST)
-Message-ID: <373674e4-cbd0-44d7-98c7-304b0ab4f34b@kernel.org>
-Date: Tue, 27 Feb 2024 10:43:53 +0100
+	s=arc-20240116; t=1709027169; c=relaxed/simple;
+	bh=+ytKwk3NacclcWujYuHxkN3+LNPa8DzWTEDtglex9XI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XXDahg1UE7Htf5my5loF44mSalrZL6jQ/pNYZHNygg+V8H1poqF+7H/XphTJwwMlXJ2fHoLp3NDRxBf2xc6ekZGQV4tJia3xWI30qs5cREQfaUk3yO+TEIBPJjfx8+Zrcc/bNv+FMtYf6c/cLJt5CfoAJE4my2S2XK2VUVACTCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bnFZzcs8; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 27 Feb 2024 04:45:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709027164;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9nlWS0taAPbDFSntCaJ2TVsOBW7I3UD2z/xphXUPlTY=;
+	b=bnFZzcs8sYgZ/WAdp0TCl6iE8mORl4n3jkZU5UpN+8Yhyt3ppzRDI0kT83L14Ajo+/3/GK
+	cZPS6F/lDYPzAIXE3bk0+iyBp+ia2OM22CiV0C1VfGZKHiyciWdHzAc5YyzQQOOBpcszQR
+	zOdtNjr321Tq148zhVLstoxTE62xRfM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, 
+	mhocko@suse.com, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
+	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
+	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
+	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
+	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v4 15/36] lib: introduce support for page allocation
+ tagging
+Message-ID: <z3uitmi57ccg2iifn5nb3pav6skh4zjfvemhuxqdlmwdij3242@wx2lbakzwrxc>
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-16-surenb@google.com>
+ <d6141a99-3409-447b-88ac-16c24b0a892e@suse.cz>
+ <CAJuCfpGZ6W-vjby=hWd5F3BOCLjdeda2iQx_Tz-HcyjCAsmKVg@mail.gmail.com>
+ <72cc5f0b-90cc-48a8-a026-412fa1186acd@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/bugs: Use fixed addressing for VERW operand
-Content-Language: en-US
-To: Nikolay Borisov <nik.borisov@suse.com>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>,
- Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc: Daniel Sneddon <daniel.sneddon@linux.intel.com>,
- linux-kernel@vger.kernel.org
-References: <20240226-verw-arg-fix-v1-1-7b37ee6fd57d@linux.intel.com>
- <92440f47-21b7-4f4f-ad99-a99358cfbedf@suse.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <92440f47-21b7-4f4f-ad99-a99358cfbedf@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <72cc5f0b-90cc-48a8-a026-412fa1186acd@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On 27. 02. 24, 9:47, Nikolay Borisov wrote:
+On Tue, Feb 27, 2024 at 10:30:53AM +0100, Vlastimil Babka wrote:
 > 
 > 
-> On 27.02.24 г. 1:52 ч., Pawan Gupta wrote:
->> Macro used for MDS mitigation executes VERW with relative addressing for
->> the operand. This is unnecessary and creates a problem for backports on
->> older kernels that don't support relocations in alternatives. Relocation
->> support was added by commit 270a69c4485d ("x86/alternative: Support
->> relocations in alternatives"). Also asm for fixed addressing is much
->> more cleaner than relative RIP addressing.
->>
->> Simplify the asm by using fixed addressing for VERW operand.
->>
->> Fixes: baf8361e5455 ("x86/bugs: Add asm helpers for executing VERW")
->> Reported-by: Nikolay Borisov <nik.borisov@suse.com>
->> Closes: 
->> https://lore.kernel.org/lkml/20558f89-299b-472e-9a96-171403a83bd6@suse.com/
->> Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
->> ---
->>   arch/x86/include/asm/nospec-branch.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/include/asm/nospec-branch.h 
->> b/arch/x86/include/asm/nospec-branch.h
->> index 2aa52cab1e46..ab19c7f1167b 100644
->> --- a/arch/x86/include/asm/nospec-branch.h
->> +++ b/arch/x86/include/asm/nospec-branch.h
->> @@ -323,7 +323,7 @@
->>    * Note: Only the memory operand variant of VERW clears the CPU 
->> buffers.
->>    */
->>   .macro CLEAR_CPU_BUFFERS
->> -    ALTERNATIVE "", __stringify(verw _ASM_RIP(mds_verw_sel)), 
->> X86_FEATURE_CLEAR_CPU_BUF
->> +    ALTERNATIVE "", __stringify(verw mds_verw_sel), 
->> X86_FEATURE_CLEAR_CPU_BUF
+> On 2/26/24 18:11, Suren Baghdasaryan wrote:
+> > On Mon, Feb 26, 2024 at 9:07 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> >>
+> >> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> >>> Introduce helper functions to easily instrument page allocators by
+> >>> storing a pointer to the allocation tag associated with the code that
+> >>> allocated the page in a page_ext field.
+> >>>
+> >>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> >>> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> >>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> >>
+> >> The static key usage seems fine now. Even if the page_ext overhead is still
+> >> always paid when compiled in, you mention in the cover letter there's a plan
+> >> for boot-time toggle later, so
+> > 
+> > Yes, I already have a simple patch for that to be included in the next
+> > revision: https://github.com/torvalds/linux/commit/7ca367e80232345f471b77b3ea71cf82faf50954
 > 
-> Actually thinking about it more and discussing with Jiri (cc'ed), will 
-> this work with KASLR enabled?
+> This opt-out logic would require a distro kernel with allocation
+> profiling compiled-in to ship together with something that modifies
+> kernel command line to disable it by default, so it's not very
+> practical. Could the CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT be
+> turned into having 3 possible choices, where one of them would
+> initialize mem_profiling_enabled to false?
+> 
+> Or, taking a step back, is it going to be a common usecase to pay the
+> memory overhead unconditionally, but only enable the profiling later
+> during runtime? Also what happens if someone would enable and disable it
+> multiple times during one boot? Would the statistics get all skewed
+> because some frees would be not accounted while it's disabled?
 
-I might of course be wrong. We appear to rely on the asm+linker here. 
-Please see also:
-https://lore.kernel.org/r/fd8f2df0-563e-4f5c-aca4-bc92a14e9426@kernel.org
+I already wrote the code for fast lookup from codetag index -> codetag -
+i.e. pointer compression - so this is all going away shortly.
 
-thanks,
--- 
-js
-suse labs
-
+It just won't be in the initial pull request because of other
+dependencies (it requires my eytzinger code, which I was already lifting
+from fs/bcachefs/ for 6.9), but it can still probably make 6.9 in a
+second smaller pull.
 
