@@ -1,235 +1,142 @@
-Return-Path: <linux-kernel+bounces-83245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA79C8690C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:39:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E37BD8690B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EFDF284452
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:39:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 852F5B2103A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B0813A896;
-	Tue, 27 Feb 2024 12:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE61F136667;
+	Tue, 27 Feb 2024 12:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=udima.es header.i=@udima.es header.b="SORrIfKN"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="hqnyz1zy"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823CD13A258
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F0E11CD3B;
+	Tue, 27 Feb 2024 12:37:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709037569; cv=none; b=qySezkxrjohLkXPERo+9VwJrPad/9hjzjQsajCc3Zve4bWOr2Li/D4ALz0MvJJ/9/8QzAa5CBMSLAz0OPYxL6jah1MurAEa5T6CkjefUkHbmV8gy7gsduwbf3XBDF6RbYZ436QBDvFyApWrBNLaxaL2Xh3s1i9OPNhLVIjCComQ=
+	t=1709037448; cv=none; b=HFEj8AtQAnf6LzYcPgGJru9Fl2TIVwrpWpIeGUSEESe6CEN9tloy6waFqXD33YH9Da6tVajGY/8QUavkN5iOyqErjdCZaIZQJi3wkRE6A1iH/AVXXUqjyizomoyMliIhFla20taPPVdAmLqGJHX6Ouh3GnXha4IYIO6EKZ2AUX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709037569; c=relaxed/simple;
-	bh=IglaxdcZLU76jtprsOmWHg7k//GQ0hgdjNnuOUMEAVE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A3ROdBuzCQVO3XyjpU2reQgynp0VGjTBDesod398heupWtxqo/1PyzidZfy9VlTFOXu9yVdbkkZ73E440frYPIPJ6ueCOiAjHQIpY+cXgEY+PMS8rB+etHubGD8Ls6ngnzY1+vdiuyOQg/CRLwjAexFiKBPi1vhcHSeRI7dXdfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=udima.es; spf=pass smtp.mailfrom=udima.es; dkim=pass (1024-bit key) header.d=udima.es header.i=@udima.es header.b=SORrIfKN; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=udima.es
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=udima.es
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33d26da3e15so2379279f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:39:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=udima.es; s=google; t=1709037564; x=1709642364; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ulSh+zGZ8+dyF926zcKrRhp4LS8bqP+HSdasdk27iBg=;
-        b=SORrIfKN823y17rLyenkBj+/iROfbZGuBLb81Yrk6DPdYExXqlvZphXiwfPPLFETNg
-         tUk+Ke1aN29TvDYVkdjy/kpv3ZucL2PLbnwoZLpeW7jH3bWzvyyTK2pIsher5NvZQbp0
-         ZVi4yObKoBeatg8talaP0a8S1IGCquZJiS+wA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709037564; x=1709642364;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ulSh+zGZ8+dyF926zcKrRhp4LS8bqP+HSdasdk27iBg=;
-        b=SYhjBZZXHqOE5A6Qom2NyRfVlRc000EfaGfe9rCaFEa5StNgwcm8AKQKSnxA9UAOR0
-         oV5nkWkzi4gCn93iMbEGIH8hzsa2y7JotaL+EdU1/Po8ZLA+7qi1IcUezpriBhQ8E6sT
-         ZWIPDGmoAyh5ED5YRQALmKmQYZX81CIAnFdvdzqSrTjVjnBnUn2tlGDgrbhXxM75e0YW
-         U6jljCsF/28pUp2fHUQzKkyz6qZgCE37Y7fW4ASobtmRD9FIj/9oHVRlYKdF42hAFW/5
-         90zpZ4TQB9zJjeKF2NqQCATsDUlz1hTkOxeviADji8Fk14YK/YT8QH8cnUzfPYM823tz
-         jFXg==
-X-Forwarded-Encrypted: i=1; AJvYcCVEG6rfCprNzjNnz+jOxYFrRo9UpcoMZWa22sKXJKdVdl46Rdxcn7mCWI4xGmr4RV3DSQUHFNIPHC2BjSch/Qgqi6Is3fZ6VGZiix6H
-X-Gm-Message-State: AOJu0Yz31ZE60O4Becndsogw3dxd4vHS3pT1n4OOMvIuoZ81fZtOAKOf
-	zCPd7PSXkDrJlQaFjhVvbVu+n+SsDDDKhQftzya4LWIGoQ1bcULpk6i+TPUlbrU=
-X-Google-Smtp-Source: AGHT+IEmHNL+YaOOg3Qorj9DIRtr3BjF7dDzlkl0TJwo1yMeS3zmaiUNv0d+QEC07JdkBi5KsJphoQ==
-X-Received: by 2002:adf:d1c3:0:b0:33d:7ec9:f5d0 with SMTP id b3-20020adfd1c3000000b0033d7ec9f5d0mr9918938wrd.2.1709037563746;
-        Tue, 27 Feb 2024 04:39:23 -0800 (PST)
-Received: from portatil76.udima ([79.116.0.170])
-        by smtp.googlemail.com with ESMTPSA id bw1-20020a0560001f8100b0033af3a43e91sm11444061wrb.46.2024.02.27.04.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 04:39:23 -0800 (PST)
-From: =?UTF-8?q?Javier=20Garc=C3=ADa?= <javier.garcia.ta@udima.es>
-To: 
-Cc: daniel.baluta@nxp.com,
-	javier.garcia.ta@udima.es,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	alsa-devel@alsa-project.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
-Date: Tue, 27 Feb 2024 13:35:55 +0100
-Message-ID: <20240227123602.258190-1-javier.garcia.ta@udima.es>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709037448; c=relaxed/simple;
+	bh=vL3h/IKG2Lc53EUgGT8KSBiS7JMMvvCh4EzUmuDxQuI=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PrshsZqcllTisn67flBj+K2kIqhnyyr8DRAVpnGCqiTPiuhYmk4R/kUO2tZPguQNP97t3uxMPf3SJlbDfyLdvghyQX7xLaZeqTkVvD+stcxmnb97H8KuAgfweJoaEwB4DaadzY9G8ZTMoSUjI3woEJSVjGkBT90qZZpP4+Lc/x8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=hqnyz1zy; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709037446; x=1740573446;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vL3h/IKG2Lc53EUgGT8KSBiS7JMMvvCh4EzUmuDxQuI=;
+  b=hqnyz1zyUmFx0mZVDgnVpoyeyc98LDGtGQqep23JBNikKIOmNQtYPZZw
+   Cpuaj2zj+Tzm0OaYn44FFbNiuhZfKCPVdGz4bqc/rVeOuj93HTV9CN3ID
+   0vqVDPNwN1LlkGgg6dO0qVneqptTd78uraVSU1GLMEt8UF5bFzo2ii90Q
+   RNP9MJ7o1yZboZmqIZe/ZRdV97d7QsDFyiK0FAlxRLtdXL66fleo2VY86
+   50RQy2yTVxaNjlJRWxY329KQi+Izk05Pvl1r85tnpjmce0o3oXpAzA1SS
+   pmFp//244xdLHXb8kLtfifufNI+wMWrmwzWBCHmBDOkH0qH7QZB1Jxv9Z
+   Q==;
+X-CSE-ConnectionGUID: RIjtrF0uTky5IbYLb0NUFw==
+X-CSE-MsgGUID: VyN+l4VUTNyBBErAHgla5w==
+X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
+   d="asc'?scan'208";a="16883354"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 05:37:25 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 05:37:09 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 27 Feb 2024 05:37:06 -0700
+Date: Tue, 27 Feb 2024 12:36:23 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+CC: Conor Dooley <conor@kernel.org>, <linux-riscv@lists.infradead.org>, Miguel
+ Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida
+ Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo
+	<gary@garyguo.net>, =?iso-8859-1?Q?Bj=F6rn?= Roy Baron
+	<bjorn3_gh@protonmail.com>, Jonathan Corbet <corbet@lwn.net>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Nathan
+ Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
+	Tom Rix <trix@redhat.com>, <rust-for-linux@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<llvm@lists.linux.dev>
+Subject: Re: [PATCH v2 2/3] scripts: generate_rust_target: enable building on
+ RISC-V
+Message-ID: <20240227-swarm-serpent-2010b255f68a@wendy>
+References: <20240223-leverage-walmart-5424542cd8bd@spud>
+ <20240223-employee-pessimism-03ba0b58db6b@spud>
+ <CANiq72ngEZskjH0f=8+cJuQsFTK227bGCxe5G0STMHuPbZYnXg@mail.gmail.com>
+ <20240227-resolved-deceit-4a59a6af5b71@wendy>
+ <CANiq72mwM+4Oh-H5WmRoqQ_nE1w-eJ1wn-nEwS=BR9JRwzxMMQ@mail.gmail.com>
+ <20240227-glove-underwire-f562a56cf2c7@wendy>
+ <CANiq72=f03_bw9B8ww8UxHkVyP2F7ZPyvC+KWCyhO3Nk1yqdaw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="lgqlciDgvTDbCOgO"
+Content-Disposition: inline
+In-Reply-To: <CANiq72=f03_bw9B8ww8UxHkVyP2F7ZPyvC+KWCyhO3Nk1yqdaw@mail.gmail.com>
 
-Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
+--lgqlciDgvTDbCOgO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Javier García <javier.garcia.ta@udima.es>
----
- .../bindings/sound/img,spdif-in.txt           | 41 ----------
- .../bindings/sound/img,spdif-in.yaml          | 80 +++++++++++++++++++
- 2 files changed, 80 insertions(+), 41 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.txt
- create mode 100644 Documentation/devicetree/bindings/sound/img,spdif-in.yaml
+On Tue, Feb 27, 2024 at 01:12:51PM +0100, Miguel Ojeda wrote:
+> On Tue, Feb 27, 2024 at 12:05=E2=80=AFPM Conor Dooley
+> <conor.dooley@microchip.com> wrote:
+> >
+> > My point though was more
+> > that either this was acceptable for v6.9 or would be v6.10 material
+> > with the same mechanism as arm64. Rebasing after v6.9-rc1 but not
+> > adapting to that way of doing things is what seemed silly to me, since
+> > if a resend is required then the other improvements should be carried
+> > out at the same time.
+>=20
+> If avoiding the `target.json` is possible, definitely.
+>=20
+> I didn't want to assume it is, though -- e.g. the native integer
+> widths you have is 64 but the built-in targets use 32:64 (perhaps
+> there is a way to tweak it with an LLVM param via `-Cllvm-args`, but I
+> don't see any obvious way from a quick look; `opt` does have it,
+> though).
 
-diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.txt b/Documentation/devicetree/bindings/sound/img,spdif-in.txt
-deleted file mode 100644
-index f7ea8c87bf34..000000000000
---- a/Documentation/devicetree/bindings/sound/img,spdif-in.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--Imagination Technologies SPDIF Input Controller
--
--Required Properties:
--
--  - compatible : Compatible list, must contain "img,spdif-in"
--
--  - #sound-dai-cells : Must be equal to 0
--
--  - reg : Offset and length of the register set for the device
--
--  - dmas: Contains an entry for each entry in dma-names.
--
--  - dma-names: Must include the following entry:
--	"rx"
--
--  - clocks : Contains an entry for each entry in clock-names
--
--  - clock-names : Includes the following entries:
--	"sys"	The system clock
--
--Optional Properties:
--
--  - resets: Should contain a phandle to the spdif in reset signal, if any
--
--  - reset-names: Should contain the reset signal name "rst", if a
--	reset phandle is given
--
--  - interrupts : Contains the spdif in interrupt, if present
--
--Example:
--
--spdif_in: spdif-in@18100e00 {
--	compatible = "img,spdif-in";
--	reg = <0x18100E00 0x100>;
--	interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
--	dmas = <&mdc 15 0xffffffff 0>;
--	dma-names = "rx";
--	clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
--	clock-names = "sys";
--	#sound-dai-cells = <0>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/img,spdif-in.yaml b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
-new file mode 100644
-index 000000000000..d201293d63c7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/img,spdif-in.yaml
-@@ -0,0 +1,80 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/img,spdif-in.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Imagination Technologies SPDIF Input Controller
-+
-+maintainers:
-+  - Rob Herring <robh+dt@kernel.org>
-+  - Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - img,spdif-in
-+
-+  reg:
-+    description:
-+      Offset and length of the register set for the device.
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  dmas:
-+    maxItems: 1
-+
-+  dma-names:
-+    items:
-+      - const: rx
-+
-+  clocks:
-+    items:
-+      - description: The system clock
-+
-+  clock-names:
-+    items:
-+      - const: sys
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  resets:
-+    items:
-+      - description: Should contain a phandle to the spdif in reset signal, if any
-+
-+  reset-names:
-+    items:
-+      - const: rst
-+
-+required:
-+  - compatible
-+  - reg
-+  - dmas
-+  - dma-names
-+  - clocks
-+  - clock-names
-+  - '#sound-dai-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/pistachio-clk.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/interrupt-controller/mips-gic.h>
-+    #include <dt-bindings/reset/pistachio-resets.h>
-+    spdif_in: spdif-in@18100e00 {
-+        compatible = "img,spdif-in";
-+        reg = <0x18100E00 0x100>;
-+        interrupts = <GIC_SHARED 20 IRQ_TYPE_LEVEL_HIGH>;
-+        dmas = <&mdc 15 0xffffffff 0>;
-+        dma-names = "rx";
-+        clocks = <&cr_periph SYS_CLK_SPDIF_IN>;
-+        clock-names = "sys";
-+
-+        #sound-dai-cells = <0>;
-+    };
--- 
-2.43.0
+Looking closer at those targets, all of them enable compressed
+instructors, but we support hardware that does not support them.
+I think that means we are stuck with the custom targets.
 
+I could badger Palmer to pick this up tomorrow, provided you're okay
+with the gist of this series.
+
+Cheers,
+Conor.
+
+--lgqlciDgvTDbCOgO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd3XRwAKCRB4tDGHoIJi
+0pwnAQDKxa0TynZPieVRztR0zcy3tmhfLcVSi9lF1+smiaRObwD/S98C/1BHyqaa
+o69/XjNcE1BNOR9mwoXX9xRD9UA01Qc=
+=I1HU
+-----END PGP SIGNATURE-----
+
+--lgqlciDgvTDbCOgO--
 
