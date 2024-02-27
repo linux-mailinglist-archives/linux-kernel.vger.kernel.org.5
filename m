@@ -1,127 +1,172 @@
-Return-Path: <linux-kernel+bounces-83618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B710869C54
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:38:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85EF1869C67
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:39:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDA901C24B97
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:38:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 295BAB32960
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B43208B4;
-	Tue, 27 Feb 2024 16:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NvcFz/+s"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6DA7250F8;
+	Tue, 27 Feb 2024 16:38:15 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2095.outbound.protection.partner.outlook.cn [139.219.17.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5990C208AD
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:38:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709051882; cv=none; b=m+aS9Im+R1kxg/lWxUEWmdI/gOZp7yH70/27BW/z3XpIDoyfs4aJ2Vv9yoGRctimhN52v5b80HzSBmgfsEkJemRugkYXGDllb1C948FuPRqU0K9FYXmfryOYVA2hz7vp7vfiGhHz0nV39tvRwlG33i2V4GIN3L+itcNKAbYW9f8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709051882; c=relaxed/simple;
-	bh=OHiW7rbcuYzcClUQc9OK8mKAChRHcUsMHQFdnb5Tz8g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=a7gMeV/dv3vqexRZpH/MDAwl8J5PUWHp1fygiZv7o8fcrmNdM88BqJmTi3vq5z81ls7CYBnELdbg1r+48ppGYNwXaAVjoWwFoe/qdRHa5C8AjGa78tLihQ1ThUAKFjHc2vHMAYCiOkQ7nA264vIDPetpQIwjBYRZVUqBQOcAUH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NvcFz/+s; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RC8LGQ003566;
-	Tue, 27 Feb 2024 16:37:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=/MGuTE0DU8CyyPYXulKWAoGMCEKdrgcReMxRuOBYI80=; b=Nv
-	cFz/+sa3SZq+3WwkOWZNT6V2czM7PqeeXgumZePSPZEr7g87C3gsiEYvf4ykUUNR
-	vVBoOFC1PO7stNLhq5A2f1E7PRndI0eNDqlvzahIl1+VVOh6A9jXZIGTfasxrpIZ
-	W0m52NlvE0MjSO66HzE8h0rqR1c8/XD9echohlcomZCNduNjWqLZR2A8TFSGa6Nl
-	xCuL5+ojUpUc104e/obC7x14929/pVT4Wac60dngnDUHguUqfYhcikSZwbWXJ7Uw
-	apEo/KrMS8wBBsGCus+2MXLt7CWD9hi/8hRzBH+vnh1jj/GTOTf6m5rbkSWmh2Js
-	z9HWnUIuA8EbGl7K8s5w==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh64qhx5j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 16:37:38 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41RGbEIM029254
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 16:37:14 GMT
-Received: from [10.216.25.104] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 27 Feb
- 2024 08:37:11 -0800
-Message-ID: <2408885e-517d-dc98-e05a-b79de0c66c38@quicinc.com>
-Date: Tue, 27 Feb 2024 22:07:08 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826471F61C;
+	Tue, 27 Feb 2024 16:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.95
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709051895; cv=fail; b=WTFXBXI+qic+KOocTSNfyA1RL14Fj/vM6k2OBc5k8Krxu+JvrODpzyIYr79olm+eH1QFYhtnp3hk/1ZLeAT63Lf4Pc6NwE6oA7My1vM0Iib9SVCFScOYHk8Sjei/mJo1ZzmNZjy1GN8ybD8ICxemJKwTSueX6cc7TMCouO2sT2g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709051895; c=relaxed/simple;
+	bh=asem7D2d3ie17mLaIhy+1kEiIEcNR9D58UV9tfBd3YE=;
+	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=H4lm98Domn7ozjPHvygLYphms+90i2VAFKcHdj8/+CctcdCEKvED8NRbnEKqFKeOmHfnbTeToIEytKt6eeq5muQslY3bsGiSin+TP6/JKM2J9TjsovpGPeV6mZU4aO0Er3kl2m8Cd/BX4MhP34RWuSL8WpUMp54EJFJOuCjEHIo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Zkxp2/uuKvRoiupzyTRRkgc73ejpEOaZZqjqxn7N1DTnu7LtCxz4jWvd/71eCAZtlj+5i2GDRSNDFHaY5mxwJScFJXdFJVw4qxlaRoUd8IHGQd7cuq27pC7vD/74UmhVehSW2IfWNzz0ns/67OKbU+nxleWU1Y/XksQMOmibvCmiPuqkNOfqBBma3H8QXc4ar4FZaaH0gLHYoE0fi09P53lj1TtdA7yHZFklRxM0NR78vtOs2SUcYjRr1/4wZWs66WKo823aIHqpzqGf8gosZpWxYXuSOnDIxl2/K9W9ZVIJ754/4f723uE69HU8T23tbhpsZffaltNvcaPJ7VMScQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hYx+KSEMw1F+aSAH+9sIPjRzNNgvs+xXHPlRNX5ahkk=;
+ b=EdFgG4PS9Op3EPeQpOXOxJFLOhxtlv+/shEffgxOBCnW1SsDvOSVDCUz7gneK+b70nYImfl91zTW7IPJrVQamsi1AdiDSzRuMcANqPfUV4uYkrsXxHix3ToS9gxDJhrZiEOZn6MOZtV1bYsBXJ4uamilBnRvJmtPMBj7V5LApQTI2GXf7u9Uzkb22/ifoWzg7j77kYGAvNABPQwqa40PxZPzMizaGHKVfR6JqcwxPy3CNdvNuFuMQULBtk+eQr9KEfKSBRh6s4LLiYozJLfLwawO8Qhesna6S3zXJXS4oee++vcGZ2Y2eChcuu0Fhzd/jhjvpS70AV5jcf0c5NkdGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:26::16) by SHXPR01MB0685.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:27::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7249.42; Tue, 27 Feb
+ 2024 16:38:06 +0000
+Received: from SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+ ([fe80::9ffd:1956:b45a:4a5d]) by
+ SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn ([fe80::9ffd:1956:b45a:4a5d%6])
+ with mapi id 15.20.7249.041; Tue, 27 Feb 2024 16:38:06 +0000
+From: Jia Jie Ho <jiajie.ho@starfivetech.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	dmaengine@vger.kernel.org
+Subject: [PATCH v3 0/6] crypto: starfive: Add support for JH8100
+Date: Wed, 28 Feb 2024 00:37:52 +0800
+Message-Id: <20240227163758.198133-1-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: NT0PR01CA0014.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510::16) To SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:26::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] printk: Update @console_may_schedule in
- console_trylock_spinning()
-Content-Language: en-US
-To: John Ogness <john.ogness@linutronix.de>, <pmladek@suse.com>,
-        <rostedt@goodmis.org>, <senozhatsky@chromium.org>
-CC: <linux-kernel@vger.kernel.org>
-References: <20240222090538.23017-1-quic_mojha@quicinc.com>
- <87plwo5z4k.fsf@jogness.linutronix.de>
- <e5474801-53c1-6bbb-8781-e5cee42d6a90@quicinc.com>
- <875xybmo2z.fsf@jogness.linutronix.de>
- <44648e78-d117-2f6a-8ecd-f0a29327fa4f@quicinc.com>
- <8734tfml8v.fsf@jogness.linutronix.de>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <8734tfml8v.fsf@jogness.linutronix.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LzOFRhNtxSBz9dOAtFyBnNLecZMYscoO
-X-Proofpoint-GUID: LzOFRhNtxSBz9dOAtFyBnNLecZMYscoO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-27_03,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- priorityscore=1501 suspectscore=0 mlxlogscore=990 clxscore=1015
- impostorscore=0 lowpriorityscore=0 phishscore=0 malwarescore=0 bulkscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402270128
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SHXPR01MB0670:EE_|SHXPR01MB0685:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a3be24e-a843-40f7-b9ea-08dc37b279c8
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	FCXfHTR45J8dG3rzVYis7q4AoDYqbMHKU0nJHEUf1oMDTb2GZDKIhdvBzY4owLWPwyh16PiGvPQbIxnVhtV9AW46PcxULQrTQmWl9Fay2ovW9vzn0KyxcWRkyc570JiU6oB2ePOLyLPEfyeytTETSh4Z8og35WBRG+4rRpM45R0Nh0Bp6dL5dSawzNIAkcK2n5Idq9j+g90BMCYV91TRZuoomIuoU7b2XyTxv8EV/z3BlLDrWSWkckKbWTCb8sgmYqrZfU67pwMcCSKDVQipNAGFq8vADaQJg+j8nHuCAlkKORy9w4y6AZ34+jsEzod9ijf9ExpKfSM3e3zzPUYC0H6s8S5WEBSHk/eWRaKUKvwJmW/j3yx0CPOMdxiMf6sd04NLAnq3ezAV75AVae2fPBhXoCZKgh5RYfQLo8XqCMoLY8C8/dTp3jkqbq3EiWm5eWfpvws2st7hr4YzZrkdZ/+06EIJ94vAW/A3wtSBKnUVr3XMsnhFF+E393O+MKhnJn0+p9/FRygFd6DlDLVG+LexGRmK+sFOui/GGMCzB5VjTcrZrkvNMTQ/tkSLFXegXKhURQTchK/Udt+M5IdDz/fxdA+K+gRshx9YrpKvu1UclcQYdal6PSkx07btZOgb7rYuEIyoouYbNwFT3zn3kQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38350700005)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?sZ9SGh2enYt+kuCIennKLes7x3DtI+dWfhYkL4Bg1mRrX8MyPoJ+8aO0mqMs?=
+ =?us-ascii?Q?we4MYJSjN7fgMek53fE1chnyM/jOH8MiAw1mn2DFFB1/hTkw1fNBbpMEkOJy?=
+ =?us-ascii?Q?4cxUhmHjmdvZTA84C25Uu7zkWoJZv5mfYViSPstZiVvgxTosobhxLhXQ3+it?=
+ =?us-ascii?Q?n08UqPDmvZgyBmopLvSB/69Ac+1ChD8dF+VEpkxYlGtKubunsYRopZc5dbcW?=
+ =?us-ascii?Q?PF6ShU5HaPsWPoXm29IyGM7WRjUR3JD6KB/22n1u6NMye8QyPkjYHZe6bPvN?=
+ =?us-ascii?Q?FYI9YHHXCJeFbYeQM9Nb0d0XhjEp1Zo3mxLNgcWyeXPcuAaOpqsvWnJthmNg?=
+ =?us-ascii?Q?svBbsS636RsvNuhOksUX8RrowxJw+WpCuBZu0G3wC6+cMbVB5pbTFV411hq2?=
+ =?us-ascii?Q?V19MB/omJC0xHzbwcXGWrIz2PEcg1SzgZLefEqKqUBFrloB+Q/XK7/bUYLf8?=
+ =?us-ascii?Q?bE7Lm+BGL+sB7WCy91NaBmy2I5HQnyQ7o51m4KHTdr3R/NWOJvnRIEdm5K+w?=
+ =?us-ascii?Q?v6j0cTLTALVi47JqFSJexYUPRc39NzPjVnoLz+Qk8BQJTDH+n8R+fjQWASiG?=
+ =?us-ascii?Q?r0zv/eVwfcBvyRh+jtOwUiq/T2jNE1eyiGmWRpzaI2O39TXJGStoQTMfPs9S?=
+ =?us-ascii?Q?AXpneWEr65hLPN8KPxP0xeC687pHN2MYwlsA4ls0D8dw/1kz+smZyHNLiwXt?=
+ =?us-ascii?Q?qN3sbLv+CkKRkU96ptKu+KfsIurnmCK9NZ83OIOGqfOkp3E67KLbe8QKg+zn?=
+ =?us-ascii?Q?s0wIRfBeAKtyOjUCGQEPnfHoYnOKuac5DDbVGg9eK85KZ/kTPFKYPsQq3336?=
+ =?us-ascii?Q?V/7DoQn6K4Tw/Samvm7bhjqM8xw1EREE5dHgt8aOJn/dBb3EaVeKalPds5T1?=
+ =?us-ascii?Q?TukdpLZQavQ2IA3kNGxKTwKPinsPThrQQ+xJsRxvR+RcTmdsWXcH7VwEGqc+?=
+ =?us-ascii?Q?PZznESdxo3CND2s9uczg9hE0suxgQRV8eZCz9Btazte8mMYLr0L/v8MR9yxr?=
+ =?us-ascii?Q?C58bwDXW+/bmqv/9HQRs/LXynGkgdyGv0bcjGzzsE3y839K9AYvrlGI10l+I?=
+ =?us-ascii?Q?dXufi0QyDMb00AmZ/B9ZKymNiojVqFklo5BGzKuNM7nk+z6ldyU6op/71K/Y?=
+ =?us-ascii?Q?9Qyr0S+CZD4WBoFAHWj05jgyPf+zLXKQ0ryviOdS5DYq59q7oQ6FGsceJNJx?=
+ =?us-ascii?Q?twXHCcajSJc880dH9GApF1BTRvsF27cEqgo3UOB+bKNWSE0w7nfPGOJMLC3U?=
+ =?us-ascii?Q?JHnhl4iNbOzFnRNrEHu2QgL2UnJy8ULigssQMqbD+dWHASele7HnmCJ24eCF?=
+ =?us-ascii?Q?K+a679QQrKFl7dOWr7EycAhkDnh5p46HbL633WtdwqT4K5PO0t+aPuHU8AII?=
+ =?us-ascii?Q?8cEJRhInoP4KFDIm6YcPdmtcsS7hTW5sjWRvieuBzoIXjdY+lBDxYFa0jpU+?=
+ =?us-ascii?Q?FZmYYN1VRGEPMYI0q2W3N6oSxtDlpB1U9g7EcbtzHFvrZm7+vOF5fadhMsGT?=
+ =?us-ascii?Q?qwQ/NOk68LlEpFbpqwUs7Fz+wS9S3sInc49XZCKZqkbYQcIXma+AzYMwdIuq?=
+ =?us-ascii?Q?DOc9D4ngMyFWFBRSrqzrp25TUP0eOUo0sAnBGOjDf53NAd1UE+btK2DKudxi?=
+ =?us-ascii?Q?Yw=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a3be24e-a843-40f7-b9ea-08dc37b279c8
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 16:38:06.7639
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 13xJdarasJkVp3+8euyuToQOwusClArFxklVhZAKQzqbwGZ9ltHQu7xBeVKporzI8Knkgjw4TBvXT/0Z2sY+O1e3m3y0GIQ2MshYszeXPjQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0685
 
+This patch series add driver support for StarFive JH8100 SoC crypto
+engine. Patch 1 adds compatible string and update irq descriptions for
+JH8100 device. Subsequent patches update current driver implementations
+to support both 7110 and 8100 variants.
 
+v2->v3:
+- Use of device data instead of #ifdef CONFIG_ for different device
+  variants.
+- Updated dt bindings compatible and interrupts descriptions.
+- Added patch 4 to support hardware quirks for dw-axi-dmac driver.
 
-On 2/26/2024 6:32 PM, John Ogness wrote:
-> On 2024-02-26, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
->> what if console_trylock_spinning() gets the lock which makes
->> console_may_schedule =1 and it is still schedulable ?
-> 
-> I am afraid I do not understand the question.
-> 
-> console_trylock_spinning() is only called from the printk caller
-> context. In this context, console_may_schedule is always set to 0.
-> 
-> Only if another context acquires the console lock per sleeping wait,
-> console_lock(), can console_may_schedule be set to 1.
-> 
-> Note that the value of console_may_schedule is only relevant for the
-> console lock owner when console_unlock() is called. That is why its
-> value is set when locking the console (or, with this patch, when
-> transferring console lock ownerhip).
+v1->v2:
+- Resolved build warnings reported by kernel test robot
+  https://lore.kernel.org/oe-kbuild-all/202312170614.24rtwf9x-lkp@intel.com/
 
-I overlooked it, thanks.
-Patch LGTM.
+Jia Jie Ho (6):
+  dt-bindings: crypto: starfive: Add jh8100 support
+  crypto: starfive: Update hash dma usage
+  crypto: starfive: Use dma for aes requests
+  dmaengine: dw-axi-dmac: Support hardware quirks
+  crypto: starfive: Add sm3 support for JH8100
+  crypto: starfive: Add sm4 support for JH8100
 
-Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
+ .../crypto/starfive,jh7110-crypto.yaml        |   30 +-
+ drivers/crypto/starfive/Kconfig               |   30 +-
+ drivers/crypto/starfive/Makefile              |    5 +-
+ drivers/crypto/starfive/jh7110-aes.c          |  592 ++++++---
+ drivers/crypto/starfive/jh7110-cryp.c         |   77 +-
+ drivers/crypto/starfive/jh7110-cryp.h         |  112 +-
+ drivers/crypto/starfive/jh7110-hash.c         |  304 ++---
+ drivers/crypto/starfive/jh8100-sm3.c          |  535 ++++++++
+ drivers/crypto/starfive/jh8100-sm4.c          | 1119 +++++++++++++++++
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    |   32 +-
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |    2 +
+ include/linux/dma/dw_axi.h                    |   11 +
+ 12 files changed, 2412 insertions(+), 437 deletions(-)
+ create mode 100644 drivers/crypto/starfive/jh8100-sm3.c
+ create mode 100644 drivers/crypto/starfive/jh8100-sm4.c
+ create mode 100644 include/linux/dma/dw_axi.h
 
--Mukesh
-> 
-> John
+-- 
+2.34.1
+
 
