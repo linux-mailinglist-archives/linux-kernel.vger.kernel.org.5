@@ -1,153 +1,111 @@
-Return-Path: <linux-kernel+bounces-83455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F9938699C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:04:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99D558699A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:02:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDBCCB29413
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:01:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54D02292CA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8B6149000;
-	Tue, 27 Feb 2024 14:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D922F149DED;
+	Tue, 27 Feb 2024 14:58:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tsXgDuZq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="DoNs7ATA"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75454145343;
-	Tue, 27 Feb 2024 14:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F3C1474D7;
+	Tue, 27 Feb 2024 14:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709045872; cv=none; b=QrcgrKWhHO/FCgxbhaFyJXx2XewJv/JaA0FIEJNawqYimE5M6YwwpUCSLDI5tEo0wUM3u8iZMsxeepepVDKM5cL8iAIE2g59IK2FaRObYnPSv2F3hIJ9P6TCVq8XbScvDg8B2tou3UaKGsWmBqtM+Ix7ejxusJBg9IBX4SCwbfs=
+	t=1709045885; cv=none; b=A+b9eM5dGPaX4/p4hT0zaOnLrDiw1b1SQvK1DGGLw1cmA6Edx8pjtnRgzWxs/c2oygudTiF2YyUo5U2uaVMLK8HPZRwO5j/cXjDTcQ0wBWc1WQz8qfsBnJjj9329dg/J8F3tANBaxuqZt/jUB1zRdAYdylLIOwAhW68nAn6TRA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709045872; c=relaxed/simple;
-	bh=wmEclif75z08Y7k+kYIcq9r8njHDzniHYzsVWuX5qXc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nvcEbAN/CYonehRsQzbHPhoEnmFJbVdD71rxtQpTCDz1+LJmal3gxNKQUcW772uVU+78sxbhiBDrvW4ovnhLIqIMUnLFZGCk4nJJzSYjMT4FSeuSoLRY8RTDC/vP7liQk2qd9l1+9nNXNvwzEMLmC4CHOTFaYeGwwn4ci4ruHxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tsXgDuZq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BB6BC433F1;
-	Tue, 27 Feb 2024 14:57:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709045872;
-	bh=wmEclif75z08Y7k+kYIcq9r8njHDzniHYzsVWuX5qXc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tsXgDuZqZaxkgTGkVT4vgZZkifzs/XhauPG/Z8VblgKg3JYBuzgPCH2sN/AOfYAsz
-	 Cizp02wJoy2Js13JQt0E+Zl0HHvCGA3oZPWP9ioF8VBtoICsQTFvdJzNjP0YHkL+jx
-	 ZIEk0/YHOPTJNdkd9MEZU1P/jrlu9PFKFSfTKXyWBhplucxucznwgrqof5c5iGRM/2
-	 tUKDL8CJyGhfVnM/DYhRi1QnqmdGaigiZHrlvcPEAFN5h7QksWvunvY47bRRJDFmc2
-	 IfgbTjgpxKGsD+8Gs+Bdb72wnC6/I2S3F3cVc+DfaWBszVKJLxEdYDxu+6MSCu1WCQ
-	 xKCvkJWQbWn0Q==
-Date: Tue, 27 Feb 2024 08:57:51 -0600
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
-	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-	James Morris <jmorris@namei.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Miklos Szeredi <miklos@szeredi.hu>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 20/25] ovl: add fscaps handlers
-Message-ID: <Zd34b4Lw9hOHJYr2@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-20-3039364623bd@kernel.org>
- <CAOQ4uxjvrFuz2iCiO9dsOnear+qN=M+GFW-eEOZU5uCzBkTwLQ@mail.gmail.com>
+	s=arc-20240116; t=1709045885; c=relaxed/simple;
+	bh=y1Ygv47ECIb/VfxJUSJLmULU1TrWL/0eo2q14QVsgbw=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=qSdtThfUbQh13PrQ/90MOrUmmCBjXsKP4n6CrB35ggrelsia4f3Ql8EwI71vZdfMtq2Z0zcdSjIQmu3+4WcpdaHzjhddRWx4n0oEx5zjo82ittEPY+hWuab4I3oCNo7aSPyA8TKJ0OzAQ2MvnITWaSmeMYrMDGMaIiI62hMBWhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=DoNs7ATA; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjvrFuz2iCiO9dsOnear+qN=M+GFW-eEOZU5uCzBkTwLQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1709045880;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JTZuVi0d9uvRZL4My10OcZy9FBePsZQVwsZhJKzdOL4=;
+	b=DoNs7ATAI7kNuKmqWQm1bN1fJwd8ZKY0K+/yD1DzuW7xgfvgw085ZOa2rLbXEDfuKVk5eg
+	srCPtSdxKNKeetNpEEgERqTKNRJhl01qdjIWrF6mqwLnL911EQzC9pOB2B0RB+RhwGfI+V
+	aClodNXyGmn3uX4EbE1IaAdiJWLtv8l0sFoBva7b/FMoo/kEbvZNDXIKly3UXMPftKJCA3
+	LiOFFyDaOYXrbbcvBKBC+Ea9cL63jHxLMlniykE9TxQWcgADEZg2IPCCc77GRE4P5HcYUN
+	aq/ErBLdPaNAPly9K2A59/SrjU2IsgIiVHHqLGWNkvBc9IzHVL0bVtOb9MVyuA==
+Date: Tue, 27 Feb 2024 15:58:00 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Anand Moon <linux.amoon@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] arm64: dts: rockchip: Add cache information to the
+ Rockchip RK3566 and RK3568 SoC
+In-Reply-To: <CANAwSgQnoBx+th6s254sML+Zw+RZQC6WU9TjfMoWgHxmCqbDcw@mail.gmail.com>
+References: <20240226182310.4032-1-linux.amoon@gmail.com>
+ <8ceea100f2ef7cce296943ce1397161a@manjaro.org>
+ <CANAwSgQnoBx+th6s254sML+Zw+RZQC6WU9TjfMoWgHxmCqbDcw@mail.gmail.com>
+Message-ID: <4676da62ec0fc0fe89318baea0678e0c@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Tue, Feb 27, 2024 at 03:28:18PM +0200, Amir Goldstein wrote:
-> > +int ovl_set_fscaps(struct mnt_idmap *idmap, struct dentry *dentry,
-> > +                  const struct vfs_caps *caps, int setxattr_flags)
-> > +{
-> > +       int err;
-> > +       struct ovl_fs *ofs = OVL_FS(dentry->d_sb);
-> > +       struct dentry *upperdentry = ovl_dentry_upper(dentry);
-> > +       struct dentry *realdentry = upperdentry ?: ovl_dentry_lower(dentry);
-> > +       const struct cred *old_cred;
-> > +
-> > +       /*
-> > +        * If the fscaps are to be remove from a lower file, check that they
-> > +        * exist before copying up.
-> > +        */
+On 2024-02-27 13:49, Anand Moon wrote:
+> On Tue, 27 Feb 2024 at 00:39, Dragan Simic <dsimic@manjaro.org> wrote:
+>> On 2024-02-26 19:23, Anand Moon wrote:
+>> > As per RK3568 Datasheet and TRM add missing cache information to
+>> > the Rockchip RK3566 and RK3568 SoC.
+>> >
+>> > - Each Cortex-A55 core has 32KB of L1 instruction cache available and
+>> >       32KB of L1 data cache available with ECC.
+>> > - Along with 512KB Unified L3 cache with ECC.
+>> >
+>> > With adding instruction cache and data cache and a write buffer to
+>> > reduce the effect of main memory bandwidth and latency on data
+>> > access performance.
+>> >
+>> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+>> 
+>> I was about to send my own patch that adds the same missing cache
+>> information, so please allow me to describe the proposed way to move
+>> forward.
+>> 
+>> The way I see it, your commit summary and description need a rather
+>> complete rewrite, to be more readable, more accurate, and to avoid
+>> including an irrelevant (and slightly misleading) description of the
+>> general role of caches.
+>> 
+>> Also, the changes to the dtsi file would benefit from small touch-ups
+>> here and there, for improved consistency, etc.
+>> 
+>> With all that in mind, I propose that you withdraw your patch and let
+>> me send my patch that will addresses all these issues, of course with
+>> a proper tag that lists you as a co-developer.  I think that would
+>> save us a fair amount of time going back and forth.
+>> 
+>> I hope you agree.
 > 
-> Don't you need to convert -ENODATA to 0 return value in this case?
+> I have no issue with this,.If you have a better version plz share this.
 
-Do you mean that trying to remove an xattr that does not exist should
-return 0? Standard behavior is to return -ENODATA in this situation.
-
-> 
-> > +       if (!caps && !upperdentry) {
-> > +               struct path realpath;
-> > +               struct vfs_caps lower_caps;
-> > +
-> > +               ovl_path_lower(dentry, &realpath);
-> > +               old_cred = ovl_override_creds(dentry->d_sb);
-> > +               err = vfs_get_fscaps(mnt_idmap(realpath.mnt), realdentry,
-> > +                                    &lower_caps);
-> > +               revert_creds(old_cred);
-> > +               if (err)
-> > +                       goto out;
-> > +       }
-> > +
-> > +       err = ovl_want_write(dentry);
-> > +       if (err)
-> > +               goto out;
-> > +
-> 
-> ovl_want_write() should after ovl_copy_up(), see:
-> 162d06444070 ("ovl: reorder ovl_want_write() after ovl_inode_lock()")
-
-Fixed.
-
-> > @@ -758,6 +826,8 @@ static const struct inode_operations ovl_symlink_inode_operations = {
-> >         .get_link       = ovl_get_link,
-> >         .getattr        = ovl_getattr,
-> >         .listxattr      = ovl_listxattr,
-> > +       .get_fscaps     = ovl_get_fscaps,
-> > +       .set_fscaps     = ovl_set_fscaps,
-> >         .update_time    = ovl_update_time,
-> >  };
-> >
-> > @@ -769,6 +839,8 @@ static const struct inode_operations ovl_special_inode_operations = {
-> >         .get_inode_acl  = ovl_get_inode_acl,
-> >         .get_acl        = ovl_get_acl,
-> >         .set_acl        = ovl_set_acl,
-> > +       .get_fscaps     = ovl_get_fscaps,
-> > +       .set_fscaps     = ovl_set_fscaps,
-> >         .update_time    = ovl_update_time,
-> >  };
-> >
-> 
-> 
-> Sorry, I did not understand the explanation why fscaps ops are needed
-> for non regular files. It does not look right to me.
-
-The kernel does not forbid XATTR_NAME_CAPS for non-regular files and
-will internally even try to read them from non-regular files during
-killpriv checks. If we do not add handlers then we will end up using the
-normal ovl xattr handlers, which call vfs_*xattr(). These will return an
-error for fscaps xattrs after this series, which would be a change in
-behavior for overlayfs and make it behave differently from other
-filesystems.
+Thank you, I'll send my patch within the next couple of days.
 
