@@ -1,151 +1,138 @@
-Return-Path: <linux-kernel+bounces-82460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF848684E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:11:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 225BA8684F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:21:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 488F0B22602
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:11:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAAEC1F22EF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 00:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6D67FF;
-	Tue, 27 Feb 2024 00:11:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF55EA2A;
+	Tue, 27 Feb 2024 00:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iVg84o3j"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EtbmAdUx"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2F4360
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:11:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 180FF161
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708992669; cv=none; b=dYLz50dpJJaQZPCIXke9yjFbnn3iKAKTseLNMwQ07m2/+Eo3K6aFze9oAUW4FK9gFnwNiDOl/QaF2n8fiLIwWdr/lPuz3cWuHaI1enHeJnMpDbJELuqyx9p6PbArTtyJn3TuePu/WRWZl6KGVd4+86pW9SqeGDS90nUBgP8qQNo=
+	t=1708993270; cv=none; b=fGKwC+Ntg6zZjxOLj6r/ksShrtCi21s2OY76iEeGvwYVjcSlowJsHm116msL1fof+C8UBw0pfmENUVFQliRVpw2OzPkis9jMuwTVjlL4z84kexlN6BV1WP2w6kMqDcJSozt8/F8V0jcEkc51vk0xZFR0cE88ujU1HdX0FJLkCs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708992669; c=relaxed/simple;
-	bh=+0HW0I+Sds5Zs5b5rGWRfw72kX6o58U/vNE4sJhB39k=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=II0Sz4GYtHOZXulDehE496Guw8SoPlxLl00xb0xANuVyfLG64wnP4/u5u33HeiOasxuzsHIq56TVkiedeYe/prYujuni9TJRXlKdfRrXzwhTPxazuLSuv1qdgndtBmViUVF0IS0W3CsbIpMkSF+FwpH5CFOdBNHUFE2yhU2N/Rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iVg84o3j; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso5036847276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:11:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708992666; x=1709597466; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6lCojt3BigDKF1Z6DNZEhqVi/bp1on2H69YUvcRX6rE=;
-        b=iVg84o3jTA0sEICa/8a1TjsEsQEmnmlEwwSm0wl3jpljNZnXCOQ/7GkoBDoXg30YJX
-         mZDb/bl6MksxgKfY4fn5jYCeWTKULA/2NhfcXOMpO0DfuZt14UxVwuDU7aduEIzCdlw1
-         VtL430VDUWxKgpCOr6i+E1VqLoCZj1ORloQb/v6hAV4ooeDHcJkI7ZgNAMzw62EBYFWK
-         ylb+C2gNLo2LJOOj0fGihCJSxUKASSZeiSTTk1Aro5DDW87EkT3dK4rFNUNqSSFSGHJX
-         CReumaOy727tnXbMpBSgu+NjX/ajHV6K7/WRGmeaH78DTFfv2P8e1uteFIQrSnPAyFR9
-         8rDw==
+	s=arc-20240116; t=1708993270; c=relaxed/simple;
+	bh=fYTwBpg7uMTawTUnQ2BSWuwAUKm59qg1pIXrtXgXbFU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m2F5c5POsMbJ/bpDcZN4ftRBLSpZdgX2QupeViq0rdUf9D7RmcjJ9CczMoBsQlUYDdDPhPbP0TfpT0kh/JwGnwv9nD/EXTu7FxW0as1AxQNL77K3Q3KR1aoOUAlb7495nGwGQpbKqq+L3O1acEaU9EdNd8qDJEg2TtdGqlYtCIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EtbmAdUx; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708993266;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=deu2WpFSMCIwa7mbcBS0LlHiNgXZ/4WozKcv0iuRKBQ=;
+	b=EtbmAdUx3TLx1uxDIteZl3MX4pjw150lSMFNoxCXZK1a9vZ8bBTG2fFDu9F4/Mfj4q6zcX
+	WnuolmZ6gQMGgos5HRGYmgFJ4InES++k36k3DM5J1fuAQ0GdRn7HE6eLNH/KRxtlECAGAQ
+	xt/bEpAQLU2W1L9a1pFttnbII1k7DCM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-544-GFThb6AFOvKQon_xgJRCJA-1; Mon, 26 Feb 2024 19:21:05 -0500
+X-MC-Unique: GFThb6AFOvKQon_xgJRCJA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33d51bb9353so2024293f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 16:21:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708992666; x=1709597466;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6lCojt3BigDKF1Z6DNZEhqVi/bp1on2H69YUvcRX6rE=;
-        b=Q6DjS/u8sWfv/GjqCqr2Nj6vpE6ALwaTN1utzH0C4lWIAAd4khUsycd+gyefmnWTJk
-         kDFDfAUZTj+zyFYh3Sv/7Px9kfKIOGkYW3i1F2OCPHO4gojisRq7iNi+uz9Fv9iQeA/l
-         M7p61UlSDXCjdgsIv9CruyHmTFRkz+3e44Yo0NUxpE0g5W1B3n43l6uAz95IgBRZ6xNI
-         jSSpZCeuuu6ilap2pR0yPi/To+eC7it4P+V+6EY8MyDryZ0MdLtOBb+c213Fc56fPF/a
-         nhg5QN9HtwQJkdEiTGBq39eD0xheeTMZaFKfnoCC/8z36BOuirgn6c1K3RjDhNt3+Y5h
-         ZMGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUk4gCdaQ8yC6AZXyyN9et1PsWtKmCUim7Ts9Bbu7xOYnCF4BGPIgSpRxFxfcPJ2Wx8fars1Cvh5cL8+cfpIqNu146ymg/jd08dYIkR
-X-Gm-Message-State: AOJu0Yzd/m88T6ATv1HiTdiJmvkmqxivad7g1BXpH87lZ3U0ru1y3DBf
-	rm1x1MhmT73pmBXTxs+43dAoovTkjTuNrYZp6NiZgtyfMeG8jGeQ4KViLxY0uA0k+zhU/0JcBWH
-	Hxw==
-X-Google-Smtp-Source: AGHT+IGoqOLH0Yj/filzZmuPfrAn41iSOW15YVUYnEsFixu/WDYss+uM9VgJXxhJpO/Xwg/X/XhhFa9WlCs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:83ce:0:b0:dc6:519b:5425 with SMTP id
- v14-20020a2583ce000000b00dc6519b5425mr200134ybm.11.1708992666356; Mon, 26 Feb
- 2024 16:11:06 -0800 (PST)
-Date: Mon, 26 Feb 2024 16:11:04 -0800
-In-Reply-To: <585a36d2-6e46-44a0-8224-8d4cd54d0dd3@gmail.com>
+        d=1e100.net; s=20230601; t=1708993263; x=1709598063;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=deu2WpFSMCIwa7mbcBS0LlHiNgXZ/4WozKcv0iuRKBQ=;
+        b=JGoyjjr3BgVAg3AgEv/fSAKPVNW1Iu7pWaRemexl8kjUPQMw7UgmFQPXn3H5TZFmjW
+         H4jc7s2AhpKHsLGzTkgK0DuOkZOG7v3c3XYEKQoAhgSegLnSl/jGzsw8NWhCLPSR0cCd
+         Lo3zyHC84JrvDthV87Hc42NWxAofljbssE4miCyeBXRR9+bGR7EvjpfL2xSAzi1vgJTu
+         D06vjZk0LHijyogw7p4uMH0YGCG0bXqQDFxgz1qPMHjeYEJ9MaNVIld2NMREFG3dwgCI
+         0LIOFXgu5EOKVzMVlWOvyt0bxqL43O451laND3sr3d/ZES09CU2YusOheM6tik7ZOKVO
+         3zdA==
+X-Gm-Message-State: AOJu0YyVkm/Ldt0enAlnKz8bKqq7WfXKM/sxXvqLxr3RRFnDUftBizFE
+	en0jaM9hS2BCZwkdGipdsrQlHSIK/K3fI3I1yUUDUqo2sKfdRLjzYVCkmNu5VK6fJ4oYZzpTvdr
+	W1AwdZdM1O3l/sZHaZm8jhDJlrqwYD1ls5rfKpqVFHjySzh/uYrROKbQUu16F7UdJx7odM1sWvA
+	SdwxXyhF5i7Vybh0fexAyR+ETHaDXKIOCHvjZ7du/EEAXH
+X-Received: by 2002:a5d:588b:0:b0:33d:d96b:2615 with SMTP id n11-20020a5d588b000000b0033dd96b2615mr3090211wrf.47.1708993263477;
+        Mon, 26 Feb 2024 16:21:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGRfO+KR9IwLDp+vA/SLuUUNQWiLiDHzfpZePGawUDhvo/EwptbYbLO0SUGcBbbRPRC2I4yhw==
+X-Received: by 2002:a5d:588b:0:b0:33d:d96b:2615 with SMTP id n11-20020a5d588b000000b0033dd96b2615mr3090190wrf.47.1708993263000;
+        Mon, 26 Feb 2024 16:21:03 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id f1-20020adfe901000000b0033d8b1ace25sm9720705wrm.2.2024.02.26.16.21.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 16:21:02 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: Nishanth Menon <nm@ti.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
+	Breno Leitao <leitao@debian.org>,
+	Kalle Valo <kvalo@kernel.org>,
+	Li Zetao <lizetao1@huawei.com>,
+	linux-wireless@vger.kernel.org
+Subject: [PATCH] wlcore: sdio: warn only once for wl12xx_sdio_raw_{read,write}() failures
+Date: Tue, 27 Feb 2024 01:20:46 +0100
+Message-ID: <20240227002059.379267-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231206032054.55070-1-likexu@tencent.com> <ZcKKwSi7FdbSnexE@google.com>
- <ZcKf3RvyoVJ77sUQ@google.com> <585a36d2-6e46-44a0-8224-8d4cd54d0dd3@gmail.com>
-Message-ID: <Zd0omLAgMu2P3lWX@google.com>
-Subject: Re: [PATCH v2] KVM: x86/intr: Explicitly check NMI from guest to
- eliminate false positives
-From: Sean Christopherson <seanjc@google.com>
-To: Like Xu <like.xu.linux@gmail.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Andi Kleen <ak@linux.intel.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 18, 2024, Like Xu wrote:
-> On 7/2/2024 5:08 am, Sean Christopherson wrote:
-> > On Tue, Feb 06, 2024, Sean Christopherson wrote:
-> > Never mind, this causes KUT's pmu_pebs test to fail:
-> > 
-> >    FAIL: Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x1): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x2): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x4): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x1f000008): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-> >    FAIL: Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x1): GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x1): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x2): GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x2): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x4): GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x4): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x1f000008): GP counter 0 (0xfffffffffffe): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x1f000008): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x1): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x2): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x4): Multiple (0x700000055): No OVF irq, none PEBS records.
-> >    FAIL: Adaptive (0x1f000008): Multiple (0x700000055): No OVF irq, none PEBS records.
-> > 
-> > It might be a test bug, but I have neither the time nor the inclination to
-> > investigate.
-> 
-> For PEBS ovf case, we have "in_nmi() = 0x100000" from the core kernel and
-> the following diff fixes the issue:
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 995760ba072f..dcf665251fce 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1891,7 +1891,7 @@ enum kvm_intr_type {
->  /* Enable perf NMI and timer modes to work, and minimise false positives. */
->  #define kvm_arch_pmi_in_guest(vcpu) \
->  	((vcpu) && (vcpu)->arch.handling_intr_from_guest && \
-> -	 (in_nmi() == ((vcpu)->arch.handling_intr_from_guest == KVM_HANDLING_NMI)))
-> +	 (!!in_nmi() == ((vcpu)->arch.handling_intr_from_guest == KVM_HANDLING_NMI)))
-> 
->  void __init kvm_mmu_x86_module_init(void);
->  int kvm_mmu_vendor_module_init(void);
-> 
-> , does it help (tests passed on ICX) ?
+Report these failures only once, instead of keep logging the warnings for
+the same condition every time that a SDIO read or write is attempted. This
+behaviour is spammy and unnecessarily pollutes the kernel log buffer.
 
-Yes, that resolves the issues I was seeing.  I'll get this applied with the above
-squashed.
+For example, on an AM625 BeaglePlay board where accessing a SDIO WiFi chip
+fails with an -110 error:
 
-I'll also see if the tip tree folks would be open to converting the in_{nmi,hardirq,...}()
-macros to functions that return bools (or at least casting to bools in the macros).
-I can't see any reason for in_nmi() to effectively return an int since it's just
-a wrapper to nmi_count(), and this seems like a disaster waiting to happen.
+  $ dmesg | grep "sdio write\|read failed (-110)" | wc -l
+  39
 
-> > If you want any chance of your patches going anywhere but my trash folder, you
-> > need to change your upstream workflow to actually run tests.  I would give most
-> > people the benefit of the doubt, e.g. assume they didn't have the requisite
-> > hardware, or didn't realize which tests would be relevant/important.  But this
-> > is a recurring problem, and you have been warned, multiple times.
-> 
-> Sorry, my CI resources are diverted to other downstream projects.
-> But there's no doubt it's my fault and this behavior will be corrected.
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
 
-Thank you.
+ drivers/net/wireless/ti/wlcore/sdio.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ti/wlcore/sdio.c b/drivers/net/wireless/ti/wlcore/sdio.c
+index eb5482ed76ae..47ecf33a0fbe 100644
+--- a/drivers/net/wireless/ti/wlcore/sdio.c
++++ b/drivers/net/wireless/ti/wlcore/sdio.c
+@@ -75,8 +75,8 @@ static int __must_check wl12xx_sdio_raw_read(struct device *child, int addr,
+ 
+ 	sdio_release_host(func);
+ 
+-	if (WARN_ON(ret))
+-		dev_err(child->parent, "sdio read failed (%d)\n", ret);
++	if (WARN_ON_ONCE(ret))
++		dev_err_once(child->parent, "sdio read failed (%d)\n", ret);
+ 
+ 	if (unlikely(dump)) {
+ 		printk(KERN_DEBUG "wlcore_sdio: READ from 0x%04x\n", addr);
+@@ -120,8 +120,8 @@ static int __must_check wl12xx_sdio_raw_write(struct device *child, int addr,
+ 
+ 	sdio_release_host(func);
+ 
+-	if (WARN_ON(ret))
+-		dev_err(child->parent, "sdio write failed (%d)\n", ret);
++	if (WARN_ON_ONCE(ret))
++		dev_err_once(child->parent, "sdio write failed (%d)\n", ret);
+ 
+ 	return ret;
+ }
+-- 
+2.43.0
+
 
