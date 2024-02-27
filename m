@@ -1,145 +1,173 @@
-Return-Path: <linux-kernel+bounces-83964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A58CD86A0A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:05:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BC8686A0A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C88851C20D75
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:05:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA6E11F23C63
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FCAB14A4C5;
-	Tue, 27 Feb 2024 20:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1431914A0BE;
+	Tue, 27 Feb 2024 20:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Pl88GRRY"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2055.outbound.protection.outlook.com [40.107.95.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R65UT8oM"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1336F2260A;
-	Tue, 27 Feb 2024 20:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.55
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709064291; cv=fail; b=SYPc0/2vCjkuBcDSjGnet9wyAjAK5Rg6Fy4LQFA/1eXfsLFpnDa16PGMd0AdzphKCKeFfy5nDQj7yWPXsN5VkIyJ+Snc4k9bSupKsLSeWahnRf3+SaHs1i9aR4aYej/q6aDuV8gKqmwmDQjoxeZ0f8QYvdk8VcS5y+gdNl3bQvg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709064291; c=relaxed/simple;
-	bh=M9+bXWsg73l4QCENfYfOSIQg1c3tsFWlDf4P8x9lCO0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DEt01TkBIRIgvJrpGbxHZtyAJ0R4M9WQsUh5nKrgBAA39u2tfRUl17Ma0hwF4KDQEpdEI4891/2AyvqBxK1hrJWSzSnC8L08R+JK8nlQjtVQq7SyZvdG0TLV1p9Km5XV0woiSiKF+GNhf3jy23ZbzpNwEdRRMEElQl/3evSMkSY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Pl88GRRY; arc=fail smtp.client-ip=40.107.95.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vqq52YAHPfhC00+Mle33v/QvqugIRDawqn0g5w0CALyUXmXl4vSeq1VvpsZBHnkW1XWaL1li2rJg5aH5wwfGSJadA1jaY+fBR2SnE6Nd6YmUe9CaFNdOzEJTr/YS3fxVW5LtH3x1wHSEGZCnE0aHY5W+nkH9SOtoUcH/fhbxeJ3A8/EOvYGAiyWMuBbLUIeXIJIrAWe5aXp/l3l0z+R6XOF1+5N8oyLjMgRT1U/aguqAU7fPorMUAzcDfWsWQ+dTomwfGSPdQxgckX8+VTg1QEpw36vqxvKtXZ17Xajdkb+Wf2wY1bjbV1oho1Eds7I3HJos/dmHWz9GRRmF0BTyQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qywH2/mDhHSGfqUT3oPQ3bb5JCakNxiJe04tcIGneLE=;
- b=EbD3cdse1ZpXiAdC4BYAvaT6+jjcmfaIGEj37gCnPLbtX2My79jznQ6EqwxRDH5DkCp8dz0fQlSP0F1S/jIoYSjiwkon0YavexBwagiIjENiJyPDUkzDYNZ6A6QFC0anw8vhLoGvx5GM0888NJj9FmIMyxTbRfFmZsbZ5afIcKFJppIin6OFHiIDkBVkysaVSrVbAv3QoWdooBgJ/7ivsOvgFbTgk1kmkxdi0mvLf459fbZwjDYIxor8h7khWBKrXeUsi6ila6NGns7JU5Je3KOzFWtaN2SX6364ELcQf1NEGPaBJ0uXZc1DRe5k54tQFT6+MPJ5AGm8tiFfurPZhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qywH2/mDhHSGfqUT3oPQ3bb5JCakNxiJe04tcIGneLE=;
- b=Pl88GRRY03W+7EYElPqi+81jSQl50e81u8tkeTW+YK+gSi/20gipHFMwnsy7aKItvhNef5HgH9WKX8GZg1Qzx1K5lt7Piyw1IsVJHkilcevR+1fPWsC3Kh0rzukj4hQShYMhHXvPx/L/BLCLU096keOihYesiRnFFl8lWtEwGbY=
-Received: from DM6PR07CA0117.namprd07.prod.outlook.com (2603:10b6:5:330::32)
- by CH0PR12MB5153.namprd12.prod.outlook.com (2603:10b6:610:b8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Tue, 27 Feb
- 2024 20:04:44 +0000
-Received: from DS2PEPF00003442.namprd04.prod.outlook.com
- (2603:10b6:5:330:cafe::aa) by DM6PR07CA0117.outlook.office365.com
- (2603:10b6:5:330::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
- Transport; Tue, 27 Feb 2024 20:04:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003442.mail.protection.outlook.com (10.167.17.69) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Tue, 27 Feb 2024 20:04:44 +0000
-Received: from jallen-jump-host.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 27 Feb
- 2024 14:04:43 -0600
-From: John Allen <john.allen@amd.com>
-To: <kvm@vger.kernel.org>
-CC: <seanjc@google.com>, <pbonzini@redhat.com>, <mlevitsk@redhat.com>,
-	<bp@alien8.de>, <x86@kernel.org>, <thomas.lendacky@amd.com>,
-	<linux-kernel@vger.kernel.org>, John Allen <john.allen@amd.com>
-Subject: [PATCH] KVM: SVM: Rename vmplX_ssp -> plX_ssp
-Date: Tue, 27 Feb 2024 20:03:56 +0000
-Message-ID: <20240227200356.35114-1-john.allen@amd.com>
-X-Mailer: git-send-email 2.25.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7BE02D60B
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709064391; cv=none; b=M1OGlD/RTfeIrGwgAq3Nnj5Dazvi9vxbc/cO15PQLu9Lj7pzTh7+clnXEQ6042M+oGrSrunN7wI7EKTSoPRPL3nwpYBXJrHgdrigMH0XBqkMdIKnB43DCxtQRFv954RiGQh+ntg+iWmbUePHtvNURuxgtcL8OXtI5snUZksBTA4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709064391; c=relaxed/simple;
+	bh=d9xLwO7g+4iyBmG+rDlHh3o1ro7B0g6XOQxfQO0bh5I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MuzaibO2IRefSnkvocZkDWzZCF0gvqvdb7/KO0vEl0l7uP+9db5h2HIOWmxsxjytYfOiC7PHk9sPy69jj/O+TVx1EpEkvc5NirqUP72AWjkoUQZqJVbXz3LdUDOeQXPGB7VZTixcGCoBZ+5Up649LAP1mC1UDheIChs90GOzyfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R65UT8oM; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dc929e5d99so39055ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:06:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709064389; x=1709669189; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CZ/hnz7jNJ+BokDp//ndsV+GCXe8JmWh6tNQWgFFeig=;
+        b=R65UT8oMqITAmOZ3YZa9j7lRSQFCGu8GjAJSsX9/g2j4E5JYKeXCugOmH1IJYZTZlu
+         7n+6SozwcBV3c5ORqieGFmcqkssJ776uptr3P0ZupVRdV+X2tWOvKhFDZFVWRNba5aDp
+         ZzLWsXbXHjkv/FeMwwhA1hKxnBC/vV8UFFCaJRRDTY3ohalDAv8Zxh/LSMgFHUAmiYKf
+         MA/88VX+8gLUptNAyU3ZL6gJSLfAMsNo6U1vDd4ACHNQc3509U7fJr8qe8tr1Uq0IDxw
+         w33GWJcWt4WxoA6+YQBmjih6S59KXBsG+bLFBYCieb0O6YIFV9kzQVrdXLN5MMk8UT3r
+         QVwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709064389; x=1709669189;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CZ/hnz7jNJ+BokDp//ndsV+GCXe8JmWh6tNQWgFFeig=;
+        b=s07RAGSZWaG/MjaZo1HuS3nb3f8oir1btU6oKclvmb45V3Frfc3kqp4i1Bj+j4e8Qi
+         P8NxMXX6Wgx2O+oqRGkymqsctZIGjr/LgTInrJytDPXA7eTYM1PLq4rpxVsA2ue80sSA
+         jZhCDVk2AXjm0yBJY8lozLYze/bSTSwKQB5eTC7JgjfmARVqZiEp1ELNQ4D8X1sIvPq4
+         Bqbj45WKuMvkXeNiBQK7GkSJ47zK4fEQtobSwuu/aLiphiG9lfsq2k8wvAgUCZ5Rlfw5
+         OSq1qIYjyV1uVVd4L4z6Le522FK0PwZ/CIsp5iphWTgnfIXqN3x4RUhZfMk9aZAPbvgV
+         DSUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX7kiNkvbp3thjHkUomEG2UmKYRllEdOx2jOb7bBc+8sMls1jesIIgJ+M+jbLly8LTJhRYR+YOoEQyv0egq6qB2xmbEk8Q0ctoSbH82
+X-Gm-Message-State: AOJu0YxabOT3vBMgZY5O9gE2jFUo15e4qzZSvl2QuRNejTiJZy88y3+0
+	kxwJM5hppn0BcRv0fonplNF5bBUOQzA7IaB3iJU6CdlJkGZBJfV8ji7nqYcp2AZ3k7dBk7dahfF
+	8/A3X9Rni8LDtpgsc46l+ScKjNUutITZT0hx/
+X-Google-Smtp-Source: AGHT+IGPSiHUWAXJzZUtiKvTlohGh+wZMdBVE1DHNnrIL3SSOhb+4j7pbG6cTOpTpL6+2w9JNdhm2WEFiFR7tLuxLyw=
+X-Received: by 2002:a17:903:3385:b0:1db:9fed:c591 with SMTP id
+ kb5-20020a170903338500b001db9fedc591mr343160plb.22.1709064388879; Tue, 27 Feb
+ 2024 12:06:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003442:EE_|CH0PR12MB5153:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8497f3d3-397c-4d9b-2c11-08dc37cf576e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	HscLFbJF+DCC3YHYh4kRG6N5i8iQPSup5xaJ6JE0TSyXYyej5PmfMUetO5z9P2NYjXIKQvyEqoYD1W8HJqzqO2Ii/OnNGFEq8nsmvONdeblIKSF0bw9Kegf3Z443hdcf0XsI6QseFBlQgnQ4zMXRwPQPT/F8xoqOiRO/q2R2Vxdv0MeQfWv6Nt0og9JnoxeKkiW3rG9o2fc4UELXo9q/7ndyuM2MUCSCOeqNGrY/ks/pZOpoHOLN8mNt+LnIxG/VxMgbw3OlJfTp/StKXGioSelv/bpwKijyqx63VyV/7G1EuAE2QzZb4tdWMiEi/ivH26UlXuCJAVnQYaHJZr5UtNyMXXSAPZN1Sn3RPGIZenFpzlRsgjVhc2KMQao6xRP/JQt1kdC8DQYvIL/Ycnm/a4oa2UFalkKFZTPNTJvpDU/XBRiZz6i4+jBVKdhiz9Y4Pbv0PgIlu4H/e9kmntFlRKoRBDUZOzPtWZNEDMwPzSn4r+2eL1S1StyBuS0NOPRmusD8zBSg7lipAMUAROqadSIrjf11CSCVOL0cmgQty1LI6EoNNpo8AEoJqJGLtnmPGpmJmd9CgF4JkLdVCaQRxrhjAGzyJgcljA5xwU3ZPcUTBtb30qLxFgheaXhlKT9V4dGjOk2HaCEhiSLrVbrfcLgRGKC4CDJzAbNvOvSQj5QpuzNZEES4hDcT+1lSvS0JwNU6KRX8SRUEmlAZB8TVGhrRf8lpCG4YYXPYKV3T2TkmrADjSAU0Pv7pik9HX6+J
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 20:04:44.3582
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8497f3d3-397c-4d9b-2c11-08dc37cf576e
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS2PEPF00003442.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5153
+References: <20231201005720.235639-1-babu.moger@amd.com> <cover.1705688538.git.babu.moger@amd.com>
+ <2f373abf-f0c0-4f5d-9e22-1039a40a57f0@arm.com> <474ebe02-2d24-4ce3-b26a-46c520efd453@amd.com>
+ <b6bb6a59-67c2-47bc-b8d3-04cf8fd21219@intel.com> <3fe3f235-d8a6-453b-b69d-6b7f81c07ae1@amd.com>
+ <9b94b97e-4a8c-415e-af7a-d3f832592cf9@intel.com> <1ae73c9a-cec4-4496-86c6-3ffcef7940d6@amd.com>
+ <32a588e2-7b09-4257-b838-4268583a724d@intel.com> <088878bd-7533-492d-838c-6b39a93aad4d@amd.com>
+ <CALPaoCgxSAWPYGcmnZZS7M31M+gMJQ-vWd+Q5Zn1Y548bxi2Kw@mail.gmail.com> <db9a87b8-40e5-419c-b36e-400f380892a0@amd.com>
+In-Reply-To: <db9a87b8-40e5-419c-b36e-400f380892a0@amd.com>
+From: Peter Newman <peternewman@google.com>
+Date: Tue, 27 Feb 2024 12:06:17 -0800
+Message-ID: <CALPaoChiVXWz6ObQsLZudNo+ammmPnf_iLvvETDswzwY0n0rQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/17] x86/resctrl : Support AMD Assignable Bandwidth
+ Monitoring Counters (ABMC)
+To: babu.moger@amd.com
+Cc: Reinette Chatre <reinette.chatre@intel.com>, James Morse <james.morse@arm.com>, corbet@lwn.net, 
+	fenghua.yu@intel.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	paulmck@kernel.org, rdunlap@infradead.org, tj@kernel.org, 
+	peterz@infradead.org, yanjiewtw@gmail.com, kim.phillips@amd.com, 
+	lukas.bulwahn@gmail.com, seanjc@google.com, jmattson@google.com, 
+	leitao@debian.org, jpoimboe@kernel.org, rick.p.edgecombe@intel.com, 
+	kirill.shutemov@linux.intel.com, jithu.joseph@intel.com, kai.huang@intel.com, 
+	kan.liang@linux.intel.com, daniel.sneddon@linux.intel.com, 
+	pbonzini@redhat.com, sandipan.das@amd.com, ilpo.jarvinen@linux.intel.com, 
+	maciej.wieczor-retman@intel.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, eranian@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The SSP fields in the SEV-ES save area were mistakenly named vmplX_ssp
-instead of plX_ssp. Rename these to the correct names as defined in the
-APM.
+Hi Babu,
 
-Fixes: 6d3b3d34e39e ("KVM: SVM: Update the SEV-ES save area mapping")
-Signed-off-by: John Allen <john.allen@amd.com>
----
- arch/x86/include/asm/svm.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On Tue, Feb 27, 2024 at 11:37=E2=80=AFAM Moger, Babu <babu.moger@amd.com> w=
+rote:
+> On 2/27/24 12:26, Peter Newman wrote:
+> > On Tue, Feb 27, 2024 at 10:12=E2=80=AFAM Moger, Babu <babu.moger@amd.co=
+m> wrote:
+> >>
+> >> On 2/26/24 15:20, Reinette Chatre wrote:
+> >>>
+> >>> For example, if I understand correctly, theoretically, when ABMC is e=
+nabled then
+> >>> "num_rmids" can be U32_MAX (after a quick look it is not clear to me =
+why r->num_rmid
+> >>> is not unsigned, tbd if number of directories may also be limited by =
+kernfs).
+> >>> User space could theoretically create more monitor groups than the nu=
+mber of
+> >>> rmids that a resource claims to support using current upstream enumer=
+ation.
+> >>
+> >> CPU or task association still uses PQR_ASSOC(MSR C8Fh). There are only=
+ 11
+> >> bits(depends on specific h/w) to represent RMIDs. So, we cannot create
+> >> more than this limit(r->num_rmid).
+> >>
+> >> In case of ABMC, h/w uses another counter(mbm_assignable_counters) wit=
+h
+> >> RMID to assign the monitoring. So, assignment limit is
+> >> mbm_assignable_counters. The number of mon groups limit is still r->nu=
+m_rmid.
+> >
+> > That is not entirely true. As long as you don't need to maintain
+> > bandwidth counts for unassigned monitoring groups, there's no need to
+> > allocate a HW RMID to a monitoring group.
+>
+> We don't need to allocate a h/w counter for unassigned group.
+> My proposal is to allocate h/w counter only if user requests a assignment=
+.
+>  The limit for assigned events at time is mbm_assignable_counters(32 righ=
+t
+> now).
 
-diff --git a/arch/x86/include/asm/svm.h b/arch/x86/include/asm/svm.h
-index 87a7b917d30e..728c98175b9c 100644
---- a/arch/x86/include/asm/svm.h
-+++ b/arch/x86/include/asm/svm.h
-@@ -358,10 +358,10 @@ struct sev_es_save_area {
- 	struct vmcb_seg ldtr;
- 	struct vmcb_seg idtr;
- 	struct vmcb_seg tr;
--	u64 vmpl0_ssp;
--	u64 vmpl1_ssp;
--	u64 vmpl2_ssp;
--	u64 vmpl3_ssp;
-+	u64 pl0_ssp;
-+	u64 pl1_ssp;
-+	u64 pl2_ssp;
-+	u64 pl3_ssp;
- 	u64 u_cet;
- 	u8 reserved_0xc8[2];
- 	u8 vmpl;
--- 
-2.40.1
+I said "RMID", not "counter". The point is, the main purpose served by
+the RMID in an unassigned mongroup is providing a unique value to
+write into the task_struct to indicate group membership.
 
+>
+> >
+> > In my soft-ABMC prototype, where a limited number of HW RMIDs are
+> > allocated to assigned monitoring groups, I was forced to replace the
+> > HW RMID value stored in the task_struct to a pointer to the struct
+> > mongroup, since the RMID value assigned to the mongroup would
+> > frequently change, resulting in excessive walks down the tasklist to
+> > find all of the tasks using the previous value.
+> >
+> > However, the number of hardware monitor group identifiers supported
+> > (i.e., RMID, PARTID:PMG) is usually high enough that I don't think
+> > there's much motivation to support unlimited monitoring groups. In
+> > both soft-RMID and soft-ABMC, I didn't bother supporting more groups
+> > than num_rmids, because the number was large enough.
+>
+> What is soft-ABMC?
+
+It's the term I'm using to describe[1] the approach of using the
+monitor assignment interface to allocate a small number of RMIDs to
+monitoring groups.
+
+-Peter
+
+[1] https://lore.kernel.org/lkml/CALPaoCiRD6j_Rp7ffew+PtGTF4rWDORwbuRQqH2i-=
+cY5SvWQBg@mail.gmail.com/
 
