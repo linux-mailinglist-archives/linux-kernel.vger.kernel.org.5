@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-82852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8E4868A9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:13:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0D49868AA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 180801C21127
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:13:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D8602822DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79B35646F;
-	Tue, 27 Feb 2024 08:12:53 +0000 (UTC)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2D85646E;
+	Tue, 27 Feb 2024 08:13:17 +0000 (UTC)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1B9055E78;
-	Tue, 27 Feb 2024 08:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1880856449;
+	Tue, 27 Feb 2024 08:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709021573; cv=none; b=BMV+T45v+nPj8fKCf2Lb6ZEhg2cHtxkX2GCGekfoFJOPGV7eifowC5F+hG4qioI4wyhoOOfdJDxsJXlrMJqZvEhcmI9EOm1GuUlw9J3eiygEery1KP7rsJ1TU1922UZWwJht3RfpIgV6r2uM5z4yKSyoZQVaJv+tNyz8xYYvKRA=
+	t=1709021596; cv=none; b=VAvdFEYgMMBizwtCZm4mZM4I4Jvd4eYppM6TrCDideGJbsXB90e50oaVjiPAb+NrIMmJ/NoJJHmaO8jxT6i9VD0x0y1G33FFNZr81G6wQYN7qp/IJJtFtOG81TycElPK6hdpqtQwFbIq53kCbDeyl6wtbhnDGigiX0+SmbH5QA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709021573; c=relaxed/simple;
-	bh=zrZNsgj5kbElcnQmq2L1TJfkDxwpID6PxN1Dthe45BM=;
+	s=arc-20240116; t=1709021596; c=relaxed/simple;
+	bh=9RD7LxWeQLqLBg9sjVSIvwV6LHoARcR1L/9VpDZCB8E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N7ofaW8g7abiKiXnJ++ySUH9H0aQwgb0FyTG2iITrU8aGL+8PIFUifZEz6X7g2dkTNuSG1yZGUy5gWO813qcUaFR6Ko6H2lZ5nCTVI5ANpIf4xZUOZEEocHricjnR1c2gy3kRi+xP9rOR/XV/PzOxC7P6DlLgR6ZsSXL9H50o1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
+	 To:Cc:Content-Type; b=DFYuVYYTOO6UcXkDgVWiKtF5q6LzaAYLV8BCH4b2MlmOiyHezUjjbVgthCUm7tOdspvDFKNouP0je5fiokm3+Fo1IdIv4s9TIGIlPybB1nU6eUBoQ9gxNlCgKhs3fS3YXHHmJVdEPCdl+jKpGEpmyqDhO8ayip1OH8VmLFqPKZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-608e3530941so24380057b3.1;
-        Tue, 27 Feb 2024 00:12:51 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6093247d1acso121827b3.0;
+        Tue, 27 Feb 2024 00:13:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709021568; x=1709626368;
+        d=1e100.net; s=20230601; t=1709021593; x=1709626393;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uHn2r0gOJkRntSoutMiiF0ECORnR9mSgKiX3cgiGkQA=;
-        b=L694ZL4P/vNFJC5ZXs8AvL190pyAzUYCBfDVpbj7CDe4qebtGSpFsJJqrbCyUFMNy1
-         uoQl5nqEuPHH3l8uzQ21fhlHIzYkDtE0NE7SKw1lP0/QjT+sujnaRk8sG5fka1R5HFd7
-         XWRqtViT3io++KJINFDRbZWvSmGyQXwFim6ECgsVC+mXreU7sJdlW5JsTiqlOiOvPbil
-         viqTSLp02s1z15tb/cTPK0NNZye9vNXkxqG6vYh9tiPSydSC3L+SsWDKEit2f9EwseJQ
-         6TbRirjlyYFemSZKmHdcXYTBQKPcusmhymjmXY+HFhQCki2zRkkMkNo9wxIwW0BF8l1/
-         OhIw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPXuzD3dYrHiyLzoqtoBFzqw6uaudke0Wo/7kewfzGLFAoIDrR+JIWv38lTfZMKDu1DTSin/+zscRgWxmTAH9AA9UgoJW+YNpyJNP9ISc1zZYngvKQSbyh50r+LYr/W2Pa9646FfZVtWCM/Yp/BqOIgYdNkriW3pLtKT9WiiqZ0CkeeRJdnosbAED/
-X-Gm-Message-State: AOJu0YyWj8XgUNFgl8MYVX1Lz4Vs98CA6sNHx50L41Ob3RnfL7LI3YP7
-	cOnmKzIYH9GuyLRQhKE92p4PyclLEtnxi9fx1LhgKAjJzvtq3U2bjyS3lr6TC4E=
-X-Google-Smtp-Source: AGHT+IHf/zjzkVEfAmV3zADqAvWVXTCsAKsN+U4SmXJLhxOZNvR0tc3pGoxp0GYnbdL9TPoVVDf70w==
-X-Received: by 2002:a81:4316:0:b0:608:e3ac:e6ed with SMTP id q22-20020a814316000000b00608e3ace6edmr1565054ywa.10.1709021568031;
-        Tue, 27 Feb 2024 00:12:48 -0800 (PST)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id u6-20020a816006000000b006085e262414sm1659691ywb.81.2024.02.27.00.12.46
+        bh=XVOe12NY6Hd6XHyETGn8V8NNE5eD7ofZbpGZVlTMsYw=;
+        b=fg+u/jmtZA+vQM9caxTAVHoUE2hRgvrpfiwolwKGbYjCsfYwcJX9YTAwvJRACG7gqD
+         KDB6kmy4v0kBeLoyDSn0iQutKKLgZLeSAZU7SMUjaEbQRxseTE8K0FsDz9jec8b3pHH8
+         REWYzvn9uEC7cyRPLIkYrDCNMf6oAvL/K2D+17XbQeJxM821eGd201FWdhrmNNxyxt7x
+         BcOGNPsg7R4HsRnJWX+RCSyLML88UyRoY1n2+nrCeV81YRH+ebD8bqOyMsjXSzQsIP4Z
+         ZG8cBH5J64Qny1NWrPY3RAq+fUq4w7uCN8G4EPgmL7L29dEGPvQ3ppaBAEiSAsv0AeW6
+         Dq1A==
+X-Forwarded-Encrypted: i=1; AJvYcCWL33GX+19vG/MPlJ8t4R3ofYnnS+0mm7DnFjfwoFtYTfFjQwiLhRy0KdPjZlVAYRanPtpS0ls3naaCCqB+JIylspaOpDlVxCyyspnJMNmuas+Oat1xhz6vExFkmTO3GZSuaFGnrrRIPy68Uy4epJ7lYNzrrwU0zZc/Sz0Xlk62RxacxoyK8NW+ptHx
+X-Gm-Message-State: AOJu0YzXUlANE7wd+tZRU8ZyEDJPQNgMwFdbUyPBL/CHjEixHk2A++T4
+	YhjajokE33LEHF5nPmwUgMI9zxGvD0PIYm5qa3RinudoVxS5aun4Zc+ba1oCTsE=
+X-Google-Smtp-Source: AGHT+IFkkXieFkInDtmRulTNtba82nRl+8H0i4kdTdk2SXIz1K6bDy0tC0IVBI+AL4y18YQPt0D0QQ==
+X-Received: by 2002:a81:5217:0:b0:607:fc53:8a40 with SMTP id g23-20020a815217000000b00607fc538a40mr1548093ywb.28.1709021592937;
+        Tue, 27 Feb 2024 00:13:12 -0800 (PST)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com. [209.85.128.180])
+        by smtp.gmail.com with ESMTPSA id a11-20020a81bb4b000000b006049167ccffsm1583692ywl.65.2024.02.27.00.13.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 00:12:47 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso4084760276.1;
-        Tue, 27 Feb 2024 00:12:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVxREthMCZ9qsR55n11xlcJpb8FxYEObRNmKqqYr8PNi5PQW+UBAsWx04yxKTbzamQDoKKlWvj7DZszBI42RMx9/MDXFa2d/+caIQwkKZybiMUHepNtu7Wi1/ynY4sMAnvD4/XvISlYCBaMYB/MB95RC4BKTbdTdSh3V63NAFuexcFJ6uFM4TIbnlHI
-X-Received: by 2002:a25:b121:0:b0:dcb:be59:25e1 with SMTP id
- g33-20020a25b121000000b00dcbbe5925e1mr1585696ybj.30.1709021566147; Tue, 27
- Feb 2024 00:12:46 -0800 (PST)
+        Tue, 27 Feb 2024 00:13:12 -0800 (PST)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-607cd210962so35914947b3.2;
+        Tue, 27 Feb 2024 00:13:12 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX/m2/38wejeKdfCPE44e/3gFVzXEIyssRFRyYDEVnhbGRTradk9DaxDzVGeyBQbavo3nkbgMmEbbPdv6AAbxATp7QDZFG0Pl92C8PKfQiV8Izqu2YzojGNnrofT55Og+N/gScVkXXNlIIvF+8OE5yickq+//aLV0oiH/4vXvA6pyAbr/mAo4MQ6XaS
+X-Received: by 2002:a25:ce11:0:b0:dcf:a52d:6134 with SMTP id
+ x17-20020a25ce11000000b00dcfa52d6134mr1335614ybe.26.1709021591812; Tue, 27
+ Feb 2024 00:13:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-6-aford173@gmail.com>
-In-Reply-To: <20240227034539.193573-6-aford173@gmail.com>
+References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-7-aford173@gmail.com>
+In-Reply-To: <20240227034539.193573-7-aford173@gmail.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 27 Feb 2024 09:12:34 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXJEeD_2CRTk3UCR9BCUWj1K42-V+Nhz3=DO73AOUa24g@mail.gmail.com>
-Message-ID: <CAMuHMdXJEeD_2CRTk3UCR9BCUWj1K42-V+Nhz3=DO73AOUa24g@mail.gmail.com>
-Subject: Re: [PATCH 5/6] arm64: dts: renesas: r8a77960: Enable GPU
+Date: Tue, 27 Feb 2024 09:12:59 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXtO9nnGWtqP9P5Qw98gsdf3ayHJ=nW_F3AcNk_3egGkw@mail.gmail.com>
+Message-ID: <CAMuHMdXtO9nnGWtqP9P5Qw98gsdf3ayHJ=nW_F3AcNk_3egGkw@mail.gmail.com>
+Subject: Re: [PATCH 6/6] arm64: dts: renesas: r8a77961: Enable GPU
 To: Adam Ford <aford173@gmail.com>
 Cc: dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
 	aford@beaconembedded.com, Frank Binns <frank.binns@imgtec.com>, 
@@ -86,7 +86,7 @@ Content-Transfer-Encoding: quoted-printable
 
 On Tue, Feb 27, 2024 at 4:46=E2=80=AFAM Adam Ford <aford173@gmail.com> wrot=
 e:
-> The GPU on the R-Car M3-W is a Rogue GX6250 which uses firmware
+> The GPU on the R-Car M3-W+ is a Rogue GX6250 which uses firmware
 > rogue_4.45.2.58_v1.fw available from Imagination.
 >
 > When enumerated, it appears as:
@@ -95,15 +95,7 @@ e:
 >
 > Signed-off-by: Adam Ford <aford173@gmail.com>
 
-On Salvator-X with R-Car M3-W ES1.0:
-
-    powervr fd000000.gpu: [drm] loaded firmware powervr/rogue_4.45.2.58_v1.=
-fw
-    powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
-    [drm] Initialized powervr 1.0.0 20230904 for fd000000.gpu on minor 1
-
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Gr{oetje,eeting}s,
 
