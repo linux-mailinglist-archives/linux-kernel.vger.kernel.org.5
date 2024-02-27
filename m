@@ -1,115 +1,112 @@
-Return-Path: <linux-kernel+bounces-83882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA4E869FBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:02:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB886869FC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:03:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B05701C28685
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:02:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B4231F2FA31
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7FB51009;
-	Tue, 27 Feb 2024 19:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8595250A68;
+	Tue, 27 Feb 2024 19:01:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BYpMobqR"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gU8jpSnZ"
+Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E661E894;
-	Tue, 27 Feb 2024 19:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE00E14AD20;
+	Tue, 27 Feb 2024 19:01:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709060501; cv=none; b=Yki7BDVrnxoGPKHLrZxdhoZfFw7oOIaQixIWP28p+rHTTYVt5Z21K/wsMKpJvVejFZF5V3dHOQeHbQbzwg+vSB/WXW/1C/NhElf+6o7K/i5htLyYMhH6mn/OYFEohGkPtM+lMKrZXMpF/0jkKFd9+rqAnmho5WZYPplIDBWIPAg=
+	t=1709060511; cv=none; b=LAMWdLBtx12h7pzZXrAlVrC+NAqZ9TH6ylZ2PfkFHfPEV0pFgqHjGVUzozQbqyvgw3r2qOkwamkHK43fnpCQ0vAelsmdsPA2WupM4QqInGZrEUeLucV0ceXoWbBBRCBRuVP9rIXNYenT6JDyzZqdG/5GsdShPlpNeEDUbffZb2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709060501; c=relaxed/simple;
-	bh=1jD16RvjY0XylQTcKSUd8r17c2C6yBRNbcx+ZdpItzc=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type; b=HaTKWq3Lj/A/23hpiYsEkmnH7ey+lvQqYpKRs8PCVD2Psc7C7SyxxDAJAGjSHoT78F5xyl0sQ2pfKfmL3Xnby5XzO0ibfnAOB+WMSBhAFOoUsm4v5zYYlMFXJOAxP4TF3cz1Y4HkebPDS/z4CSTj4YL2qZyUm8+WRnHP3CWAQyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BYpMobqR; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709060499; x=1740596499;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=1jD16RvjY0XylQTcKSUd8r17c2C6yBRNbcx+ZdpItzc=;
-  b=BYpMobqRBb8lTbnwTMiSVDLSo6H6dQyGfgaagka6JGMELGzHxNzH22t5
-   2eGVQ4gUS0jKBui0wI8PpW8I00GCAaw6VFJuE+SNWi3hDf+fwhH/1vhfC
-   sqBAMZyqvFn+h1FVK6lnPHu9w6atapLo19CPrbFz9vG/hHpluR6FhCcVE
-   44KfYzIj7Ax1frEZSZUH0KCaOWLrJGJl8RcgEMxAhR1IfzEI8RS1lBicI
-   peb98Ig8d30+4m2iUpOtz4KjC+g6AdPMm141H/R0OqfaqWedrIr4Ac1cF
-   0vYc7YDaQw5zmL22dfeY5WDQ8R2kGSxEX3b/2P+n7tNJyKOinqq1vrM2g
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3293079"
-X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="3293079"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 11:01:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="11725838"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 11:01:37 -0800
-Received: from debox1-desk4.lan (unknown [10.251.6.149])
-	by linux.intel.com (Postfix) with ESMTP id D5D41580DEF;
-	Tue, 27 Feb 2024 11:01:36 -0800 (PST)
-From: "David E. Box" <david.e.box@linux.intel.com>
-To: david.e.box@linux.intel.com,
-	rajvi.jingar@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com
-Subject: [PATCH V2 1/3] platform/x86/intel/vsec: Remove nuisance message
-Date: Tue, 27 Feb 2024 11:01:32 -0800
-Message-Id: <20240227190134.1592072-1-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709060511; c=relaxed/simple;
+	bh=51jtFFY8/geln0haK5sNAZr/aqnSILVfKwu6u7XLrMA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LP/a62P0lZnWBRs6z8v9rKt9FRxwHZ1G5mAQDNz2LCkbMsfrxo7AaxFCOw3IGCLIef9IsnHLvqeIBEeLln44kMMh/taeu3PcoV8J3J7SLcGJNGS525QiuctDqn9Ak/laamlfD3smDzAuwKOmfuiIXOxHfujmFvuaa6jcs5qfl6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gU8jpSnZ; arc=none smtp.client-ip=209.85.222.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7d5fce59261so2955143241.3;
+        Tue, 27 Feb 2024 11:01:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709060507; x=1709665307; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GXY/6TLcSg2JBPkZ750KSp3lrbwIelE9us8AkMM6UHk=;
+        b=gU8jpSnZLFjXyTPQAoH87Xl9oJ11GlVplfmNu12SbocFv2sei2g7BqkLLmt61reH+J
+         8Xhek2Bqhp9Dh6/sKSUQWLYsfUXLfMzAAVauvppddAEbQyd3F+1m3XnUpAi0pMiql2mZ
+         hjTDt5FftOjWJjT+1jHvC123XIXfDZX+KbArI4URc0d5CZ2/HGSBER8Hn1cHEVM9p/ry
+         qWN32p2/XRqSVo92L27SnUE4xqMr8Ci9ixQK6GEUvjPOTBep+maW4z2QquAw6FbjF+9s
+         w7C8zcQuwaEDJHXb7BYODyK5cNkCf+XXpIGERZREUrp8AkhjnbmNOpq6utnngDqZ6eZo
+         4YOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709060507; x=1709665307;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GXY/6TLcSg2JBPkZ750KSp3lrbwIelE9us8AkMM6UHk=;
+        b=PBKaEcFEDF0uTFR/vfgXwjYWPlnJ+9jHuRTpigo3i3UdkwHs0nsZw4MpGiTlLdrr+T
+         eAUVNRLt+trcQoEVBWS/e0ihntLz0izl1iW7T40Pasfnk7X/9F4eytczjZm2cUHchqeo
+         c2b8K1LOs1+vETXOeWya3XOjl7qAEOu5ewaqEfb/n56d9styFw5zw+7cHZgbVACMk1sJ
+         tPXho8ralBl8HcRRxRsg4dQXeK/Q5GP2KkI74rAB5LwJJD2cybY6WY7YvlG9+Ix4isB8
+         gMQGksZ77OsZPNrC0ujeDfm41GYbOlSgIuEKQGJ8+mSnYMnvlcAYlL5HQIUj643guEn+
+         b36A==
+X-Forwarded-Encrypted: i=1; AJvYcCXkKFr2ilXH5xOFo1oscrrjakYfFwo7UsAxNxTxtU7rMKEI6Z6SBI8hwuhQSlA0cqcKxZuFWuKHHzPwYMBBEFaGLvDI7IT+l8XPt2jL
+X-Gm-Message-State: AOJu0YxXXvnLpZg7uavktupYjJ2UoZEOFcq5V1ikMHFQAySJY3IWYW24
+	rLb2T08UBJq77h26qJIS8pFLDmQqv5iuJjVtdWlHBWLZzw+Lu1sRb2+86MD+tFBc8BROJN6otlr
+	qHJ77Y+zmkYanE8CYPCXhNOKDaMY=
+X-Google-Smtp-Source: AGHT+IFV6iRsZ58o/juvLumMNk6BhV1RC5rufpp/W8VxtAPU8kXRzSrpeZUNR9qwG0WgCSCniOJ+FoNzA/ZI0rxHhMQ=
+X-Received: by 2002:a1f:d704:0:b0:4d1:34a1:c896 with SMTP id
+ o4-20020a1fd704000000b004d134a1c896mr7413620vkg.8.1709060507358; Tue, 27 Feb
+ 2024 11:01:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240227131630.636392135@linuxfoundation.org>
+In-Reply-To: <20240227131630.636392135@linuxfoundation.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Tue, 27 Feb 2024 11:01:33 -0800
+Message-ID: <CAOMdWSJyXm3+3nunLTNdAhoQX2qqj3Ftszi6LpN-Uj_yyK8G9g@mail.gmail.com>
+Subject: Re: [PATCH 6.7 000/334] 6.7.7-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-intel_vsec_walk_header() is used to configure features from devices that
-don't provide a PCI VSEC or DVSEC structure. Some of these features may
-be unsupported and fail to load. Ignore them silently as we do for
-unsupported features described by VSEC/DVSEC.
+> This is the start of the stable review cycle for the 6.7.7 release.
+> There are 334 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.7-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
+Compiled and booted on my x86_64 and ARM64 test systems. No errors or
+regressions.
 
-V2 - no changes
+Tested-by: Allen Pais <apais@linux.microsoft.com>
 
- drivers/platform/x86/intel/vsec.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/platform/x86/intel/vsec.c b/drivers/platform/x86/intel/vsec.c
-index 778eb0aa3479..0fdfaf3a4f5c 100644
---- a/drivers/platform/x86/intel/vsec.c
-+++ b/drivers/platform/x86/intel/vsec.c
-@@ -236,10 +236,7 @@ static bool intel_vsec_walk_header(struct pci_dev *pdev,
- 
- 	for ( ; *header; header++) {
- 		ret = intel_vsec_add_dev(pdev, *header, info);
--		if (ret)
--			dev_info(&pdev->dev, "Could not add device for VSEC id %d\n",
--				 (*header)->id);
--		else
-+		if (!ret)
- 			have_devices = true;
- 	}
- 
-
-base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
--- 
-2.34.1
-
+Thanks.
 
