@@ -1,151 +1,210 @@
-Return-Path: <linux-kernel+bounces-83698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6DE869D71
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:24:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E326869D81
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:26:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 361F8B29D9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:23:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8215EB2B6EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DDC7149DEF;
-	Tue, 27 Feb 2024 17:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A009314EFD4;
+	Tue, 27 Feb 2024 17:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="baSde4sM";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="pqoZ+ET7"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="hOZ53IHf"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2070.outbound.protection.outlook.com [40.107.22.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122AC146908;
-	Tue, 27 Feb 2024 17:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054516; cv=none; b=Ixpq77wN1eJZpAQ3lYGkphudhKM+smiJakfqc493KtifJKJ2czWaowzzSgTRqozIzZD3C4x5Dgz9M/dbBU1h0GY7qc2um0FNbRJmcH3ZRa0qjuWDtgbIH4IMzXbuY2l7EY0yZ6uti9Ulvv8gvVwsyW9BbdWT+zlsuRf86Qf350w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054516; c=relaxed/simple;
-	bh=y0JLCFuChGLkwaZhfLtU1K5oerT0bmx7Gx4vH0MW9nE=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=JrRfZY73yVZxXQEAoi7bCAnyyhR5kHtsyh7/fAqE4vMClwD1DHtsXnPT12Yf/KW6sO4J+7gQRaapgCC2hvmMAKUh+7e1clu8Pz3E6RHSO7efBHmvHWcbl81bprdKiAFzaew++QxBqoSIlDv9u4c8dZbKVhbn5KPiNKde9ZSjX10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=baSde4sM; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=pqoZ+ET7; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 27 Feb 2024 17:21:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709054513;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DhM4d6dg1koTzlaPLZJTgSr0duzrY7T5QVSZ+EPXJEM=;
-	b=baSde4sMpV/QQksWECdXUIDu/Tww+oA8W4LR69AVufbZdyxGkPOA0l7Xbw3fMRmmVpBOb8
-	pKSnXjz8RTVdRIcrEvKmreT2OUsJHA97mFBZeJIENmM2aIXALlgapB1zDZLqCr4MVhOIbe
-	NBjcfo/rDLmEdDSpna0uq7Q2Xwc0mQwCoeUM6OsJWEi7RBOMpGX+w9g3HPxFuTU8/DR582
-	4G0+Mtqz2t+qEAT5Y3naksx8VZZW+3EyvMEq74YpN59L9LFTSfP3RxE8s6oUIHP+OurxUw
-	U7MSbX4/n+T7LMF82ckuVH7S9q68mL3gdCFxAIF6+ovQdYqyjBbj9aWPZnIw/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709054513;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DhM4d6dg1koTzlaPLZJTgSr0duzrY7T5QVSZ+EPXJEM=;
-	b=pqoZ+ET7HPQkFU+/aCzQfZlTSbhsc6yVlICNorbLdkfkEAj5QJmJvVUn+6EeKlqrinYGPD
-	eZSb4uhym/+sqKDA==
-From:
- tip-bot2 for Uwe =?utf-8?q?Kleine-K=C3=B6nig?= <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] irqchip/madera: Convert to
- platform_driver::remove_new() callback
-Cc: u.kleine-koenig@pengutronix.de, Thomas Gleixner <tglx@linutronix.de>,
- Richard Fitzgerald <rf@opensource.cirrus.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: =?utf-8?q?=3C64c2f79760c53f29651e7126418c407ff699317d=2E17032?=
- =?utf-8?q?84359=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
-References: =?utf-8?q?=3C64c2f79760c53f29651e7126418c407ff699317d=2E170328?=
- =?utf-8?q?4359=2Egit=2Eu=2Ekleine-koenig=40pengutronix=2Ede=3E?=
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C874EB23;
+	Tue, 27 Feb 2024 17:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.70
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709054538; cv=fail; b=QmNfhGKwhepzQ3Xpn9z6yvOa5My9CoqA54EIgUYo9Z7tm+L1ZxpAqb9pfT9QptGxE5a3miWvFvZ0kYWCSuLMIpZwbRS9LuhS8e4qbsT2TfEXZkSYDbWPX/UhTwNeNadMMu/o+6WA2zbjzQqO1yM0y5lwcHroec0uHqeVrSa5PS8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709054538; c=relaxed/simple;
+	bh=r+SX1BIbt/a8XXIeUpEhiy0sFQzztcqic+7HKpVi/bY=;
+	h=From:Date:Subject:Content-Type:Message-Id:References:In-Reply-To:
+	 To:Cc:MIME-Version; b=neJ38x96EBTEpEt9As2V3v7CYP9/tIbeJiX961M8IHdiaqx0tCzzhPzicj0DI6BWe4T9tWw6XM81+F0SUr1MP2mk6NF3XyUk1f0GJMS90K76yTohAT8Gob8Q/WidUkZaQ5Q9+7BWAhxeP9d/7n7+CdTmffGEHL0GQ77mPeq4gFk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=hOZ53IHf; arc=fail smtp.client-ip=40.107.22.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oMm7C/0q/z53RCQF8LxWNpkX53U+23LcPOOIvum5xlIZSDKmmEuP1scYmAYm20hC16+iyXHBYgA0HXugFB4PpEVbso/8z7gwVyr2NT3bYuGVKlXHx/qRCEnnZr4cUxJEe9J9SfuvjS8+i/FaDdFjaKRr/0zfpDqvwkKv7YcjicentKFcD+UTqbQ0dB+bkxx7fXQgFYlYvArqCan+osT269boAmgONMXkwnQUx97Nek/rqQeVfBktVkLVxA6dZM0M/QzSn3l/2H4WoNarC5I9hY+eZ3z2cGLqc47dJOhhmGAUkKWO+iwK/lE4iIjRMr5Dg2LwtBVu/nIXPwTHTno9Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=77nLzVLA9I6azS70HtRDarrsUyxHIO7L2AnlMIBiP9U=;
+ b=FncyTObRvPgdrCSI6L2rU6EcrtjoIh3Oy3GAeT1/XImUApPx7jctd7+4J0fWhVd5yt2vctnngVgATI2ZcH4DfxK55fb21ERbe5wYwteLPCTxLFExo2DJVdNeSwupp+3hqxZjYTHKVqEgOm2MCTPrqKq7HcupCHG/5I5yApbEj4931QlHA07Z7KH+DdtSphedg/AZMWrXobNQzqrC5Yg+F8RiB79uDLU+MglRfZ2GpFVt97zx2/crR0ue0U1Pu1Z7MMX+vL/J7ExTfJUeke7JR4vVltmlvxtmYJ+/XnT85T84okPHeCF8/zLe348sE/gV/WIbedJEXeZssqai/iB/Aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=77nLzVLA9I6azS70HtRDarrsUyxHIO7L2AnlMIBiP9U=;
+ b=hOZ53IHfEarTtclBOExSaivWb6YlwLCkr5rQjLatU5+MuxOveU9OuYPfApbc2lOBVR8jZL/WY2TQLrqbShaiGqQocLM6PsRMMWbOA6k/dWEPhSX50DS21e929olOpg2w92nuLx9ITDfOI3C10sRzJON4fEE4izdcPBpUpobQ9PM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS5PR04MB9754.eurprd04.prod.outlook.com (2603:10a6:20b:654::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.27; Tue, 27 Feb
+ 2024 17:22:15 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
+ 17:22:15 +0000
+From: Frank Li <Frank.Li@nxp.com>
+Date: Tue, 27 Feb 2024 12:21:53 -0500
+Subject: [PATCH 1/5] dmaengine: fsl-edma: remove 'slave_id' from
+ fsl_edma_chan
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240227-8ulp_edma-v1-1-7fcfe1e265c2@nxp.com>
+References: <20240227-8ulp_edma-v1-0-7fcfe1e265c2@nxp.com>
+In-Reply-To: <20240227-8ulp_edma-v1-0-7fcfe1e265c2@nxp.com>
+To: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Peng Fan <peng.fan@nxp.com>
+Cc: imx@lists.linux.dev, dmaengine@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+ Frank Li <Frank.Li@nxp.com>
+X-Mailer: b4 0.13-dev-c87ef
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709054529; l=2161;
+ i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
+ bh=r+SX1BIbt/a8XXIeUpEhiy0sFQzztcqic+7HKpVi/bY=;
+ b=cfGe/Z3C5UnFeJImNZ+LXU4oZem9gGgPsVBDA5wtpcW/s/FDzBRM9a1qPbyYHdTnFViuclkiX
+ YamgA3epya5AntarmvHrkIA44CiEvkylBjbz+ghk0tMmNDcWXVpNdPo
+X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
+ pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
+X-ClientProxiedBy: SJ0PR13CA0059.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c2::34) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170905451255.398.2362250081736295349.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS5PR04MB9754:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4493227c-4ded-4eeb-569f-08dc37b8a42a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	nB5yQdgBObp/kGZlX7IoRk6NszQtfwlJMqFXCjZhhIqy5uHX1JmzPvUX2Z6V3wKQx6BU5K/GurCWk7CI9FlgMKfMKG3NVjXxxPiK8kJuh6EyccbuG9e7tGYRO3qMgG/TtvBsUyLoMtdmdxaVR7zmx9TuXOrAQ08j83LcEOW7njVLmGmmRVMKN7qlkfgXW3B2ERsjySAPyonShcbEZ+OEZu8GmZfu2C7f7S+cHtylj/muEtSZ5M1zsib6EougKuqSFlf0HaOkjqHy+9J+hAeBBS4kZyfwtb1DhJBMAgoIkB5tOcPZqCeYufg8olWKuHOldOrWOuq5+Bax0+F7HkhLiYUxbFJczlp+kKTw6A/UUA2nxBuXpnOt1rKA6psMHbErzd5Qhm1gELQ3+NUpTMWbOKko1vGBgq9dEV9bb12Dov0QI5OoLIw+1+YiYwxUpglMtgXN54WAj+xSPKjOrP9K9NW8yo9s1toV1ihqop82E0QssNG2PpOrIn2lC7/eltapWwGSwQA8gDM5003kpqH7Q1TXAlqvP8q5kNN9Fj2L7VCI4Nrb0CdMLZ6UQCYzweY56UPFHtQwz8QFZ2uvcisU8iDoSlmp8dXt4kVX0SRjXYTS/a7yRbmrlxwzWSp6+eltgp7IJGY9U1OFDjH4GYurKw8eUW51nGisDOTghaKKxr0qZniXyJ1+0WrtNCqHuquZn+z2tMlbNL5rTmLzNGChsm9iwqXS5V2FPI+DgZU3BmU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?d0lZTU5kNHBaYURRa2lIOW4zd1BlU1lNbXpvYlAvZDVDc1lmZkhhbG5GMEtN?=
+ =?utf-8?B?aVpGNk1YMFpkejRjZHRlTmlJb3RPeEFPS2U2cTVtTjRNbUE4SlM0V2Y4cTkz?=
+ =?utf-8?B?UjNHeklTOElhSDZzZFBoVUNJQVl0aEp4dkYzRFFNOHduT0Q1ZGtJQ2NoY3Fj?=
+ =?utf-8?B?UkE2cFZnblYwdzZybGdBN0xuRlpqM1hJSElUR2NTQVpUQW5YS2JRU01qMk1n?=
+ =?utf-8?B?MFNnaGlydG92NWtNZm5FOHZaSFhRVFRoSUpqVS9MMkVuV3lZWGN0bk9vUU9H?=
+ =?utf-8?B?R3pxNlllYXl6UHV1UzF4akg2d2V2YkR4cnlCWnNiT0o4dkVlVy9KclhoenRp?=
+ =?utf-8?B?VlQ4UHZIR01Edk9YekhNRGphMDNkN2tJU0plaTEzbHViN0RmZVU3UktselhN?=
+ =?utf-8?B?alc1SjdVa05aeEVjdHk0UzQvTjJJdDRBaGUwRE9pRnh1S1VTU0NzVE9tOXJO?=
+ =?utf-8?B?MFhzTVMzeSsxbXU5MkpTbUFyZTd3cDJJTnZXd0tGaVhpM2NzRG1wMjM4Y1Bi?=
+ =?utf-8?B?NkYvWnI1RTI5N1BYcmNYYzJ4dWpway93WjJwQXV1eVY2NGFucHBpWXVWcndI?=
+ =?utf-8?B?Zmt6RzJ3YTd2czRWNXpucFhiTnBEZ2RPWUt6TEcwU0drOTh0VGRZSDUwdENQ?=
+ =?utf-8?B?NkNYVEdvYmtXKy81U1Q0N1RjdXhnMHVGNng0Njd4M3JHVU9IQ3lpMmNRdnox?=
+ =?utf-8?B?blhsZHVnMTR6YWpsUlpCb0Y4TVR1bTB6Z1F2eVdONkxmdWd5OFlUU1lid1dD?=
+ =?utf-8?B?NU44SXkwZ01meEpwS3FwSUQzcWZrUVFyZFU3dUx4NHlXT0Yveng2RzQzK01E?=
+ =?utf-8?B?R21ocE1MSWY1UmIyajRoQ3ZhMHBKVzcvT0xYdjA0UkxySy9EdlArRVo5Uit1?=
+ =?utf-8?B?ZHV4YkhSSFpTZ1k0Y2J2SFg4ODBSa1JUQlBRajhIQTkvejZxNFJOSTdqWVp3?=
+ =?utf-8?B?QzU4UG5INnFGZXg4b0NId2pMNVMwZUNKaU9uSDB4RjhBTGhLNmQ0K01iR21y?=
+ =?utf-8?B?UUVEdU5mdVFrZmRrQXN0bHJ0a3l2VWN1UE9BZlk0SzlNN0N6VW9rK2xwSExj?=
+ =?utf-8?B?TmhpUHFwQ29GRDRyd2FqOTJNTHJ2TG9DdGl5eHkrdHJJMUhFL2FJSDlmZkJw?=
+ =?utf-8?B?NGw4K1hERjUvMHptaWd3dmZWcjdjRklLWnNFVFRWZlduNnQ5UGpjck81V3Jw?=
+ =?utf-8?B?VTlSOFN3ejJRcXlsa1JIckFkc3ROVEtQcnhTOGg2eWhGdmw2UjFVWUpaTm91?=
+ =?utf-8?B?L3gxSkRvU2xrUno4MVB1UUQvSnhzbWU4S0pQOStOT25lT0VaaVhtbVNIRVB6?=
+ =?utf-8?B?TUxScEtaSE9JL3JnMXVSVWxsWklJaFlGNW1KcERiTlluQnFPTmV6cDlyZVdl?=
+ =?utf-8?B?SCtKTlg1YXpSd3I4TWwzalNqcVNkRUlkVHRHQ3Z3Ti9HNm9iblp6b1BsLzBR?=
+ =?utf-8?B?RlpJcU9YWDRXUVpTV1FwN2tjaitDYWJNYUY3MTgvMXpaUDdtdlphWnN3Y0Jr?=
+ =?utf-8?B?enhaSThoM0Urd3g4NldHMm5FQXZXVzdCWnZidVBySTg5bTQxVkYrWjVzUXZF?=
+ =?utf-8?B?V2kzRTV0cTFPbXo5N0sxaFVrQldOU0JtK0hGZ0dBTlZ3enZMNWdWWlZBTndt?=
+ =?utf-8?B?amo3dGVQYzRCN2gwSGEyZDhEY3JTREVGV0JCcnZYTkFTbUNJa1d4SUdXSG5w?=
+ =?utf-8?B?WjViQ0hzVGVLZEEyaCs5S3Y5WWtMU3c4UnpRbGN2UUhZMHM4RWRVZGg2Q3M4?=
+ =?utf-8?B?MmRsMWErRjg5QlRqaVMxYVBjUDBWMHYyOERnNFBWT3hzT1piTStiUmcvTFpS?=
+ =?utf-8?B?RHF6a0tNZkdvaUJ6QzBtaE1ncVhITlZCd2dtOVhreWUzN2FvR1ZTZ21BeW02?=
+ =?utf-8?B?dllwNFRVRHB3Tmtwak9nRzBhcGtROEtRN0tyMUVhYmF2SVNoeUgrTUozang0?=
+ =?utf-8?B?YSt0OGtEbFM3R3J2b25qN1VGNWw2S3NJZ0Y5dFNuVzkzMTdOTktuaDdBZ3Rh?=
+ =?utf-8?B?a1ZTRGxaczhHVVJmbEIwbnoxMFg3YlF1N2hITjZKaVNaN2tWcjQxVk9UNXhl?=
+ =?utf-8?B?a29KZ0R1ak9uQWNoRnVrcjFFWlkzTWhMU3grVVFqdThBRGVtTWUvek0vSWxq?=
+ =?utf-8?Q?dn8Q=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4493227c-4ded-4eeb-569f-08dc37b8a42a
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 17:22:14.8440
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PdjXTUgGbVcb9qOL8xGCo15KngQV2ZqVIQQbJqqlkQYQB3Lbzg1gbJ8J15539chboxGbz4FBvN/N4sbJlbKcFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9754
 
-The following commit has been merged into the irq/core branch of tip:
+The 'slave_id' field is redundant as it duplicates the functionality of
+'srcid'. Remove 'slave_id' from fsl_edma_chan to eliminate redundancy.
 
-Commit-ID:     8d0f3e7bdef44236d33ac4a5f2106602e0d4e1ea
-Gitweb:        https://git.kernel.org/tip/8d0f3e7bdef44236d33ac4a5f2106602e0d=
-4e1ea
-Author:        Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-AuthorDate:    Fri, 22 Dec 2023 23:50:37 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 27 Feb 2024 18:12:10 +01:00
-
-irqchip/madera: Convert to platform_driver::remove_new() callback
-
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
-
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
-
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
-
-Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Link: https://lore.kernel.org/r/64c2f79760c53f29651e7126418c407ff699317d.1703=
-284359.git.u.kleine-koenig@pengutronix.de
-
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
- drivers/irqchip/irq-madera.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/dma/fsl-edma-common.h |  1 -
+ drivers/dma/fsl-edma-main.c   | 10 +++++-----
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/irqchip/irq-madera.c b/drivers/irqchip/irq-madera.c
-index 3eb1f8c..acceb6e 100644
---- a/drivers/irqchip/irq-madera.c
-+++ b/drivers/irqchip/irq-madera.c
-@@ -222,7 +222,7 @@ static int madera_irq_probe(struct platform_device *pdev)
- 	return 0;
- }
-=20
--static int madera_irq_remove(struct platform_device *pdev)
-+static void madera_irq_remove(struct platform_device *pdev)
- {
- 	struct madera *madera =3D dev_get_drvdata(pdev->dev.parent);
-=20
-@@ -232,13 +232,11 @@ static int madera_irq_remove(struct platform_device *pd=
-ev)
- 	 */
- 	madera->irq_dev =3D NULL;
- 	regmap_del_irq_chip(madera->irq, madera->irq_data);
--
--	return 0;
- }
-=20
- static struct platform_driver madera_irq_driver =3D {
--	.probe	=3D &madera_irq_probe,
--	.remove =3D &madera_irq_remove,
-+	.probe		=3D madera_irq_probe,
-+	.remove_new	=3D madera_irq_remove,
- 	.driver =3D {
- 		.name	=3D "madera-irq",
- 		.pm	=3D &madera_irq_pm_ops,
+diff --git a/drivers/dma/fsl-edma-common.h b/drivers/dma/fsl-edma-common.h
+index 7bf0aba471a8c..4cf1de9f0e512 100644
+--- a/drivers/dma/fsl-edma-common.h
++++ b/drivers/dma/fsl-edma-common.h
+@@ -151,7 +151,6 @@ struct fsl_edma_chan {
+ 	enum dma_status			status;
+ 	enum fsl_edma_pm_state		pm_state;
+ 	bool				idle;
+-	u32				slave_id;
+ 	struct fsl_edma_engine		*edma;
+ 	struct fsl_edma_desc		*edesc;
+ 	struct dma_slave_config		cfg;
+diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
+index 402f0058a180c..0a6e0c4040274 100644
+--- a/drivers/dma/fsl-edma-main.c
++++ b/drivers/dma/fsl-edma-main.c
+@@ -114,8 +114,8 @@ static struct dma_chan *fsl_edma_xlate(struct of_phandle_args *dma_spec,
+ 			if (chan) {
+ 				chan->device->privatecnt++;
+ 				fsl_chan = to_fsl_edma_chan(chan);
+-				fsl_chan->slave_id = dma_spec->args[1];
+-				fsl_edma_chan_mux(fsl_chan, fsl_chan->slave_id,
++				fsl_chan->srcid = dma_spec->args[1];
++				fsl_edma_chan_mux(fsl_chan, fsl_chan->srcid,
+ 						true);
+ 				mutex_unlock(&fsl_edma->fsl_edma_mutex);
+ 				return chan;
+@@ -540,7 +540,7 @@ static int fsl_edma_probe(struct platform_device *pdev)
+ 
+ 		fsl_chan->edma = fsl_edma;
+ 		fsl_chan->pm_state = RUNNING;
+-		fsl_chan->slave_id = 0;
++		fsl_chan->srcid = 0;
+ 		fsl_chan->idle = true;
+ 		fsl_chan->dma_dir = DMA_NONE;
+ 		fsl_chan->vchan.desc_free = fsl_edma_free_desc;
+@@ -682,8 +682,8 @@ static int fsl_edma_resume_early(struct device *dev)
+ 			continue;
+ 		fsl_chan->pm_state = RUNNING;
+ 		edma_write_tcdreg(fsl_chan, 0, csr);
+-		if (fsl_chan->slave_id != 0)
+-			fsl_edma_chan_mux(fsl_chan, fsl_chan->slave_id, true);
++		if (fsl_chan->srcid != 0)
++			fsl_edma_chan_mux(fsl_chan, fsl_chan->srcid, true);
+ 	}
+ 
+ 	if (!(fsl_edma->drvdata->flags & FSL_EDMA_DRV_SPLIT_REG))
+
+-- 
+2.34.1
+
 
