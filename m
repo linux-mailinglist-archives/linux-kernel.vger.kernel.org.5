@@ -1,119 +1,145 @@
-Return-Path: <linux-kernel+bounces-82942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB4C868C09
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:18:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B641C868C0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:19:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26649288B26
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:18:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9E031C223B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:19:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA7D1135A6A;
-	Tue, 27 Feb 2024 09:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405B4136648;
+	Tue, 27 Feb 2024 09:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DrfpclUb"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HymjBdRT"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F24E54BCB
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D440015D0;
+	Tue, 27 Feb 2024 09:19:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709025523; cv=none; b=FlXD4qsgaEMPA4PhOtRM3sJge14duHhToFXPtI9RnR47rJaiPbjt2xgSQNwAMnNdyCl1sYE7sGhjxoY/L/9g0XlU5OClEDbrfq6bAHt8XkjbXp0uV6l2vd3bp+IEYCZffwfkINhCFvGVcnQoAPfDAvA1+8xF6JdUr+I0mj0OmVM=
+	t=1709025553; cv=none; b=o44W7lp/LmM7FvJXCS94jUGyKCohMHeHMNvSIE+jRbpJqYvfkBN08rv6j7AmKfVmuCxpXJ3axKTcN6hYzekkYgLS/d1d3lvmB8/Lhnj1k+0dZOrvm/ILjPK2rudBKSHe/Uqe7W+dbgItj7aOni5mz9lxf0UsWIKFrZ+gvTZCZnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709025523; c=relaxed/simple;
-	bh=+caxhbxvXcG5btEQEz+HchYw+UK5NIuQWCABSjExhS8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=qTfOHVNphRJ7ym/6peq0ZTd2NQ4qE/GAos1ZdpluIhhVJDMde5er0txgVccg4tdN1WMImOnHTHTNYCnd1ENC7aTWXSRUXKq1HCowZDKMCTCHpn2tcrz7Fqkuzlq2UXdEtgVcbCEBuZXkCo2KewRLwg3Anp/tYmiJCASWF4085+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DrfpclUb; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3f5808b0dfso547257666b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:18:41 -0800 (PST)
+	s=arc-20240116; t=1709025553; c=relaxed/simple;
+	bh=2rvKWBsOe5u09Fm07C6Vhkn/eWWGe34DDiMGSkmn9Vg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VkqXJEMXDXxpAAkz1uCzwFYyP1Y3jLPjvP0v4rJRnjo6xBda17SSq5Q0mu7mH+UuK+kPCAPrvswebUT2WIkm38ew2TAx2Ad4p/LnYSh1xQQMGRj7D1BZDoEtqCfPDtEdNqzhWmgQt+cQX7IujWJgGONodLn//dnywKWK2plgZVk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HymjBdRT; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412ae376419so2028265e9.3;
+        Tue, 27 Feb 2024 01:19:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709025519; x=1709630319; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CTxdDYxyQ3IqtlRrYxG0cMi0muAaZV+mdO2HgBPhVk4=;
-        b=DrfpclUbD5IJXFN/GU5JTGVnzMh00BH7P+hNogtw/Ep6Qc2RcJ8GkdP0Li2jjt2N2h
-         rcyqcgQlkt6t0UvUusHvnHjhLOyqHnC33oz6OB0cmX5mM9Utq3AeOGIQvRPQjQ4oV3sZ
-         wz1ZtpJDcN24A03hnenEOBYRRVLWI5nULGuCwFiK67Hl7d8qxrHRCn2b1zsbwxsYMVqe
-         THiN71AQoiR0mLKQN3Y4YavM5KyKiELJpTMViy9I17nGWAncI3Ih73Zbgjf3+OxR+6TB
-         7ik7WtYPzlJ9z9a6xXC3Go+rYE4Axd0aOAMUfDlAkmC2tuwX2+Pw6ZRPydOFN8yBT4Jr
-         PlWg==
+        d=gmail.com; s=20230601; t=1709025550; x=1709630350; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4OJtlxBTGwU2hkLw+f6HomonbgUEkZ6XExKyA+CTZ+E=;
+        b=HymjBdRT4p/Q+XTvR4eH6i/WJ1eFgCzXTuPUoYH0jibxhRNjblhSP8MTTf3eJq/m7W
+         Mt2LK1ZdkwElaVsMlbwvTHUd0ZC0o8jIVgtybMn2hhnRCQjfyYqBtMlZr7Xwq9vuSNti
+         YfhlNmWWxnhX7uXGAqyG84ga7euBgjw+DGckFFkXBE3zZ9P2G0oz0JHPT8/NsYH2PcMn
+         UpcWXn55PR3fAv/Hfz+nCUPipjuZZ3ZPaJoVFEYwbqut/tqs3uG475iN05Ji3kidhcSS
+         jV6B3WVaQ/xc4XmzbVetQ4ejgQsZV88FHOlu6syz11H222jpGKRUty4YnuaP6Pfez4Wp
+         xthA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709025519; x=1709630319;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CTxdDYxyQ3IqtlRrYxG0cMi0muAaZV+mdO2HgBPhVk4=;
-        b=LAErealZ4sEhOA3b1ELZ7yCRgNchXXy0nbSTGoJDud2xm/1CwANys9356pTKdka3j+
-         66DjGT0JFOjWo80yEY9HGsttmJDvS+3WU0ajs/m5ERiZjJRJuDxN0nuJldlWwE891PXt
-         0faxWJdqVUWHVmLTCzyrQdlR9/R7LvNTDkyg01x5HIK3A9cyGwx5jo4IHa/KbjdSwA/E
-         3d9g9nVqNpx2ztCyVA4llz81GRwy98Y1cFUmomUT5scmRgId5mfpURX4ogWbYw8sLKxW
-         42S7k/Dq8abn1OauQrKUySriwpussOzHpFS2A11GzwP5vT1KEjNahGneIfvfem6dL69Y
-         As6A==
-X-Gm-Message-State: AOJu0YwUJONbi2q39glhEuQ1sXefLDSuDLhDhf2D6hccT9EcHbJ02ilt
-	z2omse4A+pt9jn54RO7RbIO6uNR46Oud1NTijd6I0omm6bCeTo+gkMcQ1dw3wbhdf9M2bVyeThO
-	L
-X-Google-Smtp-Source: AGHT+IH5qDiaCJ1Kc19hS+XkEPETptoM/fW2uFhb8X4AvKdAgnH5cE9EdnEx4zaM+SmijwWe1GLcsw==
-X-Received: by 2002:a17:906:3c05:b0:a3f:4596:c3c8 with SMTP id h5-20020a1709063c0500b00a3f4596c3c8mr6253526ejg.53.1709025518961;
-        Tue, 27 Feb 2024 01:18:38 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id a11-20020a1709065f8b00b00a4395a7adecsm561154eju.165.2024.02.27.01.18.37
+        d=1e100.net; s=20230601; t=1709025550; x=1709630350;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4OJtlxBTGwU2hkLw+f6HomonbgUEkZ6XExKyA+CTZ+E=;
+        b=BHj7JFB8LG+UaDqwnfPlYGZbDF3R8B1jzmr3kDFWw2jS7ADqsCx+M0Hn/e5XaLU8Nl
+         xggs3FLwhAegTZJ0qSwxwuwH+A53rljUXsQ38nZe+kKbXJDe7xubDzXQwBg/IT1k/COz
+         T1wbRnVTGoNJUqd19SjqZ+eXki6+2MZDZyhM2VqjMgaNAgpNGOlsmfjmmgivAbWXj2Xe
+         +GAwwV+5I7rU5QQb/J97dWTmckxh8rckXpngP80Nul/SU0Z2LQ3bjmRwQOmQn+IKKv0T
+         m3fJ3Dzdeyg8AelcXiG4gVUpHR7jdrdLfK9gi8C4KsGnK25qBiJtP/HELSsCCXMeiaAg
+         GXjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWeJVvyl7JrM1QXQM7SBenM/ge0gUDPh/GNaIRdUdObZoOl0ggVLgnOHJO94bJoEw0FfKJLcMJC6zAMkobo5Zm3izQqPvVBuGyKfStBkUfFdP0=
+X-Gm-Message-State: AOJu0YwXbvDrRdOJQFHQG2H94+SSmt57r26mcNsyHBehe7watc/9Boux
+	iTZmeVLDVIbYpNitXzOnWC6GrDGfA2QnPuhUaHAip29Pd0ph6EP3
+X-Google-Smtp-Source: AGHT+IHo04C8KEdcciAWhLv4DtImgXgPjfgRBYtchRH2qs/BWZhaTvu8jXxY7kHGbTjic1XqsbVm+g==
+X-Received: by 2002:a05:600c:3acf:b0:411:c329:6515 with SMTP id d15-20020a05600c3acf00b00411c3296515mr6086729wms.24.1709025549984;
+        Tue, 27 Feb 2024 01:19:09 -0800 (PST)
+Received: from gmail.com (1F2EF054.nat.pool.telekom.hu. [31.46.240.84])
+        by smtp.gmail.com with ESMTPSA id a20-20020a05600c225400b00410df4bf22esm14502533wmm.38.2024.02.27.01.19.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 01:18:38 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
- conor+dt@kernel.org, Christophe Kerello <christophe.kerello@foss.st.com>
-Cc: linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
- devicetree@vger.kernel.org
-In-Reply-To: <20240226101428.37791-1-christophe.kerello@foss.st.com>
-References: <20240226101428.37791-1-christophe.kerello@foss.st.com>
-Subject: Re: [PATCH v3 0/5] memory: stm32-fmc2-ebi: Add MP25 FMC2 support
-Message-Id: <170902551749.40155.4302792627974952211.b4-ty@linaro.org>
-Date: Tue, 27 Feb 2024 10:18:37 +0100
+        Tue, 27 Feb 2024 01:19:09 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Tue, 27 Feb 2024 10:19:07 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Subject: Re: [tip: x86/apic] smp: Provide 'setup_max_cpus' definition on UP
+ too
+Message-ID: <Zd2pCxSm0FKJ8DZn@gmail.com>
+References: <170894808668.398.2149303099223176501.tip-bot2@tip-bot2>
+ <20240226150234.GCZdyoCtNj8lFwViAW@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240226150234.GCZdyoCtNj8lFwViAW@fat_crate.local>
 
 
-On Mon, 26 Feb 2024 11:14:23 +0100, Christophe Kerello wrote:
-> On MP1 SoC, RNB signal (NAND controller signal) and NWAIT signal (PSRAM
-> controller signal) have been integrated together in the SoC. That means
-> that the NAND controller and the PSRAM controller (if the signal is
-> used) can not be used at the same time. On MP25 SoC, the 2 signals can
-> be used outside the SoC, so there is no more restrictions.
+* Borislav Petkov <bp@alien8.de> wrote:
+
+> On Mon, Feb 26, 2024 at 11:48:06AM -0000, tip-bot2 for Ingo Molnar wrote:
+> > The following commit has been merged into the x86/apic branch of tip:
+> > 
+> > Commit-ID:     429bb0269058e2e1f4ab69a0d33d374933aa15b9
+> > Gitweb:        https://git.kernel.org/tip/429bb0269058e2e1f4ab69a0d33d374933aa15b9
+> > Author:        Ingo Molnar <mingo@kernel.org>
+> > AuthorDate:    Mon, 26 Feb 2024 12:07:31 +01:00
+> > Committer:     Ingo Molnar <mingo@kernel.org>
+> > CommitterDate: Mon, 26 Feb 2024 12:13:40 +01:00
+> > 
+> > smp: Provide 'setup_max_cpus' definition on UP too
+> > 
+> > This was already defined locally by init/main.c, but let's make
+> > it generic, as arch/x86/kernel/cpu/topology.c is going to make
+> > use of it to have more uniform code.
+> > 
+> > [ Keep it a C variable, not a define, because there's
+> >   some namespace overlap for the 'setup_max_cpus' token
+> >   in existing function argument names. ]
+> > 
+> > Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: linux-kernel@vger.kernel.org
+> > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > --
+> > ---
+> >  include/linux/smp.h | 2 ++
+> >  init/main.c         | 1 -
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
 > 
-> MP1 SoC also embeds revision 1.1 of the FMC2 IP when MP25 SoC embeds
-> revision 2.0 of the FMC2 IP.
+> That one needs some work:
 > 
-> [...]
+> $ grep setup_max_cpus 13-37-17-randconfig-x86_64-2517.log
+> ...
+> ./include/linux/smp.h:221:27: warning: ‘setup_max_cpus’ defined but not used [-Wunused-const-variable=]
+> $ grep setup_max_cpus 13-37-17-randconfig-x86_64-2517.log  | wc -l
+> 122
+> 
+> very noisy.
 
-Applied, thanks!
+Yeah, a bit sad.
 
-[1/5] dt-bindings: memory-controller: st,stm32: add MP25 support
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/97dcd1ef76412d0f25d2d50215565fd4d9ef91db
-[2/5] memory: stm32-fmc2-ebi: check regmap_read return value
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/722463f73bcf65a8c818752a38c14ee672c77da1
-[3/5] memory: stm32-fmc2-ebi: add MP25 support
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/2ff761ff29f6e2d0e616b21af3e054dac1f2c5f4
-[4/5] memory: stm32-fmc2-ebi: add MP25 RIF support
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/cc7d5cf8021983a736f9d963dda2dd45de02b395
-[5/5] memory: stm32-fmc2-ebi: keep power domain on
-      https://git.kernel.org/krzk/linux-mem-ctrl/c/e46076906722ee6f9e7fd5abad7f909cd11a26af
+So I resolved this all with using #define and (first) fixing a namespace 
+collision that broke with the #define:
 
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+  4c8a49854130 smp: Avoid 'setup_max_cpus' namespace collision/shadowing
+  3c2f8859ae1c smp: Provide 'setup_max_cpus' definition on UP too
+  6be4ec29685c x86/apic: Build the x86 topology enumeration functions on UP APIC builds too
 
+Thanks,
+
+	Ingo
 
