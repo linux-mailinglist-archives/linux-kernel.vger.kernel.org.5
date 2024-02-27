@@ -1,368 +1,113 @@
-Return-Path: <linux-kernel+bounces-82847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25B41868A85
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:10:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F6D9868A8A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:10:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 499FC1C21B1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64076283B33
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:10:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D05355646F;
-	Tue, 27 Feb 2024 08:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f8vOq4kz"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D48AB5646A;
+	Tue, 27 Feb 2024 08:10:19 +0000 (UTC)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35F5356440
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86A856441;
+	Tue, 27 Feb 2024 08:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709021396; cv=none; b=IV8s1sTm+AKnVDGNxrvkflTwwtNJYO3AfXzg3j4xlYGL3q4WwmD2m3j6w3VzfJZITnpnHcSBdqR22G8M/U1PdVqsQAApp8MOMYRK/PISoKIg2m93J2+S92s957KaBV57XdQZLCKQH3eaMwzxHJTaU1wb3XQC+aEU8F7JdPNKeEI=
+	t=1709021419; cv=none; b=RkOuOF1532R43CZ8cGpswnls7N1WBiwKQsThXPSH6l09tLMAxwtcOtSQNh5zYSTlx2xJzVT5YxIRaERA/sIReKX6HnYZLyKVpdHTsyeBwLGam8FMHrviNIaGF4O4mV4onJvRMcy4dSwtO8hlZSqwBYxuey2mAEHKGdpA0sMVSi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709021396; c=relaxed/simple;
-	bh=elFxfL9A2xGcR5fGcCNyQgri3vYJ3M/gHqGTu4V1Lgs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EqBgamI8CTXg9L63RWUOejYRzHLjTG98K+3Q2KOsLbQpvtO2hfZFPRDd88FtHRDC1LAzbUEkk/vIReClmYPIYjRPBXgutyMVhy+FEkdGYq4gl6X8A3LZ9xHqeiyEfvyXcVGn6As1vYErG7PleHkY7/fcj0/+K+lGEctQH2rwNXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f8vOq4kz; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1709021419; c=relaxed/simple;
+	bh=BPyJtCmk9qWVCLq/x/4vQLcnG953c2gwDPjE+Mws0hA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qyjgb7k6W+VnlOgQ30+sZ6Y4yg9Le/CNp8pxL8AES0Iu4j96/m/SaI2snHhUyIOgQMXKiJhRc4CUT3/3lo0GfgCSsfDMOZbWqK6hIusEtZrOVZUCrR4doxFHWOfMoxhiBgMue402aafiPb7k5+KQJUJG+BdINXQ5AAYeHDcRHD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dc91d2384cso18225175ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:09:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709021394; x=1709626194; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eI87wpSxrKx5Pd/KtlbryOuE4BijaR7p0KGrHkeaOYU=;
-        b=f8vOq4kz/VoT57VNJZJckESmnb4BAXSu/iNQiAgHxqtGY1B3cPoLJ4B7+FuZEQh+5b
-         nStE3mLTx79FU5RDQJMERr7RjlHpj1QHcpKNmH7sFHosh+GyrN/Tq0E6fOO3/GV3FyJn
-         DvGjtyoeK1pCdCpS52MZHxFNjrUrIVYCzJ1bq1yA/7md5mAkK9vdP4BgTxoYcqfkIB+1
-         MTLpyyFlfcj01WwPZDogmLvL6c/wqQNjMhOVvfSTqYeQxHu+Wo4H64Ej2AKdnCMk7vTp
-         rvDIisfG2pfnlf2bN4YqYLOQeghiGqGxZ4T0GygYCgNydwDSEQq1B5k16W9u5SbJLGQz
-         DmcQ==
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60915328139so14379417b3.0;
+        Tue, 27 Feb 2024 00:10:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709021394; x=1709626194;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eI87wpSxrKx5Pd/KtlbryOuE4BijaR7p0KGrHkeaOYU=;
-        b=UJIEC65owxmYPP/KVnIGW1qGwuVPGwEgdzRmt1owR2o97FQVIvMhW0YxUPTmqu/e4h
-         L1WAMU+1I1THuc3UpILzXE38YPKJ3QGNL7W7+k5NNyPP4qYjKYqEw1g2MKlDUkWDSWyX
-         Wc/G8ALXr/CcrIulTg6TmgTap3mXlCf8qFmWhOoZ+kEg5BxIFE6nBQKS9Y4JlG+nzuGJ
-         lYDstQWZvP63Oy2eQkSNoKzZ1AE6Hf3B2ZlPhKzmY88wWONK6DaS8d0APr7W/AWSJuIA
-         B1QTUBWn8tD52C50tMi4kGPjjBu/IRLLinG2/5XvKb0K1oVRM38oRC9pfy79zmhnUEbm
-         5AdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWWQgvea+u/YPgFi1QExvCoTXyFo0LFCCvbkePZvENymCXEyx3njSFXoYX+ZclzO+WdnfDqCG8JyR+Xky3RxyJx98DuDEShx8nl/iY5
-X-Gm-Message-State: AOJu0Yz1Si+knkVhtQIHeGkOrynqdmdffOIkpb16Gr58Q0GVPTH+hzuZ
-	2rk3D9hckpOpWJnJk5H8SkyuIp0/s13zizwbvYXJCnWERsPdFpMX
-X-Google-Smtp-Source: AGHT+IGYXj5CZyrFuSJ8ejGWQyZqjq7OrKTVcYjcB+APd56hqLIPPH937YNrLrB0J4V3q4rHVXq1kA==
-X-Received: by 2002:a17:902:e809:b0:1dc:abe7:a1a6 with SMTP id u9-20020a170902e80900b001dcabe7a1a6mr4480596plg.17.1709021394116;
-        Tue, 27 Feb 2024 00:09:54 -0800 (PST)
-Received: from phoenix.. (076-050-196-152.res.spectrum.com. [76.50.196.152])
-        by smtp.gmail.com with ESMTPSA id d16-20020a170902aa9000b001dcb18cd22esm925059plr.141.2024.02.27.00.09.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 00:09:53 -0800 (PST)
-From: Michael Harris <michaelharriscode@gmail.com>
-To: gregkh@linuxfoundation.org
-Cc: hdegoede@redhat.com,
-	Larry.Finger@lwfinger.net,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] Staging: rtl8723bs: hal_btcoex: fixed styling issues
-Date: Tue, 27 Feb 2024 00:09:43 -0800
-Message-ID: <20240227080943.13032-1-michaelharriscode@gmail.com>
-X-Mailer: git-send-email 2.43.2
+        d=1e100.net; s=20230601; t=1709021416; x=1709626216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZHKgvHCfQA0dLHWrUBiWkZ5daaE/U0GQuV+47oRC1J8=;
+        b=atb4yIxLyXsAjMDfnup34VEx1Uf/mCsadz0t9qs3Xb0CtwDRaO8d/KHUhvolNLd1VK
+         3qk/4Nx7bvdpRrAvZLYqIwchiMGp/Lem4qPRfVVdyRRU7F1F6U9BUTZfcHLI1KDOa8cO
+         QLBsK7FdAv3y917RfomlukShXp8Or4cWFObWa+fJZD+ruyN3BUzyr13PKrNjFmqBcUH0
+         bxXoXbvNcXyK5m5vpX3MtUWAShtvS6oUo2emRpk21mzEQXsLerkdD+YqE/3kd26rtU+d
+         n17bm9fhSBewu6y1MpdtnPBwSm2+Fr79/MWW+d1ghr+nMbT+EIWW3Q8R88RSgByyCOGa
+         jC8w==
+X-Forwarded-Encrypted: i=1; AJvYcCU0fZBjGkFqeSpM79d/LlarzNH/mo6jT9ingdJh0iNSw3tupvNzDBkiz09DbU6U1J8IAxNWeNGurHH+Ce2PY5mw6oTgadGDaLUz5MJP6pyGbuxc+gfit3q5JX/Uz0VLuhX1dfRPDTkNImFBgYTDj7WgiGXfwOeJ54oVJ25rcg+BiZfI71QcSTP65oUB
+X-Gm-Message-State: AOJu0Yz6FosYJzSUJ6TR/9aoaDW7cpY5+t1hp2XSeEbh/R58XSG/T3na
+	nbkBU8gLkM4tSyixB12JCpaQ+YA9AjJ9KOLpp2F/Gw9YQa68CCSUJn9tI6VBJIw=
+X-Google-Smtp-Source: AGHT+IFqPaKpcdeBWLSeUsXNlBQ2/EBy2z5NH4UyyNwAJmRVNFBN/RTUfhu632tBABRHVJq6PbZltQ==
+X-Received: by 2002:a81:4113:0:b0:608:e6f4:4e14 with SMTP id o19-20020a814113000000b00608e6f44e14mr1419158ywa.47.1709021416519;
+        Tue, 27 Feb 2024 00:10:16 -0800 (PST)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com. [209.85.128.171])
+        by smtp.gmail.com with ESMTPSA id v1-20020a81a541000000b005fff0d150adsm1599681ywg.122.2024.02.27.00.10.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 00:10:16 -0800 (PST)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-60915328139so14379207b3.0;
+        Tue, 27 Feb 2024 00:10:16 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUG9OFS5zOQmuPDUIcHGOFDfMr6/iomyew3isl/i8sghSpHmtqFxMRIOGiUSURzq1ro0fmuk5+eLxJH7+tqe5L72lnLH/peYz4/QzUEg6sDXANTtIOh8ho/IkZRsfibyNj8g+kv3Dxq70OhsaaJlXN+hmBhi9JROYzOozEq1u0KltbBQ9dU4M7gZIsV
+X-Received: by 2002:a25:2e12:0:b0:dcc:58ed:6ecc with SMTP id
+ u18-20020a252e12000000b00dcc58ed6eccmr1247229ybu.41.1709021415817; Tue, 27
+ Feb 2024 00:10:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-4-aford173@gmail.com>
+In-Reply-To: <20240227034539.193573-4-aford173@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 27 Feb 2024 09:10:04 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUS2gMAZ=L-aj8GOti_cEsnrv6qz6aDLmj5-TOD3JKs7w@mail.gmail.com>
+Message-ID: <CAMuHMdUS2gMAZ=L-aj8GOti_cEsnrv6qz6aDLmj5-TOD3JKs7w@mail.gmail.com>
+Subject: Re: [PATCH 3/6] arm64: dts: renesas: r8a774e1: Enable GPU
+To: Adam Ford <aford173@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, 
+	aford@beaconembedded.com, Frank Binns <frank.binns@imgtec.com>, 
+	Matt Coster <matt.coster@imgtec.com>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fixed various checkpatch.pl styling issues: spaces before tabs, constants being on left side of comparisons, unnecessary braces, etc.
+On Tue, Feb 27, 2024 at 4:46=E2=80=AFAM Adam Ford <aford173@gmail.com> wrot=
+e:
+> The GPU on the RZ/G2H is a Rogue GX6650 which uses firmware
+> rogue_4.46.6.62_v1.fw available from Imagination.
+>
+> When enumerated, it appears as:
+>  powervr fd000000.gpu: [drm] loaded firmware powervr/rogue_4.46.6.62_v1.f=
+w
+>  powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Signed-off-by: Michael Harris <michaelharriscode@gmail.com>
----
- drivers/staging/rtl8723bs/hal/hal_btcoex.c | 78 +++++++++++-----------
- 1 file changed, 40 insertions(+), 38 deletions(-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-diff --git a/drivers/staging/rtl8723bs/hal/hal_btcoex.c b/drivers/staging/rtl8723bs/hal/hal_btcoex.c
-index e26b789b9cdd..91922457e6e8 100644
---- a/drivers/staging/rtl8723bs/hal/hal_btcoex.c
-+++ b/drivers/staging/rtl8723bs/hal/hal_btcoex.c
-@@ -10,14 +10,14 @@
- #include <hal_btcoex.h>
- #include <Mp_Precomp.h>
- 
--/* 		Global variables */
-+/*		Global variables */
- 
- struct btc_coexist GLBtCoexist;
- static u8 GLBtcWiFiInScanState;
- static u8 GLBtcWiFiInIQKState;
- 
- /*  */
--/* 		Debug related function */
-+/*		Debug related function */
- /*  */
- static u8 halbtcoutsrc_IsBtCoexistAvailable(struct btc_coexist *pBtCoexist)
- {
-@@ -92,7 +92,7 @@ static void halbtcoutsrc_LeaveLowPower(struct btc_coexist *pBtCoexist)
- 	stime = jiffies;
- 	do {
- 		ready = rtw_register_task_alive(padapter, BTCOEX_ALIVE);
--		if (_SUCCESS == ready)
-+		if (ready == _SUCCESS)
- 			break;
- 
- 		utime = jiffies_to_msecs(jiffies - stime);
-@@ -304,8 +304,10 @@ static u8 halbtcoutsrc_Get(void *pBtcContext, u8 getType, void *pOutBuf)
- 		break;
- 
- 	case BTC_GET_BL_WIFI_SCAN:
--		/* Use the value of the new variable GLBtcWiFiInScanState to judge whether WiFi is in scan state or not, since the originally used flag
--			WIFI_SITE_MONITOR in fwstate may not be cleared in time */
-+		/*
-+		 * Use the value of the new variable GLBtcWiFiInScanState to judge whether WiFi is in scan state or not, since the originally used flag
-+		 * WIFI_SITE_MONITOR in fwstate may not be cleared in time
-+		 */
- 		*pu8 = GLBtcWiFiInScanState;
- 		break;
- 
-@@ -365,6 +367,7 @@ static u8 halbtcoutsrc_Get(void *pBtcContext, u8 getType, void *pOutBuf)
- 	case BTC_GET_U4_WIFI_TRAFFIC_DIRECTION:
- 		{
- 			struct rt_link_detect_t *plinkinfo;
-+
- 			plinkinfo = &padapter->mlmepriv.LinkDetectInfo;
- 
- 			if (plinkinfo->NumTxOkInPeriod > plinkinfo->NumRxOkInPeriod)
-@@ -402,9 +405,9 @@ static u8 halbtcoutsrc_Get(void *pBtcContext, u8 getType, void *pOutBuf)
- 
- 	case BTC_GET_U1_MAC_PHY_MODE:
- 		*pu8 = BTC_SMSP;
--/* 			*pU1Tmp = BTC_DMSP; */
--/* 			*pU1Tmp = BTC_DMDP; */
--/* 			*pU1Tmp = BTC_MP_UNKNOWN; */
-+/*			*pU1Tmp = BTC_DMSP; */
-+/*			*pU1Tmp = BTC_DMDP; */
-+/*			*pU1Tmp = BTC_MP_UNKNOWN; */
- 		break;
- 
- 	case BTC_GET_U1_AP_NUM:
-@@ -562,7 +565,7 @@ static u8 halbtcoutsrc_Set(void *pBtcContext, u8 setType, void *pInBuf)
- }
- 
- /*  */
--/* 		IO related function */
-+/*		IO related function */
- /*  */
- static u8 halbtcoutsrc_Read1Byte(void *pBtcContext, u32 RegAddr)
- {
-@@ -669,7 +672,7 @@ static void halbtcoutsrc_WriteLocalReg1Byte(void *pBtcContext, u32 RegAddr, u8 D
- 	struct btc_coexist *pBtCoexist = (struct btc_coexist *)pBtcContext;
- 	struct adapter *Adapter = pBtCoexist->Adapter;
- 
--	if (BTC_INTF_SDIO == pBtCoexist->chipInterface)
-+	if (pBtCoexist->chipInterface == BTC_INTF_SDIO)
- 		rtw_write8(Adapter, SDIO_LOCAL_BASE | RegAddr, Data);
- 	else
- 		rtw_write8(Adapter, RegAddr, Data);
-@@ -773,7 +776,7 @@ static void halbtcoutsrc_FillH2cCmd(void *pBtcContext, u8 elementId, u32 cmdLen,
- }
- 
- /*  */
--/* 		Extern functions called by other module */
-+/*		Extern functions called by other module */
- /*  */
- static u8 EXhalbtcoutsrc_BindBtCoexWithAdapter(void *padapter)
- {
-@@ -781,8 +784,8 @@ static u8 EXhalbtcoutsrc_BindBtCoexWithAdapter(void *padapter)
- 
- 	if (pBtCoexist->bBinded)
- 		return false;
--	else
--		pBtCoexist->bBinded = true;
-+
-+	pBtCoexist->bBinded = true;
- 
- 	pBtCoexist->statistics.cntBind++;
- 
-@@ -895,20 +898,20 @@ void EXhalbtcoutsrc_IpsNotify(struct btc_coexist *pBtCoexist, u8 type)
- 	if (pBtCoexist->bManualControl)
- 		return;
- 
--	if (IPS_NONE == type)
-+	if (type == IPS_NONE)
- 		ipsType = BTC_IPS_LEAVE;
- 	else
- 		ipsType = BTC_IPS_ENTER;
- 
- 	/*  All notify is called in cmd thread, don't need to leave low power again */
--/* 	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
- 
- 	if (pBtCoexist->boardInfo.btdmAntNum == 2)
- 		EXhalbtc8723b2ant_IpsNotify(pBtCoexist, ipsType);
- 	else if (pBtCoexist->boardInfo.btdmAntNum == 1)
- 		EXhalbtc8723b1ant_IpsNotify(pBtCoexist, ipsType);
- 
--/* 	halbtcoutsrc_NormalLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_NormalLowPower(pBtCoexist); */
- }
- 
- void EXhalbtcoutsrc_LpsNotify(struct btc_coexist *pBtCoexist, u8 type)
-@@ -923,7 +926,7 @@ void EXhalbtcoutsrc_LpsNotify(struct btc_coexist *pBtCoexist, u8 type)
- 	if (pBtCoexist->bManualControl)
- 		return;
- 
--	if (PS_MODE_ACTIVE == type)
-+	if (type == PS_MODE_ACTIVE)
- 		lpsType = BTC_LPS_DISABLE;
- 	else
- 		lpsType = BTC_LPS_ENABLE;
-@@ -953,14 +956,14 @@ void EXhalbtcoutsrc_ScanNotify(struct btc_coexist *pBtCoexist, u8 type)
- 	}
- 
- 	/*  All notify is called in cmd thread, don't need to leave low power again */
--/* 	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
- 
- 	if (pBtCoexist->boardInfo.btdmAntNum == 2)
- 		EXhalbtc8723b2ant_ScanNotify(pBtCoexist, scanType);
- 	else if (pBtCoexist->boardInfo.btdmAntNum == 1)
- 		EXhalbtc8723b1ant_ScanNotify(pBtCoexist, scanType);
- 
--/* 	halbtcoutsrc_NormalLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_NormalLowPower(pBtCoexist); */
- }
- 
- void EXhalbtcoutsrc_ConnectNotify(struct btc_coexist *pBtCoexist, u8 action)
-@@ -979,14 +982,14 @@ void EXhalbtcoutsrc_ConnectNotify(struct btc_coexist *pBtCoexist, u8 action)
- 		assoType = BTC_ASSOCIATE_FINISH;
- 
- 	/*  All notify is called in cmd thread, don't need to leave low power again */
--/* 	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
- 
- 	if (pBtCoexist->boardInfo.btdmAntNum == 2)
- 		EXhalbtc8723b2ant_ConnectNotify(pBtCoexist, assoType);
- 	else if (pBtCoexist->boardInfo.btdmAntNum == 1)
- 		EXhalbtc8723b1ant_ConnectNotify(pBtCoexist, assoType);
- 
--/* 	halbtcoutsrc_NormalLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_NormalLowPower(pBtCoexist); */
- }
- 
- void EXhalbtcoutsrc_MediaStatusNotify(struct btc_coexist *pBtCoexist, enum
-@@ -1001,20 +1004,20 @@ void EXhalbtcoutsrc_MediaStatusNotify(struct btc_coexist *pBtCoexist, enum
- 	if (pBtCoexist->bManualControl)
- 		return;
- 
--	if (RT_MEDIA_CONNECT == mediaStatus)
-+	if (mediaStatus == RT_MEDIA_CONNECT)
- 		mStatus = BTC_MEDIA_CONNECT;
- 	else
- 		mStatus = BTC_MEDIA_DISCONNECT;
- 
- 	/*  All notify is called in cmd thread, don't need to leave low power again */
--/* 	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
- 
- 	if (pBtCoexist->boardInfo.btdmAntNum == 2)
- 		EXhalbtc8723b2ant_MediaStatusNotify(pBtCoexist, mStatus);
- 	else if (pBtCoexist->boardInfo.btdmAntNum == 1)
- 		EXhalbtc8723b1ant_MediaStatusNotify(pBtCoexist, mStatus);
- 
--/* 	halbtcoutsrc_NormalLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_NormalLowPower(pBtCoexist); */
- }
- 
- void EXhalbtcoutsrc_SpecialPacketNotify(struct btc_coexist *pBtCoexist, u8 pktType)
-@@ -1027,25 +1030,24 @@ void EXhalbtcoutsrc_SpecialPacketNotify(struct btc_coexist *pBtCoexist, u8 pktTy
- 	if (pBtCoexist->bManualControl)
- 		return;
- 
--	if (PACKET_DHCP == pktType) {
-+	if (pktType == PACKET_DHCP)
- 		packetType = BTC_PACKET_DHCP;
--	} else if (PACKET_EAPOL == pktType) {
-+	else if (pktType == PACKET_EAPOL)
- 		packetType = BTC_PACKET_EAPOL;
--	} else if (PACKET_ARP == pktType) {
-+	else if (pktType == PACKET_ARP)
- 		packetType = BTC_PACKET_ARP;
--	} else {
-+	else
- 		return;
--	}
- 
- 	/*  All notify is called in cmd thread, don't need to leave low power again */
--/* 	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
- 
- 	if (pBtCoexist->boardInfo.btdmAntNum == 2)
- 		EXhalbtc8723b2ant_SpecialPacketNotify(pBtCoexist, packetType);
- 	else if (pBtCoexist->boardInfo.btdmAntNum == 1)
- 		EXhalbtc8723b1ant_SpecialPacketNotify(pBtCoexist, packetType);
- 
--/* 	halbtcoutsrc_NormalLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_NormalLowPower(pBtCoexist); */
- }
- 
- void EXhalbtcoutsrc_BtInfoNotify(struct btc_coexist *pBtCoexist, u8 *tmpBuf, u8 length)
-@@ -1056,14 +1058,14 @@ void EXhalbtcoutsrc_BtInfoNotify(struct btc_coexist *pBtCoexist, u8 *tmpBuf, u8
- 	pBtCoexist->statistics.cntBtInfoNotify++;
- 
- 	/*  All notify is called in cmd thread, don't need to leave low power again */
--/* 	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
- 
- 	if (pBtCoexist->boardInfo.btdmAntNum == 2)
- 		EXhalbtc8723b2ant_BtInfoNotify(pBtCoexist, tmpBuf, length);
- 	else if (pBtCoexist->boardInfo.btdmAntNum == 1)
- 		EXhalbtc8723b1ant_BtInfoNotify(pBtCoexist, tmpBuf, length);
- 
--/* 	halbtcoutsrc_NormalLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_NormalLowPower(pBtCoexist); */
- }
- 
- void EXhalbtcoutsrc_HaltNotify(struct btc_coexist *pBtCoexist)
-@@ -1103,25 +1105,25 @@ void EXhalbtcoutsrc_Periodical(struct btc_coexist *pBtCoexist)
- 
- 	/*  Periodical should be called in cmd thread, */
- 	/*  don't need to leave low power again */
--/* 	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_LeaveLowPower(pBtCoexist); */
- 
- 	if (pBtCoexist->boardInfo.btdmAntNum == 2)
- 		EXhalbtc8723b2ant_Periodical(pBtCoexist);
- 	else if (pBtCoexist->boardInfo.btdmAntNum == 1)
- 		EXhalbtc8723b1ant_Periodical(pBtCoexist);
- 
--/* 	halbtcoutsrc_NormalLowPower(pBtCoexist); */
-+/*	halbtcoutsrc_NormalLowPower(pBtCoexist); */
- }
- 
- void EXhalbtcoutsrc_SetAntNum(u8 type, u8 antNum)
- {
--	if (BT_COEX_ANT_TYPE_PG == type) {
-+	if (type == BT_COEX_ANT_TYPE_PG) {
- 		GLBtCoexist.boardInfo.pgAntNum = antNum;
- 		GLBtCoexist.boardInfo.btdmAntNum = antNum;
--	} else if (BT_COEX_ANT_TYPE_ANTDIV == type) {
-+	} else if (type == BT_COEX_ANT_TYPE_ANTDIV) {
- 		GLBtCoexist.boardInfo.btdmAntNum = antNum;
- 		/* GLBtCoexist.boardInfo.btdmAntPos = BTC_ANTENNA_AT_MAIN_PORT; */
--	} else if (BT_COEX_ANT_TYPE_DETECTED == type) {
-+	} else if (type == BT_COEX_ANT_TYPE_DETECTED) {
- 		GLBtCoexist.boardInfo.btdmAntNum = antNum;
- 		/* GLBtCoexist.boardInfo.btdmAntPos = BTC_ANTENNA_AT_MAIN_PORT; */
- 	}
--- 
-2.43.2
+Gr{oetje,eeting}s,
 
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
