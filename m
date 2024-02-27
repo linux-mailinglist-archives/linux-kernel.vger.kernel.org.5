@@ -1,102 +1,169 @@
-Return-Path: <linux-kernel+bounces-82892-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FAB4868B55
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:55:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE29C868B6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:56:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19AACB21723
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:55:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1B251C20FBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A9E6133297;
-	Tue, 27 Feb 2024 08:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519BC13340B;
+	Tue, 27 Feb 2024 08:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QC/kb2no"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QTwnlPNy"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA66A3D68
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC834130E24
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709024102; cv=none; b=dRWmQ3mZFj3Ba/NitJR5+yXUI93CIyM4L1vzP2EnbtpuN2j21HmI8xJlMF83ssRvgfDYXxsxMKae2XDZdN9mmlkYd7HOxSxguZauCFr3yaef0xWflz103daDMxdRKf3iDrzfviJ0HuytoQf30bWyn+a6e+tuUo8dD/i6RLbEn94=
+	t=1709024202; cv=none; b=VqU6YrHid5N67A/L/kT11BU//BN8RShQDbOfF1Gw7cn37MgrUvmYEeVrlZ6fUJYyXWTFD9DHqPDh3ydDtrLaVM0g+N1m3ZX2pDqGt1inLogJLLogJuBxGtljbEVsoLjBHjMcubAZedoaxSbCb4kHv3cR6e4QDdQOG+fenfBKPp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709024102; c=relaxed/simple;
-	bh=e65miCkicj1NdvFVKAgHu/VbuyPfNh0KeRITNON5WD8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XKr+w6/94jM/oGUd09gx9odTz6GRsgpzJIU1zb6nQK6xCDzcwR/k+XpvvttBNRBNg9LnLQBfIBcz6oNdoElF0RGGZ7jtcU0PkKtBYSCWDGoNlcTxCPXdswxDCGPg2MtyniILCtDDGXry432ZUQOiVpYwMsbSllZwYNz9/28j7iM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QC/kb2no; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-412a3ebad2aso15295075e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:55:00 -0800 (PST)
+	s=arc-20240116; t=1709024202; c=relaxed/simple;
+	bh=53omt5jEIdwTl9xhFqn0ez1SbwdixDR3P28VJ6K+SYs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nSKYaergln0gKmQIbkDyaZKrzVa1jZMA3MZSoVCswknAEIDQNRvpCpEUOBD+pM/x7kLnXMcxzwU2P9kXmSjMwqnGc3KfJu3p6yyj4oIFYJMwqVyggGw+/Lu4pwFF35y7seS67a9c8YqPuI4m27oMXT85F9E1KiYBeeQu1e9P0ms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QTwnlPNy; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-512eed6e77cso1714e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:56:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709024099; x=1709628899; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HoOFxtqK/5ZaKWmPUt4ourSkgleZpPjmZJgHHXaK8e8=;
-        b=QC/kb2noP3iC4aPpTCHslNJtkbdFwLDhz1MVQhG9YrNYCfVihVayu7gwpa2+/LS4ys
-         AA7U2tR2PG80iWlrgpf3wKJERUKsaYoEfQglS6tcFqykYSo8+0zh5rg+BNIQch/BNu0A
-         MIyjqTlBjF5CNSH1gLQCC0FEMYSNIi09Tw+jONgEAL20XzzGPygm3s/X6HABPRH9rrzP
-         7Zcu27tspztJ2spU/LzAx0qE+BUut6wmDRkG+KdqmjrzWPJUnvjhd73F3jGX3zOmpnsE
-         I00sH/NwhNl2UiwwT9YSSiWgLaJXHFcuqy+YPEX4Z/E5ibKRGxFnyxDmXoyxM6cFvmZX
-         mZDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709024099; x=1709628899;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1709024199; x=1709628999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HoOFxtqK/5ZaKWmPUt4ourSkgleZpPjmZJgHHXaK8e8=;
-        b=rtM74d4h+NCbOODj/BIh5IYpIPKl9zT6l483KqA7likoNosu0tKVS5+tDquVKMuB3E
-         Al34lJr50nLV1ZgnSCTwlR9/O3e/t5d73J67d+ea7zTq6gFb1rbMo/N5y3d6mh+RDjnt
-         nwCIF5121aRjmagcKS/ckyZ6OGYxtFzZcfREaZW0FI78SEf7m4Al3OY0J9SrEoATz/6Z
-         5VaO9cmOxHIK539a/T0gpnZsCPTWo7kiSXXtDxez8cCsIiZmLzLMa+Q2vH9lwj4uBih8
-         yqhvVYv31+5ZnSQzMEjF7GrMFI3g1HdEQTizxLUcS8NlIOaYoGVJ7RUOqxkC2LRbeWyG
-         bK6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUwV/crAa8qyOsOKtG0bwDcqmTqsgW65asyYuQJF/BDDb2Of45KnyrCLUwokH3ahQZ1UJ8xIDP8OHY5U7l1l4uO9NkbgAyWXWngqh53
-X-Gm-Message-State: AOJu0Yx+izJde6WQ3eaMv0Pxrc8WQRVaC5k/PQixNcBcoXJjxGzKsvzW
-	ea43IDPPYStK/EJzBxLf68BZiozF715U68TP8mOEPehOr/E/cyo142VIiKHMSYg/Cqvwtsusiqg
-	y
-X-Google-Smtp-Source: AGHT+IEcssd0DZn1GwRIx6uxtu/6p9Ar/DTRb8JebvM7osNUBQzyWw5I8ki+RUWt518g6UqWWYW8cg==
-X-Received: by 2002:a5d:468d:0:b0:33d:14a7:c4b with SMTP id u13-20020a5d468d000000b0033d14a70c4bmr6212734wrq.40.1709024099075;
-        Tue, 27 Feb 2024 00:54:59 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id u14-20020a056000038e00b0033dca6f8b44sm8036668wrf.16.2024.02.27.00.54.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 00:54:58 -0800 (PST)
-Date: Tue, 27 Feb 2024 11:54:54 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Michael Harris <michaelharriscode@gmail.com>
-Cc: gregkh@linuxfoundation.org, hdegoede@redhat.com,
-	Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: rtl8723bs: hal_btcoex: fixed styling issues
-Message-ID: <da4ff70d-6c64-40b6-aae4-3aab87da2a1c@moroto.mountain>
-References: <20240227080943.13032-1-michaelharriscode@gmail.com>
+        bh=ky9wQvkdGUKNyCVZuhuPCWbq/t59roSlceuaG570uVQ=;
+        b=QTwnlPNy3vv/f1TMGOPKXUZNgaGIeLsrfjINs3Xs3QUi3ph5h4Mtdgs5YWnq55aU19
+         3okxbomzGYcufGWTyzEojPN0J2//is24y+wGEWhidYqM2p+bDNhxpWbDd8VPxtvugQL5
+         sgXLPkeBRQqAeFyn5vGtWOTQER9Qa4kbo/y09POicE9Uxvp3c3MDpnZXyIYbDiPI8cl3
+         7WP8d319hZFJ0DWjaNntTGnbqUFJlZRuGXe+ssukL9o0coYLjrh7Z2hCUS0DXJptUIs/
+         MYbn+EY6oRLfizWgQ2jFYjJ0hjslEQCFnQ43EN4jWlaabHp/cdfw7UQSuFV7EyRnBcg5
+         oDYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709024199; x=1709628999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ky9wQvkdGUKNyCVZuhuPCWbq/t59roSlceuaG570uVQ=;
+        b=Xfw4eIXDUWoZbTDQIdXXK5piQ92kOHw4ZP24R/5MO2p8ZHSCIY8sgBPTYS07QkfyYw
+         QHJWddWWNUDQwe9DIktJtdm/rG+9kV11tR0XuGodp9mstEzjja4Tm8UpoJUnEVmhJrcm
+         Ska+cZJuC36He/yoz7fkCZwEbTW79DkRMIswSFcgQCgmQqQOVqxwx0OzVhdZUd/h/XXt
+         euMtOwXxRzzWM3uGj9auoezGVAUGreEZe+/60X3FDrY2XyRfiWxiD2HoT67CG8Resd5B
+         ojXR/RfX3PyjQ6XHAbThRlxnqD4+UZETM0TaVzSSDY4NgRotryJPMo9I2mvvqBbWJGOu
+         H+tA==
+X-Forwarded-Encrypted: i=1; AJvYcCW0cgJAMHoa6a0UQbvj3/KRQlPPujEDZpvvVHA6UGuT5QV0rjtYAZtAFfALqM7+s+wwHidQv8mM3iv/F42jROCTAKt/YnryYfQPZ3nT
+X-Gm-Message-State: AOJu0YyiPhs2FpI7Bt7qg2MLddhYNehL3KB0AvqawYmRhw3cCMfDtGNV
+	1JPHnAwwKutTQ2Nv4oHMcQ1m6rrSRLqvx+ffkExzRyO8NRWRjq3tQosrCErNL7eBHMqtPLsnjQt
+	dXA4kK9rFD3ZEMelb/j3soLAMQn/p+nvNc5cX
+X-Google-Smtp-Source: AGHT+IHKyiGlVKc9EMSd5FL30+6tfYqUuRP7ea9HHWuG2gjEgFZdxXlRD2RcJ6j5pqzEW1r0JVmvC3gfdD+rS2w25NY=
+X-Received: by 2002:a05:6512:b94:b0:513:ed7:c656 with SMTP id
+ b20-20020a0565120b9400b005130ed7c656mr36903lfv.2.1709024198656; Tue, 27 Feb
+ 2024 00:56:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227080943.13032-1-michaelharriscode@gmail.com>
+References: <20240223143833.1509961-1-guanyulin@google.com>
+ <a299118d-eeec-40b4-9a3d-48dc40f34e12@gmail.com> <CAOuDEK3wP6zhEwgUn5zSedtwTYVFaJeBfeXkSg897EhpGP9=ig@mail.gmail.com>
+ <3208c5b9-5286-48d1-81ab-cc3b2bc4303e@gmail.com>
+In-Reply-To: <3208c5b9-5286-48d1-81ab-cc3b2bc4303e@gmail.com>
+From: Guan-Yu Lin <guanyulin@google.com>
+Date: Tue, 27 Feb 2024 16:56:00 +0800
+Message-ID: <CAOuDEK39Bdru5wAbxW-g2c=POgRxZwdQzPO5uNXP96AfSyA6pw@mail.gmail.com>
+Subject: Re: [PATCH v3] PM / core: conditionally skip system pm in
+ device/driver model
+To: Florian Fainelli <f.fainelli@gmail.com>
+Cc: rafael@kernel.org, pavel@ucw.cz, len.brown@intel.com, 
+	gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com, 
+	rdunlap@infradead.org, james@equiv.tech, broonie@kernel.org, 
+	james.clark@arm.com, masahiroy@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 12:09:43AM -0800, Michael Harris wrote:
-> Fixed various checkpatch.pl styling issues: spaces before tabs, constants being on left side of comparisons, unnecessary braces, etc.
-> 
-> Signed-off-by: Michael Harris <michaelharriscode@gmail.com>
+On Tue, Feb 27, 2024 at 2:40=E2=80=AFAM Florian Fainelli <f.fainelli@gmail.=
+com> wrote:
+>
+> On 2/26/24 02:28, Guan-Yu Lin wrote:
+> > On Sat, Feb 24, 2024 at 2:20=E2=80=AFAM Florian Fainelli <f.fainelli@gm=
+ail.com> wrote:
+> >>
+> >> On 2/23/24 06:38, Guan-Yu Lin wrote:
+> >>> In systems with a main processor and a co-processor, asynchronous
+> >>> controller management can lead to conflicts.  One example is the main
+> >>> processor attempting to suspend a device while the co-processor is
+> >>> actively using it. To address this, we introduce a new sysfs entry
+> >>> called "conditional_skip". This entry allows the system to selectivel=
+y
+> >>> skip certain device power management state transitions. To use this
+> >>> feature, set the value in "conditional_skip" to indicate the type of
+> >>> state transition you want to avoid.  Please review /Documentation/ABI=
+/
+> >>> testing/sysfs-devices-power for more detailed information.
+> >>
+> >> This looks like a poor way of dealing with a lack of adequate resource
+> >> tracking from Linux on behalf of the co-processor(s) and I really do n=
+ot
+> >> understand how someone is supposed to use that in a way that works.
+> >>
+> >> Cannot you use a HW maintained spinlock between your host processor an=
+d
+> >> the co-processor such that they can each claim exclusive access to the
+> >> hardware and you can busy-wait until one or the other is done using th=
+e
+> >> device? How is your partitioning between host processor owned blocks a=
+nd
+> >> co-processor(s) owned blocks? Is it static or is it dynamic?
+> >> --
+> >> Florian
+> >>
+> >
+> > This patch enables devices to selectively participate in system power
+> > transitions. This is crucial when multiple processors, managed by
+> > different operating system kernels, share the same controller. One
+> > processor shouldn't enforce the same power transition procedures on
+> > the controller =E2=80=93 another processor might be using it at that mo=
+ment.
+> > While a spinlock is necessary for synchronizing controller access, we
+> > still need to add the flexibility to dynamically customize power
+> > transition behavior for each device. And that's what this patch is
+> > trying to do.
+> > In our use case, the host processor and co-processor are managed by
+> > separate operating system kernels. This arrangement is static.
+>
+> OK, so now the question is whether the peripheral is entirely visible to
+> Linux, or is it entirely owned by the co-processor, or is there a
+> combination of both and the usage of the said device driver is dynamic
+> between Linux and your co-processor?
+>
+> A sysfs entry does not seem like the appropriate way to described which
+> states need to be skipped and which ones can remain under control of
+> Linux, you would have to use your firmware's description for that (ACPI,
+> Device Tree, etc.) such that you have a more comprehensive solution that
+> can span a bigger scope.
+> --
+> Florian
+>
 
-Please run checkpatch.pl on your patches.
+We anticipate that control of the peripheral (e.g., controller) will
+be shared between operating system kernels. Each kernel will need its
+own driver for peripheral communication. To accommodate different
+tasks, the operating system managing the peripheral can change
+dynamically at runtime.
 
-WARNING: Prefer a maximum 75 chars per line (possible unwrapped commit description?)
-#12: 
-Fixed various checkpatch.pl styling issues: spaces before tabs, constants being on left side of comparisons, unnecessary braces, etc.
-
-regards,
-dan carpenter
-
+We dynamically select the operating system kernel controlling the
+target peripheral based on the task at hand, which looks more like a
+software behavior rather than hardware behavior to me. I agree that we
+might need a firmware description for "whether another operating
+system exists for this peripheral", but we also need to store the
+information about "whether another operating system is actively using
+this peripheral". To me, the latter one looks more like a sysfs entry
+rather than a firmware description as it's not determined statically.
 
