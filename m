@@ -1,72 +1,133 @@
-Return-Path: <linux-kernel+bounces-82743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2689E8688EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F5FC8688F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:27:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE5111F235C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:26:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B96791F21E43
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 06:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09C6B5337B;
-	Tue, 27 Feb 2024 06:26:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F30D53389;
+	Tue, 27 Feb 2024 06:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hir1cSvG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A31c+58X"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3A353373
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 06:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC9C5336E;
+	Tue, 27 Feb 2024 06:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709015179; cv=none; b=QbR5/Wfntbx4fGq0c9PyCiiwqAaO/2Gi/FXXdp31a42oxOaOpDZxq08gyhmC781eU+/5kWNLlo7A8kAjsSnRT46iJ2kUB00H0vTJ5s6CSqhYPcryRFyR0Eiu3uWNLOajGgPSha9ok4ZC1kRkNCs2CBl1ifcr/1cJ9C7j5utkUwQ=
+	t=1709015219; cv=none; b=h6NWbzQWkHCfJPr+qUbi838oejYdg1PRXG7/FN2BMX2xpoMXri89mDdVrYmEv6Nkgu5cPSNPORx8qewq2ltz6Gl4mjdbTfOyR/JcmoUV3FJiZq97sbEX+cxg9I1Zn7wOiQT0QOvYDaRLPrtCG6iQ1SXeR3JPpwuGstb9RaWnZME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709015179; c=relaxed/simple;
-	bh=dh9eafsR8lA/6L1du13qLNwxxQgJJ9ECt3Bfw1mY4J4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=HK2ZOzSxj/Lbz8cleOgKGhOeY6Vpq4MK3onjwvwhsuiSu11ewEpg4Un/ndUxoDoyYCx4Awa9LGhnS1sp3vytbhYAm8wkg8L/EwK2420NZ+9gVwKDmmyfrvxYEvbdix+GCGw/3aPLX5DkyMeqNFprMaq1p2IhWJb6Mq/tAlAPsCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hir1cSvG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBFF4C433F1;
-	Tue, 27 Feb 2024 06:26:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709015178;
-	bh=dh9eafsR8lA/6L1du13qLNwxxQgJJ9ECt3Bfw1mY4J4=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=Hir1cSvGcnKbzskr7azVr/MYk6CDr5FvcV/tcPvWKSOr/K2fwFlc4b7KjPos9+89O
-	 k+m4z/K11YgN0r1cYiI4VTm3kFjczoSkJqeoI8tFlEjZKDUBjbEJWIpLsZwE/UG0go
-	 Z5SEBsmZGunqTmwh6894670SLiDwkQMkCxE4qV9W6RHdM9EnC53nslHC2LZKxqbFWP
-	 T7Cv18HgHUBx7dZNr6UHB1b6BwFcWEh+2kcrkbb497L6Qq0mEdUFPuAG+9Kk/gTpYN
-	 eKKzM736H1xKxks5ON7C7wCIFUnlL4wZl3DRxtDB0mS7ij1YftPIQJnQWcsOaxBV4T
-	 s+xyPM+nDl8fg==
-Message-ID: <4beb8c78-cd8a-407a-aee5-58d8d2c8d4f5@kernel.org>
-Date: Tue, 27 Feb 2024 14:26:14 +0800
+	s=arc-20240116; t=1709015219; c=relaxed/simple;
+	bh=l5lw8RkSxjpG2Io4jclpM5Y8NRE451hzHP+TAbY4jv8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ktBLrGR+ZMCK1FZbpDxncmYXiAGvbnLjIII1VAlu7GzavhLA5YQt/LDNb7skl7INaw9JRI0itQGsfn26Qm6EQDDlTe9LASaZglXo2QOYTCxhwvXi5rk+/pvDdxg7tPzARtBxM5mZ2T/a28/djFuhmQpy2JhuCv8kLf2Ot5TtYpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=none smtp.mailfrom=ecsmtp.iind.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A31c+58X; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ecsmtp.iind.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709015218; x=1740551218;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=l5lw8RkSxjpG2Io4jclpM5Y8NRE451hzHP+TAbY4jv8=;
+  b=A31c+58X0uXKC9ygw6qcIVLetRr3AleUW9pFhimj0DzVzGP4nuDMlBJ7
+   ThIGzJDJTDfO7+oH1Uxh/hqzJwYKNLkXP8H9uYUQvDoYp3LpzxwYmx2La
+   PETsnJ9jt/LOu/8o++Tp3pfnV+nxXZ/4u0LQxiQ4eQ6vxxAdpgmUQgDJv
+   w6lyQiKy23SST8egem2wbYwpHZGZK7Izwt6xv1x3Ewz8uOumJMn29CI6n
+   0fYe9gDQSZInYcJLS6VaruP+/Rjd5P3nqz9HTwKiOjJj3o5hM7egsKSVL
+   9SOYkznoYDuIEAdHUS0KLLSmeSFK1MlXMKYTRlM5VyAkmBvfE4GPso/XT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="20785774"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="20785774"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 22:26:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="37959670"
+Received: from inesxmail01.iind.intel.com ([10.223.57.40])
+  by fmviesa001.fm.intel.com with ESMTP; 26 Feb 2024 22:26:54 -0800
+Received: from inlubt0316.iind.intel.com (inlubt0316.iind.intel.com [10.191.20.213])
+	by inesxmail01.iind.intel.com (Postfix) with ESMTP id 446AA1FCEF;
+	Tue, 27 Feb 2024 11:56:53 +0530 (IST)
+Received: by inlubt0316.iind.intel.com (Postfix, from userid 12101951)
+	id 3F0871600101; Tue, 27 Feb 2024 11:56:53 +0530 (IST)
+From: Raag Jadav <raag.jadav@intel.com>
+To: bhelgaas@google.com,
+	jarkko.nikula@linux.intel.com,
+	mika.westerberg@linux.intel.com,
+	andriy.shevchenko@linux.intel.com,
+	stanislaw.gruszka@linux.intel.com,
+	lukas@wunner.de,
+	rafael@kernel.org,
+	ilpo.jarvinen@linux.intel.com
+Cc: linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	gregkh@linuxfoundation.org,
+	sashal@kernel.org,
+	Raag Jadav <raag.jadav@intel.com>
+Subject: [PATCH v2] PCI / PM: Really allow runtime PM without callback functions
+Date: Tue, 27 Feb 2024 11:56:48 +0530
+Message-Id: <20240227062648.16579-1-raag.jadav@intel.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH 3/5 v2] f2fs: print zone status in string and
- some log
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net
-References: <20240223205535.307307-1-jaegeuk@kernel.org>
- <20240223205535.307307-3-jaegeuk@kernel.org> <Zd0WLOe89pByO7yX@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <Zd0WLOe89pByO7yX@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2024/2/27 6:52, Jaegeuk Kim wrote:
-> No functional change, but add some more logs.
-> 
-> Reviewed-by: Chao Yu <chao@kernel.org>
+Commit c5eb1190074c ("PCI / PM: Allow runtime PM without callback
+functions") tried to eliminate the need for runtime PM callbacks by
+modifying pci_pm_runtime_suspend() and pci_pm_runtime_resume(), but
+didn't modify pci_pm_runtime_idle() with relevant changes, which still
+returns -ENOSYS if the driver supplies no runtime PM callbacks.
 
-v2 looks fine to me.
+Modify pci_pm_runtime_idle() such that it allows PCI device power state
+transitions without runtime PM callbacks and complete the original
+intention of commit c5eb1190074c ("PCI / PM: Allow runtime PM without
+callback functions").
 
-Thanks,
+Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+---
+
+This is not marked for linux-stable for the need of extensive testing
+and can be backported after a few releases if no issues are reported.
+
+Changes since v1:
+- Update commit message and tags
+
+ drivers/pci/pci-driver.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+index 51ec9e7e784f..bb7f6775b350 100644
+--- a/drivers/pci/pci-driver.c
++++ b/drivers/pci/pci-driver.c
+@@ -1382,10 +1382,7 @@ static int pci_pm_runtime_idle(struct device *dev)
+ 	if (!pci_dev->driver)
+ 		return 0;
+ 
+-	if (!pm)
+-		return -ENOSYS;
+-
+-	if (pm->runtime_idle)
++	if (pm && pm->runtime_idle)
+ 		return pm->runtime_idle(dev);
+ 
+ 	return 0;
+-- 
+2.35.3
+
 
