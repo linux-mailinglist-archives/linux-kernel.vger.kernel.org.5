@@ -1,210 +1,111 @@
-Return-Path: <linux-kernel+bounces-83473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B82438699E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:10:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBF22869A3A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:21:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA1731C241C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:10:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C10D4B2D7D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9597814A4DD;
-	Tue, 27 Feb 2024 15:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A676913EFE9;
+	Tue, 27 Feb 2024 15:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LlOiVQRF"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="csF3uiYA"
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436CF14A4C1;
-	Tue, 27 Feb 2024 15:07:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 598C713AA38
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:08:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709046453; cv=none; b=fJUv12b8Gu/pqU87vm84gEsFlRozl4u4InuNjv7LW7ORiyvaYsIrsZn43cHyDUHoNWeIJ76XvYaXpoEyeaRIIXSha9suvnN3Mobd74KM+h+FziEkljmt22XU4cOXk45GzvO348oZoOiGA/1pBWdvPVKdNNT++SmZMTuEF4d8iZ0=
+	t=1709046498; cv=none; b=JbV8Kg1cK/TJu2Wyt0TfxXIDwlU2/lh39gPIYPMDSBW/72NcQBZ+Jj0yZJ83S5dA85fFwxUvXSVhfwnHN5wxYo+selOWbO9JzOcWjy4kK9E/hJyIg1oQaoBgSMsmSBPY/BfoKmJRfQgg2TuXsBWOYsucDzzP79pUyNicCNsmgZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709046453; c=relaxed/simple;
-	bh=nbBHPd7hWnt+9fYQpHo+4Cb/SCBb82djYs8mBUn7M3s=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=b0NmLj+y1MXJOXdSHAPBv12ugay1lig64DKfyosXwmMXIoe4OYl9ELHJgodfDJUE0Zkor0K/JPtnscrEeuAO6WdLbyjw5kVqlLuoZGResu1eQCVjcK0Je/EPq9yp5H6Nw7QlU0Ev1im93JuXpqf5K5QlJsFh1I63cErQLSjGXoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LlOiVQRF; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RBjuWF011343;
-	Tue, 27 Feb 2024 15:07:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:from:to:cc:references
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=u9sTptxpOGNQHmo+HL35UVlPPUynBEERtiX8yI981Ko=; b=Ll
-	OiVQRFHPm/nyxkkAPb8BD/BVtUdTA1VVFij/PheD0+xu8Ux2Yr3p7L2C9gTL3SQF
-	KSBhl+k8G1Y1DbD4T4BsJw3C/3Zw6c29fuLBhENUtWqsyZh6xDHT9528ELrR1+r5
-	YR4fPZrz8biPemT4XkP0cu76Vs+k+pkQhbjkNUfVCz+xrLL6rf9RAAO+n4btn03y
-	6Y7RQHgA9S/Ezlsnl78Hm5zQrqtGZWUc6g05dmnWV8ohPEXkTv05ut92bIkCipMI
-	+cmBR+GekmpJCwsbpYc7Oct6TamabQ0HtQ/iQRNJvc/z+yhw4tUAfaSlzBLGu7qU
-	XK+oLcfqntKWmreJo0+g==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whd7b0s58-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 15:07:15 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41RF74Pp021840
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 15:07:04 GMT
-Received: from [10.216.43.248] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 27 Feb
- 2024 07:07:01 -0800
-Message-ID: <9f084781-2233-4b36-8b1c-db1fa9a9db49@quicinc.com>
-Date: Tue, 27 Feb 2024 20:36:56 +0530
+	s=arc-20240116; t=1709046498; c=relaxed/simple;
+	bh=shSEqvzoYcW9i9bedM9kkMWWgl1mlPbsKYHAmRts1zA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tb5KEcz5kXcnece1g2ivn0fsQPMWVNGmZqjDZW/AKLq82GoEaxaXIt9EiNT4fdsAlgaL6PJ2M5tgvbg6phQnosP4DYHx8yOutPjEtvY/4Z5RyCBfmh17LnIw4MW3X+hZWhYxlPicE9+Ry43vyYUKH+1awBRjgGezmA1YNInzDcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=csF3uiYA; arc=none smtp.client-ip=209.85.167.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-512b700c8ebso5456752e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:08:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709046494; x=1709651294; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lNPyITx0UoynK6dHtAKEbnzfq8iXUV38jg8rhOlQ0zw=;
+        b=csF3uiYAVx0vB87PIiAq3XjoX9ivtpwIarNubHNBES/dwe/PqmAn4TTVjedKRKGRV2
+         7Z4RyCc8IxO0YV79OTMoZpVxbmqJqSCrWbUg6Y26jyvs+Oa2a2bagemjZLKGxgVa9xAL
+         xTAnd+wISm/vUABS6PfQajQe2qPpb2z220bZHpdq4Qp34NGTX0fPZ8nAoNhbpzMUSZVf
+         Hbr9J59QqZNoXcwsFoMemw7vQANahrZMNLlshP54WAaDcbGMgxthb5RvKq1dbFGypvEl
+         kByMe1e0EtUXXS62iAr5275yw6dzuYmLtXKoMmT/Hn9AumMyqGBuXVIVtkFfk7BqaTiL
+         wI3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709046494; x=1709651294;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lNPyITx0UoynK6dHtAKEbnzfq8iXUV38jg8rhOlQ0zw=;
+        b=NMcHcyY2tZRSI1wbWc8akHHlQebAbRWRgKpAfyUsXWxKH3ei0soEu26bZA+cMURpG6
+         aZ4EPIPlkKIZzNXS+2FvG1aLOCTE8ghiTBZ4jPMAxIlCRzNzjyQG3OnCrI8lMsM285QU
+         cu9WzNf63aOPuVmDK8PcaIci0TgYzmeiRMhbUJ52vqKBhilgjM4O4xWhplZqDLs5lU7k
+         PGvIKtGtYRBkmELjIW/3SZjGK7ViIXgv5cVTcqJvudwmwOk22gemL+8b0Nx05MdZu5B7
+         7Yk6vZWxm3jwc1zcz4Rv7wa64N65FIft0UxLvjLcs1SUQUcuvMN7GxtP1npcvUZjeUKl
+         FMuA==
+X-Forwarded-Encrypted: i=1; AJvYcCUBx3oiEmBa9n8GsvHWxRZ6ynFljLUgDcsXVOkgjZ/DGVBCtorPspcajjFan3SYjEFYMzLhwuOpmgbo+pIUaAJxMvJsuQluUHOdB5B4
+X-Gm-Message-State: AOJu0YyxVIW9uniwsLIAPZXt6/X5zNxnwx6pilOI2/JUcrU+gdEq0CQV
+	NO9mewdsd1roIdjJFsLy0vQgEKZD6tzL8b8jwFihcOQKJPjql2gx7g97waoBeL7svA==
+X-Google-Smtp-Source: AGHT+IFTZRgv21FYparaZiB0Jua8XYz44Z4aaCzCqBK/D3ZJPgxICJLyUKu+bYL34LTN+JZJTvwq3A==
+X-Received: by 2002:a05:6512:24c:b0:512:cb9e:e358 with SMTP id b12-20020a056512024c00b00512cb9ee358mr7125892lfo.9.1709046494219;
+        Tue, 27 Feb 2024 07:08:14 -0800 (PST)
+Received: from localhost.localdomain (c83-255-24-248.bredband.tele2.se. [83.255.24.248])
+        by smtp.googlemail.com with ESMTPSA id l7-20020ac25547000000b00512f2a11d70sm1201050lfk.283.2024.02.27.07.08.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 07:08:13 -0800 (PST)
+From: Jonathan Bergh <bergh.jonathan@gmail.com>
+To: jonathankim@gctsemi.com
+Cc: deanahn@gctsemi.com,
+	gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org,
+	Jonathan Bergh <bergh.jonathan@gmail.com>
+Subject: [PATCH] staging: gdm724x: Remove spurious whitespace in macro definition and tidy up defines
+Date: Tue, 27 Feb 2024 16:07:20 +0100
+Message-Id: <20240227150720.104092-1-bergh.jonathan@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] watchdog: qcom: fine tune the max timeout value
- calculation
-Content-Language: en-US
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-To: Guenter Roeck <linux@roeck-us.net>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Wim Van
- Sebroeck <wim@linux-watchdog.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240116-wdt-v2-1-501c7694c3f0@quicinc.com>
- <2c4f9829-138d-41a5-8810-d13cf749fded@roeck-us.net>
- <67ed3805-40cb-4f00-9d0d-b0fd012d6221@quicinc.com>
-In-Reply-To: <67ed3805-40cb-4f00-9d0d-b0fd012d6221@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: eq9d10-VwcsDL5E0n_LL7x96ZGksmBKy
-X-Proofpoint-ORIG-GUID: eq9d10-VwcsDL5E0n_LL7x96ZGksmBKy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-27_01,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- mlxlogscore=999 priorityscore=1501 spamscore=0 adultscore=0 malwarescore=0
- mlxscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
- definitions=main-2402270117
 
+This patch makes the following changes:
+ * Removes extra whitespace in macro definition and
+ * Removes extra newlines between macro definitions
 
+Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+---
+ drivers/staging/gdm724x/gdm_tty.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-On 2/3/2024 12:07 PM, Kathiravan Thirumoorthy wrote:
-> 
-> 
-> On 1/16/2024 8:32 PM, Guenter Roeck wrote:
->> On 1/16/24 00:22, Kathiravan Thirumoorthy wrote:
->>> To determine the max_timeout value, the below calculation is used.
->>>
->>>     max_timeout = 0x10000000 / clk_rate
->>>
->>> cat 
->>> /sys/devices/platform/soc@0/b017000.watchdog/watchdog/watchdog0/max_timeout
->>> 8388
->>>
->>> However, this is not valid for all the platforms. IPQ SoCs starting from
->>> IPQ40xx and recent Snapdragron SoCs also has the bark and bite time 
->>> field
->>> length of 20bits, which can hold max up to 32 seconds if the clk_rate is
->>> 32KHz.
->>>
->>> If the user tries to configure the timeout more than 32s, then the value
->>> will be truncated and the actual value will not be reflected in the HW.
->>>
->>> To avoid this, lets add a variable called max_tick_count in the 
->>> device data,
->>> which defines max counter value of the WDT controller. Using this, 
->>> max-timeout
->>> will be calculated in runtime for various WDT contorllers.
->>>
->>> With this change, we get the proper max_timeout as below and restricts
->>> the user from configuring the timeout higher than this.
->>>
->>> cat 
->>> /sys/devices/platform/soc@0/b017000.watchdog/watchdog/watchdog0/max_timeout
->>> 32
->>>
->>> Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
->>
->> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> 
-> 
-> Guenter / Will, Can this be picked for v6.9? I don't see this in linux- 
-> next yet, so please consider this as a gentle reminder!
+diff --git a/drivers/staging/gdm724x/gdm_tty.h b/drivers/staging/gdm724x/gdm_tty.h
+index afec97ced476..3e0d5b621b25 100644
+--- a/drivers/staging/gdm724x/gdm_tty.h
++++ b/drivers/staging/gdm724x/gdm_tty.h
+@@ -7,8 +7,7 @@
+ #include <linux/types.h>
+ #include <linux/tty.h>
+ 
+-#define TTY_MAX_COUNT		2
+-
++#define TTY_MAX_COUNT 2
+ #define MAX_ISSUE_NUM 3
+ 
+ enum TO_HOST_RESULT {
+-- 
+2.40.1
 
-
-Guenter / Will, Gentle Reminder... is this change queued for v6.9?
-
-
-> 
->>
->>> ---
->>> Changes in v2:
->>> - drop the minimum timeout change from 30s to 32s
->>> - Link to v1: 
->>> https://lore.kernel.org/r/20240111-wdt-v1-1-28c648b3b1f3@quicinc.com
->>> ---
->>>   drivers/watchdog/qcom-wdt.c | 7 +++++--
->>>   1 file changed, 5 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/watchdog/qcom-wdt.c b/drivers/watchdog/qcom-wdt.c
->>> index 9e790f0c2096..006f9c61aa64 100644
->>> --- a/drivers/watchdog/qcom-wdt.c
->>> +++ b/drivers/watchdog/qcom-wdt.c
->>> @@ -41,6 +41,7 @@ static const u32 reg_offset_data_kpss[] = {
->>>   struct qcom_wdt_match_data {
->>>       const u32 *offset;
->>>       bool pretimeout;
->>> +    u32 max_tick_count;
->>>   };
->>>   struct qcom_wdt {
->>> @@ -177,11 +178,13 @@ static const struct watchdog_info 
->>> qcom_wdt_pt_info = {
->>>   static const struct qcom_wdt_match_data match_data_apcs_tmr = {
->>>       .offset = reg_offset_data_apcs_tmr,
->>>       .pretimeout = false,
->>> +    .max_tick_count = 0x10000000U,
->>>   };
->>>   static const struct qcom_wdt_match_data match_data_kpss = {
->>>       .offset = reg_offset_data_kpss,
->>>       .pretimeout = true,
->>> +    .max_tick_count = 0xFFFFFU,
->>>   };
->>>   static int qcom_wdt_probe(struct platform_device *pdev)
->>> @@ -236,7 +239,7 @@ static int qcom_wdt_probe(struct platform_device 
->>> *pdev)
->>>        */
->>>       wdt->rate = clk_get_rate(clk);
->>>       if (wdt->rate == 0 ||
->>> -        wdt->rate > 0x10000000U) {
->>> +        wdt->rate > data->max_tick_count) {
->>>           dev_err(dev, "invalid clock rate\n");
->>>           return -EINVAL;
->>>       }
->>> @@ -260,7 +263,7 @@ static int qcom_wdt_probe(struct platform_device 
->>> *pdev)
->>>       wdt->wdd.ops = &qcom_wdt_ops;
->>>       wdt->wdd.min_timeout = 1;
->>> -    wdt->wdd.max_timeout = 0x10000000U / wdt->rate;
->>> +    wdt->wdd.max_timeout = data->max_tick_count / wdt->rate;
->>>       wdt->wdd.parent = dev;
->>>       wdt->layout = data->offset;
->>>
->>> ---
->>> base-commit: 9e21984d62c56a0f6d1fc6f76b646212cfd7fe88
->>> change-id: 20240111-wdt-5bd079ecf14d
->>>
->>> Best regards,
->>
-> 
 
