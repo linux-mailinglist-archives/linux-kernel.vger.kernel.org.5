@@ -1,165 +1,178 @@
-Return-Path: <linux-kernel+bounces-83916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0725486A072
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:48:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 488EF86A08E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:53:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EEE22B32132
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:23:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9719AB32A39
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B72014A4DC;
-	Tue, 27 Feb 2024 19:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448B551C5D;
+	Tue, 27 Feb 2024 19:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Le3J0TTs"
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cyAAu5FG"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093D94D107
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED4051C5A
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:22:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709061736; cv=none; b=BUDA/rOispdEFUu05cjZslpZphergIIcv/12KEL6ywDjMCwbEQKJRZx9NM9V/AgJ/u0tvN8KTaiYKYzzwVayKNGhm+EPEMEbjWpVbvRJ1SL382BPmMTWgrZvIk/67umrD2b40s+vW3IQlAHziig96WhPqLOnNCBW9lB/UftNZKU=
+	t=1709061772; cv=none; b=B8kNVHSVI6MtFPivX2gJXHv74I441AmhUNO9XIujEUp616Q1l5B9yH3YZiID2ccvnx0VFWX3CSqKbHVE4t2vLSCbYGtyvf/WqEngGE3ZKZpASHmcTZoZFwySAZ2krDhTxnEDpQgiD9evHOkTE7OExPoDMdWBcOuMjjBjtleseL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709061736; c=relaxed/simple;
-	bh=delkJb/DGlxmhXkRhTjoZjiLLkGbK0QvDQCUCXsVvEA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AO3+R+5CwkFx5ACRGI7Kj9gMpUy+wAc0prVQutd9e8faIlJxcoOQzJuq9xQ6jjqEsgim543bkLbF0Daz+EJ3yXBEqlOMwQf/Eecr453FGPJMO378Fh5Gta/XWHtpIjDsR1c3z2hTT/GETVmCtA8H5mkJcCMOy9S6QoIRJRn9oIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Le3J0TTs; arc=none smtp.client-ip=209.85.166.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7c7229e85b5so167018739f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:22:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1709061734; x=1709666534; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=daBiu+dTDOsAsy2yhxY8tXjMmdUYISpdMVSBjsClfNY=;
-        b=Le3J0TTs04xWctf6/PYUlVEDdgTfFNjdZlPcNXW4jxUAM7JF6AuQElssknaKhMbtrU
-         CdCG4dXFyYLUIUNhIQdM6lqcOLsnL+1hZypeuIoxLeuZ/Y4PFv5USYt9LSYqs9/+99Yo
-         03zmd3UmKgbTx9Mg2htCv/IEmU2LdxCjJ34ygSdmI3EHUglrCS2boqdI85OD8n9f4gRF
-         9zI3WUwFEpw/N4iiQkZCAJSRC1HJa44JWDwET8hRw2wZJJMGk/h9Xys8+yhtiwMq+g7B
-         XHV/cvML1hxyDzkzCMJC9jvoC9ehaFWB6qxsAtd6HbPVjp/u8sfcltrDLabkOzSPlu1a
-         ExKQ==
+	s=arc-20240116; t=1709061772; c=relaxed/simple;
+	bh=6CQ5gmdtyYpJOht39IMv2Luza/449m9TszX8sO5JgoE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MTdBXzdzf+40pZtQqdvjsAXee/5hnGsAvFfO8st1WbPCsqtzotxgE+NirnUh3Qd5vkdEUVFiWP8PvEvwhJvHcQPZudLi6qG0GEGubSwHKYU4rIQ76ES2ODdAtSKiosvyr5D4cAj8LF76ukg46BPXFhnlWLmabQM6YZ/gq8BCQlw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cyAAu5FG; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709061768;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mhq+ZYoih/qrTYF14e3+nwNYDVyTycUAByxpGo4QvPY=;
+	b=cyAAu5FGbpfTG3i9kn8VrBrrBRpYbjctDQSY5pQurYoZAmxdUWo1GAI81V0tB4+9spzMAU
+	wPs5tdgRktwWVC5xwv6ERgumP2MSGMoVQgZW4S8VolpsA393YI/cmPJPMNM8wYgC4WtcrU
+	b5FbjSwU2TTGU5KBKtPe+Uqafq/y6AI=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-645-aeF4PCWFO6ecbkM-owgRZQ-1; Tue, 27 Feb 2024 14:22:47 -0500
+X-MC-Unique: aeF4PCWFO6ecbkM-owgRZQ-1
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-6800e52d47aso1974196d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:22:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709061734; x=1709666534;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=daBiu+dTDOsAsy2yhxY8tXjMmdUYISpdMVSBjsClfNY=;
-        b=cCm0jpTNoloHIP18hWF5lxnEw/70D6hG/Lqhqb4BT6iBRaADt7bjM4cvQm6xzB8etB
-         r5E6xY25h6lvmYrcN+pyRbir9Dkl7BFniB6MJmURTxvdrJ7Gw3BmnzG6x4R8vo7vuTJR
-         Nk1HsnTfOUko6CrN1Fq+ZJA6TgJB5CWWYh+fJhRYn/Zv5iosEqXraEzVEvtVhiSST6sW
-         fZ+coh/neD5InunTI1T0CIY0UwONC2tCqBJbTzwpo9tkd0cIZPvMUGWtw1Kw61SLCKX6
-         j8KLFYyQQvATGxc5qY5JSoRTLb2822ogpxNCAHIozCV0nesbyvvyLTqONY3zwtICVbcE
-         2Kbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUVYoRZNWxFADzbUseXG03I2ebb+rGcsBt0fICL1jv8wbPi/W5cJt7Ui0wfy64cd4BOURuJbknuOKdgJqARXvh8MkhWywtnohbw/hnd
-X-Gm-Message-State: AOJu0YwCnnWJtnAxoYK4kG0ZSpOKzWvbZQI3no85c7PLJsXuiueXCQ+m
-	ch24pF/LgGFKWqedbYJbuMRyk7wjkarhidClIG/oeT0F9GAz4Mcit5intC7A2NOuKZPBBoJQS+s
-	2
-X-Google-Smtp-Source: AGHT+IE7+ucmoeU4TVIjogt9kPNfNJP4dPyAQIAV+r9O+fZrVXXrMhT/VTNnYBXqseweoo204evXfQ==
-X-Received: by 2002:a92:650f:0:b0:365:c81:e02d with SMTP id z15-20020a92650f000000b003650c81e02dmr11843728ilb.14.1709061734132;
-        Tue, 27 Feb 2024 11:22:14 -0800 (PST)
-Received: from [100.64.0.1] ([170.85.6.200])
-        by smtp.gmail.com with ESMTPSA id o2-20020a056e02114200b00364187af517sm2269051ill.80.2024.02.27.11.22.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 11:22:13 -0800 (PST)
-Message-ID: <9673cbe7-41ec-4261-9be8-fc5191ade56c@sifive.com>
-Date: Tue, 27 Feb 2024 13:22:12 -0600
+        d=1e100.net; s=20230601; t=1709061767; x=1709666567;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mhq+ZYoih/qrTYF14e3+nwNYDVyTycUAByxpGo4QvPY=;
+        b=SiTxhfn4KgS9yY+PJ5tjRQ92atxk6zjqt+8t7cgkoLzpD4a0Hia35JrCP6wah27JJs
+         Juvgmw/PGE+6x3KEef/N8xJXqy1OpgNf2kFCpccd/lbOd7vz6X5bvgvzFEQryYPbeK+w
+         mh2jCJKaeJDJZaEIPPwinUXvzdUkMndAKkiE6evxYGdUh0DJp2O1WlEUc54Hrdm1BTj0
+         UUcsSzFJVeAqgPHF+C9wAhcDGh9xgrHObBOOJwzCuqxq5aKvUv/c19S34y68JGViS+Fq
+         y28LyYlEo321j634aqjftqMB+BuoX1Is3TwhHbBBNLNXEqK9tDj1RsY79xaRNVTkbR+Z
+         6/ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCVK5GaDno+YtSEandgiqKSGMY5UAZhOK6Vj8QLLKzTRcKMdClKgdJdsj5rstH5rogEGDxiYkIqLPZsLPoohpSuPxcweQpTDWcvFasx8
+X-Gm-Message-State: AOJu0Yx30abD28S54uQcx29lH04TAKR7NLPf4RiazPGieOBBVaFo+eQG
+	yXNhUORs+n9MHUFl1Cwwwwvk45NRvwE8QoK+OsFeg1Wi2qvK6k5PhX5y+8bZA+6E8w1PyDiKyDV
+	Jeojjk4AOMjR54gjRWe7ektZHK267Sl8VRFfZcgXNYEd9Y9u/RAgLoWXHPPPTzA==
+X-Received: by 2002:a0c:a701:0:b0:68f:b941:3463 with SMTP id u1-20020a0ca701000000b0068fb9413463mr389406qva.3.1709061766853;
+        Tue, 27 Feb 2024 11:22:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEAw3whhp33K3ejS51UcfWRh1RcSEZcDXSSQzXWA6/oS1qCwFTMJD+0WG25R51Ed1Z43180zA==
+X-Received: by 2002:a0c:a701:0:b0:68f:b941:3463 with SMTP id u1-20020a0ca701000000b0068fb9413463mr389376qva.3.1709061766538;
+        Tue, 27 Feb 2024 11:22:46 -0800 (PST)
+Received: from fedora ([142.189.203.219])
+        by smtp.gmail.com with ESMTPSA id op10-20020a056214458a00b0068ff8d75a90sm3695560qvb.19.2024.02.27.11.22.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 11:22:46 -0800 (PST)
+Date: Tue, 27 Feb 2024 14:22:44 -0500
+From: Lucas Karpinski <lkarpins@redhat.com>
+To: Souradeep Chowdhury <quic_schowdhu@quicinc.com>
+Cc: Andy Gross <agross@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@somainline.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>, Alex Elder <elder@ieee.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org, Sibi Sankar <quic_sibis@quicinc.com>, 
+	Rajendra Nayak <quic_rjendra@quicinc.com>
+Subject: Re: [PATCH V26 2/3] misc: dcc: Add driver support for Data Capture
+ and Compare unit(DCC)
+Message-ID: <cnbntxeussvhvkgwqm7c6jtpondmrlrnsyskhxhqp2463r7lfw@3umkzfwoa5le>
+References: <cover.1691496290.git.quic_schowdhu@quicinc.com>
+ <2624304811c253e1a28350668fb69cf463ac47f9.1691496290.git.quic_schowdhu@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] riscv: Fix loading 64-bit NOMMU kernels past the
- start of RAM
-Content-Language: en-US
-To: Conor Dooley <conor.dooley@microchip.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240227003630.3634533-1-samuel.holland@sifive.com>
- <20240227003630.3634533-3-samuel.holland@sifive.com>
- <20240227-unfitting-rectangle-cd0f23a4f3f1@wendy>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <20240227-unfitting-rectangle-cd0f23a4f3f1@wendy>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2624304811c253e1a28350668fb69cf463ac47f9.1691496290.git.quic_schowdhu@quicinc.com>
+User-Agent: NeoMutt/20231221
 
-Hi Conor,
+On Tue, Aug 08, 2023 at 05:58:26PM +0530, Souradeep Chowdhury wrote:
+> diff --git a/Documentation/ABI/testing/debugfs-driver-dcc b/Documentation/ABI/testing/debugfs-driver-dcc
+> index 27ed5919d21b..7f588580a906 100644
+> --- a/Documentation/ABI/testing/debugfs-driver-dcc
+> +++ b/Documentation/ABI/testing/debugfs-driver-dcc
+> @@ -1,4 +1,4 @@
+> -What:           /sys/kernel/debug/dcc/.../ready
+> +What:           /sys/kernel/debug/qcom-dcc/.../ready
+>  Date:           December 2022
+Looks like this patch set is getting closer to being accepted, please 
+keep the date updated accordingly.
 
-On 2024-02-27 6:18 AM, Conor Dooley wrote:
-> On Mon, Feb 26, 2024 at 04:34:47PM -0800, Samuel Holland wrote:
->> commit 3335068f8721 ("riscv: Use PUD/P4D/PGD pages for the linear
->> mapping") added logic to allow using RAM below the kernel load address.
->> However, this does not work for NOMMU, where PAGE_OFFSET is fixed to the
->> kernel load address. Since that range of memory corresponds to PFNs
->> below ARCH_PFN_OFFSET, mm initialization runs off the beginning of
->> mem_map and corrupts adjacent kernel memory. Fix this by restoring the
->> previous behavior for NOMMU kernels.
->>
->> Fixes: 3335068f8721 ("riscv: Use PUD/P4D/PGD pages for the linear mapping")
-> 
-> This commit was a year ago, why has nobody reported this as being an
-> issue before?
+> +#define DCC_LL_NUM_INFO			0x10
+> +#define DCC_LL_LOCK			0x00
+> +#define DCC_LL_CFG			0x04
+> +#define DCC_LL_BASE			0x08
+> +#define DCC_FD_BASE			0x0c
+> +#define DCC_LL_OFFSET                   0x80
+> +#define DCC_LL_TIMEOUT			0x10
+> +#define DCC_LL_INT_ENABLE		0x18
+> +#define DCC_LL_INT_STATUS		0x1c
+> +#define DCC_LL_SW_TRIGGER		0x2c
+> +#define DCC_LL_BUS_ACCESS_STATUS	0x30
+> +
+> +/* Default value used if a bit 6 in the HW_INFO register is set. */
+> +#define DCC_FIX_LOOP_OFFSET		16
+> +
+> +/* Mask to find version info from HW_Info register */
+> +#define DCC_VER_INFO_MASK		BIT(9)
+> +
+> +#define MAX_DCC_OFFSET			GENMASK(9, 2)
+> +#define MAX_DCC_LEN			GENMASK(6, 0)
+> +#define MAX_LOOP_CNT			GENMASK(7, 0)
+> +#define MAX_LOOP_ADDR			10
+> +
+> +#define DCC_ADDR_DESCRIPTOR		0x00
+> +#define DCC_ADDR_LIMIT			27
+> +#define DCC_WORD_SIZE			sizeof(u32)
+> +#define DCC_ADDR_RANGE_MASK		GENMASK(31, 4)
+> +#define DCC_LOOP_DESCRIPTOR		BIT(30)
+> +#define DCC_RD_MOD_WR_DESCRIPTOR	BIT(31)
+> +#define DCC_LINK_DESCRIPTOR		GENMASK(31, 30)
+> +#define DCC_STATUS_MASK			GENMASK(1, 0)
+> +#define DCC_LOCK_MASK			BIT(0)
+> +#define DCC_LOOP_OFFSET_MASK		BIT(6)
+> +#define DCC_TRIGGER_MASK		BIT(9)
+> +
+> +#define DCC_WRITE_MASK			BIT(15)
+> +#define DCC_WRITE_OFF_MASK		GENMASK(7, 0)
+> +#define DCC_WRITE_LEN_MASK		GENMASK(14, 8)
+> +
+> +#define DCC_READ_IND			0x00
+> +#define DCC_WRITE_IND			(BIT(28))
+> +
+> +#define DCC_AHB_IND			0x00
+> +#define DCC_APB_IND			BIT(29)
+> +
+> +#define DCC_MAX_LINK_LIST		8
+> +
+> +#define DCC_VER_MASK2			GENMASK(5, 0)
+> +
+> +#define DCC_SRAM_WORD_LENGTH		4
+> +
+> +#define DCC_RD_MOD_WR_ADDR              0xC105E
+> +
+> +enum dcc_descriptor_type {
+> +	DCC_READ_TYPE,
+> +	DCC_LOOP_TYPE,
+> +	DCC_READ_WRITE_TYPE,
+> +	DCC_WRITE_TYPE
+> +};
+Can you fix the spacing in the macros?
 
-I can think of a few reasons:
-1) NOMMU users are likely to be using RV32, which is not affected.
-2) Before patch 4 of this series, NOMMU implied M-mode, so there was nothing in
-the way to prevent loading Linux at the very beginning of RAM. (U-Boot/SPL
-relocates itself to the end of RAM, so it would not cause a problem.)
-3) Platforms where RAM does not begin at exactly 0x80000000 would be affected,
-there are several workarounds: change the start of RAM (for soft cores), change
-PAGE_OFFSET, or change the memory ranges in the devicetree to exclude anything
-below PAGE_OFFSET.
+> +static int dcc_add_loop(struct dcc_drvdata *drvdata, unsigned long loop_cnt, int curr_list)
+u32 loop_cnt
 
-It's possible that nobody was affected, but it's still technically a regression
-(a hypothetical platform with RAM from 0x40000000 to 0xc0000000 would crash
-instead of only being able to use half its RAM), so I thought it still deserved
-the Fixes: tag.
-
-Regards,
-Samuel
-
->> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
->> ---
->>
->>  arch/riscv/include/asm/page.h | 2 +-
->>  arch/riscv/mm/init.c          | 2 +-
->>  2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
->> index 57e887bfa34c..94b3d6930fc3 100644
->> --- a/arch/riscv/include/asm/page.h
->> +++ b/arch/riscv/include/asm/page.h
->> @@ -89,7 +89,7 @@ typedef struct page *pgtable_t;
->>  #define PTE_FMT "%08lx"
->>  #endif
->>  
->> -#ifdef CONFIG_64BIT
->> +#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
->>  /*
->>   * We override this value as its generic definition uses __pa too early in
->>   * the boot process (before kernel_map.va_pa_offset is set).
->> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
->> index fa34cf55037b..0c00efc75643 100644
->> --- a/arch/riscv/mm/init.c
->> +++ b/arch/riscv/mm/init.c
->> @@ -232,7 +232,7 @@ static void __init setup_bootmem(void)
->>  	 * In 64-bit, any use of __va/__pa before this point is wrong as we
->>  	 * did not know the start of DRAM before.
->>  	 */
->> -	if (IS_ENABLED(CONFIG_64BIT))
->> +	if (IS_ENABLED(CONFIG_64BIT) && IS_ENABLED(CONFIG_MMU))
->>  		kernel_map.va_pa_offset = PAGE_OFFSET - phys_ram_base;
->>  
->>  	/*
->> -- 
->> 2.43.0
->>
+Lucas
 
 
