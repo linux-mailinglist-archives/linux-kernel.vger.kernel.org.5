@@ -1,216 +1,278 @@
-Return-Path: <linux-kernel+bounces-83134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B11F9868EE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:38:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE4B868F4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:40:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BC3F2812AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:38:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFE071C229F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6226113A24B;
-	Tue, 27 Feb 2024 11:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC8113959A;
+	Tue, 27 Feb 2024 11:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DcStZZuN"
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="IMK/m4+t"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DE5137C38;
-	Tue, 27 Feb 2024 11:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454D412F581
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709033927; cv=none; b=SGXfysuSGTJKA8X/nI93/O388anuIIXtqQUIeyg5yOqyZGbZRA+mEgZM4Se2sdfrneeXc2b5crn7UcxkpOzS2oXl/L3UvOwPut02t8u9OQaH6w4vaJpOmyrIodm9O393LYO+bDCvLgZCp8Q1KH/XwLC2jEPAw3/c7srs+NDn+II=
+	t=1709034037; cv=none; b=sfUfOMozyi8LvN15C5sl/P5+1m2GfghnjjQbxIWoSPfzHKWyLAhlR4ciLDTRYgoLXN13hCSuUQ3BD+2xkExfzSRcbjnALhgup2j7/5gOEcDdEk3pIqx6jfyA+C6BBzx8E4r3ntE2sX41bZLB2PDkOqwh2kx3dQXvY3YJQtAqz4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709033927; c=relaxed/simple;
-	bh=rlI6CJci4iW2GxOaWto3mdUB3kh4slGAyal47TgP7jE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ocHBlzfu3IFO7kzzVhackxf/RGy7jOyMjwAOVoJorwaLOIvB/NETAZWbAqDbOCG/1rHANarL2ofS5PT9I0a7yV6raCaW4Ayu1TCB8LVasQ5dg4EZRQNuKigVGgC+JjDxWDhV3WvvrfmGxBhkBN8fB7PBp6XtYNFafrmSqBxeqnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DcStZZuN; arc=none smtp.client-ip=209.85.221.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-4d19972b455so351330e0c.3;
-        Tue, 27 Feb 2024 03:38:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709033924; x=1709638724; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e1EveZVEiSMMMB6fnTuGZVP/gmbDHNaPcEtW3gx8n28=;
-        b=DcStZZuNOOgn0mlWU8YYHeZNOBjW+/nvk3zGnV3Gq+VtF9GG2sI9dvwADrpVAuBHvZ
-         0wK6OEtoRkfZhbGLFGieYATAXVcPVWiq4jnAsAeGuBC1fzwVlDnSGuoSfaGN9UK496yn
-         6bfP7Kgv4B2DdMjGXZmFbxbYEUWF5I6DRTY77x2eU1pmPaTVa6yYHZh/ojFiM7pCZ67h
-         C035RJrnLHSp3Px57t/87E1/Y3SmiIk2sTHBHV/zSiUC2tTmquEftUcUc+BtkFGeHyI1
-         4EG5wQQz2HlJz8vyPP458pBIwHTNqhO5rgAuABfM0VSC/jISEiH/A40Fe1Jz4qhb7m9R
-         3OpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709033924; x=1709638724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e1EveZVEiSMMMB6fnTuGZVP/gmbDHNaPcEtW3gx8n28=;
-        b=ruwiMGyyYbOSkb4d7ojAD66Rrh3LEAYfyd81q5SXC1bTVMTIpWOtS5XgCuMRYvnpOt
-         LRWOoh16ZVfEY9fRKiOT/5JiO9nJ9lbdxi/zzWssfOwT+/NDhgbUqHvxxH4WsL7Farhj
-         r5FvWV7rcRAU3qoey+QlB+kt+UC/g6TAe0td8KPTMehm93h2GZNDsW8vPz1UC3dP/qZf
-         5mKt/SI6bOox24u5GN51qm1J+psKdWPW/Cs/XcPpKWhmzyf4I7tQc6zqz+jcCwjg02F6
-         dycn8mQ72Dup6Wi8eiI9prFUEOfEGgqrQRm5FVR8zI0Lhx3Y88zUi467T0Zhg0XUwF/c
-         27Gg==
-X-Forwarded-Encrypted: i=1; AJvYcCW34TZv5lpWfkuprvy5w7rl0g9tDURPfwSQ14hkyGxk8ugn3qBTgiaHhFgVybKVede33Cj8diM7iRneQTM6YVs8Ni2CZ8Xwa3z/lprg42tYgA5C7ywjrBvuIE161Tgeh9jvGitSNGSEVOA=
-X-Gm-Message-State: AOJu0YzjQK366KoCQYh7s+5M3y5myvAVGEfy9Y1q0EkC64rt+3gkIVZd
-	z2eljhGjs1B6j4MXvGX04iQdVtdZPdX8GW4BmeX1775R/q5+pshFnKzdocTibBhQ6eTdqWe01AO
-	unB5LdRdlWBtzP63wqc2SAOg/vXY=
-X-Google-Smtp-Source: AGHT+IFY5rIW4R7AnsOo+2KkC+7Q4PqHRUzXLysCU3Xts5MAHbKEy5X0OQfVK+hv44PSmKVkOQ8vOWnw8p15f/5mIVs=
-X-Received: by 2002:a1f:ca47:0:b0:4c9:b8a8:78d4 with SMTP id
- a68-20020a1fca47000000b004c9b8a878d4mr7019527vkg.3.1709033924366; Tue, 27 Feb
- 2024 03:38:44 -0800 (PST)
+	s=arc-20240116; t=1709034037; c=relaxed/simple;
+	bh=nAcqQcoVlavgogzMMv0AJtTW2BknoALl9ZTHNc2lkI8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iv/QGKoDwIpYDIBLpmAA+IFiE/nF0dr5sliKbowlhMJsSAd1vzi5t21I10bXT3DJn2kyIJzw1r/M5bkmw99eF29tijnfZzbgEZnDUqO+dCMpHmULiUatY6MZw+WqF5EkHNZHt3Pj8HQ7TOaEPxBEGsbxef8IL8npTmZIbPk3MBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=IMK/m4+t; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709034035; x=1740570035;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nAcqQcoVlavgogzMMv0AJtTW2BknoALl9ZTHNc2lkI8=;
+  b=IMK/m4+txu4CIy/y+vADJWCfXfSQyJVGg/H9eFdUSaTiXvAPXA3qaKWZ
+   rQ2Dzml3Db4f0vcLONf8fl84FI+BB0xk2U3GYoqz02ADAQ/CO/sQafbcm
+   tYyHwXK8dJuOHuMrri0gL2s7xN2xkWo/s9nreTd7gW2L38aHkaPDQOIXV
+   g05GJEO0op90X1i5aXUsJyShjwWVufzM/NIy+63sgeTlZf4v1k8XJnKaq
+   xeopy1bBrI8i2wFo8g2ndUX7zQYAFGN5QgRTwRgvqpFrbWJb2YvmuzBuz
+   5p7UPzULtyHuvB+IQ1XZ1RdSa1uxnskSYSPUC5sMh6GJV/XEiIGD59D2/
+   Q==;
+X-CSE-ConnectionGUID: bVyENMktQsa0J3zoirwwlw==
+X-CSE-MsgGUID: KyHdUvHKQ+mwrCRxqQUDzg==
+X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
+   d="asc'?scan'208";a="18453223"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 04:40:33 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 04:40:10 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 27 Feb 2024 04:40:08 -0700
+Date: Tue, 27 Feb 2024 11:39:25 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Charlie Jenkins <charlie@rivosinc.com>
+CC: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+	<palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Jisheng Zhang
+	<jszhang@kernel.org>, Evan Green <evan@rivosinc.com>,
+	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>, Eric Biggers
+	<ebiggers@kernel.org>, Elliot Berman <quic_eberman@quicinc.com>, Charles Lohr
+	<lohr85@gmail.com>, <linux-riscv@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 2/2] riscv: Set unalignment speed at compile time
+Message-ID: <20240227-condone-impeach-9469dffc6b47@wendy>
+References: <20240216-disable_misaligned_probe_config-v4-0-dc01e581c0ac@rivosinc.com>
+ <20240216-disable_misaligned_probe_config-v4-2-dc01e581c0ac@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240224121059.1806691-1-arnd@kernel.org>
-In-Reply-To: <20240224121059.1806691-1-arnd@kernel.org>
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date: Tue, 27 Feb 2024 12:38:26 +0100
-Message-ID: <CAPybu_2JoNfr158FXqYGUV=JuTW8i85XM6cf7K40_xZe9m2qyg@mail.gmail.com>
-Subject: Re: [PATCH] media: mediatek: vcodec: avoid -Wcast-function-type-strict
- warning
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Minghsiu Tsai <minghsiu.tsai@mediatek.com>, Houlong Wei <houlong.wei@mediatek.com>, 
-	Andrew-CT Chen <andrew-ct.chen@mediatek.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Tiffany Lin <tiffany.lin@mediatek.com>, Yunfei Dong <yunfei.dong@mediatek.com>, 
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>, 
-	Nicolas Dufresne <nicolas.dufresne@collabora.com>, Alexandre Courbot <acourbot@chromium.org>, 
-	Pi-Hsun Shih <pihsun@chromium.org>, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="qwP6EXChpel/sZvo"
+Content-Disposition: inline
+In-Reply-To: <20240216-disable_misaligned_probe_config-v4-2-dc01e581c0ac@rivosinc.com>
+
+--qwP6EXChpel/sZvo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Arnd
-
-Thanks for the patch
-
-On Sat, Feb 24, 2024 at 1:11=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wro=
-te:
->
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> The ipi handler here tries hard to maintain const-ness of its argument,
-> but by doing that causes a warning about function type casts:
-
-I worked on the same issue, but in instead of removing the const, I
-tried to constify everything:
-https://patchwork.linuxtv.org/project/linux-media/patch/20240226-fix-clang-=
-warnings-v2-3-fa1bc931d17e@chromium.org/
-
-My main goal is to remove the warning, so any patch is OK for me ;)
-
->
-> drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c:38:32: =
-error: cast from 'mtk_vcodec_ipi_handler' (aka 'void (*)(void *, unsigned i=
-nt, void *)') to 'ipi_handler_t' (aka 'void (*)(const void *, unsigned int,=
- void *)') converts to incompatible function type [-Werror,-Wcast-function-=
-type-strict]
->    38 |         ipi_handler_t handler_const =3D (ipi_handler_t)handler;
->       |                                       ^~~~~~~~~~~~~~~~~~~~~~
->
-> Remove the hack and just use a non-const argument.
->
-> Fixes: bf1d556ad4e0 ("media: mtk-vcodec: abstract firmware interface")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+On Fri, Feb 16, 2024 at 12:33:19PM -0800, Charlie Jenkins wrote:
+> Introduce Kconfig options to set the kernel unaligned access support.
+> These options provide a non-portable alternative to the runtime
+> unaligned access probe.
+>=20
+> To support this, the unaligned access probing code is moved into it's
+> own file and gated behind a new RISCV_PROBE_UNALIGNED_ACCESS_SUPPORT
+> option.
+>=20
+> Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
 > ---
->  drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c      |  2 +-
->  .../mediatek/vcodec/common/mtk_vcodec_fw_vpu.c         | 10 +---------
->  drivers/media/platform/mediatek/vpu/mtk_vpu.c          |  2 +-
->  drivers/media/platform/mediatek/vpu/mtk_vpu.h          |  2 +-
->  4 files changed, 4 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c b/drivers/=
-media/platform/mediatek/mdp/mtk_mdp_vpu.c
-> index b065ccd06914..378a1cba0144 100644
-> --- a/drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c
-> +++ b/drivers/media/platform/mediatek/mdp/mtk_mdp_vpu.c
-> @@ -26,7 +26,7 @@ static void mtk_mdp_vpu_handle_init_ack(const struct md=
-p_ipi_comm_ack *msg)
->         vpu->inst_addr =3D msg->vpu_inst_addr;
->  }
->
-> -static void mtk_mdp_vpu_ipi_handler(const void *data, unsigned int len,
-> +static void mtk_mdp_vpu_ipi_handler(void *data, unsigned int len,
->                                     void *priv)
->  {
->         const struct mdp_ipi_comm_ack *msg =3D data;
-> diff --git a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_=
-vpu.c b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-> index 9f6e4b59455d..4c34344dc7dc 100644
-> --- a/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-> +++ b/drivers/media/platform/mediatek/vcodec/common/mtk_vcodec_fw_vpu.c
-> @@ -29,15 +29,7 @@ static int mtk_vcodec_vpu_set_ipi_register(struct mtk_=
-vcodec_fw *fw, int id,
->                                            mtk_vcodec_ipi_handler handler=
-,
->                                            const char *name, void *priv)
->  {
-> -       /*
-> -        * The handler we receive takes a void * as its first argument. W=
-e
-> -        * cannot change this because it needs to be passed down to the r=
-proc
-> -        * subsystem when SCP is used. VPU takes a const argument, which =
-is
-> -        * more constrained, so the conversion below is safe.
-> -        */
-> -       ipi_handler_t handler_const =3D (ipi_handler_t)handler;
-> -
-> -       return vpu_ipi_register(fw->pdev, id, handler_const, name, priv);
-> +       return vpu_ipi_register(fw->pdev, id, handler, name, priv);
->  }
->
->  static int mtk_vcodec_vpu_ipi_send(struct mtk_vcodec_fw *fw, int id, voi=
-d *buf,
-> diff --git a/drivers/media/platform/mediatek/vpu/mtk_vpu.c b/drivers/medi=
-a/platform/mediatek/vpu/mtk_vpu.c
-> index 7243604a82a5..724ae7c2ab3b 100644
-> --- a/drivers/media/platform/mediatek/vpu/mtk_vpu.c
-> +++ b/drivers/media/platform/mediatek/vpu/mtk_vpu.c
-> @@ -635,7 +635,7 @@ int vpu_load_firmware(struct platform_device *pdev)
->  }
->  EXPORT_SYMBOL_GPL(vpu_load_firmware);
->
-> -static void vpu_init_ipi_handler(const void *data, unsigned int len, voi=
-d *priv)
-> +static void vpu_init_ipi_handler(void *data, unsigned int len, void *pri=
-v)
->  {
->         struct mtk_vpu *vpu =3D priv;
->         const struct vpu_run *run =3D data;
-> diff --git a/drivers/media/platform/mediatek/vpu/mtk_vpu.h b/drivers/medi=
-a/platform/mediatek/vpu/mtk_vpu.h
-> index a56053ff135a..da05f3e74081 100644
-> --- a/drivers/media/platform/mediatek/vpu/mtk_vpu.h
-> +++ b/drivers/media/platform/mediatek/vpu/mtk_vpu.h
-> @@ -17,7 +17,7 @@
->   * VPU interfaces with other blocks by share memory and interrupt.
->   */
->
-> -typedef void (*ipi_handler_t) (const void *data,
-> +typedef void (*ipi_handler_t) (void *data,
->                                unsigned int len,
->                                void *priv);
->
-> --
-> 2.39.2
->
->
+>  arch/riscv/Kconfig                          |  58 +++++-
+>  arch/riscv/include/asm/cpufeature.h         |  30 +++-
+>  arch/riscv/kernel/Makefile                  |   6 +-
+>  arch/riscv/kernel/cpufeature.c              | 255 ----------------------=
+----
+>  arch/riscv/kernel/misaligned_access_speed.c | 265 ++++++++++++++++++++++=
+++++++
+>  arch/riscv/kernel/probe_emulated_access.c   |  64 +++++++
+>  arch/riscv/kernel/sys_hwprobe.c             |  25 +++
+>  arch/riscv/kernel/traps_misaligned.c        |  54 +-----
+>  8 files changed, 442 insertions(+), 315 deletions(-)
+>=20
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index bffbd869a068..3cf700adc43b 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -690,25 +690,71 @@ config THREAD_SIZE_ORDER
+>  config RISCV_MISALIGNED
 
 
---=20
-Ricardo Ribalda
+Why can we not make up our minds on what to call this? The majority of
+users are "unaligned" but the file you add and this config option are
+"misaligned."
+
+>  	bool "Support misaligned load/store traps for kernel and userspace"
+>  	select SYSCTL_ARCH_UNALIGN_ALLOW
+> +	depends on RISCV_PROBE_UNALIGNED_ACCESS || RISCV_EMULATED_UNALIGNED_ACC=
+ESS
+>  	default y
+>  	help
+>  	  Say Y here if you want the kernel to embed support for misaligned
+>  	  load/store for both kernel and userspace. When disable, misaligned
+>  	  accesses will generate SIGBUS in userspace and panic in kernel.
+> =20
+> +choice
+> +	prompt "Unaligned Accesses Support"
+> +	default RISCV_PROBE_UNALIGNED_ACCESS
+> +	help
+> +	  This selects the hardware support for unaligned accesses. This
+> +	  information is used by the kernel to perform optimizations. It is also
+> +	  exposed to user space via the hwprobe syscall. The hardware will be
+> +	  probed at boot by default.
+> +
+> +config RISCV_PROBE_UNALIGNED_ACCESS
+> +	bool "Probe for hardware unaligned access support"
+> +	help
+> +	  During boot, the kernel will run a series of tests to determine the
+> +	  speed of unaligned accesses. This is the only portable option. This
+> +	  probing will dynamically determine the speed of unaligned accesses on
+> +	  the boot hardware.
+> +
+> +config RISCV_EMULATED_UNALIGNED_ACCESS
+> +	bool "Assume the CPU expects emulated unaligned memory accesses"
+> +	depends on NONPORTABLE
+
+This is portable too, right?
+
+> +	select RISCV_MISALIGNED
+> +	help
+> +	  Assume that the CPU expects emulated unaligned memory accesses.
+> +	  When enabled, this option notifies the kernel and userspace that
+> +	  unaligned memory accesses will be emulated by the kernel.
+
+> To enforce
+> +	  this expectation, RISCV_MISALIGNED is selected by this option.
+
+Drop this IMO, let Kconfig handle displaying the dependencies.
+
+> +
+> +config RISCV_SLOW_UNALIGNED_ACCESS
+> +	bool "Assume the CPU supports slow unaligned memory accesses"
+> +	depends on NONPORTABLE
+> +	help
+> +	  Assume that the CPU supports slow unaligned memory accesses. When
+> +	  enabled, this option improves the performance of the kernel on such
+> +	  CPUs.
+
+Does it? Are you sure that generating unaligned accesses on systems
+where they are slow is a performance increase?
+That said, I don't really see this option actually doing anything other
+than setting the value for hwprobe, so I don't actually know what the
+effect of this option actually is on the kernel's performance.
+
+Generally I would like to suggest a change from "CPU" to "system" here,
+since the slow cases that exist are mostly because the unaligned access
+is actually emulated in firmware.
+
+> However, the kernel will run much more slowly, or will not be
+> +	  able to run at all, on CPUs that do not support unaligned memory
+> +	  accesses.
+> +
+>  config RISCV_EFFICIENT_UNALIGNED_ACCESS
+>  	bool "Assume the CPU supports fast unaligned memory accesses"
+>  	depends on NONPORTABLE
+>  	select DCACHE_WORD_ACCESS if MMU
+>  	select HAVE_EFFICIENT_UNALIGNED_ACCESS
+>  	help
+> -	  Say Y here if you want the kernel to assume that the CPU supports
+> -	  efficient unaligned memory accesses.  When enabled, this option
+> -	  improves the performance of the kernel on such CPUs.  However, the
+> -	  kernel will run much more slowly, or will not be able to run at all,
+> -	  on CPUs that do not support efficient unaligned memory accesses.
+> +	  Assume that the CPU supports fast unaligned memory accesses. When
+> +	  enabled, this option improves the performance of the kernel on such
+> +	  CPUs.  However, the kernel will run much more slowly, or will not be
+> +	  able to run at all, on CPUs that do not support efficient unaligned
+> +	  memory accesses.
+> +
+> +config RISCV_UNSUPPORTED_UNALIGNED_ACCESS
+
+This option needs to be removed. The uabi states that unaligned access
+is supported in userspace, if the cpu or firmware does not implement
+unaligned access then the kernel must emulate it.
+
+> +	bool "Assume the CPU doesn't support unaligned memory accesses"
+> +	depends on NONPORTABLE
+> +	help
+> +	  Assume that the CPU doesn't support unaligned memory accesses. Only
+> +	  select this option if there is no registered trap handler to emulate
+> +	  unaligned accesses.
+> =20
+> -	  If unsure what to do here, say N.
+> +endchoice
+> =20
+>  endmenu # "Platform type"
+
+> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/asm=
+/cpufeature.h
+> index eb3ac304fc42..928ad3384406 100644
+> --- a/arch/riscv/include/asm/cpufeature.h
+> +++ b/arch/riscv/include/asm/cpufeature.h
+> @@ -33,10 +33,26 @@ extern struct riscv_isainfo hart_isa[NR_CPUS];
+> =20
+>  void riscv_user_isa_enable(void);
+> =20
+> -#ifdef CONFIG_RISCV_MISALIGNED
+> +#if defined(CONFIG_RISCV_MISALIGNED)
+> +#if defined(CONFIG_RISCV_PROBE_UNALIGNED_ACCESS)
+>  bool unaligned_ctl_available(void);
+>  bool check_unaligned_access_emulated(int cpu);
+>  void unaligned_emulation_finish(void);
+> +#elif defined(CONFIG_RISCV_EMULATED_UNALIGNED_ACCESS)
+> +static inline bool unaligned_ctl_available(void)
+> +{
+> +	return true;
+> +}
+> +
+> +static inline bool check_unaligned_access_emulated(int cpu)
+> +{
+> +	return true;
+> +}
+> +
+> +static inline void unaligned_emulation_finish(void) {}
+> +#else
+> +#error "CONFIG_RISCV_MISALIGNED is only supported if CONFIG_RISCV_PROBE_=
+UNALIGNED_ACCESS or CONFIG_RISCV_EMULATED_UNALIGNED_ACCESS is selected."
+
+Why is this an error? Enforce this in Kconfig (you already have) and drop
+the clause.
+
+Cheers,
+Conor.
+
+--qwP6EXChpel/sZvo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd3J7QAKCRB4tDGHoIJi
+0ia+AQCU5YCXF9J0kaM+Tt9OAbetH7+JzZR2O/sLLeCFxZg9GQD+KADsdA0Xelx3
+k1fmt+5ayKCVcruP4O6xdFtjtpGOUgo=
+=fwKH
+-----END PGP SIGNATURE-----
+
+--qwP6EXChpel/sZvo--
 
