@@ -1,79 +1,83 @@
-Return-Path: <linux-kernel+bounces-83563-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8F3869B79
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:02:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C0B9869B7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:02:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C39E51F264F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:01:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CB0B1C24914
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:02:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F5D14830C;
-	Tue, 27 Feb 2024 16:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B5B1487C8;
+	Tue, 27 Feb 2024 16:01:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ksmKWCJt"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kjltX1F3"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D5D1482FA
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE6E14831E
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709049703; cv=none; b=YXzGV/U2R7m42QhSVnZv0eXOEsJav0dFG/q2WS4fKkI/Le27z+FzAbSrFIvfsMIH8J+EPqBlc8b9YvYtoqrw+WebNXgWTDdbWvEKp+Lqpa2O4dLcKhMYFSH3g4tbverjHUK2khsgfrsjYUIkQuhmGUy/oIhygHINtDkkqWjLPlA=
+	t=1709049707; cv=none; b=Go18bqZzxNOBOZu5Z0lmRGLf2vudjXGEbwVB1boDYLKVApJDkWH3eiNayj3T+If+fZ/HsqZ+Oda3We62AoGcK6JQnoHCuvDFMhSXWy13LHo+0BluOI9btPAoiIJz960dAHET3Tv+wojNXMKwYvGtnl8JPcQMGUFGXCNXOkMClGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709049703; c=relaxed/simple;
-	bh=PfIAZI8U/Ed1rg3JAVmSj9XDKnHNNZKz5arRsiU7nzU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VlhBRERd6HcRRKRf27Vvxi6eyE2yJty4hYz34u8vsl+FaXXYM85ipUZIC4zv1z2b2IQ3ZJdumIVVT8IBzQ2qRTsOHrK+UD3KNd5zUX2FwM8gOELe4KxG3eAUZv+9qDIAGuMkm6jOBodcyjZ5YN3HPwtAgeNIjS93lIfe7NptkxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ksmKWCJt; arc=none smtp.client-ip=209.85.167.49
+	s=arc-20240116; t=1709049707; c=relaxed/simple;
+	bh=rj5M9NTOw+mlLPuNBzddxSdKcQk7qpqzonx/WQhvBg4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=gvZCoOVxuhRAqgZCL85TW5Lye67tbyEGfArhKrrL5lvyx56i5ZsfNvzErzHgHZ53xA27ja6WG9MiGapWWLBCR9ph1ASnzC/+arikeKj/FYgveqX50k7nIDvXAUVy0/e/xFtDdi0cjWyyxRAGxsRbBg0EejDvDfU6EP+Imr14wcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kjltX1F3; arc=none smtp.client-ip=209.85.208.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512f892500cso2562622e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:01:41 -0800 (PST)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d23d301452so61646541fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:01:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709049699; x=1709654499; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=X56hJwde2d0DSwQh7BdZYX6K5vlX3nWxYW7Jl2hEtLc=;
-        b=ksmKWCJtuZ3X7m86eiWcKjTzHsXMup8aLMclIM0fkFL4rLK1FWfMeAOQr0el6qsq+n
-         P4+IvEEJzBHuR6iBi4fq2RMBi52RIxACKubS17E2YlvsiH3A2pdNLFJYV6uM7zu41rCV
-         W/JMZh+icYRT425cD0+taNkVHUqbCx1ne0baSm6zEXDOOJRDoguxzHJMYz56FTZMe5Qj
-         KmOm+vGQidIxQ6ztxAEZoO1unUZ152jwWD/RNrKdgDAahWsAVsrJHLlB23+o47pkvgNh
-         ZqdQWpH6mNH83Uq0mpOdkNUrzIht4uk5CXqdqRQ5zs68YQtwGUOWywR1y1j9/qdNPZaE
-         Bs1g==
+        d=gmail.com; s=20230601; t=1709049703; x=1709654503; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bw+xXvSI28q5RO1dOygG9JjocsqAHut9oZzvrKjoGSM=;
+        b=kjltX1F3ZjTf5cqd9xy6JeNw5OzwHRMjIT9BTV7xrhLoudnYYIKQ9SWZ2E0e+vjzPB
+         GJE65nq86X+ogoN1jrxY0yflcUzmJoI+WXOlaRV9kRhjvD/EBB4VGi0Y0TYpSUgvGh81
+         5/u3YjMgFzEwigf3NZA2aoxM7uMQM/ZTMDl0qzLD/IW7dRG4MaaTjZa6Aw716cWQTCDV
+         mnWQV38cRabB8grdieQcP2OeuXBWw8EbJIcEY5xllNJiD/tqiQz8TSVklDcSKESOBOJF
+         LtdOmIdJexLH+2eesJsUf6LN8YF3583UfOGF6tLGBt65bffhbo2KB7BXM8GzQQzDicfB
+         CFSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709049699; x=1709654499;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=X56hJwde2d0DSwQh7BdZYX6K5vlX3nWxYW7Jl2hEtLc=;
-        b=CncOTu/m/c0se+loqGwFU3fwX0GJl7Z+132Wy2Ov3oEiAL5yqH48O08HWlF6pM1U9q
-         jjsYlQUdXAjiOOY9MSxuntIx3SjnsYyjj3adHiMEmrEtNrrul6Xn3dEhBYQ/y6yLy/70
-         TJcj/2WZG1nCjhGsQdDhiZfK9ANi2kcbI4bi3TQ/U9+9e5m6OmoVcbcRiG52yWr+XjRY
-         kYk63usnoM9AqHw8iblACoRwDLmYbH2IGJ0nRpfxr7jXeHxHHYumVHXj9hYdqRe0F9dW
-         SyBmaxW5iKUYYcBxqERkwy0Zx0eKEs1FiZUsV9rq/Ho/ZbWGnycFjbrdQ+hCexEnw6cI
-         HSGg==
-X-Forwarded-Encrypted: i=1; AJvYcCWBNg0IV5Tuby/XOdqoKw+JqjeIiif4I+2EiAhnNCdPcboDPhKDWc5rga4VAvQKQFwawOz+DNOOCeQUjg9xGHcaYEho4/n2m93vXfCZ
-X-Gm-Message-State: AOJu0Yy7BFHcHJU67KFntNuuAdxYiG2BthwdJU1TjnUKYnxKjMqI9OPF
-	ZclRxRMjD7C7c6UHe7Y5itH1duInlaoUBfOjBQkq9zT9TQujw3hK
-X-Google-Smtp-Source: AGHT+IFTr6AmoUCHJEtTWViHhncMvoKYgtkSIcxKwsADKaQBG1SR1opO+tMXXDG/egIRck4dnUZYSw==
-X-Received: by 2002:ac2:5457:0:b0:513:5d5:189a with SMTP id d23-20020ac25457000000b0051305d5189amr1215412lfn.68.1709049699255;
-        Tue, 27 Feb 2024 08:01:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709049703; x=1709654503;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bw+xXvSI28q5RO1dOygG9JjocsqAHut9oZzvrKjoGSM=;
+        b=HY45z53qgVpP/xVtkqOnc7bDtsI4EU1OGsWWUd5fpSP2otqBHSS+7lyj5NMekXZgPB
+         Wh+QgBL0Ra+deWehyFA62KVT9YVxdJwd6Ho7Ir4CMaNtytG7tKM7OjS5smyVNcVNaT4Y
+         I+WVBTO4XQ67Jj4lM4xeWImXeedHuOM5ks8WyqgtjEnkQ5U5EdVLahHHbUEKURZfuctF
+         9cu4+g3+jFwUoxlHCF1nfhavNzWrPQ42O/u84gIqXBzeznJ2Vx2ZZ5zTBdd4feHDefna
+         Udx2NAR0AQBFPOizuRVF729XZLoFDs63T5oJcDep6SUt5ihy7NSqgb+oJ0TCfia+Y3GQ
+         MJZg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHXEdeU8CI66UuCOFaLuAqcuwhpA6u7cI6eyensrlcu1xSBB0aPAGSSS+alAHVJVz1QoCTdfh4p817hOLvvdm/og6sDhsca9pe0QiO
+X-Gm-Message-State: AOJu0YwRIeixGT4LYfEIGIMhuK7zWLphks8eN1b/tdHGgnjKRDxk+SX1
+	f9LOGsVCxAxP9drYMy6WimaetsRMUuad2bhs5wBJmqFsybVHl4H5
+X-Google-Smtp-Source: AGHT+IEjjiHreFIpagJZhsvqT3vXcRrneODTErc9AB6tq16rbUuhBf8n8mhbKupYMkbTwMrDBvOdJw==
+X-Received: by 2002:a05:6512:2216:b0:513:16cd:1377 with SMTP id h22-20020a056512221600b0051316cd1377mr378703lfu.1.1709049703230;
+        Tue, 27 Feb 2024 08:01:43 -0800 (PST)
 Received: from localhost.localdomain (c83-255-24-248.bredband.tele2.se. [83.255.24.248])
-        by smtp.googlemail.com with ESMTPSA id x18-20020ac24892000000b005128d0e2a07sm1228190lfc.308.2024.02.27.08.01.37
+        by smtp.googlemail.com with ESMTPSA id x18-20020ac24892000000b005128d0e2a07sm1228190lfc.308.2024.02.27.08.01.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 08:01:38 -0800 (PST)
+        Tue, 27 Feb 2024 08:01:42 -0800 (PST)
 From: Jonathan Bergh <bergh.jonathan@gmail.com>
 To: vireshk@kernel.org
 Cc: johan@kernel.org,
 	gregkh@linuxfoundation.org,
 	linux-kernel@vger.kernel.org,
 	Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH 1/2] staging: greybus: Replace __attribute__((packed)) by __packed in various instances
-Date: Tue, 27 Feb 2024 17:01:12 +0100
-Message-Id: <20240227160113.111264-1-bergh.jonathan@gmail.com>
+Subject: [PATCH 2/2] staging: greybus: Replaces directive __attribute__((packed)) by __packed as suggested by checkpatch
+Date: Tue, 27 Feb 2024 17:01:13 +0100
+Message-Id: <20240227160113.111264-2-bergh.jonathan@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240227160113.111264-1-bergh.jonathan@gmail.com>
+References: <20240227160113.111264-1-bergh.jonathan@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,45 +87,50 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 This patch makes the following changes:
- * Replaces '__attribute__((packed))' by '__packed' in various locations
-   to remove checkpatch warning
+ * Replaces '__attribute__((packed))' by '__packed' to remove warning as
+   flagged by checkpatch
 
 Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
 ---
- drivers/staging/greybus/greybus_authentication.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/greybus/greybus_firmware.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/greybus/greybus_authentication.h b/drivers/staging/greybus/greybus_authentication.h
-index 48b4a9794d3c..ee88f880cfe3 100644
---- a/drivers/staging/greybus/greybus_authentication.h
-+++ b/drivers/staging/greybus/greybus_authentication.h
-@@ -44,7 +44,7 @@
- /* IOCTL support */
- struct cap_ioc_get_endpoint_uid {
- 	__u8			uid[8];
+diff --git a/drivers/staging/greybus/greybus_firmware.h b/drivers/staging/greybus/greybus_firmware.h
+index f68fd5e25321..b6042a82ada4 100644
+--- a/drivers/staging/greybus/greybus_firmware.h
++++ b/drivers/staging/greybus/greybus_firmware.h
+@@ -41,14 +41,14 @@ struct fw_mgmt_ioc_get_intf_version {
+ 	__u8 firmware_tag[GB_FIRMWARE_U_TAG_MAX_SIZE];
+ 	__u16 major;
+ 	__u16 minor;
 -} __attribute__ ((__packed__));
 +} __packed;
  
- struct cap_ioc_get_ims_certificate {
- 	__u32			certificate_class;
-@@ -53,7 +53,7 @@ struct cap_ioc_get_ims_certificate {
- 	__u8			result_code;
- 	__u32			cert_size;
- 	__u8			certificate[CAP_CERTIFICATE_MAX_SIZE];
+ struct fw_mgmt_ioc_get_backend_version {
+ 	__u8 firmware_tag[GB_FIRMWARE_U_TAG_MAX_SIZE];
+ 	__u16 major;
+ 	__u16 minor;
+ 	__u8 status;
 -} __attribute__ ((__packed__));
 +} __packed;
  
- struct cap_ioc_authenticate {
- 	__u32			auth_type;
-@@ -64,7 +64,7 @@ struct cap_ioc_authenticate {
- 	__u8			response[64];
- 	__u32			signature_size;
- 	__u8			signature[CAP_SIGNATURE_MAX_SIZE];
+ struct fw_mgmt_ioc_intf_load_and_validate {
+ 	__u8 firmware_tag[GB_FIRMWARE_U_TAG_MAX_SIZE];
+@@ -56,12 +56,12 @@ struct fw_mgmt_ioc_intf_load_and_validate {
+ 	__u8 status;
+ 	__u16 major;
+ 	__u16 minor;
 -} __attribute__ ((__packed__));
 +} __packed;
  
- #define CAP_IOCTL_BASE			'C'
- #define CAP_IOC_GET_ENDPOINT_UID	_IOR(CAP_IOCTL_BASE, 0, struct cap_ioc_get_endpoint_uid)
+ struct fw_mgmt_ioc_backend_fw_update {
+ 	__u8 firmware_tag[GB_FIRMWARE_U_TAG_MAX_SIZE];
+ 	__u8 status;
+-} __attribute__ ((__packed__));
++} __packed;
+ 
+ #define FW_MGMT_IOCTL_BASE			'F'
+ #define FW_MGMT_IOC_GET_INTF_FW			_IOR(FW_MGMT_IOCTL_BASE, 0, struct fw_mgmt_ioc_get_intf_version)
 -- 
 2.40.1
 
