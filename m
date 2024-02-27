@@ -1,253 +1,212 @@
-Return-Path: <linux-kernel+bounces-83160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 232EE868FA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:06:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 339EF868FAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:06:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8768EB25D7B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:06:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 579901C21BB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10A313A266;
-	Tue, 27 Feb 2024 12:06:03 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F3A13A24A
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:06:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E5813A87C;
+	Tue, 27 Feb 2024 12:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GxtuEB2o"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D899813A274;
+	Tue, 27 Feb 2024 12:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709035563; cv=none; b=TAOJYd3mD+yXOnNEPego13MjiIspxy6chJ2ecm7jy4Rk8Ckg34ZDZ80ZopVcrwPuJndVusId5Mm1L4qZWURqpN/N4I2kKXuwIIKOYn6GP8tnBPcVm6/D5QMz/7uRuMXsTF5anqqJeDsgrz8ZVNZJE77fVMV6T2kw6b7A/Aay6is=
+	t=1709035586; cv=none; b=L+xWtN6kRvtP0YJONcjyMhwqlwvUMR+EGVwHbhQD4TGU6vt3CAY3jMRurxDRkFDmAzelTpNwCV372U3jeF2nwWVSjq8yhYengKXv6ubOkxiLoTNGU+qU87DRH2e8P+7VCzBGCBqKpVYSDn75U1mWgcDEJugWjyZlK99rAGUN9S0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709035563; c=relaxed/simple;
-	bh=hvG6/mias6FHvT75nMzpN3cy6Em8IhzVVAKSwsCJBlA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WTWu8A9g5Bh1PmpEnDM27+/23q9AGL+4zJ2DdMXHkslZy2ttj394B0JVqUG3DCqNxo8hZ59yH4LWySo2+EoitWtODQVFthUiG0lXZPGstBbVD1Ogl4DFI5ygW6PQ0Oqqpy2uEkSEGw3+aIc7SZQWxF+OGAUX+kbW9BF9A6vmheE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43DA9DA7;
-	Tue, 27 Feb 2024 04:06:38 -0800 (PST)
-Received: from [10.1.30.188] (XHFQ2J9959.cambridge.arm.com [10.1.30.188])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C53E3F6C4;
-	Tue, 27 Feb 2024 04:05:57 -0800 (PST)
-Message-ID: <a4a9054f-2040-4f70-8d10-a5af4972e5aa@arm.com>
-Date: Tue, 27 Feb 2024 12:05:55 +0000
+	s=arc-20240116; t=1709035586; c=relaxed/simple;
+	bh=WvJArsUTJXRJiZdUCPnafcBXTHqHKXd8uQhLhgKJhZg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ln26wItKYUGOml/8MWkBT2SoQ3wlQj8hNKVWAhaLnwa5K9S0Ujso9SWOW0why8yAYWqn/eAgN1PdFwyyNvA8Zl/eeTmxvAjea2q9mOHqu4KpsGgOrj/D9WB2nq4kWkOdLfbE0TceYBpdtLjg3nyjCPVGQ9prCJW5AKq1Mg9oXOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GxtuEB2o; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 777041C0004;
+	Tue, 27 Feb 2024 12:06:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709035581;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WIrYh61CXichMQDwM9T6CmacuZVLBIfhKTVUXwxZYBE=;
+	b=GxtuEB2ovjmpeD6CflqWcUa6WGVUI2jNXi4BkBFeRvhBoV52Q91DF7Vx4d8ebxUKPU/oxO
+	z9UKoSQFWPY4fCYkX3S0feEQFA14hZe8CQ830J8X8U/NW48Z7Mn8+njjk2ckQWyhIIXLyb
+	Adcby25xzXXQHD0UFwysY2zvjuprwAte95k06679TJMAt1QfKflmwwGAm9bw2I2K3Ou38a
+	WYKVjW8RQiQAHWX0/3kcRJbAAMGLm/BI10lHarq9TeLWBCi1GKxLbosbyh7iIIHtMPDGxS
+	sugb7JzWflHYVJKYwvMOtI5HfbIzO9gXcb5dEApWhnxYOO0aavauleBks362eg==
+Date: Tue, 27 Feb 2024 13:06:19 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Saravana Kannan <saravanak@google.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Linus Walleij
+ <linus.walleij@linaro.org>, Pavel Machek <pavel@ucw.cz>, Lee Jones
+ <lee@kernel.org>, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-leds@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Android Kernel Team
+ <kernel-team@android.com>
+Subject: Re: [PATCH RESEND 0/2] leds: gpio: Add devlink between the
+ leds-gpio device and the gpio used.
+Message-ID: <20240227130619.4b47d409@bootlin.com>
+In-Reply-To: <CAGETcx_=g1dCH=YMUkc7VquUmLs=bNZMspUxH+V49uhcV0Bx2w@mail.gmail.com>
+References: <20240220133950.138452-1-herve.codina@bootlin.com>
+	<CAMRc=MfWPEOHeNvAwra-JxHZBFMrQbP+273zbFLDZfxi7fx8Yg@mail.gmail.com>
+	<20240220155347.693e46e1@bootlin.com>
+	<CAMRc=MeSgCOLZvFOXF4eQOp=bTz38K5Krzuy9r569-jnDx1zFA@mail.gmail.com>
+	<20240220164730.03412479@bootlin.com>
+	<CAGETcx_=g1dCH=YMUkc7VquUmLs=bNZMspUxH+V49uhcV0Bx2w@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>, David Hildenbrand <david@redhat.com>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, mhocko@suse.com, shy828301@gmail.com,
- wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
- ying.huang@intel.com, yuzhao@google.com, chrisl@kernel.org,
- surenb@google.com, hanchuanhua@oppo.com
-References: <20231025144546.577640-5-ryan.roberts@arm.com>
- <20240222070544.133673-1-21cnbao@gmail.com>
- <1a9fcdcd-c0dd-46dd-9c03-265a6988eeb2@redhat.com>
- <CAGsJ_4zWU91J_71zVjKua-RTO4hDUJMkL7z_RP1GnYf3W1dNEA@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4zWU91J_71zVjKua-RTO4hDUJMkL7z_RP1GnYf3W1dNEA@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
 
-On 23/02/2024 09:46, Barry Song wrote:
-> On Thu, Feb 22, 2024 at 11:09 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 22.02.24 08:05, Barry Song wrote:
->>> Hi Ryan,
->>>
->>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>>> index 2cc0cb41fb32..ea19710aa4cd 100644
->>>> --- a/mm/vmscan.c
->>>> +++ b/mm/vmscan.c
->>>> @@ -1212,11 +1212,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
->>>>                                      if (!can_split_folio(folio, NULL))
->>>>                                              goto activate_locked;
->>>>                                      /*
->>>> -                                     * Split folios without a PMD map right
->>>> -                                     * away. Chances are some or all of the
->>>> -                                     * tail pages can be freed without IO.
->>>> +                                     * Split PMD-mappable folios without a
->>>> +                                     * PMD map right away. Chances are some
->>>> +                                     * or all of the tail pages can be freed
->>>> +                                     * without IO.
->>>>                                       */
->>>> -                                    if (!folio_entire_mapcount(folio) &&
->>>> +                                    if (folio_test_pmd_mappable(folio) &&
->>>> +                                        !folio_entire_mapcount(folio) &&
->>>>                                          split_folio_to_list(folio,
->>>>                                                              folio_list))
->>>>                                              goto activate_locked;
->>>
->>> I ran a test to investigate what would happen while reclaiming a partially
->>> unmapped large folio. for example, for 64KiB large folios, MADV_DONTNEED
->>> 4KB~64KB, and keep the first subpage 0~4KiB.
->>
->> IOW, something that already happens with ordinary THP already IIRC.
->>
->>>
->>> My test wants to address my three concerns,
->>> a. whether we will have leak on swap slots
->>> b. whether we will have redundant I/O
->>> c. whether we will cause races on swapcache
->>>
->>> what i have done is printing folio->_nr_pages_mapped and dumping 16 swap_map[]
->>> at some specific stage
->>> 1. just after add_to_swap   (swap slots are allocated)
->>> 2. before and after try_to_unmap   (ptes are set to swap_entry)
->>> 3. before and after pageout (also add printk in zram driver to dump all I/O write)
->>> 4. before and after remove_mapping
->>>
->>> The below is the dumped info for a particular large folio,
->>>
->>> 1. after add_to_swap
->>> [   27.267357] vmscan: After add_to_swap shrink_folio_list 1947 mapnr:1
->>> [   27.267650] vmscan: offset:101b0 swp_map 40-40-40-40-40-40-40-40-40-40-40-40-40-40-40-40
->>>
->>> as you can see,
->>> _nr_pages_mapped is 1 and all 16 swap_map are SWAP_HAS_CACHE (0x40)
->>>
->>>
->>> 2. before and after try_to_unmap
->>> [   27.268067] vmscan: before try to unmap shrink_folio_list 1991 mapnr:1
->>> [   27.268372] try_to_unmap_one address:ffff731f0000 pte:e8000103cd0b43 pte_p:ffff0000c36a8f80
->>> [   27.268854] vmscan: after try to unmap shrink_folio_list 1997 mapnr:0
->>> [   27.269180] vmscan: offset:101b0 swp_map 41-40-40-40-40-40-40-40-40-40-40-40-40-40-40-40
->>>
->>> as you can see, one pte is set to swp_entry, and _nr_pages_mapped becomes
->>> 0 from 1. The 1st swp_map becomes 0x41, SWAP_HAS_CACHE + 1
->>>
->>> 3. before and after pageout
->>> [   27.269602] vmscan: before pageout shrink_folio_list 2065 mapnr:0
->>> [   27.269880] vmscan: offset:101b0 swp_map 41-40-40-40-40-40-40-40-40-40-40-40-40-40-40-40
->>> [   27.270691] zram: zram_write_page page:fffffc00030f3400 index:101b0
->>> [   27.271061] zram: zram_write_page page:fffffc00030f3440 index:101b1
->>> [   27.271416] zram: zram_write_page page:fffffc00030f3480 index:101b2
->>> [   27.271751] zram: zram_write_page page:fffffc00030f34c0 index:101b3
->>> [   27.272046] zram: zram_write_page page:fffffc00030f3500 index:101b4
->>> [   27.272384] zram: zram_write_page page:fffffc00030f3540 index:101b5
->>> [   27.272746] zram: zram_write_page page:fffffc00030f3580 index:101b6
->>> [   27.273042] zram: zram_write_page page:fffffc00030f35c0 index:101b7
->>> [   27.273339] zram: zram_write_page page:fffffc00030f3600 index:101b8
->>> [   27.273676] zram: zram_write_page page:fffffc00030f3640 index:101b9
->>> [   27.274044] zram: zram_write_page page:fffffc00030f3680 index:101ba
->>> [   27.274554] zram: zram_write_page page:fffffc00030f36c0 index:101bb
->>> [   27.274870] zram: zram_write_page page:fffffc00030f3700 index:101bc
->>> [   27.275166] zram: zram_write_page page:fffffc00030f3740 index:101bd
->>> [   27.275463] zram: zram_write_page page:fffffc00030f3780 index:101be
->>> [   27.275760] zram: zram_write_page page:fffffc00030f37c0 index:101bf
->>> [   27.276102] vmscan: after pageout and before needs_release shrink_folio_list 2124 mapnr:0
->>>
->>> as you can see, obviously, we have done redundant I/O - 16 zram_write_page though
->>> 4~64KiB has been zap_pte_range before, we still write them to zRAM.
->>>
->>> 4. before and after remove_mapping
->>> [   27.276428] vmscan: offset:101b0 swp_map 41-40-40-40-40-40-40-40-40-40-40-40-40-40-40-40
->>> [   27.277485] vmscan: after remove_mapping shrink_folio_list 2169 mapnr:0 offset:0
->>> [   27.277802] vmscan: offset:101b0 01-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
->>>
->>> as you can see, swp_map 1-15 becomes 0 and only the first swp_map is 1.
->>> all SWAP_HAS_CACHE has been removed. This is perfect and there is no swap
->>> slot leak at all!
->>>
->>> Thus, only two concerns are left for me,
->>> 1. as we don't split anyway, we have done 15 unnecessary I/O if a large folio
->>> is partially unmapped.
+Hi Saravana,
 
-So the cost of this is increased IO and swap storage, correct? Is this a big
-problem in practice? i.e. do you see a lot of partially mapped large folios in
-your workload? (I agree the proposed fix below is simple, so I think we should
-do it anyway - I'm just interested in the scale of the problem).
+On Tue, 20 Feb 2024 19:28:17 -0800
+Saravana Kannan <saravanak@google.com> wrote:
 
->>> 2. large folio is added as a whole as a swapcache covering the range whose
->>> part has been zapped. I am not quite sure if this will cause some problems
->>> while some concurrent do_anon_page, swapin and swapout occurs between 3 and
->>> 4 on zapped subpage1~subpage15. still struggling.. my brain is exploding...
-
-Yes mine too. I would only expect the ptes that map the folio will get replaced
-with swap entries? So I would expect it to be safe. Although I understand the
-concern with the extra swap consumption.
-
-[...]
->>>
->>> To me, it seems safer to split or do some other similar optimization if we find a
->>> large folio has partial map and unmap.
->>
->> I'm hoping that we can avoid any new direct users of _nr_pages_mapped if
->> possible.
->>
+> On Tue, Feb 20, 2024 at 7:47 AM Herve Codina <herve.codina@bootlin.com> wrote:
+> >
+> > Hi Bartosz,
+> >
+> > On Tue, 20 Feb 2024 16:30:11 +0100
+> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >  
+> > > On Tue, Feb 20, 2024 at 3:53 PM Herve Codina <herve.codina@bootlin.com> wrote:  
+> > > >
+> > > > On Tue, 20 Feb 2024 15:19:57 +0100
+> > > > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> > > >  
+> > > > > On Tue, Feb 20, 2024 at 2:39 PM Herve Codina <herve.codina@bootlin.com> wrote:  
+> > > > > >
+> > > > > > Hi,
+> > > > > >
+> > > > > > Note: Resent this series with Saravana added in Cc.
+> > > > > >
+> > > > > > When a gpio used by the leds-gpio device is removed, the leds-gpio
+> > > > > > device continues to use this gpio. Also, when the gpio is back, the
+> > > > > > leds-gpio still uses the old removed gpio.
+> > > > > >
+> > > > > > A consumer/supplier relationship is missing between the leds-gpio device
+> > > > > > (consumer) and the gpio used (supplier).
+> > > > > >
+> > > > > > This series adds an addionnal devlink between this two device.
+> > > > > > With this link when the gpio is removed, the leds-gpio device is also
+> > > > > > removed.
+> > > > > >
+> > > > > > Best regards,
+> > > > > > Hervé Codina
+> > > > > >
+> > > > > > Herve Codina (2):
+> > > > > >   gpiolib: Introduce gpiod_device_add_link()
+> > > > > >   leds: gpio: Add devlinks between the gpio consumed and the gpio leds
+> > > > > >     device
+> > > > > >
+> > > > > >  drivers/gpio/gpiolib.c        | 32 ++++++++++++++++++++++++++++++++
+> > > > > >  drivers/leds/leds-gpio.c      | 15 +++++++++++++++
+> > > > > >  include/linux/gpio/consumer.h |  5 +++++
+> > > > > >  3 files changed, 52 insertions(+)
+> > > > > >
+> > > > > > --
+> > > > > > 2.43.0
+> > > > > >  
+> > > > >
+> > > > > Can you add some more context here in the form of DT snippets that
+> > > > > lead to this being needed?  
+> > > >
+> > > > / {
+> > > >         leds-dock {
+> > > >                 compatible = "gpio-leds";
+> > > >
+> > > >                 led-5 {
+> > > >                         label = "dock:alarm:red";
+> > > >                         gpios = <&tca6424_dock_2 12 GPIO_ACTIVE_HIGH>;
+> > > >                 };  
+> > >
+> > > Do I understand correctly that the devlink is created between "led-5"
+> > > and "tca6424_dock_2" but actually should also be created between
+> > > "leds-dock" and "tca6424_dock_2"?
+> > >  
+> >
+> > Yes, that's my understanding too.  
 > 
-> Is _nr_pages_mapped < nr_pages a reasonable case to split as we
-> have known the folio has at least some subpages zapped?
-
-I'm not sure we need this - the folio's presence on the split list will tell us
-everything we need to know I think?
-
+> I'm replying here instead of the RESEND because here's where the
+> context and example are provided.
 > 
->> If we find that the folio is on the deferred split list, we might as
->> well just split it right away, before swapping it out. That might be a
->> reasonable optimization for the case you describe.
-
-Yes, agreed. I think there is still chance of a race though; Some other thread
-could be munmapping in parallel. But in that case, I think we just end up with
-the increased IO and swap storage? That's not the end of the world if its a
-corner case.
-
+> I quickly poked into the gpio-leds driver. Please correct me if I'm
+> misunderstanding anything.
 > 
-> i tried to change Ryan's code as below
+> It looks like led-5 will be added as a class device. But the
+> dev->fwnode is not set before it's added because it uses
+> device_create_with_groups(). So, fw_devlink doesn't create a link
+> between led-5 and tca6424_dock_2 unless tca6424_dock_2 is added after
+> led-5. Which coincidentally seems to be the case here. Might want to
+> explicitly create the device in gpio-leds driver.
 > 
-> @@ -1905,11 +1922,12 @@ static unsigned int shrink_folio_list(struct
-> list_head *folio_list,
->                                          * PMD map right away. Chances are some
->                                          * or all of the tail pages can be freed
->                                          * without IO.
-> +                                        * Similarly, split PTE-mapped folios if
-> +                                        * they have been already
-> deferred_split.
->                                          */
-> -                                       if (folio_test_pmd_mappable(folio) &&
-> -                                           !folio_entire_mapcount(folio) &&
-> -                                           split_folio_to_list(folio,
-> -                                                               folio_list))
-> +                                       if
-> (((folio_test_pmd_mappable(folio) && !folio_entire_mapcount(folio)) ||
-> +
-> (!folio_test_pmd_mappable(folio) &&
-> !list_empty(&folio->_deferred_list)))
-
-I'm not sure we need the different tests for pmd_mappable vs !pmd_mappable. I
-think presence on the deferred list is a sufficient indicator that there are
-unmapped subpages?
-
-I'll incorporate this into my next version.
-
-> +                                           &&
-> split_folio_to_list(folio, folio_list))
->                                                 goto activate_locked;
->                                 }
->                                 if (!add_to_swap(folio)) {
+> The issue you are trying to fix is a generic issue that I'd like to
+> fix in a generic fashion. It's one of my TODOs which I've mentioned
+> before in conferences/emails to LKML: device links framework has a
+> bunch of gaps when it comes to class devices. I've been thinking about
+> it for a while, but it needs a lot more work and testing. I'll roll in
+> this case when I deal with it in a generic fashion. But here's the
+> general idea of things that need to be addressed:
 > 
-> It seems to work as expected. only one I/O is left for a large folio
-> with 16 PTEs
-> but 15 of them have been zapped before.
+> 1. "Managed" device links allow having a class device as a supplier,
+> but that'll mean the consumer will never probe.
+> 2. What if a class device is a consumer and the supplier isn't ready.
+> What does it mean for the class device to be added? Is it available
+> for use? Probably not. Can we do something here that'll be useful for
+> the class implementation?
+> 3. What if the supplier and consumer are class devices, when does the
+> consumer class device become "available" (do we check the suppliers of
+> the supplier?)?
+> 4. What happens if the supplier of a class device gets removed? Do we
+> notify the class so it can do the right thing? Do we force unbind the
+> first ancestor that's on a bus? (your case).
+> 5. What if a supplier class device is removed, should we unbind the
+> consumer (if it's a bus device)?
 > 
->>
->> --
->> Cheers,
->>
->> David / dhildenb
->>
+> I'm currently working on a patch to break dependency cycles. Once
+> that's in, the next TODO item I work on is going to be this or clock
+> framework sync_state() support.
 > 
-> Thanks
-> Barry
+> So, I'd recommend waiting this out if it's not urgent.
+> 
+> Heh, here's my commit on my local repo from a year ago when I touched
+> on this and realised the scope of the work.
+> 
+> commit 7dcaad52e569209104408f3e472fde4ef8cd5585 (class-devlinks-v1)
+> Author: Saravana Kannan <saravanak@google.com>
+> Date:   Mon Feb 13 13:40:43 2023 -0800
+> 
+>     add class support to device links
+> 
 
+Well, on one side we have this current patch that fixes the current issue in
+the gpio-led use case.
+
+On the other side, I have a commit hash from your local repo which is one
+year old and some more work is needed on it.
+
+Maybe my patch is not fully correct but it fixes the issue.
+
+Do you have any idea about when your work on that topic will be available?
+
+Best regards,
+Hervé
 
