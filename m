@@ -1,558 +1,335 @@
-Return-Path: <linux-kernel+bounces-83345-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95A688693E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:49:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A334B8693DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DE191F22384
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:49:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59369292EBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293FA1420C8;
-	Tue, 27 Feb 2024 13:47:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC131419BE;
+	Tue, 27 Feb 2024 13:47:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b="ED2Q5vW9"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ezYz7Fw3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA66146009
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:47:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709041648; cv=fail; b=n7pTXqy94OlK/agHd/vLzaIxw4mNO0xUJ+IjPQQkaChyfKoFd9fVBeR+boB1v/yix2WDL/fI9RW5cwkwF2Es/SFteH2ysgXGHAdkbuleZQyeSO1MnF4AWk8kZDCihAGxvsbv96ep/dBkP/7XcM7JCx/FnNvU8lx75xYQ/tNqdfo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709041648; c=relaxed/simple;
-	bh=T168159i/YEF5z88TKc2EkMgiLXM7zihCsgxcU+jbEQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=JvHcTp9h1X9TRsw4cvqBMoA1sOv7tUPfmrRWfXmMEaREsgTpQia+2VhfGholhr66qwF8yfoqjHGT4c3Dlch27d7UEgH5KBQprmQ79LQiHcKn8VqyltruYiDKmNOPNY7uem8sQ1XrikrPT+k1bwjM+QcgRQJV7miR1qvBLikRNhA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b=ED2Q5vW9; arc=fail smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41RBIQQC017917;
-	Tue, 27 Feb 2024 05:46:54 -0800
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3wherd0bx0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 05:46:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QeIREBaPe2GIIF1leeqav45vLu5Ir8FP/PSggdeqbriD82bGyJWll9p2HWPPn88iGm/4eWQAkkCwuHuXVm3bUIQulb5lodpnF4YDWzZ7yjOT08GRr8la47ZJv2lLqoiPqDtvRV+2knfPtQwusABhdLmQe7lyYix/QFkFjNGOSXhDavBeR9+wqwcWhPGZNQtFt4BCtoS2CEJSZOtY2MQyPEl+yfuRrYvsTeMJpOdCDt6OdbS8dMxDsaf0FdV3p/iF2E63x8e/fvG69fzRBIWYKVVkl0LHvk66DrU6D8t1NkoJWzTfwxNqX8Mo/qsy+sjXtIf2IsC1l1TEQPFGSR2SGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Q03dO3W+VFbmb+4+lNcqWowFnP9YVVidYiT7cwaIGsw=;
- b=gvP6CmWMCuexfM22fW3TMkT6eHgDC0VqsaXziFMjpN2kT8QjUEwcbedDhHYJIyZpqdFenOjOQqDeXiUKpzmXlqX/ZwziHCfRdZ1Kf50hmYnKgrNVBow7XHUPCD2K5oFlj1bwMv72b+eIOdbYglKh9qpE3dELiiQlUKapxHDaalohCIaAThXTohYOjCFoOQJbFsZtZFgCyfjg/ECm/ic1LYtM3YBVqSoSAp6jJoy0+dak+w5Q/712J2Tp26SKy7+Ki2KTXjGCmWs+sRtJZnb626227eGTg16khSy/qzQnHwdVmw9+sglE46PHySR1f8IBfLreGs6oNeCtI4f/WgL02A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q03dO3W+VFbmb+4+lNcqWowFnP9YVVidYiT7cwaIGsw=;
- b=ED2Q5vW9uXaN/EJJ6PjZ85WVAZHoZUlVh8D5oiQNd2ebcZlsl/qVhlsPWQB9dYEDKytAnqFFxvflPHkOOnAFQ4QGTlxLiW0Xcx8sQRjdbLjCicfNpKnbpI0WRIxVIt+rJDw6FhzcUZ4hA/E6HrdmTG7CVQpxyFvc34xRC4OmqCQ=
-Received: from SN1PR18MB2126.namprd18.prod.outlook.com (2603:10b6:802:29::29)
- by SA1PR18MB5877.namprd18.prod.outlook.com (2603:10b6:806:3ec::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Tue, 27 Feb
- 2024 13:46:51 +0000
-Received: from SN1PR18MB2126.namprd18.prod.outlook.com
- ([fe80::f9a7:a7a:e168:e7db]) by SN1PR18MB2126.namprd18.prod.outlook.com
- ([fe80::f9a7:a7a:e168:e7db%4]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
- 13:46:51 +0000
-From: Gowthami Thiagarajan <gthiagarajan@marvell.com>
-To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-CC: "will@kernel.org" <will@kernel.org>,
-        "mark.rutland@arm.com"
-	<mark.rutland@arm.com>,
-        "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Bharat Bhushan <bbhushan2@marvell.com>,
-        George Cherian <gcherian@marvell.com>
-Subject: RE: [EXT] Re: [PATCH v3 1/2] perf/marvell: Odyssey DDR Performance
- monitor support
-Thread-Topic: [EXT] Re: [PATCH v3 1/2] perf/marvell: Odyssey DDR Performance
- monitor support
-Thread-Index: AQHaTTF7xHRDxtzu6EGBNA+u92UBJrDwvEQAgC2t9XA=
-Date: Tue, 27 Feb 2024 13:46:51 +0000
-Message-ID: 
- <SN1PR18MB2126E6148F38D7CA17701956DB592@SN1PR18MB2126.namprd18.prod.outlook.com>
-References: <20240122124933.1311925-1-gthiagarajan@marvell.com>
-	<20240122124933.1311925-2-gthiagarajan@marvell.com>
- <20240129120436.00000f18@Huawei.com>
-In-Reply-To: <20240129120436.00000f18@Huawei.com>
-Accept-Language: en-IN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN1PR18MB2126:EE_|SA1PR18MB5877:EE_
-x-ms-office365-filtering-correlation-id: dcdad5bf-861b-4d51-4eda-08dc379a8d3a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- xIejxLpHJt3Puw5YS13wosc/fncwupyFFVQ1ATGlJlB9F1lQ/+j044Nzpe0Vz6qyoOHpMx6WQPsvr94AdAsTzzvb7MvdxWklJykdbIYBcORgJQwrCnPRQaNtLDK4U6+AVev5FW1PmTL1nGNbanfWiOnZ7uHl5/K0bzCeVUeN3I+cSa5F/XT3qTkUnJnCV6mQsdSY8oEPUHf3E+CT1R7Xd3K/SgpyOzMGIBQNrmkvUoBhssT6opdOP5KQkmqYOR3Ttzae2EBX5WQnf5Q4DFWLbo3CiMftI6KZ6+glsEgM1QhXtjeeOaRexTAMG82FjSBfwefdP8TYoUbrwYAURd1PJetvzt8XvUp+zojzJued531+IejDJektdhYkB0dd/MuAu3eGT9vrqdAbMfX1c1cZbQ2Roz45EZCS7w2syvjk/SPmOlJ5ks4tIqSrnnQfrFJ/VzTdc+QqXg8S7dR9uHLYZkr6AAUfba9f/I6qf2lzWLDKBWKS1Ur+i756pLXbOmr7q9iq289E375feQsxDWoLI4DIWKPKJbgkThrQbelaL88XgaiT0hqrH6UuB7SHpPXVjGge8lXdF9CU//arlB7P1BZyQ1ZKAzPW97R+46+FsRSo+L8s6SxqYEVsO2eQPrzZTmjZ9nUyWyh1h+uyS+qF0wp0+PLQJVhLQ815vhx167sGs3icoM/ClHLSaZw7K4zAJ/5CMRGpCc6wQ9Ed1n8IJ5+ummGj+xX5J3LKKd7jf8Q=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR18MB2126.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?fx+jUrgYGVGIWhQ5xJ1zgsG0qXUayaDycHxrUYqpjD19rB/hZbVzvz6AZahN?=
- =?us-ascii?Q?V97n7VIEbx4DOhfblSXTF7wn7mCDroMcN8ijKEMoMCsjGw4veQCCyBUSYqux?=
- =?us-ascii?Q?KeaEEh5Z+6yzRqmRzAU2LsZfNoK5xNNCXWMIXvQsI/cDhCuronIL/jEKeemP?=
- =?us-ascii?Q?TpHW7KDq0oTKwoPCzB8JfHWbAXUK7aoY2L+TEiYuoi4b4ETg2DTCz/zl3E0P?=
- =?us-ascii?Q?pEiRrbC3TJJvy++WvasXOwRw1uHVgJ/kN7XkUGHUQb5NhsADt1JpbSWK/Er6?=
- =?us-ascii?Q?+IuAfbO3HwM2OcaRUKLy7gLV54GjQW6mYesMq6bQQrsr7VjzXRmY9Z2+RXFT?=
- =?us-ascii?Q?9qfZLddfP9mFf5s3Or7G5pMj/V3T+x1B2zVjd+BHhGz8V7M8T0Yf3SJHjtld?=
- =?us-ascii?Q?nxO68rUIXWBfq+Il9Y/1W0yTJUShJBV9VlbnJugT+Yj4OL6z+tWTQ/XPbxPo?=
- =?us-ascii?Q?WxwPDDmyh4O5eqFCA1J+oGq9MYycru3wmRYwaLTZN11eVjAh1WoOIa64nEbs?=
- =?us-ascii?Q?3QGclbiEbXmGz1iSuVBkZdFebefBuiIvN2PsD3zHJXM4QMfDQIq5fCWiv0qW?=
- =?us-ascii?Q?5jzr4VfnBSp+0YozbZU1OJynON4PAtoJMwuyiXeQlCLRrwGkrEOhj5/41xL4?=
- =?us-ascii?Q?MN0VwcuWOQqBBqk75PtnNsOvzbpa9Rs9e/fg8C6cjABhgM5HKW9auMoMtJYW?=
- =?us-ascii?Q?dVedHjOChy0yiZAFcjZuT36NtQzuw3qj+Ye1uRx/IiYr+3B0HeB7ikZNjraP?=
- =?us-ascii?Q?fTNdAPT6uXJmibPdMGdtAV9k8SD2yag9w8xIZMBVXamn29WZm7CH9DMU0oTZ?=
- =?us-ascii?Q?N/jDlogH1ZHo8LFbmQ+nqcyHLzzf7G9N0n/C+uYhiCOe78jwNYXKX7YrM4z1?=
- =?us-ascii?Q?n14Utf8vLG5HcuH5Eyz55OC4T/oUZJkVtAyH1O4yRQKXLPROjqWdYaprdlPQ?=
- =?us-ascii?Q?a7iPs57PaUCliyAtI6kQoJs1ETK72OiY+J/d+l7AQosAYoBaY5RHQPm1ask1?=
- =?us-ascii?Q?plqeK87bY4tyDtKfiWD68EDb67ctLeUtZg18ugY+CaEHLWAXq/rqjy44o6U5?=
- =?us-ascii?Q?Tzk9C/RoVtrpOE9DC4IgfQ7q+spxBKLMyBwrskaxPKE+neKoVriPWdKqKSc2?=
- =?us-ascii?Q?erhY/ifnN06eNHDzFr8702q6kCPSmZbp30xw9vT/SUD3BpPks51gQWLgQDSM?=
- =?us-ascii?Q?+VZ20Xo8nWn4bUN/7+dgDmieGvPtu9HOeWO6N0MP4zDlM1x0rerhtlbKYuI7?=
- =?us-ascii?Q?JFb1pnbuBIqJTduNImcnhwJS3CTugoUNUzceTsF3ShftQ163shxdi5HtH4qp?=
- =?us-ascii?Q?blA50ch3CYiHIDmilxr9n6eCVhpWG64CyCjgVdlBgnHlfO6QaKtjIeUfrp0q?=
- =?us-ascii?Q?OUhthNCRZ3am4FivkwnxZFkziXgdsbgtdiNb+8sbTa5CcuR75iDJj/FNeTPP?=
- =?us-ascii?Q?yfb5EWuX3QCXb+YDhM9GbtOvWg29wzxASHRS7b/Mep0baMP2sFZ1y9rBbFgh?=
- =?us-ascii?Q?VzpeaOWWfuHV09xckEF40wurCXku5H4UEManG12TvTJOzE70kM9ANMSWQxFD?=
- =?us-ascii?Q?UMAc84dZUECr4v6ltXF2uFkZGeDBAkfbTtafb84s?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9AEE13B7AA
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 13:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709041642; cv=none; b=Aw9deoDUpG0Ocb9ku11o1S/e04JvqN4dLp/S9wEJPvB257omEuY6VNu18s+yxaecY11CQ3oB/ax6Fj4b4SgJsma3cdwGx19A+DGuCq1uVLebHZ+l422sX/gXJCIbt8QdYNjNFV5fbSp7MbZgpgcbliHrlXKQmrYBAjANPyPE1OM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709041642; c=relaxed/simple;
+	bh=roxPi8rz4oNq2vNNNxEbsD8R+MWfx531DvbZ2mENdBo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c/jNYfFa2gsXL/MicszK9YEX6Ru8UQOss9IES/7xyy8rCnANr19E0YuJMbyOcg0CDfHWY/IFbML9S8699lRHv4ffDZEmq8jdSJ7MKcqwPYRXWiiImA2EbYV3xbVfv2Wrj0jTjpm8Lzsuspie5bx2XoATmjap+e5IpwygmZI5Kc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ezYz7Fw3; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709041639;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hTVBC0lkZuIsWB3rrhjB8rqd7JwC06vqd7+76BYU8ms=;
+	b=ezYz7Fw3t3tTBNX1V6aRqlnALqblL4K9+X6eyyhSPulEbEgryJkoRzNRBnyZYQh3UMN160
+	QR7Z1X7xPhsMBxxeraza0QyIbeDJTGLhujVYFKrS22F1VmYdumBrPTa5vKq7N+wPK0grvC
+	Utj+CkRctf1b/JwOlANDs88Iee+DOMw=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-529-oepdoXqqP--xFTCsqkRNEw-1; Tue, 27 Feb 2024 08:47:18 -0500
+X-MC-Unique: oepdoXqqP--xFTCsqkRNEw-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-512d6a5c0f0so3625737e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 05:47:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709041636; x=1709646436;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hTVBC0lkZuIsWB3rrhjB8rqd7JwC06vqd7+76BYU8ms=;
+        b=ULYWxU+mB+SYX9AqM5sp6GCTRjUp8aGMhXObG667mZmXRNLxDQFb2qvbL2B0g43FYo
+         Z0Ds7tsYNZcfIHyicGUC1yFB+1SnPfn+SMr4dtg91r1WhGfGYdkAaTE26DVERkj3ssGM
+         JbiaXNJm/irDhT7p7myXnrYzVGGqFN+Ctz3yit8LfwpHUtx647//gIgbBCha7YrFs0tD
+         BO+j1F43kYOdSPSmC6R54PZrr+w3kxj7MYQASQzglT+V6U5znrnUQTiopJG67JD160Qp
+         szNdlKzNDl0YmOUrFoTDU6ujXxuNuaB/j5f32AxGY2Bc6+Tv7iJIbE0eZkr8LbmFWNPB
+         9W6g==
+X-Forwarded-Encrypted: i=1; AJvYcCUKmxSfFSWAhNuucapI+Itt+6THo74eRSPhCUowecPrQVGjvhtyhR/GOzF3rKmll4A5Qes8oX9SEFk5sjiIzXtlN5SOUy+VdKtvy0Nt
+X-Gm-Message-State: AOJu0YzUGLIF56JG89rRvFP1rU2g2PXLHN7rO2xhHknXpUfes7upf6o+
+	Gdc5Kmq9c8DVTNK2axuUBnG/Uwd9QRKlVaZG+oNTXDS1LzXUFk0rAnNI12gw9h/PW9eVEBC9GB4
+	lQeUPuwfNaVu+2JIMZQa5dP848jKULVYAcDs34Sw+vTF0wtnH9fedcvTTonA76gjN0c4VkA==
+X-Received: by 2002:ac2:5d24:0:b0:512:e4f4:b562 with SMTP id i4-20020ac25d24000000b00512e4f4b562mr5674293lfb.31.1709041636299;
+        Tue, 27 Feb 2024 05:47:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGLf7Vwour/XjLoxR2iw6tIoak85hY2uSnJmHhcKtZd8K/kuXb6PkldJJSdOoGoEaALcMMGrQ==
+X-Received: by 2002:ac2:5d24:0:b0:512:e4f4:b562 with SMTP id i4-20020ac25d24000000b00512e4f4b562mr5674270lfb.31.1709041635850;
+        Tue, 27 Feb 2024 05:47:15 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id xa9-20020a170907b9c900b00a3e7a2d9ac4sm783359ejc.6.2024.02.27.05.47.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 05:47:15 -0800 (PST)
+Message-ID: <f3cdd944-5e68-49e5-bae8-4bc1f9f59131@redhat.com>
+Date: Tue, 27 Feb 2024 14:47:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN1PR18MB2126.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dcdad5bf-861b-4d51-4eda-08dc379a8d3a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2024 13:46:51.3377
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UvfizPGzSl4BO9S9bt3OGcEVDZZ8EiD7rzSq9DRAZu01olIDiQhyGIQiJUyosGaJAEy/Uy0E2f+r3rW+OMiuvUDxR3Q+WpVAIBXgd8O5EIw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR18MB5877
-X-Proofpoint-GUID: dV28LG1pDdsfc3cKt3gBq6ogjvzdd119
-X-Proofpoint-ORIG-GUID: dV28LG1pDdsfc3cKt3gBq6ogjvzdd119
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_11,2024-02-27_01,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] fbcon: Defer console takeover for splash screens to
+ first switch
+Content-Language: en-US, nl
+To: Daniel van Vugt <daniel.van.vugt@canonical.com>
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>,
+ Jani Nikula <jani.nikula@intel.com>, Danilo Krummrich <dakr@redhat.com>,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Sebastien Bacher <seb128@ubuntu.com>
+References: <20240202085408.23251-1-daniel.van.vugt@canonical.com>
+ <20240202085408.23251-2-daniel.van.vugt@canonical.com>
+ <7817a2a2-b07d-4e9d-85e6-c11c5720d66e@redhat.com>
+ <39ffe230-36ac-484a-8fc1-0a12d6c38d82@canonical.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <39ffe230-36ac-484a-8fc1-0a12d6c38d82@canonical.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Jonathan,
+Hi,
 
-Please find the response inline.
+On 2/27/24 02:06, Daniel van Vugt wrote:
+> On 27/2/24 02:23, Hans de Goede wrote:
+>> Hi All,
+>>
+>> On 2/2/24 09:53, Daniel van Vugt wrote:
+>>> Until now, deferred console takeover only meant defer until there is
+>>> output. But that risks stepping on the toes of userspace splash screens,
+>>> as console messages may appear before the splash screen. So check for the
+>>> "splash" parameter (as used by Plymouth) and if present then extend the
+>>> deferral until the first switch.
+>>
+>> Daniel, thank you for your patch but I do not believe that this
+>> is the right solution. Deferring fbcon takeover further then
+>> after the first text is output means that any errors about e.g.
+>> a corrupt initrd or the kernel erroring out / crashing will not
+>> be visible.
+> 
+> That's not really correct. If a boot failure has occurred after the splash then
+> pressing escape shows the log.
 
-> -----Original Message-----
-> From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-> Sent: Monday, January 29, 2024 5:35 PM
-> To: Gowthami Thiagarajan <gthiagarajan@marvell.com>
-> Cc: will@kernel.org; mark.rutland@arm.com; linux-arm-kernel@lists.infrade=
-ad.org; linux-
-> kernel@vger.kernel.org; Sunil Kovvuri Goutham <sgoutham@marvell.com>; Bha=
-rat Bhushan
-> <bbhushan2@marvell.com>; George Cherian <gcherian@marvell.com>
-> Subject: [EXT] Re: [PATCH v3 1/2] perf/marvell: Odyssey DDR Performance m=
-onitor support
->=20
-> External Email
->=20
-> ----------------------------------------------------------------------
-> On Mon, 22 Jan 2024 18:19:32 +0530
-> Gowthami Thiagarajan <gthiagarajan@marvell.com> wrote:
->=20
-> > Odyssey DRAM Subsystem supports eight counters for monitoring performan=
-ce
-> > and software can program those counters to monitor any of the defined
-> > performance events. Supported performance events include those counted
-> > at the interface between the DDR controller and the PHY, interface betw=
-een
-> > the DDR Controller and the CHI interconnect, or within the DDR Controll=
-er.
-> >
-> > Additionally DSS also supports two fixed performance event counters, on=
-e
-> > for ddr reads and the other for ddr writes.
-> >
-> > Signed-off-by: Gowthami Thiagarajan <gthiagarajan@marvell.com>
-> Hi Gowthami,
->=20
-> A quick drive by review.
-> Questions like whether this patch should be split are down to the perf ma=
-intainers.
-> I would ask for it, but not my area of the kernel ;)
->=20
-> Jonathan
->=20
->=20
-> > +#define VERSION_V1				1
-> > +#define VERSION_V2				2
->=20
-> Prefix these defines + perhaps make them an enum?
-[Gowthami] Ack.
->=20
-> > +
-> >  struct cn10k_ddr_pmu {
-> >  	struct pmu pmu;
-> >  	void __iomem *base;
-> > +	struct ddr_pmu_platform_data *p_data;
->=20
-> const both because it should be and to avoid casting away the const.
-[Gowthami] Ack.=20
->=20
->=20
-> > +	int version;
-> >  	unsigned int cpu;
-> >  	struct	device *dev;
-> >  	int active_events;
-> > @@ -134,6 +160,54 @@ struct cn10k_ddr_pmu {
-> >
-> >  #define to_cn10k_ddr_pmu(p)	container_of(p, struct cn10k_ddr_pmu, pmu)
-> >
-> > +struct ddr_pmu_platform_data {
-> > +	u64 counter_overflow_val;
-> > +	u64 counter_max_val;
-> > +	u64 ddrc_perf_cnt_base;
-> > +	u64 ddrc_perf_cfg_base;
-> > +	u64 ddrc_perf_cnt_op_mode_ctrl;
->=20
-> Good to name these in a fashion that makes it clear what they are.
-> Some are values, some are register address offsets I think?
->=20
-> Shy is ddrc_perf prefix useful in here?
-[Gowthami] Yes. Some are values and most of them point to register offsets.
-Just to match with the register defined values named it so.
->=20
->=20
-> > +	u64 ddrc_perf_cnt_start_op_ctrl;
-> > +	u64 ddrc_perf_cnt_end_op_ctrl;
-> > +	u64 ddrc_perf_cnt_end_status;
-> > +	u64 ddrc_perf_cnt_freerun_en;
-> > +	u64 ddrc_perf_cnt_freerun_ctrl;
-> > +	u64 ddrc_perf_cnt_freerun_clr;
-> > +	u64 ddrc_perf_cnt_value_wr_op;
-> > +	u64 ddrc_perf_cnt_value_rd_op;
-> > +};
-> > +
-> > +static const struct ddr_pmu_platform_data cn10k_ddr_pmu_pdata =3D {
-> > +	.counter_overflow_val =3D  BIT_ULL(48),
-> > +	.counter_max_val =3D GENMASK_ULL(48, 0),
-> > +	.ddrc_perf_cnt_base =3D CN10K_DDRC_PERF_CNT_VALUE_BASE,
-> > +	.ddrc_perf_cfg_base =3D CN10K_DDRC_PERF_CFG_BASE,
-> > +	.ddrc_perf_cnt_op_mode_ctrl =3D CN10K_DDRC_PERF_CNT_OP_MODE_CTRL,
-> > +	.ddrc_perf_cnt_start_op_ctrl =3D CN10K_DDRC_PERF_CNT_START_OP_CTRL,
-> > +	.ddrc_perf_cnt_end_op_ctrl =3D CN10K_DDRC_PERF_CNT_END_OP_CTRL,
-> > +	.ddrc_perf_cnt_end_status =3D CN10K_DDRC_PERF_CNT_END_STATUS,
-> > +	.ddrc_perf_cnt_freerun_en =3D CN10K_DDRC_PERF_CNT_FREERUN_EN,
-> > +	.ddrc_perf_cnt_freerun_ctrl =3D CN10K_DDRC_PERF_CNT_FREERUN_CTRL,
-> > +	.ddrc_perf_cnt_freerun_clr =3D 0,
-> > +	.ddrc_perf_cnt_value_wr_op =3D CN10K_DDRC_PERF_CNT_VALUE_WR_OP,
-> > +	.ddrc_perf_cnt_value_rd_op =3D CN10K_DDRC_PERF_CNT_VALUE_RD_OP,
-> > +};
-> > +
-> > +static const struct ddr_pmu_platform_data odyssey_ddr_pmu_pdata =3D {
-> > +	.counter_overflow_val =3D 0,
-> > +	.counter_max_val =3D GENMASK_ULL(63, 0),
-> > +	.ddrc_perf_cnt_base =3D ODY_DDRC_PERF_CNT_VALUE_BASE,
-> > +	.ddrc_perf_cfg_base =3D ODY_DDRC_PERF_CFG_BASE,
-> > +	.ddrc_perf_cnt_op_mode_ctrl =3D ODY_DDRC_PERF_CNT_OP_MODE_CTRL,
-> > +	.ddrc_perf_cnt_start_op_ctrl =3D ODY_DDRC_PERF_CNT_START_OP_CTRL,
-> > +	.ddrc_perf_cnt_end_op_ctrl =3D ODY_DDRC_PERF_CNT_END_OP_CTRL,
-> > +	.ddrc_perf_cnt_end_status =3D ODY_DDRC_PERF_CNT_END_STATUS,
-> > +	.ddrc_perf_cnt_freerun_en =3D 0,
-> > +	.ddrc_perf_cnt_freerun_ctrl =3D ODY_DDRC_PERF_CNT_FREERUN_CTRL,
-> > +	.ddrc_perf_cnt_freerun_clr =3D ODY_DDRC_PERF_CNT_FREERUN_CLR,
-> > +	.ddrc_perf_cnt_value_wr_op =3D ODY_DDRC_PERF_CNT_VALUE_WR_OP,
-> > +	.ddrc_perf_cnt_value_rd_op =3D ODY_DDRC_PERF_CNT_VALUE_RD_OP,
-> > +};
->=20
->=20
-> ...
->=20
-> > -static int ddr_perf_get_event_bitmap(int eventid, u64 *event_bitmap)
-> > +static int ddr_perf_get_event_bitmap(int eventid, u64 *event_bitmap,
-> > +				     struct cn10k_ddr_pmu *ddr_pmu)
-> >  {
-> > +	int ret =3D 0;
-> > +
-> >  	switch (eventid) {
-> >  	case EVENT_HIF_RD_OR_WR ... EVENT_WAW_HAZARD:
-> >  	case EVENT_OP_IS_REFRESH ... EVENT_OP_IS_ZQLATCH:
-> >  		*event_bitmap =3D (1ULL << (eventid - 1));
-> >  		break;
-> > +	case EVENT_DFI_PARITY_POISON ...EVENT_DFI_CMD_IS_RETRY:
-> > +		if (ddr_pmu->version =3D=3D VERSION_V2) {
-> > +			*event_bitmap =3D (1ULL << (eventid - 1));
-> > +		} else {
-> > +			pr_err("%s Invalid eventid %d\n", __func__, eventid);
-> > +			ret =3D -EINVAL;
-> > +		}
-> > +		break;
-> >  	case EVENT_OP_IS_ENTER_SELFREF:
-> >  	case EVENT_OP_IS_ENTER_POWERDOWN:
-> >  	case EVENT_OP_IS_ENTER_MPSM:
-> > @@ -280,10 +451,10 @@ static int ddr_perf_get_event_bitmap(int eventid,=
- u64 *event_bitmap)
-> >  		break;
-> >  	default:
-> >  		pr_err("%s Invalid eventid %d\n", __func__, eventid);
-> > -		return -EINVAL;
-> > +		ret =3D -EINVAL;
-> >  	}
-> >
-> > -	return 0;
-> > +	return ret;
-> Why?  Just return in the various paths above.
->=20
-> Direct returns make for easier to review code as you can follow a particu=
-lar path through
-> more quickly.
-[Gowthami] Ack.=20
->=20
-> >  }
->=20
-> >  static void cn10k_ddr_perf_pmu_disable(struct pmu *pmu)
-> >  {
-> >  	struct cn10k_ddr_pmu *ddr_pmu =3D to_cn10k_ddr_pmu(pmu);
-> > +	struct ddr_pmu_platform_data *p_data =3D ddr_pmu->p_data;
-> >
-> >  	writeq_relaxed(END_OP_CTRL_VAL_END, ddr_pmu->base +
-> > -		       DDRC_PERF_CNT_END_OP_CTRL);
-> > +		       p_data->ddrc_perf_cnt_end_op_ctrl);
-> >  }
-> >
-> >  static void cn10k_ddr_perf_event_update_all(struct cn10k_ddr_pmu *pmu)
-> > @@ -549,6 +778,7 @@ static void cn10k_ddr_perf_event_update_all(struct =
-cn10k_ddr_pmu *pmu)
-> >
-> >  static irqreturn_t cn10k_ddr_pmu_overflow_handler(struct cn10k_ddr_pmu=
- *pmu)
-> >  {
-> > +	struct ddr_pmu_platform_data *p_data =3D pmu->p_data;
-> >  	struct perf_event *event;
-> >  	struct hw_perf_event *hwc;
-> >  	u64 prev_count, new_count;
-> > @@ -561,7 +791,8 @@ static irqreturn_t cn10k_ddr_pmu_overflow_handler(s=
-truct cn10k_ddr_pmu *pmu)
-> >  		prev_count =3D local64_read(&hwc->prev_count);
-> >  		new_count =3D cn10k_ddr_perf_read_counter(pmu, hwc->idx);
-> >
-> > -		/* Overflow condition is when new count less than
-> > +		/*
-> > +		 * Overflow condition is when new count less than
-> >  		 * previous count
-> >  		 */
-> >  		if (new_count < prev_count)
-> > @@ -574,7 +805,8 @@ static irqreturn_t cn10k_ddr_pmu_overflow_handler(s=
-truct cn10k_ddr_pmu *pmu)
-> >  		prev_count =3D local64_read(&hwc->prev_count);
-> >  		new_count =3D cn10k_ddr_perf_read_counter(pmu, hwc->idx);
-> >
-> > -		/* Overflow condition is when new count less than
-> > +		/*
-> > +		 * Overflow condition is when new count less than
->=20
-> Good to fix this, but not in a patch doing anything meaningful. If you wa=
-nt
-> to make comment syntax changes - separate patch.
-[Gowthami] Ack.
->=20
-> >  		 * previous count
-> >  		 */
-> >  		if (new_count < prev_count)
-> > @@ -586,11 +818,23 @@ static irqreturn_t cn10k_ddr_pmu_overflow_handler=
-(struct cn10k_ddr_pmu *pmu)
-> >  			continue;
-> >
-> >  		value =3D cn10k_ddr_perf_read_counter(pmu, i);
-> > -		if (value =3D=3D DDRC_PERF_CNT_MAX_VALUE) {
-> > +		if (value =3D=3D p_data->counter_max_val) {
-> >  			pr_info("Counter-(%d) reached max value\n", i);
-> > -			cn10k_ddr_perf_event_update_all(pmu);
-> > -			cn10k_ddr_perf_pmu_disable(&pmu->pmu);
-> > -			cn10k_ddr_perf_pmu_enable(&pmu->pmu);
-> > +			/*
-> > +			 * As separate control register is added for each
-> > +			 * counter in odyssey, no need to update all
-> > +			 * the events
-> > +			 */
-> > +			if (pmu->version =3D=3D VERSION_V2) {
->=20
-> This sort of version difference is often better handled via a callback
-> in the your pdata structure.  Makes it easy to add a new one for v3 :)
->=20
-[Gowthami] Agree. Will make the change in the next version.=20
-> > +				cn10k_ddr_perf_event_update(pmu->events[i]);
-> > +				cn10k_ddr_perf_counter_stop(pmu, i);
-> > +				cn10k_ddr_perf_counter_start(pmu, i);
-> > +
-> > +			} else {
-> > +				cn10k_ddr_perf_event_update_all(pmu);
-> > +				cn10k_ddr_perf_pmu_disable(&pmu->pmu);
-> > +				cn10k_ddr_perf_pmu_enable(&pmu->pmu);
-> > +			}
-> >  		}
-> >  	}
-> >
-> > @@ -631,7 +875,10 @@ static int cn10k_ddr_pmu_offline_cpu(unsigned int =
-cpu, struct hlist_node *node)
-> >
-> >  static int cn10k_ddr_perf_probe(struct platform_device *pdev)
-> >  {
-> > +	struct ddr_pmu_platform_data *pltfm_data;
-> > +	struct device *dev =3D &pdev->dev;
-> >  	struct cn10k_ddr_pmu *ddr_pmu;
-> > +	const char  *compatible;
-> >  	struct resource *res;
-> >  	void __iomem *base;
-> >  	char *name;
-> > @@ -642,6 +889,14 @@ static int cn10k_ddr_perf_probe(struct platform_de=
-vice *pdev)
-> >  		return -ENOMEM;
-> >
-> >  	ddr_pmu->dev =3D &pdev->dev;
-> > +
-> > +	pltfm_data =3D (struct ddr_pmu_platform_data *)
-> > +		      device_get_match_data(&pdev->dev);
->=20
-> Shouldn't need the cast as it's a const void *
-> and you should not need to modify it in here (so make your
-> data types
-> const struct ddr_pmu_platform *
->=20
-[Gowthami] Ack=20
->=20
->=20
-> > +	if (!pltfm_data) {
-> > +		dev_err(&pdev->dev, "Error: No device match data found\n");
-> > +		return -ENODEV;
-> > +	}
-> > +	ddr_pmu->p_data =3D pltfm_data;
-> >  	platform_set_drvdata(pdev, ddr_pmu);
-> >
-> >  	base =3D devm_platform_get_and_ioremap_resource(pdev, 0, &res);
-> > @@ -650,25 +905,59 @@ static int cn10k_ddr_perf_probe(struct platform_d=
-evice *pdev)
-> >
-> >  	ddr_pmu->base =3D base;
-> >
-> > -	/* Setup the PMU counter to work in manual mode */
-> > -	writeq_relaxed(OP_MODE_CTRL_VAL_MANNUAL, ddr_pmu->base +
-> > -		       DDRC_PERF_CNT_OP_MODE_CTRL);
-> > -
-> > -	ddr_pmu->pmu =3D (struct pmu) {
-> > -		.module	      =3D THIS_MODULE,
-> > -		.capabilities =3D PERF_PMU_CAP_NO_EXCLUDE,
-> > -		.task_ctx_nr =3D perf_invalid_context,
-> > -		.attr_groups =3D cn10k_attr_groups,
-> > -		.event_init  =3D cn10k_ddr_perf_event_init,
-> > -		.add	     =3D cn10k_ddr_perf_event_add,
-> > -		.del	     =3D cn10k_ddr_perf_event_del,
-> > -		.start	     =3D cn10k_ddr_perf_event_start,
-> > -		.stop	     =3D cn10k_ddr_perf_event_stop,
-> > -		.read	     =3D cn10k_ddr_perf_event_update,
-> > -		.pmu_enable  =3D cn10k_ddr_perf_pmu_enable,
-> > -		.pmu_disable =3D cn10k_ddr_perf_pmu_disable,
-> > -	};
-> > +	ret =3D device_property_read_string(dev, "compatible", &compatible);
-> > +	if (ret) {
-> > +		pr_err("compatible property not found\n");
-> > +		return ret;
-> > +	}
-> >
-> > +	if ((strncmp("marvell,cn10k-ddr-pmu", compatible,
-> > +		     strlen(compatible)) =3D=3D 0))
->=20
-> Why not just embed this in your pdata structure?
-> Even better would be add data to reflect the actual differences
-> rather than relying on a 'version' number.  It tends to be more
-> extensible as new implementations surface to encode each difference
-> as data in such a structure.  Otherwise, in the long run you
-> end up with big switch statements for the many different versions
-> which just provide some per version constants.  That's messy.
-[Gowthami] Ack.
->=20
->=20
-> > +		ddr_pmu->version =3D VERSION_V1;
-> > +	else
-> > +		ddr_pmu->version =3D VERSION_V2;
-> > +
-> > +	if (ddr_pmu->version =3D=3D VERSION_V1) {
-> > +		ddr_pmu->pmu =3D (struct pmu) {
-> > +			.module	      =3D THIS_MODULE,
-> > +			.capabilities =3D PERF_PMU_CAP_NO_EXCLUDE,
-> > +			.task_ctx_nr =3D perf_invalid_context,
-> > +			.attr_groups =3D cn10k_attr_groups,
-> > +			.event_init  =3D cn10k_ddr_perf_event_init,
-> > +			.add	     =3D cn10k_ddr_perf_event_add,
-> > +			.del	     =3D cn10k_ddr_perf_event_del,
-> > +			.start	     =3D cn10k_ddr_perf_event_start,
-> > +			.stop	     =3D cn10k_ddr_perf_event_stop,
-> > +			.read	     =3D cn10k_ddr_perf_event_update,
-> > +			.pmu_enable  =3D cn10k_ddr_perf_pmu_enable,
-> > +			.pmu_disable =3D cn10k_ddr_perf_pmu_disable,
-> > +		};
-> > +
-> > +	/*
-> > +	 * As we have separate control registers for each counter in Odyssey,
-> > +	 * setting up the mode will be done when we enable each counter
-> > +	 *
->=20
-> Trivial: Odd formatting. I'd drop the blank commented line and add a full=
- stop.
-[Gowthami] Ack
->=20
-> > +	 */
-> > +
-> > +	/* Setup the PMU counter to work in manual mode */
-> > +		writeq(OP_MODE_CTRL_VAL_MANUAL, ddr_pmu->base +
-> > +		      (ddr_pmu->p_data->ddrc_perf_cnt_op_mode_ctrl));
-> > +	} else {
-> > +		ddr_pmu->pmu =3D (struct pmu) {
-> > +			.module       =3D THIS_MODULE,
-> > +			.capabilities =3D PERF_PMU_CAP_NO_EXCLUDE,
-> > +			.task_ctx_nr =3D perf_invalid_context,
-> > +			.attr_groups =3D odyssey_attr_groups,
-> > +			.event_init  =3D cn10k_ddr_perf_event_init,
-> > +			.add         =3D cn10k_ddr_perf_event_add,
-> > +			.del         =3D cn10k_ddr_perf_event_del,
-> > +			.start       =3D cn10k_ddr_perf_event_start,
-> > +			.stop        =3D cn10k_ddr_perf_event_stop,
-> > +			.read        =3D cn10k_ddr_perf_event_update,
-> > +			.pmu_enable  =3D NULL,
-> > +			.pmu_disable =3D NULL,
->=20
-> No need to set these to NULL.  Not providing them has same result and
-> I don't think there is any particular value wrt to 'documentation' of
-> setting them explicitly.  If there is a reason this needs calling out
-> I'd expect a comment explaining why.
-[Gowthami] There is no specific reason. Will remove it in the next version.
->=20
-> Ideal patch series structure for changes like this patch makes would be:
-> 1) Refactor to pull out the pdata - no functional change.
-> 2) Patch adding the support for the new device.
->=20
-> Result is easier to review than the combination of the two changes.
-[Gowthami] Agree. Will split the patch as suggested.
+Hmm, I guess this is with the latest plymouth which has a builtin terminal
+emulator for kernels without VT support ? Pressing ESC does not to a VC
+switch and AFAICT that is what you are triggering on to allow fbcon takeover
+after this patches.
 
-Thanks,
-Gowthami
->=20
->=20
-> > +		};
-> > +	}
+> If a boot failure has occurred before the splash
+> then it can be debugged visually by rebooting without the "splash" parameter.
+
+Which requires the user to know this and requires the user to know how to
+edit kernel cmdline parameters in e.g. grub. This is not a good user
+experience. We want inexperienced users to just be able to point
+a phone camera at the screen and take a picture of the errors.
+
+
+>> When the kernel e.g. oopses or panics because of not finding
+>> its rootfs (I tested the latter option when writing the original
+>> deferred fbcon takeover code) then fbcon must takeover and
+>> print the messages from the dying kernel so that the user has
+>> some notion of what is going wrong.
+> 
+> Indeed, just reboot without the "splash" parameter to do that.
+
+Again not something beginning Linux users will be able to do,
+what happened to "Ubuntu: Linux for Human Beings" ?
+
+>> And since your patch seems to delay switching till the first
+>> vc-switch this means that e.g. even after say gdm refusing
+>> to start because of issues there still will be no text
+>> output. This makes debugging various issues much harder.
+> 
+> I've debugged many gdm failures and it is never useful to use the console for
+> those. Reboot and get the system journal instead.
+
+But users will not see any errors now, meaning they don't
+even know where to begin with troubleshooting ...
+
+>> Moreover Fedora has been doing flickerfree boot for many
+>> years without needing this.
+> 
+> I believe Fedora has a mostly working solution, but not totally reliable, as
+> mentioned in the commit message:
+> 
+> "even systems whose splash exists in initrd may not be not immune because they
+>  still rely on racing against all possible kernel messages that might
+>  trigger the fbcon takeover"
+
+Only very serious kernel errors like oopses or panics will
+trigger the takeover and that is *exactly* what we want.
+
+There is a race where plymouth may hide such vary serious
+messages, if plymouth does manage to start before the errors,
+but that is actually an existing issue which we don't want
+to make bigger by *always* hiding such errors.
+
+>> The kernel itself will be quiet as long as you set
+>> CONFIG_CONSOLE_LOGLEVEL_QUIET=3 Ubuntu atm has set this
+>> to 4 which means any kernel pr_err() or dev_err()
+>> messages will get through and since there are quite
+>> a few false positives of those Ubuntu really needs
+>> to set CONFIG_CONSOLE_LOGLEVEL_QUIET=3 to fix part of:
+>> https://bugs.launchpad.net/bugs/1970069
+> 
+> Incorrect. In my testing some laptops needed log level as low as 2 to go quiet.
+> And the Ubuntu kernel team is never going to fix all those for non-sponsored
+> devices.
+
+Notice that atm Ubuntu's kernel is using the too high
+CONFIG_CONSOLE_LOGLEVEL_QUIET=4 with
+CONFIG_CONSOLE_LOGLEVEL_QUIET=3 getting any errors logged
+to the console should be very very rare.
+
+The only thing I can think of is if the kernel oopses
+/ WARN()s early on but the cause is innocent enough
+that the boot happily continues.
+
+In that case actually showing the oops/WARN() is a good
+thing.
+
+For all the years Fedora has had flickerfree boot I have
+seen zero bug reports about this. If you have examples
+of this actually being a problem please file bugs for
+them (launchpad or bugzilla.kernel.org is fine) and
+then lets take a look at those bugs and fix them.
+
+These should be so rare that I'm not worried about this
+becoming a never ending list of bugs (unlike pr_err() /
+dev_err() messages of which there are simply too many).
+
+>> After that it is "just" a matter of not making userspace
+>> output anything unless it has errors to report.
+>>
+>> systemd already is quiet by default (only logging
+>> errors) when quiet is on the kernel commandline.
+> 
+> Unfortunately not true for Ubuntu. We carry a noisy systemd patch which I'm
+> told we can't remove in the short term:
+> 
+> https://bugs.launchpad.net/ubuntu/+source/plymouth/+bug/1970069/comments/39
+
+Well then make the patch less noisy? Suppressing non
+error message unless in debug mode should be easy
+even with a downstream patch.
+
+> Thanks for your input, but I respectfully disagree and did consider these
+> points already.
+
+Sorry, but your real problem here seems to be your
+noisy downstream systemd patch. I'm not going to ack
+a kernel patch which I consider a bad idea because
+Ubuntu has a non standard systemd patch which is
+to trigger happy with spamming the console.
+
+So this is still a NACK from me.
+
+Regards,
+
+Hans
+
+
+
+
+
+>>> Closes: https://bugs.launchpad.net/bugs/1970069
+>>> Cc: Mario Limonciello <mario.limonciello@amd.com>
+>>> Signed-off-by: Daniel van Vugt <daniel.van.vugt@canonical.com>
+>>> ---
+>>>  drivers/video/fbdev/core/fbcon.c | 32 +++++++++++++++++++++++++++++---
+>>>  1 file changed, 29 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+>>> index 63af6ab034..5b9f7635f7 100644
+>>> --- a/drivers/video/fbdev/core/fbcon.c
+>>> +++ b/drivers/video/fbdev/core/fbcon.c
+>>> @@ -76,6 +76,7 @@
+>>>  #include <linux/crc32.h> /* For counting font checksums */
+>>>  #include <linux/uaccess.h>
+>>>  #include <asm/irq.h>
+>>> +#include <asm/cmdline.h>
+>>>  
+>>>  #include "fbcon.h"
+>>>  #include "fb_internal.h"
+>>> @@ -146,6 +147,7 @@ static inline void fbcon_map_override(void)
+>>>  
+>>>  #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
+>>>  static bool deferred_takeover = true;
+>>> +static int initial_console = -1;
+>>>  #else
+>>>  #define deferred_takeover false
+>>>  #endif
+>>> @@ -3341,7 +3343,7 @@ static void fbcon_register_existing_fbs(struct work_struct *work)
+>>>  	console_unlock();
+>>>  }
+>>>  
+>>> -static struct notifier_block fbcon_output_nb;
+>>> +static struct notifier_block fbcon_output_nb, fbcon_switch_nb;
+>>>  static DECLARE_WORK(fbcon_deferred_takeover_work, fbcon_register_existing_fbs);
+>>>  
+>>>  static int fbcon_output_notifier(struct notifier_block *nb,
+>>> @@ -3358,6 +3360,21 @@ static int fbcon_output_notifier(struct notifier_block *nb,
+>>>  
+>>>  	return NOTIFY_OK;
+>>>  }
+>>> +
+>>> +static int fbcon_switch_notifier(struct notifier_block *nb,
+>>> +				 unsigned long action, void *data)
+>>> +{
+>>> +	struct vc_data *vc = data;
+>>> +
+>>> +	WARN_CONSOLE_UNLOCKED();
+>>> +
+>>> +	if (vc->vc_num != initial_console) {
+>>> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
+>>> +		dummycon_register_output_notifier(&fbcon_output_nb);
+>>> +	}
+>>> +
+>>> +	return NOTIFY_OK;
+>>> +}
+>>>  #endif
+>>>  
+>>>  static void fbcon_start(void)
+>>> @@ -3370,7 +3387,14 @@ static void fbcon_start(void)
+>>>  
+>>>  	if (deferred_takeover) {
+>>>  		fbcon_output_nb.notifier_call = fbcon_output_notifier;
+>>> -		dummycon_register_output_notifier(&fbcon_output_nb);
+>>> +		fbcon_switch_nb.notifier_call = fbcon_switch_notifier;
+>>> +		initial_console = fg_console;
+>>> +
+>>> +		if (cmdline_find_option_bool(boot_command_line, "splash"))
+>>> +			dummycon_register_switch_notifier(&fbcon_switch_nb);
+>>> +		else
+>>> +			dummycon_register_output_notifier(&fbcon_output_nb);
+>>> +
+>>>  		return;
+>>>  	}
+>>>  #endif
+>>> @@ -3417,8 +3441,10 @@ void __exit fb_console_exit(void)
+>>>  {
+>>>  #ifdef CONFIG_FRAMEBUFFER_CONSOLE_DEFERRED_TAKEOVER
+>>>  	console_lock();
+>>> -	if (deferred_takeover)
+>>> +	if (deferred_takeover) {
+>>>  		dummycon_unregister_output_notifier(&fbcon_output_nb);
+>>> +		dummycon_unregister_switch_notifier(&fbcon_switch_nb);
+>>> +	}
+>>>  	console_unlock();
+>>>  
+>>>  	cancel_work_sync(&fbcon_deferred_takeover_work);
+>>
+> 
+
 
