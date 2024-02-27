@@ -1,195 +1,153 @@
-Return-Path: <linux-kernel+bounces-82652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 821718687C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:21:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA428687A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:15:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE2911F2110B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:21:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4399B247E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:15:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93491EB5B;
-	Tue, 27 Feb 2024 03:21:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC0E1CD03;
+	Tue, 27 Feb 2024 03:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DK8naz7v"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="g1HFiLex"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91F551D54C;
-	Tue, 27 Feb 2024 03:21:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709004104; cv=fail; b=A3Vrsc9hv4c7pim703I74t8XFJsVLBCySOcAgJFDI3uGr9kAfrzs3QrXjC9DX49WIhrxqZCFM7rh/TgYWpXDDm9DeehPRqes1xIskOscmE3dmzrtjtSpqmQ0n4e5sQikFOd4odxqAwfQocxRirGiiJzIHbhOejAduZAdYaV/Isg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709004104; c=relaxed/simple;
-	bh=+2QkoAJJzSkh+xCLQjvV/J6Vck1pue03sxHp5OYnx4Y=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=CjcOqEKdiggEC5qvls0ZQwKA1VlPbPsve+NqJHtdXPyHKnauzf+YXgAA6zxMBWfSdCw1wY/JbxFLzBLtLg/LpOSmlEmAdB1/oa3VD+v4zlOZ+7g/xI7RuIYaZpS/NNNdhzY8wYZ1z1M31ZWj8nV5Nngc8dttD2urdUB0RrTaqXU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DK8naz7v; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709004101; x=1740540101;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=+2QkoAJJzSkh+xCLQjvV/J6Vck1pue03sxHp5OYnx4Y=;
-  b=DK8naz7vOCqIZ1g2A9oj/UXD4X+aK4Cl/NoUWr3HK6b3bEAEGbfoetA3
-   tjRGRiBinF4EWw2WxnopyyMICCTxkpAYZJSDOYFKL3tM1gmGg7JFAj5Ec
-   FDxWcNEZgb+pTQDN31Np2G9QbNIhKNgWnL7CxPt1BP1RbtX1kEORMsJqq
-   1ZX73DNQwg5lpskFxUgb9HOeo/+qCUfSbLHL9up9sn1QGSkj7c0zmQJt4
-   u5DqfxqcshEJ+T0TNSfDGu6bzpp8f/DmdOvOiYUkJp7vjrghSk61AGd99
-   ZZoMYkRtT1HY7D+6QoCWvpD6JWRIj9djz9xsSEMnlH/w5vN2WOJyT5qAx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="7142727"
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="7142727"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 19:21:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
-   d="scan'208";a="7297440"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Feb 2024 19:21:40 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 26 Feb 2024 19:21:39 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 26 Feb 2024 19:21:39 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 26 Feb 2024 19:21:39 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I2Y1SswZhJPpPvyk5Pcbi51dwVwHPCAFE4HQ1gQwtBrC2D8kXCEf+//Ie/4M4Fo4EEG8FrfOH8jHNpfuHeOIrSMx2O/J91vVdONXJCODxpkUzNIc8sZudWjRS3kL8Wyi9es4uNXrZ/yipZEyUzDwZxtHzLd6MmWJzs67ARwsub2yBGlgLsnw5QqDrvRnY37rtyPd6sC63ZRYhjM7KnOAVMjsyIuLWk+VLtPvkqj0EVhtBz0HijDzeE7LFHi1cHwoCVKzWpBhCHfGxZVI5uSxkjISSGawD5nvcPS4VOZaPW+Uz+QsgvX1d+vsWslhaRkXM3BdaHYxc/Sk38mIwHLcew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=11qQVUCAlYeyIiAMSUKBULtnM1SA9Yt3c3+iB7RJYrw=;
- b=CsAZEd834Q9rxBJfDcbLhPnhXZ3asO+zit92d3hCoVChBeylnlSCOV/waa39WRffpV+wKH5NmYWX4TW4+0JbzMdFPICQhmi71QbiRYNCRGLoZk/kTg8GuxqTYZo+RkoAawdx2Q2YRQmZ7f1P3JOthOU1C+8pvul0Xuly8nTYeImzyhde968NY5BuLhWd6TS1SydGNHboc+ief8uA/vrOCfOjd15l058mw96hLGQ+s6DUKVAHqlVQK+5vGfq7REj+LjxUL5h3UvDBdGuG5PeXQCEZRIYQxk9+jGkXCCTQ3rDMOQtB99x8EmULDtYgaCwa6DBmzlS6cd5drFDTQsAw8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
- by PH7PR11MB6929.namprd11.prod.outlook.com (2603:10b6:510:204::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Tue, 27 Feb
- 2024 03:21:31 +0000
-Received: from CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::401d:af3f:fb1a:2c6b]) by CY5PR11MB6392.namprd11.prod.outlook.com
- ([fe80::401d:af3f:fb1a:2c6b%7]) with mapi id 15.20.7339.022; Tue, 27 Feb 2024
- 03:21:31 +0000
-Date: Tue, 27 Feb 2024 11:14:39 +0800
-From: kernel test robot <yujie.liu@intel.com>
-To: Richard Fitzgerald <rf@opensource.cirrus.com>, <broonie@kernel.org>,
-	<tiwai@suse.com>
-CC: <oe-kbuild-all@lists.linux.dev>, <linux-sound@vger.kernel.org>,
-	<alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-	<patches@opensource.cirrus.com>, Richard Fitzgerald
-	<rf@opensource.cirrus.com>
-Subject: Re: [PATCH 9/9] ASoC: cs-amp-lib: Add KUnit test for calibration
- helpers
-Message-ID: <202402221544.okaeWC1f-lkp@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240221150507.1039979-10-rf@opensource.cirrus.com>
-X-ClientProxiedBy: SI1PR02CA0027.apcprd02.prod.outlook.com
- (2603:1096:4:1f4::18) To CY5PR11MB6392.namprd11.prod.outlook.com
- (2603:10b6:930:37::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815FA1F947;
+	Tue, 27 Feb 2024 03:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709003715; cv=none; b=Kvt5S6vNTC3Npzq+92zNGR8qyiq84GUmNeepuwShETO6b/TOENANqDP+ItXRGuHPiOhN01C5t7FSD6whLBDXGZnsqlumkqJ37dKbbh2VW/5l/QTbFi5pHJdGE9t3Ni1D09PyS/7zlzooXXApE2rS4oqn0Thwk9QoXZZ2hlmL7zg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709003715; c=relaxed/simple;
+	bh=zvPm5PzDdLsLLfyUhF6DNmti8ozkQ94Jv6QvBNkp2wE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XJCQKsGOeDnzCTKjIR9RGENx3ZHQo5zKKiTQU/+mqonwXYak0iHD7RHGGqUIczuFgWESlZ9JiyQUiZthwNQ68M+6aOhMSxs3F4nUvG7+RU5gAvqyrcQkun+/zk2ztnekw0K1sn0wzUPg3G+bv7R+m+SdGjBcFFINH/UL7OKyUTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=g1HFiLex; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41R2T0eR032284;
+	Tue, 27 Feb 2024 03:15:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=6KBaG3igfsBnKJhPA45En8jYeIyXoOOVGsO8fBNA/HU=; b=g1
+	HFiLexIJmYPiXOFpbBspBe+ex45h+7FHUVlKm4u15Ni9mFoepDW/8jIoEt79WWbX
+	Zho0PO/IhtwdHGyuEcdMK0aY0HXpg8C++0bxy6gWtrtwL1sitoFQRlPbCbuNMy3S
+	ivRNNwjQWJt2H+nB3EMnmzLOrkNqtqY68vapMDcPI952WaIyZgo1Y/VNDvH5rL8m
+	h8uW12uwkBeFMnYWBdj3wWGdEKwu6hY7vhdWOXfpeyEIMaY0GGBMPQ9ElUmXZUWZ
+	PiPTIKPUmrw806wsvIUUkgppYAYnaFeikuJrz3+V1O07Xbu2G6RpkjVQfoVHPXtq
+	LDphH+n0c4gj6A4+A7iQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh50789ux-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 03:15:05 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41R3F3ag025064
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 03:15:03 GMT
+Received: from [10.216.14.152] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
+ 2024 19:14:56 -0800
+Message-ID: <c5e041dc-42b0-86f2-aba3-28d4db305c38@quicinc.com>
+Date: Tue, 27 Feb 2024 08:44:53 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|PH7PR11MB6929:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed148311-c815-49e1-4275-08dc374331be
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9Dyx1jMMNbKCpgEYgf/x8dGwdRxjWWzifg8KXXIbwJvHsFVjHXxdglbU7P/4QPGkH/WV4ldrelggMCjvDWCUQ1vlHoWVsLW/RAXWQ4q7n74GbDJw7kdsYvsV5u98bnHYZoz1nkLkQS6mVjqdcD1oLeabBSTBOfdvxBHo2RJwswyGoV+8y3HsMTsOMMdSo0fy2p6Tkel581kdAfI3XfGGnoO9SZegtETTmCihwH/Fu3GynpIi1igPP6F6Vx2kuAwMcJXRsdkcS8CM2R32B3ucE75e5Ta57GJ5kxPd/VxTsJNatxEaJTaicQf1VO5CgWK/Z4M9zm0UwtVXxb6FBH5jx3hbgYaLklgovSPDNlLJtf+MFxMbkXBT+HWX2HMmqaaAvrIwDi+TYZm7hklsgHYbqlR/6VGXfSoLRJu+CnhHvP8EjpNjrRJoH+hjiIY2XXzIRMkgqt5/Jt3Dp9jZPodEHJX/5FnKos9bbJmA//7nQZt+KwcmRpqeIWHO+Q16w00v3JhA7U8evKGkRJ0Tu1f5OVrITvJP5zImIhYYtiwD1w8WFuEsP2fx6bwvT3j6UdIR6jvvDV8NaLtTwToOzg8qLBZ8O0uUadEaWt1x/2K+g4a5+7+lxNLbklB03BsWMpen
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jjKC4LLxWKVsj60LEqrUTKRH167j8jgU1VF5wgxeG1BLK0hG9dLyv2Rd0ZBe?=
- =?us-ascii?Q?HZoujuChv/esAV1t0fiGvVbrmJ84tA54ifjc480crwboJMcIMLybjiu1WrG8?=
- =?us-ascii?Q?Io3PPmLIyQr9owZdC5eFmQU6txKRgufXAaWUPavlAjIudhBenxcXFROcyMP6?=
- =?us-ascii?Q?Ij1cMdOXOk3En1uDQr4OXPlAaoSkGN8/+dVbf1ywcjSVaf754KdoXp+wI+Ll?=
- =?us-ascii?Q?8hsovb4RXf75x90knOpBQI80NxBJQsWFKsddVEP46W2xKtXYRO1xDFiFmgTP?=
- =?us-ascii?Q?souQ0bGNtgehab9jXgQTdfAw+2Bw3FWWYZmkKIKcBzFqBWIoJgRMoJPKwL8R?=
- =?us-ascii?Q?qmCWD2gmh8uLjgDmOL9+evXb5nB5hAuKdk3bZFps1oKiwTY0hQ+Ng8yz1kO7?=
- =?us-ascii?Q?UA45Lx5psq77dYZxGqnHSF+TAwm1WcTruaVWCjk0v733sNxki9QPz5nyyc+n?=
- =?us-ascii?Q?6XBiSPa77qTClnYCPPXs80CtlFItuDlS8rqBdRVodv2vJZKRFOmA/j2z/iiH?=
- =?us-ascii?Q?k46apIIt39pMOnpFfSROhHpJTiXolrjs9cNgVHy3r7S6Y+pRALpKp3Z+U7Xb?=
- =?us-ascii?Q?CkWwdSu2GA/9lSNDkMuEc8G3BWVF9+WVQNySuZ1TS6zKkvpb8UOqblT8q4TO?=
- =?us-ascii?Q?1FgWatircckdXvhPfFsljIjg9MEM32kef3S4ZMRPYkITEQ0Dry1PhC6vlp5+?=
- =?us-ascii?Q?Ok3M7qFhx+1OxtC9RcdxmhB0bHlW6UgBHlmRBcMwUeuRF7q3NiceNokfZelt?=
- =?us-ascii?Q?YPdtd8aRtfzZbqSqNrWQBtVFgO29iKm92bR0aowQu41qA21/37A01g9yajok?=
- =?us-ascii?Q?K8fjybOjegXDT6316vVFJa8KbL9/wTUBuWh9F3f5X5ox1d6QL/j+REdMbNZQ?=
- =?us-ascii?Q?x70JjiFjArzKisN/QGP/lep69/oaGerZwUGBD8T/EVEykJZRKkrEW2BpyX8y?=
- =?us-ascii?Q?IVEG+yBgfCmzObAa2ihsdAuKz6RYL4OwzOUyZa9Wazd2vlKkSBFkLn0GfOgz?=
- =?us-ascii?Q?vKhTm6Cf0b69Fzs1WCRSK1wnHOtJSKzFbEhkKg+3n2mjWfzVwG1jbZv62KwC?=
- =?us-ascii?Q?Lg4mx6G08hHYF555Lzl2Ra84lUpCP4DbCRzUdq+9W6mcgx1GQvn6ZptVsQj5?=
- =?us-ascii?Q?QVZKG5wCEq6E6yAzZFERjE6Krt4OsDA+pICzbjF0NlGUP7XmwkYvLLyLssNf?=
- =?us-ascii?Q?l1LipCJXRUIrndm+9WyND4OIJbT689cJp3ne6RTR+WaYHblNmfx/TrWcLW3B?=
- =?us-ascii?Q?56Fgrz6I9f7pySOvdJjH+nrcE5n9q/eK/YnJAsWHNKR0eaK5SFR6E8BZvfTe?=
- =?us-ascii?Q?AglTF5TEyUpWFESp3SreRP1Ade4fIWCbsEXzk0t9cE1932qcufx7TO/00gop?=
- =?us-ascii?Q?8tHSV2ukSjvg/dfHnD5nUibg3dkCbmVpG+S9LgjPCDUYRblZH64r0hs/+QwO?=
- =?us-ascii?Q?L7UfEVJWIGW2LsTi7MIneg2biX/4SBOed3xKHTPNee0AXWiqFtV9YWvj+X1k?=
- =?us-ascii?Q?M4/sHp7FXlJ7TK3GUGwgK5chzuk7S1xgijnT+17YPkscCBc92GOU3QwYHnnM?=
- =?us-ascii?Q?8UnCsdnJ6aDle//eINcyWvssA1rSMPRBcJWcjC/m?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed148311-c815-49e1-4275-08dc374331be
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 03:21:31.7736
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oZv1RrUiVrZoqj+QPSPbXpXOl8PLV32IKoMoLH8o+AB8QIXPTlIJfXFn9PneTwyD7zOqix0m8aySSy9/g6vWHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6929
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v7 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
+ path
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring
+	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Brian Masney
+	<bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_parass@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20240223-opp_support-v7-0-10b4363d7e71@quicinc.com>
+ <20240223-opp_support-v7-3-10b4363d7e71@quicinc.com>
+ <53f486d1-94c7-4dd9-89fc-d80a92301700@linaro.org>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <53f486d1-94c7-4dd9-89fc-d80a92301700@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: NagUTDU7pvt2aIge6frUEj6VXHrP0rNI
+X-Proofpoint-GUID: NagUTDU7pvt2aIge6frUEj6VXHrP0rNI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402270024
 
-Hi Richard,
 
-kernel test robot noticed the following build errors:
 
-[auto build test ERROR on broonie-sound/for-next]
-[also build test ERROR on tiwai-sound/for-next tiwai-sound/for-linus linus/master v6.8-rc5 next-20240221]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On 2/24/2024 5:32 AM, Konrad Dybcio wrote:
+> On 23.02.2024 15:48, Krishna chaitanya chundru wrote:
+>> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
+>> ICC(interconnect consumers) path should be voted otherwise it may
+>> lead to NoC(Network on chip) timeout. We are surviving because of
+>> other driver vote for this path.
+>> As there is less access on this path compared to PCIe to mem path
+>> add minimum vote i.e 1KBps bandwidth always.
+>>
+>> In suspend remove the disable this path after register space access
+>> is done.
+>>
+>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+> 
+> [...]
+> 
+>>   
+>> +	/* Remove cpu path vote after all the register access is done */
+>> +	ret = icc_disable(pcie->icc_cpu);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to disable icc path of cpu-pcie: %d\n", ret);
+>> +		if (pcie->suspended) {
+>> +			qcom_pcie_host_init(&pcie->pci->pp);
+>> +			pcie->suspended = false;
+>> +		}
+>> +		qcom_pcie_icc_opp_update(pcie);
+> 
+> This doesn't compile (you rename it in patch 6, this is patch 3)
+> 
+> Konrad
+> 
+I will fix this in my next series.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Richard-Fitzgerald/ASoC-wm_adsp-Fix-missing-mutex_lock-in-wm_adsp_write_ctl/20240221-230851
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20240221150507.1039979-10-rf%40opensource.cirrus.com
-patch subject: [PATCH 9/9] ASoC: cs-amp-lib: Add KUnit test for calibration helpers
-config: hexagon-randconfig-r123-20240222 (https://download.01.org/0day-ci/archive/20240222/202402221544.okaeWC1f-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 36adfec155de366d722f2bac8ff9162289dcf06c)
-reproduce: (https://download.01.org/0day-ci/archive/20240222/202402221544.okaeWC1f-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <yujie.liu@intel.com>
-| Closes: https://lore.kernel.org/r/202402221544.okaeWC1f-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> ld.lld: error: undefined symbol: efi_status_to_err
-   >>> referenced by cs-amp-lib.c
-   >>>               sound/soc/codecs/cs-amp-lib.o:(cs_amp_get_efi_calibration_data) in archive vmlinux.a
-   >>> referenced by cs-amp-lib.c
-   >>>               sound/soc/codecs/cs-amp-lib.o:(cs_amp_get_efi_calibration_data) in archive vmlinux.a
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+- Krishna Chaitanya.
 
