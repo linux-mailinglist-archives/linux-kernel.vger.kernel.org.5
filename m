@@ -1,62 +1,79 @@
-Return-Path: <linux-kernel+bounces-82679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82678-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79ADB868836
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75BB0868833
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D3B71C2268A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:25:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98A551C2198D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:25:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5770B4DA0B;
-	Tue, 27 Feb 2024 04:25:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AC94D9F7;
+	Tue, 27 Feb 2024 04:25:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Dpq+4pku"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="O5jM9w59"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5841EEEA;
-	Tue, 27 Feb 2024 04:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45EF4D10A
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709007915; cv=none; b=Sa8eS59fzHL5jK0KpVzdQhK9MQe/Eoo7w05Bn4k9ZQpDR4GUdMuLMQeFVh9ibnphKnzhkHiJGMTKTW/Oefcz9n/Ym6JBSDJbXv7oa2dRpfrOItIlkQr1wjFOjy8pluam10NMwXfQwaqdgQ2GYkDiffz0qMgRsyCJs3LEObof2II=
+	t=1709007900; cv=none; b=Wks05CURlTpLU+pp+i5myanUWKd0vVv9/lYkrUu6ceXYU/tYMUiCzE9OaAPspb+McI8aoi7wZj4cRpZFB8MZ6trCX+guTqzd7l26LA7VsOPNGP516/3xk+6T59BiBmt3K0CIuTXzaEafyo6kWwhLI7/kWbSFm8wI/SX3U68pgRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709007915; c=relaxed/simple;
-	bh=FKx34NGx56OfaqqlnsM4Id57tKe3ZjT0UUYkPNqbYHM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=JtrWRpvVSB2kJioHjSANSg+DxO3mh4CWyv9BhTKsoMW8sRzFtOg5pA4vOk6fiRE1GYhxp4t/ph/Lt0JwZkH2z9KmOB8Dv5xBPppxzMuNhKmjXnTtw84kk8rmWTNskvlCnxIA3jy/MlviUgh4HzdQrXFU2yoOizUC3EbKQI8woXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Dpq+4pku; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41R4OdoS033202;
-	Mon, 26 Feb 2024 22:24:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1709007879;
-	bh=lLf2MHGq1G+iPHOKjhL3F0LbLV6mSmAfmkVSCh2uWNk=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=Dpq+4pku6oqrWEHcenPaq4SqrU18W/ebYfWi9ZY1axN7c6e8AyQtHItaBVQmvuQ9P
-	 ffpBvmc0+00mKNxWWjkDpbAN/CCGUtOp0Xq5ULCfuDUO8a4k7nunOOBkvRnRDgRTvv
-	 D5u2h63VZ591yN06t5HMJgx3JLATF1FxgRzn1df0=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41R4Odgu004999
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 26 Feb 2024 22:24:39 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 26
- Feb 2024 22:24:39 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 26 Feb 2024 22:24:39 -0600
-Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41R4OWTk077058;
-	Mon, 26 Feb 2024 22:24:33 -0600
-Message-ID: <37ab0886-0cd1-4188-9177-8b7ef0ad9eca@ti.com>
-Date: Tue, 27 Feb 2024 09:54:30 +0530
+	s=arc-20240116; t=1709007900; c=relaxed/simple;
+	bh=SAGkTvFc9MFPIj1FbE0nWxUs9VOcspJm0tS+h6honf8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fxbK7Lk03PaamUgq2RGfIHueMNLldpJ7Kc7ypSGC1mzKVc6GHENMD8id0QMkwWnBFPWpJ0s51bUchoeJfMWcji/WeoL8wD7u3DQfv9oH3PU2M2g5qZqxRqpnSkkPVAyqfYWP12mJ7QQJBscQ4Rx3/XAL8itaTp8KWzjknfSd+CU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=O5jM9w59; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709007896;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wocaQci0H8ZTuqRVNTzwftkHm1yC6L2JcX2khIjUmVo=;
+	b=O5jM9w599xNjmsV7Cb5Yv7X9l4b7S/ZV33Nz7SSQ4TqY/MprsxRgHr8b0ZXjv2Xhho26Hr
+	ZzAHf4qxX8H5DMtP2HxydtKkWQ1e+1vzoSg16gDht4Ikrwm2mFojU5eDZKLU4B+pqPim2P
+	s+YQKgBZWRr23zXec3B3VMyQ//DNRrk=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-660--eobIw5ePbKB-7Irw2zOKA-1; Mon, 26 Feb 2024 23:24:54 -0500
+X-MC-Unique: -eobIw5ePbKB-7Irw2zOKA-1
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6dde25ac92fso1944763a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:24:54 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709007894; x=1709612694;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wocaQci0H8ZTuqRVNTzwftkHm1yC6L2JcX2khIjUmVo=;
+        b=Zq8aM3fcyDsPqZkfWNAyajLmNugc0gpwKxoTniu7IzT29YMSkW+w1FlqDT5SNlFdB6
+         DPmMwfDCcpH0NLpxNyY/hQQzkQGp3a9pFY2GGTQszGaezussv2YmcS6CF2kPPQ5i3Up7
+         +puD2BPc6hoQeWqlFnxcHyhq7eyE0/ikArs8pX9uEXQ5lFEBdC9ufzdWETubsum5QxGz
+         fheMNi3O78MvXKfVjs+z1DSiGTDtWQiWQ8oqSLFc2v26DpAmuycaD42+mp3eq321/v91
+         GYhTwDa4cxxTdGn8LGGzkAfQrWdE5fCtRuZpQReD7oPkwO9CY1AimayGVfY5RuCsofwx
+         OZsw==
+X-Forwarded-Encrypted: i=1; AJvYcCWNHR2Uw1zsVd9qewLP1k+26IpHu+Ho/6JS96t1PFELEZnWGA2M0LhizyFqZMSTDY8jl5vJhv7rgVKhoIhEIEakqsuFqj7Mv4wSpiBr
+X-Gm-Message-State: AOJu0Yy+Su7S3FoMZwG3ZrjUqzKKO2/azb601tBjcYrbktHZnRFMBVXm
+	KKT1eYhmaYfZeUeo5fH3ZN+/6RXVT3hAskpIyNfJvmYu80p/imJZ54zVppuejYmafJNpP9kcLs0
+	UnYjN0xf7gKRdtEmZg1OtU2qqK65Wjiyh+DUVoyBgu+6VYSIFQXX5eWrkM3q3+w==
+X-Received: by 2002:a05:6830:1082:b0:6e4:9608:2236 with SMTP id y2-20020a056830108200b006e496082236mr6681883oto.2.1709007893800;
+        Mon, 26 Feb 2024 20:24:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGHj2Y8QFwZ4y+Zg/vr5e2fqBG+8Xmu2RKbf/1cLf+wVGRrCuhPJDudzJ7btoYWGhLeDdJSdg==
+X-Received: by 2002:a05:6830:1082:b0:6e4:9608:2236 with SMTP id y2-20020a056830108200b006e496082236mr6681869oto.2.1709007893401;
+        Mon, 26 Feb 2024 20:24:53 -0800 (PST)
+Received: from [10.72.116.113] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d18-20020a639752000000b005d8e30897e4sm4006713pgo.69.2024.02.26.20.24.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Feb 2024 20:24:52 -0800 (PST)
+Message-ID: <25ecc166-44be-40fb-b676-767d6da020aa@redhat.com>
+Date: Tue, 27 Feb 2024 12:24:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,134 +81,418 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/8] dt-bindings: usb: ti,j721e-usb: drop useless
- compatible list
+Subject: Re: [PATCH v4 4/5] KVM: selftests: aarch64: Introduce
+ pmu_event_filter_test
 Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Conor Dooley
-	<conor.dooley@microchip.com>
-CC: Conor Dooley <conor@kernel.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Roger Quadros <rogerq@kernel.org>,
-        Peter Chen
-	<peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>, Nishanth Menon
-	<nm@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>,
-        =?UTF-8?Q?Gr=C3=A9gory_Clement?=
-	<gregory.clement@bootlin.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Alan Stern
-	<stern@rowland.harvard.edu>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20240223-j7200-usb-suspend-v3-0-b41c9893a130@bootlin.com>
- <20240223-j7200-usb-suspend-v3-1-b41c9893a130@bootlin.com>
- <20240223-clarity-variably-206b01b7276a@spud>
- <CZEXXXQDZZWB.1M5CTZAFVO4YP@bootlin.com>
- <20240226-portable-rockslide-e501667a0d9a@wendy>
- <CZF33W51MC4M.3GUBZFQXT39DB@bootlin.com>
-From: Vignesh Raghavendra <vigneshr@ti.com>
-In-Reply-To: <CZF33W51MC4M.3GUBZFQXT39DB@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To: Oliver Upton <oliver.upton@linux.dev>
+Cc: Marc Zyngier <maz@kernel.org>, kvmarm@lists.linux.dev,
+ Eric Auger <eauger@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240202025659.5065-1-shahuang@redhat.com>
+ <20240202025659.5065-5-shahuang@redhat.com> <ZbypAAFEHweTDUJK@linux.dev>
+From: Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <ZbypAAFEHweTDUJK@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi Oliver,
 
-
-On 26/02/24 20:05, Théo Lebrun wrote:
-> Hello,
+On 2/2/24 16:34, Oliver Upton wrote:
+> On Thu, Feb 01, 2024 at 09:56:53PM -0500, Shaoqin Huang wrote:
+>> Introduce pmu_event_filter_test for arm64 platforms. The test configures
+>> PMUv3 for a vCPU, and sets different pmu event filters for the vCPU, and
+>> check if the guest can see those events which user allow and can't use
+>> those events which use deny.
+>>
+>> This test refactor the create_vpmu_vm() and make it a wrapper for
+>> __create_vpmu_vm(), which allows some extra init code before
+>> KVM_ARM_VCPU_PMU_V3_INIT.
+>>
+>> And this test use the KVM_ARM_VCPU_PMU_V3_FILTER attribute to set the
+>> pmu event filter in KVM. And choose to filter two common event
+>> branches_retired and instructions_retired, and let the guest to check if
+>> it see the right pmceid register.
+>>
+>> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+>> ---
+>>   tools/testing/selftests/kvm/Makefile          |   1 +
+>>   .../kvm/aarch64/pmu_event_filter_test.c       | 219 ++++++++++++++++++
+>>   .../selftests/kvm/include/aarch64/vpmu.h      |   4 +
+>>   .../testing/selftests/kvm/lib/aarch64/vpmu.c  |  14 +-
+>>   4 files changed, 236 insertions(+), 2 deletions(-)
+>>   create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+>>
+>> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+>> index 709a70b31ca2..733ec86a3385 100644
+>> --- a/tools/testing/selftests/kvm/Makefile
+>> +++ b/tools/testing/selftests/kvm/Makefile
+>> @@ -148,6 +148,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
+>>   TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
+>>   TEST_GEN_PROGS_aarch64 += aarch64/hypercalls
+>>   TEST_GEN_PROGS_aarch64 += aarch64/page_fault_test
+>> +TEST_GEN_PROGS_aarch64 += aarch64/pmu_event_filter_test
+>>   TEST_GEN_PROGS_aarch64 += aarch64/psci_test
+>>   TEST_GEN_PROGS_aarch64 += aarch64/set_id_regs
+>>   TEST_GEN_PROGS_aarch64 += aarch64/smccc_filter
+>> diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+>> new file mode 100644
+>> index 000000000000..d280382f362f
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+>> @@ -0,0 +1,219 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * pmu_event_filter_test - Test user limit pmu event for guest.
+>> + *
+>> + * Copyright (c) 2023 Red Hat, Inc.
+>> + *
+>> + * This test checks if the guest only see the limited pmu event that userspace
+>> + * sets, if the guest can use those events which user allow, and if the guest
+>> + * can't use those events which user deny.
+>> + * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
+>> + * is supported on the host.
+>> + */
+>> +#include <kvm_util.h>
+>> +#include <processor.h>
+>> +#include <vgic.h>
+>> +#include <vpmu.h>
+>> +#include <test_util.h>
+>> +#include <perf/arm_pmuv3.h>
+>> +
+>> +struct pmce{
 > 
-> On Mon Feb 26, 2024 at 12:56 PM CET, Conor Dooley wrote:
->> On Mon, Feb 26, 2024 at 11:33:06AM +0100, Théo Lebrun wrote:
->>> Hello Conor,
->>>
->>> On Fri Feb 23, 2024 at 7:12 PM CET, Conor Dooley wrote:
->>>> On Fri, Feb 23, 2024 at 05:05:25PM +0100, Théo Lebrun wrote:
->>>>> Compatible can be A or B, not A or B or A+B. Remove last option.
->>>>> A=ti,j721e-usb and B=ti,am64-usb.
->>>>>
->>>>> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
->>>>> ---
->>>>>  Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml | 9 +++------
->>>>>  1 file changed, 3 insertions(+), 6 deletions(-)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
->>>>> index 95ff9791baea..949f45eb45c2 100644
->>>>> --- a/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
->>>>> +++ b/Documentation/devicetree/bindings/usb/ti,j721e-usb.yaml
->>>>> @@ -11,12 +11,9 @@ maintainers:
->>>>>  
->>>>>  properties:
->>>>>    compatible:
->>>>> -    oneOf:
->>>>> -      - const: ti,j721e-usb
->>>>> -      - const: ti,am64-usb
->>>>> -      - items:
->>>>> -          - const: ti,j721e-usb
->>>>> -          - const: ti,am64-usb
->>>>
->>>> Correct, this makes no sense. The devices seem to be compatible though,
->>>> so I would expect this to actually be:
->>>> oneOf:
->>>>   - const: ti,j721e-usb
->>>>   - items:
->>>>       - const: ti,am64-usb
->>>>       - const: ti,j721e-usb
->>>
->>> I need your help to grasp what that change is supposed to express? Would
->>> you mind turning it into english sentences?
->>> A=ti,j721e-usb and B=ti,am64-usb. My understanding of your proposal is
->>> that a device can either be compat with A or B. But B is compatible
->>> with A so you express it as a list of items. If B is compat with A then
->>> A is compat with B. Does the order of items matter?
->>
->> The two devices are compatible with each other, based on an inspection of
->> the driver and the existing "A+B" setup. If this was a newly submitted
->> binding, "B" would not get approved because "A+B" allows support without
->> software changes and all that jazz.
->>
->> Your patch says that allowing "A", "B" and "A+B" makes no sense and you
->> suggest removing "A+B". I am agreeing that it makes no sense to allow
->> all 3 of these situations.
->>
->> What I also noticed is other problems with the binding. What should have
->> been "A+B" is actually documented as "B+A", but that doesn't make sense
->> when the originally supported device is "A".
->>
->> Therefore my suggestion was to only allow "A" and "A+B", which is what
->> we would (hopefully) tell you to do were you submitting the am64 support
->> as a new patch today.
+> Missing whitespace before curly brace.
 > 
-> Thank you for the in-depth explanation! It makes much more sense now,
-> especially the handling of historic stuff that ideally wouldn't have
-> been done this way but that won't be changed from now on.
+> Also -- pmce is an odd name. Maybe common_event_ids or pmu_id_regs.
+
+Thanks for pointing this out. I would choose pmu_common_event_ids as its 
+name.
+
+> 
+>> +	uint64_t pmceid0;
+>> +	uint64_t pmceid1;
+>> +} supported_pmce, guest_pmce;
+> 
+> maybe "max_*" and "expected_*". It took me a bit to understand that
+> guest_pmce feeds in your expected PMCEID values.
 > 
 
-IIRC, idea behind adding new compatible for AM64 even though register
-map is very much compatible is just being future proof as AM64 and J721e
-belong to different product groups and thus have differences wrt SoC
-level integration etc which may need SoC specific handling later on.
+The "max_* and "expected_*" is more clear, I would use it.
 
-I don't see any DT (now or in the past) using
+>> +static struct vpmu_vm *vpmu_vm;
+>> +
+>> +#define FILTER_NR 10
+>> +
+>> +struct test_desc {
+>> +	const char *name;
+>> +	struct kvm_pmu_event_filter filter[FILTER_NR];
+>> +};
+>> +
+>> +#define __DEFINE_FILTER(base, num, act)		\
+>> +	((struct kvm_pmu_event_filter) {	\
+>> +		.base_event	= base,		\
+>> +		.nevents	= num,		\
+>> +		.action		= act,		\
+>> +	})
+>> +
+>> +#define DEFINE_FILTER(base, act) __DEFINE_FILTER(base, 1, act)
+>> +
+>> +#define EMPTY_FILTER	{ 0 }
+>> +
+>> +#define SW_INCR		0x0
+>> +#define INST_RETIRED	0x8
+>> +#define BR_RETIRED	0x21
+> 
+> These event numbers are already defined in tools/include/perf/arm_pmuv3.h,
+> use those instead.
+> 
 
-compatible = B,A or compatible = A,B
+Sure. I would use those defined macro.
 
-So do we really need A+B to be supported by binding?
+>> +static void guest_code(void)
+>> +{
+>> +	uint64_t pmceid0 = read_sysreg(pmceid0_el0);
+>> +	uint64_t pmceid1 = read_sysreg(pmceid1_el0);
+>> +
+>> +	GUEST_ASSERT_EQ(guest_pmce.pmceid0, pmceid0);
+>> +	GUEST_ASSERT_EQ(guest_pmce.pmceid1, pmceid1);
+>> +
+>> +	GUEST_DONE();
+>> +}
+>> +
+>> +static void guest_get_pmceid(void)
+>> +{
+>> +	supported_pmce.pmceid0 = read_sysreg(pmceid0_el0);
+>> +	supported_pmce.pmceid1 = read_sysreg(pmceid1_el0);
+>> +
+>> +	GUEST_DONE();
+>> +}
+>> +
+>> +static void pmu_event_filter_init(struct vpmu_vm *vm, void *arg)
+> 
+> Why are you obfuscating the pointer to the filter array?
+> 
+>> +{
+>> +	struct kvm_device_attr attr = {
+>> +		.group	= KVM_ARM_VCPU_PMU_V3_CTRL,
+>> +		.attr	= KVM_ARM_VCPU_PMU_V3_FILTER,
+>> +	};
+>> +	struct kvm_pmu_event_filter *filter = (struct kvm_pmu_event_filter *)arg;
+>> +
+>> +	while (filter && filter->nevents != 0) {
+>> +		attr.addr = (uint64_t)filter;
+>> +		vcpu_ioctl(vm->vcpu, KVM_SET_DEVICE_ATTR, &attr);
+> 
+> Again, kvm_device_attr_set() the right helper to use.
+> 
+>> +static void set_pmce(struct pmce *pmce, int action, int event)
+>> +{
+>> +	int base = 0;
+>> +	uint64_t *pmceid = NULL;
+>> +
+>> +	if (event >= 0x4000) {
+>> +		event -= 0x4000;
+>> +		base = 32;
+>> +	}
+>> +
+>> +	if (event >= 0 && event <= 0x1F) {
+>> +		pmceid = &pmce->pmceid0;
+>> +	} else if (event >= 0x20 && event <= 0x3F) {
+>> +		event -= 0x20;
+>> +		pmceid = &pmce->pmceid1;
+>> +	} else {
+>> +		return;
+>> +	}
+>> +
+>> +	event += base;
+>> +	if (action == KVM_PMU_EVENT_ALLOW)
+>> +		*pmceid |= BIT(event);
+>> +	else
+>> +		*pmceid &= ~BIT(event);
+>> +}
+>> +
+>> +static void prepare_guest_pmce(struct kvm_pmu_event_filter *filter)
+>> +{
+>> +	struct pmce pmce_mask = { ~0, ~0 };
+>> +	bool first_filter = true;
+>> +
+>> +	while (filter && filter->nevents != 0) {
+>> +		if (first_filter) {
+>> +			if (filter->action == KVM_PMU_EVENT_ALLOW)
+>> +				memset(&pmce_mask, 0, sizeof(pmce_mask));
+>> +			first_filter = false;
+>> +		}
+>> +
+>> +		set_pmce(&pmce_mask, filter->action, filter->base_event);
+>> +		filter++;
+>> +	}
+>> +
+>> +	guest_pmce.pmceid0 = supported_pmce.pmceid0 & pmce_mask.pmceid0;
+>> +	guest_pmce.pmceid1 = supported_pmce.pmceid1 & pmce_mask.pmceid1;
+>> +}
+> 
+> Why do you need to do this? Can't you tell the guests what events to
+> expect and have it make sense of the PMCEID values it sees?
 
-Also, note that AM64 SoC support was added long after J721e. So ideally
-should be B+A if at all we need a fallback compatible.
+At here, I prepare the pmceid value which the guest should see, and pass 
+it to the guest by sync the global variable. And guest compare this 
+value with the value it read through pmu common event register.
 
-Regards
-Vignesh
+Why I don't put the process of generating expected_pmce into the guest 
+code is that I want to make sure this value computed in host is totally 
+correct, so the guest code is pretty simple, it only needs to compare 
+the two value.
+
+> 
+> You could, for example, pass in a pointer to the test descriptor as an
+> argument.
+> 
+>> +static void run_test(struct test_desc *t)
+>> +{
+>> +	pr_debug("Test: %s\n", t->name);
+> 
+> You may as well just pr_info() this thing.
+> 
+
+Ok. I can change it to pr_info().
+
+>> +	create_vpmu_vm_with_filter(guest_code, t->filter);
+>> +	prepare_guest_pmce(t->filter);
+>> +	sync_global_to_guest(vpmu_vm->vm, guest_pmce);
+>> +
+>> +	run_vcpu(vpmu_vm->vcpu);
+>> +
+>> +	destroy_vpmu_vm(vpmu_vm);
+>> +}
+>> +
+>> +static struct test_desc tests[] = {
+>> +	{"without_filter", { EMPTY_FILTER }},
+>> +	{"member_allow_filter",
+>> +	 {DEFINE_FILTER(SW_INCR, 0), DEFINE_FILTER(INST_RETIRED, 0),
+>> +	  DEFINE_FILTER(BR_RETIRED, 0), EMPTY_FILTER}},
+>> +	{"member_deny_filter",
+>> +	 {DEFINE_FILTER(SW_INCR, 1), DEFINE_FILTER(INST_RETIRED, 1),
+>> +	  DEFINE_FILTER(BR_RETIRED, 1), EMPTY_FILTER}},
+>> +	{"not_member_deny_filter",
+>> +	 {DEFINE_FILTER(SW_INCR, 1), EMPTY_FILTER}},
+>> +	{"not_member_allow_filter",
+>> +	 {DEFINE_FILTER(SW_INCR, 0), EMPTY_FILTER}},
+> 
+> Why is the filter array special enough to get its own sentinel macro
+> but...
+> 
+>> +	{ 0 }
+> 
+> ... the test descriptor array is okay to use a 'raw' initialization. My
+> vote is to drop the macro, zero-initializing a struct in an array is an
+> extremely common pattern in the kernel.
+> 
+> Also, these descriptors are dense and hard to read. Working with an
+> example:
+> 
+> 	{
+> 		.name = "member_allow_filter",
+> 		.filter = {
+> 			DEFINE_FILTER(SW_INCR, 0),
+> 			DEFINE_FILTER(INST_RETIRED, 0),
+> 			DEFINE_FILTER(BR_RETIRED, 0),
+> 			{ 0 }
+> 		},
+> 	}
+> 
+> See how much more readable that is?
+> 
+
+It's more clear and readable, thanks for your advice. I will change the 
+array definition to the beautiful format.
+
+>> +};
+>> +
+>> +static void for_each_test(void)
+>> +{
+>> +	struct test_desc *t;
+>> +
+>> +	for (t = &tests[0]; t->name; t++)
+>> +		run_test(t);
+>> +}
+> 
+> for_each_test() sounds like an iterator, but this is not. Call it
+> run_tests()
+> 
+
+Ok. Will call it run_tests().
+
+>> +static bool kvm_supports_pmu_event_filter(void)
+>> +{
+>> +	int r;
+>> +
+>> +	vpmu_vm = create_vpmu_vm(guest_code);
+>> +
+>> +	r = __kvm_has_device_attr(vpmu_vm->vcpu->fd, KVM_ARM_VCPU_PMU_V3_CTRL,
+>> +				  KVM_ARM_VCPU_PMU_V3_FILTER);
+>> +
+>> +	destroy_vpmu_vm(vpmu_vm);
+>> +	return !r;
+>> +}
+> 
+> TBH, I don't really care much about the test probing for the event
+> filter UAPI. It has been upstream for a while, and if folks are trying
+> to run selftests at HEAD on an old kernel then that's their business.
+> 
+> The other prerequisites make more sense since they actually check if HW
+> features are present.
+> 
+
+If no one cares it, I will delete this function.
+
+>> +static bool host_pmu_supports_events(void)
+>> +{
+>> +	vpmu_vm = create_vpmu_vm(guest_get_pmceid);
+>> +
+>> +	memset(&supported_pmce, 0, sizeof(supported_pmce));
+>> +	sync_global_to_guest(vpmu_vm->vm, supported_pmce);
+>> +	run_vcpu(vpmu_vm->vcpu);
+>> +	sync_global_from_guest(vpmu_vm->vm, supported_pmce);
+>> +	destroy_vpmu_vm(vpmu_vm);
+>> +
+>> +	return supported_pmce.pmceid0 & (BR_RETIRED | INST_RETIRED);
+>> +}
+> 
+> This helper says its probing the host PMU, but you're actually firing up a
+> VM to do it.
+> 
+> The events supported by a particular PMU instance are readily available
+> in sysfs. Furthermore, you can tell KVM to select the exact host PMU
+> instance you probe.
+
+It should call kvm_pmu_support_events, because I want to get the default 
+pmce without any filter in the kvm. So I run a guest and get that value 
+in the guest.
+
+I've tried get the pmceid0 through the
+
+vcpu_get_reg(vcpu, KVM_ARM64_SYS_REG(SYS_PMCEID0_EL0), &val);
+
+But it always return the -ENOENT, I'm not sure if this is expected. 
+Could I can use the KVM interface to get the pmceid0?
+
+> 
+>> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+>> index b3de8fdc555e..76ea03d607f1 100644
+>> --- a/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+>> +++ b/tools/testing/selftests/kvm/lib/aarch64/vpmu.c
+>> @@ -7,8 +7,9 @@
+>>   #include <vpmu.h>
+>>   #include <perf/arm_pmuv3.h>
+>>   
+>> -/* Create a VM that has one vCPU with PMUv3 configured. */
+>> -struct vpmu_vm *create_vpmu_vm(void *guest_code)
+>> +struct vpmu_vm *__create_vpmu_vm(void *guest_code,
+>> +				 void (*init_pmu)(struct vpmu_vm *vm, void *arg),
+>> +				 void *arg)
+>>   {
+>>   	struct kvm_vcpu_init init;
+>>   	uint8_t pmuver;
+>> @@ -50,12 +51,21 @@ struct vpmu_vm *create_vpmu_vm(void *guest_code)
+>>   		    "Unexpected PMUVER (0x%x) on the vCPU with PMUv3", pmuver);
+>>   
+>>   	/* Initialize vPMU */
+>> +	if (init_pmu)
+>> +		init_pmu(vpmu_vm, arg);
+>> +
+>>   	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &irq_attr);
+>>   	vcpu_ioctl(vpmu_vm->vcpu, KVM_SET_DEVICE_ATTR, &init_attr);
+>>   
+>>   	return vpmu_vm;
+>>   }
+>>   
+>> +/* Create a VM that has one vCPU with PMUv3 configured. */
+>> +struct vpmu_vm *create_vpmu_vm(void *guest_code)
+>> +{
+>> +	return __create_vpmu_vm(guest_code, NULL, NULL);
+>> +}
+>> +
+> 
+> Ok. This completely proves my point in the other patch. You already need
+> to refactor this helper to cram in what you're trying to do. Think of
+> ways to move the code that is actually common into libraries and leave
+> the rest to the tests themselves.
+> 
+> Some slight code duplication isn't the end of the world if it avoids
+> churning libraries every time someone wants to add a widget.
+
+Thanks for your opinion. I'm thinking about refactor the helper to make 
+it can be reuseable by further tests.
+
+Thanks,
+Shaoqin
+
+> 
+
 -- 
-Regards
-Vignesh
+Shaoqin
+
 
