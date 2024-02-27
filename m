@@ -1,86 +1,42 @@
-Return-Path: <linux-kernel+bounces-83938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9027986A095
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:56:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B0B386A051
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C8D9B27896
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:36:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 409061F21D69
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FDA524DF;
-	Tue, 27 Feb 2024 19:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgBHHG8b"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416E52D60B;
-	Tue, 27 Feb 2024 19:36:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0639752F70;
+	Tue, 27 Feb 2024 19:36:34 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id ECA952D60B
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709062562; cv=none; b=rqiF6F7NmLG9yFhb30CGCuAG4slbmDK0L4DG5DoLZmvTrI6cNGiDciEbSvFnXO93xuK8igOCK6pZ82tQiiV98VrkFx+yj4L3yfJjXd8+voLyMjqyN/iWq/eq+Gi1dcFPQ1T9QFXzltcCx2lom5EUWDn0AVQwWcWkWf0mLpIRVVk=
+	t=1709062593; cv=none; b=s5PzsH4m0VP4Edm+J+k99G2AwC7XjLrzpgvA9jabl1AkpdHhojQyEQ2+ANU1YMalTGF2Kr/j0YM6QGgA1uTlY9n/lciiM+P6MImczRCXQfBtO3omus7t5Oqa90XKilZCkdawZQHns33+1HuyxLLO47OzEay/sH0vVsklEOr1syg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709062562; c=relaxed/simple;
-	bh=X+NmQ16htm9KepdSCCA3LOSQmioJnFN1c9C9GgTodUM=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FD1ywRIo0BYXtoLAitMXxA6HLB0lsRxWnHtmMwailZX/Aqghc/JGUB6Ikh+JBp4nfHIJ+lAE3hUu2+LRhKGaGl6VNk1BJI/my7QDMlkPmAh6CdzHk3STllzPDkbbZVpCz87VvVFWD3dHbUIRLxjmkPf5Skrwjmt9MHfrHkRRFRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mgBHHG8b; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512fd840142so3320120e87.2;
-        Tue, 27 Feb 2024 11:36:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709062559; x=1709667359; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tD9VH6E6cPEsmYpWie1f4j7L7wZzShtjynMD+HiK+Hg=;
-        b=mgBHHG8b49NsqDzMteq34QpmwK9liPsx9j3WhYbmN0I6IwEQaD7k3xW8d1Yt4Fti5X
-         ecttttIBBNxXREnxrsh7rjQ9M3uxBHOYrDgIUWFqdcewGCFkWuBa/9eZ/dUwMFN3eVOM
-         vnrW0hs5a1h5xhtx4z20becXKgGGjZCLZUUjkaZQNKCisR3925YFEBTN0kOmDKM/LHiH
-         6pct+TY24JR9M815sfV6TFtGJz3jsq9iwRGZ9zrZrvDAx73yZX/YfLxzofWa5duQcvDo
-         yhHHge/IEPMrBXArTp69S3YxymN934WQG4iqAdWalxz0C5F09jVOFHOmOcLsIfpatEir
-         7+Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709062559; x=1709667359;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tD9VH6E6cPEsmYpWie1f4j7L7wZzShtjynMD+HiK+Hg=;
-        b=qCrfxRCclwxY3O6GAHe8pW+iiCglkano3o1JT3eFSHf6MO+ft4lw5yM2cXbeJud5vd
-         e9HWZfJiv/2uuJJyCCywAMi+hFLn5nkGH/Rvq3UaK8IwTZLDAXa1GmLDgavEqIuXkl7Y
-         QgK0eo5TmYTivZMjzv+Li8UQWmUh45G7dvSCzqoomBHazn5gqWhbcysXdDATD4R2cz7k
-         ip0AkbaNqgjF3RiZU2SNMDKAAITcXoDE/g0X5HppVe0xRUAGIp8OBLnjrOj9SV3bUr/H
-         k6JKkZHMsnx6tRJx/o/uJfa/DVenaBenRwQWAmXzxztd4GYF+WbN7MRWE6JOx0lHWHuN
-         P/Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXU2Y4lZKqvnYovf7ufZ0xDrzyYIF4jA5cjJkuW5MsgMDdL9lD9+mZjCjeBKWz98+1Bn0+x0GHSEpY8+lxubi/IuREVfGkuvNaqfux795N4Vzc+zaCIkH+9jv+St45YV2Du
-X-Gm-Message-State: AOJu0YyGEqdEZl3PboqVC4XHdFVQCfbvTpdJogDUPl8JGdzOf13gG3IW
-	W2+PpCG5YIrpsdiD48T4+tlEUYdHdilwlk5J8ZIFSDDEvjc8BZcE
-X-Google-Smtp-Source: AGHT+IEmtznTBWICF55EZiVWIShPadOxbp0eg/fjozpEa0tLgMh88pmZ3kc4A+T1ghCY/treg1MokA==
-X-Received: by 2002:a05:6512:31c6:b0:513:c3:1d95 with SMTP id j6-20020a05651231c600b0051300c31d95mr4176167lfe.6.1709062559031;
-        Tue, 27 Feb 2024 11:35:59 -0800 (PST)
-Received: from pc636 (host-90-233-206-150.mobileonline.telia.com. [90.233.206.150])
-        by smtp.gmail.com with ESMTPSA id o9-20020ac25b89000000b00512daba3521sm1274978lfn.173.2024.02.27.11.35.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 11:35:58 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Tue, 27 Feb 2024 20:35:56 +0100
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <Zd45nHulMXQx1dJo@pc636>
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <Zd0ZtNu+Rt0qXkfS@lothringen>
+	s=arc-20240116; t=1709062593; c=relaxed/simple;
+	bh=TpsYGSn+KVgiuE1rnZzfXrhympxdF5n2rMJg+jDI/No=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M2cS9A6Hky7w/1FhxchcnfWv04W/k8Ht6oZPn1W2gzzDD3KMYchkqu5+WH8sylQRdlSTrfd0MgX/a13I539BfP1OEpAnB8ig+POZKowBX98nI6qa9Ez2UCCh5sjTwY/yhX0+wg6WZA1y2EjqwH4fMEHfOh22qaS9+7DSWL1V1qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 774067 invoked by uid 1000); 27 Feb 2024 14:36:23 -0500
+Date: Tue, 27 Feb 2024 14:36:23 -0500
+From: Alan Stern <stern@rowland.harvard.edu>
+To: syzbot <syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com>
+Cc: bvanassche@acm.org, emilne@redhat.com, gregkh@linuxfoundation.org,
+  linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+  martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com,
+  tasos@tasossah.com, usb-storage@lists.one-eyed-alien.net
+Subject: Re: [syzbot] [usb-storage?] divide error in isd200_ata_command
+Message-ID: <8fe3f46c-4ee5-4597-bf2d-12a5d634a264@rowland.harvard.edu>
+References: <0000000000003eb868061245ba7f@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,97 +45,116 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zd0ZtNu+Rt0qXkfS@lothringen>
+In-Reply-To: <0000000000003eb868061245ba7f@google.com>
 
-> On Tue, Feb 20, 2024 at 07:31:13PM +0100, Uladzislau Rezki (Sony) wrote:
-> > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > +{
-> > +	struct llist_node *done, *rcu, *next, *head;
-> > +
-> > +	/*
-> > +	 * This work execution can potentially execute
-> > +	 * while a new done tail is being updated by
-> > +	 * grace period kthread in rcu_sr_normal_gp_cleanup().
-> > +	 * So, read and updates of done tail need to
-> > +	 * follow acq-rel semantics.
-> > +	 *
-> > +	 * Given that wq semantics guarantees that a single work
-> > +	 * cannot execute concurrently by multiple kworkers,
-> > +	 * the done tail list manipulations are protected here.
-> > +	 */
-> > +	done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > +	if (!done)
-> > +		return;
-> > +
-> > +	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
-> > +	head = done->next;
-> > +	done->next = NULL;
+On Mon, Feb 26, 2024 at 01:42:26AM -0800, syzbot wrote:
+> Hello,
 > 
-> Can the following race happen?
+> syzbot found the following issue on:
 > 
-> CPU 0                                                   CPU 1
-> -----                                                   -----
+> HEAD commit:    f2e367d6ad3b Merge tag 'for-6.8/dm-fix-3' of git://git.ker..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=114e10e4180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=eff9f3183d0a20dd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=28748250ab47a8f04100
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1064b372180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10aca6ac180000
 > 
-> // wait_tail == HEAD1
-> rcu_sr_normal_gp_cleanup() {
->     // has passed SR_MAX_USERS_WAKE_FROM_GP
->     wait_tail->next = next;
->     // done_tail = HEAD1
->     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->     queue_work() {
->         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
->         __queue_work()
->     }
-> }
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/c55ca1fdc5ad/disk-f2e367d6.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/4556a82fb4ed/vmlinux-f2e367d6.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/95338ed9dad1/bzImage-f2e367d6.xz
 > 
->                                                       set_work_pool_and_clear_pending()
->                                                       rcu_sr_normal_gp_cleanup_work() {
-> // new GP, wait_tail == HEAD2
-> rcu_sr_normal_gp_cleanup() {
->     // executes all completion, but stop at HEAD1
->     wait_tail->next = HEAD1;
->     // done_tail = HEAD2
->     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->     queue_work() {
->         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
->         __queue_work()
->     }
-> }
->                                                           // done = HEAD2
->                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
->                                                           // head = HEAD1
->                                                           head = done->next;
->                                                           done->next = NULL;
->                                                           llist_for_each_safe() {
->                                                               // completes all callbacks, release HEAD1
->                                                           }
->                                                       }
->                                                       // Process second queue
->                                                       set_work_pool_and_clear_pending()
->                                                       rcu_sr_normal_gp_cleanup_work() {
->                                                           // done = HEAD2
->                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
+> The issue was bisected to:
 > 
->
-> // new GP, wait_tail == HEAD3
-> rcu_sr_normal_gp_cleanup() {
->     // Finds HEAD2 with ->next == NULL at the end
->     rcu_sr_put_wait_head(HEAD2)
->     ...
+> commit 321da3dc1f3c92a12e3c5da934090d2992a8814c
+> Author: Martin K. Petersen <martin.petersen@oracle.com>
+> Date:   Tue Feb 13 14:33:06 2024 +0000
 > 
-> // A few more GPs later
-> rcu_sr_normal_gp_init() {
->      HEAD2 = rcu_sr_get_wait_head();
->      llist_add(HEAD2, &rcu_state.srs_next);
->                                                           // head == rcu_state.srs_next
->                                                           head = done->next;
->                                                           done->next = NULL;
->                                                           llist_for_each_safe() {
->                                                               // EXECUTE CALLBACKS TOO EARLY!!!
->                                                           }
->                                                       }
-Let me check it tomorrow!
+>     scsi: sd: usb_storage: uas: Access media prior to querying device properties
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15a3934a180000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=17a3934a180000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13a3934a180000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com
+> Fixes: 321da3dc1f3c ("scsi: sd: usb_storage: uas: Access media prior to querying device properties")
+> 
+> divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+> CPU: 0 PID: 5070 Comm: usb-storage Not tainted 6.8.0-rc5-syzkaller-00297-gf2e367d6ad3b #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> RIP: 0010:isd200_scsi_to_ata drivers/usb/storage/isd200.c:1318 [inline]
+> RIP: 0010:isd200_ata_command+0x776/0x2380 drivers/usb/storage/isd200.c:1529
 
---
-Uladzislau Rezki
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/ f2e367d6ad3b
+
+Index: usb-devel/drivers/usb/storage/isd200.c
+===================================================================
+--- usb-devel.orig/drivers/usb/storage/isd200.c
++++ usb-devel/drivers/usb/storage/isd200.c
+@@ -1105,7 +1105,7 @@ static void isd200_dump_driveid(struct u
+ static int isd200_get_inquiry_data( struct us_data *us )
+ {
+ 	struct isd200_info *info = (struct isd200_info *)us->extra;
+-	int retStatus = ISD200_GOOD;
++	int retStatus;
+ 	u16 *id = info->id;
+ 
+ 	usb_stor_dbg(us, "Entering isd200_get_inquiry_data\n");
+@@ -1137,6 +1137,13 @@ static int isd200_get_inquiry_data( stru
+ 				isd200_fix_driveid(id);
+ 				isd200_dump_driveid(us, id);
+ 
++				/* Prevent division by 0 in isd200_scsi_to_ata() */
++				if (id[ATA_ID_HEADS] == 0 || id[ATA_ID_SECTORS] == 0) {
++					usb_stor_dbg(us, "   Invalid ATA Identify data\n");
++					retStatus = ISD200_ERROR;
++					goto Done;
++				}
++
+ 				memset(&info->InquiryData, 0, sizeof(info->InquiryData));
+ 
+ 				/* Standard IDE interface only supports disks */
+@@ -1202,6 +1209,7 @@ static int isd200_get_inquiry_data( stru
+ 		}
+ 	}
+ 
++ Done:
+ 	usb_stor_dbg(us, "Leaving isd200_get_inquiry_data %08X\n", retStatus);
+ 
+ 	return(retStatus);
+@@ -1481,22 +1489,27 @@ static int isd200_init_info(struct us_da
+ 
+ static int isd200_Initialization(struct us_data *us)
+ {
++	int rc = 0;
++
+ 	usb_stor_dbg(us, "ISD200 Initialization...\n");
+ 
+ 	/* Initialize ISD200 info struct */
+ 
+-	if (isd200_init_info(us) == ISD200_ERROR) {
++	if (isd200_init_info(us) < 0) {
+ 		usb_stor_dbg(us, "ERROR Initializing ISD200 Info struct\n");
++		rc = -ENOMEM;
+ 	} else {
+ 		/* Get device specific data */
+ 
+-		if (isd200_get_inquiry_data(us) != ISD200_GOOD)
++		if (isd200_get_inquiry_data(us) != ISD200_GOOD) {
+ 			usb_stor_dbg(us, "ISD200 Initialization Failure\n");
+-		else
++			rc = -EINVAL;
++		} else {
+ 			usb_stor_dbg(us, "ISD200 Initialization complete\n");
++		}
+ 	}
+ 
+-	return 0;
++	return rc;
+ }
+ 
+ 
 
