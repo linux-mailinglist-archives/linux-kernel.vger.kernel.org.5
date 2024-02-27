@@ -1,90 +1,86 @@
-Return-Path: <linux-kernel+bounces-84178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6290686A367
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C2386A36D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:16:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44F46B2A1B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:14:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45929B2A83B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 23:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB90857326;
-	Tue, 27 Feb 2024 23:13:34 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4549C56740;
+	Tue, 27 Feb 2024 23:14:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GV+H7ERU"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E2856766;
-	Tue, 27 Feb 2024 23:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA2D5577A;
+	Tue, 27 Feb 2024 23:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709075614; cv=none; b=k5xCrjSNgHroRsryHbT28QU2ZnHusjxSpkWsD6Dwhug25RWu3D/6f5dsb/eTODedc+WlshkvD0BaA+Gjg2rLbgw1YyKiCA+zU2tnMcfJYdxCmtjccVYs5GGBNiLJs7CEiJfL8AQ2lKkCY02/tPPJOTxG+m1r+noJdlCirw7FCvw=
+	t=1709075650; cv=none; b=OXsPQRXikudCCM4JjsMd16y1CL/wP6HiQK/tUclyevA0k2af/LdQ8FHOkfvsQ8yZLOB2FCsWtybBjvIQTzs1HpYXB9wHRS7uU6mtUQhX7apIivG23p8YNpGdCzUsVmqr0+YtMvrkH9gOXnEPTPUpnagbBvOkUCDY6W7HJolpPuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709075614; c=relaxed/simple;
-	bh=B4DKrRNSUjPldZnmQy7qW35XpULDoHvXd5QTDp2J6fw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IVz2CCfcC9HNW2Tt6OeMtwRl7hJXLROtjMRm6/oG0bGpJTfExMe6HymgG1lvbFB0jX4C7HSwlhEPC1MGX1o/EUN6bWL/2FgMGRH5F7X1Cr14/VkAl6OdfNy5RNuVtVWA6H/C4gUgQ2pGYLsHU4T+KMeLehT0icxv1tUU+tKNoBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875b6c.versanet.de ([83.135.91.108] helo=phil.lan)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rf6dY-0002LS-HQ; Wed, 28 Feb 2024 00:13:24 +0100
-From: Heiko Stuebner <heiko@sntech.de>
-To: krzysztof.kozlowski+dt@linaro.org,
-	robh+dt@kernel.org,
-	Elon Zhang <zhangzj@rock-chips.com>,
-	conor+dt@kernel.org
-Cc: Heiko Stuebner <heiko@sntech.de>,
-	devicetree@vger.kernel.org,
-	weizhao.ouyang@arm.com,
-	linux-rockchip@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1709075650; c=relaxed/simple;
+	bh=nsEziExjOLtmbpppbLO2Fb6/NxIhywmNgFfnncBJ1mw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=apmHxd4Fr/w8U1zSsaJrSxAoHC1iJSq7ZTcnJs57eXs835BEfWIU4qNuTcTcvIQsT4tObMZq0z0zLNvrb+xZi5I4Y/s5IE1e8r7qsNng2H2rhAVXtoN+KZlP6msiuVoWXmN3yVY9wGzAxWvTij8ncwVaFgOaCZLbWNfFUDKA8VI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GV+H7ERU; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9B4691C0004;
+	Tue, 27 Feb 2024 23:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709075646;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=UE7EiRd4bNA/hzZvwUNjNWHpGsJRtcTpEKCKzOC3+w8=;
+	b=GV+H7ERUI3Uty2KdCDE651r2OvyRemaEYAtcIIFQwad5m+tcKg/BDx+H2mBPofxwL1vhDF
+	qK8CNh1svxIXXArtzskktAcO6eTMiSXOnhfWXwtuVom28PneF9bx26u+tyEJLzxASpCJ79
+	QpnjHCbYtp28c+/vdoWfQFwIk+iFrtcWsIg/k1lfD/zUwqaChnUzrLMKIIERNe7UmUdybC
+	tSGhjZrRhSSpzC9RVMszVOKElhEvFO5SkzgNeKYOZHT4QXC7BiKazGA4HFYaiOXdUEPJta
+	z+zcSNiWyTj2jHTfUP5a0/8w5AJ9qC9mU0PHaJX2siMcprvTW0dBR6i2MGbDQQ==
+From: alexandre.belloni@bootlin.com
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: linux-rtc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] arm64: dts: rockchip: Add devicetree support for TB-RK3588X board
-Date: Wed, 28 Feb 2024 00:13:21 +0100
-Message-Id: <170907558763.800427.16777226137397657885.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240221022902.751528-1-zhangzj@rock-chips.com>
-References: <20240221022902.751528-1-zhangzj@rock-chips.com>
+Subject: [PATCH 1/2] rtc: ds1511: set range
+Date: Wed, 28 Feb 2024 00:13:54 +0100
+Message-ID: <20240227231356.1840523-1-alexandre.belloni@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Wed, 21 Feb 2024 10:29:01 +0800, Elon Zhang wrote:
-> Add board file for Rockchip Toybrick TB-RK3588X board.
-> 
-> Specification:
-> 	Rockchip Rk3588 SoC
-> 	4x ARM Cortex-A76, 4x ARM Cortex-A55
-> 	8/16GB Memory LPDDR4x
-> 	Mali G610MC4 GPU
-> 	2× MIPI-CSI0 Connector
-> 	1x 2Lanes PCIe3.0 Connector
-> 	1x SATA3.0 Connector
-> 	32GB eMMC Module
-> 	2x USB 2.0, 2x USB 3.0
-> 	1x HDMI Output, 1x HDMI Input
-> 	2x Ethernet Port
-> 
-> [...]
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Applied, thanks!
+The ds1511 leap year calculation fails in 2100.
 
-[1/2] arm64: dts: rockchip: Add devicetree support for TB-RK3588X board
-      commit: 8ffe365f8dc798a08bf21d5050f7b21bd6a855a4
-[2/2] dt-bindings: arm: rockchip: Add Toybrick TB-RK3588X
-      commit: 7140387ff49d0f44648d26f975c6fead1c5055b0
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+---
+ drivers/rtc/rtc-ds1511.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Best regards,
+diff --git a/drivers/rtc/rtc-ds1511.c b/drivers/rtc/rtc-ds1511.c
+index edb8d90812c5..6869d28d34cc 100644
+--- a/drivers/rtc/rtc-ds1511.c
++++ b/drivers/rtc/rtc-ds1511.c
+@@ -322,6 +322,7 @@ static int ds1511_rtc_probe(struct platform_device *pdev)
+ 		return PTR_ERR(ds1511->rtc);
+ 
+ 	ds1511->rtc->ops = &ds1511_rtc_ops;
++	ds1511->rtc->range_max = RTC_TIMESTAMP_END_2099;
+ 
+ 	/*
+ 	 * if the platform has an interrupt in mind for this device,
 -- 
-Heiko Stuebner <heiko@sntech.de>
+2.43.0
+
 
