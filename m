@@ -1,194 +1,499 @@
-Return-Path: <linux-kernel+bounces-82567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5DF86866E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:51:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5490186866F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 02:53:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2CBB1F231AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:51:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7911B1C24E1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 01:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B58F4FB;
-	Tue, 27 Feb 2024 01:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C91DF55;
+	Tue, 27 Feb 2024 01:53:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="HI/qXUx8"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2046.outbound.protection.outlook.com [40.92.107.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TqrPESQa"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD88015D0;
-	Tue, 27 Feb 2024 01:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708998701; cv=fail; b=pHLDb56RvDFEhBa8AcI7AA643rZZgro9TZsG0pEFYzVMgXceiCBiKuZmIsZ+K8DZdE3V/BUwCqSgczvDWyToOtChn5dlc/UfIPf1mO4otxwYMwx/3RBCqxBXUgfSZskKUBWVAf6vVgGYwCI536J9o8cYIcNUwuxEfBmlaLR0WDY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708998701; c=relaxed/simple;
-	bh=RwTGrO2Fo8MhMpW6TnGW95iFjJjsHgynTf6qnpCUZDY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ghV3QRHYGeWFIlkDIBmIVR+s87Ii895G5/8nJRG+hiQKhPifIdKwfnZY5o9mKclYC3MgxTFYVPAD/r5qdl//8WN3xu1Fp2KDkqbMPEYaTJ4sXKVreeqR6DFoHWInEMgpSynAz7Av/FsWFlLFV3PM0RzJtH7IlUsGoX5TmG/eLAU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=HI/qXUx8; arc=fail smtp.client-ip=40.92.107.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M/xKRCYUpReRrdlZyHHDp/5JaSZgsMDzHtWPxs+ETm4t+wyxWmnXtp2in0eAsrwthbKAQxZeQcs/3fnnIYz/9R8Fqbx9Sjducsu42b9MjDAmIfGg2klcbV86KKZOyU8zg36srBjV15O2lXS535231aJJoRJyiZcVliCEcom8lLTnqKFP/fhG8DC9NarLAqowsk8FXzUFfB7eGRZVHzm3MT2rR7ATIChAM/D6jjr7EZe7DgZwoQUgTQQmDEL7b6Yxhup12GTxk8avPz3oKLBpDiwrRmlSZoh6S5PCCiEK6LMlqY18l+RyUnVw/viGgXBhgQLKUqRQVTT7YSFMMS66Aw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RWl6ccEQSSClHaBJleXwc/gRqz7Cm8tu3Llhj7MiiuE=;
- b=gZkB6wqzKG10bav9TJcTUzblO6GPQc+3J/Gu/BItz4JuB7P35+qZ2HDJYk28mggXlMTbmfoGvpl0h5OHtqq/J95E6soLG0+a4IjO55EKJB3BTTx7sL/Qz6WWj1nLZaWlOIbNMQAendkMkbRdh1nF4GfbxBQfu+nF71TYtd2zSyQ4w239GluECmhfAwUCiBYq9MrLfVqpYQ5ENlb1Zs7gNozKlsZjVoAXCDw3yxJmNp5bAne7IYjd767nxp5raVLzqaGubCeqxfP93q48pvjSq2wpttTFzdxC5K3tcKPojL827SPwFDYuC9NaGbK3/qmAdy3GQeNSDKDd39IEBmOpyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RWl6ccEQSSClHaBJleXwc/gRqz7Cm8tu3Llhj7MiiuE=;
- b=HI/qXUx86p0F9eiYLa2L84Ie4zsV9JU6H/qpYckvj7S5ERzja9OOmLXLm8hAfXRCaz+HvQJOWjL1medXv6y94pvtQC7xGHCT4Vhn2TtxSgbzurvwSb33k6k+4OL8Poiz/gKYUGvczNBYJNCkHYu0Mkf8oErV5uRbQBNPWvVgmm0xZCfIF/ngW5viWHoGvOqoj+TFHSfO4VYiiFbbaspQnd6ZlqdLyQ/3n6h/bLJO2AT9MauMh3sHFWnVpZrcJrQ4Yh0tT7r2gM03epHKsuJPwfJgdqIHnh99+WBhAjj89ZdTmfDXHvBAMo/cBWkIQeVhzkj8fWMDbb2hCxBVq6B2Sg==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by JH0PR06MB6439.apcprd06.prod.outlook.com (2603:1096:990:3b::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Tue, 27 Feb
- 2024 01:51:33 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7316.035; Tue, 27 Feb 2024
- 01:51:32 +0000
-Message-ID:
- <SEZPR06MB69590A200BDDD6D3DA4CD2DA96592@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Tue, 27 Feb 2024 09:51:26 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v4 6/6] net: hisi_femac: remove unused compatible
- strings
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
- <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240222-net-v4-0-eea68f93f090@outlook.com>
- <20240222-net-v4-6-eea68f93f090@outlook.com>
- <ccdcdb1b-44a9-4233-994e-18d875a99c2f@linaro.org>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <ccdcdb1b-44a9-4233-994e-18d875a99c2f@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TMN: [hamtEx/FyRYd9ehj0OR0hLzQZVyRviU51+9rEJ0ibBVw00ldPF2m+Bsr/C8HWT/6]
-X-ClientProxiedBy: SI2PR01CA0030.apcprd01.prod.exchangelabs.com
- (2603:1096:4:192::15) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <876febcf-f24d-4416-9e6a-579fe0512cfb@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3A85C82
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 01:53:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708998784; cv=none; b=FTruiFchfsJldiBU/BqS+1vUs1G2XKbz4w1/Cdo0GLR4en/WmXfoayePrnrJDJKClB7CposttGTTs3/pH2vDwRlFxHmfx1uEqB8sr4HNfZ1qXR1uKlJ7csR2wcsmi8Q6iN4i+U76qoQX+LrOROlrwnCgOJbttFX8tWKRGtn9RQY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708998784; c=relaxed/simple;
+	bh=luGIBaugrTyPpoxK0juMBLUHrmUxq4kEDHzWt5a+NhI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LeYgYd865885GwboHdoFyuJaRIeyMpgxN/L+4cUhtM04BTh2d8DYjzLRhTd5RLlpNIDG3IxTD3nhxFJNsF8vnqAixWaUcLzkyh8/l3anr8kJyjDmoywVb7lk6S+nv6ARG+ofQT8z1thKdSLxEcyJUNwSxSiNJ67HsS7Yg/PlZSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TqrPESQa; arc=none smtp.client-ip=209.85.128.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-607bfa4c913so37535777b3.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 17:53:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708998781; x=1709603581; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hWGWJEv4BrNVulJ7dXLkoApOICGicAN+3bV0I2F6xKk=;
+        b=TqrPESQaWfH9Vh1SEyA0VWQA6Xwn8aMQugrHR8L7Sh9X9kiwyzQbqzY7dPENPmHaYP
+         fU4CmwT/2R8cjSy645yv2qZGGyTqnm0k9Y14d+h+deAryNPzDZbO1GQOFkiDQm1fvyAQ
+         olTvtEyF19jTZ0emJK0SO4xSLoZtwRUQBMDxoDN6FBmz5xYtzuuF9gI0cBprT/CODsry
+         ul6RHIQU0Vo1w244Cs5Cx3XVBGITFLOO2RW9FrKozAADFoiD4uuP7GVxDTuNz0yO0SD1
+         s1ce3bAtVfJJkqorYKmi7H9fRqnwkW0nr4K5KGhxY3jLrka/126zd9GbgK6cCDZF9CHX
+         eMSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708998781; x=1709603581;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hWGWJEv4BrNVulJ7dXLkoApOICGicAN+3bV0I2F6xKk=;
+        b=U1pkoF+4Jw/9UyusAVcYc0Y6AamCrXKEp5G5dxdR1jILbEoriVZFfVRSWJEV1A5B2l
+         I3Li1liJJaUr9tw1m9kdE08Xc+DXrkJMLny3NMXAw/lP8dhfPCHA9ytVA2JtgO+WyhVj
+         BRWeMh7okB2YoI4JLE0jxai8uWbhfuCvbw9kdLh1N3IwPhESbYMykEffRR5oGbL7HNzS
+         SU0jnB6jxroC9zkYjNJ9m2i6/m5vqLzdlmuybIt8rejL3kNfJV9Wkm1vsof5Wdy38Q+k
+         GwKD4pdifuh0Vt7aGHrvGncp584HF7u/aQUOFBmX+7Q7/QkDduB3dOJCvaz1q0kBylEm
+         XFBA==
+X-Forwarded-Encrypted: i=1; AJvYcCXSK6BVgEwt8/n/lBw2armOZhfwQKeff7gnmXGYv1CPdD+l6PqJNbgyouzx5zj4qxsBZdVF0678sbhNEJ7qzC3mgPhssY5ak52sE9yL
+X-Gm-Message-State: AOJu0Yxa+PFkBrR1Cg8oWOc0Nmb629o5Ewj/VyoiHVeOKF4vKoc//wnP
+	3r+wwMv4I1T1u/D0Z7+6bH+vLhHk/iPgFWvT0XjuuJhXA8dlI2diVU4+UNS5GCX+dok2JLspbSc
+	BcE/iRdryUma3NiMENg0+QdEHpFwnA8pfoEPs
+X-Google-Smtp-Source: AGHT+IGa+r1vcRT9tTC205JOWJlfZxDakAIa1nGX1ahlDkPXPxO0K/HaI0G6Lm00spuPNhQllNa2T+gF9+8CO3qt5Eg=
+X-Received: by 2002:a81:4f48:0:b0:607:8edd:b5f7 with SMTP id
+ d69-20020a814f48000000b006078eddb5f7mr918240ywb.49.1708998781347; Mon, 26 Feb
+ 2024 17:53:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|JH0PR06MB6439:EE_
-X-MS-Office365-Filtering-Correlation-Id: f35b58bd-9ac3-4a9a-9be7-08dc37369f72
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	aDw9keObvhZ19e6Pu7nJQWs1SHzPJDVTc3NkjveCGbgZkG0Jgv0cRLdZlLbPYIOfYJecoEeyjk/Lz/plrW1+3JkEMf/YKY8nlAABZRkh/CDYMn78k0f1g76H6plS9d1btOl20T4Pb0W0bp4UqBi8gcafo+I7ZacaVULJKHpjgYhQs2218VlrXUj1Pb6ZSfZAzb2jCQdUexu8Kz0ae4B650byUCA0DWnqC1CUvokkvFMfnJ/5kc+GUB0/IHrujZb+NKZivuAhRvH/E6tnfVJuCaCjj9dQafrx6d19lyvKrgI1e+/eRKBhDNIQX9bJkcIKzhlzHfWF33Ry/rknlTvCEZnZBTiIAtvyv10XDT7kickfVvqCj+JoAUmuJyHAZVbBRxWxzcwN+Q4oWaWeQFe+OdoHm65qtvZyin0lT0Dzd8ahFJfURB3w6iPl8jwDPvu7xXWY5OtpbtB9FbnnfGLSDMmDPiUFuafM6cx+XQuhsQ3IocWsyzyU2svQSNjvzWLHEiUbL4LKw/ulgEVsZ3KxanferxzPzjBAPxhKQtNBSIdhiReLXXZSmY4M4yYGMJAK
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?V1VEVEVwMlB0NkJnOW5XQUR0WlZHWlhHaXo2RnQ5MTQydy9VbVlob0hUOUQ1?=
- =?utf-8?B?NWV4TGpmYWpLREtLNy9wUGlkY3dLYTdMOUdHUUtxY3FENU0rZ2d5QkVlMnYx?=
- =?utf-8?B?aXR4RWpTQWJHNWdLMVFDWEVPWVFMbjlOM09QeGlta2JkczNmTWFQblpTVWRx?=
- =?utf-8?B?WGhZdWpxT28vazJ1aHliZ3JoczFOc3oxR1lRRXFZVEVSN21FclhXWjhuU3d1?=
- =?utf-8?B?L3BnK1J4OGhJZG1LblRQSzRSbTZ5cDhleWtCc3h4NENQZWFQbHhHMnExYlNV?=
- =?utf-8?B?a2traW1YZzB4Q3N1NE5lV0hnOVlNM043STY2c01zTHpyV2FXUGYxOWE3d3BQ?=
- =?utf-8?B?bkgwckNiK1ZFdGpkK0xPd21oazMybW1DOWFyL0pxR3l4d2lrUkNlOTRFYVcw?=
- =?utf-8?B?NFNyb2dXWE95Wlp3OXRqSlRaaXV6cUNtbVBSanlRdUVhQy9TY3FsUmpETE1v?=
- =?utf-8?B?Qk1PdnFmeUFTdUszaGJEMDVtbEt6ZUZzM1FObnNYUERyZ3hxeXc0TDZVZjhD?=
- =?utf-8?B?VkhxaXFqZ25GVWRkUzI5SmI1TXN0c0dOVlh3YkdJVG1LZ2JrSEdycllPbWNU?=
- =?utf-8?B?STRCNmEvalNrS0g4cUdTZHo4T1RmMTNOazZBRld3citocTdIMjNwNkdhZzdY?=
- =?utf-8?B?OW1oUXFoSDRxdlBhYlQ2MEJBQzdUSERlYnlwYjI2RFc1eUFZZ2wrL0tQUWJi?=
- =?utf-8?B?Yk9WV0lqbkFvdTdHdGZJdjVrUXpKNlNvQlhXUElXVzdIS2R2OEJXU1hITFIv?=
- =?utf-8?B?RzN2T2xnYVMwY2gxY09QTWJBQ0VYRlp3TUpjUVZWSDJjMzJ3K0tFMVZCeHp6?=
- =?utf-8?B?ODU4YTJtbnp0ZmVyTW0vZER3cUE0UTdzd2c0Uk5NWHM4SGVDUUllTGpwUEM5?=
- =?utf-8?B?RlVvSjFkTDRCc3pKb3lIYXpKeTl0cTJ1eldNSXkyVXVETTBOanlFN3czUlpV?=
- =?utf-8?B?VHErODNmenI0RTMzOXQ3MjI2akw2bzZFbVFkcmVVajc5TUdGRWYzYXhCZjBM?=
- =?utf-8?B?SSs4OVcrMFJ0MEorLy9hVTdSTGVIRnFNVFd4bThIK3c1L3IvY282QzY4N0RZ?=
- =?utf-8?B?YmcwNTZ0d3FNc0ZIMXNaYVcrNkU1MDlOaTd1U0huRmE1ckJJaTRnem1DZkUx?=
- =?utf-8?B?ZHRXNWc5TEtZaTZJK29RdmhRamFLSmZ5c0RlSXMrOW5hN1BrcjYzVVJaZ3Jq?=
- =?utf-8?B?cVdCWDkyVjZZMUVBcml3S093a05ybURYdFRSeGV5ODJEaStMNXAySW9tYXli?=
- =?utf-8?B?SERia3FLb3FaWVl5aFQ0cUVyZS91dmcxaWRTR0dxK2NoRlJ1ekdxWXBwdUxr?=
- =?utf-8?B?UHpTSnZ4Tnk5MVlqSlpyNHFuK1hxcHVhT2VhSGJOUll2bWY0UGFScnB1MDMr?=
- =?utf-8?B?cW9CcHRrd3d0SDZWUU9ObFBsNi85Uk5LRXJVcVMxUnhScW1lL2VjUHI1b09j?=
- =?utf-8?B?VjJaRVQ0ZnUrVWdTaC9KWWtXOGdGK1VFYmtIY3g1ZkZSWHRkcjZSWGVUY0Ny?=
- =?utf-8?B?L2ZVWHB0QWtxVFhXcG1PK3JhTVE3QmJZem5hMGs2MW1IdUh2dmZoNFAxWjgv?=
- =?utf-8?B?Z0lWQnBXTlM4R2hVME4vSlBTdWJVVUNzKzZBem5xMmVCRzl3enFhREpuaUJq?=
- =?utf-8?B?OXR0Wml4bitSek9CVzRKS1ZnS3FMS0RzYjc0RkxiMjU0UzBFK0NRNTc2TmdH?=
- =?utf-8?B?NHhGcVZuUWYvTWNDaHllMWtITW1nR1JWNFBoMlQ5TnFsSUNIejZMOHVuQlZ4?=
- =?utf-8?Q?ycGeL6IRQ+qQKY9nkDmUVBSSa7x8OlvpezDJNWv?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f35b58bd-9ac3-4a9a-9be7-08dc37369f72
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 01:51:32.4663
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6439
+References: <20240226080003.4094089-1-usama.anjum@collabora.com>
+In-Reply-To: <20240226080003.4094089-1-usama.anjum@collabora.com>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Mon, 26 Feb 2024 17:52:49 -0800
+Message-ID: <CABdmKX2YSrvHx3U-q1irvmEf=dDtqTtB38dERKx+4muu77zbfQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] selftests/dmabuf-heap: conform test to TAP format output
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Shuah Khan <shuah@kernel.org>, kernel@collabora.com, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/26/2024 3:55 PM, Krzysztof Kozlowski wrote:
-> On 22/02/2024 13:43, Yang Xiwen via B4 Relay wrote:
->> From: Yang Xiwen <forbidden405@outlook.com>
->>
->> The only documented SoC Hi3516DV300 does not receive any updates from 8
->> years ago. With the recent driver changes, it unlikely works for this
->> SoC anymore. Remove the binding for this SoC.
->>
->> Also it's hard to get the version number and it's unknown how the
->> version can be used. Remove them until it's really needed.
->>
->> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->> ---
->>  drivers/net/ethernet/hisilicon/hisi_femac.c | 4 +---
->>  1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/hisilicon/hisi_femac.c b/drivers/net/ethernet/hisilicon/hisi_femac.c
->> index eab91e011d11..9466ca9da2bb 100644
->> --- a/drivers/net/ethernet/hisilicon/hisi_femac.c
->> +++ b/drivers/net/ethernet/hisilicon/hisi_femac.c
->> @@ -990,9 +990,7 @@ static int hisi_femac_drv_resume(struct platform_device *pdev)
->>  #endif
->>  
->>  static const struct of_device_id hisi_femac_match[] = {
->> -	{.compatible = "hisilicon,hisi-femac-v1",},
->> -	{.compatible = "hisilicon,hisi-femac-v2",},
->> -	{.compatible = "hisilicon,hi3516cv300-femac",},
->> +	{.compatible = "hisilicon,hisi-femac",},
-> 
-> What is happening here? Removal could be justified, but then order of
-> your patches is totally wrong. But that hisi-femac is a no-go or provide
-> proper rationale.
+On Sun, Feb 25, 2024 at 11:59=E2=80=AFPM Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
+>
+> Conform the layout, informational and status messages to TAP. No
+> functional change is intended other than the layout of output messages.
+>
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+>  .../selftests/dmabuf-heaps/dmabuf-heap.c      | 194 +++++++-----------
+>  1 file changed, 77 insertions(+), 117 deletions(-)
+>
+> diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/t=
+esting/selftests/dmabuf-heaps/dmabuf-heap.c
+> index 890a8236a8ba7..6e538e346cb8f 100644
+> --- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+> +++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/dma-buf.h>
+>  #include <linux/dma-heap.h>
+>  #include <drm/drm.h>
+> +#include "../kselftest.h"
+>
+>  #define DEVPATH "/dev/dma_heap"
+>
+> @@ -90,14 +91,13 @@ static int dmabuf_heap_open(char *name)
+>         char buf[256];
+>
+>         ret =3D snprintf(buf, 256, "%s/%s", DEVPATH, name);
+> -       if (ret < 0) {
+> -               printf("snprintf failed!\n");
+> -               return ret;
+> -       }
+> +       if (ret < 0)
+> +               ksft_exit_fail_msg("snprintf failed!\n");
+>
+>         fd =3D open(buf, O_RDWR);
+>         if (fd < 0)
+> -               printf("open %s failed!\n", buf);
+> +               ksft_exit_fail_msg("open %s failed: %s\n", buf, strerror(=
+errno));
+> +
+>         return fd;
+>  }
+>
+> @@ -140,7 +140,7 @@ static int dmabuf_sync(int fd, int start_stop)
+>
+>  #define ONE_MEG (1024 * 1024)
+>
+> -static int test_alloc_and_import(char *heap_name)
+> +static void test_alloc_and_import(char *heap_name)
+>  {
+>         int heap_fd =3D -1, dmabuf_fd =3D -1, importer_fd =3D -1;
+>         uint32_t handle =3D 0;
+> @@ -148,16 +148,12 @@ static int test_alloc_and_import(char *heap_name)
+>         int ret;
+>
+>         heap_fd =3D dmabuf_heap_open(heap_name);
+> -       if (heap_fd < 0)
+> -               return -1;
+>
+> -       printf("  Testing allocation and importing:  ");
+> +       ksft_print_msg("Testing allocation and importing:\n");
+>         ret =3D dmabuf_heap_alloc(heap_fd, ONE_MEG, 0, &dmabuf_fd);
+> -       if (ret) {
+> -               printf("FAIL (Allocation Failed!)\n");
+> -               ret =3D -1;
+> -               goto out;
+> -       }
+> +       if (ret)
+> +               ksft_exit_fail_msg("FAIL (Allocation Failed!)\n");
+> +
+>         /* mmap and write a simple pattern */
+>         p =3D mmap(NULL,
+>                  ONE_MEG,
+> @@ -166,7 +162,7 @@ static int test_alloc_and_import(char *heap_name)
+>                  dmabuf_fd,
+>                  0);
+>         if (p =3D=3D MAP_FAILED) {
+> -               printf("FAIL (mmap() failed)\n");
+> +               ksft_print_msg("FAIL (mmap() failed)\n");
+>                 ret =3D -1;
+>                 goto out;
+>         }
 
-I don't understand exactly... In dts, we commonly have a SoC specific
-compatible string first, generic compatible string the second. e.g.
+I think you should just ksft_exit_fail_msg these too and get rid of
+out / not bother with manual cleanup if we're going to exit anyway.
 
-compatible = "hisilicon,hi3798mv200-perictrl", "syscon", "simple-mfd".
-
-So i think this is recommended. Or does it mean we only need them in
-dts, not in the driver? The generic driver only needs a generic
-compatible "hisilicon,hisi-femac" in all?
-
-> 
-> Best regards,
-> Krzysztof
-> 
-
--- 
-Best regards,
-Yang Xiwen
-
+> @@ -179,31 +175,28 @@ static int test_alloc_and_import(char *heap_name)
+>         importer_fd =3D open_vgem();
+>         if (importer_fd < 0) {
+>                 ret =3D importer_fd;
+> -               printf("(Could not open vgem - skipping):  ");
+> +               ksft_test_result_skip("Could not open vgem\n");
+>         } else {
+>                 ret =3D import_vgem_fd(importer_fd, dmabuf_fd, &handle);
+> -               if (ret < 0) {
+> -                       printf("FAIL (Failed to import buffer)\n");
+> -                       goto out;
+> -               }
+> +               ksft_test_result(ret >=3D 0, "Import buffer\n");
+>         }
+>
+>         ret =3D dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_START);
+>         if (ret < 0) {
+> -               printf("FAIL (DMA_BUF_SYNC_START failed!)\n");
+> +               ksft_print_msg("FAIL (DMA_BUF_SYNC_START failed!)\n");
+>                 goto out;
+>         }
+>
+>         memset(p, 0xff, ONE_MEG);
+>         ret =3D dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_END);
+>         if (ret < 0) {
+> -               printf("FAIL (DMA_BUF_SYNC_END failed!)\n");
+> +               ksft_print_msg("FAIL (DMA_BUF_SYNC_END failed!)\n");
+>                 goto out;
+>         }
+>
+>         close_handle(importer_fd, handle);
+> -       ret =3D 0;
+> -       printf(" OK\n");
+> +       ksft_test_result_pass("%s\n", __func__);
+> +       return;
+>  out:
+>         if (p)
+>                 munmap(p, ONE_MEG);
+> @@ -214,32 +207,29 @@ static int test_alloc_and_import(char *heap_name)
+>         if (heap_fd >=3D 0)
+>                 close(heap_fd);
+>
+> -       return ret;
+> +       ksft_test_result_fail("%s\n", __func__);
+>  }
+>
+> -static int test_alloc_zeroed(char *heap_name, size_t size)
+> +static void test_alloc_zeroed(char *heap_name, size_t size)
+>  {
+>         int heap_fd =3D -1, dmabuf_fd[32];
+>         int i, j, ret;
+>         void *p =3D NULL;
+>         char *c;
+>
+> -       printf("  Testing alloced %ldk buffers are zeroed:  ", size / 102=
+4);
+> +       ksft_print_msg("Testing alloced %ldk buffers are zeroed:\n", size=
+ / 1024);
+>         heap_fd =3D dmabuf_heap_open(heap_name);
+> -       if (heap_fd < 0)
+> -               return -1;
+>
+>         /* Allocate and fill a bunch of buffers */
+>         for (i =3D 0; i < 32; i++) {
+>                 ret =3D dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]=
+);
+> -               if (ret < 0) {
+> -                       printf("FAIL (Allocation (%i) failed)\n", i);
+> -                       goto out;
+> -               }
+> +               if (ret)
+> +                       ksft_exit_fail_msg("FAIL (Allocation (%i) failed)=
+\n", i);
+> +
+>                 /* mmap and fill with simple pattern */
+>                 p =3D mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED=
+, dmabuf_fd[i], 0);
+>                 if (p =3D=3D MAP_FAILED) {
+> -                       printf("FAIL (mmap() failed!)\n");
+> +                       ksft_print_msg("FAIL (mmap() failed!)\n");
+>                         ret =3D -1;
+>                         goto out;
+>                 }
+> @@ -255,15 +245,13 @@ static int test_alloc_zeroed(char *heap_name, size_=
+t size)
+>         /* Allocate and validate all buffers are zeroed */
+>         for (i =3D 0; i < 32; i++) {
+>                 ret =3D dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]=
+);
+> -               if (ret < 0) {
+> -                       printf("FAIL (Allocation (%i) failed)\n", i);
+> -                       goto out;
+> -               }
+> +               if (ret < 0)
+> +                       ksft_exit_fail_msg("FAIL (Allocation (%i) failed)=
+\n", i);
+>
+>                 /* mmap and validate everything is zero */
+>                 p =3D mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED=
+, dmabuf_fd[i], 0);
+>                 if (p =3D=3D MAP_FAILED) {
+> -                       printf("FAIL (mmap() failed!)\n");
+> +                       ksft_print_msg("FAIL (mmap() failed!)\n");
+>                         ret =3D -1;
+>                         goto out;
+>                 }
+> @@ -271,7 +259,7 @@ static int test_alloc_zeroed(char *heap_name, size_t =
+size)
+>                 c =3D (char *)p;
+>                 for (j =3D 0; j < size; j++) {
+>                         if (c[j] !=3D 0) {
+> -                               printf("FAIL (Allocated buffer not zeroed=
+ @ %i)\n", j);
+> +                               ksft_print_msg("FAIL (Allocated buffer no=
+t zeroed @ %i)\n", j);
+>                                 break;
+>                         }
+>                 }
+> @@ -283,8 +271,8 @@ static int test_alloc_zeroed(char *heap_name, size_t =
+size)
+>                 close(dmabuf_fd[i]);
+>
+>         close(heap_fd);
+> -       printf("OK\n");
+> -       return 0;
+> +       ksft_test_result_pass("%s\n", __func__);
+> +       return;
+>
+>  out:
+>         while (i > 0) {
+> @@ -292,7 +280,7 @@ static int test_alloc_zeroed(char *heap_name, size_t =
+size)
+>                 i--;
+>         }
+>         close(heap_fd);
+> -       return ret;
+> +       ksft_test_result_fail("%s\n", __func__);
+>  }
+>
+>  /* Test the ioctl version compatibility w/ a smaller structure then expe=
+cted */
+> @@ -360,126 +348,98 @@ static int dmabuf_heap_alloc_newer(int fd, size_t =
+len, unsigned int flags,
+>         return ret;
+>  }
+>
+> -static int test_alloc_compat(char *heap_name)
+> +static void test_alloc_compat(char *heap_name)
+>  {
+> -       int heap_fd =3D -1, dmabuf_fd =3D -1;
+> -       int ret;
+> +       int ret, heap_fd =3D -1, dmabuf_fd =3D -1;
+>
+>         heap_fd =3D dmabuf_heap_open(heap_name);
+> -       if (heap_fd < 0)
+> -               return -1;
+>
+> -       printf("  Testing (theoretical)older alloc compat:  ");
+> +       ksft_print_msg("Testing (theoretical)older alloc compat:\n");
+>         ret =3D dmabuf_heap_alloc_older(heap_fd, ONE_MEG, 0, &dmabuf_fd);
+> -       if (ret) {
+> -               printf("FAIL (Older compat allocation failed!)\n");
+> -               ret =3D -1;
+> -               goto out;
+> -       }
+> -       close(dmabuf_fd);
+> -       printf("OK\n");
+> +       if (dmabuf_fd >=3D 0)
+> +               close(dmabuf_fd);
+> +       ksft_test_result(!ret, "dmabuf_heap_alloc_older\n");
+>
+> -       printf("  Testing (theoretical)newer alloc compat:  ");
+> +       ksft_print_msg("Testing (theoretical)newer alloc compat:\n");
+>         ret =3D dmabuf_heap_alloc_newer(heap_fd, ONE_MEG, 0, &dmabuf_fd);
+> -       if (ret) {
+> -               printf("FAIL (Newer compat allocation failed!)\n");
+> -               ret =3D -1;
+> -               goto out;
+> -       }
+> -       printf("OK\n");
+> -out:
+>         if (dmabuf_fd >=3D 0)
+>                 close(dmabuf_fd);
+> -       if (heap_fd >=3D 0)
+> -               close(heap_fd);
+> +       ksft_test_result(!ret, "dmabuf_heap_alloc_newer\n");
+>
+> -       return ret;
+> +       close(heap_fd);
+>  }
+>
+> -static int test_alloc_errors(char *heap_name)
+> +static void test_alloc_errors(char *heap_name)
+>  {
+>         int heap_fd =3D -1, dmabuf_fd =3D -1;
+>         int ret;
+>
+>         heap_fd =3D dmabuf_heap_open(heap_name);
+> -       if (heap_fd < 0)
+> -               return -1;
+>
+> -       printf("  Testing expected error cases:  ");
+> +       ksft_print_msg("Testing expected error cases:\n");
+>         ret =3D dmabuf_heap_alloc(0, ONE_MEG, 0x111111, &dmabuf_fd);
+> -       if (!ret) {
+> -               printf("FAIL (Did not see expected error (invalid fd)!)\n=
+");
+> -               ret =3D -1;
+> -               goto out;
+> -       }
+> +       ksft_test_result(ret, "Error expected on invalid fd\n");
+>
+>         ret =3D dmabuf_heap_alloc(heap_fd, ONE_MEG, 0x111111, &dmabuf_fd)=
+;
+> -       if (!ret) {
+> -               printf("FAIL (Did not see expected error (invalid heap fl=
+ags)!)\n");
+> -               ret =3D -1;
+> -               goto out;
+> -       }
+> +       ksft_test_result(ret, "Error expected on invalid heap flags\n");
+>
+>         ret =3D dmabuf_heap_alloc_fdflags(heap_fd, ONE_MEG,
+>                                         ~(O_RDWR | O_CLOEXEC), 0, &dmabuf=
+_fd);
+> -       if (!ret) {
+> -               printf("FAIL (Did not see expected error (invalid fd flag=
+s)!)\n");
+> -               ret =3D -1;
+> -               goto out;
+> -       }
+> +       ksft_test_result(ret, "Error expected on invalid heap flags\n");
+>
+> -       printf("OK\n");
+> -       ret =3D 0;
+> -out:
+>         if (dmabuf_fd >=3D 0)
+>                 close(dmabuf_fd);
+>         if (heap_fd >=3D 0)
+>                 close(heap_fd);
+> +}
+>
+> -       return ret;
+> +static int numer_of_heaps(void)
+> +{
+> +       DIR *d =3D opendir(DEVPATH);
+> +       struct dirent *dir;
+> +       int heaps =3D 0;
+> +
+> +       while ((dir =3D readdir(d))) {
+> +               if (!strncmp(dir->d_name, ".", 2))
+> +                       continue;
+> +               if (!strncmp(dir->d_name, "..", 3))
+> +                       continue;
+> +               heaps++;
+> +       }
+> +
+> +       return heaps;
+>  }
+>
+>  int main(void)
+>  {
+> -       DIR *d;
+>         struct dirent *dir;
+> -       int ret =3D -1;
+> +       DIR *d;
+> +
+> +       ksft_print_header();
+>
+>         d =3D opendir(DEVPATH);
+>         if (!d) {
+> -               printf("No %s directory?\n", DEVPATH);
+> -               return -1;
+> +               ksft_print_msg("No %s directory?\n", DEVPATH);
+> +               return KSFT_SKIP;
+>         }
+>
+> -       while ((dir =3D readdir(d)) !=3D NULL) {
+> +       ksft_set_plan(9 * numer_of_heaps());
+> +
+> +       while ((dir =3D readdir(d))) {
+>                 if (!strncmp(dir->d_name, ".", 2))
+>                         continue;
+>                 if (!strncmp(dir->d_name, "..", 3))
+>                         continue;
+>
+> -               printf("Testing heap: %s\n", dir->d_name);
+> -               printf("=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D\n");
+> -               ret =3D test_alloc_and_import(dir->d_name);
+> -               if (ret)
+> -                       break;
+> -
+> -               ret =3D test_alloc_zeroed(dir->d_name, 4 * 1024);
+> -               if (ret)
+> -                       break;
+> -
+> -               ret =3D test_alloc_zeroed(dir->d_name, ONE_MEG);
+> -               if (ret)
+> -                       break;
+> -
+> -               ret =3D test_alloc_compat(dir->d_name);
+> -               if (ret)
+> -                       break;
+> -
+> -               ret =3D test_alloc_errors(dir->d_name);
+> -               if (ret)
+> -                       break;
+> +               ksft_print_msg("Testing heap: %s\n", dir->d_name);
+> +               ksft_print_msg("=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D\n");
+> +               test_alloc_and_import(dir->d_name);
+> +               test_alloc_zeroed(dir->d_name, 4 * 1024);
+> +               test_alloc_zeroed(dir->d_name, ONE_MEG);
+> +               test_alloc_compat(dir->d_name);
+> +               test_alloc_errors(dir->d_name);
+>         }
+>         closedir(d);
+>
+> -       return ret;
+> +       ksft_finished();
+>  }
+> --
+> 2.42.0
+>
+>
 
