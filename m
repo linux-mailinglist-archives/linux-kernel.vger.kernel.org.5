@@ -1,182 +1,176 @@
-Return-Path: <linux-kernel+bounces-83500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83501-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88E79869A47
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:24:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 990F3869A4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ECDC2850F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:24:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E3881F24BCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718D714533E;
-	Tue, 27 Feb 2024 15:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C524E145343;
+	Tue, 27 Feb 2024 15:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="p4316UKj"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (2048-bit key) header.d=animalcreek.com header.i=@animalcreek.com header.b="g/OAwn8N";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="auIvCa4B"
+Received: from fhigh7-smtp.messagingengine.com (fhigh7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B101C54FB1;
-	Tue, 27 Feb 2024 15:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF5E1468E3;
+	Tue, 27 Feb 2024 15:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709047474; cv=none; b=ZmGOA5FwDjSumsJ3jm6atDTcKHwwv75qrJdBZcr7BtLmBc4l0rOqFNqyQENDvOdOSJAUGZpFRwSw9yynX8ksSdJpRCzRDkOBpS6kM2GCJC1Q7+TazrswxGisUbcYZ89mR9GokfxUEbxO0u0+gbz7nMkHFhaQ74gzSWZ0HdgfMPY=
+	t=1709047516; cv=none; b=ac5JU3rSX/+bB5OdDuUzjpT6NejdVxejENVtjyxCDbxelFDtkN+yNVY2FIcGaBLzkuN4HUM/abG0JnJ1a8JPpMvUlDXbkGHsqSp8vw5SqYWTJ3P8jncRpxrpZoEzdE77wEPGbEwEye6ynOx5ElYb5CL5MhmasH4e5cNxjIq+KTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709047474; c=relaxed/simple;
-	bh=GuTfgtHzMKbOGMBI9rNQiBxMjIpAwrQs7hdX/RHtN60=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RhJROpwzaRQFAMoD4MkOXt5fm0KEmhJzyG8r9LBhDH9l8wwI2Zsj5zqtDvJeGCjdzP5a/QFXO2fMzfc18lNZSlHRQbei6cyf+RuWZ7/IQ9tBFgIHQ3FlgDUzQbI2seg20P1aJgcXspPM/8jltRZn7HAY6AGlj2bYOFB/vE9fdjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=p4316UKj; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2440AE0010;
-	Tue, 27 Feb 2024 15:24:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709047464;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XnAHPEcowK5eolH8QESk6XYN95fzlShrEvPWb9+hJwQ=;
-	b=p4316UKjdx4lUOBO+8N8DeVFxUyyJ6Wa8qPAJw4hMN956lqYzDxtSkWx5cOiOMKOhbN6Ak
-	vxDKywlRMK2ijorAolfU2GERaCPuO4xDoxX0w9s8+k45I/bp87fVGHvw6K0IK/b0IJ2PkG
-	C6ujohvyp9VSCh3wo1Np6oWntS/502Bu1h9dEIwmmd9/CKuT97LMcHRl+GFbScNWC2+qhz
-	yz3i9fZKgcLGIQ+L80G6GYgAp0NFj485yKZTSWX8yXj1zkE+n7ZgO36jlP0F/GQZbVN03H
-	O+owmC60nrmS0LfYCoiggnqGp2kqQ0NrdmyBNXywXD3d2jDG3pIhgi0XRB9aWg==
-Date: Tue, 27 Feb 2024 16:24:22 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Saravana Kannan <saravanak@google.com>, Luca Ceresoli
- <luca.ceresoli@bootlin.com>, Nuno Sa <nuno.sa@analog.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Frank Rowand
- <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max Zhen
- <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>, Stefano Stabellini
- <stefano.stabellini@xilinx.com>, Jonathan Cameron
- <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>,
- Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Android Kernel Team
- <kernel-team@android.com>
-Subject: Re: [PATCH 2/2] of: overlay: Synchronize of_overlay_remove() with
- the devlink removals
-Message-ID: <20240227162422.76a00f11@bootlin.com>
-In-Reply-To: <CAGETcx_zB95nyTpi-_kYW_VqnPqMEc8mS9sewSwRNVr0x=7+kA@mail.gmail.com>
-References: <20231130174126.688486-1-herve.codina@bootlin.com>
-	<20231130174126.688486-3-herve.codina@bootlin.com>
-	<CAGETcx_zB95nyTpi-_kYW_VqnPqMEc8mS9sewSwRNVr0x=7+kA@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1709047516; c=relaxed/simple;
+	bh=/0CX/GTDlI99GNqGRU+WOoXiS5slLjuQQEO7NtWVgFs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JYkfZWaTmzD5vkOlpiAM+AEU39c/zGYLgfMt70HbOIMI++j1IqcVHssB2S+mKbVrGxe+cHg1Q5Wr4hC97gmOlfX9CQ9ddFYmzey14BqY8BIYpQ/S83+xsGX7uehfqxT5KhRrBrYpBwBufN7iuQcfJ8369qFdD1mLBt499DXFbs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=animalcreek.com; spf=pass smtp.mailfrom=animalcreek.com; dkim=pass (2048-bit key) header.d=animalcreek.com header.i=@animalcreek.com header.b=g/OAwn8N; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=auIvCa4B; arc=none smtp.client-ip=103.168.172.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=animalcreek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=animalcreek.com
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id EC67311400AB;
+	Tue, 27 Feb 2024 10:25:13 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 27 Feb 2024 10:25:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=animalcreek.com;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1709047513; x=
+	1709133913; bh=vk7zMywue6u8Ewys2yjE1YQdG3Ysi/Bjgx+fg8Jugd8=; b=g
+	/OAwn8Nnd5m2DeHCOg5TZK3ISBP+1I13sk4tur6CbpG6Zfo4jrTWcFTD287kNrM9
+	/ImIlcYeneF5cktE0bVwndusGl0UKNDbQkHL8D3580oIe5JkQ5er/jJyODDWNU4E
+	TJVzhKtyfxvhik86j2RGgD/RpPr661K4FfyXnFPs/jxrgLiRAv0deAGBAOPyz/TS
+	5EwPR/Sji/TG8uaQ8qzS2GB0NXLKPgh6mhK22n73uRUFy6HS9L8n5tBxoYvd+SIz
+	UPbj2DQMMn2LkK0vqJMSd0M5lkjb+LRfQlClFOdLJhQRurMPEkugnLuizbXXRbv6
+	UcyA5htnWMvFRUxmUEGUg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709047513; x=1709133913; bh=vk7zMywue6u8Ewys2yjE1YQdG3Ys
+	i/Bjgx+fg8Jugd8=; b=auIvCa4Bew62NXoHyKzQ9QD86zcWg4W/ntUvHxa3VrLP
+	swYPAQgJDNxhX57rC6LdlOFs2V/dfZDgruU526I144YNsOm3N/TlVNFKS/OYYuem
+	De+QROOwIaN+UdDeyQXdAUQwM+A0ddkCs3c0lXBV5xRglUyJcAWl0uryg+03EcTS
+	SofGAOpjCVpQiT/SP+V7TxKLJHJFo0GWxIgq6udPpsW8ezVOY/Tb+vZsB3enf/TY
+	DPZCJu3eTjP+7HX0N+27ZL0mrFoJDRPT7EY6P6D+bXXrB+TDGopfp89LDDQDyQnN
+	m+mj0bzwf3iwaUOUusFyqzw8BA+al/TSKQUi7bLPAQ==
+X-ME-Sender: <xms:2f7dZUJAXZnYXvIvAF2-0j4e77H-W92fq7tchj4kgDUkR6qJmJFfkw>
+    <xme:2f7dZULEPdV4H-hUqMxH8HXOwzwmxLOl_Uh7YQLP4JL8cgSUXCxPbcRP0jIoAyMhE
+    aR0xqCNRDdKofdxzg>
+X-ME-Received: <xmr:2f7dZUs02GkQ4DkmUxSU6tAkvA6nns-mWYm_v2FmV61osXXOTXaX0T4WzuNGQtWxJfQ8X8gZkLN6iQkgdhNLUNdQTvG0GdZzJ95q3O8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeehgdehudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjohesthdtredttddtvdenucfhrhhomhepofgrrhhk
+    ucfirhgvvghruceomhhgrhgvvghrsegrnhhimhgrlhgtrhgvvghkrdgtohhmqeenucggtf
+    frrghtthgvrhhnpeeugfejtefgteegieffjeejtedtveefvefffeegkefhtdehtdfgfeev
+    keegvedvgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpehmghhrvggvrhesrghnihhmrghltghrvggvkhdrtghomh
+X-ME-Proxy: <xmx:2f7dZRYSEdTKiw6R15rDIrPVYYebeNpstNURMPqaeJIp835TaHPDzA>
+    <xmx:2f7dZbY7EJ45ERcoMfNheIhetD0dCO0groHy2l0absyxjoqR0MAqAw>
+    <xmx:2f7dZdCMPUPcPY8MYFGAijD5ve1ergrRr_bjMufMdeqEoPOQ_2ZfYQ>
+    <xmx:2f7dZXrm061gXS4OrDsnJsGaqWnOESVkr1RdXkH9YjzHhh50JUKT-A>
+Feedback-ID: i9cc843c7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 27 Feb 2024 10:25:12 -0500 (EST)
+Received: by blue.animalcreek.com (Postfix, from userid 1000)
+	id 9CF18521078; Tue, 27 Feb 2024 08:25:11 -0700 (MST)
+Date: Tue, 27 Feb 2024 08:25:11 -0700
+From: Mark Greer <mgreer@animalcreek.com>
+To: Alex Elder <elder@ieee.org>
+Cc: Erick Archer <erick.archer@gmx.com>,
+	Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+	Mark Greer <mgreer@animalcreek.com>,
+	Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Kees Cook <keescook@chromium.org>, greybus-dev@lists.linaro.org,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] greybus: audio: apbridgea: Remove flexible array from
+ struct audio_apbridgea_hdr
+Message-ID: <Zd3+1xJnl7d22xIb@animalcreek.com>
+References: <20240217154758.7965-1-erick.archer@gmx.com>
+ <02cf87a3-4e92-4f6d-98f6-dfc0e198d462@ieee.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <02cf87a3-4e92-4f6d-98f6-dfc0e198d462@ieee.org>
+Organization: Animal Creek Technologies, Inc.
 
-Hi Saravana, Luca, Nuno,
-
-On Tue, 20 Feb 2024 16:37:05 -0800
-Saravana Kannan <saravanak@google.com> wrote:
-
-..
-
-> >
-> > diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-> > index a9a292d6d59b..5c5f808b163e 100644
-> > --- a/drivers/of/overlay.c
-> > +++ b/drivers/of/overlay.c
-> > @@ -1202,6 +1202,12 @@ int of_overlay_remove(int *ovcs_id)
-> >                 goto out;
-> >         }
-> >
-> > +       /*
-> > +        * Wait for any ongoing device link removals before removing some of
-> > +        * nodes
-> > +        */
-> > +       device_link_wait_removal();
-> > +  
+On Sat, Feb 17, 2024 at 03:18:59PM -0600, Alex Elder wrote:
+> On 2/17/24 9:47 AM, Erick Archer wrote:
+> > When a struct containing a flexible array is included in another struct,
+> > and there is a member after the struct-with-flex-array, there is a
+> > possibility of memory overlap. These cases must be audited [1]. See:
+> > 
+> > struct inner {
+> > 	...
+> > 	int flex[];
+> > };
+> > 
+> > struct outer {
+> > 	...
+> > 	struct inner header;
+> > 	int overlap;
+> > 	...
+> > };
+> > 
+> > This is the scenario for the "struct audio_apbridgea_hdr" structure
+> > that is included in the following "struct audio_apbridgea_*_request"
+> > structures:
 > 
-> Nuno in his patch[1] had this "wait" happen inside
-> __of_changeset_entry_destroy(). Which seems to be necessary to not hit
-> the issue that Luca reported[2] in this patch series. Is there any
-> problem with doing that?
+> Yeah this was not a very good way to define these header
+> structures, but I'm glad to hear the flexible array at the
+> end was never used.  I don't know why it was there; maybe
+> it's an artifact from some other information that got removed.
 > 
-> Luca for some reason did a unlock/lock(of_mutex) in his test patch and
-> I don't think that's necessary.
-
-I think the unlock/lock in Luca's case and so in Nuno's case is needed.
-
-I do the device_link_wait_removal() wihout having the of_mutex locked.
-
-Now, suppose I do the device_link_wait_removal() call with the of_mutex locked.
-The following flow is allowed and a deadlock is present.
-
-of_overlay_remove()
-  lock(of_mutex)
-     device_link_wait_removal()
-
-And, from the workqueue jobs execution:
-  ...
-    device_put()
-      some_driver->remove()
-        of_overlay_remove() <--- The job will never end.
-                                 It is waiting for of_mutex.
-                                 Deadlock
-
-A call to of_overlay_remove() from a driver remove() function is perfectly
-legit. A driver can use some overlays and it is already supported.
-For instance:
-  https://elixir.bootlin.com/linux/v6.8-rc6/source/drivers/of/unittest.c#L3946
-
-Unlocking/locking the mutex for the device_link_wait_removal() call opens
-a window with the mutex unlocked.
-
-What are the consequences of this mutex unlocked window during this
-of_overlay_remove() call?
-
+> If the code compiles with your change, it ought to be fine.
+> (It compiles for me.)
 > 
-> Can you move this call to where Nuno did it and see if that works for
-> all of you?
+> It would be good for Vaibhav or Mark to comment though, maybe
+> they can provide some context.
+
+Sorry for the delay guys.
+
+The way this was done comes from associated firmware that ran on the
+APBridge. This goes back a while but I think the packet headers may have
+been in flux at the time and this was a convenient way to change all of
+the packets if & when it changed.  Anyway, it doesn't seem so convenient
+now. :)
+
+So, yeah, getting rid of it sounds like a good thing to do to me.
+
+> I'd like to hear from these others, but otherwise this change
+> looks good to me.
 > 
-> [1] - https://lore.kernel.org/all/20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com/
-> [2] - https://lore.kernel.org/all/20231220181627.341e8789@booty/
-> 
+> Reviewed-by: Alex Elder <elder@linaro.org>
 
-If the unlock/lock can be done, I plan to unlock/call/lock in the beginning
-of free_overlay_changeset():
---- 8< ---
-@@ -853,6 +854,14 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
- {
-        int i;
- 
-+       /*
-+        * Wait for any ongoing device link removals before removing some of
-+        * nodes.
-+        */
-+       mutex_unlock(&of_mutex);
-+       device_link_wait_removal();
-+       mutex_lock(&of_mutex);
-+
-        if (ovcs->cset.entries.next)
-                of_changeset_destroy(&ovcs->cset);
---- 8< ---
 
-I prefer that location (drivers/of/overlay.c) instead of Nuno's one because
-of the unlock/call/lock need.
-Nuno's call is done in __of_changeset_entry_destroy() (drivers/of/dynamic.c)
-IMHO, I think it is easier to maintain with this lock, unlock/call/lock,
-unlock sequence in the same file (i.e. drivers/of/overlay.c).
+> > diff --git a/drivers/staging/greybus/audio_apbridgea.h b/drivers/staging/greybus/audio_apbridgea.h
+> > index efec0f815efd..ab707d310129 100644
+> > --- a/drivers/staging/greybus/audio_apbridgea.h
+> > +++ b/drivers/staging/greybus/audio_apbridgea.h
+> > @@ -65,7 +65,6 @@
+> >   struct audio_apbridgea_hdr {
+> >   	__u8	type;
+> >   	__le16	i2s_port;
+> > -	__u8	data[];
+> >   } __packed;
+> > 
+> >   struct audio_apbridgea_set_config_request {
+> > --
+> > 2.25.1
 
-Didn't test yet this modification as I need to setup one of my boards in the
-right context to reproduce the issue on my side.
-
-Also, I need to take into account some other comments received.
-
-Best regards,
-Hervé
+Acked-by: Mark Greer <mgreer@animalcreek.com>
 
