@@ -1,192 +1,283 @@
-Return-Path: <linux-kernel+bounces-83969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E1B86A0B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:14:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79BB486A0B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:16:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14454B21E27
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:14:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 960451C23E53
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B8714A4DD;
-	Tue, 27 Feb 2024 20:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E151414A4DC;
+	Tue, 27 Feb 2024 20:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="QO7oHusU"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hLPA0oQr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3154D5A2;
-	Tue, 27 Feb 2024 20:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC794D5A2
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709064888; cv=none; b=cuwBc+pfBNuycUn/dTs0MXmr0OGLL6KmyOouaXkddHbRb2NnlousR7NRrcpXc29Zrn8uAzK0/+GF7gNe+wmLOCbg5OEWJMaP1YZvTkcR+HJDDnGy6ov1f929pD0fHQho1rAnFtoDoW01wDP9BK9N//7So/aU7jtfw0VP0MLlXdE=
+	t=1709064959; cv=none; b=SkGYrVtOzlM7KoJ7EBxd9YuV2tdWh7+Adz55lfHNXxUoeJ6QpJufJMr44Jc+zZCVenrfrA0XC/zY5pxpgHWDujpC7KS90eTyyD7S9gz9SqitCy5soR9n8soUmEtUi3K4JxYRCPTXihJLZU5+l4y2eYtuyYpvK+smEN3QqvrNSOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709064888; c=relaxed/simple;
-	bh=kd4bIU/R8XOUWa99vIQj43v6ovZyK9dK3DLfkhNXoJw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zituv6EQXkeXCDvXr3XYdJ3oj/PBreNHfgXGRe39Izndo/WaHJqovw5GbDUlZY5Rj0djtcxAU776EtSpZWK9iReAm96I7/DCQ+zFqSyMt5INAHyuI7SpR6TgM4ye+awEbrpU1UhntEhFJEkoBxXtZsV96u4kGjLauoT9TakkfGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=QO7oHusU; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1709064867; x=1709669667; i=deller@gmx.de;
-	bh=kd4bIU/R8XOUWa99vIQj43v6ovZyK9dK3DLfkhNXoJw=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=QO7oHusUB70g1ugb29LZMtBP6Jae+PNM2TrL/rSQ+ai3N3t4FIBSlvOiLE1u+EWt
-	 Jp9qF+lnkDN0mOpo24uKictPEQ0Yp0t3UqJqTw9/w1K2BqsHIs53gljZqI4iFwJzv
-	 nYGtvgbws9tARyM1BFiMdHGERfM/39rbB+9o12iD80c3sqp0H/Wvy9ZH/pJq4PH3A
-	 6PBXFJrZeFcFpPOFSs6CJePu0owFu1t2UntlhiUmXWroVsr7C8pYEXTnIYfjJ/yok
-	 cHa6moYzdTj1E3dja4AZ7RGYcFCuzQ9AY5IdxKf66b/R3I+mlpM0W+vKvxavhspND
-	 6yodhB7i6w180ru6Zg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.157.76]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Msq6M-1qm8qJ0OtM-00tD4l; Tue, 27
- Feb 2024 21:14:27 +0100
-Message-ID: <d1a6fe49-19f9-433e-b275-209b59155193@gmx.de>
-Date: Tue, 27 Feb 2024 21:14:26 +0100
+	s=arc-20240116; t=1709064959; c=relaxed/simple;
+	bh=VK5ZLickJUjOy7+jY9XOUhZboq1Ll5OCYEdvttHFqc8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tSecLwc1ZURD3cVymyKWA6QSKLkCIROid3Nai1D0zsBgkfpU67TpDSBofZJB0kDSu369OiZcFlBj9UowkRpvBUVRCwe/IVkcx95k2TdVlQNuFi4FrXWsQ9ra1Y0ItCVUl7kJ3Pzsekn1+nyJSD8AKjFC+GQp53LI1+0+6shCuoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hLPA0oQr; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709064955;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Autf58lTUMoeQMpAqwvW0HpwA5+93miRhkjagXxn3PE=;
+	b=hLPA0oQrcyBuQp8nt/82hII/S3MUdHa7aw+llG3E8Wk5lyaAyHtMUJH5U4y4LLMsea2CSl
+	qYl29NOCsq6N44jH9K0Kk4XZz7oFRbpqVCacjKNkBJu8WmK1rXwo/AGodRTDw7739SB/ea
+	cSHUJMwFLaZNGcjxD7O+SR9IUPNmiHY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-224-1EfyVbW4OGWoPUVT6EhhTg-1; Tue, 27 Feb 2024 15:15:51 -0500
+X-MC-Unique: 1EfyVbW4OGWoPUVT6EhhTg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B4272811E81;
+	Tue, 27 Feb 2024 20:15:50 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.192.77])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 0F08A40C122C;
+	Tue, 27 Feb 2024 20:15:48 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	David Hildenbrand <david@redhat.com>,
+	Barry Song <v-songbaohua@oppo.com>,
+	Vishal Moola <vishal.moola@gmail.com>,
+	Ryan Roberts <ryan.roberts@arm.com>
+Subject: [PATCH v1] mm: convert folio_estimated_sharers() to folio_likely_mapped_shared()
+Date: Tue, 27 Feb 2024 21:15:48 +0100
+Message-ID: <20240227201548.857831-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] parisc: More csum_ipv6_magic fixes
-Content-Language: en-US
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
- Charlie Jenkins <charlie@rivosinc.com>, linux-parisc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240227185334.2697324-1-linux@roeck-us.net>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20240227185334.2697324-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PSbiFV3/SYww6osXvB3DYUhh8Gu3seUiRSHekdz2E3m7h46kfEU
- I3Pet6xRIRdQFQH5O2Du7W5goBrP3tCr8A4gwliBeUpcUS5rUdHSDqkyWIGgiqpEHCdbY/k
- Pwd6ThjMaem75VKXXjz/qG60+11EzG1bM2y/DrQJJO0Jxx1FwZH3wVJe0hxXQ6oTZB9Wi75
- adZemBnMc4WnKlbor4Bgw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:HsFkZDSaxUA=;xlgBdRntWGQI0DDwdECWGLzE3Zk
- akuxByW5CNyD8LmSRXSaCuz0NXAwK5ubKfITznC4mDKM6AAAkwbEtZ5d4FBSyNXy8bGVWu+EI
- tjg8cncpRO21u6JlOYx+GiKNcjeoR93yyVdmmgM70cB8LmzxEDMuwvOaW2XtbAA4KatJaH9fP
- uIxSlRB3KuyXS5dSSN6/6fcsBYgEHRlorl/F3+jkiH8GgM2CEdi33pat6W+C4VhBDscDuZp/s
- ayj+Mc6M1ve/KnwWCi2KEXcDgG7OMVmHK9dxRe+h6YhV6/RFOR4YW2+1kH2aC1B9noKK/ZgRg
- lJfdRU7IwhVTNlMWXbiQYUNv1khCRCSKq1LfTMRvaIJTEi1Af9x5be1mnd6MRewoeptO4KUTI
- hlf50DGcxyrjfJ7E6jSzTshFvCK3uz56dKrnCf2IE8V+S9G8FpmUYsKj5O4ByahLyqY7mq+gW
- J1Vg6K52RmF+HJllmjw6/UdPPhD3ZEbJI+QgemKnx9dWKAv8IpGOhTaroIdBIGHa7mUJWhfzz
- EXHL1HiDvUqXBGkGE2v4UzVC3JK5zlYXR3l6TB6dl4iVKZIWb9rpQEFItyCXj6l8GWeJ0IB4V
- wQcNkZg9dc+OiC2V4cvoQLPf2/Trhp6lMK56raXDNqDBmigmoM/EOVmIbM1mjl6uU6iAtCmlo
- 6FSD3Sv0se8UdDouL8l0/Ai7r7GZGLHb++qbkZ3pe2uPgiTbZ3FATkd1M1An52azPdp512vsw
- BWIpYahaduURua7fJzGmujXJwsPnNLykWHatsKBK3pFdUvqXxfriC69m95mn3kbhIdv2L+0LW
- xrt85yd/ytzMsnPtc0mNU4w7MbHYjAw+GX96/1bPg1HXw=
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On 2/27/24 19:53, Guenter Roeck wrote:
-> IPv6 checksum tests with unaligned addresses resulted in unexpected
-> failures.
->
-> Expected expected =3D=3D csum_result, but
->      expected =3D=3D 46591 (0xb5ff)
->      csum_result =3D=3D 46381 (0xb52d)
-> with alignment offset 1
->
-> Oddly enough, the problem disappeared after adding test code into
-> the beginning of csum_ipv6_magic().
->
-> As it turns out, the 'sum' parameter of csum_ipv6_magic() is declared as
-> __wsum, which is a 32-bit variable type. However, it is treated as 64-bi=
-t
-> variable in the assembler code.
+Callers of folio_estimated_sharers() only care about "mapped shared vs.
+mapped exclusively", not the exact estimate of sharers. Let's consolidate
+and unify the condition users are checking. While at it clarify the
+semantics and extend the discussion on the fuzziness.
 
-Nice catch!
-That kind of bugs is actually the reason why I start to prefer
-C-code over inline assembly, even if C might perform slower.
+Use the "likely mapped shared" terminology to better express what the
+(adjusted) function actually checks.
 
-I've applied that patch to the parisc git tree, but do you think
-you can come up with a better patch title, e.g.
-"strip upper 32bits of sum in csum_ipv6_magic()" ?
+Whether a partially-mappable folio is more likely to not be partially
+mapped than partially mapped is debatable. In the future, we might be able
+to improve our estimate for partially-mappable folios, though.
 
-Other than that you may add
-Acked-by: Helge Deller <deller@gmx.de>
+Note that we will now consistently detect "mapped shared" only if the
+first subpage is actually mapped multiple times. When the first subpage
+is not mapped, we will consistently detect it as "mapped exclusively".
+This change should currently only affect the usage in
+madvise_free_pte_range() and queue_folios_pte_range() for large folios: if
+the first page was already unmapped, we would have skipped the folio.
 
-Helge
+Cc: Barry Song <v-songbaohua@oppo.com>
+Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ include/linux/mm.h | 46 ++++++++++++++++++++++++++++++++++++----------
+ mm/huge_memory.c   |  2 +-
+ mm/madvise.c       |  6 +++---
+ mm/memory.c        |  2 +-
+ mm/mempolicy.c     | 14 ++++++--------
+ mm/migrate.c       |  8 ++++----
+ 6 files changed, 51 insertions(+), 27 deletions(-)
 
-> Tests showed that the upper 32 bit of
-> the register used to pass the variable are _not_ cleared when entering
-> the function. This can result in checksum calculation errors.
->
-> Clearing the upper 32 bit of 'sum' as first operation in the assembler
-> code fixes the problem.
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> Maybe there is a way to do this without additional instruction, but if s=
-o
-> I have not been able to find it.
->
->   arch/parisc/include/asm/checksum.h | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/arch/parisc/include/asm/checksum.h b/arch/parisc/include/as=
-m/checksum.h
-> index c949aa20fa16..2aceebcd695c 100644
-> --- a/arch/parisc/include/asm/checksum.h
-> +++ b/arch/parisc/include/asm/checksum.h
-> @@ -126,6 +126,7 @@ static __inline__ __sum16 csum_ipv6_magic(const stru=
-ct in6_addr *saddr,
->   	** Try to keep 4 registers with "live" values ahead of the ALU.
->   	*/
->
-> +"	depdi		0, 31, 32, %0\n"/* clear upper half of incoming checksum */
->   "	ldd,ma		8(%1), %4\n"	/* get 1st saddr word */
->   "	ldd,ma		8(%2), %5\n"	/* get 1st daddr word */
->   "	add		%4, %0, %0\n"
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 6f4825d829656..795c89632265f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2147,21 +2147,47 @@ static inline size_t folio_size(struct folio *folio)
+ }
+ 
+ /**
+- * folio_estimated_sharers - Estimate the number of sharers of a folio.
++ * folio_likely_mapped_shared - Estimate if the folio is mapped into the page
++ *				tables of more than one MM
+  * @folio: The folio.
+  *
+- * folio_estimated_sharers() aims to serve as a function to efficiently
+- * estimate the number of processes sharing a folio. This is done by
+- * looking at the precise mapcount of the first subpage in the folio, and
+- * assuming the other subpages are the same. This may not be true for large
+- * folios. If you want exact mapcounts for exact calculations, look at
+- * page_mapcount() or folio_total_mapcount().
++ * This function checks if the folio is currently mapped into more than one
++ * MM ("mapped shared"), or if the folio is only mapped into a single MM
++ * ("mapped exclusively").
+  *
+- * Return: The estimated number of processes sharing a folio.
++ * As precise information is not easily available for all folios, this function
++ * estimates the number of MMs ("sharers") that are currently mapping a folio
++ * using the number of times the first page of the folio is currently mapped
++ * into page tables.
++ *
++ * For small anonymous folios (except KSM folios) and anonymous hugetlb folios,
++ * the return value will be exactly correct, because they can only be mapped
++ * at most once into an MM, and they cannot be partially mapped.
++ *
++ * For other folios, the result can be fuzzy:
++ * (a) For partially-mappable large folios (THP), the return value can wrongly
++ *     indicate "mapped exclusively" (false negative) when the folio is
++ *     only partially mapped into at least one MM.
++ * (b) For pagecache folios (including hugetlb), the return value can wrongly
++ *     indicate "mapped shared" (false positive) when two VMAs in the same MM
++ *     cover the same file range.
++ * (c) For (small) KSM folios, the return value can wrongly indicate "mapped
++ *     shared" (false negative), when the folio is mapped multiple times into
++ *     the same MM.
++ *
++ * Further, this function only considers current page table mappings that
++ * are tracked using the folio mapcount(s). It does not consider:
++ * (1) If the folio might get mapped in the (near) future (e.g., swapcache,
++ *     pagecache, temporary unmapping for migration).
++ * (2) If the folio is mapped differently (VM_PFNMAP).
++ * (3) If hugetlb page table sharing applies. Callers might want to check
++ *     hugetlb_pmd_shared().
++ *
++ * Return: Whether the folio is estimated to be mapped into more than one MM.
+  */
+-static inline int folio_estimated_sharers(struct folio *folio)
++static inline bool folio_likely_mapped_shared(struct folio *folio)
+ {
+-	return page_mapcount(folio_page(folio, 0));
++	return page_mapcount(folio_page(folio, 0)) > 1;
+ }
+ 
+ #ifndef HAVE_ARCH_MAKE_PAGE_ACCESSIBLE
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 50d146eb248ff..4d10904fef70c 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1829,7 +1829,7 @@ bool madvise_free_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 	 * If other processes are mapping this folio, we couldn't discard
+ 	 * the folio unless they all do MADV_FREE so let's skip the folio.
+ 	 */
+-	if (folio_estimated_sharers(folio) != 1)
++	if (folio_likely_mapped_shared(folio))
+ 		goto out;
+ 
+ 	if (!folio_trylock(folio))
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 44a498c94158c..32a534d200219 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -366,7 +366,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		folio = pfn_folio(pmd_pfn(orig_pmd));
+ 
+ 		/* Do not interfere with other mappings of this folio */
+-		if (folio_estimated_sharers(folio) != 1)
++		if (folio_likely_mapped_shared(folio))
+ 			goto huge_unlock;
+ 
+ 		if (pageout_anon_only_filter && !folio_test_anon(folio))
+@@ -453,7 +453,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+ 		if (folio_test_large(folio)) {
+ 			int err;
+ 
+-			if (folio_estimated_sharers(folio) > 1)
++			if (folio_likely_mapped_shared(folio))
+ 				break;
+ 			if (pageout_anon_only_filter && !folio_test_anon(folio))
+ 				break;
+@@ -677,7 +677,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
+ 		if (folio_test_large(folio)) {
+ 			int err;
+ 
+-			if (folio_estimated_sharers(folio) != 1)
++			if (folio_likely_mapped_shared(folio))
+ 				break;
+ 			if (!folio_trylock(folio))
+ 				break;
+diff --git a/mm/memory.c b/mm/memory.c
+index 1c45b6a42a1b9..8394a9843ca06 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5173,7 +5173,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 	 * Flag if the folio is shared between multiple address spaces. This
+ 	 * is later used when determining whether to group tasks together
+ 	 */
+-	if (folio_estimated_sharers(folio) > 1 && (vma->vm_flags & VM_SHARED))
++	if (folio_likely_mapped_shared(folio) && (vma->vm_flags & VM_SHARED))
+ 		flags |= TNF_SHARED;
+ 
+ 	nid = folio_nid(folio);
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index f60b4c99f1302..0b92fde395182 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -642,12 +642,11 @@ static int queue_folios_hugetlb(pte_t *pte, unsigned long hmask,
+ 	 * Unless MPOL_MF_MOVE_ALL, we try to avoid migrating a shared folio.
+ 	 * Choosing not to migrate a shared folio is not counted as a failure.
+ 	 *
+-	 * To check if the folio is shared, ideally we want to make sure
+-	 * every page is mapped to the same process. Doing that is very
+-	 * expensive, so check the estimated sharers of the folio instead.
++	 * See folio_likely_mapped_shared() on possible imprecision when we
++	 * cannot easily detect if a folio is shared.
+ 	 */
+ 	if ((flags & MPOL_MF_MOVE_ALL) ||
+-	    (folio_estimated_sharers(folio) == 1 && !hugetlb_pmd_shared(pte)))
++	    (!folio_likely_mapped_shared(folio) && !hugetlb_pmd_shared(pte)))
+ 		if (!isolate_hugetlb(folio, qp->pagelist))
+ 			qp->nr_failed++;
+ unlock:
+@@ -1032,11 +1031,10 @@ static bool migrate_folio_add(struct folio *folio, struct list_head *foliolist,
+ 	 * Unless MPOL_MF_MOVE_ALL, we try to avoid migrating a shared folio.
+ 	 * Choosing not to migrate a shared folio is not counted as a failure.
+ 	 *
+-	 * To check if the folio is shared, ideally we want to make sure
+-	 * every page is mapped to the same process. Doing that is very
+-	 * expensive, so check the estimated sharers of the folio instead.
++	 * See folio_likely_mapped_shared() on possible imprecision when we
++	 * cannot easily detect if a folio is shared.
+ 	 */
+-	if ((flags & MPOL_MF_MOVE_ALL) || folio_estimated_sharers(folio) == 1) {
++	if ((flags & MPOL_MF_MOVE_ALL) || !folio_likely_mapped_shared(folio)) {
+ 		if (folio_isolate_lru(folio)) {
+ 			list_add_tail(&folio->lru, foliolist);
+ 			node_stat_mod_folio(folio,
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 73a052a382f13..35d376969f8b9 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -2568,11 +2568,11 @@ int migrate_misplaced_folio(struct folio *folio, struct vm_area_struct *vma,
+ 	/*
+ 	 * Don't migrate file folios that are mapped in multiple processes
+ 	 * with execute permissions as they are probably shared libraries.
+-	 * To check if the folio is shared, ideally we want to make sure
+-	 * every page is mapped to the same process. Doing that is very
+-	 * expensive, so check the estimated mapcount of the folio instead.
++	 *
++	 * See folio_likely_mapped_shared() on possible imprecision when we
++	 * cannot easily detect if a folio is shared.
+ 	 */
+-	if (folio_estimated_sharers(folio) != 1 && folio_is_file_lru(folio) &&
++	if (folio_likely_mapped_shared(folio) && folio_is_file_lru(folio) &&
+ 	    (vma->vm_flags & VM_EXEC))
+ 		goto out;
+ 
+-- 
+2.43.2
 
 
