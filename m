@@ -1,173 +1,161 @@
-Return-Path: <linux-kernel+bounces-83710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3704F869D88
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:27:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64CEB869D94
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:28:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63F61F229F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:27:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05FFA1F21CDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:28:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15711509AB;
-	Tue, 27 Feb 2024 17:22:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A90614A08F;
+	Tue, 27 Feb 2024 17:23:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="nCcUC0pG"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XJOxg1si"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D408454F8D
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:22:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DD81487EB;
+	Tue, 27 Feb 2024 17:23:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709054562; cv=none; b=XZF/PcYoKb2Uz01DHKzi5pbbBj4j/BCY17C477BwgquWgHeHz6ycRvOvu/SxXToV+hIwNkvpSXyf49v074VbsEVBZ+Q1LLhqbYGmwVl3rALyMCzJfAzFe0NFeK4ZvG+ESQry/rnNFGySlJhGrPAhTW2IL90x1lU+H0cqL+nqQQo=
+	t=1709054637; cv=none; b=N2m/UOBKMGiswoYqPAmSMNRC60vZX4uTax9um6eGUpLt5O7ndtEtiy9BRW1kaFwJQ0sv/VjrjjxxeeaXz1CmD93k7Fq1NiDxRrV4/578qgZpHWk6RkW/6PRCRMoKv3BHmUdG+NsXRv/XnGDkm/L1h4McSsbiXG8+o0wCygIUF/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709054562; c=relaxed/simple;
-	bh=ZdYSOcXMrGX3m2+orVkqUmLPJ7u+bym3zBa/753fpK4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ObqZcj4oTNEValleed3BNkKyOGZ6IyasezUVNCChvuU5gKPPNkOY3dWO4TZ+d8syg25eHHtiZ2qo9mkM5REoECsBLEZuNYkGtwhjE8+J36AbXJTe1eOPxXI+FWcyC2/+zXJutLjv/MxROzOrmcfe1OIS9i+/QmblOu+UdNXHrLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=nCcUC0pG; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-299b92948a6so3141661a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:22:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709054557; x=1709659357; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=IUVk9tfv2/TEKzQQvdgVWT/1BpblCVMDABxz0woItG4=;
-        b=nCcUC0pGVAHyXX1Lqi0sIdd5eB4yOJHatGI35TAURJ5FJgJxZNViQZkiUevMrcef5w
-         8CSu64042KapO/HfA4A6YiV+vdUBT3gXB3697VE2U8GwmGYisAj0p/ULzTYkhpYrKG3T
-         bA89zJR5pDXSadakbvnO23D1AWUFWk0+zEBo4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709054557; x=1709659357;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IUVk9tfv2/TEKzQQvdgVWT/1BpblCVMDABxz0woItG4=;
-        b=LFBpFMXuMTrnr3B7k7Vr7nGU17zdpP6jOzh+oZr+aLc71DQz3AFZG8k9eVXX2UBwls
-         jqcyCYWCnWKkzhWo5uTUOnVqpfOtlm6C/jzZT2bhSrxkfSsBss1B/wOdpinP5yBGHYDY
-         5zj/jQRCJc2aon2bgz70Xk9rVayy7bUZ0sOmzGX755LTWPpAiD+hCjkdIyDkl8BlaQm2
-         1lf2Y7r7qLQa0s8x2qiX9207MSWU99hY+0+XZxvb1pFWbJLiwGKjtJ6jNlF21rbEtjEI
-         I7+LHZ3VSPpGkHQAkdQkHfLqHCf1YAzNaBjvbvmVVG0CWLEGpVEoZ7oLJm2qKWF63jy3
-         NUFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWKzyLQ/BJ+KREgAysWNRxWFU2Imj9Bw4GMIWCZRcCXGSwhLVtII7DIObPwtjS3/YE5nDWMUgzgVmje7Y3K+vTEdI0dtoZPbrRhRmTt
-X-Gm-Message-State: AOJu0YzSr3T3VBDnpDHOTp+DOF5A2MA5UHrpPY8VNtwlbuU96KbBOiB8
-	Ig0ZieHviGsDxvx0lML9aj97kn66p+vQ43MI2XJYGFUYSjtShwtjenVCvv29Dg==
-X-Google-Smtp-Source: AGHT+IFJl/Kx/RszupPCRJKfaJbO35UqIx2NyIF5Jao1TcmzBVFuX2aec/PdN2rwgRMAQpvLp7NtlQ==
-X-Received: by 2002:a17:90a:8c0b:b0:29a:be15:9c90 with SMTP id a11-20020a17090a8c0b00b0029abe159c90mr6250776pjo.34.1709054557201;
-        Tue, 27 Feb 2024 09:22:37 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x92-20020a17090a6c6500b00298d8804ba8sm9585587pjj.46.2024.02.27.09.22.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 09:22:36 -0800 (PST)
-Date: Tue, 27 Feb 2024 09:22:35 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Jan Bujak <j@exia.io>, Pedro Falcato <pedro.falcato@gmail.com>,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: Recent-ish changes in binfmt_elf made my program segfault
-Message-ID: <202402270911.961702D7D6@keescook>
-References: <c7209e19-89c4-446a-b364-83100e30cc00@exia.io>
- <CAKbZUD2=W0Ng=rFVDn3UwSxtGQ5c13tRwkpqm54pPCJO0BraWA@mail.gmail.com>
- <f2ee9602-0a32-4f0c-a69b-274916abe27f@exia.io>
- <202402261821.F2812C9475@keescook>
- <878r35rkc4.fsf@email.froward.int.ebiederm.org>
+	s=arc-20240116; t=1709054637; c=relaxed/simple;
+	bh=JKaLeWJMv2PiLodxVF66I8/DgXnvXTCAEkmR/iAlsMA=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=I+kR6AS/Wkud+VRHLtaP7eoxvRSPvz6riBQ/AlZxZZig6k9PAulG9tbGrxS0YN6zMOonOl/B6V/p2xrHG1t3TH70yRKRLGeNA/FZC+Al5Xs0bDgtmO3Rj/fC6HtdFWikwO4vRQo8/ITT3BW950GRHd7JRfKtBywpHafL9Tjcrbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XJOxg1si; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B123D60003;
+	Tue, 27 Feb 2024 17:23:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709054631;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sl3yY0W8c5HJd45w2Vd535hfLRJOaX7Ck1Cj7Bauwxc=;
+	b=XJOxg1siDRaJgIfy64860PCWq4wFV5cuCinGiDdOwRKiX6ANk4dFMOr6WfOJNhFT5AGfE9
+	VMTvHBOM6oJR+7rYkkhDC6WHj3ZtnfRiN6kJqubVDYic5KDv2689jr8KNswAaPYxbxcRdd
+	asKmhwLumJQj2RdBlxr5Qpo9RcIec+VDhW4WKUbLm0Y81D3FYRO9+jtyH6ugJI1hoo71Ag
+	5zK2I1mZ7fcsPo2eka09VbAOmflI8GtvuX9hR+5MhmbaNS5NnDd2g+LkJq58p33//0SSrW
+	3INvr9x8HcV6KbqqEMfe/JkiZo7d4Jd7FpFiCxvjC09wD5ezQiDNaQzySvVrPw==
+Date: Tue, 27 Feb 2024 18:23:46 +0100
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Adam Ford <aford173@gmail.com>
+Cc: Marco Felsch <m.felsch@pengutronix.de>,
+ linux-arm-kernel@lists.infradead.org, linux-phy@lists.infradead.org, Marek
+ Vasut <marex@denx.de>, Kishon Vijay Abraham I <kishon@kernel.org>, Conor
+ Dooley <conor+dt@kernel.org>, Fabio Estevam <festevam@gmail.com>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>, Will Deacon
+ <will@kernel.org>, Rob Herring <robh@kernel.org>, imx@lists.linux.dev,
+ Sascha Hauer <s.hauer@pengutronix.de>, aford@beaconembedded.com,
+ linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Catalin Marinas
+ <catalin.marinas@arm.com>, Shawn Guo <shawnguo@kernel.org>,
+ devicetree@vger.kernel.org, Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH V6 5/6] arm64: dts: imx8mp: add HDMI display pipeline
+Message-ID: <20240227182346.6e67cc88@booty>
+In-Reply-To: <CAHCN7xKnEvrfYMZau95e7aknTkdqrQLfgWZTfb6mS3Yt5BT6+Q@mail.gmail.com>
+References: <20240226234532.80114-1-aford173@gmail.com>
+	<20240226234532.80114-6-aford173@gmail.com>
+	<20240227083301.4saxxuv4n6aoqnl6@pengutronix.de>
+	<CAHCN7xKnEvrfYMZau95e7aknTkdqrQLfgWZTfb6mS3Yt5BT6+Q@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <878r35rkc4.fsf@email.froward.int.ebiederm.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: luca.ceresoli@bootlin.com
 
-On Tue, Feb 27, 2024 at 09:35:39AM -0600, Eric W. Biederman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> 
-> > On Tue, Jan 23, 2024 at 12:23:27AM +0900, Jan Bujak wrote:
-> >> On 1/22/24 23:54, Pedro Falcato wrote:
-> >> > Hi!
-> >> > 
-> >> > Where did you get that linker script?
-> >> > 
-> >> > FWIW, I catched this possible issue in review, and this was already
-> >> > discussed (see my email and Eric's reply):
-> >> > https://lore.kernel.org/all/CAKbZUD3E2if8Sncy+M2YKncc_Zh08-86W6U5wR0ZMazShxbHHA@mail.gmail.com/
-> >> > 
-> >> > This was my original testcase
-> >> > (https://github.com/heatd/elf-bug-questionmark), which convinced the
-> >> > loader to map .data over a cleared .bss. Your bug seems similar, but
-> >> > does the inverse: maps .bss over .data.
-> >> > 
-> >> 
-> >> I wrote the linker script myself from scratch.
+On Tue, 27 Feb 2024 07:51:58 -0600
+Adam Ford <aford173@gmail.com> wrote:
+
+> On Tue, Feb 27, 2024 at 2:33=E2=80=AFAM Marco Felsch <m.felsch@pengutroni=
+x.de> wrote:
 > >
-> > Do you still need this addressed, or have you been able to adjust the
-> > linker script? (I ask to try to assess the priority of needing to fix
-> > this behavior change...)
-> 
-> Kees, I haven't had a chance to test this yet but it occurred to me
-> that there is an easy way to handle this.  In our in-memory copy
-> of the elf program headers we can just merge the two segments
-> together.
-> 
-> I believe the diff below accomplishes that, and should fix issue.
-> 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> 
-> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> index 5397b552fbeb..01df7dd1f3b4 100644
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -924,6 +926,31 @@ static int load_elf_binary(struct linux_binprm *bprm)
->  	elf_ppnt = elf_phdata;
->  	for (i = 0; i < elf_ex->e_phnum; i++, elf_ppnt++)
->  		switch (elf_ppnt->p_type) {
-> +		case PT_LOAD:
-> +		{
-> +			/*
-> +			 * Historically linux ignored all but the
-> +			 * final .bss segment.  Now that linux honors
-> +			 * all .bss segments, a .bss segment that
-> +			 * logically is not overlapping but is
-> +			 * overlapping when it's edges are rounded up
-> +			 * to page size causes programs to fail.
-> +			 *
-> +			 * Handle that case by merging .bss segments
-> +			 * into the segment they follow.
-> +			 */
-> +			if (((i + 1) >= elf_ex->e_phnum) ||
-> +			    (elf_ppnt[1].p_type != PT_LOAD) ||
-> +			    (elf_ppnt[1].p_filesz != 0))
-> +				continue;
-> +			unsigned long end =
-> +				elf_ppnt[0].p_vaddr + elf_ppnt[0].p_memsz;
-> +			if (elf_ppnt[1].p_vaddr != end)
-> +				continue;
-> +			elf_ppnt[0].p_memsz += elf_ppnt[1].p_memsz;
-> +			elf_ppnt[1].p_type = PT_NULL;
-> +			break;
-> +		}
->  		case PT_GNU_STACK:
->  			if (elf_ppnt->p_flags & PF_X)
->  				executable_stack = EXSTACK_ENABLE_X;
+> > Hi Adam,
+> >
+> > thanks a lot for pushing this topic.
+> >
+> > On 24-02-26, Adam Ford wrote: =20
+> > > From: Lucas Stach <l.stach@pengutronix.de>
+> > >
+> > > This adds the DT nodes for all the peripherals that make up the
+> > > HDMI display pipeline.
+> > >
+> > > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > > Tested-by: Marek Vasut <marex@denx.de>
+> > > Tested-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+> > > ---
+> > > V6:  Make LCDIF3 disabled by default
+> > >
+> > > V5:  No change
+> > >
+> > > V3:  Re-ordered the HDMI parts to properly come after irqstree_hdmi
+> > >      inside AIPS4.  Change size of LCDIF3 and PVI to match TRM sizes
+> > >      of 4KB.
+> > >
+> > > V2:  I took this from Lucas' original submission with the following:
+> > >      Removed extra clock from HDMI-TX since it is now part of the
+> > >      power domain
+> > >      Added interrupt-parent to PVI
+> > >      Changed the name of the HDMI tranmitter to fsl,imx8mp-hdmi-tx
+> > >      Added ports to HDMI-tx
+> > > ---
+> > >  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 95 +++++++++++++++++++++=
+++
+> > >  1 file changed, 95 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/b=
+oot/dts/freescale/imx8mp.dtsi
+> > > index 18bfa7d9aa7f..637b0265b0f1 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > > @@ -1940,6 +1940,101 @@ irqsteer_hdmi: interrupt-controller@32fc2000 {
+> > >                               clock-names =3D "ipg";
+> > >                               power-domains =3D <&hdmi_blk_ctrl IMX8M=
+P_HDMIBLK_PD_IRQSTEER>;
+> > >                       };
+> > > +
+> > > +                     hdmi_pvi: display-bridge@32fc4000 {
+> > > +                             compatible =3D "fsl,imx8mp-hdmi-pvi";
+> > > +                             reg =3D <0x32fc4000 0x1000>;
+> > > +                             interrupt-parent =3D <&irqsteer_hdmi>;
+> > > +                             interrupts =3D <12>;
+> > > +                             power-domains =3D <&hdmi_blk_ctrl IMX8M=
+P_HDMIBLK_PD_PVI>; =20
+> >
+> > this node should be 'status =3D "disabled";' as reported by Luca else t=
+his
+> > node will EPROBE_DEFER. With that beeing fixed you can add my: =20
+>=20
+> sorry I missed that one...and I though I was done...sigh.  I hope it's
+> not too late to get this into the next release.
+> >
+> > Tested-by: Marco Felsch <m.felsch@pengutronix.de>
+> > =20
+>=20
+> I'll push a V7 tonight and add your tested-by.  Thanks for testing.
 
-I don't think this is safe -- it isn't looking at flags, etc. e.g.,
-something like this could break:
+And with that fixed you can add to v7:
 
-  Type  Offset   VirtAddr  PhysAddr  FileSiz  MemSiz   Flg Align
-  LOAD  0x003000 0x12000   0x12000   0x001000 0x001000 R E 0x1000
-  LOAD  0x004000 0x13000   0x13000   0x000000 0x001000 RW  0x1000
+ Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
 
-Hmm
+Luca
 
--- 
-Kees Cook
+--=20
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
