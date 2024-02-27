@@ -1,221 +1,209 @@
-Return-Path: <linux-kernel+bounces-83090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A418B868E4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:04:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7576B868E54
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:06:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EBB01F244A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:04:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30C77288AB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:05:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0938D1386CB;
-	Tue, 27 Feb 2024 11:04:36 +0000 (UTC)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B071386D4;
+	Tue, 27 Feb 2024 11:05:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kQkBG4+X"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B9C130ADF;
-	Tue, 27 Feb 2024 11:04:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709031875; cv=none; b=FbMeGegxyAk3/HK7IewypU6w2dmiZ4WFYtcBbmluY3oY8bXWuKiqSw5kf8yANOFvLQSMI564VYsVJQxgtWNlrK+U49d3Ww740f6P2wS+DBxCIFYiNgDAI2QxSzZRAiYnyzpqcwUZsUdZeHjKSfLOZrRM59V3gsnczqASQ8rK6U8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709031875; c=relaxed/simple;
-	bh=kM9J1nLU0MN3h/U6de1ypqHdb9KiOVaBWFUfIh6BRAU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A1YsIHAWWR1F1L+MhZ77NI9TvH6Vnt8G+79U32TZ8dBkj8JGJN6MKd6qpb4C9Xl5rbaEAVj+ypdcNnxTVgWUUGi29j7RSfBU+7pgpnXOIjbl1aoFMuKykYiX1+edJrUMcdoOmQvfs735YVkbDN9qtn+089xEgKcNQy0pt0Kaj3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-608d55ab7b0so28052607b3.1;
-        Tue, 27 Feb 2024 03:04:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709031870; x=1709636670;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xPv5tY8IlTb3U7rQdZHsbYJc9/8vKc1NrUUSdhaGOUc=;
-        b=VKrkAjnyb828d55QjKTklmegqGMpRZ+rFoMG0mIbakmQCUkO6xGGPRtlQpxD2toC9u
-         dJmgozYZjTCKDuFlh7ChVT/x99h8VVTIPYpWeZGKl9W4tFuVcefEX4QVl+/1fE1sjc8i
-         iVIkMyqTIg6pqmDFhYDWfBXRZh5us95n6MecZqqLg2HlNBKWzcENaEgObqweJlEnFqX+
-         E+ZvlIWrxVbL25DbxMl3LVd+6HJPRxoqcuKJap+XXMh/uaTRPIk/YLqfQzzmzIl8PbJh
-         w9SNv1gW01ek37igxjPJbH/sPhzFt574a/2v+JZBYHuUOpkN6rx1d/vAnw56r0+g5x54
-         +jDw==
-X-Forwarded-Encrypted: i=1; AJvYcCWccuPISk8l5VDXR7oiwJMfuPIuOy9RkAnV4Wt+DwCYL19AELNkNF5eLjrMoVGhhqwNLOnIr0WT/jPYuvTtTfqduovs4QQHtFd3YQ/QJ178NWzHn0XsSmkt3Xubu9vAE0GAhnvN3ItD0Pwq83tM1QX8UVIS7IC1W32lZt3IeVc8JK05KfgrfYQL5ayD
-X-Gm-Message-State: AOJu0Yx+WLwhl/g6A11SDHNh0Lx0Tv1Y06XykGqJDEC1KBehhj0IrIli
-	UqUIJ9I9McGHPaNYgZxq2ShVvvoqJLeYP96g7ScaiqyT4CfsSySJFEF/YvAJ2xM=
-X-Google-Smtp-Source: AGHT+IH3nCYhdCtPIrVCOl+x/iPQwL95EBbhEfcIaTCO16G06irj1ZTLMNBrOgF2kdlsuO0tVG/K5A==
-X-Received: by 2002:a81:8d0b:0:b0:608:20df:8b15 with SMTP id d11-20020a818d0b000000b0060820df8b15mr1428538ywg.3.1709031870309;
-        Tue, 27 Feb 2024 03:04:30 -0800 (PST)
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com. [209.85.219.182])
-        by smtp.gmail.com with ESMTPSA id c62-20020a0dda41000000b006078c48a265sm1714178ywe.6.2024.02.27.03.04.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 03:04:29 -0800 (PST)
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc74435c428so3645352276.2;
-        Tue, 27 Feb 2024 03:04:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVyCV38Vc5aakNCF24Jf7+Ile8DTWMLrtAPEEvygQUvhHc1SFlwLw9wPhsmhwG8yEqTgxDLgllqKSF2kKtHRG3LU5uThYccg+4JPh/3eRzr7PIwWEDbSaFNcKYwl0ZbyamH18W2/Ab5kGXkvMknoK2RHZQhs41DA5ct2SVhYUGn4GRA1Swq//HuJr9c
-X-Received: by 2002:a5b:ecc:0:b0:dc6:c32f:6126 with SMTP id
- a12-20020a5b0ecc000000b00dc6c32f6126mr1590255ybs.22.1709031869487; Tue, 27
- Feb 2024 03:04:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB279130ADF
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709031946; cv=fail; b=EMNa81nqmt3fjQjT3i6dp8JZBevZwt6nLZovqfaR8ra6QChzBkvQpbYTGQhMR5RfaRKIYdB+hS9ERVXJNukKhNhW/2jmyNII35pJL1KKYkd0VEVkNM531Yv1G1hm7xMm0PTWOKnW+M9kam7J5+l2buFtvggLmSWbPYegyjErF9w=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709031946; c=relaxed/simple;
+	bh=P/tQ7O9FEvFiSAcfs0On6pu/tgxLQc0Kxb/DGPpUgj0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=fQLVS0ald33shG0ZYLWtIG+MIXc8PQDzKDlL1V83L2MO/w/vBdJsuqbsS+EO9Ek1waahV96Ds5hk+YbCO6I1OVz7fDFWiLl12o6Eruni2/OS/tO3xxkHzD2HfbFFfMAgpTZyDxftz6xK7sFeDEgKIQLRpB08P7cZxHQfoI1qucA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kQkBG4+X; arc=fail smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709031945; x=1740567945;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=P/tQ7O9FEvFiSAcfs0On6pu/tgxLQc0Kxb/DGPpUgj0=;
+  b=kQkBG4+XcCHwhDHg9GKsb46booVo6ucLhOq2Xy3Bb0DT1cUVMkUnGcoS
+   zyfUuJD2BT6mMnjt6FLVX69PthYT8up3uvxVdehlN3G7e0xGHF+BfFR76
+   /6uWR2gk8CzP44V+ElbjF+jfrZ2qxCkeoKKp544+30c2m5NtI1o1qEvLg
+   BatMUlM7lNmnkAy4vp9X42B/44Kwy7f5VRgfcIHItc43mw42+56qw8MkC
+   yf9MsMr0GSXtRArgo6Z184+V3kDCNfarFmGXYKkwuB6kK0pVRIAsCWG4x
+   ystHHQFX5nwOVdx/GJ8g1NVr7PpcE4IyuFLJBSVBAob5qlsb7HrLQUOSK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3524734"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="3524734"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 03:05:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="11620203"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Feb 2024 03:05:43 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 03:05:41 -0800
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 03:05:36 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 27 Feb 2024 03:05:36 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 27 Feb 2024 03:05:31 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NNWRrAVQbras+FkjLNM9cSlqIaZ/XtP0FmQfBWSzB4BZ5CNcMIMT7oxaMWgt8L2qL7BKLZBgMDVkwBFkX5zGVi1GAfpi3khoMdb3H80X5dm9UoQq/w0J8NpNQXE/afi5MwMFCFuPyrsRuMC696PMt9j2BonIagnxw2BmEGl/9jTFtQ8xQxZzf6VwuuL7k+xBci2PRAPXHYpiiFm33Hx254VX4PNCG/rHvprEmwW1Oduj7H1vLjInFycicUV1IR+yOk5WK4zpbMUkhAfTYR2CZbxqQ2/Sdk+8ZBDVJ1WXpMLkNvtYnlqjuIBSBAiaBIzAuBtV3+isiDN3yND/jMD8hA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=P/tQ7O9FEvFiSAcfs0On6pu/tgxLQc0Kxb/DGPpUgj0=;
+ b=jxhzwEoreH909RFWhCBgOW6bzzR4aRV7GwG3rPsTjY3LE2va9808dPwK9eB5iblmmDmj3xnvLPFPXHkgD2Xbbx0sL+GdzfNyBWJMZNdH4RdOQxvDSgu4GVwZnXF6bPOWtgcXS2J35hjD4a3IW4GVzMj9gn6ximKCFeUkJXUeckayC1H+7OxygmFKaaFxKUQsmf+ALN6m2bN53cTVBEPG4HzRIjN9Njjz7Y+U8P6XursD4dhvxhxRYr7tvpZcDQBOPFZtSIGvPoK7v4Tw5Lmddpqxfd2txHlW7KJRD97uikwqasmUnYTqXM0eed30aV5zx9pj5Zzfg71UAM1U0kAfbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by BN9PR11MB5260.namprd11.prod.outlook.com (2603:10b6:408:135::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Tue, 27 Feb
+ 2024 11:05:29 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7339.024; Tue, 27 Feb 2024
+ 11:05:29 +0000
+From: "Huang, Kai" <kai.huang@intel.com>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
+CC: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "pbonzini@redhat.com"
+	<pbonzini@redhat.com>, "rafael@kernel.org" <rafael@kernel.org>,
+	"lenb@kernel.org" <lenb@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+	"bp@alien8.de" <bp@alien8.de>
+Subject: Re: [RFC][PATCH 04/34] x86/mm: Introduce physical address limit
+ helper
+Thread-Topic: [RFC][PATCH 04/34] x86/mm: Introduce physical address limit
+ helper
+Thread-Index: AQHaZb8biFxF0I3BJUaIKHD4w06XbrEeDj0A
+Date: Tue, 27 Feb 2024 11:05:29 +0000
+Message-ID: <aee9764b0fbe9e37e1e7692194d9ca6f86a9db77.camel@intel.com>
+References: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
+	 <20240222183932.244390AC@davehans-spike.ostc.intel.com>
+In-Reply-To: <20240222183932.244390AC@davehans-spike.ostc.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|BN9PR11MB5260:EE_
+x-ms-office365-filtering-correlation-id: e724e407-b727-4be2-d667-08dc37840286
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 92aGGbknt21RZHuJV88NhpotAdy9bn+V9bz4oBQNgN66dfadSGVXQXpWfKCI/Aitd8Q2800iCySEnSO1Y3C2GFb9C4oubqoUapNibECMSNRfk/ODQ3atF0dW50QY8NW6Cq8f0SLne/UngQ07lKcmsyS8Z5jqSq28Y74ZRa2SO4irZil6Pvf3dywb7Xet0LuqzxcNGs9aSNCVNhk9i0vGF0OBERk7/IHc85RqwNDLumuwXybsv3g6hs8HQpaBuecFydkfk4IBxzrQeHahX6boV6/LoPwnfZiNUcqaRp9ItZDeZCXwBvQ3/p4JngIa+5Ra8bjgvVxG/zZKipJA1HwUMXx0ZbSVdA6hXs2w2hgiElxq8nB+AfJdjAgtCz1OzlCcZw0HtSS/311MGt3S3NjbqHPv7206uzooYa42+MTBFGEVCsg8GvfB9MS1285sVvRfoAzU93zrf5iQ3RFeGgAr5EzvDISZcxufTndAB9YyMqJBzj/3Jw5/DlV+7yyFdlrCeiMDVMrO4yo5k/hbyYr5i1NRIjp7woROPsleWuXWEaTrszNbh9nl/0aAAIgduP48OKBACNpQgP9Xw9u2t/EIqM4ixFN6coIHAhlnNJBGVlfchLJHcwPY9VRC6WDsK3GLgeBjvx2s76e8RtGfAq1/xtH4QfMelIkcrn+VCoO1WiUkmj0Zo/KEMXOluLeyDHHsaxUzvgB2M1w7cAB1fY/0oDSHSCokUwNGgxeENEBWn70=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dXZwMmtjVWxXWk9aOG9nelpSdG5tV1FndytjeGRxa0lZZW5QSkE3UlVIMW90?=
+ =?utf-8?B?N2ZrL2syUDkwVWdyMjJZTmFrd0QzRzVac2xGNzNtb1pNQjVVQnJxQ1pFc2pt?=
+ =?utf-8?B?NkxhU2xOTXJISmF4NXV6elJwNDdubzcyUVh2anpJVWxQTVdPcXRJcEZuenFt?=
+ =?utf-8?B?VFNDZTNUZFVLSURUd3dDZElVL1loUEtaK09EWEVVYmpvZy9taWIvNkw5cHZE?=
+ =?utf-8?B?YmVXM0ZxdklvMGo1ZStGN2FVS0xPWWM0amRqc3BUWW12NmVBRVBUUXhDQzBI?=
+ =?utf-8?B?ZkNKSVlMUktnVEQ4THlmY0RYVUNHdFRvd2pvZjB5aGJVQVRPdXFvQVdNd1h6?=
+ =?utf-8?B?K3VidmVqdEtHaW1SS2xUNHBPQzdObld5UStLdGdOVXp4WU5CSVJWTU1iV2ZS?=
+ =?utf-8?B?ZkNBekV3ZndualhlMzhueFVSVGN2MkNZOXBzaEtkTitZS2F4NmNqUm1oU0RM?=
+ =?utf-8?B?eUthaktCR1NxZHJHUzFDbHBuVUJxNHF1ZjZ0RDNYRkkxN01iWHloZDVSZGtj?=
+ =?utf-8?B?YnB5YjNNbFNyODZvUjJiL1RqaVRYMGlBMGMvZks4dVJYcGNwYnBYZCtlWDZT?=
+ =?utf-8?B?OFNnRkxUcWdJc0xiQTFEbHFvVktkS1JxV01jeUNDZER1MWJSbVpuZGh5b1Uw?=
+ =?utf-8?B?V1ZSck5MWE9Gb3dCeGFWakg3eUJpMUNodERZMi9MNm1iQmd5bzhHVHQ0S3F3?=
+ =?utf-8?B?NUw1enV0elMrbnArQXRBc0lFSndBaDF0U3UvY3dnd09Zc1ZUakwzWkdZc0VT?=
+ =?utf-8?B?UlNZRzI4QlRldVU0d2RWMXJpMGgzbmVKM0JDSjVqV3UyMU1rV2NqWTU5L1lE?=
+ =?utf-8?B?WVhkZUpXQWVZcWhCMCtIRTBKb3dGMzNDYzM5Y2YrL3czREg5ZnpnZDlTVmtT?=
+ =?utf-8?B?cjRnenpLMmJrNWEzUnEzTk5hOWJVaFJHNHY1elE0VllKY0JMekN3MktFdnBU?=
+ =?utf-8?B?cUFBQzM3b2k3Qk5nNkdRRFB6WGlYMlZoR1pPbFpIR2llbG9XbnM1dk9DMkdp?=
+ =?utf-8?B?cXJ0TUhwWW5FTTJvN29QWE9xR25kL2k3amtmR0Z4emQ3SGdZYXI0N24zbGh2?=
+ =?utf-8?B?YmVPeDNhQ21YYkRtNVZobjhraWx1dzFLc3ExRDZMalVQRk9uSHg3M3UybXZm?=
+ =?utf-8?B?QWtuUTdTc1dya2F5NWdUSWJqckczTjBqZ0paMzZyM2JIU25iR0JUQkVNT3Fk?=
+ =?utf-8?B?Zmw4MDA4aUtwdUtBcWErbVBpYmI1L0Y0RStBQnN5MGxBeXBTcHRmT1Fmb1M0?=
+ =?utf-8?B?NkdtOUorakkrSHNtc1JNREJjTWVRSG55Mjl2aGNhNUhwM0I3U1ZSbmpYaUh6?=
+ =?utf-8?B?Zzd1eWdteGFUNkdFYnlCbmRIcDRXMzlIR3c1M0JlNkRtbUxwZkIwYVRUSGdV?=
+ =?utf-8?B?aVNnZm9ha0d4Uzl6SUljWTFOandhWGlnT1FEaWN2TEEyYnZESUxBSW0yT1ZZ?=
+ =?utf-8?B?QmR0VlN1RTI0SXdRcU81czlVenhQYkRhdTBWMG5rSC8zRmJOSjY3a1laWXlC?=
+ =?utf-8?B?TDlTaWhGakx1Ny9oWEwzNzc5ODBxTWNhZks1elE0R2dqa3gxdEhLVnMvcWRV?=
+ =?utf-8?B?Z2grcUVISDJ1SWxtd3FBZXJDV1lqREhSS2RtRGVGNkxLTm9lUEtXSWNINnA0?=
+ =?utf-8?B?WDJ4dG1NQmtnZCtyZGdreFRJWGpXV2NDTWVDTDlyZ2ZRWmJOZXFXclhiT3Y5?=
+ =?utf-8?B?VzhZQWI0Ym9lZnVOaHFmYWhRditIU2tPSjBnUWdDMjREbHFrT0VPYnlmSlVm?=
+ =?utf-8?B?YUl3MGJ2cnlHaUREL1RBZzhjdEt1L2VjcnVrS1N1WldnS25tZVpiWXRBMHcx?=
+ =?utf-8?B?VE9zL0hnOFMvMVVXeW01QVJEVUJGZzJyTjhrVi9lMG1ZNGg3OU5JTStaSjlk?=
+ =?utf-8?B?ZmNENGJjMFZZSU1Md2hra29sMGJQSUJkUGY4QXdFV1ZFTElKUHdSaHd0T0VD?=
+ =?utf-8?B?T2YzWlhUUEdBdndKQVhTSVJ1VTJjNUJuYUNNUmpZbEo4Q2xET0Q2dGtPWGho?=
+ =?utf-8?B?Y0VqMHU3YXg1aWFteDA1dkJXRCtTemtrT0FDSU1GVTdyREhUcnJWZ1pjM3BJ?=
+ =?utf-8?B?UmVOY1lnVXBIVTdDQitIUmtQMFEzYWdZcGpQc0d3MlBCbEE1bktwUE9oMkZq?=
+ =?utf-8?B?VUh2eTZReWJzODFKMFNCVWxoVVVaa3l5WVQrK284Sk9sdTZBZ2hHWFNKQVRx?=
+ =?utf-8?B?aXc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6F8069BCBF00C74F84BD1CD88E521DB7@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227034539.193573-1-aford173@gmail.com> <20240227034539.193573-3-aford173@gmail.com>
- <39aead3b-b809-4c9c-8a5d-c0be2b36ea47@imgtec.com>
-In-Reply-To: <39aead3b-b809-4c9c-8a5d-c0be2b36ea47@imgtec.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 27 Feb 2024 12:04:17 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdW5vWg=tpB9PCRXmdBmLtt0wNN9dOEN1Lp_N7R68jz0tA@mail.gmail.com>
-Message-ID: <CAMuHMdW5vWg=tpB9PCRXmdBmLtt0wNN9dOEN1Lp_N7R68jz0tA@mail.gmail.com>
-Subject: Re: [PATCH 2/6] arm64: dts: renesas: r8a774a1: Enable GPU
-To: Matt Coster <Matt.Coster@imgtec.com>
-Cc: Adam Ford <aford173@gmail.com>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, Adam Ford <aford@beaconembedded.com>, 
-	Frank Binns <Frank.Binns@imgtec.com>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e724e407-b727-4be2-d667-08dc37840286
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2024 11:05:29.6994
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0j624VpCa2zcrNfJsxh9GphMirvryS/Dj2flu0roVlJn/xvfuPLjE+qmhRuJEp+5ZhmkU0SH10yFVmQ4lwxwfw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5260
+X-OriginatorOrg: intel.com
 
-Hi Matt,
-
-On Tue, Feb 27, 2024 at 10:31=E2=80=AFAM Matt Coster <Matt.Coster@imgtec.co=
-m> wrote:
->
-> Hi Adam,
->
-> Thanks for these patches! I'll just reply to this one patch, but my
-> comments apply to them all.
->
-> On 27/02/2024 03:45, Adam Ford wrote:
-> > The GPU on the RZ/G2M is a Rogue GX6250 which uses firmware
-> > rogue_4.45.2.58_v1.fw available from Imagination.
-> >
-> > When enumerated, it appears as:
-> >   powervr fd000000.gpu: [drm] loaded firmware powervr/rogue_4.45.2.58_v=
-1.fw
-> >   powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
->
-> These messages are printed after verifying the firmware blob=E2=80=99s he=
-aders,
-> *before* attempting to upload it to the device. Just because they appear
-> in dmesg does *not* imply the device is functional beyond the handful of
-> register reads in pvr_load_gpu_id().
->
-> Since Mesa does not yet have support for this GPU, there=E2=80=99s not a =
-lot
-> that can be done to actually test these bindings.
-
-OK.
-
-> When we added upstream support for the first GPU (the AXE core in TI=E2=
-=80=99s
-> AM62), we opted to wait until userspace was sufficiently progressed to
-> the point it could be used for testing. This thought process still
-> applies when adding new GPUs.
->
-> Our main concern is that adding bindings for GPUs implies a level of
-> support that cannot be tested. That in turn may make it challenging to
-> justify UAPI changes if/when they=E2=80=99re needed to actually make thes=
-e GPUs
-> functional.
-
-I guess that applies to "[PATCH 00/11] Device tree support for
-Imagination Series5 GPU", too, which has been in linux-next for about
-a month?
-https://lore.kernel.org/all/20240109171950.31010-1-afd@ti.com/
-
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > diff --git a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi b/arch/arm64/boo=
-t/dts/renesas/r8a774a1.dtsi
-> > index a8a44fe5e83b..8923d9624b39 100644
-> > --- a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-> > +++ b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-> > @@ -2352,6 +2352,16 @@ gic: interrupt-controller@f1010000 {
-> >                       resets =3D <&cpg 408>;
-> >               };
-> >
-> > +             gpu: gpu@fd000000 {
-> > +                     compatible =3D "renesas,r8a774a1-gpu", "img,img-a=
-xe";
->
-> The GX6250 is *not* an AXE core - it shouldn=E2=80=99t be listed as compa=
-tible
-> with one. For prior art, see [1] where we added support for the MT8173
-> found in Elm Chromebooks R13 (also a Series6XT GPU).
-
-IC. And the bindings in [2].
-
->
-> > +                     reg =3D <0 0xfd000000 0 0x20000>;
-> > +                     clocks =3D <&cpg CPG_MOD 112>;
-> > +                     clock-names =3D "core";
->
-> Series6XT cores have three clocks (see [1] again). I don=E2=80=99t have a
-> Renesas TRM to hand =E2=80=93 do you know if their docs go into detail on=
- the
-> GPU integration?
-
-Not really. The diagram in the Hardware User's Manual just shows the
-following clock inputs:
-  - Clock (ZG=CF=95) from CPG,
-  - Clock (S3D1=CF=95) from CPG,
-  - MSTP (ST112) from CPG.
-
-ZG is the main (programmable) 3DGE clock, running at up to 600 MHz.
-S3D1 is the fixed 266 MHz AXI bus clock.
-MSTP112 is the gateable module clock (part of the SYSC/CPG clock
-domain), and its parent is ZG.
-
-According to the sources:
-  - "core" is the primary clock used by the entire GPU core, so we use
-    MSTP112 for that.
-  - "sys" is the optional system bus clock, so that could be S3D1,
-  - "mem" is the optional memory clock, no idea what that would map to.
-
-But IMHO the two optional clocks do not matter at all (the driver
-doesn't care about their rates, and just enables them together with
-the core clock), and S3D1 is always-on, so I'd just limit clocks to
-a single item.
-
-Just wondering: is the availability of 1 clock specific to AXE, or to
-the AXE integration on AM62x?
-
-> +                     interrupts =3D <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
-> +                     power-domains =3D <&sysc R8A774A1_PD_3DG_B>;
-> +                     resets =3D <&cpg 112>;
-> +             };
-
-> [1]: https://gitlab.freedesktop.org/imagination/linux/-/blob/b3506b8bc45e=
-d6d4005eb32a994df0e33d6613f1/arch/arm64/boot/dts/mediatek/mt8173.dtsi#L993-=
-1006
-
-[2] https://gitlab.freedesktop.org/imagination/linux/-/blob/b3506b8bc45ed6d=
-4005eb32a994df0e33d6613f1/Documentation/devicetree/bindings/gpu/img,powervr=
-yaml
-
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+T24gVGh1LCAyMDI0LTAyLTIyIGF0IDEwOjM5IC0wODAwLCBEYXZlIEhhbnNlbiB3cm90ZToNCj4g
+RnJvbTogRGF2ZSBIYW5zZW4gPGRhdmUuaGFuc2VuQGxpbnV4LmludGVsLmNvbT4NCj4gDQo+IE1v
+ZGVybiBwcm9jZXNzb3JzIGVudW1lcmF0ZSB0aGUgc2l6ZXMgb2YgdGhlIHBoeXNpY2FsIGFuZCB2
+aXJ0dWFsIGFkZHJlc3MNCj4gc3BhY2VzIHRoYXQgdGhleSBjYW4gaGFuZGxlLiAgVGhlIGtlcm5l
+bCBzdGFzaGVzIHRoaXMgaW5mb3JtYXRpb24gZm9yIGVhY2gNCj4gQ1BVIGluICdjcHVpbmZvX3g4
+NicuDQo+IA0KPiBMaWtlIGEgbG90IG9mIHN5c3RlbS13aWRlIGNvbmZpZ3VyYXRpb24sIGluIHBy
+YWN0aWNlIHRoZSBrZXJuZWwgb25seSB1c2VzDQo+IHRoaXMgaW5mb3JtYXRpb24gZnJvbSB0aGUg
+Ym9vdCBDUFUuICBUaGF0IG1ha2VzIGEgbG90IG9mIHNlbnNlIGJlY2F1c2UNCj4gdGhlIGtlcm5l
+bCBjYW4ndCBwcmFjdGljYWxseSBzdXBwb3J0IHR3byBDUFVzIHdpdGggc3VjaCBkaWZmZXJlbnQN
+Cj4gZnVuZGFtZW50YWwgc3VwcG9ydCBhcyB0aGUgc2l6ZSBvZiB0aGUgYWRkcmVzcyBzcGFjZXMu
+DQo+IA0KPiBIYXZpbmcgYSBwZXItY3B1IGNvcHkgb2YgdGhpcyBkYXRhIGlzIHNpbGx5LiAgSXQg
+aXMsIGF0IGJlc3QsIGEgd2FzdGUNCj4gb2Ygc3BhY2UgdG8ga2VlcCBpdCBhcm91bmQgZm9yIHRo
+ZSBub24tYm9vdCBDUFVzLiAgQXQgd29yc3QsIGl0IGlzIHlldA0KPiBhbm90aGVyIGJpdCBvZiBk
+YXRhIHRoYXQgbXVzdCBiZSBpbml0aWFsaXplZCBpbiBhIHBhcnRpY3VsYXIgb3JkZXIgYW5kDQo+
+IGNhbiBiZSBhIHNvdXJjZSBvZiBidWdzLg0KPiANCj4gSW50cm9kdWNlIGEgaGVscGVyIHRvIGxv
+b2sgdXAgdGhlIG51bWJlciBvZiBzdXBwb3J0ZWQgcGh5c2ljYWwgYWRkcmVzcyBiaXRzOg0KPiAN
+Cj4gCXg4Nl9waHlzX2JpdHMoKQ0KPiANCj4gUmVwbGFjZSBtb3N0IG9wZW4tY29kZWQgcmVmZXJl
+bmNlcyB0byBib290X2NwdV9kYXRhLng4Nl9waHlzX2JpdHMuDQo+IA0KPiBUaGlzIGZvcm0gaXMg
+bW9yZSBjb21wYWN0IGFuZCBhbHNvIG9wZW5zIHVwIHRoZSBkb29yIHRvIGFkZGluZyBzb21lDQo+
+IGNlbnRyYWxpemVkIGNoZWNraW5nIGFuZCBlbmZvcmNpbmcgcnVsZXMgYXJvdW5kIHRoaXMgaW1w
+b3J0YW50IHN5c3RlbS0NCj4gd2lkZSB2YWx1ZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IERhdmUg
+SGFuc2VuIDxkYXZlLmhhbnNlbkBsaW51eC5pbnRlbC5jb20+DQo+IENjOiAiUmFmYWVsIEouIFd5
+c29ja2kiIDxyYWZhZWxAa2VybmVsLm9yZz4NCj4gQ2M6IExlbiBCcm93biA8bGVuYkBrZXJuZWwu
+b3JnPg0KPiAtLS0NCj4gDQoNClJldmlld2VkLWJ5OiBLYWkgSHVhbmcgPGthaS5odWFuZ0BpbnRl
+bC5jb20+DQo=
 
