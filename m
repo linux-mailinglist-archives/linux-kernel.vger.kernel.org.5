@@ -1,163 +1,150 @@
-Return-Path: <linux-kernel+bounces-83615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCD20869C49
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:37:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29890869C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:37:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EEBF1F224AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:37:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D0551C24B16
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:37:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 707A31DFD6;
-	Tue, 27 Feb 2024 16:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393014CB45;
+	Tue, 27 Feb 2024 16:36:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Lk+vdFlk"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C56muvyF"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86CF249EE;
-	Tue, 27 Feb 2024 16:36:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA2AA200D5;
+	Tue, 27 Feb 2024 16:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709051790; cv=none; b=FT2kqj2EP9n1PRCdQmzpdpApcuu4e4QFn5Alv4wwQiP33uz0s+iQ0FbEVWE+JH7C2ZeKAFO5ABhskDNSv6KZYxOBoI+EQ8en8Ra6XbAsndYbAMKoU8in75MfoU+D9jaDRAnsae2ymYy0o/Eqh1rtNFYQfohFp+q1agy6TpHOJgo=
+	t=1709051803; cv=none; b=IP/Riqy29R0vHvSuLUw2TTSOsNFfcSilGcaGlBRU0OZl7VWC0iw9jUzMfYbQvIao6x9opTdytFfk8lJwhokyAkCqshg/GuLPwHkifJjGC8epayyQ68cyXu3zKZtZN595eYkdqsYpPyGKzhapiIAQpglm4pnBniLZKH+PED9hXxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709051790; c=relaxed/simple;
-	bh=9iq97HWcmCoTBXP6eMMJq8y9Em2ni06xkSEPi2bvfhw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ixM1TeMJqISCSb1zN9w8OaLBIA8MKYdijff6PHuil5JRsxKT0CgEpWJ7E7cJlu1hDzH4Aqo/e7v9lBN5qx844mKsxW60FN4BdArqr5RwQrprdNUnl13+hdxO5kR4YZ5PzLIbQV3VezdW3OXD4CHZy7kym5RjsKuRMbJKXzDUCIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Lk+vdFlk; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6E59B20007;
-	Tue, 27 Feb 2024 16:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709051786;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1HjaL0N4MQbpBEM8c6K7nKarXSwAV7+wRWAqTEQw6nQ=;
-	b=Lk+vdFlkAOtang21DjVUcPqXZ4xGmhzcxrPvzUf24IYp4biewuQduaZWoOtjhyxNcN62Rr
-	rwxOMoCoIRZX8wclegXOQ76VXTHyjapTr9IsP2t6ODUtGaiqRsLJbUwI44+vvfEXexbb94
-	9/bAnwyQ9P3XE+Euu4f/yR4u4RGs3y9WzvKTTIxXUmjR9YpE0MFyeN/1jw0p+Ze7kGCnuc
-	ldhXELyC5r7hPxbHFBp0ACq9Wy+swSTwc84hn7yW8M/Jmp37LYLF68PK2vHN8r1Z5B0iFn
-	/GIEHqOOyOX3wHmJ4ik/OXScGHoUIg1Cf9QcVlv/TtrPEjZgCwaeT5tqz5m43Q==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Elad Nachman <enachman@marvell.com>, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch,
- sebastian.hesselbarth@gmail.com, huziji@marvell.com,
- ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-Cc: enachman@marvell.com
-Subject: Re: [PATCH v2 2/2] arm64: dts: ac5: add mmc node and clock
-In-Reply-To: <20240103172803.1826113-3-enachman@marvell.com>
-References: <20240103172803.1826113-1-enachman@marvell.com>
- <20240103172803.1826113-3-enachman@marvell.com>
-Date: Tue, 27 Feb 2024 17:36:25 +0100
-Message-ID: <871q8xkgom.fsf@BL-laptop>
+	s=arc-20240116; t=1709051803; c=relaxed/simple;
+	bh=hXwL4660+XM+wMrQMkOFCB0IGRMCfdbE0pfYHgN8LDY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=k3eyq5Z5hX0wkoGBj1Wilu1aPIgFNyOCtWHI0eGaz+JV9GV40FF3P2KwfBzBsPI8Xx5wtZ9MLs55GcQTra1JWL5cQZSCjzvboOHpHong50A4kytoJ81gP3aohsnX2b3bV6pw3vkEPS5gAjM/eNc2cVKw+3Z1/R0hqLkDN3KfcMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C56muvyF; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso807728066b.0;
+        Tue, 27 Feb 2024 08:36:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709051800; x=1709656600; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XTzJpS7X9XEoV4xvNdFIuJu4pysu7KWGugmJiXpsQsY=;
+        b=C56muvyFgnDMKaVPLpn71owu0IHf0H6YI75i1YxDE850MmWoIyeclDs9DDGap/r2yJ
+         jkbv9SiBsVwkstzxyyK48Ofg7uz3lAunM0ICKxHEgP3HX55zW/ibBGv5dB7rbqiRn17W
+         s6njdZ7xbDVX4OatctqKbdeSQPEcq7PO6DS/qlbWinGeayOr6sRyoUxhx4rJm+HNfb1d
+         jOgL7CapHtXyS5/5IEACNvJXrQepGrT9tgDWOK5bcWNA1LdqExSnUrJXkifTmqxihyFZ
+         0/yCaPC/DXHCho0zJB3QQXuRIHlBE+xcmMzkYTw7suEER/zf6cD9AzLPNKTinyuDtPgu
+         0n2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709051800; x=1709656600;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XTzJpS7X9XEoV4xvNdFIuJu4pysu7KWGugmJiXpsQsY=;
+        b=PKyeHu3KLGgl1QNpJlq3blB4jSf41d+SPlvvhfJdIhSnaOAU2RGX/NgCekHukvCa8K
+         A72VzYx8Pr8UOaqaxzeWn3NGNq3PaXFRxp07vVV4+9j98xLg8TEpH5CwSHWwoUSIl3+z
+         YfpWH52Pocj5gdfjfQ5oSySkOWEnH8U9KT26LnOPLOmU3ZJ5hRM9N99vXXm/JjMOi+ve
+         9VhyRcCRHpkuqfg18NQUivsQ6mVvvsId3/k3so+c5d+BmAvZaJ4lmA8AiqbPvwCo0GDA
+         jinc4K9oxgmhkIjUmlQ7BvaxcJd2rUgrJraGcztchn2uTE3QxYv0DX/1h/xdVmx4JPob
+         Khww==
+X-Forwarded-Encrypted: i=1; AJvYcCV+DgtwTyDTkaMDcwjl/8omOX2C4HoVfAUqB2451PbezjQYKdzyMvukmTN2oL1skCKhyrh5IlZpF7ihwaBYFPe+Y1J/2b9zK0HS3QDyqIWOvi/WqMrHTacqMdoIwY2v+tA5f8LzIcxSiLu6tR6MART4cGFbDdRlSi1JH4ROXzNT+cVtrfmxM3Hnm8/qLPfiLuMWV8LuN0f/c5CmJUm+ytNuv0VD3/Cwanc2g527HmAHGbumm5pVR3xT+XY=
+X-Gm-Message-State: AOJu0YwEMwTvy5VXBjUIi8tH92EeFePHdWm6hMZMxHyHyWyO5SawfhNM
+	VamgJ79OBgRGBwCb00HFqdK9pWAY1KKxUUkHCQob6JrkmmK6V5PZ
+X-Google-Smtp-Source: AGHT+IHTThC0untfFuCzhNiu9UcWocSFSzEw+xein1v3vrNBcEIfO/H/gNfMVPOXdUv4kGjwHs9jNQ==
+X-Received: by 2002:a17:906:408d:b0:a3c:5e17:1635 with SMTP id u13-20020a170906408d00b00a3c5e171635mr9143240ejj.30.1709051799951;
+        Tue, 27 Feb 2024 08:36:39 -0800 (PST)
+Received: from [192.168.1.94] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id lh11-20020a170906f8cb00b00a3fb62260e3sm919913ejb.72.2024.02.27.08.36.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 08:36:39 -0800 (PST)
+Message-ID: <9a35a53a1887fb664fd540ec7e272cb3ea63f799.camel@gmail.com>
+Subject: Re: [PATCH RFC bpf-next v3 08/16] bpf/verifier: do_misc_fixups for
+ is_bpf_timer_set_sleepable_cb_kfunc
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>,  John Fastabend <john.fastabend@gmail.com>, Andrii
+ Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song
+ Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Jiri Kosina
+ <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ linux-input@vger.kernel.org,  linux-doc@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Date: Tue, 27 Feb 2024 18:36:37 +0200
+In-Reply-To: <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
+References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
+	 <20240221-hid-bpf-sleepable-v3-8-1fb378ca6301@kernel.org>
+	 <55177311ccdc24a74811d4a291ee1880044a5227.camel@gmail.com>
+	 <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
 
-Hi Elad Nachman,
+On Tue, 2024-02-27 at 17:18 +0100, Benjamin Tissoires wrote:
+[...]
 
-> From: Elad Nachman <enachman@marvell.com>
->
-> Add mmc and mmc clock nodes to ac5 and ac5x device tree files
->
-> Signed-off-by: Elad Nachman <enachman@marvell.com>
+> Hmm, I must still be missing a piece of the puzzle:
+> if I declare bpf_timer_set_sleepable_cb() to take a third "aux"
+> argument, given that it is declared as kfunc, I also must declare it in
+> my bpf program, or I get the following:
+>=20
+> # libbpf: extern (func ksym) 'bpf_timer_set_sleepable_cb': func_proto [26=
+4] incompatible with vmlinux [18151]
+>=20
+> And if I declare it, then I don't know what to pass, given that this is
+> purely added by the verifier:
+>=20
+> 43: (85) call bpf_timer_set_sleepable_cb#18152
+> arg#2 pointer type STRUCT bpf_prog_aux must point to scalar, or struct wi=
+th scalar
 
-Applied on mvebu/dt64
+Right, something has to be done about number of arguments and we don't
+have a convenient mechanism for this afaik.
 
-Thanks,
+The simplest way would be to have two kfuncs:
+- one with 2 arguments, used form bpf program;
+- another with 3 arguments, used at runtime;
+- replace former by latter during rewrite.
 
-Gregory
+> Maybe I should teach the verifier that this kfunc only takes 2
+> arguments, and the third one is virtual, but that also means that when
+> the kfunc definitions are to be included in vmlinux.h, they would also
+> have this special case.
 
-> ---
->  arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi | 31 ++++++++++++++++++-
->  .../boot/dts/marvell/ac5-98dx35xx-rd.dts      |  4 +++
->  2 files changed, 34 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi b/arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi
-> index b5e042b8e929..5591939e057b 100644
-> --- a/arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi
-> +++ b/arch/arm64/boot/dts/marvell/ac5-98dx25xx.dtsi
-> @@ -77,7 +77,6 @@ soc {
->  		#address-cells = <2>;
->  		#size-cells = <2>;
->  		ranges;
-> -		dma-ranges;
->  
->  		internal-regs@7f000000 {
->  			#address-cells = <1>;
-> @@ -204,6 +203,30 @@ gpio1: gpio@18140 {
->  			};
->  		};
->  
-> +		mmc_dma: bus@80500000 {
-> +				compatible = "simple-bus";
-> +				ranges;
-> +				#address-cells = <0x2>;
-> +				#size-cells = <0x2>;
-> +				reg = <0x0 0x80500000 0x0 0x100000>;
-> +				dma-ranges = <0x0 0x0 0x2 0x0 0x0 0x80000000>;
-> +				dma-coherent;
-> +
-> +				sdhci: mmc@805c0000 {
-> +					compatible = "marvell,ac5-sdhci",
-> +						     "marvell,armada-ap806-sdhci";
-> +					reg = <0x0 0x805c0000 0x0 0x1000>;
-> +					interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>;
-> +					clocks = <&emmc_clock>, <&cnm_clock>;
-> +					clock-names = "core", "axi";
-> +					bus-width = <8>;
-> +					non-removable;
-> +					mmc-ddr-1_8v;
-> +					mmc-hs200-1_8v;
-> +					mmc-hs400-1_8v;
-> +				};
-> +		};
-> +
->  		/*
->  		 * Dedicated section for devices behind 32bit controllers so we
->  		 * can configure specific DMA mapping for them
-> @@ -335,5 +358,11 @@ nand_clock: nand-clock {
->  			#clock-cells = <0>;
->  			clock-frequency = <400000000>;
->  		};
-> +
-> +		emmc_clock: emmc-clock {
-> +			compatible = "fixed-clock";
-> +			#clock-cells = <0>;
-> +			clock-frequency = <400000000>;
-> +		};
->  	};
->  };
-> diff --git a/arch/arm64/boot/dts/marvell/ac5-98dx35xx-rd.dts b/arch/arm64/boot/dts/marvell/ac5-98dx35xx-rd.dts
-> index f0ebdb84eec9..0c973d7a215a 100644
-> --- a/arch/arm64/boot/dts/marvell/ac5-98dx35xx-rd.dts
-> +++ b/arch/arm64/boot/dts/marvell/ac5-98dx35xx-rd.dts
-> @@ -99,3 +99,7 @@ parition@2 {
->  		};
->  	};
->  };
-> +
-> +&sdhci {
-> +	status = "okay";
-> +};
-> -- 
-> 2.25.1
->
+It might be a somewhat generic mechanism, e.g. btf_decl_tag("hidden")
+for kfunc parameter.
 
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+imho, having two kfuncs is less hacky.
+
+> (I just tried with a blank u64 instead of the struct bpf_prog_aux*, but
+>  it crashes with KASAN complaining).
+
+For my understanding:
+- you added a 3rd param (void *) to kfunc;
+- passed it as zero in BPF program;
+- applied the above rewrite, so that r3 equals to prog->aux;
+- and now KASAN complains, right?
+
+Could you please provide more details on what exactly it complains about?
 
