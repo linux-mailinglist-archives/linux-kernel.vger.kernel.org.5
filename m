@@ -1,123 +1,118 @@
-Return-Path: <linux-kernel+bounces-83941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83942-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2882486A057
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:38:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7119686A059
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC83A1F2C569
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:38:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C9BD2851C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 19:39:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1246A010;
-	Tue, 27 Feb 2024 19:38:48 +0000 (UTC)
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679C213A891;
+	Tue, 27 Feb 2024 19:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K4qjaG13"
+Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55120524CF
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF5B2511F
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709062728; cv=none; b=G2bmTfTLcAF1PGWOd4gK76az22YlzzPyfP0E005UYVANa+3I7Gol+sZxZeVjlAhKJdOWyA6NrsclJn1fHpuvWuBQ49rnSrc9fqeWRL30TILGIe7FqIKf4kEBTYGGwdW+IAs56n7H1IfRMz1O9ZrnCZLoAPOQXGA9Q323t8XwqA8=
+	t=1709062759; cv=none; b=e0B0mYf2IHbkP4K45NfMifd2PyfY9JLSbpEL8KCmIooJFeQbmZV5WLVsBuXA0JDP3eDbfuYtoUtlOC2OK276oCBMYE41d80Drp0/GFQRj7grMdjgHeaWJCf6c7L2bQ6iR9n6PjqR+oqARcVvt7JA1kNCaE1kRmTz/dJYxdkhzGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709062728; c=relaxed/simple;
-	bh=RDreJQoMpwk05ss0YoyrFEnP7lI9JQ3wxRPl9qk573s=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bQqIK00ORt7fIayqyiUzkXFrpn5yRlx5jptFbwLqArh8URLCwvCjh70elIMkEDZ5JIGh39SlhQHLDWfTfjITU+3I96s9uKF1M3KRs0GHB9l7itJqogUvSUzDTMj6++42z3pFqTe6EEhcXgWXM5oCtfsjSm+nI8FfwW2yRPVd6is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8D074FF805;
-	Tue, 27 Feb 2024 19:38:40 +0000 (UTC)
-Message-ID: <1860a754-5cca-4411-904b-ecbe838efa77@ghiti.fr>
-Date: Tue, 27 Feb 2024 20:38:40 +0100
+	s=arc-20240116; t=1709062759; c=relaxed/simple;
+	bh=NkpgtyhkUYlQd+libVSgyBRF5SshhQknVpyB3eR+xJo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OaS3vu9QgQ3tno7kEw+oEaGetpBOihRRncskm8KbI+vrMIs+wL+ATxszROnV8QUxlZ00QIsk4r8hI1GZ/ygOqffbZBb2OQ1+P53+7IopywkGCtjLSFhOHmZ6gQ+fyOJTcTSWtKfC6pGMipz5508Fay7oe3q8u2qv9oxitzPdNA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K4qjaG13; arc=none smtp.client-ip=209.85.166.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-36503a4980aso10707125ab.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:39:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709062757; x=1709667557; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rKYVjvln7WqK9UOeHypkuBAH6upy75SMDhY2R5Rntz8=;
+        b=K4qjaG13SbbJykIKdE9bm/wtsevnfJrButRy220Go36YhQctwcoDZLXV3c8BJIxcG3
+         AHPzYIjaPFNUNfBp7QPWmGpyLRrvuhh1YWPrL7m1BpOcVGXBo6+bx3vCaPw1kxRR5MQk
+         1DW9Yo/h57L0rudI8E/EflmP0fyNBikFYpk+fsGgQXOWNPmu5VEVcnGFzIfwc/CN8zkY
+         6jJ5PEi+xcimich+oE2JrDRBteBhaCejmv8IOTwGyDCD79qK/WjBSYR0XSyo/RKbh/Y7
+         e4nuZcjJvBpPyBLWzV0TNCTzMnk0EmP/wcSPV9kHk2vddclWjFZrwQGb2+2E1kfz011O
+         kw9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709062757; x=1709667557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rKYVjvln7WqK9UOeHypkuBAH6upy75SMDhY2R5Rntz8=;
+        b=NPdUpwPSuBtglIi6txPclVFkBrKWPIne9E2Q4cAMkJXXrgbhFpEG5WzR7PGjT+WRlD
+         Jz+krmF1L/4p5SKaxUY1IG92oARLMeRrZe/KDVas/+P3d4w6mbZmKi5wSlNBgag7w2Be
+         buKnGfALi59EhQYhnZnQ5ZPU1SSKNH6sfnr5rJzJJzc/kVv4WjwDsGnhsBssvnk+hZYI
+         BZAYdGw4fw1TztHMvfVnN6HWW12mfI/uf23d8u23/F0q4TNAquDZgszjvg3RUw661fSF
+         1KLNzy+frTWVO3XNacN0WaYw5DEj9SqvQ3lNgT6/HTwS+GUBIs0Ct0MYM+E/fqhjAysK
+         hb3A==
+X-Forwarded-Encrypted: i=1; AJvYcCV2GycfaWM6x1LnUlWgd3hcScuZTRFbH7LDCxdz22TUxfD9Ndjsm+O4ZmuCJSPz0azL5Y8+iURcZmf2EInvGUPAS6bA0gw24u9ti+A8
+X-Gm-Message-State: AOJu0YxUJMg1uwxhSEotKY0sQ/acqQ/njso+6mjskWBQa3OPcIUcp7ol
+	HHjCuFdHnqNl89zmRvemouROhNrhzP5dokLx3GokjDMeLUG2X+p3
+X-Google-Smtp-Source: AGHT+IEaJ7sW1CfBTNx0YpAQ0dB/DADGQZgLd+DrJBrDTlYIpW/mMqXij0gvOsN0hSkYf/rk66ygIA==
+X-Received: by 2002:a92:c688:0:b0:365:2390:931f with SMTP id o8-20020a92c688000000b003652390931fmr11605284ilg.4.1709062757294;
+        Tue, 27 Feb 2024 11:39:17 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:8305])
+        by smtp.gmail.com with ESMTPSA id o195-20020a62cdcc000000b006e4cf04e501sm262260pfg.13.2024.02.27.11.39.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 11:39:17 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 27 Feb 2024 09:39:15 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] workqueue: Introduce from_work() helper for cleaner
+ callback declarations
+Message-ID: <Zd46Y8ZeAPug-P94@slm.duckdns.org>
+References: <20240227191037.5839-1-apais@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2,RESEND 1/2] drivers: perf: added capabilities for
- legacy PMU
-Content-Language: en-US
-From: Alexandre Ghiti <alex@ghiti.fr>
-To: Vadim Shakirov <vadim.shakirov@syntacore.com>,
- linux-riscv@lists.infradead.org
-Cc: Atish Patra <atishp@atishpatra.org>, Anup Patel <anup@brainfault.org>,
- Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- Atish Patra <atishp@rivosinc.com>
-References: <20240227170002.188671-1-vadim.shakirov@syntacore.com>
- <20240227170002.188671-2-vadim.shakirov@syntacore.com>
- <6ad96656-3cf4-4e22-8a18-cfde5c31cfc1@ghiti.fr>
-In-Reply-To: <6ad96656-3cf4-4e22-8a18-cfde5c31cfc1@ghiti.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227191037.5839-1-apais@linux.microsoft.com>
 
+On Tue, Feb 27, 2024 at 07:10:37PM +0000, Allen Pais wrote:
+> To streamline the transition from tasklets to worqueues, a new helper
+> function, from_work(), is introduced. This helper, inspired by existing
+> from_() patterns, utilizes container_of() and eliminates the redundancy
+> of declaring variable types, leading to more concise and readable code.
+> 
+> The modified code snippet demonstrates the enhanced clarity achieved
+> with from_wq():
+> 
+>   void callback(struct work_struct *w)
+>    {
+>      - struct some_data_structure *local = container_of(w,
+> 						       struct some_data_structure,
+> 						       work);
+>      + struct some_data_structure *local = from_work(local, w, work);
+> 
+> This change aims to facilitate a smoother transition and uphold code
+> quality standards.
+> 
+> Based on:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git disable_work-v3
+> 
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 
-On 27/02/2024 20:26, Alexandre Ghiti wrote:
-> On 27/02/2024 18:00, Vadim Shakirov wrote:
->> Added the PERF_PMU_CAP_NO_INTERRUPT flag because the legacy pmu driver
->> does not provide sampling capabilities
->>
->> Added the PERF_PMU_CAP_NO_EXCLUDE flag because the legacy pmu driver
->> does not provide the ability to disable counter incrementation in
->> different privilege modes
->>
->> Suggested-by: Atish Patra <atishp@rivosinc.com>
->> Signed-off-by: Vadim Shakirov <vadim.shakirov@syntacore.com>
->> ---
->>   drivers/perf/riscv_pmu_legacy.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/perf/riscv_pmu_legacy.c 
->> b/drivers/perf/riscv_pmu_legacy.c
->> index 79fdd667922e..a85fc9a15f03 100644
->> --- a/drivers/perf/riscv_pmu_legacy.c
->> +++ b/drivers/perf/riscv_pmu_legacy.c
->> @@ -117,6 +117,8 @@ static void pmu_legacy_init(struct riscv_pmu *pmu)
->>       pmu->event_mapped = pmu_legacy_event_mapped;
->>       pmu->event_unmapped = pmu_legacy_event_unmapped;
->>       pmu->csr_index = pmu_legacy_csr_index;
->> +    pmu->pmu.capabilities |= PERF_PMU_CAP_NO_INTERRUPT;
->> +    pmu->pmu.capabilities |= PERF_PMU_CAP_NO_EXCLUDE;
->>         perf_pmu_register(&pmu->pmu, "cpu", PERF_TYPE_RAW);
->>   }
->
->
-> I see here that Atish added its RB: 
-> https://lore.kernel.org/linux-riscv/CAOnJCUJ-eE+zbXH0yBX_QBK2ep779q=wNCSrc+BJfzUb+zBCaw@mail.gmail.com/
->
-> So I add it here (hopefully b4 won't complain, I don't know):
+Applied to wq/for-6.9.
 
+Thanks.
 
-FTR, b4 indeed complains:
-
-NOTE: some trailers ignored due to from/email mismatches:
-     ! Trailer: Reviewed-by: Atish Patra <atishp@rivosinc.com>
-      Msg From: Alexandre Ghiti <alex@ghiti.fr>
-
-
->
-> Reviewed-by: Atish Patra <atishp@rivosinc.com>
->
-> And I'd say the fixes tag for this one is:
->
-> Fixes: 9b3e150e310e ("RISC-V: Add a simple platform driver for RISC-V 
-> legacy perf")
->
-> Thanks,
->
-> Alex
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+-- 
+tejun
 
