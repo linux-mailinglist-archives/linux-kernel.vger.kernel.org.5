@@ -1,403 +1,120 @@
-Return-Path: <linux-kernel+bounces-83612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC5C869C3B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:35:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F364B869C43
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14D1A1F24640
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:35:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9C5D1F22CFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:36:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CCC2557F;
-	Tue, 27 Feb 2024 16:34:40 +0000 (UTC)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D6F2032B;
+	Tue, 27 Feb 2024 16:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="2xN/NWyP"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404E6208A3;
-	Tue, 27 Feb 2024 16:34:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6E91D698
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709051679; cv=none; b=h1BVEiFPc/1gWBTLorDwt/O8fdSv/IRnEqBFVNt/zg3WI4OJztMl4UvuVIk1NbzVYiHw3nmrsoew/B7uMDxXCM7jEwOTyYIxYpG1boSxlx/Miras+P9VapO2eMcrbeJ5ZsaKZdhNbJja6KHSOaD8+Y3REOncDPGMoIdQLf4Fa3g=
+	t=1709051783; cv=none; b=Rb5NxlLSa4DnafgZsWs4mE3jNchGVZ31brstAbjP+TAmwJUQohN6bZk5iw7T3gk8a9yb8fZEU0auTIFJe63bJXXN84jFFudKq1JLXigGZAeHyI0ErEIgBobsLKu4BiCFJYh0GdBf9lA4K3prCf2zJ+IwbLNxKXZrautBHtUrVGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709051679; c=relaxed/simple;
-	bh=/i9MJCMqa/FgvoVRdOY5xFk2B/DagcY8PG/48I9wa8Y=;
+	s=arc-20240116; t=1709051783; c=relaxed/simple;
+	bh=9i5hlJapLP6jPwsym6zkalPtVBE+pFBSRmyXNbEoAEY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NmznGcWmj7TRQuE2IfNVjQfrsrTCdRVwUduJFJBtg6gikQoHZErdv9TldKESVvlveXzDJlC5S8Qqal5Erk3oRjz9BEk+IrmBWlpG0cwIKtTwYZ4NY8GZZpz3AV20eHKHysJ2NOW+3178iDqKpkN/mQzwi8fdpXlJ1SSJ930/98k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-608ed07bdc5so25917397b3.3;
-        Tue, 27 Feb 2024 08:34:36 -0800 (PST)
+	 To:Cc:Content-Type; b=dl5IZx0SCIPkl4aFuuoynLsi8cBejqiosowP9HY24GHa3xSuV7JxezdKUjYey5hv1feklaYtd6GjLOM8rHeVvR7FiSILGOfGwG6+CtvfnFeiCCVar3O425aj2UL0PJFJlS/N4jMY70yNFWR/TdiixDjmCT8WLCwUI0/g8j8+vBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=2xN/NWyP; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d094bc2244so53886011fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:36:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709051779; x=1709656579; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9i5hlJapLP6jPwsym6zkalPtVBE+pFBSRmyXNbEoAEY=;
+        b=2xN/NWyPit65yZi63g9mDUgJJqD/xbqgpnu8+p+Lf6Tp/V6ZAlAu2jatg4oLQVkbCS
+         2nml10CFtTWF7+cYsVZKA3ZHmpOtp5xZjJAfC2gvkscm3ZxjDjhbBPo32niH0nnno/jC
+         Ltq9JzdI+ODlmZnILiU9uq97wIAQ2MgKDbvFSKbNdDX1BARG9Y//ksia5pXe66psxU46
+         zO548gJnTDq5oROX/1x9j7dYicdedUE97zuRNDkTv0OH1Xi0qzhIVqVLILOUOibXYmbM
+         yvJ8jEjQRNHUkvtJoOQvi4Cmh3XHcJ6DOnMZqdxLZap1cxcwnCb+kBGv06vZCiFJ1f4k
+         j1hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709051675; x=1709656475;
+        d=1e100.net; s=20230601; t=1709051779; x=1709656579;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BFhsBrNB0ZxotPvr7uksusf/c5UzUanJ2CNxp9l9FzM=;
-        b=XKM3ED51zRayKO2o4PgUFf5Wrm5x3MoavVxc7uFW9enljGPpzaUQIF589zr+DsSmat
-         dVbCKDcKjoq+7+gm8AESku9J1uniG0q2zp4LjE/yfmLgLmOSOXtWJCgvET/6CzN+d3p7
-         MoknN5oQ3rvLx/wwWznt5mXyAlv1jFG1Jb5M4dulLwTWQIMgQE84oiwN/FjhqZ9hl/sf
-         GiI1ZONWQ/ZzixAqivcZQJ806ioj97VIQr9/i5RXNW9daX8tEcQQW6oQ6QMOKzQnFNbu
-         IhUFSwCEEqYaLXpcEG9UuCkF52h5O19FbFfpcxlIvnYyMfZtIGp7yKwf3fvBtwqJrNYf
-         tt0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXlJ2ikc+7Fz0VwLIISkK8YNs6Rg2E+v2rA8NmgmjR4TzdU+TiRr74SBl4BOLnXj8h6GjLXmwyuMkf8jQ/h8Vb6yv+LtMpqar4yiZLzWF68eBL3lnw54NlexN5QGzjs9x3RUMEqIysIeifv1LAxJED2aLsRsPGGVl0mPnnLrv7TQOWKNC2KG48KRRHT0u66tZOEjJEVeJDkp7ugNZCyezRL2G6S6fMDgQfJFfsKek9J9QkhifzqvDFoSM/RL/I0HtPhledQ8W3OlIBcNrVMKPKpdL1LBzjtU0vUFT8ind/9mt3kqfFH1cK+83eYIfi8hb1BCpqHGPOxKHFmq1OT41AhldOHohLGxoyXl7bLiKrxfbl4toverL0=
-X-Gm-Message-State: AOJu0YwDMrlI06s05jp4xPtx+GdcUnZbuybT6BSjGMU2LWWbhHPvekay
-	MsT9WHZXbD7NDONnilrVWh9e5DnwVosH8+9JRdmUIMo2J8PdWJpU0mE08Kt4ysqi/Q==
-X-Google-Smtp-Source: AGHT+IG/+lq49W5+DZmfo4BbEzDWtQqgWdhMf1/CYwEzfkOCQEIxMO4LHmjQJpE6Y0sNQ63PuX0kVQ==
-X-Received: by 2002:a25:3d41:0:b0:dcf:afe3:11bf with SMTP id k62-20020a253d41000000b00dcfafe311bfmr46802yba.0.1709051675212;
-        Tue, 27 Feb 2024 08:34:35 -0800 (PST)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
-        by smtp.gmail.com with ESMTPSA id i18-20020a259d12000000b00dcd512855d4sm1452496ybp.58.2024.02.27.08.34.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 08:34:34 -0800 (PST)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-608ccac1899so40440007b3.1;
-        Tue, 27 Feb 2024 08:34:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVRfSAaYeki1tJMlnVSrB1iOBc+LJfvNgErV+m7Z/l8BUaVyuP5+aTrARF/blVrkk6rLhl5v0UPPG0U92mqiv0UPfbRVS7gPN35ZiGs/pmu3htJdwEN8CJAQQV1xR5T3xTYx3mcFzch1LGoi89/eMPbnFE5JUvx9vit72pA/v0p98zWwxBfmUvSDyUoueLZlU6kBEBcOKMssN7ORmT+70Gkwa3DJBAP54Q0xvsN438UUMFuzTR7Z+ZhONs42W9mFar45sKQQF45cFtVUk9xpm2Tu2tPuL2SyxLbC7ISVatfiBvte0/+X1q1Ia+CB4rtB+qWkaQ/qbCP8Cp6nmgWgDwirEdIzXxrTO5Yl+vYDaVywNMzvideldk=
-X-Received: by 2002:a25:dc07:0:b0:dcf:9019:a2fe with SMTP id
- y7-20020a25dc07000000b00dcf9019a2femr2483100ybe.64.1709051673849; Tue, 27 Feb
- 2024 08:34:33 -0800 (PST)
+        bh=9i5hlJapLP6jPwsym6zkalPtVBE+pFBSRmyXNbEoAEY=;
+        b=RT/8VushD12Ot3ch9OGtr+KaJpE9rLrqq7zkh9zwWWXzJMlQWdFjwfRJVfzwK2MRuU
+         t7hpbaLtkynirEyzo+cycKCWCDDQw8lRySDL8uArJZSEa5YdJzPjJ9Ywjx4w9v2fC0BI
+         fKXNSYdWu58HbiGTeNIevEVhwPNym9cMasMBzbS3q/Pjxp5eO/zOqBYkjMn6n0tLMhAn
+         WUfri5hCf05dJ1c2Wbdhrn9u3UNTSXn4hX7R9J3HNUuqa4eig98fVgcsMlRJig4rx5LY
+         7qXLflGGkbH+p7hssUTFx7Xmpy9b8bOtmPiZNiTr06mBxMauvyPh9/jnOZMDoC9g5sD9
+         VjlA==
+X-Forwarded-Encrypted: i=1; AJvYcCWODfxzIzFC0D/LshsvKaJx8Jz8npVXtx5s9NCP3WrHZ8nBdqFjjXcCXpJDW7jh+D8zIWfxI2dWaXt9t0yv4X0NA6MWD8RqGGpOfEmf
+X-Gm-Message-State: AOJu0Yw4Z6UJpF5ROPlq4kXincacvZuc89qEPaepUhJaoH2mdX1B48LQ
+	ApCoOYsIqgzZGKuWIoFGW3OL26iECeqsn3/23sUwJyYA9q4l7gS2I7MyaKF1Kv/P/bz1RzSIVdO
+	Aftmdl/Xd7omzoKsGpl/li6EGyvTG46fSGqR7fw==
+X-Google-Smtp-Source: AGHT+IH7YLnLMluYbBqba2HqK2U/KdjlxswxBx1MLznMGFPH7zEmPhqgw9gjdxbEvl1zCBEAWp/RcuPS41adiKr/ORI=
+X-Received: by 2002:a05:651c:2c4:b0:2d2:7580:e220 with SMTP id
+ f4-20020a05651c02c400b002d27580e220mr5748651ljo.15.1709051778879; Tue, 27 Feb
+ 2024 08:36:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1704788539.git.ysato@users.sourceforge.jp> <28b339d21fa7b74c75f181d3dc710f667da5f228.1704788539.git.ysato@users.sourceforge.jp>
-In-Reply-To: <28b339d21fa7b74c75f181d3dc710f667da5f228.1704788539.git.ysato@users.sourceforge.jp>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 27 Feb 2024 17:34:21 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVPSDdjGa=AF_9g_RMSv2iv862WVcrmAgvPay+ceNrzgQ@mail.gmail.com>
-Message-ID: <CAMuHMdVPSDdjGa=AF_9g_RMSv2iv862WVcrmAgvPay+ceNrzgQ@mail.gmail.com>
-Subject: Re: [DO NOT MERGE v6 15/37] clk: renesas: Add SH7750/7751 CPG Driver
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Thomas Gleixner <tglx@linutronix.de>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>, 
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, Lee Jones <lee@kernel.org>, 
-	Helge Deller <deller@gmx.de>, Heiko Stuebner <heiko@sntech.de>, 
-	Jernej Skrabec <jernej.skrabec@gmail.com>, Chris Morgan <macromorgan@hotmail.com>, 
-	Yang Xiwen <forbidden405@foxmail.com>, Sebastian Reichel <sre@kernel.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Vlastimil Babka <vbabka@suse.cz>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	David Rientjes <rientjes@google.com>, Baoquan He <bhe@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Stephen Rothwell <sfr@canb.auug.org.au>, Azeem Shaikh <azeemshaikh38@gmail.com>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Palmer Dabbelt <palmer@rivosinc.com>, Bin Meng <bmeng@tinylab.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+References: <20240219-mainline-spi-precook-message-v2-0-4a762c6701b9@baylibre.com>
+ <20240219-mainline-spi-precook-message-v2-5-4a762c6701b9@baylibre.com> <20240224165706.18cc0d7e@jic23-huawei>
+In-Reply-To: <20240224165706.18cc0d7e@jic23-huawei>
+From: David Lechner <dlechner@baylibre.com>
+Date: Tue, 27 Feb 2024 10:36:07 -0600
+Message-ID: <CAMknhBGZkCx1HT1pzNHAgOCSvA3U7a6_P7DdDibfawziih_PwA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] iio: adc: ad7380: use spi_optimize_message()
+To: Jonathan Cameron <jic23@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, Martin Sperl <kernel@martin.sperl.org>, 
+	David Jander <david@protonic.nl>, Michael Hennerich <michael.hennerich@analog.com>, 
+	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	Alain Volmat <alain.volmat@foss.st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-spi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	linux-arm-kernel@lists.infradead.org, linux-iio@vger.kernel.org, 
+	Julien Stephan <jstephan@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Sato-san,
-
-On Tue, Jan 9, 2024 at 9:24=E2=80=AFAM Yoshinori Sato
-<ysato@users.sourceforge.jp> wrote:
-> Renesas SH7750 and SH7751 series CPG driver.
-> This driver supported frequency control and clock gating.
+On Sat, Feb 24, 2024 at 10:57=E2=80=AFAM Jonathan Cameron <jic23@kernel.org=
+> wrote:
 >
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
-
-Thanks for your patch!
-
-> --- a/drivers/clk/renesas/Kconfig
-> +++ b/drivers/clk/renesas/Kconfig
-> @@ -193,6 +196,10 @@ config CLK_SH73A0
->         select CLK_RENESAS_CPG_MSTP
->         select CLK_RENESAS_DIV6
+> On Mon, 19 Feb 2024 16:33:22 -0600
+> David Lechner <dlechner@baylibre.com> wrote:
 >
-> +config CLK_SH7750
-> +       bool "SH7750/7751 family clock support" if COMPILE_TEST
-> +       help
-> +         This is a driver for SH7750 / SH7751 CPG.
-
-This is a duplicate of the below. Please drop it.
-
+> > This modifies the ad7380 ADC driver to use spi_optimize_message() to
+> > optimize the SPI message for the buffered read operation. Since buffere=
+d
+> > reads reuse the same SPI message for each read, this can improve
+> > performance by reducing the overhead of setting up some parts the SPI
+> > message in each spi_sync() call.
+> >
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> Looks good to me.
 >
->  # Family
->  config CLK_RCAR_CPG_LIB
-> @@ -223,6 +230,11 @@ config CLK_RZG2L
->         bool "Renesas RZ/{G2L,G2UL,G3S,V2L} family clock support" if COMP=
-ILE_TEST
->         select RESET_CONTROLLER
+> As this is the driver you asked me to drop earlier this cycle,
+> how do we plan to merge this series?
 >
-> +config CLK_SH7750
-> +       bool "Renesas SH7750/7751 family clock support" if COMPILE_TEST
-> +       help
-> +         This is a driver for SH7750 / SH7751 CPG.
-> +
->  # Generic
->  config CLK_RENESAS_CPG_MSSR
->         bool "CPG/MSSR clock support" if COMPILE_TEST
+> If Mark is fine taking 1-4 with the user following along that's
+> fine by me, if not I guess we are in immutable tree territory for
+> next cycle?
 
-> --- /dev/null
-> +++ b/drivers/clk/renesas/clk-sh7750.c
-
-> +static int register_pll(struct device_node *node, struct cpg_priv *cpg)
-> +{
-> +       const char *clk_name =3D node->name;
-> +       const char *parent_name;
-> +       struct clk_init_data init =3D {
-> +               .name =3D PLLOUT,
-> +               .ops =3D &pll_ops,
-> +               .flags =3D 0,
-> +               .num_parents =3D 1,
-> +       };
-> +       int ret;
-> +
-> +       parent_name =3D of_clk_get_parent_name(node, 0);
-> +       init.parent_names =3D &parent_name;
-> +       cpg->hw.init =3D &init;
-> +
-> +       ret =3D of_clk_hw_register(node, &cpg->hw);
-> +       if (ret < 0) {
-> +               pr_err("%s: failed to register %s pll clock (%d)\n",
-> +                      __func__, clk_name, ret);
-> +               return ret;
-> +       }
-> +       if (ret < 0)
-> +               pr_err("%s: failed to add provider %s (%d)\n",
-> +                      __func__, clk_name, ret);
-
-Bogus check and error message.
-
-> +       return ret;
-> +}
-
-> +static int register_div(struct device_node *node, struct cpg_priv *cpg)
-> +{
-> +       static const char * const divout[] =3D {
-> +               "fck", "bck", "ick",
-> +       };
-> +       static const char * const stbcrout[] =3D {
-> +               "sci_clk", "rtc_clk", "tmu012_clk",     /* STBCR */
-> +               "scif_clk", "dmac_clk",                 /* STBCR */
-> +               "ubc_clk", "sq_clk",                    /* STBCR2 */
-> +       };
-> +       static const char * const clkstpout[] =3D {
-> +               "intc_clk", "tmu34_clk", "pcic_clk",    /* CLKSTP00 */
-> +       };
-> +
-> +       unsigned int i;
-> +       int ret;
-> +       struct clk_hw_onecell_data *data;
-> +       struct clk_hw *reg_hw;
-> +       int num_clk =3D ARRAY_SIZE(divout) + ARRAY_SIZE(stbcrout) + ARRAY=
-_SIZE(clkstpout);
-> +
-> +       data =3D kzalloc(struct_size(data, hws, num_clk + 1), GFP_KERNEL)=
-;
-> +       if (!data)
-> +               return -ENOMEM;
-> +
-> +       num_clk =3D 0;
-> +       for (i =3D 0; i < ARRAY_SIZE(divout); i++) {
-> +               reg_hw =3D __clk_hw_register_divider(NULL, node, divout[i=
-],
-> +                                                  PLLOUT, NULL, NULL,
-> +                                                  0, cpg->frqcr, i * 3, =
-3,
-> +                                                  CLK_DIVIDER_REG_16BIT,
-> +                                                  (i =3D=3D 0) ? pdiv_ta=
-ble : div_table,
-> +                                                  &cpg->clklock);
-> +               if (IS_ERR(reg_hw)) {
-> +                       ret =3D PTR_ERR(reg_hw);
-> +                       goto error;
-> +               }
-> +               data->hws[num_clk++] =3D reg_hw;
-> +       }
-> +       for (i =3D 0; i < ARRAY_SIZE(stbcrout); i++) {
-> +               u32 off =3D  (i < 5) ? STBCR : STBCR2;
-> +
-> +               if (i >=3D 5 && !(cpg->feat & MSTP_CR2))
-> +                       break;
-
-Alternatively, you could set the maximum loop counter upfront
-
-    n =3D cpg->feat & MSTP_CR2 ? ARRAY_SIZE(stbcrout) : 5;
-    for (i =3D 0; i < n; i++) ...
-
-> +               reg_hw =3D __clk_hw_register_gate(NULL, node, stbcrout[i]=
-,
-> +                                               divout[0], NULL, NULL,
-> +                                               0, cpg->frqcr + off, i % =
-5,
-> +                                               CLK_GATE_REG_8BIT | CLK_G=
-ATE_SET_TO_DISABLE,
-> +                                               &cpg->clklock);
-> +               if (IS_ERR(reg_hw)) {
-> +                       ret =3D PTR_ERR(reg_hw);
-> +                       goto error;
-> +               }
-> +               data->hws[num_clk++] =3D reg_hw;
-> +       }
-> +       if (cpg->feat & MSTP_CLKSTP) {
-> +               for (i =3D 0; i < ARRAY_SIZE(clkstpout); i++) {
-> +                       if (i =3D=3D 2 && !(cpg->feat & MSTP_CSTP2))
-> +                               continue;
-
-Set maximum loop counter upfront?
-
-> +                       reg_hw =3D clk_hw_register_clkstp(node, clkstpout=
-[i],
-> +                                                       divout[0], cpg->c=
-lkstp00,
-> +                                                       i, &cpg->clklock)=
-;
-> +                       if (IS_ERR(reg_hw)) {
-> +                               ret =3D PTR_ERR(reg_hw);
-> +                               goto error;
-> +                       }
-> +                       data->hws[num_clk++] =3D reg_hw;
-> +               }
-> +       }
-> +       data->num =3D num_clk;
-> +       ret =3D of_clk_add_hw_provider(node, of_clk_hw_onecell_get, data)=
-;
-> +       if (ret < 0)
-> +               goto error;
-> +       return 0;
-> +
-> +error:
-> +       pr_err("%pOF: failed to register clock (%d)\n",
-> +                      node, ret);
-> +       for (num_clk--; num_clk >=3D 0; num_clk--)
-> +               kfree(data->hws[num_clk]);
-> +       kfree(data);
-> +       return ret;
-> +}
-> +
-> +static struct cpg_priv *sh7750_cpg_setup(struct device_node *node, u32 f=
-eat)
-> +{
-> +       unsigned int num_parents;
-> +       u32 mode;
-> +       struct cpg_priv *cpg;
-> +       int ret =3D 0;
-> +
-> +       num_parents =3D of_clk_get_parent_count(node);
-> +       if (num_parents < 1) {
-> +               pr_err("%s: no parent found", node->name);
-> +               return ERR_PTR(-ENODEV);
-> +       }
-
-Do you need num_parents?
-
-> +
-> +       of_property_read_u32_index(node, "renesas,mode", 0, &mode);
-
-mode may be used uninitialized, if "renesas,mode" is missing.
-
-> +       if (mode >=3D 7) {
-> +               pr_err("%s: Invalid clock mode setting (%u)\n",
-> +                      node->name, mode);
-> +               return ERR_PTR(-EINVAL);
-> +       }
-> +
-> +       cpg =3D kzalloc(sizeof(struct cpg_priv), GFP_KERNEL);
-> +       if (!cpg)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       cpg->frqcr =3D of_iomap(node, 0);
-> +       if (cpg->frqcr =3D=3D NULL) {
-> +               pr_err("%pOF: failed to map divide register", node);
-> +               ret =3D -ENODEV;
-> +               goto cpg_free;
-> +       }
-> +
-> +       if (feat & MSTP_CLKSTP) {
-> +               cpg->clkstp00 =3D of_iomap(node, 1);
-> +               if (cpg->clkstp00 =3D=3D NULL) {
-> +                       pr_err("%pOF: failed to map clkstp00 register", n=
-ode);
-> +                       ret =3D -ENODEV;
-> +                       goto unmap_frqcr;
-> +               }
-> +       }
-> +       cpg->feat =3D feat;
-> +       cpg->mode =3D mode;
-> +
-> +       ret =3D register_pll(node, cpg);
-> +       if (ret < 0)
-> +               goto unmap_clkstp00;
-> +
-> +       ret =3D register_div(node, cpg);
-> +       if (ret < 0)
-> +               goto unmap_clkstp00;
-> +
-
-Perhaps "cpg_data =3D cpg;" here, and return an error code instead? ...
-
-> +       return cpg;
-> +
-> +unmap_clkstp00:
-> +       iounmap(cpg->clkstp00);
-> +unmap_frqcr:
-> +       iounmap(cpg->frqcr);
-> +cpg_free:
-> +       kfree(cpg);
-> +       return ERR_PTR(ret);
-> +}
-> +
-> +static void __init sh7750_cpg_init(struct device_node *node)
-> +{
-> +       cpg_data =3D sh7750_cpg_setup(node, cpg_feature[CPG_SH7750]);
-> +       if (IS_ERR(cpg_data))
-> +               cpg_data =3D NULL;
-
-.. then all cpg_data handling can be removed here...
-
-> +}
-
-> +static int sh7750_cpg_probe(struct platform_device *pdev)
-> +{
-> +       u32 feature;
-> +
-> +       if (cpg_data)
-> +               return 0;
-> +       feature =3D *(u32 *)of_device_get_match_data(&pdev->dev);
-> +       cpg_data =3D sh7750_cpg_setup(pdev->dev.of_node, feature);
-> +       if (IS_ERR(cpg_data))
-> +               return PTR_ERR(cpg_data);
-> +       return 0;
-
-.. and this can be simplified to
-
-    return sh7750_cpg_setup(...);
-
-> +}
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+I've been out sick for a week so trying to get back up to speed here.
+It looks like Mark has picked up the spi changes, so that part is
+resolved. I'll work on getting the ad7380 driver resubmitted, then we
+can come back to this patch after 6.9-rc1 (assuming the SPI changes
+make it in to 3.9 of course).
 
