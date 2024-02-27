@@ -1,140 +1,106 @@
-Return-Path: <linux-kernel+bounces-82648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 304EE8687AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97F8C8687C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:21:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62B731C219EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:19:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9EE21C22C38
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620501CD03;
-	Tue, 27 Feb 2024 03:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283461CD3E;
+	Tue, 27 Feb 2024 03:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZBA3rHCJ"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ds6+qhyd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0761EB31;
-	Tue, 27 Feb 2024 03:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1E91B949;
+	Tue, 27 Feb 2024 03:20:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709003957; cv=none; b=JCZQnyb2dq/k0ObnRO1FQOSigxm+icxnW8pZYR4DezmgsUfypntqLKTM5YQ0XVlWg0qGIiiUizO7Ij9sdT6oqsGJdTHf215NELcFmrJJyUDpQYjj4Pc17oKyl4PNG4Xeihq+xNxWQo5VM0ub+PVv2KM3dQ86BDTZko9xGDTppEs=
+	t=1709004030; cv=none; b=lPbXziJ4TJ75dY7PkKvuuZSBBxVXBaH+15dXDDPDn4p6ZeobF8sy1LP/JdQoow3Pig6t4T+OhUSrIaSBUnH9h9yf1lXo4LpM9o/hTwPOvBRXBiob98Ro+RzSLW5lDE9QJNCHGxggTgk+aZBnYf0FJxPL7zd8GZERlDIPYcJvvP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709003957; c=relaxed/simple;
-	bh=HyQeAkfIsrXp7lnK7bPc8oR0V4wM6K6OMlQPcGXMiCA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=bMsCJnmZ6ayBj6psaR+ijZew/WlshXS6p57HzgymN8azXpgOPEI1Vw/l/pWXwJKJe5SPkR0sBIWsPIaaMecc+vZhOQCksyLmHV/kHEdHWTus1KdIymPhkc53soKf80x+pj83FgmEWo/RThRFnTOxmXMwgQEOHjwWUqjFylluGnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZBA3rHCJ; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41QNsnxr009857;
-	Tue, 27 Feb 2024 03:19:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=y2+n+K4VEk1Ekg1azTwyrDXlJqc1pengbDN8GywlNTw=; b=ZB
-	A3rHCJaWDsBiegF2zvodsukg1pD1JG4gPWKXNA3srNI2ikI5wRk7yRFRWelAVHIM
-	HqcYH9wkb8lC0wd5Vy5y4KUTtg8Nafx8UaboGI8VUWW3rdlRzl9eTpapvwyGwiEb
-	DNRmO1CXDGLmgnJIlIxQlyjjHun/Maoa5l4pv3XdLt7aILg5uPIVQl7FKqmktppm
-	CBf7wX/rHXyZ0UTTA6l3eOXaKlEZeAGCloZ+TrsT1H/EKUd83PdspvRhTRxX52EI
-	Ndldz8e+1CBAtUmTjaVd/sX5iEr8gfOnrixvEYDBOyTJODcUIPXS5XfC0w696rsN
-	BKLYER30F4DanIvfav5g==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wgkxq2r7k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 03:19:08 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41R3J7ae006121
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 03:19:07 GMT
-Received: from [10.110.56.192] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
- 2024 19:19:06 -0800
-Message-ID: <adb2956b-c600-4e86-8c56-87ceb70162d6@quicinc.com>
-Date: Mon, 26 Feb 2024 19:19:05 -0800
+	s=arc-20240116; t=1709004030; c=relaxed/simple;
+	bh=s2eioNfukDMALIYmsfTbL/3nVLukiMf2+0qLoHY9ES8=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=AyPDmorH+dsUhtG4MRNGrSYYF40EXcH+IOT1fDHKMu8vgkxjU5hbp3ALQlxLBT7ev6yy2UMzF6qHY/b7caJenq8GaEtPvq239CT3C3aW9mJAd108b9BquwgCi+H07bpH3KuSnfURIhpha5SJ5HtPZvF7KPv8WaYCY8rUr4kxyMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ds6+qhyd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 75D2BC43394;
+	Tue, 27 Feb 2024 03:20:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709004030;
+	bh=s2eioNfukDMALIYmsfTbL/3nVLukiMf2+0qLoHY9ES8=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ds6+qhydg6HvWtNREWG8A+IjqexZMZ7YWnTYjxMV+C485aQAvxyCnH9eGyGicW580
+	 Sgm2PDzkvNPOd80rCdTMHbuHKt+5DbsdufrqTDeeD4Njtfkh8LJk3B6lgk2TXA+MVF
+	 dVQ274u4amFeRIN3El/DsS4hhzl6rB9hOamyu7JahaHjIdp+EBDan3VUMui1u9PdBD
+	 48sa5tgNPsjZxIyzWlm7NbHmk6YIj3BC+a4/dm3+PrMnoeoMSzIvSHl3/KWA7wwJCV
+	 6Z31sUvzHAu1jbE0DSdlq45nI6xzz3Xcc83t7QIRqIPAAkwWQDxbGm1QW2fqDrQLxe
+	 1alt0e3SzRnBw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 55D29D8C976;
+	Tue, 27 Feb 2024 03:20:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
-Content-Language: en-US
-To: <quic_bjorande@quicinc.com>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ulf Hansson
-	<ulf.hansson@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Johan Hovold
-	<johan+linaro@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Johan Hovold <johan@kernel.org>,
-        <stable@vger.kernel.org>
-References: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20240226-rpmhpd-enable-corner-fix-v1-1-68c004cec48c@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qZ-77PHJpcQJTzmczVJLxZopCVLGS0C9
-X-Proofpoint-ORIG-GUID: qZ-77PHJpcQJTzmczVJLxZopCVLGS0C9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 lowpriorityscore=0 mlxlogscore=999 suspectscore=0 adultscore=0
- spamscore=0 clxscore=1011 malwarescore=0 impostorscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402270025
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/8] mptcp: various small improvements
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170900403034.25082.12541895722139534693.git-patchwork-notify@kernel.org>
+Date: Tue, 27 Feb 2024 03:20:30 +0000
+References: <20240223-upstream-net-next-20240223-misc-improvements-v1-0-b6c8a10396bd@kernel.org>
+In-Reply-To: <20240223-upstream-net-next-20240223-misc-improvements-v1-0-b6c8a10396bd@kernel.org>
+To: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ shuah@kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tanggeliang@kylinos.cn
+
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 23 Feb 2024 21:17:52 +0100 you wrote:
+> This series brings various small improvements to MPTCP and its
+> selftests:
+> 
+> Patch 1 prints an error if there are duplicated subtests names. It is
+> important to have unique (sub)tests names in TAP, because some CI
+> environments drop (sub)tests with duplicated names.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/8] selftests: mptcp: lib: catch duplicated subtest entries
+    https://git.kernel.org/netdev/net-next/c/9da74836740d
+  - [net-next,2/8] mptcp: token kunit: set protocol
+    https://git.kernel.org/netdev/net-next/c/28de50eeb734
+  - [net-next,3/8] mptcp: check the protocol in tcp_sk() with DEBUG_NET
+    https://git.kernel.org/netdev/net-next/c/dcc03f270d1e
+  - [net-next,4/8] mptcp: check the protocol in mptcp_sk() with DEBUG_NET
+    https://git.kernel.org/netdev/net-next/c/14d29ec5302c
+  - [net-next,5/8] selftests: mptcp: netlink: drop duplicate var ret
+    https://git.kernel.org/netdev/net-next/c/488ccbe76cb4
+  - [net-next,6/8] selftests: mptcp: simult flows: define missing vars
+    https://git.kernel.org/netdev/net-next/c/fccf7c922459
+  - [net-next,7/8] selftests: mptcp: join: change capture/checksum as bool
+    https://git.kernel.org/netdev/net-next/c/8c6f6b4bb53a
+  - [net-next,8/8] selftests: mptcp: diag: change timeout_poll to 30
+    https://git.kernel.org/netdev/net-next/c/e8ddc5f255c3
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-
-On 2/26/2024 5:49 PM, Bjorn Andersson via B4 Relay wrote:
-> From: Bjorn Andersson <quic_bjorande@quicinc.com>
-> 
-> Commit 'e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable
-> the domain")' aimed to make sure that a power-domain that is being
-> enabled without any particular performance-state requested will at least
-> turn the rail on, to avoid filling DeviceTree with otherwise unnecessary
-> required-opps properties.
-> 
-> But in the event that aggregation happens on a disabled power-domain, with
-> an enabled peer without performance-state, both the local and peer
-> corner are 0. The peer's enabled_corner is not considered, with the
-> result that the underlying (shared) resource is disabled.
-> 
-> One case where this can be observed is when the display stack keeps mmcx
-> enabled (but without a particular performance-state vote) in order to
-> access registers and sync_state happens in the rpmhpd driver. As mmcx_ao
-> is flushed the state of the peer (mmcx) is not considered and mmcx_ao
-> ends up turning off "mmcx.lvl" underneath mmcx. This has been observed
-> several times, but has been painted over in DeviceTree by adding an
-> explicit vote for the lowest non-disabled performance-state.
-> 
-> Fixes: e3e56c050ab6 ("soc: qcom: rpmhpd: Make power_on actually enable the domain")
-> Reported-by: Johan Hovold <johan@kernel.org>
-> Closes: https://lore.kernel.org/linux-arm-msm/ZdMwZa98L23mu3u6@hovoldconsulting.com/
-> Cc:  <stable@vger.kernel.org>
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
-> This issue is the root cause of a display regression on SC8280XP boards,
-> resulting in the system often resetting during boot. It was exposed by
-> the refactoring of the DisplayPort driver in v6.8-rc1.
-> ---
->   drivers/pmdomain/qcom/rpmhpd.c | 7 +++++--
->   1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
