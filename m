@@ -1,50 +1,51 @@
-Return-Path: <linux-kernel+bounces-83990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B6B86A123
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:51:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB21A86A144
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 21:59:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0242C1F239B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:51:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A75EEB26E3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 20:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D7D14E2C8;
-	Tue, 27 Feb 2024 20:51:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1DE815098C;
+	Tue, 27 Feb 2024 20:51:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="gXMM5bLC"
-Received: from smtp.smtpout.orange.fr (smtp-28.smtpout.orange.fr [80.12.242.28])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="gcWC20Sh"
+Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C4EF14E2CF
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 128D114EFFF
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709067074; cv=none; b=fM2YJnb+3I4RuX3VgJWZvVIJs9cuS2nLU1rWUZREV369reKU0Plqhf++8+37FXYVedprOZ5JlIpJCiD/jGx1eh2t+AQcwyES3962RJhQTfmBCvux9T213Zqd0n7h2PWmRVNXB4xIn7vyQkzPoEAkN8XS6leNhyTiB8TyH1yYDrU=
+	t=1709067077; cv=none; b=fZhXq/RzsWMBXhw8R4oDt1bbxfzP5oGPd1XMRZfiC1g1H5gNvZnHcUzAm6cVCYY36MWmuEs2cZ648XSf8DfcieIoyRYTR6qoMhEeGb0GFpPSJ2ALABTIlBa+muw23t7goBg5UCuXza3RSLJTTf2z8Nva0LSqZGecm+BULS38jvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709067074; c=relaxed/simple;
-	bh=CHjYuJEs1YGST1wT3cXrPmtA83Fz7pwoVCFfvmEsfoc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AVGp/niESjSkygzfKNgaW03m6J+7EQizLXj2I0HPEog28Kb5Dmz9P4iHCPTnPhD9/yOjm3XXMVXdYrh8u7wWHJEPxBIsIwQ9IAw3/J/cV8MEIqbAI+37tZ9bQW9v+i1HjvVWf3e7q+ajEMU0ShCU5OJERf3flRUa2lW2F+gdbYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=gXMM5bLC; arc=none smtp.client-ip=80.12.242.28
+	s=arc-20240116; t=1709067077; c=relaxed/simple;
+	bh=8UZtwuLFt1gMui9a2Im7UgO6iF/un1cR2TCSHsPBa04=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Dd7CqpEbgo3f4ccu/XN3qYvCK4H6VrD7ApOFhh6qVRKMdWDuLpT7DOUDAQo1F6MiKVzVw4gIqQJZTCblUGyMU5xP8N0Bh92I0u8oVoF9QqCmCTgtP1oN17PkWK+ZDGKfgpHf3Afi14KPmDLo+5kJLgSboEoVWov2an1pMQomf1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=gcWC20Sh; arc=none smtp.client-ip=80.12.242.27
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
 Received: from fedora.home ([92.140.202.140])
 	by smtp.orange.fr with ESMTPA
-	id f4PjrRU7nxsbMf4PjrnVjY; Tue, 27 Feb 2024 21:51:03 +0100
+	id f4PjrRU7nxsbMf4PwrnVkS; Tue, 27 Feb 2024 21:51:12 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1709067063;
-	bh=4X7OgnhzA0408NmQJznS3WtjF09N6jPBQZSZ+cdPFMU=;
-	h=From:To:Cc:Subject:Date;
-	b=gXMM5bLCajy5uQYD5Vmf2X16QRsXPNaj2madgH6f/begypQJvO1AsoFa5s9aioiMi
-	 VUeoehXAIMYdPyHkTw8Q6hKxFp7LNvVOc0flIN25qiPFUlnL30vn8XvuqLodmCMZaS
-	 BSAyF3CE/hOYUqRGyNIZarhIPY1mSpYgUhQ3ScQ5vaMzx7yvj8OuROnxBsiApuosqC
-	 qZSk9L5hedtKfNgF5YoXZwcYjZGF968ixq9NA2s5ZL4Ed9anprA8dw/WqeEK0OXdR4
-	 OCKQAoVXM+P/EfD9QMmVo1c6Mt2eVwVespEP+yizOus8zrZFPsMcN/L9aHfpNO0ljC
-	 rek6feTdO4ocQ==
+	s=t20230301; t=1709067072;
+	bh=+f4AbVJbx28S60iHUgdJzBPh+asTj/MtBzhNY4Ac8Mw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=gcWC20ShNiGpb3YLDEDliWcB/JrBjMeZvLiuX67SiQq7eqjFdQUY2LHnAXwPqJNJY
+	 yWw2f7Uqpygzy9cv/62d5bB2+6RsO7P4lOL/IVjXvA6NI26jU5+9grghCbYdyp1OG4
+	 jXp60QFwXgvk5vHlKq3j0r2bM5r+tY5/cuZ6Ng2EtGwPYYgA98JHMe927Qazz6XHXC
+	 opadKaVCYDe1tWN0/ZXKb2tMl+c6hRZCjdK9EKk17II29QnrlvJnmXESVkyMW2Gp5T
+	 3cSWhIEHQZ33KHj7nh2o+UApC2K1iywSVoy+JVNjFJLD7wKtcMnhMSj6ozH0aGp086
+	 MCm/cIjUeRNZw==
 X-ME-Helo: fedora.home
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 27 Feb 2024 21:51:03 +0100
+X-ME-Date: Tue, 27 Feb 2024 21:51:12 +0100
 X-ME-IP: 92.140.202.140
 From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To: andy@greyhouse.net,
@@ -56,10 +57,12 @@ Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel-janitors@vger.kernel.org,
 	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH net 0/2] net: tehuti: Fix some error handling paths in bdx_probe()
-Date: Tue, 27 Feb 2024 21:50:54 +0100
-Message-ID: <cover.1709066709.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH net 1/2] net: tehuti: Fix a missing pci_disable_msi() in the error handling path of bdx_probe()
+Date: Tue, 27 Feb 2024 21:50:55 +0100
+Message-ID: <011588ecfd6689e27237f96213acdb7a3543f981.1709066709.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.43.2
+In-Reply-To: <cover.1709066709.git.christophe.jaillet@wanadoo.fr>
+References: <cover.1709066709.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,23 +71,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The patch has been split in 2 patches in the hope to ease review. But
-they both fix issues introduced years ago in the same commit.
+If an error occurs after a successful call to pci_enable_msi(),
+pci_disable_msi() should be called as already done in the remove function.
 
-Moreover, the 2nd patch partly undoes the first one.
+Add a new label and the missing pci_disable_msi() call.
 
-So, if preferred they can be merged in a single patch.
+Fixes: 1a348ccc1047 ("[NET]: Add Tehuti network driver.")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
+---
+ drivers/net/ethernet/tehuti/tehuti.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-They are both compile tested-only.
-
-Christophe JAILLET (2):
-  net: tehuti: Fix a missing pci_disable_msi() in the error handling
-    path of bdx_probe()
-  net: tehuti: Fix leaks in the error handling path of bdx_probe()
-
- drivers/net/ethernet/tehuti/tehuti.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
-
+diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
+index ca409515ead5..938a5caf5a3b 100644
+--- a/drivers/net/ethernet/tehuti/tehuti.c
++++ b/drivers/net/ethernet/tehuti/tehuti.c
+@@ -1965,7 +1965,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		ndev = alloc_etherdev(sizeof(struct bdx_priv));
+ 		if (!ndev) {
+ 			err = -ENOMEM;
+-			goto err_out_iomap;
++			goto err_out_disable_msi;
+ 		}
+ 
+ 		ndev->netdev_ops = &bdx_netdev_ops;
+@@ -2031,7 +2031,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		if (bdx_read_mac(priv)) {
+ 			pr_err("load MAC address failed\n");
+ 			err = -EFAULT;
+-			goto err_out_iomap;
++			goto err_out_disable_msi;
+ 		}
+ 		SET_NETDEV_DEV(ndev, &pdev->dev);
+ 		err = register_netdev(ndev);
+@@ -2048,6 +2048,11 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ err_out_free:
+ 	free_netdev(ndev);
++err_out_disable_msi:
++#ifdef BDX_MSI
++	if (nic->irq_type == IRQ_MSI)
++		pci_disable_msi(pdev);
++#endif
+ err_out_iomap:
+ 	iounmap(nic->regs);
+ err_out_res:
 -- 
 2.43.2
 
