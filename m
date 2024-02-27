@@ -1,82 +1,100 @@
-Return-Path: <linux-kernel+bounces-82906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39987868BA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:05:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78519868BA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 10:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85B70B27F78
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:05:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D5A12880F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628B21332A9;
-	Tue, 27 Feb 2024 09:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B0F135A6A;
+	Tue, 27 Feb 2024 09:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hg1EUzVZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="JqADrn89"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991FD54BCB
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 09:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7DD754BCB;
+	Tue, 27 Feb 2024 09:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709024735; cv=none; b=XqyJYouHiZVT4+Nm+V83gMYf5FRLYzZhfi4FYCDJaE4g4oAb1hsJBzahtOpY/A2/+sUziUobhnfAvENOcrg2ImZ4jm0Ufe/gB2kBT0SXEdh7CAbvzLCLa6dNQKD4JbgcPcKqipGHGGifwC1GlP5grn+ii76/FWR9K9ZS77Y0nyk=
+	t=1709024772; cv=none; b=QOp70s7GBRmkNmrVF4rAKGuIosEIHk+TGXWUP24hZk+QDPwoLECcXQz8K4jx8Ffn6+sywi6kCVEUiMQtV4r9hIoCV2ZNGsDd07KJiCDN/2+orUjUZuoI1+61metPXwD6SvMvmfrXKdOR57q28RAg5maPRpxFvXGbWfamk6jDcDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709024735; c=relaxed/simple;
-	bh=Am/D+g9bxO9RrGanC/9goSZgOkapPvJ6A17Yn9/q0p0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wu+QXwkrtEYRBNcti3YJjz5PMeqPLF9FyhVpC4bXgn54Pdq5jPecTfuDQ5wafapkFPbuXy5g8AT4yQTJtrEdsPXZKgkN73mD2/4ebDpmw/uh0wTavn2W7ZHqHYy4Xx8IrdAHBUHxXz6LaNlDlEYASuyxcw53OpTwc2ujGiGZX58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hg1EUzVZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8B83C433F1;
-	Tue, 27 Feb 2024 09:05:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709024735;
-	bh=Am/D+g9bxO9RrGanC/9goSZgOkapPvJ6A17Yn9/q0p0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hg1EUzVZ7XOEM1hsgrqJ3KvddHqLBU06Z0qzqQRfePSMjFAmw1+GDfC0QOLNPMdPZ
-	 reR6lCFjjTSru4dEFU7h0YoMTbEnZJuBclSt2b8LOmZ7Tp5u0zglnQW2mMOv7YxAlG
-	 cNB0lTFgqQowkHWZWoGuC66YDGvgyk1TgYs2/2B7GWLRpeAtgYjere1/znwxFMSwTq
-	 y1NnkbYfNlxkD1IBk7SpKYkNQDV2hx3ZPBjocY0v0P5j9OVfDKcbvH7xjcsZIpGdrU
-	 mVNwwZ2IE5QqRs5UivGlT5e9p6Y5nQuns41rsOBPK/Cov3fWEIGzZJXs+QwsfSesmT
-	 lhLfrjZ/Ae4iQ==
-Date: Tue, 27 Feb 2024 09:05:30 +0000
-From: Will Deacon <will@kernel.org>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	linux-arm-kernel@lists.infradead.org, broonie@kernel.org,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/hw_breakpoint: Determine lengths from generic perf
- breakpoint macros
-Message-ID: <20240227090529.GA13359@willie-the-truck>
-References: <20240223113102.4027779-1-anshuman.khandual@arm.com>
- <20240223125224.GC10641@willie-the-truck>
- <1901fadb-1d71-4374-be8c-00935bb27854@arm.com>
- <ZdxwTkUALQfqjagf@FVFF77S0Q05N>
- <c37bd84e-d4f7-42df-a333-f2ad6ebc9527@arm.com>
+	s=arc-20240116; t=1709024772; c=relaxed/simple;
+	bh=n4VE9YfSvDIgD5KVbQqRs4ZGP82u4xjDxIlsieejVz4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ij9pbTeMrzla55NEdro8t2qys/3eOI8Mcgiqt+WSHhSYqFf+VxSYnO37T2J1L2Ke61o4V7ju5pYe0Rp6WJNDfYhIBsI3eOhZrb5bIzHSbcwN8IriMFbSRcgG7hfR/CsxfP71MyVK6o4oWC0VenJESWpdyWB3SG4O6qnVVu5sxnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=JqADrn89; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1709024766;
+	bh=n4VE9YfSvDIgD5KVbQqRs4ZGP82u4xjDxIlsieejVz4=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=JqADrn89IhcLGCkDQse9CAsivTzeTpWqNi0BkB12AARvNB9Y//2PvHkUkEAWj2zvy
+	 l9ycw/8QiO6Nz84Hgc7HfAAwxap21qsUy9++sygPatH60Gnd3nk4leC9xPvPgJi4gS
+	 El6VWagVC4pI98hDQ5D5gRxr7ouMvb07ydhRUby8=
+Received: from [192.168.124.4] (unknown [113.200.174.20])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 6A10A66AF5;
+	Tue, 27 Feb 2024 04:06:03 -0500 (EST)
+Message-ID: <f1ba53fd2a99949187ca392c6d4488d3d5aeaf88.camel@xry111.site>
+Subject: Re: [PATCH v5 3/6] LoongArch: KVM: Add cpucfg area for kvm
+ hypervisor
+From: Xi Ruoyao <xry111@xry111.site>
+To: maobibo <maobibo@loongson.cn>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
+	Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+  Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org,  virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+Date: Tue, 27 Feb 2024 17:05:59 +0800
+In-Reply-To: <fc05cf09-bf53-158a-3cc9-eff6f06a220a@loongson.cn>
+References: <20240222032803.2177856-1-maobibo@loongson.cn>
+	 <20240222032803.2177856-4-maobibo@loongson.cn>
+	 <CAAhV-H5eqXMqTYVb6cAVqOsDNcEDeP9HzaMKw69KFQeVaAYEdA@mail.gmail.com>
+	 <d1a6c424-b710-74d6-29f6-e0d8e597e1fb@loongson.cn>
+	 <CAAhV-H7p114hWUVrYRfKiBX3teG8sG7xmEW-Q-QT3i+xdLqDEA@mail.gmail.com>
+	 <06647e4a-0027-9c9f-f3bd-cd525d37b6d8@loongson.cn>
+	 <85781278-f3e9-4755-8715-3b9ff714fb20@app.fastmail.com>
+	 <0d428e30-07a8-5a91-a20c-c2469adbf613@loongson.cn>
+	 <09c5af9b-cc79-4cf2-84f7-276bb188754a@app.fastmail.com>
+	 <fc05cf09-bf53-158a-3cc9-eff6f06a220a@loongson.cn>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c37bd84e-d4f7-42df-a333-f2ad6ebc9527@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Tue, Feb 27, 2024 at 11:01:54AM +0530, Anshuman Khandual wrote:
-> On 2/26/24 16:34, Mark Rutland wrote:
-> > I don't think this needs to change, and can be left as-is.
-> 
-> Fair enough, but just wondering how about deriving len_in_bytes from
-> hweight_long(ARM_BREAKPOINT_LEN_*) instead ? This also drops the hard
-> coding using the platform macros itself, without going to user ABI.
+On Tue, 2024-02-27 at 15:09 +0800, maobibo wrote:
 
-Please leave this code alone. It's fine like it is and there are plenty of
-other things that would actually benefit from your attention. The BRBE
-series, for example.
+> It is difficult to find an area unused by HW for CSR method since the=20
+> small CSR ID range.
 
-Will
+We may use IOCSR instead.  In kernel/cpu-probe.c there are already some
+IOCSR reads.
+
+> It is difficult to find an area unused by HW for CSR method since the=20
+> small CSR ID range. However it is easy for cpucfg. Here I doubt whether=
+=20
+> you really know about LoongArch LVZ.
+
+It's unfair to accuse the others for not knowing about LVZ considering
+the lack of public documentation.
+
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
