@@ -1,156 +1,125 @@
-Return-Path: <linux-kernel+bounces-83400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3803686983D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:30:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95AB8869852
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E406D295093
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:30:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E161B22129
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 14:30:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40142146015;
-	Tue, 27 Feb 2024 14:29:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE418145B03;
+	Tue, 27 Feb 2024 14:29:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e7zrkFUJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oBGfoSNe"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71992145FF9;
-	Tue, 27 Feb 2024 14:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E6B1419A0;
+	Tue, 27 Feb 2024 14:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709044153; cv=none; b=rVviKp4YL8MBuVPdoTxRlRBkJO+K2DIQEBtZINDI93wCPe47XpNUJy72B5gtBLHFKvvQPUMy5+AZ271yjireVQ+k6NgLxV4mim+gG3ugpupXMGv2dBitPQnejkVZlCpeU0ditARn5QqfEdswc9fiyA16r3a+0HhraEt03taiybg=
+	t=1709044168; cv=none; b=Y16Ef5V8anLVrmFnNB4Sn2fl0MjtuBxpGjWzEv/e2VeTzk1rWCXzq/IiWB522QeilZWh8HuB0qVO72Pitd+ym22beDv1rOXQcFaV4H/wa15MHZn8F7c9dPesMHiF200C1TzN4Z1b5zTccjFp8IpjpqGJ54B6zFeMLx33TWaxf6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709044153; c=relaxed/simple;
-	bh=BeuKeRmCI8fl+4Mky6qTDE0ESLxkqayEq8heDHUciIc=;
+	s=arc-20240116; t=1709044168; c=relaxed/simple;
+	bh=L8Y8rnwu95x33EnTIXSjk4pEIYFULOLfxNY8Ak2Vvh4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R1vlyfTIEhhDx+NrrCDLla3+KcSIeW5VgJ+zSrqzPy59to4T1+OihuRQOtessErjmQSq/yu9e4rcEz+jejfJRH3px4n2eOm35RDHK+qEhB4h4KBSSaNMtOoICN3Rq73ChOsyyAxwoFZx2/ielFfkbAf8VY8tEZbW6Sxmr5cj3bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e7zrkFUJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEB05C43390;
-	Tue, 27 Feb 2024 14:29:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709044153;
-	bh=BeuKeRmCI8fl+4Mky6qTDE0ESLxkqayEq8heDHUciIc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e7zrkFUJjNkuT6ejQss+PGilg6MNPyI006Dx1xx8Zoe39qoMrNhJei7Ymxa34PjBb
-	 XXEnchbRee8ptxfWLoZirWVOzrypkJuJN831n7y8aYviicaZZkbm+K+6LgaO8GRodf
-	 axaBwr1hpp/O4zsmtbMqRFCMz0fc/Bskw7Pa1KxBm8uKJbKWG3qPPaTTAVv2M1bfVm
-	 ZEc1BIqE6o2uzkwBPWVH3HjI46Kt9VBq12B5U+pPIDmsPZW7eVb2W4vmdytNSbU8P6
-	 hTbFCfJ7AxhuU5WdnavbGLC8XrL90TYMhcDVVgjnjns8L6ETTmUknj8su/EcURMCGE
-	 ia+RFHnjoLtnA==
-Date: Tue, 27 Feb 2024 08:29:11 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UGF3ZcWC?= Anikiel <panikiel@google.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, airlied@gmail.com,
-	akpm@linux-foundation.org, conor+dt@kernel.org, daniel@ffwll.ch,
-	dinguyen@kernel.org, hverkuil-cisco@xs4all.nl,
-	krzysztof.kozlowski+dt@linaro.org,
-	maarten.lankhorst@linux.intel.com, mchehab@kernel.org,
-	mripard@kernel.org, tzimmermann@suse.de, devicetree@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org, chromeos-krk-upstreaming@google.com,
-	ribalda@chromium.org
-Subject: Re: [PATCH v2 8/9] media: dt-bindings: Add Intel Displayport RX IP
-Message-ID: <20240227142911.GB3863852-robh@kernel.org>
-References: <20240221160215.484151-1-panikiel@google.com>
- <20240221160215.484151-9-panikiel@google.com>
- <13aeb2ff-72f4-49d9-b65e-ddc31569a936@linaro.org>
- <CAM5zL5q0oKoTMR0jSwYVAChCOJ9iKYPRFiU1vH4qDqhHALKz4w@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YJ/8PH4Jvj8jeBoDjPhfkrsEzzjEEH2BFF9w4ujNZDLKlnjtRkoW5ZuzehIoT6Q3qUI3mb1UCn1Vx1IFFVH0AsMA24xKOIYlIuOgxBOxKupfdpnI3Y2V20GL512NEojVbIXZAL0mbmWhTDRC97fW6Po78CfWszSjfje/Eq0qG34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=oBGfoSNe; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41RDrKcO029324;
+	Tue, 27 Feb 2024 14:29:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=etvuMIsXye1NyMwaxEALvpT3llw8g+DZmDk8l12N12Y=;
+ b=oBGfoSNeSBC20vxMRJaiJlOIuYrzNyRZ7TnHU8dXZ8PPshNUZ3Zk1I353wii3xb8UZ8l
+ 4bSY4iNy/MoJqIXIVlNMk8x6ZJhUqP42uDVRLq/5BHkjEGUIZ9E+gZ5AkxAVfnm4QarC
+ 7pkWUcQ5lIbxAuWhOthlNvZjgkc/nguLuznaEPmziXJlK1lIHUM9Pcq+xAiqrzvLrQnK
+ VaxaZ5cCNJN+zVcNoecoKJXzX0w0rW5dftxby4eGssh2fIlo5d7e7plArc9mkYPVQ/ev
+ Hx0dktiwT+fBL/j4cDpY4tqMESa0R42bzuUBpdo/0+PSfFqK45EPY9cBLbbjb/T5g0JH Og== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3whh11948p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 14:29:25 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41RC3qqP008787;
+	Tue, 27 Feb 2024 14:29:24 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wftstgerw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 27 Feb 2024 14:29:24 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41RETJZ67799396
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 27 Feb 2024 14:29:21 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 106412004D;
+	Tue, 27 Feb 2024 14:29:19 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CE9E820040;
+	Tue, 27 Feb 2024 14:29:18 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.60])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 27 Feb 2024 14:29:18 +0000 (GMT)
+Date: Tue, 27 Feb 2024 15:29:17 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: "Jason J. Herne" <jjherne@linux.ibm.com>
+Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pasic@linux.ibm.com, akrowiak@linux.ibm.com, borntraeger@de.ibm.com,
+        agordeev@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH] s390/vfio-ap: handle hardware checkstop state on queue
+ reset operation
+Message-ID: <20240227142917.6127-B-hca@linux.ibm.com>
+References: <20240215153144.14747-1-jjherne@linux.ibm.com>
+ <3b5a812d-3832-6f34-a528-c67e59d76e65@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM5zL5q0oKoTMR0jSwYVAChCOJ9iKYPRFiU1vH4qDqhHALKz4w@mail.gmail.com>
+In-Reply-To: <3b5a812d-3832-6f34-a528-c67e59d76e65@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PmuyNpjsypTJA_M5gy-_YD3xJcSAAnhW
+X-Proofpoint-GUID: PmuyNpjsypTJA_M5gy-_YD3xJcSAAnhW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=999 phishscore=0 malwarescore=0 impostorscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402270111
 
-On Mon, Feb 26, 2024 at 11:59:42AM +0100, Paweł Anikiel wrote:
-> On Mon, Feb 26, 2024 at 10:13 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> >
-> > On 21/02/2024 17:02, Paweł Anikiel wrote:
-> > > The Intel Displayport RX IP is a part of the DisplayPort Intel FPGA IP
-> > > Core. It implements a DisplayPort 1.4 receiver capable of HBR3 video
-> > > capture and Multi-Stream Transport. The user guide can be found here:
-> > >
-> > > https://www.intel.com/programmable/technical-pdfs/683273.pdf
-> > >
-> > > Signed-off-by: Paweł Anikiel <panikiel@google.com>
-> > > ---
-> > >  .../devicetree/bindings/media/intel,dprx.yaml | 160 ++++++++++++++++++
-> > >  1 file changed, 160 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/media/intel,dprx.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/media/intel,dprx.yaml b/Documentation/devicetree/bindings/media/intel,dprx.yaml
-> > > new file mode 100644
-> > > index 000000000000..31025f2d5dcd
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/media/intel,dprx.yaml
-> > > @@ -0,0 +1,160 @@
-> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/media/intel,dprx.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Intel DisplayPort RX IP
-> > > +
-> > > +maintainers:
-> > > +  - Paweł Anikiel <panikiel@google.com>
-> > > +
-> > > +description: |
-> > > +  The Intel Displayport RX IP is a part of the DisplayPort Intel FPGA IP
-> > > +  Core. It implements a DisplayPort 1.4 receiver capable of HBR3 video
-> > > +  capture and Multi-Stream Transport.
-> > > +
-> > > +  The IP features a large number of configuration parameters, found at:
-> > > +  https://www.intel.com/content/www/us/en/docs/programmable/683273/23-3-20-0-1/sink-parameters.html
-> > > +
-> > > +  The following parameters have to be enabled:
-> > > +    - Support DisplayPort sink
-> > > +    - Enable GPU control
-> > > +  The following parameters' values have to be set in the devicetree:
-> > > +    - RX maximum link rate
-> > > +    - Maximum lane count
-> > > +    - Support MST
-> > > +    - Max stream count (only if Support MST is enabled)
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    const: intel,dprx-20.0.1
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  interrupts:
-> > > +    maxItems: 1
-> > > +
-> > > +  intel,max-link-rate:
-> > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > +    description: Max link rate configuration parameter
-> >
-> > Please do not duplicate property name in description. It's useless.
-> > Instead explain what is this responsible for.
-> >
-> > Why max-link-rate would differ for the same dprx-20.0.1? And why
-> > standard properties cannot be used?
-> >
-> > Same for all questions below.
+On Tue, Feb 27, 2024 at 08:25:21AM -0500, Jason J. Herne wrote:
+> Polite Ping :)
 > 
-> These four properties are the IP configuration parameters mentioned in
-> the device description. When generating the IP core you can set these
-> parameters, which could make them differ for the same dprx-20.0.1.
-> They are documented in the user guide, for which I also put a link in
-> the description. Is that enough? Or should I also document these
-> parameters here?
+> Patch already has R-b.
+> Thanks for taking a look.
+> 
+> On 2/15/24 10:31 AM, Jason J. Herne wrote:
+> > Update vfio_ap_mdev_reset_queue() to handle an unexpected checkstop (hardware error) the
+> > same as the deconfigured case. This prevents unexpected and unhelpful warnings in the
+> > event of a hardware error.
+> > 
+> > We also stop lying about a queue's reset response code. This was originally done so we
+> > could force vfio_ap_mdev_filter_matrix to pass a deconfigured device through to the guest
+> > for the hotplug scenario. vfio_ap_mdev_filter_matrix is instead modified to allow
+> > passthrough for all queues with reset state normal, deconfigured, or checkstopped. In the
+> > checkstopped case we choose to pass the device through and let the error state be
+> > reflected at the guest level.
+> > 
+> > Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+> > Reviewed-by: Anthony Krowiak <akrowiak@linux.ibm.com>
+> > ---
+> >   drivers/s390/crypto/vfio_ap_ops.c | 35 ++++++++++++++++---------------
+> >   1 file changed, 18 insertions(+), 17 deletions(-)
 
-Use the standard properties: link-frequencies and data-lanes. Those go 
-under the port(s) because they are inheritly per logical link.
-
-Rob
+Applied, thanks!
 
