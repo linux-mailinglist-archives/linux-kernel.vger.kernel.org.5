@@ -1,137 +1,119 @@
-Return-Path: <linux-kernel+bounces-83091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2038A868E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:05:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9182868E52
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:05:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4627B248E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:05:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EB581F2433A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 11:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8688F1386DD;
-	Tue, 27 Feb 2024 11:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA0B1386D8;
+	Tue, 27 Feb 2024 11:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="kAeNuAsj"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LEmUNOZh"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36A6130ADF;
-	Tue, 27 Feb 2024 11:05:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9091386CC
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 11:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709031909; cv=none; b=Swst7tOP2pbUt09Ph7Kegk1skotXL3e8nmK/g7i8czHY8dEFMztezXPvWV4w33corRnF1jlyXNioLj4/FX/YRNgOCaU40hEpdjL9/DEMst5CJ7EGRUKP+nI94seLnOmS4fBCSG5UGryKf7xdhemmw1VvU8og2gXGzImMVm1YEe0=
+	t=1709031933; cv=none; b=kL1n4fgCIVxCc8oDDCEyyTbGbHcwu7MqRwfiQzrauMSJrgtOznPEKJba7/Bp8r75dCRJkPB67Z/vFhDgc3rfWLQCpPGLANWPc00/5Ts8ZOaftLyxDRcA0wX0cbOv2eWq5U4Ytgc5QYIxDFs33EDCePlSJtApaThPPe8p4diK5CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709031909; c=relaxed/simple;
-	bh=nkEmgcF2sqsTVrDLvW1DSslli5qr0PA0DGExmFUENFo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gdKmkEVxGKrbo+44kAC+di+AkuQm4HFeVeOFaZwULBEWhkNNbLfrTaLaYoLNaeoY7mOA5uqpMa4GH6xKj7OOW5aseS212vFDxQXDTOm9PT6xzsmsj+f5SJrn4NwchD1hJw4r6FSPDjah7qFUW0nl3A5NujiRRLOyRZEtFYeMLy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=kAeNuAsj; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709031907; x=1740567907;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nkEmgcF2sqsTVrDLvW1DSslli5qr0PA0DGExmFUENFo=;
-  b=kAeNuAsjZPcZrxLSW2xXHhiW9q4lVKoBtABPTYFaZq8pVJn4m+uUPG/I
-   BRjWKJalUXetz5phBc2adYGTqvJc/VncHCPFn6f8KoAnxJa3k2dfU6z32
-   q3Be0IoPRys7MfdcwITd/Yd19x43PedJulUC9HeqbUTvlP/mflJKUAhcs
-   zD3eAoEGpA/Y2M6VaSSDDtvkzn8k92q6/kwyY96N51g1fJM37FEjwEE3J
-   HEyl7q9lqyQMrjARIjHsRkYcuYbdpzRIp8UF4rd+qgj6VfWeTUrvB9DXp
-   29CxDbot132UQptmp5NhC5xayVVPLsiUPA/tTOm678etVoSoRcs1PhjMN
-   w==;
-X-CSE-ConnectionGUID: hJeSGw/8TAyVRlagmnchCA==
-X-CSE-MsgGUID: KTDcPATNQk+OtFWm54w0BA==
-X-IronPort-AV: E=Sophos;i="6.06,187,1705388400"; 
-   d="asc'?scan'208";a="16880169"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 04:05:06 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 27 Feb 2024 04:04:59 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 27 Feb 2024 04:04:56 -0700
-Date: Tue, 27 Feb 2024 11:04:13 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-CC: Conor Dooley <conor@kernel.org>, <linux-riscv@lists.infradead.org>, Miguel
- Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida
- Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo
-	<gary@garyguo.net>, =?iso-8859-1?Q?Bj=F6rn?= Roy Baron
-	<bjorn3_gh@protonmail.com>, Jonathan Corbet <corbet@lwn.net>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Nathan
- Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>,
-	Tom Rix <trix@redhat.com>, <rust-for-linux@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<llvm@lists.linux.dev>
-Subject: Re: [PATCH v2 2/3] scripts: generate_rust_target: enable building on
- RISC-V
-Message-ID: <20240227-glove-underwire-f562a56cf2c7@wendy>
-References: <20240223-leverage-walmart-5424542cd8bd@spud>
- <20240223-employee-pessimism-03ba0b58db6b@spud>
- <CANiq72ngEZskjH0f=8+cJuQsFTK227bGCxe5G0STMHuPbZYnXg@mail.gmail.com>
- <20240227-resolved-deceit-4a59a6af5b71@wendy>
- <CANiq72mwM+4Oh-H5WmRoqQ_nE1w-eJ1wn-nEwS=BR9JRwzxMMQ@mail.gmail.com>
+	s=arc-20240116; t=1709031933; c=relaxed/simple;
+	bh=0RYBig305OHqvLLkrKNyAb2MuH/1VgLPeQ2Uv68/Eoc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r5amTVbNbzmiPXA4ZIAHkngXR3yK+vppRoaaUkcb3g2ez9RlhF9ytHzMLMODZ39pb0tRYFEfoyhZLH/oNqcbbO9sbkZQr2EoFL7dum9YUfmLAfAKWwh/z5hO17qq7eynXlXI+59j1WzZ2LZJAlpDvxiAdXM5BC+pAQfEI+cvTJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LEmUNOZh; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a36126ee41eso493241966b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:05:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709031929; x=1709636729; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JK61QB9o1xWii2ErgvXw3zRrKGKsozSxgEdvjx0laIw=;
+        b=LEmUNOZh/3Quf9TE4JWyY8JAacOyGLiWaylwSZb1czQ9C7W8oPcSeDzg2ZEbU4p+mf
+         +0hz8PE7RRJlb7Yc0VWAICo8nF/ukH2fs7E+NqVWhV85k8wocienIgGkFyvZQXSgzR4q
+         thc/JXJmzRLwSCA+2IB5PaVxsYw6z1oTW4yptORC7aw+I5faLI72+wSq4tU+6gNNHnrk
+         oWXcQQorTXMbuzkOmvPV5hD+RfHRKTPwGcUcJL0Y6lLAfGL0xbU3rj2dpRgQZ1c0z4ER
+         bWueGeHjuTxMt2x1bY0bMJgNLR7rAMOKrqDpEy7rvTC7pROUhTE2CXaCThJtlK8mT8K3
+         il7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709031929; x=1709636729;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JK61QB9o1xWii2ErgvXw3zRrKGKsozSxgEdvjx0laIw=;
+        b=Kn0q+O4hfEO+/GYZVVgOWpFK1itmsr6jblaD1vsjdRoeH6zr8jM9Z6SoZiPtTB2C/n
+         HIKvOPQ5m3pBZ3aZww/3G9UA7Pmk0BENeoev1EQomqM+zXuA08wbUosQJ/KPRC1FOY/q
+         xkDAMvdRhsjGmCVSXOkLGbN27u+utYnMpBgIPgzLzMg+KlZRH5YL/ikq5d/1YtK/vXKt
+         kECDkpt4YJ49Qq0RRstHyngugpW5F1s4+/19oVCk3yRw0TZpUAl8Yyg8N0m/P3h+IVXv
+         UYru2nKa/HBls2xaFp6Yx8sT8pOHqoWH94R+bdqQTwlh7dlnDfF5/4kXA1MHYvVfUnem
+         2BBg==
+X-Forwarded-Encrypted: i=1; AJvYcCUIyswyOVqL+kNw18r7yo9r4nBgGq0v4V8/GB2w70kUqLuMsHcttcqd/6Tp82Cnhei7OQOav8N/DjIYOxJGfiENQBR65Im5PpZ4+yMV
+X-Gm-Message-State: AOJu0YyM/z4D1DYTk0MOB1XGL4/BKvydDFvOAA4wy+X/xgabDE4I59X6
+	RyqAMbIghION/ASs+JdYL1INrjHsP6UeoHjSVI+8wwINmJ1ynzehVzWAQpuK890JnS/46VZlbdj
+	2
+X-Google-Smtp-Source: AGHT+IFkYbx8S7y1b8p7Kwr6a013ebLwdNvpHNqD9tmb0yy8Mo7cYn4LsFkmA1ywlo+7gQwmHMxqqw==
+X-Received: by 2002:a17:906:1808:b0:a3f:56da:5a40 with SMTP id v8-20020a170906180800b00a3f56da5a40mr6701159eje.23.1709031929608;
+        Tue, 27 Feb 2024 03:05:29 -0800 (PST)
+Received: from hackbox.lan ([188.24.162.93])
+        by smtp.gmail.com with ESMTPSA id rs15-20020a170907036f00b00a3ed811cff9sm643504ejb.154.2024.02.27.03.05.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 03:05:29 -0800 (PST)
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Mike Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>
+Cc: imx@lists.linux.dev,
+	NXP Linux Team <linux-imx@nxp.com>,
+	linux-clk@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] clk: imx: Updates for v6.9
+Date: Tue, 27 Feb 2024 13:04:16 +0200
+Message-Id: <20240227110416.259133-1-abel.vesa@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4yFQMGvLloPM49wl"
-Content-Disposition: inline
-In-Reply-To: <CANiq72mwM+4Oh-H5WmRoqQ_nE1w-eJ1wn-nEwS=BR9JRwzxMMQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
---4yFQMGvLloPM49wl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-On Tue, Feb 27, 2024 at 11:46:42AM +0100, Miguel Ojeda wrote:
-> On Tue, Feb 27, 2024 at 11:17=E2=80=AFAM Conor Dooley
-> <conor.dooley@microchip.com> wrote:
-> >
-> > Sure, I'll take a look.
->=20
-> Thanks!
->=20
-> > Nah, I think that is silly. Either this goes in as-is, and there's
-> > fixup done by Linus, or the thing should be converted to match arm64,
-> > assuming that that is possible.
->=20
-> Ah, so you are going for 6.9 too? I can give the series a try on my
-> side in that case. When do you plan to apply them?
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-If they're to be applied, it would be Palmer, not I. And if history is
-any guide, it could be into the merge window. My point though was more
-that either this was acceptable for v6.9 or would be v6.10 material
-with the same mechanism as arm64. Rebasing after v6.9-rc1 but not
-adapting to that way of doing things is what seemed silly to me, since
-if a resend is required then the other improvements should be carried
-out at the same time.
+are available in the Git repository at:
 
-Cheers,
-Conor.
+  git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git/ tags/clk-imx-6.9
 
---4yFQMGvLloPM49wl
-Content-Type: application/pgp-signature; name="signature.asc"
+for you to fetch changes up to 13269dc6c70444528f0093585e3559cd2f38850a:
 
------BEGIN PGP SIGNATURE-----
+  clk: imx: imx8mp: Fix SAI_MCLK_SEL definition (2024-02-26 11:05:58 +0200)
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd3BrQAKCRB4tDGHoIJi
-0l+1AQD2Kv7qn0sG5InjsblGeMCFLO+iLg5s4b1JdnY/mXJAMgEAnPLESP1zEN5H
-BZ6fe0suc1bctDUkHs99G3uQ759MlQc=
-=9yZw
------END PGP SIGNATURE-----
+----------------------------------------------------------------
+i.MX clocks changes for 6.9
 
---4yFQMGvLloPM49wl--
+- Minor clean-ups and error handling improvements in both composite-8m
+  and SCU clock drivers
+- Fix for SAI_MCLK_SEL definition for i.MX8MP
+
+----------------------------------------------------------------
+Markus Elfring (3):
+      clk: imx: composite-8m: Less function calls in __imx8m_clk_hw_composite() after error detection
+      clk: imx: composite-8m: Delete two unnecessary initialisations in __imx8m_clk_hw_composite()
+      clk: imx: scu: Use common error handling code in imx_clk_scu_alloc_dev()
+
+Shengjiu Wang (1):
+      clk: imx: imx8mp: Fix SAI_MCLK_SEL definition
+
+ drivers/clk/imx/clk-composite-8m.c    | 16 +++++++++-------
+ drivers/clk/imx/clk-imx8mp-audiomix.c | 11 ++++++++---
+ drivers/clk/imx/clk-scu.c             | 22 ++++++++++------------
+ 3 files changed, 27 insertions(+), 22 deletions(-)
 
