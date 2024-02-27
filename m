@@ -1,191 +1,160 @@
-Return-Path: <linux-kernel+bounces-83786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0061B869E6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:57:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC156869E5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:55:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 810241F29A74
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:57:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE77C1C24832
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 938101468F4;
-	Tue, 27 Feb 2024 17:57:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BVO7+eVq"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2ABB1487D4;
+	Tue, 27 Feb 2024 17:55:06 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2992147A7D;
-	Tue, 27 Feb 2024 17:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EC91419B3;
+	Tue, 27 Feb 2024 17:55:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709056633; cv=none; b=s5AESyYtwic2okJbtwVy593txJO4U3T1L/W9mUMXC9fr68sD2tHwFfPsGjkVZ64wPJvbiEBugKSod79b77oVnWR1/7Z50i0PDYUj3j1RucXewm5gwRrnN4KqFY0JIxzWdLRDpS1jx91ur8oiyk+BtR7Ipwujx9g4hAYuknD62Rc=
+	t=1709056506; cv=none; b=k5KBGQxzmQI5uHaUPD1qbkzYYL5PUK/0UnVAWovlR2As8C6xfdC8d7msK5MtMwdvgzpYcnM7vky77GPwJStiFQWl3YHS2UsoGHH4gV0/gI2a2j871RrBIFESW7BH0xt+d8DOdKKtsTAnjXeWPUHyow6iyNcLsHpqPvUozEArW6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709056633; c=relaxed/simple;
-	bh=MCV2xfyzVsZTimxMp1nsJm3TnteiwzapMqfslGtknNo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vEntb3hHV7iK6plALTH2ArugTA4f9TbmRAhFotQ+aZWcFBUI7PjSptKDLG4/ZsZDwhiemdcegLuk0m5Fx0L4tw39AsrBnCk/KkNgNte5gRhxv1j4MZPcg4SHIlMyqALMraZTqWZUzVLrdwjZkGoxinM7I7hmjd0PhKzmLEjmo1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BVO7+eVq; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-21e9589d4ffso2834746fac.1;
-        Tue, 27 Feb 2024 09:57:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709056631; x=1709661431; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2rvZtLZAsJQqV2EI/YljUxB6c8BBNJcwxJ+IMwUn94I=;
-        b=BVO7+eVq6zI07L3H1rM9b/tBAYjlSp5dcD/R/wfhKHcU8rfuD1ri8KXdMkmWjq5Yfx
-         yfwhnRwiFK35Ip1x0IVVPe7d5zo7zChMU1Au9Y4u4bD0cvWEEnSPeAa+xob1On4cFJeD
-         tYfd5z0o+5NnFadeEGcbcH/kIISy3G/pHMV0df76jgkVq4l/+Kkn4JeVtrHZ6XBqC7DV
-         oMxNCX4ledSno73kC/KpWKoZKCQ+z5Ji1QePCvUbBafTZirH16dVSPtSj5l5B1CALrx7
-         Wn3ZoT8x4BUYjMq/4pT7Myvgadh6WcYUML/50q1OXdmapBq+fZ41+mn6ueETezn6M630
-         9haQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709056631; x=1709661431;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2rvZtLZAsJQqV2EI/YljUxB6c8BBNJcwxJ+IMwUn94I=;
-        b=eLNflhP+KdvWDojd3QfBmNlCr6qk2I6xCwq5czfhK6W+gPQc7DwALgDmmAyyCmeAXo
-         B6nXer0H4rlrT9JKo7/gPUGRxKaShuJ6kwK6uNXVan8rOkXAiVQ5+Yo3iPgteGYBIJB/
-         fXru7LU/gfjqqfRBukIkbrYrIYoms1mVqi3SlOrn1d+u1D/cTuuFZMj06LgUZyC/HjBv
-         0gaVoc2xv49SqO/B9pOci4KNGMaEHH14GcNjkzgVdeNFqomDGXBJxWxgKVhQkxT098gz
-         mMf/vQd2fFWIjHMLehMv22nYTsEyq1Ft+rEFS+AU2OhvxbdilPMEoNRGhVOEN152KP5o
-         CE4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUoxmcCQTn5KsGcWHWEx21icY4/u4+ap6DysJB71E4UsCmNoCnJcp9cCVeXxhDAGzi16aZ8l4//yH9IMx/UBDauYe+In5520dGtXDaxO/68F3hanSobtbh357LjuVy2iRz0vENpLog=
-X-Gm-Message-State: AOJu0Yy7Y8KMIGprMCu+ls3no9p84CNI4X/gzXzfI4vT6ZLry+doR/ox
-	2dMiY5ywMt8gKAbKcDYJqmURRlKqLkyrFG93ofyb3W8Uw8rJmPIRxDFar80xIDo=
-X-Google-Smtp-Source: AGHT+IFGPd6I2/K6HlI1TytR7mWgfa8jok7atWE5+pWx/yt+JF49ojwwLtAkLyTTuVdMPe1wvNEoWQ==
-X-Received: by 2002:a05:6871:793:b0:21e:a63c:658d with SMTP id o19-20020a056871079300b0021ea63c658dmr9980599oap.21.1709056630836;
-        Tue, 27 Feb 2024 09:57:10 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id bj25-20020a05620a191900b007873306737fsm3807919qkb.87.2024.02.27.09.57.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 09:57:10 -0800 (PST)
-Message-ID: <7292dc5c-dff0-45f0-99b1-f1687451b23f@gmail.com>
-Date: Tue, 27 Feb 2024 09:57:05 -0800
+	s=arc-20240116; t=1709056506; c=relaxed/simple;
+	bh=fEAAGW+WyZIqxwlQgw3mUs/pzzZX+uujTliQ839XUuA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=cNhgRKMW4YLxEh6DcOTpmFfeB1WBs3Ufs8B3R9MFD3i8upSkiKlLlxZMBiHOSdld1G/zQba+eiEXdA9aEOvOubhRKToRanfe9geJ4SXBE8Fq5ZmXkLNRC5/ZdA55eCOUe+SIuA9PcViiVUWqPsSou41t31u/Jim82MhtVlBETe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A28FFC433F1;
+	Tue, 27 Feb 2024 17:55:04 +0000 (UTC)
+Date: Tue, 27 Feb 2024 12:57:06 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Sachin Sant <sachinp@linux.ibm.com>
+Subject: [PATCH] tracing: Prevent trace_marker being bigger than unsigned
+ short
+Message-ID: <20240227125706.04279ac2@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] PM / core: conditionally skip system pm in
- device/driver model
-Content-Language: en-US
-To: Guan-Yu Lin <guanyulin@google.com>
-Cc: rafael@kernel.org, pavel@ucw.cz, len.brown@intel.com,
- gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com,
- rdunlap@infradead.org, james@equiv.tech, broonie@kernel.org,
- james.clark@arm.com, masahiroy@kernel.org, linux-kernel@vger.kernel.org,
- linux-pm@vger.kernel.org
-References: <20240223143833.1509961-1-guanyulin@google.com>
- <a299118d-eeec-40b4-9a3d-48dc40f34e12@gmail.com>
- <CAOuDEK3wP6zhEwgUn5zSedtwTYVFaJeBfeXkSg897EhpGP9=ig@mail.gmail.com>
- <3208c5b9-5286-48d1-81ab-cc3b2bc4303e@gmail.com>
- <CAOuDEK39Bdru5wAbxW-g2c=POgRxZwdQzPO5uNXP96AfSyA6pw@mail.gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <CAOuDEK39Bdru5wAbxW-g2c=POgRxZwdQzPO5uNXP96AfSyA6pw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 2/27/24 00:56, Guan-Yu Lin wrote:
-> On Tue, Feb 27, 2024 at 2:40 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->> On 2/26/24 02:28, Guan-Yu Lin wrote:
->>> On Sat, Feb 24, 2024 at 2:20 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>>>
->>>> On 2/23/24 06:38, Guan-Yu Lin wrote:
->>>>> In systems with a main processor and a co-processor, asynchronous
->>>>> controller management can lead to conflicts.  One example is the main
->>>>> processor attempting to suspend a device while the co-processor is
->>>>> actively using it. To address this, we introduce a new sysfs entry
->>>>> called "conditional_skip". This entry allows the system to selectively
->>>>> skip certain device power management state transitions. To use this
->>>>> feature, set the value in "conditional_skip" to indicate the type of
->>>>> state transition you want to avoid.  Please review /Documentation/ABI/
->>>>> testing/sysfs-devices-power for more detailed information.
->>>>
->>>> This looks like a poor way of dealing with a lack of adequate resource
->>>> tracking from Linux on behalf of the co-processor(s) and I really do not
->>>> understand how someone is supposed to use that in a way that works.
->>>>
->>>> Cannot you use a HW maintained spinlock between your host processor and
->>>> the co-processor such that they can each claim exclusive access to the
->>>> hardware and you can busy-wait until one or the other is done using the
->>>> device? How is your partitioning between host processor owned blocks and
->>>> co-processor(s) owned blocks? Is it static or is it dynamic?
->>>> --
->>>> Florian
->>>>
->>>
->>> This patch enables devices to selectively participate in system power
->>> transitions. This is crucial when multiple processors, managed by
->>> different operating system kernels, share the same controller. One
->>> processor shouldn't enforce the same power transition procedures on
->>> the controller – another processor might be using it at that moment.
->>> While a spinlock is necessary for synchronizing controller access, we
->>> still need to add the flexibility to dynamically customize power
->>> transition behavior for each device. And that's what this patch is
->>> trying to do.
->>> In our use case, the host processor and co-processor are managed by
->>> separate operating system kernels. This arrangement is static.
->>
->> OK, so now the question is whether the peripheral is entirely visible to
->> Linux, or is it entirely owned by the co-processor, or is there a
->> combination of both and the usage of the said device driver is dynamic
->> between Linux and your co-processor?
->>
->> A sysfs entry does not seem like the appropriate way to described which
->> states need to be skipped and which ones can remain under control of
->> Linux, you would have to use your firmware's description for that (ACPI,
->> Device Tree, etc.) such that you have a more comprehensive solution that
->> can span a bigger scope.
->> --
->> Florian
->>
-> 
-> We anticipate that control of the peripheral (e.g., controller) will
-> be shared between operating system kernels. Each kernel will need its
-> own driver for peripheral communication. To accommodate different
-> tasks, the operating system managing the peripheral can change
-> dynamically at runtime.
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-OK, that seems like this ought to be resolved at various layer other 
-than just user-space, starting possibly with an 
-overarching/reconciliation layer between the various operating systems?
+The trace_marker write goes into the ring buffer. A test was added to
+write a string as big as the sub-buffer of the ring buffer to see if it
+would work. A sub-buffer is typically PAGE_SIZE in length.
 
-> 
-> We dynamically select the operating system kernel controlling the
-> target peripheral based on the task at hand, which looks more like a
-> software behavior rather than hardware behavior to me. I agree that we
-> might need a firmware description for "whether another operating
-> system exists for this peripheral", but we also need to store the
-> information about "whether another operating system is actively using
-> this peripheral". To me, the latter one looks more like a sysfs entry
-> rather than a firmware description as it's not determined statically.
+On PowerPC architecture, the ftrace selftest for trace_marker started to
+fail. This was due to PowerPC having a PAGE_SIZE of 65536 and not 4096. It
+would try to write a string that was around 63000 bytes in size. This gave
+the following warning:
 
-I can understand why moving this sort of decisions to user-space might 
-sound appealing, but it also seems like if the peripheral is going to be 
-"stolen" away from Linux, then maybe Linux should not be managing it at 
-all, e.g.: unbind the device from its driver, and then rebind it when 
-Linux needs to use it. You would have to write your drivers such that 
-they can skip the peripheral's initialization if you need to preserve 
-state from the previous agent after an ownership change for instance?
+------------[ cut here ]------------
+precision 63492 too large
+WARNING: CPU: 15 PID: 2538829 at lib/vsprintf.c:2721 set_precision+0x68/0xa4
+Modules linked in:
+CPU: 15 PID: 2538829 Comm: awk Tainted: G M O K 6.8.0-rc5-gfca7526b7d89 #1
+Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_018) hv:phyp pSeries
+NIP: c000000000f57c34 LR: c000000000f57c30 CTR: c000000000f5cdf0
+REGS: c000000a58e4f5f0 TRAP: 0700 Tainted: G M O K (6.8.0-rc5-gfca7526b7d89)
+MSR: 8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE> CR: 48000824 XER: 00000005
+CFAR: c00000000016154c IRQMASK: 0
+GPR00: c000000000f57c30 c000000a58e4f890 c000000001482800 0000000000000019
+GPR04: 0000000100011559 c000000a58e4f660 c000000a58e4f658 0000000000000027
+GPR08: c000000e84e37c10 0000000000000001 0000000000000027 c000000002a47e50
+GPR12: 0000000000000000 c000000e87bf7300 0000000000000000 0000000000000000
+GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+GPR20: c0000004a43ec590 0000000000400cc0 0000000000000003 c0000000012c3e65
+GPR24: c000000a58e4fa18 0000000000000025 0000000000000020 000000000001ff97
+GPR28: c0000001168a00dd c0000001168c0074 c000000a58e4f920 000000000000f804
+NIP [c000000000f57c34] set_precision+0x68/0xa4
+LR [c000000000f57c30] set_precision+0x64/0xa4
+Call Trace:
+[c000000a58e4f890] [c000000000f57c30] set_precision+0x64/0xa4 (unreliable)
+[c000000a58e4f900] [c000000000f5ccc4] vsnprintf+0x198/0x4c8
+[c000000a58e4f980] [c000000000f53228] seq_buf_vprintf+0x50/0xa0
+[c000000a58e4f9b0] [c00000000031cec0] trace_seq_printf+0x60/0xe0
+[c000000a58e4f9e0] [c00000000031b5f0] trace_print_print+0x78/0xa4
+[c000000a58e4fa60] [c0000000003133a4] print_trace_line+0x2ac/0x6d8
+[c000000a58e4fb20] [c0000000003145c0] s_show+0x58/0x2c0
+[c000000a58e4fba0] [c0000000005dfb2c] seq_read_iter+0x448/0x618
+[c000000a58e4fc70] [c0000000005dfe08] seq_read+0x10c/0x174
+[c000000a58e4fd10] [c00000000059a7e0] vfs_read+0xe0/0x39c
+[c000000a58e4fdc0] [c00000000059b59c] ksys_read+0x7c/0x140
+[c000000a58e4fe10] [c000000000035d74] system_call_exception+0x134/0x330
+[c000000a58e4fe50] [c00000000000d6a0] system_call_common+0x160/0x2e4
 
-I do not think you are painting a full picture of your use case, 
-hopefully not intentionally but at first glance it sounds like you need 
-a combination of kernel-level changes to your drivers, and possibly more.
+The problem was that in trace_print_print() that reads the trace_marker
+write data had the following code:
 
-Seems like more details need to be provided about the overall intended 
-use cases such that people can guide you with a fuller picture of the 
-use cases.
+	int max = iter->ent_size - offsetof(struct print_entry, buf);
+
+	[..]
+	trace_seq_printf(s, ": %.*s", max, field->buf);
+
+Where "max" was the size of the entry. Now that the write to trace_marker
+can be as big as what the sub-buffer can hold, and the sub-buffer for
+powerpc is 64K in size, the "max" value was: 63492, and that was passed to
+trace_seq_printf() which eventually calls vsnprintf() with the same format
+and parameters.
+
+The max "precision" that "%.*s" can be is max signed short (32767) where
+63492 happens to be greater than.
+
+Prevent the max size written by trace_marker to be greater than what a
+signed short can hold.
+
+Link: https://lore.kernel.org/all/C7E7AF1A-D30F-4D18-B8E5-AF1EF58004F5@linux.ibm.com/
+
+Reported-by: Sachin Sant <sachinp@linux.ibm.com>
+Tested-by: Sachin Sant <sachinp@linux.ibm.com>
+Fixes: 8ec90be7f15f ("tracing: Allow for max buffer data size trace_marker writes")
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ kernel/trace/trace.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 8198bfc54b58..1606fa99367b 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -7310,7 +7310,9 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+ /* Used in tracing_mark_raw_write() as well */
+ #define FAULTED_STR "<faulted>"
+ #define FAULTED_SIZE (sizeof(FAULTED_STR) - 1) /* '\0' is already accounted for */
+-
++#ifndef SHORT_MAX
++#define SHORT_MAX	((1<<15) - 1)
++#endif
+ 	if (tracing_disabled)
+ 		return -EINVAL;
+ 
+@@ -7328,6 +7330,16 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+ 	if (cnt < FAULTED_SIZE)
+ 		size += FAULTED_SIZE - cnt;
+ 
++	/*
++	 * trace_print_print() uses vsprintf() to determine the size via
++	 * the precision format "%.*s" which can not be greater than
++	 * a signed short.
++	 */
++	if (size > SHORT_MAX) {
++		cnt -= size - SHORT_MAX;
++		goto again;
++	}
++
+ 	if (size > TRACE_SEQ_BUFFER_SIZE) {
+ 		cnt -= size - TRACE_SEQ_BUFFER_SIZE;
+ 		goto again;
 -- 
-Florian
+2.43.0
 
 
