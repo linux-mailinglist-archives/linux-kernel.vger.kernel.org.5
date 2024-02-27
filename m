@@ -1,200 +1,221 @@
-Return-Path: <linux-kernel+bounces-82882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82884-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 204A7868B24
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:46:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88F54868B29
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 09:46:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83570B25F0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:46:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3ADEB26A93
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5356C12FB36;
-	Tue, 27 Feb 2024 08:45:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C97130E2B;
+	Tue, 27 Feb 2024 08:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="JP1qypM0"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2084.outbound.protection.outlook.com [40.107.102.84])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jb3WuLX2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58267133424;
-	Tue, 27 Feb 2024 08:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.84
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709023543; cv=fail; b=fsZQcptpkAURPytgQkofDhx9Wb03qrjWZ5Nipc2vALiNs3qwzQQ7do4Kgr6bxjLFxFDwvD+bqyL/s8V+IWkOmUrzPvH9/37ISK3yb19FrHpOQ6SVeuaA8EVqc7VJqM3Ti1lnyk19Njqcj0oVv768yJlZIQDq5QdrYlkU1GnyHG8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709023543; c=relaxed/simple;
-	bh=dTuhx1q8zHzaIJNM3dGqfLK0armnPXZmOkeGA1zLY/Y=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ftJPZPGoVkm4Jo75tcnF13INQMJr+YuTzRGkT4P/lpku+7wEfYWU6n9zP8wqaOIdThgtPaMv7SURILhpV2wTJsaq+tuKTvoRDUsVWHLS7leN9Ka7w9omCvNrtOVwTLn4uKjuCFMtfQKrHsvz2qLAqS32yxqnmu8UPztuu15/Yuo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=JP1qypM0; arc=fail smtp.client-ip=40.107.102.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GRz4WSqlkteRAXBBqnMEywtr7wVecfBMb+IbWfzVdr3eGuLXEIu4l0ErKYoXl4jge4N8IiqN+I/PpIRa95p/OLtDpgi5o3Kjy0doIx3hrIUNn0q4Jo4cILpXja0XWzQwIkBGTBQpbvj29zl113DWWqXCI35VLKj8BlEiHU/3NYEKVq8EtOX/P/esuV45pYJUFO4PTrE1EIE1Jzeh+iyddXOBEanSUwyKWBwod8tVlWVfRdY22qLIm+YbwIctOu3ibV+fLYEz3wdDWw72Uh1YE2Y4aYGwt39Rpx9x/RbzIz633gYpzaqKluxXRhpENq4KAEMcf2Gcy4uPnHjzF4XUxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dTuhx1q8zHzaIJNM3dGqfLK0armnPXZmOkeGA1zLY/Y=;
- b=Fg2pKf2wuBZscEB3v7dK+TXxGYi/ZCSXIrUMXfcj4wwoXevHXvS4mQ7YxFuzm2/80/wTrKyyQt73z2mAueK3rSDtATazkktF8bkA6W1MTVT8P9Q/eNmKBwymzUKy5zHa2yH0eQmbOAZRgM98o6hU6USO8NugqsjMOcqKfGGIrwOSgIGG/2GBs8HT3LOP+yNaJiBM8hQ9sMOT6N79sH7IcWmclsLNAdg5Mz5Drq9Xo/oILj5Ns8zIyerY7knLuioT6AnYNgf86yEI5uVzxEcu8MyxvE8EckbTNUXGYqBaDGcrEHWg/1sIOexsKweMvwCsKYfPtVbsfdOjz9TQxshW8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dTuhx1q8zHzaIJNM3dGqfLK0armnPXZmOkeGA1zLY/Y=;
- b=JP1qypM0Pkpz7WEXlTyKrYl3O53KXhMBfU6RDlgJGluxBdknp0Kpq8tTr4kIO8a5cM+j8/2NjPlIIWQ6n70bZT+h69DlRy9v8+4En87/bdI1OZGIPDFFF+QEFItF2sXWCI9ey+QcMs+yTVMuelYbRNEpFDSNlnsbUXpdci4h7bFwaOm4WNVOFn9VQTRRrQ16yRf1VAjlYCuujukF1E7A2d7M/O0x/nYRd+h96UBPa2pvZxMwBzlhFly5UA4FPC8cOFNY7XdTotdoFcUQUP6NtE2JX6e+z7XAWD9mHmVoesd2pxT2Rpn/ugYIztH7FP4HYJcBni4q+q3MHm01stATBA==
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
- by DS7PR12MB6071.namprd12.prod.outlook.com (2603:10b6:8:9d::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Tue, 27 Feb
- 2024 08:45:38 +0000
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2]) by SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2%5]) with mapi id 15.20.7316.032; Tue, 27 Feb 2024
- 08:45:38 +0000
-From: Ankit Agrawal <ankita@nvidia.com>
-To: Oliver Upton <oliver.upton@linux.dev>, "wangjinchao@xfusion.com"
-	<wangjinchao@xfusion.com>, "shahuang@redhat.com" <shahuang@redhat.com>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>, "ryan.roberts@arm.com"
-	<ryan.roberts@arm.com>, "stefanha@redhat.com" <stefanha@redhat.com>,
-	"yi.l.liu@intel.com" <yi.l.liu@intel.com>, "david@redhat.com"
-	<david@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>, "lpieralisi@kernel.org"
-	<lpieralisi@kernel.org>, "gshan@redhat.com" <gshan@redhat.com>,
-	"brauner@kernel.org" <brauner@kernel.org>, "rananta@google.com"
-	<rananta@google.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "suzuki.poulose@arm.com"
-	<suzuki.poulose@arm.com>, "kevin.tian@intel.com" <kevin.tian@intel.com>,
-	"surenb@google.com" <surenb@google.com>, "ricarkol@google.com"
-	<ricarkol@google.com>, "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-	"james.morse@arm.com" <james.morse@arm.com>, "ardb@kernel.org"
-	<ardb@kernel.org>, "will@kernel.org" <will@kernel.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "maz@kernel.org"
-	<maz@kernel.org>, "bhe@redhat.com" <bhe@redhat.com>,
-	"reinette.chatre@intel.com" <reinette.chatre@intel.com>,
-	"yuzenghui@huawei.com" <yuzenghui@huawei.com>, "andreyknvl@gmail.com"
-	<andreyknvl@gmail.com>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"mark.rutland@arm.com" <mark.rutland@arm.com>
-CC: Dan Williams <danw@nvidia.com>, Andy Currid <acurrid@nvidia.com>, Alistair
- Popple <apopple@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Aniket Agashe
-	<aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>, "kvm@vger.kernel.org"
-	<kvm@vger.kernel.org>, John Hubbard <jhubbard@nvidia.com>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>, Zhi Wang
-	<zhiw@nvidia.com>, Kirti Wankhede <kwankhede@nvidia.com>, Vikram Sethi
-	<vsethi@nvidia.com>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "Tarun Gupta (SW-GPU)"
-	<targupta@nvidia.com>
-Subject: Re: [PATCH v9 0/4] KVM: arm64: Allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Thread-Topic: [PATCH v9 0/4] KVM: arm64: Allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Thread-Index: AQHaZzMEm+T/CCvzwkOvE3ojID9DN7EdTV0AgACUxr8=
-Date: Tue, 27 Feb 2024 08:45:38 +0000
-Message-ID:
- <SA1PR12MB71992A7E86741878935DC385B0592@SA1PR12MB7199.namprd12.prod.outlook.com>
-References: <20240224150546.368-1-ankita@nvidia.com>
- <170899100569.1405597.5047894183843333522.b4-ty@linux.dev>
-In-Reply-To: <170899100569.1405597.5047894183843333522.b4-ty@linux.dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|DS7PR12MB6071:EE_
-x-ms-office365-filtering-correlation-id: e30c4d13-bdf7-4614-f75b-08dc377078b2
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- SdagqvIo+DTLuXgEG1Cp/N6wf4c47NyMxdctuMwlTntk5Ct/cPRdDvX4bZluJyiJTPQjyhEZe1D++BypmWYj1ifq0QER3dKZR8u36PqDPSiZa7dwu3wwRXyC4/ZbjFNGuDT5kWuSaFtq7nMJACAxOmUKr9ZHiIlYHaRQCWvvvag5cBhfBwJFi2QF/z8gxEPqpkTR8t0nkljgbtRnxv2jYqQXCczZp2pQcXBUHBfz2hoEkiGBe84Uys04khLjjs/8TCNRcSbyi2YrQn+xElEe0Ivg4X+h3NoR/uG/RlJ+iep1YQe32gYZMsp5mHS/1GJoLzpxv+yEsuz+13VN+XchYy9OcMkIB/T9Riaq67b5WsHsUnK7tsDynUnJ8WQviHvMjGZEjBlgHwFHMZvhsbURZvj1MMBoaIfqcu22ra2rc5lby0Js2bON/G1iFvE18Q6DLhrJE2isgK0nLCMAK1MlVtGioxmBGARIyPV6jGC5Gl2//ha9TbIx2Gj0mV24BFLxFPO3BTgvJsmK6uplZ0VGMbK1PuBmSOGHKlzzkmOyZO9MJnZAQ71a643z6oM7AGHz+1UYhzu+05MpNg9p0ryiKRaIkh8woOcjcCxe3XzsyOYxqmVnqu5tx/oh1LG2MiT5vNnODRyafujgGjlob5YjzXc2E7D6g2+gDI1d+qmyYE/sqjzi/jSaeeteNshPPNlxDIK+G196DpWk5UzaPFAilHMRJFfVtRJLkJm0SC9pIXzb2ktRO0vF1VSngC9CAjCM12GxXrDWGEynNsBrCjbMZQ==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009)(921011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?jPmbaFzJlLXW7xp8ap6bVFVZzSdRsUSRPP3dDYjdW3MOa1K5o3AoQQc2Lx?=
- =?iso-8859-1?Q?dMu1QDcE0dIpmOU+JfuOSEmk3XYfACjvVT30grGBryxP616hJRCgmOehqq?=
- =?iso-8859-1?Q?QMkJbZsGBhfRfkyIqhQIC/L6dMnzXJ22dErXOOFrYn6C0TYn2fcDsWfNTq?=
- =?iso-8859-1?Q?4M1NUsolSl6HH4YpZ74zp15j+uN7ybEZBiB3Xz7PzLq4FeajgXVi+OtlBG?=
- =?iso-8859-1?Q?BbOZyh/5y6ZguQYwTLkdhwGJxypCe2nbMNWaT9wYlsHXtpNVL8UbuwN638?=
- =?iso-8859-1?Q?mQ8Z0IqKstgp7dAVV42s1kmUrmfSPmJVYsS76oDusR51YVvR+onSNdp8lX?=
- =?iso-8859-1?Q?4+RiIAYFsqsQNNtL89a5PtIaQHxM5Eof+e9tfSmXeF3aePXoa+9SEWYPi3?=
- =?iso-8859-1?Q?tC84d0nwrVYDlCZmx0yrIfZ4LWzGo1MYTtG2ekQZ6OVn+riDvDxt7JlY13?=
- =?iso-8859-1?Q?BAQT1EIBkDJDLcMBFLTWhcj8AoGuYNSi210muXnWkcCVYCgOhDrCZT2i/Y?=
- =?iso-8859-1?Q?+dAPDYzdP9pUCKnxi9aqKHbOyav51lA0qtEDD7x1clUW8QoagbfX+50lg/?=
- =?iso-8859-1?Q?Iob1iRNTXIvYx19rCJ9RBFufaqCenWulT2G0SzMrEFgHMCfTZvyDK5yuAC?=
- =?iso-8859-1?Q?8EIJaWTW1c+u0Ohrgzf1SjZzeUpHzTAQLksujvpobRWK1g4s6TUBChwk+X?=
- =?iso-8859-1?Q?SKqK5e+2ZitYnS9NsqRv7Ir4Jt6UVWWd3/jhatvuKJO4F2DOnCvQOxqaL/?=
- =?iso-8859-1?Q?bOIMMtJgkPPDpRK5ElvRMYHtXR6fNsK+DgbQ5yilbOFFT2FQBUrMviX0Wy?=
- =?iso-8859-1?Q?H2u/Ue0uGBFIrz/iQE7x9KlCE9oMWwm7RCW/XSoX8RcMMH5a6BAwDBvoGh?=
- =?iso-8859-1?Q?5GpGWtTzYwEt0nmAloqCaRvZjHPVRkoH3WheGd0EPOmkDpSaLV/CoHmADl?=
- =?iso-8859-1?Q?AULE+h0JvLNgA79ynqrMWszZthHYtTTK6U2aILRCMDsUrVWBu/8m5zfRQ3?=
- =?iso-8859-1?Q?K2uyXPXaJAZm5sxzePalnkguOpf76yjyxVk/QCOd6ksJsNcCLsv21FS2Up?=
- =?iso-8859-1?Q?jycwiA4Etm3gDauZRVXv/gp0Z5kPBXe5tYZU/FoDSlMFII1wAvBL0REwUu?=
- =?iso-8859-1?Q?1rK8pRwl1OoAOkITk39kyRmWk0nCfuzx31BeO133NDVARdcOm+MCPVpxa8?=
- =?iso-8859-1?Q?T43pUVYrfPppY7K4OXMVDsBKV0l8kZ0wEJ4WQJHs7M1wtrLx8nnSBI1xSO?=
- =?iso-8859-1?Q?d1rYXh0g/D034PmubdrGQ/cUccEoHSWTxyjtrZS3jM+UeQkYRZRNSdOTfX?=
- =?iso-8859-1?Q?VfKIATJYzd5P2OXTj4o0iooNCtln8FOHb+ecQuCdH/65BidfeGdBQjYKPW?=
- =?iso-8859-1?Q?4HRjjHL2Qz96phYLpmcsJ482bzOPkjLqU3D0Hbk7Ex/p1GwBntCOuMAYYv?=
- =?iso-8859-1?Q?oYkhJgerevUkFBLONd8WYQkREHrc7pbInQkT+Rn1NPA0C+dAIZN44D8hXP?=
- =?iso-8859-1?Q?WTnBFfS6t1SWN6Xkjv2bVNnhI7a0M1gvyjeIpDXfMDOhJ7b7DM932UfHna?=
- =?iso-8859-1?Q?fQuM4LYDd2Qo7gqHlwp2DNPlN4lNUlwHSlCyvBeF5kUWKWQswja0VdWhxD?=
- =?iso-8859-1?Q?INrRmNyzLh+MQ=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3518912FB18
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709023610; cv=none; b=kFF9CF+fspLgSv2jSsiyFTXhQ7nLOk9sgr5AV+Urb1/OeVzlkIozQMa7o2GiFIdJLsjVulYgbQ/ie9tlR2OR1NreUbSb54x/hItzPBhozXz/Wp30tqFETU/1OAQicTNmL9umALpaWFy1HkHasMYE9UxEKKz3FsNb7R4AfLOhh4g=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709023610; c=relaxed/simple;
+	bh=RGrgG/GYBxKuA42sGlIaTnpOYadYyaEfhpbMH5Kstp4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=caW2imYpQdzBdic862Bl/TQeyV5NTBPmzSr+8BFXaxShwOMUAWfI1ESoAGVBEITzhTj5aF5DficBVkzci/QP1zQZ50txOYLcnpXize7qeZLxIPj/tQhqklvC940IeaZRQcfhHOzG/BOeIEntlJRu350QtBV86Ei1nRNCwUEa2rY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jb3WuLX2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709023608;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=r2Y2aitQqHk45FNI3Y4qg1LJmhlS3qyEFoBc+OaNRoM=;
+	b=Jb3WuLX2N1oaTZ+aIm+lh3ifvrQD0Jlx7bj5Na6EAhapfWi2+W/s2N1ln4d530bfLpHbYZ
+	NYjhtlBZdxgaE0eIlMWxGtr/1XcZU0lZi9jvn58eI9Ag1+vlHWyiuTGnLpQ/XRju00tbpY
+	zuw/livMM4eNBlXni0bm4PJICSAqeRQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-183-sZrFzdBpPaWEEDymLFnmmw-1; Tue, 27 Feb 2024 03:46:46 -0500
+X-MC-Unique: sZrFzdBpPaWEEDymLFnmmw-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-412a72590dbso8769385e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 00:46:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709023605; x=1709628405;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r2Y2aitQqHk45FNI3Y4qg1LJmhlS3qyEFoBc+OaNRoM=;
+        b=KOGD0I5k70HAB1TTPsmETzaZSbe7wBEH4PxD1G1HaNw/zGqYt3nFKZEOZaaGeFpCfg
+         eZgUFUh1FWZKakXKJc0QEMtnC0jJfCrFck5BX/uOvsVeUMASFNP/xs3KfFsW95bLY3pX
+         aUb84dHGFdvDJ7slkKU6O1jbb82VqExJiwkn+WC8LkC8sYXYYNSsbYoEV/tyPz4ADIoL
+         T/QOxb8N3z6U3lhuqGB0LpUbLZA/fqc0YoOqb70O/DWs9ffN/W9xs4sI2OU0GB63+fJA
+         kMYvk1X7giNGc+jkfto31/fZ7imxcISWTAG/BTMWacmqltjdu3Xw1J9QwBJfqMRJ5TxI
+         rmEw==
+X-Forwarded-Encrypted: i=1; AJvYcCWjNfqwSeGjN69RJ7BzSZ71ELiKKkUdkOFBT+IcM3nARrzV+ZE3Ft9ej/QRBsIGAQHo7h4JvNCQSHqsWm4vjAM1j1wHsaax5iDDd+Vn
+X-Gm-Message-State: AOJu0YygwrinraDlWUIw4gejhzjvmrD2P84N0EIVnYh/BD5+nZ0flOqY
+	39Ed6bQ8gv64CWU+qlLH+RL0v3M7siOAC1I1g6Lwe4kNC6o2kOa/lFtsHMz6yIbcll0lnizDKky
+	O8x75WvFdq46yZ0TnYC5+qq0ZiurIo6nr00U3z3Ut1QBOUqLxBBGPaVXCweHziw==
+X-Received: by 2002:a5d:588b:0:b0:33d:d96b:2614 with SMTP id n11-20020a5d588b000000b0033dd96b2614mr4024009wrf.54.1709023604920;
+        Tue, 27 Feb 2024 00:46:44 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGI2aQcQdMY3I5QZK7GcHJUhfuRlHh9NZC5OKpYxexFjRN66oqIXbCe1kIRn2Xn7mN78TWyeA==
+X-Received: by 2002:a5d:588b:0:b0:33d:d96b:2614 with SMTP id n11-20020a5d588b000000b0033dd96b2614mr4023991wrf.54.1709023604530;
+        Tue, 27 Feb 2024 00:46:44 -0800 (PST)
+Received: from ?IPV6:2003:cb:c707:7600:5c18:5a7d:c5b7:e7a9? (p200300cbc70776005c185a7dc5b7e7a9.dip0.t-ipconnect.de. [2003:cb:c707:7600:5c18:5a7d:c5b7:e7a9])
+        by smtp.gmail.com with ESMTPSA id bv20-20020a0560001f1400b0033d73e1505bsm10794183wrb.18.2024.02.27.00.46.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 00:46:44 -0800 (PST)
+Message-ID: <056a92c5-0cf6-4f71-a93e-d8c43d4eed08@redhat.com>
+Date: Tue, 27 Feb 2024 09:46:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e30c4d13-bdf7-4614-f75b-08dc377078b2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Feb 2024 08:45:38.0612
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lQFSU47ktH0KdpJe/gh8C7AAO7HIdH8c8DuYddqtypTyFKZE/itXRW6rkPwQ3ELLwITYIzz/ZqGBsbtEEhCDPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6071
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] mm/memory: Fix boundary check for next PFN in
+ folio_pte_batch()
+Content-Language: en-US
+To: Lance Yang <ioworker0@gmail.com>
+Cc: akpm@linux-foundation.org, ryan.roberts@arm.com, 21cnbao@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240227070418.62292-1-ioworker0@gmail.com>
+ <90471b2f-826e-4275-a9a3-ec673c3e6af8@redhat.com>
+ <CAK1f24nr=giiYW2CVtbpuUxNshb9ksLhtY_v-SK1_AVvQPUEdQ@mail.gmail.com>
+ <2aa8b0f0-4fd4-469a-ba72-82fe01d37f15@redhat.com>
+ <CAK1f24mVT7ucbUQZVnFQqN4KrgwTYHQ0q2ySXjq1UYW3s1m9SQ@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAK1f24mVT7ucbUQZVnFQqN4KrgwTYHQ0q2ySXjq1UYW3s1m9SQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
->>=0A=
->> Currently, KVM for ARM64 maps at stage 2 memory that is considered devic=
-e=0A=
->> with DEVICE_nGnRE memory attributes; this setting overrides (per=0A=
->> ARM architecture [1]) any device MMIO mapping present at stage 1,=0A=
->> resulting in a set-up whereby a guest operating system cannot=0A=
->> determine device MMIO mapping memory attributes on its own but=0A=
->> it is always overridden by the KVM stage 2 default.=0A=
->>=0A=
->> [...]=0A=
->=0A=
-> High time to get this cooking in -next. Looks like there aren't any=0A=
-> conflicts w/ VFIO, but if that changes I've pushed a topic branch to:=0A=
->=0A=
->=A0 https://git.kernel.org/pub/scm/linux/kernel/git/oupton/linux.git/log/?=
-h=3Dkvm-arm64/vfio-normal-nc=0A=
->=0A=
-> Applied to kvmarm/next, thanks!=0A=
-=0A=
-Thanks Oliver for your efforts. Pardon my naivety, but what would the=0A=
-sequence of steps that this series go through next before landing in an=0A=
-rc branch? Also, what is the earliest branch this is supposed to land=0A=
-assuming all goes well?=0A=
-=0A=
->=0A=
-> [1/4] KVM: arm64: Introduce new flag for non-cacheable IO memory=0A=
->=A0=A0=A0=A0=A0 https://git.kernel.org/kvmarm/kvmarm/c/c034ec84e879=0A=
-> [2/4] mm: Introduce new flag to indicate wc safe=0A=
->=A0=A0=A0=A0=A0 https://git.kernel.org/kvmarm/kvmarm/c/5c656fcdd6c6=0A=
-> [3/4] KVM: arm64: Set io memory s2 pte as normalnc for vfio pci device=0A=
->=A0=A0=A0=A0=A0 https://git.kernel.org/kvmarm/kvmarm/c/8c47ce3e1d2c=0A=
-> [4/4] vfio: Convey kvm that the vfio-pci device is wc safe=0A=
->=A0=A0=A0=A0=A0 https://git.kernel.org/kvmarm/kvmarm/c/a39d3a966a09=0A=
+On 27.02.24 09:45, Lance Yang wrote:
+> On Tue, Feb 27, 2024 at 4:33 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 27.02.24 09:23, Lance Yang wrote:
+>>> Hey David,
+>>>
+>>> Thanks for taking time to review!
+>>>
+>>> On Tue, Feb 27, 2024 at 3:30 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>
+>>>> On 27.02.24 08:04, Lance Yang wrote:
+>>>>> Previously, in folio_pte_batch(), only the upper boundary of the
+>>>>> folio was checked using '>=' for comparison. This led to
+>>>>> incorrect behavior when the next PFN exceeded the lower boundary
+>>>>> of the folio, especially in corner cases where the next PFN might
+>>>>> fall into a different folio.
+>>>>
+>>>> Which commit does this fix?
+>>>>
+>>>> The introducing commit (f8d937761d65c87e9987b88ea7beb7bddc333a0e) is
+>>>> already in mm-stable, so we would need a Fixes: tag. Unless, Ryan's
+>>>> changes introduced a problem.
+>>>>
+>>>> BUT
+>>>>
+>>>> I don't see what is broken. :)
+>>>>
+>>>> Can you please give an example/reproducer?
+>>>
+>>> For example1:
+>>>
+>>> PTE0 is present for large folio1.
+>>> PTE1 is present for large folio1.
+>>> PTE2 is present for large folio1.
+>>> PTE3 is present for large folio1.
+>>>
+>>> folio_nr_pages(folio1) is 4.
+>>> folio_nr_pages(folio2) is 4.
+>>>
+>>> pte = *start_ptep = PTE0;
+>>> max_nr = folio_nr_pages(folio2);
+>>>
+>>> If folio_pfn(folio1) < folio_pfn(folio2),
+>>> the return value of folio_pte_batch(folio2, start_ptep, pte, max_nr)
+>>> will be 4(Actually it should be 0).
+>>>
+>>> For example2:
+>>>
+>>> PTE0 is present for large folio2.
+>>> PTE1 is present for large folio1.
+>>> PTE2 is present for large folio1.
+>>> PTE3 is present for large folio1.
+>>>
+>>> folio_nr_pages(folio1) is 4.
+>>> folio_nr_pages(folio2) is 4.
+>>>
+>>> pte = *start_ptep = PTE0;
+>>> max_nr = folio_nr_pages(folio1);
+>>>
+>>
+>> In both cases, start_ptep does not map the folio.
+>>
+>> It's a BUG in your caller unless I am missing something important.
+> 
+> Sorry, I understood.
+> 
+> Thanks for your clarification!
+
+I'll post some kernel doc as reply to Barry's export patch to clarify that.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
