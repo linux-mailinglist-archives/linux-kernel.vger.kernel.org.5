@@ -1,153 +1,185 @@
-Return-Path: <linux-kernel+bounces-82646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BA428687A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:15:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42E988687A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:18:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4399B247E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:15:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C18881F25C9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC0E1CD03;
-	Tue, 27 Feb 2024 03:15:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE1F1B962;
+	Tue, 27 Feb 2024 03:18:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="g1HFiLex"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dQmTrVV2"
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 815FA1F947;
-	Tue, 27 Feb 2024 03:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA576FC6
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709003715; cv=none; b=Kvt5S6vNTC3Npzq+92zNGR8qyiq84GUmNeepuwShETO6b/TOENANqDP+ItXRGuHPiOhN01C5t7FSD6whLBDXGZnsqlumkqJ37dKbbh2VW/5l/QTbFi5pHJdGE9t3Ni1D09PyS/7zlzooXXApE2rS4oqn0Thwk9QoXZZ2hlmL7zg=
+	t=1709003910; cv=none; b=a1afUtb2Yg2OHJtBr/0F8dpYH9RgxxLdXDz8j2ypcpa8xq1sFlD2XxMcLCp03Fy37dlLuiNVqANXIF1uf+dVxngUJIxyDYJDzS18Y+fzXKRrgjVoKpS2s6ZcX9KmQKKHGUy7EyCgpwaf51MxUHpe5drqMvi75myh8Wsn0e/rD6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709003715; c=relaxed/simple;
-	bh=zvPm5PzDdLsLLfyUhF6DNmti8ozkQ94Jv6QvBNkp2wE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XJCQKsGOeDnzCTKjIR9RGENx3ZHQo5zKKiTQU/+mqonwXYak0iHD7RHGGqUIczuFgWESlZ9JiyQUiZthwNQ68M+6aOhMSxs3F4nUvG7+RU5gAvqyrcQkun+/zk2ztnekw0K1sn0wzUPg3G+bv7R+m+SdGjBcFFINH/UL7OKyUTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=g1HFiLex; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41R2T0eR032284;
-	Tue, 27 Feb 2024 03:15:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=6KBaG3igfsBnKJhPA45En8jYeIyXoOOVGsO8fBNA/HU=; b=g1
-	HFiLexIJmYPiXOFpbBspBe+ex45h+7FHUVlKm4u15Ni9mFoepDW/8jIoEt79WWbX
-	Zho0PO/IhtwdHGyuEcdMK0aY0HXpg8C++0bxy6gWtrtwL1sitoFQRlPbCbuNMy3S
-	ivRNNwjQWJt2H+nB3EMnmzLOrkNqtqY68vapMDcPI952WaIyZgo1Y/VNDvH5rL8m
-	h8uW12uwkBeFMnYWBdj3wWGdEKwu6hY7vhdWOXfpeyEIMaY0GGBMPQ9ElUmXZUWZ
-	PiPTIKPUmrw806wsvIUUkgppYAYnaFeikuJrz3+V1O07Xbu2G6RpkjVQfoVHPXtq
-	LDphH+n0c4gj6A4+A7iQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh50789ux-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 03:15:05 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41R3F3ag025064
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 03:15:03 GMT
-Received: from [10.216.14.152] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 26 Feb
- 2024 19:14:56 -0800
-Message-ID: <c5e041dc-42b0-86f2-aba3-28d4db305c38@quicinc.com>
-Date: Tue, 27 Feb 2024 08:44:53 +0530
+	s=arc-20240116; t=1709003910; c=relaxed/simple;
+	bh=KjPHTiSTwg32S1R3S8oshUP2UzgRbl2OG36gTs7izEE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JHjEmF1x36MJK09C+noj/G7t50Nv4osKFYFAOlmklsypMNUlkFmBcYkAYlQ8NrdgXGEwnpBv4jvZIDJQn9PJBydviUR7kzYdY15pWGAB00Pb0n2lDPUrJpoTP5u+dFtR51I7D0rukRCp/1i8UAmw4Pfta3O5h/yyJp5fG7cErBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dQmTrVV2; arc=none smtp.client-ip=209.85.222.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f42.google.com with SMTP id a1e0cc1a2514c-7d2e21181c1so2523221241.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 19:18:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709003908; x=1709608708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MJZD2KtLrf71EHvovaXk1j0WO0+M7+xSSk4VodUZBz8=;
+        b=dQmTrVV2lCz893yKAnTcqrcomG/wp3nN9qGsmWD5kkP8IbObWTU5Umvq7X3gDF0i/+
+         Nmw1XDudFzsu8/U6P6Tmzvj0BZjw8gKtE+G6VUpvTDdExqq5/nDE8BqYBm+qbAvYQXeK
+         1W9slgdTONVvHQA3cQ1NrYdnsDxGxOQWTQ6kyp0XiQN+ybD6tupAk3RTPaX5wiObB7NO
+         jfZAl2PojNUoZKOeBfLmn45Z/R1PaIaRr+posRD2X+6mIT/BvmfR+mzQHsF0C9FuN+qH
+         Y4+ibP0wOpAj8bz5rCyKYn2lu6bTQ54+12fB/mRACZWETs5jMG+yViiKKxLF4FJHz/jG
+         vX9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709003908; x=1709608708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MJZD2KtLrf71EHvovaXk1j0WO0+M7+xSSk4VodUZBz8=;
+        b=fuvHuoLzVYo4jDGBqIIRa1r4pSY39XcCMCuWJAg8beFLz4QPUg/zb4N5/DATUPhvhe
+         44W4iKUaRPpMWQZxu9VE8llkPZfIRzaFQL9zWGHpRCOGPUUfPW7K8wfzaQ4uHLuLDrev
+         lepBfqO/W+DkBDBByLCi3j9tDp7ZdLZRekdLjVHNLrfIZKtTEIPPOE9spHsqgG6uVfsl
+         oychQ8Tm8DEGu65Ml1DcdLAinCLtGkpncan7teVKzJvNaw/unq1qunyJ5e6uh6iL6ouD
+         QUgKbj+2GYJRZG0+G3zrkc3KHJTKuyqpuQYNYVfoWcCISy5971tkarhoQaN2/Fw7rmbg
+         mkRQ==
+X-Gm-Message-State: AOJu0Yw8tRB1I2TVaO+DNgXOBVeHQj46c25MaEJMGB5bJF8a81zVKkP+
+	kBpAEvSMSW/KpW7JQ6kCvyxw0vK13k13u5qNs47V8NVqUYAdZXWpCFwMsfc4Kkl7gUjLJ+pDHUc
+	I2OSm114Xs4+bitoPv52q/g5Mges=
+X-Google-Smtp-Source: AGHT+IFs5rDr+LuGs9pbJ463izehId6OYEso4XQoI7Xjg8YIH59ntMm6AwuRqaiP2Afn7zDCUuO5FWl8zKOx3RYW6Dw=
+X-Received: by 2002:a1f:6283:0:b0:4d1:34a1:d94f with SMTP id
+ w125-20020a1f6283000000b004d134a1d94fmr5573937vkb.6.1709003907709; Mon, 26
+ Feb 2024 19:18:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v7 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
- path
-Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Brian Masney
-	<bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_parass@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20240223-opp_support-v7-0-10b4363d7e71@quicinc.com>
- <20240223-opp_support-v7-3-10b4363d7e71@quicinc.com>
- <53f486d1-94c7-4dd9-89fc-d80a92301700@linaro.org>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <53f486d1-94c7-4dd9-89fc-d80a92301700@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: NagUTDU7pvt2aIge6frUEj6VXHrP0rNI
-X-Proofpoint-GUID: NagUTDU7pvt2aIge6frUEj6VXHrP0rNI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-26_11,2024-02-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
- clxscore=1015 mlxscore=0 malwarescore=0 impostorscore=0 phishscore=0
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402270024
+References: <20240227024050.244567-1-21cnbao@gmail.com>
+In-Reply-To: <20240227024050.244567-1-21cnbao@gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 27 Feb 2024 16:18:16 +1300
+Message-ID: <CAGsJ_4yF+kuTtN4YmtwSvfcCRqixvzL5qT0BLLfTg9nLLsReZg@mail.gmail.com>
+Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
+ need it
+To: akpm@linux-foundation.org, linux-mm@kvack.org, 
+	David Hildenbrand <david@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>
+Cc: linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
+	Lance Yang <ioworker0@gmail.com>, Yin Fengwei <fengwei.yin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 27, 2024 at 3:41=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
+e:
+>
+> From: Barry Song <v-songbaohua@oppo.com>
+>
+> madvise and some others might need folio_pte_batch to check if a range
+> of PTEs are completely mapped to a large folio with contiguous physcial
+> addresses. Let's export it for others to use.
+>
+> Cc: Lance Yang <ioworker0@gmail.com>
+> Cc: Ryan Roberts <ryan.roberts@arm.com>
+> Cc: David Hildenbrand <david@redhat.com>
 
+Hi David, Ryan,
 
-On 2/24/2024 5:32 AM, Konrad Dybcio wrote:
-> On 23.02.2024 15:48, Krishna chaitanya chundru wrote:
->> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
->> ICC(interconnect consumers) path should be voted otherwise it may
->> lead to NoC(Network on chip) timeout. We are surviving because of
->> other driver vote for this path.
->> As there is less access on this path compared to PCIe to mem path
->> add minimum vote i.e 1KBps bandwidth always.
->>
->> In suspend remove the disable this path after register space access
->> is done.
->>
->> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
->> ---
-> 
-> [...]
-> 
->>   
->> +	/* Remove cpu path vote after all the register access is done */
->> +	ret = icc_disable(pcie->icc_cpu);
->> +	if (ret) {
->> +		dev_err(dev, "failed to disable icc path of cpu-pcie: %d\n", ret);
->> +		if (pcie->suspended) {
->> +			qcom_pcie_host_init(&pcie->pci->pp);
->> +			pcie->suspended = false;
->> +		}
->> +		qcom_pcie_icc_opp_update(pcie);
-> 
-> This doesn't compile (you rename it in patch 6, this is patch 3)
-> 
-> Konrad
-> 
-I will fix this in my next series.
+Sorry, I realize I just made a mistake and your tags should be both
+Suggested-by. Please feel
+free to review the patch and give comments. I will fix the tags
+together with addressing your
+review comments in v2.
 
-- Krishna Chaitanya.
+> Cc: Yin Fengwei <fengwei.yin@intel.com>
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  -v1:
+>  at least two jobs madv_free and madv_pageout depend on it. To avoid
+>  conflicts and dependencies, after discussing with Lance, we prefer
+>  this one can land earlier.
+>
+>  mm/internal.h | 13 +++++++++++++
+>  mm/memory.c   | 11 +----------
+>  2 files changed, 14 insertions(+), 10 deletions(-)
+>
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 13b59d384845..8e2bc304f671 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -83,6 +83,19 @@ static inline void *folio_raw_mapping(struct folio *fo=
+lio)
+>         return (void *)(mapping & ~PAGE_MAPPING_FLAGS);
+>  }
+>
+> +/* Flags for folio_pte_batch(). */
+> +typedef int __bitwise fpb_t;
+> +
+> +/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+> +#define FPB_IGNORE_DIRTY               ((__force fpb_t)BIT(0))
+> +
+> +/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bi=
+t. */
+> +#define FPB_IGNORE_SOFT_DIRTY          ((__force fpb_t)BIT(1))
+> +
+> +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
+> +               pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+> +               bool *any_writable);
+> +
+>  void __acct_reclaim_writeback(pg_data_t *pgdat, struct folio *folio,
+>                                                 int nr_throttled);
+>  static inline void acct_reclaim_writeback(struct folio *folio)
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 1c45b6a42a1b..319b3be05e75 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -953,15 +953,6 @@ static __always_inline void __copy_present_ptes(stru=
+ct vm_area_struct *dst_vma,
+>         set_ptes(dst_vma->vm_mm, addr, dst_pte, pte, nr);
+>  }
+>
+> -/* Flags for folio_pte_batch(). */
+> -typedef int __bitwise fpb_t;
+> -
+> -/* Compare PTEs after pte_mkclean(), ignoring the dirty bit. */
+> -#define FPB_IGNORE_DIRTY               ((__force fpb_t)BIT(0))
+> -
+> -/* Compare PTEs after pte_clear_soft_dirty(), ignoring the soft-dirty bi=
+t. */
+> -#define FPB_IGNORE_SOFT_DIRTY          ((__force fpb_t)BIT(1))
+> -
+>  static inline pte_t __pte_batch_clear_ignored(pte_t pte, fpb_t flags)
+>  {
+>         if (flags & FPB_IGNORE_DIRTY)
+> @@ -982,7 +973,7 @@ static inline pte_t __pte_batch_clear_ignored(pte_t p=
+te, fpb_t flags)
+>   * If "any_writable" is set, it will indicate if any other PTE besides t=
+he
+>   * first (given) PTE is writable.
+>   */
+> -static inline int folio_pte_batch(struct folio *folio, unsigned long add=
+r,
+> +int folio_pte_batch(struct folio *folio, unsigned long addr,
+>                 pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+>                 bool *any_writable)
+>  {
+> --
+> 2.34.1
+>
+
+Thanks
+Barry
 
