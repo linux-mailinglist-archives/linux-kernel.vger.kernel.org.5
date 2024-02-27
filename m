@@ -1,171 +1,105 @@
-Return-Path: <linux-kernel+bounces-83268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83269-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D98D869102
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:55:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97C5686910E
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 13:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DF321C24E80
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:55:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20094B2790D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 12:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345801386CF;
-	Tue, 27 Feb 2024 12:55:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBB713AA28;
+	Tue, 27 Feb 2024 12:56:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ar6lGGLB"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tUo8ltF1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9600135A43
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 12:55:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EF213329D;
+	Tue, 27 Feb 2024 12:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709038525; cv=none; b=J+dIawKxntnthfcD9CB5XQZ3opA5dmi5FVg1Uvnw4Syy+kDsJgzg8cLODZpXWjPNIpA/yxmjAJZUmj7O0HE7iSAQJwqFyaf3yeTwNJOXap2lvNaYExqgioD59hhlm4ZFGV9j6T4vS3+YZepKhdJvFJl1NKTmUy/y1tER4MQxejQ=
+	t=1709038617; cv=none; b=bU7XTQcByWv+ouL3ZaEvbjhuBUPgrOQeJ5J5TdrhHO0KoF7HfTYKanb7ojXc9Er7IGPtWFWYR6YZPjZOZNdr8J+mV429NvqhWwKN44mH1wqWJPEZwsugWuobgOC4bSdZ6anHMQhZJRFtwv5Lnhuhm9akx9Q28CB5eXKYgZnHyaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709038525; c=relaxed/simple;
-	bh=KJz9hRO8fRmQUceWUmOGhb9xcb17Ny+mYe4CX9Me5cU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HJKBQJqS3ZMTfMJVdKIVc0FUigaYTJajguE93h6q92PrPwOk9EHAn94zx50jPXd56TTCOY5ePxy7Iu2vEbI+mlxaOZkvaWZVSF08SPIBYSFhqAC5hCP8CSaJiUMLAE1Xht6C1+bP6k9KE4QWUQU7wcH2RCVhTHWyluGr4mXEDAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ar6lGGLB; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5664623c311so4910a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:55:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709038522; x=1709643322; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MLBUJ2xAHGF+c3kUR836B1kJhRUeAGnSjULsaIYn3hI=;
-        b=ar6lGGLB3BZJH1YySaUrWaQQTeeMFXzWJQnrfnS+Znqc6Ml3YidGSrAkmsmCaWhMxc
-         Sxyi4V28I7T9TM0lm2WDMHriFr6DaHmIBjavhFhwVMk8SRqwFUgpgn42NiYknSRck3zZ
-         lo8Esj8glh8+h60/xveXota/tEVY8PvbgMlQ/n1nrtEzaGvIHtXa6wmXTIeO5vH4w4aY
-         p6LZsn/BzrUo1/lzE1fGD+Vw7zYHG/HAKolQLYPTZrUythbltLbtdfwU7itOfaSUdYyA
-         XejrYLbw7nBrvTQu6eosxRCGa8eFiNOqt+C9ItQDBYIrdcPq7uCmQElE3WsiB52uutAP
-         xFMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709038522; x=1709643322;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MLBUJ2xAHGF+c3kUR836B1kJhRUeAGnSjULsaIYn3hI=;
-        b=R/Jlgd/06lRl3e1+RyGfWEg0DN7up99n8WKrFsh8v07nwOaT2R8+Dq0Wel6f14plJx
-         YtguhyRGeTQKNnc1/PpKIVwrpXx6RSMcVlvMXlIENWgZhRvipjXeLYpMpd/THxMRRJvO
-         Kh6/wmQk/38Y+Dv5vWMwFuB1ecteH3J1PpCTGtl2YdXnF7DsTfhOGgT6/ymAPeI87X9+
-         MsYiJRJXAZqMJQZkF+RXZIndYjbid2WO6Jf61awbV+iqSHEgDlbKxPd91hItJwK9UKtL
-         t71rdtubg9HEvBNB2SYx7ErQHZtfXYXhdoTDIqfLHeU5jhs/rRgArstjEaPYJeNLMjA0
-         eGqw==
-X-Forwarded-Encrypted: i=1; AJvYcCW8as3YG7G3QrbmYi6zDYAWA7M1iqc9HtMO1CthTawEqRPehGSujVO9tn5tbn7opyzjUc76bA4s3rfX02LqnDnOP/BOcqOEzxOo+X5I
-X-Gm-Message-State: AOJu0Yz7+A7EHQkMHCqW5zFD1sXVCD1DaItZIH0KfSQ/51uPiuRqRjpV
-	Oe0YXxcQg8ZaSIozAXMqO/UmKAOzS1v1JzETP/wFPpbljVM/EdwN11IwCJJ3mTl+6YXxdmWXjO7
-	MwyxT9qTUpmSjw7E697nCZXKxhMhMK08y7Py3
-X-Google-Smtp-Source: AGHT+IE2+Ej3/Nzu1vJ6UiU7hZuhdo81g+ZGSxhMX8BMWjH4e6YCP8LJLOEDjj+HkMUb1JU2+0PSwHSIwjl3lFKtGDI=
-X-Received: by 2002:a50:a448:0:b0:565:abf9:1974 with SMTP id
- v8-20020a50a448000000b00565abf91974mr191729edb.2.1709038521727; Tue, 27 Feb
- 2024 04:55:21 -0800 (PST)
+	s=arc-20240116; t=1709038617; c=relaxed/simple;
+	bh=apcxIyzn0k7+m12GtqffHekIeQvQq1MA8T3i+VB34z4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qSxG86yxnHHAbvrWs6AOLRHloMFs32kPHfNrIbouDk0RxNN0T4duDwnlqwLl8g8sc5u2zHBIp2tPbwwr5pnZjzF5b2pmSzGBHBODQk/uvgx6XfU5Z0HfeSz5jtGfc2B+vs8hqBIzi6seznrrA7BNwNJCwXJuaxAG5h0Lz0/NqdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tUo8ltF1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF135C433F1;
+	Tue, 27 Feb 2024 12:56:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709038616;
+	bh=apcxIyzn0k7+m12GtqffHekIeQvQq1MA8T3i+VB34z4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tUo8ltF1j64VnsC26KES1wChaS26QqTrp61YOIGHMHhZxScak6IKV2RWQtzoE9thm
+	 kLXSfT0/G8rTwU1OGzTfZhdeJ2kxVLGwY7UTk8pVm40tqNJNRAyLTyngpiI0LuGwq+
+	 j03DRUz1EX7GleuhrOf/TcJfotZV3wxhg5aJsI+MPf1FH+r7bkObaWPqM9GDccXHaj
+	 h+UoVYaTSp2WsYWtz/srtLi74k+AEmimwGvMoClPv5LjCq+ub6867ZfXXNsYHrnjLU
+	 bosIgaCA/FmPW04D7tnxCX2iEe/OImYWqYH7uS+ReWNffJzwOSJ6f5oW81VVmVcj5J
+	 J5SPOWmsZH8qA==
+Date: Tue, 27 Feb 2024 12:56:52 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Javier =?iso-8859-1?Q?Garc=EDa?= <javier.garcia.ta@udima.es>
+Cc: daniel.baluta@nxp.com, Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, alsa-devel@alsa-project.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Convert the Imagination Technologies SPDIF Input
+ Controllerto DT schema.
+Message-ID: <4b4b4eb8-a160-455f-a787-156d3c933306@sirena.org.uk>
+References: <20240227123602.258190-1-javier.garcia.ta@udima.es>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANn89iJoHDzfYfhcwVvR4m7DiVG-UfFNqm+D1WD-2wjOttk6ew@mail.gmail.com>
- <20240227062833.7404-1-shijie@os.amperecomputing.com>
-In-Reply-To: <20240227062833.7404-1-shijie@os.amperecomputing.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 27 Feb 2024 13:55:07 +0100
-Message-ID: <CANn89iL2a2534d8QU9Xt6Gjm8M1+wWH03+YPdjSPQCq_Q4ZGxw@mail.gmail.com>
-Subject: Re: [PATCH v2] net: skbuff: set FLAG_SKB_NO_MERGE for skbuff_fclone_cache
-To: Huang Shijie <shijie@os.amperecomputing.com>
-Cc: kuba@kernel.org, patches@amperecomputing.com, davem@davemloft.net, 
-	horms@kernel.org, ast@kernel.org, dhowells@redhat.com, linyunsheng@huawei.com, 
-	aleksander.lobakin@intel.com, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, cl@os.amperecomputing.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="h+L9bvOLfgbqbaMj"
+Content-Disposition: inline
+In-Reply-To: <20240227123602.258190-1-javier.garcia.ta@udima.es>
+X-Cookie: Please go away.
+
+
+--h+L9bvOLfgbqbaMj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 7:29=E2=80=AFAM Huang Shijie
-<shijie@os.amperecomputing.com> wrote:
->
-> Since we do not set FLAG_SKB_NO_MERGE for skbuff_fclone_cache,
-> the current skbuff_fclone_cache maybe not really allocated, it maybe
-> used an exist old kmem_cache. In NUMA, the fclone allocated by
-> alloc_skb_fclone() maybe in remote node.
+On Tue, Feb 27, 2024 at 01:35:55PM +0100, Javier Garc=EDa wrote:
+> Convert the Imagination Technologies SPDIF Input Controllerto DT schema.
 
-Why is this happening in the first place ? Whab about skb->head ?
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
 
-Jesper patch [1] motivation was not about NUMA., but about
-fragmentation and bulk allocations/freeing.
+> +title: Imagination Technologies SPDIF Input Controller
 
-TCP fclones are not bulk allocated/freed, so I do not understand what
-your patch is doing.
-You need to give more details, and experimental results.
+> +maintainers:
+> +  - Rob Herring <robh+dt@kernel.org>
+> +  - Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 
-Using SLAB_NO_MERGE does not help, I am still seeing wrong allocations
-on a dual socket
-host with plenty of available memory.
-(either sk_buff or skb->head being allocated on the other node).
+I'm not sure they'd agree with that...
 
-fclones might be allocated from a cpu running on node A, and freed
-from a cpu running on node B.
-Maybe SLUB is not properly handling this case ?
+--h+L9bvOLfgbqbaMj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-SLAB_NO_MERGE will avoid merging fclone with kmalloc-512, it does not
-really help.
+-----BEGIN PGP SIGNATURE-----
 
-I think we need help from mm/slub experts, instead of trying to 'fix'
-networking stacks.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXd3BMACgkQJNaLcl1U
+h9BFeAf9F2UrHSUmj5HdrZl50lIgzVj+ydziDWHATv5g06rwiGkOPZBpBwwwPZLn
+AamwLnKbU2jaHXzVfkcpjdsjUHmPVOyZyAY5VKClzx8x/cjQJa+kMyb4HOjfudpy
+adLQrz6l+Vv2N+y49R05UImy+r6NNiYvO6zTyUu/Nxi6efggwqZJ1iWSpC7fU5wd
+HWZ/K0wgvc26vGsy5biTtR2L8MQY+qEEh1Rx3rnG+jUuLWt6K51BobL88b1GyV+b
+gX7BF5vj9Ekj47UtSK4rtqV1BvZeERgmGKjiEgnR3PNXe0yGqMOheKNvvGyI9SuK
+qh7Nc6dNcdzCJmtEM1K5tH8BonlyoQ==
+=lxob
+-----END PGP SIGNATURE-----
 
-Perhaps we could augment trace_kmem_cache_alloc() to record/print the nodes
-of the allocated chunk (we already have the cpu number giving us the
-local node).
-That would give us more confidence on any fixes.
-
-BTW SLUB is gone, time to remove FLAG_SKB_NO_MERGE and simply use SLAB_NO_M=
-ERGE
-
-[1]
-commit 0a0643164da4a1976455aa12f0a96d08ee290752
-Author: Jesper Dangaard Brouer <hawk@kernel.org>
-Date:   Tue Aug 15 17:17:36 2023 +0200
-
-    net: use SLAB_NO_MERGE for kmem_cache skbuff_head_cache
-
-
-
->
-> So set FLAG_SKB_NO_MERGE for skbuff_fclone_cache to fix it.
->
-> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
-> ---
-> v1 --> v2:
->        set FLAG_SKB_NO_MERGE for skbuff_fclone_cache in initialization.
->
-> v1: https://lkml.org/lkml/2024/2/20/121
-> ---
->  net/core/skbuff.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 1f918e602bc4..5e3e130fb57a 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -5013,7 +5013,8 @@ void __init skb_init(void)
->         skbuff_fclone_cache =3D kmem_cache_create("skbuff_fclone_cache",
->                                                 sizeof(struct sk_buff_fcl=
-ones),
->                                                 0,
-> -                                               SLAB_HWCACHE_ALIGN|SLAB_P=
-ANIC,
-> +                                               SLAB_HWCACHE_ALIGN|SLAB_P=
-ANIC|
-> +                                               FLAG_SKB_NO_MERGE,
->                                                 NULL);
->         /* usercopy should only access first SKB_SMALL_HEAD_HEADROOM byte=
-s.
->          * struct skb_shared_info is located at the end of skb->head,
-> --
-> 2.40.1
->
+--h+L9bvOLfgbqbaMj--
 
