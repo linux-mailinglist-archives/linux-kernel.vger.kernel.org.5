@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-82697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61B8E868857
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:45:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65BE5868858
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 05:45:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19C7E28709F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:45:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6BCBB25FBF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2375465B;
-	Tue, 27 Feb 2024 04:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D072A5676C;
+	Tue, 27 Feb 2024 04:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="bmU5wcGR"
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b="guYHwSBa"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A474D5646C
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAB05674B
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 04:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709008941; cv=none; b=AnD+r4C4TNf0MGkm1wHo0+lteO4EFhr7uFLrwSPCAezjFx2aJIPJlKGOMpHhqzJUNZYVR5s7eWQB20b1U/9BUx5PWOLi1t+kKtTfHVBThCB4kStisqlfSc/QIqN+6Ltk/y1rlVeADZoC1wdk0UnaSfw8VZ8Ne8SpJJzjOq6PfB0=
+	t=1709008942; cv=none; b=Z7ZpAbr416E7QpLqaOXVKx/vnOFgjB4djv116yUQ6VDf38WZ/Po2opBF6XX/+SkwcFV9JUmo+BfD5q1+mgcohYbk0cxu7zKooUpwo89Hn+CGzlAA2nWF1PXfcEzIeA2zn2JSZeE3RD7bKYup+MQV+jBa8QexOdU/KmyjD8gO2P8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709008941; c=relaxed/simple;
-	bh=2GdfiNtXfqkf0sPRRn4zSuegaebDi7tmfMKdY890X6o=;
+	s=arc-20240116; t=1709008942; c=relaxed/simple;
+	bh=xQjE9qceFGssnOktGdgFoh4IaBLi/CUVDPUQlm65DAM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MURE0szOVljfN8Dw7YfJDzrkQprkuZJxDI0r2J8yNBThbJ3TFin/90FClZOzaJAsm5OwO37UniWMqs2J98EGT5d3gnkA5WOYeLmtEJh0tA2ccdFs0BXEmgr2wIcXKFYIuEsabGiAmzcoc9bujESQBDrK8rUURzzcEDiZvGbJlW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=bmU5wcGR; arc=none smtp.client-ip=209.85.167.177
+	 MIME-Version; b=DzNmO/m3ZhsXQOsQO3jT/o38HsVpFA7ubKSsmrM/KTHpEwYbKwn5350OFiHo8MBTiM69ppz63nWxTa/IaM/2IUeynY/CjYPgXA6hSiFsslXAGoswnMPFsJmBZZQHbDOtjuQHr8o901bLOXARDSdvg50iN6yXD1PRbDCHkhziKH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net; spf=pass smtp.mailfrom=darkphysics.net; dkim=pass (2048-bit key) header.d=darkphysics.net header.i=@darkphysics.net header.b=guYHwSBa; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=darkphysics.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=darkphysics.net
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c19937913fso2034091b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:42:19 -0800 (PST)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6de3141f041so2411251b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 20:42:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=darkphysics.net; s=google; t=1709008939; x=1709613739; darn=vger.kernel.org;
+        d=darkphysics.net; s=google; t=1709008940; x=1709613740; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JQ70orEx9Z7FVR/JUHIaH19uQdZyExB+1mSBQCRAEpQ=;
-        b=bmU5wcGRsFtMWU5pDOgUMw+OBjzIH9kA1aw3/VIfBSKgjFBL8HyWMywt8+CiWlJ2Ap
-         UZizBklcXW4KhVoCmZyDhLTKncC85ICsURje18b2pNnygk8IanVod5NnvfRgDjGNFDc2
-         tsvgYsBptjzhaX1VC52cLJmA3JmoA/LWufJjVyY0CxTAiJRUXRMyYaLtkqtSO38a+Nzl
-         qJPdZyXFlYmcs8k+w621D2VljUUDeXPXXYeoaaAXiT2OPsyoEuYlXwrfaPTJlcKOd+66
-         COftvnOygXWFRusW578Fwfal9RxpueC4gGsQsAukfsKS5sUjKxkylIUjtWtYmSPzjGLY
-         VqVA==
+        bh=0QC7tGFV1wXK2wCdfOZhadD970J6aNSSO5r9X5gYosE=;
+        b=guYHwSBaZfmbiHjZacR21x3lAOSp7LZG0tV+7W24A48Kbl11dU05ea4aBkRtcfN8fU
+         5YGsXV0XzFUBIUYjucJCanIK9pMxEGyfBhsHnS/0xxD0wk1tIPfycBJp3/uVJ5Z7PoGE
+         XBLj9KGOEOLnJmnTSxhzH4fmLl8tkLde4JgLHnCZavk0JXsBUKQwCbsgLp2pNh9IzEeZ
+         A1JzaX3064bBNrpNvVws2665I/S0V5Ox7Sk7WcazCkvy1ugTjZ0u1SDUYu8sF246Z5J/
+         ipVuqjNP9zdhUbtMQiGx52d0Cp2Z/JJKYyHvB5OMh3wjunNsU3TnEq6/eah9gmjdkVUg
+         5sFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709008939; x=1709613739;
+        d=1e100.net; s=20230601; t=1709008940; x=1709613740;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JQ70orEx9Z7FVR/JUHIaH19uQdZyExB+1mSBQCRAEpQ=;
-        b=qHFCNrs2v0eUv7CtfhxuCAQdb1iNUd5Hr4hvoALL0BvS9hY/qWoBaD7KlGKo0ia13X
-         em39PkubYXT/qcGOdnzqjWEh01WytaKysiqdoQc9Eo7lMHeEU4gCwWxdmTJEwfg71ApJ
-         R8gLxvPtzSwPpqKkNdBiF+43dwJZKGplLP/wK9klFfOSQEuKcT2HeTxg5ksQgs1JgGIj
-         f4RGHa/D1L7U5e0DaJ6DZAjAEYUeetDXaiW4UggM8zzgulgOK+ExTmj/wsxe2r8huL/A
-         8PxM9KUDHQVRm6HeDkntQHZmfRkRxbvleuEWK0u4UD1OoX6TzFy+jPQGJ5zQHdDZ122p
-         XbkA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRm8e0so4B2O4c/QZQeTN1wckIzEeoWdJ0hF3CWQdV1n39HqSXE/UMsaArj9rF/T/DlOC2WMdynbVHTiSWSCGjwykLe7G01eYSUrmj
-X-Gm-Message-State: AOJu0YyUAGdtZSZexCHjiQ5HrdKVy0GWqiNwm4CN4eD+v8zggmXN3WRi
-	uBPQKKANuUU2ZYJY6mlVY0HZM3GDpUqmYUUyJghaYpIbLQFqOqzqDpgsrXPoEWw=
-X-Google-Smtp-Source: AGHT+IFiTQnqSujC0nm1N1BTmJRntQKj0QrjE/2oRoJ+l6JCNbiiWNAp3FMF1QNz4FzPJ4iLLIIH1w==
-X-Received: by 2002:a05:6808:1508:b0:3c1:b099:d4d9 with SMTP id u8-20020a056808150800b003c1b099d4d9mr48040oiw.12.1709008938954;
-        Mon, 26 Feb 2024 20:42:18 -0800 (PST)
+        bh=0QC7tGFV1wXK2wCdfOZhadD970J6aNSSO5r9X5gYosE=;
+        b=NatdSX4NYnoMGb3EV9w6bt6+MtRHC9VZxEOMFobJADaO03+TKMmPKR+0jSD2OM2QhB
+         lxTNatlLOZmMulOX97QCze62b9VuzQuCpdQpEA6NOyzCRhnb1vTkYSVq9o6SVKVf8Tfm
+         sYAHqFK9g36tIbLautCit1EWRmQNyjvY+NWw4NGj1ipOfac0hajh8ilpQgqqmKGOk5Ls
+         VyOmO5FW/UdLxuKqYTS/EjzS2rtHlrlJiUQrXsmWjYWCus/SExBhSn+9yAmhj8TY0ANw
+         F9xALXCZZBL5wWBH2DuN1bEigQyxOl/abC60YFBGu+/TMihzy2hqtL1n1BywL7K2IHTI
+         kn9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW2k/oZhN/HAaUE83gmLiPKDF/w11Ew0Nk+xBAAJU0EsfmaKrsKCe/OitWx1ppIg40fM25Ab3XjuozV9RcptXu9o3OzO9ZFkaLzf+vO
+X-Gm-Message-State: AOJu0YyI1XTIBlhIKN9h7JD8pbsUA92dpvbySZxWPq5hz5ND8KMmENb3
+	HfxaIcx7j4F+xXzUX11A74Fyf6bFyRG7WVz4VQO/fQGAfR4auh/Vq9NxCzVtzHo=
+X-Google-Smtp-Source: AGHT+IH0rml7CM8Hprpc9X69j3fgmPBZN0XInwcaLj7X6tEMC6DKR5HECWSvFjz6ERMNupKjn7CsoA==
+X-Received: by 2002:a62:c186:0:b0:6e4:d0ed:d2b8 with SMTP id i128-20020a62c186000000b006e4d0edd2b8mr7627506pfg.16.1709008940004;
+        Mon, 26 Feb 2024 20:42:20 -0800 (PST)
 Received: from oatmeal.darkphysics (c-76-146-178-2.hsd1.wa.comcast.net. [76.146.178.2])
-        by smtp.gmail.com with ESMTPSA id e30-20020aa798de000000b006e4ecc3e394sm4899782pfm.79.2024.02.26.20.42.17
+        by smtp.gmail.com with ESMTPSA id e30-20020aa798de000000b006e4ecc3e394sm4899782pfm.79.2024.02.26.20.42.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Feb 2024 20:42:18 -0800 (PST)
+        Mon, 26 Feb 2024 20:42:19 -0800 (PST)
 From: Tree Davies <tdavies@darkphysics.net>
 To: gregkh@linuxfoundation.org,
 	philipp.g.hortmann@gmail.com,
@@ -73,9 +73,9 @@ To: gregkh@linuxfoundation.org,
 Cc: linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	Tree Davies <tdavies@darkphysics.net>
-Subject: [PATCH v2 15/20] Staging: rtl8192e: Rename variable CcxAironetBuf
-Date: Mon, 26 Feb 2024 20:41:52 -0800
-Message-Id: <20240227044157.407379-16-tdavies@darkphysics.net>
+Subject: [PATCH v2 16/20] Staging: rtl8192e: Rename varoable osCcxVerNum
+Date: Mon, 26 Feb 2024 20:41:53 -0800
+Message-Id: <20240227044157.407379-17-tdavies@darkphysics.net>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240227044157.407379-1-tdavies@darkphysics.net>
 References: <20240227044157.407379-1-tdavies@darkphysics.net>
@@ -87,36 +87,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rename variable CcxAironetBuf to ccx_aironet_buf to fix checkpatch warning
-Avoid CamelCase.
+Rename variable osCcxVerNum to os_vcx_ver_num to fix checkpatch warning
+Avoid CamelCase,
 
 Signed-off-by: Tree Davies <tdavies@darkphysics.net>
 ---
 v2: no changes
- drivers/staging/rtl8192e/rtllib_softmac.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/staging/rtl8192e/rtllib_softmac.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 0907bee45dbf..51fa9db7d73c 100644
+index 51fa9db7d73c..567891123960 100644
 --- a/drivers/staging/rtl8192e/rtllib_softmac.c
 +++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -819,12 +819,12 @@ rtllib_association_req(struct rtllib_network *beacon,
+@@ -853,16 +853,16 @@ rtllib_association_req(struct rtllib_network *beacon,
  
- 	if (beacon->ckip_supported) {
- 		static const u8 aironet_ie_oui[] = {0x00, 0x01, 0x66};
--		u8	CcxAironetBuf[30];
-+		u8	ccx_aironet_buf[30];
- 		struct octet_string os_ccx_aironet_ie;
+ 	if (beacon->bss_ccx_ver_number >= 2) {
+ 		u8 ccx_ver_num_buf[] = {0x00, 0x40, 0x96, 0x03, 0x00};
+-		struct octet_string osCcxVerNum;
++		struct octet_string os_ccx_ver_num;
  
--		memset(CcxAironetBuf, 0, 30);
--		os_ccx_aironet_ie.octet = CcxAironetBuf;
--		os_ccx_aironet_ie.Length = sizeof(CcxAironetBuf);
-+		memset(ccx_aironet_buf, 0, 30);
-+		os_ccx_aironet_ie.octet = ccx_aironet_buf;
-+		os_ccx_aironet_ie.Length = sizeof(ccx_aironet_buf);
- 		memcpy(os_ccx_aironet_ie.octet, aironet_ie_oui,
- 		       sizeof(aironet_ie_oui));
- 
+ 		ccx_ver_num_buf[4] = beacon->bss_ccx_ver_number;
+-		osCcxVerNum.octet = ccx_ver_num_buf;
+-		osCcxVerNum.Length = sizeof(ccx_ver_num_buf);
++		os_ccx_ver_num.octet = ccx_ver_num_buf;
++		os_ccx_ver_num.Length = sizeof(ccx_ver_num_buf);
+ 		tag = skb_put(skb, cxvernum_ie_len);
+ 		*tag++ = MFIE_TYPE_GENERIC;
+-		*tag++ = osCcxVerNum.Length;
+-		memcpy(tag, osCcxVerNum.octet, osCcxVerNum.Length);
+-		tag += osCcxVerNum.Length;
++		*tag++ = os_ccx_ver_num.Length;
++		memcpy(tag, os_ccx_ver_num.octet, os_ccx_ver_num.Length);
++		tag += os_ccx_ver_num.Length;
+ 	}
+ 	if (ieee->ht_info->current_ht_support && ieee->ht_info->enable_ht) {
+ 		if (ieee->ht_info->peer_ht_spec_ver != HT_SPEC_VER_EWC) {
 -- 
 2.39.2
 
