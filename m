@@ -1,135 +1,122 @@
-Return-Path: <linux-kernel+bounces-83556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0817A869B60
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:56:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 687A8869B61
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFD7E28345B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:56:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D45BF285AFC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 15:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CC614690C;
-	Tue, 27 Feb 2024 15:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51317146910;
+	Tue, 27 Feb 2024 15:57:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="haDg/0xO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jbtFR3yS"
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DB714691C
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56D51468F1
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 15:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709049369; cv=none; b=fQnDBWsXX820brhJO9sJA0UIzcxfyhsLvJFQTzTHhalKOzJjwGbdLuV/eplcyUy95/05l3LU80Ew+ZOCIQI3CEfVjXfPKX1jbLJarqzdrV8cNWTMDl3wDxS72rylkxlyaaOetDen0hlVp+EMSJZSiuEwWqry7/1OByB11ekrMVs=
+	t=1709049425; cv=none; b=UNAxh3FQ1YLY4kMpI/DOvPRO832Jbhc5iIIwUi8h4HRT7gBs2xDzSYuoU0v3229piUnwumP6tYccHqOzlfy0UK06Yx0eVa2hrVD3hMVEbSoFusdeB1kZ/KDaRz0uMCsTrlxX717UwoGykccIQuTF3bQuiJf6JshbeZIdL2Sp6Lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709049369; c=relaxed/simple;
-	bh=s3wlEquGysXZAaufy+BZCB9S+atZVvdmjHpRk6wPMeo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oRC3PfqUXGyYaOg/v2cmrwf3saSClRmibpQuUmL4DkZ3b2kTPw+R/tKss2fwYMtQzGjW1kypN4KBlLfSbS0QG3H3l6DcLZF+IZqp8g4uHa5npVD1dhMtLxxCBxCZNf3m05jUHmAQbcDDFdqoh9qNr7I18WL/d7DJy7LMAavyXwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=haDg/0xO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709049366;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s3wlEquGysXZAaufy+BZCB9S+atZVvdmjHpRk6wPMeo=;
-	b=haDg/0xOAo2Hr06NKLfCpPv+yiOfnEoX+cooNZXB+IPuNrUVa0o3b3PfQjGD8W0X0jZ/9Y
-	wL61rvA+zcZKCy5fy2Q+ysilFoRfW5vAnm3Dz8aLpazrYRzizT5B+r4MPNwXW0mF8WNbDE
-	MIY4q48OS4zMgoKLZ9wqW7t1e2ujWo0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-320-Z9UyeypHOFWe3T3UrO0UeQ-1; Tue, 27 Feb 2024 10:55:57 -0500
-X-MC-Unique: Z9UyeypHOFWe3T3UrO0UeQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D1082185A782;
-	Tue, 27 Feb 2024 15:55:56 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.3])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id CE0F3492BE2;
-	Tue, 27 Feb 2024 15:55:55 +0000 (UTC)
-Date: Tue, 27 Feb 2024 10:55:54 -0500
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-	Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: linux-next: Tree for Feb 26 (fs/fuse/virtio_fs.c)
-Message-ID: <20240227155554.GD386283@fedora>
-References: <20240226175509.37fa57da@canb.auug.org.au>
- <81c5b68d-90ca-4599-9cc8-a1d737750aaa@infradead.org>
+	s=arc-20240116; t=1709049425; c=relaxed/simple;
+	bh=T8GmRBHe54nbmuaPkv00EKb3E1ieTIbnwEGf8I18sXw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NA6M0setqe50vrvCzgIXMAVPOCnlIwGv8jy5VyB1ndFRwanFQ2QIHF2Ky2IvWRz3TE7LY1rK0Yjdepe5f9PKl5/02TrGKa1tK8hmgMebRM3giz/4/1i5uOaaC/RssASsFqgsxEwJerDuZ4oTvLXBy7/bt54aTzY6Aw8UpydKkXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jbtFR3yS; arc=none smtp.client-ip=209.85.217.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-47048ea1b17so536413137.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:57:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709049423; x=1709654223; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zz63I5jGJam9ziTsehsBfrmLZXVDff45p8Sdh7Rb40k=;
+        b=jbtFR3ySdR2r1CYCDZrNEI1eSFVDrOtIVvMc+mFCzmBcA42twZojGMt6JqTBIYO46R
+         ythFyksTfqlHsfx6rkSf/NadLNff2gvVeJMLHPuJN+9y04c6OmWtbPAWiJJyOz+lZZmy
+         ZQ4Svi5lkV7blL1xJUWpuBEmhSEqqzRXhr8UAJ58SCmcoM/DuHGr+1FWRfb8D6upyhHe
+         3Qoyz7BGeZJYPmA/mSj5y8ZSIanwrwZ2MULJWm2vGxECIpwtGpsbLpSFiCZ7w1DeyOiO
+         t9BuODeTeLALNY8YmO8r74/9TC0ajRsy4F3vFCfbacBEln0Zl71gWMQfC75RwCFF6gra
+         Qkyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709049423; x=1709654223;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zz63I5jGJam9ziTsehsBfrmLZXVDff45p8Sdh7Rb40k=;
+        b=PKAqmejEoN3lslorUAc9ewKnkJA5sHhJpA0TX4II0tsctIiHODUV3whIOKkZiKldTB
+         csWWGgFc9MDgGQrqLNYZDxQOGko9l7ZRkxgf5L/8xMfamk298r/7+EBC9XB9ZH3CuYyA
+         ewMZMNwQW6nuJk7Xc4CjfKZn8tWDPSaY+oMuEFKiMU9Rpko0KU/nEqf7pkxz0Qk6tDeR
+         Eb2Onv/ypqt0eWiXU+T6DrqQw4J5quNqpxEhXDafjLRTiXtFjgWUf5hIhV7UN79jQ3fA
+         fuc2kGBj+V/AsmOItc91PBwsYq4HxCu6PiUiumEeaFz4gH/nmPOx7s2y0+J6FgkRwKHA
+         5FPA==
+X-Forwarded-Encrypted: i=1; AJvYcCXr4PekP5qucQzMyANZ1QalMhoGzoWAicdgrFA8alMNyqqbTouGlxFsdiMUamU7W6teYZR8mhNT2/tT/JZll2Bnasp/3fIXiO6qg09k
+X-Gm-Message-State: AOJu0YzfsxqnASuMX29SCPNJ6k8hKSwCfaNKpDThmdtxKK23zsEoTcDJ
+	etzWHy710z/9Y2GAH87arncgAtnSHZV2k+9BeOSNUn6dyGe4z9d4j41aPDjVxMtsFW17kyBFEgv
+	/5KYpxW78q43+CPLU/evKFnm6CscPQ4rZM4ac
+X-Google-Smtp-Source: AGHT+IGb864B0KCLFtT9j0TGLsO0nGGyrgue73owoa/PB+tubylZra+Dcxo08UFSc/HUH0+ETPHEEz5iBt94o4W0Cnk=
+X-Received: by 2002:a05:6102:f12:b0:470:3eff:e755 with SMTP id
+ v18-20020a0561020f1200b004703effe755mr9887738vss.24.1709049422611; Tue, 27
+ Feb 2024 07:57:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="P7SwKHF8daUBXYQU"
-Content-Disposition: inline
-In-Reply-To: <81c5b68d-90ca-4599-9cc8-a1d737750aaa@infradead.org>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-
-
---P7SwKHF8daUBXYQU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240208-alice-mm-v2-0-d821250204a6@google.com>
+ <20240208-alice-mm-v2-4-d821250204a6@google.com> <Zd4Bp6ohjb7H9poA@casper.infradead.org>
+In-Reply-To: <Zd4Bp6ohjb7H9poA@casper.infradead.org>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Tue, 27 Feb 2024 16:56:51 +0100
+Message-ID: <CAH5fLggmaemG8EJamSy6oEDneZAWhJWJ7OrcbG52rdrdukyaxA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] rust: add abstraction for `struct page`
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Kees Cook <keescook@chromium.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Andrew Morton <akpm@linux-foundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
+	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 26, 2024 at 05:01:33PM -0800, Randy Dunlap wrote:
->=20
->=20
-> On 2/25/24 22:55, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > Changes since 20240223:
-> >=20
->=20
-> on 20 randconfig builds (arm64, loongarch, riscv32, riscv64, i386, and x8=
-6_64):
->=20
-> WARNING: modpost: fs/fuse/virtiofs: section mismatch in reference: virtio=
-_fs_init+0xf9 (section: .init.text) -> virtio_fs_sysfs_exit (section: .exit=
-=2Etext)
->=20
-> For
-> static void __exit virtio_fs_sysfs_exit(void)
->=20
-> probably just s/__exit// since it is called from both
-> __init and __ext code.
+On Tue, Feb 27, 2024 at 4:37=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Thu, Feb 08, 2024 at 03:47:54PM +0000, Alice Ryhl wrote:
+> > +impl Page {
+> > +    /// Allocates a new page.
+> > +    pub fn new() -> Result<Self, AllocError> {
+> > +        // SAFETY: These are the correct arguments to allocate a singl=
+e page.
+> > +        let page =3D unsafe {
+> > +            bindings::alloc_pages(
+> > +                bindings::GFP_KERNEL | bindings::__GFP_ZERO | bindings=
+::__GFP_HIGHMEM,
+>
+> I thought I raised this last time, but this is over-specialised for
+> Binder's purposes.  Many places that want to allocate a page want
+> different GFP flags from this; they shouldn't even be the default flags.
+> So either what you're defining here is a BinderPage, or new() needs
+> to take GFP flags.
 
-Thanks, Randy. I am sending a fix.
+Ah, yeah, sorry. I never got around to figuring that out.
 
-Stefan
+I can change it to take GFP flags.
 
->=20
->=20
-> --=20
-> #Randy
->=20
-
---P7SwKHF8daUBXYQU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmXeBgoACgkQnKSrs4Gr
-c8ixNggAug/rstk7tDL114D+Pvuc4VMmv9y4avToZ/AnAUhGuHymMB76nvVGpmnw
-fvxQiTO7esRLuVXEdJ9MZHStvl6TP/dAP6ZgwHwew4WjAVG7lg369lgFn/QluZ1R
-B4Fh6bkUVSETnvZRYL+7RwctDS0fcVQTg781QuMx2JP7GsBXUd7P9FFDTFTs1nYy
-4EXJVXS/H0t5l9l6lQS1RZ70Qx+ozB3wlaU4pa5tQGxNH59fvJEu2UjtckQConqQ
-nDFkn0O/9aqtImsKCXEKoqYKbk5WdxQyLPOhblTWxEqu7eUzWLQFLqMb3FfPxMgQ
-GhSfVKjxQ8iIATRWfLl7qcSdnjJ3CQ==
-=mGX0
------END PGP SIGNATURE-----
-
---P7SwKHF8daUBXYQU--
-
+Thank you for taking another look!
+Alice
 
