@@ -1,61 +1,85 @@
-Return-Path: <linux-kernel+bounces-82834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91103868A44
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:55:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B39C868A4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:58:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5ABE1C21248
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:55:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB18B1F24C87
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFDA55E63;
-	Tue, 27 Feb 2024 07:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D08855E6B;
+	Tue, 27 Feb 2024 07:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="IhXDmQzO"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 712B854F8F;
-	Tue, 27 Feb 2024 07:55:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="A2pwS+qT"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E551553E00
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 07:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709020544; cv=none; b=bBx5n3pIi6dm9rAttAwwb0hi+XZG06fsIHoc0qU2bhDWbBu5qJQ7ZKC68T699PJmQcHGfqo0FQnzy8JOBVNuKmKG9jpVTJozxAb/GjhmJUOZxg/SbC+YzujFgIh83gD/iBkdEU7jQJq3lpjTnNhjFhcCpBqt9XBONLvyltQlFF0=
+	t=1709020721; cv=none; b=m6f2oMjq/MJznNOaigzF4Qud5SUI7y1CNv7DzFK4OcOIADO6GKCywuEXSa5LF1s+z9PjeJBwtjBblL5j8b1B23qum2beXAIlpZUWc6OuEL3f+aGKtTsW498XSanxu24FJXHMhGR8n6FeSWRy8zObtZDDBu/URPXoAAyQ0SSW+a4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709020544; c=relaxed/simple;
-	bh=6ty8jdgljvLLv+9lW6qx0Ubbos6P6g7D6VDL1Ga3ZLY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=evW3I0ezZtTzNiELV8u47rnepQ0iNttasN90AJuXJ80l32ajFDzuR5PQoDaJSDzHan9MFngxJEzNURpAbV5oPdJjSY8VZALRW+D5vDKk7vmXfbcNPK9vFPYuUNlGk/hRgm8VUs0jSTFhqw15Mf0QN7ianAHtJHhhS4eb5CzU/GY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=IhXDmQzO; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
-	Content-Type; bh=YDOiH1n9soPl5lTH/spvm77AU3J5FjRMrdB1n8tcR+c=;
-	b=IhXDmQzOWJ85+z2vuEnjot6GjhjYnbYl8pefGskbHZfpNRD9/qTXMLIgarf9WW
-	6mQ5Lcx4DNlWL7+TuGOj5TnlVz63HEL/fVn/ciLIfYysROZQcSdhIH+eFoG4zplo
-	yAQ0xQ6ye36Q8pEgZws7A71bPXIcykeRGd4J104W3dCdU=
-Received: from tian-ThinkPad-X390.. (unknown [175.2.16.90])
-	by gzga-smtp-mta-g1-0 (Coremail) with SMTP id _____wDnj9BGld1l+Sw5AA--.10604S2;
-	Tue, 27 Feb 2024 15:54:47 +0800 (CST)
-From: Yaxiong Tian <13327272236@163.com>
-To: catalin.marinas@arm.com,
-	will@kernel.org,
-	keescook@chromium.org,
-	tony.luck@intel.com,
-	gpiccoli@igalia.com,
-	tianyaxiong@kylinos.cn,
-	songshuaishuai@tinylab.org,
-	xiongxin@kylinos.cn,
-	rppt@kernel.org,
-	wangkefeng.wang@huawei.com,
-	akpm@linux-foundation.org,
-	ardb@kernel.org,
-	david@redhat.com
-Cc: linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1709020721; c=relaxed/simple;
+	bh=/ew7vIeLEuM/TCI7njTkckWnYO2dVksctCFiWGxakDM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=CiE4xvzNcptED3CSxK5Kx7I36YYZ/OxuhbitART2QbHLtiBAefzm2JCZjLBgaYRzLtlsG7d9fdVuKirCM5WOWGIXiDWXPzONnVobzZcFgi+MlqR28Rftrn/Ly8si+gUSs7D4q8Uv+V+RkLkn5o1u5BssxsQrygrptaxc1TnIJd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=A2pwS+qT; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so603509066b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Feb 2024 23:58:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709020718; x=1709625518; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ic80dLEyZy6kdVJF7joUFUuNP61uTBpqR9Za88+XI28=;
+        b=A2pwS+qTQzBQgPiW144YdOmdFP1LbuoxQHAEvJ1cs4yZHqcs4n+GHVJ7vql/7nET9W
+         1PjlyJJHWCwfW1nnR3J5zZYSIRn9uGUgCv6t+CJ3Sj3NAfED8B0zrEMRRWqStBQ5THfT
+         Gm298p+S7ug+8ndExDumcwNpGNxYDwh+pReOtRVP42mkLaqmVMdT1bXMJLaVwhMqNr36
+         HKO6DcjD06fCdRCiaRYfWHUFwkBus0key7uqFuSp5ZkN15Q9bfCV3rhO+yne7B66KyG3
+         LJO2G2BMUcNsh8HDJsNNbyo9rPsh2wByWXZmK830+5E9YnwmAkt6b48m/U8XmmjXfFne
+         8u1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709020718; x=1709625518;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ic80dLEyZy6kdVJF7joUFUuNP61uTBpqR9Za88+XI28=;
+        b=SuUpMoelnFS3RVSwRcEdmw7NX4NFASFccygsmL6vGVGjDsaQTDZDRUb2ybSlm57XXV
+         8+8rPJnrwa2nrcKayF+DTVsKOUH+PyT7U4HbUIqkA2cEjPMKWVYzHu0t00aDByOO7Xc9
+         9dXLtg2nlzVlGtLsDlojHQEk3hUoOzROIQal9J9XM1jtjhys5S98FAF0YtN3VCzE/HzD
+         0UnRtES+Gq0T+lFFKg03n9x+W01eTaoHo/j87Tyj+ZTqq+/I2MgnJpj1UhiO/2tjAjo8
+         9+XZAVN4AIFrHkb+8crjGcawstiMxAA99c5HHm8NH2oK1shpD3SGrRmg8n86LQbNqaed
+         kENQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWAPZRRPDrwglv3BApoxdsgfXi8il6za3bxWCIrgq9KPIgjnxbdrKjxNS8RLnlfEZunP2qrJs3jlvvVmwKhZjOepd1V5ivSC/51KiJF
+X-Gm-Message-State: AOJu0Yzsx6lGdBEW5JF6kz1Cb2AEMkTyfjHAeKYlR7hBvHdWyZuM2+5F
+	gYPTROAbJq5rjznXW5qVy7WCpfdV9AnWiwGRWGl5pGQ3VgG+JoiUbLDlfbd3ft0=
+X-Google-Smtp-Source: AGHT+IFTBK9hxL6b/DxdG3pgJ4lkvuj80VlJ9MESHK5mlD8V/Sd4fRjlluYaVaQPIm8Rcyfo6sMoVg==
+X-Received: by 2002:a17:906:fa8d:b0:a3f:f8a7:e1f7 with SMTP id lt13-20020a170906fa8d00b00a3ff8a7e1f7mr8339780ejb.5.1709020718353;
+        Mon, 26 Feb 2024 23:58:38 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id bg26-20020a170906a05a00b00a3d0a094574sm503467ejb.66.2024.02.26.23.58.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 23:58:37 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	linux-clk@vger.kernel.org,
+	Sylwester Nawrocki <snawrocki@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v2] arm64: hibernate: Fix level3 translation fault in swsusp_save()
-Date: Tue, 27 Feb 2024 15:54:44 +0800
-Message-Id: <20240227075444.173057-1-13327272236@163.com>
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL] clk: samsung: drivers for v6.9
+Date: Tue, 27 Feb 2024 08:58:35 +0100
+Message-Id: <20240227075835.33513-1-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -65,106 +89,96 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDnj9BGld1l+Sw5AA--.10604S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxtFy8uFWrWr48XF43Cr1kAFb_yoW7WFWrpF
-	WUGr1kGr4xCF1jyr4UAFy5uw1kGw40vanxJr1UJan7JF1UCr15Xr4UKry7KFyDtw4fXrs7
-	trWDKw40yF1DGaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jtDGOUUUUU=
-X-CM-SenderInfo: jprtjjaxsxjjitw6il2tof0z/1tbiRQiRJWXAkomvGgAAsy
 
-From: Yaxiong Tian <tianyaxiong@kylinos.cn>
+Hi,
 
-On ARM64 machines using UEFI, if can_set_direct_map() return false by 
-setting some CONFIGS in kernel build,such as 
-NO CONFIG_DEBUG_PAGEALLOC_ENABLE_DEFAULT、NO CONFIG_RODATA_FULL_DEFAULT_ENABLED.
-swsusp_save() will fail due to can't finding the map table under the nomap memory.
-such as:
+On top of the previous fixes pull request - my previous tag
+samsung-clk-fixes-6.8 - due to context dependencies.
 
-[   48.532162] Unable to handle kernel paging request at virtual address ffffff8000000000
-[   48.532162] Mem abort info:
-[   48.532162]   ESR = 0x0000000096000007
-[   48.532162]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   48.532162]   SET = 0, FnV = 0
-[   48.532162]   EA = 0, S1PTW = 0
-[   48.532162]   FSC = 0x07: level 3 translation fault
-[   48.532162] Data abort info:
-[   48.532162]   ISV = 0, ISS = 0x00000007, ISS2 = 0x00000000
-[   48.532162]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-[   48.532162]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[   48.532162] swapper pgtable: 4k pages, 39-bit VAs, pgdp=00000000eeb0b000
-[   48.532162] [ffffff8000000000] pgd=180000217fff9803, p4d=180000217fff9803, pud=180000217fff9803, pmd=180000217fff8803, pte=0000000000000000
-[   48.532162] Internal error: Oops: 0000000096000007 [#1] SMP
-[   48.532162] Internal error: Oops: 0000000096000007 [#1] SMP
-[   48.532162] Modules linked in: xt_multiport ipt_REJECT nf_reject_ipv4 xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter bpfilter rfkill at803x snd_hda_codec_hdmi snd_hda_intel snd_intel_dspcfg dwmac_generic stmmac_platform snd_hda_codec stmmac joydev pcs_xpcs snd_hda_core phylink ppdev lp parport ramoops reed_solomon ip_tables x_tables nls_iso8859_1 vfat multipath linear amdgpu amdxcp drm_exec gpu_sched drm_buddy hid_generic usbhid hid radeon video drm_suballoc_helper drm_ttm_helper ttm i2c_algo_bit drm_display_helper cec drm_kms_helper drm
-[   48.532162] CPU: 0 PID: 3663 Comm: systemd-sleep Not tainted 6.6.2+ #76
-[   48.532162] Source Version: 4e22ed63a0a48e7a7cff9b98b7806d8d4add7dc0
-[   48.532162] Hardware name: Greatwall GW-XXXXXX-XXX/GW-XXXXXX-XXX, BIOS KunLun BIOS V4.0 01/19/2021
-[   48.532162] pstate: 600003c5 (nZCv DAIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   48.532162] pc : swsusp_save+0x280/0x538
-[   48.532162] lr : swsusp_save+0x280/0x538
-[   48.532162] sp : ffffffa034a3fa40
-[   48.532162] x29: ffffffa034a3fa40 x28: ffffff8000001000 x27: 0000000000000000
-[   48.532162] x26: ffffff8001400000 x25: ffffffc08113e248 x24: 0000000000000000
-[   48.532162] x23: 0000000000080000 x22: ffffffc08113e280 x21: 00000000000c69f2
-[   48.532162] x20: ffffff8000000000 x19: ffffffc081ae2500 x18: 0000000000000000
-[   48.532162] x17: 6666662074736420 x16: 3030303030303030 x15: 3038666666666666
-[   48.532162] x14: 0000000000000b69 x13: ffffff9f89088530 x12: 00000000ffffffea
-[   48.532162] x11: 00000000ffff7fff x10: 00000000ffff7fff x9 : ffffffc08193f0d0
-[   48.532162] x8 : 00000000000bffe8 x7 : c0000000ffff7fff x6 : 0000000000000001
-[   48.532162] x5 : ffffffa0fff09dc8 x4 : 0000000000000000 x3 : 0000000000000027
-[   48.532162] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 000000000000004e
-[   48.532162] Call trace:
-[   48.532162]  swsusp_save+0x280/0x538
-[   48.532162]  swsusp_arch_suspend+0x148/0x190
-[   48.532162]  hibernation_snapshot+0x240/0x39c
-[   48.532162]  hibernate+0xc4/0x378
-[   48.532162]  state_store+0xf0/0x10c
-[   48.532162]  kobj_attr_store+0x14/0x24
+Best regards,
+Krzysztof
 
-QEMU ARM64 using UEFI also has the problem by setting can_set_direct_map()
-return false.
 
-This is because in swsusp_save()->copy_data_pages()->page_is_saveable(),
-kernel_page_present() presumes that a page is present when can_set_direct_map()
-returns false even for NOMAP ranges.So NOMAP pages will saved in after,and then
-cause level3 translation fault in this pages.
+The following changes since commit d76c762e7ee04af79e1c127422e0bbcb5f123018:
 
-Since the NOMAP regions are now marked as PageReserved(), pfn walkers
-and the rest of core mm will treat them as unusable memory. So this
-regions should not saved in hibernation.
+  clk: samsung: clk-gs101: comply with the new dt cmu_misc clock names (2024-01-22 11:40:12 +0100)
 
-This problem may cause by changes to pfn_valid() logic in commit
-a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify pfn_valid()").
+are available in the Git repository at:
 
-So to fix it, we add !pfn_is_map_memory() check in arm64::pfn_is_nosave(). It
-make such regisons don't save in hibernation.
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-clk-6.9
 
-Fixes: a7d9f306ba70 ("arm64: drop pfn_valid_within() and simplify pfn_valid()")
-Co-developed-by: xiongxin <xiongxin@kylinos.cn>
-Signed-off-by: xiongxin <xiongxin@kylinos.cn>
-Signed-off-by: Yaxiong Tian <tianyaxiong@kylinos.cn>
+for you to fetch changes up to 61f4399c74d0677ee64e42f7b8d4ab01ee39de45:
 
----
-v1->v2: move !pfn_is_map_memory() check from page_is_saveable()
-to arm64::pfn_is_nosave()
----
- arch/arm64/kernel/hibernate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  clk: samsung: Add CPU clock support for Exynos850 (2024-02-25 17:07:34 +0100)
 
-diff --git a/arch/arm64/kernel/hibernate.c b/arch/arm64/kernel/hibernate.c
-index 02870beb271e..d90005de1d26 100644
---- a/arch/arm64/kernel/hibernate.c
-+++ b/arch/arm64/kernel/hibernate.c
-@@ -94,7 +94,7 @@ int pfn_is_nosave(unsigned long pfn)
- 	unsigned long nosave_end_pfn = sym_to_pfn(&__nosave_end - 1);
- 
- 	return ((pfn >= nosave_begin_pfn) && (pfn <= nosave_end_pfn)) ||
--		crash_is_nosave(pfn);
-+		crash_is_nosave(pfn) || !pfn_is_map_memory(pfn);
- }
- 
- void notrace save_processor_state(void)
--- 
-2.34.1
+----------------------------------------------------------------
+Samsung SoC clock drivers changes for 6.9
 
+Google GS101:
+1. Register the CMU MISC clock controller earlier, so the Multi Core
+   Timer clocksource can use it.
+2. Add PERIC0 and PERIC1 clock controllers.
+
+Exynos850:
+1. Add PDMA clocks.
+2. Add CPU cluster 0 and 1 (CMU_CPUCLK0/CMU_CPUCLK1) clock controllers.
+3. Propagate SPI IPCLK rate change to parents, so the SPI will get
+   proper clock rates.
+4. Refactor the generic Samsung CPU clock controllers code, preparing it
+   for supporting Exynos850 CPU clocks.
+
+----------------------------------------------------------------
+André Draszik (4):
+      clk: samsung: gs101: gpio_peric0_pclk needs to be kept on
+      dt-bindings: clock: google,gs101-clock: add PERIC1 clock management unit
+      clk: samsung: gs101: drop extra empty line
+      clk: samsung: gs101: add support for cmu_peric1
+
+Krzysztof Kozlowski (2):
+      Merge tag 'samsung-dt-bindings-clk-6.9-2' into next/clk
+      Merge tag 'samsung-dt-bindings-clk-6.9-3' into next/clk
+
+Peter Griffin (1):
+      clk: samsung: gs101: register cmu_misc clocks early
+
+Sam Protsenko (15):
+      dt-bindings: clock: exynos850: Add PDMA clocks
+      clk: samsung: exynos850: Add PDMA clocks
+      clk: samsung: exynos850: Propagate SPI IPCLK rate change
+      dt-bindings: clock: exynos850: Add CMU_CPUCLK0 and CMU_CPUCL1
+      clk: samsung: Improve clk-cpu.c style
+      clk: samsung: Pull struct exynos_cpuclk into clk-cpu.c
+      clk: samsung: Reduce params count in exynos_register_cpu_clock()
+      clk: samsung: Use single CPU clock notifier callback for all chips
+      clk: samsung: Group CPU clock functions by chip
+      clk: samsung: Pass actual CPU clock registers base to CPU_CLK()
+      clk: samsung: Pass register layout type explicitly to CLK_CPU()
+      clk: samsung: Keep CPU clock chip specific data in a dedicated struct
+      clk: samsung: Keep register offsets in chip specific structure
+      clk: samsung: Pass mask to wait_until_mux_stable()
+      clk: samsung: Add CPU clock support for Exynos850
+
+Tudor Ambarus (2):
+      dt-bindings: clock: google,gs101-clock: add PERIC0 clock management unit
+      clk: samsung: gs101: add support for cmu_peric0
+
+Varada Pavani (1):
+      dt-bindings: clock: tesla,fsd: Fix spelling mistake
+
+ .../bindings/clock/google,gs101-clock.yaml         |  28 +-
+ .../bindings/clock/samsung,exynos850-clock.yaml    |  42 +
+ .../devicetree/bindings/clock/tesla,fsd-clock.yaml |   2 +-
+ drivers/clk/samsung/clk-cpu.c                      | 564 +++++++++----
+ drivers/clk/samsung/clk-cpu.h                      |  53 +-
+ drivers/clk/samsung/clk-exynos3250.c               |   2 +-
+ drivers/clk/samsung/clk-exynos4.c                  |   9 +-
+ drivers/clk/samsung/clk-exynos5250.c               |   5 +-
+ drivers/clk/samsung/clk-exynos5420.c               |  16 +-
+ drivers/clk/samsung/clk-exynos5433.c               |  10 +-
+ drivers/clk/samsung/clk-exynos850.c                |  43 +-
+ drivers/clk/samsung/clk-gs101.c                    | 940 ++++++++++++++++++++-
+ drivers/clk/samsung/clk.h                          |   5 +-
+ include/dt-bindings/clock/exynos850.h              |  56 ++
+ include/dt-bindings/clock/google,gs101.h           | 129 +++
+ 15 files changed, 1661 insertions(+), 243 deletions(-)
 
