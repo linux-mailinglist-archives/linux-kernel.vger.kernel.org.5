@@ -1,150 +1,166 @@
-Return-Path: <linux-kernel+bounces-82816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CDDE868A0D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:42:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F53868A0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 08:42:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6F84282429
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:42:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 661F41F244E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 07:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE49054F84;
-	Tue, 27 Feb 2024 07:42:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2175154F94;
+	Tue, 27 Feb 2024 07:42:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="CliRplUO"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2074.outbound.protection.outlook.com [40.107.100.74])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="qSbAZTdu"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BEB45467C;
-	Tue, 27 Feb 2024 07:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709019747; cv=fail; b=Ky8hQ6t2XOnRW21tlsl9gAVNWlOXc9352ojfEgk1q8QNiU6M7iDiqrUNKb7N9KdZF1e21Tvm5ZGL3N9ys0lr5DtXGOmiCrVfG/yzkng+pUA23U6HvK39CalQzkw9QWnp2HW9b3+nT4ShdoUBkoHkFeeU6XeppLNd9WZ92n3fn0k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709019747; c=relaxed/simple;
-	bh=G4Tc+7Zb3w+pmvhaBq+QwaDIX9/OWcq55Yha3Uk8pl4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=H5YP2O1DwcW5MWbEIWKyUYCSay0TzkT63d3ssPj0YGysJ1BZIB3G/U194YsPYkYkyULOTVmU5SD2sD3xas78dCKoveIiwDo8ZD8FcG+V0v/4+7Ebh2PRVJPBEUphfEsryLORp2Kka5JaLatJYAH7Pl4Zq38dYEEgNg+6oROXHF4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=CliRplUO; arc=fail smtp.client-ip=40.107.100.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bHkk5LTyRuXf09dGx1HdyEJq19cJPhkDi3PGGrZ2MaaMgFKBPA8bCOah0PBF2oJMnWV5+yt99w569NV6/lBRFLgblrZlwUPcxstlEA2C30rAzt92zQZqoiSd/UoWIMtXbDEqQum/RNP9WLRVgKc3Pf3pe2T0fbJAi+HkuAQ5LqLI94FCXtBEGgyHOkV8CcIdMSbo8eVl2KAd/ttAVEMVge4iLdxUYhn8/WtsDJo09XEGAjeHvulTtFkfOSeY9D0dzJfPitzIl7U4aNvm2Cx8APYykf2b8kI2YlSEywyH+eIqtsVdu+UOTzXGncsxiikLmE5UUX1Bagh03xAzXe3euw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bHn3iXH7UVdNTmCEfhrVhu0TnsY4LxYdcTCsJr0bNbg=;
- b=BqkDRh0FKK2JKhhuWEmfF8k+4GQtJZYGsvezKjhFUpbiXS+o3b9e0nTmpDW0R73r4+22Vk0oOXzl1Yb9hWVQZ+tTC1vNlBklcTJWPKZI8tur4sOiIrYBXZYOobTBA3n8uNR4rNnDU6Fn9ZqX4HvLzh5OSzzxNM1IHSkQOBXbjFXEqbMEkIhfJOsSkHi+T0a6wQ3gZvr618mOAGbLrBeB2q/lsfB2mBUWQbt/hYWxHPMFuQfAnrp/HMLk2hL7cbb3/aSEHg7E7C7RTPc7i68+uBBK6DCixQi343W4FlsEAlL2/49hvHz0SFLPt1GelZD0W5KKaSOCS3nzzL41HIdCEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bHn3iXH7UVdNTmCEfhrVhu0TnsY4LxYdcTCsJr0bNbg=;
- b=CliRplUO6ymxyWtY7phlpqyc9PWeS/BIzqfkRqiPEKpmGCUJ1SU9iUQR60kGbOImPJ35owWruANKwyorVltojk8WD2thqJ8WxYYvjvK+7F5CJFfSt9L5SL5Y/+ZkpoiWoGFMpidQ6G8/7ZQzhk9TR5PTxiuDKvGFsKa33Hl+Zpw=
-Received: from CY5PR19CA0010.namprd19.prod.outlook.com (2603:10b6:930:15::14)
- by CH3PR12MB8536.namprd12.prod.outlook.com (2603:10b6:610:15e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Tue, 27 Feb
- 2024 07:42:22 +0000
-Received: from CY4PEPF0000EE34.namprd05.prod.outlook.com
- (2603:10b6:930:15:cafe::77) by CY5PR19CA0010.outlook.office365.com
- (2603:10b6:930:15::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.49 via Frontend
- Transport; Tue, 27 Feb 2024 07:42:22 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE34.mail.protection.outlook.com (10.167.242.40) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Tue, 27 Feb 2024 07:42:22 +0000
-Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 27 Feb
- 2024 01:42:18 -0600
-From: Meng Li <li.meng@amd.com>
-To: Shuah Khan <skhan@linuxfoundation.org>, Andrei Vagin <avagin@google.com>,
-	Huang Rui <ray.huang@amd.com>, <linux-pm@vger.kernel.org>
-CC: Nathan Fontenot <nathan.fontenot@amd.com>, Deepak Sharma
-	<deepak.sharma@amd.com>, Alex Deucher <alexander.deucher@amd.com>, "Mario
- Limonciello" <mario.limonciello@amd.com>, Perry Yuan <Perry.Yuan@amd.com>,
-	Xiaojian Du <Xiaojian.Du@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>,
-	Borislav Petkov <bp@alien8.de>, <linux-kernel@vger.kernel.org>, Meng Li
-	<li.meng@amd.com>
-Subject: [RESEND PATCH] selftests/overlayfs: fix compilation error in overlayfs
-Date: Tue, 27 Feb 2024 15:42:04 +0800
-Message-ID: <20240227074204.3573450-1-li.meng@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C676A54BC8;
+	Tue, 27 Feb 2024 07:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709019741; cv=none; b=S8U9VGrEm+w0sYBIpbF4LF89mn//A6FuCi/g0HD4m/py1UrncTdl8ffd4I4dzUjtgoZj9hBlWlUO1/ZrCO2DKij8nza7q4RIJTqZgUNvLOg0m/BmwIV62vd10zbPjzLXgPJF5atIC/z/0kvYZNF+bxnnx7juV+g6njJLilaTbIs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709019741; c=relaxed/simple;
+	bh=HCCpPHfruMmNeDtopT91uaAx5seHuRXfQsl6Lt75Otw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MdDzo1dxltsPh/P7pnl23madvsoPMU2TWQ16bn9RvP9wXHg5Wsey65UZuSftAdAC0UCePbDkl+r5CZ612Hqn7VZAZuP7kG0fd5yYpCfD1cQtzS7q9jggcOwQ4j84rwpxzOoTA35e+rL0Z0eu8ENVdi2tyrqzeMgJMcxFLKJVnqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=qSbAZTdu; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1709019738; x=1740555738;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=r7JmSYlxsh14XOEmR0NelO63VSvY9OUGMgbj0LvjGzc=;
+  b=qSbAZTdupncGrlP7Z2kl2rr5zpC7wnPbIGNadsdCX6WQflZjtTKtWsGK
+   +EoUM2f4jInTxOhkqIpQr3r6QDnjL2fJUrehToEAMcEiF7mp9gf0RpKTJ
+   3FmyAe2xi29C7tSYcZEH3M54KvueipPjH4ema8phmTvOQXN7csdXLyk4D
+   9vOEFU5XvnCmRd71Vr0R+rX+O3L3bVyDQmM+2Nru2X4CnJQQtwqPqL/mi
+   G1JyacwbI0evswrgIlxUjCgABsaqOpGZLj3NES93VeVQA3z4DhIg9a1hx
+   BXnWtsDKT2vBs6QyQw3kinTGseQakaCQRiBIUZhMr/WVPa5bE/yOExu8l
+   w==;
+X-IronPort-AV: E=Sophos;i="6.06,187,1705359600"; 
+   d="scan'208";a="35608425"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 27 Feb 2024 08:42:15 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 28495280075;
+	Tue, 27 Feb 2024 08:42:15 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, "open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>
+Cc: Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH 3/3] arm64: dts: imx8qm-mek: add flexspi0 support
+Date: Tue, 27 Feb 2024 08:42:15 +0100
+Message-ID: <12393206.O9o76ZdvQC@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240226203358.275986-3-Frank.Li@nxp.com>
+References: <20240226203358.275986-1-Frank.Li@nxp.com> <20240226203358.275986-3-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE34:EE_|CH3PR12MB8536:EE_
-X-MS-Office365-Filtering-Correlation-Id: d663f08b-7cc7-4e15-fb2c-08dc3767a255
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	W2+tmlgpiqu6bdWi0Nl4AIHGbPkuH5F1zX/nJv4LkZ/LSIM6X4NgudGfq9xpHkCKC0Vx/m+tto5og6DD56yoXJolQR6S9aGlYb2mQjiP4y1/GtXiGeBFSgFxxcexhs0i20aq26ZbpRFzOnmT17YxEaunTNJsI8JqnNirgppFcMfEfXrnLlLzBdaInmKpg6BuQVJMaQxUxNKrvHRrbZ5lcVg4D32cIXTsxz9jGp+MzBcObbbldia8QULPfYXfp1erybUHjfdgsXTMvC7XIwbQKsiLoYHSQIrySJ+zK35VmJE+ii4qeZlfzsRzycnXE8gtuLSUZ/s5zDrEpKpNJnjOLuNj+CahMns//mwk/wAy/oD/pXBrbpwK2BKRFsym3qcjoeBKO2dsVprwie/sm3ZcdH7UnfuuxHyJpV3luu45XVFqfbXXDorkS6RO8LfLiU4JSOOt1g3QOwlXmHqJLJ4t8mbCrAbWyfauuJ0HYGwh7Qp1GlsesRCXBIX0W+6Nn6alfkzPz/+X1XkCMiUGDQXtWKuEi1dUzAJTiLh4rv1cEbNGyQLJCbrdEThseHsn7fHHYQxF5+pP732jgJXW8k5cSbFmxUvt2DX11tnmVsWiOUXC2vS9yzDJXRk+pFZY64WvsctGPWYzlx2SJgkoPeNQlTybzhxT3u9+JEmxCwrOepjurAG4pZiT17Q9KNGjpTjp8xNOBun7AE9JxFhTx63acqpFkl7+SOj2dURFFNv/llBsWQ6Ej4XzATf3+2pV0fQN
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2024 07:42:22.3532
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d663f08b-7cc7-4e15-fb2c-08dc3767a255
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE34.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8536
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-make -C tools/testing/selftests, compiling dev_in_maps fail.
-In file included from dev_in_maps.c:10:
-/usr/include/x86_64-linux-gnu/sys/mount.h:35:3: error: expected identifier before numeric constant
-   35 |   MS_RDONLY = 1,                /* Mount read-only.  */
-      |   ^~~~~~~~~
+Hi,
 
-That sys/mount.h has to be included before linux/mount.h.
+Am Montag, 26. Februar 2024, 21:33:57 CET schrieb Frank Li:
+> Add flexspi0 support for imx8qm-mek board.
+>=20
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8qm-mek.dts | 38 ++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts b/arch/arm64/bo=
+ot/dts/freescale/imx8qm-mek.dts
+> index 800dcb67642b1..7077e394e855b 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8qm-mek.dts
+> @@ -101,6 +101,23 @@ spidev0: spi@0 {
+>  	};
+>  };
+> =20
+> +&flexspi0 {
+> +	pinctrl-names =3D "default";
+> +	pinctrl-0 =3D <&pinctrl_flexspi0>;
+> +	nxp,fspi-dll-slvdly =3D <4>;
+> +	status =3D "okay";
+> +
+> +	flash0: mt35xu512aba@0 {
+> +		reg =3D <0>;
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
 
-Signed-off-by: Meng Li <li.meng@amd.com>
----
- tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Using '#address-cells' and '#size-cells' in mtd (and thus spi-nor )
+is deprecated, please refer to Documentation/devicetree/bindings/mtd/mtd.ya=
+ml.
 
-diff --git a/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c b/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
-index e19ab0e85709..871a0923c06e 100644
---- a/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
-+++ b/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
-@@ -7,11 +7,11 @@
- 
- #include <linux/unistd.h>
- #include <linux/types.h>
--#include <linux/mount.h>
- #include <sys/syscall.h>
- #include <sys/stat.h>
- #include <sys/mount.h>
- #include <sys/mman.h>
-+#include <linux/mount.h>
- #include <sched.h>
- #include <fcntl.h>
- 
--- 
-2.34.1
+You need to add a partitions subnode instead:
+> partitions {
+> 	compatible =3D "fixed-partitions";
+> 	#address-cells =3D <1>;
+> 	#size-cells =3D <1>;
+> };
+
+Best regards,
+Alexander
+
+> +		compatible =3D "jedec,spi-nor";
+> +		spi-max-frequency =3D <133000000>;
+> +		spi-tx-bus-width =3D <8>;
+> +		spi-rx-bus-width =3D <8>;
+> +	};
+> +};
+> +
+>  &fec1 {
+>  	pinctrl-names =3D "default";
+>  	pinctrl-0 =3D <&pinctrl_fec1>;
+> @@ -199,6 +216,27 @@ IMX8QM_SPI2_CS0_LSIO_GPIO3_IO10		0x21
+>  		>;
+>  	};
+> =20
+> +	pinctrl_flexspi0: flexspi0grp {
+> +		fsl,pins =3D <
+> +			IMX8QM_QSPI0A_DATA0_LSIO_QSPI0A_DATA0     0x06000021
+> +			IMX8QM_QSPI0A_DATA1_LSIO_QSPI0A_DATA1     0x06000021
+> +			IMX8QM_QSPI0A_DATA2_LSIO_QSPI0A_DATA2     0x06000021
+> +			IMX8QM_QSPI0A_DATA3_LSIO_QSPI0A_DATA3     0x06000021
+> +			IMX8QM_QSPI0A_DQS_LSIO_QSPI0A_DQS         0x06000021
+> +			IMX8QM_QSPI0A_SS0_B_LSIO_QSPI0A_SS0_B     0x06000021
+> +			IMX8QM_QSPI0A_SS1_B_LSIO_QSPI0A_SS1_B     0x06000021
+> +			IMX8QM_QSPI0A_SCLK_LSIO_QSPI0A_SCLK       0x06000021
+> +			IMX8QM_QSPI0B_SCLK_LSIO_QSPI0B_SCLK       0x06000021
+> +			IMX8QM_QSPI0B_DATA0_LSIO_QSPI0B_DATA0     0x06000021
+> +			IMX8QM_QSPI0B_DATA1_LSIO_QSPI0B_DATA1     0x06000021
+> +			IMX8QM_QSPI0B_DATA2_LSIO_QSPI0B_DATA2     0x06000021
+> +			IMX8QM_QSPI0B_DATA3_LSIO_QSPI0B_DATA3     0x06000021
+> +			IMX8QM_QSPI0B_DQS_LSIO_QSPI0B_DQS         0x06000021
+> +			IMX8QM_QSPI0B_SS0_B_LSIO_QSPI0B_SS0_B     0x06000021
+> +			IMX8QM_QSPI0B_SS1_B_LSIO_QSPI0B_SS1_B     0x06000021
+> +		>;
+> +	};
+> +
+>  	pinctrl_lpuart0: lpuart0grp {
+>  		fsl,pins =3D <
+>  			IMX8QM_UART0_RX_DMA_UART0_RX				0x06000020
+>=20
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
 
 
