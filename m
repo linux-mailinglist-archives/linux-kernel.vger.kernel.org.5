@@ -1,135 +1,130 @@
-Return-Path: <linux-kernel+bounces-83650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-83651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32326869D0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 18:03:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2ED9869CC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 17:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBA63B31B67
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:49:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A794E286CE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 16:50:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97354E1D3;
-	Tue, 27 Feb 2024 16:49:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F02219ED;
+	Tue, 27 Feb 2024 16:50:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mixHy/oz"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Xg0jJgD5"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DD74EB43;
-	Tue, 27 Feb 2024 16:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBBB8200DB
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:50:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709052547; cv=none; b=lpMbV7OdAbvYSC1kAB1s7tUbgOVphC2gWcM3M+Cx+81Tnw3CZPb17U6PEOtzR6iMC60Clb8DwXcmFSiHKcENBHHbzBBa9neX9L1Kcxhg+vV1MU1FHgbnGOwsvsc7kbEsuFsLzgrJPZwUN9xuiWEIz4Z0VVIa0rZrC8iQ2kIP270=
+	t=1709052646; cv=none; b=kaHfpHA7Lbi8zeAlFIgxsFH/svFz7bGMCz7bFd/oDpaKJ8A5vp3eZl9ltMFRKkwuXGcxEXIR2+bG5yVPzv1SvFqCoDrchaxIsdAFCrv9cti/XFFHxx8XxARsk09VwbiwxXASuvY0dEZ0OaDo2ztHxiZYLEuTMArkwdt99orS1pA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709052547; c=relaxed/simple;
-	bh=uM/i0Rm9q3ig1FjMY9O1+2SHrbYFfbfJXmzB9UyHcMg=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rxatextoHO4lzHWBCV9l/r4EIDXFx345nJ+nfF696rpp/f8JvUbaaX9nhQ/qlIQoVtPzYED9UDFPaEAxB71WQoJ4s0KmpMv4UAWy/7c904aQcjRnIhyIA0heI8rhpEhai+GytETYMwbvaSGUZgg3k1C/RA8tDC/rQB+AwnmXA4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mixHy/oz; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709052545; x=1740588545;
-  h=subject:from:to:cc:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=uM/i0Rm9q3ig1FjMY9O1+2SHrbYFfbfJXmzB9UyHcMg=;
-  b=mixHy/oz9ftJbGz9Kc9p3G02My0GRO1kXjM/b1mU2bKlklqCvnYUYlNN
-   jRB1VSZ6+8V7IGdg09KIFfPG4O6b0jQ0CIrWtdy4S+SZqNYq8Lxp2hCXU
-   VDDR7WEyAUEa1jJXGEukffFRP7WsfIwClDLkeQEamjui21uoJ7RyDTTkH
-   nlS5Gex+bV2NYEck0uW6wQdQQUUGqk2HPAvGcla4JzJz5BAjUbJbpaK40
-   osxy5l+jwYyO8gyHNC6gMudixGJFzvZfadfWHuz4UY6YzzcQt+nsTEEPW
-   wFSUVi4xFc93aOVAUNcCPlylyV35+YbMdh+Va4sOM4vkt5+zF5ZKNiCu+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="20948840"
-X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="20948840"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 08:49:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,188,1705392000"; 
-   d="scan'208";a="7536117"
-Received: from sshaik-mobl1.amr.corp.intel.com (HELO dwillia2-xfh.jf.intel.com) ([10.209.88.67])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 08:49:05 -0800
-Subject: [PATCH 3/3] cxl/region: Use cond_guard() in show_targetN()
-From: Dan Williams <dan.j.williams@intel.com>
-To: torvalds@linux-foundation.org, peterz@infradead.org,
- gregkh@linuxfoundation.org
-Cc: Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
- Ira Weiny <ira.weiny@intel.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>,
- linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org
-Date: Tue, 27 Feb 2024 08:49:04 -0800
-Message-ID: <170905254443.2268463.935306988251313983.stgit@dwillia2-xfh.jf.intel.com>
-In-Reply-To: <170905252721.2268463.6714121678946763402.stgit@dwillia2-xfh.jf.intel.com>
-References: <170905252721.2268463.6714121678946763402.stgit@dwillia2-xfh.jf.intel.com>
-User-Agent: StGit/0.18-3-g996c
+	s=arc-20240116; t=1709052646; c=relaxed/simple;
+	bh=JZiZB7SeymVQjyoZ3I3h+TPhPreTAgThGsE/ai3dA+w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NISPt6BHBDKR8aSObZnpyUmSIHtm+LcIk/udF2+QAmDYSpcd8cX0XLaTetcMVJOfs8hnn0JcjvdGUcm1wL5thBlwByaA3a19lfYI2s/xCqLOUono4dJqtKWc1uu2hGjORviHAMGhr+/Z2EkWF/u20Z419k9JTxJOIyNjbTK/n7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Xg0jJgD5; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so5849535a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:50:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709052640; x=1709657440; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JZiZB7SeymVQjyoZ3I3h+TPhPreTAgThGsE/ai3dA+w=;
+        b=Xg0jJgD5c3vfvMdkPnlrJ+e7CA+kjRBJuK/jQKt1BUSvrp4GKz/PQzx9xTAojB3WTL
+         MiGsF0BibBwVLZsDrqdvag4nWA2cu+q/n2M/PwvHUHeljfaUH0CSLMPSiIfKFR7ECh4I
+         0+2O06pTIGoTt4vSwT6CfB3IX25eCb5tRgGNw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709052640; x=1709657440;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JZiZB7SeymVQjyoZ3I3h+TPhPreTAgThGsE/ai3dA+w=;
+        b=uJb4HzHTz7Y4pDu1FEPulG/OPWZ43LVwueUSFKx1lwSMPCUfEwB7Bzeh4R4PnrQgQW
+         D3TwjRpQUGdLpcAyqsycmmj0W/ezHLifHFEQU2wqxnwDErQONQ8BHX3Fy7k0lF7AGv/8
+         eH0ZfgxAQNhEEQ7JgOUgb3Oza0xC2kqSCX3pCSY3iP8uM9I6u1zvF6Src5qHlgerOn2i
+         8/8TCBsjoHUi+Tv+3SH/wU5k7X/OtEk1OXR3zUl9Gzx7QKRcJsQ7czs/JHCceXIpHcAB
+         h2ST1WzoW8/hYXzT+Exz8rnuq8MPlkIXi2RCSfMJnEUi+dev9Uee7wALlTmIsKkebdq9
+         NQiw==
+X-Forwarded-Encrypted: i=1; AJvYcCXMMEAaJnrcHshEi2GM5hvdiZdKVNe8R7ltu8qsovzqOa0mBugYHaVRSXML45lCCFMWMS+ZPaK6R5c+O5snD2W3tXuudgV8nzwpMWhy
+X-Gm-Message-State: AOJu0YyULWjLVCqWj0aBjfd4Fp8GdfOk8fnMHolv7qCdBgVDlibYMgam
+	F4w/LseZsS1P3zmcM0YO5BUQmXX/KRo2Bl5dosGr69MUanDOst+uafNkm6hRzI+MG4COB/cZbxc
+	bdG1Q
+X-Google-Smtp-Source: AGHT+IESoTEu36nzmQQ0byb31AA1eydTY4KYjLtKBSrxByX1Qj57cSIJM3yGt26wYXtGfCs3nE8l2w==
+X-Received: by 2002:aa7:d0ca:0:b0:564:dd13:56e9 with SMTP id u10-20020aa7d0ca000000b00564dd1356e9mr6919069edo.29.1709052640488;
+        Tue, 27 Feb 2024 08:50:40 -0800 (PST)
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
+        by smtp.gmail.com with ESMTPSA id j21-20020aa7de95000000b005661a50b7c5sm920466edv.13.2024.02.27.08.50.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 08:50:40 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412a2c2ce88so72085e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 08:50:39 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXSP178wdP1ojWQZRXfes/OK+WrORcw4n13ZNeG/k+N8IRFT/tEJzXHiPtmnyJN/yBoGFjJrNEI5TkXNzimxbYb47nMejilSelXDddV
+X-Received: by 2002:a05:600c:1e02:b0:412:b008:fe7c with SMTP id
+ ay2-20020a05600c1e0200b00412b008fe7cmr90371wmb.5.1709052639020; Tue, 27 Feb
+ 2024 08:50:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240223223958.3887423-1-hsinyi@chromium.org> <20240223223958.3887423-2-hsinyi@chromium.org>
+ <87wmqqjmt9.fsf@intel.com>
+In-Reply-To: <87wmqqjmt9.fsf@intel.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Tue, 27 Feb 2024 08:50:23 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=W+fRDOS01LKkeq-k12mj6jnFu5LOc9jAE3LA5w2ubo5g@mail.gmail.com>
+Message-ID: <CAD=FV=W+fRDOS01LKkeq-k12mj6jnFu5LOc9jAE3LA5w2ubo5g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm_edid: Add a function to get EDID base block
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+Hi,
 
-Use cond_guard() in show_target() to not open code an up_read() in an 'out'
-block. If the down_read_interruptible() fails, the statement passed to the
-second argument of cond_guard() returns -EINTR.
+On Tue, Feb 27, 2024 at 1:09=E2=80=AFAM Jani Nikula <jani.nikula@linux.inte=
+l.com> wrote:
+>
+> On Fri, 23 Feb 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> > It's found that some panels have variants that they share the same pane=
+l id
+> > although their EDID and names are different. Besides panel id, now we n=
+eed
+> > the hash of entire EDID base block to distinguish these panel variants.
+> >
+> > Add drm_edid_get_base_block to returns the EDID base block, so caller c=
+an
+> > further use it to get panel id and/or the hash.
+>
+> Please reconsider the whole approach here.
+>
+> Please let's not add single-use special case functions to read an EDID
+> base block.
+>
+> Please consider reading the whole EDID, using the regular EDID reading
+> functions, and use that instead.
+>
+> Most likely you'll only have 1-2 blocks anyway. And you might consider
+> caching the EDID in struct panel_edp if reading the entire EDID is too
+> slow. (And if it is, this is probably sensible even if the EDID only
+> consists of one block.)
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Dan Williams <dan.j.williams@intel.com>
-Suggested-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/cxl/core/region.c |   16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+That makes a lot of sense! Not quite sure why I didn't just read the
+whole EDID in the first place when trying to get the panel ID.
 
-diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
-index ce0e2d82bb2b..704102f75c14 100644
---- a/drivers/cxl/core/region.c
-+++ b/drivers/cxl/core/region.c
-@@ -666,28 +666,20 @@ static size_t show_targetN(struct cxl_region *cxlr, char *buf, int pos)
- {
- 	struct cxl_region_params *p = &cxlr->params;
- 	struct cxl_endpoint_decoder *cxled;
--	int rc;
- 
--	rc = down_read_interruptible(&cxl_region_rwsem);
--	if (rc)
--		return rc;
-+	cond_guard(rwsem_read_intr, return -EINTR, &cxl_region_rwsem);
- 
- 	if (pos >= p->interleave_ways) {
- 		dev_dbg(&cxlr->dev, "position %d out of range %d\n", pos,
- 			p->interleave_ways);
--		rc = -ENXIO;
--		goto out;
-+		return -ENXIO;
- 	}
- 
- 	cxled = p->targets[pos];
- 	if (!cxled)
--		rc = sysfs_emit(buf, "\n");
--	else
--		rc = sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
--out:
--	up_read(&cxl_region_rwsem);
-+		return sysfs_emit(buf, "\n");
- 
--	return rc;
-+	return sysfs_emit(buf, "%s\n", dev_name(&cxled->cxld.dev));
- }
- 
- static int match_free_decoder(struct device *dev, void *data)
-
+-Doug
 
