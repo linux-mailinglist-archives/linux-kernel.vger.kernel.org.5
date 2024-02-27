@@ -1,240 +1,133 @@
-Return-Path: <linux-kernel+bounces-82636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-82637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 076D886877C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:03:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE7C86877D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 04:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C60C1C21867
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:03:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 745D81F257B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Feb 2024 03:04:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B244338DD5;
-	Tue, 27 Feb 2024 03:03:17 +0000 (UTC)
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54DCA3EA86;
+	Tue, 27 Feb 2024 03:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QAKrDy5d"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819B02D603
-	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DA93D988
+	for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 03:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709002997; cv=none; b=m3beYM5DYS8xD+5ssIuY7Ydl/UHZXY8uhWcwJwmAxoUFDx5gJjyF7zrcu7y542mHt6/NihFq9iZRwrT//qOJU2hnhq2t2FjpylBcupRLK8RebNmSg4k4aRjChpGX4hQkKcMKLBXrOMGZnGTOlvKj5SmFrdkTz+rdXGK2vJPJRsg=
+	t=1709003006; cv=none; b=i0ZDB3JwHEWvCuy5PF36l/SE1M/Odturdvqk2rbgUV80V1BSt1i3lQiAs9dXEZNFfRq/kV6vsbJ8GSckWih0othPISp6/xy301d88cgb0OqZuvAohBGcQDHiYI/QZXvCVlc2HJO0S7U53ULk0Hx5UdRVcKqIGqmtYD360jOxzqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709002997; c=relaxed/simple;
-	bh=/M8dgwAyEda7XsNe3iFiXBlSIntC0kanjsl4nXxFc+E=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=in11NGnxUyKJy+w6hmCsH451dK8boiic8m7oFgg/xPytVR/21JXn+15BvNrBRhOvGQ1PACTvx6xL3e+qdSzCic+OJ/2/7jndPSW4PvGPtHo46SSx8dEoTyZ1JrKS2Rb0RQoPpAdwK5y8uVW/HWVXpw39bfAbnZuhBLimxlEaWJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=linux.dev; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <zhouchengming@bytedance.com>
-Date: Tue, 27 Feb 2024 03:02:55 +0000
-Subject: [PATCH 2/2] mm/zsmalloc: remove the deferred free mechanism
+	s=arc-20240116; t=1709003006; c=relaxed/simple;
+	bh=zdJ2ODkJR0n1OAeFgqhQcdgBH8wAu0+3mGhii83TXAY=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=dAfuYWjTie4wQ39Zol3PIPAa6IQXvbKmri2x8ueU5Z5hHW0D75OGtVBluHCiKkEnVYc8KzNRORuvvJM3TRQ6g0vfgUW22ql2zvo9TaBTErZtk9Ijhju4ficbh8CImo+AfkWau/XKKxtyceJdo9zSXMCripdQJOw0ZsbNUysTCsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QAKrDy5d; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709003005; x=1740539005;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zdJ2ODkJR0n1OAeFgqhQcdgBH8wAu0+3mGhii83TXAY=;
+  b=QAKrDy5dPAKunSc0dVyS7nt0AmqOxMaGf3DhLq9QO9ccuy1p6ZzulzbL
+   NQeqxjZ3kdvGPFVtZTKo8q24X6h0mnR5Y/2ZX/Qpx3ib3CRrddzBg/ocy
+   TVoOKkiCiD9bP9ojDfHLNRA9cJl3NRv/Ag/AqFsbzdB24W3MX0I9V7VPs
+   Zpn1rjrb0pc7/3BfBQ7WfbO2I6un6N1BXhrQ6uFCyXpu/q1xRukyGEmWa
+   zTHx4uhfpcXgelkxyoQIiFY19BWCH9FSTFLPJRTRWvPUm5vu9i0Rd5ysm
+   uwmiSM3rOdyEN9NiySW/v5/JmnwXCZgnw9wJYljRa+Gujsh84b8hf9/gV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3201119"
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="3201119"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 19:03:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,187,1705392000"; 
+   d="scan'208";a="44385470"
+Received: from wufei-optiplex-7090.sh.intel.com ([10.239.158.51])
+  by orviesa001.jf.intel.com with ESMTP; 26 Feb 2024 19:03:20 -0800
+From: Fei Wu <fei2.wu@intel.com>
+To: atishp@atishpatra.org,
+	anup@brainfault.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	fei2.wu@intel.com
+Subject: [PATCH] perf: RISCV: Fix panic on pmu overflow handler
+Date: Tue, 27 Feb 2024 11:07:31 +0800
+Message-Id: <20240227030731.2560035-1-fei2.wu@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240226-zsmalloc-zspage-rcu-v1-2-456b0ef1a89d@bytedance.com>
-References: <20240226-zsmalloc-zspage-rcu-v1-0-456b0ef1a89d@bytedance.com>
-In-Reply-To: <20240226-zsmalloc-zspage-rcu-v1-0-456b0ef1a89d@bytedance.com>
-To: yosryahmed@google.com, Sergey Senozhatsky <senozhatsky@chromium.org>, hannes@cmpxchg.org, nphamcs@gmail.com,
- Andrew Morton <akpm@linux-foundation.org>, Minchan Kim <minchan@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, Chengming Zhou <zhouchengming@bytedance.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709002985; l=5278;
- i=zhouchengming@bytedance.com; s=20240220; h=from:subject:message-id;
- bh=/M8dgwAyEda7XsNe3iFiXBlSIntC0kanjsl4nXxFc+E=;
- b=HKzHCzoHlRScN2CAHFL2LHEXBGcx4FZexrsgeFkUsWRTeBSsg2wQ+Kv5cGnhN6T8q7yMHkqfy
- LkC11bU4POFDX84RKgcD2IwlI1sl7CP9Dx9yfr3MiZEdk9Ydr9BUfAL
-X-Developer-Key: i=zhouchengming@bytedance.com; a=ed25519;
- pk=5+68Wfci+T30FoQos5RH+hfToF6SlC+S9LMPSPBFWuw=
-X-Migadu-Flow: FLOW_OUT
 
-Since the only user of kick_deferred_free() has gone, remove all the
-deferred mechanism related code.
+Sign extension of (1 << idx) from int is not desired when setting bits
+in unsigned long overflowed_ctrs, kernel panics if 31 is a valid lidx.
+This panic happens when 'perf record -e branches' on a sophgo machine.
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+[  212.845953] epc : ffffffff80afc288 ra : ffffffff80afd310 sp : fffffff6e36928f0
+[  212.853474]  gp : ffffffff821f7f48 tp : ffffffd9033b9900 t0 : 0000002ad69e9978
+[  212.861069]  t1 : 000000000000002a t2 : ffffffff801764d2 s0 : fffffff6e3692ab0
+[  212.868637]  s1 : 0000000000000020 a0 : 0000000000000000 a1 : 0000000000000015
+[  212.876021]  a2 : 0000000000000000 a3 : 0000000000000015 a4 : 0000000000000020
+[  212.883482]  a5 : ffffffd7ff880640 a6 : 000000000005a569 a7 : ffffffffffffffd5
+[  212.891191]  s2 : 000000000000ffff s3 : 0000000000000000 s4 : ffffffd7ff880540
+[  212.898707]  s5 : 0000000000504d55 s6 : ffffffd902443000 s7 : ffffffff821fe1f8
+[  212.906329]  s8 : 000000007fffffff s9 : ffffffd7ff880540 s10: ffffffd9147a1098
+[  212.914151]  s11: 0000000080000000 t3 : 0000000000000003 t4 : ffffffff80186226
+[  212.921773]  t5 : ffffffff802455ca t6 : ffffffd9058900e8
+[  212.927300] status: 0000000200000100 badaddr: 0000000000000098 cause: 000000000000000d
+[  212.935575] [<ffffffff80afc288>] riscv_pmu_ctr_get_width_mask+0x8/0x60
+[  212.942391] [<ffffffff80079922>] handle_percpu_devid_irq+0x98/0x1e8
+[  212.948855] [<ffffffff80073d06>] generic_handle_domain_irq+0x28/0x36
+[  212.955521] [<ffffffff80481444>] riscv_intc_irq+0x36/0x4e
+[  212.961269] [<ffffffff80ca5fce>] handle_riscv_irq+0x4a/0x74
+[  212.967270] [<ffffffff80ca6afc>] do_irq+0x60/0x90
+[  212.972284] Code: b580 60a2 6402 5529 0141 8082 0013 0000 0013 0000 (6d5c) b783
+[  212.980036] ---[ end trace 0000000000000000 ]---
+[  212.984874] Kernel panic - not syncing: Fatal exception in interrupt
+[  212.991506] SMP: stopping secondary CPUs
+[  212.995964] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
+
+Signed-off-by: Fei Wu <fei2.wu@intel.com>
 ---
- mm/zsmalloc.c | 109 ----------------------------------------------------------
- 1 file changed, 109 deletions(-)
+ drivers/perf/riscv_pmu_sbi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index b153f2e5fc0f..1a044690b389 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -232,9 +232,6 @@ struct zs_pool {
+diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+index 16acd4dcdb96..c87c459e52de 100644
+--- a/drivers/perf/riscv_pmu_sbi.c
++++ b/drivers/perf/riscv_pmu_sbi.c
+@@ -731,14 +731,14 @@ static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
+ 		/* compute hardware counter index */
+ 		hidx = info->csr - CSR_CYCLE;
+ 		/* check if the corresponding bit is set in sscountovf */
+-		if (!(overflow & (1 << hidx)))
++		if (!(overflow & (1UL << hidx)))
+ 			continue;
  
- #ifdef CONFIG_ZSMALLOC_STAT
- 	struct dentry *stat_dentry;
--#endif
--#ifdef CONFIG_COMPACTION
--	struct work_struct free_work;
- #endif
- 	spinlock_t lock;
- 	atomic_t compaction_in_progress;
-@@ -281,12 +278,8 @@ static void migrate_write_lock(struct zspage *zspage);
- static void migrate_write_unlock(struct zspage *zspage);
- 
- #ifdef CONFIG_COMPACTION
--static void kick_deferred_free(struct zs_pool *pool);
--static void init_deferred_free(struct zs_pool *pool);
- static void SetZsPageMovable(struct zs_pool *pool, struct zspage *zspage);
- #else
--static void kick_deferred_free(struct zs_pool *pool) {}
--static void init_deferred_free(struct zs_pool *pool) {}
- static void SetZsPageMovable(struct zs_pool *pool, struct zspage *zspage) {}
- #endif
- 
-@@ -1632,50 +1625,6 @@ static int putback_zspage(struct size_class *class, struct zspage *zspage)
- 	return fullness;
- }
- 
--#ifdef CONFIG_COMPACTION
--/*
-- * To prevent zspage destroy during migration, zspage freeing should
-- * hold locks of all pages in the zspage.
-- */
--static void lock_zspage(struct zspage *zspage)
--{
--	struct page *curr_page, *page;
--
--	/*
--	 * Pages we haven't locked yet can be migrated off the list while we're
--	 * trying to lock them, so we need to be careful and only attempt to
--	 * lock each page under migrate_read_lock(). Otherwise, the page we lock
--	 * may no longer belong to the zspage. This means that we may wait for
--	 * the wrong page to unlock, so we must take a reference to the page
--	 * prior to waiting for it to unlock outside migrate_read_lock().
--	 */
--	while (1) {
--		migrate_read_lock(zspage);
--		page = get_first_page(zspage);
--		if (trylock_page(page))
--			break;
--		get_page(page);
--		migrate_read_unlock(zspage);
--		wait_on_page_locked(page);
--		put_page(page);
--	}
--
--	curr_page = page;
--	while ((page = get_next_page(curr_page))) {
--		if (trylock_page(page)) {
--			curr_page = page;
--		} else {
--			get_page(page);
--			migrate_read_unlock(zspage);
--			wait_on_page_locked(page);
--			put_page(page);
--			migrate_read_lock(zspage);
--		}
--	}
--	migrate_read_unlock(zspage);
--}
--#endif /* CONFIG_COMPACTION */
--
- static void migrate_lock_init(struct zspage *zspage)
- {
- 	rwlock_init(&zspage->lock);
-@@ -1730,10 +1679,6 @@ static void replace_sub_page(struct size_class *class, struct zspage *zspage,
- 
- static bool zs_page_isolate(struct page *page, isolate_mode_t mode)
- {
--	/*
--	 * Page is locked so zspage couldn't be destroyed. For detail, look at
--	 * lock_zspage in free_zspage.
--	 */
- 	VM_BUG_ON_PAGE(PageIsolated(page), page);
- 
- 	return true;
-@@ -1848,56 +1793,6 @@ static const struct movable_operations zsmalloc_mops = {
- 	.putback_page = zs_page_putback,
- };
- 
--/*
-- * Caller should hold page_lock of all pages in the zspage
-- * In here, we cannot use zspage meta data.
-- */
--static void async_free_zspage(struct work_struct *work)
--{
--	int i;
--	struct size_class *class;
--	struct zspage *zspage, *tmp;
--	LIST_HEAD(free_pages);
--	struct zs_pool *pool = container_of(work, struct zs_pool,
--					free_work);
--
--	for (i = 0; i < ZS_SIZE_CLASSES; i++) {
--		class = pool->size_class[i];
--		if (class->index != i)
--			continue;
--
--		spin_lock(&pool->lock);
--		list_splice_init(&class->fullness_list[ZS_INUSE_RATIO_0],
--				 &free_pages);
--		spin_unlock(&pool->lock);
--	}
--
--	list_for_each_entry_safe(zspage, tmp, &free_pages, list) {
--		list_del(&zspage->list);
--		lock_zspage(zspage);
--
--		spin_lock(&pool->lock);
--		class = zspage_class(pool, zspage);
--		__free_zspage(pool, class, zspage);
--		spin_unlock(&pool->lock);
--	}
--};
--
--static void kick_deferred_free(struct zs_pool *pool)
--{
--	schedule_work(&pool->free_work);
--}
--
--static void zs_flush_migration(struct zs_pool *pool)
--{
--	flush_work(&pool->free_work);
--}
--
--static void init_deferred_free(struct zs_pool *pool)
--{
--	INIT_WORK(&pool->free_work, async_free_zspage);
--}
--
- static void SetZsPageMovable(struct zs_pool *pool, struct zspage *zspage)
- {
- 	struct page *page = get_first_page(zspage);
-@@ -1908,8 +1803,6 @@ static void SetZsPageMovable(struct zs_pool *pool, struct zspage *zspage)
- 		unlock_page(page);
- 	} while ((page = get_next_page(page)) != NULL);
- }
--#else
--static inline void zs_flush_migration(struct zs_pool *pool) { }
- #endif
- 
- /*
-@@ -2121,7 +2014,6 @@ struct zs_pool *zs_create_pool(const char *name)
- 	if (!pool)
- 		return NULL;
- 
--	init_deferred_free(pool);
- 	spin_lock_init(&pool->lock);
- 	atomic_set(&pool->compaction_in_progress, 0);
- 
-@@ -2229,7 +2121,6 @@ void zs_destroy_pool(struct zs_pool *pool)
- 	int i;
- 
- 	zs_unregister_shrinker(pool);
--	zs_flush_migration(pool);
- 	zs_pool_stat_destroy(pool);
- 
- 	for (i = 0; i < ZS_SIZE_CLASSES; i++) {
-
+ 		/*
+ 		 * Keep a track of overflowed counters so that they can be started
+ 		 * with updated initial value.
+ 		 */
+-		overflowed_ctrs |= 1 << lidx;
++		overflowed_ctrs |= 1UL << lidx;
+ 		hw_evt = &event->hw;
+ 		riscv_pmu_event_update(event);
+ 		perf_sample_data_init(&data, 0, hw_evt->last_period);
 -- 
-b4 0.10.1
+2.34.1
+
 
