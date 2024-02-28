@@ -1,161 +1,105 @@
-Return-Path: <linux-kernel+bounces-85542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85544-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E39D86B74B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:39:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6C3086B76E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:44:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6D0728C18C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:39:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E19791C24AEC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:44:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B9371EB6;
-	Wed, 28 Feb 2024 18:39:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B93C71EB0;
+	Wed, 28 Feb 2024 18:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bZRYLvOc"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gx7X2jbf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBF7E71EAE
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7982871EAE;
+	Wed, 28 Feb 2024 18:44:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709145546; cv=none; b=cH/Dx7LThMgCp0IMNlDPUAZyyp7iZ2pZXponUOriUAuPnrk6QsWPQ5Jz0u5Vt8cUSq3/uWHJzjkIY4/Ij7rAPnfVPgO1xtROKU+8Kp5z8Ha3EFumRTcWxEvvuAWd/2PHGWR7ZuyOAYh/Q9kl6bBYxKrt+JlP17wALIC9GaSvj4E=
+	t=1709145860; cv=none; b=pbxbu4BmVj1oKVmKg000Clvnp27XjxtWOWaQ4HvKmOUOW6D190dDEd4m8ZktvC0YRNwhN5vJBrAJZGFkTasH3XzIn2DCa6IPVi5McFFFoF9ALO5eXFgyUMKTkR34yDCcyr8hsoYTzeoqvIhY3F/2DXy6F4lVet/9VOGlk5KNzLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709145546; c=relaxed/simple;
-	bh=7iqFBA+LWwnU3gwgoROsymeSLKp/pJPiwqlUMLON2K8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Tfq9OL+iz5FNxt6FDNkrL/KfS1FJu55xXAkwV6K0IFCnItB/kh8lQ83K9BYM85hKm7iLfechF0N4lpF9bUwSQFnbIeX439u/inK/tnW7QazmdpxbS7DNANuUmF0+Uq0qk6eOYf+BkJIBivlBQDqSp8iDPBfZxKEDPfanlU3SNf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bZRYLvOc; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60938adfed8so787247b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:39:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709145544; x=1709750344; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7iqFBA+LWwnU3gwgoROsymeSLKp/pJPiwqlUMLON2K8=;
-        b=bZRYLvOcuSQJ7yTTsyjqu0vwk3flVlQP1DkzZ/201fIwY1LLOW6TSNF6BYYEq7oYih
-         1Cl/Df6h2RV0hl63dNEtntv3f0hZjvN14lRZSYwmLl6hBmIvAn8BJrmsnKFHiRyYxvSy
-         1wr5QF6lFsds62i4Y8iuXFqdO0/MBLf6T7/+JSj90jrAlTfxy6GUL+48TvD+WOQc65TS
-         PDOLJlrQzICYzz+uFhAZmzzcJl2jXbwZ8tb34Kwjdq/CreXpKKumqlKO+WPcgXvIqXBq
-         8HDEcoozgv8zib5X41FWRrwsnVv8RmgjkKKUEW/eb3ulqmH/IChjCZdd7xJUHNqnSmlQ
-         Y4AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709145544; x=1709750344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7iqFBA+LWwnU3gwgoROsymeSLKp/pJPiwqlUMLON2K8=;
-        b=osozuG1rBbojK6brua5qWSVRU6RH/4U0KYluVHY2eNBZsn2/t5pCQzJfB/wyPCkWBH
-         23esmxiN0hMuitTNbZo7qlppL3wOWswHEdshwBOOEtVlgo9tHH+YVUD5X53b1mXEW0of
-         3Kss/B4sc/Pty0grhc+85VCVviM/0SUft3areggw9/B93o8p5tPYN3O1gOfpjl2om0uq
-         frjo49bKZkaBcqtzFDLCJxuzGJfNwtqwZ0CstezG/yVwFYG5wy32yWKvL75NPPfp7v8O
-         HLbuJd/CO6Fxk3kffP4IbBLvZlJBD7RNOhQ6zPQDZB1wyG86FyCDhrRuNpViu1xUBWTu
-         MmPw==
-X-Forwarded-Encrypted: i=1; AJvYcCXGNICuqlqTTchd7xeIV8JXz0zeOk5p4zyKn2Nld9q9afPEMCykEwwUrMc9fwN2O4iAImrHg/60VWJVGKQmOubGxc7C86GPZ0PebiGl
-X-Gm-Message-State: AOJu0YzLKfXyexYl3OgAAssqpfV2hI4Ob6+tZNkAebQOnw+ZmNs30V8g
-	LxrYAhUUK/5MLse+KRL6uZdqTtNqWA0qABNRrMzR/yUL0XHVCI6CQ5SVvd5KBFV4psWc1k5B33X
-	2+NUaao+BcGeIhlAcjVb3rByf23OoQeb86Lz+
-X-Google-Smtp-Source: AGHT+IGPWnLmF2TVmBJmUMEp5oMR8c6WgnFtjjNeDdqebhJZ+NPAbFsWrA/RAsFNPaaO16thY7f2/GzzgeasEYFaVaU=
-X-Received: by 2002:a5b:f45:0:b0:dc6:e75d:d828 with SMTP id
- y5-20020a5b0f45000000b00dc6e75dd828mr48009ybr.18.1709145543730; Wed, 28 Feb
- 2024 10:39:03 -0800 (PST)
+	s=arc-20240116; t=1709145860; c=relaxed/simple;
+	bh=lDadQ60W+scUEa1H+i74ZjntqFwyrcfss1QHZ2gw77Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B2RftI2ia37gLxYO/Pj+CTukVHxPFLX+UELzVgxTCpmWcdbONK7COErkrPFKWDPGvuJRDOiFtE9eDpxhpb1ye8CXBz8eHRE97nZJ6mFagsBvMy8dxiDFpE6/LqkFLmsRm18hS3WQDZU0il63zS6440jebflxHYhzE7/T0sML2Fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gx7X2jbf; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709145859; x=1740681859;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=lDadQ60W+scUEa1H+i74ZjntqFwyrcfss1QHZ2gw77Q=;
+  b=gx7X2jbfTHOOA7MHEYyd8yDpiHO2UPk/B4uyU4kJenalFkX8AOemTlKw
+   CZI2kTgBref1wQ9GgwMwqu2lWRAQ1pRd5f7ObAcXT8v9Gj1qzK09UqcqK
+   4B+U/7NQiuBmAGHJzd7oxtEZN6qBNp+DX75OlhNdkhWOd89igkE49Vbkv
+   lwNO4dAx9jElqWuCNyGIfjpquG9H1gjvZ0Q4PDTqziHJIQveDfMHi3aYY
+   qlG0Dekh78cp6Tyw0pobLPg0oH0WntIMPia26iGSVC+I/3HLENmCabCCX
+   fxZSmzRl0IvmcLTGmDy/GgkrSH6JTA8A07aPHI6StYxiZ84RDx2t1mV2w
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="21023733"
+X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
+   d="scan'208";a="21023733"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 10:44:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="937034565"
+X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
+   d="scan'208";a="937034565"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Feb 2024 10:44:15 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 0D5D11C5; Wed, 28 Feb 2024 20:44:13 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	linux-gpio@vger.kernel.org,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Subject: [PATCH v1 0/2] gpiolib: Align prototypes of *gpio_count() APIs
+Date: Wed, 28 Feb 2024 20:40:45 +0200
+Message-ID: <20240228184412.3591847-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-20-surenb@google.com>
- <2daf5f5a-401a-4ef7-8193-6dca4c064ea0@suse.cz> <CAJuCfpGt+zfFzfLSXEjeTo79gw2Be-UWBcJq=eL1qAnPf9PaiA@mail.gmail.com>
- <6db0f0c8-81cb-4d04-9560-ba73d63db4b8@suse.cz> <CAJuCfpEgh1OiYNE_uKG-BqW2x97sOL9+AaTX4Jct3=WHzAv+kg@mail.gmail.com>
- <f494b8e5-f1ca-4b95-a8aa-01b9c4395523@suse.cz>
-In-Reply-To: <f494b8e5-f1ca-4b95-a8aa-01b9c4395523@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 28 Feb 2024 10:38:49 -0800
-Message-ID: <CAJuCfpHJoPa_pQNPrcWNZyU7V7=UA4deGFMxh9_aZPyiP0bFSw@mail.gmail.com>
-Subject: Re: [PATCH v4 19/36] mm: create new codetag references during page splitting
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 28, 2024 at 10:28=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 2/28/24 18:50, Suren Baghdasaryan wrote:
-> > On Wed, Feb 28, 2024 at 12:47=E2=80=AFAM Vlastimil Babka <vbabka@suse.c=
-z> wrote:
-> >
-> >>
-> >> Now this might be rare enough that it's not worth fixing if that would=
- be
-> >> too complicated, just FYI.
-> >
-> > Yeah. We can fix this by subtracting the "bytes" counter of the "head"
-> > page for all free_the_page(page + (1 << order), order) calls we do
-> > inside __free_pages(). But we can't simply use pgalloc_tag_sub()
-> > because the "calls" counter will get over-decremented (we allocated
-> > all of these pages with one call). I'll need to introduce a new
-> > pgalloc_tag_sub_bytes() API and use it here. I feel it's too targeted
-> > of a solution but OTOH this is a special situation, so maybe it's
-> > acceptable. WDYT?
->
-> Hmm I think there's a problem that once you fail put_page_testzero() and
-> detect you need to do this, the page might be already gone or reallocated=
- so
-> you can't get to the tag for decrementing bytes. You'd have to get it
-> upfront (I guess for "head && order > 0" cases) just in case it happens.
-> Maybe it's not worth the trouble for such a rare case.
+Two out of three GPIO count APIs take device pointer. OF case clearly
+does not need it as it immediately switches to device node inside, and
+ACPI abstracts that to struct acpi_device pointer. Unify all these by
+making them to take struct fwnode_handle pointer. This, in particular,
+will allow to create fwnode_gpio_count() API if needed. The need of that
+was discussed here [1].
 
-Yes, that hit me when I tried to implement it but there is a simple
-solution around that. I can obtain alloc_tag before doing
-put_page_testzero() and then decrement bytes counter directly as
-needed.
-Not sure if it is a rare enough case that we can ignore it but if the
-fix is simple enough then might as well do it?
+Note, no functional changes intended.
 
->
-> >>
-> >>
-> >> > Every time
-> >> > one of these pages are freed that codetag's "bytes" and "calls"
-> >> > counters will be decremented. I think accounting will work correctly
-> >> > irrespective of where these pages are freed, in __free_pages() or by
-> >> > put_page().
-> >> >
-> >>
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+Link: https://lore.kernel.org/r/2ad735ed-963c-4e75-b83e-687ea2c0aef5@alliedtelesis.co.nz [1]
+
+Andy Shevchenko (2):
+  gpiolib-of: Make of_gpio_get_count() take firmware node as a parameter
+  gpiolib-acpi: Make acpi_gpio_count() take firmware node as a parameter
+
+ drivers/gpio/gpiolib-acpi.c | 13 ++++++-------
+ drivers/gpio/gpiolib-acpi.h |  4 ++--
+ drivers/gpio/gpiolib-of.c   | 13 ++++++-------
+ drivers/gpio/gpiolib-of.h   |  5 +++--
+ drivers/gpio/gpiolib.c      |  4 ++--
+ 5 files changed, 19 insertions(+), 20 deletions(-)
+
+-- 
+2.43.0.rc1.1.gbec44491f096
+
 
