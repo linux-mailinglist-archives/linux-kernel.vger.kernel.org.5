@@ -1,69 +1,67 @@
-Return-Path: <linux-kernel+bounces-85396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F0C86B55D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:57:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF20286B55F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:57:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E204289A09
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:57:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9047AB23066
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:57:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22DC3FBA8;
-	Wed, 28 Feb 2024 16:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B2E12F38F;
+	Wed, 28 Feb 2024 16:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JhCD72Yi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CTywNE41"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AFC200A8
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:57:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85548208B2
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709139443; cv=none; b=cFS7l3m3YEvBsDX+rjMbE/prHs7hKfPkB8db+N3ARfl/EBPIXrdQaI4qcpA4YIxFotRBENyrjqwgciWVnJfHiXpt9QaWmnAcperLvlWODOMUlBS0IBxWLNOyT6GwSDv2K1QkGRu7roE9Jo5zHNBXpxNgYIOxaryrjlF7YoHOslY=
+	t=1709139444; cv=none; b=fJxop5ABJHv6WKjMxkt55mb5o1DT8FfXIIPLZoCW+fKSTtUdlMzXJU/diX04qgMHPzY9YZKx3YY3LnmLRQrWstJf8jl7hZRTb0pCZ5zeOOhK0Ij1aA7awssqJ/V/H3BeGQrC5XuDBS93y/L/o6YnHlDd7uPywacwVdUHY12UAuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709139443; c=relaxed/simple;
-	bh=cG0K0Z07eB5+9mj4tuqLV6lwrA56qZB6hhqyl8Bt7+k=;
+	s=arc-20240116; t=1709139444; c=relaxed/simple;
+	bh=AIkMM1NMy91FDgmfFFaJ0HxHDsRelsqEiKUcFIg+iw8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CjZZxdsItDSmZkWsGlly9GLiijzPdCYecxx8c4kmz3fY2q7xSixLLcSxLlNu9zc04fzNRjkiZxMiRG8cBS5+Vrt2YqNGHPzJIb8cVNNP+gjBV+5/Qhl+SRqC3lYwsIxyi7i5xmg4CDkaUdwGK39m91o6j95NpWtbIcxx3eaFGCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JhCD72Yi; arc=none smtp.client-ip=192.198.163.17
+	 MIME-Version:Content-Type; b=TqTNkvkG9eGkkNbGv4P7DTr0D1J2WMcnVdGrtyWPTpVwBYbPdlIx7IiLSDsHElzQOBQ+Vj/dHrpVwdM6ZJj+X2Or3P+NjhLCvm3jx/FGu58+QlgxI1nX/lqzdmXKUtE/QyHmNLs5lC9VVqQ1irkI1tm5RB8QTsbC682NlkctX6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CTywNE41; arc=none smtp.client-ip=192.198.163.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709139441; x=1740675441;
+  t=1709139442; x=1740675442;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=cG0K0Z07eB5+9mj4tuqLV6lwrA56qZB6hhqyl8Bt7+k=;
-  b=JhCD72YiKE0CMRDUmmX43FPbM44qHoxdM0/qEZQIxW5SttAKHE7PsIjd
-   kspUMWGwZfEioQklAV0EF7icUzMKVB+hrAB1pkxEMCWmTL+jW2So3wTIK
-   l4eWk+Xqprx4dkvFV+fzUqa9InWDTMQZ4F9uI0MtYnlqY8B0sDfGyq0xl
-   34DeGzcgLNlxaDMqZe4obdOvH1m5mIeyXPCSS4fMgMJI8fYvu+SiyC6jC
-   3pl1e7J9ecvpAaACsZqLSg+1PhK0cx51KqSkz9h01SOq4+U9q28LqRaPB
-   V8MeQzVVOUq2GXRlO0AmUhvxRblw1GxVJtOqkBLYoZENbaePHbsqZpsaI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3401207"
+  bh=AIkMM1NMy91FDgmfFFaJ0HxHDsRelsqEiKUcFIg+iw8=;
+  b=CTywNE41vHAyg5zlXuFLhmMXodQaFSiAJ/Es7lUzgyBHegC+Xc3Cj+Yc
+   Y2KIWts6UcU23+mO6o/FuD87OY9lfo0jIHDNpjgZXFGXWyCDhpJaP228p
+   jBgE0GmUyqV4/irPHafrYP8okOg/19CKDBw4V+MG0+YbB53Wmd75Lr54w
+   LrTpAVzVq7TNTBFw/s0qA5sv48O3Yof5UT+3nAGKsq/KusubZUIzdfLew
+   gGR39187SfX0dx7Vl/efhus06JJJ8Leofq7VmCil0yePByAw4l++Kpf1n
+   xvAS6B+HZhA+wV4MyNI0e6A2J1cIlRAUadMJ1+wEvvd0YpDF/wcLnv0+9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3401214"
 X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="3401207"
+   d="scan'208";a="3401214"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:57:20 -0800
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:57:22 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="12213424"
+   d="scan'208";a="12213438"
 Received: from josouza-mobl2.bz.intel.com ([10.87.243.88])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:57:19 -0800
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:57:21 -0800
 From: =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>
 To: linux-kernel@vger.kernel.org,
 	intel-xe@lists.freedesktop.org
 Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Mukesh Ojha <quic_mojha@quicinc.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
 	Jonathan Cavitt <jonathan.cavitt@intel.com>,
 	=?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>
-Subject: [PATCH v2 2/4] devcoredump: Add dev_coredumpm_timeout()
-Date: Wed, 28 Feb 2024 08:57:07 -0800
-Message-ID: <20240228165709.82089-2-jose.souza@intel.com>
+Subject: [PATCH v2 3/4] drm/xe: Remove devcoredump during driver release
+Date: Wed, 28 Feb 2024 08:57:08 -0800
+Message-ID: <20240228165709.82089-3-jose.souza@intel.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240228165709.82089-1-jose.souza@intel.com>
 References: <20240228165709.82089-1-jose.souza@intel.com>
@@ -76,142 +74,93 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add function to set a custom coredump timeout.
+This will remove devcoredump from file system and free its resources
+during driver unload.
 
-Current 5-minute timeout may be too short for users to search and
-understand what needs to be done to capture coredump to report bugs.
-
-v2:
-- replace dev_coredump_timeout_set() by dev_coredumpm_timeout() (Mukesh)
+This fix the driver unload after gpu hang happened, otherwise this
+it would report that Xe KMD is still in use and it would leave the
+kernel in a state that Xe KMD can't be unload without a reboot.
 
 Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Mukesh Ojha <quic_mojha@quicinc.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
 Cc: Jonathan Cavitt <jonathan.cavitt@intel.com>
 Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
 ---
- drivers/base/devcoredump.c  | 44 +++++++++++++++++++++++++++++++------
- include/linux/devcoredump.h | 18 +++++++++++++++
- 2 files changed, 55 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/xe/xe_devcoredump.c | 13 ++++++++++++-
+ drivers/gpu/drm/xe/xe_devcoredump.h |  5 +++++
+ drivers/gpu/drm/xe/xe_device.c      |  4 ++++
+ 3 files changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
-index 82aeb09b3d1b5..07b89f7f735d8 100644
---- a/drivers/base/devcoredump.c
-+++ b/drivers/base/devcoredump.c
-@@ -328,7 +328,8 @@ void dev_coredump_put(struct device *dev)
- EXPORT_SYMBOL_GPL(dev_coredump_put);
+diff --git a/drivers/gpu/drm/xe/xe_devcoredump.c b/drivers/gpu/drm/xe/xe_devcoredump.c
+index 68d3d623a05bf..3fef81396fe8a 100644
+--- a/drivers/gpu/drm/xe/xe_devcoredump.c
++++ b/drivers/gpu/drm/xe/xe_devcoredump.c
+@@ -9,6 +9,8 @@
+ #include <linux/devcoredump.h>
+ #include <generated/utsrelease.h>
  
- /**
-- * dev_coredumpm - create device coredump with read/free methods
-+ * dev_coredumpm_timeout - create device coredump with read/free methods with a
-+ * custom timeout.
-  * @dev: the struct device for the crashed device
-  * @owner: the module that contains the read/free functions, use %THIS_MODULE
-  * @data: data cookie for the @read/@free functions
-@@ -336,17 +337,20 @@ EXPORT_SYMBOL_GPL(dev_coredump_put);
-  * @gfp: allocation flags
-  * @read: function to read from the given buffer
-  * @free: function to free the given buffer
-+ * @timeout: time in jiffies to remove coredump
-  *
-  * Creates a new device coredump for the given device. If a previous one hasn't
-  * been read yet, the new coredump is discarded. The data lifetime is determined
-  * by the device coredump framework and when it is no longer needed the @free
-  * function will be called to free the data.
-  */
--void dev_coredumpm(struct device *dev, struct module *owner,
--		   void *data, size_t datalen, gfp_t gfp,
--		   ssize_t (*read)(char *buffer, loff_t offset, size_t count,
--				   void *data, size_t datalen),
--		   void (*free)(void *data))
-+void dev_coredumpm_timeout(struct device *dev, struct module *owner,
-+			   void *data, size_t datalen, gfp_t gfp,
-+			   ssize_t (*read)(char *buffer, loff_t offset,
-+					   size_t count, void *data,
-+					   size_t datalen),
-+			   void (*free)(void *data),
-+			   unsigned long timeout)
++#include <drm/drm_managed.h>
++
+ #include "xe_device.h"
+ #include "xe_exec_queue.h"
+ #include "xe_force_wake.h"
+@@ -231,5 +233,14 @@ void xe_devcoredump(struct xe_sched_job *job)
+ 	dev_coredumpm(xe->drm.dev, THIS_MODULE, coredump, 0, GFP_KERNEL,
+ 		      xe_devcoredump_read, xe_devcoredump_free);
+ }
+-#endif
+ 
++static void xe_driver_devcoredump_fini(struct drm_device *drm, void *arg)
++{
++	dev_coredump_put(drm->dev);
++}
++
++int xe_devcoredump_init(struct xe_device *xe)
++{
++	return drmm_add_action_or_reset(&xe->drm, xe_driver_devcoredump_fini, xe);
++}
++#endif
+diff --git a/drivers/gpu/drm/xe/xe_devcoredump.h b/drivers/gpu/drm/xe/xe_devcoredump.h
+index df8671f0b5eb2..9eba67f37234f 100644
+--- a/drivers/gpu/drm/xe/xe_devcoredump.h
++++ b/drivers/gpu/drm/xe/xe_devcoredump.h
+@@ -11,10 +11,15 @@ struct xe_sched_job;
+ 
+ #ifdef CONFIG_DEV_COREDUMP
+ void xe_devcoredump(struct xe_sched_job *job);
++int xe_devcoredump_init(struct xe_device *xe);
+ #else
+ static inline void xe_devcoredump(struct xe_sched_job *job)
  {
- 	static atomic_t devcd_count = ATOMIC_INIT(0);
- 	struct devcd_entry *devcd;
-@@ -403,7 +407,7 @@ void dev_coredumpm(struct device *dev, struct module *owner,
- 	dev_set_uevent_suppress(&devcd->devcd_dev, false);
- 	kobject_uevent(&devcd->devcd_dev.kobj, KOBJ_ADD);
- 	INIT_DELAYED_WORK(&devcd->del_wk, devcd_del);
--	schedule_delayed_work(&devcd->del_wk, DEVCD_TIMEOUT);
-+	schedule_delayed_work(&devcd->del_wk, timeout);
- 	mutex_unlock(&devcd->mutex);
- 	return;
-  put_device:
-@@ -414,6 +418,32 @@ void dev_coredumpm(struct device *dev, struct module *owner,
-  free:
- 	free(data);
  }
-+EXPORT_SYMBOL_GPL(dev_coredumpm_timeout);
-+
-+/**
-+ * dev_coredumpm - create device coredump with read/free methods
-+ * @dev: the struct device for the crashed device
-+ * @owner: the module that contains the read/free functions, use %THIS_MODULE
-+ * @data: data cookie for the @read/@free functions
-+ * @datalen: length of the data
-+ * @gfp: allocation flags
-+ * @read: function to read from the given buffer
-+ * @free: function to free the given buffer
-+ *
-+ * Creates a new device coredump for the given device. If a previous one hasn't
-+ * been read yet, the new coredump is discarded. The data lifetime is determined
-+ * by the device coredump framework and when it is no longer needed the @free
-+ * function will be called to free the data.
-+ */
-+void dev_coredumpm(struct device *dev, struct module *owner,
-+		   void *data, size_t datalen, gfp_t gfp,
-+		   ssize_t (*read)(char *buffer, loff_t offset, size_t count,
-+				   void *data, size_t datalen),
-+		   void (*free)(void *data))
++static inline int xe_devcoredump_init(struct xe_device *xe)
 +{
-+	dev_coredumpm_timeout(dev, owner, data, datalen, gfp, read, free,
-+			      DEVCD_TIMEOUT);
++	return 0;
 +}
- EXPORT_SYMBOL_GPL(dev_coredumpm);
+ #endif
  
- /**
-diff --git a/include/linux/devcoredump.h b/include/linux/devcoredump.h
-index c8f7eb6cc1915..5e1e4deab07a6 100644
---- a/include/linux/devcoredump.h
-+++ b/include/linux/devcoredump.h
-@@ -55,6 +55,14 @@ static inline void _devcd_free_sgtable(struct scatterlist *table)
- void dev_coredumpv(struct device *dev, void *data, size_t datalen,
- 		   gfp_t gfp);
+ #endif
+diff --git a/drivers/gpu/drm/xe/xe_device.c b/drivers/gpu/drm/xe/xe_device.c
+index 919ad88f0495a..22be76537c7da 100644
+--- a/drivers/gpu/drm/xe/xe_device.c
++++ b/drivers/gpu/drm/xe/xe_device.c
+@@ -20,6 +20,7 @@
+ #include "regs/xe_regs.h"
+ #include "xe_bo.h"
+ #include "xe_debugfs.h"
++#include "xe_devcoredump.h"
+ #include "xe_dma_buf.h"
+ #include "xe_drm_client.h"
+ #include "xe_drv.h"
+@@ -502,6 +503,9 @@ int xe_device_probe(struct xe_device *xe)
+ 			return err;
+ 	}
  
-+void dev_coredumpm_timeout(struct device *dev, struct module *owner,
-+			   void *data, size_t datalen, gfp_t gfp,
-+			   ssize_t (*read)(char *buffer, loff_t offset,
-+					   size_t count, void *data,
-+					   size_t datalen),
-+			   void (*free)(void *data),
-+			   unsigned long timeout);
-+
- void dev_coredumpm(struct device *dev, struct module *owner,
- 		   void *data, size_t datalen, gfp_t gfp,
- 		   ssize_t (*read)(char *buffer, loff_t offset, size_t count,
-@@ -72,6 +80,16 @@ static inline void dev_coredumpv(struct device *dev, void *data,
- 	vfree(data);
- }
- 
-+void dev_coredumpm_timeout(struct device *dev, struct module *owner,
-+			   void *data, size_t datalen, gfp_t gfp,
-+			   ssize_t (*read)(char *buffer, loff_t offset,
-+					   size_t count, void *data,
-+					   size_t datalen),
-+			   void (*free)(void *data),
-+			   unsigned long timeout)
-+{
-+}
-+
- static inline void
- dev_coredumpm(struct device *dev, struct module *owner,
- 	      void *data, size_t datalen, gfp_t gfp,
++	err = xe_devcoredump_init(xe);
++	if (err)
++		return err;
+ 	err = drmm_add_action_or_reset(&xe->drm, xe_driver_flr_fini, xe);
+ 	if (err)
+ 		return err;
 -- 
 2.44.0
 
