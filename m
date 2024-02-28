@@ -1,85 +1,101 @@
-Return-Path: <linux-kernel+bounces-84310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84314-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 443B286A4D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:13:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E599486A4DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:19:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A43B0B258B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:13:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 760BB1F24C8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C68AD1FB5;
-	Wed, 28 Feb 2024 01:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9648C185E;
+	Wed, 28 Feb 2024 01:19:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UIgiXhCq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lrIEPNnN"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC65EDD;
-	Wed, 28 Feb 2024 01:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7881A1103
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709082799; cv=none; b=WeocnG6kgN5HNQuJSQHPIsTTnMttEcc+P0U18PL48Mva3njNt+lQoDbgjA1ikRDDoQbJmxAro/wIFB/GcI6xD9srpp7b97cOPuUMrGUeUkupVND4vqsSBKYmBauwIPe05cB/uvq59wYGpF2r7gF1LmUX30x+NcgyAofyrAcPynk=
+	t=1709083185; cv=none; b=VYn/iopAOZR+naFL/T2EkOjPLdtEC+y+k91crbaqXStEI69ufZ7jIntkcY5c+6F+ZcJJ8fEXE1k6R28dDGVhzscLCiKr6I9XEQlgoog+gDqsQAhgvKi7doWPn/tSk+WfQr6z+lK4eBkcv4LW96j0LUNfAJUu+PKPav0d1lVo+nU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709082799; c=relaxed/simple;
-	bh=C+rRmB4z5l9btdhBTc4yMDZ+lILSCJDrkTvKG1X3jXA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A+CJy20Et4I4TVVmUGFN9hy2er7WnIMbhLcQHCFBKekN6ZfK5iEGlxqK7MGdbGW796hr0Pcb8MqVws0padbt2tQiHF8Z88CYpp5qYDaJfIxguYZ6hZz33oRTOmlwOVYUihqoNuLhDS+37L+c8Gns3Lh0w9M1MMvwFv0xITDgJUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UIgiXhCq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80F75C433F1;
-	Wed, 28 Feb 2024 01:13:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709082798;
-	bh=C+rRmB4z5l9btdhBTc4yMDZ+lILSCJDrkTvKG1X3jXA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UIgiXhCqo5GJGvw8M0/WD+WE7QrPKzJjzB3pkMf5itTvtlEQ6Lq00qHknYNCbYuhV
-	 kAtEO+6SnJqmzJyA/4ieoPAg32PRSbl2G8EW0Ip5c8aok5Scj2duT2A+sao1E2rKMB
-	 z0lrm63NvXJtwaL9a2a7wnoMmEBf1qnMV6BfJI8sORNJ+rwf9zKa+044vGv0zlvbON
-	 028bBMDnGdRr2mUuinl1+AkvcxSToOAFso9x7wc5W7E8N6cfrNKtbjLa7AavamtnPz
-	 VejFJ91dsPoBoxKlKyDf2flbMJCYGO8MoQeDC07gj/uFMZP4UufQjiDyxvbiNTLvG7
-	 geGMr9qpvCyVQ==
-Date: Tue, 27 Feb 2024 17:13:16 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: "Lameter, Christopher" <cl@os.amperecomputing.com>
-Cc: Eric Dumazet <edumazet@google.com>, Adam Li
- <adamli@os.amperecomputing.com>, corbet@lwn.net, davem@davemloft.net,
- pabeni@redhat.com, willemb@google.com, yangtiezhu@loongson.cn,
- atenart@kernel.org, kuniyu@amazon.com, wuyun.abel@bytedance.com,
- leitao@debian.org, alexander@mihalicyn.com, dhowells@redhat.com,
- paulmck@kernel.org, joel.granados@gmail.com, urezki@gmail.com,
- joel@joelfernandes.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- patches@amperecomputing.com, shijie@os.amperecomputing.com
-Subject: Re: [PATCH] net: make SK_MEMORY_PCPU_RESERV tunable
-Message-ID: <20240227171316.40fe9c35@kernel.org>
-In-Reply-To: <bc168824-25dd-7541-1a34-38b1a3c00489@os.amperecomputing.com>
-References: <20240226022452.20558-1-adamli@os.amperecomputing.com>
-	<CANn89iLbA4_YdQrF+9Rmv2uVSb1HLhu0qXqCm923FCut1E78FA@mail.gmail.com>
-	<bc168824-25dd-7541-1a34-38b1a3c00489@os.amperecomputing.com>
+	s=arc-20240116; t=1709083185; c=relaxed/simple;
+	bh=tQvscC8DBlBxs+BhNJ1NwTvV+ccyIZaVmqcCkhwrSXU=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=VxMVv+T5ccWiNKKTndE0dyVM1EHDufYWvTVGV75MN6blVfGRyfU2BojvqF6rnoiYWZoHQJAoLuqwymFyX1JKnPKk8RXC8j8hUi0W33zEP7RYZRp3LVEDb8e/Vtey2vAsAcENFfkMtZF20n6ydxDQAwGHaNpjpIE8O4x4Nv5YkWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lrIEPNnN; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709083185; x=1740619185;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=tQvscC8DBlBxs+BhNJ1NwTvV+ccyIZaVmqcCkhwrSXU=;
+  b=lrIEPNnN6wr68RTV/tIdqkwBT0I5JSYgNHZhnppOQNuWHXgTg/SxjSYa
+   JHSjtNhG5pCqRn3x8M5fwj6hlewFIwVQ/XGczW9h+5tQvgJiApAB+q5j/
+   jmOkDT6khNUStyIcrcjk88Bsa0CX7DKuPQhRWQv37IH8FJtV9s/SOUfmY
+   uPw6DiTSS7VKRmDwDJ/6kfp72xpSY7TwCjPevx3HHm+46FjzjC6NGuyJU
+   VTh7ewSWtjuP7LHVFPNQ8uGd4vcsMoGcUBiE3aSbz3xF3ccYkE9QlB8qu
+   eGmnTqMI4gsh1is1wLy4RZ/PW5X3CymdozO+C1Itfn+HLZ7j1aYUVOB+G
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3620158"
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="3620158"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 17:19:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="11872833"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa004.fm.intel.com with ESMTP; 27 Feb 2024 17:19:41 -0800
+Message-ID: <c8bfc031-27a2-464e-b98e-47a7e6a05286@linux.intel.com>
+Date: Wed, 28 Feb 2024 09:13:45 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, "iommu@lists.linux.dev"
+ <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Jason Gunthorpe <jgg@nvidia.com>
+Subject: Re: [PATCH 1/2] iommu: Add static iommu_ops->release_domain
+Content-Language: en-US
+To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, "Badger, Eric" <ebadger@purestorage.com>
+References: <20240223051302.177596-1-baolu.lu@linux.intel.com>
+ <20240223051302.177596-2-baolu.lu@linux.intel.com>
+ <BN9PR11MB52766C0E58E2CB6989E0EB608C592@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB52766C0E58E2CB6989E0EB608C592@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Tue, 27 Feb 2024 15:08:18 -0800 (PST) Lameter, Christopher wrote:
-> > This looks good, do you have any performance numbers to share ?
-> >
-> > On a host with 384 threads, 384*16 ->  6 GB of memory.  
-> 
-> Those things also come with corresponding memories of a couple of TB...
+On 2/27/24 3:32 PM, Tian, Kevin wrote:
+>> From: Lu Baolu<baolu.lu@linux.intel.com>
+>> Sent: Friday, February 23, 2024 1:13 PM
+>>
+>>
+>> +	/*
+>> +	 * If the iommu driver provides release_domain then the core code
+>> +	 * ensures that domain is attached prior to calling release_device.
+>> +	 * Drivers can use this to enforce a translation on the idle iommu.
+> 'enforce a translation' is confusing in the context of blocking/identity
+> domain.
 
-We have a lot of machines at Meta with more cores than gigabytes of
-memory. Keying on amount of memory would make sense. Something like
-max(1MB, sk_mem / cores / 8) comes to mind?
+Blocking or identity domain is also kind of a translation from the
+core's perspective. The core does not care what type of translation the
+release_domain is; it just enforces this type of translation before
+device release if the driver has specified one.
 
-In fact it may be a better idea to have the sysctl control the divisor
-(the 8 in my example above). I had issues in the past with people
-"micro-optimizing" the absolute size, forgetting about it, moving
-workload to a larger machine and then complaining TCP is choking :(
+Best regards,
+baolu
 
