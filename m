@@ -1,158 +1,126 @@
-Return-Path: <linux-kernel+bounces-84667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD5F786A9CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:24:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D05C86A9CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:24:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86A49288F59
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:24:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20C941F245D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:24:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9A72C850;
-	Wed, 28 Feb 2024 08:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D472C861;
+	Wed, 28 Feb 2024 08:24:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U+XIOsi0"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UUe5t3SE"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72952C6A7
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764F12D042;
+	Wed, 28 Feb 2024 08:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709108651; cv=none; b=kdjP8oVXJ+ruCUp9PJYUj8UETm2qSC3j0U8FPnm9bmNs7bRPVu17cta6LDXfvJvFQ+Wqy9aPK/cuEicUabs4JecPhml3CctDZhxp+9nHA4tJzmJ51rpKKzcQ8RpBicpsOM2880m8YCOjp0JnoKp6p5m9DvTho2u4zO7azohz5Gg=
+	t=1709108676; cv=none; b=upfvdaX4cqAFbOT4snQZlNxDTDgKSdCAiQ+ltGCN0biJlpJYARooOOMtiB38TmCItPoMvaVVC8yjPQMilunaygW1I9PXLdI+yr1qgQrHHXc6FnZ0fPWsti+xAUGBMhlns24QEDd7CRZLm32qX7NflZTv91ynlXX7d5Ag6DThudI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709108651; c=relaxed/simple;
-	bh=/34dynQfECm5B+3LFDIPAZBmeHM5kcxjFKpAK3qqMls=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YHH5KfvwumLVCJKoXVRGWtBLibeK7b4vHcnEIYewVN3XbR7ROEoeMujJFURiyLcHCKf6dIMejQv8AYSFvrOaAOZueN3za7YLE4x+uQ36Mk0ME+9WpacIBiVvZc33zLNKs/OQGaS52jL5EBprCDaF6NadEZuOpCeaD2wMcW7IYJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U+XIOsi0; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709108648;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J9Ndb3isEOpYMN4yO8UqNjKboPqCzY08CWqnXU9iwDw=;
-	b=U+XIOsi0ri602B7oJiJv6ViATJ8zob3zQaTdXvU383dqrenTpkASboXlIFV+vkXqZVPsMs
-	OPMw1puuAP3304+CTDmsbTAhk5P0dkLtNQxvCwmvmdQmGxoMLvjNIgXd4CWMsnZ+LYjTz9
-	9hvvhYlov1REdhWyndiVqUEXst9JROI=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-20-4bss5OM6MeWz1tM51xq-8Q-1; Wed, 28 Feb 2024 03:24:06 -0500
-X-MC-Unique: 4bss5OM6MeWz1tM51xq-8Q-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d2b326f17fso6362571fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:24:06 -0800 (PST)
+	s=arc-20240116; t=1709108676; c=relaxed/simple;
+	bh=rcSNTBiRF+f+3t3RzyuU+qKQ8ru2QZn9y+YmrmBALig=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Bk88vVe381w7e/ce02bDOs6d0bPKfAubjauojNA8t5j7sxhFPApcy5l7Q1GIv/7pcjk4sh62x4s0GpyMcSXUA2bTZr4MyYm6WsVoZi8Wiicmayllw4hZp41H7GGRUMCHJeUga5VLqW5Foj/b2nh/M9EhgcPnteHQjIpYvZ3+S24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UUe5t3SE; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dcc7f4717fso5899925ad.0;
+        Wed, 28 Feb 2024 00:24:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709108675; x=1709713475; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ANLYUYqTJ5NOkYuF+uWmj+L6Rv2c3OMTBVV8U8yPtxY=;
+        b=UUe5t3SE9LR6qSHuXJperYMrG3H1rnruT7kpCj2j+orpX0XqN0lHFvM6Ng6NSJnk2T
+         4BsXDBB2ToTL7acSWjzqh4bpJAhIrzJdHqLiNTKMGbIX78ZMCWK3BL1nOhbZIi+43RY+
+         cEYFSauEvU9/8JBD3/sy+69x+pOuPJDehQVOelfHq+C17BRfS8465xD1D9IzCOwSWCWq
+         nqXBHNAwSPd5+ZWZdLYbZQSmWFz+wVwPUl7sAkt9uBrXlzcCE2rEcF6wf9nFj4GBetnV
+         AMTkUlb8YXFczp9r5B0FvQyao5tVVVNBT57RDK1dOHvxlVRb9spYqStblH5MXETbrNbn
+         5XNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709108645; x=1709713445;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J9Ndb3isEOpYMN4yO8UqNjKboPqCzY08CWqnXU9iwDw=;
-        b=Lv3TOyxzuJjpjXxAjt9RCOHqMSDlAqylRJmydMWDM++Av526Dw3PMxrMp409nBNl2o
-         oD7XVWnvQ0gruMhWwIxWXD4fkHXSO1Jzt83AakfFd1FOCRiXcSYZR9AtQnQQLUEJMr1L
-         JI1rSQ794oU16GXgA8ehMPEMZv3tWtIt6wdmTWl9GJS3S6tHk9WcBIVkCOujOFKhZQta
-         w2Us46zhTWLYiJ3ofpxUHJu/Z/0Nx6FQgCdcQeAyb0Eug2tyNG77fYYKt0zWt8IZI980
-         VMbwhaazbxregvkSTATUzKKQyCJXnAPXbzcWQaj63/r7g9/UJ34qiRjDP1wLapcg0LY7
-         dwuQ==
-X-Gm-Message-State: AOJu0YwW1tJwQtHEcGLTkUQqNF5AwUeg1K8cLZ86EULP+DQVx47rAP7k
-	7Jf9KMgOpUQ8oQDXn4rG9ByDKHI9i9Y8l4byxaVXBCRrim3WxzCBNCR355fVlrz3e64ukMHqZKb
-	LCsigO3knHgGEALE5/uinAcV+bd/GPqk9W5YdOvaRd5AFJ5AwOpDQfFlIPgLD0Q==
-X-Received: by 2002:a05:651c:503:b0:2d2:7a4e:f5ec with SMTP id o3-20020a05651c050300b002d27a4ef5ecmr9461734ljp.7.1709108645190;
-        Wed, 28 Feb 2024 00:24:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEU9RFfTDN6DCawl4zOzM2ajPJXakuMJ1PeT8SScHF5O6ubWlcg+N2qiwzBokAlcvgl/u+VpQ==
-X-Received: by 2002:a05:651c:503:b0:2d2:7a4e:f5ec with SMTP id o3-20020a05651c050300b002d27a4ef5ecmr9461721ljp.7.1709108644858;
-        Wed, 28 Feb 2024 00:24:04 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id m13-20020a7bce0d000000b00412a31d2e2asm1308154wmc.32.2024.02.28.00.24.04
+        d=1e100.net; s=20230601; t=1709108675; x=1709713475;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ANLYUYqTJ5NOkYuF+uWmj+L6Rv2c3OMTBVV8U8yPtxY=;
+        b=gYl8Dfyh2RmT5gFUd2QxhCST9ia+fgcThcrF2v9v2JULG/FZt4LEVA7YILJFwDafeS
+         g4CnOuMCQTqUmH8CT9R0yu2o8ubwOBPxA74L2+d3QpLwc0RKEB6qwO4UqVG2UAxHQfzF
+         kb22CYTPop0HywMQ3VONvN5qxHWv/wlT/SWAdZjaVSI9VIhh6Rzq0pvUKskcAEEsmDab
+         CuwGnd/wPZdvvYY1u1g+YYKAjBRrGT6NLRm2Q2xuUkQO8SxUiKQwVgTHeWYE/Pg72FGW
+         N5VZVYdb9q4kFT2gCSwbSl40DUvjunDcR+t3cnHYzXsm1iAmiyiURHbhfranV8wtf82u
+         TP5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUExjF0J2VmOe7XHwuFs0w5pw4OHvuHPQXJmzxRmEvL2HBhJXEe7EgQzKJKcSKAgSFVnj1WrFHPrkV3ZMsg1oWqg5IaC5IswYuKnQmBmiVHS7bGKWGLg5HHJBhmWvWle96JDW57fIh66LbQ2Xth
+X-Gm-Message-State: AOJu0Yxo4ZS9WW6dKSwyqviRldCp8RuYQAsMQpiSUundnOAEOJMJfwPX
+	CMIiFt02z7lv40l1yIicnGJCRhDdw9QaxnIr24CiAHjtTUHY4SGyMgOmcmYz
+X-Google-Smtp-Source: AGHT+IHFSxHEnMcZZRP0fuCcTyC3jlFxQF+jQbHOTPo5GbmFmpa3QE0nYX6/CayEeXRL3zjjGsLfRw==
+X-Received: by 2002:a17:902:f54f:b0:1dc:78b6:bbcf with SMTP id h15-20020a170902f54f00b001dc78b6bbcfmr15420655plf.63.1709108674644;
+        Wed, 28 Feb 2024 00:24:34 -0800 (PST)
+Received: from localhost.localdomain ([115.99.206.243])
+        by smtp.gmail.com with ESMTPSA id je20-20020a170903265400b001db608107ecsm2752890plb.167.2024.02.28.00.24.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 00:24:04 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>, Breno Leitao
- <leitao@debian.org>, Li Zetao <lizetao1@huawei.com>,
- linux-wireless@vger.kernel.org
-Subject: Re: [PATCH] wlcore: sdio: warn only once for
- wl12xx_sdio_raw_{read,write}() failures
-In-Reply-To: <8734tdaal1.fsf@kernel.org>
-References: <20240227002059.379267-1-javierm@redhat.com>
- <8734tdaal1.fsf@kernel.org>
-Date: Wed, 28 Feb 2024 09:24:03 +0100
-Message-ID: <877cipngik.fsf@minerva.mail-host-address-is-not-set>
+        Wed, 28 Feb 2024 00:24:34 -0800 (PST)
+From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+To: shuah@kernel.org
+Cc: netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	petrm@nvidia.com,
+	idosch@nvidia.com,
+	Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+Subject: [PATCH net-next] selftests: net: Correct couple of spelling mistakes
+Date: Wed, 28 Feb 2024 13:54:16 +0530
+Message-Id: <20240228082416.416882-1-pvkumar5749404@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Kalle Valo <kvalo@kernel.org> writes:
+Changes :
+	- "excercise" is corrected to "exercise" in drivers/net/mlxsw/spectrum-2/tc_flower.sh
+	- "mutliple" is corrected to "multiple" in drivers/net/netdevsim/ethtool-fec.sh
 
-Hello Kalle,
+Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+---
+ .../testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh | 2 +-
+ tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks for your feedback.
-
-> Javier Martinez Canillas <javierm@redhat.com> writes:
->
->> Report these failures only once, instead of keep logging the warnings for
->> the same condition every time that a SDIO read or write is attempted. This
->> behaviour is spammy and unnecessarily pollutes the kernel log buffer.
->
-> Removing error messages is not usually a good idea, it would be much
-
-This patch is not removing error messages though, just limiting to print
-only since IMO there is no need to constantly keep printing the same error
-message over and over.
-
-> better to fix the root cause.
->
-
-Agreed and I'm trying to figure out the cause. But to do that, I need a
-usable serial console and it's barely usable with all the warns and stack
-traces printed while I'm trying to type commands.
-
->> For example, on an AM625 BeaglePlay board where accessing a SDIO WiFi chip
->> fails with an -110 error:
->>
->>   $ dmesg | grep "sdio write\|read failed (-110)" | wc -l
->>   39
->
-> -110 is -ETIMEDOUT. Why is it timing out?
->
-
-If I knew it then I wouldn't have to type this patch :) In theory it
-should work according to Nishanth (Cc'ed) since I've both the firmware
-and the required patches for the bootloader to set some clocks early.
-
-But it's not working for me... I don't know what's missing for me.
-
->> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-
-[...]
-
->> -	if (WARN_ON(ret))
->> -		dev_err(child->parent, "sdio read failed (%d)\n", ret);
->> +	if (WARN_ON_ONCE(ret))
->> +		dev_err_once(child->parent, "sdio read failed (%d)\n", ret);
->
-> WARN_ON() feels excessive here, maybe remove that entirely? But
-
-Agreed and I'm on board to drop it.
-
-> dev_err_ratelimited() feels more approriate than printing the error just
-> once.
->
-
-Works for me. Thanks!
-
+diff --git a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
+index 616d3581419c..31252bc8775e 100755
+--- a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
++++ b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
+@@ -869,7 +869,7 @@ bloom_simple_test()
+ bloom_complex_test()
+ {
+ 	# Bloom filter index computation is affected from region ID, eRP
+-	# ID and from the region key size. In order to excercise those parts
++	# ID and from the region key size. In order to exercise those parts
+ 	# of the Bloom filter code, use a series of regions, each with a
+ 	# different key size and send packet that should hit all of them.
+ 	local index
+diff --git a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
+index 7d7829f57550..6c52ce1b0450 100755
+--- a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
++++ b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
+@@ -49,7 +49,7 @@ for o in llrs rs; do
+ Active FEC encoding: ${o^^}"
+ done
+ 
+-# Test mutliple bits
++# Test multiple bits
+ $ETHTOOL --set-fec $NSIM_NETDEV encoding rs llrs
+ check $?
+ s=$($ETHTOOL --show-fec $NSIM_NETDEV | tail -2)
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+2.34.1
 
 
