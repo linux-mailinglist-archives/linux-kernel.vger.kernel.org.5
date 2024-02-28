@@ -1,77 +1,147 @@
-Return-Path: <linux-kernel+bounces-85240-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85244-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C137986B2CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:10:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EB9186B2D4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:12:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C454287B60
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:10:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A29F4B29596
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:12:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67CF15CD52;
-	Wed, 28 Feb 2024 15:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64F315CD55;
+	Wed, 28 Feb 2024 15:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="6RNvx1X0"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="U9uKYkbr"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8027F2D022;
-	Wed, 28 Feb 2024 15:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F9BA2D022;
+	Wed, 28 Feb 2024 15:11:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709133022; cv=none; b=fMal7qlApT9h3lT3504Bkk8Hz85cdWJU7cMMKwzLvBo3i22l4BJ80aEzQIn/zE9/cU1jKS5x+rxBzgCRSuTgo2v0Ax2l2Zr/dYKj3lMWVh/qD/s/tuIYqruNLCaWdaHuLhGQUzE3id0AyzN+idGuYzhT5zAQmdlg08O5StXnebg=
+	t=1709133109; cv=none; b=ifPPQ0HVVVALl8wB0s2NrtB/wySnA6eKj4D02shS7X8b40LU4I7Ra+aiIZA6dTZy7vF1guD3Yfsc8Eom1JnvsaG0T/S8QGA7T7PQ3K+XiIzLE48eg+8DWGh3abZCoeBJu57Kgi6O8sNEmNjugEIA9FvTcHQHRDYhDDhOxL7IXXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709133022; c=relaxed/simple;
-	bh=hbU6soSNIhde/HbBZmF1+OQ6a8o7ZDnBxNw6usm4cqE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TwU2Iz1m59//6p+nd0UePDcZnJmc/GhzBOdCYW3haZufLNVggYAidRXpI0rL3COuGbEopk3ax4eRx9q892VpKBS/5cz9H8fpY0chZv7N88nQsBjny3WIIL85O+U9eUOQzhHmYKPwaRehMYUnuVmiUv0JJUmjW4PWbooC6jMboXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=6RNvx1X0; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=88pAabs67d/TaG18mZs0ENtHJpAhlznp1aL+eyjFIZY=; b=6RNvx1X0aVSuyP/gI8PFf+trpL
-	HwXlVYgad+kq4p21jk4hI/FBs7Nqpwh4BylkoAlZ9v233Ht9VswGXAm1jIFerp+am4LHEp8w7Ddzw
-	litSe5pNwbCeQF4z1zait7ziaFW5Wn6D3SHr3EF5vO9J5wxLHzt4DVBUgzH+np74PSI4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rfLZn-008xVg-Ue; Wed, 28 Feb 2024 16:10:31 +0100
-Date: Wed, 28 Feb 2024 16:10:31 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-	Peter Korsgaard <peter@korsgaard.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: usb: dm9601: fix wrong return value in
- dm9601_mdio_read
-Message-ID: <1ed82980-6fa8-4ad6-b031-2bdd07207fe0@lunn.ch>
-References: <20240225-dm9601_ret_err-v1-1-02c1d959ea59@gmail.com>
- <20240227181709.7159d60f@kernel.org>
+	s=arc-20240116; t=1709133109; c=relaxed/simple;
+	bh=vMPtC0P6kj5OKOx0oZX/3NpIKMdeW8bIJGtlsp0RhbA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=JrF+aqk2nl0cr4OFMr1n2kkaNhZX0Yu+vGIcQD6oe7lC7Qbdb+vlNvi5GcvOsvuE4yYEa4+hpNz3HHNXWtn9MPDvFUNATXABPknfoO0fN5Q8yx9FgJaN2kdIlh3rPhKmtR/+iNsD3FeFTKoLNZ+ebKX2a8V9AG7RPv06yQfGxqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=U9uKYkbr; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S7LJbE005021;
+	Wed, 28 Feb 2024 15:11:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=WQwMVbuHD29gVKeUPgQfDeQmg0TH8Q84YBFEqP82N4s=; b=U9
+	uKYkbr93JkEeygQi9noVg6VyioqEjSxmBrAK4Apox95ExMect929Jjf9Tnr2LfvZ
+	VWrPbSDPgGoXJSNJZ8CdLO1KcERYx4Q97irarVLtqX2rcUSNL4BCtXInqTQ6Sa8Z
+	tGJhOCxQMvg8WDm/lXVrYqa0E/sQfSvZsJJ7xXnEiP2CaC2UT2AO/Rab9clGXTXc
+	6udv7s2rBiJjo0X5aEO6XDQFk9keJuXp4TG0rn8MZ9yZ3XZia7KAxdsgO+ZBLk67
+	ZDY01+TakFMozFACiIhMzS9PYJB0+e7vZBPLlDqYGLFigvAGShc3w34sVuVnY7zl
+	kF7iDLAthT+HKDo0D5zQ==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whw3f1f98-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 15:11:37 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SFBaCK010479
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 15:11:36 GMT
+Received: from [10.216.14.152] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 07:11:27 -0800
+Message-ID: <2e8ff010-2129-55e0-55b7-5a1589d27798@quicinc.com>
+Date: Wed, 28 Feb 2024 20:41:22 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227181709.7159d60f@kernel.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v7 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
+ path
+Content-Language: en-US
+To: Bjorn Helgaas <helgaas@kernel.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring
+	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Brian Masney
+	<bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_parass@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20240228145051.GA271533@bhelgaas>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20240228145051.GA271533@bhelgaas>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LitNJhq6cC_bjasrp6uvlpEFM25PtURf
+X-Proofpoint-GUID: LitNJhq6cC_bjasrp6uvlpEFM25PtURf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_07,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 adultscore=0 impostorscore=0 priorityscore=1501 bulkscore=0
+ mlxscore=0 clxscore=1015 malwarescore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402280119
 
-> Andrew, 
-> mii.h files seem to fall under PHYLIB in MAINTAINERS, but mii.c does
-> not. Is this intentional?
 
-Probably. There are big parts of linux/mii.h which phylib
-uses. However drivers/net/mii.c is not part of phylib and is
-unmaintained.
 
-      Andrew
+On 2/28/2024 8:20 PM, Bjorn Helgaas wrote:
+> On Wed, Feb 28, 2024 at 12:08:37PM +0530, Krishna Chaitanya Chundru wrote:
+>> On 2/28/2024 4:52 AM, Bjorn Helgaas wrote:
+>>> On Fri, Feb 23, 2024 at 08:18:00PM +0530, Krishna chaitanya chundru wrote:
+>>>> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
+>>>> ICC(interconnect consumers) path should be voted otherwise it may
+>>>> lead to NoC(Network on chip) timeout. We are surviving because of
+>>>> other driver vote for this path.
+>>>> As there is less access on this path compared to PCIe to mem path
+>>>> add minimum vote i.e 1KBps bandwidth always.
+> 
+>>>> +	 * The config space, BAR space and registers goes through cpu-pcie path.
+>>>> +	 * Set peak bandwidth to 1KBps as recommended by HW team for this path all the time.
+>>>
+>>> Wrap to fit in 80 columns.
+> 
+>> We have limit up to 100 columns in the driver right, I am ok to change to 80
+>> but just checking if I misunderstood something.
+> 
+> I should have said "wrap to fit in 80 columns to match the rest of the
+> file."  I looked at pcie-qcom.c, and with a few minor exceptions, it
+> fits in 80 columns, and maintaining that consistency makes it easier
+> to browse.  Sometimes exceptions make sense for code, but for
+> comments, having some that fit in 80 columns and some that require 100
+> just makes life harder.
+> 
+> Bjorn
+> 
+
+Sure I will wrap in 80 columns, in my next patch series.
+- Krishna Chaitanya.
 
