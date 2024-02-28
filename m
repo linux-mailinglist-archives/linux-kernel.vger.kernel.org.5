@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-84971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 101BA86AE50
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:56:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E317286AE4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:55:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307D31C21942
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:56:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1376D1C22744
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:55:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E323B15AAB7;
-	Wed, 28 Feb 2024 11:49:44 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E481159582;
+	Wed, 28 Feb 2024 11:49:43 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1B6155A5C;
-	Wed, 28 Feb 2024 11:49:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242FC6CDDB;
+	Wed, 28 Feb 2024 11:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709120984; cv=none; b=crM/MHN14pX4/SmMTUZ62TssTspGXDvfpcnxa8/0cFFzihEQ+95wHSSlZ8zRdWAHIE6LxSSQXa34UJsvij2x0N8QF2UUAAXfdtyMU8a0+UDeZGSGKm+d5YIrESNa13wvO/xsEBh+lVyRPz+ESatHZXlN1Ft9zoab85sfxcPLiKs=
+	t=1709120981; cv=none; b=YpzKZEWfRM0f6BSe35E3rASEQ0dOnNrGH9qPFGx6HpTC9T0tgTQ/MCDREQZMWafSbrqZzVT9UEotAChwruReR4Up8zB9rZm6WQU3xWZJqrXJj0vT1fEGjtMS1coF/al8hHWBM12alxa1VzCVUwEonAJcnSbSePqRlmN+3grDLJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709120984; c=relaxed/simple;
-	bh=jldN1ct6r5ylRv2hbOuCl1QF6H4dCcHj/0HGIhtPvgc=;
+	s=arc-20240116; t=1709120981; c=relaxed/simple;
+	bh=AZ9SJ8Ws9UIzKwZBqDyxIqj2dRCU8An1gMQqmKewSbs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=X9f457AqO/cftfunRBvIj9lKNzYgDBEfCn3hN1LTAiMkymxAX6o8Ye/bZ6nGr4daVH1UpeaAb2k2jJhW1ZzudmDZQkjj4oMOqeDE6a10L9wzPfg+QP/+fGv6uYJuwhAp3M06u/GhR2u3prMgASakjgjLR3bvoO0/JSZHR0zgZVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=s3qhLcJha3SqaZEO4hSY4cmdDdg2lHMXEY1pSHz00mvRqDezWzMGauFQI1YZ6jMk1FijM8LcqWUR3a7JYanI/bVLmmlzDqTrc/ixmT0F5+GD/r3zVGlDVcnOGHelEsPvQgbVbO6b3BBG0IW27foSy9r0+PPXcOxlMVfQg3zu8o0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TlCLv3CZvz4f3js6;
-	Wed, 28 Feb 2024 19:49:27 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TlCLs5ngpz4f3lfq;
+	Wed, 28 Feb 2024 19:49:25 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id AA6431A0D99;
-	Wed, 28 Feb 2024 19:49:32 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 25A811A016E;
+	Wed, 28 Feb 2024 19:49:33 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g7IHd9l+eamFQ--.6969S6;
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g7IHd9l+eamFQ--.6969S7;
 	Wed, 28 Feb 2024 19:49:32 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: xni@redhat.com,
@@ -49,9 +49,9 @@ Cc: linux-raid@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH md-6.9 v3 02/11] md/raid1: factor out helpers to add rdev to conf
-Date: Wed, 28 Feb 2024 19:43:24 +0800
-Message-Id: <20240228114333.527222-3-yukuai1@huaweicloud.com>
+Subject: [PATCH md-6.9 v3 03/11] md/raid1: record nonrot rdevs while adding/removing rdevs to conf
+Date: Wed, 28 Feb 2024 19:43:25 +0800
+Message-Id: <20240228114333.527222-4-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240228114333.527222-1-yukuai1@huaweicloud.com>
 References: <20240228114333.527222-1-yukuai1@huaweicloud.com>
@@ -62,12 +62,12 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g7IHd9l+eamFQ--.6969S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxur1UJF4UAw4kGry3ZFWkJFb_yoWrAw4Upa
-	13XasxGr47ZrsIgr1DJrWUCFyFqw4kCa97JryfW3yIvanxKrZ5X3y8JFy5XFyUZFZ8Zw45
-	Xa4rJrWDGF1xuFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+X-CM-TRANSID:cCh0CgAn9g7IHd9l+eamFQ--.6969S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF47AF1xGFWxJryxCryUZFb_yoWrZF1Dpa
+	y5ta9av3yUJa98Cw4ktw48Cr1Sv34UKay8GFZ7C3yF9asIqFWqqFW8G342qr1kGrs8Aw42
+	vr1UGws8C3WxKFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
 	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
 	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
@@ -78,152 +78,135 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxur1UJF4UAw4kGry3ZFWkJFb_yoWrAw4Upa
 	Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
 	0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8
 	JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIx
-	AIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbdOz7UUUUU=
+	AIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU
 	=
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-There are no functional changes, just make code cleaner and prepare to
-record disk non-rotational information while adding and removing rdev to
-conf
+For raid1, each read will iterate all the rdevs from conf and check if
+any rdev is non-rotational, then choose rdev with minimal IO inflight
+if so, or rdev with closest distance otherwise.
 
+Disk nonrot info can be changed through sysfs entry:
+
+/sys/block/[disk_name]/queue/rotational
+
+However, consider that this should only be used for testing, and user
+really shouldn't do this in real life. Record the number of non-rotational
+disks in conf, to avoid checking each rdev in IO fast path and simplify
+read_balance() a little bit.
+
+Co-developed-by: Paul Luse <paul.e.luse@linux.intel.com>
+Signed-off-by: Paul Luse <paul.e.luse@linux.intel.com>
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/md/raid1.c | 74 ++++++++++++++++++++++++++++------------------
- 1 file changed, 46 insertions(+), 28 deletions(-)
+ drivers/md/md.h    |  1 +
+ drivers/md/raid1.c | 17 ++++++++++-------
+ drivers/md/raid1.h |  1 +
+ 3 files changed, 12 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/md/md.h b/drivers/md/md.h
+index a49ab04ab707..b2076a165c10 100644
+--- a/drivers/md/md.h
++++ b/drivers/md/md.h
+@@ -207,6 +207,7 @@ enum flag_bits {
+ 				 * check if there is collision between raid1
+ 				 * serial bios.
+ 				 */
++	Nonrot,			/* non-rotational device (SSD) */
+ };
+ 
+ static inline int is_badblock(struct md_rdev *rdev, sector_t s, int sectors,
 diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
-index a145fe48b9ce..1940ff398c23 100644
+index 1940ff398c23..032a6a6c3730 100644
 --- a/drivers/md/raid1.c
 +++ b/drivers/md/raid1.c
-@@ -1757,6 +1757,40 @@ static int raid1_spare_active(struct mddev *mddev)
- 	return count;
- }
+@@ -599,7 +599,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	int sectors;
+ 	int best_good_sectors;
+ 	int best_disk, best_dist_disk, best_pending_disk;
+-	int has_nonrot_disk;
+ 	int disk;
+ 	sector_t best_dist;
+ 	unsigned int min_pending;
+@@ -620,7 +619,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	best_pending_disk = -1;
+ 	min_pending = UINT_MAX;
+ 	best_good_sectors = 0;
+-	has_nonrot_disk = 0;
+ 	choose_next_idle = 0;
+ 	clear_bit(R1BIO_FailFast, &r1_bio->state);
  
-+static bool raid1_add_conf(struct r1conf *conf, struct md_rdev *rdev, int disk)
-+{
-+	struct raid1_info *info = conf->mirrors + disk;
-+
-+	if (info->rdev)
-+		return false;
-+
-+	rdev->raid_disk = disk;
-+	info->head_position = 0;
-+	info->seq_start = MaxSector;
-+	WRITE_ONCE(info->rdev, rdev);
-+
-+	return true;
-+}
-+
-+static bool raid1_remove_conf(struct r1conf *conf, int disk)
-+{
-+	struct raid1_info *info = conf->mirrors + disk;
-+	struct md_rdev *rdev = info->rdev;
-+
-+	if (!rdev || test_bit(In_sync, &rdev->flags) ||
-+	    atomic_read(&rdev->nr_pending))
-+		return false;
-+
-+	/* Only remove non-faulty devices if recovery is not possible. */
-+	if (!test_bit(Faulty, &rdev->flags) &&
-+	    rdev->mddev->recovery_disabled != conf->recovery_disabled &&
-+	    rdev->mddev->degraded < conf->raid_disks)
-+		return false;
-+
-+	WRITE_ONCE(info->rdev, NULL);
-+	return true;
-+}
-+
- static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
- {
- 	struct r1conf *conf = mddev->private;
-@@ -1792,15 +1826,13 @@ static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
- 				disk_stack_limits(mddev->gendisk, rdev->bdev,
- 						  rdev->data_offset << 9);
+@@ -637,7 +635,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 		sector_t first_bad;
+ 		int bad_sectors;
+ 		unsigned int pending;
+-		bool nonrot;
  
--			p->head_position = 0;
--			rdev->raid_disk = mirror;
-+			raid1_add_conf(conf, rdev, mirror);
- 			err = 0;
- 			/* As all devices are equivalent, we don't need a full recovery
- 			 * if this was recently any drive of the array
+ 		rdev = conf->mirrors[disk].rdev;
+ 		if (r1_bio->bios[disk] == IO_BLOCKED
+@@ -703,8 +700,6 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 			/* At least two disks to choose from so failfast is OK */
+ 			set_bit(R1BIO_FailFast, &r1_bio->state);
+ 
+-		nonrot = bdev_nonrot(rdev->bdev);
+-		has_nonrot_disk |= nonrot;
+ 		pending = atomic_read(&rdev->nr_pending);
+ 		dist = abs(this_sector - conf->mirrors[disk].head_position);
+ 		if (choose_first) {
+@@ -731,7 +726,7 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 			 * small, but not a big deal since when the second disk
+ 			 * starts IO, the first disk is likely still busy.
  			 */
- 			if (rdev->saved_raid_disk < 0)
- 				conf->fullsync = 1;
--			WRITE_ONCE(p->rdev, rdev);
- 			break;
- 		}
- 		if (test_bit(WantReplacement, &p->rdev->flags) &&
-@@ -1810,13 +1842,11 @@ static int raid1_add_disk(struct mddev *mddev, struct md_rdev *rdev)
+-			if (nonrot && opt_iosize > 0 &&
++			if (test_bit(Nonrot, &rdev->flags) && opt_iosize > 0 &&
+ 			    mirror->seq_start != MaxSector &&
+ 			    mirror->next_seq_sect > opt_iosize &&
+ 			    mirror->next_seq_sect - opt_iosize >=
+@@ -763,7 +758,7 @@ static int read_balance(struct r1conf *conf, struct r1bio *r1_bio, int *max_sect
+ 	 * mixed ratation/non-rotational disks depending on workload.
+ 	 */
+ 	if (best_disk == -1) {
+-		if (has_nonrot_disk || min_pending == 0)
++		if (READ_ONCE(conf->nonrot_disks) || min_pending == 0)
+ 			best_disk = best_pending_disk;
+ 		else
+ 			best_disk = best_dist_disk;
+@@ -1764,6 +1759,11 @@ static bool raid1_add_conf(struct r1conf *conf, struct md_rdev *rdev, int disk)
+ 	if (info->rdev)
+ 		return false;
  
- 	if (err && repl_slot >= 0) {
- 		/* Add this device as a replacement */
--		p = conf->mirrors + repl_slot;
- 		clear_bit(In_sync, &rdev->flags);
- 		set_bit(Replacement, &rdev->flags);
--		rdev->raid_disk = repl_slot;
-+		raid1_add_conf(conf, rdev, repl_slot);
- 		err = 0;
- 		conf->fullsync = 1;
--		WRITE_ONCE(p[conf->raid_disks].rdev, rdev);
- 	}
- 
- 	print_conf(conf);
-@@ -1833,27 +1863,20 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
- 	if (unlikely(number >= conf->raid_disks))
- 		goto abort;
- 
--	if (rdev != p->rdev)
--		p = conf->mirrors + conf->raid_disks + number;
-+	if (rdev != p->rdev) {
-+		number += conf->raid_disks;
-+		p = conf->mirrors + number;
++	if (bdev_nonrot(rdev->bdev)) {
++		set_bit(Nonrot, &rdev->flags);
++		WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks + 1);
 +	}
- 
- 	print_conf(conf);
- 	if (rdev == p->rdev) {
--		if (test_bit(In_sync, &rdev->flags) ||
--		    atomic_read(&rdev->nr_pending)) {
--			err = -EBUSY;
--			goto abort;
--		}
--		/* Only remove non-faulty devices if recovery
--		 * is not possible.
--		 */
--		if (!test_bit(Faulty, &rdev->flags) &&
--		    mddev->recovery_disabled != conf->recovery_disabled &&
--		    mddev->degraded < conf->raid_disks) {
-+		if (!raid1_remove_conf(conf, number)) {
- 			err = -EBUSY;
- 			goto abort;
- 		}
--		WRITE_ONCE(p->rdev, NULL);
--		if (conf->mirrors[conf->raid_disks + number].rdev) {
 +
-+		if (number < conf->raid_disks &&
-+		    conf->mirrors[conf->raid_disks + number].rdev) {
- 			/* We just removed a device that is being replaced.
- 			 * Move down the replacement.  We drain all IO before
- 			 * doing this to avoid confusion.
-@@ -3000,15 +3023,10 @@ static struct r1conf *setup_conf(struct mddev *mddev)
- 		    || disk_idx < 0)
- 			continue;
- 		if (test_bit(Replacement, &rdev->flags))
--			disk = conf->mirrors + mddev->raid_disks + disk_idx;
--		else
--			disk = conf->mirrors + disk_idx;
-+			disk_idx += mddev->raid_disks;
+ 	rdev->raid_disk = disk;
+ 	info->head_position = 0;
+ 	info->seq_start = MaxSector;
+@@ -1787,6 +1787,9 @@ static bool raid1_remove_conf(struct r1conf *conf, int disk)
+ 	    rdev->mddev->degraded < conf->raid_disks)
+ 		return false;
  
--		if (disk->rdev)
-+		if (!raid1_add_conf(conf, rdev, disk_idx))
- 			goto abort;
--		disk->rdev = rdev;
--		disk->head_position = 0;
--		disk->seq_start = MaxSector;
- 	}
- 	conf->raid_disks = mddev->raid_disks;
- 	conf->mddev = mddev;
++	if (test_and_clear_bit(Nonrot, &rdev->flags))
++		WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks - 1);
++
+ 	WRITE_ONCE(info->rdev, NULL);
+ 	return true;
+ }
+diff --git a/drivers/md/raid1.h b/drivers/md/raid1.h
+index 14d4211a123a..5300cbaa58a4 100644
+--- a/drivers/md/raid1.h
++++ b/drivers/md/raid1.h
+@@ -71,6 +71,7 @@ struct r1conf {
+ 						 * allow for replacements.
+ 						 */
+ 	int			raid_disks;
++	int			nonrot_disks;
+ 
+ 	spinlock_t		device_lock;
+ 
 -- 
 2.39.2
 
