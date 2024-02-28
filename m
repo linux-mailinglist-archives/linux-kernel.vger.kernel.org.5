@@ -1,103 +1,108 @@
-Return-Path: <linux-kernel+bounces-85702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CBDA86B987
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:00:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF7386B98B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:02:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2C97B2796E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:00:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC27728CAF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAAF28626D;
-	Wed, 28 Feb 2024 21:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XOmdFSNz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FE8C8626D;
+	Wed, 28 Feb 2024 21:02:12 +0000 (UTC)
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC678624E;
-	Wed, 28 Feb 2024 21:00:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C25D8624B;
+	Wed, 28 Feb 2024 21:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709154025; cv=none; b=QnVPO9XCgLCBVyuUaZa28jkJ7CTjTzAxct2rCT76s0VbRBZXJ5PQ4lL4eSKucmvVc9EWe0qy6S88RkwSsHnq/HGsu/YRwO7jEUCfLeXiP34TQcjotR/bRzulaUXGfZ2esrRVLhlR9Fv5w42mUYwJBIafOocpXwxu+W/dSQ5CSG4=
+	t=1709154131; cv=none; b=MNGkA5HrAptlgQsMhX3VNj9LULOmRVHFCz5EUN8j+PTLhkbF/iJZAncBXts/CHcIAJ7mmowcNMOkb+bet+LC3Sehm19Fzniy/lI+Cn4GQ8ARlkft2tlnOn15dGfKwuT6H2wWHOFlsLh7ehzojfTPtIx6kVUh0ubCE3R1jL/F+Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709154025; c=relaxed/simple;
-	bh=FcwKp/UWdTffbXRIcOsOFOR+78otSCOswrhWTwcAlqA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qPVygE+TqRRXlnLF+CEO3p0ZWjl8KZ4eCI0T28ccawYP7IucbXhM6vEgaxlw95m8E066LE0CFXrzUCZdyOnlQaxfXnRujqZdMBMazlu6n7SuwubMpFpKw1CjB+JOkBfGNxQJ/4fZsYpwKdFzH8i6DWZ7J+cySwwWFdCBeF9iY9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XOmdFSNz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C66BC433C7;
-	Wed, 28 Feb 2024 21:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709154024;
-	bh=FcwKp/UWdTffbXRIcOsOFOR+78otSCOswrhWTwcAlqA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XOmdFSNzkPCQQ/4whocnsxMjSbyb5JDdYRP7Jg8kc7MJkj0p5cRb0zU5RK+PgDIea
-	 GQrhmgA2zDrfh9DXu/qbepiNOpl5R5GreAJngS02tMorgpal9PJUM65LkQ5peBav0L
-	 AQyJGfiuo2EnjLlUC0kimaH156Tj4h4aGlreZEb3leS+19tLz6gNstAwUyLr0CwBj4
-	 wn8FAAQ6vQqdqfAcjn+QWoQhCCSVOxEyYskfYa62p0Q2VOWci8Nuu6IVG0XOicBA/1
-	 0kFjgCI+uobLjUxZCmwDCQwsJnpaZQuVyvBX+Y+/X+fIL5tKHUkEDcLwW8J8V6UV/D
-	 o7iavPnxhqXAQ==
-Date: Wed, 28 Feb 2024 21:00:14 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Kees Cook <keescook@chromium.org>,
-	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v4 6/8] spi: Use new helpers from overflow.h in
- __spi_alloc_controller()
-Message-ID: <d2ba1ccf-b22c-4939-823f-5298d5d8a15b@sirena.org.uk>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
- <20240228204919.3680786-7-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1709154131; c=relaxed/simple;
+	bh=f2E/PxHTdkAA66JUThG2R7iMitY1zi3+RidEBdAzSbI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XHNrkR0zuMhMDgPwzIPzU1wLpj0tyO5d7Sk3e6bDETcaQROm3jd+8UarIQ60fxd7fwvHXd1pdEM92xNAEQLg1HuS80BLRkBQreG5HzMNujuH1BDH/4W8IlfeClEbsfxIgw6h/Hmf4094v80rGXTEuJgtflD6e6r+wLEKWcjpCCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e4aa4877a9so29242a34.0;
+        Wed, 28 Feb 2024 13:02:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709154129; x=1709758929;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0avo+3TPJ6C9EUCLGrpf7J7w7kB90jDxq4qRrj4Zxv0=;
+        b=OSAztUX0NA83S2CJDIbXswASJl0SVSF1eMVWArfFh5NXK53kAk+waa7WKbGsMIRrcW
+         Nwp1Hg8Y2REA4u5wvl0QHFtOrxL6ZriQ/FZ97ffZHO0hDE6yn1yeQXXu56P3/x6RJJaG
+         +W0TZlv830pYbePh8Gy9RL6FzFDcGCnOSfhXBiWntDq5gWlvapCtLAPkLWphC12iNz5+
+         r9YiisKiRZRB/66+bKADV4rqNL9sq9QY4oSqTQiU6rRGAaf9i3V5JbQ0sUQS4KTOemnA
+         kZlvV1wPB+QXdC/ms/HnPB81siZuSycyUyxJIm4fWYliB1Bt4rqdti0V+4SnDCrRZ3o4
+         /TKA==
+X-Forwarded-Encrypted: i=1; AJvYcCX7ATJku6zlxehUXSyJFsFbP2QCN6AxN8bcedot9sPsZrK/xJggY/bgFzjeZNgDvMxuDMimLfTA/DPYXdDkGpbY4qlzZn6poBEJYhqUgufdWIT3DufPGLIUbQh6psKGie8Ij9Q5XHd/IQ==
+X-Gm-Message-State: AOJu0YyRDH/g5Uhcrg8SeE5PVqQ0A9ohnb+Sk5a/0J7KJpe3Gnn6KmzC
+	SMp0A47r7ABFztbJvChLpYlgG0YLtEV35zyNPmVFgMUoAKlEPTRZp9iC8t/Q7s1PRuSfTQKGEUA
+	l7HMzhNWF5egojmypspsWXq/f9Gs=
+X-Google-Smtp-Source: AGHT+IFdE9LB/cub6f7YK5AXJkUU9wAyIzEqghD6UR9pim6GcGMmJiookGbi7z8qGJ3v1XHyntEd6yM0iKdZrxq6LBc=
+X-Received: by 2002:a05:6820:d09:b0:5a0:3d13:a45a with SMTP id
+ ej9-20020a0568200d0900b005a03d13a45amr294699oob.0.1709154129401; Wed, 28 Feb
+ 2024 13:02:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gk1BrI7DkkgarVoc"
-Content-Disposition: inline
-In-Reply-To: <20240228204919.3680786-7-andriy.shevchenko@linux.intel.com>
-X-Cookie: Function reject.
+References: <20240223155731.858412-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240223155731.858412-1-andriy.shevchenko@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 28 Feb 2024 22:01:57 +0100
+Message-ID: <CAJZ5v0gJm48gX_Gssfc_6QOky3WiRLY+Wb5_iEYHR_u5CCVgaw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] driver core & device property: clean up APIs
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Sakari Ailus <sakari.ailus@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Feb 23, 2024 at 4:58=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> There are two, but dependent pair of patches that:
+> - hides unused devlink APIs
+> - removes 'proxy' header use
+>
+> v2:
+> - most of the patches were sent separately as v1, thus this series is v2
+> - harvested tags from that patches (Sakari, Saravana)
+>
+> Andy Shevchenko (4):
+>   driver core: Drop unneeded 'extern' keyword in fwnode.h
+>   driver core: Move fw_devlink stuff to where it belongs
+>   device property: Move enum dev_dma_attr to fwnode.h
+>   device property: Don't use "proxy" headers
+>
+>  drivers/base/core.c      | 58 ++++++++++++++++++++++++++++++++++
+>  drivers/base/property.c  | 67 ++++------------------------------------
+>  drivers/base/swnode.c    | 13 +++++++-
+>  include/linux/fwnode.h   | 13 +++++---
+>  include/linux/property.h |  9 +-----
+>  5 files changed, 86 insertions(+), 74 deletions(-)
+>
+> --
 
---gk1BrI7DkkgarVoc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+All of the code changes in the series look good to me, so
 
-On Wed, Feb 28, 2024 at 10:41:36PM +0200, Andy Shevchenko wrote:
-> We have two new helpers struct_size_with_data() and struct_data_pointer()
-> that we can utilize in __spi_alloc_controller(). Do it so.
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-Acked-by: Mark Brown <broonie@kernel.org>
+for all of the patches.
 
---gk1BrI7DkkgarVoc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXfnt0ACgkQJNaLcl1U
-h9BgOAf9FI0recmC0vWAsLHdxnLZ3bOgqWYIL5B3T4mtMG3GuQr3YG2DvaTxsw/L
-QhLkb+GOuSatBmvkPsVFx0FWtvVpf94puDaIWZv0vlC8jVwGRnBfTx2GkQUhfcrJ
-QwC4yAe6uoYffFT1QKi6ciibDmkz0h/PfgQ1lP6Dkrz1tySzwziI1wsuq6fGyKwW
-fHw7LZfoevfiaH4x9u2ByukwqGhDXhASRx+H8O9ujAU2j80ZTpUCHLjWF9XzqcLz
-2OZZzA0huTOd7AggXRnzRQ0CrQDa4JqcLrT15hxwfQX9pqDi+ewLmnfANzKUeeC4
-5AoTzSsw2gEuPX3Rz04M1o5pIEXRYw==
-=2YDc
------END PGP SIGNATURE-----
-
---gk1BrI7DkkgarVoc--
+The changelog of patch [2/4] could be a bit more to the point IMV, but
+let me reply to it directly.
 
