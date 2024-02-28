@@ -1,186 +1,73 @@
-Return-Path: <linux-kernel+bounces-84612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A40C686A905
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:32:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A74986A8FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44ED4B25BFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:32:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFE811F26E32
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A9C2560B;
-	Wed, 28 Feb 2024 07:31:51 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988C42561A;
+	Wed, 28 Feb 2024 07:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="D62rkL/Z"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75CC92560C;
-	Wed, 28 Feb 2024 07:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A08425603;
+	Wed, 28 Feb 2024 07:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709105511; cv=none; b=CRiVdtA3CWKwnWaL+SBPRbueIYTnpx4A1BlYJrHdrCVknYYs/gaD3cw1+dsuUtafyjhKy9PxqarkGJeeJ/QZPqteMmjXma6nlnUK8BHJmDLeV8i+ZTBrOqbD6DLpThiOSycMHZyJP4WL98w631/4g5WFCU5X5B/D/qX9Cx1bE10=
+	t=1709105474; cv=none; b=kh4zj6XWQWL9sZOfLZWtp5D8482G1963jKf7aaAn7CVuckCqf1Ftx+IEV2fBC8rWX71URCqiiRXbTABoUFNi9cc3N0DDAs2v/8E2AAFS5J8g1T3TAeWdI2jMJw0jqsv/oKj4KBPqkSkQjgFDlcsfgNhie14QLmPws1MSsL5Jz70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709105511; c=relaxed/simple;
-	bh=7b/Mm0rd6kV5M5+yNjB1eglhtbDPT0suSYpIqAyjs98=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eu185EIeErU5qMIZ+OqukEJw7j4izDk4jx8K09eIBeHiYP9KInfn5Y3VwcHJZ5/2abziZHyDw9Ho4FMAp4LLZ2edgn8uiz3u6PF+H6TCHU5wH1gu114QTdhmq5x7eFyjyUl8cXPX1AqaZPnd8XMr1n542fdqd2C1lTkX3scl8oE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.0.224] (ip5f5aedb1.dynamic.kabel-deutschland.de [95.90.237.177])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id A509361E5FE04;
-	Wed, 28 Feb 2024 08:30:42 +0100 (CET)
-Message-ID: <93d67381-34fc-423c-868a-565378c63e09@molgen.mpg.de>
-Date: Wed, 28 Feb 2024 08:30:41 +0100
+	s=arc-20240116; t=1709105474; c=relaxed/simple;
+	bh=bAhqk/05b8Deh/CrIzHszwgDXByXMAhoAe9aJbpdWe8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BrZkI+gxQyzNob9O6D+A83KCa5s5HK+1lSoYTYCqLNmR8saBlHOBrT/MwFLatkM0L5fu69DnztJfqgiZhjfWZYx+bpZczf5LRUdxm1FEe6iCTutUnQ1SemvfvFlFEHgB1Wh/gSPWzXa9Ihtp1OosRUWKaKXPtOx2FLUufVC9+ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=D62rkL/Z; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id D5C0C60429;
+	Wed, 28 Feb 2024 07:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1709105472;
+	bh=bAhqk/05b8Deh/CrIzHszwgDXByXMAhoAe9aJbpdWe8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=D62rkL/Z5dRMQsFd4AD+bN9vvTKIVlxz5nkOJxPXKVcZdINh8PJNWUdreAgIH3zhm
+	 7GuNx+PSZ/kQwEwHxjFqDtb6znK7vb38tl84TYuGh/8CZFDF7iWyEmSZI3/73coF/7
+	 3F0NkpoxPIOyx6uF+/5iTMdgpYYLENmyV2vOGhY1Ywn0TIoBpn6/eDip8h0IPYultX
+	 b2IxUxucALeyikRs+iL8JDJMPVfy2gn1Klr4rtQjugBmUiXLJYYKsJUNFXWXFoy5Rn
+	 80pu3A8fr3YdfpmUzCtYEhWS2JmT6zGqZrBJ3yqqhpZCQIEKn61D7pCaZw3Nh/afZl
+	 r6gN4PpTVeytw==
+Date: Wed, 28 Feb 2024 09:31:02 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] bus: ti-sysc: constify the struct device_type usage
+Message-ID: <20240228073102.GE52537@atomide.com>
+References: <20240219-device_cleanup-ti-sysc-v1-1-13b53177d0a5@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/3] dt-bindings: hwmon: Add NCT7363Y documentation
-Content-Language: en-US
-To: Ban Feng <baneric926@gmail.com>
-Cc: jdelvare@suse.com, linux@roeck-us.net, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, corbet@lwn.net,
- linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
- kcfeng0@nuvoton.com, kwliu@nuvoton.com, openbmc@lists.ozlabs.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- DELPHINE_CHIU@wiwynn.com, naresh.solanki@9elements.com,
- billy_tsai@aspeedtech.com, Rob Herring <robh@kernel.org>
-References: <20240227005606.1107203-1-kcfeng0@nuvoton.com>
- <20240227005606.1107203-3-kcfeng0@nuvoton.com>
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20240227005606.1107203-3-kcfeng0@nuvoton.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240219-device_cleanup-ti-sysc-v1-1-13b53177d0a5@marliere.net>
 
-Dear Ban,
+* Ricardo B. Marliere <ricardo@marliere.net> [240219 14:09]:
+> Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
+> core can properly handle constant struct device_type. Move the
+> sysc_device_type variable to be a constant structure as well, placing it
+> into read-only memory which can not be modified at runtime.
 
+Thanks applying into omap-for-v6.9/ti-sysc.
 
-Thank you for your patch.
-
-
-Am 27.02.24 um 01:56 schrieb baneric926@gmail.com:
-> From: Ban Feng <kcfeng0@nuvoton.com>
-> 
-> Adding bindings for the Nuvoton NCT7363Y Fan Controller
-
-s/Adding/Add/ or even Document bindings …
-
-Do you have an URL to the datasheet?
-
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Ban Feng <kcfeng0@nuvoton.com>
-> ---
->   .../bindings/hwmon/nuvoton,nct7363.yaml       | 63 +++++++++++++++++++
->   MAINTAINERS                                   |  6 ++
->   2 files changed, 69 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml
-> new file mode 100644
-> index 000000000000..1a9d9a5d614e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/hwmon/nuvoton,nct7363.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Nuvoton NCT7363Y Hardware Monitoring IC
-> +
-> +maintainers:
-> +  - Ban Feng <kcfeng0@nuvoton.com>
-> +
-> +description: |
-> +  The NCT7363Y is a Fan controller which provides up to 16 independent
-
-lowecase: fan controller?
-
-> +  FAN input monitors, and up to 16 independent PWM output with SMBus interface.
-
-output*s*?
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - nuvoton,nct7363
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#pwm-cells":
-> +    const: 2
-> +
-> +patternProperties:
-> +  "^fan-[0-9]+$":
-> +    $ref: fan-common.yaml#
-> +    unevaluatedProperties: false
-> +    required:
-> +      - pwms
-> +      - tach-ch
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#pwm-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        hwmon: hwmon@22 {
-> +            compatible = "nuvoton,nct7363";
-> +            reg = <0x22>;
-> +            #pwm-cells = <2>;
-> +
-> +            fan-0 {
-> +                pwms = <&hwmon 0 50000>;
-> +                tach-ch = /bits/ 8 <0x00>;
-> +            };
-> +            fan-1 {
-> +                pwms = <&hwmon 1 50000>;
-> +                tach-ch = /bits/ 8 <0x01>;
-> +            };
-> +        };
-> +    };
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 2ecaaec6a6bf..7b1efefed7c4 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -15084,6 +15084,12 @@ S:	Maintained
->   F:	Documentation/devicetree/bindings/hwmon/nuvoton,nct6775.yaml
->   F:	drivers/hwmon/nct6775-i2c.c
->   
-> +NCT7363 HARDWARE MONITOR DRIVER
-> +M:	Ban Feng <kcfeng0@nuvoton.com>
-> +L:	linux-hwmon@vger.kernel.org
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/hwmon/nuvoton,nct7363.yaml
-> +
->   NETDEVSIM
->   M:	Jakub Kicinski <kuba@kernel.org>
->   S:	Maintained
-
-Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
-
-
-Kind regards,
-
-Paul
+Tony
 
