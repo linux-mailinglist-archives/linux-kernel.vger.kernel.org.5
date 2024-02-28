@@ -1,143 +1,199 @@
-Return-Path: <linux-kernel+bounces-85661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D16486B8D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:06:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53F3C86B8DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:10:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E63771F2AE14
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:06:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF03AB23265
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5FB34CDE;
-	Wed, 28 Feb 2024 20:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C568974426;
+	Wed, 28 Feb 2024 20:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p62TuRDJ"
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="Szwlaen6"
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2138.outbound.protection.outlook.com [40.107.241.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6AC35E078
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709150772; cv=none; b=lW5EO1y93+Ei6ir5Rq84Nlnmhz6+zPs/UqFCZv5wxUzyK7gl+9cQqWx5I5Ja4zdGpXqmDoEbQwrQebsla5secrcouyiZV13wc982r2Lmf4RNbm4YLa7ZIQLYweVUNuWpFhMNghI6GDrESLl3G/QrbqyuYK2E/UMeiUHaIL36hqk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709150772; c=relaxed/simple;
-	bh=k/m4YheVfQs4VHgcocYJE6LjLMExMpl/5ZaI3/fMn8g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HRtAYMBxasQJtDgE6KkNYPAdpLwGRgsTzkWtanN3oWeUJX7QxezzrIn6JdQU3gcduiOM+g5+scLqSnLneKMILsRRVaiIIsMrRLY3z4wZEH/47FbbWAL8odl4TG2ONaGmqZbgiQ3PDvomotM2L0M9IZXNVZm0euYOhacA1RNYnAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p62TuRDJ; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 28 Feb 2024 15:06:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709150768;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Od6nSrqP2/hZbAtGU3cLKbPlzuM3mAeGtdvOMo4Vn/I=;
-	b=p62TuRDJRe5Gi6VYpKsvcCPUoOCqt4c/PugiE8eqtxJDAYA/o/AtmO0Kn5f4tg3ilLMAT/
-	SJChWy1VQj/nxbPhnPtFW1q2hysyTIyyY2iGuHaQ9OJMXbO8v5GIZUBKgvx11+FyVizGnR
-	Mjq6NfDXp8LBql/eO5BLQY+UH1PtS8I=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Brian Foster <bfoster@redhat.com>
-Cc: linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	djwong@kernel.org
-Subject: Re: [PATCH 02/21] bcachefs: Accumulate accounting keys in journal
- replay
-Message-ID: <zy6htbwdtvq2wikbgflfisbpu7lsluejch67wlbdmrin5d3awa@elqulgzc3bn5>
-References: <20240225023826.2413565-1-kent.overstreet@linux.dev>
- <20240225023826.2413565-3-kent.overstreet@linux.dev>
- <Zd4EmpK0zJp0mbml@bfoster>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 089645E082;
+	Wed, 28 Feb 2024 20:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.138
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709151024; cv=fail; b=thpEUWzMhRGjvLdAtrRX+dz6HQfl5MNpoJ9NQxv4oR+vfzkxylTNMD0ssOPHtKvTka33nq7ZR0F0W2Bu8eRsBv95MvgzO6u6ucACXPswQbkD824kpR3JAQzLQk78zW3t2/b+lGE6gL/ddhQLmSqfxm7JRZdOjkK5C6XqDd9eiYQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709151024; c=relaxed/simple;
+	bh=uTzOOkQNdkqG1Bbh7wtmcr/G3sl7Oy7hw37xO4pnMoo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=QPDUBEwL/4tWftkOlgVvYb/TbxRJUokcGOqx11iDLnlcipn9maUe3qGxibwVZei2GgVtXZt/fMgeyxqgvZdSfAO4JZY8zBFvpFRoyPCProWAOGeP/0EL+3ezDMgUj7On9BVGrLXpwfVq3K7/kmSH0L+Zw6CQjWAB0YLmpUqoA+A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=Szwlaen6; arc=fail smtp.client-ip=40.107.241.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S/eO3PjJTT6bBzs1D2853TDN6qsM757QLa77OCbrGCjUnBe2TYiqJWkxZtrWJzxGmhQ51gYWxiP1hmYTFwFecrPz1WdE1/21+Ou8v2XMWEZyh1KQvhY+yg0h5siDTJlTJyxJ2OQITM9WbUmKlGKmCuCZ90qxbmgIz1rYbbaP0dfFTFh6BhuU7CDC/Lh5fvy2U1r39FeWSGeIy7W89te07AtQVidLxxpsHGSRIMEQeahVRCNcGT1vgjiP8rsLmhKuOF7sM1VC7TAO9D0RR2bKs8i+MMdQBV7cjGgah42+vTBRz9JkfwHlHVqMf/LXnTu6AOOcJm9RFpsoJByHhub19A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LgHzYPxRXqzgVmM835etgMzjz3/Zb9jEr4WnIXJipwk=;
+ b=XIyY+kBfVIZF4UD2pHZDcb1jbUFuP1zTQXna1x7rP4akhqJozOZb3bGV3gTWvem/ldcYM/JtI6jkI/VrNyWEknyZJOar5NHhC0GmMl2GU3kW9OIFpgc8aW03aWr6qvC9+Ca8S8bF/mm+kWWhg+qOMY1x1BH9L8VssA8MbtmT3V0eZ6Q9GsDMRvK3lQcZrYsbbn/ZkwGJDq4b4sM+UTgHfZae9NYdfSplUF5HWg4/oM912euidLY1eVUQWd+pE9eoNqriLokfy8Qt93f67gI4r3nEDOlgtXZGvRquPjOWfC8y+oy5kwu5FGCI/ngR9CBcJN3jZqCJTDlm7NsyIT39yQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LgHzYPxRXqzgVmM835etgMzjz3/Zb9jEr4WnIXJipwk=;
+ b=Szwlaen67kK/8OZWJE9O3QPbCiggVkmh7lDgsbK8S4OwgAsXU3ADnsLTukvJBypsrmVs+mO0trbPhyQ1yhn3Mli45g9pw9Lb6AYO2m9IPnAN+mEiqAcun3FA7CtP5QECLqklP1I8OJsqlSWijq7u8A8/Vhduo+hkaw6ppyle54I=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by PAWPR08MB9590.eurprd08.prod.outlook.com (2603:10a6:102:2e8::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 28 Feb
+ 2024 20:10:19 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::9e35:6de9:e4fc:843f]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::9e35:6de9:e4fc:843f%6]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
+ 20:10:19 +0000
+Message-ID: <26262e37-55e8-4488-9489-51e640ba1586@wolfvision.net>
+Date: Wed, 28 Feb 2024 21:10:15 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/8] usb: misc: onboard_hub: rename to onboard_dev
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Helen Koike <helen.koike@collabora.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Russell King <linux@armlinux.org.uk>, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240228-onboard_xvf3500-v5-0-76b805fd3fe6@wolfvision.net>
+ <20240228-onboard_xvf3500-v5-2-76b805fd3fe6@wolfvision.net>
+ <Zd946sKywJNvIJq6@google.com>
+Content-Language: en-US
+From: Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <Zd946sKywJNvIJq6@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0100.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9c::14) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zd4EmpK0zJp0mbml@bfoster>
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PAWPR08MB9590:EE_
+X-MS-Office365-Filtering-Correlation-Id: 54db64ba-5bbe-4c55-c820-08dc38994928
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ZszxwNu6SlNWHD69DzVeXFtSehGA7W0yv831y0PO+CjYp02DUe1W9pOb0LBbF6GiEVddlFzTZSVnlUcZXSLyxLm1OymAIsvzLhLiJsXgdZZnUF9j3g7IyZdDdF6vcnVrkO40bczySfTw0CE2mRN7RErrLRj0TlZ3rsksTTCZ/RvRmdV+UaM1b5V7oatjFdf7Bt5M3/MvpRSNqMEKicvbR13illFM3jxAz1M57PPWRCmBO5uaAeTPsV8bU1pP82kyD27KG7ykWhnCXCNVfZvoIgc8OLNBkKzgP5+7FsKDeNx5X3FgIif8LULCmUBmSYini7e9rvOHZNG9K/Jpa6dvzZ8Krto6TPkqYh1zY1CVlkLRXFhG0phRuws9GWOKGXuN98/mwkRPNQu8qReEUom6wxtkne9qsAD2pgrvHL3K7+ZH8etMBQVXD0pFLy54ZbaDfjuWXSvGmHhHBeQv0bf0DNDesSniqrYy1GCQqQDN4Te6vznxrbmi1lK8X3vcxnto6t0nYBeJ4cpBKJv0Sp1yb+hBVDXJDagjcF9JAPwsTFYS7Ostxdkbi6zmeEdlNzxUBJA39cf8mfEYF+lCwGBcIf16CMnxEaVV/MP1+cWqsPgWIWuFHB4IAokBU1BinLWHtxgzUbewKUajkvFXDa6KWQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZWlIdkVRTXk3VlplWk5zWmpocFNzOC9GMXBqSGhIOUlxQm1LR2ZUZXlSKzk4?=
+ =?utf-8?B?Vlc2eENnK1orN243OCtaK3FTVitsUklUeXVUenF0cll6Vlo4MXNrT0FXMGFv?=
+ =?utf-8?B?QjFvemZyWDNsc01zMTZGdkhtQnFjWEFWTm91Z2NoMVlpRlRsSUtQcUNhWi9O?=
+ =?utf-8?B?VkI0dXRFN0xFRU9ZRTJGd3lqNHROeWt5MHhySWtHYUFxTlVmbVpOYzJzWXhK?=
+ =?utf-8?B?MkVFbnA4bm1yOWE5UzRKeXdaclRXWFk2SnE3VVVQa2dOZnFZN29DNkEzYnhH?=
+ =?utf-8?B?TjNtTVRybDBnRUhPZStIMHhFTXlObzJ4TE1jNzlVdVkxMUhHZlpmQi9nSERq?=
+ =?utf-8?B?Z3VxS2NBbmREOXdOYXFCdXFsamw5NEZ4VE5YZkdmSkhzNFdmV3p4NmFrWnAv?=
+ =?utf-8?B?bUNwL0NlL3pjODhQNHVQM1IzMXFOTVdvUnJsRXNHbEFLanpsVEVIbmVqK1dK?=
+ =?utf-8?B?eWhpWFNuekxXNm1BdFBLeVFLaXQwVm9wYkNIVEFueDZqZmFYQ2RWZ1pYdzVX?=
+ =?utf-8?B?bWNBR2JBSFc1Y2ZIM1pwOFg4d1krbmRmS1Q2aFJqZ04xc1ZJOEpYWlVuOHVP?=
+ =?utf-8?B?azhWQjc5aE5US3dZMU1TQVJyUCtGbE5mUlJvdm00b3YxckltUnNlZXFvWlBY?=
+ =?utf-8?B?b2h5czBSVVdrS3RiQTJWdmxyOG5iZGtnSXBDZkt1RytOalhEOElDY3NCMm0w?=
+ =?utf-8?B?QXp6alBiT1RFWmR5L3k0WDMzcE5JM2RqY04yZHZkNjBpUXM4Qzc1K1QrcmRD?=
+ =?utf-8?B?QVhLWUt5ZFo4cFJyRVlySjNocFFjbHkyc1F1QldienJvd0tlUUk2K2JoTEpB?=
+ =?utf-8?B?VStVbU5Yb3hiMm1lWEJHeGpQKzFSMzFoa0Zib0xzTUhXRi9rS3NXcUEyUkps?=
+ =?utf-8?B?Q3JPN1BycnhMQ3dmM3FseVRFeXRqUWkxWGR3YnU1UFhQaCtCSFQwYTBVQ3NM?=
+ =?utf-8?B?Ni84dkFseG5iNUdodTlhN0ZEUWpMaS83dGxnMXp4akVmdktKL0NEZktGcC9m?=
+ =?utf-8?B?OHlMM3loZWVENHJYT2RNK2t5VUY3ZGRlWGFsSUdreE5JRUFzTWtlSXllNUZq?=
+ =?utf-8?B?RU5vYjR6aXhURlh2aHZRbGJSb285N1NOZ3J0eFcxY1c1SmkzRTVzd3U3K3lN?=
+ =?utf-8?B?WGVUcS9LV1RyZ3o4Uzl3S0VtUkhOdklJM0dmNkNPeENLcDdHY283Y3U2Y0Nz?=
+ =?utf-8?B?WTg2WkhjTVRVek9LakpUc3V5T1lnNm5pemNEUkZmSU56MExzQ0tmSGEyU2J0?=
+ =?utf-8?B?K0lwZkx4ZG1md1pGWjNEZk1ERmNQUmtPOGlBTjJOVjg2Z2FtZ2NmRllJRmla?=
+ =?utf-8?B?OU15YzE4MGNxOWxLWUhUK25xR3daUGhSaDhXQUhLWmxZc1FUM2lNQ2cydHdw?=
+ =?utf-8?B?Y2ZMalNtTno2VDNkRTdub0RzQm5uUEtTc3FtQVNUV29rZlJkVkFZUnJUUlFw?=
+ =?utf-8?B?bFdvZXVOUEM5eE9Td2VyVUJ5dWxBai9sZmsxMGZwbVp0K2VEa1U4RzBpUldM?=
+ =?utf-8?B?d1NsTGh4SkhUTzVVUFR1SFh0TG53MWlONHJBNDczYy9ERnhzem1lWHlwaE5u?=
+ =?utf-8?B?SFN0aEpldUpBSS9pMVBxR3FDYWhsaHZaUXdyQk5RekJqcytVYWxIQm50cHpp?=
+ =?utf-8?B?SVZsSENqVkJKZDhwQ25CQmlaeXg4bkdLVXdlWTN0OHJ6MFpuMVJGcjlPR1g1?=
+ =?utf-8?B?VkJxWENoQ05zb3RkUHhibUhndUhRczVseFhYc2ZyeGlyMWx6LzhSM3hYelRJ?=
+ =?utf-8?B?NVd1QUdNYitZejZzK3FyRWRZb2xmU1FQcHdZTVpVUzh5Wjc0M20ra3BzOXlu?=
+ =?utf-8?B?OS9rZUE1MFJ3dmtWMDNhMEZQejBueVJyY2dad3FQQnZTOUdMZWdUbFZWU0lt?=
+ =?utf-8?B?WGxpMm14cHN2T2xXdjRSenArdFVpZEszcUhENmwzNVhNbElNcWVXL0YwQm95?=
+ =?utf-8?B?QVN4ZUJ5SWRrcithSlFBZDJrdHBUT2dvOVRwdU9HQWF1Q0dEa3VOaWlqREMz?=
+ =?utf-8?B?TXNnMkVtbmg5MjdYMWttb2pzd29UNWl5WTFKQjhtemlWd1JKTEVRRG9SQW1m?=
+ =?utf-8?B?T21lK0J3aEVVQThRek94Y0dOZk9EejFqcVZGV2QrWmoyTHRPSU1kS3lQK2Nw?=
+ =?utf-8?B?L3pRYVpwRHFMUU91bFc3NjBLKy9UNE1aeEh1OE9uRzlnNURSRjR3alFKTmJI?=
+ =?utf-8?B?M1JtMXFiU1laU0c4SGpWT0Y1SkZqL1lHS2VFNDIzOXNWRDlqYVFOajFINnR6?=
+ =?utf-8?Q?m3cL96cJc+cLENKyuOv43nKTcQ0LyN1hx2NxPw0eJY=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54db64ba-5bbe-4c55-c820-08dc38994928
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 20:10:18.9905
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: q4b47o10VPqMTJxcRDx7kPDEGf9FW95znYsRruPvslVkBZj6fVOHnNAgXwW2mZ6EKJLUDXpGKcjpIeVEPTxqX2QKw/hcWklw9FaA7vw1kGs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR08MB9590
 
-On Tue, Feb 27, 2024 at 10:49:46AM -0500, Brian Foster wrote:
-> On Sat, Feb 24, 2024 at 09:38:04PM -0500, Kent Overstreet wrote:
-> > Until accounting keys hit the btree, they are deltas, not new versions
-> > of the existing key; this means we have to teach journal replay to
-> > accumulate them.
-> > 
-> > Additionally, the journal doesn't track precisely which entries have
-> > been flushed to the btree; it only tracks a range of entries that may
-> > possibly still need to be flushed.
-> > 
-> > That means we need to compare accounting keys against the version in the
-> > btree and only flush updates that are newer.
-> > 
-> > There's another wrinkle with the write buffer: if the write buffer
-> > starts flushing accounting keys before journal replay has finished
-> > flushing accounting keys, journal replay will see the version number
-> > from the new updates and updates from the journal will be lost.
-> > 
-> > To avoid this, journal replay has to flush accounting keys first, and
-> > we'll be adding a flag so that write buffer flush knows to hold
-> > accounting keys until then.
-> > 
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > ---
-> >  fs/bcachefs/btree_journal_iter.c | 23 +++-------
-> >  fs/bcachefs/btree_journal_iter.h | 15 +++++++
-> >  fs/bcachefs/btree_trans_commit.c |  9 +++-
-> >  fs/bcachefs/btree_update.h       | 14 +++++-
-> >  fs/bcachefs/recovery.c           | 76 +++++++++++++++++++++++++++++++-
-> >  5 files changed, 117 insertions(+), 20 deletions(-)
-> > 
-> ...
-> > diff --git a/fs/bcachefs/recovery.c b/fs/bcachefs/recovery.c
-> > index 96e7a1ec7091..6829d80bd181 100644
-> > --- a/fs/bcachefs/recovery.c
-> > +++ b/fs/bcachefs/recovery.c
-> > @@ -11,6 +11,7 @@
-> >  #include "btree_io.h"
-> >  #include "buckets.h"
-> >  #include "dirent.h"
-> > +#include "disk_accounting.h"
-> >  #include "ec.h"
-> >  #include "errcode.h"
-> >  #include "error.h"
-> > @@ -87,6 +88,56 @@ static void replay_now_at(struct journal *j, u64 seq)
-> >  		bch2_journal_pin_put(j, j->replay_journal_seq++);
-> >  }
-> >  
-> > +static int bch2_journal_replay_accounting_key(struct btree_trans *trans,
-> > +					      struct journal_key *k)
-> > +{
-> > +	struct journal_keys *keys = &trans->c->journal_keys;
-> > +
-> > +	struct btree_iter iter;
-> > +	bch2_trans_node_iter_init(trans, &iter, k->btree_id, k->k->k.p,
-> > +				  BTREE_MAX_DEPTH, k->level,
-> > +				  BTREE_ITER_INTENT);
-> > +	int ret = bch2_btree_iter_traverse(&iter);
-> > +	if (ret)
-> > +		goto out;
-> > +
-> > +	struct bkey u;
-> > +	struct bkey_s_c old = bch2_btree_path_peek_slot(btree_iter_path(trans, &iter), &u);
-> > +
-> > +	if (bversion_cmp(old.k->version, k->k->k.version) >= 0) {
-> > +		ret = 0;
-> > +		goto out;
-> > +	}
+On 28.02.24 19:18, Matthias Kaehlcke wrote:
+> On Wed, Feb 28, 2024 at 02:51:29PM +0100, Javier Carrasco wrote:
+>> This patch prepares onboad_hub to support non-hub devices by renaming
+>> the driver files and their content, the headers and their references.
+>>
+>> The comments and descriptions have been slightly modified to keep
+>> coherence and account for the specific cases that only affect onboard
+>> hubs (e.g. peer-hub).
+>>
+>> The "hub" variables in functions where "dev" (and similar names) variables
+>> already exist have been renamed to onboard_dev for clarity, which adds a
+>> few lines in cases where more than 80 characters are used.
+>>
+>> No new functionality has been added.
+>>
+>> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+>> ---
+>>  ...-usb-hub => sysfs-bus-platform-onboard-usb-dev} |   3 +-
+>>  MAINTAINERS                                        |   4 +-
+>>  drivers/usb/core/Makefile                          |   4 +-
+>>  drivers/usb/core/hub.c                             |   8 +-
+>>  drivers/usb/core/hub.h                             |   2 +-
+>>  drivers/usb/misc/Kconfig                           |  16 +-
+>>  drivers/usb/misc/Makefile                          |   2 +-
+>>  drivers/usb/misc/onboard_usb_dev.c                 | 519 +++++++++++++++++++++
+>>  .../misc/{onboard_usb_hub.h => onboard_usb_dev.h}  |  28 +-
+>>  ...ard_usb_hub_pdevs.c => onboard_usb_dev_pdevs.c} |  47 +-
+>>  include/linux/usb/onboard_dev.h                    |  18 +
+>>  include/linux/usb/onboard_hub.h                    |  18 -
+>>  12 files changed, 595 insertions(+), 74 deletions(-)
 > 
-> So I assume this is what correlates back to the need to not flush the
-> write buffer until replay completes, otherwise we could unintentionally
-> skip subsequent key updates. Is that the case?
+> This does not rename/delete onboard_usb_hub.c. With a rename there would
+> probably be an actual diff for onboard_usb_dev.c instead of a new file,
+> which would help with reviewing.
 
-No, this is the "has this delta been applie to the btree key" check -
-adding that as a comment.
+Thanks, I noticed that when I started working on v6 and it has been
+fixed. I must have lost that one when fixing conflicts during the patch
+re-ordering.
 
-Write buffer exclusion comes with a new filesytem bit that gets set once
-accounting keys have all been replayed, that's in the next patch
+Best regards,
+Javier Carrasco
+
 
