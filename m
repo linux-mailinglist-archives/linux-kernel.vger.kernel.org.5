@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-84953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84954-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A148D86AE23
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:51:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A61D86AE27
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D862AB251CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:51:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B565B26B47
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 688CF149E0E;
-	Wed, 28 Feb 2024 11:47:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06EA51332BC;
+	Wed, 28 Feb 2024 11:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="TDDVoFaQ"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="aPxOXQVb"
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84DCD13B2A3;
-	Wed, 28 Feb 2024 11:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E64146908;
+	Wed, 28 Feb 2024 11:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709120872; cv=none; b=rcLJknlw+XGyZuEzjHFkY8MppKwPQ4VWXhMyRe/a1Ds6qMNSp8PzCGSzyZC+JdlOECACDb2ezmYcR8cm9BYsJ/tHTJioWuFRPopBTnplPw0R/xIic1oFNQri5P2Y/xi8LiLBHtAMwyccAFKP/TvN4eR6p7lD9nR4tA9IBW7RiBA=
+	t=1709120874; cv=none; b=Y0SRDjS0SeokwXFtB+Cj+kCWgdnr0DAKemmdk15j8eI97gBKMlm/IPbLLgG69XiwTBpHJM5net2ZwJX9TSLzLBQNhnYpncyG8nVrYduVS+Y4zg7iaaK0uVj9GwbSyuzigGdRqw3ibHzulNtfv1UrJtDwV/37Bd3mr9C7ybr0750=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709120872; c=relaxed/simple;
-	bh=nfclxXDmccqoJeZ6Xuve1/yVbu0Ku5GdhvUzwebFiD8=;
+	s=arc-20240116; t=1709120874; c=relaxed/simple;
+	bh=GsRtod+a/eUYG602CpiQTS9TwQCsbZFyfSHZ9K5H6FU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MU/tIveaUXMNgktFNAsbE3gk4pC5UbrUzpUOw1sqMsDoHEIa1uYYS2r3wHlxf7wyAIyFvU3MfHsHEWfoYE0PLpji2oX4dCSkhNn7xU7ElRyOq7dA8MO74WcjASqp3mLWon+FMWVce8qIxjv7DBl8eCND6H1LeRzUNxPhkcqjxOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=TDDVoFaQ; arc=none smtp.client-ip=217.70.183.197
+	 MIME-Version; b=G9Pg8QUZfUkMs5iRaYP2EYBaYsabmATXSpWyWlJdsw5obU4xuyG23I/unF1ydJz0mnZ7gcg4hdPk21t9Bt6VNVrGTetzCNT7W7efi94ahCZV2MJdRjxnydOzTq0+sqzkqZdVt1cu1mwmFgpEt/UdtYQ0RhC7v53MtQqDANwktpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=aPxOXQVb; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 020361C000B;
-	Wed, 28 Feb 2024 11:47:47 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 597891C000F;
+	Wed, 28 Feb 2024 11:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709120869;
+	t=1709120870;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=sgOogDtanHEd8bm+qGwxyE50KWI8Y9AXr46d1GNftJQ=;
-	b=TDDVoFaQdCGG28VUf36c5DTMuT+5xM7e15xE84bA7kkfWQuqup5aP/E436PjubaV/4tZ6A
-	LLIsp2ezZXWbslnG7afMBJYtxns8CnGIYnhX1hxqrKuHS7E8bZpWf41j28O3kYgbN47fVK
-	jxHbFafCjgbxv3zu4UkpAAGgyr4IR0VUAYLZhmhdTGwsymeGibOdpAyOb+zmryF/U1LuiN
-	6AU16OEXRwRPEMJf5HnvwN1YAJ4QULvP6qG+0suF+lqvIuxB998z4qChe0SKDi12Irb6UM
-	NKqGhh8USeg5oghh3gzy1jPpVF5volK0GQowN2CEZ/kxIVpR0vWjsvJoQCey1g==
+	bh=fWgGWj5P8Yr52HQ5xyDbwBoI/GhoQmy2xfbLru+Vbow=;
+	b=aPxOXQVbZhw5JCxyeWqa6afq6Moe9B1EYbXI/2rXoA3qR3d4bxP0GBjxHs0SgMiq9Ead3m
+	OLOeSb6hr8ny625zlNgQvDKadIswVqivv2Qity1vH01ngh2evZH/VjWfFPDtjkyWjKuxci
+	HF4amS5FphYOWwfFLRrc8E4JIA3gDhassMZyxWtQAbJi+3O/DhPIekO6ZTUPT6D3gPDFf3
+	HnjPY3Xnr1QzXy3YQLIfoZlkJRxFdsOngKcaVhdcXS07exo0uUzn+cyWdp7YWHG6Ybe3la
+	m82FhzYTff0vRNT6ij11DOgWxEUV3a5nlK3VSQ9DOGSXh2/kjGjZiBmI+aLM1g==
 From: Maxime Chevallier <maxime.chevallier@bootlin.com>
 To: davem@davemloft.net
 Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
@@ -70,9 +70,9 @@ Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
 	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
 	Simon Horman <horms@kernel.org>,
 	mwojtas@chromium.org
-Subject: [PATCH net-next v9 11/13] net: ethtool: cable-test: Target the command to the requested PHY
-Date: Wed, 28 Feb 2024 12:47:25 +0100
-Message-ID: <20240228114728.51861-12-maxime.chevallier@bootlin.com>
+Subject: [PATCH net-next v9 12/13] net: ethtool: strset: Allow querying phy stats by index
+Date: Wed, 28 Feb 2024 12:47:26 +0100
+Message-ID: <20240228114728.51861-13-maxime.chevallier@bootlin.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240228114728.51861-1-maxime.chevallier@bootlin.com>
 References: <20240228114728.51861-1-maxime.chevallier@bootlin.com>
@@ -85,8 +85,9 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: maxime.chevallier@bootlin.com
 
-Cable testing is a PHY-specific command. Instead of targeting the command
-towards dev->phydev, use the request to pick the targeted PHY.
+The ETH_SS_PHY_STATS command gets PHY statistics. Use the phydev pointer
+from the ethnl request to allow query phy stats from each PHY on the
+link.
 
 Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
 ---
@@ -98,80 +99,68 @@ V5: Added Andrew's R-b
 V4: No changes
 V3: No changes
 V2: New patch
+ net/ethtool/strset.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
- net/ethtool/cabletest.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/net/ethtool/cabletest.c b/net/ethtool/cabletest.c
-index 06a151165c31..536800bbc379 100644
---- a/net/ethtool/cabletest.c
-+++ b/net/ethtool/cabletest.c
-@@ -13,7 +13,7 @@
+diff --git a/net/ethtool/strset.c b/net/ethtool/strset.c
+index c678b484a079..edc826407564 100644
+--- a/net/ethtool/strset.c
++++ b/net/ethtool/strset.c
+@@ -126,7 +126,7 @@ struct strset_reply_data {
  
- const struct nla_policy ethnl_cable_test_act_policy[] = {
- 	[ETHTOOL_A_CABLE_TEST_HEADER]		=
+ const struct nla_policy ethnl_strset_get_policy[] = {
+ 	[ETHTOOL_A_STRSET_HEADER]	=
 -		NLA_POLICY_NESTED(ethnl_header_policy),
 +		NLA_POLICY_NESTED(ethnl_header_policy_phy),
+ 	[ETHTOOL_A_STRSET_STRINGSETS]	= { .type = NLA_NESTED },
+ 	[ETHTOOL_A_STRSET_COUNTS_ONLY]	= { .type = NLA_FLAG },
  };
+@@ -233,17 +233,18 @@ static void strset_cleanup_data(struct ethnl_reply_data *reply_base)
+ }
  
- static int ethnl_cable_test_started(struct phy_device *phydev, u8 cmd)
-@@ -69,7 +69,7 @@ int ethnl_act_cable_test(struct sk_buff *skb, struct genl_info *info)
- 		return ret;
+ static int strset_prepare_set(struct strset_info *info, struct net_device *dev,
+-			      unsigned int id, bool counts_only)
++			      struct phy_device *phydev, unsigned int id,
++			      bool counts_only)
+ {
+ 	const struct ethtool_phy_ops *phy_ops = ethtool_phy_ops;
+ 	const struct ethtool_ops *ops = dev->ethtool_ops;
+ 	void *strings;
+ 	int count, ret;
  
- 	dev = req_info.dev;
--	if (!dev->phydev) {
-+	if (!req_info.phydev) {
- 		ret = -EOPNOTSUPP;
- 		goto out_dev_put;
+-	if (id == ETH_SS_PHY_STATS && dev->phydev &&
++	if (id == ETH_SS_PHY_STATS && phydev &&
+ 	    !ops->get_ethtool_phy_stats && phy_ops &&
+ 	    phy_ops->get_sset_count)
+-		ret = phy_ops->get_sset_count(dev->phydev);
++		ret = phy_ops->get_sset_count(phydev);
+ 	else if (ops->get_sset_count && ops->get_strings)
+ 		ret = ops->get_sset_count(dev, id);
+ 	else
+@@ -258,10 +259,10 @@ static int strset_prepare_set(struct strset_info *info, struct net_device *dev,
+ 		strings = kcalloc(count, ETH_GSTRING_LEN, GFP_KERNEL);
+ 		if (!strings)
+ 			return -ENOMEM;
+-		if (id == ETH_SS_PHY_STATS && dev->phydev &&
++		if (id == ETH_SS_PHY_STATS && phydev &&
+ 		    !ops->get_ethtool_phy_stats && phy_ops &&
+ 		    phy_ops->get_strings)
+-			phy_ops->get_strings(dev->phydev, strings);
++			phy_ops->get_strings(phydev, strings);
+ 		else
+ 			ops->get_strings(dev, id, strings);
+ 		info->strings = strings;
+@@ -305,8 +306,8 @@ static int strset_prepare_data(const struct ethnl_req_info *req_base,
+ 		    !data->sets[i].per_dev)
+ 			continue;
+ 
+-		ret = strset_prepare_set(&data->sets[i], dev, i,
+-					 req_info->counts_only);
++		ret = strset_prepare_set(&data->sets[i], dev, req_base->phydev,
++					 i, req_info->counts_only);
+ 		if (ret < 0)
+ 			goto err_ops;
  	}
-@@ -85,12 +85,12 @@ int ethnl_act_cable_test(struct sk_buff *skb, struct genl_info *info)
- 	if (ret < 0)
- 		goto out_rtnl;
- 
--	ret = ops->start_cable_test(dev->phydev, info->extack);
-+	ret = ops->start_cable_test(req_info.phydev, info->extack);
- 
- 	ethnl_ops_complete(dev);
- 
- 	if (!ret)
--		ethnl_cable_test_started(dev->phydev,
-+		ethnl_cable_test_started(req_info.phydev,
- 					 ETHTOOL_MSG_CABLE_TEST_NTF);
- 
- out_rtnl:
-@@ -220,7 +220,7 @@ static const struct nla_policy cable_test_tdr_act_cfg_policy[] = {
- 
- const struct nla_policy ethnl_cable_test_tdr_act_policy[] = {
- 	[ETHTOOL_A_CABLE_TEST_TDR_HEADER]	=
--		NLA_POLICY_NESTED(ethnl_header_policy),
-+		NLA_POLICY_NESTED(ethnl_header_policy_phy),
- 	[ETHTOOL_A_CABLE_TEST_TDR_CFG]		= { .type = NLA_NESTED },
- };
- 
-@@ -321,7 +321,7 @@ int ethnl_act_cable_test_tdr(struct sk_buff *skb, struct genl_info *info)
- 		return ret;
- 
- 	dev = req_info.dev;
--	if (!dev->phydev) {
-+	if (!req_info.phydev) {
- 		ret = -EOPNOTSUPP;
- 		goto out_dev_put;
- 	}
-@@ -342,12 +342,12 @@ int ethnl_act_cable_test_tdr(struct sk_buff *skb, struct genl_info *info)
- 	if (ret < 0)
- 		goto out_rtnl;
- 
--	ret = ops->start_cable_test_tdr(dev->phydev, info->extack, &cfg);
-+	ret = ops->start_cable_test_tdr(req_info.phydev, info->extack, &cfg);
- 
- 	ethnl_ops_complete(dev);
- 
- 	if (!ret)
--		ethnl_cable_test_started(dev->phydev,
-+		ethnl_cable_test_started(req_info.phydev,
- 					 ETHTOOL_MSG_CABLE_TEST_TDR_NTF);
- 
- out_rtnl:
 -- 
 2.43.2
 
