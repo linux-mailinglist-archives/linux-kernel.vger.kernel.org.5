@@ -1,202 +1,159 @@
-Return-Path: <linux-kernel+bounces-85328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A71EF86B448
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:11:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FD1786B44E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06CE9B276DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:11:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40D211C22319
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E26515DBA2;
-	Wed, 28 Feb 2024 16:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA1A15DBB6;
+	Wed, 28 Feb 2024 16:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ejSSTthZ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aR5LDzrK"
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E6B15E5A4
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:10:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BDC15DBBA;
+	Wed, 28 Feb 2024 16:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709136654; cv=none; b=hgUUJ0hesMB2TAO3od/5OpLNZsTaBBVwEVHnowNkbqKMfwVrRSjfujMIdMasZQMuRpWC1vKSj13uhVeE5ORjw/wqdtr8Jp1fOjM/AwQLAIuMNEfGaYBXpIQF5w/LQy4OkUrL4cExz1sN2+ecVasWSzFSmvpjRgqdSY3BfqxrK00=
+	t=1709136663; cv=none; b=SItcfcQoqFm+7xWaCSabs7fQoLTJ6MhBqg97Tw+iWcP/R2CGs7xhuFWvkX/1UsVbtva9K8eIBEra8bsatlQX5oxmcQvk8uemwvtSVxZxCdWVFOtRKiqgkJ5sUwTXwZtBjqHcekzNIukvj64PkyZ8ZuKMSlep+dzhiKey9m7gUuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709136654; c=relaxed/simple;
-	bh=tUfJQor4830kH9UmzvNPWn4hGPtuR5l4LZ1wkT5hAec=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JzeuXVGEcALRLGstXS/L0EPNpjhdBCsTKAGem0Wzz4RDhVozbLPcTS0Ffyzirxd5MtVc8LdMFRVBk5Pketz/0qVa5fkGzXGU51IUbdHQDTasbhmtJRDzzfKX3Cs9oYlt9WPkxoUY+Dfu9V7MYkUFEiyBk0ivb2ZSWO6YaxdB3s8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ejSSTthZ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709136648;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=udhaGW9sxAsIHOXwgUwbVd2Skw/h1rnJJQepqWMaXzM=;
-	b=ejSSTthZVVlrqmNAuIoE1Nhkt9xFTv8YoA8lQqVyLIjYtD7EBk9LfwKk2IZvqyCWjEfrO9
-	RDjj5WcpU7SgW6/ZvHuVdo6tVtEK6oCEUComxqp4AruX1J+uWEBAUkS5YEmsNQKG7FRyHY
-	w1h/1YUX49cxUsP7DOSCFFyJepDQ+nU=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-651-RNobaYjiNI-Ej_Z-YUhjrw-1; Wed, 28 Feb 2024 11:10:46 -0500
-X-MC-Unique: RNobaYjiNI-Ej_Z-YUhjrw-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-564753be3deso2998498a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:10:46 -0800 (PST)
+	s=arc-20240116; t=1709136663; c=relaxed/simple;
+	bh=x4cppwy5kuHxn1Xdw/R0WLbMpw8zlt+UyW3XE5G3RSw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PeGYpb9bXkn9VdRpZbL4gxt65nXRH3hS7uIATzhvdhtOBTDlVpLsoEPhzUlpwI6YiYF6794gqOgBrmwi86vFwtOZ8vNEqHhIfB79Xid9R07nZuEnRoor1tAyZY8KOBRBashH/ZlJkLrLoxmQEN1t8mbqCQLavyBVfEOzjLzdpcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aR5LDzrK; arc=none smtp.client-ip=209.85.161.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a0a19c9bb7so1914960eaf.3;
+        Wed, 28 Feb 2024 08:11:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709136661; x=1709741461; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=UM7fB83xrY7g3CIrUJgpt+5lWVhOTXwWDbWvr1lXm3o=;
+        b=aR5LDzrKBVpQoLw5bR2v3dc+uWVkN5IFLzc7kb/OWdpF9k67QbUSzCkjLX7gDlG11o
+         gP6smNiQXiqCW3rvqs4aQoOjwF7pM4TuFbPbi/Tav6ML7ak9NY0bYOV218axG683V4vV
+         VAag+pv81zLuB7O3YAfkK1eWgm2TYZ84omougYKbYOOt39QmM+SpG03B0ZSeiPyAhSV9
+         zCYulM3PAnvcGLb7Ap/90w/OouC+Z8tVN2cN//3PXh6x2U2x0kKx+SeBXKu6CvUgRLtP
+         4Why03SmMW6geYuZvb4ztjhT7Bht+rNUXcIkb5czeyeHJMihcOxRe5IEaacIThVxtgb1
+         aX2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709136645; x=1709741445;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1709136661; x=1709741461;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=udhaGW9sxAsIHOXwgUwbVd2Skw/h1rnJJQepqWMaXzM=;
-        b=QCXpoxWfYWJTV9dwE21gE02J3eE1KMQcTFSlX1ifzW4AIqpvSTi4u7jhoF6Akz7FU4
-         fcwoHIdybNMn/ov1Al1JrTMAAmq2O+JAaw0mg55IFREHLH/BSYOuIfDSVwk9Ehqd6VKh
-         A8zJ9EMolaPxP5axxu5mLjCwiR1ly8CSRM1HmoP+Re/ZQXvWVkf9JCrK1DjmVw8bp3iE
-         0inzA/4ErwxvqVrKk1NwzoheDi5vhiEBUAvnuvfPoiBkyfSJFdWIkp/tcZmzVfxf4fgS
-         wnQjGWNkjpBKsdvLtqovVvlaa2EEJe4oKN4A4F/V4pe3f2msskWJw8GMWaGq7gtbHuXa
-         vbCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVn3J9GU1ug5Vi7aHHlhss3cOzouhz5PCb4Cq7pIEx85pN6iORxsxeZy+IGIIcKwv0flFzJPuFory81G1RDVP6U5+POzICWHNGucHjm
-X-Gm-Message-State: AOJu0YxwS5nI9JZGmZ6V35fFfaKOLe4Lmw0Sc1cGt6OOz5ZHeRpJKls6
-	DmM2CIPOSscK5abh/MY41cF3UGaeRVlEuvz3SdFmopWPdhc7tKtfH7fbzHKrf2Wo5ZcFaMetNin
-	zR0qp6ZScckH/ZyIZwBOMtoRKvjll5JZqQD71bTMA/P2bDUBx1ksk9iiksTa0+w==
-X-Received: by 2002:aa7:c643:0:b0:566:51fa:3640 with SMTP id z3-20020aa7c643000000b0056651fa3640mr2544691edr.6.1709136645219;
-        Wed, 28 Feb 2024 08:10:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEwsLQbE8k7pl3GPAi+qUVw53CxKpuM6+Z0a8HCacvxILM4aFwXL+GIxWbkN8im8wD9VNSenQ==
-X-Received: by 2002:aa7:c643:0:b0:566:51fa:3640 with SMTP id z3-20020aa7c643000000b0056651fa3640mr2544674edr.6.1709136644902;
-        Wed, 28 Feb 2024 08:10:44 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id m11-20020a056402510b00b0056686744752sm102392edd.37.2024.02.28.08.10.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 08:10:44 -0800 (PST)
-Message-ID: <3e96a963-5596-4ea6-9a72-450d0b1221cd@redhat.com>
-Date: Wed, 28 Feb 2024 17:10:43 +0100
+        bh=UM7fB83xrY7g3CIrUJgpt+5lWVhOTXwWDbWvr1lXm3o=;
+        b=G+9kmGSHVdh+qj3gTGdsWeraTgFODlHWGqfLr8FQxs5sk3m7WqMXjXbko3h6XSgC1m
+         9VqvV6CMFL8qAPEkBELJcjDCA+1G00V1umKJ3gN3u7DOkJB4c4OIknNzN9281M7LTHsr
+         K6noDvlOKOI6IfqDzQZT88yDdhHTgDVYK47RTqrCkBdVXXNZLmwL3EzOLrg70fFPO5XV
+         AcS/6v6bz03UO7/OrU4eB6IEabJo1j1LxxnHjxdEqnljbjrpJIQjlxMifjxoEDWt9+UB
+         UWE17yM5ADcbhrVkaBoz4EZazc62JtancXwa/lwn4UE2MFBXCtOa7ZvNoAEejTUdT1xu
+         6AAw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2lXB9q/oa/FB+pBjxjnyyU3hvxR4Ev8dPdx5x6FOpo95I2uNMqE/GHxpmGqZCeXLFqiZuoOTkkyK2F9aSaekmoVluKvA0m6/rEZuUkhVGihBcvZQ15rF5W32rKX3qXtJFeLuuOW/i/oE57tqWIX98ol0iUoYUVi1BODnobCwAYE7eyFb9NSmR7XFg+M7XsrBHr4hs1Qr4r4hBTKCH
+X-Gm-Message-State: AOJu0YzcUMAUheJpb5q2PrywtTKcxaSE1VujbR5NqIJd31f0Gc1xxMqB
+	efk1DXtH81WvN2HQDdkashMbFtfI9Maj67AL7xDRO12XK4eXC39z
+X-Google-Smtp-Source: AGHT+IHVqmXgCjjpeT3Ayfgm29V7pLwkYccA07WjeKQIvCijKqteNCHyaFrBaReNdiJYMkPFdwfJlQ==
+X-Received: by 2002:a05:6359:4c0f:b0:178:94bc:72ef with SMTP id kj15-20020a0563594c0f00b0017894bc72efmr17459234rwc.25.1709136660774;
+        Wed, 28 Feb 2024 08:11:00 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
+        by smtp.gmail.com with ESMTPSA id h8-20020a255f48000000b00dcda5ddeccasm1939107ybm.30.2024.02.28.08.10.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 08:11:00 -0800 (PST)
+Date: Wed, 28 Feb 2024 08:10:59 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Alexander Potapenko <glider@google.com>,
+	Alexander Lobakin <aleksander.lobakin@intel.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+	Marcin Szycik <marcin.szycik@linux.intel.com>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Andy Shevchenko <andy@kernel.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Jiri Pirko <jiri@resnulli.us>, Ido Schimmel <idosch@nvidia.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Simon Horman <horms@kernel.org>, linux-btrfs@vger.kernel.org,
+	dm-devel@redhat.com, ntfs3@lists.linux.dev,
+	linux-s390@vger.kernel.org,
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+	Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+	Syed Nayyar Waris <syednwaris@gmail.com>,
+	William Breathitt Gray <william.gray@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH net-next v5 01/21] lib/bitmap: add bitmap_{read,write}()
+Message-ID: <Zd9bE0Z3djvj3+As@yury-ThinkPad>
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+ <20240201122216.2634007-2-aleksander.lobakin@intel.com>
+ <3f6df876-4b25-4dc8-bbac-ce678c428d86@app.fastmail.com>
+ <CAG_fn=Wb81V+axD2eLLiE9SfdbJ8yncrkhuyw8b+6OBJJ_M9Sw@mail.gmail.com>
+ <b4309c85-026c-4fc9-8c26-61689ac38fa1@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] power: supply: Add Acer Aspire 1 embedded
- controller driver
-Content-Language: en-US, nl
-To: Nikita Travkin <nikita@trvn.ru>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org,
- Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
- linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- platform-driver-x86@vger.kernel.org
-References: <20240220-aspire1-ec-v3-0-02cb139a4931@trvn.ru>
- <20240220-aspire1-ec-v3-2-02cb139a4931@trvn.ru>
- <qoidm5wujjbeoc2hlraky26wuwmuaxi2atyl6ehovhvffdbfeh@g5gunqdei45m>
- <7c429d2110dbac68d0c82c8fb8bfb742@trvn.ru>
- <edec3bee-8604-49a9-8e2f-6c21e852ef6c@redhat.com>
- <c6d3d9841fe5a754e78adaf95522b434@trvn.ru>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <c6d3d9841fe5a754e78adaf95522b434@trvn.ru>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <b4309c85-026c-4fc9-8c26-61689ac38fa1@app.fastmail.com>
 
-Hi Nikita,
-
-On 2/28/24 16:49, Nikita Travkin wrote:
-> Hans de Goede писал(а) 26.02.2024 15:59:
->> Hi,
->>
->> +Ilpo (fellow pdx86 maintainer)
->>
->> On 2/23/24 15:32, Nikita Travkin wrote:
->>> Sebastian Reichel писал(а) 22.02.2024 04:41:
->>>> Hi,
->>>>
->>>> On Tue, Feb 20, 2024 at 04:57:13PM +0500, Nikita Travkin wrote:
->>>>> Acer Aspire 1 is a Snapdragon 7c based laptop. It uses an embedded
->>>>> controller to control the charging and battery management, as well as to
->>>>> perform a set of misc functions.
->>>>>
->>>>> Unfortunately, while all this functionality is implemented in ACPI, it's
->>>>> currently not possible to use ACPI to boot Linux on such Qualcomm
->>>>> devices. To allow Linux to still support the features provided by EC,
->>>>> this driver reimplments the relevant ACPI parts. This allows us to boot
->>>>> the laptop with Device Tree and retain all the features.
->>>>>
->>>>> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
->>>>> ---
->>>>>  drivers/power/supply/Kconfig           |  14 +
->>>>>  drivers/power/supply/Makefile          |   1 +
->>>>>  drivers/power/supply/acer-aspire1-ec.c | 453 +++++++++++++++++++++++++++++++++
->>>>
->>>> I think this belongs into drivers/platform, as it handles all bits of
->>>> the EC.
->>>>
->>>
->>> Hm, I initially submitted it to power/supply following the c630 driver,
->>> but I think you're right... Though I'm not sure where in platform/ I'd
->>> put this driver... (+CC Hans)
->>>
->>> Seems like most of the things live in platform/x86 but there is no i.e.
->>> platform/arm64...
->>>
->>> Hans, (as a maintainer for most things in platform/) what do you think
->>> would be the best place to put this (and at least two more I'd expect)
->>> driver in inside platform/? And can we handle it through the
->>> platform-driver-x86 list?
->>
->> I guess that adding a drivers/platform/aarch64 map for this makes
->> sense, with some comments in the Makefile and in the Kconfig
->> help explaining that this is for PC/laptop style EC drivers,
->> which combine multiple logical functions in one, only!
->>
->> Assuming that we are only going to use this for such EC drivers,
->> using the platform-driver-x86 mailinglist for this makes sense
->> since that is where are the people are with knowledge of e.g.
->> userspace APIs for various typical EC functionalities.
->>
->> It might even make sense to also use:
->>
->> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git
->>
->> As git tree for this and send pull-reqs to Linus for this
->> together with the other pdx86 for the same reasons.
->>
->> I would be open to that as long as this is strictly limited to
->> EC (like) drivers.
+On Thu, Feb 01, 2024 at 03:02:50PM +0100, Arnd Bergmann wrote:
+> On Thu, Feb 1, 2024, at 14:45, Alexander Potapenko wrote:
+> > On Thu, Feb 1, 2024 at 2:23 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> >> On Thu, Feb 1, 2024, at 13:21, Alexander Lobakin wrote:
+> >>
+> >> As far as I can tell, the header ends up being included
+> >> indirectly almost everywhere, so just parsing these functions
+> >> likey adds not just dependencies but also compile time.
+> >>
+> >
+> > Removing particular functions from a header to reduce compilation time
+> > does not really scale.
+> > Do we know this case has a noticeable impact on the compilation time?
+> > If yes, maybe we need to tackle this problem in a different way (e.g.
+> > reduce the number of dependencies on it)?
 > 
-> Yes, I believe the EC are the only "board-specific" drivers we need for
-> the Windows-on-Arm devices as of today. I expect at least two more EC
-> drivers to be added later.
+> Cleaning up the header dependencies is definitely possible in
+> theory, and there are other places we could start this, but
+> it's also a multi-year effort that several people have tried
+> without much success.
 > 
-> Then I will re-target this series to platform-driver-x86:
+> All I'm asking here is to not make it worse by adding this
+> one without need. If the function is not normally inlined
+> anyway, there is no benefit to having it in the header.
 > 
-> - Will add a new drivers/platform/aarch64/ dir with a Makefile and Kconfig
->   that would explicitly note it's only for EC-like drivers. Will update
->   the "X86 PLATFORM DRIVERS" entry in MAINTAINERS. (Or should I add a new
->   entry?)
+>       Arnd
 
-Please add a new entry (you can simply copy most of the "X86 PLATFORM DRIVERS"
-entry), putting this under the "X86 PLATFORM DRIVERS" entry feels weird.
+Hi Arnd,
 
-> - Will add this driver there, also updating per the last Sebastian's
->   comments.
+I think Alexander has shown that the functions are normally inlined.
+If for some target that doesn't hold, we'd use __always_inline.
 
-This sounds good.
+They are very lightweight by nature - one or at max two word fetches
+followed by some shifting. We spent quite some cycles making sure
+that the generated code looks efficient, at least not worse than the
+existing bitmap_{get,set}_value8(), which is a special case of the
+bitmap_{read,write}.
 
-> - Will also move the dt binding to a new bindings/platform/ dir.
+I agree that bitmap header is overwhelmed (like many other kernel
+headers), and I'm working on unloading it.
 
-Please consult with the DT binding maintainers about this bit.
+I checked allyesconfig build time before and after this patch, and
+I found no difference for me. So if you're concerned about compilation
+time, this patch doesn't make things worse in this department.
 
-Regards,
+With all that, Alexander, can you please double-check that the
+functions get inlined, and if so:
 
-Hans
-
-
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
 
