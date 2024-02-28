@@ -1,76 +1,56 @@
-Return-Path: <linux-kernel+bounces-84977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4977D86AE6B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:58:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF15886AE6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDE741F23733
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:58:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F1D11F24703
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:58:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AFC145FE1;
-	Wed, 28 Feb 2024 11:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RDBVhHu5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945CD145B23;
-	Wed, 28 Feb 2024 11:51:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9521474D6;
+	Wed, 28 Feb 2024 11:52:17 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CBA7353F;
+	Wed, 28 Feb 2024 11:52:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709121113; cv=none; b=nS4j1L//Ugx+yd160Vj+lRd7yRzOSn4W8OpdN0Xq/LvXv7xtEOZdUUu30sfpgo6EIDUSbY+yu2AZTUTf4VkOhJUCqyRbdLnlW1rUMDxsvb1jgTIhQcRBTb2PG87hD0ooLuGnPlC4S8R+IEeFAVqlsv4t8ZWC62h0VN+sulJTzY0=
+	t=1709121136; cv=none; b=FJN5DkQm/lkBTD8kzcGqDMjNwtIONWXHzknzLsPUV+5sX4DRPlq0JVolD6aXKI9gS60nb02Canb+be9WuzvhfVjUNt01JqjTNpFcP0mlEoS/ie87PqYJHk/ksnLeGRhX7hGWjcvsnNtc0gLfHYY9qVBjPPAKfu7f6b9dDLLPv5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709121113; c=relaxed/simple;
-	bh=UOHYABj412OrOe9R32rHntZ5qCSK4fekgltl0v2LzuA=;
+	s=arc-20240116; t=1709121136; c=relaxed/simple;
+	bh=2WlL3MKim5BA9DPtobT0T+QuzovrPwZOzIxQn5vg7gU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cw0mtNxdE4/5cabJ8INPrUMwwL1oTn2AvMPmzOiZpr2bi71esQVbp0JRh2u2u3TXeA5X50JW/IV6HtKHptKGsKBxBjHqGMbTaOuYlUKbQ44inaWgPteUoRXgTgVfZeTUnbysBhdd4AHJhBmKxzgZtnrhR7ifDG2GtLFub5D+Rn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RDBVhHu5; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709121112; x=1740657112;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UOHYABj412OrOe9R32rHntZ5qCSK4fekgltl0v2LzuA=;
-  b=RDBVhHu5kI9HOB61cYAalpnZ0DtwYx+LtAapZMdpmtTti1t1X1gju8nt
-   c1z44b/MnstlsBpEtN+coKHYcUxG8szJs55fjXU147XR/FnOJV/SYvtx8
-   yStpCZHQMUL+2+mNzijJUbKbYQR4frglhlbWn6aAz0h0GnpSTay4K1KiS
-   IiGNHTgknp78ZyywcGudpjPoepr7mb7nd/n70LtFkTbbMhbgfZVWvX1UA
-   lGV2Ev2plHj8OAZ9T2oYa2HMzAJbZll6mnn+lcU7iL97KTVsl4aQE99Cl
-   dUNihqUkChd2VgIlYe1JlCnAkwnkgD2olR3z51GWrqQCwPsqgsW9sn4np
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="7337755"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="7337755"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 03:51:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="937034059"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="937034059"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Feb 2024 03:51:44 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id B730928A; Wed, 28 Feb 2024 13:51:42 +0200 (EET)
-Date: Wed, 28 Feb 2024 13:51:42 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Liam.Howlett@oracle.com, akpm@linux-foundation.org, debug@rivosinc.com, 
-	broonie@kernel.org, keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, luto@kernel.org, 
-	peterz@infradead.org, hpa@zytor.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH v2 5/9] mm: Initialize struct vm_unmapped_area_info
-Message-ID: <j7bfvig3gew3qruouxrh7z7ehjjafrgkbcmg6tcghhfh3rhmzi@wzlcoecgy5rs>
-References: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
- <20240226190951.3240433-6-rick.p.edgecombe@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RSokLNvOUvoqf4v0zEYN5gv0UDVkh/RnZuqGj5Q6W8ZgQ+M6c6zUuWAbz20gDVlr8ZHQ0E62BJfV/qFJnXGLjqKZHvxLPQbjxafvgxBoRqnNOJKCK7jQjmPdpgHiyiRv0OQmXdLvgn2dDTSG7pqF9I/sC5ehgnj/VSckeh8mWZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F611C15;
+	Wed, 28 Feb 2024 03:52:51 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.68.152])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 26AD03F6C4;
+	Wed, 28 Feb 2024 03:52:10 -0800 (PST)
+Date: Wed, 28 Feb 2024 11:52:00 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	will@kernel.org, catalin.marinas@arm.com,
+	Mark Brown <broonie@kernel.org>, James Clark <james.clark@arm.com>,
+	Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
+	Suzuki Poulose <suzuki.poulose@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH V16 4/8] drivers: perf: arm_pmuv3: Enable branch stack
+ sampling via FEAT_BRBE
+Message-ID: <Zd8eYHbLebKLV648@FVFF77S0Q05N>
+References: <20240125094119.2542332-1-anshuman.khandual@arm.com>
+ <20240125094119.2542332-5-anshuman.khandual@arm.com>
+ <ZdY_oEYPGSj7nwvP@FVFF77S0Q05N>
+ <781dd6a8-cf18-48ab-93f3-5256d161b359@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,52 +59,217 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240226190951.3240433-6-rick.p.edgecombe@intel.com>
+In-Reply-To: <781dd6a8-cf18-48ab-93f3-5256d161b359@arm.com>
 
-On Mon, Feb 26, 2024 at 11:09:47AM -0800, Rick Edgecombe wrote:
-> diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
-> index 5db88b627439..dd6801bb9240 100644
-> --- a/arch/alpha/kernel/osf_sys.c
-> +++ b/arch/alpha/kernel/osf_sys.c
-> @@ -1218,7 +1218,7 @@ static unsigned long
->  arch_get_unmapped_area_1(unsigned long addr, unsigned long len,
->  		         unsigned long limit)
->  {
-> -	struct vm_unmapped_area_info info;
-> +	struct vm_unmapped_area_info info = {};
->  
->  	info.flags = 0;
->  	info.length = len;
+On Wed, Feb 28, 2024 at 01:41:05PM +0530, Anshuman Khandual wrote:
+> On 2/21/24 23:53, Mark Rutland wrote:
+> > On Thu, Jan 25, 2024 at 03:11:15PM +0530, Anshuman Khandual wrote:
 
-Can we make a step forward and actually move initialization inside the
-initializator? Something like below.
+> >> +============================================
+> >> +Branch Record Buffer Extension aka FEAT_BRBE
+> >> +============================================
+> >> +
+> >> +Author: Anshuman Khandual <anshuman.khandual@arm.com>
+> >> +
+> >> +FEAT_BRBE is an optional architecture feature, which creates branch records
+> >> +containing information about change in control flow. The branch information
+> >> +contains source address, target address, and some relevant metadata related
+> >> +to that change in control flow. BRBE can be configured to filter out branch
+> >> +records based on their type and privilege level.
+> > 
+> > Do we actually need this documentation?
+> 
+> IMHO we do need some documentation.
+> 
+> > The set of peopl writing kernel code can read the ARM ARM or the kernel code,
+> > and there's not much here useful to users.
+> 
+> But not all documentation write ups in the kernel are only for the users, there
+> are examples in many subsystems where documentations help explain implementation
+> details including data structures and function flows, for upcoming developers to
+> understand the code better and make further improvements.
 
-I understand that it is substantially more work, but I think it is useful.
+Sure, but that's for things where there are *many* kernel developers that will
+consume this. The set of people who will modify the BRBE code in a meaningful
+way can be counted on a hand or two, and so I don't think there's a need or
+justification for having this detail under Documentation/.
 
-diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
-index 5db88b627439..c40ddede3b13 100644
---- a/arch/alpha/kernel/osf_sys.c
-+++ b/arch/alpha/kernel/osf_sys.c
-@@ -1218,14 +1218,12 @@ static unsigned long
- arch_get_unmapped_area_1(unsigned long addr, unsigned long len,
- 		         unsigned long limit)
- {
--	struct vm_unmapped_area_info info;
-+	struct vm_unmapped_area_info info = {
-+		.length = len;
-+		.low_limit = addr,
-+		.high_limit = limit,
-+	};
+> > I think it may make sense to document what userspace and/or VMs can and cannot
+> > do (which is why we describe the ID registers), and any 'gotchas' (e.g.
+> > restrictions we have that other architectures don't, or vice-versa). I do not
+> 
+> Agreed - such documentations must be included for better technology adoption, but
+> those are not the only type of documentation available in the kernel - even right
+> now.
+> 
+> > think that we should try to describe the hardware beyond what is necessary to
+> > describe that, and I do not think that we should describe the structure of the
+> > perf code beyond what is necessary to desribe that.
+> > 
+> > Otherwise, this is just a maintenance burden
+> 
+> I think we should have some documentation for BRBE implementation, and if there
+> are suggestions to improve the proposed one, will be happy to change. But for
+> now, will try and rewrite the documentation with your above suggestions in mind.
 
--	info.flags = 0;
--	info.length = len;
--	info.low_limit = addr;
--	info.high_limit = limit;
--	info.align_mask = 0;
--	info.align_offset = 0;
- 	return vm_unmapped_area(&info);
- }
+I think that any documentation on the implementation details should be within
+the driver itself; please limit anything under Documentation/ to be on details
+relevant to userspace.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+[...]
+
+> I believe the proposed code is already well documented but will revisit and
+> try to fill gaps if any but the point being in code documentation might not
+> be a substitute for a Documentation/arch/arm64/ based file.
+
+For the moment I'm not asking that you add new comments to the BRBE code, so
+please don't feel like you need to add anything there. I'm only asking that you
+limit the Documentation/ coverage to details which are directly relevant to
+userspace.
+
+> 
+> > 
+> > [...]
+> > 
+> >> diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
+> >> index b7afaa026842..649b926bf69d 100644
+> >> --- a/arch/arm64/include/asm/el2_setup.h
+> >> +++ b/arch/arm64/include/asm/el2_setup.h
+> >> @@ -154,6 +154,51 @@
+> >>  .Lskip_set_cptr_\@:
+> >>  .endm
+> >>  
+> >> +#ifdef CONFIG_ARM64_BRBE
+> >> +/*
+> >> + * Enable BRBE cycle count
+> >> + *
+> >> + * BRBE requires both BRBCR_EL1.CC and BRBCR_EL2.CC fields, be set
+> >> + * for the cycle counts to be available in BRBINF<N>_EL1.CC during
+> >> + * branch record processing after a PMU interrupt. This enables CC
+> >> + * field on both these registers while still executing inside EL2.
+> >> + *
+> >> + * BRBE driver would still be able to toggle branch records cycle
+> >> + * count support via BRBCR_EL1.CC field regardless of whether the
+> >> + * kernel ends up executing in EL1 or EL2.
+> >> + */
+> >> +.macro __init_el2_brbe
+> >> +	mrs	x1, id_aa64dfr0_el1
+> >> +	ubfx	x1, x1, #ID_AA64DFR0_EL1_BRBE_SHIFT, #4
+> >> +	cbz	x1, .Lskip_brbe_cc_\@
+> >> +
+> >> +	mrs_s	x0, SYS_BRBCR_EL2
+> >> +	orr	x0, x0, BRBCR_ELx_CC
+> >> +	msr_s	SYS_BRBCR_EL2, x0
+> > 
+> > Please initialise this to a specific value rather than using a
+> > read-modify-write.
+> 
+> I will change this as follows - which will be written into both BRBCR_EL2
+> and BRBCR_EL12 registers as applicable.
+> 
+>         mov     x0, xzr
+>         orr     x0, x0, #(BRBCR_ELx_CC |BRBCR_ELx_MPRED)
+
+Please generate the value directly, and only use ORR for bits that need to be
+conditionally set, e.g. the above can be:
+
+	mov_q	x0, #(BRBCR_ELx_CC | BRBCR_ELx_MPRED)
+	msr_s	SYS_BRBCR_EL2, x0
+
+[...]
+
+> >> +/*
+> >> + * A branch record with BRBINFx_EL1.LASTFAILED set, implies that all
+> >> + * preceding consecutive branch records, that were in a transaction
+> >> + * (i.e their BRBINFx_EL1.TX set) have been aborted.
+> >> + *
+> >> + * Similarly BRBFCR_EL1.LASTFAILED set, indicate that all preceding
+> >> + * consecutive branch records up to the last record, which were in a
+> >> + * transaction (i.e their BRBINFx_EL1.TX set) have been aborted.
+> >> + *
+> >> + * --------------------------------- -------------------
+> >> + * | 00 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX success]
+> >> + * --------------------------------- -------------------
+> >> + * | 01 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX success]
+> >> + * --------------------------------- -------------------
+> >> + * | 02 | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 0 |
+> >> + * --------------------------------- -------------------
+> >> + * | 03 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+> >> + * --------------------------------- -------------------
+> >> + * | 04 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+> >> + * --------------------------------- -------------------
+> >> + * | 05 | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 1 |
+> >> + * --------------------------------- -------------------
+> >> + * | .. | BRBSRC | BRBTGT | BRBINF | | TX = 0 | LF = 0 |
+> >> + * --------------------------------- -------------------
+> >> + * | 61 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+> >> + * --------------------------------- -------------------
+> >> + * | 62 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+> >> + * --------------------------------- -------------------
+> >> + * | 63 | BRBSRC | BRBTGT | BRBINF | | TX = 1 | LF = 0 | [TX failed]
+> >> + * --------------------------------- -------------------
+> >> + *
+> >> + * BRBFCR_EL1.LASTFAILED == 1
+> >> + *
+> >> + * BRBFCR_EL1.LASTFAILED fails all those consecutive, in transaction
+> >> + * branches records near the end of the BRBE buffer.
+> >> + *
+> >> + * Architecture does not guarantee a non transaction (TX = 0) branch
+> >> + * record between two different transactions. So it is possible that
+> >> + * a subsequent lastfailed record (TX = 0, LF = 1) might erroneously
+> >> + * mark more than required transactions as aborted.
+> >> + */
+> >> +static void process_branch_aborts(struct pmu_hw_events *cpuc)
+> >> +{
+> >> +	u64 brbfcr = read_sysreg_s(SYS_BRBFCR_EL1);
+> >> +	bool lastfailed = !!(brbfcr & BRBFCR_EL1_LASTFAILED);
+> >> +	int idx = brbe_get_numrec(cpuc->percpu_pmu->reg_brbidr) - 1;
+> >> +	struct perf_branch_entry *entry;
+> >> +
+> >> +	do {
+> >> +		entry = &cpuc->branches->branch_entries[idx];
+> >> +		if (entry->in_tx) {
+> >> +			entry->abort = lastfailed;
+> >> +		} else {
+> >> +			lastfailed = entry->abort;
+> >> +			entry->abort = false;
+> >> +		}
+> >> +	} while (idx--, idx >= 0);
+> >> +}
+> > 
+> > Please consider:
+> > 
+> > 1) There are no extant CPU implementations with TME.
+> > 2) There are no plans for anyone to build TME.
+> > 3) The kernel doesn't support TME.
+> > 
+> > ... so why are we tryting to handle this architectural edge-case (complete with
+> > what is arguably an architectural bug!) that can only happen on a CPU with TME,
+> > under a kernel that's using TME?
+> > 
+> > This cannot possibly have been tested, trivially by point 3.
+> > 
+> > This is purely a maintenance and review burden.
+> > 
+> > Please delete this and replace it with a comment somewhere that *if* we ever
+> > add support for TME this will need to be handled somehow.
+> 
+> Alright, will drop TME handling completely.
+> 
+> - Dropped process_branch_aborts() completely
+> 
+> - Added an warning if transaction states get detected some how unexpectedly
+> 
+>                 /*
+>                  * Currently TME feature is neither implemented in any hardware
+>                  * nor it is being supported in the kernel. Just warn here once
+>                  * if TME related information shows up rather unexpectedly.
+>                  */
+>                 if (entry->abort || entry->in_tx)
+>                         pr_warn_once("Unknown transaction states %d %d\n",
+>                                       entry->abort, entry->in_tx);
+
+Something of that shape sounds good; thanks!
+
+Mark.
 
