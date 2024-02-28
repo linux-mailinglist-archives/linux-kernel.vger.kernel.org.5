@@ -1,281 +1,82 @@
-Return-Path: <linux-kernel+bounces-84606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA5BF86A8F2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:28:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C7BF86A8F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:28:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A1B71C23C17
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:28:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38D0A1F2672C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC04250FD;
-	Wed, 28 Feb 2024 07:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E2524B41;
+	Wed, 28 Feb 2024 07:28:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="km/Hm0N5"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="inPkxNnf"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C57B24214
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:28:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC0423776;
+	Wed, 28 Feb 2024 07:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709105291; cv=none; b=qI6Rw078YHWsk9j5Bn5ZJMePstgOceekcVGfVErpDjnV47CfWAZ4/4j46lidENOR6RN8RuNJVn9+gta2j2Oq+jR0PG3moVfI/bPVtBQ9Zo3wp9srJzNkzhzH7eIznV2zhHH7xe9UquGDiSPY0aRsSMdg9WMVex1TbOd9RZ58wB4=
+	t=1709105315; cv=none; b=nyJ1DqBley2lpJb5H5gfjnkCCllGwtUovaQ6x7rvQD/LoyZZWzX8Dw9ggMEaXq5qe4FsAhKxkWl9Y7D91+vkdSCHLVrLztr79Byx03R+icrLCuYWyzud/3iWyj6mWYTXO4TehkZu4lSa/utdSeKlWc3dccEB9yvHC0HKM2sOOUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709105291; c=relaxed/simple;
-	bh=7ey5g7zO7vsPThLxFqRRla5M4J4jK/rW388FMFA42pw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SPlKcz9UyvWgj35/lZFXppPjCHxhKsPOn0lkrSISU9XjTdKmMkeLUxWlWhRdlfQfuRj9/D5x06e/NFxHt1GM6ESqVaNcPZ7quYF+9Ebh+LgsuhKkZjITC2fMpowI+x7op8Vx50ZINnb2OzHCr/yy2IxIBYGytmxSiKfLrH9E/PA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=km/Hm0N5; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-564a53b8133so4330616a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709105288; x=1709710088; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WFLcJJee259JIrk4DVS+FE6qZgBM9LZf/wuGod93q6E=;
-        b=km/Hm0N5ptvZotk8WCVsYp7DnkDJDYQaf04l+pRGmCfR//Q+3NLxiLdP/Z+28oquGo
-         xn6DVBgKaH2FDnFjVDEjT50VEWaNCnvOTX/ab3cKjqY30nYBRHI1uLrkUYveIrEZ/mBb
-         S1uL1EjR2kvAadxqzLRAIc+T4QYQXwW59SR04KflXj1ssKwJVzvWC3T1sehZ0qMdzkZP
-         om46hO8nBj+9R3A3/fq1+7usrs48ekRfCmT0Flz8Im1WK7h5D3ODGhzLDgOEwaNxk5g4
-         9oGCtHTp4+H4j4Al3MFIfynLNBm2TeflKOhUNkbZ5dex3lEfcQ6H6phRo1ra2KVsk9yp
-         iPRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709105288; x=1709710088;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WFLcJJee259JIrk4DVS+FE6qZgBM9LZf/wuGod93q6E=;
-        b=nCXFXiI5v+18UxJNnG9RuYinpH4szK7M99u7GBCZmlOhVyG3xtzxaZr6ZIokAL63dc
-         lvD9CuWjMDaXJNcxI1e1vyBbBrflXtTnFS7zvjbkpH7QryfwSFJEEJ4j4+qlaof1U7Bm
-         CllVN6OGC0ER4J9Nas2ussx4OL5tQC1f6jde8E+QsuyJZR8LoVKpWYO7QgrpvBDeR8XJ
-         RtkfvGfn4TjHZutE5PxPL2vD2NjaQPQGPadxdUPekZukL9HIKAHs5tXxpeX8JO3UgXKg
-         ENqfMZ+TkYbya04R7DyAhDqp/tKjl5cTQnu23aPWE14/0q8K9UEgels0SHRXZMbEgH59
-         i03w==
-X-Forwarded-Encrypted: i=1; AJvYcCWJqqPBNkeP3KUHsZcYHshya+VZ4N3km0abojV02jNsfOg8/PtLAKCK3DsxV6c+rb4c7gsiMuKo/fSb+EgZUQbc3o2afSj2hsDIJfb7
-X-Gm-Message-State: AOJu0YxT696Z+To9CIeLH9dbJhbY3djllqPzrPRRY+gcSCPxGjYsuWbg
-	KtdfsC6egZYhfXtGIRBuQNvahRdMs8ZkKCRTnvv1A6qodDcX8KIfu2gXGlGCZ56nvX2SAK1IwiE
-	f
-X-Google-Smtp-Source: AGHT+IH2GW07nyyPZlJBIhQlHwDOvgu3sHI8ZoZanWd7zoQ1boLFcvCer/d4+r5wraTosaLmy2C5rQ==
-X-Received: by 2002:a05:6402:1606:b0:565:ffa5:becd with SMTP id f6-20020a056402160600b00565ffa5becdmr5196923edv.37.1709105288573;
-        Tue, 27 Feb 2024 23:28:08 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id p15-20020aa7cc8f000000b005667629f6e1sm133626edt.39.2024.02.27.23.28.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 23:28:08 -0800 (PST)
-Message-ID: <bd4bf6ae-350e-4ee6-a924-7dd31b2c6034@linaro.org>
-Date: Wed, 28 Feb 2024 08:28:05 +0100
+	s=arc-20240116; t=1709105315; c=relaxed/simple;
+	bh=ANc8dvk1HuRXLTAqn99EVddZRnoclltcavg81hMnWrs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gla+ml2rNhKwRK0Uiwhnp5v3R+zISjNT3L92273//Bg+aZ+B5bTADQYcMWF7MPB6wwAfaTTwnwmpM4VJnJFwyAAjfnksKJnbcKCLKCUX0XGThgTffRSK6g3R1bUVCK4vf4vvYUZGm8/xnK3rXiyD+dLFG/sTXazLKjw5BFiOx8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=inPkxNnf; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id ADF6D60429;
+	Wed, 28 Feb 2024 07:28:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1709105311;
+	bh=ANc8dvk1HuRXLTAqn99EVddZRnoclltcavg81hMnWrs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=inPkxNnf+HpIvFe918cZSHkW5rJUb6YyW2/eBrn3fZrWfw+wCilZm2X5z7DYPbilg
+	 Bqo7Vw7OegTxemrXfgAEM5kIY9he8H+wUl5jaa++cCqywGdjm9Mp3Z/jtsdS8jzAhh
+	 aT+Gebmu7InEIQUnjngcJRiaDRaVau54dqmoL6+EsNXUCwRL8h9r4XygZHZPCubnuq
+	 c6JGo8V/WYsUTUbC/yOtxNJR+tmM90UEeR3ZfJe1w4+nx75CPLHpjVjTM+SZ9+Tqta
+	 Ji0pbWM4ON1dNKo4MvtHYZ5g/vP0OfdIJUDSQSF8JyijZVC3JXrgVIK3MI86LRxQwS
+	 xzUhNG3NXqX8w==
+Date: Wed, 28 Feb 2024 09:28:12 +0200
+From: Tony Lindgren <tony@atomide.com>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	linux-omap@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	Russell King <linux@armlinux.org.uk>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: omap1: remove duplicated 'select ARCH_OMAP'
+Message-ID: <20240228072812.GD52537@atomide.com>
+References: <20240204125716.56756-1-masahiroy@kernel.org>
+ <CAK7LNASC4xh5WrEaHkqFg49xzJsQMQnjLV8sCea8uceNp5EUdQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/18] ASoC: dt-bindings: mediatek,mt8365-afe: Add audio
- afe document
-Content-Language: en-US
-To: Alexandre Mergnat <amergnat@baylibre.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-1-4fa1cea1667f@baylibre.com>
- <ce5f71a9-1b5f-4724-89db-dae2f64e8008@linaro.org>
- <eeb3329b-0558-4237-8343-4e11f65a6a35@baylibre.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <eeb3329b-0558-4237-8343-4e11f65a6a35@baylibre.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNASC4xh5WrEaHkqFg49xzJsQMQnjLV8sCea8uceNp5EUdQ@mail.gmail.com>
 
-On 27/02/2024 16:18, Alexandre Mergnat wrote:
->>
->>> +    type: boolean
->>> +
->>> +  mediatek,dmic-iir-on:
->>> +    description:
->>> +      Boolean which specifies whether the DMIC IIR is enabled.
->>> +      If this property is not present the IIR is disabled.
->>
->> "is enabled" or "enable it"?
->>
->> You described the desired Linux feature or behavior, not the actual
->> hardware. The bindings are about the latter, so instead you need to
->> rephrase the property and its description to match actual hardware
->> capabilities/features/configuration etc.
+* Masahiro Yamada <masahiroy@kernel.org> [240204 13:19]:
+> Just a nit.
 > 
-> I will rephrase:
+> The commit subject "arm:" should be capitalized to "ARM:"
+> because it is a convention for changes under arch/arm/.
 > 
-> True to enable the Infinite Impulse Response (IIR) filter
-> on the digital microphone inputs.
+> Maybe, the maintainer can cater to it?
 
-I still don't know why this is DT-specific. You still tell driver what
-to do...
+Thanks yes applying into omap-for-v6.9/omap1 with the prefix
+changed.
 
-> 
->>
->>> +    type: boolean
->>> +
->>> +  mediatek,dmic-irr-mode:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    description:
->>> +      Selects stop band of IIR DC-removal filter.
->>> +      0 = Software programmable custom coeff loaded by the driver.
->>
->> Bindings are for hardware, not drivers. Why is this a property of board DTS?
-> 
-> Actually this is a hardware feature. Mode 1 t 5 are predefined filters. 
-> Mode 0, the HW will read some "coef filter registers" to setup the 
-> custom filter. the "coef filter regs" are written by the driver. 
-> Currently the coef values are hardcoded in the driver.
+Regards,
 
-You don't get the point. Just because you choose some mode it does not
-mean is hardware feature for DT. Sampling frequency done by hardware is
-also "hardware feature", but do you put it to DT? No.
-
-Explain why this is board-specific, not runtime configuration.
-
-> 
->>
->>> +      1 = 5Hz if 48KHz mode.
->>> +      2 = 10Hz if 48KHz mode.
->>> +      3 = 25Hz if 48KHz mode.
->>> +      4 = 50Hz if 48KHz mode.
->>> +      5 = 65Hz if 48KHz mode.
->>
->> Use proper unit suffixes - hz.
->>
->>
->>> +    enum:
->>> +      - 0
->>> +      - 1
->>> +      - 2
->>> +      - 3
->>> +      - 4
->>> +      - 5
->>> +
->>> +  mediatek,dmic-two-wire-mode:
->>> +    description:
->>> +      Boolean which turns on digital microphone for two wire mode.
->>> +      If this property is not present the two wire mode is disabled.
->>
->> This looks like hardware property, but the naming looks like SW. Again
->> you instruct what driver should do. Standard disclaimer:
->>
->> You described the desired Linux feature or behavior, not the actual
->> hardware. The bindings are about the latter, so instead you need to
->> rephrase the property and its description to match actual hardware
->> capabilities/features/configuration etc.
-> 
-> Actually this is a hardware feature. This is ALL I have to describe the 
-> HW behavior from the datasheet:
-> "
-> bit name: ul_dmic_two_wire_ctl
-> Turns on digital microphone for two wire mode.
-> 0: Turn off
-> 1: Turn on
-
-That's rather suggestion it is not a description of hardware but you
-want driver to do something...
-
-> "
-> 
-> On the board schematic, SoC and DMIC and linked by 3 pins:
-> - clk
-> - data0
-> - data1
-> 
-> IMHO, "two-wire-mode" means the HW use 2 pins for data, and the SoC must 
-> be aware of that by reading the register value written by the driver, 
-> using the value found in the DTS.
-
-So this depends on type of connection of DMIC? Then rephrase description
-property like this.
-
-> 
-> I don't get why you think it wouldn't be hardware behavior.
-
-Because telling what to write to the registers which is typical sign of
-people stuffing to DT whatever they need to configure the hardware.
-
-> 
-> Rephrase description:
-> "True to enable the two wire mode of the digital microphone"
-> Is it better ?
-
-No, because again you describe some sort of mode. If you insist on such
-description, then my answer is: it's runtime, so not suitable for DT.
-Instead describe what is the hardware problem/configuration, e.g. "DMIC
-is connected with only CLK and DATA0, without third pin" etc.
-
-> 
-> About the property name, "mediatek,dmic-two-wire-ctl" sound better for you ?
-
-To sound more like a register less like physical characteristic of the
-board? No. The name can stay, I don't have better ideas.
-
-
-Best regards,
-Krzysztof
-
+Tony
 
