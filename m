@@ -1,73 +1,69 @@
-Return-Path: <linux-kernel+bounces-84923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AA186ADC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:42:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8324D86ADC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:42:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C2B29193F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:42:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BB0DB23A51
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:42:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435F6151CF9;
-	Wed, 28 Feb 2024 11:32:09 +0000 (UTC)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB12C155314;
+	Wed, 28 Feb 2024 11:32:10 +0000 (UTC)
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2021273524;
-	Wed, 28 Feb 2024 11:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0FBE14F998;
+	Wed, 28 Feb 2024 11:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119928; cv=none; b=G8ww27AKRbH8h/EZaBaom1MViLOu4CLoLj17xF89EvQHT4Ty+wIPLKDIrly5xDKzwg2VTZXgok0gl63g+3IJ1DOGrZk8+sHQMzL47vYn6y8k1R8oeFxAI00GjpmRvr5uqLubNjB2n3hcpM/Y8wtwjcBXCnNHAIo5q1Dj3oH4SFE=
+	t=1709119930; cv=none; b=L/bzBZM+CDZv12X1oAIigzWKNPDqV3HYEjlJxW/qAhthQD1haxLmq/9izVO6SXbtI7nEnyudbAirS17olu1D/1N5ejp1YM9DcfYCLTpdqF5/YGTrhK9afgg4j+noxtzG+f9jUNsqt8X98H6rbZCaCvM+0vir0gR/05RZjSPAyGc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709119928; c=relaxed/simple;
-	bh=xfokqmnN1hXAoQigXny2P/sjBScjiho/EWfxSdAhYj4=;
+	s=arc-20240116; t=1709119930; c=relaxed/simple;
+	bh=osYfHf0zdit3Caig568VNoIMqJacx7kM2FhaGegFpUs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H88DOyacGUvaqsiSihdM2O9JXrFv4mASa/G2hMSXz6OS1qt4omJ9PtxVo6U0EoaKoWqR14fkli8QD29H5+RD/R93AkoBu/s2x4E1EipjxrUZgo4ktVEwZ7PV7QmR/K+Bn67dSKO44Fa/nH1jGhddKA36+HGzaXwyNoCXKOZ69Hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.49
+	 MIME-Version; b=L/gElqENF/qwcRCveQ4V6JvUhAqrmscgfauvKXlwD1rvvzNUtQ6i3x2ps4GgAJoOR4v72z9R94BnLOpWtUzXh4BkctFo1toatKrbki56qXhhjN4Ls1Ibysg8ysMW1+XgjEFIh9nq0jO3qnZhkVk8b/INc88oaWfpRtyWJeCIhs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-564fd9eea75so6825044a12.3;
-        Wed, 28 Feb 2024 03:32:06 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso139920866b.1;
+        Wed, 28 Feb 2024 03:32:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709119925; x=1709724725;
+        d=1e100.net; s=20230601; t=1709119927; x=1709724727;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hPc6h8vGachk83ubTaMre+MHbC4ZFxj395rd+hZ7iVc=;
-        b=wPp4Plj3ii3URkT/t6hUAxjYMAhNiUMLFcRh+HU+mCEmUJNIm5EQG9Hcpw1nkaooXM
-         u+J2k5U1peNsdKFps6jfgHModvm5lJGjf+2Qqbp4sDN3t7C0RU1OOBPlwr/j8CzZ+jOq
-         zZPDtRNsT4iTkFX7OCdkjGs/V3dZwkaFmcv2lqoNy53Tv9I1lBAeUk6i1PFfr5ZGZEZA
-         023fofZTEZ3v8+MhN09RxuS7gOs5+eOG8CcD9YdF5LgA2SgcKJJYFes9rq3h1c8neqwA
-         e+3/Ymg/XbxYvaRmK+tY1hSX4Ovb31KGImIXo8fu+wKIXAO62HP9ZEWrRbyvF0rOiOj0
-         eCRw==
-X-Forwarded-Encrypted: i=1; AJvYcCVY1M1Nj3/1epGHBwY5+G0+BeBMtGFedC00SARF61GkVkPitAImBWjUBpf7zVK8YlweUhKUcJMHJuNJsIEor+IFvGFFJLJPbyPuqr3p
-X-Gm-Message-State: AOJu0YxpVqqnKsTXS+vbuFPB0UXYeYgDmaWjQVs32zunyJN7wl9JNdo9
-	/eteeeJv5azpUKJw3dtfqwk3BiZJJzaRh/1pnLe1x2Lv1voI5C8ZZoH3kRkL
-X-Google-Smtp-Source: AGHT+IFl1/H1/1Apa8TAsSMASHDA9z60Tdx1lChlAG9+XL9WpynmSWwUs4fs0dhHtXr3IGC9AugNpw==
-X-Received: by 2002:a50:cc92:0:b0:565:a5aa:22e5 with SMTP id q18-20020a50cc92000000b00565a5aa22e5mr8397110edi.26.1709119925262;
-        Wed, 28 Feb 2024 03:32:05 -0800 (PST)
-Received: from localhost (fwdproxy-lla-000.fbsv.net. [2a03:2880:30ff::face:b00c])
-        by smtp.gmail.com with ESMTPSA id en9-20020a056402528900b0056679104c1bsm253779edb.37.2024.02.28.03.32.04
+        bh=CZMdscvMnTBrNFqpRdeZHYyP0ag1D/LQclkgNCHYzYs=;
+        b=awjvSt45rk0Lc+3xbUMR9awugwR4Ju0tMaUmTHfjcxmdiXlIVsr+SWdwJlI1RLJddd
+         dGChTx9zHgl3gfQ8x0jBTj4Rr+C6L2v9hEZVg6HjnB9ARg17FYkzUsh1ipcUPNjeyX5U
+         XKt3PpzAlB9Eu2v9NxkIH2x5ER3RaemYgu4o2t2OXEE5noMK1BcyZ4G9c0LAktQ+oh03
+         zLBNamRblWfytigPsP4CuO1uvTcbkQUytI7xnpn5Hs9rKedw5xJmEjVGMJScTU8I1e8J
+         ouTjWILWV88ixGZGep+KW96W09N6g3xUSr0PtkWHWwOxOHVe8aNfskCjZs3DM/6BcS/F
+         l+6g==
+X-Forwarded-Encrypted: i=1; AJvYcCW2HHlMYEAePQhUvvCqylTVR5elFJOqdyqWQCgbesJw51vuZYHFHwRPFzovqfuQV9fEB0zXLAn+5luf3+G7d43l0DjzVhywTRImvmmJ
+X-Gm-Message-State: AOJu0YyW7KI8YuSU3SU6bAfdGREe2cFT8HF9JtXgTpt4V/VdD78QQiw1
+	yTPmQFT7jaAiDdp5PvyFDIVv4vnplH1wlfFmAl1ClGVMEWraWSS0
+X-Google-Smtp-Source: AGHT+IFLp9ie3+/1hqnj68QzfyOsdEqFZgLoyTa22wNJESInVZCR90DilUp+wSkt/U38LJ/Sp0aVsg==
+X-Received: by 2002:a17:907:7651:b0:a3c:5e17:1635 with SMTP id kj17-20020a170907765100b00a3c5e171635mr1797915ejc.30.1709119927035;
+        Wed, 28 Feb 2024 03:32:07 -0800 (PST)
+Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
+        by smtp.gmail.com with ESMTPSA id hw18-20020a170907a0d200b00a3d5efc65e0sm1761437ejc.91.2024.02.28.03.32.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 03:32:04 -0800 (PST)
+        Wed, 28 Feb 2024 03:32:06 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
 	pabeni@redhat.com,
-	edumazet@google.com
+	edumazet@google.com,
+	David Ahern <dsahern@kernel.org>
 Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	horms@kernel.org,
-	dsahern@kernel.org,
-	Jiri Pirko <jiri@resnulli.us>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>
-Subject: [PATCH net-next 1/2] net: get stats64 if device if driver is configured
-Date: Wed, 28 Feb 2024 03:31:21 -0800
-Message-ID: <20240228113125.3473685-2-leitao@debian.org>
+	horms@kernel.org
+Subject: [PATCH net-next 2/2] net: sit: Do not set .ndo_get_stats64
+Date: Wed, 28 Feb 2024 03:31:22 -0800
+Message-ID: <20240228113125.3473685-3-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240228113125.3473685-1-leitao@debian.org>
 References: <20240228113125.3473685-1-leitao@debian.org>
@@ -79,33 +75,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If the network driver is relying in the net core to do stats allocation,
-then we want to dev_get_tstats64() instead of netdev_stats_to_stats64(),
-since there are per-cpu stats that needs to be taken in consideration.
+If the driver is using the network core allocation mechanism, by setting
+NETDEV_PCPU_STAT_TSTATS, as this driver is, then, it doesn't need to set
+the dev_get_tstats64() generic .ndo_get_stats64 function pointer. Since
+the network core calls it automatically, and .ndo_get_stats64 should
+only be set if the driver needs special treatment.
 
-This will also simplify the drivers in regard to statistics. Once the
-driver sets NETDEV_PCPU_STAT_TSTATS, it doesn't not need to allocate the
-stacks, neither it needs to set `.ndo_get_stats64 = dev_get_tstats64`
-for the generic stats collection function anymore.
+This simplifies the driver, since all the generic statistics is now
+handled by core.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- net/core/dev.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv6/sit.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 275fd5259a4a..3577620e39bd 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -10701,6 +10701,8 @@ struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
- 		ops->ndo_get_stats64(dev, storage);
- 	} else if (ops->ndo_get_stats) {
- 		netdev_stats_to_stats64(storage, ops->ndo_get_stats(dev));
-+	} else if (dev->pcpu_stat_type == NETDEV_PCPU_STAT_TSTATS) {
-+		dev_get_tstats64(dev, storage);
- 	} else {
- 		netdev_stats_to_stats64(storage, &dev->stats);
- 	}
+diff --git a/net/ipv6/sit.c b/net/ipv6/sit.c
+index 5ad01480854d..655c9b1a19b8 100644
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -1398,7 +1398,6 @@ static const struct net_device_ops ipip6_netdev_ops = {
+ 	.ndo_uninit	= ipip6_tunnel_uninit,
+ 	.ndo_start_xmit	= sit_tunnel_xmit,
+ 	.ndo_siocdevprivate = ipip6_tunnel_siocdevprivate,
+-	.ndo_get_stats64 = dev_get_tstats64,
+ 	.ndo_get_iflink = ip_tunnel_get_iflink,
+ 	.ndo_tunnel_ctl = ipip6_tunnel_ctl,
+ };
 -- 
 2.43.0
 
