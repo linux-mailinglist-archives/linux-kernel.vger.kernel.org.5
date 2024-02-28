@@ -1,295 +1,186 @@
-Return-Path: <linux-kernel+bounces-85566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0CBF86B7CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:02:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D60786B7D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:03:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F40051C222A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:02:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F751B23CC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:03:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2171371EDD;
-	Wed, 28 Feb 2024 19:02:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8969174411;
+	Wed, 28 Feb 2024 19:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="za4ZdViA"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="dhro6FdH"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2077.outbound.protection.outlook.com [40.107.8.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB80540843
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709146972; cv=none; b=nCEFXUJGIaxctqkK+KezGyFLFErSq9xadWEWbjrYCQnfuN5uWBTqRCYVPsOp1uqkP+FoLZgXdrpO05jsDPzEEWEDWJ7M4wI0MFP5bTFwUkycE64grVMi8Oy0UMp86iNyoHhvJUC21wqmqJI2CvAyq6zNhbPBPGHsIxaBngptgTA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709146972; c=relaxed/simple;
-	bh=skFUv9Uol9+cRhzF1ak6ei4adRuspYQ8Rx2dU/hvc/c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QdxVEtLXkI8dEjXRBNpT/RUIQrcfye8zAYJyz7r/bnVElT70ERY3v3D0uBlwHYq337kcZfBcPXFTykvGBDEK2azcNevWfEWPZtMD8tD+XBucOpijESPdK9hoosBfmKY8zb3TOt9qFb3UV2LydoiecFj1yKqzqZ0BgLd/lNgCJo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=za4ZdViA; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-564647bcdbfso143362a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709146967; x=1709751767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X8tVlwjS8losoKuCZ/fjzZ/9YF7qU0FgMHqFQ3Tqj9U=;
-        b=za4ZdViA1avUJ2A2Jnb0AV12V+8pVtq0+GTRtMo7OuicrLANFG6k2ypUb2iP9cCoGx
-         kG87Jg5UmQr5UNRgcKa6FgEfmNA+TJ1nZuKp/V+onmEGNGUxbNSn+I5BMOl8QNaYy5OO
-         iBLpcoBebRmvJFpvCEpTOeMt70BZ8sIihkB+fx3iEAzW0eiI9gaXG16J4CngluOcVzu/
-         1pWYXhnw+0nkUlOJrkISq8gwS3feEd+JJW9xihfCqWXDI4ZJnGOARboXrXYpqDVR/KpX
-         NlmzLSPYhluD9xDfTuML5dILInOlhfyzTDca0wuYgb7ONRIcDE9GQKkSiv6YYS9l7klY
-         peOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709146967; x=1709751767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X8tVlwjS8losoKuCZ/fjzZ/9YF7qU0FgMHqFQ3Tqj9U=;
-        b=daJiZDXuB5RhKoqwE9jjyj0rWX/qaI9QrxST5HLcLow3LPuI3MhZWSRblK1daOEjug
-         ByStxm1YRTQufwzf4QKx1lPnn3LTR1UXH550iP4OXlFV/rYejG6zJKECd3wCakRPRyTV
-         MdiF6BuG5WAbZwq5tuSPXnhn3hneZCdyhbPE2IX33l/JvHgIcZsT2O9xayYDyGT2oOu4
-         s/Bg6nXkW7tTWdXpkmd2hXYGcUOjFMGxPIvpfPUtadrA2uls0wFrTzE4DH12SeanB2vk
-         0dxNbhm6HDsJrQzfC6gjZFdXH1MC08raGUihX+K2pP38saATHdlJwa00Olk8FS2tswqN
-         /KFg==
-X-Forwarded-Encrypted: i=1; AJvYcCXr+qxV84kF7ZQ+icli8w7GBscrRJi+ruIzJfkXZr+I4egg1w5t07zwVBiRsdypjXAr5IdlRDEjqlfvDenZ/2xAbtRYEF94ZeYmP1bv
-X-Gm-Message-State: AOJu0YyGN+qVHLRQZJ01dDsLlGxjGRLxsh4lUSp0CWE3G/SDho4R2hfW
-	/xaY0xsJKR9/WCgdzsuUCLjWGbkHag5L5tGefJungxjVupdpVkDQ+gMwc1hlXCafiFO4jWrlYMY
-	VJpB5GlVrGozKfHjtPTmE7w6+L5tXe4EmeWKstA==
-X-Google-Smtp-Source: AGHT+IE3utn3vyJsWF2mAg/s87LAZC7cECKzA/OV3r5FZbp8dm6m45TbYz9+U3CBjLv2zPJfvrM9+hF0Z6dwrR4u53s=
-X-Received: by 2002:a17:906:1d59:b0:a3f:c6a6:3b79 with SMTP id
- o25-20020a1709061d5900b00a3fc6a63b79mr421674ejh.6.1709146967406; Wed, 28 Feb
- 2024 11:02:47 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81BC440843;
+	Wed, 28 Feb 2024 19:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709147022; cv=fail; b=Kok7hP0S+aMqGwi3BAQf3YJirXlCTLwF4iadxXUcXUZcxDLgrocA8IG0rYvhjbay3SWF/V+jE+7pddJMBJ/ztrXvOjbb+sy+Fu0o1ublrpWabFPmikakt92drZ0o4pjIVhastSfcJUet1qfAoY9EcVG96PZhIj7UHgVfUcXZ7lI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709147022; c=relaxed/simple;
+	bh=1mSQ0qSdbafYDA/kluh9wXcAQuKk/Re/NOPUG4jpsmk=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=gsYLsVqlcYweBNzUQORP5i1RR5DnK3FENO9QlSndqyxluwt0ualCI1KBben/VfrsCzA043zE0Yxr4AlRj48DDlE+YKrNCeY/75ZX/nyFEhkFbtecOl3CaDfxjdLO1GsHZUJfwHDKJk58ToGINftFa8Xp/7bkb8yB8Z+2wcBZVYc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=dhro6FdH; arc=fail smtp.client-ip=40.107.8.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S8aPCZQEdSfk6Qkbnb6/t5H/ufbfPm4RnmrXMm0u+VFD/oKFjFCnuSNpcT26elnQsvNR09i4Ne80ywOl5QuTyFSshL90MQlDmaRnlsxHyNanupL9iWrchBm5yeP+oCbLv2ujOldcUK03SslfgJkdCKF1TuiPonIiI1275Y2z1qKutNViyxAPda1C48/LnOlD3wcHpqFZPtxmKoH6lKKFhWiiHL8rr5rloSptQF+glQLzVvV9heVOLVTg2U6O4rEnUUCThKOt6kq5Plfjdd9WjzuAakiyOs78ObkHMA/sLahN/RerZ4m7OGMQwF22i885w45MKvewp/Ym3DcT7ffIBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BkdlxnsqUOt42fCfOoakK4R+X04CpK2e17EWNipAHkw=;
+ b=XGJbI0FzCkt2pNbyutEVVhm8ebqXX9bgx24aX9M6CKSYW3CEmv7+1+N/4t4fIzzCX7Y68XdKWHe9Xi/i2UYM6Pq8KK+sj+30RQB/oKHJicsBmOE58kT41L+xQ5WXhj9+POWpicWOa5QYUgkDHNg+GSwgclcWrNe68cG4o2+FPIp4p4cGT1STO63xWvRZo2gUwcoxkl1oYfwZh/8djJqrEr7C7AUjOmJ5GyNAtNW3jDkhfPxKzG0zV42C4mnoKUY2/Qj4qP+3ER5lYn7Ey3gpqI6wenD7FEWXeGn7+rrpNvbSkbMy1eu1eCQBR0Vqv2CPWLExYudgBWvXM7s2yQ3u/g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BkdlxnsqUOt42fCfOoakK4R+X04CpK2e17EWNipAHkw=;
+ b=dhro6FdHlPuBPiRXJN7jwCURlA0wrj8kgxbeAVDWErDwmlXFcr5P88HsCCB/vRXHiz51JbT57itKyQ7GLYlQ0sVZEEemjEM+h1mdpTblIdU7l/KKw3fzSh8tHlDH/CnbNmvfyDwRKclLCGF81Ug99K41YjsneHdD0M0S1TG15sA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB8370.eurprd04.prod.outlook.com (2603:10a6:20b:3b1::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Wed, 28 Feb
+ 2024 19:03:37 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
+ 19:03:37 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: helgaas@kernel.org
+Cc: Frank.Li@nxp.com,
+	bhelgaas@google.com,
+	conor+dt@kernel.org,
+	conor@kernel.org,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org,
+	kw@linux.com,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org,
+	robh@kernel.org
+Subject: [PATCH v5 0/5] dt-bindings: pci: layerscape-pci: Convert to yaml format
+Date: Wed, 28 Feb 2024 14:03:16 -0500
+Message-Id: <20240228190321.580846-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR05CA0165.namprd05.prod.outlook.com
+ (2603:10b6:a03:339::20) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228175149.162646-1-alexghiti@rivosinc.com>
- <20240228175149.162646-3-alexghiti@rivosinc.com> <74d7adee-8293-4fad-82c3-f4458b2e3960@sifive.com>
-In-Reply-To: <74d7adee-8293-4fad-82c3-f4458b2e3960@sifive.com>
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-Date: Wed, 28 Feb 2024 20:02:36 +0100
-Message-ID: <CAHVXubiiyYAdKeVpzEdiySk=xz3bs6sb70SHT6_zM9XWDxWp+Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] riscv: Fix text patching when IPI are used
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Andrea Parri <andrea@rivosinc.com>, 
-	Anup Patel <anup@brainfault.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8370:EE_
+X-MS-Office365-Filtering-Correlation-Id: 61284c6f-890f-4c28-50c5-08dc388ff83d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	X///cYIqUVvMZtfVN47dqIJDXKZyEBShLmIPMV2m/f/2IBeXqBtnmn9hOrgfrX1efarIhnYBdy+/68uLRk5co0ftsgnsC50Ld1gUloXzxJVhfCZE4HL1Qq3kZY8T84ToKb5bPD2pAN93VXfELwSYjLwQ7TWfBiEjoQ83qOXIW8EInZJIbXnMT2SKgrJz1i5xrvXg3x2GNckltNnL9bMRLs7I6CmMrPnf7yUSR3R6ivvPAoq3VqLALgH1IM0KqRE8Mk5TnhxR32Zy/ZP7Ym2VGcYfSssy4SpV2Ov2t9jpYynIIwx+9b2X3t3xnX33mAdd9dk0w2w+HSqPvyLc5LxHBbHll5+sNxhUh7ob1kJlJHE9WqEQkPDjtntKDNL5QlrWdpUVvaqJQ0leo1hJe9VGMuIt8Cd2PbuPap8nt+txlO6/o6PFSerXqYOkZrzNBqiLbFsldDeqzBR2roYafU3GEC33zOsJn96qvaVvlbT3uBbIMIbFhoMUP0v585qY4l00WRkjY8C9td7YqEIReZbLReFDVO+4mhrPlrvCnIP/bVHVrbQbuGoVcP5dd8SS/SKQTAT4AiewzS2ewmrL3tn61oKEP2ELQ6CXfj8rsMpcAiwrkNqgwy/WOKJ2eGjlALxCaA3NoGjqqoBwrrgqRj9LtOOZ1xFL7d8a3fjJYcShBtBMIfaQQFr1u9yFQlgZLRyng9mLKqH3p8Nxha0O6xXGHS3bygVq9AXJaaLfjp+WG/U=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Hf2Nlla4aKr0qaQ4mVq65AYW53cBQYjHNuRbQVf5DzJam3sEPyXMjbyOdfqo?=
+ =?us-ascii?Q?N0Qgx52ASJP4EYN8WRFdRocsbz1kC/KlQlFqodHDshzrD7LWdG0F4WusTgzO?=
+ =?us-ascii?Q?MGlj5ajm/hXg39CSknXJ1KXvxb7ic1jQQYpbFgAgNJUqBVOd7Bh7PcQZhs/B?=
+ =?us-ascii?Q?V3YcefdGYyeniXRN9ZWrbO/CMiBpmbqqlnFeBiGGG+WR8BcHnxaVr3u/eQuk?=
+ =?us-ascii?Q?3mWrvkNgA4XcnQFOi4H8W2mzbJWhhWZEQd16+1lHxmPkZR26Imw0sFgDmq92?=
+ =?us-ascii?Q?N0SWPAlhYOAGoi5knslYBNuziO5lxVA6/+QxCkSmk4Ye/2Pzlnm8oXcz6ebc?=
+ =?us-ascii?Q?jff/c+ZQ33eHOHFuT/qdUBa8cJjuAgIZDvLlgyaSUHlgT6RuXNhlB5ajrLEY?=
+ =?us-ascii?Q?cQuCrfvcLdak6pAv44YxKgeHyXdXL8JSqz//DIqnWvD4ZiZWO6432Nwffutw?=
+ =?us-ascii?Q?1llzAY5LxKivodoP40U3Ul6Ik+1A/NxOzDYaJAb2uvM0GZsohM59a9ZFUoLS?=
+ =?us-ascii?Q?reb/mVgVDUTzdPcZCYW9ve0FjaPPLAaX4fa3UJIYAZshto5Pf7zMDlyQd38+?=
+ =?us-ascii?Q?WBhv0Q+GqKUUP4iebSwW8ly8q0A3RwZeGl8WTdlkBGG8BtSVDZTvJ4FA/K8E?=
+ =?us-ascii?Q?qK24NPYoA3XbBOBM3PEA7hoa1jp27NkHG+inSNNOCklRQ1ItJn/JgQv4rR5u?=
+ =?us-ascii?Q?VXEouv88vKP3os4r6Ld+P/9AqQipVi9J73+19ya93wT9Jx5/aE4S67P1ChUo?=
+ =?us-ascii?Q?wv0ALoBs7pv0xqpJKWIL8XufxejBxZpnyv5arKuikTbiYdIcrDacByZLNvRc?=
+ =?us-ascii?Q?/Kt85D+Lb8BDhN49xfnuKLDXE4Rcdn/I2Dvw5146oHr6H8LL7Dzuh2F9a60y?=
+ =?us-ascii?Q?IbA043afRgQaLymIEkEPhGZQGKpISf3Ji1t7cyfhUZCZ7KT9+apXE3uS8Z/t?=
+ =?us-ascii?Q?fbzLdOAoXi5BUaW1Ct4KfSE4Dj2lTAehbAiwMrTyLrDKeeBb5E6veEKyy36x?=
+ =?us-ascii?Q?7vlVhrkOEiU8A5EsdsIA9X0nvCPTv4pncBc2XmHis1fxmbYkCY4y0L+wN9F+?=
+ =?us-ascii?Q?C5W/13kbgay97Y8A4yrOyxmP3BZzP3gWaXi3Fk0r06U7YxQoVX1BmIiM1JaP?=
+ =?us-ascii?Q?K2eiAAuDwvcRSwVh8bue4pdyhFcOnqh2pT7Qtbiu+L9i8/cfMnMHESIovwm9?=
+ =?us-ascii?Q?PhAHNawj9hBBcwhxZDmrM4erYzjN+VcnntzdQbJMvm+f7S6R4dFmqWNyX/kV?=
+ =?us-ascii?Q?vDrptyS/ruOlg6wJ8oqFc/ToRS3aaQbwAlGVL6tz7an6TJK9adVJSTD/vBaD?=
+ =?us-ascii?Q?kh7FQrJObNO8HKHlP4hW2SI6Gfg3jhkLU+bYMzG/e4/k7ONHyOvi5cGIDSu2?=
+ =?us-ascii?Q?iTcAiHGHIgMLEMPydDsjLvafvvWq/lNOhbR22GoJCNg2awEskLkRlfvxldz+?=
+ =?us-ascii?Q?WHyPG1ruNDWafqV/mXBhSPKSL3N/JBeppzf0jA1GLCX+Q8Khjl52sekjFcMa?=
+ =?us-ascii?Q?Nh5/IecvJCAwhya3JCak1rWYWHfJsoNfXvIpeDZEfgQGc8PkCvXl4TYkyCdU?=
+ =?us-ascii?Q?NlbGbnWHpabJm2ZdcFo=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61284c6f-890f-4c28-50c5-08dc388ff83d
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 19:03:37.7646
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /fM4kvXAsKPtOTQvLz7Yn5eOv14QFedXfBMlvTUfm2RnPvyRBouD9OKxcL8dLPazX+Jaj7ifaHRStuulFDDr6Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8370
 
-On Wed, Feb 28, 2024 at 7:21=E2=80=AFPM Samuel Holland
-<samuel.holland@sifive.com> wrote:
->
-> Hi Alex,
->
-> On 2024-02-28 11:51 AM, Alexandre Ghiti wrote:
-> > For now, we use stop_machine() to patch the text and when we use IPIs f=
-or
-> > remote icache flushes (which is emitted in patch_text_nosync()), the sy=
-stem
-> > hangs.
-> >
-> > So instead, make sure every cpu executes the stop_machine() patching
-> > function and emit a local icache flush there.
-> >
-> > Co-developed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > ---
-> >  arch/riscv/include/asm/patch.h |  1 +
-> >  arch/riscv/kernel/ftrace.c     | 42 ++++++++++++++++++++++++++++++----
-> >  arch/riscv/kernel/patch.c      | 18 +++++++++------
-> >  3 files changed, 50 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/pa=
-tch.h
-> > index e88b52d39eac..9f5d6e14c405 100644
-> > --- a/arch/riscv/include/asm/patch.h
-> > +++ b/arch/riscv/include/asm/patch.h
-> > @@ -6,6 +6,7 @@
-> >  #ifndef _ASM_RISCV_PATCH_H
-> >  #define _ASM_RISCV_PATCH_H
-> >
-> > +int patch_insn_write(void *addr, const void *insn, size_t len);
-> >  int patch_text_nosync(void *addr, const void *insns, size_t len);
-> >  int patch_text_set_nosync(void *addr, u8 c, size_t len);
-> >  int patch_text(void *addr, u32 *insns, int ninsns);
-> > diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
-> > index f5aa24d9e1c1..5654966c4e7d 100644
-> > --- a/arch/riscv/kernel/ftrace.c
-> > +++ b/arch/riscv/kernel/ftrace.c
-> > @@ -8,6 +8,7 @@
-> >  #include <linux/ftrace.h>
-> >  #include <linux/uaccess.h>
-> >  #include <linux/memory.h>
-> > +#include <linux/stop_machine.h>
-> >  #include <asm/cacheflush.h>
-> >  #include <asm/patch.h>
-> >
-> > @@ -75,8 +76,7 @@ static int __ftrace_modify_call(unsigned long hook_po=
-s, unsigned long target,
-> >               make_call_t0(hook_pos, target, call);
-> >
-> >       /* Replace the auipc-jalr pair at once. Return -EPERM on write er=
-ror. */
-> > -     if (patch_text_nosync
-> > -         ((void *)hook_pos, enable ? call : nops, MCOUNT_INSN_SIZE))
-> > +     if (patch_insn_write((void *)hook_pos, enable ? call : nops, MCOU=
-NT_INSN_SIZE))
-> >               return -EPERM;
-> >
-> >       return 0;
-> > @@ -88,7 +88,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned=
- long addr)
-> >
-> >       make_call_t0(rec->ip, addr, call);
-> >
-> > -     if (patch_text_nosync((void *)rec->ip, call, MCOUNT_INSN_SIZE))
-> > +     if (patch_insn_write((void *)rec->ip, call, MCOUNT_INSN_SIZE))
-> >               return -EPERM;
-> >
-> >       return 0;
-> > @@ -99,7 +99,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ft=
-race *rec,
-> >  {
-> >       unsigned int nops[2] =3D {NOP4, NOP4};
-> >
-> > -     if (patch_text_nosync((void *)rec->ip, nops, MCOUNT_INSN_SIZE))
-> > +     if (patch_insn_write((void *)rec->ip, nops, MCOUNT_INSN_SIZE))
-> >               return -EPERM;
-> >
-> >       return 0;
-> > @@ -134,6 +134,40 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
-> >
-> >       return ret;
-> >  }
-> > +
-> > +struct ftrace_modify_param {
-> > +     int command;
-> > +     atomic_t cpu_count;
-> > +};
-> > +
-> > +static int __ftrace_modify_code(void *data)
-> > +{
-> > +     struct ftrace_modify_param *param =3D data;
-> > +
-> > +     if (atomic_inc_return(&param->cpu_count) =3D=3D num_online_cpus()=
-) {
-> > +             ftrace_modify_all_code(param->command);
-> > +             /*
-> > +              * Make sure the patching store is effective *before* we
-> > +              * increment the counter which releases all waiting cpus
-> > +              * by using the release version of atomic increment.
-> > +              */
-> > +             atomic_inc_return_release(&param->cpu_count);
-> > +     } else {
-> > +             while (atomic_read(&param->cpu_count) <=3D num_online_cpu=
-s())
-> > +                     cpu_relax();
-> > +     }
-> > +
-> > +     local_flush_icache_all();
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +void arch_ftrace_update_code(int command)
-> > +{
-> > +     struct ftrace_modify_param param =3D { command, ATOMIC_INIT(0) };
-> > +
-> > +     stop_machine(__ftrace_modify_code, &param, cpu_online_mask);
-> > +}
-> >  #endif
-> >
-> >  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-> > diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> > index 0b5c16dfe3f4..82d8508c765b 100644
-> > --- a/arch/riscv/kernel/patch.c
-> > +++ b/arch/riscv/kernel/patch.c
-> > @@ -188,7 +188,7 @@ int patch_text_set_nosync(void *addr, u8 c, size_t =
-len)
-> >  }
-> >  NOKPROBE_SYMBOL(patch_text_set_nosync);
-> >
-> > -static int patch_insn_write(void *addr, const void *insn, size_t len)
-> > +int patch_insn_write(void *addr, const void *insn, size_t len)
-> >  {
-> >       size_t patched =3D 0;
-> >       size_t size;
-> > @@ -211,11 +211,9 @@ NOKPROBE_SYMBOL(patch_insn_write);
-> >
-> >  int patch_text_nosync(void *addr, const void *insns, size_t len)
-> >  {
-> > -     u32 *tp =3D addr;
-> >       int ret;
-> >
-> > -     ret =3D patch_insn_write(tp, insns, len);
-> > -
-> > +     ret =3D patch_insn_write(addr, insns, len);
-> >       if (!ret)
-> >               flush_icache_range((uintptr_t) tp, (uintptr_t) tp + len);
->
-> This only happens to compile because flush_icache_range() is a macro that
-> ignores its parameters. You could replace tp with addr in this line as we=
-ll, but
-> that seems like more of a cosmetic change and should be a separate patch =
-(like
-> in [1] which covers both related functions) if you respin this.
+Change from
+    Change from v4 to v5
+    - split 5 patch.
+    - create one base patch, which the same as original txt.
+    - two patch fix for RC.
+    - two patch fix for EP.
 
-I'll respin a new version and won't touch the extra variables since
-you did. Your patchset is getting closer and closer in my todo list :)
+    Change from v3 to v4
+    - remove ep label
+    - remove status="disabled"
+    - remove deprecated property
+    - fixed irq max-numbers
+    - because dts still use "reg" instead "dbi", to avoid dtb check warning,
+    not referernece to snps,dwc-pcie yet.
 
-Thanks,
+    Change from v2 to v3
+    - update commit message, show change compare txt file
+    - add failback compatible fsl,ls-pcie-ep.
+    - add commit message about 'addr_space' and 'config'.
 
-Alex
+    Change from v1 to v2
+    - remove '|-'
+    - dma-coherent: true
+    - add interrupts and interrupt-names at before Allof
+    - remove ref to snps,pcie*.yaml, some reg-names are not aligned with in
+    drivers
+    - Add an example for pcie-ep
 
->
-> Regards,
-> Samuel
->
-> [1]:
-> https://lore.kernel.org/linux-riscv/20240212025529.1971876-8-samuel.holla=
-nd@sifive.com/
->
-> >
-> > @@ -232,15 +230,21 @@ static int patch_text_cb(void *data)
-> >       if (atomic_inc_return(&patch->cpu_count) =3D=3D num_online_cpus()=
-) {
-> >               for (i =3D 0; ret =3D=3D 0 && i < patch->ninsns; i++) {
-> >                       len =3D GET_INSN_LENGTH(patch->insns[i]);
-> > -                     ret =3D patch_text_nosync(patch->addr + i * len,
-> > -                                             &patch->insns[i], len);
-> > +                     ret =3D patch_insn_write(patch->addr + i * len, &=
-patch->insns[i], len);
-> >               }
-> > -             atomic_inc(&patch->cpu_count);
-> > +             /*
-> > +              * Make sure the patching store is effective *before* we
-> > +              * increment the counter which releases all waiting cpus
-> > +              * by using the release version of atomic increment.
-> > +              */
-> > +             atomic_inc_return_release(&patch->cpu_count);
-> >       } else {
-> >               while (atomic_read(&patch->cpu_count) <=3D num_online_cpu=
-s())
-> >                       cpu_relax();
-> >       }
-> >
-> > +     local_flush_icache_all();
-> > +
-> >       return ret;
-> >  }
-> >  NOKPROBE_SYMBOL(patch_text_cb);
->
+Frank Li (5):
+  dt-bindings: pci: layerscape-pci: Convert to yaml format
+  dt-bindings: pci: layerscape-pci: Add snps,dw-pcie.yaml reference
+  dt-bindings: pci: layerscape-pci: Remove 'fsl,pcie-scfg' and
+    'dma-coherence' from required
+  dt-bindings: pci: layerscape-pci-ep: Add snps,dw-pcie-ep.yaml
+    reference
+  dt-bindings: pci: layerscape-pci-ep: Remove 'fsl,pcie-scfg' and
+    'dma-coherence' from required
+
+ .../bindings/pci/fsl,layerscape-pcie-ep.yaml  |  91 +++++++++
+ .../bindings/pci/fsl,layerscape-pcie.yaml     | 173 ++++++++++++++++++
+ .../bindings/pci/layerscape-pci.txt           |  79 --------
+ 3 files changed, 264 insertions(+), 79 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+ create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+ delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-pci.txt
+
+-- 
+2.34.1
+
 
