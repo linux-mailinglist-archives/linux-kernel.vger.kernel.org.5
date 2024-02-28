@@ -1,155 +1,173 @@
-Return-Path: <linux-kernel+bounces-84701-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A4FA86AA70
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:50:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6195386AA72
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:51:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DED71C21DE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:50:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1650128A0E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE612D605;
-	Wed, 28 Feb 2024 08:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="dd1bLmPp"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2132.outbound.protection.outlook.com [40.107.255.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540862D056
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.132
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709110222; cv=fail; b=V4UsNpS5Q/wCLem0OU2gnwIFzIldNuXuZ4EOKjOXMXPP8TuDzdPiX6juHjdDf2+JVCE0JYnTkTkYzlz9QzImMZZgkaoV5IpVwlyt9q225/GVQIvT6yaC7qz59cGbLUYtGUQfN6tkl2ICTikqmD6BYruglvdSIVkiPFNshLTe1Ik=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709110222; c=relaxed/simple;
-	bh=5N7FqwmmZvqN09JjQRn6vDNUpQVIPMwU9aMA0Nx77NI=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=C+8Dm38u9rDJ0ro8wSWFovmek27Wf656bXwpPNXsWX9IJIElqt+EHFnlDjYSoq5fSrRl8mmfiRE/7/F7ijM4/cI3FduuX/iaA7oLcqR9IREQcMMM1YQ8jfWRf7nIgVFCJShliATo1k1nUq++88hwiLzxcaFi5tj28pxa1JEhib4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=dd1bLmPp; arc=fail smtp.client-ip=40.107.255.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k8Qum3/p14PBnh5u4JO9Uv5f41Wz09I8I+57dmfuRg8+aQYcH2wxbPELGv+x4oUrEMsB1jdd1YuP2jfB3uuMituLmYWcVA2S8SsjWawscCNHceAqeLtXxeSTM1EiEvmUuNjSOHshXx+hoxXx3SvrVPyvvsSYXoTJSj7PKBl2QtNiIlBjhYAzXN/5G0L3Q4I6h2WmYAGn6Br+9dMae3bOm2lZEibK73rg9I2pWMAsTCy7dDgYYj1kLRTtxtTugAE+PBRNP9jArTl2medBCiNDy7hLcqLvEXG+Zk25lrjjJTv7g9TZkElvKisUUqMbtcHG94QVMVpIcJH6zrk3TdqFxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5N7FqwmmZvqN09JjQRn6vDNUpQVIPMwU9aMA0Nx77NI=;
- b=l8VuzxG4t49IePNw3TyZsV6PoPmTtr/LrDPhs8+kJJ7GfV1S1biUnLQwNe8/moiaxashjyLJdGY3Oir/Rz9oWVz6waGexJgb+G1/qJWfPIQTivesP0xM/FpsFipqLQIMlP/PBCDYYsAH6XaNyxdGk3bPfFifROneqhZ1ywrBh1jmTYpdgpcSpG12FH4uDAoSjweL/d7l0lqhSXQiddxTm4XaRKnHcxy8jCZ3wJLV4N/zOha6CfOREkb6tRM7+8S4XVuDYcDd4ZqTLAuVI0tPf9EuxoprYDVFLgfzWcAryXvBuFfzcmZIkvRoZ3S3vZyCsI+P6rNi7KNMux+d+TU4nA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5N7FqwmmZvqN09JjQRn6vDNUpQVIPMwU9aMA0Nx77NI=;
- b=dd1bLmPpIYvZ33DHrP2ECD9I8TFY58qkVhZ8xS1LMw+edJkEVXrh3qdSXSUNcmUVWe0EY4oRMQEXVcDE87jhHbRuSqFaFrRN+Y74KVvg1pQX030pQNL2IvEzaNgPw5iLSEWLJuPeOXMp1Qr2eN5bSu43+S4ZIZmLlLAR7TGafOk=
-Received: from SEZPR02MB7164.apcprd02.prod.outlook.com (2603:1096:101:194::8)
- by SEZPR02MB7073.apcprd02.prod.outlook.com (2603:1096:101:19e::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Wed, 28 Feb
- 2024 08:50:14 +0000
-Received: from SEZPR02MB7164.apcprd02.prod.outlook.com
- ([fe80::c54f:7115:e36a:591d]) by SEZPR02MB7164.apcprd02.prod.outlook.com
- ([fe80::c54f:7115:e36a:591d%3]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
- 08:50:14 +0000
-From: =?utf-8?B?5YiY5rW36b6ZKExhb0xpdSk=?= <liuhailong@oppo.com>
-To: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"urezki@gmail.com" <urezki@gmail.com>, "hch@infradead.org"
-	<hch@infradead.org>, "lstoakes@gmail.com" <lstoakes@gmail.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH] mm/vmalloc: Fix return value check for vb_alloc
-Thread-Topic: [PATCH] mm/vmalloc: Fix return value check for vb_alloc
-Thread-Index: AQHaaiMl/BXt6+jxSE2MrtR/YdMwFg==
-Date: Wed, 28 Feb 2024 08:50:14 +0000
-Message-ID: <84d7cd03-1cf8-401a-8edf-2524db0bd6d5@oppo.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oppo.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SEZPR02MB7164:EE_|SEZPR02MB7073:EE_
-x-ms-office365-filtering-correlation-id: 11cdcb2c-3f9a-4b03-2476-08dc383a47c7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- k2qcM6jbBYiAX8Zod+9UsL3BSA3sFqd69s3vk4inmpY69HPSzhCxj7DhmZIr6viTAQ3YyGLrRxujnY70dBDUqtKWkml4jmCRRp4vanzNDO+Mrlk1h1PhNXrloMZAoACrKtD1rc3GjxEiJeN1AMXTxB/dACZzjNyUlssJ4o20n89Wr5Rn0UqVT2lTr5JoyuGPPw8oHRUtp7EJG2z4kiKDGILQDeVp6X0kXpVsWf+YiPtlwEbPDbdxQn8U2ITMkmLIfT+oXdowtBF4acsv08/3nTP3prX0EZjRmzPFNBd4KblVyRKzU9xThzEwfChs5Dswway0e6BpIBaaFr7KYseDC/MhuGyix7G5n3RKHvLmP54CZEbd7XZhgD9WqJkiwFuwxmqRmzClODNLAgMoM9q97qiisMKxevWH4XlX/ExznDAKRz5Cpb6ibCa+i0FcxJFH94M/EC8Ww5mHDqZ+KR3ROZJV37/T5WyTwRl3m6+OvEUK0MJEBysfS0ncKUOOiV+Fd8RgqD1oS6sO75zJqNA8SzaKNS6FKISPot3pv97MIDkD/Uj4elzoH/mQ9duZo7pg4CvyQAo083B+TE6h/mn50IueWUICEDf1TTZhsy8YqSQHCWIhOXMDgVE6hrHZsHtcaidQ1U3/iYZUxzy+vDWoySRBVK2+mVVoRqjcVVa7K85N3h1nHbGHHs5kzSWcjW4KZGGFhGosy5opl8qekk6lUqLXy9r3cX/cDciLF82Ckk8=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR02MB7164.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?MytHVWRSdW1IR2Z1RGtHVk11VTN3NHhaLzEyOGdiL3Q5WEhnTWJYWE4zOVlY?=
- =?utf-8?B?ME5Bbmh2OFVLVVBPbzE4NzlIREtzTVZVc3p5bDkydXBDRnNPU2h1L3NZRFll?=
- =?utf-8?B?ZWhpSEpTeW5hQnkzcm9QTHZuWjhGZ0J5ZGxwWllDc2lub3lOMUVXMXo1WVFE?=
- =?utf-8?B?QnRDa29PekltcVZYdkUxdjFvZ0Q0SEhJRDdtay80TWhLZnZpMzRyeUlVYkl3?=
- =?utf-8?B?SmNCVlFWQ1huaGJIQ2YwR0owS2QxTFg3c2JDRUdBRzh1YVM2S0x4WTAxZGFO?=
- =?utf-8?B?bmNiU05NZVFtaTE0Y2U0aWdGUFdzQnA1c0FuSTE0Yk00SU84WFpac3VQbS9E?=
- =?utf-8?B?R1VneVdEQzJTN2NOZ3ovb2ZyMVVmTVltbHhZZENDdUlrYkFSUDR1OEZOM0I3?=
- =?utf-8?B?VUZoQjFXdW41ZmpkbkE5MVhNM1Jhd3lxa0t2UXB5VjBLT1JVQ2RaOFZnK3BT?=
- =?utf-8?B?enlyRC9hNWpIZ2FzVzRqdTUydGNmdW1pUGRNZlJjWGpzZVVOUk1aZHpWV2xF?=
- =?utf-8?B?VEtaTzVDSUtTRW8rUmxrenBNY1NNL1lONUsvcS9vc3d4SU52Mk5lemc1T2lV?=
- =?utf-8?B?bzA2NGFvb0VTTzlXOWtiVWhUVkU0cDVjbWdhZFV6dS93U1BLd3liZGFoUDRV?=
- =?utf-8?B?M241cUEvWVBEdGF2VG1TWDd1N04zV3ZCWEZzMy9NekhxbEVKOU15ekFlWS9H?=
- =?utf-8?B?T2lHUjd0dVRLYkFGTGZvYzdtc3Q4Z1FPNERldEkrVGdSdEcrelQ5YXNVMWNW?=
- =?utf-8?B?RTRRakpnR0dXWGRuVXBNbCtGZWlCTWZvSTVET2hJZGlqcmFTZU1PZHUvM05R?=
- =?utf-8?B?MUdJeGFvZXNBRFpnQWpIYkhwbDFwNU4zU05sQ2daanU2VlU4SnlNa2VJdHhZ?=
- =?utf-8?B?c3V1YUp1KzA5UnV0ZVc3bjI3Y1U3TzY3ZFZ1Z2xQVkRMUFpjSFYwb2RWOG1F?=
- =?utf-8?B?YmIrQ3BVNGNKNHlNVVdLTUxMV1ZvVjdLTHJkVDBpMnp6bVM3VlY2d00yditi?=
- =?utf-8?B?blJwVTA1WUFQUDNFVTk3YkU4a2lBR2F0WjBqK1RnNHE3QnZETUZzOGJXMXVY?=
- =?utf-8?B?YWQvOGxjbmo1ZWpjMG5meXhkcTVsZ0g3bkNlZXZoMVpueW4zRnQ2Q0dHU3pX?=
- =?utf-8?B?U010UFVMVGVSUlVLemdJcXYwc0NtV2g3eGJ1SXhDREo1dHU2STgwTk9zS3Rj?=
- =?utf-8?B?Y2RqWnN1c28zZUhwZDg0dmNSN3F1MjRERkVpd2szd1NML3ROMUNkK3FnNFl4?=
- =?utf-8?B?ZktyMlJPeG1hUmVqTTVwbUN0cXZQZ3ZyT0FoYm1uN1FXT1ZCak1YQllYa3Vp?=
- =?utf-8?B?MkNQMElwVjE0U3R6Mm04WFpIdXJRUjBnR0MvaHVzSUhVTlYzc0t2RTA1T2hl?=
- =?utf-8?B?MmVIMnFoUTkwQWlqUmJUZjFWSUV4aDBrSHRwc0pUYU15V3VZMFhoUHlVUlVV?=
- =?utf-8?B?Z295K01qZHJEOWk2bWJzUUNiQW9LN0hUdEthZ08yY1c3NUo3ckYrbFFuZ3Vo?=
- =?utf-8?B?N2lXTmN0RTVLSVF5aGtJdmwxOHhJdlExMXJIdWUwdlgxWGw1SzNod3dZejQ5?=
- =?utf-8?B?VUdHemE0VXlINzJId0J2T3l1cUdIWHVqWGlJM0IwNEt4MU1GdEh4Qkp3N2t5?=
- =?utf-8?B?VW5KS016WlZIOHJHWGdCSnlpYjRuTkhlU0FmV05yb2NtZFBDVEZzek5wc1B6?=
- =?utf-8?B?bnF5dFNNd1ZjSEZWbXl3MDNXUFNzdVRaN1BSZ0wrQUJRQ25zY3JBZnhSZXo1?=
- =?utf-8?B?eDVLTU9XSEhDUE13RmxJLzY4VkJZUXd4d2E3U3VjSWNXTEhBaThCUEhha0dh?=
- =?utf-8?B?cldaRDNyWlBUMUhWM0k5M3dIVEZlRmFDN043TjJVWXNZZGNUTGJkMEMyNFVO?=
- =?utf-8?B?RExIL0ZRS1VIeGhFNzhYSUlwcG14VkpJS3hVZkdnOGJDellHVGtXVlBCZmpp?=
- =?utf-8?B?YTZVYTJvOVJGY2V6VTVVMU9UQmVGN3pvTUorTGJUYzBzWFp5eXdvNXB0dE5D?=
- =?utf-8?B?Lzg3d2RxOFIraFQ3OU1MTFBFcmVGY1IxS3VZeVFXVEh0QU1kdnRkdVVPMEw3?=
- =?utf-8?B?MllzN0RIOCtjWHlienJXci9NOFBUWmJxL3NtNVd6MlgwTjNEQXVNeTN0ck9G?=
- =?utf-8?Q?SFQVgM4CgTFiVE/3/1274ZbP5?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <F0ABAA4C1D45EF4FAF85C1B8F1DFCCD1@apcprd02.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE7102D60C;
+	Wed, 28 Feb 2024 08:51:03 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131EA2D604;
+	Wed, 28 Feb 2024 08:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709110263; cv=none; b=L5iqttCwwpEgnsCC7Ba0gq0R1Znrf0rTkPgD/isThNJpqLOPnMcChOozsJOwJg9MUmRziyplKAtc/EWt2+i1BeFjocMQ+KVLQzqyPZUSde+FzApDXWehaPh1FODu8Jj0vIQruLCY3FSNd4wVhaPncuLpb3Y0uiLoGFR78hFdAqs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709110263; c=relaxed/simple;
+	bh=FF65Jmeuin6I8vITgMeAspe0JypO8S2zvX1rI8TCGZo=;
+	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=fu95PwZco2l0aKYvDLVnfoq9csEAVFEADcmXgqzLmfm83tCMRoWDMA9iXhmh+UdjocAugYojNxWo4uAhJP+qMpCZKNnVbUheumu2XIOEdOtbnr6883ZdxLcVuxbug83M6wxWZZ36rfwrXTF/lMJnmi+YlY7HQcrctaceA2uADYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8Ax++jr895lq1YSAA--.26909S3;
+	Wed, 28 Feb 2024 16:50:51 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxnhPm895lSq5JAA--.10005S3;
+	Wed, 28 Feb 2024 16:50:48 +0800 (CST)
+Subject: Re: [PATCH v7 0/4] KVM: selftests: Add LoongArch support
+From: maobibo <maobibo@loongson.cn>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+ Sean Christopherson <seanjc@google.com>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240202041046.3405779-1-maobibo@loongson.cn>
+Message-ID: <14864f68-83a9-da9c-4dd2-d8fb69f551cc@loongson.cn>
+Date: Wed, 28 Feb 2024 16:51:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR02MB7164.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 11cdcb2c-3f9a-4b03-2476-08dc383a47c7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Feb 2024 08:50:14.3095
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TOJVvBilI0oBwEmmdSu/o68AvRPTQb23YBjAl9kqetDzkWoyPUrwipK7oGPPEH2oxpbor7/NksL1qFVfXRmBvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR02MB7073
+In-Reply-To: <20240202041046.3405779-1-maobibo@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8BxnhPm895lSq5JAA--.10005S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWr15trW3Ww4UWF4ftrWUGFX_yoWrGFy5pa
+	4I9Fn5Krs7GFy2q3Z3G34ku3WSya1xKrWxCr1agryUuw12yry8JrWxKFZ0yas5Z398XF10
+	v3W8twnxW3WUtacCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw
+	1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
+	1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-
+	e5UUUUU==
 
-SWYgdm1fbWFwX3JhbShwYWdlLCAwLCAwKSB3b3VsZCBjYXVzZSBwYW5pYyBieSB2bWFwX3BhZ2Vz
-X3JhbmdlX25vZmx1c2gsIHNvDQpjaGFuZ2UgSVNfRVJSIHRvIElTX0VSUl9PUl9OVUxMIHRvIGZp
-eCB0aGlzLg0KDQpTaWduZWQtb2ZmLWJ5OiBIYWlsb25nLkxpdSA8bGl1aGFpbG9uZ0BvcHBvLmNv
-bT4NCi0tLQ0KIG1tL3ZtYWxsb2MuYyB8IDIgKy0NCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
-b24oKyksIDEgZGVsZXRpb24oLSkNCg0KZGlmZiAtLWdpdCBhL21tL3ZtYWxsb2MuYyBiL21tL3Zt
-YWxsb2MuYw0KaW5kZXggZDEyYTE3ZmMwYzE3Li4xMDk3MzIwMDZjZjcgMTAwNjQ0DQotLS0gYS9t
-bS92bWFsbG9jLmMNCisrKyBiL21tL3ZtYWxsb2MuYw0KQEAgLTIzODcsNyArMjM4Nyw3IEBAIHZv
-aWQgKnZtX21hcF9yYW0oc3RydWN0IHBhZ2UgKipwYWdlcywgdW5zaWduZWQgaW50DQpjb3VudCwg
-aW50IG5vZGUpDQoNCiAgICAgICAgaWYgKGxpa2VseShjb3VudCA8PSBWTUFQX01BWF9BTExPQykp
-IHsNCiAgICAgICAgICAgICAgICBtZW0gPSB2Yl9hbGxvYyhzaXplLCBHRlBfS0VSTkVMKTsNCi0g
-ICAgICAgICAgICAgICBpZiAoSVNfRVJSKG1lbSkpDQorICAgICAgICAgICAgICAgaWYgKElTX0VS
-Ul9PUl9OVUxMKG1lbSkpDQogICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gTlVMTDsNCiAg
-ICAgICAgICAgICAgICBhZGRyID0gKHVuc2lnbmVkIGxvbmcpbWVtOw0KICAgICAgICB9IGVsc2Ug
-ew0KLS0NCjIuMzQuMQ0K
+ping.
+
+Can it be merged for 6.9?
+
+Regards
+Bibo Mao
+
+On 2024/2/2 下午12:10, Bibo Mao wrote:
+> This patchset adds KVM selftests for LoongArch system, currently only
+> some common test cases are supported and pass to run. These testcase
+> are listed as following:
+>          demand_paging_test
+>          dirty_log_perf_test
+>          dirty_log_test
+>          guest_print_test
+>          hardware_disable_test
+>          kvm_binary_stats_test
+>          kvm_create_max_vcpus
+>          kvm_page_table_test
+>          memslot_modification_stress_test
+>          memslot_perf_test
+>          set_memory_region_test
+> 
+> This patchset originally is posted from zhaotianrui, I continue to work
+> on his efforts.
+> 
+> ---
+> Changes in v7:
+> 1. Refine code to add LoongArch support in test case
+> set_memory_region_test.
+> 
+> Changes in v6:
+> 1. Refresh the patch based on latest kernel 6.8-rc1, add LoongArch
+> support about testcase set_memory_region_test.
+> 2. Add hardware_disable_test test case.
+> 3. Drop modification about macro DEFAULT_GUEST_TEST_MEM, it is problem
+> of LoongArch binutils, this issue is raised to LoongArch binutils owners.
+> 
+> Changes in v5:
+> 1. In LoongArch kvm self tests, the DEFAULT_GUEST_TEST_MEM could be
+> 0x130000000, it is different from the default value in memstress.h.
+> So we Move the definition of DEFAULT_GUEST_TEST_MEM into LoongArch
+> ucall.h, and add 'ifndef' condition for DEFAULT_GUEST_TEST_MEM
+> in memstress.h.
+> 
+> Changes in v4:
+> 1. Remove the based-on flag, as the LoongArch KVM patch series
+> have been accepted by Linux kernel, so this can be applied directly
+> in kernel.
+> 
+> Changes in v3:
+> 1. Improve implementation of LoongArch VM page walk.
+> 2. Add exception handler for LoongArch.
+> 3. Add dirty_log_test, dirty_log_perf_test, guest_print_test
+> test cases for LoongArch.
+> 4. Add __ASSEMBLER__ macro to distinguish asm file and c file.
+> 5. Move ucall_arch_do_ucall to the header file and make it as
+> static inline to avoid function calls.
+> 6. Change the DEFAULT_GUEST_TEST_MEM base addr for LoongArch.
+> 
+> Changes in v2:
+> 1. We should use ".balign 4096" to align the assemble code with 4K in
+> exception.S instead of "align 12".
+> 2. LoongArch only supports 3 or 4 levels page tables, so we remove the
+> hanlders for 2-levels page table.
+> 3. Remove the DEFAULT_LOONGARCH_GUEST_STACK_VADDR_MIN and use the common
+> DEFAULT_GUEST_STACK_VADDR_MIN to allocate stack memory in guest.
+> 4. Reorganize the test cases supported by LoongArch.
+> 5. Fix some code comments.
+> 6. Add kvm_binary_stats_test test case into LoongArch KVM selftests.
+> 
+> ---
+> Tianrui Zhao (4):
+>    KVM: selftests: Add KVM selftests header files for LoongArch
+>    KVM: selftests: Add core KVM selftests support for LoongArch
+>    KVM: selftests: Add ucall test support for LoongArch
+>    KVM: selftests: Add test cases for LoongArch
+> 
+>   tools/testing/selftests/kvm/Makefile          |  16 +
+>   .../selftests/kvm/include/kvm_util_base.h     |   5 +
+>   .../kvm/include/loongarch/processor.h         | 133 +++++++
+>   .../selftests/kvm/include/loongarch/ucall.h   |  20 ++
+>   .../selftests/kvm/lib/loongarch/exception.S   |  59 ++++
+>   .../selftests/kvm/lib/loongarch/processor.c   | 332 ++++++++++++++++++
+>   .../selftests/kvm/lib/loongarch/ucall.c       |  38 ++
+>   .../selftests/kvm/set_memory_region_test.c    |   2 +-
+>   8 files changed, 604 insertions(+), 1 deletion(-)
+>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
+>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/ucall.h
+>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/exception.S
+>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/processor.c
+>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
+> 
+> 
+> base-commit: 6764c317b6bb91bd806ef79adf6d9c0e428b191e
+> 
+
 
