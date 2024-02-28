@@ -1,147 +1,249 @@
-Return-Path: <linux-kernel+bounces-85823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2D686BBCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:02:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A88586BBD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:03:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EFC31F20F2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:02:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B65D3B213C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:03:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BFF13D315;
-	Wed, 28 Feb 2024 22:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38AD376F04;
+	Wed, 28 Feb 2024 22:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="M8pO9Xkp"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2052.outbound.protection.outlook.com [40.107.237.52])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VOAj82Ry"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3533F13D30C;
-	Wed, 28 Feb 2024 22:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709161176; cv=fail; b=KiY7cotv4HbJvlcrCCNp3gQqNyLbp4+NWP2qFUGbEY1WSAcdVfB7Qi8vxv9fIyYzEejctNQFrKuAYAK9nQWm3fOQj4xK+37+mAwOw+BVtDCaGIR0lNRzJsbk44tqbT5gDMBz7yiT6YgJ3W3puQVe8xoU1KTmDR6mFv0GzjRcrFo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709161176; c=relaxed/simple;
-	bh=6c/qeXAkM4WTt+H5WPDa9HqIIaNyAqU2sAYoYJDTBys=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=aTksa2vUntuSN4chJlH55iC2YjR5qSNvi04lF2srgT0xgs509qunicaBoo5aC6TqRydNL3Ts0HrTFrXvZEtUBmOBPrTKjI4ZL8kEHfZEQjuZpkFBwEMFwxhcvvww2SJ5D6+5Xb2l6yoHXS9MZOZB3HnB7DB2dsPRoXZo8skkEEo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=M8pO9Xkp; arc=fail smtp.client-ip=40.107.237.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kyABQSaTBV4ZvM3SLb5cVkk6kNeRYfEOqP2m+YzdzDLIdauTK+2v8sPEArL6/HF/izCCR1167SiQtlbZYv10pYFNhkzJrjZ2XxmEfIG1zXf1S6z7et23XzU/KeKp1r7/Aumzl3DQMKpGfPSh/rtwIaIquLzZ8oh5nZJmMfB8WwMzgcUjsuIGkFDJRObmhGkKELr4kF8+laOm+W6Mbv/aomgYX5DjSA+voWa63B1xnFL8bGYtYJ6ELeO3w+XpuQEcTY7p7MXyKjGABSW/JtOY53s2WFNnS5MZ3hHC6Cd2MtJohCNh10VGzeHwFnLue6rkbNSAnuQ+i0j+JWwEXSbDwg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=454o32wUhxMQJq4xDHQ/PpPJSgTNAAGKSfoUpoTO3xM=;
- b=hvnXJiKNAGQ37oz46BERzRia/U6d8CC+gS19rFqju5cbT5jXK4fe2KmTO8LOkUn86IPGVjsMc59WRiPnra85Scx+4EbDF04Vu1seQaAWtDLNHJ9E6tZcgsD57IqW6QuXFwBRRWZQd49OghicD66Iv5C3RmNrfvIrhe/lGsi0JouuhjL5Vpt6KUL3EZ8cTq7Jw0giOLpChJCQqOSxYjiiaf+dd0yylz4VBzQv1rd85g513sLud+RlYNQBhBmGn+n9yw8MI1vc+HDcYmPKnerib5tr6ysBnMR8jOTeKISMRKh8HZ9BIJ2soVee1gO20ZJUpBHOBbj05om/pqmezKNCpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=454o32wUhxMQJq4xDHQ/PpPJSgTNAAGKSfoUpoTO3xM=;
- b=M8pO9Xkp4DcnGrcI7x5XDEMGThOrHr4FNet+gS8s8qBOLvDZki78BnILEjW4VLfFShYn6afMNc819uR+Db4bYNEycXGX4TAHplLFx7CF8mn/cvOtyXIwOTDpxQhNiLABSbhy9M72u1TiDgwHedA63RZukjW7cbcIR9ra58ufr11+hxvN1hWK0ZXZEpaTv8BYp11WiMWz5q+H/lJqlSzF89UuVy8OznDwgzpWjWFt8H1xCMsoCfPlqeoQDyG+TXKEUuJZaqwY2uW3637QqdIc9v3geojvh5wO5uruyjZxOL8U+pMys2OmtwQa7JHO00sdxoFxmlQUBYyueOTdELQ3DA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by SJ2PR12MB8848.namprd12.prod.outlook.com (2603:10b6:a03:537::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 28 Feb
- 2024 22:59:31 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::2e3e:c7c0:84da:3941]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::2e3e:c7c0:84da:3941%6]) with mapi id 15.20.7316.037; Wed, 28 Feb 2024
- 22:59:31 +0000
-Date: Wed, 28 Feb 2024 18:59:29 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: "Tian, Kevin" <kevin.tian@intel.com>
-Cc: Nicolin Chen <nicolinc@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	"patches@lists.linux.dev" <patches@lists.linux.dev>
-Subject: Re: [PATCH rc 0/3] iommufd: Fix three bugs found by Syzkaller
-Message-ID: <20240228225929.GR13330@nvidia.com>
-References: <cover.1708636627.git.nicolinc@nvidia.com>
- <BN9PR11MB5276D622986E55465C3977CB8C592@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB5276D622986E55465C3977CB8C592@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: SA9PR13CA0084.namprd13.prod.outlook.com
- (2603:10b6:806:23::29) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F6EB7291C;
+	Wed, 28 Feb 2024 22:59:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709161183; cv=none; b=m+qh8pmmCMMIdhWNnxKNvX1ewmApQFn1B8sTONernuAgv/a3DiTbAbGxl/OLAHel//qSE98Yw1mo7p8u+1JLxxJbIaF/+67DFCgE6KzenYmQkobimbRVPOTC2E+aRR+WPTXL+GoSYJUZEpGf8o6+Y1Xu4LKakZ4YongKNDWjABo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709161183; c=relaxed/simple;
+	bh=qyALoYJ4e/xDXFwou2aAo1rZPwgMePJQ8UyFijx0rcE=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=RdG5QxMn7Wc8IcywNk4vau683+lZsogGUavXz9JH57eoiEBCglvCZ3Hh49NwDmp1hsPSQqZs6CLLYvHIX2MAGkcYB8GgP96Bl2ek68uDhatdKcoIINMYg1Rt5eRjrFztEcyqXemj96oC4+dV9h4Froy+NQzug+WlLPjHKDncmgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VOAj82Ry; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C742C433F1;
+	Wed, 28 Feb 2024 22:59:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709161182;
+	bh=qyALoYJ4e/xDXFwou2aAo1rZPwgMePJQ8UyFijx0rcE=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=VOAj82RysJU1YtvCqndNJphH/ubZQADuXdO96RADGytgnXjlA+ueUjB3eQQM7rNvY
+	 7D8Gv/t/60sQQb1T+CYzm8cYJQNlWLCHyEg06whSTkbNUPfTBJPBNXOGNWQnoSoIc1
+	 n/2LULwb9QJLOuMROfxqNW6hnbB2yXZFOeiNrzDHavMqYue9Cq1OUF0oYcSfT3iAsl
+	 I4QckxPVdUOxC9zYtqbXDHp5/R9nmtgxry3TvdrZ9Qcz6obcYBJh3QFjRPKkxMfCjH
+	 aZ/TBvhMxj1ejolQHOMvHcRFkE+PZ19UrBOAFykL+2yeuDZP8zxeoQ/penk3oRJO08
+	 Bvn7VXDKAEjAQ==
+Message-ID: <2df72cc0d2be877c1f6eda8ebcf79508.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|SJ2PR12MB8848:EE_
-X-MS-Office365-Filtering-Correlation-Id: e4058933-0326-4cdf-39e1-08dc38b0ec4e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	wKjNvoNtO5J5l8P9oPnmodsMnaHoqP3NFTnpvVuZLm4BqsBvsPPYX2+NaiFh1zF5TeMcXqH4fEb1rqQ0y9+R+3NNST8PSK4BBOd9U+2bpMZEI7CuLNh7DoViHsvggzwkwy1hI5K4fyM/A7TWiaUM5EwBqC+YQFJ+nfFZcC67VaH4emOaLBw9AlZJcGVoN6N4qLu1sgGjm0m6nBhhWVrQEKNw2rMCWDcnC7HLkMGq/yFHE/PUkpJjR/NmGKQlZWRYBLpnMSU7fMlhiWTUWupokTegUoZZBHiJaLgtzgLVy/CZ9cF/7pXsf9vLfDYMXUMgn1BJAzU3tC0NihZo+XLHGUue4GF0d8s7gF6nmU2kkGpQM3Qw8kREN8Vm1M9rj/KMxSp2MYV49x3hHUb/7n/wUZ2hR9FVHEMuckRpMXp+NkB7mEQkxUKmqMeJF/TDDVOkpu1R8FVU9MqZgVXdhRN3E+chUDcSo4tObLDWmKbZ0TiQfbqVlSshpFaiG/3I4jDaCg5mvoa5ohRR3yuiJTbSUGJHGJzz79fBUwStuxL3oEcT40TibPKlKccCPYXVvVhjAsEFK+N42UM22bqMPI2Soma7xPAD/Iegw/7tMtqE7jvDhk0QZ0xWfmb8SmxMXzLOtTh4jonhb1gwCaR8iQ+GoA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?cLp55OBzS7D9I/MVx0Bey+Fyacf8+yO3HXxDOlf3AqePbZfTKnI6EkyUYXAL?=
- =?us-ascii?Q?HvodTsPBXAc5mtU7Mj9gZDVEac4jTf4xf53QeIQ8lZRWrCYM80NakWvz+IW2?=
- =?us-ascii?Q?jkqSvkjPzJAh0p8L7o8UrXaT7lErguYVKEW98cPj0yNd/CFb619DOoBJJoHw?=
- =?us-ascii?Q?oE8kJ39T3mfp1uGKNBBd0xBeednNQk+Q3wXqC8R2qMlkFkKQ+ulemyqq0pbi?=
- =?us-ascii?Q?hrpH0Y4lIyafLxwJbd28nibfQuHSiWEYxGqPPkbSJqkHAtx/9Od6UvqDdVqj?=
- =?us-ascii?Q?naUcf1M0/SQzI6VlPwYLZ4v9nIm82iZvY8t/rQ+KhiAmFgZ59V0VJ/j06pZu?=
- =?us-ascii?Q?s1hqeTBcRlSkPhKA1Oil2rVqQYhiPhzxmCcK2cHn8+0C9usVzUIftPk8NO56?=
- =?us-ascii?Q?xRwONHQ79cCSscQMvqNMGvxBliSCesahkBdrDTYOEa7Dr18ciNhHIWN+H2gU?=
- =?us-ascii?Q?CEMdOUCm2Xp9ghIr56OQa9F4OshhMrvqHQBNTYG2A6lHvI4EmwhYEUcuR1mU?=
- =?us-ascii?Q?lZGnbiZEHNc7LogeEYXV15wGPhaZdIhA96kMZc+sk6WxJZ2gSZ640tg8Wq53?=
- =?us-ascii?Q?5kaVjulmC0tfqbWCUEutcUy1rBoaJZZDRscjvD7DLhNY9aPEWL6Wnuzq7cXt?=
- =?us-ascii?Q?a8t8rY9WnoqXIx/HQ/5dbiuWuPAXFO31Xqxnj9hcirwfSsvuHEzzopHBAdyS?=
- =?us-ascii?Q?h8c49bn0dg/2y9IpDA1TYtG+C/pKkCAd75xUyL7XJPhmLC38wlQNjrJ72ZPl?=
- =?us-ascii?Q?mBF77rn00J/4iHNDccZALTVcdDFjp3i+4Vgxtp4bUtcrzqgmgIv5ZsLKJc3e?=
- =?us-ascii?Q?3hfX5IWCKC4GX31vu7j4qWH6DAvXz24x0TpxdCGX+Z1Lm5K1vDxVdwjVNbuv?=
- =?us-ascii?Q?fCIenFbgD8xkkE63o/OXbWrMHzsBuKrPIAgj2GuQVT6RE+386muGrtZDe07j?=
- =?us-ascii?Q?yfegy4T04o4THXdzaTTEWMfvDgEV7ApodeRszf15++qVVrIojfao/KieVItv?=
- =?us-ascii?Q?NEPdLJzN25gO3O93SkGikbjzA1jy8OfN+PpRq9KR8KINd/fXLYtPYXS2payN?=
- =?us-ascii?Q?7CeHVY9yiR/263dHjhlS2ISNAgjXsPjd43qbekACrofxaloj2ULaPyEYd7TB?=
- =?us-ascii?Q?9eGiTwAiZVLPZU9QdV/HxifF9wiSRfH56cy7shPpnT1MRPtI6MzVNoDWjAZn?=
- =?us-ascii?Q?bu5wZUwAkUzmiiJw69VAQKUdGyJdUVQcPo3dn8YGY+7VVk6Nm+8fO40s2sVt?=
- =?us-ascii?Q?3GYpaJa81V2r/E8QQUlXNsxKo14qHfiWQFqU65qhEamNB2DqhJQIQPMXgODY?=
- =?us-ascii?Q?JbzXu+IVAOTPYVWtAKpIobTXiwMskRXo4rm4DtWULvlvArX1gwhO0+jA4dLh?=
- =?us-ascii?Q?BNDcZ1rydzCZNN8RSs8LcSXtvwgX0axybcxiJlIQepDGuGcHWHsB9pygLS1j?=
- =?us-ascii?Q?v4nIGcX9UowZvm4qS+SV2o8WrDp9NVZ7euxuDCmPqCstP0NzcQehgyPzM0nw?=
- =?us-ascii?Q?tSmUZG5RokGtmOxZsSibuXPZhr9AYcSbirQsVO92Mm8uEAXvNzyQwaEm677a?=
- =?us-ascii?Q?ZGMyjBcDmyeCezaUlko=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4058933-0326-4cdf-39e1-08dc38b0ec4e
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 22:59:31.0931
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i6Ut08zTqhTjeOt/aQxVeZk80Po+yIZvQF2LwrQT4KW+gQrVWshROTWDyyvDxSkq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8848
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240224091236.10146-2-krzysztof.kozlowski@linaro.org>
+References: <20240224091236.10146-1-krzysztof.kozlowski@linaro.org> <20240224091236.10146-2-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH 2/3] dt-bindings: clock: ti: remove unstable remark
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Bjorn Andersson <andersson@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Michael Turquette <mturquette@baylibre.com>, Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org, Tony Lindgren <tony@atomide.com>
+Date: Wed, 28 Feb 2024 14:59:40 -0800
+User-Agent: alot/0.10
 
-On Tue, Feb 27, 2024 at 03:34:11AM +0000, Tian, Kevin wrote:
-> > From: Nicolin Chen <nicolinc@nvidia.com>
-> > Sent: Friday, February 23, 2024 5:24 AM
-> > 
-> > Jason has been running Syzkaller that found three bugs.
-> 
-> could you remove "Jason has been running" from all three patches?
-> Just say that Syzkaller found a bug.
++Tony
 
-I will copy edit the commit messages
+Quoting Krzysztof Kozlowski (2024-02-24 01:12:35)
+> Several TI SoC clock bindings were marked as work-in-progress / unstable
+> between 2013-2016, for example in commit f60b1ea5ea7a ("CLK: TI: add
+> support for gate clock").  It was enough of time to consider them stable
+> and expect usual ABI rules.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
 
-Thanks,
-Jason
+Acked-by: Stephen Boyd <sboyd@kernel.org>
+
+>  Documentation/devicetree/bindings/clock/ti/adpll.txt            | 2 --
+>  Documentation/devicetree/bindings/clock/ti/apll.txt             | 2 --
+>  Documentation/devicetree/bindings/clock/ti/autoidle.txt         | 2 --
+>  Documentation/devicetree/bindings/clock/ti/clockdomain.txt      | 2 --
+>  Documentation/devicetree/bindings/clock/ti/composite.txt        | 2 --
+>  Documentation/devicetree/bindings/clock/ti/divider.txt          | 2 --
+>  Documentation/devicetree/bindings/clock/ti/dpll.txt             | 2 --
+>  Documentation/devicetree/bindings/clock/ti/fapll.txt            | 2 --
+>  .../devicetree/bindings/clock/ti/fixed-factor-clock.txt         | 2 --
+>  Documentation/devicetree/bindings/clock/ti/gate.txt             | 2 --
+>  Documentation/devicetree/bindings/clock/ti/interface.txt        | 2 --
+>  Documentation/devicetree/bindings/clock/ti/mux.txt              | 2 --
+>  12 files changed, 24 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/clock/ti/adpll.txt b/Docum=
+entation/devicetree/bindings/clock/ti/adpll.txt
+> index 4c8a2ce2cd70..3122360adcf3 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/adpll.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/adpll.txt
+> @@ -1,7 +1,5 @@
+>  Binding for Texas Instruments ADPLL clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1]. It assumes a
+>  register-mapped ADPLL with two to three selectable input clocks
+>  and three to four children.
+> diff --git a/Documentation/devicetree/bindings/clock/ti/apll.txt b/Docume=
+ntation/devicetree/bindings/clock/ti/apll.txt
+> index ade4dd4c30f0..bbd505c1199d 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/apll.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/apll.txt
+> @@ -1,7 +1,5 @@
+>  Binding for Texas Instruments APLL clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1].  It assumes a
+>  register-mapped APLL with usually two selectable input clocks
+>  (reference clock and bypass clock), with analog phase locked
+> diff --git a/Documentation/devicetree/bindings/clock/ti/autoidle.txt b/Do=
+cumentation/devicetree/bindings/clock/ti/autoidle.txt
+> index 7c735dde9fe9..05645a10a9e3 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/autoidle.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/autoidle.txt
+> @@ -1,7 +1,5 @@
+>  Binding for Texas Instruments autoidle clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1]. It assumes a register map=
+ped
+>  clock which can be put to idle automatically by hardware based on the us=
+age
+>  and a configuration bit setting. Autoidle clock is never an individual
+> diff --git a/Documentation/devicetree/bindings/clock/ti/clockdomain.txt b=
+/Documentation/devicetree/bindings/clock/ti/clockdomain.txt
+> index 9c6199249ce5..edf0b5d42768 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/clockdomain.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/clockdomain.txt
+> @@ -1,7 +1,5 @@
+>  Binding for Texas Instruments clockdomain.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1] in consumer role.
+>  Every clock on TI SoC belongs to one clockdomain, but software
+>  only needs this information for specific clocks which require
+> diff --git a/Documentation/devicetree/bindings/clock/ti/composite.txt b/D=
+ocumentation/devicetree/bindings/clock/ti/composite.txt
+> index 33ac7c9ad053..6f7e1331b546 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/composite.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/composite.txt
+> @@ -1,7 +1,5 @@
+>  Binding for TI composite clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1]. It assumes a
+>  register-mapped composite clock with multiple different sub-types;
+> =20
+> diff --git a/Documentation/devicetree/bindings/clock/ti/divider.txt b/Doc=
+umentation/devicetree/bindings/clock/ti/divider.txt
+> index 9b13b32974f9..4d7c76f0b356 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/divider.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/divider.txt
+> @@ -1,7 +1,5 @@
+>  Binding for TI divider clock
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1].  It assumes a
+>  register-mapped adjustable clock rate divider that does not gate and has
+>  only one input clock or parent.  By default the value programmed into
+> diff --git a/Documentation/devicetree/bindings/clock/ti/dpll.txt b/Docume=
+ntation/devicetree/bindings/clock/ti/dpll.txt
+> index 37a7cb6ad07d..14a1b72c2e71 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/dpll.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/dpll.txt
+> @@ -1,7 +1,5 @@
+>  Binding for Texas Instruments DPLL clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1].  It assumes a
+>  register-mapped DPLL with usually two selectable input clocks
+>  (reference clock and bypass clock), with digital phase locked
+> diff --git a/Documentation/devicetree/bindings/clock/ti/fapll.txt b/Docum=
+entation/devicetree/bindings/clock/ti/fapll.txt
+> index c19b3f253b8c..88986ef39ddd 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/fapll.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/fapll.txt
+> @@ -1,7 +1,5 @@
+>  Binding for Texas Instruments FAPLL clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1]. It assumes a
+>  register-mapped FAPLL with usually two selectable input clocks
+>  (reference clock and bypass clock), and one or more child
+> diff --git a/Documentation/devicetree/bindings/clock/ti/fixed-factor-cloc=
+k.txt b/Documentation/devicetree/bindings/clock/ti/fixed-factor-clock.txt
+> index 518e3c142276..dc69477b6e98 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/fixed-factor-clock.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/fixed-factor-clock.txt
+> @@ -1,7 +1,5 @@
+>  Binding for TI fixed factor rate clock sources.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1], and also uses the autoidle
+>  support from TI autoidle clock [2].
+> =20
+> diff --git a/Documentation/devicetree/bindings/clock/ti/gate.txt b/Docume=
+ntation/devicetree/bindings/clock/ti/gate.txt
+> index 4982615c01b9..a8e0335b006a 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/gate.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/gate.txt
+> @@ -1,7 +1,5 @@
+>  Binding for Texas Instruments gate clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1]. This clock is
+>  quite much similar to the basic gate-clock [2], however,
+>  it supports a number of additional features. If no register
+> diff --git a/Documentation/devicetree/bindings/clock/ti/interface.txt b/D=
+ocumentation/devicetree/bindings/clock/ti/interface.txt
+> index d3eb5ca92a7f..85fb1f2d2d28 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/interface.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/interface.txt
+> @@ -1,7 +1,5 @@
+>  Binding for Texas Instruments interface clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1]. This clock is
+>  quite much similar to the basic gate-clock [2], however,
+>  it supports a number of additional features, including
+> diff --git a/Documentation/devicetree/bindings/clock/ti/mux.txt b/Documen=
+tation/devicetree/bindings/clock/ti/mux.txt
+> index b33f641f1043..cd56d3c1c09f 100644
+> --- a/Documentation/devicetree/bindings/clock/ti/mux.txt
+> +++ b/Documentation/devicetree/bindings/clock/ti/mux.txt
+> @@ -1,7 +1,5 @@
+>  Binding for TI mux clock.
+> =20
+> -Binding status: Unstable - ABI compatibility may be broken in the future
+> -
+>  This binding uses the common clock binding[1].  It assumes a
+>  register-mapped multiplexer with multiple input clock signals or
+>  parents, one of which can be selected as output.  This clock does not
+> --=20
+> 2.34.1
+>
 
