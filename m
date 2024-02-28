@@ -1,189 +1,132 @@
-Return-Path: <linux-kernel+bounces-84816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CF8086ABF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:12:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DFB486ABF6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:12:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9993B2134A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:12:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 491A3282B86
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CD8381A4;
-	Wed, 28 Feb 2024 10:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFF20381D1;
+	Wed, 28 Feb 2024 10:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDeUbWqL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WF0LN4nb"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B298F364A1;
-	Wed, 28 Feb 2024 10:12:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01BB3770C;
+	Wed, 28 Feb 2024 10:12:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709115138; cv=none; b=BzXrLOTlgm1ZQgo0SoefhCGcXx/TNjwNY98XbQV2qvGqBs2r770QpXQekrfWB7hjewnYaeB9z0YQApOS47iUH+M2YXVCfySMEDpiT5fbogKyEoCNxbSv7cUr2E/fk5PNANYSwmYbX8JNIHcHmO92Is/+aQt8/RAcdIO7T4O6fQg=
+	t=1709115166; cv=none; b=X+YunkdejUYXkEJK5tuK6+NIhdQRIrHNDWAO+65lsgpw5c5t6aReu3eijrQ83+5qowVbK8TaxQN3j8TwV8mqHAcHavjJHi17ZmD13NMBROCz+YR2V20JW9ueOAwGT6WS7VHArE/DOz3ZLR/0Ubvhi1WN5vQCcGWlxdgskjX6qKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709115138; c=relaxed/simple;
-	bh=SjeV4gq8axgBTGcvjKkuyl4z96MDTwhCe9RbzzE6oRg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i+9nbMherX1xqrU5GodBYCsHFLAMEhnxPwLF47FsIF5XBKmQp52fKSUjXMeRSUMS2DPW0Cbx3nPBwVWXfB+CqP4ttYT10CDnwPKxyOr1XdSN7nQR+LptAUGUo3swvcMD/VPH8/06lAZ4EooSkpLSf60q1c+2N2j+p3LBtlfpG5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FDeUbWqL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89E21C433F1;
-	Wed, 28 Feb 2024 10:12:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709115138;
-	bh=SjeV4gq8axgBTGcvjKkuyl4z96MDTwhCe9RbzzE6oRg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FDeUbWqL0ZTfHwKjTeYjmKki5DdyY7jdLCVq2yvRjHfMi+r1Xy36SYjIRIfA/ZJUv
-	 irtXowHrs38LdQHhbbwci0ZxsEKYlQ2xU4ZNVX8jdXwueVx4FT2viljWDFcHoXdBkR
-	 m9gJSvxkrjmDZ0TEVh+tWEMTSnYnB0YT9EDAkR1DM4b7nDC/EDrEf/19oXrEHmRzmz
-	 4SY6EaTIgfS9ZZ9MEK9TcJtDdeHDLpGTTy7UkKQk6wujOq+lG1sGAoLHQ32UuIITnY
-	 SHLFPWkqsiB/9hVJTkYTQpweKadedjzTy/eZSmNDeXAiY+OAcbZrfZV02nnsSiJZeY
-	 prSeGGXArxXDQ==
-Date: Wed, 28 Feb 2024 10:12:14 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	linux-kernel@vger.kernel.org, Alexandre Ghiti <alex@ghiti.fr>,
-	linux-riscv@lists.infradead.org,
-	Stefan O'Rear <sorear@fastmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH -fixes v4 2/3] riscv: Add a custom ISA extension for the
- [ms]envcfg CSR
-Message-ID: <20240228-goldsmith-shrine-97fc4610e0bc@spud>
-References: <20240228065559.3434837-1-samuel.holland@sifive.com>
- <20240228065559.3434837-3-samuel.holland@sifive.com>
+	s=arc-20240116; t=1709115166; c=relaxed/simple;
+	bh=QtkybHA+dLfb/QVzUjDEIMZVXhkak6pmXpwwKXRPt+U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YKXp+wSetyphyUvgbel7FWbAys2ioYoAO9D6eU22qdQBO5QjNKwt+w5EWE4Z22215pxCGLX8UIpMm9g9ESJKUCJAX8zOt00Q8+1SVRjclmWgjwwbQoU7D1OReHlU/bxP/7418S/nUbzXhcjsGHKSx2vbJ9Y4hiDdrFfgJkPIKDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WF0LN4nb; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S6KrNo022821;
+	Wed, 28 Feb 2024 10:12:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=eDhRFVyysNsDGN+FMhkZ93Dyyc7lx1J5zTtYdxW8Axo=; b=WF
+	0LN4nbgJEokwn9Uy7ycFHIrs2p5K5ffHcwRvmYTkPvGD4dJbLxBsoK6RTAYrzXmd
+	Nqfs46lrWE0UKe74b/7pVCs4cmx3hvcCj/JsPKJFYbK2yHnBChHuKYV+YNgFiF06
+	/rARxo03EqRQiQhkkusP0HP6RG9+hcmGzdy7nLQsKDlfM9Dq8factDCd7rHqcgzG
+	jXL2sVE3o5keoYXWLs7adIKB9XX0e8gunHoTLPypCH0y5JP00nP8AL7FJap8cz4o
+	cQ3Lan/zTSFD1akBS8TMvxZ6UicPtiVXljNNPlgl4QIwJzWsHQ26Up4PZQIx2mu5
+	LhfaWsLAnelcVth/1tVg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whuksruj2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 10:12:41 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SACe1Q020988
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 10:12:40 GMT
+Received: from [10.218.35.239] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 02:12:37 -0800
+Message-ID: <e216ce10-c345-811a-2279-0ef248c9485f@quicinc.com>
+Date: Wed, 28 Feb 2024 15:42:34 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="89TWk6vKMP9NHwwH"
-Content-Disposition: inline
-In-Reply-To: <20240228065559.3434837-3-samuel.holland@sifive.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH] usb: xhci: Add error handling in xhci_map_urb_for_dma
+Content-Language: en-US
+To: Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <20240228083343.3101303-1-quic_prashk@quicinc.com>
+ <e4f87b6b-4561-8058-3449-2ff9086c81a4@gmail.com>
+From: Prashanth K <quic_prashk@quicinc.com>
+In-Reply-To: <e4f87b6b-4561-8058-3449-2ff9086c81a4@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 8Mnyt1hv2vzWnDYJ_Yp88sZJ_-e3o_Gc
+X-Proofpoint-ORIG-GUID: 8Mnyt1hv2vzWnDYJ_Yp88sZJ_-e3o_Gc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_04,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 mlxlogscore=659 clxscore=1011 malwarescore=0 phishscore=0
+ adultscore=0 priorityscore=1501 spamscore=0 bulkscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280080
 
 
---89TWk6vKMP9NHwwH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 10:55:34PM -0800, Samuel Holland wrote:
-> The [ms]envcfg CSR was added in version 1.12 of the RISC-V privileged
-> ISA (aka S[ms]1p12). However, bits in this CSR are defined by several
-> other extensions which may be implemented separately from any particular
-> version of the privileged ISA (for example, some unrelated errata may
-> prevent an implementation from claiming conformance with Ss1p12). As a
-> result, Linux cannot simply use the privileged ISA version to determine
-> if the CSR is present. It must also check if any of these other
-> extensions are implemented. It also cannot probe the existence of the
-> CSR at runtime, because Linux does not require Sstrict, so (in the
-> absence of additional information) it cannot know if a CSR at that
-> address is [ms]envcfg or part of some non-conforming vendor extension.
->=20
-> Since there are several standard extensions that imply the existence of
-> the [ms]envcfg CSR, it becomes unwieldy to check for all of them
-> wherever the CSR is accessed. Instead, define a custom Xlinuxenvcfg ISA
-> extension bit that is implied by the other extensions and denotes that
-> the CSR exists as defined in the privileged ISA, containing at least one
-> of the fields common between menvcfg and senvcfg.
-
-> This extension does not need to be parsed from the devicetree or ISA
-> string because it can only be implemented as a subset of some other
-> standard extension.
-
-NGL, every time I look at the superset stuff I question whether or not
-it is a good implementation, but it is nice to see that it at least
-makes the creation of quasi-extension flags like this straightforward.
-
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-
->=20
-> Cc: <stable@vger.kernel.org> # v6.7+
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
->=20
-> Changes in v4:
->  - New patch for v4
->=20
->  arch/riscv/include/asm/hwcap.h |  2 ++
->  arch/riscv/kernel/cpufeature.c | 14 ++++++++++++--
->  2 files changed, 14 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwca=
-p.h
-> index 5340f818746b..1f2d2599c655 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -81,6 +81,8 @@
->  #define RISCV_ISA_EXT_ZTSO		72
->  #define RISCV_ISA_EXT_ZACAS		73
-> =20
-> +#define RISCV_ISA_EXT_XLINUXENVCFG	127
-> +
->  #define RISCV_ISA_EXT_MAX		128
->  #define RISCV_ISA_EXT_INVALID		U32_MAX
-> =20
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeatur=
-e.c
-> index c5b13f7dd482..dacffef68ce2 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -201,6 +201,16 @@ static const unsigned int riscv_zvbb_exts[] =3D {
->  	RISCV_ISA_EXT_ZVKB
->  };
-> =20
-> +/*
-> + * While the [ms]envcfg CSRs were not defined until version 1.12 of the =
-RISC-V
-> + * privileged ISA, the existence of the CSRs is implied by any extension=
- which
-> + * specifies [ms]envcfg bit(s). Hence, we define a custom ISA extension =
-for the
-> + * existence of the CSR, and treat it as a subset of those other extensi=
-ons.
-> + */
-> +static const unsigned int riscv_xlinuxenvcfg_exts[] =3D {
-> +	RISCV_ISA_EXT_XLINUXENVCFG
-> +};
-> +
->  /*
->   * The canonical order of ISA extension names in the ISA string is defin=
-ed in
->   * chapter 27 of the unprivileged specification.
-> @@ -250,8 +260,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] =3D {
->  	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
->  	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
->  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
-> -	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
-> -	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
-> +	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvc=
-fg_exts),
-> +	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvc=
-fg_exts),
->  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
->  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
-> --=20
-> 2.43.1
->=20
-
---89TWk6vKMP9NHwwH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd8G/gAKCRB4tDGHoIJi
-0lSVAQD2pgTYFd8WHckkvmBwiRxHU2gH6XrQ/xUjopf2SNAXOQD/UxgKdys+eRaA
-Pe6taFBtc5LYaTJUWzGwhcdKp817lgU=
-=FMqA
------END PGP SIGNATURE-----
-
---89TWk6vKMP9NHwwH--
+On 28-02-24 02:31 pm, Sergei Shtylyov wrote:
+> On 2/28/24 11:33 AM, Prashanth K wrote:
+> 
+>> Currently xhci_map_urb_for_dma() creates a temporary buffer
+>> and copies the SG list to the new linear buffer. But if the
+>> kzalloc_node() fails, then the following sg_pcopy_to_buffer()
+>> can lead to crash since it tries to memcpy to NULL pointer.
+>> So return -EAGAIN if kzalloc returns null pointer.
+>>
+>> Cc: <stable@vger.kernel.org> # 5.11
+>> Fixes: 2017a1e58472 ("usb: xhci: Use temporary buffer to consolidate SG")
+>> Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+>> ---
+>>   drivers/usb/host/xhci.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+>> index c057c42c36f4..0597a60bec34 100644
+>> --- a/drivers/usb/host/xhci.c
+>> +++ b/drivers/usb/host/xhci.c
+>> @@ -1218,6 +1218,9 @@ static int xhci_map_temp_buffer(struct usb_hcd *hcd, struct urb *urb)
+>>   	temp = kzalloc_node(buf_len, GFP_ATOMIC,
+>>   			    dev_to_node(hcd->self.sysdev));
+>>   
+> 
+>     I don't think we need an empty line here.
+> 
+>> +	if (!temp)
+>> +		return -EAGAIN;
+> 
+>     Not -ENOMEM?
+Yea that sounds better, will update in next patch.
+Thanks!
 
