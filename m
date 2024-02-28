@@ -1,207 +1,205 @@
-Return-Path: <linux-kernel+bounces-85393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2419C86B555
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:53:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A67786B558
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:56:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F019B24432
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:53:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C5981C233BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C5B3FB85;
-	Wed, 28 Feb 2024 16:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8953FB82;
+	Wed, 28 Feb 2024 16:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="QehyGA8Z"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="TbiyDmEO"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7376EF0E
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5704E1E516;
+	Wed, 28 Feb 2024 16:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709139187; cv=none; b=KyngiaUyQMuGumA876bffHNBiA2moNCcKPV31xBHrxiz15iyXrPHLJIzgLhYTUBYXs0TRjDY4V2Di7d0uIfKN7gipYHILUc6icmJPSN4EyXhdbcYvCDD5epAWQw5tx2yu9wR+q+uqjafauzXD3BH7lK5RUVRG1k+U/dJRwmWlzE=
+	t=1709139370; cv=none; b=X7iDer5e+/dpWukD3+IKg9S+43L3QQRD+Kk6NEmxNaAa9+fz9qRK6B+OQ5HT9GyV1f24UNPQ5Sxp5gkbwdWEpoIj3c3WNfXpZKl7cOEs/dHQonoU9ARmAKK2bvDc3revro1SFcwaQ/52AXsqDAKWk369EysN48dmDGqpfClGKKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709139187; c=relaxed/simple;
-	bh=YeysMJrMKJOqZ+ZRJb/n6sEWfzXImIkkf8WwSLVPEyM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=B9530+fbKPCvYK0r45pwUHfHxQFOoWfeMPc+LxguG6kXLZgHZEVZknrgUnTNbh7VuB9SSTOzW1BQiI8Se/4X8h19a4rHR2tAHYhqLJ+X9DRRPcC8zGK+EsgkJ24pQrAnZtgYb25QTeVmrHOQYT3P0WHj8d24GPfl3h6kJeanrTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QehyGA8Z; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc744f54d0so235105ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:53:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709139184; x=1709743984; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DtF5/pdVuibkgPXJcntwpHSGdyt4hc2nkXEyG93pZvI=;
-        b=QehyGA8ZTmvzFGxmdp2gHWwZK0DGr+8IgjC50EzLZNNZl7tzyFUwX4jc0WBxfh6HOB
-         OO0L+tpdnf8k+5crPabsIEC86d8Uf8HCBLUg11TBKKNEnfrUowCxXeqoLe1M1go027cP
-         l5W3ghgfkqeoDkFB3hkKoC2yo79ipCL+BycIl/c6cGE8rApJrEu91MBJ3S24ew1/P+L6
-         8aku9MZvD/ZXuzKfa6L6o6ybKjCkEpajaE5rL25FGSR8ITIvawcAwnT7NNyvG8sYXSzW
-         gvTJ4QL1boXEuQrgRWZkV33Vl+5zWnE7GKYaFM91q5Nqb/Crq5vXu70QwoxDfdiMvRcc
-         54+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709139184; x=1709743984;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DtF5/pdVuibkgPXJcntwpHSGdyt4hc2nkXEyG93pZvI=;
-        b=qmAvJW0JUZ3Yb2VApa5OZx4GP3UNUe+5eUBHzlykHc7fPh7nPoc/yNc/IbK0A3cOrv
-         7PoTBg/3WCzBoGTQ+VhqwlilS+zYp7KuZmEaBR0ffbni+U+vefFPLFAKJWJb+GQv7dTl
-         RK+9ZasGN+dHtpTKwuoJVCYaYaZFlupH4M0Hx18lrJFHDAWFkqA0WOvRfRt0Qp2S3bn8
-         xEtP+cgFXpleJ0ihCK1biqozskY/1DRhpewO8E+1VSqgTmxIwVyYHeJHKvLggoE31ZO2
-         B+l6UDMAkKTzSuLQPqNJRuMz0yiOxi6OJYuJ580PP1yXWJitW+Cct9cRjST5MDesYrx1
-         AZYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXsEt9NUiPHoZY5Lr/5eessDVJGGiNFlKXX5oqPRsXwt4INnnk7Ul8MWdwahLotvy9oHIB9uxPAZUOWHtusc7W1srAtG9hScPGZoSBR
-X-Gm-Message-State: AOJu0YwDTcMM8UO82gzsbhx2ekFUdIqLcuYnlVBOV/1JwKQOziNorX9J
-	GPYy04gQQliXUlrd1CQNUcKtQUX2BI0yftd43kcmS3/WQJFBRqe7vpPIr9kQQLIxsKb9ogKMJJY
-	+sy0ZvWL0JBsPpeY+LGAeztseAf8ejWwPuadz
-X-Google-Smtp-Source: AGHT+IFtOXSYXU84VVLaknqL+pG680O1sVKAYLkwQ1wwVHSfHbEz51im2N5KPclBVeDBV4X/kh9n+/NWxg+VN9Tdjds=
-X-Received: by 2002:a17:903:18a:b0:1db:e5e3:f7ac with SMTP id
- z10-20020a170903018a00b001dbe5e3f7acmr70137plg.7.1709139183758; Wed, 28 Feb
- 2024 08:53:03 -0800 (PST)
+	s=arc-20240116; t=1709139370; c=relaxed/simple;
+	bh=m5f7UsTub+FQSG/nsPjXIqkJlRLxrtwLhLhVNn6H5ok=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fm778GqPVkarJEB88t13DPIPC4FrQ/RHcQlaTg4WQbAQYN1TL4m6zVuVETouaYH1sfIRMCTmYHHTp9mL0idetbAfGUzSBghLPC9iuUjui5U+KS1Km0Nbfg0Y9Y+eQioPHCbyCphdaW0LIHoF+AnRlIUGt/f40OugmPM0xPInHYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=TbiyDmEO; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709139365;
+	bh=m5f7UsTub+FQSG/nsPjXIqkJlRLxrtwLhLhVNn6H5ok=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TbiyDmEOjcPlR/19QYVfiEgA4rt4uBmH6wejZAaGopYNCIcFxxRWl75kkXdxUQ7h+
+	 F3NnbSTNyUl29eg4CoZI+6htJC/S/uLyTaEElnKdu64ZXByLXIMQsVPcBaGjwK1g5i
+	 G3zuEuk9dhYUQMWvcxjG+uQ8Md7V6U2WarUskHoXuxtpy8xQfdvJVCHrxVJSeon+/R
+	 ai8CzRnDpPayE7ylbLZg/FnjOsJ2cNiUe5WuDNOhpOhShByBmoTyl2C577SiK0RC/w
+	 QySa9dsx/DLiRwmy/ZNaVTUgwvJFQH69ny0nyu2asPlQjSlgo5ARmbRwkLz0hZkntc
+	 /MymFNgFtUsuA==
+Received: from arisu.hitronhub.home (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: detlev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 954CF37820D9;
+	Wed, 28 Feb 2024 16:56:04 +0000 (UTC)
+From: Detlev Casanova <detlev.casanova@collabora.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-media@vger.kernel.org,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Detlev Casanova <detlev.casanova@collabora.com>
+Subject: [PATCH] test-media: Add basic tests for visl
+Date: Wed, 28 Feb 2024 11:56:08 -0500
+Message-ID: <20240228165608.1000988-1-detlev.casanova@collabora.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8fe3f46c-4ee5-4597-bf2d-12a5d634a264@rowland.harvard.edu>
- <0000000000008b026406126a4bbe@google.com> <13add23d-af18-4f84-9f1a-043932a9712b@rowland.harvard.edu>
-In-Reply-To: <13add23d-af18-4f84-9f1a-043932a9712b@rowland.harvard.edu>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Wed, 28 Feb 2024 17:52:50 +0100
-Message-ID: <CANp29Y4DUvL5zsnqQmhPGkbc=EN6UjFrWF9EZGE5U_=0C9+1Nw@mail.gmail.com>
-Subject: Re: [syzbot] [usb-storage?] divide error in isd200_ata_command
-To: Alan Stern <stern@rowland.harvard.edu>
-Cc: syzbot <syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com>, 
-	bvanassche@acm.org, emilne@redhat.com, gregkh@linuxfoundation.org, 
-	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com, 
-	tasos@tasossah.com, usb-storage@lists.one-eyed-alien.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Alan,
+This will run the v4l2-compliance tests on the visl device, check
+(un)binding and module reloading.
 
-Please try it once more with the full commit hash.
+Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
+---
+ contrib/test/test-media | 80 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 78 insertions(+), 2 deletions(-)
 
---=20
-Aleksandr
+diff --git a/contrib/test/test-media b/contrib/test/test-media
+index afe20760..18a4f886 100755
+--- a/contrib/test/test-media
++++ b/contrib/test/test-media
+@@ -9,6 +9,7 @@ vivid=0
+ vim2m=0
+ vimc=0
+ vicodec=0
++visl=0
+ cec=0
+ cecpwr=--skip-test-standby-resume
+ kmemleak=0
+@@ -56,10 +57,11 @@ if [ -z "$1" ]; then
+ 	echo "vimc: test the vimc driver"
+ 	echo "vicodec: test the vicodec driver"
+ 	echo "vidtv: test the vidtv driver"
++	echo "visl: test the visl driver"
+ 	echo "cec: adds the vivid CEC compliance tests, except for the CEC standby/wakeup tests."
+ 	echo "cec-pwr: adds the vivid CEC compliance tests, including the CEC standby/wakeup tests."
+-	echo "all: equals 'vivid vim2m vimc vicodec vidtv cec cec-pwr'"
+-	echo "mc: equals 'vivid vim2m vimc vicodec vidtv'"
++	echo "all: equals 'vivid vim2m vimc vicodec vidtv visl cec cec-pwr'"
++	echo "mc: equals 'vivid vim2m vimc vicodec vidtv visl'"
+ 	exit 0
+ fi
+ 
+@@ -118,6 +120,7 @@ while [ ! -z "$1" ]; do
+ 		vim2m=1
+ 		vimc=1
+ 		vicodec=1
++		visl=1
+ 		cec=1
+ 		cecpwr=
+ 		;;
+@@ -127,6 +130,7 @@ while [ ! -z "$1" ]; do
+ 		vimc=1
+ 		vicodec=1
+ 		vidtv=1
++		visl=1
+ 		;;
+ 	vidtv)
+ 		vidtv=1
+@@ -143,6 +147,9 @@ while [ ! -z "$1" ]; do
+ 	vicodec)
+ 		vicodec=1
+ 		;;
++	visl)
++		visl=1
++		;;
+ 	cec)
+ 		cec=1
+ 		cecpwr=--skip-test-standby-resume
+@@ -239,6 +246,75 @@ if [ $vivid -eq 1 -a $setup -eq 0 ]; then
+ 	echo
+ fi
+ 
++if [ $visl -eq 1 -a $setup -eq 0 ]; then
++	dmesg -n notice
++	echo
++	echo loading visl module | tee /dev/kmsg
++	modprobe visl
++	sleep $modprobe_time
++	echo
++	echo visl compliance tests | tee /dev/kmsg
++	echo
++	date
++	stdbuf -oL $v4l2_compliance -m platform:visl -P -s10 -a 2>&1 | tee -a $tmp
++	echo
++	echo unbind visl | tee /dev/kmsg
++	echo
++	echo -n visl.0 >/sys/bus/platform/drivers/visl/unbind
++	sleep $unbind_time
++	echo
++	echo rebind visl | tee /dev/kmsg
++	echo
++	echo -n visl.0 >/sys/bus/platform/drivers/visl/bind
++	sleep 1
++	echo
++	echo second unbind visl | tee /dev/kmsg
++	echo
++	for i in `$v4l2_ctl -z platform:visl --list-devices`; do
++		let "t = 1 + $RANDOM / 4096"
++		echo $i: sleep ${t}s
++		sleep $t <$i &
++	done
++	sleep 1
++	echo
++	echo -n visl.0 >/sys/bus/platform/drivers/visl/unbind
++	sleep $reunbind_time
++	echo
++	echo rmmod visl | tee /dev/kmsg
++	echo
++	rmmod visl
++	sleep $rmmod_time
++
++	if [ $kmemleak -eq 1 ]; then
++		echo
++		echo kmemleak results for visl:
++		echo
++		echo scan >/sys/kernel/debug/kmemleak
++		cat /sys/kernel/debug/kmemleak
++		echo
++		echo end of kmemleak results
++		echo
++	fi
++
++	modprobe visl
++	sleep $modprobe_time
++
++	$v4l2_ctl -z platform:visl --all
++
++	if [ $kmemleak -eq 1 ]; then
++		echo clear >/sys/kernel/debug/kmemleak
++	fi
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++	echo
++fi
++
++
+ if [ $cec -eq 1 ]; then
+ 	dmesg -n notice
+ 	cec-ctl --version
+-- 
+2.43.0
 
-On Wed, Feb 28, 2024 at 5:12=E2=80=AFPM Alan Stern <stern@rowland.harvard.e=
-du> wrote:
->
-> On Tue, Feb 27, 2024 at 09:20:03PM -0800, syzbot wrote:
-> > Hello,
-> >
-> > syzbot tried to test the proposed patch but the build/boot failed:
-> >
-> > failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/ker=
-nel/git/torvalds/linux.git/ on commit f2e367d6ad3b: failed to run ["git" "f=
-etch" "--force" "--tags" "7b440d1b40dd93ea98b5af6bba55ffca63425216" "f2e367=
-d6ad3b"]: exit status 128
-> > fatal: couldn't find remote ref f2e367d6ad3b
->
-> I'm going to guess this was a temporary failure and try again.  If that
-> wasn't the case, something is seriously wrong somewhere.  I had no
-> trouble accessing that commit using the git.kernel.org web interface.
->
-> Alan Stern
->
-> On Mon, Feb 26, 2024 at 01:42:26AM -0800, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    f2e367d6ad3b Merge tag 'for-6.8/dm-fix-3' of git://git.=
-ker..
-> > git tree:       upstream
->
-> #syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux=
-git/ f2e367d6ad3b
->
-> Index: usb-devel/drivers/usb/storage/isd200.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- usb-devel.orig/drivers/usb/storage/isd200.c
-> +++ usb-devel/drivers/usb/storage/isd200.c
-> @@ -1105,7 +1105,7 @@ static void isd200_dump_driveid(struct u
->  static int isd200_get_inquiry_data( struct us_data *us )
->  {
->         struct isd200_info *info =3D (struct isd200_info *)us->extra;
-> -       int retStatus =3D ISD200_GOOD;
-> +       int retStatus;
->         u16 *id =3D info->id;
->
->         usb_stor_dbg(us, "Entering isd200_get_inquiry_data\n");
-> @@ -1137,6 +1137,13 @@ static int isd200_get_inquiry_data( stru
->                                 isd200_fix_driveid(id);
->                                 isd200_dump_driveid(us, id);
->
-> +                               /* Prevent division by 0 in isd200_scsi_t=
-o_ata() */
-> +                               if (id[ATA_ID_HEADS] =3D=3D 0 || id[ATA_I=
-D_SECTORS] =3D=3D 0) {
-> +                                       usb_stor_dbg(us, "   Invalid ATA =
-Identify data\n");
-> +                                       retStatus =3D ISD200_ERROR;
-> +                                       goto Done;
-> +                               }
-> +
->                                 memset(&info->InquiryData, 0, sizeof(info=
-->InquiryData));
->
->                                 /* Standard IDE interface only supports d=
-isks */
-> @@ -1202,6 +1209,7 @@ static int isd200_get_inquiry_data( stru
->                 }
->         }
->
-> + Done:
->         usb_stor_dbg(us, "Leaving isd200_get_inquiry_data %08X\n", retSta=
-tus);
->
->         return(retStatus);
-> @@ -1481,22 +1489,27 @@ static int isd200_init_info(struct us_da
->
->  static int isd200_Initialization(struct us_data *us)
->  {
-> +       int rc =3D 0;
-> +
->         usb_stor_dbg(us, "ISD200 Initialization...\n");
->
->         /* Initialize ISD200 info struct */
->
-> -       if (isd200_init_info(us) =3D=3D ISD200_ERROR) {
-> +       if (isd200_init_info(us) < 0) {
->                 usb_stor_dbg(us, "ERROR Initializing ISD200 Info struct\n=
-");
-> +               rc =3D -ENOMEM;
->         } else {
->                 /* Get device specific data */
->
-> -               if (isd200_get_inquiry_data(us) !=3D ISD200_GOOD)
-> +               if (isd200_get_inquiry_data(us) !=3D ISD200_GOOD) {
->                         usb_stor_dbg(us, "ISD200 Initialization Failure\n=
-");
-> -               else
-> +                       rc =3D -EINVAL;
-> +               } else {
->                         usb_stor_dbg(us, "ISD200 Initialization complete\=
-n");
-> +               }
->         }
->
-> -       return 0;
-> +       return rc;
->  }
->
->
->
 
