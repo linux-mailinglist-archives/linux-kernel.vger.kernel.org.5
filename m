@@ -1,190 +1,141 @@
-Return-Path: <linux-kernel+bounces-85384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A5E86B53B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:44:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B970C86B541
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:46:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EED41F24A07
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:44:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69E832878E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF3441F958;
-	Wed, 28 Feb 2024 16:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F116E208D2;
+	Wed, 28 Feb 2024 16:46:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="yClr7yzr"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DRSXZdSn"
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711CD1E88D
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5AC6EEE4;
+	Wed, 28 Feb 2024 16:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709138667; cv=none; b=SsaNrM3lZBXEqZS9V1EV5LlXiBOXOlYrRCh8XOD90FkaTtaS8qVEW9fU+HgFEoc3SM3pJsu/DRjPm/lSaCrJfYXY/B54IfI+mMire4uSbyDOjCRQGAjoAr8XJvuICH2O+BYWxakG21NFzi1QXFuH9OYO4vMht4A9S05/+FHzHZs=
+	t=1709138794; cv=none; b=jBxdT7/IYKvA9/6OwUtnizzbuCqEffo4NLSmJ5MpOLvbCJgNh7IoPOQOt0y11lXIg7owtp2Tx6Wqia9/mK/KHUGHWn24+41gmsjcKtFc4k/mi6+Rlr+I6yOKWNpqN1brCXbeIJRm2C3C4AZXqBkbDVSUtGzgdN8230ZHJdtfhdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709138667; c=relaxed/simple;
-	bh=KJlhzIPR/vjW9vKySj9E3Vpnv5RoXvud7GTILjlLqx8=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=W9KBA2PHAkV2Y3Vt2UdtudBWJqytXcTcT3V5KEG4+tvBVmSttOM6qZoeUsYWal3rMOQFvz9JYf/6JZbwZhaIQAHEgxjxJfQ0/eo7dkX8kmx2WG6Sn1nVKNsj5J6SLjlLiQ4DZW/M1LrmvdZEKi7hAG/xMUJhncAq5R5MKmuKPkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=yClr7yzr; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7c79664c71fso34331139f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:44:25 -0800 (PST)
+	s=arc-20240116; t=1709138794; c=relaxed/simple;
+	bh=V+Wes0yro1vaPybdAdIYTu58twkZIP8KrE4+vLrxbsI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fJDCU6bzZgDObSzdAj/wfkw7SxuiR0CN/4aPBKVy+SRxA5kQDWvo2q11yW7WxiWy0gIyZ0oZHFxf1hQLuTv44pzWGUrrZQIgtXuTzJc5fHlZIr2D3jTztaPcshl6fS5Hsii86X8K5yxNEEFz+qQoQSmdm65EtOGQA4nUSVPfEaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DRSXZdSn; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so1118638276.0;
+        Wed, 28 Feb 2024 08:46:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709138664; x=1709743464; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k4XRPdwxUwqws5YY4VvPNG/LxgQfuluLcLEsy4IUoCQ=;
-        b=yClr7yzrDC/SWzZyqDUnt3982p6KQZDRIsPI6bZTF/geYXuK4fIGinTnJ8z9IHVMDT
-         7ZRwm1Qa1Yy85NtRLSSQ2Ckug0Tm7zfk29oWofuPR4oTwMsTl5t4pgzLS+auIrjcXlIW
-         Z4fZyTquIOuTkQGpKKAbPShN9H8kJS+KPoFhY=
+        d=gmail.com; s=20230601; t=1709138791; x=1709743591; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DxwTMwCJVFMBDDvjxN0uaNIVMWBc/m50PoGk4vNalyY=;
+        b=DRSXZdSn37qd1kKt+dhafidPKpXvIpn+/ObqdhivrtC3F6e7ddTn5l0YtNgaRKGK+M
+         d9MQ9UTXf4FbnpAV1R5XwfiT79PBjpgF+VSWxQoms07ghIBsJt9l9X0V0bZUWn5pvFi9
+         SMRb4BM5i8GqKWF6xtBRccDsVisltO0HNlOm2pUdMvbiYCxNJnKjCpNQ7xvMzCWEOl9U
+         FPiP2lA92mTaALlKGf9KEjmm6zlmTO6nhzCvlOKzyEXaKH/36SB3tArGkhSeFElCnv9E
+         S2h1Tby5FPY1XGorSyWLSt17PR++PDYbmqjrQr7PqUIPzyZZTbLLxX2W3NJJsOj9X676
+         qKAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709138664; x=1709743464;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k4XRPdwxUwqws5YY4VvPNG/LxgQfuluLcLEsy4IUoCQ=;
-        b=TjHsDaAMBG39Ji8bRA26WkdzcwytvoC2CQTTAU1bSt5Odh2T7ZqGBoMXUA0kwC4zsX
-         GBK5S2QO7eExZvPZpBV44dExqvUHV+uYP5BZdvv6LfFlPNh3z4YFmHu9ZPEx8sqeQh9c
-         R6LgtiPZj7EEiveNK6QMHNlSVHHr+5Jn/GxxbjeDe3egLMXGuu6VDeRXLgzYiXNpvD4s
-         7MgrWwg1oa8x7MgDrAXEGlcY2GLR04UB+pQ2F0T52hTnqUlOCRR/AToOUDdVkSybPD6/
-         h+x4TtZ94x1JFAprowMMiS7/4jyBnIBBhfh/3NajP2+bcLMp64+oaujQEgPMpkv8iaww
-         lY5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUfqOG8Yex8VPaLh9z4y6Kw4JiOARfPvNVyTw3RUizJ/LYwUJFkIAhGUui6WeAPbNFD6ZV7rrb9qnK7/mhf2f2oT9ctYzIh/y3ILreu
-X-Gm-Message-State: AOJu0Yyrl05C48l1poElkwv5g0Q1WV1dKCV/q7GE8RJiWQ3Xi5f2Y8+K
-	jlf6Q+XAp03sgDrbiDyEA+oqTh7yxD69lVf0wasABNmNFgl2t3voF4Z16/M8bpQ=
-X-Google-Smtp-Source: AGHT+IEHOs4CxadxUk+QzF5PCarTAbEfy0WGLF1fUV8BDOqm/9M4WKn9+kuDXDQZhcNvB2495wtSKg==
-X-Received: by 2002:a5e:8345:0:b0:7c7:f993:8c55 with SMTP id y5-20020a5e8345000000b007c7f9938c55mr4747iom.2.1709138663699;
-        Wed, 28 Feb 2024 08:44:23 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.76])
-        by smtp.gmail.com with ESMTPSA id gw3-20020a0566381ee300b00474b2c54cf7sm156322jab.174.2024.02.28.08.44.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 08:44:23 -0800 (PST)
-Message-ID: <44dce4fb-6198-4ca3-9535-566655fa8e35@joelfernandes.org>
-Date: Wed, 28 Feb 2024 11:44:19 -0500
+        d=1e100.net; s=20230601; t=1709138791; x=1709743591;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DxwTMwCJVFMBDDvjxN0uaNIVMWBc/m50PoGk4vNalyY=;
+        b=a50gL7jA1ORb2QEq2pYlynwcNl0O52+fwa0MV9XzhcKv5+ciUASQQ71Y1QySSYYfUA
+         WeqI5LW+5lVJm8C8vBb5guu1JvWre0maYL2yprNwwKq8DZEzrBuW+leOvIW887Cg18aW
+         NwNd2I+CnV0iRENfqbsjXzEJSYk30KwJGIeIChfW9PMvH9KGcoQN5IMJ12fNhQngNtDd
+         1Lmkj89KsB8ubmHanAtu26cY86bpOaRY7iiVdg1nbH0IhyzEED6FvWwos3uvcjYtAOOs
+         JWpN7fpeDD29z1N22+b/dPyxmaN5iWTwcUThf0wt3FCBgKYLjly4wonrevKIxOiy0j/+
+         s2Bg==
+X-Forwarded-Encrypted: i=1; AJvYcCUywO9m1zecZ3ofWeU4sUrDKcNKkLn2VCQMyXB7ROcp4X+Vdxi7mpbbg9PD2sUb2LbwwINZN3xFiWr6kFRX4tgGmmVSM6GfkCljFuy/sJaFWqnQ0NeFRikRTp3HCYNf/Qm4zGzoDePoM9aQJhKIjHqDXS/VWGD28XkWhcbI+7fWOcDAbakQ0Fp5lfLOM3D6ZFSY2f6M78ZvrgAKsl7z
+X-Gm-Message-State: AOJu0Yw4HKJSOkFC79K8pPJKgiFkUlYMrSkS/iDvlwmRKYtukMLTgMW3
+	h5/PHqjWSIk45Hua/eVOSfgCPIcC9qeqQRjebQy2VFf2af8GswLkAzvPJxgjThw=
+X-Google-Smtp-Source: AGHT+IG+T6i0Kg6hK0OXQQpUI7eVIpugJ4UsU/eSwtZUJTDnNAIjX3r6X/tjo8tk0qDTO98RF+EAJQ==
+X-Received: by 2002:a25:72c1:0:b0:dc7:3362:4b2f with SMTP id n184-20020a2572c1000000b00dc733624b2fmr2053330ybc.13.1709138791147;
+        Wed, 28 Feb 2024 08:46:31 -0800 (PST)
+Received: from localhost ([2601:344:8301:57f0:2256:57ae:919c:373f])
+        by smtp.gmail.com with ESMTPSA id t13-20020a25aa8d000000b00dcc620f4139sm2082379ybi.14.2024.02.28.08.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 08:46:30 -0800 (PST)
+Date: Wed, 28 Feb 2024 08:46:29 -0800
+From: Yury Norov <yury.norov@gmail.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Andy Shevchenko <andy@kernel.org>,
+	linux-s390@vger.kernel.org, ntfs3@lists.linux.dev,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Ido Schimmel <idosch@nvidia.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>, dm-devel@redhat.com,
+	linux-kernel@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
+	Eric Dumazet <edumazet@google.com>,
+	Marcin Szycik <marcin.szycik@linux.intel.com>,
+	Alexander Potapenko <glider@google.com>,
+	Simon Horman <horms@kernel.org>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	linux-btrfs@vger.kernel.org, intel-wired-lan@lists.osuosl.org
+Subject: Re: [Intel-wired-lan] [PATCH net-next v5 00/21] ice: add PFCP filter
+ support
+Message-ID: <Zd9jZZafcVyDGOTw@yury-ThinkPad>
+References: <20240201122216.2634007-1-aleksander.lobakin@intel.com>
+ <c90e7c78-47e9-46d0-a4e5-cb4aca737d11@intel.com>
+ <20240207070535.37223e13@kernel.org>
+ <4f4f3d68-7978-44c4-a7d3-6446b88a1c8e@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-To: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
- "Paul E . McKenney" <paulmck@kernel.org>
-Cc: RCU <rcu@vger.kernel.org>, Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
- Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
- LKML <linux-kernel@vger.kernel.org>,
- Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
- Frederic Weisbecker <frederic@kernel.org>
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <572f9069-f79f-4432-b2ac-7f963a526c0b@joelfernandes.org>
-In-Reply-To: <572f9069-f79f-4432-b2ac-7f963a526c0b@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f4f3d68-7978-44c4-a7d3-6446b88a1c8e@intel.com>
 
-On 2/28/2024 9:32 AM, Joel Fernandes wrote:
+On Mon, Feb 12, 2024 at 12:35:38PM +0100, Alexander Lobakin wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> Date: Wed, 7 Feb 2024 07:05:35 -0800
 > 
+> > On Tue, 6 Feb 2024 13:46:44 +0100 Alexander Lobakin wrote:
+> >>> Add support for creating PFCP filters in switchdev mode. Add pfcp module
+> >>> that allows to create a PFCP-type netdev. The netdev then can be passed to
+> >>> tc when creating a filter to indicate that PFCP filter should be created.  
+> >>
+> >> I believe folks agreed that bitmap_{read,write}() should stay inline,
+> >> ping then?
+> > 
+> > Well, Dave dropped this from PW, again. Can you ping people to give you
 > 
-> On 2/20/2024 1:31 PM, Uladzislau Rezki (Sony) wrote:
-[...]
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index c8980d76f402..1328da63c3cd 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -75,6 +75,7 @@
->>  #define MODULE_PARAM_PREFIX "rcutree."
->>  
->>  /* Data structures. */
->> +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *);
->>  
->>  static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
->>  	.gpwrap = true,
->> @@ -93,6 +94,8 @@ static struct rcu_state rcu_state = {
->>  	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
->>  	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
->>  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
->> +	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
->> +		rcu_sr_normal_gp_cleanup_work),
->>  };
->>  
->>  /* Dump rcu_node combining tree at boot to verify correct setup. */
->> @@ -1422,6 +1425,282 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
->>  		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->>  }
-> [..]
->> +static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
->> +{
->> +	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
->> +}
->> +
+> Why was it dropped? :D
 > 
-> I'm a bit concerned from a memory order PoV about this llist_add() happening
-> possibly on a different CPU than the GP thread, and different than the kworker
-> thread. Basically we can have 3 CPUs simultaneously modifying and reading the
-> list, but only 2 CPUs have the acq-rel pair AFAICS.
+> > the acks and repost? What's your plan?
 > 
-> Consider the following situation:
+> Ufff, I thought people read their emails...
 > 
-> synchronize_rcu() user
-> ----------------------
-> llist_add the user U - update srs_next list
-> 
-> rcu_gp_init() and rcu_gp_cleanup (SAME THREAD)
-> --------------------
-> insert dummy node in front of U, call it S
-> update wait_tail to U
-> 
-> and then cleanup:
-> read wait_tail to W
-> set wait_tail to NULL
-> set done_tail to W (RELEASE) -- this release ensures U and S are seen by worker.
-> 
-> workqueue handler
-> -----------------
-> read done_tail (ACQUIRE)
-> disconnect rest of list -- disconnected list guaranteed to have U and S,
->                            if done_tail read was W.
-> ---------------------------------
-> 
-> So llist_add() does this (assume new_first and new_last are same):
-> 
-> 	struct llist_node *first = READ_ONCE(head->first);
-> 
-> 	do {
-> 		new_last->next = first;
-> 	} while (!try_cmpxchg(&head->first, &first, new_first));
-> 
-> 	return !first;
-> ---
-> 
-> It reads head->first, then writes the new_last->next (call it new_first->next)
-> to the old first, then sets head->first to the new_first if head->first did not
-> change in the meanwhile.
-> 
-> The problem I guess happens if the update the head->first is seen *after* the
-> update to the new_first->next.
-> 
-> This potentially means a corrupted list is seen in the workqueue handler..
-> because the "U" node is not yet seen pointing to the rest of the list
-> (previously added nodes), but is already seen the head of the list.
-> 
-> I am not sure if this can happen, but AFAIK try_cmpxchg() doesn't imply ordering
-> per-se. Maybe that try_cmpxchg() should be a try_cmpxchg_release() in llist_add() ?
+> Yury, Konstantin, s390 folks? Could you please give some missing acks? I
+> don't want to ping everyone privately :z
 
-Everyone in the internal RCU crew corrected me offline that try_cmpxchg() has
-full ordering if the cmpxchg succeeded.
+Hi Alexander, Jakub,
 
-So I don't think the issue I mentioned can occur, So we can park this.
+I reviewed the series again and added my SOBs for bitmap-related
+patches, and Acks or RBs for the rest, where appropriate.
 
-Thanks!
+Regarding the patch #17, I don't think that network-related tests
+should be hosted in lib/test-bitmap. This is not a critical issue,
+but Alexander, can you find a better place for the code?
 
- - Joel
+The rest of the series is OK for me. I think Jakub wants to pull this
+as a whole in his -net branch? If so please go ahead, if not - I can
+pull bitmap-related part in bitmap-for-next.
 
+Thanks,
+Yury
 
