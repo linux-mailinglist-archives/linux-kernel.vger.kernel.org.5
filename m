@@ -1,126 +1,160 @@
-Return-Path: <linux-kernel+bounces-85846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9AA286BC2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:27:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32BF986BC2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:27:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6458C1F2612C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:27:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E47FE284EF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:27:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4423FB97;
-	Wed, 28 Feb 2024 23:26:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6385770055;
+	Wed, 28 Feb 2024 23:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K7HSEoza"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C8Ft2bAJ"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECE913D314
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:26:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 075E813D319;
+	Wed, 28 Feb 2024 23:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709162818; cv=none; b=ubNTVh1o6QMs8SgQdU4VJJRBTvdpfgsvpDnHqqo1grPnFjs5lDlwmXaDMjAM/fTqusl8sDOfrDiXb3o9AfJ+rG2uJmXmvhVnpcO/wNwoZ2j2UBWpKqROlvfRiKCJQJOITk7MrgDnnjfsCo0V3SBqeV98IGTwHrfWO5MC9boq+YA=
+	t=1709162846; cv=none; b=DbZVBXm3BU188n5Gmd4gRM80COWV8LXgA7i4jnuC6g0IruMtvvKKawunUf8UNUVq3F5MTiHnD2dnWXr8Nn4cdYtGOQ8YCpacPYXi8fCyeE7IiOhfUWUl/vPjroshLaWSgAIyI/XapgvSRySLwYEmPHhwqTmvj8OvwSysWk+tSkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709162818; c=relaxed/simple;
-	bh=8FTj6Koa44+7wIfYWJIPoAle8PfST8SPtRF2sQxL16I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mcHGsgNS9dgc596VNBxM2YGyz0ingSgPe7iq/MkQ7QBUb4aeTLsgcuHVnKYtKlHfeh8441XCoFvkZSF0AFkxsS2XTUVOqbrHZkA1Yi7U5jzxeqTiqbKUoQzWGxrUZVpYb8EDPaSK9KrxiacIgPUBm9Mz685TbLzytpNKHMD8gPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K7HSEoza; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512e4f4e463so170881e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:26:56 -0800 (PST)
+	s=arc-20240116; t=1709162846; c=relaxed/simple;
+	bh=yR99aj/Y3qUCL/U7ci0Qst/HDVZ03Ni5Gp668ZTg95w=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=T+mdSpIYlH+IKCtCwNOlmbKZpS76o/mQ9SlodHkRr7nNFAnr5PoY5UrE7RPYvuiwqMHWN1jy41LjxNSPey+pQKIrfpmhWarFT0zPdd4ILvvjJ6bc7RyVB33ieikuyEIzatJglVaLsCBJ3g5LdbcfdcDtBRvZKS3imlRV9litW4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C8Ft2bAJ; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513230201b2so155805e87.1;
+        Wed, 28 Feb 2024 15:27:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709162815; x=1709767615; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7eYiCisy9EvDzPpdsA8EnqFrzrb2WGQGdFzfYxWz3OE=;
-        b=K7HSEoza7DCdIqrcWgXXP62YbQCQYuMTXvgq7CHcNaOta4aWB5IYuuPC4ZTd00TQIC
-         dDRItLh2fANircRuUuzCH1UrwlY9WjWUkYNIifpwhQpZaSCv3QvyOjOFE9UCNApaduLt
-         CdW+mGt3xCIKGv0rTlSKBJBDIehivzbzwHRLyo4oebRX1cs49wR2n6HOLU4FkmyciG6z
-         1TUR+xNX++n69zJfmA2NwhWLV8fJkRy8wmSK/Feeme5DN6K0hzbi73TfyBdqJLngT4yn
-         FhMoJWm4kvhic9OJBIgQUnC7VIrKHWDadTbXx+K1t2jyR42CznPlLgT0h+P8q7ZmuyiL
-         VHrg==
+        d=gmail.com; s=20230601; t=1709162843; x=1709767643; darn=vger.kernel.org;
+        h=mime-version:message-id:date:subject:to:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qUsI28IGlUJBAILlE5CNXqMn2Wot3QZGGWsRmezOGs8=;
+        b=C8Ft2bAJuHRJs50ha//S0HEUf+4TAkzx6P9B/EkWJVo6PI4f8MOYI4+z1rR7icFPVN
+         exHx9yc3aDLE8iClOLhTm1Dl9JzU+AqxO2mPfg1dqYrerfFC3FOpuM8aAmrDFAeMtbbr
+         0EjzxsG0YbaMZorOksSC8Bc3lOGoL0WBm3/muTA1GaMaoEQHD9GNsVTNn4FKwlAmkvel
+         3l+0Lp4GdGCytkpMsohMtect6MijdyfYQc0lCIOLDx7lJnK8nXjZWe40HFFwpPIbpsFa
+         5lU0ZsmLQZr/SVEC1O+JSNQZ9epYhM9sYgToHdjWgFtmFC6uynaaYtlaGxOg/gaTvl6j
+         ryZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709162815; x=1709767615;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7eYiCisy9EvDzPpdsA8EnqFrzrb2WGQGdFzfYxWz3OE=;
-        b=Acrkp3hNO0XENie20RT1FqhHhze+IhZemdJj8i+ktWTgRsRRvQUeLzPdkbzeGe23Te
-         sYLywA0v3pZOsoV3p/SQT9JUiGyYWIacas/I14Sl7DVrSUj/BIJ8Uan61oI8LuZI/SlG
-         NUfo+N/ws3v/2vpP6UHQeTWCwSfKEsI3O0zAu2ZDHKskEtcSqtJ82n2aSeU7Ady0GUCV
-         7pCjHVdEo/4drWgFuzaxwJLrcpFqXdUs0aeojHCDjHUfiW5O3xLM6cnf7Mc/3eI92SNr
-         joDN4tjMpTG/JEJhq3IP1m2u7O8h18OROsd7qkvEWiZeRJwnDEaofOwALOw60HYJ+Tu3
-         a+6w==
-X-Gm-Message-State: AOJu0YwLSA81FQ5RjexOoOy71G6SWIQUcy8b1IlEWM09jIYS0cw5keOr
-	NxxrmYFREqKJLDleOC48sZHov+BDdtZuQ7JfzTzGFvrR9Ge4/V/2RP7Hg8pMg/g=
-X-Google-Smtp-Source: AGHT+IEauPA8YU76AZ2HWn9YzhqJSaQh/sxY5dBOq9kCUqmFc1a7D67zChdJwrqxqulBHP/Mq3mKqg==
-X-Received: by 2002:a05:6512:34d3:b0:512:f6a0:1311 with SMTP id w19-20020a05651234d300b00512f6a01311mr236650lfr.47.1709162815082;
-        Wed, 28 Feb 2024 15:26:55 -0800 (PST)
-Received: from [172.30.205.146] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id j10-20020a056512028a00b00512dec300dcsm28686lfp.2.2024.02.28.15.26.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 15:26:54 -0800 (PST)
-Message-ID: <c25aa425-f350-4ad2-b92e-67de996daed3@linaro.org>
-Date: Thu, 29 Feb 2024 00:26:49 +0100
+        d=1e100.net; s=20230601; t=1709162843; x=1709767643;
+        h=mime-version:message-id:date:subject:to:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qUsI28IGlUJBAILlE5CNXqMn2Wot3QZGGWsRmezOGs8=;
+        b=SafCwNlNQxuf/hMnOcdRyyUfF07A4dtLmPO3kWYHP8VDy3HOd2gN1dfWpHHMhq6Ipg
+         5b8gK9/8y4ZjlCwWThCb/JxyENigSiBR/dLyp3qE+Rgw0Z5N2cBGBb626hfOQcns1mR4
+         4m0D6I7AD8AX9bgXQI14MVdS3jlpzinqnvRcH4mVDChZiMFWEfn0fNO23FJusa1aP/UQ
+         UF519bXo02M+m2POO0RXM5i9Fc1ZXn4BsSjpLXnFc2woZB0o5BPWEK0Sz7cnPPAznCud
+         ZkhGo/njk8axUKnODTqvaTRcpAD2vts/XfypRA6cW9dRKYiPjQjPs8OMOTtjWhnCl2bS
+         detw==
+X-Forwarded-Encrypted: i=1; AJvYcCX7Qtkqk0+dQf/n/xDBB/mDexGZ4bwXcFqVFS8lertDOEnqiSmjsIJzZXD1gKcBkNkDMxRsb5keZuYl/5NQL1XMKPxp8CjXzur5sZz2ECZj2sNDZ6MXnwucj5ZRP4oBmM6Q
+X-Gm-Message-State: AOJu0YyouFEqmb8zHJcRICUcNn38Erkm7Y86FpNAW36IYzOe0rB9+Z96
+	DBCSAuuIm5rSHth3GzDp9pgPqP9MiD7TmSxHCSujCzYYhp44y0pA
+X-Google-Smtp-Source: AGHT+IEUDNBkFdHTxEGr88/rougzxjN7wW1dNLNTE4EokEqvE3FvIDWV4qKKcWv4RZPmxcXgd163Ng==
+X-Received: by 2002:a05:6512:605:b0:513:1a02:7304 with SMTP id b5-20020a056512060500b005131a027304mr202101lfe.54.1709162842814;
+        Wed, 28 Feb 2024 15:27:22 -0800 (PST)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id m19-20020a056000181300b0033d3b8820f8sm51909wrh.109.2024.02.28.15.27.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Feb 2024 15:27:22 -0800 (PST)
+From: puranjay12@gmail.com
+To: catalin.marinas@arm.com, ast@kernel.org, daniel@iogearbox.net,
+ mark.rutland@arm.com, broonie@kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org 
+Subject: arm64: Supporting DYNAMIC_FTRACE_WITH_CALL_OPS with CLANG_CFI 
+Date: Wed, 28 Feb 2024 23:27:03 +0000
+Message-ID: <mb61ph6hsxj94.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soc: qcom: pmic_glink_altmode: Use common error handling
- code in pmic_glink_altmode_probe()
-To: Markus Elfring <Markus.Elfring@web.de>, linux-arm-msm@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Johan Hovold <johan+linaro@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, freedreno@lists.freedesktop.org,
- dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
- Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Andrzej Hajda <andrzej.hajda@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
- David Airlie <airlied@gmail.com>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Jonas Karlman <jonas@kwiboo.se>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Kuogee Hsieh <quic_khsieh@quicinc.com>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>, Rob Clark <robdclark@gmail.com>,
- Robert Foss <rfoss@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Peter Zijlstra <peterz@infradead.org>
-References: <29b63eb4-2342-4ca8-a313-5de2a6ec6a83@web.de>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <29b63eb4-2342-4ca8-a313-5de2a6ec6a83@web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
 
+I recently worked on allowing BPF programs to work properly on CLANG_CFI
+enabled kernels [1]. While doing this I found that fentry programs are
+failing to attach because DYNAMIC_FTRACE_WITH_CALL_OPS doesn't work with
+CLANG_CFI.
 
-On 2/28/24 19:05, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Wed, 28 Feb 2024 18:45:13 +0100
-> 
-> Add a jump target so that a bit of exception handling can be better reused
-> at the end of this function implementation.
-> 
-> This issue was transformed by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
+Mark told me that the problem is that clang CFI places the type hash
+immediately before any pre-function NOPs, and so where some functions
+have pre-function NOPs and others do not, the type hashes are not at a
+consistent offset (and effectively the functions have different ABIs and
+cannot call one another)
 
-(+CC Peter)
+I tried enabling both Clang CFI and -fpatchable-function-entry=4,2 to
+see the behaviour and where this could fail. Here is an example:
 
-Hmm.. this looks very similar to the problem that __free solves
-with <linux/cleanup.h>..
+This is the disassembly of jump_label_cmp() that has two pre-function nops and the CFI
+hash before them. So, the hash is at (addr - 12).
 
-I know no better, but wouldn't the same mechanism, down to the
-usage of DEFINE_FREE work fine for _put-like functions?
+ffff80008033e9b0:       16c516ce        [kCFI hash for 'static int jump_label_cmp(const void *a, const void *b)']
+ffff80008033e9b4:       d503201f        nop
+ffff80008033e9b8:       d503201f        nop
+ffff80008033e9bc <jump_label_cmp>:
+ffff80008033e9bc:       d503245f        bti     c
+ffff80008033e9c0:       d503201f        nop
+ffff80008033e9c4:       d503201f        nop
+[.....]
 
-Konrad
+The following is the disassembly of the sort_r() function that makes an indirect call to
+jump_label_cmp() but loads the CFI hash from (addr - 4) rather than
+(addr - 12). So, it is loading the nop instruction and not the hash.
+
+ffff80008084e19c <sort_r>:
+[.....]
+0xffff80008084e454 <+696>:   ldur    w16, [x8, #-4] (#-4 here should be #-12)
+0xffff80008084e458 <+700>:   movk    w17, #0x16ce
+0xffff80008084e45c <+704>:   movk    w17, #0x16c5, lsl #16
+0xffff80008084e460 <+708>:   cmp     w16, w17
+0xffff80008084e464 <+712>:   b.eq    0xffff80008084e46c <sort_r+720>  // b.none
+0xffff80008084e468 <+716>:   brk     #0x8228
+0xffff80008084e46c <+720>:   blr     x8
+
+This would cause a cfi exception.
+
+As I haven't spent more time trying to understand this, I am not aware
+how the compiler emits 2 nops before some functions and none for others.
+
+I would propose the following changes to the compiler that could fix this
+issue:
+
+1. The kCFI hash should always be generated at func_addr - 4, this would
+make the calling code consistent.
+
+2. The two(n) nops should be generated before the kCFI hash. We would
+modify the ftrace code to look for these nops at (fun_addr - 12) and
+(func_addr - 8) when CFI is enabled, and (func_addr - 8), (func_addr -
+4) when CFI is disabled.
+
+The generated code could then look like:
+
+ffff80008033e9b0:       d503201f        nop
+ffff80008033e9b4:       d503201f        nop
+ffff80008033e9b8:       16c516ce        kCFI hash
+ffff80008033e9bc <jump_label_cmp>:
+ffff80008033e9bc:       d503245f        bti     c
+ffff80008033e9c0:       d503201f        nop
+ffff80008033e9c4:       d503201f        nop
+[.....]
+
+Note: I am overlooking the alignment requirements here, we might need to
+add another nop above the hash to make sure the top two nops are aligned at 8 bytes.
+
+I am not sure how useful this solution is, looking forward to hear from
+others who know more about this topic.
+
+Thanks,
+Puranjay
+
+[1] https://lore.kernel.org/bpf/20240227151115.4623-1-puranjay12@gmail.com/ 
 
