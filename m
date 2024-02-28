@@ -1,102 +1,91 @@
-Return-Path: <linux-kernel+bounces-85828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A56A86BBE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:04:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EEEA86BBE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:05:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8CC1284DFF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:04:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF517B28D0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997DC13D306;
-	Wed, 28 Feb 2024 23:03:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0A513D2FC;
+	Wed, 28 Feb 2024 23:05:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UX+Nty8i"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Frmk1kIk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1ED13D2EC;
-	Wed, 28 Feb 2024 23:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDDE1EEE7;
+	Wed, 28 Feb 2024 23:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709161393; cv=none; b=Yvfb2eNwT+OQBMKBthtFAiJGShbO8OSpTdWabzd4IdMi9JBxkeJyfdWmySIICybCs1fYFeTPt4vEu2tFDpSXG/dTwoBuCfw1xj27qHDU1crAlm9a5pM/KWFlAmpEf4AQvLEa/SOKmC9D6RsrpEm+/vTHF4v/5lIaZcrEzdCWj1Q=
+	t=1709161522; cv=none; b=Ur/yVPGbrb4IjjlokUpUyLdFWElINk0CdkTj67vZzg636OA3SR1KdL91P9VZWjw/LYtOV3KkB5vejCucgwz5y7/qCnB/zM49UpJXv3DoqIUPMkJJSdz67UNdv6xmXM2mxfWxGmuTLiQMCd+wHXsPB5mhvQb5oTyo53YjTP4weTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709161393; c=relaxed/simple;
-	bh=po5FvhdrjHlOz2JRmBTxwzgRG233kHblzB3DOAhWYmY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nYl8Q0bCNvBOaWiSvsXE3fwddTKlZ3rZc4L/5AhXEkxaaFbqV53JgKJXuKfaAJEwX5+hVfRtwmZJxG/Ot6RA6Nz5BMKiHkh1TE2UlFbXBkFVXqOVLmRvgTfZnY8wqU7VZAGPnESNfhDXzq/NNu3kW9/6IwuJq43NV9vu00CRlxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=UX+Nty8i; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=exl8mldDgfMmNdvFA8534z1ZX7bw2tXMon2gQ9u2Kc0=; b=UX+Nty8i10/+0ZGaNcSgbYFxUk
-	AO5ZurXOhP9FZzoxqWRQO0GU/RUDUFHxGqwb2FOA+Sl61CatxoT+LKm39IC5KitnyGuagPpu5Ruid
-	nnvoz7pyl2Ae6d/ZlL2KelFwbu/Zmf0XgNDU4OFHa743DSKPlFiUCbaCErD0Bi36BoUfTPvy8wNY7
-	XDe/lv4aeFh4EsSNqdkH6mNbRhP169iFSbBmeAGpZZLdLJD18wmbHVPTbENlNJMZZiOukfxxNvjb/
-	2+cN44S66anzAxL8bJtCm31tWXih94rXyD8/wNXSorOWFkYZKBIJe6mCkjjfqlp8NJHq4p46zc6oZ
-	KyGmk/QQ==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rfSxC-0000000BE5a-2kXP;
-	Wed, 28 Feb 2024 23:03:10 +0000
-Message-ID: <4bec9a50-e846-4507-9332-22bd7a05e7f2@infradead.org>
-Date: Wed, 28 Feb 2024 15:03:08 -0800
+	s=arc-20240116; t=1709161522; c=relaxed/simple;
+	bh=F1VOE+DnjdscjpxmdpPOZleVN5H0NxncCSGnUm/eOfM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Pt0C5I7Ckxxm2LIhEG8pmQxh0k9WsqdniTeLm1WrP042AvNU2RxDgEG63u4jvqCUjjlIbY8QZH05jxa3LXnQ/9M79jwBi+QJKB3l03Slm2qoB9sTYRIoETIybyh/ZGHZ0/oFLujVG/b1uIWzVyHtRJjGByJIzfdiPd/FJXnsnk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Frmk1kIk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E74C433F1;
+	Wed, 28 Feb 2024 23:05:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709161521;
+	bh=F1VOE+DnjdscjpxmdpPOZleVN5H0NxncCSGnUm/eOfM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=Frmk1kIkCtxpQM1uEGaF3hVv/D95rdvphgFe94ADYS2R3mpXMAjS/R25w0LEwLNFy
+	 hC2cj69c3cptVkpQFMZpR4bvruVKfqOaZJ38zAeO7J+6fTVHgfT+are01CP+pz7wyP
+	 n38haW2bEAVvFD+a6zm+2HbahRmWN5Fy4n+o9NPPJR0Pc+M0Sej9QiaedNEY4jmtZ/
+	 YcwTG+vuyYyhjKVC7mqP6+zCfzmsr+Ukawhx3154Wgczj33Q7KUrRZDCQrdsuqZViS
+	 Ejvl8OYqjPMfbtt2nJLHQqQg8eJ5oGHkHMF8iqpoc53W5FchQXztgXSTrwhVLbsFVB
+	 +JOP4EYyPL36Q==
+Date: Wed, 28 Feb 2024 17:05:20 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 2/6] PCI: imx6: Rename pci-imx6.c and PCI_IMX6 config
+Message-ID: <20240228230520.GA314710@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs: submit-checklist: structure by category
-Content-Language: en-US
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, workflows@vger.kernel.org, linux-doc@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240226104653.54877-1-lukas.bulwahn@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240226104653.54877-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227-pci2_upstream-v1-2-b952f8333606@nxp.com>
 
-Hi Lukas,
+On Tue, Feb 27, 2024 at 04:47:09PM -0500, Frank Li wrote:
+> pci-imx6.c and PCI_IMX6 actuall for all i.MX chips (i.MX6x, i.MX7x, i.MX8x,
+> i.MX9x). Remove '6' to avoid confuse.
 
-Sorry about the (my) delay.
+s/actuall for all/cover all/
+s/confuse/confusion/
 
+>  drivers/pci/controller/dwc/{pci-imx6.c => pci-imx.c} |  0
 
-On 2/26/24 02:46, Lukas Bulwahn wrote:
+If we're going to rename it, we should rename it to "pcie-imx.c".
 
-> 
->  Documentation/process/submit-checklist.rst | 157 +++++++++++----------
->  1 file changed, 84 insertions(+), 73 deletions(-)
-> 
-> diff --git a/Documentation/process/submit-checklist.rst b/Documentation/process/submit-checklist.rst
-> index b1bc2d37bd0a..7d8dba942fe8 100644
-> --- a/Documentation/process/submit-checklist.rst
-> +++ b/Documentation/process/submit-checklist.rst
-> @@ -11,110 +11,121 @@ These are all above and beyond the documentation that is provided in
->  and elsewhere regarding submitting Linux kernel patches.
->  
->  
-> +*Review your code:*
+It was my mistake long ago to use "pci-" instead of "pcie-".
 
-These "headings" (?) shouldn't have ending ':'s IMO.
-Maybe they should be real headings?
+> -config PCI_IMX6
+> +config PCI_IMX
 
-Otherwise the patch is a very good & welcome improvement, although as
-Jon said, the file needs some TLC. (after this patch is applied)
-
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-Thanks.
--- 
-#Randy
+What does this look like to users who carry an old .config file
+forward?
 
