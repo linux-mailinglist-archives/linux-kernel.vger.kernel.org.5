@@ -1,128 +1,138 @@
-Return-Path: <linux-kernel+bounces-85042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4444A86AF82
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:54:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A5186AF8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:55:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3878287C06
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:54:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2976D1C2432A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:54:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8453B14EFE4;
-	Wed, 28 Feb 2024 12:53:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD41D146015;
+	Wed, 28 Feb 2024 12:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jL2HWUs5";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eypl/HHr"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="1a8zvToH"
+Received: from smtp-8fad.mail.infomaniak.ch (smtp-8fad.mail.infomaniak.ch [83.166.143.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D07149E01;
-	Wed, 28 Feb 2024 12:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B19145B27
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709124807; cv=none; b=rJjKNI52mXJ3RBfqiXmnc4B8t+KfD0X0J9yhL+SJAeGiz+FoJsFZscng9yrdt31H+sHRAdbXaIt0xsot8Ml6Vn5T4yazcrabo3EEadglcgi7mFii8MI3nqZENrLijiP9i+tbl7ihGX47KDFRGmIR71QpbAa1cvksMmV1M3FKsuA=
+	t=1709124853; cv=none; b=OdZB+j4QoXojGj1Af4EWoG1nCklTSoxD5mTzrwmMnv94MFJoJBeYeCPAiA+oLvRyxvfD2owq1V+H0y/JXAiSRLWKBQQxia0pm8+sf/I4UCLqOs6KIrJlo+tGEEpQxQAaYp8vcCUZK+ObqZxQOKlk1vxqZZrPkp84i7lsbf76OVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709124807; c=relaxed/simple;
-	bh=unfqZidumn24iXVPy4auOrLTeuT97RoLN9DRHqzjL9c=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=XzrTNyF6IcFFcnUlFAwkZuKOOvNk7j0I+FBvNs14mk7vQH/bUdEWHViuOWy+nNHnsEWfX0Lkf0vgwDn7anUloUGpUv7apU4WK9XFHxgO4N45qXMA8Q+h98+jF1k+LlLLMTp0JbJMq1wBoIFGgrq2T408idrJKIfhbU7H2+rGamw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jL2HWUs5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eypl/HHr; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 28 Feb 2024 12:53:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709124804;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4zx4JZGkklQTdrU2XSkaUDyw5tTHTirZv7mYq6dRHUI=;
-	b=jL2HWUs5ijgUGFqYIavQ/ekelFWFTRDjE4gvsH56h3yothgcrIofjKFlyEf0JjPrE3OV4i
-	mx4b7ch0dEbT1Ah9tOGNZk1O72TYqBmkGFm6x74ir4D/izyz+xyFDj0Ml8gCQDuX7Fon0a
-	NlFY/zZa5hy/2RRoFqgUqSJBvwvWNv4F+GYQBcUcweEKCgCKTtX5RaJCeLRONDc/QlBF78
-	ubH0Z1KAUeK5zIdBxfva1i4aJrJRmdlRg/Qz6kxPvB5NVGKbvCfkYFWTWJfS2K7q1yKyQ4
-	YoIUH/R/3UdOpoogCdjgwNaCdsdHSMxVuZKWuA4hEpOJznrnKgrVx3WpSt1pyw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709124804;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4zx4JZGkklQTdrU2XSkaUDyw5tTHTirZv7mYq6dRHUI=;
-	b=eypl/HHrp9IBmlcd80AcazRYuvW4Y5LadDMazyBcPZy5Za9eN5Z8BggF2Rp+kIhDRXuWAB
-	9WrcQQZbJqjAfODA==
-From: "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/qspinlock: Fix 'wait_early' set but not
- used warning
-Cc: kernel test robot <lkp@intel.com>, Waiman Long <longman@redhat.com>,
- Ingo Molnar <mingo@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
- Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240222150540.79981-2-longman@redhat.com>
-References: <20240222150540.79981-2-longman@redhat.com>
+	s=arc-20240116; t=1709124853; c=relaxed/simple;
+	bh=V0Wu/+VTiNjbmF7GguEv6L2WS2ghRGPZ/G5cRniKxG4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VbVK7Xojxh00uqSISJxkxtQfdsvPIDvwkYovkoZvdHzN8DdjfVZvfN6MvCxIjDLQ/HKUzHNL1x971xvdwyqxM0gJbV+PC26Sri5tgirtpT4pXj7S6QQW1ATqpPguBrxLX6gMAZIRxsujAmPRb7j7hy0jZJG5b/L/kMbc2WxaeMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=1a8zvToH; arc=none smtp.client-ip=83.166.143.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TlDnN1M7FzWGr;
+	Wed, 28 Feb 2024 13:54:00 +0100 (CET)
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4TlDnM0D2lzMprLN;
+	Wed, 28 Feb 2024 13:53:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1709124840;
+	bh=V0Wu/+VTiNjbmF7GguEv6L2WS2ghRGPZ/G5cRniKxG4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=1a8zvToHqfl9+MEmyAhJmDNVttx5z44Yz6eTRwuZj2eA2ZQbCw5Zr8ESyTAoJF6Q3
+	 b9GHEHRZNZCMtqCZNIA6u7qWe/M0N0waqTV9yZWn2dPSsqHeZEcdT6657QH96gdFFX
+	 pEG24/X6jBNjhnWQpldiXVUneQ26JrS/3q3ueQwA=
+Date: Wed, 28 Feb 2024 13:53:42 +0100
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Paul Moore <paul@paul-moore.com>
+Cc: John Johansen <john.johansen@canonical.com>, 
+	Casey Schaufler <casey@schaufler-ca.com>, James Morris <jmorris@namei.org>, 
+	"Serge E . Hallyn" <serge@hallyn.com>, linux-kernel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] AppArmor: Fix lsm_get_self_attr()
+Message-ID: <20240228.iuBae3aiS6oo@digikod.net>
+References: <20240223190546.3329966-1-mic@digikod.net>
+ <20240223190546.3329966-2-mic@digikod.net>
+ <CAHC9VhQGLmeL4Buh3ZzS3LuZ9Grut9s7KEq2q04DYUMCftrVkg@mail.gmail.com>
+ <CAHC9VhTUux1j9awg8pBhHv_4-ZZH0_txnEp5jQuiRpAcZy79uQ@mail.gmail.com>
+ <CAHC9VhQHpZZDOoPcCqRQJeDc_DOh8XGvhFF3M2wZse4ygCXZJA@mail.gmail.com>
+ <CAHC9VhQL9REbeyP6Lp=0HT=0LryPnAOKAbBF4gH9c=cBbJxaFg@mail.gmail.com>
+ <CAHC9VhR2=bzVqHtcPH7-cSQRBnfphzzBQ4n9agXWMtasK9wh7Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170912480380.398.9234775487451824502.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhR2=bzVqHtcPH7-cSQRBnfphzzBQ4n9agXWMtasK9wh7Q@mail.gmail.com>
+X-Infomaniak-Routing: alpha
 
-The following commit has been merged into the locking/core branch of tip:
+On Tue, Feb 27, 2024 at 05:13:58PM -0500, Paul Moore wrote:
+> On Tue, Feb 27, 2024 at 5:09 PM Paul Moore <paul@paul-moore.com> wrote:
+> > On Tue, Feb 27, 2024 at 11:01 AM Paul Moore <paul@paul-moore.com> wrote:
+> > > On Mon, Feb 26, 2024 at 2:59 PM Paul Moore <paul@paul-moore.com> wrote:
+> > > > On Fri, Feb 23, 2024 at 4:07 PM Paul Moore <paul@paul-moore.com> wrote:
+> > > > > On Fri, Feb 23, 2024 at 2:06 PM Mickaël Salaün <mic@digikod.net> wrote:
+> > > > > >
+> > > > > > aa_getprocattr() may not initialize the value's pointer in some case.
+> > > > > > As for proc_pid_attr_read(), initialize this pointer to NULL in
+> > > > > > apparmor_getselfattr() to avoid an UAF in the kfree() call.
+> > > > > >
+> > > > > > Cc: Casey Schaufler <casey@schaufler-ca.com>
+> > > > > > Cc: John Johansen <john.johansen@canonical.com>
+> > > > > > Cc: Paul Moore <paul@paul-moore.com>
+> > > > > > Cc: stable@vger.kernel.org
+> > > > > > Fixes: 223981db9baf ("AppArmor: Add selfattr hooks")
+> > > > > > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> > > > > > ---
+> > > > > >  security/apparmor/lsm.c | 2 +-
+> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > >
+> > > > > If you like John, I can send this up to Linus with the related SELinux
+> > > > > fix, I would just need an ACK from you.
+> > > >
+> > > > Reviewed-by: Paul Moore <paul@paul-moore.com>
+> > > >
+> > > > This patch looks good to me, and while we've still got at least two
+> > > > (maybe three?) more weeks before v6.8 is tagged, I think it would be
+> > > > good to get this up to Linus ASAP.  I'll hold off for another day, but
+> > > > if we don't see any comment from John I'll go ahead and merge this and
+> > > > send it up to Linus with the SELinux fix; I'm sure John wouldn't be
+> > > > happy if v6.8 went out the door without this fix.
+> > >
+> > > I just merged this into lsm/stable-6.8 and once the automated
+> > > build/test has done it's thing and come back clean I'll send this,
+> > > along with the associated SELinux fix, up to Linus.  Thanks all.
+> >
+> > In off-list discussions with Mickaël today it was noted that this
+> > patch also needs a fixup to the commit description so I've replaced it
+> > with the following:
+> >
+> >   "In apparmor_getselfattr() when an invalid AppArmor
+> >    attribute is requested, or a value hasn't been explicitly
+> >    set for the requested attribute, the label passed to
+> >    aa_put_label() is not properly initialized which can cause
+> >    problems when the pointer value is non-NULL and AppArmor
+> >    attempts to drop a reference on the bogus label object."
+> >
+> > I've updated the commit in lsm/stable-6.8 and I'll be sending it to
+> > Linus shortly.
+> >
+> > > John, if this commit is problematic please let me know and I'll send a
+> > > fix or a revert.
+> 
+> I also just realized that both this patch and the SELinux have the
+> stable kernel marking which shouldn't be necessary as the LSM syscalls
+> are only present in the v6.8-rcX kernels.  I'm going to drop the
+> stable tagging, but leave the 'Fixes:' tag of course.
 
-Commit-ID:     ca4bc2e07b716509fd279d2b449bb42f4263a9c8
-Gitweb:        https://git.kernel.org/tip/ca4bc2e07b716509fd279d2b449bb42f4263a9c8
-Author:        Waiman Long <longman@redhat.com>
-AuthorDate:    Thu, 22 Feb 2024 10:05:37 -05:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 28 Feb 2024 13:08:37 +01:00
+Looks good, thanks!
 
-locking/qspinlock: Fix 'wait_early' set but not used warning
-
-When CONFIG_LOCK_EVENT_COUNTS is off, the wait_early variable will be
-set but not used. This is expected. Recent compilers will not generate
-wait_early code in this case.
-
-Add the __maybe_unused attribute to wait_early for suppressing this
-W=1 warning.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Link: https://lore.kernel.org/r/20240222150540.79981-2-longman@redhat.com
-
-Closes: https://lore.kernel.org/oe-kbuild-all/202312260422.f4pK3f9m-lkp@intel.com/
----
- kernel/locking/qspinlock_paravirt.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/locking/qspinlock_paravirt.h b/kernel/locking/qspinlock_paravirt.h
-index 6a0184e..ae2b12f 100644
---- a/kernel/locking/qspinlock_paravirt.h
-+++ b/kernel/locking/qspinlock_paravirt.h
-@@ -294,8 +294,8 @@ static void pv_wait_node(struct mcs_spinlock *node, struct mcs_spinlock *prev)
- {
- 	struct pv_node *pn = (struct pv_node *)node;
- 	struct pv_node *pp = (struct pv_node *)prev;
-+	bool __maybe_unused wait_early;
- 	int loop;
--	bool wait_early;
- 
- 	for (;;) {
- 		for (wait_early = false, loop = SPIN_THRESHOLD; loop; loop--) {
+> 
+> -- 
+> paul-moore.com
+> 
 
