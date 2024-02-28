@@ -1,141 +1,208 @@
-Return-Path: <linux-kernel+bounces-84845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8381786AC61
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:49:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CC0786AC70
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:01:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B528C1C225AC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:49:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0F631F245F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:01:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0AC112BF15;
-	Wed, 28 Feb 2024 10:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28BB24B39;
+	Wed, 28 Feb 2024 11:01:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ampoXZVW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D2+SL82W"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E4E7FBD7;
-	Wed, 28 Feb 2024 10:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44792129A96
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709117368; cv=none; b=di/Q0/F3Bepy74vbOq6qRR6t7tjaG4VIrvUr+mgMjuFNwJFNpI3viHvPg7F16IfCA5YWHBx3GfRBam77h0Yor5fV76gvt5e+pwOWcNkllmv2wthm1xQ18ztPxlQh6FjmnIuy3PkvHtwEnFK89hC7anE2mfCMHUBaNqd9W5E8kls=
+	t=1709118101; cv=none; b=QTIH0OSHfA7viLXjFNyVLLxXUXX40YDiAyU03MpnwyP2J8AUHoPaCLP/oWfPogL0ZkHF0eKnLSEbbEPguRlVZALKdUs7piVJFBqO74Q5BUiFH+wZdVGmobXmtfE0ZRZZ0HrPaLZO5w7i97P2XFziuUMXxeeej3Q7vFZz7tAMWNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709117368; c=relaxed/simple;
-	bh=NReh0r1OOkJ/WPAnBLnxEVaYYz6tyBjSchjL2TDVkOo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CjKF1vaC38ajXnkTzRGkngujadESZuxcQkXwAVfsxrctlZZbz7xthOC8xl177Ytb46jUCqYGIKuMFB4VH3YXueeyiXlD7iRcyhuY7YvJBGPW1C7M4sz7cWiHPtkQMEZgYRJ6sFaMK5fCwsT4rOHuFd0KbsFxtKGY0P+PHRAGlI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ampoXZVW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF263C433C7;
-	Wed, 28 Feb 2024 10:49:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709117367;
-	bh=NReh0r1OOkJ/WPAnBLnxEVaYYz6tyBjSchjL2TDVkOo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ampoXZVWcdsJDzSiPecqBZ+IfULM6TLhs+9C8H4SnTBekIvwYvHd0QBTNVwtYqOXL
-	 bn2ncUcxLhMaGPhE6+66ypcI1ExIuESsfSIE0RtfPYlVsMlatqODU6OvjEi+BvgpS0
-	 2EqhL/g/7Q0skBNyRT31JSA6EcToPgB6XISQy3EHmhqBR8g2cOGFNBybEzvVBbNyUs
-	 lZsaCp1TC1Y71rkwAUxsYPnbY1RgQ8fUamNqIqoaXsFsxZLv8oDdkxPsMYSMCsdOTw
-	 tNL7SfL50A7+7WfNCZAH+AqZyPKle1r8/h5Mpu4t0+vSeTfDXLA1pVVIDZqiyojCE8
-	 HmK67aoOrsptA==
-Date: Wed, 28 Feb 2024 11:49:24 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH 09/13] i2c: nomadik: fetch timeout-usecs property from
- devicetree
-Message-ID: <Zd8PtLsUc0G8KR97@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-9-19a336e91dca@bootlin.com>
- <Zd3SJMBp23ybgdsJ@shikoro>
- <CZFWIJE9978P.G3TZC2YIUST9@bootlin.com>
+	s=arc-20240116; t=1709118101; c=relaxed/simple;
+	bh=8OgkdCAnRjKaw3j4wSYcHFa/xxgMjTCLQm7+X/e43Tc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dBYAkZ33PN4nIpDKDhjVpEpdqKr23qRT7u+8J1TdvYoT9o98RwnS9Qg2I7UQfCQap70ZYU4Uea4eREefeCT+wBDwkc5xPn3KQi5T/SuS7ybFvJLmW0VYa/1209nbxcd09hIVyy4j/0oYVViAQTzj2yFvh10N46BAKE9PpTHjRLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D2+SL82W; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709118098;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KHUgioFTWud+yVu8FFp4Z9cGICZSxHxVkQZdXkVKoZc=;
+	b=D2+SL82WvSHLJ1dVq1XVDX1hBr7rGoggsxClyk1BmcHnrW/8WiRA6T9Hml3PukRuvMKbjT
+	Tqqc7NKU2o4i3/reYgLquOOGYgeXxrR0WHAPTSUynvJKcVo/WUrpDevYrH8hJ0XJINw3bi
+	r2MVrnObelOXG8fc7rRX2HNxHfrsbUA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-460-IcMtDDVwMaCcgGAR-QAASg-1; Wed, 28 Feb 2024 06:01:37 -0500
+X-MC-Unique: IcMtDDVwMaCcgGAR-QAASg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4314ed2638so188717966b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 03:01:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709118096; x=1709722896;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KHUgioFTWud+yVu8FFp4Z9cGICZSxHxVkQZdXkVKoZc=;
+        b=NJh7ELseLEcWfyrHa2vysxADaXTdJ84MaZhfK12EabQe18hcQ+aitoZOS9lZSpJPby
+         XMWNeh+p0ksQCukgxbnJwW1znZl00Re5PI3p4Tc3sDrpVY/w/Sb4ubxHy7WT1tjaIQVt
+         ftlCVb9BS8XWQcYOdgYir3MFoP7n1W0X9kWR0RgXI9rauclycBKBl65fzaiBFCEeYuCc
+         3iBk3Tu99ta//LiKm+GaYVl47DWPJZJ9wIEydpNks58ef+eT+QlmSBzvnxm8O8bgXXh8
+         1m0NlRe4+m5g/FeKcuTvOF+rvArfWos0a/368WEgBcm5LEIj3nRZJhYPB2qHRhnxom4o
+         SnOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXqUcO5asv4rD9f4jwhlTg9en5A2rmbkL8WqeF9xnznltVuMEww3kELkPuLi6cMi2F3SP5iEWCpqpwQYkVGvfH2J4wQ/XQf0xvaR4+I
+X-Gm-Message-State: AOJu0YyygqzODVdmRaLOjuw9W/kokZ/P51eZeFe8NWC0wqsNDVJCfS/G
+	fd7bVIyKuKDuhZdrTESdt/pU7wpPFSqaPDnGZllcPlVG1JwArFQzE8sRI1AY00xHyFYnOqZ7eY8
+	75wXcsS3D+GokIheJGqcZ58YoJxf3CLQ6e2amMzOEmF2sqhXQlpO3M0OytT/ED5RWsms4s/94xQ
+	bZHbnhwTMGnXfyWgHLqvP7xZDlL6cJRw7SneDe
+X-Received: by 2002:a17:906:1450:b0:a3f:c6a6:3b79 with SMTP id q16-20020a170906145000b00a3fc6a63b79mr8266996ejc.6.1709118095846;
+        Wed, 28 Feb 2024 03:01:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFAWI5m4fiH4ALLfFYlhSHwy5bFWy63vFpnGQNng4cv4hRI1z/LUykHqlS5EudRuxJtWXmdgW+znCdtAHZdRn8=
+X-Received: by 2002:a17:906:1450:b0:a3f:c6a6:3b79 with SMTP id
+ q16-20020a170906145000b00a3fc6a63b79mr8266966ejc.6.1709118095447; Wed, 28 Feb
+ 2024 03:01:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FC1UhtSW8OWBZjC4"
-Content-Disposition: inline
-In-Reply-To: <CZFWIJE9978P.G3TZC2YIUST9@bootlin.com>
-
-
---FC1UhtSW8OWBZjC4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
+ <20240221-hid-bpf-sleepable-v3-8-1fb378ca6301@kernel.org> <55177311ccdc24a74811d4a291ee1880044a5227.camel@gmail.com>
+ <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
+ <9a35a53a1887fb664fd540ec7e272cb3ea63f799.camel@gmail.com>
+ <CAO-hwJ+TGiLrc4De7htvKaSsMfQnZahK-zONAMNgUMYHEQb-7g@mail.gmail.com> <CAADnVQKrKzrvzu9NmcaDYGFYicqN--R5J6r--_J58gB0jic_NA@mail.gmail.com>
+In-Reply-To: <CAADnVQKrKzrvzu9NmcaDYGFYicqN--R5J6r--_J58gB0jic_NA@mail.gmail.com>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Wed, 28 Feb 2024 12:01:23 +0100
+Message-ID: <CAO-hwJL_WAsOOJ5oScvNBbXwK=g3R_5S=PqUmNi5C156pcwgzQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v3 08/16] bpf/verifier: do_misc_fixups for is_bpf_timer_set_sleepable_cb_kfunc
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Benjamin Tissoires <bentiss@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Th=C3=A9o,
+On Wed, Feb 28, 2024 at 2:49=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Feb 27, 2024 at 8:51=E2=80=AFAM Benjamin Tissoires
+> <benjamin.tissoires@redhat.com> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 5:36=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
+com> wrote:
+> > >
+> > > On Tue, 2024-02-27 at 17:18 +0100, Benjamin Tissoires wrote:
+> > > [...]
+> > >
+> > > > Hmm, I must still be missing a piece of the puzzle:
+> > > > if I declare bpf_timer_set_sleepable_cb() to take a third "aux"
+> > > > argument, given that it is declared as kfunc, I also must declare i=
+t in
+> > > > my bpf program, or I get the following:
+> > > >
+> > > > # libbpf: extern (func ksym) 'bpf_timer_set_sleepable_cb': func_pro=
+to [264] incompatible with vmlinux [18151]
+> > > >
+> > > > And if I declare it, then I don't know what to pass, given that thi=
+s is
+> > > > purely added by the verifier:
+> > > >
+> > > > 43: (85) call bpf_timer_set_sleepable_cb#18152
+> > > > arg#2 pointer type STRUCT bpf_prog_aux must point to scalar, or str=
+uct with scalar
+> > >
+> > > Right, something has to be done about number of arguments and we don'=
+t
+> > > have a convenient mechanism for this afaik.
+> > >
+> > > The simplest way would be to have two kfuncs:
+> > > - one with 2 arguments, used form bpf program;
+> > > - another with 3 arguments, used at runtime;
+> > > - replace former by latter during rewrite.
+> >
+> > It's hacky but seems interesting enough to be tested :)
+>
+> Too hacky imo :)
+>
+> Let's follow the existing pattern.
+> See:
+> __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+>
+> __ign suffix tells the verifier to ignore it.
+>
+> Then we do:
+> #define bpf_obj_new(type) \
+>   ((type *)bpf_obj_new_impl(bpf_core_type_id_local(type), NULL))
+>
+> and later the verifier replaces arg2 with the correct pointer.
 
-> That sounds good. I have not used this prop in the DTS as it does not
-> make much sense for an eval board. The target is production boards.
+\o/ Thanks, it works :)
 
-=2E..
+>
+> > We also could use the suffix (like __uninit, __k, etc...), but it
+> > might introduce more headaches than the 2 kfuncs you are proposing.
+>
+> Only one kfunc pls. Let's not make it more complex than necessary.
+>
+> We cannot easily add a suffix to tell libbpf to ignore that arg,
+> since bpf_core_types_are_compat() compares types and there are
+> no argument names in the types.
+> So it will be a significant surgery for libbpf to find the arg name
+> in vmlinux BTF and strcmp the suffix.
 
-> My upcoming question is how to move forward on this series. I can do the
-> patch to i2c_parse_fw_timings() in the next revision. That way it gets
-> added alongside the first user of this feature. Would it work for you?
+Yeah, I guessed so. Having a single #define is fine, especially given
+that there are already a lot of them for the same purpose.
 
-Hmmm, to be honest I have a bit of an issue with the 'no user' problem.
-There is a driver which uses this feature, okay. But there is no
-upstream hardware which uses this driver with this new feature. This
-makes maintaining harder ("Who uses this feature?" - "Someone" - "How do
-they use it? Can we modify it?" - "Dunno").
+>
+> >
+> > >
+> > > Could you please provide more details on what exactly it complains ab=
+out?
+> > >
+> >
+> > Well, there is a simple reason: that code is never reached because, in
+> > that function, there is a `if (insn->src_reg =3D=3D
+> > BPF_PSEUDO_KFUNC_CALL)` above that unconditionally terminates with a
+> > `continue`. So basically this part of the code is never hit.
+> >
+> > I'll include that new third argument and the dual kfunc call in
+> > fixup_kfunc_call() and report if it works from here.
+>
+> Something is wrong. fixup_kfunc_call() can rewrite args with whatever
+> it wants.
+> Are you sure you've added bpf_timer_set_sleepable_cb to special_kfunc_lis=
+t ?
+>
 
-Kind regards,
+Yeah, but as I mentioned, I wasn't hacking at the correct place. I was
+not doing the changes in the fixup_kfunc_call() but in the helper
+processing, so that path was not hit.
 
-   Wolfram
+But with your instructions it works.
 
+I have a couple of changes to do and the selftests to add and the
+series will be ready.
 
---FC1UhtSW8OWBZjC4
-Content-Type: application/pgp-signature; name="signature.asc"
+Cheers,
+Benjamin
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXfD7AACgkQFA3kzBSg
-KbZNpRAAplZcmoN+v+398lrwCBrPt7fW87i3u0pGvvs36OOmYI47d+qOyYjBaEdN
-M52Dr0jkq4NrpXVgxXk2ty2m3Tv7F6pnPwKU5+e7TzVeUoCQgJwq/vJV1ppgBY+O
-1iNfCKh6ZtzNrhuC6X+Rjxt0dZ/qc0zjjjQP4yUEYDCs5AHqc3gd5YopbJ1N0eGd
-YMKEPrY9FntcE5argMTXW1OZ/jlRMhrRziD9d+a3odezohS5kITrTuwg9b+Yckm0
-/3paBaWYXFFeAgwYPkg5vEIJHq39Y2ljKG5VhpKfMEdg2F2OWkWgxvOiRxEhlFua
-rvHkb3UFHoFx4kyheWXEjx79i5KwP/wiCrMv/gxu1Gz4l6HanCMZfoRSUhsOscbH
-0qiQBXust4YSa9BEpJD3CYOf5Z1SrWdACRgYwAmb7yUmIQLqlLbBPjxWfyvCKk5d
-nDfz34EdiE8Sc5RWJrzwFv1JOZLwg/L0m0i++8GnqKL5jvTgj0+dcg6ScetIINKW
-nayMd+ZqNBoA9g738JhlU/Xycy/CNxRda96mCbnFLZWXsEPX3bv4pyQRKapgkZxt
-UIxVw3xtwpifhg7/3EwmV5xKDi3m+OuOM+E8sA0VloVNxnpscANrQVC9V5G3YDr1
-GNpgoNp1XnZOTcCBGi1gdUUZDQnwybWDNMn+cdAlUZAM/N3WQe4=
-=fDeJ
------END PGP SIGNATURE-----
-
---FC1UhtSW8OWBZjC4--
 
