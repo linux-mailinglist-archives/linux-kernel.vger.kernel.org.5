@@ -1,82 +1,80 @@
-Return-Path: <linux-kernel+bounces-85529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5445886B71A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:24:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D94D86B71C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:24:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E82761F23CEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:24:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 237EB1F239DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:24:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1866D40846;
-	Wed, 28 Feb 2024 18:24:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003924085D;
+	Wed, 28 Feb 2024 18:24:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="joQFw1pO"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L54GeCTc"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B691B40847
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD84A40846
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709144654; cv=none; b=XIEEjY2lVVc5LhNerFYzy7gMli5FodmRuRKggWf4bh6v7eS9s05kFq8zp91t4mrEvajwYK7M2FdJLVq1zO8G1ghgNgoqOuBDiL5elJR7Sg+pz7S6LZHZ0k5tC9zv2m57eQYCnBFqi4h54xQo9ZvB00CwX7ZnCEAUtnvitA2v7W8=
+	t=1709144675; cv=none; b=GRD41v7s+hjbnpceVvqntuM0+KZ0YJuQYsNwy3x3t5BUI9PFEd7XNtFmazDPniafCiaYevlBdVdFiuKFiwNVbQtpZRoUJuoASj6RPqJgA70r3gGTF6EkM70mNyfaI7lw9OfLV4go+tcK/f8l7aZMUv29rqVIKUDxFbqpUFNk3jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709144654; c=relaxed/simple;
-	bh=r81XQMf23teX1T+JGKRU64I4W8Z8plFKuxG2dA9W0e0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=JCBWLSyVeDskxfPVBAVU47aKSHXFDFJXANOdP45oR+dcrgtunb0VSrlSSuYp/IhEav4DivxYKLHndmnLX8JaqQeAPBjrYJmfL+5Mw9z/djXxz8Kdl71yLCE+Amb+wLuFAGROl0VkEm90wbu03piiz+xQKTrpsymPydZ8oQDbMHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=joQFw1pO; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412b7bb0bd3so299395e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:24:12 -0800 (PST)
+	s=arc-20240116; t=1709144675; c=relaxed/simple;
+	bh=KLVHgL9DGtOA1LZ4QpgI7es0AHDvgKX2wiD5ghdJhTg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qRmf3ygE2i4tIuLeHI01KVVU9j6ujDPuApjC5PY6TT7Bl/ll+wkP5bIKQrq5wsJqhBMhMZm5prBV3648fldw3jvu02BHtbFhBfSmCBjqXulL6bBYjhsXOTB4a2iqznLeU84Qzr089SnQ2/dvCVHBtUekzCvd4LciQWKn0PJjvVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L54GeCTc; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1db6e0996ceso738015ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:24:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709144651; x=1709749451; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0Qz1dKrMSqcJN7vhekUwEPSMU/YeVaBN11f7/M4F1f4=;
-        b=joQFw1pO5rSKT4ik+toEE+KLxABAeNEwHJ9bgvPrBH57WAqAZF45Q2eNXGmArQobII
-         H14UpvAfd5yEx9YkWald8rilqmwVzYSQ8l3NUfFQGb90EekzxaETh7pcUjnoBOItqCTV
-         Ml5haV6XcRJpbUbM7W8bhN9fDMuuuIPRYZCJ8X6Pr39V+sacyf5GzCLAUqBaHgTgKv69
-         3OD0lGEvF768gLee0+GVxREkHN/qWfbwr4/3jRR5tAwr09Q85ltW7B1s0YvWlEhjdZTV
-         2doyaAzVOv2nlKr+XlZ33h20HhONxLGj/aSxgG20i6mrA34jcl0n2DO4Gl9LqSfQLXAy
-         dvaw==
+        d=gmail.com; s=20230601; t=1709144673; x=1709749473; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3weX12Jydvw2iQSNrmeDVigxrB3bIIY4H0E1E8jahR8=;
+        b=L54GeCTcj328PzK+aQLR0zwNXV/WhIGYYLpJk7/USx7/8N6kVYlX3ycYN3MO7HvG2o
+         O0ftuVGFK/yv5abtMbdeiQdOwpKGMMLhq727umvr+kyIFidzU9DwM9JiYcwozoVy0rYu
+         PwnRGiPyXJWYEIa7j3L72KZl1dME8h7KnOAFLnVq3tayX9gKYj0LpgDgSQNyyIeUJgvK
+         b8y0l8RxCjOUQWgWjH7lhIJgWP6W5kQgL7H6om1NQSbNgYzTwVB0e8Th0ihSwasdkYNw
+         OIDsCMCXq9EgC7ioUJmQ4FZOLkCUivOcb4E8nG6zj3ZVkDcClCYUmiEXp1KG+flgE/QQ
+         vi/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709144651; x=1709749451;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Qz1dKrMSqcJN7vhekUwEPSMU/YeVaBN11f7/M4F1f4=;
-        b=TEd1boNS07Q/9XHjgZUEeShf/27HCfQedEe6UdBn85AJgOU8N2FrPkbr+qKSSDDfDE
-         Bq+r6Hpo7HUuuiAmwO4Kfq9PtM9VI0AzdCyAPpKYI05Zmv3OcVHQxjWp0QIgWcqu9GeA
-         tWUOgCtBQAggLogd3SvLjjlLacY68NOPjSclHVMq30j+QNI6/ghcRCu6kZnOWKKCVOft
-         O5wCG4FoEWwSRpnRXyDNHbEGLbDO+uKx/Ix49lN4wbQqqhfBKSoNxkzwDGUg+dTnl9lI
-         ta386nN/joSMlglJ8lTs+xRRhhBQptdXrpPCeLcn/o/DxLjkP9QzOo4NJVZw6MhU3SfR
-         4XGA==
-X-Forwarded-Encrypted: i=1; AJvYcCXuhKDsP/mjHEq6fViZwXXU7Dp47a5PDnsv5uJNv/5I/cg07u4HmEYhwTCOoKLG4wlGOAL9SO9JfXVhX5dteFT/2a3nndZI3YoW0k4k
-X-Gm-Message-State: AOJu0Yw+/XdTFoi++ZiUgOmbdbUJR3DvTpU/UE4l6r24bOcwRC76v5aC
-	PqHk4CRn5+boQ5rYGs9GygDKP3KLACiQIMMZ+CtUK352QHqIu+XJpUK9ztJwtoA=
-X-Google-Smtp-Source: AGHT+IElRJ3gqeiSGlL5qwYW93OYT6mf3vu1RfSzg+Bf0SkGa+KphevMjr4f+hkHMRduO19FmMIfEA==
-X-Received: by 2002:a05:600c:4e90:b0:412:b659:1ac9 with SMTP id f16-20020a05600c4e9000b00412b6591ac9mr58808wmq.11.1709144651138;
-        Wed, 28 Feb 2024 10:24:11 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id q16-20020a7bce90000000b0041069adbd87sm2781312wmj.21.2024.02.28.10.24.10
+        d=1e100.net; s=20230601; t=1709144673; x=1709749473;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3weX12Jydvw2iQSNrmeDVigxrB3bIIY4H0E1E8jahR8=;
+        b=se9lIVP3uAyBNqVdSLw4Lm+QRMO2juh8fBpgiESh6Cr/XrxA70hcxPtiUuNF6S1ehR
+         hG8XWUazZrHRFy42rTbboP+eenyjvwIanNM8YjaYvnB5sAVPNj3k0PeAKfaM7Yw18Lzk
+         EVRkygwxxMXo8nt87AvHbkOWrE6za7BVZWc+BgZph5sV/vID+l7LwhZvrWF0Q911n0lR
+         Xw9usd68FWFxDmk1ATtLcA5lWOLCzW5Ljx3dD128ZVU3IjkLYDJRNQGOsbYzzCIrv3/2
+         uEfEBVaTCSBOaJY/ThJ1KBe84qZIVA+UqA3HINSvJ8G5oTy96QNzlbxw9TBx7exQkWHW
+         Vz1w==
+X-Forwarded-Encrypted: i=1; AJvYcCWhcpRNFVPtIgumxhi/8RGt2u+IeOcOVLuIIZBdjyBdMdjdmngtM5JPKzhFYGmyfqQU/Up9jqDXL6Wdeam0zbr9/iEg0c4oBGlflFjq
+X-Gm-Message-State: AOJu0YxiX+g9ESAqvYY+CVkpx/8ZW+bQ9FQoRhtIEaCRT6Hl98Qh6M3x
+	80BsrPulk7fkkDAJhbtSLnUSAfO4GW+/GThsPdYYqgrhYf4th9YV
+X-Google-Smtp-Source: AGHT+IGW2OqPR1EvjMKlgMtFjg9ZEauoXZciwBOxhwvs7vPMNYZ58qmGIHR9sJXpXeUOxcYRJgdn1Q==
+X-Received: by 2002:a17:903:98b:b0:1dc:af71:29fc with SMTP id mb11-20020a170903098b00b001dcaf7129fcmr358384plb.6.1709144673126;
+        Wed, 28 Feb 2024 10:24:33 -0800 (PST)
+Received: from localhost ([2620:10d:c090:400::5:8305])
+        by smtp.gmail.com with ESMTPSA id kn11-20020a170903078b00b001d6f29c12f7sm3597240plb.135.2024.02.28.10.24.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 10:24:10 -0800 (PST)
-Date: Wed, 28 Feb 2024 21:24:07 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Cindy Lu <lulu@redhat.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Xie Yongji <xieyongji@bytedance.com>,
-	Maxime Coquelin <maxime.coquelin@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Christian Brauner <brauner@kernel.org>,
-	virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH v3] vduse: Fix off by one in vduse_dev_mmap()
-Message-ID: <98298b2f-7288-4b0b-8974-3d5111b589cb@moroto.mountain>
+        Wed, 28 Feb 2024 10:24:32 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 28 Feb 2024 08:24:31 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Allen Pais <apais@linux.microsoft.com>
+Cc: jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel: Introduce enable_and_queue_work() convenience
+ function
+Message-ID: <Zd96XzRHI_jMOCip@slm.duckdns.org>
+References: <20240228181850.5895-1-apais@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,40 +83,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+In-Reply-To: <20240228181850.5895-1-apais@linux.microsoft.com>
 
-The dev->vqs[] array has "dev->vq_num" elements.  It's allocated in
-vduse_dev_init_vqs().  Thus, this > comparison needs to be >= to avoid
-reading one element beyond the end of the array.
+On Wed, Feb 28, 2024 at 06:18:50PM +0000, Allen Pais wrote:
+> The enable_and_queue_work() function is introduced to streamline
+> the process of enabling and queuing a work item on a specific
+> workqueue. This function combines the functionalities of
+> enable_work() and queue_work() in a single call, providing a
+> concise and convenient API for enabling and queuing work items.
+> 
+> The function accepts a target workqueue and a work item as parameters.
+> It first attempts to enable the work item using enable_work(). If the
+> enable operation is successful, the work item is then queued on the
+> specified workqueue using queue_work(). The function returns true if
+> the work item was successfully enabled and queued, and false otherwise.
+> 
+> This addition aims to enhance code readability and maintainability by
+> providing a unified interface for the common use case of enabling and
+> queuing work items on a workqueue.
+> 
+> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
 
-Add an array_index_nospec() as well to prevent speculation issues.
+I'll apply this together with the rest of the series once v6.10-rc1 opens.
 
-Fixes: 316ecd1346b0 ("vduse: Add file operation for mmap")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
-v2: add array_index_nospec()
-v3: I accidentally corrupted v2.  Try again.
+Thanks.
 
- drivers/vdpa/vdpa_user/vduse_dev.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-index b7a1fb88c506..eb914084c650 100644
---- a/drivers/vdpa/vdpa_user/vduse_dev.c
-+++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-@@ -1532,9 +1532,10 @@ static int vduse_dev_mmap(struct file *file, struct vm_area_struct *vma)
- 	if ((vma->vm_flags & VM_SHARED) == 0)
- 		return -EINVAL;
- 
--	if (index > dev->vq_num)
-+	if (index >= dev->vq_num)
- 		return -EINVAL;
- 
-+	index = array_index_nospec(index, dev->vq_num);
- 	vq = dev->vqs[index];
- 	vaddr = vq->vdpa_reconnect_vaddr;
- 	if (vaddr == 0)
 -- 
-2.43.0
-
+tejun
 
