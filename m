@@ -1,181 +1,156 @@
-Return-Path: <linux-kernel+bounces-85085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AE8086B032
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAB6186B03C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A32D31F23976
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:23:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 329161F25B98
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7FAA14AD3A;
-	Wed, 28 Feb 2024 13:23:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="O1tbovg4"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C931E493
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58EC14C5B6;
+	Wed, 28 Feb 2024 13:24:44 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F77145351;
+	Wed, 28 Feb 2024 13:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709126632; cv=none; b=aEZ7ZjOc8wgnydO8KcqCGBj0nhegfdVyBw9I+nlCN7tz1Feg8CArVoI89lWr4eyh/ghaVn0K/A/whulml0FPhVjhwYGGgOFma7evRxmfqt+AS2MZFXTGbcYJKuWaR41p7PYpQSRWEtpmztkupZsIDKMLoBAhiTpd7JCopwHueXI=
+	t=1709126684; cv=none; b=dE06TRSule9g1O6AGg3YtKbMpXzSIWwZ1/OjbyyK9RLIPHY+YbNhJrt2+t67USfXIu41WNP0MoOR6gveUNrb2tV99XvcadVdv3BReq93TEb1/1M1otVB85PGFjNzwAzMWrt3+bm+gKgYcYEwiZloHsUrInJt6UdMhRFeKBr7AV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709126632; c=relaxed/simple;
-	bh=kyD96LlqC0WDcP5SnnAWQxbwUFSnDFt0kfUoP4Y3c7w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=njxE9RurgFsoXc9tDb07c293smDgD0jf+U0gNxiHrpCkmmCOwCm55jcI94/bt+FIB63Z2jrVmUJJLfsGDJABDeAfCQi8/jCn5SbfdqQ4RqLndJ9iNIqlJuInHPZe+wF0IPjzrQqc9waooRGaY6r52BrEtm7mgU4j3N2ik5xk/OU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=O1tbovg4; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33d568fbf62so3147237f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:23:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709126629; x=1709731429; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F4AJ/fArH74SzdFgIIdNAKmcF3qjIEBPPZEADsp2Buk=;
-        b=O1tbovg4/6O/ljHAruTDaLS6WOKl+bCI7vpNSaIn/jP5Q3ICPhEHJTGBXKDaERwqNG
-         937blckOzDGu2Q+hu9eDMQcBYYe6jCBpquZWoj2/xGu/rgXDpf5UN0uoFsfX6LSLJAuy
-         MFw3L1ZTzbx7LKSGk8WCNiTAcEavpdTQeJHV1Qk7T/lVCfa9/umnshxvePEHGNjRCVh1
-         hsPOXLb32VllPXKgNf/RT9jeWqRHtKsvCsN359ETv4mcHDuS+iIqlmcCA9s2sz+671Ym
-         v/Oohj5/wBj1FbGzFB7a69rHwA5P+bPUH9CvOZxYpfZB1THjfdYhMUHK6PAOQ7RhcBRV
-         eQFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709126629; x=1709731429;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F4AJ/fArH74SzdFgIIdNAKmcF3qjIEBPPZEADsp2Buk=;
-        b=Ekw3cCVCvOd5RgTj6G+2nPcAAGCGqNNpUvZ9gaX+HEXYt7KzKLQD/+PGRyqNoHl+iL
-         iWtO7G9WM0DcAvtlJJmPSYILEnIEdxCEPQwevPnzqMdkfZTiZg4C1AdPkXMlsJgT+F8a
-         rWvYJ4U+CVSbNFwYCfXWEA9UWvOBDMOwE6WgYdEc9Ueb0ih+s06mGSuwjJHH2UHleOrj
-         /bh1p9kqWP6wX3vuXb4UfcMwLGEJIEfTfKKmBbCA7uZ27pwTU+kMeHT7hCY0plUj6cU6
-         b7CqgePdCn64FE4M2Fhk9f05ZQVYrDYAnZ4yk6GhLpr/7Kbnoz9fDGDuLXoNvj3pm0ri
-         KPpw==
-X-Forwarded-Encrypted: i=1; AJvYcCUSJB/J2ebzn6pIi/LHqgplTKyTWm8wu0KbGu1BTHGarAxQfq7zkJV4SHmDrPPDG7zve2AAc42hCdW7fjicaOV5zwTtiq1aynfa+aiP
-X-Gm-Message-State: AOJu0Yw/9kyuRdb8/KOpTEsNe3EoWcbYUb+NjmhLbc9ptm0sLu+Cgug/
-	pQ4Xszg43c0l62Gv4ZMvA02sYNoJXlZJAaKutYMOlEe4Ia8BeSqncXPtI9nfLE2K6M9ZVi58V4a
-	P
-X-Google-Smtp-Source: AGHT+IFBd1kKeTUg2s8YVizQ+9mRMh8SA/NeRYEZS37yHKGxfoOm8vE5+PviOWlb4gymksIThVwa2A==
-X-Received: by 2002:a5d:6789:0:b0:33d:e908:3671 with SMTP id v9-20020a5d6789000000b0033de9083671mr3386900wru.4.1709126629485;
-        Wed, 28 Feb 2024 05:23:49 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id q16-20020adffed0000000b0033ce06c303csm14568306wrs.40.2024.02.28.05.23.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 05:23:49 -0800 (PST)
-Date: Wed, 28 Feb 2024 14:23:48 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-kernel@vger.kernel.org, 
-	Conor Dooley <conor@kernel.org>, Alexandre Ghiti <alex@ghiti.fr>, linux-riscv@lists.infradead.org, 
-	Stefan O'Rear <sorear@fastmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH -fixes v4 2/3] riscv: Add a custom ISA extension for the
- [ms]envcfg CSR
-Message-ID: <20240228-ca2521f494659596f079b843@orel>
-References: <20240228065559.3434837-1-samuel.holland@sifive.com>
- <20240228065559.3434837-3-samuel.holland@sifive.com>
+	s=arc-20240116; t=1709126684; c=relaxed/simple;
+	bh=XDFj5ej2ly05jyaCAesq3QNALGY6izh4ir1ndq5BHhg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a2ycsSuJEg9/yTfd2brF9yv8gTI0kJqt1kaFLePourRfa/Fk8kvuc6swFgQ1ts6XT1HpxCgKUdlczD3YqCAxZildh4wtZEMBsG7aiUMuymDdOHSyILkeT+k4smg5Xl4ltaC9yQzHB0pQKKvbTBERyjlCsaVG0toMMXzacGvsEH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 78C53C15;
+	Wed, 28 Feb 2024 05:25:19 -0800 (PST)
+Received: from [10.57.11.244] (unknown [10.57.11.244])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 187A53F762;
+	Wed, 28 Feb 2024 05:24:36 -0800 (PST)
+Message-ID: <f8bfc666-c216-44d5-a63b-99f04ff3b8ef@arm.com>
+Date: Wed, 28 Feb 2024 13:24:53 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228065559.3434837-3-samuel.holland@sifive.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V3 2/2] cpufreq: scmi: Register for limit change
+ notifications
+Content-Language: en-US
+To: Sibi Sankar <quic_sibis@quicinc.com>
+Cc: linux-arm-kernel@lists.infradead.org, pierre.gondois@arm.com,
+ dietmar.eggemann@arm.com, morten.rasmussen@arm.com, viresh.kumar@linaro.org,
+ rafael@kernel.org, cristian.marussi@arm.com, sudeep.holla@arm.com,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ quic_mdtipton@quicinc.com, linux-arm-msm@vger.kernel.org
+References: <20240227181632.659133-1-quic_sibis@quicinc.com>
+ <20240227181632.659133-3-quic_sibis@quicinc.com>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20240227181632.659133-3-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 27, 2024 at 10:55:34PM -0800, Samuel Holland wrote:
-> The [ms]envcfg CSR was added in version 1.12 of the RISC-V privileged
-> ISA (aka S[ms]1p12). However, bits in this CSR are defined by several
-> other extensions which may be implemented separately from any particular
-> version of the privileged ISA (for example, some unrelated errata may
-> prevent an implementation from claiming conformance with Ss1p12). As a
-> result, Linux cannot simply use the privileged ISA version to determine
-> if the CSR is present. It must also check if any of these other
-> extensions are implemented. It also cannot probe the existence of the
-> CSR at runtime, because Linux does not require Sstrict, so (in the
-> absence of additional information) it cannot know if a CSR at that
-> address is [ms]envcfg or part of some non-conforming vendor extension.
+
+
+On 2/27/24 18:16, Sibi Sankar wrote:
+> Register for limit change notifications if supported and use the throttled
+> frequency from the notification to apply HW pressure.
 > 
-> Since there are several standard extensions that imply the existence of
-> the [ms]envcfg CSR, it becomes unwieldy to check for all of them
-> wherever the CSR is accessed. Instead, define a custom Xlinuxenvcfg ISA
-> extension bit that is implied by the other extensions and denotes that
-> the CSR exists as defined in the privileged ISA, containing at least one
-> of the fields common between menvcfg and senvcfg.
-> 
-> This extension does not need to be parsed from the devicetree or ISA
-> string because it can only be implemented as a subset of some other
-> standard extension.
-> 
-> Cc: <stable@vger.kernel.org> # v6.7+
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
 > ---
 > 
-> Changes in v4:
->  - New patch for v4
+> v3:
+> * Sanitize range_max received from the notifier. [Pierre]
+> * Update commit message.
 > 
->  arch/riscv/include/asm/hwcap.h |  2 ++
->  arch/riscv/kernel/cpufeature.c | 14 ++++++++++++--
->  2 files changed, 14 insertions(+), 2 deletions(-)
+>   drivers/cpufreq/scmi-cpufreq.c | 29 ++++++++++++++++++++++++++++-
+>   1 file changed, 28 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-> index 5340f818746b..1f2d2599c655 100644
-> --- a/arch/riscv/include/asm/hwcap.h
-> +++ b/arch/riscv/include/asm/hwcap.h
-> @@ -81,6 +81,8 @@
->  #define RISCV_ISA_EXT_ZTSO		72
->  #define RISCV_ISA_EXT_ZACAS		73
->  
-> +#define RISCV_ISA_EXT_XLINUXENVCFG	127
+> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+> index 76a0ddbd9d24..78b87b72962d 100644
+> --- a/drivers/cpufreq/scmi-cpufreq.c
+> +++ b/drivers/cpufreq/scmi-cpufreq.c
+> @@ -25,9 +25,13 @@ struct scmi_data {
+>   	int domain_id;
+>   	int nr_opp;
+>   	struct device *cpu_dev;
+> +	struct cpufreq_policy *policy;
+>   	cpumask_var_t opp_shared_cpus;
+> +	struct notifier_block limit_notify_nb;
+>   };
+>   
+> +const struct scmi_handle *handle;
+> +static struct scmi_device *scmi_dev;
+>   static struct scmi_protocol_handle *ph;
+>   static const struct scmi_perf_proto_ops *perf_ops;
+>   static struct cpufreq_driver scmi_cpufreq_driver;
+> @@ -151,6 +155,20 @@ static struct freq_attr *scmi_cpufreq_hw_attr[] = {
+>   	NULL,
+>   };
+>   
+> +static int scmi_limit_notify_cb(struct notifier_block *nb, unsigned long event, void *data)
+> +{
+> +	struct scmi_data *priv = container_of(nb, struct scmi_data, limit_notify_nb);
+> +	struct scmi_perf_limits_report *limit_notify = data;
+> +	struct cpufreq_policy *policy = priv->policy;
+> +
+> +	policy->max = clamp(limit_notify->range_max_freq/HZ_PER_KHZ, policy->cpuinfo.min_freq,
+> +			    policy->cpuinfo.max_freq);
 
-Since 128 is just the current max and will need to be bumped someday,
-xlinuxenvcfg will end up in the middle of the list at some point anyway
-(since bumping it too would be unnecessary churn). With that in mind,
-I'd probably have just assigned it 74, but either way is fine by me.
+Please take the division operation out of this clamp() call, somewhere
+above. Currently it 'blurs' these stuff, while it's important convertion
+to khz. You can call it e.g.:
+
+limit_freq_khz = limit_notify->range_max_freq / HZ_PER_KHZ;
+
+then use in clamp(limit_freq_khz, ...)
 
 > +
->  #define RISCV_ISA_EXT_MAX		128
->  #define RISCV_ISA_EXT_INVALID		U32_MAX
->  
-> diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-> index c5b13f7dd482..dacffef68ce2 100644
-> --- a/arch/riscv/kernel/cpufeature.c
-> +++ b/arch/riscv/kernel/cpufeature.c
-> @@ -201,6 +201,16 @@ static const unsigned int riscv_zvbb_exts[] = {
->  	RISCV_ISA_EXT_ZVKB
->  };
->  
-> +/*
-> + * While the [ms]envcfg CSRs were not defined until version 1.12 of the RISC-V
-> + * privileged ISA, the existence of the CSRs is implied by any extension which
-> + * specifies [ms]envcfg bit(s). Hence, we define a custom ISA extension for the
-> + * existence of the CSR, and treat it as a subset of those other extensions.
-> + */
-> +static const unsigned int riscv_xlinuxenvcfg_exts[] = {
-> +	RISCV_ISA_EXT_XLINUXENVCFG
-> +};
+> +	cpufreq_update_pressure(policy);
 > +
->  /*
->   * The canonical order of ISA extension names in the ISA string is defined in
->   * chapter 27 of the unprivileged specification.
-> @@ -250,8 +260,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
->  	__RISCV_ISA_EXT_DATA(c, RISCV_ISA_EXT_c),
->  	__RISCV_ISA_EXT_DATA(v, RISCV_ISA_EXT_v),
->  	__RISCV_ISA_EXT_DATA(h, RISCV_ISA_EXT_h),
-> -	__RISCV_ISA_EXT_DATA(zicbom, RISCV_ISA_EXT_ZICBOM),
-> -	__RISCV_ISA_EXT_DATA(zicboz, RISCV_ISA_EXT_ZICBOZ),
-> +	__RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, riscv_xlinuxenvcfg_exts),
-> +	__RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, riscv_xlinuxenvcfg_exts),
->  	__RISCV_ISA_EXT_DATA(zicntr, RISCV_ISA_EXT_ZICNTR),
->  	__RISCV_ISA_EXT_DATA(zicond, RISCV_ISA_EXT_ZICOND),
->  	__RISCV_ISA_EXT_DATA(zicsr, RISCV_ISA_EXT_ZICSR),
-> -- 
-> 2.43.1
->
+> +	return NOTIFY_OK;
+> +}
+> +
+>   static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>   {
+>   	int ret, nr_opp, domain;
+> @@ -269,6 +287,15 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>   		}
+>   	}
+>   
+> +	priv->limit_notify_nb.notifier_call = scmi_limit_notify_cb;
+> +	ret = handle->notify_ops->devm_event_notifier_register(scmi_dev, SCMI_PROTOCOL_PERF,
+> +							SCMI_EVENT_PERFORMANCE_LIMITS_CHANGED,
+> +							&domain,
+> +							&priv->limit_notify_nb);
+> +	if (ret)
+> +		dev_warn(cpu_dev,
+> +			 "failed to register for limits change notifier for domain %d\n", domain);
+> +
+>   	priv->policy = policy;
+>   
+>   	return 0;
+> @@ -342,8 +369,8 @@ static int scmi_cpufreq_probe(struct scmi_device *sdev)
+>   {
+>   	int ret;
+>   	struct device *dev = &sdev->dev;
+> -	const struct scmi_handle *handle;
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+It should be a compilation error...
+
+>   
+> +	scmi_dev = sdev;
+>   	handle = sdev->handle;
+
+due to usage here, wasn't it?
+
+>   
+>   	if (!handle)
 
