@@ -1,113 +1,135 @@
-Return-Path: <linux-kernel+bounces-85530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D94D86B71C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:24:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85B6886B722
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 237EB1F239DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:24:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42491286060
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003924085D;
-	Wed, 28 Feb 2024 18:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D701240866;
+	Wed, 28 Feb 2024 18:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L54GeCTc"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	dkim=pass (2048-bit key) header.d=hefring-com.20230601.gappssmtp.com header.i=@hefring-com.20230601.gappssmtp.com header.b="xnM34M7c"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD84A40846
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C66540860
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709144675; cv=none; b=GRD41v7s+hjbnpceVvqntuM0+KZ0YJuQYsNwy3x3t5BUI9PFEd7XNtFmazDPniafCiaYevlBdVdFiuKFiwNVbQtpZRoUJuoASj6RPqJgA70r3gGTF6EkM70mNyfaI7lw9OfLV4go+tcK/f8l7aZMUv29rqVIKUDxFbqpUFNk3jw=
+	t=1709144882; cv=none; b=OWm71h//6HcjL5R7PsuJqeCK6SRQQgZ/VVzZQexTgrFuXqO4HnigHb4Ul6qcYo/KrXtUj3Fyft3WHB23qDa7xu6SrnGKk0WLsnpq/Gmfj2MVOX0h2Tg9OJATwqAHmRNQh2H4vOawSm521xuXc/7C3cl9zqIUJ0Gjbb7ONB4L+p8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709144675; c=relaxed/simple;
-	bh=KLVHgL9DGtOA1LZ4QpgI7es0AHDvgKX2wiD5ghdJhTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qRmf3ygE2i4tIuLeHI01KVVU9j6ujDPuApjC5PY6TT7Bl/ll+wkP5bIKQrq5wsJqhBMhMZm5prBV3648fldw3jvu02BHtbFhBfSmCBjqXulL6bBYjhsXOTB4a2iqznLeU84Qzr089SnQ2/dvCVHBtUekzCvd4LciQWKn0PJjvVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L54GeCTc; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1db6e0996ceso738015ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:24:33 -0800 (PST)
+	s=arc-20240116; t=1709144882; c=relaxed/simple;
+	bh=k4xyia0piuIcKuFqrg4Vvg1MChuit3EZ7ASf2pglsMc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dvIf/6Nmr2z254PkjuI6BgS2EjNWEETDN/OBD/qXyTIHdM0aoH8J+jUKNu+mKNSZURQDQGoCOq7XJ7z2G5RtdJKFJhzvDM7YTRFnsCzzwhJslN+uFSwJbVVY84ccHvVYKVKtg24iUszxP0qeaKJlIC09agcS5latVSX7KySyL0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hefring.com; spf=none smtp.mailfrom=hefring.com; dkim=pass (2048-bit key) header.d=hefring-com.20230601.gappssmtp.com header.i=@hefring-com.20230601.gappssmtp.com header.b=xnM34M7c; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hefring.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=hefring.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dbed0710c74so83982276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:27:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709144673; x=1709749473; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3weX12Jydvw2iQSNrmeDVigxrB3bIIY4H0E1E8jahR8=;
-        b=L54GeCTcj328PzK+aQLR0zwNXV/WhIGYYLpJk7/USx7/8N6kVYlX3ycYN3MO7HvG2o
-         O0ftuVGFK/yv5abtMbdeiQdOwpKGMMLhq727umvr+kyIFidzU9DwM9JiYcwozoVy0rYu
-         PwnRGiPyXJWYEIa7j3L72KZl1dME8h7KnOAFLnVq3tayX9gKYj0LpgDgSQNyyIeUJgvK
-         b8y0l8RxCjOUQWgWjH7lhIJgWP6W5kQgL7H6om1NQSbNgYzTwVB0e8Th0ihSwasdkYNw
-         OIDsCMCXq9EgC7ioUJmQ4FZOLkCUivOcb4E8nG6zj3ZVkDcClCYUmiEXp1KG+flgE/QQ
-         vi/A==
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1709144878; x=1709749678; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EF1KPzXNNkHhE7yYlv+hV5FrLPYFNCzXyE0ge4E72Xc=;
+        b=xnM34M7cCjaHquzBGHYfE/gb6Zi719cfhzCqjktyCvCcdKHeQVQJdZXfRRaTSAXILF
+         /SKByzv5s5E5/xhLiUNRqjceyUwGSaxsb0IlfxHCfPXkyqjP9dBTgvZs10XxLjvw4Kh1
+         ljWVTGEZKJAGjOFYty7jscH7p9Dojk/SosUjD1owQ9qHlquXazMf1bWEMAn/PT6KciEP
+         o0Skd2unAC7+05nVXyj3Dk44L5ti54dtGLTsOjxHH29FotSPb3rqznup0ZAFLpp2wrJR
+         ECQn/65BeKjl1/3IsbUzxCyx9PTN1eD4BBzX5qqDTNYiIo/Wzt9hP56yK9BpNZ/JVovH
+         Hidg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709144673; x=1709749473;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3weX12Jydvw2iQSNrmeDVigxrB3bIIY4H0E1E8jahR8=;
-        b=se9lIVP3uAyBNqVdSLw4Lm+QRMO2juh8fBpgiESh6Cr/XrxA70hcxPtiUuNF6S1ehR
-         hG8XWUazZrHRFy42rTbboP+eenyjvwIanNM8YjaYvnB5sAVPNj3k0PeAKfaM7Yw18Lzk
-         EVRkygwxxMXo8nt87AvHbkOWrE6za7BVZWc+BgZph5sV/vID+l7LwhZvrWF0Q911n0lR
-         Xw9usd68FWFxDmk1ATtLcA5lWOLCzW5Ljx3dD128ZVU3IjkLYDJRNQGOsbYzzCIrv3/2
-         uEfEBVaTCSBOaJY/ThJ1KBe84qZIVA+UqA3HINSvJ8G5oTy96QNzlbxw9TBx7exQkWHW
-         Vz1w==
-X-Forwarded-Encrypted: i=1; AJvYcCWhcpRNFVPtIgumxhi/8RGt2u+IeOcOVLuIIZBdjyBdMdjdmngtM5JPKzhFYGmyfqQU/Up9jqDXL6Wdeam0zbr9/iEg0c4oBGlflFjq
-X-Gm-Message-State: AOJu0YxiX+g9ESAqvYY+CVkpx/8ZW+bQ9FQoRhtIEaCRT6Hl98Qh6M3x
-	80BsrPulk7fkkDAJhbtSLnUSAfO4GW+/GThsPdYYqgrhYf4th9YV
-X-Google-Smtp-Source: AGHT+IGW2OqPR1EvjMKlgMtFjg9ZEauoXZciwBOxhwvs7vPMNYZ58qmGIHR9sJXpXeUOxcYRJgdn1Q==
-X-Received: by 2002:a17:903:98b:b0:1dc:af71:29fc with SMTP id mb11-20020a170903098b00b001dcaf7129fcmr358384plb.6.1709144673126;
-        Wed, 28 Feb 2024 10:24:33 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:8305])
-        by smtp.gmail.com with ESMTPSA id kn11-20020a170903078b00b001d6f29c12f7sm3597240plb.135.2024.02.28.10.24.32
+        d=1e100.net; s=20230601; t=1709144878; x=1709749678;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EF1KPzXNNkHhE7yYlv+hV5FrLPYFNCzXyE0ge4E72Xc=;
+        b=b/76RgqD2C2/Mpm8fM6sW+xaIFb3LlhPgd7y3a9L2BowdMoJgmMXxYMOjERueTIR3E
+         bDaxozDeNFk35ST7Wa55rvgqyf/hykSNv/ZNai9HfVLENlue66PXLlfeM8LCWlfxYJSG
+         RDF5JpL6ZSGtJsfTGXgFoRVBxRzST5Z2ZupIuQ3MLi+okfGWZFIH+uWxymObbgf7NEze
+         fDGrPuprQLuHEFTx+Ww9E9uFPq0SqzireA+bCzUgkd4SmhQJk9M3VqO0LdEsSxOjfo4D
+         Cgwu16M2FUwNGvii8GmhsiQAyfpHiILDbDIxJmyZyY/qLK662QbWrofS6A5YUNapMPbG
+         KzyA==
+X-Gm-Message-State: AOJu0YxAG9lCH4itf1Rnt95LnP+vbVGS6MQywqEWe1Qb1p9VrEjirZYg
+	k1rj+o//i9Vl3eUIXY1FTzSIvzCwfQSKcDc6tYJVL3+cnC82uMaA6BJkOgQxLkHoge90SpVeciU
+	u
+X-Google-Smtp-Source: AGHT+IGGIUcPNLaPDD97/JSUYoRXanewPna4Nbjsv7a0TEzYLDOhtOT2egjmszbqhcM+oGhhhvzNHQ==
+X-Received: by 2002:a05:6902:136e:b0:dc5:f51e:6a60 with SMTP id bt14-20020a056902136e00b00dc5f51e6a60mr22948ybb.6.1709144878346;
+        Wed, 28 Feb 2024 10:27:58 -0800 (PST)
+Received: from localhost.localdomain ([50.212.55.90])
+        by smtp.gmail.com with ESMTPSA id x4-20020ac87a84000000b0042e390c9804sm8355qtr.6.2024.02.28.10.27.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 10:24:32 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 28 Feb 2024 08:24:31 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Allen Pais <apais@linux.microsoft.com>
-Cc: jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kernel: Introduce enable_and_queue_work() convenience
- function
-Message-ID: <Zd96XzRHI_jMOCip@slm.duckdns.org>
-References: <20240228181850.5895-1-apais@linux.microsoft.com>
+        Wed, 28 Feb 2024 10:27:57 -0800 (PST)
+From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+To: linux-kernel@vger.kernel.org,
+	linux-watchdog@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Christophe Roullier <christophe.roullier@st.com>,
+	Ben Wolsieffer <ben.wolsieffer@hefring.com>
+Subject: [PATCH] watchdog: stm32_iwdg: initialize default timeout
+Date: Wed, 28 Feb 2024 13:27:23 -0500
+Message-ID: <20240228182723.12855-1-ben.wolsieffer@hefring.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228181850.5895-1-apais@linux.microsoft.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 28, 2024 at 06:18:50PM +0000, Allen Pais wrote:
-> The enable_and_queue_work() function is introduced to streamline
-> the process of enabling and queuing a work item on a specific
-> workqueue. This function combines the functionalities of
-> enable_work() and queue_work() in a single call, providing a
-> concise and convenient API for enabling and queuing work items.
-> 
-> The function accepts a target workqueue and a work item as parameters.
-> It first attempts to enable the work item using enable_work(). If the
-> enable operation is successful, the work item is then queued on the
-> specified workqueue using queue_work(). The function returns true if
-> the work item was successfully enabled and queued, and false otherwise.
-> 
-> This addition aims to enhance code readability and maintainability by
-> providing a unified interface for the common use case of enabling and
-> queuing work items on a workqueue.
-> 
-> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+The driver never sets a default timeout value, therefore it is
+initialized to zero. When CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is
+enabled, the watchdog is started during probe. The kernel is supposed to
+automatically ping the watchdog from this point until userspace takes
+over, but this does not happen if the configured timeout is zero. A zero
+timeout causes watchdog_need_worker() to return false, so the heartbeat
+worker does not run and the system therefore resets soon after the
+driver is probed.
 
-I'll apply this together with the rest of the series once v6.10-rc1 opens.
+This patch fixes this by setting an arbitrary non-zero default timeout.
+The default could be read from the hardware instead, but I didn't see
+any reason to add this complexity.
 
-Thanks.
+This has been tested on an STM32F746.
 
+Fixes: 85fdc63fe256 ("drivers: watchdog: stm32_iwdg: set WDOG_HW_RUNNING at probe")
+Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
+---
+ drivers/watchdog/stm32_iwdg.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
+index d9fd50df9802..5404e0387620 100644
+--- a/drivers/watchdog/stm32_iwdg.c
++++ b/drivers/watchdog/stm32_iwdg.c
+@@ -20,6 +20,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/watchdog.h>
+ 
++#define DEFAULT_TIMEOUT 10
++
+ /* IWDG registers */
+ #define IWDG_KR		0x00 /* Key register */
+ #define IWDG_PR		0x04 /* Prescaler Register */
+@@ -248,6 +250,7 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+ 	wdd->parent = dev;
+ 	wdd->info = &stm32_iwdg_info;
+ 	wdd->ops = &stm32_iwdg_ops;
++	wdd->timeout = DEFAULT_TIMEOUT;
+ 	wdd->min_timeout = DIV_ROUND_UP((RLR_MIN + 1) * PR_MIN, wdt->rate);
+ 	wdd->max_hw_heartbeat_ms = ((RLR_MAX + 1) * wdt->data->max_prescaler *
+ 				    1000) / wdt->rate;
 -- 
-tejun
+2.43.0
+
 
