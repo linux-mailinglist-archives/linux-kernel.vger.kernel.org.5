@@ -1,144 +1,157 @@
-Return-Path: <linux-kernel+bounces-84814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7CB786ABE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:10:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59EC786ABEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:11:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 147B11C2599E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:10:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15C5B28C7B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:11:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D3FE37165;
-	Wed, 28 Feb 2024 10:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26F0F3770C;
+	Wed, 28 Feb 2024 10:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fb3laZnx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K/Uz8Rwr";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="t6X1lfYr"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169CF37141
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:10:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3AF8376EC;
+	Wed, 28 Feb 2024 10:11:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709115050; cv=none; b=cJ/DwzRHWRSqYxpYLdP/Gaauygz6bfwhQl6qnTh0MotlYy7suhu7E40Kn0RflLtTW08XYXrqZipBEggJy+EZvqBvQfJxJg3s4UhBMvug6w31bhF5bXzGZlnMszZG+dCxZXxpXpZp8nrOZdXxOISVKI92xepaHWByfrOVLjJ0Bww=
+	t=1709115091; cv=none; b=KMRRBqQ2cmU9nZ/uhq95UiE/iA8wo9/4jTaST/V2eoJvi7F66rswAZSBEKxnkPqAXy+AJ7eDnL9b+72U7yQmmFZ+ktZF4xqa54twRb7WTygqBq5gbM/QVCMM97ZK3sHavdRCWpsilLf8+jwjcUFx0wKTGXuonmo97VQdf2ha6V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709115050; c=relaxed/simple;
-	bh=tdz0czbokXbZx8NoSb1bVuk3MM7myK0Cqgqnu3P9uqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=g0hMEmqzpZ0ItrV2w9ciUqZtof2ikPdZMf6vlqGoDwsijnkMfLZRVbCymUiKWg8YjKJGSPSlHye21Vw3f/EHJT5nW7ZcPKiYimNXOBQDxKWPvBK1BvqtH3iBJdYiZd90i44Gvk1DnKEuY7hKqiNqrCFkNR6mpJpIAy95V38/zFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fb3laZnx; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709115047;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=EDEC0vsrgcNRv6UvAcMAg7ZhZIrIeAEq54Sn/mnIp3o=;
-	b=fb3laZnx2pUCA0VcBlf7g//IH6KHspfITBozR30Rcth6FE9ghAzdWHxB5mLtMb+WlRh05U
-	q40HKdjhjaoiiMC/omy6O/Ar8ybz2S/SKCIPPXrCBvBTPc6fRSiovUyf9bc5Qa+FOlxpBd
-	0256CMDXl32zs+v9oxL3MkiUVaseH2g=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-314-_1zB7Cs7N8KPJ7GFQhs2hw-1; Wed, 28 Feb 2024 05:10:46 -0500
-X-MC-Unique: _1zB7Cs7N8KPJ7GFQhs2hw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-40d62d3ae0cso28303365e9.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:10:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709115045; x=1709719845;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EDEC0vsrgcNRv6UvAcMAg7ZhZIrIeAEq54Sn/mnIp3o=;
-        b=sLc3FWTYoZBD3IXm0BM86XMga/Ikog6WFHr8nREAS3B52OKy+uunXwlPWsVjBFxACu
-         3szuDv4X0LmvLndcPsZcf9AFKFlQf1odVyQJVXWrJldjarLLVQRpLT85AOZ1mIG3ddng
-         TijkbsEdP7IhSgEMmDLm5LJA/wi6AM2BOX6p7+grPt0Y+hjl/SyNvJEEuye9wmZSiDn2
-         j3hrH1433TzcSmsaD/JUuLgqB3pto9Eek2ovA5coxp7Ib8YDDcfAYTjHvooyQTDxiZZ5
-         IK4rFuu/k6hDI5zWsm3whDr8JNfGqheMlI2I19y1khraQSmaSXhO+k5q0JSOLkqqILkE
-         N1yw==
-X-Gm-Message-State: AOJu0YyTsiFgu3CGsuBDUcQx3cs03hak8+mPQeZBRKM11OOLehFMEXvr
-	p4TDUvVpMaeREgMrNRqHMiGf09+LVcwvm2lBgAtFIaNgG/eL+Ukdgm5e07TQTPRqsME+B/ltGry
-	eHHJeW+COqRGLh/zmTvrqhVJHGV7qzkMcdjJwgazZAPbbbNP8S3PputEfoCoAy2qBPrKc5vWUHe
-	DPe2Zsl6aI7BCOovMkhCfF5xRDIh/bALwCJ78eAlfX6+jM
-X-Received: by 2002:adf:e30e:0:b0:33d:6bd5:9f00 with SMTP id b14-20020adfe30e000000b0033d6bd59f00mr8878807wrj.41.1709115044964;
-        Wed, 28 Feb 2024 02:10:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGNBvyItDUcjcIv0Np/7pXiZKIT9CIiSDAQ+3HmvfjfhrAlJ9hPwCLMmeprtUdu0nI7lbpBTg==
-X-Received: by 2002:adf:e30e:0:b0:33d:6bd5:9f00 with SMTP id b14-20020adfe30e000000b0033d6bd59f00mr8878785wrj.41.1709115044551;
-        Wed, 28 Feb 2024 02:10:44 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id bo28-20020a056000069c00b0033b406bc689sm14668667wrb.75.2024.02.28.02.10.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 02:10:44 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: Nishanth Menon <nm@ti.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Breno Leitao <leitao@debian.org>,
-	Kalle Valo <kvalo@kernel.org>,
-	Li Zetao <lizetao1@huawei.com>,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH v2] wlcore: sdio: Rate limit wl12xx_sdio_raw_{read,write}() failures warns
-Date: Wed, 28 Feb 2024 11:10:32 +0100
-Message-ID: <20240228101042.728881-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1709115091; c=relaxed/simple;
+	bh=d0/GW9Hlrkhgj4xitNTIzREyL/IrPHq2WBsSG7+jrKw=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=uKNktQoTHCB+x9GQtA5t+H4bqeJdI9dfbvDZjHKfLPRJQqtgA9+jZrtIEXJt3gJo46NOLw76n3Z0pZVQUvQTTSj8TApVhSkqr/ZY5I2rprqN5YEcGD1ESjqbCTnl8wk0dpdq5KsM7WyqNFSELEDGvosGhiyNiFxDkTTvHoV8VbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K/Uz8Rwr; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=t6X1lfYr; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 28 Feb 2024 10:11:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709115087;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LrnkpejSqhcF9JYa98EHYfWHPhb164YL0Ul7jes8SbM=;
+	b=K/Uz8Rwr/Esb6voUMNiHQ6suEIiffe4TiDxZLjHEKaqA0q7cDLFg9acVB2U74aBI7c3uLi
+	W7b2qgqUOBb92MVJUJnqo9MbuVmZJOX5cYw7rf3L19vI+aqJSzK9QpjBu4KMo///DKvLF0
+	UnKWBK4v83qaeeHe1AskZSIKhUp/DzGTgFeRgRFGF47Mw4YCEewCPddtb57nZlubAEn3et
+	JEx5PCWwgw4yR2T3Mfu6J7LJYK32p6VrkOK5/oU22ktYXP/pLisctL79vwc5SGeH75/ZuY
+	qK6oNgL+t/DPTqHAEuilocT8N0G6c2DQRjvNkF1T9krS+ypdNoyoArkoQzbonQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709115087;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LrnkpejSqhcF9JYa98EHYfWHPhb164YL0Ul7jes8SbM=;
+	b=t6X1lfYr1CyDvUik5ZfFl2tSAkXtSxPtNC3mD1vxl9OfSnVZ+BwtGiItI87WhXTzz8iC0p
+	spcMcMqnNU4FbVCg==
+From: "tip-bot2 for Brian Gerst" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] x86/boot/64: Load the final kernel GDT during early
+ boot directly, remove startup_gdt[]
+Cc: Brian Gerst <brgerst@gmail.com>, Ingo Molnar <mingo@kernel.org>,
+ Ard Biesheuvel <ardb@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Andy Lutomirski <luto@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ "H. Peter Anvin" <hpa@zytor.com>, Josh Poimboeuf <jpoimboe@redhat.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240226220544.70769-1-brgerst@gmail.com>
+References: <20240226220544.70769-1-brgerst@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <170911508625.398.12452118843438429976.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-When these failures happen, the warning and call trace is printed which is
-excessive. Instead, just print the error but rate limited to prevent warns
-to unnecessarily pollute the kernel log buffer and make the serial console
-practically unusable.
+The following commit has been merged into the x86/boot branch of tip:
 
-For example, on an AM625 BeaglePlay board where accessing a SDIO WiFi chip
-fails with an -110 (ETIMEDOUT) error:
+Commit-ID:     11e36b0f7c2150a6453872b79555767b43c846d0
+Gitweb:        https://git.kernel.org/tip/11e36b0f7c2150a6453872b79555767b43c846d0
+Author:        Brian Gerst <brgerst@gmail.com>
+AuthorDate:    Mon, 26 Feb 2024 17:05:44 -05:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 28 Feb 2024 11:02:16 +01:00
 
-  $ dmesg | grep "sdio write\|read failed (-110)" | wc -l
-  39
+x86/boot/64: Load the final kernel GDT during early boot directly, remove startup_gdt[]
 
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
-Reviewed-by: Breno Leitao <leitao@debian.org>
+Instead of loading a duplicate GDT just for early boot, load the kernel
+GDT from its physical address.
+
+Signed-off-by: Brian Gerst <brgerst@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lore.kernel.org/r/20240226220544.70769-1-brgerst@gmail.com
 ---
+ arch/x86/include/asm/desc.h |  1 +
+ arch/x86/kernel/head64.c    | 13 ++-----------
+ 2 files changed, 3 insertions(+), 11 deletions(-)
 
-Changes in v2:
-- Add Reviewed-by tag by Breno Leitao.
-- Drop warns which seems excesive and rate limit the error (Kalle Vallo).
-
- drivers/net/wireless/ti/wlcore/sdio.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ti/wlcore/sdio.c b/drivers/net/wireless/ti/wlcore/sdio.c
-index eb5482ed76ae..70b9648acaaf 100644
---- a/drivers/net/wireless/ti/wlcore/sdio.c
-+++ b/drivers/net/wireless/ti/wlcore/sdio.c
-@@ -75,8 +75,8 @@ static int __must_check wl12xx_sdio_raw_read(struct device *child, int addr,
+diff --git a/arch/x86/include/asm/desc.h b/arch/x86/include/asm/desc.h
+index ab97b22..52c0150 100644
+--- a/arch/x86/include/asm/desc.h
++++ b/arch/x86/include/asm/desc.h
+@@ -46,6 +46,7 @@ struct gdt_page {
+ } __attribute__((aligned(PAGE_SIZE)));
  
- 	sdio_release_host(func);
+ DECLARE_PER_CPU_PAGE_ALIGNED(struct gdt_page, gdt_page);
++DECLARE_INIT_PER_CPU(gdt_page);
  
--	if (WARN_ON(ret))
--		dev_err(child->parent, "sdio read failed (%d)\n", ret);
-+	if (ret)
-+		dev_err_ratelimited(child->parent, "sdio read failed (%d)\n", ret);
+ /* Provide the original GDT */
+ static inline struct desc_struct *get_cpu_gdt_rw(unsigned int cpu)
+diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
+index 72351c3..fd77a26 100644
+--- a/arch/x86/kernel/head64.c
++++ b/arch/x86/kernel/head64.c
+@@ -68,15 +68,6 @@ unsigned long vmemmap_base __ro_after_init = __VMEMMAP_BASE_L4;
+ EXPORT_SYMBOL(vmemmap_base);
+ #endif
  
- 	if (unlikely(dump)) {
- 		printk(KERN_DEBUG "wlcore_sdio: READ from 0x%04x\n", addr);
-@@ -120,8 +120,8 @@ static int __must_check wl12xx_sdio_raw_write(struct device *child, int addr,
+-/*
+- * GDT used on the boot CPU before switching to virtual addresses.
+- */
+-static struct desc_struct startup_gdt[GDT_ENTRIES] __initdata = {
+-	[GDT_ENTRY_KERNEL32_CS]         = GDT_ENTRY_INIT(DESC_CODE32, 0, 0xfffff),
+-	[GDT_ENTRY_KERNEL_CS]           = GDT_ENTRY_INIT(DESC_CODE64, 0, 0xfffff),
+-	[GDT_ENTRY_KERNEL_DS]           = GDT_ENTRY_INIT(DESC_DATA64, 0, 0xfffff),
+-};
+-
+ #ifdef CONFIG_X86_5LEVEL
+ static void __head *fixup_pointer(void *ptr, unsigned long physaddr)
+ {
+@@ -589,8 +580,8 @@ void __head startup_64_setup_gdt_idt(void)
+ 	void *handler = NULL;
  
- 	sdio_release_host(func);
+ 	struct desc_ptr startup_gdt_descr = {
+-		.address = (unsigned long)&RIP_REL_REF(startup_gdt),
+-		.size    = sizeof(startup_gdt) - 1,
++		.address = (unsigned long)&RIP_REL_REF(init_per_cpu_var(gdt_page.gdt)),
++		.size    = GDT_SIZE - 1,
+ 	};
  
--	if (WARN_ON(ret))
--		dev_err(child->parent, "sdio write failed (%d)\n", ret);
-+	if (ret)
-+		dev_err_ratelimited(child->parent, "sdio write failed (%d)\n", ret);
- 
- 	return ret;
- }
--- 
-2.43.2
-
+ 	/* Load GDT */
 
