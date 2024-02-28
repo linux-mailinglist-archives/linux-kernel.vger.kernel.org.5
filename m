@@ -1,142 +1,114 @@
-Return-Path: <linux-kernel+bounces-85053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD2186AFC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:03:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD6AA86AFD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:04:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEF222894F9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:03:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63C501F2252E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F6914A4C9;
-	Wed, 28 Feb 2024 13:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D6B14AD3B;
+	Wed, 28 Feb 2024 13:04:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="RzXv6sUz"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="X5jbiB9w"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB5443BBEE
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:03:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A20C3BBEE
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709125425; cv=none; b=dcCZJm3PtBFaeP41FjQLGSGf+/hym8V8kU9xPmc0qLSHWIXHo37IQ2zBWN7jzR2AwNx20JekC14ljnYmKnCdOxoVzIlt87WlAih4vSmnyY5Kha5E84AC3eWtSnmRBXgkt9YFAHQtZbQJa93IsFYbPeBwEZu8NGhAbHoBqLzZOvY=
+	t=1709125467; cv=none; b=C/FdODGdPMUr4vRMAAmzjQZ0IooMyeXu4z3xUnlgzXDxnpfR5jHYhHg8ubTSFAloB7hT9UG3Ywk2zl+MAAvX3q8FFo5kS7MMx1MpeXhnBA7ngdYZEndoqBdkO6E7S1PmwlVQR4NSAmbkCrZpdon5f7vmraIyK7cREqQAg/C+O8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709125425; c=relaxed/simple;
-	bh=49cG36IgRgH/aZMT+wxVEMhCBHfNfgfEAKJY6/++VIo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TY3k1ck+gr9hLJBJlHUxSaaqLH+u5pE1DGT4WKEyxMQ7aqH+OTF176Adyr9+TZIncKL7KT2GjreoXSzfUk+mTH1alEMMOoe/FH57xPEZJSPsH3ZXoDzO7YX2Lq9RgpC030a762PFC4d/CM7Fry/Ii4lg+urCCXMSnDZ0N/ZDKQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=RzXv6sUz; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5643ae47cd3so7116174a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:03:42 -0800 (PST)
+	s=arc-20240116; t=1709125467; c=relaxed/simple;
+	bh=E8Q8BUTHPfJyeoU9Q6QdXQerQaQjnZ/2HuOscrhXz2w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gE98QsSzScbO68rOCvPEzfPudoGaUCrNjZAQEBbvF/HQ5WRQ/IQ6dGnEG+J1pDvuQpOF2NlZWbGAnxrsDnaG9jIT/1Pdf06LwKv9PTDXXRZ+pcR2qU4NOivxq1ug+TjS+hgYE/WKt0sycy+qXN15u9ig7r1iDgfeq7FahBZGTf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=X5jbiB9w; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc236729a2bso5089410276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:04:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709125421; x=1709730221; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yFXQvGUsk1gt0qCtFqOPcrEsIWVhxYHprqeQMVcPhiQ=;
-        b=RzXv6sUzkIVuiNF1plr7C20IEl7kjt+3ycnZRqDuy21Ns2qL0Fp2KX/YX0vO3Is9hK
-         x2f+xgG31TRIVTtKxpJJRIgbVkKWV/EyHqtatJVF+T9mHhs/HIit5lYmPcMMfwLdS7Vc
-         UggPTSokRy+SxZthJ4YbJmNDjAiR/9++iwZ6FxiJCFU5esamJ5kuM4au9XbwJvy42Rq4
-         8Zm1z+b3xGFsyoFzPzyktnrrOTO9sQIn8itl+yXjzLp2u/V6iM3z4muwB09KsSZYUlxd
-         VKN106MqyQYgqduXkt5bmkp0Sgd5Fx7mt+b0MLcxRXXsy9OYZV9nYnTUXLTFC4yzMLdY
-         wggw==
+        d=linaro.org; s=google; t=1709125465; x=1709730265; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jAVkysIrddkYfA1tLe0rVWGFMQxH9A+gv88vB1iCZTo=;
+        b=X5jbiB9wGoTpduk3FeUv1VZkPef+oGG/mEw4fNENnr7kFNQeMU/6JyPQLeR9GHr5jq
+         x/u5j+zayDVBlfZsrK+paFkGUuMFpRZBxNbU67Ofwg7+1/ta1hilnGhCz5Kw0SzlzkPu
+         mS9R+CW9OK7iJCcqhex1cBhyLVG4o/8MB7v107RExifcnlKpUlsRFk1khuiEbkvgmqCA
+         eQEdiBxkpyVqtutG9tmGm8Ha0kwAOMX+/SiGh2UUSPSNSI1b/YyZI/DDOa/BLf/KCic4
+         +fatOeL4RChqvkY8QmwWaPOsEEM4cMRj6TWzOIL+AXQrxO4F7YmkhsHN842hseMKGHmX
+         NDjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709125421; x=1709730221;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yFXQvGUsk1gt0qCtFqOPcrEsIWVhxYHprqeQMVcPhiQ=;
-        b=MlPVj2zaydnfpQTwr50tIZCsNFNk49PozNhKZLJqwsSk07gWPl7sTd5wy2y0Eu1GAa
-         V5KbdNj7GjBxyVLqBj4zVNi9mmneL3eeF2eBiiPFD2YbygbT5bXfAvWKbyAiioyzZ9V8
-         XxT7Ydt1NaMDHA0hnQXi2BYsIaziTlm880szNyDAETngBUhG7MHMDOR0rc9I9oJBo0/f
-         xLQtxmCyeUIHePUey+fDSzwbxtz+Ci/TMKAY6ETt8ROklcwskom0umudDJ39y6stmO5k
-         0pYhFfhoobFVEFKGzGnV7W0QqG7KoLEVvHCVfbCKBOjO947laI3r2Ex7Bu+vcvkF+/l2
-         aB5w==
-X-Forwarded-Encrypted: i=1; AJvYcCWmpIE7Dz0xSsAW8Jyk7g+A4rZ5i8XXPEK8CCkB8KIji5gj87Xe3w7WQq1+HgHVRVXIT2nCfKGzTabqwnskjSw5B8m0wvJgTF8Zx+Ke
-X-Gm-Message-State: AOJu0Yw4kd/Gx4ZQv2CrgrU24MrZMh0SuMXKe4N4nixRD7n9QuRZHbXB
-	GXEeEL+HwfxwAywezbRWRHasTcs38y4ygRkdgifKurkkXZjpDSQzjze6xqbaGBI=
-X-Google-Smtp-Source: AGHT+IGvHaZpaUKN38zrJM3JDTNxolRHG6m9JTolps7oKVeZD8z9mLSzqZ67XkfY3F7ks+tZteHSgA==
-X-Received: by 2002:aa7:d80e:0:b0:566:d15:1458 with SMTP id v14-20020aa7d80e000000b005660d151458mr4961658edq.21.1709125421040;
-        Wed, 28 Feb 2024 05:03:41 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id fe9-20020a056402390900b0056470bf320asm500629edb.43.2024.02.28.05.03.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 05:03:40 -0800 (PST)
-Date: Wed, 28 Feb 2024 14:03:39 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, 
-	Atish Patra <atishp@atishpatra.org>, Shuah Khan <shuah@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/5] RISC-V: KVM: Forward SEED CSR access to user space
-Message-ID: <20240228-e87f7a9a9cf6fa701e621f41@orel>
-References: <20240214123757.305347-1-apatel@ventanamicro.com>
- <20240214123757.305347-2-apatel@ventanamicro.com>
+        d=1e100.net; s=20230601; t=1709125465; x=1709730265;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jAVkysIrddkYfA1tLe0rVWGFMQxH9A+gv88vB1iCZTo=;
+        b=fhFqSWF5MdafhhuUIf0wPDl4UbBSsnRvUzPXtBsOgncYkhSN+H64BJF0fjCaNv41vb
+         EbM6IJ7R91eAIPNqnbrOGL27jfjTvopZ9vxfC5dy4Epb8t40E7q9S3GL03+LVv2pZSG9
+         pyPrrFXIfMDDh502G4hmAt57gUhQT3qMVmyIF24136r73oGRnKW9A7iJhIuM5p4XOCgf
+         6LOw67cQdk1zJwDi0OQRPlRa9ABvZGtuigbS70jERVp9MaW33ePgTTvJeEWWjXyu87VB
+         jmpuz1JM2uS+z8DjdB55y881LaMyALAc4fKDbTzbRKB6GHA8CKq9SMPFTHjbh+DHfJSk
+         V7YA==
+X-Forwarded-Encrypted: i=1; AJvYcCULLxx8tL+sl1lYxwBHllFUNSe8A4fTGWTi6UOUuD3Gyflr3Bx9FFCh0SlpThfLV/+QkTaNO2S8XJN/mq6XD5DvgHE4O4KtJo4qrhp1
+X-Gm-Message-State: AOJu0Yzy+HQek1AQlzhspSzxGCV3Z+CLTVIv+Aodc2m3iWgKlsjYL4Fn
+	E7zDMiaAch7veoJ8CQspabNAqnfsK2fVel/BF6uKMeoEVx61TwZUB2mTeD0GvJn3DDaIJW926ze
+	VhzOc1h37jotiqk2J+joKkv9OvZv2gkMqY4aXlSAingxrRFPk
+X-Google-Smtp-Source: AGHT+IEDs/w431tr4qF6okypXXHq9KVTC5AOppR1Q9xcmNDFdy2AyqsDq48PDYDgQFnhrDDXuj09h87Q5miAGmhXqhw=
+X-Received: by 2002:a25:4c89:0:b0:dc7:4951:5f8 with SMTP id
+ z131-20020a254c89000000b00dc7495105f8mr2636701yba.22.1709125465317; Wed, 28
+ Feb 2024 05:04:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214123757.305347-2-apatel@ventanamicro.com>
+References: <20240221-fix-sh-mmcif-v2-0-5e521eb25ae4@linaro.org>
+In-Reply-To: <20240221-fix-sh-mmcif-v2-0-5e521eb25ae4@linaro.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Wed, 28 Feb 2024 14:03:49 +0100
+Message-ID: <CAPDyKFpJra0+XKG3CvnTk99gvXg5qgeuSQ3UddU4rx1-S-dNLA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Try to fix the sg_mitet bugs in SH MMCIF
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, linux-mmc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 14, 2024 at 06:07:53PM +0530, Anup Patel wrote:
-> The SEED CSR access from VS/VU mode (guest) will always trap to
-> HS-mode (KVM) when Zkr extension is available to the Guest/VM.
-> 
-> We must forward this CSR access to KVM user space so that it
-> can be emulated based on the method chosen by VMM.
-> 
-> Fixes: f370b4e668f0 ("RISC-V: KVM: Allow scalar crypto extensions for Guest/VM")
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/kvm/vcpu_insn.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/arch/riscv/kvm/vcpu_insn.c b/arch/riscv/kvm/vcpu_insn.c
-> index 7a6abed41bc1..ee7215f4071f 100644
-> --- a/arch/riscv/kvm/vcpu_insn.c
-> +++ b/arch/riscv/kvm/vcpu_insn.c
-> @@ -7,6 +7,8 @@
->  #include <linux/bitops.h>
->  #include <linux/kvm_host.h>
->  
-> +#include <asm/cpufeature.h>
-> +
->  #define INSN_OPCODE_MASK	0x007c
->  #define INSN_OPCODE_SHIFT	2
->  #define INSN_OPCODE_SYSTEM	28
-> @@ -213,9 +215,20 @@ struct csr_func {
->  		    unsigned long wr_mask);
->  };
->  
-> +static int seed_csr_rmw(struct kvm_vcpu *vcpu, unsigned int csr_num,
-> +			unsigned long *val, unsigned long new_val,
-> +			unsigned long wr_mask)
-> +{
-> +	if (!riscv_isa_extension_available(vcpu->arch.isa, ZKR))
-> +		return KVM_INSN_ILLEGAL_TRAP;
-> +
-> +	return KVM_INSN_EXIT_TO_USER_SPACE;
-> +}
-> +
->  static const struct csr_func csr_funcs[] = {
->  	KVM_RISCV_VCPU_AIA_CSR_FUNCS
->  	KVM_RISCV_VCPU_HPMCOUNTER_CSR_FUNCS
-> +	{ .base = CSR_SEED, .count = 1, .func = seed_csr_rmw },
->  };
->  
->  /**
-> -- 
-> 2.34.1
+On Wed, 21 Feb 2024 at 22:23, Linus Walleij <linus.walleij@linaro.org> wrote:
 >
+> This adresses some bugs found after the introduction of the
+> memory iterator sg_miter to the sh mmcif driver.
+>
+> This was first just one patch for fixing the atomic bug, but
+> now also a second patch is needed to fix a semantic issue.
+>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> Changes in v2:
+> - Collect Geerts test tag on patch 1
+> - Add a second patch fixing the problem with advancing to
+>   the next sglist entry before reading/writing the first block and
+>   after reading/writing each block in a multiblock operation.
+> - Link to v1: https://lore.kernel.org/r/20240220-fix-sh-mmcif-v1-1-b9d08a787c1f@linaro.org
+>
+> ---
+> Linus Walleij (2):
+>       mmc: sh_mmcif: sg_miter does not need to be atomic
+>       mmc: sh_mmcif: Advance sg_miter before reading blocks
+>
+>  drivers/mmc/host/sh_mmcif.c | 46 +++++++++++++++++++++++++++++----------------
+>  1 file changed, 30 insertions(+), 16 deletions(-)
+> ---
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Applied for next and by amending the commit message header as pointed
+out by Geert, thanks!
+
+Kind regards
+Uffe
 
