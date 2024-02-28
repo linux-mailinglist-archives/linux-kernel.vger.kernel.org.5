@@ -1,216 +1,131 @@
-Return-Path: <linux-kernel+bounces-85226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0804386B27F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:57:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71D8286B280
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:57:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 749121F27523
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:57:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A141C1C255DA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2455E15B966;
-	Wed, 28 Feb 2024 14:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Aqg6B7Cg"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474CA159580
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCF0115B0FD;
+	Wed, 28 Feb 2024 14:57:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B363873531
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709132217; cv=none; b=YKXKmik+q0jEBCni/OaiJ1dJLVHH3TyXGeX147NLL2TcV5C2+xZ3rWkUJyQtezCkkVuk5kQisZuAC7Odzi7C7WP8L9YGVyHqQ4R2LdR9lP66/qmRs9nxC7sXh1M+bNEZO4CMIglNei+EACPAfr95roP2CWLvslOD0owbv+A0sFs=
+	t=1709132265; cv=none; b=Bi3gQ4AHloKrxlI3+mFWrxH+hL1bt12yc5MMw3cvN5W7UvK21KnFZ6LT/B2ZfotFUzobPy3OzkVFes4/bH8aPoz8llcSoqcpwy88yRhumwX3gNLb6qKC+CVP3qk7q3bg89M6t7ylji5dUClU/Qh3EwkkiUn4ggpVs9YK7EbAtgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709132217; c=relaxed/simple;
-	bh=O55w29tKHLUKo0RdPfcAcVhOTj9ZoMGpw9KOsAN3BPM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QGDdaMof80knzgWjZoESfJN9v5pBSIFxeneTjLvXnuxuDmZgijjjyQseVq5YxVQBKr1tF4wzY6Lx6wQLmD8lv44NlzUU9mbqmtiLItib6tREc1XCzw4mT0BoXHk3CjQSMqCT3X2MG0vKnJ15rpL9rvKyKMt/opQGS0eqBxg5FBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Aqg6B7Cg; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3684B672;
-	Wed, 28 Feb 2024 15:56:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1709132200;
-	bh=O55w29tKHLUKo0RdPfcAcVhOTj9ZoMGpw9KOsAN3BPM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Aqg6B7CggdTM8Q820pmR6Ab0PjOe+pqw8hg3TXjZwAf6jjcX0841oypoyISexdDF0
-	 vdvUmgBEZfP8DuHpdRXwnkuhe6TAwAaaRcKMNqNFwcRtSxlGR5lqJ2ys86Q6XZf8Cl
-	 U781Zhx3050iS9/dwfNNjCVdV97DUZ/TfYEDXp+8=
-Date: Wed, 28 Feb 2024 16:56:54 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Michal Simek <michal.simek@amd.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] drm: xlnx: zynqmp_dpsub: Set layer mode during
- creation
-Message-ID: <20240228145654.GB9863@pendragon.ideasonboard.com>
-References: <20240226-dp-live-fmt-v1-0-b78c3f69c9d8@amd.com>
- <20240226-dp-live-fmt-v1-1-b78c3f69c9d8@amd.com>
+	s=arc-20240116; t=1709132265; c=relaxed/simple;
+	bh=u+CxlfyPsAmnf6ezTygBrM4z1l4e5MJ76fX/bJTH2bw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QK9oop6NKqIQ4jK2lUxy7KHf6q8xS6dVLGRpzgn8c8JLu7Mu5M8HhHudQJGOdw5pPht1kzV+CAlE8HUc5rpInxUu6/RieQj5zJfrqT3zod7SMqX65m/nDsMoKyZ+yPlC3LixL2rRpNK95Y5Tjvo4A2cQBpTdOVAfoq7/p9QuzL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 678941FB;
+	Wed, 28 Feb 2024 06:58:15 -0800 (PST)
+Received: from [10.1.38.163] (XHFQ2J9959.cambridge.arm.com [10.1.38.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF1003F73F;
+	Wed, 28 Feb 2024 06:57:34 -0800 (PST)
+Message-ID: <4a73b16e-9317-477a-ac23-8033004b0637@arm.com>
+Date: Wed, 28 Feb 2024 14:57:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240226-dp-live-fmt-v1-1-b78c3f69c9d8@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+ <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+ <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
+ <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
+ <049818ca-e656-44e4-b336-934992c16028@arm.com>
+ <d2fbfdd0-ad61-4fe2-a976-4dac7427bfc9@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <d2fbfdd0-ad61-4fe2-a976-4dac7427bfc9@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Anatoliy,
-
-Thank you for the patch.
-
-On Mon, Feb 26, 2024 at 08:44:42PM -0800, Anatoliy Klymenko wrote:
-> Set layer mode of operation (live or dma-based) during layer creation.
+On 28/02/2024 12:12, David Hildenbrand wrote:
+>>> How relevant is it? Relevant enough that someone decided to put that
+>>> optimization in? I don't know :)
+>>
+>> I'll have one last go at convincing you: Huang Ying (original author) commented
+>> "I believe this should be OK.  Better to compare the performance too." at [1].
+>> That implies to me that perhaps the optimization wasn't in response to a
+>> specific problem after all. Do you have any thoughts, Huang?
 > 
-> Each DPSUB layer mode of operation is defined by corresponding DT node port
-> connection, so it is possible to assign it during layer object creation.
-> Previously it was set in layer enable functions, although it is too late
-> as setting layer format depends on layer mode, and should be done before
-> given layer enabled.
+> Might make sense to include that in the patch description!
 > 
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> ---
->  drivers/gpu/drm/xlnx/zynqmp_disp.c | 20 ++++++++++++++++----
->  drivers/gpu/drm/xlnx/zynqmp_disp.h | 13 +------------
->  drivers/gpu/drm/xlnx/zynqmp_dp.c   |  2 +-
->  drivers/gpu/drm/xlnx/zynqmp_kms.c  |  2 +-
->  4 files changed, 19 insertions(+), 18 deletions(-)
+>> OK so if we really do need to keep this optimization, here are some ideas:
+>>
+>> Fundamentally, we would like to be able to figure out the size of the swap slot
+>> from the swap entry. Today swap supports 2 sizes; PAGE_SIZE and PMD_SIZE. For
+>> PMD_SIZE, it always uses a full cluster, so can easily add a flag to the cluster
+>> to mark it as PMD_SIZE.
+>>
+>> Going forwards, we want to support all sizes (power-of-2). Most of the time, a
+>> cluster will contain only one size of THPs, but this is not the case when a THP
+>> in the swapcache gets split or when an order-0 slot gets stolen. We expect these
+>> cases to be rare.
+>>
+>> 1) Keep the size of the smallest swap entry in the cluster header. Most of the
+>> time it will be the full size of the swap entry, but sometimes it will cover
+>> only a portion. In the latter case you may see a false negative for
+>> swap_page_trans_huge_swapped() meaning we take the slow path, but that is rare.
+>> There is one wrinkle: currently the HUGE flag is cleared in put_swap_folio(). We
+>> wouldn't want to do the equivalent in the new scheme (i.e. set the whole cluster
+>> to order-0). I think that is safe, but haven't completely convinced myself yet.
+>>
+>> 2) allocate 4 bits per (small) swap slot to hold the order. This will give
+>> precise information and is conceptually simpler to understand, but will cost
+>> more memory (half as much as the initial swap_map[] again).
+>>
+>> I still prefer to avoid this at all if we can (and would like to hear Huang's
+>> thoughts). But if its a choice between 1 and 2, I prefer 1 - I'll do some
+>> prototyping.
 > 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index 8a39b3accce5..e6d26ef60e89 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -64,6 +64,16 @@
->  
->  #define ZYNQMP_DISP_MAX_NUM_SUB_PLANES			3
->  
-> +/**
-> + * enum zynqmp_dpsub_layer_mode - Layer mode
-> + * @ZYNQMP_DPSUB_LAYER_NONLIVE: non-live (memory) mode
-> + * @ZYNQMP_DPSUB_LAYER_LIVE: live (stream) mode
-> + */
-> +enum zynqmp_dpsub_layer_mode {
-> +	ZYNQMP_DPSUB_LAYER_NONLIVE,
-> +	ZYNQMP_DPSUB_LAYER_LIVE,
-> +};
-> +
->  /**
->   * struct zynqmp_disp_format - Display subsystem format information
->   * @drm_fmt: DRM format (4CC)
-> @@ -902,15 +912,12 @@ u32 *zynqmp_disp_layer_drm_formats(struct zynqmp_disp_layer *layer,
->  /**
->   * zynqmp_disp_layer_enable - Enable a layer
->   * @layer: The layer
-> - * @mode: Operating mode of layer
->   *
->   * Enable the @layer in the audio/video buffer manager and the blender. DMA
->   * channels are started separately by zynqmp_disp_layer_update().
->   */
-> -void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer,
-> -			      enum zynqmp_dpsub_layer_mode mode)
-> +void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer)
->  {
-> -	layer->mode = mode;
->  	zynqmp_disp_avbuf_enable_video(layer->disp, layer);
->  	zynqmp_disp_blend_layer_enable(layer->disp, layer);
->  }
-> @@ -1134,6 +1141,11 @@ static int zynqmp_disp_create_layers(struct zynqmp_disp *disp)
->  		layer->id = i;
->  		layer->disp = disp;
->  		layer->info = &layer_info[i];
-> +		/* For now assume dpsub works in either live or non-live mode for both layers.
-> +		 * Hybrid mode is not supported yet.
-> +		 */
-
-		/*
-		 * For now assume dpsub works in either live or non-live mode
-		 * for both layers. Hybrid mode is not supported yet.
-		 */
-
-Sounds like a reasonable restriction for now.
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> +		layer->mode = disp->dpsub->dma_enabled ? ZYNQMP_DPSUB_LAYER_NONLIVE
-> +						       : ZYNQMP_DPSUB_LAYER_LIVE;
->  
->  		ret = zynqmp_disp_layer_request_dma(disp, layer);
->  		if (ret)
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.h b/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> index 123cffac08be..9b8b202224d9 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> @@ -42,16 +42,6 @@ enum zynqmp_dpsub_layer_id {
->  	ZYNQMP_DPSUB_LAYER_GFX,
->  };
->  
-> -/**
-> - * enum zynqmp_dpsub_layer_mode - Layer mode
-> - * @ZYNQMP_DPSUB_LAYER_NONLIVE: non-live (memory) mode
-> - * @ZYNQMP_DPSUB_LAYER_LIVE: live (stream) mode
-> - */
-> -enum zynqmp_dpsub_layer_mode {
-> -	ZYNQMP_DPSUB_LAYER_NONLIVE,
-> -	ZYNQMP_DPSUB_LAYER_LIVE,
-> -};
-> -
->  void zynqmp_disp_enable(struct zynqmp_disp *disp);
->  void zynqmp_disp_disable(struct zynqmp_disp *disp);
->  int zynqmp_disp_setup_clock(struct zynqmp_disp *disp,
-> @@ -62,8 +52,7 @@ void zynqmp_disp_blend_set_global_alpha(struct zynqmp_disp *disp,
->  
->  u32 *zynqmp_disp_layer_drm_formats(struct zynqmp_disp_layer *layer,
->  				   unsigned int *num_formats);
-> -void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer,
-> -			      enum zynqmp_dpsub_layer_mode mode);
-> +void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer);
->  void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer);
->  void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
->  				  const struct drm_format_info *info);
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index 1846c4971fd8..04b6bcac3b07 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -1295,7 +1295,7 @@ static void zynqmp_dp_disp_enable(struct zynqmp_dp *dp,
->  	/* TODO: Make the format configurable. */
->  	info = drm_format_info(DRM_FORMAT_YUV422);
->  	zynqmp_disp_layer_set_format(layer, info);
-> -	zynqmp_disp_layer_enable(layer, ZYNQMP_DPSUB_LAYER_LIVE);
-> +	zynqmp_disp_layer_enable(layer);
->  
->  	if (layer_id == ZYNQMP_DPSUB_LAYER_GFX)
->  		zynqmp_disp_blend_set_global_alpha(dp->dpsub->disp, true, 255);
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_kms.c b/drivers/gpu/drm/xlnx/zynqmp_kms.c
-> index db3bb4afbfc4..43bf416b33d5 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_kms.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_kms.c
-> @@ -122,7 +122,7 @@ static void zynqmp_dpsub_plane_atomic_update(struct drm_plane *plane,
->  
->  	/* Enable or re-enable the plane if the format has changed. */
->  	if (format_changed)
-> -		zynqmp_disp_layer_enable(layer, ZYNQMP_DPSUB_LAYER_NONLIVE);
-> +		zynqmp_disp_layer_enable(layer);
->  }
->  
->  static const struct drm_plane_helper_funcs zynqmp_dpsub_plane_helper_funcs = {
+> Taking a step back: what about we simply batch unmapping of swap entries?
 > 
+> That is, if we're unmapping a PTE range, we'll collect swap entries (under PT
+> lock) that reference consecutive swap offsets in the same swap file.
 
--- 
-Regards,
+Yes in principle, but there are 4 places where free_swap_and_cache() is called,
+and only 2 of those are really amenable to batching (zap_pte_range() and
+madvise_free_pte_range()). So the other two users will still take the "slow"
+path. Maybe those 2 callsites are the only ones that really matter? I can
+certainly have a stab at this approach.
 
-Laurent Pinchart
+> 
+> There, we can then first decrement all the swap counts, and then try minimizing
+> how often we actually have to try reclaiming swap space (lookup folio, see it's
+> a large folio that we cannot reclaim or could reclaim, ...).
+> 
+> Might need some fine-tuning in swap code to "advance" to the next entry to try
+> freeing up, but we certainly can do better than what we would do right now.
+
+I'm not sure I've understood this. Isn't advancing just a matter of:
+
+entry = swp_entry(swp_type(entry), swp_offset(entry) + 1);
+
+
 
