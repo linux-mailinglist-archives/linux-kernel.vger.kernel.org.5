@@ -1,111 +1,80 @@
-Return-Path: <linux-kernel+bounces-85771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD8FB86BA8C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0100086BA90
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:09:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7804E2888FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:08:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0D252888FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09D951361C6;
-	Wed, 28 Feb 2024 22:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JX3RE+mK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA46A1361D7;
+	Wed, 28 Feb 2024 22:08:57 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E001361A4;
-	Wed, 28 Feb 2024 22:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC411361B5;
+	Wed, 28 Feb 2024 22:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709158127; cv=none; b=cDZfvCUumjVJnNCsv+jRWGpH4JGdZPIbIO8MbQ2Zjtr6FwSXhUU/mE2bPu0i9P6kd0zRhGTbZs1tv0JTos8s5K8/X74O7JcK0EaUeS1SnmX3VqkgpDcDQyzj6WuYzwBuhhZnDPhGbG9Z89UFmu4CZFxuWEx8Sm+PaDvNyYFjHg0=
+	t=1709158137; cv=none; b=WMlNNcznXzx6eAD8bdcVIPJBNe3Z5sgc231RWvAqWDtlmRcu4oSY7l3Wufdy9uxM87j1v0HFe+Elqmh0+qFTpIvrwDNTOI7wvTGq6epMhxzq4QLEcyLxFiXO2SZFAf+iB8lKJxXdAr4ltQKit0RW5f29qyjlCDI8Hsg+FC4U/lI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709158127; c=relaxed/simple;
-	bh=cDIB7eI+qfgraTst6qw8uLCsKY/61Gvo/qIhEP5EUZc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=qv8Xq/kzhA1JflSfCBreCfTN+niV6vzgOrP2pGk2SyiYumbMbxaIHRLamofa4j6eWnus7fAMtS6x+YQI5TgKKHQJ2perLZlkv3SAk2sLNLOZaoxkZUzcGqEV1lMNic/NTViogk8uWmZoVQmXFGvtum9uPjXskXgcW8HoPgaMX8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JX3RE+mK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BD49C433C7;
-	Wed, 28 Feb 2024 22:08:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709158125;
-	bh=cDIB7eI+qfgraTst6qw8uLCsKY/61Gvo/qIhEP5EUZc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=JX3RE+mKdKR3cvs2/r6iCFu+RJTvicZ9D4D1E2qwq5kEnO0q5ozRlFgi6RPZbSD+n
-	 Kz4JTeGOFFE+8Ox6q084bxDjKJW4oPxfZ8wulEKEe8AV70+XjzAGUUasrk7PMcGkMz
-	 /aa9ExC4RfKqEYouEuTIsCvdNLApe6NIUDhWwzfMHYy0o6RLioqLF2/n3FYxluK5dy
-	 1oEStdLGgcp4lNjFeAeiP7RL8w0FHuHX30YRNgOMCN7VenEGcbN5yDv3/A1oBIlv8T
-	 bpgfItgqgi/zRR0UTHiu3c5RVlCErz9/KijTaVaAkX8bLkRMs9iBLd431PSMnA/GZO
-	 /gWj+V8w2a8hQ==
-Date: Wed, 28 Feb 2024 16:08:43 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Johan Hovold <johan+linaro@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and
- GICv3 ITS enable
-Message-ID: <20240228220843.GA309344@bhelgaas>
+	s=arc-20240116; t=1709158137; c=relaxed/simple;
+	bh=r1i94g2MPDnIrgqSNviSxFemOVfH2bZ3i25wcrLYUfE=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=SwldOUkY3OZbkg3wW/q/cxj58XnZXLG23D0gfrRggdfWuUPI3G4Whh45Ek2aLVdHb9Ozj+M3x1CU5J0Uh3O3mkk35KrnBs8r1xPbbGdPD1ot/4C4xSdhFgnca2Kp+heiRbI5EzNYGNVmzJtoZzIowzlMWm0xp3btoufBs2ROm+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6BCAC433A6;
+	Wed, 28 Feb 2024 22:08:56 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id 63C431067A0E; Wed, 28 Feb 2024 23:08:53 +0100 (CET)
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Sebastian Reichel <sre@kernel.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Nathan Chancellor <nathan@kernel.org>
+In-Reply-To: <20240228-device_cleanup-power-v1-1-52c0321c48e1@marliere.net>
+References: <20240228-device_cleanup-power-v1-1-52c0321c48e1@marliere.net>
+Subject: Re: [PATCH] power: supply: move power_supply_attr_group into
+ #ifdef block
+Message-Id: <170915813338.50142.16479593478459212798.b4-ty@collabora.com>
+Date: Wed, 28 Feb 2024 23:08:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223152124.20042-1-johan+linaro@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
 
-[+to Mani]
 
-On Fri, Feb 23, 2024 at 04:21:12PM +0100, Johan Hovold wrote:
-> This series addresses a few problems with the sc8280xp PCIe
-> implementation.
-> ...
-
-> A recent commit enabling ASPM on certain Qualcomm platforms introduced
-> further errors when using the Wi-Fi on the X13s as well as when
-> accessing the NVMe on the CRD. The exact reason for this has not yet
-> been identified, but disabling ASPM L0s makes the errors go away. This
-> could suggest that either the current ASPM implementation is incomplete
-> or that L0s is not supported with these devices.
-> ...
-
-> As this series fixes a regression in 6.7 (which enabled ASPM) and fixes
-> a user-reported problem with the Wi-Fi often not starting at boot, I
-> think we should merge this series for the 6.8 cycle. The final patch
-> enabling the GIC ITS should wait for 6.9.
+On Wed, 28 Feb 2024 10:46:28 -0300, Ricardo B. Marliere wrote:
+> When building with CONFIG_SYSFS=n, the build error below is triggered:
 > 
-> The DT bindings and PCI patch are expected to go through the PCI tree,
-> while Bjorn A takes the devicetree updates through the Qualcomm tree.
-> ...
+> ld: drivers/power/supply/power_supply_core.o:(.data+0x0): undefined
+> reference to `power_supply_attr_group'
+> 
+> The problem is that power_supply_attr_group is needed in
+> power_supply_core.c but defined in power_supply_sysfs.c, which is only
+> targeted with CONFIG_SYSFS=y. Therefore, move the extern declaration into
+> the #ifdef block that checks for CONFIG_SYSFS, and define an empty static
+> const struct otherwise. This is safe because the macro __ATRIBUTE_GROUPS in
+> power_supply_core.c will expand into an empty attribute_group array.
+> 
+> [...]
 
-> Johan Hovold (12):
->   dt-bindings: PCI: qcom: Allow 'required-opps'
->   dt-bindings: PCI: qcom: Do not require 'msi-map-mask'
->   dt-bindings: PCI: qcom: Allow 'aspm-no-l0s'
->   PCI: qcom: Add support for disabling ASPM L0s in devicetree
+Applied, thanks!
 
-The ASPM patches fix a v6.7 regression, so it would be good to fix
-that in v6.8.
+[1/1] power: supply: move power_supply_attr_group into #ifdef block
+      commit: ea4367c40c79a5f16cb0de8a94a6b72697d37f06
 
-Mani, if you are OK with them, I can add them to for-linus for v6.8.  
+Best regards,
+-- 
+Sebastian Reichel <sebastian.reichel@collabora.com>
 
-What about the 'required-opps' and 'msi-map-mask' patches?  If they're
-important, I can merge them for v6.8, too, but it's late in the cycle
-and it's not clear from the commit logs why they shouldn't wait for
-v6.9.
-
-Bjorn
 
