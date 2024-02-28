@@ -1,86 +1,68 @@
-Return-Path: <linux-kernel+bounces-85500-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12FC86B6AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:04:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14A8086B6B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:05:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 991821C22B5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:04:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C33C7287702
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A5B79B73;
-	Wed, 28 Feb 2024 18:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9E640840;
+	Wed, 28 Feb 2024 18:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ErxEuFLz"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="N5jYBfzS"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E22779B6D;
-	Wed, 28 Feb 2024 18:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDAD279B83;
+	Wed, 28 Feb 2024 18:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709143467; cv=none; b=imoYCknuv4w3caI4Oc1nNIXLk55cV4ANXOiwI+4DuijE/WILbnAUqcIQK8prVGoFCz6YCVZRR1MqM85/Mdk/mpgRJO/C01Uo2Y+7LVeqXvtM/Mm7SQCph+aLJO/IMVSMnmBfNADM+TvQFXzWcMz339v6TRwH0NOK1WhVXV7ONvw=
+	t=1709143485; cv=none; b=WF7vzJRbaFjGvDgR4OKRtMetAV7cG6rOIFa7BQbm7tXxJVhKFzKE2Hhk5yd8GdZt1VajpK5AHe3ojTHRPMtlGS8ImtLnrpZ90JwyJG5am/PWlsRv0oVS2WkMlKZEgwg1N80oIIMz/229LPl5ry5mteEWRk2VdLXtRjEnoVvJapg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709143467; c=relaxed/simple;
-	bh=N6U2+QaW5VeXwZH1HC6wjUMQVkEbc2qw2QuDIpP+log=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DKnr/pt9XWbWaV7Qto0ssBfi9l7gpYHNx0I8APcX54m8jbuG8ZFMcNONatNuWcDA6BzP4wMSyg79STR/bj6nyTIzn8bUa/Uv6HzHQ4EHHLc9rFJDmhK7IfbAH5C0G7cB39uANOqYiRSyeRw+EYRDIoPXwhLW7VwtmjsO2ajVzVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ErxEuFLz; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d28464c554so57296261fa.3;
-        Wed, 28 Feb 2024 10:04:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709143464; x=1709748264; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bBF352Tfti3FMF3gl2ozPiENjZpzK1rD95Ac73/ICZg=;
-        b=ErxEuFLz07eVvCknuXKL8nMbW8WuICGVzzWX1gHZp4o4RJ9/CJbVHjTaxUQ+YcPOQr
-         6fC61ZxJxFy6HyYrb+E8HR3Qggg161SvMwIcKBc4ugewv7Uy5gwtkGhruThNzZsQn349
-         q/UZHQ6FIXQTRtRRx5+TqGW2mN8YYDsr2jrgoa/cK54d+hGJRTAzP2XeE/CSYxYy+ccr
-         YIEjj4D8GBivDnhmUv8JqN+2kdnU+D9gGWwmtXNGBocglApnEZQGVuBt3fZsUr7pjw3B
-         VO7+oL++GnOdHfEi9cOPQyAcECl9PUvTy2ZRWEgKC6RVHrUZUx+k8fCOvQf+cJpJcy6M
-         7ZoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709143464; x=1709748264;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bBF352Tfti3FMF3gl2ozPiENjZpzK1rD95Ac73/ICZg=;
-        b=cMBT8mPcq1ZATB4/c5zAn1ka8WVPG1KsUrLaKiwY42R2O0HeqzAU0gHPuURSjxGQqN
-         aULVyupd7zRvmfoh5UScXqcmGV8qsllMoLW21H4J/VgbArfKlkITe8h/xk+veWv44Ox9
-         3TShX6Pbxqel5vMXlmwhEp9rJBrsugjZHyI1p0VRISyIwuLueWhjxf656kuK1by04a+j
-         KykIwrfTA2HCnm6hIHFpAvYYNhLOWhUmmEmf/LCqv7Vgch3dR+iL+z0CQHmkeYWvkq1s
-         AvvwOk7vsodM+RyjlVHppt0TSREn4g1uPzBD/DeLc4k/OFs8Yu+GCJ32VdlXWYPqeCqo
-         5coQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW+Ub/iFeUDJnL/n9uRj84j3E76KqRLEf6CKpVjrLUmEXQKdDtcR4r6YMU/sL61Ke9FfwQeB8enAXHR2Amn8cJ7dE8zdLFOWu1ApPNUb2cGFIqJiGKIkFsDs0wHxylmbaw2
-X-Gm-Message-State: AOJu0YyqZmNmfnR8Inhn0okB3lX4AthGkYYvUG3tHqv3pqSNlJp8gR/D
-	VSisUwOcASyLVzAsYzIFcUHhjfLwOXMWEUHj7+pAH2hn8SE2Dqz7
-X-Google-Smtp-Source: AGHT+IEF9xAODB4cRUxwgi6tfpfkRGio1fqe/Hz0ad8tgoBMhmAJu28NLDgCW+e6vLlL3ynMQxrN8g==
-X-Received: by 2002:a2e:8e95:0:b0:2d2:e51f:2ba2 with SMTP id z21-20020a2e8e95000000b002d2e51f2ba2mr674576ljk.21.1709143463923;
-        Wed, 28 Feb 2024 10:04:23 -0800 (PST)
-Received: from pc636 (host-90-233-206-150.mobileonline.telia.com. [90.233.206.150])
-        by smtp.gmail.com with ESMTPSA id a19-20020a2ebe93000000b002d283718d89sm1468562ljr.56.2024.02.28.10.04.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 10:04:23 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Wed, 28 Feb 2024 19:04:21 +0100
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <Zd91pR0fjiCUZTtP@pc636>
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <Zd0ZtNu+Rt0qXkfS@lothringen>
+	s=arc-20240116; t=1709143485; c=relaxed/simple;
+	bh=2uZdEhXlLk6+Kihsqf5ShsnH4PpiXM/DSq0L4fxdcpE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mirRT9crycp9g/VrY0pTPjBPsfJTEzdJ6L5S1x99vAWq5PjZwg2IJWz7zmikayzw3lzx/e0WyYlgZx2oa3y16IS/U08621rzsXpBkYK7nakVYplilwRvwNkjdsICVjGV2SDzIzP2iwSz61huzScxujMayjOJ/iTKcOba+4JvGTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=N5jYBfzS; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=4+3pSytnWQjK2YQrwpnYoErWsk0+5Bb2EK+jBbCnDEY=; b=N5jYBfzSgjDXobOuvQqxkmYWXk
+	QImWXO4epRecr8Hcj7XH3FLIrGE9iMM5iGF1FoQtTTQLFwSeZCqZXQeTjo4mKQddHn5esiTlTg3rd
+	DK1la7jWyH3cZYkfBITOKjSGJ7mJGHrDVQSZCn7kpsJqrjtj5Gwb+3Y52zRIZDHLMPSxqnT/BtbXo
+	Luq6yWLSD1MoRZWOd+174E5Nt7zmTmBinvHjZZ92sYUc6xCPIepBYkcztiBhZAZJJM05JCMZKJf3I
+	XNL1YJ1yzNbZkuIHozFSWERD3azo29pn98mFdU86Vh1+F/EScaRDJvfkoVZaORqtBEVAZkMT1BnwI
+	YMVhPAsQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33306)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rfOI6-0005QG-33;
+	Wed, 28 Feb 2024 18:04:27 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rfOI4-0008Ul-6h; Wed, 28 Feb 2024 18:04:24 +0000
+Date: Wed, 28 Feb 2024 18:04:24 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Robert Marko <robimarko@gmail.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, andrew@lunn.ch,
+	hkallweit1@gmail.com, davem@davemloft.net, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, linux-arm-msm@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2 2/2] net: phy: qcom: qca808x: fill in
+ possible_interfaces
+Message-ID: <Zd91qM1W/srGL/Jw@shell.armlinux.org.uk>
+References: <20240228172452.2456842-1-robimarko@gmail.com>
+ <20240228172452.2456842-3-robimarko@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,99 +71,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zd0ZtNu+Rt0qXkfS@lothringen>
+In-Reply-To: <20240228172452.2456842-3-robimarko@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Tue, Feb 27, 2024 at 12:07:32AM +0100, Frederic Weisbecker wrote:
-> On Tue, Feb 20, 2024 at 07:31:13PM +0100, Uladzislau Rezki (Sony) wrote:
-> > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > +{
-> > +	struct llist_node *done, *rcu, *next, *head;
-> > +
-> > +	/*
-> > +	 * This work execution can potentially execute
-> > +	 * while a new done tail is being updated by
-> > +	 * grace period kthread in rcu_sr_normal_gp_cleanup().
-> > +	 * So, read and updates of done tail need to
-> > +	 * follow acq-rel semantics.
-> > +	 *
-> > +	 * Given that wq semantics guarantees that a single work
-> > +	 * cannot execute concurrently by multiple kworkers,
-> > +	 * the done tail list manipulations are protected here.
-> > +	 */
-> > +	done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > +	if (!done)
-> > +		return;
-> > +
-> > +	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
-> > +	head = done->next;
-> > +	done->next = NULL;
+On Wed, Feb 28, 2024 at 06:24:10PM +0100, Robert Marko wrote:
+> Currently QCA808x driver does not fill the possible_interfaces.
+> 2.5G QCA808x support SGMII and 2500Base-X while 1G model only supports
+> SGMII, so fill the possible_interfaces accordingly.
 > 
-> Can the following race happen?
-> 
-> CPU 0                                                   CPU 1
-> -----                                                   -----
-> 
-> // wait_tail == HEAD1
-> rcu_sr_normal_gp_cleanup() {
->     // has passed SR_MAX_USERS_WAKE_FROM_GP
->     wait_tail->next = next;
->     // done_tail = HEAD1
->     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->     queue_work() {
->         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
->         __queue_work()
->     }
-> }
-> 
->                                                       set_work_pool_and_clear_pending()
->                                                       rcu_sr_normal_gp_cleanup_work() {
-> // new GP, wait_tail == HEAD2
-> rcu_sr_normal_gp_cleanup() {
->     // executes all completion, but stop at HEAD1
->     wait_tail->next = HEAD1;
->     // done_tail = HEAD2
->     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->     queue_work() {
->         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
->         __queue_work()
->     }
-> }
->                                                           // done = HEAD2
->                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
->                                                           // head = HEAD1
->                                                           head = done->next;
->                                                           done->next = NULL;
->                                                           llist_for_each_safe() {
->                                                               // completes all callbacks, release HEAD1
->                                                           }
->                                                       }
->                                                       // Process second queue
->                                                       set_work_pool_and_clear_pending()
->                                                       rcu_sr_normal_gp_cleanup_work() {
->                                                           // done = HEAD2
->                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> 
-> // new GP, wait_tail == HEAD3
-> rcu_sr_normal_gp_cleanup() {
->     // Finds HEAD2 with ->next == NULL at the end
->     rcu_sr_put_wait_head(HEAD2)
->     ...
-> 
-> // A few more GPs later
-> rcu_sr_normal_gp_init() {
->      HEAD2 = rcu_sr_get_wait_head();
->      llist_add(HEAD2, &rcu_state.srs_next);
->                                                           // head == rcu_state.srs_next
->                                                           head = done->next;
->                                                           done->next = NULL;
->                                                           llist_for_each_safe() {
->                                                               // EXECUTE CALLBACKS TOO EARLY!!!
->                                                           }
->                                                       }
-Looks like that. To address this, we should not release the head in the GP kthread.
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
+
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
 Thanks!
 
---
-Uladzislau Rezki
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
