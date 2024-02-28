@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-84881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AA7886AD09
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:29:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA0C386AD19
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AADD0B2293A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:29:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC0E01C2263F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A4413B2B1;
-	Wed, 28 Feb 2024 11:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651351493BB;
+	Wed, 28 Feb 2024 11:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SteUhdZk"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZE6bK4sj"
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3C912F362;
-	Wed, 28 Feb 2024 11:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B876212F38F;
+	Wed, 28 Feb 2024 11:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119702; cv=none; b=a3GPovyI3eriGG58NBtwzWEbg2ve7+WNSjtiCOktPMzDdMjCxq23EX6e8KF8qq2LTcjJbiK9VqR7J1T3Cj7ycUJqMsCEbdr34xlGlOf/C3je2mMzs9huqI/5nbx/1FN5WKfFG5uWHyN0zKhL7gzgDfRQiTx1a5NVODk5c17D0fo=
+	t=1709119703; cv=none; b=nYXF+kQeENJvxgi2SUsdOq51/kQPgJkYPMfT9pFBYTqZEaABZb0pFEUoKo3tdQksTY8JeWPQoBWFm9JzpR9a8EBcBvG9AjpgvXdHzKTiWuSXR1Kg50jcB+fom7fZi4ZbKntjenPdhuegqp5ijA1T464C8e5N3dhPI6pEJ1uO+OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709119702; c=relaxed/simple;
-	bh=PhCHo+nZepUT5U4u3onobcw9AuCrMUmtfoajPO5Nvcs=;
+	s=arc-20240116; t=1709119703; c=relaxed/simple;
+	bh=5/D2H8iA6Ufzd19sWQrvOhKy6ggsMPXM93NQPtmqEFw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lvRp9zuxG3g977CSL9mYqG53wMKTrhfSYAZQUfMsLerV5e22eZzpH/pPAY2oRvmmp9zX8FLyeJkHRnFK2sQTjbnYVj3K7/0NBggznF/rr3fetYCIB1VFwrphfmydbfelebtMMfC0cFlM8PmWLoxbKQ8bCPyafQRstuJ0wL6wcKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SteUhdZk; arc=none smtp.client-ip=217.70.183.201
+	 In-Reply-To:To:Cc; b=dI1HaRmha7bKOJ2hdIQX9cXp32wo0d6bQV0wk61iUoVl/9QCw6bDuFHuWvOSO3pGEczg6RjCy8s8amdx13AV0Zf4VR/0UhWiBuVCGuusFK/uyd0IIdVNGKiR7vdR85ItNfFDSur82/nM1bUEuARZbsnRhpjk8Sb66LTEA4xPX8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZE6bK4sj; arc=none smtp.client-ip=217.70.183.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 91A091BF215;
-	Wed, 28 Feb 2024 11:28:11 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5A7E11BF205;
+	Wed, 28 Feb 2024 11:28:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709119692;
+	t=1709119693;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=C31sOfsx4Qwt0tMTnh/5231c3KsGYLZuGcmz5uUT5No=;
-	b=SteUhdZkvycZYAZExE9BH3zi8vEQwIAffFlFzp1N4nYCsQbrpIY591yQugm8kp8Ov+zQ4M
-	CfIzZUkDWA05RBenCNXJyOoBXtyNegUbIeUnNA/HODedN7VrVANfM7UnekuWruJXUe0Qif
-	H8CIzQit6IEb1wQEQ1SVLG1bfb0S9gKfRnFybd31i4ti1fqqqt/rMrYUPwOP4iKGw7M5pH
-	HulxRYA1P6c5T/iz2QNsfJyjvwBdA9CiJtAO79wuCsSkLBIqlRPFFwOQW3Plbg+DTv3Tmo
-	Le5DjBQJmT0rhvgvejyVuzi9kp7eRHxSKZ405Xnr7dKXckf24pFb7/9SjZRLCw==
+	bh=hnc2fMbNDrMwlNP05nuoqg0x6uxvqA1VAcuazwBJ2Z4=;
+	b=ZE6bK4sj1PDrbNqpeHte/TwxmSIvNGIUOpi1iQ419L/ddj9l2qejh+6gfw0it6BXMc/GxO
+	OvsA22huB7hpbqPfn7QCWKUwbmGUomvZGIDFivvmiM30+fR+CsARDtWS4J0MB9KuTqj8Ho
+	NvsBgLE4R9JOp8i9MW7GWQOG5GMAUff2+00b/SQPm83aQ9LEWW4y65TlP4n/apqn0vFh4L
+	TFkWLBZWZmKmKN8aN1ay9sy7xvlnvkjF7pJcn8Z+8l/RmQvw5sYN2sKaHC3Y7X3lw3g3Yi
+	BRckKp0BrZDMBBgDmx0f2CQER3ZK+it4IFTIrPMsQWPOgdi/Fd+I592NDuQuWA==
 From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 28 Feb 2024 12:28:00 +0100
-Subject: [PATCH v2 02/30] dt-bindings: gpio: nomadik: add optional ngpios
- property
+Date: Wed, 28 Feb 2024 12:28:01 +0100
+Subject: [PATCH v2 03/30] dt-bindings: gpio: nomadik: add
+ mobileye,eyeq5-gpio compatible
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240228-mbly-gpio-v2-2-3ba757474006@bootlin.com>
+Message-Id: <20240228-mbly-gpio-v2-3-3ba757474006@bootlin.com>
 References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
 In-Reply-To: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
@@ -70,36 +70,51 @@ Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
  Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
  Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
 X-Mailer: b4 0.13.0
 X-GND-Sasl: theo.lebrun@bootlin.com
 
-This GPIO controller can support a lesser number of GPIOs than 32.
-Express that in devicetree using an optional, generic property.
+This GPIO controller is used on the Mobileye EyeQ5 SoC. Add its
+compatible to the dt-bindings. One difference is that the block as
+integrated on EyeQ5 does not support sleep-mode.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../devicetree/bindings/gpio/st,nomadik-gpio.yaml          | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml b/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
-index 69774f36e03f..4080e94702d5 100644
+index 4080e94702d5..8e7f21988e9e 100644
 --- a/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
 +++ b/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
-@@ -51,6 +51,10 @@ properties:
-   gpio-ranges:
-     maxItems: 1
+@@ -19,7 +19,9 @@ properties:
+     pattern: "^gpio@[0-9a-f]+$"
  
-+  ngpios:
-+    minimum: 0
-+    maximum: 32
+   compatible:
+-    const: st,nomadik-gpio
++    enum:
++      - st,nomadik-gpio
++      - mobileye,eyeq5-gpio
+ 
+   reg:
+     maxItems: 1
+@@ -66,6 +68,16 @@ required:
+ 
+ unevaluatedProperties: false
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: mobileye,eyeq5-gpio
++    then:
++      properties:
++        st,supports-sleepmode: false
 +
- required:
-   - compatible
-   - reg
+ examples:
+   - |
+     gpio1: gpio@8012e080 {
 
 -- 
 2.44.0
