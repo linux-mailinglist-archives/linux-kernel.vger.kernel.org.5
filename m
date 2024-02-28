@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-85181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFB1286B1B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F0E086B23E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:46:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92BD6B25A82
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:28:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2BE7B28B54
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3110159589;
-	Wed, 28 Feb 2024 14:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A97B1151CDB;
+	Wed, 28 Feb 2024 14:45:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b="bQNTke6J"
-Received: from refb01.tmes.trendmicro.eu (refb01.tmes.trendmicro.eu [18.185.115.53])
+	dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b="cSzlfyPx"
+Received: from refb02.tmes.trendmicro.eu (refb02.tmes.trendmicro.eu [18.185.115.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2938314F99C
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=18.185.115.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E55D2D022
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:45:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=18.185.115.58
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709130500; cv=fail; b=jV77U9n8ExaXSrtUuMEOxlWAqE4+g112RO9k29ZlnGyixZkiy9BNkqJV6kPC1ELdtuuoOwGHwhg6DrGBp94aEdEfZWdejk9o6p/pasV+SZdOHogvA0biNUsPYpu4joY1LoEaHwzgkfTwpZYTrqAYg3xxhED2vh6BXD3WzKSOrQk=
+	t=1709131546; cv=fail; b=UAvKFNfmuDqaEm/wTrb6xxnlUPZGDJYoI/D6LobhhMg2/MzbGp1qzfIwH5wYpWlFE+7OgHfuy6rf/mT0wXFf42kMDz4Qor/El/DiZTjPsrOn+QE3rUC2C2aCp8rt2ZZgiAvo1PhIKeZ7NVyTW+/jkfhdI1ZztCrNnurGQ5NgNJE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709130500; c=relaxed/simple;
-	bh=o5pnakltMFt3zPlYhNq52eRUmYEc5+2aLLunQf0dl3I=;
+	s=arc-20240116; t=1709131546; c=relaxed/simple;
+	bh=wccHaYRRmdaQrFNTjtIYVVqOXBpIk0wQINyYR90rUZw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QjHGqQktm7rbWA9hgnrTV9Fbd739lhEU0INn4K462fT70Uxm+uciCPQFRIiJA8eO6h9FmGl7Dyp3wSTgyffm1hQ8PV1lGFqS2D/AabIaKGYAD8wFR9gP96S/dLFQuQv++4UBtMCUc8IsME3+sTK28lCgF/EXcfeu9qrc87EWa0I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensynergy.com; spf=pass smtp.mailfrom=opensynergy.com; dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b=bQNTke6J; arc=fail smtp.client-ip=18.185.115.53
+	 MIME-Version:Content-Type; b=GC6ip1Cl3h04XPz4I63Wsm4bA6nn2qEfVei9pLiWkCdeDQg0DA+2UuIutSEGMdTmp3aZpoLqB4DYmhqU4yNBlF+NB5Uppmqq23mGi8sK86yC7j+N8khD6mi6P5wL4YnMWPCbIjdA4gK781DfFb4PE4PcqMe0OkecgEiuDCXQfJo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensynergy.com; spf=pass smtp.mailfrom=opensynergy.com; dkim=pass (2048-bit key) header.d=opensynergy.com header.i=@opensynergy.com header.b=cSzlfyPx; arc=fail smtp.client-ip=18.185.115.58
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensynergy.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensynergy.com
-Received: from 104.47.7.168_.trendmicro.com (unknown [172.21.9.50])
-	by refb01.tmes.trendmicro.eu (Postfix) with ESMTPS id 5D4331004E54B
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:28:10 +0000 (UTC)
-Received: from 104.47.7.168_.trendmicro.com (unknown [172.21.192.213])
-	by repost01.tmes.trendmicro.eu (Postfix) with SMTP id 62FAD10016AC8;
+Received: from 104.47.11.169_.trendmicro.com (unknown [172.21.19.113])
+	by refb02.tmes.trendmicro.eu (Postfix) with ESMTPS id 4F0E110170AC0
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:28:11 +0000 (UTC)
+Received: from 104.47.11.169_.trendmicro.com (unknown [172.21.162.72])
+	by repost01.tmes.trendmicro.eu (Postfix) with SMTP id F2710100017C2;
 	Wed, 28 Feb 2024 14:28:03 +0000 (UTC)
-X-TM-MAIL-RECEIVED-TIME: 1709130483.016000
-X-TM-MAIL-UUID: d40fd90b-a676-4ad8-9119-a6ce98161081
-Received: from DEU01-BE0-obe.outbound.protection.outlook.com (unknown [104.47.7.168])
-	by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 04613100003D3;
+X-TM-MAIL-RECEIVED-TIME: 1709130483.586000
+X-TM-MAIL-UUID: d98f862d-1a46-4034-8414-4368629b174b
+Received: from DEU01-FR2-obe.outbound.protection.outlook.com (unknown [104.47.11.169])
+	by repre01.tmes.trendmicro.eu (Trend Micro Email Security) with ESMTPS id 8F4ED1000030B;
 	Wed, 28 Feb 2024 14:28:03 +0000 (UTC)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G1F3EWAWvF5mlcuMM9Z2/RIsllz73BGfX73/qU1nt8DNUXq/e56BJYBVKIEe3JbF2x3LmPt4vnilQi3qzhmsbiCvayjqsX3kMIT96w3gEuoLsrCqo+4ztf2bdoMf0gAMhKSyJt+b5axDHXO9Orl135M2QpzXNAFSfO9Y8VRCc16B8nkSFeVNM8tLMl1zGGnDoYdCE9Ge/Tj1nwWcECXha9Qt5DL6Mbgp8vTENFe0rO+DZnyeBl5FoTpOfUM+LfTjBLcQlSAFu72Jo+BpQLJUhAcfTfBubpBhy+cwlC+ru8YL2i0DLqTS7Txtv5VcgqFdLweAlEhLh/K2BBxXreA81w==
+ b=RxVlkl4OwPT0L0Y5GVBXYj5+X+AdyjFllF6uLdTHL9tuCqH1CzaDxqxZl8YdnMQOuT2CxOL+N8KNVGPH29fwqhHh97oPTeV/YLc3A2OYlJn6//Kseay6mMK2sc8nDcnNWoJxy6/+HQ5s5i6hz9aOYJ9whErJNkH4IqkVrbNePViUg72E/YIeZHhup+lTl2Zx7MtdZBVJujDPYTTaOtNfPacTd2byeH5b51QlGlPgF+uaClfFlr270+q6v4+2Zt1aIzTOG8rBiGBzL18WckJO+PKqFE2aIdkro6+bMRMWmlzWqWnsFknMYRZyTnRwM4YI1wxvwVsjZqcDF2Mo+IvpgA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vfCCHadleGpKiHoyE1qVPBTdPVQTCDaUuMxCw0+3VHA=;
- b=aAdMv0QDenK2SZz+n71MmLHTjnwb0uWreWWciSCFC7TlNsKWOrIdNHDcwoWLRQ/IQLpnY6XpXH/WK3J0uDMmdCFiCm1rTzZH0gO/pccFzC0Df/sdXVnXKBN8i8T+AWXs0Tnj5auQNyfKxPG6Yohlkwu+SRFAjB2wnd+MrbqOyL0ddK3m35gMiq3Uanmrxx3NrvY+E9vMXI7DFQTHqLZp/D93oo3naljDaqjWGOphzz3dFSxY31t6qSIThPQW9i4GRj0S4ls3nBfWfZnj4Dxl0BWev9W6sWBLVuVRabBDJGVeT+eM2EwHR8ujP9DLXvfS6ikRFlkKDMtLRHkkdfrrGQ==
+ bh=uCmlABCO8fDFjHyDcjgORV1Mb1fcDEegzdNLOOic0D0=;
+ b=A1PY4U/itGyNoAscqWWyPr+oJVd9hyeFs4SJPrvRbXdKW/m0tfMiNqcyXGWcG8N/9yCJL9CMbZorKiW4ttlDD3C2jf19pGYZvk50HYH/Gsai3gW7glVoGThFeETwS5r/IGk3HD0KAuhAcdqR66V/8myVhosGBgryUBJXrjwc3i6mJzeMzkgrhV9Z/k1o0+XDDn2oEVaqe/WXZPv8RrwsKvYxJAe0tdPipcPxyEXPNcAIlYB8FefN0EveatbO2OhunwFMup53xNsGiKfRrJ7h5MEwG9bbjZMdP96/+idFz5BWNYeu5HyjUvexzTaY3PZEfxE8pHpE5wOB3XkVJaSiCw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  217.66.60.4) smtp.rcpttodomain=kernel.org smtp.mailfrom=opensynergy.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none
@@ -68,10 +68,11 @@ To: virtio-dev@lists.oasis-open.org,
 Cc: quic_ztu@quicinc.com,
 	Matti Moell <Matti.Moell@opensynergy.com>,
 	Mikhail Golubev <Mikhail.Golubev@opensynergy.com>,
-	Harald Mommer <harald.mommer@opensynergy.com>
-Subject: [PATCH v1 2/3] virtio-spi: Add virtio-spi.h.
-Date: Wed, 28 Feb 2024 15:27:54 +0100
-Message-Id: <20240228142755.4061-3-Harald.Mommer@opensynergy.com>
+	Harald Mommer <harald.mommer@opensynergy.com>,
+	Harald Mommer <Harald.Mommer@opensynergy.com>
+Subject: [PATCH v1 3/3] virtio-spi: Add virtio SPI driver.
+Date: Wed, 28 Feb 2024 15:27:55 +0100
+Message-Id: <20240228142755.4061-4-Harald.Mommer@opensynergy.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240228142755.4061-1-Harald.Mommer@opensynergy.com>
 References: <20240228142755.4061-1-Harald.Mommer@opensynergy.com>
@@ -84,263 +85,615 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AMS0EPF000001A4:EE_|BE1P281MB2680:EE_
+X-MS-TrafficTypeDiagnostic: AMS0EPF000001A8:EE_|BEZP281MB3062:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 03695004-df64-44f6-15e5-08dc386977ce
+X-MS-Office365-Filtering-Correlation-Id: 51dc0404-23d9-491f-33dc-08dc386977ca
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	hPQELicl0KJHM5c0fBpvkjlxQhydW1Z3mL6Pvmk3kINUdXQLg1W6LKTQoY0xVLknpl4atb/uL6a3uZYtZm9EILxKkOSLTec+u3zBY7ZxiRzPUDoUSf6KycCAkdQe8pSw2pgoNBmQx59vOcq6GynQipNOfw4Rw6/Uo7ApqVOppLfLalMeO5bQUY4wvsbj/5YozdDc+Y9/ZLvKVbJ5Gx1NAfz6pnShZCbexc2gSolMEm1ZuKUvsZYMKZgvFO6f3C6HfLM5wd2hBPmWAWWBLq3ZgWJSnPBEUolgt9I2BtKh/neGMVhhT/VUa9mT6+FScL3CH1loQvA6TuqtO9C9RXvyKehoahx2cT23xYXfkrNFZjBySPnAgJ11NNB3Mi1EsFxM8XDP1xqOigHgQKExmN1KOo7VpCkPYHG1XkK3sc72Qfv0FA56klIsm07ANY0aTEwfFtJnWin71XF61JZVMtcmcTG7Q70pwLMKbcaf1pw7emD8GIy6qYwsewG1xA8F+enSXCX25vm89iL5a4+0mCkJyjskOBVdpShwCUMPEN03lgoVnQIkngbxCiTTHdRxZ/gjJC0RAqhVI1zJnRQXOZF50GRbkTEhHBNmuOpwKQcX+v1OYOUXPU3lnZI+5q6dwWsNzsv/4TMJR6eXgHTg7xNYPBh5g5IqQg5JqXmCbK5u2Xj6he2h80g2p6VwKTeU/7JgxQvgS8tV3+L/YhGvDDfOJb7+mG1z9U+fCJChKF/3QUtLFiS01rhNkiJ5QWG2tfrb
+	1oORbvyab65slbSic3WNN40562uZKH8g44Qbu3Kg5IElBvgXviXuwErDNPCzcnhEoLBmTRooFedXcQ+7Tc3X9OyHk6WRkUuA7zevjTlqJRoApxyJ5qEHyzRppKqZmbiKyIiCelHob9YFg6OYaixJoS+P1W7PNwZhjd1rslc0fr6JCj9X1DbMEmGr9zjhRp2vBJ6+tjv1zNWDm+Btk1+W81imOuBPHT8JPELj5i5lFW+TKWPaxlAdxxy/zZ7XZKhL4HIqB2b31IHAfOfEUHho631yrlleFJDoZh9uMWiTor5+7i9pymj+IYiVjOWDOOwJNLdeQ4dKiJVPac4BvCbXOApd2dC9N6fRXedZ2ds7ulZjeIiEZvRCjQWJWmMiol7GdnhWQL9T7YTxLs1GkXrKunwWjN/er8grErfsCHMAQmiS6++avUOv/HMUri9ZiGb8AnrIMSGMeG5Ly6gs2KygusiK+AlIkMNrQ1o438xy6erJNhNWoOEl0Th8swhq+D+U4A5xs/iBRxX+1GHuivoq0UJ1aW8XCQuU0/PhD3l8UjInt2/4vryb+DpdhRxKNQ/GZopFu307IYlDgi4fc5f2sPhUAcPHTPSNd2OsjingPfUYMCbE/kPqXCn2xXVqMr5Jw0EdHdXhtRXcQ3xrukvSN/snuFqQ+LbzyW/ytU4PxIIhClotK/wBUwsKP3szpK/LM5QDs+Btt198NMeR5SCDu70b/hWCGm9K+cuBwB06rqKEjrJDRsqVaafdXzN3hgBI
 X-Forefront-Antispam-Report:
 	CIP:217.66.60.4;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SR-MAIL-03.open-synergy.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004);DIR:OUT;SFP:1102;
 X-OriginatorOrg: opensynergy.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 14:28:01.1546
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 14:28:01.1448
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 03695004-df64-44f6-15e5-08dc386977ce
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51dc0404-23d9-491f-33dc-08dc386977ca
 X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=800fae25-9b1b-4edc-993d-c939c4e84a64;Ip=[217.66.60.4];Helo=[SR-MAIL-03.open-synergy.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF000001A4.eurprd05.prod.outlook.com
+	AMS0EPF000001A8.eurprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BE1P281MB2680
-X-TM-AS-ERS: 104.47.7.168-0.0.0.0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BEZP281MB3062
+X-TM-AS-ERS: 104.47.11.169-0.0.0.0
 X-TMASE-Version: StarCloud-1.3-9.1.1015-28218.007
-X-TMASE-Result: 10--11.476900-4.000000
-X-TMASE-MatchedRID: iCFo82lRN+nJ+P2VFrJmrNbTOt1RbxD5yiAijCjuVj08Sz17UlfNnyzc
-	BY1cYZWcMpPx8OFzfY3vVaXvN8Hm+HV2KXA5dledcl8xQtDJjP+NZsEXc444sAD8gVkUxyRf/ML
-	WVw0m36wc/67TLVA3Nz5DuftIGbXbh7WxbHud8h0PAv5X53l32wZ56rA8tSWbYUdh2Fo9g6bm+G
-	s9Q6HSkSqWIaOjeKhZVVloj1evxlf0P2k3B8GnhDxl1kIwpaZ64DiXvcLDKwtLzssSnXxLpItLm
-	Ysuoy662mASxyN7woi8HPJVrIH2AQyeroDP4V8LWucEZobOeTTPaW4rD8GWjC6AUFDL7nwFSD/k
-	H/Ym2jL+XkmXDmV7yzsR3s9x8aXjx10k8QqyoAyqiWyHuX1y0KODSWu0oxbK6gfKtA7YhlrtmyE
-	vxwC5ZPzygRMUeOgbJpK4F9wnIiY7AFczfjr/7G7XLR36HrMtyoe6R/u46RZ7/YJ3Y50NfE8JXf
-	jn3aV92kVzoXxGttY=
-X-TMASE-XGENCLOUD: fedd0450-47e8-4b03-a918-1b87bfe3a173-0-0-200-0
-X-TM-Deliver-Signature: 857D7F3D8C4387D40CBEAADF9B9BE7AF
-X-TM-Addin-Auth: zMGgZk9xRr+PfGVyTaUGsku3Fkr4lpQcWDaimzLMLnUcyJkOahnpRO9xLon
-	OQMtF/sXT+sHuvYUjAEaEcBZjQHceBs86k+dGTdPzfmuxJx+pq/a4eJ9uMkViyIJxhhrQaOisop
-	bwpCU8lWpJZ7lVMAGoC99qK2J2Z7z6SJuqf0RHheeWX0FLR7sQH6akmVgf1DrF2C5iWhUnHcAC+
-	4tVn03kWToc4L4sJJPKskJaE51aB6Z7eN5KhVwt6xIVymcD3s1l9VFZgJWQeLnfaAzPB++JRIIj
-	E3gk691fr5KVPlA=.cesp1uzlXJ+fOXbwRTFHHRlwX1nTXPXfE/e9xhE6VKMdwtT1beUJbPHaUh
-	rmsl2uLzIEGcRKj6EJ+wNCw/KpZSZaahDdlWVGRnP65bN2hqzG5vsIwFKLJth2Ca6WlJw5SvzmL
-	vN9VlQsVsuMZKhKjyfygC1WOX259/9jioK7L60YS0z585BqPjlu7ZjPWF84Ff7/1KMM5RjdvFM7
-	2k9tz8nWv8cnQHu7aYXQuhzVdD5IEyxbJH6GW+GpKrelJuPJ29bnxjk/Cn+KtRVGVRnMCuFu04F
-	YRZaKHpwg3U4KBNH5oB2rNxb5hCMlPsk2rUETxkPfEqX/V9a9gjl2Phk1XA==
+X-TMASE-Result: 10--13.787800-4.000000
+X-TMASE-MatchedRID: HE8hON2ynzcAsgl6PZgqJOkI20Cl55uDgz5VmKZ8x87hCm8am+SP54vP
+	iBq/iW91MpPx8OFzfY0zJJn1odE+3zVxLV/TD3CFsX4aFYAMIYPIQQwRv8gPjskXIF34mJLKOnp
+	NWpJkOQuTIJr1EFP8Nn7U1eUtsS59MsZYFnBjXTWF3V/JMHm7u781t3rGD+B++wWpop+OSdw4As
+	RtUisW+DmvcaGRO/Oh31jKtZ+jlPPy8yPa5oCwl4WEan0Y08OtfJ3eYkN7pTES6lv5p9KHVZtjb
+	vEw2yYya+t98YxCbwSI47i1GQb7nS1CuW+6P3e+BA/ZR5qnp8O4UL3v//+17eY6m/6o4hAKqFty
+	1HMHrV6ZNA2b+iaOd6EA84aOEbsGODSqp4i2jlcKonRFsndtvYo3KQs0iA9hiGVApiRLArkow1L
+	HBmlcNps6E2fc3GjdUTh5CoFhalLaej9gO1Z/MOBHyXZCGbHqfq7xWexVq1yyBw15H24MRz/m+V
+	kiqierl1NYlxxvWUwtgEZJUHc75WBnDtEasdEgiL+RrlWsewrY2awIDlDmun7ZRtYqlSvxFiudH
+	R1ngLGK74BU3ZTzPXKQ85FZRoOF3WI5i77IXCnFBwzJyVLv9xqklYkipn3PS3PLJOcIhnVs7ZYn
+	R9ZralncYgN9Ud2Z6xA0Ava73nBcOnqpgy+bqxEuOqgkm3/1h7z+gmKKj0oDf6I8jFx+tlmLzQc
+	f60Tu0K2S3XHNPUe/2tJ3foSBQiPzRlrdFGDwNEHQipqsVMg1AAEuBf5okkD+1rs1KoVDLZv5Oe
+	M/dOFDtKdYRNRb+w==
+X-TMASE-XGENCLOUD: 7c874ead-db80-4f39-b269-9a19b31ed382-0-0-200-0
+X-TM-Deliver-Signature: 509002F337D67242CDE88B54126CCC28
+X-TM-Addin-Auth: FQ6XPoiTNN9ZjxNErXwyWrGmqUi3bCzO2XF7gHNADvvmbipyPmMYZLD+/W6
+	uxOdGEP2cyLdAN8ajPHw3MKoz95OwDhqs6poXMvQwc2Aa7jq8bq/Zgp9MN+CERDjSPcLbS42QHs
+	Za2I4hQ9uOCA2NemL4QCFSdO3ST/qofvCv2Zepm43BRB9LdeuOKKNgXkCZrtMRa1Kgzg0lwQFJb
+	BEXGihdLZIrePEW2Jklq0oMvbEt/mxyX2BOTlKkFMPTZuEh+hQb6yBJwHUNTl9qMymtqU9fSviF
+	G39YY1brbS5gyn0=.mkVmxQ+K9MIIIw/41gq+3+PWCwavUg5USdqd6HSdHrFmwRvt6zOSDmvDhc
+	fX9DpmJGDua1BR4ILXkcHi7H0rckw95YDS4Rdc8uGTb5dhajn9CzCKgDpDN0kRcySy0ic6PQms+
+	sHM+4Wbo90YqjZgPdZafj1z3cQNncILXDUCsjF3iMKGR6zutMgDPO4obgTDKWoVuovWYi6r9v77
+	jVB05kxynP9IKEhZGwiqQQUIhGYSL2S0B4JP9p8dOsBI+14FVvnF3MCiuJ8aIZUnZ/88wVnF4HM
+	RMm2UdjFm1RNV5Ut5qMgfsy70dxVXoqVoAlGWQz0WhWhY9RPGtouWCD2sog==
 X-TM-Addin-ProductCode: EMS
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=opensynergy.com;
 	s=TM-DKIM-20210503141657; t=1709130483;
-	bh=o5pnakltMFt3zPlYhNq52eRUmYEc5+2aLLunQf0dl3I=; l=8276;
+	bh=wccHaYRRmdaQrFNTjtIYVVqOXBpIk0wQINyYR90rUZw=; l=16816;
 	h=From:To:Date;
-	b=bQNTke6JXcR90Ve7TR9hgYWcXqea8O7YJHhn+nTtZQRngS/uwXo2tQrJnQRmY7h9g
-	 FSvU7JvvFKV663fW7tS+2/ggI9buo0uhyWHkGSH/KXnDwts64rl02RW0pTtfrvabMs
-	 2MQLIwOxfMP2aYlJKShswRCmEHcOlmtVF7dczQu2WEnzcvJ07n4KdbHdR3nIH6YIl3
-	 yZqQJYIWJAjWCWU7Q9EFKPBZhQL7krTZ+SMoELjZ0loKDq5lqAX8slWvpxpLEnX5MX
-	 iXio27id8oUIQl1qo5OWd3/GMMcWQtfRIIVhBAwIuM9ekPLrdRASd8Jqwz0hyxKlVY
-	 e5jxLi6MJ2S5g==
+	b=cSzlfyPxPYllTChLg6zDrAdzo5nRMpkF7ipMfRzu1TdPby25aOhfu5OcAAeeYq7v8
+	 K0fcxwGDwJbrBzIfF9TV84yxPLUSQV9YrVtR4enjwZOdbsJJLwX9aAPNLUIfXrh/7E
+	 cS+VKplCYIO446W6NZWwUoOnKQHdJBtxel0dgl/PtCrttphl58Ui9o/F5aFu2rn83s
+	 ngQH4bj6CGDR2U3n/MaRnmHkm32P7Xq0skHxwnrraxRG18wP1TLeab38a1KeWyKIV9
+	 T7NIuGewdS/xMXikuQqOwwb90e6S4RgSzIeSNZdV9TBHoq1TPrkfAdgo+on5X2kH/u
+	 clUKj3dbCm7kA==
 
 From: Harald Mommer <harald.mommer@opensynergy.com>
 
-Add virtio-spi.h header for virtio SPI.
+This is the virtio SPI Linux kernel driver.
 
-Signed-off-by: Harald Mommer <harald.mommer@opensynergy.com>
-Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Harald Mommer <Harald.Mommer@opensynergy.com>
 ---
- include/uapi/linux/virtio_spi.h | 185 ++++++++++++++++++++++++++++++++
- 1 file changed, 185 insertions(+)
- create mode 100644 include/uapi/linux/virtio_spi.h
+ MAINTAINERS              |   6 +
+ drivers/spi/Kconfig      |  11 +
+ drivers/spi/Makefile     |   1 +
+ drivers/spi/spi-virtio.c | 480 +++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 498 insertions(+)
+ create mode 100644 drivers/spi/spi-virtio.c
 
-diff --git a/include/uapi/linux/virtio_spi.h b/include/uapi/linux/virtio_spi.h
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2ecaaec6a6bf..536fad147724 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -23391,6 +23391,12 @@ S:	Maintained
+ F:	include/uapi/linux/virtio_snd.h
+ F:	sound/virtio/*
+ 
++VIRTIO SPI DRIVER
++M:	Harald Mommer <harald.mommer@opensynergy.com>
++S:	Maintained
++F:	include/uapi/linux/virtio_spi.h
++F:	drivers/spi/spi-virtio.c
++
+ VIRTUAL BOX GUEST DEVICE DRIVER
+ M:	Hans de Goede <hdegoede@redhat.com>
+ M:	Arnd Bergmann <arnd@arndb.de>
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index ddae0fde798e..ff06e595679a 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -1125,6 +1125,17 @@ config SPI_UNIPHIER
+ 
+ 	  If your SoC supports SCSSI, say Y here.
+ 
++config SPI_VIRTIO
++	tristate "Virtio SPI Controller"
++	depends on SPI_MASTER && VIRTIO
++	help
++	  This enables the Virtio SPI driver.
++
++	  Virtio SPI is an SPI driver for virtual machines using Virtio.
++
++	  If your Linux is a virtual machine using Virtio, say Y here.
++	  If unsure, say N.
++
+ config SPI_XCOMM
+ 	tristate "Analog Devices AD-FMCOMMS1-EBZ SPI-I2C-bridge driver"
+ 	depends on I2C
+diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+index 4ff8d725ba5e..ff2243e44e00 100644
+--- a/drivers/spi/Makefile
++++ b/drivers/spi/Makefile
+@@ -146,6 +146,7 @@ spi-thunderx-objs			:= spi-cavium.o spi-cavium-thunderx.o
+ obj-$(CONFIG_SPI_THUNDERX)		+= spi-thunderx.o
+ obj-$(CONFIG_SPI_TOPCLIFF_PCH)		+= spi-topcliff-pch.o
+ obj-$(CONFIG_SPI_UNIPHIER)		+= spi-uniphier.o
++obj-$(CONFIG_SPI_VIRTIO)		+= spi-virtio.o
+ obj-$(CONFIG_SPI_XCOMM)		+= spi-xcomm.o
+ obj-$(CONFIG_SPI_XILINX)		+= spi-xilinx.o
+ obj-$(CONFIG_SPI_XLP)			+= spi-xlp.o
+diff --git a/drivers/spi/spi-virtio.c b/drivers/spi/spi-virtio.c
 new file mode 100644
-index 000000000000..d6923f4080b4
+index 000000000000..7e1a75f1b45a
 --- /dev/null
-+++ b/include/uapi/linux/virtio_spi.h
-@@ -0,0 +1,185 @@
-+/* SPDX-License-Identifier: BSD-3-Clause */
++++ b/drivers/spi/spi-virtio.c
+@@ -0,0 +1,480 @@
++// SPDX-License-Identifier: GPL-2.0-only
 +/*
++ * SPI bus driver for the Virtio SPI controller
 + * Copyright (C) 2023 OpenSynergy GmbH
 + */
-+#ifndef _LINUX_VIRTIO_VIRTIO_SPI_H
-+#define _LINUX_VIRTIO_VIRTIO_SPI_H
 +
-+#include <linux/types.h>
-+#include <linux/virtio_config.h>
-+#include <linux/virtio_ids.h>
-+#include <linux/virtio_types.h>
++#include <linux/completion.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/spi/spi.h>
++#include <linux/stddef.h>
++#include <linux/virtio.h>
++#include <linux/virtio_ring.h>
++#include <linux/virtio_spi.h>
 +
-+/* Sample data on trailing clock edge */
-+#define VIRTIO_SPI_CPHA (1 << 0)
-+/* Clock is high when IDLE */
-+#define VIRTIO_SPI_CPOL (1 << 1)
-+/* Chip Select is active high */
-+#define VIRTIO_SPI_CS_HIGH (1 << 2)
-+/* Transmit LSB first */
-+#define VIRTIO_SPI_MODE_LSB_FIRST (1 << 3)
-+/* Loopback mode */
-+#define VIRTIO_SPI_MODE_LOOP (1 << 4)
++struct virtio_spi_req {
++	struct completion completion;
++	struct spi_transfer_head transfer_head	____cacheline_aligned;
++	const uint8_t *tx_buf			____cacheline_aligned;
++	uint8_t *rx_buf				____cacheline_aligned;
++	struct spi_transfer_result result	____cacheline_aligned;
++};
++
++/* virtio_spi private data structure */
++struct virtio_spi_priv {
++	/* Virtio SPI message */
++	struct virtio_spi_req spi_req;
++	/* The virtio device we're associated with */
++	struct virtio_device *vdev;
++	/* Pointer to the virtqueue */
++	struct virtqueue *vq;
++	/* Copy of config space mode_func_supported */
++	u32 mode_func_supported;
++	/* Copy of config space max_freq_hz */
++	u32 max_freq_hz;
++};
++
++static struct spi_board_info board_info = {
++	.modalias = "spi-virtio",
++};
++
++static void virtio_spi_msg_done(struct virtqueue *vq)
++{
++	struct virtio_spi_req *req;
++	unsigned int len;
++
++	while ((req = virtqueue_get_buf(vq, &len)))
++		complete(&req->completion);
++}
 +
 +/*
-+ * All config fields are read-only for the Virtio SPI driver
++ *       .   .      .    .    .   .   .   .   .   .
++ * Delay + A +      + B  +    + C + D + E + F + A +
++ *       .   .      .    .    .   .   .   .   .   .
++ *    ___.   .      .    .    .   .   .___.___.   .
++ * CS#   |___.______.____.____.___.___|   .   |___._____________
++ *       .   .      .    .    .   .   .   .   .   .
++ *       .   .      .    .    .   .   .   .   .   .
++ * SCLK__.___.___NNN_____NNN__.___.___.___.___.___.___NNN_______
 + *
-+ * @cs_max_number: maximum number of chipselect the host SPI controller
-+ *   supports.
-+ * @cs_change_supported: indicates if the host SPI controller supports to toggle
-+ * chipselect after each transfer in one message:
-+ *   0: unsupported, chipselect will be kept in active state throughout the
-+ *      message transaction;
-+ *   1: supported.
-+ *   Note: Message here contains a sequence of SPI transfers.
-+ * @tx_nbits_supported: indicates the supported number of bit for writing:
-+ *   bit 0: DUAL (2-bit transfer), 1 for supported
-+ *   bit 1: QUAD (4-bit transfer), 1 for supported
-+ *   bit 2: OCTAL (8-bit transfer), 1 for supported
-+ *   other bits are reserved as 0, 1-bit transfer is always supported.
-+ * @rx_nbits_supported: indicates the supported number of bit for reading:
-+ *   bit 0: DUAL (2-bit transfer), 1 for supported
-+ *   bit 1: QUAD (4-bit transfer), 1 for supported
-+ *   bit 2: OCTAL (8-bit transfer), 1 for supported
-+ *   other bits are reserved as 0, 1-bit transfer is always supported.
-+ * @bits_per_word_mask: mask indicating which values of bits_per_word are
-+ *   supported. If not set, no limitation for bits_per_word.
-+ * @mode_func_supported: indicates the following features are supported or not:
-+ *   bit 0-1: CPHA feature
-+ *     0b00: invalid, should support as least one CPHA setting
-+ *     0b01: supports CPHA=0 only
-+ *     0b10: supports CPHA=1 only
-+ *     0b11: supports CPHA=0 and CPHA=1.
-+ *   bit 2-3: CPOL feature
-+ *     0b00: invalid, should support as least one CPOL setting
-+ *     0b01: supports CPOL=0 only
-+ *     0b10: supports CPOL=1 only
-+ *     0b11: supports CPOL=0 and CPOL=1.
-+ *   bit 4: chipselect active high feature, 0 for unsupported and 1 for
-+ *     supported, chipselect active low should always be supported.
-+ *   bit 5: LSB first feature, 0 for unsupported and 1 for supported,
-+ *     MSB first should always be supported.
-+ *   bit 6: loopback mode feature, 0 for unsupported and 1 for supported,
-+ *     normal mode should always be supported.
-+ * @max_freq_hz: the maximum clock rate supported in Hz unit, 0 means no
-+ *   limitation for transfer speed.
-+ * @max_word_delay_ns: the maximum word delay supported in ns unit,
-+ *   0 means word delay feature is unsupported.
-+ *   Note: Just as one message contains a sequence of transfers,
-+ *         one transfer may contain a sequence of words.
-+ * @max_cs_setup_ns: the maximum delay supported after chipselect is asserted,
-+ *   in ns unit, 0 means delay is not supported to introduce after chipselect is
-+ *   asserted.
-+ * @max_cs_hold_ns: the maximum delay supported before chipselect is deasserted,
-+ *   in ns unit, 0 means delay is not supported to introduce before chipselect
-+ *   is deasserted.
-+ * @max_cs_incative_ns: maximum delay supported after chipselect is deasserted,
-+ *   in ns unit, 0 means delay is not supported to introduce after chipselect is
-+ *   deasserted.
++ * NOTE: 1st transfer has two words, the delay between these two words are
++ * 'B' in the diagram.
++ *
++ * A => struct spi_device -> cs_setup
++ * B => max{struct spi_transfer -> word_delay, struct spi_device -> word_delay}
++ *   Note: spi_device and spi_transfer both have word_delay, Linux
++ *         choose the bigger one, refer to _spi_xfer_word_delay_update function
++ * C => struct spi_transfer -> delay
++ * D => struct spi_device -> cs_hold
++ * E => struct spi_device -> cs_inactive
++ * F => struct spi_transfer -> cs_change_delay
++ *
++ * So the corresponding relationship:
++ * A <===> cs_setup_ns (after CS asserted)
++ * B <===> word_delay_ns (no matter with CS)
++ * C+D <===> cs_delay_hold_ns (before CS deasserted)
++ * E+F <===> cs_change_delay_inactive_ns (after CS deasserted, these two
++ * values are also recommended in the Linux driver to be added up)
 + */
-+struct virtio_spi_config {
-+	/* # of /dev/spidev<bus_num>.CS with CS=0..chip_select_max_number -1 */
-+	__u8 cs_max_number;
-+	__u8 cs_change_supported;
-+#define VIRTIO_SPI_RX_TX_SUPPORT_DUAL (1 << 0)
-+#define VIRTIO_SPI_RX_TX_SUPPORT_QUAD (1 << 1)
-+#define VIRTIO_SPI_RX_TX_SUPPORT_OCTAL (1 << 2)
-+	__u8 tx_nbits_supported;
-+	__u8 rx_nbits_supported;
-+	__le32 bits_per_word_mask;
-+#define VIRTIO_SPI_MF_SUPPORT_CPHA_0 (1 << 0)
-+#define VIRTIO_SPI_MF_SUPPORT_CPHA_1 (1 << 1)
-+#define VIRTIO_SPI_MF_SUPPORT_CPOL_0 (1 << 2)
-+#define VIRTIO_SPI_MF_SUPPORT_CPOL_1 (1 << 3)
-+#define VIRTIO_SPI_MF_SUPPORT_CS_HIGH (1 << 4)
-+#define VIRTIO_SPI_MF_SUPPORT_LSB_FIRST (1 << 5)
-+#define VIRTIO_SPI_MF_SUPPORT_LOOPBACK (1 << 6)
-+	__le32 mode_func_supported;
-+	__le32 max_freq_hz;
-+	__le32 max_word_delay_ns;
-+	__le32 max_cs_setup_ns;
-+	__le32 max_cs_hold_ns;
-+	__le32 max_cs_inactive_ns;
++static int virtio_spi_set_delays(struct spi_transfer_head *th,
++				 struct spi_device *spi,
++				 struct spi_transfer *xfer)
++{
++	int cs_setup;
++	int cs_word_delay_xfer;
++	int cs_word_delay_spi;
++	int delay;
++	int cs_hold;
++	int cs_inactive;
++	int cs_change_delay;
++
++	cs_setup = spi_delay_to_ns(&spi->cs_setup, xfer);
++	if (cs_setup < 0) {
++		dev_warn(&spi->dev, "Cannot convert cs_setup\n");
++		return cs_setup;
++	}
++	th->cs_setup_ns = cpu_to_le32((u32)cs_setup);
++
++	cs_word_delay_xfer = spi_delay_to_ns(&xfer->word_delay, xfer);
++	if (cs_word_delay_xfer < 0) {
++		dev_warn(&spi->dev, "Cannot convert cs_word_delay_xfer\n");
++		return cs_word_delay_xfer;
++	}
++	cs_word_delay_spi = spi_delay_to_ns(&spi->word_delay, xfer);
++	if (cs_word_delay_spi < 0) {
++		dev_warn(&spi->dev, "Cannot convert cs_word_delay_spi\n");
++		return cs_word_delay_spi;
++	}
++	if (cs_word_delay_spi > cs_word_delay_xfer)
++		th->word_delay_ns = cpu_to_le32((u32)cs_word_delay_spi);
++	else
++		th->word_delay_ns = cpu_to_le32((u32)cs_word_delay_xfer);
++
++	delay = spi_delay_to_ns(&xfer->delay, xfer);
++	if (delay < 0) {
++		dev_warn(&spi->dev, "Cannot convert delay\n");
++		return delay;
++	}
++	cs_hold = spi_delay_to_ns(&spi->cs_hold, xfer);
++	if (cs_hold < 0) {
++		dev_warn(&spi->dev, "Cannot convert cs_hold\n");
++		return cs_hold;
++	}
++	th->cs_delay_hold_ns = cpu_to_le32((u32)delay + (u32)cs_hold);
++
++	cs_inactive = spi_delay_to_ns(&spi->cs_inactive, xfer);
++	if (cs_inactive < 0) {
++		dev_warn(&spi->dev, "Cannot convert cs_inactive\n");
++		return cs_inactive;
++	}
++	cs_change_delay = spi_delay_to_ns(&xfer->cs_change_delay, xfer);
++	if (cs_change_delay < 0) {
++		dev_warn(&spi->dev, "Cannot convert cs_change_delay\n");
++		return cs_change_delay;
++	}
++	th->cs_change_delay_inactive_ns =
++		cpu_to_le32((u32)cs_inactive + (u32)cs_change_delay);
++
++	return 0;
++}
++
++static int virtio_spi_transfer_one(struct spi_controller *ctrl,
++				   struct spi_device *spi,
++				   struct spi_transfer *xfer)
++{
++	struct virtio_spi_priv *priv = spi_controller_get_devdata(ctrl);
++	struct virtio_spi_req *spi_req = &priv->spi_req;
++	struct spi_transfer_head *th;
++	struct scatterlist sg_out_head, sg_out_payload;
++	struct scatterlist sg_in_result, sg_in_payload;
++	struct scatterlist *sgs[4];
++	unsigned int outcnt = 0u;
++	unsigned int incnt = 0u;
++	int ret;
++
++	th = &spi_req->transfer_head;
++
++	/* Fill struct spi_transfer_head */
++	th->chip_select_id = spi_get_chipselect(spi, 0);
++	th->bits_per_word = spi->bits_per_word;
++	th->cs_change = xfer->cs_change;
++	th->tx_nbits = xfer->tx_nbits;
++	th->rx_nbits = xfer->rx_nbits;
++	th->reserved[0] = 0;
++	th->reserved[1] = 0;
++	th->reserved[2] = 0;
++
++	BUILD_BUG_ON(VIRTIO_SPI_CPHA != SPI_CPHA);
++	BUILD_BUG_ON(VIRTIO_SPI_CPOL != SPI_CPOL);
++	BUILD_BUG_ON(VIRTIO_SPI_CS_HIGH != SPI_CS_HIGH);
++	BUILD_BUG_ON(VIRTIO_SPI_MODE_LSB_FIRST != SPI_LSB_FIRST);
++
++	th->mode = cpu_to_le32(spi->mode & (SPI_LSB_FIRST | SPI_CS_HIGH |
++					    SPI_CPOL | SPI_CPHA));
++	if ((spi->mode & SPI_LOOP) != 0)
++		th->mode |= cpu_to_le32(VIRTIO_SPI_MODE_LOOP);
++
++	th->freq = cpu_to_le32(xfer->speed_hz);
++
++	ret = virtio_spi_set_delays(th, spi, xfer);
++	if (ret)
++		goto msg_done;
++
++	/* Set buffers */
++	spi_req->tx_buf = xfer->tx_buf;
++	spi_req->rx_buf = xfer->rx_buf;
++
++	/* Prepare sending of virtio message */
++	reinit_completion(&spi_req->completion);
++
++	sg_init_one(&sg_out_head, th, sizeof(*th));
++	sgs[outcnt] = &sg_out_head;
++	outcnt++;
++
++	if (spi_req->tx_buf) {
++		sg_init_one(&sg_out_payload, spi_req->tx_buf, xfer->len);
++		sgs[outcnt] = &sg_out_payload;
++		outcnt++;
++	}
++
++	if (spi_req->rx_buf) {
++		sg_init_one(&sg_in_payload, spi_req->rx_buf, xfer->len);
++		sgs[outcnt] = &sg_in_payload;
++		incnt++;
++	}
++
++	sg_init_one(&sg_in_result, &spi_req->result,
++		    sizeof(struct spi_transfer_result));
++	sgs[outcnt + incnt] = &sg_in_result;
++	incnt++;
++
++	ret = virtqueue_add_sgs(priv->vq, sgs, outcnt, incnt, spi_req,
++				GFP_KERNEL);
++	if (ret)
++		goto msg_done;
++
++	/* Simple implementation: There can be only one transfer in flight */
++	virtqueue_kick(priv->vq);
++
++	wait_for_completion(&priv->spi_req.completion);
++
++	/* Read result from message and translate return code */
++	switch (priv->spi_req.result.result) {
++	case VIRTIO_SPI_TRANS_OK:
++		/* ret is 0 */
++		break;
++	case VIRTIO_SPI_PARAM_ERR:
++		ret = -EINVAL;
++		break;
++	case VIRTIO_SPI_TRANS_ERR:
++		ret = -EIO;
++		break;
++	default: /* Protocol violation */
++		ret = -EIO;
++		break;
++	}
++
++msg_done:
++	if (ret)
++		ctrl->cur_msg->status = ret;
++
++	return ret;
++}
++
++static void virtio_spi_read_config(struct virtio_device *vdev)
++{
++	struct spi_controller *ctrl = dev_get_drvdata(&vdev->dev);
++	struct virtio_spi_priv *priv = vdev->priv;
++	u8 cs_max_number;
++	u8 tx_nbits_supported;
++	u8 rx_nbits_supported;
++
++	cs_max_number = virtio_cread8(vdev, offsetof(struct virtio_spi_config,
++						     cs_max_number));
++	ctrl->num_chipselect = cs_max_number;
++
++	/* Set the mode bits which are understood by this driver */
++	priv->mode_func_supported =
++		virtio_cread32(vdev, offsetof(struct virtio_spi_config,
++					      mode_func_supported));
++	ctrl->mode_bits = priv->mode_func_supported &
++			  (VIRTIO_SPI_CS_HIGH | VIRTIO_SPI_MODE_LSB_FIRST);
++	if ((priv->mode_func_supported & VIRTIO_SPI_MF_SUPPORT_CPHA_1) != 0)
++		ctrl->mode_bits |= VIRTIO_SPI_CPHA;
++	if ((priv->mode_func_supported & VIRTIO_SPI_MF_SUPPORT_CPOL_1) != 0)
++		ctrl->mode_bits |= VIRTIO_SPI_CPOL;
++	if ((priv->mode_func_supported & VIRTIO_SPI_MF_SUPPORT_LSB_FIRST) != 0)
++		ctrl->mode_bits |= SPI_LSB_FIRST;
++	if ((priv->mode_func_supported & VIRTIO_SPI_MF_SUPPORT_LOOPBACK) != 0)
++		ctrl->mode_bits |= SPI_LOOP;
++	tx_nbits_supported =
++		virtio_cread8(vdev, offsetof(struct virtio_spi_config,
++					     tx_nbits_supported));
++	if ((tx_nbits_supported & VIRTIO_SPI_RX_TX_SUPPORT_DUAL) != 0)
++		ctrl->mode_bits |= SPI_TX_DUAL;
++	if ((tx_nbits_supported & VIRTIO_SPI_RX_TX_SUPPORT_QUAD) != 0)
++		ctrl->mode_bits |= SPI_TX_QUAD;
++	if ((tx_nbits_supported & VIRTIO_SPI_RX_TX_SUPPORT_OCTAL) != 0)
++		ctrl->mode_bits |= SPI_TX_OCTAL;
++	rx_nbits_supported =
++		virtio_cread8(vdev, offsetof(struct virtio_spi_config,
++					     rx_nbits_supported));
++	if ((rx_nbits_supported & VIRTIO_SPI_RX_TX_SUPPORT_DUAL) != 0)
++		ctrl->mode_bits |= SPI_RX_DUAL;
++	if ((rx_nbits_supported & VIRTIO_SPI_RX_TX_SUPPORT_QUAD) != 0)
++		ctrl->mode_bits |= SPI_RX_QUAD;
++	if ((rx_nbits_supported & VIRTIO_SPI_RX_TX_SUPPORT_OCTAL) != 0)
++		ctrl->mode_bits |= SPI_RX_OCTAL;
++
++	ctrl->bits_per_word_mask =
++		virtio_cread32(vdev, offsetof(struct virtio_spi_config,
++					      bits_per_word_mask));
++
++	priv->max_freq_hz =
++		virtio_cread32(vdev, offsetof(struct virtio_spi_config,
++					      max_freq_hz));
++}
++
++static int virtio_spi_find_vqs(struct virtio_spi_priv *priv)
++{
++	struct virtqueue *vq;
++
++	vq = virtio_find_single_vq(priv->vdev, virtio_spi_msg_done, "spi-rq");
++	if (IS_ERR(vq))
++		return (int)PTR_ERR(vq);
++	priv->vq = vq;
++	return 0;
++}
++
++/* Function must not be called before virtio_spi_find_vqs() has been run */
++static void virtio_spi_del_vq(struct virtio_device *vdev)
++{
++	virtio_reset_device(vdev);
++	vdev->config->del_vqs(vdev);
++}
++
++static int virtio_spi_validate(struct virtio_device *vdev)
++{
++	/*
++	 * SPI needs always access to the config space.
++	 * Check that the driver can access the config space
++	 */
++	if (!vdev->config->get) {
++		dev_err(&vdev->dev, "%s failure: config access disabled\n",
++			__func__);
++		return -EINVAL;
++	}
++
++	if (!virtio_has_feature(vdev, VIRTIO_F_VERSION_1)) {
++		dev_err(&vdev->dev,
++			"device does not comply with spec version 1.x\n");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int virtio_spi_probe(struct virtio_device *vdev)
++{
++	struct device_node *np = vdev->dev.parent->of_node;
++	struct virtio_spi_priv *priv;
++	struct spi_controller *ctrl;
++	int err;
++	u32 bus_num;
++	u16 csi;
++
++	ctrl = devm_spi_alloc_host(&vdev->dev, sizeof(*priv));
++	if (!ctrl) {
++		dev_err(&vdev->dev, "Kernel memory exhausted in %s()\n",
++			__func__);
++		return -ENOMEM;
++	}
++
++	priv = spi_controller_get_devdata(ctrl);
++	priv->vdev = vdev;
++	vdev->priv = priv;
++	dev_set_drvdata(&vdev->dev, ctrl);
++
++	init_completion(&priv->spi_req.completion);
++
++	err = of_property_read_u32(np, "spi,bus-num", &bus_num);
++	if (!err && bus_num <= S16_MAX)
++		ctrl->bus_num = (s16)bus_num;
++
++	virtio_spi_read_config(vdev);
++
++	/* Method to do a single SPI transfer */
++	ctrl->transfer_one = virtio_spi_transfer_one;
++
++	/* Initialize virtqueues */
++	err = virtio_spi_find_vqs(priv);
++	if (err) {
++		dev_err(&vdev->dev, "Cannot setup virtqueues\n");
++		return err;
++	}
++
++	err = spi_register_controller(ctrl);
++	if (err) {
++		dev_err(&vdev->dev, "Cannot register controller\n");
++		goto err_return;
++	}
++
++	board_info.max_speed_hz = priv->max_freq_hz;
++	/* spi_new_device() currently does not use bus_num but better set it */
++	board_info.bus_num = (u16)ctrl->bus_num;
++
++	/* Add chip selects to controller */
++	for (csi = 0; csi < ctrl->num_chipselect; csi++) {
++		dev_dbg(&vdev->dev, "Setting up CS=%u\n", csi);
++		board_info.chip_select = csi;
++		/* TODO: Discuss setting of board_info.mode */
++		if (!(priv->mode_func_supported & VIRTIO_SPI_CS_HIGH))
++			board_info.mode = SPI_MODE_0;
++		else
++			board_info.mode = SPI_MODE_0 | SPI_CS_HIGH;
++		if (!spi_new_device(ctrl, &board_info)) {
++			dev_err(&vdev->dev, "Cannot setup device %u\n", csi);
++			spi_unregister_controller(ctrl);
++			err = -ENODEV;
++			goto err_return;
++		}
++	}
++
++	return 0;
++
++err_return:
++	vdev->config->del_vqs(vdev);
++	return err;
++}
++
++static void virtio_spi_remove(struct virtio_device *vdev)
++{
++	struct spi_controller *ctrl = dev_get_drvdata(&vdev->dev);
++
++	/* Order: 1.) unregister controller, 2.) remove virtqueue */
++	spi_unregister_controller(ctrl);
++	virtio_spi_del_vq(vdev);
++}
++
++static int virtio_spi_freeze(struct virtio_device *vdev)
++{
++	struct device *dev = &vdev->dev;
++	struct spi_controller *ctrl = dev_get_drvdata(dev);
++	int ret;
++
++	/* Stop the queue running */
++	ret = spi_controller_suspend(ctrl);
++	if (ret) {
++		dev_warn(dev, "cannot suspend controller (%d)\n", ret);
++		return ret;
++	}
++
++	virtio_spi_del_vq(vdev);
++	return 0;
++}
++
++static int virtio_spi_restore(struct virtio_device *vdev)
++{
++	struct device *dev = &vdev->dev;
++	struct spi_controller *ctrl = dev_get_drvdata(dev);
++	int ret;
++
++	ret = virtio_spi_find_vqs(vdev->priv);
++	if (ret) {
++		dev_err(dev, "problem starting vqueue (%d)\n", ret);
++		return ret;
++	}
++
++	ret = spi_controller_resume(ctrl);
++	if (ret)
++		dev_err(dev, "problem resuming controller (%d)\n", ret);
++
++	return ret;
++}
++
++static struct virtio_device_id virtio_spi_id_table[] = {
++	{ VIRTIO_ID_SPI, VIRTIO_DEV_ANY_ID },
++	{ 0 },
 +};
 +
-+/*
-+ * @chip_select_id: chipselect index the SPI transfer used.
-+ *
-+ * @bits_per_word: the number of bits in each SPI transfer word.
-+ *
-+ * @cs_change: whether to deselect device after finishing this transfer
-+ *     before starting the next transfer, 0 means cs keep asserted and
-+ *     1 means cs deasserted then asserted again.
-+ *
-+ * @tx_nbits: bus width for write transfer.
-+ *     0,1: bus width is 1, also known as SINGLE
-+ *     2  : bus width is 2, also known as DUAL
-+ *     4  : bus width is 4, also known as QUAD
-+ *     8  : bus width is 8, also known as OCTAL
-+ *     other values are invalid.
-+ *
-+ * @rx_nbits: bus width for read transfer.
-+ *     0,1: bus width is 1, also known as SINGLE
-+ *     2  : bus width is 2, also known as DUAL
-+ *     4  : bus width is 4, also known as QUAD
-+ *     8  : bus width is 8, also known as OCTAL
-+ *     other values are invalid.
-+ *
-+ * @reserved: for future use.
-+ *
-+ * @mode: SPI transfer mode.
-+ *     bit 0: CPHA, determines the timing (i.e. phase) of the data
-+ *         bits relative to the clock pulses.For CPHA=0, the
-+ *         "out" side changes the data on the trailing edge of the
-+ *         preceding clock cycle, while the "in" side captures the data
-+ *         on (or shortly after) the leading edge of the clock cycle.
-+ *         For CPHA=1, the "out" side changes the data on the leading
-+ *         edge of the current clock cycle, while the "in" side
-+ *         captures the data on (or shortly after) the trailing edge of
-+ *         the clock cycle.
-+ *     bit 1: CPOL, determines the polarity of the clock. CPOL=0 is a
-+ *         clock which idles at 0, and each cycle consists of a pulse
-+ *         of 1. CPOL=1 is a clock which idles at 1, and each cycle
-+ *         consists of a pulse of 0.
-+ *     bit 2: CS_HIGH, if 1, chip select active high, else active low.
-+ *     bit 3: LSB_FIRST, determines per-word bits-on-wire, if 0, MSB
-+ *         first, else LSB first.
-+ *     bit 4: LOOP, loopback mode.
-+ *
-+ * @freq: the transfer speed in Hz.
-+ *
-+ * @word_delay_ns: delay to be inserted between consecutive words of a
-+ *     transfer, in ns unit.
-+ *
-+ * @cs_setup_ns: delay to be introduced after CS is asserted, in ns
-+ *     unit.
-+ *
-+ * @cs_delay_hold_ns: delay to be introduced before CS is deasserted
-+ *     for each transfer, in ns unit.
-+ *
-+ * @cs_change_delay_inactive_ns: delay to be introduced after CS is
-+ *     deasserted and before next asserted, in ns unit.
-+ */
-+struct spi_transfer_head {
-+	__u8 chip_select_id;
-+	__u8 bits_per_word;
-+	__u8 cs_change;
-+	__u8 tx_nbits;
-+	__u8 rx_nbits;
-+	__u8 reserved[3];
-+	__le32 mode;
-+	__le32 freq;
-+	__le32 word_delay_ns;
-+	__le32 cs_setup_ns;
-+	__le32 cs_delay_hold_ns;
-+	__le32 cs_change_delay_inactive_ns;
++static struct virtio_driver virtio_spi_driver = {
++	.driver.name = KBUILD_MODNAME,
++	.driver.owner = THIS_MODULE,
++	.id_table = virtio_spi_id_table,
++	.validate = virtio_spi_validate,
++	.probe = virtio_spi_probe,
++	.remove = virtio_spi_remove,
++	.freeze = pm_sleep_ptr(virtio_spi_freeze),
++	.restore = pm_sleep_ptr(virtio_spi_restore),
 +};
 +
-+struct spi_transfer_result {
-+#define VIRTIO_SPI_TRANS_OK 0
-+#define VIRTIO_SPI_PARAM_ERR 1
-+#define VIRTIO_SPI_TRANS_ERR 2
-+	u8 result;
-+};
++module_virtio_driver(virtio_spi_driver);
++MODULE_DEVICE_TABLE(virtio, virtio_spi_id_table);
 +
-+#endif /* #ifndef _LINUX_VIRTIO_VIRTIO_SPI_H */
++MODULE_AUTHOR("OpenSynergy GmbH");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Virtio SPI bus driver");
 -- 
 2.25.1
 
