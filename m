@@ -1,60 +1,47 @@
-Return-Path: <linux-kernel+bounces-84335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 894C186A507
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E22286A4E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:23:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4301C2850BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:28:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59EEB282695
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE3F4A32;
-	Wed, 28 Feb 2024 01:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3744C7B;
+	Wed, 28 Feb 2024 01:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jV8Tl60O"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hFf2d9Um"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F98D4400
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:28:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A3F4A1A
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709083722; cv=none; b=eDY8eu1gghSIejtqrcEYlYMEgVtZGgoi5VTl0hO4eZEcJ3EuTa/mifSJvLYCsVhXf2SExts97zfMR4eSGlQASffL2ErjtuKSs2ajphYE0jy+KLfD9Q7FHoyBq/JmROrbrSr2mXMWc58+4bnZjVFcoOIPmIizciZXEo+w4/jEqLQ=
+	t=1709083387; cv=none; b=GPLZjargb8WPPKGlpDM8TzWsrhkRDOWqawee9K102U+790pOmn1YBceqMSh78Hc3EukGT5yHaA9QhCt1YdxcBYDUhKiWLXc7BItz8tEMnaDuybz+R5BTYl7pkKdB8ddkdIBAoe7KaWK3xVNPuiekN3le2FMiD3daLwpllzK2VQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709083722; c=relaxed/simple;
-	bh=sJR9z4eckKcNzeUdP4oLegXejIZJep7SfGn1kxt7Ufk=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=EpmDbPVNE7VNFzJfUB+BHpMmA9ZF6YIKkY5z4Lirbp/rPb4aBaQ/mNh16S+TOF/vGjH2X/guVmTg8CsmLC4BxpeiQ5LbZ/LFLVrHODxIJoG4ipSORVCJxuCAtqT79/hrX5vItKgrdxJcA/VIekHFaJEg1hzhCPuaSW8EH70s0mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jV8Tl60O; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709083722; x=1740619722;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=sJR9z4eckKcNzeUdP4oLegXejIZJep7SfGn1kxt7Ufk=;
-  b=jV8Tl60Ou8TAmusD67Cgo6Cet+iHcEyCAcQjoGYBC8Bm2cWEK16fJ8Uh
-   XE5sPonOSpiovjQdyoq3McmNrSsR/oj2JpcWsMLOoe6O3WcLhQfQJaaWy
-   IDh68esVtA2ewrNms94tBbGg+TNk+hsKCahmLV+I88iyG4mSt3NG5l4UQ
-   9V5/AjLsXgYbLGY6GvZpWrq6WvcH9G3kqsPD4CQlK76A/n17qa3ZgBCYy
-   EcbdMA886V6qDQzGI1zp4WUZlgOXQiXedEjmkD3EI7hp1hZsuwTwrWMtl
-   XWFw18LkDiDRvP83iJfAkTvemq9Cmezf6JylJUs5y7VEGQ4p8SGz1vFSY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3624787"
-X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
-   d="scan'208";a="3624787"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 17:28:41 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
-   d="scan'208";a="11877504"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by fmviesa004.fm.intel.com with ESMTP; 27 Feb 2024 17:28:38 -0800
-Message-ID: <64a1f1ff-793d-4bf7-91fc-00984336594c@linux.intel.com>
-Date: Wed, 28 Feb 2024 09:22:42 +0800
+	s=arc-20240116; t=1709083387; c=relaxed/simple;
+	bh=4RHgr8hwDvio26ZjrRIEjc1o1G4N6nvQ/z/qnal8zlo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uDsvC5tMwsDbqMqxeq828hHOxUrUQXylLcxdttGv4YNTXBxAJG1RdglxTbwmKnngUfyEXeLz84R4RK/D1y+zbryfU7q8AEHYvWZrSBe0evYytbm40X0Bx2jFpZKEqKAEc4hEFpH3j9/N+imx0u9pw9UDDxpwpIljBHoldBDghr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hFf2d9Um; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B199CC433C7;
+	Wed, 28 Feb 2024 01:23:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709083386;
+	bh=4RHgr8hwDvio26ZjrRIEjc1o1G4N6nvQ/z/qnal8zlo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hFf2d9Um1oLNPRpQKwnRWsQgSWfnZfclDq0mK6uTwtQon9JUl+0N2jeaceBhPe05M
+	 +vNnLXQX+wCmKoVURItJ/yK7HRp19OAihBvkFMe8jFpp1a1FCRuhh+hykv+OI25i/A
+	 de/BQ+qe6lWSR0IaGtrEME3ITZTIky0q/fBaDXjBmaB0zjcH2J4vEmKl0fFC1UFD8b
+	 sfbiirOm495Y+vaDUJ9XwIYvUiw6kin3Ou81XN8YGvgX61zUILXkQbjtieERJ5QJKB
+	 iC//ROnMNLxAaqwr801NkdP2V93BnnPpunLHarxr1USwTjfEw6HrgcfoNOhjO9esy1
+	 ch64RekLx9hmw==
+Message-ID: <bdacbc3c-87c0-42b7-980b-9f9830ab994c@kernel.org>
+Date: Wed, 28 Feb 2024 09:23:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,63 +49,76 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "iommu@lists.linux.dev"
- <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] iommu/vt-d: Fix NULL domain on device release
+Subject: Re: [PATCH 2/4] f2fs: fix to don't call f2fs_stop_checkpoint in
+ spinlock coverage
 Content-Language: en-US
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, "Badger, Eric" <ebadger@purestorage.com>
-References: <20240223051302.177596-1-baolu.lu@linux.intel.com>
- <20240223051302.177596-3-baolu.lu@linux.intel.com>
- <BN9PR11MB52763D19A01C804FB514419F8C592@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52763D19A01C804FB514419F8C592@BN9PR11MB5276.namprd11.prod.outlook.com>
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20240222121851.883141-1-chao@kernel.org>
+ <20240222121851.883141-2-chao@kernel.org> <Zd4g2SgQn3v_ZJMj@google.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <Zd4g2SgQn3v_ZJMj@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2/27/24 3:40 PM, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Friday, February 23, 2024 1:13 PM
->>
->> -static void dmar_remove_one_dev_info(struct device *dev)
->> -{
->> -	struct device_domain_info *info = dev_iommu_priv_get(dev);
->> -	struct dmar_domain *domain = info->domain;
->> -	struct intel_iommu *iommu = info->iommu;
->> -	unsigned long flags;
->> -
->> -	if (!dev_is_real_dma_subdevice(info->dev)) {
->> -		if (dev_is_pci(info->dev) && sm_supported(iommu))
->> -			intel_pasid_tear_down_entry(iommu, info->dev,
->> -					IOMMU_NO_PASID, false);
->> -
->> -		iommu_disable_pci_caps(info);
->> -		domain_context_clear(info);
->> -	}
->> -
->> -	spin_lock_irqsave(&domain->lock, flags);
->> -	list_del(&info->link);
->> -	spin_unlock_irqrestore(&domain->lock, flags);
->> -
->> -	domain_detach_iommu(domain, iommu);
->> -	info->domain = NULL;
->> -}
->> -
-> what's required here is slightly different from device_block_translation()
-> which leaves context entry uncleared in scalable mode (implying the
-> pasid table must be valid). but in the release path the pasid table will
-> be freed right after then leading to a use-after-free case.
+On 2024/2/28 1:50, Jaegeuk Kim wrote:
+> On 02/22, Chao Yu wrote:
+>> f2fs_stop_checkpoint(, false) is complex and it may sleep, so we should
+>> move it outside segmap_lock spinlock coverage in get_new_segment().
 > 
-> let's add an explicit domain_context_clear() in intel_iommu_release_device().
+> Chao, I merged this patch into
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev-test&id=f3b576d209983b5d6e1cb130bfc8ca1f0bbcad6d
 
-Nice catch!
+It's fine to me.
 
-How about moving the scalable mode context entry management to probe and
-release path? Currently, it's part of domain switch, that's really
-irrelevant.
+Thanks,
 
-Best regards,
-baolu
+> 
+>>
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/f2fs/segment.c | 12 +++++++++---
+>>   1 file changed, 9 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>> index d0209ea77dd2..8edc42071e6f 100644
+>> --- a/fs/f2fs/segment.c
+>> +++ b/fs/f2fs/segment.c
+>> @@ -2646,6 +2646,7 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+>>   	unsigned int old_zoneno = GET_ZONE_FROM_SEG(sbi, *newseg);
+>>   	bool init = true;
+>>   	int i;
+>> +	int ret = 0;
+>>   
+>>   	spin_lock(&free_i->segmap_lock);
+>>   
+>> @@ -2671,9 +2672,8 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+>>   		secno = find_first_zero_bit(free_i->free_secmap,
+>>   							MAIN_SECS(sbi));
+>>   		if (secno >= MAIN_SECS(sbi)) {
+>> -			f2fs_stop_checkpoint(sbi, false,
+>> -				STOP_CP_REASON_NO_SEGMENT);
+>> -			f2fs_bug_on(sbi, 1);
+>> +			ret = -ENOSPC;
+>> +			goto out_unlock;
+>>   		}
+>>   	}
+>>   	segno = GET_SEG_FROM_SEC(sbi, secno);
+>> @@ -2704,7 +2704,13 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
+>>   	f2fs_bug_on(sbi, test_bit(segno, free_i->free_segmap));
+>>   	__set_inuse(sbi, segno);
+>>   	*newseg = segno;
+>> +out_unlock:
+>>   	spin_unlock(&free_i->segmap_lock);
+>> +
+>> +	if (ret) {
+>> +		f2fs_stop_checkpoint(sbi, false, STOP_CP_REASON_NO_SEGMENT);
+>> +		f2fs_bug_on(sbi, 1);
+>> +	}
+>>   }
+>>   
+>>   static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
+>> -- 
+>> 2.40.1
 
