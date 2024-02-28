@@ -1,207 +1,125 @@
-Return-Path: <linux-kernel+bounces-85077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42C9F86B012
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:13:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2BFE86B014
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:14:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6E9A1F27999
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:13:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EBB528A55E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:14:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9995514AD3B;
-	Wed, 28 Feb 2024 13:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WX78PGCu"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BAE214AD3B;
+	Wed, 28 Feb 2024 13:13:58 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B2F149DE2
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:13:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AAE149E0B;
+	Wed, 28 Feb 2024 13:13:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709126022; cv=none; b=ugTRpU2BojJtvV+SR9XAYNUpkbL1cnTjiZyO4+mHa25PaCY6yVbpVR9D6OwPjMbOuW2uSAMC3uSWczx7jhyhHT7hgCsk/2L0wlzBCR6sNipJn1+Uo2xPxQcotnds2/iA9D5dU7AT4tEKz+qeJW/cWHAsUfhENxHSS81JjX3aYW8=
+	t=1709126037; cv=none; b=ZdP5ak93nlT60V92o77ZoU8oIkDghEBijn7mqLlqkHn4gp2r7d1r5iiFVwll1XlxBX0Lgb0L1o24gWYacaGc6z6VAXdFFbZPrXiejqxb0VdeTPN/IMGtwcoplA6rZ/EEE+YN94AHge2QnpZzzUqXfYYS6CTOwd9KR7zZymM1LRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709126022; c=relaxed/simple;
-	bh=QxAH73vFsZy8xBmiuW4xaEhL4RumSMNKoe6Y+H1gQSE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jlJ6aGUjokLIlwMcvG2IEU3ZJbjHetTrWa/xhZkJ8KOIIZa34/nvMUJZvXHh9M1AkAUCNX7lDB4I+PV1WEi1Lmrhmajz2k0Qcvf0/yTqCUiSfVGWejRo/26G4RI439tcr/icYqV/0/dp7BjFAVdEcyI/A4GpINS+CWs91VOWNik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WX78PGCu; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709126020;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tKNEybmPHBTkIVCB4kT9DFXVsL5tcw4ENy7Enaez3g0=;
-	b=WX78PGCu/QvXZCuklJ2iBR/I3BC9Fv4Le6pOMI0Fz1fG58IetRwLCKS8nlIx4S0Eo3dxtE
-	zpIWlrWBhhbqPb2CElWnA1bqHq1y43R7bZ/Qj3VF0HNpCXWMSuoQwr2IeNZF553/5jNzDu
-	RNQDckzuFNjJhZlkEzHK1MR2VSU6EfU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-441-toVawfqaNgukSDnxPgeO3Q-1; Wed, 28 Feb 2024 08:13:38 -0500
-X-MC-Unique: toVawfqaNgukSDnxPgeO3Q-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33dadb50731so2867059f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:13:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709126017; x=1709730817;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tKNEybmPHBTkIVCB4kT9DFXVsL5tcw4ENy7Enaez3g0=;
-        b=YEeEZeUNb6o9epFo27nyA1GdcrPDOozLyV9oUHLXGJH9biRObFRF2VnHzUzCZdyc66
-         Pw9NoCFlKIOJE3xIvScCsosCRkBc6J3yXAWOukyuiWKbocfnsMwQbsuGpT0Bgm+DcDaC
-         eOwhbc+or6GLno0oc2pGXw7JY8w3pnzjctL3GKyZAOkf0oUsBCl6Sg3carLdkvbtXu4f
-         Ip4cduFoia4yDdsjv1Cpcp7H64d510WyFTd+lxoXlZjNgFM5Bt9I3whdk8QaXnkM3n3I
-         /DDJw5Of9xhJR2/SZAcZhwoHxeBtNzEh99BXq8anG8uTRLqr7SPY8p20Ijii5jmS89hX
-         X5ew==
-X-Gm-Message-State: AOJu0Yzst9VPA2+4keaa4SrwtS35drAsfM6nPkiIKiKCO9SXYNvdiDeb
-	DbnLwJ5WPIlGtiGWjXYePKrjc3JemK3YvUuNoFCdTmepB+43St7eajYNJ16pkPxqKBycuF5/vYE
-	YIjEQIqS88dF7mq+JGR8bDKCAZO0Xbqd74TyA6G2hLkVjaVZDl9NGrnQmcyZ61U/nYMak6zmxBu
-	OwapXqOV+TRuCTcrLfv2DviuOEDxEH6Wg8Fydj
-X-Received: by 2002:a5d:56cc:0:b0:33d:c3e6:109d with SMTP id m12-20020a5d56cc000000b0033dc3e6109dmr9927208wrw.61.1709126017587;
-        Wed, 28 Feb 2024 05:13:37 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFXKghreVkHqVL2PPq89apnL2dK9C6ka/v8xFhCabiGtrxngaSs3ooESvQVP5kXQvsDOnFWubm2ZL/CZqhMRPY=
-X-Received: by 2002:a5d:56cc:0:b0:33d:c3e6:109d with SMTP id
- m12-20020a5d56cc000000b0033dc3e6109dmr9927194wrw.61.1709126017255; Wed, 28
- Feb 2024 05:13:37 -0800 (PST)
+	s=arc-20240116; t=1709126037; c=relaxed/simple;
+	bh=HgwVfW0K+Hhu2RJ2w8yehDlFn8KAHL04pm/mocETtp0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ScBJPmK63lQa0ygbcYtugbbP+p4ex4A5fps5HNG/WC1bzdj3Wv9WvEw4UHtU49+YA4dH38wtlf7cOU780oHn3dEZ2n2JzMeKTmQhESlhsITeiT79Z2qdXfxkhz4JGEONxOFX2CxMl6TLm6JTzkBClN84KDnxn4XGUGqGcM18Uwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TlFCZ73XBzqhs3;
+	Wed, 28 Feb 2024 21:13:14 +0800 (CST)
+Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
+	by mail.maildlp.com (Postfix) with ESMTPS id 3CE591A016B;
+	Wed, 28 Feb 2024 21:13:52 +0800 (CST)
+Received: from [10.67.120.108] (10.67.120.108) by
+ dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 28 Feb 2024 21:13:51 +0800
+Message-ID: <693dec74-1750-191e-cbc3-37f993d165ac@huawei.com>
+Date: Wed, 28 Feb 2024 21:13:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227232100.478238-1-pbonzini@redhat.com> <20240227232100.478238-15-pbonzini@redhat.com>
- <Zd6UVfhzdMp8z2O2@google.com>
-In-Reply-To: <Zd6UVfhzdMp8z2O2@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Wed, 28 Feb 2024 14:13:25 +0100
-Message-ID: <CABgObfb=5L7p7RDJMtxaGpCVgNfogWuOFCN7W5DBFdP+LAUhFA@mail.gmail.com>
-Subject: Re: [PATCH 14/21] KVM: x86/mmu: pass error code back to MMU when
- async pf is ready
-To: Sean Christopherson <seanjc@google.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	isaku.yamahata@intel.com, thomas.lendacky@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH] scsi: libsas: Fix disk not being scanned in after being
+ removed
+Content-Language: en-CA
+To: John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
+	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+	<damien.lemoal@opensource.wdc.com>
+CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
+	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
+References: <20240221073159.29408-1-yangxingui@huawei.com>
+ <d765d2c5-3451-4519-a5e1-9e8f28dcd6b3@oracle.com>
+From: yangxingui <yangxingui@huawei.com>
+In-Reply-To: <d765d2c5-3451-4519-a5e1-9e8f28dcd6b3@oracle.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggpemm100023.china.huawei.com (7.185.36.248) To
+ dggpemd100001.china.huawei.com (7.185.36.94)
 
-On Wed, Feb 28, 2024 at 3:03=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Tue, Feb 27, 2024, Paolo Bonzini wrote:
-> > Right now the error code is not used when an async page fault is comple=
-ted.
-> > This is not a problem in the current code, but it is untidy.  For prote=
-cted
-> > VMs we need to check that the page attributes match the current state o=
-f the
-> > page.  Async page faults can only occur on shared pages (because
-> > private pages go through kvm_faultin_pfn_private() instead of
-> > __gfn_to_pfn_memslot()), but it is risky to rely on the polarity of
-> > PFERR_GUEST_ENC_MASK and the high 32 bits of the error code being zero.
-> > So, for clarity and future-proofing of the code, pipe the error code
-> > from kvm_arch_setup_async_pf() to kvm_arch_async_page_ready() via the
-> > architecture-specific async page fault data.
-> >
-> > Extracted from a patch by Isaku Yamahata.
-> >
-> > Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> > ---
-> >  arch/x86/include/asm/kvm_host.h |  1 +
-> >  arch/x86/kvm/mmu/mmu.c          | 14 +++++++-------
-> >  2 files changed, 8 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm=
-_host.h
-> > index a4514c2ef0ec..24e30ca2ca8f 100644
-> > --- a/arch/x86/include/asm/kvm_host.h
-> > +++ b/arch/x86/include/asm/kvm_host.h
-> > @@ -1839,6 +1839,7 @@ struct kvm_arch_async_pf {
-> >       gfn_t gfn;
-> >       unsigned long cr3;
-> >       bool direct_map;
-> > +     u64 error_code;
-> >  };
-> >
-> >  extern u32 __read_mostly kvm_nr_uret_msrs;
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index f58ca6cb789a..c9890e5b6e4c 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4260,18 +4260,18 @@ static u32 alloc_apf_token(struct kvm_vcpu *vcp=
-u)
-> >       return (vcpu->arch.apf.id++ << 12) | vcpu->vcpu_id;
-> >  }
-> >
-> > -static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_o=
-r_gpa,
-> > -                                 gfn_t gfn)
-> > +static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu,
-> > +                                 struct kvm_page_fault *fault)
-> >  {
-> >       struct kvm_arch_async_pf arch;
-> >
-> >       arch.token =3D alloc_apf_token(vcpu);
-> > -     arch.gfn =3D gfn;
-> > +     arch.gfn =3D fault->gfn;
-> >       arch.direct_map =3D vcpu->arch.mmu->root_role.direct;
-> >       arch.cr3 =3D kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu);
-> >
-> > -     return kvm_setup_async_pf(vcpu, cr2_or_gpa,
-> > -                               kvm_vcpu_gfn_to_hva(vcpu, gfn), &arch);
-> > +     return kvm_setup_async_pf(vcpu, fault->addr,
-> > +                               kvm_vcpu_gfn_to_hva(vcpu, fault->gfn), =
-&arch);
-> >  }
-> >
-> >  void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async=
-_pf *work)
-> > @@ -4290,7 +4290,7 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *v=
-cpu, struct kvm_async_pf *work)
-> >             work->arch.cr3 !=3D kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.=
-mmu))
-> >               return;
-> >
-> > -     kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true, NULL);
-> > +     kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, work->arch.error_co=
-de, true, NULL);
->
-> This is silly.  If we're going to bother plumbing in the error code, then=
- we
-> should use it to do sanity checks.  Things have gone off the rails if end=
- up with
-> an async #PF on private memory.
+Hi John,
 
-Sure, I split this part out not just because it makes sense to do so,
-but also because it's not strictly necessary. I'll add the check and
-tweak the changelog.
+On 2024/2/22 20:41, John Garry wrote:
+> On 21/02/2024 07:31, Xingui Yang wrote:
+>> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
+>> update PHY info"), do discovery will send a new SMP_DISCOVER and update
+>> phy->phy_change_count. We found that if the disk is reconnected and phy
+>> change_count changes at this time, the disk scanning process will not be
+>> triggered.
+>>
+>> So update the PHY info with the last query results.
+>>
+>> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to 
+>> update PHY info")
+>> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+>> ---
+>>   drivers/scsi/libsas/sas_expander.c | 9 ++++-----
+>>   1 file changed, 4 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/scsi/libsas/sas_expander.c 
+>> b/drivers/scsi/libsas/sas_expander.c
+>> index a2204674b680..9563f5589948 100644
+>> --- a/drivers/scsi/libsas/sas_expander.c
+>> +++ b/drivers/scsi/libsas/sas_expander.c
+>> @@ -1681,6 +1681,10 @@ int sas_get_phy_attached_dev(struct 
+>> domain_device *dev, int phy_id,
+>>           if (*type == 0)
+>>               memset(sas_addr, 0, SAS_ADDR_SIZE);
+>>       }
+>> +
+>> +    if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM))
+>> +        sas_set_ex_phy(dev, phy_id, disc_resp);
+>> +
+>>       kfree(disc_resp);
+>>       return res;
+>>   }
+>> @@ -1972,11 +1976,6 @@ static int sas_rediscover_dev(struct 
+>> domain_device *dev, int phy_id,
+>>       if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM)) {
+>>           phy->phy_state = PHY_EMPTY;
+>>           sas_unregister_devs_sas_addr(dev, phy_id, last);
+>> -        /*
+>> -         * Even though the PHY is empty, for convenience we discover
+>> -         * the PHY to update the PHY info, like negotiated linkrate.
+>> -         */
+>> -        sas_ex_phy_discover(dev, phy_id);
+> 
+> It would be nice to be able to call sas_set_ex_phy() here (instead of 
+> sas_get_phy_attached_dev()), but I assume that you can't do that as the 
+> disc_resp memory is not available.
+> 
+By the way, I have updated a version and call sas_set_ex_phy() here, 
+please check it again.
 
-Paolo
-
->
-> >  }
-> >
-> >  static inline u8 kvm_max_level_for_order(int order)
-> > @@ -4395,7 +4395,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcp=
-u, struct kvm_page_fault *fault
-> >                       trace_kvm_async_pf_repeated_fault(fault->addr, fa=
-ult->gfn);
-> >                       kvm_make_request(KVM_REQ_APF_HALT, vcpu);
-> >                       return RET_PF_RETRY;
-> > -             } else if (kvm_arch_setup_async_pf(vcpu, fault->addr, fau=
-lt->gfn)) {
-> > +             } else if (kvm_arch_setup_async_pf(vcpu, fault)) {
-> >                       return RET_PF_RETRY;
-> >               }
-> >       }
-> > --
-> > 2.39.0
-> >
-> >
->
-
+Thanks,
+Xingui
 
