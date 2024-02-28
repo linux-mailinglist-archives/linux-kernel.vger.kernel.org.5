@@ -1,128 +1,347 @@
-Return-Path: <linux-kernel+bounces-84562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84564-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32FAA86A854
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:31:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 568B286A85C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:32:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF9811F261E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:31:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47DFE1C238CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E0E23757;
-	Wed, 28 Feb 2024 06:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139CB2263E;
+	Wed, 28 Feb 2024 06:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="bUbpqgpy"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aFlYRe1M"
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8781EB27;
-	Wed, 28 Feb 2024 06:30:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7449022086
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709101840; cv=none; b=H9fHu5lX+jdq8eIcsUhIuzUc0z6n7l0ec76ntrSXFtG2rELVXfRyQiVbbi0W//HSVx9sdwRyDYfjMNvQHIuixD2XLdXf1MhmBsBZW01RofrEcFKrzw7c9+gpoxqYy6xVPqjRXKghP8PhKbsgxa7zRcxAAkaZrW6Y2Ax6s5woPWA=
+	t=1709101955; cv=none; b=FKtRwkEPgagRyrm2CdSQ74VQIAATSUZvmLiMYdfexmWkZBsEoBK9C+2E/iHzshKC6xfYnWCmfXnwkHODNKvWKTccevVMu+YGZ4JgeNy+B2aeUxGl504VZwW1s7l5eSaf6Ec5X/lsj+4K9tHKPxsg9lFIHUnQHR//f+6sk3qy0A4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709101840; c=relaxed/simple;
-	bh=yykHRE1Z1DG58ITzYPSAjX+1Z8DC7NCPRqkZBbJG4/A=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LTF/IIaA1c9ii7rfwpE/7sy/TewLfqhqY7Kvv/B8n9L4+hiOHKN57LhAWoeeGEuQLEXeFFycUFCamQ5zmQJjc4pn7QczFhJVodJ0gxt0sqv0GQ9cCbTzeKpT+DsuT37nhJZQDFxGw6Oqrp/7tdmUtYMwemJ42mc1kgY3thZSNaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=bUbpqgpy; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709101839; x=1740637839;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yykHRE1Z1DG58ITzYPSAjX+1Z8DC7NCPRqkZBbJG4/A=;
-  b=bUbpqgpySHTZ2jutG5hDq1C+u24QmsS5+Vxr7WYV14bRWV8DnQWd+/il
-   i6ymwhWew07Ra/yj4uQjj6b1VDFferyrR7iRb7c9pL/2kbJzQrQ1B5zsC
-   vZD8hmT/hCtqH1srsMYXTX+5HC7/FFLfHJ1J7J04/m2Lv+2QVyC6BIeBb
-   w/HjHlBF3JuhRyWu9IAwPhbfi7UgyoNC1AhysGwxeDqFTCyam5T9PtLwT
-   8NWWCFaDD6KrszfrMhWF++huQ2SNLSn5NLf4xhzFgK/CqRckBWym/1L8X
-   3sd8TMLejkkCClUVEUoCMpnDZXVet7gltCIri/Yv2VE2Kg6xt3B6vKVfs
-   A==;
-X-CSE-ConnectionGUID: WwtfXDcGT3ekg/b+aiH4Eg==
-X-CSE-MsgGUID: jGD6Xd8wRRq4FYvG5xft5w==
-X-IronPort-AV: E=Sophos;i="6.06,190,1705388400"; 
-   d="scan'208";a="247685635"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Feb 2024 23:30:36 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 27 Feb 2024 23:30:08 -0700
-Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Tue, 27 Feb 2024 23:30:06 -0700
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<UNGLinuxDriver@microchip.com>, Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next 2/2] net: phy: micrel: lan8814 cable improvement errata
-Date: Wed, 28 Feb 2024 07:28:13 +0100
-Message-ID: <20240228062813.1007138-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240228062813.1007138-1-horatiu.vultur@microchip.com>
-References: <20240228062813.1007138-1-horatiu.vultur@microchip.com>
+	s=arc-20240116; t=1709101955; c=relaxed/simple;
+	bh=QcQL8W30rO/wVOY4BowBdqac0u0A3vahCxu4ucWjwmA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EouRHBdnB9fBF0/zgFgaV/a8qoNBq/iCue6Z/IFF34idD/uBG28xQPhv2W+mV2JO+Rjmgnm62AsfFT/iOl94n5F5l/YDkiA2DkRZ6qGhxdA270WRSCb2d/Ul7EwJe7hDiUoFVAItF9VteK8FwKLZVNbOU9ZOU+Brggy0MoMSl5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aFlYRe1M; arc=none smtp.client-ip=209.85.160.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-42e7f5e24beso104051cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:32:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709101951; x=1709706751; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7kfropls9BSDYywJcFgAsbuoKFtsZgwR3FdIR6FHl8M=;
+        b=aFlYRe1MCnA/UlzLsUj6aOXS0Ib37A8sSREoPu0QqSj9VEXwYlaIcqnv3SpwRzcHUk
+         QUO7NzePXz9TvdZMlb1M3fIm/c2/elNKq2Lq1noE9GDbIEcf5mikmhAZhzI7j4KIg+Of
+         9RxWrMGcKEbcBnYDwyNbrictCIyOiZgSIb1s7ehKGTFtToasNTTyIhIT40u43/KNjJ1x
+         b9TtdwWgv4TFwuS1fzS/IUua7tKP2k+gZtVa/Z1d5ANoau1Dwpn/k4gAbTHn9UkuGvcU
+         SD4C7vx+FXBtnduKTL1VVE0Bi7PPwdL1/cScEsGntoCmM/7Q2K0nuvgMOI+r6DlGKNqL
+         0KNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709101951; x=1709706751;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7kfropls9BSDYywJcFgAsbuoKFtsZgwR3FdIR6FHl8M=;
+        b=pVLEYlcqZAsbmRtXj4zg1dTLM2D7gCXUvWJieyFfH7o2n+OlXmPj4GL+LR+FT/5kFn
+         7FZSfetMpaKaWcOT5syHry2zaWla59798JFXvQrjyXquUYnUtA8FJJoVhjwCjbrkrR2f
+         CWRpBS8VJlNxNH6JYpvPUXPVcVvSkcuc3agK6F/q6BCumlqWH1YHQ1VP1re6AwsX9hEa
+         DIbC5n/vdkznxp+jIiT0vHIMlbdSq9H0Dm3FBdPOUcZpTsVjyo7cLzLCjaPmK3H1nCfh
+         LQP1FRx1GJRgJIR339yLv2DXLPRFYPu1vUfv9MceEZpHEw0H8DqHb/Lh72ZQve22WmnU
+         02cg==
+X-Forwarded-Encrypted: i=1; AJvYcCUxArsoeJaBeTp7ZJ2qVWTNmLP6rhMVjltH0WrFRJ1slOQPZqnRMC/CMigOq9WtKkI6ijRSADtEpSm9nerOdnQUn6AsAqOFTDJUs+d+
+X-Gm-Message-State: AOJu0YwEMk6dT1BSGfWSjfeiDAEUugCs6Phha7dFhWpak54Kr9wFvFM+
+	tPx1m+zYkWMUruABmbzfocWhsx8T2J6iu6t7kPTdlbDei8qlmqfGbQuUaj49JqmELRx4wSa3fvP
+	qD4bcC/2ssH8KQy7jG/YFaNi8HdnrAbkMx9Mt
+X-Google-Smtp-Source: AGHT+IFr70f+civQ/3UgYuEXfwZtiYoi7vW1i3oKDsuea3RfDA2ANF593blcGYeON7f3wUylYfBeXlmyZCY2Y/AiKTE=
+X-Received: by 2002:a05:622a:4c6:b0:42e:3233:4924 with SMTP id
+ q6-20020a05622a04c600b0042e32334924mr56931qtx.26.1709101951306; Tue, 27 Feb
+ 2024 22:32:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+References: <20240228053335.312776-1-namhyung@kernel.org>
+In-Reply-To: <20240228053335.312776-1-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 27 Feb 2024 22:32:17 -0800
+Message-ID: <CAP-5=fVzYnn1wV1H6Uxv9ZSy2S+5yCC_DCvj6e0YueLpXmmx8A@mail.gmail.com>
+Subject: Re: [PATCH v2] perf lock contention: Account contending locks too
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When the length of the cable is more than 100m and the lan8814 is
-configured to run in 1000Base-T Slave then the register of the device
-needs to be optimized.
+On Tue, Feb 27, 2024 at 9:33=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Currently it accounts the contention using delta between timestamps in
+> lock:contention_begin and lock:contention_end tracepoints.  But it means
+> the lock should see the both events during the monitoring period.
+>
+> Actually there are 4 cases that happen with the monitoring:
+>
+>                 monitoring period
+>             /                       \
+>             |                       |
+>  1:  B------+-----------------------+--------E
+>  2:    B----+-------------E         |
+>  3:         |           B-----------+----E
+>  4:         |     B-------------E   |
+>             |                       |
+>             t0                      t1
+>
+> where B and E mean contention BEGIN and END, respectively.  So it only
+> accounts the case 4 for now.  It seems there's no way to handle the case
+> 1.  The case 2 might be handled if it saved the timestamp (t0), but it
+> lacks the information from the B notably the flags which shows the lock
+> types.  Also it could be a nested lock which it currently ignores.  So
+> I think we should ignore the case 2.
+>
+> However we can handle the case 3 if we save the timestamp (t1) at the
+> end of the period.  And then it can iterate the map entries in the
+> userspace and update the lock stat accordinly.
+>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 
-Workaround this by setting the measure time to a value of 0xb. This
-value can be set regardless of the configuration.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-This issue is described in 'LAN8814 Silicon Errata and Data Sheet
-Clarification' and according to that, this will not be corrected in a
-future silicon revision.
+Thanks,
+Ian
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- drivers/net/phy/micrel.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 5a0cc89eaebdd..1e3b0436e161e 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -117,6 +117,10 @@
- #define LAN8814_EEE_STATE			0x38
- #define LAN8814_EEE_STATE_MASK2P5P		BIT(10)
- 
-+#define LAN8814_PD_CONTROLS			0x9d
-+#define LAN8814_PD_CONTROLS_PD_MEAS_TIME_MASK_	GENMASK(3, 0)
-+#define LAN8814_PD_CONTROLS_PD_MEAS_TIME_VAL_	0xb
-+
- /* Represents 1ppm adjustment in 2^32 format with
-  * each nsec contains 4 clock cycles.
-  * The value is calculated as following: (1/1000000)/((2^-32)/4)
-@@ -3302,6 +3306,12 @@ static void lan8814_errata_fixes(struct phy_device *phydev)
- 	val = lanphy_read_page_reg(phydev, 2, LAN8814_EEE_STATE);
- 	val &= ~LAN8814_EEE_STATE_MASK2P5P;
- 	lanphy_write_page_reg(phydev, 2, LAN8814_EEE_STATE, val);
-+
-+	/* Improve cable reach beyond 100m */
-+	val = lanphy_read_page_reg(phydev, 1, LAN8814_PD_CONTROLS);
-+	val &= ~LAN8814_PD_CONTROLS_PD_MEAS_TIME_MASK_;
-+	val |= LAN8814_PD_CONTROLS_PD_MEAS_TIME_VAL_;
-+	lanphy_write_page_reg(phydev, 1, LAN8814_PD_CONTROLS, val);
- }
- 
- static int lan8814_probe(struct phy_device *phydev)
--- 
-2.34.1
-
+> ---
+> v2: add a comment on mark_end_timestamp  (Ian)
+>
+>  tools/perf/util/bpf_lock_contention.c         | 120 ++++++++++++++++++
+>  .../perf/util/bpf_skel/lock_contention.bpf.c  |  16 ++-
+>  tools/perf/util/bpf_skel/lock_data.h          |   7 +
+>  3 files changed, 136 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_=
+lock_contention.c
+> index 31ff19afc20c..9af76c6b2543 100644
+> --- a/tools/perf/util/bpf_lock_contention.c
+> +++ b/tools/perf/util/bpf_lock_contention.c
+> @@ -179,6 +179,123 @@ int lock_contention_prepare(struct lock_contention =
+*con)
+>         return 0;
+>  }
+>
+> +/*
+> + * Run the BPF program directly using BPF_PROG_TEST_RUN to update the en=
+d
+> + * timestamp in ktime so that it can calculate delta easily.
+> + */
+> +static void mark_end_timestamp(void)
+> +{
+> +       DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
+> +               .flags =3D BPF_F_TEST_RUN_ON_CPU,
+> +       );
+> +       int prog_fd =3D bpf_program__fd(skel->progs.end_timestamp);
+> +
+> +       bpf_prog_test_run_opts(prog_fd, &opts);
+> +}
+> +
+> +static void update_lock_stat(int map_fd, int pid, u64 end_ts,
+> +                            enum lock_aggr_mode aggr_mode,
+> +                            struct tstamp_data *ts_data)
+> +{
+> +       u64 delta;
+> +       struct contention_key stat_key =3D {};
+> +       struct contention_data stat_data;
+> +
+> +       if (ts_data->timestamp >=3D end_ts)
+> +               return;
+> +
+> +       delta =3D end_ts - ts_data->timestamp;
+> +
+> +       switch (aggr_mode) {
+> +       case LOCK_AGGR_CALLER:
+> +               stat_key.stack_id =3D ts_data->stack_id;
+> +               break;
+> +       case LOCK_AGGR_TASK:
+> +               stat_key.pid =3D pid;
+> +               break;
+> +       case LOCK_AGGR_ADDR:
+> +               stat_key.lock_addr_or_cgroup =3D ts_data->lock;
+> +               break;
+> +       case LOCK_AGGR_CGROUP:
+> +               /* TODO */
+> +               return;
+> +       default:
+> +               return;
+> +       }
+> +
+> +       if (bpf_map_lookup_elem(map_fd, &stat_key, &stat_data) < 0)
+> +               return;
+> +
+> +       stat_data.total_time +=3D delta;
+> +       stat_data.count++;
+> +
+> +       if (delta > stat_data.max_time)
+> +               stat_data.max_time =3D delta;
+> +       if (delta < stat_data.min_time)
+> +               stat_data.min_time =3D delta;
+> +
+> +       bpf_map_update_elem(map_fd, &stat_key, &stat_data, BPF_EXIST);
+> +}
+> +
+> +/*
+> + * Account entries in the tstamp map (which didn't see the corresponding
+> + * lock:contention_end tracepoint) using end_ts.
+> + */
+> +static void account_end_timestamp(struct lock_contention *con)
+> +{
+> +       int ts_fd, stat_fd;
+> +       int *prev_key, key;
+> +       u64 end_ts =3D skel->bss->end_ts;
+> +       int total_cpus;
+> +       enum lock_aggr_mode aggr_mode =3D con->aggr_mode;
+> +       struct tstamp_data ts_data, *cpu_data;
+> +
+> +       /* Iterate per-task tstamp map (key =3D TID) */
+> +       ts_fd =3D bpf_map__fd(skel->maps.tstamp);
+> +       stat_fd =3D bpf_map__fd(skel->maps.lock_stat);
+> +
+> +       prev_key =3D NULL;
+> +       while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
+> +               if (bpf_map_lookup_elem(ts_fd, &key, &ts_data) =3D=3D 0) =
+{
+> +                       int pid =3D key;
+> +
+> +                       if (aggr_mode =3D=3D LOCK_AGGR_TASK && con->owner=
+)
+> +                               pid =3D ts_data.flags;
+> +
+> +                       update_lock_stat(stat_fd, pid, end_ts, aggr_mode,
+> +                                        &ts_data);
+> +               }
+> +
+> +               prev_key =3D &key;
+> +       }
+> +
+> +       /* Now it'll check per-cpu tstamp map which doesn't have TID. */
+> +       if (aggr_mode =3D=3D LOCK_AGGR_TASK || aggr_mode =3D=3D LOCK_AGGR=
+_CGROUP)
+> +               return;
+> +
+> +       total_cpus =3D cpu__max_cpu().cpu;
+> +       ts_fd =3D bpf_map__fd(skel->maps.tstamp_cpu);
+> +
+> +       cpu_data =3D calloc(total_cpus, sizeof(*cpu_data));
+> +       if (cpu_data =3D=3D NULL)
+> +               return;
+> +
+> +       prev_key =3D NULL;
+> +       while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
+> +               if (bpf_map_lookup_elem(ts_fd, &key, cpu_data) < 0)
+> +                       goto next;
+> +
+> +               for (int i =3D 0; i < total_cpus; i++) {
+> +                       update_lock_stat(stat_fd, -1, end_ts, aggr_mode,
+> +                                        &cpu_data[i]);
+> +               }
+> +
+> +next:
+> +               prev_key =3D &key;
+> +       }
+> +       free(cpu_data);
+> +}
+> +
+>  int lock_contention_start(void)
+>  {
+>         skel->bss->enabled =3D 1;
+> @@ -188,6 +305,7 @@ int lock_contention_start(void)
+>  int lock_contention_stop(void)
+>  {
+>         skel->bss->enabled =3D 0;
+> +       mark_end_timestamp();
+>         return 0;
+>  }
+>
+> @@ -301,6 +419,8 @@ int lock_contention_read(struct lock_contention *con)
+>         if (stack_trace =3D=3D NULL)
+>                 return -1;
+>
+> +       account_end_timestamp(con);
+> +
+>         if (con->aggr_mode =3D=3D LOCK_AGGR_TASK) {
+>                 struct thread *idle =3D __machine__findnew_thread(machine=
+,
+>                                                                 /*pid=3D*=
+/0,
+> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/=
+util/bpf_skel/lock_contention.bpf.c
+> index 95cd8414f6ef..fb54bd38e7d0 100644
+> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
+> @@ -19,13 +19,6 @@
+>  #define LCB_F_PERCPU   (1U << 4)
+>  #define LCB_F_MUTEX    (1U << 5)
+>
+> -struct tstamp_data {
+> -       __u64 timestamp;
+> -       __u64 lock;
+> -       __u32 flags;
+> -       __s32 stack_id;
+> -};
+> -
+>  /* callstack storage  */
+>  struct {
+>         __uint(type, BPF_MAP_TYPE_STACK_TRACE);
+> @@ -140,6 +133,8 @@ int perf_subsys_id =3D -1;
+>  /* determine the key of lock stat */
+>  int aggr_mode;
+>
+> +__u64 end_ts;
+> +
+>  /* error stat */
+>  int task_fail;
+>  int stack_fail;
+> @@ -559,4 +554,11 @@ int BPF_PROG(collect_lock_syms)
+>         return 0;
+>  }
+>
+> +SEC("raw_tp/bpf_test_finish")
+> +int BPF_PROG(end_timestamp)
+> +{
+> +       end_ts =3D bpf_ktime_get_ns();
+> +       return 0;
+> +}
+> +
+>  char LICENSE[] SEC("license") =3D "Dual BSD/GPL";
+> diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_s=
+kel/lock_data.h
+> index 08482daf61be..36af11faad03 100644
+> --- a/tools/perf/util/bpf_skel/lock_data.h
+> +++ b/tools/perf/util/bpf_skel/lock_data.h
+> @@ -3,6 +3,13 @@
+>  #ifndef UTIL_BPF_SKEL_LOCK_DATA_H
+>  #define UTIL_BPF_SKEL_LOCK_DATA_H
+>
+> +struct tstamp_data {
+> +       u64 timestamp;
+> +       u64 lock;
+> +       u32 flags;
+> +       u32 stack_id;
+> +};
+> +
+>  struct contention_key {
+>         u32 stack_id;
+>         u32 pid;
+> --
+> 2.44.0.rc1.240.g4c46232300-goog
+>
 
