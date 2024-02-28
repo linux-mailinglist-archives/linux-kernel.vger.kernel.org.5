@@ -1,111 +1,248 @@
-Return-Path: <linux-kernel+bounces-85441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB0A486B602
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C84E686B605
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:32:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 303AA283218
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:31:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E7CD28345A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEBA15957C;
-	Wed, 28 Feb 2024 17:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA2D15A483;
+	Wed, 28 Feb 2024 17:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jCxevNJM"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lh7ajcip"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72CC83FBA2;
-	Wed, 28 Feb 2024 17:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2505E3FBA2;
+	Wed, 28 Feb 2024 17:32:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709141461; cv=none; b=nzmS7jRB+BvXpvVriW44VPZd/qd+n0/7w4vGfDsT+wVThVurwN3kIXoo8gpatllIDYZC2xTYZJaQY9r3R8zeQQ3X5Mv0HSwF6HGXI3QjfTiwXuCncTirzTavPq9atYKLoQnmId5QS8tqM9drxK/Gv4MkwSqPdh6xuO/BUH2OOjs=
+	t=1709141527; cv=none; b=vGMdtu3oZ2+KofT2JeT7GEJi/nEawidYwLoHPF5MsqqpUiNZGi3HbjfMgtrrq7LypnxeTwDyvhhAO5UJku/7XKanuNfePachyCa3DIdKRQg4rm9soRlMKk8oRAUJ/siL2BFP4nfd+BPrLN1WIs80svgVZMJY708/mYU05H5MBe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709141461; c=relaxed/simple;
-	bh=jRBtZuKeERtGAw31LmqF50r1/ss/xfk5LRp9GqVgqTg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dw5ypLYHbn1+8m/tFYAgY6ugDrVc6j2dlGptMmOVrY/4Zs+EJhMlP4BmHYuFFYtQD+YWSbWBnYdqWodS3waoH0cgh8sxdauuFndYI4Yl6C4NctWW71MoA08dHjd+wsH17x4Lc8CM0LJ9FXxe2tEJn/ahHe94j8dEkSLM5HFKMec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jCxevNJM; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e572dbbc5cso2632b3a.0;
-        Wed, 28 Feb 2024 09:31:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709141460; x=1709746260; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+1B6Wdy58qhImm+FGHcgFzCMtrDaanKZM3JrnRwFVxk=;
-        b=jCxevNJMJ/N9RuuRLfLPoJJYPyiy3o0VsLUqna/C5O8rV+FfWbeyYMj8VMNoZ8TF4R
-         7B05wwOWVy2dqSi7m/Mp0lwaxNVZeIn+vKhZ/7Am86wheFOB/XtXldATtpiFx9eisoyH
-         jSLRlrGOaRyEEEI04jtq1Q4rDsVYbZ618OCtMf5p6FvPXOFCGFT7Vqs5/9ZkNFZOKFEO
-         O6LhYGVfboxSE9an8DzJ8bwp2irzFgWZJhEB1f+ctT5a3SC6gVQ7dTu/A8fidlGCMeTC
-         C73E3ufzs/NbOEpOa2wbbx41SNr8wzn5faZL8PQ4q330kOf03kFNYap9gPag1eTFX7wn
-         g/0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709141460; x=1709746260;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+1B6Wdy58qhImm+FGHcgFzCMtrDaanKZM3JrnRwFVxk=;
-        b=M6kWHmfoNXzHpx6jFuOxLnuVUj9df/2iDfs3Ouc6yER0TOYFG+c88jxdI05UJEBow+
-         KrUnWzEUvcHhfbkf+x2tgiIPDYb4FLDQWoGMD4gr2ODm5IGt4vu1gZGKBuaFTYva7QoL
-         sGwZBsL1JpiYL5sZY0AWWK0ClUGVUk+TU09ygAH32lh7WdU9Pv6uQU7UPAU7y1hOGvoV
-         QVOnStXA5+TEbgja8ERIkytFET0abmkbKuP+lW4dokD+hTAcQla33uPcMmqcAnIdhct5
-         LlfrUTXpGUIFIWsSda7YKAlrSZrv0HaK+1eDnj0QC5Mk8Hm4jWKS1BJ5PH2dffckG9PQ
-         or8w==
-X-Forwarded-Encrypted: i=1; AJvYcCUvDZzE9JgxU6frwmzPOYyqudjtXndamd9DduL+W5F9QroZ/7WywRjhwR3aEluPG7uabdDo8ORv7/cNk6W6bsunEEWCBgYSMpEMz3R82n7k/vOUAYxCiarYarIbuzQ7pW13oXcmawBErOnbYw==
-X-Gm-Message-State: AOJu0Yx5L9cgLYOCB9OXETyZGzTbctehcYNJ/9DMuz2c3pF37ImRGhmh
-	Xds0SMQhBJMP9whP367Z8b21xulw66gbX7ZUxAdm9jJrQLhpUE6VXuRMv2llL2A=
-X-Google-Smtp-Source: AGHT+IGtKwjQRZtdEELtm6l6O1j7xB/QfF5VZb9+Z0vH6u5A3+Hde38k5FESR01Kc6cR/4jZeU8J3Q==
-X-Received: by 2002:a62:f209:0:b0:6e5:3b0e:9f36 with SMTP id m9-20020a62f209000000b006e53b0e9f36mr65248pfh.3.1709141459484;
-        Wed, 28 Feb 2024 09:30:59 -0800 (PST)
-Received: from ubuntu-VirtualBox.. ([42.60.173.150])
-        by smtp.googlemail.com with ESMTPSA id t26-20020a62d15a000000b006e56bf07483sm1369424pfl.77.2024.02.28.09.30.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 09:30:59 -0800 (PST)
-From: Nguyen Dinh Phi <phind.uet@gmail.com>
-To: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>
-Cc: Nguyen Dinh Phi <phind.uet@gmail.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: use inode_set_ctime_to_ts to set inode ctime to current time
-Date: Thu, 29 Feb 2024 01:30:31 +0800
-Message-Id: <20240228173031.3208743-1-phind.uet@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709141527; c=relaxed/simple;
+	bh=q/m65mSFAQWv1ZKGkfQ/GUczJr0fLasn2tZbosS0Ib4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YTtM1NrhxLrtdXr66uhN1BwTBEP3C/sLBLhkPviE7neZYJH/MtLZ3mxP3TdY55mY1F2DWwP7yXnQz4ZCS2Y4sbFp3NNR0MCarhoPFpXD0EeUg+z8nqC7I47XhZFXM7PEhaLt8wRl0UT4PYKQ8DD/eWRdRAYGTYrGZC5DdoGrK9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lh7ajcip; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41SEGsXC004941;
+	Wed, 28 Feb 2024 17:31:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Espt4lxlW/6peI/8r/CerAqW/cjoVDWGJeVhPYWvqBc=; b=lh
+	7ajcipQnqD7v/vfmZUL7xzmYWvcwjkKIuoOrb8Jfcqk0IY6T/lYLBJATVzNvEuMJ
+	WoHaJVdJ96iAn8SzLSd3Udlu2nDPAEDc4HZQmfRQZjDz+GHhlPOaicVErrq7Sb3H
+	uhYDg/Nw3dRxNsuKYrYPQ3tixVdTUMHthGwAu+ESKUYgr6EVL+uybgRjDg0Yqojt
+	S1tA6dU+kDa5BinqWz2f3N6giDDNBNV86392/BfIyGWYh6Ayoi1K4rdsKN3zCP+Z
+	0jwCwCnDp6VBkY4VEmAteAZ4jRMoYr5A44zZDK9gGGCtX0LmONfoSXCbrJsshwej
+	8jRrhOyXhVTr8tiOODmA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wj6en8k8j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 17:31:59 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SHVvC9031001
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 17:31:57 GMT
+Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 09:31:53 -0800
+Message-ID: <f1ce339e-0d80-743c-b1cf-4ffafd919850@quicinc.com>
+Date: Wed, 28 Feb 2024 23:01:50 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [RFC 4/7] soc: qcom: Utilize qcom scmi vendor protocol for bus
+ dvfs
+Content-Language: en-US
+To: Cristian Marussi <cristian.marussi@arm.com>
+CC: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, <sudeep.holla@arm.com>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <jassisinghbrar@gmail.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <quic_rgottimu@quicinc.com>, <quic_kshivnan@quicinc.com>,
+        <conor+dt@kernel.org>, Amir Vajid <avajid@quicinc.com>
+References: <20240117173458.2312669-1-quic_sibis@quicinc.com>
+ <20240117173458.2312669-5-quic_sibis@quicinc.com>
+ <CAA8EJpr8qLZ8Y7PjU05ZoxSHWOf=q-KtM+s-tnR5X2t96rFWhw@mail.gmail.com>
+ <0adaa065-3883-ebfe-8259-05ebdbd821eb@quicinc.com> <ZdTANrUZuN_UZW9j@pluto>
+From: Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <ZdTANrUZuN_UZW9j@pluto>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: DYx7YJWDoNEaWrcXe0zfITGINFvGxzqx
+X-Proofpoint-ORIG-GUID: DYx7YJWDoNEaWrcXe0zfITGINFvGxzqx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 spamscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0
+ suspectscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280138
 
-The function inode_set_ctime_current simply retrieves the current time
-and assigns it to the field __i_ctime without any alterations. Therefore,
-it is possible to set ctime to now directly using inode_set_ctime_to_ts
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
----
- fs/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/inode.c b/fs/inode.c
-index 91048c4c9c9e..0b1327be581a 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -2509,7 +2509,7 @@ struct timespec64 inode_set_ctime_current(struct inode *inode)
- {
- 	struct timespec64 now = current_time(inode);
- 
--	inode_set_ctime(inode, now.tv_sec, now.tv_nsec);
-+	inode_set_ctime_to_ts(inode, now);
- 	return now;
- }
- EXPORT_SYMBOL(inode_set_ctime_current);
--- 
-2.39.2
+On 2/20/24 20:37, Cristian Marussi wrote:
+> On Mon, Feb 12, 2024 at 03:54:27PM +0530, Sibi Sankar wrote:
+>>
+>>
+>> On 1/18/24 02:11, Dmitry Baryshkov wrote:
+>>> On Wed, 17 Jan 2024 at 19:36, Sibi Sankar <quic_sibis@quicinc.com> wrote:
+> 
+> Hi,
+> 
+> I'll comment this patch fully, just a remark down below about this
+> mail-thread.
+> 
+>>>>
+>>>> From: Shivnandan Kumar <quic_kshivnan@quicinc.com>
+>>>>
+>>>> This patch introduces a client driver that interacts with the SCMI QCOM
+>>>
+>>> git grep This.patch Documentation/process/
+>>>
+>>>> vendor protocol and passes on the required tuneables to start various
+>>>> features running on the SCMI controller.
+>>>
+>>> Is there any word about the 'memlat'? No. Unless one  reads into the
+>>> patch, one can not come up with the idea of what is being introduced.
+>>
+>> ack, will fix it in the re-spin.
+>>
+>>>
+>>>>
+>>>> Signed-off-by: Shivnandan Kumar <quic_kshivnan@quicinc.com>
+>>>> Co-developed-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
+>>>> Signed-off-by: Ramakrishna Gottimukkula <quic_rgottimu@quicinc.com>
+>>>> Co-developed-by: Amir Vajid <avajid@quicinc.com>
+>>>> Signed-off-by: Amir Vajid <avajid@quicinc.com>
+>>>> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+>>>> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+>>>> ---
+>>>>    drivers/soc/qcom/Kconfig            |  10 +
+>>>>    drivers/soc/qcom/Makefile           |   1 +
+>>>>    drivers/soc/qcom/qcom_scmi_client.c | 486 ++++++++++++++++++++++++++++
+>>>
+>>> Should it go to drivers/firmware/arm_scmi instead? Or maybe to drivers/devfreq?
+>>
+>> I don't think it should go into arm_scmi unless Sudeep wants it there.
+>> As for drivers/devfreq, I would have moved it there if this driver
+>> benfitted being classified as a devfreq device. We can't use any of
+>> the available governors on it and the tuneables appear way too custom.
+>> These are the reasons why I placed it in drivers/soc/qcom instead.
+>>
+> 
+> I think we used to host a couple of generic SCMI driver related to
+> standard protocols but they have been moved out of driver/firmware/arm_scmi
+> into the related subsystem...not sure if Sudeep thinks otherwise but I
+> suppose we want to host only SCMI drivers that are clearly lacking a
+> place where to stay...
 
+I see and it makes sense, since it would go through an additional layer
+of review from the corresponding sub-system maintainers and only after
+sufficient push back it gets to land in driver/firmware/arm_scmi.
+
+> 
+>>>
+>>>>    3 files changed, 497 insertions(+)
+>>>>    create mode 100644 drivers/soc/qcom/qcom_scmi_client.c
+>   
+>   [snip]
+> 
+>>>> +static int configure_cpucp_mon(struct scmi_memlat_info *info, int memory_index, int monitor_index)
+>>>> +{
+>>>> +       const struct qcom_scmi_vendor_ops *ops = info->ops;
+>>>> +       struct scmi_memory_info *memory = info->memory[memory_index];
+>>>> +       struct scmi_monitor_info *monitor = memory->monitor[monitor_index];
+>>>> +       struct scalar_param_msg scalar_msg;
+>>>> +       struct map_param_msg map_msg;
+>>>> +       struct node_msg msg;
+>>>> +       int ret;
+>>>> +       int i;
+>>>> +
+>>>> +       msg.cpumask = monitor->mask;
+>>>> +       msg.hw_type = memory->hw_type;
+>>>> +       msg.mon_type = monitor->mon_type;
+>>>> +       msg.mon_idx = monitor->mon_idx;
+>>>> +       strscpy(msg.mon_name, monitor->mon_name, sizeof(msg.mon_name));
+>>>> +       ret = ops->set_param(info->ph, &msg, MEMLAT_ALGO_STR, MEMLAT_SET_MONITOR, sizeof(msg));
+>>>> +       if (ret < 0) {
+>>>> +               pr_err("Failed to configure monitor %s\n", monitor->mon_name);
+>>>> +               return ret;
+>>>> +       }
+>>>> +
+>>>> +       scalar_msg.hw_type = memory->hw_type;
+>>>> +       scalar_msg.mon_idx = monitor->mon_idx;
+>>>> +       scalar_msg.val = monitor->ipm_ceil;
+>>>> +       ret = ops->set_param(info->ph, &scalar_msg, MEMLAT_ALGO_STR, MEMLAT_IPM_CEIL,
+>>>> +                            sizeof(scalar_msg));
+>>>> +       if (ret < 0) {
+>>>> +               pr_err("Failed to set ipm ceil for %s\n", monitor->mon_name);
+>>>> +               return ret;
+>>>> +       }
+>>>> +
+>>>> +       map_msg.hw_type = memory->hw_type;
+>>>> +       map_msg.mon_idx = monitor->mon_idx;
+>>>> +       map_msg.nr_rows = monitor->freq_map_len;
+>>>> +       for (i = 0; i < monitor->freq_map_len; i++) {
+>>>> +               map_msg.tbl[i].v1 = monitor->freq_map[i].cpufreq_mhz;
+>>>> +               map_msg.tbl[i].v2 = monitor->freq_map[i].memfreq_khz / 1000;
+>>>> +       }
+>>>
+>>> So this table goes 1:1 to the firmware? Is it going to be the same for
+>>> all versions of the SoC? If so, it might be better to turn it into the
+>>> static data inside the driver. If it doesn't change, there is no need
+>>> to put it to DT.
+>>
+>> The table does go directly to the firmware but obviously varies across
+>> SoCs. Also since it's a SCMI client driver we don't have a way to
+>> distinguish between SoCs based on compatibles. So it made more sense to
+>> move it to the device tree instead.
+>>
+> 
+> Well, the SCMI fw running the server DOES know where it is running right ?
+> 
+> So, if you have multiple fixed config tables to feed into the firmware
+> that vary based on the SoC you are running on, you could add an SCMI command
+> to your QCOM SCMI vendor protocol and expose a related operation in ops to get
+> the actual SoC model, so that you can embed the tableS in the driver here (as
+> suggested) and then choose at runtime which one to use based on the reported
+> platform...this is clearly config stuff (sa said by others) so it just
+> does not belong to DT descriptions.
+
+I still think changing it to opp-tables from qcom,cpufreq-memfreq-tbl
+like Konrad/Dmitry suggested is the the right way to go for the
+following reason. I would expect the SCP FW running on the SoC to be
+board invariant i.e. a SoC can support multiple variants of a memory
+that we are trying to scale like ram (lpddr4/lpddr5) so the having them
+in the device tree actually allows us to configure the supported ddr
+frequencies by overriding those in the board files. Thus closer to the
+actual representation. Also like I explained just getting the SoC info
+won't be sufficient since the tables are expected to change across
+boards when there is a change in type or supported frequencies.
+
+-Sibi
+
+> 
+> Thanks,
+> Cristian
 
