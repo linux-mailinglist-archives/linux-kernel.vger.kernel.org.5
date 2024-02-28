@@ -1,194 +1,156 @@
-Return-Path: <linux-kernel+bounces-85856-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85857-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE63786BC4C
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:43:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7C9186BC4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:44:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BEE51F23300
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:43:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CAEF287CF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:44:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D8272909;
-	Wed, 28 Feb 2024 23:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="i4fk+b1j"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB7E672924;
+	Wed, 28 Feb 2024 23:44:13 +0000 (UTC)
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697E313D2E3;
-	Wed, 28 Feb 2024 23:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1B013D2E3;
+	Wed, 28 Feb 2024 23:44:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709163789; cv=none; b=agpUTWpvVLY9YGo+VHmCDTNx25ywclHPv5u5jsN7ZmiNMWQ91NVmco6g3eC9PdLEVoEmDBnIDNHyUpLYoNW+c5sadGN/BtVGIyGrHbkWX1D+OulkfTPdA5DBkoeDVc+hZRnMHGDis0vXrA1dfhgZDL833u3pS0PGuwxK5RKpOyg=
+	t=1709163853; cv=none; b=iSgUdBDvEw95S6YZAtJ7jABDeg0AlzSB7+MPou40BCxclefAQwq1bqbQOE6cOVCyUFvEsXDVIbhTmMkEFynNbuGDiTxRx34zT8rguvHiwdSYcrzcERLCyuaXZ8GoDmldfcSr5Snx6dTy6FYUA12mEnSlyU5arLh7HgfAk/AnRq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709163789; c=relaxed/simple;
-	bh=PP8PEC6rFh1DwcrVPHXVW/931c6ONXSblHZE9aVTqp8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d15ZplBM6h/suArHTd7ukhOByTW05RCf6EsDK5DKobjt30hPAzyLQOhJtZhoPi2s34oJmdqmfKVpNZgAfWCVfKOHU8HMzlcB96r2PcRE3kPVG9ScR8sqnzgqNF80fT46tYv5BPhuMhb+tUGYGwlT3SmdNJkkI4fjiyXjLYJy8Mw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=i4fk+b1j; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TlWB21vmjzDq6T;
-	Wed, 28 Feb 2024 23:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1709163781; bh=PP8PEC6rFh1DwcrVPHXVW/931c6ONXSblHZE9aVTqp8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=i4fk+b1jpnaGlH3cL5gWB/A8KeL08j9ZijONrP/WfY8cIVdC6zJQH6Dg21pBNrHPQ
-	 Z6rwY7uTB94u7bBvg69unZNj+mb+sB9yBP+fz7HGuV1ZffwsIMPkehDs40x3I5Sd1l
-	 1BgWhtqg2dDlId3bTLK+EXd3yXqBeNe3cP6lRQuw=
-X-Riseup-User-ID: 2052F0A24D6BCE5ED2705508C577C34C275D6FB563886C45EEEF070D3EB3EA2F
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4TlW9w5nmszJrYk;
-	Wed, 28 Feb 2024 23:42:44 +0000 (UTC)
-Message-ID: <9e6ed0e5-c9aa-4fb9-a6d8-4c3b1d658ef2@riseup.net>
-Date: Wed, 28 Feb 2024 20:42:41 -0300
+	s=arc-20240116; t=1709163853; c=relaxed/simple;
+	bh=Bun5m8G8ZzV7ghqTD6WFlwdCGqvE8zICLBqsMSfoowQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JgJKcaeJnCAO1DmFUyEyfiqnzzlq6qcYKtydeRO9jUlAlr7hN3dIMVQ+lsgKWgcTKP8DaUry3rIRcwkdx0cMif7dZoCP65HOp/AJfs7RIR/hlrFjJRoARe5ThkWt5+I9Vj8moNRPOuPZZ7v8jaOliYJZOcbI94le8gTtLO4Xulo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso246030a12.0;
+        Wed, 28 Feb 2024 15:44:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709163851; x=1709768651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3Z2mKmaKj61Pf7pJc9lk5Bc9rbWv418rABeaEWh7OCw=;
+        b=M1QHbuC8e4WYt/BV8w6YfPy1Fcdkmoeg1tiTIM8zMlTMsXDjt9OGDK896nWwS0ZFZU
+         zSt3fM1k/e63thE2rARqhYZ7ePQhAXvUDUzeUMzv4wrCou5Z85RWsKsww5D6HbfN2W38
+         ztjX2CRgf2dMc857XrrUmoONfQ2tkAs7KtASqaWP+LmTQflzHaYyWOqbt+L5/+cVLgb6
+         pGN5kTPEraubkpN9/IeXdX81zayKldHjjxQ1UO+pmUtVKl3V5ConhJtM04ilIye0RFXU
+         gMU5D5UptQvErnvEho6zdBCJfcFdNYj537ERr/yCmMT+iSWk1f15eOMAbNYuBVAs+pQE
+         t1Cg==
+X-Forwarded-Encrypted: i=1; AJvYcCXPf+RSiGcOoagnIMf/0EWHrc81ZcX3xUlVNtYgc0ZXJLWsRXGlxhoEGZzYHZt3BCJ0pPC9282yB+ZXEYmbX4rt5lTe2kPl8ipIqW6tkgTU8TNbL5kRDaTmf0BIm2DcEOclBW4aY6ukQCCVeY26C/yzAnGzOEBwkPgN35i59qWZM6YXEg==
+X-Gm-Message-State: AOJu0YzmueW24zWK1LsIQ/33nn5opazAv5mMZfCokNk7d0zJPoLvsb5M
+	VS4NQyNqJL+O0N/phAE9mLZqomkNxJtV16CY3crrXXv+Ip0y70aolpoMV6y2wHZkHq/Xn9c9XHF
+	HSqVtWn1HgOgnlK3gqWTEGyqDT1U=
+X-Google-Smtp-Source: AGHT+IGpXyr6rC4PgckoEC9vlZ9CvQ+9sOZHQ5msGedCpWHTuAGfHXRpjzvh8PLTjI5km7wdxKh2/j2tbDhvW4NDFNg=
+X-Received: by 2002:a17:90b:4b4f:b0:29b:b70:5ace with SMTP id
+ mi15-20020a17090b4b4f00b0029b0b705acemr248351pjb.16.1709163850993; Wed, 28
+ Feb 2024 15:44:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 0/7] Add YUV formats to VKMS
-To: Sebastian Wick <sebastian.wick@redhat.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Haneen Mohammed <hamohammed.sa@gmail.com>,
- Harry Wentland <harry.wentland@amd.com>, Jonathan Corbet <corbet@lwn.net>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Melissa Wen <melissa.srw@gmail.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-doc@vger.kernel.org
-References: <20240110-vkms-yuv-v2-0-952fcaa5a193@riseup.net>
- <20240115150600.GC160656@toolbox>
-Content-Language: en-US
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <20240115150600.GC160656@toolbox>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
+ <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
+ <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+ <CAM9d7chXtmfaC73ykiwn+RqJmy5jZFWFaV_QNs10c_Td+zmLBQ@mail.gmail.com>
+ <Zd41Nltnoen0cPYX@x1> <CAP-5=fWv25WgY82ZY3V1erUvCb+jdhLd_d91p4akjqFgynvAgg@mail.gmail.com>
+ <CAM9d7cjJTf_yed9nwXZkBPr6u6NH5n+V+u0m6Zgsc1JBy_LdyA@mail.gmail.com> <CAP-5=fWKdp7rf+v7t_T_0tU0OxQO9R2g+ZH7Ag7HgyBbGT3-nQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fWKdp7rf+v7t_T_0tU0OxQO9R2g+ZH7Ag7HgyBbGT3-nQ@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Wed, 28 Feb 2024 15:43:59 -0800
+Message-ID: <CAM9d7cj-kxaQc18QG_cd6EzsDbk7vmhYqg-XzCV+g5oi9Giwww@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 27, 2024 at 11:24=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> On Tue, Feb 27, 2024 at 10:40=E2=80=AFPM Namhyung Kim <namhyung@kernel.or=
+g> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 1:42=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > On Tue, Feb 27, 2024 at 11:17=E2=80=AFAM Arnaldo Carvalho de Melo
+> > > <acme@kernel.org> wrote:
+> > > >
+> > > > On Tue, Feb 27, 2024 at 09:31:33AM -0800, Namhyung Kim wrote:
+> > > > > I can see some other differences like machine__findnew_thread()
+> > > > > which I think is due to the locking change.  Maybe we can fix the
+> > > > > problem before moving the code and let the code move simple.
+> > > >
+> > > > I was going to suggest that, agreed.
+> > > >
+> > > > We may start doing a refactoring, then find a bug, at that point we
+> > > > first fix the problem them go back to refactoring.
+> > >
+> > > Sure I do this all the time. Your typical complaint on the v+1 patch
+> > > set is to move the bug fixes to the front of the changes. On the v+2
+> > > patch set the bug fixes get applied but not the rest of the patch
+> > > series, etc.
+> > >
+> > > Here we are refactoring code for an rb-tree implementation of threads
+> > > and worrying about its correctness. There's no indication it's not
+> > > correct, it is largely copy and paste, there is also good evidence in
+> > > the locking disciple it is more correct. The next patch deletes that
+> > > implementation, replacing it with a hash table. Were I not trying to
+> > > break things apart I could squash those 2 patches together, but I've
+> > > tried to do the right thing. Now we're trying to micro correct, break
+> > > apart, etc. a state that gets deleted. A reviewer could equally
+> > > criticise this being 2 changes rather than 1, and the cognitive load
+> > > of having to look at code that gets deleted. At some point it is a
+> > > judgement call, and I think this patch is actually the right size. I
+> > > think what is missing here is some motivation in the commit message t=
+o
+> > > the findnew refactoring and so I'll add that.
+> >
+> > I'm not against your approach and actually appreciate your effort
+> > to split rb-tree refactoring and hash table introduction.  What I'm
+> > asking is just to separate out the code moving.  I think you can do
+> > whatever you want in the current file.  Once you have the final code
+> > you can move it to its own file exactly the same.  When I look at this
+> > commit, say a few years later, I won't expect a commit that says
+> > moving something to a new file has other changes.
+>
+> The problem is that the code in machine treats the threads lock as if
+> it is a lock in machine. So there is __machine__findnew_thread which
+> implies the thread lock is held. This change is making threads its own
+> separate concept/collection and the lock belongs with that collection.
+> Most of the implementation of threads__findnew matches
+> __machine__findnew_thread, so we may be able to engineer a smaller
+> line diff by moving "__machine__findnew_thread" code into threads.c,
+> then renaming it to build the collection, etc. We could also build the
+> threads collection inside of machine and then in a separate change
+> move it to threads.[ch].  In the commit history this seems muddier
+> than just splitting out threads as a collection. Also, some of the API
+> design choices are motivated more by the hash table implementation of
+> the next patch than trying to have a good rbtree abstracted collection
+> of threads. Essentially it'd be engineering a collection of threads
+> but only with a view to delete it in the next patch. I don't think it
+> would be for the best and the commit history for deleted code is
+> unlikely to be looked upon.
 
+I think the conversation is repeating. :)  Why not do this?
 
-On 15/01/24 12:06, Sebastian Wick wrote:
-> On Wed, Jan 10, 2024 at 02:44:00PM -0300, Arthur Grillo wrote:
->> This patchset aims to add support for additional buffer YUV formats.
->> More specifically, it adds support to:
->>
->> Semi-planar formats:
->>
->> - NV12
->> - NV16
->> - NV24
->> - NV21
->> - NV61
->> - NV42
->>
->> Planar formats:
->>
->> - YUV440
->> - YUV422
->> - YUV444
->> - YVU440
->> - YVU422
->> - YVU444
->>
->> These formats have more than one plane, and most have chroma
->> subsampling. These properties don't have support on VKMS, so I had to
->> work on this before.
->>
->> To ensure that the conversions from YUV to RGB are working, I wrote a
->> KUnit test. As the work from Harry on creating KUnit tests on VKMS[1] is
->> not yet merged, I took the setup part (Kconfig entry and .kunitfile)
->> from it.
->>
->> Furthermore, I couldn't find any sources with the conversion matrices,
->> so I had to work out the values myself based on the ITU papers[2][3][4].
->> So, I'm not 100% sure if the values are accurate. I'd appreciate some
->> input if anyone has more knowledge in this area.
-> 
-> H.273 CICP [1] has concise descriptions of the required values for most
-> widely used formats and the colour python framework [2] also can be used
-> to quickly get to the desired information most of the time.
-> 
-> [1]: https://www.itu.int/rec/T-REC-H.273
-> [2]: https://www.colour-science.org/
+1. refactor threads code in machine.c and fix the locking
+2. move threads code to its own file
+3. use hash table in threads
 
-I want to thank you for suggesting the python framework, it helped
-immensely now that I'm changing the precision from 8-bit to 32-bit[1].
-
-If I'd known about this framework while developing this patch, I
-would've saved myself a few weeks of pain and suffering recreating a
-part of this library XD.
-
-[1]: https://lore.kernel.org/all/b23da076-0bfb-48b2-9386-383a6dec1868@riseup.net/
-
-Best Regards,
-~Arthur Grillo
-
-> 
->> Also, I used two IGT tests to check if the formats were having a correct
->> conversion (all with the --extended flag):
->>
->> - kms_plane@pixel_format
->> - kms_plane@pixel_format_source_clamping.
->>
->> The nonsubsampled formats don't have support on IGT, so I sent a patch
->> fixing this[5].
->>
->> Currently, this patchset does not add those formats to the writeback, as
->> it would require a rewrite of how the conversions are done (similar to
->> what was done on a previous patch[6]). So, I would like to review this
->> patchset before I start the work on this other part.
->>
->> [1]: https://lore.kernel.org/all/20231108163647.106853-5-harry.wentland@amd.com/
->> [2]: https://www.itu.int/rec/R-REC-BT.601-7-201103-I/en
->> [3]: https://www.itu.int/rec/R-REC-BT.709-6-201506-I/en
->> [4]: https://www.itu.int/rec/R-REC-BT.2020-2-201510-I/en
->> [5]: https://lists.freedesktop.org/archives/igt-dev/2024-January/066937.html
->> [6]: https://lore.kernel.org/dri-devel/20230414135151.75975-2-mcanal@igalia.com/
->>
->> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
->> ---
->> Changes in v2:
->> - Use EXPORT_SYMBOL_IF_KUNIT instead of including the .c test
->>   file (Maxime)
->> - Link to v1: https://lore.kernel.org/r/20240105-vkms-yuv-v1-0-34c4cd3455e0@riseup.net
->>
->> ---
->> Arthur Grillo (7):
->>       drm/vkms: Use drm_frame directly
->>       drm/vkms: Add support for multy-planar framebuffers
->>       drm/vkms: Add range and encoding properties to pixel_read function
->>       drm/vkms: Add chroma subsampling
->>       drm/vkms: Add YUV support
->>       drm/vkms: Drop YUV formats TODO
->>       drm/vkms: Create KUnit tests for YUV conversions
->>
->>  Documentation/gpu/vkms.rst                    |   3 +-
->>  drivers/gpu/drm/vkms/Kconfig                  |  15 ++
->>  drivers/gpu/drm/vkms/Makefile                 |   1 +
->>  drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
->>  drivers/gpu/drm/vkms/tests/Makefile           |   3 +
->>  drivers/gpu/drm/vkms/tests/vkms_format_test.c | 156 ++++++++++++++++
->>  drivers/gpu/drm/vkms/vkms_drv.h               |   6 +-
->>  drivers/gpu/drm/vkms/vkms_formats.c           | 247 ++++++++++++++++++++++----
->>  drivers/gpu/drm/vkms/vkms_formats.h           |   9 +
->>  drivers/gpu/drm/vkms/vkms_plane.c             |  26 ++-
->>  drivers/gpu/drm/vkms/vkms_writeback.c         |   5 -
->>  11 files changed, 426 insertions(+), 49 deletions(-)
->> ---
->> base-commit: eeb8e8d9f124f279e80ae679f4ba6e822ce4f95f
->> change-id: 20231226-vkms-yuv-6f7859f32df8
->>
->> Best regards,
->> -- 
->> Arthur Grillo <arthurgrillo@riseup.net>
->>
-> 
+Thanks,
+Namhyung
 
