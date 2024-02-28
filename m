@@ -1,282 +1,418 @@
-Return-Path: <linux-kernel+bounces-85292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13B2886B390
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:45:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1021686B396
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:45:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16E6DB29482
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:45:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F9471C26525
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C5115E5CF;
-	Wed, 28 Feb 2024 15:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="NnQnpny3"
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com (mail-mr2fra01on2115.outbound.protection.outlook.com [40.107.9.115])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F3515E5C4
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.9.115
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709135059; cv=fail; b=Wq5JAUoQGkvm9jKTXYFwRQugVpjHPmlZBL763eVVQgCaYeCJkOgIi6raWXaggp855QC66/WoDk/bycZRMfxkY+fZJqRiBrJItNi2ut+rlPiGJn26jV8CV24/CSC7eAPx3KHbQb75a2huLke9WLcNQ4V//SIxDkgmPRZ0crDCHdo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709135059; c=relaxed/simple;
-	bh=3CENs7gSpryXGKee86mfDA0ussYio97rqoQhbB4ptrE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=EdTh2cI6nUobHQOdI53izHiA5sRQrtjPik45uf/9sNsSiaWsJ6J4CRzwU5g9ptbfmPqGhbcnPBiFfMRVYYyGJ9+AdRTmaNmvEk3KutrHrT2Ij4a2MmCCDiCI8UfVV1pK593PDmXcPSX/h/enTPBll70tMCiB6zxsOvhpm9tnGxk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=NnQnpny3; arc=fail smtp.client-ip=40.107.9.115
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I+lKkzUgiT28zuxxjj7VCP1mTgz9av7kywkvH7DKkQeSPO7r6CIfkKBrN/OKAPWPHW4Ls8lCIrLhgiuucUWTqHW4l21XvY1haaUOjOVnBGMlHtxSag3akKDlG1wmBRkRmjZOUGEP+kAH5ou4gL9yX1gHWKs2GTXzprspj+vR6S8zwHQ6Q4BdCWYGdz0V/bjLACP0oygBHnlWGrYH9Ex2yfip/PebFAYB2QVf7OA6jZnyiw3XChKd4s7WAvWU5tfF6UbeQDo/Ntd4772qWiVxEpJv85lU5/Mz01NnG3Ojk4YvwRm2LO/8A2ML9YENcXQXLH278K2yM1exhk4l6CmyIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3CENs7gSpryXGKee86mfDA0ussYio97rqoQhbB4ptrE=;
- b=LlqCzv7QYPFFnDlDGnTY/6D31H6IkzS6gLU3GbCl09jWlbdvaLOSzepuyTNNH6qgpPJVthh+f6f3D8OIvUsFqXFRjUcQZbku5A0jS5H4ZkeIje3lMVVyDlFGxNan6bKzRwI82bmPB3fKOw6hlyNWlDsRVbNDyn6zYK0cDCnF4mdzpaukjntTp0hMFE8eRrt/I4amjLNinbJCV1R5GaXUv0is8Q+b0IxdTsTIgZuKKf2ZpC9Qq0H0AQvpZQRMOtBoEgfA/UEe6sTsUVbZgk2nA7CZLxOt3/pxvbxg9jQlC2BNkHlrALbr0E1aFi8Oosx0sS4fHNCb9vzYF04s3A/d5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3CENs7gSpryXGKee86mfDA0ussYio97rqoQhbB4ptrE=;
- b=NnQnpny3+s4D+qqSyscdJguu931ZkAxqJeOokKa0xKkSrS/bSZPF6vEfWqFrqcBJ3S64bVHagmbWHesCXWLPRh6e6QvTZqe7EHkFW7sOUerEJmBs6ESa38BmkiKm/gFLBk1iRdZX+KZrzTgDbvn+SD9uFhGPKaEf1pI5hPRMmF18r6bYlRcEQnfGKSdPZD+nuOrpFICMRKOj4TknGUT6rr/DbyOKSr+W1509QAObOL9FGSx/LtN2gKAx2hujrkc/fQM2KEOz7Y9iX7GgPAbirR4aspXPWHmVP4oc/O351JDmnElVxBXKyWr+9kKRxo7Pzb2EOOz/MqmLX+yXT7LvlA==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PAZP264MB3118.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1e7::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Wed, 28 Feb
- 2024 15:44:14 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7316.037; Wed, 28 Feb 2024
- 15:44:14 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Eric Dumazet <edumazet@google.com>, Vadim Fedorenko
-	<vadim.fedorenko@linux.dev>
-CC: "venkat88@linux.vnet.ibm.com" <venkat88@linux.vnet.ibm.com>,
-	"mputtash@linux.vnet.com" <mputtash@linux.vnet.com>, Tasmiya Nalatwad
-	<tasmiya@linux.vnet.ibm.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "arkadiusz.kubalewski@intel.com"
-	<arkadiusz.kubalewski@intel.com>, "sachinp@linux.vnet.com"
-	<sachinp@linux.vnet.com>, "abdhalee@linux.vnet.ibm.com"
-	<abdhalee@linux.vnet.ibm.com>, "jiri@nvidia.com" <jiri@nvidia.com>,
-	"kuba@kernel.org" <kuba@kernel.org>, "linuxppc-dev@lists.ozlabs.org"
-	<linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
-Thread-Topic: [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
-Thread-Index: AQHaajbPzM0q4kW/m0SFUzTmZzl0P7EfynaAgAAKIQCAABDwgA==
-Date: Wed, 28 Feb 2024 15:44:14 +0000
-Message-ID: <ad84ba42-2555-47dc-ba6b-66ce0eb0b1db@csgroup.eu>
-References: <3fcf3a2c-1c1b-42c1-bacb-78fdcd700389@linux.vnet.ibm.com>
- <85b78dad-affa-47c3-9cd0-79a4321460b8@linux.dev>
- <CANn89iJEzTjwxF7wXSnUR+NyDu-S-zEOYVXA+fEaYs_1o1g5HQ@mail.gmail.com>
-In-Reply-To:
- <CANn89iJEzTjwxF7wXSnUR+NyDu-S-zEOYVXA+fEaYs_1o1g5HQ@mail.gmail.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAZP264MB3118:EE_
-x-ms-office365-filtering-correlation-id: 3e94b9ed-6a82-4a38-2555-08dc38741d8b
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- +/f0brVt/tYbOs9mJDOnY7awi9aujNucyEWy8gmaI0gMO9N6mOTs0RFjyhQnlXJsOsLzYNZL2giUhOIFvoI1WIYSe40zAXkYejFKQFOImhvWhTLJjjwMARPwD8AKOIFQQpctDQe/GA8Pi8aUuoXm5v7/9l/XIczKEuR/fI1I3X5MMchAZhAUBwOSVFWSdvsRJ1ltqYaMVul9XvHj9AGWCvz/Zwedcm2zAKKmNss+PVOoQEsbGLLqdOWgvSQC7Q2zsm1ULGISyRvf0Me99w3bn1Lxq3g1iJSh3Al1uvh3O1VFNC/+iIcyLRPgAGtQZ5YOCFfTcbmbaBTYN+BTMBEV2Iji1YqNXQw6t41Lqo1synLU6cBt8mNplUNf2IIjMc4YqnOB7WACn50k0fQx9VJc5nEGdu+IFKXqjBVQWk3rUmTaELuymO9EcuVAUOpk+9/k8JQyBa/zg5JAgpLE1FW6ONfQIxM3VHUZK0l2u/5CdB6DKa0LfgGvZLGol6s+r9b1ouWoZ5Z0RpRC12GRQ5W771Ewa08s8kt04Li3/pbrnwWkbTNL9tAc+Yja19k3k968QmKpNkjxU98H9LC7HBjYNObWLTs2WmfLJ70yt2d0kLZK14Tj6kWLaeISHH7ZiAW4lrdvtZKBngzRlv9zXLZyhv50utRnLTJ/jkCsimbfmnkC6OZypYm/rjXRjH9Z48zrF/PhFy0njUm5qxO9Sh0P7T2MFnVpZM5/+T8IKGF1ZYk=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?cSs4S1M5Vm5rOEpmMkU5QmtUWlZSd2NBcm83ZmJna3VNRWtMbGRyVEVlRWpO?=
- =?utf-8?B?c3A4clNVV3dlKzRCVVFKUTJ4QjE2OEZ3R3VPRzhZb1Nvc3dTTGluZWNla3dv?=
- =?utf-8?B?WUg4TU9kQmtVcTBEV3h4VHlLZy9CK0QzUlZXenlVelF3cHNHNmpWZGdQL081?=
- =?utf-8?B?L2djMlFMbTNkN0tYdWluaGEzWGo2elVsQ3dpSXpwVGZYeEtrTkN4UldqSkND?=
- =?utf-8?B?OVJEdldFcVZiOGFaOTRCZDZWV2N3ekg2Mzd3dGdVN1JPQlVPYm5VMWdTaXhN?=
- =?utf-8?B?azJNNjkvQ092ZlJvOE5tbTFsVVNreDNIWkxTcGh2bEhaTXlxdHY0WWQweEVk?=
- =?utf-8?B?c2JJSFRGLzZOazFlZW13NkRWV2FqNlpmSHZKcnV4cG9lVzg1L1hHcEVtSDgz?=
- =?utf-8?B?QUxGRGYvU0RtK2xJOWZHM2dqWFhENFJINzFTMmFIdFBpRW9pSzlVRUNUd1pH?=
- =?utf-8?B?bXBjeGVSZEM0WmRCZU0zTVovUjJUTWU5QWFXeGozbEVVTHVGRXRBeTV0RHlG?=
- =?utf-8?B?bDlERDRsUk94ZFlSb1ZycnF5NTZFNlZQVkpRb0ZRcVZpKzR4dHBYbEc5QWpw?=
- =?utf-8?B?VVpqTVdJZVU0NWNzUVlDR2tSN0NZbTFIdDRRZ3BUa2NGTWdUaHZlbXI2WHBB?=
- =?utf-8?B?b09BNUc0eUlvVm43UzhDbEllRldMVVFkVllUSkpobjdWcGh1MGd5OHZFT1dh?=
- =?utf-8?B?bThTaUs4VDJFM0lRUndHK3lSREoyUTZQVmVuejJERExGVlE3ay9TQVdnTGtl?=
- =?utf-8?B?Mk9rUEM1eWtaeUJ3Z0YwaFpGM2plR0FlMDdjNngycFVEWGdhWitVZHZleS9v?=
- =?utf-8?B?Q01EZFVJUndrN0lUNUtPV1NZVXNlMzd3cE1FUWRHYmZGcnhaZ2ZOOUYrUjlo?=
- =?utf-8?B?akk5MkF6OWIyY0RlZlVibUFkTEV6UkgvWGNpWmJDTUFsUSttS0w5Ui9jVkNI?=
- =?utf-8?B?RVluZGhrZkhOWEFUL3ZVYi9XWnBGTTBzR3JqMWkvWTlkalF1c2ovSGhaWS9w?=
- =?utf-8?B?SDhSaXlhVnRzbG5ldmtSNWs4WnVSdVhmUFBYMEwwK0RFblNDekkyd2dMS0Mv?=
- =?utf-8?B?RDAwQzZxck9sYnVpQVliWkVYcElTQXczWWhhOWJUcmNEOXpLaFVkSjBzNDVq?=
- =?utf-8?B?STh0YUVPV0pWMmVDajBQYWlLcStFRlJnOUNmUFpQNHlJTlhyTkRlbzlzWEtm?=
- =?utf-8?B?MlF3NTZsWHh3elFZTDQ4d0tGaFRzWjVhSFJGZzRUWmpZRWlvdlIzcFNsU3hX?=
- =?utf-8?B?QzlEMkRHSS8xeUZPSXNQZFJKRnJ3OUVVSmJBSzRtNlptOUMya2VDRWJBeHZ2?=
- =?utf-8?B?ZVkrM0V5T1dVV25Mc1Vkd2pNQ1ByeXZBYnRFdGRGa2h2QkxsQnllVy9nUG54?=
- =?utf-8?B?U3JOb09Ra2toN0ZwdVlONGVmK0ZabEZWd1o5V0ZNYlJySjcvaExLb3BxWVhB?=
- =?utf-8?B?VkR6MVI3d0pkMlJLdDhtWFlNSHJmNTVlSkZaeENpRDZJd0lYUm01QzdWeUQv?=
- =?utf-8?B?QlBqUjFtYzZGTWp6UVZPRzJhTG9NczRhd1h2WnR5bjZodE5DQ0FJUXl2OUNr?=
- =?utf-8?B?NVp4WWhzUHhYLzlZMTVDVlZUeWx0TUZIRVowN1Q1K1Y0TEJZQitaQXM1bVRO?=
- =?utf-8?B?OGIyRU9zRkFOM0JvMmhtTElSa0ZPV0NLSll2dTNtTk9jay8rTjFJb2Jzci9w?=
- =?utf-8?B?d0NJaEsrSkJzcTZYRjJNUEdpd3M2YkRsbjZjUy9RNmd5QXlyc2N5R2JJcklJ?=
- =?utf-8?B?Kzd1SlBubERXbEhOY2VXblQvS09XWjBzeDdpR085dDM5TWhnVUozUkFWWk9Y?=
- =?utf-8?B?UjEyUFhuMU9zN09rYVpDVDNYUTlHSUM5LzA5SUovTjZ3ME5HNU00NG1DNDVi?=
- =?utf-8?B?cFJQUVFSd3gwc3dXR2VDbTRzMVBtaitQR2pXWVRucUNKQnppdE4zNnRZSmQv?=
- =?utf-8?B?WFNxaXpxWFpPY1B3Q3FzZUMwcSszaTMrWDkxZG85dnZnMllHcmkzMmtHQXBz?=
- =?utf-8?B?c1RsbWUzaVY0K1JjdXpjUzBFcnJmRm8zdXVuRGRCUzFRVE5xYXUzQ1pOeVNz?=
- =?utf-8?B?QTNRWi9kcHFwSmFtRUsveFFwRDlTejZFZGs2QVIvRDdaUTJsWFJKN25BcUNv?=
- =?utf-8?Q?uKkZwYpblm3RrT+o0PxkFk/Dm?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0864BC955030D8438CBD8578674EBBB2@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2BA15D5B3;
+	Wed, 28 Feb 2024 15:44:53 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD18515CD61;
+	Wed, 28 Feb 2024 15:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709135092; cv=none; b=YXK1IuxqrwbBjY5/suAPE82663/7X+aa58dKs28nvoHCB+XnTSWDqm+ucQEmv3NojOEi3fCNA3nCTsEZXo4btRRu4CAF2L3ttpjFMsQ3WJlCehKgTIkg+y6pEl0EBwo8mV8d6sfFpGAL16oayB8Si4lry1xq4v8w1LLyn1Kg3vQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709135092; c=relaxed/simple;
+	bh=jShHMbSAj4gwnKGAcCpC1kjbMZEjTjQCy/NI+QGukf0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=grPvKdMVSehDulWxduLO9TQr11ka9ObG7pf53h8QCImSljE9Xjs9BiBpZ6Ljn7+cEc3qUsPMJ5cMi8KPfm143XVHwGysmfppEpi9kKej/+58iMeCoE4lZ4maT7ZXiqP9TApg58v8YjrFiBl584Oc51fOHjkPmbmX8NqPReEWT04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1E721FB;
+	Wed, 28 Feb 2024 07:45:27 -0800 (PST)
+Received: from [10.1.38.163] (XHFQ2J9959.cambridge.arm.com [10.1.38.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3756F3F73F;
+	Wed, 28 Feb 2024 07:44:46 -0800 (PST)
+Message-ID: <408df79a-130e-43cd-a21a-9b3a2ddef617@arm.com>
+Date: Wed, 28 Feb 2024 15:44:44 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e94b9ed-6a82-4a38-2555-08dc38741d8b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Feb 2024 15:44:14.2485
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8b/cbpOLEy1XZnrhh+75qAcGe8DJ9HF1K/UHxUXwjF3TDIfVPEDL0BeWU3kvOxZeiuAzznI5YIeh+JTNyHVvurSjeSw97dOhGAOtsFc6UBo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAZP264MB3118
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 7/8] mm: thp: split huge page to any lower order pages
+Content-Language: en-GB
+To: Zi Yan <ziy@nvidia.com>
+Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
+ Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
+ <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Luis Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240226205534.1603748-1-zi.yan@sent.com>
+ <20240226205534.1603748-8-zi.yan@sent.com>
+ <2ce685a2-20c9-4287-a40f-30b0f0c59d49@arm.com>
+ <BD595F60-38C4-42B1-8EB9-9AE5B413C3F9@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <BD595F60-38C4-42B1-8EB9-9AE5B413C3F9@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-DQoNCkxlIDI4LzAyLzIwMjQgw6AgMTU6NDMsIEVyaWMgRHVtYXpldCBhIMOpY3JpdMKgOg0KPiBP
-biBXZWQsIEZlYiAyOCwgMjAyNCBhdCAzOjA34oCvUE0gVmFkaW0gRmVkb3JlbmtvDQo+IDx2YWRp
-bS5mZWRvcmVua29AbGludXguZGV2PiB3cm90ZToNCj4+DQo+PiBPbiAyOC8wMi8yMDI0IDExOjA5
-LCBUYXNtaXlhIE5hbGF0d2FkIHdyb3RlOg0KPj4+IEdyZWV0aW5ncywNCj4+Pg0KPj4+IFtyZXZl
-cnQgMGQ2MGQ4ZGY2ZjQ5XSBbbmV0L25ldC1uZXh0XSBbNi44LXJjNV0gQnVpbGQgRmFpbHVyZQ0K
-Pj4+DQo+Pj4gUmV2ZXJ0aW5nIGJlbG93IGNvbW1pdCBmaXhlcyB0aGUgaXNzdWUNCj4+Pg0KPj4+
-IGNvbW1pdCAwZDYwZDhkZjZmNDkzYmI0NmJmNWRiNDBkMzlkZDYwYTFiYWZkZDRlDQo+Pj4gICAg
-ICAgZHBsbDogcmVseSBvbiByY3UgZm9yIG5ldGRldl9kcGxsX3BpbigpDQo+Pj4NCj4+PiAtLS0g
-VHJhY2VzIC0tLQ0KPj4+DQo+Pj4gLi9pbmNsdWRlL2xpbnV4L2RwbGwuaDogSW4gZnVuY3Rpb24g
-4oCYbmV0ZGV2X2RwbGxfcGlu4oCZOg0KPj4+IC4vaW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oOjQz
-OTo5OiBlcnJvcjogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvDQo+Pj4gaW5jb21wbGV0ZSB0eXBl
-IOKAmHN0cnVjdCBkcGxsX3BpbuKAmQ0KPj4+ICAgICB0eXBlb2YoKnApICpsb2NhbCA9ICh0eXBl
-b2YoKnApICpfX2ZvcmNlKVJFQURfT05DRShwKTsgXA0KPj4+ICAgICAgICAgICAgXg0KPj4+IC4v
-aW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oOjU4NzoyOiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFj
-cm8NCj4+PiDigJhfX3JjdV9kZXJlZmVyZW5jZV9jaGVja+KAmQ0KPj4+ICAgICBfX3JjdV9kZXJl
-ZmVyZW5jZV9jaGVjaygocCksIF9fVU5JUVVFX0lEKHJjdSksIFwNCj4+PiAgICAgXn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn4NCj4+PiAuL2luY2x1ZGUvbGludXgvcnRuZXRsaW5rLmg6NzA6Mjogbm90
-ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvDQo+Pj4g4oCYcmN1X2RlcmVmZXJlbmNlX2NoZWNr4oCZ
-DQo+Pj4gICAgIHJjdV9kZXJlZmVyZW5jZV9jaGVjayhwLCBsb2NrZGVwX3J0bmxfaXNfaGVsZCgp
-KQ0KPj4+ICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4+PiAuL2luY2x1ZGUvbGludXgvZHBs
-bC5oOjE3NTo5OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8NCj4+PiDigJhyY3VfZGVyZWZl
-cmVuY2VfcnRubOKAmQ0KPj4+ICAgICByZXR1cm4gcmN1X2RlcmVmZXJlbmNlX3J0bmwoZGV2LT5k
-cGxsX3Bpbik7DQo+Pj4gICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fg0KPj4+IG1ha2Vb
-NF06ICoqKiBbc2NyaXB0cy9NYWtlZmlsZS5idWlsZDoyNDM6IGRyaXZlcnMvZHBsbC9kcGxsX2Nv
-cmUub10gRXJyb3IgMQ0KPj4+IG1ha2VbNF06ICoqKiBXYWl0aW5nIGZvciB1bmZpbmlzaGVkIGpv
-YnMuLi4uDQo+Pj4gICAgIEFSICAgICAgbmV0L21wbHMvYnVpbHQtaW4uYQ0KPj4+ICAgICBBUiAg
-ICAgIG5ldC9sM21kZXYvYnVpbHQtaW4uYQ0KPj4+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSAuL2lu
-Y2x1ZGUvbGludXgvcmJ0cmVlLmg6MjQsDQo+Pj4gICAgICAgICAgICAgICAgICAgIGZyb20gLi9p
-bmNsdWRlL2xpbnV4L21tX3R5cGVzLmg6MTEsDQo+Pj4gICAgICAgICAgICAgICAgICAgIGZyb20g
-Li9pbmNsdWRlL2xpbnV4L21tem9uZS5oOjIyLA0KPj4+ICAgICAgICAgICAgICAgICAgICBmcm9t
-IC4vaW5jbHVkZS9saW51eC9nZnAuaDo3LA0KPj4+ICAgICAgICAgICAgICAgICAgICBmcm9tIC4v
-aW5jbHVkZS9saW51eC91bWguaDo0LA0KPj4+ICAgICAgICAgICAgICAgICAgICBmcm9tIC4vaW5j
-bHVkZS9saW51eC9rbW9kLmg6OSwNCj4+PiAgICAgICAgICAgICAgICAgICAgZnJvbSAuL2luY2x1
-ZGUvbGludXgvbW9kdWxlLmg6MTcsDQo+Pj4gICAgICAgICAgICAgICAgICAgIGZyb20gZHJpdmVy
-cy9kcGxsL2RwbGxfbmV0bGluay5jOjk6DQo+Pj4gLi9pbmNsdWRlL2xpbnV4L2RwbGwuaDogSW4g
-ZnVuY3Rpb24g4oCYbmV0ZGV2X2RwbGxfcGlu4oCZOg0KPj4+IC4vaW5jbHVkZS9saW51eC9yY3Vw
-ZGF0ZS5oOjQzOTo5OiBlcnJvcjogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvDQo+Pj4gaW5jb21w
-bGV0ZSB0eXBlIOKAmHN0cnVjdCBkcGxsX3BpbuKAmQ0KPj4+ICAgICB0eXBlb2YoKnApICpsb2Nh
-bCA9ICh0eXBlb2YoKnApICpfX2ZvcmNlKVJFQURfT05DRShwKTsgXA0KPj4+ICAgICAgICAgICAg
-Xg0KPj4+IC4vaW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oOjU4NzoyOiBub3RlOiBpbiBleHBhbnNp
-b24gb2YgbWFjcm8NCj4+PiDigJhfX3JjdV9kZXJlZmVyZW5jZV9jaGVja+KAmQ0KPj4+ICAgICBf
-X3JjdV9kZXJlZmVyZW5jZV9jaGVjaygocCksIF9fVU5JUVVFX0lEKHJjdSksIFwNCj4+PiAgICAg
-Xn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4+PiAuL2luY2x1ZGUvbGludXgvcnRuZXRsaW5rLmg6
-NzA6Mjogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvDQo+Pj4g4oCYcmN1X2RlcmVmZXJlbmNl
-X2NoZWNr4oCZDQo+Pj4gICAgIHJjdV9kZXJlZmVyZW5jZV9jaGVjayhwLCBsb2NrZGVwX3J0bmxf
-aXNfaGVsZCgpKQ0KPj4+ICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4+PiAuL2luY2x1ZGUv
-bGludXgvZHBsbC5oOjE3NTo5OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8NCj4+PiDigJhy
-Y3VfZGVyZWZlcmVuY2VfcnRubOKAmQ0KPj4+ICAgICByZXR1cm4gcmN1X2RlcmVmZXJlbmNlX3J0
-bmwoZGV2LT5kcGxsX3Bpbik7DQo+Pj4gICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fg0K
-Pj4+IG1ha2VbNF06ICoqKiBbc2NyaXB0cy9NYWtlZmlsZS5idWlsZDoyNDM6IGRyaXZlcnMvZHBs
-bC9kcGxsX25ldGxpbmsub10NCj4+PiBFcnJvciAxDQo+Pj4gbWFrZVszXTogKioqIFtzY3JpcHRz
-L01ha2VmaWxlLmJ1aWxkOjQ4MTogZHJpdmVycy9kcGxsXSBFcnJvciAyDQo+Pj4gbWFrZVszXTog
-KioqIFdhaXRpbmcgZm9yIHVuZmluaXNoZWQgam9icy4uLi4NCj4+PiBJbiBmaWxlIGluY2x1ZGVk
-IGZyb20gLi9hcmNoL3Bvd2VycGMvaW5jbHVkZS9nZW5lcmF0ZWQvYXNtL3J3b25jZS5oOjEsDQo+
-Pj4gICAgICAgICAgICAgICAgICAgIGZyb20gLi9pbmNsdWRlL2xpbnV4L2NvbXBpbGVyLmg6MjUx
-LA0KPj4+ICAgICAgICAgICAgICAgICAgICBmcm9tIC4vaW5jbHVkZS9saW51eC9pbnN0cnVtZW50
-ZWQuaDoxMCwNCj4+PiAgICAgICAgICAgICAgICAgICAgZnJvbSAuL2luY2x1ZGUvbGludXgvdWFj
-Y2Vzcy5oOjYsDQo+Pj4gICAgICAgICAgICAgICAgICAgIGZyb20gbmV0L2NvcmUvZGV2LmM6NzE6
-DQo+Pj4gbmV0L2NvcmUvZGV2LmM6IEluIGZ1bmN0aW9uIOKAmG5ldGRldl9kcGxsX3Bpbl9hc3Np
-Z27igJk6DQo+Pj4gLi9pbmNsdWRlL2xpbnV4L3JjdXBkYXRlLmg6NDYyOjM2OiBlcnJvcjogZGVy
-ZWZlcmVuY2luZyBwb2ludGVyIHRvDQo+Pj4gaW5jb21wbGV0ZSB0eXBlIOKAmHN0cnVjdCBkcGxs
-X3BpbuKAmQ0KPj4+ICAgICNkZWZpbmUgUkNVX0lOSVRJQUxJWkVSKHYpICh0eXBlb2YoKih2KSkg
-X19mb3JjZSBfX3JjdSAqKSh2KQ0KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgXn5+fg0KPj4+IC4vaW5jbHVkZS9hc20tZ2VuZXJpYy9yd29uY2UuaDo1NTozMzogbm90
-ZTogaW4gZGVmaW5pdGlvbiBvZiBtYWNybw0KPj4+IOKAmF9fV1JJVEVfT05DReKAmQ0KPj4+ICAg
-ICAqKHZvbGF0aWxlIHR5cGVvZih4KSAqKSYoeCkgPSAodmFsKTsgICAgXA0KPj4+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+DQo+Pj4gLi9hcmNoL3Bvd2VycGMvaW5jbHVk
-ZS9hc20vYmFycmllci5oOjc2OjI6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybw0KPj4+IOKA
-mFdSSVRFX09OQ0XigJkNCj4+PiAgICAgV1JJVEVfT05DRSgqcCwgdik7ICAgICAgXA0KPj4+ICAg
-ICBefn5+fn5+fn5+DQo+Pj4gLi9pbmNsdWRlL2FzbS1nZW5lcmljL2JhcnJpZXIuaDoxNzI6NTU6
-IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybw0KPj4+IOKAmF9fc21wX3N0b3JlX3JlbGVhc2Xi
-gJkNCj4+PiAgICAjZGVmaW5lIHNtcF9zdG9yZV9yZWxlYXNlKHAsIHYpIGRvIHsga2NzYW5fcmVs
-ZWFzZSgpOw0KPj4+IF9fc21wX3N0b3JlX3JlbGVhc2UocCwgdik7IH0gd2hpbGUgKDApDQo+Pj4g
-Xn5+fn5+fn5+fn5+fn5+fn5+fg0KPj4+IC4vaW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oOjUwMzoz
-OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8NCj4+PiDigJhzbXBfc3RvcmVfcmVsZWFzZeKA
-mQ0KPj4+ICAgICAgc21wX3N0b3JlX3JlbGVhc2UoJnAsIFJDVV9JTklUSUFMSVpFUigodHlwZW9m
-KHApKV9yX2FfcF9fdikpOyBcDQo+Pj4gICAgICBefn5+fn5+fn5+fn5+fn5+fg0KPj4+IC4vaW5j
-bHVkZS9saW51eC9yY3VwZGF0ZS5oOjUwMzoyNTogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3Jv
-DQo+Pj4g4oCYUkNVX0lOSVRJQUxJWkVS4oCZDQo+Pj4gICAgICBzbXBfc3RvcmVfcmVsZWFzZSgm
-cCwgUkNVX0lOSVRJQUxJWkVSKCh0eXBlb2YocCkpX3JfYV9wX192KSk7IFwNCj4+PiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBefn5+fn5+fn5+fn5+fn4NCj4+PiBuZXQvY29yZS9kZXYuYzo5
-MDgxOjI6IG5vdGU6IGluIGV4cGFuc2lvbiBvZiBtYWNybyDigJhyY3VfYXNzaWduX3BvaW50ZXLi
-gJkNCj4+PiAgICAgcmN1X2Fzc2lnbl9wb2ludGVyKGRldi0+ZHBsbF9waW4sIGRwbGxfcGluKTsN
-Cj4+PiAgICAgXn5+fn5+fn5+fn5+fn5+fn5+DQo+Pj4gbWFrZVs0XTogKioqIFtzY3JpcHRzL01h
-a2VmaWxlLmJ1aWxkOjI0MzogbmV0L2NvcmUvZGV2Lm9dIEVycm9yIDENCj4+PiBtYWtlWzRdOiAq
-KiogV2FpdGluZyBmb3IgdW5maW5pc2hlZCBqb2JzLi4uLg0KPj4+ICAgICBBUiAgICAgIGRyaXZl
-cnMvbmV0L2V0aGVybmV0L2J1aWx0LWluLmENCj4+PiAgICAgQVIgICAgICBkcml2ZXJzL25ldC9i
-dWlsdC1pbi5hDQo+Pj4gICAgIEFSICAgICAgbmV0L2RjYi9idWlsdC1pbi5hDQo+Pj4gICAgIEFS
-ICAgICAgbmV0L25ldGxhYmVsL2J1aWx0LWluLmENCj4+PiAgICAgQVIgICAgICBuZXQvc3RycGFy
-c2VyL2J1aWx0LWluLmENCj4+PiAgICAgQVIgICAgICBuZXQvaGFuZHNoYWtlL2J1aWx0LWluLmEN
-Cj4+PiAgICAgR0VOICAgICBsaWIvdGVzdF9mb3J0aWZ5LmxvZw0KPj4+ICAgICBBUiAgICAgIG5l
-dC84MDIxcS9idWlsdC1pbi5hDQo+Pj4gICAgIEFSICAgICAgbmV0L25zaC9idWlsdC1pbi5hDQo+
-Pj4gICAgIEFSICAgICAgbmV0L3VuaXgvYnVpbHQtaW4uYQ0KPj4+ICAgICBDQyAgICAgIGxpYi9z
-dHJpbmcubw0KPj4+ICAgICBBUiAgICAgIG5ldC9wYWNrZXQvYnVpbHQtaW4uYQ0KPj4+ICAgICBB
-UiAgICAgIG5ldC9zd2l0Y2hkZXYvYnVpbHQtaW4uYQ0KPj4+ICAgICBBUiAgICAgIGxpYi9saWIu
-YQ0KPj4+ICAgICBBUiAgICAgIG5ldC9tcHRjcC9idWlsdC1pbi5hDQo+Pj4gICAgIEFSICAgICAg
-bmV0L2RldmxpbmsvYnVpbHQtaW4uYQ0KPj4+IEluIGZpbGUgaW5jbHVkZWQgZnJvbSAuL2luY2x1
-ZGUvbGludXgvcmJ0cmVlLmg6MjQsDQo+Pj4gICAgICAgICAgICAgICAgICAgIGZyb20gLi9pbmNs
-dWRlL2xpbnV4L21tX3R5cGVzLmg6MTEsDQo+Pj4gICAgICAgICAgICAgICAgICAgIGZyb20gLi9p
-bmNsdWRlL2xpbnV4L21tem9uZS5oOjIyLA0KPj4+ICAgICAgICAgICAgICAgICAgICBmcm9tIC4v
-aW5jbHVkZS9saW51eC9nZnAuaDo3LA0KPj4+ICAgICAgICAgICAgICAgICAgICBmcm9tIC4vaW5j
-bHVkZS9saW51eC91bWguaDo0LA0KPj4+ICAgICAgICAgICAgICAgICAgICBmcm9tIC4vaW5jbHVk
-ZS9saW51eC9rbW9kLmg6OSwNCj4+PiAgICAgICAgICAgICAgICAgICAgZnJvbSAuL2luY2x1ZGUv
-bGludXgvbW9kdWxlLmg6MTcsDQo+Pj4gICAgICAgICAgICAgICAgICAgIGZyb20gbmV0L2NvcmUv
-cnRuZXRsaW5rLmM6MTc6DQo+Pj4gLi9pbmNsdWRlL2xpbnV4L2RwbGwuaDogSW4gZnVuY3Rpb24g
-4oCYbmV0ZGV2X2RwbGxfcGlu4oCZOg0KPj4+IC4vaW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oOjQz
-OTo5OiBlcnJvcjogZGVyZWZlcmVuY2luZyBwb2ludGVyIHRvDQo+Pj4gaW5jb21wbGV0ZSB0eXBl
-IOKAmHN0cnVjdCBkcGxsX3BpbuKAmQ0KPj4+ICAgICB0eXBlb2YoKnApICpsb2NhbCA9ICh0eXBl
-b2YoKnApICpfX2ZvcmNlKVJFQURfT05DRShwKTsgXA0KPj4+ICAgICAgICAgICAgXg0KPj4+IC4v
-aW5jbHVkZS9saW51eC9yY3VwZGF0ZS5oOjU4NzoyOiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFj
-cm8NCj4+PiDigJhfX3JjdV9kZXJlZmVyZW5jZV9jaGVja+KAmQ0KPj4+ICAgICBfX3JjdV9kZXJl
-ZmVyZW5jZV9jaGVjaygocCksIF9fVU5JUVVFX0lEKHJjdSksIFwNCj4+PiAgICAgXn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn4NCj4+PiAuL2luY2x1ZGUvbGludXgvcnRuZXRsaW5rLmg6NzA6Mjogbm90
-ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvDQo+Pj4g4oCYcmN1X2RlcmVmZXJlbmNlX2NoZWNr4oCZ
-DQo+Pj4gICAgIHJjdV9kZXJlZmVyZW5jZV9jaGVjayhwLCBsb2NrZGVwX3J0bmxfaXNfaGVsZCgp
-KQ0KPj4+ICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4+PiAuL2luY2x1ZGUvbGludXgvZHBs
-bC5oOjE3NTo5OiBub3RlOiBpbiBleHBhbnNpb24gb2YgbWFjcm8NCj4+PiDigJhyY3VfZGVyZWZl
-cmVuY2VfcnRubOKAmQ0KPj4+ICAgICByZXR1cm4gcmN1X2RlcmVmZXJlbmNlX3J0bmwoZGV2LT5k
-cGxsX3Bpbik7DQo+Pj4gICAgICAgICAgICBefn5+fn5+fn5+fn5+fn5+fn5+fg0KPj4+IEluIGZp
-bGUgaW5jbHVkZWQgZnJvbSBuZXQvY29yZS9ydG5ldGxpbmsuYzo2MDoNCj4+PiAuL2luY2x1ZGUv
-bGludXgvZHBsbC5oOjE3OToxOiBlcnJvcjogY29udHJvbCByZWFjaGVzIGVuZCBvZiBub24tdm9p
-ZA0KPj4+IGZ1bmN0aW9uIFstV2Vycm9yPXJldHVybi10eXBlXQ0KPj4+ICAgIH0NCj4+Pg0KPj4N
-Cj4+IEhpLCBFcmljIQ0KPj4NCj4+IExvb2tzIGxpa2Ugd2UgaGF2ZSB0byBtb3ZlIHN0cnVjdCBk
-cGxsX3BpbiBkZWZpbml0aW9uIHRvDQo+PiBpbmNsdWRlL2xpbnV4L2RwbGwuaCB0byBoYXZlIHRo
-aXMgZml4ZWQsIHJpZ2h0Pw0KPj4NCj4gDQo+IE5vIGlkZWEgd2hhdCBpcyB3cm9uZy4gSXMgaXQg
-cG93ZXJwYyBzcGVjaWZpYyA/IFNvbWUgY29tcGlsZXIgdmVyc2lvbiA/DQoNCk1pZ2h0IGJlIGEg
-Y2lyY3VsYXIgaGVhZGVyIGluY2x1c2lvbi4NCg0KQ2hyaXN0b3BoZQ0K
+On 28/02/2024 15:42, Zi Yan wrote:
+> On 28 Feb 2024, at 3:23, Ryan Roberts wrote:
+> 
+>> Hi Zi,
+>>
+>>
+>> On 26/02/2024 20:55, Zi Yan wrote:
+>>> From: Zi Yan <ziy@nvidia.com>
+>>>
+>>> To split a THP to any lower order pages, we need to reform THPs on
+>>> subpages at given order and add page refcount based on the new page
+>>> order. Also we need to reinitialize page_deferred_list after removing
+>>> the page from the split_queue, otherwise a subsequent split will
+>>> see list corruption when checking the page_deferred_list again.
+>>>
+>>> Note: Anonymous order-1 folio is not supported because _deferred_list,
+>>> which is used by partially mapped folios, is stored in subpage 2 and an
+>>> order-1 folio only has subpage 0 and 1. File-backed order-1 folios are
+>>> fine, since they do not use _deferred_list.
+>>>
+>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>> ---
+>>>  include/linux/huge_mm.h |  21 +++++---
+>>>  mm/huge_memory.c        | 110 +++++++++++++++++++++++++++++++---------
+>>>  2 files changed, 99 insertions(+), 32 deletions(-)
+>>>
+>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>> index 5adb86af35fc..de0c89105076 100644
+>>> --- a/include/linux/huge_mm.h
+>>> +++ b/include/linux/huge_mm.h
+>>> @@ -265,10 +265,11 @@ unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
+>>>
+>>>  void folio_prep_large_rmappable(struct folio *folio);
+>>>  bool can_split_folio(struct folio *folio, int *pextra_pins);
+>>> -int split_huge_page_to_list(struct page *page, struct list_head *list);
+>>> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>> +		unsigned int new_order);
+>>>  static inline int split_huge_page(struct page *page)
+>>>  {
+>>> -	return split_huge_page_to_list(page, NULL);
+>>> +	return split_huge_page_to_list_to_order(page, NULL, 0);
+>>>  }
+>>>  void deferred_split_folio(struct folio *folio);
+>>>
+>>> @@ -422,7 +423,8 @@ can_split_folio(struct folio *folio, int *pextra_pins)
+>>>  	return false;
+>>>  }
+>>>  static inline int
+>>> -split_huge_page_to_list(struct page *page, struct list_head *list)
+>>> +split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>> +		unsigned int new_order)
+>>>  {
+>>>  	return 0;
+>>>  }
+>>> @@ -519,17 +521,20 @@ static inline bool thp_migration_supported(void)
+>>>  }
+>>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>>>
+>>> -static inline int split_folio_to_list(struct folio *folio,
+>>> -		struct list_head *list)
+>>> +static inline int split_folio_to_list_to_order(struct folio *folio,
+>>> +		struct list_head *list, int new_order)
+>>>  {
+>>> -	return split_huge_page_to_list(&folio->page, list);
+>>> +	return split_huge_page_to_list_to_order(&folio->page, list, new_order);
+>>>  }
+>>>
+>>> -static inline int split_folio(struct folio *folio)
+>>> +static inline int split_folio_to_order(struct folio *folio, int new_order)
+>>>  {
+>>> -	return split_folio_to_list(folio, NULL);
+>>> +	return split_folio_to_list_to_order(folio, NULL, new_order);
+>>>  }
+>>>
+>>> +#define split_folio_to_list(f, l) split_folio_to_list_to_order(f, l, 0)
+>>> +#define split_folio(f) split_folio_to_order(f, 0)
+>>> +
+>>>  /*
+>>>   * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP due to
+>>>   * limitations in the implementation like arm64 MTE can override this to
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index b2df788c11fa..8b47a96a28f9 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -2770,7 +2770,6 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>>>  		struct lruvec *lruvec, struct list_head *list)
+>>>  {
+>>>  	VM_BUG_ON_PAGE(!PageHead(head), head);
+>>> -	VM_BUG_ON_PAGE(PageCompound(tail), head);
+>>>  	VM_BUG_ON_PAGE(PageLRU(tail), head);
+>>>  	lockdep_assert_held(&lruvec->lru_lock);
+>>>
+>>> @@ -2791,7 +2790,8 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>>>  }
+>>>
+>>>  static void __split_huge_page_tail(struct folio *folio, int tail,
+>>> -		struct lruvec *lruvec, struct list_head *list)
+>>> +		struct lruvec *lruvec, struct list_head *list,
+>>> +		unsigned int new_order)
+>>>  {
+>>>  	struct page *head = &folio->page;
+>>>  	struct page *page_tail = head + tail;
+>>> @@ -2861,10 +2861,15 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+>>>  	 * which needs correct compound_head().
+>>>  	 */
+>>>  	clear_compound_head(page_tail);
+>>> +	if (new_order) {
+>>> +		prep_compound_page(page_tail, new_order);
+>>> +		folio_prep_large_rmappable(new_folio);
+>>> +	}
+>>>
+>>>  	/* Finally unfreeze refcount. Additional reference from page cache. */
+>>> -	page_ref_unfreeze(page_tail, 1 + (!folio_test_anon(folio) ||
+>>> -					  folio_test_swapcache(folio)));
+>>> +	page_ref_unfreeze(page_tail,
+>>> +		1 + ((!folio_test_anon(folio) || folio_test_swapcache(folio)) ?
+>>> +			     folio_nr_pages(new_folio) : 0));
+>>>
+>>>  	if (folio_test_young(folio))
+>>>  		folio_set_young(new_folio);
+>>> @@ -2882,7 +2887,7 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+>>>  }
+>>>
+>>>  static void __split_huge_page(struct page *page, struct list_head *list,
+>>> -		pgoff_t end)
+>>> +		pgoff_t end, unsigned int new_order)
+>>>  {
+>>>  	struct folio *folio = page_folio(page);
+>>>  	struct page *head = &folio->page;
+>>> @@ -2890,11 +2895,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>  	struct address_space *swap_cache = NULL;
+>>>  	unsigned long offset = 0;
+>>>  	int i, nr_dropped = 0;
+>>> +	unsigned int new_nr = 1 << new_order;
+>>>  	int order = folio_order(folio);
+>>>  	unsigned int nr = 1 << order;
+>>>
+>>>  	/* complete memcg works before add pages to LRU */
+>>> -	split_page_memcg(head, order, 0);
+>>> +	split_page_memcg(head, order, new_order);
+>>>
+>>>  	if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
+>>>  		offset = swp_offset(folio->swap);
+>>> @@ -2907,8 +2913,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>
+>>>  	ClearPageHasHWPoisoned(head);
+>>>
+>>> -	for (i = nr - 1; i >= 1; i--) {
+>>> -		__split_huge_page_tail(folio, i, lruvec, list);
+>>> +	for (i = nr - new_nr; i >= new_nr; i -= new_nr) {
+>>> +		__split_huge_page_tail(folio, i, lruvec, list, new_order);
+>>>  		/* Some pages can be beyond EOF: drop them from page cache */
+>>>  		if (head[i].index >= end) {
+>>>  			struct folio *tail = page_folio(head + i);
+>>> @@ -2929,24 +2935,30 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>  		}
+>>>  	}
+>>>
+>>> -	ClearPageCompound(head);
+>>> +	if (!new_order)
+>>> +		ClearPageCompound(head);
+>>> +	else {
+>>> +		struct folio *new_folio = (struct folio *)head;
+>>> +
+>>> +		folio_set_order(new_folio, new_order);
+>>> +	}
+>>>  	unlock_page_lruvec(lruvec);
+>>>  	/* Caller disabled irqs, so they are still disabled here */
+>>>
+>>> -	split_page_owner(head, order, 0);
+>>> +	split_page_owner(head, order, new_order);
+>>>
+>>>  	/* See comment in __split_huge_page_tail() */
+>>>  	if (PageAnon(head)) {
+>>>  		/* Additional pin to swap cache */
+>>>  		if (PageSwapCache(head)) {
+>>> -			page_ref_add(head, 2);
+>>> +			page_ref_add(head, 1 + new_nr);
+>>>  			xa_unlock(&swap_cache->i_pages);
+>>>  		} else {
+>>>  			page_ref_inc(head);
+>>>  		}
+>>>  	} else {
+>>>  		/* Additional pin to page cache */
+>>> -		page_ref_add(head, 2);
+>>> +		page_ref_add(head, 1 + new_nr);
+>>>  		xa_unlock(&head->mapping->i_pages);
+>>>  	}
+>>>  	local_irq_enable();
+>>> @@ -2958,7 +2970,15 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>  	if (folio_test_swapcache(folio))
+>>>  		split_swap_cluster(folio->swap);
+>>>
+>>> -	for (i = 0; i < nr; i++) {
+>>> +	/*
+>>> +	 * set page to its compound_head when split to non order-0 pages, so
+>>> +	 * we can skip unlocking it below, since PG_locked is transferred to
+>>> +	 * the compound_head of the page and the caller will unlock it.
+>>> +	 */
+>>> +	if (new_order)
+>>> +		page = compound_head(page);
+>>> +
+>>> +	for (i = 0; i < nr; i += new_nr) {
+>>>  		struct page *subpage = head + i;
+>>>  		if (subpage == page)
+>>>  			continue;
+>>> @@ -2992,29 +3012,36 @@ bool can_split_folio(struct folio *folio, int *pextra_pins)
+>>>  }
+>>>
+>>>  /*
+>>> - * This function splits huge page into normal pages. @page can point to any
+>>> - * subpage of huge page to split. Split doesn't change the position of @page.
+>>> + * This function splits huge page into pages in @new_order. @page can point to
+>>> + * any subpage of huge page to split. Split doesn't change the position of
+>>> + * @page.
+>>> + *
+>>> + * NOTE: order-1 anonymous folio is not supported because _deferred_list,
+>>> + * which is used by partially mapped folios, is stored in subpage 2 and an
+>>> + * order-1 folio only has subpage 0 and 1. File-backed order-1 folios are OK,
+>>> + * since they do not use _deferred_list.
+>>>   *
+>>>   * Only caller must hold pin on the @page, otherwise split fails with -EBUSY.
+>>>   * The huge page must be locked.
+>>>   *
+>>>   * If @list is null, tail pages will be added to LRU list, otherwise, to @list.
+>>>   *
+>>> - * Both head page and tail pages will inherit mapping, flags, and so on from
+>>> - * the hugepage.
+>>> + * Pages in new_order will inherit mapping, flags, and so on from the hugepage.
+>>>   *
+>>> - * GUP pin and PG_locked transferred to @page. Rest subpages can be freed if
+>>> - * they are not mapped.
+>>> + * GUP pin and PG_locked transferred to @page or the compound page @page belongs
+>>> + * to. Rest subpages can be freed if they are not mapped.
+>>>   *
+>>>   * Returns 0 if the hugepage is split successfully.
+>>>   * Returns -EBUSY if the page is pinned or if anon_vma disappeared from under
+>>>   * us.
+>>>   */
+>>> -int split_huge_page_to_list(struct page *page, struct list_head *list)
+>>> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>> +				     unsigned int new_order)
+>>>  {
+>>>  	struct folio *folio = page_folio(page);
+>>>  	struct deferred_split *ds_queue = get_deferred_split_queue(folio);
+>>> -	XA_STATE(xas, &folio->mapping->i_pages, folio->index);
+>>> +	/* reset xarray order to new order after split */
+>>> +	XA_STATE_ORDER(xas, &folio->mapping->i_pages, folio->index, new_order);
+>>>  	struct anon_vma *anon_vma = NULL;
+>>>  	struct address_space *mapping = NULL;
+>>>  	int extra_pins, ret;
+>>> @@ -3024,6 +3051,34 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>>>  	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+>>>  	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
+>>>
+>>> +	/* Cannot split anonymous THP to order-1 */
+>>> +	if (new_order == 1 && folio_test_anon(folio)) {
+>>> +		VM_WARN_ONCE(1, "Cannot split to order-1 folio");
+>>> +		return -EINVAL;
+>>> +	}
+>>> +
+>>> +	if (new_order) {
+>>> +		/* Only swapping a whole PMD-mapped folio is supported */
+>>> +		if (folio_test_swapcache(folio)) {
+>>> +			VM_WARN_ONCE(1,
+>>> +				"Cannot split swap-cached folio to non-0 order");
+>>
+>> My understanding may be wrong here, but can't the folio be moved to swapcache
+>> asynchronously? How does the caller guarrantee that the folio is not in
+>> swapcache and will not be moved between the call to
+>> split_huge_page_to_list_to_order() and this test? If the caller can't prevent
+>> it, then isn't it wrong to raise a warning here? Perhaps you just have to fail
+>> to split?
+> 
+> Right. That is why I only use VM_WARN_ONCE here. You mean it is better to
+> get rid of the warning. I have no strong preference about it.
+
+Yes; I don't think we should be issuing warnings when the caller has done
+nothing wrong?
+
+> 
+>>
+>> I'm guessing this restriction is because swap only supports order-0 and
+>> pmd-order folios currently? (And you only have split_swap_cluster() to downgrade
+>> from pmd-order to order-0). Perhaps you need my series that allows swapping out
+>> any order THP? Current version at [1] but I'm working on a new version.
+>>
+>> [1] https://lore.kernel.org/linux-mm/20231025144546.577640-1-ryan.roberts@arm.com/
+> 
+> Right. Once your patchset is in, the above check can be removed.
+> 
+>>> +			return -EINVAL;
+>>> +		}
+>>> +		/* Split shmem folio to non-zero order not supported */
+>>> +		if (shmem_mapping(folio->mapping)) {
+>>> +			VM_WARN_ONCE(1,
+>>> +				"Cannot split shmem folio to non-0 order");
+>>> +			return -EINVAL;
+>>> +		}
+>>> +		/* No split if the file system does not support large folio */
+>>> +		if (!mapping_large_folio_support(folio->mapping)) {
+>>> +			VM_WARN_ONCE(1,
+>>> +				"Cannot split file folio to non-0 order");
+>>> +			return -EINVAL;
+>>> +		}
+>>> +	}
+>>> +
+>>> +
+>>>  	is_hzp = is_huge_zero_page(&folio->page);
+>>>  	if (is_hzp) {
+>>>  		pr_warn_ratelimited("Called split_huge_page for huge zero page\n");
+>>> @@ -3120,14 +3175,21 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>>>  		if (folio_order(folio) > 1 &&
+>>>  		    !list_empty(&folio->_deferred_list)) {
+>>>  			ds_queue->split_queue_len--;
+>>> -			list_del(&folio->_deferred_list);
+>>> +			/*
+>>> +			 * Reinitialize page_deferred_list after removing the
+>>> +			 * page from the split_queue, otherwise a subsequent
+>>> +			 * split will see list corruption when checking the
+>>> +			 * page_deferred_list.
+>>> +			 */
+>>> +			list_del_init(&folio->_deferred_list);
+>>>  		}
+>>>  		spin_unlock(&ds_queue->split_queue_lock);
+>>>  		if (mapping) {
+>>>  			int nr = folio_nr_pages(folio);
+>>>
+>>>  			xas_split(&xas, folio, folio_order(folio));
+>>> -			if (folio_test_pmd_mappable(folio)) {
+>>> +			if (folio_test_pmd_mappable(folio) &&
+>>> +			    new_order < HPAGE_PMD_ORDER) {
+>>>  				if (folio_test_swapbacked(folio)) {
+>>>  					__lruvec_stat_mod_folio(folio,
+>>>  							NR_SHMEM_THPS, -nr);
+>>> @@ -3139,7 +3201,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>>>  			}
+>>>  		}
+>>>
+>>> -		__split_huge_page(page, list, end);
+>>> +		__split_huge_page(page, list, end, new_order);
+>>>  		ret = 0;
+>>>  	} else {
+>>>  		spin_unlock(&ds_queue->split_queue_lock);
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
+
 
