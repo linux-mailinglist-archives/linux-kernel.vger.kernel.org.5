@@ -1,164 +1,122 @@
-Return-Path: <linux-kernel+bounces-85184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D75E386B1CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:30:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 752F886B1AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06DE11C23FC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:30:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E3A628A2FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7425654F9C;
-	Wed, 28 Feb 2024 14:30:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="l+kmlhWD";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b="T6iMBxD1"
-Received: from smtpout143.security-mail.net (smtpout143.security-mail.net [85.31.212.143])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AE015958B
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=85.31.212.143
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709130606; cv=fail; b=bQuVnBQT6m6nWjHNBA3aWpVi2Cqh9itWyAofc71sISUE2qZUAuN9NZ1e6Hh6LiFSmLU6iJXT6rFygBrH7xCm04Amw2mAigfLZNIwdUhJeYheyhxx0FW8g8CQq0ifhxEYC7UbcxQxlai34jjOh5eMtimpeEwhQ5vYjnFwdU8XeLQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709130606; c=relaxed/simple;
-	bh=eNGrV+nhiIltPpCPO5tY6Qja2z5LVYDK3bDG1QJWR44=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=VwLIfWwLEAu/K5GVlfCJBN2eKZRm5vOj9BVyLKHM8iFMnSQ4r7IeO0x6AsTDMAOsHrswwQh0GfxyJ+NbF1bjY5CnS2aRx66PgDDzCMFtdnvMSLtiOc34NBPzGs0MinjYhR8uh4+ose3iYt+SRobWDab3s1gzmPAxZoR1BK8Vbz0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com; spf=pass smtp.mailfrom=kalrayinc.com; dkim=pass (1024-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=l+kmlhWD; dkim=fail (2048-bit key) header.d=kalrayinc.com header.i=@kalrayinc.com header.b=T6iMBxD1 reason="signature verification failed"; arc=fail smtp.client-ip=85.31.212.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=kalrayinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kalrayinc.com
-Received: from localhost (localhost [127.0.0.1])
-	by fx403.security-mail.net (Postfix) with ESMTP id 828A15290DE
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:24:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kalrayinc.com;
-	s=sec-sig-email; t=1709130264;
-	bh=eNGrV+nhiIltPpCPO5tY6Qja2z5LVYDK3bDG1QJWR44=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=l+kmlhWDxQH+2b/UxuoNOxLGFK5WFnaVomA/Xy3V+fY3eEtFro7MBz1QbO1OTeiLb
-	 GAOEYGxT6acRkWNAgj/zfW/7WXlJyZiLHOqI5JKWF76I0I9eoNhPKZt1I/ABJGZQUH
-	 gI/gxbkfgBJvKnOV1H5c+D/1KJ6uscepOiy4hu0c=
-Received: from fx403 (localhost [127.0.0.1]) by fx403.security-mail.net
- (Postfix) with ESMTP id 2A065529D55; Wed, 28 Feb 2024 15:24:24 +0100 (CET)
-Received: from FRA01-MR2-obe.outbound.protection.outlook.com
- (mail-mr2fra01on0100.outbound.protection.outlook.com [104.47.25.100]) by
- fx403.security-mail.net (Postfix) with ESMTPS id 64165529C60; Wed, 28 Feb
- 2024 15:24:23 +0100 (CET)
-Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:13::5)
- by PR1P264MB3847.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:252::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Wed, 28 Feb
- 2024 14:24:21 +0000
-Received: from MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- ([fe80::9c5c:2fbf:64c6:1dac]) by MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- ([fe80::9c5c:2fbf:64c6:1dac%6]) with mapi id 15.20.7316.039; Wed, 28 Feb
- 2024 14:24:21 +0000
-X-Virus-Scanned: E-securemail
-Secumail-id: <10be8.65df4217.62e77.0>
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VXvRBCcmTSsP8YFWHxUH+7Qd7p6JA3ugRPjrgaRBmFf7mNHeYwD9qtCq6A7mg1Tf5GvVMuiFHQGciciPjhSqLpVXGLa4eF/g0Ru2fLgkGoMTfijscxDfHZy6dyLWmuaNSoQQahz0s4ZsRFBc6HhJVBmouFiEanmNcts08tCV10DM2CHYLyg1NGU/uqzdnLe+NIT7uMLhWV3rr2Et/Y2s3bEEyb8UY0GwXmdoLIaYD4FFAC+ieZwrUTIy9bxV7GKBgv2kEpvN+TdK0UdARjaLHH1IKEK1NsZhtRYtFOmkaTsS8dTAsVeVdP9B5jjdXQ1h2PvSaks6uRbMG6vrIP08Ug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microsoft.com; s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gTLTZqOv3UZW/INnUNdfcBE14GunzMfW8KhiPMp2mzk=;
- b=c1pc2qov4vubvOhV1W0G8aCKl5yx0DTPf5UvUA62H1DJwgDuRoYTSgQYBId3N6a8zzeRgmRjmCZWVK3+IGUl9sE9sLEbs9lRR2+GAOA4lep9nnttbskTB2aaUPh+dZufdMDv76NwpkT5M3pTE26pqo1E/1CJ0KppxX5IdlJ9X2K2tY1bKs8OBIclCfxNqIuK+IByjisllDze1MM3F7TG4WTZBcuNqoMAE9EWqNc79I+1oY2eFcmxE26zKGbrb4Yt0+QsAtFc8LsKRuuqPjWu3ddnwyFxlrBrTwjlY7wRmnnLyuGyPd8axTizT8xa2gihxpgdyVl3bi0JJ3q9+hEiOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kalrayinc.com; dmarc=pass action=none
- header.from=kalrayinc.com; dkim=pass header.d=kalrayinc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kalrayinc.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gTLTZqOv3UZW/INnUNdfcBE14GunzMfW8KhiPMp2mzk=;
- b=T6iMBxD1SkzKNVuVdC8Kc9MfEbFrV3mg5Ihh25Z0i7i2S5lz8lgjXrv/T3S9yuE/QdkKt3RA9G7SbeAtesgrqXEeYoSp/wr2So8Rc5NKYBicWbGb6pw0cdbTqx1Eeh7bhXOUeb4fnIpWQAfa4OUxUo0FwBIMIoPaY6BamrDA4bb9Ur5F1TFjm5E8mrR9GLqVIffR1UTEg4VE0f4CGlHgRO1EvQjzMsRReRb3wSifLdQbmhlDsuvAx49zll6Oya/JP6wcHOph5qf5Wqyndy0cLK9mIu0b1vkfckXTeMVSRYVz8EYjWreZlWNPqpokq2LPikdkmvlWaPHJCPMFXWS0vg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kalrayinc.com;
-Message-ID: <9be431cc-7300-479e-af22-e02c1d1460cc@kalrayinc.com>
-Date: Wed, 28 Feb 2024 15:24:18 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/195] 6.1.80-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240227131610.391465389@linuxfoundation.org>
-Content-Language: en-us, fr
-From: Yann Sionneau <ysionneau@kalrayinc.com>
-In-Reply-To: <20240227131610.391465389@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PA7P264CA0531.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:102:3db::12) To MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:501:13::5)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1DE159578;
+	Wed, 28 Feb 2024 14:24:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB24157E9F
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709130285; cv=none; b=Z945MohXwWpQEwjHUPVZAVZE3tyseBHO12Ngx5dadOn1g8HGjfXDrsn/2ctOCwGzCRdc5DP8q5MmuB1XT0EFtriIe1DTw5mGUIQKyyJBKz19exPRTmP1jbD6uwtcd4xY4niQesi5QbGxIb1bHFCoIis5pHmj8Fv6w2xUv1PrP/o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709130285; c=relaxed/simple;
+	bh=huop7d02EiFKkMw8Bk8K+OGUNEN62EsppTBVNBgjzZY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A3LccB4CGxu+lEUYmHJXTUmjldT53sC4Wn56RZm56dIED2EmSCtb/7UaJ4FEys9i7HNucx590aLdvzvEguAW+1eNC93ueiYgYHp3mzRA3l5uqqA4W30NPxJbKhqvmZlj5Z9GPXWe+L/AfSGTAPRSthDI96bk1RCwst7G70ozM40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E5018C15;
+	Wed, 28 Feb 2024 06:25:19 -0800 (PST)
+Received: from [10.1.38.163] (XHFQ2J9959.cambridge.arm.com [10.1.38.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A53C3F73F;
+	Wed, 28 Feb 2024 06:24:39 -0800 (PST)
+Message-ID: <f94ca70a-d033-4323-8815-240bfa895013@arm.com>
+Date: Wed, 28 Feb 2024 14:24:37 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MR1P264MB1890:EE_|PR1P264MB3847:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2920cc40-331c-42b2-d4df-08dc3868f475
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RqrH1eRxqVdYXMIeOfZ3a+gZwAKm9hpYbKWNT/b8c+73n4lS0Yyjch9OfPMySvdzx1gS+9sz/FbfFFsWMsGk2tsX/8PhRg5LqueeesWGZVxxMRxsjKr5YEAIx/f2bFq8hSHfYt3I6ny24aLmbfQ77vTSjy/8hHec+cAa72hpsKu6AHoAroUyZlqkUbo+I/oO+lkyQo2jgxbin7fwk+n6dqwR5TKnF9qPUbQQUTy74X6QeZLnhNj5ATlX6p7Xarnf0XLQVRcnGL3zm7wNdqiC1H05dIs1kJVF4mqNmpvSwuZpKvVS40veBUzMeO+ZXryr3Wi+O1lurZTf28c/t8lk5SCcke65hDmuzeH+/UdhBWxLhyXMishfPxJfHyqv45w8cLAg9Eo1ZinuGHmxuE2niDtCp6uXlK9V+9qvD+wzoh0cutzk8FCffjBe4PTMoWNIDJABA/Ebgh5WO8l1sQjfgbaAvD6suzT8EyHThu7kicByWdW6YS0UuvZGYqVtG6m4JJZLwlTbDEec3t41wop3Yc4PjMHajnWrNahywPf7ZkIgzW0mm1bOyCq4uXzz8tzTVeEyvZRZPqvViQhjo6y72A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: z3/dqlsK91zfPiiGfGDVrN6geWRTX0IY7JaZn4gUn4hwA+EiRfon3sPa9eb7viFhkWFpAhP08FTEKMyYB06eDJZBxpUr7J17sg7vxtcRdPHAXUj2Y0pBJn4+L+JUlUnzh3IUPapF7VEjgaIOucEsImTfi1ip8TohYM0nXMbEaoEfdeMqRdpRpMAxGAExedgZTM0Ok18vtOua4ICzK05LcvaKGS1q0DWS+RRZ3yjZebETGkL+SI7sP5dFmsOdvIw3NNLczlnOl/hlgOtXWQ8+X9RSYXR3XL3BB/NwLegp1nqw5dh0lJvKYZdae5s7OX5q6EGQjK6mu6vtWwBImxog5NTgHyB0g4fbQ8k58ovwYPllMiHEIFyABDEvIeFTdl9UdtV8nZpRJANQXAwFYeEcERvtuwCMNT+LxpDRlhNVCq2RGqmouXsHg1zV18AKKTH2rz+saNsq1eefukorP6zFFlzlKacLdHedhtDVGwvFTQgURgkBAz5PCQ4WbI4+5OPQFCbecUHe8+YE1wXH72GE9QI2XivgoWTMlsch0JCMXsY9Kq6k5y7bO7EjVGU7aTOB3bW2waeNlI07usCTNVJ/MwMhgrLJSe/JT3OKIZ+/NT1rpuCHWFDOmIFg+KCy5uq0XuYhrFTaeCg3VNq1VBt/I3fHSh3wMW7nHes5LqwGFs0YtipoYTiKHiY2i9v0y8J9CtrKBe9z+mqDsx+eqcpmucEIaS6NTkfSb1N1QvvM7vwFdn2oMFjXb1rZgd+P5RzT3b7t4JkNQfh1TscrNKm6HwaRpQZFgb+7zsYK/7e+gg7cJNf3sqH1lzhP1d0jc+Ei9+5bIXxupA0oG6YTMd8fTv7PQDrwKRvkygfYzGlX6p8uUte2mSE/xJmg4QzQr+jmBH7gWu0zMi3YYlJG/Wu+dW18PcExYSFVaI7zb3pGkY+C71s2bB+hHmj+ZOtyDkIO
- YARjJPGA3XMLQjrSGgfTnDsAyk87NdGfPtxsUqRcryV2tVKVpxikDxsCptYTVFHaRn8qBVTOIke3rVs7QpBdUQJHjkovHUF2Ro1N96AFZdizi2a1ueaTh/g70PnIay0iH9J7EqTC9DH6OxZE94cEEaLadtKLBlGPmRiQlt59OeWyTm9EE+XOCwnOzqo6GzmNK1ZpJSQPofUDjaZXYHvsSgHAxcyFCQ/u6Oz/zM4bqihe1EmQmsECLeUzs2O4RY519mN/VkY4royp3KnTYkWlF6ogOjjWwdV6oiHuwMBpYmKxq013rcQwZsGwEiYLOQWonqs1vv51W/tgTreQRTuhNaWO3EG08yw5aOy288fTDHdYIss80M/ITrg1DvLO5Ra/mOzZMLq6T04xpVrYhZsN4wFc1Pon5eSmhCdcP8wGeubUR+2I18Dxm4xzGfv3KGzPaIX5hxWbhTcf5yMHjrY0nbNP/07ydxuEz+CICx3ypNZ7mf8TxHW/d/kEt7f06ZOjFFyU/Czzs8Gv1nhchnHKTAdoCXy+Y0Kr/Av1rkKcZrqIwTku4mClKNJR1lfs1zwdwSdipKVmvlQNhW31N41QxABlKFZZxIU9L5LJmPZPFM9Cv+oFHTuiBO8TA9P/Z7cejZLrrPg0/ywW7MydBwTDaXpWI/onSkd1ORrppC7z9PpYB139zDyfZce5oA3/VST7a4ZeTNwWWB4MGjzj+iPNxw==
-X-OriginatorOrg: kalrayinc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2920cc40-331c-42b2-d4df-08dc3868f475
-X-MS-Exchange-CrossTenant-AuthSource: MR1P264MB1890.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 14:24:21.6005
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8931925d-7620-4a64-b7fe-20afd86363d3
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UbHV9ugXP5sVQINIBbz+EhAUEZcHRAdBjBqpRrPmqNWSqSCOp5rheJAH30QGkz/Wa5JdTE3Mf7OSVNl2/U7POg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR1P264MB3847
-X-ALTERMIMEV2_out: done
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+Content-Language: en-GB
+To: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Huang Ying
+ <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>,
+ Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+ Michal Hocko <mhocko@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+ <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+ <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
+ <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
+ <049818ca-e656-44e4-b336-934992c16028@arm.com>
+ <Zd82FqN7qxuBUSvl@casper.infradead.org>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <Zd82FqN7qxuBUSvl@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Greg,
+On 28/02/2024 13:33, Matthew Wilcox wrote:
+> On Wed, Feb 28, 2024 at 09:37:06AM +0000, Ryan Roberts wrote:
+>> Fundamentally, we would like to be able to figure out the size of the swap slot
+>> from the swap entry. Today swap supports 2 sizes; PAGE_SIZE and PMD_SIZE. For
+>> PMD_SIZE, it always uses a full cluster, so can easily add a flag to the cluster
+>> to mark it as PMD_SIZE.
+>>
+>> Going forwards, we want to support all sizes (power-of-2). Most of the time, a
+>> cluster will contain only one size of THPs, but this is not the case when a THP
+>> in the swapcache gets split or when an order-0 slot gets stolen. We expect these
+>> cases to be rare.
+>>
+>> 1) Keep the size of the smallest swap entry in the cluster header. Most of the
+>> time it will be the full size of the swap entry, but sometimes it will cover
+>> only a portion. In the latter case you may see a false negative for
+>> swap_page_trans_huge_swapped() meaning we take the slow path, but that is rare.
+>> There is one wrinkle: currently the HUGE flag is cleared in put_swap_folio(). We
+>> wouldn't want to do the equivalent in the new scheme (i.e. set the whole cluster
+>> to order-0). I think that is safe, but haven't completely convinced myself yet.
+>>
+>> 2) allocate 4 bits per (small) swap slot to hold the order. This will give
+>> precise information and is conceptually simpler to understand, but will cost
+>> more memory (half as much as the initial swap_map[] again).
+>>
+>> I still prefer to avoid this at all if we can (and would like to hear Huang's
+>> thoughts). But if its a choice between 1 and 2, I prefer 1 - I'll do some
+>> prototyping.
+> 
+> I can't quite bring myself to look up the encoding of swap entries
+> but as long as we're willing to restrict ourselves to naturally aligning
+> the clusters, there's an encoding (which I believe I invented) that lets
+> us encode arbitrary power-of-two sizes with a single bit.
+> 
+> I describe it here:
+> https://kernelnewbies.org/MatthewWilcox/NaturallyAlignedOrder
+> 
+> Let me know if it's not clear.
 
-On 27/02/2024 14:24, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.80 release.
-> There are 195 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.80-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
-I tested 6.1.80-rc1 (8b73abf80c8e) on Kalray kvx arch (not upstream yet) and everything looks good!
+Ahh yes, I'm familiar with this encoding scheme from other settings. Although
+I've previously thought of it as having a bit to indicate whether the scheme is
+enabled or not, and if it is enabled then the encoded PFN is:
 
-It ran on real hw (k200, k200lp and k300 boards), on qemu as well as on our internal instruction set simulator (ISS).
+PFNe = PFNd | (1 << (log2(n) - 1))
 
-Tests were run on several interfaces/drivers (usb, qsfp ethernet, eMMC, PCIe endpoint+RC, SPI, remoteproc, uart, iommu). LTP and uClibc-ng testsuites are also run without any regression.
+Where n is the power-of-2 page count.
 
-Everything looks fine to us.
+Same thing, I think.
 
-Tested-by: Yann Sionneau <ysionneau@kalrayinc.com>
-
-Thanks a lot!
-
--- 
-Yann
-
-
-
+I think we would have to steal a bit from the offset to make this work, and it
+looks like the size of that is bottlnecked on the arch's swp_entry PTE
+representation. Looks like there is a MIPS config that only has 17 bits for
+offset to begin with, so I doubt we would be able to spare a bit here? Although
+it looks possible that there are some unused low bits that could be used...
 
 
