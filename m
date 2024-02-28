@@ -1,75 +1,73 @@
-Return-Path: <linux-kernel+bounces-84641-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72CB386A964
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:59:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F337186A967
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95E771C23F42
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:59:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A90AB283D5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A69625625;
-	Wed, 28 Feb 2024 07:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 120E02562A;
+	Wed, 28 Feb 2024 08:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EYl74bz4"
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lyLr/mYY"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04BEC25601;
-	Wed, 28 Feb 2024 07:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED5928DA4
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709107172; cv=none; b=n770QfDpUwQ+k9aJ0O19OsCp63IUCK8tc4DwdmiJmssrmwfKrNfqNwZ6DX2qTuGbI9LNrImbqe7rDVKuWY1JQ6laRusxlESiAB4N3cM7ogEWBT1faO+ymmJbaBPBYYgehe7Qnmf0Or4cQaFupEwr0Q60ohbLn2Jf1dEn3uoSQL0=
+	t=1709107201; cv=none; b=A19C9IPgBz8KP9A0EHyC+Nb07GZP7PG0nnHqZh3X/Iebvr9UayfiJtbKvbh1oN2BYLMeVJiWRP3CjazWjVawgQTi1o84kDgd4ByX5v+sW6qIksp6HU86z+483m2U0E6RaO8gCnRmzBEHp32YzgltTXoc6kXM/IoSBvl+jVx195c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709107172; c=relaxed/simple;
-	bh=s+MTxz3XZi58tmfPU4UEzhWO91JXf7GqfJkKcYbl45g=;
+	s=arc-20240116; t=1709107201; c=relaxed/simple;
+	bh=3N18emKIlP5QmEwPUM9ApVmjt2ga6IPBuuwqZU0Y/N0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DXczge1SEykw+e0UdIqKR/HyDA5qKYpzOZB9Q5AsLVXbQz6zC3INHblpYK6zqT/pqLlpqGpgD1VM+cJfzUXoAptExAjYRSzJEJUZcCoaeFbwPXbMYUm0/OR9jI11nkwh5qzJIbN/Xm8wwXyJHV2edqnY7A4aF5dMiA1shsmnQFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EYl74bz4; arc=none smtp.client-ip=209.85.161.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a058b9bd2dso2461792eaf.2;
-        Tue, 27 Feb 2024 23:59:30 -0800 (PST)
+	 In-Reply-To:Content-Type; b=Zc9pfNeaF4lGsYZFFT8lVKL3MkpQxh3WmuPwyYIXIXXX6jr5aWdky3a8HAaN5Am4v6Q+0bePe/LovRaJ0p6HcKCLtQEQJ18i8Va1pKT5y00wG9r0AIZGfsFYEFb992qgvegrVjElKp+bLC6MamxM1NITQ9J280fdtdUWX9UsjjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lyLr/mYY; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3d484a58f6so724461166b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:59:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709107170; x=1709711970; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709107198; x=1709711998; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=26+dqjvjj4vr1Nm47nzBeWoRybtvVYDtXt2JoODqBl4=;
-        b=EYl74bz485YDkncCkJErnSHIL5DNPvZ3XoLkQAW5vki9j659P7C9mcgxp/VbFY8B9n
-         UT6ChUmcisX7WZ47jGMCLAfLkrrE7pWmXk/BvRYKDeMHw5YLbPzJ2mIwVRqDfuhddnnX
-         PrYAFS+S07i85pYFf+QrMHLqd5JO00TgbyxVUP7nPbXQNg9yRKeqgb03pf008jCLiqAx
-         TBObt4SqU4K2VbISClPSAb1k2xhVUCKbUFVTehkXsIkJvMyiH3d9ePKHkAYR4WlaArQe
-         sWmIFv9TVtKsfG8KiOEnmmOJI1smMXEmAQL7ZlWz3y4RiTVsyxaUP6HjhoLgZbqPKJvq
-         fPCg==
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/14vQsrFOdxUXgpNs/rZdUJ/cXdTf6EY3SxQD70V1bw=;
+        b=lyLr/mYYpVVBWi6QLFtp7oZ4n1oOsab/VxvqDmIEnm2e/xj/sF73OhoIBlxY4dmObz
+         zInMQUkt1TJgIDTYcaeL+macU4NJIoYKV0aFibVE9QnCXhc/3L8hGJbIQhht6tJ8A1QS
+         f+JLhQRuoukuh1KPB3adO7SjAU+k2KZUIxgwQGL8uj8dcbedROP8og2EoC3LZjqFHJOT
+         1TRv4jy4aj6YTbWEB2jZcwFZQWGdCDiroyQFBB38cbiHSdijvLYzIUBRNVJqszve9i1e
+         wkOcwBEABFDYzWbHVyfHDAM9j7Lb3fyGYrfi0nVXK5ERIa55iNTpw9D2XYZpvG9uZByq
+         c4AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709107170; x=1709711970;
+        d=1e100.net; s=20230601; t=1709107198; x=1709711998;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=26+dqjvjj4vr1Nm47nzBeWoRybtvVYDtXt2JoODqBl4=;
-        b=Z5nICP+i7uSU7dijrnAXfzWQmTtGBE0sX9PeVKZHH34vBoAEq9UKU0UFamdc2OaOnK
-         hacd6Iko5+x0QXMRI1e3YkAHMBvoFvVgL7Uj4/wTYB31AjKxl92B1giO1pHpGycpqka/
-         +z78XbzP2gEFpP/Z0xxJz0bT2prLqxaRNxa54vjHzeVItnYjKz8PdXxnHzK6qprxEpKp
-         EtKid+mNelHyjlvPPwpw4pLaM857BlV7VHumMuQEOGpZiOQ25ON/ZG1l8/5F2DFG/ayf
-         L1+ZS6Ax3PL0O3LjTYpDenqNf+Vpz5Uh6S+H7Zp0QwgAHKsPdsFKTaBVtDCdIGS7i1j9
-         4kHA==
-X-Forwarded-Encrypted: i=1; AJvYcCVvZmtVBEaaQIuCYcTpqDUk8Q/wn3Ic22ypwy7j/B25RYrwXJyYxXECjpEJI1XqKhIiB4J9J+gpj9yepsFNaYqv95cHpeLLBHl/MoKD0HBMfGPtB47ulJuPUkC1nWYkyD6LhgpI07nfKP/+
-X-Gm-Message-State: AOJu0YxJpWk/Fod4BQ9YmbbK7eAC9i+vkP1jYJSlE7+brubAzy2CYuWN
-	YkGZvnSfhOgwaEVNa/Ru2OziaJUDyo7+MLbDmA8CqLgXTQpCchRY
-X-Google-Smtp-Source: AGHT+IEx6reRBTmrhs+IVZ6DfccJmCzi8W4flQcW+LUK9CctDitl3PYulhop178jQEaokbrd0Mtj1A==
-X-Received: by 2002:a05:6358:5623:b0:17b:5dd1:a38d with SMTP id b35-20020a056358562300b0017b5dd1a38dmr15297176rwf.1.1709107169924;
-        Tue, 27 Feb 2024 23:59:29 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j23-20020a632317000000b005dc4fc80b21sm6971886pgj.70.2024.02.27.23.59.27
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/14vQsrFOdxUXgpNs/rZdUJ/cXdTf6EY3SxQD70V1bw=;
+        b=gSv4wSgO8TIir98jcdvv7tdDQ1I1+pl4L2ifmmfBMMai7vNfSYfSiTkNMz1seK3jQI
+         +4LT/GQBTFGjY/nFEBrq2+aX39iX6/25wRqyq4Evyh5dXgM46C331xk57y8f7zXhoNDP
+         9UFNCqo/XJCEcrVMzvfcDNuj2R2O7dYygnhaj4ByLtt8PX4SyybO13uVx8VtWP13cbmB
+         6TjrWw+1IGXvdQKTfaEH9UBZMExNeoI80Wpo7kaIv97SuDdRLG3IB6EZNlkuITd8uHnJ
+         Z0RK1HwubFsM86yAd7Fbbne1wTP3MpvKr5z8GB87avX/9tvi1FaHxmWRpjQL+F7S6d0x
+         j0ZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVYpZ8wsxLQLnVDnNXudUmEf/q4iWz2GMFtiOl7tQ5xa4PcoB7UjCa+oLjQAI6RldH5Nj9eWjU4JQcmrqfKbwLG7x5j0PJLLVpYRFcn
+X-Gm-Message-State: AOJu0YzJZPR9GC+CtQLhv+vsNlq0L0jeRyywoKlSkAe+MPo5EkZGteTd
+	PIn881omfpB4dgPDX/6JMOUmGmKXfVfjMXzqPlKzBMdpZV2tOR49bdpZ09Z1uZY=
+X-Google-Smtp-Source: AGHT+IFzVfE+aPNDJBvGSFYbvze6Z1NowzUGHzzhTNQi4YFijcOZ8a9a0TA8Eygjf9M4sYtozP3hpg==
+X-Received: by 2002:a17:907:b9d7:b0:a43:83dd:1e4e with SMTP id xa23-20020a170907b9d700b00a4383dd1e4emr4247219ejc.29.1709107198088;
+        Tue, 27 Feb 2024 23:59:58 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id f3-20020a170906c08300b00a3d1c0a3d5dsm1568860ejz.63.2024.02.27.23.59.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 23:59:28 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <02bb92c3-a14c-4a77-a3b0-a7c857d1d60d@roeck-us.net>
-Date: Tue, 27 Feb 2024 23:59:26 -0800
+        Tue, 27 Feb 2024 23:59:57 -0800 (PST)
+Message-ID: <44d0b0cb-e366-45bb-b24f-a8386cae21d8@linaro.org>
+Date: Wed, 28 Feb 2024 08:59:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,99 +75,105 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10] lib: checksum: Use aligned accesses for ip_fast_csum
- and csum_ipv6_magic tests
+Subject: Re: [PATCH v2 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
+ module
 Content-Language: en-US
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- Charlie Jenkins <charlie@rivosinc.com>,
- "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: David Laight <David.Laight@aculab.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>, Helge Deller <deller@gmx.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Parisc List <linux-parisc@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Palmer Dabbelt <palmer@rivosinc.com>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <7ae930a7-3b10-4470-94ee-89cb650b3349@csgroup.eu>
- <e11fea7a-e99e-4539-a489-0aa145ee65f0@roeck-us.net>
- <ZdzPgSCTntY7JD5i@shell.armlinux.org.uk> <ZdzZ5tk459bgUrgz@ghost>
- <ZdzhRntTHApp0doV@shell.armlinux.org.uk>
- <b13b8847977d4cfa99b6a0c9a0fcbbcf@AcuMS.aculab.com> <Zd0b8SDT8hrG/0yW@ghost>
- <cdd09f7a-83b2-41ba-a32c-9886dd79c43e@roeck-us.net>
- <9b4ce664-3ddb-4789-9d5d-8824f9089c48@csgroup.eu>
- <Zd25XWTkDPuIjpF8@shell.armlinux.org.uk> <Zd58jvN3PjQSe+yt@ghost>
- <c0449c0a-33bc-49c4-97e3-56a79a6ce93e@csgroup.eu>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <c0449c0a-33bc-49c4-97e3-56a79a6ce93e@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Peng Fan <peng.fan@nxp.com>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+ Abel Vesa <abelvesa@kernel.org>, Michael Turquette
+ <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>
+Cc: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ "imx@lists.linux.dev" <imx@lists.linux.dev>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240228-imx95-blk-ctl-v2-0-ffb7eefb6dcd@nxp.com>
+ <20240228-imx95-blk-ctl-v2-1-ffb7eefb6dcd@nxp.com>
+ <1ad77c33-71de-4bc8-a53e-1e74a5096079@linaro.org>
+ <DU0PR04MB9417459448EDB8A674827DD588582@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <DU0PR04MB9417459448EDB8A674827DD588582@DU0PR04MB9417.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/27/24 23:25, Christophe Leroy wrote:
-[ ... ]
+On 28/02/2024 08:54, Peng Fan wrote:
+>> Subject: Re: [PATCH v2 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
+>> module
 >>
->> This test case is supposed to be as true to the "general case" as
->> possible, so I have aligned the data along 14 + NET_IP_ALIGN. On ARM
->> this will be a 16-byte boundary since NET_IP_ALIGN is 2. A driver that
->> does not follow this may not be appropriately tested by this test case,
->> but anyone is welcome to submit additional test cases that address this
->> additional alignment concern.
+>> On 28/02/2024 06:43, Peng Fan (OSS) wrote:
+>>> From: Peng Fan <peng.fan@nxp.com>
+>>>
+>>> i.MX95 includes BLK CTL module in several MIXes, such as VPU_CSR in
+>>> VPUMIX, BLK_CTRL_NETCMIX in NETCMIX, CAMERA_CSR in CAMERAMIX
+>> and etc.
+>>>
+>>> The BLK CTL module is used for various settings of a specific MIX,
+>>> such as clock, QoS and etc.
+>>>
+>>> This patch is to add some BLK CTL modules that has clock features.
+>>
+>> Please use subject prefixes matching the subsystem. You can get them for
+>> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory your
+>> patch is touching.
+>>
+>> There are some typos, so you miss my filters...
 > 
-> But then this test case is becoming less and less true to the "general
-> case" with this patch, whereas your initial implementation was almost
-> perfect as it was covering most cases, a lot more than what we get with
-> that patch applied.
-> 
-NP with me if that is where people want to go. I'll simply disable checksum
-tests on all architectures which don't support unaligned accesses (so far
-it looks like that is only arm with thumb instructions, and possibly nios2).
-I personally find that less desirable and would have preferred a second
-configurable set of tests for unaligned accesses, but I have no problem
-with it.
+> Ah.. ok, will check more. Please ignore V3.
 
-Guenter
+Why do you send three versions the same day? Give people chance to
+review. One version per day is the max.
+
+Best regards,
+Krzysztof
 
 
