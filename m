@@ -1,124 +1,121 @@
-Return-Path: <linux-kernel+bounces-84321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E22286A4E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:23:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6203786A4F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:25:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59EEB282695
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:23:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09F641F22CDC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3744C7B;
-	Wed, 28 Feb 2024 01:23:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hFf2d9Um"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCBB22309;
+	Wed, 28 Feb 2024 01:23:30 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A3F4A1A
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9904A219FC
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709083387; cv=none; b=GPLZjargb8WPPKGlpDM8TzWsrhkRDOWqawee9K102U+790pOmn1YBceqMSh78Hc3EukGT5yHaA9QhCt1YdxcBYDUhKiWLXc7BItz8tEMnaDuybz+R5BTYl7pkKdB8ddkdIBAoe7KaWK3xVNPuiekN3le2FMiD3daLwpllzK2VQ8=
+	t=1709083410; cv=none; b=l/19cx5e6DzfSJ05P7sQGzcBfIokUETtNeQ6dhIwBajPx41gHYzrhLUJdBKFSneO/r6KvEsfWV/jwl4mXF9VNpsg1f/h6oCHgTowWMGeCMbMxEsRdAoA3sNUvK3XysB4RGfrG5pWgMo+fy30SFfQz0o8z+7VnyxPrbPUAnvyP0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709083387; c=relaxed/simple;
-	bh=4RHgr8hwDvio26ZjrRIEjc1o1G4N6nvQ/z/qnal8zlo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uDsvC5tMwsDbqMqxeq828hHOxUrUQXylLcxdttGv4YNTXBxAJG1RdglxTbwmKnngUfyEXeLz84R4RK/D1y+zbryfU7q8AEHYvWZrSBe0evYytbm40X0Bx2jFpZKEqKAEc4hEFpH3j9/N+imx0u9pw9UDDxpwpIljBHoldBDghr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hFf2d9Um; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B199CC433C7;
-	Wed, 28 Feb 2024 01:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709083386;
-	bh=4RHgr8hwDvio26ZjrRIEjc1o1G4N6nvQ/z/qnal8zlo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hFf2d9Um1oLNPRpQKwnRWsQgSWfnZfclDq0mK6uTwtQon9JUl+0N2jeaceBhPe05M
-	 +vNnLXQX+wCmKoVURItJ/yK7HRp19OAihBvkFMe8jFpp1a1FCRuhh+hykv+OI25i/A
-	 de/BQ+qe6lWSR0IaGtrEME3ITZTIky0q/fBaDXjBmaB0zjcH2J4vEmKl0fFC1UFD8b
-	 sfbiirOm495Y+vaDUJ9XwIYvUiw6kin3Ou81XN8YGvgX61zUILXkQbjtieERJ5QJKB
-	 iC//ROnMNLxAaqwr801NkdP2V93BnnPpunLHarxr1USwTjfEw6HrgcfoNOhjO9esy1
-	 ch64RekLx9hmw==
-Message-ID: <bdacbc3c-87c0-42b7-980b-9f9830ab994c@kernel.org>
-Date: Wed, 28 Feb 2024 09:23:05 +0800
+	s=arc-20240116; t=1709083410; c=relaxed/simple;
+	bh=Az2cipqHRNZc9bmqhUQ857rmevnLZPQ1P1i+RozUbh8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=kVwG9Ypj799yScuEcqRAqKWi7H1OcfSFDik43Wxmu0roB6muWiRwRgfc7GPTzanoaQ/sg0kKnBSbnehuTZ+5fFb5hy2TLWzOe8Pop7MehzjVj3NUHTKb5E4Dy4YFPFJ5v9gBoww7VVSUEbIvsDJ5KcX7VpNQshO1mS4iFFsCVAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: dcfdaf20806d478f87296c71c8e60693-20240228
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:175b7b38-df8f-4664-8453-a39aa8b672c6,IP:20,
+	URL:0,TC:0,Content:-25,EDM:-30,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,
+	ACTION:release,TS:-50
+X-CID-INFO: VERSION:1.1.37,REQID:175b7b38-df8f-4664-8453-a39aa8b672c6,IP:20,UR
+	L:0,TC:0,Content:-25,EDM:-30,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
+	TION:release,TS:-50
+X-CID-META: VersionHash:6f543d0,CLOUDID:4e456484-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:2402280923195D8PB1H9,BulkQuantity:0,Recheck:0,SF:19|44|66|38|24|17|1
+	02,TC:nil,Content:0,EDM:2,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:
+	nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-UUID: dcfdaf20806d478f87296c71c8e60693-20240228
+X-User: yaolu@kylinos.cn
+Received: from localhost.localdomain [(116.128.244.169)] by mailgw
+	(envelope-from <yaolu@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 816934123; Wed, 28 Feb 2024 09:23:16 +0800
+From: Lu Yao <yaolu@kylinos.cn>
+To: frank.binns@imgtec.com,
+	donald.robson@imgtec.com,
+	matt.coster@imgtec.com,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Lu Yao <yaolu@kylinos.cn>
+Subject: [PATCH] drm/imagination: Kconfig: add 'PAGE_SIZE=4K' dependency
+Date: Wed, 28 Feb 2024 09:23:13 +0800
+Message-Id: <20240228012313.5934-1-yaolu@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] f2fs: fix to don't call f2fs_stop_checkpoint in
- spinlock coverage
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20240222121851.883141-1-chao@kernel.org>
- <20240222121851.883141-2-chao@kernel.org> <Zd4g2SgQn3v_ZJMj@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <Zd4g2SgQn3v_ZJMj@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024/2/28 1:50, Jaegeuk Kim wrote:
-> On 02/22, Chao Yu wrote:
->> f2fs_stop_checkpoint(, false) is complex and it may sleep, so we should
->> move it outside segmap_lock spinlock coverage in get_new_segment().
-> 
-> Chao, I merged this patch into
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git/commit/?h=dev-test&id=f3b576d209983b5d6e1cb130bfc8ca1f0bbcad6d
+When 'PAGE_SIZE=64K',the following compilation error occurs:
+"
+  ../drivers/gpu/drm/imagination/pvr_fw_mips.c: In function
+‘pvr_mips_fw_process’:
+  ../drivers/gpu/drm/imagination/pvr_fw_mips.c:140:60: error: array
+subscript 0 is outside the bounds of an interior zero-length array
+‘dma_addr_t[0]’ {aka ‘long long unsigned int[]’}
+[-Werror=zero-length-bounds]
+  140 |   boot_data->pt_phys_addr[page_nr] =
+mips_data->pt_dma_addr[src_page_nr] +
+~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+  In file included from ../drivers/gpu/drm/imagination/pvr_fw_mips.c:6:
+  ../drivers/gpu/drm/imagination/pvr_fw_mips.h:30:13: note: while
+referencing ‘pt_dma_addr’
+   30 |  dma_addr_t pt_dma_addr[PVR_MIPS_PT_PAGE_COUNT];
+"
 
-It's fine to me.
+This is because 'PVR_MIPS_PT_PAGE_COUNT' is defined as
+'(ROGUE_MIPSFW_MAX_NUM_PAGETABLE_PAGES * ROGUE_MIPSFW_PAGE_SIZE_4K) \
+>> PAGE_SHIFT', and under the above conditions, 'PAGE_SHIFT' is '16',
+'ROGUE_MIPSFW_MAX_NUM_PAGETABLE_PAGES' is '4','ROGUE_MIPSFW_PAGE_SIZE_4K'
+is '4096',so 'PVR_MIPS_PT_PAGE_COUNT' is '0' causing the member
+'pt_dma_addr' to be incorrectly defined.
 
-Thanks,
+Signed-off-by: Lu Yao <yaolu@kylinos.cn>
+---
+ drivers/gpu/drm/imagination/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
->>
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   fs/f2fs/segment.c | 12 +++++++++---
->>   1 file changed, 9 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index d0209ea77dd2..8edc42071e6f 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -2646,6 +2646,7 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->>   	unsigned int old_zoneno = GET_ZONE_FROM_SEG(sbi, *newseg);
->>   	bool init = true;
->>   	int i;
->> +	int ret = 0;
->>   
->>   	spin_lock(&free_i->segmap_lock);
->>   
->> @@ -2671,9 +2672,8 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->>   		secno = find_first_zero_bit(free_i->free_secmap,
->>   							MAIN_SECS(sbi));
->>   		if (secno >= MAIN_SECS(sbi)) {
->> -			f2fs_stop_checkpoint(sbi, false,
->> -				STOP_CP_REASON_NO_SEGMENT);
->> -			f2fs_bug_on(sbi, 1);
->> +			ret = -ENOSPC;
->> +			goto out_unlock;
->>   		}
->>   	}
->>   	segno = GET_SEG_FROM_SEC(sbi, secno);
->> @@ -2704,7 +2704,13 @@ static void get_new_segment(struct f2fs_sb_info *sbi,
->>   	f2fs_bug_on(sbi, test_bit(segno, free_i->free_segmap));
->>   	__set_inuse(sbi, segno);
->>   	*newseg = segno;
->> +out_unlock:
->>   	spin_unlock(&free_i->segmap_lock);
->> +
->> +	if (ret) {
->> +		f2fs_stop_checkpoint(sbi, false, STOP_CP_REASON_NO_SEGMENT);
->> +		f2fs_bug_on(sbi, 1);
->> +	}
->>   }
->>   
->>   static void reset_curseg(struct f2fs_sb_info *sbi, int type, int modified)
->> -- 
->> 2.40.1
+diff --git a/drivers/gpu/drm/imagination/Kconfig b/drivers/gpu/drm/imagination/Kconfig
+index 3bfa2ac212dc..e585922f634d 100644
+--- a/drivers/gpu/drm/imagination/Kconfig
++++ b/drivers/gpu/drm/imagination/Kconfig
+@@ -3,7 +3,7 @@
+ 
+ config DRM_POWERVR
+ 	tristate "Imagination Technologies PowerVR (Series 6 and later) & IMG Graphics"
+-	depends on ARM64
++	depends on (ARM64 && ARM64_PAGE_SHIFT=12)
+ 	depends on DRM
+ 	depends on PM
+ 	select DRM_EXEC
+-- 
+2.25.1
+
 
