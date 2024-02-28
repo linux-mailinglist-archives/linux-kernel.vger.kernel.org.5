@@ -1,467 +1,314 @@
-Return-Path: <linux-kernel+bounces-84293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A30C286A4A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:58:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 967C986A4AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:59:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0706A285408
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:58:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C1EA1F24D99
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AFBE15AF;
-	Wed, 28 Feb 2024 00:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D408520F1;
+	Wed, 28 Feb 2024 00:59:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="unLw8Bi4"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01olkn2080.outbound.protection.outlook.com [40.92.107.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ps37R3t6"
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D1F23CB;
-	Wed, 28 Feb 2024 00:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.107.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709081914; cv=fail; b=oRBXV6SeVj+TMmzIU/DbD7VMyMzcqDusE9L8aL9LO3S67nVPAWWO0nqgaGFaPtnpM6HzIAUKbaoJXArjDNsiKIw6Iw7GRzQIzOoemIpz47RdhSW0waCExHmZanWYHCk9eGt20dlH9sEfls7cTqSWqA1MNQJI2ywcmEF5VuqWlXU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709081914; c=relaxed/simple;
-	bh=uGdEdEY69s0W9RlnZIKz0P/gQ+I8TXjjmtEBnbvyDRQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ampR8fxtWjbJnnFGblFtewOvaZD7w/PD4rBFNtbQ7LDiyFaiQtkWpwzh5zToewTaDLPf8A7O33gB4Sxwl4IMG3EIogltQP7t3YkPDVYc8RG3ueCKrDglZQdl6Vt9tkoA/EaRzSqS+Xk3H9aBAsJJ5xL+9gF3XD7XyGWkCmgI8Jc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=unLw8Bi4; arc=fail smtp.client-ip=40.92.107.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VrvtlQGPKdIQPqypfuUKLDJEqFmHBr59gEU44KNPZL3MGsIvtNMugkcIk/RTqOJ5R7aiD2bEW8jbiW6cQt0N1/EMfmGAnZ9/rYlYDusJo82ZqBWJbzR3v88zDJiZnAtvqju/dQ63IDX3PmtRKCo54pRRzDOMOGsSzlesApXppW/wcikE2Wp9g4QXFIXtqbfrW3uoxG+QWzLzYYPfTV/BhyfjyLV0oP7nD78GOhK1YTV6Fd8dWwpTSV/vjF7aLE4JZ6Qh0+GY9NmrSL8L2SjRQ8Aw/Jgm0hGDqMZL7uAH5nxucdip+fKJIh1oeVaB/W7yN69A16AWt68XaWFYdYW/yw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UgvQP/pt91j6Pi+4m/Juod8yAbz2fcKZkmnddFhjfm0=;
- b=P4QsuIcS7fGLGRmEv96LOYsF2aQzliNyrVahK6E3qmNKE9Zz1gOrYB1HOwgkR/Zr16hM8ZwRJKYY1xrUnAhkssyyQ0xTHYy/0eeM3Y9gueqTycf1i41gYZ5w5pZT4cafotwqA7hIdKFHOsTQmWdELUddWtSjmriR1N8EiPzki9beYteb386VS+IUH1BjPvSWj0xB/mfHoxwjrR0FzN+y8WuevyxtWY/a3snnjVXAG3YFsNBhaKrMf6zn+b1S0rANQXaI4Qa9dzD06XN/DBZ45gndKUcRMUd607gEn4NAiRjZ/AAXLIuhiDGLQK3m3UJafP6KSssQ79GJVR1eftHHIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UgvQP/pt91j6Pi+4m/Juod8yAbz2fcKZkmnddFhjfm0=;
- b=unLw8Bi49yzUQw/Qz6Byt249fJgplLAvuNSu6PW6cO1o9mWLNMNAGbj7nYT5Mob/hSI8k5UKpo1CZdxETcE4yUZLIJrfd8yzi02vncZZIEWNJUKdySjQNtZxp0O9Xa1VfMJ3nSrc8brHIt045JlhHytOGEA9fKzknUkj6mOJriaRo4jeCPm6CCeJa0khWmvRPUhdgIgSzpa1P/5TYufE1E7le7dgHeRBBlZ5Ld+CUFyN/0uKHABzCFa2ED2EWuSD3oXUu3Lvs6nwKJ6hpJpBeVKlmy8lqKRNzPzwdLxjJEkCVlAuRnsiyS+j0bqBB8RN1yP5DEYnvmp5N2zFlSWEWg==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by TYSPR06MB6338.apcprd06.prod.outlook.com (2603:1096:400:433::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.36; Wed, 28 Feb
- 2024 00:58:25 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
- 00:58:25 +0000
-Message-ID:
- <SEZPR06MB6959E0E07423A82DEF133CCB96582@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Wed, 28 Feb 2024 08:58:15 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/5] mmc: dw_mmc: add support for hi3798mv200
-Content-Language: en-US
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- Andrew Jeffery <andrew@codeconstruct.com.au>, Joel Stanley <joel@jms.id.au>,
- Igor Opaniuk <igor.opaniuk@linaro.org>,
- tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org,
- openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-References: <20240221-b4-mmc-hi3798mv200-v6-0-bc41bf6a9769@outlook.com>
- <20240221-b4-mmc-hi3798mv200-v6-3-bc41bf6a9769@outlook.com>
- <CAPDyKFosUX7giCYbFJpKRjSDHKEyO6FATna5VnDg7tHEzagWBg@mail.gmail.com>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <CAPDyKFosUX7giCYbFJpKRjSDHKEyO6FATna5VnDg7tHEzagWBg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TMN: [ZgIm6KRo4+x9BsYGTwbEEr1fV2qkA2H9BgZ+Tr6OdVFEbUzyHP8beFN7z6pGLWPU]
-X-ClientProxiedBy: KL1PR01CA0015.apcprd01.prod.exchangelabs.com
- (2603:1096:820::27) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <743b8a86-6790-4282-9da0-331d54283ace@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEFDEBB;
+	Wed, 28 Feb 2024 00:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709081983; cv=none; b=OJ1Jg+062nGMrCWkSKmkTjdnm2phmKY9a+wJF3dyEOe0lJiUqXQaSmDeBRGipK3PG600UoaRA9BF1irm658FdZeSrheyqZSPgPbgFh4KLRUnNwbjd/PIRL8bKQFoF4YZYiG3Z5ya47ZWFQx3SGtV8hOeRRtG6xqHEgQ5SX6GYl4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709081983; c=relaxed/simple;
+	bh=6mAwiUtOknSSutvq0YNFLvWJ9KCKfA9wjlmgNIu1avE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=giA/uR0iWTXGj3gevN6CQ5xAdW1U8zWDebMZthUjffkjVppVKjwO3wpmoLnvXxx6ipIdhSEUvhCzMoh9z7LpSMw38/MGxESFUpj7mUvunZoBf0KWSVREW7Pf1BQAjWqtkzB07cPY+eDTTF7c0ohtNPzdHlPwYVUGIRS8CnYfRyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ps37R3t6; arc=none smtp.client-ip=209.85.160.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-21fa872dce3so2760214fac.2;
+        Tue, 27 Feb 2024 16:59:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709081979; x=1709686779; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y/VJ4ezn4JfkgFtFkFYYYQTXIflXruAY0C3laMtvGzA=;
+        b=Ps37R3t60IfbP9rnsIhEOeC39uUcRHWCWlso5hL5yIp7CycH4z7ObGZNRnl3rgrz+V
+         q6hSeKHWeC0V9TdPDHNGeGx+X0yXjZYx+aPNwEWJPkPPq7zk4F4aKE3lOGx6ltpWtVmG
+         YGA1neRx7vMOd8/3XahVCV7uqecHdNKbameqR7uDA0lXb5Gh+H/17T+DcWfxlY+rV7cK
+         SCDS8k/0EgyleXAQdkPxN3myLO51FaidBBg7yDPfoOQRNledV8LuD+pVfX29RVTdo/qO
+         FpeXsNypti3QHaYbG8vy00kqq3zQFVZR3D+lxM/kp+4J/SPmken5u/kU6zREaw/pcny2
+         FZKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709081979; x=1709686779;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y/VJ4ezn4JfkgFtFkFYYYQTXIflXruAY0C3laMtvGzA=;
+        b=ORp14QFxRirn7q7UgyycEZ2nGijb1/EOcufLCxlsKJ68qZytC/tzRAJkEMMFuWjOJJ
+         nnGna6vop10cF0Z1XGIDzlK1WKkQLbSnP1ShPsljx9+QC46AF8ofrEu/8R7vkon+thh2
+         HwfMUjml7nOewM9XP2b4vj5UVvLjF01Fte1Mgm4UpLHCF4DUb1GlTLN0bNozqM8HO8Vl
+         6wSvgyla0SMpl/Exe2Rd5c+4IFbSMrp+7Dtj9KDxhJ2JSYTbb0RQzAdquCq4AO8aMdnp
+         V+KQZH1HMBc+wuE72SzuutdKa6wfb1sbg7PU4KSPgOJZdyMZ9gZwKHo7WHP8Tq8tRLK/
+         mMvA==
+X-Forwarded-Encrypted: i=1; AJvYcCWzGUfKx0wixXxaztnmPSZxNfW11PTgzovkNrIBhDb0tgzFpn3wHwksWWm8DmweDHMlv8yRN7NljRMqEEOwd5QPuy/Wv8AFeI4E7ubbJVjqPGdzzr6ecX1Ar3CYIwlvCvqZyxKMRBogq9t3dv8U8aykiuguS0mm7z+daSkjRjZus5mXcO0wT7bXEoDFAcFBykefXHZO/4Qh4Q+pEYflIpiEmA==
+X-Gm-Message-State: AOJu0Yx08tMlYAj/wRoKsWUo0uHyz8fx5W+JaBdQ3ldy2n/lxgRnqo8H
+	iw9gNueBeURwHKjxRph/E2b73p4nLl2QJzGbQCdsIoF8Cc/DSeU0
+X-Google-Smtp-Source: AGHT+IE/bq+pbCEPKnDfm3BhnEgfwUEKQIWim6ODi2jvIyHs822SfRjbFVspFukSBnfjmr30t4HikQ==
+X-Received: by 2002:a05:6870:55d2:b0:21e:5827:9483 with SMTP id qk18-20020a05687055d200b0021e58279483mr13395251oac.29.1709081978556;
+        Tue, 27 Feb 2024 16:59:38 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id xm12-20020a0568709f8c00b0021fb37e33e5sm2322033oab.19.2024.02.27.16.59.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 16:59:38 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Tue, 27 Feb 2024 18:59:36 -0600
+From: John Groves <John@groves.net>
+To: Christian Brauner <brauner@kernel.org>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, linux-cxl@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nvdimm@lists.linux.dev, john@jagalactic.com, Dave Chinner <david@fromorbit.com>, 
+	Christoph Hellwig <hch@infradead.org>, dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 11/20] famfs: Add fs_context_operations
+Message-ID: <6jrtl2vc4dmi5b6db6tte2ckiyjmiwezbtlwrtmm464v65wkhj@znzv2mwjfgsk>
+References: <a645646f071e7baa30ef37ea46ea1330ac2eb63f.1708709155.git.john@groves.net>
+ <20240227-mammut-tastatur-d791ca2f556b@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|TYSPR06MB6338:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7354d83b-c927-47b6-772e-08dc37f85ddb
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VJyBjNGoV5WdGO8UGOgiTiW5lu+dQtb+q3HHMwBIgIRLqXw61SfK65Fx4Tffzge06HkLaKt5ZX458AXUULLN4bSqxhkVwgk3Bu7L+ifxac5hM17AeeRx9BkdZ0OQf1mVHg+HxIPrXsT+E+G3sxJXhE+RJOoLHZJ6kYs+YR+Q1i0dvfkqf5lFwJOaxX0Wu1fHYwlzax/g6CiY4oeQW/3ss/aC2VBGK7P3RKTSyl9CoUrIUm2UKX+M7lCFNNNu4xO+EKJ5aAhTlLjZTzVZaprRXNcFuqpUfvQS0F3iRJiIyq95VEheFcVyThaCnAt8OrxA4vsadNaogmRe5sYF7hJweqVcn9tcYDBsl8kTtZAHK1rJV0l/fH/fvlVHn1cYy+OPJmLxw7j66YNwdxVUZjik/lEuHC0T7a6nJUVSCq5Oyt+SXT1R683iqdvr78PTPdVNT381sKQDqKvp+ESAIXPU+sgTQtVzM9Nt3p9B2JJ4r1oSEq9QcmJs82y4PvytpUocmaziiWJaXE8Aj/fFmwYdZL+ZCtlBRI7QRMStBAyDZV//qBgUVQCogtPLIp2xQ8RF
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?S2V6cXBmR3JOUG41SEYvWFZRYzk0dnZIYW0yMnduZHBMc1VtYWpKTDRibndt?=
- =?utf-8?B?TTdkWjYvM0ZMS2U4UFlDOGIzSVlIS2pnMlpGMTc4RjRsZTRrTDE2dVhCYTZV?=
- =?utf-8?B?YlgxVWR0eXZaenoxdWRMdjZXcFc2a3BMcXlEN25jTnUzdEUrM2hVZE1lcFp1?=
- =?utf-8?B?YkgzTEkzREZFTzcyUzFmK1pLdUxkNW0xRlQrQkQ5YnR6ZFpXSXdIVnhIam9s?=
- =?utf-8?B?K1lBdm82eUlzUWJOcmZ5SVJ6cTJ5QTMybUY1U2V0YTNyZTk0KytBejBNNmh2?=
- =?utf-8?B?TzhnSUJxclBwaWdyRGJZeXRGR3M5THdWcEUzaXluWFpvanVkQ1Q0NEVsSUQ4?=
- =?utf-8?B?TjVQVXVmeGE0OWtRZTJBSjExL2FwZHVOZXRHNzh5U0h1bHhJYlUvWXZQNDhs?=
- =?utf-8?B?YmFJaG9VWUV1UlBYQTRxVkhBR3RaeHNOVWUvaGo0RVBFMEo4bmdjN0VMNEhF?=
- =?utf-8?B?MVh1NWxobGM3bFd1dmRSNzRMc0pKV2dIY1pERVBZTm5kYjIvUGdabEdBVFVp?=
- =?utf-8?B?UE9HaE9HWi9pSFpLVFV2ZVpsVkI5cW5NSTFVd2l1d2hYdWlwalp4WjRrLzBS?=
- =?utf-8?B?MTA0bTZOaVlhWURUOGVPNk9ONlJyN0xCUS8vL2xLVlJwWWhCMzN6UXloWUxS?=
- =?utf-8?B?NTJlc2F3WUE5V0Z2NTZ0WW5PQklkQzBGMEZ2RlYwd0hvNm1oem5nZ0NJZkQw?=
- =?utf-8?B?QVQ4b2VmUGsrZytkblJKU0FRbFJYYjRTRW1YaXNGSjVhbzlYaFZ2eXBZOFBj?=
- =?utf-8?B?dWJnZGs3U0lIcGlJQTA1YnFxZFhNRWNnN2x2WTNVcjQ5bW1oeURwekFWMVI0?=
- =?utf-8?B?dTZDT2RZYVM3OWttVjJNVHVTWlJraWtieG1qdlVYbUIvdzJPSEFOVVhBOG8w?=
- =?utf-8?B?aGR3RWpYU0xOdC9UK3ltVklBelVSK2hxRkpidy9scWFyZUpXZ2YycGFVZXNG?=
- =?utf-8?B?SWhXdmdVNllycjhadmx2VmYxZS8wT2szRjBicEZPVTkwcmk2b1Q1VnhUaUJF?=
- =?utf-8?B?bVZQMzZlVFhQQVZ1RElNMmEyeWlQNWR6ZWdtejZTL0Z1RGNKdWl0NUJWTDdw?=
- =?utf-8?B?dmdMVkkwNHZiZHhjU3FZTklDZGhSQmpuRDZ5YUw4ZmVVeGtQZUZLWWxEVnZl?=
- =?utf-8?B?Y0RXeFFiSUhzUHhxMmI5c1daQ2I4YmZMYkZrWTZsaWJ1Z1hEU0hhOUFaZ2FW?=
- =?utf-8?B?RFc3eEdmR1JiR2JwREV2L0hsME9ObUpBMDN4MlZYcjkvWTVsNThMODNDV0p5?=
- =?utf-8?B?eG9DU3RNNEJkeml6ZmJ0MytVdk10L0dySHFYTlArUWtaRGFZTU92WE1MRXN2?=
- =?utf-8?B?UEpVYTRseENadW0yeXlXV3krT3ZFSGpiZWNTUmg3bmxjb3kwd3BTZTRxOWdD?=
- =?utf-8?B?Z0M0emg5a0VkN014Qzh1SFNudGc5UUtCSjVWUWVvYkFSdHBLdm91VHVVT0Jy?=
- =?utf-8?B?cy9HeVpGK09SUFJxWDBhQ0hpT0E4VlRnRGVoOFpZM1NMTVZyaHFWTVBZTzRs?=
- =?utf-8?B?aDlqSG5hRXkrVlQ1R0owODJSaktmZHNkbFdJSXJ0czJ4WjVrZXUzUEl3STJ6?=
- =?utf-8?B?clhvYjRGV01haGVkSUFzWjJCMFRQZko1TnpPU0x3a29DNHJhck54VldjaWRi?=
- =?utf-8?B?UU4xVzZSR1hHWVpTRU0vWFJBVm1ndlVESnRGYW1rZ1FEMnp6TzRWVjZKaTBs?=
- =?utf-8?B?NGFRV0ovRkNEdGJHWEh6Y1FqbG5Ja0ZtKzFiMjRkb2Y3aEcyczBlNUI5aExD?=
- =?utf-8?Q?NIHxyavCux7G7kCqjq3G2vIc7F54+n5VXKQ+slH?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7354d83b-c927-47b6-772e-08dc37f85ddb
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 00:58:25.1806
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6338
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227-mammut-tastatur-d791ca2f556b@brauner>
 
-On 2/27/2024 11:16 PM, Ulf Hansson wrote:
-> On Wed, 21 Feb 2024 at 13:45, Yang Xiwen via B4 Relay
-> <devnull+forbidden405.outlook.com@kernel.org> wrote:
->>
->> From: Yang Xiwen <forbidden405@outlook.com>
->>
->> Add support for Hi3798MV200 specific extension.
->>
->> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
->> ---
->>  drivers/mmc/host/Kconfig              |   9 ++
->>  drivers/mmc/host/Makefile             |   1 +
->>  drivers/mmc/host/dw_mmc-hi3798mv200.c | 239 ++++++++++++++++++++++++++++++++++
->>  3 files changed, 249 insertions(+)
->>
->> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
->> index 81f2c4e05287..aebc587f77a7 100644
->> --- a/drivers/mmc/host/Kconfig
->> +++ b/drivers/mmc/host/Kconfig
->> @@ -798,6 +798,15 @@ config MMC_DW_HI3798CV200
->>           Synopsys DesignWare Memory Card Interface driver. Select this option
->>           for platforms based on HiSilicon Hi3798CV200 SoC.
->>
->> +config MMC_DW_HI3798MV200
->> +       tristate "Hi3798MV200 specific extensions for Synopsys DW Memory Card Interface"
->> +       depends on MMC_DW
->> +       select MMC_DW_PLTFM
->> +       help
->> +         This selects support for HiSilicon Hi3798MV200 SoC specific extensions to the
->> +         Synopsys DesignWare Memory Card Interface driver. Select this option
->> +         for platforms based on HiSilicon Hi3798MV200 SoC.
->> +
->>  config MMC_DW_K3
->>         tristate "K3 specific extensions for Synopsys DW Memory Card Interface"
->>         depends on MMC_DW
->> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
->> index d0be4465f3ec..f53f86d200ac 100644
->> --- a/drivers/mmc/host/Makefile
->> +++ b/drivers/mmc/host/Makefile
->> @@ -51,6 +51,7 @@ obj-$(CONFIG_MMC_DW_PLTFM)    += dw_mmc-pltfm.o
->>  obj-$(CONFIG_MMC_DW_BLUEFIELD) += dw_mmc-bluefield.o
->>  obj-$(CONFIG_MMC_DW_EXYNOS)    += dw_mmc-exynos.o
->>  obj-$(CONFIG_MMC_DW_HI3798CV200) += dw_mmc-hi3798cv200.o
->> +obj-$(CONFIG_MMC_DW_HI3798MV200) += dw_mmc-hi3798mv200.o
->>  obj-$(CONFIG_MMC_DW_K3)                += dw_mmc-k3.o
->>  obj-$(CONFIG_MMC_DW_PCI)       += dw_mmc-pci.o
->>  obj-$(CONFIG_MMC_DW_ROCKCHIP)  += dw_mmc-rockchip.o
->> diff --git a/drivers/mmc/host/dw_mmc-hi3798mv200.c b/drivers/mmc/host/dw_mmc-hi3798mv200.c
->> new file mode 100644
->> index 000000000000..73aaa21040ea
->> --- /dev/null
->> +++ b/drivers/mmc/host/dw_mmc-hi3798mv200.c
->> @@ -0,0 +1,239 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Modified from dw_mmc-hi3798cv200.c
->> + *
->> + * Copyright (c) 2024 Yang Xiwen <forbidden405@outlook.com>
->> + * Copyright (c) 2018 HiSilicon Technologies Co., Ltd.
->> + */
->> +
->> +#include <linux/clk.h>
->> +#include <linux/mfd/syscon.h>
->> +#include <linux/mmc/host.h>
->> +#include <linux/module.h>
->> +#include <linux/of_address.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/regmap.h>
->> +
->> +#include "dw_mmc.h"
->> +#include "dw_mmc-pltfm.h"
->> +
->> +#define SDMMC_TUNING_CTRL      0x118
->> +#define SDMMC_TUNING_FIND_EDGE BIT(5)
->> +
->> +#define ALL_INT_CLR            0x1ffff
->> +
->> +/* DLL ctrl reg */
->> +#define SAP_DLL_CTRL_DLLMODE   BIT(16)
->> +
->> +struct dw_mci_hi3798mv200_priv {
->> +       struct clk *sample_clk;
->> +       struct clk *drive_clk;
->> +       struct regmap *crg_reg;
->> +       u32 sap_dll_offset;
->> +       struct mmc_clk_phase_map phase_map;
->> +};
->> +
->> +static void dw_mci_hi3798mv200_set_ios(struct dw_mci *host, struct mmc_ios *ios)
->> +{
->> +       struct dw_mci_hi3798mv200_priv *priv = host->priv;
->> +       struct mmc_clk_phase phase = priv->phase_map.phase[ios->timing];
->> +       u32 val;
->> +
->> +       val = mci_readl(host, ENABLE_SHIFT);
->> +       if (ios->timing == MMC_TIMING_MMC_DDR52
->> +           || ios->timing == MMC_TIMING_UHS_DDR50)
->> +               val |= SDMMC_ENABLE_PHASE;
->> +       else
->> +               val &= ~SDMMC_ENABLE_PHASE;
->> +       mci_writel(host, ENABLE_SHIFT, val);
->> +
->> +       val = mci_readl(host, DDR_REG);
->> +       if (ios->timing == MMC_TIMING_MMC_HS400)
->> +               val |= SDMMC_DDR_HS400;
->> +       else
->> +               val &= ~SDMMC_DDR_HS400;
->> +       mci_writel(host, DDR_REG, val);
->> +
->> +       if (clk_set_rate(host->ciu_clk, ios->clock))
->> +               dev_warn(host->dev, "Failed to set rate to %u\n", ios->clock);
->> +       else
->> +               // CLK_MUX_ROUND_NEAREST is enabled for this clock
->> +               // The actual clock rate is not what we setted, but a rounded value
->> +               // so we should get the rate once again
-> 
-> Please use proper comments sections (/* .... */) and not "//".
-> 
->> +               host->bus_hz = clk_get_rate(host->ciu_clk);
->> +
->> +       if (phase.valid) {
->> +               clk_set_phase(priv->drive_clk, phase.out_deg);
->> +               clk_set_phase(priv->sample_clk, phase.in_deg);
->> +       } else {
->> +               dev_warn(host->dev,
->> +                        "The phase entry for timing mode %d is missing in device tree.\n",
->> +                        ios->timing);
->> +       }
->> +}
->> +
->> +static inline int dw_mci_hi3798mv200_enable_tuning(struct dw_mci_slot *slot)
->> +{
->> +       struct dw_mci_hi3798mv200_priv *priv = slot->host->priv;
->> +
->> +       return regmap_clear_bits(priv->crg_reg, priv->sap_dll_offset, SAP_DLL_CTRL_DLLMODE);
->> +}
->> +
->> +static inline int dw_mci_hi3798mv200_disable_tuning(struct dw_mci_slot *slot)
->> +{
->> +       struct dw_mci_hi3798mv200_priv *priv = slot->host->priv;
->> +
->> +       return regmap_set_bits(priv->crg_reg, priv->sap_dll_offset, SAP_DLL_CTRL_DLLMODE);
->> +}
->> +
->> +static int dw_mci_hi3798mv200_execute_tuning_mix_mode(struct dw_mci_slot *slot,
->> +                                            u32 opcode)
->> +{
->> +       static const int degrees[] = { 0, 45, 90, 135, 180, 225, 270, 315 };
->> +       struct dw_mci *host = slot->host;
->> +       struct dw_mci_hi3798mv200_priv *priv = host->priv;
->> +       int raise_point = -1, fall_point = -1;
->> +       int err, prev_err = -1;
->> +       int found = 0;
->> +       int regval;
->> +       int i;
->> +       int ret;
->> +
->> +       // enable tuning
-> 
-> Looks like a redundant comment, please drop it.
-> 
->> +       ret = dw_mci_hi3798mv200_enable_tuning(slot);
->> +       if (ret < 0)
->> +               return ret;
-> 
-> A newline here would improve the readability I think.
-> 
->> +       for (i = 0; i < ARRAY_SIZE(degrees); i++) {
->> +               clk_set_phase(priv->sample_clk, degrees[i]);
->> +               mci_writel(host, RINTSTS, ALL_INT_CLR);
->> +
->> +               err = mmc_send_tuning(slot->mmc, opcode, NULL);
->> +               if (!err) {
->> +                       regval = mci_readl(host, TUNING_CTRL);
->> +                       if (regval & SDMMC_TUNING_FIND_EDGE)
->> +                               err = 1;
->> +                       else
->> +                               found = 1;
->> +               };
->> +
->> +               if (i > 0) {
->> +                       if (err && !prev_err)
->> +                               fall_point = i - 1;
->> +                       if (!err && prev_err)
->> +                               raise_point = i;
->> +               }
->> +
->> +               if (raise_point != -1 && fall_point != -1)
->> +                       goto tuning_out;
->> +
->> +               prev_err = err;
->> +               err = 0;
->> +       }
->> +
->> +tuning_out:
->> +       ret = dw_mci_hi3798mv200_disable_tuning(slot);
->> +       if (ret < 0)
->> +               return ret;
->> +       if (found) {
->> +               if (raise_point == -1)
->> +                       raise_point = 0;
->> +               if (fall_point == -1)
->> +                       fall_point = ARRAY_SIZE(degrees) - 1;
->> +               if (fall_point < raise_point) {
->> +                       if ((raise_point + fall_point) >
->> +                           (ARRAY_SIZE(degrees) - 1))
->> +                               i = fall_point / 2;
->> +                       else
->> +                               i = (raise_point + ARRAY_SIZE(degrees) - 1) / 2;
->> +               } else {
->> +                       i = (raise_point + fall_point) / 2;
->> +               }
->> +
->> +               // use the same phase table for both HS200 and HS400
-> 
-> Don't use "//" for comments.
-> 
->> +               priv->phase_map.phase[MMC_TIMING_MMC_HS200].in_deg = degrees[i];
->> +               priv->phase_map.phase[MMC_TIMING_MMC_HS400].in_deg = degrees[i];
->> +
->> +               clk_set_phase(priv->sample_clk, degrees[i]);
->> +               dev_dbg(host->dev, "Tuning clk_sample[%d, %d], set[%d]\n",
->> +                       raise_point, fall_point, degrees[i]);
->> +               err = 0;
->> +       } else {
->> +               dev_err(host->dev, "No valid clk_sample shift! use default\n");
->> +               err = -EINVAL;
->> +       }
->> +
->> +       mci_writel(host, RINTSTS, ALL_INT_CLR);
->> +       return err;
-> 
-> The entire code in dw_mci_hi3798mv200_execute_tuning_mix_mode() looks
-> rather messy to me. A lot of variables are being used, set and reset
-> from everywhere.
-> 
-> Would you mind having a closer look and try to improve it a bit, so it
-> becomes easier to follow what is going on?
+On 24/02/27 02:41PM, Christian Brauner wrote:
+> On Fri, Feb 23, 2024 at 11:41:55AM -0600, John Groves wrote:
+> > This commit introduces the famfs fs_context_operations and
+> > famfs_get_inode() which is used by the context operations.
+> > 
+> > Signed-off-by: John Groves <john@groves.net>
+> > ---
+> >  fs/famfs/famfs_inode.c | 178 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 178 insertions(+)
+> > 
+> > diff --git a/fs/famfs/famfs_inode.c b/fs/famfs/famfs_inode.c
+> > index 82c861998093..f98f82962d7b 100644
+> > --- a/fs/famfs/famfs_inode.c
+> > +++ b/fs/famfs/famfs_inode.c
 
-That might because the code here is modified from dw-mmc_hi3798cv200.c.
-And That file is already a mess. I'll try to improve it soon.
+<snip>
+
+> > +enum famfs_param {
+> > +	Opt_mode,
+> > +	Opt_dax,
+> > +};
+> > +
+> > +const struct fs_parameter_spec famfs_fs_parameters[] = {
+> > +	fsparam_u32oct("mode",	  Opt_mode),
+> > +	fsparam_string("dax",     Opt_dax),
+> > +	{}
+> > +};
+> > +
+> > +static int famfs_parse_param(
+> > +	struct fs_context   *fc,
+> > +	struct fs_parameter *param)
+> > +{
+> > +	struct famfs_fs_info *fsi = fc->s_fs_info;
+> > +	struct fs_parse_result result;
+> > +	int opt;
+> > +
+> > +	opt = fs_parse(fc, famfs_fs_parameters, param, &result);
+> > +	if (opt == -ENOPARAM) {
+> > +		opt = vfs_parse_fs_param_source(fc, param);
+> > +		if (opt != -ENOPARAM)
+> > +			return opt;
+> 
+> I'm not sure I understand this. But in any case add, you should add
+> Opt_source to enum famfs_param and then add
+> 
+>         fsparam_string("source",        Opt_source),
+> 
+> to famfs_fs_parameters. Then you can add:
+> 
+> famfs_parse_source(fc, param);
+> 
+> You might want to consider validating your devices right away. So think
+> about:
+> 
+> fd_fs = fsopen("famfs", ...);
+> ret = fsconfig(fd_fs, FSCONFIG_SET_STRING, "source", "/definitely/not/valid/device", ...) // succeeds
+> ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "OPTION_1", ...) // succeeds
+> ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "OPTION_2", ...) // succeeds 
+> ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "OPTION_3", ...) // succeeds 
+> ret = fsconfig(fd_fs, FSCONFIG_SET_FLAG, "OPTION_N", ...) // succeeds 
+> ret = fsconfig(fd_fs, FSCONFIG_CMD_CREATE, ...) // superblock creation failed
+> 
+> So what failed exactly? Yes, you can log into the fscontext and dmesg
+> that it's @source that's the issue but it's annoying for userspace to
+> setup a whole mount context only to figure out that some option was
+> wrong at the end of it.
+> 
+> So validating
+> 
+> famfs_parse_source(...)
+> {
+> 	if (fc->source)
+> 		return invalfc(fc, "Uhm, we already have a source....
+> 	
+>        lookup_bdev(fc->source, &dev)
+>        // validate it's a device you're actually happy to use
+> 
+>        fc->source = param->string;
+>        param->string = NULL;
+> }
+> 
+> Your ->get_tree implementation that actually creates/finds the
+> superblock will validate fc->source again and yes, there's a race here
+> in so far as the path that fc->source points to could change in between
+> validating this in famfs_parse_source() and ->get_tree() superblock
+> creation. This is fixable even right now but then you couldn't reuse
+> common infrastrucute so I would just accept that race for now and we
+> should provide a nicer mechanism on the vfs layer.
+
+I wasn't aware of the new fsconfig interface. Is there documentation or a
+file sytsem that already uses it that I should refer to? I didn't find an
+obvious candidate, but it might be me. If it should be obvious from the
+example above, tell me and I'll try harder.
+
+My famfs code above was copied from ramfs. If you point me to 
+documentation I might send you a ramfs fsconfig patch too :D.
 
 > 
->> +}
->> +
->> +static int dw_mci_hi3798mv200_init(struct dw_mci *host)
->> +{
->> +       struct dw_mci_hi3798mv200_priv *priv;
->> +       struct device_node *np = host->dev->of_node;
->> +       int ret;
->> +
->> +       priv = devm_kzalloc(host->dev, sizeof(*priv), GFP_KERNEL);
->> +       if (!priv)
->> +               return -ENOMEM;
->> +
->> +       mmc_of_parse_clk_phase(host->dev, &priv->phase_map);
->> +
->> +       priv->sample_clk = devm_clk_get_enabled(host->dev, "ciu-sample");
->> +       if (IS_ERR(priv->sample_clk))
->> +               return dev_err_probe(host->dev, PTR_ERR(priv->sample_clk),
->> +                                    "failed to get enabled ciu-sample clock\n");
->> +
->> +       priv->drive_clk = devm_clk_get_enabled(host->dev, "ciu-drive");
->> +       if (IS_ERR(priv->drive_clk))
->> +               return dev_err_probe(host->dev, PTR_ERR(priv->drive_clk),
->> +                                    "failed to get enabled ciu-drive clock\n");
->> +
->> +       priv->crg_reg = syscon_regmap_lookup_by_phandle(np, "hisilicon,sap-dll-reg");
->> +       if (IS_ERR(priv->crg_reg))
->> +               return dev_err_probe(host->dev, PTR_ERR(priv->crg_reg),
->> +                                    "failed to get CRG reg\n");
->> +
->> +       ret = of_property_read_u32_index(np, "hisilicon,sap-dll-reg", 1, &priv->sap_dll_offset);
->> +       if (ret)
->> +               return dev_err_probe(host->dev, ret, "failed to get sample DLL register offset\n");
->> +
->> +       host->priv = priv;
->> +       return 0;
->> +}
->> +
->> +static const struct dw_mci_drv_data hi3798mv200_data = {
->> +       .common_caps = MMC_CAP_CMD23,
->> +       .init = dw_mci_hi3798mv200_init,
->> +       .set_ios = dw_mci_hi3798mv200_set_ios,
->> +       .execute_tuning = dw_mci_hi3798mv200_execute_tuning_mix_mode,
->> +};
->> +
->> +static const struct of_device_id dw_mci_hi3798mv200_match[] = {
->> +       { .compatible = "hisilicon,hi3798mv200-dw-mshc" },
->> +       {},
->> +};
->> +
->> +static int dw_mci_hi3798mv200_probe(struct platform_device *pdev)
->> +{
->> +       return dw_mci_pltfm_register(pdev, &hi3798mv200_data);
->> +}
->> +
->> +static void dw_mci_hi3798mv200_remove(struct platform_device *pdev)
->> +{
->> +       dw_mci_pltfm_remove(pdev);
->> +}
->> +
->> +MODULE_DEVICE_TABLE(of, dw_mci_hi3798mv200_match);
->> +static struct platform_driver dw_mci_hi3798mv200_driver = {
->> +       .probe = dw_mci_hi3798mv200_probe,
->> +       .remove_new = dw_mci_hi3798mv200_remove,
->> +       .driver = {
->> +               .name = "dwmmc_hi3798mv200",
->> +               .probe_type = PROBE_PREFER_ASYNCHRONOUS,
->> +               .of_match_table = dw_mci_hi3798mv200_match,
->> +       },
->> +};
->> +module_platform_driver(dw_mci_hi3798mv200_driver);
->> +
->> +MODULE_DESCRIPTION("HiSilicon Hi3798MV200 Specific DW-MSHC Driver Extension");
->> +MODULE_LICENSE("GPL");
->>
+> > +
+> > +		return 0;
+> > +	}
+> > +	if (opt < 0)
+> > +		return opt;
+> > +
+> > +	switch (opt) {
+> > +	case Opt_mode:
+> > +		fsi->mount_opts.mode = result.uint_32 & S_IALLUGO;
+> > +		break;
+> > +	case Opt_dax:
+> > +		if (strcmp(param->string, "always"))
+> > +			pr_notice("%s: invalid dax mode %s\n",
+> > +				  __func__, param->string);
+> > +		break;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static DEFINE_MUTEX(famfs_context_mutex);
+> > +static LIST_HEAD(famfs_context_list);
+> > +
+> > +static int famfs_get_tree(struct fs_context *fc)
+> > +{
+> > +	struct famfs_fs_info *fsi_entry;
+> > +	struct famfs_fs_info *fsi = fc->s_fs_info;
+> > +
+> > +	fsi->rootdev = kstrdup(fc->source, GFP_KERNEL);
+> > +	if (!fsi->rootdev)
+> > +		return -ENOMEM;
+> > +
+> > +	/* Fail if famfs is already mounted from the same device */
+> > +	mutex_lock(&famfs_context_mutex);
+> > +	list_for_each_entry(fsi_entry, &famfs_context_list, fsi_list) {
+> > +		if (strcmp(fsi_entry->rootdev, fc->source) == 0) {
+> > +			mutex_unlock(&famfs_context_mutex);
+> > +			pr_err("%s: already mounted from rootdev %s\n", __func__, fc->source);
+> > +			return -EALREADY;
 > 
-> Kind regards
-> Uffe
+> What errno is EALREADY? Isn't that socket stuff. In any case, it seems
+> you want EBUSY?
 
--- 
-Best regards,
-Yang Xiwen
+Thanks... That should probaby be EBUSY. But the whole famfs_context_list
+should probably also be removed. More below...
+
+> 
+> But bigger picture I'm lost. And why do you keep that list based on
+> strings? What if I do:
+> 
+> mount -t famfs /dev/pmem1234 /mnt # succeeds
+> 
+> mount -t famfs /dev/pmem1234 /opt # ah, fsck me, this fails.. But wait a minute....
+> 
+> mount --bind /dev/pmem1234 /evil-masterplan
+> 
+> mount -t famfs /evil-masterplan /opt # succeeds. YAY
+> 
+> I believe that would trivially defeat your check.
+> 
+
+And I suspect this is related to the get_tree issue you noticed below.
+
+This famfs code was working in 6.5 without keeping the linked list of devices,
+but in 6.6/6.7/6.8 it works provided you don't try to repeat a mount command
+that has already succeeded. I'm not sure why 6.5 protected me from that,
+but the later versions don't. In 6.6+ That hits a BUG_ON (have specifics on 
+that but not handy right now).
+
+So for a while we just removed repeated mount requests from the famfs smoke
+tests, but eventually I implemented the list above, which - though you're right
+it would be easy to circumvent and therefore is not right - it did solve the
+problem that we were testing for.
+
+I suspect that correctly handling get_tree might solve this problem.
+
+Please assume that linked list will be removed - it was not the right solution.
+
+More below...
+
+> > +		}
+> > +	}
+> > +
+> > +	list_add(&fsi->fsi_list, &famfs_context_list);
+> > +	mutex_unlock(&famfs_context_mutex);
+> > +
+> > +	return get_tree_nodev(fc, famfs_fill_super);
+> 
+> So why isn't this using get_tree_bdev()? Note that a while ago I
+> added FSCONFIG_CMD_CREAT_EXCL which prevents silent superblock reuse. To
+> implement that I added fs_context->exclusive. If you unconditionally set
+> fc->exclusive = 1 in your famfs_init_fs_context() and use
+> get_tree_bdev() it will give you EBUSY if fc->source is already in use -
+> including other famfs instances.
+> 
+> I also fail to yet understand how that function which actually opens the block
+> device and gets the dax device figures into this. It's a bit hard to follow
+> what's going on since you add all those unused functions and types so there's
+> never a wider context to see that stuff in.
+
+Clearly that's a bug in my code. That get_tree_nodev() is from ramfs, which
+was the starting point for famfs.
+
+I'm wondering if doing this correctly (get_tree_bdev() when it's pmem) would
+have solved my double mount problem on 6.6 onward.
+
+However, there's another wrinkle: I'm concluding
+(see https://lore.kernel.org/linux-fsdevel/ups6cvjw6bx5m3hotn452brbbcgemnarsasre6ep2lbe4tpjsy@ezp6oh5c72ur/)
+that famfs should drop block support and just work with /dev/dax. So famfs 
+may be the first file system to be hosted on a character device? Certainly 
+first on character dax. 
+
+Given that, what variant of get_tree() should it call? Should it add 
+get_tree_dax()? I'm not yet familiar enough with that code to have a worthy 
+opinion on this.
+
+Please let me know what you think.
+
+Thank you for the serious review!
+John
+
 
 
