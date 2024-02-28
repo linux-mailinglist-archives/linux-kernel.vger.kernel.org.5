@@ -1,208 +1,120 @@
-Return-Path: <linux-kernel+bounces-84846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CC0786AC70
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3134686AC76
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:02:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0F631F245F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:01:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC5151F2672A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28BB24B39;
-	Wed, 28 Feb 2024 11:01:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF1D12BEA1;
+	Wed, 28 Feb 2024 11:02:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D2+SL82W"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="kvlx29TF"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44792129A96
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C277E56E
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709118101; cv=none; b=QTIH0OSHfA7viLXjFNyVLLxXUXX40YDiAyU03MpnwyP2J8AUHoPaCLP/oWfPogL0ZkHF0eKnLSEbbEPguRlVZALKdUs7piVJFBqO74Q5BUiFH+wZdVGmobXmtfE0ZRZZ0HrPaLZO5w7i97P2XFziuUMXxeeej3Q7vFZz7tAMWNE=
+	t=1709118155; cv=none; b=kMfiaa80OGsEzELD/kK1EGh4enGm/iMa5j5vTYdClX+6o3ZMexWsMhfdc3kwxmXQaw8SZDs1c1IEKTeSgb6PCyB1QtS2F/uJq9bAJgkgePnF2dfvk0v4fYn0U2X/kqV2cAzSZPcyEbVz6oBYNSgImoRr5jRvU2sPiiNyY34EOC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709118101; c=relaxed/simple;
-	bh=8OgkdCAnRjKaw3j4wSYcHFa/xxgMjTCLQm7+X/e43Tc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dBYAkZ33PN4nIpDKDhjVpEpdqKr23qRT7u+8J1TdvYoT9o98RwnS9Qg2I7UQfCQap70ZYU4Uea4eREefeCT+wBDwkc5xPn3KQi5T/SuS7ybFvJLmW0VYa/1209nbxcd09hIVyy4j/0oYVViAQTzj2yFvh10N46BAKE9PpTHjRLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D2+SL82W; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709118098;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHUgioFTWud+yVu8FFp4Z9cGICZSxHxVkQZdXkVKoZc=;
-	b=D2+SL82WvSHLJ1dVq1XVDX1hBr7rGoggsxClyk1BmcHnrW/8WiRA6T9Hml3PukRuvMKbjT
-	Tqqc7NKU2o4i3/reYgLquOOGYgeXxrR0WHAPTSUynvJKcVo/WUrpDevYrH8hJ0XJINw3bi
-	r2MVrnObelOXG8fc7rRX2HNxHfrsbUA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-460-IcMtDDVwMaCcgGAR-QAASg-1; Wed, 28 Feb 2024 06:01:37 -0500
-X-MC-Unique: IcMtDDVwMaCcgGAR-QAASg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a4314ed2638so188717966b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 03:01:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709118096; x=1709722896;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KHUgioFTWud+yVu8FFp4Z9cGICZSxHxVkQZdXkVKoZc=;
-        b=NJh7ELseLEcWfyrHa2vysxADaXTdJ84MaZhfK12EabQe18hcQ+aitoZOS9lZSpJPby
-         XMWNeh+p0ksQCukgxbnJwW1znZl00Re5PI3p4Tc3sDrpVY/w/Sb4ubxHy7WT1tjaIQVt
-         ftlCVb9BS8XWQcYOdgYir3MFoP7n1W0X9kWR0RgXI9rauclycBKBl65fzaiBFCEeYuCc
-         3iBk3Tu99ta//LiKm+GaYVl47DWPJZJ9wIEydpNks58ef+eT+QlmSBzvnxm8O8bgXXh8
-         1m0NlRe4+m5g/FeKcuTvOF+rvArfWos0a/368WEgBcm5LEIj3nRZJhYPB2qHRhnxom4o
-         SnOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXqUcO5asv4rD9f4jwhlTg9en5A2rmbkL8WqeF9xnznltVuMEww3kELkPuLi6cMi2F3SP5iEWCpqpwQYkVGvfH2J4wQ/XQf0xvaR4+I
-X-Gm-Message-State: AOJu0YyygqzODVdmRaLOjuw9W/kokZ/P51eZeFe8NWC0wqsNDVJCfS/G
-	fd7bVIyKuKDuhZdrTESdt/pU7wpPFSqaPDnGZllcPlVG1JwArFQzE8sRI1AY00xHyFYnOqZ7eY8
-	75wXcsS3D+GokIheJGqcZ58YoJxf3CLQ6e2amMzOEmF2sqhXQlpO3M0OytT/ED5RWsms4s/94xQ
-	bZHbnhwTMGnXfyWgHLqvP7xZDlL6cJRw7SneDe
-X-Received: by 2002:a17:906:1450:b0:a3f:c6a6:3b79 with SMTP id q16-20020a170906145000b00a3fc6a63b79mr8266996ejc.6.1709118095846;
-        Wed, 28 Feb 2024 03:01:35 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFAWI5m4fiH4ALLfFYlhSHwy5bFWy63vFpnGQNng4cv4hRI1z/LUykHqlS5EudRuxJtWXmdgW+znCdtAHZdRn8=
-X-Received: by 2002:a17:906:1450:b0:a3f:c6a6:3b79 with SMTP id
- q16-20020a170906145000b00a3fc6a63b79mr8266966ejc.6.1709118095447; Wed, 28 Feb
- 2024 03:01:35 -0800 (PST)
+	s=arc-20240116; t=1709118155; c=relaxed/simple;
+	bh=mP1LTdeJ3Dns0bz8m3e7GknssXAWqlpGOWgSsRtPbmA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lk+feAraWS5wzJPbh+0RlKOVsz/A5LYY5HJDc2Xa19lzhNb1W4uB3C9IttxDSet19LHAgbyWphT9+im04aBrff2EHJ7vvn6a28l1lTsGhJLHxxg1Wc6CC+tlcbeH2YEKvK8XV9TB1l3LYdDVCFBKoLDBHpmIjDWCN9k6i9Zj5lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=kvlx29TF; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2799040E0196;
+	Wed, 28 Feb 2024 11:02:30 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id SIzcVFrYMp_X; Wed, 28 Feb 2024 11:02:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709118147; bh=66W6K62NDaGuzFz8YAZkJ+BJvGSDyNWZIMt6wCMS1WA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kvlx29TFSzPSgtP5aT5OFRz//RpQwuzBMVHQqBKDp0dt+hjzmZyp07TGhJhp1FWy2
+	 tgDDvPAGJHg33wCgCA9MYHVG6MJKoPordvytsnq99nQKtr8MlKV6AvyrURulOWhvdi
+	 NYWRH1JikkOug4i2svew0qoXtndxyoyPwTEHvhk8M9mMTh7CcWEC/PONvM4QpkM4HE
+	 SyRdRa6Yz1v78sqo/4maNFNtUhGOHiVSMgnh6Q2ZinpEM4vr+0RC0p6x9sxws/PmiD
+	 f6fhvhm8U5ZEsUdc3O9jcgtbYuPhyE8PB2rd9PJX1oXER0lMtHc+9GgQxZspvy7ilw
+	 LlDMWwTkeXGCDNX9oOyiYxt4tAb8Xc43+D1lsLIMxuOuuJCSgZNtNjIksgmw21Opz4
+	 SLnmCOMjKWSL9g8yoAWb13a+9Of3xw1Ef4bE/IF2YH5HA3jZO1miD+h3+r7fOEgUbC
+	 slTmKWbJNEbETF2UHuIIMMpByc37djh5mphqSsmA34l03KiWytYJWqks5Z2JaLOOgD
+	 tx5GsN48A1MyhFXlluvrd+MtTtmWmo+tJMYtjy5NZwpXFwcLUMYIYzr4QzAoCqeuDT
+	 NmaU7A5bHO3Yk4/NdaK9NAAKkv4L3rt94BDng2gEEVReluLmkk9R6TfS5SlHWFYPa2
+	 O1mg+RwpQBtuxbjIaFPFYYBQ=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BC40240E01A2;
+	Wed, 28 Feb 2024 11:02:11 +0000 (UTC)
+Date: Wed, 28 Feb 2024 12:02:07 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: "dyoung@redhat.com" <dyoung@redhat.com>,
+	"Gao, Chao" <chao.gao@intel.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"Hansen, Dave" <dave.hansen@intel.com>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"bhe@redhat.com" <bhe@redhat.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"hpa@zytor.com" <hpa@zytor.com>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"nik.borisov@suse.com" <nik.borisov@suse.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>
+Subject: Re: [PATCH 1/4] x86/coco: Add a new CC attribute to unify cache
+ flush during kexec
+Message-ID: <20240228110207.GCZd8Sr8mXHA2KTiLz@fat_crate.local>
+References: <20240219203222.GIZdO61ucfq4bFxRT0@fat_crate.local>
+ <283877fd-78c7-4322-bbce-ba6420d56765@amd.com>
+ <20240220142812.GBZdS2_HJEA50F8RZD@fat_crate.local>
+ <28a494ca-3173-4072-921c-6c5f5b257e79@amd.com>
+ <ec58908ac8bc7d953d4c00825217615918436721.camel@intel.com>
+ <24844584-8031-4b58-ba5c-f85ef2f4c718@amd.com>
+ <20240221092856.GAZdXCWGJL7c9KLewv@fat_crate.local>
+ <CALu+AoR-VFHCK_7LHiJ3z_Vk1B=sFS90iAyCs9qmSmf2+XORLw@mail.gmail.com>
+ <CALu+AoSZkq1kz-xjvHkkuJ3C71d0SM5ibEJurdgmkZqZvNp2dQ@mail.gmail.com>
+ <8c3e3e8c32b50cf488413d965ac6730ce8814214.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-hid-bpf-sleepable-v3-0-1fb378ca6301@kernel.org>
- <20240221-hid-bpf-sleepable-v3-8-1fb378ca6301@kernel.org> <55177311ccdc24a74811d4a291ee1880044a5227.camel@gmail.com>
- <pocfd5n6lxriqg7r6usyhrlprgslclxs44jqoq63lw734fjl2g@5kv4hjaux2fp>
- <9a35a53a1887fb664fd540ec7e272cb3ea63f799.camel@gmail.com>
- <CAO-hwJ+TGiLrc4De7htvKaSsMfQnZahK-zONAMNgUMYHEQb-7g@mail.gmail.com> <CAADnVQKrKzrvzu9NmcaDYGFYicqN--R5J6r--_J58gB0jic_NA@mail.gmail.com>
-In-Reply-To: <CAADnVQKrKzrvzu9NmcaDYGFYicqN--R5J6r--_J58gB0jic_NA@mail.gmail.com>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Wed, 28 Feb 2024 12:01:23 +0100
-Message-ID: <CAO-hwJL_WAsOOJ5oScvNBbXwK=g3R_5S=PqUmNi5C156pcwgzQ@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v3 08/16] bpf/verifier: do_misc_fixups for is_bpf_timer_set_sleepable_cb_kfunc
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Benjamin Tissoires <bentiss@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <8c3e3e8c32b50cf488413d965ac6730ce8814214.camel@intel.com>
 
-On Wed, Feb 28, 2024 at 2:49=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Feb 27, 2024 at 8:51=E2=80=AFAM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > On Tue, Feb 27, 2024 at 5:36=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
-com> wrote:
-> > >
-> > > On Tue, 2024-02-27 at 17:18 +0100, Benjamin Tissoires wrote:
-> > > [...]
-> > >
-> > > > Hmm, I must still be missing a piece of the puzzle:
-> > > > if I declare bpf_timer_set_sleepable_cb() to take a third "aux"
-> > > > argument, given that it is declared as kfunc, I also must declare i=
-t in
-> > > > my bpf program, or I get the following:
-> > > >
-> > > > # libbpf: extern (func ksym) 'bpf_timer_set_sleepable_cb': func_pro=
-to [264] incompatible with vmlinux [18151]
-> > > >
-> > > > And if I declare it, then I don't know what to pass, given that thi=
-s is
-> > > > purely added by the verifier:
-> > > >
-> > > > 43: (85) call bpf_timer_set_sleepable_cb#18152
-> > > > arg#2 pointer type STRUCT bpf_prog_aux must point to scalar, or str=
-uct with scalar
-> > >
-> > > Right, something has to be done about number of arguments and we don'=
-t
-> > > have a convenient mechanism for this afaik.
-> > >
-> > > The simplest way would be to have two kfuncs:
-> > > - one with 2 arguments, used form bpf program;
-> > > - another with 3 arguments, used at runtime;
-> > > - replace former by latter during rewrite.
-> >
-> > It's hacky but seems interesting enough to be tested :)
->
-> Too hacky imo :)
->
-> Let's follow the existing pattern.
-> See:
-> __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
->
-> __ign suffix tells the verifier to ignore it.
->
-> Then we do:
-> #define bpf_obj_new(type) \
->   ((type *)bpf_obj_new_impl(bpf_core_type_id_local(type), NULL))
->
-> and later the verifier replaces arg2 with the correct pointer.
+On Wed, Feb 28, 2024 at 09:21:00AM +0000, Huang, Kai wrote:
+> Based on this I'll change to do unconditional WBINVD during kexec() for in
+> stop_this_cpu() and relocate_kernel().  Please let me know if you have any
+> comments.
 
-\o/ Thanks, it works :)
+Yes, pls make sure to summarize in the commit message what this thread
+figured out. But basically, we want to try the simple approach and
+WBINVD unconditionally on the CPU stopping path so that caches are clean
+and there's no potential issues...
 
->
-> > We also could use the suffix (like __uninit, __k, etc...), but it
-> > might introduce more headaches than the 2 kfuncs you are proposing.
->
-> Only one kfunc pls. Let's not make it more complex than necessary.
->
-> We cannot easily add a suffix to tell libbpf to ignore that arg,
-> since bpf_core_types_are_compat() compares types and there are
-> no argument names in the types.
-> So it will be a significant surgery for libbpf to find the arg name
-> in vmlinux BTF and strcmp the suffix.
+Thx.
 
-Yeah, I guessed so. Having a single #define is fine, especially given
-that there are already a lot of them for the same purpose.
+-- 
+Regards/Gruss,
+    Boris.
 
->
-> >
-> > >
-> > > Could you please provide more details on what exactly it complains ab=
-out?
-> > >
-> >
-> > Well, there is a simple reason: that code is never reached because, in
-> > that function, there is a `if (insn->src_reg =3D=3D
-> > BPF_PSEUDO_KFUNC_CALL)` above that unconditionally terminates with a
-> > `continue`. So basically this part of the code is never hit.
-> >
-> > I'll include that new third argument and the dual kfunc call in
-> > fixup_kfunc_call() and report if it works from here.
->
-> Something is wrong. fixup_kfunc_call() can rewrite args with whatever
-> it wants.
-> Are you sure you've added bpf_timer_set_sleepable_cb to special_kfunc_lis=
-t ?
->
-
-Yeah, but as I mentioned, I wasn't hacking at the correct place. I was
-not doing the changes in the fixup_kfunc_call() but in the helper
-processing, so that path was not hit.
-
-But with your instructions it works.
-
-I have a couple of changes to do and the selftests to add and the
-series will be ready.
-
-Cheers,
-Benjamin
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
