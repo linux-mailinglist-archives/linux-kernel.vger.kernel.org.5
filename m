@@ -1,258 +1,243 @@
-Return-Path: <linux-kernel+bounces-85361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 073BA86B4CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:25:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D396B86B50A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:32:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FF0D1F25020
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:25:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02C1A1C255C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D20856EF11;
-	Wed, 28 Feb 2024 16:25:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A10145FF7;
+	Wed, 28 Feb 2024 16:32:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RqG0KGBr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="iejjMwD6";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="mAj8NGgT"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3BFC6EEE1;
-	Wed, 28 Feb 2024 16:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709137549; cv=none; b=F+pRGjhrr+3zSgTZmxvylpdRRW2ASzUOSNqqvlGxgxaQJ1G3pw1gOth/ByFqf0Lh0aC0StcP2GW+e9agDdsyD3uhTM5VvH1Z7rdZO4xvyFxxGBBUKLYWjH98cNBpNi3etHewbnIvV2c7P2ttTaVsmfYL19ZXiahP1lOh9H869/w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709137549; c=relaxed/simple;
-	bh=I3Ry+AyxVFp2fepKf56qSbxbBz0NZWBFMR4xiWNttqI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=nSyg5lgWqTTUplOt3IkfHr2VxmZXK57Havn2V3SF/Ad3LLv0JOLXcOUj+R1McVLkerTNVj0HwZ3qw51x7nRnuM5yR3WlD0smcdlmpql9Kv1h9xxmbmTC3dqdGzsS3BBMUqLzgRJVYFIai4OVXkAyrRbRlh3rUOAGejpFylRVtL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RqG0KGBr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DF09C43394;
-	Wed, 28 Feb 2024 16:25:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709137548;
-	bh=I3Ry+AyxVFp2fepKf56qSbxbBz0NZWBFMR4xiWNttqI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=RqG0KGBrnXVRymi9pbuDFcM0wj6P0BHkgpfBlPoNCDp399b4p7KA5grrqwGQvjy+C
-	 CHcUrpacGUcBxGE+TsXaYYOQav5iZIHQeJVHbAByydpLI0jCH4vFo6fhN/09B3+e4I
-	 mj4ol4hWIr9DA1DGIqPGpPvvcaTKv3Y2WONHFC5WZSoN6YA3lG3QY2IFl+BIYDEPHd
-	 B7OW70RVzL/+BUPcne96Tf71ttuXhDKPLvhcQxmC7+Be5DG0mX4esdLvYl6SNs5QBv
-	 Rx3/vePUySNOb3Q9RMPxYIggiO4U46gG9GdefU2nDvT5N/WdlwkPbO+WuOHdKKOx8e
-	 JFDXh0JHRFAtg==
-Date: Wed, 28 Feb 2024 10:25:46 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-	Lukas Wunner <lukas@wunner.de>,
-	Yazen Ghannam <yazen.ghannam@amd.com>,
-	Ilpo Jarvinen <ilpo.jarvinen@linux.intel.com>
-Subject: Re: [PATCH v9] PCI/DPC: Ignore Surprise Down error on hot removal
-Message-ID: <20240228162546.GA275965@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798073FBA9;
+	Wed, 28 Feb 2024 16:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709137926; cv=fail; b=IxEB6TDZVtYEpu+T6u4oBjmpMIHbsvO96Ne0efIQMQEacFTUCuVKAlHE1rEdKvaNQPtimHxYa6XfTak3f2Yz/k+61/PvqMG4gRTCDEKhAO6bG6SrbyJImOSXOC/u1/fV5IlA833pWxdBmEbKmgzRNUSwKovHwv9wT/0si3o/gbs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709137926; c=relaxed/simple;
+	bh=zXFy1YWDlUYp8u6qtz5ZEK0ulx/cqZvfaPfwU+K+VHM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=uYLspCW2xddM49KKTl2meeJIbFu7st6DXXHJ3XGuv7HpKBolQVbPryEx98LkQAuyaWqOnXBWnrIBK7KWPN/LQ0I6viuL8YHXhahYCDAmr0xejusIQV6nkjLCxV4yaI9vuSfle1gShtWAeqGFjh6PaGsk2wb2meJN5iTEcAXFW20=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=iejjMwD6; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=mAj8NGgT; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41SEG28t017707;
+	Wed, 28 Feb 2024 16:26:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=iN5dFnYhW268G8zScvSYFjRs/Z0kwcZsm7x6g6GY3Dw=;
+ b=iejjMwD6DIaPXEj9AtOBpkK8vKbWD4PMwYHi1uE/bFkznC3vw+dFWCswhWXTBG60QrRH
+ F5SGZBpIorrtOz8BiiQLoQ02Dbd+WxnpI5V2L4WrCM2kzeWJM08qOTcLsFGsI+xw68jS
+ pusPNPnm3ELy+C6Jf0pV7vcOf3YcD58MCZORv7At2fkvEaGWgCzK0FKP7bjG3sa5Weue
+ YQPQIVh1gB4XwRIG/3Sx+Y8HL+6dAWR3+xJOXct00rnhUHTNSlebGlY16FMrfaD+lawg
+ DKFbxzC3Wq8ilH4PZj9lIpc3c9/2UHjruuEZuZxdKf3q1SzBXyAHXqJCXM9kjfAGLG+k sw== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf8gdk16t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 28 Feb 2024 16:26:45 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41SGCj7O001674;
+	Wed, 28 Feb 2024 16:26:45 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2169.outbound.protection.outlook.com [104.47.73.169])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wf6w958dx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 28 Feb 2024 16:26:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RI+NEa6KRW5WuW+6MC3DVQrScNok7zN4Dx9VPCXv0xl/8ZxonXTAMCzBDFZoOb9N9ZJHRZS8zPF8H2itpvUfa8gEflXtrJZQiPm65G9QNiSuwsWU9pJQN6zmUND6+d+4ZxMXxhP/TmICh4/Q7cHUeVMOrp+gnyjT5WcbxhFQ2M8gLEhHNGlXk43q4fgz/TOht9DrP50mwqDa96EJl+HRR7IM21VxKZZplhuKYoLzhG5E4qMrDuIB1tAtIx34gmuz5X9l+AiuFLcmp6AeaVHt7z3h5X/fmt7M0zAiL7X7U7/WLTsPH7ojOdRVvsl/9P+a8rfI/Kpxbs5jG9t5tsHhYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iN5dFnYhW268G8zScvSYFjRs/Z0kwcZsm7x6g6GY3Dw=;
+ b=jG14I7p1vXun9MosWdeRA1d7AmyvN/BBpJyC8MNVE7uBaAUJ0inz1xrAZTIHGG+vPKEmFRDzrWgyfS0lMcXheJzC45ROybNoTkhWbbyYE2Rm3NYyUWiI1wW9P31ULQJtPfAAibmL9r1yvYHRj/K2rfGWFr0rPUSsUxD5HQRRswsiCYtQYb3vioWNq2cdK0gOE8wCWJLAiXLe4xNm15fUqkLwtYhW9foP8lhfFw8kYzIIS1YpnklDvaRJYDUIaTOuGKsA5JMeRp5YwodT4WvhEzuGj9sB5FgnyLYg1mJFPLIUGa7qCHTTvYFqgeidda2B15r2Tv4+N+nDuGMj7eFUXw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iN5dFnYhW268G8zScvSYFjRs/Z0kwcZsm7x6g6GY3Dw=;
+ b=mAj8NGgTh7dDNsEwMgupdmnucCdahBqWH8RkUlmoaexjGOoLlZTdZVLJF10+d8BknFJ5Cfz1j8eE5FR8zg4uQcCNnQN8qaFI0Vy7iv+umhH7QbwdI4uOjvWrCjiSnmCUxvHUuGwp6KIifmkbnVbxPhAAJst2inJxuhL0+i9OvPo=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by IA1PR10MB7239.namprd10.prod.outlook.com (2603:10b6:208:3f8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 28 Feb
+ 2024 16:26:42 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::97a0:a2a2:315e:7aff]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::97a0:a2a2:315e:7aff%3]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
+ 16:26:42 +0000
+Message-ID: <0786d006-9ccf-4ba2-8a1f-452711797a81@oracle.com>
+Date: Wed, 28 Feb 2024 16:26:38 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] scsi: libsas: Fix disk not being scanned in after being
+ removed
+To: yangxingui <yangxingui@huawei.com>, yanaijie@huawei.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        damien.lemoal@opensource.wdc.com
+Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com, prime.zeng@hisilicon.com,
+        chenxiang66@hisilicon.com, kangfenglong@huawei.com
+References: <20240221073159.29408-1-yangxingui@huawei.com>
+ <d765d2c5-3451-4519-a5e1-9e8f28dcd6b3@oracle.com>
+ <693dec74-1750-191e-cbc3-37f993d165ac@huawei.com>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <693dec74-1750-191e-cbc3-37f993d165ac@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO4P123CA0639.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:296::6) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240207181854.121335-1-Smita.KoralahalliChannabasappa@amd.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|IA1PR10MB7239:EE_
+X-MS-Office365-Filtering-Correlation-Id: 488ba142-814e-4229-2db5-08dc387a0c6f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	XTEUhdUq2ImjMXYrSM+E4DiPHC58LI5Ch1eMrbhv2YWxKBEdaO0EDoks5zuXoiXL9k0ob/Bl8PUPpsE2Xy4Bz6fRtKgufw+8ZPzPZP8WmtCbhtJiwG2GJSQp1CY7VdFCUFWb6Xcy2D9eJv5ZA1ABLVIO6TCvL9EeUcriUxX2E1Yx9X9BG6RUZsLGzIT31iKf7nypuFGGrOkP9U7mulxfVWofK/Bz+OMWM71g/kEmHnyoM7GvDi1iiupU5q+ncTT9weTiRzxyoOmSSNt9KJ7byNNKUfaJTHdEFs452bL+vkzYtfPRJSVzQfBBLEYznHKJqzsDA0l0hcwgNULs50dvwplUy5x3QCDoSvXMqhHeyBNse1ajml65hTaVYlVLLiNRmaatiU5Smz1JImXKUOZk3vySAbBEoCq4VaTKNCmOOv7ajNZYVYe7c/4Po4tU45D6hPos8vZVWodnCo3mGet+kr/0WjPvk3TT1btEtq7BxB6PBCgttMiclTMsYZ+NGWhDjh0ptIZFiAFGEJmzK83DcJ0o13/IomkDigGFNen+cYBz1GEaaWNYJQmgZaCvVqhR8jsb6doc6nYv38RFyqz2+icCAg1v6R5FSwuq2siyj9S1/ebtyc9vadrXrQOCHQykJTAqFXsXizDhs9BkTngh5w==
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?dWlRTldjbmE0cEdFSGQwK1ByUTNnUnlsU25MOGF0YlRoUWJVTnorSGl6a1pQ?=
+ =?utf-8?B?cU1wbDQ5T1lrZitkVEpmY1kwM3BhMzdzTDM5QUsyQlFYd3MvREt5VENFQnVK?=
+ =?utf-8?B?Y1FuYlZXSlBiMXFjWDAycmVXWjNRMUhLOTNPTkVaTkIySDBpUU1jU1NueUZH?=
+ =?utf-8?B?bk40MFY2aFAwemJnMXp4a3FzTE5IZTkvZ1ZiM3IvQTZWejg5RWdsbDZCN0tK?=
+ =?utf-8?B?WEJTbnFVdjlYMHEycmpUU3NWck1pb0JFTmpkZnFYMU1RcWxEeGh0L0lCZDly?=
+ =?utf-8?B?azhEWG9INUNPbFlVbEdGa2J2TTgvUnd1dCs0WTRSQjhuUzBTWUZ1RENvSTZr?=
+ =?utf-8?B?UWVTZk55UzQ2ck5MaVpiay9EVWE1UWtYeTZUWVIyZmlyem82MVRFREoySUcy?=
+ =?utf-8?B?ZkhlYUpsUU10ZkVBY1lsNTN3MlBleHVrNG5RQjlmelA4T2xqcXBFbmRuRGdC?=
+ =?utf-8?B?aUh2T29Ja3NLd0xBSGU2NHo1RkRxbmorbElZd3EwbzcvbXlhT3BsTERnV0FC?=
+ =?utf-8?B?dnluUTZTR1k2c21pWHF4TW0zUkZsVk85dWRxYVEvVzZqMGRJY1JMR0JESWp4?=
+ =?utf-8?B?R2ZLNFFxSWxhVHVad2cwenRkRkltaFlETzZSdjFLQ0lrcjBPWTFiQkp6Q1Z5?=
+ =?utf-8?B?c1hLSm5pUlpvODBkOFYzRFBwdElBaEsvb3lEbjFpSHUzdnBmaGhWa1RlY0tP?=
+ =?utf-8?B?aTA4ZU1NSktPa25zSDlHdWRlbkRnVmhIcFhnRm0xRjVPV2c4c0k3RWhsZEx5?=
+ =?utf-8?B?NEpLVFUvZkFMMGRPUTdZYlJCK3dJN2o3dS80ZGxpQUJlaXA0cDZrQTF2TTEz?=
+ =?utf-8?B?TVJLUXZJUmxDK1Y0d1VPeUpaOVRhY2xNTjYwMUdSVFZ0MmNhQ29oZ2FoYldD?=
+ =?utf-8?B?SGIzWS9FTlJoVlozaXFyZUhPNWU4amQ3THhGbVJrWm4wdGhjeVpoczRrbmJR?=
+ =?utf-8?B?eW5zbzFQQlduMUJNaGlka2xQdjZvVFFrZjhXTTF4TnBOd3htbnA2alFPc1V6?=
+ =?utf-8?B?L2EySXoyRVFVd2FHTDVhRGI1dC92SG9Jbi9QZ1dXVGJYVHlQQWxtRlNyOXF4?=
+ =?utf-8?B?WkhIWTNSYm5DeHYyeVBHRTdnMXdwdTlRZ1drVU54MTg4NTlDWUJ2RGttTitK?=
+ =?utf-8?B?TEJoNktERTlINDlka0gxRUtvZEZFYjg4WGVLcTh5QkVVY01id3NpV0ZGcEwv?=
+ =?utf-8?B?SlZ3RUlXOWxOcHJsWUZvRlBsYXE4OEhWK01sOXVqd1h1c1FHajFvR3l6TzRP?=
+ =?utf-8?B?d2JGWjI1eEFjSUJTTk0wOFZpZFlBYlhVQlVSOWNhcExjeHZZa0l6OFRHZ210?=
+ =?utf-8?B?clRXd3lkN0NLQm5Pc0Vwb29jY0cweitaa01aL0F5L0lLRFJqeCtBVzJnOWNx?=
+ =?utf-8?B?U2N3VzNpYUJabjZxNCtIWWtUY1ZOUUpJWWI3QU5hcy9JNDJIMU1ST2dwOG1l?=
+ =?utf-8?B?bzhoaStNckRlRDFBbnpuK2NDU2E1YUFBU0dMUTZTK1UrWTVZekFNUEVOOERi?=
+ =?utf-8?B?cVNTZDA0SFBVUW94L1Z4eHQ2WVY0bWluMDd3MUdzcUFGTmZiQ2hPRzcrVll2?=
+ =?utf-8?B?dXJXeXlocnJRMzVWRUxxRmRPdS83TG9uRGFzcXVlNGFCbTFDMTZQdGdsNVF3?=
+ =?utf-8?B?alFScVNUSVZWclJsdHhpY3IwVjZPVngvU3FiNUpoc2N3N3hDUFc2ak9LZUJG?=
+ =?utf-8?B?UkZmWjBYMzNmc240WjVhcXFGdFRvcVd6eEhETElWbEpSR08xdVMvNTI4M1cw?=
+ =?utf-8?B?MHB5dno5VnpKN3M1T05sQVhRTmE2cUdIak1sc0JhZlBSRmwxOGl4alUxdVRi?=
+ =?utf-8?B?RGswRW5DWTBpUnVUZFgzZjZYTVcvSWhUWkFMMGxMLzNza0lockpzRlRTUGJm?=
+ =?utf-8?B?RXI2RXNEeGJEYjBBNzlZdFZybkdsZVY1VG0wRTRZcnJqRWpJNmpqWWZBSE8r?=
+ =?utf-8?B?bUlXbGE0SnhQL0pjZzR6Mk9jZ3Z5aDA3anpYTzEzbEppbEVBOCs4ZUdoQmwx?=
+ =?utf-8?B?bXpPUlZEQ3M4YTQ2S21VdGloSnFhR2k2a0pQZXFHeC91cjFaVGo4RmFkUmRQ?=
+ =?utf-8?B?NWJGdGMwQVhMWVZ5U0NSOG82d1dIZHFiemMxRGVFUDlWTUhNOGM5SnRsdzRn?=
+ =?utf-8?Q?OgCAc2PbrTA7pPp5REStv/Phb?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	+OxcIdc2Q7djjr6g3Hm7V7QlB1C9Ov5DZC3w106L5rRx3E8t2L1huGXEDKIW3waWgGeBOZ8I/p6stRTWq6d9ZomkWhOoF6AQE1h5S282SVb0O+jwE1jlNDechnN9RkMvamjA2vWUi/9alkulmO8t/KJBkbP/VkXVXKFqG3Xfp9RoVQboFsoRVjgP6arciyoP7wzIt7OiwwJ79D9Vg0smWhJSshaYbqLr+yfgQHVEp+7p7jG4SFp81OTsdHDz5XlpccDpiG3hoVoPYoMLH7N58P81C07Gl5w6/83JhmaChM7WqpxJOf+WvUX4VqIN4cZet1iocYjtHIEuPoSPFsjit+EADltO8D56ttk9EvF9estuIdd99KjMzeu9WV5BPKB5x2O6QuLc5GFFVdnzoab35WjddT85QtFiGQe+99ma1iwCFW+4ugcVhsMTO5M+yDnvCxMaGGaWmAy8voERn/mT4pknl6Dbo5grqQZ69+vp7KlTltfKjmOGnxrCTvwqTAhEDVdDD2skl8UOBWrH6ikkgH+NOAPaqy4cr6WpYfC7KcliTHvEwVmd6rxRRAuer7O1ElYochtkGZ5UvEz+Pm762ZU9wtMVVVh46WTfWvGBJ6Q=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 488ba142-814e-4229-2db5-08dc387a0c6f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 16:26:42.7658
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FhJCT7TheivQG5OJrsQMBVocyqgZJqaPfBOnYa1y/lmcX0tiDJe4vnoyGZ/awE2lJOtsQ3aDzVpfrgn1WYImQg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB7239
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
+ mlxscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402280128
+X-Proofpoint-ORIG-GUID: ioRJiDoGpZXPAttj9-VpbrEOP_Dpm3od
+X-Proofpoint-GUID: ioRJiDoGpZXPAttj9-VpbrEOP_Dpm3od
 
-On Wed, Feb 07, 2024 at 06:18:54PM +0000, Smita Koralahalli wrote:
-> According to PCIe r6.0 sec 6.7.6 [1], async removal with DPC may result in
-> surprise down error. This error is expected and is just a side-effect of
-> async remove.
+On 28/02/2024 13:13, yangxingui wrote:
+> Hi John,
 > 
-> Ignore surprise down error generated as a side-effect of async remove.
-> Typically, this error is benign as the pciehp handler invoked by PDC
-> or/and DLLSC alongside DPC, de-enumerates and brings down the device
-> appropriately. But the error messages might confuse users. Get rid of
-> these irritating log messages with a 1s delay while pciehp waits for
-> dpc recovery.
+> On 2024/2/22 20:41, John Garry wrote:
+>> On 21/02/2024 07:31, Xingui Yang wrote:
+>>> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
+>>> update PHY info"), do discovery will send a new SMP_DISCOVER and update
+>>> phy->phy_change_count. We found that if the disk is reconnected and phy
+>>> change_count changes at this time, the disk scanning process will not be
+>>> triggered.
+>>>
+>>> So update the PHY info with the last query results.
+>>>
+>>> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to 
+>>> update PHY info")
+>>> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+>>> ---
+>>>   drivers/scsi/libsas/sas_expander.c | 9 ++++-----
+>>>   1 file changed, 4 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/scsi/libsas/sas_expander.c 
+>>> b/drivers/scsi/libsas/sas_expander.c
+>>> index a2204674b680..9563f5589948 100644
+>>> --- a/drivers/scsi/libsas/sas_expander.c
+>>> +++ b/drivers/scsi/libsas/sas_expander.c
+>>> @@ -1681,6 +1681,10 @@ int sas_get_phy_attached_dev(struct 
+>>> domain_device *dev, int phy_id,
+>>>           if (*type == 0)
+>>>               memset(sas_addr, 0, SAS_ADDR_SIZE);
+>>>       }
+>>> +
+>>> +    if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM))
+>>> +        sas_set_ex_phy(dev, phy_id, disc_resp);
+>>> +
+>>>       kfree(disc_resp);
+>>>       return res;
+>>>   }
+>>> @@ -1972,11 +1976,6 @@ static int sas_rediscover_dev(struct 
+>>> domain_device *dev, int phy_id,
+>>>       if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM)) {
+>>>           phy->phy_state = PHY_EMPTY;
+>>>           sas_unregister_devs_sas_addr(dev, phy_id, last);
+>>> -        /*
+>>> -         * Even though the PHY is empty, for convenience we discover
+>>> -         * the PHY to update the PHY info, like negotiated linkrate.
+>>> -         */
+>>> -        sas_ex_phy_discover(dev, phy_id);
+>>
+>> It would be nice to be able to call sas_set_ex_phy() here (instead of 
+>> sas_get_phy_attached_dev()), but I assume that you can't do that as 
+>> the disc_resp memory is not available.
+>>
+> By the way, I have updated a version and call sas_set_ex_phy() here, 
+> please check it again.
 > 
-> The implementation is as follows: On an async remove a DPC is triggered
-> along with a Presence Detect State change and/or DLL State Change.
-> Determine it's an async remove by checking for DPC Trigger Status in DPC
-> Status Register and Surprise Down Error Status in AER Uncorrected Error
-> Status to be non-zero. If true, treat the DPC event as a side-effect of
-> async remove, clear the error status registers and continue with hot-plug
-> tear down routines. If not, follow the existing routine to handle AER and
-> DPC errors.
-> 
-> Please note that, masking Surprise Down Errors was explored as an
-> alternative approach, but left due to the odd behavior that masking only
-> avoids the interrupt, but still records an error per PCIe r6.0.1 Section
-> 6.2.3.2.2. That stale error is going to be reported the next time some
-> error other than Surprise Down is handled.
 
-I tweaked this citation to r6.0 since you cited r6.0 above, and I
-don't think r6.0.1 changed anything in this section.
+Then maybe the first patch is a better approach. Let me check it again. 
+Sorry for the delay.
 
-> Dmesg before:
-> 
->   pcieport 0000:00:01.4: DPC: containment event, status:0x1f01 source:0x0000
->   pcieport 0000:00:01.4: DPC: unmasked uncorrectable error detected
->   pcieport 0000:00:01.4: PCIe Bus Error: severity=Uncorrected (Fatal), type=Transaction Layer, (Receiver ID)
->   pcieport 0000:00:01.4:   device [1022:14ab] error status/mask=00000020/04004000
->   pcieport 0000:00:01.4:    [ 5] SDES (First)
->   nvme nvme2: frozen state error detected, reset controller
->   pcieport 0000:00:01.4: DPC: Data Link Layer Link Active not set in 1000 msec
->   pcieport 0000:00:01.4: AER: subordinate device reset failed
->   pcieport 0000:00:01.4: AER: device recovery failed
->   pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
->   nvme2n1: detected capacity change from 1953525168 to 0
->   pci 0000:04:00.0: Removing from iommu group 49
-> 
-> Dmesg after:
-> 
->  pcieport 0000:00:01.4: pciehp: Slot(16): Link Down
->  nvme1n1: detected capacity change from 1953525168 to 0
->  pci 0000:04:00.0: Removing from iommu group 37
-> 
-> [1] PCI Express Base Specification Revision 6.0, Dec 16 2021.
->     https://members.pcisig.com/wg/PCI-SIG/document/16609
-> 
-> Signed-off-by: Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-> Reviewed-by: Lukas Wunner <lukas@wunner.de>
-> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+John
 
-Applied to pci/dpc for v6.9, thanks!
-
-> ---
-> v2:
-> 	Indentation is taken care. (Bjorn)
-> 	Unrelevant dmesg logs are removed. (Bjorn)
-> 	Rephrased commit message, to be clear on native vs FW-First
-> 	handling. (Bjorn and Sathyanarayanan)
-> 	Prefix changed from pciehp_ to dpc_. (Lukas)
-> 	Clearing ARI and AtomicOp Requester are performed as a part of
-> 	(de-)enumeration in pciehp_unconfigure_device(). (Lukas)
-> 	Changed to clearing all optional capabilities in DEVCTL2.
-> 	OS-First -> native. (Sathyanarayanan)
-> 
-> v3:
-> 	Added error message when root port become inactive.
-> 	Modified commit description to add more details.
-> 	Rearranged code comments and function calls with no functional
-> 	change.
-> 	Additional check for is_hotplug_bridge.
-> 	dpc_completed_waitqueue to wakeup pciehp handler.
-> 	Cleared only Fatal error detected in DEVSTA.
-> 
-> v4:
-> 	Made read+write conditional on "if (pdev->dpc_rp_extensions)"
-> 	for DPC_RP_PIO_STATUS.
-> 	Wrapped to 80 chars.
-> 	Code comment for clearing PCI_STATUS and PCI_EXP_DEVSTA.
-> 	Added pcie_wait_for_link() check.
-> 	Removed error message for root port inactive as the message
-> 	already existed.
-> 	Check for is_hotplug_bridge before registers read.
-> 	Section 6.7.6 of the PCIe Base Spec 6.0 -> PCIe r6.0 sec 6.7.6.
-> 	Made code comment more meaningful.
-> 
-> v5:
-> 	$SUBJECT correction.
-> 	Added "Reviewed-by" tag.
-> 	No code changes. Re-spin on latest base to get Bjorn's
-> 	attention.
-> 
-> v6:
-> 	Change to write 1's to clear error. (Sathyanarayanan)
-> 
-> v7:
-> 	No changes. Rebasing on pci main branch as per Bjorn comments.
-> 
-> v8:
-> 	Just return "status & PCI_ERR_UNC_SURPDN" instead of true and
-> 	false and allow C to handle the conversion to bool. (Ilpo)
-> 
-> v9:
-> 	Handle errors from pci_write_config_word().
-> 	Write 1 to clear PIO_STATUS.
-> ---
->  drivers/pci/pcie/dpc.c | 60 ++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
-> 
-> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-> index 94111e438241..17f166504b54 100644
-> --- a/drivers/pci/pcie/dpc.c
-> +++ b/drivers/pci/pcie/dpc.c
-> @@ -303,10 +303,70 @@ void dpc_process_error(struct pci_dev *pdev)
->  	}
->  }
->  
-> +static void pci_clear_surpdn_errors(struct pci_dev *pdev)
-> +{
-> +	if (pdev->dpc_rp_extensions)
-> +		pci_write_config_dword(pdev, pdev->dpc_cap +
-> +				       PCI_EXP_DPC_RP_PIO_STATUS, ~0);
-> +
-> +	/*
-> +	 * In practice, Surprise Down errors have been observed to also set
-> +	 * error bits in the Status Register as well as the Fatal Error
-> +	 * Detected bit in the Device Status Register.
-> +	 */
-> +	pci_write_config_word(pdev, PCI_STATUS, 0xffff);
-> +
-> +	pcie_capability_write_word(pdev, PCI_EXP_DEVSTA, PCI_EXP_DEVSTA_FED);
-> +}
-> +
-> +static void dpc_handle_surprise_removal(struct pci_dev *pdev)
-> +{
-> +	if (!pcie_wait_for_link(pdev, false)) {
-> +		pci_info(pdev, "Data Link Layer Link Active not cleared in 1000 msec\n");
-> +		goto out;
-> +	}
-> +
-> +	if (pdev->dpc_rp_extensions && dpc_wait_rp_inactive(pdev))
-> +		goto out;
-> +
-> +	pci_aer_raw_clear_status(pdev);
-> +	pci_clear_surpdn_errors(pdev);
-> +
-> +	pci_write_config_word(pdev, pdev->dpc_cap + PCI_EXP_DPC_STATUS,
-> +			      PCI_EXP_DPC_STATUS_TRIGGER);
-> +
-> +out:
-> +	clear_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
-> +	wake_up_all(&dpc_completed_waitqueue);
-> +}
-> +
-> +static bool dpc_is_surprise_removal(struct pci_dev *pdev)
-> +{
-> +	u16 status;
-> +
-> +	if (!pdev->is_hotplug_bridge)
-> +		return false;
-> +
-> +	if (pci_read_config_word(pdev, pdev->aer_cap + PCI_ERR_UNCOR_STATUS,
-> +				 &status))
-> +		return false;
-> +
-> +	return status & PCI_ERR_UNC_SURPDN;
-> +}
-> +
->  static irqreturn_t dpc_handler(int irq, void *context)
->  {
->  	struct pci_dev *pdev = context;
->  
-> +	/*
-> +	 * According to PCIe r6.0 sec 6.7.6, errors are an expected side effect
-> +	 * of async removal and should be ignored by software.
-> +	 */
-> +	if (dpc_is_surprise_removal(pdev)) {
-> +		dpc_handle_surprise_removal(pdev);
-> +		return IRQ_HANDLED;
-> +	}
-> +
->  	dpc_process_error(pdev);
->  
->  	/* We configure DPC so it only triggers on ERR_FATAL */
-> -- 
-> 2.17.1
-> 
 
