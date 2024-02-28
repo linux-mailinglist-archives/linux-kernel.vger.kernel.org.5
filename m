@@ -1,67 +1,77 @@
-Return-Path: <linux-kernel+bounces-85581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0655986B7F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:15:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB9E86B814
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A70B1C226E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:15:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52CC91F23722
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B2C1332BC;
-	Wed, 28 Feb 2024 19:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C15AF74417;
+	Wed, 28 Feb 2024 19:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hyY2jmKB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MnkH5c2Y"
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4142240849
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3764134CDE
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:24:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709147713; cv=none; b=hB53CM/qap9k3TovHIuNznQwRi3h9wcGgDzuAsrHkr+P5a/vMI2jLGGTrcGJb+jnyXPYVrIPRgAorv0Oe5VBCpYfH1ljM2NkwVfcVGwSTQ+ZeDRWDEIO0nhYxgqcUFed01AomepJWBrukLR2zrMh9crhsVGz+42aHahpWZA/tJI=
+	t=1709148244; cv=none; b=M1spQp6oeMCKQlYjVia51jus84pFB41uVuu7+CvjQeO0yTE1nwzEN16ZBEVXd3P3jp4qqNhXTU5NQKQA00UUaS+7I4KaoaTOROZ30kcKhZ6f1fW72kaBRA/3+/eSm2SZxFF76NuKQSSzvX6nOCEqfa00iJSsIXyXOljq/YDDYqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709147713; c=relaxed/simple;
-	bh=SowfoK/PmICKWh7EUg5Z1noipNIU58W8LZzQ1HeePlY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NFH1mXc6NFFUX2e1mIQ2tVQRReQODDo1nDNS6rTLptN6IU30O36Tg51nIFBPvDLbAquTwc+Ar0mYZBaBtXFWJsLUKEhP/+p7C5mCazV602I83+dfJ6UzhW8L7HmYQvrTq1QWE2eJ/7IPNeANH6jzs2hhIr2OTQ+0dfhQ+sVdpGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hyY2jmKB; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709147709;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=MljlOyunqu2jlYMmKl9aQOW/JRFU3MLIYOB1XnVuGaw=;
-	b=hyY2jmKB4bDz3sHOPIAlGuGbmKiT9FyOd2qLO+C8AG9KPM2rlbktYhfd5a1jP7UCzNCGDY
-	uIQjsFy/Q3ffXvSp8dgxh6pjyCJBD++5XjC/070ZXTI9b2hmQHv7tp1qH0JsF9CyemuLG0
-	MNBsXw07tB93qcHTshEwEKrFiwhP4gQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-333-nZC1LXXDMsqMC0i9D60IlA-1; Wed,
- 28 Feb 2024 14:15:06 -0500
-X-MC-Unique: nZC1LXXDMsqMC0i9D60IlA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 91FC71C592A2;
-	Wed, 28 Feb 2024 19:15:04 +0000 (UTC)
-Received: from llong.com (unknown [10.22.9.68])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 6548A40C94AB;
-	Wed, 28 Feb 2024 19:15:03 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Audra Mitchell <aubaker@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH] mm/kmemleak: Don't hold kmemleak_lock when calling printk()
-Date: Wed, 28 Feb 2024 14:14:44 -0500
-Message-Id: <20240228191444.481048-1-longman@redhat.com>
+	s=arc-20240116; t=1709148244; c=relaxed/simple;
+	bh=wDldj/L9sldGrmGC63Ask+odB9JANp2O8Lythy3yAt4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oOciVfPpo0fG9Fzb2swayn4qw8ybmzQRAvxG0JlFqs8f2zpQtkXhYrQU3vBcRL1Gr474lOK/SGSHVvQIOBEJ1cEGm3MFy6z7yd/YtGA/9luUBOAakFJhGMeG7QBga7LvTZRWgnJXuptTt5fipn2LjTCKd11Rr6I2GqmkiHjOGR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MnkH5c2Y; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5dc8961f5a9so8690a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:24:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709148240; x=1709753040; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DemoB3+IC+42EmKa1d98XsfOh62nKrZDSBCsbO4iPSc=;
+        b=MnkH5c2Ysvxm41NiZuR56Xx9NrxpcwB/8Tc1nmpYsXprJz2RI2wi2DAai/HQTCz0mv
+         oAZ3NMBCysa4vcyvu1dFb8CNPjFBLnVbyv9GXPkevaaTQdbxQ2eQVk24+9DnyJNREA+g
+         M1jHMgpq4HSJfKxwTPO7VmL3V3S3y1WF0YiQ6IZKHOKmNcX2uw7HnC69g8KWPOE7ZW02
+         W0expWhlScG/6fzc3Q24m5AoNqf+YT1HTUTdCSJaqSoZHfFQnMYMIuWoL+X7OCvonKrM
+         lD0YBcYnAUh1MnOTgUQlwnfIiEX/znsd47Fr68mYvOgg08vrcLJDO/nlXyuQsjAQPhA5
+         INoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709148240; x=1709753040;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DemoB3+IC+42EmKa1d98XsfOh62nKrZDSBCsbO4iPSc=;
+        b=lvVF2lfyXMpEwFCTyrAIZGdIqCpyMlT+fvI2c+ySkEdnxwqusPAi0HRHd/YvaYwDxs
+         kfuiG8QG66W0cYTr1X2ePYVgv46WZm2QCcIDYTNKoUbMiYrSs9LO2G2TYAd+Mod1fMuB
+         vITPz0Q8hJlhHkwGBZkjN2jigpCAo4+NfKRjXIVYcN0QHq5cq049I3OdTHaonpqdV+bx
+         SYTS4cKmri3gWLQVg0hUKCjvgf97o+PWGdSvIavMDwbDOS6HB/ZAdyzSLB+pct7zYbdu
+         AEbJ7118VBfmnpFV9Rt2MIResqXsnhDTbSskhexra/1gX02U7jcjHm9l5X+wGzpOHERT
+         PcEQ==
+X-Gm-Message-State: AOJu0Yy3az5A+Zo6+6evLULwcy/D/hw2eo733fFgmyuN70TPXw4bxHVX
+	xgkkmkyyb9uOv/pf3QpuapiqIKCG7HXB7BAS3kAkfHC/jKZHgJ4//4EuIG7AyZWq5o63gIEMSBI
+	L
+X-Google-Smtp-Source: AGHT+IFzMSbFLYKI8r1963+D1i7PRMiM89/YPh6I6yMlja4PmocWiOS5BMIUjwchFI6TS97IHayB0A==
+X-Received: by 2002:a17:90b:3906:b0:299:1ae1:51b2 with SMTP id ob6-20020a17090b390600b002991ae151b2mr79255pjb.4.1709148239799;
+        Wed, 28 Feb 2024 11:23:59 -0800 (PST)
+Received: from localhost.localdomain ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id b10-20020a17090a550a00b00298f2ad430csm4230pji.0.2024.02.28.11.23.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 11:23:58 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org,
+	mingo@redhat.com
+Subject: [PATCHSET v3 0/2] Split iowait into two states
+Date: Wed, 28 Feb 2024 12:16:55 -0700
+Message-ID: <20240228192355.290114-1-axboe@kernel.dk>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,171 +79,42 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-When some error conditions happen (like OOM), some kmemleak functions
-call printk() to dump out some useful debugging information while holding
-the kmemleak_lock. This may cause deadlock as the printk() function
-may need to allocate additional memory leading to a create_object()
-call acquiring kmemleak_lock again.
+Hi,
 
-Fix this deadlock issue by making sure that printk() is only called
-after releasing the kmemleak_lock.
+This is v3 of the patchset where the current in_iowait state is split
+into two parts:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/kmemleak.c | 64 ++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 46 insertions(+), 18 deletions(-)
+1) The "task is sleeping waiting on IO", and would like cpufreq goodness
+   in terms of sleep and wakeup latencies.
+2) The above, and also accounted as such in the iowait stats.
 
-diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-index 6a540c2b27c5..acd8742c80b5 100644
---- a/mm/kmemleak.c
-+++ b/mm/kmemleak.c
-@@ -401,6 +401,19 @@ static struct rb_root *object_tree(unsigned long objflags)
- 	return &object_tree_root;
- }
- 
-+/*
-+ * Increment the object use_count. Return 1 if successful or 0 otherwise. Note
-+ * that once an object's use_count reached 0, the RCU freeing was already
-+ * registered and the object should no longer be used. This function must be
-+ * called under the protection of rcu_read_lock().
-+ */
-+static int get_object(struct kmemleak_object *object)
-+{
-+	return atomic_inc_not_zero(&object->use_count);
-+}
-+
-+static void put_object(struct kmemleak_object *object);
-+
- /*
-  * Look-up a memory block metadata (kmemleak_object) in the object search
-  * tree based on a pointer value. If alias is 0, only values pointing to the
-@@ -413,6 +426,8 @@ static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
- 	struct rb_node *rb = object_tree(objflags)->rb_node;
- 	unsigned long untagged_ptr = (unsigned long)kasan_reset_tag((void *)ptr);
- 
-+	lockdep_assert_held(&kmemleak_lock);
-+
- 	while (rb) {
- 		struct kmemleak_object *object;
- 		unsigned long untagged_objp;
-@@ -427,9 +442,20 @@ static struct kmemleak_object *__lookup_object(unsigned long ptr, int alias,
- 		else if (untagged_objp == untagged_ptr || alias)
- 			return object;
- 		else {
-+			if (!get_object(object))
-+				break;
-+			/*
-+			 * Release kmemleak_lock and acquire object->lock
-+			 * temporarily to avoid deadlock in printk().
-+			 */
-+			raw_spin_unlock(&kmemleak_lock);
- 			kmemleak_warn("Found object by alias at 0x%08lx\n",
- 				      ptr);
-+			raw_spin_lock(&object->lock);
- 			dump_object_info(object);
-+			raw_spin_unlock(&object->lock);
-+			put_object(object);
-+			raw_spin_lock(&kmemleak_lock);
- 			break;
- 		}
- 	}
-@@ -442,22 +468,12 @@ static struct kmemleak_object *lookup_object(unsigned long ptr, int alias)
- 	return __lookup_object(ptr, alias, 0);
- }
- 
--/*
-- * Increment the object use_count. Return 1 if successful or 0 otherwise. Note
-- * that once an object's use_count reached 0, the RCU freeing was already
-- * registered and the object should no longer be used. This function must be
-- * called under the protection of rcu_read_lock().
-- */
--static int get_object(struct kmemleak_object *object)
--{
--	return atomic_inc_not_zero(&object->use_count);
--}
--
- /*
-  * Memory pool allocation and freeing. kmemleak_lock must not be held.
-  */
- static struct kmemleak_object *mem_pool_alloc(gfp_t gfp)
- {
-+	bool warn = false;
- 	unsigned long flags;
- 	struct kmemleak_object *object;
- 
-@@ -477,9 +493,11 @@ static struct kmemleak_object *mem_pool_alloc(gfp_t gfp)
- 	else if (mem_pool_free_count)
- 		object = &mem_pool[--mem_pool_free_count];
- 	else
--		pr_warn_once("Memory pool empty, consider increasing CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE\n");
-+		warn = true;
- 	raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
- 
-+	if (unlikely(warn))
-+		pr_warn_once("Memory pool empty, consider increasing CONFIG_DEBUG_KMEMLEAK_MEM_POOL_SIZE\n");
- 	return object;
- }
- 
-@@ -692,6 +710,8 @@ static int __link_object(struct kmemleak_object *object, unsigned long ptr,
- 	unsigned long untagged_ptr;
- 	unsigned long untagged_objp;
- 
-+	lockdep_assert_held(&kmemleak_lock);
-+
- 	object->flags = OBJECT_ALLOCATED | objflags;
- 	object->pointer = ptr;
- 	object->size = kfence_ksize((void *)ptr) ?: size;
-@@ -718,13 +738,21 @@ static int __link_object(struct kmemleak_object *object, unsigned long ptr,
- 		else if (untagged_objp + parent->size <= untagged_ptr)
- 			link = &parent->rb_node.rb_right;
- 		else {
--			kmemleak_stop("Cannot insert 0x%lx into the object search tree (overlaps existing)\n",
--				      ptr);
-+			if (!get_object(parent))
-+				return -EEXIST;
- 			/*
--			 * No need for parent->lock here since "parent" cannot
--			 * be freed while the kmemleak_lock is held.
-+			 * Release kmemleak_lock & acquire parent->lock
-+			 * temporarily to avoid deadlock in printk().
- 			 */
-+			raw_spin_unlock(&kmemleak_lock);
-+
-+			kmemleak_stop("Cannot insert 0x%lx into the object search tree (overlaps existing)\n",
-+				      ptr);
-+			raw_spin_lock(&parent->lock);
- 			dump_object_info(parent);
-+			raw_spin_unlock(&parent->lock);
-+			put_object(parent);
-+			raw_spin_lock(&kmemleak_lock);
- 			return -EEXIST;
- 		}
- 	}
-@@ -839,11 +867,12 @@ static void delete_object_part(unsigned long ptr, size_t size,
- 	raw_spin_lock_irqsave(&kmemleak_lock, flags);
- 	object = __find_and_remove_object(ptr, 1, objflags);
- 	if (!object) {
-+		raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
- #ifdef DEBUG
- 		kmemleak_warn("Partially freeing unknown object at 0x%08lx (size %zu)\n",
- 			      ptr, size);
- #endif
--		goto unlock;
-+		goto out;
- 	}
- 
- 	/*
-@@ -862,7 +891,6 @@ static void delete_object_part(unsigned long ptr, size_t size,
- 			   object->min_count, objflags))
- 		object_r = NULL;
- 
--unlock:
- 	raw_spin_unlock_irqrestore(&kmemleak_lock, flags);
- 	if (object)
- 		__delete_object(object);
+The current ->in_iowait covers both, with this series we have ->in_iowait
+for step 1 above, and ->in_iowait_acct for step 2. You cannot be
+->in_iowait_acct without also having ->in_iowait set.
+
+Patch 1 is a prep patch, that turns rq->nr_iowait into an int rather than
+an atomic_t. Reasons given in that patch. This patch can stand alone, as
+it should not have any functional changes, outside of improving the
+handling of iowait a bit.
+
+Patch 2 adds the ->in_iowait_acct stage inside the current ->in_iowait
+setting.
+
+I wasn't super happy with the need to grab the rq lock for the one case
+where we still need it, and woke up with a better idea of how to do this.
+It's all in patch 1. Nice part here is that we get rid of atomics for
+3 out of the 4 iowait inc/dec. Patch just follows the same principle.
+
+Comments welcome! Peter, CC'ing you since I did on the previous posting,
+feel free to ignore.
+
+Since v2:
+- Drop need for rq lock for the remote case by turning both nr_iowait
+  and nr_iowait_acct into the difference between a remote atomic count
+  and the local non-atomic one.
+
 -- 
-2.39.3
+Jens Axboe
 
 
