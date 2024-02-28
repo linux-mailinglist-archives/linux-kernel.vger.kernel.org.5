@@ -1,122 +1,136 @@
-Return-Path: <linux-kernel+bounces-85021-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6495686AF3A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:35:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7E5186AF41
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:36:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2011A2853B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:35:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DB99286249
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3657145B27;
-	Wed, 28 Feb 2024 12:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E781487D1;
+	Wed, 28 Feb 2024 12:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tRsfQdix"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="bvKkZ+ZL"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A1973515;
-	Wed, 28 Feb 2024 12:35:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F6A145B27
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709123733; cv=none; b=u8pq6XuSo18Ubc8oHyc3WlW+Hj2TWp1Ef34eBBLS2lmyNJUMN6IyDbRVlp1+f29I6wh4Tt5pjWyv3DQooBbIAu2MGkTjvFo9gihruH/RiT5K6nTQbJaIjiS/SS8jHzgzvhmtjxx83VbI3IalqZUMfPQR8VGu2FPyFM7YF36G2Uw=
+	t=1709123786; cv=none; b=qTsK0bB4OPNBaDYhRfyvx+4Bn6hed9NOr3y1hD5CgWfX7Q2SoQRJcfDU8dAZ+oU9pS8JyyMRiFGSLAX35uTakEKKvjmjWw+RtxJhQzhkk71fXm6Ry9jKZxp4G2gfPMykweSnhaO/QIgYEzLiO2iTG34PbSogaG+nD/owfrvyjnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709123733; c=relaxed/simple;
-	bh=1pgQK9aLsh1QMqOUlKhfXXSUFpsP/N2g45/FWso6So8=;
+	s=arc-20240116; t=1709123786; c=relaxed/simple;
+	bh=JV34Rsk9Ud6TAluSh/NNnx0sR4WyEiQcLsdy9DEB4qs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M8FmC9VRtQz2O9M3sgUSPTyVsE4y5GIf7NpKvJx+HplDSN23JMC4wbVqrEtgqGp6Sk4l7PQ9gukwlU/ay0oqsSTh0yzTNs/EbPj4DB3RRMkz263rFnDDf+RXl51Juch8w8YTz0aD+/OtN4XVwUVJAchoATnQzErEs9SdE2SUfbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tRsfQdix; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB383C433C7;
-	Wed, 28 Feb 2024 12:35:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709123732;
-	bh=1pgQK9aLsh1QMqOUlKhfXXSUFpsP/N2g45/FWso6So8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tRsfQdix7XWJKfb1kO6HlWBrvkbStw5DRWlEnOars3/UDUOGEQyfY3vwBr/th6Ezf
-	 CimDkwlK2M79QAFu+U74bHA1i9LnEFtE2Bc3vYKTYSvJci+/4ktWoHeOB/jSrsGa5P
-	 2obnt2ZE419sifS5mkf21DbO9l7s/taAoEkYuIhXQotnPSssERAuSGINUQvHbtHjWv
-	 zwNdz06lmqWAB6BNiAOsMnwDL2tXbvA5j/UMOxjQfl2ClPnUh2PyjBxmoKPsHbUJqa
-	 feuRWz4HwXOkrs392FZXRj2PFFkXolZL+Wa84wYDpZMvf0Ga5wv8si43HrgtuTQSCw
-	 twKT7mXZfnoRw==
-Date: Wed, 28 Feb 2024 12:35:28 +0000
-From: Conor Dooley <conor@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: tglx@linutronix.de, maz@kernel.org, robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	l.stach@pengutronix.de, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] dt-bindings: interrupt-controller: fsl,irqsteer: Add
- power-domains entry
-Message-ID: <20240228-sphere-stylus-71b9189fd93b@spud>
-References: <20240226130516.3821803-1-peng.fan@oss.nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LsZlxh0UNc1txqNdKOxmwaQzmTM0u4cnUcZOyjy/vGuFy6g80x2BAbiSGwUZ5MigxvKkyJJGReOXIRrcOFE2rR/YTyEd4+CGjerByf805XjMOoNPYNyaxLUH++3YA7CUjIIQB6kQ/+G033enAkNPbjAMYnc30VKmyyBooR/O9Ls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=bvKkZ+ZL; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d27184197cso68364591fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 04:36:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709123783; x=1709728583; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1r218cPQs+vQGXk5W8TMf0lKe2Qttm/rc570dURd+N8=;
+        b=bvKkZ+ZLtHNPsb7dGhSPQXPayePNh+6Lmt/DHG7HRPB3V9c7Ppzh+a3Ho/q1fuQrVM
+         t9J0NO+bVlMs4wQnKdeckyUIShPMuieGay2SK5BhALFXOyFFB2qQ4A6ArQRP/Xt4jY2u
+         bPBxtTIIJDTofbyZjsmVqk05oVSgOVEALDrtGi2XQlrJl0r44lAE1x4hQ077h0Ojxkou
+         pq8OeAjQZJkHFmU2x6PR/Ct0QTi8HA1aK4U8EPyPIx3h8sqOJuS2c1yyqPStDZtySXwT
+         cf+6V3bevYEdhAzWW1i4nslTOm/IT9XJrPueyQmgOT4hIcW45KxL89D6SfJS2Vau3wZA
+         T6Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709123783; x=1709728583;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1r218cPQs+vQGXk5W8TMf0lKe2Qttm/rc570dURd+N8=;
+        b=XUayUOMn7Fr5GhkzrxenAInsX7l4sK4wfuNb3P76gxEnA85eHyO3VliF2vyXpo5V0Z
+         JtxL1TmRFwZzpu2xaKIblQArpc+RXw4nEw/gXsbjNdKf6mbetQPU3Qr5j0NA9eT5Je19
+         5Gcnlib5CY1rAqi+Hzo+Xyf+ygoi7fikRqGwrCPDhz/IVCLwbeBTX27zt+upDRdcSuS6
+         59CFYfxLGc0wIVZBgg4SAaFyr3nAV4lzd3fWps3j0GhyufE6BTLFqVfgmO88NNnlDlBd
+         oomGSgGVicxp02sBeUy0d3yMKhqiYPS2LOn0Ycnl12LGOETrb9V52nI740YgbiU8zJNJ
+         hwqw==
+X-Forwarded-Encrypted: i=1; AJvYcCWQ8I+ZllIpDSAkRj63TnGTfXreiPwlkU4PX4knAWXLBMZoNZvDrv8TPwJknxIJEBDkeR9hgR9EwkfCifYiMp6iLJzfc610Gq/Vx144
+X-Gm-Message-State: AOJu0YxIKekhzRObnKugZHp+x4DKxqSZYwmnONhwppa20KiP1oSYCyQC
+	G+nyyIdcNEBvOos2T/dYQlkPbcol5Gsa/8GVa8q64GkxIyOg9wvCkqZ4jqlZ8/8=
+X-Google-Smtp-Source: AGHT+IFb88pLzc0mMMHFWr4GGKTyW9NIU1Fk+9L4Orhc7J610CrnBoBIDGq7iYcyyvZI2ScWuygMWw==
+X-Received: by 2002:a2e:99d5:0:b0:2d0:b758:93a5 with SMTP id l21-20020a2e99d5000000b002d0b75893a5mr7831033ljj.18.1709123783116;
+        Wed, 28 Feb 2024 04:36:23 -0800 (PST)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c230900b004129018510esm1949803wmo.22.2024.02.28.04.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 04:36:22 -0800 (PST)
+Date: Wed, 28 Feb 2024 13:36:19 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Yunjian Wang <wangyunjian@huawei.com>
+Cc: mst@redhat.com, willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+	kuba@kernel.org, bjorn@kernel.org, magnus.karlsson@intel.com,
+	maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+	davem@davemloft.net, bpf@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, xudingke@huawei.com,
+	liwei395@huawei.com
+Subject: Re: [PATCH net-next v2 0/3] tun: AF_XDP Tx zero-copy support
+Message-ID: <Zd8ow_KkdzAfnX8l@nanopsycho>
+References: <1709118281-125508-1-git-send-email-wangyunjian@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="MqZO6m3bS8tHuDyQ"
-Content-Disposition: inline
-In-Reply-To: <20240226130516.3821803-1-peng.fan@oss.nxp.com>
-
-
---MqZO6m3bS8tHuDyQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1709118281-125508-1-git-send-email-wangyunjian@huawei.com>
 
-On Mon, Feb 26, 2024 at 09:05:16PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> Add optional power-domains entry for i.MX95 usage
+Wed, Feb 28, 2024 at 12:04:41PM CET, wangyunjian@huawei.com wrote:
+>Hi all:
+>
+>Now, some drivers support the zero-copy feature of AF_XDP sockets,
+>which can significantly reduce CPU utilization for XDP programs.
+>
+>This patch set allows TUN to also support the AF_XDP Tx zero-copy
+>feature. It is based on Linux 6.8.0+(openEuler 23.09) and has
+>successfully passed Netperf and Netserver stress testing with
+>multiple streams between VM A and VM B, using AF_XDP and OVS.
+>
+>The performance testing was performed on a Intel E5-2620 2.40GHz
+>machine. Traffic were generated/send through TUN(testpmd txonly
+>with AF_XDP) to VM (testpmd rxonly in guest).
+>
+>+------+---------+---------+---------+
+>|      |   copy  |zero-copy| speedup |
+>+------+---------+---------+---------+
+>| UDP  |   Mpps  |   Mpps  |    %    |
+>| 64   |   2.5   |   4.0   |   60%   |
+>| 512  |   2.1   |   3.6   |   71%   |
+>| 1024 |   1.9   |   3.3   |   73%   |
+>+------+---------+---------+---------+
+>
+>Yunjian Wang (3):
+>  xsk: Remove non-zero 'dma_page' check in xp_assign_dev
+>  vhost_net: Call peek_len when using xdp
+>  tun: AF_XDP Tx zero-copy support
 
-If it is only for the imx95, please limit it to that device only.
+Threading of the patchset seems to be broken. Did you by any chance send
+this with "--nothread" git-send-email option?
+pw seems to cope fine with this though.
 
-Thanks,
-Conor.
 
->=20
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,i=
-rqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,i=
-rqsteer.yaml
-> index 20ad4ad82ad6..7ccbb96434a4 100644
-> --- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer=
-=2Eyaml
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer=
-=2Eyaml
-> @@ -59,6 +59,9 @@ properties:
->        u32 value representing the number of input interrupts of this chan=
-nel,
->        should be multiple of 32 input interrupts and up to 512 interrupts.
-> =20
-> +  power-domains:
-> +    maxItems: 1
-> +
->  required:
->    - compatible
->    - reg
-> --=20
-> 2.37.1
->=20
-
---MqZO6m3bS8tHuDyQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd8okAAKCRB4tDGHoIJi
-0oJgAQDZp4EzUmU6mEyQ8YKgbJyEAgDn64J20y010rhh+fiVagD/SCjsJxtvr+sP
-ogt3rgFXqhd6pocLmSNLno3bcSy2sAA=
-=232Z
------END PGP SIGNATURE-----
-
---MqZO6m3bS8tHuDyQ--
+>
+> drivers/net/tun.c       | 177 ++++++++++++++++++++++++++++++++++++++--
+> drivers/vhost/net.c     |  21 +++--
+> include/linux/if_tun.h  |  32 ++++++++
+> net/xdp/xsk_buff_pool.c |   7 --
+> 4 files changed, 220 insertions(+), 17 deletions(-)
+>
+>-- 
+>2.41.0
+>
+>
 
