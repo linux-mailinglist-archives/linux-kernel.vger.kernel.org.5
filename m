@@ -1,81 +1,87 @@
-Return-Path: <linux-kernel+bounces-85088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0B9086B045
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:27:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0926D86B04C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4B581C235A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:27:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1C21F271A2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:28:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF9C14D44A;
-	Wed, 28 Feb 2024 13:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816EB14AD2D;
+	Wed, 28 Feb 2024 13:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="DqPURRkb"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="ryI2yKQc"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B2114AD29
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 513CD145FE8
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709126856; cv=none; b=Vy7s16MFko+CQdBWzd7zhsq8Rgk7E47SaUJx/gWdtSu9oqFU3TdriYZ3YEZO+cqMAlEaf3NyN9p7x7s4y13Vot56icbucUwdqUCm/Q/6aoa2RtuFy4JbZKeSIm1ZW7F3qXS965DmW4JLx1Up2bZm5h0MUtC0OaJlsKGJ6uOZBSc=
+	t=1709126886; cv=none; b=O0Hzy8EVgUgLwbNGj2yuCxEeiGq88csJIGuZZHBPXAACxTHv1DnxpoS3AqPNOt42zZkqpOBuowFxcGFuiuRFHY8cN8n+Su1BPGin7kURb2mtp3k1bOKccVoeBC1H+qfcxDtKJtmarLb9G07QZ5eg3xmSQ5Wl3PMm0aRsvQ3VHfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709126856; c=relaxed/simple;
-	bh=OhYQ1wbcM/5cvGzllyuLV9iLeLmBj6Hy+kF8PqKuACg=;
+	s=arc-20240116; t=1709126886; c=relaxed/simple;
+	bh=5tu4oA59KhY06nxQt1gQkS0mgx9HIzfNvh62p6xnllQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XcPxLZgzw5nP5un6xnblSJD+CgUFK96SDOnHEmUtEwVoO5qv/E4U+vjJMz2pUUIZ1jhXtvAQ/QZPzemY2PcWPoFnC3ByRchmisD66Q6Ca9sf1XT034h/mJf63LrST8DfnN7eMwaqnonr+TCcwGadY/aDOVRz071SVzv9TXP3I1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=DqPURRkb; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d269b2ff48so68120021fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:27:34 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=E6LxheCmykHk0nbnxFd8a4I0IvVIpzkF6iIA0INrF8+lpSSsfEvtQypBj+8psm+0QKFkr+cF2+G4fZvFZLD1Qrxbs6EEYYe1FYV4hDkLfivPd27odcDNEy2q72SVwxUnCmoSiABBQyZKUifMacD4s2hes8RfX8a/fqd61GKYmV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=ryI2yKQc; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412ae087378so13277495e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:28:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709126852; x=1709731652; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709126882; x=1709731682; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=085e3STycEqrCsNI0U1fWcxzFfs9YgyshKRlsnEMVpE=;
-        b=DqPURRkb6hziyydRjm1NTpxoO99SRwdH4lYJyrGZKRIYpic99fqvujiFQH8ZW6uq+u
-         DEk4CkpO6uZpiiQWp5mj1S0Vjz+XNtGBtaNq0gxfECjfzOpMU0OjqFT5MnUjNr0ktWyq
-         gz2xnORAvq4krmjXOPDi8tgktMAghEPYbrVzvK/3xc3XH13aOKmh2+PYEywCosUn8QS+
-         OM/uBWLYNI+w3e2yxYS8C0ZWae/hKZiOCWxc/tcj758z0GUCyZZ1isgUOELMeC89fVwm
-         D5l1u28Paa2uiE/ytGuUADdRhKj07bIy9oj4IUYzf0Z4SbKdsFUj/5Zlm6Do9MkDTI1O
-         gn8g==
+        bh=e9wUp62staKveDTu96LB6OyYEe4qCAP2aId49Azr470=;
+        b=ryI2yKQcTsrM8jS/xT0zgx+VUPnyVBj1FzTtcdEaoVKOoE3/lGEyIKYwGqUP8Q4GPY
+         yJCARAsYvHUe9N0XBZIVkT0LSihQm5t/YSbX/Aux3Vcq4KibesKAGRuX8IuKsKMqEfkC
+         VKCNPgOSvrJGjP9F1DIOTTvdn2Xa5UfuQfIxhnefAvd24J4NFS0Yz3mGQoENpycCQHco
+         rM/UMM5s/zb8DchlbZgRZ3sP5TQRPz8TAaYg6cYwJgeb9zWguAU6bq0YVQM9jFYYHwrx
+         p4L491f+FhWjdHYIaJ7GO1xtY0Xyw1cgyIMaltwZZ8o1s2ASEnbAsJa5hJPkO2hVmjsA
+         4PlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709126852; x=1709731652;
+        d=1e100.net; s=20230601; t=1709126882; x=1709731682;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=085e3STycEqrCsNI0U1fWcxzFfs9YgyshKRlsnEMVpE=;
-        b=al/Av8tMNCbTR8T44Ia5Mt4OU5WcYMCelcRhJ86FenAn9pf9TG12k3Os1QCTkfWccW
-         Nkyq3Cs+YYAuEm4JbrocTDw8RoYtf4r/SvP/7yBzBl/JZfDTRZLF36juq2S1eNQukAgh
-         RoDkQf9kSbLlJBtFEcTr1QDz30ay8enb8cAy5+2npR9l4m75B5qXlZ3Xv0juGmxKB+bB
-         c6hHnj9wx3/CI1uR9JHqIdcOyA/lmfXrq3hsCkTXKJbYLuMexOi/sGyAoE6XW10BkG8/
-         h6TsJQStSu3x/C8fXGUEG6v9w590C18xPlIoQjOoGcruu8eCJ7ZkeTAIgNWAixKX4RJG
-         vNQA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhUQp9mOs20KxOb6E98cG1nd/HwebF8wlqEJKbmd4oCfNCreQeKZWUxBrl0xW7MvKJ3RSQBS+Mp4vt8QM+Hvj8xotMRPktpowWL7P5
-X-Gm-Message-State: AOJu0YwpuG4W0AnndGrimH5cpT+K/wtm6Qpu/wUukpVUBFWkwsjxZQEl
-	EqJ1EfKV/QljTuAtr51GoEqZCYOnI76SRQN8qQf0h7bDMmKXXz/JAE1aTlI3YiI=
-X-Google-Smtp-Source: AGHT+IFC0XXC3H5qzKW/aZa5LVkLGjCH85nXFOY7PAeqSwrdiOpz48eXurJvLKthpHRi5VSbPhLa+g==
-X-Received: by 2002:a2e:9614:0:b0:2d2:acef:6aca with SMTP id v20-20020a2e9614000000b002d2acef6acamr2443164ljh.41.1709126852478;
-        Wed, 28 Feb 2024 05:27:32 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id n17-20020a5d4211000000b0033d97bd5ddasm14525870wrq.85.2024.02.28.05.27.31
+        bh=e9wUp62staKveDTu96LB6OyYEe4qCAP2aId49Azr470=;
+        b=JBACfqdtXX0Hm4FHVEj736ZLyvoJzxLtTYwtn1XMvZrhMEaIBQZE/wMxMuq3hc4wp2
+         H0mrOQ8puVest36txNgufICoHKFJ9UKuQ9WdTGbfZx4Qh/A2rz4FjlqISaV8LJkicZdQ
+         4NDJ56tMHl1LXVv1cuI/MrQ6sgH/BMO1KBPJurXHL+rR9u9IC4PEfKPCghkzvazCOimV
+         zqXXfkxKq/MDemTbYgTDQZJ2PI5j0h7ro1uS6tu4rJ1cf8/HPggWo5zmwFnKruuHC6Ct
+         fCZjCE/d7vhpHncFSNB+93nqmMARjsnUqAMjFeErZcFeeUVUSDA+x3WMgU7A6P2i88J2
+         cuLg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBYlg/ErJcZ6q6lB4Ca2HfoiZBwNWybm21Sh9ZLK1MuD9Xr65FUjwwxYpOlbnQTqi24MSjpzJEBgig8hJ9IeiUgK2moTBfU2AotKxe
+X-Gm-Message-State: AOJu0YzI7dQ4VkE6WnvF0fGjEKDPmXmxSqY0CcvPMweXIpi++JxZ1sTW
+	yA4OaYO/0i3TBDbqu/nK2A3/0uKPd6GkvOtVpaolBmEc17fyhAN+PX1pB/pp1dI=
+X-Google-Smtp-Source: AGHT+IEPcxRfVeevLifaXmgO5QobEy2Cf5VY3JV3xCE4YTrpJZ6rYoXF80CZFflldoLPhoHRiWr5EA==
+X-Received: by 2002:a5d:528d:0:b0:33d:7c8:2230 with SMTP id c13-20020a5d528d000000b0033d07c82230mr9850374wrv.24.1709126882544;
+        Wed, 28 Feb 2024 05:28:02 -0800 (PST)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id d14-20020a5d538e000000b0033d4deb2356sm14476145wrv.56.2024.02.28.05.28.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 05:27:32 -0800 (PST)
-Date: Wed, 28 Feb 2024 14:27:31 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-kernel@vger.kernel.org, 
-	Conor Dooley <conor@kernel.org>, Alexandre Ghiti <alex@ghiti.fr>, linux-riscv@lists.infradead.org, 
-	Stefan O'Rear <sorear@fastmail.com>, stable@vger.kernel.org
-Subject: Re: [PATCH -fixes v4 3/3] riscv: Save/restore envcfg CSR during CPU
- suspend
-Message-ID: <20240228-4bb96d297dcbe43ed85a9760@orel>
-References: <20240228065559.3434837-1-samuel.holland@sifive.com>
- <20240228065559.3434837-4-samuel.holland@sifive.com>
+        Wed, 28 Feb 2024 05:28:02 -0800 (PST)
+Date: Wed, 28 Feb 2024 14:27:59 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Siddharth Vadapalli <s-vadapalli@ti.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, rogerq@kernel.org, andrew@lunn.ch,
+	vladimir.oltean@nxp.com, hkallweit1@gmail.com,
+	dan.carpenter@linaro.org, horms@kernel.org, yuehaibing@huawei.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, srk@ti.com
+Subject: Re: [PATCH net-next] net: ethernet: ti: am65-cpsw: Add priv-flag for
+ Switch VLAN Aware mode
+Message-ID: <Zd8034JJFHTjyhfc@nanopsycho>
+References: <20240227082815.2073826-1-s-vadapalli@ti.com>
+ <Zd3YHQRMnv-ZvSWs@nanopsycho>
+ <7d1496da-100a-4336-b744-33e843eba930@ti.com>
+ <Zd7taFB2nEvtZh8E@nanopsycho>
+ <49e531f7-9465-40ea-b604-22a3a7f13d62@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,78 +90,129 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240228065559.3434837-4-samuel.holland@sifive.com>
+In-Reply-To: <49e531f7-9465-40ea-b604-22a3a7f13d62@ti.com>
 
-On Tue, Feb 27, 2024 at 10:55:35PM -0800, Samuel Holland wrote:
-> The value of the [ms]envcfg CSR is lost when entering a nonretentive
-> idle state, so the CSR must be rewritten when resuming the CPU.
-> 
-> Cc: <stable@vger.kernel.org> # v6.7+
-> Fixes: 43c16d51a19b ("RISC-V: Enable cbo.zero in usermode")
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
-> 
-> Changes in v4:
->  - Check for Xlinuxenvcfg instead of Zicboz
-> 
-> Changes in v3:
->  - Check for Zicboz instead of the privileged ISA version
-> 
-> Changes in v2:
->  - Check for privileged ISA v1.12 instead of the specific CSR
->  - Use riscv_has_extension_likely() instead of new ALTERNATIVE()s
-> 
->  arch/riscv/include/asm/suspend.h | 1 +
->  arch/riscv/kernel/suspend.c      | 4 ++++
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/arch/riscv/include/asm/suspend.h b/arch/riscv/include/asm/suspend.h
-> index 02f87867389a..491296a335d0 100644
-> --- a/arch/riscv/include/asm/suspend.h
-> +++ b/arch/riscv/include/asm/suspend.h
-> @@ -14,6 +14,7 @@ struct suspend_context {
->  	struct pt_regs regs;
->  	/* Saved and restored by high-level functions */
->  	unsigned long scratch;
-> +	unsigned long envcfg;
->  	unsigned long tvec;
->  	unsigned long ie;
->  #ifdef CONFIG_MMU
-> diff --git a/arch/riscv/kernel/suspend.c b/arch/riscv/kernel/suspend.c
-> index 239509367e42..299795341e8a 100644
-> --- a/arch/riscv/kernel/suspend.c
-> +++ b/arch/riscv/kernel/suspend.c
-> @@ -15,6 +15,8 @@
->  void suspend_save_csrs(struct suspend_context *context)
->  {
->  	context->scratch = csr_read(CSR_SCRATCH);
-> +	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
-> +		context->envcfg = csr_read(CSR_ENVCFG);
->  	context->tvec = csr_read(CSR_TVEC);
->  	context->ie = csr_read(CSR_IE);
->  
-> @@ -36,6 +38,8 @@ void suspend_save_csrs(struct suspend_context *context)
->  void suspend_restore_csrs(struct suspend_context *context)
->  {
->  	csr_write(CSR_SCRATCH, context->scratch);
-> +	if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV_ISA_EXT_XLINUXENVCFG))
-> +		csr_write(CSR_ENVCFG, context->envcfg);
->  	csr_write(CSR_TVEC, context->tvec);
->  	csr_write(CSR_IE, context->ie);
->  
-> -- 
-> 2.43.1
+Wed, Feb 28, 2024 at 11:04:55AM CET, s-vadapalli@ti.com wrote:
 >
+>
+>On 28/02/24 13:53, Jiri Pirko wrote:
+>> Wed, Feb 28, 2024 at 08:06:39AM CET, s-vadapalli@ti.com wrote:
+>>>
+>>>
+>>> On 27/02/24 18:09, Jiri Pirko wrote:
+>>>> Tue, Feb 27, 2024 at 09:28:15AM CET, s-vadapalli@ti.com wrote:
+>>>>> The CPSW Ethernet Switch on TI's K3 SoCs can be configured to operate in
+>>>>> VLAN Aware or VLAN Unaware modes of operation. This is different from
+>>>>> the ALE being VLAN Aware and Unaware. The Ethernet Switch being VLAN Aware
+>>>>> results in the addition/removal/replacement of VLAN tag of packets during
+>>>>> egress as described in section "12.2.1.4.6.4.1 Transmit VLAN Processing" of
+>>>>> the AM65x Technical Reference Manual available at:
+>>>>> https://www.ti.com/lit/ug/spruid7e/spruid7e.pdf
+>>>>> In VLAN Unaware mode, packets remain unmodified on egress.
+>>>>>
+>>>>> The driver currently configures the Ethernet Switch in VLAN Aware mode by
+>>>>> default and there is no support to toggle this capability of the Ethernet
+>>>>> Switch at runtime. Thus, add support to toggle the capability by exporting
+>>>>> it via the ethtool "priv-flags" interface.
+>>>>
+>>>> I don't follow. You have all the means to offload all bridge/vlan
+>>>> configurations properly and setup your hw according to that. See mlxsw
+>>>> for a reference. I don't see the need for any custom driver knobs.
+>>>>
+>>>
+>>> Thank you for reviewing the patch. Please note that the "VLAN Aware mode" being
+>>> referred to here is different from ALE being VLAN aware. The hw offload of
+>>> bridge/vlan configurations is already supported in the context of the ALE. The
+>>> Ethernet Switch being VLAN Aware is a layer on top of that, which enables
+>>> further processing on top of the untagged/VLAN packets. This patch aims to
+>>> provide a method to enable the following use-cases:
+>>> 1. ALE VLAN Aware + CPSW VLAN Aware
+>>> 2. ALE VLAN Aware + CPSW VLAN Unaware
+>>>
+>>> All hw offloads of bridge/vlan configurations are w.r.t. ALE VLAN Aware alone.
+>>> Currently, only use-case 1 is enabled by the driver by default and there is no
+>>> knob to toggle to use-case 2.
+>>>
+>>> I am quoting sections of the Technical Reference Manual mentioned in my commit
+>>> message, in order to clarify the CPSW VLAN Unaware and CPSW VLAN Aware terminology.
+>>>
+>>> CPSW VLAN Unaware:
+>>> Transmit packets are NOT modified during switch egress.
+>>>
+>>> CPSW VLAN Aware:
+>>> 1. Untagged Packet Operations
+>>> Untagged packets are all packets that are not a VLAN packet or a priority tagged
+>>> packet. According to the CPWS0_FORCE_UNTAGGED_EGRESS_REG[1-0] MASK bit in the
+>>> packet header the packet may exit the switch with a VLAN tag inserted or the
+>>> packet may leave the switch unchanged....
+>>> 2. Priority Tagged Packet Operations (VLAN VID == 0 && EN_VID0_MODE ==0h)
+>>> Priority tagged packets are packets that contain a VLAN header with VID = 0.
+>>> According to the CPSW_ALE_FORCE_UNTAGGED_EGRESS_REG[1-0] MASK bit in the packet
+>>> header, priority tagged packets may exit the switch with their VLAN ID and
+>>> priority replaced or they may have their priority tag completely removed....
+>>> 3. VLAN Tagged Packet Operations (VLAN VID != 0 || (EN_VID0_MODE ==1h && VLAN
+>>> VID ==0))
+>>> VLAN tagged packets are packets that contain a VLAN header specifying the VLAN
+>>> the packet belongs to
+>>> (VID), the packet priority (PRI), and the drop eligibility indicator (CFI).
+>>> According to the CPSW_ALE_FORCE_UNTAGGED_EGRESS_REG[1-0] MASK bit in the packet
+>>> header, VLAN tagged packets may exit the switch with their VLAN priority
+>>> replaced or they may have their VLAN header completely removed...
+>>>
+>>> I hope that this clarifies that CPSW VLAN Unaware/Aware is a layer on top of the
+>>> hw offload-able bridge/vlan configuration.  Please let me know if there is
+>>> anything specific that could enable this without requiring the "priv-flag" based
+>>> implementation of this patch.
+>> 
+>> I have no clue what "ALE" is. But in general. User provided
+>
+>ALE is Address Lookup Engine.
+>
+>> configuration, using ip/bridge/etc tools/uapi. According to this
+>> configuration, kernel is bahaving. When you do offload, you should just
+>> make sure to mimic/mirror the kernel behaviour. With this in mind, why
+>
+>What if there is no kernel behavior associated with it? How can it be mimicked
+>then? This patch isn't offloading any feature that is supported in software. It
+>might not be possible to offload features which act on the forwarding path of
+>packets entirely in Hardware within the Ethernet Switch.
+>
+>Please consider the following:
+>Untagged packets sent from Software via the corresponding VLAN interfaces will
+>be tagged which is the expected behavior. However, if this is offloaded, it will
+>imply that even untagged packets that are simply forwarded in the Ethernet
+>Switch and never get to software will also have to be tagged by the Ethernet
+>Switch. This is not allowing the choice of leaving untagged packets as-is on the
+>Ethernet Switch's forwarding path. This patch attempts to allow configuring
+>something quite similar to this, where it is possible to *choose* whether or not
+>to tag packets being forwarded.
 
-Picking _likely vs. _unlikely sometimes feels like flipping a coin, but
-we'll presumably be increasing the likelihood of xlinuxenvcfg being
-present as we add more and more envcfg using extensions, so maybe we
-should use _likely here now, lest we forget to change it someday. But,
-either way,
+What would kernel datapath do? That is the question you need to ask and
+configure the hw accordingly. If 2 interfaces are in the bridge, vlans
+involved, etc, the forward behavior is well defined, isn't it. What am I
+missing?
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
-Thanks,
-drew
-
+>
+>> can't you do it without adding additional knob? And if you really need
+>> it because the know does some internal hw/fw tuning, priv flag of netdev
+>
+>The feature can be turned on or off depending on the use-case. Is it acceptable
+>to have build configs scattered in the driver code? I don't suppose that is
+>acceptable, due to which it will be preferable to have a runtime configuration
+>option, which is what this patch provides.
+>
+>> is most probably not the correct place to put it. If it is, make sure
+>
+>Please suggest an alternative if this isn't the right place. Otherwise, I can
+>only assume that there isn't one.
+>
+>> you advocate for it properly in the patch description.
+>> 
+>> pw-bot: cr
+>>
+>
+>-- 
+>Regards,
+>Siddharth.
 
