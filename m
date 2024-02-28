@@ -1,216 +1,101 @@
-Return-Path: <linux-kernel+bounces-84488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66BC186A757
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:49:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4DC486A759
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:51:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1558B218B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:49:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F7741F241BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373B220328;
-	Wed, 28 Feb 2024 03:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53D820332;
+	Wed, 28 Feb 2024 03:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V9QT+KEM"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="VOV2co6s"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACBD2030F
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 03:49:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34991F94D;
+	Wed, 28 Feb 2024 03:51:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709092174; cv=none; b=Q88a2FYuI4zZrxSkaB0O9H61gZcnrXWtbqft0y4QMI422DqziojJN0W33Gg3ZhUE6kErBhBKuRITxlx9ADOIpn4k8uupvETVDGnJ8adQQjtUqhF4XwwD733diQnw0Zg+J9ei7x3t0nM1Ix/ah9risN1+o4j46L9jqwIMO7TsFPY=
+	t=1709092304; cv=none; b=BixuWzVmE13Q0rqgjRjE4AhpL8kEhziK1MkeOkz1McDujw59wQGjlbECgP/Y/z5gj9eKF7OK/ayeNZZFmU8s6ZAhrFxpIF3SMA9xjwNV/diJqZ8r2V3tVtNIeLR5ey7ydXP0io2n5t6BBJ8b1ry4BgkHGfX+hZuAmIWW1dcQA8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709092174; c=relaxed/simple;
-	bh=GORHl7Se++zyxsZ5Y5aFQ7sI1NaaSGD3Zd3YJixbA4Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Z5mpI0rX0ZxieZ8Ba3uaJwJQL9wKm3vgT4RkSOINlR/XL0N8Zf6pto8k6p0fJmchT2eijRatluSlinwOF0kCSIr0pL2n6GM0f6b1FVUQlvNAjJf1Sp4RjJiKPfwJAyh4g+pEcR7f8B7NHdFnvBYoms0fGum9CJLMbPVcZDuM9qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V9QT+KEM; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so3595873a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 19:49:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709092172; x=1709696972; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NQlUYyJ2eXhnbobYPXDOgBr3jKeBkHk1CGOLpbMiMT0=;
-        b=V9QT+KEMMqs/ehp2oT5nph0XSk4wn3vUftvzoiKuZKGj8BFJxEhvraqwc3WkxjQ9qF
-         8vmzZx6vE7J0ixn5DT4z/hHhZH5u5k43MBe8LtlXv4uPALi28vf9sdgPOr57qex1zPUO
-         xud4cKgu7MfZjz7iORBMTxuhvwv4zgMHMPxMeyq0yug8WOACeboXcJfEV9WtkCsDoFk7
-         0HKjDxHXmnKNLqB1XkTWep+1G5DlkzTrHqG+oM5ULkU/5InXUjLtCX2hZUd2Y4D39ipd
-         SrtHsI9rZec8oxinApMvbFBjjjpniNxV60va9ybUVGd5zpVgXjva7HlKjxI48PVcamFT
-         IdLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709092172; x=1709696972;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NQlUYyJ2eXhnbobYPXDOgBr3jKeBkHk1CGOLpbMiMT0=;
-        b=X+CzIB+WZ+oONDcpXRCyf6V+kuLx1zNLC5+l7NDLTCS4uT9OFQV7k8S5p6F3J9KErg
-         pGKlrUSOjXxEFIZMqYbyh0PHlNzPBf7wYK6WZUKk9kCJeIii4ZTKozijX0IGZ5O5OlMu
-         FgTzXrzcPR5DBGWt7Y/Xthj7VxxE8mgiUaHonjeaNAEej9tgI7EYa8WAYHrcAhrRHua4
-         cqTpc0Dyz0dMr9ixXLijNgNllMEr0XSI00CsdUjCPIXpXjMzy4XfBVHIiOxJ/YTxOvBy
-         UKxBmjpaaoS45yuCbw4G46UidPUPmslyI0GUXFdnLY+zCBZmtRYsjZcge8qSCj3eimKS
-         hxWg==
-X-Forwarded-Encrypted: i=1; AJvYcCUCRwQUP4XjSCEPtPtqcAMEdNdJWJyiqAhHbG9uraGOI2/pl1Ey0Igi0LcjIf+0APSjpEYkDgLFETb99fFZTdeyUcWpL7JW/noWc3Q3
-X-Gm-Message-State: AOJu0YwO8Fzt784tMbtcJBILngjNP5rlvVQjPf7r15Nz6PFZU/jQ11nI
-	SbWkihGyX27FpA0o4frdIuovBSUcBrElhNJJJLv/AlQoQEDIOQSB
-X-Google-Smtp-Source: AGHT+IFZf3UkJGMFdoMTVJXNs+EvRyKPGXTGgjO3Givm+ElB2niZvrZWAVSLHnfq28gpw6myICQ0Yw==
-X-Received: by 2002:a05:6a20:e605:b0:1a1:e83:8eb4 with SMTP id my5-20020a056a20e60500b001a10e838eb4mr3472377pzb.9.1709092172179;
-        Tue, 27 Feb 2024 19:49:32 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:e4ad:9b94:2418:969e])
-        by smtp.gmail.com with ESMTPSA id p16-20020a17090b011000b00299e946b9cdsm374033pjz.20.2024.02.27.19.49.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 19:49:31 -0800 (PST)
-From: Barry Song <21cnbao@gmail.com>
-To: 21cnbao@gmail.com,
-	ryan.roberts@arm.com
-Cc: akpm@linux-foundation.org,
-	david@redhat.com,
-	hanchuanhua@oppo.com,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	mhocko@suse.com,
-	shy828301@gmail.com,
-	steven.price@arm.com,
-	surenb@google.com,
-	v-songbaohua@oppo.com,
-	wangkefeng.wang@huawei.com,
-	willy@infradead.org,
-	xiang@kernel.org,
-	ying.huang@intel.com,
-	yuzhao@google.com,
-	Chris Li <chrisl@kernel.org>,
-	Minchan Kim <minchan@kernel.org>,
-	SeongJae Park <sj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH RFC 6/6] mm: madvise: don't split mTHP for MADV_PAGEOUT
-Date: Wed, 28 Feb 2024 16:49:06 +1300
-Message-Id: <20240228034906.83872-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAGsJ_4xFgcf8+ZqKUqQ3gQt63JXtn-VifAk5mTA6dopYvNqGqA@mail.gmail.com>
-References: <CAGsJ_4xFgcf8+ZqKUqQ3gQt63JXtn-VifAk5mTA6dopYvNqGqA@mail.gmail.com>
+	s=arc-20240116; t=1709092304; c=relaxed/simple;
+	bh=8MVLVlrqD4j9HSuUdXtNL4OD++UUSJ32JL2smhWfInU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=F/RZ6ckOG0ANNcGPrseToz+29Zq/GqoUH9VnT3RmWSh06n49cVCIyLlnRwXF/o/jBhV3Cvpq6VjVyK5sUQ/PaowEbuHETaor7IPeeaK5vGgO012Z59KpmK3rd7841VlWu36/dIcJ37KSW8cd+4EiqAyQPatYg4XS/Ue1abF/AnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=VOV2co6s; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709092297;
+	bh=NJnamOiEuScuE3OfMKj/+x9Mr4ZVQY3hwB3v5cD2PEA=;
+	h=Date:From:To:Cc:Subject:From;
+	b=VOV2co6sN94QPfX4kbPRCUP6cBB8OA4/8ciXubEZwLqDK3BqeJUGHGRYHxSqR1q92
+	 xS30UDpFZDFEaAzhcWpV2fsFT0fY5f+F9Sfz7VppruXG5/fiUUaY7W1WFfoLwb12Yq
+	 99ME8jwZNzehDoh0BaoOUtLIYW9eY/12sIypYvrqSPAcQP9uU8k9wuMF0D0uD+Adw1
+	 DJTTwf+cbb786EK2mf9UE/Fptb4T6WThQXwMbSHyfr0D6shH6e3pr0LjTX/cWYKPpo
+	 TgST8uQ3phO/ELlZwFPmB/clKrOEX0zPFTYPUvYp1tOVk48bOxHnRKrnLVtwIj1Srx
+	 1eujNEt72YWbg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tl0lX6dKzz4wc6;
+	Wed, 28 Feb 2024 14:51:36 +1100 (AEDT)
+Date: Wed, 28 Feb 2024 14:51:34 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc: Ramona Gradinariu <ramona.gradinariu@analog.com>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the iio tree
+Message-ID: <20240228145134.03283c42@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/gi9v==n2V+dx.5Nq7v=D=qJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
->> I'm going to rework this patch and integrate it into my series if that's ok with
->> you?
-> 
-> This is perfect. Please integrate it into your swap-out series which is the
-> perfect place for this MADV_PAGEOUT.
+--Sig_/gi9v==n2V+dx.5Nq7v=D=qJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-BTW, Ryan, while you integrate this into your swap-put series, can you also
-add the below one which is addressing one comment of Chris,
+Hi all,
 
-From: Barry Song <v-songbaohua@oppo.com>
-Date: Tue, 27 Feb 2024 22:03:59 +1300
-Subject: [PATCH] mm: madvise: extract common function
- folio_deactivate_or_add_to_reclaim_list
+After merging the iio tree, today's linux-next build (htmldocs) produced
+this warning:
 
-For madvise_cold_or_pageout_pte_range, both pmd-mapped and pte-mapped
-normal folios are duplicating the same code right now, and we might
-have more such as pte-mapped large folios to use it. It is better
-to extract a common function.
+Documentation/iio/adis16475.rst:317: ERROR: Unexpected indentation.
 
-Cc: Chris Li <chrisl@kernel.org>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: SeongJae Park <sj@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- mm/madvise.c | 52 ++++++++++++++++++++--------------------------------
- 1 file changed, 20 insertions(+), 32 deletions(-)
+Introduced by commit
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 44a498c94158..1812457144ea 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -321,6 +321,24 @@ static inline bool can_do_file_pageout(struct vm_area_struct *vma)
- 	       file_permission(vma->vm_file, MAY_WRITE) == 0;
- }
- 
-+static inline void folio_deactivate_or_add_to_reclaim_list(struct folio *folio, bool pageout,
-+				struct list_head *folio_list)
-+{
-+	folio_clear_referenced(folio);
-+	folio_test_clear_young(folio);
-+
-+	if (folio_test_active(folio))
-+		folio_set_workingset(folio);
-+	if (!pageout)
-+		return folio_deactivate(folio);
-+	if (folio_isolate_lru(folio)) {
-+		if (folio_test_unevictable(folio))
-+			folio_putback_lru(folio);
-+		else
-+			list_add(&folio->lru, folio_list);
-+	}
-+}
-+
- static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 				unsigned long addr, unsigned long end,
- 				struct mm_walk *walk)
-@@ -394,19 +412,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 			tlb_remove_pmd_tlb_entry(tlb, pmd, addr);
- 		}
- 
--		folio_clear_referenced(folio);
--		folio_test_clear_young(folio);
--		if (folio_test_active(folio))
--			folio_set_workingset(folio);
--		if (pageout) {
--			if (folio_isolate_lru(folio)) {
--				if (folio_test_unevictable(folio))
--					folio_putback_lru(folio);
--				else
--					list_add(&folio->lru, &folio_list);
--			}
--		} else
--			folio_deactivate(folio);
-+		folio_deactivate_or_add_to_reclaim_list(folio, pageout, &folio_list);
- huge_unlock:
- 		spin_unlock(ptl);
- 		if (pageout)
-@@ -498,25 +504,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 			tlb_remove_tlb_entry(tlb, pte, addr);
- 		}
- 
--		/*
--		 * We are deactivating a folio for accelerating reclaiming.
--		 * VM couldn't reclaim the folio unless we clear PG_young.
--		 * As a side effect, it makes confuse idle-page tracking
--		 * because they will miss recent referenced history.
--		 */
--		folio_clear_referenced(folio);
--		folio_test_clear_young(folio);
--		if (folio_test_active(folio))
--			folio_set_workingset(folio);
--		if (pageout) {
--			if (folio_isolate_lru(folio)) {
--				if (folio_test_unevictable(folio))
--					folio_putback_lru(folio);
--				else
--					list_add(&folio->lru, &folio_list);
--			}
--		} else
--			folio_deactivate(folio);
-+		folio_deactivate_or_add_to_reclaim_list(folio, pageout, &folio_list);
- 	}
- 
- 	if (start_pte) {
--- 
-2.34.1
+  38033fdf3b09 ("docs: iio: add documentation for adis16475 driver")
 
-Thanks
-Barry
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gi9v==n2V+dx.5Nq7v=D=qJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXercYACgkQAVBC80lX
+0Gxz6wgAg2MVx6Z4x6NvdH3m83bSGdyhpbU8A1mSTSxlVcJL3qWGFpYnbhe3n2QE
+DAJNrGnXZ5p1Z4hIZMTvIhaVc/pq5LWnVlK2SC7e/vQIgaGYcbvYelBADQotb8Yj
+Bhn0jJKhsP7PWUZ/9qKcv7IE/ozi7H1AC3Ay8W5sfViQGY7IoowdVgH/Pcc1kH3c
+QpDBZC2MSLbMEnnFC5ewO9XXFmyPbUXWgCmu/hNBifbpq51ePii7hvpAE2GUyL1l
+Vg1APMjf7dhldmcBYGvqzEOAf+d5cPqmIF+0727FsGco4eCLR54AQ3GGi7COdk00
+2h5EqFHMhh3ndssK6NLRFT5vGWuyVA==
+=WIIU
+-----END PGP SIGNATURE-----
+
+--Sig_/gi9v==n2V+dx.5Nq7v=D=qJ--
 
