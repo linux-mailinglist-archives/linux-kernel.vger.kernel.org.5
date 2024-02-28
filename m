@@ -1,56 +1,85 @@
-Return-Path: <linux-kernel+bounces-84554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AA9D86A839
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E30786A83A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB25728AF53
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:07:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC7ED28B71C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DB821A1C;
-	Wed, 28 Feb 2024 06:07:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4149A2261B;
+	Wed, 28 Feb 2024 06:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cEThuSc4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PbP3/wLY"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48DD224D4;
-	Wed, 28 Feb 2024 06:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385CF225AE
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709100461; cv=none; b=WTROVQ1hBLNaY9UrS/jUVEm6bCbXgpoHoyHLW3YEcRcXctYuZ4ugEDw/QPRg30P9mbEgocWgG1uaK7vRdKz+hFICcXloJTQvdqZK19R0PD4TrPrRtIqXAverkiY35fWG3YNy1lms73BEbEl8BhsoWmRDheGZu9tST+QyfYDy4bE=
+	t=1709100482; cv=none; b=fjXB3OKxfWWtxcIJfQeG36eP6x+Mqxxn7F9eYLYem6JEkuZv5Hq0rTL0JkN4/eYgyDWu+0ZakqKLkeXRo40V57b1aG6rE5HZdjw8z71TOPJpl88DGaOxUPjk7/WfH74BgOKLHdHTX9ndx22tm60LOkB8s9WLnddbUqUkZsAug+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709100461; c=relaxed/simple;
-	bh=pxc2ZZ/jk0gXN4weRBL2NBBmdZRdQq6VWS7o4nzzuj4=;
+	s=arc-20240116; t=1709100482; c=relaxed/simple;
+	bh=mvlF08pv/DSbP99HlcEUEOnhnotN8+l8l/FIsGOsMqI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s3bs31Qb2wmNf/hV/EWRYbDGCcKaxuYfBcMqpurtgWii0W476UbMRYivvtK+Q+uqq5XN9mGoQ5tfu4l6TfXLNMHjhW6gg+UF88MI78h50//dl8lGMKrm4mw8xbphz5DqGKxP8zGJ4cnonBEo/u8f2i81NT8hRTJwwZh3pw/p5iA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cEThuSc4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA456C433F1;
-	Wed, 28 Feb 2024 06:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709100461;
-	bh=pxc2ZZ/jk0gXN4weRBL2NBBmdZRdQq6VWS7o4nzzuj4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cEThuSc4bNSWeaQNmhTxul4sBIUSAjOLhwLIVZQ8rDxznqlEh7qxDnkWdPuHKXjX3
-	 IzSDFNUcOLoqHSTBWL+gKNhteNEdU+KP/9Kz96z730FiC25sRVPDxac7huK+zXSFAb
-	 cZfZ9xC+hPN94H+ZZGzItK60eCzrPL+m17Kv7Bgg=
-Date: Wed, 28 Feb 2024 07:07:38 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Qingliang Li <qingliang.li@mediatek.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-	Len Brown <len.brown@intel.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Tony Lindgren <tony@atomide.com>, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] PM: wakeirq: fix wake irq warning in system suspend stage
-Message-ID: <2024022829-ripple-quintet-a097@gregkh>
-References: <20240228020040.25815-1-qingliang.li@mediatek.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lr1250Et6zH/Nu1FXxwdsz/q9mb8fJPI2/CNrIqtbzuFjO7RD7Xfgu0yycK5ClUjKNdM96KGllfGbfYYdvfbsG0mpA5qWrBZPGH0+6sCOI99hMU9kUEd5nBTIRYBT+9edk0K3wxlCZINNiGpH8J21zER2dfPddRyP8jp49j8NSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PbP3/wLY; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29aa8c4710bso420459a91.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:08:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709100480; x=1709705280; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MeKU9LAERyJoKW+mNk4qVeJIhy/Zeo/llG2Crnx8dtI=;
+        b=PbP3/wLYKAYF3Ieywrkjoohj2STu5NNjdJIvMxchU61QWOMvfcyUT1Ethff1DkP90N
+         lj1/4fXdX1Njxc6fs1P2THYJ2ChiNl7FTFxKzdyCDHGpifEVSFpdcTrv92GKlOor7Gvm
+         2BYgj694eO5EPXK12VLoH5SsabzdAqhrR0DPg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709100480; x=1709705280;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MeKU9LAERyJoKW+mNk4qVeJIhy/Zeo/llG2Crnx8dtI=;
+        b=UdtEvqZJYwQmlSReZ2+TUFbLnjyti+PmjgrLJPF1VBN98mBzOIt6gfzUbZrCucjBoO
+         0tijjZ3ln4EYToSs4nZO+mrqPF9Z+JPchhFOT1/E0oNukWJviP47XVu/QVMu/6rg7FcL
+         +lzOkJF52eAF/d959xVPm/9Cy+mxvwYu4lpnZKsQtLfR28dmrVFi1ODkRGW2AVPFbYru
+         If/I59q1GPsu9OLHLa8XIng+tdQAHWJODCITeIVjmHRIzgcCxfI5Y4Ted8EW4v0YLvfZ
+         8tl22vxADU8NWPy3SIbtvzYckrYN4pfpIOjF18sqk+SsSh20mUFlnCRsPOOIasfGUY6o
+         wu3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWAvhfXOPC2wWzm5kxw75mblx7BhugM1/YXPVq63M3YbyarvHvukqxj1EkbgJ03v1L9pcLYPfMqpBtAlQBqVrWqKkJdE5I6JC1vWfv1
+X-Gm-Message-State: AOJu0YxuvuzwmpgVBl3C0HGXf0P2ZTcpRWfPRwiHBCsbuIhLiGtlYlJB
+	ByG9Hta/Xpc4z+jQLcaPb7/KtE0DbZcMCjisFPv+y8MOoE6Btbyb4Ys+Z1KVSQ==
+X-Google-Smtp-Source: AGHT+IEu++Dtdm+Ls8/lxFgAIO7qDrPLVd2IJ6PrQUeBFnqrJPVzqTCR5jKvm4uWQjzqFBDNcn0Qsg==
+X-Received: by 2002:a17:90a:2ecb:b0:299:1cce:f3c3 with SMTP id h11-20020a17090a2ecb00b002991ccef3c3mr2161789pjs.7.1709100480487;
+        Tue, 27 Feb 2024 22:08:00 -0800 (PST)
+Received: from google.com ([2401:fa00:8f:203:50c1:1ad2:3268:cacd])
+        by smtp.gmail.com with ESMTPSA id ta6-20020a17090b4ec600b0029a849e7268sm647056pjb.28.2024.02.27.22.07.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Feb 2024 22:08:00 -0800 (PST)
+Date: Wed, 28 Feb 2024 15:07:56 +0900
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
+To: Chengming Zhou <chengming.zhou@linux.dev>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Chengming Zhou <zhouchengming@bytedance.com>, yosryahmed@google.com,
+	hannes@cmpxchg.org, nphamcs@gmail.com,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Minchan Kim <minchan@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH 1/2] mm/zsmalloc: don't hold locks of all pages when
+ free_zspage()
+Message-ID: <20240228060756.GK11972@google.com>
+References: <20240226-zsmalloc-zspage-rcu-v1-0-456b0ef1a89d@bytedance.com>
+ <20240226-zsmalloc-zspage-rcu-v1-1-456b0ef1a89d@bytedance.com>
+ <20240228043358.GF11972@google.com>
+ <5a556476-05b2-483e-8875-eeb3e2a51151@linux.dev>
+ <20240228052906.GI11972@google.com>
+ <913f1a04-8fa2-46b0-85dc-edd23477a1d6@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -59,71 +88,15 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240228020040.25815-1-qingliang.li@mediatek.com>
+In-Reply-To: <913f1a04-8fa2-46b0-85dc-edd23477a1d6@linux.dev>
 
-On Wed, Feb 28, 2024 at 10:00:40AM +0800, Qingliang Li wrote:
-> When driver registers the wake irq with reverse enable ordering,
-> the wake irq will be re-enabled when entering system suspend, triggering
-> an 'Unbalanced enable for IRQ xxx' warning. The wake irq will be
-> enabled in both dev_pm_enable_wake_irq_complete() and dev_pm_arm_wake_irq()
+On (24/02/28 13:42), Chengming Zhou wrote:
+> > I'm curious if we want to add RCU to the picture, given that zsmalloc
+> > is quite often run under memory pressure.
 > 
-> To fix this issue, complete the setting of WAKE_IRQ_DEDICATED_ENABLED flag
-> in dev_pm_enable_wake_irq_complete() to avoid redundant irq enablement.
-> 
-> Fixes: 8527beb12087 ("PM: sleep: wakeirq: fix wake irq arming")
-> Signed-off-by: Qingliang Li <qingliang.li@mediatek.com>
-> ---
->  drivers/base/power/wakeirq.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/base/power/wakeirq.c b/drivers/base/power/wakeirq.c
-> index 42171f766dcb..5a5a9e978e85 100644
-> --- a/drivers/base/power/wakeirq.c
-> +++ b/drivers/base/power/wakeirq.c
-> @@ -313,8 +313,10 @@ void dev_pm_enable_wake_irq_complete(struct device *dev)
->  		return;
->  
->  	if (wirq->status & WAKE_IRQ_DEDICATED_MANAGED &&
-> -	    wirq->status & WAKE_IRQ_DEDICATED_REVERSE)
-> +	    wirq->status & WAKE_IRQ_DEDICATED_REVERSE) {
->  		enable_irq(wirq->irq);
-> +		wirq->status |= WAKE_IRQ_DEDICATED_ENABLED;
-> +	}
->  }
->  
->  /**
-> -- 
-> 2.25.1
-> 
+> Yes, it's a reasonable point. But given struct zspage size has only 56 bytes,
+> it maybe not a problem to delay its free to RCU?
 
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+Hmm, yeah, probably.  I think it'll make sense to wait for more
+"go for it" from Cc-ed folks before we land this series.
 
