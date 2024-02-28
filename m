@@ -1,120 +1,138 @@
-Return-Path: <linux-kernel+bounces-85438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 253D686B5F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:27:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15C3C86B5FB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAB2FB28833
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:27:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B99FD1F21CF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77E1B15957C;
-	Wed, 28 Feb 2024 17:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB0C159567;
+	Wed, 28 Feb 2024 17:29:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ix/XMzvG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h5GHPVkO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EFB34CDE;
-	Wed, 28 Feb 2024 17:27:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B8334CDE
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:29:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709141259; cv=none; b=jAJz4lhMuZHIlQnOyP1g4eZVVDObxqE3pRrlLk8N3OouApyS6xqGcdmAFoNnMp2nvzfF0TCDZ94RFGHiY5qzcoEdLWInOUz5Igef/Erdl3aVWNMUmza186MlQYA1hS4it+D0FSZtgPN/OwTaIF+VfZIBiLpThEVdhFMBLx/Zo9E=
+	t=1709141349; cv=none; b=cZ0JhD9MJAPszZ0ojyR9Ag08b20KnP80EHq0j121MzoVMv3qaQaYFmu03/hPEQiHi/4Ri4Vj0WMjz+syyy2Embo2bCcQZBTjJu+Pb90cIyBjlM8IthvWIEoOnyE8fxvBP+rzrfrmjMKxsbyuaSSbupi/Vlxzw8DjT9oJBDcJGQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709141259; c=relaxed/simple;
-	bh=a6yPinrfFCyv1D0aYBQjzitLgkEQTPi0B91kfaZLW0U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iqr40XIWgaXW8Vtsqm91OmZRiplyvMetFrM20mGmxb3Lv9RiTg8hClNrL2IkAE2LxyDbtKASXjVHHCxpGl8OLbClnzpzsTIB2InKPS4Q3aG1BeHhw07jYbI7etwCyI9TR+ZFEkGaRD9BB8oR+//wl/aCrIKtebPYr+1jznEthh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ix/XMzvG; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1709141349; c=relaxed/simple;
+	bh=CDkOmty3Y9k/DPWDiSygmNFOvhxT7q2cYTOHtCPHBaE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bd7jcEIUVwtm5mLIS5JWjC2PYuJ5948BiS3BL0YQReU1R72CIs/Tb/uvdJDycE5u/kLFHMAec6tDFyVdU+kEo7OjbG2xe6QmTcnjD1Eh+lOodWW3qjrTyPfHT9z214LPa4Kl/xmRJn4pKeKHopdZFGdk3RLJTR01NKRkCQ13Fwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h5GHPVkO; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709141259; x=1740677259;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=a6yPinrfFCyv1D0aYBQjzitLgkEQTPi0B91kfaZLW0U=;
-  b=Ix/XMzvGBqid+ta5dulE/RJq/IBijC7mt94AEL1asjECxCFSzfXstxqM
-   e0JSRmyXof+T9utEClK5Jm5fFpZs/BxiNr5UlJW+TT+bm4T83HbXQ8JJE
-   DHL8NssyWTJRwYBjavOjHn7TZQXP0cskQlMUExEzCc480BHieFPl/FsIl
-   kbiCP/+XuIK510nO3kZ39itOM09kP755hZsnkGEaCFthKGkkOJa6FeU11
-   7Agw8+VZfp/T/Xz1Mau/O9OmQfjuDX90fMWekM1/6fnbWCD1ofuJkwMh9
-   gtDEWRm9CKhfIWnEiGoWvG4R1KLKD7mt73JUvhgUzUJfQ50frLDOlug/i
+  t=1709141347; x=1740677347;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CDkOmty3Y9k/DPWDiSygmNFOvhxT7q2cYTOHtCPHBaE=;
+  b=h5GHPVkO4FMIECresW2Idhg6gLll4mJS7ZXMo6VWxXIqpXzsFbky+SGP
+   CfM8gV0RxVGq8Uw6pROwxXTbUmlgJTiA0Af7F4Admca+hAUkCx5iRNYBq
+   YselHbcxT6SyagrC325bMVbuooc96dPgnpgMOyT7so5f3uFGT+XeN7dYg
+   qQIgPztgZ/0fdg/eqBx9yBG2gdh0+1/bo5R2OXn0IkcuFzNtLSlWwA/yg
+   hixP02fEkEp/ninQYWBqVh5kFoW7kgbly07Wg1oVdmKrPd4iS77Ycflfc
+   j+m9qzfWt6eY4KjTIMVceEnkrnZbj+illuQ/L+UhU5Del+k+472qxZTdT
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3720069"
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3436984"
 X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="3720069"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:27:38 -0800
+   d="scan'208";a="3436984"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:29:07 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913956212"
 X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="913956212"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:27:33 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rfNiM-00000008Has-1Z2p;
-	Wed, 28 Feb 2024 19:27:30 +0200
-Date: Wed, 28 Feb 2024 19:27:30 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Matti Vaittinen <mazziesaccount@gmail.com>
-Cc: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Marek Vasut <marex@denx.de>,
-	Anshul Dalal <anshulusr@gmail.com>,
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
-	Matt Ranostay <matt@ranostay.sg>,
-	Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
-	linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 5/5] iio: light: Add support for APDS9306 Light Sensor
-Message-ID: <Zd9tApJClX7Frq20@smile.fi.intel.com>
-References: <20240228122408.18619-1-subhajit.ghosh@tweaklogic.com>
- <20240228122408.18619-6-subhajit.ghosh@tweaklogic.com>
- <a828e77c-b3d4-49bb-b0bb-b9fd6cb7d114@gmail.com>
+   d="scan'208";a="7929522"
+Received: from edloving-mobl1.amr.corp.intel.com (HELO [10.209.50.42]) ([10.209.50.42])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:29:06 -0800
+Message-ID: <b18d2563-0ce8-41d5-bc48-bce9042da6db@intel.com>
+Date: Wed, 28 Feb 2024 09:29:05 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a828e77c-b3d4-49bb-b0bb-b9fd6cb7d114@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC][PATCH 09/34] x86/cpu: Introduce address configuration
+ structure
+Content-Language: en-US
+To: "Huang, Kai" <kai.huang@intel.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, linux-kernel@vger.kernel.org
+Cc: kirill.shutemov@linux.intel.com, pbonzini@redhat.com, tglx@linutronix.de,
+ x86@kernel.org, bp@alien8.de
+References: <20240222183926.517AFCD2@davehans-spike.ostc.intel.com>
+ <20240222183938.662DD27C@davehans-spike.ostc.intel.com>
+ <10808725-d98b-430b-8c47-4feef8685734@intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <10808725-d98b-430b-8c47-4feef8685734@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 03:08:56PM +0200, Matti Vaittinen wrote:
-> On 2/28/24 14:24, Subhajit Ghosh wrote:
-
-..
-
-> > +	ret = iio_gts_find_new_gain_by_old_gain_time(&data->gts, gain_old,
-> > +						     intg_old, val2, &gain_new);
+On 2/27/24 15:47, Huang, Kai wrote:
+> From the above description, ...
 > 
-> You don't use the 'ret' here, so maybe for the clarity, not assign it.
-> Or, maybe you wan't to try to squeeze out few cycles for succesful case and
-> check the ret for '0' - in which case you should be able to omit the check
-> right below as well as the call to iio_find_closest_gain_low(). OTOH, this
-> is likely not a "hot path" so I don't care too much about the extra call if
-> you think code is clearer this way.
+>> +struct x86_addr_config bsp_addr_config;
+>> +
 > 
-> > +	if (gain_new < 0) {
-> > +		dev_err_ratelimited(dev, "Unsupported gain with time\n");
-> > +		return gain_new;
-> > +	}
+> ... this can be __ro_after_init?
+> 
+> Maybe I am missing something, but if it cannot be annotated with
+> __ro_after_init here, IMHO it would be helpful to call out in the
+> changelog.
 
-What is the difference between negative response from the function itself and
-similar in gain_new?
+It can actually be full on __init .. eventually.  It goes *AWAY* after boot.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+I'll add a note in the changelog why it can't be until later in the series.
 
