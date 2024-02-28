@@ -1,231 +1,219 @@
-Return-Path: <linux-kernel+bounces-85158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78AE786B143
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:06:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9119E86B146
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:07:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47D65B2813A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:06:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B044C1C2194B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:07:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 026211552EA;
-	Wed, 28 Feb 2024 14:06:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101F4154BE3;
+	Wed, 28 Feb 2024 14:07:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aKxron1X"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZwHMsaBe"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6A9151CC5
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831F014F995
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:07:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709129182; cv=none; b=NqVL1VFytImuYRXyV7AQwpLhko8oxZHxtmHTVZC3hlzEGzCk4kAoBqx7QQJtQyUWqZrDlh8JjfVudhPvcpbe544XCV4mGmDHEjDFyxe0JC/rkJ7HBYkfEJn7hF9+4hG3zsbAZi++dqesrQ8XqeJcMiCyPQz3GMJLHGWyeysN3W0=
+	t=1709129254; cv=none; b=vAGteXemc7ZPWsaM3oQljGl7ZBHEBxH1+KYbHhblzjUCDvkBBtitXUkEztwaMD6GqxAmvE00cBdB8pQY8qBSgyRLuz/8yJRoAg+eqnfEeAlqfhedcOonNizjVE7yh3jdoocM/ZirJeNnymsiSB+mInHuMQUsOYzaETOdbE8/QHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709129182; c=relaxed/simple;
-	bh=fUSaXoqtXRB0qGdabGFsyk62OVa7gFl3kWDiGvq9L48=;
+	s=arc-20240116; t=1709129254; c=relaxed/simple;
+	bh=THa2mSqtA/v0EgDSq0esfVnYprQRD4n81uuv6q9X/oI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XK8RW/ow7vzAI2phdRdRDoh8zDI5jWqELUjhKTHb0X+c35Qkcbto0D9IQPDD9U71wXmQKc1forFlqjpmO/rF7c0j7NvBfhLkIwuPBvA2cs6xw927NnLo+eFzH4yEFZbeGmO5DdSREMafSYoR2djs3ksNJfwv9q8DiY3+cNNOlb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aKxron1X; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so9777375a12.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:06:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709129178; x=1709733978; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0/rpJyq/RgcopvSHJgS4VKLl6wgR1t9y0dcYjB0pkkA=;
-        b=aKxron1Xi3Dmu2YFzEWO1RysdsHNLdF+gQu6CNRfJpFv37BdmxlqdpNevoi5Mzabxf
-         EjKIv6SztXXqOuewrqlNhr/NTWngJnx4/+8YhQe25n++umgn0ZPKEC9m9dnl81Y5AHvR
-         2M69odf/YHGbmCzp+6372QkLtyvVqWtJ3aSi7Xu96wkFiAWD8DFSM4zPpLSz1Z7GkHYX
-         cAiD6bwBonkrcC0RyO/VDZpvpBXRYkQHUiesXEJJD84CIZemNwgIRNQjE981FIP/+Svz
-         FfIp5K8QtRUxpITkMXPSnZR2Ac45gxlhmRBVrtvfAmS0vWswvGWiWIZfNHw7QeCW3oP1
-         1k9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709129178; x=1709733978;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0/rpJyq/RgcopvSHJgS4VKLl6wgR1t9y0dcYjB0pkkA=;
-        b=EddGpvUTFS3HPuwOIvx7Ed+msvWsXppaIi1nYJ8yuzj8xAntFo51rnLIWF7pKn8Vis
-         62X2zh1SXOiLGkaY9DdQhFEEGqEWf3kAQTPHP3yCZw0MXdSffcXIMXt1xvw3l34ZbVaj
-         wiSK0C/j2CeN0PZAIY6UTaN0jkV5Y0eob2ZeXOne1Y5MJeq/+lcHr0j7XKSVwURRYBVL
-         evqD7ORF/EFoUQbTSFZwe4VxnfBdZoIs/2Cwh2QGw7IdvOtZCQMTkGLKPYsj9aZTCnDw
-         Gk6qglaghG7TOH0scb0790yaN/6LFZdyRQbX9/pSAayuZ39Ux8yGGsShe/gSEfzuLNhf
-         NDCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXnOZ1GIsiSAYNg0ZY7+1M/DKdrQZOzVF063+61hT57u5udX/eQ4B4c1k+wG7DZUtB3gkGNjyZhUqZFoESv3KzOoSvG1SvrrH9JCYYJ
-X-Gm-Message-State: AOJu0YwWQyX3vPYtyeW4z1tbrIyXZTNteKpDgg1Pm19YY2U0xug0fXRF
-	hFr219T5kUtymOvlL89IYZqq9z/LP+LNFzBdCi2wc5Zi7W0QqggnANTYpFqVNUs=
-X-Google-Smtp-Source: AGHT+IFE4wiM4wtkf5DpMvBbMBdAJSPpOXes7UwK5f3dYxNRKxgNFtELeQKw7Zr46zFZZ2hHeYEafA==
-X-Received: by 2002:a17:906:bce7:b0:a44:2178:d280 with SMTP id op7-20020a170906bce700b00a442178d280mr240776ejb.66.1709129178506;
-        Wed, 28 Feb 2024 06:06:18 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id cd14-20020a170906b34e00b00a4412406741sm398217ejb.131.2024.02.28.06.06.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 06:06:18 -0800 (PST)
-Message-ID: <01f6fd8b-2d2e-4324-b354-1ea1b0868976@linaro.org>
-Date: Wed, 28 Feb 2024 15:06:16 +0100
+	 In-Reply-To:Content-Type; b=I5GcuQ9U2D0EhIsn6Lpa0wj7gvASrrW/y3PW5LFBaqAYMuQYNTfD5J7V6V42wL9csowe8CKlEtY8dawDPy1XJlqyEdqXAesA7rzKpP1wjGrbo71Br9sqOLLom+C76PzvCApTF33pfzXVFcuAf/4fvR7NW5MrZ0qXkHbTTLDIH8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZwHMsaBe; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <85b78dad-affa-47c3-9cd0-79a4321460b8@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709129249;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vM/KfHgUOwY2lvB0mjrY169vFxTeITIHZRgep2xkV9c=;
+	b=ZwHMsaBeOCPMcixCVbnytMfUemQGQhlm0UygvzwBIDGjehrH3MJkjDwdE90CR6NxSjuhHg
+	0kJL2hFNLJ3ccAdj1qETsMhAwKdq6bYZN1/uXnIw/tmlsLvgNN4SwK6oOWvApA2O33I8JU
+	/wtd+U6BrFrwyTkSN86fs7iu/4GJ6tM=
+Date: Wed, 28 Feb 2024 14:07:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/4] dt-bindings: iio: adc: ad7192: Add AD7194 support
+Subject: Re: [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
 Content-Language: en-US
-To: Alisa-Dariana Roman <alisadariana@gmail.com>,
- michael.hennerich@analog.com, linux-iio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: lars@metafoo.de, jic23@kernel.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- andriy.shevchenko@linux.intel.com, nuno.sa@analog.com,
- alisa.roman@analog.com, dlechner@baylibre.com
-References: <20240228122617.185814-1-alisa.roman@analog.com>
- <20240228122617.185814-4-alisa.roman@analog.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240228122617.185814-4-alisa.roman@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ edumazet@google.com
+Cc: arkadiusz.kubalewski@intel.com, jiri@nvidia.com, kuba@kernel.org,
+ "abdhalee@linux.vnet.ibm.com" <abdhalee@linux.vnet.ibm.com>,
+ "mputtash@linux.vnet.com" <mputtash@linux.vnet.com>,
+ "sachinp@linux.vnet.com" <sachinp@linux.vnet.com>,
+ venkat88@linux.vnet.ibm.com, Tasmiya Nalatwad <tasmiya@linux.vnet.ibm.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <3fcf3a2c-1c1b-42c1-bacb-78fdcd700389@linux.vnet.ibm.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <3fcf3a2c-1c1b-42c1-bacb-78fdcd700389@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 28/02/2024 13:26, Alisa-Dariana Roman wrote:
-> Unlike the other AD719Xs, AD7194 has configurable differential
-> channels. The default configuration for these channels can be changed
-> from the devicetree.
+On 28/02/2024 11:09, Tasmiya Nalatwad wrote:
+> Greetings,
 > 
-> Also add an example for AD7194 devicetree.
+> [revert 0d60d8df6f49] [net/net-next] [6.8-rc5] Build Failure
 > 
-> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
-> Signed-off-by: romandariana <alisa.roman@analog.com>
-
-Something is not right here...
-
-> ---
->  .../bindings/iio/adc/adi,ad7192.yaml          | 75 +++++++++++++++++++
->  1 file changed, 75 insertions(+)
+> Reverting below commit fixes the issue
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
-> index 16def2985ab4..c62862760311 100644
-> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
-> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
-> @@ -21,8 +21,15 @@ properties:
->        - adi,ad7190
->        - adi,ad7192
->        - adi,ad7193
-> +      - adi,ad7194
->        - adi,ad7195
->  
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
->    reg:
->      maxItems: 1
->  
-> @@ -96,8 +103,44 @@ required:
->    - spi-cpol
->    - spi-cpha
->  
-> +patternProperties:
-> +  "^channel@([0-9]+)$":
+> commit 0d60d8df6f493bb46bf5db40d39dd60a1bafdd4e
+>      dpll: rely on rcu for netdev_dpll_pin()
+> 
+> --- Traces ---
+> 
+> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
+> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to 
+> incomplete type ‘struct dpll_pin’
+>    typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+>           ^
+> ./include/linux/rcupdate.h:587:2: note: in expansion of macro 
+> ‘__rcu_dereference_check’
+>    __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+>    ^~~~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro 
+> ‘rcu_dereference_check’
+>    rcu_dereference_check(p, lockdep_rtnl_is_held())
+>    ^~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/dpll.h:175:9: note: in expansion of macro 
+> ‘rcu_dereference_rtnl’
+>    return rcu_dereference_rtnl(dev->dpll_pin);
+>           ^~~~~~~~~~~~~~~~~~~~
+> make[4]: *** [scripts/Makefile.build:243: drivers/dpll/dpll_core.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+>    AR      net/mpls/built-in.a
+>    AR      net/l3mdev/built-in.a
+> In file included from ./include/linux/rbtree.h:24,
+>                   from ./include/linux/mm_types.h:11,
+>                   from ./include/linux/mmzone.h:22,
+>                   from ./include/linux/gfp.h:7,
+>                   from ./include/linux/umh.h:4,
+>                   from ./include/linux/kmod.h:9,
+>                   from ./include/linux/module.h:17,
+>                   from drivers/dpll/dpll_netlink.c:9:
+> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
+> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to 
+> incomplete type ‘struct dpll_pin’
+>    typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+>           ^
+> ./include/linux/rcupdate.h:587:2: note: in expansion of macro 
+> ‘__rcu_dereference_check’
+>    __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+>    ^~~~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro 
+> ‘rcu_dereference_check’
+>    rcu_dereference_check(p, lockdep_rtnl_is_held())
+>    ^~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/dpll.h:175:9: note: in expansion of macro 
+> ‘rcu_dereference_rtnl’
+>    return rcu_dereference_rtnl(dev->dpll_pin);
+>           ^~~~~~~~~~~~~~~~~~~~
+> make[4]: *** [scripts/Makefile.build:243: drivers/dpll/dpll_netlink.o] 
+> Error 1
+> make[3]: *** [scripts/Makefile.build:481: drivers/dpll] Error 2
+> make[3]: *** Waiting for unfinished jobs....
+> In file included from ./arch/powerpc/include/generated/asm/rwonce.h:1,
+>                   from ./include/linux/compiler.h:251,
+>                   from ./include/linux/instrumented.h:10,
+>                   from ./include/linux/uaccess.h:6,
+>                   from net/core/dev.c:71:
+> net/core/dev.c: In function ‘netdev_dpll_pin_assign’:
+> ./include/linux/rcupdate.h:462:36: error: dereferencing pointer to 
+> incomplete type ‘struct dpll_pin’
+>   #define RCU_INITIALIZER(v) (typeof(*(v)) __force __rcu *)(v)
+>                                      ^~~~
+> ./include/asm-generic/rwonce.h:55:33: note: in definition of macro 
+> ‘__WRITE_ONCE’
+>    *(volatile typeof(x) *)&(x) = (val);    \
+>                                   ^~~
+> ./arch/powerpc/include/asm/barrier.h:76:2: note: in expansion of macro 
+> ‘WRITE_ONCE’
+>    WRITE_ONCE(*p, v);      \
+>    ^~~~~~~~~~
+> ./include/asm-generic/barrier.h:172:55: note: in expansion of macro 
+> ‘__smp_store_release’
+>   #define smp_store_release(p, v) do { kcsan_release(); 
+> __smp_store_release(p, v); } while (0)
+> ^~~~~~~~~~~~~~~~~~~
+> ./include/linux/rcupdate.h:503:3: note: in expansion of macro 
+> ‘smp_store_release’
+>     smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
+>     ^~~~~~~~~~~~~~~~~
+> ./include/linux/rcupdate.h:503:25: note: in expansion of macro 
+> ‘RCU_INITIALIZER’
+>     smp_store_release(&p, RCU_INITIALIZER((typeof(p))_r_a_p__v)); \
+>                           ^~~~~~~~~~~~~~~
+> net/core/dev.c:9081:2: note: in expansion of macro ‘rcu_assign_pointer’
+>    rcu_assign_pointer(dev->dpll_pin, dpll_pin);
+>    ^~~~~~~~~~~~~~~~~~
+> make[4]: *** [scripts/Makefile.build:243: net/core/dev.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+>    AR      drivers/net/ethernet/built-in.a
+>    AR      drivers/net/built-in.a
+>    AR      net/dcb/built-in.a
+>    AR      net/netlabel/built-in.a
+>    AR      net/strparser/built-in.a
+>    AR      net/handshake/built-in.a
+>    GEN     lib/test_fortify.log
+>    AR      net/8021q/built-in.a
+>    AR      net/nsh/built-in.a
+>    AR      net/unix/built-in.a
+>    CC      lib/string.o
+>    AR      net/packet/built-in.a
+>    AR      net/switchdev/built-in.a
+>    AR      lib/lib.a
+>    AR      net/mptcp/built-in.a
+>    AR      net/devlink/built-in.a
+> In file included from ./include/linux/rbtree.h:24,
+>                   from ./include/linux/mm_types.h:11,
+>                   from ./include/linux/mmzone.h:22,
+>                   from ./include/linux/gfp.h:7,
+>                   from ./include/linux/umh.h:4,
+>                   from ./include/linux/kmod.h:9,
+>                   from ./include/linux/module.h:17,
+>                   from net/core/rtnetlink.c:17:
+> ./include/linux/dpll.h: In function ‘netdev_dpll_pin’:
+> ./include/linux/rcupdate.h:439:9: error: dereferencing pointer to 
+> incomplete type ‘struct dpll_pin’
+>    typeof(*p) *local = (typeof(*p) *__force)READ_ONCE(p); \
+>           ^
+> ./include/linux/rcupdate.h:587:2: note: in expansion of macro 
+> ‘__rcu_dereference_check’
+>    __rcu_dereference_check((p), __UNIQUE_ID(rcu), \
+>    ^~~~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/rtnetlink.h:70:2: note: in expansion of macro 
+> ‘rcu_dereference_check’
+>    rcu_dereference_check(p, lockdep_rtnl_is_held())
+>    ^~~~~~~~~~~~~~~~~~~~~
+> ./include/linux/dpll.h:175:9: note: in expansion of macro 
+> ‘rcu_dereference_rtnl’
+>    return rcu_dereference_rtnl(dev->dpll_pin);
+>           ^~~~~~~~~~~~~~~~~~~~
+> In file included from net/core/rtnetlink.c:60:
+> ./include/linux/dpll.h:179:1: error: control reaches end of non-void 
+> function [-Werror=return-type]
+>   }
+> 
 
-No need for ()
+Hi, Eric!
 
-> +    type: object
-> +    $ref: adc.yaml
-> +    unevaluatedProperties: false
-> +
-> +    properties:
-> +      reg:
-> +        description: The channel index.
-> +        minimum: 1
-> +        maximum: 16
-> +
-> +      diff-channels:
-> +        description: |
-> +          Both inputs can be connected to pins AIN1 to AIN16 by choosing the
-> +          appropriate value from 1 to 16. The negative input can also be
-> +          connected to AINCOM by choosing 0.
-> +        items:
-> +          minimum: 0
-> +          maximum: 16
-> +
-> +    required:
-> +      - reg
-> +      - diff-channels
-> +
->  allOf:
->    - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - adi,ad7190
-> +            - adi,ad7192
-> +            - adi,ad7193
-> +            - adi,ad7195
-> +    then:
-> +      patternProperties:
-> +        "^channel@([0-9]+)$": false
-
-No need for ()
-
->  
->  unevaluatedProperties: false
->  
-> @@ -127,3 +170,35 @@ examples:
-
-
-Best regards,
-Krzysztof
+Looks like we have to move struct dpll_pin definition to 
+include/linux/dpll.h to have this fixed, right?
 
 
