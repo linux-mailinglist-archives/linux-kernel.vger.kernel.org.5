@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-84319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2776A86A4E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:21:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E3D786A4E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:22:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7239FB26F0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:21:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 473041C20E0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988F51852;
-	Wed, 28 Feb 2024 01:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376101C10;
+	Wed, 28 Feb 2024 01:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ife+onZu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XzWEw+Fg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8D6EDD
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267F315AF
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:22:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709083290; cv=none; b=s1T/G+5e/rwwHXl1v3m6o4H8wxc1uO9fHHvbQ1g9cqwz3NOnmLmvLLTUeYnBr0hYYrF+rbhraPyunSkDi8YnH3L4HLBQVcaL/4Jm/pLtlo+03sbHtSFajTzysIPkE3QNucwyF2t4/Z3nEp9nLf/ea4yGmh2uFjLrByvH+W2bQ4E=
+	t=1709083349; cv=none; b=OKge1jGRRVP7XxAKiNnLkZXnoi9gZ7MKatrguUak/gFLHO/RGsFdWzvfB8kbXpeCRD/EL7Ra5QzD+WlfxP2dY7ESZDU4AxmXkAH0XCL3L0LeVRdONWA3bVHPW7D03Cl+BYj1DZ8GgeOsA1sC+CuPNub44vwqJY5otMtGONihBnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709083290; c=relaxed/simple;
-	bh=xbDh3NL+tZVp1UyHoiJ9+BKG31EbR4SOQpOg0CSDafg=;
+	s=arc-20240116; t=1709083349; c=relaxed/simple;
+	bh=9/GA4VMiDY2WSNMYbprjEOxAi3HOihpqkEnkeAvurJc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oFlyScehwKp7G5BpV6Dt8QvM06VDLgTvBBBxEjuOw+C6qKiC5uRjGlYo5qqQBWa3yDKAaJlYEahQO3/EWgzAqSV5RwnHiFdx+5GT/dbrTFlV9+4DwFkIqRVAwdcvNoQyadK5ocz0tS5VRvYh/qh5O9pYwOuVP0fY7P+sKjPOlKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ife+onZu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 771BBC433F1;
-	Wed, 28 Feb 2024 01:21:28 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=U1bedp4qk/U9EtHjzY/BSwsSODu4zje84hQvSGECBm5k7PSiAFG2bYN3fXzVV7eyiW1eaVv/pPpgRtZCeXYOLI0BVwkTi6vy5x04t0TrmpMcthtMQIRaqXhy9aSeaLQYTHS0CiNcxregKauC5vXq2JfRsw0XpDqfMWSqhskhqDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XzWEw+Fg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1365BC433C7;
+	Wed, 28 Feb 2024 01:22:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709083290;
-	bh=xbDh3NL+tZVp1UyHoiJ9+BKG31EbR4SOQpOg0CSDafg=;
+	s=k20201202; t=1709083349;
+	bh=9/GA4VMiDY2WSNMYbprjEOxAi3HOihpqkEnkeAvurJc=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Ife+onZuQUz70GgqxLfbizZLJsArG7Kkqc9+5dR4MXnVNJAH0fbewtJVQYpd828jP
-	 cc1QErW+Y12QtmlXiUePwI01zPk1b5vkSQb1ujOg9cbEcJRY/qOq3gD64sfgzto71L
-	 YknoaVHk7DX+dYHku7VYAmgwz/BCCQ5KsJqB+Ut6WiNdXvGaoQxFOOXhPMpC4Hm0Xz
-	 UIUM4AxC9U8n/fdGhFhgY+1ixhhEmuUSvmeGGuRCI3RLuc+AtEz0abITYnVcOavZt/
-	 u1Ziw3B0gJgz7BdqqdaynKSPuL0kW1ENKV9mHWIGhg9EsQGQIn2KkjOXBTwFdc4mGY
-	 2l7z1YA8HQ4qA==
-Message-ID: <f188ef53-b74e-4173-9d34-5f04c620fc2b@kernel.org>
-Date: Wed, 28 Feb 2024 09:21:25 +0800
+	b=XzWEw+FgdpjMy/Ej/OX1YSKyG0tHnqvZWn33OzkOcm632bO8OylUI/tYmA7WgA2PC
+	 1wTtSDAQgrV9G0Cm5+qqHaUFY4FhR9pu2LKoUGstAgUinWSdMRZQCzw9+wkWbbN3Kv
+	 HAue7/iRE5XqmHGF5HrWIO1+O/IzzjUS7g5EBzyj7P1GZuiylETpIu5fmZmyi6BYN1
+	 cbPNzqtDC3BJhRRmxMCMty4nBW4IF5NufH5ShC6pqQuugMKJFjCul9HsjdoKbx2lK1
+	 6VWVH8VsfshxrHMb5+YqmxT7Egmi6psBVZ7SJueHDJdkdoLpBQS7DAyxpI6Zd3hD4E
+	 GrTk2VP/DkJjg==
+Message-ID: <b4b1406a-c9cf-4d98-85ae-b44de99c8160@kernel.org>
+Date: Wed, 28 Feb 2024 09:22:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,145 +49,313 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] f2fs: fix panic issue in small capacity device
+Subject: Re: [PATCH] f2fs: introduce SEGS_TO_BLKS/BLKS_TO_SEGS for cleanup
 Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>, Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- ke.wang@unisoc.com, hongyu.jin@unisoc.com
-References: <1707271264-5551-1-git-send-email-zhiguo.niu@unisoc.com>
- <88459a22-a21c-4c3d-8371-31d7d713b536@kernel.org>
- <CAHJ8P3KYY27M3v=9Lu-yD2ufxU1fdG-bg=G92AbpnLUx0zLz3g@mail.gmail.com>
- <f36ef5d0-8922-449e-b19c-de009c89e712@kernel.org>
- <CAHJ8P3KS2YAXm=GND8DknZqvGqTvm38Nv_9z1nEq4cTJjir-sA@mail.gmail.com>
- <Zd03RHMKBqv1f6GF@google.com>
- <CAHJ8P3Lj_1pa=npkAsMfeStEY3nWgf591tFndKTT_skFYLv+GQ@mail.gmail.com>
- <Zd4ZTokbVPkj5gy4@google.com>
+To: Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
+References: <20240221092040.403629-1-chao@kernel.org>
+ <Zd4gNUyZkxemSMIS@google.com>
 From: Chao Yu <chao@kernel.org>
-In-Reply-To: <Zd4ZTokbVPkj5gy4@google.com>
+In-Reply-To: <Zd4gNUyZkxemSMIS@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 2024/2/28 1:18, Jaegeuk Kim wrote:
-> On 02/27, Zhiguo Niu wrote:
->> On Tue, Feb 27, 2024 at 9:13 AM Jaegeuk Kim <jaegeuk@kernel.org> wrote:
->>>
->>> On 02/26, Zhiguo Niu wrote:
->>>> Dear Chao,
->>>>
->>>> On Fri, Feb 23, 2024 at 10:38 AM Chao Yu <chao@kernel.org> wrote:
->>>>>
->>>>> On 2024/2/23 10:01, Zhiguo Niu wrote:
->>>>>>
->>>>>>
->>>>>> On Thu, Feb 22, 2024 at 8:30 PM Chao Yu <chao@kernel.org <mailto:chao@kernel.org>> wrote:
->>>>>>
->>>>>>      On 2024/2/7 10:01, Zhiguo Niu wrote:
->>>>>>       > A panic issue happened in a reboot test in small capacity device
->>>>>>       > as following:
->>>>>>       > 1.The device size is 64MB, and main area has 24 segments, and
->>>>>>       > CONFIG_F2FS_CHECK_FS is not enabled.
->>>>>>       > 2.There is no any free segments left shown in free_segmap_info,
->>>>>>       > then another write request cause get_new_segment get a out-of-bound
->>>>>>       > segment with segno 24.
->>>>>>       > 3.panic happen in update_sit_entry because access invalid bitmap
->>>>>>       > pointer.
->>>>>>
->>>>>>      Zhiguo,
->>>>>>
->>>>>>      Can you please try below patch to see whether it can fix your problem?
->>>>>>
->>>>>>      https://lore.kernel.org/linux-f2fs-devel/20240222121851.883141-3-chao@kernel.org <https://lore.kernel.org/linux-f2fs-devel/20240222121851.883141-3-chao@kernel.org>
->>>>>>
->>>>>>      Thanks,
->>>>>>
->>>>>>
->>>>>> Dear Chao,
->>>>>> I need to coordinate the testing resources. The previous testing has been stopped because it was fixed with the current patch. In addition, this requires stability testing to reproduce, so it will take a certain amount of time. If there is any situation, I will tell you in time.
->>>>>
->>>>> Zhiguo, thank you!
->>>>
->>>> We tested this patch  this weekend on the previous version with
->>>> problem, and it can not reproduce panic issues,
->>>> so this patch should fix the original issue.
->>>> thanks！
->>>
->> Dear Jaegeuk,
->>> Hey, do you guys please point out which patches were tested without what?
->> This problem occurred during our platform stability testing.
->> it can be fixed by my  this patch set, mainly be fixed by:
->> f2fs: fix panic issue in update_sit_entry & f2fs: enhance judgment
->> conditions of GET_SEGNO
->> and Chao's patch can also fix this problems testing without my patch
->>> IOWs, which patches should I remove and keep Chao's patch?
->> I think chao's patch is more reasonable, it does error handling more complete.
->> but my patch just do some sanity check for return value of GET_SEGNO
->> Same as other codes(update_segment_mtime)
->> and i think it also needed except this part:
+On 2024/2/28 1:47, Jaegeuk Kim wrote:
+> On 02/21, Chao Yu wrote:
+>> Just cleanup, no functional change.
+>>
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/f2fs/debug.c   |  7 +++----
+>>   fs/f2fs/f2fs.h    | 14 ++++++++------
+>>   fs/f2fs/gc.c      | 10 +++++-----
+>>   fs/f2fs/gc.h      |  4 ++--
+>>   fs/f2fs/segment.c | 12 ++++++------
+>>   fs/f2fs/segment.h |  8 ++++----
+>>   fs/f2fs/super.c   | 16 ++++++++--------
+>>   fs/f2fs/sysfs.c   |  4 ++--
+>>   8 files changed, 38 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+>> index 6617195bd27e..12893477f2e4 100644
+>> --- a/fs/f2fs/debug.c
+>> +++ b/fs/f2fs/debug.c
+>> @@ -134,7 +134,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+>>   	si->cur_ckpt_time = sbi->cprc_info.cur_time;
+>>   	si->peak_ckpt_time = sbi->cprc_info.peak_time;
+>>   	spin_unlock(&sbi->cprc_info.stat_lock);
+>> -	si->total_count = (int)sbi->user_block_count / BLKS_PER_SEG(sbi);
+>> +	si->total_count = BLKS_TO_SEGS(sbi, (int)sbi->user_block_count);
+>>   	si->rsvd_segs = reserved_segments(sbi);
+>>   	si->overp_segs = overprovision_segments(sbi);
+>>   	si->valid_count = valid_user_blocks(sbi);
+>> @@ -175,11 +175,10 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+>>   	si->alloc_nids = NM_I(sbi)->nid_cnt[PREALLOC_NID];
+>>   	si->io_skip_bggc = sbi->io_skip_bggc;
+>>   	si->other_skip_bggc = sbi->other_skip_bggc;
+>> -	si->util_free = (int)(free_user_blocks(sbi) >> sbi->log_blocks_per_seg)
+>> +	si->util_free = (int)(BLKS_TO_SEGS(sbi, free_user_blocks(sbi)))
+>>   		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
+>>   		/ 2;
+>> -	si->util_valid = (int)(written_block_count(sbi) >>
+>> -						sbi->log_blocks_per_seg)
+>> +	si->util_valid = (int)(BLKS_TO_SEGS(sbi, written_block_count(sbi)))
+>>   		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
+>>   		/ 2;
+>>   	si->util_invalid = 50 - si->util_free - si->util_valid;
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index dad2774ca72f..8a6fd4352a0e 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -1813,12 +1813,14 @@ struct f2fs_sb_info {
+>>   };
+>>   
+>>   /* Definitions to access f2fs_sb_info */
+>> -#define BLKS_PER_SEG(sbi)					\
+>> -	((sbi)->blocks_per_seg)
+>> -#define BLKS_PER_SEC(sbi)					\
+>> -	((sbi)->segs_per_sec << (sbi)->log_blocks_per_seg)
+>> -#define SEGS_PER_SEC(sbi)					\
+>> -	((sbi)->segs_per_sec)
+>> +#define SEGS_TO_BLKS(sbi, segs)					\
+>> +		((segs) << (sbi)->log_blocks_per_seg)
 > 
-> Thanks for confirmation. It seems it'd be better to revert yours and apply
-> Chao's patch first. If you think there's something to improve on top of it,
-> could you please send another patch afterwards?
+> 
+> I also applied this.
+> 
+>   /* Definitions to access f2fs_sb_info */
+>   #define SEGS_TO_BLKS(sbi, segs)                                        \
+> -               ((segs) << (sbi)->log_blocks_per_seg)
+> +               (((long long)segs) << (sbi)->log_blocks_per_seg)
+>   #define BLKS_TO_SEGS(sbi, blks)                                        \
+>                  ((blks) >> (sbi)->log_blocks_per_seg)
 
-Agreed.
+Thank you, looks fine.
 
 Thanks,
 
 > 
->>
+>> +#define BLKS_TO_SEGS(sbi, blks)					\
+>> +		((blks) >> (sbi)->log_blocks_per_seg)
+>> +
+>> +#define BLKS_PER_SEG(sbi)	((sbi)->blocks_per_seg)
+>> +#define BLKS_PER_SEC(sbi)	(SEGS_TO_BLKS(sbi, (sbi)->segs_per_sec))
+>> +#define SEGS_PER_SEC(sbi)	((sbi)->segs_per_sec)
+>>   
+>>   __printf(3, 4)
+>>   void f2fs_printk(struct f2fs_sb_info *sbi, bool limit_rate, const char *fmt, ...);
+>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+>> index 3ff126316d42..6d160d50e14e 100644
+>> --- a/fs/f2fs/gc.c
+>> +++ b/fs/f2fs/gc.c
+>> @@ -301,7 +301,7 @@ static unsigned int get_max_cost(struct f2fs_sb_info *sbi,
+>>   
+>>   	/* LFS */
+>>   	if (p->gc_mode == GC_GREEDY)
+>> -		return 2 * BLKS_PER_SEG(sbi) * p->ofs_unit;
+>> +		return SEGS_TO_BLKS(sbi, 2 * p->ofs_unit);
+>>   	else if (p->gc_mode == GC_CB)
+>>   		return UINT_MAX;
+>>   	else if (p->gc_mode == GC_AT)
+>> @@ -347,7 +347,7 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
+>>   	mtime = div_u64(mtime, SEGS_PER_SEC(sbi));
+>>   	vblocks = div_u64(vblocks, SEGS_PER_SEC(sbi));
+>>   
+>> -	u = (vblocks * 100) >> sbi->log_blocks_per_seg;
+>> +	u = BLKS_TO_SEGS(sbi, vblocks * 100);
+>>   
+>>   	/* Handle if the system time has changed by the user */
+>>   	if (mtime < sit_i->min_mtime)
+>> @@ -2060,7 +2060,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+>>   	raw_sb->segment_count = cpu_to_le32(segment_count + segs);
+>>   	raw_sb->segment_count_main = cpu_to_le32(segment_count_main + segs);
+>>   	raw_sb->block_count = cpu_to_le64(block_count +
+>> -			(long long)(segs << sbi->log_blocks_per_seg));
+>> +			(long long)SEGS_TO_BLKS(sbi, segs));
+>>   	if (f2fs_is_multi_device(sbi)) {
+>>   		int last_dev = sbi->s_ndevs - 1;
+>>   		int dev_segs =
+>> @@ -2076,7 +2076,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
+>>   static void update_fs_metadata(struct f2fs_sb_info *sbi, int secs)
+>>   {
+>>   	int segs = secs * SEGS_PER_SEC(sbi);
+>> -	long long blks = (long long)(segs << sbi->log_blocks_per_seg);
+>> +	long long blks = (long long)SEGS_TO_BLKS(sbi, segs);
+>>   	long long user_block_count =
+>>   				le64_to_cpu(F2FS_CKPT(sbi)->user_block_count);
+>>   
+>> @@ -2118,7 +2118,7 @@ int f2fs_resize_fs(struct file *filp, __u64 block_count)
+>>   		int last_dev = sbi->s_ndevs - 1;
+>>   		__u64 last_segs = FDEV(last_dev).total_segments;
+>>   
+>> -		if (block_count + (last_segs << sbi->log_blocks_per_seg) <=
+>> +		if (block_count + SEGS_TO_BLKS(sbi, last_segs) <=
+>>   								old_block_count)
+>>   			return -EINVAL;
+>>   	}
+>> diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
+>> index e4a75aa4160f..6a2419ddc7c6 100644
+>> --- a/fs/f2fs/gc.h
+>> +++ b/fs/f2fs/gc.h
+>> @@ -70,7 +70,7 @@ struct victim_entry {
+>>   
+>>   static inline block_t free_segs_blk_count(struct f2fs_sb_info *sbi)
+>>   {
+>> -	return free_segments(sbi) << sbi->log_blocks_per_seg;
+>> +	return SEGS_TO_BLKS(sbi, free_segments(sbi));
+>>   }
+>>   
+>>   static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
+>> @@ -78,7 +78,7 @@ static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
+>>   	block_t free_blks, ovp_blks;
+>>   
+>>   	free_blks = free_segs_blk_count(sbi);
+>> -	ovp_blks = overprovision_segments(sbi) << sbi->log_blocks_per_seg;
+>> +	ovp_blks = SEGS_TO_BLKS(sbi, overprovision_segments(sbi));
+>>   
+>>   	if (free_blks < ovp_blks)
+>>   		return 0;
+>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>> index 56927b097e30..d0209ea77dd2 100644
+>> --- a/fs/f2fs/segment.c
+>> +++ b/fs/f2fs/segment.c
+>> @@ -448,8 +448,8 @@ static inline bool excess_dirty_threshold(struct f2fs_sb_info *sbi)
+>>   	unsigned int nodes = get_pages(sbi, F2FS_DIRTY_NODES);
+>>   	unsigned int meta = get_pages(sbi, F2FS_DIRTY_META);
+>>   	unsigned int imeta = get_pages(sbi, F2FS_DIRTY_IMETA);
+>> -	unsigned int threshold = (factor * DEFAULT_DIRTY_THRESHOLD) <<
+>> -				sbi->log_blocks_per_seg;
+>> +	unsigned int threshold =
+>> +		SEGS_TO_BLKS(sbi, (factor * DEFAULT_DIRTY_THRESHOLD));
+>>   	unsigned int global_threshold = threshold * 3 / 2;
+>>   
+>>   	if (dents >= threshold || qdata >= threshold ||
+>> @@ -870,7 +870,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi)
+>>   {
+>>   	int ovp_hole_segs =
+>>   		(overprovision_segments(sbi) - reserved_segments(sbi));
+>> -	block_t ovp_holes = ovp_hole_segs << sbi->log_blocks_per_seg;
+>> +	block_t ovp_holes = SEGS_TO_BLKS(sbi, ovp_hole_segs);
+>>   	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
+>>   	block_t holes[2] = {0, 0};	/* DATA and NODE */
+>>   	block_t unusable;
+>> @@ -2178,7 +2178,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+>>   		if (!f2fs_sb_has_blkzoned(sbi) &&
+>>   		    (!f2fs_lfs_mode(sbi) || !__is_large_section(sbi))) {
+>>   			f2fs_issue_discard(sbi, START_BLOCK(sbi, start),
+>> -				(end - start) << sbi->log_blocks_per_seg);
+>> +				SEGS_TO_BLKS(sbi, end - start));
+>>   			continue;
+>>   		}
+>>   next:
+>> @@ -2289,7 +2289,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
+>>   	atomic_set(&dcc->queued_discard, 0);
+>>   	atomic_set(&dcc->discard_cmd_cnt, 0);
+>>   	dcc->nr_discards = 0;
+>> -	dcc->max_discards = MAIN_SEGS(sbi) << sbi->log_blocks_per_seg;
+>> +	dcc->max_discards = SEGS_TO_BLKS(sbi, MAIN_SEGS(sbi));
+>>   	dcc->max_discard_request = DEF_MAX_DISCARD_REQUEST;
+>>   	dcc->min_discard_issue_time = DEF_MIN_DISCARD_ISSUE_TIME;
+>>   	dcc->mid_discard_issue_time = DEF_MID_DISCARD_ISSUE_TIME;
+>> @@ -4469,7 +4469,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
+>>   #endif
+>>   
+>>   	sit_i->sit_base_addr = le32_to_cpu(raw_super->sit_blkaddr);
+>> -	sit_i->sit_blocks = sit_segs << sbi->log_blocks_per_seg;
+>> +	sit_i->sit_blocks = SEGS_TO_BLKS(sbi, sit_segs);
+>>   	sit_i->written_valid_blocks = 0;
+>>   	sit_i->bitmap_size = sit_bitmap_size;
+>>   	sit_i->dirty_sentries = 0;
 >> diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
->> index 3bf2ce46fa0907..bb22feeae1cfcb 100644
+>> index 9fe5ec619456..e72b02b67087 100644
 >> --- a/fs/f2fs/segment.h
 >> +++ b/fs/f2fs/segment.h
->> @@ -96,7 +96,8 @@ static inline void sanity_check_seg_type(struct
->> f2fs_sb_info *sbi,
->> (GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
->> #define GET_SEGNO(sbi, blk_addr) \
->> - ((!__is_valid_data_blkaddr(blk_addr)) ? \
->> + ((!__is_valid_data_blkaddr(blk_addr) || \
->> + !f2fs_is_valid_blkaddr(sbi, blk_addr, DATA_GENERIC)) ? \
->> NULL_SEGNO : GET_L2R_SEGNO(FREE_I(sbi), \
->> GET_SEGNO_FROM_SEG0(sbi, blk_addr)))
->> #define CAP_BLKS_PER_SEC(sbi)
->> because Chao's patch let new_addr=null_addr when  get_new_segment
->> returns NOSPACE,
->> so I think this can be reverted and it also saves code running time.
->> How about Chao's opinions?
->> thanks!
->>>
->>>>
->>>>>
->>>>> BTW, I've tested this patch for a while, and it looks there is no issue w/
->>>>> FAULT_NO_SEGMENT fault injection is on.
->>>>>
->>>>>> btw, Why can’t I see this patch on your branch^^?
->>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/log/?h=dev-test <https://git.kernel.org/pub/scm/linux/kernel/git/chao/linux.git/log/?h=dev-test>
->>>>>
->>>>> Too lazy to push patches in time, will do it in this weekend. :P
->>>>>
->>>>>> thanks！
->>>>>>
->>>>>>
->>>>>>       >
->>>>>>       > More detail shown in following patch sets.
->>>>>>       > The three patches are splited here because the modifications are
->>>>>>       > relatively independent and more readable.
->>>>>>       >
->>>>>>       > ---
->>>>>>       > Changes of v2: stop checkpoint when get a out-of-bound segment
->>>>>>       > ---
->>>>>>       >
->>>>>>       > Zhiguo Niu (4):
->>>>>>       >    f2fs: correct counting methods of free_segments in __set_inuse
->>>>>>       >    f2fs: fix panic issue in update_sit_entry
->>>>>>       >    f2fs: enhance judgment conditions of GET_SEGNO
->>>>>>       >    f2fs: stop checkpoint when get a out-of-bounds segment
->>>>>>       >
->>>>>>       >   fs/f2fs/file.c          |  7 ++++++-
->>>>>>       >   fs/f2fs/segment.c       | 21 ++++++++++++++++-----
->>>>>>       >   fs/f2fs/segment.h       |  7 ++++---
->>>>>>       >   include/linux/f2fs_fs.h |  1 +
->>>>>>       >   4 files changed, 27 insertions(+), 9 deletions(-)
->>>>>>       >
->>>>>>
+>> @@ -77,21 +77,21 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
+>>   #define TOTAL_SEGS(sbi)							\
+>>   	(SM_I(sbi) ? SM_I(sbi)->segment_count : 				\
+>>   		le32_to_cpu(F2FS_RAW_SUPER(sbi)->segment_count))
+>> -#define TOTAL_BLKS(sbi)	(TOTAL_SEGS(sbi) << (sbi)->log_blocks_per_seg)
+>> +#define TOTAL_BLKS(sbi)	(SEGS_TO_BLKS(sbi, TOTAL_SEGS(sbi)))
+>>   
+>>   #define MAX_BLKADDR(sbi)	(SEG0_BLKADDR(sbi) + TOTAL_BLKS(sbi))
+>>   #define SEGMENT_SIZE(sbi)	(1ULL << ((sbi)->log_blocksize +	\
+>>   					(sbi)->log_blocks_per_seg))
+>>   
+>>   #define START_BLOCK(sbi, segno)	(SEG0_BLKADDR(sbi) +			\
+>> -	 (GET_R2L_SEGNO(FREE_I(sbi), segno) << (sbi)->log_blocks_per_seg))
+>> +	 (SEGS_TO_BLKS(sbi, GET_R2L_SEGNO(FREE_I(sbi), segno))))
+>>   
+>>   #define NEXT_FREE_BLKADDR(sbi, curseg)					\
+>>   	(START_BLOCK(sbi, (curseg)->segno) + (curseg)->next_blkoff)
+>>   
+>>   #define GET_SEGOFF_FROM_SEG0(sbi, blk_addr)	((blk_addr) - SEG0_BLKADDR(sbi))
+>>   #define GET_SEGNO_FROM_SEG0(sbi, blk_addr)				\
+>> -	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) >> (sbi)->log_blocks_per_seg)
+>> +	(BLKS_TO_SEGS(sbi, GET_SEGOFF_FROM_SEG0(sbi, blk_addr)))
+>>   #define GET_BLKOFF_FROM_SEG0(sbi, blk_addr)				\
+>>   	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
+>>   
+>> @@ -891,7 +891,7 @@ static inline int nr_pages_to_skip(struct f2fs_sb_info *sbi, int type)
+>>   	if (type == DATA)
+>>   		return BLKS_PER_SEG(sbi);
+>>   	else if (type == NODE)
+>> -		return 8 * BLKS_PER_SEG(sbi);
+>> +		return SEGS_TO_BLKS(sbi, 8);
+>>   	else if (type == META)
+>>   		return 8 * BIO_MAX_VECS;
+>>   	else
+>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>> index 9976f2b0393c..bb056700b459 100644
+>> --- a/fs/f2fs/super.c
+>> +++ b/fs/f2fs/super.c
+>> @@ -3763,9 +3763,9 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
+>>   	sbi->segs_per_sec = le32_to_cpu(raw_super->segs_per_sec);
+>>   	sbi->secs_per_zone = le32_to_cpu(raw_super->secs_per_zone);
+>>   	sbi->total_sections = le32_to_cpu(raw_super->section_count);
+>> -	sbi->total_node_count =
+>> -		((le32_to_cpu(raw_super->segment_count_nat) / 2) *
+>> -		NAT_ENTRY_PER_BLOCK) << sbi->log_blocks_per_seg;
+>> +	sbi->total_node_count = SEGS_TO_BLKS(sbi,
+>> +			((le32_to_cpu(raw_super->segment_count_nat) / 2) *
+>> +			NAT_ENTRY_PER_BLOCK));
+>>   	F2FS_ROOT_INO(sbi) = le32_to_cpu(raw_super->root_ino);
+>>   	F2FS_NODE_INO(sbi) = le32_to_cpu(raw_super->node_ino);
+>>   	F2FS_META_INO(sbi) = le32_to_cpu(raw_super->meta_ino);
+>> @@ -4199,14 +4199,14 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
+>>   			if (i == 0) {
+>>   				FDEV(i).start_blk = 0;
+>>   				FDEV(i).end_blk = FDEV(i).start_blk +
+>> -				    (FDEV(i).total_segments <<
+>> -				    sbi->log_blocks_per_seg) - 1 +
+>> -				    le32_to_cpu(raw_super->segment0_blkaddr);
+>> +					SEGS_TO_BLKS(sbi,
+>> +					FDEV(i).total_segments) - 1 +
+>> +					le32_to_cpu(raw_super->segment0_blkaddr);
+>>   			} else {
+>>   				FDEV(i).start_blk = FDEV(i - 1).end_blk + 1;
+>>   				FDEV(i).end_blk = FDEV(i).start_blk +
+>> -					(FDEV(i).total_segments <<
+>> -					sbi->log_blocks_per_seg) - 1;
+>> +						SEGS_TO_BLKS(sbi,
+>> +						FDEV(i).total_segments) - 1;
+>>   				FDEV(i).bdev_handle = bdev_open_by_path(
+>>   					FDEV(i).path, mode, sbi->sb, NULL);
+>>   			}
+>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+>> index 2689cc9c3bf8..ceac3bfc5e2c 100644
+>> --- a/fs/f2fs/sysfs.c
+>> +++ b/fs/f2fs/sysfs.c
+>> @@ -493,8 +493,8 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+>>   		spin_lock(&sbi->stat_lock);
+>>   		if (t > (unsigned long)(sbi->user_block_count -
+>>   				F2FS_OPTION(sbi).root_reserved_blocks -
+>> -				(SM_I(sbi)->additional_reserved_segments <<
+>> -					sbi->log_blocks_per_seg))) {
+>> +				SEGS_TO_BLKS(sbi,
+>> +				SM_I(sbi)->additional_reserved_segments))) {
+>>   			spin_unlock(&sbi->stat_lock);
+>>   			return -EINVAL;
+>>   		}
+>> -- 
+>> 2.40.1
 
