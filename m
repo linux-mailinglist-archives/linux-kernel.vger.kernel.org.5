@@ -1,254 +1,146 @@
-Return-Path: <linux-kernel+bounces-84743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF5B86AAF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:11:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C1486AAF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:10:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE8FA1F255A0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:11:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A6F21F256E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:10:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650A336AFE;
-	Wed, 28 Feb 2024 09:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="mb4bANLr"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AFF13612C;
+	Wed, 28 Feb 2024 09:10:37 +0000 (UTC)
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D29736123;
-	Wed, 28 Feb 2024 09:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F9F3610A
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709111440; cv=none; b=E+/vlE8tcBauuy5WRAu+snBHxqRSqH/v685RFETRKKUytnUqC/K6OvdLuygNa7qpSM+p4f1aN/ndvvlQIDOTRVset8yaiWBfAzb3m2kd+4lHgbVr98VnEnLuX84z6muxyN8oS782zPpKTL0Psl82LEH7W+YbeXmtpmKnjuMgdew=
+	t=1709111437; cv=none; b=T+IzWoomwyxOpjNDpi9wshofZ7fUpI8PbNocfRELTjhTZP+vH4H/4evJe9yWx9ZfxN039ndD8B3AEMjlDujXeoHDzOAcOWvoQgZWoGb2gkUZnjw6SczBsmYfHG6ZAbZAvqUwarAmVxvxiEooSc/KRxaLPait0onaGnDQqNLZLQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709111440; c=relaxed/simple;
-	bh=b061BB84RuQChn7pUehWqftMh9aaeENZVLuDae0z2o0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m9OiLbfniZ+68c6SDnqOPX085qCb4mvb9j3bG7FMG/sG/ArIlM+fXG2QSbqHLOI8GXkNZfNXgp6MwerDTR1qvdA/f3Z89bjnoJygvxesgsA1gFJWWjATcU7qmKAxH2b/ofs0VOm6MUTdEvIdMtwZc8dsLpmcia6VDHz7li2nyQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=mb4bANLr; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=JZmRRC7+giq784NiX7u9sjbmk2jcEFr5UJNkwN1hGJM=; b=mb4bANLrw0bUApx6+o5xL7scG8
-	VEy5AiLGiStvnDJCUJ3fWXZwFXxyEOKmbye8S9rhMvpQOR+lNNsq6FuztXl5b/a3oj+0/fgSY5Ukr
-	QSEKt0JU8BeaSrIIr7iN25fvnz4uLDT3xyk9HO4qwoJFTZ2ZeqeYAtXuoQzWSWzRQZS1/2z9pzPsv
-	4VpW/k7/4do/cPp+LhdF4UMZsTTVHt/rT+vpFG1SsIq/QkQoLDa4giZQMb/nzmGXonfU3qlDVYb5c
-	BIS7a2m2hL75mdZsd6jKrs9/JfE/AHTgLHVANrxpKUVm7Ze98TeMB1r3e5dkxUHrEABgRrjltd+NY
-	0pDwW7Zw==;
-Received: from [179.93.184.120] (helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1rfFxM-004CV8-VS; Wed, 28 Feb 2024 10:10:29 +0100
-Date: Wed, 28 Feb 2024 06:10:22 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Gwendal Grignou <gwendal@chromium.org>, dlunev@chromium.org
-Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
-Message-ID: <Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
-References: <20240222203013.2649457-1-cascardo@igalia.com>
- <87bk88oskz.fsf@mail.parknet.co.jp>
- <Zdf8qPN5h74MzCQh@quatroqueijos.cascardo.eti.br>
- <874jdzpov7.fsf@mail.parknet.co.jp>
- <87zfvroa1c.fsf@mail.parknet.co.jp>
- <ZdhsYAUCe9GVMnYE@quatroqueijos.cascardo.eti.br>
- <87v86fnz2o.fsf@mail.parknet.co.jp>
- <Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
- <87le75s1fg.fsf@mail.parknet.co.jp>
+	s=arc-20240116; t=1709111437; c=relaxed/simple;
+	bh=aR+cXcaI0S9JSIHt8xgiRYYHaN66SQJElfrLEEHVaOo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r7FBmD8wiDmcnSmZ3y8CFIAq1X/xBGu3xgj+8VV7FbH/q01kchb3qb3WlFFF0XS8GUKoFfmO4QZEdVE98A2WuY+KFcb9LEUFneXJnxSqhf36yYqcwT9a1B+y/YGovm2HLR7qKWLRIpfjZlQQoWnPx9UvGZTMeNoHzTjJ0g2xvcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 681B72000F;
+	Wed, 28 Feb 2024 09:10:29 +0000 (UTC)
+Message-ID: <108c8828-5a64-4bfd-8183-f75261ed10d7@ghiti.fr>
+Date: Wed, 28 Feb 2024 10:10:29 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="ZF9ulUaRrLXtqq3l"
-Content-Disposition: inline
-In-Reply-To: <87le75s1fg.fsf@mail.parknet.co.jp>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] perf: RISCV: Fix panic on pmu overflow handler
+Content-Language: en-US
+To: Fei Wu <fei2.wu@intel.com>, atishp@atishpatra.org, anup@brainfault.org,
+ paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Atish Patra <atishp@rivosinc.com>
+References: <20240228082752.2612302-1-fei2.wu@intel.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20240228082752.2612302-1-fei2.wu@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
+
+Hi Fei,
+
+On 28/02/2024 09:27, Fei Wu wrote:
+> (1 << idx) of int is not desired when setting bits in unsigned long
+> overflowed_ctrs, use BIT() instead. This panic happens when running
+> 'perf record -e branches' on sophgo sg2042.
+>
+> [  273.311852] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000098
+> [  273.320851] Oops [#1]
+> [  273.323179] Modules linked in:
+> [  273.326303] CPU: 0 PID: 1475 Comm: perf Not tainted 6.6.0-rc3+ #9
+> [  273.332521] Hardware name: Sophgo Mango (DT)
+> [  273.336878] epc : riscv_pmu_ctr_get_width_mask+0x8/0x62
+> [  273.342291]  ra : pmu_sbi_ovf_handler+0x2e0/0x34e
+> [  273.347091] epc : ffffffff80aecd98 ra : ffffffff80aee056 sp : fffffff6e36928b0
+> [  273.354454]  gp : ffffffff821f82d0 tp : ffffffd90c353200 t0 : 0000002ade4f9978
+> [  273.361815]  t1 : 0000000000504d55 t2 : ffffffff8016cd8c s0 : fffffff6e3692a70
+> [  273.369180]  s1 : 0000000000000020 a0 : 0000000000000000 a1 : 00001a8e81800000
+> [  273.376540]  a2 : 0000003c00070198 a3 : 0000003c00db75a4 a4 : 0000000000000015
+> [  273.383901]  a5 : ffffffd7ff8804b0 a6 : 0000000000000015 a7 : 000000000000002a
+> [  273.391327]  s2 : 000000000000ffff s3 : 0000000000000000 s4 : ffffffd7ff8803b0
+> [  273.398773]  s5 : 0000000000504d55 s6 : ffffffd905069800 s7 : ffffffff821fe210
+> [  273.406139]  s8 : 000000007fffffff s9 : ffffffd7ff8803b0 s10: ffffffd903f29098
+> [  273.413660]  s11: 0000000080000000 t3 : 0000000000000003 t4 : ffffffff8017a0ca
+> [  273.421022]  t5 : ffffffff8023cfc2 t6 : ffffffd9040780e8
+> [  273.426437] status: 0000000200000100 badaddr: 0000000000000098 cause: 000000000000000d
+> [  273.434512] [<ffffffff80aecd98>] riscv_pmu_ctr_get_width_mask+0x8/0x62
+> [  273.441169] [<ffffffff80076bd8>] handle_percpu_devid_irq+0x98/0x1ee
+> [  273.447562] [<ffffffff80071158>] generic_handle_domain_irq+0x28/0x36
+> [  273.454151] [<ffffffff8047a99a>] riscv_intc_irq+0x36/0x4e
+> [  273.459659] [<ffffffff80c944de>] handle_riscv_irq+0x4a/0x74
+> [  273.465442] [<ffffffff80c94c48>] do_irq+0x62/0x92
+> [  273.470360] Code: 0420 60a2 6402 5529 0141 8082 0013 0000 0013 0000 (6d5c) b783
+> [  273.477921] ---[ end trace 0000000000000000 ]---
+> [  273.482630] Kernel panic - not syncing: Fatal exception in interrupt
+>
+> Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> Signed-off-by: Fei Wu <fei2.wu@intel.com>
+> ---
+>   drivers/perf/riscv_pmu_sbi.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+> index 16acd4dcdb96..452aab49db1e 100644
+> --- a/drivers/perf/riscv_pmu_sbi.c
+> +++ b/drivers/perf/riscv_pmu_sbi.c
+> @@ -512,7 +512,7 @@ static void pmu_sbi_set_scounteren(void *arg)
+>   
+>   	if (event->hw.idx != -1)
+>   		csr_write(CSR_SCOUNTEREN,
+> -			  csr_read(CSR_SCOUNTEREN) | (1 << pmu_sbi_csr_index(event)));
+> +			  csr_read(CSR_SCOUNTEREN) | BIT(pmu_sbi_csr_index(event)));
+>   }
+>   
+>   static void pmu_sbi_reset_scounteren(void *arg)
+> @@ -521,7 +521,7 @@ static void pmu_sbi_reset_scounteren(void *arg)
+>   
+>   	if (event->hw.idx != -1)
+>   		csr_write(CSR_SCOUNTEREN,
+> -			  csr_read(CSR_SCOUNTEREN) & ~(1 << pmu_sbi_csr_index(event)));
+> +			  csr_read(CSR_SCOUNTEREN) & ~BIT(pmu_sbi_csr_index(event)));
+>   }
+>   
+>   static void pmu_sbi_ctr_start(struct perf_event *event, u64 ival)
+> @@ -731,14 +731,14 @@ static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
+>   		/* compute hardware counter index */
+>   		hidx = info->csr - CSR_CYCLE;
+>   		/* check if the corresponding bit is set in sscountovf */
+> -		if (!(overflow & (1 << hidx)))
+> +		if (!(overflow & BIT(hidx)))
+>   			continue;
+>   
+>   		/*
+>   		 * Keep a track of overflowed counters so that they can be started
+>   		 * with updated initial value.
+>   		 */
+> -		overflowed_ctrs |= 1 << lidx;
+> +		overflowed_ctrs |= BIT(lidx);
+>   		hw_evt = &event->hw;
+>   		riscv_pmu_event_update(event);
+>   		perf_sample_data_init(&data, 0, hw_evt->last_period);
 
 
---ZF9ulUaRrLXtqq3l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+You can add:
 
-On Wed, Feb 28, 2024 at 12:38:43PM +0900, OGAWA Hirofumi wrote:
-> Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
-> 
-> >> There are many corrupted images, and attacks. Allowing too wide is
-> >> danger for fs.
-> >> 
-> >> BTW, this image works and pass fsck on windows? When I quickly tested
-> >> ev3fs.zip (https://github.com/microsoft/pxt-ev3/issues/980) on windows
-> >> on qemu, it didn't seem recognized as FAT. I can wrongly tested though.
-> >> 
-> >> Thanks.
-> >> -- 
-> >> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-> >
-> > The test image I managed to create mounts just fine on Windows. New
-> > subdirectories can be created there just as well.
-> 
-> Can you share the image somehow? And fsck (chkdsk, etc.) works without
-> any complain?
-> 
-> Thanks.
-> -- 
-> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 
-Checking the filesystem on Windows runs without any complains, but it turns the
-directory into an useless lump of data. Without checking the filesystem,
-creating and reading files from that directory works just fine.
+Thanks,
 
-I tried to use gzip or xz to compress the very sparse filesystem image that I
-got, but they made it larger on disk than it really was. So here is a script
-and pieces of the filesystem that will create a sparse 8GB image.
+Alex
 
-Thank you for looking into this.
-Cascardo.
-
---ZF9ulUaRrLXtqq3l
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="vfat2.img_1"
-Content-Transfer-Encoding: base64
-
-61iQbWtmcy5mYXQAAgggAAIAAAAA+AAAPgD3AAAIAACWg+4AiDsAAAAAAAACAAAAAQAGAAAA
-AAAAAAAAAAAAAIAAKeSRpvVOTyBOQU1FICAgIEZBVDMyICAgDh++d3ysIsB0C1a0DrsHAM0Q
-XuvwMuTNFs0Z6/5UaGlzIGlzIG5vdCBhIGJvb3RhYmxlIGRpc2suICBQbGVhc2UgaW5zZXJ0
-IGEgYm9vdGFibGUgZmxvcHB5IGFuZA0KcHJlc3MgYW55IGtleSB0byB0cnkgYWdhaW4gLi4u
-IA0KAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVapSUmFBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcnJBYYrBHQADAAAAAAAAAAAAAAAAAAAAAABVqgAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA61iQbWtm
-cy5mYXQAAgggAAIAAAAA+AAAPgD3AAAIAACWg+4AiDsAAAAAAAACAAAAAQAGAAAAAAAAAAAA
-AAAAAIAAKeSRpvVOTyBOQU1FICAgIEZBVDMyICAgDh++d3ysIsB0C1a0DrsHAM0QXuvwMuTN
-Fs0Z6/5UaGlzIGlzIG5vdCBhIGJvb3RhYmxlIGRpc2suICBQbGVhc2UgaW5zZXJ0IGEgYm9v
-dGFibGUgZmxvcHB5IGFuZA0KcHJlc3MgYW55IGtleSB0byB0cnkgYWdhaW4gLi4uIA0KAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAVapSUmFBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAcnJBYYvBHQACAAAAAAAAAAAAAAAAAAAAAABVqg==
-
---ZF9ulUaRrLXtqq3l
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="vfat2.img_2"
-Content-Transfer-Encoding: base64
-
-+P//D////w/4//8P////DwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
-
---ZF9ulUaRrLXtqq3l
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="vfat2.img_3"
-Content-Transfer-Encoding: base64
-
-+P//D////w/4//8P////DwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
-
---ZF9ulUaRrLXtqq3l
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="vfat2.img_4"
-Content-Transfer-Encoding: base64
-
-QkFERElSICAgICAQAMNFRFxYXFgAAEVEXFgDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
-
---ZF9ulUaRrLXtqq3l
-Content-Type: application/x-sh
-Content-Disposition: attachment; filename="vfat.sh"
-Content-Transfer-Encoding: quoted-printable
-
-dd if=3Dvfat2.img_1 of=3Dvfat2.img=0Add if=3Dvfat2.img_2 of=3Dvfat2.img see=
-k=3D32=0Add if=3Dvfat2.img_3 of=3Dvfat2.img seek=3D15272=0Add if=3Dvfat2.im=
-g_4 of=3Dvfat2.img seek=3D30512=0Atruncate --size 8003224064 vfat2.img=0A
---ZF9ulUaRrLXtqq3l--
 
