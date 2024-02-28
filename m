@@ -1,156 +1,106 @@
-Return-Path: <linux-kernel+bounces-85254-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC35186B2F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:21:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 522BF86B2FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:22:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE0691C2574E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:21:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A778289432
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:22:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021E515B987;
-	Wed, 28 Feb 2024 15:21:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A3D215B990;
+	Wed, 28 Feb 2024 15:22:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f5+3am7d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bt3WeIhs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4798B1C10
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:21:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B8F015B112;
+	Wed, 28 Feb 2024 15:22:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709133700; cv=none; b=Upwb1Fxw8Q3neFCfNpN1/o/SxdZqtAt+2djtYMWBliXDxF44eEuLObxT8uReg6t0Yd8NlSjUzlT04esN8vyWd8zHP+/IM7fzM6XXHHxw8rI+M2Y1bRStbJj1laLRrI0idomXz5cR/UGwrVhJP2ZEyVghgl0jbGALVoieiTbIQi8=
+	t=1709133745; cv=none; b=q3ZyUzZygHr0J5XX/K/ufOuhK8IVs7IfJU9QdifX7QF6VBKagGBRfgaWa48GYeRVw4HK4JrtRhn1/xFSqYut9tk9Bc18ptAjoPUnzyDb7WYS+3lQsTrwSo3J9VEB5C51R4K/K8XytxmkDviSwBgEr9NioScAoWAT+L5ZY3hOnt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709133700; c=relaxed/simple;
-	bh=Y2o0FRacDS3mFULfR5wkJ8AGuzyyqfzfYbMEDh5ISvY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WvDSf0Zwlov8I74q1vAggRXz7TJ3M07G8d6UiDXGIXf1Y3sNES8RypkjZ4zxvDirRRzt4czaUAkH14FaitOd922u+cc1mGVpU46aFuP80Vt7znsIiGDBw+1RqjR5ixKS+jCcEA8GtxcnL/1Y5Ku5cThi1HYTM2TfPsX3JwxZU1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f5+3am7d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BFB2C433F1;
-	Wed, 28 Feb 2024 15:21:38 +0000 (UTC)
+	s=arc-20240116; t=1709133745; c=relaxed/simple;
+	bh=nBvL+ug5h09avX9lyMoju+Baf9hhu66dKZQsdi83ohc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=CKIwmnMXcuBS7BAS+AXQ7v7uOUKygdadsFBRNpZ4U5VZn3HyxAvFwgTQ1vV2i5s2URvaIVJQIX+arqW/fSnLOHshYrtPo1oxaf9QQYSy4Bob9SZw5vBRHBmEfFUfgU45CeYKuSHH/90cnC2cnCwiOZVoJuqnlNsLWrDVSXvFO7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bt3WeIhs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ED9DC43390;
+	Wed, 28 Feb 2024 15:22:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709133699;
-	bh=Y2o0FRacDS3mFULfR5wkJ8AGuzyyqfzfYbMEDh5ISvY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f5+3am7dFzyNH3svpjQNbZ18bBVtGFxJN9sYU/AQsZYlh3HKOvEJYXZ/RP46/wB9e
-	 9u3I88AkDbLXdc3tiysjSX8/xSjhNJrflJLTTrNcKBJQlYqAPSiP3h6CxsgaEE+93F
-	 iQQQqm8aoy1QBv2qJSH18Sxg1aBveIEx5HvgfXiuK1qeYjQjZ8rAZSZ1EM+KiaTaS4
-	 F5+O1tTzYS4lkpYK3g0htvY34Q90IBR8LO7nwTXxM2H7cX3oek7Ykm7dnKsvbfH/d1
-	 yX5CDPTLtye3G6wpj4bStDej7Sv6ci9x1lPa2OLitkURzHJbYN+WB5Mgt3YprRcLsJ
-	 AhmpXBWJ+Aclw==
-Date: Wed, 28 Feb 2024 15:21:36 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Conor Dooley <conor.dooley@microchip.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] riscv: Allow NOMMU kernels to run in S-mode
-Message-ID: <20240228-reverence-vaseline-590175d7901e@spud>
-References: <20240227003630.3634533-1-samuel.holland@sifive.com>
- <20240227003630.3634533-5-samuel.holland@sifive.com>
- <20240227-seventh-overgrown-2fa453e8a775@wendy>
- <21e03db9-efb7-4e26-9b0d-4931afd62194@sifive.com>
+	s=k20201202; t=1709133744;
+	bh=nBvL+ug5h09avX9lyMoju+Baf9hhu66dKZQsdi83ohc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=Bt3WeIhs5Z0E08Xv8KSiFvHKfyCOHc+f58WMxvZJ7Upm6UPzX4+casSgucNRWzqXJ
+	 0BYOyn7+JINjVAakhETw7VTbKCKwEjzN9Dxf/6fk9fNLfMw5lhiale9PxFBaqzaFrl
+	 I27iL0O7BDWLfg2gJ/KCa9L4IPS3ZxUqyQFBrVEJ5BZSTJtpDZQ2vNZO+Q3MzCWAsA
+	 v3zcrUkn8oey11AlzqXND46YZ5lOE/KlC0/CIOiYjuGv7RQpHHOWEBXserQKqFWo1A
+	 omGS1KdY8/k9vr7Ok6LDlmGJ9JKakgfQRz6n4rfsmw5wrEb4ggXha3cV+iShi17/mo
+	 SiLSUHB3bhngw==
+Date: Wed, 28 Feb 2024 09:22:22 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+Cc: bhelgaas@google.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, alexander.stein@ew.tq-group.com,
+	decui@microsoft.com,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
+Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
+Message-ID: <20240228152222.GA272403@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mJowefI5gHiXMm/u"
-Content-Disposition: inline
-In-Reply-To: <21e03db9-efb7-4e26-9b0d-4931afd62194@sifive.com>
-
-
---mJowefI5gHiXMm/u
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240227171458.GA16664@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
-On Tue, Feb 27, 2024 at 01:02:11PM -0600, Samuel Holland wrote:
-> Hi Conor,
->=20
-> On 2024-02-27 6:24 AM, Conor Dooley wrote:
-> > On Mon, Feb 26, 2024 at 04:34:49PM -0800, Samuel Holland wrote:
-> >> For ease of testing, it is convenient to run NOMMU kernels in supervis=
-or
-> >> mode. The only required change is to offset the kernel load address,
-> >> since the beginning of RAM is usually reserved for M-mode firmware.
-> >>
-> >> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> >> ---
-> >>
-> >>  arch/riscv/Kconfig | 15 ++++++++++-----
-> >>  1 file changed, 10 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> >> index ef53c00470d6..0dc09b2ac2f6 100644
-> >> --- a/arch/riscv/Kconfig
-> >> +++ b/arch/riscv/Kconfig
-> >> @@ -64,7 +64,7 @@ config RISCV
-> >>  	select ARCH_WANTS_THP_SWAP if HAVE_ARCH_TRANSPARENT_HUGEPAGE
-> >>  	select BINFMT_FLAT_NO_DATA_START_OFFSET if !MMU
-> >>  	select BUILDTIME_TABLE_SORT if MMU
-> >> -	select CLINT_TIMER if !MMU
-> >> +	select CLINT_TIMER if RISCV_M_MODE
-> >>  	select CLONE_BACKWARDS
-> >>  	select COMMON_CLK
-> >>  	select CPU_PM if CPU_IDLE || HIBERNATION || SUSPEND
-> >> @@ -220,8 +220,12 @@ config ARCH_MMAP_RND_COMPAT_BITS_MAX
-> >> =20
-> >>  # set if we run in machine mode, cleared if we run in supervisor mode
-> >>  config RISCV_M_MODE
-> >> -	bool
-> >> -	default !MMU
-> >> +	bool "Build a kernel that runs in machine mode"
-> >> +	depends on !MMU
-> >> +	default y
-> >> +	help
-> >> +	  Select this option if you want to run the kernel in M-mode,
-> >> +	  without the assistance of any other firmware.
-> >> =20
-> >>  # set if we are running in S-mode and can use SBI calls
-> >>  config RISCV_SBI
-> >> @@ -238,8 +242,9 @@ config MMU
-> >> =20
-> >>  config PAGE_OFFSET
-> >>  	hex
-> >> -	default 0xC0000000 if 32BIT && MMU
-> >> -	default 0x80000000 if !MMU
-> >> +	default 0x80000000 if !MMU && RISCV_M_MODE
-> >> +	default 0x80200000 if !MMU
-> >> +	default 0xc0000000 if 32BIT
-> >>  	default 0xff60000000000000 if 64BIT
-> >=20
-> > The first default seen with a passing condition is the default chosen,
-> > right?
->=20
-> Yes, exactly. It's not required for the conditions to all be disjoint.
+On Tue, Feb 27, 2024 at 09:14:58AM -0800, Saurabh Singh Sengar wrote:
+> On Wed, Feb 07, 2024 at 08:30:27AM -0800, Saurabh Singh Sengar wrote:
+> > On Tue, Feb 06, 2024 at 04:07:15PM -0600, Bjorn Helgaas wrote:
+> > > On Fri, Dec 08, 2023 at 07:46:16PM -0800, Saurabh Sengar wrote:
+> > > > Currently there is a race in calling pci_create_resource_files function
+> > > > from two different therads, first therad is triggered by pci_sysfs_init
+> > > > from the late initcall where as the second thread is initiated by
+> > > > pci_bus_add_devices from the respective PCI drivers probe.
+> ...
 
-I had actually gone and checked was doing the right thing, but I didn't
-manage to convince myself that this was intended behaviour rather than
-an implementation detail. What I saw in the docs for default was:
-"If multiple default values are visible, only the first defined one is acti=
-ve"
-and I suppose "visible" is what is used to cover the if part.
+> > > Krzysztof has done a ton of work to convert these files to static
+> > > attributes, where the device model prevents most of these races:
+> > > 
+> > >   506140f9c06b ("PCI/sysfs: Convert "index", "acpi_index", "label" to static attributes")
+> > >   d93f8399053d ("PCI/sysfs: Convert "vpd" to static attribute")
+> > >   f42c35ea3b13 ("PCI/sysfs: Convert "reset" to static attribute")
+> > >   527139d738d7 ("PCI/sysfs: Convert "rom" to static attribute")
+> > >   e1d3f3268b0e ("PCI/sysfs: Convert "config" to static attribute")
+> > > 
+> > > and he even posted a series to do the same for the resource files:
+> > > 
+> > >   https://lore.kernel.org/linux-pci/20210910202623.2293708-1-kw@linux.com/
+> > > 
+> > > I can't remember why we didn't apply that at the time, and it no
+> > > longer applies cleanly, but I think that's the direction we should go.
+> > 
+> > Thanks for you review.
+> > 
+> > Please inform me if there's existing feedback explaining why this
+> > series hasn't been merged yet. I am willing to further improve it
+> > if necessary.
+> 
+> Let us know your opinion so that we can move ahead in fixing this
+> long pending bug.
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+There's no feedback on the mailing list (I checked the link above), so
+the way forward is to update the series so it applies cleanly again
+and post it as a v3.
 
-Cheers,
-Conor.
+There's no need to wait for Krzysztof to refresh it, and if you have
+time to do it, it would be very welcomed!  The best base would be
+v6.8-rc1.
 
---mJowefI5gHiXMm/u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd9PgAAKCRB4tDGHoIJi
-0p9fAP4oVyq079FR8VVeHLxfQpN1jV17v4VmsjHPNWksXn+mNQD/Rv7JMAR+mJbV
-LAy3Zpg/8TRlPfdbhnqwRAmKtOvdoQ0=
-=hrDd
------END PGP SIGNATURE-----
-
---mJowefI5gHiXMm/u--
+Bjorn
 
