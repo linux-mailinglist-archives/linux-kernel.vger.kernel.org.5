@@ -1,165 +1,238 @@
-Return-Path: <linux-kernel+bounces-84699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B66686AA64
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:48:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BBDA86AA6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:50:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A1722836F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:48:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 163A61F24958
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6389A2D61A;
-	Wed, 28 Feb 2024 08:48:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F69E2D605;
+	Wed, 28 Feb 2024 08:50:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dg0LetI4"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IIt6z4JV"
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09162D052
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:48:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0581F608
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709110104; cv=none; b=FxNYAmOjzZX9QfNCswvz3/cinJQ+zrImVUzD9LJZYj5vYscvSaGCFm3s021Qu3P6k7bW+2uh9Xp0/H3nA6xquenLWQ1tye9N+G6mG5995Ev2tZQtoVU2nr5OrftiC/FVxMtlLhcxTj4neKQNQ5ij8o6dPH1YvOoNI+dIogfnKbw=
+	t=1709110210; cv=none; b=n3fz5EpV2MyKU+5rRTHO82KXmID5Y20A8pt7YbpiZ8nRTnC1DE4OY3raaU0T1wOueHVLMiIVHX++/nFjMDDZJuXt35eMJQF+/vXBml4Pr8o2AwGJIBWF5+jJUec9uo3OCEZ4RD1I+SaN/rFWf6PCq3SA7w6575VqJPskPb8PAF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709110104; c=relaxed/simple;
-	bh=c/lbvKiivAPjD0Mp3kf9YnP5KkMypKY04lHuqLtbkUM=;
+	s=arc-20240116; t=1709110210; c=relaxed/simple;
+	bh=mLh6+aNUh4FntiPlQM+P2aEMsa+DZhrGXjkKdK+LLcw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CMUlMlXlZTznzp7gQTCbhmf1AqxDzXMxbS1tSLeoOgSVE7wCVig8USK97iFmY1Kv08G7rrjuUglQHu045lYAEY3epesMByeNZBaJKErxU4hqnOHSHqudBoOQbMDqm7TTuF439YiOnpzS8rXSIIYif1lDgArH8QTvmefOVM5pUlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dg0LetI4; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-565223fd7d9so7109a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:48:22 -0800 (PST)
+	 To:Cc:Content-Type; b=j0uNpFIJ6L4SZumi8638xskan0CgRr4fsIsqTMZvo5dx5wQe6dI5DwXbP7YkrYgQ9R8I3xpQt1i001eAcvrRgykPUa7aKnzGHWRekTX3KystO8ncSEGK/NPs+30n7vuBEFSRL0YYGZtRvg+rZB/B9M8Ls894A2qwpP4gUj/mI9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IIt6z4JV; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7d6275d7d4dso2669786241.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:50:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709110101; x=1709714901; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709110207; x=1709715007; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LOHdb4gC52VDJXjDwJCJAgGjMtqm1gMwO+f40BDHTaw=;
-        b=dg0LetI4GImURkBNInhf7UKI4sbJF0LZqyrf5Scl5y3B8dWIghsoBmvvh3QxR7Pvqc
-         pRN3vJL2bLXT6bDKpN7s7j50rqnTMgo2J9DVOzwApVT2QYlR+Q7n7iG2kRpGC0zDP8fU
-         jWKUZ87U4vjc2x87d46GbpTfeIc+navgVcc09LSsW900dhKnjENgeBo31An85tDx2s+Y
-         qbRoy/JqLSPp6iDx9THFCqAkN8lcHydWZR3UXYbpxk5R8a+orbMPsmT7WX/CoxgU8Ley
-         3aEBheZA3s25BNHj9iqL18WFSIWd8qWKrpzrMXFJsESx14Wf08MBriCiFp7Ac5wTUwqf
-         gbaA==
+        bh=SfLLRr+7TVO9BIvaySCbRAIq29D/g1YN79CAfZ4LjO4=;
+        b=IIt6z4JV9PCz5TFU72hNW/YZZvY1eyCfGJm+sD41vaKJyIwk2u4oLVcFfm250OiZIi
+         cVsAL3AEwgF20/oDTjtPKzD5aDzac/HrKqdeOtqaL4v4zx+gqR63LVIWCTkiS1Ep9dw7
+         LCvCtJHxr6y6lKLDB2jQ9VlI/HiXQ/hWQ21ChULMYzliOLYNWEQx1fjaU6suH9Zm5uXz
+         K6nj+0gzYi1OmzuB90dC2LzpLrdAmTGRZqrc2+pI/Yp0yi8gV0zUMPZJgqZqD8lVwf8m
+         G/0Rr7CDjSsH15NV6zQFh4vXyqr54ZJOv1B1ocscoehJBEEcPvPQgokcJ0DJVVu5bHGy
+         HhDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709110101; x=1709714901;
+        d=1e100.net; s=20230601; t=1709110207; x=1709715007;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LOHdb4gC52VDJXjDwJCJAgGjMtqm1gMwO+f40BDHTaw=;
-        b=p35ESCIHt8ploR0dUFajRSaQuDYbiPTVbUQNwxdrPZyEByx/eEcE1v3WtWy0t6Uucd
-         AOVqeIntAysJy9AdV5YktcLBKPXlfgmTx/ZLpYKfo6U7s3N84ezr3nEWOk6f4PO5v6ds
-         GM7nbKdWn4NoT4X9LxoDzW5B7veZ0rOFyKKibIcAyLnKlMolHvba+bHROGWQCc42j3Qt
-         +Wl8DQFjgXo0/tLl2hHMWka0Q8odsdRnhWfsReVEFR9I8xxCJcC0yXxSgJUS5ZKh4TNF
-         wXmNi+apBrPXdFIrdKpBa0RQw2gCCWJqw3CS0PM3PSeVF0QW2q+j8/+IzupOL9Plq70q
-         ZPgA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/AYFc7Q7QtxX3mcp64rCijt7hUESH/LorAzNL81SdeOu4RGITeZyhWjDwHmBtP/yoRSpBo66FGednOk4+CvUmSGSsjWlMcthocIz3
-X-Gm-Message-State: AOJu0YwzaUwvpS7gorDG+1FWbU2c5TLaFPVRKZRqn4AGJVB4/FFbOSyR
-	9J3dGK1HCnMISM6tsGCraJc8KkW7Z5J6XZB8MAJAHT8ajZR9cx2xSZQFbBWPzcHB9nvxU7aShME
-	dm3aH6+cyKCaERyQXeV0EKDilw2vKFEWw65h1
-X-Google-Smtp-Source: AGHT+IF/5h+WUoGX3+I8PwNwD6dhZfIcRNEEBiiSwHrJF/F4geD/nGTDRoUtYBissdQeflMfQZ00OnScf+6jsdjEcv8=
-X-Received: by 2002:a50:9f89:0:b0:55f:8851:d03b with SMTP id
- c9-20020a509f89000000b0055f8851d03bmr35131edf.5.1709110101052; Wed, 28 Feb
- 2024 00:48:21 -0800 (PST)
+        bh=SfLLRr+7TVO9BIvaySCbRAIq29D/g1YN79CAfZ4LjO4=;
+        b=BoSe1UwgFnLCN/Mj9g4TLs+O79d853/m8xL/i4UzUqTFHSKwRBrH0O/mclr74Z7Xbj
+         GVM+9PucDZISts/vhAhpUVu/q1xwBhe69SpH4oJ1ejvFgsu/gUuQpp3ShN5BLVPyClq7
+         UfQNanaiV6QI9eZPVVLsxJ+TgJN9VRS/BDM6JC1LjmXN6tvNTeBvJST02THlf3UVWJN6
+         kZyK4neHwW1po5AQUdnjjlMAbwYC4SNrocx3OXNmhrqmVOvT0EJqzq0XMes0WkJDD0VQ
+         n5URuhFBJC7UA9cvpE2J36R4JidZbMWW7o07bnPzTIV9vQUslRl4t3TbP90km7J6dBNZ
+         Fb5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVSSHk/65pDqDXuCop/pj3rluoo8iiZILO4BiNF83igFdijd9BoixjT3nQcENVEd3yz2/gy7VLAQQVElGJMYtsob5xTD0gX9g1eJEvp
+X-Gm-Message-State: AOJu0YyHkfo/SyTtXwVQWUJDycyACig36Hr8pKWEw+mM6ye3zEhdCeVr
+	NtjzE84vhAwBiE7c70lFKpHlmt80N/7GSzYkwFQzWXmSz/9iP3a+18jsHt5MuT1cp1NZbpVsh4N
+	ruNdy1o0+Pga+8ibRUDArsiXjXeXlVzgKaM3snQ==
+X-Google-Smtp-Source: AGHT+IFnsrl6gjCAhHgO8koFIoHLY5w/+IhehRrtWDWApTw4cgij5r0Xf31CBOYKUW7xMtxXK+PbUVZOw3b+zV+49jo=
+X-Received: by 2002:a1f:4e82:0:b0:4d1:34a1:c05f with SMTP id
+ c124-20020a1f4e82000000b004d134a1c05fmr8561580vkb.0.1709110207559; Wed, 28
+ Feb 2024 00:50:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CALkn8kLOozs5UO52SQa9PR-CiKx_mqW8VF9US94qN+ixyqnkdQ@mail.gmail.com>
-In-Reply-To: <CALkn8kLOozs5UO52SQa9PR-CiKx_mqW8VF9US94qN+ixyqnkdQ@mail.gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Wed, 28 Feb 2024 09:48:09 +0100
-Message-ID: <CANn89iLH5+KryWa3GMs-Fz+sdy9Qs7kJqfBwf0229iwgW65Hxg@mail.gmail.com>
-Subject: Re: Network performance regression in Linux kernel 6.6 for small
- socket size test cases
-To: Abdul Anshad Azeez <abdul-anshad.azeez@broadcom.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, 
-	dsahern@kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Boon Ang <boon.ang@broadcom.com>, John Savanyo <john.savanyo@broadcom.com>, 
-	Peter Jonasson <peter.jonasson@broadcom.com>, Rajender M <rajender.m@broadcom.com>
+References: <20240227131548.514622258@linuxfoundation.org>
+In-Reply-To: <20240227131548.514622258@linuxfoundation.org>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 28 Feb 2024 14:19:56 +0530
+Message-ID: <CA+G9fYvzwLgC5i-vzN22x_ocjDRD6EkYwtYyKrH=DUZjumz7vg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/52] 4.19.308-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
+	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 7:43=E2=80=AFAM Abdul Anshad Azeez
-<abdul-anshad.azeez@broadcom.com> wrote:
+On Tue, 27 Feb 2024 at 19:15, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> During performance regression workload execution of the Linux
-> kernel we observed up to 30% performance decrease in a specific networkin=
-g
-> workload on the 6.6 kernel compared to 6.5 (details below). The regressio=
-n is
-> reproducible in both Linux VMs running on ESXi and bare metal Linux.
+> This is the start of the stable review cycle for the 4.19.308 release.
+> There are 52 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Workload details:
+> Responses should be made by Thu, 29 Feb 2024 13:15:36 +0000.
+> Anything received after that time might be too late.
 >
-> Benchmark - Netperf TCP_STREAM
-> Socket buffer size - 8K
-> Message size - 256B
-> MTU - 1500B
-> Socket option - TCP_NODELAY
-> # of STREAMs - 32
-> Direction - Uni-Directional Receive
-> Duration - 60 Seconds
-> NIC - Mellanox Technologies ConnectX-6 Dx EN 100G
-> Server Config - Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz & 512G Memory
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.308-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
 >
-> Bisect between 6.5 and 6.6 kernel concluded that this regression originat=
-ed
-> from the below commit:
+> thanks,
 >
-> commit - dfa2f0483360d4d6f2324405464c9f281156bd87 (tcp: get rid of
-> sysctl_tcp_adv_win_scale)
-> Author - Eric Dumazet <edumazet@google.com>
-> Link -
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3D
-> dfa2f0483360d4d6f2324405464c9f281156bd87
->
-> Performance data for (Linux VM on ESXi):
-> Test case - TCP_STREAM_RECV Throughput in Gbps
-> (for different socket buffer sizes and with constant message size - 256B)=
-:
->
-> Socket buffer size - [LK6.5 vs LK6.6]
-> 8K - [8.4 vs 5.9 Gbps]
-> 16K - [13.4 vs 10.6 Gbps]
-> 32K - [19.1 vs 16.3 Gbps]
-> 64K - [19.6 vs 19.7 Gbps]
-> Autotune - [19.7 vs 19.6 Gbps]
->
-> From the above performance data, we can infer that:
-> * Regression is specific to lower fixed socket buffer sizes (8K, 16K & 32=
-K).
-> * Increasing the socket buffer size gradually decreases the throughput im=
-pact.
-> * Performance is equal for higher fixed socket size (64K) and Autotune so=
-cket
-> tests.
->
-> We would like to know if there are any opportunities for optimization in
-> the test cases with small socket sizes.
->
+> greg k-h
 
-Sure, I would suggest not setting small SO_RCVBUF values in 2024,
-or you get what you ask for (going back to old TCP performance of year 2010=
- )
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Back in 2018, we set tcp_rmem[1] to 131072 for a good reason.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-commit a337531b942bd8a03e7052444d7e36972aac2d92
-Author: Yuchung Cheng <ycheng@google.com>
-Date:   Thu Sep 27 11:21:19 2018 -0700
+## Build
+* kernel: 4.19.308-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.19.y
+* git commit: 6ea6c59b4f34e92143ce345e6b727f8d88ca98d5
+* git describe: v4.19.307-35-g6ea6c59b4f34
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+307-35-g6ea6c59b4f34
 
-    tcp: up initial rmem to 128KB and SYN rwin to around 64KB
+## Test Regressions (compared to v4.19.307)
 
+## Metric Regressions (compared to v4.19.307)
 
-I can not enforce a minimum in SO_RCVBUF (other than the small one added in
-commit eea86af6b1e18d6fa8dc959e3ddc0100f27aff9f     ("net: sock: adapt
-SOCK_MIN_RCVBUF and SOCK_MIN_SNDBUF"))
-otherwise many test programs will break, expecting to set a low value.
+## Test Fixes (compared to v4.19.307)
+
+## Metric Fixes (compared to v4.19.307)
+
+## Test result summary
+total: 50056, pass: 43934, fail: 563, skip: 5518, xfail: 41
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 108 total, 102 passed, 6 failed
+* arm64: 33 total, 28 passed, 5 failed
+* i386: 18 total, 15 passed, 3 failed
+* mips: 20 total, 20 passed, 0 failed
+* parisc: 3 total, 0 passed, 3 failed
+* powerpc: 24 total, 24 passed, 0 failed
+* s390: 6 total, 6 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 6 total, 6 passed, 0 failed
+* x86_64: 28 total, 23 passed, 5 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-user
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-smoketest
+* ltp-syscalls
+* ltp-tracing
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
