@@ -1,159 +1,104 @@
-Return-Path: <linux-kernel+bounces-84301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BAE186A4BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:06:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B902F86A4BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:06:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C7CA1C21EE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:06:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C67F282FB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C37F1FC4;
-	Wed, 28 Feb 2024 01:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 607884C9D;
+	Wed, 28 Feb 2024 01:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eMY6CVTD"
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="euJN3HZ8"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AD0FEBF;
-	Wed, 28 Feb 2024 01:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DDE3FE1;
+	Wed, 28 Feb 2024 01:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709082374; cv=none; b=tuRXd5m6FGv5Vbo2KuDD4Qpy0qMTUe+aBqtfA90+4nT0XSAYuknQ5Lcs+SPAnG8LEZ0hoXD82pfUU0NLrY7AFhEz02ArJ4OvMPka9cxpsIoZjzbvpu1Tm/HC6K/kecUoK5GeKfhbtSTJhjZrqLLlOreRpU3ZkpgZ9jmDA80h6sA=
+	t=1709082380; cv=none; b=WMIqmsndXRvKwhgwjlSe0TCISIxRiezw9v3Zx5Idhlqu5HZkbyRifyDY+ADTsEBPWPfNCDDOx1iso7zOcJc/uaTv8HsXrAkBIa5ns44Yd42/r95WKcx/3aGwoNRi0ZXVIuw1gaR6yIlQxjyFcqYOOj24R4EmyrTBsVZGWrZHALc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709082374; c=relaxed/simple;
-	bh=Sm75gcCv9xKtIq0Ia+ywMl1YZw2dek62rJr+oQKTC1g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cjU7IsNrefAwEcKZu4AKTe6gYJrnZ0ACGQd62WGCGsU9yHXfmN7lzcMZ6HrcheDdZxS10bOJ9oQm52ZWwR41HyxCKHTwuhe+QIXzACDuwb5gKlJrjo4kyUGTGATmsIhpF52vIZX/Ndu2OhV/anyRBjMOKYKKAlP5f3Mllqo54oA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eMY6CVTD; arc=none smtp.client-ip=209.85.210.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e49872f576so1656005a34.1;
-        Tue, 27 Feb 2024 17:06:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709082372; x=1709687172; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DhG2DGa6pDHH1VG928nucKPhUiyDvmB5uJFD8WxCLAk=;
-        b=eMY6CVTD1mZfy03rOZkJ4ki/QIeX53Mx2oiVe2EPjFaYG+lPUv/D05iyiotwDXcLxx
-         pfSoxsDvJ6Vz6gWEfEj0nlD4hKz/78j6xWas7xXV0t5qOnb34AahB49xjZslFbS7ev3f
-         EuWPAK7Ah4wohBdaYAO1s1PmIuoyH69zYYoWcMXgcOIvRXuFsReyHSDFNpZ5Xg6W7lQG
-         WdpJiBv2G+ySuQSQUNWljKnI2M55f9HKo8e2nLiO2qxxNLrd5ujcFOrRe4Hko4B44GBI
-         gYcKlp9UO/sr7nKIY3cTjNvPw+RzCX5H5NFLdMTnUpHjdjgUH8IFFRCeYgDgDpwABFKb
-         uX0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709082372; x=1709687172;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DhG2DGa6pDHH1VG928nucKPhUiyDvmB5uJFD8WxCLAk=;
-        b=hpmeQp1E3u3ObK7fli9lVTrrf++q1OocXyMRjwOB2IQ4P5mjUCccoV0+FECIKsMfXZ
-         dC3MUxPtZ9rNgk2HKlkRfwX2x2vhgkP0CfdIHQuI078TZkVafALz7TeL6fecPXydTUwu
-         qXiUAumrqoaT5Md2Ap1kW9Z0zNFQkwXYfdH9ZGjCHPr1EPypbC78+yQbxH8EklbHzmd4
-         Itpo1CBf2P0Q53fMimFgLppwUG7TMIgrJYsP/SXYKlvHwy+wYC3tmTMeKZPSmCnS5bDI
-         RzEffwSVuOQ/eFMnbYQdNucGuLxWQqmi2xe+q/kgAXhzAzI9MQ1JlfkauPV4vVcHRZsM
-         CbEw==
-X-Forwarded-Encrypted: i=1; AJvYcCXHmMS+0ZFqhOoxRUkh1NRHhQqc0xVp5vJLuBBH1w1u4dy0Thunx9cnCIWJfcoRRDhpjJFz5yIhxNeRJxLiAm46Wc+U0FCZjoSKupS+inKuREo9NSwKE0TBVQ/voqEsaKdXaA+739Wz8s1wUp57xiHbZ32ECXmflxmyaUHS2taDBcYVH8nZXyPm+E1DVg6eGOjy+S6FSGRnyqr2BpLY7OKKzg==
-X-Gm-Message-State: AOJu0Ywj/p8Yq0KjGKESJdBygDWKMxL2dw1X/DJuji3b99/UTiBNGLzn
-	hjf+N74+y17B/YRR4E9GJSMe3F7FlcHKIvcO/qKGzM+X5297HTLn
-X-Google-Smtp-Source: AGHT+IFKfO0y13JodeF6eFlc6IWCbbbk2Jvw3nQLEBpJsjWeW7+WZ/Ry4CGjgxNXq0G9thCXP1TIMA==
-X-Received: by 2002:a9d:6a9a:0:b0:6e4:8d2d:64e5 with SMTP id l26-20020a9d6a9a000000b006e48d2d64e5mr11096665otq.13.1709082372064;
-        Tue, 27 Feb 2024 17:06:12 -0800 (PST)
-Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
-        by smtp.gmail.com with ESMTPSA id p4-20020a056830338400b006e2d8b5d9e5sm1713834ott.21.2024.02.27.17.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 17:06:11 -0800 (PST)
-Sender: John Groves <grovesaustin@gmail.com>
-Date: Tue, 27 Feb 2024 19:06:09 -0600
-From: John Groves <John@groves.net>
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
-	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
-	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
-	dave.hansen@linux.intel.com, gregory.price@memverge.com
-Subject: Re: [RFC PATCH 08/20] famfs: Add famfs_internal.h
-Message-ID: <agvghv2lask3iazxtycynwkdydrxqula3pwbrusvwn3e2fz6jd@nrmpnbamp6f7>
-References: <cover.1708709155.git.john@groves.net>
- <13556dbbd8d0f51bc31e3bdec796283fe85c6baf.1708709155.git.john@groves.net>
- <20240226124818.0000251d@Huawei.com>
- <u6nfwlidsmmhejsboqdo4r2juox4txkzt4ffjlnlcqzzrwthlt@wsh5eb5xeghj>
- <20240227102846.00003eef@Huawei.com>
+	s=arc-20240116; t=1709082380; c=relaxed/simple;
+	bh=YS2pYE1GPnWlMWhWuj4MACHPGS3lXGICITby3+Zw2NY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=sRcJo58Jm7t6cnhX88hu7ruuoTDo/PRLI3gAcAEn0lsKqhFCyBvPRajjxvV0o9EtZ7xaroGarNIvCIH6qDeg5QQ0DyaFfCYOgbCnViAcgKpwEZE6QahyzaD1wTyAlSK0OHLXyqi72TBhhN26zYAa2we+hjQN9doXRJIV6FzNh3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=euJN3HZ8; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709082373;
+	bh=EsbLfL+LUdutNIIrkit75sjNOPvFzTu5+vzPbE+VRdc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=euJN3HZ8oCmaPqlRWrxhp3GASuup2M+RKYBjdeU/qZnYDk3efXKobtFveeNDe6WCr
+	 GJV9Qo48Lg8FxOOegzXdFy1an+KlmjFGtYlCr5D9c4uekS36BSUS9QFRATvVWyxP6p
+	 LE5m6PgRC5ya7Egxw+9Lqequ2Azfg9tFKSrQvnHIwbddqa7omWfjUFvDQUl7zo0wf2
+	 6Vb85wCqs434apvwt58J0Wi1he7CUkqxqXjmw6m3TUc3LJRKFzlqSy8UyO9q+6Luaf
+	 OYYD0/1cvVKWazEOTWsnHEsLIChqkE2Dp1w7n4PtcdCfOlQEXoljIyzdw9Zwkvj5rD
+	 j3izuVRDEeCmQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tkx4j0FXkz4wcN;
+	Wed, 28 Feb 2024 12:06:12 +1100 (AEDT)
+Date: Wed, 28 Feb 2024 12:06:10 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: "Paul E. McKenney" <paulmck@kernel.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin"
+ <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patch in the rcu tree
+Message-ID: <20240228120610.0fdd20af@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227102846.00003eef@Huawei.com>
+Content-Type: multipart/signed; boundary="Sig_/5TXCPMz9eZ+7mWf6HaRBaIk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On 24/02/27 10:28AM, Jonathan Cameron wrote:
-> On Mon, 26 Feb 2024 11:35:17 -0600
-> John Groves <John@groves.net> wrote:
-> 
-> > On 24/02/26 12:48PM, Jonathan Cameron wrote:
-> > > On Fri, 23 Feb 2024 11:41:52 -0600
-> > > John Groves <John@Groves.net> wrote:
-> > >   
-> > > > Add the famfs_internal.h include file. This contains internal data
-> > > > structures such as the per-file metadata structure (famfs_file_meta)
-> > > > and extent formats.
-> > > > 
-> > > > Signed-off-by: John Groves <john@groves.net>  
-> > > Hi John,
-> > > 
-> > > Build this up as you add the definitions in later patches.
-> > > 
-> > > Separate header patches just make people jump back and forth when trying
-> > > to review.  Obviously more work to build this stuff up cleanly but
-> > > it's worth doing to save review time.
-> > >   
-> > 
-> > Ohhhhkaaaaay. I think you're right, just not looking forward to
-> > all that rebasing.
-> 
-> :)  Patch mangling is half the fun of upstream development :)
-> 
-> > 
-> > > Generally I'd plumb up Kconfig and Makefile a the beginning as it means
-> > > that the set is bisectable and we can check the logic of building each stage.
-> > > That is harder to do but tends to bring benefits in forcing clear step
-> > > wise approach on a patch set. Feel free to ignore this one though as it
-> > > can slow things down.  
-> > 
-> > I'm not sure that's practical. A file system needs a bunch of different
-> > kinds of operations
-> > - super_operations
-> > - fs_context_operations
-> > - inode_operations
-> > - file_operations
-> > - dax holder_operations, iomap_ops
-> > - etc.
-> > 
-> > Will think about the dependency graph of these entities, but I'm not sure
-> > it's tractable...
-> 
-> Sure.  There's a difference though between doing something useful (or
-> even successfully loading) and being able to build it at intermediate steps.
-> I'm only looking for buildability.
-> 
-> If not possible, even with a few stubs, empty ops structures etc
-> then fair enough.
-> 
-> Jonathan
+--Sig_/5TXCPMz9eZ+7mWf6HaRBaIk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'm through at least the first stage of grief on this. By the time we're
-through this I'll be able to reconstitute the whole bloody thing from memory,
-backwards :D
+Hi all,
 
-John
+The following commit is also in the tip tree as a different commit
+(but the same patch):
 
+  020eee167cca ("x86/nmi: Fix "in NMI handler" check")
+
+This is commit
+
+  d54e56f31a34 ("x86/nmi: Fix the inverse "in NMI handler" check")
+
+in the tip tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5TXCPMz9eZ+7mWf6HaRBaIk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXehwIACgkQAVBC80lX
+0GxzwAgAh5uVu9ue3N5Xzr2IEufz/54zo+ymBLNW/yCvDzvbr3MvOhmHnjQKgM74
+eJn/Cv9X6/xT9pARQX+9lKWut7TM4WAiUDSHNu9sddDUi6n5FcVH8fzTRzossdeY
+BG+GJiM7O3nQa6D0tpTbau0v85Tkar3iCmU0/NBSDzAJ2boD4uPg+3s2F2cUoW1y
+YN/baMT8ECCkVdCmWsJ0UOz1SO/6j7p/hk0+KXs57ykI0wrXMm+HbTGPeeBCJ0Zj
+35j/zDNp0ir4T72Y/LFVN9IZX5KaGZUeIIaHeAkQpidc+z8yAvCDb7wWfzC+gEnV
+WBnuC+GNj8RussheX/M5jMd8Z18sKQ==
+=TXNg
+-----END PGP SIGNATURE-----
+
+--Sig_/5TXCPMz9eZ+7mWf6HaRBaIk--
 
