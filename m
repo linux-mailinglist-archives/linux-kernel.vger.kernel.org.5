@@ -1,165 +1,115 @@
-Return-Path: <linux-kernel+bounces-85125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7655586B0B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:46:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C08A86B0B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:47:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D788AB27354
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:46:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB72E28CC33
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC0F14F979;
-	Wed, 28 Feb 2024 13:46:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EAEC14F98E;
+	Wed, 28 Feb 2024 13:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="O/YgCYQD"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KtY7nQTM"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3772014DFD6;
-	Wed, 28 Feb 2024 13:46:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24AD14DFD6
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:46:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709127998; cv=none; b=eNBYffaLUvDhNfOfUwA+IPw5/g07D61AQ219fi/2arZwIEHsvxNXGUbPHKoqtMV56cfFRFE4rxQpYaH6Axh1qN8h4PZZCJFbNBa5GgwFDM6IKypRg+gZwTEVFoP/19L3XtL9kKGsQc2aGRsBoSz8bn6Q6hj5xJ6aHoaagjSW9Jg=
+	t=1709128017; cv=none; b=Z/92f85gf+KxxK/jSs+9ypRcyhp8KrsvM8kS+SOLgaPF50S+xl1XP58rnm9oItbjlehTFMnRmpyK/gw75FBgMfq1ivefuvFvuwgS7f8mp2H0al20PVB8Ejd8CG/PWyk7Sk3heakuPjQ1A0bQLtdef2Ar0RONbZyESZf8UCWaqLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709127998; c=relaxed/simple;
-	bh=5ClQvTqbw9dWroMtzRxVjJD1S/jKRAq+aYt+MzEpEoA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=fZCDjx2IzDYmV7kPlnV4mapXgyC55Mb8YA8unB86fEQUOCFNqFpQWVDYZ02IeTl8n6fxMbNy+ikcE3Yj3Piw7NNeEU4moVyP1na+VmDRUGbcyKmcUIxZNNC5fGkpCaW01lrj+rFKTcDFH7g8F0+OS8+hvZlK5r75a2HwVvZXqQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=O/YgCYQD; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e4b03f0903so754570a34.3;
-        Wed, 28 Feb 2024 05:46:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709127995; x=1709732795;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1709128017; c=relaxed/simple;
+	bh=ymHrqDk7VWzL+X4vUhdrura4R4GWKkZNuZaV7hmNw2c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DzR7S2ycnhWleTq3vSoI/ZN/7nt4G/nIOV9GFDRk5lMITqWtv/uUTV6AZ9lFA2ZTrrYrvP03Bx75NwCYeNzrEhrMOLGKDyTo3OwPm+o0275X9Yh3mXwqIzuTIBExVguQUrEzcfmhtC2qaZFop1SZpTbGGJU8E2YJNQChVHmGs3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KtY7nQTM; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412a2c2ce88so55515e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:46:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709128014; x=1709732814; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T00DVPV0QDu6L2fFl0PLla69pcFGEB7rCw/GF1ZnL7w=;
-        b=JBicfe4HPZGCDHaIAWvbN7cYRG1Fdz4u2kOxnhpHfUUQSOFSkIeorAP48poNNdu7u5
-         MxGgSi0LFdYL7HfQ+YKK0+GVN/yFJF6bUNOqdnXHvb91MEhyfvekmng52SI03AbM7zut
-         ZyPXG3JwtoYHW1+v9i/RGFmqVD2V5GH6lXmPvKoW/eUKo0KxdGFF73zfyXaNAiNDZI0e
-         X2PoXFijqHy34HXN2dGlCngOw00N275foaicISkmCsxmFHE/ImO6kft33PRGM4Am7Bdx
-         CklKcy9fyDuSsB/s+FtzX/8CCW49Tr7EeeyOkEekK57+rLba1ILzH5HKtbyKQ5giRjjm
-         I4eg==
-X-Forwarded-Encrypted: i=1; AJvYcCXlvUm7kimX9qCvydwEidXa8qZO7B4zRYUgx3+sjmT+sTQyN206Iveg9+1mnWOl3x9KhHWkzInZOJB8HRFZHcOSWlcmovzqz0qoWXIqpiIYUZozGiOfkK0vvIW8SbaJI7DguVlHVpc=
-X-Gm-Message-State: AOJu0YzxbW7JfbPyeMSQVg9lrFk1SdhhxeGNeOsGv39orKr8o+A8ELQF
-	24xu/Vgl+kzueoeBRBtewC8AI8pTQS5nPgINHXGSR0rEiYfr0ikCEdxfphhBDWP8bw==
-X-Google-Smtp-Source: AGHT+IFQrJSaXarzg2sYFI/mJxr1sNz23Vi7MjRP4ReJT24KWmrBTE9rLgMG064q1zb5IiWVCi7EiA==
-X-Received: by 2002:a05:6830:1da1:b0:6e4:2c63:66d with SMTP id z1-20020a0568301da100b006e42c63066dmr14153009oti.27.1709127995222;
-        Wed, 28 Feb 2024 05:46:35 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id m24-20020a635818000000b005dc9ab425c2sm7675389pgb.35.2024.02.28.05.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 05:46:34 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709127992;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=T00DVPV0QDu6L2fFl0PLla69pcFGEB7rCw/GF1ZnL7w=;
-	b=O/YgCYQDhzPZ/UGlnWaSH6IBlcN5LqqTVGZhcyL57h+ENricyGdnXwXxLpLmK+UlZHnBab
-	r4bEYvO0Bhuq83RlVVszlhRSdAVgu6KrbHwQHhRc2UhabLxtzPIvz8+JzzNd2DBgX2XNmh
-	CnmgLR5YIALtgPSpbth7tb4BKEvbsH1//NlNXDDDd9Duee47hHbMvfBTRi1YAEcsCzieg8
-	VP8oRG5GksucpI8OUSzV4xHXSzIk+3VIZFMiZ0L2m1ObHGC3HMu1Iq0ertPVcBk/6iwnNW
-	wfhN2srJg5MsdrtIbmyLaMUniqHTGQF/JLEplyU/R/Q3tSZ6ikeahVSgoLyjUA==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Wed, 28 Feb 2024 10:46:28 -0300
-Subject: [PATCH] power: supply: move power_supply_attr_group into #ifdef
- block
+        bh=ymHrqDk7VWzL+X4vUhdrura4R4GWKkZNuZaV7hmNw2c=;
+        b=KtY7nQTMZxeR7j4kTDdTEmi0nsBci+s3Ji8uufm1eHtjPNapqRCsRdOhpYAZ8bvoqy
+         f9Ee8ba29vkRD5wgC1VSgDP75rEMCPokRqs3SbmOCRw+hNHLgBeBwAEhJGpRVCfFt19C
+         1Fud7A1SV5z6KHZIfI0Fj03SHKtJIKKw+Cz7YJ5s2+FU1VKVzk7iyNUSdax9hv+bMD8e
+         AsGEDM9X/LrUu9Be0JqLx06IcnvyRAvJM5fu0sUvYLngFxT6n990nmeQztIuZv5IbS4K
+         yvJvJDNlSRzhTL5wHbmLwO9lHqqopaEFdCfsqYzjHIxjTtNDx2evDDLI94tfu8z+xnnP
+         Pzmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709128014; x=1709732814;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ymHrqDk7VWzL+X4vUhdrura4R4GWKkZNuZaV7hmNw2c=;
+        b=ocH0E0H/G6DqYf9EoQTukLzUSVQfTub1N4pX+Inr7E6/EWiWFiJd4Eta/ew+0RszI7
+         4UvKhpEW9iSwy2RS46D+KVE3nDns0iKIcLrmKpD7GUtqUPABTV11BPY5U410UGLeVBg+
+         4+KlZylJalOKunjySJIrwF2SSq7n5CuS7fGVDYJ+BHJnMohgCTQyyHajdLrBz7rZdjA/
+         t0DP4Hn6fMyKag6rsOLdGsHzfkSTaBDYnJH4BPl6r68PDtNUWAND0D4OdJoJHu2XxlIr
+         YLtgB4W9Zuk6RzSkWSJ4v5DC9syUqGcTbBuzRoq3y/nYDg4SWy4+K+GIpVaicYgBZTMc
+         K3KQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3oG26E3JeTmAPXHAwZeg5gdrifyQUu1AgFYrJeJXO3+6Qu25fjfqmHC3IIhxLt6EQgrBt0tXgAKk7NvXmLMOBuge3lVTryWDdbU7o
+X-Gm-Message-State: AOJu0YxIn9WalChMOfkqGgaTJwPaXVl7rALTzn4x39953v/udhc8CjSQ
+	m9Zs8eE+hwPdgIu4uEKLwFo+q2QTUwBmc8zeKrrR4WDUzBHcCY7JX71O3V0Vlw/UJtA1Fh4lNo1
+	HO6d1V9ygvc3BzeniCMq9csOH1egPPv0KWJVk
+X-Google-Smtp-Source: AGHT+IHbeTdHpmkDN3I1vsg5Mn3d5H0C6dPTZqa9JsZGlxrtGb/ahPejZhVKDMTBZjO60g/v6fvjZztmXJ+xG6wqDpY=
+X-Received: by 2002:a05:600c:1e15:b0:412:b689:5d88 with SMTP id
+ ay21-20020a05600c1e1500b00412b6895d88mr27039wmb.3.1709128013828; Wed, 28 Feb
+ 2024 05:46:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240228-device_cleanup-power-v1-1-52c0321c48e1@marliere.net>
-X-B4-Tracking: v=1; b=H4sIADM532UC/x2MWwqAIBAArxL7nVBLYHSViDBdayFMVnpAePekz
- 4GZeSGRMCUYqheELk58hAJtXYHdTFhJsSsM2GDXIPbKFcnSbHcy4YwqHjeJQme9MXrRHhcoaRT
- y/Pzbccr5A9PBCnxmAAAA
-To: Sebastian Reichel <sre@kernel.org>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.com>, 
- linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Nathan Chancellor <nathan@kernel.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2169; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=5ClQvTqbw9dWroMtzRxVjJD1S/jKRAq+aYt+MzEpEoA=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl3zk0PGu+fqVQdG3FmeC1+n1bpwoDK9QHapBf2
- qsIVmwVFKOJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZd85NAAKCRDJC4p8Y4ZY
- piZgD/4qFM8l4BNkjHTpBgOGWwXMnCoNlfYp/T8vfxZ9NyECILlWfT6OGDgN+lY7Qc3KpYG55uj
- Jdz/JM8WS/YSeXz5OgbXLRxj+forZNZfvLMfE2OxqO908rOYrocSrtIs3hwa+eC6by7XVJW8kFb
- TKT//i0NB0X/F3PpObEYvdhE5OQGptyt02Y3XxpSXgc/CFnlqVaz58L+jlmh7dqBTPg2faVWw+o
- MxPdxSiSR96SKo00THkOPOgYzMNj+RCsNj2jv8+ZI6+LX/d1d0tqr+L5Bss4lb+RfsKAhssN9U7
- WGjUpEJTZocvt+kIqKNU/+IbDPVJHNernq0zpmiCsbjFm/xuCDdbLydGwaD5GM3Uyxvlcdeebqb
- XQrrXAeBNOKBwK06QUaFB9QSMNTqO7cLw/ED87Uc0huSun0FkeOBqwoT0XPaP5y30bjQyYP6LvL
- xE0JCaDJk9HMCm7TBcS9pcSgKpNMbKnRF7iu8uQ97y5NDnzWlgxpUBr+DCRh9ofyK4eIRs5iyxx
- J1fqDje9FhZehx1eSzatIE9DPR2AWlxunkGI586/6TRjSPEd4mCmc+HFBwHS2+RvLFRhTWVe+Hi
- qAEXmf/I/F9UKGjUJN1zvQdBCfw2jJfvzttisoV1ER33MezsmvfrYt6qu9wkm96tmqqpwzLjmub
- ThURccE9y4tvxyQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+References: <20240226022452.20558-1-adamli@os.amperecomputing.com>
+ <CANn89iLbA4_YdQrF+9Rmv2uVSb1HLhu0qXqCm923FCut1E78FA@mail.gmail.com> <a8de785f-8cc3-4075-a5f2-259e20222dcb@os.amperecomputing.com>
+In-Reply-To: <a8de785f-8cc3-4075-a5f2-259e20222dcb@os.amperecomputing.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Wed, 28 Feb 2024 14:46:39 +0100
+Message-ID: <CANn89iJAKEUu_Fdh0OC-+BJ+iVY0D2y0nAakGLxWZ8TywDu=BA@mail.gmail.com>
+Subject: Re: [PATCH] net: make SK_MEMORY_PCPU_RESERV tunable
+To: Adam Li <adamli@os.amperecomputing.com>
+Cc: corbet@lwn.net, davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
+	willemb@google.com, yangtiezhu@loongson.cn, atenart@kernel.org, 
+	kuniyu@amazon.com, wuyun.abel@bytedance.com, leitao@debian.org, 
+	alexander@mihalicyn.com, dhowells@redhat.com, paulmck@kernel.org, 
+	joel.granados@gmail.com, urezki@gmail.com, joel@joelfernandes.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, patches@amperecomputing.com, 
+	cl@os.amperecomputing.com, shijie@os.amperecomputing.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When building with CONFIG_SYSFS=n, the build error below is triggered:
+On Wed, Feb 28, 2024 at 2:21=E2=80=AFPM Adam Li <adamli@os.amperecomputing.=
+com> wrote:
+>
+> On 2/28/2024 4:38 AM, Eric Dumazet wrote:
+>
+> >>
+> >> sk_prot->memory_allocated points to global atomic variable:
+> >> atomic_long_t tcp_memory_allocated ____cacheline_aligned_in_smp;
+> >>
+> >> If increasing the per-cpu cache size from 1MB to e.g. 16MB,
+> >> changes to sk->sk_prot->memory_allocated can be further reduced.
+> >> Performance may be improved on system with many cores.
+> >
+> > This looks good, do you have any performance numbers to share ?
+>
+> I ran localhost memcached test on system with 320 CPU threads,
+> perf shows 4% cycles spent in __sk_mem_raise_allocated() -->sk_memory_all=
+ocated().
+> If increasing SK_MEMORY_PCPU_RESERV to 16MB, perf cycles spent in
+> __sk_mem_raise_allocated() drops to 0.4%.
 
-ld: drivers/power/supply/power_supply_core.o:(.data+0x0): undefined
-reference to `power_supply_attr_group'
-
-The problem is that power_supply_attr_group is needed in
-power_supply_core.c but defined in power_supply_sysfs.c, which is only
-targeted with CONFIG_SYSFS=y. Therefore, move the extern declaration into
-the #ifdef block that checks for CONFIG_SYSFS, and define an empty static
-const struct otherwise. This is safe because the macro __ATRIBUTE_GROUPS in
-power_supply_core.c will expand into an empty attribute_group array.
-
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/all/20240227214916.GA3699076@dev-arch.thelio-3990X/
-Fixes: 7b46b60944d7 ("power: supply: core: constify the struct device_type usage")
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
-This patch depends on [1].
-[1]: 20240227-fix-power_supply_init_attrs-stub-v1-1-43365e68d4b3@kernel.org
----
- drivers/power/supply/power_supply.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/power/supply/power_supply.h b/drivers/power/supply/power_supply.h
-index 7d05756398b9..06749a534db4 100644
---- a/drivers/power/supply/power_supply.h
-+++ b/drivers/power/supply/power_supply.h
-@@ -13,16 +13,16 @@ struct device;
- struct device_type;
- struct power_supply;
- 
--extern const struct attribute_group power_supply_attr_group;
--
- #ifdef CONFIG_SYSFS
- 
- extern void power_supply_init_attrs(void);
- extern int power_supply_uevent(const struct device *dev, struct kobj_uevent_env *env);
-+extern const struct attribute_group power_supply_attr_group;
- 
- #else
- 
- static inline void power_supply_init_attrs(void) {}
-+static const struct attribute_group power_supply_attr_group;
- #define power_supply_uevent NULL
- 
- #endif /* CONFIG_SYSFS */
-
----
-base-commit: 837af6b0cdb2b8df56d2df35db0444cfa1ea47c2
-change-id: 20240228-device_cleanup-power-2dcfaa7b7f2b
-
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
-
+I suspect some kind of flow/cpu steering issues then.
+Also maybe SO_RESERVE_MEM would be better for this workload.
 
