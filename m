@@ -1,205 +1,154 @@
-Return-Path: <linux-kernel+bounces-85394-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A67786B558
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:56:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF9FD86B55C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C5981C233BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:56:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B128B228E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8953FB82;
-	Wed, 28 Feb 2024 16:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1210B34CDE;
+	Wed, 28 Feb 2024 16:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="TbiyDmEO"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bVFkPQb2"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5704E1E516;
-	Wed, 28 Feb 2024 16:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099DC6EF10
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:57:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709139370; cv=none; b=X7iDer5e+/dpWukD3+IKg9S+43L3QQRD+Kk6NEmxNaAa9+fz9qRK6B+OQ5HT9GyV1f24UNPQ5Sxp5gkbwdWEpoIj3c3WNfXpZKl7cOEs/dHQonoU9ARmAKK2bvDc3revro1SFcwaQ/52AXsqDAKWk369EysN48dmDGqpfClGKKU=
+	t=1709139442; cv=none; b=LQOgIOh7HUYaVlxzosPoZxv/6v6NfPLFRBNEgjhoVHN0GFd4iM7SbnFscf9IT4YcXpHCym0ejX38hzpoAzdmFdGgbX0xj1jL/dRpkVLsYqmxo9xhvKisV2XPAM9guILpEd2diHuDM4bNDxBzOyrkQGovMuLpnZKyUgCpSbkwHoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709139370; c=relaxed/simple;
-	bh=m5f7UsTub+FQSG/nsPjXIqkJlRLxrtwLhLhVNn6H5ok=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Fm778GqPVkarJEB88t13DPIPC4FrQ/RHcQlaTg4WQbAQYN1TL4m6zVuVETouaYH1sfIRMCTmYHHTp9mL0idetbAfGUzSBghLPC9iuUjui5U+KS1Km0Nbfg0Y9Y+eQioPHCbyCphdaW0LIHoF+AnRlIUGt/f40OugmPM0xPInHYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=TbiyDmEO; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709139365;
-	bh=m5f7UsTub+FQSG/nsPjXIqkJlRLxrtwLhLhVNn6H5ok=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TbiyDmEOjcPlR/19QYVfiEgA4rt4uBmH6wejZAaGopYNCIcFxxRWl75kkXdxUQ7h+
-	 F3NnbSTNyUl29eg4CoZI+6htJC/S/uLyTaEElnKdu64ZXByLXIMQsVPcBaGjwK1g5i
-	 G3zuEuk9dhYUQMWvcxjG+uQ8Md7V6U2WarUskHoXuxtpy8xQfdvJVCHrxVJSeon+/R
-	 ai8CzRnDpPayE7ylbLZg/FnjOsJ2cNiUe5WuDNOhpOhShByBmoTyl2C577SiK0RC/w
-	 QySa9dsx/DLiRwmy/ZNaVTUgwvJFQH69ny0nyu2asPlQjSlgo5ARmbRwkLz0hZkntc
-	 /MymFNgFtUsuA==
-Received: from arisu.hitronhub.home (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: detlev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 954CF37820D9;
-	Wed, 28 Feb 2024 16:56:04 +0000 (UTC)
-From: Detlev Casanova <detlev.casanova@collabora.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-media@vger.kernel.org,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Detlev Casanova <detlev.casanova@collabora.com>
-Subject: [PATCH] test-media: Add basic tests for visl
-Date: Wed, 28 Feb 2024 11:56:08 -0500
-Message-ID: <20240228165608.1000988-1-detlev.casanova@collabora.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709139442; c=relaxed/simple;
+	bh=phbEv7ysbvgxwpG7TOOGa4Oqlsk+ALMGgBrAccT/rds=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PZ7hUi9SN6jLrp8rB7DOJhDZnzwabmzu4TaA518+Vh4ZGEOGktJH31xsj2E3LUER8li71l1lXHTE+acXTG40w5rbLK6unJMuHNTAIjTEYxoXDviTUUA7u3Wr/OkXHAnml3UGjQ4N1U8zJEPIsiAMA6/2EDiCBdYEFkstKlc/J3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bVFkPQb2; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709139439; x=1740675439;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=phbEv7ysbvgxwpG7TOOGa4Oqlsk+ALMGgBrAccT/rds=;
+  b=bVFkPQb2sKU2rDr1RII8TbACuq1+5jRMDbw7ubLLeOoGVa4Hgig2Om+G
+   OeBVCHMe1I7KgZh6Yi8VkcwAJVPIllpCFyov4sSXpezwLaxhhK7K6STD1
+   SyOzpqJhCEw9lpRe3QdOVbyDyMW5NAMGKIuusWNR3nD9m4SuyobwP8hYz
+   FpdnPAFRyP+j3JgXSwn/KwXTTBolQ/Im1s9cO2bdjMUYspNGkF/2FrfXq
+   2bgy0/hbPXEEM7wZ74XtNhZeMT5U4NvmrCcrraJOpCDw9rgYnjqLA0zK/
+   HWA+GVvZY9fMUXoEDCI9j6ufcHAEdDQH3U3V7svhlBmKvsj2pN9ey3iNd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3401200"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="3401200"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:57:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="12213419"
+Received: from josouza-mobl2.bz.intel.com ([10.87.243.88])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:57:17 -0800
+From: =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>
+To: linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Mukesh Ojha <quic_mojha@quicinc.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Jonathan Cavitt <jonathan.cavitt@intel.com>,
+	=?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>
+Subject: [PATCH v2 1/4] devcoredump: Add dev_coredump_put()
+Date: Wed, 28 Feb 2024 08:57:06 -0800
+Message-ID: <20240228165709.82089-1-jose.souza@intel.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This will run the v4l2-compliance tests on the visl device, check
-(un)binding and module reloading.
+It is useful for modules that do not want to keep coredump available
+after its unload.
+Otherwise, the coredump would only be removed after DEVCD_TIMEOUT
+seconds.
 
-Signed-off-by: Detlev Casanova <detlev.casanova@collabora.com>
+v2:
+- dev_coredump_put() documentation updated (Mukesh)
+
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Mukesh Ojha <quic_mojha@quicinc.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Jonathan Cavitt <jonathan.cavitt@intel.com>
+Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
 ---
- contrib/test/test-media | 80 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 78 insertions(+), 2 deletions(-)
+ drivers/base/devcoredump.c  | 23 +++++++++++++++++++++++
+ include/linux/devcoredump.h |  5 +++++
+ 2 files changed, 28 insertions(+)
 
-diff --git a/contrib/test/test-media b/contrib/test/test-media
-index afe20760..18a4f886 100755
---- a/contrib/test/test-media
-+++ b/contrib/test/test-media
-@@ -9,6 +9,7 @@ vivid=0
- vim2m=0
- vimc=0
- vicodec=0
-+visl=0
- cec=0
- cecpwr=--skip-test-standby-resume
- kmemleak=0
-@@ -56,10 +57,11 @@ if [ -z "$1" ]; then
- 	echo "vimc: test the vimc driver"
- 	echo "vicodec: test the vicodec driver"
- 	echo "vidtv: test the vidtv driver"
-+	echo "visl: test the visl driver"
- 	echo "cec: adds the vivid CEC compliance tests, except for the CEC standby/wakeup tests."
- 	echo "cec-pwr: adds the vivid CEC compliance tests, including the CEC standby/wakeup tests."
--	echo "all: equals 'vivid vim2m vimc vicodec vidtv cec cec-pwr'"
--	echo "mc: equals 'vivid vim2m vimc vicodec vidtv'"
-+	echo "all: equals 'vivid vim2m vimc vicodec vidtv visl cec cec-pwr'"
-+	echo "mc: equals 'vivid vim2m vimc vicodec vidtv visl'"
- 	exit 0
- fi
+diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
+index 7e2d1f0d903a6..82aeb09b3d1b5 100644
+--- a/drivers/base/devcoredump.c
++++ b/drivers/base/devcoredump.c
+@@ -304,6 +304,29 @@ static ssize_t devcd_read_from_sgtable(char *buffer, loff_t offset,
+ 				  offset);
+ }
  
-@@ -118,6 +120,7 @@ while [ ! -z "$1" ]; do
- 		vim2m=1
- 		vimc=1
- 		vicodec=1
-+		visl=1
- 		cec=1
- 		cecpwr=
- 		;;
-@@ -127,6 +130,7 @@ while [ ! -z "$1" ]; do
- 		vimc=1
- 		vicodec=1
- 		vidtv=1
-+		visl=1
- 		;;
- 	vidtv)
- 		vidtv=1
-@@ -143,6 +147,9 @@ while [ ! -z "$1" ]; do
- 	vicodec)
- 		vicodec=1
- 		;;
-+	visl)
-+		visl=1
-+		;;
- 	cec)
- 		cec=1
- 		cecpwr=--skip-test-standby-resume
-@@ -239,6 +246,75 @@ if [ $vivid -eq 1 -a $setup -eq 0 ]; then
- 	echo
- fi
++/**
++ * dev_coredump_put - remove device coredump
++ * @dev: the struct device for the crashed device
++ *
++ * dev_coredump_put() removes coredump, if exists, for a given device from
++ * the file system and free its associated data otherwise, does nothing.
++ *
++ * It is useful for modules that do not want to keep coredump
++ * available after its unload.
++ */
++void dev_coredump_put(struct device *dev)
++{
++	struct device *existing;
++
++	existing = class_find_device(&devcd_class, NULL, dev,
++				     devcd_match_failing);
++	if (existing) {
++		devcd_free(existing, NULL);
++		put_device(existing);
++	}
++}
++EXPORT_SYMBOL_GPL(dev_coredump_put);
++
+ /**
+  * dev_coredumpm - create device coredump with read/free methods
+  * @dev: the struct device for the crashed device
+diff --git a/include/linux/devcoredump.h b/include/linux/devcoredump.h
+index c008169ed2c6f..c8f7eb6cc1915 100644
+--- a/include/linux/devcoredump.h
++++ b/include/linux/devcoredump.h
+@@ -63,6 +63,8 @@ void dev_coredumpm(struct device *dev, struct module *owner,
  
-+if [ $visl -eq 1 -a $setup -eq 0 ]; then
-+	dmesg -n notice
-+	echo
-+	echo loading visl module | tee /dev/kmsg
-+	modprobe visl
-+	sleep $modprobe_time
-+	echo
-+	echo visl compliance tests | tee /dev/kmsg
-+	echo
-+	date
-+	stdbuf -oL $v4l2_compliance -m platform:visl -P -s10 -a 2>&1 | tee -a $tmp
-+	echo
-+	echo unbind visl | tee /dev/kmsg
-+	echo
-+	echo -n visl.0 >/sys/bus/platform/drivers/visl/unbind
-+	sleep $unbind_time
-+	echo
-+	echo rebind visl | tee /dev/kmsg
-+	echo
-+	echo -n visl.0 >/sys/bus/platform/drivers/visl/bind
-+	sleep 1
-+	echo
-+	echo second unbind visl | tee /dev/kmsg
-+	echo
-+	for i in `$v4l2_ctl -z platform:visl --list-devices`; do
-+		let "t = 1 + $RANDOM / 4096"
-+		echo $i: sleep ${t}s
-+		sleep $t <$i &
-+	done
-+	sleep 1
-+	echo
-+	echo -n visl.0 >/sys/bus/platform/drivers/visl/unbind
-+	sleep $reunbind_time
-+	echo
-+	echo rmmod visl | tee /dev/kmsg
-+	echo
-+	rmmod visl
-+	sleep $rmmod_time
+ void dev_coredumpsg(struct device *dev, struct scatterlist *table,
+ 		    size_t datalen, gfp_t gfp);
 +
-+	if [ $kmemleak -eq 1 ]; then
-+		echo
-+		echo kmemleak results for visl:
-+		echo
-+		echo scan >/sys/kernel/debug/kmemleak
-+		cat /sys/kernel/debug/kmemleak
-+		echo
-+		echo end of kmemleak results
-+		echo
-+	fi
-+
-+	modprobe visl
-+	sleep $modprobe_time
-+
-+	$v4l2_ctl -z platform:visl --all
-+
-+	if [ $kmemleak -eq 1 ]; then
-+		echo clear >/sys/kernel/debug/kmemleak
-+	fi
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+	echo
-+fi
-+
-+
- if [ $cec -eq 1 ]; then
- 	dmesg -n notice
- 	cec-ctl --version
++void dev_coredump_put(struct device *dev);
+ #else
+ static inline void dev_coredumpv(struct device *dev, void *data,
+ 				 size_t datalen, gfp_t gfp)
+@@ -85,6 +87,9 @@ static inline void dev_coredumpsg(struct device *dev, struct scatterlist *table,
+ {
+ 	_devcd_free_sgtable(table);
+ }
++static inline void dev_coredump_put(struct device *dev)
++{
++}
+ #endif /* CONFIG_DEV_COREDUMP */
+ 
+ #endif /* __DEVCOREDUMP_H */
 -- 
-2.43.0
+2.44.0
 
 
