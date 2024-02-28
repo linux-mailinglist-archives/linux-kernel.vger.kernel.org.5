@@ -1,230 +1,134 @@
-Return-Path: <linux-kernel+bounces-85799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27DF086BAEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:48:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E0486BAF2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:49:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF8C228229C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:48:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C758B286EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:49:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5904A71ECB;
-	Wed, 28 Feb 2024 22:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2672E7290B;
+	Wed, 28 Feb 2024 22:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rQCD9vb1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eYRSKsXT"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757E61361B0;
-	Wed, 28 Feb 2024 22:48:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B8E1361CD;
+	Wed, 28 Feb 2024 22:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709160481; cv=none; b=RoyqUpJ4luGNhIhMri+iWP+WkRXP4xFAvOOAILFLcVC1anS9MO40hDqfvy+EFDu9lhpDKaBOpkss6Ke53qxN1kQkOtE1quISIZqOdK3jF4kHHj1rmWbSXm49XnmO4Cy8EwNc/3IM6ykjWpQcQb8ZD2Xnp+KpgfiWBYHMZkXY66k=
+	t=1709160539; cv=none; b=qRGMS1bdaBbZH1oqma/acDgbJbhTxCo65y+Po0qrYnLZKd2Ayd3mwFdXyNCAQpNtyd5m4zJf02QJWKEQjgrorYOs6EMdPrXiEjsGKHkECNgZlGJ2MtJKl5XOvWlqMg8noUqQc3O47nnZMhWIaoRWR1dW8ZUtBp/UBvC0iUDi+Xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709160481; c=relaxed/simple;
-	bh=imNeDCybnQTqCSixbtIV0f49WNytkR9qirQh/BflgTg=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=MPjZlbjzsShYHr2tCFAnkQ6SZzQ0nE+2hqV2ahw5nK8trYhtWOQBZi46oex4z/JJPkJn35V5vTlIgfS2euGbD2D2uijeHaRLk+q6lC3Q7O0LPXpEU9Z6ig40656FIHLaj7Hf+l8IsQgjw8Q1VduAxViicG79V74YPR/bOrrS5pI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rQCD9vb1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA43CC433F1;
-	Wed, 28 Feb 2024 22:48:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709160481;
-	bh=imNeDCybnQTqCSixbtIV0f49WNytkR9qirQh/BflgTg=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=rQCD9vb1vr8YHCT/cgkG3W7cl4iANHxlC78YiqJYGmoVBGqQiEb+hTHozvMqU6wZU
-	 ASxO/ZoEKOmJqEd9cagY1syCwVISUecVoZBAimrvdm76l2hPsYHp89/lFlmiyBp/Sc
-	 eHAEd7hznx95l2X+bOVA8UybOZfH3P057IOz1nPtsHctrCp3QUC6ITFbPcq4o0v7Gb
-	 /IOGef/PdArRlTZRdlCRt/GfXzIXqwGTDL5RZ0slMm1aNqJzJtwk4VifL4MjgprKDd
-	 pbRTcOEl4IbYDzkkDAjCZpAhZmuMCdDnOCFgZ/PN3+xVbPZ8j+dEvVxTjInyMGPST9
-	 i7+aa6QfDAI+w==
-Message-ID: <8acf846e767884978f3bb98646433551.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709160539; c=relaxed/simple;
+	bh=aEkhJ7ls8uFYlDlRc+iLJ5Ocz8xUoDm7sxScH2TbCDY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kDGx7UdO7fviYAPkF49NnNBoMFPvANew7imv3QxtWDcRmzqZGGBSNgsl/9KRPtrEe5gkuRgRRjJqDGvBGVZfrg1GD/dbxtV5D4nkvKz+/Ucw4XdvKSU5KbF+d5ZX5/yE5BfdnJ9ny6xOVPD8aQvbpRqdbuiDyBxcl88seehK+NI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eYRSKsXT; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33dc3fe739aso849342f8f.0;
+        Wed, 28 Feb 2024 14:48:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709160536; x=1709765336; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H/le6i8BwVt+VGq3pUSqTQqqbO9l7kbzBUEhYF9A/E8=;
+        b=eYRSKsXT+J48Whv/wGJUN1ZFp5DakHSKKohmX4Wk85dfYrKWIhD4A8de95z95z2VAH
+         GDadP53NaFExQZVZSOImq0bSVjZ1iKDosCHKnQeM0qLEwp0F0kG321r6xrMr37yqfv8w
+         mGRO29wfQ85CJuBiuOLSV8KqTKmE/nBG7xcooVyB3t0jSa0xz+i5FzMj+TRWJSZV0p1F
+         1JziCgCIsgK5q/YWbs3yYugGU7drL9B6S9DBicMDX6w0PB1jQuSfAvqoKTwy6SzOlKMB
+         CRRjYVD+8eMGwqSevsj/r1kLtNNSJRbPiiBzigEIYIfW+aK83b73JMescb4D1PqpD2P/
+         avZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709160536; x=1709765336;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H/le6i8BwVt+VGq3pUSqTQqqbO9l7kbzBUEhYF9A/E8=;
+        b=BUB0Y4nQAwTQWG3p9ySI3VhYUajpMj79SqYa7ps5q1dMjF207Yv9vnco/ZcS+UQf7w
+         ZyUp3vzw++2hrExaBpqb0Vk4RVMrr2i+BmXu5p9KwSANBdQWPA12D3NrWT1t6Ls6nIKh
+         o2DTvA5JPdxzJdaI0k5Mnn6pJ6lCxau+GSEdgkBYe8PXSn71VnkVy/Wkz1eK6CA12XBk
+         xw/O0KFYDq6VXIFPcy+/ff47fjRwJyjO+1ZhONSBqaoJMiMm7glsIoWJFmV9JC4bVr7J
+         GZ/H41kHl9woRzaAh0PzaP0aacoETUCPMA4JWVXio7Menai6YFBh+LUe82xe3+lFv4KD
+         d8Vg==
+X-Forwarded-Encrypted: i=1; AJvYcCXjs+pMWOOuFgWkqoIPGhVI+A7ec1Y/ynWnc3w90znc5QXGo0etm5a+hQtGO/i+PZ2FCoqrlGawbXX/BUQIQqm8b/cwr52wn+l5fJ/Bhcft/AsH8vqjNAGVwfDEcbyNX7la6J3d6E3Ho92bfNhfLiwHJ6xFHRNHgB+tcq3+1oDGPEhCx/lryY62s0lEk1Z8
+X-Gm-Message-State: AOJu0YwO8GlPun29b/TuX19YI7cq0PTsGAwGOlcoag1WKpOymWwZNrrY
+	TtlOdjWf1WYDGt5MaFjU2KKtx1NsyO5H9rNVUflP8l7mtkDcxfFMIxhlicwbgRvz6YeHV+3DOmU
+	f9xSf/BLEznMoYB7IVdrzlCnJA8c=
+X-Google-Smtp-Source: AGHT+IF0YDHyLBY6/gXQehe5XSXN9guIRT+7y3g1ZZYDHR/P+wrXwRJOjZL9EI5NoKop6bxXRpwCfMH4z78sBr0E4C4=
+X-Received: by 2002:adf:ce0b:0:b0:33d:545b:a33e with SMTP id
+ p11-20020adfce0b000000b0033d545ba33emr83390wrn.13.1709160535981; Wed, 28 Feb
+ 2024 14:48:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <02913b40-7b74-48b3-b15d-53133afd3ba6@paulmck-laptop>
+ <3D27EFEF-0452-4555-8277-9159486B41BF@joelfernandes.org> <ba95955d-b63d-4670-b947-e77b740b1a49@paulmck-laptop>
+ <20240228173307.529d11ee@gandalf.local.home>
+In-Reply-To: <20240228173307.529d11ee@gandalf.local.home>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 28 Feb 2024 14:48:44 -0800
+Message-ID: <CAADnVQ+szRDGaDJPoBFR9KyeMjwpuxOCNys=yxDaCLYZkSkyYw@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
+	Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>, 
+	Network Development <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
+	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org, 
+	bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>, 
+	Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAP6Zq1g5gwXvYzO5fnHxG-6__gSCpNBY7VeEPyr4Qtijya6EfQ@mail.gmail.com>
-References: <20240131182653.2673554-1-tmaimon77@gmail.com> <20240131182653.2673554-4-tmaimon77@gmail.com> <74e003c6d80611ddd826ac21f48b4b3a.sboyd@kernel.org> <CAP6Zq1g5gwXvYzO5fnHxG-6__gSCpNBY7VeEPyr4Qtijya6EfQ@mail.gmail.com>
-Subject: Re: [PATCH v23 3/3] clk: npcm8xx: add clock controller
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: benjaminfair@google.com, joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com, robh+dt@kernel.org, tali.perry1@gmail.com, venture@google.com, yuenn@google.com, openbmc@lists.ozlabs.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-To: Tomer Maimon <tmaimon77@gmail.com>
-Date: Wed, 28 Feb 2024 14:47:58 -0800
-User-Agent: alot/0.10
 
-Quoting Tomer Maimon (2024-02-25 10:00:35)
-> Hi Stephen,
->=20
-> On Thu, 22 Feb 2024 at 07:58, Stephen Boyd <sboyd@kernel.org> wrote:
+On Wed, Feb 28, 2024 at 2:31=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
+> wrote:
+>
+> On Wed, 28 Feb 2024 14:19:11 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+>
+> > > >
+> > > > Well, to your initial point, cond_resched() does eventually invoke
+> > > > preempt_schedule_common(), so you are quite correct that as far as
+> > > > Tasks RCU is concerned, cond_resched() is not a quiescent state.
+> > >
+> > >  Thanks for confirming. :-)
 > >
-> > Quoting Tomer Maimon (2024-01-31 10:26:53)
-> > > diff --git a/drivers/clk/clk-npcm8xx.c b/drivers/clk/clk-npcm8xx.c
-> > > new file mode 100644
-> > > index 000000000000..eacb579d30af
-> > > --- /dev/null
-> > > +++ b/drivers/clk/clk-npcm8xx.c
-> > > @@ -0,0 +1,509 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * Nuvoton NPCM8xx Clock Generator
-> > > + * All the clocks are initialized by the bootloader, so this driver =
-allows only
-> > [...]
-> > > +
-> > > +/* external clock definition */
-> > > +#define NPCM8XX_CLK_S_REFCLK   "refclk"
-> > > +
-> > > +/* pll definition */
-> > > +#define NPCM8XX_CLK_S_PLL0     "pll0"
-> > > +#define NPCM8XX_CLK_S_PLL1     "pll1"
-> > > +#define NPCM8XX_CLK_S_PLL2     "pll2"
-> > > +#define NPCM8XX_CLK_S_PLL_GFX  "pll_gfx"
-> > > +
-> > > +/* early divider definition */
-> > > +#define NPCM8XX_CLK_S_PLL2_DIV2                "pll2_div2"
-> > > +#define NPCM8XX_CLK_S_PLL_GFX_DIV2     "pll_gfx_div2"
-> > > +#define NPCM8XX_CLK_S_PLL1_DIV2                "pll1_div2"
-> > > +
-> > > +/* mux definition */
-> > > +#define NPCM8XX_CLK_S_CPU_MUX     "cpu_mux"
-> > > +
-> > > +/* div definition */
-> > > +#define NPCM8XX_CLK_S_TH          "th"
-> > > +#define NPCM8XX_CLK_S_AXI         "axi"
+> > However, given that the current Tasks RCU use cases wait for trampoline=
+s
+> > to be evacuated, Tasks RCU could make the choice that cond_resched()
+> > be a quiescent state, for example, by adjusting rcu_all_qs() and
+> > .rcu_urgent_qs accordingly.
 > >
-> > Please inline all these string #defines to the place they're used.
-> The version V21 you mention using define only when the definition is
-> used more than once
-> https://www.spinics.net/lists/kernel/msg5045826.html
-> Should I remove all the string definitions and add the string to the arra=
-y?
+> > But this seems less pressing given the chance that cond_resched() might
+> > go away in favor of lazy preemption.
+>
+> Although cond_resched() is technically a "preemption point" and not truly=
+ a
+> voluntary schedule, I would be happy to state that it's not allowed to be
+> called from trampolines, or their callbacks. Now the question is, does BP=
+F
+> programs ever call cond_resched()? I don't think they do.
+>
+> [ Added Alexei ]
 
-If it's a clk name for a clk registered in this file it should be
-inlined. Is that the case for everything besides refclk? And even refclk
-could be inlined so that we don't have to jump to the definition of a
-string.
-
-> > > +
-> > > +static unsigned long npcm8xx_clk_div_get_parent(struct clk_hw *hw,
-> > > +                                               unsigned long parent_=
-rate)
-> > > +{
-> > > +       struct npcm8xx_clk *div =3D to_npcm8xx_clk(hw);
-> > > +       unsigned int val;
-> > > +
-> > > +       regmap_read(div->clk_regmap, div->offset, &val);
-> > > +       val =3D val >> div->shift;
-> > > +       val &=3D clk_div_mask(div->width);
-> > > +
-> > > +       return divider_recalc_rate(hw, parent_rate, val, NULL, div->f=
-lags,
-> > > +                                  div->width);
-> > > +}
-> > > +
-> > > +static const struct clk_ops npcm8xx_clk_div_ops =3D {
-> > > +       .recalc_rate =3D npcm8xx_clk_div_get_parent,
-> > > +};
-> > > +
-> > > +static int npcm8xx_clk_probe(struct platform_device *pdev)
-> > > +{
-> > > +       struct device_node *parent_np =3D of_get_parent(pdev->dev.of_=
-node);
-> >
-> > The parent of this device is not a syscon.
-> Once I have registered the map that handles both reset and the clock
-> in general is syscon, this is why we will modify the DTS so the clock
-> and the reset will be under syscon father node
->                 sysctrl: system-controller@f0801000 {
->                         compatible =3D "syscon", "simple-mfd";
->                         reg =3D <0x0 0xf0801000 0x0 0x1000>;
->=20
->                         rstc: reset-controller {
->                                 compatible =3D "nuvoton,npcm845-reset";
->                                 reg =3D <0x0 0xf0801000 0x0 0xC4>;
->                                 #reset-cells =3D <2>;
->                                 nuvoton,sysgcr =3D <&gcr>;
->                         };
->=20
->                         clk: clock-controller {
->                                 compatible =3D "nuvoton,npcm845-clk";
->                                 #clock-cells =3D <1>;
->                                 clocks =3D <&refclk>;
->                                 clock-names =3D "refclk";
->                         };
->                 };
-> You can see other drivers that using the same method like
-> https://elixir.bootlin.com/linux/v6.8-rc5/source/Documentation/devicetree=
-/bindings/clock/socionext,uniphier-clock.yaml
-
-You will need a similar file like
-Documentation/devicetree/bindings/soc/socionext/socionext,uniphier-perictrl=
-yaml
-then to describe the child nodes.
-
-Socionext may not be the best example to follow. I generally try to
-avoid syscon and simply put #reset-cells and #clock-cells in the node
-for the device. You can use the auxiliary bus to register drivers for
-clk and reset and put them into the resepective driver directories.
-Avoid syscon means random drivers can't reach into the device with a
-regmap handle and read/write registers that they're not supposed to.
-
-> >
-> > > +       struct clk_hw_onecell_data *npcm8xx_clk_data;
-> > > +       struct device *dev =3D &pdev->dev;
-> > > +       struct regmap *clk_regmap;
-> > > +       struct clk_hw *hw;
-> > > +       unsigned int i;
-> > > +
-> > > +       npcm8xx_clk_data =3D devm_kzalloc(dev, struct_size(npcm8xx_cl=
-k_data, hws,
-> > > +                                                        NPCM8XX_NUM_=
-CLOCKS),
-> > > +                                       GFP_KERNEL);
-> > > +       if (!npcm8xx_clk_data)
-> > > +               return -ENOMEM;
-> > > +
-> > > +       clk_regmap =3D syscon_node_to_regmap(parent_np);
-> > > +       of_node_put(parent_np);
-> >
-> > Is there another binding update that is going to move this node to be a
-> > child of the syscon?
-> >
-> >                 gcr: system-controller@f0800000 {
-> >                         compatible =3D "nuvoton,npcm845-gcr", "syscon";
-> >                         reg =3D <0x0 0xf0800000 0x0 0x1000>;
-> >                 };
-> No, sorry but I'm not going to use the GCR node the handle the clock
-> and reset modules, the GCR has different memory space.
-> the clock driver will have the following device tree
-
-What does the reset driver use the CGR node for? The driver looks like
-it's using it to control USB phy resets.
-
->                sysctrl: system-controller@f0801000 {
->                         compatible =3D "syscon", "simple-mfd";
->                         reg =3D <0x0 0xf0801000 0x0 0x1000>;
->=20
->                         rstc: reset-controller {
->                                 compatible =3D "nuvoton,npcm845-reset";
->                                 reg =3D <0x0 0xf0801000 0x0 0xC4>;
-
-This isn't a valid reg property for a child node like this.
-
->                                 #reset-cells =3D <2>;
->                                 nuvoton,sysgcr =3D <&gcr>;
->                         };
->=20
->                         clk: clock-controller {
->                                 compatible =3D "nuvoton,npcm845-clk";
->                                 #clock-cells =3D <1>;
->                                 clocks =3D <&refclk>;
->                                 clock-names =3D "refclk";
->                         };
->                 };
+I'm a bit lost in this thread :)
+Just answering the above question.
+bpf progs never call cond_resched() directly.
+But there are sleepable (aka faultable) bpf progs that
+can call some helper or kfunc that may call cond_resched()
+in some path.
+sleepable bpf progs are protected by rcu_tasks_trace.
+That's a very different one vs rcu_tasks.
 
