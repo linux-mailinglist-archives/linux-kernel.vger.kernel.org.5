@@ -1,276 +1,156 @@
-Return-Path: <linux-kernel+bounces-85432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B031486B5E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:25:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED77A86B5F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D9221F279B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:25:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62BD31F23F45
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C825B1FB;
-	Wed, 28 Feb 2024 17:24:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B1815CD6E;
+	Wed, 28 Feb 2024 17:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="So3wmLE+"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f3n8Kt8f"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FF53FBB2
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57C315A4A2;
+	Wed, 28 Feb 2024 17:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709141092; cv=none; b=qLAAFOWRNudeQXiR/PYNeJpQBGNc8+XHNa982S1zwu53Y73Y+JnI5Yw7W9HXAIzg7nHxvVqhi7DdGFDSuHzpGHNtst1jX2KNFhKwpCRb7FkCTLz11+d/sTAw8V/GKewBMS1zPw5Frn6fUF/G3V4dWkWGA5k4RgXnTaly5rupqI4=
+	t=1709141171; cv=none; b=YLCCbeTMgIieIMiIis4311PqUGlL1jNp4aJlTxO7kSybY+ZTMOJzc8oyKTL21u6ScThsVbYyBWLx9OnC+h5mFOy1CW/n2+MhU3fuUV6z8K4i0xakdtSeydPs8UpzTJa0cYTkGDyNaDwh3TL+4BlMK/xcZOTI0JKD7Fdj5bSyZNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709141092; c=relaxed/simple;
-	bh=soRTzd7Me30gCUd+6AIO6TJS6L30Xaor13mHaLhngq4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jzP+cVNU05aqd4ADT2oPU6CE4DyfYeCZP15NmJ/Cc0Ds8m34VXbCWWSurrdo7fqmh2wJVo7x2w+czmDxFs1j5urb4OaovvBOix8banwHTkkwRTdBlgn8I//aMbENdnNMrafLyvE7WDiTSwkw7HjB2x0KvLuZG3S5tdTFvVu9Zls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=So3wmLE+; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41SHImi6015851;
-	Wed, 28 Feb 2024 17:24:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mqVYMcMMlUFQsUkdjAg6n2QQizzlVsv07gqAGjVOnrA=;
- b=So3wmLE+1xlXKVRPvoQSl5IgoV7+AYseQFHyTb+3f7t9DaMnQ3f595vJMw9yDNPomxvh
- eTCMBZV4GMZ2LrrZ3jquSpXDK90ZKkRWitu1FsNUvjLdMgE0GMpU3/m5Es0GZIaVdpoD
- GmILclZCYJQgmYi5G50WJYe8IW/zoYP2topojCXFfR8iglleOTkHZPs7AQ4odw00Q1du
- GZwFvCGEL9aWj6MwFYa2zOYd9ptQ4pajTlVlTaiXiuzbbXDsbnimVOojltohNhmkAJNk
- xku815MOCkPikWAfOlOoGYnex4KfLacUY46adELhANvuWLsqQIvPuLWS49yTNyG8IVOa Qw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wj8wnrk3j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 17:24:34 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41SHIqOf015993;
-	Wed, 28 Feb 2024 17:24:33 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wj8wnrk1x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 17:24:33 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41SH6GTX008154;
-	Wed, 28 Feb 2024 17:24:32 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfv9mfk74-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 17:24:32 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41SHOSKO25035314
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 28 Feb 2024 17:24:30 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C450E58061;
-	Wed, 28 Feb 2024 17:24:28 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F0E3558058;
-	Wed, 28 Feb 2024 17:24:23 +0000 (GMT)
-Received: from [9.43.11.51] (unknown [9.43.11.51])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 28 Feb 2024 17:24:23 +0000 (GMT)
-Message-ID: <72c2d279-90ae-4612-9b96-e579333b8088@linux.ibm.com>
-Date: Wed, 28 Feb 2024 22:54:22 +0530
+	s=arc-20240116; t=1709141171; c=relaxed/simple;
+	bh=UNTgcEBBg73DjZmytlJ3R7l8+M00JW1cu/+Tjop0kzs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YgI27yG1PjraJwcPyQt4ISTXqPi0cpp5qtL25Gdt/ZfS5vvlVZN4WEbl8ZRRL1Ti/zuwGsgy3Vm7jTsmktawc8xLwicJ9ITJiocieAq3mW3tVJQzfIjjEBpS+jr7Wdk7LoZWkVS4mfJR7sc8vjTFOAKq4X1trLEC1ZvGKTmASlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f3n8Kt8f; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d28e465655so47399831fa.0;
+        Wed, 28 Feb 2024 09:26:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709141168; x=1709745968; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UNTgcEBBg73DjZmytlJ3R7l8+M00JW1cu/+Tjop0kzs=;
+        b=f3n8Kt8f3Mfk2/rg6mfpV9FjOeCL+EUjGNlB58HlWl07I9TBsbc5MzUgJmYCQNrKjF
+         f/yE2GpsB2gsR/IIimruiK6LG5McQ1AuvMnTslgrOPG/8HC3aLDk0ex33+vR8wuWUvMu
+         1S0EVQbAN0QNwt3xthjWEuzMqS+vQGJsRI7VOjLlKxWmTWmHFhsla/dpMBtYkqap9l0r
+         2xmEMVu4F1j44gNVTbRLPmw/58oyuFIyKvPhagnU/6BtmF8dCS7xfof9DEwKOqVhg2cw
+         8VU+QfznfIoBjvoR1E7wep/pNIaHe0iYpli/hGQtwfbULxOAr7o1cleZaNYQBXEkgxQ7
+         rJbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709141168; x=1709745968;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UNTgcEBBg73DjZmytlJ3R7l8+M00JW1cu/+Tjop0kzs=;
+        b=EM6kjJwNbNsxFgQ12hQs8Qa+HQsMHu2Dc2S1qDVCmrFAzS28GjO5t7A3bh6+2cwHEa
+         8Juj6fQIiwmTUO9dapJw/S/YuNItF5Y4PVdXPl/PkmCj8zMoUv45ZuH5qbhSVbGMjtXJ
+         lhopXgwzOanXj/+CJrQT9wJKLGjLoCIMLkIvbLCq7ckZJxcIrI4oH4ANxAo3+3FECzSF
+         QmXHXedecm0vRYH3KYGSh4HNFG2KTMp2NjAn3ug3bRzju7FxHDy+FIBe42DvPtF7XIsT
+         8+TjbfWwUkFW7JnptzWQVeeeBJ1Z3MrUMSXSCj6AMcEmZgpZIF7UXEVBSYE8FUYS7zwr
+         rNjw==
+X-Forwarded-Encrypted: i=1; AJvYcCWGjrlnB+V5OeouG2yZtlVpyZ6ndtu31I3PPCVQwFpoMVl0A4hnXEfK8zX9aGLoOSpUC2ITzJJZNywoSEEVvon/8KwaMt4rOcpvuJ0aBrwLF/LrHgdHth4t7tzCXHGUPkImJae1WeBAWVc=
+X-Gm-Message-State: AOJu0YwWh/gX1Nfqcm3hkuGLnT5r+yyyH4PT6LEWWlXffRSU1b1zUIN2
+	gIf22uf+QZRqGu+CAswnBOSYopQNclX8jfdSpBb0RrP3TkN8itOE1wQ0eVpBhDYgWkykSwQXqrE
+	PyahzcqRF+C4WBiHrblGnoQ5f6wT8+Uqn0733FA==
+X-Google-Smtp-Source: AGHT+IH1rWoewQvMELMlYHG8fdSakqFW164fjWcxkcHfJKS1Eql5fp55rbAcnXR8nYl+LnUARZaIVQMv/On3PTITdrk=
+X-Received: by 2002:a05:651c:4d3:b0:2d2:c8ee:c99b with SMTP id
+ e19-20020a05651c04d300b002d2c8eec99bmr2003504lji.29.1709141167712; Wed, 28
+ Feb 2024 09:26:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] sched/fair: Add EAS checks before updating
- overutilized
-Content-Language: en-US
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: yu.c.chen@intel.com, dietmar.eggemann@arm.com,
-        linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
-        aboorvad@linux.ibm.com, srikar@linux.vnet.ibm.com, vschneid@redhat.com,
-        morten.rasmussen@arm.com, qyousef@layalina.io, mingo@kernel.org,
-        peterz@infradead.org, vincent.guittot@linaro.org
-References: <20240228071621.602596-1-sshegde@linux.ibm.com>
- <20240228071621.602596-2-sshegde@linux.ibm.com>
- <86f000a3-3068-4c57-858d-c00e3eb6e974@arm.com>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <86f000a3-3068-4c57-858d-c00e3eb6e974@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LwbNPo9sYLxtcIBcZ2FqHeKx4th4lZtP
-X-Proofpoint-GUID: _LNIgGbO8nsthWBrN9SkJoj9Cl0-F2ik
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 clxscore=1015 impostorscore=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 bulkscore=0 phishscore=0 suspectscore=0
- spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402280137
+References: <CAOCpoWc_HQy4UJzTi9pqtJdO740Wx5Yd702O-mwXBE6RVBX1Eg@mail.gmail.com>
+ <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
+In-Reply-To: <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
+From: Patrick Plenefisch <simonpatp@gmail.com>
+Date: Wed, 28 Feb 2024 12:25:57 -0500
+Message-ID: <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
+Subject: Re: [REGRESSION] LVM-on-LVM: error while submitting device barriers
+To: stable@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@kernel.org>, 
+	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+	David Sterba <dsterba@suse.com>, regressions@lists.linux.dev, dm-devel@lists.linux.dev, 
+	linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+
+I'm unsure if this is just an LVM bug, or a BTRFS+LVM interaction bug,
+but LVM is definitely involved somehow.
+Upgrading from 5.10 to 6.1, I noticed one of my filesystems was
+read-only. In dmesg, I found:
+
+BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
+0, rd 0, flush 1, corrupt 0, gen 0
+BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
+tolerance is 0 for writable mount
+BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
+failure (errors while submitting device barriers.)
+BTRFS info (device dm-75: state E): forced readonly
+BTRFS warning (device dm-75: state E): Skipping commit of aborted transaction.
+BTRFS: error (device dm-75: state EA) in cleanup_transaction:1992:
+errno=-5 IO failure
+
+At first I suspected a btrfs error, but a scrub found no errors, and
+it continued to be read-write on 5.10 kernels.
+
+Here is my setup:
+
+/dev/lvm/brokenDisk is a lvm-on-lvm volume. I have /dev/sd{a,b,c,d}
+(of varying sizes) in a lower VG, which has three LVs, all raid1
+volumes. Two of the volumes are further used as PV's for an upper VGs.
+One of the upper VGs has no issues. The non-PV LV has no issue. The
+remaining one, /dev/lowerVG/lvmPool, hosting nested LVM, is used as a
+PV for VG "lvm", and has 3 volumes inside. Two of those volumes have
+no issues (and are btrfs), but the last one is /dev/lvm/brokenDisk.
+This volume is the only one that exhibits this behavior, so something
+is special.
+
+Or described as layers:
+/dev/sd{a,b,c,d} => PV => VG "lowerVG"
+/dev/lowerVG/single (RAID1 LV) => BTRFS, works fine
+/dev/lowerVG/works (RAID1 LV) => PV => VG "workingUpper"
+/dev/workingUpper/{a,b,c} => BTRFS, works fine
+/dev/lowerVG/lvmPool (RAID1 LV) => PV => VG "lvm"
+/dev/lvm/{a,b} => BTRFS, works fine
+/dev/lvm/brokenDisk => BTRFS, Exhibits errors
+
+After some investigation, here is what I've found:
+
+1. This regression was introduced in 5.19. 5.18 and earlier kernels I
+can keep this filesystem rw and everything works as expected, while
+5.19.0 and later the filesystem is immediately ro on any write
+attempt. I couldn't build rc1, but I did confirm rc2 already has this
+regression.
+2. Passing /dev/lvm/brokenDisk to a KVM VM as /dev/vdb with an
+unaffected kernel inside the vm exhibits the ro barrier problem on
+unaffected kernels.
+3. Passing /dev/lowerVG/lvmPool to a KVM VM as /dev/vdb with an
+affected kernel inside the VM and using LVM inside the VM exhibits
+correct behavior (I can keep the filesystem rw, no barrier errors on
+host or guest)
+4. A discussion in IRC with BTRFS folks, and they think the BTRFS
+filesystem is fine (btrfs check and btrfs scrub also agree)
+5. The dmesg error can be delayed indefinitely by not writing to the
+disk, or reading with noatime
+6. This affects Debian, Ubuntu, NixOS, and Solus, so I'm fairly
+certain it's distro-agnostic, and purely a kernel issue.
+7. I can't reproduce this with other LVM-on-LVM setups, so I think the
+asymmetric nature of the raid1 volume is potentially contributing
+8. There are no new smart errors/failures on any of the disks, disks are healthy
+9. I previously had raidintegrity=y and caching enabled. They didn't
+affect the issue
 
 
+#regzbot introduced v5.18..v5.19-rc2
 
-On 2/28/24 9:28 PM, Pierre Gondois wrote:
-
-Hi Pierre, Thanks for taking a look.
-
-> It is nice to avoid calling effective_cpu_util() through the following
-> when EAS is not enabled:
-> I think we are avoiding calling cpu_overutilized except in update_sg_lb_stats. 
-I didnt want to put a EAS check in cpu_overutilized as it could be useful 
-function in non-EAS cases in future. calling cpu_overutilized alone doesnt 
-do any access to root_domain's overutilized field. So we are okay w.r.t to 
-cache issues. 
-But we will do some extra computation currently and then not use it if it 
-Non-EAS case in update_sg_lb_stats
-
-Would something like this makes sense?
-@@ -9925,7 +9925,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
-                if (nr_running > 1)
-                        *sg_status |= SG_OVERLOAD;
- 
--               if (cpu_overutilized(i))
-+               if (sched_energy_enabled() && cpu_overutilized(i))
-                        *sg_status |= SG_OVERUTILIZED;
- 
-
-
-
-I didnt find how would util_fits_cpu ends up calling effective_cpu_util. 
-Could you please elaborate? 
-
-> cpu_overutilized()
-> \-util_fits_cpu()
->   \- ...
->     \-effective_cpu_util()
-> 
-> On 2/28/24 08:16, Shrikanth Hegde wrote:
->> Overutilized field of root domain is only used for EAS(energy aware
->> scheduler)
->> to decide whether to do regular load balance or EAS aware load
->> balance. It
->> is not used if EAS not possible.
->>
->> Currently enqueue_task_fair and task_tick_fair accesses, sometime updates
->> this field. In update_sd_lb_stats it is updated often.
->> Which causes cache contention due to load/store tearing and burns
->> a lot of cycles. Hence add EAS check before updating this field.
->> EAS check is optimized at compile time or it is static branch.
->> Hence it shouldn't cost much.
->>
->> With the patch, both enqueue_task_fair and newidle_balance don't show
->> up as hot routines in perf profile.
->>
->> 6.8-rc4:
->> 7.18%  swapper          [kernel.vmlinux]              [k]
->> enqueue_task_fair
->> 6.78%  s                [kernel.vmlinux]              [k] newidle_balance
->> +patch:
->> 0.14%  swapper          [kernel.vmlinux]              [k]
->> enqueue_task_fair
->> 0.00%  swapper          [kernel.vmlinux]              [k] newidle_balance
->>
->> Minor change; trace_sched_overutilized_tp expect that second argument to
->> be bool. So do a int to bool conversion for that.
->>
->> Fixes: 2802bf3cd936 ("sched/fair: Add over-utilization/tipping point
->> indicator")
->> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
->> ---
->>   kernel/sched/fair.c | 35 ++++++++++++++++++++++++-----------
->>   1 file changed, 24 insertions(+), 11 deletions(-)
->>
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 8e30e2bb77a0..3105fb08b87e 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -6670,15 +6670,30 @@ static inline bool cpu_overutilized(int cpu)
->>       return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min,
->> rq_util_max, cpu);
->>   }
->>
->> -static inline void update_overutilized_status(struct rq *rq)
->> +static inline void update_rd_overutilized_status(struct root_domain *rd,
->> +                         int status)
->>   {
->> -    if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu)) {
->> -        WRITE_ONCE(rq->rd->overutilized, SG_OVERUTILIZED);
->> -        trace_sched_overutilized_tp(rq->rd, SG_OVERUTILIZED);
->> +    if (sched_energy_enabled()) {
->> +        WRITE_ONCE(rd->overutilized, status);
->> +        trace_sched_overutilized_tp(rd, !!status);
->> +    }
->> +}
-> 
-> NIT:
-> When called from check_update_overutilized_status(),
-> sched_energy_enabled() will be checked twice.
-Yes. 
-But, I think that's okay since it is a static branch check at best. 
-This way it keeps the code simpler. 
-
-> 
->> +
->> +static inline void check_update_overutilized_status(struct rq *rq)
->> +{
->> +    /*
->> +     * overutilized field is used for load balancing decisions only
->> +     * if energy aware scheduler is being used
->> +     */
->> +    if (sched_energy_enabled()) {
->> +        if (!READ_ONCE(rq->rd->overutilized) &&
->> cpu_overutilized(rq->cpu))
->> +            update_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
->>       }
->>   }
->>   #else
->> -static inline void update_overutilized_status(struct rq *rq) { }
->> +static inline void check_update_overutilized_status(struct rq *rq) { }
->> +static inline void update_rd_overutilized_status(struct root_domain *rd,
->> +                         bool status) { }
->>   #endif
->>
->>   /* Runqueue only has SCHED_IDLE tasks enqueued */
->> @@ -6779,7 +6794,7 @@ enqueue_task_fair(struct rq *rq, struct
->> task_struct *p, int flags)
->>        * and the following generally works well enough in practice.
->>        */
->>       if (!task_new)
->> -        update_overutilized_status(rq);
->> +        check_update_overutilized_status(rq);
->>
->>   enqueue_throttle:
->>       assert_list_leaf_cfs_rq(rq);
->> @@ -10613,13 +10628,11 @@ static inline void update_sd_lb_stats(struct
->> lb_env *env, struct sd_lb_stats *sd
->>           WRITE_ONCE(rd->overload, sg_status & SG_OVERLOAD);
->>
->>           /* Update over-utilization (tipping point, U >= 0) indicator */
->> -        WRITE_ONCE(rd->overutilized, sg_status & SG_OVERUTILIZED);
->> -        trace_sched_overutilized_tp(rd, sg_status & SG_OVERUTILIZED);
->> +        update_rd_overutilized_status(rd, sg_status & SG_OVERUTILIZED);
->>       } else if (sg_status & SG_OVERUTILIZED) {
->>           struct root_domain *rd = env->dst_rq->rd;
->>
->> -        WRITE_ONCE(rd->overutilized, SG_OVERUTILIZED);
->> -        trace_sched_overutilized_tp(rd, SG_OVERUTILIZED);
->> +        update_rd_overutilized_status(rd, SG_OVERUTILIZED);
->>       }
->>
->>       update_idle_cpu_scan(env, sum_util);
->> @@ -12625,7 +12638,7 @@ static void task_tick_fair(struct rq *rq,
->> struct task_struct *curr, int queued)
->>           task_tick_numa(rq, curr);
->>
->>       update_misfit_status(curr, rq);
->> -    update_overutilized_status(task_rq(curr));
->> +    check_update_overutilized_status(task_rq(curr));
->>
->>       task_tick_core(rq, curr);
->>   }
->> -- 
->> 2.39.3
->>
+Patrick
 
