@@ -1,142 +1,150 @@
-Return-Path: <linux-kernel+bounces-85667-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CF4986B8EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:17:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47B8986B8F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:19:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC397287425
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:17:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBB03B24A1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E45374433;
-	Wed, 28 Feb 2024 20:17:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2D274433;
+	Wed, 28 Feb 2024 20:19:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RbjIdgmK"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iFbxjVCT"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3131C74412
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4CFB2CA8;
+	Wed, 28 Feb 2024 20:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709151458; cv=none; b=U0y83HCnBlUJ7vKqSKxmgL2TxHaGQpzwRUZxiRuliUh9Y3rCUkLA5SF4bvfHnGJt5FhFkjo7XOmHzcvdRgMOlFsP5JWOSyRHu6Wk7aFfwmCEozyVep+nWTBoyBLeLjZ78i8FgdHlFOfv28QufbO46RUB5EinhyHyguEnrwRabdI=
+	t=1709151578; cv=none; b=Be3Fuvd3+82In8V4VdA15T7Lm36+qO+zZlpWY2Ml/fiMZxEtVeZVp4locVMfLkPQcoFlyeRWJcatgo6UMeUyjwXJ0WZNz3IXAU1+tuciIK/gAEU/IDG580FDjGh+Jcaqrd6uZf1k8ktHwI/00RH0RHW8rJMsvxPjh+rNAhAHfeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709151458; c=relaxed/simple;
-	bh=zCE3KeML9YfIVCAxmwUQkF435x0sQK0jWupf7a2rdBU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SxXiztmn1TOK+vroUwpBpuMlIYC6jPVYXtfIOEbV3Qr/qYKMBjXxt/Y6FTBC6LMmECFyFXaFljoYObFrOcI7RXRtDU4y0bOpB5jaSIX/DdxqlUvxWwLASCabXrYkBBNXxW092DcTr8dWu1eynIlNx9pD7dZty57UHmCS0Ltv81s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RbjIdgmK; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709151455;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TTw4ZSIJXGsiLChjCX2qkr5AsU1DzHE1V0dnP5D7DIs=;
-	b=RbjIdgmKGQhvEPEWaKdN/EiyzbbP/fhxBy1XcnCnEK7OlkZLx7tyBY3q2x/FJLoUX5S5i6
-	nKR1UlpW7nxT6q8XVIxrTdUhhf69H6O2xFYfxFHibkO4WC46W0ov+NINhbwUE/45U5gOX5
-	MwxzCooZf9Yqys+grKlluZNmAcDDGB0=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-179-H1T2Qhr3OnmTdHa-0gkGzg-1; Wed, 28 Feb 2024 15:17:33 -0500
-X-MC-Unique: H1T2Qhr3OnmTdHa-0gkGzg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33d07c0825aso65991f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:17:33 -0800 (PST)
+	s=arc-20240116; t=1709151578; c=relaxed/simple;
+	bh=XdH1gVAmPrYrirTX0Zyh+LhBwvzthAkxOMyXwhAk/mE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q0NNRosGmKY0O/7mV0XyEawJ8ci5LUc8xWOfyBsccveyQYq7k2h+4OVgd3lTrTqIOO6V/sNXvT8yHsPIktVrzG/LMk6e/g2kdWPpSBXMhNV6fgwo5pYH5URRwpReTP4c4CNmsp71tDPfrYN/myxAIB28ROl2Cxer9+97dV9iZG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iFbxjVCT; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d288bac3caso1367851fa.2;
+        Wed, 28 Feb 2024 12:19:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709151575; x=1709756375; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=AaYkftKp1y11sdAWaYMn4v1B8t9t+mmU/Hhe9qMT1cc=;
+        b=iFbxjVCTC8qWr95n1EzEApjXV0OhXODOKVDCWwpKw+MtI2tXNgLrp+me5D3JTLVszI
+         xo8XxHmEe6JrBRtZXu/eaUcydS3l5oap7UZSeh/aY42w66VOPaTHFWQLeZomrgL02SfQ
+         33KfPMhmnL7NKYmQhLt5QlHYdMAMjVRT8whOP2lj9cfLORdmV+rOmlgOioKe0aYI1nkD
+         Ww2Z39/YC7BmY9Ze7BUsCG2GzDmca5ZDvCBM2In9t2Y4wdClpE2PiKCs5OI9gOisn3Ki
+         TCmzN22kpfNaB1TmiWViHHPGTs7NDIAa7hyzpakETzuWqGMhVTvMe2qQKZ2ilp0u98mk
+         jaiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709151452; x=1709756252;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TTw4ZSIJXGsiLChjCX2qkr5AsU1DzHE1V0dnP5D7DIs=;
-        b=FO7EyezZ4GCfKUAv+Gz+aT0NxzXMFs3ixcCHuDr1+zX+VJCTXd2NNliIzB2q+WV8Ci
-         x6nesLGhDGW8ta51WZ1yD2pYpbmE1MqH7xvm3gavMvCFNQUt5fPfY37RB61rKWtwfWjB
-         D6LMik62UxMfXOTVAZ8/HuoZe5XBSNlVOXnEkcVgjofIFEfbaR0mm+ydXm5nM8q0m7NK
-         npaQgg1a7Q6KKkHiZvg0fBp3hc3aZwlX35GgPCQjGnK5Z7DRKzOCog1d9lZKxK85WNZT
-         WaIBp2JBMbqk5+yLQX0vb1Hl/x1ZbczLpFI7uuFlXqqFD/5Z8cciz9ETzhKmmAd0GPbw
-         ITNw==
-X-Forwarded-Encrypted: i=1; AJvYcCUY8Ecrar6n1OIIPe53bsggjWw+rKqmE4o5+ckOFe9WqrrdLwmqH627YPiLPh81GZsgrgMFQl6+Fl2EA/VG6nOV163xaMVZMYICGOJT
-X-Gm-Message-State: AOJu0Yyue7+HyynD+m0CoL0F3lUioQC0NN+NvC/fu7eUivbCv/c7PMWe
-	ak17Ub4Km4mzroTEW8iQEKvL4SAxSLyxVRnwRTw4oGn/Qzvr5Akri8/CZMqEUCEMZdi/UJBZja5
-	NcMRbQxk60zaFazUAYVRx9hmUS4vDlAeKsRmrKai6+gl4wnJrofN8twE9n8HnheoOQxhuIZOFy6
-	q+swlYGTYfbzMTr7ubHTG92PN/1+wrnhrJtFGn
-X-Received: by 2002:a5d:4b0a:0:b0:33d:afbc:6c85 with SMTP id v10-20020a5d4b0a000000b0033dafbc6c85mr461057wrq.8.1709151452252;
-        Wed, 28 Feb 2024 12:17:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGgHPzGN/DHFe4puI/8ysLIKlvcEuBiVtnUT6JuEjxUXY4Ozjp/ZzTMdzcpsSTIbMTP4PxKulnZgiPsoMvTHxg=
-X-Received: by 2002:a5d:4b0a:0:b0:33d:afbc:6c85 with SMTP id
- v10-20020a5d4b0a000000b0033dafbc6c85mr461045wrq.8.1709151451975; Wed, 28 Feb
- 2024 12:17:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709151575; x=1709756375;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AaYkftKp1y11sdAWaYMn4v1B8t9t+mmU/Hhe9qMT1cc=;
+        b=sK0eognUGJevje7VB6rpjcl33ja0nEaCw5d7hNT6IoQ/MFYsPyQlFwFeZK7ODO5H+f
+         pHTiFiCPN2itLrLD2JjboUukwzsgVDWw4qYanZGTWDqPT4ty4B5qtJlT9rvMZhWWLvwg
+         DLbSJ5HUheXKpWfmCutUgWc6Z2Vky18wBec2/jtaMbfxv+eg0pKIGfSLtUpLgrqejDXJ
+         5AUS7lQFYWIvywTjx6JXsLqlUb8tgXk4DuAztqikw5pGF2DaWxXu3ZtcfqpAaLEkn5rO
+         t5Q2RuPE/h3GWUEDdK86uaV0SbQb2O3jzU014S3qlcCi5uxu8WwsWNvH+I8BAL5ThG8G
+         /ZHg==
+X-Forwarded-Encrypted: i=1; AJvYcCX6NpZMC7djRN1aRXZjX2wKg9ulaDNR/WKhCzq4qbNx/xNdSDBbWiJ+0HCSlnXAv118F0H3NY9H/wu+mqfHTG2AYsKDZ0Hn2eXpRfYEX3/JsjjvaZlrV16gqciH4UEmgKqqzb3F54vWQd0V+8EHQUqel8SVdHFtXel4PXkl0IZh0aA5fj3WIw==
+X-Gm-Message-State: AOJu0YwAqYkPBkehCjUSLmF9L4FN0EWL3pXSrvNkteanK0F+qW57pChy
+	qSJMkwn5CnrTbMni8t/pPgmu/umdGN8jgaKW8cMHh8W+YCJS+r4A
+X-Google-Smtp-Source: AGHT+IEmzFheUvrhk7elS7+uTO42EaEZigwC+piudVPdSqGPkd8eJkZq1RdUGfSUAb28YaMidt4oZQ==
+X-Received: by 2002:a2e:978b:0:b0:2d2:a4e2:bb84 with SMTP id y11-20020a2e978b000000b002d2a4e2bb84mr3894714lji.47.1709151574660;
+        Wed, 28 Feb 2024 12:19:34 -0800 (PST)
+Received: from Red ([2a01:cb1d:3d5:a100:4a02:2aff:fe07:1efc])
+        by smtp.googlemail.com with ESMTPSA id bk25-20020a0560001d9900b0033dd98c518bsm10293993wrb.50.2024.02.28.12.19.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 12:19:34 -0800 (PST)
+Date: Wed, 28 Feb 2024 21:19:32 +0100
+From: Corentin Labbe <clabbe.montjoie@gmail.com>
+To: Alexey Romanov <avromanov@salutedevices.com>
+Cc: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+	"clabbe@baylibre.com" <clabbe@baylibre.com>,
+	"herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>,
+	"khilman@baylibre.com" <khilman@baylibre.com>,
+	"jbrunet@baylibre.com" <jbrunet@baylibre.com>,
+	"martin.blumenstingl@googlemail.com" <martin.blumenstingl@googlemail.com>,
+	"vadim.fedorenko@linux.dev" <vadim.fedorenko@linux.dev>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	kernel <kernel@sberdevices.ru>
+Subject: Re: [PATCH v4 00/20] Support more Amlogic SoC families in crypto
+ driver
+Message-ID: <Zd-VVGXHoH2ikbmV@Red>
+References: <20240212135108.549755-1-avromanov@salutedevices.com>
+ <ZcsYaPIUrBSg8iXu@Red>
+ <20240215104719.njq6ie2niisntcnv@cab-wsm-0029881.sigma.sbrf.ru>
+ <ZdL713ae1swwTU_B@Red>
+ <20240228133656.24bic6djmjvkill7@cab-wsm-0029881>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227232100.478238-1-pbonzini@redhat.com> <20240227232100.478238-18-pbonzini@redhat.com>
- <Zd6W-aLnovAI1FL3@google.com> <CAJD7tkapC6es9qjaOf=SmE9XYUdbh_fAperjSe9hy=_iqdB0wQ@mail.gmail.com>
- <Zd8x3w2mwyAufKvm@casper.infradead.org> <CABgObfZ9LFDrtLkMaT5LVwy0Z2QMk6SqJ104+D=w7o9i0gEu+g@mail.gmail.com>
- <Zd-Icopo09aUmOvT@casper.infradead.org>
-In-Reply-To: <Zd-Icopo09aUmOvT@casper.infradead.org>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Wed, 28 Feb 2024 21:17:19 +0100
-Message-ID: <CABgObfZApRALa0AEWRDTY_Qc3bFVe25mVph2R1JaUBhqJ8eabg@mail.gmail.com>
-Subject: Re: [PATCH 17/21] filemap: add FGP_CREAT_ONLY
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Sean Christopherson <seanjc@google.com>, 
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	isaku.yamahata@intel.com, thomas.lendacky@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240228133656.24bic6djmjvkill7@cab-wsm-0029881>
 
-On Wed, Feb 28, 2024 at 8:24=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Wed, Feb 28, 2024 at 02:28:45PM +0100, Paolo Bonzini wrote:
-> > Since you're here: KVM would like to add a ioctl to encrypt and
-> > install a page into guest_memfd, in preparation for launching an
-> > encrypted guest. For this API we want to rule out the possibility of
-> > overwriting a page that is already in the guest_memfd's filemap,
-> > therefore this API would pass FGP_CREAT_ONLY|FGP_CREAT
-> > into__filemap_get_folio. Do you think this is bogus...
->
-> Would it work to start out by either asserting the memfd is empty of
-> pages, or by evicting any existing pages?  Both those seem nicer than
-> starting, realising you've got some unencrypted memory and aborting.
+Le Wed, Feb 28, 2024 at 01:37:02PM +0000, Alexey Romanov a écrit :
+> Hello,
+> 
+> On Mon, Feb 19, 2024 at 07:57:27AM +0100, Corentin Labbe wrote:
+> > Le Thu, Feb 15, 2024 at 10:47:24AM +0000, Alexey Romanov a 'ecrit :
+> > > On Tue, Feb 13, 2024 at 08:21:12AM +0100, Corentin Labbe wrote:
+> > > > Le Mon, Feb 12, 2024 at 04:50:48PM +0300, Alexey Romanov a 'ecrit :
+> > > > > Hello!
+> > > > > 
+> > > > > This patchset expand the funcionality of the Amlogic
+> > > > > crypto driver by adding support for more SoC families:
+> > > > > AXG, G12A, G12B, SM1, A1, S4.
+> > > > > 
+> > > > > Also specify and enable crypto node in device tree
+> > > > > for reference Amlogic devices.
+> > > > > 
+> > > > > Tested on AXG, G12A/B, SM1, A1 and S4 devices via
+> > > > > custom tests [1] and tcrypt module.
+> > > > > 
+> > > > > ---
+> > > > > 
+> > > > 
+> > > > added patchs up to  "drivers: crypto: meson: process more than MAXDESCS descriptors"
+> > > 
+> > > Including this patch or not?
+> > 
+> > The crash start with "drivers: crypto: meson: move algs definition and cipher API to cipher.c"
+> 
+> Unfortunately I was unable to reproduce this. I use Khadas Vim1 board
+> and my custom tests (https://gist.github.com/mRrvz/3fb8943a7487ab7b943ec140706995e7).
+> Tried both build as module and built-in.
+> 
+> Can you, please, give more information? Maybe your test cases?
 
-Unfortunately it would be quite ugly to force userspace to do all the
-initialization in one go. For example, there are different kinds of
-pages that probably would be initialized at different points (e.g.
-before vs. after vCPUs are created, because the initial vCPU state is
-also encrypted).
+My test case is simple, simply load the driver.
 
-The thing that I want to protect against is userspace trying to
-initialize the same encrypted page twice.
+The problem is that you moved the algs[i].mc = mc after the register of algs (in drivers: crypto: meson: move algs definition and cipher API to cipher.c)
+Test could happen as soon the register is done and so mc is deferenced.
 
-> > > This looks bogus to me, and if it's not bogus, it's incomplete.
-> >
-> > ... or if not, what incompleteness can you spot?
->
-> The part where we race another caller passing FGP_CREAT_ONLY and one gets
-> an EEXIST back from filemap_add_folio().  Maybe that's not something
-> that can happen in your use case, but it's at least semantics that
-> need documenting.
+Since you didnt hit the case, I suspect you didnt test the driver as module.
 
-From the point of view of filemap_add_folio(), one of the racers wins
-and one fails. It doesn't matter to filemap.c if the missing
-synchronization is in the kernel or in userspace. In the case of KVM,
-the ioctl will return the number of pages before it found an existing
-page, or -EEXIST if that number is zero (similar to what nonblocking
-read does with EAGAIN).
-
-I'll improve the documentation and changelog and make sure to Cc you
-on the next version.
-
-Thanks again!
-
-Paolo
-
+Regards
 
