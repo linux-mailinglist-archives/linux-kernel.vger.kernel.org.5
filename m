@@ -1,134 +1,111 @@
-Return-Path: <linux-kernel+bounces-85800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60E0486BAF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:49:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A40F86BAFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:52:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C758B286EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:49:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 388851F23A2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:52:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2672E7290B;
-	Wed, 28 Feb 2024 22:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E979071ECB;
+	Wed, 28 Feb 2024 22:52:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eYRSKsXT"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="ba/CQ0Pk"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B8E1361CD;
-	Wed, 28 Feb 2024 22:48:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611C11EEE7
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709160539; cv=none; b=qRGMS1bdaBbZH1oqma/acDgbJbhTxCo65y+Po0qrYnLZKd2Ayd3mwFdXyNCAQpNtyd5m4zJf02QJWKEQjgrorYOs6EMdPrXiEjsGKHkECNgZlGJ2MtJKl5XOvWlqMg8noUqQc3O47nnZMhWIaoRWR1dW8ZUtBp/UBvC0iUDi+Xw=
+	t=1709160744; cv=none; b=InRh1URRTM7HkhU76u0FPZjDgVxXawjfTFmyYeoY4P/RV/DXWn5R2vQXHQygvcT8t+3hw0ZjmAu2RL2hZWr92R3fXMILoRpOp6tvhCbor/hcClP4VjKgdvpBW8wMA/dM4/CzSZWFxQfOsCQ+LdAeurlzm4QpLnvWXVVWo94OH5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709160539; c=relaxed/simple;
-	bh=aEkhJ7ls8uFYlDlRc+iLJ5Ocz8xUoDm7sxScH2TbCDY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kDGx7UdO7fviYAPkF49NnNBoMFPvANew7imv3QxtWDcRmzqZGGBSNgsl/9KRPtrEe5gkuRgRRjJqDGvBGVZfrg1GD/dbxtV5D4nkvKz+/Ucw4XdvKSU5KbF+d5ZX5/yE5BfdnJ9ny6xOVPD8aQvbpRqdbuiDyBxcl88seehK+NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eYRSKsXT; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33dc3fe739aso849342f8f.0;
-        Wed, 28 Feb 2024 14:48:57 -0800 (PST)
+	s=arc-20240116; t=1709160744; c=relaxed/simple;
+	bh=ZQCta753ivPoo8b0/ihVIr1oYvphcIvS17YSXyf2fV0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OWs4ulJPE8eDEtKs3VX89pTWcBgWbGh+ygmTxoc/JypMXNAyDRBUoUpyuC5qMtFL4jwC6Kf90cDonV4m+f+JDXbDEIB0sUu+EnreiYIEfiCHQaEhvC7qaNkS1UkawlyYpxV6/akRJFOUI3FyKFyE6MjiXNUYZ3i2SIVJOtqLV9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=ba/CQ0Pk; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a4348aaa705so48738766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:52:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709160536; x=1709765336; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H/le6i8BwVt+VGq3pUSqTQqqbO9l7kbzBUEhYF9A/E8=;
-        b=eYRSKsXT+J48Whv/wGJUN1ZFp5DakHSKKohmX4Wk85dfYrKWIhD4A8de95z95z2VAH
-         GDadP53NaFExQZVZSOImq0bSVjZ1iKDosCHKnQeM0qLEwp0F0kG321r6xrMr37yqfv8w
-         mGRO29wfQ85CJuBiuOLSV8KqTKmE/nBG7xcooVyB3t0jSa0xz+i5FzMj+TRWJSZV0p1F
-         1JziCgCIsgK5q/YWbs3yYugGU7drL9B6S9DBicMDX6w0PB1jQuSfAvqoKTwy6SzOlKMB
-         CRRjYVD+8eMGwqSevsj/r1kLtNNSJRbPiiBzigEIYIfW+aK83b73JMescb4D1PqpD2P/
-         avZQ==
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709160741; x=1709765541; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=p68q64fPKpPRnVU3Ta/zu5aSS1cC7AT3EHsyijjzmko=;
+        b=ba/CQ0PkDCWH+jZYzyfb0/K+5alngizmRJpTtnaYxzuzFPJsEYW8vLyNJFioq4azcT
+         h6dssooKwnTalEPs3WY/GHkFGhZm2EUcGRP+cN0Bby6uFOKjtUEc/qxmxtzapDJPf7Ic
+         ZDjlAEuY7bcIHhK5RwYq38ziDaCadeEPfbTEt0cze9QVHoDVyElWMETfVzaZ0Ab+jBaS
+         WRkfAX4wT62wcIAlrE9yXhfpK3Z78xFEq+y5Oul5e1brlJeejt1QJgZYRZQ2Lt0BbZpK
+         m/aSFbteusCQttoS0iuFXZSNxma5El18SGMcAsaXtJBKcuLpPsjqco7m/j2//vElN+Yy
+         VWFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709160536; x=1709765336;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H/le6i8BwVt+VGq3pUSqTQqqbO9l7kbzBUEhYF9A/E8=;
-        b=BUB0Y4nQAwTQWG3p9ySI3VhYUajpMj79SqYa7ps5q1dMjF207Yv9vnco/ZcS+UQf7w
-         ZyUp3vzw++2hrExaBpqb0Vk4RVMrr2i+BmXu5p9KwSANBdQWPA12D3NrWT1t6Ls6nIKh
-         o2DTvA5JPdxzJdaI0k5Mnn6pJ6lCxau+GSEdgkBYe8PXSn71VnkVy/Wkz1eK6CA12XBk
-         xw/O0KFYDq6VXIFPcy+/ff47fjRwJyjO+1ZhONSBqaoJMiMm7glsIoWJFmV9JC4bVr7J
-         GZ/H41kHl9woRzaAh0PzaP0aacoETUCPMA4JWVXio7Menai6YFBh+LUe82xe3+lFv4KD
-         d8Vg==
-X-Forwarded-Encrypted: i=1; AJvYcCXjs+pMWOOuFgWkqoIPGhVI+A7ec1Y/ynWnc3w90znc5QXGo0etm5a+hQtGO/i+PZ2FCoqrlGawbXX/BUQIQqm8b/cwr52wn+l5fJ/Bhcft/AsH8vqjNAGVwfDEcbyNX7la6J3d6E3Ho92bfNhfLiwHJ6xFHRNHgB+tcq3+1oDGPEhCx/lryY62s0lEk1Z8
-X-Gm-Message-State: AOJu0YwO8GlPun29b/TuX19YI7cq0PTsGAwGOlcoag1WKpOymWwZNrrY
-	TtlOdjWf1WYDGt5MaFjU2KKtx1NsyO5H9rNVUflP8l7mtkDcxfFMIxhlicwbgRvz6YeHV+3DOmU
-	f9xSf/BLEznMoYB7IVdrzlCnJA8c=
-X-Google-Smtp-Source: AGHT+IF0YDHyLBY6/gXQehe5XSXN9guIRT+7y3g1ZZYDHR/P+wrXwRJOjZL9EI5NoKop6bxXRpwCfMH4z78sBr0E4C4=
-X-Received: by 2002:adf:ce0b:0:b0:33d:545b:a33e with SMTP id
- p11-20020adfce0b000000b0033d545ba33emr83390wrn.13.1709160535981; Wed, 28 Feb
- 2024 14:48:55 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709160741; x=1709765541;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=p68q64fPKpPRnVU3Ta/zu5aSS1cC7AT3EHsyijjzmko=;
+        b=lG1vdHKay4Ldl2gSNDyPLh2lxVx6gbL4vsJMErh5l4AVVpP8JIPXnroPWFtNdouCnc
+         Q32xHlO9PETA6mChi1YqdOxULWZrSBwSC07oBvLsijrMiPh87/tAk5w+1Ya8RcQuWtdn
+         kjYADhBR4NITjYOOAOcj+s41ucAIFd4fZzktLwhXyijbWJtoYTqnsia7XL3IEICg7h9f
+         McoeYQIAxW2To5q+ZvqoecDkHqNN7FMLcjUyJXab1XwI91MQlJg5mGViVscPGn33aju1
+         83XySsm4/Xfkxb5YanpBQzmW+E+SPdDrp/kqXA+4H8/6T99HZtUjj+sdTDty2nkPOFz3
+         vvHw==
+X-Forwarded-Encrypted: i=1; AJvYcCUeXx8tMhGXi29rUo44e/HieuE3pRhVvt7WNwnig1j69Co0I1/OR37KV3bfoIgJ3WpSpUJwuVHabOivVJ6J0SpswBOFDU2WTI6Dy6qY
+X-Gm-Message-State: AOJu0YzOw0CaEXgYTG+7bew81qXoK7BD/0I7vZH6ChIaEiuzJLFS8v3I
+	eKfcefGXeTip8qcBZipOC0MzlEbfbJFn5EdFx1ewmKnEi5MyXznSmgTu+kzp+/JKF8h7HQURehv
+	fqndMuA==
+X-Google-Smtp-Source: AGHT+IFXxI9A58dhuw3TFJjV1Gqjef2xeIhS2AJ9dF542nq8/YdvfewX1SoXF9u5MsKEXu0DwDs0DA==
+X-Received: by 2002:a17:906:b7d4:b0:a3f:7e2:84cc with SMTP id fy20-20020a170906b7d400b00a3f07e284ccmr241976ejb.6.1709160740552;
+        Wed, 28 Feb 2024 14:52:20 -0800 (PST)
+Received: from fedora.fritz.box (aftr-82-135-80-35.dynamic.mnet-online.de. [82.135.80.35])
+        by smtp.gmail.com with ESMTPSA id q11-20020a17090622cb00b00a431e4d5deasm2292785eja.155.2024.02.28.14.52.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 14:52:20 -0800 (PST)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] mm: page_alloc: Use div64_ul() instead of do_div()
+Date: Wed, 28 Feb 2024 23:49:12 +0100
+Message-ID: <20240228224911.1164-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <02913b40-7b74-48b3-b15d-53133afd3ba6@paulmck-laptop>
- <3D27EFEF-0452-4555-8277-9159486B41BF@joelfernandes.org> <ba95955d-b63d-4670-b947-e77b740b1a49@paulmck-laptop>
- <20240228173307.529d11ee@gandalf.local.home>
-In-Reply-To: <20240228173307.529d11ee@gandalf.local.home>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 28 Feb 2024 14:48:44 -0800
-Message-ID: <CAADnVQ+szRDGaDJPoBFR9KyeMjwpuxOCNys=yxDaCLYZkSkyYw@mail.gmail.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>, 
-	Network Development <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Simon Horman <horms@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
-	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org, 
-	bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>, 
-	Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 28, 2024 at 2:31=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org=
-> wrote:
->
-> On Wed, 28 Feb 2024 14:19:11 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
->
-> > > >
-> > > > Well, to your initial point, cond_resched() does eventually invoke
-> > > > preempt_schedule_common(), so you are quite correct that as far as
-> > > > Tasks RCU is concerned, cond_resched() is not a quiescent state.
-> > >
-> > >  Thanks for confirming. :-)
-> >
-> > However, given that the current Tasks RCU use cases wait for trampoline=
-s
-> > to be evacuated, Tasks RCU could make the choice that cond_resched()
-> > be a quiescent state, for example, by adjusting rcu_all_qs() and
-> > .rcu_urgent_qs accordingly.
-> >
-> > But this seems less pressing given the chance that cond_resched() might
-> > go away in favor of lazy preemption.
->
-> Although cond_resched() is technically a "preemption point" and not truly=
- a
-> voluntary schedule, I would be happy to state that it's not allowed to be
-> called from trampolines, or their callbacks. Now the question is, does BP=
-F
-> programs ever call cond_resched()? I don't think they do.
->
-> [ Added Alexei ]
+Fixes Coccinelle/coccicheck warning reported by do_div.cocci.
 
-I'm a bit lost in this thread :)
-Just answering the above question.
-bpf progs never call cond_resched() directly.
-But there are sleepable (aka faultable) bpf progs that
-can call some helper or kfunc that may call cond_resched()
-in some path.
-sleepable bpf progs are protected by rcu_tasks_trace.
-That's a very different one vs rcu_tasks.
+Compared to do_div(), div64_ul() does not implicitly cast the divisor and
+does not unnecessarily calculate the remainder.
+
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ mm/page_alloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 150d4f23b010..dfafec7fba1d 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5845,7 +5845,7 @@ static void __setup_per_zone_wmarks(void)
+ 
+ 		spin_lock_irqsave(&zone->lock, flags);
+ 		tmp = (u64)pages_min * zone_managed_pages(zone);
+-		do_div(tmp, lowmem_pages);
++		tmp = div64_ul(tmp, lowmem_pages);
+ 		if (is_highmem(zone) || zone_idx(zone) == ZONE_MOVABLE) {
+ 			/*
+ 			 * __GFP_HIGH and PF_MEMALLOC allocations usually don't
+-- 
+2.44.0
+
 
