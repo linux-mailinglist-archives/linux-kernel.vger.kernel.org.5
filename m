@@ -1,116 +1,183 @@
-Return-Path: <linux-kernel+bounces-85746-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 988E186BA42
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:53:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E8486BA44
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20BE2B26861
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:53:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A9DA1C22837
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADD0D7290F;
-	Wed, 28 Feb 2024 21:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C277D72902;
+	Wed, 28 Feb 2024 21:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FwyEWm8N"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RnhB61uT"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C3270020;
-	Wed, 28 Feb 2024 21:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0517005A;
+	Wed, 28 Feb 2024 21:54:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709157209; cv=none; b=Rkt7pVaf54h21GmIgjd+ZgTZpBN/5cQpqAYR75uS4hl1yeX5oBhoyw5hxCBXfxWsrv7kwbLrqFYuyXwR/0AK9F5QWCL2EQgv4NFd1u8d8QKQF844M1XJjkIgZfzd88C1Oq3De3DkhfTSXPtWQjMOZQXzW/rQ3fHINQiCNFrEcHA=
+	t=1709157245; cv=none; b=ZQZ5qjY+P9XTQxPD0MkrLbNSUZcTTHatPI5+XxL/2O+2Xzqp/in9PM6ZqfeGxL1MhKfsP73FOBU/g5BZJU4rJPDqxKr5IbuCcrPXAh6UvyDeroVzzCaN7MHWBN+uQLgJZCmQ1bJiLs6buekGrDzj0n48MAWO+fbnxU9zEdIqi/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709157209; c=relaxed/simple;
-	bh=DXAncb5M5L0FxykniOApRquIQ7d0QWI8AZKaQoqhSto=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AYZ7FHq008iEHwvP9VXvNCUPaXAfl7ru91BSpET/lTMVIcPviNCBexuKgTSKiUPETGfB0rwZVZE3oKiNpb38SziLqjMDmbpqGnFO4WYTPkvzJa1FwUj9g7kN2JbAq+JFzw3I7ZTYtoKbC6HCUZdc8p6V4oMVSyZbGqReCI/CQvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FwyEWm8N; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709157207; x=1740693207;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DXAncb5M5L0FxykniOApRquIQ7d0QWI8AZKaQoqhSto=;
-  b=FwyEWm8NnFZq9TCcGO+GXkLBsqwe/ihXTjdDYgmFZnZB3PUlAPaRXo19
-   6zo2UDl/a2MtYnzaxPJGsZFH6f7sIrFkYEZ335IvHaTVdobP+gSqVhu8i
-   2OZE6y8DGqMF0Bye80GmncJtewe6LayRAf6TC3ViSTdijb2S+jf/rT8f/
-   X0ehQBv3HB4qhMKnAMnPuYlEnZ7TiBzrF22c/sx65LdEV+q2NUFaDsy0L
-   C9C3C+Qh3tx4Q2argv/s9KBQwV1wShPeE/p8uQnzd99mFT2rJ5CVKy+NM
-   o76GO69MCxzvO0jDQSI0tJNQpY4Zir7LSmKlVjgUxvLgXOtmVDYPaZwUj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="7373409"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="7373409"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 13:53:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913962225"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="913962225"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 13:53:21 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rfRrZ-00000008Vpz-48uU;
-	Wed, 28 Feb 2024 23:53:17 +0200
-Date: Wed, 28 Feb 2024 23:53:17 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
- netdevice APIs
-Message-ID: <Zd-rTRidOqOd4Gr7@smile.fi.intel.com>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
- <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
- <202402281341.AC67EB6E35@keescook>
+	s=arc-20240116; t=1709157245; c=relaxed/simple;
+	bh=+udCsYwCCLroqTJ3NW8T4zKSPlLtm2ihTeKdecE4u60=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=eew427jK8LomOfZiOjrDuzgk5Ygwse73IFcH/ovG0CemtRS62zn851uZv5ErIk83iL0P6P1XGd+2VFX7GJam9tmDvRsJDPJF8rR9bRyK2eGABDnmOeBoPYqKa+iFXP3V412V3/cGBHgA0tSVCozRcGbETuZvVNJoF4v8oq2QSh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=RnhB61uT; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41SLJT97011242;
+	Wed, 28 Feb 2024 21:53:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=JSVKryuam2bUhRANM9hEqbHjM26jbCrdVMAbYCzj5zk=; b=Rn
+	hB61uTdV9vJHvSVXb0KqyGcQMGt0hXenK1PQr6M8JjfFd+wSTHTe+yBVdHDSypcJ
+	/kBFHzejDt5Q8A4k3tptMkyYlqgl7OD2N/BHGpa6odBgqSqG7cH/ocsO5u39Hz6J
+	ZXClemwhl+aTdMpKMAY+cXj1QshDsgLosAAAkxmAVVl2LNK2+/OkPRZbd2131rgZ
+	07DnMAnWDrTYylI855hDo4thtyNI9BKb2PQ/KKmyoH2qiaMRsDLDoL4sdW18hWxf
+	L0Vmcb1ll8Nx1XoILYAQcRJS1PhfmIhbywyss72FEucPs+e0Ww2fQdfR8GvbrLtB
+	5e/ICk2l45FQ0ugx396w==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wja0egdh1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 21:53:48 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SLrlYU015855
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 21:53:47 GMT
+Received: from [10.110.100.241] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 13:53:44 -0800
+Message-ID: <8a5d15aa-96e2-4d9c-9479-bf2ba8fb2a79@quicinc.com>
+Date: Wed, 28 Feb 2024 13:53:43 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202402281341.AC67EB6E35@keescook>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v2] net: Modify mono_delivery_time with
+ clockid_delivery_time
+Content-Language: en-US
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>
+CC: <kernel@quicinc.com>
+References: <20240228011219.1119105-1-quic_abchauha@quicinc.com>
+ <65df56f6ba002_7162829435@willemb.c.googlers.com.notmuch>
+ <f38efc6d-20af-4cc1-9b8a-5fcb676b2845@quicinc.com>
+ <65df94185a2c1_b2ad829442@willemb.c.googlers.com.notmuch>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <65df94185a2c1_b2ad829442@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: is35nZS8Glz5KFjqMaUUxVah4K7yuXRb
+X-Proofpoint-ORIG-GUID: is35nZS8Glz5KFjqMaUUxVah4K7yuXRb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 impostorscore=0 adultscore=0
+ clxscore=1015 bulkscore=0 priorityscore=1501 spamscore=0 mlxlogscore=657
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402280174
 
-On Wed, Feb 28, 2024 at 01:46:10PM -0800, Kees Cook wrote:
-> On Wed, Feb 28, 2024 at 10:41:37PM +0200, Andy Shevchenko wrote:
 
-..
 
-> >  static inline void *netdev_priv(const struct net_device *dev)
-> >  {
-> > -	return (char *)dev + ALIGN(sizeof(struct net_device), NETDEV_ALIGN);
-> > +	return struct_data_pointer(dev, NETDEV_ALIGN);
-> >  }
+On 2/28/2024 12:14 PM, Willem de Bruijn wrote:
+> Abhishek Chauhan (ABC) wrote:
+>>
+>>
+>> On 2/28/2024 7:53 AM, Willem de Bruijn wrote:
+>>> Abhishek Chauhan wrote:
+>>>> Bridge driver today has no support to forward the userspace timestamp
+>>>> packets and ends up resetting the timestamp. ETF qdisc checks the
+>>>> packet coming from userspace and encounters to be 0 thereby dropping
+>>>> time sensitive packets. These changes will allow userspace timestamps
+>>>> packets to be forwarded from the bridge to NIC drivers.
+>>>>
+>>>> Existing functionality of mono_delivery_time is not altered here
+>>>> instead just extended with userspace tstamp support for bridge
+>>>> forwarding path.
+>>>>
+>>>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+>>>> ---
+>>>> Changes since v1 
+>>>> - Changed the commit subject as i am modifying the mono_delivery_time 
+>>>>   bit with clockid_delivery_time.
+>>>> - Took care of suggestion mentioned by Willem to use the same bit for 
+>>>>   userspace delivery time as there are no conflicts between TCP and 
+>>>>   SCM_TXTIME, because explicit cmsg makes no sense for TCP and only
+>>>>   RAW and DGRAM sockets interprets it.
+>>>
+>>> The variable rename churn makes it hard to spot the functional
+>>> changes. Perhaps it makes sense just keep the variable name as is,
+>>> even though the "mono" is not always technically correct anymore.
+>>>
+>>   
+>>
+>> I think a better approach would be to keep the variable as ease and add
+>> comments and documentation in the header file of skbuff.h like 
+>> how i have done in this patch. The reason why i say this is
+>> a. We can avoid alot of code churn just to solve this basic problem of 
+>> propagating timestamp through forwarding bridge path 
+>> b. Re-use the same variable name and have better documentation 
+>> c. Complexity will be as minimal as possible.
+>>
+>> Let me know what you think. 
 > 
-> I really don't like hiding these trailing allocations from the compiler.
-> Why can't something like this be done (totally untested):
+> Agreed
+> 
 
-Below is interesting idea, now at least I started understanding your previous
-comments.
+Okay i will make the changes accordingly. 
+>>> Or else to split into two patches. One that renames the field.
+>>> And one that adds the new behavior of setting the bit for SO_TXTIME.
+>>>
+>>
+>> Regarding the sidenote. I dont see how they are using clock_id to determine 
+>> if the skb->tstamp is set in monotonic. Please correct me or point me to 
+>> the piece of code which is doing so.
+> 
+> That's really out of scope of this series anyway
+> 
 
--- 
-With Best Regards,
-Andy Shevchenko
+Sounds good. Really appreciate your review and discussion on this topic. 
+ 
+>>
+>> I hope the check against sock_flag is a better implementation as 
+>> it clearly stats and is inline with the implementation that the tstamp is 
+>> coming from userspace. 
+>> skb->mono_delivery_time = sock_flag(sk, SOCK_TXTIME);
+> 
+> Enabling the socket flag is not sufficient to configure a delivery
+> time on a packet. A transmit time must be communicated per packet
+> with cork->transmit_time. And on top of that, it is cheaper to test.
 
 
+So to re-use the same bit of mono_delivery_time. I want to set this bit 
+when user-space sets the timestamps using SCM_TXTIME. 
+Is it okay if i do the below when we make skb in ipv4/ipv6 and raw packets
+to ensure that bridge doesn't reset the packet tstamp or do you have a better 
+suggestion to set the bit so br_forward_finish does not reset the timestamp. 
+
+skb->mono_delivery_time = sock_flag(sk, SOCK_TXTIME);
 
