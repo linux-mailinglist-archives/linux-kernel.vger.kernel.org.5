@@ -1,126 +1,132 @@
-Return-Path: <linux-kernel+bounces-85552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85553-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2231586B7A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:48:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7951086B7A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:50:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7DCDB21C9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:48:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AC201F2A473
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:50:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D964F71EC7;
-	Wed, 28 Feb 2024 18:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9904871ED4;
+	Wed, 28 Feb 2024 18:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jqdIO8tH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fkJNYAkq"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 251B871EAE;
-	Wed, 28 Feb 2024 18:48:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8598A79B7A;
+	Wed, 28 Feb 2024 18:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709146113; cv=none; b=kbYvDlikFsKxANcYqPln4bLNfh350NLb2/pJbUsN/XQ/fPIphFZCpRMLKQwE/LkWBSoOf3cFZoHNL5lCNCQkKpqH3ZmYUmrSY2i+c4A6tlXiUAG5NX3my0TToRvAkGRn6yQGAehNTUlNK2zj2GKbO2YwtxuV5Lh1auDvXpyXOCM=
+	t=1709146225; cv=none; b=szsxO/auZjpJl7rv/p4tUB49aqPJ+rcd301oNgI3Xf+M1og9bk9x82owqVFpRsqle1aE7aeIZUmp5nNJQFHotC+BSm2Xa/cMvpG+t3WJ9h7aUQs2gOYQQftexkSR6YxCceO13XnFV3ZqPZHU/ijWGzMnmurS0Gc65DaYL8qLeig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709146113; c=relaxed/simple;
-	bh=I1FvYieTX2lMCO6HW6oRx/DgD5ZUO5pYflH+dqxQSng=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pVINBu1JoJQE/qU3jFuSoYD85mWlMq2ni8q9AnHp+ILzYJendatO3h+ZlH5yvVXfbT8u69/xNrrARxFDe1RADWpvv008gxgPd9CFNwNrGnr3MjEbF2dmE9gPXEoDAb+ZNFNDDfXIP7ZVLcHptMN53i4ImXpU1gH7PszPsXP8oeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jqdIO8tH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A71CC433C7;
-	Wed, 28 Feb 2024 18:48:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709146112;
-	bh=I1FvYieTX2lMCO6HW6oRx/DgD5ZUO5pYflH+dqxQSng=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=jqdIO8tHM3uGKe8pv5ysvLhoq4IOs9HFHDWQDhPTxG6BeA3vlZHY6OtcVIkA7VXbw
-	 M89Fs7z6k9gNnYIoSlr4sOcu/VUw1pBGeG177PNsJqSQdluOFLVNhn3cr6rHRHrV9w
-	 tTXazdvUHLxclGVvffSZfHqlCI35ScxuWDXorBj8gyC+CdQ/qcV76d21adR3hLSOc2
-	 TI6WQZU1LafFB5d1wAc/dnIrzFct+CoTLEWSCmQlypP27eDS75ddSiTEDM0JTXukiS
-	 HlmQmS73NFDLQniye+Vv8RbZHc7relEffN11zK1KrAiSxIZ+nA6Kkfmn1o0hC+BgLU
-	 4CUAlX9bzLH2g==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 13D5BCE0358; Wed, 28 Feb 2024 10:48:32 -0800 (PST)
-Date: Wed, 28 Feb 2024 10:48:32 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] tracepoints: Use WARN() and not WARN_ON() for warnings
-Message-ID: <23ffccec-8fb5-4f44-a193-0d21eaf07d1b@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240228133112.0d64fb1b@gandalf.local.home>
+	s=arc-20240116; t=1709146225; c=relaxed/simple;
+	bh=ztBRN8H9cDMaU+euBKWvMiwH9ff2ZLkBxBg/KHOXYYE=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=uGLeyq+Sqt4/NqxzVetELerVMmMZZq72vqkgKEL9qDUzHxx+qnMCIftXs7LnMHHIHRFO+W+WzTVMqdZllzhFDvdip1TALK3+U8fG/uztzVx3meMRgWPLQvbk3aaDs4zgpwAusDmk23eT9Mn6IkCxkZP3rGNMaLFPQ9rDZKQKx44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fkJNYAkq; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41SAxLK8014965;
+	Wed, 28 Feb 2024 18:50:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=jEZOciEw7QWJWN
+	d6uZ3qYXpZbkzs1CfLSY+lK5A4LEA=; b=fkJNYAkqODqjLdDrd3CQdalYiseYPZ
+	zyCPjKNzZplYyYPm9D8AGyp7sbqKEvu7dOpcXjzZ0cpbfjj1vwXa4sHnJ4XM9pUE
+	qOwKLSCZd+yZm0ZVEa82uSWcO/cYVueXrMmhANBqaAoWjEWoWYqpmpGcr5ogf23V
+	ju3R/PW290eMhpbwDkzXmU/2pfwPdlqe8cYD88PZhCXRyyHyFj3sQEbOO0BXQfBU
+	6VLKkUlCNgryb6uwJsd210K91BFO62WLo6SZNrhUHZ8DkFqF/Wm9LuAoPQGm7Keb
+	wv4GYJf5shWPSqwZpdEERcsu2nTtmIa/oiA+YVlzR1D1OuZR4jwOvbww==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whw3f232d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 18:50:17 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SIoGtE013925
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 18:50:16 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 10:50:13 -0800
+From: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+Subject: [PATCH 0/3] SCM: Support latest version of waitq-aware firmware
+Date: Wed, 28 Feb 2024 10:49:58 -0800
+Message-ID: <20240228-multi_waitq-v1-0-ccb096419af0@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228133112.0d64fb1b@gandalf.local.home>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFaA32UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIyNj3dzSnJLM+PLEzJJCXRNLEyMTM4uUZBNLCyWgjoKi1LTMCrBp0bG
+ 1tQBjQOlkXQAAAA==
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Sibi Sankar <quic_sibis@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, Prasad Sodagudi <quic_psdoagud@quicinc.com>,
+        "Murali
+ Nalajala" <quic_mnalajal@quicinc.com>,
+        Satya Durga Srinivasu Prabhala
+	<quic_satyap@quicinc.com>,
+        Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709146213; l=960;
+ i=quic_uchalich@quicinc.com; s=20240202; h=from:subject:message-id;
+ bh=ztBRN8H9cDMaU+euBKWvMiwH9ff2ZLkBxBg/KHOXYYE=;
+ b=wF6h5fOIzi1uPnt1nMji/CsczdySbn43gvG+fGPq9UctMBHkims9V0FnOgT3HVEY39viZl22T
+ YG7O4kbWDqHA9wdlEcukPTshA1/ICN80OqyYhPdKdS0SI3B6pJA0LQf
+X-Developer-Key: i=quic_uchalich@quicinc.com; a=ed25519;
+ pk=8n+IFmsCDcEIg91sUP/julv9kf7kmyIKT2sR+1yFd4A=
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: -YCWjv494SNMppZTNZjw20PhkjcsSIEG
+X-Proofpoint-GUID: -YCWjv494SNMppZTNZjw20PhkjcsSIEG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=826 spamscore=0
+ suspectscore=0 adultscore=0 impostorscore=0 priorityscore=1501 bulkscore=0
+ mlxscore=0 clxscore=1015 malwarescore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402280148
 
-On Wed, Feb 28, 2024 at 01:31:12PM -0500, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> There are two WARN_ON*() warnings in tracepoint.h that deal with RCU
-> usage. But when they trigger, especially from using a TRACE_EVENT()
-> macro, the information is not very helpful and is confusing:
-> 
->  ------------[ cut here ]------------
->  WARNING: CPU: 0 PID: 0 at include/trace/events/lock.h:24 lock_acquire+0x2b2/0x2d0
-> 
-> Where the above warning takes you to:
-> 
->  TRACE_EVENT(lock_acquire,  <<<--- line 24 in lock.h
-> 
-> 	TP_PROTO(struct lockdep_map *lock, unsigned int subclass,
-> 		int trylock, int read, int check,
-> 		struct lockdep_map *next_lock, unsigned long ip),
-> 	[..]
-> 
-> Change the WARN_ON_ONCE() to WARN_ONCE() and add a string that allows
-> someone to search for exactly where the bug happened.
-> 
-> Reported-by: Borislav Petkov <bp@alien8.de>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+This series adds support for the latest improvements made in SCM
+firmware (FW) that allow for multiple wait-queues in FW.
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
+This series has been tested on SA8775P SoC.
 
-> ---
->  include/linux/tracepoint.h | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-> index 88c0ba623ee6..689b6d71590e 100644
-> --- a/include/linux/tracepoint.h
-> +++ b/include/linux/tracepoint.h
-> @@ -199,7 +199,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->  		if (!(cond))						\
->  			return;						\
->  									\
-> -		if (WARN_ON_ONCE(RCUIDLE_COND(rcuidle)))		\
-> +		if (WARN_ONCE(RCUIDLE_COND(rcuidle),			\
-> +			      "Bad RCU usage for tracepoint"))		\
->  			return;						\
->  									\
->  		/* keep srcu and sched-rcu usage consistent */		\
-> @@ -259,7 +260,8 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->  				TP_ARGS(args),				\
->  				TP_CONDITION(cond), 0);			\
->  		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
-> -			WARN_ON_ONCE(!rcu_is_watching());		\
-> +			WARN_ONCE(!rcu_is_watching(),			\
-> +				  "RCU not watching for tracepoint");	\
->  		}							\
->  	}								\
->  	__DECLARE_TRACE_RCU(name, PARAMS(proto), PARAMS(args),		\
-> -- 
-> 2.43.0
-> 
+P.S. While at Qualcomm, Guru Das Srinagesh authored these patches.
+Thanks Guru!
+
+Signed-off-by: Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+---
+Unnathi Chalicheemala (3):
+      firmware: qcom-scm: Initialize waitq before setting global __scm
+      firmware: qcom-scm: Support multiple waitq contexts
+      firmware: qcom-scm: Remove QCOM_SMC_WAITQ_FLAG_WAKE_ALL
+
+ drivers/firmware/qcom/qcom_scm-smc.c |  7 ++-
+ drivers/firmware/qcom/qcom_scm.c     | 85 +++++++++++++++++++++++++-----------
+ drivers/firmware/qcom/qcom_scm.h     |  3 +-
+ 3 files changed, 67 insertions(+), 28 deletions(-)
+---
+base-commit: 39133352cbed6626956d38ed72012f49b0421e7b
+change-id: 20240223-multi_waitq-4942468dc498
+
+Best regards,
+-- 
+Unnathi Chalicheemala <quic_uchalich@quicinc.com>
+
 
