@@ -1,127 +1,154 @@
-Return-Path: <linux-kernel+bounces-85780-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DBCB86BAA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:18:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7E6386BAA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:19:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD76028BA05
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:18:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D068B224B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B6671361C1;
-	Wed, 28 Feb 2024 22:18:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4D481361D9;
+	Wed, 28 Feb 2024 22:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kn6KZG+V"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SeJJq6/z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890341361A3;
-	Wed, 28 Feb 2024 22:18:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 178401361B4;
+	Wed, 28 Feb 2024 22:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709158686; cv=none; b=oKCqi2/Qo0AY+FWjh9Xm1fxv0FnqA5E5Bb6iSoX6q8p+G5WyJr1qRgLud+7gQzW/dBDS17TX9IOtjKi6yrtW3j878l6DWs6a93RH5qJ5jqfyOBvWvMGkCo6sq9JS9ZgNNjYnlynAefyPP8MrablYknZUyuneNiSdxQYkTABL+o4=
+	t=1709158752; cv=none; b=OXJcvcQoQLrO6jbI/DAEYGrvw+isZhbHY1WOuiysyWxabXGp4JR7NRuKAzCeQ6QOb0UxAh8t1M2ncxeyygrf6/oQxONUhOR1h0FtdllKM6Ht9LQD10s2g94gR1ZEos0AvoKIWmipbCRqn5sJvDb/4NJi5/pKI6jzd08lRzPw7dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709158686; c=relaxed/simple;
-	bh=XgRBeERvVGVRTMKOSp0B+k8IqLT4mFYWBW+Ok+EN2DY=;
-	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
-	 Subject:From:Cc:To:Date; b=Bz1gpzGBO2Srj/CEej96d6glVY74JzfSZubyk4SF/OKhPXXp70Ur/mQntdt7etNNVsrp3ZKa1d1WxqS7Ify4a/j4MIG3e/DR1lDG848pEffzI6Fch+IEYdrtIKK6MgUowoGpsAuMdHeDT6nHvyTxLJAgwHF2MkciDpHbzXu7jok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kn6KZG+V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15252C433F1;
-	Wed, 28 Feb 2024 22:18:06 +0000 (UTC)
+	s=arc-20240116; t=1709158752; c=relaxed/simple;
+	bh=+7apalvwMqyqMX/hzGj7jyyLU7wXZnb5wwBuDuGCTvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OerYC1JI2tPPV7vjlJWZHd53WMimIOrktP/bLlmoL0rdbsWqs3eoJzXiJsyiXbGYdwpqmP30sF1Jnlk3G9xJ71tEnIy9eivPKFRncxPb7iaEIyNcaqJtVDL6ZgaW6ULve4woFH9u2sqwJUyj8IwHRrriN6T1TbkifRCNt8Y2LnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SeJJq6/z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA8F3C433F1;
+	Wed, 28 Feb 2024 22:19:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709158686;
-	bh=XgRBeERvVGVRTMKOSp0B+k8IqLT4mFYWBW+Ok+EN2DY=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=kn6KZG+Vo9H4uSUtWN/Ywm+W5t5mRmUSu3k9ZH+K3+uqq/kvsbHZnqY4LYfPY/h8Y
-	 lIKUBFxU4WV4+V3F1d5FugkOWz9puNZlgBu2WX1+Ej8rOaHjyxVxgD+M+8bIuNnIgl
-	 UqQf/CRzIFaGFb3aF1T5BNfVYBSeXUzmLxmOZHSn8sF1FYYDmwZibZYAZekzOLB+kf
-	 j8hms/IgHk5aLwFfRtV9KyB0/NigVAXa0nEQ1CbG+6dycDdp/0SPNRjgGuYdqER3w5
-	 5FvSizj73YbMEVlSrDZasqDhsHirKEzaKCHdt9e6lO8d2D+X2ZM2Nd+SUeq3ioRjwb
-	 tqfy9isPUs6sQ==
-Message-ID: <d81a0e5a477f03c248111f515ae2e3be.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1709158751;
+	bh=+7apalvwMqyqMX/hzGj7jyyLU7wXZnb5wwBuDuGCTvg=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=SeJJq6/zJx9VFse1Hh68yaTtcJSIbzhHZ6qWme6W8kJhvsIQ9V087qEaLI4qJ7wrX
+	 m2pXtYu2NQu9j4CdSn3ctSLt/SrrBPbxtmfr6Zr7ox7NYxuRzZr0sO20yqZR1Kb6JH
+	 TYl6TfF+3VetCBZORgWex4m37uKlpwjSC8iaW/rX5MEg9ElzQL2YZceSf4V29M7uZJ
+	 aaF9QuFszfBfEuqP75u1oRuZIu3YKL46Nz4Hzp47e2TVyfJLdbrjjdGcQaUddbnVHE
+	 UcDbkhjC6Cda7YDVkCoN8WIJ2y/VysMEFsOjCuW6Z+tUwUjIWD2Togw+VHLcn+hbGw
+	 Er7cjjH5iwFtA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 518FDCE0F91; Wed, 28 Feb 2024 14:19:11 -0800 (PST)
+Date: Wed, 28 Feb 2024 14:19:11 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
+	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com,
+	rostedt@goodmis.org, mark.rutland@arm.com
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <ba95955d-b63d-4670-b947-e77b740b1a49@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <02913b40-7b74-48b3-b15d-53133afd3ba6@paulmck-laptop>
+ <3D27EFEF-0452-4555-8277-9159486B41BF@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240228082649.1633083-1-peng.fan@oss.nxp.com>
-References: <20240228082649.1633083-1-peng.fan@oss.nxp.com>
-Subject: Re: [PATCH] clk: imx: lpcg-scu: SW workaround for errata (e10858)
-From: Stephen Boyd <sboyd@kernel.org>
-Cc: imx@lists.linux.dev, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-To: Peng Fan (OSS) <peng.fan@oss.nxp.com>, abelvesa@kernel.org, festevam@gmail.com, kernel@pengutronix.de, mturquette@baylibre.com, s.hauer@pengutronix.de, shawnguo@kernel.org
-Date: Wed, 28 Feb 2024 14:18:03 -0800
-User-Agent: alot/0.10
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3D27EFEF-0452-4555-8277-9159486B41BF@joelfernandes.org>
 
-Quoting Peng Fan (OSS) (2024-02-28 00:26:49)
-> diff --git a/drivers/clk/imx/clk-lpcg-scu.c b/drivers/clk/imx/clk-lpcg-sc=
-u.c
-> index dd5abd09f3e2..b30d0f8b5bca 100644
-> --- a/drivers/clk/imx/clk-lpcg-scu.c
-> +++ b/drivers/clk/imx/clk-lpcg-scu.c
-> @@ -6,6 +6,7 @@
-> =20
->  #include <linux/bits.h>
->  #include <linux/clk-provider.h>
-> +#include <linux/delay.h>
->  #include <linux/err.h>
->  #include <linux/io.h>
->  #include <linux/slab.h>
-> @@ -41,6 +42,31 @@ struct clk_lpcg_scu {
-> =20
->  #define to_clk_lpcg_scu(_hw) container_of(_hw, struct clk_lpcg_scu, hw)
-> =20
-> +/* e10858 -LPCG clock gating register synchronization errata */
-> +static void do_lpcg_workaround(u32 rate, void __iomem *reg, u32 val)
+On Wed, Feb 28, 2024 at 05:10:43PM -0500, Joel Fernandes wrote:
+> 
+> 
+> > On Feb 28, 2024, at 4:52 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> > 
+> > ﻿On Wed, Feb 28, 2024 at 04:27:47PM -0500, Joel Fernandes wrote:
+> >> 
+> >> 
+> >>>> On Feb 28, 2024, at 4:13 PM, Paul E. McKenney <paulmck@kernel.org> wrote:
+> >>> 
+> >>> ﻿On Wed, Feb 28, 2024 at 03:14:34PM -0500, Joel Fernandes wrote:
+> >>>>> On Wed, Feb 28, 2024 at 12:18 PM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >>>>> 
+> >>>>> On Wed, Feb 28, 2024 at 10:37:51AM -0600, Yan Zhai wrote:
+> >>>>>> On Wed, Feb 28, 2024 at 9:37 AM Joel Fernandes <joel@joelfernandes.org> wrote:
+> >>>>>>> Also optionally, I wonder if calling rcu_tasks_qs() directly is better
+> >>>>>>> (for documentation if anything) since the issue is Tasks RCU specific. Also
+> >>>>>>> code comment above the rcu_softirq_qs() call about cond_resched() not taking
+> >>>>>>> care of Tasks RCU would be great!
+> >>>>>>> 
+> >>>>>> Yes it's quite surprising to me that cond_resched does not help here,
+> >>>>> 
+> >>>>> In theory, it would be possible to make cond_resched() take care of
+> >>>>> Tasks RCU.  In practice, the lazy-preemption work is looking to get rid
+> >>>>> of cond_resched().  But if for some reason cond_resched() needs to stay
+> >>>>> around, doing that work might make sense.
+> >>>> 
+> >>>> In my opinion, cond_resched() doing Tasks-RCU QS does not make sense
+> >>>> (to me), because cond_resched() is to inform the scheduler to run
+> >>>> something else possibly of higher priority while the current task is
+> >>>> still runnable. On the other hand, what's not permitted in a Tasks RCU
+> >>>> reader is a voluntary sleep. So IMO even though cond_resched() is a
+> >>>> voluntary call, it is still not a sleep but rather a preemption point.
+> >>> 
+> >>> From the viewpoint of Task RCU's users, the point is to figure out
+> >>> when it is OK to free an already-removed tracing trampoline.  The
+> >>> current Task RCU implementation relies on the fact that tracing
+> >>> trampolines do not do voluntary context switches.
+> >> 
+> >> Yes.
+> >> 
+> >>> 
+> >>>> So a Tasks RCU reader should perfectly be able to be scheduled out in
+> >>>> the middle of a read-side critical section (in current code) by
+> >>>> calling cond_resched(). It is just like involuntary preemption in the
+> >>>> middle of a RCU reader, in disguise, Right?
+> >>> 
+> >>> You lost me on this one.  This for example is not permitted:
+> >>> 
+> >>>   rcu_read_lock();
+> >>>   cond_resched();
+> >>>   rcu_read_unlock();
+> >>> 
+> >>> But in a CONFIG_PREEMPT=y kernel, that RCU reader could be preempted.
+> >>> 
+> >>> So cond_resched() looks like a voluntary context switch to me.  Recall
+> >>> that vanilla non-preemptible RCU will treat them as quiescent states if
+> >>> the grace period extends long enough.
+> >>> 
+> >>> What am I missing here?
+> >> 
+> >> That we are discussing Tasks-RCU read side section? Sorry I should have been more clear. I thought sleeping was not permitted in Tasks RCU reader, but non-sleep context switches (example involuntarily getting preempted were).
+> > 
+> > Well, to your initial point, cond_resched() does eventually invoke
+> > preempt_schedule_common(), so you are quite correct that as far as
+> > Tasks RCU is concerned, cond_resched() is not a quiescent state.
+> 
+>  Thanks for confirming. :-)
 
-unsigned long rate
+However, given that the current Tasks RCU use cases wait for trampolines
+to be evacuated, Tasks RCU could make the choice that cond_resched()
+be a quiescent state, for example, by adjusting rcu_all_qs() and
+rcu_urgent_qs accordingly.
 
-> +{
-> +       writel(val, reg);
-> +
-> +       if (rate >=3D 24000000 || rate =3D=3D 0) {
-> +               u32 reg1;
+But this seems less pressing given the chance that cond_resched() might
+go away in favor of lazy preemption.
 
-Please declare this variable at the start of the function.
-
-> +
-> +               /*
-> +                * The time taken to access the LPCG registers from the A=
-P core
-> +                * through the interconnect is longer than the minimum de=
-lay
-> +                * of 4 clock cycles required by the errata.
-> +                * Adding a readl will provide sufficient delay to prevent
-> +                * back-to-back writes.
-> +                */
-> +               reg1 =3D readl(reg);
-> +       } else {
-> +               /*
-> +                * For clocks running below 24MHz, wait a minimum of
-> +                * 4 clock cycles.
-> +                */
-> +               ndelay(4 * (DIV_ROUND_UP(1000000000, rate)));
-> +       }
-> +}
-> +
->  static int clk_lpcg_scu_enable(struct clk_hw *hw)
->  {
->         struct clk_lpcg_scu *clk =3D to_clk_lpcg_scu(hw);
-> @@ -57,7 +83,8 @@ static int clk_lpcg_scu_enable(struct clk_hw *hw)
->                 val |=3D CLK_GATE_SCU_LPCG_HW_SEL;
-> =20
->         reg |=3D val << clk->bit_idx;
-> -       writel(reg, clk->reg);
-> +
-> +       do_lpcg_workaround(clk_hw_get_rate(hw), clk->reg, reg);
-
-I'd prefer the name had 'writel' in it somewhere.
-> =20
->         spin_unlock_irqrestore(&imx_lpcg_scu_lock, flags);
->
+							Thanx, Paul
 
