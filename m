@@ -1,170 +1,274 @@
-Return-Path: <linux-kernel+bounces-84399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2C4486A663
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:13:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27DFE86A64C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:04:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA44FB2778A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:03:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D307428D5F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543446125;
-	Wed, 28 Feb 2024 02:03:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90896538A;
+	Wed, 28 Feb 2024 02:04:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RNfKPtf0"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="otjZt2d5"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19AD04400
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1701D6125;
+	Wed, 28 Feb 2024 02:04:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709085785; cv=none; b=QJqsHSw4JAposygSjpY/0Zxo70asxQf86t+ReXePx/f3IiMS9jeUoIft5dNiMpg398lPtdxvYskPf29y/H1WF90GOv0qT4CMsx8yGgLz0isSZG2yGhz2OgCJCpfQuKi4Q+7P9NUl/u2vGrt0WZVf75eRltv4uN5WPhnSskt49jc=
+	t=1709085843; cv=none; b=i1b1ZBk10YfdJEEnKzFLDM1BUxLtaPVjqFp9+eTzIzYFWnUe1S9MaRwS6XVN10kQzAg15rh1IcuPqySLTFOJgYEAfd7RHCKwa/8dYNkQmMJ02bE43q3Np3115jcGZOuiSPElaqRUhUjyXxaCsyOxa46zAK/Oz22zRC6723mWm3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709085785; c=relaxed/simple;
-	bh=4on74mCYLeE6XaAwNoUjaXzsgV6wvEl6lBJmqfetf9k=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=KKeib2hlhYbEFUV9xfMh8tQ77PI7SEyogCGDb/9VhO2AvZ4aRJz7ZoDmtoeQgnaNVve12cG0NNYi/j+R+kMoBz1aIqYd90XVsihCIthk3ZPwbhsIJGDX5CtImAW6i/Njplv98bw+uGCpiPoRORtl8BjwGZ8fMEDit2+66eYL3Es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RNfKPtf0; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6093f75fc81so438407b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:03:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709085783; x=1709690583; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2cRk3uqvSbJiBHA3pyhGkClPVcG1HOgMZ3vlrWdyKlg=;
-        b=RNfKPtf0FOjno52HqOg1L+E2Ncf7KNg1pCXFiGPr8aQp2k1Fi0+Jbav4dmR7Sdg3Sx
-         WIQQIack4+Hf8X89I8XQFmO+Knxc5pqXlO+fN+7sJPZo4o9Lt9Nf4EFf+vixHYdK6O3j
-         nhLQjY5zZH92KRoHJexIMSHoAducE43vF268hY986rYShBnPtlxz7HyPrQKyqpzE7Ihj
-         r+UtbUhJcvBwCvQWQuo6WI2t3w3KhUGmF+mc5/tv2C4M7A5+hBcmcj/gEqVOLOh8WTlR
-         pAlo40RZFcq0N7P1xXkBSg+0Pgf47tWAbpWeLrSvvbg3306mMWatgFJq7kvUnzzpKGQQ
-         IYVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709085783; x=1709690583;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2cRk3uqvSbJiBHA3pyhGkClPVcG1HOgMZ3vlrWdyKlg=;
-        b=aY/HrmzU8JEBd3HJh3A9P+aKnI274L9JinDyXq0R/tNpNfjF+eiNHSZZB89IDc2xNG
-         H97DKiQFILvT2ZgUw5Tr058gS/ZV+mScoska7V2D8wcIZQzcNpmpl8DnqCu5Uq3W1VRo
-         WCHHZCQEz94/Iao7HKrDSTlmub5qqtqST69Oi2knaNtcGepSoNZOpIZC6pqBb5Mr2V/Q
-         Ma1MakrU2I4SnYECt4puIJkqGBXApYnf4DQlhvos0Gw0Hs2oLvDNthMZTpGy4OcFUhaW
-         3poiEszDZ8Lbj/5GYdGUcWuJJl3vm1Fdqu1eLN/S/9U3yEij7jJH3v2igX45dwVOVQIW
-         cLAA==
-X-Gm-Message-State: AOJu0YxD2J0aFAbs+Tf81GPqyhvtZw7RrOrzy06Uzh7t1eADFGhftBre
-	rz/Q8voHko/gGWedWgQpMobgVDtplrL9dn/lOP/hcT1YVmWg7Mkii+iNv4/IzHy2mlzmZAI+KnJ
-	kcg==
-X-Google-Smtp-Source: AGHT+IEK2yrVKUL7lEaC9JelCIFBpRdLkIgZXj7tAXuA6PffgrnMLO39NARWg5HKV7bsg3dCjSBeiyxN4gs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:fe08:0:b0:608:f15:5ba7 with SMTP id
- j8-20020a81fe08000000b006080f155ba7mr907857ywn.0.1709085783122; Tue, 27 Feb
- 2024 18:03:03 -0800 (PST)
-Date: Tue, 27 Feb 2024 18:03:01 -0800
-In-Reply-To: <20240227232100.478238-15-pbonzini@redhat.com>
+	s=arc-20240116; t=1709085843; c=relaxed/simple;
+	bh=g5A9yMVDZzVX3M2BL3GzDMAqmNmxjz0+OuSVno93rmg=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:CC:References:
+	 In-Reply-To:Content-Type; b=Q4maregRJKfFJxcN2a/LNXRvlxeQBzOTJ3MyVMsTRS9ezb0kSSH9Cqnq5AGLWeG5i49srKatchWSedWfxXdCKjd8373kJJ4WEbGxbjzdGCrhw/SBNaMchoYd5UTOwhgb4a0uJs4wyYUyKhC4FjNxv+JTLjCRCGFZZoMc9H+6ABU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=otjZt2d5; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S1tCdm012049;
+	Wed, 28 Feb 2024 02:03:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:from:subject:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=h3Qpl7kTMENDyFAqOAx1LMkh6JOUtgWr5lhtd7jR1Xc=; b=ot
+	jZt2d5QbB5tt5iM0EbCZ+DzcX/Htt0a6B/GDtQ8GcuRWgNPEIGvpIi7/7w8CSfRY
+	uqwwD6HUS+AyP9iGh2bGuwRRevqpbuu7+pq1+2szB9stT6d2KeMk1OkzmjV59IUP
+	pqUfX38dKGyS/9iGVSasXbv474xJnZlIOeHEyN062dYCClToE/DxDuHboKJyK2o7
+	oyRYD33BZnXC8LcrTVDBpAJlwf/jbdiPapHeMja48lY859Gx/HDvbQouEs8aj4X0
+	QzBxsXvi7oz9FarmAy6OMpVm3NW81sT0mUNFbOcoUz30b4zGREJvorRQj+GFBWQc
+	+xqFF2w7u6h19ZtpNnMw==
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wh8aujssj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 02:03:58 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41S23vbo007225
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 02:03:57 GMT
+Received: from [10.239.132.150] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 27 Feb
+ 2024 18:03:52 -0800
+Message-ID: <e5d3d76f-32a3-4378-8d94-06f762ffb11f@quicinc.com>
+Date: Wed, 28 Feb 2024 10:03:50 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240227232100.478238-1-pbonzini@redhat.com> <20240227232100.478238-15-pbonzini@redhat.com>
-Message-ID: <Zd6UVfhzdMp8z2O2@google.com>
-Subject: Re: [PATCH 14/21] KVM: x86/mmu: pass error code back to MMU when
- async pf is ready
-From: Sean Christopherson <seanjc@google.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	isaku.yamahata@intel.com, thomas.lendacky@amd.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: "Aiqun Yu (Maria)" <quic_aiquny@quicinc.com>
+Subject: Re: [PATCH v4 1/6] dt-bindings: arm: qcom: Document QCM8550, QCS8550
+ SoC and board
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Tengfei Fan <quic_tengfan@quicinc.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>
+References: <20240119100621.11788-1-quic_tengfan@quicinc.com>
+ <20240119100621.11788-2-quic_tengfan@quicinc.com>
+ <CAA8EJprpMjK03rKPK6wgfVuDvBikYsKZjMc0Wusa1BxFOBnXhQ@mail.gmail.com>
+ <86672501-206a-49ed-8af7-2b6c332c1697@quicinc.com>
+ <CAA8EJppkDDACV_sLxFW4EqKQLHfo4ivSLwa_jCde8JpeH4YfzA@mail.gmail.com>
+ <88845d8d-0b58-46fa-8c52-c1bb4f2d39f8@quicinc.com>
+ <CAA8EJpr_vqwpf89GvyAUYJwcrT2mZxwWUkkqmDEOGH0Lci_YYw@mail.gmail.com>
+Content-Language: en-US
+In-Reply-To: <CAA8EJpr_vqwpf89GvyAUYJwcrT2mZxwWUkkqmDEOGH0Lci_YYw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: dikCYJR2YLm---cyOjOpBR9dxvmhdpS7
+X-Proofpoint-GUID: dikCYJR2YLm---cyOjOpBR9dxvmhdpS7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_01,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 suspectscore=0 phishscore=0 malwarescore=0
+ mlxscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280015
 
-On Tue, Feb 27, 2024, Paolo Bonzini wrote:
-> Right now the error code is not used when an async page fault is completed.
-> This is not a problem in the current code, but it is untidy.  For protected
-> VMs we need to check that the page attributes match the current state of the
-> page.  Async page faults can only occur on shared pages (because
-> private pages go through kvm_faultin_pfn_private() instead of
-> __gfn_to_pfn_memslot()), but it is risky to rely on the polarity of
-> PFERR_GUEST_ENC_MASK and the high 32 bits of the error code being zero.
-> So, for clarity and future-proofing of the code, pipe the error code
-> from kvm_arch_setup_async_pf() to kvm_arch_async_page_ready() via the
-> architecture-specific async page fault data.
-> 
-> Extracted from a patch by Isaku Yamahata.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  1 +
->  arch/x86/kvm/mmu/mmu.c          | 14 +++++++-------
->  2 files changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index a4514c2ef0ec..24e30ca2ca8f 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1839,6 +1839,7 @@ struct kvm_arch_async_pf {
->  	gfn_t gfn;
->  	unsigned long cr3;
->  	bool direct_map;
-> +	u64 error_code;
->  };
->  
->  extern u32 __read_mostly kvm_nr_uret_msrs;
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index f58ca6cb789a..c9890e5b6e4c 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -4260,18 +4260,18 @@ static u32 alloc_apf_token(struct kvm_vcpu *vcpu)
->  	return (vcpu->arch.apf.id++ << 12) | vcpu->vcpu_id;
->  }
->  
-> -static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> -				    gfn_t gfn)
-> +static bool kvm_arch_setup_async_pf(struct kvm_vcpu *vcpu,
-> +				    struct kvm_page_fault *fault)
->  {
->  	struct kvm_arch_async_pf arch;
->  
->  	arch.token = alloc_apf_token(vcpu);
-> -	arch.gfn = gfn;
-> +	arch.gfn = fault->gfn;
->  	arch.direct_map = vcpu->arch.mmu->root_role.direct;
->  	arch.cr3 = kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu);
->  
-> -	return kvm_setup_async_pf(vcpu, cr2_or_gpa,
-> -				  kvm_vcpu_gfn_to_hva(vcpu, gfn), &arch);
-> +	return kvm_setup_async_pf(vcpu, fault->addr,
-> +				  kvm_vcpu_gfn_to_hva(vcpu, fault->gfn), &arch);
->  }
->  
->  void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
-> @@ -4290,7 +4290,7 @@ void kvm_arch_async_page_ready(struct kvm_vcpu *vcpu, struct kvm_async_pf *work)
->  	      work->arch.cr3 != kvm_mmu_get_guest_pgd(vcpu, vcpu->arch.mmu))
->  		return;
->  
-> -	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, 0, true, NULL);
-> +	kvm_mmu_do_page_fault(vcpu, work->cr2_or_gpa, work->arch.error_code, true, NULL);
 
-This is silly.  If we're going to bother plumbing in the error code, then we
-should use it to do sanity checks.  Things have gone off the rails if end up with
-an async #PF on private memory.
 
->  }
->  
->  static inline u8 kvm_max_level_for_order(int order)
-> @@ -4395,7 +4395,7 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
->  			trace_kvm_async_pf_repeated_fault(fault->addr, fault->gfn);
->  			kvm_make_request(KVM_REQ_APF_HALT, vcpu);
->  			return RET_PF_RETRY;
-> -		} else if (kvm_arch_setup_async_pf(vcpu, fault->addr, fault->gfn)) {
-> +		} else if (kvm_arch_setup_async_pf(vcpu, fault)) {
->  			return RET_PF_RETRY;
->  		}
->  	}
-> -- 
-> 2.39.0
+On 2/20/2024 5:15 PM, Dmitry Baryshkov wrote:
+> On Tue, 20 Feb 2024 at 11:09, Aiqun Yu (Maria) <quic_aiquny@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 2/5/2024 9:48 PM, Dmitry Baryshkov wrote:
+>>> On Mon, 5 Feb 2024 at 12:21, Tengfei Fan <quic_tengfan@quicinc.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2/5/2024 12:29 AM, Dmitry Baryshkov wrote:
+>>>>> On Fri, 19 Jan 2024 at 11:07, Tengfei Fan <quic_tengfan@quicinc.com> wrote:
+>>>>>>
+>>>>>> Document QCM8550, QCS8550 SoC and the AIM300 AIoT board bindings.
+>>>>>> QCS8550 and QCM8550 processor combines powerful computing, extreme edge
+>>>>>> AI processing, Wi-Fi 7, and robust video and graphics for a wide range
+>>>>>> of use cases for the Internet of Things (IoT). QCS8550 is a QCS version
+>>>>>> for QCM8550. Modem RF only in QCM8550 but not in QCS8550.
+>>>>>> AIM300 Series is a highly optimized family of modules designed to
+>>>>>> support AIoT applications. The module is mounted onto Qualcomm AIoT
+>>>>>> carrier board to support verification, evaluation and development. It
+>>>>>> integrates QCS8550 SoC, UFS and PMIC chip etc.
+>>>>>> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
+>>>>>>
+>>>>>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>>>>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>>>>>> ---
+>>>>>>     Documentation/devicetree/bindings/arm/qcom.yaml | 11 +++++++++++
+>>>>>>     1 file changed, 11 insertions(+)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+>>>>>> index 1a5fb889a444..9cee874a8eae 100644
+>>>>>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+>>>>>> @@ -49,8 +49,10 @@ description: |
+>>>>>>             msm8996
+>>>>>>             msm8998
+>>>>>>             qcs404
+>>>>>> +        qcs8550
+>>>>>>             qcm2290
+>>>>>>             qcm6490
+>>>>>> +        qcm8550
+>>>>>
+>>>>> Drop
+>>>>
+>>>> we want to introduce qcm8550 here.
+>>>
+>>> What for. It either had to be introduced beforehand, or it should be
+>>> introduced when one adds support for an actual qcm8550 device.
+>>>
+>>>> qcm8550.dtsi has been introduced and qcs8550-aim300.dtsi include
+>>>> qcm8550.dtsi directly.
+>>>>
+>>>> qcs8550 is a QCS version for qcm8550. qcs8550 is a sub-series of
+>>>> qcm8550. qcm8550 will be a firmware release series from qualcomm.
+>>>
+>>> All three names refer to the different kinds of the same platform. The
+>>> base chip name is sm8550, so it is the last one. Other than that,
+>>> there is no need to include any SoC compatibles other than the actual
+>>> SoC name. See existing qrb devices for an inspiration.
+>>>
+>>>>
+>>>> here is the qcm8550/qcs8550 detailed spec:
+>>>> https://docs.qualcomm.com/bundle/publicresource/87-61717-1_REV_A_Qualcomm_QCS8550_QCM8550_Processors_Product_Brief.pdf
+>>>>
+>>>> here is the sm8550 detailed spec:
+>>>> https://docs.qualcomm.com/bundle/publicresource/87-71408-1_REV_C_Snapdragon_8_gen_3_Mobile_Platform_Product_Brief.pdf
+>>>
+>>> Can you please summarise the _actual_ difference between qcm8550,
+>>> qcs8550 and sm8550? Are they fully soft compatible? Soft compatible
+>>> except the modem? Pin compatible?
+>>
+>> we can remove the qcm8550 compatible for now, and rename current dtsi
+>> back for qcs8550.dtsi, and only introduce qcm8550 later when there is
+>> qcm8550 board public-ed.
+> 
+> Yes, please.
+> 
+>>
+>>   From software point of view, currently it is single firmware image
+>> release for both qcm8550 and qcs8550, and the firmware is not grantee
+>> for sm8550 software compatible.
+> 
+> I assume that modem.mbn is different for qcm and qcs devices. Or does
+> qcs completely miss the modem DSP?
+You are right, modem.mbn part is different. QCS have a gps only modem image.
+> 
+>>
+>>   From hardware point of view, qcm8550, qcs8550, sm8550 are different
+>> hardware socs, qcm8550, qcs8550 is derived from sm8550. We can only
+>> share the public document about those soc descriptions [1]. For soc
+>> itself, it is all similar difference for QCS and QCM version.
+>> Currently(in current development stage) there is not notable software
+>> difference needed other than memory map in kernel side needed to be
+>> differentiate from qcm8550 qcs8550 to sm8550.
+>>
+>> [1]
+>> https://docs.qualcomm.com/bundle/publicresource/87-61717-1_REV_A_Qualcomm_QCS8550_QCM8550_Processors_Product_Brief.pdf
+>>
+>>>
+>>>>
+>>>>>
+>>>>>>             qdu1000
+>>>>>>             qrb2210
+>>>>>>             qrb4210
+>>>>>> @@ -93,6 +95,7 @@ description: |
+>>>>>>       The 'board' element must be one of the following strings:
+>>>>>>
+>>>>>>             adp
+>>>>>> +        aim300-aiot
+>>>>>
+>>>>> We probably need to drop this list, it doesn't surve its purposes.
+>>>>
+>>>> I am a little confused, do you expect to just remove this "aim300-aiot"
+>>>> or do you want to introduce a new patch and remove the whole list?
+>>>
+>>> If you were following the list, you would have seen the patch
+>>> reworking the bindings.
+>>>
+>>>>
+>>>>>
+>>>>>>             cdp
+>>>>>>             dragonboard
+>>>>>>             idp
+>>>>>> @@ -904,6 +907,14 @@ properties:
+>>>>>>               - const: qcom,qcs404-evb
+>>>>>>               - const: qcom,qcs404
+>>>>>>
+>>>>>> +      - items:
+>>>>>> +          - enum:
+>>>>>> +              - qcom,qcs8550-aim300-aiot
+>>>>>> +          - const: qcom,qcs8550-aim300
+>>>>>> +          - const: qcom,qcs8550
+>>>>>> +          - const: qcom,qcm8550
+>>>>>
+>>>>> In the review comments for v3 you have been asked to add qcom,sm8550.
+>>>>> But not the qcom,qcm8550. I don't think that there is any need to
+>>>>> mention qcm8550 here.
+>>>>
+>>>> qcm8550 and sm8550 are different, they have different firmware release.
+>>>>
+>>>> AIM300 AIoT board depend on qcs8550, qcs8550 is a QCS version for
+>>>> qcm8550. Modem RF only in qcm8550 but not in qcs8550.
+>>>
+>>> There are no 'dependecies' here. The thing is about declaring compatibility.
+>>> In my opinion, the qcm8550 is an unnecesary part of the equation. You
+>>> declare compatibility with the board itself,  with the SoM, with the
+>>> actual SoC and with the base of the series. Anybody caring for the
+>>> difference between QCM, QCS and SM will have to check for both
+>>> qcom,qcs8550 and qcom,qcm8550 anyway, as there are differences on the
+>>> modem side.
+>>>
+>>>>>> +          - const: qcom,sm8550
+>>>>>> +
+>>>>>>           - items:
+>>>>>>               - enum:
+>>>>>>                   - qcom,sa8155p-adp
+>>>>>> --
+>>>
+>>
+>> --
+>> Thx and BRs,
+>> Aiqun(Maria) Yu
 > 
 > 
+> 
+
+-- 
+Thx and BRs,
+Aiqun(Maria) Yu
 
