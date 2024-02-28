@@ -1,100 +1,145 @@
-Return-Path: <linux-kernel+bounces-84762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4104B86AB2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:30:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9255186AB30
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:31:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F9C01C24D1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:30:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55F5528736F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F01339A8;
-	Wed, 28 Feb 2024 09:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1A332C89;
+	Wed, 28 Feb 2024 09:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NWL1LJ/K"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FxkUMgHo"
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0C972D052;
-	Wed, 28 Feb 2024 09:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7202D606
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:31:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112632; cv=none; b=rNrH1bDsBqlwy1g8d0VuAExDvFwD+tGVioZf25SsDwvhqh8SmRL2zBZjpPozTWWfuochpQ1BR6UZOVk3Qa6LBAsm8AzpokiKdOjkJaYYbKR3jlOVlTzVIwjono/b01pb+nUaBCJOu6RPf8VRMRSwcD8YR09hXy4o6gb0BGj1y7M=
+	t=1709112681; cv=none; b=gFR8+1M+L9AQYJk8aetYlI/JGGp5TBfDk71JTidBuOQYEKk09SGm1X2VNGDlRBODQlXLIY9mQINC7OhJHgxaqVuIYQxU0HK3LTbOL1GXE+NKlau98ANV5VHKRzQ3NHAP4TMLFGTIWbyZZrGoCO4Ipxa2Bpb2vWFNckc5SomZUwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112632; c=relaxed/simple;
-	bh=ghkRRLFzNc+IVFkmdNWp0Xo1+eTKBJ80L+Fwfaxc5KA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ElRyqBlfLp7Vh92V5zz8ArafI008ifADt/Pumr4CrlWPd21i5+55sb3S4M4zug6t4zuerUXsN1HIg7X9ByO9C7oMvgM3+w7vQYWgdP5fNT6tEQINNP/jXxooN4hDN9Xem1EW2vSRskTKVZdqOY0kIMyq3cTuoG/IS8BXu7Bv60M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NWL1LJ/K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E896BC43394;
-	Wed, 28 Feb 2024 09:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709112631;
-	bh=ghkRRLFzNc+IVFkmdNWp0Xo1+eTKBJ80L+Fwfaxc5KA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=NWL1LJ/KuKX+qCm81NLQESXCqza3tPemjug2LEDZjOLyx5W+2Dbi1MqArberDscKk
-	 RdYUeP5J1lYiK6vd+HzWrMnIDRJzON42wbMQL0Ahz1r3rAwnHzi2dbOPxOTOR5czUW
-	 fcIEvxvDiQV90tmwznpEWkifvh7B1QkqZIRKLOC8wDNrgZUKrjOQCRVB5bRzhoPVku
-	 16o0Zix6FCELrWpWLIkI1NVqKTwmya5qBev8g8BjDu27pyC9YLzP8ii+V+mBbfa5/Z
-	 +S8ZkC34z0/by3ZFfkqP5HQkWXphyqCGfA945aDfA5BTosc432csKbufa8CqU11lMy
-	 +Olq7+WLGEAhA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C7891D88FAF;
-	Wed, 28 Feb 2024 09:30:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709112681; c=relaxed/simple;
+	bh=ggsQyXDpBQNykNIgrvksbxqVHHrQQxhUfF3Xmc//E30=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=Bk7sFYddANxaMKZ+6wen+JdIaAkRkQHh/1/K4go5siT00adrRwauMg1uCTtXp4sP/MY2SSM88D10z++7pLDyjbKwTt/YabuwReK0qTNG/Kq3E1x88jgpMZRcyR2K7XZY8UFdjsFl3WNksDTVOPtToaJIxSVdVT0pIzJjhfzB9+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FxkUMgHo; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a315427f-fe39-4714-a21c-1c104460d3fb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709112676;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kmyL/BrWdx5wm+hWvNvDksX7lVp1tOfJaEY5Dk9iJ0w=;
+	b=FxkUMgHoZ8vP94baYaMWYAKTYOvHCcfPNQOLWsscKf6JV6oUu2rmY/Gae2+2Ktpv5sOrxl
+	aKR1CyClv8PF3fBMdO9dbk249uKOv8/dOeWCZMXP6LuJTWCyD6nPQwI24LshbKBxrjvRPf
+	w9mpzeiZd30A7jC7MU1uyfZboJ8N1OY=
+Date: Wed, 28 Feb 2024 17:31:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: make SK_MEMORY_PCPU_RESERV tunable
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170911263080.1645.11640647793580048759.git-patchwork-notify@kernel.org>
-Date: Wed, 28 Feb 2024 09:30:30 +0000
-References: <20240226022452.20558-1-adamli@os.amperecomputing.com>
-In-Reply-To: <20240226022452.20558-1-adamli@os.amperecomputing.com>
-To: Adam Li <adamli@os.amperecomputing.com>
-Cc: corbet@lwn.net, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, willemb@google.com, yangtiezhu@loongson.cn,
- atenart@kernel.org, kuniyu@amazon.com, wuyun.abel@bytedance.com,
- leitao@debian.org, alexander@mihalicyn.com, dhowells@redhat.com,
- paulmck@kernel.org, joel.granados@gmail.com, urezki@gmail.com,
- joel@joelfernandes.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- patches@amperecomputing.com, cl@os.amperecomputing.com,
- shijie@os.amperecomputing.com
+Subject: Re: [PATCH] mm/slab: Fix a kmemleak in kmem_cache_destroy()
+Content-Language: en-US
+To: Xiaolei Wang <xiaolei.wang@windriver.com>, cl@linux.com,
+ penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+ akpm@linux-foundation.org, vbabka@suse.cz, roman.gushchin@linux.dev,
+ 42.hyeyoo@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240228030408.2740647-1-xiaolei.wang@windriver.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240228030408.2740647-1-xiaolei.wang@windriver.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Mon, 26 Feb 2024 02:24:52 +0000 you wrote:
-> This patch adds /proc/sys/net/core/mem_pcpu_rsv sysctl file,
-> to make SK_MEMORY_PCPU_RESERV tunable.
+On 2024/2/28 11:04, Xiaolei Wang wrote:
+> For earlier kmem cache creation, slab_sysfs_init() has not been called.
+> Consequently, kmem_cache_destroy() cannot utilize kobj_type::release to
+> release the kmem_cache structure. Therefore, tweak kmem_cache_release()
+> to use slab_kmem_cache_release() for releasing kmem_cache when slab_state
+> isn't FULL. This will fixes the memory leaks like following:
 > 
-> Commit 3cd3399dd7a8 ("net: implement per-cpu reserves for
-> memory_allocated") introduced per-cpu forward alloc cache:
+> unreferenced object 0xffff0000c2d87080 (size 128):
+>    comm "swapper/0", pid 1, jiffies 4294893428
+>    hex dump (first 32 bytes):
+>      00 00 00 00 ad 4e ad de ff ff ff ff 6b 6b 6b 6b .....N......kkkk
+>      ff ff ff ff ff ff ff ff b8 ab 48 89 00 80 ff ff.....H.....
+>    backtrace (crc 8819d0f6):
+>      [<ffff80008317a298>] kmemleak_alloc+0xb0/0xc4
+>      [<ffff8000807e553c>] kmem_cache_alloc_node+0x288/0x3a8
+>      [<ffff8000807e95f0>] __kmem_cache_create+0x1e4/0x64c
+>      [<ffff8000807216bc>] kmem_cache_create_usercopy+0x1c4/0x2cc
+>      [<ffff8000807217e0>] kmem_cache_create+0x1c/0x28
+>      [<ffff8000819f6278>] arm_v7s_alloc_pgtable+0x1c0/0x6d4
+>      [<ffff8000819f53a0>] alloc_io_pgtable_ops+0xe8/0x2d0
+>      [<ffff800084b2d2c4>] arm_v7s_do_selftests+0xe0/0x73c
+>      [<ffff800080016b68>] do_one_initcall+0x11c/0x7ac
+>      [<ffff800084a71ddc>] kernel_init_freeable+0x53c/0xbb8
+>      [<ffff8000831728d8>] kernel_init+0x24/0x144
+>      [<ffff800080018e98>] ret_from_fork+0x10/0x20
 > 
-> "Implement a per-cpu cache of +1/-1 MB, to reduce number
-> of changes to sk->sk_prot->memory_allocated, which
-> would otherwise be cause of false sharing."
+> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+
+Looks good to me. And I notice the PARTIAL_NODE state of slab_state is
+also useless since SLAB removed.
+
+Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+
+Thanks.
+
+> ---
+>  mm/slab_common.c | 8 ++++++--
+>  mm/slub.c        | 6 ++----
+>  2 files changed, 8 insertions(+), 6 deletions(-)
 > 
-> [...]
-
-Here is the summary with links:
-  - net: make SK_MEMORY_PCPU_RESERV tunable
-    https://git.kernel.org/netdev/net-next/c/12a686c2e761
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 238293b1dbe1..b6b35bcdd196 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -404,8 +404,12 @@ EXPORT_SYMBOL(kmem_cache_create);
+>   */
+>  static void kmem_cache_release(struct kmem_cache *s)
+>  {
+> -	sysfs_slab_unlink(s);
+> -	sysfs_slab_release(s);
+> +	if (slab_state >= FULL) {
+> +		sysfs_slab_unlink(s);
+> +		sysfs_slab_release(s);
+> +	} else {
+> +		slab_kmem_cache_release(s);
+> +	}
+>  }
+>  #else
+>  static void kmem_cache_release(struct kmem_cache *s)
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 2ef88bbf56a3..9ba59d064b6d 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -6792,14 +6792,12 @@ static int sysfs_slab_add(struct kmem_cache *s)
+>  
+>  void sysfs_slab_unlink(struct kmem_cache *s)
+>  {
+> -	if (slab_state >= FULL)
+> -		kobject_del(&s->kobj);
+> +	kobject_del(&s->kobj);
+>  }
+>  
+>  void sysfs_slab_release(struct kmem_cache *s)
+>  {
+> -	if (slab_state >= FULL)
+> -		kobject_put(&s->kobj);
+> +	kobject_put(&s->kobj);
+>  }
+>  
+>  /*
 
