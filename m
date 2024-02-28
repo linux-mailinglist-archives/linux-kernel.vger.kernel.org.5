@@ -1,126 +1,131 @@
-Return-Path: <linux-kernel+bounces-85812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1701986BB5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C62586BB62
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:59:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AB171C23C88
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:58:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EF3A1C23CB7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1449F7D071;
-	Wed, 28 Feb 2024 22:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5D17293B;
+	Wed, 28 Feb 2024 22:58:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="RVg2hVA1"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YILRbG+K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81AAF7292C
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:57:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C69E1361D0;
+	Wed, 28 Feb 2024 22:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709161043; cv=none; b=bBiPdyiDECkWgimyI9QM8x1g0wLSM8vZ8KzMck0vGGQWtqvLaRtDXtDoVqScHEFwRHecnLFNTs6kZ3Z8gVghdRU6y2TiBbN44WBCROjgF+DKuslvgkqXglAHuQiSTbpM76lCxsOHTKdWfzPV28xEq3zFvGmeV5kD2Y3zmpgsl4Q=
+	t=1709161134; cv=none; b=Xd5UrYVZMDdQJt3c4bftSdqjVWCDbBsjjyQOw0RGQ5w4v+KY92O2lV7lDPQaM8m0roXTLlfeZ7E4VqedVf3QHxhj+NGGw8Csf9vg1uHqhy06sFozIQUa63NNa7Vrb8WeSkuAndFuUyXN9r64f8FjgoZLH4lRCwVFDduNk+Y+ssc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709161043; c=relaxed/simple;
-	bh=rFdeaF8OvHp8ycIMfjI32IqX3BMfkKmkCnOldjcHl/g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uNb9HAm6y90X/O56UjajWBZWHsuM4Xz2qU6HcM5iF/TY7rTkEFtxWtZUsgak1zUlBhWYgYlzhVgU47+kz6vqNu1BfNuLt7dX+4Fzs9qA9jNrY9SLzsYu7lxE8O3JZH1mF68zv9fuSbwOMlLUF6zjPhw9InTAzzryR1/1Gl8EDOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=RVg2hVA1; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5654f700705so482324a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:57:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709161039; x=1709765839; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XmDUVGJ7uYNuJQyRX/NAFGYz0phL9n1ekfsCjXQN9T0=;
-        b=RVg2hVA1htW9QrV231XmRu8rVE9dxV51l51q/PZmKI+VP0e7zdBrJXCL0nGQqa9K9C
-         09+83yEVgQjs1xoJ9udWq6U/MWN7IG479Bsb37f36UhtGM52IpxZf9N5YyuA9SDdJAXd
-         Nmd/L3ZsB9AoxeA3ynprcqaMgKBNcmkKqhWSw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709161039; x=1709765839;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XmDUVGJ7uYNuJQyRX/NAFGYz0phL9n1ekfsCjXQN9T0=;
-        b=oFjLnT+o9NxX5ClXNVY5HCz9pIQr/zM/kUgxkUATVzyzK0n05v+Oh7MdSjgVoBqF84
-         IgbfO5oFT+Kkn0mL4Q799MfoHGCAPMFcNfEijYUfHeHNmCLdvPFlIrY+NdFJZjYRMZV9
-         beaHBdJzZgIghfEFf8Dsc+PhSbQ6oFf8M8TmeoUbsP9DxLSM8VT8oAYUe4qX5VO33GBN
-         V6PAutGInofsHq0UkeLS25+e4Bby4zXy7AMvtbRR0ft36eHxp5AYcrOEPr3zrXdPxBol
-         29eLVuueq3AHueHrfCSlywElY7348CeBCtLTtfVwyWRfNjef/k8lF9tlGhki+fvvLl0N
-         aQvg==
-X-Forwarded-Encrypted: i=1; AJvYcCX9bsGNVL1B4/4Fh6944EV1kcj04fOkBo0fUKWcMNy0+Lc96xvhQkL0NvoTdTJEJyUK4kV27ciqzzV3xgtSPR3jNS+b67L9qdxHrjR4
-X-Gm-Message-State: AOJu0Yz/hMWwSguWwEJuBvwPdYoxWPPsn/mxDEivN6/xbMXHZQaaNjH8
-	7nYjKQuDx4Pj4XbIsSyJknngY5yJ1lywDjH5o07yeS+tsr1Za+I2fJGEyAZ7FlLk8m8JjgqQ9BQ
-	u4Y0ANg==
-X-Google-Smtp-Source: AGHT+IEjwH5pp5pQLH9f0HInvpiye9Dj4+wl/OcjiZJkJ3ys2aehnpiNpoX6xxmVTtzBjidzk7D+5A==
-X-Received: by 2002:a50:8d8d:0:b0:565:9f59:b3bf with SMTP id r13-20020a508d8d000000b005659f59b3bfmr222401edh.6.1709161039683;
-        Wed, 28 Feb 2024 14:57:19 -0800 (PST)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id o23-20020a509b17000000b0056636a98652sm2170837edi.82.2024.02.28.14.57.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 14:57:18 -0800 (PST)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a26fa294e56so62359366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:57:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXBuU2ZbkMJrx1IjM7cJMievjT44sLvkhMlG0pyViMdHEficJKg+btR5zZjCugm3G+AnXnq54yMDgc6cyNMk09MMivRYINQ3cJN8rJE
-X-Received: by 2002:a17:906:b7d4:b0:a44:f89:8104 with SMTP id
- fy20-20020a170906b7d400b00a440f898104mr218606ejb.42.1709161037880; Wed, 28
- Feb 2024 14:57:17 -0800 (PST)
+	s=arc-20240116; t=1709161134; c=relaxed/simple;
+	bh=JxkkjdGFf/rPehnVheEO5cySQ/MvnKPHAt51ceI+tUI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QrtRjNvz7kV3JBNP4mAcxuUMas3TfHs+gyduXILUT2jC8cpd/BvHnFMwln5CKuzQZV8Dlvuen0gZ1rXmP4aadtUxAn46A0FFbm2IAzBP0eyOmctLD4cviUYK3icOLrUi5c+GTQKCvpyiqGVJC1wmUsyWvM8DmwZrrNwR/cWJ8Ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YILRbG+K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25CBDC433F1;
+	Wed, 28 Feb 2024 22:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709161134;
+	bh=JxkkjdGFf/rPehnVheEO5cySQ/MvnKPHAt51ceI+tUI=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=YILRbG+Kodk7xTlswzoQEZ9TF6XCGKOlWutaj4rhKtSkMEjm4xXdSQjLSLwtYVAzA
+	 7qqEDv/OLK57bWSda4rfLtdQ/6gIA+A/k2SJA+h7fqxGv/FJupSq/95KQeppuZfo07
+	 eMhC6K6qSy2mapQst4KdNGsixHapSUtiXRtM2m3dprBMKwrdjdO2e9vjzeFjywUzP0
+	 gQMONVoFID9Bkdl3xbJ3UPC7UgxxbnW+YaHCjjKuhZviWzTXBRRhhnkWf1CdPY7B5U
+	 bP+YEPsMBuJ+MSrQ7f1guWJ3+/hXe08hS0mRthTPb0+vzjMqb+gtL3xLT/zxjJbuC8
+	 S3SqYbfb1O8xA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id B8F37CE0F91; Wed, 28 Feb 2024 14:58:53 -0800 (PST)
+Date: Wed, 28 Feb 2024 14:58:53 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
+	Network Development <netdev@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	Hannes Frederic Sowa <hannes@stressinduktion.org>,
+	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
+	bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+Message-ID: <8ae889cb-ee1d-4c72-9414-e21258118ce3@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <02913b40-7b74-48b3-b15d-53133afd3ba6@paulmck-laptop>
+ <3D27EFEF-0452-4555-8277-9159486B41BF@joelfernandes.org>
+ <ba95955d-b63d-4670-b947-e77b740b1a49@paulmck-laptop>
+ <20240228173307.529d11ee@gandalf.local.home>
+ <CAADnVQ+szRDGaDJPoBFR9KyeMjwpuxOCNys=yxDaCLYZkSkyYw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230925120309.1731676-1-dhowells@redhat.com> <20230925120309.1731676-8-dhowells@redhat.com>
- <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com> <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
-In-Reply-To: <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Wed, 28 Feb 2024 14:57:00 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
-Message-ID: <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
-Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
- 07/12] iov_iter: Convert iterate*() to inline funcs
-To: Tong Tiangen <tongtiangen@huawei.com>
-Cc: David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>, 
-	Christian Brauner <christian@brauner.io>, David Laight <David.Laight@aculab.com>, 
-	Matthew Wilcox <willy@infradead.org>, Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQ+szRDGaDJPoBFR9KyeMjwpuxOCNys=yxDaCLYZkSkyYw@mail.gmail.com>
 
-On Wed, 28 Feb 2024 at 13:21, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Hmm. If the copy doesn't succeed and make any progress at all, then
-> the code in generic_perform_write() after the "goto again"
->
->                 //[4]
->                 if (unlikely(fault_in_iov_iter_readable(i, bytes) ==
->                               bytes)) {
->
-> should break out of the loop.
+On Wed, Feb 28, 2024 at 02:48:44PM -0800, Alexei Starovoitov wrote:
+> On Wed, Feb 28, 2024 at 2:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Wed, 28 Feb 2024 14:19:11 -0800
+> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> >
+> > > > >
+> > > > > Well, to your initial point, cond_resched() does eventually invoke
+> > > > > preempt_schedule_common(), so you are quite correct that as far as
+> > > > > Tasks RCU is concerned, cond_resched() is not a quiescent state.
+> > > >
+> > > >  Thanks for confirming. :-)
+> > >
+> > > However, given that the current Tasks RCU use cases wait for trampolines
+> > > to be evacuated, Tasks RCU could make the choice that cond_resched()
+> > > be a quiescent state, for example, by adjusting rcu_all_qs() and
+> > > .rcu_urgent_qs accordingly.
+> > >
+> > > But this seems less pressing given the chance that cond_resched() might
+> > > go away in favor of lazy preemption.
+> >
+> > Although cond_resched() is technically a "preemption point" and not truly a
+> > voluntary schedule, I would be happy to state that it's not allowed to be
+> > called from trampolines, or their callbacks. Now the question is, does BPF
+> > programs ever call cond_resched()? I don't think they do.
+> >
+> > [ Added Alexei ]
+> 
+> I'm a bit lost in this thread :)
+> Just answering the above question.
+> bpf progs never call cond_resched() directly.
+> But there are sleepable (aka faultable) bpf progs that
+> can call some helper or kfunc that may call cond_resched()
+> in some path.
+> sleepable bpf progs are protected by rcu_tasks_trace.
+> That's a very different one vs rcu_tasks.
 
-Ahh. I see the problem. Or at least part of it.
+Suppose that the various cond_resched() invocations scattered throughout
+the kernel acted as RCU Tasks quiescent states, so that as soon as a
+given task executed a cond_resched(), synchronize_rcu_tasks() might
+return or call_rcu_tasks() might invoke its callback.
 
-The iter is an ITER_BVEC.
+Would that cause BPF any trouble?
 
-And fault_in_iov_iter_readable() "knows" that an ITER_BVEC cannot
-fail. Because obviously it's a kernel address, so no user page fault.
+My guess is "no", because it looks like BPF is using RCU Tasks (as you
+say, as opposed to RCU Tasks Trace) only to wait for execution to leave a
+trampoline.  But I trust you much more than I trust myself on this topic!
 
-But for the machine check case, ITER_BVEC very much can fail.
-
-This should never have worked in the first place.
-
-What a crock.
-
-Do we need to make iterate_bvec() always succeed fully, and make
-copy_mc_to_kernel() zero out the end?
-
-                   Linus
+							Thanx, Paul
 
