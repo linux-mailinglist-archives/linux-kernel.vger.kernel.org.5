@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-84439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2088C86A6CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:45:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE62C86A6CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:46:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45D881C26087
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:45:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A97BA28B551
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:46:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54D62C197;
-	Wed, 28 Feb 2024 02:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D312D03C;
+	Wed, 28 Feb 2024 02:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K3vCi+W9"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B2DwrAqe"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8130200B8
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:42:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B9C25566
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709088137; cv=none; b=DkTWAjqgR1oOtRQQJMXw7q47lShOXY1CM/9vYYQS7d89yavHSP1a+CqX9Q1VYn5IAGlAplqaPiAZyMKOqvPV/eBia7Yv+rZEDg/XQucL89Vww2iGA5PVt570hSgcgZJBbUO3EoFCOhhMpjCZ35/uMca1wh+pfj3lAeP5yiBU2Wc=
+	t=1709088139; cv=none; b=KocNDApRuuS/TEzmoPnpdr51nyaWQql4v0wOY3nau2fzzKRk5Ub5uk6uqdiesGbLadi8II4sWMcbQwOyFmtIzpE+nUtAy0S/gC5CC1f8dXcI7ybLOqfyzhD1Gg6atWm0IVkSTVTazFmkA/Cqcka6Rk7frj7PiZ7k8FfITSDBjQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709088137; c=relaxed/simple;
-	bh=0gEhOu+NvnccPPQj+DGkgmpKe+mDJdiQ8EYFWVgv6Yg=;
+	s=arc-20240116; t=1709088139; c=relaxed/simple;
+	bh=JLsN4xg251qE9a3MZGdWpvkmGCZsQVcBJtHNmsnHqx0=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=KqdVeYRoJYJD0T/41Z8PBBi+ORPS3Xpt8IfdzIia3d2z8QZbA1ZXEBSmfYZiwUFqFmZCe/doqSfGESYlLl6L8I5UPIEGeMRQHEnNbZFmyh4UX2WOZ7dY04c+V/tXA7WAB8SZb8AcPkBmlciYADdQfyX1JnI9AmtzuUZ6ZGHKiJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K3vCi+W9; arc=none smtp.client-ip=209.85.128.201
+	 To:Cc:Content-Type; b=D+8up5P0Cwk7Z13SaB82BFsiLSw1intS5mt9FsVk4eQIzkUg2G37rXYQ+AWa9nCjgDxwrYEnkvvLZ7oG3rkMiNfVs4Zns+dvS7GkqYe4OpbRyd1mPHq042OwS6lipGVijYyvIeTgprhaJaIQ3aVgAxN5gz0s5XZWegdnRKYMcig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B2DwrAqe; arc=none smtp.client-ip=209.85.215.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60804b369c7so53335667b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:42:15 -0800 (PST)
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5cf555b2a53so304953a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:42:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709088135; x=1709692935; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709088137; x=1709692937; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=l9B6PZq9lTAwCPQClSfUQyAcFb6buJcOcs8BLLLIFfI=;
-        b=K3vCi+W9PP9mOXJVXEgpPk8GWlyWO7FsUI5EGYp9/KHl/81V5sfa2Ccl1HnuFMY4Uv
-         CgxYNnEkV5Ky8lF7XRWzuGtVNb1olRoag5MKYejOOy0jy4FTBvf7AA8pyDYIG+Sa/ygg
-         9kgq1/g/fFWFBUqHJxX9xnyn5vQ4PEh2VV0Mq4ChxWj2ZrR1jM8c3XHVPgWyMr2jNtz0
-         +x4REkioKYUz5hHUmdpwEaNp9JWbQYagqq5uWE/upqWJp3KqhAEJO+IcCpdHKf2pYri8
-         xLoc+lxD2m4Htsydv27gwksD+ofGYKndcFQpgHW01YKvE2WIlFX+3zCMhHcr1Thn/RQI
-         pGLw==
+        bh=za8QaygzoKIY5MyMe/Z2Ubm1oLIN1MbBZtglXwIHigs=;
+        b=B2DwrAqeZ3hxUE5PrHwB//zObnj3gOVUrBHZ7xlBCCpYJwsaZsujU1Wd6wRYLYKFVQ
+         ciPVYnK1SHSFjRSfWcz7DzJ+KuBdcNZaVAp6YQxNlQrmZ9ozftnUOEf9bEVq6FwNyGZT
+         uUcqGZbU2HNYM7KrHo3KmJ3Inmi3YIJoXDEDlrG5x1iddFnp9C48nEQ/1+7Hl1TrilfH
+         1qri28/ll7THvl6UBOzAy/IWkLi/YqZIdINLf52ijL2HEPWA9UL9M785vvTRjSWr1j7t
+         FZnkQP1xBcX2LzHqHTFuGrsctfXMggNxh6HQiut930hQsKBmCOHK/+EpKSutmNoTP26H
+         Gtuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709088135; x=1709692935;
+        d=1e100.net; s=20230601; t=1709088137; x=1709692937;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=l9B6PZq9lTAwCPQClSfUQyAcFb6buJcOcs8BLLLIFfI=;
-        b=Tfg2sMsyQBEXgB9IydG1BZuzSzXflKO7DyoTadCNmnLLqSe8Vm9d8ADmDBtQkf20iX
-         FNJKNQC8bv677zYyaOpkqp/V9TL8Z2V/wLzOlTYdsUrlLqpT+Yt0e0CqiStlHB7btocU
-         B32IFLKP27wl+s0jS1dR+GiYHYZ2Tjl2QdheKuGbDcUpDSFA4TaCDasdSRoqkGHTr9S8
-         +5Ej0gXX3+0Kwy8VGRZrVIiTcytA7ctKkjbF0JfrJuu7b254mPu5C3gD4mvBVfwexgb8
-         O0fB0hKoA82zjgz6IL7CeLP900bTB8ntDzjnmlWB9pMol1EVHdoMtG2xaG/X/Ilw+Q8m
-         G5ig==
-X-Forwarded-Encrypted: i=1; AJvYcCXpsiqWyuigY8Bk57iORLaOpqStxI3KwkZpBUpMoqDU2ZxXqBQvL5iNDl2Y+k5JuOmGUPHTG/2ej0poGMCilGk3ebyTQeNXOZZ1VxIF
-X-Gm-Message-State: AOJu0Yx5j9uurjIoqLv71fQjaeEKYGoUALANlbvkU29gZ4JFcNf5vBq6
-	qPeTiWy3dARURE33Rbo9KycNZItKvMCaTkUYF3adbNkueOJiiYzjJOfSw0rdh4pQ7QPg9H6DF0Z
-	DFg==
-X-Google-Smtp-Source: AGHT+IEPzkpN558mdThb1mQJAX8w0FWfivalHkGQsaKz9YUi8JxhkESyegzZmqcp881opi3TCAgG1XKM99s=
+        bh=za8QaygzoKIY5MyMe/Z2Ubm1oLIN1MbBZtglXwIHigs=;
+        b=e5ejnIR19Qolhbca8xPcAiE4CbjHHKo2gqnykfGQP4zQdHu+hk08fwW8bTEPMPWoso
+         pBzXER+rdMAwcnFKgfZfayC5Y0tRgKQcY64ewfYy7bILtzapPoxjCJzt3rDfoFb+f02j
+         JFoijE5mhM0K9wgj/TC1Oh6CYDR/GVWvdkcutsFssTH8GEGCisPxzE1IEWdIEA7ykhBE
+         zauMEnHfQurhBYL9k24/t0Shu6YldrbIurO46m8kvoEGd3tCdU9slFjGbMCAd4R1024s
+         WRdTrhlSxtxmp8TLVOh2wZfdyKSyYnTMA8V0m6Tjy9u0l/opz/CmPwupEhYSWMPYXxRz
+         m6Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCUsxrvWt2GowtecU3FClGzQ9D/+V1tCQhp8tFei36SlZA1l9M6+HZCcrTGgDPe5pSlxbewzX/Use7VU4KVAUIWfou0QmmW9IzAsByxM
+X-Gm-Message-State: AOJu0YyPEzk4xvq0m7NGWnYglDKa2dfpQYfSpRcgfoln/1LjOEagSyOx
+	Kf+nfj956sqDynlN1KGbNWg4tmc1odlun0V/MEB0L+RBKbXMz7cPiLw+jP9CTMswPws1IPyCdxa
+	8cA==
+X-Google-Smtp-Source: AGHT+IEmZWdUDpfZFtSaGW+CNF5X12KqObi0fTpi5HyUpexKv6qJR0Hv72mZ7zAGZ81rRBqkZor7Gh8nLJE=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:d64e:0:b0:608:d0a4:75ea with SMTP id
- y75-20020a0dd64e000000b00608d0a475eamr905939ywd.7.1709088134972; Tue, 27 Feb
- 2024 18:42:14 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:902:fa83:b0:1db:a739:d17b with SMTP id
+ lc3-20020a170902fa8300b001dba739d17bmr2743plb.1.1709088136837; Tue, 27 Feb
+ 2024 18:42:16 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue, 27 Feb 2024 18:41:44 -0800
+Date: Tue, 27 Feb 2024 18:41:45 -0800
 In-Reply-To: <20240228024147.41573-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,8 +75,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240228024147.41573-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240228024147.41573-14-seanjc@google.com>
-Subject: [PATCH 13/16] KVM: x86/mmu: Handle no-slot faults at the beginning of kvm_faultin_pfn()
+Message-ID: <20240228024147.41573-15-seanjc@google.com>
+Subject: [PATCH 14/16] KVM: x86/mmu: Set kvm_page_fault.hva to KVM_HVA_ERR_BAD
+ for "no slot" faults
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -86,124 +87,29 @@ Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
 	David Matlack <dmatlack@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Handle the "no memslot" case at the beginning of kvm_faultin_pfn(), just
-after the private versus shared check, so that there's no need to
-repeatedly query whether or not a slot exists.  This also makes it more
-obvious that, except for private vs. shared attributes, the process of
-faulting in a pfn simply doesn't apply to gfns without a slot.
+Explicitly set fault->hva to KVM_HVA_ERR_BAD when handling a "no slot"
+fault to ensure that KVM doesn't use a bogus virtual address, e.g. if
+there *was* a slot but it's unusable (APIC access page), or if there
+really was no slot, in which case fault->hva will be '0' (which is a
+legal address for x86).
 
-Opportunistically stuff @fault's metadata in kvm_handle_noslot_fault() so
-that it doesn't need to be duplicated in all paths that invoke
-kvm_handle_noslot_fault(), and to minimize the probability of not stuffing
-the right fields.
-
-Leave the existing handle behind, but convert it to a WARN, to guard
-against __kvm_faultin_pfn() unexpectedly nullifying fault->slot.
-
-Cc: David Matlack <dmatlack@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c          | 29 +++++++++++++++++------------
- arch/x86/kvm/mmu/mmu_internal.h |  2 +-
- 2 files changed, 18 insertions(+), 13 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 8aa957f0a717..4dee0999a66e 100644
+index 4dee0999a66e..43f24a74571a 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3322,6 +3322,10 @@ static int kvm_handle_noslot_fault(struct kvm_vcpu *vcpu,
- 	vcpu_cache_mmio_info(vcpu, gva, fault->gfn,
- 			     access & shadow_mmio_access_mask);
+@@ -3325,6 +3325,7 @@ static int kvm_handle_noslot_fault(struct kvm_vcpu *vcpu,
+ 	fault->slot = NULL;
+ 	fault->pfn = KVM_PFN_NOSLOT;
+ 	fault->map_writable = false;
++	fault->hva = KVM_HVA_ERR_BAD;
  
-+	fault->slot = NULL;
-+	fault->pfn = KVM_PFN_NOSLOT;
-+	fault->map_writable = false;
-+
  	/*
  	 * If MMIO caching is disabled, emulate immediately without
- 	 * touching the shadow page tables as attempting to install an
-@@ -4393,15 +4397,18 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 		return -EFAULT;
- 	}
- 
-+	if (unlikely(!slot))
-+		return kvm_handle_noslot_fault(vcpu, fault, access);
-+
- 	/*
- 	 * Retry the page fault if the gfn hit a memslot that is being deleted
- 	 * or moved.  This ensures any existing SPTEs for the old memslot will
- 	 * be zapped before KVM inserts a new MMIO SPTE for the gfn.
- 	 */
--	if (slot && (slot->flags & KVM_MEMSLOT_INVALID))
-+	if (slot->flags & KVM_MEMSLOT_INVALID)
- 		return RET_PF_RETRY;
- 
--	if (slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT) {
-+	if (slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT) {
- 		/*
- 		 * Don't map L1's APIC access page into L2, KVM doesn't support
- 		 * using APICv/AVIC to accelerate L2 accesses to L1's APIC,
-@@ -4413,12 +4420,9 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 		 * uses different roots for L1 vs. L2, i.e. there is no danger
- 		 * of breaking APICv/AVIC for L1.
- 		 */
--		if (is_guest_mode(vcpu)) {
--			fault->slot = NULL;
--			fault->pfn = KVM_PFN_NOSLOT;
--			fault->map_writable = false;
--			goto faultin_done;
--		}
-+		if (is_guest_mode(vcpu))
-+			return kvm_handle_noslot_fault(vcpu, fault, access);
-+
- 		/*
- 		 * If the APIC access page exists but is disabled, go directly
- 		 * to emulation without caching the MMIO access or creating a
-@@ -4429,6 +4433,9 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 			return RET_PF_EMULATE;
- 	}
- 
-+	fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
-+	smp_rmb();
-+
- 	/*
- 	 * Check for a relevant mmu_notifier invalidation event before getting
- 	 * the pfn from the primary MMU, and before acquiring mmu_lock.
-@@ -4450,19 +4457,17 @@ static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 	 * *guaranteed* to need to retry, i.e. waiting until mmu_lock is held
- 	 * to detect retry guarantees the worst case latency for the vCPU.
- 	 */
--	if (fault->slot &&
--	    mmu_invalidate_retry_gfn_unsafe(vcpu->kvm, fault->mmu_seq, fault->gfn))
-+	if (mmu_invalidate_retry_gfn_unsafe(vcpu->kvm, fault->mmu_seq, fault->gfn))
- 		return RET_PF_RETRY;
- 
- 	ret = __kvm_faultin_pfn(vcpu, fault);
- 	if (ret != RET_PF_CONTINUE)
- 		return ret;
- 
--faultin_done:
- 	if (unlikely(is_error_pfn(fault->pfn)))
- 		return kvm_handle_error_pfn(vcpu, fault);
- 
--	if (unlikely(!fault->slot))
-+	if (WARN_ON_ONCE(!fault->slot))
- 		return kvm_handle_noslot_fault(vcpu, fault, access);
- 
- 	/*
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index d7c10d338f14..74736d517e74 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -235,7 +235,7 @@ struct kvm_page_fault {
- 	/* The memslot containing gfn. May be NULL. */
- 	struct kvm_memory_slot *slot;
- 
--	/* Outputs of kvm_faultin_pfn.  */
-+	/* Outputs of kvm_faultin_pfn. */
- 	unsigned long mmu_seq;
- 	kvm_pfn_t pfn;
- 	hva_t hva;
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
