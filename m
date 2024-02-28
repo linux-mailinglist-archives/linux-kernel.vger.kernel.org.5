@@ -1,171 +1,272 @@
-Return-Path: <linux-kernel+bounces-85527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A110186B711
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA3B86B713
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:21:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06C61285C00
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:21:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 141F42888BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:21:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CBE040864;
-	Wed, 28 Feb 2024 18:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 527B571EAE;
+	Wed, 28 Feb 2024 18:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YLaLKLZx"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Ea4LILr/"
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6680A40847
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:21:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD35940868
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709144473; cv=none; b=BB1t8yPIdcmU2opQxxwmcURRtbwFuDBQtctQUjKUhb0K3DsSo3JDDFOFmKG81a+AceiyfnQ0SRVtc2lcEAjSjS1l3fVlwffxOTlz+O/VHWqzYqyxd1xFPqBniwMAOWKSsCrPv2kEySWDkLNbJK5CyTlBP0kqREzMIvJ6JN5ZPy4=
+	t=1709144476; cv=none; b=qmvGzsJ6J4Iey7fnPEniz+GHv9W1vDcKtftMqDf16QKfEP3T7RCvKPOgea8pzWXcNxJOhuoPf/zDR+caMqH/pW4wTNx4M/BtJolvsKiqfF9Tgp4jEwQJEBnq+W5tbyn2bloQ3eZ6zVqyiWm5V56EhV8hL5WuGv+nwgk2/8rN4mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709144473; c=relaxed/simple;
-	bh=IlLz2VfIORUGWPlRUuhRJlF7DR2TU3PjgeFfLjigpBU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BD1FjlFv2ExIPris7Q4gL4QStqWFehSYrRN/EiCCkiEv5qIM/0ud8m9r7qFmmpEd3KqGTDEoGZ9igKL0DgAQEGWp4NqZpN7f0mmPZQCyXjpqmvey8ioqrMlo78Vh7pKZJccvRiL0RggIH8cpVJzjYm5j+IjJih9nx6MJfe43geU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YLaLKLZx; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56648955ac5so97342a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:21:11 -0800 (PST)
+	s=arc-20240116; t=1709144476; c=relaxed/simple;
+	bh=U/35yZauNfn/yXZB88kYKZuMxXuKf/iKnkd2JjyBfy8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sty0QwlCoIIIV6OLPXiGlR5gq5IpYC+yrosZK4QaGQFdb550Ng8sGd9Mlck8ypyhmllDPigVjhoTSemnTP1i0tq4JLaQDM+NlivrYXzBU4ANkkiboygY+sHLWx0QcK0mLdCdTCPOgp57Oco58uKxMWfaK2CeO3oTbwkG0Pi3Guc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Ea4LILr/; arc=none smtp.client-ip=209.85.166.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-36519980c04so276765ab.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:21:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1709144470; x=1709749270; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F0Q2VEWLTjS2U6IhLhs8VN1l8yd5YlaS/zs5Osz7AKY=;
-        b=YLaLKLZxbZLjz0J1yQCaZVSkRbl4dTTrln5e8BLQBYvNqooIrzhbVXTT5aVj2u2DJg
-         gvc4IfuAJZFQSbaByKXEwO+GDn/EVQSaTRm+gillpDSwGDCukQQvfk9xUWVk7EQC704e
-         1E1ddx3yrYhm4GdlmzCVjEi9FS28uIyjHCchfc/X36XUQSPck9yLZWlMXp4VXETZOt9d
-         5cx2feuJFAVZfT5OpfZ8SzW+WboNCNjKJrv6stM8EnTqJgBJndbljy21eP2mMastbOOU
-         EyXzvAhc7KfwW6mYc1yx2Bbc+bJ4lBoBYcIePoHVGgpk4jsTclRXytzD1RNF3FYRy1dz
-         GGDg==
+        d=sifive.com; s=google; t=1709144474; x=1709749274; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=08d0NHfoqroa1V4eYj1iLjIHMDy0L3o0VRrTUb12x9c=;
+        b=Ea4LILr/eUHZUPkpTItbc+Dq9PWU7p1DZGfGYr6XAAcIo6HwqVtIqWfX303iypp9Fg
+         M455WtErj5TKPeFKqBJWUqxOnOA7b2LS0v5YakT8Fl9Vp+0Q64dzYekI9u3JaqYHjFHd
+         Lu/QiyzC5brZH/QJgxplXNW0lw5NUf2V5HJ1fAfLEl7vH15BLnfJF3tfdEXzDyDZg0tc
+         9pP7WJxr+J1Cuu2eiPaUfmVmYFAza9mij1vamCOtuEhQxMOm4agssHKire0dhNB3kb0R
+         xA4Ww/L8Nz6HFgUSvou5HrJOtSQWqDyU7myaCtvpHOYJw5nNx+qeGTNfI/u+E5ZK5s8m
+         re0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709144470; x=1709749270;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F0Q2VEWLTjS2U6IhLhs8VN1l8yd5YlaS/zs5Osz7AKY=;
-        b=gF/7MA3sCZehE9yiwrx8q1E5JgjbJBwPdi5/WOoDtYFrLpBlfX0Dw0jZQwhJG7h2r1
-         /Yfq/CxHY6unSYN0z5ZwgzdDuuZBPciTRw+X20ryfhzsnSdCrdCPSDzxzFoyFWzX39Kt
-         qers90zHIgqL8pxMUjfRT8yeONb2RcEIssujXCDvFz5L7LK0j/wpW+4NHrCeErSbC5vw
-         O55uTpSuGBYFpjZU1qbvxx+XNlybae7VI/6gNAl3+/HkwzzPzL8VQwF4VrHCAyzfWWyi
-         yQRQZ+ihEnvq+8f/zBlurxXv52Ok1oAn/zp6AhZAjxA9X7ljm9tYdXoXpaFyb4lzQKaG
-         ZZRw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/jIO91KsJZ42VPN6Ango0cH3FNGopwS+dsUG3MzCSwJR0IAhisG1Ap8jUYULr23qpz0tzckcYQkiIZ9EI6dzIU5lkJVO3EL1v4Vyj
-X-Gm-Message-State: AOJu0YyE3MZhmiW35bNatoLJpp2KB8cIthtK4pP+QThbmV+Ov8LZgX6d
-	GwZ4GWyEypUU7jnp3NbDsa6CrXxeSZkY5m76W8mjpW/XjqjxFHYTS79YilYRmd9VlppvUilgImm
-	+wvPN0aAo+yiTWhNk8irbpo5WhrYJpedfjbDB8A==
-X-Google-Smtp-Source: AGHT+IGxdXWls/rPfinB0uQQkXKmMgc6r4kLOeAWFd8I9R7QhkQU4gee2PUX9KLBptb/Pw4yWIXjq4Yzyd+hFDFrqcY=
-X-Received: by 2002:aa7:cfd1:0:b0:564:151c:747a with SMTP id
- r17-20020aa7cfd1000000b00564151c747amr150661edy.27.1709144469812; Wed, 28 Feb
- 2024 10:21:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709144474; x=1709749274;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=08d0NHfoqroa1V4eYj1iLjIHMDy0L3o0VRrTUb12x9c=;
+        b=hXb6wZUmIcFSUZvxP7nQCe77IGfw52BWlmgHkwetQFbhmqijJiPHkHhV4yg4DxtYAT
+         NxSBCBzBwCkewN0K5Un9LyOAvPzb3fcaotj16B8JDvAdDFBOA6pYeHUNJN8cyyp5S2Q/
+         CVlC4sli5gLZw4Z10cInRUWFKHwjzOwhsJsLP0zcVSHwSzoB/K3YDbXHDIGs3n7Ax/3B
+         +ULeJ7n/Oe4i6LWolZxoSKlbNlPHd2b2f6KokQcOkWXTc990shG0/Zi61WmwequHp37O
+         JNJ//ppEE8pAEQ0M+FKrM0Ag3R79PDv/xJw4QUqXNHbQ5cT3k0DegWRvmWuWpiwdPp97
+         Fuhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVitwxMYUg+hcy9nW9cLOnl7eTNG44Pcyy5i5gpZP1CXrbD8TVVbRA+N/oLyglDbvuJlzHw6+z4bmWkMVrOe7bv2plupeBWEaP7Mvyr
+X-Gm-Message-State: AOJu0YyOa0aE21W/Bo6suuZ3R7D/w6BnfYVFnhuzmsMJxCW0+xmaaG7V
+	6USZ9lMbWmilbPnVs9SgRT1xatQku1QpQ1zXm/eJLKko+2Ryx8K2RYws6hyZYbE=
+X-Google-Smtp-Source: AGHT+IHiR99D2BpM734RwDyOoiFWYbAyNElJ0/muIImLUYBA5CvXwg5wO0mpbjv4vAMqzrgZg+2hhg==
+X-Received: by 2002:a92:c00c:0:b0:365:c5c:dfa7 with SMTP id q12-20020a92c00c000000b003650c5cdfa7mr67118ild.1.1709144473768;
+        Wed, 28 Feb 2024 10:21:13 -0800 (PST)
+Received: from [100.64.0.1] ([170.85.6.201])
+        by smtp.gmail.com with ESMTPSA id ck13-20020a056e02370d00b00364372c5b5asm2956326ilb.15.2024.02.28.10.21.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 10:21:13 -0800 (PST)
+Message-ID: <74d7adee-8293-4fad-82c3-f4458b2e3960@sifive.com>
+Date: Wed, 28 Feb 2024 12:21:11 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201233400.3394996-1-cleech@redhat.com>
-In-Reply-To: <20240201233400.3394996-1-cleech@redhat.com>
-From: Lee Duncan <lduncan@suse.com>
-Date: Wed, 28 Feb 2024 10:20:58 -0800
-Message-ID: <CAPj3X_Ve4WgwCdzXiNSC+3ejsD9yc=586=g9kY_zGZXBREx7fA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] UIO_MEM_DMA_COHERENT for cnic/bnx2/bnx2x
-To: Chris Leech <cleech@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Nilesh Javali <njavali@marvell.com>, 
-	Christoph Hellwig <hch@lst.de>, John Meneghini <jmeneghi@redhat.com>, 
-	Mike Christie <michael.christie@oracle.com>, Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	GR-QLogic-Storage-Upstream@marvell.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] riscv: Fix text patching when IPI are used
+Content-Language: en-US
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Andrea Parri <andrea@rivosinc.com>, Anup Patel <anup@brainfault.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+References: <20240228175149.162646-1-alexghiti@rivosinc.com>
+ <20240228175149.162646-3-alexghiti@rivosinc.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20240228175149.162646-3-alexghiti@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Is this series stalled?
+Hi Alex,
 
-I believe the main objections came from Greg earlier in the series,
-but I'd gotten the impression Greg accepted the latest version.
+On 2024-02-28 11:51 AM, Alexandre Ghiti wrote:
+> For now, we use stop_machine() to patch the text and when we use IPIs for
+> remote icache flushes (which is emitted in patch_text_nosync()), the system
+> hangs.
+> 
+> So instead, make sure every cpu executes the stop_machine() patching
+> function and emit a local icache flush there.
+> 
+> Co-developed-by: Björn Töpel <bjorn@rivosinc.com>
+> Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/patch.h |  1 +
+>  arch/riscv/kernel/ftrace.c     | 42 ++++++++++++++++++++++++++++++----
+>  arch/riscv/kernel/patch.c      | 18 +++++++++------
+>  3 files changed, 50 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/patch.h
+> index e88b52d39eac..9f5d6e14c405 100644
+> --- a/arch/riscv/include/asm/patch.h
+> +++ b/arch/riscv/include/asm/patch.h
+> @@ -6,6 +6,7 @@
+>  #ifndef _ASM_RISCV_PATCH_H
+>  #define _ASM_RISCV_PATCH_H
+>  
+> +int patch_insn_write(void *addr, const void *insn, size_t len);
+>  int patch_text_nosync(void *addr, const void *insns, size_t len);
+>  int patch_text_set_nosync(void *addr, u8 c, size_t len);
+>  int patch_text(void *addr, u32 *insns, int ninsns);
+> diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+> index f5aa24d9e1c1..5654966c4e7d 100644
+> --- a/arch/riscv/kernel/ftrace.c
+> +++ b/arch/riscv/kernel/ftrace.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/ftrace.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/memory.h>
+> +#include <linux/stop_machine.h>
+>  #include <asm/cacheflush.h>
+>  #include <asm/patch.h>
+>  
+> @@ -75,8 +76,7 @@ static int __ftrace_modify_call(unsigned long hook_pos, unsigned long target,
+>  		make_call_t0(hook_pos, target, call);
+>  
+>  	/* Replace the auipc-jalr pair at once. Return -EPERM on write error. */
+> -	if (patch_text_nosync
+> -	    ((void *)hook_pos, enable ? call : nops, MCOUNT_INSN_SIZE))
+> +	if (patch_insn_write((void *)hook_pos, enable ? call : nops, MCOUNT_INSN_SIZE))
+>  		return -EPERM;
+>  
+>  	return 0;
+> @@ -88,7 +88,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+>  
+>  	make_call_t0(rec->ip, addr, call);
+>  
+> -	if (patch_text_nosync((void *)rec->ip, call, MCOUNT_INSN_SIZE))
+> +	if (patch_insn_write((void *)rec->ip, call, MCOUNT_INSN_SIZE))
+>  		return -EPERM;
+>  
+>  	return 0;
+> @@ -99,7 +99,7 @@ int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec,
+>  {
+>  	unsigned int nops[2] = {NOP4, NOP4};
+>  
+> -	if (patch_text_nosync((void *)rec->ip, nops, MCOUNT_INSN_SIZE))
+> +	if (patch_insn_write((void *)rec->ip, nops, MCOUNT_INSN_SIZE))
+>  		return -EPERM;
+>  
+>  	return 0;
+> @@ -134,6 +134,40 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+>  
+>  	return ret;
+>  }
+> +
+> +struct ftrace_modify_param {
+> +	int command;
+> +	atomic_t cpu_count;
+> +};
+> +
+> +static int __ftrace_modify_code(void *data)
+> +{
+> +	struct ftrace_modify_param *param = data;
+> +
+> +	if (atomic_inc_return(&param->cpu_count) == num_online_cpus()) {
+> +		ftrace_modify_all_code(param->command);
+> +		/*
+> +		 * Make sure the patching store is effective *before* we
+> +		 * increment the counter which releases all waiting cpus
+> +		 * by using the release version of atomic increment.
+> +		 */
+> +		atomic_inc_return_release(&param->cpu_count);
+> +	} else {
+> +		while (atomic_read(&param->cpu_count) <= num_online_cpus())
+> +			cpu_relax();
+> +	}
+> +
+> +	local_flush_icache_all();
+> +
+> +	return 0;
+> +}
+> +
+> +void arch_ftrace_update_code(int command)
+> +{
+> +	struct ftrace_modify_param param = { command, ATOMIC_INIT(0) };
+> +
+> +	stop_machine(__ftrace_modify_code, &param, cpu_online_mask);
+> +}
+>  #endif
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+> index 0b5c16dfe3f4..82d8508c765b 100644
+> --- a/arch/riscv/kernel/patch.c
+> +++ b/arch/riscv/kernel/patch.c
+> @@ -188,7 +188,7 @@ int patch_text_set_nosync(void *addr, u8 c, size_t len)
+>  }
+>  NOKPROBE_SYMBOL(patch_text_set_nosync);
+>  
+> -static int patch_insn_write(void *addr, const void *insn, size_t len)
+> +int patch_insn_write(void *addr, const void *insn, size_t len)
+>  {
+>  	size_t patched = 0;
+>  	size_t size;
+> @@ -211,11 +211,9 @@ NOKPROBE_SYMBOL(patch_insn_write);
+>  
+>  int patch_text_nosync(void *addr, const void *insns, size_t len)
+>  {
+> -	u32 *tp = addr;
+>  	int ret;
+>  
+> -	ret = patch_insn_write(tp, insns, len);
+> -
+> +	ret = patch_insn_write(addr, insns, len);
+>  	if (!ret)
+>  		flush_icache_range((uintptr_t) tp, (uintptr_t) tp + len);
 
-On Thu, Feb 1, 2024 at 3:34=E2=80=AFPM Chris Leech <cleech@redhat.com> wrot=
-e:
->
-> During bnx2i iSCSI testing we ran into page refcounting issues in the
-> uio mmaps exported from cnic to the iscsiuio process, and bisected back
-> to the removal of the __GFP_COMP flag from dma_alloc_coherent calls.
->
-> The cnic uio interface also has issues running with an iommu enabled,
-> which these changes correct.
->
-> In order to fix these drivers to be able to mmap dma coherent memory via
-> a uio device, introduce a new uio mmap type backed by dma_mmap_coherent.
->
-> While I understand some complaints about how these drivers have been
-> structured, I also don't like letting support bitrot when there's a
-> reasonable alternative to re-architecting an existing driver. I believe
-> this to be the most sane way to restore these drivers to functioning
-> properly.
->
-> There are two other uio drivers which are mmaping dma_alloc_coherent
-> memory as UIO_MEM_PHYS, uio_dmem_genirq and uio_pruss.
-> These drivers are converted in the later patches of this series.
->
-> v5:
-> - convert uio_pruss and uio_dmem_genirq
-> - added dev_warn and comment about not adding more users
-> - put some PAGE_ALIGNs back in cnic to keep checks in
->   uio_mmap_dma_coherent matched with uio_mmap_physical.
-> - dropped the Fixes trailer
-> v4:
-> - re-introduce the dma_device member to uio_map,
->   it needs to be passed to dma_mmap_coherent somehow
-> - drop patch 3 to focus only on the uio interface,
->   explicit page alignment isn't needed
-> - re-add the v1 mail recipients,
->   this isn't something to be handled through linux-scsi
-> v3 (Nilesh Javali <njavali@marvell.com>):
-> - fix warnings reported by kernel test robot
->   and added base commit
-> v2 (Nilesh Javali <njavali@marvell.com>):
-> - expose only the dma_addr within uio and cnic.
-> - Cleanup newly added unions comprising virtual_addr
->   and struct device
->
-> previous threads:
-> v1: https://lore.kernel.org/all/20230929170023.1020032-1-cleech@redhat.co=
-m/
-> attempt at an alternative change: https://lore.kernel.org/all/20231219055=
-514.12324-1-njavali@marvell.com/
-> v2: https://lore.kernel.org/all/20240103091137.27142-1-njavali@marvell.co=
-m/
-> v3: https://lore.kernel.org/all/20240109121458.26475-1-njavali@marvell.co=
-m/
-> v4: https://lore.kernel.org/all/20240131191732.3247996-1-cleech@redhat.co=
-m/
->
-> Chris Leech (4):
->   uio: introduce UIO_MEM_DMA_COHERENT type
->   cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
->   uio_pruss: UIO_MEM_DMA_COHERENT conversion
->   uio_dmem_genirq: UIO_MEM_DMA_COHERENT conversion
->
->  drivers/net/ethernet/broadcom/bnx2.c          |  1 +
->  .../net/ethernet/broadcom/bnx2x/bnx2x_main.c  |  2 +
->  drivers/net/ethernet/broadcom/cnic.c          | 25 ++++++----
->  drivers/net/ethernet/broadcom/cnic.h          |  1 +
->  drivers/net/ethernet/broadcom/cnic_if.h       |  1 +
->  drivers/uio/uio.c                             | 47 +++++++++++++++++++
->  drivers/uio/uio_dmem_genirq.c                 | 22 ++++-----
->  drivers/uio/uio_pruss.c                       |  6 ++-
->  include/linux/uio_driver.h                    |  8 ++++
->  9 files changed, 89 insertions(+), 24 deletions(-)
->
->
-> base-commit: 861c0981648f5b64c86fd028ee622096eb7af05a
-> --
-> 2.43.0
->
+This only happens to compile because flush_icache_range() is a macro that
+ignores its parameters. You could replace tp with addr in this line as well, but
+that seems like more of a cosmetic change and should be a separate patch (like
+in [1] which covers both related functions) if you respin this.
+
+Regards,
+Samuel
+
+[1]:
+https://lore.kernel.org/linux-riscv/20240212025529.1971876-8-samuel.holland@sifive.com/
+
+>  
+> @@ -232,15 +230,21 @@ static int patch_text_cb(void *data)
+>  	if (atomic_inc_return(&patch->cpu_count) == num_online_cpus()) {
+>  		for (i = 0; ret == 0 && i < patch->ninsns; i++) {
+>  			len = GET_INSN_LENGTH(patch->insns[i]);
+> -			ret = patch_text_nosync(patch->addr + i * len,
+> -						&patch->insns[i], len);
+> +			ret = patch_insn_write(patch->addr + i * len, &patch->insns[i], len);
+>  		}
+> -		atomic_inc(&patch->cpu_count);
+> +		/*
+> +		 * Make sure the patching store is effective *before* we
+> +		 * increment the counter which releases all waiting cpus
+> +		 * by using the release version of atomic increment.
+> +		 */
+> +		atomic_inc_return_release(&patch->cpu_count);
+>  	} else {
+>  		while (atomic_read(&patch->cpu_count) <= num_online_cpus())
+>  			cpu_relax();
+>  	}
+>  
+> +	local_flush_icache_all();
+> +
+>  	return ret;
+>  }
+>  NOKPROBE_SYMBOL(patch_text_cb);
+
 
