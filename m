@@ -1,266 +1,213 @@
-Return-Path: <linux-kernel+bounces-84715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84704-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42D1986AAA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:00:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62F1686AA7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:53:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C718A28389D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:00:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D63E71F24AFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18FBA2D634;
-	Wed, 28 Feb 2024 09:00:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="AU9xdpZF"
-Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14EB72DF92;
+	Wed, 28 Feb 2024 08:53:42 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A142D05B;
-	Wed, 28 Feb 2024 09:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A97C2D604;
+	Wed, 28 Feb 2024 08:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709110814; cv=none; b=VI9toq4Dq1az3uLlUAi38emx7Y4UMsEwJecmjexRWSO4wGKL8Z1eTBsXZBKMdBxATXOFe+V1LBhUdj2YFTEBiqORxBlYhmn5ypeSKSrfhKixoCAZ+3stANGFP9VPhxZg9ijaLD+uM6Su58v09UrdlHAW8ZzixOLq/E8qWy1dyko=
+	t=1709110421; cv=none; b=KWG7I93jmhcbzz52vPSmRZ/pASas2GLaKaC6XbsVgZqa4TVIx0YCZfVt2OM4+QnPY0PYAPv/ZvfBw42Q1nj5jTfUzYsusBNUmN3+B9OnUTjpVOzfd2OKfZd7t36ihsKl5UweKAOYF8Huk02Mfh3atPM+6uaV76OR4Tu0/9WlJaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709110814; c=relaxed/simple;
-	bh=NC4eJqy+tWfGOlFYPyPnq1rTK8KHis1P8cHnzIvCX2g=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=I1BuVHZC0FtIUllRaY70FiqmEH20vLznm5QTpSsOOHLkA2ykkiRPi071V4VwT7hoj9O/4nC5zAzJXdkb/4u1zvZ+I4Bs1LMSwQ7TvusT32ZKpP1uOCvBSUTOXVATTHUYrJkOg8a345Jt5vfym2Adbjw1czE2Kk2JzgNdN2PK+S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=AU9xdpZF; arc=none smtp.client-ip=203.205.221.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709110500; bh=OJERieRX8TNnv9pPvsXYVZQyy3A2qdrTGojUlwVAUuY=;
-	h=From:To:Cc:Subject:Date;
-	b=AU9xdpZFuk/EWLDKSuBQTXt6Y3LUwI1ZT2JhB/ou9vDuLBBx+FP40mePzsbsVvKSo
-	 Iw7hf/T8OR8FYac8bnQwSj9fOfOJBPsyBXxqtZ1NGqXdRG1SUqRDQCO8B57tSa9leo
-	 knSIyjYtuZEoA9yHgl9zJ9uRyxyu/3N30fnGEynA=
-Received: from cyy-pc.lan ([240e:379:2240:e500:994d:62ab:74a6:932b])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id D8722820; Wed, 28 Feb 2024 16:54:07 +0800
-X-QQ-mid: xmsmtpt1709110447t2alhx9za
-Message-ID: <tencent_88FEE0A2C5E0852436A2F1A1087E6803380A@qq.com>
-X-QQ-XMAILINFO: MllZffuBkEb5+DdQxOt7EblMGQYPjfWa7qBxdA9axrezMMfQnz09MBeCkgeptN
-	 juxzBBrmwXkR+fTdxjyixdPFQ7e2+HvZENJn2O5o48CSwHT9PpAJMgzJLa2XcJFQWrSXvgMBrDLr
-	 qPkyzwbGhowYlM5MYTw0V0wIYBgvL/KtFlIrdJ2UNfoKEujhrv37N8TXxvRgPfF8UUqz69WAsnjR
-	 ykQY9yAQ02kbyPDeYfYNupxd1G4X0U2Ov3ZTovTaGqDzhJuUsjyt+wWLTfA+P0e37PZc4Xl4hK7m
-	 z2YtSpJ/YJHyArBYr2/25l5o9dfZW6TS3L7SrrlOCY75R/8PkkiVy25JYUqw7Hk18zzqGPYlcQDk
-	 ARf5mjWKer5ALTTQbQWYALlHMLEji6psiVYzDY72Ra/dX4RHq3ZAyfuOmPoqeWumW3mWGmDIamsf
-	 +lsltrC5vw/5kqgFCtvtfBfnbd0YWxLkqf0ppnEDx60TZ0igo9qpKatwv0UB+npfOnAO0tHXVZOx
-	 N+6E7OwGimKXM/mjPjqUsg3bp+Kjkr7ppqoMWPWOvHtnpl8i8C5S7Ckp+BIfmCDNIvvi4p2Fgutd
-	 hGql7p0D4BQXU13YsHCZa3fu2sl/dAJ6WIgK+dfYuYKRijIOC5Yba+UNpsx/kbFR0nLbAC08g+Ps
-	 6b2DjOYuZboFLBlhh4FXGOfqgYZIr2/vKUgo/M8SSlgISLa6kW7sxgK7naMUTrhVTdcEEd0Dg5Be
-	 NrgAQZdCDvf2bdufRB3e0c41nLKTdZbZCzbbkBK8OuwC0fqbCbOxdHtRqyX7DGRz8uu9wMdackNp
-	 QjeGVcFLF8TWP5zT6ZCknr15oSNJPzEPUKvP0VgZHHq4KI6nXXrVCQJgjC3ebx85Vhc41uvwnGYe
-	 nvlu0FOB2y39G1f/PREijNSVlLD7eV9h56JoG0+J6Q8k6IaawX/5vcVd4+38+GTcRnXjmTPQ/sYk
-	 1hzed3cA3DcRPZAv8C3E8jD6MLJ9xF9CbwBHCsEupVice/uOadSay41srGnvETYnUaq6M6QF//U4
-	 9hXQ0C6Q==
-X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
-From: Yangyu Chen <cyy@cyyself.name>
-To: linux-riscv@lists.infradead.org
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Conor Dooley <conor@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Alexandre Ghiti <alex@ghiti.fr>,
-	Rob Herring <robh+dt@kernel.org>,
-	devicetree@vger.kernel.org,
-	Yangyu Chen <cyy@cyyself.name>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v3] riscv: dts: Move BUILTIN_DTB_SOURCE to common Kconfig
-Date: Wed, 28 Feb 2024 16:52:54 +0800
-X-OQ-MSGID: <20240228085255.201092-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709110421; c=relaxed/simple;
+	bh=LmMn4l1GClZilnMTAowDg6HVHEvvOnMdx2YPGsYQJJE=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=dPUJ4hSltk7sFEhkgCSuV6FJQi9ZQkNurciFwsbIDDG0wgQE4pzkKvSsjOIDCyasxzdnitlT/5BSk9R2BH9AabdlGKY9+F2MjazCNA5pYfwLMhVDW/wibwnQDBw5P9+UzS/QbRzWLdc0pmH8N1d5fkwn3N3evS92YkjtFwg+dvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tl7Rv0pkKz4f3kKQ;
+	Wed, 28 Feb 2024 16:53:31 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 722071A0172;
+	Wed, 28 Feb 2024 16:53:34 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+	by APP1 (Coremail) with SMTP id cCh0CgAn+RGM9N5lUE2aFQ--.30440S3;
+	Wed, 28 Feb 2024 16:53:34 +0800 (CST)
+Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
+ write operation
+To: Christoph Hellwig <hch@infradead.org>, djwong@kernel.org,
+ Dave Chinner <david@fromorbit.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+ ritesh.list@gmail.com, willy@infradead.org, zokeefe@google.com,
+ yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+ wangkefeng.wang@huawei.com
+References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
+ <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
+ <ZcsCP4h-ExNOcdD6@infradead.org>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <9b0040ef-3d9d-6246-4bdd-82b9a8f55fa2@huaweicloud.com>
+Date: Wed, 28 Feb 2024 16:53:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <ZcsCP4h-ExNOcdD6@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAn+RGM9N5lUE2aFQ--.30440S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3AF4fXry7uF47AFy5Zw13urg_yoW7GF4rpF
+	909F4jkan7t3yfWr1kZFs5Xry0vwsaqF4UCry7KrW3Z3Z8JFyIgF17uFWYkFWUXr9xAr1a
+	qF4vva4fuF1UCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UZ18PUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-The BUILTIN_DTB_SOURCE was only configured for K210 before. Since
-SOC_BUILTIN_DTB_DECLARE was removed at commit d5805af9fe9f ("riscv: Fix
-builtin DTB handling") from patch [1], the kernel cannot choose one of the
-dtbs from then on and always take the first one dtb to use. Then, another
-commit 0ddd7eaffa64 ("riscv: Fix BUILTIN_DTB for sifive and microchip soc")
-from patch [2] supports BUILTIN_DTB_SOURCE for other SoCs. However, this
-feature will only work if the Kconfig we use links the dtb we expected in
-the first place as mentioned in the thread [3]. Thus, a config
-BUILTIN_DTB_SOURCE is needed for all SoCs to choose one dtb to use.
+On 2024/2/13 13:46, Christoph Hellwig wrote:
+> Wouldn't it make more sense to just move the size manipulation to the
+> write-only code?  An untested version of that is below.  With this
+> the naming of the status variable becomes even more confusing than
+> it already is, maybe we need to do a cleanup of the *_write_end
+> calling conventions as it always returns the passed in copied value
+> or 0.
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 3dab060aed6d7b..8401a9ca702fc0 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -876,34 +876,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
+>  		size_t copied, struct folio *folio)
+>  {
+>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
+> -	loff_t old_size = iter->inode->i_size;
+> -	size_t ret;
+> -
+> -	if (srcmap->type == IOMAP_INLINE) {
+> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
+> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
+> -				copied, &folio->page, NULL);
+> -	} else {
+> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
+> -	}
+> -
+> -	/*
+> -	 * Update the in-memory inode size after copying the data into the page
+> -	 * cache.  It's up to the file system to write the updated size to disk,
+> -	 * preferably after I/O completion so that no stale data is exposed.
+> -	 */
+> -	if (pos + ret > old_size) {
+> -		i_size_write(iter->inode, pos + ret);
+> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+> -	}
 
-For some considerations, this patch also removes default y if XIP_KERNEL
-for BUILTIN_DTB, as this requires setting a proper dtb to use on the
-BUILTIN_DTB_SOURCE, else the kernel with XIP but does not set
-BUILTIN_DTB_SOURCE or unselect BUILTIN_DTB will not boot.
+I've recently discovered that if we don't increase i_size in
+iomap_zero_iter(), it would break fstests generic/476 on xfs. xfs
+depends on iomap_zero_iter() to increase i_size in some cases.
 
-Also, this patch removes the default dtb string for k210 from Kconfig to
-nommu_k210_defconfig and nommu_k210_sdcard_defconfig to avoid complex
-Kconfig settings for other SoCs in the future.
+ generic/476 75s ... _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
+ (see /home/zhangyi/xfstests-dev/results//xfs/generic/476.full for details)
 
-[1] https://lore.kernel.org/linux-riscv/20201208073355.40828-5-damien.lemoal@wdc.com/
-[2] https://lore.kernel.org/linux-riscv/20210604120639.1447869-1-alex@ghiti.fr/
-[3] https://lore.kernel.org/linux-riscv/CAK7LNATt_56mO2Le4v4EnPnAfd3gC8S_Sm5-GCsfa=qXy=8Lrg@mail.gmail.com/
+ _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
+ *** xfs_repair -n output ***
+ Phase 1 - find and verify superblock...
+ Phase 2 - using internal log
+         - zero log...
+         - scan filesystem freespace and inode maps...
+ sb_fdblocks 10916, counted 10923
+         - found root inode chunk
+ ...
 
-Signed-off-by: Yangyu Chen <cyy@cyyself.name>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
----
-Changes since v2:
-- some fixes on format and grammar
-- v2: https://lore.kernel.org/linux-riscv/tencent_61DFA8E0B13696A3256E538C4BC856633406@qq.com/
+After debugging and analysis, I found the root cause of the problem is
+related to the pre-allocations of xfs. xfs pre-allocates some blocks to
+reduce fragmentation during buffer append writing, then if we write new
+data or do file copy(reflink) after the end of the pre-allocating range,
+xfs would zero-out and write back the pre-allocate space(e.g.
+xfs_file_write_checks() -> xfs_zero_range()), so we have to update
+i_size before writing back in iomap_zero_iter(), otherwise, it will
+result in stale delayed extent.
 
-Changes since v1:
-- remove default y for BULTIN_DTB in any cases
-- remove default DTB_SOURCE for k210 and moved to its defconfig file
-- remove building dtb object file for other SoCs
-- reword help message to say N if unsure for BUILTIN_DTB_SOURCE
-- reword commit message
-- v1: https://lore.kernel.org/linux-riscv/tencent_AB625442CC1BCFF86E04D7B5891C43719109@qq.com/
+For more details, let's think about this case,
+1. Buffered write from range [A, B) of an empty file foo, and
+   xfs_buffered_write_iomap_begin() prealloc blocks for it, then create
+   a delayed extent from [A, D).
+2. Write back process map blocks but only convert above delayed extent
+   from [A, C) since the lack of a contiguous physical blocks, now we
+   have a left over delayed extent from [C, D), and the file size is B.
+3. Copy range from another file to range [E, F), then
+   xfs_reflink_zero_posteof() would zero-out post eof range [B, E), it
+   writes zero, dirty and write back [C, E).
+4. Since we don't update i_size in iomap_zero_iter()，the writeback
+   doesn't write anything back, also doesn't convert the delayed extent.
+   After copy range, the file size will update to F.
+5. Finally, the delayed extent becomes stale, and the free blocks count
+   becomes incorrect.
 
----
- arch/riscv/Kconfig                            | 14 +++++++-
- arch/riscv/Kconfig.socs                       | 32 -------------------
- arch/riscv/boot/dts/Makefile                  |  2 +-
- arch/riscv/boot/dts/canaan/Makefile           |  2 --
- arch/riscv/boot/dts/microchip/Makefile        |  1 -
- arch/riscv/boot/dts/sifive/Makefile           |  1 -
- arch/riscv/configs/nommu_k210_defconfig       |  2 ++
- .../riscv/configs/nommu_k210_sdcard_defconfig |  2 ++
- 8 files changed, 18 insertions(+), 38 deletions(-)
+So, we have to handle above case for xfs. I suppose we could keep
+increasing i_size if the zeroed folio is entirely outside of i_size,
+make sure we could write back and allocate blocks for the
+zeroed & delayed extent, something like below, any suggestions ?
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 85c899d0133a..3d6d93d71257 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -1000,7 +1000,19 @@ config RISCV_ISA_FALLBACK
- config BUILTIN_DTB
- 	bool "Built-in device tree"
- 	depends on OF && NONPORTABLE
--	default y if XIP_KERNEL
-+	help
-+	  Build a device tree into the Linux image.
-+	  This option should be selected if no bootloader is being used.
-+	  If unsure, say N.
+
+@@ -1390,6 +1390,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+
+ 	do {
+ 		struct folio *folio;
++		loff_t old_size;
+ 		int status;
+ 		size_t offset;
+ 		size_t bytes = min_t(u64, SIZE_MAX, length);
+@@ -1408,6 +1409,28 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+ 		folio_mark_accessed(folio);
+
+ 		bytes = iomap_write_end(iter, pos, bytes, bytes, folio);
 +
++		/*
++		 * If folio is entirely outside of i_size, update the
++		 * in-memory inode size after zeroing the data in the page
++		 * cache to prevent the write-back process from not writing
++		 * back zeroed pages.
++		 */
++		old_size = iter->inode->i_size;
++		if (pos + bytes > old_size) {
++			size_t offset = offset_in_folio(folio, old_size);
++			pgoff_t end_index = old_size >> PAGE_SHIFT;
 +
-+config BUILTIN_DTB_SOURCE
-+	string "Built-in device tree source"
-+	depends on BUILTIN_DTB
-+	help
-+	  DTS file path (without suffix, relative to arch/riscv/boot/dts)
-+	  for the DTS file that will be used to produce the DTB linked into the
-+	  kernel.
- 
- endmenu # "Boot options"
- 
-diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-index e08e91c49abe..623de5f8a208 100644
---- a/arch/riscv/Kconfig.socs
-+++ b/arch/riscv/Kconfig.socs
-@@ -84,36 +84,4 @@ config SOC_CANAAN
- 	help
- 	  This enables support for Canaan Kendryte K210 SoC platform hardware.
- 
--if ARCH_CANAAN
--
--config ARCH_CANAAN_K210_DTB_BUILTIN
--	def_bool SOC_CANAAN_K210_DTB_BUILTIN
--
--config SOC_CANAAN_K210_DTB_BUILTIN
--	bool "Builtin device tree for the Canaan Kendryte K210"
--	depends on ARCH_CANAAN
--	default y
--	select OF
--	select BUILTIN_DTB
--	help
--	  Build a device tree for the Kendryte K210 into the Linux image.
--	  This option should be selected if no bootloader is being used.
--	  If unsure, say Y.
--
--config ARCH_CANAAN_K210_DTB_SOURCE
--	string
--	default SOC_CANAAN_K210_DTB_SOURCE
--
--config SOC_CANAAN_K210_DTB_SOURCE
--	string "Source file for the Canaan Kendryte K210 builtin DTB"
--	depends on ARCH_CANAAN
--	depends on ARCH_CANAAN_K210_DTB_BUILTIN
--	default "k210_generic"
--	help
--	  Base name (without suffix, relative to arch/riscv/boot/dts/canaan)
--	  for the DTS file that will be used to produce the DTB linked into the
--	  kernel.
--
--endif # ARCH_CANAAN
--
- endmenu # "SoC selection"
-diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-index 72030fd727af..fdae05bbf556 100644
---- a/arch/riscv/boot/dts/Makefile
-+++ b/arch/riscv/boot/dts/Makefile
-@@ -8,4 +8,4 @@ subdir-y += sophgo
- subdir-y += starfive
- subdir-y += thead
- 
--obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix /, $(subdir-y))
-+obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix .dtb.o, $(CONFIG_BUILTIN_DTB_SOURCE))
-diff --git a/arch/riscv/boot/dts/canaan/Makefile b/arch/riscv/boot/dts/canaan/Makefile
-index 520623264c87..987d1f0c41f0 100644
---- a/arch/riscv/boot/dts/canaan/Makefile
-+++ b/arch/riscv/boot/dts/canaan/Makefile
-@@ -5,5 +5,3 @@ dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_bit.dtb
- dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_dock.dtb
- dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_go.dtb
- dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maixduino.dtb
--
--obj-$(CONFIG_ARCH_CANAAN_K210_DTB_BUILTIN) += $(addsuffix .dtb.o, $(CONFIG_ARCH_CANAAN_K210_DTB_SOURCE))
-diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot/dts/microchip/Makefile
-index 45adc4926e79..e177815bf1a2 100644
---- a/arch/riscv/boot/dts/microchip/Makefile
-+++ b/arch/riscv/boot/dts/microchip/Makefile
-@@ -4,4 +4,3 @@ dtb-$(CONFIG_ARCH_MICROCHIP_POLARFIRE) += mpfs-m100pfsevp.dtb
- dtb-$(CONFIG_ARCH_MICROCHIP_POLARFIRE) += mpfs-polarberry.dtb
- dtb-$(CONFIG_ARCH_MICROCHIP_POLARFIRE) += mpfs-sev-kit.dtb
- dtb-$(CONFIG_ARCH_MICROCHIP_POLARFIRE) += mpfs-tysom-m.dtb
--obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
-diff --git a/arch/riscv/boot/dts/sifive/Makefile b/arch/riscv/boot/dts/sifive/Makefile
-index 6a5fbd4ed96a..495bf760a909 100644
---- a/arch/riscv/boot/dts/sifive/Makefile
-+++ b/arch/riscv/boot/dts/sifive/Makefile
-@@ -1,4 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_SIFIVE) += hifive-unleashed-a00.dtb \
- 			     hifive-unmatched-a00.dtb
--obj-$(CONFIG_BUILTIN_DTB) += $(addsuffix .o, $(dtb-y))
-diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs/nommu_k210_defconfig
-index 146c46d0525b..7e75200543f4 100644
---- a/arch/riscv/configs/nommu_k210_defconfig
-+++ b/arch/riscv/configs/nommu_k210_defconfig
-@@ -33,6 +33,8 @@ CONFIG_SMP=y
- CONFIG_NR_CPUS=2
- CONFIG_CMDLINE="earlycon console=ttySIF0"
- CONFIG_CMDLINE_FORCE=y
-+CONFIG_BUILTIN_DTB=y
-+CONFIG_BUILTIN_DTB_SOURCE="canaan/k210_generic"
- # CONFIG_SECCOMP is not set
- # CONFIG_STACKPROTECTOR is not set
- # CONFIG_GCC_PLUGINS is not set
-diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-index 95d8d1808f19..0ba353e9ca71 100644
---- a/arch/riscv/configs/nommu_k210_sdcard_defconfig
-+++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-@@ -25,6 +25,8 @@ CONFIG_SMP=y
- CONFIG_NR_CPUS=2
- CONFIG_CMDLINE="earlycon console=ttySIF0 root=/dev/mmcblk0p1 rootwait ro"
- CONFIG_CMDLINE_FORCE=y
-+CONFIG_BUILTIN_DTB=y
-+CONFIG_BUILTIN_DTB_SOURCE="canaan/k210_generic"
- # CONFIG_SECCOMP is not set
- # CONFIG_STACKPROTECTOR is not set
- # CONFIG_GCC_PLUGINS is not set
--- 
-2.43.0
++			if (folio->index > end_index ||
++			    (folio->index == end_index && offset == 0)) {
++				i_size_write(iter->inode, pos + bytes);
++				iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
++			}
++		}
++		__iomap_put_folio(iter, pos, bytes, folio);
++		if (old_size < pos)
++			pagecache_isize_extended(iter->inode, old_size, pos);
++
+ 		if (WARN_ON_ONCE(bytes == 0))
+ 			return -EIO;
+
+Thansk,
+Yi.
 
 
