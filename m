@@ -1,365 +1,282 @@
-Return-Path: <linux-kernel+bounces-85320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C279D86B423
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:05:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BECF86B400
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:02:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74561286B99
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:05:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 963CBB21CC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2198E161B66;
-	Wed, 28 Feb 2024 16:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EEB715D5D3;
+	Wed, 28 Feb 2024 16:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aoCYPUHg"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="ccSTNqUl"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2120.outbound.protection.outlook.com [40.107.7.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B40515F316;
-	Wed, 28 Feb 2024 16:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709136266; cv=none; b=k23oYlnQ6VLkPtZ56vygT0N+VIHTMktz8kI/sBWmHBjzdIxZ9WAjYTGGOReV+c3SAf3rK+Ct+Mb4OT2kEsZGh8Hc6Nc+jGB146GUxTCz6CBWSTLvqL2DX+9u2V1yOlrg63zsaXA+tmOqRzroT701fl6Qx+XPnsK83QUiJxZrqR4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709136266; c=relaxed/simple;
-	bh=Bjrp1tTlD6ezzWfPdYM+Tqz2X4qeW6q9D/krqY8Q3+k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hq4p5Rv0eAxEuAQdD4ph+cgjhfAVpYjdzPKPkoZun0P/R3PxE1G2t8oIXkPdw7M3zPcCN6zZm6VxWTPwVZ7EvifiioP/A6YoUBpm1qXpPE5Wb1PIwZ0aBv+BDpDDRfFXMdMwEHCrE2pLpBwN+qaRkjs1qj1SHI84HGYfHczmQ5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aoCYPUHg; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709136264; x=1740672264;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Bjrp1tTlD6ezzWfPdYM+Tqz2X4qeW6q9D/krqY8Q3+k=;
-  b=aoCYPUHgwnZd05PMTrhcI8yQ9mIdLjJsI6ae/CC9rk8IQ8vuSSXjp2qJ
-   h9nTrctbQqVGZYkZBSiig4jKXwlO4uCFQolEJJrfnm/ssvKQYn8Wizqmd
-   wlpVpojaNy9P1GOxwUSc9HjgRWsSCKQrS3xfGJ4ie7d2dGzF643maEafq
-   G+rVJ0e0z4YgXqzNb7cQd7Z4TYMzrV5fYlrKuanSoqvdy4z19s4pf+kFM
-   T+YGHD/Xk++4V1HN7gTKIUCdd2dLcOBFOeJuGC9ULvH5wfSpfBdFvbHwx
-   Zj9IxzjqPWVLR7K30uu8bmBmBzGiJYZ3PUW6rsAq0I7U/Qt/ZUjEA4hdZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="3706637"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="3706637"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 08:04:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="7527818"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orviesa009.jf.intel.com with ESMTP; 28 Feb 2024 08:04:18 -0800
-Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 87BD536825;
-	Wed, 28 Feb 2024 16:04:15 +0000 (GMT)
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Mateusz Pacuszka <mateuszx.pacuszka@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	Lukasz Plachno <lukasz.plachno@intel.com>,
-	Jakub Buchocki <jakubx.buchocki@intel.com>,
-	Pawel Kaminski <pawel.kaminski@intel.com>,
-	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
-	Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-	Mateusz Polchlopek <mateusz.polchlopek@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Pawel Chmielewski <pawel.chmielewski@intel.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: [PATCH iwl-net 5/5] ice: Implement VF LLDP TX support for VF
-Date: Wed, 28 Feb 2024 16:59:49 +0100
-Message-ID: <20240228155957.408036-6-larysa.zaremba@intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240228155957.408036-1-larysa.zaremba@intel.com>
-References: <20240228155957.408036-1-larysa.zaremba@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C7841487DC;
+	Wed, 28 Feb 2024 16:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.120
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709136140; cv=fail; b=clmX0ZWIGM5t6NCuMuve4l/V6yRBPn9Raz5x9GvmTQo/byry5LxEhhoUw5T9pQmxE60kGGhH6JUPl7DBFg8ACw2O4KTVLhfH/Ml8FFWGlNYAlRF5iRt/cUcj934nDa130k91DMtJal017Ke6A11i6gRXXos/fBDtbaAeqhPqkaA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709136140; c=relaxed/simple;
+	bh=NTWTGbTlad9ttpJP/eYnmoAL03pU48ytGPmdLPhQtBU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=pSmc93nKrR0Risr3FpBl0+70Z3RHmixUwk0bbn4MQGeyxRNBro87n9oRlz2vZrMjmSyuwzqqvazHR6ViC+O88hL0LvM4HpnizYzveBg+N7RI1haYxp26RWBHWCzlVmsqNS5n0zC6eIWyzEpNpjc/9kGFELexqkrwWupdAgch3D0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=ccSTNqUl; arc=fail smtp.client-ip=40.107.7.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MYRcf51wdR5ExnBNdJSiyl7zoYdzAaGJeWknCLuU090ieaKnFvQQTXzOUeD3xiP/tTIV+ws7PphSHzADQnDIe1ZhVrGxYWy8+Imtp/h/MaquD30yYTYmIavbB6L7en2QS/LP59caTNyxt/C/+lf06k2JngB6Js8PWerevHE5PXVi74GzZj7imsmS0uPKNgGf/RKll+p9vpglATPV9okNp1Exzq6hCxyx670ZspsMLVqakHykDpoWAXBoMVdcTx8sNdhzBecsLUpZ6yiu9e6XkY/GeXSJiS788PvA1/iInNl49fWNAT3yOYxZzPtWsSrw1wVT09w/6zyw4l1XlQJ87g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ib60+e3Xc5apGQ5aBkGV/ytaz92nOBR4XuijNtrje0k=;
+ b=I5nD3wYrbyY67AwgVLKr7YRPLdI8K9+kCbis+ZcFh1hXH/LOHNi2tCo9PRS/BhoPtULoWzswQNhNaX/RAk21XXf9yavw5g7OMIhLgb4m14Qt1hiRbjN+QjolJ4bhmvdQpxtCZLiA+q5lgqkZ2I1v06WKpsUvsqF4bU8vUD6VpRfeKjZJ2/QOsS1AgzKX36GMdfQnE19xM5rIERugBXP7kRMAEdfymw5n80F024yE+vtqmnZ2DmZauCuO4pEPgLtdER3gFQlLZD39BHIablTGQho3HITKP4jr2fXPFPEce9pY5YfO+DeVb02skH+tQKxhRBxm5Jy52Sf87ay/s5sutw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ib60+e3Xc5apGQ5aBkGV/ytaz92nOBR4XuijNtrje0k=;
+ b=ccSTNqUl9CL3UVb6cxZ1eDzPgbUDX3rnYMVQvtTqRKvP/205Yvcf53f1lfsBXu0toXm9xFqCU56Oh6VYYzCY7CDb23o7odP3pKsfqHVt8etSDPM9+bbDIe9OHL+hbIFhZMhTPsKM5pYlj0U5k0eDHwtwXhy8rn3dA+LSI/ItV+Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by GV2PR08MB9280.eurprd08.prod.outlook.com (2603:10a6:150:e1::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Wed, 28 Feb
+ 2024 16:02:13 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::9e35:6de9:e4fc:843f]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::9e35:6de9:e4fc:843f%6]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
+ 16:02:12 +0000
+Message-ID: <2bbd5eae-f963-40d6-a827-1c273ef5b211@wolfvision.net>
+Date: Wed, 28 Feb 2024 17:02:10 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/8] usb: misc: onboard_hub: use device supply names
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Helen Koike <helen.koike@collabora.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Russell King <linux@armlinux.org.uk>, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240228-onboard_xvf3500-v5-0-76b805fd3fe6@wolfvision.net>
+ <20240228-onboard_xvf3500-v5-1-76b805fd3fe6@wolfvision.net>
+ <Zd9TLL0IM08Wh63i@google.com>
+Content-Language: en-US
+From: Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <Zd9TLL0IM08Wh63i@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0161.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a2::20) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|GV2PR08MB9280:EE_
+X-MS-Office365-Filtering-Correlation-Id: 237ac6a4-ea7b-41eb-db53-08dc38769ff1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	SLGwEBOOT+5MSpbib6+XzdYlFSd+zYVKbpSSAXhTSNGhxS0uKshMjDYoj7A3imsjXf9gv+12gFm7rCjLMe8gomoksmiTcdlsd9TZ5cS6VysDnf4uqEuPF25fzNHycrhAwgp+PrVXGkDFllItloqUuMnYgzGY7ZxqJZt1xlCGBn6dQ6YfZXLXxvByROsuJQnCpbKCOYoaZJe7e1M/96DrzasVGepNoJ/lBR404RmKslA8FRkSvQxjNwapg+SL6WfxQax7Rwk0KO/i7ZITleeU7IRBSKdJXKXvy/aVy9KTbV7GkpAKHCrz6MrmFGKeGbNKRJsNfH/w7tIUSLiJyohI21VnGbBSt1HQ7wQ10iTv3cK5+5mkzIycZvQJWfBfRnztGuD1LnR4ePVPSEU3BdZRJZPNkHsWMmmMdKl9acfhoBvbmzUIVPdpo4BLlJ4DJwFvAQlH40c+OPwC9mTrsJc9hHxG85XrbtlHPuX9CrAAsUxQ5XjfiInZh9vx/SymwaOArbxCTOE9yNAHztleswSELXzeFQxxV3lejup63ZV1qKdIpsv0QpPNWG/Me3oRgH3m9x2jHYkbT3aDWwjujkawCXDM3KXNG//tT1S7LRvRTPGfW+PeYwqMu1fQFXQjsEka/HtNVsDEMIyH1A6D2UCFUw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?NWhDZlVYdG8wZitqYzJtYnpKSkFxdi80Zjl2YU4xQi9GUXpLbDdjOVlBa3Jk?=
+ =?utf-8?B?aXVyeUpHSGRTM0wrOWpqWTRIcG9MVkUzZFVzRUorQ05YTy9kTTJpRVZSRHNW?=
+ =?utf-8?B?Ukpqdkh4YnZrQUh2RUlXMmMyZEJNZ0tnNXBTZVRWb09oaXRZckNncUhObkpH?=
+ =?utf-8?B?QWpMM2pKMUduMUxnaTA4WU9KU1BybXZNd2EyTnZ2VTVUTHI1cXJlL2M1dVdS?=
+ =?utf-8?B?Vm52WUxtOEJXemNQaTBjNzNyS29iYnBOSGY1TGcrckVuNmQxaXBmVkhnazU5?=
+ =?utf-8?B?bG1TMlM2S2dMRngvVVgybHhWMUg2Nmc5TGRNMUNZeEdBREVER0tVRHBZdVkw?=
+ =?utf-8?B?aWNFcU9GVGJwRnJNK2FHR2NtWDlaWUE5ZWJSMExXazBnSDB3R1Bid0Y3N0hy?=
+ =?utf-8?B?Wmd0SkxDUnBSSVBxZTB6MHIrM0s5cFk5T0lBS3NLbnRCRnpoSnZlamZFZGI5?=
+ =?utf-8?B?aUtvT0RhNXZveWNldmdRMlF4NitNNC9kZEE2aVdhU0QzK28zc2k2czZtZGF4?=
+ =?utf-8?B?QzhnVlllS002QnNoRFJRaGNjZ1dnWDFsWFJrMHhYeGxBNkxWTFc0ZFZpa0tU?=
+ =?utf-8?B?M1Z5VGFtOFJRQVpwY0FwYVhKZlNPK0lKSk93dDhtaVhDT3k4SkVEY1NLeDJH?=
+ =?utf-8?B?c3IvRUhraHlxUlNLSm9iV0xZc2tZRzVNM2xHZU1CN1dHWTBQRmkyNDM2MjAv?=
+ =?utf-8?B?Vk9nL2ZlRlhJTzRGeXdPOHgvamJuckxTNm5tQ211Y1Y2Z1VPSU1EejRscHNK?=
+ =?utf-8?B?cWlGbmNEemU4QUVFeG82NXVmYmVoTDNLbVA2blRFWVRPWmZEWUYvcEpqdnoy?=
+ =?utf-8?B?T2NBMURUWS9WQ3kzREg5SDZPNThqY2R0eWo0cGRObSs2TUxiK0RleEh1dldQ?=
+ =?utf-8?B?b0VFOEZNUlFJV2pMZm9pZW5JRDR6VHhPMmhJRnYxQURkN2k5dUVCZUJUbkQ0?=
+ =?utf-8?B?YW50bUxad1ZUdndRT3ZZOEh3eGg2MGFwcTdCd3lSTHZVZEFJN0E3aGd1VFlI?=
+ =?utf-8?B?SHV0aW90RzhZOW9SRk1BWHV2V2JFNGNpc0xBK0h0WUtXVkFTZTNDUVphL1ZK?=
+ =?utf-8?B?czdmTTBXOHB3eWhmSmRXNlpCRm44clMxT2JyVWQybkhRVlFRekFBRkZhWnhQ?=
+ =?utf-8?B?eHJtWjAwaVlxcm94NG9GZTB4VzN1cnl3eHNGNFlnZitCdTVTTVlzQ0NTMHRL?=
+ =?utf-8?B?SlFUVTU4TExWV1lic2NoaHZ5RGN1ZTBMbGt2Wkp1ckU1cmVGcDBBb29VTm9l?=
+ =?utf-8?B?Q3doRVVpczVmYmczYmVtbnd5S2FZZ3BOQVJCcDB1WGdMNjlxMkR5YmwyTS9R?=
+ =?utf-8?B?aC9hYlEyYk94dlBhSFdiN3VVTHJJaUYvUDg3RHNla0E2aTBScHl1ME5yTlpp?=
+ =?utf-8?B?MEJHYmY2THEwcWNuNHZzOWFqK21sOHVyOXFDM3VKcU1GV3QrcVp4azlEekkz?=
+ =?utf-8?B?N3JnK1gvT2J4bUttZTVwTjRNSjJxTkNFTmlvZ2pjSTB0bkJwRnQ4YmhEbytw?=
+ =?utf-8?B?UHlvelgvME4zbzNQZ2V5bWh0SUNNTmJjOEFMOGFSNWs3WklMWnVxMk13T2w0?=
+ =?utf-8?B?enllTzU5U0lhK2lWSFhSajJVZGlKS0IvQW1RU0R6WEhmWHUwNXd5ZFB3TVNI?=
+ =?utf-8?B?S25iVEpFUjJjUkt0N3ZZREVCcEhZcXJFeWdra0NyMWdULzQ4TElJMXErcXdk?=
+ =?utf-8?B?Tml2TElUMUxxamg0bUFnMW5lTk81bm9WWm5xbXJheFFvM1ZQNjAzTkJVbExJ?=
+ =?utf-8?B?MlZoQUh3TUFQeXRwQ0pSNEtWRFhDdVVmckVSckhPbFFlUDRGVXdkclY4bTNn?=
+ =?utf-8?B?WXV5VEVIRXJTcngyMzlLZ3pVT1JiNDJsd1JOVENjMU43UFVBa09DWDhvVWJH?=
+ =?utf-8?B?MGk1NlJHTUs3SitIYjk3aUVkb0I0ZTFyRHZqaUNCWW9wM29iTis5RCs4VDQ4?=
+ =?utf-8?B?OVF6OFNISXgxNklXWiswVG4ydXorQmd4b0tLUE5CeGl4VnVCVUx1aXpRWXJY?=
+ =?utf-8?B?UmRhVkhjaVRBUE1zbWVoRGl5cWZkbkdqVmdHS2VtZzUvYUhIQ1l4ekRtUzdV?=
+ =?utf-8?B?ZnhlenRxbFU5a3hUU0Ezb0l6d0ZRM2xjQlF4T3pOUjVOMzhhclkyOXlCTGNS?=
+ =?utf-8?B?c2NlUDZMZGNIUkFCeDBGSHNmS1N0M2xlWWoyaXM3VnVpS082UTdRb0hKamw5?=
+ =?utf-8?Q?rPPcOU1kiHlUGbducr2UOGw=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 237ac6a4-ea7b-41eb-db53-08dc38769ff1
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 16:02:12.1730
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JxndB1uaJpZ6BN1hNH2dWNvD/5R3FC2flfAV+jdTMfUOmFfHSFLK47loP2F9JxHNrvyZwsfi9COvE+xIc0Fk7xf8D9LJDQVlWm4LBhHWm38=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR08MB9280
 
-From: Mateusz Pacuszka <mateuszx.pacuszka@intel.com>
+On 28.02.24 16:37, Matthias Kaehlcke wrote:
+> Hi Javier,
+> 
+> Thanks for moving this patch to the front of the series!
+> 
+> A few more comments inline.
+> 
+> On Wed, Feb 28, 2024 at 02:51:28PM +0100, Javier Carrasco wrote:
+>> The current implementation uses generic names for the power supplies,
+>> which conflicts with proper name definitions in the device bindings.
+>>
+>> Add a per-device property to include real supply names and keep generic
+>> names for existing devices to keep backward compatibility.
+>>
+>> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+>> ---
+>>  drivers/usb/misc/onboard_usb_hub.c | 49 ++++++++++++++++++++------------------
+>>  drivers/usb/misc/onboard_usb_hub.h | 12 ++++++++++
+>>  2 files changed, 38 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/drivers/usb/misc/onboard_usb_hub.c b/drivers/usb/misc/onboard_usb_hub.c
+>> index 0dd2b032c90b..3755f6cc1eda 100644
+>> --- a/drivers/usb/misc/onboard_usb_hub.c
+>> +++ b/drivers/usb/misc/onboard_usb_hub.c
+>> @@ -29,17 +29,6 @@
+>>  
+>>  #include "onboard_usb_hub.h"
+>>  
+>> -/*
+>> - * Use generic names, as the actual names might differ between hubs. If a new
+>> - * hub requires more than the currently supported supplies, add a new one here.
+>> - */
+>> -static const char * const supply_names[] = {
+>> -	"vdd",
+>> -	"vdd2",
+>> -};
+>> -
+>> -#define MAX_SUPPLIES ARRAY_SIZE(supply_names)
+>> -
+>>  static void onboard_hub_attach_usb_driver(struct work_struct *work);
+>>  
+>>  static struct usb_device_driver onboard_hub_usbdev_driver;
+>> @@ -65,6 +54,30 @@ struct onboard_hub {
+>>  	struct clk *clk;
+>>  };
+>>  
+>> +static int onboard_hub_get_regulator_bulk(struct device *dev,
+>> +					  struct onboard_hub *onboard_hub)
+> 
+> Let's call this onboard_hub_get_regulators(), it's an implementation detail
+> that regulator_bulk_get() is used for getting them.
+> 
+> no need to pass 'dev', there is onboard_hub->dev
+> 
 
-Add option to enable transmit LLDP on single trusted VF via a sysfs entry,
-for example:
+Not at this point, though. The hub->dev = dev assignment happens a few
+lines below, but there is no reason not to move the line up. I will
+modify this for v6.
 
-echo '1' > /sys/class/net/<PF_IFNAME>/device/virtfn0/transmit_lldp
+>>  static int onboard_hub_power_on(struct onboard_hub *hub)
+>>  {
+>>  	int err;
+>> @@ -253,7 +266,6 @@ static int onboard_hub_probe(struct platform_device *pdev)
+>>  {
+>>  	struct device *dev = &pdev->dev;
+>>  	struct onboard_hub *hub;
+>> -	unsigned int i;
+>>  	int err;
+>>  
+>>  	hub = devm_kzalloc(dev, sizeof(*hub), GFP_KERNEL);
+>> @@ -264,18 +276,9 @@ static int onboard_hub_probe(struct platform_device *pdev)
+>>  	if (!hub->pdata)
+>>  		return -EINVAL;
+>>  
+>> -	if (hub->pdata->num_supplies > MAX_SUPPLIES)
+>> -		return dev_err_probe(dev, -EINVAL, "max %zu supplies supported!\n",
+>> -				     MAX_SUPPLIES);
+>> -
+>> -	for (i = 0; i < hub->pdata->num_supplies; i++)
+>> -		hub->supplies[i].supply = supply_names[i];
+>> -
+>> -	err = devm_regulator_bulk_get(dev, hub->pdata->num_supplies, hub->supplies);
+>> -	if (err) {
+>> -		dev_err(dev, "Failed to get regulator supplies: %pe\n", ERR_PTR(err));
+>> +	err = onboard_hub_get_regulator_bulk(dev, onboard_hub);
+> 
+> The local variable is called 'hub', not 'onboard_hub'.
+> 
 
-Signed-off-by: Mateusz Pacuszka <mateuszx.pacuszka@intel.com>
-Co-developed-by: Jakub Buchocki <jakubx.buchocki@intel.com>
-Signed-off-by: Jakub Buchocki <jakubx.buchocki@intel.com>
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_lib.c    |   3 +
- drivers/net/ethernet/intel/ice/ice_sriov.c  |   4 +
- drivers/net/ethernet/intel/ice/ice_vf_lib.c | 163 ++++++++++++++++++++
- drivers/net/ethernet/intel/ice/ice_vf_lib.h |  14 ++
- 4 files changed, 184 insertions(+)
+Good catch! Actually this patch alone would have not compiled, but once
+the renaming is done, everything is ok again. I will fix this for v6.
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index 19f08f2e0139..32b1ed74bfa4 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -2062,6 +2062,9 @@ void ice_dis_sw_lldp(struct ice_pf *pf)
- 
- 		if (vsi && vsi->rx_lldp_ena)
- 			ice_cfg_sw_lldp(vsi, false, false);
-+
-+		if (vf->transmit_lldp)
-+			ice_handle_vf_tx_lldp(vf, false);
- 	}
- }
- 
-diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.c b/drivers/net/ethernet/intel/ice/ice_sriov.c
-index a94a1c48c3de..0fe07330cc1a 100644
---- a/drivers/net/ethernet/intel/ice/ice_sriov.c
-+++ b/drivers/net/ethernet/intel/ice/ice_sriov.c
-@@ -832,6 +832,10 @@ static int ice_create_vf_entries(struct ice_pf *pf, u16 num_vfs)
- 		vf->vfdev = vfdev;
- 		vf->vf_sw_id = pf->first_sw;
- 
-+		err = ice_init_vf_sysfs(vf);
-+		if (err)
-+			goto err_free_entries;
-+
- 		pci_dev_get(vfdev);
- 
- 		/* set default number of MSI-X */
-diff --git a/drivers/net/ethernet/intel/ice/ice_vf_lib.c b/drivers/net/ethernet/intel/ice/ice_vf_lib.c
-index 2de6ef3661cf..244d0ac7c9c4 100644
---- a/drivers/net/ethernet/intel/ice/ice_vf_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_vf_lib.c
-@@ -577,6 +577,165 @@ void ice_ena_all_vfs_rx_lldp(struct ice_pf *pf)
- 	}
- }
- 
-+static bool ice_is_transmit_lldp_enabled(struct ice_pf *pf)
-+{
-+	struct ice_vf *vf;
-+	unsigned int bkt;
-+
-+	ice_for_each_vf(pf, bkt, vf) {
-+		if (vf->transmit_lldp)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+/**
-+ * ice_handle_vf_tx_lldp - enable/disable LLDP TX on VF
-+ * @vf: VF to configure Tx LLDP for
-+ * @ena: Enable or disable Tx LLDP switch rule
-+ *
-+ * Configure Tx filters for VF to transmit LLDP
-+ */
-+int ice_handle_vf_tx_lldp(struct ice_vf *vf, bool ena)
-+{
-+	void (*allow_override)(struct ice_vsi_ctx *ctx);
-+	struct ice_vsi *vsi, *main_vsi;
-+	struct ice_pf *pf = vf->pf;
-+	struct device *dev;
-+	bool prev_ena;
-+
-+	dev = ice_pf_to_dev(pf);
-+	vsi = ice_get_vf_vsi(vf);
-+	main_vsi = ice_get_main_vsi(pf);
-+	if (!vsi || !main_vsi)
-+		return -ENOENT;
-+
-+	if (ena && test_bit(ICE_FLAG_FW_LLDP_AGENT, pf->flags)) {
-+		dev_err(dev, "Transmit LLDP VF is only allowed when FW LLDP Agent is disabled");
-+		return -EPERM;
-+	}
-+
-+	if (ena && ice_is_transmit_lldp_enabled(pf)) {
-+		dev_err(dev, "Only a single VF per port is allowed to transmit LLDP packets, ignoring the settings");
-+		return -EPERM;
-+	}
-+
-+	allow_override = ena ? ice_vsi_ctx_set_allow_override
-+			     : ice_vsi_ctx_clear_allow_override;
-+	prev_ena = vsi->info.sec_flags & ICE_AQ_VSI_SEC_FLAG_ALLOW_DEST_OVRD;
-+
-+	if (ice_vsi_update_security(vsi, allow_override))
-+		return -ENOENT;
-+
-+	/* If VF can transmit LLDP, then PF cannot and vice versa */
-+	allow_override = ena ? ice_vsi_ctx_clear_allow_override
-+			     : ice_vsi_ctx_set_allow_override;
-+
-+	if (ice_vsi_update_security(main_vsi, allow_override)) {
-+		allow_override = prev_ena  ? ice_vsi_ctx_set_allow_override
-+					   : ice_vsi_ctx_clear_allow_override;
-+		ice_vsi_update_security(vsi, allow_override);
-+		return -ENOENT;
-+	}
-+
-+	vf->transmit_lldp = ena;
-+	return 0;
-+}
-+
-+static ssize_t ice_transmit_lldp_vf_attr_show(struct device *dev,
-+					      struct device_attribute *attr,
-+					      char *buf)
-+{
-+	struct ice_vf *vf = ice_get_vf_by_dev(dev);
-+
-+	if (!vf)
-+		return -ENOENT;
-+
-+	return sysfs_emit(buf, "%u\n", vf->transmit_lldp);
-+}
-+
-+static ssize_t ice_transmit_lldp_vf_attr_store(struct device *dev,
-+					       struct device_attribute *attr,
-+					       const char *buf, size_t count)
-+{
-+	struct pci_dev *vfdev = container_of(dev, struct pci_dev, dev);
-+	struct ice_vf *vf = ice_get_vf_by_dev(dev);
-+	struct pci_dev *pdev = vfdev->physfn;
-+	struct ice_pf *pf;
-+	bool ena;
-+	int err;
-+
-+	if (!vf)
-+		return -ENOENT;
-+
-+	pf = pci_get_drvdata(pdev);
-+	if (!pf)
-+		return -ENOENT;
-+
-+	err = kstrtobool(buf, &ena);
-+	if (err)
-+		return -EINVAL;
-+
-+	if (ena == vf->transmit_lldp) {
-+		dev_dbg(dev, "Transmit LLDP value already set for VF %d",
-+			vf->vf_id);
-+		return count;
-+	}
-+
-+	err = ice_handle_vf_tx_lldp(vf, ena);
-+	if (err)
-+		return err;
-+
-+	return count;
-+}
-+
-+static int ice_init_vf_transmit_lldp_sysfs(struct ice_vf *vf)
-+{
-+	struct device_attribute tmp = __ATTR(transmit_lldp, 0644,
-+					     ice_transmit_lldp_vf_attr_show,
-+					     ice_transmit_lldp_vf_attr_store);
-+
-+	vf->transmit_lldp_attr = tmp;
-+
-+	return device_create_file(&vf->vfdev->dev, &vf->transmit_lldp_attr);
-+}
-+
-+/**
-+ * ice_init_vf_sysfs - Initialize sysfs entries for a VF
-+ * @vf: VF to init sysfs for
-+ *
-+ * Initialize sysfs entries (accessible from the host) for a VF
-+ */
-+int ice_init_vf_sysfs(struct ice_vf *vf)
-+{
-+	struct device *dev = ice_pf_to_dev(vf->pf);
-+	int err = 0;
-+
-+	if (!vf->vfdev) {
-+		dev_err(dev, "%s: no vfdev", __func__);
-+		return -ENOENT;
-+	}
-+
-+	err = ice_init_vf_transmit_lldp_sysfs(vf);
-+	if (err)
-+		dev_err(dev, "could not init transmit_lldp sysfs entry, err: %d",
-+			err);
-+
-+	return err;
-+}
-+
-+static int ice_vf_apply_tx_lldp(struct ice_vf *vf)
-+{
-+	if (!vf->transmit_lldp)
-+		return 0;
-+
-+	/* Disable it so it can be applied again. */
-+	vf->transmit_lldp = false;
-+
-+	return ice_handle_vf_tx_lldp(vf, true);
-+}
-+
- /**
-  * ice_vf_rebuild_host_cfg - host admin configuration is persistent across reset
-  * @vf: VF to rebuild host configuration on
-@@ -607,6 +766,10 @@ static void ice_vf_rebuild_host_cfg(struct ice_vf *vf)
- 		dev_err(dev, "failed to rebuild spoofchk configuration for VF %d\n",
- 			vf->vf_id);
- 
-+	if (ice_vf_apply_tx_lldp(vf))
-+		dev_err(dev, "failed to rebuild transmit LLDP configuration for VF %d\n",
-+			vf->vf_id);
-+
- 	/* rebuild aggregator node config for main VF VSI */
- 	ice_vf_rebuild_aggregator_node_cfg(vsi);
- }
-diff --git a/drivers/net/ethernet/intel/ice/ice_vf_lib.h b/drivers/net/ethernet/intel/ice/ice_vf_lib.h
-index 81f734f2ae41..63e53591541e 100644
---- a/drivers/net/ethernet/intel/ice/ice_vf_lib.h
-+++ b/drivers/net/ethernet/intel/ice/ice_vf_lib.h
-@@ -104,9 +104,11 @@ struct ice_vf {
- 	struct ice_vlan port_vlan_info;	/* Port VLAN ID, QoS, and TPID */
- 	struct virtchnl_vlan_caps vlan_v2_caps;
- 	struct ice_mbx_vf_info mbx_info;
-+	struct device_attribute transmit_lldp_attr;
- 	u8 pf_set_mac:1;		/* VF MAC address set by VMM admin */
- 	u8 trusted:1;
- 	u8 spoofchk:1;
-+	u8 transmit_lldp:1;
- 	u8 link_forced:1;
- 	u8 link_up:1;			/* only valid if VF link is forced */
- 	/* VSI indices - actual VSI pointers are maintained in the PF structure
-@@ -234,6 +236,8 @@ void ice_reset_all_vfs(struct ice_pf *pf);
- struct ice_vsi *ice_get_vf_ctrl_vsi(struct ice_pf *pf, struct ice_vsi *vsi);
- void ice_ena_all_vfs_rx_lldp(struct ice_pf *pf);
- int ice_ena_vf_rx_lldp(struct ice_vf *vf);
-+int ice_init_vf_sysfs(struct ice_vf *vf);
-+int ice_handle_vf_tx_lldp(struct ice_vf *vf, bool ena);
- #else /* CONFIG_PCI_IOV */
- static inline struct ice_vf *ice_get_vf_by_id(struct ice_pf *pf, u16 vf_id)
- {
-@@ -313,6 +317,16 @@ ice_get_vf_ctrl_vsi(struct ice_pf *pf, struct ice_vsi *vsi)
- static inline void ice_ena_all_vfs_rx_lldp(struct ice_pf *pf)
- {
- }
-+
-+static inline int ice_handle_vf_tx_lldp(struct ice_vf *vf, bool ena)
-+{
-+	return -EOPNOTSUPP;
-+}
-+
-+static inline int ice_init_vf_sysfs(struct ice_vf *vf)
-+{
-+	return 0;
-+}
- #endif /* !CONFIG_PCI_IOV */
- 
- #endif /* _ICE_VF_LIB_H_ */
--- 
-2.43.0
+>> diff --git a/drivers/usb/misc/onboard_usb_hub.h b/drivers/usb/misc/onboard_usb_hub.h
+>> index f360d5cf8d8a..ea24bd6790f0 100644
+>> --- a/drivers/usb/misc/onboard_usb_hub.h
+>> +++ b/drivers/usb/misc/onboard_usb_hub.h
+>> @@ -6,54 +6,66 @@
+>>  #ifndef _USB_MISC_ONBOARD_USB_HUB_H
+>>  #define _USB_MISC_ONBOARD_USB_HUB_H
+>>  
+>> +#define MAX_SUPPLIES 2
+>> +
+>>  struct onboard_hub_pdata {
+>>  	unsigned long reset_us;		/* reset pulse width in us */
+>>  	unsigned int num_supplies;	/* number of supplies */
+>> +	const char * const supply_names[MAX_SUPPLIES]; /* use the real names */
+> 
+> The comment isn't particularly useful or accurate. Not in all cases
+> real names are used and outside of the context of this change the
+> comment is hard to understand.
+> 
+> I'd say just omit it, the name of the field is self-documenting enough,
+> there is no need to repeat the same in a comment (as for 'num_supplies'
+> ...)
 
+I added tthe comment because I can foresee what is going to happen:
+people will copy the names from existing devices, we will have to ask if
+the supplies are actually called vdd and vdd2 in the datasheet, and then
+the real names will be sent in v2. Especially at the beginning, when the
+supported devices are using vdd and vdd2.
+
+But if you think the field name is self-documenting, I am fine with it
+too. I will remove the comment for v6.
+
+Thanks again and best regards,
+Javier Carrasco
 
