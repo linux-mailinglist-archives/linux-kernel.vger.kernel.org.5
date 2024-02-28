@@ -1,114 +1,100 @@
-Return-Path: <linux-kernel+bounces-84397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84398-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ABA486A643
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:01:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2034C86A644
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:01:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE3A01F2EF13
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:01:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D05BF28D3F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:01:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB4263B3;
-	Wed, 28 Feb 2024 02:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 063BE1CF98;
+	Wed, 28 Feb 2024 02:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="se3mPeBI"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1frM7TW2"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754AB2107;
-	Wed, 28 Feb 2024 02:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD20C524B
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709085653; cv=none; b=JEU+Ykrk98pUDp4+CyAH/DDl5tqcDooJnRHSLvCa/CRUJQpYiHYyrYXnp/geRkHNkYjUW4xOvOl5Z1Dsa+FjjI+YFc2nioVLdhtdNL8HTcHPhtgb96UK+nKgHkmMF5v9Lw57Oeu35XRwP3dd9Rgq53Xu/3W55YQga6H1toXTTIU=
+	t=1709085655; cv=none; b=Jcz2rM5bj2qt1eDL+3aohmdowC6geGo9NklMoz+aXyKrJyGq5lLO0z4Cl6Phcl0REXXDPxdYjoogOM698WwIPVj5ah1sttHtTpqpPn0Z0sJMG5ceqX8g474UgyAQbAXwFt8JY29ft3kg86rzoOHCV0Q3cwIZfunjndWRu88w4zY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709085653; c=relaxed/simple;
-	bh=KxH+FSKqPnen96UL7oC2xIPLR9KE5bLwWqMqNe1vbh4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ropg1tOCKwVZ/p+0Ngesf5efHlc7bw1t2eJCZvN0Py0g5yBpHrZOyaqt1kLE44cijDPj7GnVX8i9Tz6IJckYAeXPjyDiQZ/2ME9B7iAs8p6Q/akJ9BYOpozGEs7qlyyAP1rh23kykQMuHmM2e0lltKfXaW9f5/JyZh92vmpDquE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=se3mPeBI; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 2f72af6ad5dd11ee935d6952f98a51a9-20240228
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ps+ctjgSHlaJ48jdpOUAWUiCS3YICM9/AZhDjh4oT8Q=;
-	b=se3mPeBIF+PqBgOAxPuFZkNwfjcE8pqrOpefA1S7oaRR6MrD2V8ghgdm6q36NWfIcH6M1qbuvQ3ihY2SEpCmf8RNdzt/CuKrST/mnsusTngh4tV+Fqf9UgAqrvQI12zPllEghGwV2Nx9h0D2KVGjIz+FaxxYNW2JBdGOWlqb/1I=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:bcae47ab-630f-484c-8287-b5ed9edab26c,IP:0,U
-	RL:0,TC:0,Content:0,EDM:-30,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-30
-X-CID-META: VersionHash:6f543d0,CLOUDID:95876484-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:2,IP:nil,UR
-	L:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:
-	1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 2f72af6ad5dd11ee935d6952f98a51a9-20240228
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-	(envelope-from <qingliang.li@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 386241137; Wed, 28 Feb 2024 10:00:45 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 28 Feb 2024 10:00:44 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 28 Feb 2024 10:00:43 +0800
-From: Qingliang Li <qingliang.li@mediatek.com>
-To: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>, Len
- Brown <len.brown@intel.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Johan Hovold
-	<johan+linaro@kernel.org>, Tony Lindgren <tony@atomide.com>
-CC: <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	Qingliang Li <qingliang.li@mediatek.com>
-Subject: [PATCH] PM: wakeirq: fix wake irq warning in system suspend stage
-Date: Wed, 28 Feb 2024 10:00:40 +0800
-Message-ID: <20240228020040.25815-1-qingliang.li@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709085655; c=relaxed/simple;
+	bh=AeGqh4r9dOP1kwfVwX/m+p2YxJI1dCpAzCe7eQkbPOY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ketshLUwY3gOweqVrUH7t2p/Y2a6VVR5JZbKNlQ7ha9aKdNY77AImnhFjK13fT57rlVIX2T9UElsG+qoDQotYN2L6gQ+YsI0dblH+TiKstuR+46BUKTK8FS9tplDxgtbG+wM6FSC1elNAOV1bRjkFsU+IAmrt8qhOoDtwvScKlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1frM7TW2; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607e56f7200so45993547b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:00:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709085653; x=1709690453; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6bH08g0YXsvdxlNeOpXzubbkmdDGzJ3RB+XxBRnvGmk=;
+        b=1frM7TW2ehsm+Qnlni4Dt2AAzwZc4T4GvSzHzJsI/VN8OL0omLS5WmzAt6mt3OLsIh
+         WL8XNIZNmTcq2LTboX+6HNKYdrL196rsWZ5GJbZnm6AcYaX2+GOyIpAxsoac5DvL4G0S
+         QZknUrOIvAZGvyfA2Z5p44K2cnKoPqQ2JE0hw53xho3bQUJyeyGHm9GOTLl6LI29YsAA
+         TGuyekphR3UQ4DNokdBOMQNC9Kkj1Fd7XISo4K3EEUG8q4vCC0NPNpMOKLxmNlc8DKyg
+         TF+hOoe9EJe6BXrXB5efJp96f4wzqnEy3vzNPuJy+z9HUaIptp6NFm62RN3B26lBQeT8
+         waNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709085653; x=1709690453;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6bH08g0YXsvdxlNeOpXzubbkmdDGzJ3RB+XxBRnvGmk=;
+        b=FSie1OF4WK1kUgEO+66JgwcbL88MInqLEGFsbxSo7yqijLqP4TpH6P20B0mvItUfSb
+         a9rwJhZXHiMIcN+N9yyUGybuMZdWn8TfBQjf1Y8rSb0K7U5n5mb47db0iipxGq19vi3z
+         JuQkO5QpE98if1AES112Iv08ObyxBYnydQD8W0HmSQ/EO0wDlyqCGV5gsZZBGmkoCUqJ
+         u1Mgi/HYN5sjoadquAZIp0bhUpeXQT09ghYzu4JZ8XVPJUvJ+gIR350ErwAcx/hwnip+
+         MoGiUTQYzojIGHuaehWH2jJh0SPwutsPEQZ5d07LFm5eB28DXTBqHzi+sYNYs3qyAjEW
+         rU6A==
+X-Gm-Message-State: AOJu0Yx8CWjA5hc/BkDUIo5YhcJrLRTAqOEWLqAgNjWycFOdTwaAfWxI
+	y0Awxh5vNhv2wegwBocEnspK7BkXdAvA1UikGkiPINpNuRJS7JGYNWI5dWeLmTz1bqsNcJK3gax
+	0pg==
+X-Google-Smtp-Source: AGHT+IFgN7TYk0XlfuOYPZslMedGVow73Hppqg/OG9s/zwcwi0yZpG4A0sRX4Fk0DaV1/c/nMc+rIkohxu4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:92d7:0:b0:609:3901:f2b4 with SMTP id
+ j206-20020a8192d7000000b006093901f2b4mr253754ywg.4.1709085652718; Tue, 27 Feb
+ 2024 18:00:52 -0800 (PST)
+Date: Tue, 27 Feb 2024 18:00:51 -0800
+In-Reply-To: <20240227232100.478238-11-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Mime-Version: 1.0
+References: <20240227232100.478238-1-pbonzini@redhat.com> <20240227232100.478238-11-pbonzini@redhat.com>
+Message-ID: <Zd6T06Qghvutp8Qw@google.com>
+Subject: Re: [PATCH 10/21] KVM: SEV: Use a VMSA physical address variable for
+ populating VMCB
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
+	isaku.yamahata@intel.com, thomas.lendacky@amd.com, 
+	Ashish Kalra <ashish.kalra@amd.com>
+Content-Type: text/plain; charset="us-ascii"
 
-When driver registers the wake irq with reverse enable ordering,
-the wake irq will be re-enabled when entering system suspend, triggering
-an 'Unbalanced enable for IRQ xxx' warning. The wake irq will be
-enabled in both dev_pm_enable_wake_irq_complete() and dev_pm_arm_wake_irq()
+On Tue, Feb 27, 2024, Paolo Bonzini wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> In preparation to support SEV-SNP AP Creation, use a variable that holds
+> the VMSA physical address rather than converting the virtual address.
+> This will allow SEV-SNP AP Creation to set the new physical address that
+> will be used should the vCPU reset path be taken.
 
-To fix this issue, complete the setting of WAKE_IRQ_DEDICATED_ENABLED flag
-in dev_pm_enable_wake_irq_complete() to avoid redundant irq enablement.
+No, this patch belongs in the SNP series.  The hanlding of vmsa_pa is broken
+(KVM leaks the page set by the guest; I need to follow-up in the SNP series).
+On top of that, I detest duplicat variables, and I don't like that KVM keeps its
+original VMSA (kernel allocation) after the guest creates its own.
 
-Fixes: 8527beb12087 ("PM: sleep: wakeirq: fix wake irq arming")
-Signed-off-by: Qingliang Li <qingliang.li@mediatek.com>
----
- drivers/base/power/wakeirq.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/base/power/wakeirq.c b/drivers/base/power/wakeirq.c
-index 42171f766dcb..5a5a9e978e85 100644
---- a/drivers/base/power/wakeirq.c
-+++ b/drivers/base/power/wakeirq.c
-@@ -313,8 +313,10 @@ void dev_pm_enable_wake_irq_complete(struct device *dev)
- 		return;
- 
- 	if (wirq->status & WAKE_IRQ_DEDICATED_MANAGED &&
--	    wirq->status & WAKE_IRQ_DEDICATED_REVERSE)
-+	    wirq->status & WAKE_IRQ_DEDICATED_REVERSE) {
- 		enable_irq(wirq->irq);
-+		wirq->status |= WAKE_IRQ_DEDICATED_ENABLED;
-+	}
- }
- 
- /**
--- 
-2.25.1
-
+I can't possibly imagine why this needs to be pulled in early.  There's no way
+TDX needs this, and while this patch is _small_, the functional change it leads
+to is not.
 
