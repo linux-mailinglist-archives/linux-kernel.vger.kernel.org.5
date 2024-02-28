@@ -1,580 +1,373 @@
-Return-Path: <linux-kernel+bounces-84585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84586-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEE9A86A8AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:06:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073DD86A8AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:06:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 65096B24721
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:06:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8458928521C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A4D2374C;
-	Wed, 28 Feb 2024 07:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BFB52375A;
+	Wed, 28 Feb 2024 07:06:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OcClwfYh"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="WfIIBTMF"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2099.outbound.protection.outlook.com [40.107.223.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D4E22F02
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709103958; cv=none; b=Y2XuaB472Fa/4j+dCn4PCmEblbzyijtW2KPgELnH/ulFcZEtDxRNJfQs3E64RXtRGQHQTWp++PmF/t7t6MLtkiAGd0WDWQxD+f+0Z56Pf+R+ij7RndfbrKTxMA7eYt20LpnklTsTiSIarL4r7Zs8fsnQaRYTbiPwR15BzV76pRs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709103958; c=relaxed/simple;
-	bh=LZ7rJiFTRknhew6hWsybErTwjdsVw8ts7cc991mYQdM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rq5iYIPYPE70xJ6PCvaxul6FAnxqSHBC+qu7ujsreiLJzcfqrjXBh/qWL1vhQAMxQYP9IgkZrsoBvuhEdiCABM5VZBoyrW5vD3GQbTkWyDPg/mt/T3bs9qdyCmx3lMOnIsozVsDGz5G0+qPaR5zCDsaFwxxQ6ZBV0mUE66/gh10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OcClwfYh; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dc929e5d99so97835ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:05:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175B022F02;
+	Wed, 28 Feb 2024 07:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.99
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709103981; cv=fail; b=e3H3REj7nmYAMz9rvHLRTM99RVfVtrpuPDBLoQQaRrzIX/FXHem5NbsmOk3HMf48N5U/t9fCja0H67a+elP1usZSGqsq2zylS5ksnaDbbqA90I2r91+lK+nJo9dA/VoyoFM4ykYU08kZuYT0fUMP+Ou4jY1hwFXIaBz+BBe7n58=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709103981; c=relaxed/simple;
+	bh=q25NZdwFehDvSESAQyQ6tXqTewFalNCqxk4gxNqU4x4=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=HSuxDyrpc66wyB0cQb+Gz7PNRFltKzcrY8NeMdGECELUXqZxEbOi1X3Cm0mlj99cwZ7BTebCmyaAPy7Du6YSsM8JaIhwuESc9ZrG1MjNsrP5OdnMGtzMXaWY0ctYDq5tmkpJ/D1yvqcVpg22cnfN0oAeIxnXRutKmyNSgRPllK8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=WfIIBTMF reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.223.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oaobyCju+UZBbcpmF1u6n3eCv0NFzjgyK+eXo+BIw4SG/yt7P28R0VbCd8HcobE9bZkq0tw6lIKcMbOw8NSAGrOZMiqC/EJ4tFRsP77RhCoydCnG/++cN/Z72i+w0sxdlVgLhNamD/lqfarBrdQHul3CF/RUxllc+PRcgbOr4soe4W14n9PGR4cPjO0i7dbMAlCV1uDeUjDyaIJjijUPe6q4LJqTB7TZSbK6p+DC+lRYSMwEdJr36Iwi2kjlHNcpZHZuoWR/CdZnrb/+e1pvrGOKU2Yij3k21q7A3qwoFqOm609uTrlo71AOUVD/i2Nl+d+krImju5MvYO3aiyYCVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aX1FTTvSjBp7tOUhsGm6enJqO9eWRsXMF6xUiOw/kiY=;
+ b=AFq82p/lKIN8C8SoLNus2p0Ag4AgfA76EGJ7noq3EFef/DPPI39UcuS7tG+T6YVS0uKSs0LnIZ8HptchG2aFkRQq6+XcSJa1/R4dHO/a5bbuaVH2qTlk1Cu7QB4rxdvFmRl1ETtqvAQYAEwN6D0hKVXgepv6OQP8CzRS0HfbrpqkwgZW+Ex9iyXC+GY+iK08HLdkjotUgKoSCHxMtU65KCIt0TfFNmtDEEDHWhsRaBcjbyhMzBLJNaSvUFTqTFTeNAaKGhcRy2+wfSNcE5m8avEznS417PGbC+octijoMCyXj7LOcY/9i6w22VRO14rU5L+lCaoRY2dcXY9rQEzqiw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709103955; x=1709708755; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EYNpsmx+5jlrdHVb/KJnk8W5LZfpc2ZQ4JV3cdQE6BA=;
-        b=OcClwfYhX+Dlm90Wr7HYtpdjpAsY3SorTNNcvyKClLM8p6Dv8SHktFnhGvQT6ENm8m
-         NOUr4bUe/6uwX4ekbY8Dij1nMShofkfbchiR6l0+/vMnQTA0xuipE5IFmX/o3mNuPhlh
-         jdoDQnFt8LeRM9BbehnZs0wYuD505PXtN6jJOYqj+Pnt5UvJuGbvJhVk91lcCZtQ7w+N
-         4p9HsPxHi0HtIyYGXk0p+Fxx1AhrXitrTe92qm0quDPh1KhgxoBedSkD9DjwUCUoUAaj
-         dZanzUm7E/eSgLUpoRr8m5ukIdKhlcGEB8VzA+CKxV3sFOLBp6ThFrT7Qo3j7r0svBs6
-         Srgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709103955; x=1709708755;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EYNpsmx+5jlrdHVb/KJnk8W5LZfpc2ZQ4JV3cdQE6BA=;
-        b=L2a087WJonm1PCo0Z1MWpakpRELmfULJ5O7YXQGnfYuaqlXfELTjnxiyDbPgUDJlJ6
-         Ah9VsVYry65dCuDsjbQkxPHqOXRPNemAj9jaY7CKOMGqjs9tJQI4BLqyCOQnY19L0G/z
-         42hLDHyHlarvvtONdQoKQk5IaWMMCPQYnbRNn2a/3Jj/VkpSflA7CVKZkSpOBdT7V3ev
-         Kzeb+MqANgqaQibQEc+Ffw5HIynK8zffP04P+AGXpYkr4rOD7Ifm4YE4iIAogO3yEe7m
-         tONyAuWHkmDzEHbONZFmtg7DpscxIYxi9J/B8Mn7ZcGxtJjpMVINxcrmLvdI82uWz2j7
-         IcKA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+J3xpaANYlkN3nlghlfvFLFW3bYR89NMXG91V3ayj11s+3s/rPnf+KKZ3AKQHeL3q8kwfDNyPYMSPm96qkOXaPSoC5B3HfGWwYPco
-X-Gm-Message-State: AOJu0Yz3O28GJ7vbGhi9HnoJRLmGt3iCdU2M26vtHn2GfYvIc0UVzCQY
-	wANS6L5rzwpxPTEjYmCYDslqbjMPZeRw24xmrOa+tWHLtCtvF0YBcsqHcpJb2cVVBEWL8A/0q6x
-	Wht0hq/hyx8QrkNMgEMAnSBx6S0/sdrRA4fZv
-X-Google-Smtp-Source: AGHT+IHWoCZJH5Wev12SBWbmmtLEfuQBMk3YPL6TsmZsbIBsz9/Ps6cJyG2xGP6cmVXpkIazc6AEV56sBHtmHll33hw=
-X-Received: by 2002:a17:903:2681:b0:1db:a356:b954 with SMTP id
- jf1-20020a170903268100b001dba356b954mr41271plb.28.1709103955287; Tue, 27 Feb
- 2024 23:05:55 -0800 (PST)
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aX1FTTvSjBp7tOUhsGm6enJqO9eWRsXMF6xUiOw/kiY=;
+ b=WfIIBTMFXwP+FBGVmlk0hzXBt3qpS85K7StuTACJuEqRtTjUA0m6r4LBBcdIIyGZjMbhYguqMuC4+v1ixqUf/YC8YWREw5UmxubbakEt9WbsCQRsmyIGDWG/B0tPpj5tOd3keeSESgML7Voolef8bH4eCbrT/M7f7oUmy9U+9e4=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from PH0PR01MB7975.prod.exchangelabs.com (2603:10b6:510:26d::15) by
+ DM4PR01MB7881.prod.exchangelabs.com (2603:10b6:8:6c::12) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7316.36; Wed, 28 Feb 2024 07:06:15 +0000
+Received: from PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a])
+ by PH0PR01MB7975.prod.exchangelabs.com ([fe80::91c:92f:45a5:e68a%6]) with
+ mapi id 15.20.7316.018; Wed, 28 Feb 2024 07:06:15 +0000
+Message-ID: <018b5652-8006-471d-94d0-d230e4aeef6d@amperemail.onmicrosoft.com>
+Date: Wed, 28 Feb 2024 15:05:58 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] net: skbuff: set FLAG_SKB_NO_MERGE for
+ skbuff_fclone_cache
+To: Eric Dumazet <edumazet@google.com>,
+ Huang Shijie <shijie@os.amperecomputing.com>
+Cc: kuba@kernel.org, patches@amperecomputing.com, davem@davemloft.net,
+ horms@kernel.org, ast@kernel.org, dhowells@redhat.com,
+ linyunsheng@huawei.com, aleksander.lobakin@intel.com,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ cl@os.amperecomputing.com
+References: <CANn89iJoHDzfYfhcwVvR4m7DiVG-UfFNqm+D1WD-2wjOttk6ew@mail.gmail.com>
+ <20240227062833.7404-1-shijie@os.amperecomputing.com>
+ <CANn89iL2a2534d8QU9Xt6Gjm8M1+wWH03+YPdjSPQCq_Q4ZGxw@mail.gmail.com>
+From: Shijie Huang <shijie@amperemail.onmicrosoft.com>
+In-Reply-To: <CANn89iL2a2534d8QU9Xt6Gjm8M1+wWH03+YPdjSPQCq_Q4ZGxw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: CH0PR03CA0090.namprd03.prod.outlook.com
+ (2603:10b6:610:cc::35) To PH0PR01MB7975.prod.exchangelabs.com
+ (2603:10b6:510:26d::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-2-irogers@google.com>
- <CAM9d7ciB8JAgU9P6qKh-VdVCjH0ZK+Q-n6mdXTO_nRAv6kSSyA@mail.gmail.com>
- <CAP-5=fW+NAXNYs7LGVORsikL4+jvGNqgNgoWVsgi6w8pezS9wQ@mail.gmail.com> <CAM9d7chqy7uD0w=Y+nJyhL8cpAEp6tptqPUHx0-4rQ_NJDRrsg@mail.gmail.com>
-In-Reply-To: <CAM9d7chqy7uD0w=Y+nJyhL8cpAEp6tptqPUHx0-4rQ_NJDRrsg@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 27 Feb 2024 23:05:41 -0800
-Message-ID: <CAP-5=fVKpVtNhDQCg=wFTmL7ruZR1gs_CmSsbVw_=_ZfGL2V+Q@mail.gmail.com>
-Subject: Re: [PATCH v1 1/6] perf report: Sort child tasks by tid
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB7975:EE_|DM4PR01MB7881:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8bf61393-cea0-4101-d9d4-08dc382bc0b5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	PCLTUSS7rvIc/e6bFRog8En1hh+aK9p31Nzt6mG2XwcUmi2TO+j/3EKTAYESRh/sHDGIBRiJbkPaLj94V3NBG9kbJXJd2A9IjkamMVzrSROxGv53BeDYrhGizEMYROO3LEg7rUkBZ19J2pWDU8JdP+olOmdW50dr4OXSuLiEyqbe9quJKHOPR3eBwubwLd0uADS6lTKZlqXjrNAF+jwmFYXkSLzJoch3G61AP37HkD8HTwdyVd3IHQyOrik58trNn3ZFVib8+3+WaAYVxQzknHNCkjD6uFrsC975G/yy27Qoali5JsxsP8YvM9y7EoN/rmWKHLePxbqWruQCfXW5I/j+Y4u9jejfBkgYLSV1TSPoMFCSAunihEFoCwLzFpAIvfzAs7Ym5VUgJiB6cNbo9bn9lhCsvwG8uIm/GyK+FBVFQ9UZji9Si/f50EQb47WCYcBtj4YdHd6czoyrYOV4RIkHjBPZNeEwuZ7lmbVdWd3oM6ONi0l5IUB4UXZatR7kB5atuBzGYMPaYYqN9frdYpqPH4N/GFvtB0FAnhKcRsJMJANhh3UABrZK7G+uhItwBnxyMuPMZ2PWECSJ541Xs2xvhhhCQ8Pd7mgrEcCCr3tFOS17A9LSVEozqWZtPZrK
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7975.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?THVzMHAyL1IxUlhaYldmbUFyRlNyY1dKaWdUUlFkWk5TRHo3T0xpREpUbTY4?=
+ =?utf-8?B?dWFFdDZFZkxNRnc4V0VkMGlYajFuRmFGZkw0UXl6VHZNbDhCWmhkb3BqaWZw?=
+ =?utf-8?B?NjZpdXZWN1pjTlREMUZ6ZTI0UmdlV2VSWWtEa3ArM1ZLSm9YckJoejFBY21O?=
+ =?utf-8?B?eGVJQXlKdUpWRllrSnprM2wxYmRmajMzUkNQTzNNUGlNaVNRdDFMSy9MR2Vk?=
+ =?utf-8?B?aC9kVFA5UktZcHdlU3pEL2IzSlBodk5BRVFveEZJVTJVWnFOdWsxcUxCdmVj?=
+ =?utf-8?B?S081ZCtadUIvQTBTUmRybko4Q3RTWXRyVlZKa1VGbTR1dUpPeEk2SkpZYW93?=
+ =?utf-8?B?WHpZS3FlSG4zL2hLVk5pWlgxMW9nWWRUWVBqbm1ZQVllQ3BSUU5YL2JMbzFm?=
+ =?utf-8?B?S1h6dEY2N2xkSmJuTjVmUWYrTTZLYmVud1VSZU03aHJZeUkvdi9FOXR1bU8w?=
+ =?utf-8?B?ZlNselVvbUpDQXI2cG1VVERBN0ZQWktFdHp0UXkwRktaazAvV25menJzKzBY?=
+ =?utf-8?B?SXVFVGV5Y0FDQW14cnZ6WDF4OEdULzFFWWl5cVdHY2pPZzFuWUNpdWEzTjdK?=
+ =?utf-8?B?K2J5WmVBRU5VQTlBWTE1MDN4Ymo4c09obHFEYjcrOG83cGlMaDZTOWJsSXho?=
+ =?utf-8?B?NFBBWTFQVEhiRHFBRUhkdGRmWXF2Sk1BREZENDYzaDk2ZGZ6UU5rQlBpME1s?=
+ =?utf-8?B?QTJiQ1FXalE0SS90Qmo0TC9uZCtvaVM1WTlpdlFJaGRoQ0NGLy9MV1g4bkFj?=
+ =?utf-8?B?d1JycVIrK2tGL2wzYURaRXgxMnFqRTR5ekU5MDVvd3I2VzV5SGpTNVJ6c3FO?=
+ =?utf-8?B?bHZwZTk3eVExcm05WSs0MGNyU3lKZWZIeEVaQURLejBiU294WXR2N2g0bUpE?=
+ =?utf-8?B?amxxbTVOaS9oRCtubUIwM2RRcGgyRERVWXEvUm9RUVM1SlEwSU82eTdvREVw?=
+ =?utf-8?B?dS83UHl6eFVmZHZDWGZHdGNEcUYyZCtmRXo2VnlHUjRiM1FCclBvMWIrY1ZS?=
+ =?utf-8?B?L0NZL1EyUCs0YUJMVTEwZ21RWDh3cDlIbkQ2UGRCc2Y4QzN0YU1HK1piS1Bt?=
+ =?utf-8?B?M0pNVVUrQi9RR3JPQmR3ZjBqdlU1L09KeEQ5ejNrQ2x0UnNyb1lqcER4UVRm?=
+ =?utf-8?B?ZDFBNTh0N1lKbXh1MjhnOFk4MXRiY1gwclhPYUNsbjYvSU93VDMxZWYxcDhn?=
+ =?utf-8?B?QVFPN3k5aW16WmM4ZU5PdUZKb3U2cjFGdlpuVldHbko5NmxpQ2lCVWVYZXFV?=
+ =?utf-8?B?OXdEU3gxWkp4Z2EvWUtsOEdRRjVQNmc2NmhPSWlxMllvRnNrejcyOThOcDI2?=
+ =?utf-8?B?Z1hoNDZDMkxxT0Q4TTRJK280THVPaFFrMlRsaC9TVEd1Vk9CY0o5cFFRNkxC?=
+ =?utf-8?B?V29VU1BvWTV0ZjZHNytVbzdqdWQ1TEtNeGlHcWgxeG9MS3Eva0dsU0ZyOGEy?=
+ =?utf-8?B?SDZpYVZ3UWlyWHJPNk9mcFJLdFhQRVBJSnkxVEN5a1pVK2p0YjV2QlFMMExO?=
+ =?utf-8?B?TWZhTzlyZHVKUGFPa2QrVmdMVGtSdjdaLzlFSlk1ejZYSE9aRFp5Uzh3WmFy?=
+ =?utf-8?B?Y21uRldUTXdDbWthMExCYzZ6VFd1UzVNM2M3L1h0OWlKcm93UmtnRU5zeStF?=
+ =?utf-8?B?WWx2cEgyV0lXMjUzZHVIRVJGZE1EQnBrSU83MkM4NDJ5dFFybld3ZW5XRllB?=
+ =?utf-8?B?M0dIOHpQTCtzSHJZM0xyVlJlOEZ0N3dRakVMWENYMGltRHlsT3hXV0RVczJv?=
+ =?utf-8?B?VmxOZzhGUEFjQnZBRHBqemN2azh4MHNRaEFkUFpJMG1ka3hNNHE3bkpnNENs?=
+ =?utf-8?B?S1FNMHlUZFMxcXJ3TjFnWCs4cHorM1htNm8zczY5T2RKeVE4OXlNZjhEeWE2?=
+ =?utf-8?B?WUd0ZnJGL1FLYUJqYXhpK0pqMm9LZlFRRVJTVldDUjR0Zm9Fbm1QQlhhQ0hv?=
+ =?utf-8?B?dHkxbS9NWmhBR1lzL0JQNE9uNlJoRGJXV0dHc0RWY2ExdkV4Q1lNYi9JUGQ3?=
+ =?utf-8?B?WFkyL2dsdlF0SktXVWRKK3JyRytCVVJBUGtiaFd2STBqMmRwb2Y3U3pHQ1RO?=
+ =?utf-8?B?dk5uZTl0Y1liN3NLTTBsWTFIc1hFOW16eUJxR3I4VGtqL2tkTk9MK0VyQy93?=
+ =?utf-8?B?TkV1NUpScTI0a212WTVPcWVBOFZaeDJxTXQxbWQrODM2Q210aUVnZmN6V1FO?=
+ =?utf-8?B?K0E9PQ==?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8bf61393-cea0-4101-d9d4-08dc382bc0b5
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7975.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 07:06:14.9518
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wntD44Vhfg+VzBcfFhrkA8y7YWFqSCv0XCV7NRQcPU0getJV7DUXWX9RWVKl4rOyEx4n3YtO/VavKGYxbl7RZahhQNJJOtZ8wcUHqjiynQ5IwFJRW6pXYGfN8IXr090w
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR01MB7881
 
-On Tue, Feb 27, 2024 at 10:11=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
->
-> On Mon, Feb 26, 2024 at 11:12=E2=80=AFPM Ian Rogers <irogers@google.com> =
-wrote:
-> >
-> > On Mon, Feb 26, 2024 at 10:39=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > >
-> > > On Tue, Feb 13, 2024 at 10:37=E2=80=AFPM Ian Rogers <irogers@google.c=
-om> wrote:
-> > > >
-> > > > Commit 91e467bc568f ("perf machine: Use hashtable for machine
-> > > > threads") made the iteration of thread tids unordered. The perf rep=
-ort
-> > > > --tasks output now shows child threads in an order determined by th=
-e
-> > > > hashing. For example, in this snippet tid 3 appears after tid 256 e=
-ven
-> > > > though they have the same ppid 2:
-> > > >
-> > > > ```
-> > > > $ perf report --tasks
-> > > > %      pid      tid     ppid  comm
-> > > >          0        0       -1 |swapper
-> > > >          2        2        0 | kthreadd
-> > > >        256      256        2 |  kworker/12:1H-k
-> > > >     693761   693761        2 |  kworker/10:1-mm
-> > > >    1301762  1301762        2 |  kworker/1:1-mm_
-> > > >    1302530  1302530        2 |  kworker/u32:0-k
-> > > >          3        3        2 |  rcu_gp
-> > > > ...
-> > > > ```
-> > > >
-> > > > The output is easier to read if threads appear numerically
-> > > > increasing. To allow for this, read all threads into a list then so=
-rt
-> > > > with a comparator that orders by the child task's of the first comm=
-on
-> > > > parent. The list creation and deletion are created as utilities on
-> > > > machine.  The indentation is possible by counting the number of
-> > > > parents a child has.
-> > > >
-> > > > With this change the output for the same data file is now like:
-> > > > ```
-> > > > $ perf report --tasks
-> > > > %      pid      tid     ppid  comm
-> > > >          0        0       -1 |swapper
-> > > >          1        1        0 | systemd
-> > > >        823      823        1 |  systemd-journal
-> > > >        853      853        1 |  systemd-udevd
-> > > >       3230     3230        1 |  systemd-timesyn
-> > > >       3236     3236        1 |  auditd
-> > > >       3239     3239     3236 |   audisp-syslog
-> > > >       3321     3321        1 |  accounts-daemon
-> > > > ...
-> > > > ```
-> > > >
-> > > > Signed-off-by: Ian Rogers <irogers@google.com>
->
-> I know you sent out v2 already, but let me continue the discussion
-> here.
->
->
-> > > > ---
-> > > >  tools/perf/builtin-report.c | 203 ++++++++++++++++++++------------=
-----
-> > > >  tools/perf/util/machine.c   |  30 ++++++
-> > > >  tools/perf/util/machine.h   |  10 ++
-> > > >  3 files changed, 155 insertions(+), 88 deletions(-)
-> > > >
-> > > > diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-repor=
-t.c
-> > > > index 8e16fa261e6f..b48f1d5309e3 100644
-> > > > --- a/tools/perf/builtin-report.c
-> > > > +++ b/tools/perf/builtin-report.c
-> > > > @@ -59,6 +59,7 @@
-> > > >  #include <linux/ctype.h>
-> > > >  #include <signal.h>
-> > > >  #include <linux/bitmap.h>
-> > > > +#include <linux/list_sort.h>
-> > > >  #include <linux/string.h>
-> > > >  #include <linux/stringify.h>
-> > > >  #include <linux/time64.h>
-> > > > @@ -828,35 +829,6 @@ static void tasks_setup(struct report *rep)
-> > > >         rep->tool.no_warn =3D true;
-> > > >  }
-> > > >
-> > > > -struct task {
-> > > > -       struct thread           *thread;
-> > > > -       struct list_head         list;
-> > > > -       struct list_head         children;
-> > > > -};
-> > > > -
-> > > > -static struct task *tasks_list(struct task *task, struct machine *=
-machine)
-> > > > -{
-> > > > -       struct thread *parent_thread, *thread =3D task->thread;
-> > > > -       struct task   *parent_task;
-> > > > -
-> > > > -       /* Already listed. */
-> > > > -       if (!list_empty(&task->list))
-> > > > -               return NULL;
-> > > > -
-> > > > -       /* Last one in the chain. */
-> > > > -       if (thread__ppid(thread) =3D=3D -1)
-> > > > -               return task;
-> > > > -
-> > > > -       parent_thread =3D machine__find_thread(machine, -1, thread_=
-_ppid(thread));
-> > > > -       if (!parent_thread)
-> > > > -               return ERR_PTR(-ENOENT);
-> > > > -
-> > > > -       parent_task =3D thread__priv(parent_thread);
-> > > > -       thread__put(parent_thread);
-> > > > -       list_add_tail(&task->list, &parent_task->children);
-> > > > -       return tasks_list(parent_task, machine);
-> > > > -}
-> > > > -
-> > > >  struct maps__fprintf_task_args {
-> > > >         int indent;
-> > > >         FILE *fp;
-> > > > @@ -900,89 +872,144 @@ static size_t maps__fprintf_task(struct maps=
- *maps, int indent, FILE *fp)
-> > > >         return args.printed;
-> > > >  }
-> > > >
-> > > > -static void task__print_level(struct task *task, FILE *fp, int lev=
-el)
-> > > > +static int thread_level(struct machine *machine, const struct thre=
-ad *thread)
-> > > >  {
-> > > > -       struct thread *thread =3D task->thread;
-> > > > -       struct task *child;
-> > > > -       int comm_indent =3D fprintf(fp, "  %8d %8d %8d |%*s",
-> > > > -                                 thread__pid(thread), thread__tid(=
-thread),
-> > > > -                                 thread__ppid(thread), level, "");
-> > > > +       struct thread *parent_thread;
-> > > > +       int res;
-> > > >
-> > > > -       fprintf(fp, "%s\n", thread__comm_str(thread));
-> > > > +       if (thread__tid(thread) <=3D 0)
-> > > > +               return 0;
-> > > >
-> > > > -       maps__fprintf_task(thread__maps(thread), comm_indent, fp);
-> > > > +       if (thread__ppid(thread) <=3D 0)
-> > > > +               return 1;
-> > > >
-> > > > -       if (!list_empty(&task->children)) {
-> > > > -               list_for_each_entry(child, &task->children, list)
-> > > > -                       task__print_level(child, fp, level + 1);
-> > > > +       parent_thread =3D machine__find_thread(machine, -1, thread_=
-_ppid(thread));
-> > > > +       if (!parent_thread) {
-> > > > +               pr_err("Missing parent thread of %d\n", thread__tid=
-(thread));
-> > > > +               return 0;
-> > > >         }
-> > > > +       res =3D 1 + thread_level(machine, parent_thread);
-> > > > +       thread__put(parent_thread);
-> > > > +       return res;
-> > > >  }
-> > > >
-> > > > -static int tasks_print(struct report *rep, FILE *fp)
-> > > > +static void task__print_level(struct machine *machine, struct thre=
-ad *thread, FILE *fp)
-> > > >  {
-> > > > -       struct perf_session *session =3D rep->session;
-> > > > -       struct machine      *machine =3D &session->machines.host;
-> > > > -       struct task *tasks, *task;
-> > > > -       unsigned int nr =3D 0, itask =3D 0, i;
-> > > > -       struct rb_node *nd;
-> > > > -       LIST_HEAD(list);
-> > > > +       int level =3D thread_level(machine, thread);
-> > > > +       int comm_indent =3D fprintf(fp, "  %8d %8d %8d |%*s",
-> > > > +                                 thread__pid(thread), thread__tid(=
-thread),
-> > > > +                                 thread__ppid(thread), level, "");
-> > > >
-> > > > -       /*
-> > > > -        * No locking needed while accessing machine->threads,
-> > > > -        * because --tasks is single threaded command.
-> > > > -        */
-> > > > +       fprintf(fp, "%s\n", thread__comm_str(thread));
-> > > >
-> > > > -       /* Count all the threads. */
-> > > > -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++)
-> > > > -               nr +=3D machine->threads[i].nr;
-> > > > +       maps__fprintf_task(thread__maps(thread), comm_indent, fp);
-> > > > +}
-> > > >
-> > > > -       tasks =3D malloc(sizeof(*tasks) * nr);
-> > > > -       if (!tasks)
-> > > > -               return -ENOMEM;
-> > > > +static int task_list_cmp(void *priv, const struct list_head *la, c=
-onst struct list_head *lb)
-> > >
-> > > I'm a little afraid that this comparison logic becomes complex.
-> > > But I think it's better than having a tree of thread relationship.
-> > > Just a comment that explains why we need this would be nice.
-> >
-> > I can add something in v2.
-> >
-> > >
-> > > > +{
-> > > > +       struct machine *machine =3D priv;
-> > > > +       struct thread_list *task_a =3D list_entry(la, struct thread=
-_list, list);
-> > > > +       struct thread_list *task_b =3D list_entry(lb, struct thread=
-_list, list);
-> > > > +       struct thread *a =3D task_a->thread;
-> > > > +       struct thread *b =3D task_b->thread;
-> > > > +       int level_a, level_b, res;
-> > > > +
-> > > > +       /* Compare a and b to root. */
-> > > > +       if (thread__tid(a) =3D=3D thread__tid(b))
-> > > > +               return 0;
-> > > >
-> > > > -       for (i =3D 0; i < THREADS__TABLE_SIZE; i++) {
-> > > > -               struct threads *threads =3D &machine->threads[i];
-> > > > +       if (thread__tid(a) =3D=3D 0)
-> > > > +               return -1;
-> > > >
-> > > > -               for (nd =3D rb_first_cached(&threads->entries); nd;
-> > > > -                    nd =3D rb_next(nd)) {
-> > > > -                       task =3D tasks + itask++;
-> > > > +       if (thread__tid(b) =3D=3D 0)
-> > > > +               return 1;
-> > > >
-> > > > -                       task->thread =3D rb_entry(nd, struct thread=
-_rb_node, rb_node)->thread;
-> > > > -                       INIT_LIST_HEAD(&task->children);
-> > > > -                       INIT_LIST_HEAD(&task->list);
-> > > > -                       thread__set_priv(task->thread, task);
-> > > > -               }
-> > > > +       /* If parents match sort by tid. */
-> > > > +       if (thread__ppid(a) =3D=3D thread__ppid(b)) {
-> > > > +               return thread__tid(a) < thread__tid(b)
-> > > > +                       ? -1
-> > > > +                       : (thread__tid(a) > thread__tid(b) ? 1 : 0)=
-;
-> > >
-> > > Can it be simply like this?  We know tid(a) !=3D tid(b).
-> > >
-> > >   return thread__tid(a) < thread__tid(b) ? -1 : 1;
-> >
-> > Yes, but the parent check is still required.
->
-> Sure.  I only meant the return statement.
->
-> >
-> > > >         }
-> > > >
-> > > >         /*
-> > > > -        * Iterate every task down to the unprocessed parent
-> > > > -        * and link all in task children list. Task with no
-> > > > -        * parent is added into 'list'.
-> > > > +        * Find a and b such that if they are a child of each other=
- a and b's
-> > > > +        * tid's match, otherwise a and b have a common parent and =
-distinct
-> > > > +        * tid's to sort by. First make the depths of the threads m=
-atch.
-> > > >          */
-> > > > -       for (itask =3D 0; itask < nr; itask++) {
-> > > > -               task =3D tasks + itask;
-> > > > -
-> > > > -               if (!list_empty(&task->list))
-> > > > -                       continue;
-> > > > -
-> > > > -               task =3D tasks_list(task, machine);
-> > > > -               if (IS_ERR(task)) {
-> > > > -                       pr_err("Error: failed to process tasks\n");
-> > > > -                       free(tasks);
-> > > > -                       return PTR_ERR(task);
-> > > > +       level_a =3D thread_level(machine, a);
-> > > > +       level_b =3D thread_level(machine, b);
-> > > > +       a =3D thread__get(a);
-> > > > +       b =3D thread__get(b);
-> > > > +       for (int i =3D level_a; i > level_b; i--) {
-> > > > +               struct thread *parent =3D machine__find_thread(mach=
-ine, -1, thread__ppid(a));
-> > > > +
-> > > > +               thread__put(a);
-> > > > +               if (!parent) {
-> > > > +                       pr_err("Missing parent thread of %d\n", thr=
-ead__tid(a));
-> > > > +                       thread__put(b);
-> > > > +                       return -1;
-> > > >                 }
-> > > > +               a =3D parent;
-> > > > +       }
-> > > > +       for (int i =3D level_b; i > level_a; i--) {
-> > > > +               struct thread *parent =3D machine__find_thread(mach=
-ine, -1, thread__ppid(b));
-> > > >
-> > > > -               if (task)
-> > > > -                       list_add_tail(&task->list, &list);
-> > > > +               thread__put(b);
-> > > > +               if (!parent) {
-> > > > +                       pr_err("Missing parent thread of %d\n", thr=
-ead__tid(b));
-> > > > +                       thread__put(a);
-> > > > +                       return 1;
-> > > > +               }
-> > > > +               b =3D parent;
-> > > > +       }
-> > > > +       /* Search up to a common parent. */
-> > > > +       while (thread__ppid(a) !=3D thread__ppid(b)) {
-> > > > +               struct thread *parent;
-> > > > +
-> > > > +               parent =3D machine__find_thread(machine, -1, thread=
-__ppid(a));
-> > > > +               thread__put(a);
-> > > > +               if (!parent)
-> > > > +                       pr_err("Missing parent thread of %d\n", thr=
-ead__tid(a));
-> > > > +               a =3D parent;
-> > > > +               parent =3D machine__find_thread(machine, -1, thread=
-__ppid(b));
-> > > > +               thread__put(b);
-> > > > +               if (!parent)
-> > > > +                       pr_err("Missing parent thread of %d\n", thr=
-ead__tid(b));
-> > > > +               b =3D parent;
-> > > > +               if (!a || !b)
-> > > > +                       return !a && !b ? 0 : (!a ? -1 : 1);
-> > >
-> > > Wouldn't it leak a refcount if either a or b is NULL (not both)?
-> >
-> > It would, but this would be an error condition anyway. I can add puts.
-> >
-> > >
-> > > > +       }
-> > > > +       if (thread__tid(a) =3D=3D thread__tid(b)) {
-> > > > +               /* a is a child of b or vice-versa, deeper levels a=
-ppear later. */
-> > > > +               res =3D level_a < level_b ? -1 : (level_a > level_b=
- ? 1 : 0);
-> > > > +       } else {
-> > > > +               /* Sort by tid now the parent is the same. */
-> > > > +               res =3D thread__tid(a) < thread__tid(b) ? -1 : 1;
-> > > >         }
-> > > > +       thread__put(a);
-> > > > +       thread__put(b);
-> > > > +       return res;
-> > > > +}
-> > > > +
-> > > > +static int tasks_print(struct report *rep, FILE *fp)
-> > > > +{
-> > > > +       struct machine *machine =3D &rep->session->machines.host;
-> > > > +       LIST_HEAD(tasks);
-> > > > +       int ret;
-> > > >
-> > > > -       fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "ppid", "c=
-omm");
-> > > > +       ret =3D machine__thread_list(machine, &tasks);
-> > > > +       if (!ret) {
-> > > > +               struct thread_list *task;
-> > >
-> > > Do we really need this thread_list?  Why not use an
-> > > array of threads directly?
-> >
-> > The code isn't particularly performance critical. I used a list as it
-> > best approximated how the rbtree was being used. The code is reused in
-> > subsequent patches, there's no initial pass to size an array and I
-> > think the reallocarray/qsort logic is generally more problematic than
-> > the list ones. If we were worried about performance then I think
-> > arrays could make sense for optimization, but I think this is good
-> > enough for now.
->
-> Well, it's not about performance.  It made me think why we need
-> this thread_list but I couldn't find the reason.  If you can move
-> machine__threads_nr() here then you won't need realloc().
 
-But then you can race between allocating an array and traversing to
-fill it in. Using realloc in the iterator callback would avoid this
-but with capacity tracking, etc. If this were C++ its a call between a
-std::vector and a std::list, and std::vector would win that race there
-(imo). Here we're moving from code that was working on sorted tree
-nodes in code that tends to more heavily use lists. I wanted the
-transition from the rbtree nodes to list nodes to be as small as
-possible in the changes to the APIs that did strange things to the
-threads tree (resorting it). Moving to an array with indices would
-require more tracking and be a larger change in general. The array
-could move because of a realloc, whilst nodes wouldn't, etc. Having
-the code now work on a list its easier to see how it can migrate to an
-array, but that can be follow on work. I'm not sure we're motivated to
-do it given there's no code on a performance critical path.
+在 2024/2/27 20:55, Eric Dumazet 写道:
+> On Tue, Feb 27, 2024 at 7:29 AM Huang Shijie
+> <shijie@os.amperecomputing.com> wrote:
+>> Since we do not set FLAG_SKB_NO_MERGE for skbuff_fclone_cache,
+>> the current skbuff_fclone_cache maybe not really allocated, it maybe
+>> used an exist old kmem_cache. In NUMA, the fclone allocated by
+>> alloc_skb_fclone() maybe in remote node.
+> Why is this happening in the first place ? Whab about skb->head ?
 
-Thanks,
-Ian
+I tested the fclone firstly. I did not test others yet.
 
-> Thanks,
-> Namhyung
+I did not check the skb->head yet.
+
+But I ever checked the pfrag's page, it is okay.
+
+
 >
-> > > >
-> > > > -       list_for_each_entry(task, &list, list)
-> > > > -               task__print_level(task, fp, 0);
-> > > > +               list_sort(machine, &tasks, task_list_cmp);
-> > > >
-> > > > -       free(tasks);
-> > > > -       return 0;
-> > > > +               fprintf(fp, "# %8s %8s %8s  %s\n", "pid", "tid", "p=
-pid", "comm");
-> > > > +
-> > > > +               list_for_each_entry(task, &tasks, list)
-> > > > +                       task__print_level(machine, task->thread, fp=
-);
-> > > > +       }
-> > > > +       thread_list__delete(&tasks);
-> > > > +       return ret;
-> > > >  }
-> > > >
-> > > >  static int __cmd_report(struct report *rep)
-> > > > diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> > > > index 3da92f18814a..7872ce92c9fc 100644
-> > > > --- a/tools/perf/util/machine.c
-> > > > +++ b/tools/perf/util/machine.c
-> > > > @@ -3261,6 +3261,36 @@ int machines__for_each_thread(struct machine=
-s *machines,
-> > > >         return rc;
-> > > >  }
-> > > >
-> > > > +
-> > > > +static int thread_list_cb(struct thread *thread, void *data)
-> > > > +{
-> > > > +       struct list_head *list =3D data;
-> > > > +       struct thread_list *entry =3D malloc(sizeof(*entry));
-> > > > +
-> > > > +       if (!entry)
-> > > > +               return -ENOMEM;
-> > > > +
-> > > > +       entry->thread =3D thread__get(thread);
-> > > > +       list_add_tail(&entry->list, list);
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +int machine__thread_list(struct machine *machine, struct list_head=
- *list)
-> > > > +{
-> > > > +       return machine__for_each_thread(machine, thread_list_cb, li=
-st);
-> > > > +}
-> > > > +
-> > > > +void thread_list__delete(struct list_head *list)
-> > > > +{
-> > > > +       struct thread_list *pos, *next;
-> > > > +
-> > > > +       list_for_each_entry_safe(pos, next, list, list) {
-> > > > +               thread__zput(pos->thread);
-> > > > +               list_del(&pos->list);
-> > > > +               free(pos);
-> > > > +       }
-> > > > +}
-> > > > +
-> > > >  pid_t machine__get_current_tid(struct machine *machine, int cpu)
-> > > >  {
-> > > >         if (cpu < 0 || (size_t)cpu >=3D machine->current_tid_sz)
-> > > > diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
-> > > > index 1279acda6a8a..b738ce84817b 100644
-> > > > --- a/tools/perf/util/machine.h
-> > > > +++ b/tools/perf/util/machine.h
-> > > > @@ -280,6 +280,16 @@ int machines__for_each_thread(struct machines =
-*machines,
-> > > >                               int (*fn)(struct thread *thread, void=
- *p),
-> > > >                               void *priv);
-> > > >
-> > > > +struct thread_list {
-> > > > +       struct list_head         list;
-> > > > +       struct thread           *thread;
-> > > > +};
-> > > > +
-> > > > +/* Make a list of struct thread_list based on threads in the machi=
-ne. */
-> > > > +int machine__thread_list(struct machine *machine, struct list_head=
- *list);
-> > > > +/* Free up the nodes within the thread_list list. */
-> > > > +void thread_list__delete(struct list_head *list);
-> > > > +
-> > > >  pid_t machine__get_current_tid(struct machine *machine, int cpu);
-> > > >  int machine__set_current_tid(struct machine *machine, int cpu, pid=
-_t pid,
-> > > >                              pid_t tid);
-> > > > --
-> > > > 2.43.0.687.g38aa6559b0-goog
-> > > >
+> Jesper patch [1] motivation was not about NUMA., but about
+> fragmentation and bulk allocations/freeing.
+>
+> TCP fclones are not bulk allocated/freed, so I do not understand what
+> your patch is doing.
+> You need to give more details, and experimental results.
+
+1.) My NUMA machine:
+
+       node 0 (CPU 0 ~ CPU79):
+
+                      CPU 0 ~  CPU 39 are used as memcached's server
+
+                     CPU 40 ~  CPU 79 are used as memcached's client
+
+       node 1 (CPU 80 ~ CPU160):
+
+                      CPU 80 ~  CPU 119 are used as memcached's server
+
+                     CPU 120 ~  CPU 179 are used as memcached's client
+
+    the kernel is linux-next 20240227
+
+
+  2.) My private patches:
+
+       patch 1 is for slub:
+
+       ---
+  mm/slub.c | 1 +
+  1 file changed, 1 insertion(+)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index 5d838ebfa35e..d2ab1e36fd6b 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5691,6 +5691,7 @@ __kmem_cache_alias(const char *name, unsigned int 
+size, unsigned int align,
+
+         s = find_mergeable(size, align, flags, name, ctor);
+         if (s) {
++               printk("[%s] origin:%s, shared :%s\n", __func__, name, 
+s->name);
+                 if (sysfs_slab_alias(s, name))
+                         return NULL;
+
+---------
+
+   This patch is used the check which is the sharing kmem_cache for 
+"skbuff_fclone_cache".
+
+   I cannot find the "skbuff_fclone_cache" in /proc/slabinfo.
+
+   From my test, the "pool_workqueue" is the real working kmem_cache.
+
+   The "skbuff_fclone_cache" is just a pointer to "pool_workqueue" 
+(pwq_cache).
+
+
+   The following private patch is used to record the fclone allocation:
+
+  ---
+  net/ipv4/tcp.c | 19 +++++++++++++++++++
+  1 file changed, 19 insertions(+)
+
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index c82dc42f57c6..6f31ddcfc017 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -864,6 +864,24 @@ ssize_t tcp_splice_read(struct socket *sock, loff_t 
+*ppos,
+  }
+  EXPORT_SYMBOL(tcp_splice_read);
+
++unsigned long right_num, wrong_num;
++static void check_fclone(struct sk_buff *skb)
++{
++       int n = numa_mem_id(); /* current node */
++       int node2 = page_to_nid(virt_to_page((unsigned long) skb));
++
++       if (n != node2) {
++               wrong_num++;
++               if ((wrong_num % 1000) == 999)
++                       printk(KERN_DEBUG "[%s] current:%d, get from 
+:%d, (%ld, %ld, %ld)\n",
++                               __func__, n, node2, wrong_num, 
+right_num, wrong_num * 100 / (wrong_num + right_num));
++       } else {
++               right_num++;
++               if ((right_num % 1000000) == 9999)
++                       printk("[%s] we received :%ld, %ld\n", __func__, 
+right_num, wrong_num);
++       }
++}
++
+  struct sk_buff *tcp_stream_alloc_skb(struct sock *sk, gfp_t gfp,
+                                      bool force_schedule)
+  {
+@@ -884,6 +902,7 @@ struct sk_buff *tcp_stream_alloc_skb(struct sock 
+*sk, gfp_t gfp,
+                         skb_reserve(skb, MAX_TCP_HEADER);
+                         skb->ip_summed = CHECKSUM_PARTIAL;
+INIT_LIST_HEAD(&skb->tcp_tsorted_anchor);
++                       check_fclone(skb);
+                         return skb;
+                 }
+                 __kfree_skb(skb);
+--
+
+   Without this v2 patch, I can get the result after the memcached test:
+
+[ 1027.317645] [check_fclone] current:0, get from :1, (7112999, 9076711, 43)
+[ 1027.317653] [check_fclone] current:0, get from :1, (7112999, 9076707, 43)
+[ 1027.804110] [check_fclone] we received :10009999, 7113326
+
+It means nearly 43% fclone is allocated in the remote node.
+
+
+  With this v2 patch,  I can find the "skbuff_fclone_cache" in 
+/proc/slabinfo.
+
+The test result shows below:
+
+[  503.357293] [check_fclone] we received :8009999, 0
+[  503.357293] [check_fclone] we received :8009999, 0
+[  503.357305] [check_fclone] we received :8009999, 0
+
+After v2 patch, I cannot see the wrong fclone in remote node.
+
+
+>
+> Using SLAB_NO_MERGE does not help, I am still seeing wrong allocations
+> on a dual socket
+> host with plenty of available memory.
+> (either sk_buff or skb->head being allocated on the other node).
+
+Do you mean you still can see the wrong fclone after using SLAB_NO_MERGE?
+
+If so, I guess there is bug in the slub.
+
+
+> fclones might be allocated from a cpu running on node A, and freed
+> from a cpu running on node B.
+> Maybe SLUB is not properly handling this case ?
+
+Maybe.
+
+
+
+> SLAB_NO_MERGE will avoid merging fclone with kmalloc-512, it does not
+> really help.
+>
+> I think we need help from mm/slub experts, instead of trying to 'fix'
+> networking stacks.
+
+@Christopher
+
+Any idea about this?
+
+Thanks
+
+Huang Shijie
+
+> Perhaps we could augment trace_kmem_cache_alloc() to record/print the nodes
+> of the allocated chunk (we already have the cpu number giving us the
+> local node).
+> That would give us more confidence on any fixes.
+>
+> BTW SLUB is gone, time to remove FLAG_SKB_NO_MERGE and simply use SLAB_NO_MERGE
+>
+> [1]
+> commit 0a0643164da4a1976455aa12f0a96d08ee290752
+> Author: Jesper Dangaard Brouer <hawk@kernel.org>
+> Date:   Tue Aug 15 17:17:36 2023 +0200
+>
+>      net: use SLAB_NO_MERGE for kmem_cache skbuff_head_cache
+>
+>
+>
+>> So set FLAG_SKB_NO_MERGE for skbuff_fclone_cache to fix it.
+>>
+>> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
+>> ---
+>> v1 --> v2:
+>>         set FLAG_SKB_NO_MERGE for skbuff_fclone_cache in initialization.
+>>
+>> v1: https://lkml.org/lkml/2024/2/20/121
+>> ---
+>>   net/core/skbuff.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>> index 1f918e602bc4..5e3e130fb57a 100644
+>> --- a/net/core/skbuff.c
+>> +++ b/net/core/skbuff.c
+>> @@ -5013,7 +5013,8 @@ void __init skb_init(void)
+>>          skbuff_fclone_cache = kmem_cache_create("skbuff_fclone_cache",
+>>                                                  sizeof(struct sk_buff_fclones),
+>>                                                  0,
+>> -                                               SLAB_HWCACHE_ALIGN|SLAB_PANIC,
+>> +                                               SLAB_HWCACHE_ALIGN|SLAB_PANIC|
+>> +                                               FLAG_SKB_NO_MERGE,
+>>                                                  NULL);
+>>          /* usercopy should only access first SKB_SMALL_HEAD_HEADROOM bytes.
+>>           * struct skb_shared_info is located at the end of skb->head,
+>> --
+>> 2.40.1
+>>
 
