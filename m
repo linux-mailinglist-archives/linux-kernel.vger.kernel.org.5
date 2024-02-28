@@ -1,189 +1,127 @@
-Return-Path: <linux-kernel+bounces-85122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EACDE86B0AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:44:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABA0786B0B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:45:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7960E1F25E62
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:44:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD99B1C22423
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBEC14F996;
-	Wed, 28 Feb 2024 13:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4C014D44A;
+	Wed, 28 Feb 2024 13:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="RajPwTXj"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="OymBZv5q"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BF7130AEF
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:43:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F65773508
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709127790; cv=none; b=irhzKdlaCKuBTvZ8G+gJdzLZFV8Y4vXwxu/rAv723EjJjGtafKsMp1T67oyw7mb+9VO35vBQ85yzxKMnOfApfDYrG8LAiqjlvA5rfFPOHPwv0iAbj05YUyzd6UJtI/fsSB9G66KokPuj3Lxs6ZaV+8eiwOVZBI21LKQo626SXsw=
+	t=1709127926; cv=none; b=gAKsAo/I2ROYtl4ThpDTCWyqTAdFkxFzyXpOAwva/AO8j5M3HDhMKVm7ot/J6EvU8PCzJ71jMpNOSJHrT7V0PRVae4ZxxtFkL6J3A8kZbqFHEAia2EETiolTr2hN9UXyJ3QEv5fPllKtPjwLMCDHHOBKkD4daq93g6OQtYEE7V8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709127790; c=relaxed/simple;
-	bh=SvOjEBM6XaTjawBpJfnC/vAcSjjGGP5H8FoPZUwyDR4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=TnQcSjh2G30hDlVe+6t1ngZ8nXLls+OK9Z/M6vo8U7aR0fmE9o9vlb0CaEcrlC3ypVC6s/dsZKo1X1GvcOWtDpdivBYdOIgs3t+skqYh5aOKZSkfOYQt6xWdnIUWTGKUq+XEEAgye4O096CxmXBQ2Z51MmQAIVN5WCd2TdcIJOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=RajPwTXj; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41SDe2Qc012073;
-	Wed, 28 Feb 2024 13:43:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=gbbaIjKyJYqdiJn3LCuTCwFTxGo+XR59Kj1/OOErhfk=; b=Ra
-	jPwTXjsRX23YHsuwKQ3s0tKtcBH8rGAfIDCf5hw0PrgKaJXahj10wk/B14U+T2dS
-	pNOYvJ0mXRHI04MBDWZa90wuznxC3OoyqYIpbo8UaIxItAezyrz7k4wvdZUcQwRg
-	znrR75nd7kb4oFQCM4iE8hTgOHjWocGE1QkfKCRN+ZlWxfpghdEFLxWt9ITzNVJ4
-	Lm8CxgRerdON0W3WGdKs5uzfpvBmYX16dq1o1TaHhgPFsrtO0OUx1fVZ2fceuSX+
-	4wYfob+rSnkltURFsO5iP7MzvsF1kmFSfExC9i2UWyXWZMtKAbMNyxIsBl/oDwCg
-	awS2JATXPlQN0hqbmBZg==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wj5wc8093-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 13:43:01 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SDh0sc004702
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 13:43:00 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
- 2024 05:42:58 -0800
-Message-ID: <d8b52875-1eea-5eba-55d0-d6acedf206ef@quicinc.com>
-Date: Wed, 28 Feb 2024 19:12:53 +0530
+	s=arc-20240116; t=1709127926; c=relaxed/simple;
+	bh=7VmebPJtBPFwDRFWwrsAwULy02yCG8ypW1U2mmCpG8Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FS43vnkqNo9OXQBXYfbS8r2Je/4kObqXpmh2jUHEErM8v3WMBl01yAOieiF5uKbX+bk3WGzfDog6641Kp4OiFxOAgM7fExYFrZNm11ebnPTb4U8Wrdz/W84B0YZn94AZ+UGeemXRM3Tjws00BArjvTOw794qhaBecS8UKUCmiKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=OymBZv5q; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B0FBE40E019B;
+	Wed, 28 Feb 2024 13:45:19 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 26pDk6jWIfLp; Wed, 28 Feb 2024 13:45:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709127917; bh=ataY2XHE0jBLrOe8cHYNXNn3jD+yyqpZSTu2eZh9ilQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OymBZv5qF/RcUHF4rzLH+vGKjfnXdUX92Aor5E+d3TsnSjBlkmHUGT4q56RG1Ae3d
+	 SC5mMJyOB76DTOGAwtGg94DD8K27MMI5V8tmGfQeTJDnFnPeUcMABGodtvX8AfIDiN
+	 TG7QIXnPKriJLIXzZaAAZAsJLDhvHwqaLThomGcYrVwF71kyl6qZkm4bc6EYvSpn6z
+	 /lblaRu/P8pU0bjue4RGNZ5NPGXsXXdXg/j61C9/GpEw82x9kvmKGIZy+W8a9hu8/M
+	 OsgxHHe/T0fLWdmB88ftqMcwWvYay2D/vmSaVoGi9WqVVhg8lFmuCCT1mxekW+9brR
+	 P5G4aF6Fa7fjLjfI4VSiCYXyfK83M8ka+nr02sBvG+MHCMglrIlmgzpghAy9mNgpkr
+	 HAzYsu5w68Xz2Nfz0EkGZwB+Jr5M/KOvsrIGI0tMMHjxHqGk2MFvFlwqSZQHxwvPc7
+	 EfXKLlbSW3zwX9shGz6auM9LXfpSMz50dt5ebpPi8nqeD2ShYiCTVF/lcE/BPgM78F
+	 JFxNGkkROHinfl+GLJAmpC89L+q325w300ctaVZ39yVclwsPzgJS+6TqwHqU4HMdHP
+	 GNE4OBN8T4sCwaM9hD6hPaJtbvtTjGXJlGvXhEqRZmgphPjxbH9yu9ghaHBKy2paAE
+	 r72gjzLAwvb6mjcs3RIQCAXM=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 83C9840E0196;
+	Wed, 28 Feb 2024 13:45:06 +0000 (UTC)
+Date: Wed, 28 Feb 2024 14:45:00 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v7 1/9] x86/startup_64: Simplify CR4 handling in startup
+ code
+Message-ID: <20240228134500.GHZd843I43EccJD1Ak@fat_crate.local>
+References: <20240227151907.387873-11-ardb+git@google.com>
+ <20240227151907.387873-12-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/4] devcoredump: Add dev_coredump_put()
-Content-Language: en-US
-To: =?UTF-8?Q?Jos=c3=a9_Roberto_de_Souza?= <jose.souza@intel.com>,
-        <linux-kernel@vger.kernel.org>, <intel-xe@lists.freedesktop.org>
-CC: Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Johannes Berg
-	<johannes@sipsolutions.net>,
-        Jonathan Cavitt <jonathan.cavitt@intel.com>
-References: <20240227210008.182904-1-jose.souza@intel.com>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20240227210008.182904-1-jose.souza@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: c4sVrRvDN_S1dI-labytC-2CfvTIQqnA
-X-Proofpoint-ORIG-GUID: c4sVrRvDN_S1dI-labytC-2CfvTIQqnA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_06,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
- priorityscore=1501 mlxlogscore=928 mlxscore=0 phishscore=0 bulkscore=0
- suspectscore=0 impostorscore=0 spamscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402280108
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240227151907.387873-12-ardb+git@google.com>
 
+On Tue, Feb 27, 2024 at 04:19:09PM +0100, Ard Biesheuvel wrote:
+> +	/*
+> +	 * Create a mask of CR4 bits to preserve. Omit PGE in order to clean
+> +	 * global 1:1 translations from the TLBs.
 
+Brian raised this question when exactly global entries get flushed and
+I was looking for the exact definition in the SDM, here's what I'll do
+ontop:
 
-On 2/28/2024 2:30 AM, José Roberto de Souza wrote:
-> This is useful for drivers that don't want to keep a coredump
-> available after unloading.
-> Otherwise, the coredump would only be removed after DEVCD_TIMEOUT
-> seconds.
-> 
-> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Cc: Mukesh Ojha <quic_mojha@quicinc.com>
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: Jonathan Cavitt <jonathan.cavitt@intel.com>
-> Signed-off-by: José Roberto de Souza <jose.souza@intel.com>
-> ---
->   drivers/base/devcoredump.c  | 22 ++++++++++++++++++++++
->   include/linux/devcoredump.h |  5 +++++
->   2 files changed, 27 insertions(+)
-> 
-> diff --git a/drivers/base/devcoredump.c b/drivers/base/devcoredump.c
-> index 7e2d1f0d903a6..e96427411b87c 100644
-> --- a/drivers/base/devcoredump.c
-> +++ b/drivers/base/devcoredump.c
-> @@ -304,6 +304,28 @@ static ssize_t devcd_read_from_sgtable(char *buffer, loff_t offset,
->   				  offset);
->   }
->  
-[...]
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 2d8762887c6a..24df91535062 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -186,8 +186,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 1:
+ 
+ 	/*
+-	 * Create a mask of CR4 bits to preserve. Omit PGE in order to clean
++	 * Create a mask of CR4 bits to preserve. Omit PGE in order to flush
+ 	 * global 1:1 translations from the TLBs.
++	 *
++	 * From the SDM:
++	 * "If CR4.PGE is changing from 0 to 1, there were no global TLB
++	 *  entries before the execution; if CR4.PGE is changing from 1 to 0,
++	 *  there will be no global TLB entries after the execution."
+ 	 */
+ 	movl	$(X86_CR4_PAE | X86_CR4_LA57), %edx
+ #ifdef CONFIG_X86_MCE
+---
 
-> +/**
-> + * dev_coredump_put - remove device coredump
-> + * @dev: the struct device for the crashed device
-> + *
-> + * If giving device has a coredump this removes it from file system and free
-> + * associated data otherwise does nothing.
-> + * This is useful for drivers that don't want to keep a coredump
-> + * available after unloading.
-> + */
+And how it is perfectly clear.
 
-[...]
+Thx.
 
-Slight rephrasing..
+-- 
+Regards/Gruss,
+    Boris.
 
-""
-dev_coredump_put() removes coredump, if exists, for a given device from 
-the file system and free its associated data otherwise, does nothing.
-
-It is useful for modules that do not want to keep coredump
-available after its unload.
-""
-
-Overall, LGTM..
-
--Mukesh
-
-> +void dev_coredump_put(struct device *dev)
-> +{
-> +	struct device *existing;
-> +
-> +	existing = class_find_device(&devcd_class, NULL, dev,
-> +				     devcd_match_failing);
-> +	if (existing) {
-> +		devcd_free(existing, NULL);
-> +		put_device(existing);
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(dev_coredump_put);
-> +
->   /**
->    * dev_coredumpm - create device coredump with read/free methods
->    * @dev: the struct device for the crashed device
-> diff --git a/include/linux/devcoredump.h b/include/linux/devcoredump.h
-> index c008169ed2c6f..c8f7eb6cc1915 100644
-> --- a/include/linux/devcoredump.h
-> +++ b/include/linux/devcoredump.h
-> @@ -63,6 +63,8 @@ void dev_coredumpm(struct device *dev, struct module *owner,
->   
->   void dev_coredumpsg(struct device *dev, struct scatterlist *table,
->   		    size_t datalen, gfp_t gfp);
-> +
-> +void dev_coredump_put(struct device *dev);
->   #else
->   static inline void dev_coredumpv(struct device *dev, void *data,
->   				 size_t datalen, gfp_t gfp)
-> @@ -85,6 +87,9 @@ static inline void dev_coredumpsg(struct device *dev, struct scatterlist *table,
->   {
->   	_devcd_free_sgtable(table);
->   }
-> +static inline void dev_coredump_put(struct device *dev)
-> +{
-> +}
->   #endif /* CONFIG_DEV_COREDUMP */
->   
->   #endif /* __DEVCOREDUMP_H */
+https://people.kernel.org/tglx/notes-about-netiquette
 
