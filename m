@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-84430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF23586A6BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:43:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7574E86A6BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85BDE287295
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:43:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E13E21F296BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33A12232B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA623224D4;
 	Wed, 28 Feb 2024 02:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gApBg6m9"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PcHXFqab"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD7120B0E
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:41:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7102720DF1
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:42:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709088121; cv=none; b=n/vnPZhBwI6KQFXIPsy2EOC794bhbq7lNhPUSBzyqL+LnWPw4bqOeu9IPDIsfYnffzaXn7g1P6Ay+pNXJEk8jsHCDCCjA0hD+eI8MvFkPtJOZeOFO9N6Mnyq55wG+fjSbwfkSygAAZdbYMGI1Yne5l1Tam6hegTMMXJQBIZCrNc=
+	t=1709088122; cv=none; b=OReL+mC1Jh2cuj5dPxZNZOk/zj6PVc/vkjFR4+6sO5MoaD9OPaAPzaMiSLbpxG8XVOL2ROlO+QTVo45vuLqrQ9NHZDMCrralgbugthqbxBB1HWcY291E6ZPbeocfBcMNVRAxddpeZz4UdUXmN4gWSMT1rZlMhXL1We/I0AN+QY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709088121; c=relaxed/simple;
-	bh=Ee4P1IGzSZAbqqoC45jHzPN8hF/0X+AxCf4vkLrZ8oo=;
+	s=arc-20240116; t=1709088122; c=relaxed/simple;
+	bh=fw6fQCaxNyQVmsm0HwKPD91hojXxJNupzj4MzyZI3f0=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Hee2S/uY15JjWQ0c7VFkZXZGdSqEikzc9H4zeDQkDP5RljzftsNvAauaNHBMrUr3Yw8NUDlQ+7RPgRbh1Ndxx3Fnj91ztIyoXLT5tn9D/pZFLCKQqxuKVjHzWpAYOV8tbEq/0Z5or4IjgHORefP6p6fH3JSX2pr1Fl3aMguJM2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gApBg6m9; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=aWHVdmWIlgGRXtEGIiK5rsxPtYLj69JChoDVcvnCN0bTB7enMaxl94+Z14CSGOrjNgFl0rs/JsqgoRMWbhzg6VTujyz26eCIZjQctc3cXOXYKdTjWF2kaUlJQ0cQJh8P/7YH2LyNRd7tsBPmtIvSw8fVZMPXLFVa/MSZTmzBTds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PcHXFqab; arc=none smtp.client-ip=209.85.210.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608d6ffc64eso7155487b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:41:58 -0800 (PST)
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e5588db705so382405b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:42:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709088118; x=1709692918; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709088120; x=1709692920; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=vbRF992kdFc9tiyNuxItAbgdPRKbA7Cju3slwI3hgOA=;
-        b=gApBg6m9/n4OByfbEvr+LNxa1FXhXQXl++lerlpZbBu/TZaJKN/Wrv5NAx6Y8OUYkn
-         cEOnoUNmcEOBeR0upfproGY+rxMMBYjz+Q3gWoVVO0Cyc0l1n6BLT66+7GbK+6b16uez
-         XvfylwSerawHTVsavbLcmWa14F7e4MqBiHV2eYY3M+M+pPlnJKVSHbDJGqmAIbOjDPug
-         KKnSZueNOidQFLClvMQ4kdR8Pe25MkkKGQobd8efDml/+ZRkFjnkiPr4ary6U49yZr2n
-         zMHJvS2ywYF4JwfZz2TPHZ0b4mouT7UoVQkXiZJRJUcbiYMYwueersvLCHGUPePJUk1R
-         HgZg==
+        bh=UtgfH5mWUwUleAFxMU19P9nYVxmIT/Ru+pHd1FRZC+Q=;
+        b=PcHXFqab6wfr2gPo40/6WpRR5Y4D22zIVOk8I9eZ4ln70tXNUJELztSRICOBRAaDuj
+         B4MxQ0dre4sndiDi0+2aXU8XH6Pk4m7El8Zg1xgypt2hku2NWFXt+eUogAFHduBC3OCI
+         ZVH7M83YfFE3EkfiFgs7pN4oA2lUUio6ot5V6XZvdTlTvsBYvdACnUzioFkbX88/Etrj
+         jUwyIt1tqPPiBb7NvRPwIkQEMhL+7ZZbtBI3ehjguRGd+me4dW7gVxCHGHL7KL7vPcQf
+         mnn1ZMea0ahhprXPuqsO9RawAKZ/gP2VIMESDbk/z7QnzFycYKWtPdm50DcN6odKzIXc
+         KPTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709088118; x=1709692918;
+        d=1e100.net; s=20230601; t=1709088120; x=1709692920;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=vbRF992kdFc9tiyNuxItAbgdPRKbA7Cju3slwI3hgOA=;
-        b=XEMcqCaIxj961uuESMHUi2DwFilyl/gvcekU+GlMSpptBeGEpTZqdzvG5afW7CFevM
-         VDbUWOtm+Z2Joi6Mkr4E681zq7JgNb0JCewBh+Kj2Mo0YIWxvTVquWxu4V6/m4zL0owB
-         I22jSjvKcKzuxML+hrucDYJ4D+Yc9F0RtafokIcrG18+2IbiAyS2XCLRxGVUiP++TyoB
-         KQ/tIN888DFQaNhcnyCjk5yZMAqBucqvE4eWA19R8i/TsXdOth1TCMzEoka2r39Zis2o
-         Jbmf3x1pdOUeijJ00n4lPmqQOBXZY0W8A6PH2hEYG2vnzhMvERLZ+5SgZLe84xVyZTHA
-         Ebxw==
-X-Forwarded-Encrypted: i=1; AJvYcCVmGDYAYucsmQ+LOkQqVymxKc8dG3s083wbI8H4XmroDDTmwNiAzlW1XJ0g8t97OrZ6WT38gKKwPk3ddplXkEcaoTV8TNmuMiVH1cC8
-X-Gm-Message-State: AOJu0Yz1WEmtTyNkXALgkHkXAvWVpIyxkbjSc+bLHvYA5xZy/nLRivk4
-	bpx5qii63uz0mx79AnBFjyFk+ZXgnUg0SLrzueeC/oqPzDmum8dVm3vl3Alb6645I6TTCvWbP4n
-	wEw==
-X-Google-Smtp-Source: AGHT+IHCnZcr7IGx9UCKZXWtKEIsgWhnDoq9inJyUaTHMdVOsz14wV7APi/MVh0ZipKVxAEEBedkFmN5nhU=
+        bh=UtgfH5mWUwUleAFxMU19P9nYVxmIT/Ru+pHd1FRZC+Q=;
+        b=avwowQJT+Dm81MbLYoZtqYwYm84BnWEBpfWn369XwFg6zuwNrTL4VJd6mtyDxx1qM6
+         jMsiAjr/dLk0rDV+x9fZybMQZJ3Y+vfigCCIYfSy3GX3NIGE4umn4UJke/oqgpJstnXU
+         /XA0359EIX31iAxBBbGBuz00kkqp2iXqjuCZslcCOkQz2BbOsaUqHrS434QTySS9HDN0
+         BtrcB55Sh4ssLqJUljxMnWsk4z0IONQGc86VCrzF8Nv5StIpyC370wC0BH67Znieztd2
+         AO3C36BZQm16uh5SvepHR6Ng6KbTpTGSFHHaNjlxtJedPr+/MPxvzRJOF6/3phbw2Y2k
+         WKHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWvTtsDeE5gjYSVKgnJ1phbBVAlnKAohLv1WNuRmUf0gwd6oBZtKyvO60P6jynt6rwr7rA1b0v+EY8gxKgLxGuzCrPcpqU44wLUidsY
+X-Gm-Message-State: AOJu0YzTHJK5NJoGsgmsQcfYCBaKG37OgUa9QuFMfgz8Hdfg7/Fy2Hk7
+	uaYamWhEjCAkxSGSpM7OB7C+1YzPUyvW+Yug1wyrHqRlobUda+Jj98ddhnIT0VME8ml444PRMqs
+	jDw==
+X-Google-Smtp-Source: AGHT+IGqmp6QkrShsDKaoHDxyQmUjOsMVIaWkQmrr+uLwfys/m2SNtFhLMK3Ci20GlPI6cF86IvueWYbzkU=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:4e8f:0:b0:608:ff12:4155 with SMTP id
- c137-20020a814e8f000000b00608ff124155mr292352ywb.0.1709088118014; Tue, 27 Feb
- 2024 18:41:58 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:4708:b0:6e5:4142:ea1c with SMTP id
+ df8-20020a056a00470800b006e54142ea1cmr3775pfb.3.1709088119796; Tue, 27 Feb
+ 2024 18:41:59 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Tue, 27 Feb 2024 18:41:35 -0800
+Date: Tue, 27 Feb 2024 18:41:36 -0800
 In-Reply-To: <20240228024147.41573-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,9 +75,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240228024147.41573-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Message-ID: <20240228024147.41573-5-seanjc@google.com>
-Subject: [PATCH 04/16] KVM: x86/mmu: Pass full 64-bit error code when handling
- page faults
+Message-ID: <20240228024147.41573-6-seanjc@google.com>
+Subject: [PATCH 05/16] KVM: x86/mmu: Use synthetic page fault error code to
+ indicate private faults
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -87,79 +87,112 @@ Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
 	David Matlack <dmatlack@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+Add and use a synthetic, KVM-defined page fault error code to indicate
+whether a fault is to private vs. shared memory.  TDX and SNP have
+different mechanisms for reporting private vs. shared, and KVM's
+software-protected VMs have no mechanism at all.  Usurp an error code
+flag to avoid having to plumb another parameter to kvm_mmu_page_fault()
+and friends.
 
-Plumb the full 64-bit error code throughout the page fault handling code
-so that KVM can use the upper 32 bits, e.g. SNP's PFERR_GUEST_ENC_MASK
-will be used to determine whether or not a fault is private vs. shared.
+Alternatively, KVM could borrow AMD's PFERR_GUEST_ENC_MASK, i.e. set it
+for TDX and software-protected VMs as appropriate, but that would require
+*clearing* the flag for SEV and SEV-ES VMs, which support encrypted
+memory at the hardware layer, but don't utilize private memory at the
+KVM layer.
 
-Note, passing the 64-bit error code to FNAME(walk_addr)() does NOT change
-the behavior of permission_fault() when invoked in the page fault path, as
-KVM explicitly clears PFERR_IMPLICIT_ACCESS in kvm_mmu_page_fault().
+Opportunistically add a comment to call out that the logic for software-
+protected VMs is (and was before this commit) broken for nested MMUs, i.e.
+for nested TDP, as the GPA is an L2 GPA.  Punt on trying to play nice with
+nested MMUs as there is a _lot_ of functionality that simply doesn't work
+for software-protected VMs, e.g. all of the paths where KVM accesses guest
+memory need to be updated to be aware of private vs. shared memory.
 
-Continue passing '0' from the async #PF worker, as guest_memfd() and thus
-private memory doesn't support async page faults.
-
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-[mdr: drop references/changes on rebase, update commit message]
-Signed-off-by: Michael Roth <michael.roth@amd.com>
-[sean: drop truncation in call to FNAME(walk_addr)(), rewrite changelog]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c          | 3 +--
- arch/x86/kvm/mmu/mmu_internal.h | 4 ++--
- arch/x86/kvm/mmu/mmutrace.h     | 2 +-
- 3 files changed, 4 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/kvm_host.h | 11 +++++++++++
+ arch/x86/kvm/mmu/mmu.c          | 26 +++++++++++++++++++-------
+ arch/x86/kvm/mmu/mmu_internal.h |  2 +-
+ 3 files changed, 31 insertions(+), 8 deletions(-)
 
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 1e69743ef0fb..4077c46c61ab 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -267,7 +267,18 @@ enum x86_intercept_stage;
+ #define PFERR_GUEST_ENC_MASK	BIT_ULL(34)
+ #define PFERR_GUEST_SIZEM_MASK	BIT_ULL(35)
+ #define PFERR_GUEST_VMPL_MASK	BIT_ULL(36)
++
++/*
++ * IMPLICIT_ACCESS is a KVM-defined flag used to correctly perform SMAP checks
++ * when emulating instructions that triggers implicit access.
++ */
+ #define PFERR_IMPLICIT_ACCESS	BIT_ULL(48)
++/*
++ * PRIVATE_ACCESS is a KVM-defined flag us to indicate that a fault occurred
++ * when the guest was accessing private memory.
++ */
++#define PFERR_PRIVATE_ACCESS	BIT_ULL(49)
++#define PFERR_SYNTHETIC_MASK	(PFERR_IMPLICIT_ACCESS | PFERR_PRIVATE_ACCESS)
+ 
+ #define PFERR_NESTED_GUEST_PAGE (PFERR_GUEST_PAGE_MASK |	\
+ 				 PFERR_WRITE_MASK |		\
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index e2fd74e06ff8..408969ac1291 100644
+index 408969ac1291..7807bdcd87e8 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5860,8 +5860,7 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
- 	}
+@@ -5839,19 +5839,31 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
+ 	bool direct = vcpu->arch.mmu->root_role.direct;
  
- 	if (r == RET_PF_INVALID) {
--		r = kvm_mmu_do_page_fault(vcpu, cr2_or_gpa,
--					  lower_32_bits(error_code), false,
-+		r = kvm_mmu_do_page_fault(vcpu, cr2_or_gpa, error_code, false,
- 					  &emulation_type);
- 		if (KVM_BUG_ON(r == RET_PF_INVALID, vcpu->kvm))
- 			return -EIO;
+ 	/*
+-	 * IMPLICIT_ACCESS is a KVM-defined flag used to correctly perform SMAP
+-	 * checks when emulating instructions that triggers implicit access.
+ 	 * WARN if hardware generates a fault with an error code that collides
+-	 * with the KVM-defined value.  Clear the flag and continue on, i.e.
+-	 * don't terminate the VM, as KVM can't possibly be relying on a flag
+-	 * that KVM doesn't know about.
++	 * with KVM-defined sythentic flags.  Clear the flags and continue on,
++	 * i.e. don't terminate the VM, as KVM can't possibly be relying on a
++	 * flag that KVM doesn't know about.
+ 	 */
+-	if (WARN_ON_ONCE(error_code & PFERR_IMPLICIT_ACCESS))
+-		error_code &= ~PFERR_IMPLICIT_ACCESS;
++	if (WARN_ON_ONCE(error_code & PFERR_SYNTHETIC_MASK))
++		error_code &= ~PFERR_SYNTHETIC_MASK;
+ 
+ 	if (WARN_ON_ONCE(!VALID_PAGE(vcpu->arch.mmu->root.hpa)))
+ 		return RET_PF_RETRY;
+ 
++	/*
++	 * Except for reserved faults (emulated MMIO is shared-only), set the
++	 * private flag for software-protected VMs based on the gfn's current
++	 * attributes, which are the source of truth for such VMs.  Note, this
++	 * wrong for nested MMUs as the GPA is an L2 GPA, but KVM doesn't
++	 * currently supported nested virtualization (among many other things)
++	 * for software-protected VMs.
++	 */
++	if (IS_ENABLED(CONFIG_KVM_SW_PROTECTED_VM) &&
++	    !(error_code & PFERR_RSVD_MASK) &&
++	    vcpu->kvm->arch.vm_type == KVM_X86_SW_PROTECTED_VM &&
++	    kvm_mem_is_private(vcpu->kvm, gpa_to_gfn(cr2_or_gpa)))
++		error_code |= PFERR_PRIVATE_ACCESS;
++
+ 	r = RET_PF_INVALID;
+ 	if (unlikely(error_code & PFERR_RSVD_MASK)) {
+ 		r = handle_mmio_page_fault(vcpu, cr2_or_gpa, direct);
 diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 0eea6c5a824d..1fab1f2359b5 100644
+index 1fab1f2359b5..d7c10d338f14 100644
 --- a/arch/x86/kvm/mmu/mmu_internal.h
 +++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -190,7 +190,7 @@ static inline bool is_nx_huge_page_enabled(struct kvm *kvm)
- struct kvm_page_fault {
- 	/* arguments to kvm_mmu_do_page_fault.  */
- 	const gpa_t addr;
--	const u32 error_code;
-+	const u64 error_code;
- 	const bool prefetch;
+@@ -306,7 +306,7 @@ static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+ 		.max_level = KVM_MAX_HUGEPAGE_LEVEL,
+ 		.req_level = PG_LEVEL_4K,
+ 		.goal_level = PG_LEVEL_4K,
+-		.is_private = kvm_mem_is_private(vcpu->kvm, cr2_or_gpa >> PAGE_SHIFT),
++		.is_private = err & PFERR_PRIVATE_ACCESS,
+ 	};
+ 	int r;
  
- 	/* Derived from error_code.  */
-@@ -288,7 +288,7 @@ static inline void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
- }
- 
- static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
--					u32 err, bool prefetch, int *emulation_type)
-+					u64 err, bool prefetch, int *emulation_type)
- {
- 	struct kvm_page_fault fault = {
- 		.addr = cr2_or_gpa,
-diff --git a/arch/x86/kvm/mmu/mmutrace.h b/arch/x86/kvm/mmu/mmutrace.h
-index ae86820cef69..195d98bc8de8 100644
---- a/arch/x86/kvm/mmu/mmutrace.h
-+++ b/arch/x86/kvm/mmu/mmutrace.h
-@@ -260,7 +260,7 @@ TRACE_EVENT(
- 	TP_STRUCT__entry(
- 		__field(int, vcpu_id)
- 		__field(gpa_t, cr2_or_gpa)
--		__field(u32, error_code)
-+		__field(u64, error_code)
- 		__field(u64 *, sptep)
- 		__field(u64, old_spte)
- 		__field(u64, new_spte)
 -- 
 2.44.0.278.ge034bb2e1d-goog
 
