@@ -1,144 +1,415 @@
-Return-Path: <linux-kernel+bounces-85221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA9E86B271
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:54:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B92E486B274
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3F79B216B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:54:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73EF41C23C32
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97FFF15B10B;
-	Wed, 28 Feb 2024 14:54:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C291612FC;
+	Wed, 28 Feb 2024 14:55:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="TBlzutj3";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RWWbvqQ/"
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nRtRMqQ1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EA4973512;
-	Wed, 28 Feb 2024 14:54:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C68081586C5;
+	Wed, 28 Feb 2024 14:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709132084; cv=none; b=TQW89ZslADvwov1np47i1xU193rDBNhqr2hammz2Fj7SfiCRflZBvrfD6KQ8UW1ylxhAj23cq09qliXurFCVZOVtgnt/sxrXomA6vBpTNgAaIZJJPtSmmgyw52ABn8M4TcE/IbPuOAHJUPP+VPzlWkVtiPjbyaNdJP29j6chTJU=
+	t=1709132106; cv=none; b=TO0qBMBpmbvZTdqQ3CCQZNQdjeHozdZ9g1ICkJIq/RGXVQwPX3QYlqvo2XwYeCK8G5Iz2ppl29xCWcu/NWwE9C4oi3vL75V4K91oOErsVigsIDzYHxhfnLBdoUQF2tTDxfAI+4eFoZFezTatHj3NBQQxWwmPJBukHZhsNvpgA94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709132084; c=relaxed/simple;
-	bh=Y+7/5mhPZBptJeNuYZtHzu66OCEsCfP5b3mZFAVJEho=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=jkrmX/unszqe8TKuC4fQFhTNHytOw6sQZQi3w0yBHEZs2WTCH0GU5cYwyHSPnIbZhaZ2ZId08ueqv6Oo6nAcsMeOx8VKaQv/ueiVa/Q852a47kHIBZeQk0qYbtYvJnyMQBQOI9rbvc1hu5lR02qB4DU4/rOIScLTAasFAcPDoNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=TBlzutj3; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RWWbvqQ/; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.nyi.internal (Postfix) with ESMTP id 6DB5E5C049D;
-	Wed, 28 Feb 2024 09:54:41 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 28 Feb 2024 09:54:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1709132081; x=1709218481; bh=p2oBXCBPa5
-	Te8eYjdkY/VrzwmmeYD1hEdZ5hF+LH8JI=; b=TBlzutj3JSlO5koSP5xw7k+irJ
-	0hZavVqjKWnu7v2MYhHuOMiUE3fIFRzqi/rBPpvjGbntcg3uMyPAft+32ddXjmNX
-	5zBABph+FZaN1gFRDTXCFJAwRFtoM8/mE7BOsPsdpNeqq6DDyjSbftV8OfFdiB0V
-	+d+Aq8TQuSMnlzCje3325683suFGsnegn/tbIEAgQyrUuYnm0Hd3Xce2P4wnaPRp
-	+YOjeuvW98qaV6cLgZHG06L1VIeerPOZ5lU1b9cA3ZEK8jAwBrjQKfEJWkqqXHKC
-	E05U+vvmDT+ALjvya75BAn9NNId9lbH3kaKw+kI0y8ysAg5+4tSubv2EL/Mw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709132081; x=1709218481; bh=p2oBXCBPa5Te8eYjdkY/VrzwmmeY
-	D1hEdZ5hF+LH8JI=; b=RWWbvqQ/Ne/Biv7H2HA1/RgmZ4nNcBwSykwsBTU2KoKD
-	ENkzfIfAoi6RE0EqYAw2132pO/DFf1FuS6lx6B1j0hkxuHwHqnt46HAxJ3m3xnGS
-	ALsmHSC8Fjs7je8qJDodeWMDKb3mNL7+pKA1X+3KL5Dzt/3j/OcCPCNU5OhhXbHr
-	GbEoo3YWw2CPeGccgjwtHVQgS+aw6y1wRy/FEAHcS2QGhQZ/KXoe0iuao70gL4cx
-	1/dKdJjjzHz0C29vhAiFJDFW2ADPC53PHcr6vJXv2jbB198vQhU0H0noSI2ZUDqv
-	48Pi6NVQil6gE1OVy18zxChcd/s9sYee0ZsJn+TKvA==
-X-ME-Sender: <xms:MUnfZb7jHSrWyVsdUu3ZM3yG53hbGTTR3Gv0pTrxwJ1i-x3q1MJkDQ>
-    <xme:MUnfZQ7IdMi_NiixLikw6lfiygDu99L3A_orvyzjLKE1KGJG2tVCvaJH5krmgCzn_
-    f0qt5YUbqikCW7-iW8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeejgdeiiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:MUnfZScavs01mZ8Cf7658uCEK5eKltpRUhbtWb9JyTxkd1Lhci-KOA>
-    <xmx:MUnfZcKYR5hJQLUnXr4xCTf5SLNLrN_tNVVZlv2emQBriYftASweYQ>
-    <xmx:MUnfZfIa1nQBXZKdNMaziTKaRCsm4OVK_exJq_cO-GUAf2YGSGhO6g>
-    <xmx:MUnfZRyjBj4OCu_Q8XXzsjSr5g-FhUdrSE9p_hKxuQbcE9rr7WSz8Q>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 20E56B6008D; Wed, 28 Feb 2024 09:54:41 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-182-gaab6630818-fm-20240222.002-gaab66308
+	s=arc-20240116; t=1709132106; c=relaxed/simple;
+	bh=Mo78dJ9Wp+tA4cX4x0JBLjMbdszD3R7oJcgpk28Ai2Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AcX1j5EPTC8hftQ0Zadqgx3qOWuAxwrosEhBiw0/cy/skY450tJnEQCG5x1uGXdZMTXqE7RpaEoFG8igFRUdeRrqadGdYWKbw58JIvE6b4bPqnlk328QknOFTtbsmWGhk0rvP9rkjF9J5GR/UHqcCMOByFzXhz6vJ+TMZ8r1kXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nRtRMqQ1; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709132104; x=1740668104;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Mo78dJ9Wp+tA4cX4x0JBLjMbdszD3R7oJcgpk28Ai2Y=;
+  b=nRtRMqQ12RDwd2wy+iv6+uKfnC7Xu1RZFcRElSj3u0FElAvjb+k/zc4B
+   KIJi+UZD3NkNWbuVz/amue225RzuyJ1HzTCmgzwaeHnzYC8++sNDWPS2r
+   CMBmYaiXMIXi72imgbpjxGJ9sQfCJ6jBMOq4g0hkd79Afm+ZuhuibnnJp
+   3oOrIK7HZCBaMZOrgGHDDaxaisHyGk1DXYXqNZ7Haef/H0mO4k2z3L3B8
+   OZ7gYw3GKgkgNHkABd7JRZlTd73DRRIfjboH8wleUJsWW2So97urfDaPz
+   NDnyyL8pvyp7vIb2Rgaay0yQ0xLhEEs8W3uCfiPFjrQGVMATEfo4Jsp5F
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="7314269"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="7314269"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 06:55:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="8022598"
+Received: from linux.intel.com ([10.54.29.200])
+  by orviesa008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 06:55:03 -0800
+Received: from [10.213.186.121] (kliang2-mobl1.ccr.corp.intel.com [10.213.186.121])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 31AAC5807E2;
+	Wed, 28 Feb 2024 06:55:01 -0800 (PST)
+Message-ID: <2b950564-fe20-4426-ac91-5b40a2087099@linux.intel.com>
+Date: Wed, 28 Feb 2024 09:54:59 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <debdd4e5-d3f2-4199-a2f7-825e37b212da@app.fastmail.com>
-In-Reply-To: 
- <CAA93jw50D5Kqi4=ze4qn1TUswWtmEao9=FBtH=4W_g9CnBf=AA@mail.gmail.com>
-References: <20240228140413.1862310-1-arnd@kernel.org>
- <CAA93jw50D5Kqi4=ze4qn1TUswWtmEao9=FBtH=4W_g9CnBf=AA@mail.gmail.com>
-Date: Wed, 28 Feb 2024 15:54:19 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Dave Taht" <dave.taht@gmail.com>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
- "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
- "Paolo Abeni" <pabeni@redhat.com>, "Breno Leitao" <leitao@debian.org>,
- "Roger Quadros" <rogerq@kernel.org>,
- "Siddharth Vadapalli" <s-vadapalli@ti.com>,
- "Grygorii Strashko" <grygorii.strashko@ti.com>,
- "Dan Carpenter" <dan.carpenter@linaro.org>, Netdev <netdev@vger.kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: ti: am65-cpsw-qos: fix non-bql configs
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] perf vendor events intel: Add umasks to PCU events.
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240226201517.3540187-1-irogers@google.com>
+ <0b2ff06f-099c-424a-97b5-fdf638892e41@linux.intel.com>
+ <CAP-5=fVTOgOO=N7uf4CaANWu+WCCLXXMuNBnDdBOP3E6vijG_A@mail.gmail.com>
+Content-Language: en-US
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <CAP-5=fVTOgOO=N7uf4CaANWu+WCCLXXMuNBnDdBOP3E6vijG_A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 28, 2024, at 15:44, Dave Taht wrote:
-> but why do you want to disable BQL?
 
-I have no idea, I'm just doing randconfig build tests.
 
-I assume Breno has an answer for that, at least he
-sent the patch that triggered the regression, see below.
+On 2024-02-27 9:12 p.m., Ian Rogers wrote:
+> On Tue, Feb 27, 2024 at 6:12 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+>>
+>>
+>>
+>> On 2024-02-26 3:15 p.m., Ian Rogers wrote:
+>>> UMasks were being dropped leading to all PCU
+>>> UNC_P_POWER_STATE_OCCUPANCY events having the same encoding. Don't
+>>> drop the umask trying to be consistent with other sources of events
+>>> like libpfm4 [1]. This applies the change from [2].
+>>>
+>>> [1] https://sourceforge.net/p/perfmon2/libpfm4/ci/master/tree/lib/events/intel_skx_unc_pcu_events.h#l30
+>>> [2] https://github.com/captain5050/perfmon/commit/661a229996493448095fb55415ed568ceabc631b
+>>>
+>>> Signed-off-by: Ian Rogers <irogers@google.com>
+>>> ---
+>>
+>> Thanks Ian.
+>>
+>> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> Thanks,
+>> Kan
+>>
+>>>  tools/perf/pmu-events/arch/x86/broadwellde/uncore-power.json  | 3 +++
+>>>  tools/perf/pmu-events/arch/x86/broadwellx/uncore-power.json   | 3 +++
+>>>  tools/perf/pmu-events/arch/x86/cascadelakex/uncore-power.json | 3 +++
+>>>  tools/perf/pmu-events/arch/x86/haswellx/uncore-power.json     | 3 +++
+>>>  tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json     | 3 +++
+>>>  tools/perf/pmu-events/arch/x86/ivytown/uncore-power.json      | 3 +++
+>>>  tools/perf/pmu-events/arch/x86/jaketown/uncore-power.json     | 3 +++
+>>>  tools/perf/pmu-events/arch/x86/skylakex/uncore-power.json     | 3 +++
+>>>  tools/perf/pmu-events/arch/x86/snowridgex/uncore-power.json   | 3 +++
+>>>  9 files changed, 27 insertions(+)
+>>>
+>>> diff --git a/tools/perf/pmu-events/arch/x86/broadwellde/uncore-power.json b/tools/perf/pmu-events/arch/x86/broadwellde/uncore-power.json
+>>> index 83d20130c217..9a0bc34c08e1 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/broadwellde/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/broadwellde/uncore-power.json
+>>> @@ -396,6 +396,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -404,6 +405,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -412,6 +414,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> diff --git a/tools/perf/pmu-events/arch/x86/broadwellx/uncore-power.json b/tools/perf/pmu-events/arch/x86/broadwellx/uncore-power.json
+>>> index 83d20130c217..9a0bc34c08e1 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/broadwellx/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/broadwellx/uncore-power.json
+>>> @@ -396,6 +396,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -404,6 +405,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -412,6 +414,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> diff --git a/tools/perf/pmu-events/arch/x86/cascadelakex/uncore-power.json b/tools/perf/pmu-events/arch/x86/cascadelakex/uncore-power.json
+>>> index c6254af7a468..ceef46046488 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/cascadelakex/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/cascadelakex/uncore-power.json
+>>> @@ -144,6 +144,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -152,6 +153,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -160,6 +162,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> diff --git a/tools/perf/pmu-events/arch/x86/haswellx/uncore-power.json b/tools/perf/pmu-events/arch/x86/haswellx/uncore-power.json
+>>> index daebf1050acb..15097511cbd8 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/haswellx/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/haswellx/uncore-power.json
+>>> @@ -428,6 +428,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -436,6 +437,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -444,6 +446,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> diff --git a/tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json b/tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json
+>>> index ee4dac6fc797..920cab6ffe37 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/icelakex/uncore-power.json
+>>> @@ -151,6 +151,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "Number of cores in C-State : C0 and C1 : This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -159,6 +160,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "Number of cores in C-State : C3 : This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -167,6 +169,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "Number of cores in C-State : C6 and C7 : This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> diff --git a/tools/perf/pmu-events/arch/x86/ivytown/uncore-power.json b/tools/perf/pmu-events/arch/x86/ivytown/uncore-power.json
+>>> index 5df1ebfb89ea..4dac5810324b 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/ivytown/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/ivytown/uncore-power.json
+>>> @@ -516,6 +516,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+> 
+> There's something wrong on Ivytown, I don't see a umask format in uncore_pmu:
+> ```
+> $ ls /sys/devices/uncore_pcu/format/
+> edge   filter_band0  filter_band2  occ_edge    occ_sel
+> event  filter_band1  filter_band3  occ_invert  thresh
+> ```
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/events/intel/uncore_snbep.c#n1606
+> 
+> It does exist for skylake though:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/events/intel/uncore_snbep.c#n4145
+> 
+> Kan, what's the right way to deal with this?
 
-     Arnd
+There is no umask in the uncore spec. Please see P120 of the spec.
+https://www.intel.com/content/www/us/en/develop/download/intel-xeon-processor-e5-2600-v2-product-family-uncore-performance-monitoring-reference.html
 
-commit ea7f3cfaa58873bbe271577efa800647e30f18bd
-Author: Breno Leitao <leitao@debian.org>
-Date:   Thu Feb 15 09:05:07 2024 -0800
+It should be occ_sel.
+The occ_sel = (the umask from the event list >> 6) & 0x3.
 
-    net: bql: allow the config to be disabled
-    
-    It is impossible to disable BQL individually today, since there is no
-    prompt for the Kconfig entry, so, the BQL is always enabled if SYSFS is
-    enabled.
-    
-    Create a prompt entry for BQL, so, it could be enabled or disabled at
-    build time independently of SYSFS.
-    
-    Signed-off-by: Breno Leitao <leitao@debian.org>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
+I don't think we want to change either the kernel or the perf tool.
+There is nothing to help either if we add the occ_sel in the original
+event list. So it seems the only choice should be handling it in the
+convertor tool.
 
-diff --git a/net/Kconfig b/net/Kconfig
-index 4adc47d0c9c2..3e57ccf0da27 100644
---- a/net/Kconfig
-+++ b/net/Kconfig
-@@ -331,6 +331,7 @@ config NET_RX_BUSY_POLL
- 
- config BQL
-        bool
-+       prompt "Enable Byte Queue Limits"
-        depends on SYSFS
-        select DQL
-        default y
+Is it possible to check the UNC_P_POWER_STATE_OCCUPANCY.CORES_C0 in IVT
+and use "Filter": "occ_sel=0x1" to replace "UMask": "0x40"?
+
+It seems everything in the filter will directly be appended. Is my
+understanding correct?
+
+Thanks,
+Kan
+
+> 
+> Thanks,
+> Ian
+> 
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -524,6 +525,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -532,6 +534,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> diff --git a/tools/perf/pmu-events/arch/x86/jaketown/uncore-power.json b/tools/perf/pmu-events/arch/x86/jaketown/uncore-power.json
+>>> index b3ee5d741015..a83e07dce947 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/jaketown/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/jaketown/uncore-power.json
+>>> @@ -235,6 +235,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in C0.  It can be used by itself to get the average number of cores in C0, with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -243,6 +244,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in C0.  It can be used by itself to get the average number of cores in C0, with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -251,6 +253,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in C0.  It can be used by itself to get the average number of cores in C0, with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> diff --git a/tools/perf/pmu-events/arch/x86/skylakex/uncore-power.json b/tools/perf/pmu-events/arch/x86/skylakex/uncore-power.json
+>>> index c6254af7a468..ceef46046488 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/skylakex/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/skylakex/uncore-power.json
+>>> @@ -144,6 +144,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -152,6 +153,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -160,6 +162,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> diff --git a/tools/perf/pmu-events/arch/x86/snowridgex/uncore-power.json b/tools/perf/pmu-events/arch/x86/snowridgex/uncore-power.json
+>>> index a61ffca2dfea..dcf268467db9 100644
+>>> --- a/tools/perf/pmu-events/arch/x86/snowridgex/uncore-power.json
+>>> +++ b/tools/perf/pmu-events/arch/x86/snowridgex/uncore-power.json
+>>> @@ -150,6 +150,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C0",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "Number of cores in C-State : C0 and C1 : This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x40",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -158,6 +159,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C3",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "Number of cores in C-State : C3 : This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0x80",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+>>> @@ -166,6 +168,7 @@
+>>>          "EventName": "UNC_P_POWER_STATE_OCCUPANCY.CORES_C6",
+>>>          "PerPkg": "1",
+>>>          "PublicDescription": "Number of cores in C-State : C6 and C7 : This is an occupancy event that tracks the number of cores that are in the chosen C-State.  It can be used by itself to get the average number of cores in that C-state with thresholding to generate histograms, or with other PCU events and occupancy triggering to capture other details.",
+>>> +        "UMask": "0xc0",
+>>>          "Unit": "PCU"
+>>>      },
+>>>      {
+> 
 
