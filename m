@@ -1,197 +1,173 @@
-Return-Path: <linux-kernel+bounces-84843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E646886AC55
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:45:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A182686AC58
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:47:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98381284BE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:45:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F7091F23C73
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC28212CD89;
-	Wed, 28 Feb 2024 10:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED7B129A81;
+	Wed, 28 Feb 2024 10:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b="W9G5CEGF"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gDHoail9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF5512BF3D;
-	Wed, 28 Feb 2024 10:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709117120; cv=fail; b=j86dXjevXbOogvRqMscwtTf5gO+noMPuF2ZbAK19Ax7/wqkucBN+rwETkJ/td4dqEW3jdTWvAjjOoYCZRdtdfVDrqtZaWu70+614XJV82hRqnjiq/UAy1McSRjkq23mhZ1g062pqDV5DRW+dUXgKfAfE6bBmj4s1ps46GEJRJjg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709117120; c=relaxed/simple;
-	bh=EnGAmgBVXEzUq9UBzjm9aeYgJzEg2lJXntXnXdlXJEI=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=smRXcbdzOLLFRbysVQzxt32bVnf/2H6rl4pKazd5cEb+dpijfncv7gXExejxhyhDSchUhwYX5kF0en9lqBQgQmqYb7p5UWtq3qygjXIRCeXdP/EfGsIzhJpg098tcxRyTiowiYENFYcW/cWMNjYruxS2oqXxWqiheCLck7tZadE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.onmicrosoft.com header.i=@marvell.onmicrosoft.com header.b=W9G5CEGF; arc=fail smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S13QD0005646;
-	Wed, 28 Feb 2024 02:45:06 -0800
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3whjm6bq57-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 02:45:06 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CVPH7DZLIqYy/PfMJLEVRNZEd+yruh2ukvNaHoSmuCh60DMP2es/g+6VQvZpvNq0xo8ugdplHJZKx5kcxDNbRqtQ4Z8EHdwHd7ssxUSmSvrwNjPwuZAQgjJo5bJqc9LedqyT6Uvgv5BASl6njD77RNKVeoIShoTFCznVxcaCufuVEivMjpAOTjdmHnjT8axAeQ/RXKFTl10FWV5LdvBcEV4uheaoXFozaN/6DoTNXwwS2uBlzNz2LtFPoLdWEK1dpSUjwanQXVYVolyPN4KBGCewcxqKRXxkfNeaI09QNfNZyQTqSl+2DrqAstiwwYS15xmOQ+dk/obDNs9BcvuDCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TuQmCTCL7btCEKANFbaoLPvcIKkqQ2Ou4Mp8/FKNgRw=;
- b=SckJBotUwGQJdFQR4dAZ6XYIk/c/UK8qlUVh9e0pq+9y/WA1jcXChHlx0IUi8HKXNgBHgF1ED9YJ0NaZ5OCL0fv4UmUbpBwj+fS4jibRD+aDUlNJI5TAhj6SSd3I/qnHfqNBlz7JJS8XXjRa7gmkKRRkexAm+xnigWIlmq7YrbMBPmn57l0EIlh7Nytwxuts2ERkG6ZRuM2os0dNUt/4/5dKb3YGviYmkvxeKY8YEdQ7lr6xripXZaFujJhwLTHXZQnONzbZ77B6Cv8EDqaTySeVYT1O2jgPUtkC2dOfD1ZhQUpIkILHILZEY1eYPWVxg8PHoAqzZl3PoVedbLeYfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TuQmCTCL7btCEKANFbaoLPvcIKkqQ2Ou4Mp8/FKNgRw=;
- b=W9G5CEGFTK8Q5Xx8EvVC19GVZv4p5hIQGugzwqfcEbOMYwYlVLA51qC3q9UaUfIPh3ncNidM7vo4I6nf8fOgjCMFrW/dNZ3dfo2e6DZSAtL4351+ONphGtogEnWgTOvmaW6B0DSQVe/zMIspk6ZxF03L5UOogcLQK3gxuT+d1T0=
-Received: from PH0PR18MB4474.namprd18.prod.outlook.com (2603:10b6:510:ea::22)
- by SA1PR18MB5901.namprd18.prod.outlook.com (2603:10b6:806:3ec::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Wed, 28 Feb
- 2024 10:45:03 +0000
-Received: from PH0PR18MB4474.namprd18.prod.outlook.com
- ([fe80::bd81:17d2:f4eb:525c]) by PH0PR18MB4474.namprd18.prod.outlook.com
- ([fe80::bd81:17d2:f4eb:525c%4]) with mapi id 15.20.7316.037; Wed, 28 Feb 2024
- 10:45:02 +0000
-From: Hariprasad Kelam <hkelam@marvell.com>
-To: Andrew Lunn <andrew@lunn.ch>
-CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "davem@davemloft.net"
-	<davem@davemloft.net>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Sunil Kovvuri Goutham
-	<sgoutham@marvell.com>
-Subject: RE: [EXT] Re: [net-next PatchV3] octeontx2-pf: Add support to read
- eeprom information
-Thread-Topic: [EXT] Re: [net-next PatchV3] octeontx2-pf: Add support to read
- eeprom information
-Thread-Index: AQHaaZROIGbxXr4C5kqkRYmpzf+/FLEfgzHw
-Date: Wed, 28 Feb 2024 10:45:02 +0000
-Message-ID: 
- <PH0PR18MB4474F9F96EDDC1FD22E1B5F9DE582@PH0PR18MB4474.namprd18.prod.outlook.com>
-References: <20240227084722.27110-1-hkelam@marvell.com>
- <28d5c5b8-bd8f-458a-a62e-bb233add4a2b@lunn.ch>
-In-Reply-To: <28d5c5b8-bd8f-458a-a62e-bb233add4a2b@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH0PR18MB4474:EE_|SA1PR18MB5901:EE_
-x-ms-office365-filtering-correlation-id: 212ab055-67ac-4de1-7ac7-08dc384a516d
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 
- Zs8j/J/R6/hhZU6SnPJKkqN9csAwQpvjWbO8yzdomNsAwuA3FlM4/GSSeENORra53vLmn1/wokfNdbZ/frufP9CWccK/xEpc9HRVtaewbcJ7X54aSjSxq0oCN5rTqgEAoSK5vtVM0kZ9lQFbgiUyRuJD33rynC1Ufyx4QCo5jp0Y33OcT6e/MN27Kzv9CWnPTzIPSKEPgYrU1oNO32xi9reLU1f8il2/aCmmjSu3G0zL9vrmh/Mvht+Ty3k5nGxby8AlMjMpk/5GKtqzYWutBg2/dHhQ3yhZszyIxjGOuB3qrkqChRkvP/ivuTdLvnUYCr2HgFvPOOgIKGqrouTi2K+56DhcNEEsyQqZDwtT7rnCTODTTiewNENGsc1W6GCpsy+30S7F9PuSh3GkqEmY5+CFK+IiTvorS2lN1N6w4NmegGFapMXogpq3Xq8Tb/SRrcBMuK8964jT3pJlL7A9iDGNvNKNWhf8lGlHlNeRLD6XnCqFrOEocBXXLIIfiCSpyTqIEq56ysqtrzKO5f1/vW8/O+I4npDSUswoG9VGboOUvo4hEhODlApiLoUl5RcIZUXF7Vzy5v3/inCvyxgMF24qEnJg48s3OWeAJW3pkC0t/551p33QAvNyJ6HgLTDi28/Wi3KTXFm/w3otW7fgUGokeDalz1BOpV0H13oAHmnSZcs4lkRNJoR6hmNJCH7Btrdf1P8UDXwVBUj52qmbADMqtbs7OvbvTAUonDKnJnc=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB4474.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?us-ascii?Q?jad2P8dnb1q3Z2B2BiQjfCb+B26fo8qDbH3eQn/TVZ04kxFx7ICTZcfJqkMa?=
- =?us-ascii?Q?pD9jhSA/+eVjsQ2c3GLJAoW5if98ICEbCgQYEhtqYmDqOnDMA3d6AACjwfsS?=
- =?us-ascii?Q?G2xfbXM2H//KLnNfG4+0aSthwF+nqQW/mZiCN+vf+wbnNy6Zn0TvZeELtn6q?=
- =?us-ascii?Q?XGVHU/IU9lxCO8N3Npx3nm7a2pQEQiXHP9wh76WslNyRHsu5sUexFbd3K/Ro?=
- =?us-ascii?Q?ByKjxN1RXr2m6q0QN0njmItlyd9e3cIYCadESQ09SIKPyGJUru3TenlNw/uW?=
- =?us-ascii?Q?a+GkUVW6s8eMXK7OKVn8YF8lRoXYXvDg7iU2gjTQkQ7FjFgFjCDC15xJflKE?=
- =?us-ascii?Q?fixDmFVSYa7xcZ0w0kUCVV4qLpVyOD2kjVG+i+xVL3h0AVg0i+hJfJY5jax2?=
- =?us-ascii?Q?gKuVKexiW8huX9uz3WS2/sWsDEHPDUn9lnlmfameYCa4HcvOtdjtcPMnk+8w?=
- =?us-ascii?Q?ONVlYRQUTF1dZuOJTX8PUb6c23vE0fU+offADAkc/xIU0VQbZUP4obCJJIZP?=
- =?us-ascii?Q?pDkYoyJlJGn0jSVhfbYpkPUbX3A1ft3TgHVPcb8BfYXTm+wwqV5ieVPc8Q8N?=
- =?us-ascii?Q?RCqKesFuoyHoWiTZ9gjFGJx+Sx39vc2kkxa2lvOTx31zEoB5xk5mMT0t417n?=
- =?us-ascii?Q?Z7La1M67+jRxHTrjtAatpR7KHEQPWqqdFEQaMxsziy6Mh0TY9p5lSMKkzF4c?=
- =?us-ascii?Q?5NiB6o8Hvfeub/W0Px+2gM6zVG4FwNG7utmk8GrOyo2QmUkZLhjvetrZ24G+?=
- =?us-ascii?Q?bl7LtdNfiDpP68eSGYGI1zjkBTHPxG+NSR9UDdRSf2z6auEudFA59v8+49sY?=
- =?us-ascii?Q?U/hXmlnl+NtTTp2Jwz9+bB5BpDMiAUnREAxOeQjWqiY+6BQxk3tzUPmPSun+?=
- =?us-ascii?Q?ZRDQsIcvPu9MMtX0iKZwUBE7g/ZFgw9yawKJE0126Wh5s8oPLLcSKXQluhCn?=
- =?us-ascii?Q?IK/ez8UcS+bdrh2Ez0oa73rvzaqmxYvqoY6djJUhEsLnWkqLF3PAdUf3QKAi?=
- =?us-ascii?Q?Y0yGpN80I7aqTYqfV1AsAG0zLUlfLBdP/6ZW/ol83HkvWKPjA3R7cMTqIJkP?=
- =?us-ascii?Q?+7PyqA1xc76Vdxrc9inSQRiKud2Zcrtc/ctim23z8sCN+8OE0xkrm5x4Vv/L?=
- =?us-ascii?Q?Y7k2LPItuSU9nkHkY9gJbhsMhQwl7LMvYLz3DwkJFl3yGhxWivnyTChfGTf9?=
- =?us-ascii?Q?IqOgePIzVOZTExdV+BL9L0KRAKgv9HilhWCloXHL4UhdM5wJpu1G50WQ2R4Q?=
- =?us-ascii?Q?a9jPhYhi/nDhgnh+oXxiWGOBo7PrL5AP5AQWXfVq4rn3I73kg+8rrwFD8V0c?=
- =?us-ascii?Q?oFoOds5ceNlIiUCy/BkMeNFi7npGQiPZXXxbaPYUL1EGPYNaNQ3qkRm4/B4q?=
- =?us-ascii?Q?3aMNrxgSACMzK5fuVTb4ARTvm5VTo/E/QF0IWrOBFhn1tNlg0Qup4g57ajDQ?=
- =?us-ascii?Q?OckskuhXCS4v0JL1AO9QD4RP5qcUwmQ7LyJlOavJngM3N0VcgVvsH6R1W5pD?=
- =?us-ascii?Q?bDgfUVonr7bPHoI158d+OosXxTu7I/SDwxZcEp/67zAVa5HhaQ2HLwZRKD1q?=
- =?us-ascii?Q?kWO29hzUZKoNIWvVlxk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 929A01419BF
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709117224; cv=none; b=KXSWaD+5Y0ltAkrSD/4thGHhvl6DrFo/W8kLdA45CTiKUdFSut+5+V4VbupNr+dFq36UKok80+TtyMz+eY92LxSMmJwZ+SQAcJO0Xx/aXNi6Ljr8XGV+RA9Bj394RySombYHHMzkx7rNGvEF4zKA8Z9AY0YUSbij0i0k+r0AQFI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709117224; c=relaxed/simple;
+	bh=k7p6dEiqHUwJL4U0LJbIatYWo4aHYpi2+4FtB9a9Bo8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ejhYKusIMirvkcqcb5DeD2p7hbSI9zThQJLcoxvytslGX90kqkneswudPk/TsLUE+Lus2sLVssPvf9Gl7K9nBWhFKeD5T3T0PZDYEdPVVgr12xpMQDK0rQSZ7EoLFOrmE3MqKZJqU9muhuRsGYgTosbT/SO6Tneu0nxU2NnFmNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gDHoail9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709117221;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Kc3+qohcYOv7xTer5tRFWbCV/ueH7+RPa9lqQ5Kk9yE=;
+	b=gDHoail9yn2i/Zzq0jjFdgGx+o582oayRKeswSXS2/+C2u3Zn55z997JCjJRz7T/Na9qf0
+	CR89aws9dyrN1NBp7EJ1z0lxr/0FeDVVikksVwZMvahyCXLaHoAqJcrBqaC/vDg4680N5M
+	YIFCplnv/t2W77fI8IIQ1Uo5F/ohi+g=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-42-ZEEreVnuMYCRfGFVYnOUcg-1; Wed, 28 Feb 2024 05:46:59 -0500
+X-MC-Unique: ZEEreVnuMYCRfGFVYnOUcg-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-513149e133cso1108173e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:46:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709117218; x=1709722018;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Kc3+qohcYOv7xTer5tRFWbCV/ueH7+RPa9lqQ5Kk9yE=;
+        b=Ctft60oGiNipUvNu77eFpKr59GRGeD9vZ1IXlpQdffUTi6wJmcDsNNwFQEK+bgkggj
+         jtvseF+V0qZSsmfyrGmM+Gx2SU+qxQZ6GVTnZRAHODmykqKEcUe3lpDyrUyw8i6Nf6Kd
+         P7V2+NoYQtn09/Nxium+qjFcf60x0Cmrz5bXCppZzxSkxtRD9CyJpD+UM9CjtQBcG9y3
+         dg2+RldXQdHWZZjLxShbokQQVig+KUNJqDTE9Zsmh+vInbCWN2ioFvvj5XLjXe4tklpR
+         HUhHubHiVpjScYojATJxgmbCQDCadWhIBhJ1vUwCwdp/O7TmM2KV0+D3jeN4Wi8jEQnK
+         UOew==
+X-Forwarded-Encrypted: i=1; AJvYcCU2Ymo3HDVM0p1trcqfZPRtxYp5mMeC6UPzhWonUYokGBRln7fp4kxwVKt9B5s7O/aVbkMSHjbKYQAF3VQmXfPdT4k/wwgylDDSY0tg
+X-Gm-Message-State: AOJu0YwkA+52SwxjQq1ZwPkYa8Ut950/XpwLwn1fv3nZI088z2s03MXk
+	+kB9eO0hBwFsMj8ipFAHw+3cSRPsc+l6TPta0UF6h74Izj45GPkESIzbRtAwhdTvHgtXYqLAypb
+	bAX7I8mkxv+PKy+mRo3PWvc015N2RMAmLvRWQOXJfTv67OFYF58xN7H2ukG2hlQ==
+X-Received: by 2002:a19:7619:0:b0:512:d907:3161 with SMTP id c25-20020a197619000000b00512d9073161mr7631211lff.66.1709117218342;
+        Wed, 28 Feb 2024 02:46:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF6CzADTyebzu2Slcxx0hE7NteAMQ7UJqGjlJVvgdrPVCvKtxmvbU8C0mLqHkB6o6gP7KsU+Q==
+X-Received: by 2002:a19:7619:0:b0:512:d907:3161 with SMTP id c25-20020a197619000000b00512d9073161mr7631188lff.66.1709117217856;
+        Wed, 28 Feb 2024 02:46:57 -0800 (PST)
+Received: from [10.32.64.237] (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id bv26-20020a0560001f1a00b0033e03a6b1ecsm701426wrb.18.2024.02.28.02.46.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 02:46:57 -0800 (PST)
+Message-ID: <c47c032a-bf47-4c5b-b854-37c33a27cb39@redhat.com>
+Date: Wed, 28 Feb 2024 11:46:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB4474.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 212ab055-67ac-4de1-7ac7-08dc384a516d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Feb 2024 10:45:02.4539
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wqMl+405nkazHHAg5WXUZtJxMJR4wM24Y7kR4Rlhlwosl131+cAi/8dNBsso7QJVYh0F8EnKgewZr/6vb640OQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR18MB5901
-X-Proofpoint-ORIG-GUID: u6tV6IBAha8Ad8OXvXhebANDg_7NpNp9
-X-Proofpoint-GUID: u6tV6IBAha8Ad8OXvXhebANDg_7NpNp9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_04,2024-02-27_01,2023-05-22_02
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: userfaultfd: fix unexpected change to src_folio when
+ UFFDIO_MOVE fails
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>, aarcange@redhat.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240222080815.46291-1-zhengqi.arch@bytedance.com>
+ <20240222130005.c3f24eed1c1a27c66947e9df@linux-foundation.org>
+ <CAJuCfpHoxAZvRx2VN+SzsjefB5demhk5OV_wPe8JYnsejgA91w@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAJuCfpHoxAZvRx2VN+SzsjefB5demhk5OV_wPe8JYnsejgA91w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+On 22.02.24 22:56, Suren Baghdasaryan wrote:
+> On Thu, Feb 22, 2024 at 1:00 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>>
+>> On Thu, 22 Feb 2024 16:08:15 +0800 Qi Zheng <zhengqi.arch@bytedance.com> wrote:
+>>
+>>> After ptep_clear_flush(), if we find that src_folio is pinned we will fail
+>>> UFFDIO_MOVE and put src_folio back to src_pte entry, but the change to
+>>> src_folio->{mapping,index} is not restored in this process. This is not
+>>> what we expected, so fix it.
+>>>
+>>> Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
+>>
+>> What are the expected worst-case userspace-visible runtime effects of
+>> this flaw?
+> 
+> It can cause rmap for that page to be invalid. I guess memory
+> corruption might be the visible effect?
 
-> On Tue, Feb 27, 2024 at 02:17:22PM +0530, Hariprasad Kelam wrote:
-> > Add support to read/decode EEPROM module information using ethtool.
-> > Usage: ethtool -m <interface>
-> >
-> > Signed-off-by: Hariprasad Kelam <hkelam@marvell.com>
-> > Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
-> > ---
-> > V3 * remove redundant checks as stack is already doing it.
->=20
-> So still only access to the first 256 bytes, using the old internal API.
->=20
-Firmware and Kernel shares the data over a shared memory region.=20
+At least swapout+migration would no longer work, because we might fail 
+to locate the mappings of that folio.
 
-  Firmware   <-- Shared memory -->   Kernel
+Memory corruption, not sure.
 
-As per our design, firmware updates the shared memory region by reading eep=
-rom data from the MAC.=20
-Upon receiving ethtool request to read eeprom data, Kernel maps this shared=
- memory and copies the eeprom data to the user.
+-- 
+Cheers,
 
-Currently firmware supports updating only the first page of eeprom. Due to =
-this we are limited to support the first page.
+David / dhildenb
 
-, using the old internal API.
-
-While copying the data, the current patch does considers the offset/length =
-fields.
-         ethtool -m ethx offset x length x
-
-Could please point us what are we missing here?
-
-Thanks,
-Hariprasad k
-
-
-> Disappointing.
->=20
-> And the Signed-of-by: appear to be in the wrong order.
->=20
->     Andrew
 
