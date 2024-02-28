@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-85012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351EE86AF22
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:27:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C670A86AF26
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:27:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD3CC1F22FF0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:27:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B72E28212C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:27:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590CE6CDC5;
-	Wed, 28 Feb 2024 12:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A0B3BBD8;
+	Wed, 28 Feb 2024 12:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iiTq2hI+"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dPKAdDyf"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153673BBF7;
-	Wed, 28 Feb 2024 12:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 707546CDC6;
+	Wed, 28 Feb 2024 12:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709123215; cv=none; b=FwWHBcquo0CTjV97ZRXT2ETRnaK2vbDbbHD3OnWfb0Mt7TwKBtghD8s5ybxxyjuGR4B+CmF2GMm4R3e/NVSEhD5xZzOdOVjb14gU3jJk2SO320kMCod7bnJtHq3WhwF6crpUP7QBONdMhen9dEFlA6twxTRmBw1eeW+6h1JJhwQ=
+	t=1709123218; cv=none; b=YzUeZ3ZYOX/2mbhlqo+5UZLcY3ZxkNh9oRms2Xove/zJOteZKB0fd88ytmyhBmb/YpuRwsSj2q0KnmnyxWIGO7W7bQGVZt5Zx4aFu1yiuvP7cQtSEfNNhN2Wahcz59REuu7ysHAL5Y3fllxc9xN5jtdvlkpha2qwi2kNzln1/Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709123215; c=relaxed/simple;
-	bh=9LRp6pyZzKOPMwdJmb0cgyOrxZ2yUXGdwFoFFeN5y3Q=;
+	s=arc-20240116; t=1709123218; c=relaxed/simple;
+	bh=BBWiHnJ/r7xpKFZE4Kz1164OVbYXkJ/2croGM6AzAsg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=F/n7Ni+okfXpTXiCYoW6EC4S2pRCEsyM/LJ3KTSjaWxHKZs/vuoatbes9UyjLv8pBJxYbyIV2ZGSJp8kjd8MwGfTH0kBCQVSb/XZTn6BOIpD8ifX+dMAbP2+B7ou5ZkuXEhxHMS65FVp/cAymoxeMFVDT2ZplhGhs89zv08vsRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iiTq2hI+; arc=none smtp.client-ip=209.85.218.51
+	 MIME-Version; b=KJYzeDQJPBUYoW4Gg5TpcU7+ARz6FgfTd1Hm7VvAgWHaN9ig6E6ocZSs55gH3okZD+L0iAm96hISd8Tk3Je79e+U/RxTR7Fxeg+lAhAsUXXl8LDNpZ9t5U0InCUAuOCN5ubr50FNRWOWZMn3RdB5Wrfhcictid7w72zaheujQI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dPKAdDyf; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4419683a6bso33637866b.1;
-        Wed, 28 Feb 2024 04:26:53 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5656e5754ccso6728279a12.0;
+        Wed, 28 Feb 2024 04:26:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709123212; x=1709728012; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709123215; x=1709728015; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yfu1NXdJaxRIuGk1AGGi0w8J7Vn0Rmrv+AxI/bKxIZU=;
-        b=iiTq2hI+KN3cQ50pZgxmicOeV4QEKNbNFiPWs5jf8/G7n6QxDt1i9u9UHagOh8UxHZ
-         5sXiB+te0snFQVFECmW1QMFade5kC+uwIHnCQdoHy9Gpvvl6WeCphbcsjTC60j4MXud0
-         gZY+IOWnYyNreJFTLf69j1vcDpbKj9QKojZ9w4wNzQNI6FksiA+4nmAhHFxCpDN4wXk4
-         Lv8m0jLqDc7b6Jih1MQy8wvURf7COZ0e4RdpxESjRb8056zK5IWOVUbYvxBDT2mwC02O
-         uop4SbzQ7pj5h4zMJAr/ZT8NyiGO9jehNpZQGZZuSxVU9U1Q0zB8c60E2ic7v8l5Bjnj
-         zRng==
+        bh=g/Xp0WhuiHGrQ1r2Hb53CPJ6S7Yc2qjybrALOzmpRZg=;
+        b=dPKAdDyfruEb4Tc5nSruUz3hUBy09D626NHt8008P1TQBO9rVn/opkNX9kbUNcee4y
+         L81PBZvwMuGgqDuYnAX4vvolJsxw+W7oUGBI5zO10EZqCFnPQxT0yJK65eplnDHIwsXE
+         5QaI91+4epmftu37mygAwpihWeaTTjBnGptujgvhk+GgOGJWbtRSU1kibUpO2/VJfN8I
+         XEEyUjmFWuHYy01k/tgregB0Z7cfhLD+0lZI2C9E0aLj/2haIYn+hHDI3mXiC4zPatjk
+         I8l23DBVz1Sc98SGqTuAMzPhHIHbhKb1DdvMtx3bRYWgci4fzt0oIJnVTonb8c5m0hhN
+         g+XQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709123212; x=1709728012;
+        d=1e100.net; s=20230601; t=1709123215; x=1709728015;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yfu1NXdJaxRIuGk1AGGi0w8J7Vn0Rmrv+AxI/bKxIZU=;
-        b=Dvc2pzpcwMqakzwU40eXN7byq0/1q5cOaRBZkFlY6KTmEB8cnoJTTZA0pcX8TfLxda
-         dbgPbu+ZOhnieQ4FMaBIJamWObVCwkFr7R+AoySkObh/YMcFVCSJqigeaE026oHNcoUv
-         1eyIgpKFA7Chz9a3j0of7qNon/9u56jVS3XCwuljXu4cQaJMAL9f7z3URdjyuaez/2J0
-         GwtNLhmvd9XMvYLqc2aqY3c2tg+OQpR4bNOouwxJl+0mrF14PjpPIpb5g0ErrCDJ9kZN
-         HZEl8O002HThjCRiJxKP+1OP36GiCRAW8wmgCWADHb4OfecF23V7tB1ktG39PFnMs14c
-         D4Fw==
-X-Forwarded-Encrypted: i=1; AJvYcCXhjFyMiK5XA6Brt5UAhplj8tZZdg4kvHuZEfJlYqwH0steef6jU2jx5RvexcOu8QgfaIBcx6qlUGl8XI0VWzfcTrEDi6FsXFJZDt0xzZJu7bSmZ3w6fgpAndpWF/Z1lwTj1x1Dpm0al3rDXF3zG2KsQF9mLi0kei/bb45LAgSrOC/sUQ==
-X-Gm-Message-State: AOJu0YxK2IYdE47oGXuVMadhYZTU4IDfEEWXXLE9O8sdbvWRHIGzPajY
-	xCS+jZMngWR1+i38PKEmU0n2rAd5jGWcWm9w+OEey2SU2tzy0XWX
-X-Google-Smtp-Source: AGHT+IE1NiJeYEubifaFA/hUzo6Udj5vWz5f5UUWJg5PzMbVijkXKbPCZQlLp/Qh0IFejTdtP4OcSA==
-X-Received: by 2002:a17:906:c40c:b0:a3f:d2f3:d226 with SMTP id u12-20020a170906c40c00b00a3fd2f3d226mr8362653ejz.17.1709123212058;
-        Wed, 28 Feb 2024 04:26:52 -0800 (PST)
+        bh=g/Xp0WhuiHGrQ1r2Hb53CPJ6S7Yc2qjybrALOzmpRZg=;
+        b=U9fZNp1OnE1JtDsNWud4B2wqtjZ93ELT7pTX9M8Tx+O2CNs+tX7paPAd97pKhKVgDC
+         ZbHkUe7/zjweGylESU1pmYttDA05ND04v+CynZItZARuso/+jVj8wRw0ZNPdVF98XSVU
+         ze+ZQWE6Yd1uBKOTgZ6jA1xxuSasvCUmk6NHbt/HC3iQLoVyWv3dKaxUZ3qXZMCdfa0x
+         MSpqBf0dfvTUWXZ5zyq00wD+k1K/gWNRhVfKgG19olLTX1UBhT59VTSgdM7O3BErfE+4
+         FDrXyCUDYNg8lyFNt5R//n8T1LXPg6O65kULIA5q+OZSIbeQD+/r2tC02gXoSYI/8VNu
+         xr7A==
+X-Forwarded-Encrypted: i=1; AJvYcCXo5JHinz0MG2Vvm211DxSs8023PY2qJ/ej6ne0KkEUESMDJAQ39I1ssN0CyKqQvJlPecXMAdW/e7GrkzY/b2fRD5MbnIP5bkLR19WgdbSAYmcpbOdMpLFxVyeHm3eBZE+PbuamKCE7h6sZ0ZFVCkY7yoBEyixq5kwP1zthtr02HR4RNQ==
+X-Gm-Message-State: AOJu0YwrFTBQkXPyy5Xl1yOzOalL2GokpAGvVkdSGv/4PSq8dGQcJz5D
+	YZ/ava+Le8jrh+2nLf0tFCBEuCGGAyslBKcshkp2w7inBjt1CoY1
+X-Google-Smtp-Source: AGHT+IFCDMwvCCnJzvoLdQvqmjtCmFeXcmSPfal9yrIEj5kVJoG4sKvUOCLwj3kof+F9Is21thLELQ==
+X-Received: by 2002:a17:906:139b:b0:a43:e4b4:b8cc with SMTP id f27-20020a170906139b00b00a43e4b4b8ccmr1993155ejc.38.1709123214430;
+        Wed, 28 Feb 2024 04:26:54 -0800 (PST)
 Received: from spiri.. ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id f3-20020a170906c08300b00a3d1c0a3d5dsm1800417ejz.63.2024.02.28.04.26.50
+        by smtp.gmail.com with ESMTPSA id f3-20020a170906c08300b00a3d1c0a3d5dsm1800417ejz.63.2024.02.28.04.26.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 04:26:51 -0800 (PST)
+        Wed, 28 Feb 2024 04:26:54 -0800 (PST)
 From: Alisa-Dariana Roman <alisadariana@gmail.com>
 X-Google-Original-From: Alisa-Dariana Roman <alisa.roman@analog.com>
 To: michael.hennerich@analog.com,
@@ -82,9 +82,9 @@ Cc: lars@metafoo.de,
 	nuno.sa@analog.com,
 	alisa.roman@analog.com,
 	dlechner@baylibre.com
-Subject: [PATCH v4 1/4] iio: adc: ad7192: Pass state directly
-Date: Wed, 28 Feb 2024 14:26:14 +0200
-Message-Id: <20240228122617.185814-2-alisa.roman@analog.com>
+Subject: [PATCH v4 2/4] iio: adc: ad7192: Use standard attribute
+Date: Wed, 28 Feb 2024 14:26:15 +0200
+Message-Id: <20240228122617.185814-3-alisa.roman@analog.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240228122617.185814-1-alisa.roman@analog.com>
 References: <20240228122617.185814-1-alisa.roman@analog.com>
@@ -96,49 +96,184 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Pass only the ad7192_state structure. There is no need to pass the
-iio_dev structure.
+Replace custom attribute filter_low_pass_3db_frequency_available with
+standard attribute.
+
+Store the available values in ad7192_state struct.
+
+The function that used to compute those values replaced by
+ad7192_update_filter_freq_avail().
+
+Function ad7192_show_filter_avail() is no longer needed.
+
+Note that the initial available values are hardcoded.
 
 Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
 Signed-off-by: romandariana <alisa.roman@analog.com>
 ---
- drivers/iio/adc/ad7192.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/iio/adc/ad7192.c | 67 ++++++++++++++++++----------------------
+ 1 file changed, 30 insertions(+), 37 deletions(-)
 
 diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-index 7bcc7e2aa2a2..72de9cc6716e 100644
+index 72de9cc6716e..e0f1c9eaf9ae 100644
 --- a/drivers/iio/adc/ad7192.c
 +++ b/drivers/iio/adc/ad7192.c
-@@ -387,9 +387,9 @@ static int ad7192_clock_select(struct ad7192_state *st)
- 	return clock_sel;
+@@ -190,6 +190,7 @@ struct ad7192_state {
+ 	u32				mode;
+ 	u32				conf;
+ 	u32				scale_avail[8][2];
++	u32				filter_freq_avail[4][2];
+ 	u32				oversampling_ratio_avail[4];
+ 	u8				gpocon;
+ 	u8				clock_sel;
+@@ -473,6 +474,16 @@ static int ad7192_setup(struct ad7192_state *st)
+ 	st->oversampling_ratio_avail[2] = 8;
+ 	st->oversampling_ratio_avail[3] = 16;
+ 
++	st->filter_freq_avail[0][0] = 600;
++	st->filter_freq_avail[1][0] = 800;
++	st->filter_freq_avail[2][0] = 2300;
++	st->filter_freq_avail[3][0] = 2720;
++
++	st->filter_freq_avail[0][1] = 1000;
++	st->filter_freq_avail[1][1] = 1000;
++	st->filter_freq_avail[2][1] = 1000;
++	st->filter_freq_avail[3][1] = 1000;
++
+ 	return 0;
  }
  
--static int ad7192_setup(struct iio_dev *indio_dev, struct device *dev)
-+static int ad7192_setup(struct ad7192_state *st)
+@@ -586,48 +597,24 @@ static int ad7192_get_f_adc(struct ad7192_state *st)
+ 				 f_order * FIELD_GET(AD7192_MODE_RATE_MASK, st->mode));
+ }
+ 
+-static void ad7192_get_available_filter_freq(struct ad7192_state *st,
+-						    int *freq)
++static void ad7192_update_filter_freq_avail(struct ad7192_state *st)
  {
+ 	unsigned int fadc;
+ 
+ 	/* Formulas for filter at page 25 of the datasheet */
+ 	fadc = ad7192_compute_f_adc(st, false, true);
+-	freq[0] = DIV_ROUND_CLOSEST(fadc * 240, 1024);
++	st->filter_freq_avail[0][0] = DIV_ROUND_CLOSEST(fadc * 240, 1024);
+ 
+ 	fadc = ad7192_compute_f_adc(st, true, true);
+-	freq[1] = DIV_ROUND_CLOSEST(fadc * 240, 1024);
++	st->filter_freq_avail[1][0] = DIV_ROUND_CLOSEST(fadc * 240, 1024);
+ 
+ 	fadc = ad7192_compute_f_adc(st, false, false);
+-	freq[2] = DIV_ROUND_CLOSEST(fadc * 230, 1024);
++	st->filter_freq_avail[2][0] = DIV_ROUND_CLOSEST(fadc * 230, 1024);
+ 
+ 	fadc = ad7192_compute_f_adc(st, true, false);
+-	freq[3] = DIV_ROUND_CLOSEST(fadc * 272, 1024);
++	st->filter_freq_avail[3][0] = DIV_ROUND_CLOSEST(fadc * 272, 1024);
+ }
+ 
+-static ssize_t ad7192_show_filter_avail(struct device *dev,
+-					struct device_attribute *attr,
+-					char *buf)
+-{
+-	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
 -	struct ad7192_state *st = iio_priv(indio_dev);
-+	struct device *dev = &st->sd.spi->dev;
- 	bool rej60_en, refin2_en;
- 	bool buf_en, bipolar, burnout_curr_en;
- 	unsigned long long scale_uv;
-@@ -460,7 +460,7 @@ static int ad7192_setup(struct iio_dev *indio_dev, struct device *dev)
- 	/* Populate available ADC input ranges */
- 	for (i = 0; i < ARRAY_SIZE(st->scale_avail); i++) {
- 		scale_uv = ((u64)st->int_vref_mv * 100000000)
--			>> (indio_dev->channels[0].scan_type.realbits -
-+			>> (st->chip_info->channels[0].scan_type.realbits -
- 			!FIELD_GET(AD7192_CONF_UNIPOLAR, st->conf));
- 		scale_uv >>= i;
+-	unsigned int freq_avail[4], i;
+-	size_t len = 0;
+-
+-	ad7192_get_available_filter_freq(st, freq_avail);
+-
+-	for (i = 0; i < ARRAY_SIZE(freq_avail); i++)
+-		len += sysfs_emit_at(buf, len, "%d.%03d ", freq_avail[i] / 1000,
+-				     freq_avail[i] % 1000);
+-
+-	buf[len - 1] = '\n';
+-
+-	return len;
+-}
+-
+-static IIO_DEVICE_ATTR(filter_low_pass_3db_frequency_available,
+-		       0444, ad7192_show_filter_avail, NULL, 0);
+-
+ static IIO_DEVICE_ATTR(bridge_switch_en, 0644,
+ 		       ad7192_show_bridge_switch, ad7192_set,
+ 		       AD7192_REG_GPOCON);
+@@ -637,7 +624,6 @@ static IIO_DEVICE_ATTR(ac_excitation_en, 0644,
+ 		       AD7192_REG_CONF);
  
-@@ -1152,7 +1152,7 @@ static int ad7192_probe(struct spi_device *spi)
- 		}
- 	}
+ static struct attribute *ad7192_attributes[] = {
+-	&iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.attr,
+ 	&iio_dev_attr_bridge_switch_en.dev_attr.attr,
+ 	NULL
+ };
+@@ -647,7 +633,6 @@ static const struct attribute_group ad7192_attribute_group = {
+ };
  
--	ret = ad7192_setup(indio_dev, &spi->dev);
-+	ret = ad7192_setup(st);
- 	if (ret)
- 		return ret;
+ static struct attribute *ad7195_attributes[] = {
+-	&iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.attr,
+ 	&iio_dev_attr_bridge_switch_en.dev_attr.attr,
+ 	&iio_dev_attr_ac_excitation_en.dev_attr.attr,
+ 	NULL
+@@ -665,17 +650,15 @@ static unsigned int ad7192_get_temp_scale(bool unipolar)
+ static int ad7192_set_3db_filter_freq(struct ad7192_state *st,
+ 				      int val, int val2)
+ {
+-	int freq_avail[4], i, ret, freq;
++	int i, ret, freq;
+ 	unsigned int diff_new, diff_old;
+ 	int idx = 0;
  
+ 	diff_old = U32_MAX;
+ 	freq = val * 1000 + val2;
+ 
+-	ad7192_get_available_filter_freq(st, freq_avail);
+-
+-	for (i = 0; i < ARRAY_SIZE(freq_avail); i++) {
+-		diff_new = abs(freq - freq_avail[i]);
++	for (i = 0; i < ARRAY_SIZE(st->filter_freq_avail); i++) {
++		diff_new = abs(freq - st->filter_freq_avail[i][0]);
+ 		if (diff_new < diff_old) {
+ 			diff_old = diff_new;
+ 			idx = i;
+@@ -826,6 +809,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
+ 		st->mode &= ~AD7192_MODE_RATE_MASK;
+ 		st->mode |= FIELD_PREP(AD7192_MODE_RATE_MASK, div);
+ 		ad_sd_write_reg(&st->sd, AD7192_REG_MODE, 3, st->mode);
++		ad7192_update_filter_freq_avail(st);
+ 		break;
+ 	case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
+ 		ret = ad7192_set_3db_filter_freq(st, val, val2 / 1000);
+@@ -846,6 +830,7 @@ static int ad7192_write_raw(struct iio_dev *indio_dev,
+ 				break;
+ 			}
+ 		mutex_unlock(&st->lock);
++		ad7192_update_filter_freq_avail(st);
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+@@ -888,6 +873,12 @@ static int ad7192_read_avail(struct iio_dev *indio_dev,
+ 		/* Values are stored in a 2D matrix  */
+ 		*length = ARRAY_SIZE(st->scale_avail) * 2;
+ 
++		return IIO_AVAIL_LIST;
++	case IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY:
++		*vals = (int *)st->filter_freq_avail;
++		*type = IIO_VAL_FRACTIONAL;
++		*length = ARRAY_SIZE(st->filter_freq_avail) * 2;
++
+ 		return IIO_AVAIL_LIST;
+ 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+ 		*vals = (int *)st->oversampling_ratio_avail;
+@@ -956,7 +947,9 @@ static const struct iio_info ad7195_info = {
+ 			BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY) | \
+ 			(_mask_all), \
+ 		.info_mask_shared_by_type_available = (_mask_type_av), \
+-		.info_mask_shared_by_all_available = (_mask_all_av), \
++		.info_mask_shared_by_all_available = \
++			BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY) | \
++			(_mask_all_av), \
+ 		.ext_info = (_ext_info), \
+ 		.scan_index = (_si), \
+ 		.scan_type = { \
 -- 
 2.34.1
 
