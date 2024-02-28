@@ -1,139 +1,110 @@
-Return-Path: <linux-kernel+bounces-85208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADF486B244
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:48:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7486C86B249
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:48:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75E232896B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:48:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F5C4B29AD8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CBF415959F;
-	Wed, 28 Feb 2024 14:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EABD15B0F3;
+	Wed, 28 Feb 2024 14:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VtyyEKVq"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UZSP8kgo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4AA2D022
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:47:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D48A12E1DD;
+	Wed, 28 Feb 2024 14:48:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709131676; cv=none; b=P3dU8IACG8T2YRTQ0NG88lYJETEK5ol0+/8g2IpHyhtCIESKUqUp9+D9T76tKVZRDzkIVdw2EsXRvlYQ0erPYmX9BbZJjhiUf7zp9Yd4WeBll0o1Ww5RIKQxa9lA7WO5JxwFUKSvYIo1JzFOgKx+aAr1qQP4XOSUAS6f0u8HQQo=
+	t=1709131694; cv=none; b=sxtVl4djXkP1jp0HkxRsUAmZQGakJe5j0Djb4rl/utTPOQckw2zzGMaftLasOpP0KWFnqpgHk/RLgAPJzyz8Pg5pzIq404/CDDVWsF4qLnKB5WaQSnOKKbQelrvEoW+80RZeBewlfhUtoukqYBB3oIJpO5/e9ZEJJCmCN6aIENE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709131676; c=relaxed/simple;
-	bh=5MvfFrf1G4ERBN3zHNH5ZYScjoyEnlfETFdY+bUYgoM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rbwUw+dVsTZp6+Lss6KV5lqUfsxQYM/pIu6z2fojTSQkTxHnz7NWWMoGDl3sklV15Fwcu3QmjmSexjC1lERln6LNgNhDutLxe6Qkla5IndQG7IoV5xteWomajjbBjlvavKU+hgmpC2Imtwwv53y4+J0MVjJr0x8UbsFr+RFLHO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VtyyEKVq; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513143d3c42so1947974e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:47:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1709131673; x=1709736473; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3GbQN37mhhA8J1p486CCanaHeSFjvjlJFFfeli9pCvc=;
-        b=VtyyEKVqcz+oaPvzd9GBQBtjhE3sojlgDngsIjNmuHstYjVK6g5rFtmqoLwzqHPfOH
-         XOD4+BHv59cejcEiEqhRt36HFso/GMwgsanlXko5pkqV2QURIuLi1WZwmPD37Z4jLY1C
-         gCGH+ZJfMhGXpaWns3bmNqd8OQ3QPMALWF8zJQg81xOnoiiaN/Z/EdDvmxmUkuC11snJ
-         es0npuccCVih88qi72nwcb/IvqWdOuEkGxyOE+4Q9GkV6aXAGEclH9P2ENVYyxv9hg9q
-         EPPzFcdgQ48CLaKPq+yZ9LJl41q1iqqybQb4xRpBv535ay93mGa3/Po8kO8StxxZ3mQT
-         GKKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709131673; x=1709736473;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3GbQN37mhhA8J1p486CCanaHeSFjvjlJFFfeli9pCvc=;
-        b=pYsBoI/E9Q2PUTa2eURBpPWdLgDSYrImsbNaOqHjv6s/3cyFJ2HDA9PzTIwnaqU853
-         troeYlyZskdvUxqA1WXKKG4gDo/BSRtPpbofC7luBJgBKg5VAWeCX2XS+xvzXBXQfb2o
-         hTA3YEEBONHYGpENfNBBXeZEhUIqH3ZgYnY/rVyUqKJ/+JgjGWowSMo12DdmZGQxeS1l
-         JaoT2l8fj60TbIpPUDsZZVIoGxYb8kTc0cpMBSfmcS7gKDuBdoLbKl16wkUN0ZcQHKMF
-         rgM0mUfYNbt0mr25IqeQ2x+tzlZPjuOAZA2rkOmB3AlIkpA1S+5+JFYgi5xe5FVzyVhj
-         ZtjA==
-X-Forwarded-Encrypted: i=1; AJvYcCWsIXvoraR72/qxSzkPnriupjZg5BmhofRUapV3pAO2uLa6r4lpy/Renwd9NstNWxU541Eo7IaPjM9D2RehdBecDDpa3Samz+P3zE3G
-X-Gm-Message-State: AOJu0YyUZ33PbrCNeakzUEFt9W3BpiLPjPuCSwcGlUARFls+ZyStTk1A
-	AeXAcu9EvVw2b9s8sm7dTQBpzjlMKeoM1fSJDyDoGJnP+/UmTZ6TGgY/CBgd/RU=
-X-Google-Smtp-Source: AGHT+IH91e8k5xsqpA7DNNC9jiLw5SufBWVlhROZKlTXqcqtB2uevW9HcetR8P9jbSkCOV0afMvOzQ==
-X-Received: by 2002:a19:750d:0:b0:512:ab46:3de6 with SMTP id y13-20020a19750d000000b00512ab463de6mr7491124lfe.32.1709131672792;
-        Wed, 28 Feb 2024 06:47:52 -0800 (PST)
-Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
-        by smtp.gmail.com with ESMTPSA id n16-20020a05600c3b9000b00411e3cc0e0asm2351047wms.44.2024.02.28.06.47.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 06:47:52 -0800 (PST)
-Message-ID: <49a365a7-199a-42cd-b8d3-86d72fe5bca6@suse.com>
-Date: Wed, 28 Feb 2024 15:47:51 +0100
+	s=arc-20240116; t=1709131694; c=relaxed/simple;
+	bh=BGdZaD9k7LAInkzJ5BRx71iyoWI+dyq3+fHt8weHUqg=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=jKn7WdKMuL/tXpYpWaNfepkfT+R2SQdxkpCteR9COZts/UvhuvEofQtpRwOVUP99GFjHQJnBDiGXhTRpasZYchjwdKMlmd6OxpeHoAYSt/38K6OQUBOyh3yw3eWirquUrPBhb4IlQQ3fIChwe8j1V0m+7BQyHyFbqRUwGCERy5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UZSP8kgo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AA46C433C7;
+	Wed, 28 Feb 2024 14:48:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709131694;
+	bh=BGdZaD9k7LAInkzJ5BRx71iyoWI+dyq3+fHt8weHUqg=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=UZSP8kgotAd829ClsURiaX4BS1uPTbjsSun5pBM4h6TGQX3U7mH+n7iX7PU0soBxW
+	 BTYn/36b8/JC/h9voKlkftUzlcqmFfL3Bqp/Ve2qUARWRJhhTxjvhZY31ly9CO5dJM
+	 5plqLzh5t53sDGVNswF7mhp2We3e/HE+Gvdin96s7rFXQsJvj32qsa5CuFa9Ve04tV
+	 cmVKCL5KQJJBUWxDJqcsCsevTOjJA7R2s2y9SmJ4suD6uV8RBQIuJsiVfm/8m5JWzM
+	 Q5+7WcmZY4CUlFNyWy+9n6IaF6p6ZnywMD50oXyidXTogyjmboO7ieR8n9WXRI+2wp
+	 6eyHOiOC4nv4A==
+Date: Wed, 28 Feb 2024 06:48:14 -0800
+From: Kees Cook <kees@kernel.org>
+To: Duoming Zhou <duoming@zju.edu.cn>, linux-kernel@vger.kernel.org
+CC: brcm80211-dev-list.pdl@broadcom.com, brcm80211@lists.linux.dev,
+ linux-wireless@vger.kernel.org, justinstitt@google.com,
+ jisoo.jang@yonsei.ac.kr, petr.tesarik.ext@huawei.com,
+ quic_alokad@quicinc.com, hdegoede@redhat.com, keescook@chromium.org,
+ johannes.berg@intel.com, kvalo@kernel.org, arend.vanspriel@broadcom.com
+Subject: Re: [PATCH v2] wifi: brcm80211: handle pmk_op allocation failure
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20240228063408.7006-1-duoming@zju.edu.cn>
+References: <20240228063408.7006-1-duoming@zju.edu.cn>
+Message-ID: <8B696743-9487-4A78-B9B4-16DA4F2F8E26@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] USB:UAS:return ENODEV when submit urbs fail with
- device not attached.
-Content-Language: en-US
-To: "WeitaoWang-oc@zhaoxin.com" <WeitaoWang-oc@zhaoxin.com>,
- Oliver Neukum <oneukum@suse.com>, stern@rowland.harvard.edu,
- gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
- usb-storage@lists.one-eyed-alien.net
-Cc: WeitaoWang@zhaoxin.com, stable@vger.kernel.org
-References: <20240228111521.3864-1-WeitaoWang-oc@zhaoxin.com>
- <e8c4e8a3-bfc3-463f-afce-b9f600b588b2@suse.com>
- <07e80d55-d766-1781-ffc9-fab9ddcd33e3@zhaoxin.com>
-From: Oliver Neukum <oneukum@suse.com>
-In-Reply-To: <07e80d55-d766-1781-ffc9-fab9ddcd33e3@zhaoxin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 
 
-On 28.02.24 23:32, WeitaoWang-oc@zhaoxin.com wrote:
+On February 27, 2024 10:34:08 PM PST, Duoming Zhou <duoming@zju=2Eedu=2Ecn=
+> wrote:
+>The kzalloc() in brcmf_pmksa_v3_op() will return null if the
+>physical memory has run out=2E As a result, if we dereference
+>the null value, the null pointer dereference bug will happen=2E
+>
+>Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
+>for pmk_op=2E
+>
+>Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V3 =
+operations")
+>Signed-off-by: Duoming Zhou <duoming@zju=2Eedu=2Ecn>
+>---
+>Changes in v2:
+>  - Drop the new label and just return -ENOMEM=2E
+>
+> drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211=2Ec | 3 +++
+> 1 file changed, 3 insertions(+)
+>
+>diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211=2E=
+c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211=2Ec
+>index 28d6a30cc01=2E=2E7af6d6448b9 100644
+>--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211=2Ec
+>+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211=2Ec
+>@@ -4322,6 +4322,9 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp, struct cfg8=
+0211_pmksa *pmksa,
+> 	int ret;
+>=20
+> 	pmk_op =3D kzalloc(sizeof(*pmk_op), GFP_KERNEL);
+>+	if (!pmk_op)
+>+		ret =3D -ENOMEM;
 
-> @@ -602,6 +606,8 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
->           if (err) {
->               usb_unanchor_urb(cmdinfo->data_out_urb);
->               uas_log_cmd_state(cmnd, "data out submit err", err);
-> +            if (err == -ENODEV)
-> +                return -ENODEV;
+This doesn't fix anything=2E It doesn't stop the execution path; it'll con=
+tinue and immediately dereference the NULL pmk_op in the next line=2E=2E=2E
 
-This is a generic error code from errno.h
+>+
+> 	pmk_op->version =3D cpu_to_le16(BRCMF_PMKSA_VER_3);
+>=20
+> 	if (!pmksa) {
 
->               return SCSI_MLQUEUE_DEVICE_BUSY;
-
-This is not.
-
->           }
->           cmdinfo->state &= ~SUBMIT_DATA_OUT_URB;
-> @@ -621,6 +627,8 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
->           if (err) {
->               usb_unanchor_urb(cmdinfo->cmd_urb);
->               uas_log_cmd_state(cmnd, "cmd submit err", err);
-> +            if (err == -ENODEV)
-> +                return -ENODEV;
->               return SCSI_MLQUEUE_DEVICE_BUSY;
->           }
-> 
-> I'm not sure I fully understand what your mean.
-> Whether the above code is more reasonable? If not,could you give me some
-> suggestion? Thanks for your help!
-
-You want to change uas_submit_urbs() to return the reason for
-errors, because -ENODEV needs to be handled differently. That
-is good.
-But why don't you just do
-
-return err;
-
-unconditionally? There is no point in using SCSI_MLQUEUE_DEVICE_BUSY
-
-	Regards
-		Oliver
-
+--=20
+Kees Cook
 
