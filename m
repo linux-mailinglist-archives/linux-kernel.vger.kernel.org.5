@@ -1,79 +1,58 @@
-Return-Path: <linux-kernel+bounces-85256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6FF686B2FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:22:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8599C86B30A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:24:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C2F51F24FD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:22:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E116628B83D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:24:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26FE915B98B;
-	Wed, 28 Feb 2024 15:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 230BC15B993;
+	Wed, 28 Feb 2024 15:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aAPFYLJV"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ez68DcuL"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60C815B96C
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BA3D612FC
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:24:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709133764; cv=none; b=G/CnfWA4whePXAyV9SBfooWIr+mSnzs0CJaQQcdh2le6sSy6jbJKw1SRoVNtWSfdJ2uc4LTw/R3QCLG8EbR5QHhc+gPPgmhvBNiZqb2wpSKL3WwNhV6Sdrb5+URn+wKX1ehPSuTvkPePjRh59CEas42Yd2UEU4+x+YI3c87nQac=
+	t=1709133852; cv=none; b=RtLAURbfKKsesU9cnc4Z9NSGwxyK/7e7x92/ZFWryBUu65ceLBA0NvJoh/qIiRhUtrzKn79i+mPLVTZJsqBsOWbH9QnVdtOkbdttlDwrFEdE+tkJ6Ej7t97K4B6TvbAv2c9X8vLYshM85KOy3iGi1+9WbFo6nVNwaaFj8A8SAc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709133764; c=relaxed/simple;
-	bh=pVo3nZ1TRQ7aysEs3qhN7ATzV2rZ6Gtlgvl+QzdEatc=;
+	s=arc-20240116; t=1709133852; c=relaxed/simple;
+	bh=5GeP2XG7v7dx7ZFOk1hq4cxp31+uOLrX3m4TokH17kk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u61t0oKxkpslIbvbpF4QnE60kZDlVyLowb/nlyDVnMRMScV3a//dEyi0TJaUQaUdAKRGJfDLf+HSMlIl0+qmbDl1XtnC+NbP+Mv2d51BTIGmkQlYNia0Eyjo8nDd5f55c/+x8LnvZ7zsgyQdB6j/ZfoxVXdXcAlXFTj4/kPWEGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aAPFYLJV; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709133764; x=1740669764;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pVo3nZ1TRQ7aysEs3qhN7ATzV2rZ6Gtlgvl+QzdEatc=;
-  b=aAPFYLJVMAeHq0gV6LJWmfUfL3KCTFXlscM3hv1pl44ugA4QmTVY55XV
-   ouQQf80ANsOSaFc/R9xj5nX2OyXzCRCEMdNajE7mAt9Imb0nMJHZiTXVL
-   R5isg9QmTWpolqrXdz9TRn4ey5WomGPLSTkL6kRky7UUXQVwYdTua+YGj
-   XfjnaNh/0Wt8jejUuNa3NJv3AkuuO8HDaJaqoL6WWUNyhG8gZJ58SUfPI
-   eQwSi6TaavxCIdM8zgjOiIdtbV1+OE3wU7xBwdE5cc3XbCc+fJ5hFI5xE
-   DAEQuarC6XEb8Jl9851iw7aokd/GFDFIyytPdDFkT5NjhKdrcUjy3axB0
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14088124"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="14088124"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 07:22:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="937034395"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="937034395"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Feb 2024 07:22:31 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id BCEB228A; Wed, 28 Feb 2024 17:22:30 +0200 (EET)
-Date: Wed, 28 Feb 2024 17:22:30 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org, 
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv8 17/17] ACPI: tables: Print MULTIPROC_WAKEUP when MADT
- is parsed
-Message-ID: <3jgmzzbjmwtf2rtrbiulhwjj5xwzc3icf4gxcmugyyq5n7pg5m@ua3poay4gmku>
-References: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
- <20240227212452.3228893-18-kirill.shutemov@linux.intel.com>
- <0a633c22-8426-42cf-9572-7812ffc75d0a@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QKj3JVY7mjdTesY67iMD9hFlGP+hBGxCi95qfqc4wSMLlFLIh3z+EHBDE1HofQ0hg56R7xjBpnHvLtYa4cQPCLsAQEURDJPE+Yr8A2GcLVSi/qRSL7+sXphViXT+mIIkorjRYofi75Cm7Fhw+sdaGUcCpBOLVfGLlDkMYWCMCDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ez68DcuL; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=3ehB3JpwRymg1TYF5t3hxiEfGc+bqJjBOoTcqkFo59Q=; b=ez68DcuLmefJzuWkWivyBEJAlG
+	T+NXerCLYSu7LaLTVCkpWeSllzPcbel7rYe07ifv6MR8eEWkLinnLZz0SoK2TekcY4ceGRq3cXYsF
+	Eth1QTsN8GV1t5UOQWbl+9n6RJPRjaosfbKS6R6zv3sVQSYqsNPxM/1e1ulYXlhS3mIia+kqX5iqc
+	+vETEsjdhYmjGC/EIV4WkH6UUSkzPMAooz210L+XSl8Dl09O3G7FgQuD34fdsru7C8cvVXUOuDoU2
+	BP0VE0BnLB5wHjVXh1fMD942xmZPXU4gF53uGilQFTJKJFLVtJuykOnPX0lPYirrDM5LpIA6kpfRI
+	47lKUfZA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rfLmw-00000005WZ4-3nu3;
+	Wed, 28 Feb 2024 15:24:06 +0000
+Date: Wed, 28 Feb 2024 15:24:06 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Chengming Zhou <chengming.zhou@linux.dev>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, yosryahmed@google.com,
+	nphamcs@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH mm-unstable hotfix] mm/zswap: fix zswap_pools_lock usages
+ after changing to percpu_ref
+Message-ID: <Zd9QFkE2nr5FyYDq@casper.infradead.org>
+References: <20240210-zswap-global-lru-v3-2-200495333595@bytedance.com>
+ <20240228151832.2431993-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,58 +61,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0a633c22-8426-42cf-9572-7812ffc75d0a@intel.com>
+In-Reply-To: <20240228151832.2431993-1-chengming.zhou@linux.dev>
 
-On Wed, Feb 28, 2024 at 11:08:38AM +1300, Huang, Kai wrote:
+On Wed, Feb 28, 2024 at 03:18:32PM +0000, Chengming Zhou wrote:
+> Now the release of zswap pool is controlled by percpu_ref, its release
+> callback (__zswap_pool_empty()) will be called when percpu_ref hit 0.
+> But this release callback may potentially be called from RCU callback
+> context by percpu_ref_kill(), which maybe in the interrupt context.
 > 
-> 
-> On 28/02/2024 10:24 am, Kirill A. Shutemov wrote:
-> > When MADT is parsed, print MULTIPROC_WAKEUP information:
-> > 
-> > ACPI: MP Wakeup (version[1], mailbox[0x7fffd000], reset[0x7fffe068])
-> > 
-> > This debug information will be very helpful during bring up.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > Reviewed-by: Baoquan He <bhe@redhat.com>
-> > ---
-> >   drivers/acpi/tables.c | 14 ++++++++++++++
-> >   1 file changed, 14 insertions(+)
-> > 
-> > diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
-> > index b07f7d091d13..c59a3617bca7 100644
-> > --- a/drivers/acpi/tables.c
-> > +++ b/drivers/acpi/tables.c
-> > @@ -198,6 +198,20 @@ void acpi_table_print_madt_entry(struct acpi_subtable_header *header)
-> >   		}
-> >   		break;
-> > +	case ACPI_MADT_TYPE_MULTIPROC_WAKEUP:
-> > +		{
-> > +			struct acpi_madt_multiproc_wakeup *p =
-> > +				(struct acpi_madt_multiproc_wakeup *)header;
-> > +			u64 reset_vector = 0;
-> > +
-> > +			if (p->version >= ACPI_MADT_MP_WAKEUP_VERSION_V1)
-> > +				reset_vector = p->reset_vector;
-> > +
-> > +			pr_debug("MP Wakeup (version[%d], mailbox[%#llx], reset[%#llx])\n",
-> > +				 p->version, p->mailbox_address, reset_vector);
-> > +		}
-> > +		break;
-> > +
-> 
-> Hmm.. I hate to say, but maybe it is better to put this patch at some early
-> place in this series w/o mailbox version and reset_vector, and add
-> incremental changes where mailbox/reset_vector is introduced in this series.
-> 
-> The advantage is in this way someone can just backport this patch to the old
-> kernel if they care -- this should be part of commit f39642d0dbacd
-> ("x86/acpi/x86/boot: Add multiprocessor wake-up support") anyway.
+> So we need to use spin_lock_irqsave() and spin_unlock_irqrestore()
+> in the release callback: __zswap_pool_empty(). In other task context
+> places, spin_lock_irq() and spin_unlock_irq() are enough to avoid
+> potential deadlock.
 
-It is not subject for backporting. It is just a cosmetics fix (or debug
-facility). Any new MADT type would generate a warning. Nothing wrong with
-it.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+RCU callback context is BH, not IRQ, so it's enough to use
+spin_lock_bh(), no?
 
