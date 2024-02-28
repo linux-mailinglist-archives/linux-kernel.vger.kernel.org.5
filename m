@@ -1,143 +1,122 @@
-Return-Path: <linux-kernel+bounces-85105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C4F686B07F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:38:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4737A86B070
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:36:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D926B273CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:38:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0737528AB8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72A3014E2D9;
-	Wed, 28 Feb 2024 13:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9321114C5B6;
+	Wed, 28 Feb 2024 13:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="APWU8rZM"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jffe1l4Y";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UngALnpu"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2536F14AD07;
-	Wed, 28 Feb 2024 13:37:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671DC6CDBC;
+	Wed, 28 Feb 2024 13:36:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709127477; cv=none; b=WGuor1psIn3zRHmH+kiBC4a/xvSjFqOdjWoFrISnf0Mga6Ae2DHEGRZgaUB+TpoGTYbC6vAlkR45as5Mk3v59o+A72lrcDr6vYr2Bk6ilZ7CrMTE2eZNQfS/dTs1huMatVCO8fQPpZclHgv/Jozl5cNgC9MHBkczZOtdiB8zrBs=
+	t=1709127361; cv=none; b=criSwb6oGesdgNOBKO0KMhGDSxjOoc3WaK5BVwuKW+fKI2gnFfY6uucqpB1FsYhT9dfchWMybCgyxY69NAFbvO1eHoCuAXzXOWNiOCZY6fUb4ad7iHsx68CH+sgRseZSUdGNqboBvjG07AGNyw+AhuaM9Ho5Zi4H0RLbxhCEj74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709127477; c=relaxed/simple;
-	bh=ZrIig3MM4Z+bo/sqJIChCKj/Pje7QWTe1w+LQ7AYd7o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t3C5wje0ZBAMHkEDJvs/QqxLp7xj68H4AxADUJ30bVqnq/zL3/dwYb+lQ4TbFyRpFNJfLWwzOw7KwwSdLSUoX1A7HWEHru0gsSY9JOpKCY0hXAYR4ZMw0wqPWlPswHAHJOgW+0TMSo4ap3UvhrqzFGetE3VXcmMG5EFQROzjmw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=APWU8rZM; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso84619211fa.2;
-        Wed, 28 Feb 2024 05:37:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709127474; x=1709732274; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SxWgL4sElI1B0/tx2GgHOxLa5Q0889pBGSF5c/6AjSo=;
-        b=APWU8rZMSd44oQK4cQwmDyD10Bati7iN4EYq2cFJf/V1ausdaVI0S7ZjOw/vMsnBRs
-         vuaSteWGsJjghSjwCoFIInKuskyETVmni6mymCmQ+EkMnHpVJmHFB3VmbTGDQUH5uVdy
-         LMyjr2UQddYb9ilHugc46oTLuxy+zyr3VgEnMH0XRl5vzQCEMB2WY1O4+dYVTtBn3oEQ
-         21qUR6CUxggCQaOU1EVUv6oR65e2On0zkmsdyv9nOe8CI1Mnq/xMd8rrK8hz/an8Iv57
-         ESdhQF/ktOUnINjlQTMdCG655Q/E4E35Y9WzLS393DhvubtnnRYYqJ3nEK/X9FGEQM50
-         S88w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709127474; x=1709732274;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SxWgL4sElI1B0/tx2GgHOxLa5Q0889pBGSF5c/6AjSo=;
-        b=VY91DAgGmj4xy6cWHWafm6sXi3ULU/y5c2HQbT2VSny1jOzBRcEJ1mq1gy8QInJMh0
-         uJv8iRrqZ0E8a9tv66LVFhKrQDvUAiz0mKkBIdffJr6UUr+xuNwrOcyRS3Tugb94Xm6P
-         /aYUZe4ccKuLG+Km4Bc1LVcq0zcRVQ32+DzHa2nDeJQ2bYCzOW9YWjqGHEGmn4DxoLrE
-         PQIXvzrbDvEm8jteDyJSjmbiKDMRDUJ93w1/S9OHOOkrKTi7gVvqZg7hQIzGrP8YH91L
-         m/3Op4tM0O4awnEXvOyQ/j1Xzd50YTh4AIfC6SETtDcrG/fsP9UOUYnrcG1qLqP6tf9P
-         AOig==
-X-Forwarded-Encrypted: i=1; AJvYcCXAK/oy7uXDCa+avjP2kvJT4XQg4eEoz3fJ4OaHQtjI0EeDpgyw1XjhWm8u+7aWAsJ5XGTWmZumgC6nni2bApivkZAjkhuMsZtkdlshf7Me3xLtOXeX9+rCGy+7lZvPqWM5b7zoNe1I2iYT
-X-Gm-Message-State: AOJu0YyRLeHfdObX//0GiDh/Ik5rlTBNGFCD5q4YEW6M6hbAD+wZ0z/z
-	VV6Oi74J+q8r6+33tS+y3y04BK8GwIZMSLs3rx2CBNicuOF9PcAf
-X-Google-Smtp-Source: AGHT+IEGAbjhr46EhXX778kptGTzCsJXZVuCDdfQgon6/ZXpJpBpqXYL2Ir2C0Xs3h1Pus1GVC1Ojw==
-X-Received: by 2002:a05:6512:21b1:b0:512:f733:9eb with SMTP id c17-20020a05651221b100b00512f73309ebmr5671413lft.11.1709127473910;
-        Wed, 28 Feb 2024 05:37:53 -0800 (PST)
-Received: from localhost ([94.19.228.143])
-        by smtp.gmail.com with ESMTPSA id o11-20020ac2494b000000b005131434454bsm433619lfi.228.2024.02.28.05.37.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 05:37:53 -0800 (PST)
-Date: Wed, 28 Feb 2024 16:35:39 +0300
-From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Corentin Labbe <clabbe.montjoie@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Ovidiu Panait <ovidiu.panait@windriver.com>,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: Re: [PATCH] crypto: rk3288 - Fix use after free in unprepare
-Message-ID: <Zd82q8lw_qH7KLCs@skv.local>
-Mail-Followup-To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Corentin Labbe <clabbe.montjoie@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Ovidiu Panait <ovidiu.panait@windriver.com>,
-	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Arnaud Ferraris <arnaud.ferraris@collabora.com>
-References: <20240226215358.555234-1-andrej.skvortzov@gmail.com>
- <Zd75LLhzlJx4nJiP@gondor.apana.org.au>
+	s=arc-20240116; t=1709127361; c=relaxed/simple;
+	bh=bV7rC9AwyM7rwmPwCODY5JQR5FkAI2361fVWivOoLGU=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=SB2HQmlJBi7UTch4wutyaI0hcQgV1O9cr7YqytXwM4CtNXMC/Tcho4hUIvjLKC43b4TKsatHzKASXVzGK0TM4m8jNGt+EqFUeFYljisVEGJFvVhDMgr+SCX7nwDa9FYi0awWU0gMc5urOsQLPvR1EanL4amHVwHeYS9acEg3Ic4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jffe1l4Y; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UngALnpu; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 28 Feb 2024 13:35:56 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709127357;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3261/azcGbpm0bz+42s7atBucovQYrO3uk/Loe+guZw=;
+	b=jffe1l4YFxuIeO1TsvAoU0Vfod9XgZdPHVaq5vDjM2YyGMI8vABMVp1zsBR2xcBzJ02dh+
+	xmvKEHdFqEuAoMb+bovewxry9hRbaavzLJu7jC343B4XMH/2fsUeHBqmborh5nNU20+OUv
+	aVAf+02PEMt4SKsdtsbn4SXHo0Zn8+N+lDcMT+A9FenzIQZThSi6CzoYe1jFHlazu1Ogjs
+	s+yi6UK9NaJ2hTrRt3Z2zoSiZg0y4GwABTRLthXZEJOMDtvr6CQL41g2D4ICk0tnmOu1Mj
+	vetvwJ4wMH1ywrnKD7ovrbwhYCU6rYR1P1EV1OS0lYpTk26ngnRn6G4Kfo5c9A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709127357;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3261/azcGbpm0bz+42s7atBucovQYrO3uk/Loe+guZw=;
+	b=UngALnpu5WnIKr0UlT7Addn9mvStlWFfdsVUj67sBrBGhYvfDZAkA8wJSizXzR515nsXUh
+	BoO/cunRrUBjDDBQ==
+From: "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/boot] efi/x86: Set the PE/COFF header's NX compat flag
+ unconditionally
+Cc: Ard Biesheuvel <ardb@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240116085347.2193966-2-ardb+git@google.com>
+References: <20240116085347.2193966-2-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zd75LLhzlJx4nJiP@gondor.apana.org.au>
+Message-ID: <170912735700.398.16561638992186941827.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On 24-02-28 17:13, Herbert Xu wrote:
-> The unprepare call must be carried out before the finalize call
-> as the latter can free the request.
-> 
-> Fixes: c66c17a0f69b ("crypto: rk3288 - Remove prepare/unprepare request")
-> Reported-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> 
-> diff --git a/drivers/crypto/rockchip/rk3288_crypto_ahash.c b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-> index 1b13b4aa16ec..a235e6c300f1 100644
-> --- a/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-> +++ b/drivers/crypto/rockchip/rk3288_crypto_ahash.c
-> @@ -332,12 +332,12 @@ static int rk_hash_run(struct crypto_engine *engine, void *breq)
->  theend:
->  	pm_runtime_put_autosuspend(rkc->dev);
->  
-> +	rk_hash_unprepare(engine, breq);
-> +
->  	local_bh_disable();
->  	crypto_finalize_hash_request(engine, breq, err);
->  	local_bh_enable();
->  
-> -	rk_hash_unprepare(engine, breq);
-> -
->  	return 0;
->  }
->  
-Thanks, that was quick. I had locally the same change.
+The following commit has been merged into the x86/boot branch of tip:
 
-Reviewed-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Commit-ID:     891f8890a4a3663da7056542757022870b499bc1
+Gitweb:        https://git.kernel.org/tip/891f8890a4a3663da7056542757022870b499bc1
+Author:        Ard Biesheuvel <ardb@kernel.org>
+AuthorDate:    Tue, 16 Jan 2024 09:53:48 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Wed, 28 Feb 2024 14:23:55 +01:00
 
--- 
-Best regards,
-Andrey Skvortsov
+efi/x86: Set the PE/COFF header's NX compat flag unconditionally
+
+Now that the proper section and file alignment is used, and the EFI
+memory attributes protocol to manage executable permissions where needed
+is invoked, set the NX compat flag unconditionally.
+
+  [ bp: Remove the "we"s. ]
+
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/20240116085347.2193966-2-ardb+git@google.com
+---
+ arch/x86/boot/header.S | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
+index a1bbedd..b5c79f4 100644
+--- a/arch/x86/boot/header.S
++++ b/arch/x86/boot/header.S
+@@ -111,11 +111,7 @@ extra_header_fields:
+ 	.long	salign				# SizeOfHeaders
+ 	.long	0				# CheckSum
+ 	.word	IMAGE_SUBSYSTEM_EFI_APPLICATION	# Subsystem (EFI application)
+-#ifdef CONFIG_EFI_DXE_MEM_ATTRIBUTES
+ 	.word	IMAGE_DLL_CHARACTERISTICS_NX_COMPAT	# DllCharacteristics
+-#else
+-	.word	0				# DllCharacteristics
+-#endif
+ #ifdef CONFIG_X86_32
+ 	.long	0				# SizeOfStackReserve
+ 	.long	0				# SizeOfStackCommit
 
