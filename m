@@ -1,262 +1,204 @@
-Return-Path: <linux-kernel+bounces-84523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21E3A86A7C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:12:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5738E86A7CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:13:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08B091C24055
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:11:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D8C528984E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848832134B;
-	Wed, 28 Feb 2024 05:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6246820DE9;
+	Wed, 28 Feb 2024 05:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sg8xeHhZ"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5G4F82rh"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2044.outbound.protection.outlook.com [40.107.92.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE9F520DFF
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709097104; cv=none; b=SXOXpdOzp3Rgus1/NhNUT95x4iJah0YAc9laeVZpgsQjZmORiDXGLuhsagVIXFZUv33Z5CejDMdbiKBzpce8hVhtqNDtteyLfaWb6LD1LNxyfjWtXydAQ3GCxr4IoyMhX3qJiCnMGo4PPRjjX2w0NdSl7L50j2W0WdT5RC9+lj4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709097104; c=relaxed/simple;
-	bh=CJHY3E3l0STl1mnEmS9k7x6uJ3VjL+97RnCR4NbqExw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Mtkog7rBdLHOZEMQEpH7WX8h/uG1CFmXXn6zUavkCRwP0WQp5JZo9T9dqSW5tPpsTLxSHcBq8O9/zHYyznWpCVialYcfG6xJ8cmYaMP0SdCbUKHRlu5TPT0I3u3HHqmgt6PoKNQLOVZ/9o9dImZNO5eYzo1S9LkfjcmnFjw+xxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--richardycc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sg8xeHhZ; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--richardycc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-608dc99b401so57122577b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 21:11:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709097102; x=1709701902; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uqML4vY0pGUSQ+ssAelgPTzgnCg/ot5G0/OjWps3luM=;
-        b=sg8xeHhZkApqcWnjmVQO3DfekVWLtaf2cMm/zfkMvNy4mIWcEuLpAp7o0dedNZ0uWr
-         hLEbhhK79KgBpqtCzufyVsF2mqwJGr1JrWgbb6dEanUiRTlS6J9wkDdrknOSsoDDRmyU
-         ijL/j2jj8IrjiIiud7IWFL7l6R+Dp5tLTg7K6p2CFaiMO95l3kKXXG2cir94YDQHez8K
-         js5Nv6yoDSj4kWhUuKq4FqBXoW+Bw6iT3ozvCIAae7NcLFZRZ+jsaYipgi0eynK5Uro7
-         mdKkAFMYS3g84foDc573bLbIhyPs8m/8YIBXuuCJ4q4XrbmeIWU3QOL5bEhlzewiNFj5
-         Fyfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709097102; x=1709701902;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uqML4vY0pGUSQ+ssAelgPTzgnCg/ot5G0/OjWps3luM=;
-        b=MXBxr/LHa+qK35OoPy9xgba8OkZ1rfVsd1eTvuPs7QCZlCVPECqvUug1/pkL5dZyJG
-         z/vMRbJ6wnB+GbZE0qdtnssKkxSKadAmHg5do4nTZ2Vvj/pysJBFvDw6W7QfzTzfTux/
-         kYg+dMx0eQQ2493Ln9R3krw47NaHLbiH1AaEYyLIL5/GBk+uY/VWyDo07MoMUzzyEEjV
-         d9VvQF8ai9XRocSGsSHVciw3t79oKn3Ip734EXFMnvYwSTG9nQV9Pvbw7GUwnlI6NRjM
-         UWNj/7EQEU5a0goHc5SwdmxPksRF34sQLSmNeAgtrLm9QYk2SmZ/uESU/NL/UnAbdR9z
-         aFrA==
-X-Forwarded-Encrypted: i=1; AJvYcCUyfCN3FmU6gg+qTMUrb3JlfZR+2dZjXAwYFLSDcXPwyQPhlKE4WEgWAh2K08oV4SMiWeAioaP3I4T+ZvAP0Q166yBoIRpk3fQ2zzi1
-X-Gm-Message-State: AOJu0YxgrWj8KuIhBFvvJmRqvOghDzrX0112V76NP61/oGaJqEDAEUsy
-	5IqNwWcchcVIPqLS43wd2EL1jk0H2QRC4Y16wSg3U8WKYzTJ9qHTnScOFd3ntXhxmrdCoCcuL+C
-	zgBrvC3oN6DtJ5Ij2
-X-Google-Smtp-Source: AGHT+IHyzMYAk41ghRY9BmWyJ7wM13H2JKhk13gZrcP4KgPdiL8ORxRnV4ac5QW5ZsOurSY8RayignJdNKweROeL
-X-Received: from richardycc.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:f5f])
- (user=richardycc job=sendgmr) by 2002:a05:690c:88:b0:609:247a:bdc5 with SMTP
- id be8-20020a05690c008800b00609247abdc5mr955171ywb.4.1709097102017; Tue, 27
- Feb 2024 21:11:42 -0800 (PST)
-Date: Wed, 28 Feb 2024 05:11:17 +0000
-In-Reply-To: <20240226120728.3f495fa7@gandalf.local.home>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F4720B20
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709097174; cv=fail; b=AoNwr45J6zAsJKj47yuVX3gmYOSsTJvuvJfSWVi1mRbXnhLuLO0z8hCSWO2OJ9jvDoiwmnrVn6Q0JM+Ffsiq2doxoyqhDbYRABQsr2Axei1PdfT60LLWp6PlGmHhcGuUU4ILjgQw3DFWUj5VYyXmILy0OnGkoVxMdUyd+al8iIY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709097174; c=relaxed/simple;
+	bh=w2yXVPb7Iev0qKlQ7JtLV6qwA6d5Y9fewM80mMc2REU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=i+1HFxyDhK68Dg/sZnaR8xev6MUkJmA93QEraaPEpe8ooaaUi23ocGSZN0tDpRCijCanRh9ZQ9CIna+3gn2YtlEnRj1J3kOGqL6Jv7RB9N6wGZ5fMR+CLSNGmahbknaxOIPIae8uH3QubGQvhs5M8PfMnoYaaE5c24xqTvaFj6Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=5G4F82rh; arc=fail smtp.client-ip=40.107.92.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hll7iWQ0F5HpuSkE+2wSMVoyXBdDWqksBv2lHWpFr/0VYmvDNZfWw7QgstSF1iCSMiWtInPT/onSzw5lBFadLLQZkAnZprseQJqr1kSlYD2XGgAwtaJg2fHx0QoB+sFt1Salm2VXo/oACCMZGqtH5wvruBYmdqLEoKW2kF9bZMyizK9hzsjNMHT0Mo2r8bFxQ9JAUnzwb0LNS6LP5NVbR5SIFsOEhQZghIxnXUvdSW4kFDkg3BhOnvfuMPzdPXe279J9YoTxLMP6qXS50a1ONCCZ3SiRfBtrhswkm/73NEgjQuucUxYwR1QmH6XfpNqSLWH7r5s2h/en1MYjdoO9RA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uVWB1xbEZ+5ACUD8CcfU3L1Z+zXqEOOWkxj+Zir9D/w=;
+ b=KWsyAG3G0tunYMzXsNO+7596UEgFikHjVifQNkNfPRTgVanA+u6bhHb/JDc2Ij/J8lvU8++CM8mR/LFim/kNxVQOtLIRyp5wR4jWL26HBpC/s3ke8J6uQcXfTHdI4FifL0Z0ZP+ZHWtBMW7mPnSrrMHe6S1XqLNLFnQLT5j74XHOdQdEextI6CRVDyjE3rx52suglP8nIGRNNwo8a7xxae4RWRDT2JP8rNGSr7IGG85xcbdn3B+KwCkHrbOAYZTo/CZ97CfK16HtdsJYZywICi/PeBqhe4jPVvA0InjAasp2eVGsss3smPd0bTMSHT7vMPPLd0juLSZqFgcM4lWOuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uVWB1xbEZ+5ACUD8CcfU3L1Z+zXqEOOWkxj+Zir9D/w=;
+ b=5G4F82rhiwA5bOys5z3AGQCTdI/M/kATKNREc6E7zz4hZ4eWzRrUBbim4gKEgBoRbVjeXMVKruWHw4LOtT4rl9iQzKq6wlE0vjeTAIGCvAQS6HirkIQi8r/N2Pxplhj1oVduBmsKOOxMBhcHv0DBqGdJgT6Rh80VViZGKgfDt+g=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com (2603:10b6:907:9::24)
+ by DS0PR12MB8573.namprd12.prod.outlook.com (2603:10b6:8:162::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.34; Wed, 28 Feb
+ 2024 05:12:49 +0000
+Received: from MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::3150:d50f:7411:e6bb]) by MW2PR12MB2379.namprd12.prod.outlook.com
+ ([fe80::3150:d50f:7411:e6bb%4]) with mapi id 15.20.7316.037; Wed, 28 Feb 2024
+ 05:12:49 +0000
+Message-ID: <0c606d04-6765-d55d-61ec-c3625daea423@amd.com>
+Date: Wed, 28 Feb 2024 10:42:37 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [RESEND][PATCH v8 0/7] Preparatory changes for Proxy Execution v8
+Content-Language: en-US
+To: John Stultz <jstultz@google.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Joel Fernandes <joelaf@google.com>,
+ Qais Yousef <qyousef@google.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Zimuzo Ezeozue <zezeozue@google.com>, Youssef Esmat
+ <youssefesmat@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>,
+ Boqun Feng <boqun.feng@gmail.com>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Metin Kaya <Metin.Kaya@arm.com>, Xuewen Yan <xuewen.yan94@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com
+References: <20240224001153.2584030-1-jstultz@google.com>
+ <3937e057-6b47-77fe-9440-ade079ee2cfe@amd.com>
+ <CANDhNCqUrd4RNfKKMPRZj9ft1tTMNZq-XgYsU1dHpN4ixcZuJw@mail.gmail.com>
+From: K Prateek Nayak <kprateek.nayak@amd.com>
+In-Reply-To: <CANDhNCqUrd4RNfKKMPRZj9ft1tTMNZq-XgYsU1dHpN4ixcZuJw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN3PR01CA0174.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:de::15) To MW2PR12MB2379.namprd12.prod.outlook.com
+ (2603:10b6:907:9::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240226120728.3f495fa7@gandalf.local.home>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-Message-ID: <20240228051127.2859472-1-richardycc@google.com>
-Subject: [PATCH v2] mm: add alloc_contig_migrate_range allocation statistics
-From: Richard Chang <richardycc@google.com>
-To: rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com, 
-	akpm@linux-foundation.org, richardycc@google.com
-Cc: liumartin@google.com, surenb@google.com, minchan@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW2PR12MB2379:EE_|DS0PR12MB8573:EE_
+X-MS-Office365-Filtering-Correlation-Id: eaf84777-7e91-4ad4-fe21-08dc381be880
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	cWg0NclgTgVL35xjOrr13C+hRNuCNTPlOnxRFrmiS3dEDD7DLyvfK8GZ0s2hbndn9YcOd99V1vFmK7xs6ZnULAdpRQQx+CqYMVR+VQwV5ExIOSXu+Jr2dejXlSTaKKVvieGRFaMGqVxFISW4pFit2Dl6xupRsZ0afHkaN5O8r0L4dkgJufUC46PjdJCjxQCWaG9ixB4CwRusz9alIYSX0dANfLmsr/s42VeKUWhk6+kivgKxZTy4fanwwDwMH3schRxZ/1Rcq471WDXFt5G0j69gDJmZ/oYvHL/YC3jeq2iQ1ymrYefPArUWDpd9EiGUcBkPDBhHFtJPQ1uDh9IpZnyQzlbL638yWvNnkfXUOU0z/FR+X5ekaQAZaY7aQ3PLE/RWVTPC3BlOT6zwPp1VdCbCMS/eIPIsCuxsEN6zi7tywh2D/G37+pJHCqNkrPpYw2JvdrJ7bDn6U0XBC/5457yPPPUANLUlFFzET6BNceUEUUWFQfNFOFUSe1OBpoeT1IbvCbrOIPvaU3yxIGeSli1zKkE4plo/gNS9vy0Y5Z88WMAC5FnWTPhrjjeugzN480ACs1KY0eiBuLwtiB9/9C/iwW9K5vt+7OLj9MwYpzQVE8wI6YwgGsynwTHBzWFBbFAjzRoLYYIyL242XOaSGw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR12MB2379.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VHBIcVRLUzNEZ080WUNFdExjOVhxMVBicUJPVDdKSlQySzdvLytsYlM4bm5L?=
+ =?utf-8?B?Sit0VC9NdkNQeDhVYmJTVkRFQzVLNmpVZDdjK2pyYm5wVU8vSHlTaE5aVy9Z?=
+ =?utf-8?B?QTAxc3BFOUhzSksyY3hxYktlRVZLVWJmQnVuVWFXZVBsSVVBUnJZY21wSFp4?=
+ =?utf-8?B?akNwSTkyUzBFRHJxWUtjaEU0RUkwT09WdmdPSXpiVVIyZUR6aXAwSXlZZXhr?=
+ =?utf-8?B?T1VkTlN4WWhJdy9EdGE4NzZISzVQeUJoV3owbHA2Vy9pZEhGU01SVnkxK2hK?=
+ =?utf-8?B?b0VzTDJNNHAwSW9ZMU9iOFU5U2xpb0o0SGdHVUZqZ0ZQd0RnenU5NlZCZ3la?=
+ =?utf-8?B?TGRpTGZGNEYxdXhCRkEycnNVOThzQThoSUlEdUMvdlNEYXpFbXM0VVJneDVn?=
+ =?utf-8?B?SllTdko5cldQMXk2Zm01bjNSWGlMcGpnYVAvR0VmbVh2U3NtNnlSSDNmem1H?=
+ =?utf-8?B?UUt6TStGM0hVMGpUM0RkMGYzVUM3cnRCVzBsMTJaZ1lYN1M2clNHYVJYbG9m?=
+ =?utf-8?B?ZXlLWk1ENTM2aFlXQUpzNHRZRnZDNktXc3prN1ZHSVdGU1RDbUJCUE1ITHh4?=
+ =?utf-8?B?dUtGMUhYZEtVWkQ5VW1QSUdyQzhUek1OWnd5a3BPdEJ4MmJJeXlYd1VIZnpx?=
+ =?utf-8?B?S0tHTEUrbjYvVnViV01PaVNQTk40TlZ5L1M5QWRhbzIzRDErRFYrais3Qk8v?=
+ =?utf-8?B?VEk0bjJ5UkJZV3hpYjhlSFkxZUdCc3VjWG5WZ0NlVnE3NTdMSWpwMkNPNGd0?=
+ =?utf-8?B?U0RTME9mSWphRllKUHdtNTN1SHJIQVE5dHh3ZHBiYXpGb1RBSmpybWVPV3JW?=
+ =?utf-8?B?QW1GRGpibHJHcGlyWW5JeElKcFV0bzFic1Q2QlNGQ1c4eFkzT1h0MDE1QlJz?=
+ =?utf-8?B?VjdMQjhlemJsUjhZNHBxd2RRa2lENldGWDlXK2tlTkU3YUFaaGlPSUh5M0hj?=
+ =?utf-8?B?OFBSZ3ZBOFhhQ3ZZaUFEODRVMXVnTnUxZHhmTzdvZTRuUWRucE1SYloyZXdT?=
+ =?utf-8?B?MGZsSFFsUjBROW5iRlE2Mm9HMDVYakk5bWdMVEJBelRTcnpaT055eE5aN1Jz?=
+ =?utf-8?B?bmtJcGlsdE9zMVMyZFplTXRCVnRlMllqME5ZeWtyWHFVenNFUWNnbXRod0Iz?=
+ =?utf-8?B?S0szQWQ0cEtzL2ZWUUU5aVozOHJoQXViN0Q5UnA4Y0FwSWVDZVk1Smc5TXVK?=
+ =?utf-8?B?ZHBYcnNIZkNmU2J0bTIvL2dBT0NCWnNXNGRFa1JtT2I2aWFXUlhIUzRidk1J?=
+ =?utf-8?B?cDRvZjZ3YUFQMXRtR3RKb096bEJHeFBmVWNnYVB1Y2V6SnpBYWgzRGpPNlhB?=
+ =?utf-8?B?aSs4eVoybUxpbXBncjh2dkxMNDVyUk5lbDJTcHR6RDdZNHhtS0VMR0lWQU5s?=
+ =?utf-8?B?ditUbnVzUGR6ck9hU0huM1QxOUxPK0lMWGx3SFF0WEZJaWVBZStONjlsVW93?=
+ =?utf-8?B?VWd4aTN6SkdmdlNDNm5RNHRGK0tWbTVvdlJ4eUQ1WjdHZlFSaW02NU11TFhL?=
+ =?utf-8?B?M0JoRnB6Q2Jjc1hxMHBpL25UZHZmSThvSUpQbFZVbUVxVGxvWXNjVWVMNnRQ?=
+ =?utf-8?B?KzVqbGRHQWE2amd5WWZBV1RQZUUwa21tZm5XWUlYYU9mOEI5ZDYyT3dGdlpB?=
+ =?utf-8?B?Q0tWZDNobGNldlFZNkJTemk3NERmZ1VmMm14a0NkckZXOE1SNzdtRmEwQ1ZD?=
+ =?utf-8?B?cy9GK25ISTFLS3A5MmQ2emZkaFlEenlScXllcURmVnZBWTlJQ3kvTEZMRHI3?=
+ =?utf-8?B?UlVpdENsTXpPNUhoU3ZPZTBJK0k5NFRvdDU0aVdsbU45cUttSEQvbXh6SUlW?=
+ =?utf-8?B?MVRINldoSVR1K3kvMzVNY2RNUitiaDZZS0prWE14Rm1mb1dDU3EzSUdRbnZP?=
+ =?utf-8?B?YlhISEVwakNMUjRTSFBpZkg3UU5NbEVmZkw3OVVXUXdPWXA0d1hTajFkZE1N?=
+ =?utf-8?B?M2VPVWlRNWZyU0Z5LzVJUEoxa0pwNG9vL3hWbmp1cW1YaTdpcE0wb2gzcEFp?=
+ =?utf-8?B?c09VNU56dllJVW1BYWo0bXZnbGl1Z1d6amRlVk1mcTM2R3VESjdOTFdMV0Qv?=
+ =?utf-8?B?ZWkrR2xmN2w5RjJtWGhEYXFkSFBRVDdWWGhEb255L2g3YnoxVTRZcms2Z2c3?=
+ =?utf-8?Q?zVlkTh2xmjFwQCgRpbHrVuVdj?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eaf84777-7e91-4ad4-fe21-08dc381be880
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR12MB2379.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 05:12:49.8662
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RqSbC0WUVdFYGhZfPN/SyHdotwCodJO4uGGXb/d3sXu/1Ouag4f0y5R44s8PP+x1Iuc3oM6Fwc2OARg4mgRakg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8573
 
-alloc_contig_migrate_range has every information to be able to
-understand big contiguous allocation latency. For example, how many
-pages are migrated, how many times they were needed to unmap from
-page tables.
+Hello John,
 
-This patch adds the trace event to collect the allocation statistics.
-In the field, it was quite useful to understand CMA allocation
-latency.
+On 2/28/2024 10:21 AM, John Stultz wrote:
+> On Tue, Feb 27, 2024 at 8:43 PM 'K Prateek Nayak' via kernel-team
+> <kernel-team@android.com> wrote:
+>> Happy to report that I did not see any regressions with the series
+>> as expected. Full results below.
+>>
+> [snip]
+>> o System Details
+>>
+>> - 3rd Generation EPYC System
+>> - 2 x 64C/128T
+>> - NPS1 mode
+>>
+>> o Kernels
+>>
+>> tip:            tip:sched/core at commit 8cec3dd9e593 ("sched/core:
+>>                 Simplify code by removing duplicate #ifdefs")
+>>
+>> proxy-setup:    tip + this series
+>>
+> 
+> Hey! Thank you so much for taking the time to run these through the
+> testing! I *really* appreciate it!
+> 
+> Just to clarify: by "this series" did you test just the 7 preparatory
+> patches submitted to the list here, or did you pull the full
+> proxy-exec-v8-6.8-rc3 set from git?
 
-Signed-off-by: Richard Chang <richardycc@google.com>
----
-* from v1 - https://lore.kernel.org/linux-mm/20240226100045.2083962-1-richardycc@google.com/
-  * Move the trace event int field to the end of the longs - rostedt
-  * Do the calculation only when tracing is enabled - rostedt
+Just these preparatory patches for now. On my way to queue a run for the
+whole set from your tree. I'll use the "proxy-exec-v8-6.8-rc3" branch and
+pick the commits past the
+"[ANNOTATION] === Proxy Exec patches past this point ===" till the commit
+ff90fb583a81 ("FIX: Avoid using possibly uninitialized cpu value with
+activate_blocked_entities()") on top of the tip:sched/core mentioned
+above since it'll allow me to reuse the baseline numbers :)
 
- include/trace/events/kmem.h | 38 +++++++++++++++++++++++++++++++++++++
- mm/internal.h               |  3 ++-
- mm/page_alloc.c             | 32 ++++++++++++++++++++++++++-----
- mm/page_isolation.c         |  2 +-
- 4 files changed, 68 insertions(+), 7 deletions(-)
+> (Either is great! I just wanted to make sure its clear which were covered)
+> 
+> [snip]
+>> Tested-by: K Prateek Nayak <kprateek.nayak@amd.com>
+> 
+> Thanks so much again!
+> -john
 
-diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
-index 58688768ef0f..6e62cc64cd92 100644
---- a/include/trace/events/kmem.h
-+++ b/include/trace/events/kmem.h
-@@ -304,6 +304,44 @@ TRACE_EVENT(mm_page_alloc_extfrag,
- 		__entry->change_ownership)
- );
- 
-+TRACE_EVENT(mm_alloc_contig_migrate_range_info,
-+
-+	TP_PROTO(unsigned long start,
-+		 unsigned long end,
-+		 unsigned long nr_migrated,
-+		 unsigned long nr_reclaimed,
-+		 unsigned long nr_mapped,
-+		 int migratetype),
-+
-+	TP_ARGS(start, end, nr_migrated, nr_reclaimed, nr_mapped, migratetype),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned long, start)
-+		__field(unsigned long, end)
-+		__field(unsigned long, nr_migrated)
-+		__field(unsigned long, nr_reclaimed)
-+		__field(unsigned long, nr_mapped)
-+		__field(int, migratetype)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->start = start;
-+		__entry->end = end;
-+		__entry->nr_migrated = nr_migrated;
-+		__entry->nr_reclaimed = nr_reclaimed;
-+		__entry->nr_mapped = nr_mapped;
-+		__entry->migratetype = migratetype;
-+	),
-+
-+	TP_printk("start=0x%lx end=0x%lx migratetype=%d nr_migrated=%lu nr_reclaimed=%lu nr_mapped=%lu",
-+		  __entry->start,
-+		  __entry->end,
-+		  __entry->migratetype,
-+		  __entry->nr_migrated,
-+		  __entry->nr_reclaimed,
-+		  __entry->nr_mapped)
-+);
-+
- /*
-  * Required for uniquely and securely identifying mm in rss_stat tracepoint.
-  */
-diff --git a/mm/internal.h b/mm/internal.h
-index f309a010d50f..e114c647e278 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -537,7 +537,8 @@ isolate_migratepages_range(struct compact_control *cc,
- 			   unsigned long low_pfn, unsigned long end_pfn);
- 
- int __alloc_contig_migrate_range(struct compact_control *cc,
--					unsigned long start, unsigned long end);
-+					unsigned long start, unsigned long end,
-+					int migratetype);
- 
- /* Free whole pageblock and set its migration type to MIGRATE_CMA. */
- void init_cma_reserved_pageblock(struct page *page);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 150d4f23b010..da169fa20d8e 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6219,9 +6219,14 @@ static void alloc_contig_dump_pages(struct list_head *page_list)
- 	}
- }
- 
--/* [start, end) must belong to a single zone. */
-+/*
-+ * [start, end) must belong to a single zone.
-+ * @migratetype: using migratetype to filter the type of migration in
-+ *		trace_mm_alloc_contig_migrate_range_info.
-+ */
- int __alloc_contig_migrate_range(struct compact_control *cc,
--					unsigned long start, unsigned long end)
-+					unsigned long start, unsigned long end,
-+					int migratetype)
- {
- 	/* This function is based on compact_zone() from compaction.c. */
- 	unsigned int nr_reclaimed;
-@@ -6232,6 +6237,10 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
- 		.nid = zone_to_nid(cc->zone),
- 		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
- 	};
-+	struct page *page;
-+	unsigned long total_mapped = 0;
-+	unsigned long total_migrated = 0;
-+	unsigned long total_reclaimed = 0;
- 
- 	lru_cache_disable();
- 
-@@ -6257,9 +6266,18 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
- 							&cc->migratepages);
- 		cc->nr_migratepages -= nr_reclaimed;
- 
-+		if (trace_mm_alloc_contig_migrate_range_info_enabled()) {
-+			total_reclaimed += nr_reclaimed;
-+			list_for_each_entry(page, &cc->migratepages, lru)
-+				total_mapped += page_mapcount(page);
-+		}
-+
- 		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
- 			NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE, NULL);
- 
-+		if (trace_mm_alloc_config_migrate_range_info_enabled() && !ret)
-+			total_migrated += cc->nr_migratepages;
-+
- 		/*
- 		 * On -ENOMEM, migrate_pages() bails out right away. It is pointless
- 		 * to retry again over this error, so do the same here.
-@@ -6273,9 +6291,13 @@ int __alloc_contig_migrate_range(struct compact_control *cc,
- 		if (!(cc->gfp_mask & __GFP_NOWARN) && ret == -EBUSY)
- 			alloc_contig_dump_pages(&cc->migratepages);
- 		putback_movable_pages(&cc->migratepages);
--		return ret;
- 	}
--	return 0;
-+
-+	trace_mm_alloc_contig_migrate_range_info(start, end, migratetype,
-+						 total_migrated,
-+						 total_reclaimed,
-+						 total_mapped);
-+	return (ret < 0) ? ret : 0;
- }
- 
- /**
-@@ -6355,7 +6377,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
- 	 * allocated.  So, if we fall through be sure to clear ret so that
- 	 * -EBUSY is not accidentally used or returned to caller.
- 	 */
--	ret = __alloc_contig_migrate_range(&cc, start, end);
-+	ret = __alloc_contig_migrate_range(&cc, start, end, migratetype);
- 	if (ret && ret != -EBUSY)
- 		goto done;
- 	ret = 0;
-diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-index cd0ea3668253..a5c8fa4c2a75 100644
---- a/mm/page_isolation.c
-+++ b/mm/page_isolation.c
-@@ -434,7 +434,7 @@ static int isolate_single_pageblock(unsigned long boundary_pfn, int flags,
- 				}
- 
- 				ret = __alloc_contig_migrate_range(&cc, head_pfn,
--							head_pfn + nr_pages);
-+							head_pfn + nr_pages, page_mt);
- 
- 				/*
- 				 * restore the page's migratetype so that it can
--- 
-2.44.0.rc1.240.g4c46232300-goog
-
+--
+Thanks and Regards,
+Prateek
 
