@@ -1,232 +1,193 @@
-Return-Path: <linux-kernel+bounces-85685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E63786B941
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:48:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A5A586B943
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:49:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81E431C2314B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:48:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 852B2B26560
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3095415E5CE;
-	Wed, 28 Feb 2024 20:48:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B8513541F;
+	Wed, 28 Feb 2024 20:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LibtN70t"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="A1km7Vpv"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C46D15DBBB
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4632573509;
+	Wed, 28 Feb 2024 20:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709153314; cv=none; b=fNxLEibpW33+J1Ykm2XWe2Vmc71JKdnHSGkvNKIDCYFBFbqx73ckOEcFCZUgtFUkb9xiLlQuO+pl9GAIE/Ly/kn9wsmQj7FYmS1gKOaAK8tufuBvVSwIlLSlQOTftkQUYiiWMjY1XdYAamjXvBqinEY9JwKtCCGt8pkPq1BoeXw=
+	t=1709153330; cv=none; b=IsdCo8vWT9OphyvDMWLgL8G1vDJZXN8YHpRPNqMUlr4ynzhQg4ZMOaOTRlAKbnvDg43Ng2mYp3PHnHnlICaMlhnPGeHOC+VWrf/X5ljMfcR2FWU2J9tyV0AAy4BpfRL4fDy7Qh1tsAMiUynpUH4oEbOlW+NvT44XnpUymZoXbNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709153314; c=relaxed/simple;
-	bh=j7yv2aZOYPyxqiCW7SC4YeHXcQrFeT9++J/3vRdLw6I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hDAO/q9bI901HIciTn/hDfcxeW0kaRVEUtqALx1vQcbZy/L0ONjjInUckhVEhkiVF5mLuqVH0QYxpETL3KlijolexlH9FFNmvxu6dEE3gHdDAJdVcPXut5A6LTPIZfG+wq9upemhTkg97RfSx63u7+ng9Qhdehoho79LVRiHEzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LibtN70t; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so320126a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:48:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709153307; x=1709758107; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7yv2aZOYPyxqiCW7SC4YeHXcQrFeT9++J/3vRdLw6I=;
-        b=LibtN70tuJeuLmSqDky4HPmoDXrM7LtFWmWLHig8jIBi/eu6jJdCsGt6ymc6uiZGTJ
-         DKO8K2PXMimiihifqNTXeMzCD7lafZOj05mIad3Ril/uKK3b57XUP6/laKA74BYoay+3
-         FCtiHCHq1eJFakugvleGcQDk2qfQz/9Gxh1tI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709153307; x=1709758107;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j7yv2aZOYPyxqiCW7SC4YeHXcQrFeT9++J/3vRdLw6I=;
-        b=K1en2PfXFpy/Lh7SEk7ge+fc4jk//ngEcNn15AV2CqBV/P5jQ7iqsBvY2Kaauhcdx0
-         c6B72OCJKT8vSzhTBq5Lai0Q/OQRMg3CAOkxQAtV56QXo64OROEWaCnBSCmGsFGnvZrE
-         EhsRrQUiu4bk9DsLrHxlLA9iAx86nRIVTCZWvRPmRXYOhn3VG7zk43ee+kG56yKYT5GF
-         SlDaO468P1ZP42Jer5upxkf+0ci0ZylA3158niinUkA84F98EnQPDe35RGwNKzYFI0do
-         743bG0Ic6Xuex6DdKLUmRYmcG8dDuR16Wxd3cppkGq7jV5kDVD99C1XO+2iqurxj446m
-         HRzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWygt/3Hohh50y/NfGpk0rXBPywOhbHpuBXi9XwE/oq9Mnqdcpa8ET7ztoPC/3q4ydhNrsFMsMmoKDj4mfFWwRiOCkMHXgIxzl40Lhg
-X-Gm-Message-State: AOJu0Yx6b0cImqC/z/Qmzr8NyLEP1Yi7QTplnx+b40TIRLmBhteEcbGR
-	NMM8ziPYdv5W5x4hOJQfg6C8nAQXRrPay1o3C8OFl4X4eeZ8RGd3hOUgB1CrnZU0W8MEo8efKXi
-	fhkBm
-X-Google-Smtp-Source: AGHT+IFidFyeCm2I/z7QiF+5wcQDRe33dbXNQoRK0k9FrT/UklgHWJXFQwOdtXhRNr8Qpm7whS7PsA==
-X-Received: by 2002:a17:906:3e0d:b0:a3f:4eaf:ec66 with SMTP id k13-20020a1709063e0d00b00a3f4eafec66mr69505eji.25.1709153307545;
-        Wed, 28 Feb 2024 12:48:27 -0800 (PST)
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com. [209.85.128.45])
-        by smtp.gmail.com with ESMTPSA id vu5-20020a170907a64500b00a442124bd2dsm440286ejc.37.2024.02.28.12.48.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 12:48:27 -0800 (PST)
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4129a748420so20055e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:48:25 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXsbw5O6oReaON/97WU/lHAQfAbkfhE/NLC0dAhh0FbYRPcC37ZwWUt5PdBYZZblvIX9rXbP5s9ncMaHlIiadloYgB7kk8a+j33yl4r
-X-Received: by 2002:a05:600c:b99:b0:412:a37b:4171 with SMTP id
- fl25-20020a05600c0b9900b00412a37b4171mr134980wmb.4.1709153305657; Wed, 28 Feb
- 2024 12:48:25 -0800 (PST)
+	s=arc-20240116; t=1709153330; c=relaxed/simple;
+	bh=xB/Lvc3pAyy3aE4uSGlVi5mHrvCghaImnICZTejHVYw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pSR96rcfW3F5XvZIZZ6R0TuT0ypwpbjxi3B5ui4jrl4INqe6QPnpm1e47XR1l0Q8adl9FjEGti2EnAuexgExLSR/m67vM41egiutVSK3/+iGsCrHJafpZREYHm+n+Du5ZeK1AJI2TeFXt4DMtara+ZTGeO2YKLsEyjaKTRGXtqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=A1km7Vpv; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1709153316; x=1709758116; i=w_armin@gmx.de;
+	bh=xB/Lvc3pAyy3aE4uSGlVi5mHrvCghaImnICZTejHVYw=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=A1km7VpvR1RYpB9+WhwCVsuYxvp7u1Qta2kWyER8RKFnhcOaPAu2yOXLYxp4/hE5
+	 lLPqHMa3XODQkPUWCcG+BXgK17XtkA13je+bWjGOgmLYzCqtiRQ/6EbvCevLaNHvb
+	 FafPjVNeUpt7j0UQDI7gLkCxoQz3V7Z83bIIkwD4rJA2BKTEPQkxnlRJ8CJe5yLqS
+	 Oy2LQqlK7F2hApnxsLDWQobYy6tewA4gIukrz7tFEhd4WLlpCnwKgqT0J3Fkr7Hqg
+	 OmxSnmXzrXsmy4ELoiGv1v0UoIE8uVmym/ahLJ9xEfDYYIg7ZAEx4GeoGO2e82N8j
+	 J6a5wzG30a07vpUpug==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mk0NU-1rCirs0w36-00kLYJ; Wed, 28
+ Feb 2024 21:48:36 +0100
+Message-ID: <63ba267a-27db-456e-be32-2efe27fa26e1@gmx.de>
+Date: Wed, 28 Feb 2024 21:48:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202141109.1.I24277520ac754ea538c9b14578edc94e1df11b48@changeid>
- <CAJMQK-it9YMod4rHKnACq4O-iaGieK2SN4x5vQ018CghsA631A@mail.gmail.com>
- <CAD=FV=VfuFrK1cSKA0maMzT5dxzKEzADqrd69fZKXuAGrU2rmA@mail.gmail.com>
- <87sf1u58k0.fsf@intel.com> <CAD=FV=XQdLm3PcjEd_g_dBJ9QO8zAJtj5nrXS9=cjC80+-Jbfg@mail.gmail.com>
- <cbcd981f-bd5d-477e-8482-d3414be17057@linaro.org> <CAD=FV=UtpL=Wy7jnUFkTF8WtMjWa3ZfJXsXDX=Q=j6o_6rd4AQ@mail.gmail.com>
- <b4266102-3354-4d4a-8368-c143b12dbead@linaro.org>
-In-Reply-To: <b4266102-3354-4d4a-8368-c143b12dbead@linaro.org>
-From: Doug Anderson <dianders@chromium.org>
-Date: Wed, 28 Feb 2024 12:48:10 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=VQvC+JxVgtm=w8jFf+_caUoH=6QsKdfP5zzDFwORgC-Q@mail.gmail.com>
-Message-ID: <CAD=FV=VQvC+JxVgtm=w8jFf+_caUoH=6QsKdfP5zzDFwORgC-Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/dp: Don't attempt AUX transfers when eDP panels are
- not powered
-To: neil.armstrong@linaro.org
-Cc: Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Hsin-Yi Wang <hsinyi@chromium.org>, dri-devel@lists.freedesktop.org, eizan@chromium.org, 
-	Ankit Nautiyal <ankit.k.nautiyal@intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, 
-	Imre Deak <imre.deak@intel.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] platform/x86/amd/pmf: Fix possible out-of-bound
+ memory accesses
+Content-Language: en-US
+To: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20240227145500.299683-1-W_Armin@gmx.de>
+ <20240227145500.299683-2-W_Armin@gmx.de>
+ <2dd63b5b-cf60-9f28-55b3-35eab537dc9b@linux.intel.com>
+ <0e70681f-85c2-43f9-822a-2e07776c37c9@amd.com>
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <0e70681f-85c2-43f9-822a-2e07776c37c9@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:SyH/nmgU2774H+komsiu5jOrBKM93Q/lDfp/A1JMDlijW0dIDIo
+ qlGTzGn7y8GRGiDajuHEYxJ/8IAyXhgLGTRMKEg0w2Uv5W2xm+2MWSqyQfJURXQOxH7xJrz
+ FpzohwyTTv3a8VzhO2LSYuiWrxyc1dFAWgtdmKz4Ol/8LVZN4JDUV+qRkUGCN8nsHo8b37p
+ tgW1bI2nxusE0TUNTHKgA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:3dRI2+X09JY=;HcDYDkXd0mggqMRwvx12MJ+gSuD
+ wxAdLYrEYvIh+3wvZzfD/rMEJsg8giRmFEma0zrmUbENt6E/ZIrpem6++hOo9s5Yvnxc35EWo
+ 2tkW16cwpOmWHGqum5wrCBcqSaAwpKfou6yVMV+fMOFrcGZ7oMdU9tOH6x0xohQ6wOI5/SarM
+ rsR1HOPHmGzt4It/ooa3XNHSJEo5sj9fnSdTZso/uViJ25FSTcTKGyZCoYpUa4x+UCBSHbmlY
+ 2UkT4xS1YkC7w5Ylz3ytN15z4VvAer2CNktcOCkKCrb9pqi1awjMj2naJXjD1Y4paWK92tZ1I
+ lF+6+9nR9QEI+lqM+N7ZuN+06aaYwTGA7n86Jm5d5Kd/qkrLKP2Ux24fX42bQEoYaIKER20c0
+ trqeorVSGJJ15ziLMZZRGMiCR+fEOFKBZ6bqXrwr0Tjn214M5aldunvOdBraqvas8pv32eY+v
+ FbzP/Z7TPnOzL0u3bRS6YMavIVakTFjKcfqyiu4IZYRs7ljj5JAUNeMGYrQR9GcuPQhAAZdzw
+ 8+U5GS1td1zj7nUrC14UbgphUu9RaZKagBUry6aNNfnYExN8Ocx+JIPKKipedS/1PlXsvJPMQ
+ h7D+wMyBCSrnd2MLn1pvpQ+Z8zMA6gE+Qx6GlVwojYyNwp7ziuJaA2ehHpUGVRXwAtcvl0FDk
+ 7KkrWXOrqxGbyFdDA1mlcZdZgm2RqhiHbFQ0izUs3OG/at7708pHbvd+qmwuxTkdu8bSay3RT
+ fSz9jRTvhpCkqEciKO7cVRknGbbgZCrWCUDloyeYUK3DX9+nmcMwuxehZ3PLY43KluiraGQe4
+ u1HzZOmsJ1xfh9pkSaWWoouPsTx03xzJ09N+BkBMb65/w=
 
-Hi,
+Am 28.02.24 um 12:16 schrieb Shyam Sundar S K:
 
-On Wed, Feb 28, 2024 at 8:52=E2=80=AFAM <neil.armstrong@linaro.org> wrote:
+> Hi Ilpo,
 >
-> On 28/02/2024 17:40, Doug Anderson wrote:
-> > Neil,
-> >
-> > On Thu, Feb 15, 2024 at 8:53=E2=80=AFAM Neil Armstrong
-> > <neil.armstrong@linaro.org> wrote:
-> >>
-> >> Hi Doug,
-> >>
-> >> On 15/02/2024 16:08, Doug Anderson wrote:
-> >>> Hi,
-> >>>
-> >>> On Thu, Feb 15, 2024 at 2:24=E2=80=AFAM Jani Nikula <jani.nikula@inte=
-l.com> wrote:
-> >>>>
-> >>>> On Wed, 14 Feb 2024, Doug Anderson <dianders@chromium.org> wrote:
-> >>>>> Hi,
-> >>>>>
-> >>>>> On Tue, Feb 13, 2024 at 10:25=E2=80=AFPM Hsin-Yi Wang <hsinyi@chrom=
-ium.org> wrote:
-> >>>>>>
-> >>>>>> On Wed, Feb 14, 2024 at 2:23=E2=80=AFPM Douglas Anderson <dianders=
-@chromium.org> wrote:
-> >>>>>>>
-> >>>>>>> If an eDP panel is not powered on then any attempts to talk to it=
- over
-> >>>>>>> the DP AUX channel will timeout. Unfortunately these attempts may=
- be
-> >>>>>>> quite slow. Userspace can initiate these attempts either via a
-> >>>>>>> /dev/drm_dp_auxN device or via the created i2c device.
-> >>>>>>>
-> >>>>>>> Making the DP AUX drivers timeout faster is a difficult propositi=
-on.
-> >>>>>>> In theory we could just poll the panel's HPD line in the AUX tran=
-sfer
-> >>>>>>> function and immediately return an error there. However, this is
-> >>>>>>> easier said than done. For one thing, there's no hard requirement=
- to
-> >>>>>>> hook the HPD line up for eDP panels and it's OK to just delay a f=
-ixed
-> >>>>>>> amount. For another thing, the HPD line may not be fast to probe.=
- On
-> >>>>>>> parade-ps8640 we need to wait for the bridge chip's firmware to b=
-oot
-> >>>>>>> before we can get the HPD line and this is a slow process.
-> >>>>>>>
-> >>>>>>> The fact that the transfers are taking so long to timeout is caus=
-ing
-> >>>>>>> real problems. The open source fwupd daemon sometimes scans DP bu=
-sses
-> >>>>>>> looking for devices whose firmware need updating. If it happens t=
-o
-> >>>>>>> scan while a panel is turned off this scan can take a long time. =
-The
-> >>>>>>> fwupd daemon could try to be smarter and only scan when eDP panel=
-s are
-> >>>>>>> turned on, but we can also improve the behavior in the kernel.
-> >>>>>>>
-> >>>>>>> Let's let eDP panels drivers specify that a panel is turned off a=
-nd
-> >>>>>>> then modify the common AUX transfer code not to attempt a transfe=
-r in
-> >>>>>>> this case.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> >>>>>>> ---
-> >>>>>>
-> >>>>>> Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> >>>>>
-> >>>>> Thanks for the review!
-> >>>>>
-> >>>>> Given that this touches core DRM code and that I never got
-> >>>>> confirmation that Jani's concerns were addressed with my previous
-> >>>>> response, I'm still going to wait a little while before applying. I=
-'m
-> >>>>> on vacation for most of next week, but if there are no further repl=
-ies
-> >>>>> between now and then I'll plan to apply this to "drm-misc-next" the
-> >>>>> week of Feb 26th. If someone else wants to apply this before I do t=
-hen
-> >>>>> I certainly won't object. Jani: if you feel this needs more discuss=
-ion
-> >>>>> or otherwise object to this patch landing then please yell. Likewis=
-e
-> >>>>> if anyone else in the community wants to throw in their opinion, fe=
-el
-> >>>>> free.
-> >>>>
-> >>>> Sorry for dropping the ball after my initial response. I simply have=
- not
-> >>>> had the time to look into this.
-> >>>>
-> >>>> It would be great to get, say, drm-misc maintainer ack on this befor=
-e
-> >>>> merging. It's not fair for me to stall this any longer, I'll trust t=
-heir
-> >>>> judgement.
-> >>>>
-> >>>> Reasonable?
-> >>>
-> >>> I'd be more than happy for one of the drm-misc maintainers to Ack.
-> >>> I'll move Maxime, Thomas, and Maarten to the "To:" line to see if tha=
-t
-> >>> helps get through their filters.
-> >>
-> >> I'll like some test reports to be sure it doesn't break anything,
-> >> then I'll be happy to give my ack !
-> >
-> > Are you looking for any more test reports at this point? Eizan did
-> > some testing and provided a tag, though this was also on ChromeOS.
-> > Steev also tested on two non-ChromeOS environments and provided his
-> > tag. It's also been another two weeks of this being rolled out to some
-> > Chromebook users and I haven't heard any reports of problems. If
-> > somehow something was missed, I'm happy to follow-up and provide
-> > additional fixes if some report comes in later.
->
-> Sure, thx I think you can apply it now
->
-> Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
+> On 2/27/2024 21:15, Ilpo J=C3=A4rvinen wrote:
+>> Hi Shyam & Armin,
+>>
+>> Shyam, please take a look at the question below.
+>>
+>> On Tue, 27 Feb 2024, Armin Wolf wrote:
+>>
+>>> The length of the policy buffer is not validated before accessing it,
+>>> which means that multiple out-of-bounds memory accesses can occur.
+>>>
+>>> This is especially bad since userspace can load policy binaries over
+>>> debugfs.
+> IMO, this patch is not required, reason being:
+> - the debugfs patch gets created only when CONFIG_AMD_PMF_DEBUG is
+> enabled.
+> - Sideload of policy binaries is only supported with a valid signing
+> key. (think like this can be tested & verified within AMD environment)
+> - Also, in amd_pmf_get_pb_data() there are boundary conditions that
+> are being checked. Is that not sufficient enough?
 
-Pushed to drm-misc-next.
+IMHO, amd_pmf_get_pb_data() only checks if the length of the binary is
+between 0 and the maximum buffer size.
 
-8df1ddb5bf11 drm/dp: Don't attempt AUX transfers when eDP panels are not po=
-wered
+If for example the binary contains only 4 bytes, then there will be an
+out-of-bounds access when trying to read the cookie and length.
+
+Or if the length is bigger than the binary buffer, then the driver just
+updates the buffer length even if the buffer is too small.
+
+I think the driver should catch such cases and return an error.
+
+(Please note that we are talking about the binary buffer, not the internal
+structure of the remaining policy binary itself).
+
+>>> +	if (dev->policy_sz < POLICY_COOKIE_LEN + sizeof(length))
+>>> +		return -EINVAL;
+>>> +
+>>>   	cookie =3D *(u32 *)(dev->policy_buf + POLICY_COOKIE_OFFSET);
+>>>   	length =3D *(u32 *)(dev->policy_buf + POLICY_COOKIE_LEN);
+>> This starts to feel like adding a struct for the header(?) would be bet=
+ter
+>> course of action here as then one could compare against sizeof(*header)
+>> and avoid all those casts (IMO, just access the header fields directly
+>> w/o the local variables).
+> Not sure if I get your question clearly. Can you elaborate a bit more
+> on the struct you are envisioning?
+
+I think he envisions something like this:
+
+struct __packed cookie_header {
+	u32 magic;
+	u32 length;
+};
+
+>
+> but IHMO, we actually don't need a struct - as all that we would need
+> is to make sure the signing cookie is part of the policy binary and
+> leave the rest of the error handling to ASP/TEE modules (we can rely
+> on the feedback from those modules).
+>
+>> Shyam, do you think a struct makes sense here? There's some header in
+>> this policy, right?
+> Yes, the policy binary on a whole has multiple sections within it and
+> there are multiple headers (like signing, OEM header, etc).
+>
+> But that might be not real interest to the PMF driver. The only thing
+> the driver has to make sure is that the policy binary going into ASP
+> (AMD Secure Processor) is with in the limits and has a valid signing
+> cookie. So this part is already taken care in the current code.
+>
+>>
+>> There are more thing to address here...
+>>
+>> 1) amd_pmf_start_policy_engine() function returns -EINVAL & res that is
+>>     TA_PMF_* which inconsistent in type of the return value
+>>
+> ah! it has mix of both int and u32 :-)
+>
+> Armin, would you like to amend this in your current series? or else I
+> will submit a change for this in my next series.
+>
+> Thanks,
+> Shyam
+
+I can do so, but i will be unable to send a new patch series for the rest =
+of this week.
+
+Thanks,
+Armin Wolf
+
+>> 2) Once 1) is fixed, the caller shadowing the return code can be fixed =
+as
+>>     well:
+>>          ret =3D amd_pmf_start_policy_engine(dev);
+>>          if (ret)
+>>                  return -EINVAL;
+>>
+>>
 
