@@ -1,157 +1,103 @@
-Return-Path: <linux-kernel+bounces-84284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A82A786A48F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:50:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2970186A491
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:52:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 489551F23C6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:50:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8172FB25684
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB2A290F;
-	Wed, 28 Feb 2024 00:49:59 +0000 (UTC)
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8E3111E;
+	Wed, 28 Feb 2024 00:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="KAx74stG"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA8FD23BD
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:49:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CA9A29
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:52:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709081399; cv=none; b=FlpFOQJ/fHFZ+GvdNi1gJNCh/l2MPbGpnmXyj2hpXXDGi32D1tyLmD/k1LKPIH3F/87Xg5o8iSFvUMAtpu6zHOZp+oqKJ8lgPqctnbwG/DCH/NcfIfPF5GSJFMHBrYiHPVvbiFnuVx1H3YiReNjrSGzCAEjqAmdm+Fbsu64ygv0=
+	t=1709081535; cv=none; b=ETREUocxGUwj/CypVLIhWjsIswX7vYINs83AMTFpzyraH7wrkw2q65m9HenIk11to6dOEYQzNe4NK1J4k0vuJXPgQj8e4qDl2T6snMKdPt/V3yFpoDyYq/PX9hA0G2mX7yTVoSdcthRmrrln3i5oPDUYkUchlOIx3xPC9/480vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709081399; c=relaxed/simple;
-	bh=dIBr8tyIVMUn1qvp0/S8KjT65BOAIIB1EYw9sFoLihI=;
+	s=arc-20240116; t=1709081535; c=relaxed/simple;
+	bh=/4+xU2nl2Qim7JMaWpZ5/E+UvRv0P+YRKK4Rvx4upno=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Wtcmo8X+uRLbuiqArwp4fqkdgX8+veI862CHAzPBq+dwbF8kB3X/ZzxLZ3V4GHJEPfA+n+QOEluHp/cn7NjIN6izdW2ADzmCSaQ8vZAzb238oYCeJfbaIgOLXX1/LH5hQbLIa6TjApnhuthIFXV9sooC+yKavvIlsdrSoXDY6s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e4670921a4so2812054b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:49:57 -0800 (PST)
+	 To:Cc:Content-Type; b=sXdwixKlnlfQXEDe3OEtD8HgTV2HQsMV+tNocOkzSIHWDx7M5Djb1r6hZrWIW4COCxRaHAbG1hFfVlaofQBO8GGICOThtTIbjuQioAshBw16xwOlmMnH/ezx3KfJnD+ojNDwVNIQ/6xILrS9mjvPnqnIGU5KWsoZym7CPh3cSwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=KAx74stG; arc=none smtp.client-ip=209.85.208.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d2505352e6so69648221fa.3
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:52:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709081531; x=1709686331; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=H/XDCG1AIPihXz816FH77DikjrbKv0OtTNG33iOLSO4=;
+        b=KAx74stGkQPTsABFbcSuIeZWuWQMOlxvKFswlentJs3zjM1ezqnm4jlM/IqKlGaRSR
+         73o0ak14hZ/gAkXKaN7UQaqSy/32aD4m7PS4K62bFM+HOl6p/2qsTzxasL2b4xs5YaZ+
+         ueKMR7hhtfOkF9WK3xLikfPCcG3NQ0hKMPqpM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709081397; x=1709686197;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=04obEC+ENFXzX+FFFDRk5S/y1ymFZwYaQ9bqc+hwyH8=;
-        b=eOXvlS7eD2zPvMgc+19aqRCu/3583KIfGaW5nMW5NOII4KhCvKapyY6M9lNm7FY6q8
-         ErYhcapuvXoA0uWlFtSZEymV96cCMgJgUfGWVNoc4L8Sa1LO6/jgsAuYJPDPEidxLPZ5
-         /RypJ6YAIhghqiUjb+uKRbJTFOTWcQhJkt5DupzdlT7myiuh8u9SEtsHcg+nxu4LEEfj
-         /57AB2urNFJCqQTgcihwWRFcpr+Oj8thrpwwxXK2WN8Tw88jqgZAlPFYEwY53uw8LwRC
-         eGfCB/WXk/S7OjXUv1FtaU8VHcFQMYAYoGqYOWDIGprWApos1iZizjGtI1wnJ7WBiu/m
-         K+Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCUfZqEXYA2ynjAG/8RWE3EdOfwfJ/EKMhEQPvWpMHH019Jb+EtKxeN7wAXuR5U/XHJ8EvX2YW7XA4Zbn2Urtmgv9nNHcrdSp/OuKP0a
-X-Gm-Message-State: AOJu0YyM/1ZRqx9YYyMxiHv9xFiPVHc5llCcw51CIwBh8JwT4o7jeA3g
-	m2G8V7FdZuYGy9U1l/df5ayrN2u7dlcHM+fOLr8ey3HwrhJAVxBvXPVo8tnDVJlsRUwee4Azh/y
-	JKfWkDGopLypVOg6y29XaDPk4u9I=
-X-Google-Smtp-Source: AGHT+IE2miWAg41zHicaEmDtu9qPyIlvHS7MYa/ojzQAlGzQI6hKbxD470BGBS1f2Bi6s0mdGcHFXAYeNWxQ4ihuGSc=
-X-Received: by 2002:a05:6a20:d90f:b0:199:7d51:a942 with SMTP id
- jd15-20020a056a20d90f00b001997d51a942mr4419552pzb.50.1709081396946; Tue, 27
- Feb 2024 16:49:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709081531; x=1709686331;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=H/XDCG1AIPihXz816FH77DikjrbKv0OtTNG33iOLSO4=;
+        b=rWi+DwDh4klen8x66AkLsrtZ28VZKWhd5S2M8Oj2WjykG504R6ZvhAEIxgh+dFmxz7
+         OGTDO/8MDd0gBYAtNhidifzMzDYcfQRWMGrJEygX3/zl5TjNrijDg3g+UaY14FJekuZP
+         l5lQBgljJfZ7uodv3kJQ3eBwIIKsi7L/YL3l2QyD3TMiHIRO7X3NJdj1WSvKPnI17uwz
+         5ghrqA4uquiJuvN3AFsWNVLZRIGNP767erHtITSx8VEFD9S+CnEhABe267vKCjiURrbq
+         Y13y+TzDe4HJmPtxFq/Y3KhEAe19L4nSQNpMzt9ZTnsyewyOgP+batxc6ezZ91zggFFM
+         djWg==
+X-Forwarded-Encrypted: i=1; AJvYcCXDQP8QoqkfTswL23m5L5Qf0IMWrw8+A2ZyWJHFD7zk4ai5AxgpznD2nrcGCfYTTYJedVF0iVnxhw9MavnTc5zlZvbwDBBTjlowyzHZ
+X-Gm-Message-State: AOJu0YwhgMpqmSG9WF2C7/NDazbBYaQPRG+bHC16LHBrxFOwUp0T/07H
+	+pTSmYROl/CxbHt+Cp2gLbhfG5/+pk7JoZAp43LgQZMn7Haum4jgkiA+VqepSuAzaNGpCRwvKNk
+	wCu+iQw==
+X-Google-Smtp-Source: AGHT+IEX6+JSmROyLy8j/Pix6GNzAamlVJmqEIijqmwa9CvOFYrmZ+kbWPeMflTEHuajVpzHk16+HA==
+X-Received: by 2002:a19:e01d:0:b0:512:d8fb:e45e with SMTP id x29-20020a19e01d000000b00512d8fbe45emr6892065lfg.45.1709081531405;
+        Tue, 27 Feb 2024 16:52:11 -0800 (PST)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id va27-20020a17090711db00b00a3d81b90ffcsm1265313ejb.218.2024.02.27.16.52.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 16:52:10 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a431324e84cso375477166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:52:10 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUDNaoi+Ea4aYlrS7WSq5Crkyqnjng4dTQHECm7gBggNfDLcaJKPqs73et9MlEBjWXp/2cHatc+1scIQjR31TnrB1Y+1NKXCwYBQ1VN
+X-Received: by 2002:a17:906:36db:b0:a3e:95b8:4c7a with SMTP id
+ b27-20020a17090636db00b00a3e95b84c7amr7569487ejc.23.1709081530526; Tue, 27
+ Feb 2024 16:52:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231108215322.2845536-1-namhyung@kernel.org> <CAM9d7chyJun57UV-6qRzgTzDEmUu5Z0mStgjRbrg2dcjUkMQzw@mail.gmail.com>
- <CAM9d7cjQv=RiOkW5=7vXUSwQn5v1XQNiJyL9egGy2VgmKWO69Q@mail.gmail.com> <c29d648c-451a-42af-81d3-e1660e3af46f@redhat.com>
-In-Reply-To: <c29d648c-451a-42af-81d3-e1660e3af46f@redhat.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 27 Feb 2024 16:49:45 -0800
-Message-ID: <CAM9d7cip9xBfx+ZW06TO7BhKvTkQgQ=UZfrc+UOb3wOUrt8VYg@mail.gmail.com>
-Subject: Re: [PATCH] locking/percpu-rwsem: Trigger contention tracepoints only
- if contended
-To: Waiman Long <longman@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	LKML <linux-kernel@vger.kernel.org>
+References: <20240227145619.40b2f9b33dc2723df27f68c0@linux-foundation.org>
+In-Reply-To: <20240227145619.40b2f9b33dc2723df27f68c0@linux-foundation.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 27 Feb 2024 16:51:54 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjk98Rt6PYgwrEp627ociAzWrRpNXOg7TRJcDO_nx1==A@mail.gmail.com>
+Message-ID: <CAHk-=wjk98Rt6PYgwrEp627ociAzWrRpNXOg7TRJcDO_nx1==A@mail.gmail.com>
+Subject: Re: [GIT PULL] hotfixes for 6.8-rc7
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, mm-commits@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 4:19=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
-ote:
+On Tue, 27 Feb 2024 at 14:56, Andrew Morton <akpm@linux-foundation.org> wrote:
 >
->
-> On 2/27/24 18:02, Namhyung Kim wrote:
-> > Hello,
-> >
-> > On Mon, Nov 20, 2023 at 12:28=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> >> Ping!
-> >>
-> >> On Wed, Nov 8, 2023 at 1:53=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
-rg> wrote:
-> >>> It mistakenly fires lock contention tracepoints always in the writer =
-path.
-> >>> It should be conditional on the try lock result.
-> > Can anybody take a look at this?  This makes a large noise
-> > in the lock contention result.
-> >
-> > Thanks,
-> > Namhyung
-> >
-> >>> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> >>> ---
-> >>>   kernel/locking/percpu-rwsem.c | 11 ++++++++---
-> >>>   1 file changed, 8 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/kernel/locking/percpu-rwsem.c b/kernel/locking/percpu-rw=
-sem.c
-> >>> index 185bd1c906b0..6083883c4fe0 100644
-> >>> --- a/kernel/locking/percpu-rwsem.c
-> >>> +++ b/kernel/locking/percpu-rwsem.c
-> >>> @@ -223,9 +223,10 @@ static bool readers_active_check(struct percpu_r=
-w_semaphore *sem)
-> >>>
-> >>>   void __sched percpu_down_write(struct percpu_rw_semaphore *sem)
-> >>>   {
-> >>> +       bool contended =3D false;
-> >>> +
-> >>>          might_sleep();
-> >>>          rwsem_acquire(&sem->dep_map, 0, 0, _RET_IP_);
-> >>> -       trace_contention_begin(sem, LCB_F_PERCPU | LCB_F_WRITE);
-> >>>
-> >>>          /* Notify readers to take the slow path. */
-> >>>          rcu_sync_enter(&sem->rss);
-> >>> @@ -234,8 +235,11 @@ void __sched percpu_down_write(struct percpu_rw_=
-semaphore *sem)
-> >>>           * Try set sem->block; this provides writer-writer exclusion=
-.
-> >>>           * Having sem->block set makes new readers block.
-> >>>           */
-> >>> -       if (!__percpu_down_write_trylock(sem))
-> >>> +       if (!__percpu_down_write_trylock(sem)) {
-> >>> +               trace_contention_begin(sem, LCB_F_PERCPU | LCB_F_WRIT=
-E);
-> >>>                  percpu_rwsem_wait(sem, /* .reader =3D */ false);
-> >>> +               contended =3D true;
-> >>> +       }
-> >>>
-> >>>          /* smp_mb() implied by __percpu_down_write_trylock() on succ=
-ess -- D matches A */
-> >>>
-> >>> @@ -247,7 +251,8 @@ void __sched percpu_down_write(struct percpu_rw_s=
-emaphore *sem)
-> >>>
-> >>>          /* Wait for all active readers to complete. */
-> >>>          rcuwait_wait_event(&sem->writer, readers_active_check(sem), =
-TASK_UNINTERRUPTIBLE);
-> >>> -       trace_contention_end(sem, 0);
-> >>> +       if (contended)
-> >>> +               trace_contention_end(sem, 0);
-> >>>   }
-> >>>   EXPORT_SYMBOL_GPL(percpu_down_write);
-> >>>
-> >>> --
-> >>> 2.42.0.869.gea05f2083d-goog
->
-> Yes, that makes sense. Sorry for missing this patch.
->
-> Reviewed-by: Waiman Long <longman@redhat.com>
+> 6 hotfixes.  3 are cc:stable and the remainder address post-6.7 issues
+> or aren't considered appropriate for backporting.
 
-Thanks for your review.
-Namhyung
+Hmm. I notice that you add "Link:" pointers to lore, but you do so
+even for emails that have been sent to you without any lists, so that
+they don't actually exist on lore..
+
+IOW, that link-generating automation of yours looks a bit overly aggressive.
+
+                Linus
 
