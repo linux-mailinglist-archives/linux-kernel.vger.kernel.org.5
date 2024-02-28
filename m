@@ -1,124 +1,117 @@
-Return-Path: <linux-kernel+bounces-85431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0587E86B5DE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:23:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68AD586B5E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:25:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36DC61C229FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:23:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 092721F27AB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:25:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E9B12F38F;
-	Wed, 28 Feb 2024 17:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B08115CD5D;
+	Wed, 28 Feb 2024 17:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="en9o0nri";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JgYaz9Ds"
-Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MK1D2lJ7"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55A823FBB2;
-	Wed, 28 Feb 2024 17:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28003FBB2;
+	Wed, 28 Feb 2024 17:24:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709141017; cv=none; b=KGiElUVrBKuX+BPn9cvAeD/quA737i2e+rsgKNbzPoEaelHpIAgehIPkxQUGjUS1ekKStTNHiqkl9S0WfHWrXVTCZth9aFmg4oMUaalxmQmm/RZFW2EQqr0lnlY4T539UBWxdhdBG9OyTQpUEIzAsezLludeQEXZ2gCsNaOhh7I=
+	t=1709141100; cv=none; b=mVNYYJS3UMuZvca6IQvkJk1c4p44nsPW/8ZzEbLRWzSLiiHdTQ90jJc4AugiUGAlMupiPLGbhrCnsKsJ3Dl0zV/VvA4clefFE/6RUJEUY8bOFSL+AkLvFEyUJ2+rkYAR/PxaoqhpunwfjNHeEFRbqRbUJyLuHD8J8pEyu8I7ND0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709141017; c=relaxed/simple;
-	bh=gyHaX4rUH7VfXk5+GSMnekvjp1WHHHsYtG16XBQttRM=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=HI05kRleNIZuMp0CYaqr3Whx1J0B9+TjEpmXfgKWQKLP2reML10UM8sUxueent/Ozbv/R+U0F4e78wf8zBvU2THPQvNV9dll/EwMwMiyYZAX1zbw9C7c9rLV4OyLYpd7WQbyPzcpbnxl8Cs+VvPNdfZSmA3ErtCAVNqr7fB/2uU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=en9o0nri; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JgYaz9Ds; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 69C3813800B5;
-	Wed, 28 Feb 2024 12:23:34 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Wed, 28 Feb 2024 12:23:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1709141014; x=1709227414; bh=Uczs6P+Vjh
-	lsb/gj6HcF1VFbl7LhQCHMFJrfB/feXkU=; b=en9o0nri8jxQPWja5PFaAxCjBA
-	CVBxhnwxdOqfhXeiKEr+G1DCaaMIRNquKEtCdBroqhtKlzd06Mtko3jduGHe7cOQ
-	S7fWvwXKsXn4Y6vt3CUC13wD9dNVgQ3KMwqHbGEMubfD0iuJcwsamSD++5v0lJ+p
-	k0oZMd94hq5jwqKTKLrja9LEeikZ+sAh9TDqJYKVETniCS/7+hc5iD+4x4p3vcbG
-	xg4NdTCmvxHZ7Q6La679xTekm9TNojZPFpXRbEQH/lmBt7lPmGY+ZmS0qgu4YXPB
-	9982UuShK/IY5SXNoMXRL2qPd9pwvUjdi8JA4jccX7RH0Xg3zhSnvTbT4sUA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709141014; x=1709227414; bh=Uczs6P+Vjhlsb/gj6HcF1VFbl7Lh
-	QCHMFJrfB/feXkU=; b=JgYaz9DsiLHdxiHNDvW8LwzgBn/BCNjf2fob6BKz5jQc
-	DS5kEAeXURNsQZrPIKN9UIcI9+D5d/Ql5rzfYE8oI03V8+6Xcmi8sT7qf1IfcBf3
-	wT/yMM3dUJ3cL7L7YLYNa6FebV0892paATs0dslLr2ZOtmEN+pZEFK3PpVTozZlG
-	ETjDNtSSx5UlIDV/m1U34HExkRAWCshbKoolnF6hJ41jEChZa3Zy3pYPkEpzkySL
-	pBGd7RW2/z3j98TaKrTsUrDPCxnDvlRmokwfGRjmYE6oTNmCQFj3sJ2wsMv3Ge7x
-	t+jbx/Ui/4HcJAe2u8/s3VtdtDojqklL0Yp3mI9hZQ==
-X-ME-Sender: <xms:FWzfZQdJnERtgPUGhWvTMoPTc8vTvStLKqwqM8uoJ15MrQfp6OhDcQ>
-    <xme:FWzfZSN-kUxVIyhgDuW6xybAFJFdxqNHE3h5a2x6cWi7UfIH5uCBT_XKjXyQ93z3P
-    s_vWkt34NI2tth0DYY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrgeejgdelhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:FmzfZRh_6upNX0-B6oaWDTR4DjOE33shLapoovFm1eckDY-jte_nSg>
-    <xmx:FmzfZV8ZC_NDmBpXfcAS2AaJgfc1olAVkxquD-MYUuJf4LCRaxgfbA>
-    <xmx:FmzfZcvrXHYnI6fWUzBRb9cRi3I9G6YcUl-TBXpB6I2KbGHi_qdTVQ>
-    <xmx:FmzfZcHoHWEBeJFgNhGJoP0YSpwrg8qfQqIm-0Tt9-sykLuOUbLmwg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id ABF8BB6008D; Wed, 28 Feb 2024 12:23:33 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-182-gaab6630818-fm-20240222.002-gaab66308
+	s=arc-20240116; t=1709141100; c=relaxed/simple;
+	bh=ibbZtSAB3p6iITdVB1SXa0cy+XZ4vhhCy3WP18PyyD0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q7gzYO3+uFJwEkTRZ35mBTB/F7QzDeHBIZx/AC4EQ68NTsB93e2C7RRhXKF+TGSHC4duVgo/StOwymOJ1OT0sHgXvdpi4yZ9MLHENlIO2sfgqEn4vThIzXyEqeld7ViQPUl6N+fz7gPpNZZuKy2M7LhTydkKNYQKpvToIs2VAiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MK1D2lJ7; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso27494a12.2;
+        Wed, 28 Feb 2024 09:24:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709141097; x=1709745897; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ggUWzI97AER97VCO5bK1ghUrgDw3VtB950on0vUkKY4=;
+        b=MK1D2lJ7BIkx9icBccLLDChbA7H1+8PayXlzXLK9b6z7z5RlI5vSMVBIQigF0Je6Ia
+         jrFTLN6Pwm5pPJPHyG3kB57C7S+eTPwpp2TJPWMrvFdE3sMAoUS4vCxBCJmS5QfN15Zd
+         1LzVYHU3teMPTatGrPV9qu4qHqYb+rDpPgZptlGN6spDkN1TsTt1n81+sQaU+ueTD/aO
+         GPFlAyfT0qgThRBqQvowiAV71XEDT2AlxkztFXpiU8k+5MOrOz4G37V1T9mnEsMBuFMl
+         FktxM5UW5OhlZfm3nQX78mDO1EVlTptexQn+5gx6hzlsX/m2DZDgpH0g0rzVgjdfC8BG
+         4qTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709141097; x=1709745897;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ggUWzI97AER97VCO5bK1ghUrgDw3VtB950on0vUkKY4=;
+        b=WD1tQ3bLE5OxR3B/lvy5qRMc5fxKCFSE2TTBRk5/80F0JMHFoMrUFUiezLI/VgXXv3
+         tT4N5MQj6mp+hKqvP0osxTIUEIxhLC1pnTuPVQcdPdDje0h/EyDbpLaXsP9qMqR/4JD8
+         AXA2xv2jc/dEJzbn2rQbu8GCVrmswTARMORdXzpI5cvVt0yAc+2O+fmHYagFd1CRekiM
+         5EJxdS57fm1YmVtmrrmmhos81HU+cyM4Kmrhs7kgl0KEp+9RXKuzE7MlfU90D9AdqErE
+         622vyaPE3d3L1Ldky3eJIF4Qwcvw0NJsnMmf6DDXRSdnPZiZU5V82CgnbPbvRdsnP3Hg
+         rFeA==
+X-Forwarded-Encrypted: i=1; AJvYcCVz+JSeFv8BGerlPToBUbD42Nbk7eo9IYqnECr+dSP6TYrxP33u5Oq+9Drgp93XWizBjohOq7a+hwS6lp7RhWT0bGUQLcENGCQudQYdoN0c3X75edfskIRY5yHLew8Lfqq2LElU/1GhIs+7AU6fQsaOcqv3evthSdfX1fBLw0ke+TylpA==
+X-Gm-Message-State: AOJu0YwsckSgFdrV8hOekII4Bq2hJx9ZOC/XSMxgQ/ryalDSDVZ7leqI
+	da4CTqYNq0lr2niHnjs1LjeP1F1CPt3puNxkDq9gkoSftchxexQs
+X-Google-Smtp-Source: AGHT+IHRtV+73O8/64MXV5GC0Imj4BFKa58Y2BDfVVmT6K5FnbrF6s0WW1PyaDtDiMh8WcLBxqZWzg==
+X-Received: by 2002:a17:906:454:b0:a3d:994a:791d with SMTP id e20-20020a170906045400b00a3d994a791dmr193000eja.59.1709141096969;
+        Wed, 28 Feb 2024 09:24:56 -0800 (PST)
+Received: from fedora.. (cpe-109-60-83-139.zg3.cable.xnet.hr. [109.60.83.139])
+        by smtp.googlemail.com with ESMTPSA id ts7-20020a170907c5c700b00a43f4722eaesm926910ejc.103.2024.02.28.09.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 09:24:55 -0800 (PST)
+From: Robert Marko <robimarko@gmail.com>
+To: andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	andrew@lunn.ch,
+	hkallweit1@gmail.com,
+	linux@armlinux.org.uk,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-arm-msm@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Robert Marko <robimarko@gmail.com>
+Subject: [PATCH net-next v2 0/2] net: phy: qcom: qca808x: fill in possible_interfaces
+Date: Wed, 28 Feb 2024 18:24:08 +0100
+Message-ID: <20240228172452.2456842-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <62f20e36-536d-47ee-b486-28ed87201b60@app.fastmail.com>
-In-Reply-To: <87il28h7zs.wl-tiwai@suse.de>
-References: <20240228140152.1824901-1-arnd@kernel.org>
- <87msrkhcz6.wl-tiwai@suse.de>
- <1265517d-b98a-4ec6-9215-10cd988ff78f@app.fastmail.com>
- <87il28h7zs.wl-tiwai@suse.de>
-Date: Wed, 28 Feb 2024 18:23:13 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Takashi Iwai" <tiwai@suse.de>
-Cc: "Arnd Bergmann" <arnd@kernel.org>, "Kees Cook" <keescook@chromium.org>,
- "Jaroslav Kysela" <perex@perex.cz>, "Takashi Iwai" <tiwai@suse.com>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev
-Subject: Re: [PATCH] ALSA: asihpi: work around clang-17+ false positive fortify-string
- warning
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 28, 2024, at 17:24, Takashi Iwai wrote:
-> On Wed, 28 Feb 2024 16:03:56 +0100,
->> On Wed, Feb 28, 2024, at 15:37, Takashi Iwai wrote:
->> > On Wed, 28 Feb 2024 15:01:45 +0100,
->> 
->> The fortified-string warning only triggers for string.h operations
->> (memset, memcpy, memcmp, strn*...), not for a direct assignment.
->
-> Ah, I see.  Then from the logical POV, it's better to have a check
-> before that assignment; otherwise it'd overflow silently there.
->
-> Does putting the check beforehand (like the one below) fix similarly?
+QCA808x does not currently fill in the possible_interfaces.
 
-Indeed, it does address the issue. I'll send a v2 with that
-version, since it clearly makes more sense.
+This leads to Phylink not being aware that it supports 2500Base-X as well
+so in cases where it is connected to a DSA switch like MV88E6393 it will
+limit that port to phy-mode set in the DTS.
 
-       Arnd
+That means that if SGMII is used you are limited to 1G only while if
+2500Base-X was set you are limited to 2.5G only.
+
+Populating the possible_interfaces fixes this.
+
+Changes in v2:
+* Get rid of the if/else by Russels suggestion in the helper
+
+Robert Marko (2):
+  net: phy: qcom: qca808x: add helper for checking for 1G only model
+  net: phy: qcom: qca808x: fill in possible_interfaces
+
+ drivers/net/phy/qcom/qca808x.c | 29 ++++++++++++++++++++++++-----
+ 1 file changed, 24 insertions(+), 5 deletions(-)
+
+-- 
+2.44.0
+
 
