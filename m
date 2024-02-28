@@ -1,137 +1,235 @@
-Return-Path: <linux-kernel+bounces-84486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C0586A74E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:46:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6128486A739
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:32:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8F4F928AE25
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:46:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8321E1C22D62
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3418D210EC;
-	Wed, 28 Feb 2024 03:46:01 +0000 (UTC)
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D05D200BF;
+	Wed, 28 Feb 2024 03:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ggf3sYh9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433F9208C5;
-	Wed, 28 Feb 2024 03:45:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=92.121.34.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF36B1CD38;
+	Wed, 28 Feb 2024 03:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709091960; cv=none; b=QopvdrNk3kuJMcHsTMEULmPxfmx0xZL6noB09OqyWXacwYgLYrSbltKWzmrnJHervHnjCflEwo6aSefIsuc1e4MB+YR6ngPM5/8EO6yFv+rL8iPNhv+Ff7FDutw3xB7V/JpGczQcAqQ4q40c+HS4hUgahgxZyuv4qdylx5yioLY=
+	t=1709091123; cv=none; b=a25NcMYOcaq0yuEzJO7xol28z7/d0sO/750Y5GFCw1BN2hTj91aM6oAmKd0IiouepcqrfcKtc5tLpO4M7LhTFP09Kly+U47pbrvSF/TendrXN0X1Hj3siRl2ltk4xbM9XwqK/uAaZ/UqE0pJVbCb6Nlgax6hkIQ0At09cQaY0lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709091960; c=relaxed/simple;
-	bh=EPW3rG3kqLWmQW9DnapYjEt7ibW3jPvJkUwuGnNnWvk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=e/QCPFqBi2KR56bO/lwk7ZCl3b1Ww/EsBGXspT4RyEiGh6MgjIxLzhtdu2VhWv9Iiw1v+u8p2Lj9ZgCKX8BerjfNZrbcul1ybtztHmMeUelEqy7nQfIpvPFNMj6+FGP/GAkylR/tC/bsOJM5Ki0xzbaz7WTZne78m4uz1oqMGp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; arc=none smtp.client-ip=92.121.34.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 784FA1A0950;
-	Wed, 28 Feb 2024 04:45:52 +0100 (CET)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-	by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 422441A092C;
-	Wed, 28 Feb 2024 04:45:52 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-	by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 58BDA183ACAC;
-	Wed, 28 Feb 2024 11:45:50 +0800 (+08)
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
-To: robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	linux-imx@nxp.com,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: shengjiu.wang@gmail.com
-Subject: [PATCH v3 3/3] arm64: dts: imx8mp-evk: Add PDM micphone sound card support
-Date: Wed, 28 Feb 2024 11:30:13 +0800
-Message-Id: <1709091013-14026-4-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1709091013-14026-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1709091013-14026-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+	s=arc-20240116; t=1709091123; c=relaxed/simple;
+	bh=mfXQ3FzHsCOGWJMna/+p/oEW7VkIC/ksgfe+TdGQ+oQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=IEZLZXmtDN/UNRhvcmil3aOaft757Nx/fVGlEROertE3KQSVbBXn3FlvCkFtEf4VLgbrjPX86PSfQrIczHDsQ8XsL6m3Vo+z60UVvcsGlUkhDq9rFa0Wj8Ncu6sz9ssy/L7cDIWL+fnU/pUxn9lpGadV2LTos+seDTDjWMJ8Sv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ggf3sYh9; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709091121; x=1740627121;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=mfXQ3FzHsCOGWJMna/+p/oEW7VkIC/ksgfe+TdGQ+oQ=;
+  b=ggf3sYh9/W0OgBMighYWU2zhXxiWlUz0uBwem0mRMEC8Ziogecq906lv
+   0L5XPV6zfSoNPylk2y0iUpYKkM3PtLoqdXVfSwKntJgVWJBpY5doC6adz
+   sv7jtWjbBVPsLk7j0rS3cxQ1hin/QI4zJCWzCw2GZvrifxYdqg3bQoxwh
+   23fGfiRtEgD/OoKMseudQR5etnQii/8suyGUvaIac00jMkRMFEW3Nmggz
+   OW1XIkIEVVKLJY9E9+lwVseSx1ZyBuVa72CqXvKeNjKgyS4ZZp21bUbpJ
+   7fdHvlL4MkyI2Oz7CJxZ9ldvvhy/Npyk7S7ZcusoztOxvsPpTlR4uwypY
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="7289608"
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="7289608"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 19:32:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="7409366"
+Received: from dschro4x-mobl.amr.corp.intel.com (HELO [10.212.137.190]) ([10.212.137.190])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 19:32:00 -0800
+Message-ID: <56b67440-f6a7-4266-a8be-1e312ebd9aae@linux.intel.com>
+Date: Tue, 27 Feb 2024 19:31:59 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 9/9] tools: intel_sdsi: Add current meter support
+Content-Language: en-US
+To: "David E. Box" <david.e.box@linux.intel.com>,
+ rajvi.jingar@linux.intel.com, platform-driver-x86@vger.kernel.org,
+ linux-kernel@vger.kernel.org, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com
+References: <20240228000016.1685518-1-david.e.box@linux.intel.com>
+ <20240228000016.1685518-10-david.e.box@linux.intel.com>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240228000016.1685518-10-david.e.box@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Add PDM micphone sound card support, configure the pinmux.
 
-This sound card supports recording sound from PDM micphone
-and convert the PDM format data to PCM data.
+On 2/27/24 4:00 PM, David E. Box wrote:
+> Add support to read the 'meter_current' file. The display is the same as
+> the 'meter_certificate', but will show the current snapshot of the
+> counters.
+>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- arch/arm64/boot/dts/freescale/imx8mp-evk.dts | 34 ++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+Looks good to me.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-index 0fc6c0d21cd6..97a3198f2b59 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-evk.dts
-@@ -145,6 +145,20 @@ sound-hdmi {
- 		hdmi-out;
- 	};
- 
-+	sound-micfil {
-+		compatible = "fsl,imx-audio-card";
-+		model = "micfil-audio";
-+
-+		pri-dai-link {
-+			link-name = "micfil hifi";
-+			format = "i2s";
-+
-+			cpu {
-+				sound-dai = <&micfil>;
-+			};
-+		};
-+	};
-+
- 	reserved-memory {
- 		#address-cells = <2>;
- 		#size-cells = <2>;
-@@ -526,6 +540,16 @@ &lcdif1 {
- 	status = "okay";
- };
- 
-+&micfil {
-+	#sound-dai-cells = <0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pdm>;
-+	assigned-clocks = <&clk IMX8MP_CLK_PDM>;
-+	assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL1_OUT>;
-+	assigned-clock-rates = <196608000>;
-+	status = "okay";
-+};
-+
- &mipi_dsi {
- 	samsung,esc-clock-frequency = <10000000>;
- 	status = "okay";
-@@ -792,6 +816,16 @@ MX8MP_IOMUXC_SD1_DATA4__GPIO2_IO06	0x40
- 		>;
- 	};
- 
-+	pinctrl_pdm: pdmgrp {
-+		fsl,pins = <
-+			MX8MP_IOMUXC_SAI5_RXC__AUDIOMIX_PDM_CLK		0xd6
-+			MX8MP_IOMUXC_SAI5_RXD0__AUDIOMIX_PDM_BIT_STREAM00	0xd6
-+			MX8MP_IOMUXC_SAI5_RXD1__AUDIOMIX_PDM_BIT_STREAM01	0xd6
-+			MX8MP_IOMUXC_SAI5_RXD2__AUDIOMIX_PDM_BIT_STREAM02	0xd6
-+			MX8MP_IOMUXC_SAI5_RXD3__AUDIOMIX_PDM_BIT_STREAM03	0xd6
-+		>;
-+	};
-+
- 	pinctrl_pmic: pmicgrp {
- 		fsl,pins = <
- 			MX8MP_IOMUXC_GPIO1_IO03__GPIO1_IO03	0x000001c0
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>
+> V2 - Set the name of the file to be opened once.
+>
+>  tools/arch/x86/intel_sdsi/intel_sdsi.c | 49 ++++++++++++++++----------
+>  1 file changed, 30 insertions(+), 19 deletions(-)
+>
+> diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> index a8fb6d17405f..325e1e41af1d 100644
+> --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
+> @@ -182,6 +182,7 @@ struct sdsi_dev {
+>  enum command {
+>  	CMD_SOCKET_INFO,
+>  	CMD_METER_CERT,
+> +	CMD_METER_CURRENT_CERT,
+>  	CMD_STATE_CERT,
+>  	CMD_PROV_AKC,
+>  	CMD_PROV_CAP,
+> @@ -329,13 +330,14 @@ static void get_feature(uint32_t encoding, char *feature)
+>  	feature[0] = name[3];
+>  }
+>  
+> -static int sdsi_meter_cert_show(struct sdsi_dev *s)
+> +static int sdsi_meter_cert_show(struct sdsi_dev *s, bool show_current)
+>  {
+>  	char buf[METER_CERT_MAX_SIZE] = {0};
+>  	struct bundle_encoding_counter *bec;
+>  	struct meter_certificate *mc;
+>  	uint32_t count = 0;
+>  	FILE *cert_ptr;
+> +	char *cert_fname;
+Nit: I think this can be const char *
+>  	int ret, size;
+>  	char name[4];
+>  
+> @@ -345,7 +347,6 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  
+>  	if (!s->regs.en_features.sdsi) {
+>  		fprintf(stderr, "SDSi feature is present but not enabled.\n");
+> -		fprintf(stderr, " Unable to read meter certificate\n");
+>  		return -1;
+>  	}
+>  
+> @@ -360,15 +361,17 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
+>  		return ret;
+>  	}
+>  
+> -	cert_ptr = fopen("meter_certificate", "r");
+> +	cert_fname = show_current ? "meter_current" : "meter_certificate";
+> +	cert_ptr = fopen(cert_fname, "r");
+> +
+>  	if (!cert_ptr) {
+> -		perror("Could not open 'meter_certificate' file");
+> +		fprintf(stderr, "Could not open '%s' file: %s", cert_fname, strerror(errno));
+>  		return -1;
+>  	}
+>  
+>  	size = fread(buf, 1, sizeof(buf), cert_ptr);
+>  	if (!size) {
+> -		fprintf(stderr, "Could not read 'meter_certificate' file\n");
+> +		fprintf(stderr, "Could not read '%s' file\n", cert_fname);
+>  		fclose(cert_ptr);
+>  		return -1;
+>  	}
+> @@ -734,7 +737,7 @@ static void sdsi_free_dev(struct sdsi_dev *s)
+>  
+>  static void usage(char *prog)
+>  {
+> -	printf("Usage: %s [-l] [-d DEVNO [-i] [-s] [-m] [-a FILE] [-c FILE]]\n", prog);
+> +	printf("Usage: %s [-l] [-d DEVNO [-i] [-s] [-m | -C] [-a FILE] [-c FILE]\n", prog);
+>  }
+>  
+>  static void show_help(void)
+> @@ -743,8 +746,9 @@ static void show_help(void)
+>  	printf("  %-18s\t%s\n", "-l, --list",           "list available On Demand devices");
+>  	printf("  %-18s\t%s\n", "-d, --devno DEVNO",    "On Demand device number");
+>  	printf("  %-18s\t%s\n", "-i, --info",           "show socket information");
+> -	printf("  %-18s\t%s\n", "-s, --state",          "show state certificate");
+> -	printf("  %-18s\t%s\n", "-m, --meter",          "show meter certificate");
+> +	printf("  %-18s\t%s\n", "-s, --state",          "show state certificate data");
+> +	printf("  %-18s\t%s\n", "-m, --meter",          "show meter certificate data");
+> +	printf("  %-18s\t%s\n", "-C, --meter_current",  "show live unattested meter data");
+>  	printf("  %-18s\t%s\n", "-a, --akc FILE",       "provision socket with AKC FILE");
+>  	printf("  %-18s\t%s\n", "-c, --cap FILE>",      "provision socket with CAP FILE");
+>  }
+> @@ -760,21 +764,22 @@ int main(int argc, char *argv[])
+>  	int option_index = 0;
+>  
+>  	static struct option long_options[] = {
+> -		{"akc",		required_argument,	0, 'a'},
+> -		{"cap",		required_argument,	0, 'c'},
+> -		{"devno",	required_argument,	0, 'd'},
+> -		{"help",	no_argument,		0, 'h'},
+> -		{"info",	no_argument,		0, 'i'},
+> -		{"list",	no_argument,		0, 'l'},
+> -		{"meter",	no_argument,		0, 'm'},
+> -		{"state",	no_argument,		0, 's'},
+> -		{0,		0,			0, 0 }
+> +		{"akc",			required_argument,	0, 'a'},
+> +		{"cap",			required_argument,	0, 'c'},
+> +		{"devno",		required_argument,	0, 'd'},
+> +		{"help",		no_argument,		0, 'h'},
+> +		{"info",		no_argument,		0, 'i'},
+> +		{"list",		no_argument,		0, 'l'},
+> +		{"meter",		no_argument,		0, 'm'},
+> +		{"meter_current",	no_argument,		0, 'C'},
+> +		{"state",		no_argument,		0, 's'},
+> +		{0,			0,			0, 0 }
+>  	};
+>  
+>  
+>  	progname = argv[0];
+>  
+> -	while ((opt = getopt_long_only(argc, argv, "+a:c:d:hilms", long_options,
+> +	while ((opt = getopt_long_only(argc, argv, "+a:c:d:hilmCs", long_options,
+>  			&option_index)) != -1) {
+>  		switch (opt) {
+>  		case 'd':
+> @@ -790,6 +795,9 @@ int main(int argc, char *argv[])
+>  		case 'm':
+>  			command = CMD_METER_CERT;
+>  			break;
+> +		case 'C':
+> +			command = CMD_METER_CURRENT_CERT;
+> +			break;
+>  		case 's':
+>  			command = CMD_STATE_CERT;
+>  			break;
+> @@ -828,7 +836,10 @@ int main(int argc, char *argv[])
+>  			ret = sdsi_read_reg(s);
+>  			break;
+>  		case CMD_METER_CERT:
+> -			ret = sdsi_meter_cert_show(s);
+> +			ret = sdsi_meter_cert_show(s, false);
+> +			break;
+> +		case CMD_METER_CURRENT_CERT:
+> +			ret = sdsi_meter_cert_show(s, true);
+>  			break;
+>  		case CMD_STATE_CERT:
+>  			ret = sdsi_state_cert_show(s);
+
 -- 
-2.34.1
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
