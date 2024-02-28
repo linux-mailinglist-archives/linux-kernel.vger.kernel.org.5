@@ -1,162 +1,283 @@
-Return-Path: <linux-kernel+bounces-85606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1492786B83A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:34:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEFBB86B83C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:34:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34B4D1C237D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:34:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 224751F26DFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC8B15E5D4;
-	Wed, 28 Feb 2024 19:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4551615F31D;
+	Wed, 28 Feb 2024 19:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kPI9tUbD"
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KqpWX0wX"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4F57443C;
-	Wed, 28 Feb 2024 19:33:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C35815F300
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709148822; cv=none; b=pIruTEyksF2K4t4DVjjIoj/lRELxqvYc+nNStdpcWED8ByLcGFZNFFMu2G9EWXnwqMVrNibxefFP8qPTuZeKzpy8+rneCMXNcCaiRxWM54zNlePt/apP/xyK2/GRsckqpcAQoEFV5PLigEXowCNqL+5jKEubHI8mo7lsBOIfejM=
+	t=1709148833; cv=none; b=JFqY7uftTVtGBiTATE09Roai1WNIiDnzcOEBBSnvPkRW5beDiHz4wID+3/SqTE1An+AiRi8E2c0ppUBmjDIsecSbBUvWzK15005chEUy4Xv0sejZc5xHHgiSxaeDnmoS5z9AVCQ3lmu87WYT9zSL54DvfaX08dVhTGgcNyFCb0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709148822; c=relaxed/simple;
-	bh=dxC+hAlOq10B4bZ7HZJwDTmNSm7HvXRBIG7Yteyn+F0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lqu6T9fiAgwjrhlWU/GOr5qTpdyaaG7LLywRJ01BqAMDwGJf/bqI26pPTs5BYHmVcemikeSFecb5tIzrdST4htfg+G0M0eWNcEtemgi7qCS4GM+i5DwtM8FqVH8gKNe8R524eU46um0OaCTuOpiz5Yax0ZiI46XSF0YElLmW4M8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kPI9tUbD; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7c7c9846910so2248139f.1;
-        Wed, 28 Feb 2024 11:33:40 -0800 (PST)
+	s=arc-20240116; t=1709148833; c=relaxed/simple;
+	bh=rHtUr07NXBMCSzgyNiFib3qptNPUiCmpA1avywuSbrs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=makb3xwFt7WfW4OMKVFyKOyseBrQ35N82udttDBeuL8y4Q5VbrYdbY3iUxk31F9cwUKF5ITPiUWrnm0NtHoQ0gYtJTaDsc4Zx0+iYWpT1KEY/XQLLPeERO78lllKqsF1Q12r8ve07HzdB0Y/zCWO4uGMPU7W+fJt8I2gSd1iCN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KqpWX0wX; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d118a181fso89841f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:33:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709148820; x=1709753620; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=u8mM2p+az2pSDmE4hT9LVCRHJtuOLCaAXLm78LG7ajk=;
-        b=kPI9tUbDr+bhqvCstO3kjYe6+89coMKJNOySaSqhLlWKARKlo5AqbGn3AcFFtJQSj3
-         1Ew8DqkuR6ihY3p7skM7ZFivVySgbs643o6+cFC7h61P7QzWKgA4S4tfd7QdmprwnQ2S
-         O+xk2zOT5bg9x06J/2M+oaz/nawYDWa6g1O0qLrXit4QTPfb0vOwRicWAOVi8xB4UnVS
-         Z8u2qwJXei49CWNAoXQvsdEtdpFqf+Wq3NwgYDHXTUs8sOwb7DNxBiyaPk4AGP0kA/z1
-         WukyrM8Vy4orsDnZCTZe1apxh3xagDld+qMivyCMkIbNirJTETIgd+d/E1T0Lbw/YiwQ
-         3Z2w==
+        d=chromium.org; s=google; t=1709148830; x=1709753630; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lT04GCfSayZ/NG1YfdCVrXwolvgh0gSX9xKT3OophFQ=;
+        b=KqpWX0wXQ99WhpCCJ3E3KfNuFhK9da/LR8d0s7yfOBekz4WR9dG4eEZpzV80NbUJ76
+         xB2Pb2Mj5h1BLM2Shg2o9MHwmrd1j7U18EBxvNw9DSTC3wfdTYvs8NFY4NjevLX7Q+8C
+         OCbr8xDXws56/smwVmSkWGjR1uScyFNrJsl8A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709148820; x=1709753620;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u8mM2p+az2pSDmE4hT9LVCRHJtuOLCaAXLm78LG7ajk=;
-        b=SdNCr4FdNL5QFk3Mu6ZTpH8Ke+PmhmiuMeulqBzZGjKWJmJGlvalALUVeroDf351wz
-         CoD2AtvRKOl1AU9+4ox830ZqBk7oplP35CywgIrfJzEcAjtnq/wqp3FGPOB1nLzz+J+O
-         OnJJNwLN/GtxtiTYRhnXjZAMwXG4R/UsNbF6FpWdWnSsV1CbXRjoDc1xqKPXqKCavO31
-         04KtFSuyDRJcrgf62+KHSH9fB0q0LIsYrZzrhlUkB1ckvNDO4A+eH6fxxlentemcBy2v
-         nFl29Ot35KIRW8Ubv2Pb8jhqo2tNLhnC5fVqPz7q15+6gED8NSSvnKWTg7nKg6+luHsD
-         QGGg==
-X-Forwarded-Encrypted: i=1; AJvYcCVP+VtF4wL6PApbdnuNzdfnIFrER0hn1b6smcTLLxy2f/FDRGR31vriaTM6SRWzSA4UFQEkxFhhyYXjxwJUPS8i2seHqcQzQj9bNLz/QVlLGtbIzKtIUAKDLk6Uo93rLt7c5QQcW0UOEbo=
-X-Gm-Message-State: AOJu0YzUQTHsyYVF4t2QYfm8N144PhWC3a+asoSBiLKuSv2ZO2kCPqzm
-	wDWu9vJlyDmSfhxG1VcCWI/wWvBthFNS2+JxzkgItsELT8+Vdh6U
-X-Google-Smtp-Source: AGHT+IGARzIk+E5EMnBMCtfIC7bdhVsSuEorAoYVZ+sT5XHXfRyxzB07QTpnHnWS/4a+8U8Et+6/YA==
-X-Received: by 2002:a6b:e412:0:b0:7c7:d2f2:fe90 with SMTP id u18-20020a6be412000000b007c7d2f2fe90mr169055iog.7.1709148819783;
-        Wed, 28 Feb 2024 11:33:39 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k25-20020a02c659000000b00474420a484esm4076jan.98.2024.02.28.11.33.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 11:33:38 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <7e1c18e3-7523-4fe6-affe-d3f143ad79e3@roeck-us.net>
-Date: Wed, 28 Feb 2024 11:33:36 -0800
+        d=1e100.net; s=20230601; t=1709148830; x=1709753630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lT04GCfSayZ/NG1YfdCVrXwolvgh0gSX9xKT3OophFQ=;
+        b=fuCdFM3wWFhAQ+BbmDAV+Hsnv8Wt5EkJDXodwqShklLRamqOHSl3t/k4100eWXNts/
+         lPDAkwOujbl1N9sE3iDqk+/l91M7U+lG5OnCfX5Z5/G07Ce79gEmANXsiARo3YLmPsWI
+         7NHDANDCKfSdE+tlDDmGEx2161nPuxMphBz9quEZkJJQ8HR+CM6MNlMjLT2TW4COtM4H
+         80FEP0MFC0AMDrAHFd5fH8l2K+m68fuc8U56saW93EKGxNusH6A9nqlZVlgjwuFPwHtp
+         ArUID8N+XFg0DyckGLszq+lOV+kictGNVqEHvtfYUiAWfKW35JPdGcMj2HKgrs4Pgtw3
+         uAUw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+6Mw6S1S7O868L31NQ1nC2cTsB9H2JntjV0aAWThlGFUkahycZcNt+IUCXPZFAsF9WZX1Co9i18l0t4r+KPHFhwjY6BIyph7Z5nqb
+X-Gm-Message-State: AOJu0Yy9naHlnwpmhBlNKGddLmcm84LDqULDY2i/G25Uja9v1zuxNO+l
+	+So/CWzBQ4uhAAMZ3cMXqxYtvt5PtevQbHq8MQrdXQkSaKuh+Onig52INIt+wyU27OfplN9vffD
+	VqpJklrT3UIP1RYeiVTYPGX1+/9LdcCH+ZD3D
+X-Google-Smtp-Source: AGHT+IHi0a9VVTiFwIdkF5FnWuaSceqJNfODPnjKL5knq0jzCOUubnV9I4KXVitnKYMcQsXNcnfJC9GeIga63VcV/x8=
+X-Received: by 2002:adf:f848:0:b0:33d:88c1:31b8 with SMTP id
+ d8-20020adff848000000b0033d88c131b8mr399831wrq.60.1709148829737; Wed, 28 Feb
+ 2024 11:33:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: ext4_mballoc_test: Internal error: Oops: map_id_range_down
- (kernel/user_namespace.c:318)
-Content-Language: en-US
-To: =?UTF-8?Q?Daniel_D=C3=ADaz?= <daniel.diaz@linaro.org>,
- Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: open list <linux-kernel@vger.kernel.org>,
- linux-ext4 <linux-ext4@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
- lkft-triage@lists.linaro.org, Jan Kara <jack@suse.cz>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Theodore Ts'o <tytso@mit.edu>,
- Christian Brauner <brauner@kernel.org>, Randy Dunlap
- <rdunlap@infradead.org>, shikemeng@huaweicloud.com,
- Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>
-References: <CA+G9fYvnjDcmVBPwbPwhFDMewPiFj6z69iiPJrjjCP4Z7Q4AbQ@mail.gmail.com>
- <CAEUSe79PhGgg4-3ucMAzSE4fgXqgynAY_t8Xp+yiuZsw4Aj1jg@mail.gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <CAEUSe79PhGgg4-3ucMAzSE4fgXqgynAY_t8Xp+yiuZsw4Aj1jg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CAG-rBihs_xMKb3wrMO1+-+p4fowP9oy1pa_OTkfxBzPUVOZF+g@mail.gmail.com>
+ <20240221114357.13655-2-vbabka@suse.cz>
+In-Reply-To: <20240221114357.13655-2-vbabka@suse.cz>
+From: Karthikeyan Ramasubramanian <kramasub@chromium.org>
+Date: Wed, 28 Feb 2024 12:33:38 -0700
+Message-ID: <CAJZwx_niaTD+n7mvKbzBQeEEki591Rg=W1cJpJew-iTo8P8X8g@mail.gmail.com>
+Subject: Re: [PATCH] mm, vmscan: prevent infinite loop for costly GFP_NOIO |
+ __GFP_RETRY_MAYFAIL allocations
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Andrew Morton <akpm@linux-foundation.org>, svenva@chromium.org, bgeffon@google.com, 
+	cujomalainey@chromium.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-sound@vger.kernel.org, perex@perex.cz, stable@vger.kernel.org, 
+	tiwai@suse.com, tiwai@suse.de, Michal Hocko <mhocko@kernel.org>, 
+	Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/28/24 11:26, Daniel Díaz wrote:
-> Hello!
-> 
-> On Wed, 28 Feb 2024 at 12:19, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->> Kunit ext4_mballoc_test tests found following kernel oops on Linux next.
->> All ways reproducible on all the architectures and steps to reproduce shared
->> in the bottom of this email.
->>
->> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->>
-
-[ ... ]
-
-> +Guenter. Just the thing we were talking about, at about the same time.
-> 
-
-Good that others see the same problem. Thanks a lot for reporting!
-
-Guenter
-
+On Wed, Feb 21, 2024 at 4:44=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> Sven reports an infinite loop in __alloc_pages_slowpath() for costly
+> order __GFP_RETRY_MAYFAIL allocations that are also GFP_NOIO. Such
+> combination can happen in a suspend/resume context where a GFP_KERNEL
+> allocation can have __GFP_IO masked out via gfp_allowed_mask.
+>
+> Quoting Sven:
+>
+> 1. try to do a "costly" allocation (order > PAGE_ALLOC_COSTLY_ORDER)
+>    with __GFP_RETRY_MAYFAIL set.
+>
+> 2. page alloc's __alloc_pages_slowpath tries to get a page from the
+>    freelist. This fails because there is nothing free of that costly
+>    order.
+>
+> 3. page alloc tries to reclaim by calling __alloc_pages_direct_reclaim,
+>    which bails out because a zone is ready to be compacted; it pretends
+>    to have made a single page of progress.
+>
+> 4. page alloc tries to compact, but this always bails out early because
+>    __GFP_IO is not set (it's not passed by the snd allocator, and even
+>    if it were, we are suspending so the __GFP_IO flag would be cleared
+>    anyway).
+>
+> 5. page alloc believes reclaim progress was made (because of the
+>    pretense in item 3) and so it checks whether it should retry
+>    compaction. The compaction retry logic thinks it should try again,
+>    because:
+>     a) reclaim is needed because of the early bail-out in item 4
+>     b) a zonelist is suitable for compaction
+>
+> 6. goto 2. indefinite stall.
+>
+> (end quote)
+>
+> The immediate root cause is confusing the COMPACT_SKIPPED returned from
+> __alloc_pages_direct_compact() (step 4) due to lack of __GFP_IO to be
+> indicating a lack of order-0 pages, and in step 5 evaluating that in
+> should_compact_retry() as a reason to retry, before incrementing and
+> limiting the number of retries. There are however other places that
+> wrongly assume that compaction can happen while we lack __GFP_IO.
+>
+> To fix this, introduce gfp_compaction_allowed() to abstract the __GFP_IO
+> evaluation and switch the open-coded test in try_to_compact_pages() to
+> use it.
+>
+> Also use the new helper in:
+> - compaction_ready(), which will make reclaim not bail out in step 3, so
+>   there's at least one attempt to actually reclaim, even if chances are
+>   small for a costly order
+> - in_reclaim_compaction() which will make should_continue_reclaim()
+>   return false and we don't over-reclaim unnecessarily
+> - in __alloc_pages_slowpath() to set a local variable can_compact,
+>   which is then used to avoid retrying reclaim/compaction for costly
+>   allocations (step 5) if we can't compact and also to skip the early
+>   compaction attempt that we do in some cases
+>
+> Reported-by: Sven van Ashbrook <svenva@chromium.org>
+> Closes: https://lore.kernel.org/all/CAG-rBihs_xMKb3wrMO1%2B-%2Bp4fowP9oy1=
+pa_OTkfxBzPUVOZF%2Bg@mail.gmail.com/
+> Fixes: 3250845d0526 ("Revert "mm, oom: prevent premature OOM killer invoc=
+ation for high order request"")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Tested-by: Karthikeyan Ramasubramanian <kramasub@chromium.org>
+> ---
+>  include/linux/gfp.h |  9 +++++++++
+>  mm/compaction.c     |  7 +------
+>  mm/page_alloc.c     | 10 ++++++----
+>  mm/vmscan.c         |  5 ++++-
+>  4 files changed, 20 insertions(+), 11 deletions(-)
+>
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index de292a007138..e2a916cf29c4 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -353,6 +353,15 @@ static inline bool gfp_has_io_fs(gfp_t gfp)
+>         return (gfp & (__GFP_IO | __GFP_FS)) =3D=3D (__GFP_IO | __GFP_FS)=
+;
+>  }
+>
+> +/*
+> + * Check if the gfp flags allow compaction - GFP_NOIO is a really
+> + * tricky context because the migration might require IO.
+> + */
+> +static inline bool gfp_compaction_allowed(gfp_t gfp_mask)
+> +{
+> +       return IS_ENABLED(CONFIG_COMPACTION) && (gfp_mask & __GFP_IO);
+> +}
+> +
+>  extern gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma);
+>
+>  #ifdef CONFIG_CONTIG_ALLOC
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 4add68d40e8d..b961db601df4 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -2723,16 +2723,11 @@ enum compact_result try_to_compact_pages(gfp_t gf=
+p_mask, unsigned int order,
+>                 unsigned int alloc_flags, const struct alloc_context *ac,
+>                 enum compact_priority prio, struct page **capture)
+>  {
+> -       int may_perform_io =3D (__force int)(gfp_mask & __GFP_IO);
+>         struct zoneref *z;
+>         struct zone *zone;
+>         enum compact_result rc =3D COMPACT_SKIPPED;
+>
+> -       /*
+> -        * Check if the GFP flags allow compaction - GFP_NOIO is really
+> -        * tricky context because the migration might require IO
+> -        */
+> -       if (!may_perform_io)
+> +       if (!gfp_compaction_allowed(gfp_mask))
+>                 return COMPACT_SKIPPED;
+>
+>         trace_mm_compaction_try_to_compact_pages(order, gfp_mask, prio);
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 150d4f23b010..a663202045dc 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4041,6 +4041,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int=
+ order,
+>                                                 struct alloc_context *ac)
+>  {
+>         bool can_direct_reclaim =3D gfp_mask & __GFP_DIRECT_RECLAIM;
+> +       bool can_compact =3D gfp_compaction_allowed(gfp_mask);
+>         const bool costly_order =3D order > PAGE_ALLOC_COSTLY_ORDER;
+>         struct page *page =3D NULL;
+>         unsigned int alloc_flags;
+> @@ -4111,7 +4112,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int=
+ order,
+>          * Don't try this for allocations that are allowed to ignore
+>          * watermarks, as the ALLOC_NO_WATERMARKS attempt didn't yet happ=
+en.
+>          */
+> -       if (can_direct_reclaim &&
+> +       if (can_direct_reclaim && can_compact &&
+>                         (costly_order ||
+>                            (order > 0 && ac->migratetype !=3D MIGRATE_MOV=
+ABLE))
+>                         && !gfp_pfmemalloc_allowed(gfp_mask)) {
+> @@ -4209,9 +4210,10 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned in=
+t order,
+>
+>         /*
+>          * Do not retry costly high order allocations unless they are
+> -        * __GFP_RETRY_MAYFAIL
+> +        * __GFP_RETRY_MAYFAIL and we can compact
+>          */
+> -       if (costly_order && !(gfp_mask & __GFP_RETRY_MAYFAIL))
+> +       if (costly_order && (!can_compact ||
+> +                            !(gfp_mask & __GFP_RETRY_MAYFAIL)))
+>                 goto nopage;
+>
+>         if (should_reclaim_retry(gfp_mask, order, ac, alloc_flags,
+> @@ -4224,7 +4226,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int=
+ order,
+>          * implementation of the compaction depends on the sufficient amo=
+unt
+>          * of free memory (see __compaction_suitable)
+>          */
+> -       if (did_some_progress > 0 &&
+> +       if (did_some_progress > 0 && can_compact &&
+>                         should_compact_retry(ac, order, alloc_flags,
+>                                 compact_result, &compact_priority,
+>                                 &compaction_retries))
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4f9c854ce6cc..4255619a1a31 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -5753,7 +5753,7 @@ static void shrink_lruvec(struct lruvec *lruvec, st=
+ruct scan_control *sc)
+>  /* Use reclaim/compaction for costly allocs or under memory pressure */
+>  static bool in_reclaim_compaction(struct scan_control *sc)
+>  {
+> -       if (IS_ENABLED(CONFIG_COMPACTION) && sc->order &&
+> +       if (gfp_compaction_allowed(sc->gfp_mask) && sc->order &&
+>                         (sc->order > PAGE_ALLOC_COSTLY_ORDER ||
+>                          sc->priority < DEF_PRIORITY - 2))
+>                 return true;
+> @@ -5998,6 +5998,9 @@ static inline bool compaction_ready(struct zone *zo=
+ne, struct scan_control *sc)
+>  {
+>         unsigned long watermark;
+>
+> +       if (!gfp_compaction_allowed(sc->gfp_mask))
+> +               return false;
+> +
+>         /* Allocation can already succeed, nothing to do */
+>         if (zone_watermark_ok(zone, sc->order, min_wmark_pages(zone),
+>                               sc->reclaim_idx, 0))
+> --
+> 2.43.1
+>
 
