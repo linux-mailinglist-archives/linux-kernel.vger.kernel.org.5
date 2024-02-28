@@ -1,145 +1,151 @@
-Return-Path: <linux-kernel+bounces-85738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B724586BA23
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:43:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84DA086BA24
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:44:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F91C1C246BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:43:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 407002879F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:44:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912AB7004A;
-	Wed, 28 Feb 2024 21:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015E070049;
+	Wed, 28 Feb 2024 21:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jw59jCoB"
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="UuCARKF+"
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EA88625A;
-	Wed, 28 Feb 2024 21:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF93970023
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709156624; cv=none; b=L0+VXR5LMm6jUlliSOYkeLVmQGoa2gCqsGmTvs7egjALRtpvUVToCeQ4Zzv0rxHjFfnkv9abGbkjN7bf28NOiVjQO1W/4SS2IVrp0PduFnFg1L9Lr2wkEaRPYIpXzXBRg56u2u4qwJyl4U199sNBqZA7i8LKqcyzoYLlZ5FAAL4=
+	t=1709156667; cv=none; b=Q7FW5hpPPOp71hvfaZwYq6dKE/zUIDQgBNjc5MS/L5OYSF/QujFDOn9MCXkD/KfBKlbOolapB6XG83vYNXeN2yt5C3Fxf4E+HBQdv45oALBggx17+9zGnzFhxathfKhTqImsbueitDNwxtqjIWTSmiZ3o86c6trNNco3qzbgChI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709156624; c=relaxed/simple;
-	bh=aM7XKGX0np7tp8gG7UR7aonJU+lXyXuJtFBlWXo9ZKw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V0JPfB9MDRwHQSNWp6oku7OssYyiEMJSeyZ5PAulFf0b5WLK3PzPVhckkFaHPeUQgG+pa4T1a84eFnbv4PO3O4AeYd4tM3/j4IyPGDQ07PBdWAxgCD2HLoyuxbALvdWfEU7JVdC1G7+4KezRN233AfmTew1uOHqTfiiJTy65Ocg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jw59jCoB; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so132581a12.3;
-        Wed, 28 Feb 2024 13:43:43 -0800 (PST)
+	s=arc-20240116; t=1709156667; c=relaxed/simple;
+	bh=nFoJDv80EHehKpiT+Htmgr8+aowz1fRe5XI0qtqlXP4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uwS509yiXpFNru8uuAFe6919uYcWJX7rhhgZPOYXLmIpAKIYsOC/8Dr2GzA/T9GrordcLZHyd9Cn2Khvo8ecXNYShWY86vDnJgZ6q4kpA+cPp/Zcg7fUHIkvTWGKF1KV/XzVhblXBxLo47aVtmHYb5Xhvu2ui0P78e30hoKrE58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=UuCARKF+; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42e8a130ebcso8930011cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:44:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709156623; x=1709761423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4MROf+F57WlYpsW/TTfDlqwVn7p2q2yEa3HrwJ6r+kg=;
-        b=Jw59jCoBap6tUSstSIEBKzbMuTEvTMkNRGNMaNQgdsddzqpdc1cZaBtmrsvng+/fjq
-         XC0LMwiYEwnSP02aqOCZ2qKH1bkvhMY8OLcE/nRTwWRoCuc90UJ/NySsQkjNfD035Wt/
-         S2p4f6AdnKR5lK3Zs7N2m1Pu9oahgo+5QNfs4C+sW6edUsvNTwAu9Zgwx4WBLfNi4hs3
-         BewO+R894UOGvlWI2vpjLJ5scgBKHK3bjFNAbTWco83oddDFshUWlN3ScU+3LSbaNVwx
-         RDACwdSrlThjt7ZMDr0wabrsGZmXkiVaj8SjFbFn8jkl6DTHImRQD2nkSTvRaEfqlIKY
-         E3kw==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1709156662; x=1709761462; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uZklOSUieULDemWZ+oNQMLtEXHZHkGyXS/OFBbqQnog=;
+        b=UuCARKF+5YCkKrOqSSJt0PA2MzxqDQsOr2HrrB7HqgeB5z2GL3l6UIW9isao6fIgWb
+         MBebnKGmiV519REoSHjuUwsVGKOqZBT0Z0rzzu0+IU7XYY2xBpSv4k6BbRh/tBsj8XsH
+         RM0qMaruBMW0kGszM9AHg5YwO/DL3r6nLFRxdIFp5wpqq/7r5RYu1VSM8bv7nSh02hKw
+         XJedS6vAiYOyJYmDQqCAN3VEUUySzeHSX+eMNnbXn4fEgAnScwZ5FZ/TaZNrPiRFU5NT
+         wO3ZVSxK670tEooWb3dF+tOByY4q/4XWQnANDQ+A19Ur4ZCzK9MVJCF3abrujbEYjgS5
+         qr5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709156623; x=1709761423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4MROf+F57WlYpsW/TTfDlqwVn7p2q2yEa3HrwJ6r+kg=;
-        b=g/N7AzboIQN1TSGkDWwGvu1EkjpFFp4W8gIA6z8vyiEwf8FjiHnjPTElZZUY88wYgE
-         0pmL8hi8JGm7kJTDM1wRXvuOUYGqsDuweasSqulgI+x6mKyGf7pLheaLQXeyQAPueUMN
-         k06g3dX5c0FqgCZ3Bz1ctaYAW1jVQW0BqUEyik6jfFHaiosiYGg5Kmr1g+RTPP5rL5D3
-         AVxl65a+xMXVCPeN58OGiys7G81g2CWmXvPpY7BVycTYVcgCVe9cxKH6+zTy6LYYjt+Y
-         y22TrDZI1nHY2uYiDOcg6OFKFkVVsF8Kay9tTMn0P3qanFw4H3tHSMtBYIlnD8W+zbcy
-         kpdg==
-X-Forwarded-Encrypted: i=1; AJvYcCXJauhuwY/iV8+iniW3oCfiNQZf8u0NGeiFV3b/EN+ElPTynZZ6kgq2xKgnDYLWDA2hxumiTQ22ivdYDYS8b7eAuM6uzFsnvvUp6oX4sL2AZfkG7/rlHQATCzQ9Xza+zIC4LYAbx1YKXhf2MHS2Eq9OHw==
-X-Gm-Message-State: AOJu0YwcmaFjg154kGfQ9kYk8q6BSYLrG3SEd1FyoNMKMTcr9wWNBXe3
-	bV06dZPW3H0qs/xXCYjx4SpcEPd4patFfrOT/fyInA0x+X5SD5V+Tx5iv5q6a4WTxhI3/Rt/TEL
-	/03bn0SZDE59b+l+IASZGRSTU6kM=
-X-Google-Smtp-Source: AGHT+IHYU/yGXd4MDshpKRx80tk5wSCpTZYb44+puq4sjffOz7w4cXohR+y1Cw54XwuCp12wOXwTWBNYsYnp3p6XwlA=
-X-Received: by 2002:a17:90a:6c03:b0:29a:ee72:1058 with SMTP id
- x3-20020a17090a6c0300b0029aee721058mr417989pjj.35.1709156622437; Wed, 28 Feb
- 2024 13:43:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709156662; x=1709761462;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uZklOSUieULDemWZ+oNQMLtEXHZHkGyXS/OFBbqQnog=;
+        b=rvXoNPZHBO5IJCY+iZ2RfycMZ+lav9Jp10KCyOuVPtW4g6z9gz8XNHpIvHBGCTytoB
+         rFV7WY6QUMpLznMHMQFpJW3Fbciv5cM/G65+XOVLC+4FkHmxgZpmomrvgwT3MmW8LnBE
+         O6HzIkvYqaDi+7gnwmVzjwEEecOZTcskYeubDqnsarF6MdNF8k68eaHuKQdc7vv1COMR
+         SzIhfUUtKzCJMEd9dxDeDwJaUpLQTn4D4q0Sq9WyaYBP9OtwgQ0GWm3QSp/g37gAyNHk
+         JvVKULZlt1zHlsY3lh25ivMMSKJn4JdlkWgemvxYShHbVMkpR8aIWVUAu6bDwQG2uEi1
+         RX8w==
+X-Forwarded-Encrypted: i=1; AJvYcCXA9I+sElTihWwSsFfmZjwEqtrL/EUZ/yDaFqNT5rlpsbh2gEJ8K1ADPaRki5YDbms1fsigHaV7FdABC93RcP/JP/z9ZQ8pJ8cIX8vB
+X-Gm-Message-State: AOJu0YzedDBYRjz5EU8CXS8vhN5XHs3/7hI60LLFRnDiIiJlrGhExgXg
+	sS3+sef+gx80MZzqK2xV4P8IDi+cyDUb2GgFJ9vxRSMOd+x/8bcjhGmQ1Ocsk5zc1o/WgoqdDk5
+	z
+X-Google-Smtp-Source: AGHT+IFssyts4QE2YmPDJt+vm+uwcfNQbPvJ8bBJfQ9VFSUi0fyzRV6qkzW8l5C7Vlz6slB10sOD2g==
+X-Received: by 2002:a05:622a:30f:b0:42e:7b49:f3d with SMTP id q15-20020a05622a030f00b0042e7b490f3dmr869543qtw.34.1709156662485;
+        Wed, 28 Feb 2024 13:44:22 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id vy22-20020a05620a491600b0078597896394sm31677qkn.51.2024.02.28.13.44.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 13:44:21 -0800 (PST)
+Date: Wed, 28 Feb 2024 16:44:20 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Byungchul Park <byungchul@sk.com>
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com
+Subject: Re: [PATCH] mm/vmscan: simplify the calculation of fractions for
+ SCAN_FRACT
+Message-ID: <20240228214420.GA50163@cmpxchg.org>
+References: <20240228015500.52452-1-byungchul@sk.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228150149.4799-1-vishnuocv@gmail.com> <d6d0806e-5b5d-474c-affa-d43d88785275@redhat.com>
- <fdda6515-3b13-4727-9304-c740c77003ec@app.fastmail.com>
-In-Reply-To: <fdda6515-3b13-4727-9304-c740c77003ec@app.fastmail.com>
-From: Vishnu Sankar <vishnuocv@gmail.com>
-Date: Thu, 29 Feb 2024 06:43:05 +0900
-Message-ID: <CABxCQKtUFpiap-Zi5ihDD6W=NSd3Jn9RXykFPUz_Nj4WQ_qjWg@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Add more ThinkPads with
- non-standard reg address for fan
-To: Mark Pearson <mpearson-lenovo@squebb.ca>
-Cc: Hans de Goede <hdegoede@redhat.com>, =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	"platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, linux-kernel@vger.kernel.org, 
-	Vishnu Sankar <vsankar@lenovo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228015500.52452-1-byungchul@sk.com>
 
-Hi Hans and Mark,
+On Wed, Feb 28, 2024 at 10:55:00AM +0900, Byungchul Park wrote:
+> The current way to calculate fractions for SACN_FRACT is little readable
+> and more complicated than it should be.  It also performs unnecessary
+> division and adjustment to avoid zero operands.  Prune away by
+> multiplying the fractions by 'anon_cost * file_cost / (3 * total_cost)':
+> 
+> where:
+>    total_cost = sc->anon_cost + sc->file_cost
+>    anon_cost = total_cost + sc->anon_cost
+>    file_cost = total_cost + sc->file_cost
+> 
+> before:
+>    fraction[0] = swappiness * 3 * total_cost / anon_cost
+>    fraction[1] = (200 - swappiness) * 3 * total_cost / file_cost
+> 
+> after:
+>    fraction[0] = swappiness * file_cost
+>    fraction[1] = (200 - swappiness) * anon_cost
+> 
+> Worth noting that this patch doesn't change the formula.
+> 
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  mm/vmscan.c | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4657440854db..7b33fcc1cbdc 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -2339,7 +2339,6 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>  	u64 fraction[ANON_AND_FILE];
+>  	u64 denominator = 0;	/* gcc */
+>  	enum scan_balance scan_balance;
+> -	unsigned long ap, fp;
+>  	enum lru_list lru;
+>  
+>  	/*
+> @@ -2416,17 +2415,10 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>  	total_cost = sc->anon_cost + sc->file_cost;
+>  	anon_cost = total_cost + sc->anon_cost;
+>  	file_cost = total_cost + sc->file_cost;
+> -	total_cost = anon_cost + file_cost;
+>  
+> -	ap = swappiness * (total_cost + 1);
+> -	ap /= anon_cost + 1;
+> -
+> -	fp = (200 - swappiness) * (total_cost + 1);
+> -	fp /= file_cost + 1;
+> -
+> -	fraction[0] = ap;
+> -	fraction[1] = fp;
+> -	denominator = ap + fp;
+> +	fraction[0] = swappiness * file_cost;
+> +	fraction[1] = (200 - swappiness) * anon_cost;
 
-Thanks for the review.
-On Thu, Feb 29, 2024 at 5:19=E2=80=AFAM Mark Pearson <mpearson-lenovo@squeb=
-b.ca> wrote:
->
-> Hi Hans,
->
-> On Wed, Feb 28, 2024, at 11:09 AM, Hans de Goede wrote:
-> > Hi,
-> >
-> > On 2/28/24 16:01, Vishnu Sankar wrote:
-> >> Add more ThinkPads with non-standard register addresses to read fan va=
-lues.
-> >>
-> >> ThinkPads added are L13 Yoga Gen1, X13 Yoga Gen1, L380, L390, 11e Gen5=
- GL,
-> >> 11e Gen5 GL-R, 11e Gen5 KL-Y.
-> >>
-> >> Signed-off-by: Vishnu Sankar <vishnuocv@gmail.com>
-> >
-> > Thanks, I have no objection against this patch:
-> >
-> > Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-> >
-> > But this feels like it will become a game of whack-a-mole.
-> >
-> > Mark can you reach out to the ThinkPad firmware team and
-> > figure out if there is some supported way to automatically detect
-> > this ?
-> >
-> These are all older platforms and we're not expecting to see this on any =
-newer platforms...if it shows up it's because they messed up (there is a sp=
-ec and they're supposed to follow it).
-> Vishnu did review with the FW team which platforms had used this implemen=
-tation, and we believe the list below to be complete.
->
-> Vishnu, please correct me if you've heard otherwise.
-This is confirmed by the FW team.
-The list of systems is complete and no more systems are expected (as of now=
-).
->
-> As a note, I did review this during an internal review, before Vishnu pus=
-hed it, so I'll add:
->
-> Reviewed-by: Mark Pearson <mpearson-lenovo@squebb.ca>
->
-> Mark
+Unfortunately, I don't think that
 
+anon = swappiness * file_cost
+file = (200 - swappiness) * anon_cost
 
-
---=20
-
-Regards,
-
-      Vishnu Sankar
-     +817015150407 (Japan)
+is more readable. Sure it's the same, but I think it's clearer to
+actually see that `anon = total_cost / anon_cost` ratio in the code.
 
