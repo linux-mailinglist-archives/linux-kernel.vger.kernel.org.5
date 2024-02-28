@@ -1,181 +1,134 @@
-Return-Path: <linux-kernel+bounces-84811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5253186ABE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:09:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46F7E86ABE7
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:10:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08836286669
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:09:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 014F9286D41
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:10:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A640B3714C;
-	Wed, 28 Feb 2024 10:09:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D0E36AEC;
+	Wed, 28 Feb 2024 10:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Skew+2LO"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="A/Yt6XK8"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3396136B0A;
-	Wed, 28 Feb 2024 10:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A27E3613E;
+	Wed, 28 Feb 2024 10:10:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709114968; cv=none; b=fRl6vDZRnh95QoipNGIBfgmPOuNVyAuc3XONiTTELTrFqPfUpkwqtFgPFkZXAxBj2N6K6Q8g18CpW+Hy9UqmdvokfVa1ofC41mpVUp0btHgbHFmr/Z1SPPxucF99AtQAcnvUQsf7EfstIHRhTDatZq7JqDBuqqoWZRWmz2MXzfs=
+	t=1709115016; cv=none; b=fsQ1apoOtLZnc17sMXeQ+D7bEnZV1yMVbjM6aOz73MkPURJJ26aDbviHoyAWY5lbi+B2jCj/B9wWqDuancLCbSlt6lUhVKK8be0ZbL7n5xZ60h9XjPw43sLF6Wih2D7BOb17aai+G/xDw9aHSq04V/5eXPXPE6YGgDCcrvBQJ8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709114968; c=relaxed/simple;
-	bh=S66s19ilvDHTNIulMAImsMB6AkaPAi9N9/xnkhBU13k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tJuFBAxaFhYtqKLTRw5R2q00CGHqDWOZXEg/JaN6LOjU+fXO0WEZ3AY8sdMXWVKy2Rnggj/TRajCkZextXqYN9DYIpUJxtyljLmLN6XNXMs6AKPteOzZ8SLLxUoBra5dn552v+kAZhY0QxahaMUTIDEV7lQKalGRLBLffVJFG8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Skew+2LO; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709114964;
-	bh=S66s19ilvDHTNIulMAImsMB6AkaPAi9N9/xnkhBU13k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Skew+2LOY7JbHwKpTbn8YnEJTYP2G50KkkHUgi6mQv0GLQVie8KLptOh2ijMyWp25
-	 4aFi6QD8QSXodCbY/qyo7t1nSTF1XHcmytnnAhaZ+x3pc3pKGKasqgVigmzCsjnEHr
-	 kolcyRw7M+mEU5aA+Ta1zv4ft/DYLLt5LDgcVRDfXcz4h7TAyeoGZSO0q8lnnzZabE
-	 DhEeUV14LG5nJLEbnE4d793Dy1nRzHAuFkEtFTrHF6BWWdEzU6s7ZZnRDpscnsjjS3
-	 FiZ6L7D4Xsqe7aCd2SJPdL9WPxmDh5y7n5NSzqGrKJg4u3AB1n4ckYgq87Y2/+A8qh
-	 Ggcq2RaJdmgAw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id AE5D937820CB;
-	Wed, 28 Feb 2024 10:09:23 +0000 (UTC)
-Message-ID: <e7d57472-08f9-4e71-8c42-2f95d9a81f75@collabora.com>
-Date: Wed, 28 Feb 2024 11:09:23 +0100
+	s=arc-20240116; t=1709115016; c=relaxed/simple;
+	bh=gDrqe1TCdETutZDRLxWC3iPRvaMUjmZdXz4Pg6I6EyA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=VEonGOu6lz38hqwrokmXSiABa7Yvm8desQymJdzlfPawnT4Tju4u5s614EwkNCusoy35m06CdxbTWuvJTrkS1sWgEhD59vJ3mE7jZG2uLW/TyBjJlXpEm8B7RtU9jAf0MVc5V9KUsMeoy21oTB4VVJOUjRRsCTEAsra2XdiLxdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=A/Yt6XK8; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S6VSf8009700;
+	Wed, 28 Feb 2024 10:09:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=F/s+thCeoDRDTCkLO/eC1Mvzb84PqPQpXoHEQ1eWBiA=; b=A/
+	Yt6XK8AhRgCQbjBtMjCSZqzDYrSnINWozkr0vnVTGqqJSVGHymK9ivj/k0x0o1uN
+	WYGtIoILPxfjc78PTJA2OvnoML0+UUsGUo585Mz1fSiPpVKaYw2klS+rrwXdCLCT
+	NOLUfZMGA963L5jPhQhT5QgIjm4N2uS2kmjpxTrQj63Y06y3+BDuTehFIK2+3y4O
+	5pb84JAY8o+RLBsmvEr/e2GS2g+5g4FFXlOGTMNsVqffYyYS0Fj8/f0QOlXMkGTH
+	zAjFwwNcdU00wbbm8hT+H/ChkIni/GoHbS5kvBpqw3VrFXSkj4+lGzbX84rg/B7y
+	zwz8ukycaCKE09OmzmFw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whp65sgwe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 10:09:43 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SA9gv8015023
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 10:09:42 GMT
+Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 02:09:37 -0800
+Message-ID: <9cc4e465-9979-e4cc-3d2d-84cca307f19e@quicinc.com>
+Date: Wed, 28 Feb 2024 15:39:34 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: mediatek: vcodec: Fix oops when HEVC init fails
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 0/2] Fix per-policy boost behavior
 Content-Language: en-US
-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>,
- Tiffany Lin <tiffany.lin@mediatek.com>,
- Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
- Yunfei Dong <yunfei.dong@mediatek.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: kernel@collabora.com, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240226211954.400891-1-nicolas.dufresne@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240226211954.400891-1-nicolas.dufresne@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Viresh Kumar <viresh.kumar@linaro.org>
+CC: <dietmar.eggemann@arm.com>, <marcan@marcan.st>, <sven@svenpeter.dev>,
+        <alyssa@rosenzweig.io>, <rafael@kernel.org>, <xuwei5@hisilicon.com>,
+        <zhanjie9@hisilicon.com>, <sudeep.holla@arm.com>,
+        <cristian.marussi@arm.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <quic_rgottimu@quicinc.com>,
+        <linux-arm-kernel@lists.infradead.org>, <asahi@lists.linux.dev>,
+        <linux-pm@vger.kernel.org>
+References: <20240227165309.620422-1-quic_sibis@quicinc.com>
+ <20240228050703.lixqywrtxravegc6@vireshk-i7>
+ <c165dd32-1e51-2fac-38ae-dd7300d36372@quicinc.com>
+ <20240228063511.rcntpb3dhbbhf7fb@vireshk-i7>
+From: Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <20240228063511.rcntpb3dhbbhf7fb@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 56b7fyYeCFjEwNtiQNInKEoxnAAVmICM
+X-Proofpoint-ORIG-GUID: 56b7fyYeCFjEwNtiQNInKEoxnAAVmICM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_04,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280080
 
-Il 26/02/24 22:19, Nicolas Dufresne ha scritto:
-> In stateless HEVC case, the instance pointer was saved in the
-> context regardless if the initialization worked. As the pointer
-> is freed in failure, this resulted in use after free in the
-> deinit function.
+
+
+On 2/28/24 12:05, Viresh Kumar wrote:
+> On 28-02-24, 10:44, Sibi Sankar wrote:
+>> In the existing code, per-policy flags doesn't have any impact i.e.
+>> if cpufreq_driver boost is enabled and one or more of the per-policy
+>> boost is disabled, the cpufreq driver will behave as if boost is
+>> enabled.
 > 
-
- From what I understand, "the pointer" that is freed is struct vdec_vpu_inst; is
-that correct?
-
-Since you do have a way to easily reproduce the issue on your side, can we resolve
-the safety/reliability root issue as well as making this correct?
-
-The idea is being able to avoid a kernel panic in the situation that you describe
-in this fix, but throw an error message (read: throw a big "wtf!") when this does
-happen, and handle that with returning an error code (avoiding a kernel crash).
-
-Let's cut it short - please try this:
-
-In functions
-   - int vpu_vdec_start()
-   - int vpu_dec_get_param()
-   - int vcodec_send_ap_ipi()
-
-at the beginning, perform this check:
-
-	if (unlikely(!vpu)) {
-		/* Write a scarier message if this is not scary enough */
-		mtk_vdec_err("FIXME!! - VPU is NULL. This is unexpected.\n");
-		return -EINVAL; /* or something else if more meaningful */
-	}
-
-Unless I've misunderstood what's NULL, that'll work. :-)
-
-
-Meanwhile, for this fix:
-
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-Cheers,
-Angelo
-
->   Hardware name: Acer Tomato (rev3 - 4) board (DT)
->   pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->   pc : vcodec_vpu_send_msg+0x4c/0x190 [mtk_vcodec_dec]
->   lr : vcodec_send_ap_ipi+0x78/0x170 [mtk_vcodec_dec]
->   sp : ffff80008750bc20
->   x29: ffff80008750bc20 x28: ffff1299f6d70000 x27: 0000000000000000
->   x26: 0000000000000000 x25: 0000000000000000 x24: 0000000000000000
->   x23: ffff80008750bc98 x22: 000000000000a003 x21: ffffd45c4cfae000
->   x20: 0000000000000010 x19: ffff1299fd668310 x18: 000000000000001a
->   x17: 000000040044ffff x16: ffffd45cb15dc648 x15: 0000000000000000
->   x14: ffff1299c08da1c0 x13: ffffd45cb1f87a10 x12: ffffd45cb2f5fe80
->   x11: 0000000000000001 x10: 0000000000001b30 x9 : ffffd45c4d12b488
->   x8 : 1fffe25339380d81 x7 : 0000000000000001 x6 : ffff1299c9c06c00
->   x5 : 0000000000000132 x4 : 0000000000000000 x3 : 0000000000000000
->   x2 : 0000000000000010 x1 : ffff80008750bc98 x0 : 0000000000000000
->   Call trace:
->    vcodec_vpu_send_msg+0x4c/0x190 [mtk_vcodec_dec]
->    vcodec_send_ap_ipi+0x78/0x170 [mtk_vcodec_dec]
->    vpu_dec_deinit+0x1c/0x30 [mtk_vcodec_dec]
->    vdec_hevc_slice_deinit+0x30/0x98 [mtk_vcodec_dec]
->    vdec_if_deinit+0x38/0x68 [mtk_vcodec_dec]
->    mtk_vcodec_dec_release+0x20/0x40 [mtk_vcodec_dec]
->    fops_vcodec_release+0x64/0x118 [mtk_vcodec_dec]
->    v4l2_release+0x7c/0x100
->    __fput+0x80/0x2d8
->    __fput_sync+0x58/0x70
->    __arm64_sys_close+0x40/0x90
->    invoke_syscall+0x50/0x128
->    el0_svc_common.constprop.0+0x48/0xf0
->    do_el0_svc+0x24/0x38
->    el0_svc+0x38/0xd8
->    el0t_64_sync_handler+0xc0/0xc8
->    el0t_64_sync+0x1a8/0x1b0
->   Code: d503201f f9401660 b900127f b900227f (f9400400)
+> I see. Good catch. The first patch is fine, just explain the problem
+> properly and mention that no one is checking the policy->boost_enabled
+> field. It is never read.
 > 
-> Signed-off-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
-> Fixes: 2674486aac7d ("media: mediatek: vcodec: support stateless hevc decoder")
-> ---
->   .../mediatek/vcodec/decoder/vdec/vdec_hevc_req_multi_if.c       | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>> I had to update the policy->boost_enabled value because we seem
+>> to allow enabling cpufreq_driver.boost_enabled from the driver, but I
+>> can drop that because it was just for book keeping.
 > 
-> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_hevc_req_multi_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_hevc_req_multi_if.c
-> index 06ed47df693bf..21836dd6ef85a 100644
-> --- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_hevc_req_multi_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_hevc_req_multi_if.c
-> @@ -869,7 +869,6 @@ static int vdec_hevc_slice_init(struct mtk_vcodec_dec_ctx *ctx)
->   	inst->vpu.codec_type = ctx->current_codec;
->   	inst->vpu.capture_type = ctx->capture_fourcc;
->   
-> -	ctx->drv_handle = inst;
->   	err = vpu_dec_init(&inst->vpu);
->   	if (err) {
->   		mtk_vdec_err(ctx, "vdec_hevc init err=%d", err);
-> @@ -898,6 +897,7 @@ static int vdec_hevc_slice_init(struct mtk_vcodec_dec_ctx *ctx)
->   	mtk_vdec_debug(ctx, "lat hevc instance >> %p, codec_type = 0x%x",
->   		       inst, inst->vpu.codec_type);
->   
-> +	ctx->drv_handle = inst;
->   	return 0;
->   error_free_inst:
->   	kfree(inst);
+> So with cpufreq_driver->boost_enabled at init time, policy's
+> boost_enabled must be set too. Do that in the core during
+> initialization of the policy instead.
+> 
+>> I didn't want
+>> to include redundant info from another mail thread that I referenced in
+>> the cover letter, but will add more info in the re-spin.
+> 
+> You don't have to, but you need to explain the exact problem in a bit
+> more detail since it wasn't obvious here.
 
+ack, will make these changes in the next re-spin.
+
+-Sibi
+
+> 
 
