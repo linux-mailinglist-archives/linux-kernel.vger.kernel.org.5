@@ -1,154 +1,123 @@
-Return-Path: <linux-kernel+bounces-85494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE2486B69F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:01:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47BE086B69E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27FB01C263A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:01:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1C931F25AA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5293B79B72;
-	Wed, 28 Feb 2024 18:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C7479B9E;
+	Wed, 28 Feb 2024 18:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Yjb3feY5"
-Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D4A679B64
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.22
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KIPC+xsb"
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3137779B91
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709143260; cv=none; b=FRKTJmZTEKLcH8L45/7xmWzgqGhVADZ2XR/XGniuaJ2Cg5u7uWEy7T46FY+H5CUSj8DXWQ5WrG1y8fW8rwXS+Dp/GYfpVsy/4EIr1eI+X5GzLA7B4//6Y27GE4h5v1I7cArlJT3SkjaZwHWiM113akzPryndLVfXmKvyaD8rNJM=
+	t=1709143223; cv=none; b=sM7DOdYERrB9p5b9/r9G9pocr7BF9wANRKxafIsfXErgh2g4jMyjt90cB+6evrjJM3vvu+OYM92r1NjZgmFmTGUY9UG72HppITNMma/LiKzoDSS1f3UiQp0m2rou+J/yo8sNLETC7KBZb6aNQb9BoqCQmJKYziBBioqDo8uzCik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709143260; c=relaxed/simple;
-	bh=0FwpwzAD/az5o+wVtVaQP081+CsxoOZPZKbjHeTacdA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n7sHpROnmkGeW3kYA45DOWFRbZU5ttAZAYe6hf3qd239WJEUjGTecgx/1xOAYeDNoBdDCM0jvx6sTNPyoYF4SiJ7gwCH47i2SC5TZ2JjRRo/4AB7s1HoE5nOOn+kdgTCShmhcnZCulfC7gY6o8iAUcrcejImRDLy6q6KTW4v4NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=Yjb3feY5; arc=none smtp.client-ip=80.12.242.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id fODbrhZ9PVFb9fODbrBPJG; Wed, 28 Feb 2024 18:59:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1709143189;
-	bh=6VMAgc74NhzsJxo+NTy1RBo7SqgKKr+Thg+OAvLcHUU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=Yjb3feY5IUAlE0MCzfv6lk++/zAkNFWvUaThblhfbkm+SBQV5+eBNlpDsSDdv1xfQ
-	 8LD33Z25T9g9yu/xAg1HmI2mMfwa+rDrJSzQWIq7mW3T1GlhMD+dLMQEKyO4ROqZlX
-	 u9PYsCVx9j/t3Tt9nHfU90JVcMGiHFC2HsPC/BndBHVajXe6813vR1JT8Bi4pGpXJ+
-	 tgAfjuEUGU4EvHA1qzkmHo8awrYUZpnx6jKfLPKmdZr3K8DKWJjSunHFNrwCbw8/Xb
-	 TNLTWzPOPsptY9yQ/8/6zV18yX81EfZIz/kI/q/sbens5iKGftU+rsMk6Si54g34rN
-	 Pl7ngA2g3Jk5g==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Wed, 28 Feb 2024 18:59:49 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <eca39015-296c-4494-8b1b-6344b4ace3a2@wanadoo.fr>
-Date: Wed, 28 Feb 2024 18:59:47 +0100
+	s=arc-20240116; t=1709143223; c=relaxed/simple;
+	bh=b9zRhYvv4PXca3piPorvZ5+a2QRM6gh45nB1FAsuTlw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OE2JNFxX/LnYbqjQplwpLH9luB7SdnpFLHsxwA5kG+G7rnRPDQQp9OLZhqL8pJ0bCFvY+0VWKuvCLoCCdaTIXhfTjWSmPFJNlnN44oHa2b5Xx30RUX4w9wwq20/YanL/3F+zLMzZIy4E2LtkDSFnq2mqYeqA46/dChdNTSQ7sNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KIPC+xsb; arc=none smtp.client-ip=209.85.222.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7da6e831977so1058373241.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709143221; x=1709748021; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=J4sA0rtgSj+9+qXLbdIB1immx/WztoPHP7M0OTv8GAU=;
+        b=KIPC+xsbt4MKT/Yhhp9kE4mNcfMWSSF2BFeTKrOb0qfYABqQ6+bWwfBLu2n0ALYtsv
+         CtMMIejcLmTXibEY93kNtEDlATKaEHjGt+vc75TnqqWQfSMO4Sc7YBVOxxy0EGb137kp
+         cnr8dSOD0ZC1iTV+pa/XqLuIesTHo+qBNHZUl52ueGxz5MnmmIU02fMgv39Ez0F6t/ln
+         kjJli6sV5obihoduBWrMoRn1ytsT207fBfteojrt30tglzT98siyWSxsvB0fXkZ55EKq
+         f88tIArtLI7c8bWHgLXDvQnC7BL67hgol5qYWg4Vq6Av53G7jnJBlhalJSLBpr0J3ovL
+         o3OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709143221; x=1709748021;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=J4sA0rtgSj+9+qXLbdIB1immx/WztoPHP7M0OTv8GAU=;
+        b=oZ4QmX21iniBkD3s+n7SAXKjfkryKqWPEhr+xkoxB/IulEm9qbE5kK6Bw/Ceo8exnm
+         4g4agOEDryXvJR775fxDQTNjpuE96enyP73FsT0BnW/3Y9vOfNfFe8ep828ftwZPWSln
+         lzS0vGso/ICG9Xt3FauHSg0GoUTWGMYHphVPEj/TU2D73qzQutPOiLrbhATSvpXrau6a
+         OmZF7kFNPbhiT6bcz08XEewFMENQbkHa059rqJUWpmTP/bV2bUSHLo7jpjHE30rMCwst
+         vxuBarPZBgmRzmxnIYZX+QtJ+PAo7OAZioESxHceGyKtTlXidudkiXkJ/UDJ2sYmxkNX
+         5oQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVt4pcfwICj0FMXPfP0g7TDVqqHcMDsqtN7wUAt0Pyfs1oCx6ppOkcdMBekjWWlX4UpOz2nfzGZ0eSKq/cbS1wT1kULDPMo87Ey+sPm
+X-Gm-Message-State: AOJu0Yw8yAlq76zs+qjTY94fCE8HzO1U57ti/kzlxydowlr+saPDL1l9
+	v8F0eFZSYYMWkzt3lj//KEDBwWOLJU939WVCE725zSlE/LWiMUkQkBE95eNgrJxksR6gErW5wQa
+	G4I3F+f5YvHHEley9DfH+pBmf/8GT/X7F
+X-Google-Smtp-Source: AGHT+IGDxwNO38LaKSkKz71BL0SKZWSzSEvlLrRn6Vd4Rz45iveoXvYeoieF4XSxNSJfXFRV/Ik5JwH8G/FiOsuguI0=
+X-Received: by 2002:a67:b608:0:b0:472:623b:75bc with SMTP id
+ d8-20020a67b608000000b00472623b75bcmr337913vsm.10.1709143221159; Wed, 28 Feb
+ 2024 10:00:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 2/2] net: tehuti: Fix leaks in the error handling path
- of bdx_probe()
-Content-Language: en-MW
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <cover.1709066709.git.christophe.jaillet@wanadoo.fr>
- <9090b599c7574892b77a9521e3ddb3a52a154205.1709066709.git.christophe.jaillet@wanadoo.fr>
- <3b12e1e2-4859-40b6-8d9d-0a940251bed4@moroto.mountain>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <3b12e1e2-4859-40b6-8d9d-0a940251bed4@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240227172852.2386358-1-tj@kernel.org> <20240227172852.2386358-7-tj@kernel.org>
+ <CAOMdWSLVDaN_XFD6Ov-=6VrH4wyBz-0wq_L3EzgdsJ5zJi47qQ@mail.gmail.com> <Zd9yNByiBMcPxWbU@slm.duckdns.org>
+In-Reply-To: <Zd9yNByiBMcPxWbU@slm.duckdns.org>
+From: Allen <allen.lkml@gmail.com>
+Date: Wed, 28 Feb 2024 10:00:08 -0800
+Message-ID: <CAOMdWSJX43mqaSWaoVkNep9zJjr+v6OXup9YK9EuA_CWH+wThA@mail.gmail.com>
+Subject: Re: [PATCH 6/6] r8152: Convert from tasklet to BH workqueue
+To: Tejun Heo <tj@kernel.org>
+Cc: jiangshanlai@gmail.com, torvalds@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, boqun.feng@gmail.com, 
+	tglx@linutronix.de, peterz@infradead.org, romain.perier@gmail.com, 
+	mingo@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Le 28/02/2024 à 11:17, Dan Carpenter a écrit :
-> On Tue, Feb 27, 2024 at 09:50:56PM +0100, Christophe JAILLET wrote:
->> If an error occurs when allocating the net_device, all the one already
->> allocated and registered should be released, as already done in the remove
->> function.
->>
->> Add a new label, remove the now useless 'err_out_disable_msi' label and
->> adjust the error handling path accordingly.
->>
->> Fixes: 1a348ccc1047 ("[NET]: Add Tehuti network driver.")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->> Compile tested only.
->> ---
->>   drivers/net/ethernet/tehuti/tehuti.c | 15 ++++++++++-----
->>   1 file changed, 10 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
->> index 938a5caf5a3b..6678179885cb 100644
->> --- a/drivers/net/ethernet/tehuti/tehuti.c
->> +++ b/drivers/net/ethernet/tehuti/tehuti.c
->> @@ -1965,7 +1965,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->>   		ndev = alloc_etherdev(sizeof(struct bdx_priv));
->>   		if (!ndev) {
->>   			err = -ENOMEM;
->> -			goto err_out_disable_msi;
->> +			goto err_out_free;
->>   		}
->>   
->>   		ndev->netdev_ops = &bdx_netdev_ops;
->> @@ -2031,13 +2031,13 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->>   		if (bdx_read_mac(priv)) {
->>   			pr_err("load MAC address failed\n");
->>   			err = -EFAULT;
->> -			goto err_out_disable_msi;
->> +			goto err_out_free_current;
->>   		}
->>   		SET_NETDEV_DEV(ndev, &pdev->dev);
->>   		err = register_netdev(ndev);
->>   		if (err) {
->>   			pr_err("register_netdev failed\n");
->> -			goto err_out_free;
->> +			goto err_out_free_current;
->>   		}
->>   		netif_carrier_off(ndev);
->>   		netif_stop_queue(ndev);
->> @@ -2046,9 +2046,14 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->>   	}
->>   	RET(0);
->>   
->> -err_out_free:
->> +err_out_free_current:
->>   	free_netdev(ndev);
-> 
-> Since it seems like you're going to be resending this patch, could you
-> do this free_netdev() before gotos?  That way if someone adds more code
-> after the loop then we can still use the goto ladder to unwind.  (No one
-> is going to add more code after the loop, I know...  I wouldn't have
-> commented except that it seemed like you were going to resend.)
-> 
-> 		if (bdx_read_mac(priv)) {
-> 			free_netdev(ndev);
-> 			pr_err("load MAC address failed\n");
-> 			err = -EFAULT;
-> 			goto err_out_free;
-> 		}
-> 
+> > > @@ -6971,7 +6972,7 @@ static int rtl8152_open(struct net_device *netdev)
+> > >                 goto out_unlock;
+> > >         }
+> > >         napi_enable(&tp->napi);
+> > > -       tasklet_enable(&tp->tx_tl);
+> > > +       enable_work(&tp->tx_work);
+> >
+> >   I think we are missing queue_work() above, right?
+> >
+> >    To avoid such situations, could we combine enable_work() + queue_work(),
+> > into a single API?
+>
+> Here, the device is newly being opened and the work item is just disabled
+> from the init. So, it doesn't need queueing.
+>
 
-Yeh, I thought about it, but it is more verbose and this code looks 
-mostly unchanged since 2007!
+Ah, my bad. Thanks for pointing it out.
 
-Anyway, I agree with you and will update accordingly.
+> > Perhaps, something like:
+> >
+> > static inline bool enable_and_queue_work(struct workqueue_struct *wq,
+> > struct work_struct *work)
+> > {
+> >        if (enable_work(work))
+> >        {
+> >              queue_work(wq, work);
+> >              return true;
+> >        }
+> >        return false;
+> > }
+>
+> That said, this may still be nice to have.
+>
 
-CJ
+ If the above is okay, I could send out a patch. Please let me know.
 
-> regards,
-> dan carpenter
-> 
-> 
-> 
-> 
-
+Thanks.
 
