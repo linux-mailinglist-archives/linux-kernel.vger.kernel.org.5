@@ -1,144 +1,180 @@
-Return-Path: <linux-kernel+bounces-84569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 970D086A879
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:43:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B3086A87B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:43:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 971C11C21725
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:43:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31DEA286291
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A69C22F0E;
-	Wed, 28 Feb 2024 06:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9BE23772;
+	Wed, 28 Feb 2024 06:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="eYIqAprp"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D754620320
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="A2pGNn3+"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4672522638;
+	Wed, 28 Feb 2024 06:43:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709102620; cv=none; b=Yh+0Oc7oP+Ptxq7vC6KC1RKZNq4QgQMoqHs8NzIwof8XfH8VWdWi2P5vz8o3Jbd/a6dFzMdob6wKKqXRGmliP6GCoX8M5depIDdL9JIRRv4nrCx4C/4LSodZiSbQECxzizt+D6/kYVC4VhBouveAa7uKAwgYNGaLmTPCAOlbfLE=
+	t=1709102621; cv=none; b=mK3h5T+D0u94MRB176g3g6VLAYm6fEEILE3EVdbcbpw7wH4t+T0eLDMND7sDGqSVFT9B69VbbT5imCMtWlu2OsDscnX10QOsrsgGpb+LWWYW8+RA3oQRhPKWgDlVkEJ5uNCdC4I1wSY5gYB/OgSyLeXoiJ2/eHFB4JMrFhMlURA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709102620; c=relaxed/simple;
-	bh=LM+OsxCppsJ6vH6sdJRPnnLwwS2Ds6CfVd62BHFGpNA=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=rqQ5AoFn6ARbjVkRY4owp1+sgh3HUSB/m3eYKD5RYaDtoQtmuvFodMZglSNI5jeNaXNQpfvL9fMeK1hXUU3lcIg+xq3uP1pV/3eGkpc59bsVMOBDI8twtHF789u/F5Fvlwjp3YKBs2pJnq87G60GUN7jAg17PCfooqp+wyVTcig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=eYIqAprp; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-299b92948a6so3547469a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 22:43:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1709102618; x=1709707418; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=W37pxQOj7sbIyu7CJO+URF/XloPZZvMA9cXiDnGo9tE=;
-        b=eYIqAprpTZE0V6C0gXzkpK8BhkLlmgoXHu5jRfh9+2PJKIudDxHlJiHvN5EB/6saur
-         achkj+PCk+/02eEgatTZndkwRfxYig9rRRIIZMM5UqwBgoFsOeyEjOisSWKVhuJI1lMP
-         +x2RUd0FrXcnLcVrd7439Lr11uIrgUueDRhhQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709102618; x=1709707418;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W37pxQOj7sbIyu7CJO+URF/XloPZZvMA9cXiDnGo9tE=;
-        b=orATJkKWXFkxzSpvqBKsA5uxmXdu8j5EMHb/lIcZA8yK2z25fbNtaSMIGtHTjAMSLa
-         b0vrRnZmBywmfua/w1p+2xMO6bJLTitLC/vldDy0MmkXLwrOnVpHQvoWmbatHs8U8RxU
-         oANDofe1zo3qo6pMhbDPKXfjG+j/udY3sBVbkNiiyH3ZEKZ07uOrg7UWz4ILin01aMZK
-         kY6XKsohYFCri9SkQp8c1QMGV3mjRziztXSkxih/lnFZFWqwDvjP59MAad9XwUMEDOiE
-         r1yQWG7gMCuHBfi1fGqpxhYZTnvC9nJ0C9JTpWKnlpl7XvRaYbL2u0LnJS2NGTvQgC2t
-         boIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXLJ4DhcwQFV6kbILZwpjQb8eX4dA0T4sEcamESzj32QK20x6bigR7csiqmacv+1TbMTErOvOZLeKl5SJKLwihcBMuxpJDJgqvkMH2w
-X-Gm-Message-State: AOJu0YzgO/tt+KFfDejNXh1XO4qIriv71uMUWTrqTjJO1b7rcdXipPEl
-	yVP9Mo0eoVtQBMHSqlQPCibM0AP1Zx5Aepdi7b4h1TKLP2jmlW9QhsRpgcCy0MZs8onxG9ZhuTm
-	mZ4BqfEIcbU/7D7Hfx4E7I7DKcMJtOsbMJuvq5QWMtxTGbcqexRGL54iQs5xBIPbN3JKoPAL3Ia
-	6JoNL9E4Du+Jk2vTb5C2oRBDbmCg==
-X-Google-Smtp-Source: AGHT+IFiAFQF0tsosZziRXvjhFNgZTGoEsb3uhNiMXK7LDGGnE1BLYnqExv8d6Odjw5vZ23ToTxyjpgPL4Un3Whvc2Q=
-X-Received: by 2002:a17:90a:4209:b0:299:1777:134c with SMTP id
- o9-20020a17090a420900b002991777134cmr9222310pjg.33.1709102618037; Tue, 27 Feb
- 2024 22:43:38 -0800 (PST)
+	s=arc-20240116; t=1709102621; c=relaxed/simple;
+	bh=Kq1Ae7/0Yd/vncOJ774Xuv/NHFHZQvwgiW47Ijr+Mo4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vf2VMHxCzh4Xw2LK9T8dCQk0pHyuA688VnpiVNSlsJuw8Ww9qj3+1eMFOUL/pUnTkLMewF0IdCryy0otj3CvgKLMbYErGvcQZXg02UOUV9jA85RpTwN0MEdtHJiu5/dahp1+JPNJsjEvHrtFBgltp17wSwuol95GyX3vMTzinfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=A2pGNn3+; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id B4FBD20B74C0; Tue, 27 Feb 2024 22:43:39 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B4FBD20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1709102619;
+	bh=tmubg1SbFwAIrQWmTiq/y8+jK/3FCZfPgB+eI0chJE4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=A2pGNn3+Uc5rAZp8xS/+vBI7P7XxUqhLENU2bkV9fWXFhJxys4E3RY34Vfrr/zMdz
+	 q0ANyCINzUZo1/Okbjrj9WPv9RGYhySvtSrx3Y9wTpOmOw1rVK8F30fucPFU+nxcE0
+	 GA8EuUltFhMU3CyeRZWyz+7krjwNPXzwfwg+P/Es=
+Date: Tue, 27 Feb 2024 22:43:39 -0800
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Ani Sinha <anisinha@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>, Olaf Hering <olaf@aepfle.de>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v8] hv/hv_kvp_daemon:Support for keyfile based connection
+ profile
+Message-ID: <20240228064339.GA10916@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1696847920-31125-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <A8905E07-2D01-46D6-A40D-C9F7461393EB@redhat.com>
+ <CAK3XEhMzLvxTbP+sFjD7btfdjw5uxyAccdT09d4hcw5hkCKXHQ@mail.gmail.com>
+ <CAK3XEhOn+k7U88sMF2tXGSyhYvAL9u17sw6qvomL=oYESRMQkw@mail.gmail.com>
+ <20240105054153.GA18258@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <CAK3XEhNRuFq=x22q011uthNdrzWzTeFzzEoNX0ZjWfcivfhyCw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Abdul Anshad Azeez <abdul-anshad.azeez@broadcom.com>
-Date: Wed, 28 Feb 2024 12:13:27 +0530
-Message-ID: <CALkn8kLOozs5UO52SQa9PR-CiKx_mqW8VF9US94qN+ixyqnkdQ@mail.gmail.com>
-Subject: Network performance regression in Linux kernel 6.6 for small socket
- size test cases
-To: edumazet@google.com, davem@davemloft.net, kuba@kernel.org, 
-	pabeni@redhat.com, corbet@lwn.net, dsahern@kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Cc: Boon Ang <boon.ang@broadcom.com>, John Savanyo <john.savanyo@broadcom.com>, 
-	Peter Jonasson <peter.jonasson@broadcom.com>, Rajender M <rajender.m@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK3XEhNRuFq=x22q011uthNdrzWzTeFzzEoNX0ZjWfcivfhyCw@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-During performance regression workload execution of the Linux
-kernel we observed up to 30% performance decrease in a specific networking
-workload on the 6.6 kernel compared to 6.5 (details below). The regression is
-reproducible in both Linux VMs running on ESXi and bare metal Linux.
+Hi Ani,
 
-Workload details:
+This patch should be out for review by mid next week.
 
-Benchmark - Netperf TCP_STREAM
-Socket buffer size - 8K
-Message size - 256B
-MTU - 1500B
-Socket option - TCP_NODELAY
-# of STREAMs - 32
-Direction - Uni-Directional Receive
-Duration - 60 Seconds
-NIC - Mellanox Technologies ConnectX-6 Dx EN 100G
-Server Config - Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz & 512G Memory
-
-Bisect between 6.5 and 6.6 kernel concluded that this regression originated
-from the below commit:
-
-commit - dfa2f0483360d4d6f2324405464c9f281156bd87 (tcp: get rid of
-sysctl_tcp_adv_win_scale)
-Author - Eric Dumazet <edumazet@google.com>
-Link -
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=
-dfa2f0483360d4d6f2324405464c9f281156bd87
-
-Performance data for (Linux VM on ESXi):
-Test case - TCP_STREAM_RECV Throughput in Gbps
-(for different socket buffer sizes and with constant message size - 256B):
-
-Socket buffer size - [LK6.5 vs LK6.6]
-8K - [8.4 vs 5.9 Gbps]
-16K - [13.4 vs 10.6 Gbps]
-32K - [19.1 vs 16.3 Gbps]
-64K - [19.6 vs 19.7 Gbps]
-Autotune - [19.7 vs 19.6 Gbps]
-
-From the above performance data, we can infer that:
-* Regression is specific to lower fixed socket buffer sizes (8K, 16K & 32K).
-* Increasing the socket buffer size gradually decreases the throughput impact.
-* Performance is equal for higher fixed socket size (64K) and Autotune socket
-tests.
-
-We would like to know if there are any opportunities for optimization in
-the test cases with small socket sizes.
-
-Abdul Anshad Azeez
-Performance Engineering
-Broadcom Inc.
-
--- 
-This electronic communication and the information and any files transmitted 
-with it, or attached to it, are confidential and are intended solely for 
-the use of the individual or entity to whom it is addressed and may contain 
-information that is confidential, legally privileged, protected by privacy 
-laws, or otherwise restricted from disclosure to anyone else. If you are 
-not the intended recipient or the person responsible for delivering the 
-e-mail to the intended recipient, you are hereby notified that any use, 
-copying, distributing, dissemination, forwarding, printing, or copying of 
-this e-mail is strictly prohibited. If you received this e-mail in error, 
-please return the e-mail to the sender, delete it from your computer, and 
-destroy any printed copy of it.
+Thanks and Regards,
+Shradha.
+On Sat, Feb 24, 2024 at 09:48:17PM +0530, Ani Sinha wrote:
+> On Fri, 5 Jan, 2024, 11:12 am Shradha Gupta, <
+> shradhagupta@linux.microsoft.com> wrote:
+> 
+> > On Sat, Dec 23, 2023 at 01:35:26PM +0530, Ani Sinha wrote:
+> > > On Sat, Dec 23, 2023 at 12:43???PM Ani Sinha <anisinha@redhat.com>
+> > wrote:
+> > > >
+> > > > On Fri, Oct 13, 2023 at 3:06???PM Ani Sinha <anisinha@redhat.com>
+> > wrote:
+> > > > >
+> > > > >
+> > > > >
+> > > > > > On 09-Oct-2023, at 4:08 PM, Shradha Gupta <
+> > shradhagupta@linux.microsoft.com> wrote:
+> > > > > >
+> > > > > > Ifcfg config file support in NetworkManger is deprecated. This
+> > patch
+> > > > > > provides support for the new keyfile config format for connection
+> > > > > > profiles in NetworkManager. The patch modifies the hv_kvp_daemon
+> > code
+> > > > > > to generate the new network configuration in keyfile
+> > > > > > format(.ini-style format) along with a ifcfg format configuration.
+> > > > > > The ifcfg format configuration is also retained to support easy
+> > > > > > backward compatibility for distro vendors. These configurations are
+> > > > > > stored in temp files which are further translated using the
+> > > > > > hv_set_ifconfig.sh script. This script is implemented by individual
+> > > > > > distros based on the network management commands supported.
+> > > > > > For example, RHEL's implementation could be found here:
+> > > > > >
+> > https://gitlab.com/redhat/centos-stream/src/hyperv-daemons/-/blob/c9s/hv_set_ifconfig.sh
+> > > > > > Debian's implementation could be found here:
+> > > > > >
+> > https://github.com/endlessm/linux/blob/master/debian/cloud-tools/hv_set_ifconfig
+> > > > > >
+> > > > > > The next part of this support is to let the Distro vendors consume
+> > > > > > these modified implementations to the new configuration format.
+> > > > > >
+> > > > > > Tested-on: Rhel9(Hyper-V, Azure)(nm and ifcfg files verified)
+> > > > >
+> > > > > Was this patch tested with ipv6? We are seeing a mix of ipv6 and
+> > ipv4 addresses in ipv6 section:
+> > > >
+> > > > There is also another issue which is kind of a design problem that
+> > > > existed from the get go but now is exposed since keyfile support was
+> > > > added.
+> > > > Imagine we configure both ipv6 and ipv4 and some interfaces have ipv4
+> > > > addresses and some have ipv6.
+> > > > getifaddres() call in kvp_get_ip_info() will return a linked list per
+> > > > interface. The code sets ip_buffer->addr_family based on the address
+> > > > family of the address set for the interface. We use this to determine
+> > > > which section in the keyfile to use, ipv6 or ipv4. However, once we
+> > > > make this decision, we are locked in. The issue here is that
+> > > > kvp_process_ip_address() that extracts the IP addresses concatenate
+> > > > the addresses in a single buffer separating the IPs with ";". Thus
+> > > > across interfaces, the buffer can contain both ipv4 and ipv6 addresses
+> > > > separated by ";" if both v4 and v6 are configured. This is problematic
+> > > > as the addr_family can be either ipv4 or ipv6 but not both.
+> > > > Essentially, we can have a situation that for a single addr_family in
+> > > > hv_kvp_ipaddr_value struct, the ip_addr member can be a buffer
+> > > > containing both ipv6 and ipv4 addresses. Notice that
+> > > > process_ip_string() handles this by iterating through the string and
+> > > > for each ip extracted, it individually determines if the IP is a v6 or
+> > > > a v4 and adds "IPV6ADDR" or "IPADDR" to the ifcfg file accordingly.
+> > > > process_ip_string_nm() does not do that and solely makes the
+> > > > determination based on is_ipv6 values which is based on a single
+> > > > addr_family value above. Thus, it cannot possibly know whether the
+> > > > specific IP address extracted from the string is a v4 or v6. Unlike
+> > > > for ifcfg files, fir nm keyfiles, we need to add v4 and v6 addresses
+> > > > in specific sections and we cannot mix the two. So we need to make two
+> > > > passes. One for v4 and one for v6 and then add IPs in the respective
+> > > > sections.
+> > > >
+> > > > This issue needs to be looked into and unless it's resolved, we cannot
+> > > > support both ipv4 and ipv6 addresses at the same time.
+> > >
+> > > In the short term, we should probably do this to avoid the mismatch :
+> > >
+> > > diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+> > > index 318e2dad27e0..b77c8edfe663 100644
+> > > --- a/tools/hv/hv_kvp_daemon.c
+> > > +++ b/tools/hv/hv_kvp_daemon.c
+> > > @@ -1216,6 +1216,9 @@ static int process_ip_string_nm(FILE *f, char
+> > > *ip_string, char *subnet,
+> > >                                                        subnet_addr,
+> > >                                                        (MAX_IP_ADDR_SIZE
+> > *
+> > >                                                         2))) {
+> > > +               if (is_ipv6 == is_ipv4((char*) addr))
+> > > +                   continue;
+> > > +
+> > >                 if (!is_ipv6)
+> > >                         plen = kvp_subnet_to_plen((char *)subnet_addr);
+> > >                 else
+> > >
+> > > But this is really a short term hack.
+> > Thanks for bringing this up Ani. I will try to fix this in a new patch
+> > (would get the new testcases added in our suite as well)
+> >
+> 
+> Has there been any progress on this front?
+> 
+> 
+> >
 
