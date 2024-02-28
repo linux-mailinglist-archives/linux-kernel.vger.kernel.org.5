@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-84922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3950B86ADBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:41:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0AA186ADC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:42:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AECB1C21C3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:41:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C2B29193F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FAA14EFEB;
-	Wed, 28 Feb 2024 11:32:05 +0000 (UTC)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 435F6151CF9;
+	Wed, 28 Feb 2024 11:32:09 +0000 (UTC)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E88314DFD3;
-	Wed, 28 Feb 2024 11:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2021273524;
+	Wed, 28 Feb 2024 11:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119924; cv=none; b=Xdnt02LNfOQ3J2eWC+Rvg4i8tblCaElqUME3KvG8OAYuUQseOOdn8nz89LBND728PKimUYaf7FYZZCxFgSJ0kT+KDRkJAZ5TcYqlE411OoXYziJpqCz7Wn3corJdnAXtpg31e19tzhonsJ6t4aVcFj6bQ+5kNbrE0kVhRj0xJZw=
+	t=1709119928; cv=none; b=G8ww27AKRbH8h/EZaBaom1MViLOu4CLoLj17xF89EvQHT4Ty+wIPLKDIrly5xDKzwg2VTZXgok0gl63g+3IJ1DOGrZk8+sHQMzL47vYn6y8k1R8oeFxAI00GjpmRvr5uqLubNjB2n3hcpM/Y8wtwjcBXCnNHAIo5q1Dj3oH4SFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709119924; c=relaxed/simple;
-	bh=M42cRr9evUR9Mr0JSq1IeJJSWj3kvBrf77cxCU4NVhE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OJKrspOEGAk+lIsmBM51kPygIN5BWnX1hJSNjPr2ShF0W2ZQsUPBjUy8IJTPRp0nAqJ53dlEFb+YcLGBiAGEmLxRRYeT35KGyVLHRqsXOkytytqNBeD1xCXArl5XcQ22kcjBH1Mj+CYPaKlD4Rs3vW0OY51bIObtkqP1PXFFPjU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
+	s=arc-20240116; t=1709119928; c=relaxed/simple;
+	bh=xfokqmnN1hXAoQigXny2P/sjBScjiho/EWfxSdAhYj4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=H88DOyacGUvaqsiSihdM2O9JXrFv4mASa/G2hMSXz6OS1qt4omJ9PtxVo6U0EoaKoWqR14fkli8QD29H5+RD/R93AkoBu/s2x4E1EipjxrUZgo4ktVEwZ7PV7QmR/K+Bn67dSKO44Fa/nH1jGhddKA36+HGzaXwyNoCXKOZ69Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a43f922b2c5so69130666b.3;
-        Wed, 28 Feb 2024 03:32:02 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-564fd9eea75so6825044a12.3;
+        Wed, 28 Feb 2024 03:32:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709119921; x=1709724721;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eeRdk5nsJWzv2xbJPbFyJWHca2KgoSDk84tifNfmBI8=;
-        b=ckMFm2E1+8R0znaL8z3/V7tLd2oB0das6N0eDzfPX2deMnYNwNwjYTYHl8D6razvF7
-         BgdRxfQM3C7kyZmuRVHpYz2oR6wNLfG73oK2eSVbl04sgbSwPmZNiwqQDk2ehpnNZcqX
-         PapVdPqG8t+qzfBmFMv+ynOK+xOUtGNTz8SK50WuqhLjleZvxwPDb6t6wgrrMJ8iIIjO
-         wlv6wP0i0t7p2D1pNsofKdKDwhli7esUh/l5MG/XUmAyq+9+6C/rf0TSHUdePnnGBcmN
-         zr9uciI06jqBIB+aLTA4iv87S+pJkunZ9SGy5aFdSnxWJn86RLYokqNkpgVusa0IahtK
-         fNYA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJuhJ+NzUsSti3Dx94VWNJbknkdPcRhXhPbwR881FnkK0UoKK7icQo2XpBSGMQi1faiGEmSWW4vANoYUnaFkUmMA1ZrL/ORocXjbpe
-X-Gm-Message-State: AOJu0Yw65fvr+43mSn1F5TccMYP3q1+FVmU0gNANjJLf4BovGoalWsyA
-	rSrOvN+SHHI8wOO3DQxjCs3iW+Kp8PUypdCOZeudB+Iy+qrbIKFU
-X-Google-Smtp-Source: AGHT+IF3z7GP3/H1N4q1K4u1BmTqW5idwzXmlZlHj90TqM8VUsFO4aGGRLci4uTMbH0nKNo6EoqWhA==
-X-Received: by 2002:a17:906:4ecd:b0:a43:b472:9a57 with SMTP id i13-20020a1709064ecd00b00a43b4729a57mr3038624ejv.62.1709119921217;
-        Wed, 28 Feb 2024 03:32:01 -0800 (PST)
-Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ef3-20020a17090697c300b00a4396ea6628sm1736864ejb.210.2024.02.28.03.32.00
+        d=1e100.net; s=20230601; t=1709119925; x=1709724725;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hPc6h8vGachk83ubTaMre+MHbC4ZFxj395rd+hZ7iVc=;
+        b=wPp4Plj3ii3URkT/t6hUAxjYMAhNiUMLFcRh+HU+mCEmUJNIm5EQG9Hcpw1nkaooXM
+         u+J2k5U1peNsdKFps6jfgHModvm5lJGjf+2Qqbp4sDN3t7C0RU1OOBPlwr/j8CzZ+jOq
+         zZPDtRNsT4iTkFX7OCdkjGs/V3dZwkaFmcv2lqoNy53Tv9I1lBAeUk6i1PFfr5ZGZEZA
+         023fofZTEZ3v8+MhN09RxuS7gOs5+eOG8CcD9YdF5LgA2SgcKJJYFes9rq3h1c8neqwA
+         e+3/Ymg/XbxYvaRmK+tY1hSX4Ovb31KGImIXo8fu+wKIXAO62HP9ZEWrRbyvF0rOiOj0
+         eCRw==
+X-Forwarded-Encrypted: i=1; AJvYcCVY1M1Nj3/1epGHBwY5+G0+BeBMtGFedC00SARF61GkVkPitAImBWjUBpf7zVK8YlweUhKUcJMHJuNJsIEor+IFvGFFJLJPbyPuqr3p
+X-Gm-Message-State: AOJu0YxpVqqnKsTXS+vbuFPB0UXYeYgDmaWjQVs32zunyJN7wl9JNdo9
+	/eteeeJv5azpUKJw3dtfqwk3BiZJJzaRh/1pnLe1x2Lv1voI5C8ZZoH3kRkL
+X-Google-Smtp-Source: AGHT+IFl1/H1/1Apa8TAsSMASHDA9z60Tdx1lChlAG9+XL9WpynmSWwUs4fs0dhHtXr3IGC9AugNpw==
+X-Received: by 2002:a50:cc92:0:b0:565:a5aa:22e5 with SMTP id q18-20020a50cc92000000b00565a5aa22e5mr8397110edi.26.1709119925262;
+        Wed, 28 Feb 2024 03:32:05 -0800 (PST)
+Received: from localhost (fwdproxy-lla-000.fbsv.net. [2a03:2880:30ff::face:b00c])
+        by smtp.gmail.com with ESMTPSA id en9-20020a056402528900b0056679104c1bsm253779edb.37.2024.02.28.03.32.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 03:32:00 -0800 (PST)
+        Wed, 28 Feb 2024 03:32:04 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
@@ -59,11 +60,17 @@ To: kuba@kernel.org,
 Cc: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	horms@kernel.org,
-	dsahern@kernel.org
-Subject: [PATCH net-next 0/2] net: collect tstats automatically
-Date: Wed, 28 Feb 2024 03:31:20 -0800
-Message-ID: <20240228113125.3473685-1-leitao@debian.org>
+	dsahern@kernel.org,
+	Jiri Pirko <jiri@resnulli.us>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>
+Subject: [PATCH net-next 1/2] net: get stats64 if device if driver is configured
+Date: Wed, 28 Feb 2024 03:31:21 -0800
+Message-ID: <20240228113125.3473685-2-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240228113125.3473685-1-leitao@debian.org>
+References: <20240228113125.3473685-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,43 +79,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf") added a field in struct_netdevice, which tells what
-type of statistics the driver supports.
+If the network driver is relying in the net core to do stats allocation,
+then we want to dev_get_tstats64() instead of netdev_stats_to_stats64(),
+since there are per-cpu stats that needs to be taken in consideration.
 
-That field is used primarily to allocate stats structures automatically,
-but, it also could leveraged to simplify the drivers even further, such
-as, if the driver relies in the default stats collection, then it
-doesn't need to assign to .ndo_get_stats64. That means that drivers only
-assign functions to .ndo_get_stats64 if they are using something
-special.
+This will also simplify the drivers in regard to statistics. Once the
+driver sets NETDEV_PCPU_STAT_TSTATS, it doesn't not need to allocate the
+stacks, neither it needs to set `.ndo_get_stats64 = dev_get_tstats64`
+for the generic stats collection function anymore.
 
-I started to move some of these drivers[1][2][3] to use the core
-allocation, and with this change in, I just need to touch the driver
-once, and be able to simplify the whole stats allocation and collection
-for generic case.
-
-There are 44 devices today that could benefit from this simplification.
-
-	# grep -r .ndo_get_stats64 | grep dev_get_tstats64 | wc -l
-	44
-
-As of today, netnext only has the `sit` driver fully ported to core
-stats allocation, hence the second patch.
-
-Links:
-[1] https://lore.kernel.org/all/20240227182338.2739884-1-leitao@debian.org/
-[2] https://lore.kernel.org/all/20240222144117.1370101-1-leitao@debian.org/
-[3] https://lore.kernel.org/all/20240223115839.3572852-1-leitao@debian.org/
-
-Breno Leitao (2):
-  net: get stats64 if device if driver is configured
-  net: sit: Do not set .ndo_get_stats64
-
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
  net/core/dev.c | 2 ++
- net/ipv6/sit.c | 1 -
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ 1 file changed, 2 insertions(+)
 
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 275fd5259a4a..3577620e39bd 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10701,6 +10701,8 @@ struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
+ 		ops->ndo_get_stats64(dev, storage);
+ 	} else if (ops->ndo_get_stats) {
+ 		netdev_stats_to_stats64(storage, ops->ndo_get_stats(dev));
++	} else if (dev->pcpu_stat_type == NETDEV_PCPU_STAT_TSTATS) {
++		dev_get_tstats64(dev, storage);
+ 	} else {
+ 		netdev_stats_to_stats64(storage, &dev->stats);
+ 	}
 -- 
 2.43.0
 
