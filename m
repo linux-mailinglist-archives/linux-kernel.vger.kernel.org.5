@@ -1,183 +1,131 @@
-Return-Path: <linux-kernel+bounces-84253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 031E086A432
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D706C86A437
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F1EF1F25668
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:03:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 783C21F24985
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9BA03C30;
-	Wed, 28 Feb 2024 00:01:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F69C2103;
+	Wed, 28 Feb 2024 00:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="faslrYAr"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MTf+tThp"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2A123BD
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:01:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA8D3184F;
+	Wed, 28 Feb 2024 00:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709078515; cv=none; b=RMuPt3N5chDoLQ2NnDDski/XPIV+1NlvIKZfOJcGBWlUqzjVxzZrs+KYx1iUCXzKjPWqX2T8bscXb1qvxTOr12emq8qY/ZDFMLeq62w+l3/+q2aXeQaVaDXaHGYLEAwkGhdRT73mXWZEseZfVOB5Y0YorUOefLvLhOHb1o9LE20=
+	t=1709078679; cv=none; b=PHM9AIsdRoxqgrpfGognPHelrmWXKJqGEpxyd4zHi1564EUcQIdJ0zNSr0nrDjfnHF3F64fqeJUrbxBvZeZnEUDIseDWVgQQS+HyS8iqXeZIUk0Z9mkL7F5JxsrMDVmWPE9dfKRcsv9r8ZFi+40iLiWDR6vykgfSHfqV76hXS3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709078515; c=relaxed/simple;
-	bh=rJMJ2JMyWN+ZP1wfxJ61M7N5IzMgg95FlXOlFyiqAPY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C4Jxp6w2kKDHwkR5YIJ8yYjg7l0NTHZ0/jJbjr623EmzzWfY3vFZClKgUjqbJU4FBXE1vISYJ/pBMeymsjHSJheGsnxivXdOApFUFxDKjkZmsKCs4kMzLw7Qltdq7vleq2EGnrKapUXBPoARjkaADWg9GV/6fMK2Va9WfNQxIfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=faslrYAr; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-365b413549eso948165ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:01:53 -0800 (PST)
+	s=arc-20240116; t=1709078679; c=relaxed/simple;
+	bh=JGUgWS4grQla5O7HdEiyj3k63HrCOx5ncAUPSxH5+bY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kk2CGH86guxc8LTgxJ43wrgoGDQdzztL23Xy1B4SIUr8IbfwBvHp+V2ftFZ41xqWRC/smE5FceW5sil+l/c/QoSUR/uiza43a9DtayTRV/5o7zmGenGlXNS5Yy0tqg7TjBT0sh71x/HDTNFAWBUYOqgq0/xNr7MnuJa0a6u4E8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MTf+tThp; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a437a2a46b1so275921566b.2;
+        Tue, 27 Feb 2024 16:04:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1709078512; x=1709683312; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vrK0eALq3CiAPH0N0ru8YW+DX4foq/ClBC0Geu6EPXo=;
-        b=faslrYArGMUqphsHkdlrHW/26xGTlMIR+96BZYXQhsldVZryx8KimdmxYD1Uoqs3eu
-         Ny1xe1jgzny6QGwgH6ppwp1DGdyYGaZsb8iRKJh5KerpZUFCIsdCMrVq/n73IjpOEmB8
-         7M+V/fDIthXhle7+Bwyuxnqh+Z7XI5zJ7NMIo=
+        d=gmail.com; s=20230601; t=1709078676; x=1709683476; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CGAsf5cgvi4hUcPvX6gI5YnLh72rWWc63kIQDyDiu9Q=;
+        b=MTf+tThpVGrJdwGtpMVfoBVNq9uH+eiSbu4c0aoxaO6nqvxKVaUZqazzwgbUI5S4vB
+         kdNmwBecgiUWQctuIUnrIPV1aG1WP7uJLk4UAnOUdtxLXqKLu0i/BmUyKKWR5spunF6k
+         lJk0bDYedqnuiOvpO0a4gPl1wqIyI1KB9X4+KmN8DIaXZnWBNHg3gdfFbvvmQE/Z2E3q
+         WIbLNmE6bOord8Cz6sEYlcsRbscYhzj2VQf7QdkjY6bc4SnT8RWrXzqepyhsNSuxOBd9
+         2faGP24LtEd42fvZ5w/Ydj2MFDcylvKp7MIveS0GziMSuOv+4n/J3VSefMt1zcvosrGy
+         QaoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709078512; x=1709683312;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vrK0eALq3CiAPH0N0ru8YW+DX4foq/ClBC0Geu6EPXo=;
-        b=oGk6KaLA4Pn83Cr7xoGr5BfBwCus4GBZVKZ36n1isOMLCmhE38ean9queizWPvysfM
-         e07rQglNdry+M//5AQUJUPutM/EGyBJ9aX3L93IYLmGS+Q8yn0m1oik4i4vQ6R5aR7Wz
-         je7eJdJYPeE5knrIKJA0J74CVkMf6M3NQmlenAnxS1X6SjsrU4tMJWExUhknJNC2Vq2o
-         nsi6J3WscEi+JH7w1TfPjWP4nKB+Bzc5b1OFiT9SzfScZjy5X40qF90LhAFZ3XcsgG//
-         Jc7P2yBnCLJheAG49ip0izN9F0FioXmfysBqdg7CoeEcETo8MluFOO+xqmPGXrOGfCUG
-         TsNg==
-X-Forwarded-Encrypted: i=1; AJvYcCUTdRq65cCv9sH2Pm/2kUt51LzUqJ2YlvMnfGEMxNwRibPptedkFZLidjcif0YuMFu77SARIgmRaUFKIcui9KUFF27KBVMJ+BaInE8b
-X-Gm-Message-State: AOJu0YwK7B/aNy7UL7k8w7izSRLaC61Iu4em9u3Ni2lUO8yhy00KaMTW
-	xwwK9cI6Cm0uGiq6LNEa6yC5NPiqoGCaNgcZSSuhtrJUuzNwR1I+FHHsFsSg5A4=
-X-Google-Smtp-Source: AGHT+IEyFi+EbG1qEGArV61BbwDxrrUz63Oh268SNQYaoJn57jboMklRNZBRwVEQ0zclSCq1pIQTXg==
-X-Received: by 2002:a6b:7e08:0:b0:7c7:f5ce:5d9b with SMTP id i8-20020a6b7e08000000b007c7f5ce5d9bmr797781iom.1.1709078512072;
-        Tue, 27 Feb 2024 16:01:52 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id s9-20020a6bdc09000000b007c76a2d6a98sm1947667ioc.53.2024.02.27.16.01.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 16:01:51 -0800 (PST)
-Message-ID: <5df7d5b1-1387-41f5-a9e9-29c9aefa448e@linuxfoundation.org>
-Date: Tue, 27 Feb 2024 17:01:50 -0700
+        d=1e100.net; s=20230601; t=1709078676; x=1709683476;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CGAsf5cgvi4hUcPvX6gI5YnLh72rWWc63kIQDyDiu9Q=;
+        b=fFm8k6G5H+Px9p+bkhcEPQW+RHS7IEJ53KZWI4iLBXLHbOlhVe0REWKRv4+bR1gsUL
+         284lT+gC92uNoPPE569HsqB1nfLl5HBDLAkoN/fXVoL3+8SRugl3n4npdF+UYwAvdvrg
+         ji7+05vwShEQ1WSfJz83Qzpde58LE7afp8+m+anUZLhV+JXnLonjKCBRcHlqz8LezCYC
+         erdKnIp4UQhCOYAA+YMbVr7wPmblujaRhL5LvDfF/G8WGO1L+m1CvbcZ75iXjw16oMce
+         TlEM1clxY7ymJTyo1N2sLg0ziL51FsL0dc23orAG/AKiqTs5kep99wsxf9feB+xBey2T
+         iIlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXu7WV4w7ucdq06LIODGa0wkiijC2IPZ1S2BSoaf3rB0hB7QOJcyMufyeaA9w5s7hfqMx2a76SdSfJiMRpH7NnZIW4YlvgyE+I/UBxOT85iPKJ6XfJMOO7Dn1hgqMU2ooiKVsSq1WEVMKKKRpLpA6eWPWqaDBjXSoR29ES2rpkISRiDutY=
+X-Gm-Message-State: AOJu0YyQosQsVGy/SxmGgrxIjxhnwChZJkKrY8x/jM3R29LggjS5nZUr
+	8POr/rLHxCuY7J75bNOFU957gEDqK46iOmBD/QjiTDJKSzei9RNGR02zJi6OmddGkHaxEsJT2L1
+	FgoFALB6AD8exoOTQkYl/RWPc9iY=
+X-Google-Smtp-Source: AGHT+IGXLgvtICyW0r81gWFgD3HrWKOjnkobiDubKg4V9DdmTC/M0dtG3PZq8BTs+ZginsAuk4xm9JsdwYJtrkb5tpo=
+X-Received: by 2002:a17:906:1cd4:b0:a3e:5993:96e9 with SMTP id
+ i20-20020a1709061cd400b00a3e599396e9mr6993567ejh.42.1709078676009; Tue, 27
+ Feb 2024 16:04:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] kselftest: Add basic test for probing the rust sample
- modules
-Content-Language: en-US
-To: Laura Nao <laura.nao@collabora.com>, ojeda@kernel.org,
- alex.gaynor@gmail.com, wedsonaf@gmail.com, shuah@kernel.org
-Cc: usama.anjum@collabora.com, a.hindborg@samsung.com, aliceryhl@google.com,
- benno.lossin@proton.me, bjorn3_gh@protonmail.com, boqun.feng@gmail.com,
- gary@garyguo.net, kernel@collabora.com, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, rust-for-linux@vger.kernel.org,
- kernel@valentinobst.de, Sergio Gonzalez Collado <sergio.collado@gmail.com>,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240226101646.291337-1-laura.nao@collabora.com>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240226101646.291337-1-laura.nao@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz> <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Wed, 28 Feb 2024 02:03:59 +0200
+Message-ID: <CAHp75Vdi2c=s_z9wwxWzVcL+4tx5ZnXymbiN4O1FS+D3kz5vqw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] dt-bindings: auxdisplay: Add bindings for generic
+ 7 segment LED
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: andy@kernel.org, geert@linux-m68k.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch, 
+	gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
+	ojeda@kernel.org, tzimmermann@suse.de, javierm@redhat.com, robin@protonic.nl, 
+	lee@kernel.org, pavel@ucw.cz, devicetree@vger.kernel.org, 
+	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Laura,
+On Tue, Feb 27, 2024 at 11:22=E2=80=AFPM Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
 
-On 2/26/24 03:16, Laura Nao wrote:
-> Add new basic kselftest that checks if the available rust sample modules
-> can be added and removed correctly.
-> 
-> Signed-off-by: Laura Nao <laura.nao@collabora.com>
-> Reviewed-by: Sergio Gonzalez Collado <sergio.collado@gmail.com>
-> Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
-> Depends on:
-> - https://lore.kernel.org/all/20240102141528.169947-1-laura.nao@collabora.com/T/#u
-> - https://lore.kernel.org/all/20240131-ktap-sh-helpers-extend-v1-0-98ffb468712c@collabora.com/
-> Changes in v4:
-> - Added config file
-> Changes in v3:
-> - Removed useless KSFT_PASS, KSFT_FAIL, KSFT_SKIP constants
-> - Used ktap_finished to print the results summary and handle the return code
-> Changes in v2:
-> - Added missing SPDX line
-> - Edited test_probe_samples.sh script to use the common KTAP helpers file
-> ---
->   MAINTAINERS                                   |  1 +
->   tools/testing/selftests/Makefile              |  1 +
->   tools/testing/selftests/rust/Makefile         |  4 +++
->   tools/testing/selftests/rust/config           |  5 +++
->   .../selftests/rust/test_probe_samples.sh      | 34 +++++++++++++++++++
->   5 files changed, 45 insertions(+)
->   create mode 100644 tools/testing/selftests/rust/Makefile
->   create mode 100644 tools/testing/selftests/rust/config
->   create mode 100755 tools/testing/selftests/rust/test_probe_samples.sh
-> 
+..
 
-I ran test again and I still see the same. I would like to
-see the script to handle error conditions.
+> +  segment-gpios:
+> +    description:
+> +      An array of GPIOs one per segment.
 
-> diff --git a/MAINTAINERS b/MAINTAINERS
->
-> +
-> +DIR="$(dirname "$(readlink -f "$0")")"
-> +
-> +source "${DIR}"/../kselftest/ktap_helpers.sh
+This is a vague description. Please explain the order (e.g., LSB =3D
+'a', MSB =3D 'g'), use of DP (optional?), etc.
 
-It tries to source and keeps going. Why can't we test for
-the file to exist and skip gracefully without printing
-the following messages.
+> +    minItems: 7
 
-  ./test_probe_samples.sh: line 12: /linux/linux_6.8/tools/testing/selftests/rust/../kselftest/ktap_helpers.sh: No such file or director
-# ./test_probe_samples.sh: line 16: ktap_print_header: command not found
-# ./test_probe_samples.sh: line 18: ktap_set_plan: command not found
-# ./test_probe_samples.sh: line 22: ktap_test_skip: command not found
-# ./test_probe_samples.sh: line 22: ktap_test_skip: command not found
-# ./test_probe_samples.sh: line 34: ktap_finished: command not found
+maxItems?
 
+..
 
+> +    led-7seg {
 
-not ok 1 selftests: rust: test_probe_samples.sh # exit=127
+Probably it should be more human readable. DT people might suggest
+something better.
 
+> +        compatible =3D "generic-gpio-7seg";
+> +        segment-gpios =3D <&gpio 0 GPIO_ACTIVE_LOW
+> +                         &gpio 1 GPIO_ACTIVE_LOW
+> +                         &gpio 2 GPIO_ACTIVE_LOW
+> +                         &gpio 3 GPIO_ACTIVE_LOW
+> +                         &gpio 4 GPIO_ACTIVE_LOW
+> +                         &gpio 5 GPIO_ACTIVE_LOW
+> +                         &gpio 6 GPIO_ACTIVE_LOW>;
 
-> +
-> +rust_sample_modules=("rust_minimal" "rust_print")
-> +
-> +ktap_print_header
-> +
-> +ktap_set_plan "${#rust_sample_modules[@]}"
-> +
-> +for sample in "${rust_sample_modules[@]}"; do
-> +    if ! /sbin/modprobe -n -q "$sample"; then
-> +        ktap_test_skip "module $sample is not found in /lib/modules/$(uname -r)"
-> +        continue
+Dunno how to handle DP. Either we always expect it to be here (as
+placeholder) or with additional property.
 
-Why are we continuing here? Isn't this skip condition?
+> +    };
 
-> +    fi
-> +
-> +    if /sbin/modprobe -q "$sample"; then
-> +        /sbin/modprobe -q -r "$sample"
-> +        ktap_test_pass "$sample"
-> +    else
-> +        ktap_test_fail "$sample"
-> +    fi
-> +done
-> +
-> +ktap_finished
-
-
-I would like to see the test exit with skip code when RUST isn't
-enabled. Please refer to existing tests that do this properly.
-
-thanks,
--- Shuah
+--=20
+With Best Regards,
+Andy Shevchenko
 
