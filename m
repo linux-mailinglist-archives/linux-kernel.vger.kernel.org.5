@@ -1,224 +1,122 @@
-Return-Path: <linux-kernel+bounces-85094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3533E86B059
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:29:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6F086B060
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:31:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD99628AEDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:29:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BD511F28255
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:31:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC98714CAC3;
-	Wed, 28 Feb 2024 13:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4D7814D420;
+	Wed, 28 Feb 2024 13:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RrtoESqG"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZC/kXNJ5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE1814AD3B
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D7B1E493
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709126977; cv=none; b=KgevLYDe0FGO2j5vEty+H6+T3AT/CljgnZeS8ScfnVQf0BuMi8w8RDMn2Uynu67YQNheTL5GfbuVwVgBdlu+00sT150sEFhScNudK6sr1ELL3nOd848V8OAosYh9mPmGC3esV4TVh2xsMPD27zMflHIhujhdaZxNHGmQEonsSEo=
+	t=1709127067; cv=none; b=DeEQ8AfsZ/7GEI/BJtezRamm0+pZcW0gy1w2QN9K8FNkpqTo5LddCW/9/3Edx2JmDmu/1UUqQJ3ervz6b1s1ICNOY98WqI+yspFDsws8qNd5QHm0PBSLCr8RSZz4J1B1txqukfbsjyddosCpsJ4b6Prydx9rZ1hLxOaHN9Evdok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709126977; c=relaxed/simple;
-	bh=8C9xjDtwVubJnIZ59ku4USy+YZ5NXDWqvFar24cX19Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K34sSllg1NXFCnSGHaXYLINsQrKTwE3p5jbPO2roH9rwilhZ0nLPYVwUgB43kPJe+z+4H5uom4zlFcFuRdbqMJXcXojWwAVQIMmgHC9ptqhhB8Yhlc9Ic1PobxaL7A/1by4TdcGCTGF9LBVw2uD/jJlFrYEa4xxnLvrgFT7LJFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RrtoESqG; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1709127067; c=relaxed/simple;
+	bh=3VQZtPFFjJ6KMik5qwmu9RFH9g6RLd3eRx0NWCx6Qko=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Fnr4P9ejRxI/VruD1cqPVE4BfkJXMluqHt9j4+4cGYQd9dQIAfJztG2TyLeOVN4/UpJQ5p0vZHb3/md/86EAVa5x8ckN4j4rPj+XIVHkC0Q8xgz6Rg1oxNk8gvXUpq0hZ4k7Lds7adrM4DA3uRiwdCRIiTpRe3Km9M1Qc6Ji6kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZC/kXNJ5; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709126974;
+	s=mimecast20190719; t=1709127063;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DhHR8mT655dVQv+Wx7zsXbjJvhrKDohyC9LbFEwHkvs=;
-	b=RrtoESqGGOKQ2xoI61b1gmSrk80hxA0gocEkue6yJ8MrC7TRBkmq7vij+Ros4j1TtCG571
-	Xa5Alo7scUE7hLjS4rUCb2x6anWMGMP73hpma7oHUJgB8jSy2nRz+G3/ktpgy6DbltvaWG
-	MWdAAwvXqNDKo6LJLH6/q+s9J7TnG2M=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=mYhUY0xj59xhvUYFGeVBejeoiizOAuL7jH7HPYGmaLI=;
+	b=ZC/kXNJ5NUV/Ec4C2J2EV0+HAV1fdM5L/N11qkgCz1Dfsa97q0MCxqHSdxWoBaCfTyN2PZ
+	FY3Rv31J4gtv0w6JWY04NcTEy5N4aPKcopvINjCUkVXwI7C+/oDiXa0zemdo3933+nbOXl
+	6yEtUEmR9e5H4h/JktfgEvZRKjMoS2Q=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-153-icCL449pNgG0i-YOfhNCNw-1; Wed, 28 Feb 2024 08:29:33 -0500
-X-MC-Unique: icCL449pNgG0i-YOfhNCNw-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d2e5540a8cso362131fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:29:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709126971; x=1709731771;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DhHR8mT655dVQv+Wx7zsXbjJvhrKDohyC9LbFEwHkvs=;
-        b=XAubkpa8LdhQ158duw/mGpwDBBSlq8Pop8nYQwdEfrxvgFy/XHUsYwXeEJwOPrFo83
-         PWnPeDDxy54NQ9VIbnHHDcG7WFBFLonCZz18CfjsxcydXirk4J+h17UrPfQrhORZ/3mz
-         id6mxaUi14me+BDZiRMEihR6xeMPdZCsB32txNxVnuq7r5/xAojIoFqYTkfzNVZzR1dh
-         4Q0lia/4aZD7q4fXp3TOsCG2bVvgmGTxwombGumEoFNaBsx0FprzW6M74CbNpy8/BcRu
-         BAvB02c4nw2lTcOi1HwoMp9vbYUnjxkpRXJhRSnPLtGOkV8IpE77FJmkmunLYMClj9pP
-         2THQ==
-X-Gm-Message-State: AOJu0YxxJuYIdxYAlPCD5NgS5ohtM9cs32ZM4O72LaObWvI3ZMiptIDS
-	kwOY6WDrdDYtKN1rMElL4Q5TDfeDt+2/HkMTDzGKowfxH3veeOLswHGDeRJojSDOGMZBeJjNHm7
-	soewWkQfKqpQFpNusKpQYrxoXqqgvzSrEbx5HEfMuxq0WofDY/Z7MCCQi9MnRPtwvw2dgouplci
-	PuDlAvE56lDJLOLx/mTAZos0UvqgZFRdx3J7AR
-X-Received: by 2002:a2e:b889:0:b0:2d2:6676:3b0f with SMTP id r9-20020a2eb889000000b002d266763b0fmr10984735ljp.22.1709126971552;
-        Wed, 28 Feb 2024 05:29:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH17mlMZ28t5T5IRr+YR1u98XdOGcHpUxH/XtQl8vHXHH/lyEkZGla24b3RJVS283feQNM31uhk8u+TJ+8sakc=
-X-Received: by 2002:a2e:b889:0:b0:2d2:6676:3b0f with SMTP id
- r9-20020a2eb889000000b002d266763b0fmr10984717ljp.22.1709126971174; Wed, 28
- Feb 2024 05:29:31 -0800 (PST)
+ us-mta-290-aBSN9Oe7P5W_Su_A28IPow-1; Wed, 28 Feb 2024 08:31:01 -0500
+X-MC-Unique: aBSN9Oe7P5W_Su_A28IPow-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD1CF8B39A5;
+	Wed, 28 Feb 2024 13:31:00 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 937901121312;
+	Wed, 28 Feb 2024 13:31:00 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id EC662401E122B; Wed, 28 Feb 2024 10:30:42 -0300 (-03)
+Date: Wed, 28 Feb 2024 10:30:42 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH -v2 net-next] net/core/dev.c: enable timestamp static key if
+ CPU isolation is configured
+Message-ID: <Zd81gp2utD9+ripX@tpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227232100.478238-1-pbonzini@redhat.com> <Zd6LK7RpZZ8t-5CY@google.com>
-In-Reply-To: <Zd6LK7RpZZ8t-5CY@google.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Wed, 28 Feb 2024 14:29:20 +0100
-Message-ID: <CABgObfYpRJnDdQrxp=OgjhbT9A+LHK36MHjMvzcQJsHAmfX++w@mail.gmail.com>
-Subject: Re: [PATCH 00/21] TDX/SNP part 1 of n, for 6.9
-To: Sean Christopherson <seanjc@google.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	isaku.yamahata@intel.com, thomas.lendacky@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Wed, Feb 28, 2024 at 2:25=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Tue, Feb 27, 2024, Paolo Bonzini wrote:
-> > This is a first set of, hopefully non-controversial patches from the
->
-> Heh, you jinxed yourself.  :-)
 
-Well I
-> > SNP and TDX series.  They cover mostly changes to generic code and new
-> > gmem APIs, and in general have already been reviewed when posted by
-> > Isaku and Michael.
-> >
-> > One important change is that the gmem hook for initializing memory
-> > is designed to return -EEXIST if the page already exists in the
-> > guestmemfd filemap.  The idea is that the special case of
-> > KVM_SEV_SNP_LAUNCH_UPDATE, where __kvm_gmem_get_pfn() is used to
-> > return an uninitialized page and make it guest-owned, can be be done at
-> > most once per page unless the ioctl fails.
-> >
-> > Of course these patches add a bunch of dead code.  This is intentional
-> > because it's the only way to trim the large TDX (and to some extent SNP=
-)
-> > series to the point that it's possible to discuss them.  The next step =
-is
-> > probably going to be the private<->shared page logic from the TDX serie=
-s.
-> >
-> > Paolo
-> >
-> > Isaku Yamahata (5):
-> >   KVM: x86/mmu: Add Suppress VE bit to EPT
-> >     shadow_mmio_mask/shadow_present_mask
-> >   KVM: VMX: Introduce test mode related to EPT violation VE
-> >   KVM: x86/tdp_mmu: Init role member of struct kvm_mmu_page at
-> >     allocation
-> >   KVM: x86/tdp_mmu: Sprinkle __must_check
-> >   KVM: x86/mmu: Pass around full 64-bit error code for KVM page faults
->
-> I have a slight tweak to this patch (drop truncation), and a rewritten ch=
-angelog.
->
-> > Michael Roth (2):
-> >   KVM: x86: Add gmem hook for invalidating memory
-> >   KVM: x86: Add gmem hook for determining max NPT mapping level
-> >
-> > Paolo Bonzini (6):
-> >   KVM: x86/mmu: pass error code back to MMU when async pf is ready
-> >   KVM: x86/mmu: Use PFERR_GUEST_ENC_MASK to indicate fault is private
->
-> This doesn't work.  The ENC flag gets set on any SNP *capable* CPU, which=
- results
-> in false positives for SEV and SEV-ES guests[*].
+For systems that use CPU isolation (via nohz_full), creating or destroying
+a socket with timestamping (SOCK_TIMESTAMPING_RX_SOFTWARE and 
+SOF_TIMESTAMPING_OPT_TX_SWHW) might cause a
+static key to be enabled/disabled. This in turn causes undesired
+IPIs to isolated CPUs.
 
-You didn't look at the patch did you? :) It does check for
-has_private_mem (alternatively I could have dropped the bit in SVM
-code for SEV and SEV-ES guests).
+So enable the static key unconditionally, if CPU isolation is enabled,
+thus avoiding the IPIs.
 
-> I have a medium-sized series to add a KVM-defined synthetic flag, and cle=
-an up
-> the related code (it also has my slight variation on the 64-bit error cod=
-e patch).
->
-> I'll post my series exactly as I have it, mostly so that I don't need to =
-redo
-> testing, but also because it's pretty much a drop-in replacement.  This s=
-eries
-> applies cleanly on top, except for the two obvious conflicts.
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
-Ok, I will check it out. This is exactly why I posted these.
+---
+v2: mention SOF_TIMESTAMPING_OPT_TX_SWHW in the commit log (Willem de Bruijn / Paolo Abeni)
 
-Paolo
-
-> [*] https://lore.kernel.org/all/Zdar_PrV4rzHpcGc@google.com
->
-> >   KVM: guest_memfd: pass error up from filemap_grab_folio
-> >   filemap: add FGP_CREAT_ONLY
-> >   KVM: x86: Add gmem hook for initializing memory
-> >   KVM: guest_memfd: add API to undo kvm_gmem_get_uninit_pfn
-> >
-> > Sean Christopherson (7):
-> >   KVM: x86: Split core of hypercall emulation to helper function
-> >   KVM: Allow page-sized MMU caches to be initialized with custom 64-bit
-> >     values
-> >   KVM: x86/mmu: Replace hardcoded value 0 for the initial value for SPT=
-E
-> >   KVM: x86/mmu: Track shadow MMIO value on a per-VM basis
-> >   KVM: x86/mmu: Allow non-zero value for non-present SPTE and removed
-> >     SPTE
-> >   KVM: VMX: Move out vmx_x86_ops to 'main.c' to wrap VMX and TDX
-> >   KVM: VMX: Modify NMI and INTR handlers to take intr_info as function
-> >     argument
-> >
-> > Tom Lendacky (1):
-> >   KVM: SEV: Use a VMSA physical address variable for populating VMCB
-> >
-> >  arch/x86/include/asm/kvm-x86-ops.h |   3 +
-> >  arch/x86/include/asm/kvm_host.h    |  12 +
-> >  arch/x86/include/asm/vmx.h         |  13 +
-> >  arch/x86/kvm/Makefile              |   2 +-
-> >  arch/x86/kvm/mmu.h                 |   1 +
-> >  arch/x86/kvm/mmu/mmu.c             |  55 ++--
-> >  arch/x86/kvm/mmu/mmu_internal.h    |   6 +-
-> >  arch/x86/kvm/mmu/mmutrace.h        |   2 +-
-> >  arch/x86/kvm/mmu/paging_tmpl.h     |   4 +-
-> >  arch/x86/kvm/mmu/spte.c            |  16 +-
-> >  arch/x86/kvm/mmu/spte.h            |  21 +-
-> >  arch/x86/kvm/mmu/tdp_iter.h        |  12 +
-> >  arch/x86/kvm/mmu/tdp_mmu.c         |  74 +++--
-> >  arch/x86/kvm/svm/sev.c             |   3 +-
-> >  arch/x86/kvm/svm/svm.c             |   9 +-
-> >  arch/x86/kvm/svm/svm.h             |   1 +
-> >  arch/x86/kvm/vmx/main.c            | 168 +++++++++++
-> >  arch/x86/kvm/vmx/vmcs.h            |   5 +
-> >  arch/x86/kvm/vmx/vmx.c             | 460 +++++++++++------------------
-> >  arch/x86/kvm/vmx/vmx.h             |   6 +-
-> >  arch/x86/kvm/vmx/x86_ops.h         | 124 ++++++++
-> >  arch/x86/kvm/x86.c                 |  69 +++--
-> >  include/linux/kvm_host.h           |  25 ++
-> >  include/linux/kvm_types.h          |   1 +
-> >  include/linux/pagemap.h            |   2 +
-> >  mm/filemap.c                       |   4 +
-> >  virt/kvm/Kconfig                   |   8 +
-> >  virt/kvm/guest_memfd.c             | 120 +++++++-
-> >  virt/kvm/kvm_main.c                |  16 +-
-> >  29 files changed, 855 insertions(+), 387 deletions(-)
-> >  create mode 100644 arch/x86/kvm/vmx/main.c
-> >  create mode 100644 arch/x86/kvm/vmx/x86_ops.h
-> >
-> > --
-> > 2.39.0
-> >
->
+diff --git a/net/core/dev.c b/net/core/dev.c
+index c588808be77f..15a32f5900e6 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -155,6 +155,7 @@
+ #include <net/netdev_rx_queue.h>
+ #include <net/page_pool/types.h>
+ #include <net/page_pool/helpers.h>
++#include <linux/sched/isolation.h>
+ 
+ #include "dev.h"
+ #include "net-sysfs.h"
+@@ -11851,3 +11852,14 @@ static int __init net_dev_init(void)
+ }
+ 
+ subsys_initcall(net_dev_init);
++
++static int __init net_dev_late_init(void)
++{
++	/* avoid static key IPIs to isolated CPUs */
++	if (housekeeping_enabled(HK_TYPE_MISC))
++		net_enable_timestamp();
++
++	return 0;
++}
++
++late_initcall(net_dev_late_init);
 
 
