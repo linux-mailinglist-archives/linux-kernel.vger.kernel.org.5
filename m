@@ -1,152 +1,115 @@
-Return-Path: <linux-kernel+bounces-84754-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5177586AB13
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:20:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EF1286AB18
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADEB9B22EEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:20:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEA72B23F94
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0BF36124;
-	Wed, 28 Feb 2024 09:20:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 293B23307B;
+	Wed, 28 Feb 2024 09:20:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOYOpJgq"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dz8cCpXq"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EBCC33CC2;
-	Wed, 28 Feb 2024 09:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44DC2E84B;
+	Wed, 28 Feb 2024 09:20:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112019; cv=none; b=JA6ajDYLnumDVkDbGheCiWkUS+CKBsCl+uCRqn1GkqVh+QAGJWZcoV1zOeJkox0xyEqNioyiCidyXPKvQA6ReoBNIj8djMnK1BiLd27cucVqgj8xhe4cqZc2kJVgissqdhA2Mjdprhfhr5AmRhty9Jt//gQzYcVfm/gOSKWG26Y=
+	t=1709112047; cv=none; b=Y+42zKeDgURpOj3bJK/R6S3BHzBT7e/F8oIAJgvyvsnFf6WAw8a15ucndv4Q8BeQpcN/spRgikS/cXu5O2gPTCU/FLonXFXbav22MhSFvcA7DjDzp5FXy7RQ4RGUoLjgDMLJAL6mYaKY0bIqsicTCrNYyyeNWnPYTenI8QT4rxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112019; c=relaxed/simple;
-	bh=v2eiHuL62WCXQs7hcAtCym9lIkCchgxpESbrCei0pbA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VvRbD2U8k/GbVaNY6ODrYqkFbhDm1ydBwZtZCzDDCe5ak8OoQBB9WWGqbUZJkLfoVclh5n8AjI4T37f7unWfzCJk0cZUPXd9upPZFoTRBWlSZzEe8mpYkaVsnpVQP2VUADxbtNu+yskDuhH8Tp36NctZbZpOw7aA5uSRtv6lbNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NOYOpJgq; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1709112047; c=relaxed/simple;
+	bh=V/8zs0tE6GUyqcVezTh3xOtRONJaj657JNEedNDBs6o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=kw10Q6K5ZSLldSnzkd+Smg7gHBQKYsp5ASpUHLPiAMKpeFwwxI2hBNd++oWsU2NDF86El+WIJF4B6Bx/DkGrIZ6t//Ah3WNcF0cTiXUNCeuSfuMCkWJxeTQPZRpTyg3z0nv/i97pvnjoJKCS9ipdOym/qj64jNao1Bkw11zO2bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dz8cCpXq; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-565ef8af2f5so3860635a12.3;
-        Wed, 28 Feb 2024 01:20:17 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513143d3c40so1546697e87.3;
+        Wed, 28 Feb 2024 01:20:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709112016; x=1709716816; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MMWQD7UAFsp9KchPLx3P8oI21qYIe7rr+n1htkt7OGE=;
-        b=NOYOpJgqlfXsp1NviA5b58FjGtoZFiLLPZ83p12jcAolpm5eNLtyoPZyNWWPa+cxsh
-         3fnXVmy0KFs2ESN/8bF4WZSYNh1mJ/uziHXHG2T57U4Bu8dXOBMoNNiJHybSLngH7zCF
-         kYRDGXuItJ0Ien2s5OBUMJwnF8T3SpRhBjLx795PYWl16C5HKWqvACAUNn+H9D7Ap+PW
-         iN0I23QryATIATDgXIFOkDNg6xOg8nP2PoGuh8v77CQTdat61pI2/YrOd6d5Tk5ucNdP
-         6RyazRzjo2E/cg58OfM6gfB40PeStnHytSFyeVFcHpcRUzabV1+7otTV9ZKKxbladzxg
-         TufQ==
+        d=gmail.com; s=20230601; t=1709112044; x=1709716844; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a2noyD+gH5EeHWvIbCVfQ5txzmPqGPvNkLe5Kdw3vzI=;
+        b=dz8cCpXqBuk3qOdcTOEjLdYXy4jasJu/4+7groKUTVe8z2RW6uzGaPA/diPhOHUksm
+         83fh3sOunBIdPIC3Po9dd29UYr7tPGIrwK2DU5RcR/QzvW6fv9gRuF0l/I2XA+1VL5Sw
+         zeWQQwwl/gI6jPT+vOkeU9mGpuUoBWYQx3S7P9yyN3givwKLiZtU2CimeorHFTN1Xmsk
+         x/wm+oyBZG6+SpZ8Rb/Wrwjwr8CDY6Eme8xR0k3HAESrrLs6YbtP7PrwowZXuQwCpyvm
+         BewS7eqiUZUlAwL7MhYH6GPHUxi0YPC/76JWqXgLAroQChZDTIgZF+IULKiZgTBl42AE
+         5XfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709112016; x=1709716816;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MMWQD7UAFsp9KchPLx3P8oI21qYIe7rr+n1htkt7OGE=;
-        b=HouydlVj6Db825ZJJW4zKsTdmH44snCiOqCeggP89KkSSEuf4o0dgsFZM7xZDo9Vpr
-         c38zYGR4nO4guy+TOutBipnTB/lHa1hGJ8epzjdsnQjwR5rXz68jHfCj4hpObpepGPb5
-         uqlXHnUZBqiw5ExujcNtOLECHyI5rjXHgN3aOIWPGKQ5CnXWe+xDxjYIGiGbqlrMPDbM
-         GRj9qNAdSKlAfx/JiPxyDhBE0ZjUVS/WTM7TPSU/oqQ44BTQb28koZ3GYayTVjJn1UVD
-         DkTE4ouAUk3KL19rwyGCpRMUqeayEQxgCbsZGWHNeDH5Yq8Yr4wvok1fVGcLWv+9BI4Z
-         VYeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvfqlYaVlwsQTIctJvEQ/7+EGz7sy8qCUkzjlE3md7FOaYJmwGiCoik6B5pa2QkT6KrXdSzlhVHOeC85rU4BuVXj3ycZiCsa8JOdSKeNucquNDBrJQnfMZ+dKbF5HwbMffcJkHMJf5lDxIobNNaL4tvRHyA+HIxehTkA==
-X-Gm-Message-State: AOJu0YyrcVIxrHkvLDvzrRuYOoHyjj5zPTSqn2SOcAnKatAjrcLTi1c7
-	x3mAJrLD1S2tR91ERUBQ3L0a7p3xWSSJn/w4gYKTAoSuYPH9LILI
-X-Google-Smtp-Source: AGHT+IFMqeyTM1Fz8XS/CKmvJQyp3KmW3GKHKd3rNDuQ3QkpR1QTAbKMMsbOlG73ALffL7AbF66auQ==
-X-Received: by 2002:a17:906:13db:b0:a42:f40e:3ac0 with SMTP id g27-20020a17090613db00b00a42f40e3ac0mr8087879ejc.6.1709112016441;
-        Wed, 28 Feb 2024 01:20:16 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id fj15-20020a1709069c8f00b00a42ea946917sm1626181ejc.130.2024.02.28.01.20.15
+        d=1e100.net; s=20230601; t=1709112044; x=1709716844;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a2noyD+gH5EeHWvIbCVfQ5txzmPqGPvNkLe5Kdw3vzI=;
+        b=nh79PPYXJUy9VyisiaE0Nuh0ZniXnGAvpfCUGpC6ubSEtkKRX6BVrLWDcpkUY52Q9I
+         fnE7uNsXCPwQUKdu5zL9VHQHsgiFzNUx5s8MarC5MLQ0u0LdUkIte3x39LNscWcvgSdm
+         Ljk0Klv9BDi70YH/D/cTI0VAF8dmEitSihVMOp+NUs9dQCwVXNoKm3HxTwgLjt3CTrFW
+         cigBpQzfaU9FLysRYExALo/PJtLzyO56mUYoLRrLq7RoRq9+GWMHfI9Clsa7M45Cvv38
+         CbXJhepLbnfcrbiqzsxS3NQSC1g2GTJ8fkS8pJvexUuXPlE3GuDGZFrflhhbLip/3ScE
+         Xbhg==
+X-Forwarded-Encrypted: i=1; AJvYcCVMmkCdrrbeH5PgAkULxETRb8qEdjY04mvUYElJ3Abh7zSd0SdwrnA33rsujxAzO3+/PZolblzQyoO2BAtG8hnie0WcxES8ABxK/+1A
+X-Gm-Message-State: AOJu0Yw8Q3IHizo5pKmi77+gIpo2eHGeyjtG3uZ3RnOfGH3qyHn+epmo
+	pyOy77xnOO5GFxZ74BO3WFiRtiQ7M4LlRlJYkBVd8iuDZRCwvu7v
+X-Google-Smtp-Source: AGHT+IHqmkUwiO2sfj7BD6bTWs5IUeTj5Q2VJyj4bs2CxxwV7i3xk4DbJ+e5SZU7I6iDYoTpbxt8yg==
+X-Received: by 2002:a05:6512:991:b0:512:ee1f:b5af with SMTP id w17-20020a056512099100b00512ee1fb5afmr6493372lft.41.1709112043681;
+        Wed, 28 Feb 2024 01:20:43 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c229100b00412b2afb2c8sm1457617wmf.26.2024.02.28.01.20.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 01:20:16 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 28 Feb 2024 10:20:14 +0100
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>, dwarves@vger.kernel.org
-Subject: Re: [PATCH] fix linux kernel BTF builds: increase max percpu
- variables by 10x
-Message-ID: <Zd76zrhA4LAwA_WF@krava>
-References: <20240228032142.396719-1-jhubbard@nvidia.com>
+        Wed, 28 Feb 2024 01:20:43 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Jani Nikula <jani.nikula@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	intel-gfx@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/i915/dp: Fix spelling mistake "redect" -> "reject"
+Date: Wed, 28 Feb 2024 09:20:42 +0000
+Message-Id: <20240228092042.4125617-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228032142.396719-1-jhubbard@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 07:21:42PM -0800, John Hubbard wrote:
-> When building the Linux kernel with a distro .config, most or even all
-> possible kernel modules are built. This adds up to 4500+ modules, and
-> based on my testing, this causes the pahole utility to run out of space,
-> which shows up like this (CONFIG_DEBUG_INFO_BTF=y is required in order
-> to reproduce this):
-> 
->   LD      .tmp_vmlinux.btf
->   BTF     .btf.vmlinux.bin.o
-> Reached the limit of per-CPU variables: 4096
-> ...repeated many times...
-> Reached the limit of per-CPU variables: 4096
->   LD      .tmp_vmlinux.kallsyms1
->   NM      .tmp_vmlinux.kallsyms1.syms
->   KSYMS   .tmp_vmlinux.kallsyms1.S
->   AS      .tmp_vmlinux.kallsyms1.S
->   LD      .tmp_vmlinux.kallsyms2
->   NM      .tmp_vmlinux.kallsyms2.syms
->   KSYMS   .tmp_vmlinux.kallsyms2.S
->   AS      .tmp_vmlinux.kallsyms2.S
->   LD      vmlinux
->   BTFIDS  vmlinux
-> libbpf: failed to find '.BTF' ELF section in vmlinux
-> FAILED: load BTF from vmlinux: No data available
-> make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 255
-> make[2]: *** Deleting file 'vmlinux'
-> make[1]: *** [/kernel_work/linux-people/Makefile:1162: vmlinux] Error 2
-> make: *** [Makefile:240: __sub-make] Error 2
-> 
-> Increasing MAX_PERCPU_VAR_CNT by 10x avoids running out of space, and
-> allows the build to succeed.
+There is a spelling mistake in a drm_dbg_kms message. Fix it.
 
-do you have an actual count of percpu variables for your config?
-10x seems a lot to me
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/gpu/drm/i915/display/intel_dp_tunnel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-this might be a workaround, but we should make encoder->percpu.vars
-dynamically allocated like we do for functions
+diff --git a/drivers/gpu/drm/i915/display/intel_dp_tunnel.c b/drivers/gpu/drm/i915/display/intel_dp_tunnel.c
+index 75d76f91ecbd..6503abdc2b98 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp_tunnel.c
++++ b/drivers/gpu/drm/i915/display/intel_dp_tunnel.c
+@@ -348,7 +348,7 @@ void intel_dp_tunnel_resume(struct intel_dp *intel_dp,
+ 
+ out_err:
+ 	drm_dbg_kms(&i915->drm,
+-		    "[DPTUN %s][CONNECTOR:%d:%s][ENCODER:%d:%s] Tunnel can't be resumed, will drop and redect it (err %pe)\n",
++		    "[DPTUN %s][CONNECTOR:%d:%s][ENCODER:%d:%s] Tunnel can't be resumed, will drop and reject it (err %pe)\n",
+ 		    drm_dp_tunnel_name(intel_dp->tunnel),
+ 		    connector->base.base.id, connector->base.name,
+ 		    encoder->base.base.id, encoder->base.name,
+-- 
+2.39.2
 
-jirka
-
-> 
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> ---
->  btf_encoder.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index fd04008..d9f4e80 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -50,7 +50,7 @@ struct elf_function {
->  	struct btf_encoder_state state;
->  };
->  
-> -#define MAX_PERCPU_VAR_CNT 4096
-> +#define MAX_PERCPU_VAR_CNT 40960
->  
->  struct var_info {
->  	uint64_t    addr;
-> -- 
-> 2.44.0
-> 
-> 
 
