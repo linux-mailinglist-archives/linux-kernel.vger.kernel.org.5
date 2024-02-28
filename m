@@ -1,362 +1,249 @@
-Return-Path: <linux-kernel+bounces-84315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8910686A4DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:20:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 832F386A4E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:20:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3F411F27B30
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:20:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 339AF28479E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF84A4A35;
-	Wed, 28 Feb 2024 01:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB48185E;
+	Wed, 28 Feb 2024 01:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fJHLqcK8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BCXbGul3"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2B420F1
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7982219BDC
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709083189; cv=none; b=Td/LX6UwzYekwvX9LlJXupsCdqOl41/6X03AW6+b/3IaAOKkgOjlLqTb6x9yl6BTYQ3zu0ppXL9ULghwy2nkKyOhS3JHSPiKssHGqjksNtd8I6h7NzJCc9wABcQv8wdpkhyfmdsZiclNltTj174yW6nN5+NVeNYVf9het+6OFT4=
+	t=1709083210; cv=none; b=Wgmz4Rl5z8pUYn/eZBA8JfCHDmHtP+g8asIML69H3OtFWOvVS3oZJl1QpE3G+d75dap9JWwEeww+2lxu7T8B1evTdKqt2TcyyLo2G+VsaO8v7sZzqrP7p6UTho6G1Vj3EHry6Gh91bP0XnkX6PtHxEKuMIejjFLB96frPz6uGXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709083189; c=relaxed/simple;
-	bh=jUjuP1ba97xMxa8s8XEAr69TPTAFRtYzXYGh0GnZ11g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iYgBGEsqOW7AC30ZBFDQVkZk3HxiWpMzOAAOBkXPUnYV+D2G1I7jDCdpsxKnwazxbl6MK3G2J/ub/GjLLW/F0OiTmWc3wnyOa1Lc26peS4Xxs6jB89kag3WHqGSmTdym2mFhOy9M7eL/y+Q1Iju0i+BLEeXTFa72NNVkbPfWkno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fJHLqcK8; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709083186;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xODwkh6lWJ+prRzk9B4MVint+BajL8I0Z+w8JnGYEJs=;
-	b=fJHLqcK8Gvcbt0W/FA1Grv5wlxsFC5DCVMziRLO9ZKMYYF0WKGGT9O8Xh4+3Eu5aGZIBD4
-	dd7zHBrNL/3HZF1C+YfIT0wwmrbpaT+FtIaZzujkdEOkkHJpS+hO7ZWb32J+2jtIXRd4bp
-	1i2qS/Thycnmd9glisl5OrZDmYMeJQs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-561-1-sefNxRNwmT3rc5jP8TDw-1; Tue, 27 Feb 2024 20:19:44 -0500
-X-MC-Unique: 1-sefNxRNwmT3rc5jP8TDw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 53311185A780;
-	Wed, 28 Feb 2024 01:19:43 +0000 (UTC)
-Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (bmarzins-01.fast.eng.rdu2.dc.redhat.com [10.6.23.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id D39901121312;
-	Wed, 28 Feb 2024 01:19:42 +0000 (UTC)
-Received: from bmarzins-01.fast.eng.rdu2.dc.redhat.com (localhost [127.0.0.1])
-	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.17.1/8.17.1) with ESMTPS id 41S1Jghx666443
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Tue, 27 Feb 2024 20:19:42 -0500
-Received: (from bmarzins@localhost)
-	by bmarzins-01.fast.eng.rdu2.dc.redhat.com (8.17.1/8.17.1/Submit) id 41S1JfXs666441;
-	Tue, 27 Feb 2024 20:19:41 -0500
-Date: Tue, 27 Feb 2024 20:19:41 -0500
-From: Benjamin Marzinski <bmarzins@redhat.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: Song Liu <song@kernel.org>, mpatocka@redhat.com, heinzm@redhat.com,
-        xni@redhat.com, blazej.kucman@linux.intel.com, agk@redhat.com,
-        snitzer@kernel.org, dm-devel@lists.linux.dev, jbrassow@f14.redhat.com,
-        neilb@suse.de, shli@fb.com, akpm@osdl.org,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH v5 00/14] dm-raid/md/raid: fix v6.7 regressions
-Message-ID: <Zd6KLf1pOkMmfR5g@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
- <CAPhsuW7u1UKHCDOBDhD7DzOVtkGemDz_QnJ4DUq_kSN-Q3G66Q@mail.gmail.com>
- <Zc72uQln4bXothru@bmarzins-01.fast.eng.rdu2.dc.redhat.com>
- <0083c330-1d3f-43b0-1d11-caf09d7c27c8@huaweicloud.com>
+	s=arc-20240116; t=1709083210; c=relaxed/simple;
+	bh=9qll4EAZp7xZbfC2l/E18PzekDZKS5gdLme9hxcfwr4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CWoGQ3aeTzh6+AsI25ZMXu8A8yYilgA/f4SMC+LmQziRsGvpWw8xH5REdyjKl+ai5J6/m3zalVTlIOJAF0ZDrPVBADyPEsyzzP5tGba3wGqNvJHKrfsSMNj/jyjpPeMPOBbijbqf+ucccYAa1Fm5jY8xnJ/IHWXWeuoRcfGMudE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BCXbGul3; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc929e5d99so50785ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:20:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709083208; x=1709688008; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yTmmVU2YsnEQHc0ghGArOeYhLtN51cwHy7vJLHmcGh8=;
+        b=BCXbGul35GPXd6tDmWUySMcr/ACg6BSiijByq/45suXVbckDhVNotvpMvHQKzMMITC
+         fHfVdPNfVcculS0O9RWF3fLmwf2tTUpNx8ML8QeW/euhp2eACbWa93UYbYv697DTpuXK
+         0NR3TUMFuNoRGG4yZmFxwRc1Ndva7i2zdnTsB1LnKwQUhQm8ZyOaZi2bdQrck4wPOW3r
+         mz9C961MFQQ1BJMSxZugldsGyEEWFhQmW0RX01R9xr8FFEypLHgkmF08aFxHFT1CCIBX
+         84J2osNoCXjCOe02VRjyU0jR0xrct8Z0EeTokm85mdGZIPcXhsxhAw9kVtpSTLSSThv7
+         /VIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709083208; x=1709688008;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yTmmVU2YsnEQHc0ghGArOeYhLtN51cwHy7vJLHmcGh8=;
+        b=o2l6zaxHzvCiX9rnbif745yPnnzXvwt/7UE3P9UXdD7vM93UA+KeGgnHIg41nz+B24
+         c5sBUSXw8wwBHzjdyDPHHqrNmadbRg7a6BxNiJ97t6FdME8oQgNOwrZ/Uu9ZGsNNIba3
+         KXStcnieJZZa4OfNuOkqEwGiqunFJ/j92QAI9Npnj6d7bzqil/lMcHLkRzmQp0f+7WjE
+         FsWdWahLkrw9DHZyCG6hYxZg2EVW1BrnoaAFgePOCBUCyhwyMvQseUTGpSugJl5CcoNc
+         GgaXDthppInwGP8IWBJNlQMJ4iEZ/UZ05y4PhQgeeV7M+PHmIiBwaRdQyGtBMgaySGId
+         ndXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVxhe5SwU8M1RcG7rF4a0LL+paPdwnvBf2iiaDF8geMluwE0M/xhhRyIdSaPKrQ73vSEXnDwYX+8a6PhoE1pN8i8/dXG3Nl1vePulm6
+X-Gm-Message-State: AOJu0YwXmSVDp8YBn92BDgNWoB1N9tKC1gG+Oj1h3TS+C5ruDhwDybJb
+	2BThCxwTmYI1vMAR7urfXJHDDvTAYfto1QvMX3gBtvWL4eUwhbiKvFmJDb2QRLbibm/8dq5LM4L
+	/0ieh6qtHUGHZfcr2B3Qb+ptQvOhkNGZ5X3NqxcpkOkZOdQWmPAIK
+X-Google-Smtp-Source: AGHT+IF59eNnnySegsKhfnfzXYM07i5Fgsx6xFLHCRkXQs7BnMoj+MUqztMGZD2zxbeHPnGH23UuKKSLPu/28cL7+B0=
+X-Received: by 2002:a17:902:fa0f:b0:1dc:8841:43f2 with SMTP id
+ la15-20020a170902fa0f00b001dc884143f2mr48794plb.26.1709083207590; Tue, 27 Feb
+ 2024 17:20:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0083c330-1d3f-43b0-1d11-caf09d7c27c8@huaweicloud.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+References: <20240228005230.287113-1-namhyung@kernel.org> <20240228005230.287113-2-namhyung@kernel.org>
+In-Reply-To: <20240228005230.287113-2-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 27 Feb 2024 17:19:56 -0800
+Message-ID: <CAP-5=fVUqFbvYp_g5PL9e4on=5gF1YE42-w-XMTrFxOZJ+JrXw@mail.gmail.com>
+Subject: Re: [PATCH 1/4] perf annotate: Add a hashmap for symbol histogram
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 22, 2024 at 05:00:56PM +0800, Yu Kuai wrote:
-> Hi,
-> 
-> 在 2024/02/16 13:46, Benjamin Marzinski 写道:
-> > On Thu, Feb 15, 2024 at 02:24:34PM -0800, Song Liu wrote:
-> > > On Thu, Feb 1, 2024 at 1:30 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
-> > > > 
-> > > [...]
-> > > > 
-> > > > [1] https://lore.kernel.org/all/CALTww29QO5kzmN6Vd+jT=-8W5F52tJjHKSgrfUc1Z1ZAeRKHHA@mail.gmail.com/
-> > > > 
-> > > > Yu Kuai (14):
-> > > >    md: don't ignore suspended array in md_check_recovery()
-> > > >    md: don't ignore read-only array in md_check_recovery()
-> > > >    md: make sure md_do_sync() will set MD_RECOVERY_DONE
-> > > >    md: don't register sync_thread for reshape directly
-> > > >    md: don't suspend the array for interrupted reshape
-> > > >    md: fix missing release of 'active_io' for flush
-> > > 
-> > > Applied 1/14-5/14 to md-6.8 branch (6/14 was applied earlier).
-> > > 
-> > > Thanks,
-> > > Song
-> > 
-> > I'm still seeing new failures that I can't reproduce in the 6.6 kernel,
-> > specifically:
-> > 
-> > lvconvert-raid-reshape-stripes-load-reload.sh
-> > lvconvert-repair-raid.sh
-> > 
-> > with lvconvert-raid-reshape-stripes-load-reload.sh Patch 12/14
-> > ("md/raid456: fix a deadlock for dm-raid456 while io concurrent with
-> > reshape") is changing a hang to a corruption. The issues is that we
-> > can't simply fail IO that crosses the reshape position. I assume that
-> > the correct thing to do is have dm-raid reissue it after the suspend,
-> > when the reshape can make progress again. Perhaps something like this,
-> > only less naive (although this patch does make the test pass for me).
-> > Heinz, any thoughts on this? Otherwise, I'll look into this a little
-> > more and post a RFC patch.
-> > 
-> > =========================================================
-> > diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-> > index ed8c28952b14..ff481d494b04 100644
-> > --- a/drivers/md/dm-raid.c
-> > +++ b/drivers/md/dm-raid.c
-> > @@ -3345,6 +3345,14 @@ static int raid_map(struct dm_target *ti, struct bio *bio)
-> >   	return DM_MAPIO_SUBMITTED;
-> >   }
-> > +static int raid_end_io(struct dm_target *ti, struct bio *bio,
-> > +		       blk_status_t *error)
-> > +{
-> > +	if (*error != BLK_STS_IOERR || !dm_noflush_suspending(ti))
-> > +		return DM_ENDIO_DONE;
-> > +	return DM_ENDIO_REQUEUE;
-> > +}
-> 
-> I love this idea, however, there could be other reasonable case to
-> return BLK_STS_IOERR, and we probably shouldn't requeue in this case.
-> 
-> Are we agree with the idea to let dm-raid reissue the IO after the
-> suspend? If so, we can let raid_map return DM_MAPIO_REQUEUE directly in
-> this special case.
-> 
-> Benjamin, can you test the following patch on the top of this set? I
-> verified in my VM for 20+ times that the test pass for me.
-
-This looks sensible to me, and I have not hit an error in over a hundred
-runs.
-
--Ben
-
-> Thanks,
-> Kuai
-> 
-> diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
-> index ed8c28952b14..bd37ec94663e 100644
-> --- a/drivers/md/dm-raid.c
-> +++ b/drivers/md/dm-raid.c
-> @@ -3340,7 +3340,8 @@ static int raid_map(struct dm_target *ti, struct bio
-> *bio)
->         if (unlikely(bio_end_sector(bio) > mddev->array_sectors))
->                 return DM_MAPIO_REQUEUE;
-> 
-> -       md_handle_request(mddev, bio);
-> +       if (unlikely(!md_handle_request(mddev, bio)))
-> +               return DM_MAPIO_REQUEUE;
-> 
->         return DM_MAPIO_SUBMITTED;
+On Tue, Feb 27, 2024 at 4:52=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> Now symbol histogram uses an array to save per-offset sample counts.
+> But it wastes a lot of memory if the symbol has a few samples only.
+> Add a hashmap to save values only for actual samples.
+>
+> For now, it has duplicate histogram (one in the existing array and
+> another in the new hash map).  Once it can convert to use the hash
+> in all places, we can get rid of the array later.
+>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/annotate.c | 40 +++++++++++++++++++++++++++++++++++++-
+>  tools/perf/util/annotate.h |  2 ++
+>  2 files changed, 41 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
+> index 107b264fa41e..7a70e4d35c9b 100644
+> --- a/tools/perf/util/annotate.c
+> +++ b/tools/perf/util/annotate.c
+> @@ -38,6 +38,7 @@
+>  #include "arch/common.h"
+>  #include "namespaces.h"
+>  #include "thread.h"
+> +#include "hashmap.h"
+>  #include <regex.h>
+>  #include <linux/bitops.h>
+>  #include <linux/kernel.h>
+> @@ -863,6 +864,17 @@ bool arch__is(struct arch *arch, const char *name)
+>         return !strcmp(arch->name, name);
 >  }
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index a8db84c200fe..59411d20cbfd 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -366,7 +366,7 @@ static bool is_suspended(struct mddev *mddev, struct bio
-> *bio)
->         return true;
->  }
-> 
-> -void md_handle_request(struct mddev *mddev, struct bio *bio)
-> +bool md_handle_request(struct mddev *mddev, struct bio *bio)
->  {
->  check_suspended:
->         if (is_suspended(mddev, bio)) {
-> @@ -374,7 +374,7 @@ void md_handle_request(struct mddev *mddev, struct bio
-> *bio)
->                 /* Bail out if REQ_NOWAIT is set for the bio */
->                 if (bio->bi_opf & REQ_NOWAIT) {
->                         bio_wouldblock_error(bio);
-> -                       return;
-> +                       return true;
->                 }
->                 for (;;) {
->                         prepare_to_wait(&mddev->sb_wait, &__wait,
-> @@ -390,10 +390,14 @@ void md_handle_request(struct mddev *mddev, struct bio
-> *bio)
-> 
->         if (!mddev->pers->make_request(mddev, bio)) {
->                 percpu_ref_put(&mddev->active_io);
-> +               if (!mddev->gendisk && mddev->pers->prepare_suspend &&
-> +                   mddev->reshape_position != MaxSector)
-> +                       return false;
->                 goto check_suspended;
->         }
-> 
->         percpu_ref_put(&mddev->active_io);
-> +       return true;
->  }
->  EXPORT_SYMBOL(md_handle_request);
-> 
-> @@ -8765,6 +8769,23 @@ void md_account_bio(struct mddev *mddev, struct bio
-> **bio)
->  }
->  EXPORT_SYMBOL_GPL(md_account_bio);
-> 
-> +void md_free_cloned_bio(struct bio *bio)
+>
+> +/* symbol histogram: key =3D offset << 16 | evsel->core.idx */
+> +static size_t sym_hist_hash(long key, void *ctx __maybe_unused)
 > +{
-> +       struct md_io_clone *md_io_clone = bio->bi_private;
-> +       struct bio *orig_bio = md_io_clone->orig_bio;
-> +       struct mddev *mddev = md_io_clone->mddev;
-> +
-> +       if (bio->bi_status && !orig_bio->bi_status)
-> +               orig_bio->bi_status = bio->bi_status;
-> +
-> +       if (md_io_clone->start_time)
-> +               bio_end_io_acct(orig_bio, md_io_clone->start_time);
-> +
-> +       bio_put(bio);
-> +       percpu_ref_put(&mddev->active_io);
+> +       return (key >> 16) + (key & 0xffff);
 > +}
-> +EXPORT_SYMBOL_GPL(md_free_cloned_bio);
 > +
->  /* md_allow_write(mddev)
->   * Calling this ensures that the array is marked 'active' so that writes
->   * may proceed without blocking.  It is important to call this before
-> diff --git a/drivers/md/md.h b/drivers/md/md.h
-> index 8e81f9e2fb20..08db2954006e 100644
-> --- a/drivers/md/md.h
-> +++ b/drivers/md/md.h
-> @@ -763,6 +763,7 @@ extern void md_finish_reshape(struct mddev *mddev);
->  void md_submit_discard_bio(struct mddev *mddev, struct md_rdev *rdev,
->                         struct bio *bio, sector_t start, sector_t size);
->  void md_account_bio(struct mddev *mddev, struct bio **bio);
-> +void md_free_cloned_bio(struct bio *bio);
-> 
->  extern bool __must_check md_flush_request(struct mddev *mddev, struct bio
-> *bio);
->  extern void md_super_write(struct mddev *mddev, struct md_rdev *rdev,
-> @@ -791,7 +792,7 @@ extern void md_stop_writes(struct mddev *mddev);
->  extern int md_rdev_init(struct md_rdev *rdev);
->  extern void md_rdev_clear(struct md_rdev *rdev);
-> 
-> -extern void md_handle_request(struct mddev *mddev, struct bio *bio);
-> +extern bool md_handle_request(struct mddev *mddev, struct bio *bio);
->  extern int mddev_suspend(struct mddev *mddev, bool interruptible);
->  extern void mddev_resume(struct mddev *mddev);
->  extern void md_idle_sync_thread(struct mddev *mddev);
-> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-> index 812d7ec64da5..9a6a1d9eed3d 100644
-> --- a/drivers/md/raid5.c
-> +++ b/drivers/md/raid5.c
-> @@ -760,6 +760,7 @@ enum stripe_result {
->         STRIPE_RETRY,
->         STRIPE_SCHEDULE_AND_RETRY,
->         STRIPE_FAIL,
-> +       STRIPE_WAIT_RESHAPE,
->  };
-> 
->  struct stripe_request_ctx {
-> @@ -6036,9 +6037,9 @@ static enum stripe_result make_stripe_request(struct
-> mddev *mddev,
->  out:
->         if (ret == STRIPE_SCHEDULE_AND_RETRY && !mddev->gendisk &&
->             reshape_disabled(mddev)) {
-> -               bi->bi_status = BLK_STS_IOERR;
-> -               ret = STRIPE_FAIL;
-> -               pr_err("dm-raid456: io failed across reshape position while
-> reshape can't make progress");
-> +               bi->bi_status = BLK_STS_RESOURCE;
-> +               ret = STRIPE_WAIT_RESHAPE;
-> +               pr_err_ratelimited("dm-raid456: io across reshape position
-> while reshape can't make progress");
+> +static bool sym_hist_equal(long key1, long key2, void *ctx __maybe_unuse=
+d)
+> +{
+> +       return key1 =3D=3D key2;
+> +}
+> +
+>  static struct annotated_source *annotated_source__new(void)
+>  {
+>         struct annotated_source *src =3D zalloc(sizeof(*src));
+> @@ -877,6 +889,8 @@ static __maybe_unused void annotated_source__delete(s=
+truct annotated_source *src
+>  {
+>         if (src =3D=3D NULL)
+>                 return;
+> +
+> +       hashmap__free(src->samples);
+>         zfree(&src->histograms);
+>         free(src);
+>  }
+> @@ -909,6 +923,14 @@ static int annotated_source__alloc_histograms(struct=
+ annotated_source *src,
+>         src->sizeof_sym_hist =3D sizeof_sym_hist;
+>         src->nr_histograms   =3D nr_hists;
+>         src->histograms      =3D calloc(nr_hists, sizeof_sym_hist) ;
+> +
+> +       if (src->histograms =3D=3D NULL)
+> +               return -1;
+> +
+> +       src->samples =3D hashmap__new(sym_hist_hash, sym_hist_equal, NULL=
+);
+> +       if (src->samples =3D=3D NULL)
+> +               zfree(&src->histograms);
+> +
+>         return src->histograms ? 0 : -1;
+>  }
+>
+> @@ -920,6 +942,7 @@ void symbol__annotate_zero_histograms(struct symbol *=
+sym)
+>         if (notes->src !=3D NULL) {
+>                 memset(notes->src->histograms, 0,
+>                        notes->src->nr_histograms * notes->src->sizeof_sym=
+_hist);
+> +               hashmap__clear(notes->src->samples);
 >         }
->         return ret;
->  }
-> @@ -6161,7 +6162,7 @@ static bool raid5_make_request(struct mddev *mddev,
-> struct bio * bi)
->         while (1) {
->                 res = make_stripe_request(mddev, conf, &ctx, logical_sector,
->                                           bi);
-> -               if (res == STRIPE_FAIL)
-> +               if (res == STRIPE_FAIL ||res == STRIPE_WAIT_RESHAPE)
->                         break;
-> 
->                 if (res == STRIPE_RETRY)
-> @@ -6199,8 +6200,13 @@ static bool raid5_make_request(struct mddev *mddev,
-> struct bio * bi)
-> 
->         if (rw == WRITE)
->                 md_write_end(mddev);
-> -       bio_endio(bi);
-> -       return true;
-> +       if (res == STRIPE_WAIT_RESHAPE) {
-> +               md_free_cloned_bio(bi);
-> +               return false;
-> +       } else {
-> +               bio_endio(bi);
-> +               return true;
+>         if (notes->branch && notes->branch->cycles_hist) {
+>                 memset(notes->branch->cycles_hist, 0,
+> @@ -983,8 +1006,10 @@ static int __symbol__inc_addr_samples(struct map_sy=
+mbol *ms,
+>                                       struct perf_sample *sample)
+>  {
+>         struct symbol *sym =3D ms->sym;
+> +       long hash_key;
+>         unsigned offset;
+>         struct sym_hist *h;
+> +       struct sym_hist_entry *entry;
+>
+>         pr_debug3("%s: addr=3D%#" PRIx64 "\n", __func__, map__unmap_ip(ms=
+->map, addr));
+>
+> @@ -1002,15 +1027,28 @@ static int __symbol__inc_addr_samples(struct map_=
+symbol *ms,
+>                          __func__, __LINE__, sym->name, sym->start, addr,=
+ sym->end, sym->type =3D=3D STT_FUNC);
+>                 return -ENOMEM;
+>         }
+> +
+> +       hash_key =3D offset << 16 | evidx;
+> +       if (!hashmap__find(src->samples, hash_key, &entry)) {
+> +               entry =3D zalloc(sizeof(*entry));
+> +               if (entry =3D=3D NULL)
+> +                       return -ENOMEM;
+> +
+> +               if (hashmap__add(src->samples, hash_key, entry) < 0)
+> +                       return -ENOMEM;
 > +       }
+> +
+>         h->nr_samples++;
+>         h->addr[offset].nr_samples++;
+>         h->period +=3D sample->period;
+>         h->addr[offset].period +=3D sample->period;
+> +       entry->nr_samples++;
+> +       entry->period +=3D sample->period;
+>
+>         pr_debug3("%#" PRIx64 " %s: period++ [addr: %#" PRIx64 ", %#" PRI=
+x64
+>                   ", evidx=3D%d] =3D> nr_samples: %" PRIu64 ", period: %"=
+ PRIu64 "\n",
+>                   sym->start, sym->name, addr, addr - sym->start, evidx,
+> -                 h->addr[offset].nr_samples, h->addr[offset].period);
+> +                 entry->nr_samples, entry->period);
+>         return 0;
 >  }
-> 
-> > +
-> >   /* Return sync state string for @state */
-> >   enum sync_state { st_frozen, st_reshape, st_resync, st_check, st_repair, st_recover, st_idle };
-> >   static const char *sync_str(enum sync_state state)
-> > @@ -4100,6 +4108,7 @@ static struct target_type raid_target = {
-> >   	.ctr = raid_ctr,
-> >   	.dtr = raid_dtr,
-> >   	.map = raid_map,
-> > +	.end_io = raid_end_io,
-> >   	.status = raid_status,
-> >   	.message = raid_message,
-> >   	.iterate_devices = raid_iterate_devices,
-> > =========================================================
-> > > 
-> > > 
-> > > >    md: export helpers to stop sync_thread
-> > > >    md: export helper md_is_rdwr()
-> > > >    dm-raid: really frozen sync_thread during suspend
-> > > >    md/dm-raid: don't call md_reap_sync_thread() directly
-> > > >    dm-raid: add a new helper prepare_suspend() in md_personality
-> > > >    md/raid456: fix a deadlock for dm-raid456 while io concurrent with
-> > > >      reshape
-> > > >    dm-raid: fix lockdep waring in "pers->hot_add_disk"
-> > > >    dm-raid: remove mddev_suspend/resume()
-> > > > 
-> > > >   drivers/md/dm-raid.c |  78 +++++++++++++++++++--------
-> > > >   drivers/md/md.c      | 126 +++++++++++++++++++++++++++++--------------
-> > > >   drivers/md/md.h      |  16 ++++++
-> > > >   drivers/md/raid10.c  |  16 +-----
-> > > >   drivers/md/raid5.c   |  61 +++++++++++----------
-> > > >   5 files changed, 192 insertions(+), 105 deletions(-)
-> > > > 
-> > > > --
-> > > > 2.39.2
-> > > > 
-> > > > 
-> > 
-> > .
-> > 
+>
+> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+> index 94435607c958..a2b0c8210740 100644
+> --- a/tools/perf/util/annotate.h
+> +++ b/tools/perf/util/annotate.h
+> @@ -12,6 +12,7 @@
+>  #include "symbol_conf.h"
+>  #include "mutex.h"
+>  #include "spark.h"
+> +#include "hashmap.h"
 
+nit: This could just be a forward reference to keep the number of
+header files down.
+
+Thanks,
+Ian
+
+>
+>  struct hist_browser_timer;
+>  struct hist_entry;
+> @@ -280,6 +281,7 @@ struct annotated_source {
+>         size_t                  sizeof_sym_hist;
+>         struct sym_hist         *histograms;
+>         struct annotation_line  **offsets;
+> +       struct hashmap          *samples;
+>         int                     nr_histograms;
+>         int                     nr_entries;
+>         int                     nr_asm_entries;
+> --
+> 2.44.0.rc1.240.g4c46232300-goog
+>
 
