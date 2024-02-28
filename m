@@ -1,95 +1,157 @@
-Return-Path: <linux-kernel+bounces-85837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE95C86BC08
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:16:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9155086BC0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:17:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF17E1C22EB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:16:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4390F1F24B5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60EC613D30F;
-	Wed, 28 Feb 2024 23:16:07 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58CD13D306;
+	Wed, 28 Feb 2024 23:17:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="nezoDe1j"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873E413D2FF
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 784FF13D2F2;
+	Wed, 28 Feb 2024 23:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709162166; cv=none; b=t5as4rrrNiRg7FluAlba8H65LoJgW1wzyVqpNVG58nbsVlswNYDYsaPZ5Anmat1q7S8Co7YvQRsMv9wupKd5TgFaPGb2Y6zDnk3uBLCjANAeAbh2awjkPqK8gsQBPDrdA7ayo89if3MjrnMpynrHMjMJNJ89VCEepbq+S3TVKdQ=
+	t=1709162251; cv=none; b=Y0qS3Q6Vc0rr52R+rZYYIwfBzRB0+q6votoaSbZmHnzS7RUFZsLotKxdtkCLY+CDP134Llm1K48lREXQnQ2WYx/uisx0ycGRkkutZh9ccHwxOrmg1Gn687vVyEXlj4J9HJR1Q5NjG1YYp5xAdH8lsexbtjwiRfTScV+Y2T48bn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709162166; c=relaxed/simple;
-	bh=AQUahNxliBRnxzbiLyFJhAv8zSnsPgpBvtR8vmHjVTI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=S6rX7OVXVn4sjv37rgDh9nCDaOg2AjXUbpqm2QGjpJMpOLim/56174K7r/17WCW/d4MdF+yiz6fHI3kHM/WGE/X/Q3clBNfpQu7K5fejcugCX2ysBIHDEZC9b1ixw5QwY1IO1Daku5EVI0+XhxJ/Yebh4eA7AR4yPBj/HGi/cI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c78e7044b7so28071639f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:16:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709162165; x=1709766965;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b0RlstvxprlM4gkYbdJ5NUP8ntmVKrjAxjshVbrRXSc=;
-        b=fj1VzGOYl20Iq9dEBUQzqcuqNJ2j9bfYlZ8JFRU8WBZt6LLIe7agB3fAFiH3z/Wxwi
-         aU6d8EY6GMEISacjSCCUBBnjgi5E0a1hDV+fN4sdpACksmxt55bqz97FFEhR8sEjyMw8
-         xxRMiQKgPqCapsqwsFPnvcyoiWV2w3qvsLmj2ZqgTYpClsQrUNRN0xG5W33Oa68GX3E5
-         SZFRm7+h6wpLk4tV7VgpOddPslmwojZIzFWj6crszUpCR0OmAiXYJLB/hujiR/mwC9wq
-         P+PXfnIsPRTKyGL/1Kuk22MiD8XNa42JJfEEPosghqnhnl0PvkBPlv8BS43ia08m6mmv
-         z6rg==
-X-Forwarded-Encrypted: i=1; AJvYcCXs72QLP3pgpEpwx04ZHvd2bNL0EGoCJTkGKly2Md84C31Lb8KWAvg4+e9J6t/RRDJm2IQRI7zbX6CcqQZqXr0zIZBimoin+98Ju0M0
-X-Gm-Message-State: AOJu0Ywb4irWOin4XImr3ISmmXiTgNNx+Bf8Yp3h14JSvzAtEtfPpn8q
-	DQ6GZkx9oUlBoQklTgnXfyLEVrL8CvLOdBadStplj8qEusC8tJ7XXF5poaKQGKZbF/koqMNnWFG
-	0WVUP8rNpkc9mcCOXEf0JJBR1BhU1ikLYBcsNKvyoGeMK4dMbMjNsKo4=
-X-Google-Smtp-Source: AGHT+IFji+gWg2pA+eUmcqqi3S63tv894XUzwmU+L6rl/SIS/OebR1zkMrOwnEALjAYt6aL4+TwLBuzpQRHW46MxBHfiWMdCbk8l
+	s=arc-20240116; t=1709162251; c=relaxed/simple;
+	bh=r60eb2e8alPRaEUcbAn6sqeiAkSCW7JPQkjwOYrrwdo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=SKP6BJReWO7ibQne2hpv6nDvD2AtE1e36wQdZXuxLlmJOBhQ9SOeWj3dL3a0YIOOyhGdnpnWGDyVsAjcDqvnN6+UiepupCZee7LFCuInfqg8r06Zkd9iK+B6Rj6o/ZS+0XphjdiK9ASGsl8cdnUCPQfcimcluLbS+yoYqvtHYJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=nezoDe1j; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709162243;
+	bh=ZL/XInIJt5Cjmb6tbB31oFlzL2jGhkTDoNVbNzl3oks=;
+	h=Date:From:To:Cc:Subject:From;
+	b=nezoDe1jULxhYuf/bJjayZMTPtC1mFWM7SV034TzbFm3Ff62W3foLUTH7eoaNXQnk
+	 P/cqOCSpeqs643DM1yST2mEJRfzSg/i+NPaBL9ZnpDAcy8idn700KkVYnytS+lsrpl
+	 x/yFS/OzbnwCvUW3sDiUi3xPgZQh3HPw/1AygzxOkBtnufVGsXZxuEW6hWN9B4PeO7
+	 U1YXGAWwrBAqIXj5t0ulMsoJ/bUCzg/PyGt2PeT6tA7DsphcIfIA2TrVKNJGGFWhbD
+	 Se4r4ju1LbngVhi3oS8lP1RycJr9GSRlPpwxejmRSeXPEvl8UWNxNIbVMMW1VlWgeC
+	 pF7OLkwQXZP6w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TlVcf6Gvyz4wb2;
+	Thu, 29 Feb 2024 10:17:22 +1100 (AEDT)
+Date: Thu, 29 Feb 2024 10:17:21 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Michael Ellerman <mpe@ellerman.id.au>, PowerPC
+ <linuxppc-dev@lists.ozlabs.org>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the powerpc tree with the mm-stable
+ tree
+Message-ID: <20240229101721.58569685@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20eb:b0:365:25a2:18ab with SMTP id
- q11-20020a056e0220eb00b0036525a218abmr36292ilv.3.1709162164779; Wed, 28 Feb
- 2024 15:16:04 -0800 (PST)
-Date: Wed, 28 Feb 2024 15:16:04 -0800
-In-Reply-To: <00000000000095141106008bf0b5@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b2059906127953c9@google.com>
-Subject: Re: [syzbot] [ext4?] [reiserfs?] kernel BUG in __phys_addr (2)
-From: syzbot <syzbot+daa1128e28d3c3961cb2@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, bp@alien8.de, 
-	brauner@kernel.org, dave.hansen@linux.intel.com, hpa@zytor.com, jack@suse.com, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com, 
-	peterz@infradead.org, reiserfs-devel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tytso@mit.edu, 
-	x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/4n4pHsN37n9IgpmeL1C=ccq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-syzbot suspects this issue was fixed by commit:
+--Sig_/4n4pHsN37n9IgpmeL1C=ccq
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Hi all,
 
-    fs: Block writes to mounted block devices
+Today's linux-next merge of the powerpc tree got a conflict in:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1010d154180000
-start commit:   95c8a35f1c01 Merge tag 'mm-hotfixes-stable-2024-01-05-11-3..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=247b5a935d307ee5
-dashboard link: https://syzkaller.appspot.com/bug?extid=daa1128e28d3c3961cb2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14562761e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1089280ee80000
+  arch/powerpc/mm/pgtable_32.c
 
-If the result looks correct, please mark the issue as fixed by replying with:
+between commit:
 
-#syz fix: fs: Block writes to mounted block devices
+  a5e8131a0329 ("arm64, powerpc, riscv, s390, x86: ptdump: refactor CONFIG_=
+DEBUG_WX")
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+from the mm-stable tree and commit:
+
+  8f17bd2f4196 ("powerpc: Handle error in mark_rodata_ro() and mark_initmem=
+_nx()")
+
+from the powerpc tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/powerpc/mm/pgtable_32.c
+index 12498017da8e,4be97b4a44f9..000000000000
+--- a/arch/powerpc/mm/pgtable_32.c
++++ b/arch/powerpc/mm/pgtable_32.c
+@@@ -164,21 -174,17 +174,14 @@@ static int __mark_rodata_ro(void
+  	numpages =3D PFN_UP((unsigned long)__end_rodata) -
+  		   PFN_DOWN((unsigned long)_stext);
+ =20
+- 	set_memory_ro((unsigned long)_stext, numpages);
++ 	return set_memory_ro((unsigned long)_stext, numpages);
++ }
++=20
++ void mark_rodata_ro(void)
++ {
++ 	int err =3D __mark_rodata_ro();
++=20
++ 	if (err)
++ 		panic("%s() failed, err =3D %d\n", __func__, err);
+ -
+ -	// mark_initmem_nx() should have already run by now
+ -	ptdump_check_wx();
+  }
+  #endif
+-=20
+- #if defined(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) && defined(CONFIG_DEBUG=
+_PAGEALLOC)
+- void __kernel_map_pages(struct page *page, int numpages, int enable)
+- {
+- 	unsigned long addr =3D (unsigned long)page_address(page);
+-=20
+- 	if (PageHighMem(page))
+- 		return;
+-=20
+- 	if (enable)
+- 		set_memory_p(addr, numpages);
+- 	else
+- 		set_memory_np(addr, numpages);
+- }
+- #endif /* CONFIG_DEBUG_PAGEALLOC */
+
+--Sig_/4n4pHsN37n9IgpmeL1C=ccq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXfvwEACgkQAVBC80lX
+0GzdyQf/ZXxsTunyeE9hpoU8sNgMv+YWuJxIkdQX4wdxWcuybexme3bw4kj0rZXd
+RUBTfzmZTW5+KV18MvN9pBzsnIYrfEhGDGItzZQzlElVGmsPevvkAOvKTyvKP1oK
+KYDLqqtNYEWX+s0T8svodh+Tfxwp1zanWycAGStmzdZbnffSzV4cMeWRAKRuW9lR
++ujWWGXO4WKdIkS0X97BvGadKnu/BCvIQIPjOsS7HLWdl5XHPpVOTP0KkZIzewTW
+7igbDgq0075biqdcvuLWDdFfNUTr3Qbx1DydOvtVVv7Zk2IJRzTQ2K6feYgPSjs1
+c5Tt4xpnk8QJOrm6dAlfjN9fmks7Sg==
+=k40I
+-----END PGP SIGNATURE-----
+
+--Sig_/4n4pHsN37n9IgpmeL1C=ccq--
 
