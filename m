@@ -1,178 +1,173 @@
-Return-Path: <linux-kernel+bounces-84675-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84676-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0591286A9F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:33:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF9E286A9FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27CEA1C216E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:33:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E9101F262D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604992D05E;
-	Wed, 28 Feb 2024 08:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1982D052;
+	Wed, 28 Feb 2024 08:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bPDTLpAT"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="lEk+o0Ae"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F242D04C;
-	Wed, 28 Feb 2024 08:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419332B9B7
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709109169; cv=none; b=BjMGXRw2YAjCmbm40Mc0IaSd7uA32kHvuB6LYeuR1z+owyTx0OPS/JgSD5V35v02cyOox32OFrYmca26kauH6iLWfmBSygf/lLhFEB5wbuPMmGCagnHoM33TM5+rauy+nGAlnOw9CcOxzdAE2cyJoxIpagnPD+ovqU/yelPNe8w=
+	t=1709109198; cv=none; b=CF3QvUdxpge2qcwS6LOpHUmZzFmlyLyjkmTwFmI7CxVixI52KTOBzaWoBh0g++/mHsZKQZO3PBYnNn9Tjmvmt26yQl80DSNZAxqzzOuYPbvrq3OGUVUYATatKRBGnMNOaDHLVWEPo218wNClh5Y+ihFdAPokziwZqtXbSq4i29I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709109169; c=relaxed/simple;
-	bh=t40K0JM0NMfK3mCMUC77qdJh8lHBWSded2PQLMcMHuM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T39lvtBSXvfQ/ywjsOU3BUBsUVkQBSvW8pGgVEYCtIqg9X/qETz2XsooiHc9nQilZYAAP5sYslTGsMvDb+fVdo/y+7jJ1Hw1ftGcQbFudmnBnlNWUt+B1zha+sf3ZWlXPcW7L4bPRXgngL1J+EVa+UD3z38D8cbXlUZVnjBc0gY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bPDTLpAT; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so4284104a12.1;
-        Wed, 28 Feb 2024 00:32:48 -0800 (PST)
+	s=arc-20240116; t=1709109198; c=relaxed/simple;
+	bh=Ta2sUnIiLlpyDoRPXV3QRmDaVXo8Q8J/r2XiZcnzHvk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Mm+uGDEEODJUe0j0zxsz0tVqthg1ZvrblR6s74avTj+aRFfXkt8JVqJXNXiAbk55mQhkIhIEIzxDptld58xADIidETiFWaMFhJHPPOl6eaBGSdV6YWbogZzWU5zYGJS1Fwxq6JmIry9Ka2oZr1o128ORqizrUaozCHmp8Sbbwuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=lEk+o0Ae; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso109043066b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:33:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709109167; x=1709713967; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t40K0JM0NMfK3mCMUC77qdJh8lHBWSded2PQLMcMHuM=;
-        b=bPDTLpAT020g7yTaG9s9Dg5fvjrKx4wikeZJpv+bqHd0xAYQn/zDrG1BhttuJrKgVn
-         BRbLmFTzsVmcWnqrMNVSvOmW0IYk3EgWkGSvzQDgUnM1ucTKtYfblJhOgfvw4Dxk1nPV
-         h3dveXFWmESQ1te1DbRn94501+g735ohKL12hnWhzWXcxXidqSmqKXglwovFjuIU23L/
-         ojrTLtjlcGJTtEylQ9DXIJDkB5S7+alsj0ur2To6ifkNGcmoZzGstbfxEzbyhFvfYPVN
-         jE4ogmXaI4K5WzOBoVSak8WIrysUAvVbLAhplUK8lBFFEuUGjOlQDcg9/j6wCEOxxSkE
-         44xQ==
+        d=tuxon.dev; s=google; t=1709109194; x=1709713994; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yBZ2rZoeK1vPw/QA7FLPO8LSa6g3zo2lPvoS2UqE6EQ=;
+        b=lEk+o0Aea4mIu9hlU26NzEgOW8jau9AM1UW7WbAOB0Z8DyokZ53GxLH6HPl1tH7MER
+         zN9s3UmGZ773L+r9jpphuBoh1/mr1337JOPbp/JdwDMHZhNiaCb3fO+uDEgt9Mgy3D9Q
+         +RfNzmIG7me5D9q06+pTpf5zbQftGqlL3SCCDRS7t1VMOikny/1WPwPBcgrvFkipeQve
+         HB47++WO9HffQAKhYWRmbF90ITqCLwEQWgn4CyCs5KcF936SldCk/wMvjQkmmDU2/Mjq
+         10HD03M2VFlArzyXVfeFYV5DRVEHeGxq0RN137wFC/P3Uthu/tqUX3QDniE6IfSmN4az
+         NL+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709109167; x=1709713967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=t40K0JM0NMfK3mCMUC77qdJh8lHBWSded2PQLMcMHuM=;
-        b=CrnSSpA1MmIyHpb8xQiYuhC+jttMmvCok1/T5fOGdeXYTukMyaSeLxpaaB/4OyJ9Ob
-         HN6BQn+aOSVTIVuOJr3hieI4DoxNQXddEe0ve8rkUYSs7nPyTCIKu+Epzs251ev775l2
-         FT4PAdYn3OMfKdz7wPluB2wdS36oMW0PHmhR2/0T/TiSYHJuqFTwODkCyorD1PikzWb7
-         nb0VYiOlAy56PioT6m01sFKMZvtjhW3b8ISQsyUQHpQKDFucxgK0bnVKdBfUJyf3Ijb8
-         c1dNktGS8ks5AEV8UxLBFxPXOaggnUhtHthtl9Ql4atpcC81C+Drji1XyNC32J0XHZ6Z
-         fFYw==
-X-Forwarded-Encrypted: i=1; AJvYcCX+ITVEfXj0EJRUU55yWNANpfu9J7i9Zp9J4G5RBI9I1Psz/Dcmq0Wbp21ns5i1hRfAnnCTw8TfKD9uoHCFdFf5hptWdd+8HO5UrKvlcKPmb9XelPAHWnHa2WjUo9z6G5LgtBph
-X-Gm-Message-State: AOJu0YxR+SVuJphv/oooYDRUl1WmjB9goUUD21sslOcPF2ScrScgJS7s
-	Nj3uwndeyZI10RirublsIq6ODcg1hWJvqSLrmagzQM5OiJlGfdLc
-X-Google-Smtp-Source: AGHT+IEPBy5Yel+v4FYYx1dJ/kW3sj9XgdN6GjR1Lqmv35o9Q62to13V/d1NNwcnNw4qpmaVH/AN5A==
-X-Received: by 2002:a17:90a:88c:b0:299:3f10:20ba with SMTP id v12-20020a17090a088c00b002993f1020bamr10292017pjc.27.1709109167564;
-        Wed, 28 Feb 2024 00:32:47 -0800 (PST)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id sy12-20020a17090b2d0c00b00296f4fc7e60sm962560pjb.12.2024.02.28.00.32.46
+        d=1e100.net; s=20230601; t=1709109194; x=1709713994;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yBZ2rZoeK1vPw/QA7FLPO8LSa6g3zo2lPvoS2UqE6EQ=;
+        b=mjpoFSherY592jDrqiLuQqEYNK1TSD8jDJb6jmGlX8y1AgMDpRcE5EX+Xrf85s6w5s
+         tRhK2C6U6z9tjw9b9hoJPysZSoNf5GiEOEjrA+glxOsKS7gVRZwD16WihIn54ED58vbz
+         3o3yjWqWEgTXtIH/PWerAyoiB+JJSrZQSHvW5w8qx7e1Lqz8SfhkbPHcbu9brlC5bz8A
+         6nnOXV1u0AMz3udJCxMCsMvnwyaQRK5EAkFwelzxpfeVZ7g2RNKkR4yiFuWOMnyPjdrm
+         GeTptYueaB0Q4XgWaIMIhQBxbn8QHYC7T6cFSaG6bKoD+7mh6WbwTkvNihN15qayxwS1
+         feMw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJqhwy9N58hiz7la0BMkKTLv2DvZQ/BZnIwRA0u7ef6GiGR88C+78Ar4Wvh6l8W8viLVRFHO5qJQ0m6Updkks2CBdP0ptsNouodD2Z
+X-Gm-Message-State: AOJu0YyoF1K52DJJi8ihboNj7dz3QR8FxNPCMGDBiXKmAYGIn0IJB0Ad
+	t7/DfpwsoSEmKpC0AyECQkYY2NumSHOc9C3PqOlKH2Bxr8ZlHQsxO5w8RZ8YxrA=
+X-Google-Smtp-Source: AGHT+IGhtvclnENZE7nyT6n3Bx/9ZK3N1tKvc3crfWvk5MmaQ+FIosvn0afdz6PqVN2A9bDPN9lz9w==
+X-Received: by 2002:a17:906:4a17:b0:a43:f924:d65 with SMTP id w23-20020a1709064a1700b00a43f9240d65mr1039966eju.26.1709109194460;
+        Wed, 28 Feb 2024 00:33:14 -0800 (PST)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.83])
+        by smtp.gmail.com with ESMTPSA id qh16-20020a170906ecb000b00a432777eb77sm1593987ejb.60.2024.02.28.00.33.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 00:32:47 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id D8B75187DBEB7; Wed, 28 Feb 2024 15:32:41 +0700 (WIB)
-Date: Wed, 28 Feb 2024 15:32:41 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Abdul Anshad Azeez <abdul-anshad.azeez@broadcom.com>,
-	edumazet@google.com, davem@davemloft.net, kuba@kernel.org,
-	pabeni@redhat.com, corbet@lwn.net, dsahern@kernel.org,
-	Linux Networking <netdev@vger.kernel.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Regressions <regressions@lists.linux.dev>
-Cc: Boon Ang <boon.ang@broadcom.com>,
-	John Savanyo <john.savanyo@broadcom.com>,
-	Peter Jonasson <peter.jonasson@broadcom.com>,
-	Rajender M <rajender.m@broadcom.com>
-Subject: Re: Network performance regression in Linux kernel 6.6 for small
- socket size test cases
-Message-ID: <Zd7vqSnT6ocYLuZ4@archie.me>
-References: <CALkn8kLOozs5UO52SQa9PR-CiKx_mqW8VF9US94qN+ixyqnkdQ@mail.gmail.com>
+        Wed, 28 Feb 2024 00:33:14 -0800 (PST)
+From: Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To: wim@linux-watchdog.org,
+	linux@roeck-us.net,
+	robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	geert+renesas@glider.be,
+	magnus.damm@gmail.com,
+	biju.das.jz@bp.renesas.com
+Cc: linux-watchdog@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org,
+	claudiu.beznea@tuxon.dev,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v8 00/10] watchdog: rzg2l_wdt: Add support for RZ/G3S
+Date: Wed, 28 Feb 2024 10:32:43 +0200
+Message-Id: <20240228083253.2640997-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="aJ0FkAcvBcopWHIX"
-Content-Disposition: inline
-In-Reply-To: <CALkn8kLOozs5UO52SQa9PR-CiKx_mqW8VF9US94qN+ixyqnkdQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+
+Hi,
+
+Series adds watchdog support for Renesas RZ/G3S (R9A08G045) SoC.
+
+Patches do the following:
+- patch 1/10 makes the driver depend on ARCH_RZG2L || ARCH_R9A09G011
+- patch 2/10 makes the driver depend on PM
+- patches 3-7/10 adds fixes and cleanups for the watchdog driver
+- patch 8/10 adds suspend to RAM to the watchdog driver (to be used by
+  RZ/G3S)
+- patch 9/10 adapt for power domain support
+- patch 10/10 documents the RZ/G3S support
+
+Thank you,
+Claudiu Beznea
+
+Changes in v8:
+- added patch 9
+- collected tags
+
+Changes in v7:
+- updated the dependency on patch 2/9
+
+Changes in v6:
+- update patch 2/9 description
+- fixed the dependency on COMPILE_TEST previously introduced in patch
+  2/9
+
+Changes in v5:
+- updated description of patch 2/9
+- simplify the code in patch 2/9 by using on a new line:
+  depends on PM || COMPILE_TEST
+
+Changes in v4:
+- added patch "watchdog: rzg2l_wdt: Restrict the driver to ARCH_RZG2L and
+  ARCH_R9A09G011"
+- collected tags
+
+Changes in v3:
+- make driver depend on PM not select it
+- drop patches already accepted (patches 1, 10, 11 from v2)
+- re-arranged the tags in patch 8/8 as they were messed by b4 am/shazam
+
+Changes in v2:
+- added patch "watchdog: rzg2l_wdt: Select PM"
+- propagate the return status of rzg2l_wdt_start() to it's callers
+  in patch "watchdog: rzg2l_wdt: Use pm_runtime_resume_and_get()" 
+- propagate the return status of rzg2l_wdt_stop() to it's callers
+  in patch "watchdog: rzg2l_wdt: Check return status of pm_runtime_put()" 
+- removed pm_ptr() from patch "watchdog: rzg2l_wdt: Add suspend/resume support"
+- s/G2UL/G2L in patch "dt-bindings: watchdog: renesas,wdt: Document RZ/G3S support"
+- collected tags
 
 
---aJ0FkAcvBcopWHIX
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Claudiu Beznea (10):
+  watchdog: rzg2l_wdt: Restrict the driver to ARCH_RZG2L and
+    ARCH_R9A09G011
+  watchdog: rzg2l_wdt: Make the driver depend on PM
+  watchdog: rzg2l_wdt: Use pm_runtime_resume_and_get()
+  watchdog: rzg2l_wdt: Check return status of pm_runtime_put()
+  watchdog: rzg2l_wdt: Remove reset de-assert from probe
+  watchdog: rzg2l_wdt: Remove comparison with zero
+  watchdog: rzg2l_wdt: Rely on the reset driver for doing proper reset
+  watchdog: rzg2l_wdt: Add suspend/resume support
+  watchdog: rzg2l_wdt: Power on the PM domain in rzg2l_wdt_restart()
+  dt-bindings: watchdog: renesas,wdt: Document RZ/G3S support
 
-[also Cc: regressions ML]
+ .../bindings/watchdog/renesas,wdt.yaml        |   1 +
+ drivers/watchdog/Kconfig                      |   3 +-
+ drivers/watchdog/rzg2l_wdt.c                  | 123 +++++++++++-------
+ 3 files changed, 76 insertions(+), 51 deletions(-)
 
-On Wed, Feb 28, 2024 at 12:13:27PM +0530, Abdul Anshad Azeez wrote:
-> During performance regression workload execution of the Linux
-> kernel we observed up to 30% performance decrease in a specific networking
-> workload on the 6.6 kernel compared to 6.5 (details below). The regressio=
-n is
-> reproducible in both Linux VMs running on ESXi and bare metal Linux.
->=20
-> Workload details:
->=20
-> Benchmark - Netperf TCP_STREAM
-> Socket buffer size - 8K
-> Message size - 256B
-> MTU - 1500B
-> Socket option - TCP_NODELAY
-> # of STREAMs - 32
-> Direction - Uni-Directional Receive
-> Duration - 60 Seconds
-> NIC - Mellanox Technologies ConnectX-6 Dx EN 100G
-> Server Config - Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz & 512G Memory
->=20
-> Bisect between 6.5 and 6.6 kernel concluded that this regression originat=
-ed
-> from the below commit:
->=20
-> commit - dfa2f0483360d4d6f2324405464c9f281156bd87 (tcp: get rid of
-> sysctl_tcp_adv_win_scale)
-> Author - Eric Dumazet <edumazet@google.com>
-> Link -
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3D
-> dfa2f0483360d4d6f2324405464c9f281156bd87
->=20
-> Performance data for (Linux VM on ESXi):
-> Test case - TCP_STREAM_RECV Throughput in Gbps
-> (for different socket buffer sizes and with constant message size - 256B):
->=20
-> Socket buffer size - [LK6.5 vs LK6.6]
-> 8K - [8.4 vs 5.9 Gbps]
-> 16K - [13.4 vs 10.6 Gbps]
-> 32K - [19.1 vs 16.3 Gbps]
-> 64K - [19.6 vs 19.7 Gbps]
-> Autotune - [19.7 vs 19.6 Gbps]
->=20
-> >From the above performance data, we can infer that:
-> * Regression is specific to lower fixed socket buffer sizes (8K, 16K & 32=
-K).
-> * Increasing the socket buffer size gradually decreases the throughput im=
-pact.
-> * Performance is equal for higher fixed socket size (64K) and Autotune so=
-cket
-> tests.
->=20
-> We would like to know if there are any opportunities for optimization in
-> the test cases with small socket sizes.
->=20
+-- 
+2.39.2
 
-Can you verify the regression on current mainline (v6.8-rc6)?
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---aJ0FkAcvBcopWHIX
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZd7vpAAKCRD2uYlJVVFO
-o3FWAQDe+PbGL4LW/N1x23XLUSDEsqAGX9WqhwvPNQEir1nE3gEAqt155Cln5op5
-oMAlTfo6KFQ5Sl5qdUv70rbcuu4T+gs=
-=88Qq
------END PGP SIGNATURE-----
-
---aJ0FkAcvBcopWHIX--
 
