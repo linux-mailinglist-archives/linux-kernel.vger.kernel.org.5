@@ -1,292 +1,256 @@
-Return-Path: <linux-kernel+bounces-85169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7DD86B169
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:14:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9CD86B17D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D704EB262CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:14:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 72C541C23310
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9663155307;
-	Wed, 28 Feb 2024 14:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628081586E9;
+	Wed, 28 Feb 2024 14:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="OGpqW5IY"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eiXdj1lP"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C34EB14F998
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BCB14F998;
+	Wed, 28 Feb 2024 14:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709129641; cv=none; b=gXMDemfXKz2STpSueuY6NrIzBWOGP94uDuUIlX/zXSHHfh9kY2P7X7A2ScJ7vbXEMjAAAEvOW45d+zMpZzu65wwomPLg9ZfPimkEhbxmhz/B4afTD0cvxE4J/KcyzdyxtRZKhmo1VOidV/zosd8jP8xMya6Uh1uFDK4gtRtUGUI=
+	t=1709129925; cv=none; b=nWJ6Lsc2LOsHAopGr3aFF1z0Pk6vdb588rAo9UzNVe663EQ4jqZ0dmdIRqPHtz6C6ub5VikBmFVBmxtjczU/nN6ZBegJhTx4o97gF2e1B+yaBj6+7PeHWuw4GZh8zyj+yALLgEj+UOW/3yUaj8QFjKQvZua7EM/cE2UeLuQDXjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709129641; c=relaxed/simple;
-	bh=HiHXR3EDZvoIzUSuanFItURWEjW4d81x9fSQVVhg+aI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RbaOXQ8O+i71ELU8SWxw7RAX548Qcwys/DF/WM9Td+INR1uILCeW3JzkO6e10gG09va9P/8Zdc/qhlO1044GNSKPrlqoWAPjGZqtu/QCPh65KUG6hSaoG2C3VtuHGnPMqPnJq30DXe6x/wLr4tjJobB+VequVf9pI7DLgdVSBT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=OGpqW5IY; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33ad9ec3ec2so656537f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:13:59 -0800 (PST)
+	s=arc-20240116; t=1709129925; c=relaxed/simple;
+	bh=lHbE9CNSkMTisacwR8gmtL+5gp2cS17p9riJalD1z7w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ea56r/g8rgb4bF2j8ca2+pYqKFVQurVumPSk+A7hZdVWSz9R4Q7sH/gyxK4B1285IH/qtAeNlSdpCLQvGTAuPzO48JtYMpiR9p+HCSVN5yn9PAheqOcQKT9rBk6kvb+6tGFmc34J3YPGmJkCDq3y6zIKPEegkrCA9hPdbWlwq1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eiXdj1lP; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412b88e2f07so216355e9.3;
+        Wed, 28 Feb 2024 06:18:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1709129638; x=1709734438; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tQ6S85ERjoMhiF/axIBWpRKICnSxTdLINo9QSace1cY=;
-        b=OGpqW5IYw5t9CUuzH9z3XyiT7ollj3FqMgLSA3mYPyR1lcAfaG4+bY3RC0EwBPuyyB
-         t7gA6QwSNwQ4kLjKkBPcaXsUzkxxGkFWKtH6AfAdFE2WsZhdgqsz6Qn0ZPKg91zcHyFG
-         Erdg0Ree0Wz8LcqutmvaJV8LUw5vxo9QNlTjo=
+        d=gmail.com; s=20230601; t=1709129922; x=1709734722; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1PMX+ThpO6mgVFASiMk5Ewm/ciwzj+pfXAE1dKwvq0g=;
+        b=eiXdj1lPmqpLKQbpyHKnAES0E5aeYbtKavGX0MsZ5bQwTSHs/QdTONrkFO6uD5AlZ3
+         kdnn4qHIzxBCD0pNXW2hrQPpFzPzlGi5uoss6BzUH3joc7koGtOtAogco6WtzK0v/lmB
+         hiUA8XetAgWI2N+BhAJqYjTx2JmDoNSNaV1nNkRABydlrVBZC7LLwp0KztTj7rOvjUHW
+         4Q72NsUowKIp64qhhZJ5VYKybk0P1PYEPTKuIdbY5UziO5eZe1PTSkmG83aMgshJH3oa
+         LMc8Kjo9JunjjJDiWvSihQop4t1Vz90rQNSatrlYXL8lCaFpsEOXeoJPs2dZz9c+qoBI
+         1tpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709129638; x=1709734438;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:mail-followup-to:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1709129922; x=1709734722;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tQ6S85ERjoMhiF/axIBWpRKICnSxTdLINo9QSace1cY=;
-        b=bE9854MBTD8QKcjvQRFb0KRFMJXQuuEbJ5eOnYCglp1EYmZcW55StiShq6UjOGWbe+
-         0ezeO7MWZIemq86qgMOK6PvkrtfjEbtSx2W0nfhK31/G1e6vIV1qHA3vj96LJNAIf7JH
-         tYHdgp2qPS7aTXVXaoWY7mS6GzBwGaaZluCgB2wJCR+iDLJcrhhvDdf+kNBQiZ/gBv8V
-         yt0YoLvbjpA0Cnb6omUS2cBVWyGMjyB7WxpiwkIROoRu9srLXnHTeRqoqBPY15+Cb376
-         zcPkauhHykDwhluZ7WqTbLV0aaSei5ybmCFVKPT/WpOLtKa7DDR5ebpP+sCz4LYeP2sj
-         HiMw==
-X-Forwarded-Encrypted: i=1; AJvYcCVz2dCKtqaHt3UiOJLZ9+oEXABdBR5L2qqOKtMlXiWB4AB/bk1VwDDrMrjNXSS/hI+lMavSTzVxbWZWXN9YmQxfkvNFVmoZzderDkU0
-X-Gm-Message-State: AOJu0YyD8W8YGKtQCZy5nLAhLmPBn16X6zvizWUXds+4Xv7a83DspURe
-	m2HFMV4mfHPELgsQfg3seWN7HCBRaYO/9eRYtzT8YN1UEDlwshCLlYWMJv1vsLk=
-X-Google-Smtp-Source: AGHT+IH8cQBqvdw+8dSfOcDh30ptsjj9xOAU729XZvKQLyKuMLauSt8LWlzhDf6WyRemlNHg72doFw==
-X-Received: by 2002:a05:6512:3f20:b0:512:b3df:8a54 with SMTP id y32-20020a0565123f2000b00512b3df8a54mr8298761lfa.4.1709129617719;
-        Wed, 28 Feb 2024 06:13:37 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id jz6-20020a05600c580600b00412b843cd2esm52544wmb.0.2024.02.28.06.13.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 06:13:37 -0800 (PST)
-Date: Wed, 28 Feb 2024 15:13:35 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: =?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>
-Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Steven Price <steven.price@arm.com>,
-	Lionel Landwerlin <lionel.g.landwerlin@linux.intel.com>,
-	Boris Brezillon <boris.brezillon@collabora.com>,
-	Rob Herring <robh@kernel.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
-Subject: Re: [PATCH 0/1] Always record job cycle and timestamp information
-Message-ID: <Zd8_j7VHRWhKdO3B@phenom.ffwll.local>
-Mail-Followup-To: =?iso-8859-1?Q?Adri=E1n?= Larumbe <adrian.larumbe@collabora.com>,
-	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-	Steven Price <steven.price@arm.com>,
-	Lionel Landwerlin <lionel.g.landwerlin@linux.intel.com>,
-	Boris Brezillon <boris.brezillon@collabora.com>,
-	Rob Herring <robh@kernel.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
-References: <20240214121435.3813983-1-adrian.larumbe@collabora.com>
- <ba987da3-b4aa-410c-95ae-434e94793d85@arm.com>
- <CAKMK7uH=QKSyMgsOYCHMwE7iv6jQZRwUMcKq=HiXsBXBCv5BCQ@mail.gmail.com>
- <cfe1870f-16ff-45b4-8966-6bb536d3cae7@linux.intel.com>
- <jvohxwzrgwqmzhwws3tzn53ii6eyexkutwl7pdj5buk6k6wx7c@ucxoohk5e3iw>
- <0c001651-0339-4872-bf4f-d1a3e4f2aa43@linux.intel.com>
- <63vgotmjzngc2u7f6egxxgol6wtepjev5ct43sozkrove7w4co@4tkgqawcscxb>
+        bh=1PMX+ThpO6mgVFASiMk5Ewm/ciwzj+pfXAE1dKwvq0g=;
+        b=M+yC1PE9q1vU8Poo0cl4xQY2HJq9/GXgYOjPdS33wd+4iDmHywWA40ImUu2ZDWjclL
+         DeJ70EO+LaAB2QxZLoOKhFjE+0MhifITbvZg/96KdXS6wYhLFSh4Efp8ELNWgnUX2TEh
+         HQ80URenwf7GcD78zVIBDUg/QCZJnkmwsOiuBygD5+omJHcjbKOHxaTvm3jocgSdVmgn
+         byNHC40RdMbZafcNji9POPVY++CQWntcKBCPPN6NhhS9xHIsn7yIoh9EQiHDQi9lWFG2
+         ErBCGYWazNSr2Lu9VLhyEXzmrgr0P1S1Y3T5qR+DykdtIGt4Mv2Anl3K7VVTi716V0HP
+         Sr9A==
+X-Forwarded-Encrypted: i=1; AJvYcCXZNijAElMHMOHBFisWtGkLsJnYxQPNs/3aNk9uCVc6B8uAZE7VEBPAoP4YXtE/w60j0Oq60aTu8rg4sGuJYO5bE8KAXZUhfVMYFWwXMBNoilR7DuTakfSyF8tSH18mc5Lo
+X-Gm-Message-State: AOJu0YwXtt7QuWSOZeVDkEhN2flN/77kB7jpjt/JxVTrPBq5wxgIFhmT
+	Z1IqAtvw1qh6X4791Pbto4Ow2fqIrxjzsyE4KqjCWKkibkYPCPeH
+X-Google-Smtp-Source: AGHT+IEHjfVaHuEbgnHU7QkhA712qSAqgZ5DPG4JC8/dqFlbjMvB3GmyWUM2Q21L9Yzh7L6K3+w+zg==
+X-Received: by 2002:a7b:c459:0:b0:412:817c:364e with SMTP id l25-20020a7bc459000000b00412817c364emr9244945wmi.36.1709129921466;
+        Wed, 28 Feb 2024 06:18:41 -0800 (PST)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id c9-20020a05600c0ac900b00412a2060d5esm2221635wmr.23.2024.02.28.06.18.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Feb 2024 06:18:41 -0800 (PST)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	catalin.marinas@arm.com,
+	mark.rutland@arm.com,
+	bpf@vger.kernel.org,
+	kpsingh@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	xukuohai@huaweicloud.com
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next v9 0/2] bpf, arm64: use BPF prog pack allocator in BPF JIT
+Date: Wed, 28 Feb 2024 14:18:22 +0000
+Message-ID: <20240228141824.119877-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <63vgotmjzngc2u7f6egxxgol6wtepjev5ct43sozkrove7w4co@4tkgqawcscxb>
-X-Operating-System: Linux phenom 6.6.11-amd64 
 
-On Wed, Feb 21, 2024 at 03:13:41PM +0000, Adrián Larumbe wrote:
-> > On 21.02.2024 14:34, Tvrtko Ursulin wrote:
-> > 
-> > On 21/02/2024 09:40, Adrián Larumbe wrote:
-> > > Hi,
-> > > 
-> > > I just wanted to make sure we're on the same page on this matter. So in
-> > > Panfrost, and I guess in almost every other single driver out there, HW perf
-> > > counters and their uapi interface are orthogonal to fdinfo's reporting on drm
-> > > engine utilisation.
-> > > 
-> > > At the moment it seems like HW perfcounters and the way they're exposed to UM
-> > > are very idiosincratic and any attempt to unify their interface into a common
-> > > set of ioctl's sounds like a gargantuan task I wouldn't like to be faced with.
-> > 
-> > I share the same feeling on this sub-topic.
-> > 
-> > > As for fdinfo, I guess there's more room for coming up with common helpers that
-> > > could handle the toggling of HW support for drm engine calculations, but I'd at
-> > > least have to see how things are being done in let's say, Freedreno or Intel.
-> > 
-> > For Intel we don't need this ability, well at least for pre-GuC platforms.
-> > Stat collection is super cheap and permanently enabled there.
-> > 
-> > But let me copy Umesh because something at the back of my mind is telling me
-> > that perhaps there was something expensive about collecting these stats with
-> > the GuC backend? If so maybe a toggle would be beneficial there.
-> > 
-> > > Right now there's a pressing need to get rid of the debugfs knob for fdinfo's
-> > > drm engine profiling sources in Panfrost, after which I could perhaps draw up an
-> > > RFC for how to generalise this onto other drivers.
-> > 
-> > There is a knob currently meaning fdinfo does not work by default? If that is
-> > so, I would have at least expected someone had submitted a patch for gputop to
-> > handle this toggle. It being kind of a common reference implementation I don't
-> > think it is great if it does not work out of the box.
-> 
-> It does sound like I forgot to document this knob at the time I submited fdinfo
-> support for Panforst.  I'll make a point of mentioning it in a new patch where I
-> drop debugfs support and enable toggling from sysfs instead.
-> 
-> > The toggle as an idea sounds a bit annoying, but if there is no other
-> > realistic way maybe it is not too bad. As long as it is documented in the
-> > drm-usage-stats.rst, doesn't live in debugfs, and has some common plumbing
-> > implemented both on the kernel side and for the aforementioned gputop /
-> > igt_drm_fdinfo / igt_drm_clients. Where and how exactly TBD.
-> 
-> As soon as the new patch is merged, I'll go and reflect the driver uAPI changes
-> in all three of these.
+Changes in V8 => V9:
+V8: https://lore.kernel.org/bpf/20240221145106.105995-1-puranjay12@gmail.com/
+1. Rebased on bpf-next/master
+2. Added Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
-Would be good (and kinda proper per process rules) to implement the code
-in at least e.g. gputop for this. To make sure it actually works for that
-use-case, and there's not an oversight that breaks it all.
--Sima
+Changes in V7 => V8:
+V7: https://lore.kernel.org/bpf/20240125133159.85086-1-puranjay12@gmail.com/
+1. Rebase on bpf-next/master
+2. Fix __text_poke() by removing usage of 'ret' that was never set.
 
-> 
-> > Regards,
-> > 
-> > Tvrtko
-> > 
-> 
-> Cheers,
-> Adrian
-> 
-> > > On 16.02.2024 17:43, Tvrtko Ursulin wrote:
-> > > > 
-> > > > On 16/02/2024 16:57, Daniel Vetter wrote:
-> > > > > On Wed, Feb 14, 2024 at 01:52:05PM +0000, Steven Price wrote:
-> > > > > > Hi Adrián,
-> > > > > > 
-> > > > > > On 14/02/2024 12:14, Adrián Larumbe wrote:
-> > > > > > > A driver user expressed interest in being able to access engine usage stats
-> > > > > > > through fdinfo when debugfs is not built into their kernel. In the current
-> > > > > > > implementation, this wasn't possible, because it was assumed even for
-> > > > > > > inflight jobs enabling the cycle counter and timestamp registers would
-> > > > > > > incur in additional power consumption, so both were kept disabled until
-> > > > > > > toggled through debugfs.
-> > > > > > > 
-> > > > > > > A second read of the TRM made me think otherwise, but this is something
-> > > > > > > that would be best clarified by someone from ARM's side.
-> > > > > > 
-> > > > > > I'm afraid I can't give a definitive answer. This will probably vary
-> > > > > > depending on implementation. The command register enables/disables
-> > > > > > "propagation" of the cycle/timestamp values. This propagation will cost
-> > > > > > some power (gates are getting toggled) but whether that power is
-> > > > > > completely in the noise of the GPU as a whole I can't say.
-> > > > > > 
-> > > > > > The out-of-tree kbase driver only enables the counters for jobs
-> > > > > > explicitly marked (BASE_JD_REQ_PERMON) or due to an explicit connection
-> > > > > > from a profiler.
-> > > > > > 
-> > > > > > I'd be happier moving the debugfs file to sysfs rather than assuming
-> > > > > > that the power consumption is small enough for all platforms.
-> > > > > > 
-> > > > > > Ideally we'd have some sort of kernel interface for a profiler to inform
-> > > > > > the kernel what it is interested in, but I can't immediately see how to
-> > > > > > make that useful across different drivers. kbase's profiling support is
-> > > > > > great with our profiling tools, but there's a very strong connection
-> > > > > > between the two.
-> > > > > 
-> > > > > Yeah I'm not sure whether a magic (worse probably per-driver massively
-> > > > > different) file in sysfs is needed to enable gpu perf monitoring stats in
-> > > > > fdinfo.
-> > > > > 
-> > > > > I get that we do have a bit a gap because the linux perf pmu stuff is
-> > > > > global, and you want per-process, and there's kinda no per-process support
-> > > > > for perf stats for devices. But that's probably the direction we want to
-> > > > > go, not so much fdinfo. At least for hardware performance counters and
-> > > > > things like that.
-> > > > > 
-> > > > > Iirc the i915 pmu support had some integration for per-process support,
-> > > > > you might want to chat with Tvrtko for kernel side and Lionel for more
-> > > > > userspace side. At least if I'm not making a complete mess and my memory
-> > > > > is vaguely related to reality. Adding them both.
-> > > > 
-> > > > Yeah there are two separate things, i915 PMU and i915 Perf/OA.
-> > > > 
-> > > > If my memory serves me right I indeed did have a per-process support for i915
-> > > > PMU implemented as an RFC (or at least a branch somewhere) some years back.
-> > > > IIRC it only exposed the per engine GPU utilisation and did not find it very
-> > > > useful versus the complexity. (I think it at least required maintaining a map
-> > > > of drm clients per task.)
-> > > > 
-> > > > Our more useful profiling is using a custom Perf/OA interface (Observation
-> > > > Architecture) which is possibly similar to kbase mentioned above. Why it is a
-> > > > custom interface is explained in a large comment on top of i915_perf.c. Not
-> > > > sure if all of them still hold but on the overall perf does not sound like the
-> > > > right fit for detailed GPU profiling.
-> > > > 
-> > > > Also PMU drivers are very challenging to get the implementation right, since
-> > > > locking model and atomicity requirements are quite demanding.
-> > > > 
-> > > >  From my point of view, at least it is my initial thinking, if custom per
-> > > > driver solutions are strongly not desired, it could be interesting to look
-> > > > into whether there is enough commonality, in at least concepts, to see if a
-> > > > new DRM level common but extensible API would be doable. Even then it may be
-> > > > tricky to "extract" enough common code to justify it.
-> > > > 
-> > > > Regards,
-> > > > 
-> > > > Tvrtko
-> > > > 
-> > > > > 
-> > > > > Cheers, Sima
-> > > > > 
-> > > > > 
-> > > > > > 
-> > > > > > Steve
-> > > > > > 
-> > > > > > > Adrián Larumbe (1):
-> > > > > > >     drm/panfrost: Always record job cycle and timestamp information
-> > > > > > > 
-> > > > > > >    drivers/gpu/drm/panfrost/Makefile           |  2 --
-> > > > > > >    drivers/gpu/drm/panfrost/panfrost_debugfs.c | 21 ------------------
-> > > > > > >    drivers/gpu/drm/panfrost/panfrost_debugfs.h | 14 ------------
-> > > > > > >    drivers/gpu/drm/panfrost/panfrost_device.h  |  1 -
-> > > > > > >    drivers/gpu/drm/panfrost/panfrost_drv.c     |  5 -----
-> > > > > > >    drivers/gpu/drm/panfrost/panfrost_job.c     | 24 ++++++++-------------
-> > > > > > >    drivers/gpu/drm/panfrost/panfrost_job.h     |  1 -
-> > > > > > >    7 files changed, 9 insertions(+), 59 deletions(-)
-> > > > > > >    delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
-> > > > > > >    delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
-> > > > > > > 
-> > > > > > > 
-> > > > > > > base-commit: 6b1f93ea345947c94bf3a7a6e668a2acfd310918
-> > > > > > 
-> > > > > 
-> > > > > --
-> > > > > Daniel Vetter
-> > > > > Software Engineer, Intel Corporation
-> > > > > http://blog.ffwll.ch
-> 
+Changes in V6 => V7:
+V6: https://lore.kernel.org/all/20240124164917.119997-1-puranjay12@gmail.com/
+1. Rebase on bpf-next/master.
+
+Changes in V5 => V6:
+V5: https://lore.kernel.org/all/20230908144320.2474-1-puranjay12@gmail.com/
+1. Implement a text poke api to reduce code repeatition.
+2. Use flush_icache_range() in place of caches_clean_inval_pou() in the
+   functions that modify code.
+3. Optimize the bpf_jit_free() by not copying the all instructions on
+   the rw image to the ro_image
+
+Changes in V4 => v5:
+1. Remove the patch for making prog pack allocator portable as it will come
+   through the RISCV tree[1].
+
+2. Add a new function aarch64_insn_set() to be used in
+   bpf_arch_text_invalidate() for putting illegal instructions after a
+   program is removed. The earlier implementation of bpf_arch_text_invalidate()
+   was calling aarch64_insn_patch_text_nosync() in a loop and making it slow
+   because each call invalidated the cache.
+
+   Here is test_tag now:
+   [root@ip-172-31-6-176 bpf]# time ./test_tag
+   test_tag: OK (40945 tests)
+
+   real    0m19.695s
+   user    0m1.514s
+   sys     0m17.841s
+
+   test_tag without these patches:
+   [root@ip-172-31-6-176 bpf]# time ./test_tag
+   test_tag: OK (40945 tests)
+
+   real    0m21.487s
+   user    0m1.647s
+   sys     0m19.106s
+
+   test_tag in the previous version was really slow > 2 minutes. see [2]
+
+3. Add cache invalidation in aarch64_insn_copy() so other users can call the
+   function without worrying about the cache. Currently only bpf_arch_text_copy()
+   is using it, but there might be more users in the future.
+
+Chanes in V3 => V4: Changes only in 3rd patch
+1. Fix the I-cache maintenance: Clean the data cache and invalidate the i-Cache
+   only *after* the instructions have been copied to the ROX region.
+
+Chanes in V2 => V3: Changes only in 3rd patch
+1. Set prog = orig_prog; in the failure path of bpf_jit_binary_pack_finalize()
+call.
+2. Add comments explaining the usage of the offsets in the exception table.
+
+Changes in v1 => v2:
+1. Make the naming consistent in the 3rd patch:
+   ro_image and image
+   ro_header and header
+   ro_image_ptr and image_ptr
+2. Use names dst/src in place of addr/opcode in second patch.
+3. Add Acked-by: Song Liu <song@kernel.org> in 1st and 2nd patch.
+
+BPF programs currently consume a page each on ARM64. For systems with many BPF
+programs, this adds significant pressure to instruction TLB. High iTLB pressure
+usually causes slow down for the whole system.
+
+Song Liu introduced the BPF prog pack allocator[3] to mitigate the above issue.
+It packs multiple BPF programs into a single huge page. It is currently only
+enabled for the x86_64 BPF JIT.
+
+This patch series enables the BPF prog pack allocator for the ARM64 BPF JIT.
+
+====================================================
+Performance Analysis of prog pack allocator on ARM64
+====================================================
+
+To test the performance of the BPF prog pack allocator on ARM64, a stresser
+tool[4] was built. This tool loads 8 BPF programs on the system and triggers
+5 of them in an infinite loop by doing system calls.
+
+The runner script starts 20 instances of the above which loads 8*20=160 BPF
+programs on the system, 5*20=100 of which are being constantly triggered.
+
+In the above environment we try to build Python-3.8.4 and try to find different
+iTLB metrics for the compilation done by gcc-12.2.0.
+
+The source code[5] is  configured with the following command:
+/configure --enable-optimizations --with-ensurepip=install
+
+Then the runner script is executed with the following command:
+/run.sh "perf stat -e ITLB_WALK,L1I_TLB,INST_RETIRED,iTLB-load-misses -a make -j32"
+
+This builds Python while 160 BPF programs are loaded and 100 are being constantly
+triggered and measures iTLB related metrics.
+
+The output of the above command is discussed below before and after enabling the
+BPF prog pack allocator.
+
+The tests were run on qemu-system-aarch64 with 32 cpus, 4G memory, -machine virt,
+-cpu host, and -enable-kvm.
+
+Results
+-------
+
+Before enabling prog pack allocator:
+------------------------------------
+
+Performance counter stats for 'system wide':
+
+         333278635      ITLB_WALK
+     6762692976558      L1I_TLB
+    25359571423901      INST_RETIRED
+       15824054789      iTLB-load-misses
+
+     189.029769053 seconds time elapsed
+
+After enabling prog pack allocator:
+-----------------------------------
+
+Performance counter stats for 'system wide':
+
+         190333544      ITLB_WALK
+     6712712386528      L1I_TLB
+    25278233304411      INST_RETIRED
+        5716757866      iTLB-load-misses
+
+     185.392650561 seconds time elapsed
+
+Improvements in metrics
+-----------------------
+
+Compilation time                             ---> 1.92% faster
+iTLB-load-misses/Sec (Less is better)        ---> 63.16% decrease
+ITLB_WALK/1000 INST_RETIRED (Less is better) ---> 42.71% decrease
+ITLB_Walk/L1I_TLB (Less is better)           ---> 42.47% decrease
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git/commit/?h=for-next&id=20e490adea279d49d57b800475938f5b67926d98
+[2] https://lore.kernel.org/all/CANk7y0gcP3dF2mESLp5JN1+9iDfgtiWRFGqLkCgZD6wby1kQOw@mail.gmail.com/
+[3] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+[4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+[5] https://www.python.org/ftp/python/3.8.4/Python-3.8.4.tgz
+
+Puranjay Mohan (2):
+  arm64: patching: implement text_poke API
+  bpf, arm64: use bpf_prog_pack for memory management
+
+ arch/arm64/include/asm/patching.h |   2 +
+ arch/arm64/kernel/patching.c      |  75 ++++++++++++++++
+ arch/arm64/net/bpf_jit_comp.c     | 139 ++++++++++++++++++++++++------
+ 3 files changed, 192 insertions(+), 24 deletions(-)
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.42.0
+
 
