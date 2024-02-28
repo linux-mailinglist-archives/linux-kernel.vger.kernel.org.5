@@ -1,257 +1,134 @@
-Return-Path: <linux-kernel+bounces-84830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC04D86AC27
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:25:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA11986AC2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:28:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E00671C241FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:25:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBAA21C2466E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB705810F;
-	Wed, 28 Feb 2024 10:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6E3D5A105;
+	Wed, 28 Feb 2024 10:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qVdjMgNp"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2t9Bhv5+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Aozq2qcW"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FDD5733F;
-	Wed, 28 Feb 2024 10:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC1933CC2;
+	Wed, 28 Feb 2024 10:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709115937; cv=none; b=lt2pDU5NFZ44a3WlEqee/OWgi56ceCXICSvVeUGhiiCf/J1gMuC4PH07KHkK81vDOWw7fR2pTHqLTj6TgnGZflB8tophiXFnCj8i+Rv1NKVX0y06UdajyL2FfFZrGzBluOPRgl/5YQZidkwRkUxSUAx1rPUbR7htO8lrvA/5cME=
+	t=1709116097; cv=none; b=INqGR88gL1Sgt1jR2MAu3n5x+tcOSzqvYpkF1B4hN7X++q7X0TCX3VXBOweiZ7B025KXaK/gySb0sUzaCmHJM7/8pA8nUSDoZOqZJ4IX2O3cF503i4JTaeoQQzkt9WMymKNAcAruMA9jKRV52CDBq5DnZ9liGSmbG5UmHpOBaj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709115937; c=relaxed/simple;
-	bh=E8R79vstTtZYjkIXyTYbyYkKBTC6894FJU5MK2LqR20=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=vBwYd0m2X9iswRt7OJe3U1nwQOxB63y0ae/c/KyWQbqCAqFS0SwkIbbjRo986DRMT3PChRmxJXeCRbSxwSX5hTQd4xz78zDibMJvblrKKaVgw9NPne7Z8X4azOfd19y+sHUfkZwLjWSE2a1kWZieUB1VH4GsllN3842Y5CGtp5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=qVdjMgNp; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709115933;
-	bh=E8R79vstTtZYjkIXyTYbyYkKBTC6894FJU5MK2LqR20=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qVdjMgNpoJSKYoUGzNNif7MwqOIvRhO+7Z512Q1OpHtWr70VAn2rL29LyFCx5lcOu
-	 2A+3rlzaNSw1g91MWg9EOwDjy0uIXRvFQe8lG+ZfY76MTDsfoXPLs73Ne1Se/vBUbv
-	 VpOLc1vtuTvKRGQtbKDRuKGyfxcvr8ufYw5nC+/8DZYLodTszxLHzRryEYxFhssgrw
-	 oAphV7git0xKym3Y/vQWhfh+Yme1IfUOBmtbU7oTWRHVm9YqOMrnEIy7veaCQATzW8
-	 TjkxbCIEE9MER6XEM87oFe7lh0ZSRcN6OZPk/sUiDQ0VVSmBJM5WF1FdL6uC3PR8gA
-	 jemLx0f+CRKLA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 30B7E3780C6C;
-	Wed, 28 Feb 2024 10:25:32 +0000 (UTC)
-Message-ID: <bb86b986-ecd7-416a-9036-082a3cff2176@collabora.com>
-Date: Wed, 28 Feb 2024 11:25:31 +0100
+	s=arc-20240116; t=1709116097; c=relaxed/simple;
+	bh=c7EozbE5lS8REnkr5wltySbUv2bQiI1Sc8Mhu0Q684I=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=MsZYdKeym5UYf3MleOoTRqqZSVLLuPeQBQiRJzbdQ/B2vzsS+GuFr34niDTdZ/U5XETgaIZyq8ebpiROp4wl7iN6RBo6UwAABmG48zWIx+98AGR+rFwWF5DTHDud2Uz2bnwD7xHuCjkKPc0aiHD5w8n5eI0C+3qJEvVRI4jsaZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2t9Bhv5+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Aozq2qcW; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 28 Feb 2024 10:28:12 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709116093;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZJ/ARzW2iQnxlfHDRNbOFL7Jz4fHUm/wi9/mmrRzFyo=;
+	b=2t9Bhv5+8ZrR3QtyrTLsPyZgRmeFm2cdRDtC5NbtlkGaVinAFiL4xAi663iYLWAunMPUaO
+	koC2jtRTWWqvEQyUg0I6kVbB1Um2+fIWcej+Kf5u+rF8qzv/6EdqcyuE1sp52mz/UVzCyJ
+	hVJ7rCa1Pl4efZbMnLiCVhdIltxFHuYg4texpW16s544hCTDr+/cy4/FbeYRHEPlt+JqbL
+	83PZmqycmxsT2HUt3HQG5ArsNCWG33TEWoNbua+Ak2nvh6UnJainhFFYh8H3X2bcTS9hke
+	5xfpa04DSSiceAj4eWkdQDILKIUDZk4u2mr6az4sGg0BsSYa4zofCoboHmDjJw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709116093;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZJ/ARzW2iQnxlfHDRNbOFL7Jz4fHUm/wi9/mmrRzFyo=;
+	b=Aozq2qcWSWl84qjcO632WVDXdrCDI0iDPxn5J9gk/wCSQ/tSI2YkCK/YZlXi6neLJvJMf2
+	zWjwX/dVYanK66Dw==
+From: "tip-bot2 for Jiri Bohac" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/e820: Don't reserve SETUP_RNG_SEED in e820
+Cc: Jiri Bohac <jbohac@suse.cz>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+  <stable@kernel.org>, x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <ZbmOjKnARGiaYBd5@dwarf.suse.cz>
+References: <ZbmOjKnARGiaYBd5@dwarf.suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/18] ASoC: dt-bindings: mediatek,mt8365-afe: Add audio
- afe document
-Content-Language: en-US
-To: Alexandre Mergnat <amergnat@baylibre.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>, Lee Jones <lee@kernel.org>,
- Flora Fu <flora.fu@mediatek.com>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <20240226-audio-i350-v1-1-4fa1cea1667f@baylibre.com>
- <ce5f71a9-1b5f-4724-89db-dae2f64e8008@linaro.org>
- <eeb3329b-0558-4237-8343-4e11f65a6a35@baylibre.com>
- <bd4bf6ae-350e-4ee6-a924-7dd31b2c6034@linaro.org>
- <66e527af-0253-4565-9822-04ed84e5817c@baylibre.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <66e527af-0253-4565-9822-04ed84e5817c@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Message-ID: <170911609255.398.9253992823992514888.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Il 28/02/24 10:57, Alexandre Mergnat ha scritto:
-> I think I got it.
-> 
-> - mediatek,i2s-shared-clock: will be remove from DT
-> - mediatek,dmic-iir-on: will be remove from DT
-> - mediatek,dmic-irr-mode: will be remove from DT
-> - mediatek,dmic-two-wire-mode: rephrase description needed
-> 
-> I've did abstraction (despite me) that IIR settings are runtime config because the 
-> driver implement its usage like a one-time-setup -_-'
-> 
+The following commit has been merged into the x86/urgent branch of tip:
 
-Yes but just one more thing I just noticed: `mediatek,dmic-two-wire-mode` - can we
-please rename this to `mediatek,dmic-mode` ?
+Commit-ID:     9e1daa3bfcccf79ee368061d807ff541d6e2d909
+Gitweb:        https://git.kernel.org/tip/9e1daa3bfcccf79ee368061d807ff541d6e2d909
+Author:        Jiri Bohac <jbohac@suse.cz>
+AuthorDate:    Wed, 31 Jan 2024 01:04:28 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Wed, 28 Feb 2024 11:10:31 +01:00
 
-That'd be for consistency check mt6359.yaml and mt6358.txt
+x86/e820: Don't reserve SETUP_RNG_SEED in e820
 
-   mediatek,dmic-mode:
-     $ref: /schemas/types.yaml#/definitions/uint32
-     description: |
-       Indicates how many data pins are used to transmit two channels of PDM
-       signal. 0 means two wires, 1 means one wire. Default value is 0.
-     enum:
-       - 0 # one wire
-       - 1 # two wires
+SETUP_RNG_SEED in setup_data is supplied by kexec and should
+not be reserved in the e820 map.
 
-Cheers,
-Angelo
+Doing so reserves 16 bytes of RAM when booting with kexec.
+(16 bytes because data->len is zeroed by parse_setup_data so only
+sizeof(setup_data) is reserved.)
 
+When kexec is used repeatedly, each boot adds two entries in the
+kexec-provided e820 map as the 16-byte range splits a larger
+range of usable memory. Eventually all of the 128 available entries
+get used up. The next split will result in losing usable memory
+as the new entries cannot be added to the e820 map.
 
+Fixes: 68b8e9713c8e ("x86/setup: Use rng seeds from setup_data")
+Signed-off-by: Jiri Bohac <jbohac@suse.cz>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Cc: <stable@kernel.org>
+Link: https://lore.kernel.org/r/ZbmOjKnARGiaYBd5@dwarf.suse.cz
+---
+ arch/x86/kernel/e820.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-> Thanks for the explanations, that help.
-> 
-> Regards,
-> Alexandre
-> 
-> On 28/02/2024 08:28, Krzysztof Kozlowski wrote:
->> On 27/02/2024 16:18, Alexandre Mergnat wrote:
->>>>
->>>>> +    type: boolean
->>>>> +
->>>>> +  mediatek,dmic-iir-on:
->>>>> +    description:
->>>>> +      Boolean which specifies whether the DMIC IIR is enabled.
->>>>> +      If this property is not present the IIR is disabled.
->>>>
->>>> "is enabled" or "enable it"?
->>>>
->>>> You described the desired Linux feature or behavior, not the actual
->>>> hardware. The bindings are about the latter, so instead you need to
->>>> rephrase the property and its description to match actual hardware
->>>> capabilities/features/configuration etc.
->>>
->>> I will rephrase:
->>>
->>> True to enable the Infinite Impulse Response (IIR) filter
->>> on the digital microphone inputs.
->>
->> I still don't know why this is DT-specific. You still tell driver what
->> to do...
->>
->>>
->>>>
->>>>> +    type: boolean
->>>>> +
->>>>> +  mediatek,dmic-irr-mode:
->>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>>> +    description:
->>>>> +      Selects stop band of IIR DC-removal filter.
->>>>> +      0 = Software programmable custom coeff loaded by the driver.
->>>>
->>>> Bindings are for hardware, not drivers. Why is this a property of board DTS?
->>>
->>> Actually this is a hardware feature. Mode 1 t 5 are predefined filters.
->>> Mode 0, the HW will read some "coef filter registers" to setup the
->>> custom filter. the "coef filter regs" are written by the driver.
->>> Currently the coef values are hardcoded in the driver.
->>
->> You don't get the point. Just because you choose some mode it does not
->> mean is hardware feature for DT. Sampling frequency done by hardware is
->> also "hardware feature", but do you put it to DT? No.
->>
->> Explain why this is board-specific, not runtime configuration.
->>
->>>
->>>>
->>>>> +      1 = 5Hz if 48KHz mode.
->>>>> +      2 = 10Hz if 48KHz mode.
->>>>> +      3 = 25Hz if 48KHz mode.
->>>>> +      4 = 50Hz if 48KHz mode.
->>>>> +      5 = 65Hz if 48KHz mode.
->>>>
->>>> Use proper unit suffixes - hz.
->>>>
->>>>
->>>>> +    enum:
->>>>> +      - 0
->>>>> +      - 1
->>>>> +      - 2
->>>>> +      - 3
->>>>> +      - 4
->>>>> +      - 5
->>>>> +
->>>>> +  mediatek,dmic-two-wire-mode:
->>>>> +    description:
->>>>> +      Boolean which turns on digital microphone for two wire mode.
->>>>> +      If this property is not present the two wire mode is disabled.
->>>>
->>>> This looks like hardware property, but the naming looks like SW. Again
->>>> you instruct what driver should do. Standard disclaimer:
->>>>
->>>> You described the desired Linux feature or behavior, not the actual
->>>> hardware. The bindings are about the latter, so instead you need to
->>>> rephrase the property and its description to match actual hardware
->>>> capabilities/features/configuration etc.
->>>
->>> Actually this is a hardware feature. This is ALL I have to describe the
->>> HW behavior from the datasheet:
->>> "
->>> bit name: ul_dmic_two_wire_ctl
->>> Turns on digital microphone for two wire mode.
->>> 0: Turn off
->>> 1: Turn on
->>
->> That's rather suggestion it is not a description of hardware but you
->> want driver to do something...
->>
->>> "
->>>
->>> On the board schematic, SoC and DMIC and linked by 3 pins:
->>> - clk
->>> - data0
->>> - data1
->>>
->>> IMHO, "two-wire-mode" means the HW use 2 pins for data, and the SoC must
->>> be aware of that by reading the register value written by the driver,
->>> using the value found in the DTS.
->>
->> So this depends on type of connection of DMIC? Then rephrase description
->> property like this.
->>
->>>
->>> I don't get why you think it wouldn't be hardware behavior.
->>
->> Because telling what to write to the registers which is typical sign of
->> people stuffing to DT whatever they need to configure the hardware.
->>
->>>
->>> Rephrase description:
->>> "True to enable the two wire mode of the digital microphone"
->>> Is it better ?
->>
->> No, because again you describe some sort of mode. If you insist on such
->> description, then my answer is: it's runtime, so not suitable for DT.
->> Instead describe what is the hardware problem/configuration, e.g. "DMIC
->> is connected with only CLK and DATA0, without third pin" etc.
->>
->>>
->>> About the property name, "mediatek,dmic-two-wire-ctl" sound better for you ?
->>
->> To sound more like a register less like physical characteristic of the
->> board? No. The name can stay, I don't have better ideas.
->>
->>
->> Best regards,
->> Krzysztof
->>
-> 
-
+diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+index fb8cf95..b66f540 100644
+--- a/arch/x86/kernel/e820.c
++++ b/arch/x86/kernel/e820.c
+@@ -1017,10 +1017,12 @@ void __init e820__reserve_setup_data(void)
+ 		e820__range_update(pa_data, sizeof(*data)+data->len, E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
+ 
+ 		/*
+-		 * SETUP_EFI and SETUP_IMA are supplied by kexec and do not need
+-		 * to be reserved.
++		 * SETUP_EFI, SETUP_IMA and SETUP_RNG_SEED are supplied by
++		 * kexec and do not need to be reserved.
+ 		 */
+-		if (data->type != SETUP_EFI && data->type != SETUP_IMA)
++		if (data->type != SETUP_EFI &&
++		    data->type != SETUP_IMA &&
++		    data->type != SETUP_RNG_SEED)
+ 			e820__range_update_kexec(pa_data,
+ 						 sizeof(*data) + data->len,
+ 						 E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
 
