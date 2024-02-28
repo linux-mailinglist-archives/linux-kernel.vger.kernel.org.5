@@ -1,145 +1,149 @@
-Return-Path: <linux-kernel+bounces-84763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9255186AB30
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:31:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E08C86AB5B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:34:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55F5528736F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:31:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61B061C24DB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1A332C89;
-	Wed, 28 Feb 2024 09:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6251C36AEE;
+	Wed, 28 Feb 2024 09:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FxkUMgHo"
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="TFno7vEA"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7202D606
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:31:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3B936B00
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112681; cv=none; b=gFR8+1M+L9AQYJk8aetYlI/JGGp5TBfDk71JTidBuOQYEKk09SGm1X2VNGDlRBODQlXLIY9mQINC7OhJHgxaqVuIYQxU0HK3LTbOL1GXE+NKlau98ANV5VHKRzQ3NHAP4TMLFGTIWbyZZrGoCO4Ipxa2Bpb2vWFNckc5SomZUwU=
+	t=1709112772; cv=none; b=ROzHWSpmVcxdVMLrlx+jhBh+kJy5XQ5VuOV1/rf7s7YRT9Bw+k9UchCuCohKZSfJcEOt9ntaG4Sk5gdoWjP+K3IBIM/r7UpwLC92qnW7hn5IPlkSG6yNg4gUKkPIfaMgCslcw58Vi7KgwNEHUhvKhJ01lgv6pebpGqarlprE/6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112681; c=relaxed/simple;
-	bh=ggsQyXDpBQNykNIgrvksbxqVHHrQQxhUfF3Xmc//E30=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Bk7sFYddANxaMKZ+6wen+JdIaAkRkQHh/1/K4go5siT00adrRwauMg1uCTtXp4sP/MY2SSM88D10z++7pLDyjbKwTt/YabuwReK0qTNG/Kq3E1x88jgpMZRcyR2K7XZY8UFdjsFl3WNksDTVOPtToaJIxSVdVT0pIzJjhfzB9+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FxkUMgHo; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a315427f-fe39-4714-a21c-1c104460d3fb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709112676;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kmyL/BrWdx5wm+hWvNvDksX7lVp1tOfJaEY5Dk9iJ0w=;
-	b=FxkUMgHoZ8vP94baYaMWYAKTYOvHCcfPNQOLWsscKf6JV6oUu2rmY/Gae2+2Ktpv5sOrxl
-	aKR1CyClv8PF3fBMdO9dbk249uKOv8/dOeWCZMXP6LuJTWCyD6nPQwI24LshbKBxrjvRPf
-	w9mpzeiZd30A7jC7MU1uyfZboJ8N1OY=
-Date: Wed, 28 Feb 2024 17:31:06 +0800
+	s=arc-20240116; t=1709112772; c=relaxed/simple;
+	bh=uFslmsiSq1HBTE5LNPd44uZu/F0twT8BTQkMgaIxbMQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mzSgX58fTsv3VjqQpHCutOaYTPlNJO9aUxBfwwJU2ohL4Yzi8b8a6Fr02c6vwai593UhUi7fIHDoUsv8Uq3O8Cpp7y2MpbLVUwMhsQXGZHfnm/U4z9GznkZLYmtsMyasC3CSzsui8vG/LTLxZMVtA5YmzgGO8+0XNT9mK2SLuIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=TFno7vEA; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33d6f26ff33so3621849f8f.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:32:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709112768; x=1709717568; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mQNKJ78MfZyuiu4j+k295fZB+jgGmMFXgbaeQC8Zu04=;
+        b=TFno7vEAtJvk8A1beRQwOvIZw3g/vzS8dk6zRjuy336HMS4eFvMMasQGb3bHpFZ+d9
+         xzmRK/vLGm1lF86v1HAm0L7DioQbgSJKN7JEbS2AMj+eZGvo6NNOzEDpyah4lSzl9xzJ
+         AYLV+Bmnj8I+Yn76qIgwQdsCL/iHrBrpP13cGK/GGMscP8JgtalnRHulvoW6R0K4/Bfz
+         E5k195u0KWrxOrwJLNOzjqCio/SaEumX5jSlPG5+Ur74FogDy/178a6ei5dy/Ck4555f
+         zLByFZF3soq+ophlRxY5yvvEEHCqyq/de/3rpbIUOWiUHw3kcZ5xbkaQ0EpdfwheQj8P
+         UtCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709112768; x=1709717568;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mQNKJ78MfZyuiu4j+k295fZB+jgGmMFXgbaeQC8Zu04=;
+        b=Wz1wx7gENHNypbrfnLV477Sa0MSyRzKpVdLb5HgMBZAYz73rAZ8nToD92fVEfrlcBd
+         0jHtvaxzkczragJubsMzYAUagFFfQuMzu1t74WZNIovwh7orqZknU1Uj3DIHdaKZ+wD/
+         UMgWugEAOAvrHnrmkiNOzXHLknaKKmn3oIqB7LF3EQq+nuFRWmB5YYjVnbzrI5e1MIB9
+         pI5GPSqhvllCNEOWIxOqgjulmEAB770FImAXaheKaMkdHc1aKMaEkvTHBv2XSznkkLA5
+         n3J3mrFydh2iVjNsC5tQ3EHCTfYptYX96bHU9bMtmHoJQFT9NzeOckclu0GylCdwgHpw
+         +BOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXiztOlwM6hlR8g8oiGp7OisVZiMeU5FW5Fs2xNt9psERosYqRe+ijd7WiwuaTrRjEIp+v/TwCW+CkKw5C2/kguzRJXyJyzglEBQtuX
+X-Gm-Message-State: AOJu0Yxz2v6+6ZwNbYJo3V8SLEOZ6g+fGbKBGmLheECDm7LhwNpEIDI/
+	oi2hio5paY2HN56/hnhcMeCfPdxr/ry7t/FvgbO9a+ck7nLxoGtLRDN11DywHvw=
+X-Google-Smtp-Source: AGHT+IEWEqNQ9d2tqbJP6sC861PImJRIY/oH0R9V9AxQfO/Gs6YqWMFo4jl9jdQrcYf5WDRE4XxY0A==
+X-Received: by 2002:a5d:4046:0:b0:33d:8cc0:4827 with SMTP id w6-20020a5d4046000000b0033d8cc04827mr8411713wrp.45.1709112767852;
+        Wed, 28 Feb 2024 01:32:47 -0800 (PST)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id az14-20020adfe18e000000b0033d2541b3e1sm14587268wrb.72.2024.02.28.01.32.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 01:32:47 -0800 (PST)
+Date: Wed, 28 Feb 2024 10:32:44 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: prabhav kumar <pvkumar5749404@gmail.com>
+Cc: shuah@kernel.org, netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	petrm@nvidia.com, idosch@nvidia.com
+Subject: Re: [PATCH net-next] selftests: net: Correct couple of spelling
+ mistakes
+Message-ID: <Zd79vEsSp7wlJWQy@nanopsycho>
+References: <20240227175513.8703-1-pvkumar5749404@gmail.com>
+ <Zd7lqr8Cz4XrNoI8@nanopsycho>
+ <CAH8oh8U1KLxY95DQW9duU30VC5hdQd1YKs+8USuuz0k4JWtBSQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] mm/slab: Fix a kmemleak in kmem_cache_destroy()
-Content-Language: en-US
-To: Xiaolei Wang <xiaolei.wang@windriver.com>, cl@linux.com,
- penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
- akpm@linux-foundation.org, vbabka@suse.cz, roman.gushchin@linux.dev,
- 42.hyeyoo@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240228030408.2740647-1-xiaolei.wang@windriver.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20240228030408.2740647-1-xiaolei.wang@windriver.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAH8oh8U1KLxY95DQW9duU30VC5hdQd1YKs+8USuuz0k4JWtBSQ@mail.gmail.com>
 
-On 2024/2/28 11:04, Xiaolei Wang wrote:
-> For earlier kmem cache creation, slab_sysfs_init() has not been called.
-> Consequently, kmem_cache_destroy() cannot utilize kobj_type::release to
-> release the kmem_cache structure. Therefore, tweak kmem_cache_release()
-> to use slab_kmem_cache_release() for releasing kmem_cache when slab_state
-> isn't FULL. This will fixes the memory leaks like following:
-> 
-> unreferenced object 0xffff0000c2d87080 (size 128):
->    comm "swapper/0", pid 1, jiffies 4294893428
->    hex dump (first 32 bytes):
->      00 00 00 00 ad 4e ad de ff ff ff ff 6b 6b 6b 6b .....N......kkkk
->      ff ff ff ff ff ff ff ff b8 ab 48 89 00 80 ff ff.....H.....
->    backtrace (crc 8819d0f6):
->      [<ffff80008317a298>] kmemleak_alloc+0xb0/0xc4
->      [<ffff8000807e553c>] kmem_cache_alloc_node+0x288/0x3a8
->      [<ffff8000807e95f0>] __kmem_cache_create+0x1e4/0x64c
->      [<ffff8000807216bc>] kmem_cache_create_usercopy+0x1c4/0x2cc
->      [<ffff8000807217e0>] kmem_cache_create+0x1c/0x28
->      [<ffff8000819f6278>] arm_v7s_alloc_pgtable+0x1c0/0x6d4
->      [<ffff8000819f53a0>] alloc_io_pgtable_ops+0xe8/0x2d0
->      [<ffff800084b2d2c4>] arm_v7s_do_selftests+0xe0/0x73c
->      [<ffff800080016b68>] do_one_initcall+0x11c/0x7ac
->      [<ffff800084a71ddc>] kernel_init_freeable+0x53c/0xbb8
->      [<ffff8000831728d8>] kernel_init+0x24/0x144
->      [<ffff800080018e98>] ret_from_fork+0x10/0x20
-> 
-> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+Prabhav, I'm not sure what you are trying to do, but you have to
+re-submit the patch, preferably using git-send-email or another email
+client you use.
 
-Looks good to me. And I notice the PARTIAL_NODE state of slab_state is
-also useless since SLAB removed.
 
-Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
-
-Thanks.
-
-> ---
->  mm/slab_common.c | 8 ++++++--
->  mm/slub.c        | 6 ++----
->  2 files changed, 8 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 238293b1dbe1..b6b35bcdd196 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -404,8 +404,12 @@ EXPORT_SYMBOL(kmem_cache_create);
->   */
->  static void kmem_cache_release(struct kmem_cache *s)
->  {
-> -	sysfs_slab_unlink(s);
-> -	sysfs_slab_release(s);
-> +	if (slab_state >= FULL) {
-> +		sysfs_slab_unlink(s);
-> +		sysfs_slab_release(s);
-> +	} else {
-> +		slab_kmem_cache_release(s);
-> +	}
->  }
->  #else
->  static void kmem_cache_release(struct kmem_cache *s)
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 2ef88bbf56a3..9ba59d064b6d 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -6792,14 +6792,12 @@ static int sysfs_slab_add(struct kmem_cache *s)
->  
->  void sysfs_slab_unlink(struct kmem_cache *s)
->  {
-> -	if (slab_state >= FULL)
-> -		kobject_del(&s->kobj);
-> +	kobject_del(&s->kobj);
->  }
->  
->  void sysfs_slab_release(struct kmem_cache *s)
->  {
-> -	if (slab_state >= FULL)
-> -		kobject_put(&s->kobj);
-> +	kobject_put(&s->kobj);
->  }
->  
->  /*
+Wed, Feb 28, 2024 at 09:42:01AM CET, pvkumar5749404@gmail.com wrote:
+>On Wed, Feb 28, 2024 at 1:20 PM Jiri Pirko <jiri@resnulli.us> wrote:
+>>
+>> Please fix the patch subject to include appropriate prefixes and
+>> rephrase a bit like this:
+>>
+>> Subject: [PATCH net-next] selftests: net: Correct couple of spelling mistakes
+>>
+>> pw-bot: cr
+>>
+>>
+>> Tue, Feb 27, 2024 at 06:55:13PM CET, pvkumar5749404@gmail.com wrote:
+>> >Changes :
+>> >       - "excercise" is corrected to "exercise" in drivers/net/mlxsw/spectrum-2/tc_flower.sh
+>> >       - "mutliple" is corrected to "multiple" in drivers/net/netdevsim/ethtool-fec.sh
+>> >
+>> >Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+>> >---
+>> > .../testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh | 2 +-
+>> > tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh    | 2 +-
+>> > 2 files changed, 2 insertions(+), 2 deletions(-)
+>> >
+>> >diff --git a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
+>> >index 616d3581419c..31252bc8775e 100755
+>> >--- a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
+>> >+++ b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
+>> >@@ -869,7 +869,7 @@ bloom_simple_test()
+>> > bloom_complex_test()
+>> > {
+>> >       # Bloom filter index computation is affected from region ID, eRP
+>> >-      # ID and from the region key size. In order to excercise those parts
+>> >+      # ID and from the region key size. In order to exercise those parts
+>> >       # of the Bloom filter code, use a series of regions, each with a
+>> >       # different key size and send packet that should hit all of them.
+>> >       local index
+>> >diff --git a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
+>> >index 7d7829f57550..6c52ce1b0450 100755
+>> >--- a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
+>> >+++ b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
+>> >@@ -49,7 +49,7 @@ for o in llrs rs; do
+>> > Active FEC encoding: ${o^^}"
+>> > done
+>> >
+>> >-# Test mutliple bits
+>> >+# Test multiple bits
+>> > $ETHTOOL --set-fec $NSIM_NETDEV encoding rs llrs
+>> > check $?
+>> > s=$($ETHTOOL --show-fec $NSIM_NETDEV | tail -2)
+>> >--
+>> >2.34.1
+>> >
+>> >
 
