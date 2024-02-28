@@ -1,59 +1,71 @@
-Return-Path: <linux-kernel+bounces-84540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84539-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDAAE86A806
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:33:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA41B86A804
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:33:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3ABD288B38
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:33:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 18D6C1C23417
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:33:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB70321353;
-	Wed, 28 Feb 2024 05:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A11C21101;
+	Wed, 28 Feb 2024 05:33:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HZL1DB1C"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kvNJfRZz"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81791EEFC;
-	Wed, 28 Feb 2024 05:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B964A1A
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709098418; cv=none; b=Fm67iPeZnAY7o1/ncRIbcFHJXHzkLASUPuLU0t1N/HLre0KwVFi03dM4usVWAU24aecLM8+vF0aPrFKPmnE4KacytpAxwhckN5l4WfBW5WonEzll6P3c1cHiUJPz6LdxG6KiwNKPc/YsteRdyY+g82QeLePkJMod2swLz3W1kgc=
+	t=1709098387; cv=none; b=gYLe1ypKO2wXBbkT6siYLZQTYrpM8N+QEmX2j78I8LScVUc8SqW+TLSBeh621hVQwJH5SOYPGjSTW4uyaasTO2HXtwQhHYcId5LYQ+uQvEj7evIwf/H/OYYPFm/EKlRbfyQzzrpoydY1S7KaUMHB3rme75CtJFud4bgGdJ3KXGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709098418; c=relaxed/simple;
-	bh=SG51VYH9JEUGEW6hnzOW/IFg0lpQP3pfUJCNA/WYd58=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oB+hsXFT8hj/DE11RCDFihAjSBSmE8B4CpOV6GD//kdWwsCVOB6adbbZ8KK3GOop9qu0mLWvuKKLvHSs9FUodVexLxQ08/R2zUarL2a4UTMj8+u8qq5pHlVGGLUTyT3dEoKxO0Xok4fBTBKwpcO77DkdYF9ZLkVE3I1yeUi6oZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HZL1DB1C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0067AC433F1;
-	Wed, 28 Feb 2024 05:33:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709098417;
-	bh=SG51VYH9JEUGEW6hnzOW/IFg0lpQP3pfUJCNA/WYd58=;
-	h=From:To:Cc:Subject:Date:From;
-	b=HZL1DB1CnQH4Q3Vc5pionsBT0KLxSYcuTOGSZA6/0MHpfcQRvefBX6K9FMqDg2SVC
-	 MBpJjwuoTu0DK9Owt6CghzhCd2SDrFwlLG+Hbql/pnhQIC7vCW5Xg1wRd5Q75TpYrb
-	 giCUPqCLpKN4DNEHQNKfIVbSyMTx8eQh2feiQGAeo9ih9rxYmQdJwo3dCsESjqjRMS
-	 9s7ecG2rUzj6cjdkLdJmN+yNnHk6u7/kAxdI++c8q7E6/Xneq7vcrSzfhGREc+DFL0
-	 fA3CYcUB1ylQfQgCuguezZKgDb0Yim55orJ8KqREnGfYzB7bZ6QU9v37CkYQfViVSn
-	 W+EDNzx3d8nVQ==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH v2] perf lock contention: Account contending locks too
-Date: Tue, 27 Feb 2024 21:33:35 -0800
-Message-ID: <20240228053335.312776-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+	s=arc-20240116; t=1709098387; c=relaxed/simple;
+	bh=z/BnArCvPNt7MT9ga2Arel3xPYZRjie7hVWYkQTMgwg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WfHq+h+dfzz14VdO6Ufb0YAQZatp7xBbgQsCG1xanRZTPdP9EHhwvNqA/8XrohoePR3lpeGPYmMpF3VOq3o4v0jVYr1JSy40ZfDZzA/fDKfyJ3fEA258xuA/GlCrBQtmuiCsl6w7FajF+UzeQaJJiPz2E2SF3pFspvgTRlSNKDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kvNJfRZz; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709098386; x=1740634386;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=z/BnArCvPNt7MT9ga2Arel3xPYZRjie7hVWYkQTMgwg=;
+  b=kvNJfRZzOwIsiOZyBz3REuU8cYSvf7Kz+DMW+DtB3x+g3c8ND6zzvA8f
+   MlQ2BcMs5xlo7z/IghOYWnhZYfLqqJ7wIjLYa8o7jHGVHL1vnNo5ntSh9
+   qAT243bael3B1hAfrgfxKzHAYYlNwVfUVw7G+FPqNJm7kfaSm2u7cRaaN
+   JpqLQDlomrpllkeVdF2PSc7Q3rDhmcjPC5KtQcVfMdeB1lxPALKvDg/bt
+   oVl4viR8SIRUeF5HezdRkOlqq550BlQeqbm60tH/xmYUYFWqJiSeszWxS
+   DXqsoybkz6mJmYGAnWkPeVfaQ5Jas7gDARfYKO8j+/GAI6Ozsg032NXSJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="20935832"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="20935832"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 21:33:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="12031899"
+Received: from wufei-optiplex-7090.sh.intel.com ([10.239.158.51])
+  by orviesa003.jf.intel.com with ESMTP; 27 Feb 2024 21:33:03 -0800
+From: Fei Wu <fei2.wu@intel.com>
+To: atishp@atishpatra.org,
+	anup@brainfault.org,
+	paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alex@ghiti.fr>
+Cc: Fei Wu <fei2.wu@intel.com>
+Subject: [PATCH v2] perf: RISCV: Fix panic on pmu overflow handler
+Date: Wed, 28 Feb 2024 13:38:22 +0800
+Message-Id: <20240228053822.2610915-1-fei2.wu@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,245 +74,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently it accounts the contention using delta between timestamps in
-lock:contention_begin and lock:contention_end tracepoints.  But it means
-the lock should see the both events during the monitoring period.
+(1 << idx) of int is not desired when setting bits in unsigned long
+overflowed_ctrs, use BIT() instead. This panic happens when running
+'perf record -e branches' on sophgo sg2042.
 
-Actually there are 4 cases that happen with the monitoring:
+[  273.311852] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000098
+[  273.320851] Oops [#1]
+[  273.323179] Modules linked in:
+[  273.326303] CPU: 0 PID: 1475 Comm: perf Not tainted 6.6.0-rc3+ #9
+[  273.332521] Hardware name: Sophgo Mango (DT)
+[  273.336878] epc : riscv_pmu_ctr_get_width_mask+0x8/0x62
+[  273.342291]  ra : pmu_sbi_ovf_handler+0x2e0/0x34e
+[  273.347091] epc : ffffffff80aecd98 ra : ffffffff80aee056 sp : fffffff6e36928b0
+[  273.354454]  gp : ffffffff821f82d0 tp : ffffffd90c353200 t0 : 0000002ade4f9978
+[  273.361815]  t1 : 0000000000504d55 t2 : ffffffff8016cd8c s0 : fffffff6e3692a70
+[  273.369180]  s1 : 0000000000000020 a0 : 0000000000000000 a1 : 00001a8e81800000
+[  273.376540]  a2 : 0000003c00070198 a3 : 0000003c00db75a4 a4 : 0000000000000015
+[  273.383901]  a5 : ffffffd7ff8804b0 a6 : 0000000000000015 a7 : 000000000000002a
+[  273.391327]  s2 : 000000000000ffff s3 : 0000000000000000 s4 : ffffffd7ff8803b0
+[  273.398773]  s5 : 0000000000504d55 s6 : ffffffd905069800 s7 : ffffffff821fe210
+[  273.406139]  s8 : 000000007fffffff s9 : ffffffd7ff8803b0 s10: ffffffd903f29098
+[  273.413660]  s11: 0000000080000000 t3 : 0000000000000003 t4 : ffffffff8017a0ca
+[  273.421022]  t5 : ffffffff8023cfc2 t6 : ffffffd9040780e8
+[  273.426437] status: 0000000200000100 badaddr: 0000000000000098 cause: 000000000000000d
+[  273.434512] [<ffffffff80aecd98>] riscv_pmu_ctr_get_width_mask+0x8/0x62
+[  273.441169] [<ffffffff80076bd8>] handle_percpu_devid_irq+0x98/0x1ee
+[  273.447562] [<ffffffff80071158>] generic_handle_domain_irq+0x28/0x36
+[  273.454151] [<ffffffff8047a99a>] riscv_intc_irq+0x36/0x4e
+[  273.459659] [<ffffffff80c944de>] handle_riscv_irq+0x4a/0x74
+[  273.465442] [<ffffffff80c94c48>] do_irq+0x62/0x92
+[  273.470360] Code: 0420 60a2 6402 5529 0141 8082 0013 0000 0013 0000 (6d5c) b783
+[  273.477921] ---[ end trace 0000000000000000 ]---
+[  273.482630] Kernel panic - not syncing: Fatal exception in interrupt
 
-                monitoring period
-            /                       \
-            |                       |
- 1:  B------+-----------------------+--------E
- 2:    B----+-------------E         |
- 3:         |           B-----------+----E
- 4:         |     B-------------E   |
-            |                       |
-            t0                      t1
-
-where B and E mean contention BEGIN and END, respectively.  So it only
-accounts the case 4 for now.  It seems there's no way to handle the case
-1.  The case 2 might be handled if it saved the timestamp (t0), but it
-lacks the information from the B notably the flags which shows the lock
-types.  Also it could be a nested lock which it currently ignores.  So
-I think we should ignore the case 2.
-
-However we can handle the case 3 if we save the timestamp (t1) at the
-end of the period.  And then it can iterate the map entries in the
-userspace and update the lock stat accordinly.
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Signed-off-by: Fei Wu <fei2.wu@intel.com>
 ---
-v2: add a comment on mark_end_timestamp  (Ian)
+ drivers/perf/riscv_pmu_sbi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- tools/perf/util/bpf_lock_contention.c         | 120 ++++++++++++++++++
- .../perf/util/bpf_skel/lock_contention.bpf.c  |  16 ++-
- tools/perf/util/bpf_skel/lock_data.h          |   7 +
- 3 files changed, 136 insertions(+), 7 deletions(-)
-
-diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-index 31ff19afc20c..9af76c6b2543 100644
---- a/tools/perf/util/bpf_lock_contention.c
-+++ b/tools/perf/util/bpf_lock_contention.c
-@@ -179,6 +179,123 @@ int lock_contention_prepare(struct lock_contention *con)
- 	return 0;
- }
+diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+index 16acd4dcdb96..335171db9647 100644
+--- a/drivers/perf/riscv_pmu_sbi.c
++++ b/drivers/perf/riscv_pmu_sbi.c
+@@ -731,14 +731,14 @@ static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
+ 		/* compute hardware counter index */
+ 		hidx = info->csr - CSR_CYCLE;
+ 		/* check if the corresponding bit is set in sscountovf */
+-		if (!(overflow & (1 << hidx)))
++		if (!(overflow & BIT(hidx)))
+ 			continue;
  
-+/*
-+ * Run the BPF program directly using BPF_PROG_TEST_RUN to update the end
-+ * timestamp in ktime so that it can calculate delta easily.
-+ */
-+static void mark_end_timestamp(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+		.flags = BPF_F_TEST_RUN_ON_CPU,
-+	);
-+	int prog_fd = bpf_program__fd(skel->progs.end_timestamp);
-+
-+	bpf_prog_test_run_opts(prog_fd, &opts);
-+}
-+
-+static void update_lock_stat(int map_fd, int pid, u64 end_ts,
-+			     enum lock_aggr_mode aggr_mode,
-+			     struct tstamp_data *ts_data)
-+{
-+	u64 delta;
-+	struct contention_key stat_key = {};
-+	struct contention_data stat_data;
-+
-+	if (ts_data->timestamp >= end_ts)
-+		return;
-+
-+	delta = end_ts - ts_data->timestamp;
-+
-+	switch (aggr_mode) {
-+	case LOCK_AGGR_CALLER:
-+		stat_key.stack_id = ts_data->stack_id;
-+		break;
-+	case LOCK_AGGR_TASK:
-+		stat_key.pid = pid;
-+		break;
-+	case LOCK_AGGR_ADDR:
-+		stat_key.lock_addr_or_cgroup = ts_data->lock;
-+		break;
-+	case LOCK_AGGR_CGROUP:
-+		/* TODO */
-+		return;
-+	default:
-+		return;
-+	}
-+
-+	if (bpf_map_lookup_elem(map_fd, &stat_key, &stat_data) < 0)
-+		return;
-+
-+	stat_data.total_time += delta;
-+	stat_data.count++;
-+
-+	if (delta > stat_data.max_time)
-+		stat_data.max_time = delta;
-+	if (delta < stat_data.min_time)
-+		stat_data.min_time = delta;
-+
-+	bpf_map_update_elem(map_fd, &stat_key, &stat_data, BPF_EXIST);
-+}
-+
-+/*
-+ * Account entries in the tstamp map (which didn't see the corresponding
-+ * lock:contention_end tracepoint) using end_ts.
-+ */
-+static void account_end_timestamp(struct lock_contention *con)
-+{
-+	int ts_fd, stat_fd;
-+	int *prev_key, key;
-+	u64 end_ts = skel->bss->end_ts;
-+	int total_cpus;
-+	enum lock_aggr_mode aggr_mode = con->aggr_mode;
-+	struct tstamp_data ts_data, *cpu_data;
-+
-+	/* Iterate per-task tstamp map (key = TID) */
-+	ts_fd = bpf_map__fd(skel->maps.tstamp);
-+	stat_fd = bpf_map__fd(skel->maps.lock_stat);
-+
-+	prev_key = NULL;
-+	while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
-+		if (bpf_map_lookup_elem(ts_fd, &key, &ts_data) == 0) {
-+			int pid = key;
-+
-+			if (aggr_mode == LOCK_AGGR_TASK && con->owner)
-+				pid = ts_data.flags;
-+
-+			update_lock_stat(stat_fd, pid, end_ts, aggr_mode,
-+					 &ts_data);
-+		}
-+
-+		prev_key = &key;
-+	}
-+
-+	/* Now it'll check per-cpu tstamp map which doesn't have TID. */
-+	if (aggr_mode == LOCK_AGGR_TASK || aggr_mode == LOCK_AGGR_CGROUP)
-+		return;
-+
-+	total_cpus = cpu__max_cpu().cpu;
-+	ts_fd = bpf_map__fd(skel->maps.tstamp_cpu);
-+
-+	cpu_data = calloc(total_cpus, sizeof(*cpu_data));
-+	if (cpu_data == NULL)
-+		return;
-+
-+	prev_key = NULL;
-+	while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
-+		if (bpf_map_lookup_elem(ts_fd, &key, cpu_data) < 0)
-+			goto next;
-+
-+		for (int i = 0; i < total_cpus; i++) {
-+			update_lock_stat(stat_fd, -1, end_ts, aggr_mode,
-+					 &cpu_data[i]);
-+		}
-+
-+next:
-+		prev_key = &key;
-+	}
-+	free(cpu_data);
-+}
-+
- int lock_contention_start(void)
- {
- 	skel->bss->enabled = 1;
-@@ -188,6 +305,7 @@ int lock_contention_start(void)
- int lock_contention_stop(void)
- {
- 	skel->bss->enabled = 0;
-+	mark_end_timestamp();
- 	return 0;
- }
- 
-@@ -301,6 +419,8 @@ int lock_contention_read(struct lock_contention *con)
- 	if (stack_trace == NULL)
- 		return -1;
- 
-+	account_end_timestamp(con);
-+
- 	if (con->aggr_mode == LOCK_AGGR_TASK) {
- 		struct thread *idle = __machine__findnew_thread(machine,
- 								/*pid=*/0,
-diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-index 95cd8414f6ef..fb54bd38e7d0 100644
---- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-+++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-@@ -19,13 +19,6 @@
- #define LCB_F_PERCPU	(1U << 4)
- #define LCB_F_MUTEX	(1U << 5)
- 
--struct tstamp_data {
--	__u64 timestamp;
--	__u64 lock;
--	__u32 flags;
--	__s32 stack_id;
--};
--
- /* callstack storage  */
- struct {
- 	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-@@ -140,6 +133,8 @@ int perf_subsys_id = -1;
- /* determine the key of lock stat */
- int aggr_mode;
- 
-+__u64 end_ts;
-+
- /* error stat */
- int task_fail;
- int stack_fail;
-@@ -559,4 +554,11 @@ int BPF_PROG(collect_lock_syms)
- 	return 0;
- }
- 
-+SEC("raw_tp/bpf_test_finish")
-+int BPF_PROG(end_timestamp)
-+{
-+	end_ts = bpf_ktime_get_ns();
-+	return 0;
-+}
-+
- char LICENSE[] SEC("license") = "Dual BSD/GPL";
-diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
-index 08482daf61be..36af11faad03 100644
---- a/tools/perf/util/bpf_skel/lock_data.h
-+++ b/tools/perf/util/bpf_skel/lock_data.h
-@@ -3,6 +3,13 @@
- #ifndef UTIL_BPF_SKEL_LOCK_DATA_H
- #define UTIL_BPF_SKEL_LOCK_DATA_H
- 
-+struct tstamp_data {
-+	u64 timestamp;
-+	u64 lock;
-+	u32 flags;
-+	u32 stack_id;
-+};
-+
- struct contention_key {
- 	u32 stack_id;
- 	u32 pid;
+ 		/*
+ 		 * Keep a track of overflowed counters so that they can be started
+ 		 * with updated initial value.
+ 		 */
+-		overflowed_ctrs |= 1 << lidx;
++		overflowed_ctrs |= BIT(lidx);
+ 		hw_evt = &event->hw;
+ 		riscv_pmu_event_update(event);
+ 		perf_sample_data_init(&data, 0, hw_evt->last_period);
 -- 
-2.44.0.rc1.240.g4c46232300-goog
+2.34.1
 
 
