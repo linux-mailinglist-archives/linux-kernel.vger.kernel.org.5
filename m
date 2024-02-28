@@ -1,194 +1,177 @@
-Return-Path: <linux-kernel+bounces-84463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB6386A713
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:16:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7754C86A7C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:11:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB861B2B188
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:15:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39EF528743F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057121EA99;
-	Wed, 28 Feb 2024 03:15:30 +0000 (UTC)
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624D420DCE;
+	Wed, 28 Feb 2024 05:11:42 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B511D681
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 03:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.110.167.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBF911D685;
+	Wed, 28 Feb 2024 05:11:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709090129; cv=none; b=uY8MOMmnpe3KmwnKg9B8UT/DGVXqIDi3vu1Ci8YgXJl/o/gRawzIunB7LIM+CzbKKqqbHpNsq2T0ojtELS0eJB3CeCr0JgfprCeNKXc514wGWaaWfWsrg3GIRIPp+rOBBg2VD82QpE4NO4F9W1ipNYZpzdlJepuuYmFcaXzVwZA=
+	t=1709097101; cv=none; b=PFtkOMsbPgteyz+s2FpJYzKs1bA+djeALYvYsFm9TDFQKNbEuUSXf65NHcCAlFjKj8O3HfH/3QMLvlQpHyqiZZn7qcuaZ5b16+5309/Oqh8CQHEd927U7n5PsW845/VnlYwB+Eo+9XB9ayX/21+gNgLW9mMNZS1GbB1w4sskqr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709090129; c=relaxed/simple;
-	bh=fwjCOVuAe1e0TdDrUgm6xmn/efGbI2EduGdh+QYbqnk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UmcZmAMbc4B46TRVhmoC7GvUAiUkhge/PYCvWXIcW4QwM5KYV29ajEjHFm4id+HVbduPN89E6YCuTW+s0m35abbW65tXcYSCiwn958wl5jjkdxqqgKqPQ7njfaR99DB1mraOZcdiy9G1ryroTv5y4dGrrDBgqWXI7mimleSaMC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com; spf=pass smtp.mailfrom=zhaoxin.com; arc=none smtp.client-ip=203.110.167.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zhaoxin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zhaoxin.com
-X-ASG-Debug-ID: 1709090121-1eb14e0c7f4b750001-xx1T2L
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx2.zhaoxin.com with ESMTP id J4vELxcXT5Px1eGw (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Wed, 28 Feb 2024 11:15:21 +0800 (CST)
-X-Barracuda-Envelope-From: WeitaoWang-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 28 Feb
- 2024 11:15:21 +0800
-Received: from L440.zhaoxin.com (10.29.8.21) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 28 Feb
- 2024 11:15:20 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-From: Weitao Wang <WeitaoWang-oc@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.29.252.163
-To: <oneukum@suse.com>, <stern@rowland.harvard.edu>,
-	<gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-	<usb-storage@lists.one-eyed-alien.net>
-CC: <WeitaoWang@zhaoxin.com>, <stable@vger.kernel.org>
-Subject: [PATCH v2] USB:UAS:return ENODEV when submit urbs fail with device not attached.
-Date: Wed, 28 Feb 2024 19:15:21 +0800
-X-ASG-Orig-Subj: [PATCH v2] USB:UAS:return ENODEV when submit urbs fail with device not attached.
-Message-ID: <20240228111521.3864-1-WeitaoWang-oc@zhaoxin.com>
-X-Mailer: git-send-email 2.32.0
+	s=arc-20240116; t=1709097101; c=relaxed/simple;
+	bh=6zpMQGqstL9uPpFOv76N6PFMaID669Pd5/NbhzWUD/E=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qBnv3BOcLFeP3JG7mf5PNUqxgdyU8+GQ3hugcSEjVSoH0Ijiet9NlgopLENY0JKQ6P2l9rQ5Cj60Wy/s+BWINYPacN7652Gy40qpb+PsINS9KB8tpsy2K3+I6JcUejSLh2YIaS0pMNOR8JD7F8BW48FwjlGDXOQkIMHaP++tgPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from h3cspam02-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+	by h3cspam02-ex.h3c.com with ESMTP id 41S2vifp091258;
+	Wed, 28 Feb 2024 10:57:44 +0800 (GMT-8)
+	(envelope-from liu.yeC@h3c.com)
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 41S2uMv7083766;
+	Wed, 28 Feb 2024 10:56:22 +0800 (GMT-8)
+	(envelope-from liu.yeC@h3c.com)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (unknown [10.62.14.11])
+	by mail.maildlp.com (Postfix) with ESMTP id F15DC2004BB7;
+	Wed, 28 Feb 2024 10:57:30 +0800 (CST)
+Received: from localhost.localdomain (10.114.186.34) by
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Wed, 28 Feb 2024 10:56:22 +0800
+From: LiuYe <liu.yeC@h3c.com>
+To: <jason.wessel@windriver.com>, <daniel.thompson@linaro.org>
+CC: <dianders@chromium.org>, <gregkh@linuxfoundation.org>,
+        <jirislaby@kernel.org>, <kgdb-bugreport@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <linux-serial@vger.kernel.org>,
+        <liu.yeC@h3c.com>
+Subject: [PATCH] kdb: Fix the deadlock issue in KDB debugging.
+Date: Wed, 28 Feb 2024 10:56:02 +0800
+Message-ID: <20240228025602.3087748-1-liu.yeC@h3c.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-X-ClientProxiedBy: zxbjmbx1.zhaoxin.com (10.29.252.163) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1709090121
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 4337
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: 1.09
-X-Barracuda-Spam-Status: No, SCORE=1.09 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=DATE_IN_FUTURE_06_12, DATE_IN_FUTURE_06_12_2
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.121424
-	Rule breakdown below
-	 pts rule name              description
-	---- ---------------------- --------------------------------------------------
-	0.01 DATE_IN_FUTURE_06_12   Date: is 6 to 12 hours after Received: date
-	3.10 DATE_IN_FUTURE_06_12_2 DATE_IN_FUTURE_06_12_2
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 41S2vifp091258
 
-In the scenario of entering hibernation with udisk in the system, if the
-udisk was gone or resume fail in the thaw phase of hibernation. Its state
-will be set to NOTATTACHED. At this point, usb_hub_wq was already freezed
-and can't not handle disconnect event. Next, in the poweroff phase of
-hibernation, SYNCHRONIZE_CACHE SCSI command will be sent to this udisk
-when poweroff this scsi device, which will cause uas_submit_urbs to be
-called to submit URB for sense/data/cmd pipe. However, these URBs will
-submit fail as device was set to NOTATTACHED state. Then, uas_submit_urbs
-will return a value SCSI_MLQUEUE_DEVICE_BUSY to the caller. That will lead
-the SCSI layer go into an ugly loop and system fail to go into hibernation.
+master cpu : After executing the go command, a deadlock occurs.
+slave cpu: may be performing thread migration,
+        acquiring the running queue lock of master CPU.
+        Then it was interrupted by kdb NMI and entered the nmi_handler proc=
+ess.
+        (nmi_handle-> kgdb_nmicallback-> kgdb_cpu_enter
+        while(1){ touch wathcdog}.)
 
-On the other hand, when we specially check for -ENODEV in function
-uas_queuecommand_lck, returning DID_ERROR to SCSI layer will cause device
-poweroff fail and system shutdown instead of entering hibernation.
+example:
+ BUG: spinlock lockup suspected on CPU#0, namex/10450
+ lock: 0xffff881ffe823980, .magic: dead4ead, .owner: namexx/21888, .owner_c=
+pu: 1
+ ffff881741d00000 ffff881741c01000 0000000000000000 0000000000000000
+ ffff881740f58e78 ffff881741cffdd0 ffffffff8147a7fc ffff881740f58f20
+Call Trace:
+ [<ffffffff81479e6d>] ? __schedule+0x16d/0xac0
+ [<ffffffff8147a7fc>] ? schedule+0x3c/0x90
+ [<ffffffff8147e71a>] ? schedule_hrtimeout_range_clock+0x10a/0x120
+ [<ffffffff8147d22e>] ? mutex_unlock+0xe/0x10
+ [<ffffffff811c839b>] ? ep_scan_ready_list+0x1db/0x1e0
+ [<ffffffff8147e743>] ? schedule_hrtimeout_range+0x13/0x20
+ [<ffffffff811c864a>] ? ep_poll+0x27a/0x3b0
+ [<ffffffff8108c540>] ? wake_up_q+0x70/0x70
+ [<ffffffff811c99a8>] ? SyS_epoll_wait+0xb8/0xd0
+ [<ffffffff8147f296>] ? entry_SYSCALL_64_fastpath+0x12/0x75
+ CPU: 0 PID: 10450 Comm: namex Tainted: G           O    4.4.65 #1
+ Hardware name: Insyde Purley/Type2 - Board Product Name1, BIOS 05.21.51.00=
+36 07/19/2019
+  0000000000000000 ffff881ffe813c10 ffffffff8124e883 ffff881741c01000
+  ffff881ffe823980 ffff881ffe813c38 ffffffff810a7f7f ffff881ffe823980
+  000000007d2b7cd0 0000000000000001 ffff881ffe813c68 ffffffff810a80e0
+  Call Trace:
+  <#DB>  [<ffffffff8124e883>] dump_stack+0x85/0xc2
+  [<ffffffff810a7f7f>] spin_dump+0x7f/0x100
+  [<ffffffff810a80e0>] do_raw_spin_lock+0xa0/0x150
+  [<ffffffff8147eb55>] _raw_spin_lock+0x15/0x20
+  [<ffffffff8108c256>] try_to_wake_up+0x176/0x3d0
+  [<ffffffff8108c4c5>] wake_up_process+0x15/0x20
+  [<ffffffff8107b371>] insert_work+0x81/0xc0
+  [<ffffffff8107b4e5>] __queue_work+0x135/0x390
+  [<ffffffff8107b786>] queue_work_on+0x46/0x90
+  [<ffffffff81313d28>] kgdboc_post_exp_handler+0x48/0x70
+  [<ffffffff810ed488>] kgdb_cpu_enter+0x598/0x610
+  [<ffffffff810ed6e2>] kgdb_handle_exception+0xf2/0x1f0
+  [<ffffffff81054e21>] __kgdb_notify+0x71/0xd0
+  [<ffffffff81054eb5>] kgdb_notify+0x35/0x70
+  [<ffffffff81082e6a>] notifier_call_chain+0x4a/0x70
+  [<ffffffff8108304d>] notify_die+0x3d/0x50
+  [<ffffffff81017219>] do_int3+0x89/0x120
+  [<ffffffff81480fb4>] int3+0x44/0x80
 
-To fix this issue, let uas_submit_urbs function to return a value -ENODEV
-when submit URB fail with device in NOTATTACHED state. At the same time,
-we need to translate -ENODEV to DID_NOT_CONNECT for the SCSI layer.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Weitao Wang <WeitaoWang-oc@zhaoxin.com>
+Signed-off-by: LiuYe <liu.yeC@h3c.com>
 ---
-v1->v2
- - Modify the description of this patch.
+ drivers/tty/serial/kgdboc.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
- drivers/usb/storage/uas.c | 21 ++++++++++-----------
- 1 file changed, 10 insertions(+), 11 deletions(-)
+diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+index 7ce7bb164..945318ef1 100644
+--- a/drivers/tty/serial/kgdboc.c
++++ b/drivers/tty/serial/kgdboc.c
+@@ -22,6 +22,9 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/serial_core.h>
++#include <linux/smp.h>
++
++#include "../kernel/sched/sched.h"
 
-diff --git a/drivers/usb/storage/uas.c b/drivers/usb/storage/uas.c
-index 9707f53cfda9..967f18db525a 100644
---- a/drivers/usb/storage/uas.c
-+++ b/drivers/usb/storage/uas.c
-@@ -533,7 +533,7 @@ static struct urb *uas_alloc_cmd_urb(struct uas_dev_info *devinfo, gfp_t gfp,
-  * daft to me.
-  */
- 
--static struct urb *uas_submit_sense_urb(struct scsi_cmnd *cmnd, gfp_t gfp)
-+static int uas_submit_sense_urb(struct scsi_cmnd *cmnd, gfp_t gfp)
- {
- 	struct uas_dev_info *devinfo = cmnd->device->hostdata;
- 	struct urb *urb;
-@@ -541,16 +541,15 @@ static struct urb *uas_submit_sense_urb(struct scsi_cmnd *cmnd, gfp_t gfp)
- 
- 	urb = uas_alloc_sense_urb(devinfo, gfp, cmnd);
- 	if (!urb)
--		return NULL;
-+		return -ENOMEM;
- 	usb_anchor_urb(urb, &devinfo->sense_urbs);
- 	err = usb_submit_urb(urb, gfp);
- 	if (err) {
- 		usb_unanchor_urb(urb);
- 		uas_log_cmd_state(cmnd, "sense submit err", err);
- 		usb_free_urb(urb);
--		return NULL;
- 	}
--	return urb;
-+	return err;
+ #define MAX_CONFIG_LEN         40
+
+@@ -399,7 +402,8 @@ static void kgdboc_post_exp_handler(void)
+                dbg_restore_graphics =3D 0;
+                con_debug_leave();
+        }
+-       kgdboc_restore_input();
++       if (!raw_spin_is_locked(&(cpu_rq(smp_processor_id())->lock)))
++               kgdboc_restore_input();
  }
- 
- static int uas_submit_urbs(struct scsi_cmnd *cmnd,
-@@ -562,9 +561,9 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
- 
- 	lockdep_assert_held(&devinfo->lock);
- 	if (cmdinfo->state & SUBMIT_STATUS_URB) {
--		urb = uas_submit_sense_urb(cmnd, GFP_ATOMIC);
--		if (!urb)
--			return SCSI_MLQUEUE_DEVICE_BUSY;
-+		err = uas_submit_sense_urb(cmnd, GFP_ATOMIC);
-+		if (err)
-+			return (err == -ENODEV) ? -ENODEV : SCSI_MLQUEUE_DEVICE_BUSY;
- 		cmdinfo->state &= ~SUBMIT_STATUS_URB;
- 	}
- 
-@@ -582,7 +581,7 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
- 		if (err) {
- 			usb_unanchor_urb(cmdinfo->data_in_urb);
- 			uas_log_cmd_state(cmnd, "data in submit err", err);
--			return SCSI_MLQUEUE_DEVICE_BUSY;
-+			return (err == -ENODEV) ? -ENODEV : SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 		cmdinfo->state &= ~SUBMIT_DATA_IN_URB;
- 		cmdinfo->state |= DATA_IN_URB_INFLIGHT;
-@@ -602,7 +601,7 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
- 		if (err) {
- 			usb_unanchor_urb(cmdinfo->data_out_urb);
- 			uas_log_cmd_state(cmnd, "data out submit err", err);
--			return SCSI_MLQUEUE_DEVICE_BUSY;
-+			return (err == -ENODEV) ? -ENODEV : SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 		cmdinfo->state &= ~SUBMIT_DATA_OUT_URB;
- 		cmdinfo->state |= DATA_OUT_URB_INFLIGHT;
-@@ -621,7 +620,7 @@ static int uas_submit_urbs(struct scsi_cmnd *cmnd,
- 		if (err) {
- 			usb_unanchor_urb(cmdinfo->cmd_urb);
- 			uas_log_cmd_state(cmnd, "cmd submit err", err);
--			return SCSI_MLQUEUE_DEVICE_BUSY;
-+			return (err == -ENODEV) ? -ENODEV : SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 		cmdinfo->cmd_urb = NULL;
- 		cmdinfo->state &= ~SUBMIT_CMD_URB;
-@@ -698,7 +697,7 @@ static int uas_queuecommand_lck(struct scsi_cmnd *cmnd)
- 	 * of queueing, no matter how fatal the error
- 	 */
- 	if (err == -ENODEV) {
--		set_host_byte(cmnd, DID_ERROR);
-+		set_host_byte(cmnd, DID_NO_CONNECT);
- 		scsi_done(cmnd);
- 		goto zombie;
- 	}
--- 
-2.32.0
 
+ static struct kgdb_io kgdboc_io_ops =3D {
+--
+2.25.1
+
+---------------------------------------------------------------------------=
+----------------------------------------------------------
+=B1=BE=D3=CA=BC=FE=BC=B0=C6=E4=B8=BD=BC=FE=BA=AC=D3=D0=D0=C2=BB=AA=C8=FD=BC=
+=AF=CD=C5=B5=C4=B1=A3=C3=DC=D0=C5=CF=A2=A3=AC=BD=F6=CF=DE=D3=DA=B7=A2=CB=CD=
+=B8=F8=C9=CF=C3=E6=B5=D8=D6=B7=D6=D0=C1=D0=B3=F6
+=B5=C4=B8=F6=C8=CB=BB=F2=C8=BA=D7=E9=A1=A3=BD=FB=D6=B9=C8=CE=BA=CE=C6=E4=CB=
+=FB=C8=CB=D2=D4=C8=CE=BA=CE=D0=CE=CA=BD=CA=B9=D3=C3=A3=A8=B0=FC=C0=A8=B5=AB=
+=B2=BB=CF=DE=D3=DA=C8=AB=B2=BF=BB=F2=B2=BF=B7=D6=B5=D8=D0=B9=C2=B6=A1=A2=B8=
+=B4=D6=C6=A1=A2
+=BB=F2=C9=A2=B7=A2=A3=A9=B1=BE=D3=CA=BC=FE=D6=D0=B5=C4=D0=C5=CF=A2=A1=A3=C8=
+=E7=B9=FB=C4=FA=B4=ED=CA=D5=C1=CB=B1=BE=D3=CA=BC=FE=A3=AC=C7=EB=C4=FA=C1=A2=
+=BC=B4=B5=E7=BB=B0=BB=F2=D3=CA=BC=FE=CD=A8=D6=AA=B7=A2=BC=FE=C8=CB=B2=A2=C9=
+=BE=B3=FD=B1=BE
+=D3=CA=BC=FE=A3=A1
+This e-mail and its attachments contain confidential information from New H=
+3C, which is
+intended only for the person or entity whose address is listed above. Any u=
+se of the
+information contained herein in any way (including, but not limited to, tot=
+al or partial
+disclosure, reproduction, or dissemination) by persons other than the inten=
+ded
+recipient(s) is prohibited. If you receive this e-mail in error, please not=
+ify the sender
+by phone or email immediately and delete it!
 
