@@ -1,136 +1,162 @@
-Return-Path: <linux-kernel+bounces-85663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07D5D86B8DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:12:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D03C786B8E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 732DBB2788F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:12:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25684B203C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCA7871EB1;
-	Wed, 28 Feb 2024 20:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0F774418;
+	Wed, 28 Feb 2024 20:14:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QYd4rGVN"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H/gpZmEw"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798EA5E07B
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:12:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DC95E090;
+	Wed, 28 Feb 2024 20:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709151148; cv=none; b=P0VblcsC0ImeqaQI7n51UkdUX87N/JFsWiCeX9gS/cYqbYZ4pc0Egl5kfW8e9FwHZz1bWTXNkHQWOxCHcOp5QPdzNRZkU1eOWd1E4CZn8GIKpKZp3hEC+YkpOytW8JlDkJta6DyVQUMZBiJ3EG4qqbo4kgSWk5TPS+CHvUjpA6I=
+	t=1709151259; cv=none; b=osKfML2GDB9UvPvb1rHMhI4/qw8Wz4zwOtupVBoI9cY4MY4hHwr13Z+OIN68LIsSgl7UBvkMM7cF3RTMjfav3LUuPKlQc6pjfZfxG2cI/qVWCHTvMxhDWydE64bTtCXVoAuTzvRE825ZChyEnPWBshl9DMXQJ+tOWoCPt2GhQJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709151148; c=relaxed/simple;
-	bh=vSCY86DjYJ6LoNtj3P/+29GiTUr7GSnsdZ1KbZ/S9k4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=MHtCiFAd3egjI7+NzKC5AsRkroWTAog3k3ObNh3Q0KyN1h9j7pGwIlLtOKk2KOWmyCuhr8pj5WZvcEmKMkiUx1mlkbtFLF+dtFR/9j68BeLtu29rup5Qyqvn/no5nmbVyBxSNKFdb7DjNnOyQswipMwM2zLgQPcgQ88Gi3+k6wI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QYd4rGVN; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709151145;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=lt7Z2bfGFfZb7GW+qc4A0EHIW+vtSShzIyaaG+Gg6bc=;
-	b=QYd4rGVNz42HwTXwVh/CnrUqL9scxOT4b187fxp8/zizkNIH9VE7viRSSNt6rlqsGG8rTV
-	NZrrkm9QTToFbh09zN/O7VDdVDD4gs9armgdoJNi+/gGFE+/v2rtLQOjtWK+QEFJ5g2ZBG
-	7ZS6FBysQzKoi/dbxeDoibgQHFMR8DQ=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-212-lFeeXlUaP52Od5Om9zpcVQ-1; Wed, 28 Feb 2024 15:12:23 -0500
-X-MC-Unique: lFeeXlUaP52Od5Om9zpcVQ-1
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-787b27005b7so14667685a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:12:23 -0800 (PST)
+	s=arc-20240116; t=1709151259; c=relaxed/simple;
+	bh=S/kBFAFK1JxGSRBxjvHb9wpGKCelBSL7wSHo55RJ70U=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=NRFckICdMI3YycW21nYPfaejKWKnpl6FGY9NQUkuW7GwDbbntPCpHS7fbxdUNJ6vxqp17mFgh3nMGdL3FiVhjWhaPyxc+FmB7epWIEyKOvgjOlUh8SLPguXAT02yGoqZ8LsK4hgMNapkbeuaR8x0daP/ZkMNN9c9NSqWPRPoNas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H/gpZmEw; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-690105304b4so565596d6.3;
+        Wed, 28 Feb 2024 12:14:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709151257; x=1709756057; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1a/rY8nw5LZhhjrVDMwvjRYyAy1YxBmAbBSbPx3P8QI=;
+        b=H/gpZmEwEEg55CZuZa7pU17B68fAQ7nEQjZfohIuWqx53q9r30TbnNVpDUZw81qwEg
+         28eN+dTCvKqcTSfcYYop0Oz7QDq43LoBs0zqVTgpmjHP8jTNtmMLQinLdF2SosnC890X
+         yWjqvVUFg9E7gtnxcy65xPZf5HZfXwIFVke4ENfLYlv6Wkjr2qHPCcnr8ptf7+HafCcz
+         Tn7v9yECEy9qYM5C+qJflQ/hBjQXl3Vi+TAKZpS+SQ82Zh3ox7+DJIz308lG9Tg207tS
+         s+Wtn6/X3xKXjsHTVN/fNuhlyvKELyDxGPV3cuHKkVnstZrLoRQmjiTVXxA+t01b1ouB
+         6pmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709151143; x=1709755943;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lt7Z2bfGFfZb7GW+qc4A0EHIW+vtSShzIyaaG+Gg6bc=;
-        b=aBdhR6baeZgMnVLH2NoUWqSQtkg3hrnS12jg8RoDfMinibxrqVlaFxpcqKT0zzVUTJ
-         uqRJopZjJZUvaVU5jDxcX/0YDw4bVsIlNE3dmih6lfYxqazsGx+N4mP3+/sPNntL1JT1
-         bEKwN6HKjESORBSloXXx6meupzeOmuJ0PMzYczgZuM6C9YFRbChMJKmSMWVVUEK0QYTh
-         cjin5Jz9NB4ykMbSncKpDastrIapNs8QnJZkQmWULBF1TVZayNPa1wM7RdMnt7Pw2fyQ
-         z9dFBgHZKtGMnofTV3YJdsiJ4UElRdtHBbBXjw6DlNAqoBQCc8d6mxHUgQDADbGQwsAb
-         DGSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVu49AqaiGfPl0mU0oZTYd0yMZQhRTMZ7XA4tTOpxyX5grqq/eIEAyhw2HzvpP8UD9cPvIG+eRxwOfbV9gyXgFU7OpSdarDAl2vDH3X
-X-Gm-Message-State: AOJu0YwVNFO1kmApdGvVwdLFLwcLA9wRj0YtzOtSdKeolzNmj6oL8FPy
-	14Zor/bQ8qyUKxhmM2f35XQkev4lFPXdaDPIQ5BLaP6zHK7eF8dyzwWPCs58woMRKh1AYn9ElTx
-	bI/PRfVkAQdtS1Ktv8rkIym8mlI92r7G5BPHihNjSTPlxCDYYDhT5WrcYSf4Vsw==
-X-Received: by 2002:a05:620a:1108:b0:787:f452:df60 with SMTP id o8-20020a05620a110800b00787f452df60mr97193qkk.47.1709151143417;
-        Wed, 28 Feb 2024 12:12:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHzEM8vE6Yv8kYQAtA9/PNJt641WNB+vw1kTd4a6fUV85b8yyNH9nKk+KexNqOg1WQLFei8Cw==
-X-Received: by 2002:a05:620a:1108:b0:787:f452:df60 with SMTP id o8-20020a05620a110800b00787f452df60mr97173qkk.47.1709151143120;
-        Wed, 28 Feb 2024 12:12:23 -0800 (PST)
-Received: from [192.168.1.163] ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id z1-20020ae9e601000000b007873213b29csm122762qkf.49.2024.02.28.12.12.22
+        d=1e100.net; s=20230601; t=1709151257; x=1709756057;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1a/rY8nw5LZhhjrVDMwvjRYyAy1YxBmAbBSbPx3P8QI=;
+        b=lcVq5oY0Cg7/hY1I0rDtB46/74CHY9GC1y7t+DIihV542xYujR8dNoygbgycgAVDu6
+         +7ec02RNKjs4Im0Hw9jx2OEP/Nr3bEBnbolmvmeJxPBvGYl1/eHKTu/NzrxrYQZ5YwLU
+         juIupqdJnKoIOX5q2/2brrEeOgutLjdmgWUQgbQu9SJfELhxksZyAwZ14MoIABui8VVo
+         Zd4L2nCjaRGIZeYshwTBXXKD/umd7lObFQrJhXBETMV7NuEXCigFpzwfpMVU0bxSDfD9
+         UEirHbOJIzI3BP/Ft/9JpAx/Nc+jG2MbuItfjlumqEdodW7oAFsrR2+kO08U0EdKhn8j
+         pSKw==
+X-Forwarded-Encrypted: i=1; AJvYcCXhoPsP0AM3VwEFuBZclYRw+3R1oZg3ovjvV34bNB3oTItw6dPlWvyyKDSsdi0JwpN5DT7j/wT7w9FcP573iOciI0bhqZ4+1eqWm4gGXK/Q5ODZozntb9yiJU0KujQymtgX4N0A
+X-Gm-Message-State: AOJu0YyYJoBYLXBazjPahD/lMuC9zwjGfKAFTr5MpXgWig/BOBaaAi9E
+	+UGQZc8YMqiWilyiOHX2qvRmsiV2XUYK/2CjxojeopqLdRJGr+5N
+X-Google-Smtp-Source: AGHT+IHxNWyxCske1Sik3AzMuvEhMmss2UuSC/r9wqFpY78TS4gk9vI+gPwdO/qOu4IRTvOYF4TUPA==
+X-Received: by 2002:a05:6214:16c5:b0:68f:e051:b1ee with SMTP id d5-20020a05621416c500b0068fe051b1eemr146433qvz.25.1709151256938;
+        Wed, 28 Feb 2024 12:14:16 -0800 (PST)
+Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
+        by smtp.gmail.com with ESMTPSA id u17-20020a0ced31000000b0068f6e1c3582sm113429qvq.146.2024.02.28.12.14.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 12:12:22 -0800 (PST)
-From: Andrew Halaney <ahalaney@redhat.com>
-Date: Wed, 28 Feb 2024 14:12:06 -0600
-Subject: [PATCH] drm/tidss: Use dev_err_probe() over dev_dbg() when failing
- to probe the port
+        Wed, 28 Feb 2024 12:14:16 -0800 (PST)
+Date: Wed, 28 Feb 2024 15:14:16 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>
+Cc: kernel@quicinc.com
+Message-ID: <65df94185a2c1_b2ad829442@willemb.c.googlers.com.notmuch>
+In-Reply-To: <f38efc6d-20af-4cc1-9b8a-5fcb676b2845@quicinc.com>
+References: <20240228011219.1119105-1-quic_abchauha@quicinc.com>
+ <65df56f6ba002_7162829435@willemb.c.googlers.com.notmuch>
+ <f38efc6d-20af-4cc1-9b8a-5fcb676b2845@quicinc.com>
+Subject: Re: [PATCH net-next v2] net: Modify mono_delivery_time with
+ clockid_delivery_time
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240228-tidss-dev-err-probe-v1-1-5482252326d3@redhat.com>
-X-B4-Tracking: v=1; b=H4sIAJWT32UC/x3MPQqAMAxA4atIZgM1+H8VcVCbahaVRIog3t3i+
- A3vPWCswgZ99oByFJNjTyjyDJZt2ldG8clAjkpH1OIl3gw9R2RVPPWYGcNUF2F2VeOog1SeykH
- u/zqM7/sBYg+Xc2UAAAA=
-To: Jyri Sarha <jyri.sarha@iki.fi>, 
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Enric Balletbo <eballetb@redhat.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>
-X-Mailer: b4 0.12.3
 
-This gets logged out to /sys/kernel/debug/devices_deferred in the
--EPROBE_DEFER case and as an error otherwise. The message here provides
-useful information to the user when troubleshooting why their display is
-not working in either case, so let's make it output appropriately.
+Abhishek Chauhan (ABC) wrote:
+> 
+> 
+> On 2/28/2024 7:53 AM, Willem de Bruijn wrote:
+> > Abhishek Chauhan wrote:
+> >> Bridge driver today has no support to forward the userspace timestamp
+> >> packets and ends up resetting the timestamp. ETF qdisc checks the
+> >> packet coming from userspace and encounters to be 0 thereby dropping
+> >> time sensitive packets. These changes will allow userspace timestamps
+> >> packets to be forwarded from the bridge to NIC drivers.
+> >>
+> >> Existing functionality of mono_delivery_time is not altered here
+> >> instead just extended with userspace tstamp support for bridge
+> >> forwarding path.
+> >>
+> >> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+> >> ---
+> >> Changes since v1 
+> >> - Changed the commit subject as i am modifying the mono_delivery_time 
+> >>   bit with clockid_delivery_time.
+> >> - Took care of suggestion mentioned by Willem to use the same bit for 
+> >>   userspace delivery time as there are no conflicts between TCP and 
+> >>   SCM_TXTIME, because explicit cmsg makes no sense for TCP and only
+> >>   RAW and DGRAM sockets interprets it.
+> > 
+> > The variable rename churn makes it hard to spot the functional
+> > changes. Perhaps it makes sense just keep the variable name as is,
+> > even though the "mono" is not always technically correct anymore.
+> > 
+>   
+> 
+> I think a better approach would be to keep the variable as ease and add
+> comments and documentation in the header file of skbuff.h like 
+> how i have done in this patch. The reason why i say this is
+> a. We can avoid alot of code churn just to solve this basic problem of 
+> propagating timestamp through forwarding bridge path 
+> b. Re-use the same variable name and have better documentation 
+> c. Complexity will be as minimal as possible.
+> 
+> Let me know what you think. 
 
-Signed-off-by: Andrew Halaney <ahalaney@redhat.com>
----
-There's definitely more spots in this driver that could be upgraded from
-dev_dbg() to something more appropriate, but this one burned me today so
-I thought I'd send a patch for it specifically before I forget.
----
- drivers/gpu/drm/tidss/tidss_kms.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Agreed
 
-diff --git a/drivers/gpu/drm/tidss/tidss_kms.c b/drivers/gpu/drm/tidss/tidss_kms.c
-index a0e494c806a96..f371518f86971 100644
---- a/drivers/gpu/drm/tidss/tidss_kms.c
-+++ b/drivers/gpu/drm/tidss/tidss_kms.c
-@@ -135,8 +135,7 @@ static int tidss_dispc_modeset_init(struct tidss_device *tidss)
- 			dev_dbg(dev, "no panel/bridge for port %d\n", i);
- 			continue;
- 		} else if (ret) {
--			dev_dbg(dev, "port %d probe returned %d\n", i, ret);
--			return ret;
-+			return dev_err_probe(dev, ret, "port %d probe failed\n", i);
- 		}
+> > Or else to split into two patches. One that renames the field.
+> > And one that adds the new behavior of setting the bit for SO_TXTIME.
+> >
+> 
+> Regarding the sidenote. I dont see how they are using clock_id to determine 
+> if the skb->tstamp is set in monotonic. Please correct me or point me to 
+> the piece of code which is doing so.
+
+That's really out of scope of this series anyway
  
- 		if (panel) {
+> 
+> I hope the check against sock_flag is a better implementation as 
+> it clearly stats and is inline with the implementation that the tstamp is 
+> coming from userspace. 
+> skb->mono_delivery_time = sock_flag(sk, SOCK_TXTIME);
 
----
-base-commit: 22ba90670a51a18c6b36d285fddf92b9887c0bc3
-change-id: 20240228-tidss-dev-err-probe-fa61fb057029
-
-Best regards,
--- 
-Andrew Halaney <ahalaney@redhat.com>
-
+Enabling the socket flag is not sufficient to configure a delivery
+time on a packet. A transmit time must be communicated per packet
+with cork->transmit_time. And on top of that, it is cheaper to test.
 
