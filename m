@@ -1,106 +1,110 @@
-Return-Path: <linux-kernel+bounces-85634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F21786B87C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:45:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 511C286B881
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:46:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 018761C2189A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:45:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDF80285368
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936AA5E074;
-	Wed, 28 Feb 2024 19:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808855E073;
+	Wed, 28 Feb 2024 19:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="If6AmXJK"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e0+9yYap"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2EE5E063;
-	Wed, 28 Feb 2024 19:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFB85E061;
+	Wed, 28 Feb 2024 19:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709149504; cv=none; b=FKSCbPEriwEQRe0Q7BEgv0/jA0Yh3Mx1s4+tL6ABmHCbKH/RDmWJNfXxY/uxMlr2K842cztShW7f2gpIq+Fjer9xoC0FIQv4ZjfxLzFjBgMBQ3i3YIsnA49E/SlNdItiepZbZYImJTVGRnSkRPWYTNXQhakbL49qqf9Eaqf5igQ=
+	t=1709149598; cv=none; b=XthgfscUPcz1mFFAg368GRQlMLmJUv5SX9jH2DxaYrA28AZwiJjks444MVhm5SIcIPAZjkWs+RsLz2Bmlnb4juNcE9z7r0VVTnnk2ZjxRIgsWcP4RASzF0uOJ1O4y1FqjjK1YzmKIXNk2mpx5yPTS1ebiV6eIxGLxDv5HiXoJek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709149504; c=relaxed/simple;
-	bh=RmY6FThNkxGmlbB0Exm3Wo1qtpWs1/pqZKVhO300w8E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RdEDlxT5tVF/mcLkJZu/UXrmiLAn1qdkDlpsTYYvemwbDr8Aa7x+I+0rzDRYkNIMYhRotKJcf7MylyITyD717T5kEZEcYRJPfCxibUpvIJWf4NsJ8t25S782ybjiNfEopGcLS3NXk9A3mHegnJtNBAilT9G0rQJZbNPnhBip4pA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=If6AmXJK; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-365124888a5so816925ab.1;
-        Wed, 28 Feb 2024 11:45:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709149502; x=1709754302; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=9xZ8xmcjSfjLYlMC6SCBTArV0VkBy+6b9iBOrLgBynQ=;
-        b=If6AmXJKl60NvbICp8HpdBHSOBRkIvVLGKABmchVRK3gnv+03G/trS6srzuY3A5tQP
-         z9c3m3xdbfTxSW9u+3zIB3z3MRSg5ozi5og5HRfvxuSTnEOIOkJwfBcfsKTG01pAEjlm
-         5k9KWYuVTfdDkNq/R1wJYWP2Sjnxn3SNpLxQfcRINTq+MDg3vHIb+XEA2mGcSdK4pWoD
-         0dHR2QplE2eFMCavV3QOCc6m80d1tKf8BhE1qteUVYXBPDRZCeQd+BO2EkZF66WSttzh
-         b//Di4fhugKPLM021YqP7Ox/RTgJQU3+LTLP0rWsLP3ztd0XuxH15dimhxloAaPKSY++
-         J5Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709149502; x=1709754302;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9xZ8xmcjSfjLYlMC6SCBTArV0VkBy+6b9iBOrLgBynQ=;
-        b=RWUex5diRVilpvXt2ZuW/xKJkak9wOw7FklfZJT+4YgnKpmVU/eidlorD2CK1kh5Me
-         bBWiAW1hZoLvVRzdq4LpkjEWr2XvYt60DHMGa8p4A5kpMcjW5xKPTNTJJ4aFnHG7L3e7
-         PkIWown587cpvR5Ak/HE1GFV8yhLaFuxk9+E1QjItAMiUg/xLsWG1jW+CO/3LNMczjy3
-         QxBo9xihcTmw68TmXt5lR+zhFRqWqBz7hlr3FLucUJOQPBnU/pYVqBjSe6emXJ6u/NDT
-         mtAWAOdUqn9ZVCLhlYjajVMrfq+vqRq9S7+bqNIKKz0voQqmjRGWiR3tb19OMWeefZPF
-         K8jw==
-X-Forwarded-Encrypted: i=1; AJvYcCUKptZEp++rV9x4jCIAdhL2cRoWS8m4n0j+sTJX8lHRgBupIeV0jL2qA3MpZoRlrWTwO/1KLn6Kf3ay5vUNNVWAez4SKYZ5rNhN6q2j1xqWI1O1rxASPMeUeXyq/bEuSzUUt1b7kOmqTTG+A3LL
-X-Gm-Message-State: AOJu0YxZpzQ1qSUvnBYBKkgkx/krNcXd/E3D+f6hIcuuMLg+pB4tpsz5
-	OFEMMGwdCGlSmvWqPC5sK8wkeqG4py+vgudw+Dup7fvdcUVCzrpj6K/jeHO+
-X-Google-Smtp-Source: AGHT+IFnSI1+gnNkWI/zc0c8dXyqPZhw+XDdNUnqDGuxILt7h4aCQ7+b2dfGiRBanV+bDvtqtxmvdg==
-X-Received: by 2002:a92:d986:0:b0:365:245c:6c99 with SMTP id r6-20020a92d986000000b00365245c6c99mr268427iln.29.1709149502498;
-        Wed, 28 Feb 2024 11:45:02 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c5-20020a056e020cc500b00365843633bcsm21471ilj.83.2024.02.28.11.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 11:45:02 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Wed, 28 Feb 2024 11:45:00 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>, linux-kselftest@vger.kernel.org,
-	kunit-dev@googlegroups.com
-Subject: lock warnings in dev_addr_lists test
-Message-ID: <48c4d3db-66d5-4a9a-ab9e-9036db7222dc@roeck-us.net>
+	s=arc-20240116; t=1709149598; c=relaxed/simple;
+	bh=B8cB0QnIPUowOgUL1pi+u6srQ+WF28YcOhJoR7HcGCY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qGRuYiEvzGmeXgq02XNYBnEML3XEbWj7cA4fE/7Gzrq92yz5Mv0+tDLwiwOKT5LgfozZ+uvKdGocpYg4oiV/wcAP2bfHK+sHmHLTewEWTUA97PjOUuxy54GvdC5DelOgPSTQrR5Gkea4hNBbJa84apjtaLAzXYrS0yJzyIeFoCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e0+9yYap; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709149597; x=1740685597;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=B8cB0QnIPUowOgUL1pi+u6srQ+WF28YcOhJoR7HcGCY=;
+  b=e0+9yYapyXRmWVRiXK5vHZz+MeZkyVMCDKrYwKbkS9GGQR0ctygdzU0q
+   DVgpXZyRP5z5PPdT3GhNTqDF4NU/EJsu0KErG2n70+LcSqLAjANNgzilW
+   LYHtxEya1P9uGD+EnKQdH2WBkABOSuligH95zjzQt3Yj2Ar7FBYyIYVLY
+   gx048oHuLrUBH8dn76sSWHJvrhXE/jwA2khpsmLmdl2cI9A9WHGNtdAym
+   VDKLrCDsFSC5YA3pTVSGI7aKwFgaQsCj4oFJ8J4y4YyoAeil0sCLHj6Na
+   DOncLm23KmTvtdoLgcLAoolB4unFmb5s/hPeez0nJvl77/W79LjHeuMA2
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14991935"
+X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
+   d="scan'208";a="14991935"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 11:46:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="937034610"
+X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
+   d="scan'208";a="937034610"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Feb 2024 11:46:34 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 6DD241C5; Wed, 28 Feb 2024 21:46:33 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Mark Brown <broonie@kernel.org>,
+	linux-spi@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] spi: stm32-qspi: Replace of_gpio.h by proper one
+Date: Wed, 28 Feb 2024 21:46:32 +0200
+Message-ID: <20240228194632.3606563-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hi,
+of_gpio.h is deprecated and subject to remove.
+The driver doesn't use it directly, replace it
+with what is really being used.
 
-when running the dev_addr_lists unit test with lock debugging enabled,
-I always get the following lockdep warning.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/spi/spi-stm32-qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[    7.031327] ====================================
-[    7.031393] WARNING: kunit_try_catch/1886 still has locks held!
-[    7.031478] 6.8.0-rc6-00053-g0fec7343edb5-dirty #1 Tainted: G        W        N
-[    7.031728] ------------------------------------
-[    7.031816] 1 lock held by kunit_try_catch/1886:
-[    7.031896]  #0: ffffffff8ed35008 (rtnl_mutex){+.+.}-{3:3}, at: dev_addr_test_init+0x6a/0x100
+diff --git a/drivers/spi/spi-stm32-qspi.c b/drivers/spi/spi-stm32-qspi.c
+index 385832030459..f1e922fd362a 100644
+--- a/drivers/spi/spi-stm32-qspi.c
++++ b/drivers/spi/spi-stm32-qspi.c
+@@ -8,13 +8,13 @@
+ #include <linux/dmaengine.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/errno.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/io.h>
+ #include <linux/iopoll.h>
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_device.h>
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-Instrumentation shows that dev_addr_test_exit() is called, but only
-after the warning fires.
-
-Is this a problem with kunit tests or a problem with this specific test ?
-
-Thanks,
-Guenter
 
