@@ -1,156 +1,171 @@
-Return-Path: <linux-kernel+bounces-84776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE9A086AB67
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:36:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD3C86AB65
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:35:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E1F8282105
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:36:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A2C01C267C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AC536B0E;
-	Wed, 28 Feb 2024 09:34:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6386C364B1;
+	Wed, 28 Feb 2024 09:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="g1i/ND/s"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hrGJahEJ"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3DB33987
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5B736133;
+	Wed, 28 Feb 2024 09:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112895; cv=none; b=sNbO/lDyo/t5ymRRWneNZLe1kFtIoesPg7g5Z9jaPn9nrBlmwmN34MTmSY1/8WHEw58EFBQ+ozH+tvhBJgYZoSaz7RGDk19RnKCjx86xybQjmb0mVnsxjVw+YMsFnfzrk5dJ7p1O8Y43vuitaRTkU4Tj1KOojkJ5240jNEmgLgo=
+	t=1709112880; cv=none; b=ovzRqh7SuH2rPisC8kjXe2pyXmMFXPSiEEBilau9A/C040ANdyO/8H2TbriN2c0J2NtFL6Ho+vru42Pf2hp0bCV93pfHyfOGhQeFq7uJNjDs8yUSe1e5tvu9mQLUTfRF57i8g3yInT7mLU1BZ4tQ+wZHLXtdrj8f0/CKDZ2gUaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112895; c=relaxed/simple;
-	bh=6orYZl3wn2cOkF4brbe/Asz5vqmU0uEkBFM9m2BCNjo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RhQvovF2mrJFcsmQ4+07v0TGpvKUOTXtYqU7wTo7HIDJvwvWioB9/zy1irfDxERTr88G3SUQXru7LnOUd56Dypvi240jBBSHZUxdci6SV1kpsc7IL8J35fpbscfn/zSqIgJjcmPGMxa0dWHl/H6G+p03faVSNG99j8k2vaAP0PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=g1i/ND/s; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S5jrJv016379;
-	Wed, 28 Feb 2024 09:34:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=qcppdkim1; bh=mC1TlTHZ8OiOtXr093yL
-	IlnoHBATtQ3OA9nN4jcVblw=; b=g1i/ND/sZO/H2i6FS46xY1bww0ZvGUKstbVl
-	volNPgdvfaeQyRA3ztISsnloUuMfRScZXDL69ZYjyXByMau4LqE5MueVqjR0YDeh
-	L1KLhSMBsy33wsnMrr/Af1F3GJfe/mB3AmUQdgxkhqsnXSq1Ujt8S2Vp7aBnoJp6
-	jSwxWp53PumrX9HdbpQYuXMazuUWstIace17BZEqkMpFgBG2nYmaHa1XwebOOSni
-	sUU+w6yv4g5aCw4L7SXSF7HBYGyDyZ6FqwU0VzXy0OK96eFdA6yN7/aHV0Pwwi+p
-	uzy1/uGBXAcekIGmCo87G+C6a+UZEcB4QjOrLmtrHLFMTPQmqA==
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whp65sepy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 09:34:39 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41S9YaQQ018749;
-	Wed, 28 Feb 2024 09:34:36 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3wf9hkux7y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 09:34:36 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41S9YaRR018744;
-	Wed, 28 Feb 2024 09:34:36 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-msavaliy-hyd.qualcomm.com [10.213.110.207])
-	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 41S9YZFH018743
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 09:34:36 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 429934)
-	id 9729524176; Wed, 28 Feb 2024 15:04:34 +0530 (+0530)
-From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-To: alexandre.belloni@bootlin.com, linux-i3c@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc: andersson@kernel.org, vkoul@kernel.org, manivannan.sadhasivam@linaro.org,
-        Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
-Subject: [PATCH v1] i3c: master: Enable runtime PM for master controller
-Date: Wed, 28 Feb 2024 15:04:07 +0530
-Message-Id: <20240228093407.4038399-1-quic_msavaliy@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709112880; c=relaxed/simple;
+	bh=Cf7Ab1S5Azi7ftJlAgSjDp6AD00chiKeVOaFhJkgUqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fIsqipA/KKwzQMx9SPmmmZ4p5HFR5/o3fvajeqD4fDFh8yX6udCt/SncWHsxAUOO7dMULSBPaKzeI3aRWhrouq5j1wdvGtMWm7WrWq4W3arOfQaCfGXjs3Dq/JX5btc95Q45UXRJN/RCXhFyvz8T7+IM3HqIjEjeOm2QXz+Nisc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hrGJahEJ; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5cddc5455aeso4905606a12.1;
+        Wed, 28 Feb 2024 01:34:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709112878; x=1709717678; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BnTxzgDB4D6z5X/XWZgAEvdqEsYIyodUJ23UluDAgo8=;
+        b=hrGJahEJja+59nTNLV8vTZpK5nHU2IWAh/hfK58Fwewtfy0la4gn6b5vC43Df9ybx9
+         oTa/ea6wsUI7shS0sUl/F2TQYAIlYdUHqMmqwaaQUPDmL0z5eBuSNDkGkNtrdmFapUEv
+         iaRGYDc8zlmkztVHWuAOLJQEPAR4+FlVALMMKjrslPaREuScwnS1WtD6+FLQQV4lB0l+
+         u3CU1HpUlu1WqfBgu/GinA90JyTbs8oX5vzjPJBvSm1ereLbyvfjORLumwyIdez4G8U2
+         ynTJEk6JJ6SxAYdX5TVe35DgWQ/V+vMxtWYUiKFd91tKjp+6ysIJNinwU2mN0f5x9o4y
+         cdew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709112878; x=1709717678;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BnTxzgDB4D6z5X/XWZgAEvdqEsYIyodUJ23UluDAgo8=;
+        b=YRG8rpYwLpVB3pwSRXANdox2pfISfFBfY5R+rHnWG1BRPdTvHQA4Swc/AftlebsSPX
+         9/z2hgprGPF4mY7miXjCv4YAuS6jyHix6kK8AobYEtUi7ISO9eElHJnJdWE0OyElBP0Y
+         c1x/U81rieL5zItFagqI0ZFvXukXroqkx/WxwsX+wj+DNhBbrsSBucCKrpUp+cqYDPk1
+         SgzfNrZN3RnRPA67JhbpPDP84YVcKWe3T0VcObY/WhxtnXopWa4AEURkkkbiP49x94+Q
+         75rjJBbP5k85k8swhgtk9hz5ES82UUDMAd6MGxeGId2OjZXElWFEuaIKXP+2/1k1aF1i
+         8d0g==
+X-Forwarded-Encrypted: i=1; AJvYcCXSVrcGem6ulktbKxBBvXrqTHuAQtwqdS7CROayk01qI5dFuuXM6bZzbocI0s9aFYsHfcvcQyHri2Azn1uwkaWwC6toQsWEnvG5JxspdnviZAR3Tn7nvokIW6GYFHPX5APb
+X-Gm-Message-State: AOJu0Yx23xKd6rt74p+AIzztaDqtwS6EPToUPREP707lPPbQAV+NJQip
+	qs66AbvZ4RE/Gz7QNHp/EsAQxqCEFWbtDoCh6tJ1wWfGShzz91M1
+X-Google-Smtp-Source: AGHT+IGuQ8W5px8wKjurGo44FSp62ASDSBPR2Tehpe/JisAe2FtfFe9UEtCIaamJIUbV1mDvADh8YA==
+X-Received: by 2002:a05:6a20:c116:b0:1a0:fc33:17b8 with SMTP id bh22-20020a056a20c11600b001a0fc3317b8mr3634526pzb.24.1709112878380;
+        Wed, 28 Feb 2024 01:34:38 -0800 (PST)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id f19-20020a17090aa79300b0029ab73a80a2sm1104370pjq.22.2024.02.28.01.34.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 01:34:37 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 6442518515716; Wed, 28 Feb 2024 16:34:34 +0700 (WIB)
+Date: Wed, 28 Feb 2024 16:34:33 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Cc: seanjc@google.com, michael.roth@amd.com, aik@amd.com
+Subject: Re: [PATCH v3 05/15] Documentation: kvm/sev: separate description of
+ firmware
+Message-ID: <Zd7-KWFGOXGs_iOu@archie.me>
+References: <20240226190344.787149-1-pbonzini@redhat.com>
+ <20240226190344.787149-6-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: JLMJw9ph6eLPqoAJlm04ymWsw6_J4r7L
-X-Proofpoint-ORIG-GUID: JLMJw9ph6eLPqoAJlm04ymWsw6_J4r7L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_04,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
- adultscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1011
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402280074
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="eUPRBjCtZiK17fws"
+Content-Disposition: inline
+In-Reply-To: <20240226190344.787149-6-pbonzini@redhat.com>
 
-Enable runtime PM for i3c master node during master registration time.
 
-Sometimes i3c client device driver may want to control the PM of the
-parent (master) to perform the transactions and save the power in an
-efficient way by controlling the session. Hence device can call PM
-APIs by passing the parent node.
+--eUPRBjCtZiK17fws
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Here, I3C target device when calls pm_runtime_get_sync(dev->parent)
-couldn't invoke master drivers runtime PM callback registered by
-the master driver because parent's PM status was disabled in the
-Master node.
+On Mon, Feb 26, 2024 at 02:03:34PM -0500, Paolo Bonzini wrote:
+> +``KVM_MEMORY_ENCRYPT_OP`` API
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
 
-Also call pm_runtime_no_callbacks() and pm_suspend_ignore_children()
-for the master node to not have any callback addition and ignore the
-children to have runtime PM work just locally in the driver. This
-should be generic and common change for all i3c devices and should
-not have any other impact.
+Nit: I think to be consistent, with command names in section headings below,
+the API name heading above should not be inlined.
 
-With these changes, I3C client device works and able to invoke
-master driver registered runtime PM callbacks.
+> =20
+>  The main ioctl to access SEV is KVM_MEMORY_ENCRYPT_OP.  If the argument
+>  to KVM_MEMORY_ENCRYPT_OP is NULL, the ioctl returns 0 if SEV is enabled
+> @@ -87,10 +81,6 @@ guests, such as launching, running, snapshotting, migr=
+ating and decommissioning.
+>  The KVM_SEV_INIT command is used by the hypervisor to initialize the SEV=
+ platform
+>  context. In a typical workflow, this command should be the first command=
+ issued.
+> =20
+> -The firmware can be initialized either by using its own non-volatile sto=
+rage or
+> -the OS can manage the NV storage for the firmware using the module param=
+eter
+> -``init_ex_path``. If the file specified by ``init_ex_path`` does not exi=
+st or
+> -is invalid, the OS will create or override the file with output from PSP.
+> =20
+>  Returns: 0 on success, -negative on error
+> =20
+> @@ -434,6 +424,21 @@ issued by the hypervisor to make the guest ready for=
+ execution.
+> =20
+>  Returns: 0 on success, -negative on error
+> =20
+> +Firmware Management
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +The SEV guest key management is handled by a separate processor called t=
+he AMD
+> +Secure Processor (AMD-SP). Firmware running inside the AMD-SP provides a=
+ secure
+> +key management interface to perform common hypervisor activities such as
+> +encrypting bootstrap code, snapshot, migrating and debugging the guest. =
+For more
+> +information, see the SEV Key Management spec [api-spec]_
+> +
+> +The AMD-SP firmware can be initialized either by using its own non-volat=
+ile
+> +storage or the OS can manage the NV storage for the firmware using
+> +parameter ``init_ex_path`` of the ``ccp`` module. If the file specified
+> +by ``init_ex_path`` does not exist or is invalid, the OS will create or
+> +override the file with PSP non-volatile storage.
+> +
 
-Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
----
- drivers/i3c/master.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+This one LGTM.
 
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 3afa530c5e32..a3dc88974f92 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -13,6 +13,7 @@
- #include <linux/kernel.h>
- #include <linux/list.h>
- #include <linux/of.h>
-+#include <linux/pm_runtime.h>
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/workqueue.h>
-@@ -2812,6 +2813,10 @@ int i3c_master_register(struct i3c_master_controller *master,
- 
- 	i3c_bus_notify(i3cbus, I3C_NOTIFY_BUS_ADD);
- 
-+	pm_runtime_no_callbacks(&master->dev);
-+	pm_suspend_ignore_children(&master->dev, true);
-+	pm_runtime_enable(&master->dev);
-+
- 	/*
- 	 * We're done initializing the bus and the controller, we can now
- 	 * register I3C devices discovered during the initial DAA.
-@@ -2849,6 +2854,7 @@ void i3c_master_unregister(struct i3c_master_controller *master)
- 	i3c_master_i2c_adapter_cleanup(master);
- 	i3c_master_unregister_i3c_devs(master);
- 	i3c_master_bus_cleanup(master);
-+	pm_runtime_disable(&master->dev);
- 	device_unregister(&master->dev);
- }
- EXPORT_SYMBOL_GPL(i3c_master_unregister);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Other than the nit,
 
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--eUPRBjCtZiK17fws
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZd7+IAAKCRD2uYlJVVFO
+o162AQCcn8Ku0qmJzR0aVZhAlymyxJjRteYpeKWfN7U4NfghawEAkNBc12XmmmJP
+8LB8u3zNlnOBbkVipGKxB+YnRI5WQQ8=
+=Hybi
+-----END PGP SIGNATURE-----
+
+--eUPRBjCtZiK17fws--
 
