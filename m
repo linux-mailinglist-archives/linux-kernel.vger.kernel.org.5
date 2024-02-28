@@ -1,125 +1,98 @@
-Return-Path: <linux-kernel+bounces-85610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5387B86B845
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:35:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E38D86B847
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85FBC1C25177
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:35:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C05841C2442D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAE87146015;
-	Wed, 28 Feb 2024 19:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EmW+BrHs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4E71332BC;
+	Wed, 28 Feb 2024 19:35:47 +0000 (UTC)
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B50974413;
-	Wed, 28 Feb 2024 19:35:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788BD2CA8;
+	Wed, 28 Feb 2024 19:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709148909; cv=none; b=WSJkSvjgwr/RsPbcwRiGrNAxoPuWYyHXmrnZNSx5eA2nDPbzfjpAcHqGxqbCxJjsoN9Gy0Ym2XfWjBmetTi4Q+ucfD7bQC1Ihznxm8L7jLfQ/h5OckWVLM8RhxKZQx9g87GBzuDrR/UPo2jAVGfdNiVjElhRXx6sBjmG1DDHpLc=
+	t=1709148947; cv=none; b=UfE0aoAdOkYnnB5P0dJ3ckd6Q4o+Wco6F5awzaX0SHva1xSN4p3+dTsm0VLdnE/7XEZnRQqqpmbyiIDs3q6fmMt9d+hkI2BxZLpDiBaXiFUHY5sDRVAlw3Ie27IKx5GhvmP1J42bw5VznLv8NRZphy8/XaQV6MGtJWQWoeUGcfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709148909; c=relaxed/simple;
-	bh=Uym1km90jfZMuTJ+0Ntvz9OhbaTkbIPMPpk5s7b4d8A=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=niNuQ9ocVMAa5UhFavKjKReRXOPhKUfE3LFejrUCJzRSQPYW8/qUZaQ1xUTfoCazNX51B9Ok0zXipZjMC+Ipt1VopOfqz9t85xZZXnK0QqFRrL9VSlXHNVgItY5/fCa5Lp1UyFJvZA2RTFl0dug4jAFAlQ96HQvsZMKVZ5JOsss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EmW+BrHs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AB56C433C7;
-	Wed, 28 Feb 2024 19:35:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709148908;
-	bh=Uym1km90jfZMuTJ+0Ntvz9OhbaTkbIPMPpk5s7b4d8A=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=EmW+BrHsD9Qz1QoqJkLpg3c6cM9Xojkg2ra11HYCoP/1LDDOWM4P8DU+MTdP3XuxO
-	 Zt+ESIF1Ll5lJikG8jYq+TM/STBZR+jWSgyLX285aY8qjiuH0ADMGxly6E3mmLSwS5
-	 VFUk9G7RlY91r45tWc1oU3XB6nK9IDobx+mC9bkDnt8runGn2qNup4/lIMI8QF72PX
-	 aJPfZhd7mQIxjSUN43Gp4E3/YmP2eGwEN4OIulG8Jc9dHeqq30ySZ9KKBWnqtZoZAv
-	 cIg9vBxBpvX+BsFqSu4LaqOPuRkZp14PZyNTU+ng+/uLoVA4siyX3hGxPvmTnzmjr1
-	 yqeh0HaBE0oPA==
-Date: Wed, 28 Feb 2024 19:34:58 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Rob Herring <robh@kernel.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Alex Soo <yuklin.soo@starfivetech.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
- Hal Feng <hal.feng@starfivetech.com>,
- Ley Foon Tan <leyfoon.tan@starfivetech.com>,
- Jianlong Huang <jianlong.huang@starfivetech.com>,
- Emil Renner Berthing <kernel@esmil.dk>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Drew Fustini <drew@beagleboard.org>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
-Subject: =?US-ASCII?Q?Re=3A_=5BRFC_PATCH_v2_1/6=5D_dt-bindings=3A_?= =?US-ASCII?Q?pinctrl=3A_starfive=3A_Add_JH8100_pinctrl?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20240228170338.GA239206-robh@kernel.org>
-References: <20240220064246.467216-1-yuklin.soo@starfivetech.com> <20240220064246.467216-2-yuklin.soo@starfivetech.com> <1a11cee2-2ef1-4ce0-8cc1-63c6cc97863f@linaro.org> <20240220-bottling-reverence-e0ee08f48ccc@spud> <cafccf8d-b8f7-44cb-bc41-3c7a908fd1e4@linaro.org> <20240223002443.GA3877354-robh@kernel.org> <caea26e2-6598-4796-b199-4ee5b1b9cd30@linaro.org> <20240224-smudgy-eldercare-d5d8640d9961@spud> <20240228170338.GA239206-robh@kernel.org>
-Message-ID: <6CB89570-8BBE-4323-AB75-4D0582AD1058@kernel.org>
+	s=arc-20240116; t=1709148947; c=relaxed/simple;
+	bh=+6etF/fq7ldjOI/GyGfq1efGbshb281kNLWkoDRIiYY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=NJAHaHBNDvhh9PChFSwS4LdVHmXAaoI7+5QURV8SR+snMqJ9xiWyBpaOe1UHtwc+mctGvzhyXguYPch+1yB9GXgv7k12Y6pUHJmbmwGaqj1Y9CN3asrk1Siv6bexEsGQ4cH6G4IMEbpkf3Q9ozeHmklyT3kK5DkQiT3qT+qJGSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6e4aa4877a9so14577a34.0;
+        Wed, 28 Feb 2024 11:35:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709148944; x=1709753744;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qXxRrKueZ7Vtn7mi6LjZZurm7sEhUkklteXK7bV+wK0=;
+        b=o7aEJuUWE6UJXbyE66fWmMFeOQVVIv6+MEuAlsicuksaZ5t7/yzkThaS6cQqOh0Ih4
+         SRZ+8edJxXpOhvm4Wohy3gj0lONTmCv/iMYTdc+az35Nof8FfnmUd2DOUYMpjegBHln3
+         hm8ZgKHwDtOUMeMrDJ/c3kDSsqSLnRT+aAOAiFvb/a5dY0HNiy4q6BATflj2taurzsmi
+         X9+IQCLewCpKN53Mlmi6tSMi8/tHDp9nWuvo5aPnO3CP8XPqIYKkutI2nmrIsA11ZpFS
+         9epGww1Wfg0IVoQFS56VNwewxhuNR7vsZb8IMc+FBLRpdFiDIV0zZ6IZGrHNrKqXmhm6
+         7avg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKlryZUQP4P8wWCJn10pEOOhWxocSljC0NYrDISQK2Sg7qUemq308u9y1dt7IKotwm67mUdvFHsUNg0oQ+bBebM3I0tBwxdhaPiLH8
+X-Gm-Message-State: AOJu0YxhHahawItyTLG/3jpJCyzLSFjzryhE3BqP1uX+q1QbBV/RRDuT
+	I/cVK++U3mf1NSPDD9veh1cxYvM9tS26f2lB36GzkjUGEC2nEr3/8ldU7PXMIZP6pcuxVYGk2IC
+	dn4SNvxSp2e2daBCMTIheJeCOSINqBVkLpcs=
+X-Google-Smtp-Source: AGHT+IHlA/ryiasXjC2chxTtgTt63LIwNqQHfaBtieBiN9f4Zo/yWMzTVpnvGQpjFIJ59MjDAHS7FSolYg33sE41gL0=
+X-Received: by 2002:a05:6820:d09:b0:5a0:3d13:a45a with SMTP id
+ ej9-20020a0568200d0900b005a03d13a45amr86864oob.0.1709148944537; Wed, 28 Feb
+ 2024 11:35:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 28 Feb 2024 20:35:33 +0100
+Message-ID: <CAJZ5v0jnP3cJ=tVobm310iLQR0A7n+_wtp9vAefGC_NJ0G2aGQ@mail.gmail.com>
+Subject: [GIT PULL] ACPI fix for v6.8-rc7
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: ACPI Devel Maling List <linux-acpi@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+
+Hi Linus,
+
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-6.8-rc7
+
+with top-most commit e0359f1551b8d4a8d00704699c07fabb11a07cf1
+
+ Revert "ACPI: EC: Use a spin lock without disabing interrupts"
+
+on top of commit b401b621758e46812da61fa58a67c3fd8d91de0d
+
+ Linux 6.8-rc5
+
+to receive an ACPI fix for 6.8-rc7.
+
+This reverts a recent EC driver change that introduced an unexpected
+and undesirable user-visible difference in behavior (Rafael J. Wysocki).
+
+Thanks!
 
 
+---------------
 
-On 28 February 2024 17:03:38 GMT, Rob Herring <robh@kernel=2Eorg> wrote:
->On Sat, Feb 24, 2024 at 07:20:30PM +0000, Conor Dooley wrote:
->> On Sat, Feb 24, 2024 at 09:46:53AM +0100, Krzysztof Kozlowski wrote:
->> > > I would like a solution though=2E The only idea I have is passing=
-=20
->> > > SystemReady cert, but that's an Arm thing=2E
->>=20
->> I don't know jack about SystemReady
->
->AIUI, Risc-V is working on something similar=2E=2E=2E=20
+Rafael J. Wysocki (1):
+      Revert "ACPI: EC: Use a spin lock without disabing interrupts"
 
-Probably, but there's a few other things they need to ratify first w=2Er=
-=2Et=2E booting before they're at the point of implementing something like =
-SR=2E
-They still seem to think they need to invent their own discovery mechanism=
-, so my hopes aren't super high for what they produce=2E
+---------------
 
->
->The primary intent of it is to enable installing off-the-shelf OSs=2E
->
->> - I had it in my head that it was a
->> system level certification=2E I am wondering how you think that
->> SystemReady certification would apply to a whole binding (I can see it
->> being a per-compatible thing, but that would be a mess I am sure)=2E
->
->There's a lot of pieces, but I'll stick to the DT aspects (which is=20
->SystemReady IR band)=2E Certification applies to a specific firmware buil=
-d=20
->(which includes the DTB) on a specific board=2E The testing requirements=
-=20
->at the moment (for 2=2Ex) are every binding (compatible) must have a=20
->schema, but warnings are allowed=2E=20
->
->So a "stable" tag would apply to a DTS as a whole=2E That of course=20
->implies that everything within the DTS is stable too=2E=20
-
-Right, so it would be on a per-compatible basis then=2E I guess not altoge=
-ther different from marking a compatible deprecated=2E
-
->One wrinkle is that SR has no direct requirement that the DTB come from=
-=20
->anything upstream=2E Indirectly, the schemas must exist and be upstream=
-=20
->(or acked on the lists) and various distro kernels have to actually=20
->boot=2E For that reason, if we had some tag, it would have to be=20
->distinct from SR=2E
-
-And for the reason that other architectures may want to use it I suppose!
+ drivers/acpi/ec.c | 112 ++++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 66 insertions(+), 46 deletions(-)
 
