@@ -1,108 +1,120 @@
-Return-Path: <linux-kernel+bounces-85640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B0AD86B890
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:49:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D70C86B893
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:49:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D0971C24D13
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:49:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5537CB22E26
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244FC15DBAE;
-	Wed, 28 Feb 2024 19:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PWq3WaT+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66965E07B;
+	Wed, 28 Feb 2024 19:49:24 +0000 (UTC)
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BAD5E09B;
-	Wed, 28 Feb 2024 19:48:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D095E06B;
+	Wed, 28 Feb 2024 19:49:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709149706; cv=none; b=e2+MuNRX6y9H8EWMpq0uKAosulWXYohC8dNf8vXLqOPUXmAw4v+EnihcddVQTf8mKP7CFLnpPbjrf1S4p/LO6IrzbJQsz5KGloHdrD02Z2kD6o6wjTzFnv190BHdlf5pr5Q57IFEFzb/SILB7dnSrLuWU1zT1tNFYrBRoV9B7pM=
+	t=1709149764; cv=none; b=goLblhb0ExL1rr53ZAWozHGqf8tiU5JjN9OoIWwkIno9bpdMMLuVUfn9G0ASszCUUxOZxqHCEjjVeuryRGR+Ksahjx2MQGM45kdTQZEDQrDQmGrFrCbQttkL+u4B6guMmFy1pPobVUS39axGL6Ha7InBFoZ3qu2oHAUyb00CbCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709149706; c=relaxed/simple;
-	bh=RICB52h8F07eWZ8R3FPvLlk8h5Ejw6F2UCLBQVHpQqw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pYmD9zgL2PJJgt+8MDbfCMdKWs3u6cpIheYqVO4F6MuP5L7lC0ZjKmFa+rX9G3gUMsqfOusxlaOElTrsINbzOkC3DkISQkMK7mO02qfp7W3ofwIetZFO3Ar25Q6lPp8GbBYj0sxdH1tk0sTWsQqikN/yE8Yj4HC87ZVgw6M7vMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PWq3WaT+; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709149705; x=1740685705;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=RICB52h8F07eWZ8R3FPvLlk8h5Ejw6F2UCLBQVHpQqw=;
-  b=PWq3WaT+YziUJylxrZS1iXa5tL8n/9oRG9jfvLTVjhuziMUBNedZPzMr
-   teLbpKVxq7khSr88JZyUHZciIewZR05jG6iVYzXX+FjNZhATcDyTUF9T0
-   IoN4Ss3QUaPGBVh6gftJ1LG+9q2iro1YW0iGtQUEKlq/G8bEBGcynwGiz
-   l5/YMB55c0JcSm/bQE0yQfxusFCg8rxvkT/ftJ1LQLnm+iLLIKxPbg5R9
-   epyJHdKN3H0dzk4H+iYPSasoVCDhxZFcL+kaRGs399iYVxjknLEXRI85o
-   sG9z/BmF4MS2/01GEA30xK/m48F+AY5rXRvdmWDX3376TJdtzpON19sHE
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14992232"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="14992232"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 11:48:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="937034611"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="937034611"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 28 Feb 2024 11:48:21 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id AA0D51C5; Wed, 28 Feb 2024 21:48:20 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Mark Brown <broonie@kernel.org>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 1/1] spi: pic32: Replace of_gpio.h by proper one
-Date: Wed, 28 Feb 2024 21:48:08 +0200
-Message-ID: <20240228194818.3606841-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1709149764; c=relaxed/simple;
+	bh=hNwxsxFHkT45A9U15lhdDgR4JMddTjGXDbtNCjzgf30=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=boDmGX4ekuw5YzcL92RYe1W1DvB+kSI2nrMQvtxdD+G6sG7pm4hhFgVK2Wv2HPm/e5kdm3AzQtaewn3f1jle0K+D2we8Y6mY6s7I2dXqKGmPnPYEIhoJ6x1lE1+kM/bmRNRW61Ds0MqfXE2l5odt8wqboeN4BTDexqK/Xokix34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a05210e560so8003eaf.1;
+        Wed, 28 Feb 2024 11:49:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709149762; x=1709754562;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HE1qZn3b1IzgdRSGPsE7fyXZDTJIgSzw+q5wgzCIoO4=;
+        b=s/T+DIVAUCXSDDFKCVHpbEvJtjgKAjAmEobt0Ss8rCyBiLynkbMC64azZpBxkkARYq
+         EcEtKH6zcnakyLqYBfFNWnK9P2BsPnSSpnJhIpwy3ny6zVHDy2HibiDFgJWMJlySu9KV
+         WMsHDnYoRCm+Qd1aGYTOXRii/jll/6nFA1RWb0Ba3CDuYnblXsI/OADQDelt92AfW2t4
+         vyW6poL/tqVG6zX4ZKqa/9k+iZClU81JJ4/rqJo20obaEby0Un1Xiebx6u+I9eSLLKwc
+         GYXwZdnqobfgrdcBqztsd+HMhjBOrJu4pq3HBkXqAphYckjD8573/TvXE3Amb3Ddt75/
+         n0kg==
+X-Forwarded-Encrypted: i=1; AJvYcCVESbSkd8r/gjAM7nrrqOZ2jVAdEb98ljNWg1zYIGd2RiVpmmHj5vFmsYf+OL18Nm0PzBkV2V1rLo3Z0Sf8HeqmDMrclxxuMXTKarxf6s6AMIKNk2h4CXOhdXMqSjinWjpXxkwbzZQ=
+X-Gm-Message-State: AOJu0YyJKqvKioaCxd9GyvmYrZuZP0IwMPo3xFF8YxIuEVhKYeTTz+cA
+	eaqocShC4VC+t3a4sVao+HrYLauLybMcvb84aGEHez1kpv08+9ICypQ2jhJUuTi200AqLSw6q8P
+	qloXQ4E04k3dMTtyu3jMZXdTJ3Yc=
+X-Google-Smtp-Source: AGHT+IE+xd7u/DgBb1KRV3ePR137ikxvmmIT3/LJpCMU6zKr3aTutJNpQUrMVOtwKXAPYGcHnR9vTYjuqS4mlX+JW2o=
+X-Received: by 2002:a4a:d317:0:b0:5a0:2cbe:43dd with SMTP id
+ g23-20020a4ad317000000b005a02cbe43ddmr58582oos.1.1709149762003; Wed, 28 Feb
+ 2024 11:49:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240227194112.1289979-1-srinivas.pandruvada@linux.intel.com>
+In-Reply-To: <20240227194112.1289979-1-srinivas.pandruvada@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 28 Feb 2024 20:49:10 +0100
+Message-ID: <CAJZ5v0iC4+SiBK6efdC1ALEEG9Yb0iO0LCvMa8qwFhTZrQzqQg@mail.gmail.com>
+Subject: Re: [PATCH] thermal: int340x: processor_thermal: Add Lunar Lake-M PCI ID
+To: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: rafael@kernel.org, daniel.lezcano@linaro.org, lukasz.luba@arm.com, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-of_gpio.h is deprecated and subject to remove.
-The driver doesn't use it directly, replace it
-with what is really being used.
+On Tue, Feb 27, 2024 at 8:41=E2=80=AFPM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> Add Lunar Lake-M PCI ID for processor thermal device.
+>
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> ---
+>  drivers/thermal/intel/int340x_thermal/processor_thermal_device.h | 1 +
+>  .../thermal/intel/int340x_thermal/processor_thermal_device_pci.c | 1 +
+>  2 files changed, 2 insertions(+)
+>
+> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_devi=
+ce.h b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
+> index 95c6013a33fb..674f3c85dfbc 100644
+> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
+> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
+> @@ -25,6 +25,7 @@
+>  #define PCI_DEVICE_ID_INTEL_HSB_THERMAL        0x0A03
+>  #define PCI_DEVICE_ID_INTEL_ICL_THERMAL        0x8a03
+>  #define PCI_DEVICE_ID_INTEL_JSL_THERMAL        0x4E03
+> +#define PCI_DEVICE_ID_INTEL_LNLM_THERMAL       0x641D
+>  #define PCI_DEVICE_ID_INTEL_MTLP_THERMAL       0x7D03
+>  #define PCI_DEVICE_ID_INTEL_RPL_THERMAL        0xA71D
+>  #define PCI_DEVICE_ID_INTEL_SKL_THERMAL        0x1903
+> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_devi=
+ce_pci.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_p=
+ci.c
+> index d7495571dd5d..4e1dfd283651 100644
+> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.=
+c
+> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device_pci.=
+c
+> @@ -407,6 +407,7 @@ static SIMPLE_DEV_PM_OPS(proc_thermal_pci_pm, proc_th=
+ermal_pci_suspend,
+>  static const struct pci_device_id proc_thermal_pci_ids[] =3D {
+>         { PCI_DEVICE_DATA(INTEL, ADL_THERMAL, PROC_THERMAL_FEATURE_RAPL |
+>           PROC_THERMAL_FEATURE_FIVR | PROC_THERMAL_FEATURE_DVFS | PROC_TH=
+ERMAL_FEATURE_WT_REQ) },
+> +       { PCI_DEVICE_DATA(INTEL, LNLM_THERMAL, PROC_THERMAL_FEATURE_RAPL)=
+ },
+>         { PCI_DEVICE_DATA(INTEL, MTLP_THERMAL, PROC_THERMAL_FEATURE_RAPL =
+|
+>           PROC_THERMAL_FEATURE_FIVR | PROC_THERMAL_FEATURE_DVFS | PROC_TH=
+ERMAL_FEATURE_DLVR |
+>           PROC_THERMAL_FEATURE_WT_HINT | PROC_THERMAL_FEATURE_POWER_FLOOR=
+) },
+> --
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: fixed typo in Subject
- drivers/spi/spi-pic32.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/spi/spi-pic32.c b/drivers/spi/spi-pic32.c
-index f55b38c577e4..709edb70ad7d 100644
---- a/drivers/spi/spi-pic32.c
-+++ b/drivers/spi/spi-pic32.c
-@@ -11,13 +11,13 @@
- #include <linux/delay.h>
- #include <linux/dmaengine.h>
- #include <linux/dma-mapping.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/highmem.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/interrupt.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
--#include <linux/of_gpio.h>
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
--- 
-2.43.0.rc1.1.gbec44491f096
-
+Applied, thanks!
 
