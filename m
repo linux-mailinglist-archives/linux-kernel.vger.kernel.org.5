@@ -1,113 +1,113 @@
-Return-Path: <linux-kernel+bounces-85632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5FF586B875
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:42:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D838086B877
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6140C28AC91
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:42:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D7C9B22016
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 095AC5E071;
-	Wed, 28 Feb 2024 19:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31C345E06A;
+	Wed, 28 Feb 2024 19:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="McIgWXQL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lErPlaJc"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477125E064;
-	Wed, 28 Feb 2024 19:41:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2AD5E062
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709149295; cv=none; b=NDUFzgGmiIiyqWxPHRvBgamFjbNFvSHPcgwrd5UscNUiWqLGh9QHeY5J4Uh2OaS4X9V2J5XXbzNdEbI8nBGp8uSMPPH9kiOdxSuez+os6JZzifu7qW0ocZ8u4Rl4fCzu6A8anIFxbG+2N3FyvOPwQqHh8MPSjqvmtNrslZvC1go=
+	t=1709149451; cv=none; b=b+UXvyaCTFTEA7yRvkraV9Oj5X9F1pfb8Blmi5dBJKM8hJwLGH30Rbk2zpTxMMQVOiCAj7cNF25HE4VPny3YOz/q24U5bcD4BWfHMlFkozDtSbnAuLwmgA2rfl4VeioVRpiVqzJs/ybS+Aw+jCu17D4MMMUdEcgowMdocoC9RoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709149295; c=relaxed/simple;
-	bh=NPzyxwGeYXka5gn3GSClv08yHw0AIL3RUtkhYEIB4Wg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=gs/pc4xCcVuSWZSy+VAzpk8k3s+Yt0xEW8CDR8kRDn4i1SBzN41mMfQXIlEfhHq4UCC741lObyfvGVLSY6VVpT0H3fd2HdY4C7zEoxq+uAbVoyJeC11ygpLBd55c9UJ8n1VJ9xDsYj/GSdkYkbqUSH5tgXMkQ3/3JJGv/PnARpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=McIgWXQL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8832C433F1;
-	Wed, 28 Feb 2024 19:41:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709149294;
-	bh=NPzyxwGeYXka5gn3GSClv08yHw0AIL3RUtkhYEIB4Wg=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=McIgWXQLxWsmvp/4CoIA6FzhNKEtocy6+giqblpmPudKRUvdS3pDFPbKvAAp603Ga
-	 6vaPUQEPp6nxYA+EU3/lHnVCjf/l8xH/Wwgqd643QXjBWhTvCMk9i6siY+tcWW8ma0
-	 t1C3usPFza3lVr5yPx4aHmAzfYjxN+SCVx0mTcAjccFHcNlQNpVQVvKyI/x73LdauJ
-	 0dUFejxdx73g8UdrMStTk2mOa7Gk7Rp6rYYSjHIddwrhNsf+kC/CISd3M7AXaDvkNW
-	 FA8Y0SszP/UA1eGxveBLhGq0EQ0s4N86CCFvqlYyZAvteRVCC40hWCIV0Ra0tgjcva
-	 0b9KWq/TNqznw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 38A90CE03F3; Wed, 28 Feb 2024 11:41:29 -0800 (PST)
-Date: Wed, 28 Feb 2024 11:41:29 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Ankur Arora <ankur.a.arora@oracle.com>,
-	Thomas Gleixner <tglx@linutronix.de>, kernel-team@meta.com
-Subject: [PATCH RFC bpf] Chose RCU Tasks based on TASKS_RCU rather than
- PREEMPTION
-Message-ID: <847ac98b-886d-4f91-b961-2bb452555af0@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	s=arc-20240116; t=1709149451; c=relaxed/simple;
+	bh=V0ilXmhRKxli9jjfPc07HZw+QOYaraP3+0PgQZD1VWc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ct24DUq1Ko2Wtb9ELmIFvQPR6ReE0Nrj8O7uvZ6lsgHxokCgvTcD4hOi+Lq0Pr4gpXqPrd4l5rpuIsYClT0HTdIEgmLJTqXaucunY6kQx/nqOpgiKKcY3YDggmY2HrPuzmBqVgN9+1GneqnK9KBXwEyU/2Mfc1wN23xYpVs/mck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lErPlaJc; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709149450; x=1740685450;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=V0ilXmhRKxli9jjfPc07HZw+QOYaraP3+0PgQZD1VWc=;
+  b=lErPlaJcaPgnuhAgCzPdqHdKiF0xncXldjv8qwR1unrCDL72PYpa17Dr
+   zZ7OsZucQYZECKyLXTUA2XheKQvjnIfs+Y2SOWqOMYSm9vqQ+tbmMuZlF
+   pv2er91q7WcatHcFyxHLsDf9SGrEc9WywCwagq/myHM94FNEso/dWkD4+
+   KPZL1A3fek5izm+UjIikfHOxbvBgt88de8EaULSnarybIa1uI/MR2Wfw2
+   sbCsTZsTTgF2bSDj+/38Bb2d0AIQUxxBwsIVvLihgSPiDN2ayVSqxGeQy
+   al00KE9aZmDLSujnzMM1p82QcKW/he89/mWF8C3BcSh2ZcbUZC0RLDzh4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14216819"
+X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
+   d="scan'208";a="14216819"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 11:44:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
+   d="scan'208";a="7502494"
+Received: from lucas-s2600cw.jf.intel.com ([10.165.21.196])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 11:44:07 -0800
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Oded Gabbay <ogabbay@kernel.org>,
+	=?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+	Arnd Bergmann <arnd@kernel.org>
+Cc: Lucas De Marchi <lucas.demarchi@intel.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Matthew Brost <matthew.brost@intel.com>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Matt Roper <matthew.d.roper@intel.com>,
+	intel-xe@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] [v2] drm/xe/kunit: fix link failure with built-in xe
+Date: Wed, 28 Feb 2024 11:44:35 -0800
+Message-ID: <170914939984.3691978.2185510121426316962.b4-ty@intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240226124736.1272949-1-arnd@kernel.org>
+References: <20240226124736.1272949-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-The advent of CONFIG_PREEMPT_AUTO, AKA lazy preemption, will mean that
-even kernels built with CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY
-might see the occasional preemption, and that this preemption just might
-happen within a trampoline.
 
-Therefore, update bpf_tramp_image_put() to choose call_rcu_tasks()
-based on CONFIG_TASKS_RCU instead of CONFIG_PREEMPTION.
+On Mon, 26 Feb 2024 13:46:36 +0100, Arnd Bergmann wrote:
+> When the driver is built-in but the tests are in loadable modules,
+> the helpers don't actually get put into the driver:
+> 
+> ERROR: modpost: "xe_kunit_helper_alloc_xe_device" [drivers/gpu/drm/xe/tests/xe_test.ko] undefined!
+> 
+> Change the Makefile to ensure they are always part of the driver
+> even when the rest of the kunit tests are in loadable modules.
+> 
+> [...]
 
-This change might enable further simplifications, but the goal of this
-effort is to make the code safe, not necessarily optimal.
+All 3 patches applied to drm-xe-next. Thanks!
 
-Only build tested.
+[1/3] drm/xe/kunit: fix link failure with built-in xe
+      commit: 0e6fec6da25167a568fbaeb8401d8172069124ad
+[2/3] drm/xe/mmio: fix build warning for BAR resize on 32-bit
+      commit: f5d3983366c0b88ec388b3407b29c1c0862ee2b8
+[3/3] drm/xe/xe2: fix 64-bit division in pte_update_size
+      commit: 1408784b599927d2f361bac6dc5170d2ee275f17
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: <bpf@vger.kernel.org>
-
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index d382f5ebe06c8..5085f66b33890 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -333,7 +333,7 @@ static void bpf_tramp_image_put(struct bpf_tramp_image *im)
- 		int err = bpf_arch_text_poke(im->ip_after_call, BPF_MOD_JUMP,
- 					     NULL, im->ip_epilogue);
- 		WARN_ON(err);
--		if (IS_ENABLED(CONFIG_PREEMPTION))
-+		if (IS_ENABLED(CONFIG_TASKS_RCU))
- 			call_rcu_tasks(&im->rcu, __bpf_tramp_image_put_rcu_tasks);
- 		else
- 			percpu_ref_kill(&im->pcref);
+Best regards,
+-- 
+Lucas De Marchi <lucas.demarchi@intel.com>
 
