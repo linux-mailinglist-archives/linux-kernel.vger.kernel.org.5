@@ -1,130 +1,97 @@
-Return-Path: <linux-kernel+bounces-85709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ED2C86B9AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:13:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E01E86B9B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:14:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BDD11F25C87
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:13:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F9EA1C24E19
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A43C86244;
-	Wed, 28 Feb 2024 21:13:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Kqarl1gF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BCD213AF2;
+	Wed, 28 Feb 2024 21:14:50 +0000 (UTC)
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F27686264;
-	Wed, 28 Feb 2024 21:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72CD86241;
+	Wed, 28 Feb 2024 21:14:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709154786; cv=none; b=qgEcygJnDxRSQ7S5e/z1X/rLlc3N2/94iDLEOvu7BTmK7itjcoPILL9MfdZ2wGy4K9q4hqgr6CteyoQa5b25FAk9lYGQ9Q99pxjeKkcD6SysOfL4uhWkMi7T6GiaLJrYLaymmsxOAM4xD6ZMJIbpqoSiom/UhgGoWz7JKXuroT8=
+	t=1709154890; cv=none; b=lCmNbR4W3qwIdm0NfxH363zHis8xuoTiGP7j1k+Q8qJ3FZdX2FxmNCtThL7paAPBQVjWzKOYTvnHnIszn7anYLb3M86RR4q9jm60HOIDHtegw2Qoe9/OmiQrbYrbEFbljat9vUUtHyZfAAtz1Y0ASX/gFOJM756a0793SMVPwF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709154786; c=relaxed/simple;
-	bh=bvfUvyOHM3B822eF9dQJqvD3Ut/r4uRrCEE6r01GjYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qLRjYyRxbY9Z+Ux+AxqNb79w9wqIEGM9LPv644e5AOIVmVamNqowvuyx1P/HJtg0Hamj6RUWTeYmFLJEiMG9L6xizzQqLwvZhGft7gAlKtjeZHfnWJ6u0tqaWYGqtcNmBQizgJvl9bnfRQhsXQP0OJgDNiOSZI/JpTPbFXQYMI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Kqarl1gF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B642EC433F1;
-	Wed, 28 Feb 2024 21:13:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709154785;
-	bh=bvfUvyOHM3B822eF9dQJqvD3Ut/r4uRrCEE6r01GjYw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Kqarl1gFzSFgUHKI4+aF3qtI9/m/lCwKKbHSTC+a6BfbeMn7aHR6zeCH+9a0Me85P
-	 pCZ28Qjpv5qMPywj2dUTqIG9ZfJitSLdnM2COofeKn7SfJKBSfCN4/3zQj1i+1MP8U
-	 bfWE19hieEH58AhQwv7wL40+2kX1PlCdCJ7oqk8Wn0PDjzOjUkRFZJIX++6DjqSto0
-	 N3UvDPyxfiQ3/gh3gnK+p9tRK21b86MQ9nO/KmjAPTNdNQYe7wddoSlLw4//TLzwt5
-	 BT5d2W6O2FuIEbXaKNjZmzu81bOV+9IqQHdnYscjwieDvq2OAB/0wcwdSV1VshZ8ey
-	 tvqRwRGOjNAzg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 4CC24CE03F3; Wed, 28 Feb 2024 13:13:05 -0800 (PST)
-Date: Wed, 28 Feb 2024 13:13:05 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>,
-	netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	Hannes Frederic Sowa <hannes@stressinduktion.org>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	rostedt@goodmis.org, mark.rutland@arm.com
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Message-ID: <5b74968d-fe14-48b4-bb16-6cf098a04ca5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <Zd4DXTyCf17lcTfq@debian.debian>
- <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
- <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop>
- <f1d1e0fb-2870-4b8f-8936-881ac29a24f1@joelfernandes.org>
- <CAO3-Pboo32iQBBUHUELUkvvpSa=jZwUqefrwC-NBjDYx4yxYJQ@mail.gmail.com>
- <e592faa3-db99-4074-9492-3f9021b4350c@paulmck-laptop>
- <CAEXW_YRfjhBjsMpBEdCoLd2S+=5YdFSs2AS07xwN72bgtW4sDQ@mail.gmail.com>
+	s=arc-20240116; t=1709154890; c=relaxed/simple;
+	bh=vga5pA+ojUatokeTJQVGmvG5MkhEI6W2dbJk1EB3qrE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sxYyLQePr0VpWq9q+N8mEzn5D3PuHAZJAr/qQQiMeAdhJgY4WTT/LOA+eh6rVvqHBjzQsdWt7QrQu9BAs0h1+Exe165c9/iDKHZ9lbQVu0H3k6UiJT+fDpCzJhBpWgZGyiUtj+b908TXqqwM8uMz94wNGm5d/qdEGaeYIFAHeIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e2b466d213so38915a34.0;
+        Wed, 28 Feb 2024 13:14:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709154888; x=1709759688;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W9hD0YbFqBXT/nXqtV3fYDeNO40gmiO0A4+0rNHvkIk=;
+        b=LAnkfUFSGPyR3aqU8uuC+Ig2vg6IVv8WgofgMh6a3JasuoM//1CUthoRTPVljKXWCC
+         v66FbGzP9To6h/7HHOJgqopDoiHZ1N6UzkHl8dWGp+fTSElNB3iTR/LSw57Cc1+tCHH8
+         PKEvXtAU0tKsri+X6+NtVYMrSeSnBlcT/CIm7n9Q592BK9BBLsqqd/mT9E8nLcJli/NA
+         tRuCw2xzs25ueIsGRV5UvV6kexeYz02wBFDcz3G1cS2qM7iOKMa/rUKDgb/DIGo5pZ4p
+         swbUAID13R6c8HmG3s6IezaVmCIP46niOFF2dWn0PAf1LTdgOb0KOSWhPDgiJcNfO5gT
+         C4fg==
+X-Forwarded-Encrypted: i=1; AJvYcCXVfGiR3A93Yxcp3lN3DSrI915qpcyHgLMQ/apPGHNqTuzkx/LDEL3tPTL/eC7A4YLpomUAbkZrfX79vvNEyAEhZZs+HvrKq0IBLZ9HOBfC+cHjscI+ba/C0vzZzsCQCChU8Cf7fdrZWw==
+X-Gm-Message-State: AOJu0YxANWcdDB5ThaW8kNNrSINfcJ+nGMcbsCwtAROtrjhWharwnWFX
+	SZAd8GBqzv5nhW864vmz0Vx68J00dcFX7s6YyfH0H7QYSE1fIqnofD1sBnS4HAsPTPZtDHNv3W3
+	XpRkmKHJPg5LC0Dhh22BqLbOqAEsHZkdx
+X-Google-Smtp-Source: AGHT+IFR7qFdUqz48+gGHmdyqSr7YuDPzeNmv6VTZEBxCB9UizCjvZI5i60mgaTaHiqy7YBJ7WfwSn306BNwE3vBPUA=
+X-Received: by 2002:a4a:620a:0:b0:5a0:6de5:a880 with SMTP id
+ x10-20020a4a620a000000b005a06de5a880mr347558ooc.0.1709154887860; Wed, 28 Feb
+ 2024 13:14:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YRfjhBjsMpBEdCoLd2S+=5YdFSs2AS07xwN72bgtW4sDQ@mail.gmail.com>
+References: <20240223155731.858412-1-andriy.shevchenko@linux.intel.com> <20240223155731.858412-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240223155731.858412-3-andriy.shevchenko@linux.intel.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 28 Feb 2024 22:14:36 +0100
+Message-ID: <CAJZ5v0gmJYZ==O_xn7v+=-9dr9n+GvV2TmcjWVsRvXc4F2UcYQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/4] driver core: Move fw_devlink stuff to where it belongs
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Sakari Ailus <sakari.ailus@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Scally <djrscally@gmail.com>, 
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 03:14:34PM -0500, Joel Fernandes wrote:
-> On Wed, Feb 28, 2024 at 12:18 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Wed, Feb 28, 2024 at 10:37:51AM -0600, Yan Zhai wrote:
-> > > On Wed, Feb 28, 2024 at 9:37 AM Joel Fernandes <joel@joelfernandes.org> wrote:
-> > > > Also optionally, I wonder if calling rcu_tasks_qs() directly is better
-> > > > (for documentation if anything) since the issue is Tasks RCU specific. Also
-> > > > code comment above the rcu_softirq_qs() call about cond_resched() not taking
-> > > > care of Tasks RCU would be great!
-> > > >
-> > > Yes it's quite surprising to me that cond_resched does not help here,
-> >
-> > In theory, it would be possible to make cond_resched() take care of
-> > Tasks RCU.  In practice, the lazy-preemption work is looking to get rid
-> > of cond_resched().  But if for some reason cond_resched() needs to stay
-> > around, doing that work might make sense.
-> 
-> In my opinion, cond_resched() doing Tasks-RCU QS does not make sense
-> (to me), because cond_resched() is to inform the scheduler to run
-> something else possibly of higher priority while the current task is
-> still runnable. On the other hand, what's not permitted in a Tasks RCU
-> reader is a voluntary sleep. So IMO even though cond_resched() is a
-> voluntary call, it is still not a sleep but rather a preemption point.
+On Fri, Feb 23, 2024 at 4:57=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> A few APIs that belong specifically to the fw_devlink APIs
 
-From the viewpoint of Task RCU's users, the point is to figure out
-when it is OK to free an already-removed tracing trampoline.  The
-current Task RCU implementation relies on the fact that tracing
-trampolines do not do voluntary context switches.
+It would be better to say which functions specifically you mean here.
 
-> So a Tasks RCU reader should perfectly be able to be scheduled out in
-> the middle of a read-side critical section (in current code) by
-> calling cond_resched(). It is just like involuntary preemption in the
-> middle of a RCU reader, in disguise, Right?
+> - are exposed to others without need
 
-You lost me on this one.  This for example is not permitted:
+This is not particularly precise.  I guess you mean that they could be
+static and are not, which is fair enough, but why not just say that?
 
-	rcu_read_lock();
-	cond_resched();
-	rcu_read_unlock();
+> - prevents device property code to be cleaned up in the future
 
-But in a CONFIG_PREEMPT=y kernel, that RCU reader could be preempted.
+This is completely unclear to me.
 
-So cond_resched() looks like a voluntary context switch to me.  Recall
-that vanilla non-preemptible RCU will treat them as quiescent states if
-the grace period extends long enough.
+> Resolve this mess by moving fw_devlink code to where it belongs
+> and hide from others.
 
-What am I missing here?
+This could be more precise.
 
-							Thanx, Paul
+Also I think that the patch is not expected to introduce functional
+changes, which could be mentioned here.
 
