@@ -1,134 +1,165 @@
-Return-Path: <linux-kernel+bounces-84813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46F7E86ABE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:10:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2393E86ABE3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 014F9286D41
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:10:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC839286BBD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63D0E36AEC;
-	Wed, 28 Feb 2024 10:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68C04374DE;
+	Wed, 28 Feb 2024 10:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="A/Yt6XK8"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ToUa9jT5"
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A27E3613E;
-	Wed, 28 Feb 2024 10:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343F8374C2
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709115016; cv=none; b=fsQ1apoOtLZnc17sMXeQ+D7bEnZV1yMVbjM6aOz73MkPURJJ26aDbviHoyAWY5lbi+B2jCj/B9wWqDuancLCbSlt6lUhVKK8be0ZbL7n5xZ60h9XjPw43sLF6Wih2D7BOb17aai+G/xDw9aHSq04V/5eXPXPE6YGgDCcrvBQJ8I=
+	t=1709114996; cv=none; b=dFfQCgLcQH5ShsvPGBVKTwRUtsPsjuv8V9YelaDkIV6jcbsOVaJxEQd+ShffC+7oimPV1YS52ZoN61z9+/thiOmdsSQGc57nOgf7VYuWJT/3ZLu8+0laDr02klgrH+mWzqs7fbv+p0f+g2eByIeOIxH6D93S7PIgCAOiw0v0LG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709115016; c=relaxed/simple;
-	bh=gDrqe1TCdETutZDRLxWC3iPRvaMUjmZdXz4Pg6I6EyA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=VEonGOu6lz38hqwrokmXSiABa7Yvm8desQymJdzlfPawnT4Tju4u5s614EwkNCusoy35m06CdxbTWuvJTrkS1sWgEhD59vJ3mE7jZG2uLW/TyBjJlXpEm8B7RtU9jAf0MVc5V9KUsMeoy21oTB4VVJOUjRRsCTEAsra2XdiLxdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=A/Yt6XK8; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S6VSf8009700;
-	Wed, 28 Feb 2024 10:09:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=F/s+thCeoDRDTCkLO/eC1Mvzb84PqPQpXoHEQ1eWBiA=; b=A/
-	Yt6XK8AhRgCQbjBtMjCSZqzDYrSnINWozkr0vnVTGqqJSVGHymK9ivj/k0x0o1uN
-	WYGtIoILPxfjc78PTJA2OvnoML0+UUsGUo585Mz1fSiPpVKaYw2klS+rrwXdCLCT
-	NOLUfZMGA963L5jPhQhT5QgIjm4N2uS2kmjpxTrQj63Y06y3+BDuTehFIK2+3y4O
-	5pb84JAY8o+RLBsmvEr/e2GS2g+5g4FFXlOGTMNsVqffYyYS0Fj8/f0QOlXMkGTH
-	zAjFwwNcdU00wbbm8hT+H/ChkIni/GoHbS5kvBpqw3VrFXSkj4+lGzbX84rg/B7y
-	zwz8ukycaCKE09OmzmFw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whp65sgwe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 10:09:43 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SA9gv8015023
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 10:09:42 GMT
-Received: from [10.131.33.37] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
- 2024 02:09:37 -0800
-Message-ID: <9cc4e465-9979-e4cc-3d2d-84cca307f19e@quicinc.com>
-Date: Wed, 28 Feb 2024 15:39:34 +0530
+	s=arc-20240116; t=1709114996; c=relaxed/simple;
+	bh=xDkKjxQpRUj82ppPpFRdT86UyQry3guk02MGD+qyIKw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B4mPD80RuCqZFgJXewxknMsqvLWrkvhH8y58/Uu5O0WOxFuQErZMFX/zsYWTCxECEv1I9CywIfZT7Q5M6yx9G58hWZshikxhGp8I39o2weeHsYH0e6bn+WUngCmrxU+z0J70qcaLUL/ofg+FFLLWT/F8G9cTTHTJ6lDGc44F2sQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ToUa9jT5; arc=none smtp.client-ip=209.85.217.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-4704c69a3d9so829210137.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:09:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709114994; x=1709719794; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BkbZnM4zUKTeRZ6grRhqdDU4kcmxS6+jabdIxX7mZ+8=;
+        b=ToUa9jT5iXLoWFlco3+Zzs5yAIdWhjD3kUjzLAhiTRJxerN0m6OyWCxEjnRaIkK7F+
+         sNoEq0Km+e+TOr2ywFmzCq+JJ31f62jf4rlyrVYg6g6/lbrfv4XRGGleep8XzvM9WpR6
+         RIhJhOiIB/TnHSUx/pNW9u6nMx892LRW919QhOY2o/O+LuCIya02GRoO8BJPRj4xfN7o
+         TIpSyHbE3KPaa6BddoOpmTwW6VVvi7Qc3Nqf0aQvPw6+cI9g4O89iGKC9T+h1lZqt6mt
+         scOg+zvrCyUZHI+YTdkutmCR5zDcgU2crmMFw4LzJTbu25EAcvwgC50wB2FhRMbn0OU0
+         89/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709114994; x=1709719794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BkbZnM4zUKTeRZ6grRhqdDU4kcmxS6+jabdIxX7mZ+8=;
+        b=RiVzxrqpu1AWry2mjpaxWQn4lqRef5wERKPHRP7zGoqCH3LrHLADsAVxq9yHRUHirT
+         duj3Celt6NdSf3zXWE4XHypBM5A06K8Zi/IiBkDsmADDOlOTlOa+v4gEtjRIQ8Dp53wY
+         1sH0jFQFlmzE1QWmBhvcuu04oglrUw5W6jYUvSRYqAUL1qumD9xQckpew8tXY4Hfzize
+         EfIA8lssHUzaXQCcS6FiaSJoNSYiua6lGAlHdMv4BSCHQa7xsAbXtledCRTA37yiTSeD
+         Mh6dttNxwjbBB+ATT6NJ/zGmkPXkotAxDYmyuxpCbQIwvFAmUPsgi1wece/s4dgZmLX3
+         fhKw==
+X-Forwarded-Encrypted: i=1; AJvYcCX0he1YsQ84l6i31keLAvDf6DpHZGE/NsiAAOrsC9hSym8N4Mdgn9Gt/zVqj13G/WvlUBPU/H5ucAmKBCtYBmQjNbjr8/DFRJIb7Bv1
+X-Gm-Message-State: AOJu0YxG8TUJ5B5NhKlt/gye0XqdsDPh6ciNCNUhhxgCqU0QdQp4HxcI
+	G39W6sR5YKj/ym9/EpFuEvcdUnbiRwhSwcgZijFWxXucM0aDdjxxlHcVBd1um3q+fRwQ92UyfyZ
+	xFD4IbUKdqruev6VRgE2KlyzIaY4=
+X-Google-Smtp-Source: AGHT+IF/SEs+hX15r1XGp/VDiYdDgU0ARaAjEu/4Jr+jiImJahk5OhxM1h5WTeI+Kzyuae0ylWCRvDOq9tjbqwZ3aas=
+X-Received: by 2002:a05:6102:1942:b0:472:5572:fe32 with SMTP id
+ jl2-20020a056102194200b004725572fe32mr3525827vsb.13.1709114994045; Wed, 28
+ Feb 2024 02:09:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 0/2] Fix per-policy boost behavior
-Content-Language: en-US
-To: Viresh Kumar <viresh.kumar@linaro.org>
-CC: <dietmar.eggemann@arm.com>, <marcan@marcan.st>, <sven@svenpeter.dev>,
-        <alyssa@rosenzweig.io>, <rafael@kernel.org>, <xuwei5@hisilicon.com>,
-        <zhanjie9@hisilicon.com>, <sudeep.holla@arm.com>,
-        <cristian.marussi@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <quic_rgottimu@quicinc.com>,
-        <linux-arm-kernel@lists.infradead.org>, <asahi@lists.linux.dev>,
-        <linux-pm@vger.kernel.org>
-References: <20240227165309.620422-1-quic_sibis@quicinc.com>
- <20240228050703.lixqywrtxravegc6@vireshk-i7>
- <c165dd32-1e51-2fac-38ae-dd7300d36372@quicinc.com>
- <20240228063511.rcntpb3dhbbhf7fb@vireshk-i7>
-From: Sibi Sankar <quic_sibis@quicinc.com>
-In-Reply-To: <20240228063511.rcntpb3dhbbhf7fb@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 56b7fyYeCFjEwNtiQNInKEoxnAAVmICM
-X-Proofpoint-ORIG-GUID: 56b7fyYeCFjEwNtiQNInKEoxnAAVmICM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_04,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
- adultscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402280080
+References: <84d7cd03-1cf8-401a-8edf-2524db0bd6d5@oppo.com>
+ <CAGsJ_4w_itxmZR7ytu7HnptQNZQzM-vAJhE_zSZrTAH1iqBV6g@mail.gmail.com> <fd71a174-e4cf-425c-a619-0d7c15cd91f7@oppo.com>
+In-Reply-To: <fd71a174-e4cf-425c-a619-0d7c15cd91f7@oppo.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 28 Feb 2024 23:09:42 +1300
+Message-ID: <CAGsJ_4xpJ2FtLRxJT1fORHXzEiajiUJ6q_Pz8pwjYmVOmnaP5Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/vmalloc: Fix return value check for vb_alloc
+To: =?UTF-8?B?5YiY5rW36b6ZKExhb0xpdSk=?= <liuhailong@oppo.com>
+Cc: "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "urezki@gmail.com" <urezki@gmail.com>, 
+	"hch@infradead.org" <hch@infradead.org>, "lstoakes@gmail.com" <lstoakes@gmail.com>, 
+	"linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Feb 28, 2024 at 11:02=E2=80=AFPM =E5=88=98=E6=B5=B7=E9=BE=99(LaoLiu=
+) <liuhailong@oppo.com> wrote:
+>
+> On 2024/2/28 17:34, Barry Song wrote:
+> > On Wed, Feb 28, 2024 at 9:51=E2=80=AFPM =E5=88=98=E6=B5=B7=E9=BE=99(Lao=
+Liu) <liuhailong@oppo.com> wrote:
+> >>
+> >> If vm_map_ram(page, 0, 0) would cause panic by vmap_pages_range_noflus=
+h, so
+> >> change IS_ERR to IS_ERR_OR_NULL to fix this.
+> >>
+> >> Signed-off-by: Hailong.Liu <liuhailong@oppo.com>
+> >> ---
+> >>  mm/vmalloc.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> >> index d12a17fc0c17..109732006cf7 100644
+> >> --- a/mm/vmalloc.c
+> >> +++ b/mm/vmalloc.c
+> >> @@ -2387,7 +2387,7 @@ void *vm_map_ram(struct page **pages, unsigned i=
+nt
+> >> count, int node)
+> >>
+> >>         if (likely(count <=3D VMAP_MAX_ALLOC)) {
+> >>                 mem =3D vb_alloc(size, GFP_KERNEL);
+> >> -               if (IS_ERR(mem))
+> >> +               if (IS_ERR_OR_NULL(mem))
+> >
+> > it seems the only case for vb_alloc to return NULL is size =3D 0, isn't
+> > it a bug of
+> > caller?
+> vb_alloc had already checked the size =3D=3D 0, so it should be return NU=
+LL
+> to caller or not panic here.
+>
+> In fact, we encounter z_erofs_lz4_decompress issue.
+>
+> [54032.383633][T25392]  vmap_pages_range_noflush+0x790/0x8f8
+> [54032.383637][T25392]  vm_map_ram+0x1c8/0x10b0
+> [54032.383642][T25392]  z_erofs_lz4_decompress+0x60/0x1e8
+> [54032.383648][T25392]  z_erofs_decompress_pcluster+0x624/0x9fc
+> [54032.383653][T25392]  z_erofs_decompress_kickoff+0x18c/0x224
+> [54032.383658][T25392]  z_erofs_decompressqueue_endio+0x1a8/0x1e0
+> [54032.383663][T25392]  bio_endio+0x188/0x47c
+> [54032.383667][T25392]  clone_endio+0x1a0/0x550
+> [54032.383674][T25392]  bio_endio+0x14c/0x47c
+> [54032.383678][T25392]  verity_work.60258+0x7c/0x13c
+> [54032.383682][T25392]  process_one_work+0x1b8/0xa98
+> [54032.383687][T25392]  worker_thread+0x160/0x6c0
+> [54032.383691][T25392]  kthread+0x15c/0x1d0
+> [54032.383696][T25392]  ret_from_fork+0x10/0x20
+>
+> z_erofs_lz4_decompress has checked the return value, so it's reasonable
+> to return NULL if size =3D=3D 0.
 
+I agree. but there is no reason to activate a WARN_ON in vb_alloc as
+obviously it doesn't like it. so fix it earlier.
 
-On 2/28/24 12:05, Viresh Kumar wrote:
-> On 28-02-24, 10:44, Sibi Sankar wrote:
->> In the existing code, per-policy flags doesn't have any impact i.e.
->> if cpufreq_driver boost is enabled and one or more of the per-policy
->> boost is disabled, the cpufreq driver will behave as if boost is
->> enabled.
-> 
-> I see. Good catch. The first patch is fine, just explain the problem
-> properly and mention that no one is checking the policy->boost_enabled
-> field. It is never read.
-> 
->> I had to update the policy->boost_enabled value because we seem
->> to allow enabling cpufreq_driver.boost_enabled from the driver, but I
->> can drop that because it was just for book keeping.
-> 
-> So with cpufreq_driver->boost_enabled at init time, policy's
-> boost_enabled must be set too. Do that in the core during
-> initialization of the policy instead.
-> 
->> I didn't want
->> to include redundant info from another mail thread that I referenced in
->> the cover letter, but will add more info in the re-spin.
-> 
-> You don't have to, but you need to explain the exact problem in a bit
-> more detail since it wasn't obvious here.
+I even feel z_erofs_lz4_decompress is a better place than vm_map_ram
+according to your description. but at least vm_map_ram is better than
+checking a vb_alloc's ret after it gives a parameter obviously hated and
+causes complaints.
 
-ack, will make these changes in the next re-spin.
+>
+> Brs,
+> Hailong.
+> >
+> >>                         return NULL;
+> >>                 addr =3D (unsigned long)mem;
+> >>         } else {
+> >> --
+> >> 2.34.1
+> >
 
--Sibi
-
-> 
+Thanks
+Barry
 
