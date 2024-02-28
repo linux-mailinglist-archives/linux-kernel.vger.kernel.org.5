@@ -1,122 +1,75 @@
-Return-Path: <linux-kernel+bounces-84737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BCE386AAE7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:08:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60D6B86AAEA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D8271C213A4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:08:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B8542840EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18CF43A1BA;
-	Wed, 28 Feb 2024 09:05:33 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B7432E635;
+	Wed, 28 Feb 2024 09:07:32 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF89D38F98;
-	Wed, 28 Feb 2024 09:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F0C62E62B;
+	Wed, 28 Feb 2024 09:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709111132; cv=none; b=i47jlOyTDfDNljFISuGdllX+0PaNE53+IWm42PHFpiJTFz1FKQjnILXYQ4aqsMNj5/TlGupyWF8cpPPHyjaryBBQbgnMC/X/eF8/FcDnkxxKXdb1tRl37cYA8W+hKuxc5nGv4xn7uVpd1lKoEkrGHYByc9+dT9omsv+KNcfzVEc=
+	t=1709111251; cv=none; b=nI80afoBlPv/jQa2vYv+9OIJl1IETw7PqaH9j9DXZcMgnZQFvtnEoB0tOwIkL8rsgXbWwYiNMnjCLQsaXBmAURq9lGuhXi0ougWjHJlJf0DnSzZakgwL+dF62s/5aS0LnkbVPHWRng+f3BD08hEtedOe6tYo0sAc+phTY1Rob4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709111132; c=relaxed/simple;
-	bh=WESIMAsMI+WtLCwW+GE6axyaA0i2azKiuAhul2HjH24=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XydAYhByJo4GC8eIq/TKfxs2wpKrWXbQh7e+czvLv2iDzXCzkoG7sRNb6mCJzU/q36kS0m7VcIBubU3qhv8QzaYR+ZtGZAWlBCWwfgPXfNpgZM4iuByNDbMFEjkSf6zEicXaJnRMw5ydrdmsLzr1acGVu4z9yCjZ738zggXByfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tl7dJ6k78z67Q86;
-	Wed, 28 Feb 2024 17:01:40 +0800 (CST)
-Received: from lhrpeml100005.china.huawei.com (unknown [7.191.160.25])
-	by mail.maildlp.com (Postfix) with ESMTPS id D4BB8140A1B;
-	Wed, 28 Feb 2024 17:05:26 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (7.191.163.240) by
- lhrpeml100005.china.huawei.com (7.191.160.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 28 Feb 2024 09:05:26 +0000
-Received: from lhrpeml500005.china.huawei.com ([7.191.163.240]) by
- lhrpeml500005.china.huawei.com ([7.191.163.240]) with mapi id 15.01.2507.035;
- Wed, 28 Feb 2024 09:05:26 +0000
-From: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To: Brett Creeley <brett.creeley@amd.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
-	"yishaih@nvidia.com" <yishaih@nvidia.com>, "kevin.tian@intel.com"
-	<kevin.tian@intel.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: "shannon.nelson@amd.com" <shannon.nelson@amd.com>
-Subject: RE: [PATCH v2 vfio 0/2] vfio/pds: Fix and simplify resets
-Thread-Topic: [PATCH v2 vfio 0/2] vfio/pds: Fix and simplify resets
-Thread-Index: AQHaad2kYsrb/UByXUeVSA/PNWDN9LEfdD1A
-Date: Wed, 28 Feb 2024 09:05:26 +0000
-Message-ID: <ead300c6e249429f92a4ce124fc0fd56@huawei.com>
-References: <20240228003205.47311-1-brett.creeley@amd.com>
-In-Reply-To: <20240228003205.47311-1-brett.creeley@amd.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1709111251; c=relaxed/simple;
+	bh=NrDvZZF70DEoKM4j6lrIR6okJ6e68t2DzMezctdcIX8=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K8ZR4OXtH/1wUuyXHxf2UH75cI9zsO4uMwTZ+cYk1Z9XcdiZrNuVQ3LP+CheMgaZcx0OcgsO1WKtBX+HhL+lRsp1cNNpbBE+FwSIopAKcldr6/MkyMlhewSLzhx4sVrZ1SoBBG/fk1r+TkiqgsxbTXIjgHde6aoAJ2WSjYvkSRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rfFu4-001C6p-RG; Wed, 28 Feb 2024 17:07:05 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Wed, 28 Feb 2024 17:07:19 +0800
+Date: Wed, 28 Feb 2024 17:07:19 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Andrey Skvortsov <andrej.skvortzov@gmail.com>,
+	Corentin Labbe <clabbe.montjoie@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Ovidiu Panait <ovidiu.panait@windriver.com>,
+	linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Arnaud Ferraris <arnaud.ferraris@collabora.com>
+Subject: Re: [PATCH] crypto: sun8i-ce - Fix use after free in unprepare.
+Message-ID: <Zd73xxYHxFJWKyxq@gondor.apana.org.au>
+References: <20240226215358.555234-1-andrej.skvortzov@gmail.com>
+ <Zd0LKrryWNs15zxi@skv.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zd0LKrryWNs15zxi@skv.local>
 
+On Tue, Feb 27, 2024 at 01:05:30AM +0300, Andrey Skvortsov wrote:
+>
+> And potentially rk3288_crypto driver is affected by the similar
+> problem.
 
-
-> -----Original Message-----
-> From: Brett Creeley <brett.creeley@amd.com>
-> Sent: Wednesday, February 28, 2024 12:32 AM
-> To: jgg@ziepe.ca; yishaih@nvidia.com; Shameerali Kolothum Thodi
-> <shameerali.kolothum.thodi@huawei.com>; kevin.tian@intel.com;
-> alex.williamson@redhat.com; kvm@vger.kernel.org; linux-
-> kernel@vger.kernel.org
-> Cc: shannon.nelson@amd.com; brett.creeley@amd.com
-> Subject: [PATCH v2 vfio 0/2] vfio/pds: Fix and simplify resets
->=20
-> This small series contains a fix and readability improvements for
-> resets.
->=20
-> v2:
-> - Split single patch into 2 patches
-> - Improve commit messages
-
-Just a query on the reset_done handler and the deferred_reset()
-logic in this driver. From a quick look, it doesn't look like you have=20
-a condition where a copy_to/from_user() is under state_mutex. So
-do you think we can get rid of the deferred_reset logic from this=20
-driver? Please see the discussion here,
-https://lore.kernel.org/kvm/20240220132459.GM13330@nvidia.com/
-
-For HiSilicon, we do have the lock taken for PRE_COPY, but that needs fixin=
-g
-and then can get rid of the deferred_reset. I will sent out a patch for
-that soon.
+Indeed, and there is one more in sun8i-ce.  I'll send out patches
+for them.
 
 Thanks,
-Shameer
-
->=20
-> v1:
-> https://lore.kernel.org/kvm/20240126183225.19193-1-
-> brett.creeley@amd.com/
->=20
-> Brett Creeley (2):
->   vfio/pds: Always clear the save/restore FDs on reset
->   vfio/pds: Refactor/simplify reset logic
->=20
->  drivers/vfio/pci/pds/pci_drv.c  |  2 +-
->  drivers/vfio/pci/pds/vfio_dev.c | 14 +++++++-------
->  drivers/vfio/pci/pds/vfio_dev.h |  7 ++++++-
->  3 files changed, 14 insertions(+), 9 deletions(-)
->=20
-> --
-> 2.17.1
-
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
