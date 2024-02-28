@@ -1,106 +1,257 @@
-Return-Path: <linux-kernel+bounces-84829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E20A86AC1F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:25:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC04D86AC27
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:25:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2FE71F249DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:25:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E00671C241FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A968756774;
-	Wed, 28 Feb 2024 10:25:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BB705810F;
+	Wed, 28 Feb 2024 10:25:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="VHLB0nZS"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qVdjMgNp"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0370856765
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FDD5733F;
+	Wed, 28 Feb 2024 10:25:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709115905; cv=none; b=AJf4lm5Imw9JN5cQEdsrZvau2C2FU4k2N4108HuO0dO9lf1auCV0POnuAvnFSuF1Snkz6NmiQVhlA8MCEwEUQXkoUqGgFlmR6LL00JKOb0QTjjji4DK7j8IzFfLDP2UFwqKA9iLwoj5cwtCmmQmZOre2JWpkGk+fUQUfKp/aJPY=
+	t=1709115937; cv=none; b=lt2pDU5NFZ44a3WlEqee/OWgi56ceCXICSvVeUGhiiCf/J1gMuC4PH07KHkK81vDOWw7fR2pTHqLTj6TgnGZflB8tophiXFnCj8i+Rv1NKVX0y06UdajyL2FfFZrGzBluOPRgl/5YQZidkwRkUxSUAx1rPUbR7htO8lrvA/5cME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709115905; c=relaxed/simple;
-	bh=RJWvUgHr8awlOHf5f+a2KBnaO6oNMg4fY/qdVUnzznE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QMLXmeoQ2fFnIl2vL6+x6EYq9trYs2U1Zjx3ZszTl268matIYnLp6DrQCVZX/L6l7Sv0JuoYWcj2q9pOQ7yv5nDBQmiZDmXao0UlgmLsOk72nLSdOzA7ijQcB9IBsG2PgB5GZoKvMJQUfk+4fQzJ7hKcgNBQ4nHrTx5w5MgVWNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=VHLB0nZS; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d23d301452so72617171fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:25:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709115900; x=1709720700; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RJWvUgHr8awlOHf5f+a2KBnaO6oNMg4fY/qdVUnzznE=;
-        b=VHLB0nZSyQaFKtZcmkt3np1G94/kCMT4QEtZ1pFMUERk0xrpuIB/cFHO3fGjlRzOP2
-         oPzD+8DH9HrM6ThX/bOOsq6ol5+/fZ4EzAiMfjD7TN2bC2b4a0f9oSIYEidetc7dvYXm
-         LHmy3iZ85hsllimJ56Q4XeIdZRw+4XtGJCOlFSddkUfu8pJ7hsEkC8YrBoB8ClXV9FyZ
-         rnVg9lleA486hOl6cyZb52Sw1VtTF9Cn+lIANYJUmkeF22AC7rs3muACZfI5sj6NmLL4
-         Bc6THhkHYFJce4Qv++qsTkeDdqTkLuYtS6pVv2T1Fq+0D9kckt0TssylpV33o8mP3aM+
-         5xyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709115900; x=1709720700;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RJWvUgHr8awlOHf5f+a2KBnaO6oNMg4fY/qdVUnzznE=;
-        b=S6FPK/pbt+GfYZeQhXFfDubVYd7wS/sMaRlINBcH2rXpbyGNOeqfita4qqtW7AOPtN
-         9w0LHJxmhwIDskzh0EmeSFHZOen6AOuJAlW43ptI2h3YJ4A91i/dnvPGh/oS5ofXPvm4
-         wPA9qorm2cF1zISaa3ONNj6uDOLrMwuEOFOVZcK8ZqMPba79cCcHkra1h85F0BG9CT3d
-         MBcgbcMvwtq8Tv0mxMAE4cslXx4iizIct5EiMuE8j5yvWl6fCSDnMZjx77qSqZ+hA9hq
-         4CmKUDb6Iu1TYvGwRh4p7COB2Oz29EogPImU4NY9YFj7TwV0EewoIOVLtQTk97ug6qYv
-         c4Ig==
-X-Forwarded-Encrypted: i=1; AJvYcCX6xwll1pjqVUt2Re8N5eddEyn3zvE1rYSIKOVeqPOQbotksLhPqkijB70MFmfD/HEKDg7kpdJfC87FGbLs03oSKhXe87Xqxx41OZOZ
-X-Gm-Message-State: AOJu0YwW+9A7+9EwWBS798Afq7BxL4EYZelKFZ71RvkccWcOG0oO6Rpp
-	Y62wg/b0j2g7Swp3YQCFVaP8Ur/UBBz++ctEZtAv2n+5vuR69z1E8vMpH63OU2s=
-X-Google-Smtp-Source: AGHT+IE1v8GX4KnuPAkO6ZzFb7IevBYvi4p+fVrf0lN07SaeF+mCEndEdGtR/o1KHfLMa4I/j6BhoA==
-X-Received: by 2002:a05:651c:b0b:b0:2d2:d449:6425 with SMTP id b11-20020a05651c0b0b00b002d2d4496425mr633734ljr.35.1709115900049;
-        Wed, 28 Feb 2024 02:25:00 -0800 (PST)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id jj2-20020a05600c6a0200b004120537210esm1621345wmb.46.2024.02.28.02.24.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 02:24:59 -0800 (PST)
-Date: Wed, 28 Feb 2024 11:24:56 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net 2/2] net: tehuti: Fix leaks in the error handling
- path of bdx_probe()
-Message-ID: <Zd8J-F1SEyZwF5Mv@nanopsycho>
-References: <cover.1709066709.git.christophe.jaillet@wanadoo.fr>
- <9090b599c7574892b77a9521e3ddb3a52a154205.1709066709.git.christophe.jaillet@wanadoo.fr>
+	s=arc-20240116; t=1709115937; c=relaxed/simple;
+	bh=E8R79vstTtZYjkIXyTYbyYkKBTC6894FJU5MK2LqR20=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vBwYd0m2X9iswRt7OJe3U1nwQOxB63y0ae/c/KyWQbqCAqFS0SwkIbbjRo986DRMT3PChRmxJXeCRbSxwSX5hTQd4xz78zDibMJvblrKKaVgw9NPne7Z8X4azOfd19y+sHUfkZwLjWSE2a1kWZieUB1VH4GsllN3842Y5CGtp5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=qVdjMgNp; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709115933;
+	bh=E8R79vstTtZYjkIXyTYbyYkKBTC6894FJU5MK2LqR20=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=qVdjMgNpoJSKYoUGzNNif7MwqOIvRhO+7Z512Q1OpHtWr70VAn2rL29LyFCx5lcOu
+	 2A+3rlzaNSw1g91MWg9EOwDjy0uIXRvFQe8lG+ZfY76MTDsfoXPLs73Ne1Se/vBUbv
+	 VpOLc1vtuTvKRGQtbKDRuKGyfxcvr8ufYw5nC+/8DZYLodTszxLHzRryEYxFhssgrw
+	 oAphV7git0xKym3Y/vQWhfh+Yme1IfUOBmtbU7oTWRHVm9YqOMrnEIy7veaCQATzW8
+	 TjkxbCIEE9MER6XEM87oFe7lh0ZSRcN6OZPk/sUiDQ0VVSmBJM5WF1FdL6uC3PR8gA
+	 jemLx0f+CRKLA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 30B7E3780C6C;
+	Wed, 28 Feb 2024 10:25:32 +0000 (UTC)
+Message-ID: <bb86b986-ecd7-416a-9036-082a3cff2176@collabora.com>
+Date: Wed, 28 Feb 2024 11:25:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9090b599c7574892b77a9521e3ddb3a52a154205.1709066709.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/18] ASoC: dt-bindings: mediatek,mt8365-afe: Add audio
+ afe document
+Content-Language: en-US
+To: Alexandre Mergnat <amergnat@baylibre.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Lee Jones <lee@kernel.org>,
+ Flora Fu <flora.fu@mediatek.com>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org
+References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
+ <20240226-audio-i350-v1-1-4fa1cea1667f@baylibre.com>
+ <ce5f71a9-1b5f-4724-89db-dae2f64e8008@linaro.org>
+ <eeb3329b-0558-4237-8343-4e11f65a6a35@baylibre.com>
+ <bd4bf6ae-350e-4ee6-a924-7dd31b2c6034@linaro.org>
+ <66e527af-0253-4565-9822-04ed84e5817c@baylibre.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <66e527af-0253-4565-9822-04ed84e5817c@baylibre.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Tue, Feb 27, 2024 at 09:50:56PM CET, christophe.jaillet@wanadoo.fr wrote:
->If an error occurs when allocating the net_device, all the one already
->allocated and registered should be released, as already done in the remove
->function.
->
->Add a new label, remove the now useless 'err_out_disable_msi' label and
->adjust the error handling path accordingly.
->
->Fixes: 1a348ccc1047 ("[NET]: Add Tehuti network driver.")
->Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->---
->Compile tested only.
+Il 28/02/24 10:57, Alexandre Mergnat ha scritto:
+> I think I got it.
+> 
+> - mediatek,i2s-shared-clock: will be remove from DT
+> - mediatek,dmic-iir-on: will be remove from DT
+> - mediatek,dmic-irr-mode: will be remove from DT
+> - mediatek,dmic-two-wire-mode: rephrase description needed
+> 
+> I've did abstraction (despite me) that IIR settings are runtime config because the 
+> driver implement its usage like a one-time-setup -_-'
+> 
+
+Yes but just one more thing I just noticed: `mediatek,dmic-two-wire-mode` - can we
+please rename this to `mediatek,dmic-mode` ?
+
+That'd be for consistency check mt6359.yaml and mt6358.txt
+
+   mediatek,dmic-mode:
+     $ref: /schemas/types.yaml#/definitions/uint32
+     description: |
+       Indicates how many data pins are used to transmit two channels of PDM
+       signal. 0 means two wires, 1 means one wire. Default value is 0.
+     enum:
+       - 0 # one wire
+       - 1 # two wires
+
+Cheers,
+Angelo
 
 
-Looks okay.
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> Thanks for the explanations, that help.
+> 
+> Regards,
+> Alexandre
+> 
+> On 28/02/2024 08:28, Krzysztof Kozlowski wrote:
+>> On 27/02/2024 16:18, Alexandre Mergnat wrote:
+>>>>
+>>>>> +    type: boolean
+>>>>> +
+>>>>> +  mediatek,dmic-iir-on:
+>>>>> +    description:
+>>>>> +      Boolean which specifies whether the DMIC IIR is enabled.
+>>>>> +      If this property is not present the IIR is disabled.
+>>>>
+>>>> "is enabled" or "enable it"?
+>>>>
+>>>> You described the desired Linux feature or behavior, not the actual
+>>>> hardware. The bindings are about the latter, so instead you need to
+>>>> rephrase the property and its description to match actual hardware
+>>>> capabilities/features/configuration etc.
+>>>
+>>> I will rephrase:
+>>>
+>>> True to enable the Infinite Impulse Response (IIR) filter
+>>> on the digital microphone inputs.
+>>
+>> I still don't know why this is DT-specific. You still tell driver what
+>> to do...
+>>
+>>>
+>>>>
+>>>>> +    type: boolean
+>>>>> +
+>>>>> +  mediatek,dmic-irr-mode:
+>>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>>>> +    description:
+>>>>> +      Selects stop band of IIR DC-removal filter.
+>>>>> +      0 = Software programmable custom coeff loaded by the driver.
+>>>>
+>>>> Bindings are for hardware, not drivers. Why is this a property of board DTS?
+>>>
+>>> Actually this is a hardware feature. Mode 1 t 5 are predefined filters.
+>>> Mode 0, the HW will read some "coef filter registers" to setup the
+>>> custom filter. the "coef filter regs" are written by the driver.
+>>> Currently the coef values are hardcoded in the driver.
+>>
+>> You don't get the point. Just because you choose some mode it does not
+>> mean is hardware feature for DT. Sampling frequency done by hardware is
+>> also "hardware feature", but do you put it to DT? No.
+>>
+>> Explain why this is board-specific, not runtime configuration.
+>>
+>>>
+>>>>
+>>>>> +      1 = 5Hz if 48KHz mode.
+>>>>> +      2 = 10Hz if 48KHz mode.
+>>>>> +      3 = 25Hz if 48KHz mode.
+>>>>> +      4 = 50Hz if 48KHz mode.
+>>>>> +      5 = 65Hz if 48KHz mode.
+>>>>
+>>>> Use proper unit suffixes - hz.
+>>>>
+>>>>
+>>>>> +    enum:
+>>>>> +      - 0
+>>>>> +      - 1
+>>>>> +      - 2
+>>>>> +      - 3
+>>>>> +      - 4
+>>>>> +      - 5
+>>>>> +
+>>>>> +  mediatek,dmic-two-wire-mode:
+>>>>> +    description:
+>>>>> +      Boolean which turns on digital microphone for two wire mode.
+>>>>> +      If this property is not present the two wire mode is disabled.
+>>>>
+>>>> This looks like hardware property, but the naming looks like SW. Again
+>>>> you instruct what driver should do. Standard disclaimer:
+>>>>
+>>>> You described the desired Linux feature or behavior, not the actual
+>>>> hardware. The bindings are about the latter, so instead you need to
+>>>> rephrase the property and its description to match actual hardware
+>>>> capabilities/features/configuration etc.
+>>>
+>>> Actually this is a hardware feature. This is ALL I have to describe the
+>>> HW behavior from the datasheet:
+>>> "
+>>> bit name: ul_dmic_two_wire_ctl
+>>> Turns on digital microphone for two wire mode.
+>>> 0: Turn off
+>>> 1: Turn on
+>>
+>> That's rather suggestion it is not a description of hardware but you
+>> want driver to do something...
+>>
+>>> "
+>>>
+>>> On the board schematic, SoC and DMIC and linked by 3 pins:
+>>> - clk
+>>> - data0
+>>> - data1
+>>>
+>>> IMHO, "two-wire-mode" means the HW use 2 pins for data, and the SoC must
+>>> be aware of that by reading the register value written by the driver,
+>>> using the value found in the DTS.
+>>
+>> So this depends on type of connection of DMIC? Then rephrase description
+>> property like this.
+>>
+>>>
+>>> I don't get why you think it wouldn't be hardware behavior.
+>>
+>> Because telling what to write to the registers which is typical sign of
+>> people stuffing to DT whatever they need to configure the hardware.
+>>
+>>>
+>>> Rephrase description:
+>>> "True to enable the two wire mode of the digital microphone"
+>>> Is it better ?
+>>
+>> No, because again you describe some sort of mode. If you insist on such
+>> description, then my answer is: it's runtime, so not suitable for DT.
+>> Instead describe what is the hardware problem/configuration, e.g. "DMIC
+>> is connected with only CLK and DATA0, without third pin" etc.
+>>
+>>>
+>>> About the property name, "mediatek,dmic-two-wire-ctl" sound better for you ?
+>>
+>> To sound more like a register less like physical characteristic of the
+>> board? No. The name can stay, I don't have better ideas.
+>>
+>>
+>> Best regards,
+>> Krzysztof
+>>
+> 
+
 
