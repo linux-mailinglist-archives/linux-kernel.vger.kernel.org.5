@@ -1,143 +1,217 @@
-Return-Path: <linux-kernel+bounces-84713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5FCC86AA9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:59:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41CC786AAA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:00:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE63B1C23D17
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:59:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED205287835
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25D202D634;
-	Wed, 28 Feb 2024 08:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235022E85E;
+	Wed, 28 Feb 2024 09:00:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6S2HM7Y"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LaSmTbZ9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B97F42E84F;
-	Wed, 28 Feb 2024 08:58:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40FD92E419;
+	Wed, 28 Feb 2024 09:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709110738; cv=none; b=I3I6t416e+xw/LaxqChkdH/9YeRGqnclH1ldTE52rJufNhUgBUPiciQ9geOfvJ1/Da56rLqsV/jcMqMmSFEdhP9J2jaHMLXRjOc6d6B0GllFWSiTaM9rZBT1c1HqLy0czXCoFwZtk7DBgO/67htuxlLWFAgrHU+hdnVGCZ8XaII=
+	t=1709110818; cv=none; b=D7p6bkxxqeX9gPdhxwNm929XdZHc59CZjDs9QHTe3KI778iM8TN/p2j67x33vyz/aT2scMXhRnnS0iXplNxqsuho8aw3wntF1bOELPuv5KqJgLA2rlaNnJSPLoCIfov7VqCKtLDoIgs/PQA+BpdYZxfpI3ZgESiWPSO4t8LMrW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709110738; c=relaxed/simple;
-	bh=yIUst7+3ODvs408zwYXRT1jR3LK2s1xhcE0dmgtWszk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jO5wostoCxouUsJFR9eXPIhYjjPNki+xCIvt84ouzChUCEmWWIcsjMTu1iwTarq03WZ2EsydD9lhVVvnNTF6ADzebwg+OF4fuah9Eidtwy26VLIjluybukUquEQLwH0KwxzJRPVnrW0El9aDD1IvonbpjLd27xwXNgJomUT8MZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6S2HM7Y; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d2305589a2so74281721fa.1;
-        Wed, 28 Feb 2024 00:58:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709110735; x=1709715535; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5A3lAAmSMgn6GRalT76bIAGFZOne7C/ohlC8xFZVbW0=;
-        b=O6S2HM7YPGgSZ1jLbxp3gFn1gZbYJMSPnj0DzE0MCZIXRvpSaxwkLEiidvOhPUo55v
-         qBmqhDBFkAJGKx12+wHsNOFXG+2wx1Ji974+uKbKBYO+fI7dfsOu2b3XGCyClITqxSB0
-         OPebrZ75j0f+AYi9P87lQ1ee676lEWHKqzDszT/p64k371FmLUgbEgn/FGzqlnCEJTd/
-         aawouxEd2agFDo6om0Vspzp3Bi9qeRlrXDF7VOmA8/rdGndD030UwNrVgP4EyFTWE50j
-         +FO5RnvUi3jmUBljipXLp7oxFpdOOeI4SmYgHIaLdyles1GRkO95wr0pN15hay8AP/ln
-         +wlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709110735; x=1709715535;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5A3lAAmSMgn6GRalT76bIAGFZOne7C/ohlC8xFZVbW0=;
-        b=h946UpZ73QSPfIHODn+qq1lMNTQ1f6DpEgKEahj/ypW2BXP/Hb1RNYDivH2GcQHKHX
-         ODmpdMdwWfY8sfbJk86bcLjrgaFZ1mTMsLPlOKL+tNooT6pAtvALlcL0TLmK9S6lg6BC
-         2beg+CiIi+4a3FDrDTqGVjpWLt8j6nBbx0vHkNIC14V4DBHEvjF8+y8MBzwRIEsPxh2O
-         qLza32hN0dLtJzua5rFQiyUSZqIBYrneylJ6vuKsOb465XBEEazo/EA/EK44RVSj7stP
-         DnrYGXNBQBBar5Ypcj6urJD1Ys7PP+8Cf528mkZ2nMVStYSRfb0YWYxeLRTTzJD+bpsM
-         ztCg==
-X-Forwarded-Encrypted: i=1; AJvYcCU5+TIOtpZkaWl8gomgBRR4q7OxxdkRK+jaMcCB24LwuITbnwrw91Gu/j8BRxOVPIjJra5SwwCRLwEta1HvuZL/Ro0JrhlqvCpqGGBw4M7KA5cTl1UdoU0Ss073m/r4Pbv2dbve
-X-Gm-Message-State: AOJu0Yxm6SI1BFftRaGgkMeCY1xiAOb7eorwOy5yaml1Vwbiy5ne/EP8
-	/14crMn08haIZUOOXzwy4zgkSdafAsY9VVYTqYyQCGINYMFUYRG6FOsSywHZGcZtEOtAfhFVbLf
-	UFNQY1MnRuLiRYnEkK17PC1W53htFM980a6HL2g==
-X-Google-Smtp-Source: AGHT+IGjoGQ3AM7Hcs5ExQngiiirhwlBbCJykaS19J2G8iJ062O1vqW4F5tgSKrBFW0xw9SvKOS5NLf9pfO6X2Uik30=
-X-Received: by 2002:a05:6512:318e:b0:512:fe1f:d3c1 with SMTP id
- i14-20020a056512318e00b00512fe1fd3c1mr6031414lfe.58.1709110734603; Wed, 28
- Feb 2024 00:58:54 -0800 (PST)
+	s=arc-20240116; t=1709110818; c=relaxed/simple;
+	bh=vsh9jGxQjjvBWK3B4oQcW0pqzFbEoSreLHkQicRRkn8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XqbSYHmtI/d4Tys9la7W1jF2p00xaxPm/3Ghvge9UjKiYIquv1WL4nZ5A4lNH/Gq5w572AY5g3JAmaIEVRB34DoLCwS3IxN0p7Ohz0HbpAvTbXQj1g3ewYTchezQyiiI6+v9JE0n/0il1sYKDirisU5wGLzoKHhSAt+zMYlt44Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LaSmTbZ9; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709110816; x=1740646816;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=vsh9jGxQjjvBWK3B4oQcW0pqzFbEoSreLHkQicRRkn8=;
+  b=LaSmTbZ9SBV3mflqI845r+3zLA8QyMSxE4v3mNpFY3IYyc6cTcI7+BJu
+   el755Ws326R1VlwsOWV+MaS+nxSt2SadeL/hnsY21gF3Kbdhpxy4DJ3OR
+   8aD6b8S9bsV3K9raqG6mfRzMCqmsp2DOZDf/W0zwaue+o5JfljG2M1P/L
+   gkI1cSVjgIG+kjPPG2vD8hgq7YaS/Iq2d4L4+Z0salhDesgE8F0GZiRAC
+   HXLExSWG1cwHLKBIMrDkoIN5qi8i1aL34gLVRS7DWWGL7h0tevYa4Enzk
+   +wfiogOPgTtSNSNx7PaloJAKFGIxARHqNC1+cORh5vwbKzNCILIVu1bh0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3421075"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="3421075"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 01:00:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="7396998"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 01:00:12 -0800
+Message-ID: <eac3e9e7-657f-4de2-b9ed-878ffc2b93cb@linux.intel.com>
+Date: Wed, 28 Feb 2024 17:00:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228074308.3623984-2-zegao@tencent.com> <CANn89iLQ8r3e7=RP9F7wO=b+bZbGucbuitOswkVwmijbd1Fzig@mail.gmail.com>
-In-Reply-To: <CANn89iLQ8r3e7=RP9F7wO=b+bZbGucbuitOswkVwmijbd1Fzig@mail.gmail.com>
-From: Ze Gao <zegao2021@gmail.com>
-Date: Wed, 28 Feb 2024 16:58:43 +0800
-Message-ID: <CAD8CoPD-TSt_twgkiHKw_rON9VSRON3vJfxaDLd9rz3PTPOWiQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] net, sock.h: Make sure accesses to a fullsock when it
- is indeed one
-To: Eric Dumazet <edumazet@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	Ze Gao <zegao@tencent.com>, Honglin Li <honglinli@tencent.com>, paulmck@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 3/3] iommu/vt-d: improve ITE fault handling if target
+ device isn't valid
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>, baolu.lu@linux.intel.com,
+ bhelgaas@google.com, robin.murphy@arm.com, jgg@ziepe.ca,
+ kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org, lukas@wunner.de,
+ yi.l.liu@intel.com, iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-pci@vger.kernel.org
+References: <20240226225234.GA211745@bhelgaas>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <20240226225234.GA211745@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 4:34=E2=80=AFPM Eric Dumazet <edumazet@google.com> =
-wrote:
+On 2/27/2024 6:52 AM, Bjorn Helgaas wrote:
+> On Fri, Feb 23, 2024 at 10:29:28AM +0800, Ethan Zhao wrote:
+>> On 2/22/2024 7:24 PM, Dan Carpenter wrote:
+>>> On Thu, Feb 22, 2024 at 04:02:51AM -0500, Ethan Zhao wrote:
+>>>> Because surprise removal could happen anytime, e.g. user could request safe
+>>>> removal to EP(endpoint device) via sysfs and brings its link down to do
+>>>> surprise removal cocurrently. such aggressive cases would cause ATS
+>>>> invalidation request issued to non-existence target device, then deadly
+>>>> loop to retry that request after ITE fault triggered in interrupt context.
+>>>> this patch aims to optimize the ITE handling by checking the target device
+>>>> presence state to avoid retrying the timeout request blindly, thus avoid
+>>>> hard lockup or system hang.
+>>>>
+>>>> Devices are valid ATS invalidation request target only when they reside
+>>>> in the iommu->device_rbtree (probed, not released) and present.
+>>> "valid invalidation" is awkward wording.  Can we instead say:
+>> If you read them together, sounds like tongue twister. but here "ATS
+>> invalidation request target" is one term in PCIe spec.
+> "ATS invalidation request target" does not appear in the PCIe spec.  I
+> think you're trying to avoid sending ATS Invalidate Requests when you
+> know they will not be completed.
 >
-> On Wed, Feb 28, 2024 at 8:46=E2=80=AFAM Ze Gao <zegao2021@gmail.com> wrot=
-e:
-> >
-> > We know a pointer that has type struct sock* can actually points to
-> > one of some different sock types which have different memory layouts,
-> > take req_to_sk() for example, and whether a sock is full or not
-> > depends upon ->sk_state which is a shared field among them so that we
-> > see some repeated code pattern similar to this:
-> >
-> >         if (sk && sk fullsock(sk) && sk->field_not_shared)
-> >
-> > which seems to have no problem at the first glance, but it is actually
-> > unsound in a way that ->field_not_shared is likely uninitialized (or
-> > unmapped) when it's not a full sock, and a compiler is free to reorder
-> > accesses to fields of a struct sock when it can, that is, it could
-> > reorder accesses to ->field_not_shared across ->sk_state or load them
-> > all before the branch test, which leads to unexpected behavior, althoug=
-h
-> > most of them won't do this.
-> >
-> > So leave a barrier() in between and force the compiler to keep the
-> > obvious program order.
-> >
-> > Cc: Honglin Li <honglinli@tencent.com>
-> > Signed-off-by: Ze Gao <zegao@tencent.com>
-> > ---
-> >
-> > IIUC, casting a pointer to refer to a bigger object in size is
-> > technically UB, which may lead to unsound code. From the POV of
-> > a compiler, when it is allowed to assume that one struct member
-> > is valid, they all are through a pointer, and thus it's likely
-> > for the compiler to do such optimizations and reorder what we
-> > want to keep in order.
-> >
-> > Note this is not a typical way to use barrier(), which only
-> > acts an ok fix to what's already unsound, at least IMO.
-> >
-> > Comments are welcome, since I'm not an expert in C and I know
-> > most of compilers won't do this reorder, but I'm being pessimistic
-> > here.
+> It is impossible to reliably determine whether a device will be
+> present and able to complete an Invalidate Request.  No matter what
+> you check to determine that a device is present *now*, it may be
+> removed before an Invalidate Request reaches it.
 >
-> Well, my suggestion is to have evidence first...
+> If an Invalidate Request to a non-existent device causes a "deadly
+> loop" (I'm not sure what that means) or a hard lockup or a system
+> hang, something is wrong with the hardware.  There should be a
 
-Fair point!  my initial purpose is to raise my question here to check if
-there is UB here and see if C experts have insights on this.
+The hardware might be innocent, here in the qi_submit_sync() &
+qi_check_fault() will retry the timeout request forever if the
+target device is gone or the target device always takes too much
+time to reponse. there is dead loop here.
 
-> We are not going to add barriers just because we do not trust
-> compilers handling of sequence points.
+This patch aims to break the dead loop for case device is not
+present anymore.
 
-Makes sense to me as well if this is indeed not an issue here.
+But for those devices takes too much time to complete. I am
+working on other patches, not in this patchset.
+
 
 Thanks,
-        -- Ze
+Ethan
+
+> mechanism to recover from a timeout in that situation.
+>
+> You can avoid sending Invalidate Requests to devices that have been
+> removed, and that will reduce the number of timeout cases.  But if you
+> rely on a check like pci_device_is_present() or
+> pci_dev_is_disconnected(), there is *always* an unavoidable race
+> between a device removal and the Invalidate Request.
+>
+>>>> @@ -1273,6 +1273,9 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>>>>    {
+>>>>    	u32 fault;
+>>>>    	int head, tail;
+>>>> +	u64 iqe_err, ite_sid;
+>>>> +	struct device *dev = NULL;
+>>>> +	struct pci_dev *pdev = NULL;
+>>>>    	struct q_inval *qi = iommu->qi;
+>>>>    	int shift = qi_shift(iommu);
+>>>> @@ -1317,6 +1320,13 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>>>>    		tail = readl(iommu->reg + DMAR_IQT_REG);
+>>>>    		tail = ((tail >> shift) - 1 + QI_LENGTH) % QI_LENGTH;
+>>>> +		/*
+>>>> +		 * SID field is valid only when the ITE field is Set in FSTS_REG
+>>>> +		 * see Intel VT-d spec r4.1, section 11.4.9.9
+>>>> +		 */
+>>>> +		iqe_err = dmar_readq(iommu->reg + DMAR_IQER_REG);
+>>>> +		ite_sid = DMAR_IQER_REG_ITESID(iqe_err);
+>>>> +
+>>>>    		writel(DMA_FSTS_ITE, iommu->reg + DMAR_FSTS_REG);
+>>>>    		pr_info("Invalidation Time-out Error (ITE) cleared\n");
+>>>> @@ -1326,6 +1336,21 @@ static int qi_check_fault(struct intel_iommu *iommu, int index, int wait_index)
+>>>>    			head = (head - 2 + QI_LENGTH) % QI_LENGTH;
+>>>>    		} while (head != tail);
+>>>> +		/*
+>>>> +		 * If got ITE, we need to check if the sid of ITE is one of the
+>>>> +		 * current valid ATS invalidation target devices, if no, or the
+>>>> +		 * target device isn't presnet, don't try this request anymore.
+>>>> +		 * 0 value of ite_sid means old VT-d device, no ite_sid value.
+>>>> +		 */
+>>> This comment is kind of confusing.
+>> Really confusing ? this is typo there, resnet-> "present"
+>>
+>>> /*
+>>>    * If we have an ITE, then we need to check whether the sid of the ITE
+>>>    * is in the rbtree (meaning it is probed and not released), and that
+>>>    * the PCI device is present.
+>>>    */
+>>>
+>>> My comment is slightly shorter but I think it has the necessary
+>>> information.
+>>>
+>>>> +		if (ite_sid) {
+>>>> +			dev = device_rbtree_find(iommu, ite_sid);
+>>>> +			if (!dev || !dev_is_pci(dev))
+>>>> +				return -ETIMEDOUT;
+>>> -ETIMEDOUT is weird.  The callers don't care which error code we return.
+>>> Change this to -ENODEV or something
+>> -ETIMEDOUT means prior ATS invalidation request hit timeout fault, and the
+>> caller really cares about the returned value.
+>>
+>>>> +			pdev = to_pci_dev(dev);
+>>>> +			if (!pci_device_is_present(pdev) &&
+>>>> +				ite_sid == pci_dev_id(pci_physfn(pdev)))
+>>> The && confused me, but then I realized that probably "ite_sid ==
+>>> pci_dev_id(pci_physfn(pdev))" is always true.  Can we delete that part?
+>> Here is the fault handling, just double confirm nothing else goes wrong --
+>> beyond the assumption.
+>>
+>>> 		pdev = to_pci_dev(dev);
+>>> 		if (!pci_device_is_present(pdev))
+>>> 			return -ENODEV;
+>>>
+>>>
+>>>> +				return -ETIMEDOUT;
+>>> -ENODEV.
+>> The ATS invalidation request could be sent from userland in later code,
+>> the userland code will care about the returned value,  -ENODEV is one aspect
+>> of the fact (target device not present), while -ETIMEDOUT is another
+>> (timeout happened). we couldn't return them both.
+>>
+>>>> +		}
+>>>>    		if (qi->desc_status[wait_index] == QI_ABORT)
+>>>>    			return -EAGAIN;
+>>>>    	}
+>>> Sorry, again for nit picking a v13 patch.  I'm not a domain expert but
+>>> this patchset seems reasonable to me.
+>> Though this is the v13, it is based on new rbtree code, you are welcome.
+>>
+>> Thanks,
+>> Ethan
+>>
+>>> regards,
+>>> dan carpenter
 
