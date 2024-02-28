@@ -1,229 +1,134 @@
-Return-Path: <linux-kernel+bounces-85714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2578A86B9C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:20:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF9F686B9C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:21:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8492285DCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:20:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 081741C224D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:21:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119293FB9E;
-	Wed, 28 Feb 2024 21:19:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EABA970036;
+	Wed, 28 Feb 2024 21:21:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="poRPXhfs"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="B+m69ozj"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693E370027
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:19:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF7B8627D
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709155193; cv=none; b=B/v1G7GMdBghir/ptJKyV8POVLCrjLtDUm1UYtOEx/zmFDcE3haJH5tsXqT/bQ9OsYXBCajuqPM34WnYW0eAQd9gs5/5Fw7a34hruRqh1dEHNRxoACTXQl4xXNIgyPr0gQySjKPp+m7eakCy8wHsYAeRcakBj+4WeP9142wTS3k=
+	t=1709155290; cv=none; b=HmefSMwS4NyK11e8KnmuJNfKcw0bQFg4qj04cPBtJCi1suFXG5Elx5UV+8KeLqzcq0Wu6bN7tTFiX89P0RIG5PbmHrZrTR2Kkt+98DP+zK90bUFJw+fIMk3VmRT5OosKZHPrOf15kBc0jRUsh+nkdxcVgIgjXn4JIzR8FIENRN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709155193; c=relaxed/simple;
-	bh=gk/MrBtcV7Nj4M6X2sQOVcKzwLMPmaE9N2JN751XURU=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=uqRvBqhGWyYAiGrRMWdyf3kkPAp9AzH9ilzqlvcKKqnuemfOp0m37V74pgOuBvzwYm9sj3mtn7k6l1SmHLIbOyBIPUiYa+Yc61qaObSZTnDmLb2iIWlZG7y1ijCofdhN5Wmot482lDI1yra7I3RNCBO7s1XTdN5Z1AParOVy9dk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=poRPXhfs; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60966f363c1so1477547b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:19:51 -0800 (PST)
+	s=arc-20240116; t=1709155290; c=relaxed/simple;
+	bh=1MRLxMSSbDaZOoH74gZrRBxdj01ORAzox/zNSSQV35k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zah6hcwvr1/LSJeiroKk8NYEygNjrg8fwBmkTnMRWPJ7hPLJC+SucmvjEwPpiwvMqJsDBlE7Taxo2I6anMvms9cslUODHcm2Q9NQKCWPl8nfIejadWolee75ypC/qEowUPAyYV74KnufxQIHsjZqNHS0O/eUBh9nZHKdVNRs4pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=B+m69ozj; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a43488745bcso37828266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:21:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709155190; x=1709759990; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I3lMvE57lAGMOn/5i5GUfHlWgJVlKCqOgZHHFIXT5YI=;
-        b=poRPXhfsYkCniLxu2SKdSpdTc8kxYQFx268+jR6EGsyEEsUNkBSLHbI8qy4ZXOAELO
-         Ygn0BdGKwB3A70aIzf1JPMv7vBbEFE8Re1J5rwL+kfhdMazmI/71c+ySjWteu/kEzZED
-         dEmyXtOUe3gve0NgqXtGvDTppaVDyEv+r/DMj49nqVo6+lMCLonzFiL5vSQ2njXdSLuh
-         yYd3bOsrd4eDJhAeSAHjtMX3qXkrVU1XlCGWvEvnBTzzcNiH46/KNb6R5KJSMSyP2pJE
-         dyglx+6TLSZ/0mRg2ZnavTNyvDbv+0RWf3CI3fy5CmiwQihdR/PeI89ajk9MpWIcona9
-         Z4PQ==
+        d=linux-foundation.org; s=google; t=1709155286; x=1709760086; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ibURPhL0TwbuNHb2Ue6c1VsEM5dnOByPcep2Xd5k/OA=;
+        b=B+m69ozjwNePNGkNIqZxY5cYxPT5xZkc2iYa3mL8hTrYFU1YOYVnRJsPkJqCi2ymQp
+         hTWjmaksS/HCeGz5kk/DM0ms6EkmbZ5//kAhxkq4/NA3lQz8y8UqCP2WwQMif4pCIbFR
+         Ue6ZGIY3ca0Oo0WS8pFOfA50DMxhF4102kkC8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709155190; x=1709759990;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I3lMvE57lAGMOn/5i5GUfHlWgJVlKCqOgZHHFIXT5YI=;
-        b=kqvqDKp8kaksB7meUfG3PnJW8pT8bLX0Wv5YDOgaukMGKZ7bpO1eWKwbdJaGMuZWUC
-         7ruE8t6NGcw3VImIlJWotlnj+i3Wri2xMECFmp9xaHfk2UIent3z3T/B+f5qHWBUVmFr
-         HRcVaGNMnndZ2UZ+RbEhnclfB3CR5QoQXDO6EejvdMKqEqFmulTrd7UcnPRPw4x+90Ys
-         oDgYK3chC2Bd/tSvIY4JGncdYfaa/nZ2iUVgwepCSgacsv2J22Vr0EV8p9Ow4c/HMZ6Q
-         d/38O0+EfXpEElXfGyHE9l2FdVla426jnI+Si9Q2zAaYSBatuf9f9ldxnNBZQUxAfNnW
-         QfzA==
-X-Forwarded-Encrypted: i=1; AJvYcCWuHlWQUOyfp3wpqMxvCjX7dttWOdstqEJKRO0YvBkLVxRY6bUz0AuSLJcL7rZbzyvlwL4/Vu3KyVSnIEj7OYJFsoQvJijf1adYzFtK
-X-Gm-Message-State: AOJu0YzYfQX2AsVQLx4SGjT9JJH/KjHlf0wf0MrzcB4mW8t4angd0zHM
-	4KiuU3fp/vkVra/OJdAhHDN/dK6DWENON/asyBl3RDxSqkZ1dpNCVT/f1jOuELxlw2rTbnAdgt5
-	DgQ==
-X-Google-Smtp-Source: AGHT+IGIb2EDaA1Xfc5xFJEWOVFhVtRT96S9AFF70n2hacpd3aAGkhz27VZdHFJQY6yEoiJnM3glwUpknsM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:338b:b0:609:22ea:f95e with SMTP id
- fl11-20020a05690c338b00b0060922eaf95emr59391ywb.4.1709155190409; Wed, 28 Feb
- 2024 13:19:50 -0800 (PST)
-Date: Wed, 28 Feb 2024 13:19:48 -0800
-In-Reply-To: <Zd-JjBNCpFG5iDul@google.com>
+        d=1e100.net; s=20230601; t=1709155286; x=1709760086;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ibURPhL0TwbuNHb2Ue6c1VsEM5dnOByPcep2Xd5k/OA=;
+        b=oH8UP2TdE5bb3sRlwjixXGzP9mDF0jWE5wSJ3Hnj1USNCbobf9X5bgYBS8wbT+KLcR
+         +OSWjmFAjGF4a8wH+tm03ZCjlWZiv7yXjNmuOQN2Qbswy3WrBlZGRCoi6PfkwNdI0ejY
+         Pwb1zb8gPTFzVXczDtqsFwTPCrbgSemWgftzBZ9t9WnH/LJmsRmL3hYrigxDMd9TbM08
+         QSmC4mthW/6MYCFZjmuc0Cn826IQxDYjejUSMijBOHozNXhBdjUvXomo889xyok92d/b
+         wH5Pp5+ebvKaU3PniKbDQYbeG3JTMMWdM/5PLVrrX0QyHYgCbo/IRGAzuzOi7+l5rY7Q
+         hIpg==
+X-Forwarded-Encrypted: i=1; AJvYcCUvpyi/Wf+if9BRa0R6s5wBjwcXR4GQoA30Nehos5nvDS4kxjcOwHT1PR9BLFmdCAAD2IGDVgfxp/wgo5/5t4YANSHgvpWMAhaOO6Jh
+X-Gm-Message-State: AOJu0Yy2w+S+NGaYLJb4WFk61iEnpgG4j2wV1VAJPbwfLEyLIMKiD7A5
+	rQrwpBlIOjGmDQDbotxmnSMOCpXLcq/aGiRMj7GWg/0cZFQiv1e29neku+RAVPL4jFZF5aLyKHf
+	Jsp+nVQ==
+X-Google-Smtp-Source: AGHT+IGoR8WcFnrOwrE+RWoBbjvTueUnz/S7vn6s1BHF1wyo0DlaT0YyW2gvGqh4SMdu0UeIRJ+AjQ==
+X-Received: by 2002:a17:906:f8d5:b0:a43:6156:6e75 with SMTP id lh21-20020a170906f8d500b00a4361566e75mr126547ejb.43.1709155286385;
+        Wed, 28 Feb 2024 13:21:26 -0800 (PST)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id hu21-20020a170907a09500b00a3ed975968esm2243680ejc.28.2024.02.28.13.21.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 13:21:24 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5656e5754ccso361023a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:21:24 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVip/omivsvQxQgD8+b1laZSMj9Ce/hjpZF1Kvr/S5UjFqLvHhTHwVZhkdQSW+e1X+o/9fUAMren5TjiMY6rfUoSLe1qBsLJORdVFZE
+X-Received: by 2002:a17:906:a291:b0:a44:234:e621 with SMTP id
+ i17-20020a170906a29100b00a440234e621mr129720ejz.10.1709155284453; Wed, 28 Feb
+ 2024 13:21:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240208204844.119326-1-thuth@redhat.com> <20240208204844.119326-4-thuth@redhat.com>
- <501ac94d-11ab-4765-a25d-75013c021be6@sirena.org.uk> <Zd-JjBNCpFG5iDul@google.com>
-Message-ID: <Zd-jdAtI_C_d_fp4@google.com>
-Subject: Re: [PATCH v3 3/8] KVM: selftests: Move setting a vCPU's entry point
- to a dedicated API
-From: Sean Christopherson <seanjc@google.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Thomas Huth <thuth@redhat.com>, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Marc Zyngier <maz@kernel.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, Aishwarya TCV <aishwarya.tcv@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+References: <20230925120309.1731676-1-dhowells@redhat.com> <20230925120309.1731676-8-dhowells@redhat.com>
+ <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com>
+In-Reply-To: <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 28 Feb 2024 13:21:07 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
+Message-ID: <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
+Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
+ 07/12] iov_iter: Convert iterate*() to inline funcs
+To: Tong Tiangen <tongtiangen@huawei.com>
+Cc: David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
+	Al Viro <viro@zeniv.linux.org.uk>, Christoph Hellwig <hch@lst.de>, 
+	Christian Brauner <christian@brauner.io>, David Laight <David.Laight@aculab.com>, 
+	Matthew Wilcox <willy@infradead.org>, Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Oliver and/or Marc, question for y'all towards the bottom.
+On Sat, 17 Feb 2024 at 19:13, Tong Tiangen <tongtiangen@huawei.com> wrote:
+>
+> After this patch:
+>    copy_page_from_iter_atomic()
+>      -> iterate_and_advance2()
+>        -> iterate_bvec()
+>          -> remain = step()
+>
+> With CONFIG_ARCH_HAS_COPY_MC, the step() is copy_mc_to_kernel() which
+> return "bytes not copied".
+>
+> When a memory error occurs during step(), the value of "left" equal to
+> the value of "part" (no one byte is copied successfully). In this case,
+> iterate_bvec() returns 0, and copy_page_from_iter_atomic() also returns
+> 0. The callback shmem_write_end()[2] also returns 0. Finally,
+> generic_perform_write() goes to "goto again"[3], and the loop restarts.
+> 4][5] cannot enter and exit the loop, then deadloop occurs.
 
-On Wed, Feb 28, 2024, Sean Christopherson wrote:
-> On Wed, Feb 28, 2024, Mark Brown wrote:
-> > On Thu, Feb 08, 2024 at 09:48:39PM +0100, Thomas Huth wrote:
-> > > From: Sean Christopherson <seanjc@google.com>
-> > >=20
-> > > Extract the code to set a vCPU's entry point out of vm_arch_vcpu_add(=
-) and
-> > > into a new API, vcpu_arch_set_entry_point().  Providing a separate AP=
-I
-> > > will allow creating a KVM selftests hardness that can handle tests th=
-at
-> > > use different entry points for sub-tests, whereas *requiring* the ent=
-ry
-> > > point to be specified at vCPU creation makes it difficult to create a
-> > > generic harness, e.g. the boilerplate setup/teardown can't easily cre=
-ate
-> > > and destroy the VM and vCPUs.
-> >=20
-> > With today's -next I'm seeing most of the KVM selftests failing on an
-> > arm64 defconfig with:
-> >=20
-> > # =3D=3D=3D=3D Test Assertion Failure =3D=3D=3D=3D
-> > #   include/kvm_util_base.h:677: !ret
-> > #   pid=3D735 tid=3D735 errno=3D9 - Bad file descriptor
-> > #      1	0x0000000000410937: vcpu_set_reg at kvm_util_base.h:677 (discr=
-iminator 4)
-> > #      2	 (inlined by) vcpu_arch_set_entry_point at processor.c:370 (di=
-scriminator 4)
-> > #      3	0x0000000000407bab: vm_vcpu_add at kvm_util_base.h:981
-> > #      4	 (inlined by) __vm_create_with_vcpus at kvm_util.c:419
-> > #      5	 (inlined by) __vm_create_shape_with_one_vcpu at kvm_util.c:43=
-2
-> > #      6	0x000000000040187b: __vm_create_with_one_vcpu at kvm_util_base=
-h:892
-> > #      7	 (inlined by) vm_create_with_one_vcpu at kvm_util_base.h:899
-> > #      8	 (inlined by) main at aarch32_id_regs.c:158
-> > #      9	0x0000007fbcbe6dc3: ?? ??:0
-> > #     10	0x0000007fbcbe6e97: ?? ??:0
-> > #     11	0x0000000000401f2f: _start at ??:?
-> > #   KVM_SET_ONE_REG failed, rc: -1 errno: 9 (Bad file descriptor)
-> >=20
-> > and a bisect pointed to this commit which does look plausibly relevant.
-> >=20
-> > Note that while this was bisected with plain arm64 defconfig and the KV=
-M
-> > selftests fragment was not enabled, but enabling the KVM fragment gave
-> > the same result as would be expected based on the options enabled by th=
-e
-> > fragment.  We're also seeing an alternative failure pattern where the
-> > tests segfault when run in a different environment, I'm also tracking
-> > that down but I suspect these are the same issue.
->=20
-> Gah, my bad, I should have at least tested on ARM since I have easy acces=
-s to
-> such hardware.  If I can't figure out what's going wrong in the next few =
-hours,
-> I'll drop this series and we can try again for 6.10.
->=20
-> Sorry :-/
+Hmm. If the copy doesn't succeed and make any progress at all, then
+the code in generic_perform_write() after the "goto again"
 
-/facepalm
+                //[4]
+                if (unlikely(fault_in_iov_iter_readable(i, bytes) ==
+                              bytes)) {
+                        status = -EFAULT;
+                        break;
+                }
 
-The inner helper doesn't return the vCPU, and by dumb (bad) luck, selftests=
- end
-up trying to use fd=3D0.
+should break out of the loop.
 
-diff --git a/tools/testing/selftests/kvm/lib/aarch64/processor.c b/tools/te=
-sting/selftests/kvm/lib/aarch64/processor.c
-index ed4ab29f4fad..a9eb17295be4 100644
---- a/tools/testing/selftests/kvm/lib/aarch64/processor.c
-+++ b/tools/testing/selftests/kvm/lib/aarch64/processor.c
-@@ -386,6 +386,7 @@ static struct kvm_vcpu *__aarch64_vcpu_add(struct kvm_v=
-m *vm, uint32_t vcpu_id,
-        aarch64_vcpu_setup(vcpu, init);
-=20
-        vcpu_set_reg(vcpu, ARM64_CORE_REG(sp_el1), stack_vaddr + stack_size=
-);
-+       return vcpu;
- }
-=20
- struct kvm_vcpu *aarch64_vcpu_add(struct kvm_vm *vm, uint32_t vcpu_id,
+So either your analysis looks a bit flawed, or I'm missing something.
+Likely I'm missing something really obvious.
 
-I'll squash the above and force push.
+Why does the copy_mc_to_kernel() fail, but the
+fault_in_iov_iter_readable() succeeds?
 
-
-In my defense, I would have caught this when build-testing, as the compiler=
- does
-warn...
-
-  lib/aarch64/processor.c -o /usr/local/google/home/seanjc/go/src/kernel.or=
-g/nox/tools/testing/selftests/kvm/lib/aarch64/processor.o
-  lib/aarch64/processor.c: In function =E2=80=98__aarch64_vcpu_add=E2=80=99=
-:
-  lib/aarch64/processor.c:389:1: warning: no return statement in function r=
-eturning non-void [-Wreturn-type]
-    389 | }
-        | ^
-  At top level:
-  cc1: note: unrecognized command-line option =E2=80=98-Wno-gnu-variable-si=
-zed-type-not-at-end=E2=80=99 may have been intended to silence earlier diag=
-nostics
-
-but due to a different issue that is fixed in the kvm-arm tree[*], but not =
-in mine,
-I built without -Werror and didn't see the new warn in the sea of GUEST_PRI=
-NTF
-warnings.
-
-Ugh, and I still can't enable -Werror, because there are unused functions i=
-n
-aarch64/vpmu_counter_access.c
-
-  aarch64/vpmu_counter_access.c:96:20: error: unused function 'enable_count=
-er' [-Werror,-Wunused-function]
-  static inline void enable_counter(int idx)
-                   ^
-  aarch64/vpmu_counter_access.c:104:20: error: unused function 'disable_cou=
-nter' [-Werror,-Wunused-function]
-  static inline void disable_counter(int idx)
-                   ^
-  2 errors generated.
-  make: *** [Makefile:278: /usr/local/google/home/seanjc/go/src/kernel.org/=
-nox/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.o] Error 1
-  make: *** Waiting for unfinished jobs....
-
-  Commit 49f31cff9c533d264659356b90445023b04e10fb failed to build with 'mak=
-e-clang make-arm make -j128'.
-
-Oliver/Marc, any thoughts on how you want to fix the unused function warnin=
-gs?
-As evidenced by this goof, being able to compile with -Werror is super help=
-ful.
-
-And another question: is there any reason to not force -Werror for selftest=
-s?
-
-[*] https://lore.kernel.org/all/20240202234603.366925-1-seanjc@google.com
+              Linus
 
