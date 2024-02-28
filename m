@@ -1,153 +1,159 @@
-Return-Path: <linux-kernel+bounces-84787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C108F86AB8B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:44:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E837086AB88
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:43:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2E921C23FCC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:44:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6005B1F21385
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B94636124;
-	Wed, 28 Feb 2024 09:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67D9136125;
+	Wed, 28 Feb 2024 09:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LG9h3AQj"
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="peW0vXEm"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5192E84B;
-	Wed, 28 Feb 2024 09:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE5A2D052
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:43:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709113455; cv=none; b=I5GKu2qytsGcCQqeW3jMbUBaY2TuEqk8cEClYMiqBsROUDiM5HOOj9pwjbFaLB18sn9xhHLloyrCw/xrVdsWAZFvwM0rS+HGwAi+KasiOKiSWHpNXcDVHpJXZSp0MG3uVQAGyIsFbQU2IWgxyp3kUECHpOzYMothOJSrmuEOAlA=
+	t=1709113424; cv=none; b=fuhdCSsWRM8cgOlJpl6x0NVGX0E9G1eUGWCnU9TpeD7PL842b9gPSFdefEyr4GL5uEWd+oSe9FxUykw/LFMWWxpxfaxYqVavBZHpz1n252kLPopEher5ZUiPut9+Gw0lK85ETldLNSU2z9NNvdvaD4/+36RbimY615XtqASQ+eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709113455; c=relaxed/simple;
-	bh=lRVKIKjBIcOPEo6Xr+dAqUMb9zwLpThSLnQ3kHz+dUE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SjaoWpSXN4t0/xt6q5iSSd7gNHOhfoGkvq3E3i6Rgpai50nBGXrF7cKnowwII5RsP7PffcwlQB/b3PGk/1SxyrcPBnRYUCHyJSTvhiX0HOtmnJ+R+KeMmJDOdOH9LlG+WJPjUJl53KZ1p1q8zPwSpMKRq8P9A4eAdzEzUg+ovic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LG9h3AQj; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4d332d0db9cso338870e0c.3;
-        Wed, 28 Feb 2024 01:44:14 -0800 (PST)
+	s=arc-20240116; t=1709113424; c=relaxed/simple;
+	bh=Ult8vei6p6VMkXn/9tdyilwesfzp6VrkTIDAJq5kUtQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D9s1hsPYvzHjo6tjfxsJSJ6OTBTtL3V/Esg86k6VOPSjIQO69Y2iKljY2GD94Vi+wvo6KsD5/+2AyspFUHYNjWdJ6xri9d+LaKMEb3mq7TxaO4BC8HoVgI/KE7qN53wwUWi2ktLoImkQ9StwWniVdzX0taAJa5Zpz2eqpjo4xpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=peW0vXEm; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412af574501so9799765e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:43:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709113453; x=1709718253; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EigGEravrSBB3kVIXSapPAOk2V/j1XFYrgJgPBVd5DA=;
-        b=LG9h3AQjKM9qUE6XJW8WtaoVHgGHYV3okpaiNJgUUiWg6beR2qYC2T0es+bZDRnzoW
-         6iWiTnAMW5r87CTB4aL4TgmFudW0kz0a3veCrUOqzU7glazC4PsfM1dGs7cZpVBjUskN
-         lh6H7QolnRkCE9nbGVFVL6vKCDzcICvS4+UgZZTgccglxp/P7gfk+jinjbFSL5P0TQYv
-         Y+Jxt+oxCGiaih1E6CbohVx51EO1KQwHteXQ+loi7n51LtjqJyslpTNROfY4IqiCEQvb
-         glrG/NOSwz3MdXcD1Eb17LFdvXL7qLNKUUIainYWm1BnOTSvF6Sl36imJk+0BMB+L22Z
-         9lCQ==
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1709113421; x=1709718221; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kRPlWagDvPDMQ7ZK9LzRF2TmTIwImnAEbz7S+2nAljo=;
+        b=peW0vXEmBsf7z1/hspbBP+IagT/DOAQo9bClkdS48eeiR54yGh8NX8YZCxYW10KaLg
+         Ivlu5rlgfehXtOAPQX2Prj2eQEA8MuL+eeD10tT4b7xio/D+yoNrj2JNVqOySzueMeUo
+         0iPZVKTm8lQA6Li4NZIMbYckuR1FPVP/HpsRJqU8sCdGKPBLJ1Ob+ncQSUZbLoXYht1h
+         W4MqTBy/+Mw6JAKjgzdVxTqCFvcVXdZq04/A9wxgrR0TPi9O+j2nno4EL7aZMkX8Qlaz
+         0vy8Tf8QScHTH3kJsXgnLz6S2aUTbrPaJaEEuvRJ1SHId+vuslTDjeX6VrdMGXKHy275
+         sH5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709113453; x=1709718253;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EigGEravrSBB3kVIXSapPAOk2V/j1XFYrgJgPBVd5DA=;
-        b=g1g+9fVnhF7MzLGTVCwYs61uZwIAeL8E97gE7vJX2h5LztlAC4I/ugpp14ExN4cTuL
-         PUG4tJNYdn9SuL9gt3HBXvk61wAuFAHLMvsU20ZCGgA9KmWTdpkodDFL5KBXx0hTrKcb
-         AnEcRNuXDpz/WYBflDb7+AbC8nKS1F+g11jMYlQS2WoGHy+1qVUIhvHGkGh94QGgqa55
-         FddhzppnK6AkmVaixcmiNZ3KW2a9IA2QGHpRH+cY8mZ2HJ1Bkco8IljB86RMxBcmdYhc
-         x/peqDpD88hU+fSPcli0YdqOR9bOnteziN/1LRdI4a6Yb5oIcY9oXimLyoE6jByQVnIy
-         TRfw==
-X-Forwarded-Encrypted: i=1; AJvYcCVNlszEXQaStDl1itHLLl5TaKt/1i051FO+RIPsyld/hem/MnXwZcdBANZYgex93HRDPbViXoAfF6+KMqHvUtp7dNNJpHBVLIPYcBqJKwUxvYwc6ZIna3+LIguQgPLmk/YLt7tYILXmPp1iaEMZIUGdfNpLIaUlsXI37UIeA2xogYNJ1PL1T8mvQ3X4
-X-Gm-Message-State: AOJu0YxPSwANih7wYe2mptoOxv423imVc9l37p0pbUvdMkbjK8Eo7E4k
-	ehXSCmC17VkoZoJmZFDuc/wGxL7evDk81FnBS8AujedTDAgpILav5FlxKpqOlAxdoEhLREalPci
-	0NdMj8quoGeRPwypaIy2McmIA6/FTdMMU
-X-Google-Smtp-Source: AGHT+IHe2DUCCldJvUgC7hikB8+SCQ+sM3Oqi3/DV8PYhNOgZo6s01p0sEz3T8mp/3aAJxXtjzhExGxpJ4FIl3IIGyM=
-X-Received: by 2002:a1f:e401:0:b0:4d3:37d1:5a70 with SMTP id
- b1-20020a1fe401000000b004d337d15a70mr2313505vkh.7.1709113453037; Wed, 28 Feb
- 2024 01:44:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709113421; x=1709718221;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kRPlWagDvPDMQ7ZK9LzRF2TmTIwImnAEbz7S+2nAljo=;
+        b=eetWhjqJVB3M9Gwi676FZJ2UIt7/klubM9Z4AgU0As4HJxsWaMZMBAkMz+CyroWGoo
+         1/PFi1XdxA8VLusEMrIO/EIlFwCpnAmIz18688eZHD/ZZr1HjiqZW1/RkhRjNHWBKKLX
+         5gXOQ+YHBxt5wLeh1rThGCuPNm9dO1k9jGktdIcsBFyn3cQU+ETCpNkxuWthvXXl3HEM
+         v9XYFz4uAs4zb/eFb3mRMYMcFsT4eFU7zwD2i9LHRSt59s2Su6aPJaGnRK95Ny/6DLuh
+         5K1hUKxM7xcmBNkluI7sHwMNfbtBjPEX9WfHWnhB5Kp/wrXtzvdLqjNQrmXueoZHk+E1
+         g38Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWNs7kOne1AWeJHdvo3nnVkDsge2VRyhH8EeyOH0RQ05qM54djkKl5EFb7O1YEs2NZs9PigTWrVfWFs8y0J1ad57BTVXjQ78Y3G5SqF
+X-Gm-Message-State: AOJu0Yxt7WA8jV14DxIWqDUdGiEI/D1oxR2i5WpyPCe8AgxL52Mobb/+
+	2GTcLIxe1JL3KnQcjDd09EIDdhr07YdwfN+VFyOEf6gn2qugnF6MCiLR+s+1z9M=
+X-Google-Smtp-Source: AGHT+IHuR2/GUaaVQKMylulngc2NeSpLM/wXdoWCxP1RvRNWXEcQoYpHV6mjF9Upqj7OQcQnPl17cQ==
+X-Received: by 2002:a05:600c:5493:b0:412:f24:560a with SMTP id iv19-20020a05600c549300b004120f24560amr10064073wmb.11.1709113421234;
+        Wed, 28 Feb 2024 01:43:41 -0800 (PST)
+Received: from localhost ([193.47.165.251])
+        by smtp.gmail.com with ESMTPSA id je13-20020a05600c1f8d00b00412b236f145sm1566537wmb.26.2024.02.28.01.43.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 01:43:40 -0800 (PST)
+Date: Wed, 28 Feb 2024 10:43:37 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Erwan Velu <erwanaliasr1@gmail.com>
+Cc: Erwan Velu <e.velu@criteo.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i40e: Prevent setting MTU if greater than MFS
+Message-ID: <Zd8ASR9ocx-Xk4OT@nanopsycho>
+References: <20240227192704.376176-1-e.velu@criteo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227232531.218159-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240227232531.218159-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <8e4e05f9-5bd1-4f31-a2ae-fc1567405c11@linaro.org>
-In-Reply-To: <8e4e05f9-5bd1-4f31-a2ae-fc1567405c11@linaro.org>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Wed, 28 Feb 2024 09:43:22 +0000
-Message-ID: <CA+V-a8vSCif-JXGFtn9k-JRBsV3sKH4YoGJzQbum0DV1JS5hmg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: arm: renesas: Document Renesas
- RZ/V2H(P) System Controller
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227192704.376176-1-e.velu@criteo.com>
 
-Hi Krzysztof,
-
-Thank you for the review.
-
-On Wed, Feb 28, 2024 at 7:49=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
+Tue, Feb 27, 2024 at 08:27:03PM CET, erwanaliasr1@gmail.com wrote:
+>Commit 6871a7de705b6f6a4046f0d19da9bcd689c3bc8e from iPXE project is
+>setting the MFS to 0x600 = 1536.
 >
-> On 28/02/2024 00:25, Prabhakar wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Add DT binding documentation for System Controller (SYS) found on
-> > RZ/V2H(P) ("R9A09G057") SoC's.
-> >
-> > SYS block contains the SYS_LSI_DEVID register which can be used to
-> > retrieve SoC version information.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> > ---
-> > v1 -> v2
-> > - Dropped extal_clk node from example
-> > - Replaced RZ/V2H{P} -> RZ/V2H(P)
-> > - Dropped description for clocks & resets properties
-> > - used <cpg 1> for clocks in example node
-> > ---
-> >  .../soc/renesas/renesas,r9a09g057-sys.yaml    | 51 +++++++++++++++++++
-> >  1 file changed, 51 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/renesas/renes=
-as,r9a09g057-sys.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas,r9a0=
-9g057-sys.yaml b/Documentation/devicetree/bindings/soc/renesas/renesas,r9a0=
-9g057-sys.yaml
-> > new file mode 100644
-> > index 000000000000..72bf8e733dcd
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/soc/renesas/renesas,r9a09g057-s=
-ys.yaml
-> > @@ -0,0 +1,51 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/soc/renesas/renesas,r9a09g057-sys.y=
-aml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Renesas RZ/V2H(P) System Controller (SYS)
-> > +
-> > +maintainers:
-> > +  - Geert Uytterhoeven <geert+renesas@glider.be>
-> > +
-> > +description:
+>At boot time the i40e driver complains about it with
+>the following message but continues.
 >
-> You need | to preserve formatting
+>	MFS for port 1 has been set below the default: 600
 >
-Sure I will add "|". On that note some bindings have "|+" and some "|"
-what is the preferred one?
+>If the MTU size is increased, the driver accept it but large packets will not
+>be processed by the firmware generating tx_errors. The issue is pretty
+>silent for users. i.e doing TCP in such context will generates lots of
+>retransmissions until the proper window size (below 1500) will be used.
+>
+>To fix this case, it would have been ideal to increase the MFS,
+>via i40e_aqc_opc_set_mac_config, but I didn't found a reliable way to do it.
+>
+>At least, this commit prevents setting up an MTU greater than the current MFS.
+>It will avoid being in the position of having an MTU set to 9000 on the
+>netdev with a firmware refusing packets larger than 1536.
+>
+>A typical trace looks like the following :
+>[  377.548696] i40e 0000:5d:00.0 eno5: Error changing mtu to 9000 which is greater than the current mfs: 1536
+>
+>Signed-off-by: Erwan Velu <e.velu@criteo.com>
 
-Cheers,
-Prabhakar
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+
+Next time, could you please indicate the target tree in the patch
+subject prefix, like this: "[patch net-next] xxx" ?
+
+
+>---
+> drivers/net/ethernet/intel/i40e/i40e_main.c | 9 ++++++++-
+> 1 file changed, 8 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+>index 54eb55464e31..14fc70d854d3 100644
+>--- a/drivers/net/ethernet/intel/i40e/i40e_main.c
+>+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+>@@ -2950,7 +2950,7 @@ static int i40e_change_mtu(struct net_device *netdev, int new_mtu)
+> 	struct i40e_netdev_priv *np = netdev_priv(netdev);
+> 	struct i40e_vsi *vsi = np->vsi;
+> 	struct i40e_pf *pf = vsi->back;
+>-	int frame_size;
+>+	int frame_size, mfs;
+> 
+> 	frame_size = i40e_max_vsi_frame_size(vsi, vsi->xdp_prog);
+> 	if (new_mtu > frame_size - I40E_PACKET_HDR_PAD) {
+>@@ -2959,6 +2959,13 @@ static int i40e_change_mtu(struct net_device *netdev, int new_mtu)
+> 		return -EINVAL;
+> 	}
+> 
+>+	mfs = pf->hw.phy.link_info.max_frame_size;
+>+	if (new_mtu > mfs) {
+>+		netdev_err(netdev, "Error changing mtu to %d which is greater than the current mfs: %d\n",
+>+			   new_mtu, mfs);
+>+		return -EINVAL;
+>+	}
+>+
+> 	netdev_dbg(netdev, "changing MTU from %d to %d\n",
+> 		   netdev->mtu, new_mtu);
+> 	netdev->mtu = new_mtu;
+>-- 
+>2.43.2
+>
+>
 
