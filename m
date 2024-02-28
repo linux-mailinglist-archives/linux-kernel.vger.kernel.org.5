@@ -1,173 +1,154 @@
-Return-Path: <linux-kernel+bounces-85598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E403286B826
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:29:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D253486B82B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:32:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 735F11F22501
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:29:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8780428A80F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:32:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BBAC7443A;
-	Wed, 28 Feb 2024 19:29:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 987CA7443B;
+	Wed, 28 Feb 2024 19:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IP9BevXJ"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="R+e+/28X"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890B774415
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:29:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB927441E
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 19:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709148561; cv=none; b=hl0fJJG6YpagGEAsTTIdjOX0WLzJJV3T5Ao8GdUzsNvK8uoHXrp/FGDXnWt/P1Jhi+dlHrdm7F9pN+G9OaGCK0FriXWrLBhX0a1cqsjxEPhUlD2xDd4i02uXkklr9t8zPLtl+Svo+8aNpISTLjn3CUBb6CLBwiIl8l/78S2ULeI=
+	t=1709148716; cv=none; b=I9rzKEoddxe7djLPxLBf27Sbu46qN3S+3qLloXtXGHpmrW52rUBNnPcvA1xQYdgyXljlfw3z7auz7e47jaOd9T6SH72ff3ZjuZ+uDaIeTD4ARSyRTej/imtr13UDKW8Z9mSbMjjQrni7pQccSCb40N0b1ZVzuDphYcZrLKp/+iE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709148561; c=relaxed/simple;
-	bh=HDIINGy+g4s1hGSMPco1nC2p3P5zb08MwBm6RlGXfn8=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Pou14Ufiyv2PLE3SOx8F6wfq6hSjmoeJNbQNfpfklKBhgAuMVUZlvdz6vqGjykUAAb3Miu5bLKlcvOAwzk1/w9GdiWqxLbwle5DYBnf2Nf+Ep0CLkcu5vBcaub3VPJ7YP3v6AIKa23R9d1loDM9XP20nVe9oqjuZ1zllF9HA5yE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IP9BevXJ; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-608e4171382so1501617b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:29:18 -0800 (PST)
+	s=arc-20240116; t=1709148716; c=relaxed/simple;
+	bh=CsmB9fARMIy01DhD7lmpgmTlIpsn7iHrh8AsXbNH4Vk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JpyIX9F7L7ecVKir584tXcRoNIxI2RDMUw//iEVW9TXEYTjJYTBBnmENr8oEIOgBu8IP2p+7mi9bQgoXCcaRS5ApLTtczVC7nNEuHW4eqbQDUoUI63ZDUOI3ROrdFGIXaeHRfiBb8zhN6UOkUE7ErLG6HWaPzPcI4YW5IWh0/oU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=R+e+/28X; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so963931fa.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 11:31:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709148557; x=1709753357; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=z7saMouekiNL4SDnY8l1WG6+uM8tId4as9SNT1MABgI=;
-        b=IP9BevXJd3HC4O9fDEXGpCRqJwv6FN40NePcqJZSiF/eesXruDf5uoiaOkMMYW3aKk
-         f2ezIC2fJlC8HqQHP9/bjSa5Vv03lRQWEAlHtkC4Bso2sV/XRRX4PWUjtlP7RTFBDl8N
-         EidRPb8lyh3Fpywe93H2Joh2Zzg3ACFZ2xohYhxmbuiE2FgE2mipQLBm/evMUJZoS2Ec
-         wi+dOQL68sm+Tt67nX8ba/MQAQNWeqXeIl4wCy1BirloUR7WqhsvKJXsw9pkD6yGlZuu
-         HJHgX1A7GJ/JVoL135K8f1teR88Jv62PwaqdvdJzHhTEdzrhriaiIUXehQqDixmM98eQ
-         cwnA==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709148713; x=1709753513; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RxzW+l5jEUWB61rf6mBekKpON+Tg5s7JQK0g/jqbljE=;
+        b=R+e+/28XFP3gGWzZNSrdTpdZ5fVQwpEtlww2QcKiPhIOOZWn0laZ+VKF09Tq8ARaGb
+         owsDODN3TLjcbRIPFA9NklS7uriteutH0rnNLndr8D151IacX3qNvXAukUcq8pjx0xFR
+         CfT8umv62mZdOVMHrFRpRZ73fhR0Z1iNnWiJoYhe3ZDyrVW77EqcF9CoZfzkj5RM6AcX
+         J15Gx2B62xWNt94JOZ5yDzq1QWJtrRVDW+jDOEPHW4Rrp0hxgShC375Ur8kuAKsxNJVe
+         b/3JYUjeLT7wjqyvseTtfrw7MSJBiiNeWZmGvDSm4HX6fl/nqZYCqhdhdYhN/W7Wfzyw
+         ifhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709148557; x=1709753357;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=z7saMouekiNL4SDnY8l1WG6+uM8tId4as9SNT1MABgI=;
-        b=CPvsmm75BMTJIoQYR5QvWbmhMvuZrC8tvavnWnmIx3qcKD7xHG54+XHHKTC8Xiyxqe
-         SB14vaiajHu12swX50G2+LPX6i6fgZYkmXon1G8AWu60la1RFcpErIRcXJGA+bfz/Ogr
-         YgJGxuWotpqPGPSLMNxSwkzpluXsvz/NisuH4Qr2ubyRKqrZjlia9kZB3mhMffX8MLAM
-         W1ToGbs7X2RaKFnOA+/XlyOahqtqNbPpAGAwKmf3aZEKLzLtJ4HunHkAuzYs8HDpNwgI
-         GiTuueK2pg5u2ByhZxXX4lApFYuJpYizTKfrmAWb3atdfk7Cd0xYMpP6YviCzgMyrkqj
-         yGog==
-X-Forwarded-Encrypted: i=1; AJvYcCWAhtelWz1pYaU8PXj5hUELFkTFvQvtzNTJh1wb8JN5Gaf9mGYxE7BfQSKjKtqm+pcV+gScO9bSPoQxNZFAZZxqWQ7kkY7uI1l+xUv9
-X-Gm-Message-State: AOJu0Yy2croqwXp+OLyDpTD/qWf5khpFHuq9ZFJypAXR87/O0A2cqLZ4
-	2AvWthb5ottuCxh2vstLPS0RfUtBoMBZ5U7FVlHLuyCE+Dy5RjLG4zgR2NRXGU/buxjN4cWigX8
-	a9Q==
-X-Google-Smtp-Source: AGHT+IGUwmJBAaiA58+gxzBbHGRKuvTNTMhF9ZigJKYpehWOoTrUnbjqb53H/C0+WfiTZaiYFralNhVs+S0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:3507:b0:608:e67f:4387 with SMTP id
- fq7-20020a05690c350700b00608e67f4387mr278ywb.7.1709148557586; Wed, 28 Feb
- 2024 11:29:17 -0800 (PST)
-Date: Wed, 28 Feb 2024 11:29:16 -0800
-In-Reply-To: <501ac94d-11ab-4765-a25d-75013c021be6@sirena.org.uk>
+        d=1e100.net; s=20230601; t=1709148713; x=1709753513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RxzW+l5jEUWB61rf6mBekKpON+Tg5s7JQK0g/jqbljE=;
+        b=Jb4ewfKMMdESTgnstspGMbB3iOXArTu+Fv22V6W37lSrklcIfxC9F2MiwrxuPpFb1P
+         A2dOxX9lVFr4xezwCs08bhnyITCrtD1MuLrvVw30VWnwKVAuxSZW6jppIM9OMSC4mKgU
+         iOmS0Z9Uzv5tvawMycqOUOB38N2gXdXbwRJ9XnF6IOlFb13pnXKnjxPW9GDZqmD0q4ql
+         2ROrU6xZxNXZ/z7G5RfwU2bnHdvCgT3MLE6Lsojrv1bD1PeejSUAe0z4/I3MpgqKRpt0
+         3BMDBJ/H8csfv+h/NBlSvpul721nLU94OxMUG0UPk8Qnsk3Codlcs1zdi/5XYgKWEI4/
+         vIeg==
+X-Forwarded-Encrypted: i=1; AJvYcCVdV5ou1EUDyEAPnGumRTdSbrjOyQK8XWVpDtXUKoV7nNFctNuZRML/jk6d0x3XYNWo7ZjurZwDGfi+r9+FwaKGMlt75qWKLmDs/eP0
+X-Gm-Message-State: AOJu0YwTvxnw74TNWCmlFtGRdIECZsMH7Zo74TaQksKAcucImrtgat0a
+	bAnk29HJmwEyXWIMHH3xC4tVkHkVJaZB5UlZBsb5ghD3D5kngE7id51xykrFtBQ1NWIKMU4JmWG
+	mrEakKczND3x5W6A7tOeK8J3RLKrZsakFFxwUjg==
+X-Google-Smtp-Source: AGHT+IHKGzn3Jy+jvSzStiobwmQa7F/8DIMpq3pQzjfiiVl4yPJkJ9M8hV1Z785oJhbfM5/KLC2JWML5w3BPF2F7DOQ=
+X-Received: by 2002:a2e:9d02:0:b0:2d2:650f:9587 with SMTP id
+ t2-20020a2e9d02000000b002d2650f9587mr8698177lji.13.1709148712666; Wed, 28 Feb
+ 2024 11:31:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240208204844.119326-1-thuth@redhat.com> <20240208204844.119326-4-thuth@redhat.com>
- <501ac94d-11ab-4765-a25d-75013c021be6@sirena.org.uk>
-Message-ID: <Zd-JjBNCpFG5iDul@google.com>
-Subject: Re: [PATCH v3 3/8] KVM: selftests: Move setting a vCPU's entry point
- to a dedicated API
-From: Sean Christopherson <seanjc@google.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Thomas Huth <thuth@redhat.com>, kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Marc Zyngier <maz@kernel.org>, 
-	Oliver Upton <oliver.upton@linux.dev>, Aishwarya TCV <aishwarya.tcv@arm.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240228122617.185814-1-alisa.roman@analog.com> <20240228122617.185814-4-alisa.roman@analog.com>
+In-Reply-To: <20240228122617.185814-4-alisa.roman@analog.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Wed, 28 Feb 2024 13:31:41 -0600
+Message-ID: <CAMknhBGsD+soKKVBwFxa5AzVgxzgKFyoN54kR5eJ9zk039iHag@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] dt-bindings: iio: adc: ad7192: Add AD7194 support
+To: Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc: michael.hennerich@analog.com, linux-iio@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, lars@metafoo.de, 
+	jic23@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, andriy.shevchenko@linux.intel.com, nuno.sa@analog.com, 
+	alisa.roman@analog.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024, Mark Brown wrote:
-> On Thu, Feb 08, 2024 at 09:48:39PM +0100, Thomas Huth wrote:
-> > From: Sean Christopherson <seanjc@google.com>
-> > 
-> > Extract the code to set a vCPU's entry point out of vm_arch_vcpu_add() and
-> > into a new API, vcpu_arch_set_entry_point().  Providing a separate API
-> > will allow creating a KVM selftests hardness that can handle tests that
-> > use different entry points for sub-tests, whereas *requiring* the entry
-> > point to be specified at vCPU creation makes it difficult to create a
-> > generic harness, e.g. the boilerplate setup/teardown can't easily create
-> > and destroy the VM and vCPUs.
-> 
-> With today's -next I'm seeing most of the KVM selftests failing on an
-> arm64 defconfig with:
-> 
-> # ==== Test Assertion Failure ====
-> #   include/kvm_util_base.h:677: !ret
-> #   pid=735 tid=735 errno=9 - Bad file descriptor
-> #      1	0x0000000000410937: vcpu_set_reg at kvm_util_base.h:677 (discriminator 4)
-> #      2	 (inlined by) vcpu_arch_set_entry_point at processor.c:370 (discriminator 4)
-> #      3	0x0000000000407bab: vm_vcpu_add at kvm_util_base.h:981
-> #      4	 (inlined by) __vm_create_with_vcpus at kvm_util.c:419
-> #      5	 (inlined by) __vm_create_shape_with_one_vcpu at kvm_util.c:432
-> #      6	0x000000000040187b: __vm_create_with_one_vcpu at kvm_util_base.h:892
-> #      7	 (inlined by) vm_create_with_one_vcpu at kvm_util_base.h:899
-> #      8	 (inlined by) main at aarch32_id_regs.c:158
-> #      9	0x0000007fbcbe6dc3: ?? ??:0
-> #     10	0x0000007fbcbe6e97: ?? ??:0
-> #     11	0x0000000000401f2f: _start at ??:?
-> #   KVM_SET_ONE_REG failed, rc: -1 errno: 9 (Bad file descriptor)
-> 
-> and a bisect pointed to this commit which does look plausibly relevant.
-> 
-> Note that while this was bisected with plain arm64 defconfig and the KVM
-> selftests fragment was not enabled, but enabling the KVM fragment gave
-> the same result as would be expected based on the options enabled by the
-> fragment.  We're also seeing an alternative failure pattern where the
-> tests segfault when run in a different environment, I'm also tracking
-> that down but I suspect these are the same issue.
+On Wed, Feb 28, 2024 at 6:26=E2=80=AFAM Alisa-Dariana Roman
+<alisadariana@gmail.com> wrote:
+>
+> Unlike the other AD719Xs, AD7194 has configurable differential
+> channels. The default configuration for these channels can be changed
+> from the devicetree.
+>
+> Also add an example for AD7194 devicetree.
+>
+> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+> Signed-off-by: romandariana <alisa.roman@analog.com>
 
-Gah, my bad, I should have at least tested on ARM since I have easy access to
-such hardware.  If I can't figure out what's going wrong in the next few hours,
-I'll drop this series and we can try again for 6.10.
+Why two SOBs with the same email?
 
-Sorry :-/
+> ---
+>  .../bindings/iio/adc/adi,ad7192.yaml          | 75 +++++++++++++++++++
+>  1 file changed, 75 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/=
+Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> index 16def2985ab4..c62862760311 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+> @@ -21,8 +21,15 @@ properties:
+>        - adi,ad7190
+>        - adi,ad7192
+>        - adi,ad7193
+> +      - adi,ad7194
+>        - adi,ad7195
+>
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+>    reg:
+>      maxItems: 1
+>
 
-> A full log from a sample failing run can be seen here.
-> 
->    https://lava.sirena.org.uk/scheduler/job/645026#L1581
-> 
-> Bisect log:
-> 
-> git bisect start
-> # good: [75d8cf735082728a5dfb7e46926ee184851cc519] Merge branch 'for-linux-next-fixes' of git://anongit.freedesktop.org/drm/drm-misc
-> git bisect good 75d8cf735082728a5dfb7e46926ee184851cc519
-> # bad: [20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e] Add linux-next specific files for 20240228
-> git bisect bad 20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e
-> # good: [1322f1801e59dddce10591d602d246c1bf49990c] Merge branch 'main' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-> git bisect good 1322f1801e59dddce10591d602d246c1bf49990c
-> # good: [f996a1cab1c3547a0bd2edf0daa7a71eddec9b58] Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
-> git bisect good f996a1cab1c3547a0bd2edf0daa7a71eddec9b58
-> # bad: [22e19d7b30a88dc9e7b315935f44fb2a6c6bf7bf] Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt.git
-> git bisect bad 22e19d7b30a88dc9e7b315935f44fb2a6c6bf7bf
-> # good: [f9ad77051d5d45000848e87650a382995adf7e50] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-> git bisect good f9ad77051d5d45000848e87650a382995adf7e50
-> # bad: [6e9a1d8a249374b0c8ff9472f30f160c98881519] Merge branch 'next' of https://github.com/kvm-x86/linux.git
-> git bisect bad 6e9a1d8a249374b0c8ff9472f30f160c98881519
-> # bad: [f3ac6b5aec49c3f8ced623802ee9efa6484263eb] Merge branch 'xen'
-> git bisect bad f3ac6b5aec49c3f8ced623802ee9efa6484263eb
-> # good: [938ccbf4327f38cec365986136e349486ddbb005] Merge branch 'pmu'
-> git bisect good 938ccbf4327f38cec365986136e349486ddbb005
-> # bad: [f3750b0c7f6e48b0adfb9bd2419de4a3c604ca68] KVM: selftests: Add a basic SEV-ES smoke test
-> git bisect bad f3750b0c7f6e48b0adfb9bd2419de4a3c604ca68
-> # bad: [992178c7219caa0bcdaa5c0ce59615b12da21662] KVM: selftests: Add a macro to define a test with one vcpu
-> git bisect bad 992178c7219caa0bcdaa5c0ce59615b12da21662
-> # good: [71cd774ad2f98d4c78bc868e7e55397810be3540] KVM: s390: move s390-specific structs to uapi/asm/kvm.h
-> git bisect good 71cd774ad2f98d4c78bc868e7e55397810be3540
-> # good: [db7d6fbc10447090bab8691a907a7c383ec66f58] KVM: remove unnecessary #ifdef
-> git bisect good db7d6fbc10447090bab8691a907a7c383ec66f58
-> # good: [221d65449453846bbf6801d0ecf7dfdf4f413ad9] KVM: selftests: x86: sync_regs_test: Get regs structure before modifying it
-> git bisect good 221d65449453846bbf6801d0ecf7dfdf4f413ad9
-> # bad: [8ef192609f14272b7bd6fc3a553ebe02d1133cd0] KVM: selftests: Move setting a vCPU's entry point to a dedicated API
-> git bisect bad 8ef192609f14272b7bd6fc3a553ebe02d1133cd0
-> # first bad commit: [8ef192609f14272b7bd6fc3a553ebe02d1133cd0] KVM: selftests: Move setting a vCPU's entry point to a dedicated API
+Based on the discussion in v3, I was expecting to see an aincom-supply
+property added. (Although that probably belongs in a separate patch
+since it applies to all existing chips, not just the one being added
+here.)
 
 
+> @@ -96,8 +103,44 @@ required:
+>    - spi-cpol
+>    - spi-cpha
+>
+> +patternProperties:
+> +  "^channel@([0-9]+)$":
+> +    type: object
+> +    $ref: adc.yaml
+> +    unevaluatedProperties: false
+> +
+> +    properties:
+> +      reg:
+> +        description: The channel index.
+> +        minimum: 1
+> +        maximum: 16
+
+I guess this is OK, but max of 16 is a bit artificial since there
+could be unusual use cases where inputs are reused on multiple
+channels. Technically, there are 16 * 17 =3D 272 possible combinations
+that could appear.
 
