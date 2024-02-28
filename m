@@ -1,223 +1,251 @@
-Return-Path: <linux-kernel+bounces-84535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC7F086A7FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:27:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EBA786A801
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:29:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0B321C231BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:27:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0704B21D5C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E10221100;
-	Wed, 28 Feb 2024 05:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE5321A02;
+	Wed, 28 Feb 2024 05:29:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K8deY+mg"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oJ/oDW8K"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03744210EC
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D8B219E4
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709098051; cv=none; b=UJohvyaOyEsL3l+tG19ROwQx2cUgzt7VuRVoWQsL/LKa5FVejudUSB3VOGk2vvmgZRVQYcpFzjzA+nU5s/0TfQsnxRsKfmvC0LpdkQKywP65/UNFRejz6ba3ObishUOMgw1/xRcN/YGkiLDXuonUKkKjSRiR4qjPSWAnnkSPQHw=
+	t=1709098185; cv=none; b=pPsMtA0717JU2l8QkDcOYPoYOChnQOAX59q2yc9UGaxJUrEguryg9r5MhLpuRt/qvEe7vNiRjrgBDyfkWnegey1YA0K8BeI1ejbcjlF0R18bIZn7G0ezSbjTSjYHu8bpCgWNZ4dL0z+OX3HCs9ue0ffGDGE8nIv2Rm3NXuHqv3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709098051; c=relaxed/simple;
-	bh=f91w+0QC3qP9EU7d+4+laz201VJZGD/uwQ2hj2v9Y8s=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=oYiKIxUfmc6aABrKawzRqZktRnk1ULevNQ5n7Qo5Ilpqp6mTViD0MPaMPm+QBZU09l0fnzFGENqy4300ujAYUUkMsuai0uYp5N57EwYU+RcdqcAP2JSqr5nZyhyjIzYdGnIPa8XpxtOo9SyyKNygTy3J4afMW8JS2huGv/TG1Bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--davidgow.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K8deY+mg; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--davidgow.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso7448595276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 21:27:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709098049; x=1709702849; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3qlQXkJNmXY3V9U5JrSaKD9CZoD39fkjGBycAj3A9pQ=;
-        b=K8deY+mgb02H7CYEmxZXBGFs4WVQKH/MEe+c3P5i+FDd8GJ6ua0QFFz9FdQT6ct8jR
-         t9EV+hZp/q+xlJBJO+P+4HRhYC0x1eS9YebKf8EASYhp0zLdNGe6UDIKptVHUBbJ+XiG
-         Gi9nYw5ptGX7bum5lMYyM3YP6WoTaY50Mjz58e+ykUyszNqtBk8dgI8SKmMKBOTDZU/M
-         C7xPd1IPWVaXUvMSMvbrGDqEUNe7U/npR3pYKZSMFIt6DUy4MRtWhVxAHOtK24o9T17e
-         L6o55kilsL/C6NcSLv/ZbjZsGYYmRtT7Wld7/KdcWkG8L+h/hl3+l9K8tLBa9JDJveV/
-         pRAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709098049; x=1709702849;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3qlQXkJNmXY3V9U5JrSaKD9CZoD39fkjGBycAj3A9pQ=;
-        b=ZdA6XM0K2mITeOz/jSYa9kKaHmeSdg7phtcCi5YxoSHGVA8GYURnWESh05Bt4YP3vD
-         r8j5nLqDwqigMTek6QUDacyBqyrrm9xOVcierWEzNQ1X/fpO3r6JAfoAQwvkysw86M+I
-         nwAluQNkNw7IEjuG6OKBPAte4Cga/C94VkAT77Qkph2eEnB1Nd5bCBGjwGlnpehmah4L
-         MHDOMeWoCuuy7EBCWNWi63mSvojaYIamtTcfob/AJP8O+v18fYXJa4KqwdtSmpxdd5OL
-         do1/ooop7LBMkABwNtSMIMf77nNwQ6uL53DT3tiAr1XHgTGJz7zuJm1PPZVjqExaapbr
-         Lrng==
-X-Forwarded-Encrypted: i=1; AJvYcCVXJTEbbA+Ddo6r8TKGo/IEi3Nw/3gc5vYwnb23TQ8IgcobcjFQYBeCHzl6LZN1vSooNisqQaiqHeYZiitIph9h4G4LJVlMu6S3UfsU
-X-Gm-Message-State: AOJu0YxvScBRx6O9naDtuZNzMQkEuffnR9s5Oj/t0i8nT58zIk0znTS+
-	7EBj3h+oZYdywaL4JlcTujxzwsRsA6rI5/J14f6H0IT/ptrZZoRgKgbquBvBuVehfLsGD6mW+Ji
-	mU+qnM5eqTg==
-X-Google-Smtp-Source: AGHT+IH+/qGhGDq3Yovyrglwb4bcFyvgK7xysDbRhlcFNgma2qcuZmmIjriDyKoazNpJafEO07qRx6QW2gm0kA==
-X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a25:b341:0:b0:dcb:bc80:8333 with SMTP id
- k1-20020a25b341000000b00dcbbc808333mr455657ybg.13.1709098049017; Tue, 27 Feb
- 2024 21:27:29 -0800 (PST)
-Date: Wed, 28 Feb 2024 13:27:20 +0800
+	s=arc-20240116; t=1709098185; c=relaxed/simple;
+	bh=3VuG+yi0Y1wDbDpMng1bhApp7w/6e8NIaJgMl7UcNsA=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=k9BddF4PTyg7lLdTyu8cTEpshQBaE44+GIWY/cYYSXQgdBV0x7p/8EIuJN4yZrGbN6tPN0uGORaXW8Ta8M59EUMfoQMpZJtoGg3IdPIcxccCuQ0rvq6qMd2wjpEkjzoAURRQ2OcsnJXAL1xdOK+vTNDwI8C6Gx/CkmBILJdC4go=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oJ/oDW8K; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709098183; x=1740634183;
+  h=date:from:to:cc:subject:message-id;
+  bh=3VuG+yi0Y1wDbDpMng1bhApp7w/6e8NIaJgMl7UcNsA=;
+  b=oJ/oDW8KVZoh+L+oDxDngPt4uJMI3/CElW7At2iAuJUaTxpbx6Snv9Lj
+   zHgyRQ9j6qeP6DlbD51uIv3r2Jix6+Hqrf+XGmiE3s3HWd4xzWuD255yQ
+   lUkjZSLWuHAXGgmljMWRCcCQ2W9k6Jo3I9z+tDs5CiAvRz7vPtAZc0NjH
+   RcQfzCfTwMP2Bhlf5zTlWFfyhJT+nqRFToKJQCVyAZ1rH5Aj8LFD6QwWO
+   3BLPoEHQDIsRdZUegzQWGcwNCNnmKpq6jsPduzL+WISPjZKyVDP67XJaL
+   fYehvZj10uv0iq41eEuRygTCbXivsWVJH9yPxi5NNYA4UqOMXfqm+J0rn
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="14922479"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="14922479"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 21:29:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="7247006"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa009.fm.intel.com with ESMTP; 27 Feb 2024 21:29:41 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rfCUT-000BpV-2M;
+	Wed, 28 Feb 2024 05:28:40 +0000
+Date: Wed, 28 Feb 2024 13:27:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ e453cb32af61debd5652dc077d467489a7339254
+Message-ID: <202402281318.4pBj4Kl4-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-Message-ID: <20240228052722.409679-1-davidgow@google.com>
-Subject: [PATCH v2] drm: tests: Fix invalid printf format specifiers in KUnit tests
-From: David Gow <davidgow@google.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Guenter Roeck <linux@roeck-us.net>, Rae Moar <rmoar@google.com>, 
-	Matthew Auld <matthew.auld@intel.com>, 
-	Arunpravin Paneer Selvam <arunpravin.paneerselvam@amd.com>, 
-	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, 
-	"=?UTF-8?q?Ma=C3=ADra=20Canal?=" <mcanal@igalia.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, 
-	Matthew Brost <matthew.brost@intel.com>, Javier Martinez Canillas <javierm@redhat.com>, 
-	Arthur Grillo <arthur.grillo@usp.br>
-Cc: David Gow <davidgow@google.com>, Brendan Higgins <brendan.higgins@linux.dev>, 
-	Daniel Latypov <dlatypov@google.com>, David Airlie <airlied@gmail.com>, 
-	Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	kunit-dev@googlegroups.com, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-The drm_buddy_test's alloc_contiguous test used a u64 for the page size,
-which was then updated to be an 'unsigned long' to avoid 64-bit
-multiplication division helpers.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: e453cb32af61debd5652dc077d467489a7339254  Merge branch into tip/master: 'x86/tdx'
 
-However, the variable is logged by some KUNIT_ASSERT_EQ_MSG() using the
-'%d' or '%llu' format specifiers, the former of which is always wrong,
-and the latter is no longer correct now that ps is no longer a u64. Fix
-these to all use '%lu'.
+elapsed time: 1188m
 
-Also, drm_mm_test calls KUNIT_FAIL() with an empty string as the
-message. gcc and clang warns if a printf format string is empty, so
-give these some more detailed error messages, which should be more
-useful anyway.
+configs tested: 163
+configs skipped: 3
 
-Fixes: a64056bb5a32 ("drm/tests/drm_buddy: add alloc_contiguous test")
-Fixes: fca7526b7d89 ("drm/tests/drm_buddy: fix build failure on 32-bit targ=
-ets")
-Fixes: fc8d29e298cf ("drm: selftest: convert drm_mm selftest to KUnit")
-Reviewed-by: Matthew Auld <matthew.auld@intel.com>
-Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Justin Stitt <justinstitt@google.com>
-Signed-off-by: David Gow <davidgow@google.com>
----
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Changes since v1:
-https://lore.kernel.org/linux-kselftest/20240221092728.1281499-8-davidgow@g=
-oogle.com/
-- Split this patch out, as the others have been applied already.
-- Rebase on 6.8-rc6
-- Add everyone's {Reviewed,Acked,Tested}-by tags. Thanks!
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240228   gcc  
+arc                   randconfig-002-20240228   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240228   clang
+arm                   randconfig-002-20240228   clang
+arm                   randconfig-003-20240228   clang
+arm                   randconfig-004-20240228   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240228   clang
+arm64                 randconfig-002-20240228   gcc  
+arm64                 randconfig-003-20240228   gcc  
+arm64                 randconfig-004-20240228   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240228   gcc  
+csky                  randconfig-002-20240228   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240228   clang
+hexagon               randconfig-002-20240228   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240228   clang
+i386         buildonly-randconfig-002-20240228   clang
+i386         buildonly-randconfig-003-20240228   clang
+i386         buildonly-randconfig-004-20240228   clang
+i386         buildonly-randconfig-005-20240228   gcc  
+i386         buildonly-randconfig-006-20240228   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240228   clang
+i386                  randconfig-002-20240228   clang
+i386                  randconfig-003-20240228   gcc  
+i386                  randconfig-004-20240228   clang
+i386                  randconfig-005-20240228   clang
+i386                  randconfig-006-20240228   gcc  
+i386                  randconfig-011-20240228   clang
+i386                  randconfig-012-20240228   clang
+i386                  randconfig-013-20240228   gcc  
+i386                  randconfig-014-20240228   gcc  
+i386                  randconfig-015-20240228   gcc  
+i386                  randconfig-016-20240228   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240228   gcc  
+loongarch             randconfig-002-20240228   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240228   gcc  
+nios2                 randconfig-002-20240228   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240228   gcc  
+parisc                randconfig-002-20240228   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240228   clang
+powerpc               randconfig-002-20240228   clang
+powerpc               randconfig-003-20240228   gcc  
+powerpc64             randconfig-001-20240228   clang
+powerpc64             randconfig-002-20240228   clang
+powerpc64             randconfig-003-20240228   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240228   clang
+riscv                 randconfig-002-20240228   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240228   clang
+s390                  randconfig-002-20240228   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240228   gcc  
+sh                    randconfig-002-20240228   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240228   gcc  
+sparc64               randconfig-002-20240228   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240228   clang
+um                    randconfig-002-20240228   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240228   gcc  
+x86_64       buildonly-randconfig-002-20240228   clang
+x86_64       buildonly-randconfig-003-20240228   clang
+x86_64       buildonly-randconfig-004-20240228   gcc  
+x86_64       buildonly-randconfig-005-20240228   gcc  
+x86_64       buildonly-randconfig-006-20240228   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240228   clang
+x86_64                randconfig-002-20240228   gcc  
+x86_64                randconfig-003-20240228   gcc  
+x86_64                randconfig-004-20240228   gcc  
+x86_64                randconfig-005-20240228   gcc  
+x86_64                randconfig-006-20240228   clang
+x86_64                randconfig-011-20240228   clang
+x86_64                randconfig-012-20240228   clang
+x86_64                randconfig-013-20240228   clang
+x86_64                randconfig-014-20240228   gcc  
+x86_64                randconfig-015-20240228   gcc  
+x86_64                randconfig-016-20240228   gcc  
+x86_64                randconfig-071-20240228   gcc  
+x86_64                randconfig-072-20240228   clang
+x86_64                randconfig-073-20240228   gcc  
+x86_64                randconfig-074-20240228   gcc  
+x86_64                randconfig-075-20240228   clang
+x86_64                randconfig-076-20240228   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240228   gcc  
+xtensa                randconfig-002-20240228   gcc  
 
----
- drivers/gpu/drm/tests/drm_buddy_test.c | 14 +++++++-------
- drivers/gpu/drm/tests/drm_mm_test.c    |  6 +++---
- 2 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests=
-/drm_buddy_test.c
-index 2f32fb2f12e7..3dbfa3078449 100644
---- a/drivers/gpu/drm/tests/drm_buddy_test.c
-+++ b/drivers/gpu/drm/tests/drm_buddy_test.c
-@@ -55,30 +55,30 @@ static void drm_test_buddy_alloc_contiguous(struct kuni=
-t *test)
- 		KUNIT_ASSERT_FALSE_MSG(test,
- 				       drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							      ps, ps, list, 0),
--				       "buddy_alloc hit an error size=3D%u\n",
-+				       "buddy_alloc hit an error size=3D%lu\n",
- 				       ps);
- 	} while (++i < n_pages);
-=20
- 	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							   3 * ps, ps, &allocated,
- 							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc didn't error size=3D%u\n", 3 * ps);
-+			       "buddy_alloc didn't error size=3D%lu\n", 3 * ps);
-=20
- 	drm_buddy_free_list(&mm, &middle);
- 	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							   3 * ps, ps, &allocated,
- 							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc didn't error size=3D%u\n", 3 * ps);
-+			       "buddy_alloc didn't error size=3D%lu\n", 3 * ps);
- 	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							   2 * ps, ps, &allocated,
- 							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc didn't error size=3D%u\n", 2 * ps);
-+			       "buddy_alloc didn't error size=3D%lu\n", 2 * ps);
-=20
- 	drm_buddy_free_list(&mm, &right);
- 	KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							   3 * ps, ps, &allocated,
- 							   DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc didn't error size=3D%u\n", 3 * ps);
-+			       "buddy_alloc didn't error size=3D%lu\n", 3 * ps);
- 	/*
- 	 * At this point we should have enough contiguous space for 2 blocks,
- 	 * however they are never buddies (since we freed middle and right) so
-@@ -87,13 +87,13 @@ static void drm_test_buddy_alloc_contiguous(struct kuni=
-t *test)
- 	KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							    2 * ps, ps, &allocated,
- 							    DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc hit an error size=3D%u\n", 2 * ps);
-+			       "buddy_alloc hit an error size=3D%lu\n", 2 * ps);
-=20
- 	drm_buddy_free_list(&mm, &left);
- 	KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, mm_size,
- 							    3 * ps, ps, &allocated,
- 							    DRM_BUDDY_CONTIGUOUS_ALLOCATION),
--			       "buddy_alloc hit an error size=3D%u\n", 3 * ps);
-+			       "buddy_alloc hit an error size=3D%lu\n", 3 * ps);
-=20
- 	total =3D 0;
- 	list_for_each_entry(block, &allocated, link)
-diff --git a/drivers/gpu/drm/tests/drm_mm_test.c b/drivers/gpu/drm/tests/dr=
-m_mm_test.c
-index 1eb0c304f960..f37c0d765865 100644
---- a/drivers/gpu/drm/tests/drm_mm_test.c
-+++ b/drivers/gpu/drm/tests/drm_mm_test.c
-@@ -157,7 +157,7 @@ static void drm_test_mm_init(struct kunit *test)
-=20
- 	/* After creation, it should all be one massive hole */
- 	if (!assert_one_hole(test, &mm, 0, size)) {
--		KUNIT_FAIL(test, "");
-+		KUNIT_FAIL(test, "mm not one hole on creation");
- 		goto out;
- 	}
-=20
-@@ -171,14 +171,14 @@ static void drm_test_mm_init(struct kunit *test)
-=20
- 	/* After filling the range entirely, there should be no holes */
- 	if (!assert_no_holes(test, &mm)) {
--		KUNIT_FAIL(test, "");
-+		KUNIT_FAIL(test, "mm has holes when filled");
- 		goto out;
- 	}
-=20
- 	/* And then after emptying it again, the massive hole should be back */
- 	drm_mm_remove_node(&tmp);
- 	if (!assert_one_hole(test, &mm, 0, size)) {
--		KUNIT_FAIL(test, "");
-+		KUNIT_FAIL(test, "mm does not have single hole after emptying");
- 		goto out;
- 	}
-=20
---=20
-2.44.0.rc1.240.g4c46232300-goog
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
