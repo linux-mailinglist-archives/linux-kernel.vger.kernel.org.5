@@ -1,402 +1,178 @@
-Return-Path: <linux-kernel+bounces-84758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F0D786AB24
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:27:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 624ED86AB25
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E0011F2373B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:27:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C5991C2224B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5812931A82;
-	Wed, 28 Feb 2024 09:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8306132189;
+	Wed, 28 Feb 2024 09:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Hnj4Pchd"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCDM0jy7"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15F0622065
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1106D36103;
+	Wed, 28 Feb 2024 09:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112441; cv=none; b=PqnOf2DOMvDDnZX8i+2PwGThASazSB78a6uK0ee1Lavi4Y2lXMFPxRhnrDCdtxwd5jKQlO6YGPgjwrR60idBqKxPPZJab3Vs1a3nP85NjjgXPHZkHvsgKvPsk4gvRZukFVJ26poje9MItAQt8IThh0rJu7cqn+4iWS/6aeO/gME=
+	t=1709112497; cv=none; b=arJn3KSLalsofvCC4ruXFpL7qKIynMLn4pZWX3dVyjpb/d1xppq4g34Ni8QFfs2qYVkOZgw7l4D2v4pDZiyLxLvz1u5/LwfDRbzYhDps5+RV0XlUqvKVfNuhfrKRmFWfzcauxEJBzofzy6EM4pZwRAdkJXf+gI5y1slAe5Qe9yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112441; c=relaxed/simple;
-	bh=Wi273g6TtrYvy7qseec9+gcMVzAdkaDhWksxSwYNGLE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EbDitlPY4gd2Af6cFB4qFkCNu+gsIT9lYq9qZEAhjwu0LylaQNAAppSbi6jUMRA5J4NHSSSlySwNn8zceFcVq/Kfh8J217nAoGJeNeYVfyvvHMNerUPht2fXxJoZPzvUyh9lqCmp05oRkYJ8dzH8pZva3KwZgJjWgU30nTmQ1/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Hnj4Pchd; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709112438;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f3UkgT4oHLfn/Gn+eWNstUeC+v5h5q3tpSuEQK9eJKI=;
-	b=Hnj4PchdcdSYuSxm7poaOp7pQjlroVG566FwvXNsf4iHaqXZgexa3bWyM41vDNZT++frWv
-	lS6Td6d6Bd/Frwt7s9c0YfchkPpeMngzY2PqkoVvl5EUv0cMw1kBx09xagzTQhfGtQu8Wh
-	t3Z+LjQ2Y3hdYQ/IuaeXUz1N2UMzjio=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-359-2bNyEf_zMXO3EtyQzjOjKA-1; Wed, 28 Feb 2024 04:27:12 -0500
-X-MC-Unique: 2bNyEf_zMXO3EtyQzjOjKA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BC7B311BB5E7;
-	Wed, 28 Feb 2024 09:27:11 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 32C8E8173;
-	Wed, 28 Feb 2024 09:27:09 +0000 (UTC)
-Date: Wed, 28 Feb 2024 17:27:06 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Pedro Falcato <pedro.falcato@gmail.com>,
-	Matthew Wilcox <willy@infradead.org>, Mel Gorman <mgorman@suse.de>,
-	kirill.shutemov@linux.intel.com,
-	Vishal Moola <vishal.moola@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
+	s=arc-20240116; t=1709112497; c=relaxed/simple;
+	bh=U9dihVgHrwLV647kosEhX6QDdv2LPSGr7BqD90UgUyg=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q1hyc98FI2vjfx8YFQu/m9P/7N2u59OeagBJytgQA4OBAuR8FUEg6r+Mp35xQYWdQJbst2dMc7Uu5o6MrN5qeos7u7RLxmjD2gBB1N9lYUwSeFD2safqAP+YCycJM92NSOmHedtCSd9fBNekUhfTpbEfUOF5U0NPORZuT7ee4cI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nCDM0jy7; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so84943051fa.0;
+        Wed, 28 Feb 2024 01:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709112494; x=1709717294; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oGK72162MdnLwFLf7GIA1kmtXhXPTiOIV5c3HATo7ik=;
+        b=nCDM0jy7giOGSP8eleXSuBhe5CScHUjXCDL+dM+xZ4rO2UXQpDk1SzMOhBhId36kYU
+         iYPS6Nu3pI2gTjrpP5zpSk+GiIq3YhS9gzDmO4p6YDqRt1nOqaUlf/It91+2W1wf/ZKn
+         qNxPBpD80S1ZWBvcYbHgp4tk09tRemomKHyWXAb5SgEFAIBtCOfHEHFJeG2ypCakrXjv
+         7AbROB13fWweAKsFXQJO21zVk2SvtWXamP1Uw9Zqyswckl2uNBmjxsTkFEksbUuxWIuy
+         Vq4NellXXB5ufaNFdL71T+ZI5GqVFVdQ+pt04/bPRDX4nosJFyip1y2c6Ptu+lBzvnYR
+         5DyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709112494; x=1709717294;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oGK72162MdnLwFLf7GIA1kmtXhXPTiOIV5c3HATo7ik=;
+        b=g8ZIzg2uCgnCaKOECbezBULtnuI7tTPLOiOzh0cfq5tMa86FSD6GXYioVWSlKZjgoU
+         6s5tL7jE6WMi3a2bfoBbGhTpeu8lqTcjb4GW0Vl7mINVSeutzp2b84MGeOirQl4d0LKV
+         ZENdTXbAjMpy14M52CUP71JySyAA3xBB++KZ0975BnPdP6M5SPV6aVjD4ssv5LsupIqz
+         nij/23NjAw6bdLEaweI1b6HfbQODoSxIuGEa8hGZmX6HTyOHkGcUPwg0vGD26fPuyOkr
+         VT9GecbC08c91AEcTbgHY5atR5T70kW/cQHBX8yy+V3lVuwFcwxMTZpwuby1k08+x3sb
+         vg/w==
+X-Forwarded-Encrypted: i=1; AJvYcCVAeeQIWcyJFjL4KxriryEyNaPG+ReVcdHZgNV2ZlWNlKTB6EqYCON5pfoRY1Vq3GoiXHDDkYfTIvn1pAmveta3a/P609IL4FCsOswk9I5C+EAHJ07n8MInVfW76I/14Cl5
+X-Gm-Message-State: AOJu0YwbzMnxFaPWxYd/P3I5hGCD39KupTQZji/YHp/f7ChKfeAt7DWd
+	F5nJdY3nR1pb75tSUvECMni0Zo0Bjb8h5ueAXs97l/CqOFAAyF4g
+X-Google-Smtp-Source: AGHT+IF7bSJ7qwbMinklPhUTqQyYaA8Y4QFrquCejoltWNYZsBBYAbcVEkNCwF2ZLB7WYDxGgTsP/Q==
+X-Received: by 2002:a05:651c:231d:b0:2d2:3db6:b168 with SMTP id bi29-20020a05651c231d00b002d23db6b168mr6531995ljb.14.1709112493868;
+        Wed, 28 Feb 2024 01:28:13 -0800 (PST)
+Received: from pc636 (host-90-233-206-150.mobileonline.telia.com. [90.233.206.150])
+        by smtp.gmail.com with ESMTPSA id w18-20020a2ea3d2000000b002d25c81fb30sm1532737lje.94.2024.02.28.01.28.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 01:28:13 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Wed, 28 Feb 2024 10:28:11 +0100
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
 	LKML <linux-kernel@vger.kernel.org>,
-	Lorenzo Stoakes <lstoakes@gmail.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Dave Chinner <david@fromorbit.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v3 00/11] Mitigate a vmap lock contention v3
-Message-ID: <Zd78aiZ8uiM6ZP16@MiWiFi-R3L-srv>
-References: <20240102184633.748113-1-urezki@gmail.com>
- <ZdcHXFMq0cwmVKfM@pc636>
- <CAKbZUD3+PJUoXee3MNvToy1zRnDoPoPqMjNAf5_87Uh-u2377w@mail.gmail.com>
- <ZdhmrEmA8wOuVcQT@pc636>
- <Zdhy3S1PzwfEJuS3@MiWiFi-R3L-srv>
- <Zdh8KmZtoQym7Syz@pc636>
- <ZdjAZQRVmP9gnfsJ@MiWiFi-R3L-srv>
- <ZdjqDRLbpnExRhSZ@pc638.lan>
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <Zd78qzAGeriKUxBi@pc636>
+References: <20240220183115.74124-1-urezki@gmail.com>
+ <20240220183115.74124-3-urezki@gmail.com>
+ <c8182a5a-e804-4fcc-a6a5-bb121260e6a6@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="PvGAVpYbqnFPzAAR"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZdjqDRLbpnExRhSZ@pc638.lan>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
-
-
---PvGAVpYbqnFPzAAR
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-
-On 02/23/24 at 07:55pm, Uladzislau Rezki wrote:
-> On Fri, Feb 23, 2024 at 11:57:25PM +0800, Baoquan He wrote:
-> > On 02/23/24 at 12:06pm, Uladzislau Rezki wrote:
-> > > > On 02/23/24 at 10:34am, Uladzislau Rezki wrote:
-> > > > > On Thu, Feb 22, 2024 at 11:15:59PM +0000, Pedro Falcato wrote:
-> > > > > > Hi,
-> > > > > > 
-> > > > > > On Thu, Feb 22, 2024 at 8:35 AM Uladzislau Rezki <urezki@gmail.com> wrote:
-> > > > > > >
-> > > > > > > Hello, Folk!
-> > > > > > >
-> > > > > > >[...]
-> > > > > > > pagetable_alloc - gets increased as soon as a higher pressure is applied by
-> > > > > > > increasing number of workers. Running same number of jobs on a next run
-> > > > > > > does not increase it and stays on same level as on previous.
-> > > > > > >
-> > > > > > > /**
-> > > > > > >  * pagetable_alloc - Allocate pagetables
-> > > > > > >  * @gfp:    GFP flags
-> > > > > > >  * @order:  desired pagetable order
-> > > > > > >  *
-> > > > > > >  * pagetable_alloc allocates memory for page tables as well as a page table
-> > > > > > >  * descriptor to describe that memory.
-> > > > > > >  *
-> > > > > > >  * Return: The ptdesc describing the allocated page tables.
-> > > > > > >  */
-> > > > > > > static inline struct ptdesc *pagetable_alloc(gfp_t gfp, unsigned int order)
-> > > > > > > {
-> > > > > > >         struct page *page = alloc_pages(gfp | __GFP_COMP, order);
-> > > > > > >
-> > > > > > >         return page_ptdesc(page);
-> > > > > > > }
-> > > > > > >
-> > > > > > > Could you please comment on it? Or do you have any thought? Is it expected?
-> > > > > > > Is a page-table ever shrink?
-> > > > > > 
-> > > > > > It's my understanding that the vunmap_range helpers don't actively
-> > > > > > free page tables, they just clear PTEs. munmap does free them in
-> > > > > > mmap.c:free_pgtables, maybe something could be worked up for vmalloc
-> > > > > > too.
-> > > > > >
-> > > > > Right. I see that for a user space, pgtables are removed. There was a
-> > > > > work on it.
-> > > > > 
-> > > > > >
-> > > > > > I would not be surprised if the memory increase you're seeing is more
-> > > > > > or less correlated to the maximum vmalloc footprint throughout the
-> > > > > > whole test.
-> > > > > > 
-> > > > > Yes, the vmalloc footprint follows the memory usage. Some uses cases
-> > > > > map lot of memory.
-> > > > 
-> > > > The 'nr_threads=256' testing may be too radical. I took the test on
-> > > > a bare metal machine as below, it's still running and hang there after
-> > > > 30 minutes. I did this after system boot. I am looking for other
-> > > > machines with more processors.
-> > > > 
-> > > > [root@dell-r640-068 ~]# nproc 
-> > > > 64
-> > > > [root@dell-r640-068 ~]# free -h
-> > > >                total        used        free      shared  buff/cache   available
-> > > > Mem:           187Gi        18Gi       169Gi        12Mi       262Mi       168Gi
-> > > > Swap:          4.0Gi          0B       4.0Gi
-> > > > [root@dell-r640-068 ~]# 
-> > > > 
-> > > > [root@dell-r640-068 linux]# tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=256
-> > > > Run the test with following parameters: run_test_mask=127 nr_threads=256
-> > > > 
-> > > Agree, nr_threads=256 is a way radical :) Mine took 50 minutes to
-> > > complete. So wait more :)
-> > 
-> > Right, mine could take the similar time to finish that. I got a machine
-> > with 288 cpus, see if I can get some clues. When I go through the code
-> > flow, suddenly realized it could be drain_vmap_area_work which is the 
-> > bottle neck and cause the tremendous page table pages costing.
-> > 
-> > On your system, there's 64 cpus. then 
-> > 
-> > nr_lazy_max = lazy_max_pages() = 7*32M = 224M;
-> > 
-> > So with nr_threads=128 or 256, it's so easily getting to the nr_lazy_max
-> > and triggering drain_vmap_work(). When cpu resouce is very limited, the
-> > lazy vmap purging will be very slow. While the alloc/free in lib/tet_vmalloc.c 
-> > are going far faster and more easily then vmap reclaiming. If old va is not
-> > reused, new va is allocated and keep extending, the new page table surely
-> > need be created to cover them.
-> > 
-> > I will take testing on the system with 288 cpus, will update if testing
-> > is done.
-> > 
-> <snip>
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 12caa794abd4..a90c5393d85f 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -1754,6 +1754,8 @@ size_to_va_pool(struct vmap_node *vn, unsigned long size)
->  	return NULL;
->  }
->  
-> +static unsigned long lazy_max_pages(void);
-> +
->  static bool
->  node_pool_add_va(struct vmap_node *n, struct vmap_area *va)
->  {
-> @@ -1763,6 +1765,9 @@ node_pool_add_va(struct vmap_node *n, struct vmap_area *va)
->  	if (!vp)
->  		return false;
->  
-> +	if (READ_ONCE(vp->len) > lazy_max_pages())
-> +		return false;
-> +
->  	spin_lock(&n->pool_lock);
->  	list_add(&va->list, &vp->head);
->  	WRITE_ONCE(vp->len, vp->len + 1);
-> @@ -2170,9 +2175,9 @@ static bool __purge_vmap_area_lazy(unsigned long start, unsigned long end,
->  				INIT_WORK(&vn->purge_work, purge_vmap_node);
->  
->  				if (cpumask_test_cpu(i, cpu_online_mask))
-> -					schedule_work_on(i, &vn->purge_work);
-> +					queue_work_on(i, system_highpri_wq, &vn->purge_work);
->  				else
-> -					schedule_work(&vn->purge_work);
-> +					queue_work(system_highpri_wq, &vn->purge_work);
->  
->  				nr_purge_helpers--;
->  			} else {
-> <snip>
-> 
-> We need this. This settles it back to a normal PTE-usage. Tomorrow i
-> will check if cache-len should be limited. I tested on my 64 CPUs
-> system with radical 256 kworkers. It looks good.
-
-I finally finished the testing w/o and with your above improvement
-patch. Testing is done on a system with 128 cpus. The system with 288
-cpus is not available because of some console connection. Attach the log
-here. In some testing after rebooting, I found it could take more than 30
-minutes, I am not sure if it's caused by my messy code change. I finally
-cleaned up all of them and take a clean linux-next to test, then apply
-your above draft code.
-
---PvGAVpYbqnFPzAAR
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="vmalloc_node.log"
+Content-Disposition: inline
+In-Reply-To: <c8182a5a-e804-4fcc-a6a5-bb121260e6a6@joelfernandes.org>
 
-[root@dell-per6515-03 linux]# nproc 
-128
-[root@dell-per6515-03 linux]# free -h
-               total        used        free      shared  buff/cache   available
-Mem:           124Gi       2.6Gi       122Gi        21Mi       402Mi       122Gi
-Swap:          4.0Gi          0B       4.0Gi
-
-1)linux-next kernel w/o improving code from Uladzislau
--------------------------------------------------------
-[root@dell-per6515-03 linux]# time tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=64
-Run the test with following parameters: run_test_mask=127 nr_threads=64
-Done.
-Check the kernel ring buffer to see the summary.
-
-real	4m28.018s
-user	0m0.015s
-sys	0m4.712s
-[root@dell-per6515-03 ~]# sort -h /proc/allocinfo | tail -10
-    21405696     5226 mm/memory.c:1122 func:folio_prealloc 
-    26199936     7980 kernel/fork.c:309 func:alloc_thread_stack_node 
-    29822976     7281 mm/readahead.c:247 func:page_cache_ra_unbounded 
-    99090432    96768 drivers/iommu/iova.c:604 func:iova_magazine_alloc 
-   107638784     6320 mm/readahead.c:468 func:ra_alloc_folio 
-   120560528    29439 mm/mm_init.c:2521 func:alloc_large_system_hash 
-   134742016    32896 mm/percpu-vm.c:95 func:pcpu_alloc_pages 
-   263192576    64256 mm/page_ext.c:270 func:alloc_page_ext 
-   266797056    65136 include/linux/mm.h:2848 func:pagetable_alloc 
-   507617280    32796 mm/slub.c:2305 func:alloc_slab_page 
-[root@dell-per6515-03 ~]# 
-[root@dell-per6515-03 ~]# 
-[root@dell-per6515-03 linux]# time tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=128
-Run the test with following parameters: run_test_mask=127 nr_threads=128
-Done.
-Check the kernel ring buffer to see the summary.
-
-real	6m19.328s
-user	0m0.005s
-sys	0m9.476s
-[root@dell-per6515-03 ~]# sort -h /proc/allocinfo | tail -10
-    21405696     5226 mm/memory.c:1122 func:folio_prealloc 
-    26889408     8190 kernel/fork.c:309 func:alloc_thread_stack_node 
-    29822976     7281 mm/readahead.c:247 func:page_cache_ra_unbounded 
-    99090432    96768 drivers/iommu/iova.c:604 func:iova_magazine_alloc 
-   107638784     6320 mm/readahead.c:468 func:ra_alloc_folio 
-   120560528    29439 mm/mm_init.c:2521 func:alloc_large_system_hash 
-   134742016    32896 mm/percpu-vm.c:95 func:pcpu_alloc_pages 
-   263192576    64256 mm/page_ext.c:270 func:alloc_page_ext 
-   550068224    34086 mm/slub.c:2305 func:alloc_slab_page 
-   664535040   162240 include/linux/mm.h:2848 func:pagetable_alloc 
-[root@dell-per6515-03 ~]# 
-[root@dell-per6515-03 ~]# 
-[root@dell-per6515-03 linux]# time tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=256
-Run the test with following parameters: run_test_mask=127 nr_threads=256
-Done.
-Check the kernel ring buffer to see the summary.
-
-real	19m10.657s
-user	0m0.015s
-sys	0m20.959s
-[root@dell-per6515-03 ~]# sort -h /proc/allocinfo | tail -10
-    22441984     5479 mm/shmem.c:1634 func:shmem_alloc_folio 
-    26758080     8150 kernel/fork.c:309 func:alloc_thread_stack_node 
-    35880960     8760 mm/readahead.c:247 func:page_cache_ra_unbounded 
-    99090432    96768 drivers/iommu/iova.c:604 func:iova_magazine_alloc 
-   120560528    29439 mm/mm_init.c:2521 func:alloc_large_system_hash 
-   122355712     7852 mm/readahead.c:468 func:ra_alloc_folio 
-   134742016    32896 mm/percpu-vm.c:95 func:pcpu_alloc_pages 
-   263192576    64256 mm/page_ext.c:270 func:alloc_page_ext 
-   708231168    50309 mm/slub.c:2305 func:alloc_slab_page 
-  1107296256   270336 include/linux/mm.h:2848 func:pagetable_alloc 
-[root@dell-per6515-03 ~]# 
-
-2)linux-next kernel with improving code from Uladzislau
------------------------------------------------------
-[root@dell-per6515-03 linux]# time tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=64
-Run the test with following parameters: run_test_mask=127 nr_threads=64
-Done.
-Check the kernel ring buffer to see the summary.
-
-real	4m27.226s
-user	0m0.006s
-sys	0m4.709s
-[root@dell-per6515-03 linux]# sort -h /proc/allocinfo | tail -10
-    38023168     9283 mm/readahead.c:247 func:page_cache_ra_unbounded 
-    72228864    17634 fs/xfs/xfs_buf.c:390 [xfs] func:xfs_buf_alloc_pages 
-    99090432    96768 drivers/iommu/iova.c:604 func:iova_magazine_alloc 
-    99863552    97523 fs/xfs/xfs_icache.c:81 [xfs] func:xfs_inode_alloc 
-   120560528    29439 mm/mm_init.c:2521 func:alloc_large_system_hash 
-   136314880    33280 mm/percpu-vm.c:95 func:pcpu_alloc_pages 
-   184176640    10684 mm/readahead.c:468 func:ra_alloc_folio 
-   263192576    64256 mm/page_ext.c:270 func:alloc_page_ext 
-   284700672    69507 include/linux/mm.h:2848 func:pagetable_alloc 
-   601427968    36377 mm/slub.c:2305 func:alloc_slab_page 
-[root@dell-per6515-03 linux]# time tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=128
-Run the test with following parameters: run_test_mask=127 nr_threads=128
-Done.
-Check the kernel ring buffer to see the summary.
-
-real	6m16.960s
-user	0m0.007s
-sys	0m9.465s
-[root@dell-per6515-03 linux]# sort -h /proc/allocinfo | tail -10
-    38158336     9316 mm/readahead.c:247 func:page_cache_ra_unbounded 
-    72220672    17632 fs/xfs/xfs_buf.c:390 [xfs] func:xfs_buf_alloc_pages 
-    99090432    96768 drivers/iommu/iova.c:604 func:iova_magazine_alloc 
-    99863552    97523 fs/xfs/xfs_icache.c:81 [xfs] func:xfs_inode_alloc 
-   120560528    29439 mm/mm_init.c:2521 func:alloc_large_system_hash 
-   136314880    33280 mm/percpu-vm.c:95 func:pcpu_alloc_pages 
-   184504320    10710 mm/readahead.c:468 func:ra_alloc_folio 
-   263192576    64256 mm/page_ext.c:270 func:alloc_page_ext 
-   427884544   104464 include/linux/mm.h:2848 func:pagetable_alloc 
-   697311232    45159 mm/slub.c:2305 func:alloc_slab_page
-[root@dell-per6515-03 linux]# time tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=256
-Run the test with following parameters: run_test_mask=127 nr_threads=256
-Done.
-Check the kernel ring buffer to see the summary.
-
-real	21m15.673s
-user	0m0.008s
-sys	0m20.259s
-[root@dell-per6515-03 linux]# sort -h /proc/allocinfo | tail -10
-    38158336     9316 mm/readahead.c:247 func:page_cache_ra_unbounded 
-    72224768    17633 fs/xfs/xfs_buf.c:390 [xfs] func:xfs_buf_alloc_pages 
-    99090432    96768 drivers/iommu/iova.c:604 func:iova_magazine_alloc 
-    99863552    97523 fs/xfs/xfs_icache.c:81 [xfs] func:xfs_inode_alloc 
-   120560528    29439 mm/mm_init.c:2521 func:alloc_large_system_hash 
-   136314880    33280 mm/percpu-vm.c:95 func:pcpu_alloc_pages 
-   184504320    10710 mm/readahead.c:468 func:ra_alloc_folio 
-   263192576    64256 mm/page_ext.c:270 func:alloc_page_ext 
-   506974208   123773 include/linux/mm.h:2848 func:pagetable_alloc 
-   809504768    53621 mm/slub.c:2305 func:alloc_slab_page
-[root@dell-per6515-03 linux]# time tools/testing/selftests/mm/test_vmalloc.sh run_test_mask=127 nr_threads=256
-Run the test with following parameters: run_test_mask=127 nr_threads=256
-Done.
-Check the kernel ring buffer to see the summary.
-
-real	21m36.580s
-user	0m0.012s
-sys	0m19.912s
-[root@dell-per6515-03 linux]# sort -h /proc/allocinfo | tail -10
-    38977536     9516 mm/readahead.c:247 func:page_cache_ra_unbounded 
-    72273920    17645 fs/xfs/xfs_buf.c:390 [xfs] func:xfs_buf_alloc_pages 
-    99090432    96768 drivers/iommu/iova.c:604 func:iova_magazine_alloc 
-    99895296    97554 fs/xfs/xfs_icache.c:81 [xfs] func:xfs_inode_alloc 
-   120560528    29439 mm/mm_init.c:2521 func:alloc_large_system_hash 
-   141033472    34432 mm/percpu-vm.c:95 func:pcpu_alloc_pages 
-   186064896    10841 mm/readahead.c:468 func:ra_alloc_folio 
-   263192576    64256 mm/page_ext.c:270 func:alloc_page_ext 
-   541237248   132138 include/linux/mm.h:2848 func:pagetable_alloc 
-   694718464    41216 mm/slub.c:2305 func:alloc_slab_page
+On Tue, Feb 27, 2024 at 03:51:03PM -0500, Joel Fernandes wrote:
+> 
+> 
+> On 2/20/2024 1:31 PM, Uladzislau Rezki (Sony) wrote:
+> > A call to a synchronize_rcu() can be optimized from a latency
+> > point of view. Workloads which depend on this can benefit of it.
+> > 
+> > The delay of wakeme_after_rcu() callback, which unblocks a waiter,
+> > depends on several factors:
+> > 
+> > - how fast a process of offloading is started. Combination of:
+> >     - !CONFIG_RCU_NOCB_CPU/CONFIG_RCU_NOCB_CPU;
+> >     - !CONFIG_RCU_LAZY/CONFIG_RCU_LAZY;
+> >     - other.
+> > - when started, invoking path is interrupted due to:
+> >     - time limit;
+> >     - need_resched();
+> >     - if limit is reached.
+> > - where in a nocb list it is located;
+> > - how fast previous callbacks completed;
+> > 
+> > Example:
+> > 
+> > 1. On our embedded devices i can easily trigger the scenario when
+> > it is a last in the list out of ~3600 callbacks:
+> > 
+> > <snip>
+> >   <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
+> > ...
+> >   <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
+> >   <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
+> >   <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
+> >   <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
+> >   <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
+> >   <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
+> >   <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
+> > <snip>
+> > 
+> > 2. We use cpuset/cgroup to classify tasks and assign them into
+> > different cgroups. For example "backgrond" group which binds tasks
+> > only to little CPUs or "foreground" which makes use of all CPUs.
+> > Tasks can be migrated between groups by a request if an acceleration
+> > is needed.
+> > 
+> > See below an example how "surfaceflinger" task gets migrated.
+> > Initially it is located in the "system-background" cgroup which
+> > allows to run only on little cores. In order to speed it up it
+> > can be temporary moved into "foreground" cgroup which allows
+> > to use big/all CPUs:
+> > 
+> > cgroup_attach_task():
+> >  -> cgroup_migrate_execute()
+> >    -> cpuset_can_attach()
+> >      -> percpu_down_write()
+> >        -> rcu_sync_enter()
+> >          -> synchronize_rcu()
+> 
+> We should do this patch but I wonder also if cgroup_attach_task() usage of
+> synchronize_rcu() should actually be using the _expedited() variant (via some
+> possible flag to the percpu rwsem / rcu_sync).
+> 
+> If the user assumes it a slow path, then usage of _expedited() should probably
+> be OK. If it is assumed a fast path, then it is probably hurting latency anyway
+> without the enablement of this patch's rcu_normal_wake_from_gp.
+> 
+> Thoughts?
+> 
+How i see it, the rcu_normal_wake_from_gp is disabled so far. We need to
+work on this further to have it on by default. But we will move toward
+this.
 
 
+> Then it becomes a matter of how to plumb the expeditedness down the stack.
+> 
+> Also, speaking of percpu rwsem, I noticed that percpu refcounts don't use
+> rcu_sync. I haven't looked closely why, but something I hope to get time to look
+> into is if it can be converted over and what benefits would that entail if any.
+> 
+> Also will continue reviewing the patch. Thanks.
+> 
+Thanks.
 
-
---PvGAVpYbqnFPzAAR--
-
+--
+Uladzislau Rezki
 
