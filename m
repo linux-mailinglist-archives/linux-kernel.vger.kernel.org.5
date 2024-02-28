@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-84316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 832F386A4E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:20:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3CBF86A4E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:20:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 339AF28479E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:20:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D53CB1C2542F
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:20:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB48185E;
-	Wed, 28 Feb 2024 01:20:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C521FDA;
+	Wed, 28 Feb 2024 01:20:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BCXbGul3"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GtnjBG4u"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7982219BDC
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F784A32
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709083210; cv=none; b=Wgmz4Rl5z8pUYn/eZBA8JfCHDmHtP+g8asIML69H3OtFWOvVS3oZJl1QpE3G+d75dap9JWwEeww+2lxu7T8B1evTdKqt2TcyyLo2G+VsaO8v7sZzqrP7p6UTho6G1Vj3EHry6Gh91bP0XnkX6PtHxEKuMIejjFLB96frPz6uGXA=
+	t=1709083235; cv=none; b=J2eiuqZgYWq0wroHfrWE1D1hNkNrI46t3lo4XwJIEmtM694fbvZm25SN2c3zxt6ZTa+Iozs6QSQLWphXlv1vVSd6JTkYdKCtHExDLtQgBkqJ7J+N3obSP18zU+vpUndIGS7yluXTrXO4YyU+8G5VoUCGIVZiwTsd4XfZKi4s83Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709083210; c=relaxed/simple;
-	bh=9qll4EAZp7xZbfC2l/E18PzekDZKS5gdLme9hxcfwr4=;
+	s=arc-20240116; t=1709083235; c=relaxed/simple;
+	bh=f8TZMnSkvdvr8lU7/b4OziAB9m4g7TVwlFVIH7WadGc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CWoGQ3aeTzh6+AsI25ZMXu8A8yYilgA/f4SMC+LmQziRsGvpWw8xH5REdyjKl+ai5J6/m3zalVTlIOJAF0ZDrPVBADyPEsyzzP5tGba3wGqNvJHKrfsSMNj/jyjpPeMPOBbijbqf+ucccYAa1Fm5jY8xnJ/IHWXWeuoRcfGMudE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BCXbGul3; arc=none smtp.client-ip=209.85.214.177
+	 To:Cc:Content-Type; b=URBFRppQcy3WWRzcgmzM36xYDxeG694BoK8U1FK2C/SHH8Q2w5XvLdGoQ+ykI1yxciuWArIXNCAyGFcbzdXBDFvo9rjdY/UYKHtguWpwSp0WtWVqMUpH6PUyOkbyptMPkD/Cev63kySWMvCo7ncWvjeOdWGSLzy4rK1/V1Gzx5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GtnjBG4u; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc929e5d99so50785ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:20:08 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dc744f54d0so92815ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:20:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709083208; x=1709688008; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1709083233; x=1709688033; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yTmmVU2YsnEQHc0ghGArOeYhLtN51cwHy7vJLHmcGh8=;
-        b=BCXbGul35GPXd6tDmWUySMcr/ACg6BSiijByq/45suXVbckDhVNotvpMvHQKzMMITC
-         fHfVdPNfVcculS0O9RWF3fLmwf2tTUpNx8ML8QeW/euhp2eACbWa93UYbYv697DTpuXK
-         0NR3TUMFuNoRGG4yZmFxwRc1Ndva7i2zdnTsB1LnKwQUhQm8ZyOaZi2bdQrck4wPOW3r
-         mz9C961MFQQ1BJMSxZugldsGyEEWFhQmW0RX01R9xr8FFEypLHgkmF08aFxHFT1CCIBX
-         84J2osNoCXjCOe02VRjyU0jR0xrct8Z0EeTokm85mdGZIPcXhsxhAw9kVtpSTLSSThv7
-         /VIQ==
+        bh=vdT0x3HibO/pzSmdrgIYWiv8FmuIQF8zXY+TeseC7sM=;
+        b=GtnjBG4ued0/3Wglc80zQFw7gd9rH4lN4TWnRIzyjBJFQgPy/PL5H+zyz4aWoQkES9
+         iu5PewLUB+eGkhqMCuiJstyqj7bW0M7fNuUuBRRW5M+tkcm4elfKNeOX37CMTtpsBn53
+         3VL/JGFX8CNMvfVKupyl7luFYtn4hF7j1U3aksxS5ALU3tr2hLF5ergj8hWcL7gcoPLe
+         QYv7/TWICuu6XeWN+IJglD2rJSl83D6rs5mhUZcbav2PB3brDnw2/SK/VOb35zFx6GFX
+         PNcqTNSrM668Mm8aQgIBf0uw0ESlitttZ8JhUUgJul2H4IM2Fbw1GABmYzf3NwwyCJc2
+         wKKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709083208; x=1709688008;
+        d=1e100.net; s=20230601; t=1709083233; x=1709688033;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yTmmVU2YsnEQHc0ghGArOeYhLtN51cwHy7vJLHmcGh8=;
-        b=o2l6zaxHzvCiX9rnbif745yPnnzXvwt/7UE3P9UXdD7vM93UA+KeGgnHIg41nz+B24
-         c5sBUSXw8wwBHzjdyDPHHqrNmadbRg7a6BxNiJ97t6FdME8oQgNOwrZ/Uu9ZGsNNIba3
-         KXStcnieJZZa4OfNuOkqEwGiqunFJ/j92QAI9Npnj6d7bzqil/lMcHLkRzmQp0f+7WjE
-         FsWdWahLkrw9DHZyCG6hYxZg2EVW1BrnoaAFgePOCBUCyhwyMvQseUTGpSugJl5CcoNc
-         GgaXDthppInwGP8IWBJNlQMJ4iEZ/UZ05y4PhQgeeV7M+PHmIiBwaRdQyGtBMgaySGId
-         ndXg==
-X-Forwarded-Encrypted: i=1; AJvYcCVxhe5SwU8M1RcG7rF4a0LL+paPdwnvBf2iiaDF8geMluwE0M/xhhRyIdSaPKrQ73vSEXnDwYX+8a6PhoE1pN8i8/dXG3Nl1vePulm6
-X-Gm-Message-State: AOJu0YwXmSVDp8YBn92BDgNWoB1N9tKC1gG+Oj1h3TS+C5ruDhwDybJb
-	2BThCxwTmYI1vMAR7urfXJHDDvTAYfto1QvMX3gBtvWL4eUwhbiKvFmJDb2QRLbibm/8dq5LM4L
-	/0ieh6qtHUGHZfcr2B3Qb+ptQvOhkNGZ5X3NqxcpkOkZOdQWmPAIK
-X-Google-Smtp-Source: AGHT+IF59eNnnySegsKhfnfzXYM07i5Fgsx6xFLHCRkXQs7BnMoj+MUqztMGZD2zxbeHPnGH23UuKKSLPu/28cL7+B0=
-X-Received: by 2002:a17:902:fa0f:b0:1dc:8841:43f2 with SMTP id
- la15-20020a170902fa0f00b001dc884143f2mr48794plb.26.1709083207590; Tue, 27 Feb
- 2024 17:20:07 -0800 (PST)
+        bh=vdT0x3HibO/pzSmdrgIYWiv8FmuIQF8zXY+TeseC7sM=;
+        b=jeXoUtoZ0hSzIXP88sCL9e7BQ0RR0BBqyPuVtkxZORuBsyDCpsCC+jvl24I/QHURwk
+         L0AgDhjsunBAPllAfGS/hhijXtCH9hLz2QBx6GOXhWYFPoOM/89Vmtm7IWKzCwUJIqhT
+         nixwPMrWfKh1A8SZ4Jh3S/LzzCupgQRB3X6OxrK3dvAEs5F5EknSs+figID1WW9DkPTe
+         lAITS0/lGS6IivVp/iMGckmxYTXJafnwbw+/bRDZm7/RAfy6B89j/lWEyzInotoGoNUq
+         AIAWih28uyQ0/yvyjY/f9NUBKQ3NKmbR3V5TO3VpY93u/JfFrzSj99QIZ1sQPYeNTnOc
+         KJ3A==
+X-Forwarded-Encrypted: i=1; AJvYcCVCDbuxkVcAYHcetvFuVEF/LauTdan7Ft8PJyQgMRMrKiKWZGJcHyzw+wEHngNAri1SyhtK6aBaWMHmE0gJAOpTFxfLYJpY748Sj/91
+X-Gm-Message-State: AOJu0YwcqUV1Wl39PKd1vms4zS5JUIkwhisTweFJokgEiNiA0gI/AcHp
+	SsS1zyobgxxNrzhZnaQs6pG6hLnSlvb3MNIxHlKS8Yy6B/RYVTAv6SmU0mUr8RqNlqvwbKMooSC
+	NneLwbDFd/wcAArahWR/smC/DBH1Dj/Kvoj9z
+X-Google-Smtp-Source: AGHT+IExJXBPQ3GF+J+ug86UWIg39ZhcnQ8sj9sPYlXuoBEeaVUgwPP/10AdRfGAu/tgNqj+8duppB4y7xFFMF15R7E=
+X-Received: by 2002:a17:902:fa08:b0:1dc:8fac:929b with SMTP id
+ la8-20020a170902fa0800b001dc8fac929bmr9738plb.15.1709083232928; Tue, 27 Feb
+ 2024 17:20:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228005230.287113-1-namhyung@kernel.org> <20240228005230.287113-2-namhyung@kernel.org>
-In-Reply-To: <20240228005230.287113-2-namhyung@kernel.org>
+References: <20240228005230.287113-1-namhyung@kernel.org>
+In-Reply-To: <20240228005230.287113-1-namhyung@kernel.org>
 From: Ian Rogers <irogers@google.com>
-Date: Tue, 27 Feb 2024 17:19:56 -0800
-Message-ID: <CAP-5=fVUqFbvYp_g5PL9e4on=5gF1YE42-w-XMTrFxOZJ+JrXw@mail.gmail.com>
-Subject: Re: [PATCH 1/4] perf annotate: Add a hashmap for symbol histogram
+Date: Tue, 27 Feb 2024 17:20:21 -0800
+Message-ID: <CAP-5=fUK-P-4n46DjjGt48z_sivJ+HawsFP3e_C-mx5dW9JP8w@mail.gmail.com>
+Subject: Re: [PATCH 0/4] perf annotate: Improve memory usage for symbol histogram
 To: Namhyung Kim <namhyung@kernel.org>
 Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
 	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -87,162 +87,52 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Feb 27, 2024 at 4:52=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
 wrote:
 >
-> Now symbol histogram uses an array to save per-offset sample counts.
-> But it wastes a lot of memory if the symbol has a few samples only.
-> Add a hashmap to save values only for actual samples.
+> Hello,
 >
-> For now, it has duplicate histogram (one in the existing array and
-> another in the new hash map).  Once it can convert to use the hash
-> in all places, we can get rid of the array later.
+> This is another series of memory optimization in perf annotate.
 >
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/annotate.c | 40 +++++++++++++++++++++++++++++++++++++-
->  tools/perf/util/annotate.h |  2 ++
->  2 files changed, 41 insertions(+), 1 deletion(-)
+> When perf annotate (or perf report/top with TUI) processes samples, it
+> needs to save the sample period (overhead) at instruction level.  For
+> now, it allocates an array to do that for the whole symbol when it
+> hits any new symbol.  This comes with a lot of waste since samples can
+> be very few and instructions span to multiple bytes.
 >
-> diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-> index 107b264fa41e..7a70e4d35c9b 100644
-> --- a/tools/perf/util/annotate.c
-> +++ b/tools/perf/util/annotate.c
-> @@ -38,6 +38,7 @@
->  #include "arch/common.h"
->  #include "namespaces.h"
->  #include "thread.h"
-> +#include "hashmap.h"
->  #include <regex.h>
->  #include <linux/bitops.h>
->  #include <linux/kernel.h>
-> @@ -863,6 +864,17 @@ bool arch__is(struct arch *arch, const char *name)
->         return !strcmp(arch->name, name);
->  }
+> For example, when a sample hits symbol 'foo' that has size of 100 and
+> that's the only sample falls into the symbol.  Then it needs to
+> allocate a symbol histogram (sym_hist) and the its size would be
 >
-> +/* symbol histogram: key =3D offset << 16 | evsel->core.idx */
-> +static size_t sym_hist_hash(long key, void *ctx __maybe_unused)
-> +{
-> +       return (key >> 16) + (key & 0xffff);
-> +}
-> +
-> +static bool sym_hist_equal(long key1, long key2, void *ctx __maybe_unuse=
-d)
-> +{
-> +       return key1 =3D=3D key2;
-> +}
-> +
->  static struct annotated_source *annotated_source__new(void)
->  {
->         struct annotated_source *src =3D zalloc(sizeof(*src));
-> @@ -877,6 +889,8 @@ static __maybe_unused void annotated_source__delete(s=
-truct annotated_source *src
->  {
->         if (src =3D=3D NULL)
->                 return;
-> +
-> +       hashmap__free(src->samples);
->         zfree(&src->histograms);
->         free(src);
->  }
-> @@ -909,6 +923,14 @@ static int annotated_source__alloc_histograms(struct=
- annotated_source *src,
->         src->sizeof_sym_hist =3D sizeof_sym_hist;
->         src->nr_histograms   =3D nr_hists;
->         src->histograms      =3D calloc(nr_hists, sizeof_sym_hist) ;
-> +
-> +       if (src->histograms =3D=3D NULL)
-> +               return -1;
-> +
-> +       src->samples =3D hashmap__new(sym_hist_hash, sym_hist_equal, NULL=
-);
-> +       if (src->samples =3D=3D NULL)
-> +               zfree(&src->histograms);
-> +
->         return src->histograms ? 0 : -1;
->  }
+>   16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) =3D 1616
 >
-> @@ -920,6 +942,7 @@ void symbol__annotate_zero_histograms(struct symbol *=
-sym)
->         if (notes->src !=3D NULL) {
->                 memset(notes->src->histograms, 0,
->                        notes->src->nr_histograms * notes->src->sizeof_sym=
-_hist);
-> +               hashmap__clear(notes->src->samples);
->         }
->         if (notes->branch && notes->branch->cycles_hist) {
->                 memset(notes->branch->cycles_hist, 0,
-> @@ -983,8 +1006,10 @@ static int __symbol__inc_addr_samples(struct map_sy=
-mbol *ms,
->                                       struct perf_sample *sample)
->  {
->         struct symbol *sym =3D ms->sym;
-> +       long hash_key;
->         unsigned offset;
->         struct sym_hist *h;
-> +       struct sym_hist_entry *entry;
+> But actually it just needs 32 (header + sym_hist_entry) bytes.  Things
+> get worse if the symbol size is bigger (and it doesn't have many
+> samples in different places).  Also note that it needs separate
+> histogram for each event.
 >
->         pr_debug3("%s: addr=3D%#" PRIx64 "\n", __func__, map__unmap_ip(ms=
-->map, addr));
+> Let's split the sym_hist_entry and have it in a hash table so that it
+> can allocate only necessary entries.
 >
-> @@ -1002,15 +1027,28 @@ static int __symbol__inc_addr_samples(struct map_=
-symbol *ms,
->                          __func__, __LINE__, sym->name, sym->start, addr,=
- sym->end, sym->type =3D=3D STT_FUNC);
->                 return -ENOMEM;
->         }
-> +
-> +       hash_key =3D offset << 16 | evidx;
-> +       if (!hashmap__find(src->samples, hash_key, &entry)) {
-> +               entry =3D zalloc(sizeof(*entry));
-> +               if (entry =3D=3D NULL)
-> +                       return -ENOMEM;
-> +
-> +               if (hashmap__add(src->samples, hash_key, entry) < 0)
-> +                       return -ENOMEM;
-> +       }
-> +
->         h->nr_samples++;
->         h->addr[offset].nr_samples++;
->         h->period +=3D sample->period;
->         h->addr[offset].period +=3D sample->period;
-> +       entry->nr_samples++;
-> +       entry->period +=3D sample->period;
+> No functional change intended.
 >
->         pr_debug3("%#" PRIx64 " %s: period++ [addr: %#" PRIx64 ", %#" PRI=
-x64
->                   ", evidx=3D%d] =3D> nr_samples: %" PRIu64 ", period: %"=
- PRIu64 "\n",
->                   sym->start, sym->name, addr, addr - sym->start, evidx,
-> -                 h->addr[offset].nr_samples, h->addr[offset].period);
-> +                 entry->nr_samples, entry->period);
->         return 0;
->  }
+> Thanks,
+> Namhyung
 >
-> diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-> index 94435607c958..a2b0c8210740 100644
-> --- a/tools/perf/util/annotate.h
-> +++ b/tools/perf/util/annotate.h
-> @@ -12,6 +12,7 @@
->  #include "symbol_conf.h"
->  #include "mutex.h"
->  #include "spark.h"
-> +#include "hashmap.h"
+>
+> Namhyung Kim (4):
+>   perf annotate: Add a hashmap for symbol histogram
+>   perf annotate: Calculate instruction overhead using hashmap
+>   perf annotate: Remove sym_hist.addr[] array
+>   perf annotate: Add comments in the data structures
 
-nit: This could just be a forward reference to keep the number of
-header files down.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
 Thanks,
 Ian
 
+>  tools/perf/ui/gtk/annotate.c |  14 ++++-
+>  tools/perf/util/annotate.c   | 114 ++++++++++++++++++++++-------------
+>  tools/perf/util/annotate.h   |  86 +++++++++++++++++++++++---
+>  3 files changed, 158 insertions(+), 56 deletions(-)
 >
->  struct hist_browser_timer;
->  struct hist_entry;
-> @@ -280,6 +281,7 @@ struct annotated_source {
->         size_t                  sizeof_sym_hist;
->         struct sym_hist         *histograms;
->         struct annotation_line  **offsets;
-> +       struct hashmap          *samples;
->         int                     nr_histograms;
->         int                     nr_entries;
->         int                     nr_asm_entries;
 > --
 > 2.44.0.rc1.240.g4c46232300-goog
 >
