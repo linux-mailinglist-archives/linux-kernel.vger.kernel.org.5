@@ -1,174 +1,185 @@
-Return-Path: <linux-kernel+bounces-85325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0F8E86B43C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:10:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF30886B43D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:10:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 555A42810FE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:10:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5357128265E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BF415D5D3;
-	Wed, 28 Feb 2024 16:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F0A415D5D8;
+	Wed, 28 Feb 2024 16:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="A7LOt25J"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="FE13DZ76"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1F615CD60
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:10:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76FA615CD4A
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:10:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709136607; cv=none; b=Hmd6rAR28e0pwJFiT4ktbBAdo0eqJQZL7PESGFisTd3cPfOoq3XpttURsS2XM4mYcqIFL7cOmD27lVLBN58qBSYr9UWahd9mrO6r6LwIhZ6gELIbsGti/KoJ9TurVngw0fSZtzbh2jfC8VJcIMoQW6J/Wpn8Pnmeqeq1DF4mCps=
+	t=1709136644; cv=none; b=YfzONc39owFKOnzd73cRnJt8iLRV6FJV5XOAH71jZlehNrRBfuZ85Z9CmYl6LQkDc4tqA2i9G8TGEzQULN4sfMvXSBdqTQtMhzMN9MIeiAxFAKkcSBxJcof+2rY9bnlYNuOV7x5FMVr5LBVTOPChdOM8FNosYlKg8XpYEU68rfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709136607; c=relaxed/simple;
-	bh=0m8gNxas4C7HlPBjHxGORwNSO+eueqaAOKJKBhTr8D8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=El5XTA6MyTyPsk31I0o9AgvB/3HDPknTxA3t5hZ4iFWdflI8+hTMLHiMzw2p76glc9exr9pmYuWtcqbE+DcEO7xH8uNhlqXyB/M1RdDXKAEq8zieVYz0chTfw0DK19/hT5Duim4xfPdLf4mo6sbfnCLgP6cRNxaeSqNZ6tjUL68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=A7LOt25J; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6D94F6B3;
-	Wed, 28 Feb 2024 17:09:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1709136589;
-	bh=0m8gNxas4C7HlPBjHxGORwNSO+eueqaAOKJKBhTr8D8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=A7LOt25JgCvBw449xk6EQWBXfplKYynur1DmdBihGgx43rT2hHitQm/IScJBW6Sf0
-	 BL1aXherRxbVQg2uHr13QVxmkzKMJMUXyQ6A7BWWQXzD8VZWZZfKpKXbgssXkCPo1w
-	 0yhRt5G/ZkNURKnWs1xgQjp00Ftn52Epdcqqc10o=
-Date: Wed, 28 Feb 2024 18:10:04 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Michal Simek <michal.simek@amd.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] drm/atomic-helper: Add select_output_bus_format
- callback
-Message-ID: <20240228161004.GE9863@pendragon.ideasonboard.com>
-References: <20240226-dp-live-fmt-v1-0-b78c3f69c9d8@amd.com>
- <20240226-dp-live-fmt-v1-4-b78c3f69c9d8@amd.com>
- <20240228-nifty-flashy-shrew-905edc@houat>
+	s=arc-20240116; t=1709136644; c=relaxed/simple;
+	bh=fe8lOuxEMj1yMsRcOiFuSFp7gwfqXyve/jnu+J2Xg9k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rIwaAa7oTDOMqwY0C9u5mVBNH342UT9XZvrBshaukOvt6Fb6GEC5gcGvrUcS3Q/ue6+MUxq4Lyhjnr8bivOJsIKShOEO5jnLLvHmETqwkMz5ze5Z1/8nAoly2cVQiDfgBF9raQ0PR5Tw4KEpAnMg8FybhEaGIbXm8j9646UO+xI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=FE13DZ76; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41SG00j7011011;
+	Wed, 28 Feb 2024 16:10:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=lFzZ+uKK9jWdHGRqBfOIQfaRRz7nH+OApMLXZqmSw38=;
+ b=FE13DZ76EJt6cOMeazEmd3luq6vjhV1izqWqqFILHjRq7J+wPBPkU41f7W/i/duxxU6O
+ F2SyR82gdgLu5XjEBovjTiT3myUYOwsML3tqYv8baQLPqhXVU71w3B4e+MlaZ0zBUrYu
+ V+3Cad3XXKgLGF1i5hT0AUODMncaYo4+4Akv+GAU5+2REpdRhXCakcyHb8FVXBdyeXaU
+ Thlx5qYEh3ORDsYFaNZbK4MGXqWmcLD0jpAfmRk9Z4c7clnFtjpdebhdAkZLeW8Gq/q7
+ 7wZHpZGxMpc/e6QzHbpH5qkgE3AxYap9ckUrFD+b5XCFXVv+eXhnYdQciZuMwVSUPGhx Jg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wj7ybge9w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 16:10:25 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41SFxwRa010832;
+	Wed, 28 Feb 2024 16:10:25 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wj7ybge9b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 16:10:25 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41SDe9qQ008782;
+	Wed, 28 Feb 2024 16:10:24 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wftstqkd1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 16:10:24 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41SGAKGt28574014
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 28 Feb 2024 16:10:22 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 80D3C2005A;
+	Wed, 28 Feb 2024 16:10:20 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3FF9D2004F;
+	Wed, 28 Feb 2024 16:10:20 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.171.184.61])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 28 Feb 2024 16:10:20 +0000 (GMT)
+From: Tobias Huschle <huschle@linux.ibm.com>
+To: linux-kernel@vger.kernel.org
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, sshegde@linux.vnet.ibm.com,
+        srikar@linux.vnet.ibm.com, linuxppc-dev@lists.ozlabs.org
+Subject: [RFC] sched/eevdf: sched feature to dismiss lag on wakeup
+Date: Wed, 28 Feb 2024 17:10:18 +0100
+Message-Id: <20240228161018.14253-1-huschle@linux.ibm.com>
+X-Mailer: git-send-email 2.34.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: U_5Hm9dPXdMRVcUqEwgF8Jr34BZT4MAW
+X-Proofpoint-ORIG-GUID: htKPM3LVBjGR6p1vhcpzqx_CsnXtnahg
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240228-nifty-flashy-shrew-905edc@houat>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_08,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=999 adultscore=0 clxscore=1011
+ suspectscore=0 phishscore=0 impostorscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311290000 definitions=main-2402280126
 
-On Wed, Feb 28, 2024 at 04:29:33PM +0100, Maxime Ripard wrote:
-> On Mon, Feb 26, 2024 at 08:44:45PM -0800, Anatoliy Klymenko wrote:
-> > Add select_output_bus_format to CRTC atomic helpers callbacks. This
-> > callback Will allow CRTC to participate in media bus format negotiation
-> > over connected DRM bridge chain and impose CRTC-specific restrictions.
-> > A good example is CRTC implemented as FPGA soft IP. This kind of CRTC will
-> > most certainly support a single output media bus format, as supporting
-> > multiple runtime options consumes extra FPGA resources. A variety of
-> > options for FPGA are usually achieved by synthesizing IP with different
-> > parameters.
-> > 
-> > Incorporate select_output_bus_format callback into the format negotiation
-> > stage to fix the input bus format of the first DRM bridge in the chain.
-> > 
-> > Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> > ---
-> >  drivers/gpu/drm/drm_bridge.c             | 19 +++++++++++++++++--
-> >  include/drm/drm_modeset_helper_vtables.h | 31 +++++++++++++++++++++++++++++++
-> >  2 files changed, 48 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> > index 521a71c61b16..453ae3d174b4 100644
-> > --- a/drivers/gpu/drm/drm_bridge.c
-> > +++ b/drivers/gpu/drm/drm_bridge.c
-> > @@ -32,6 +32,7 @@
-> >  #include <drm/drm_edid.h>
-> >  #include <drm/drm_encoder.h>
-> >  #include <drm/drm_file.h>
-> > +#include <drm/drm_modeset_helper_vtables.h>
-> >  #include <drm/drm_of.h>
-> >  #include <drm/drm_print.h>
-> >  
-> > @@ -879,7 +880,8 @@ static int select_bus_fmt_recursive(struct drm_bridge *first_bridge,
-> >  	unsigned int i, num_in_bus_fmts = 0;
-> >  	struct drm_bridge_state *cur_state;
-> >  	struct drm_bridge *prev_bridge;
-> > -	u32 *in_bus_fmts;
-> > +	struct drm_crtc *crtc = crtc_state->crtc;
-> > +	u32 *in_bus_fmts, in_fmt;
-> >  	int ret;
-> >  
-> >  	prev_bridge = drm_bridge_get_prev_bridge(cur_bridge);
-> > @@ -933,7 +935,20 @@ static int select_bus_fmt_recursive(struct drm_bridge *first_bridge,
-> >  		return -ENOMEM;
-> >  
-> >  	if (first_bridge == cur_bridge) {
-> > -		cur_state->input_bus_cfg.format = in_bus_fmts[0];
-> > +		in_fmt = in_bus_fmts[0];
-> > +		if (crtc->helper_private &&
-> > +		    crtc->helper_private->select_output_bus_format) {
-> > +			in_fmt = crtc->helper_private->select_output_bus_format(
-> > +							crtc,
-> > +							crtc->state,
-> > +							in_bus_fmts,
-> > +							num_in_bus_fmts);
-> > +			if (!in_fmt) {
-> > +				kfree(in_bus_fmts);
-> > +				return -ENOTSUPP;
-> > +			}
-> > +		}
-> > +		cur_state->input_bus_cfg.format = in_fmt;
-> 
-> I don't think we should start poking at the CRTC internals, but we
-> should rather provide a helper here.
+The previously used CFS scheduler gave tasks that were woken up an
+enhanced chance to see runtime immediately by deducting a certain value
+from its vruntime on runqueue placement during wakeup.
 
-It would probably look cleaner, yes.
+This property was used by some, at least vhost, to ensure, that certain
+kworkers are scheduled immediately after being woken up. The EEVDF
+scheduler, does not support this so far. Instead, if such a woken up
+entitiy carries a negative lag from its previous execution, it will have
+to wait for the current time slice to finish, which affects the
+performance of the process expecting the immediate execution negatively.
 
-> >  		cur_state->output_bus_cfg.format = out_bus_fmt;
-> >  		kfree(in_bus_fmts);
-> >  		return 0;
-> > diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
-> > index 881b03e4dc28..7c21ae1fe3ad 100644
-> > --- a/include/drm/drm_modeset_helper_vtables.h
-> > +++ b/include/drm/drm_modeset_helper_vtables.h
-> > @@ -489,6 +489,37 @@ struct drm_crtc_helper_funcs {
-> >  				     bool in_vblank_irq, int *vpos, int *hpos,
-> >  				     ktime_t *stime, ktime_t *etime,
-> >  				     const struct drm_display_mode *mode);
-> > +
-> > +	/**
-> > +	 * @select_output_bus_format
-> > +	 *
-> > +	 * Called by the first connected DRM bridge to negotiate input media
-> > +	 * bus format. CRTC is expected to pick preferable media formats from
-> > +	 * the list supported by the DRM bridge chain.
-> 
-> There's nothing restricting it to bridges here. Please rephrase this to
-> remove the bridge mention. The user is typically going to be the
-> encoder, and bridges are just an automagic implementation of an encoder.
-> 
-> And generally speaking, I'd really like to have an implementation
-> available before merging this.
+To address this issue, implement EEVDF strategy #2 for rejoining
+entities, which dismisses the lag from previous execution and allows
+the woken up task to run immediately (if no other entities are deemed
+to be preferred for scheduling by EEVDF).
 
-There's a downstream implementation in the Xilinx kernel, which would
-indeed be nice to upstream. This shouldn't block patches 1/4 to 3/4
-though, those can be merged once review comments are taken into account.
+The vruntime is decremented by an additional value of 1 to make sure,
+that the woken up tasks gets to actually run. This is of course not
+following strategy #2 in an exact manner but guarantees the expected
+behavior for the scenario described above. Without the additional
+decrement, the performance goes south even more. So there are some
+side effects I could not get my head around yet.
 
+Questions:
+1. The kworker getting its negative lag occurs in the following scenario
+   - kworker and a cgroup are supposed to execute on the same CPU
+   - one task within the cgroup is executing and wakes up the kworker
+   - kworker with 0 lag, gets picked immediately and finishes its
+     execution within ~5000ns
+   - on dequeue, kworker gets assigned a negative lag
+   Is this expected behavior? With this short execution time, I would
+   expect the kworker to be fine.
+   For a more detailed discussion on this symptom, please see:
+   https://lore.kernel.org/netdev/ZWbapeL34Z8AMR5f@DESKTOP-2CCOB1S./T/
+2. The proposed code change of course only addresses the symptom. Am I
+   assuming correctly that this is in general the exepected behavior and
+   that the task waking up the kworker should rather do an explicit
+   reschedule of itself to grant the kworker time to execute?
+   In the vhost case, this is currently attempted through a cond_resched
+   which is not doing anything because the need_resched flag is not set.
+
+Feedback and opinions would be highly appreciated.
+
+Signed-off-by: Tobias Huschle <huschle@linux.ibm.com>
+---
+ kernel/sched/fair.c     | 5 +++++
+ kernel/sched/features.h | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 533547e3c90a..c20ae6d62961 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5239,6 +5239,11 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
+ 		lag = div_s64(lag, load);
+ 	}
+ 
++	if (sched_feat(NOLAG_WAKEUP) && (flags & ENQUEUE_WAKEUP)) {
++		se->vlag = 0;
++		lag = 1;
++	}
++
+ 	se->vruntime = vruntime - lag;
+ 
+ 	/*
+diff --git a/kernel/sched/features.h b/kernel/sched/features.h
+index 143f55df890b..d3118e7568b4 100644
+--- a/kernel/sched/features.h
++++ b/kernel/sched/features.h
+@@ -7,6 +7,7 @@
+ SCHED_FEAT(PLACE_LAG, true)
+ SCHED_FEAT(PLACE_DEADLINE_INITIAL, true)
+ SCHED_FEAT(RUN_TO_PARITY, true)
++SCHED_FEAT(NOLAG_WAKEUP, true)
+ 
+ /*
+  * Prefer to schedule the task we woke last (assuming it failed
 -- 
-Regards,
+2.34.1
 
-Laurent Pinchart
 
