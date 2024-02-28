@@ -1,79 +1,82 @@
-Return-Path: <linux-kernel+bounces-85452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD6DC86B632
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:39:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15E0A86B633
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EA83B21BC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:39:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47D451C21F2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3EF15CD6A;
-	Wed, 28 Feb 2024 17:39:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97E7915E5AE;
+	Wed, 28 Feb 2024 17:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gHIgNzNT"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="CmrImjj2"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E666373509;
-	Wed, 28 Feb 2024 17:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD12515DBC5
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:39:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709141969; cv=none; b=s772BrznUHP5jBQ3/Dx2vW9kVWnRKZNW+X9oNoiqSqi2p+Om0IoEdSY9jeVSVsWg1lO4Ra5HWDzD/BYgxCTLMkc3v5ca3n7qeYG9tqb2uHLAXkIB2bN8chSVKhaqMUX7IH0SPDS7gYCAOM85sXHv1uw9wOkrGOz4RHVWNmxTB/8=
+	t=1709141973; cv=none; b=ku56GG1gaKqpEWhwgyp8+UfAJWK+kQTJho1HEqv3TEvbuKSgrZXnp0O9WLvWFx+K4A/7RVOb8AzSw7sIUHdiPOGDT9Y7EQx8OGQiQVXA+TbNS1qyXhNdjrFpYPlblme54FmeKg2H2cCeunes1mgFJOCz6hP3LWvoNQB5JPfGPks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709141969; c=relaxed/simple;
-	bh=FyH6BIiOWiWBx3YnExZt3Z2Nqd/kjnaRsbM9Vu4zJ5A=;
+	s=arc-20240116; t=1709141973; c=relaxed/simple;
+	bh=QC8X8RLJg/EcMAAM6B4fCWDSCW+dwBVTLUthDex9rDk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TgG+PqfdhLQT2ei5PPQw8sZmpUDhuo804mYlQjxttH9/2g6VJ4tTdvcHLUZ9lz7F6ThGxdtbXO/9TU10e7LMQUNzCvUjBgEf8KMg34WnqMk9uvHsHeso2I8+fDrhjGChrNi0wU/OGllazYKS4VyZz4gW6z79702a35rHaJSd4f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gHIgNzNT; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709141968; x=1740677968;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FyH6BIiOWiWBx3YnExZt3Z2Nqd/kjnaRsbM9Vu4zJ5A=;
-  b=gHIgNzNT0w+HCJl1CXWeAn3lVkNXgyZ+XF2SymHKH4ELD6XkLEJ7g1fa
-   vHWD9GLZehMIS4Rp9IHOJW7eOsxtVOC5WZAnKNHq9ZKmu56WfgKVhx4JO
-   vIsQlVXwWF2THdiiuZFeS+LYcage7gkPMgZSV1yP40wXIYlzi/anLTVL7
-   13fn5uvzI1aUG6qYhd/OXDo2+n6lSx9MxHnmAXVvTLxNk7B02giVYFwp7
-   iGdfzFRoo0rCvVjrQ5nDUV3GnQ2LztqDrzRVGlZnfT2tYq6N6MeTuL24Q
-   BedSdAtr3Qa2CdDlMO0DwHBz4E52dAtzW36IG1nxtihVFNCuzTDC33mtA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14997460"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="14997460"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:39:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="913956496"
-X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
-   d="scan'208";a="913956496"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 09:39:23 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rfNto-00000008HnM-015k;
-	Wed, 28 Feb 2024 19:39:20 +0200
-Date: Wed, 28 Feb 2024 19:39:19 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Chris Down <chris@chrisdown.name>, Petr Mladek <pmladek@suse.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jessica Yu <jeyu@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
-	Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>,
-	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
-	ceph-devel@vger.kernel.org
-Subject: Re: [PATCH 2/4] dev_printk: Add and use dev_no_printk()
-Message-ID: <Zd9vx2pM3Ds9-dzk@smile.fi.intel.com>
-References: <cover.1709127473.git.geert+renesas@glider.be>
- <8583d54f1687c801c6cda8edddf2cf0344c6e883.1709127473.git.geert+renesas@glider.be>
+	 Content-Type:Content-Disposition:In-Reply-To; b=k/7hIj9IMHOGYJDtDV8wKM9NCDfCfQUIuNAJPHh1uHrHBS7TfdCX52kIxJFXx+Sn8IPM9YQrmW2EGAlwt0suAMa+2wlwlQs+WNlWw8HmozXFWUy0PVwozMj3+F525pvYavUlMycYMh5KONRJAgfR6YRTurtmYauHa3kYHY26K/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=CmrImjj2; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299e0271294so3820062a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:39:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709141971; x=1709746771; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NODDRAJhqWW7+B+ilVMpkZpvr1dJVh6fzecoPQ05aGY=;
+        b=CmrImjj2aqfntU7U0gcG7SHvevqf+uO71X/YwqojTsy2H0ulvOGGMhj9hnhOg7ntYR
+         O+HuVbSzj6jVauuSSX2aSK/x34vd7iMFJhNxrrfugi2fqqB0ZckeDGvklPjNcBSEf2Uv
+         YNW80ZATRm5WtR35OE0SUB+V0Yocmy6hl9NEg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709141971; x=1709746771;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NODDRAJhqWW7+B+ilVMpkZpvr1dJVh6fzecoPQ05aGY=;
+        b=tUWPUWiWxGNIOnQQoOaJp31SHuWMmk5iFhpDJHgWGU/PQaQGVQP6x7m+LSBBZjcgw4
+         a75foW17oSQVOQlfLoneLzIJwWZ4tSyg900NanxfJBawwIfhbFxPZGl2Pk87S2PvG/wS
+         CXt7THmQm71CrZSGjW12hufb5PR29O+SNaWDlOyHZGbfItWUio0ijNSl9I86M5njK/Xb
+         XKi+RQMMyWX6QBP54cz+zxNrqYKwELaFk7t5Sr7DC5DF+H7Wc0Zh5whbup1LAA30q8ug
+         b5BH6L1lcYQd4g9NzzcSEPB1oLwwMbqeR/4TuozY+41axsE81v9j08gkv3bqkp/Rn0xx
+         vZmw==
+X-Forwarded-Encrypted: i=1; AJvYcCVtVk6f1mtBwpGS5uczFLqn0nJq+ijv66FrqzqvHPZBPATeqLqj6vEoyDgPXOH19SBX72/NPkzor2SOHBxNYiyT5qr5cZqc6R5vkvaj
+X-Gm-Message-State: AOJu0YzQl/Z6iBr9k1CaMs86AOzUg39/Qc8ua0G6G/kjxP6uosHCkrwJ
+	Djrk1Ew+XBYOhZOJQZq9ec58EI2m0PYvQc9+TfAYx+E1ZpMEU2drWfF24HCjFw==
+X-Google-Smtp-Source: AGHT+IGp/woc+TexLF/WvhjGKbASp59EBqxFySULqYfcyiys7bw1alzskx50yFi4SAk3a5wWSI6Icw==
+X-Received: by 2002:a17:90a:cf8a:b0:299:58af:c873 with SMTP id i10-20020a17090acf8a00b0029958afc873mr400790pju.10.1709141971163;
+        Wed, 28 Feb 2024 09:39:31 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id sz3-20020a17090b2d4300b002961a383303sm1953273pjb.14.2024.02.28.09.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 09:39:30 -0800 (PST)
+Date: Wed, 28 Feb 2024 09:39:30 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Arnd Bergmann <arnd@arndb.de>, Bill Wendling <morbo@google.com>,
+	Nathan Chancellor <nathan@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Arnd Bergmann <arnd@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Justin Stitt <justinstitt@google.com>, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Clang __bos vs loop unrolling (was Re: [PATCH] ALSA: asihpi: work
+ around clang-17+ false positive fortify-string warning)
+Message-ID: <202402280925.5B709A60F@keescook>
+References: <20240228140152.1824901-1-arnd@kernel.org>
+ <87msrkhcz6.wl-tiwai@suse.de>
+ <1265517d-b98a-4ec6-9215-10cd988ff78f@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,45 +85,24 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8583d54f1687c801c6cda8edddf2cf0344c6e883.1709127473.git.geert+renesas@glider.be>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1265517d-b98a-4ec6-9215-10cd988ff78f@app.fastmail.com>
 
-On Wed, Feb 28, 2024 at 03:00:03PM +0100, Geert Uytterhoeven wrote:
-> When printk-indexing is enabled, each dev_printk() invocation emits a
-> pi_entry structure.  This is even true when the dev_printk() is
-> protected by an always-false check, as is typically the case for debug
-> messages: while the actual code to print the message is optimized out by
-> the compiler, the pi_entry structure is still emitted.
-> 
-> Avoid emitting pi_entry structures for unavailable dev_printk() kernel
-> messages by:
->   1. Introducing a dev_no_printk() helper, mimicked after the existing
->      no_printk() helper, which calls _dev_printk() instead of
->      dev_printk(),
->   2. Replacing all "if (0) dev_printk(...)" constructs by calls to the
->      new helper.
-> 
-> This reduces the size of an arm64 defconfig kernel with
-> CONFIG_PRINTK_INDEX=y by 957 KiB.
+On Wed, Feb 28, 2024 at 04:03:56PM +0100, Arnd Bergmann wrote:
+> My first thought was that clang warns about it here because
+> the 'u16 adapter' declaration limits the index to something
+> smaller than an 'int' or 'long', but changing the type
+> did not get rid of the warning.
 
-..
+Our current theory is that Clang has a bug with
+__builtin_object_size/__builtin_dynamic_object_size when doing loop
+unrolling (or other kinds of execution flow splitting). Some examples:
+https://github.com/ClangBuiltLinux/linux/issues?q=label%3A%22loop+unroller%22+
 
-> +/*
-> + * Dummy dev_printk for disabled debugging statements to use whilst maintaining
+Which is perhaps related to __bos miscalculations:
+https://github.com/ClangBuiltLinux/linux/issues?q=label%3A%22%5B__bos%5D+miscalculation%22+
 
-dev_printk()
-
-> + * gcc's format checking.
-> + */
-> +#define dev_no_printk(level, dev, fmt, ...)				\
-> +	({								\
-> +		if (0)							\
-> +			_dev_printk(level, dev, fmt, ##__VA_ARGS__);	\
-> +	})
+-Kees
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Kees Cook
 
