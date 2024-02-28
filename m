@@ -1,153 +1,124 @@
-Return-Path: <linux-kernel+bounces-84567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 215B986A873
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 826DB86A875
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0DA4285B36
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:39:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CFBE284F5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EE622F02;
-	Wed, 28 Feb 2024 06:39:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pDV1kGw9"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13CE622F03;
+	Wed, 28 Feb 2024 06:40:13 +0000 (UTC)
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248411D689;
-	Wed, 28 Feb 2024 06:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3851222612;
+	Wed, 28 Feb 2024 06:40:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709102344; cv=none; b=H+zbKVpWz+8aiyNFvVz4OrpoLn1750eW/arjhQnBcAdmvNUiAVdy8heZmtvbh9R521c/LUSsTWJTlhMeLxrdIkjreheAACPEm7qp+3WhmS6VX04d1r8SW6b1LFDbcKPSBYR7SJVXck7GfuWF4cFa4oR/P/ovSJHOGtn9aT/cDyY=
+	t=1709102412; cv=none; b=rBTcLCmWcVqea9QMahd4J4NpeLkp45H5o8C74S/kL+SUIKvwiwRYRnsZcvunc4rHWsmVA/n3caoTCWVBMSqW6J8PvX7L0oGjZVhWe+7Xc7dhn6M0uvuDSmBk1cHwY0te5VFMVrhiOtYyAjekUgjdyJOvXdke7p9+rfQ2wkfUMJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709102344; c=relaxed/simple;
-	bh=GaIuDDftg63Pi2OrFl6WV1sAWCA8dIeGF8X+3sE8U0I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=oDglktSqFR85HHKSGqr2XR/HpDpLrlTCd4l4GiR9KMFPjgxsDhrruY9zUB1u7iT93y608eENyt+XfCcHBupDHhHbMNLIrPSwcNB76K3WHS41nPrYCl1e3Y6n0g2YIQm0idnlUHb1VGwh/aktbAwSAhMdaSuipUo0RdEspU6vi9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pDV1kGw9; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S2OUDs025134;
-	Wed, 28 Feb 2024 06:38:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=yEsPn9GSp7vrEJijyIX2lOAPt6LbAnSDCfGstYnezu8=; b=pD
-	V1kGw9hZd4GwvCyZxbw8Zw+tgg8p8lLb1hdyB+nbBR9Lv3DjtCA2cZG3FV7extRI
-	uTFlm2RdwM/JZuHW0ZzrIYhpab6x6X/4YYSDiy1osaREuWiw+l+Hx0Tm9VdUeGD2
-	aOnabmD39i/RwxdOt3vCfZC5XNQlfsjjFjOm0owuqUqUyxdfIW9y5YgHFLhkunaj
-	asewKXRxMzJAVaUxGqiXf8rHWy+3dmG82ior86B/CUOKeYIFQb2FbEfZRIe6Q3u4
-	ucquS2oQd2Tmh5eD9hS1feQmh8c1/q10PodhQbLkRVnAU2k4U/M07fIw2L8zaVqJ
-	oomyDbAVpxOGmAB00WyQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whthv0hnh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 06:38:52 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41S6cofA002687
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 28 Feb 2024 06:38:50 GMT
-Received: from [10.216.14.152] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 27 Feb
- 2024 22:38:42 -0800
-Message-ID: <b2e136ba-a7fd-ee8d-e71a-dce1442ada03@quicinc.com>
-Date: Wed, 28 Feb 2024 12:08:37 +0530
+	s=arc-20240116; t=1709102412; c=relaxed/simple;
+	bh=xiWevfT9cchx2Vdiysrx4aisTABSvKEIDUCCaMlWVP0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fnE+XdscED0fL3vk0ME4AWDFv2/10c0pW52p1Q1SpMQooFGKcr38rn2Wb1rug7tXBnt9dzLYJjX0sd9iuEAyq0u0wS30tWFzLhtSUfTS+R8bRLneZaSs5TAR65aSRE6fiYhgPzI0tPibtkYQpzWdwz+6ZkN58/ny3lHeO7s3MbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so4248341a12.1;
+        Tue, 27 Feb 2024 22:40:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709102410; x=1709707210;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sdhe1qiqnH1mmfeicE2lvag9ei+5O0VGdCXulH5OX0w=;
+        b=rdTfjJ3+rdqTQgoq7ksnPNX7lqqN3oNGYl8xthLypwqsLekOwsS83OF+aA3YAa/WLf
+         0AD9bvj70opaRY1zEZtjqRfBO6sEOFdpE3r5K46Q9cXWJjCos25D8N4yKwSumP8dIiqZ
+         cfmsom8qzOxyZnD1JTf5ABxaBc/wd0uWPtx+QQW0eEhW0+q66oB6X3WT9FrMmnkYZv8E
+         L2lWeCzocdGNR0m6djT4QEczKEqOJV6x0KfemOogfpWk7bcfwKHaHNJZfdxbUA9k+HPo
+         tLblbTs0ATKpINJ4HvQ/RkP6NJ85OBUj0ATk+eUED2JRrGSPvmGh/NCrhxdoUbGcvXBA
+         rBpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVW9ZzezROmMOoW/qbH4azGBS8dNwy90+BF9BRI5xExcTyGlMCMV0e4dC4ZWqJD9nV0CNJ64YAneG4/iwHv/SjkmhUamaefVLpxHvO3oOcq1F+GmV9xm/AqmKwIxWywAK4NyCuz4yI7G2gdybGnOhKWwPXOWsQwV1Nugt5yjAQZLC7Gow==
+X-Gm-Message-State: AOJu0Yzu1YHpwZtRbiIlAvzZf1O2Bimc002OyXuYYs+hPVbjnFmzhscL
+	MmSjpfaqfz7iV8U0JhwIuXguXyWgcdKOzL9bSl0JWJCU8nbZEY/HCsR0R0lWtAh3AZNKj2Mzsk0
+	oNuty5AN1DaYNdnPaG3K3djyJfBk=
+X-Google-Smtp-Source: AGHT+IFz8gp9rU+LHPN9fpzTEh8XtPMVHKqepBklImKyp7e2bW4iFRgm2xMAL1bD9iLQiSCH08KZ/0xHUwm70IBu4Eo=
+X-Received: by 2002:a17:90a:5214:b0:299:2db9:1ad4 with SMTP id
+ v20-20020a17090a521400b002992db91ad4mr9005915pjh.40.1709102410283; Tue, 27
+ Feb 2024 22:40:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v7 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
- path
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Brian Masney
-	<bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_parass@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20240227232235.GA251235@bhelgaas>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240227232235.GA251235@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: I-cPpAz1F3izauMNu9J6HK0YhGTFsMRP
-X-Proofpoint-GUID: I-cPpAz1F3izauMNu9J6HK0YhGTFsMRP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-28_04,2024-02-27_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- priorityscore=1501 clxscore=1015 suspectscore=0 adultscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402280050
+References: <20240214063708.972376-1-irogers@google.com> <20240214063708.972376-5-irogers@google.com>
+ <CAM9d7cjuv2VAVfGM6qQEMYO--WvgPvAvmnF73QrS_PzGzCF32w@mail.gmail.com>
+ <CAP-5=fUUSpHUUAc3jvJkPAUuuJAiSAO4mjCxa9qUppnqk76wWg@mail.gmail.com>
+ <CAM9d7chXtmfaC73ykiwn+RqJmy5jZFWFaV_QNs10c_Td+zmLBQ@mail.gmail.com>
+ <Zd41Nltnoen0cPYX@x1> <CAP-5=fWv25WgY82ZY3V1erUvCb+jdhLd_d91p4akjqFgynvAgg@mail.gmail.com>
+In-Reply-To: <CAP-5=fWv25WgY82ZY3V1erUvCb+jdhLd_d91p4akjqFgynvAgg@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 27 Feb 2024 22:39:58 -0800
+Message-ID: <CAM9d7cjJTf_yed9nwXZkBPr6u6NH5n+V+u0m6Zgsc1JBy_LdyA@mail.gmail.com>
+Subject: Re: [PATCH v1 4/6] perf threads: Move threads to its own files
+To: Ian Rogers <irogers@google.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 27, 2024 at 1:42=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Tue, Feb 27, 2024 at 11:17=E2=80=AFAM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 09:31:33AM -0800, Namhyung Kim wrote:
+> > > I can see some other differences like machine__findnew_thread()
+> > > which I think is due to the locking change.  Maybe we can fix the
+> > > problem before moving the code and let the code move simple.
+> >
+> > I was going to suggest that, agreed.
+> >
+> > We may start doing a refactoring, then find a bug, at that point we
+> > first fix the problem them go back to refactoring.
+>
+> Sure I do this all the time. Your typical complaint on the v+1 patch
+> set is to move the bug fixes to the front of the changes. On the v+2
+> patch set the bug fixes get applied but not the rest of the patch
+> series, etc.
+>
+> Here we are refactoring code for an rb-tree implementation of threads
+> and worrying about its correctness. There's no indication it's not
+> correct, it is largely copy and paste, there is also good evidence in
+> the locking disciple it is more correct. The next patch deletes that
+> implementation, replacing it with a hash table. Were I not trying to
+> break things apart I could squash those 2 patches together, but I've
+> tried to do the right thing. Now we're trying to micro correct, break
+> apart, etc. a state that gets deleted. A reviewer could equally
+> criticise this being 2 changes rather than 1, and the cognitive load
+> of having to look at code that gets deleted. At some point it is a
+> judgement call, and I think this patch is actually the right size. I
+> think what is missing here is some motivation in the commit message to
+> the findnew refactoring and so I'll add that.
 
+I'm not against your approach and actually appreciate your effort
+to split rb-tree refactoring and hash table introduction.  What I'm
+asking is just to separate out the code moving.  I think you can do
+whatever you want in the current file.  Once you have the final code
+you can move it to its own file exactly the same.  When I look at this
+commit, say a few years later, I won't expect a commit that says
+moving something to a new file has other changes.
 
-On 2/28/2024 4:52 AM, Bjorn Helgaas wrote:
-> On Fri, Feb 23, 2024 at 08:18:00PM +0530, Krishna chaitanya chundru wrote:
->> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
->> ICC(interconnect consumers) path should be voted otherwise it may
->> lead to NoC(Network on chip) timeout. We are surviving because of
->> other driver vote for this path.
->> As there is less access on this path compared to PCIe to mem path
->> add minimum vote i.e 1KBps bandwidth always.
-> 
-> Add blank line between paragraphs or wrap into a single paragraph.
-> 
-> Add space before open paren, e.g., "ICC (interconnect consumers)",
-> "NoC (Network on Chip)".
-> 
->> In suspend remove the disable this path after register space access
->> is done.
-> 
-> "... remove the disable this path ..." has too many verbs :)
-> Maybe "When suspending, disable this path ..."?
-> 
->> +	 * The config space, BAR space and registers goes through cpu-pcie path.
->> +	 * Set peak bandwidth to 1KBps as recommended by HW team for this path all the time.
-> 
-> Wrap to fit in 80 columns.
-> 
->> +	/* Remove cpu path vote after all the register access is done */
-> 
-> One of the other patches has s/cpu/CPU/ in it.  Please do the same
-> here.
-> 
-> Bjorn
-I will update the commit message as suggested in next series.
-
-We have limit up to 100 columns in the driver right, I am ok to change 
-to 80 but just checking if I misunderstood something.
-
-- Krishna Chaitanya.
+Thanks,
+Namhyung
 
