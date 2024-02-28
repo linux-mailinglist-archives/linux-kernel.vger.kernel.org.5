@@ -1,126 +1,134 @@
-Return-Path: <linux-kernel+bounces-85665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4889086B8E3
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:15:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E20C586B8E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:16:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9694B27B3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:15:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B78B1F296A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E865E7443D;
-	Wed, 28 Feb 2024 20:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B677442D;
+	Wed, 28 Feb 2024 20:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="W5O7VKgi"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fb5/3KZu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7450634CDE
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C4A5E06C;
+	Wed, 28 Feb 2024 20:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709151291; cv=none; b=h7fFVrie6cUU/1/vSQEvLnTEs9bI1Hwk53nm5ZNQBhaN38ErFeUMvHkuN9OjLr6AFt5FwLJvWzTTUOZBZ95FPs/dsw+0Hjg5DV/acT2A8HbuGrBFPjs1Cw1ejo/ZsUdga6MIJmZaooWdoAUvOz7WgOv3opMGRehZwdUfMopGDk4=
+	t=1709151389; cv=none; b=sPX2WwFFXvxq/jBjn4CAyZf1e3t+Ir4H8EeAW4XLq17gRYiXmD2dxJ6Qg1GxL8V9ZK3TPGRXOKb2Bn0/kiBzjKThW5+wJUJFJGyZBVycborwHVN21lCyLU30p4Gryv1HUzZvUceR3dh7EC2hYOn8hgJBsDhwuno0wH5Dy1nqTVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709151291; c=relaxed/simple;
-	bh=0nrml+WBxBMSjB6gKdozgb5uGnndn0Y89KcuAcb5ymw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Jn0S6jVNaoflmIw5dkNXcqKxCuiJ9pL5+D1cV1NN9T+MSYbYu4OrGo4cfu0pW3D1ymNWDfi/Hl8IKOWs99ANsZ94nTbsUhPkecPNWnNk9Fe51XmhIxlRAJH36++9K6LreoHaSFU0ARteItBah0nVQ8Cr68eUdz0gMu+E4+x0xW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=W5O7VKgi; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d28051376eso1800991fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:14:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709151288; x=1709756088; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0ADqDxZgPwlPHrnolYYX16DFA+qGQXF/8Cktxf1H8u4=;
-        b=W5O7VKgi0RbREj9bK4Jj5Fb/FthztsNedxht03WloYlKep64hw9KOTCl1792qGxaBQ
-         xcQKzawXUgJcl+IXmoQ9/1Yp1GVfNaxOvmPklwosEmZ2Jj1obRlTpB0GXJDQ9tktvLW5
-         2P/lviMm1/25OJAZNOdBD2hxALxvlydcFp5Sg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709151288; x=1709756088;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0ADqDxZgPwlPHrnolYYX16DFA+qGQXF/8Cktxf1H8u4=;
-        b=nWdyNH11AFa/L5PNL0MktLMGWAWrtNFGiuZ3a91U+DszuwtAxrgpYr31Vgic94AITJ
-         ojx2RA/czC9MeUP7LcqGk0algeErJ5CXgf6McCa3TAzI8mJgEQf5yINy51AX9O7ArFtS
-         LGeL/fpZB0mS3xIuhx6HYCFETSxymN8pbe6mEjnGMsBP5Gy9bQaNsA5zSiXC7If2oJlf
-         hEW4yzqdYVutkXMmIiPTm2/B3DKhdRPPQi+NywwCy+hiSY6zu7B3hGRMnyIGEYnuQGT0
-         QOLNBaewHDty7n+mrL6NkyDZyxcXma4aT/8SiERIWEz6iI1nZBCdvvyTkmHA20Zcjkzq
-         biPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4sSJdzDHqiBuFacnpcvRf8DamtZpTsg0Ghjn4b3K/Y9ZxHGbrymt+XXpX4nhdSZTJLrrYgJ5NOKJmhwEdPMnftpg1H7TLtqfZ8hyn
-X-Gm-Message-State: AOJu0YwamHJGTGEHq4+atz4lWgs4U0wnQ3ZISiTv53bDp/aAvocSeafb
-	HsXIQTHMWCcdInRWrNekT47U3upDnQ/VTU4qBwEwAsUJL/3123+a6VM4N/MzGRxE+nAh1w0X2Vl
-	rcIIZp8DoS0D1IBTMHV2iM+DY3wtIjOfUrp2U4g==
-X-Google-Smtp-Source: AGHT+IG7XxH4AwZOInEocXRNgWrMaGpJwprc/M5hmyKfGaWgosyEiwVI681eukxW0okBE54/dKecrCUQtR2maiJPvrI=
-X-Received: by 2002:a2e:be28:0:b0:2d2:64c8:49a6 with SMTP id
- z40-20020a2ebe28000000b002d264c849a6mr11611642ljq.21.1709151287525; Wed, 28
- Feb 2024 12:14:47 -0800 (PST)
+	s=arc-20240116; t=1709151389; c=relaxed/simple;
+	bh=8Objle7v/jEBe99Hj6SMEzxAZiF4Xti3vQEyGIpNDYU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MhCdrCE7QU2vtIymfp3UaFv1y7VHPBJJalpUXc2UhqIX4UZL1lXWE37GLr6CPkcKjstdmspT3yC7D5ijZKKvSdZN3at2WSsJ+/Nx+aEmMMkz0WDodDl1p286Oow6iIrQ/9BML/fm6PxYklGD+KtHaB2j7P2iITr5G1kQBxmWmWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fb5/3KZu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C54C433F1;
+	Wed, 28 Feb 2024 20:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709151388;
+	bh=8Objle7v/jEBe99Hj6SMEzxAZiF4Xti3vQEyGIpNDYU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Fb5/3KZuVt+nHUzPvWhMwkgdRq0PrU53jDcwftN897mxW60kP/uQnaVPmg5K9U8X4
+	 KVaXGbwhwsxY0oKpJ5RhCetxS4KK7d+sDazk9Lm0fPS7yNYziqLT9lx08khNTZIzrn
+	 vninn5ZJZ66xpXF0VjnqhlBe+p2FoUC8M6i8zVFDgsH06v5NjkoInffaQv56rAlMQy
+	 r7PMDYDpwbYKfSmhnNS1Rl9/ndAONZrQQoUKD2S6ZpEaiSgkP8Pz2E8Vn0U7EFL9ao
+	 Aiq8Kz8Rnjl8zNRT+IuTSDunOZrt8HoRZCseHoGpfTb2Sf2ZQ3bmAaW4rcU7fvx7lF
+	 actdX0u1KrWSA==
+Date: Wed, 28 Feb 2024 17:16:25 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v2] perf lock contention: Account contending locks too
+Message-ID: <Zd-UmcqV0mbrKnd0@x1>
+References: <20240228053335.312776-1-namhyung@kernel.org>
+ <Zd8lkcb5irCOY4-m@x1>
+ <CAM9d7cicRtxCvMWu4pk6kdZAqT2pt3erpzL4_Jdt1pKLLYoFgQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zd4DXTyCf17lcTfq@debian.debian> <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
- <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop> <f1d1e0fb-2870-4b8f-8936-881ac29a24f1@joelfernandes.org>
- <CAO3-Pboo32iQBBUHUELUkvvpSa=jZwUqefrwC-NBjDYx4yxYJQ@mail.gmail.com> <e592faa3-db99-4074-9492-3f9021b4350c@paulmck-laptop>
-In-Reply-To: <e592faa3-db99-4074-9492-3f9021b4350c@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Wed, 28 Feb 2024 15:14:34 -0500
-Message-ID: <CAEXW_YRfjhBjsMpBEdCoLd2S+=5YdFSs2AS07xwN72bgtW4sDQ@mail.gmail.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-To: paulmck@kernel.org
-Cc: Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, 
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
-	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
-	kernel-team@cloudflare.com, rostedt@goodmis.org, mark.rutland@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7cicRtxCvMWu4pk6kdZAqT2pt3erpzL4_Jdt1pKLLYoFgQ@mail.gmail.com>
 
-On Wed, Feb 28, 2024 at 12:18=E2=80=AFPM Paul E. McKenney <paulmck@kernel.o=
-rg> wrote:
->
-> On Wed, Feb 28, 2024 at 10:37:51AM -0600, Yan Zhai wrote:
-> > On Wed, Feb 28, 2024 at 9:37=E2=80=AFAM Joel Fernandes <joel@joelfernan=
-des.org> wrote:
-> > > Also optionally, I wonder if calling rcu_tasks_qs() directly is bette=
-r
-> > > (for documentation if anything) since the issue is Tasks RCU specific=
- Also
-> > > code comment above the rcu_softirq_qs() call about cond_resched() not=
- taking
-> > > care of Tasks RCU would be great!
+On Wed, Feb 28, 2024 at 12:01:55PM -0800, Namhyung Kim wrote:
+> On Wed, Feb 28, 2024 at 4:22 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 09:33:35PM -0800, Namhyung Kim wrote:
+> > > Currently it accounts the contention using delta between timestamps in
+> > > lock:contention_begin and lock:contention_end tracepoints.  But it means
+> > > the lock should see the both events during the monitoring period.
 > > >
-> > Yes it's quite surprising to me that cond_resched does not help here,
->
-> In theory, it would be possible to make cond_resched() take care of
-> Tasks RCU.  In practice, the lazy-preemption work is looking to get rid
-> of cond_resched().  But if for some reason cond_resched() needs to stay
-> around, doing that work might make sense.
+> > > Actually there are 4 cases that happen with the monitoring:
+> > >
+> > >                 monitoring period
+> > >             /                       \
+> > >             |                       |
+> > >  1:  B------+-----------------------+--------E
+> > >  2:    B----+-------------E         |
+> > >  3:         |           B-----------+----E
+> > >  4:         |     B-------------E   |
+> > >             |                       |
+> > >             t0                      t1
+> > >
+> > > where B and E mean contention BEGIN and END, respectively.  So it only
+> > > accounts the case 4 for now.  It seems there's no way to handle the case
+> > > 1.  The case 2 might be handled if it saved the timestamp (t0), but it
+> > > lacks the information from the B notably the flags which shows the lock
+> > > types.  Also it could be a nested lock which it currently ignores.  So
+> > > I think we should ignore the case 2.
+> >
+> > Perhaps have a separate output listing locks that were found to be with
+> > at least tE - t0 time, with perhaps a backtrace at that END time?
+> 
+> Do you mean long contentions in case 3?  I'm not sure what do
+> you mean by tE, but they started after t0 so cannot be greater
 
-In my opinion, cond_resched() doing Tasks-RCU QS does not make sense
-(to me), because cond_resched() is to inform the scheduler to run
-something else possibly of higher priority while the current task is
-still runnable. On the other hand, what's not permitted in a Tasks RCU
-reader is a voluntary sleep. So IMO even though cond_resched() is a
-voluntary call, it is still not a sleep but rather a preemption point.
+case 2
 
-So a Tasks RCU reader should perfectly be able to be scheduled out in
-the middle of a read-side critical section (in current code) by
-calling cond_resched(). It is just like involuntary preemption in the
-middle of a RCU reader, in disguise, Right?
+                monitoring period
+            /                       \
+            |                       |
+ 2:    B----+-------------E         |
+            |             |         |
+            t0            tE        t1
 
-thanks,
+We get a notification for event E, right? We don´t have one for B,
+because it happened before we were monitoring.
 
- - Joel
+> than or equal to the monitoring period.  Maybe we can try with
+> say, 90% of period but we can still miss something.
+> 
+> And collecting backtrace of other task would be racy as the it
+> may not contend anymore.
+> 
+> > With that we wouldn't miss that info, however incomplete it is and the
+> > user would try running again, perhaps for a longer time, or start
+> > monitoring before the observed workload starts, etc.
+> 
+> Yeah, it can be useful.  Let me think about it more.
+> 
+> >
+> > Anyway:
+> >
+> > Reviwed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+> Thanks for your review!
+> Namhyung
+> 
 
