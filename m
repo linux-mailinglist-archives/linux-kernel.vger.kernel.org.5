@@ -1,80 +1,88 @@
-Return-Path: <linux-kernel+bounces-85739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84DA086BA24
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:44:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EF286BA2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:46:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 407002879F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:44:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 010101F275F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015E070049;
-	Wed, 28 Feb 2024 21:44:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D2C7005E;
+	Wed, 28 Feb 2024 21:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="UuCARKF+"
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZtLJz/W4"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF93970023
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6827003E
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:46:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709156667; cv=none; b=Q7FW5hpPPOp71hvfaZwYq6dKE/zUIDQgBNjc5MS/L5OYSF/QujFDOn9MCXkD/KfBKlbOolapB6XG83vYNXeN2yt5C3Fxf4E+HBQdv45oALBggx17+9zGnzFhxathfKhTqImsbueitDNwxtqjIWTSmiZ3o86c6trNNco3qzbgChI=
+	t=1709156773; cv=none; b=h3i2pGOmdq+JcUHv8yPIQCpbQxVOJP7sVJ6/Z9bRj4HMVgypgBd8g9EZJCXHj1eElZAtZGtX94PckzO2N60y95MLGqPUE4ywFTL4q+skjQ1Wh5AZDtPErHuJf8n9mEGIgnTml1ndhzQrY1/PuuVSz80Uyg4rjIJWRe7tcm4j7ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709156667; c=relaxed/simple;
-	bh=nFoJDv80EHehKpiT+Htmgr8+aowz1fRe5XI0qtqlXP4=;
+	s=arc-20240116; t=1709156773; c=relaxed/simple;
+	bh=fcDVrwhc94lvkdvuNxLBpqQuiN5giB/sSTSBYGUgGIc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uwS509yiXpFNru8uuAFe6919uYcWJX7rhhgZPOYXLmIpAKIYsOC/8Dr2GzA/T9GrordcLZHyd9Cn2Khvo8ecXNYShWY86vDnJgZ6q4kpA+cPp/Zcg7fUHIkvTWGKF1KV/XzVhblXBxLo47aVtmHYb5Xhvu2ui0P78e30hoKrE58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=UuCARKF+; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42e8a130ebcso8930011cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:44:23 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=T7BH1VeYxgPfg3SPZE3alGTsluqYq6kA4+/brabsyTHob2sH3BTjknBLWrislnSucmSsx0AvjbsGdDS4JSN1PHnFWzC03Nv80UZTbh1hNR9xN+AlWBg+nHQ99GUS26uLgZ9M6SVfDQOj/+UNC9NWaWiRLzMW0qlD4MyptTqvjhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZtLJz/W4; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dc1e7c0e29so2810535ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:46:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1709156662; x=1709761462; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1709156771; x=1709761571; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uZklOSUieULDemWZ+oNQMLtEXHZHkGyXS/OFBbqQnog=;
-        b=UuCARKF+5YCkKrOqSSJt0PA2MzxqDQsOr2HrrB7HqgeB5z2GL3l6UIW9isao6fIgWb
-         MBebnKGmiV519REoSHjuUwsVGKOqZBT0Z0rzzu0+IU7XYY2xBpSv4k6BbRh/tBsj8XsH
-         RM0qMaruBMW0kGszM9AHg5YwO/DL3r6nLFRxdIFp5wpqq/7r5RYu1VSM8bv7nSh02hKw
-         XJedS6vAiYOyJYmDQqCAN3VEUUySzeHSX+eMNnbXn4fEgAnScwZ5FZ/TaZNrPiRFU5NT
-         wO3ZVSxK670tEooWb3dF+tOByY4q/4XWQnANDQ+A19Ur4ZCzK9MVJCF3abrujbEYjgS5
-         qr5Q==
+        bh=YdpR7cAKDSC45Ra+lrCp3FSf1aPEjcGJZRBQhc0h7f4=;
+        b=ZtLJz/W4FVvtDRebNbxjo9KAbyrivuwW7+Y8BDkVKdrGwX6LFTJ541BhPJLPafiylL
+         L1pr8exLx7rY4kcmGR46OVXlksD5v1A+XiM1EMekDxwic601QGOOpe9j/cXgjsOoXyoy
+         eX4Xe+VYEYoDAYDRSvSJtR2m0DxJiFFjHoCIw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709156662; x=1709761462;
+        d=1e100.net; s=20230601; t=1709156771; x=1709761571;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uZklOSUieULDemWZ+oNQMLtEXHZHkGyXS/OFBbqQnog=;
-        b=rvXoNPZHBO5IJCY+iZ2RfycMZ+lav9Jp10KCyOuVPtW4g6z9gz8XNHpIvHBGCTytoB
-         rFV7WY6QUMpLznMHMQFpJW3Fbciv5cM/G65+XOVLC+4FkHmxgZpmomrvgwT3MmW8LnBE
-         O6HzIkvYqaDi+7gnwmVzjwEEecOZTcskYeubDqnsarF6MdNF8k68eaHuKQdc7vv1COMR
-         SzIhfUUtKzCJMEd9dxDeDwJaUpLQTn4D4q0Sq9WyaYBP9OtwgQ0GWm3QSp/g37gAyNHk
-         JvVKULZlt1zHlsY3lh25ivMMSKJn4JdlkWgemvxYShHbVMkpR8aIWVUAu6bDwQG2uEi1
-         RX8w==
-X-Forwarded-Encrypted: i=1; AJvYcCXA9I+sElTihWwSsFfmZjwEqtrL/EUZ/yDaFqNT5rlpsbh2gEJ8K1ADPaRki5YDbms1fsigHaV7FdABC93RcP/JP/z9ZQ8pJ8cIX8vB
-X-Gm-Message-State: AOJu0YzedDBYRjz5EU8CXS8vhN5XHs3/7hI60LLFRnDiIiJlrGhExgXg
-	sS3+sef+gx80MZzqK2xV4P8IDi+cyDUb2GgFJ9vxRSMOd+x/8bcjhGmQ1Ocsk5zc1o/WgoqdDk5
-	z
-X-Google-Smtp-Source: AGHT+IFssyts4QE2YmPDJt+vm+uwcfNQbPvJ8bBJfQ9VFSUi0fyzRV6qkzW8l5C7Vlz6slB10sOD2g==
-X-Received: by 2002:a05:622a:30f:b0:42e:7b49:f3d with SMTP id q15-20020a05622a030f00b0042e7b490f3dmr869543qtw.34.1709156662485;
-        Wed, 28 Feb 2024 13:44:22 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id vy22-20020a05620a491600b0078597896394sm31677qkn.51.2024.02.28.13.44.21
+        bh=YdpR7cAKDSC45Ra+lrCp3FSf1aPEjcGJZRBQhc0h7f4=;
+        b=peBvGlutxs87KSlCtnPcZKH1HncyF8mrOagPIjfqbX6npRzbC92pAWHnDysQ1IkFpT
+         X1aymQjnWfjjwFcQly61HZjXX2sBFnBOTnqpi0BiUt7WFCs0uXK7NjVLwMS6B1VjETJh
+         vaIJy7sXbEUgf9PIGDYWLAjAL0Ikh01UsSjaC3mR+l6wTLEti5oDq/Xnj7y8IDiSORYs
+         cqQi3CNhfCH6D+eA08FrI99njgFSnHvRUoD+eSn4pnYZkQik/JzvPXirwbob15RFfnKx
+         KusX5oZHC6++OmkLSXmP0oMTopEuaj/mtnUyfC62xF4ulJyuHYGMtLcYBnGVM9NRm07x
+         M/2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVywQ3xE2RLwRx3sNmEUo4hXiuf0mWhDZj8VBXGOJcL8ouqZYGCUn1+3bnMtlBYolyuAYcF1MMKloUhQ/AJiv3dnUM7heIrq1KCGtPn
+X-Gm-Message-State: AOJu0Yx/tpUuimuXkTOAMxnyx66uUW4IdoOw3XM+6YMvgvT2F+ueHg2A
+	KQl6H9FtKzR4FmScarWzyKbsVS0x6Yu0KS46fxxmPILVK7KhwWSHAHeSMX2gXQ==
+X-Google-Smtp-Source: AGHT+IFK5KehNOc+U2G0Wb+EMlndfkoXfMOcgULHS3OIVI0AWPxjaSZUD8y4ptkj3iwHc9bqJccSpg==
+X-Received: by 2002:a17:902:ec81:b0:1dc:696d:6bb0 with SMTP id x1-20020a170902ec8100b001dc696d6bb0mr246471plg.6.1709156771102;
+        Wed, 28 Feb 2024 13:46:11 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id je6-20020a170903264600b001dc23e877bfsm3733240plb.268.2024.02.28.13.46.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 13:44:21 -0800 (PST)
-Date: Wed, 28 Feb 2024 16:44:20 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Byungchul Park <byungchul@sk.com>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, kernel_team@skhynix.com
-Subject: Re: [PATCH] mm/vmscan: simplify the calculation of fractions for
- SCAN_FRACT
-Message-ID: <20240228214420.GA50163@cmpxchg.org>
-References: <20240228015500.52452-1-byungchul@sk.com>
+        Wed, 28 Feb 2024 13:46:10 -0800 (PST)
+Date: Wed, 28 Feb 2024 13:46:10 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v4 7/8] net-device: Use new helpers from overflow.h in
+ netdevice APIs
+Message-ID: <202402281341.AC67EB6E35@keescook>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
+ <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,69 +91,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240228015500.52452-1-byungchul@sk.com>
+In-Reply-To: <20240228204919.3680786-8-andriy.shevchenko@linux.intel.com>
 
-On Wed, Feb 28, 2024 at 10:55:00AM +0900, Byungchul Park wrote:
-> The current way to calculate fractions for SACN_FRACT is little readable
-> and more complicated than it should be.  It also performs unnecessary
-> division and adjustment to avoid zero operands.  Prune away by
-> multiplying the fractions by 'anon_cost * file_cost / (3 * total_cost)':
+On Wed, Feb 28, 2024 at 10:41:37PM +0200, Andy Shevchenko wrote:
+> We have two new helpers struct_size_with_data() and struct_data_pointer()
+> that we can utilize in alloc_netdev_mqs() and netdev_priv(). Do it so.
 > 
-> where:
->    total_cost = sc->anon_cost + sc->file_cost
->    anon_cost = total_cost + sc->anon_cost
->    file_cost = total_cost + sc->file_cost
-> 
-> before:
->    fraction[0] = swappiness * 3 * total_cost / anon_cost
->    fraction[1] = (200 - swappiness) * 3 * total_cost / file_cost
-> 
-> after:
->    fraction[0] = swappiness * file_cost
->    fraction[1] = (200 - swappiness) * anon_cost
-> 
-> Worth noting that this patch doesn't change the formula.
-> 
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  mm/vmscan.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
+>  include/linux/netdevice.h |  3 ++-
+>  net/core/dev.c            | 10 +++++-----
+>  2 files changed, 7 insertions(+), 6 deletions(-)
 > 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 4657440854db..7b33fcc1cbdc 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2339,7 +2339,6 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->  	u64 fraction[ANON_AND_FILE];
->  	u64 denominator = 0;	/* gcc */
->  	enum scan_balance scan_balance;
-> -	unsigned long ap, fp;
->  	enum lru_list lru;
->  
->  	/*
-> @@ -2416,17 +2415,10 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->  	total_cost = sc->anon_cost + sc->file_cost;
->  	anon_cost = total_cost + sc->anon_cost;
->  	file_cost = total_cost + sc->file_cost;
-> -	total_cost = anon_cost + file_cost;
->  
-> -	ap = swappiness * (total_cost + 1);
-> -	ap /= anon_cost + 1;
-> -
-> -	fp = (200 - swappiness) * (total_cost + 1);
-> -	fp /= file_cost + 1;
-> -
-> -	fraction[0] = ap;
-> -	fraction[1] = fp;
-> -	denominator = ap + fp;
-> +	fraction[0] = swappiness * file_cost;
-> +	fraction[1] = (200 - swappiness) * anon_cost;
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index c41019f34179..d046dca18854 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -25,6 +25,7 @@
+>  #include <linux/bug.h>
+>  #include <linux/delay.h>
+>  #include <linux/atomic.h>
+> +#include <linux/overflow.h>
+>  #include <linux/prefetch.h>
+>  #include <asm/cache.h>
+>  #include <asm/byteorder.h>
+> @@ -2668,7 +2669,7 @@ void dev_net_set(struct net_device *dev, struct net *net)
+>   */
+>  static inline void *netdev_priv(const struct net_device *dev)
+>  {
+> -	return (char *)dev + ALIGN(sizeof(struct net_device), NETDEV_ALIGN);
+> +	return struct_data_pointer(dev, NETDEV_ALIGN);
+>  }
 
-Unfortunately, I don't think that
+I really don't like hiding these trailing allocations from the compiler.
+Why can't something like this be done (totally untested):
 
-anon = swappiness * file_cost
-file = (200 - swappiness) * anon_cost
 
-is more readable. Sure it's the same, but I think it's clearer to
-actually see that `anon = total_cost / anon_cost` ratio in the code.
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 118c40258d07..dae6df4fb177 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -2475,6 +2475,8 @@ struct net_device {
+ 	/** @page_pools: page pools created for this netdevice */
+ 	struct hlist_head	page_pools;
+ #endif
++	u32			priv_size;
++	u8			priv_data[] __counted_by(priv_size) __aligned(NETDEV_ALIGN);
+ };
+ #define to_net_dev(d) container_of(d, struct net_device, dev)
+ 
+@@ -2665,7 +2667,7 @@ void dev_net_set(struct net_device *dev, struct net *net)
+  */
+ static inline void *netdev_priv(const struct net_device *dev)
+ {
+-	return (char *)dev + ALIGN(sizeof(struct net_device), NETDEV_ALIGN);
++	return dev->priv_data;
+ }
+ 
+ /* Set the sysfs physical device reference for the network logical device
+diff --git a/net/core/dev.c b/net/core/dev.c
+index cb2dab0feee0..afaaa3224656 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -10814,18 +10814,14 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
+ 		return NULL;
+ 	}
+ 
+-	alloc_size = sizeof(struct net_device);
+-	if (sizeof_priv) {
+-		/* ensure 32-byte alignment of private area */
+-		alloc_size = ALIGN(alloc_size, NETDEV_ALIGN);
+-		alloc_size += sizeof_priv;
+-	}
++	alloc_size = struct_size(p, priv_data, sizeof_priv);
+ 	/* ensure 32-byte alignment of whole construct */
+ 	alloc_size += NETDEV_ALIGN - 1;
+ 
+ 	p = kvzalloc(alloc_size, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
+ 	if (!p)
+ 		return NULL;
++	p->priv_size = sizeof_priv;
+ 
+ 	dev = PTR_ALIGN(p, NETDEV_ALIGN);
+ 	dev->padded = (char *)dev - (char *)p;
+
+
+-- 
+Kees Cook
 
