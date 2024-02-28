@@ -1,88 +1,173 @@
-Return-Path: <linux-kernel+bounces-84576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B432986A88D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:49:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15CBC86A890
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:51:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E60C71C243A6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:49:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70715B244F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 06:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 662FB22F13;
-	Wed, 28 Feb 2024 06:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B128C22EFD;
+	Wed, 28 Feb 2024 06:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CMsio4B4"
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="eITcBrGt"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2080.outbound.protection.outlook.com [40.107.244.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3FB22EF0
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709102961; cv=none; b=JKl8xAIaUrG5q+pg3HFlqANvoWP+uhOBLTKgfKbX3P/rqxViQyopl6ExxJZVho9CTLagH2tNSUaHYZ6ur8356nNDA4E2+XAfmqfTnxeKgzx1CjHx6uvsjT97D9eAfHVg/vgNmByl03Vabe7KCNYf8XWPck42pifE4sbxQ3h7xbo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709102961; c=relaxed/simple;
-	bh=/7ifBW+dVDQN5fSOaW3OantJn+4kOQoQ7Eo9Q5Mj0po=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AUUxhkKoAxBFoXt3mDN5F849kg9IJFxnRCx1mPvaXKwpuqzvbK56jvbSTSAeqttlu68iJq3W3eBVb5TjizJ775W1HE/KkIsUeSxSCq2eZUWPNO6UZQZEpc+eJj2Kj+qeGD6kDLOyJGKWbMhXMntAHXJK4zLteOr0NVv1+FRCcmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CMsio4B4; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a3ad60ec-6968-4ebb-a561-0ffc5774c30c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709102957;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6S3YME2pgLHPYQU3lBfvV94TvsKe/nmiEavd1qVEYLk=;
-	b=CMsio4B4CD/lJBJgZVox0kRhNO08fsp634BgnlQYADsLOBK70SxK874YnDqebGx3mVqGxd
-	tYTRXTfBnUaUmG2G3iCbM4okoyM3/d0uIxyFPTdpHVWpe+5fngTF0nIOp8l2UU5WfllGgi
-	y8KESOTMZgiUD225b3xoD8vMA+ZAF8A=
-Date: Wed, 28 Feb 2024 14:49:10 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2BA1D689
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 06:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.80
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709103106; cv=fail; b=JUE2QLxcWzgcbAqtExjiLH/WbZKAZEA7/gMN3qdwXwnbbZJrYdBkxROgaqErBXeZw9avwqk+NbxDKmmZVwiPgxV5/wqlsiYJB1PqIOo2pNXV66skCJDKhI7UIJ2AWaSam/neMZG5VVzN852uC0E5dILKnyRHE7gYJlIwaQLQ/9A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709103106; c=relaxed/simple;
+	bh=gOyHCY1RPasUedag8HP5zrJ3OcLGBE5bB+meG4QSn9I=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=QDs1Hg2tCT3PzE2+tLJkjup9eKP3UW3p2TlY/krzw9M1v4tnn/YtN4M99ie6lLi0oBIynrviddsM3320Kfu1vQ+5SExFax5JprSbLs8+3nrI8gw+I/LKAevg20s+bwmPT/1Y/fFS73yI30UobOU95rXG3ygdSj22r3IPI36OfGg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=eITcBrGt; arc=fail smtp.client-ip=40.107.244.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tl9iEmabyg9RVIaH1lAI2/WEvtEF1WipgbDYGDTSAD/O2GZO4DeiXzLqQVNOP7o3Mmmi/J6vZt5WlwM9clTZ88gqd0G+Ay6cNVOlcWzjEmz89yRdCy90mEM+i93aBxXII9g0M3oSsbiRE30A+Jlg0CvNFkp0p0eMCya43qr3SWjOBXTYV21LBbvuacpJfNhR2o5VDA60JZ4Q8gdi1HzQdJAdG0S+vLpBtptAMufiJ4T7bpCjldmKnQdIrfwa4fBCoPRPktRq4cUgBmxCIeu1KmM7Y4mri27Wzt1gymxG/DY5eI3pWuD/Fx1jNzqbC0AdWcMTlcogK01gGRRNgFOY5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7bAvWq99iZxlznVrDJOLReMSqLtbHWrNmL2gAGOj+Bo=;
+ b=Ft39UQP8zAkB9oy4eXnMNDB1KX+M3oZZn1VgFCfEGg7dFAHjYt8jNcOqK1gu5XPSwAePelfNOc51DBF2+UMHrdf9Ic/EeBJy7/h2/60ZkIe4lDk4uY4rCOJDhPoqR+9FwhdA8Rn3QHvz+/6YBVnnTR+18F0VzUjoi2f4jw2PVqFqnkLckmVo5ho/ZWWvhDUrezXSNwVGAbpf+qPbQxCJxmQiggyKsoDQ8jH6a34dBwiCoNBD45+w6Ovzze+wEEqBrCqS2I1hKxZHLPscEIrtevcyprlIZOLc/ar8Q32rsm5GE6I+JR0cyL8bB82vUsdcS7A0AH/UoI0vC47McviYeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7bAvWq99iZxlznVrDJOLReMSqLtbHWrNmL2gAGOj+Bo=;
+ b=eITcBrGtlyS9YsFM/8lF2PZ1eBaCIsD0JFdXZvoRy2XD3dbAqWKBjBn30JohMMhOtpA0mpC3X8a+8exnQMXOIkSv2v2B1sbjNWOJ1kqdWPjQWf1qgLCjGxOWUodYZHqjfj/HR92/bJRYhP+QM1u2Lk2KAtHmMex8fG12RKr7l8I=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by SJ1PR12MB6028.namprd12.prod.outlook.com (2603:10b6:a03:489::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.24; Wed, 28 Feb
+ 2024 06:51:42 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7316.031; Wed, 28 Feb 2024
+ 06:51:42 +0000
+Message-ID: <8ccab1ca-428b-4812-b46a-671e816dd34d@amd.com>
+Date: Wed, 28 Feb 2024 07:51:36 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amdgpu: Fix assignment errors in
+ 'si_common_early_init' functions
+Content-Language: en-US
+To: Lu Yao <yaolu@kylinos.cn>, alexander.deucher@amd.com, Xinhui.Pan@amd.com,
+ airlied@gmail.com, daniel@ffwll.ch
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240228014435.7234-1-yaolu@kylinos.cn>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20240228014435.7234-1-yaolu@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0147.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:96::11) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] mm/zsmalloc: don't hold locks of all pages when
- free_zspage()
-Content-Language: en-US
-To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: yosryahmed@google.com, hannes@cmpxchg.org, nphamcs@gmail.com,
- Andrew Morton <akpm@linux-foundation.org>, Minchan Kim <minchan@kernel.org>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20240226-zsmalloc-zspage-rcu-v1-0-456b0ef1a89d@bytedance.com>
- <20240226-zsmalloc-zspage-rcu-v1-1-456b0ef1a89d@bytedance.com>
- <20240228061400.GL11972@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Chengming Zhou <chengming.zhou@linux.dev>
-In-Reply-To: <20240228061400.GL11972@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SJ1PR12MB6028:EE_
+X-MS-Office365-Filtering-Correlation-Id: 32d60516-ece0-4ddd-47f8-08dc3829b8c5
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Ha/gA9LFaG0DA4+n/+DuDDBZXJ6WPLka+UBSPX9tSmHhboIIoARsKXSXInOxiBWzOfpYZ3G8QIFuqpAtjJEUPyFUwkXhD3hnJw0hF0qY+2G/g9v14lxV5uQLYg311N+GxBrK5e46G5IZKe9twiFrTVtYLZEfz9TJ+vTPhQI1d6Aid6ceFmDEsSePaxDO2ZN/hyZWl6Bkf8ehiA+MZiRdmry10+xgx3Ck9xH4ItEqirEbnuzu3UgPFR8IlsrfT2C3mlrLsjFx1KAbDkcWZ+f58bDr6ch+rd0NDo3fFXGRj1Uwjy6Md77T+5vS/KwXHx+ktuf/9VHkKWGSEcvIfFxTjd3+Hn4T9FhYW2bhRtFwLbWTYwIarQ6uPDJq1lGVGR8GjlI2cxgIALjjMJVt65KmNiseRtxoJTS4U/j7G6vgd+lBl8xVjKKgBO3AKN/GFwPy0GH4guald92deIqpkK/j0IHZaiPDyFGZZ7Cv1eHvHmdVmPKO00q1ql2amoDq+PLPHKukhwEuR+J154zc/UTKtHRMV8hTFzHLBbqMOwAEgKtUzytdNi6aPqLhc63aiazTTyeMlHmcFTkgm/D8omj6C/WrpmIKlEG54FMDz/TGp4/s8H53DzZm1lhSdLxU/0JLJnMeVh/6rd9HDYAnO4wDSg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aHVhRHN4YkRTaGpDZnpzbE4za0d4NDVaODZ4OEplTi9jRFRvRWdvTGhuMnpH?=
+ =?utf-8?B?dHRKU2NJeGZmU2lSV2NaaDVDMDJJSWl4eWorUit5WU5CWCtjZVB5cC9GZ25X?=
+ =?utf-8?B?TEVRWFFMN3llWk4yeUZ1VHVjUVdUMXIxSkprK0RvM1hxT05mNGUvaTFyYWJx?=
+ =?utf-8?B?aDdHUGlxbEFtSzlNSVh0b29OYVBiUDVkNndYYmRnSCt5cUF0RTZMd0FqNk9E?=
+ =?utf-8?B?UzREVHJhTjRvQWM0Q2VkR0Rjc2tqLzNOZnNLTURMTlZLVkZRVDYxTGs2NzhH?=
+ =?utf-8?B?UTFzZWZyWFp3NWhtbkpSTVV2am4wVGI4Ui9RdHBadWFOUC84d2FqVmlhM2VJ?=
+ =?utf-8?B?WEdOWFhXYnFGRHdTdFpMYlhaaEk1S3pCYm14b3BkWHVjTXVrb3gzUFdqNTYz?=
+ =?utf-8?B?dVpMRkxkSUZsT2VGQlAxK2pZeFd2TUZQQ3RjN0FuSzJzZW1iMmxGQnJPZjZw?=
+ =?utf-8?B?NWRmQ0Z2S0R0V3RDRzBxK0pUTzRTN1BQOWhOZGlXMmdtbmtaWlBQZE9HMEUy?=
+ =?utf-8?B?bmdjU0VlY1BmRFVCTFdSdUJQd0UzYlVla3FtcXNyU1JmeE9DMTNaQndtaERZ?=
+ =?utf-8?B?eEphbUJIMlYrem5hakxXUFlvckp3VkVqM053elgxYmxLdkY1bEFNdmJQSkE5?=
+ =?utf-8?B?M01NZzQ4QzlrQllpRFJmc0RGWkFEdG93dlRYZjhtVTZOVXJwTmNpY2luaDJs?=
+ =?utf-8?B?MElGVHRGTkdkOFNqVkVEV29sZEk3ekE5NmNqUkpid01wYUF4WlpLT3lSVE54?=
+ =?utf-8?B?NXA2dlZOaE1NdTlVRHVyMmo4THFqdytLaVBJSjIzMzZ5dUEyNlJrUGRpTWtF?=
+ =?utf-8?B?dVpTYkhzTmF0dE5EWEhiUzRJZlp5YlRxM2RSOXpaMldxdVdiM3dzd3B3cldo?=
+ =?utf-8?B?bEZHaWw5VjZUT2VlWDFWeWE0dEw4dEl3WkNHTC9SWnBTelVLdjFoc2hqeXp5?=
+ =?utf-8?B?dHJoQVMzTnFzZUdhSEUxc1U3WXBzVlNFNWpXNWQzcmtZKzBJL1hBbXNFR2sv?=
+ =?utf-8?B?aTQvT3ZNci9wY3IrNWhTRFl1NkZOSmEvbmJ6d2RlSVRTSHdSdS9rM3o1RDE5?=
+ =?utf-8?B?dTU0NFZRc2hGTW53R0hPdlRZMmtFaEZVWjJlcVVKWGo5K1pQWGppa3BVOTJn?=
+ =?utf-8?B?SnRuWVRIV2NpRnBZTHRRY1RxSWs4LzN4REhOWHc4b0x1V2pZSW1YYWNSUVpy?=
+ =?utf-8?B?MjZ3eWZIdW4xalB5cG9HMnZCeC94V3crVTAvckhtckhkWlhrMzlNZmwvM2My?=
+ =?utf-8?B?WlViZUE3ZjVWODQxa2FzaU42dGFVQTNFN2o3MnpUcC9EbFJVU2FYNFJTZkJl?=
+ =?utf-8?B?Z2FvYzhsblc5WTVnOWs3Rlg5Q3RCZzhyd3BQcEhzc2dQck1wNm1ibDl6dmZ5?=
+ =?utf-8?B?OHZNTi9CWjk2UjRHeldhREpaNVk0QWx3Z1RGYXhEWTdPYThnTytDc0RUY1RK?=
+ =?utf-8?B?Nnh2OWR2RS9FSDl0ZWlsNHUrMFE0UC9BVmRnWDl2RXZjTEMveHRLdHcxTEtU?=
+ =?utf-8?B?MTRGYURQOHM1T2ovbVk0VkxyNSt1Z3Q2d3hJams2ZG1KKzJwQVJGemtDZVFL?=
+ =?utf-8?B?WWJZTVlzZG1VWWdITERiM0ZUeFNxVnBzd3JudkYyT3B0cGxFbGswOGZOTHh1?=
+ =?utf-8?B?WUU3eHh6a1RNbkJVZFVmZjdZTTFGd1hoTEVrTlQ0UGQrTU41dWpNaVBMTktK?=
+ =?utf-8?B?VlR1Ujd2cFJuc0I4Y3F4RS94MjRrb2RZOTNObFd4VFYzZVh3NDk4WjE2RnB2?=
+ =?utf-8?B?TWs3elpJZ1AvQWZTL2VJUTZkZmtvM3RHenN3djBuL3hSaW9hWkVrWXptL2Vm?=
+ =?utf-8?B?QmVTYXNMQytva3hNVWFRVWRXZzdvOG5iZVkrMEJGenpkYm1uTXlkUUdKUGNM?=
+ =?utf-8?B?V05WL1pxa2U2c1pXOHp6dGNwdHo2MVBaMVZXYWYwS2dpOE42WjlvTk10QlVG?=
+ =?utf-8?B?UUFTVFZQUndMYk5WbFJYNkFuWG10SlZCS1FoMHlweU9HQ1JSWlVPNFdWejFo?=
+ =?utf-8?B?YmNDN1JmbElHL1RqWTJqRVlsc0Zva2NranBsUFpDZWFHYmhIcUVlM1N5SGZ0?=
+ =?utf-8?B?b0VMSTIzNnp0M00yY0Q5ZUdaNkZ4WVc3Tm1HZXpQc1VoM1h2UmVHNjZTVSs1?=
+ =?utf-8?Q?yewyQC/qmeOgi63xajv6YJXkh?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32d60516-ece0-4ddd-47f8-08dc3829b8c5
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 06:51:42.7374
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EAodHW57hui/ffXLxb+iC+4KBHf9ZakxWtYYfMaOW658tKMfPYX8EO8azlsXIl0P
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6028
 
-On 2024/2/28 14:14, Sergey Senozhatsky wrote:
-> On (24/02/27 03:02), Chengming Zhou wrote:
->> @@ -834,13 +841,12 @@ static void __free_zspage(struct zs_pool *pool, struct size_class *class,
->>  		VM_BUG_ON_PAGE(!PageLocked(page), page);
->>  		next = get_next_page(page);
->>  		reset_page(page);
-> 
-> reset_page()->__ClearPageMovable()->PageMovable() expects page to be
-> locked.
+Am 28.02.24 um 02:44 schrieb Lu Yao:
+> uvd_ctx_rreg/uvd_ctx_wreg correct value requires function pointer.
 
-This seems to make the patch doesn't work anymore... will think about it.
+Yeah, but that is completely irrelevant here. We usually don't use the & 
+for function pointers since that is unnecessary in C.
 
-Thanks!
+Regards,
+Christian.
 
-> 
->> -		unlock_page(page);
->>  		dec_zone_page_state(page, NR_ZSPAGES);
->>  		put_page(page);
->>  		page = next;
->>  	} while (page != NULL);
+>
+> Signed-off-by: Lu Yao <yaolu@kylinos.cn>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/si.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/si.c b/drivers/gpu/drm/amd/amdgpu/si.c
+> index a757526153e5..455d49f7bd9c 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/si.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/si.c
+> @@ -2032,8 +2032,8 @@ static int si_common_early_init(void *handle)
+>   	adev->pcie_wreg = &si_pcie_wreg;
+>   	adev->pciep_rreg = &si_pciep_rreg;
+>   	adev->pciep_wreg = &si_pciep_wreg;
+> -	adev->uvd_ctx_rreg = si_uvd_ctx_rreg;
+> -	adev->uvd_ctx_wreg = si_uvd_ctx_wreg;
+> +	adev->uvd_ctx_rreg = &si_uvd_ctx_rreg;
+> +	adev->uvd_ctx_wreg = &si_uvd_ctx_wreg;
+>   	adev->didt_rreg = NULL;
+>   	adev->didt_wreg = NULL;
+>   
+
 
