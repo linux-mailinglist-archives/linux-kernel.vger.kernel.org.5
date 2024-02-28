@@ -1,437 +1,105 @@
-Return-Path: <linux-kernel+bounces-84450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DB8286A6E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E912886A6E8
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 03:51:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A8FC282ED0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:48:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A68A6287540
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B4141E864;
-	Wed, 28 Feb 2024 02:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24A31CF81;
+	Wed, 28 Feb 2024 02:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="HQeO9uEK"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="W7k6hiFy"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B39DDD7;
-	Wed, 28 Feb 2024 02:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6211CD0F
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709088511; cv=none; b=KsHuO6F5E4G6Jj/JvAz5kLhh4h9nxTF6QjYIBdRFeJxM61oiJOUHz/IVw15DFbwISX7/r7jzK6I7WZz8zPep5VctyQIJi0wwQXuDs5voclO7HnDXSYxejFB7mgCfgmHgxMKQO8TDkVlQ1i7GDUSHh4K+/7jbo4Q5QaGspPDvoLs=
+	t=1709088666; cv=none; b=WeZ7n4i9Vn5gOWZXTFC4UPgjyWbuYce9/kPzC/z/keh0rVsZfBOJ6JQPUjIuZYWkdKV7LxkUhfh+BcRrEHb0iN7cp4t0m7d+vPVsM84GouXsa8/G0Mqz26Dys8MaPxwZMrEBX17zJ3niS2i8umyiLuZodjGiuguimIJhLwRx59I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709088511; c=relaxed/simple;
-	bh=ICAns8wxjd1PYdG47lGBYIqp/QhHF4aDdoFKaENJqyQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Wzz6E7aVRHbtXlTdfy2uTYkvKsruZxzPBwNYOnMddHVZvc0A7JT7ZrqUb2VlwfEweJrr6l/ld6oCG7p2aQe1C0NPB1q+dRltJUaUK6G6XxuIsOnWmxvsCVoGo2HNtAeXaOQ5E8tEwt69RmDwIak6LLezLrJkqOzgdi03l7p0L6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=HQeO9uEK; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709088500;
-	bh=TmErh517pP890p8HTJUYzlERLASanZiIftKNJ3aw8Bo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=HQeO9uEK4B1Kkj5y7Agyt+wXV7A/sP9SnOpWm2CanRwUsuzqCV/N6IYskYFYMmTxb
-	 PLze9uTbyhag0rOJ/uiGOUeTDMDezAwjhB6oUQ1dMiSB7PJaLFcws7/XRA717hOxy5
-	 yRPpjpfJ5WR1d7DGNCM9hCSHYtY1F+06Emi27fJ+XDpeT2iwqXrq/IOiOXupgzi2a1
-	 oNKnyRy8nHOCz2GiahHARyom6JXOHpWFcuVeGLLEtg/Mv9Ogvh1RDh0hnfu1GpI5A1
-	 35psKrmbuMGY1jBY7+ylLTa4zjBf9eu1UIV7ab9IXQzuR111RuwugwwE11IKdoIetR
-	 ehOzUmmLpAUYg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TkzLW67ljz4wbQ;
-	Wed, 28 Feb 2024 13:48:19 +1100 (AEDT)
-Date: Wed, 28 Feb 2024 13:48:18 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Shuah Khan <skhan@linuxfoundation.org>, Brendan Higgins
- <brendanhiggins@google.com>
-Cc: David Gow <davidgow@google.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the kunit-next tree
-Message-ID: <20240228134818.7b6134dc@canb.auug.org.au>
+	s=arc-20240116; t=1709088666; c=relaxed/simple;
+	bh=kx5LCqUuIYQ9KdpDTmjjLIzHshpz1YkwrkM7+Lzgshw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mQQXuYdJcgqKjCnW7b1fa+H4fhTsmvmbDQ8uvOF+OzZHq6aVsDJq9Vg7mZDljkHJW68uGJjjq+JjdMDtNrqoOhwvPMm4ThI5P7B/BhtjJyNjUVtiJM44VPRLdDz98L4opUqUC8CthtRXIidqyNWMsU2rcKBUYn0xCXucS/sgbDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=W7k6hiFy; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6da4a923b1bso4005143b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 18:51:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1709088664; x=1709693464; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b4FqA67RdXu7Wc6aPbe8nrEQlAnfIV6tiLcrDtl1Sb0=;
+        b=W7k6hiFyP9m5jeUSqCmCA0MhzX5pqdl3NIQOItCUUnFZILnc/ue4aD7Fb4GgHY9heD
+         aBMrMoAOVzRKzZFfmoH0TgGwUJESo+F6Id3n5juOSWmIXe0FixJT5QFexF3P3/SCnFR9
+         pYbYJlQasYzA35c0/5cx/70jjokx97XbfinrUwGyw5co6tgZo33pzoLhZoNt/6i0wXGf
+         lEhaQNVVn8KcrPKvq1tYRaqm2N6RimrMciikBSI6QEiTXlAzUXsn9j70sO8vLF2xd36Q
+         JLqb1WxC2oadUAA7Dz+OZWCwNMETCQNJLPcJ670pgY0FL/LBXMwvl5KfF9rWBqqcDQPT
+         P67g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709088664; x=1709693464;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=b4FqA67RdXu7Wc6aPbe8nrEQlAnfIV6tiLcrDtl1Sb0=;
+        b=Zuf2Ej5EJ9IFItW6JJyQiwvAFCcVMWYCExNnaZrZzEt6LTAV3+MH/cZxd8h0kXFP8/
+         8L++OyqOpU0HDQixPLBAKK5oIfIz3rNDMbIwcJu0JpWS45Q6+LaB0sKYFDjKDWIGAKPz
+         mSTap198T1FcbW5WUOdIlpSotPIBNhGdeeyaaS9bUtk2/OBWI4Qdoq4aU5nYDiJkeZ42
+         tpXhReY85EHrqMK6UThgey1eQHQb6qv8E7L8xV+3EfOvFmjDbZXYs9GY9oPn9UhB/wLW
+         qZHIUOPu3KZf70tULDAqJ6X4cH4PvshQAB8WCASVJgir8R9Nf62+8LTK22Yd2wByNUpH
+         TVrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWtcbM05wVZBI8x3FJVzpPw7ehhLApCFW3x4DQHlNjsHaXPTOISsF5zfFVRBCiQ6TUrL4DRvy/yTs6cdP/HK9S1ECItxwUwVhTfZxkD
+X-Gm-Message-State: AOJu0YyvbjKwUqodTcJ6eni1ZJzBbYE5rpAIZ04rSeGCeSOZTJ95Wx2b
+	Dah9SzZCi3jGZtR22imOA/LgjUuct7WPICQdibKwDoa2Mrpql96YfQTumZRM0Ww=
+X-Google-Smtp-Source: AGHT+IGeReZ3Y5NxIZlAaM8Enqxn/OFrYcimk/GW8M9PDaThxvj9F6RTHN7tdifb5hp9OSU+TOS9Wg==
+X-Received: by 2002:a05:6a20:f29:b0:19f:f059:c190 with SMTP id fl41-20020a056a200f2900b0019ff059c190mr3572652pzb.24.1709088664240;
+        Tue, 27 Feb 2024 18:51:04 -0800 (PST)
+Received: from ?IPV6:fdbd:ff1:ce00:1d7c:876:e31b:5d3a:49d6? ([240e:6b1:c0:120::1:d])
+        by smtp.gmail.com with ESMTPSA id j18-20020a63e752000000b005e17cad83absm6521340pgk.74.2024.02.27.18.50.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Feb 2024 18:51:03 -0800 (PST)
+Message-ID: <72b3f614-aeef-473f-9496-6a5ed81916a4@bytedance.com>
+Date: Wed, 28 Feb 2024 10:50:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oNsIlO=ukzVRl5gjkW5zm.5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [External] Re: [PATCH 0/3] Support intra-function call validation
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: bp@alien8.de, mingo@redhat.com, tglx@linutronix.de, hpa@zytor.com,
+ jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
+ gregkh@linuxfoundation.org, stable@vger.kernel.org,
+ alexandre.chartre@oracle.com, x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20240226094925.95835-1-qirui.001@bytedance.com>
+ <f516eb83-c393-af67-803f-4cf664865cf8@bytedance.com>
+ <20240226172843.52zidtcasjw4wbmh@treble>
+From: Rui Qi <qirui.001@bytedance.com>
+In-Reply-To: <20240226172843.52zidtcasjw4wbmh@treble>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---Sig_/oNsIlO=ukzVRl5gjkW5zm.5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+I tested the mainline kernel v6.8-rc5 without this problem, as I said before, this problem only occurs in 5.4 LTS, to be precise, it can occur from v5.4.217, with CONFIG_RETPOLINE and CONFIG_LIVEPATCH enabled
 
-Hi all,
+BTW: The patch for V2 version has been sent out. We can discuss based on that. Thank you!
+https://lore.kernel.org/stable/20240228024535.79980-1-qirui.001@bytedance.com/T/#t
 
-After merging the kunit-next tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
-
-In file included from drivers/gpu/drm/tests/drm_buddy_test.c:7:
-drivers/gpu/drm/tests/drm_buddy_test.c: In function 'drm_test_buddy_alloc_c=
-ontiguous':
-drivers/gpu/drm/tests/drm_buddy_test.c:58:40: error: format '%u' expects ar=
-gument of type 'unsigned int', but argument 7 has type 'long unsigned int' =
-[-Werror=3Dformat=3D]
-   58 |                                        "buddy_alloc hit an error si=
-ze=3D%u\n",
-      |                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~
-   59 |                                        ps);
-      |                                        ~~
-      |                                        |
-      |                                        long unsigned int
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:662:9: note: in expansion of macro 'KUNIT_UNARY_ASSERT=
-ION'
-  662 |         KUNIT_UNARY_ASSERTION(test,                                =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-include/kunit/test.h:1233:9: note: in expansion of macro 'KUNIT_FALSE_MSG_A=
-SSERTION'
- 1233 |         KUNIT_FALSE_MSG_ASSERTION(test,                            =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:55:17: note: in expansion of macro '=
-KUNIT_ASSERT_FALSE_MSG'
-   55 |                 KUNIT_ASSERT_FALSE_MSG(test,
-      |                 ^~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:58:72: note: format string is define=
-d here
-   58 |                                        "buddy_alloc hit an error si=
-ze=3D%u\n",
-      |                                                                    =
-   ~^
-      |                                                                    =
-    |
-      |                                                                    =
-    unsigned int
-      |                                                                    =
-   %lu
-drivers/gpu/drm/tests/drm_buddy_test.c:65:32: error: format '%u' expects ar=
-gument of type 'unsigned int', but argument 7 has type 'long unsigned int' =
-[-Werror=3Dformat=3D]
-   65 |                                "buddy_alloc didn't error size=3D%u\=
-n", 3 * ps);
-      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-  ~~~~~~
-      |                                                                    =
-    |
-      |                                                                    =
-    long unsigned int
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:654:9: note: in expansion of macro 'KUNIT_UNARY_ASSERT=
-ION'
-  654 |         KUNIT_UNARY_ASSERTION(test,                                =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-include/kunit/test.h:1214:9: note: in expansion of macro 'KUNIT_TRUE_MSG_AS=
-SERTION'
- 1214 |         KUNIT_TRUE_MSG_ASSERTION(test,                             =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:62:9: note: in expansion of macro 'K=
-UNIT_ASSERT_TRUE_MSG'
-   62 |         KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, =
-mm_size,
-      |         ^~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:65:64: note: format string is define=
-d here
-   65 |                                "buddy_alloc didn't error size=3D%u\=
-n", 3 * ps);
-      |                                                               ~^
-      |                                                                |
-      |                                                                unsi=
-gned int
-      |                                                               %lu
-drivers/gpu/drm/tests/drm_buddy_test.c:71:32: error: format '%u' expects ar=
-gument of type 'unsigned int', but argument 7 has type 'long unsigned int' =
-[-Werror=3Dformat=3D]
-   71 |                                "buddy_alloc didn't error size=3D%u\=
-n", 3 * ps);
-      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-  ~~~~~~
-      |                                                                    =
-    |
-      |                                                                    =
-    long unsigned int
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:654:9: note: in expansion of macro 'KUNIT_UNARY_ASSERT=
-ION'
-  654 |         KUNIT_UNARY_ASSERTION(test,                                =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-include/kunit/test.h:1214:9: note: in expansion of macro 'KUNIT_TRUE_MSG_AS=
-SERTION'
- 1214 |         KUNIT_TRUE_MSG_ASSERTION(test,                             =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:68:9: note: in expansion of macro 'K=
-UNIT_ASSERT_TRUE_MSG'
-   68 |         KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, =
-mm_size,
-      |         ^~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:71:64: note: format string is define=
-d here
-   71 |                                "buddy_alloc didn't error size=3D%u\=
-n", 3 * ps);
-      |                                                               ~^
-      |                                                                |
-      |                                                                unsi=
-gned int
-      |                                                               %lu
-drivers/gpu/drm/tests/drm_buddy_test.c:75:32: error: format '%u' expects ar=
-gument of type 'unsigned int', but argument 7 has type 'long unsigned int' =
-[-Werror=3Dformat=3D]
-   75 |                                "buddy_alloc didn't error size=3D%u\=
-n", 2 * ps);
-      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-  ~~~~~~
-      |                                                                    =
-    |
-      |                                                                    =
-    long unsigned int
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:654:9: note: in expansion of macro 'KUNIT_UNARY_ASSERT=
-ION'
-  654 |         KUNIT_UNARY_ASSERTION(test,                                =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-include/kunit/test.h:1214:9: note: in expansion of macro 'KUNIT_TRUE_MSG_AS=
-SERTION'
- 1214 |         KUNIT_TRUE_MSG_ASSERTION(test,                             =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:72:9: note: in expansion of macro 'K=
-UNIT_ASSERT_TRUE_MSG'
-   72 |         KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, =
-mm_size,
-      |         ^~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:75:64: note: format string is define=
-d here
-   75 |                                "buddy_alloc didn't error size=3D%u\=
-n", 2 * ps);
-      |                                                               ~^
-      |                                                                |
-      |                                                                unsi=
-gned int
-      |                                                               %lu
-drivers/gpu/drm/tests/drm_buddy_test.c:81:32: error: format '%u' expects ar=
-gument of type 'unsigned int', but argument 7 has type 'long unsigned int' =
-[-Werror=3Dformat=3D]
-   81 |                                "buddy_alloc didn't error size=3D%u\=
-n", 3 * ps);
-      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-  ~~~~~~
-      |                                                                    =
-    |
-      |                                                                    =
-    long unsigned int
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:654:9: note: in expansion of macro 'KUNIT_UNARY_ASSERT=
-ION'
-  654 |         KUNIT_UNARY_ASSERTION(test,                                =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-include/kunit/test.h:1214:9: note: in expansion of macro 'KUNIT_TRUE_MSG_AS=
-SERTION'
- 1214 |         KUNIT_TRUE_MSG_ASSERTION(test,                             =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:78:9: note: in expansion of macro 'K=
-UNIT_ASSERT_TRUE_MSG'
-   78 |         KUNIT_ASSERT_TRUE_MSG(test, drm_buddy_alloc_blocks(&mm, 0, =
-mm_size,
-      |         ^~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:81:64: note: format string is define=
-d here
-   81 |                                "buddy_alloc didn't error size=3D%u\=
-n", 3 * ps);
-      |                                                               ~^
-      |                                                                |
-      |                                                                unsi=
-gned int
-      |                                                               %lu
-drivers/gpu/drm/tests/drm_buddy_test.c:90:32: error: format '%u' expects ar=
-gument of type 'unsigned int', but argument 7 has type 'long unsigned int' =
-[-Werror=3Dformat=3D]
-   90 |                                "buddy_alloc hit an error size=3D%u\=
-n", 2 * ps);
-      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-  ~~~~~~
-      |                                                                    =
-    |
-      |                                                                    =
-    long unsigned int
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:662:9: note: in expansion of macro 'KUNIT_UNARY_ASSERT=
-ION'
-  662 |         KUNIT_UNARY_ASSERTION(test,                                =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-include/kunit/test.h:1233:9: note: in expansion of macro 'KUNIT_FALSE_MSG_A=
-SSERTION'
- 1233 |         KUNIT_FALSE_MSG_ASSERTION(test,                            =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:87:9: note: in expansion of macro 'K=
-UNIT_ASSERT_FALSE_MSG'
-   87 |         KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0,=
- mm_size,
-      |         ^~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:90:64: note: format string is define=
-d here
-   90 |                                "buddy_alloc hit an error size=3D%u\=
-n", 2 * ps);
-      |                                                               ~^
-      |                                                                |
-      |                                                                unsi=
-gned int
-      |                                                               %lu
-drivers/gpu/drm/tests/drm_buddy_test.c:96:32: error: format '%u' expects ar=
-gument of type 'unsigned int', but argument 7 has type 'long unsigned int' =
-[-Werror=3Dformat=3D]
-   96 |                                "buddy_alloc hit an error size=3D%u\=
-n", 3 * ps);
-      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-  ~~~~~~
-      |                                                                    =
-    |
-      |                                                                    =
-    long unsigned int
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:662:9: note: in expansion of macro 'KUNIT_UNARY_ASSERT=
-ION'
-  662 |         KUNIT_UNARY_ASSERTION(test,                                =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~
-include/kunit/test.h:1233:9: note: in expansion of macro 'KUNIT_FALSE_MSG_A=
-SSERTION'
- 1233 |         KUNIT_FALSE_MSG_ASSERTION(test,                            =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:93:9: note: in expansion of macro 'K=
-UNIT_ASSERT_FALSE_MSG'
-   93 |         KUNIT_ASSERT_FALSE_MSG(test, drm_buddy_alloc_blocks(&mm, 0,=
- mm_size,
-      |         ^~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_buddy_test.c:96:64: note: format string is define=
-d here
-   96 |                                "buddy_alloc hit an error size=3D%u\=
-n", 3 * ps);
-      |                                                               ~^
-      |                                                                |
-      |                                                                unsi=
-gned int
-      |                                                               %lu
-In file included from drivers/gpu/drm/tests/drm_mm_test.c:8:
-drivers/gpu/drm/tests/drm_mm_test.c: In function 'drm_test_mm_init':
-drivers/gpu/drm/tests/drm_mm_test.c:160:34: error: zero-length gnu_printf f=
-ormat string [-Werror=3Dformat-zero-length]
-  160 |                 KUNIT_FAIL(test, "");
-      |                                  ^~
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:625:9: note: in expansion of macro 'KUNIT_FAIL_ASSERTI=
-ON'
-  625 |         KUNIT_FAIL_ASSERTION(test,                                 =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_mm_test.c:160:17: note: in expansion of macro 'KU=
-NIT_FAIL'
-  160 |                 KUNIT_FAIL(test, "");
-      |                 ^~~~~~~~~~
-drivers/gpu/drm/tests/drm_mm_test.c:174:34: error: zero-length gnu_printf f=
-ormat string [-Werror=3Dformat-zero-length]
-  174 |                 KUNIT_FAIL(test, "");
-      |                                  ^~
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:625:9: note: in expansion of macro 'KUNIT_FAIL_ASSERTI=
-ON'
-  625 |         KUNIT_FAIL_ASSERTION(test,                                 =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_mm_test.c:174:17: note: in expansion of macro 'KU=
-NIT_FAIL'
-  174 |                 KUNIT_FAIL(test, "");
-      |                 ^~~~~~~~~~
-drivers/gpu/drm/tests/drm_mm_test.c:181:34: error: zero-length gnu_printf f=
-ormat string [-Werror=3Dformat-zero-length]
-  181 |                 KUNIT_FAIL(test, "");
-      |                                  ^~
-include/kunit/test.h:597:37: note: in definition of macro '_KUNIT_FAILED'
-  597 |                                     fmt,                           =
-            \
-      |                                     ^~~
-include/kunit/test.h:625:9: note: in expansion of macro 'KUNIT_FAIL_ASSERTI=
-ON'
-  625 |         KUNIT_FAIL_ASSERTION(test,                                 =
-            \
-      |         ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/tests/drm_mm_test.c:181:17: note: in expansion of macro 'KU=
-NIT_FAIL'
-  181 |                 KUNIT_FAIL(test, "");
-      |                 ^~~~~~~~~~
-
-Caused by commit
-
-  e00c5a9fa617 ("kunit: Annotate _MSG assertion variants with gnu printf sp=
-ecifiers")
-
-Please fix all the current problems before applying a patch to warn
-about them.
-
-I have used the kunit-next tree from next-20240227 for today.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oNsIlO=ukzVRl5gjkW5zm.5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXenvIACgkQAVBC80lX
-0GxX5Af/Vfvis2//nsnk8VcrZIQuQIzuk8qlnEaP14huyU+3TXINbP5cxiBaGdrG
-L5CUG6Gb65MQTQoa9xMnbZjOOLo1dL6ji8y/na3h90hppCuRlZb8qq+l98mRjwCW
-4iAivdKaVZbXPzA6c61vYOfgYVQH76eogFb/7WeLJ0/RcVEV/HytW/XKek6EkvKU
-GrwwlRTX+MKOurNXPfCChMd7XfrokciE1IripDX1+PD8GqABplnWryeP4d/24vGX
-Dw3mN9IE0BBfyld9DmGcrObZArR5ed7oGi6hFM7UPeHXixNtJAhFtK12UYxD+Tor
-gk0cVJKTh+pt8X2KQM0TblOsuED5Uw==
-=PCh2
------END PGP SIGNATURE-----
-
---Sig_/oNsIlO=ukzVRl5gjkW5zm.5--
+On 2/27/24 1:28 AM, Josh Poimboeuf wrote:
+> On Mon, Feb 26, 2024 at 07:33:53PM +0800, qirui wrote:
+>> This issue only occurs in 5.4 LTS versions after LTS 5.4.250
+>> (inclusive), and this patchset is based on commit
+>> 6e1f54a4985b63bc1b55a09e5e75a974c5d6719b (Linux 5.4.269)
+> 
+> Does the bug also exist in mainline?  If not, why?
+> 
 
