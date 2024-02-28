@@ -1,126 +1,106 @@
-Return-Path: <linux-kernel+bounces-84983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199D386AE84
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:00:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87B7A86AE88
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8F4D2872EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:00:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E9C629695B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A84A70CA7;
-	Wed, 28 Feb 2024 11:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B0E23BBCA;
+	Wed, 28 Feb 2024 11:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hsG8VPCk"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gCuvCf8J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D90F7351E;
-	Wed, 28 Feb 2024 11:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47E473507;
+	Wed, 28 Feb 2024 11:58:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709121445; cv=none; b=dkFNxGKj4FpsPAoiiMiQdxEdlU2wydykgDlwMEcEcXygI/mDPgEpJX5peAXo65+Tcxdr+8qyY9OQgJRiH+993K50d5rSvH8wCCDdJxjQVdjmJ1aNDqgc44YWDYpdC2Q0F9H2dIxthFO1aLZa52oroQV425D0DhIlZJl/0Bn4FWk=
+	t=1709121486; cv=none; b=oLmw2MDtOeKRKpjFQGh3frp0ZL8WqBIsMf+zdHUpPff9T6ZXW/bnvSYv9UDlAjVnTApdQeHzPpO5npAzLw07JFBy4/aajtb/GjYN/ve1biGU1I/0fG4QBuCeCvJYQNLwqH21CnszJ4Tl7sHPwOM29fksmVd7hjc0HlWvNDSK6Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709121445; c=relaxed/simple;
-	bh=rcSNTBiRF+f+3t3RzyuU+qKQ8ru2QZn9y+YmrmBALig=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SHQFyOBcuAtYP28Fh7tew2DmU6xhYzIRWEtwwgbhGbu10PyPIVDfkL67J1wleYfKdH2vwL3YCQYedcUjOtDCYMpwdwb0iqRM5NSt9on4b5iXUN1vZ54Z5dboH5HqornVy8HZhaMd4Jy7I5Oh/zFi1hjeIibIJ/17554pcggpl6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hsG8VPCk; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dcc7f4717fso7467195ad.0;
-        Wed, 28 Feb 2024 03:57:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709121443; x=1709726243; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ANLYUYqTJ5NOkYuF+uWmj+L6Rv2c3OMTBVV8U8yPtxY=;
-        b=hsG8VPCkQ4SPnzuYE5BesN9VIC7c2/XUIqQraZGAOZhuVqTHdYVW1Q9fypO3Fzc5kR
-         GI7X88eVsFVSl+45kvJNx6YJHulGv8Vs96p+v4kAaw/xIwULrwJMYkR3Vm833BqHb2VA
-         dnr0lQEk1UocIdnLIDXFKVqlQ52Is8E7IlASrAz5bWgMFpEjpD67HlYXTNmQJImtUyOY
-         Bvs4F3qnh4DbWWB0+D0stcJVJtDn5g9IcgbSQR0S6NMrkk/Csp+w8lKbnLyJof8fakBO
-         mODL7BWEBSTiNwdXIvZHH5bV/FOfQnKNJQ5QBhwK/Eosgs91m60DP5jn8XyWvNNI5QjM
-         YhsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709121443; x=1709726243;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ANLYUYqTJ5NOkYuF+uWmj+L6Rv2c3OMTBVV8U8yPtxY=;
-        b=cbzsVkB4E72TYKHymJY42M2gP6JpximJk2raPmni0IDfownt8hx56qo2cR22Pf45MA
-         P2wvwgLZJpcjewf2JjAgOI2muDOmWO79pDxSwP1eqbRL50VU0Vw+7bYqv/Dt+9PbJfB1
-         ag2UNX7tHbfZyH9h0leYR+146EHR779Ta4ibx/EKA5tuRmvJwQ6DuVbPO8/FYxUaGt6J
-         gBZXvUY43go8oIGkC0Hzd4UcFUzVq43oYjZaBubZVcQuEPwgI0yNdReNfV3wpxLkN2wg
-         ZhYQbuUzkNLvghtIn4JLSPz1DVVwOUnhc5UT2f9Na6F0z3y2204RP64UnbvHhHuPvI5a
-         wypQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWmX/XG9AC4RQwsAFqLojI4xD8koj85hLgIvvZTBPm7ahuH+GHOxlg2Im57POwceXnTPsnDzY1S1YQbQhdB9GiqgoFJJ6b5rcDKAChASIarpciGb382phznsvotATD3dL+EXJOkr//VYRMNdCV7
-X-Gm-Message-State: AOJu0YwCl7AIH4FKCG4oQMF/9h2W17jzV4VdE56zJV9uk+O7hsXEBbGk
-	T9i6nmk6Mu4pVEx1B0JKcKYAgx1yXiLYfQQ1rK4rqkyRIBnB3Cqk
-X-Google-Smtp-Source: AGHT+IF51RV9A4dYFGcyQ378LWI5tKCNm6KT+pRauZgzs8Pdzqw0S11E1x9Hv/cyW2/s+TaVikNpyg==
-X-Received: by 2002:a17:902:fc87:b0:1db:4941:f703 with SMTP id mf7-20020a170902fc8700b001db4941f703mr14753116plb.15.1709121443368;
-        Wed, 28 Feb 2024 03:57:23 -0800 (PST)
-Received: from localhost.localdomain ([115.99.206.243])
-        by smtp.gmail.com with ESMTPSA id l8-20020a17090270c800b001dc23e877c9sm3141647plt.106.2024.02.28.03.57.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 03:57:22 -0800 (PST)
-From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-To: shuah@kernel.org
-Cc: netdev@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	petrm@nvidia.com,
-	idosch@nvidia.com,
-	Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-Subject: [PATCH net-next] Correct couple of spelling mistakes
-Date: Wed, 28 Feb 2024 17:27:07 +0530
-Message-Id: <20240228115707.420200-1-pvkumar5749404@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709121486; c=relaxed/simple;
+	bh=2i57F2bwd8MFtlPkyg5+cTyjkGeR5xF3YTz9mn9FMPo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mEkRUGYqOty0CYIcmOgMuMEk39oZTaMdqiyUt/ebs/5dPYzWJEVPV81RgfHJgOcvi+3pb6iFPbzCp4qT11hNeNpEeZrvLjft3ffZgkRs6oY6DxwTpBykQQDqziMvL6iusks7M97hm7uZApvg/0Bz5bL8RAdhMLv2YC151WWnAGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gCuvCf8J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81BF6C433C7;
+	Wed, 28 Feb 2024 11:58:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709121486;
+	bh=2i57F2bwd8MFtlPkyg5+cTyjkGeR5xF3YTz9mn9FMPo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gCuvCf8JLm/G3hyf82omkF/EFRSEDdsMPz+k8PJOUXPTs19x4IjEhAC7IjvarNarp
+	 f2mfRJuQBszQyCddyAoxMKEO/9uwRxfdk6t0vPR6/B77rKJ8uYagYgTj8UDlHozlPd
+	 8Hpor3xdVOWiOQ4gKx0b8I8KNTfnrdIOZ34vxV/QAc5cupuKmdFWXXDYqHSBUgLkH/
+	 9tnS4u6/BKc/7Pny26ZvnLLv3Q4dOw/mpLwnExI+DCB7ZSaQ2CAiFYxEuIDNtIIWD/
+	 rQRqY267+OLRb0coDAzBmqVFIoEfgFqLDHvjMGJbqn2heiodlXXBROnYWoaAmK43kE
+	 zgzYtrx4vvqfg==
+Date: Wed, 28 Feb 2024 11:58:01 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: antoniu.miclaus@analog.com, alexandre.belloni@bootlin.com,
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+	linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+	Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
+Subject: Re: [PATCH v8 2/2] dt-bindings: rtc: add max313xx RTCs
+Message-ID: <20240228-embark-rimmed-d81bab3d42b8@spud>
+References: <20240227010312.3305966-1-chris.packham@alliedtelesis.co.nz>
+ <20240227010312.3305966-3-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="t4gB6YKl63pmWb0L"
+Content-Disposition: inline
+In-Reply-To: <20240227010312.3305966-3-chris.packham@alliedtelesis.co.nz>
 
-Changes :
-	- "excercise" is corrected to "exercise" in drivers/net/mlxsw/spectrum-2/tc_flower.sh
-	- "mutliple" is corrected to "multiple" in drivers/net/netdevsim/ethtool-fec.sh
 
-Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
----
- .../testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh | 2 +-
- tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+--t4gB6YKl63pmWb0L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
-index 616d3581419c..31252bc8775e 100755
---- a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
-+++ b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
-@@ -869,7 +869,7 @@ bloom_simple_test()
- bloom_complex_test()
- {
- 	# Bloom filter index computation is affected from region ID, eRP
--	# ID and from the region key size. In order to excercise those parts
-+	# ID and from the region key size. In order to exercise those parts
- 	# of the Bloom filter code, use a series of regions, each with a
- 	# different key size and send packet that should hit all of them.
- 	local index
-diff --git a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
-index 7d7829f57550..6c52ce1b0450 100755
---- a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
-+++ b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
-@@ -49,7 +49,7 @@ for o in llrs rs; do
- Active FEC encoding: ${o^^}"
- done
- 
--# Test mutliple bits
-+# Test multiple bits
- $ETHTOOL --set-fec $NSIM_NETDEV encoding rs llrs
- check $?
- s=$($ETHTOOL --show-fec $NSIM_NETDEV | tail -2)
--- 
-2.34.1
+On Tue, Feb 27, 2024 at 02:03:10PM +1300, Chris Packham wrote:
 
+>    interrupts:
+> +    description:
+> +      Alarm1 interrupt line of the RTC. Some of the RTCs have two interrupt
+> +      lines and alarm1 interrupt muxing depends on the clockin/clockout
+> +      configuration.
+>      maxItems: 1
+
+The maxItems: 1 looks odd here when you state "some of the RTCs have two
+interrupt lines", which makes it sound as if there are actually two
+interrupts that should be exposed here. If those two interrupts get
+muxed to the same pin for output I'd suggest that you clarify that here.
+
+Otherwise, this looks good to me - although I do wonder if the
+authorship on the commit (attributed to the analog guys) is still
+accurate.
+
+Thanks,
+Conor.
+
+--t4gB6YKl63pmWb0L
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd8fyQAKCRB4tDGHoIJi
+0tDSAQD7rkCjY+O1QQKDOVfrzBf54VpRC0g+H4OnP8QHO8tvcAEAve/lMLAJY/bw
+qykf1vJWluXsxzAdd6/12T1WX8A94Qs=
+=7JwR
+-----END PGP SIGNATURE-----
+
+--t4gB6YKl63pmWb0L--
 
