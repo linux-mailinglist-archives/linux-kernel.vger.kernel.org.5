@@ -1,110 +1,128 @@
-Return-Path: <linux-kernel+bounces-85374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B60F686B513
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:33:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CC8786B520
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62F591F22631
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:33:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C14581F260F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65F3B34CDE;
-	Wed, 28 Feb 2024 16:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C691E480;
+	Wed, 28 Feb 2024 16:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="JEq8YU5Z"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="LdkB87zd"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F531E4BF;
-	Wed, 28 Feb 2024 16:33:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A484F6EF17
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709137985; cv=none; b=X/W0HL9WemyaFL64OPuEFpLMWODBEHQSDW5zxBuiky28aLh/sDDn0NwM34I7y8mXpr2sz/GMoHGt3gpi4iVuMQHUKM/OXge2XcsTLX9QbAanTpaQZQGCklNUP2TjzCF4PPsZm0V4zrRMGNSRHk7QV/M05faI7BM1UkhiQ+8He5U=
+	t=1709138285; cv=none; b=uu7GUd4j+8PdVbsSvZxPlm5Ub4jfsIhCWcayHiodOUu/mY6oRnWjUp4ZMfSTzoU5fvKjsICUa2oUQTszfJUTe5l4c0hgLV/WyS0cSiecRShHHd/XLZ5T0NelKG0FAVv42VlXZG8XYSpjU/yS+BKMxExjb0G+30UFwqaIvlReBEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709137985; c=relaxed/simple;
-	bh=WpEvuwbQqpreIe52/sd2Mcz0JuvJUxbOEsWvJ1YBNo8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SZqcLXDayGp5lTqkIevJwHjElf2xbZAdD5GiySnSXSd6r5a02NMiJ2KBA1C5LcG94/iyHIC8xOKaKiBEHJfE70Y1c4Q4z6VUG6rzSschVkh4AmBWBbPXpuR3tA+o43jnqcty5sGNR/GLFRdzhS2u3hx2vz9DQ1MxL2eP/vtR/14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=JEq8YU5Z; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0E5196B3;
-	Wed, 28 Feb 2024 17:32:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1709137970;
-	bh=WpEvuwbQqpreIe52/sd2Mcz0JuvJUxbOEsWvJ1YBNo8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JEq8YU5ZK2sTFXcAhT5IyohlO9Wh3ZxTIe0h6vv3Y2ZOvuKOyjpE5VsZFfo7l61Gt
-	 hhC7uVAA4PKglQqALuCgxG8cVTst1iNOljRBqMHbKxeRCY5r8VZS+hY8YI8i0UHyiB
-	 wKblZF2HKE7RJLmyE7jA3Nr4oeTxHvyU7X2xo45U=
-Date: Wed, 28 Feb 2024 18:33:04 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Adam Ford <aford173@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
-	aford@beaconembedded.com, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm64: dts: imx8mp-beacon-kit: Enable HDMI bridge HPD
-Message-ID: <20240228163304.GI9863@pendragon.ideasonboard.com>
-References: <20240228113737.43434-1-aford173@gmail.com>
- <20240228113737.43434-2-aford173@gmail.com>
+	s=arc-20240116; t=1709138285; c=relaxed/simple;
+	bh=9PTeAYYKh6BghzUQ5SY1FEoCFtAzge8LlEvtJa+/mwI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o+cYPMuC1yg6yBg/phcdbGOTR/2zXzwfdfmSa/NZiJzh0rTBLBVi+g64MjJ8nR7x+GtDNxxvxadiyAyUz0uxkTqbWPawwDrQnSTju3ngWMMzT18LO7mSzikxEN849XCI2UPS3NRKvyiI4LSKrMsdqU2vlVJq8g+tym7HCZxPKcI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=LdkB87zd; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563d56ee65cso7875034a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:38:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1709138282; x=1709743082; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EWAQpAUpfQCDhx0rGjR9Oel5LgwsLKY+ggnWMU654+8=;
+        b=LdkB87zd/3Ey/TszPdJTjeBQW0CD8ooalvGxGuuwIAZDzqDmWaj0B/AU3vvPUzguME
+         efMh/O1i1e4AdYTsJ3LCDduY7WErH+GOcYL3Ekt+sK6CmLuLTCFWegQfToCkq+bDYAjC
+         ExlXDdy4kn7Lo124FUzyhxciy7Avg9lImGOpWtlvlk2DK1rWKQR+3x8FfYJHE1mWw477
+         IjVO27AnTPrNXoYNbzQ0lKRhYwuSxcxok561LJwnPBBkVcNrAYGKF7vy11qiqQ56HaBN
+         WD60dlG3pOb5Q0iKZKsxGKSXPkiwcJeiOVS1+KjFR/wXicr3DWprGwOJwMT5FsaH4iBW
+         wFhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709138282; x=1709743082;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EWAQpAUpfQCDhx0rGjR9Oel5LgwsLKY+ggnWMU654+8=;
+        b=UuTjpKbsoor+BsqDYOonvUEP6suiSjXiZH0UPRL6Zw+RJ7YwUNvbLHUsNlEJ4oy8Bm
+         7wtrCgJ26kqhnPGEQYctO/hsL1fqCvIvcS6IrMTYAcPBi3T4vwyc9t3StF2S50ruM/z3
+         xfaaIz87PutAAUwrp0dYnZuxmfJH1ljzx2Ov4/LN9GOanxQsQ78Ub97cQK+XOmBf7KXK
+         mJu2PqMDxS7OIDGAESDenqtdiHqm3/rf4vaKHnNx6px5FkgC9Ny1Xe/YxDsKkBy3BId/
+         uJ889DeYA2dUyDBffz5rr5Km5UfSLQRm93IBfg1OtTfhjprdIuANQ16oSpfj1VRo9+oa
+         jA0w==
+X-Forwarded-Encrypted: i=1; AJvYcCVdbRDCCTwkIXNOlQ525beLnu95vr6FejH9ITMd433ok0nZR8dkP6llVj//HX3k0xnZO7lnS5ETQ1VGy66RJH0hMzBS4VhOpiwOS2FY
+X-Gm-Message-State: AOJu0YzXhSZTmxNXitaSZPDo86mnlVBqIBY+diSDz8VjwsjwEkRrnH3o
+	jDgsdeHDuIaZpAJmIQZRjAe5Yqlto7e+lG7G3sgCk/1Klg8PBKo2SMVsCv/mVlzLWVhu5GuTQaE
+	ttv40arZ9/+c7NmAoOlLZuw93fqpcCJzawrT+Wg==
+X-Google-Smtp-Source: AGHT+IH6HQq8hzqji91OJqqxN2VkP0/oD9hn7fSXzbwfcVbmFDthP3qt0d5uMMo2K+yS0zBkR2z5gsNJJobM1iVOpOM=
+X-Received: by 2002:a17:906:e8f:b0:a43:49ca:2473 with SMTP id
+ p15-20020a1709060e8f00b00a4349ca2473mr193121ejf.0.1709138282075; Wed, 28 Feb
+ 2024 08:38:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240228113737.43434-2-aford173@gmail.com>
+References: <Zd4DXTyCf17lcTfq@debian.debian> <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+ <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop> <f1d1e0fb-2870-4b8f-8936-881ac29a24f1@joelfernandes.org>
+In-Reply-To: <f1d1e0fb-2870-4b8f-8936-881ac29a24f1@joelfernandes.org>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Wed, 28 Feb 2024 10:37:51 -0600
+Message-ID: <CAO3-Pboo32iQBBUHUELUkvvpSa=jZwUqefrwC-NBjDYx4yxYJQ@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: paulmck@kernel.org, Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, 
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Adam,
+On Wed, Feb 28, 2024 at 9:37=E2=80=AFAM Joel Fernandes <joel@joelfernandes.=
+org> wrote:
+> Also optionally, I wonder if calling rcu_tasks_qs() directly is better
+> (for documentation if anything) since the issue is Tasks RCU specific. Al=
+so
+> code comment above the rcu_softirq_qs() call about cond_resched() not tak=
+ing
+> care of Tasks RCU would be great!
+>
+Yes it's quite surprising to me that cond_resched does not help here,
+I will include that comment. Raising just the task RCU QS seems
+sufficient to the problem we encountered. But according to commit
+d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched and RCU-preempt
+when safe"), there might be additional threat factor in __do_softirq
+that also applies to threaded poll.
 
-Thank you for the patch.
+Yan
 
-On Wed, Feb 28, 2024 at 05:37:36AM -0600, Adam Ford wrote:
-> The DSI to HDMI bridge supports hot-plut-detect, but the
-> driver didn't previously support a shared IRQ GPIO.  With
-> the driver updated, the interrupt can be added to the bridge.
 
-You can reflow the commit message to 72 columns.
-
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-> index 8de4dd268908..d854c94ec997 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-> @@ -405,6 +405,8 @@ adv_bridge: hdmi@3d {
->  		compatible = "adi,adv7535";
->  		reg = <0x3d>, <0x3c>, <0x3e>, <0x3f>;
->  		reg-names = "main", "cec", "edid", "packet";
-> +		interrupt-parent = <&gpio4>;
-> +		interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
->  		adi,dsi-lanes = <4>;
->  		#sound-dai-cells = <0>;
->  
-
--- 
-Regards,
-
-Laurent Pinchart
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>
+> thanks,
+>
+>  - Joel
+> [1]
+> @@ -381,8 +553,10 @@ asmlinkage __visible void __softirq_entry __do_softi=
+rq(void)
+>                 pending >>=3D softirq_bit;
+>         }
+>
+> -       if (__this_cpu_read(ksoftirqd) =3D=3D current)
+> +       if (!IS_ENABLED(CONFIG_PREEMPT_RT) &&
+> +           __this_cpu_read(ksoftirqd) =3D=3D current)
+>                 rcu_softirq_qs();
+> +
+>         local_irq_disable();
 
