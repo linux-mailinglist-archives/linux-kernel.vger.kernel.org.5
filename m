@@ -1,162 +1,126 @@
-Return-Path: <linux-kernel+bounces-85664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D03C786B8E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4889086B8E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:15:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25684B203C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:14:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9694B27B3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 20:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B0F774418;
-	Wed, 28 Feb 2024 20:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E865E7443D;
+	Wed, 28 Feb 2024 20:14:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H/gpZmEw"
-Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="W5O7VKgi"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DC95E090;
-	Wed, 28 Feb 2024 20:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7450634CDE
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 20:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709151259; cv=none; b=osKfML2GDB9UvPvb1rHMhI4/qw8Wz4zwOtupVBoI9cY4MY4hHwr13Z+OIN68LIsSgl7UBvkMM7cF3RTMjfav3LUuPKlQc6pjfZfxG2cI/qVWCHTvMxhDWydE64bTtCXVoAuTzvRE825ZChyEnPWBshl9DMXQJ+tOWoCPt2GhQJg=
+	t=1709151291; cv=none; b=h7fFVrie6cUU/1/vSQEvLnTEs9bI1Hwk53nm5ZNQBhaN38ErFeUMvHkuN9OjLr6AFt5FwLJvWzTTUOZBZ95FPs/dsw+0Hjg5DV/acT2A8HbuGrBFPjs1Cw1ejo/ZsUdga6MIJmZaooWdoAUvOz7WgOv3opMGRehZwdUfMopGDk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709151259; c=relaxed/simple;
-	bh=S/kBFAFK1JxGSRBxjvHb9wpGKCelBSL7wSHo55RJ70U=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=NRFckICdMI3YycW21nYPfaejKWKnpl6FGY9NQUkuW7GwDbbntPCpHS7fbxdUNJ6vxqp17mFgh3nMGdL3FiVhjWhaPyxc+FmB7epWIEyKOvgjOlUh8SLPguXAT02yGoqZ8LsK4hgMNapkbeuaR8x0daP/ZkMNN9c9NSqWPRPoNas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H/gpZmEw; arc=none smtp.client-ip=209.85.219.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-690105304b4so565596d6.3;
-        Wed, 28 Feb 2024 12:14:17 -0800 (PST)
+	s=arc-20240116; t=1709151291; c=relaxed/simple;
+	bh=0nrml+WBxBMSjB6gKdozgb5uGnndn0Y89KcuAcb5ymw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Jn0S6jVNaoflmIw5dkNXcqKxCuiJ9pL5+D1cV1NN9T+MSYbYu4OrGo4cfu0pW3D1ymNWDfi/Hl8IKOWs99ANsZ94nTbsUhPkecPNWnNk9Fe51XmhIxlRAJH36++9K6LreoHaSFU0ARteItBah0nVQ8Cr68eUdz0gMu+E4+x0xW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=W5O7VKgi; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d28051376eso1800991fa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:14:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709151257; x=1709756057; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=joelfernandes.org; s=google; t=1709151288; x=1709756088; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1a/rY8nw5LZhhjrVDMwvjRYyAy1YxBmAbBSbPx3P8QI=;
-        b=H/gpZmEwEEg55CZuZa7pU17B68fAQ7nEQjZfohIuWqx53q9r30TbnNVpDUZw81qwEg
-         28eN+dTCvKqcTSfcYYop0Oz7QDq43LoBs0zqVTgpmjHP8jTNtmMLQinLdF2SosnC890X
-         yWjqvVUFg9E7gtnxcy65xPZf5HZfXwIFVke4ENfLYlv6Wkjr2qHPCcnr8ptf7+HafCcz
-         Tn7v9yECEy9qYM5C+qJflQ/hBjQXl3Vi+TAKZpS+SQ82Zh3ox7+DJIz308lG9Tg207tS
-         s+Wtn6/X3xKXjsHTVN/fNuhlyvKELyDxGPV3cuHKkVnstZrLoRQmjiTVXxA+t01b1ouB
-         6pmw==
+        bh=0ADqDxZgPwlPHrnolYYX16DFA+qGQXF/8Cktxf1H8u4=;
+        b=W5O7VKgi0RbREj9bK4Jj5Fb/FthztsNedxht03WloYlKep64hw9KOTCl1792qGxaBQ
+         xcQKzawXUgJcl+IXmoQ9/1Yp1GVfNaxOvmPklwosEmZ2Jj1obRlTpB0GXJDQ9tktvLW5
+         2P/lviMm1/25OJAZNOdBD2hxALxvlydcFp5Sg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709151257; x=1709756057;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=1a/rY8nw5LZhhjrVDMwvjRYyAy1YxBmAbBSbPx3P8QI=;
-        b=lcVq5oY0Cg7/hY1I0rDtB46/74CHY9GC1y7t+DIihV542xYujR8dNoygbgycgAVDu6
-         +7ec02RNKjs4Im0Hw9jx2OEP/Nr3bEBnbolmvmeJxPBvGYl1/eHKTu/NzrxrYQZ5YwLU
-         juIupqdJnKoIOX5q2/2brrEeOgutLjdmgWUQgbQu9SJfELhxksZyAwZ14MoIABui8VVo
-         Zd4L2nCjaRGIZeYshwTBXXKD/umd7lObFQrJhXBETMV7NuEXCigFpzwfpMVU0bxSDfD9
-         UEirHbOJIzI3BP/Ft/9JpAx/Nc+jG2MbuItfjlumqEdodW7oAFsrR2+kO08U0EdKhn8j
-         pSKw==
-X-Forwarded-Encrypted: i=1; AJvYcCXhoPsP0AM3VwEFuBZclYRw+3R1oZg3ovjvV34bNB3oTItw6dPlWvyyKDSsdi0JwpN5DT7j/wT7w9FcP573iOciI0bhqZ4+1eqWm4gGXK/Q5ODZozntb9yiJU0KujQymtgX4N0A
-X-Gm-Message-State: AOJu0YyYJoBYLXBazjPahD/lMuC9zwjGfKAFTr5MpXgWig/BOBaaAi9E
-	+UGQZc8YMqiWilyiOHX2qvRmsiV2XUYK/2CjxojeopqLdRJGr+5N
-X-Google-Smtp-Source: AGHT+IHxNWyxCske1Sik3AzMuvEhMmss2UuSC/r9wqFpY78TS4gk9vI+gPwdO/qOu4IRTvOYF4TUPA==
-X-Received: by 2002:a05:6214:16c5:b0:68f:e051:b1ee with SMTP id d5-20020a05621416c500b0068fe051b1eemr146433qvz.25.1709151256938;
-        Wed, 28 Feb 2024 12:14:16 -0800 (PST)
-Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
-        by smtp.gmail.com with ESMTPSA id u17-20020a0ced31000000b0068f6e1c3582sm113429qvq.146.2024.02.28.12.14.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 12:14:16 -0800 (PST)
-Date: Wed, 28 Feb 2024 15:14:16 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>
-Cc: kernel@quicinc.com
-Message-ID: <65df94185a2c1_b2ad829442@willemb.c.googlers.com.notmuch>
-In-Reply-To: <f38efc6d-20af-4cc1-9b8a-5fcb676b2845@quicinc.com>
-References: <20240228011219.1119105-1-quic_abchauha@quicinc.com>
- <65df56f6ba002_7162829435@willemb.c.googlers.com.notmuch>
- <f38efc6d-20af-4cc1-9b8a-5fcb676b2845@quicinc.com>
-Subject: Re: [PATCH net-next v2] net: Modify mono_delivery_time with
- clockid_delivery_time
+        d=1e100.net; s=20230601; t=1709151288; x=1709756088;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0ADqDxZgPwlPHrnolYYX16DFA+qGQXF/8Cktxf1H8u4=;
+        b=nWdyNH11AFa/L5PNL0MktLMGWAWrtNFGiuZ3a91U+DszuwtAxrgpYr31Vgic94AITJ
+         ojx2RA/czC9MeUP7LcqGk0algeErJ5CXgf6McCa3TAzI8mJgEQf5yINy51AX9O7ArFtS
+         LGeL/fpZB0mS3xIuhx6HYCFETSxymN8pbe6mEjnGMsBP5Gy9bQaNsA5zSiXC7If2oJlf
+         hEW4yzqdYVutkXMmIiPTm2/B3DKhdRPPQi+NywwCy+hiSY6zu7B3hGRMnyIGEYnuQGT0
+         QOLNBaewHDty7n+mrL6NkyDZyxcXma4aT/8SiERIWEz6iI1nZBCdvvyTkmHA20Zcjkzq
+         biPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU4sSJdzDHqiBuFacnpcvRf8DamtZpTsg0Ghjn4b3K/Y9ZxHGbrymt+XXpX4nhdSZTJLrrYgJ5NOKJmhwEdPMnftpg1H7TLtqfZ8hyn
+X-Gm-Message-State: AOJu0YwamHJGTGEHq4+atz4lWgs4U0wnQ3ZISiTv53bDp/aAvocSeafb
+	HsXIQTHMWCcdInRWrNekT47U3upDnQ/VTU4qBwEwAsUJL/3123+a6VM4N/MzGRxE+nAh1w0X2Vl
+	rcIIZp8DoS0D1IBTMHV2iM+DY3wtIjOfUrp2U4g==
+X-Google-Smtp-Source: AGHT+IG7XxH4AwZOInEocXRNgWrMaGpJwprc/M5hmyKfGaWgosyEiwVI681eukxW0okBE54/dKecrCUQtR2maiJPvrI=
+X-Received: by 2002:a2e:be28:0:b0:2d2:64c8:49a6 with SMTP id
+ z40-20020a2ebe28000000b002d264c849a6mr11611642ljq.21.1709151287525; Wed, 28
+ Feb 2024 12:14:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <Zd4DXTyCf17lcTfq@debian.debian> <CANn89iJQX14C1Qb_qbTVG4yoG26Cq7Ct+2qK_8T-Ok2JDdTGEA@mail.gmail.com>
+ <d633c5b9-53a5-4cd6-9dbb-6623bb74c00b@paulmck-laptop> <f1d1e0fb-2870-4b8f-8936-881ac29a24f1@joelfernandes.org>
+ <CAO3-Pboo32iQBBUHUELUkvvpSa=jZwUqefrwC-NBjDYx4yxYJQ@mail.gmail.com> <e592faa3-db99-4074-9492-3f9021b4350c@paulmck-laptop>
+In-Reply-To: <e592faa3-db99-4074-9492-3f9021b4350c@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Wed, 28 Feb 2024 15:14:34 -0500
+Message-ID: <CAEXW_YRfjhBjsMpBEdCoLd2S+=5YdFSs2AS07xwN72bgtW4sDQ@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: paulmck@kernel.org
+Cc: Yan Zhai <yan@cloudflare.com>, Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, 
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
+	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
+	kernel-team@cloudflare.com, rostedt@goodmis.org, mark.rutland@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Abhishek Chauhan (ABC) wrote:
-> 
-> 
-> On 2/28/2024 7:53 AM, Willem de Bruijn wrote:
-> > Abhishek Chauhan wrote:
-> >> Bridge driver today has no support to forward the userspace timestamp
-> >> packets and ends up resetting the timestamp. ETF qdisc checks the
-> >> packet coming from userspace and encounters to be 0 thereby dropping
-> >> time sensitive packets. These changes will allow userspace timestamps
-> >> packets to be forwarded from the bridge to NIC drivers.
-> >>
-> >> Existing functionality of mono_delivery_time is not altered here
-> >> instead just extended with userspace tstamp support for bridge
-> >> forwarding path.
-> >>
-> >> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
-> >> ---
-> >> Changes since v1 
-> >> - Changed the commit subject as i am modifying the mono_delivery_time 
-> >>   bit with clockid_delivery_time.
-> >> - Took care of suggestion mentioned by Willem to use the same bit for 
-> >>   userspace delivery time as there are no conflicts between TCP and 
-> >>   SCM_TXTIME, because explicit cmsg makes no sense for TCP and only
-> >>   RAW and DGRAM sockets interprets it.
-> > 
-> > The variable rename churn makes it hard to spot the functional
-> > changes. Perhaps it makes sense just keep the variable name as is,
-> > even though the "mono" is not always technically correct anymore.
-> > 
->   
-> 
-> I think a better approach would be to keep the variable as ease and add
-> comments and documentation in the header file of skbuff.h like 
-> how i have done in this patch. The reason why i say this is
-> a. We can avoid alot of code churn just to solve this basic problem of 
-> propagating timestamp through forwarding bridge path 
-> b. Re-use the same variable name and have better documentation 
-> c. Complexity will be as minimal as possible.
-> 
-> Let me know what you think. 
+On Wed, Feb 28, 2024 at 12:18=E2=80=AFPM Paul E. McKenney <paulmck@kernel.o=
+rg> wrote:
+>
+> On Wed, Feb 28, 2024 at 10:37:51AM -0600, Yan Zhai wrote:
+> > On Wed, Feb 28, 2024 at 9:37=E2=80=AFAM Joel Fernandes <joel@joelfernan=
+des.org> wrote:
+> > > Also optionally, I wonder if calling rcu_tasks_qs() directly is bette=
+r
+> > > (for documentation if anything) since the issue is Tasks RCU specific=
+ Also
+> > > code comment above the rcu_softirq_qs() call about cond_resched() not=
+ taking
+> > > care of Tasks RCU would be great!
+> > >
+> > Yes it's quite surprising to me that cond_resched does not help here,
+>
+> In theory, it would be possible to make cond_resched() take care of
+> Tasks RCU.  In practice, the lazy-preemption work is looking to get rid
+> of cond_resched().  But if for some reason cond_resched() needs to stay
+> around, doing that work might make sense.
 
-Agreed
+In my opinion, cond_resched() doing Tasks-RCU QS does not make sense
+(to me), because cond_resched() is to inform the scheduler to run
+something else possibly of higher priority while the current task is
+still runnable. On the other hand, what's not permitted in a Tasks RCU
+reader is a voluntary sleep. So IMO even though cond_resched() is a
+voluntary call, it is still not a sleep but rather a preemption point.
 
-> > Or else to split into two patches. One that renames the field.
-> > And one that adds the new behavior of setting the bit for SO_TXTIME.
-> >
-> 
-> Regarding the sidenote. I dont see how they are using clock_id to determine 
-> if the skb->tstamp is set in monotonic. Please correct me or point me to 
-> the piece of code which is doing so.
+So a Tasks RCU reader should perfectly be able to be scheduled out in
+the middle of a read-side critical section (in current code) by
+calling cond_resched(). It is just like involuntary preemption in the
+middle of a RCU reader, in disguise, Right?
 
-That's really out of scope of this series anyway
- 
-> 
-> I hope the check against sock_flag is a better implementation as 
-> it clearly stats and is inline with the implementation that the tstamp is 
-> coming from userspace. 
-> skb->mono_delivery_time = sock_flag(sk, SOCK_TXTIME);
+thanks,
 
-Enabling the socket flag is not sufficient to configure a delivery
-time on a packet. A transmit time must be communicated per packet
-with cork->transmit_time. And on top of that, it is cheaper to test.
+ - Joel
 
