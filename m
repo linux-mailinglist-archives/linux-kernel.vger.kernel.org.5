@@ -1,137 +1,147 @@
-Return-Path: <linux-kernel+bounces-85060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85061-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97AA786AFDC
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:05:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCFA186AFE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:06:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CF631F21E0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:05:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EED441C21BD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEFC14A4F9;
-	Wed, 28 Feb 2024 13:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F9EE14A4FB;
+	Wed, 28 Feb 2024 13:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="PRg+yigA"
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UXiHg9a/"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA02073508
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C331314691C;
+	Wed, 28 Feb 2024 13:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709125535; cv=none; b=BsvXKYEZvCyCheGCRW8qwTaKgRrdkO2Kdx9R3oLSchw1998aFufWj18EuNMf3X2r0mwhbMnOdZpDRjgOv8vMUAXp1pINR42xqYdvjSWW+JLALxZUaZpn0D/5LfvvGEv1aV2gU91fjjBF9/jWstKqG9GYfDZKm3T6XwNabCLl/zI=
+	t=1709125586; cv=none; b=CPyZMi60eH+eMMvvPFPSuiFr0awxUS8sFlvEOCoa0lWXpgkS7cQ304/fesxAzvHZ7hzK/HlSJV9+tGdKW4Z0tPSBIaYq5sJ2WaFL5azpPvA5KTMORm0Jd9IKBo6+Am0iM4XOdLWIYdrXLK7ten1D2J0AsfQB75o65Anvv7L7/Gc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709125535; c=relaxed/simple;
-	bh=MMhWgFzk2xvRvZhLcEHl1omXZ+ewrj46X6uo0KVBQU8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p01QiyVP/zrLazcspEvBdUIV2LlpD6MAJf1huZVbrgGgbEt36xyGn2uvNBIRWF4fwvqRpvFiF9j2cDX9cdO1cyCfKqsXVLeXRvv+l9ijDAPVuyVmpnlAblQ/LcODsbXxuxcOOkX911FkOaoR5z9pIHUBhTW3bwH0nbwQKd2CPrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=PRg+yigA; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a4348aaa705so443377566b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 05:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709125532; x=1709730332; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=O3WgTNeeGr6uKUuJvcES9LZuUweLm/sbBaRIaDoEjes=;
-        b=PRg+yigArlQOvAMf+4ViDVkE40RfzRlIqwtr42og9I+JvnDOywEaiTu1mCCXlJ5MWq
-         g4mMw2IWpGXE+kCqjeBUKMWy92rVUbbPhiltZU1+vemO4e4+GHBiDxODTL+cHCFx56i7
-         jTofTAxBrjwPoKEaIL9mQZuo49h94995gno9C67NPVHIvCNJYy1hYJtThC0MHVmBiYBb
-         6Lq60c6RDn5PM/GUpxF5JO+vf+iI/lpX12McpdbYcjZWyvInxGcb3qBFumEbO2LpVUnL
-         SjAr1NtulmGC5Y7Ia+RWN1NhL8BMsisT5hQRByKzU6vEAL54JHu9AIFMMpHTseRKxtuz
-         /TDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709125532; x=1709730332;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O3WgTNeeGr6uKUuJvcES9LZuUweLm/sbBaRIaDoEjes=;
-        b=T5vRmq/LzSuYm4zbpsQYAAktZn4EPcZuIumpqrem9SdwUc9FFTxdkJh3X5HDQIteVl
-         SwInOkuCBTte9RicCzqW2n8XsrG+48Ypz7zV3nlcISSojHAvuSNgWGemY4mj0VEombcb
-         44tgZyZAu22324RGWONBXJZBLvneYU+LsT0p6PoR/XPlQ5ChXI7Q2EStVv6MxtHsPa9B
-         QeGVvl8VM98gPpa56YItCAr/VGqDz7YnXkIyAmY7P7KqtkjjCALzobbTZu9n2/K1uQjR
-         MPukwsz1pKqQbnMpPR40rb4mzuKl89slpeoliLMh9e65/9id0dFn7wT6agrExBj+AXy6
-         m/qA==
-X-Forwarded-Encrypted: i=1; AJvYcCU6QiNIL0vNU6DYeZ2mvCD8CdKJdunx9FUvs77855E9ULgDKAFerJIQZUKGX8UyUAaxY/CDhS2RxdTYmwidfRIGvWS1Y3bxoDhUj8QH
-X-Gm-Message-State: AOJu0YwUMmY8iiJk4VfUCIEAz2XSk2asgyzK/zKySmI50sla99Vpo5mS
-	E1TyvG2CO5B8kGTkxAXbr6Q0jyOf/9zA6ZiPPVNm6VQrY8cffjvPzh9r08CXRXk=
-X-Google-Smtp-Source: AGHT+IH+C1UK8TXkfq2HYZwku9tG0/J9fW8seqeejTe1fbola7gcXOqlPx5qIbzYgVlGAurTsc1Dmw==
-X-Received: by 2002:a17:906:371a:b0:a3e:9ad2:b555 with SMTP id d26-20020a170906371a00b00a3e9ad2b555mr9508772ejc.24.1709125532375;
-        Wed, 28 Feb 2024 05:05:32 -0800 (PST)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id ti6-20020a170907c20600b00a43c3e5e008sm1386581ejc.205.2024.02.28.05.05.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 05:05:31 -0800 (PST)
-Date: Wed, 28 Feb 2024 14:05:31 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Anup Patel <apatel@ventanamicro.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, 
-	Atish Patra <atishp@atishpatra.org>, Shuah Khan <shuah@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 2/5] RISC-V: KVM: Allow Ztso extension for Guest/VM
-Message-ID: <20240228-4b0546ecd98e675844aab46f@orel>
-References: <20240214123757.305347-1-apatel@ventanamicro.com>
- <20240214123757.305347-3-apatel@ventanamicro.com>
+	s=arc-20240116; t=1709125586; c=relaxed/simple;
+	bh=b2Ig2bSrvAWCjWDAGJzCNXj0xb7pA3/vdDPzXmg9efw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=dlxNpJW7hXy8azcWaaTKJ9E1y0rDtbkgqQmOHTlA+eaAsxXQmMPiLndVpatHEFJXWrTY4b0IlLfBIoc9dpNSSU0vlmJFCq1r6G1VyiF7V4vj6ZN3mr4zeT8r7ddhKaQJNFXWWbRHPf8sp59bWS678O/bUnpv9jMuLrjJDKeF8pY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UXiHg9a/; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S59x2g021611;
+	Wed, 28 Feb 2024 13:06:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=5OVExsAPMnmn+la7f25Pu1bxp8NeHQu4Jdb0u6jp0oE=; b=UX
+	iHg9a/2wYQEXWWWNye5X8EtbzAByLyhHgem+jAmLGzcHK/PUfwem4JrxgyTDgl7d
+	VSJpV8fTfcUdQnlda9ef3OTVmKx7NOYC8Eph175zCLJAGDI4GOoHSYq9rQ7LTXqF
+	HPKa6aTofv1ax1pWxfqUcy0kP5BvxAGf2wKwoU3YVmw1qxQ9PnN8NQ7ArsPNAKMA
+	KF2AB5Ln9leCGOvFo/omBEfcght/B4/yl3FQOhRxd1q/9VHaGSF+YglB7A92uzUG
+	HiM/jCtkSn9IWPGVAlTpJXKzWVRqya9dZe9tyGGyuGbd78aeO77VKDOe5yj9Y7G9
+	AH7Y4dTL92PthYTmgXAA==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whu8k19xe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 13:06:12 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SD6BeA018566
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 13:06:11 GMT
+Received: from [10.218.10.86] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 05:06:04 -0800
+Message-ID: <8dc0f8e4-e7e6-98b6-037b-31b86c6087af@quicinc.com>
+Date: Wed, 28 Feb 2024 18:36:01 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214123757.305347-3-apatel@ventanamicro.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v5 2/3] PCI: qcom-ep: Enable cache coherency for SA8775P
+ EP
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <manivannan.sadhasivam@linaro.org>, <robh@kernel.org>
+CC: <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
+        <dmitry.baryshkov@linaro.org>, <quic_krichai@quicinc.com>,
+        <quic_vbadigan@quicinc.com>, <quic_schintav@quicinc.com>,
+        Lorenzo Pieralisi
+	<lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?=
+	<kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>
+References: <1708697021-16877-1-git-send-email-quic_msarkar@quicinc.com>
+ <1708697021-16877-3-git-send-email-quic_msarkar@quicinc.com>
+ <640775cb-3508-4228-aa94-2e4b7b6b2b6d@linaro.org>
+From: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+In-Reply-To: <640775cb-3508-4228-aa94-2e4b7b6b2b6d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: SxOULRZ_ja7o0_1XuoiMOY3p95yOxIWy
+X-Proofpoint-GUID: SxOULRZ_ja7o0_1XuoiMOY3p95yOxIWy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_06,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 impostorscore=0 suspectscore=0 clxscore=1015 phishscore=0
+ adultscore=0 mlxscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280103
 
-On Wed, Feb 14, 2024 at 06:07:54PM +0530, Anup Patel wrote:
-> We extend the KVM ISA extension ONE_REG interface to allow KVM
-> user space to detect and enable Ztso extension for Guest/VM.
-> 
-> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> ---
->  arch/riscv/include/uapi/asm/kvm.h | 1 +
->  arch/riscv/kvm/vcpu_onereg.c      | 2 ++
->  2 files changed, 3 insertions(+)
-> 
-> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
-> index 7499e88a947c..f8aa9f2ace95 100644
-> --- a/arch/riscv/include/uapi/asm/kvm.h
-> +++ b/arch/riscv/include/uapi/asm/kvm.h
-> @@ -166,6 +166,7 @@ enum KVM_RISCV_ISA_EXT_ID {
->  	KVM_RISCV_ISA_EXT_ZVFH,
->  	KVM_RISCV_ISA_EXT_ZVFHMIN,
->  	KVM_RISCV_ISA_EXT_ZFA,
-> +	KVM_RISCV_ISA_EXT_ZTSO,
->  	KVM_RISCV_ISA_EXT_MAX,
->  };
->  
-> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
-> index 5f7355e96008..38f5cf286087 100644
-> --- a/arch/riscv/kvm/vcpu_onereg.c
-> +++ b/arch/riscv/kvm/vcpu_onereg.c
-> @@ -66,6 +66,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
->  	KVM_ISA_EXT_ARR(ZKSED),
->  	KVM_ISA_EXT_ARR(ZKSH),
->  	KVM_ISA_EXT_ARR(ZKT),
-> +	KVM_ISA_EXT_ARR(ZTSO),
->  	KVM_ISA_EXT_ARR(ZVBB),
->  	KVM_ISA_EXT_ARR(ZVBC),
->  	KVM_ISA_EXT_ARR(ZVFH),
-> @@ -141,6 +142,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
->  	case KVM_RISCV_ISA_EXT_ZKSED:
->  	case KVM_RISCV_ISA_EXT_ZKSH:
->  	case KVM_RISCV_ISA_EXT_ZKT:
-> +	case KVM_RISCV_ISA_EXT_ZTSO:
->  	case KVM_RISCV_ISA_EXT_ZVBB:
->  	case KVM_RISCV_ISA_EXT_ZVBC:
->  	case KVM_RISCV_ISA_EXT_ZVFH:
-> -- 
-> 2.34.1
+
+On 2/24/2024 5:37 AM, Konrad Dybcio wrote:
+> On 23.02.2024 15:03, Mrinmay Sarkar wrote:
+>> Due to some hardware changes, SA8775P has set the NO_SNOOP attribute
+>> in its TLP for all the PCIe controllers. NO_SNOOP attribute when set,
+>> the requester is indicating that there no cache coherency issues exit
+>> for the addressed memory on the host i.e., memory is not cached. But
+>> in reality, requester cannot assume this unless there is a complete
+>> control/visibility over the addressed memory on the host.
+>>
+>> And worst case, if the memory is cached on the host, it may lead to
+>> memory corruption issues. It should be noted that the caching of memory
+>> on the host is not solely dependent on the NO_SNOOP attribute in TLP.
+>>
+>> So to avoid the corruption, this patch overrides the NO_SNOOP attribute
+>> by setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not
+>> needed for other upstream supported platforms since they do not set
+>> NO_SNOOP attribute by default.
+>>
+>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+>> ---
+>>   drivers/pci/controller/dwc/pcie-qcom-ep.c | 20 +++++++++++++++++---
+>>   1 file changed, 17 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+>> index 89d06a3e6e06..369954649254 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+>> @@ -45,6 +45,7 @@
+>>   #define PARF_SLV_ADDR_MSB_CTRL			0x2c0
+>>   #define PARF_DBI_BASE_ADDR			0x350
+>>   #define PARF_DBI_BASE_ADDR_HI			0x354
+>> +#define PARF_NO_SNOOP_OVERIDE			0x3d4
+> Any reason for this to be unsorted?
 >
+> Konrad
+Yes, this should be sorted. Will fix this in next series.
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Thanks
+Mrinmay
 
