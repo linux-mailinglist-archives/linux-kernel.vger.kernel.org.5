@@ -1,159 +1,104 @@
-Return-Path: <linux-kernel+bounces-85852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1F3986BC3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:34:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D0A986BC3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:33:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7D151F2209B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:34:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29B681F21D2B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1101F71ECE;
-	Wed, 28 Feb 2024 23:34:43 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599E213D2EC
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EEE071EA1;
+	Wed, 28 Feb 2024 23:33:05 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 376DC13D2FA
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709163282; cv=none; b=Thxr8IB6LcBlXiSugGHeV8m10lJLibAPnEcl2bFVuLs4Ia+1QbbFgDDIGPkGIcVvZ2Sh846yrj/9DfqvpbY6SsYiSPOY7aD+HZ94S+Ci+e0qmDuRX+nG3fG2z9SFm0WrhgYZXsL/n3HNBQH3Wmqo5QAKWJ1VgMFWw8Y9AMrbu4s=
+	t=1709163185; cv=none; b=pJol25tyqo8vsqhgUFpQVnA5xhkNZ+sJXi8XKEpP4mpqX6HPr4gyoeyBKh0XnhT90F9NLGS/CKxK/ie37iPF9j6NIzxyRkxs90iVqMFJgXLl94OqnxZMhaZmw0HUxWV+wiUhDUQTy72PIY5pmZMMrukoBws4PK8woR+jo+yaIIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709163282; c=relaxed/simple;
-	bh=+MsY1IJSTlCHzh7O9mUgcv30fwS5Nx5yrNhbZQvAZyA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ayE0Co5FrMZE7UYW/jOeO8YjxI4wISNd6BDkdsQCdy54sSxM0zQl2cvHOfouekMd1kEUR0vlQ0DCzXsQfEoy3KoXEmztC7BTwlq5twesgZ7n8vKx+/p9zzlxJEOC/32eWHoZsKv3Koh5ADa+T4MnuH2uccMQusNeK3zROyKQwJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 199A31FB;
-	Wed, 28 Feb 2024 15:35:17 -0800 (PST)
-Received: from [192.168.2.96] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 617E33F73F;
-	Wed, 28 Feb 2024 15:34:34 -0800 (PST)
-Message-ID: <1146ab2f-56c7-43f3-b26b-d91d2bd08556@arm.com>
-Date: Thu, 29 Feb 2024 00:34:28 +0100
+	s=arc-20240116; t=1709163185; c=relaxed/simple;
+	bh=fmyNSUcPVp9b3i6F509Z6PDdFlXhI3KhBOJlRENZKog=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Ro1c/ZLA0xJBFh/e3epcSw+w/zod9746dnmcjn2LkrlioiS7fR93w70axE1tBd52RmRxs7lRAJ2GNYbjb7Yia0oddhsGVcauCmHE8+YDMww2VQ17Y5mPoQOwP2D+F7WWkLTJH7tXHBuQIUtH6oTib9gvFZsxxyIQx9dPp6sDO54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31A27C433F1;
+	Wed, 28 Feb 2024 23:33:03 +0000 (UTC)
+Date: Wed, 28 Feb 2024 18:35:07 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org, Peter Zijlstra
+ <peterz@infradead.org>, Vince Weaver <vincent.weaver@maine.edu>, Dave Jones
+ <dsj@fb.com>, Jann Horn <jannh@google.com>, Miroslav Benes
+ <mbenes@suse.cz>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Masami Hiramatsu <mhiramat@kernel.org>, Nilay Vaish
+ <nilayvaish@google.com>
+Subject: Re: [PATCH v2 06/11] x86/unwind/orc: Convert global variables to
+ static
+Message-ID: <20240228183507.78c5f130@gandalf.local.home>
+In-Reply-To: <43ae310bf7822b9862e571f36ae3474cfde8f301.1587808742.git.jpoimboe@redhat.com>
+References: <cover.1587808742.git.jpoimboe@redhat.com>
+	<43ae310bf7822b9862e571f36ae3474cfde8f301.1587808742.git.jpoimboe@redhat.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] sched/fair: Add EAS checks before updating
- overutilized
-Content-Language: en-US
-To: Shrikanth Hegde <sshegde@linux.ibm.com>,
- Pierre Gondois <pierre.gondois@arm.com>
-Cc: yu.c.chen@intel.com, linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
- aboorvad@linux.ibm.com, srikar@linux.vnet.ibm.com, vschneid@redhat.com,
- morten.rasmussen@arm.com, qyousef@layalina.io, mingo@kernel.org,
- peterz@infradead.org, vincent.guittot@linaro.org
-References: <20240228071621.602596-1-sshegde@linux.ibm.com>
- <20240228071621.602596-2-sshegde@linux.ibm.com>
- <86f000a3-3068-4c57-858d-c00e3eb6e974@arm.com>
- <72c2d279-90ae-4612-9b96-e579333b8088@linux.ibm.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <72c2d279-90ae-4612-9b96-e579333b8088@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 28/02/2024 18:24, Shrikanth Hegde wrote:
-> 
-> 
-> On 2/28/24 9:28 PM, Pierre Gondois wrote:
+On Sat, 25 Apr 2020 05:03:05 -0500
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 
-[...]
-
-> But we will do some extra computation currently and then not use it if it 
-> Non-EAS case in update_sg_lb_stats
+> These variables aren't used outside of unwind_orc.c, make them static.
 > 
-> Would something like this makes sense?
-> @@ -9925,7 +9925,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
->                 if (nr_running > 1)
->                         *sg_status |= SG_OVERLOAD;
+> Also annotate some of them with '__ro_after_init', as applicable.
+
+So it appears that crash uses "lookup_num_blocks" to be able to do
+back-traces with the ORC unwinder. But because it's now static, crash can no
+longer do that.
+
+Is it possible to make lookup_num_blocks global again?
+
+/* Not static so that the crash utility can access it */
+unsigned int lookup_num_blocks __ro_after_init;
+
+-- Steve
+
+> 
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+> ---
+>  arch/x86/kernel/unwind_orc.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+> index e9cc182aa97e..64889da666f4 100644
+> --- a/arch/x86/kernel/unwind_orc.c
+> +++ b/arch/x86/kernel/unwind_orc.c
+> @@ -15,12 +15,12 @@ extern int __stop_orc_unwind_ip[];
+>  extern struct orc_entry __start_orc_unwind[];
+>  extern struct orc_entry __stop_orc_unwind[];
 >  
-> -               if (cpu_overutilized(i))
-> +               if (sched_energy_enabled() && cpu_overutilized(i))
->                         *sg_status |= SG_OVERUTILIZED;
+> -static DEFINE_MUTEX(sort_mutex);
+> -int *cur_orc_ip_table = __start_orc_unwind_ip;
+> -struct orc_entry *cur_orc_table = __start_orc_unwind;
+> +static bool orc_init __ro_after_init;
+> +static unsigned int lookup_num_blocks __ro_after_init;
+>  
+> -unsigned int lookup_num_blocks;
+> -bool orc_init;
+> +static DEFINE_MUTEX(sort_mutex);
+> +static int *cur_orc_ip_table = __start_orc_unwind_ip;
+> +static struct orc_entry *cur_orc_table = __start_orc_unwind;
+>  
+>  static inline unsigned long orc_ip(const int *ip)
+>  {
 
-Yes, we could also disable the setting of OU in load_balance in the none
-!EAS case.
-
-[...]
-
->> NIT:
->> When called from check_update_overutilized_status(),
->> sched_energy_enabled() will be checked twice.
-> Yes. 
-> But, I think that's okay since it is a static branch check at best. 
-> This way it keeps the code simpler. 
-
-You could keep the ched_energy_enabled() outside of the new
-set_overutilized_status() to avoid this:
-
--->8--
-
----
- kernel/sched/fair.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 32bc98d9123d..c82164bf45f3 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6676,12 +6676,19 @@ static inline bool cpu_overutilized(int cpu)
- 	return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min, rq_util_max, cpu);
- }
- 
-+static inline void set_overutilized_status(struct rq *rq, unsigned int val)
-+{
-+	WRITE_ONCE(rq->rd->overutilized, val);
-+	trace_sched_overutilized_tp(rq->rd, val);
-+}
-+
- static inline void update_overutilized_status(struct rq *rq)
- {
--	if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu)) {
--		WRITE_ONCE(rq->rd->overutilized, SG_OVERUTILIZED);
--		trace_sched_overutilized_tp(rq->rd, SG_OVERUTILIZED);
--	}
-+	if (!sched_energy_enabled())
-+		return;
-+
-+	if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu))
-+		set_overutilized_status(rq, SG_OVERUTILIZED);
- }
- #else
- static inline void update_overutilized_status(struct rq *rq) { }
-@@ -10755,19 +10762,16 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 		env->fbq_type = fbq_classify_group(&sds->busiest_stat);
- 
- 	if (!env->sd->parent) {
--		struct root_domain *rd = env->dst_rq->rd;
--
- 		/* update overload indicator if we are at root domain */
--		WRITE_ONCE(rd->overload, sg_status & SG_OVERLOAD);
-+		WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
- 
- 		/* Update over-utilization (tipping point, U >= 0) indicator */
--		WRITE_ONCE(rd->overutilized, sg_status & SG_OVERUTILIZED);
--		trace_sched_overutilized_tp(rd, sg_status & SG_OVERUTILIZED);
--	} else if (sg_status & SG_OVERUTILIZED) {
--		struct root_domain *rd = env->dst_rq->rd;
--
--		WRITE_ONCE(rd->overutilized, SG_OVERUTILIZED);
--		trace_sched_overutilized_tp(rd, SG_OVERUTILIZED);
-+		if (sched_energy_enabled()) {
-+			set_overutilized_status(env->dst_rq,
-+						sg_status & SG_OVERUTILIZED);
-+		}
-+	} else if (sched_energy_enabled() && sg_status & SG_OVERUTILIZED) {
-+		set_overutilized_status(env->dst_rq, SG_OVERUTILIZED);
- 	}
- 
- 	update_idle_cpu_scan(env, sum_util);
--- 
-2.25.1
 
