@@ -1,97 +1,126 @@
-Return-Path: <linux-kernel+bounces-85845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4DED86BC26
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:26:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9AA286BC2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:27:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 388FCB2117C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:26:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6458C1F2612C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4BD13D319;
-	Wed, 28 Feb 2024 23:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4423FB97;
+	Wed, 28 Feb 2024 23:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nFzLWLde";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XrrtfC3L"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K7HSEoza"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF36913D2EE
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECE913D314
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709162790; cv=none; b=GwzVHCS5sZQ8NilDcQi5H2OgltNLdV8JlEOHK1tN06sYLJw/4t+ufG9jFx0CLTvypjbp6vsUNoGureotTe6gDwEWuQ7EmpVZybuoNtMJRoDRwo7F5zt1Vy85KnVnD0F46CLU51AAl1uKxq+ur6MjNJ3fqHCQxdeve0yQP4ORp9I=
+	t=1709162818; cv=none; b=ubNTVh1o6QMs8SgQdU4VJJRBTvdpfgsvpDnHqqo1grPnFjs5lDlwmXaDMjAM/fTqusl8sDOfrDiXb3o9AfJ+rG2uJmXmvhVnpcO/wNwoZ2j2UBWpKqROlvfRiKCJQJOITk7MrgDnnjfsCo0V3SBqeV98IGTwHrfWO5MC9boq+YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709162790; c=relaxed/simple;
-	bh=lvzNbHMux8kYW4Qr2USEaO+QnqLQjOklCQuREhqmM60=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Nx2Rk5iKDTuGQesqyC7BQGcfcuqJriUmSdScmyUxeRBLf8q2tsIdZwrnOYSYMedsx2Fn+8tzD7ZNkJi9b7QwwHz8577Z1eUn41SgPkhDlVJlK38oGbtfvAfKzhVmugS+N+USi+T753l5Yj2Jxy9+xG+k1i20P2QZZUVpQd6WcLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nFzLWLde; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XrrtfC3L; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709162786;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WILh8BPSHXfAxjCpDXq5cvSk7cP9m3kjlHYnbAdrmBE=;
-	b=nFzLWLdeXnmVm8fFmKbb5AqRMicnpkEPdoVf2uMyYPB+SYZy/VhRR861ogn82CvurxjqH6
-	OrSKtaDw+fM3h0LIhdTMHSdS67crIt1aQKN3KH4iWZvGyZIl1XDvXsswYJrjvgjEhOuB8D
-	Q54x980kCytM/zP9ASuxEQK7UOt6W2HLLKEuMQfkcIvz7W7ipuNsQKLqWv0fgOsS2QtsKN
-	YrGy9rvtioFMZb5Q9pXPdFk7xScAr+LfXaLdhsTgCDOzbbTlKpno/JEKFbGIMkZVxDzP0g
-	f3PF0Ni32DGWOJam3hRjOBfj/KJ2pEFNyle7wHXLKydU0YydhKhK9ReJ2y0vsw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709162786;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WILh8BPSHXfAxjCpDXq5cvSk7cP9m3kjlHYnbAdrmBE=;
-	b=XrrtfC3LY01+rmQkcm2RC7k8TS85BLvffCJ1MMjXvVqGdy+5efHbEeDXyHmFDOZaGfXwk5
-	u39N4rpv8Cc7B5Aw==
-To: Andi Kleen <ak@linux.intel.com>, x86@kernel.org
-Cc: linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v2] x86/mtrr: Check if fixed MTRRs exist before saving them
-In-Reply-To: <20240110150806.22531-1-ak@linux.intel.com>
-References: <20240110150806.22531-1-ak@linux.intel.com>
-Date: Thu, 29 Feb 2024 00:26:26 +0100
-Message-ID: <87edcw8925.ffs@tglx>
+	s=arc-20240116; t=1709162818; c=relaxed/simple;
+	bh=8FTj6Koa44+7wIfYWJIPoAle8PfST8SPtRF2sQxL16I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mcHGsgNS9dgc596VNBxM2YGyz0ingSgPe7iq/MkQ7QBUb4aeTLsgcuHVnKYtKlHfeh8441XCoFvkZSF0AFkxsS2XTUVOqbrHZkA1Yi7U5jzxeqTiqbKUoQzWGxrUZVpYb8EDPaSK9KrxiacIgPUBm9Mz685TbLzytpNKHMD8gPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K7HSEoza; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512e4f4e463so170881e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 15:26:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709162815; x=1709767615; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7eYiCisy9EvDzPpdsA8EnqFrzrb2WGQGdFzfYxWz3OE=;
+        b=K7HSEoza7DCdIqrcWgXXP62YbQCQYuMTXvgq7CHcNaOta4aWB5IYuuPC4ZTd00TQIC
+         dDRItLh2fANircRuUuzCH1UrwlY9WjWUkYNIifpwhQpZaSCv3QvyOjOFE9UCNApaduLt
+         CdW+mGt3xCIKGv0rTlSKBJBDIehivzbzwHRLyo4oebRX1cs49wR2n6HOLU4FkmyciG6z
+         1TUR+xNX++n69zJfmA2NwhWLV8fJkRy8wmSK/Feeme5DN6K0hzbi73TfyBdqJLngT4yn
+         FhMoJWm4kvhic9OJBIgQUnC7VIrKHWDadTbXx+K1t2jyR42CznPlLgT0h+P8q7ZmuyiL
+         VHrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709162815; x=1709767615;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7eYiCisy9EvDzPpdsA8EnqFrzrb2WGQGdFzfYxWz3OE=;
+        b=Acrkp3hNO0XENie20RT1FqhHhze+IhZemdJj8i+ktWTgRsRRvQUeLzPdkbzeGe23Te
+         sYLywA0v3pZOsoV3p/SQT9JUiGyYWIacas/I14Sl7DVrSUj/BIJ8Uan61oI8LuZI/SlG
+         NUfo+N/ws3v/2vpP6UHQeTWCwSfKEsI3O0zAu2ZDHKskEtcSqtJ82n2aSeU7Ady0GUCV
+         7pCjHVdEo/4drWgFuzaxwJLrcpFqXdUs0aeojHCDjHUfiW5O3xLM6cnf7Mc/3eI92SNr
+         joDN4tjMpTG/JEJhq3IP1m2u7O8h18OROsd7qkvEWiZeRJwnDEaofOwALOw60HYJ+Tu3
+         a+6w==
+X-Gm-Message-State: AOJu0YwLSA81FQ5RjexOoOy71G6SWIQUcy8b1IlEWM09jIYS0cw5keOr
+	NxxrmYFREqKJLDleOC48sZHov+BDdtZuQ7JfzTzGFvrR9Ge4/V/2RP7Hg8pMg/g=
+X-Google-Smtp-Source: AGHT+IEauPA8YU76AZ2HWn9YzhqJSaQh/sxY5dBOq9kCUqmFc1a7D67zChdJwrqxqulBHP/Mq3mKqg==
+X-Received: by 2002:a05:6512:34d3:b0:512:f6a0:1311 with SMTP id w19-20020a05651234d300b00512f6a01311mr236650lfr.47.1709162815082;
+        Wed, 28 Feb 2024 15:26:55 -0800 (PST)
+Received: from [172.30.205.146] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id j10-20020a056512028a00b00512dec300dcsm28686lfp.2.2024.02.28.15.26.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 15:26:54 -0800 (PST)
+Message-ID: <c25aa425-f350-4ad2-b92e-67de996daed3@linaro.org>
+Date: Thu, 29 Feb 2024 00:26:49 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: pmic_glink_altmode: Use common error handling
+ code in pmic_glink_altmode_probe()
+To: Markus Elfring <Markus.Elfring@web.de>, linux-arm-msm@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Bjorn Andersson <andersson@kernel.org>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Johan Hovold <johan+linaro@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, freedreno@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@gmail.com>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Kuogee Hsieh <quic_khsieh@quicinc.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Rob Clark <robdclark@gmail.com>,
+ Robert Foss <rfoss@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Peter Zijlstra <peterz@infradead.org>
+References: <29b63eb4-2342-4ca8-a313-5de2a6ec6a83@web.de>
+Content-Language: en-US
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <29b63eb4-2342-4ca8-a313-5de2a6ec6a83@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 10 2024 at 07:08, Andi Kleen wrote:
-> This one place forgot to check the fixed capability.
 
-This one place forgot? And what the heck is a fixed capability? 
 
-> Otherwise there will a harmless but ugly WARN_ON for the failed WRMSR
-> when the MSR doesn't exist.
+On 2/28/24 19:05, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 28 Feb 2024 18:45:13 +0100
+> 
+> Add a jump target so that a bit of exception handling can be better reused
+> at the end of this function implementation.
+> 
+> This issue was transformed by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
 
-This is not a sentence as it lacks a verb,
+(+CC Peter)
 
-Also it does not matter whether you think that the WARN_ON() is ugly or
-not. Can you please write a changelog in technical terms?
+Hmm.. this looks very similar to the problem that __free solves
+with <linux/cleanup.h>..
 
-> Noticed when testing X86S support.
+I know no better, but wouldn't the same mechanism, down to the
+usage of DEFINE_FREE work fine for _put-like functions?
 
-Who cares?
-
-> Fixes: 2b1f6278d77c ("[PATCH] x86: Save the MTRRs of the BSP before")
-
-This fixes tag is pointlessly truncated. The correct one is:
-
-Fixes: 2b1f6278d77c ("[PATCH] x86: Save the MTRRs of the BSP before booting an AP")
-
-It's not rocket science to copy & pasta correctly.
-
-Thanks,
-
-        tglx
+Konrad
 
