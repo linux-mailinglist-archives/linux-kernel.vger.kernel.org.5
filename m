@@ -1,99 +1,142 @@
-Return-Path: <linux-kernel+bounces-84383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEDF386A619
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:52:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2163186A61C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C4141C21C9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:52:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D035B288DAE
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EBE9200D6;
-	Wed, 28 Feb 2024 01:45:22 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A99208C0;
+	Wed, 28 Feb 2024 01:46:25 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15AB2107
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDA7610C;
+	Wed, 28 Feb 2024 01:46:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709084721; cv=none; b=Xp43T/+TtC6a3A6pHfCytdDAu9yy81URT6zv94jilc9ktzYJtpw6CFzcKuhyKjylkpqKOYJnnRNemib1DXC87sNvhA7aaT0PM3F1zqIGJq+H4ZErqyM9aB5vancOSBk/N9ulI0mn9dwSax/9Ddn+/ZbypQzngjflX/gG03s3tqo=
+	t=1709084785; cv=none; b=thqPFMgmhOPLm+O8KoafileyMxHIyItWQI6+oUohUNiaJ37ZjkpuXpLNIzmvuwj9oTKo+8yUyZ/+b7k9cgBdhQA6HkcfNd6KGHhZMDixkfhDTwsCbk9els2Gei9R6eRmoD4+rFo3UQO4v1F65Kch2TpBTOEhScQPWqjNUglLENs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709084721; c=relaxed/simple;
-	bh=aUhYnlIpBJqOZBs9lCR1IssHEcMlvOje0saxlAdAohs=;
-	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ZT09dmM8jsjYP8AIi4hIgpVNMMNdZvjFddsaOmV48OEndvHGUAVkEvd6Lxaz0FhPRApCnV9ElaZ4dyno/gTMJErKpZTqSmLwejh+ithYqy55PIgDJWJt2SCMqt6aFumhUGjEa018EG/YRnAwD+A/EV5wG6KH5zVGV/LuTID4LKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tkxr0701Pz1b15m;
-	Wed, 28 Feb 2024 09:40:16 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id CD0EF18002F;
-	Wed, 28 Feb 2024 09:45:15 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 28 Feb 2024 09:45:14 +0800
-Subject: Re: [PATCH v2] mtd: ubi: fix NVMEM over UBI volumes on 32-bit systems
-To: Daniel Golle <daniel@makrotopia.org>, Richard Weinberger <richard@nod.at>,
-	Miquel Raynal <miquel.raynal@bootlin.com>, Vignesh Raghavendra
-	<vigneshr@ti.com>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <31a20aead3419209991bf01aaeaefe07ab94d23a.1709081052.git.daniel@makrotopia.org>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <8ae44e8e-fc3d-28bd-5d1e-e900ce53529f@huawei.com>
-Date: Wed, 28 Feb 2024 09:45:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1709084785; c=relaxed/simple;
+	bh=y2J8xrZa9M54eWn3LAFoC7IkuHnNfcD6qqr0J5J5Lzs=;
+	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=j/AD68De1mtewDa4p7Os1fGxdx975S+wOUkD6QyxfkIaKhdx0Jy55h2XI2NO2usdLSc1VwXOlf5NQbEcorkZgDlQoZENMvMjqN+psLUWiwb78jA+9bjmZkJci4CyT25oCXkmvCQslNxEPdP1nC84X+1e1XBS/sBeDGLdr7SwfxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tkxyr5qdGz4f3m6x;
+	Wed, 28 Feb 2024 09:46:12 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 255601A0392;
+	Wed, 28 Feb 2024 09:46:20 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP4 (Coremail) with SMTP id gCh0CgAHW21qkN5lpJfMFQ--.11014S2;
+	Wed, 28 Feb 2024 09:46:20 +0800 (CST)
+Subject: Re: [PATCH 1/7] fs/writeback: avoid to writeback non-expired inode in
+ kupdate writeback
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: Tim Chen <tim.c.chen@linux.intel.com>, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, jack@suse.cz
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240208172024.23625-1-shikemeng@huaweicloud.com>
+ <20240208172024.23625-2-shikemeng@huaweicloud.com>
+ <ba75294dfb5bf4dd046d54de6c3e57698592dacc.camel@linux.intel.com>
+ <4364e9bc-2d29-120d-4837-7f5620585508@huaweicloud.com>
+Message-ID: <64ceb2b1-a120-dcf1-0e5f-033033b47685@huaweicloud.com>
+Date: Wed, 28 Feb 2024 09:46:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <31a20aead3419209991bf01aaeaefe07ab94d23a.1709081052.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+In-Reply-To: <4364e9bc-2d29-120d-4837-7f5620585508@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAHW21qkN5lpJfMFQ--.11014S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF1UJF1UJw4fXFWxZry7KFg_yoW8urW8pF
+	WrKFyUKF4UZ3W8uwn2va17Zr4UKF4xGr13Xw12kF1Utas09r1SgFyUurWrKa40kr43XwnY
+	v3WkJ343ua15JFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-ÔÚ 2024/2/28 8:46, Daniel Golle Ð´µÀ:
-> A compiler warning related to sizeof(int) != 8 when calling do_div()
-> is triggered when building on 32-bit platforms.
-> Address this by using integer types having a well-defined size.
+
+
+on 2/18/2024 10:01 AM, Kemeng Shi wrote:
 > 
-> Fixes: 3ce485803da1 ("mtd: ubi: provide NVMEM layer over UBI volumes")
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
-> v2: use size_t for 'bytes_left' variable to match parameter type
 > 
->   drivers/mtd/ubi/nvmem.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/ubi/nvmem.c b/drivers/mtd/ubi/nvmem.c
-> index b7a93c495d172..e68b8589c4279 100644
-> --- a/drivers/mtd/ubi/nvmem.c
-> +++ b/drivers/mtd/ubi/nvmem.c
-> @@ -23,9 +23,12 @@ struct ubi_nvmem {
->   static int ubi_nvmem_reg_read(void *priv, unsigned int from,
->   			      void *val, size_t bytes)
->   {
-> -	int err = 0, lnum = from, offs, bytes_left = bytes, to_read;
->   	struct ubi_nvmem *unv = priv;
->   	struct ubi_volume_desc *desc;
-> +	size_t bytes_left = bytes;
-> +	uint32_t offs, to_read;
-There still exist a type truncation assignment 'to_read = bytes_left' 
-below, although it's safe in logic.
-> +	uint64_t lnum = from;
-> +	int err = 0;
->   
->   	desc = ubi_open_volume(unv->ubi_num, unv->vol_id, UBI_READONLY);
->   	if (IS_ERR(desc))
-> 
+> on 2/9/2024 2:29 AM, Tim Chen wrote:
+>> On Fri, 2024-02-09 at 01:20 +0800, Kemeng Shi wrote:
+>>>
+>>>  
+>>> +static void filter_expired_io(struct bdi_writeback *wb)
+>>> +{
+>>> +	struct inode *inode, *tmp;
+>>> +	unsigned long expired_jiffies = jiffies -
+>>> +		msecs_to_jiffies(dirty_expire_interval * 10);
+>>
+>> We have kupdate trigger time hard coded with a factor of 10 to expire interval here.
+>> The kupdate trigger time "mssecs_to_jiffies(dirty_expire_interval * 10)" is
+>> also used in wb_writeback().  It will be better to have a macro or #define
+>> to encapsulate the trigger time so if for any reason we need
+>> to tune the trigger time, we just need to change it at one place.
+> Hi Tim. Sorry for the late reply, I was on vacation these days.
+> I agree it's better to have a macro and I will add it in next version.
+> Thanks!
+Hi Tim,
+After a deep look, I plan to set dirty_expire_interval in jiffies within sysctl
+handler. Then we could use dirty_expire_interval directly instead of
+"mssecs_to_jiffies(dirty_expire_interval * 10)" and macro is not needed.
+Similar, dirty_writeback_interval and dirtytime_expire_interval could be set in
+jiffies to remove repeat convertion from centisecs to jiffies. I will submit a
+new series to do this if no one is against this.
+Thanks!
+>>
+>> Tim
+>>
+>>> +
+>>> +	spin_lock(&wb->list_lock);
+>>> +	list_for_each_entry_safe(inode, tmp, &wb->b_io, i_io_list)
+>>> +		if (inode_dirtied_after(inode, expired_jiffies))
+>>> +			redirty_tail(inode, wb);
+>>> +
+>>> +	list_for_each_entry_safe(inode, tmp, &wb->b_more_io, i_io_list)
+>>> +		if (inode_dirtied_after(inode, expired_jiffies))
+>>> +			redirty_tail(inode, wb);
+>>> +	spin_unlock(&wb->list_lock);
+>>> +}
+>>> +
+>>>  /*
+>>>   * Explicit flushing or periodic writeback of "old" data.
+>>>   *
+>>> @@ -2070,6 +2087,9 @@ static long wb_writeback(struct bdi_writeback *wb,
+>>>  	long progress;
+>>>  	struct blk_plug plug;
+>>>  
+>>> +	if (work->for_kupdate)
+>>> +		filter_expired_io(wb);
+>>> +
+>>>  	blk_start_plug(&plug);
+>>>  	for (;;) {
+>>>  		/*
+>>
 
 
