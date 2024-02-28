@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-85113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED5986B091
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:40:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2488E86B093
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:41:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50F981C230AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:40:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDF52282D97
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B66F15699F;
-	Wed, 28 Feb 2024 13:39:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AE7158D6F;
+	Wed, 28 Feb 2024 13:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmB8OHgS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CHWG753i"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0A3E157E8E;
-	Wed, 28 Feb 2024 13:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D4114E2F5;
+	Wed, 28 Feb 2024 13:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709127587; cv=none; b=ndBGOhCuLHxmQh5HLPBhUCqqDsr7mUCBptVA4dJOfdobcxdf7MzksqTJ1S2n7bZI2MMqnARIGww+QLT+XMvqqzWnD407yMhGmAmRQbcj/TDBeKHoCFyjy4V5fxmy4amLfb7IAYyecuKSH33fGAs9i5tI7uNugxxrz8xbQZLN+GM=
+	t=1709127589; cv=none; b=j7XpI7XenHC/r9eqfigDVMRk+GdY/Y1pqns2wM009hTcCJJXN+N3kVES64NCZkT3Y9USFx9vtRT++Kz12eTkkGu7tZnOAnpX8Ie4qHFaqWJ2XPtGutQYsFor0Vyz6aKn86T0bzQ7rpvB+dR0iat3Ejo21M4GT9lUUI5vajNuRCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709127587; c=relaxed/simple;
-	bh=dxwWmvXzdSSRNkdcGEkNTrMB/45mYo1YIJ2aRH5yEZo=;
+	s=arc-20240116; t=1709127589; c=relaxed/simple;
+	bh=o75sRCQUI46CYjNWqbkykeA/mcL6EPkE3K/J+SlWBK8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=A+ovFCLKM92PZeiebaVgYiNVlPnss2iIoAwjK3wRHxkWqf/Qwd+cU9+HRRdhjfscUDi1/vTQZHb8uLRyhjNnYnmJKtlYRudWm+oxhBB4vElbtL8akqHUBxXG1tzmgOwWWMoVqG+lfO02C9APMKbUAsFpq27WNrqnAmTWAHVV2JA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kmB8OHgS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0115DC433B1;
-	Wed, 28 Feb 2024 13:39:44 +0000 (UTC)
+	 MIME-Version; b=Dk9NZMmWU68heRDGWHAVJFDRLne1CBUadwyar269bXnpq5nvbxs1t+jHnqzYd8g6KiThTAAUD9sALxQlnhWOXsI9dTdOhgDc6xp3+1pXlJuhjq1ZHZSDS35SnnxxT1/yA2c7t4WYmojAgXEbIv28ei3KZai2yJHlHpkC013QBp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CHWG753i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F27AC43390;
+	Wed, 28 Feb 2024 13:39:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709127587;
-	bh=dxwWmvXzdSSRNkdcGEkNTrMB/45mYo1YIJ2aRH5yEZo=;
+	s=k20201202; t=1709127589;
+	bh=o75sRCQUI46CYjNWqbkykeA/mcL6EPkE3K/J+SlWBK8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kmB8OHgSZHzFyoRS0a5E0qlqyW60IZS83omqXJKgkbElBp3VnU4QXVUd96IDeHblS
-	 cQnTR0bae0YQ/gc6istY2EiMzL6JL1E4rDDzEerKy9Cu6Z5p7I3byzknb96ojXpXUp
-	 xlsxWkYkV4AnmOwjJEUByvnuRIuuP9j4AsDcGz9GW3klb7tIO3MzE5rVuewi2Qp2pO
-	 cvC99Grhqb7/Azhwm7dk9+IDo/crbeloSM40ecGTSKW0c8ix2DYZ+VwcoSLYgYCHAK
-	 eW1U88dFw7jyoSAqIITEJfZlDvkeeBx5URecupCW3YEdpzTCSLk+cDeY+9BwxfUpJA
-	 CEs6IgHRiddbg==
+	b=CHWG753ie/82pXIpmtvyfWKwL5df+/wNFbjVyxgnrKSYnAOKMld2nb/BdZ8TAXOj7
+	 I55OQumlwgTkpPgFEfH/d+3KdhHnrIcC8oosvWDnFbFRbUZQj9FxLqizrbHcGHxyLv
+	 031mR320OQK4AOILfHnXCmU75Wd44PnqY1JtHwAFMBTl0VWcsI0Ni0MZlTF3MxL0D2
+	 qm7p5yv6mbHo+J4WCLJPeMQwcLA9DL4FliaCOljaBjT8Jb+Arj8tINTAWaXopN5aEe
+	 ccDnx2ezyRfgpXfZyDsTadnJh3on3e0Yt6v4mbUkpsjdckRQL9U2zsvkJnLLChzyqp
+	 DLMa7QVk8uxHg==
 From: Will Deacon <will@kernel.org>
 To: linux-kernel@vger.kernel.org
 Cc: kernel-team@android.com,
@@ -52,9 +52,9 @@ Cc: kernel-team@android.com,
 	Dexuan Cui <decui@microsoft.com>,
 	Nicolin Chen <nicolinc@nvidia.com>,
 	Michael Kelley <mhklinux@outlook.com>
-Subject: [PATCH v5 4/6] swiotlb: Fix alignment checks when both allocation and DMA masks are present
-Date: Wed, 28 Feb 2024 13:39:28 +0000
-Message-Id: <20240228133930.15400-5-will@kernel.org>
+Subject: [PATCH v5 5/6] iommu/dma: Force swiotlb_max_mapping_size on an untrusted device
+Date: Wed, 28 Feb 2024 13:39:29 +0000
+Message-Id: <20240228133930.15400-6-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240228133930.15400-1-will@kernel.org>
 References: <20240228133930.15400-1-will@kernel.org>
@@ -66,57 +66,87 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Nicolin reports that swiotlb buffer allocations fail for an NVME device
-behind an IOMMU using 64KiB pages. This is because we end up with a
-minimum allocation alignment of 64KiB (for the IOMMU to map the buffer
-safely) but a minimum DMA alignment mask corresponding to a 4KiB NVME
-page (i.e. preserving the 4KiB page offset from the original allocation).
-If the original address is not 4KiB-aligned, the allocation will fail
-because swiotlb_search_pool_area() erroneously compares these unmasked
-bits with the 64KiB-aligned candidate allocation.
+From: Nicolin Chen <nicolinc@nvidia.com>
 
-Tweak swiotlb_search_pool_area() so that the DMA alignment mask is
-reduced based on the required alignment of the allocation.
+The swiotlb does not support a mapping size > swiotlb_max_mapping_size().
+On the other hand, with a 64KB PAGE_SIZE configuration, it's observed that
+an NVME device can map a size between 300KB~512KB, which certainly failed
+the swiotlb mappings, though the default pool of swiotlb has many slots:
+    systemd[1]: Started Journal Service.
+ => nvme 0000:00:01.0: swiotlb buffer is full (sz: 327680 bytes), total 32768 (slots), used 32 (slots)
+    note: journal-offline[392] exited with irqs disabled
+    note: journal-offline[392] exited with preempt_count 1
+
+Call trace:
+[    3.099918]  swiotlb_tbl_map_single+0x214/0x240
+[    3.099921]  iommu_dma_map_page+0x218/0x328
+[    3.099928]  dma_map_page_attrs+0x2e8/0x3a0
+[    3.101985]  nvme_prep_rq.part.0+0x408/0x878 [nvme]
+[    3.102308]  nvme_queue_rqs+0xc0/0x300 [nvme]
+[    3.102313]  blk_mq_flush_plug_list.part.0+0x57c/0x600
+[    3.102321]  blk_add_rq_to_plug+0x180/0x2a0
+[    3.102323]  blk_mq_submit_bio+0x4c8/0x6b8
+[    3.103463]  __submit_bio+0x44/0x220
+[    3.103468]  submit_bio_noacct_nocheck+0x2b8/0x360
+[    3.103470]  submit_bio_noacct+0x180/0x6c8
+[    3.103471]  submit_bio+0x34/0x130
+[    3.103473]  ext4_bio_write_folio+0x5a4/0x8c8
+[    3.104766]  mpage_submit_folio+0xa0/0x100
+[    3.104769]  mpage_map_and_submit_buffers+0x1a4/0x400
+[    3.104771]  ext4_do_writepages+0x6a0/0xd78
+[    3.105615]  ext4_writepages+0x80/0x118
+[    3.105616]  do_writepages+0x90/0x1e8
+[    3.105619]  filemap_fdatawrite_wbc+0x94/0xe0
+[    3.105622]  __filemap_fdatawrite_range+0x68/0xb8
+[    3.106656]  file_write_and_wait_range+0x84/0x120
+[    3.106658]  ext4_sync_file+0x7c/0x4c0
+[    3.106660]  vfs_fsync_range+0x3c/0xa8
+[    3.106663]  do_fsync+0x44/0xc0
+
+Since untrusted devices might go down the swiotlb pathway with dma-iommu,
+these devices should not map a size larger than swiotlb_max_mapping_size.
+
+To fix this bug, add iommu_dma_max_mapping_size() for untrusted devices to
+take into account swiotlb_max_mapping_size() v.s. iova_rcache_range() from
+the iommu_dma_opt_mapping_size().
 
 Fixes: 82612d66d51d ("iommu: Allow the dma-iommu api to use bounce buffers")
-Reported-by: Nicolin Chen <nicolinc@nvidia.com>
-Link: https://lore.kernel.org/r/cover.1707851466.git.nicolinc@nvidia.com
-Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+Signed-off-by: Nicolin Chen <nicolinc@nvidia.com>
+Link: https://lore.kernel.org/r/ee51a3a5c32cf885b18f6416171802669f4a718a.1707851466.git.nicolinc@nvidia.com
+Acked-by: Robin Murphy <robin.murphy@arm.com>
+[will: Drop redundant is_swiotlb_active(dev) check]
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- kernel/dma/swiotlb.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/iommu/dma-iommu.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index c20324fba814..c381a7ed718f 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -981,8 +981,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
- 	dma_addr_t tbl_dma_addr =
- 		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
- 	unsigned long max_slots = get_max_slots(boundary_mask);
--	unsigned int iotlb_align_mask =
--		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
-+	unsigned int iotlb_align_mask = dma_get_min_align_mask(dev);
- 	unsigned int nslots = nr_slots(alloc_size), stride;
- 	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
- 	unsigned int index, slots_checked, count = 0, i;
-@@ -993,6 +992,14 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
- 	BUG_ON(!nslots);
- 	BUG_ON(area_index >= pool->nareas);
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 50ccc4f1ef81..639efa0c4072 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -1706,6 +1706,14 @@ static size_t iommu_dma_opt_mapping_size(void)
+ 	return iova_rcache_range();
+ }
  
-+	/*
-+	 * Ensure that the allocation is at least slot-aligned and update
-+	 * 'iotlb_align_mask' to ignore bits that will be preserved when
-+	 * offsetting into the allocation.
-+	 */
-+	alloc_align_mask |= (IO_TLB_SIZE - 1);
-+	iotlb_align_mask &= ~alloc_align_mask;
++static size_t iommu_dma_max_mapping_size(struct device *dev)
++{
++	if (dev_is_untrusted(dev))
++		return swiotlb_max_mapping_size(dev);
 +
- 	/*
- 	 * For mappings with an alignment requirement don't bother looping to
- 	 * unaligned slots once we found an aligned one.
++	return SIZE_MAX;
++}
++
+ static const struct dma_map_ops iommu_dma_ops = {
+ 	.flags			= DMA_F_PCI_P2PDMA_SUPPORTED,
+ 	.alloc			= iommu_dma_alloc,
+@@ -1728,6 +1736,7 @@ static const struct dma_map_ops iommu_dma_ops = {
+ 	.unmap_resource		= iommu_dma_unmap_resource,
+ 	.get_merge_boundary	= iommu_dma_get_merge_boundary,
+ 	.opt_mapping_size	= iommu_dma_opt_mapping_size,
++	.max_mapping_size       = iommu_dma_max_mapping_size,
+ };
+ 
+ /*
 -- 
 2.44.0.rc1.240.g4c46232300-goog
 
