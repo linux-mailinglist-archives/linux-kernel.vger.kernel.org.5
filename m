@@ -1,212 +1,165 @@
-Return-Path: <linux-kernel+bounces-85464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5926D86B66A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8718E86B670
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:51:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F820288F7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:51:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3886A28B2F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:51:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF4415E5B1;
-	Wed, 28 Feb 2024 17:51:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3795D15E5DF;
+	Wed, 28 Feb 2024 17:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AGtlO26T"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YS3tbMlM"
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8419A15DBC1
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E429222F1E;
+	Wed, 28 Feb 2024 17:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709142665; cv=none; b=TexMYNaYWFDLHRq1PWFJs5PeNLj1lHS23v+lm89NYRr/5xAO0y+sKSL0MRnXbP/o8TlJfimBcIT+EwY5oM68TjvPIOtqnN4EQum6uRM4LhuDglXnSkCPGoTyKPmlqDQyynkKBKhACCNWOv8JpYnNi0AE76YWDh3wWGIYynHBMPE=
+	t=1709142688; cv=none; b=ntaKPTuCyCmBty0yva8GVPZ4gAPoghRSuAMChRGEFkiI3xFa7rpsaQuw5ITJwr7Qr8WFXOzipcq6NX1uGGCkuj325X4hZnAars57OK689aszQdlG4EHSNWQ5MlQ8BO6jLGJQ/N3od5Y1YRrDr4zxjKO/2J0xDwSQUcSZv78kHQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709142665; c=relaxed/simple;
-	bh=Kjp9e87qYUvuVJ7M2OXAg9wWZf/QwADaOftlAlqHnSs=;
+	s=arc-20240116; t=1709142688; c=relaxed/simple;
+	bh=X0SFgac44AGTtRt3bpXGtzG9V/AziVxJderyrCtjMW4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cr96pchn8cufAj+Fsbrv9AjVgj0fAuuk3fEOBL+60NdonNwgHAhGxV0pPJGADusUid+5zbPWgZoj2yuHHakGdvuPnywdX5Y1dFk6Y3NUxxwJ68XmdOwUWz33OY/vBF0UuFdYo9xjY5uG53Lq/AbmmbA67y5rEC3doyrHwG3y01I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AGtlO26T; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60925c4235eso52217b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:51:03 -0800 (PST)
+	 To:Cc:Content-Type; b=ZVgSQ8jRTejhjrQHXwu21CoKTElCpyi0+W0ble2V8O+khRJBEahUGlAP0y6Cx/ce11Qeg9tkptUm9NAOhTRUZz+jaq1LIY45IGPh9ZUHI74RMBLm91uSMsgfFKKUwUVj+5apWVK1iSp/GV2RHJ8ukx9PLw4AYTBgxup8Pqe0WY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YS3tbMlM; arc=none smtp.client-ip=209.85.222.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7d6024b181bso2876106241.2;
+        Wed, 28 Feb 2024 09:51:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709142662; x=1709747462; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709142686; x=1709747486; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VnQ/ab/JPnAloJ9klQyh8nICmNuzmA4WCeR9lmsJM4M=;
-        b=AGtlO26T+doUb5WQH6HpuNAonMJHI1VctQ6KnGaUDOiepgfP1rGunEp2EG/fAzIzgt
-         2jIqPjRYCt79wlj1VIm88MH5ngDdryRQHoOSIW2yXrvW1+SEYeglvKzZTlJ6Zf3g/NR7
-         uajrrj2JBMIzyvm4bcgTu6gTY4LlDUQLRpGFp6MlqBhwozTTw/lZe9bQDIwrGKZkUtgn
-         hPfl50UdRGiSn7mkOc+n1IoWaEdBdeo8HszJPN0zZK0RacuYwh86fvoEl2VZa9Ghun5O
-         Eyu7Yuo/iy5/V3RQoVduxsSei9kZcZMcu1t7C8S+2OXNwWpAE5Z+mfaF2ZnbZCtJATm6
-         590w==
+        bh=+FSxoYCjI8KHEKvT+a2H+wwDJ3Fc0JNH4HEuSuWDa0o=;
+        b=YS3tbMlMLKldW4cWRRZKzDBIHd7Cf+OhO/WEZMfwOxT9ocN9DUYggZ0JBnWDwd0fb0
+         AucfsXHs2CFSk8aZeFNPRdxDVEMGdnNWWkU9K6B/QXWz/E2HEQNDzXVlZtOlRPKrA57a
+         cYdbQLsG4PKoTOEZfj+3Gcf7eSMpPPq9fUTzMqvRjD0+PbyiMqXsH4YRYfK8e+ue7A5g
+         Vlri25OI2LJZHENvCGXQIbIgLUMfur+bYCpZlDGBKuj2M5W9I23I7v+xYiV+3No79vCy
+         O48GNQDlAZoBEkjCy5mPDqPMC2dGCj99jClAanFfGMvKdiwkPGpygMaGWIbxqy29TGOb
+         Nbsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709142662; x=1709747462;
+        d=1e100.net; s=20230601; t=1709142686; x=1709747486;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VnQ/ab/JPnAloJ9klQyh8nICmNuzmA4WCeR9lmsJM4M=;
-        b=rYt4f2KwukaglxIt1Che8esyIFWTuOqGvS1+9uxez9NqXCxCl7Q6uS++bnC4zGDt1E
-         oaBI5v4hOCR0pK1JDbYLqTQCz6jNK67yK+8ZDv7cBRbwpao2N+mKJrgVgtG0dvy7xBPt
-         F1dPLGIfjuonADGzmH2hbaIdU1fDSQ+MZa7sQBr6lcio9t5+MDE38gOkBRGV+Dq9YmiO
-         rb5y4GATM3Mf6GlThNOuWYgnbGMgCPWcxUo8VMV8rpEneWlklwEKL6E0iWasBiy3jndQ
-         W3TwBXK+Zw72jY8y8CYaY+57LQMTrLz5a7EV7cobZAYMO1PbTW3qJ3nKfnTN0xKZRVto
-         p4Ww==
-X-Forwarded-Encrypted: i=1; AJvYcCW5ws8l8oZwUu0buYkXalrWyiIKikA6g7hz4dnzGsopG5bGESbswqh6emNxTtVhnZM9oapFFDziRSVpYlxIL6Yaqq0KqN5vzA5JVLh4
-X-Gm-Message-State: AOJu0YzGWthDmik/3zI5XnO2InJRKYbqrQrS/jdCpoAsURpXDgT73YVr
-	5R03cE0cUFELN5QC6In1JovSCkPplkdZJii9woSv/tAqs0Or5iE54zndth7IlNqpsaAyk0GbAuA
-	6u+IhsBZCjXjmC7JYOBtkfau/b2oaYbtSGyoM
-X-Google-Smtp-Source: AGHT+IG/EeCjxcbMnwV3xlMkTlCAxh5CrdaPO3GQcKcWzYKjyw1uLk52luOW0XOEQwoUYKADdxDUo6eSBLFJyH16/wI=
-X-Received: by 2002:a25:9c08:0:b0:dcb:bff0:72b with SMTP id
- c8-20020a259c08000000b00dcbbff0072bmr3550ybo.31.1709142661963; Wed, 28 Feb
- 2024 09:51:01 -0800 (PST)
+        bh=+FSxoYCjI8KHEKvT+a2H+wwDJ3Fc0JNH4HEuSuWDa0o=;
+        b=ikKRNXwpmqePqkD2CUUxQiE5PUnimwjL6ZyAbE0FQjSfHs7438GBh46Tkg0vuqTiW0
+         hfLfUsJIWAYaxKQN2BBXEtQWpvOh7VAZA8H7RYlTuYs3CDke61RmOkCCW6hrelTeHe0m
+         r5Y0oCMJ/jcbqSxnHC85DlGlrEeLlpTviO8UcUyRw5d2LiEjI4IlhdS4BSE5KBzpiHmZ
+         kwHWTETHkro7TYuaCHDamz3C8VTzW7CnxcHbyE1yiq/+0tJF3j67RcyF0a01UOX+Byq8
+         15r9dduSB/6M+N3snRBXGIGLc1tT2yY9FwvqOWTERwUbSuF7QXegwSOGVJkoaeyf4HE9
+         ICMA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKm2roe+3pciqbHb2WsR7APSe/mD+IfCc2iAGiVz9oytso3R2HInsaXsVFt7BZifKb/PoLC8VroyxMV+K5WOrXsQRAtCY8wEdFFmJrL5PmvrwAD/z0FO5DAZEzlXlUbcWm2/oZ
+X-Gm-Message-State: AOJu0Yzn3ANxgcrETfrJpU1d0fdarl5iAlGrraeaxm8rnSHU7II0nyXV
+	p/28tFE1PPdTVuseci+vbwo564ralhQbwQF8QNcy8tegSm38kaBsfJRn5+EsRn3+FJ6WueVNoS4
+	NvLL7EiRfdxKcSM+L6LPgq8GFEZA=
+X-Google-Smtp-Source: AGHT+IGucqGCPOj4OwzGw3o5YGuCjVzCIuIxy9Vz1LlGyTtV0gAAR0EVqbRMIlHOsZttATj1JLjjxl/G0nOm/rrquOk=
+X-Received: by 2002:a05:6102:55a1:b0:470:4e67:3b38 with SMTP id
+ dc33-20020a05610255a100b004704e673b38mr372791vsb.14.1709142685683; Wed, 28
+ Feb 2024 09:51:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-20-surenb@google.com>
- <2daf5f5a-401a-4ef7-8193-6dca4c064ea0@suse.cz> <CAJuCfpGt+zfFzfLSXEjeTo79gw2Be-UWBcJq=eL1qAnPf9PaiA@mail.gmail.com>
- <6db0f0c8-81cb-4d04-9560-ba73d63db4b8@suse.cz>
-In-Reply-To: <6db0f0c8-81cb-4d04-9560-ba73d63db4b8@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 28 Feb 2024 17:50:50 +0000
-Message-ID: <CAJuCfpEgh1OiYNE_uKG-BqW2x97sOL9+AaTX4Jct3=WHzAv+kg@mail.gmail.com>
-Subject: Re: [PATCH v4 19/36] mm: create new codetag references during page splitting
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+References: <df300a49-7811-4126-a56a-a77100c8841b@gmail.com>
+ <79a8ba83-86bf-4c22-845c-8f285c2d1396@gmail.com> <CAHsH6GvX7zYSoA7JVemRtunWWSaew1S11Y996WAGt6B9d8=cOA@mail.gmail.com>
+ <aa5f1c11-4528-4d53-91f3-5ce8c02363ac@gmail.com>
+In-Reply-To: <aa5f1c11-4528-4d53-91f3-5ce8c02363ac@gmail.com>
+From: Eyal Birger <eyal.birger@gmail.com>
+Date: Wed, 28 Feb 2024 09:51:14 -0800
+Message-ID: <CAHsH6GspzSsSJX2Xuerp3NApJnobv7_eoNdwMSX=Mqw3EVhAzg@mail.gmail.com>
+Subject: Re: [PATCH net-next 2/2] net: geneve: enable local address bind for
+ geneve sockets
+To: Richard Gobert <richardbgobert@gmail.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, idosch@nvidia.com, razor@blackwall.org, amcohen@nvidia.com, 
+	petrm@nvidia.com, jbenc@redhat.com, b.galvani@gmail.com, bpoirier@nvidia.com, 
+	gavinl@nvidia.com, martin.lau@kernel.org, daniel@iogearbox.net, 
+	herbert@gondor.apana.org.au, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 28, 2024 at 12:47=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
+On Tue, Feb 27, 2024 at 1:03=E2=80=AFAM Richard Gobert <richardbgobert@gmai=
+l.com> wrote:
 >
-> On 2/27/24 17:38, Suren Baghdasaryan wrote:
-> > On Tue, Feb 27, 2024 at 2:10=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz=
-> wrote:
+> Eyal Birger wrote:
+> > Hi,
+> >
+> > On Thu, Feb 22, 2024 at 12:54=E2=80=AFPM Richard Gobert
+> > <richardbgobert@gmail.com> wrote:
 > >>
-> >> On 2/21/24 20:40, Suren Baghdasaryan wrote:
-> >> > When a high-order page is split into smaller ones, each newly split
-> >> > page should get its codetag. The original codetag is reused for thes=
-e
-> >> > pages but it's recorded as 0-byte allocation because original codeta=
-g
-> >> > already accounts for the original high-order allocated page.
-> >>
-> >> This was v3 but then you refactored (for the better) so the commit log
-> >> could reflect it?
+> >> This patch adds support for binding to a local address in geneve socke=
+ts.
 > >
-> > Yes, technically mechnism didn't change but I should word it better.
-> > Smth like this:
+> > Thanks for adding this.
 > >
-> > When a high-order page is split into smaller ones, each newly split
-> > page should get its codetag. After the split each split page will be
-> > referencing the original codetag. The codetag's "bytes" counter
-> > remains the same because the amount of allocated memory has not
-> > changed, however the "calls" counter gets increased to keep the
-> > counter correct when these individual pages get freed.
->
-> Great, thanks.
-> The concern with __free_pages() is not really related to splitting, so fo=
-r
-> this patch:
->
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
->
+> >> It achieves this by adding a geneve_addr union to represent local addr=
+ess
+> >> to bind to, and copying it to udp_port_cfg in geneve_create_sock.
 > >
-> >>
-> >> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> >>
-> >> I was going to R-b, but now I recalled the trickiness of
-> >> __free_pages() for non-compound pages if it loses the race to a
-> >> speculative reference. Will the codetag handling work fine there?
+> > AFICT in geneve_sock_add(), geneve_socket_create() is only called if th=
+ere's
+> > no existing open socket with the GENEVE destination port. As such, woul=
+dn't
+> > this bind work only for the first socket in the namespace?
 > >
-> > I think so. Each non-compoud page has its individual reference to its
-> > codetag and will decrement it whenever the page is freed. IIUC the
-> > logic in  __free_pages(), when it loses race to a speculative
-> > reference it will free all pages except for the first one and the
->
-> The "tail" pages of this non-compound high-order page will AFAICS not hav=
-e
-> code tags assigned, so alloc_tag_sub() will be a no-op (or a warning with
-> _DEBUG).
-
-Yes, that is correct.
-
->
-> > first one will be freed when the last put_page() happens. If prior to
-> > this all these pages were split from one page then all of them will
-> > have their own reference which points to the same codetag.
->
-> Yeah I'm assuming there's no split before the freeing. This patch about
-> splitting just reminded me of that tricky freeing scenario.
-
-Ah, I see. I thought you were talking about a page that was previously spli=
-t.
-
->
-> So IIUC the "else if (!head)" path of __free_pages() will do nothing abou=
-t
-> the "tail" pages wrt code tags as there are no code tags.
-> Then whoever took the speculative "head" page reference will put_page() a=
-nd
-> free it, which will end up in alloc_tag_sub(). This will decrement calls
-> properly, but bytes will become imbalanced, because that put_page() will
-> pass order-0 worth of bytes - the original order is lost.
-
-Yeah, that's true. put_page() will end up calling
-free_unref_page(&folio->page, 0) even if the original order was more
-than 0.
-
->
-> Now this might be rare enough that it's not worth fixing if that would be
-> too complicated, just FYI.
-
-Yeah. We can fix this by subtracting the "bytes" counter of the "head"
-page for all free_the_page(page + (1 << order), order) calls we do
-inside __free_pages(). But we can't simply use pgalloc_tag_sub()
-because the "calls" counter will get over-decremented (we allocated
-all of these pages with one call). I'll need to introduce a new
-pgalloc_tag_sub_bytes() API and use it here. I feel it's too targeted
-of a solution but OTOH this is a special situation, so maybe it's
-acceptable. WDYT?
-
->
->
-> > Every time
-> > one of these pages are freed that codetag's "bytes" and "calls"
-> > counters will be decremented. I think accounting will work correctly
-> > irrespective of where these pages are freed, in __free_pages() or by
-> > put_page().
+> > If that is the case, then perhaps binding the socket isn't the right
+> > approach, and instead geneve_lookup() should search for the tunnel base=
+d on
+> > both the source and destination IPs.
 > >
+> > Am I missing something?
+> >
+> > Eyal
 >
+> You are right, I missed it.
+> Binding the socket is the main reason for the patch, to prevent exposing
+> the geneve port on all interfaces.
+
+I see. The use case I had in mind is allowing to differentiate between
+tunnels based on local IP, but not exposing the port sounds like
+a good use case too.
+
+> I think it should be searched in geneve{6}_lookup and in geneve_find_sock=
+:
+
+If the socket is bound to a specific IP, i'm not sure you'd need to
+change geneve{6}_lookup() - only packets matching that IP would arrive
+there no? In that case I think the change you suggested to geneve_find_sock=
+()
+should be enough.
+
+>
+> static struct geneve_sock *geneve_find_sock(struct geneve_net *gn,
+>                                             sa_family_t family,
+>                                             union geneve_addr *saddr)
+>  {
+>         struct geneve_sock *gs;
+>
+>         list_for_each_entry(gs, &gn->sock_list, list) {
+>                 struct inet_sock *inet =3D inet_sk(gs->sock->sk);
+>
+>                 if (inet->inet_sport =3D=3D dst_port && geneve_get_sk_fam=
+ily(gs) =3D=3D family) {
+>                         if (family =3D=3D AF_INET && inet->inet_rcv_saddr=
+ =3D=3D saddr->sin.sin_addr.s_addr)
+>                                 return gs;
+>         ...
+>
+> This is also true for VXLAN
+
+I haven't looked at the VXLAN code, but if the lookup is similar there
+I would guess the same.
+
+Eyal.
 
