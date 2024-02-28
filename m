@@ -1,619 +1,448 @@
-Return-Path: <linux-kernel+bounces-85236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85238-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B26986B2B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:08:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB1C86B2C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31580284E00
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:08:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0E8B1C2358B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D652515B96C;
-	Wed, 28 Feb 2024 15:08:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7C9F15B113;
+	Wed, 28 Feb 2024 15:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="Luxv3QRq"
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Dvz4rBB0"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CCB14D44E;
-	Wed, 28 Feb 2024 15:08:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A957915B98E;
+	Wed, 28 Feb 2024 15:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709132890; cv=none; b=J3vYB4J72teVRWCLKxveKgH1YzCDJYbAyKPKVcUG6wCAVrzbASGIiLoiF9rGaAkwWCl3cprp9y7J6qm5gL6JMLR6VuapZb5Qv8xIO11fzZ/WNgmrTv06lhDOblBF9XI2sStRDq4ZTGAlaGtlD/CK9uxoFa/1S6oS9h6770WYdsA=
+	t=1709132930; cv=none; b=lUGAdyMH9yGTXHBq3eWwNR0O54sIz2LmsOPKVxN9dcm8TzgGPhBCd3T4692LLr1H1/Q1v8LgwtQ4E854wBjszK8+RkiogKnlggnx9NhwZ6WFyT6wAADGB+6ZYVk2t9zsiBedou3WLAaqOQjWuWq7SIY2usg5L6iDBVR+BJ1T1dU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709132890; c=relaxed/simple;
-	bh=6TpfHuAVAIVbbzEGJHgz5XZqL+s7ttCnwdiEU6ZTC0s=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CJR0lHgXB/0I40feTURhcWTNBuEp2EJ12xOIvh4SWsnAowRPr6AlZjXwDfaaf7lCnxAWRrwLYRKHXtkOzxS+VAOiBVnE2JABpE9A7Bq/2EqrODx4nlersY6W/1pcr1OGy0O706hu6aVGRG/aFb/mJ0sclXraGQSxFP7h8GVaSEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=Luxv3QRq; arc=none smtp.client-ip=85.214.62.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
-Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-	(No client certificate requested)
-	(Authenticated sender: lukma@denx.de)
-	by phobos.denx.de (Postfix) with ESMTPSA id 3076187D84;
-	Wed, 28 Feb 2024 16:07:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-	s=phobos-20191101; t=1709132885;
-	bh=c0q84ew0DF4BFK2bDVbPcWaz4zRABjtcE679uWhgCvA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Luxv3QRqBpe0cW+ja2r3v6Cm7jh1688fCjiuHwA44FpcpmvAaUZnTECm7rvSZ0mVR
-	 /5jHTlFtbmBiaXletMKyUp59ll8Q06KtWxwAgKXIQnKg3kly4Bu8TuzF00bxmc2eEL
-	 EWxZiSIdW+JZrML3fh0XboK1a9XJ0uJtm4qFGXCKvDQqgZzuLm2wpicofYO/SlkZGQ
-	 hEZ4dFNgBaTCtNgXUq5ippw2ymzQYx2yAnFjU34y89vFoSsMilLMZugLc9Tk3Z2eTL
-	 dMUeowPkYMNYeS2vt7RaYt4FR1dVjWpzwFpLfNWEDyAjngNcKDd0KR2lyhyNwUckA0
-	 2lrRtpIvfdCZQ==
-From: Lukasz Majewski <lukma@denx.de>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Andrew Lunn <andrew@lunn.ch>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	netdev@vger.kernel.org,
-	Tristram.Ha@microchip.com,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Ravi Gunasekaran <r-gunasekaran@ti.com>,
-	Simon Horman <horms@kernel.org>,
-	Wojciech Drewek <wojciech.drewek@intel.com>,
-	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-	Murali Karicheri <m-karicheri2@ti.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Ziyang Xuan <william.xuanziyang@huawei.com>,
-	Kristian Overskeid <koverskeid@gmail.com>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Lukasz Majewski <lukma@denx.de>
-Subject: [RFC] net: hsr: Provide RedBox support
-Date: Wed, 28 Feb 2024 16:07:35 +0100
-Message-Id: <20240228150735.3647892-1-lukma@denx.de>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709132930; c=relaxed/simple;
+	bh=hC0hZUzddUnZkJKtGKjbrkSXgGl2pTxPGRuIOwGTbXA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=DQIdWds9lGHpNm9i6rgHl2a88hpasFeAPIdj1qimtG2XqbIEi3HO5DSaF7cbMYYQcaH/wGlwHB3VO1UA/ZMUH1rQAahs8HvhDlq6H7iyPklMfMRP0kIvkZGwDaBVo+KbDOJPlLIKG4iBkLvmz1vBLZ5mh0ZGDD46Q6WFeHDzYvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Dvz4rBB0; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41SASuXw014538;
+	Wed, 28 Feb 2024 15:08:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=uBGYZjXZ08exoNBo4t5gFS1uBUVDM2Va3XWrZMFyw+U=; b=Dv
+	z4rBB0EqLVmNRZx4LxH47R+XjZaYgKZ/bpydxUDrEwZFaHndSluOI6ISNCZtYeq8
+	iXg2VGj5mWqu9oZxK87znAVBEYdL9CHo1FLU6WEIl7pQ79mOpzfKovkDS8Vj7nKu
+	8cK+SmZjrw3apHIulLrEWZXNuFAPjh5EFAffCFA8i5QSDMHdEiRa1bIAm5kwY0eD
+	hbqKrV0tmB1F5gyoIPSNqd091qFNXCEy8248v1UUrM6++pbbdGGVv7NpHCh9g7Yt
+	x3aZGmIXoUAS3HNd6w2RCIzX1brJ8fkSNhziZL6b2/2BVnJBT2/sw8rioX/mZNQM
+	+xw7jCTMANREHM97TqTA==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whtbw9qrt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 15:08:43 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41SF8d9G018903
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 15:08:39 GMT
+Received: from [10.216.40.135] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 28 Feb
+ 2024 07:08:37 -0800
+Message-ID: <145beef9-75e0-f8ed-7ad1-39b3aadbf4a6@quicinc.com>
+Date: Wed, 28 Feb 2024 20:38:32 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-
-This patch is the RFC for providing RedBox support (HSR-SAN to be more
-precise) for HSR networks. It implements the 'Mode U' without
-optimizations for traffic reduction.
-
-The corresponding patch to modify iptable2 sources has already been sent:
-https://lore.kernel.org/netdev/20240226124110.37892211@hermes.local/T/
-
-Some issues for clarification:
-------------------------------
-The standard IEC (62439-3:2022) says that RedBox shall work as a "proxy",
-but there are no hints on the actual implementation.
-Pseudo code for HSR-SAN Redbox (points 5.4.2/3/4) just mentions about
-removing or adding HSR tag to the ETH frame (for respecitve ports).
-
-With this patch implementation - the non-RedBox node's NodeTable will
-also have information about SAN nodes in it.
-
-Moreover, according to standard - the RedBox's ProxyNodeTable shall have
-only SAN addresses as well as NodeTable only those available in the HSR
-ring. Now only ProxyNodeTable is correctly filled, as NodeTable requires
-SAN addresses for handling "outside" (i.e. SAN) traffic.
-
-As I've written in the other mail - the approach with using "bridge" driver
-and hsrX device seems to be far less optimal than this one:
-https://www.spinics.net/lists/netdev/msg973057.html
-
-Testing procedure:
-------------------
-The EVB-KSZ9477 has been used for testing on net-next branch
-(SHA1: 709776ea8562).
-
-Ports 4/5 were used for SW managed HSR (hsr1) as first hsr0 for ports 1/2
-(with HW offloading for ksz9477) was created. Port 3 has been used as
-interlink port.
-
-Configuration - RedBox (EVB-KSZ9477):
-ifconfig lan1 down;ifconfig lan2 down
-ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
-ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 interlink lan3 supervision 45 version 1
-ifconfig lan4 up;ifconfig lan5 up
-ifconfig lan3 up
-ifconfig hsr1 192.168.0.11 up
-
-Configuration - DAN-H (EVB-KSZ9477):
-
-ifconfig lan1 down;ifconfig lan2 down
-ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
-ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 supervision 45 version 1
-ifconfig lan4 up;ifconfig lan5 up
-ifconfig hsr1 192.168.0.12 up
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v12 8/9] firmware: qcom: scm: Add check to prevent Null
+ pointer dereference
+Content-Language: en-US
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>
+References: <20240227155308.18395-1-quic_mojha@quicinc.com>
+ <20240227155308.18395-9-quic_mojha@quicinc.com>
+ <20240227085215204-0800.eberman@hu-eberman-lv.qualcomm.com>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20240227085215204-0800.eberman@hu-eberman-lv.qualcomm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: fZGIB62MZLTmg8E__kCHUGlwAYQDFkXs
+X-Proofpoint-ORIG-GUID: fZGIB62MZLTmg8E__kCHUGlwAYQDFkXs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_07,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ suspectscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
+ spamscore=0 mlxlogscore=999 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280119
 
 
-Signed-off-by: Lukasz Majewski <lukma@denx.de>
----
- include/uapi/linux/if_link.h |  1 +
- net/hsr/hsr_debugfs.c        | 32 ++++++++++++++++++++
- net/hsr/hsr_device.c         | 44 ++++++++++++++++++++++------
- net/hsr/hsr_device.h         |  4 +--
- net/hsr/hsr_forward.c        | 24 +++++++++++----
- net/hsr/hsr_framereg.c       | 57 ++++++++++++++++++++++++++++++++++++
- net/hsr/hsr_framereg.h       |  6 ++++
- net/hsr/hsr_main.h           |  6 ++++
- net/hsr/hsr_netlink.c        | 28 ++++++++++++++++--
- net/hsr/hsr_slave.c          |  1 +
- 10 files changed, 183 insertions(+), 20 deletions(-)
 
-diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
-index ab9bcff96e4d..b93a3acdd83f 100644
---- a/include/uapi/linux/if_link.h
-+++ b/include/uapi/linux/if_link.h
-@@ -1770,6 +1770,7 @@ enum {
- 	IFLA_HSR_PROTOCOL,		/* Indicate different protocol than
- 					 * HSR. For example PRP.
- 					 */
-+	IFLA_HSR_INTERLINK,		/* HSR interlink network device */
- 	__IFLA_HSR_MAX,
- };
- 
-diff --git a/net/hsr/hsr_debugfs.c b/net/hsr/hsr_debugfs.c
-index 1a195efc79cd..dce87e32ae1d 100644
---- a/net/hsr/hsr_debugfs.c
-+++ b/net/hsr/hsr_debugfs.c
-@@ -52,7 +52,26 @@ hsr_node_table_show(struct seq_file *sfp, void *data)
- 	return 0;
- }
- 
-+/* hsr_proxy_node_table_show - Formats and prints proxy node_table entries */
-+static int
-+hsr_proxy_node_table_show(struct seq_file *sfp, void *data)
-+{
-+	struct hsr_priv *priv = (struct hsr_priv *)sfp->private;
-+	struct hsr_node *node;
-+
-+	seq_printf(sfp, "Proxy Node Table entries for HSR device\n");
-+	seq_puts(sfp, "MAC-Address-SAN,        time_in\n");
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(node, &priv->proxy_node_db, mac_list) {
-+		seq_printf(sfp, "%pM ", &node->macaddress_A[0]);
-+		seq_printf(sfp, "%10lx\n", node->time_in[HSR_PT_INTERLINK]);
-+	}
-+	rcu_read_unlock();
-+	return 0;
-+}
-+
- DEFINE_SHOW_ATTRIBUTE(hsr_node_table);
-+DEFINE_SHOW_ATTRIBUTE(hsr_proxy_node_table);
- 
- void hsr_debugfs_rename(struct net_device *dev)
- {
-@@ -95,6 +114,19 @@ void hsr_debugfs_init(struct hsr_priv *priv, struct net_device *hsr_dev)
- 		priv->node_tbl_root = NULL;
- 		return;
- 	}
-+
-+	if (!priv->redbox)
-+		return;
-+
-+	de = debugfs_create_file("proxy_node_table", S_IFREG | 0444,
-+				 priv->node_tbl_root, priv,
-+				 &hsr_proxy_node_table_fops);
-+	if (IS_ERR(de)) {
-+		pr_err("Cannot create hsr proxy node_table file\n");
-+		debugfs_remove(priv->node_tbl_root);
-+		priv->node_tbl_root = NULL;
-+		return;
-+	}
- }
- 
- /* hsr_debugfs_term - Tear down debugfs intrastructure
-diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
-index 9d71b66183da..3a5585b38107 100644
---- a/net/hsr/hsr_device.c
-+++ b/net/hsr/hsr_device.c
-@@ -142,30 +142,32 @@ static int hsr_dev_open(struct net_device *dev)
- {
- 	struct hsr_priv *hsr;
- 	struct hsr_port *port;
--	char designation;
-+	char *designation = NULL;
- 
- 	hsr = netdev_priv(dev);
--	designation = '\0';
- 
- 	hsr_for_each_port(hsr, port) {
- 		if (port->type == HSR_PT_MASTER)
- 			continue;
- 		switch (port->type) {
- 		case HSR_PT_SLAVE_A:
--			designation = 'A';
-+			designation = "Slave A";
- 			break;
- 		case HSR_PT_SLAVE_B:
--			designation = 'B';
-+			designation = "Slave B";
-+			break;
-+		case HSR_PT_INTERLINK:
-+			designation = "Interlink";
- 			break;
- 		default:
--			designation = '?';
-+			designation = "Unknown";
- 		}
- 		if (!is_slave_up(port->dev))
--			netdev_warn(dev, "Slave %c (%s) is not up; please bring it up to get a fully working HSR network\n",
-+			netdev_warn(dev, "%s (%s) is not up; please bring it up to get a fully working HSR network\n",
- 				    designation, port->dev->name);
- 	}
- 
--	if (designation == '\0')
-+	if (designation == NULL)
- 		netdev_warn(dev, "No slave devices configured\n");
- 
- 	return 0;
-@@ -296,6 +298,7 @@ static void send_hsr_supervision_frame(struct hsr_port *master,
- 	struct hsr_priv *hsr = master->hsr;
- 	__u8 type = HSR_TLV_LIFE_CHECK;
- 	struct hsr_sup_payload *hsr_sp;
-+	struct hsr_sup_tlv *hsr_stlv;
- 	struct hsr_sup_tag *hsr_stag;
- 	struct sk_buff *skb;
- 
-@@ -335,6 +338,16 @@ static void send_hsr_supervision_frame(struct hsr_port *master,
- 	hsr_sp = skb_put(skb, sizeof(struct hsr_sup_payload));
- 	ether_addr_copy(hsr_sp->macaddress_A, master->dev->dev_addr);
- 
-+	if (hsr->redbox) {
-+		hsr_stlv = skb_put(skb, sizeof(struct hsr_sup_tlv));
-+		hsr_stlv->HSR_TLV_type = PRP_TLV_REDBOX_MAC;
-+		hsr_stlv->HSR_TLV_length = sizeof(struct hsr_sup_payload);
-+
-+		/* Payload: MacAddressRedBox */
-+		hsr_sp = skb_put(skb, sizeof(struct hsr_sup_payload));
-+		ether_addr_copy(hsr_sp->macaddress_A, hsr->macaddress_redbox);
-+	}
-+
- 	if (skb_put_padto(skb, ETH_ZLEN)) {
- 		spin_unlock_bh(&hsr->seqnr_lock);
- 		return;
-@@ -545,8 +558,8 @@ static const unsigned char def_multicast_addr[ETH_ALEN] __aligned(2) = {
- };
- 
- int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
--		     unsigned char multicast_spec, u8 protocol_version,
--		     struct netlink_ext_ack *extack)
-+		     struct net_device *interlink, unsigned char multicast_spec,
-+		     u8 protocol_version, struct netlink_ext_ack *extack)
- {
- 	bool unregister = false;
- 	struct hsr_priv *hsr;
-@@ -555,6 +568,7 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
- 	hsr = netdev_priv(hsr_dev);
- 	INIT_LIST_HEAD(&hsr->ports);
- 	INIT_LIST_HEAD(&hsr->node_db);
-+	INIT_LIST_HEAD(&hsr->proxy_node_db);
- 	spin_lock_init(&hsr->list_lock);
- 
- 	eth_hw_addr_set(hsr_dev, slave[0]->dev_addr);
-@@ -615,6 +629,18 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
- 	if (res)
- 		goto err_unregister;
- 
-+	if (interlink) {
-+		res = hsr_add_port(hsr, interlink, HSR_PT_INTERLINK, extack);
-+		if (res)
-+			goto err_unregister;
-+
-+		hsr->redbox = true;
-+		ether_addr_copy(hsr->macaddress_redbox, interlink->dev_addr);
-+		timer_setup(&hsr->prune_proxy_timer, hsr_prune_proxy_nodes, 0);
-+		mod_timer(&hsr->prune_proxy_timer,
-+			  jiffies + msecs_to_jiffies(PRUNE_PROXY_PERIOD));
-+	}
-+
- 	hsr_debugfs_init(hsr, hsr_dev);
- 	mod_timer(&hsr->prune_timer, jiffies + msecs_to_jiffies(PRUNE_PERIOD));
- 
-diff --git a/net/hsr/hsr_device.h b/net/hsr/hsr_device.h
-index 9060c92168f9..655284095b78 100644
---- a/net/hsr/hsr_device.h
-+++ b/net/hsr/hsr_device.h
-@@ -16,8 +16,8 @@
- void hsr_del_ports(struct hsr_priv *hsr);
- void hsr_dev_setup(struct net_device *dev);
- int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
--		     unsigned char multicast_spec, u8 protocol_version,
--		     struct netlink_ext_ack *extack);
-+		     struct net_device *interlink, unsigned char multicast_spec,
-+		     u8 protocol_version, struct netlink_ext_ack *extack);
- void hsr_check_carrier_and_operstate(struct hsr_priv *hsr);
- int hsr_get_max_mtu(struct hsr_priv *hsr);
- #endif /* __HSR_DEVICE_H */
-diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
-index 5d68cb181695..400b7d00f5af 100644
---- a/net/hsr/hsr_forward.c
-+++ b/net/hsr/hsr_forward.c
-@@ -393,6 +393,13 @@ bool hsr_drop_frame(struct hsr_frame_info *frame, struct hsr_port *port)
- 	if (port->dev->features & NETIF_F_HW_HSR_FWD)
- 		return prp_drop_frame(frame, port);
- 
-+	/* RedBox specific frames dropping policies
-+	 *
-+	 * Do not send HSR supervisory frames to SAN devices
-+	 */
-+	if (frame->is_supervision && port->type == HSR_PT_INTERLINK)
-+		return true;
-+
- 	return false;
- }
- 
-@@ -448,13 +455,14 @@ static void hsr_forward_do(struct hsr_frame_info *frame)
- 		}
- 
- 		/* Check if frame is to be dropped. Eg. for PRP no forward
--		 * between ports.
-+		 * between ports, or sending HSR supervision to RedBox.
- 		 */
- 		if (hsr->proto_ops->drop_frame &&
- 		    hsr->proto_ops->drop_frame(frame, port))
- 			continue;
- 
--		if (port->type != HSR_PT_MASTER)
-+		if (port->type == HSR_PT_SLAVE_A ||
-+		    port->type == HSR_PT_SLAVE_B)
- 			skb = hsr->proto_ops->create_tagged_frame(frame, port);
- 		else
- 			skb = hsr->proto_ops->get_untagged_frame(frame, port);
-@@ -469,7 +477,9 @@ static void hsr_forward_do(struct hsr_frame_info *frame)
- 			hsr_deliver_master(skb, port->dev, frame->node_src);
- 		} else {
- 			if (!hsr_xmit(skb, port, frame))
--				sent = true;
-+				if (port->type == HSR_PT_SLAVE_A ||
-+				    port->type == HSR_PT_SLAVE_B)
-+					sent = true;
- 		}
- 	}
- }
-@@ -574,9 +584,11 @@ static int fill_frame_info(struct hsr_frame_info *frame,
- 
- 	memset(frame, 0, sizeof(*frame));
- 	frame->is_supervision = is_supervision_frame(port->hsr, skb);
--	frame->node_src = hsr_get_node(port, &hsr->node_db, skb,
--				       frame->is_supervision,
--				       port->type);
-+	frame->node_src = hsr_get_node(port,
-+				      port->type == HSR_PT_INTERLINK ?
-+				      &hsr->proxy_node_db : &hsr->node_db, skb,
-+				      frame->is_supervision, port->type);
-+
- 	if (!frame->node_src)
- 		return -1; /* Unknown node and !is_supervision, or no mem */
- 
-diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
-index 6d14d935ee82..55320dea341a 100644
---- a/net/hsr/hsr_framereg.c
-+++ b/net/hsr/hsr_framereg.c
-@@ -71,6 +71,14 @@ static struct hsr_node *find_node_by_addr_A(struct list_head *node_db,
- 	return NULL;
- }
- 
-+/* Check if node for a given MAC address is already present in data base
-+ */
-+bool hsr_is_node_in_db(struct list_head *node_db,
-+		       const unsigned char addr[ETH_ALEN])
-+{
-+	return !!find_node_by_addr_A(node_db, addr);
-+}
-+
- /* Helper for device init; the self_node is used in hsr_rcv() to recognize
-  * frames from self that's been looped over the HSR ring.
-  */
-@@ -557,6 +565,55 @@ void hsr_prune_nodes(struct timer_list *t)
- 		  jiffies + msecs_to_jiffies(PRUNE_PERIOD));
- }
- 
-+void hsr_prune_proxy_nodes(struct timer_list *t)
-+{
-+	struct hsr_priv *hsr = from_timer(hsr, t, prune_proxy_timer);
-+	struct hsr_node *node;
-+	struct hsr_node *tmp;
-+	struct hsr_port *port;
-+	unsigned long timestamp;
-+	unsigned long time_c;
-+
-+	spin_lock_bh(&hsr->list_lock);
-+	list_for_each_entry_safe(node, tmp, &hsr->proxy_node_db, mac_list) {
-+
-+		time_c = node->time_in[HSR_PT_INTERLINK];
-+
-+		/* Check for timestamps old enough to risk wrap-around */
-+		if (time_after(jiffies, time_c + MAX_JIFFY_OFFSET / 2))
-+			node->time_in_stale[HSR_PT_INTERLINK] = true;
-+
-+		timestamp = time_c;
-+		/* Warn of ring error only as long as we get frames at all */
-+		if (time_is_after_jiffies(timestamp +
-+				msecs_to_jiffies(1.5 * MAX_SLAVE_DIFF))) {
-+			rcu_read_lock();
-+			port = get_late_port(hsr, node);
-+			if (port)
-+				hsr_nl_ringerror(hsr, node->macaddress_A, port);
-+			rcu_read_unlock();
-+		}
-+
-+		/* Prune old entries */
-+		if (time_is_before_jiffies(timestamp +
-+				msecs_to_jiffies(HSR_PROXY_NODE_FORGET_TIME))) {
-+			hsr_nl_nodedown(hsr, node->macaddress_A);
-+			if (!node->removed) {
-+				list_del_rcu(&node->mac_list);
-+				node->removed = true;
-+				/* Note that we need to free this entry later: */
-+				kfree_rcu(node, rcu_head);
-+			}
-+		}
-+	}
-+
-+	spin_unlock_bh(&hsr->list_lock);
-+
-+	/* Restart timer */
-+	mod_timer(&hsr->prune_proxy_timer,
-+		  jiffies + msecs_to_jiffies(PRUNE_PROXY_PERIOD));
-+}
-+
- void *hsr_get_next_node(struct hsr_priv *hsr, void *_pos,
- 			unsigned char addr[ETH_ALEN])
- {
-diff --git a/net/hsr/hsr_framereg.h b/net/hsr/hsr_framereg.h
-index b23556251d62..67456a75d8fe 100644
---- a/net/hsr/hsr_framereg.h
-+++ b/net/hsr/hsr_framereg.h
-@@ -46,6 +46,7 @@ int hsr_register_frame_out(struct hsr_port *port, struct hsr_node *node,
- 			   u16 sequence_nr);
- 
- void hsr_prune_nodes(struct timer_list *t);
-+void hsr_prune_proxy_nodes(struct timer_list *t);
- 
- int hsr_create_self_node(struct hsr_priv *hsr,
- 			 const unsigned char addr_a[ETH_ALEN],
-@@ -63,10 +64,15 @@ int hsr_get_node_data(struct hsr_priv *hsr,
- 		      int *if2_age,
- 		      u16 *if2_seq);
- 
-+void hsr_handle_san_frame(bool san, enum hsr_port_type port,
-+			  struct hsr_node *node);
- void prp_handle_san_frame(bool san, enum hsr_port_type port,
- 			  struct hsr_node *node);
- void prp_update_san_info(struct hsr_node *node, bool is_sup);
- 
-+bool hsr_is_node_in_db(struct list_head *node_db,
-+		       const unsigned char addr[ETH_ALEN]);
-+
- struct hsr_node {
- 	struct list_head	mac_list;
- 	/* Protect R/W access to seq_out */
-diff --git a/net/hsr/hsr_main.h b/net/hsr/hsr_main.h
-index 18e01791ad79..3fb5b07f8f25 100644
---- a/net/hsr/hsr_main.h
-+++ b/net/hsr/hsr_main.h
-@@ -21,6 +21,7 @@
-  */
- #define HSR_LIFE_CHECK_INTERVAL		 2000 /* ms */
- #define HSR_NODE_FORGET_TIME		60000 /* ms */
-+#define HSR_PROXY_NODE_FORGET_TIME	60000 /* ms */
- #define HSR_ANNOUNCE_INTERVAL		  100 /* ms */
- #define HSR_ENTRY_FORGET_TIME		  400 /* ms */
- 
-@@ -35,6 +36,7 @@
-  * HSR_NODE_FORGET_TIME?
-  */
- #define PRUNE_PERIOD			 3000 /* ms */
-+#define PRUNE_PROXY_PERIOD		 3000 /* ms */
- #define HSR_TLV_EOT				   0  /* End of TLVs */
- #define HSR_TLV_ANNOUNCE		   22
- #define HSR_TLV_LIFE_CHECK		   23
-@@ -192,9 +194,11 @@ struct hsr_priv {
- 	struct rcu_head		rcu_head;
- 	struct list_head	ports;
- 	struct list_head	node_db;	/* Known HSR nodes */
-+	struct list_head	proxy_node_db;	/* RedBox HSR proxy nodes */
- 	struct hsr_self_node	__rcu *self_node;	/* MACs of slaves */
- 	struct timer_list	announce_timer;	/* Supervision frame dispatch */
- 	struct timer_list	prune_timer;
-+	struct timer_list	prune_proxy_timer;
- 	int announce_count;
- 	u16 sequence_nr;
- 	u16 sup_sequence_nr;	/* For HSRv1 separate seq_nr for supervision */
-@@ -209,6 +213,8 @@ struct hsr_priv {
- 				 * of lan_id
- 				 */
- 	bool fwd_offloaded;	/* Forwarding offloaded to HW */
-+	bool redbox;            /* Device supports HSR RedBox */
-+	unsigned char		macaddress_redbox[ETH_ALEN];
- 	unsigned char		sup_multicast_addr[ETH_ALEN] __aligned(sizeof(u16));
- 				/* Align to u16 boundary to avoid unaligned access
- 				 * in ether_addr_equal
-diff --git a/net/hsr/hsr_netlink.c b/net/hsr/hsr_netlink.c
-index 78fe40eb9f01..183ec9ddb86d 100644
---- a/net/hsr/hsr_netlink.c
-+++ b/net/hsr/hsr_netlink.c
-@@ -23,6 +23,7 @@ static const struct nla_policy hsr_policy[IFLA_HSR_MAX + 1] = {
- 	[IFLA_HSR_SUPERVISION_ADDR]	= { .len = ETH_ALEN },
- 	[IFLA_HSR_SEQ_NR]		= { .type = NLA_U16 },
- 	[IFLA_HSR_PROTOCOL]		= { .type = NLA_U8 },
-+	[IFLA_HSR_INTERLINK]		= { .type = NLA_U32 },
- };
- 
- /* Here, it seems a netdevice has already been allocated for us, and the
-@@ -35,8 +36,8 @@ static int hsr_newlink(struct net *src_net, struct net_device *dev,
- 	enum hsr_version proto_version;
- 	unsigned char multicast_spec;
- 	u8 proto = HSR_PROTOCOL_HSR;
--	struct net_device *link[2];
- 
-+	struct net_device *link[2], *interlink = NULL;
- 	if (!data) {
- 		NL_SET_ERR_MSG_MOD(extack, "No slave devices specified");
- 		return -EINVAL;
-@@ -67,6 +68,20 @@ static int hsr_newlink(struct net *src_net, struct net_device *dev,
- 		return -EINVAL;
- 	}
- 
-+	if (data[IFLA_HSR_INTERLINK])
-+		interlink = __dev_get_by_index(src_net,
-+				       nla_get_u32(data[IFLA_HSR_INTERLINK]));
-+
-+	if (interlink && interlink == link[0]) {
-+		NL_SET_ERR_MSG_MOD(extack, "Interlink and Slave1 are the same");
-+		return -EINVAL;
-+	}
-+
-+	if (interlink && interlink == link[1]) {
-+		NL_SET_ERR_MSG_MOD(extack, "Interlink and Slave2 are the same");
-+		return -EINVAL;
-+	}
-+
- 	if (!data[IFLA_HSR_MULTICAST_SPEC])
- 		multicast_spec = 0;
- 	else
-@@ -96,10 +111,17 @@ static int hsr_newlink(struct net *src_net, struct net_device *dev,
- 		}
- 	}
- 
--	if (proto == HSR_PROTOCOL_PRP)
-+	if (proto == HSR_PROTOCOL_PRP) {
- 		proto_version = PRP_V1;
-+		if (interlink) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "Interlink only works with HSR");
-+			return -EINVAL;
-+		}
-+	}
- 
--	return hsr_dev_finalize(dev, link, multicast_spec, proto_version, extack);
-+	return hsr_dev_finalize(dev, link, interlink, multicast_spec,
-+				proto_version, extack);
- }
- 
- static void hsr_dellink(struct net_device *dev, struct list_head *head)
-diff --git a/net/hsr/hsr_slave.c b/net/hsr/hsr_slave.c
-index e5742f2a2d52..136e3917f477 100644
---- a/net/hsr/hsr_slave.c
-+++ b/net/hsr/hsr_slave.c
-@@ -55,6 +55,7 @@ static rx_handler_result_t hsr_handle_frame(struct sk_buff **pskb)
- 	protocol = eth_hdr(skb)->h_proto;
- 
- 	if (!(port->dev->features & NETIF_F_HW_HSR_TAG_RM) &&
-+	    port->type != HSR_PT_INTERLINK &&
- 	    hsr->proto_ops->invalid_dan_ingress_frame &&
- 	    hsr->proto_ops->invalid_dan_ingress_frame(protocol))
- 		goto finish_pass;
--- 
-2.20.1
+On 2/27/2024 10:26 PM, Elliot Berman wrote:
+> On Tue, Feb 27, 2024 at 09:23:07PM +0530, Mukesh Ojha wrote:
+>> There are multiple place in SCM driver __scm->dev is being
+>> accessed without checking if it is valid or not and all
+>> not all of function needs the device but it is needed
+>> for some cases when the number of argument passed is more
+>> and dma_map_single () api is used.
+>>
+>> Add a NULL check for the cases when it is fine even to pass
+>> device as NULL and add qcom_scm_is_available() check for
+>> cases when it is needed for DMA api's.
+>>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> ---
+>>   drivers/firmware/qcom/qcom_scm.c | 88 ++++++++++++++++++++++++--------
+>>   1 file changed, 66 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+>> index 6f14254c0c10..a1dce417e6ec 100644
+>> --- a/drivers/firmware/qcom/qcom_scm.c
+>> +++ b/drivers/firmware/qcom/qcom_scm.c
+>> @@ -465,7 +465,7 @@ int qcom_scm_set_remote_state(u32 state, u32 id)
+>>   	struct qcom_scm_res res;
+>>   	int ret;
+>>   
+>> -	ret = qcom_scm_call(__scm->dev, &desc, &res);
+>> +	ret = qcom_scm_call(__scm ? __scm->dev : NULL, &desc, &res);
+> 
+> We're doing this ternary a lot. Maybe an macro would help with
+> readability?
+> 
+> static inline struct device *scm_dev()
+> {
+> 	return __scm ? __scm->dev : NULL;
+> }
+> 
+> and then we can do
+> 
+> ret = qcom_scm_call(scm_dev(), &desc, &res);
+> 
 
+Sure, will apply.
+
+-Mukesh
+
+>>   
+>>   	return ret ? : res.result[0];
+>>   }
+>> @@ -591,6 +591,9 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
+>>   	};
+>>   	struct qcom_scm_res res;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	/*
+>>   	 * During the scm call memory protection will be enabled for the meta
+>>   	 * data blob, so make sure it's physically contiguous, 4K aligned and
+>> @@ -637,6 +640,9 @@ EXPORT_SYMBOL_GPL(qcom_scm_pas_init_image);
+>>    */
+>>   void qcom_scm_pas_metadata_release(struct qcom_scm_pas_metadata *ctx)
+>>   {
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	if (!ctx->ptr)
+>>   		return;
+>>   
+>> @@ -671,6 +677,9 @@ int qcom_scm_pas_mem_setup(u32 peripheral, phys_addr_t addr, phys_addr_t size)
+>>   	};
+>>   	struct qcom_scm_res res;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	ret = qcom_scm_clk_enable();
+>>   	if (ret)
+>>   		return ret;
+>> @@ -706,6 +715,9 @@ int qcom_scm_pas_auth_and_reset(u32 peripheral)
+>>   	};
+>>   	struct qcom_scm_res res;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	ret = qcom_scm_clk_enable();
+>>   	if (ret)
+>>   		return ret;
+>> @@ -740,6 +752,9 @@ int qcom_scm_pas_shutdown(u32 peripheral)
+>>   	};
+>>   	struct qcom_scm_res res;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	ret = qcom_scm_clk_enable();
+>>   	if (ret)
+>>   		return ret;
+>> @@ -776,11 +791,11 @@ bool qcom_scm_pas_supported(u32 peripheral)
+>>   	};
+>>   	struct qcom_scm_res res;
+>>   
+>> -	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
+>> +	if (!__qcom_scm_is_call_available(__scm ? __scm->dev : NULL, QCOM_SCM_SVC_PIL,
+>>   					  QCOM_SCM_PIL_PAS_IS_SUPPORTED))
+>>   		return false;
+>>   
+>> -	ret = qcom_scm_call(__scm->dev, &desc, &res);
+>> +	ret = qcom_scm_call(__scm ? __scm->dev : NULL, &desc, &res);
+>>   
+>>   	return ret ? false : !!res.result[0];
+>>   }
+>> @@ -840,7 +855,7 @@ int qcom_scm_io_readl(phys_addr_t addr, unsigned int *val)
+>>   	int ret;
+>>   
+>>   
+>> -	ret = qcom_scm_call_atomic(__scm->dev, &desc, &res);
+>> +	ret = qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, &res);
+>>   	if (ret >= 0)
+>>   		*val = res.result[0];
+>>   
+>> @@ -859,7 +874,7 @@ int qcom_scm_io_writel(phys_addr_t addr, unsigned int val)
+>>   		.owner = ARM_SMCCC_OWNER_SIP,
+>>   	};
+>>   
+>> -	return qcom_scm_call_atomic(__scm->dev, &desc, NULL);
+>> +	return qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, NULL);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_io_writel);
+>>   
+>> @@ -871,7 +886,8 @@ EXPORT_SYMBOL_GPL(qcom_scm_io_writel);
+>>    */
+>>   bool qcom_scm_restore_sec_cfg_available(void)
+>>   {
+>> -	return __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_MP,
+>> +	return __qcom_scm_is_call_available(__scm ? __scm->dev : NULL,
+>> +					    QCOM_SCM_SVC_MP,
+>>   					    QCOM_SCM_MP_RESTORE_SEC_CFG);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_restore_sec_cfg_available);
+>> @@ -889,7 +905,7 @@ int qcom_scm_restore_sec_cfg(u32 device_id, u32 spare)
+>>   	struct qcom_scm_res res;
+>>   	int ret;
+>>   
+>> -	ret = qcom_scm_call(__scm->dev, &desc, &res);
+>> +	ret = qcom_scm_call(__scm ? __scm->dev : NULL, &desc, &res);
+>>   
+>>   	return ret ? : res.result[0];
+>>   }
+>> @@ -907,7 +923,7 @@ int qcom_scm_iommu_secure_ptbl_size(u32 spare, size_t *size)
+>>   	struct qcom_scm_res res;
+>>   	int ret;
+>>   
+>> -	ret = qcom_scm_call(__scm->dev, &desc, &res);
+>> +	ret = qcom_scm_call(__scm ? __scm->dev : NULL, &desc, &res);
+>>   
+>>   	if (size)
+>>   		*size = res.result[0];
+>> @@ -930,7 +946,7 @@ int qcom_scm_iommu_secure_ptbl_init(u64 addr, u32 size, u32 spare)
+>>   	};
+>>   	int ret;
+>>   
+>> -	ret = qcom_scm_call(__scm->dev, &desc, NULL);
+>> +	ret = qcom_scm_call(__scm ? __scm->dev : NULL, &desc, NULL);
+>>   
+>>   	/* the pg table has been initialized already, ignore the error */
+>>   	if (ret == -EPERM)
+>> @@ -951,7 +967,7 @@ int qcom_scm_iommu_set_cp_pool_size(u32 spare, u32 size)
+>>   		.owner = ARM_SMCCC_OWNER_SIP,
+>>   	};
+>>   
+>> -	return qcom_scm_call(__scm->dev, &desc, NULL);
+>> +	return qcom_scm_call(__scm ? __scm->dev : NULL, &desc, NULL);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_iommu_set_cp_pool_size);
+>>   
+>> @@ -973,7 +989,7 @@ int qcom_scm_mem_protect_video_var(u32 cp_start, u32 cp_size,
+>>   	};
+>>   	struct qcom_scm_res res;
+>>   
+>> -	ret = qcom_scm_call(__scm->dev, &desc, &res);
+>> +	ret = qcom_scm_call(__scm ? __scm->dev : NULL, &desc, &res);
+>>   
+>>   	return ret ? : res.result[0];
+>>   }
+>> @@ -1038,6 +1054,9 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+>>   	int ret, i, b;
+>>   	u64 srcvm_bits = *srcvm;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	src_sz = hweight64(srcvm_bits) * sizeof(*src);
+>>   	mem_to_map_sz = sizeof(*mem_to_map);
+>>   	dest_sz = dest_cnt * sizeof(*destvm);
+>> @@ -1093,7 +1112,8 @@ EXPORT_SYMBOL_GPL(qcom_scm_assign_mem);
+>>    */
+>>   bool qcom_scm_ocmem_lock_available(void)
+>>   {
+>> -	return __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_OCMEM,
+>> +	return __qcom_scm_is_call_available(__scm ? __scm->dev : NULL,
+>> +					    QCOM_SCM_SVC_OCMEM,
+>>   					    QCOM_SCM_OCMEM_LOCK_CMD);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_ocmem_lock_available);
+>> @@ -1120,7 +1140,7 @@ int qcom_scm_ocmem_lock(enum qcom_scm_ocmem_client id, u32 offset, u32 size,
+>>   		.arginfo = QCOM_SCM_ARGS(4),
+>>   	};
+>>   
+>> -	return qcom_scm_call(__scm->dev, &desc, NULL);
+>> +	return qcom_scm_call(__scm ? __scm->dev : NULL, &desc, NULL);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_ocmem_lock);
+>>   
+>> @@ -1143,7 +1163,7 @@ int qcom_scm_ocmem_unlock(enum qcom_scm_ocmem_client id, u32 offset, u32 size)
+>>   		.arginfo = QCOM_SCM_ARGS(3),
+>>   	};
+>>   
+>> -	return qcom_scm_call(__scm->dev, &desc, NULL);
+>> +	return qcom_scm_call(__scm ? __scm->dev : NULL, &desc, NULL);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_ocmem_unlock);
+>>   
+>> @@ -1155,9 +1175,11 @@ EXPORT_SYMBOL_GPL(qcom_scm_ocmem_unlock);
+>>    */
+>>   bool qcom_scm_ice_available(void)
+>>   {
+>> -	return __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_ES,
+>> +	return __qcom_scm_is_call_available(__scm ? __scm->dev : NULL,
+>> +					    QCOM_SCM_SVC_ES,
+>>   					    QCOM_SCM_ES_INVALIDATE_ICE_KEY) &&
+>> -		__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_ES,
+>> +		__qcom_scm_is_call_available(__scm ?__scm->dev : NULL,
+>> +					     QCOM_SCM_SVC_ES,
+>>   					     QCOM_SCM_ES_CONFIG_SET_ICE_KEY);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_ice_available);
+>> @@ -1184,7 +1206,7 @@ int qcom_scm_ice_invalidate_key(u32 index)
+>>   		.owner = ARM_SMCCC_OWNER_SIP,
+>>   	};
+>>   
+>> -	return qcom_scm_call(__scm->dev, &desc, NULL);
+>> +	return qcom_scm_call(__scm ?__scm->dev : NULL, &desc, NULL);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_ice_invalidate_key);
+>>   
+>> @@ -1228,6 +1250,9 @@ int qcom_scm_ice_set_key(u32 index, const u8 *key, u32 key_size,
+>>   	dma_addr_t key_phys;
+>>   	int ret;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	/*
+>>   	 * 'key' may point to vmalloc()'ed memory, but we need to pass a
+>>   	 * physical address that's been properly flushed.  The sanctioned way to
+>> @@ -1262,7 +1287,12 @@ EXPORT_SYMBOL_GPL(qcom_scm_ice_set_key);
+>>   bool qcom_scm_hdcp_available(void)
+>>   {
+>>   	bool avail;
+>> -	int ret = qcom_scm_clk_enable();
+>> +	int ret;
+>> +
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>> +	ret = qcom_scm_clk_enable();
+>>   
+>>   	if (ret)
+>>   		return ret;
+>> @@ -1307,6 +1337,9 @@ int qcom_scm_hdcp_req(struct qcom_scm_hdcp_req *req, u32 req_cnt, u32 *resp)
+>>   	};
+>>   	struct qcom_scm_res res;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	if (req_cnt > QCOM_SCM_HDCP_MAX_REQ_CNT)
+>>   		return -ERANGE;
+>>   
+>> @@ -1335,7 +1368,7 @@ int qcom_scm_iommu_set_pt_format(u32 sec_id, u32 ctx_num, u32 pt_fmt)
+>>   		.owner = ARM_SMCCC_OWNER_SIP,
+>>   	};
+>>   
+>> -	return qcom_scm_call(__scm->dev, &desc, NULL);
+>> +	return qcom_scm_call(__scm ? __scm->dev : NULL, &desc, NULL);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_iommu_set_pt_format);
+>>   
+>> @@ -1351,13 +1384,15 @@ int qcom_scm_qsmmu500_wait_safe_toggle(bool en)
+>>   	};
+>>   
+>>   
+>> -	return qcom_scm_call_atomic(__scm->dev, &desc, NULL);
+>> +	return qcom_scm_call_atomic(__scm ? __scm->dev : NULL, &desc, NULL);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_qsmmu500_wait_safe_toggle);
+>>   
+>>   bool qcom_scm_lmh_dcvsh_available(void)
+>>   {
+>> -	return __qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_LMH, QCOM_SCM_LMH_LIMIT_DCVSH);
+>> +	return __qcom_scm_is_call_available(__scm ? __scm->dev : NULL,
+>> +					    QCOM_SCM_SVC_LMH,
+>> +					    QCOM_SCM_LMH_LIMIT_DCVSH);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_lmh_dcvsh_available);
+>>   
+>> @@ -1371,7 +1406,7 @@ int qcom_scm_lmh_profile_change(u32 profile_id)
+>>   		.owner = ARM_SMCCC_OWNER_SIP,
+>>   	};
+>>   
+>> -	return qcom_scm_call(__scm->dev, &desc, NULL);
+>> +	return qcom_scm_call(__scm ? __scm->dev : NULL, &desc, NULL);
+>>   }
+>>   EXPORT_SYMBOL_GPL(qcom_scm_lmh_profile_change);
+>>   
+>> @@ -1394,6 +1429,9 @@ int qcom_scm_lmh_dcvsh(u32 payload_fn, u32 payload_reg, u32 payload_val,
+>>   		.owner = ARM_SMCCC_OWNER_SIP,
+>>   	};
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	payload_buf = dma_alloc_coherent(__scm->dev, payload_size, &payload_phys, GFP_KERNEL);
+>>   	if (!payload_buf)
+>>   		return -ENOMEM;
+>> @@ -1568,6 +1606,9 @@ int qcom_scm_qseecom_app_get_id(const char *app_name, u32 *app_id)
+>>   	char *name_buf;
+>>   	int status;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	if (app_name_len >= name_buf_size)
+>>   		return -EINVAL;
+>>   
+>> @@ -1638,6 +1679,9 @@ int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
+>>   	dma_addr_t rsp_phys;
+>>   	int status;
+>>   
+>> +	if (!qcom_scm_is_available())
+>> +		return -EPROBE_DEFER;
+>> +
+>>   	/* Map request buffer */
+>>   	req_phys = dma_map_single(__scm->dev, req, req_size, DMA_TO_DEVICE);
+>>   	status = dma_mapping_error(__scm->dev, req_phys);
+>> -- 
+>> 2.43.0.254.ga26002b62827
+>>
+>>
 
