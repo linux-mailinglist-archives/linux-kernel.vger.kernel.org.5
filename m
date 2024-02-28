@@ -1,178 +1,185 @@
-Return-Path: <linux-kernel+bounces-84515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBB586A7B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:53:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F01886A7B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 05:55:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03A381F2236F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:53:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52D9D1C242DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 04:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C1E720320;
-	Wed, 28 Feb 2024 04:53:19 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4781520DF1;
+	Wed, 28 Feb 2024 04:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ns+6vK9o"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 167797FA
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 04:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709095998; cv=none; b=AeyvNwAYnsWE73I9JFoKr2BmvOfKTAZDbDn6quliMLNZlUSRKgePc+ZmF5YQh72v0vvueZ4ljcgfLF6UTTWp/iom3Oe05j1vlZWTWaYOowayJJfrJozc1EfbM4YviweB5XCleU7n7GgjvcwJFohjsbyaPPtMz4EECZl8bWu5KbU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709095998; c=relaxed/simple;
-	bh=wZmkdZbXJo1h2ax0tDtCwbt9EHwto6bbJWngD1zBDe0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kkwZTVB2tLK5Pl8mlxtoJhFNuDuVNiL5L8QO0ti5PXxtVL0zvuP14e7uQ8H8AcT4BrdgkGfl80LGw1CTjLwPKE6f3ZAVSbl6D+7PhsPEiGkhsaVXmE9kiiFi21umQARlZYqzpNL/I5mqa8VcprxErExPDVBiwld08nZdkp6M4lU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-365b4dc6c3eso6987525ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 20:53:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709095996; x=1709700796;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wLp1bsry9uAqXzf4BDbA5DbOjqtNpJoqrZgoXxy1hjA=;
-        b=eMtD2tBZJuZcWYIrx5/BlALVkKWR8dVyMjNUPpVV+zSP/ynXpDBPMgsEQ92s/PbtS3
-         y/slAEyAx+6mUu4jappRaNP//DV7QyO6oQyPW3bZpdFybfM9fQ9EPaVk6HkcgnA2udb1
-         PjOKq3+dFZMWmQpGyQmeelV44cQ7KGm00s2ZzDAJJuNZMRqXCEF8jdx8KZww+lChT/LI
-         kkWFM0qsdCWDbWqpLIGQuf0rr2D4oomwvFR1c1RLIzqmoZ/ttqVFFl5RZPGiDP3qzlXN
-         5P7qGJ5VOrgnK5OsYeJ3mvK/9JuwU+hu1TT41FtLVNLVQ+GZAGj919PKfdAEwY0tzNmA
-         sRoA==
-X-Forwarded-Encrypted: i=1; AJvYcCWkY2V0eZTh5kokXBsmv+xYAPJW48DdN3AZRQRH7ccPmcoTEFBsvhzUMND0orilt2BOBgJeE8JuOmRpVxLqK1klBtxwJ8OW/RRJMbm+
-X-Gm-Message-State: AOJu0YzPuJ5IQF14G2Lb2t8nIy0VyDFZ/cO5nuf1OHvqlnM7fHntX67e
-	JCTOlMhOH2Z3oIRy9zw8O0SxT77GR2N+ukvt78REwAe2aUmyQVFhpE8RLkDhyWRhLjJi14dfsp0
-	HSldZCqjjIRVWgtcR+uRiy2uzYJJCGxvaqFTEM59Vb+P4EHmWICdeXag=
-X-Google-Smtp-Source: AGHT+IFKtGl7Hrq3wGX5AY1HvUoLSLPZ95MyV08N+LxrKQn3KHztGVxS791I4R0OlCFYcsJAIYR5hY09FiCWWVY9XWIsmPkPw0Mc
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C6218E03;
+	Wed, 28 Feb 2024 04:55:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709096133; cv=fail; b=vBeVIn1MA8z6IvYI6AfV4y09aXvOmtkS4CNta7L1avqZFK25QtJtN8JHCKSW/DYY5K8CTMK+XS1g+wwOtanAzlwwtC8bC4y+aWvaOfGZSXJc7BPbmZWGn8Q2xIZDOxQvcbWStgg+TmE2pv3f3sYolNcJLIT1kn+BI3YVE6lvGKw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709096133; c=relaxed/simple;
+	bh=Y2lx2Jxs24uY3+KwGeF9xU2WnAYb/42OXjEn5eeRTB0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=pm6kEdXGy463AWtO7lvqyCD2V3KUPEBYxKuujSbvRXe4MpwWDivjXyhoJt4YoNgX77M+YhRRBvcEArGKS0PmE3UmJ8l78LtuDXvu/kFsy/mJ/wZzEOFWcXeyAMRX1CPjEBdl8GBJT1+T7dZG1u8wnv7mEPqtU4FjN3GqkOVKjms=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ns+6vK9o; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709096132; x=1740632132;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Y2lx2Jxs24uY3+KwGeF9xU2WnAYb/42OXjEn5eeRTB0=;
+  b=Ns+6vK9oVGSXdEsipXUUzHgZYEzt2gUDdM1wEPyT/nm27xlB1qEZieL1
+   XshaiboYH0pVLIbBC9ESFxucppZ17EaCar5iRRQeVWD31WtTagLu6IOq5
+   O8sV0ehTuD7ZUKXKXOVqSo+sjsAf8iuZfFKYGVH4lil8ASO1Hi3p8C5Mm
+   isW99cWcknLccmu0HYW6Mjvq/hvwN5koNymwTZaRry+mFfjsWT6enBfEB
+   o+EK196CGme3CaIG3Uy3or/gmEltmhRtnWqvGVf8FGmJBdsveIpeZhisI
+   oe2kAK7+2lpbE4NiWsQMwFyLAQ67JrxH1m/VzOk0HG4pnqrgZgeCc0jN3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3640042"
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="3640042"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2024 20:55:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,189,1705392000"; 
+   d="scan'208";a="7341871"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 27 Feb 2024 20:55:31 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 27 Feb 2024 20:55:29 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 27 Feb 2024 20:55:29 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 27 Feb 2024 20:55:29 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NWMQbh1T8d1bP0aPgo4blmhRGrKjGjofDaOT9LCoI/oIH++e6//iqUHVv0egcbG9DUeQrujNU8ZR1smhfMPI6m4i9D/jlw/eHSh/2tOHnRqrJ3DHjuncSfAhcg5JeJNKK5YvmxiHzkWWlJPk3w64AIxAs/OZKP/rWqIvSvkfM3TM9m0AGSce9BTrSKS7PB/J+JPGEg7WXSMs3h4MEdLfCEMnHP+pMwwnRDX0I4gICDaSCB6KIB0ByTtwDIYjhCNplz3hZI4gXS/T1N/8t3ed2Gm0o9fG0HBVmePTcXt97JZIc1aBGDKYXWsoDacbEKXzH0Ptbf3SIRa4hs/mn327GA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y2lx2Jxs24uY3+KwGeF9xU2WnAYb/42OXjEn5eeRTB0=;
+ b=cvLszUdyMBU6xxc3l+pUDhC8tE2xZMwwWkfHiULpDjoT1gbP+z0K7jvbts4A3KniSLx1DzHChS536H3zQfb/W/RqY/uGzhxVBFPQsT9bhSgnmYRHBuZTRRXGlWrIdFXaWp5pYhxQEnRN3W7y3pdG1Rtm3P/HPhdN2N1bLtdYBjpOc0HIR9verOz8zTszUr/ER2i2CyxrBuO+eE8CLx3dmbVerYuckM4B7HZt1A0/nkC9+idIKpACOks3VA36pLaXEhTPzgcurVTPdUClRxa3/Wh2ykEJW5UZPGp+85AuzbM+XZIGXwMPsUAJuvxVKUOsmlggRbOpPDqy3Ql0hSpQ6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by SJ0PR11MB4781.namprd11.prod.outlook.com (2603:10b6:a03:2d8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.25; Wed, 28 Feb
+ 2024 04:55:27 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::b0e3:e5b2:ab34:ff80]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::b0e3:e5b2:ab34:ff80%7]) with mapi id 15.20.7339.024; Wed, 28 Feb 2024
+ 04:55:27 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Brett Creeley <brett.creeley@amd.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+	"yishaih@nvidia.com" <yishaih@nvidia.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "alex.williamson@redhat.com"
+	<alex.williamson@redhat.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "shannon.nelson@amd.com" <shannon.nelson@amd.com>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH v2 vfio 1/2] vfio/pds: Always clear the save/restore FDs
+ on reset
+Thread-Topic: [PATCH v2 vfio 1/2] vfio/pds: Always clear the save/restore FDs
+ on reset
+Thread-Index: AQHaad2jJNcjBgqFYkuS9gCWwg3GnLEfMNhA
+Date: Wed, 28 Feb 2024 04:55:27 +0000
+Message-ID: <BN9PR11MB527658407AFC552ADEF6E3ED8C582@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240228003205.47311-1-brett.creeley@amd.com>
+ <20240228003205.47311-2-brett.creeley@amd.com>
+In-Reply-To: <20240228003205.47311-2-brett.creeley@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SJ0PR11MB4781:EE_
+x-ms-office365-filtering-correlation-id: 05081f59-f8db-4dde-383a-08dc38197b73
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GuzEMza//hHPq6xlJ+8e7Enl8xBqv0lIIBZMqq8hngmg28sxYJU7jJUE/BiS8viVQkd5M7w6tjhbRGBNZs/Z9bxOJ19bLwcj8rf7I+vNeVx7WVbUs0BW5uoC36lLiSE2GAg9WiBJn88bNmCdJEIgtMIpQ0ezZoNy8QerUmvqBvNHgm86l60XtGCPgyHSdfl18rGGhddyDX5ViNywQfREg76k/dyzJvml54BAwix2oEk698H+uvDZuG/DNchhtOwBohd8lRNHvHMYwsKq7rcxFsMRnbaKWbDCdrixD2QHd7RyDq2FVzfXiTqk+Bwzf9Ummt08PTAJrgqiS+00nx/gIGQWcytJNGAG+g/omV5ZpgWB+TF+v3PGfe8sLptNzVvJukJZftIFKJPs3uh6mMtj1MJAZeyvOKAazi2dwozUwLVw6jCrrs2wJdX5P1aKZ1xQbaOeeGJppIb91eMCHU3Rb5a0aRHhoqRM2MTG87tE6Y0An7CRihxWqycXNLv561rakgxJcBv52bg3TvOq33BCdOBDFyYbVl5ZYy5TDQZu8ke8IIlV8avLq3gMG0K8EHZuuBS+7eHsGmDFVNN1SifwUkB+PnW9bZL90OUOKd5U5BNYqj4HSzn2oM5PwAfacgsHfL8UMN20Gw7FKcLtutKknwGByZlve2GJBM9cpS0dDoGnsdW+pE/anrT2N9v6yE6rDdvoV4EYe9qr8VtB3ywPLGc6Fw9McYGXuVvsiQROwkQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?XTwjXGCODOZRHB9xxXStcKWu6CGjcG8zh/Omix3qmNHv9QmATujUWs+eqD7N?=
+ =?us-ascii?Q?NRk9dwfW14rHXl+oAaxa5Zjtqtn88d6ZCNmCV4DwukgaYyeT7tsBAQnAL2IK?=
+ =?us-ascii?Q?5O9LMu1RhfdVHbjkFzyUoSzDmoL4t/n1r0DaCsnNmQd7LnJ1C6crAFRBvAyO?=
+ =?us-ascii?Q?lKnkdZlZNlJwabVGG8MfXleFt4mVEVYdG35OPXMjsWKPspVmFthX9Hm0v+aQ?=
+ =?us-ascii?Q?94k7Kest7TLb9vpgemcJ2QthlVQmryGShGHnb+I/OBo3UTf4r2bZgSEVvPQQ?=
+ =?us-ascii?Q?LPGuqHCElbigweOLoAq/suMIRmcNUn5gx6CCI9FwNnlxYra8OIkdErP6DNe7?=
+ =?us-ascii?Q?T2XnaiZuhruQSgtyFzHxXrFmjl0yIEGnFJaAUB17yjjT7hLgqGKDLR1K4cVo?=
+ =?us-ascii?Q?UpS6pGFfQFJoPhUSfE1rg0NvpOWaIIlf1TuP8cLMJ3nbvLKB+Rws1d2kcK11?=
+ =?us-ascii?Q?Jh7Eq/fBFqvwTJTDJ27nUF9Fhhm65QAiEXq2zxN7NnvaxzN0nqxj7o560jKB?=
+ =?us-ascii?Q?1ZEe2T8zMnY4mVgKVYaCCWb0eWF6KQYirhni/+qJwAmkzWBp/ntm9dkR3u7W?=
+ =?us-ascii?Q?rw9Y4z5e4hKTKdia8QRpAgVuannt3MX5CVgqC7oush4a4udmwSUr3Gi/CVLH?=
+ =?us-ascii?Q?dxZVi/DR705HCxJMd/8LDByiAdUZ5f3kDLPtVmwNung4rmSl16YZ7h4kRfD+?=
+ =?us-ascii?Q?SkwkapoOCpHan6HcsV9rOkrKQ6S5Qyj+npg02N/e9PSJH9o/1mIK14sJ6g0N?=
+ =?us-ascii?Q?vMcTPVH/lDToVTXMXI+0FKhC5UuujtF3zKIQo5ytWStGRQ3rROhBmwUaMTfa?=
+ =?us-ascii?Q?M63Np3VxMD9HmB5gsrkMwXhiDDcCPRVaKVZ6cfLFEWWQd5hGJS33zHEItv1g?=
+ =?us-ascii?Q?6MoCEmwZZR2jbQpUBRGFpzU8CQQDv5VJ2hqU34rNlwU+CnFMW0t9x/NzGvCl?=
+ =?us-ascii?Q?KYwXqYgX9xL9r2u9yrb7wVWnBk1tTbNaIftm5Eii/NdbmiQKRlHWxQbWVseS?=
+ =?us-ascii?Q?nLYtLH0uFYOmIzpQ/RZICFhobfNetqo92b0QlJioIDHiRhDDYDFry8f4vwlI?=
+ =?us-ascii?Q?DpArM0757wQuMtJ9RyZCemQ0tcI47qMAlwixMHbp7bm9ysVVTdNlwSU1SfX5?=
+ =?us-ascii?Q?Szb1r9ZAqt1DnvSvSXoHHlo95jC39GaLlEncMSONlXnN2CJAwaatpQoNu+Ok?=
+ =?us-ascii?Q?Gdp8EGDv2JQbl7R4nU2vlUxp6+/fVIuzpf9rvL5KleL1AudoYoAAvdyr3DMX?=
+ =?us-ascii?Q?IrAazII3OtltTV3D4JKpYMElAs0Z+Yreaye5rauAaxndE+XOAlFucX6KkskU?=
+ =?us-ascii?Q?G3bjt3olXpATB7//ToQvfTj6785kDUg1Hb+lopVr17HNyM7iV/43072DH2iF?=
+ =?us-ascii?Q?Q+kU1bHkdhcH30ZlAwHJL5cIH6gNzSXhOjv9rAQEsIZ8xnr8rsBrP0F+G2JD?=
+ =?us-ascii?Q?IR5xDiHVg0dFciyarTQJkePlW3dgREGvFQqQzJqyL2fXx3pYLNY2pBaZjGOg?=
+ =?us-ascii?Q?ZcWNgWGKo/JUkBhSe4yF8PUMPo6XAJhRlw4iHMyAQUzzM4LHCpMCChHP9TQY?=
+ =?us-ascii?Q?dORawC4FLviNYiD+yZN0mMmWm3lv6yXyM8G+7/RJ?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1808:b0:365:424a:73db with SMTP id
- a8-20020a056e02180800b00365424a73dbmr848046ilv.4.1709095996307; Tue, 27 Feb
- 2024 20:53:16 -0800 (PST)
-Date: Tue, 27 Feb 2024 20:53:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bf4687061269eb1b@google.com>
-Subject: [syzbot] [bluetooth?] WARNING in hci_conn_del
-From: syzbot <syzbot+b2545b087a01a7319474@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, johan.hedberg@gmail.com, 
-	kuba@kernel.org, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, luiz.von.dentz@intel.com, 
-	marcel@holtmann.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, william.xuanziyang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 05081f59-f8db-4dde-383a-08dc38197b73
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Feb 2024 04:55:27.5663
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: YLvT9Fq+WSHHMUzWU9RW/HM5eObUjcBDPe4My8EPy8YrCh3qPOIc6wJZu5+2UI4xhNsvsao9P8CmbZAQmbni4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4781
+X-OriginatorOrg: intel.com
 
-Hello,
+> From: Brett Creeley <brett.creeley@amd.com>
+> Sent: Wednesday, February 28, 2024 8:32 AM
+>=20
+> After reset the VFIO device state will always be put in
+> VFIO_DEVICE_STATE_RUNNING, but the save/restore files will only be
+> cleared if the previous state was VFIO_DEVICE_STATE_ERROR. This
+> can/will cause the restore/save files to be leaked if/when the
+> migration state machine transitions through the states that
+> re-allocates these files. Fix this by always clearing the
+> restore/save files for resets.
+>=20
+> Fixes: 7dabb1bcd177 ("vfio/pds: Add support for firmware recovery")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Brett Creeley <brett.creeley@amd.com>
+> Reviewed-by: Shannon Nelson <shannon.nelson@amd.com>
 
-syzbot found the following issue on:
-
-HEAD commit:    603c04e27c3e Merge tag 'parisc-for-6.8-rc6' of git://git.k..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12d065aa180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=eff9f3183d0a20dd
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2545b087a01a7319474
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17960122180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d70222180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ffe1f52b2e32/disk-603c04e2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/76775e0b335d/vmlinux-603c04e2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/8cd3c1c87eef/bzImage-603c04e2.xz
-
-The issue was bisected to:
-
-commit 181a42edddf51d5d9697ecdf365d72ebeab5afb0
-Author: Ziyang Xuan <william.xuanziyang@huawei.com>
-Date:   Wed Oct 11 09:57:31 2023 +0000
-
-    Bluetooth: Make handle of hci_conn be unique
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1357945c180000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10d7945c180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1757945c180000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b2545b087a01a7319474@syzkaller.appspotmail.com
-Fixes: 181a42edddf5 ("Bluetooth: Make handle of hci_conn be unique")
-
-------------[ cut here ]------------
-ida_free called for id=8192 which is not allocated.
-WARNING: CPU: 1 PID: 5074 at lib/idr.c:525 ida_free+0x370/0x420 lib/idr.c:525
-Modules linked in:
-CPU: 1 PID: 5074 Comm: syz-executor104 Not tainted 6.8.0-rc5-syzkaller-00278-g603c04e27c3e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:ida_free+0x370/0x420 lib/idr.c:525
-Code: 10 42 80 3c 28 00 74 05 e8 8d 4b 9b f6 48 8b 7c 24 40 4c 89 fe e8 a0 89 17 00 90 48 c7 c7 80 cd c5 8c 89 de e8 21 32 fd f5 90 <0f> 0b 90 90 eb 3d e8 45 27 39 f6 49 bd 00 00 00 00 00 fc ff df 4d
-RSP: 0018:ffffc900039ef920 EFLAGS: 00010246
-RAX: 59cbf4b1e8f11a00 RBX: 0000000000002000 RCX: ffff88802da20000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc900039efa18 R08: ffffffff81577ab2 R09: 1ffff110172a51a2
-R10: dffffc0000000000 R11: ffffed10172a51a3 R12: ffffc900039ef960
-R13: dffffc0000000000 R14: ffff88801e3ec0a0 R15: 0000000000000246
-FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f78fc079f08 CR3: 000000002db8e000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- hci_conn_cleanup net/bluetooth/hci_conn.c:157 [inline]
- hci_conn_del+0x7c0/0xcb0 net/bluetooth/hci_conn.c:1188
- hci_conn_hash_flush+0x18e/0x240 net/bluetooth/hci_conn.c:2646
- hci_dev_close_sync+0x9ab/0xff0 net/bluetooth/hci_sync.c:4954
- hci_dev_do_close net/bluetooth/hci_core.c:554 [inline]
- hci_unregister_dev+0x1e3/0x4e0 net/bluetooth/hci_core.c:2739
- vhci_release+0x83/0xd0 drivers/bluetooth/hci_vhci.c:674
- __fput+0x429/0x8a0 fs/file_table.c:376
- task_work_run+0x24e/0x310 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa2c/0x2740 kernel/exit.c:871
- do_group_exit+0x206/0x2c0 kernel/exit.c:1020
- __do_sys_exit_group kernel/exit.c:1031 [inline]
- __se_sys_exit_group kernel/exit.c:1029 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1029
- do_syscall_64+0xf9/0x240
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f78fc021449
-Code: Unable to access opcode bytes at 0x7f78fc02141f.
-RSP: 002b:00007ffd8ebe2238 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f78fc021449
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
-RBP: 00007f78fc0ad2b0 R08: ffffffffffffffb0 R09: 000000ff00ff4650
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f78fc0ad2b0
-R13: 0000000000000000 R14: 00007f78fc0add00 R15: 00007f78fbfef4e0
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 
