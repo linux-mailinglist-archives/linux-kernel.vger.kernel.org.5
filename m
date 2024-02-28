@@ -1,112 +1,128 @@
-Return-Path: <linux-kernel+bounces-85228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D61686B283
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:58:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6710586B285
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:59:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE2C6B244D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:58:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CC4A1F26E90
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A0615B10D;
-	Wed, 28 Feb 2024 14:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zjh0SRi4"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8622273531;
-	Wed, 28 Feb 2024 14:58:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C21C15B0FF;
+	Wed, 28 Feb 2024 14:59:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A0E73531
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:59:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709132303; cv=none; b=F14WRnX3A6VtOxPr759TJC+HWQW1WKsN5kq/A+jXLCCun83snA2QwJSWCg1HDWk3re6PLTvfE40K+vuAakfn4qbjOher2srv3rrcL+mIiU7dugWavjM2r+wc5vEbpU+G5R8bCn4+PIdDqW7oMnytxv6zTk3qZaCVNDU9hFWnitQ=
+	t=1709132376; cv=none; b=GSWxXkiLkQQIfVDXoJZMIICzIwY7JN0WXKakM7rF+84GlRRwSAQRsKgDYTH3v/KMbr28QgugPVN3zXOBXK2GxE51EIm0GF1xLa54SAKus6TKOD1DgGA/66zDhFM1KTBNOePKWTl2QFRdmYEAw4PJH7rgCy6auhe9zFtYimJouZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709132303; c=relaxed/simple;
-	bh=D0mxBNIYaM/LvyCACLqGR6ej8KvkbeUqHMXZmcDYbD8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JfML8tCMaKi0Vu+3zbm3FVykBjbhbtgQ9x7+LZjs1u2uRXauR1M5kCiIHiErUb4hckEpjVV9zv68Il76FLMnC2cTXGZ6ATAJcRSn3V95u3TkI+w0w4rdBwmEDz1XTPxGo9UOIqs1OE6DS7Qr5wsvtToYYy50VHBKyquAXVJ2O9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zjh0SRi4; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55a8fd60af0so7758447a12.1;
-        Wed, 28 Feb 2024 06:58:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709132300; x=1709737100; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TQb0JnJ+sgplpcUuC4pN4ac3IxkeDfhPVjjzotONsYA=;
-        b=Zjh0SRi4Oeds13svzg5jn4zqXfUVbjEYxIRX0QtV4cQb0jyFToNg6xwXtM97S9WjsQ
-         Uf/I1E5aG5gG/aFHAdkq0w4lWmKcrRqbDBmUam3Y8xGJIehSU+SR5T3wUlmZAH6kpr6u
-         IbGmaiDgJOK2yVby3OqPO/LZxfkPD+Lb7IRKTWRZsijoCeUdQsKBed5sS7TMDcYLWsP6
-         NFaxMze4ypW9mma6kNjYL8P9YQfKmLRKPqrDSrmN0n9+pl/asArC3iIS7fSIjukAIpjo
-         mr3PmIxJefBYHyof8KidWrcqAGcw1WSBAG5MjSVi1jyYsVqJlZSQfacPR0FeREE3Ly2D
-         WdpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709132300; x=1709737100;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TQb0JnJ+sgplpcUuC4pN4ac3IxkeDfhPVjjzotONsYA=;
-        b=AGdsxARQlmPucgU6/Dizu8DxydAJDh0MLhmRaCpBiZGqjXKc7QCnYVYFspf2tTwD5r
-         3SzL8+IadywutQs3bPy7tmphDgchzWRQJvKkit+9W6GxElmufFb87rp/S2FERqO7leDw
-         RgfaGJ/IGkrQmu77HlGPHYwEwRhTjdn2C7J+lPRZgCT3XS6StLZB/mUjxhOyrW5MF7wl
-         M70oAox3j7QKLbjQPkvVIH6VsqGTt1WjdAa1NmECOtvSjoqMP5NNDuXT5Mx9618fN8oy
-         Zjz1YPm5rFF1Fn+oqgpEYFKptMDWLeM3HUh36ICUytZ+1x/4lZ0cEUdsnwUQGOWhS8C3
-         R1cQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUCTwY7k8j1GPxmuAufU15SqWBE7JPy7Dn7hjLF/YXfScmP+5C1IwoslH1pjhfzkAaUmWLEjhMgkEy6yeNqw9FArtn7axTKQfV0b0HptdjQTTcO7vTgNV37HKSG13p5YSp9/KyJ7dPZYuvAmdhTNQWFtjsuVGZXuvXqV5W/CnkrMMDS1Es=
-X-Gm-Message-State: AOJu0Yyypdcv2KVLflMjjqbgvBqP+/hDhGDNJrNLEVhgijqP4G2QKwyd
-	oU2X2AiUNckDZvfknzIxE7HF8gsnNswQWlaLR4omtWYcKY/4Njh/Gy9Rfv5TrpDkIL535SdTnsI
-	WpNAXEL11lHbP+vNSgoL2CCCS4WU=
-X-Google-Smtp-Source: AGHT+IHbUi80zT/GDNSOM62vj6itxNrIGGGPlRo9mbQuyAjdAlxxHCTGE9XVvRXPzk9pIjfFUK/K2RvzZlnWYUOiUpo=
-X-Received: by 2002:a17:906:6dcf:b0:a3e:b3e6:5b71 with SMTP id
- j15-20020a1709066dcf00b00a3eb3e65b71mr9147554ejt.62.1709132299649; Wed, 28
- Feb 2024 06:58:19 -0800 (PST)
+	s=arc-20240116; t=1709132376; c=relaxed/simple;
+	bh=gYL/LGvFvwpN3CtLDtVeVHzxeWkGqY6Q4q1PntanCMc=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=C84vi1QJldhVJ5ik4EsOxqYqk/4aTtX0oSitl421OQzY1e1K0JBSeQgRB7Zt3FqtpCCGBsnakuuUKyt20htvlQurGWofZxmauEsRG5hr3F7MBAn5he0y1uFR5gSUrUPcBWnc/Zafw7WTZgcgWcHlZrVagM5KeEJg3XNzptFZJl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E40391FB;
+	Wed, 28 Feb 2024 07:00:10 -0800 (PST)
+Received: from [10.1.38.163] (XHFQ2J9959.cambridge.arm.com [10.1.38.163])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4800C3F73F;
+	Wed, 28 Feb 2024 06:59:30 -0800 (PST)
+Message-ID: <531c6702-1389-42c5-9cdd-062989d40133@arm.com>
+Date: Wed, 28 Feb 2024 14:59:28 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227212244.262710-1-chris.packham@alliedtelesis.co.nz>
- <20240227212244.262710-3-chris.packham@alliedtelesis.co.nz> <20240228140423.GA3307293-robh@kernel.org>
-In-Reply-To: <20240228140423.GA3307293-robh@kernel.org>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 28 Feb 2024 16:57:42 +0200
-Message-ID: <CAHp75VfW0Q7At+JnyWGXP3d=2dfWADRiQ-Z97B2JcZio3A_tyw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] dt-bindings: auxdisplay: Add bindings for generic
- 7 segment LED
-To: Rob Herring <robh@kernel.org>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, andy@kernel.org, 
-	geert@linux-m68k.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	andrew@lunn.ch, gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
-	ojeda@kernel.org, tzimmermann@suse.de, javierm@redhat.com, robin@protonic.nl, 
-	lee@kernel.org, pavel@ucw.cz, devicetree@vger.kernel.org, 
-	linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+Content-Language: en-GB
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Huang Ying
+ <ying.huang@intel.com>, Gao Xiang <xiang@kernel.org>,
+ Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+ Michal Hocko <mhocko@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+ <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+ <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
+ <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
+ <049818ca-e656-44e4-b336-934992c16028@arm.com>
+ <Zd82FqN7qxuBUSvl@casper.infradead.org>
+ <f94ca70a-d033-4323-8815-240bfa895013@arm.com>
+In-Reply-To: <f94ca70a-d033-4323-8815-240bfa895013@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28, 2024 at 4:04=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
-> On Wed, Feb 28, 2024 at 10:22:42AM +1300, Chris Packham wrote:
+On 28/02/2024 14:24, Ryan Roberts wrote:
+> On 28/02/2024 13:33, Matthew Wilcox wrote:
+>> On Wed, Feb 28, 2024 at 09:37:06AM +0000, Ryan Roberts wrote:
+>>> Fundamentally, we would like to be able to figure out the size of the swap slot
+>>> from the swap entry. Today swap supports 2 sizes; PAGE_SIZE and PMD_SIZE. For
+>>> PMD_SIZE, it always uses a full cluster, so can easily add a flag to the cluster
+>>> to mark it as PMD_SIZE.
+>>>
+>>> Going forwards, we want to support all sizes (power-of-2). Most of the time, a
+>>> cluster will contain only one size of THPs, but this is not the case when a THP
+>>> in the swapcache gets split or when an order-0 slot gets stolen. We expect these
+>>> cases to be rare.
+>>>
+>>> 1) Keep the size of the smallest swap entry in the cluster header. Most of the
+>>> time it will be the full size of the swap entry, but sometimes it will cover
+>>> only a portion. In the latter case you may see a false negative for
+>>> swap_page_trans_huge_swapped() meaning we take the slow path, but that is rare.
+>>> There is one wrinkle: currently the HUGE flag is cleared in put_swap_folio(). We
+>>> wouldn't want to do the equivalent in the new scheme (i.e. set the whole cluster
+>>> to order-0). I think that is safe, but haven't completely convinced myself yet.
+>>>
+>>> 2) allocate 4 bits per (small) swap slot to hold the order. This will give
+>>> precise information and is conceptually simpler to understand, but will cost
+>>> more memory (half as much as the initial swap_map[] again).
+>>>
+>>> I still prefer to avoid this at all if we can (and would like to hear Huang's
+>>> thoughts). But if its a choice between 1 and 2, I prefer 1 - I'll do some
+>>> prototyping.
+>>
+>> I can't quite bring myself to look up the encoding of swap entries
+>> but as long as we're willing to restrict ourselves to naturally aligning
+>> the clusters, there's an encoding (which I believe I invented) that lets
+>> us encode arbitrary power-of-two sizes with a single bit.
+>>
+>> I describe it here:
+>> https://kernelnewbies.org/MatthewWilcox/NaturallyAlignedOrder
+>>
+>> Let me know if it's not clear.
+> 
+> Ahh yes, I'm familiar with this encoding scheme from other settings. Although
+> I've previously thought of it as having a bit to indicate whether the scheme is
+> enabled or not, and if it is enabled then the encoded PFN is:
+> 
+> PFNe = PFNd | (1 << (log2(n) - 1))
+> 
+> Where n is the power-of-2 page count.
+> 
+> Same thing, I think.
+> 
+> I think we would have to steal a bit from the offset to make this work, and it
+> looks like the size of that is bottlnecked on the arch's swp_entry PTE
+> representation. Looks like there is a MIPS config that only has 17 bits for
+> offset to begin with, so I doubt we would be able to spare a bit here? Although
+> it looks possible that there are some unused low bits that could be used...
+> 
 
-..
+I think the other problem with this is that it won't tell us which slot in the
+"swap slot block" each entry is targetting?
 
-> > +  segment-gpios:
-> > +    description:
-> > +      An array of GPIOs one per segment.
-> > +    minItems: 7
->
-> How does one know which GPIO is which segment?
-
-I believe we need just to agree on this. Since anybody can shuffle
-GPIOs in the DT, there is no need to support arbitrary orders. And
-naturally 'a' is bit 0, 'g' is bit 6, 'dp' bit 7 if present.
-
---=20
-With Best Regards,
-Andy Shevchenko
 
