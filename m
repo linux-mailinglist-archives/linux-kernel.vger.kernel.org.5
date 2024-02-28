@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-84646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D0A86A976
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:02:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0624F86A979
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:02:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71E78B23625
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:02:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8791E1F218F0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41DA25635;
-	Wed, 28 Feb 2024 08:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F4D286AC;
+	Wed, 28 Feb 2024 08:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="oICL3Cbn"
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wzNR79k1"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E13371DDC5
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24B762561F
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709107339; cv=none; b=BC9NNpN93HpY6Bv0qfS659V+66x6QvdvIoFg/v2SJFmvVvTJ92iy8iMza48BoTmcgWZYZlg77UTdd2FD22/hpA/8r50L2HsyrFHgUtO4ufF1Rsznx2JcchHnXWbfB91OTPTP9KwFqfwKCAbAhriq2J5OZg3zH9vTI8yA7QDHEjA=
+	t=1709107367; cv=none; b=n+F78GEiIuiP2P+xoGpEwre6T+TD43ovkHI1gzoooS9Vbb7nnfwkUYM/+caRLH7+P5vk1lr8v1YIaBu5nb018xvzeqnOoBAbjl2GIZaL4h2eS7s3GWNn5uVZGr8KtC80UtGKimoVQEWH5y2pKWzm4KJZ7R6NtaEO0/R7JYM7klA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709107339; c=relaxed/simple;
-	bh=tYJuevDGogk+ALUek28REBMm+UYW1ZBzy6FRGG/Dz8I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=cyB6jAKN4y6p52ZQmKPtwHiuIJKtCJDM/Tb93FbHtOCnQtVpf2HfHsEpKatjUFxk5rgwuVK12ve2FPwBXaCspwq2Df65xsQ9C6rhEvbwaBwFa4mAlC+asV7m2YPjiWkQ+hFQKpUhLSnqetY6rgWnWtNwf82bkEYWD4v7/9teCgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=oICL3Cbn; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e55731af5cso842619b3a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:02:16 -0800 (PST)
+	s=arc-20240116; t=1709107367; c=relaxed/simple;
+	bh=a/pmd6Q01WSXxZYDQYeL64y3OnNOOXe0fVMyyGWa6Ik=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HiICGj4ovF88KiPWXwWmDT/YGeOgstSlg1KmvO431isGceQXX5Q1vXaLKSBg9tO3lKXMtwt2pO4IXmi8UwzWsFJJUSwG4GPdnmaaEiN0B3SGynm3EmQmwQRhFy5yS1C32NkAGwmckZT8GmN96TD9h0Iw041Ryz9gLHRCKa2+yIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wzNR79k1; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5640fef9fa6so6682877a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:02:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709107336; x=1709712136; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1709107363; x=1709712163; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ihZBz7OwN5ETOgMmy5LVC1SqPJA8PdSxZfkW50G4hxc=;
-        b=oICL3Cbnzfvga9CJGm1SHiBFvwQo9Bdn7R+IEN0Ci27ARgO599ykPk41mnE5II+okQ
-         Q9KuJmXbacio/TltyOkrp8Bz5Ge/rfXTom0K80YV2bg3jwz5hHIbcXhRFz6+u/UVoNHM
-         7OXZ03OvTsWPm+GyFEO8TNI80ABC8cKPTNSUrb+FUDbzrLKSn66PXvVGU8A7wtf0LNxk
-         71OdKPpm8GW8gJMgm0GK3+qeLhZSV8JwrByEqIv2Hxvkj7ReX5mVZtwlF5nfiY31XYtx
-         h568wz1qi0YTXq6fvghwHVJPooAimjfJdOOa8FwZaHsc81b94jFfX2etIzpg2YvuZoug
-         S14Q==
+        bh=nBB3ocy5KB+L4/CkWyT+O/AlDT67FyLTB4OvAIkq0+4=;
+        b=wzNR79k1YOdplT81hEnC7O3rv/UjNczYwj/nYhglPNFzhcNrB1Hd6fJbmWJB/Sayuy
+         4SbwfUGl4gFI4uCkKJlYpwaUpPzZMwzbtwcAf2/Xm8MXTnKmyTLfJt32nqFV3fKwGhUX
+         EsoaWu9ixsYoGknVq2Rx8TsHESdM0EfbAd4fgXhWwi2E31y8ePg1fKkuZE+jkdNhbO4R
+         A9KPnIZkflRnZ6LPtex5jENtqhWa7EInJtW8GBR29PRbuFi2vZWJdzx5V53Ht/eWTXv4
+         qSuFN0ztk/6Nm9a3bg+HvOuDmUQwa2+Rqw+Bb20vA1ebOMBwz5t0b8UUw1cvwG0V0iMU
+         tHJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709107336; x=1709712136;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1709107363; x=1709712163;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ihZBz7OwN5ETOgMmy5LVC1SqPJA8PdSxZfkW50G4hxc=;
-        b=qpaJVu18hm/rB1gIkDq6fzGaQ0pyaxrqAdKaU+jMEXdQM/zdMw/GB1xG+5ZqmKFDgj
-         CIwL85dJVG/tZjw7J/UUlPMsLsTH6KxAl8VaSk6kuCI5PAdMEDC7T/tHp8kfcuivnZqv
-         DGCz2RCCgOUc19SaTsQ2WNRBPIVyWV6yPMs8bEjS4HeFYU/JKukDFXjJLwMqEVBI4Ypm
-         K3Yq3i818hPlCqm0gUa9t75XbAkA0SMvAZ7iP0YaTy7klOpPVg1tpvl2Y5VOZsvmCGMp
-         5ow4dSZt08j84nxqPIsjTH6j6pswU+BnX9JGq8S2n+B4L4RVfYt1HLXRBxKjOi2o2dFI
-         ZCOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWSzOjL4FbGJQPPR87wZHie/d7B538ZMVVizh7glmM1Zs3WLYFsJZn1PbH3llwMjjTvgG9czUhTGaZLPiPD4lxR656bZ477KqPt5Oy6
-X-Gm-Message-State: AOJu0YxqJWVRE3G7UZOPVrjetVLORxM+UmnY3sqtOXXrNZvSgFHJYb+y
-	6EGdBdQmetdeSRAF0w66LEB7MhhoJUQTAEONyjmGVo+1+tHEjFGjtcLNyQ1foEs=
-X-Google-Smtp-Source: AGHT+IG0hIgUBsBFWAzvziUqfTJGoXEYw1oTO8UUN72MDxoUA1WaSDnmDxqIvlF5IiMIpnjt92pXzw==
-X-Received: by 2002:a05:6a00:320b:b0:6e4:f32a:4612 with SMTP id bm11-20020a056a00320b00b006e4f32a4612mr10099798pfb.16.1709107336044;
-        Wed, 28 Feb 2024 00:02:16 -0800 (PST)
-Received: from [172.16.0.12] (c-67-188-2-18.hsd1.ca.comcast.net. [67.188.2.18])
-        by smtp.gmail.com with ESMTPSA id q5-20020aa79825000000b006e56d880015sm328472pfl.140.2024.02.28.00.02.14
+        bh=nBB3ocy5KB+L4/CkWyT+O/AlDT67FyLTB4OvAIkq0+4=;
+        b=SUy0UIu2+CLxv3benA3dd3FXMCFf3UNmEGI+nx5k+lBj1Ir6VIuZQ2v9xsJIQZiBzC
+         vPUmsibnjQgmRDZMOP2vqdjUOQrefk5WqsvXCojtZfRmTNdjFxdxSrEIUiEjtYyVeKjG
+         EzyTS59dsx8EjyweNUE6VzgXOGADXEiwXzUNnywdClDtPgAn0SIod0xXzhhA0vjrLKEP
+         E7kuQJPX/fK7HQ+PGtni4vtAYAzyGfE8oz3TDeLEMfk7mCtYcpGHOIWV9faYeBYanhTA
+         udDCTzPp6s4mJW4kvsDhNbpOg/SifhNvutAfZt748/BL4lje6FVyLovWEinoTNmu7SDF
+         jaiw==
+X-Forwarded-Encrypted: i=1; AJvYcCWswMza6ywjfNiXE8OmK+RWp7OptEYyI3AT/l8y4Ch0iAJDl2CzU1xSWQFazhuQnCYvA7thCTh2n2num/tix+UEBRfKDLrAHAkwOWkX
+X-Gm-Message-State: AOJu0Ywz9ucJXBVApxmFYW0beCIO18vjkb+SNmneJTBgqu5GwWsEhqX0
+	A2CpK5RmhZ+N9RHQvy5WhJKjmbWB1S6wJh0enuBOtwqqhVjJtd/dRSUpgwsJ+Sk=
+X-Google-Smtp-Source: AGHT+IGx4aaWk+a7VM458C75pSaCOzPoU9KyTuI9mSx4h9po8tehvgZTAbAx4rZQ24zaxbSSNNU9MA==
+X-Received: by 2002:aa7:d0ca:0:b0:565:862d:1c58 with SMTP id u10-20020aa7d0ca000000b00565862d1c58mr8844636edo.8.1709107363431;
+        Wed, 28 Feb 2024 00:02:43 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id dj16-20020a05640231b000b00566317ad834sm1510962edb.49.2024.02.28.00.02.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 00:02:15 -0800 (PST)
-Message-ID: <6810b450-2c1b-4f0d-b241-1179c1df6805@rivosinc.com>
-Date: Wed, 28 Feb 2024 00:02:13 -0800
+        Wed, 28 Feb 2024 00:02:42 -0800 (PST)
+Message-ID: <bc828606-3a35-4031-bb62-0d81c426caa4@linaro.org>
+Date: Wed, 28 Feb 2024 09:02:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,83 +75,243 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] perf: RISCV: Fix panic on pmu overflow handler
+Subject: Re: [PATCH 1/2] dt-bindings: dma: Ingenic: DT bindings for Ingenic
+ PDMA
 Content-Language: en-US
-To: Fei Wu <fei2.wu@intel.com>, atishp@atishpatra.org, anup@brainfault.org,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- Alexandre Ghiti <alex@ghiti.fr>
-References: <20240228053822.2610915-1-fei2.wu@intel.com>
-From: Atish Patra <atishp@rivosinc.com>
-In-Reply-To: <20240228053822.2610915-1-fei2.wu@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: "bin.yao" <bin.yao@ingenic.com>, vkoul@kernel.org
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, broonie@kernel.org, quic_bjorande@quicinc.com,
+ rick <rick.tyliu@ingenic.com>
+References: <20240228012420.4223-1-bin.yao@ingenic.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240228012420.4223-1-bin.yao@ingenic.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/27/24 21:38, Fei Wu wrote:
-> (1 << idx) of int is not desired when setting bits in unsigned long
-> overflowed_ctrs, use BIT() instead. This panic happens when running
-> 'perf record -e branches' on sophgo sg2042.
+On 28/02/2024 02:24, bin.yao wrote:
+> From: byao <bin.yao@ingenic.com>
 > 
-> [  273.311852] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000098
-> [  273.320851] Oops [#1]
-> [  273.323179] Modules linked in:
-> [  273.326303] CPU: 0 PID: 1475 Comm: perf Not tainted 6.6.0-rc3+ #9
-> [  273.332521] Hardware name: Sophgo Mango (DT)
-> [  273.336878] epc : riscv_pmu_ctr_get_width_mask+0x8/0x62
-> [  273.342291]  ra : pmu_sbi_ovf_handler+0x2e0/0x34e
-> [  273.347091] epc : ffffffff80aecd98 ra : ffffffff80aee056 sp : fffffff6e36928b0
-> [  273.354454]  gp : ffffffff821f82d0 tp : ffffffd90c353200 t0 : 0000002ade4f9978
-> [  273.361815]  t1 : 0000000000504d55 t2 : ffffffff8016cd8c s0 : fffffff6e3692a70
-> [  273.369180]  s1 : 0000000000000020 a0 : 0000000000000000 a1 : 00001a8e81800000
-> [  273.376540]  a2 : 0000003c00070198 a3 : 0000003c00db75a4 a4 : 0000000000000015
-> [  273.383901]  a5 : ffffffd7ff8804b0 a6 : 0000000000000015 a7 : 000000000000002a
-> [  273.391327]  s2 : 000000000000ffff s3 : 0000000000000000 s4 : ffffffd7ff8803b0
-> [  273.398773]  s5 : 0000000000504d55 s6 : ffffffd905069800 s7 : ffffffff821fe210
-> [  273.406139]  s8 : 000000007fffffff s9 : ffffffd7ff8803b0 s10: ffffffd903f29098
-> [  273.413660]  s11: 0000000080000000 t3 : 0000000000000003 t4 : ffffffff8017a0ca
-> [  273.421022]  t5 : ffffffff8023cfc2 t6 : ffffffd9040780e8
-> [  273.426437] status: 0000000200000100 badaddr: 0000000000000098 cause: 000000000000000d
-> [  273.434512] [<ffffffff80aecd98>] riscv_pmu_ctr_get_width_mask+0x8/0x62
-> [  273.441169] [<ffffffff80076bd8>] handle_percpu_devid_irq+0x98/0x1ee
-> [  273.447562] [<ffffffff80071158>] generic_handle_domain_irq+0x28/0x36
-> [  273.454151] [<ffffffff8047a99a>] riscv_intc_irq+0x36/0x4e
-> [  273.459659] [<ffffffff80c944de>] handle_riscv_irq+0x4a/0x74
-> [  273.465442] [<ffffffff80c94c48>] do_irq+0x62/0x92
-> [  273.470360] Code: 0420 60a2 6402 5529 0141 8082 0013 0000 0013 0000 (6d5c) b783
-> [  273.477921] ---[ end trace 0000000000000000 ]---
-> [  273.482630] Kernel panic - not syncing: Fatal exception in interrupt
+> Convert the textual documentation for the Ingenic SoCs PDMA
+> Controller devicetree binding to YAML.
 > 
-> Signed-off-by: Fei Wu <fei2.wu@intel.com>
-> ---
->   drivers/perf/riscv_pmu_sbi.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> Add a dt-bindings header, and convert the device trees to it.
 > 
-> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-> index 16acd4dcdb96..335171db9647 100644
-> --- a/drivers/perf/riscv_pmu_sbi.c
-> +++ b/drivers/perf/riscv_pmu_sbi.c
-> @@ -731,14 +731,14 @@ static irqreturn_t pmu_sbi_ovf_handler(int irq, void *dev)
->   		/* compute hardware counter index */
->   		hidx = info->csr - CSR_CYCLE;
->   		/* check if the corresponding bit is set in sscountovf */
-> -		if (!(overflow & (1 << hidx)))
-> +		if (!(overflow & BIT(hidx)))
->   			continue;
->   
->   		/*
->   		 * Keep a track of overflowed counters so that they can be started
->   		 * with updated initial value.
->   		 */
-> -		overflowed_ctrs |= 1 << lidx;
-> +		overflowed_ctrs |= BIT(lidx);
->   		hw_evt = &event->hw;
->   		riscv_pmu_event_update(event);
->   		perf_sample_data_init(&data, 0, hw_evt->last_period);
+> Signed-off-by: byao <bin.yao@ingenic.com>
+> Signed-off-by: rick <rick.tyliu@ingenic.com>
 
-Thanks for the fix.Can you modify the other two instance of 1<< as 
-pointed by Alex as well. They are harmless because 32 counters supported 
-at max but improves the code quality.
-With that:
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+Use full names.
+
+Except that, nothing here was tested, so limited review follows.
+
+A nit, subject: drop second/last, redundant "DT bindings for". The
+"dt-bindings" prefix is already stating that these are bindings.
+See also:
+https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+
+> ---
+>  .../devicetree/bindings/dma/ingenic,pdma.yaml | 77 +++++++++++++++++++
+>  include/dt-bindings/dma/ingenic-pdma.h        | 51 ++++++++++++
+>  2 files changed, 128 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/dma/ingenic,pdma.yaml
+>  create mode 100644 include/dt-bindings/dma/ingenic-pdma.h
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/ingenic,pdma.yaml b/Documentation/devicetree/bindings/dma/ingenic,pdma.yaml
+> new file mode 100644
+> index 000000000000..b3f3a8f0b813
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/ingenic,pdma.yaml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/ingenic,dma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Ingenic SoCs DMA Controller DT bindings
+> +
+> +maintainers:
+> +  - byao <bin.yao@ingenic.com>
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+
+Drop
+
+> +      - enum:
+> +          - ingenic,m200-pdma
+> +          - ingenic,x1000-pdma
+> +          - ingenic,t40-pdma
+> +          - ingenic,t41-pdma
+> +          - ingenic,t33-pdma
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts-parent:
+> +    maxItems: 1
+
+Drop interrupts-parent
+
+> +
+> +  interrupts-names:
+> +    items:
+> +      - const: pdam
+> +      - const: pdmam
+> +
+> +  interrupts:
+> +    maxItems: 1
+
+Nope, you have two items. Test your DTS.
+
+> +
+> +  dma-channels:
+> +    const: 32
+> +
+> +  "#dma-cells":
+> +    const: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: gate_pdma
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupt-parent
+> +  - interrupt-names
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/ingenic,t33-cgu.h>
+> +    pdma:dma@13420000 {
+> +      compatible = "ingenic,t33-pdma";
+> +      reg = <0x13420000 0x10000>;
+> +      interrupt-parent = <&plic>;
+> +      interrupt-names = "pdma", "pdmam";
+> +      interrupts = <10 61>;
+> +      #dma-channels = <0x20>;
+> +      #dma-cells = <0x1>;
+> +      clocks = <&cgu T33_CLK_DMA>;
+> +      clock-names = "gate_pdma";
+> +    };
+> +
+> diff --git a/include/dt-bindings/dma/ingenic-pdma.h b/include/dt-bindings/dma/ingenic-pdma.h
+> new file mode 100644
+> index 000000000000..99c871bc0ea8
+> --- /dev/null
+> +++ b/include/dt-bindings/dma/ingenic-pdma.h
+
+Same filename as binding.
+
+> @@ -0,0 +1,51 @@
+> +/* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+> +
+> +#ifndef __INGENIC_PDMA_H__
+> +#define __INGENIC_PDMA_H__
+> +
+> +#define INGENIC_DMA_REQ_AIC_LOOP_RX	0x5
+
+Indexes start from 0. If these are not indexes, then these are neither
+suitable for bindings. Hex for sure is questionable.
+
+> +#define INGENIC_DMA_REQ_AIC_TX		0x6
+> +#define INGENIC_DMA_REQ_AIC_F_RX	0x7
+> +#define INGENIC_DMA_REQ_AUTO_TX		0x8
+> +#define INGENIC_DMA_REQ_SADC_RX		0x9
+> +#define INGENIC_DMA_REQ_UART5_TX	0xa
+> +#define INGENIC_DMA_REQ_UART5_RX	0xb
+> +#define INGENIC_DMA_REQ_UART4_TX	0xc
+> +#define INGENIC_DMA_REQ_UART4_RX	0xd
+> +#define INGENIC_DMA_REQ_UART3_TX	0xe
+> +#define INGENIC_DMA_REQ_UART3_RX	0xf
+> +#define INGENIC_DMA_REQ_UART2_TX	0x10
+> +#define INGENIC_DMA_REQ_UART2_RX	0x11
+> +#define INGENIC_DMA_REQ_UART1_TX	0x12
+> +#define INGENIC_DMA_REQ_UART1_RX	0x13
+> +#define INGENIC_DMA_REQ_UART0_TX	0x14
+> +#define INGENIC_DMA_REQ_UART0_RX	0x15
+> +#define INGENIC_DMA_REQ_SSI0_TX		0x16
+> +#define INGENIC_DMA_REQ_SSI0_RX		0x17
+> +#define INGENIC_DMA_REQ_SSI1_TX		0x18
+> +#define INGENIC_DMA_REQ_SSI1_RX		0x19
+> +#define INGENIC_DMA_REQ_SLV_TX		0x1a
+> +#define INGENIC_DMA_REQ_SLV_RX		0x1b
+> +#define INGENIC_DMA_REQ_I2C0_TX		0x24
+> +#define INGENIC_DMA_REQ_I2C0_RX		0x25
+> +#define INGENIC_DMA_REQ_I2C1_TX		0x26
+> +#define INGENIC_DMA_REQ_I2C1_RX		0x27
+> +#define INGENIC_DMA_REQ_I2C2_TX		0x28
+> +#define INGENIC_DMA_REQ_I2C2_RX		0x29
+> +#define INGENIC_DMA_REQ_DES_TX		0x2e
+> +#define INGENIC_DMA_REQ_DES_RX		0x2f
+> +
+> +#define INGENIC_DMA_TYPE_REQ_MSK	0xff
+
+Nope, not a binding.
+
+> +#define INGENIC_DMA_TYPE_CH_SFT		8
+> +#define INGENIC_DMA_TYPE_CH_MSK		(0xff << INGENIC_DMA_TYPE_CH_SFT)
+
+Drop entire file.
+
+Best regards,
+Krzysztof
 
 
