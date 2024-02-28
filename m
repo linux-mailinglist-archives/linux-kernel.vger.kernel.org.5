@@ -1,176 +1,248 @@
-Return-Path: <linux-kernel+bounces-84733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BB8A86AAE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:07:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCFC286AAE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:07:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 699421C20B22
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:07:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 511E5B27C64
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0A1E36AEE;
-	Wed, 28 Feb 2024 09:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06A037141;
+	Wed, 28 Feb 2024 09:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yt6KK5zG"
-Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ec0qze6U"
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584F8364CD;
-	Wed, 28 Feb 2024 09:04:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3597231A94
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709111044; cv=none; b=gogsuJewB+vE6aMfVKp6iu6ghnAbJRzCPPQPn7lbXb+eu7QR+7YxjJgN+bnoxnJZjImfnlHY7+3myhKlUwzEebETC+MYUsW2oCryEqhXmz3FmK2mRQS0VoPaUKc2WOPHuaqmqGdbw7rbYmgIyvYA9KN9uYzgXtr5Ny//eInL8RM=
+	t=1709111102; cv=none; b=KGFmgfRq6LJVc7VcF1ID564CbRATSZ57eg6o2Lwd/1Bc66pxONcv+h2vwNvpJGtslwg7h1yutLICuUsEPI58dWMkiqIZaGElbKNDuws5C1YadiJ1RT1rZoGNdyj7wk2Bhz9H1LkjcLPYVPS98r75gLa6sxE9VMqjSm6i45beQDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709111044; c=relaxed/simple;
-	bh=CDCmmBveuUqNZJ2apAV+ihYwz534BZMsrY3cmgntKqY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aZP2I/Zm1/78/0w+ZQvH8ebGTKBeSB9RqyFJgem2VimgM0I0XV+zZ/rm1FEP/9jTwQ/Eq7n/gCaErNrnETaOzwe6ia29hsj/Uqgat6RVZmF5rvryS3hasT7+dKIwp39CZW5FtC3Crw74aiffb8S2P07bz2dXS+bQ/gZSkLoxVkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yt6KK5zG; arc=none smtp.client-ip=209.85.161.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1709111102; c=relaxed/simple;
+	bh=SDCpujFx5m5R0akdtleqZP5cL0KU7Bh/tEDxQF2W9Sw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ohUtQien8PAJxm4HmboPFnQlgMQaN0fbCYg/ArjlibDFCCKuKsfWnE6UHHmJTWxpObMwA8Sz8QBF4YXy/PfafIKtxySIZf2iN4MHobivgRa5oYZo9j3Hbl6fsmdhuRldLntGtkW8rh8z8vB3qNIakQ2GIziOLUWizCseF2waw2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ec0qze6U; arc=none smtp.client-ip=209.85.160.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-595aa5b1fe0so3504223eaf.2;
-        Wed, 28 Feb 2024 01:04:03 -0800 (PST)
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-21e45ece781so3670116fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:05:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709111042; x=1709715842; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=FenSeDhx37Fn4h4rPIP/X4cfvW1ZC8JOsi6cnZG14Mo=;
-        b=Yt6KK5zGoZE7sYHcW8jKLHSAQJ5s9V+YMXNVggmlToTSTj9UpQGMQP3jn33BQfKX7n
-         0hmAyx/qD5np3qL+9+2rP7w+wzA2YjZHCqLgpWIR0s9x1QFW5VobRCPtgYGNjAYOpPRn
-         7e9/lbeDZ772Cs3lBj3F3t21esUXqGWbg+pT6+5dGnAGEDfW1ok1jILUsBCzulmW2Wtm
-         00rBdCX3jSQICp84Cek9znsvJmJUBORAsUs1L9KmPeOrccX4wwliRnbbrYrKKfbZV+14
-         lTHa7+XhNrYgBPS0ZoCH04pdn2Pf1lFKxdNz2WlMlmS3tXxmUU6L4g+2P1rfpfi5bj/h
-         CkLg==
+        d=gmail.com; s=20230601; t=1709111100; x=1709715900; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5lSdBPhRhYoA6tG059iv5wc9BFzvxS6RSQIxJahrV4s=;
+        b=ec0qze6UKPfdkCjq3HUV01ZzVqdAuBsyLgM8TQ+abHnF9+9aPubgoviC2/bvyI5NBC
+         RqeGO3u6dVE24u+mHPVnx4Ye4yGL3pC+5CmLJxvsbZqCJ+miH+zSFPG/TFE8gL3L8GeU
+         sem2uXuLA35/92c6BicqSZm6BNrTX7jb9f4P9OKH1edtCTmwlr1nLwx9T4jNaTuhqZan
+         bpiweGQY2TKE6rgzxy/XdT9QjY4APVW/DbMB1ZPksSLPPMgT4G5eo6JK3aGeXp6rqGyM
+         0lDhzae+XAwlk+R9DPQOenKF94iZlFlMC9/cl7aWdHzlcb+pWwFlPxHZBvwqAUo4uA0E
+         ZJ8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709111042; x=1709715842;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FenSeDhx37Fn4h4rPIP/X4cfvW1ZC8JOsi6cnZG14Mo=;
-        b=lLpRMoMES/F1LW2MDcUTZhmo2FFgxLWa28SUvSnkM4I+MpqGQhWer82apyDzkBc6gJ
-         I8FApqZPe5SwGd3JSKiAA+wV1fqPN967QVF3kfJRWHsZynV+Ej5wnzYk7o9bXWQTl2mz
-         Ttlx4dxzaugs4KwG9BJtsG5gwxhyKxYSOiSlhF3V3lNzaogPmZZwafXHZNtPpIWpJN1Q
-         BdUH7fvyLKjUq8nDtTtRct5hFJx6DlCdbEYRGKr84cQgL/ja4k5jOFuOAnf3KsFOzc3t
-         GePk8P0/Xw/obsz4TmwMCGkgSjXe4G5FxmFMgaCQMP0LTpBIwq1mI+vL7tqHI7pGeUlp
-         BO7w==
-X-Forwarded-Encrypted: i=1; AJvYcCV3Ij+jiNZFZ6I10S/RY4JdVnOVkQYaNr8+4iwPl5NjEFg15g2wdAVE78dY1Cio/bClm/094BBWT5cJEX9k5VFADqxcmskfyDgNrl+WQcYmB597RuJNYJ7doTcCUbCtSnLirD0E11J+gikn8vWms4HgXennNwXvMjDzB/fQ62LZj5Q2OYsvMxKgQleZR/dAG3aMW83UsyVmxjjyDZF7k40m
-X-Gm-Message-State: AOJu0Yw0zycz8DCZ1RMaewjV3KzrbOCtIFxaDFy+0gKUFPWTX7hy0SpE
-	NaSs77E7lUk7uxGryM/W9yNWLf9dIsNglKrBy1mLiTtSHJoNb3B3
-X-Google-Smtp-Source: AGHT+IHnRve3OtpyuvD83WrEZqqI1Lk+ep0Bewe4MemDLs++I/if9YlOf41NMMKqP5ugfkes2LfgHw==
-X-Received: by 2002:a05:6870:9625:b0:220:15bb:ba43 with SMTP id d37-20020a056870962500b0022015bbba43mr9037258oaq.48.1709111042263;
-        Wed, 28 Feb 2024 01:04:02 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u4-20020a056a00098400b006e5619b2f83sm874654pfg.7.2024.02.28.01.03.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 01:04:01 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <4b06d535-6739-47b5-ad1e-0ff94322620e@roeck-us.net>
-Date: Wed, 28 Feb 2024 01:03:58 -0800
+        d=1e100.net; s=20230601; t=1709111100; x=1709715900;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5lSdBPhRhYoA6tG059iv5wc9BFzvxS6RSQIxJahrV4s=;
+        b=bskMaYVBGPnZ/nkBq7pSm92mTFWp+ItGoK/AX0kiNZx1jRAUrPwEI3FsgeWJTLyLg1
+         82qx4ted7DXYdvLbhsBcBW77T2zM3PhuM3YJpf6UkoMhVgIytJKz1/lwr8pNXexli9mV
+         pfaMvNEvSdhO0516DfoGYq5WrodoCoXlo4qyouT6IfA02RsxN4SABTBEky3NRx3jORBZ
+         qV0EZB641UlHbFQjTKB9PLfpLq2dKIQpdIFDW4WqxILkt/nqfJvCK9b0fpAA4PedPQIp
+         rLr6vXPLjiKXFbOr8mqv/pCFBnhsHKFHUOt3aLKXkf2uP/w3oC8X2/50m8Kp62lHqKr5
+         8v0g==
+X-Forwarded-Encrypted: i=1; AJvYcCWXNAn9bkPtgnK94Fqj8M34g4U2wlInoc+51hZJ2Bj7eVUrzjbm92mQsaS771MeDLYm3rfeu70VOZgEsgVvOOvgSx+SPU7W8enIRHz1
+X-Gm-Message-State: AOJu0Yz73oz0dMeWV7F3Rd8vM7od5HC9ggxet6vsI2QspXAUW+UqXeCE
+	8YluiBHRC1k+3+kFHo7DYFw+gzOQpjEAtp+3bx0/HORDQE6D5aJ/bktNQGVyS1AvofzP5Tzfib3
+	z8fq809vTLNlAGRuqVWe3LCPIGyc=
+X-Google-Smtp-Source: AGHT+IFf7dpzGQRvPZ5WZgSU3qwbVKQxyt5TtlLk+bHEwPzaabBTrlvz5zd9+NUI/uvF1K5LMw6p41jl+9H9ds9y9x4=
+X-Received: by 2002:a05:6870:ac0d:b0:21e:8853:5edb with SMTP id
+ kw13-20020a056870ac0d00b0021e88535edbmr14894311oab.6.1709111100232; Wed, 28
+ Feb 2024 01:05:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] hwmon: Driver for Nuvoton NCT7363Y
-Content-Language: en-US
-To: Paul Menzel <pmenzel@molgen.mpg.de>, Ban Feng <baneric926@gmail.com>
-Cc: jdelvare@suse.com, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, corbet@lwn.net, linux-hwmon@vger.kernel.org,
- devicetree@vger.kernel.org, kcfeng0@nuvoton.com, kwliu@nuvoton.com,
- openbmc@lists.ozlabs.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, DELPHINE_CHIU@wiwynn.com,
- naresh.solanki@9elements.com, billy_tsai@aspeedtech.com
-References: <20240227005606.1107203-1-kcfeng0@nuvoton.com>
- <20240227005606.1107203-4-kcfeng0@nuvoton.com>
- <62f38808-7d5f-4466-a65e-b6a64b2e7c01@molgen.mpg.de>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <62f38808-7d5f-4466-a65e-b6a64b2e7c01@molgen.mpg.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240226082349.302363-1-yu.c.chen@intel.com>
+In-Reply-To: <20240226082349.302363-1-yu.c.chen@intel.com>
+From: Xuewen Yan <xuewen.yan94@gmail.com>
+Date: Wed, 28 Feb 2024 17:04:49 +0800
+Message-ID: <CAB8ipk9N9verfQp6U9s8+TQgNbA5J0DWkOB1dShf20n0xbx94w@mail.gmail.com>
+Subject: Re: [RFC PATCH] sched/eevdf: Return leftmost entity in pick_eevdf()
+ if no eligible entity is found
+To: Chen Yu <yu.c.chen@intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Abel Wu <wuyun.abel@bytedance.com>, Tim Chen <tim.c.chen@intel.com>, 
+	Tiwei Bie <tiwei.btw@antgroup.com>, Honglei Wang <wanghonglei@didichuxing.com>, 
+	Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.chen.surf@gmail.com>, 
+	linux-kernel@vger.kernel.org, kernel test robot <oliver.sang@intel.com>, 
+	Xuewen Yan <xuewen.yan@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/27/24 23:57, Paul Menzel wrote:
-> Dear Ban,
-> 
-> 
-> Thank you for your patch. Some minor things from my side.
-> 
-> 
-> Am 27.02.24 um 01:56 schrieb baneric926@gmail.com:
->> From: Ban Feng <kcfeng0@nuvoton.com>
->>
->> NCT7363Y is an I2C based hardware monitoring chip from Nuvoton.
-> 
-> Please reference the datasheet.
-> 
+Hi Yu
 
-Note that something like
+On Mon, Feb 26, 2024 at 4:26=E2=80=AFPM Chen Yu <yu.c.chen@intel.com> wrote=
+:
+>
+> There is occasional report from lkp that the kernel hits the NULL pointer
+> exception:
+>
+> [  512.079810][ T8305] BUG: kernel NULL pointer dereference, address: 000=
+0002c
+> [  512.080897][ T8305] #PF: supervisor read access in kernel mode
+> [  512.081636][ T8305] #PF: error_code(0x0000) - not-present page
+> [  512.082337][ T8305] *pde =3D 00000000
+> [  512.082829][ T8305] Oops: 0000 [#1] PREEMPT SMP
+> [  512.083407][ T8305] CPU: 1 PID: 8305 Comm: watchdog Tainted: G        =
+W
+> [  512.086203][ T8305] EIP: set_next_entity (fair.c:?)
+>
+> This is caused by NULL candidate returned by pick_eevdf() as Abel analyze=
+d.
+> After
+> commit 2227a957e1d5 ("sched/eevdf: Sort the rbtree by virtual deadline")
+> the NULL candidate would trigger the NULL pointer exception. While before
+> this commit, there would be warning.
+>
+> This NULL entity issue was always there before above commit. With debug
+> patch to print the cfs_rq and all the entities in the tree, we have the
+> information when the issue was reproduced:
+>
+> [  514.461242][ T8390] cfs_rq avg_vruntime:386638640128 avg_load:2048 min=
+_vruntime:763383370431
+> [  514.535935][ T8390] current on_rq se 0xc5851400, deadline:184358520135=
+62231446
+>                         min_vruntime:18437121115753667698 vruntime:184358=
+52013561943404, load:629
+> [  514.536772][ T8390] Traverse rb-tree from left to right
+> [  514.537138][ T8390]  se 0xec1234e0 deadline:763384870431 min_vruntime:=
+763383370431 vruntime:763383370431 non-eligible
+> [  514.537835][ T8390]  se 0xec4fcf20 deadline:763762447228 min_vruntime:=
+763760947228 vruntime:763760947228 non-eligible
+> [  514.538539][ T8390] Traverse rb-tree from topdown
+> [  514.538877][ T8390]  middle se 0xec1234e0 deadline:763384870431 min_vr=
+untime:763383370431 vruntime:763383370431 non-eligible
+> [  514.539605][ T8390]  middle se 0xec4fcf20 deadline:763762447228 min_vr=
+untime:763760947228 vruntime:763760947228 non-eligible
+> [  514.540340][ T8390] Found best:0x0
+> [  514.540613][ T8390] BUG: kernel NULL pointer dereference, address: 000=
+00074
+>
+> We can see that non of the entities in the tree are eligible, neither is
+> the current entity on this cfs_rq. As a result, curr is set to NULL:
+> if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
+>         curr =3D NULL;
+>
+> and the best is set to NULL, which caused the problem:
+> if (!best || (curr && entity_before(curr, best)))
+>         best =3D curr;
+>
+> The cause is that, the curr is eligible, but vruntime_eligible()
+> returns false. And the false negative is due to the following
+> code in vruntime_eligible():
+>
+> return avg >=3D (s64)(vruntime - cfs_rq->min_vruntime) * load;
+>
+> According to the log, vruntime is 18435852013561943404, the
+> cfs_rq->min_vruntime is 763383370431, the load is 629 + 2048 =3D 2677,
+> thus:
+> s64 delta =3D (s64)(18435852013561943404 - 763383370431) =3D -10892823530=
+978643
+>     delta * 2677 =3D 7733399554989275921
+> that is to say, the multiply result overflow the s64, which turns the
+> negative value into a positive value, thus eligible check fails.
+>
+> So where is this insane huge vruntime 18435852013561943404 coming from?
+> My guess is that, it is because the initial value of cfs_rq->min_vruntime
+> is set to (unsigned long)(-(1LL << 20)). If the task(watchdog in this cas=
+e)
+> seldom scheduled in, its vruntime might not move forward too much and
+> remain its original value by previous place_entity().
 
-Datasheet: Available from Nuvoton upon request
+Could you please test the follow patch:
 
-is quite common for hardware monitoring chips and acceptable.
+https://lore.kernel.org/all/20240130080643.1828-1-xuewen.yan@unisoc.com/
 
-> Could you please give a high level description of the driver design?
-> 
+Because the se->vruntime would be changed in place_entity() and
+reweight_eevdf(),
+however, now the vlag may exceed eevdf's limit in some scenarios, it may ca=
+use
+the vrunitme's error.
 
-Can you be more specific ? I didn't have time yet to look into details,
-but at first glance this looks like a standard hardware monitoring driver.
-One could argue that the high level design of such drivers is described
-in Documentation/hwmon/hwmon-kernel-api.rst.
-I don't usually ask for a additional design information for hwmon drivers
-unless some chip interaction is unusual and needs to be explained,
-and then I prefer to have it explained in the code. Given that, I am
-quite curious and would like to understand what you are looking for.
+>
+> The proper fix should deal with the overflow of entity_key() * load, but
+> I don't have much clue on that, so propose this conservative method to
+> restore the previous behavior before the mentioned commit.
+>
+> Fixes: 2227a957e1d5 ("sched/eevdf: Sort the rbtree by virtual deadline")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/lkml/202401301012.2ed95df0-oliver.sang@in=
+tel.com/
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+>  kernel/sched/fair.c | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 533547e3c90a..fb9202f464e2 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -880,7 +880,7 @@ static struct sched_entity *pick_eevdf(struct cfs_rq =
+*cfs_rq)
+>         struct rb_node *node =3D cfs_rq->tasks_timeline.rb_root.rb_node;
+>         struct sched_entity *se =3D __pick_first_entity(cfs_rq);
+>         struct sched_entity *curr =3D cfs_rq->curr;
+> -       struct sched_entity *best =3D NULL;
+> +       struct sched_entity *best =3D NULL, *leftmost;
+>
+>         /*
+>          * We can safely skip eligibility check if there is only one enti=
+ty
+> @@ -905,6 +905,8 @@ static struct sched_entity *pick_eevdf(struct cfs_rq =
+*cfs_rq)
+>                 goto found;
+>         }
+>
+> +       leftmost =3D se;
+> +
 
-Thanks,
-Guenter
+Maybe judging which of the deadlines of curr and se is smaller is better?
 
+>         /* Heap search for the EEVD entity */
+>         while (node) {
+>                 struct rb_node *left =3D node->rb_left;
+> @@ -937,6 +939,15 @@ static struct sched_entity *pick_eevdf(struct cfs_rq=
+ *cfs_rq)
+>         if (!best || (curr && entity_before(curr, best)))
+>                 best =3D curr;
+>
+> +       /*
+> +        * entity_eligible() could bring false negative due to
+> +        * multiply overflow, which reports no eligible entity.
+> +        * Return leftmost entity as a backup(it is guaranteed
+> +        * the tree is not NULL.
+> +        */
+> +       if (!best)
+> +               best =3D leftmost;
+> +
+>         return best;
+>  }
+>
+> --
+> 2.25.1
+>
+>
+
+BR
+--
+xuewen
 
