@@ -1,231 +1,207 @@
-Return-Path: <linux-kernel+bounces-85392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D216E86B552
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:52:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2419C86B555
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71AE01F26B6A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:52:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F019B24432
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:53:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB6120B14;
-	Wed, 28 Feb 2024 16:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21C5B3FB85;
+	Wed, 28 Feb 2024 16:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pYulpfDQ"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="QehyGA8Z"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700506EF0E
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:52:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7376EF0E
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 16:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709139134; cv=none; b=jaDWEhUWGq179g9Oh8GHlcrMqDKH5EiLOAzFsXf7BWORVbcbpvZPxJclDBqVvGqKP6d3SyuKS6+sxaSo2S384PsWKwzHrqoYxgVMXVdNeijx5vf+/VgBv/cNpmiBF1UzjhJlDYV3YBKkPwi9HAn//Dz34hjY8n3XyBUeCcnu66I=
+	t=1709139187; cv=none; b=KyngiaUyQMuGumA876bffHNBiA2moNCcKPV31xBHrxiz15iyXrPHLJIzgLhYTUBYXs0TRjDY4V2Di7d0uIfKN7gipYHILUc6icmJPSN4EyXhdbcYvCDD5epAWQw5tx2yu9wR+q+uqjafauzXD3BH7lK5RUVRG1k+U/dJRwmWlzE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709139134; c=relaxed/simple;
-	bh=hZjavC1d5KsXTVImzNF3ZHRRrkeQfF0vEU2wpm2WSCY=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=qvBA+PkvTrV/KQpvR3bsIWjfx8jK++uVbzDvQdNDelCcEksHtZRWmUOQYB4uuY7yFZBrP9MOyjw5eUwEXVFooazW4BJAM23IYGoQx6prCWq2vL9+yD+jFLWLXO0PlrI6JAf1/2k3mQtLsCY4iyszR6XRLXpSEpKZMzhUXd//B4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pYulpfDQ; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33d509ab80eso2734340f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:52:12 -0800 (PST)
+	s=arc-20240116; t=1709139187; c=relaxed/simple;
+	bh=YeysMJrMKJOqZ+ZRJb/n6sEWfzXImIkkf8WwSLVPEyM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B9530+fbKPCvYK0r45pwUHfHxQFOoWfeMPc+LxguG6kXLZgHZEVZknrgUnTNbh7VuB9SSTOzW1BQiI8Se/4X8h19a4rHR2tAHYhqLJ+X9DRRPcC8zGK+EsgkJ24pQrAnZtgYb25QTeVmrHOQYT3P0WHj8d24GPfl3h6kJeanrTg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QehyGA8Z; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc744f54d0so235105ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 08:53:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709139131; x=1709743931; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+3vtv3FCJxPFF29J4MZq7l8JyQ9EslqYGbZf8qcGPf4=;
-        b=pYulpfDQK8yzd3vIZ3bfM/jDIRxU3AimMce7vAQrSVV23wCunZPG9W2gfpJPV0JTJe
-         1O/ZR8X9CRUXA1hxawe5GBT/HtF5+A3aOGEhzQEz82nw9gMA7uZjZjd8c4qBxiMgSeVK
-         aBPOw+tC3Q6DekUG/1e3Pg0egfPEnE6BtSdP3QOGZxw6HNBKsOLTE5e0gQE/NLqzp4dn
-         awroAiGznEoew6CeA8zm2dmeGbIFYfsVgKCLmORx63n0gyEa6/wQBvnLaWmGht169C8w
-         o7ivtjAFsw/EZNpTUUmGZIEOumU/eK3VXP/QUZUs1xwx4SVL0UoQ5qiDwIb4JD1Z+U4I
-         Cn3Q==
+        d=google.com; s=20230601; t=1709139184; x=1709743984; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DtF5/pdVuibkgPXJcntwpHSGdyt4hc2nkXEyG93pZvI=;
+        b=QehyGA8ZTmvzFGxmdp2gHWwZK0DGr+8IgjC50EzLZNNZl7tzyFUwX4jc0WBxfh6HOB
+         OO0L+tpdnf8k+5crPabsIEC86d8Uf8HCBLUg11TBKKNEnfrUowCxXeqoLe1M1go027cP
+         l5W3ghgfkqeoDkFB3hkKoC2yo79ipCL+BycIl/c6cGE8rApJrEu91MBJ3S24ew1/P+L6
+         8aku9MZvD/ZXuzKfa6L6o6ybKjCkEpajaE5rL25FGSR8ITIvawcAwnT7NNyvG8sYXSzW
+         gvTJ4QL1boXEuQrgRWZkV33Vl+5zWnE7GKYaFM91q5Nqb/Crq5vXu70QwoxDfdiMvRcc
+         54+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709139131; x=1709743931;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+3vtv3FCJxPFF29J4MZq7l8JyQ9EslqYGbZf8qcGPf4=;
-        b=dRj42KEtX30Rg7o2WjCQUvVweTw/mEo4o1fJG0wX8zs6OBiPJjMkGblXLhDyx8rgvQ
-         F6ZJA5nra9hcxPj111TLWiMaBhw+kH9Arp3o2N3avjdUvMNLjFS9KxGZCbS/F/AGaQoX
-         7HtvrsZUkkl1oJ2W3fSzVJKKbvWNfT1vZ+CwziuQt2ZcjoMGLiOwHITpLPK6FUVEv2+C
-         MgiQKLnKqZJkvhdWWV9Ss6SF8WnExxeftzFWWE/8HC9e1gy3k9vxrz5G8BEtNazrGkqm
-         /d0b6TkTTuEwuYetQzGDgbdjzS+XbyZJKR3sfg5MEeNjXo/48+BlqV90QWAanYITKULq
-         Stjw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrwmtKXG9xVtJvlEVYDqt2V9rC71QoHFLhAEfyB+d3eIK7E2YLMcvuKiiRs7eAVAcHrgufxC0CnbQdoEJQ8np2CXnp4VRcPn56jAWL
-X-Gm-Message-State: AOJu0YxK59aT1E+3h0jN4+FK6a98Xxw7/G4TExW748n2t0yBrbdK9d1u
-	rUsTYVbRUqDe44PprShonEiOrPBpGMzXJZ8Zem9Rp62+VWuJF1gBqwgHEZ8eTh4=
-X-Google-Smtp-Source: AGHT+IHts9s9sJoLSp1tFY54//RVdJbrTkVB8QmQJgQYYzT+6medIFxeXXEtpfzFAlR3cphvkabkSg==
-X-Received: by 2002:adf:a1c5:0:b0:33d:d799:ef6c with SMTP id v5-20020adfa1c5000000b0033dd799ef6cmr75625wrv.66.1709139130640;
-        Wed, 28 Feb 2024 08:52:10 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:8e80:16d6:ae57:b1cb? ([2a01:e0a:982:cbb0:8e80:16d6:ae57:b1cb])
-        by smtp.gmail.com with ESMTPSA id c3-20020adfe703000000b0033d6fe3f6absm15026035wrm.62.2024.02.28.08.52.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 08:52:10 -0800 (PST)
-Message-ID: <b4266102-3354-4d4a-8368-c143b12dbead@linaro.org>
-Date: Wed, 28 Feb 2024 17:52:09 +0100
+        d=1e100.net; s=20230601; t=1709139184; x=1709743984;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DtF5/pdVuibkgPXJcntwpHSGdyt4hc2nkXEyG93pZvI=;
+        b=qmAvJW0JUZ3Yb2VApa5OZx4GP3UNUe+5eUBHzlykHc7fPh7nPoc/yNc/IbK0A3cOrv
+         7PoTBg/3WCzBoGTQ+VhqwlilS+zYp7KuZmEaBR0ffbni+U+vefFPLFAKJWJb+GQv7dTl
+         RK+9ZasGN+dHtpTKwuoJVCYaYaZFlupH4M0Hx18lrJFHDAWFkqA0WOvRfRt0Qp2S3bn8
+         xEtP+cgFXpleJ0ihCK1biqozskY/1DRhpewO8E+1VSqgTmxIwVyYHeJHKvLggoE31ZO2
+         B+l6UDMAkKTzSuLQPqNJRuMz0yiOxi6OJYuJ580PP1yXWJitW+Cct9cRjST5MDesYrx1
+         AZYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXsEt9NUiPHoZY5Lr/5eessDVJGGiNFlKXX5oqPRsXwt4INnnk7Ul8MWdwahLotvy9oHIB9uxPAZUOWHtusc7W1srAtG9hScPGZoSBR
+X-Gm-Message-State: AOJu0YwDTcMM8UO82gzsbhx2ekFUdIqLcuYnlVBOV/1JwKQOziNorX9J
+	GPYy04gQQliXUlrd1CQNUcKtQUX2BI0yftd43kcmS3/WQJFBRqe7vpPIr9kQQLIxsKb9ogKMJJY
+	+sy0ZvWL0JBsPpeY+LGAeztseAf8ejWwPuadz
+X-Google-Smtp-Source: AGHT+IFtOXSYXU84VVLaknqL+pG680O1sVKAYLkwQ1wwVHSfHbEz51im2N5KPclBVeDBV4X/kh9n+/NWxg+VN9Tdjds=
+X-Received: by 2002:a17:903:18a:b0:1db:e5e3:f7ac with SMTP id
+ z10-20020a170903018a00b001dbe5e3f7acmr70137plg.7.1709139183758; Wed, 28 Feb
+ 2024 08:53:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/dp: Don't attempt AUX transfers when eDP panels are
- not powered
-To: Doug Anderson <dianders@chromium.org>
-Cc: Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Hsin-Yi Wang <hsinyi@chromium.org>, dri-devel@lists.freedesktop.org,
- eizan@chromium.org, Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, Imre Deak <imre.deak@intel.com>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
- linux-kernel@vger.kernel.org
-References: <20240202141109.1.I24277520ac754ea538c9b14578edc94e1df11b48@changeid>
- <CAJMQK-it9YMod4rHKnACq4O-iaGieK2SN4x5vQ018CghsA631A@mail.gmail.com>
- <CAD=FV=VfuFrK1cSKA0maMzT5dxzKEzADqrd69fZKXuAGrU2rmA@mail.gmail.com>
- <87sf1u58k0.fsf@intel.com>
- <CAD=FV=XQdLm3PcjEd_g_dBJ9QO8zAJtj5nrXS9=cjC80+-Jbfg@mail.gmail.com>
- <cbcd981f-bd5d-477e-8482-d3414be17057@linaro.org>
- <CAD=FV=UtpL=Wy7jnUFkTF8WtMjWa3ZfJXsXDX=Q=j6o_6rd4AQ@mail.gmail.com>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <CAD=FV=UtpL=Wy7jnUFkTF8WtMjWa3ZfJXsXDX=Q=j6o_6rd4AQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <8fe3f46c-4ee5-4597-bf2d-12a5d634a264@rowland.harvard.edu>
+ <0000000000008b026406126a4bbe@google.com> <13add23d-af18-4f84-9f1a-043932a9712b@rowland.harvard.edu>
+In-Reply-To: <13add23d-af18-4f84-9f1a-043932a9712b@rowland.harvard.edu>
+From: Aleksandr Nogikh <nogikh@google.com>
+Date: Wed, 28 Feb 2024 17:52:50 +0100
+Message-ID: <CANp29Y4DUvL5zsnqQmhPGkbc=EN6UjFrWF9EZGE5U_=0C9+1Nw@mail.gmail.com>
+Subject: Re: [syzbot] [usb-storage?] divide error in isd200_ata_command
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: syzbot <syzbot+28748250ab47a8f04100@syzkaller.appspotmail.com>, 
+	bvanassche@acm.org, emilne@redhat.com, gregkh@linuxfoundation.org, 
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
+	martin.petersen@oracle.com, syzkaller-bugs@googlegroups.com, 
+	tasos@tasossah.com, usb-storage@lists.one-eyed-alien.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 28/02/2024 17:40, Doug Anderson wrote:
-> Neil,
-> 
-> On Thu, Feb 15, 2024 at 8:53 AM Neil Armstrong
-> <neil.armstrong@linaro.org> wrote:
->>
->> Hi Doug,
->>
->> On 15/02/2024 16:08, Doug Anderson wrote:
->>> Hi,
->>>
->>> On Thu, Feb 15, 2024 at 2:24 AM Jani Nikula <jani.nikula@intel.com> wrote:
->>>>
->>>> On Wed, 14 Feb 2024, Doug Anderson <dianders@chromium.org> wrote:
->>>>> Hi,
->>>>>
->>>>> On Tue, Feb 13, 2024 at 10:25 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->>>>>>
->>>>>> On Wed, Feb 14, 2024 at 2:23 PM Douglas Anderson <dianders@chromium.org> wrote:
->>>>>>>
->>>>>>> If an eDP panel is not powered on then any attempts to talk to it over
->>>>>>> the DP AUX channel will timeout. Unfortunately these attempts may be
->>>>>>> quite slow. Userspace can initiate these attempts either via a
->>>>>>> /dev/drm_dp_auxN device or via the created i2c device.
->>>>>>>
->>>>>>> Making the DP AUX drivers timeout faster is a difficult proposition.
->>>>>>> In theory we could just poll the panel's HPD line in the AUX transfer
->>>>>>> function and immediately return an error there. However, this is
->>>>>>> easier said than done. For one thing, there's no hard requirement to
->>>>>>> hook the HPD line up for eDP panels and it's OK to just delay a fixed
->>>>>>> amount. For another thing, the HPD line may not be fast to probe. On
->>>>>>> parade-ps8640 we need to wait for the bridge chip's firmware to boot
->>>>>>> before we can get the HPD line and this is a slow process.
->>>>>>>
->>>>>>> The fact that the transfers are taking so long to timeout is causing
->>>>>>> real problems. The open source fwupd daemon sometimes scans DP busses
->>>>>>> looking for devices whose firmware need updating. If it happens to
->>>>>>> scan while a panel is turned off this scan can take a long time. The
->>>>>>> fwupd daemon could try to be smarter and only scan when eDP panels are
->>>>>>> turned on, but we can also improve the behavior in the kernel.
->>>>>>>
->>>>>>> Let's let eDP panels drivers specify that a panel is turned off and
->>>>>>> then modify the common AUX transfer code not to attempt a transfer in
->>>>>>> this case.
->>>>>>>
->>>>>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->>>>>>> ---
->>>>>>
->>>>>> Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
->>>>>
->>>>> Thanks for the review!
->>>>>
->>>>> Given that this touches core DRM code and that I never got
->>>>> confirmation that Jani's concerns were addressed with my previous
->>>>> response, I'm still going to wait a little while before applying. I'm
->>>>> on vacation for most of next week, but if there are no further replies
->>>>> between now and then I'll plan to apply this to "drm-misc-next" the
->>>>> week of Feb 26th. If someone else wants to apply this before I do then
->>>>> I certainly won't object. Jani: if you feel this needs more discussion
->>>>> or otherwise object to this patch landing then please yell. Likewise
->>>>> if anyone else in the community wants to throw in their opinion, feel
->>>>> free.
->>>>
->>>> Sorry for dropping the ball after my initial response. I simply have not
->>>> had the time to look into this.
->>>>
->>>> It would be great to get, say, drm-misc maintainer ack on this before
->>>> merging. It's not fair for me to stall this any longer, I'll trust their
->>>> judgement.
->>>>
->>>> Reasonable?
->>>
->>> I'd be more than happy for one of the drm-misc maintainers to Ack.
->>> I'll move Maxime, Thomas, and Maarten to the "To:" line to see if that
->>> helps get through their filters.
->>
->> I'll like some test reports to be sure it doesn't break anything,
->> then I'll be happy to give my ack !
-> 
-> Are you looking for any more test reports at this point? Eizan did
-> some testing and provided a tag, though this was also on ChromeOS.
-> Steev also tested on two non-ChromeOS environments and provided his
-> tag. It's also been another two weeks of this being rolled out to some
-> Chromebook users and I haven't heard any reports of problems. If
-> somehow something was missed, I'm happy to follow-up and provide
-> additional fixes if some report comes in later.
+Hi Alan,
 
-Sure, thx I think you can apply it now
+Please try it once more with the full commit hash.
 
-Acked-by: Neil Armstrong <neil.armstrong@linaro.org>
+--=20
+Aleksandr
 
-Thanks,
-Neil
-
-> 
-> Thanks!
-> 
-> -Doug
-
+On Wed, Feb 28, 2024 at 5:12=E2=80=AFPM Alan Stern <stern@rowland.harvard.e=
+du> wrote:
+>
+> On Tue, Feb 27, 2024 at 09:20:03PM -0800, syzbot wrote:
+> > Hello,
+> >
+> > syzbot tried to test the proposed patch but the build/boot failed:
+> >
+> > failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/ker=
+nel/git/torvalds/linux.git/ on commit f2e367d6ad3b: failed to run ["git" "f=
+etch" "--force" "--tags" "7b440d1b40dd93ea98b5af6bba55ffca63425216" "f2e367=
+d6ad3b"]: exit status 128
+> > fatal: couldn't find remote ref f2e367d6ad3b
+>
+> I'm going to guess this was a temporary failure and try again.  If that
+> wasn't the case, something is seriously wrong somewhere.  I had no
+> trouble accessing that commit using the git.kernel.org web interface.
+>
+> Alan Stern
+>
+> On Mon, Feb 26, 2024 at 01:42:26AM -0800, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    f2e367d6ad3b Merge tag 'for-6.8/dm-fix-3' of git://git.=
+ker..
+> > git tree:       upstream
+>
+> #syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux=
+git/ f2e367d6ad3b
+>
+> Index: usb-devel/drivers/usb/storage/isd200.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- usb-devel.orig/drivers/usb/storage/isd200.c
+> +++ usb-devel/drivers/usb/storage/isd200.c
+> @@ -1105,7 +1105,7 @@ static void isd200_dump_driveid(struct u
+>  static int isd200_get_inquiry_data( struct us_data *us )
+>  {
+>         struct isd200_info *info =3D (struct isd200_info *)us->extra;
+> -       int retStatus =3D ISD200_GOOD;
+> +       int retStatus;
+>         u16 *id =3D info->id;
+>
+>         usb_stor_dbg(us, "Entering isd200_get_inquiry_data\n");
+> @@ -1137,6 +1137,13 @@ static int isd200_get_inquiry_data( stru
+>                                 isd200_fix_driveid(id);
+>                                 isd200_dump_driveid(us, id);
+>
+> +                               /* Prevent division by 0 in isd200_scsi_t=
+o_ata() */
+> +                               if (id[ATA_ID_HEADS] =3D=3D 0 || id[ATA_I=
+D_SECTORS] =3D=3D 0) {
+> +                                       usb_stor_dbg(us, "   Invalid ATA =
+Identify data\n");
+> +                                       retStatus =3D ISD200_ERROR;
+> +                                       goto Done;
+> +                               }
+> +
+>                                 memset(&info->InquiryData, 0, sizeof(info=
+->InquiryData));
+>
+>                                 /* Standard IDE interface only supports d=
+isks */
+> @@ -1202,6 +1209,7 @@ static int isd200_get_inquiry_data( stru
+>                 }
+>         }
+>
+> + Done:
+>         usb_stor_dbg(us, "Leaving isd200_get_inquiry_data %08X\n", retSta=
+tus);
+>
+>         return(retStatus);
+> @@ -1481,22 +1489,27 @@ static int isd200_init_info(struct us_da
+>
+>  static int isd200_Initialization(struct us_data *us)
+>  {
+> +       int rc =3D 0;
+> +
+>         usb_stor_dbg(us, "ISD200 Initialization...\n");
+>
+>         /* Initialize ISD200 info struct */
+>
+> -       if (isd200_init_info(us) =3D=3D ISD200_ERROR) {
+> +       if (isd200_init_info(us) < 0) {
+>                 usb_stor_dbg(us, "ERROR Initializing ISD200 Info struct\n=
+");
+> +               rc =3D -ENOMEM;
+>         } else {
+>                 /* Get device specific data */
+>
+> -               if (isd200_get_inquiry_data(us) !=3D ISD200_GOOD)
+> +               if (isd200_get_inquiry_data(us) !=3D ISD200_GOOD) {
+>                         usb_stor_dbg(us, "ISD200 Initialization Failure\n=
+");
+> -               else
+> +                       rc =3D -EINVAL;
+> +               } else {
+>                         usb_stor_dbg(us, "ISD200 Initialization complete\=
+n");
+> +               }
+>         }
+>
+> -       return 0;
+> +       return rc;
+>  }
+>
+>
+>
 
