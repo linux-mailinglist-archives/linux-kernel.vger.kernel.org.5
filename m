@@ -1,103 +1,108 @@
-Return-Path: <linux-kernel+bounces-84285-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84286-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2970186A491
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:52:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0965C86A492
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:52:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8172FB25684
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:52:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B3211C21269
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 00:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8E3111E;
-	Wed, 28 Feb 2024 00:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B691FB5;
+	Wed, 28 Feb 2024 00:52:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="KAx74stG"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pBZYTBSY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85CA9A29
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 00:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C85A34;
+	Wed, 28 Feb 2024 00:52:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709081535; cv=none; b=ETREUocxGUwj/CypVLIhWjsIswX7vYINs83AMTFpzyraH7wrkw2q65m9HenIk11to6dOEYQzNe4NK1J4k0vuJXPgQj8e4qDl2T6snMKdPt/V3yFpoDyYq/PX9hA0G2mX7yTVoSdcthRmrrln3i5oPDUYkUchlOIx3xPC9/480vY=
+	t=1709081552; cv=none; b=NfrSkkOdctOY7yKxlWnpIbtXhKsptS7xinRSBNF5J4eJe9vibF31kxW+B0QgH8VALSf0NREX3eSTznOVRvMRu706SePT3Mc0VxP4bZLqGxJ2UNhZEJICdghYoXxDAwPMqdZn8b4QCqEarzk6IYeM5mDWC6Sc1vzvfnqJ1f4yqOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709081535; c=relaxed/simple;
-	bh=/4+xU2nl2Qim7JMaWpZ5/E+UvRv0P+YRKK4Rvx4upno=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sXdwixKlnlfQXEDe3OEtD8HgTV2HQsMV+tNocOkzSIHWDx7M5Djb1r6hZrWIW4COCxRaHAbG1hFfVlaofQBO8GGICOThtTIbjuQioAshBw16xwOlmMnH/ezx3KfJnD+ojNDwVNIQ/6xILrS9mjvPnqnIGU5KWsoZym7CPh3cSwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=KAx74stG; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d2505352e6so69648221fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:52:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709081531; x=1709686331; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=H/XDCG1AIPihXz816FH77DikjrbKv0OtTNG33iOLSO4=;
-        b=KAx74stGkQPTsABFbcSuIeZWuWQMOlxvKFswlentJs3zjM1ezqnm4jlM/IqKlGaRSR
-         73o0ak14hZ/gAkXKaN7UQaqSy/32aD4m7PS4K62bFM+HOl6p/2qsTzxasL2b4xs5YaZ+
-         ueKMR7hhtfOkF9WK3xLikfPCcG3NQ0hKMPqpM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709081531; x=1709686331;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=H/XDCG1AIPihXz816FH77DikjrbKv0OtTNG33iOLSO4=;
-        b=rWi+DwDh4klen8x66AkLsrtZ28VZKWhd5S2M8Oj2WjykG504R6ZvhAEIxgh+dFmxz7
-         OGTDO/8MDd0gBYAtNhidifzMzDYcfQRWMGrJEygX3/zl5TjNrijDg3g+UaY14FJekuZP
-         l5lQBgljJfZ7uodv3kJQ3eBwIIKsi7L/YL3l2QyD3TMiHIRO7X3NJdj1WSvKPnI17uwz
-         5ghrqA4uquiJuvN3AFsWNVLZRIGNP767erHtITSx8VEFD9S+CnEhABe267vKCjiURrbq
-         Y13y+TzDe4HJmPtxFq/Y3KhEAe19L4nSQNpMzt9ZTnsyewyOgP+batxc6ezZ91zggFFM
-         djWg==
-X-Forwarded-Encrypted: i=1; AJvYcCXDQP8QoqkfTswL23m5L5Qf0IMWrw8+A2ZyWJHFD7zk4ai5AxgpznD2nrcGCfYTTYJedVF0iVnxhw9MavnTc5zlZvbwDBBTjlowyzHZ
-X-Gm-Message-State: AOJu0YwhgMpqmSG9WF2C7/NDazbBYaQPRG+bHC16LHBrxFOwUp0T/07H
-	+pTSmYROl/CxbHt+Cp2gLbhfG5/+pk7JoZAp43LgQZMn7Haum4jgkiA+VqepSuAzaNGpCRwvKNk
-	wCu+iQw==
-X-Google-Smtp-Source: AGHT+IEX6+JSmROyLy8j/Pix6GNzAamlVJmqEIijqmwa9CvOFYrmZ+kbWPeMflTEHuajVpzHk16+HA==
-X-Received: by 2002:a19:e01d:0:b0:512:d8fb:e45e with SMTP id x29-20020a19e01d000000b00512d8fbe45emr6892065lfg.45.1709081531405;
-        Tue, 27 Feb 2024 16:52:11 -0800 (PST)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id va27-20020a17090711db00b00a3d81b90ffcsm1265313ejb.218.2024.02.27.16.52.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 16:52:10 -0800 (PST)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a431324e84cso375477166b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 16:52:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUDNaoi+Ea4aYlrS7WSq5Crkyqnjng4dTQHECm7gBggNfDLcaJKPqs73et9MlEBjWXp/2cHatc+1scIQjR31TnrB1Y+1NKXCwYBQ1VN
-X-Received: by 2002:a17:906:36db:b0:a3e:95b8:4c7a with SMTP id
- b27-20020a17090636db00b00a3e95b84c7amr7569487ejc.23.1709081530526; Tue, 27
- Feb 2024 16:52:10 -0800 (PST)
+	s=arc-20240116; t=1709081552; c=relaxed/simple;
+	bh=Pf04X6SV6XUlQWu1+HzF9j9trt7MUo1jU/RSKN5kwes=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lkrTKNnsBt71HmEJBIpZec9hhmvwroAYNJvvLJ43MmQoGNkqPcZiQ97L8ttbEer0mPCd+hCS3nUslFKYH/O3/m4LaGRT3ox0HiYg/qqX6xox2yu0beWKb2pThS+1jrqPh6+AOBmXanTjkaPaXS9+JqrEFlxMsmFTFmiVnOYzMpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pBZYTBSY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90394C433F1;
+	Wed, 28 Feb 2024 00:52:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709081551;
+	bh=Pf04X6SV6XUlQWu1+HzF9j9trt7MUo1jU/RSKN5kwes=;
+	h=From:To:Cc:Subject:Date:From;
+	b=pBZYTBSYsSsFTPfDvsBGpMOVpCgniu+PwtBRwJqD+aP+ESBTeZAdxvn2h0QG0+0k5
+	 aoQhKj+hq+wVVkHajIRys6Zc/luHWr73ZMoY2cPCBMkSvRSiNeHB71Z6McWYm0FN5g
+	 g7E3THuYdsKu5Hcpb1jSmbdq/81kvzPRIwGlLW05kuqr1tM0Z/c6SDp5Z3KTCZCVHr
+	 e/b0E9Hs1IT25EF1Jo1oi33g+VLvSE4HmxrdGnW4mxS+yR8NE/8Qizt4WC5whonSay
+	 xjPnHZZaW4m0/AogNqq7P6QUOj3JNMDPmM+E/an2EBWdh0sDN+GJDf2mp5/JJPMhjX
+	 ffT5ZjRd1rGbQ==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Andi Kleen <ak@linux.intel.com>
+Subject: [PATCH 0/4] perf annotate: Improve memory usage for symbol histogram
+Date: Tue, 27 Feb 2024 16:52:26 -0800
+Message-ID: <20240228005230.287113-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227145619.40b2f9b33dc2723df27f68c0@linux-foundation.org>
-In-Reply-To: <20240227145619.40b2f9b33dc2723df27f68c0@linux-foundation.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 27 Feb 2024 16:51:54 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjk98Rt6PYgwrEp627ociAzWrRpNXOg7TRJcDO_nx1==A@mail.gmail.com>
-Message-ID: <CAHk-=wjk98Rt6PYgwrEp627ociAzWrRpNXOg7TRJcDO_nx1==A@mail.gmail.com>
-Subject: Re: [GIT PULL] hotfixes for 6.8-rc7
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, mm-commits@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 27 Feb 2024 at 14:56, Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> 6 hotfixes.  3 are cc:stable and the remainder address post-6.7 issues
-> or aren't considered appropriate for backporting.
+Hello,
 
-Hmm. I notice that you add "Link:" pointers to lore, but you do so
-even for emails that have been sent to you without any lists, so that
-they don't actually exist on lore..
+This is another series of memory optimization in perf annotate.
 
-IOW, that link-generating automation of yours looks a bit overly aggressive.
+When perf annotate (or perf report/top with TUI) processes samples, it
+needs to save the sample period (overhead) at instruction level.  For
+now, it allocates an array to do that for the whole symbol when it
+hits any new symbol.  This comes with a lot of waste since samples can
+be very few and instructions span to multiple bytes.
 
-                Linus
+For example, when a sample hits symbol 'foo' that has size of 100 and
+that's the only sample falls into the symbol.  Then it needs to
+allocate a symbol histogram (sym_hist) and the its size would be
+
+  16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) = 1616
+
+But actually it just needs 32 (header + sym_hist_entry) bytes.  Things
+get worse if the symbol size is bigger (and it doesn't have many
+samples in different places).  Also note that it needs separate
+histogram for each event.
+
+Let's split the sym_hist_entry and have it in a hash table so that it
+can allocate only necessary entries.
+
+No functional change intended.
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (4):
+  perf annotate: Add a hashmap for symbol histogram
+  perf annotate: Calculate instruction overhead using hashmap
+  perf annotate: Remove sym_hist.addr[] array
+  perf annotate: Add comments in the data structures
+
+ tools/perf/ui/gtk/annotate.c |  14 ++++-
+ tools/perf/util/annotate.c   | 114 ++++++++++++++++++++++-------------
+ tools/perf/util/annotate.h   |  86 +++++++++++++++++++++++---
+ 3 files changed, 158 insertions(+), 56 deletions(-)
+
+-- 
+2.44.0.rc1.240.g4c46232300-goog
+
 
