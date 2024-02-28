@@ -1,319 +1,220 @@
-Return-Path: <linux-kernel+bounces-85003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B583186AF02
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:22:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6031986AF07
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C6FB28659A
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:22:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 835501C21B67
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E196C3BBEA;
-	Wed, 28 Feb 2024 12:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BCA3BBE7;
+	Wed, 28 Feb 2024 12:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gfwyb1nR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="ML/5MtxH"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00AAF3BBD0;
-	Wed, 28 Feb 2024 12:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73A481F608
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 12:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709122967; cv=none; b=GE91KE5rJlddlqnxRRlzn79AuPDUTNTTBUd3IS/XmWL8Bjlo2Gr6GjMPur81XyTbq58Hzu44vLJ1AHvGNEsCAcc2KSbA5JlathMWjey2B6YpgpCLIoObz9M6Gu6QxftkXdVYmEsTqKpSVCGAB2saOlyOiyRtI9H54OHJeHqSDyQ=
+	t=1709123064; cv=none; b=AAMskVAFtdVNbVUlmuN9iGG5Nu3A4A53GF8SUpEjdktOut/TrJFInPW5nGwycFyZPVkUz9ShBosquqm9p3b+lYS+jb9BW8B2zzwINemRDkRZW7ecloz4BLVArmCtD1CNdifX+Srx4dV1y8wKKBuHnDbHiWQ3inbUDBJOsydp3eg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709122967; c=relaxed/simple;
-	bh=Vtf8uiKYo2k9u20FWxvxPIPbVyK9vLwi1nNSnIilD74=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HgltxOmTxQOWUqoU2nHtl8jK5/iIIGs+KIlcYWaTwtqW38VekBw02z5QZJu68Lh+JOM0rX/g65VfcB0pbYIOoB6AfepztAaGmLO/rwjxhuDwPTOXCETuHjxng+W1Rj7bAEWHCAvj2wFRW14NYwIXH2dC27t/kV9iHYgI2FS9/NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gfwyb1nR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11943C433F1;
-	Wed, 28 Feb 2024 12:22:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709122966;
-	bh=Vtf8uiKYo2k9u20FWxvxPIPbVyK9vLwi1nNSnIilD74=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Gfwyb1nRErLkTkRKYm3WcN1bCr4Cdya+HMKWySLtYNHYLDqbge4lPY0Z/Js4wfmK8
-	 YK/W3ZqxBtUuuI7CTYa6/rW8gD6bkSygxSc0HIXoauSzRkBdx7Q3wvSZcqTeg7g20+
-	 nIbiDqIKMHA6yjWfJOjPb9LV5mn1k9XY0bZ5nJ3pXgTDrwgywcE524Mqak7sHkkifs
-	 Jl2IpnRaC3ZsNPPTPTRK3uIToBV9DBVjXGPkT3xtjOFa9nOejgempF4CygOgNd2ZOj
-	 3Ivi00u6U5jv2I1gCNyOrexjkGbFJjQJjKuagvGny7CytY7zXp880eBoew1PYcsJyM
-	 DWlWZIZcFaimg==
-Date: Wed, 28 Feb 2024 09:22:41 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2] perf lock contention: Account contending locks too
-Message-ID: <Zd8lkcb5irCOY4-m@x1>
-References: <20240228053335.312776-1-namhyung@kernel.org>
+	s=arc-20240116; t=1709123064; c=relaxed/simple;
+	bh=joEzw6L4gQcaEyZ7yJHfEykF8e8qp/lQkmUXVPfflHo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oe+ijKCenh4xyNX4SlL78+ep1pDz7GMZqtZJcoO9pIJdRnXV+kOLA1qoiVAnlvj4ifLsEfnUJyE/qaIY+y/h/Kw4JqwG6icMV4FArpNEC2jUB1Gn5uo0hJDNOcWUD8CVYi9iEve84nkLmwvoMqfOIw6szuCNh8gP3oqjrKNFe4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=ML/5MtxH; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e571666829so115111b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 04:24:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tweaklogic.com; s=google; t=1709123061; x=1709727861; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EbgiGghg9niKNmOmqpQ6Q2ZDubPKX9sHm9zFo/AG5vE=;
+        b=ML/5MtxHBbtMxukqZSoxYx5e1PK7D7P81TyHRsrcxEgLhopWAZWuyEuSk8prsRk3G2
+         RGH7q+dklfPTTasTYFjkUVBuY+mHEp3Pa1p1NjpQ23Y+/TTAaM+QUIB556Xp3kOkSisP
+         GYhqO4toQjfbzUbRFJSse1iRlAp1z+V5UQwQK4Q2R8E3dGl0qVqipXEI+p15Eb411i5F
+         dQNw7MgoH5R4lUpIMlJQMAlloMiWecXKIHnKWWWOn/067lfN0KHmKG74QA2AfnZknmsE
+         6y2fP8sZLATY0L815RSOx5KwzXo3isW3x1fENitSZE078ON80XueMLauISLdy5UHJEsF
+         4TRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709123061; x=1709727861;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EbgiGghg9niKNmOmqpQ6Q2ZDubPKX9sHm9zFo/AG5vE=;
+        b=C3Sp3BCTd5yCeasyHjXIQymAMMIXymkyzafjawnA6djckmo2MBK0hZP3ochiyqHrVq
+         BR74KCVFnt4VXHunhGtPShBvX0Zhh4lsej9WCApZqEMslVVagnFB4qw4BdJkS13aUtKJ
+         tkQZvDJ1KpP+a67BljUO+ysbWOO9uYUcWwc2zdRKe0/iGMYspiNFbnYEr6apy/1FhfW/
+         6YmWQwfPqIIaabd6J2DLIvkuL+Qmzh8eQrjoAnxeN+XuvNc4MPFu/RuvM+G2Mg/5RbSp
+         bP71sXC0C0aT2Y+TgEIcz7c87IDHaBPg8Txdyqu904Xg/AkHzfA2LhkPB5lmkOD1KOKJ
+         k+kw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5QB7UkGCE148iVhWYqDXxL01vfP4qc4VrMaS9voWSTNVZetGh8nL8LWs/qhLQ6+VMRWgf4187URFT+mdiiRzqpbVuaENm2TOdi04j
+X-Gm-Message-State: AOJu0Yxl+h4RLFoHLAuUW2Byz/FNPRZQztcLeNYqglZ3Arjd+oiLpe4N
+	2PU853qr+o0R9G6RcesmBPUAUKm8ofgDXaBEzopumWHlDb+/c7mD+aWaThROIOw=
+X-Google-Smtp-Source: AGHT+IE5erscRUsxmOUjGl2sHC3pR5U8qf0CYePi7xxhhtGz+q2H7XXw98QOLR8P+9w9elldTgoK5Q==
+X-Received: by 2002:a05:6a00:99d:b0:6e5:34a1:fa51 with SMTP id u29-20020a056a00099d00b006e534a1fa51mr10113368pfg.34.1709123060599;
+        Wed, 28 Feb 2024 04:24:20 -0800 (PST)
+Received: from localhost.localdomain ([180.150.112.31])
+        by smtp.gmail.com with ESMTPSA id m3-20020a62f203000000b006dde0724247sm7857587pfh.149.2024.02.28.04.24.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 04:24:20 -0800 (PST)
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+To: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matti Vaittinen <mazziesaccount@gmail.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Marek Vasut <marex@denx.de>,
+	Anshul Dalal <anshulusr@gmail.com>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Cc: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+	Matt Ranostay <matt@ranostay.sg>,
+	Stefan Windfeldt-Prytz <stefan.windfeldt-prytz@axis.com>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v8 0/5] Support for Avago APDS9306 Ambient Light Sensor
+Date: Wed, 28 Feb 2024 22:54:03 +1030
+Message-Id: <20240228122408.18619-1-subhajit.ghosh@tweaklogic.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228053335.312776-1-namhyung@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 09:33:35PM -0800, Namhyung Kim wrote:
-> Currently it accounts the contention using delta between timestamps in
-> lock:contention_begin and lock:contention_end tracepoints.  But it means
-> the lock should see the both events during the monitoring period.
-> 
-> Actually there are 4 cases that happen with the monitoring:
-> 
->                 monitoring period
->             /                       \
->             |                       |
->  1:  B------+-----------------------+--------E
->  2:    B----+-------------E         |
->  3:         |           B-----------+----E
->  4:         |     B-------------E   |
->             |                       |
->             t0                      t1
-> 
-> where B and E mean contention BEGIN and END, respectively.  So it only
-> accounts the case 4 for now.  It seems there's no way to handle the case
-> 1.  The case 2 might be handled if it saved the timestamp (t0), but it
-> lacks the information from the B notably the flags which shows the lock
-> types.  Also it could be a nested lock which it currently ignores.  So
-> I think we should ignore the case 2.
+Support for Avago APDS9306 Ambient Light Sensor.
 
-Perhaps have a separate output listing locks that were found to be with
-at least tE - t0 time, with perhaps a backtrace at that END time?
+Driver support for Avago (Broadcom) APDS9306 Ambient Light Sensor.
+It has two channels - ALS and CLEAR. The ALS (Ambient Light Sensor)
+channel approximates the response of the human-eye providing direct
+read out where the output count is proportional to ambient light levels.
+It is internally temperature compensated and rejects 50Hz and 60Hz flicker
+caused by artificial light sources. Hardware interrupt configuration is
+optional. It is a low power device with 20 bit resolution and has 
+configurable adaptive interrupt mode and interrupt persistence mode.
+The device also features inbuilt hardware gain, multiple integration time
+selection options and sampling frequency selection options.
 
-With that we wouldn't miss that info, however incomplete it is and the
-user would try running again, perhaps for a longer time, or start
-monitoring before the observed workload starts, etc.
+This driver also uses the IIO GTS (Gain Time Scale) Helpers Namespace for 
+Scales, Gains and Integration time implementation.
 
-Anyway:
+Link: https://docs.broadcom.com/doc/AV02-4755EN
 
-Reviwed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+v7 -> v8:
+ - Renamed APDS9306_INT_CH_CLEAR to APDS9306_INT_SRC_CLEAR macro for higher
+   readability
+ - Removed APDS9306_CHANNEL macro for higher readability
+ - Updated iio_push_event() functions with correct type of events (Light or Intensity)
+ - Updated variable name "event_ch_is_light" to "int_src" and change as per
+   review to fix compiler warning
+ - Used scope for guard() functions
+ - Other fixes as per reviews
+   https://lore.kernel.org/all/20240224151340.3f2f51e8@jic23-huawei/
+   https://lore.kernel.org/all/ZdycR6nr3rtrnuth@smile.fi.intel.com/
 
-- Arnaldo
+v7 -> v8 Bindings:
+ - Updated commit message as mentioned by Jonathan
+   https://lore.kernel.org/all/20240224143803.27efa14f@jic23-huawei/
+
+v6 -> v7:
+ - Made comments to struct part_id_gts_multiplier as kernel doc
+ - Removed static_asserts for array sizes
+ - Moved regmap_field from driver private data structure and removed
+   regfield_ prefix to reduce names
+ - Used "struct apds9306_regfields *rf = &data->rf" in the respective
+   functions to reduce names
+ - Removed apds9306_runtime_power_on() and apds9306_runtime_power_off()
+   functions in favour of using the runtime_pm calls directly from
+   calling functions.
+ - Fixed indentations
+   https://lore.kernel.org/all/ZcOZX8mWTozC2EAc@smile.fi.intel.com/#r
+
+v6 -> v7 Bindings:
+ - Updated commit message
+ - Removed wrong patch dependency statement from commit messages
+ - Updates tags
+   https://lore.kernel.org/all/20240206-gambling-tricycle-510794e20ca8@spud/
+
+v5 -> v6:
+ - Changes as per review
+ - Update kernel doc for private data
+ - Change IIO Event Spec definitions
+ - Update guard mutex lock implementation
+ - Add pm_runtime_get()
+ - Update styling
+   Link: https://lore.kernel.org/all/20240204134056.5dc64e8b@jic23-huawei/
  
-> However we can handle the case 3 if we save the timestamp (t1) at the
-> end of the period.  And then it can iterate the map entries in the
-> userspace and update the lock stat accordinly.
-> 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
-> v2: add a comment on mark_end_timestamp  (Ian)
-> 
->  tools/perf/util/bpf_lock_contention.c         | 120 ++++++++++++++++++
->  .../perf/util/bpf_skel/lock_contention.bpf.c  |  16 ++-
->  tools/perf/util/bpf_skel/lock_data.h          |   7 +
->  3 files changed, 136 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/perf/util/bpf_lock_contention.c b/tools/perf/util/bpf_lock_contention.c
-> index 31ff19afc20c..9af76c6b2543 100644
-> --- a/tools/perf/util/bpf_lock_contention.c
-> +++ b/tools/perf/util/bpf_lock_contention.c
-> @@ -179,6 +179,123 @@ int lock_contention_prepare(struct lock_contention *con)
->  	return 0;
->  }
->  
-> +/*
-> + * Run the BPF program directly using BPF_PROG_TEST_RUN to update the end
-> + * timestamp in ktime so that it can calculate delta easily.
-> + */
-> +static void mark_end_timestamp(void)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-> +		.flags = BPF_F_TEST_RUN_ON_CPU,
-> +	);
-> +	int prog_fd = bpf_program__fd(skel->progs.end_timestamp);
-> +
-> +	bpf_prog_test_run_opts(prog_fd, &opts);
-> +}
-> +
-> +static void update_lock_stat(int map_fd, int pid, u64 end_ts,
-> +			     enum lock_aggr_mode aggr_mode,
-> +			     struct tstamp_data *ts_data)
-> +{
-> +	u64 delta;
-> +	struct contention_key stat_key = {};
-> +	struct contention_data stat_data;
-> +
-> +	if (ts_data->timestamp >= end_ts)
-> +		return;
-> +
-> +	delta = end_ts - ts_data->timestamp;
-> +
-> +	switch (aggr_mode) {
-> +	case LOCK_AGGR_CALLER:
-> +		stat_key.stack_id = ts_data->stack_id;
-> +		break;
-> +	case LOCK_AGGR_TASK:
-> +		stat_key.pid = pid;
-> +		break;
-> +	case LOCK_AGGR_ADDR:
-> +		stat_key.lock_addr_or_cgroup = ts_data->lock;
-> +		break;
-> +	case LOCK_AGGR_CGROUP:
-> +		/* TODO */
-> +		return;
-> +	default:
-> +		return;
-> +	}
-> +
-> +	if (bpf_map_lookup_elem(map_fd, &stat_key, &stat_data) < 0)
-> +		return;
-> +
-> +	stat_data.total_time += delta;
-> +	stat_data.count++;
-> +
-> +	if (delta > stat_data.max_time)
-> +		stat_data.max_time = delta;
-> +	if (delta < stat_data.min_time)
-> +		stat_data.min_time = delta;
-> +
-> +	bpf_map_update_elem(map_fd, &stat_key, &stat_data, BPF_EXIST);
-> +}
-> +
-> +/*
-> + * Account entries in the tstamp map (which didn't see the corresponding
-> + * lock:contention_end tracepoint) using end_ts.
-> + */
-> +static void account_end_timestamp(struct lock_contention *con)
-> +{
-> +	int ts_fd, stat_fd;
-> +	int *prev_key, key;
-> +	u64 end_ts = skel->bss->end_ts;
-> +	int total_cpus;
-> +	enum lock_aggr_mode aggr_mode = con->aggr_mode;
-> +	struct tstamp_data ts_data, *cpu_data;
-> +
-> +	/* Iterate per-task tstamp map (key = TID) */
-> +	ts_fd = bpf_map__fd(skel->maps.tstamp);
-> +	stat_fd = bpf_map__fd(skel->maps.lock_stat);
-> +
-> +	prev_key = NULL;
-> +	while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
-> +		if (bpf_map_lookup_elem(ts_fd, &key, &ts_data) == 0) {
-> +			int pid = key;
-> +
-> +			if (aggr_mode == LOCK_AGGR_TASK && con->owner)
-> +				pid = ts_data.flags;
-> +
-> +			update_lock_stat(stat_fd, pid, end_ts, aggr_mode,
-> +					 &ts_data);
-> +		}
-> +
-> +		prev_key = &key;
-> +	}
-> +
-> +	/* Now it'll check per-cpu tstamp map which doesn't have TID. */
-> +	if (aggr_mode == LOCK_AGGR_TASK || aggr_mode == LOCK_AGGR_CGROUP)
-> +		return;
-> +
-> +	total_cpus = cpu__max_cpu().cpu;
-> +	ts_fd = bpf_map__fd(skel->maps.tstamp_cpu);
-> +
-> +	cpu_data = calloc(total_cpus, sizeof(*cpu_data));
-> +	if (cpu_data == NULL)
-> +		return;
-> +
-> +	prev_key = NULL;
-> +	while (!bpf_map_get_next_key(ts_fd, prev_key, &key)) {
-> +		if (bpf_map_lookup_elem(ts_fd, &key, cpu_data) < 0)
-> +			goto next;
-> +
-> +		for (int i = 0; i < total_cpus; i++) {
-> +			update_lock_stat(stat_fd, -1, end_ts, aggr_mode,
-> +					 &cpu_data[i]);
-> +		}
-> +
-> +next:
-> +		prev_key = &key;
-> +	}
-> +	free(cpu_data);
-> +}
-> +
->  int lock_contention_start(void)
->  {
->  	skel->bss->enabled = 1;
-> @@ -188,6 +305,7 @@ int lock_contention_start(void)
->  int lock_contention_stop(void)
->  {
->  	skel->bss->enabled = 0;
-> +	mark_end_timestamp();
->  	return 0;
->  }
->  
-> @@ -301,6 +419,8 @@ int lock_contention_read(struct lock_contention *con)
->  	if (stack_trace == NULL)
->  		return -1;
->  
-> +	account_end_timestamp(con);
-> +
->  	if (con->aggr_mode == LOCK_AGGR_TASK) {
->  		struct thread *idle = __machine__findnew_thread(machine,
->  								/*pid=*/0,
-> diff --git a/tools/perf/util/bpf_skel/lock_contention.bpf.c b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> index 95cd8414f6ef..fb54bd38e7d0 100644
-> --- a/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> +++ b/tools/perf/util/bpf_skel/lock_contention.bpf.c
-> @@ -19,13 +19,6 @@
->  #define LCB_F_PERCPU	(1U << 4)
->  #define LCB_F_MUTEX	(1U << 5)
->  
-> -struct tstamp_data {
-> -	__u64 timestamp;
-> -	__u64 lock;
-> -	__u32 flags;
-> -	__s32 stack_id;
-> -};
-> -
->  /* callstack storage  */
->  struct {
->  	__uint(type, BPF_MAP_TYPE_STACK_TRACE);
-> @@ -140,6 +133,8 @@ int perf_subsys_id = -1;
->  /* determine the key of lock stat */
->  int aggr_mode;
->  
-> +__u64 end_ts;
-> +
->  /* error stat */
->  int task_fail;
->  int stack_fail;
-> @@ -559,4 +554,11 @@ int BPF_PROG(collect_lock_syms)
->  	return 0;
->  }
->  
-> +SEC("raw_tp/bpf_test_finish")
-> +int BPF_PROG(end_timestamp)
-> +{
-> +	end_ts = bpf_ktime_get_ns();
-> +	return 0;
-> +}
-> +
->  char LICENSE[] SEC("license") = "Dual BSD/GPL";
-> diff --git a/tools/perf/util/bpf_skel/lock_data.h b/tools/perf/util/bpf_skel/lock_data.h
-> index 08482daf61be..36af11faad03 100644
-> --- a/tools/perf/util/bpf_skel/lock_data.h
-> +++ b/tools/perf/util/bpf_skel/lock_data.h
-> @@ -3,6 +3,13 @@
->  #ifndef UTIL_BPF_SKEL_LOCK_DATA_H
->  #define UTIL_BPF_SKEL_LOCK_DATA_H
->  
-> +struct tstamp_data {
-> +	u64 timestamp;
-> +	u64 lock;
-> +	u32 flags;
-> +	u32 stack_id;
-> +};
-> +
->  struct contention_key {
->  	u32 stack_id;
->  	u32 pid;
-> -- 
-> 2.44.0.rc1.240.g4c46232300-goog
+v5 -> v6 Bindings:
+ - Write proper commit messages
+ - Add vdd-supply in a separate commit
+ - Add Interrupt macro in a separate commit
+   Link: https://lore.kernel.org/all/1d0a80a6-dba5-4db8-a7a8-73d4ffe7a37e@linaro.org/
+
+v2 -> v5:
+ - Bumped up the version:
+   RFC->v0->v1->v2->v3 (Earlier scheme)
+   v1->v2->v3->v4->v5 (Scheme after review) (Current scheme)
+   Link: https://lore.kernel.org/all/20231028143631.2545f93e@jic23-huawei/
+
+ - Added separate patch to merge schemas for APDS9300 and APDS9906. Added
+   APDS9306 support on top of that.
+   Link: https://lore.kernel.org/lkml/4e785d2e-d310-4592-a75a-13549938dcef@linaro.org/
+   Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
+
+ - Removed scale attribute for Intensity channel:
+   Link: https://lore.kernel.org/all/20231204095108.22f89718@jic23-huawei/
+
+ - Dropped caching of hardware gain, repeat rate and integration time and
+   updated code as per earlier reviews.
+   Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
+
+ - Added descriptive commit messages
+ - Fixed wrongly formatted commit messages
+ - Added changelog in right positions
+
+ - Link to v2: 
+   https://lore.kernel.org/lkml/20231027074545.6055-3-subhajit.ghosh@tweaklogic.com/
+
+v2 -> v5 Bindings:
+ - Removed 'required' for Interrupts and 'oneOf' for compatibility strings
+   as per below reviews:
+   Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
+   Link: https://lore.kernel.org/lkml/22e9e5e9-d26a-46e9-8986-5062bbfd72ec@linaro.org/
+
+ - Implemented changes as per previous reviews:
+   Link: https://lore.kernel.org/lkml/20231028142944.7e210eb6@jic23-huawei/
+   Link: https://lore.kernel.org/lkml/22e9e5e9-d26a-46e9-8986-5062bbfd72ec@linaro.org/
+
+Subhajit Ghosh (5):
+  dt-bindings: iio: light: Merge APDS9300 and APDS9960 schemas
+  dt-bindings: iio: light: adps9300: Add missing vdd-supply
+  dt-bindings: iio: light: adps9300: Update interrupt definitions
+  dt-bindings: iio: light: Avago APDS9306
+  iio: light: Add support for APDS9306 Light Sensor
+
+ .../bindings/iio/light/avago,apds9300.yaml    |   20 +-
+ .../bindings/iio/light/avago,apds9960.yaml    |   44 -
+ drivers/iio/light/Kconfig                     |   12 +
+ drivers/iio/light/Makefile                    |    1 +
+ drivers/iio/light/apds9306.c                  | 1355 +++++++++++++++++
+ 5 files changed, 1383 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/iio/light/avago,apds9960.yaml
+ create mode 100644 drivers/iio/light/apds9306.c
+
+
+base-commit: 45ec2f5f6ed3ec3a79ba1329ad585497cdcbe663
+-- 
+2.34.1
+
 
