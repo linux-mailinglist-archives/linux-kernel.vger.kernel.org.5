@@ -1,135 +1,197 @@
-Return-Path: <linux-kernel+bounces-85531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85B6886B722
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:28:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3A986B728
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:28:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42491286060
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:28:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3329C1C257D3
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D701240866;
-	Wed, 28 Feb 2024 18:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4DC71EAF;
+	Wed, 28 Feb 2024 18:28:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hefring-com.20230601.gappssmtp.com header.i=@hefring-com.20230601.gappssmtp.com header.b="xnM34M7c"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZPxRODIg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kXqEJKXA";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="lzwTXBmR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="K7/pGILz"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C66540860
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 18:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5954240860;
+	Wed, 28 Feb 2024 18:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709144882; cv=none; b=OWm71h//6HcjL5R7PsuJqeCK6SRQQgZ/VVzZQexTgrFuXqO4HnigHb4Ul6qcYo/KrXtUj3Fyft3WHB23qDa7xu6SrnGKk0WLsnpq/Gmfj2MVOX0h2Tg9OJATwqAHmRNQh2H4vOawSm521xuXc/7C3cl9zqIUJ0Gjbb7ONB4L+p8=
+	t=1709144890; cv=none; b=uoXaLAX1+RLeE2bCpKbr4NGmWHGURiYoUqXN4GHSjBc6GXKF0fX66ZBELelXMgnRfHrWVfqZx/4ZwAXX1rwj5tYvtNDNSV31GuyvvKlujig5lzuIGMJUwrKQrWKCWxlwMsiY57YCv2QooLoDXUhkiVQY5VpznNlmsTNr8o07RDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709144882; c=relaxed/simple;
-	bh=k4xyia0piuIcKuFqrg4Vvg1MChuit3EZ7ASf2pglsMc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dvIf/6Nmr2z254PkjuI6BgS2EjNWEETDN/OBD/qXyTIHdM0aoH8J+jUKNu+mKNSZURQDQGoCOq7XJ7z2G5RtdJKFJhzvDM7YTRFnsCzzwhJslN+uFSwJbVVY84ccHvVYKVKtg24iUszxP0qeaKJlIC09agcS5latVSX7KySyL0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hefring.com; spf=none smtp.mailfrom=hefring.com; dkim=pass (2048-bit key) header.d=hefring-com.20230601.gappssmtp.com header.i=@hefring-com.20230601.gappssmtp.com header.b=xnM34M7c; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hefring.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=hefring.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dbed0710c74so83982276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:27:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1709144878; x=1709749678; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EF1KPzXNNkHhE7yYlv+hV5FrLPYFNCzXyE0ge4E72Xc=;
-        b=xnM34M7cCjaHquzBGHYfE/gb6Zi719cfhzCqjktyCvCcdKHeQVQJdZXfRRaTSAXILF
-         /SKByzv5s5E5/xhLiUNRqjceyUwGSaxsb0IlfxHCfPXkyqjP9dBTgvZs10XxLjvw4Kh1
-         ljWVTGEZKJAGjOFYty7jscH7p9Dojk/SosUjD1owQ9qHlquXazMf1bWEMAn/PT6KciEP
-         o0Skd2unAC7+05nVXyj3Dk44L5ti54dtGLTsOjxHH29FotSPb3rqznup0ZAFLpp2wrJR
-         ECQn/65BeKjl1/3IsbUzxCyx9PTN1eD4BBzX5qqDTNYiIo/Wzt9hP56yK9BpNZ/JVovH
-         Hidg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709144878; x=1709749678;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EF1KPzXNNkHhE7yYlv+hV5FrLPYFNCzXyE0ge4E72Xc=;
-        b=b/76RgqD2C2/Mpm8fM6sW+xaIFb3LlhPgd7y3a9L2BowdMoJgmMXxYMOjERueTIR3E
-         bDaxozDeNFk35ST7Wa55rvgqyf/hykSNv/ZNai9HfVLENlue66PXLlfeM8LCWlfxYJSG
-         RDF5JpL6ZSGtJsfTGXgFoRVBxRzST5Z2ZupIuQ3MLi+okfGWZFIH+uWxymObbgf7NEze
-         fDGrPuprQLuHEFTx+Ww9E9uFPq0SqzireA+bCzUgkd4SmhQJk9M3VqO0LdEsSxOjfo4D
-         Cgwu16M2FUwNGvii8GmhsiQAyfpHiILDbDIxJmyZyY/qLK662QbWrofS6A5YUNapMPbG
-         KzyA==
-X-Gm-Message-State: AOJu0YxAG9lCH4itf1Rnt95LnP+vbVGS6MQywqEWe1Qb1p9VrEjirZYg
-	k1rj+o//i9Vl3eUIXY1FTzSIvzCwfQSKcDc6tYJVL3+cnC82uMaA6BJkOgQxLkHoge90SpVeciU
-	u
-X-Google-Smtp-Source: AGHT+IGGIUcPNLaPDD97/JSUYoRXanewPna4Nbjsv7a0TEzYLDOhtOT2egjmszbqhcM+oGhhhvzNHQ==
-X-Received: by 2002:a05:6902:136e:b0:dc5:f51e:6a60 with SMTP id bt14-20020a056902136e00b00dc5f51e6a60mr22948ybb.6.1709144878346;
-        Wed, 28 Feb 2024 10:27:58 -0800 (PST)
-Received: from localhost.localdomain ([50.212.55.90])
-        by smtp.gmail.com with ESMTPSA id x4-20020ac87a84000000b0042e390c9804sm8355qtr.6.2024.02.28.10.27.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 10:27:57 -0800 (PST)
-From: Ben Wolsieffer <ben.wolsieffer@hefring.com>
-To: linux-kernel@vger.kernel.org,
-	linux-watchdog@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Christophe Roullier <christophe.roullier@st.com>,
-	Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Subject: [PATCH] watchdog: stm32_iwdg: initialize default timeout
-Date: Wed, 28 Feb 2024 13:27:23 -0500
-Message-ID: <20240228182723.12855-1-ben.wolsieffer@hefring.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709144890; c=relaxed/simple;
+	bh=R9QZp/YdeKna3hadnR/VgwsmE0VqRkxvcGnU+2XOCfU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NviGkGXCcAVvHuu7GZa5NnDZcpN/fwnM3moxrP48JyDrcF/BC/BN2YeZ6kopfiokVxZEbc00AcAz33BiVqXcdODr8v9bvfXNmVUCZ0YsP4adLEtlMFTvEOzRnkef5qfJtiImjaEXFUq7JUNAAtadU8644h2egWgNVCg9q/HAPNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZPxRODIg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kXqEJKXA; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=lzwTXBmR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=K7/pGILz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 964A71F83E;
+	Wed, 28 Feb 2024 18:28:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709144886; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u5+mCXb2oxOlDfsxFtS236UJWrVmUWVW4KbIf8DfAn4=;
+	b=ZPxRODIgJuBC/kk3bKWl/fqC1Sfyudk0vGJJkm74L2ILUYXVZDYFKC7QLCbG8BoZfFfnuO
+	2F5Y9sWwEkEx5uGUYjaoCqwl/ENpnPeD10I3Om2S5Cun7+hfdohyNZ6fIr5VMivmAvOzWw
+	iiVeA6/W1sayC/DjSc1YVcFCA2hPS64=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709144886;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u5+mCXb2oxOlDfsxFtS236UJWrVmUWVW4KbIf8DfAn4=;
+	b=kXqEJKXAtS54C2U4OLK3xcLGEe0opZ/tDK7QnBXntatpViLNLLzG938b4EGqOLURbeGaND
+	/oRSC6c82o94pPDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709144884; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u5+mCXb2oxOlDfsxFtS236UJWrVmUWVW4KbIf8DfAn4=;
+	b=lzwTXBmRXkxN7gO7SJLCYCtmmofqbF1HrCjq5bznG+IgfvcAWdRTeZ3EhUd3U5GqxBzYJf
+	Kg7uOFCn3GbKV1pFoGR7rDwj027aADKyrD34Ivv+yi++YDMuQBnVPxJGtUl08OAVrvwVKd
+	DdjyLH60n1iN1umSCH9NlibdRc2WAns=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709144884;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u5+mCXb2oxOlDfsxFtS236UJWrVmUWVW4KbIf8DfAn4=;
+	b=K7/pGILzfHFsjg6IJPzTgMwsz1KP2WTfZMzbOuLg7OGmntvIBW9iQPiorJV3J4dAp4BNrI
+	2rbvzZOpwfnNiRCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFC7513A58;
+	Wed, 28 Feb 2024 18:28:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id i+05OjN732V+LAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 28 Feb 2024 18:28:03 +0000
+Message-ID: <f494b8e5-f1ca-4b95-a8aa-01b9c4395523@suse.cz>
+Date: Wed, 28 Feb 2024 19:28:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 19/36] mm: create new codetag references during page
+ splitting
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+ hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+ dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-20-surenb@google.com>
+ <2daf5f5a-401a-4ef7-8193-6dca4c064ea0@suse.cz>
+ <CAJuCfpGt+zfFzfLSXEjeTo79gw2Be-UWBcJq=eL1qAnPf9PaiA@mail.gmail.com>
+ <6db0f0c8-81cb-4d04-9560-ba73d63db4b8@suse.cz>
+ <CAJuCfpEgh1OiYNE_uKG-BqW2x97sOL9+AaTX4Jct3=WHzAv+kg@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAJuCfpEgh1OiYNE_uKG-BqW2x97sOL9+AaTX4Jct3=WHzAv+kg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.07
+X-Spamd-Result: default: False [0.07 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-0.14)[68.46%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_GT_50(0.00)[74];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-The driver never sets a default timeout value, therefore it is
-initialized to zero. When CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED is
-enabled, the watchdog is started during probe. The kernel is supposed to
-automatically ping the watchdog from this point until userspace takes
-over, but this does not happen if the configured timeout is zero. A zero
-timeout causes watchdog_need_worker() to return false, so the heartbeat
-worker does not run and the system therefore resets soon after the
-driver is probed.
+On 2/28/24 18:50, Suren Baghdasaryan wrote:
+> On Wed, Feb 28, 2024 at 12:47 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+> 
+>>
+>> Now this might be rare enough that it's not worth fixing if that would be
+>> too complicated, just FYI.
+> 
+> Yeah. We can fix this by subtracting the "bytes" counter of the "head"
+> page for all free_the_page(page + (1 << order), order) calls we do
+> inside __free_pages(). But we can't simply use pgalloc_tag_sub()
+> because the "calls" counter will get over-decremented (we allocated
+> all of these pages with one call). I'll need to introduce a new
+> pgalloc_tag_sub_bytes() API and use it here. I feel it's too targeted
+> of a solution but OTOH this is a special situation, so maybe it's
+> acceptable. WDYT?
 
-This patch fixes this by setting an arbitrary non-zero default timeout.
-The default could be read from the hardware instead, but I didn't see
-any reason to add this complexity.
+Hmm I think there's a problem that once you fail put_page_testzero() and
+detect you need to do this, the page might be already gone or reallocated so
+you can't get to the tag for decrementing bytes. You'd have to get it
+upfront (I guess for "head && order > 0" cases) just in case it happens.
+Maybe it's not worth the trouble for such a rare case.
 
-This has been tested on an STM32F746.
-
-Fixes: 85fdc63fe256 ("drivers: watchdog: stm32_iwdg: set WDOG_HW_RUNNING at probe")
-Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
----
- drivers/watchdog/stm32_iwdg.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/watchdog/stm32_iwdg.c b/drivers/watchdog/stm32_iwdg.c
-index d9fd50df9802..5404e0387620 100644
---- a/drivers/watchdog/stm32_iwdg.c
-+++ b/drivers/watchdog/stm32_iwdg.c
-@@ -20,6 +20,8 @@
- #include <linux/platform_device.h>
- #include <linux/watchdog.h>
- 
-+#define DEFAULT_TIMEOUT 10
-+
- /* IWDG registers */
- #define IWDG_KR		0x00 /* Key register */
- #define IWDG_PR		0x04 /* Prescaler Register */
-@@ -248,6 +250,7 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
- 	wdd->parent = dev;
- 	wdd->info = &stm32_iwdg_info;
- 	wdd->ops = &stm32_iwdg_ops;
-+	wdd->timeout = DEFAULT_TIMEOUT;
- 	wdd->min_timeout = DIV_ROUND_UP((RLR_MIN + 1) * PR_MIN, wdt->rate);
- 	wdd->max_hw_heartbeat_ms = ((RLR_MAX + 1) * wdt->data->max_prescaler *
- 				    1000) / wdt->rate;
--- 
-2.43.0
+>>
+>>
+>> > Every time
+>> > one of these pages are freed that codetag's "bytes" and "calls"
+>> > counters will be decremented. I think accounting will work correctly
+>> > irrespective of where these pages are freed, in __free_pages() or by
+>> > put_page().
+>> >
+>>
 
 
