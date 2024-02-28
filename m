@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-84628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A20A86A92D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:45:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83ECA86A936
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 08:48:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D3191C2149F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:45:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A2E3283DAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 07:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AF325551;
-	Wed, 28 Feb 2024 07:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B780825601;
+	Wed, 28 Feb 2024 07:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zaoZ6rHK"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kySfu/dG"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A328250F6
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:45:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 411DF250F6
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 07:48:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709106337; cv=none; b=Fc8e6scJlHh3O2dJDKuLVpcQ9i/M0DemmgX/Rhjr20MLOoTi4qgvuIpOyHiPi8VsLzNB54PZwF3wcouDz2jit5KXYt8tOwswgHrSRwrG/vMunYB7LJ1yJldrHs/y0GkI98EnXRG6sm9kqeKD03PlolDdM0RX/qmk+U1EVLlXktU=
+	t=1709106484; cv=none; b=Zrth9M0EU6Zih/JM/+jS8bvXspmJV2dLA2aDDZP5K6frm7zPst51LfscxHWHWXT0UmDLcYHJxjjaqP2gX/GK5932RJRpQpbmGJB70kKhABT+xNHpcanpPJG5NQ1eMZjf/uvS0nTCuEvLvod88M3GL7xs7wLdPePHf5hZQenXElY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709106337; c=relaxed/simple;
-	bh=cECfJjoEdwpwq330DxYzEtaZUApUNvoyqZPwHZ9EhtM=;
+	s=arc-20240116; t=1709106484; c=relaxed/simple;
+	bh=rNeSWI6E0hwt72gAgKSFgmoXJsdZcvg+uKBMVVtb10M=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aAr9uCTvoe6D3EHPPddnWLssO+DXgDXIGaJn/QlOkldfgw00cA9MU+/g16bi9SOme/y8waqKtTq+B8V9TwonyL2UCCiPb28X0tlOVSHcs9OhRm7TRlBI13DoIUh/F5BWyBnTkVWiwI+HSONfOwM4k9vvM3EFsK2uShSqOyr1DBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zaoZ6rHK; arc=none smtp.client-ip=209.85.208.47
+	 In-Reply-To:Content-Type; b=hC/3g4potWw+C2HlyWk/jAbXtiFk60eTZmJwgCO9LZRNLJnYJFHVIAYkDV2VXtvdsUKckuquRqOkHNi4mdhSiNa+FrI3bWFnHGGS/aabcPcOYKCjUCNxM2ZKQW6k6zAwRowxuRoYEE89HIsQy494OmPsyTjJVYOrOeDcF3BV8BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kySfu/dG; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-564a53b8133so4345550a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:45:35 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-563d56ee65cso6984914a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 23:48:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709106334; x=1709711134; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709106480; x=1709711280; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=ffcxVd3ce+OAb3e3ey+HLMYSV03mtmenUi5/yudgUWg=;
-        b=zaoZ6rHKcc/DiXFkOtV3n/NZHPSpQbL/uiVKyOIJVOX1dMUfRksflUMdvLKZujI3Sl
-         zvZ9A11KBFDNQ3ywECTgr0UvWbpBy/wbSEgc7ajyIdy2cLQjXDcQbO3Efy8+WblOHpmu
-         t2V/PaFjHFV+sWoyQrG1Zp4ytFdcEt7hud6tAPdtwxXcZxz5h+CvcEt+AYgNfUTnxOPP
-         Mlyh0opxnHfEC2F2B8SX++yvzu4Aic6pzYCPxZgobIccHt8Yv090lgN1tH4KJNWultSy
-         Vl0pOaJk6shGUp8VHT+fDzYXLRJjlTSB2MJ99TehwoKGcrjHfFUjRJW+/8IXBNVz8WUz
-         /Amw==
+        bh=15NH1jVW1Gk+t39b2x0WhZxodZp2eAPsX7mnCHfnU/c=;
+        b=kySfu/dGiWWE6Yz0auph+/LKTdEOpLyDe8vrAXFzez9IbpO2trAxPVzWegLd79cR9L
+         eXDuhpgA6H7wv6AkKP+xeMVLz/dFyO+rxB+0YaB9hM9ySEmZR10IVfcEpRC9age2tsw+
+         AcWbTAx5SKM943MUFXnYfjOBAj5BhZK4fiuHWE3n9ZATA5FPUG6qiojS/3iM/zhIEYEf
+         n4MX/McsNXNuy0noiLxYVdrmzVKq+vdTgx7CtM3yJ0R5HCLkbo6CGw7hI6FOi88UlxCC
+         Ix1D9d3xHp3R43nxNSCe0zMeIE1OrXXlJL9jknw6fFAXY0vtQ4zsbRlMkY4wxHF67fEW
+         RL8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709106334; x=1709711134;
+        d=1e100.net; s=20230601; t=1709106480; x=1709711280;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ffcxVd3ce+OAb3e3ey+HLMYSV03mtmenUi5/yudgUWg=;
-        b=L6GUtsEHbfQojKaQy8mkyA+/P5BbXlsHkb8eSV2F+Y2rhKGP4nV/An7IMn8+1WtZ6p
-         JbpUOdRJHHbZ8pic2Vh6OOrTQRZa0RVtwgAqlGi3YCoPgcXkCG69McoYezo6AHjeElFr
-         TaGC+n9ylyGhaV6c70qE22YdinS4YGo3DOBDe+v0IpwrIpUJpB7BT+xtMA7qWZnJD6gb
-         /apooAdGV6SK3hX+6fZzzsZoYzO6lyZ6lI6agy/iniKB0xJGEKR0Irk7POZ+fEaLzzWw
-         KWD9gihJFBuQWYO8mTdIlZXJsN5BmA4vCjDAm692Kdw0sXghWU70e/ezrw8ZwiPsqSKt
-         kB+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVjMR5OgqcZHikGeSI3gu/6/i2Uw9E8Eh4Yz13jXiRDEoF4kDCx1qvGozLx7uMSD+q8PdnrigtyoTKV/QoqEnHqxghaduZT9XAZcGtd
-X-Gm-Message-State: AOJu0Yx0woU8SZqKH7ZXyRS3PFE9+Gll3gItWUsbg2QJWIrLlk0mcM/g
-	f82ClRE12TrM17J0r9sD65IoeNbVtwBTG+eUJR6QVxpwTIheyf3dAcmtsyf7vFk=
-X-Google-Smtp-Source: AGHT+IHvMx+P3pIYgRJmELocj9vvnYyY5AlBT5P7k84UQf7mQZaebEI45FwJWM61dXxSeKU7AMK1og==
-X-Received: by 2002:a05:6402:1b07:b0:565:7b61:4c86 with SMTP id by7-20020a0564021b0700b005657b614c86mr8336144edb.6.1709106334017;
-        Tue, 27 Feb 2024 23:45:34 -0800 (PST)
+        bh=15NH1jVW1Gk+t39b2x0WhZxodZp2eAPsX7mnCHfnU/c=;
+        b=c8b04agmm2NVGZcHnnDcDthSHEKtyBaJ4LBa1R31g1v5zUXmvwl36tnzwVnuDY3GVx
+         lEM1ogMdFGo8/uaa4C6z7RRYwcFHiiZZVqKE0xdMO/xbySLRgKGZ+UGrG1wS0DMNQpN9
+         Q3TMF/zHIaIW4p7EL/fGY1zBbWIPnh9cryYK0sNu3qJtQli7R8ai/jujXaMTvkFu+UcG
+         phck+y3oTpubAOKxqeBR7pwscuuKqXkFv8CEKWfgRNrRT7Kvy2C1OdkwfqEQrJhtJBsB
+         25A1oC+hw8X3nXIKmPHtQjWS2z8IlF+RvN23/h99FHva8Gav8BVUwhGOq35lQk3wHoc5
+         nW+A==
+X-Forwarded-Encrypted: i=1; AJvYcCXYqvqO8IpuElzeO2rijHHMwbYO42JT8OrrqQsQA2x8O4xqFUFZsW2l/Y4/dXMxnafEkzV01FPwZDgmAgx3wJRr3+QL1BhaYllruMLG
+X-Gm-Message-State: AOJu0YxV9AL07SiJmI/J5Kkw4Q3yffLwDHkdEumH/laUUX6o+ATnp/66
+	HBduHfEfE7xwG8B2dlQWA2d8gjdouMOfIzhvF7LUpbFqP9xi/7mnl/nIpVs920k=
+X-Google-Smtp-Source: AGHT+IEtHXS+Or++NNTireTgf8WXCbOrryZAp9/bYGeZIfDxlkGHKhsV+qkZ9SslH0Xfxojpjmm2sw==
+X-Received: by 2002:a17:906:a1c2:b0:a3d:656a:4700 with SMTP id bx2-20020a170906a1c200b00a3d656a4700mr8812497ejb.71.1709106480712;
+        Tue, 27 Feb 2024 23:48:00 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id p2-20020a50c942000000b005657eefa8e9sm1518858edh.4.2024.02.27.23.45.32
+        by smtp.gmail.com with ESMTPSA id vg8-20020a170907d30800b00a43a4e405bbsm1493367ejc.115.2024.02.27.23.47.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 27 Feb 2024 23:45:33 -0800 (PST)
-Message-ID: <1ad77c33-71de-4bc8-a53e-1e74a5096079@linaro.org>
-Date: Wed, 28 Feb 2024 08:45:31 +0100
+        Tue, 27 Feb 2024 23:48:00 -0800 (PST)
+Message-ID: <c2060450-4b76-4740-afe4-d14717245f01@linaro.org>
+Date: Wed, 28 Feb 2024 08:47:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,22 +75,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
- module
+Subject: Re: [PATCH v6] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to DT
+ schema
 Content-Language: en-US
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Abel Vesa <abelvesa@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>
-Cc: linux-clk@vger.kernel.org, imx@lists.linux.dev,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-References: <20240228-imx95-blk-ctl-v2-0-ffb7eefb6dcd@nxp.com>
- <20240228-imx95-blk-ctl-v2-1-ffb7eefb6dcd@nxp.com>
+To: Andrew Jeffery <andrew@codeconstruct.com.au>, linus.walleij@linaro.org,
+ brgl@bgdev.pl, krzysztof.kozlowski+dt@linaro.org
+Cc: robh+dt@kernel.org, conor+dt@kernel.org, joel@jms.id.au,
+ linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
+References: <20240228003043.1167394-1-andrew@codeconstruct.com.au>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -136,105 +130,26 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240228-imx95-blk-ctl-v2-1-ffb7eefb6dcd@nxp.com>
+In-Reply-To: <20240228003043.1167394-1-andrew@codeconstruct.com.au>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 28/02/2024 06:43, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On 28/02/2024 01:30, Andrew Jeffery wrote:
+> Squash warnings such as:
 > 
-> i.MX95 includes BLK CTL module in several MIXes, such as VPU_CSR in
-> VPUMIX, BLK_CTRL_NETCMIX in NETCMIX, CAMERA_CSR in CAMERAMIX and etc.
+> ```
+> arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-galaxy100.dtb: /ahb/apb@1e600000/gpio@1e780000: failed to match any schema with compatible: ['aspeed,ast2400-gpio']
+> ```
 > 
-> The BLK CTL module is used for various settings of a specific MIX, such
-> as clock, QoS and etc.
-> 
-> This patch is to add some BLK CTL modules that has clock features.
-
-Please use subject prefixes matching the subsystem. You can get them for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching.
-
-There are some typos, so you miss my filters...
-
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> Signed-off-by: Andrew Jeffery <andrew@codeconstruct.com.au>
 > ---
->  .../devicetree/bindings/clock/imx95-blk-ctl.yaml   | 61 ++++++++++++++++++++++
->  include/dt-bindings/clock/nxp,imx95-clock.h        | 32 ++++++++++++
->  2 files changed, 93 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml b/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml
-> new file mode 100644
-> index 000000000000..6d33601034ae
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/imx95-blk-ctl.yaml#
+> v6: Address more constraint feedback from Krzysztof:
+>     https://lore.kernel.org/all/f69ef2ad-8ace-40c8-b923-4dde20eda2ec@linaro.org/
 
-Filename like compatible. We talked about this.
+You still have way too many examples. One is enough, two is still okay.
+We really do not want more of examples with minor differences.
 
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX95 Block Control
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - nxp,imx95-cameramix-csr
-> +          - nxp,imx95-display-master-csr
-> +          - nxp,imx95-dispmix-lvds-csr
-> +          - nxp,imx95-dispmix-csr
-> +          - nxp,imx95-netcmix-blk-ctrl
-> +          - nxp,imx95-vpumix-csr
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +    description:
-> +      The clock consumer should specify the desired clock by having the clock
-> +      ID in its "clocks" phandle cell. See
-> +      include/dt-bindings/clock/nxp,imx95-clock.h
-> +
-> +  mux-controller:
-> +    type: object
-> +    $ref: /schemas/mux/reg-mux.yaml
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  # Clock Control Module node:
-> +  - |
-> +    #include <dt-bindings/clock/nxp,imx95-clock.h>
-> +
-> +    syscon@4c410000 {
-> +      compatible = "fsl,imx95-vpumix-csr", "syscon";
-> +      reg = <0x4c410000 0x10000>;
-> +      #clock-cells = <1>;
-
-Incomplete example. Add here mux controller and power domains.
-
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
