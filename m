@@ -1,142 +1,142 @@
-Return-Path: <linux-kernel+bounces-84384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2163186A61C
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:52:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E04986A61D
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:53:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D035B288DAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:52:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A01351C23611
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:52:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A99208C0;
-	Wed, 28 Feb 2024 01:46:25 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579B520B29;
+	Wed, 28 Feb 2024 01:46:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nofOtnos"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDA7610C;
-	Wed, 28 Feb 2024 01:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BF4B20B24
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709084785; cv=none; b=thqPFMgmhOPLm+O8KoafileyMxHIyItWQI6+oUohUNiaJ37ZjkpuXpLNIzmvuwj9oTKo+8yUyZ/+b7k9cgBdhQA6HkcfNd6KGHhZMDixkfhDTwsCbk9els2Gei9R6eRmoD4+rFo3UQO4v1F65Kch2TpBTOEhScQPWqjNUglLENs=
+	t=1709084795; cv=none; b=eHlj6TKRpdqV4BIFl64Hy6CV0G6t9X7q+DZOwGgKwe/2vDfddGSj9/Qzp6TtN2N5b1Zda2kpg3nSjTEBT98/eCBcT63B5oaraz1A3IutRcOf/hWJEdazBR5RoT8VFIg52KI/E1G0spZ7z3XfZY0Sw+KJXS5ghU7cICWOBUulFPo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709084785; c=relaxed/simple;
-	bh=y2J8xrZa9M54eWn3LAFoC7IkuHnNfcD6qqr0J5J5Lzs=;
-	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=j/AD68De1mtewDa4p7Os1fGxdx975S+wOUkD6QyxfkIaKhdx0Jy55h2XI2NO2usdLSc1VwXOlf5NQbEcorkZgDlQoZENMvMjqN+psLUWiwb78jA+9bjmZkJci4CyT25oCXkmvCQslNxEPdP1nC84X+1e1XBS/sBeDGLdr7SwfxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tkxyr5qdGz4f3m6x;
-	Wed, 28 Feb 2024 09:46:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 255601A0392;
-	Wed, 28 Feb 2024 09:46:20 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP4 (Coremail) with SMTP id gCh0CgAHW21qkN5lpJfMFQ--.11014S2;
-	Wed, 28 Feb 2024 09:46:20 +0800 (CST)
-Subject: Re: [PATCH 1/7] fs/writeback: avoid to writeback non-expired inode in
- kupdate writeback
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: Tim Chen <tim.c.chen@linux.intel.com>, viro@zeniv.linux.org.uk,
- brauner@kernel.org, jack@suse.cz
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240208172024.23625-1-shikemeng@huaweicloud.com>
- <20240208172024.23625-2-shikemeng@huaweicloud.com>
- <ba75294dfb5bf4dd046d54de6c3e57698592dacc.camel@linux.intel.com>
- <4364e9bc-2d29-120d-4837-7f5620585508@huaweicloud.com>
-Message-ID: <64ceb2b1-a120-dcf1-0e5f-033033b47685@huaweicloud.com>
-Date: Wed, 28 Feb 2024 09:46:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1709084795; c=relaxed/simple;
+	bh=fs+l0pKd9Ov680ClR46avEPmjYi7OZu9E2GebkAwaIs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kGKtW85vfo2BhK4XkvY7p5lCgF/5xEooXGFeBuQHdtqg4xmGa7V5CI8TT6BK4IYJwDVLN5BZqroZEg8R3yVM9lS2zwMd9wpRSD9hhtwgOgiGKU/Q22NQ7vhv80oFMsy71s3DDav/8rLT5mlFmo5jNZWlNnd02UdlW3lCnsz8hL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nofOtnos; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60915328139so25246997b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709084793; x=1709689593; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=66cn6DXc79Sno5wggi7HSXHWH/kH93OR0PebifMA0xQ=;
+        b=nofOtnosutaXieGZfYL9Jt4f2+l95GBJiImfUz+Zg+4R8w5NUGEI16t8DKe+tKeRML
+         ImowLBd2u8KcU52l+oKyAlhEa++EXbgBmtx79URJFRnLbkMci7bmFro5kiHRkCEaPWuh
+         D0+qE8lmgKZzmUNfEwcOyZ7McFIANyFrmlgmRWws4ZYu9NF44NTl6yaDYPK5QgVofXbI
+         bI7IShY0go0ey50EfteFWKjq775bONanoz6kHW/a7uZyb5mLIvk78gO2AbWIgrPsEU1m
+         oVnRj0G/xEfN/v6hWvvqBROP7mLXxk64JmT/yeAlrbfyEs7XfpfsSPim//Ij5htSl2fq
+         kdGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709084793; x=1709689593;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=66cn6DXc79Sno5wggi7HSXHWH/kH93OR0PebifMA0xQ=;
+        b=bFJXRDKVAMKDlMBjQ4ATUjjSCfIWUmuP52u32/bdH9oZeVyC34RpUlL/IUBdtXco1Z
+         sf5P6+Sc8jrG4b9OsJ9h11jBBNVD6TzbHSk0vUB2yK3F5AfHU3TNhobEbTUeVTXeEVIz
+         5am5efUAZySqiMcpD8G0fPw4Eh7LeTIvGBTL6M1cMIM13GvXj531q8RB7rycLJ70+jTf
+         2Oeskbn3zrtR9ygJkWq/t2CtK43qkRQjgv9YVQRaAxivUB+Nm0N4Ia25sN+tRKJ6YYVh
+         GbylOxJTx5icAWVP1wNkgJID9uCB7lRo80DZwv7NYnCrVF64H/HLf69uz/l1EKwPWH5v
+         FadQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnFZLpZKr/6V+J8IaLbI+Xg/gsvu63Lr6jOJN20iiLlN1y+4nwLwXVJD4SJqjHqqwDYxMCuitTyA5VUR98I9wRoAyEijjhju2TqV22
+X-Gm-Message-State: AOJu0YxGbpXVNQwLVkZYxB+Tm4jF2QPHF199VmJYlXaXzxWqqtAaDB0x
+	C3DotzYUk1zFDk+aDzA5fN6/Hm1w3DnVhvEi6doNrdENZzJAsTxnHdBmK4VEIo5Sk6KTJTbUvHp
+	1uLVrVu45WOH8UPn6vhV7eUY6V1/prfp2v+2sAsjG
+X-Google-Smtp-Source: AGHT+IG4HucEn1faUd+ZF0DGwKqb+Hfz/1zlzPU3M8kGwG33MXRElqaYYlU9JFNAPbhH+FSW7G3DHMiyGL9JvXwflKw=
+X-Received: by 2002:a05:690c:5:b0:608:d5b7:87b0 with SMTP id
+ bc5-20020a05690c000500b00608d5b787b0mr4182816ywb.48.1709084793161; Tue, 27
+ Feb 2024 17:46:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <4364e9bc-2d29-120d-4837-7f5620585508@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAHW21qkN5lpJfMFQ--.11014S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF1UJF1UJw4fXFWxZry7KFg_yoW8urW8pF
-	WrKFyUKF4UZ3W8uwn2va17Zr4UKF4xGr13Xw12kF1Utas09r1SgFyUurWrKa40kr43XwnY
-	v3WkJ343ua15JFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+References: <20240227024050.244567-1-21cnbao@gmail.com> <Zd4HEjS6vpIvwfR9@infradead.org>
+ <CAGsJ_4xTtLzUKSY7EzEK0Ho61mWH35kHkidBRpjLd+_3_yOaUQ@mail.gmail.com>
+In-Reply-To: <CAGsJ_4xTtLzUKSY7EzEK0Ho61mWH35kHkidBRpjLd+_3_yOaUQ@mail.gmail.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Wed, 28 Feb 2024 09:46:21 +0800
+Message-ID: <CAK1f24mN2jTuhhAq-KAZczdp9OPf90b5JRNiyszWNRt+n0aK=g@mail.gmail.com>
+Subject: Re: [PATCH] mm: export folio_pte_batch as a couple of modules might
+ need it
+To: Barry Song <21cnbao@gmail.com>
+Cc: Christoph Hellwig <hch@infradead.org>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, David Hildenbrand <david@redhat.com>, 
+	Yin Fengwei <fengwei.yin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Feb 28, 2024 at 3:02=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrot=
+e:
+>
+> On Wed, Feb 28, 2024 at 5:00=E2=80=AFAM Christoph Hellwig <hch@infradead.=
+org> wrote:
+> >
+> > On Tue, Feb 27, 2024 at 03:40:50PM +1300, Barry Song wrote:
+> > > From: Barry Song <v-songbaohua@oppo.com>
+> > >
+> > > madvise and some others might need folio_pte_batch to check if a rang=
+e
+> > > of PTEs are completely mapped to a large folio with contiguous physci=
+al
+> > > addresses. Let's export it for others to use.
+> >
+> > It doesn't look exported to me in the patch (and that's a good thing!).
+> >
+> > But even for making it non-static you probably want to include that in
+> > the series actually making use of it.
+>
+> at least two parallel jobs[1][2] (maybe more ) need it right now.
 
++1
 
-on 2/18/2024 10:01 AM, Kemeng Shi wrote:
-> 
-> 
-> on 2/9/2024 2:29 AM, Tim Chen wrote:
->> On Fri, 2024-02-09 at 01:20 +0800, Kemeng Shi wrote:
->>>
->>>  
->>> +static void filter_expired_io(struct bdi_writeback *wb)
->>> +{
->>> +	struct inode *inode, *tmp;
->>> +	unsigned long expired_jiffies = jiffies -
->>> +		msecs_to_jiffies(dirty_expire_interval * 10);
->>
->> We have kupdate trigger time hard coded with a factor of 10 to expire interval here.
->> The kupdate trigger time "mssecs_to_jiffies(dirty_expire_interval * 10)" is
->> also used in wb_writeback().  It will be better to have a macro or #define
->> to encapsulate the trigger time so if for any reason we need
->> to tune the trigger time, we just need to change it at one place.
-> Hi Tim. Sorry for the late reply, I was on vacation these days.
-> I agree it's better to have a macro and I will add it in next version.
-> Thanks!
-Hi Tim,
-After a deep look, I plan to set dirty_expire_interval in jiffies within sysctl
-handler. Then we could use dirty_expire_interval directly instead of
-"mssecs_to_jiffies(dirty_expire_interval * 10)" and macro is not needed.
-Similar, dirty_writeback_interval and dirtytime_expire_interval could be set in
-jiffies to remove repeat convertion from centisecs to jiffies. I will submit a
-new series to do this if no one is against this.
-Thanks!
->>
->> Tim
->>
->>> +
->>> +	spin_lock(&wb->list_lock);
->>> +	list_for_each_entry_safe(inode, tmp, &wb->b_io, i_io_list)
->>> +		if (inode_dirtied_after(inode, expired_jiffies))
->>> +			redirty_tail(inode, wb);
->>> +
->>> +	list_for_each_entry_safe(inode, tmp, &wb->b_more_io, i_io_list)
->>> +		if (inode_dirtied_after(inode, expired_jiffies))
->>> +			redirty_tail(inode, wb);
->>> +	spin_unlock(&wb->list_lock);
->>> +}
->>> +
->>>  /*
->>>   * Explicit flushing or periodic writeback of "old" data.
->>>   *
->>> @@ -2070,6 +2087,9 @@ static long wb_writeback(struct bdi_writeback *wb,
->>>  	long progress;
->>>  	struct blk_plug plug;
->>>  
->>> +	if (work->for_kupdate)
->>> +		filter_expired_io(wb);
->>> +
->>>  	blk_start_plug(&plug);
->>>  	for (;;) {
->>>  		/*
->>
+After kernel support for anonymous multi-size THP, PTE-mapped THP will
+no longer be the exception. IMO, folio_pte_batch() is widely useful for che=
+cking
+whether we're mapping all subpages of the large folio or not.
 
+Thanks,
+Lance
+
+> Getting this one pulled in early
+> will help build a common base for them and avoid duplicates&conflicts in =
+them.
+>
+> [1] https://lore.kernel.org/linux-mm/20240118111036.72641-7-21cnbao@gmail=
+com/
+> [2] https://lore.kernel.org/linux-mm/20240225123215.86503-1-ioworker0@gma=
+il.com/
+> >
+> > > +extern int folio_pte_batch(struct folio *folio, unsigned long addr,
+> > > +             pte_t *start_ptep, pte_t pte, int max_nr, fpb_t flags,
+> > > +             bool *any_writable);
+> >
+> > no need for the extern here.
+>
+> Yes. this has been moved to internal.h as "static inline" in v2:
+> https://lore.kernel.org/linux-mm/20240227104201.337988-1-21cnbao@gmail.co=
+m/
+>
+> Thanks
+> Barry
 
