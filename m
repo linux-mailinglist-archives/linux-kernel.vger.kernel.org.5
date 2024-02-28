@@ -1,102 +1,95 @@
-Return-Path: <linux-kernel+bounces-85211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 003FE86B250
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:51:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B549586B252
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:51:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78FF4B218D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:51:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E67A61C22583
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 14:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126EE15B109;
-	Wed, 28 Feb 2024 14:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D851E15B0F4;
+	Wed, 28 Feb 2024 14:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kwfT6wxl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TQXv2XrB"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C7E1534F6;
-	Wed, 28 Feb 2024 14:50:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D74673511;
+	Wed, 28 Feb 2024 14:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709131854; cv=none; b=iKCvfKaA56a1dngmr81vWddcfatzBCjgEyKwgkczYRngk6vceLRVj805Iu7lE4A5rmGjHSIfkmJXqn7ATpTkuiwWXbPgnR1Ia2vExJsb3nO1k61nzzRH/58Kz5fEYFp8Kn0fFald/gG6lYt+Y3TCwvm0CKHELSPMObFAUp7ndWU=
+	t=1709131889; cv=none; b=ZqnC1qIxGbGuKhoo9wgMejau9FiqY6NiYzXYktqdZ8JilZW2jM1gNGElmKRBxtjD93/K8Y4YzI/eI3D/Ia5G+ZrWoDFhnAb8Ur02K5OJ6c+Saz81iK/gQA/EW7w7eQreCxH4pE6XdFN7SVUPBq39f5Ex2tsxRd/8Pp0sedEDu64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709131854; c=relaxed/simple;
-	bh=fna4MQU9f3A2IFC6gWPkzynAoifEttlaxN1EutFrS7k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=jHrH2OtYHt67xbpH8+Ob5QU5MhkTazrmzD2I+QILOCFdm7K0kkT0xY7j3I1TG69BW+6S70hTEgqiA2imSSZGk0qmvbrT3Mj0MlZIiemYB/61WtYQaRYu7SyAMR+LJn0MlPepnwkIm/jeSUphuR7rWLUYwohzNwfdwu4+x9a48S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kwfT6wxl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F85EC433F1;
-	Wed, 28 Feb 2024 14:50:53 +0000 (UTC)
+	s=arc-20240116; t=1709131889; c=relaxed/simple;
+	bh=b1t2Ov68Unjn/w42f81WQh81RyBel4D/DtuQMcGzhGY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZKX6+NhDgOrjz9QS3ctI7s9hGCOyLAo4E9qBgQTvS3BnfwX6RQhWjC9IW0R/Ap+5rm+Nes52qVK2cV4pVXMdkSuo7qG+RG/c4WFRQkSC2SsO+0FaKzctxoDnDn5TOeGlx4zp4ZriQJCxCPG/VJzG1dSzj38PuTfxC+qwqe6YhQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TQXv2XrB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69040C433F1;
+	Wed, 28 Feb 2024 14:51:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709131853;
-	bh=fna4MQU9f3A2IFC6gWPkzynAoifEttlaxN1EutFrS7k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=kwfT6wxl3XmgOQais2blrTh0rr0ZqtHeEEOgcHRtTYP46rNgNOAZaiTNlmE4PdW5B
-	 3verXGpvzbrCuS1D4/9e1l9R+3jDKKdGooNmqsivlqM9TIBgSVh2ZubYeFmpT2JQ2F
-	 H4nr6+8xNxpTuKnG09uuudsx7+/RipGTxVU0PQoOHMp5nCEfgT1GQOfMPpe0iNiF2c
-	 d5OEsh0PwggzGzOzxFVGdoKE3morOv49tosu3GbpiXlYIXT+AUBV6GySly15A3ao1k
-	 dPKzSxkR+jFdZlw1BuBRsgpsNZR+lWmeWqiqi+83P/R/odzAjSMf/aBZKfPAbnnhCq
-	 klLk6XYbOB78w==
-Date: Wed, 28 Feb 2024 08:50:51 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, vireshk@kernel.org,
-	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_parass@quicinc.com,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH v7 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
- path
-Message-ID: <20240228145051.GA271533@bhelgaas>
+	s=k20201202; t=1709131888;
+	bh=b1t2Ov68Unjn/w42f81WQh81RyBel4D/DtuQMcGzhGY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TQXv2XrBn0vNqRY10X2lfcCVh19WVDrRvxMQQZ8ido/rj6gD6INmTE/88nfSl8fxK
+	 DCATftTgbSzw8f0otRmEFCev1FLdpJ5Jzj4L3cywqm+EQrXXKkPmRVNMBM+CBPn929
+	 g3knjSQEwvwc+Ujl26E3Ihl1UMbb8p374lUpaFxr16sTO+vNynOwlw3ZMh+SiUN1Ra
+	 cbGSG7Bili8AOXdpm3FdKV3BFZPetT6Q9aHLK3tYhU3L9AnNb9GBkkrERDGGa9f/KF
+	 RPsX3/BxBV4Uyx20Ozjkdv0HParPxrCiE9ciueFqaZGjcoiY/kiWEl6mbvx0jgiHhb
+	 qEdYN5aYOD9aQ==
+Date: Wed, 28 Feb 2024 14:51:23 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	allen.lkml@gmail.com
+Subject: Re: [PATCH 6.1 000/195] 6.1.80-rc1 review
+Message-ID: <20240228-humpback-onyx-041762cab79a@spud>
+References: <20240227131610.391465389@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Lw5SBkz6rLQ/FP77"
+Content-Disposition: inline
+In-Reply-To: <20240227131610.391465389@linuxfoundation.org>
+
+
+--Lw5SBkz6rLQ/FP77
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b2e136ba-a7fd-ee8d-e71a-dce1442ada03@quicinc.com>
 
-On Wed, Feb 28, 2024 at 12:08:37PM +0530, Krishna Chaitanya Chundru wrote:
-> On 2/28/2024 4:52 AM, Bjorn Helgaas wrote:
-> > On Fri, Feb 23, 2024 at 08:18:00PM +0530, Krishna chaitanya chundru wrote:
-> > > To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
-> > > ICC(interconnect consumers) path should be voted otherwise it may
-> > > lead to NoC(Network on chip) timeout. We are surviving because of
-> > > other driver vote for this path.
-> > > As there is less access on this path compared to PCIe to mem path
-> > > add minimum vote i.e 1KBps bandwidth always.
+On Tue, Feb 27, 2024 at 02:24:21PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.80 release.
+> There are 195 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 
-> > > +	 * The config space, BAR space and registers goes through cpu-pcie path.
-> > > +	 * Set peak bandwidth to 1KBps as recommended by HW team for this path all the time.
-> > 
-> > Wrap to fit in 80 columns.
+Tested-by: Conor Dooley <conor.dooley@microchip.com>
 
-> We have limit up to 100 columns in the driver right, I am ok to change to 80
-> but just checking if I misunderstood something.
+Cheers,
+Conor.
 
-I should have said "wrap to fit in 80 columns to match the rest of the
-file."  I looked at pcie-qcom.c, and with a few minor exceptions, it
-fits in 80 columns, and maintaining that consistency makes it easier
-to browse.  Sometimes exceptions make sense for code, but for
-comments, having some that fit in 80 columns and some that require 100
-just makes life harder.
+--Lw5SBkz6rLQ/FP77
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Bjorn
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd9IVQAKCRB4tDGHoIJi
+0lNXAQC42ZMhRlN/IyjSHR2CTE0MOIU3dbuoR5qf0MASOFd6ewD/U7/idOHzLAnz
+UFJz7JF1pyep3JXl6dYQmxoGOt+RVwE=
+=ZeYL
+-----END PGP SIGNATURE-----
+
+--Lw5SBkz6rLQ/FP77--
 
