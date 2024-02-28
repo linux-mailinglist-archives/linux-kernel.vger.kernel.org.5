@@ -1,143 +1,109 @@
-Return-Path: <linux-kernel+bounces-84930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8FD286ADD0
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67FD486ADDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:44:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 640612933BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:44:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 217D9293BD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD7515A49D;
-	Wed, 28 Feb 2024 11:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42FE2137C38;
+	Wed, 28 Feb 2024 11:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ddF/8lUI"
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="toBiZAO1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDB6E130AF5;
-	Wed, 28 Feb 2024 11:35:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7087D135A65;
+	Wed, 28 Feb 2024 11:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709120120; cv=none; b=lixZrgKtp53AB9sncWwKejFJ8p/YAFLw55mQdkb4UuAZjHOSMGEdlXmJ9fYdW8zw7Ot4vpDZ02lk4PGeQ6oBIzLFimdrJMgUtAlWKulxiD7r/cushV+th8eHg5YbjcCBD6S1yLvrsPNiMfAcUfIDslKztTZsQLqbD3XXUVRRUOM=
+	t=1709120254; cv=none; b=i2HpnDyzPuJJQiuHvIb6sn1KqsEeGmJVwB2n+F1owR0yDCTanD8nFnyvJJE173KiSAYbp/gq/5xo9BixHbsaEeXSTR9ypK7IRuzzHdn1NmdxtBq8yaZX6BQ6SRffwCk0+MA8jPNP+JQjLEhmxZhKah/pP5Z3ZexKyjEpRlknrXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709120120; c=relaxed/simple;
-	bh=yc21hha3keyHdTXvtCFq7xYC/BdcAS1u/CZfz2Bpq5E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IOiEjRiDnmcBfcwU6CF12q7EyL62ouV0/SzWw2c/fpgEJAgJF4TkvxZOS2m/Ah6nHSFoxpSUyYLq4Yx1mluYDx4nfR8qmIvEKcx+7lyshlko1ULMhdXzKTSq94Yqvz6bi2waUB5jgzzhSol9Q0iCtTzIQ8iBfdJdvdFN7t7T1No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ddF/8lUI; arc=none smtp.client-ip=115.124.30.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709120114; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=ZHu3CCtC5tTmDrHwG9sD4yIzMC6+Q14Tg7eRIc+2je8=;
-	b=ddF/8lUIR4YxEAqD7PNcXr3HFghq5YCFZXMiOZchFcIEFbTYbSu2sTXywTaHyOyW22JbpK/6HcJteBzVCOlVx4dgaRgqWRoJKOBJtEQxy9IqK/A3vZX45/R8mELhq7uoS6eTOsYU/NpI3X9JVL15JRK1bxLZVwhftdjZMwmqrIQ=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=ethan.xys@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W1PkVY5_1709120113;
-Received: from 30.221.98.53(mailfrom:ethan.xys@linux.alibaba.com fp:SMTPD_---0W1PkVY5_1709120113)
-          by smtp.aliyun-inc.com;
-          Wed, 28 Feb 2024 19:35:14 +0800
-Message-ID: <4ec89335-917a-4ea5-b38b-5cea6476d9a1@linux.alibaba.com>
-Date: Wed, 28 Feb 2024 19:35:12 +0800
+	s=arc-20240116; t=1709120254; c=relaxed/simple;
+	bh=Tvp+p5Xk3fozdO2g75WRBimh75zt30LHNGCj/0SSdbs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=su8JHHfAWQ/tLfMzGOgVI6+TnaAnbM80NvEtrY3W3nPZWcLbs58TjlVhqQ9A11OFzPpMJudaXF1N8c1q+qSxOvaCKm0g8r/MdrtRWDiu4mUaI4cdU/1gjM3PgN9PQlAXwwqGKLu8o56lLl2AodpGJfM4W9x2FQhNO68l3uPCwKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=toBiZAO1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C09EBC433F1;
+	Wed, 28 Feb 2024 11:37:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709120253;
+	bh=Tvp+p5Xk3fozdO2g75WRBimh75zt30LHNGCj/0SSdbs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=toBiZAO1mdqQnmskk4C+PYBSfjXMIfnVrtT2NTtUjHhEeSQvE+Av5vHpg8HXTO36o
+	 dJiawL2eo+Gm/tiOMru6MS7M0a2UnN2v3i1s5Zg6pAbfBjaPzMHXlIh1CYlr/4Z/4M
+	 bi7VrXlnTSyMHU7EegxNhoxcZX6CkovTsPrNGjyJJGh0MG5zq7a68pgGRZvYJ6ZNuS
+	 FeKhIQdiGtIqHjVYM3uPmjSvGVyzY+Nss1yer9rOTyfiyedkd+1uyNHIzAZao6WSB4
+	 WLXajK0dwvBFDYR2XNY6MgiSSVd+O91TzVnlMeh3SlkYN2bNOrMFwXFp0k2PoYAGsT
+	 RUSED7kUYVlmA==
+Date: Wed, 28 Feb 2024 11:37:27 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-leds@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	herve.codina@bootlin.com, maxime.chevallier@bootlin.com,
+	christophercordahi@nanometrics.ca
+Subject: Re: [PATCH v2 1/6] dt-bindings: net: Add bindings for PHY DP83640
+Message-ID: <20240228-maroon-wrinkle-1f0d2aa7c186@spud>
+References: <20240227093945.21525-1-bastien.curutchet@bootlin.com>
+ <20240227093945.21525-2-bastien.curutchet@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] vfio/type1: unpin PageReserved page
-To: David Hildenbrand <david@redhat.com>,
- Alex Williamson <alex.williamson@redhat.com>, akpm@linux-foundation.org
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20240226160106.24222-1-ethan.xys@linux.alibaba.com>
- <20240226091438.1fc37957.alex.williamson@redhat.com>
- <e10ace3f-78d3-4843-8028-a0e1cd107c15@linux.alibaba.com>
- <20240226103238.75ad4b24.alex.williamson@redhat.com>
- <abb00aef-378c-481a-a885-327a99aa7b09@redhat.com>
-From: Yisheng Xie <ethan.xys@linux.alibaba.com>
-In-Reply-To: <abb00aef-378c-481a-a885-327a99aa7b09@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="XgYe8bqBfCjZqdEt"
+Content-Disposition: inline
+In-Reply-To: <20240227093945.21525-2-bastien.curutchet@bootlin.com>
 
 
-在 2024/2/27 18:27, David Hildenbrand 写道:
-> On 26.02.24 18:32, Alex Williamson wrote:
->> On Tue, 27 Feb 2024 01:14:54 +0800
->> Yisheng Xie <ethan.xys@linux.alibaba.com> wrote:
->>
->>> 在 2024/2/27 00:14, Alex Williamson 写道:
->>>> On Tue, 27 Feb 2024 00:01:06 +0800
->>>> Yisheng Xie<ethan.xys@linux.alibaba.com>  wrote:
->>>>> We meet a warning as following:
->>>>>    WARNING: CPU: 99 PID: 1766859 at mm/gup.c:209 
->>>>> try_grab_page.part.0+0xe8/0x1b0
->>>>>    CPU: 99 PID: 1766859 Comm: qemu-kvm Kdump: loaded Tainted: GOE  
->>>>> 5.10.134-008.2.x86_64 #1
->>>> ^^^^^^^^
->>>>
->>>> Does this issue reproduce on mainline?  Thanks,
->>>
->>> I have check the code of mainline, the logical seems the same as my
->>> version.
->>>
->>> so I think it can reproduce if i understand correctly.
->>
->> I obviously can't speak to what's in your 5.10.134-008.2 kernel, but I
->> do know there's a very similar issue resolved in v6.0 mainline and
->> included in v5.10.146 of the stable tree.  Please test.  Thanks,
->
-> This commit, to be precise:
->
-> commit 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4
-> Author: Alex Williamson <alex.williamson@redhat.com>
-> Date:   Mon Aug 29 21:05:40 2022 -0600
->
->     vfio/type1: Unpin zero pages
->         There's currently a reference count leak on the zero page.  We 
-> increment
->     the reference via pin_user_pages_remote(), but the page is later 
-> handled
->     as an invalid/reserved page, therefore it's not accounted against the
->     user and not unpinned by our put_pfn().
->         Introducing special zero page handling in put_pfn() would 
-> resolve the
->     leak, but without accounting of the zero page, a single user could
->     still create enough mappings to generate a reference count overflow.
->         The zero page is always resident, so for our purposes there's 
-> no reason
->     to keep it pinned.  Therefore, add a loop to walk pages returned from
->     pin_user_pages_remote() and unpin any zero pages.
->
->
-> BUT
->
-> in the meantime, we also have
->
-> commit c8070b78751955e59b42457b974bea4a4fe00187
-> Author: David Howells <dhowells@redhat.com>
-> Date:   Fri May 26 22:41:40 2023 +0100
->
->     mm: Don't pin ZERO_PAGE in pin_user_pages()
->         Make pin_user_pages*() leave a ZERO_PAGE unpinned if it 
-> extracts a pointer
->     to it from the page tables and make unpin_user_page*() 
-> correspondingly
->     ignore a ZERO_PAGE when unpinning.  We don't want to risk 
-> overrunning a
->     zero page's refcount as we're only allowed ~2 million pins on it -
->     something that userspace can conceivably trigger.
->         Add a pair of functions to test whether a page or a folio is a 
-> ZERO_PAGE.
->
->
-> So the unpin_user_page_* won't do anything with the shared zeropage.
->
-> (likely, we could revert 873aefb376bbc0ed1dd2381ea1d6ec88106fdbd4)
+--XgYe8bqBfCjZqdEt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your detail info. BTW, do we need handle all of the 
-pagereserved page?
+On Tue, Feb 27, 2024 at 10:39:40AM +0100, Bastien Curutchet wrote:
+> The DP83640 is a PTP PHY. Some of his features can be enabled by
+> hardware straps. There is not binding yet.
+>=20
+> Add a device tree binding to be able to override the hardware strap
+> configuration when needed.
+>=20
+> Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+--XgYe8bqBfCjZqdEt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZd8a9wAKCRB4tDGHoIJi
+0hbmAQCKk+K3MdOEb8IqasR55iD/+VrgCTPjSqIMqvkGdC8X7wEA4Yf9lr7hn2u/
+lhgbMZwQ4tJDtbpTSFyODKxmlorwAwk=
+=zfhz
+-----END PGP SIGNATURE-----
+
+--XgYe8bqBfCjZqdEt--
 
