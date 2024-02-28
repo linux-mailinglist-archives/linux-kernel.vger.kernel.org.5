@@ -1,96 +1,126 @@
-Return-Path: <linux-kernel+bounces-84994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9941086AEBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:05:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECD1286AEC1
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 13:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5000A285D0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:05:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FE281C217F6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 12:08:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C623BBCA;
-	Wed, 28 Feb 2024 12:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 518D829403;
+	Wed, 28 Feb 2024 12:08:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pi2YBY6d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gt213mjL"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C28373501;
-	Wed, 28 Feb 2024 12:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CEDA7350A;
+	Wed, 28 Feb 2024 12:08:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709121930; cv=none; b=mFGZE5puAl36xFns5ley+Xah+7c1BYo3tIHbz18r3QklUxjT5kMba2thPtmK7CurhxL39o5IDuXVzR52MaHNwFPXtuJ9M69fqP/IEYpG5nl6cn87qPUweZ5iRvRBw/VCyy+Lc5SENaVA2zmGS+HG1H6tv6+20EUOt6FTxKzRD9s=
+	t=1709122086; cv=none; b=Qv1bO9fgHnCxAfzRq+YckNfn92Lu2kiXCJpADV6OVwLQvTBiYOGPKCgjbx/vf0ylZOmp4ECMQjyZAMhKbfFgnU5iUmiMt7CKDkYBhQfu8zj98kediy91JHv+TqhCivplM1wS+FTg6MY5URtATlQGXySVHB6Hb9kRHs367I95iVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709121930; c=relaxed/simple;
-	bh=SU9EilANUxXGjBEPo0K/zUkP5ytJW6h7olNyIK9TmFE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jUx3DB2srBQDHMWZ/xdg+dDrcA3C8xSyMBtxsJKNKA9F74pjR8m3ey9gICa7lI383wVZWVPQyGhDZWdOsEMX2pK43fYKJekkXAOa50LpAE1hSB9e4D2v7IQV5M55i+KETUFKeECGKR4lMID74MnxVKo9ac9KPSEcD2ERE9IrST4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Pi2YBY6d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80324C433F1;
-	Wed, 28 Feb 2024 12:05:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709121929;
-	bh=SU9EilANUxXGjBEPo0K/zUkP5ytJW6h7olNyIK9TmFE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Pi2YBY6daQjrwS2RlLYQDvKF110QllmzVuDJBm0iiG4NU+5kvOFBKcXs1NQsocdty
-	 op7bv2UvR80xWR9wIelLL8PLk1TYBUJC9Q/Ptte66JNOoMsEdGZ2TBULNfSxtuUAe9
-	 sT8UdLi56LGCwFXNARDXCP3noKvhtXmNzQuOmshEvABbFstGte87DKbLLeljh+MVhC
-	 GszhgCQkWJ3QITLL0qo++/OE9yh1H1vmrKPYwYL9zpvok8Xw4zy+5LvvNRyDpFEknA
-	 4w/H+bdehwnzcTN0YeRiJJ0yQyfzzd+3+z78SzRBz0iOmuBg4aWncKu3qD1Fm2faOA
-	 5K/cmbD3psHbg==
-Date: Wed, 28 Feb 2024 12:05:23 +0000
-From: Will Deacon <will@kernel.org>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-kernel@vger.kernel.org,
-	kernel-team@android.com, iommu@lists.linux.dev,
-	Christoph Hellwig <hch@lst.de>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Nicolin Chen <nicolinc@nvidia.com>,
-	Michael Kelley <mhklinux@outlook.com>
-Subject: Re: [PATCH v4 5/5] iommu/dma: Force swiotlb_max_mapping_size on an
- untrusted device
-Message-ID: <20240228120523.GA15054@willie-the-truck>
-References: <20240221113504.7161-1-will@kernel.org>
- <20240221113504.7161-6-will@kernel.org>
- <Zd4CcL3Nnvybw2xF@infradead.org>
- <57c928e6-14a4-4724-8c07-e985a2bce522@arm.com>
+	s=arc-20240116; t=1709122086; c=relaxed/simple;
+	bh=rcSNTBiRF+f+3t3RzyuU+qKQ8ru2QZn9y+YmrmBALig=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kd66qe3EczjkLHo7uUQhuZT3OzMgGdB3XGW2hPmm/IcsJe56QktY/vYKFbgEI5/M/2Ka4QvQYkl62ZEY0xLcg6pwt2DKlNeLkQq7HFIOPREpnStrTWdUPZ50T3h9UuiXoNQJw7gLH486eputnOZGHoWVMZEYRyJJ89n4xbeyHWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gt213mjL; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dc49b00bdbso47891925ad.3;
+        Wed, 28 Feb 2024 04:08:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709122084; x=1709726884; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ANLYUYqTJ5NOkYuF+uWmj+L6Rv2c3OMTBVV8U8yPtxY=;
+        b=gt213mjL+CQMFoUhYDypcjhusyE1hoH3DWWJ6DO44XBkEhx+dQ+wUcdZ2UEutNbq6p
+         0H4erylD+jmNDFvkTLPwepOkpigwa6AMtlh9VSOo4xxMiPih5yt9T227NBeKNJGy+zye
+         UwUFO+6IpsqqYvag/O071mYn6//DGVW2BwF3VLtgOmYM+4IFngWVnqOXXUsuiZd/nrbx
+         zbe+ZvKdpS2a//h6DzgI/myvelR1kwXxbRlqlh76tvOSg86RvjgRd0zBsCoWttaISVtQ
+         K1dQTD+w6tL0t3X8YotQ4PF35csEX2qVsm5Y4u0k1gRBGD04zLie8agIO4cjjdW5uWCU
+         xKBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709122084; x=1709726884;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ANLYUYqTJ5NOkYuF+uWmj+L6Rv2c3OMTBVV8U8yPtxY=;
+        b=EtJJlF8SPQRq/lIUN8/YaYvpn8akArxN+KbqRi6t1Wr8bmHwgeOccNpEeRW5qy1yAl
+         Q0LVeJgkMIHy0EGD8J8Uy0SIdqbSqPWOGMFY1LSWlVO7bueaiUqZc/Km51t08CfAjChv
+         lR5VPxJsyBzcrOYsMnM/cV+iHULLCzv1s/l7upUDUWCjbr9ypQiHrLBd84hAnvu+8H8J
+         UTNMHLoHO64IhnjblNQrpD5MasPJsrqwC5EBz5es9DpSJMdtkq+XaHhSJJ6eR63zijoS
+         e2CyWQlFANodZ+vILvkX3r08I+P4enL5BLDIRhgbv1qQZv3Vuy+YGfXczQ1xkfLwi9MT
+         /rcw==
+X-Forwarded-Encrypted: i=1; AJvYcCWwKsbjs71fISf7pNB5IKQWN3GtInuH/Fb+IWVundW0O2CwmYS5C10nfCOECBtLjnS9NZlTCmXaeZgqTl1X5sAaj6lkGmKFcidlnDktBrQN8tSWGCITImF1vDmmgYxnjypMAbMmox5A8hdiiJzS
+X-Gm-Message-State: AOJu0YywzRiPOj3vcj0d8wPj594/XdLbkLyR/JDuQAhOGEUaUAngmU3p
+	MRuCOmnpii9t5cRp9XvMelhPn8nHwLgONh1veH5/Yim463sUHw8R
+X-Google-Smtp-Source: AGHT+IGP42kjWB8saR6KLXiU1B9P0carRihw2Cx8tj11SQU6hGJ5c12DXyzjOvoSTq7B+P50pTbgug==
+X-Received: by 2002:a17:903:41cb:b0:1db:fad5:26b0 with SMTP id u11-20020a17090341cb00b001dbfad526b0mr13295243ple.55.1709122084392;
+        Wed, 28 Feb 2024 04:08:04 -0800 (PST)
+Received: from localhost.localdomain ([115.99.206.243])
+        by smtp.gmail.com with ESMTPSA id km8-20020a17090327c800b001d8f81ecebesm3166594plb.192.2024.02.28.04.08.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 04:08:03 -0800 (PST)
+From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+To: shuah@kernel.org
+Cc: netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	petrm@nvidia.com,
+	idosch@nvidia.com,
+	Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+Subject: [PATCH net-next] selftests: net: Correct couple of spelling mistakes
+Date: Wed, 28 Feb 2024 17:37:01 +0530
+Message-Id: <20240228120701.422264-1-pvkumar5749404@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57c928e6-14a4-4724-8c07-e985a2bce522@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 27, 2024 at 03:53:05PM +0000, Robin Murphy wrote:
-> On 27/02/2024 3:40 pm, Christoph Hellwig wrote:
-> > On Wed, Feb 21, 2024 at 11:35:04AM +0000, Will Deacon wrote:
-> > > +static size_t iommu_dma_max_mapping_size(struct device *dev)
-> > > +{
-> > > +	if (is_swiotlb_active(dev) && dev_is_untrusted(dev))
-> > > +		return swiotlb_max_mapping_size(dev);
-> > 
-> > Curious: do we really need both checks here?  If swiotlb is active
-> > for a device (for whatever reason), aren't we then always bound
-> > by the max size?  If not please add a comment explaining it.
-> > 
-> 
-> Oh, good point - if we have an untrusted device but SWIOTLB isn't
-> initialised for whatever reason, then it doesn't matter what
-> max_mapping_size returns because iommu_dma_map_page() is going to bail out
-> regardless.
+Changes :
+	- "excercise" is corrected to "exercise" in drivers/net/mlxsw/spectrum-2/tc_flower.sh
+	- "mutliple" is corrected to "multiple" in drivers/net/netdevsim/ethtool-fec.sh
 
-Makes sense. Since this is all internal to the IOMMU DMA code, I can just
-drop the first part of the check.
+Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+---
+ .../testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh | 2 +-
+ tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-I'll get a v5 out shortly.
+diff --git a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
+index 616d3581419c..31252bc8775e 100755
+--- a/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
++++ b/tools/testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh
+@@ -869,7 +869,7 @@ bloom_simple_test()
+ bloom_complex_test()
+ {
+ 	# Bloom filter index computation is affected from region ID, eRP
+-	# ID and from the region key size. In order to excercise those parts
++	# ID and from the region key size. In order to exercise those parts
+ 	# of the Bloom filter code, use a series of regions, each with a
+ 	# different key size and send packet that should hit all of them.
+ 	local index
+diff --git a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
+index 7d7829f57550..6c52ce1b0450 100755
+--- a/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
++++ b/tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh
+@@ -49,7 +49,7 @@ for o in llrs rs; do
+ Active FEC encoding: ${o^^}"
+ done
+ 
+-# Test mutliple bits
++# Test multiple bits
+ $ETHTOOL --set-fec $NSIM_NETDEV encoding rs llrs
+ check $?
+ s=$($ETHTOOL --show-fec $NSIM_NETDEV | tail -2)
+-- 
+2.34.1
 
-Will
 
