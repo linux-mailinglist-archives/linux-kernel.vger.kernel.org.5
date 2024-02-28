@@ -1,135 +1,147 @@
-Return-Path: <linux-kernel+bounces-85822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C979086BBCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:02:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE2D686BBCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:02:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83E9328C204
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:01:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EFC31F20F2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980847441C;
-	Wed, 28 Feb 2024 22:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55BFF13D315;
+	Wed, 28 Feb 2024 22:59:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Do6crlRz"
-Received: from mail-il1-f202.google.com (mail-il1-f202.google.com [209.85.166.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="M8pO9Xkp"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2052.outbound.protection.outlook.com [40.107.237.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A64A115F300
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:59:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709161161; cv=none; b=mrt0nJv3Mm7bh+op+gS4aR8QWn6IIh6SBeuD7gsHu/JEmzhvsRmV86zTlMEi8Nvnmoxt50FuVVwFwvuWUWybAdJQ+ElUHxmq5K3uMz8UI3V2UmcTPsoKmRqpT6l70qjt+lDjnme2WKX5wOOBzVU6HRI1NDCDwi+4WtMqwuPJ53Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709161161; c=relaxed/simple;
-	bh=lLsSWUlgp7HueQKOzwtJI79py/7OoTHxtK4sEEcMNNg=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=LlklCP4nGRZx/LmDNs98P2jq9zjz5hCk7VNTtXoU9wHD69DZLUVBzMw5DTQdIzsAbPEMjD1TXSbHlrlycBnuIka6UuzP4tFpBsA/wFzwZ2E4if229GYSCr0E3gQf70MXHZl8bVdJSEt29gjgtdTsz8Yn5uzCQCJxMbWv74eF8uY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Do6crlRz; arc=none smtp.client-ip=209.85.166.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-il1-f202.google.com with SMTP id e9e14a558f8ab-365b8b24fd0so4578195ab.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:59:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709161158; x=1709765958; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HhfHnaxbWsSYThMRH7N1siBwLrWUAgtSctM6HfRV2Ag=;
-        b=Do6crlRzhDsizeNjHwbDPNw+B4lVIEE0TsBpogvqy/DEpNJkzRPpOnRxXtLHYjgsV1
-         zn1egIRppZAfZpOMPonIF1AwJWsckjNngRcegPehVpjM6A5OVSYE15UNuOTDIDuGDt9m
-         3I5KeQ5cYvz3KNMGfvfcUxnpymB1B7RRpc6sLB5ypFWONCH/nh5ig9p2c6oXmdk0ksJq
-         sXMaQH3c1vAfCJdlA/+LAJJC/Tc49nv+920AU8TmSHEdY9/GUbrEzK7OHr3SYLvu37fK
-         ws0QMRN0iO8dZRoQ23zjteUqdaIHS6l/I8OXAi+qA50MU413sXJj9I8v5zP/VQWM5H/V
-         eFVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709161158; x=1709765958;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HhfHnaxbWsSYThMRH7N1siBwLrWUAgtSctM6HfRV2Ag=;
-        b=ZHh3QJ4yKoHpOTRUY6KEqlRCvvf7jPjkDl/lcGZpRbx5ibB/48mk+UinfVkZfs21FZ
-         zGfuIWe52JWbm1CiJg3iDawr7RYX2l3Gqwdohb/mmGL5Rw0iMSEEotbU16qcG8UtBX6P
-         +lNxTFY6j62xWu2KpUBV0I8yueXUf0V+MZJUjj4iyazedARoTRl5upgXSR7XwixMLCQo
-         F9QILm8O4IYv3KPr5yW2ifhZ8V5Xqq0Y8EorXUf+93MKZayjoCkoSyaT14QfGBfwo/Y1
-         ddGurxTTTX264SSUsJ+CZbnbjaqQBH6L5df5+gMQnD6JaeD40ekwkV5Q61qEhCWPye1P
-         GB/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWhL7wldjNBKn6Lkn0W2p03t1I4iMFnlb4B+6sKLh9zEF3/9vlzaQXsqNN1NmLVqjN3MtPnyILtHQwAUKpVxZ5nPPwPbQIff+VZQm5O
-X-Gm-Message-State: AOJu0YwBjsUhRfbu3BZckZo9TDetqT01ZmY9nu/AOZNHteQA+jDBXz+i
-	hQK+B8kAW5eDaNQsxakWgXQJVnquvKEQGrsmCzFIeLDH3Wc6fPRpdc98xT9ArmZ5Cv0lCcOWZI5
-	fzxST3Ae3VkYKaA+iyp7cgA==
-X-Google-Smtp-Source: AGHT+IEIrIDo5sTt6gMSCiyyslq0yK1A1xLzdyJOiaImV0GkhHuEn6/P8wZRb8UKtb0X7RlT7oI9X/gwcnVP4zsqSQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6e02:1c42:b0:365:1f2b:7be8 with
- SMTP id d2-20020a056e021c4200b003651f2b7be8mr40548ilg.5.1709161157889; Wed,
- 28 Feb 2024 14:59:17 -0800 (PST)
-Date: Wed, 28 Feb 2024 22:59:07 +0000
-In-Reply-To: <20240228-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v2-0-dacebd3fcfa0@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3533F13D30C;
+	Wed, 28 Feb 2024 22:59:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709161176; cv=fail; b=KiY7cotv4HbJvlcrCCNp3gQqNyLbp4+NWP2qFUGbEY1WSAcdVfB7Qi8vxv9fIyYzEejctNQFrKuAYAK9nQWm3fOQj4xK+37+mAwOw+BVtDCaGIR0lNRzJsbk44tqbT5gDMBz7yiT6YgJ3W3puQVe8xoU1KTmDR6mFv0GzjRcrFo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709161176; c=relaxed/simple;
+	bh=6c/qeXAkM4WTt+H5WPDa9HqIIaNyAqU2sAYoYJDTBys=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=aTksa2vUntuSN4chJlH55iC2YjR5qSNvi04lF2srgT0xgs509qunicaBoo5aC6TqRydNL3Ts0HrTFrXvZEtUBmOBPrTKjI4ZL8kEHfZEQjuZpkFBwEMFwxhcvvww2SJ5D6+5Xb2l6yoHXS9MZOZB3HnB7DB2dsPRoXZo8skkEEo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=M8pO9Xkp; arc=fail smtp.client-ip=40.107.237.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kyABQSaTBV4ZvM3SLb5cVkk6kNeRYfEOqP2m+YzdzDLIdauTK+2v8sPEArL6/HF/izCCR1167SiQtlbZYv10pYFNhkzJrjZ2XxmEfIG1zXf1S6z7et23XzU/KeKp1r7/Aumzl3DQMKpGfPSh/rtwIaIquLzZ8oh5nZJmMfB8WwMzgcUjsuIGkFDJRObmhGkKELr4kF8+laOm+W6Mbv/aomgYX5DjSA+voWa63B1xnFL8bGYtYJ6ELeO3w+XpuQEcTY7p7MXyKjGABSW/JtOY53s2WFNnS5MZ3hHC6Cd2MtJohCNh10VGzeHwFnLue6rkbNSAnuQ+i0j+JWwEXSbDwg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=454o32wUhxMQJq4xDHQ/PpPJSgTNAAGKSfoUpoTO3xM=;
+ b=hvnXJiKNAGQ37oz46BERzRia/U6d8CC+gS19rFqju5cbT5jXK4fe2KmTO8LOkUn86IPGVjsMc59WRiPnra85Scx+4EbDF04Vu1seQaAWtDLNHJ9E6tZcgsD57IqW6QuXFwBRRWZQd49OghicD66Iv5C3RmNrfvIrhe/lGsi0JouuhjL5Vpt6KUL3EZ8cTq7Jw0giOLpChJCQqOSxYjiiaf+dd0yylz4VBzQv1rd85g513sLud+RlYNQBhBmGn+n9yw8MI1vc+HDcYmPKnerib5tr6ysBnMR8jOTeKISMRKh8HZ9BIJ2soVee1gO20ZJUpBHOBbj05om/pqmezKNCpQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=454o32wUhxMQJq4xDHQ/PpPJSgTNAAGKSfoUpoTO3xM=;
+ b=M8pO9Xkp4DcnGrcI7x5XDEMGThOrHr4FNet+gS8s8qBOLvDZki78BnILEjW4VLfFShYn6afMNc819uR+Db4bYNEycXGX4TAHplLFx7CF8mn/cvOtyXIwOTDpxQhNiLABSbhy9M72u1TiDgwHedA63RZukjW7cbcIR9ra58ufr11+hxvN1hWK0ZXZEpaTv8BYp11WiMWz5q+H/lJqlSzF89UuVy8OznDwgzpWjWFt8H1xCMsoCfPlqeoQDyG+TXKEUuJZaqwY2uW3637QqdIc9v3geojvh5wO5uruyjZxOL8U+pMys2OmtwQa7JHO00sdxoFxmlQUBYyueOTdELQ3DA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by SJ2PR12MB8848.namprd12.prod.outlook.com (2603:10b6:a03:537::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 28 Feb
+ 2024 22:59:31 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::2e3e:c7c0:84da:3941]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::2e3e:c7c0:84da:3941%6]) with mapi id 15.20.7316.037; Wed, 28 Feb 2024
+ 22:59:31 +0000
+Date: Wed, 28 Feb 2024 18:59:29 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: "Tian, Kevin" <kevin.tian@intel.com>
+Cc: Nicolin Chen <nicolinc@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
+	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>,
+	"patches@lists.linux.dev" <patches@lists.linux.dev>
+Subject: Re: [PATCH rc 0/3] iommufd: Fix three bugs found by Syzkaller
+Message-ID: <20240228225929.GR13330@nvidia.com>
+References: <cover.1708636627.git.nicolinc@nvidia.com>
+ <BN9PR11MB5276D622986E55465C3977CB8C592@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB5276D622986E55465C3977CB8C592@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-ClientProxiedBy: SA9PR13CA0084.namprd13.prod.outlook.com
+ (2603:10b6:806:23::29) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v2-0-dacebd3fcfa0@google.com>
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709161149; l=1256;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=lLsSWUlgp7HueQKOzwtJI79py/7OoTHxtK4sEEcMNNg=; b=O/Y8/j91ffHOW/H1lkp7P7xEh0IoohQDvBGDW0wX5DBkBQO3wENCK+STBh6SvA2jO4s+2rUiC
- /3kFM5uAc+ABhNpGPSm9eO2vRTlpeqKmRKJ1d1onyaPQI7F48pNtHxB
-X-Mailer: b4 0.12.3
-Message-ID: <20240228-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v2-7-dacebd3fcfa0@google.com>
-Subject: [PATCH v2 7/7] scsi: wd33c93: replace deprecated strncpy with strscpy
-From: Justin Stitt <justinstitt@google.com>
-To: Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>, Kashyap Desai <kashyap.desai@broadcom.com>, 
-	Sumit Saxena <sumit.saxena@broadcom.com>, Sreekanth Reddy <sreekanth.reddy@broadcom.com>, 
-	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>, Ariel Elior <aelior@marvell.com>, 
-	Manish Chopra <manishc@marvell.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Saurav Kashyap <skashyap@marvell.com>, Javed Hasan <jhasan@marvell.com>, 
-	GR-QLogic-Storage-Upstream@marvell.com, Nilesh Javali <njavali@marvell.com>, 
-	Manish Rangankar <mrangankar@marvell.com>, Don Brace <don.brace@microchip.com>
-Cc: mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kees Cook <keescook@chromium.org>, MPT-FusionLinux.pdl@broadcom.com, 
-	netdev@vger.kernel.org, storagedev@microchip.com, 
-	Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|SJ2PR12MB8848:EE_
+X-MS-Office365-Filtering-Correlation-Id: e4058933-0326-4cdf-39e1-08dc38b0ec4e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	wKjNvoNtO5J5l8P9oPnmodsMnaHoqP3NFTnpvVuZLm4BqsBvsPPYX2+NaiFh1zF5TeMcXqH4fEb1rqQ0y9+R+3NNST8PSK4BBOd9U+2bpMZEI7CuLNh7DoViHsvggzwkwy1hI5K4fyM/A7TWiaUM5EwBqC+YQFJ+nfFZcC67VaH4emOaLBw9AlZJcGVoN6N4qLu1sgGjm0m6nBhhWVrQEKNw2rMCWDcnC7HLkMGq/yFHE/PUkpJjR/NmGKQlZWRYBLpnMSU7fMlhiWTUWupokTegUoZZBHiJaLgtzgLVy/CZ9cF/7pXsf9vLfDYMXUMgn1BJAzU3tC0NihZo+XLHGUue4GF0d8s7gF6nmU2kkGpQM3Qw8kREN8Vm1M9rj/KMxSp2MYV49x3hHUb/7n/wUZ2hR9FVHEMuckRpMXp+NkB7mEQkxUKmqMeJF/TDDVOkpu1R8FVU9MqZgVXdhRN3E+chUDcSo4tObLDWmKbZ0TiQfbqVlSshpFaiG/3I4jDaCg5mvoa5ohRR3yuiJTbSUGJHGJzz79fBUwStuxL3oEcT40TibPKlKccCPYXVvVhjAsEFK+N42UM22bqMPI2Soma7xPAD/Iegw/7tMtqE7jvDhk0QZ0xWfmb8SmxMXzLOtTh4jonhb1gwCaR8iQ+GoA==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?cLp55OBzS7D9I/MVx0Bey+Fyacf8+yO3HXxDOlf3AqePbZfTKnI6EkyUYXAL?=
+ =?us-ascii?Q?HvodTsPBXAc5mtU7Mj9gZDVEac4jTf4xf53QeIQ8lZRWrCYM80NakWvz+IW2?=
+ =?us-ascii?Q?jkqSvkjPzJAh0p8L7o8UrXaT7lErguYVKEW98cPj0yNd/CFb619DOoBJJoHw?=
+ =?us-ascii?Q?oE8kJ39T3mfp1uGKNBBd0xBeednNQk+Q3wXqC8R2qMlkFkKQ+ulemyqq0pbi?=
+ =?us-ascii?Q?hrpH0Y4lIyafLxwJbd28nibfQuHSiWEYxGqPPkbSJqkHAtx/9Od6UvqDdVqj?=
+ =?us-ascii?Q?naUcf1M0/SQzI6VlPwYLZ4v9nIm82iZvY8t/rQ+KhiAmFgZ59V0VJ/j06pZu?=
+ =?us-ascii?Q?s1hqeTBcRlSkPhKA1Oil2rVqQYhiPhzxmCcK2cHn8+0C9usVzUIftPk8NO56?=
+ =?us-ascii?Q?xRwONHQ79cCSscQMvqNMGvxBliSCesahkBdrDTYOEa7Dr18ciNhHIWN+H2gU?=
+ =?us-ascii?Q?CEMdOUCm2Xp9ghIr56OQa9F4OshhMrvqHQBNTYG2A6lHvI4EmwhYEUcuR1mU?=
+ =?us-ascii?Q?lZGnbiZEHNc7LogeEYXV15wGPhaZdIhA96kMZc+sk6WxJZ2gSZ640tg8Wq53?=
+ =?us-ascii?Q?5kaVjulmC0tfqbWCUEutcUy1rBoaJZZDRscjvD7DLhNY9aPEWL6Wnuzq7cXt?=
+ =?us-ascii?Q?a8t8rY9WnoqXIx/HQ/5dbiuWuPAXFO31Xqxnj9hcirwfSsvuHEzzopHBAdyS?=
+ =?us-ascii?Q?h8c49bn0dg/2y9IpDA1TYtG+C/pKkCAd75xUyL7XJPhmLC38wlQNjrJ72ZPl?=
+ =?us-ascii?Q?mBF77rn00J/4iHNDccZALTVcdDFjp3i+4Vgxtp4bUtcrzqgmgIv5ZsLKJc3e?=
+ =?us-ascii?Q?3hfX5IWCKC4GX31vu7j4qWH6DAvXz24x0TpxdCGX+Z1Lm5K1vDxVdwjVNbuv?=
+ =?us-ascii?Q?fCIenFbgD8xkkE63o/OXbWrMHzsBuKrPIAgj2GuQVT6RE+386muGrtZDe07j?=
+ =?us-ascii?Q?yfegy4T04o4THXdzaTTEWMfvDgEV7ApodeRszf15++qVVrIojfao/KieVItv?=
+ =?us-ascii?Q?NEPdLJzN25gO3O93SkGikbjzA1jy8OfN+PpRq9KR8KINd/fXLYtPYXS2payN?=
+ =?us-ascii?Q?7CeHVY9yiR/263dHjhlS2ISNAgjXsPjd43qbekACrofxaloj2ULaPyEYd7TB?=
+ =?us-ascii?Q?9eGiTwAiZVLPZU9QdV/HxifF9wiSRfH56cy7shPpnT1MRPtI6MzVNoDWjAZn?=
+ =?us-ascii?Q?bu5wZUwAkUzmiiJw69VAQKUdGyJdUVQcPo3dn8YGY+7VVk6Nm+8fO40s2sVt?=
+ =?us-ascii?Q?3GYpaJa81V2r/E8QQUlXNsxKo14qHfiWQFqU65qhEamNB2DqhJQIQPMXgODY?=
+ =?us-ascii?Q?JbzXu+IVAOTPYVWtAKpIobTXiwMskRXo4rm4DtWULvlvArX1gwhO0+jA4dLh?=
+ =?us-ascii?Q?BNDcZ1rydzCZNN8RSs8LcSXtvwgX0axybcxiJlIQepDGuGcHWHsB9pygLS1j?=
+ =?us-ascii?Q?v4nIGcX9UowZvm4qS+SV2o8WrDp9NVZ7euxuDCmPqCstP0NzcQehgyPzM0nw?=
+ =?us-ascii?Q?tSmUZG5RokGtmOxZsSibuXPZhr9AYcSbirQsVO92Mm8uEAXvNzyQwaEm677a?=
+ =?us-ascii?Q?ZGMyjBcDmyeCezaUlko=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e4058933-0326-4cdf-39e1-08dc38b0ec4e
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 22:59:31.0931
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i6Ut08zTqhTjeOt/aQxVeZk80Po+yIZvQF2LwrQT4KW+gQrVWshROTWDyyvDxSkq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8848
 
-@p1 is assigned to @setup_buffer and then we manually assign a NUL-byte
-at the first index. This renders the following strlen() call useless.
-Moreover, we don't need to reassign p1 to setup_buffer for any reason --
-neither do we need to manually set a NUL-byte at the end. strscpy()
-resolves all this code making it easier to read.
+On Tue, Feb 27, 2024 at 03:34:11AM +0000, Tian, Kevin wrote:
+> > From: Nicolin Chen <nicolinc@nvidia.com>
+> > Sent: Friday, February 23, 2024 5:24 AM
+> > 
+> > Jason has been running Syzkaller that found three bugs.
+> 
+> could you remove "Jason has been running" from all three patches?
+> Just say that Syzkaller found a bug.
 
-Even considering the path where @str is falsey, the manual NUL-byte
-assignment is useless as setup_buffer is declared with static storage
-duration in the top-level scope which should NUL-initialize the whole
-buffer.
+I will copy edit the commit messages
 
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- drivers/scsi/wd33c93.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/wd33c93.c b/drivers/scsi/wd33c93.c
-index e4fafc77bd20..a44b60c9004a 100644
---- a/drivers/scsi/wd33c93.c
-+++ b/drivers/scsi/wd33c93.c
-@@ -1721,9 +1721,7 @@ wd33c93_setup(char *str)
- 	p1 = setup_buffer;
- 	*p1 = '\0';
- 	if (str)
--		strncpy(p1, str, SETUP_BUFFER_SIZE - strlen(setup_buffer));
--	setup_buffer[SETUP_BUFFER_SIZE - 1] = '\0';
--	p1 = setup_buffer;
-+		strscpy(p1, str, SETUP_BUFFER_SIZE);
- 	i = 0;
- 	while (*p1 && (i < MAX_SETUP_ARGS)) {
- 		p2 = strchr(p1, ',');
-
--- 
-2.44.0.rc1.240.g4c46232300-goog
-
+Thanks,
+Jason
 
