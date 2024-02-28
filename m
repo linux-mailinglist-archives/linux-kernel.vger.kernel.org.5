@@ -1,141 +1,106 @@
-Return-Path: <linux-kernel+bounces-85724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C5686B9E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:32:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77BF786B9EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:33:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 956971F25B20
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:32:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 308DF289116
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1140170027;
-	Wed, 28 Feb 2024 21:32:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1C27003F;
+	Wed, 28 Feb 2024 21:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XZB1hZ3U"
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aBN6sDQb"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7AE386270
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B8E4D11F
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 21:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709155955; cv=none; b=RWJrV/w5hi4kfU5aCP0yhLxRxEAHfvSHdO9QkjKSzUYJTxOrf4/wKuQ1mDks00ZEXvt0yHw21+yQnJgCD99+jLdGEQoY3RiNpKdwZFDhZkc11CCPDpt1/UAMXuWb2L8aS+9T4eTbbPPA2A+RYb/grHfNbpML2szgurIYxEwFcgM=
+	t=1709155998; cv=none; b=ra/CRRoq6q7s2tUVumJ3b3C3JCi34ml7nI/qEGqaYMJg6ZQxff1jwK5oWUjbY30rCSi6QWnJoHbPwkBfmkAgXd7b1zW2il8wKgehTynXMXQ/46DeF9V3UHA/Y/v0PQr/49vFomYDI3GWOW68ARhSMxa3UZR4Gi47eC9r1cPB61c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709155955; c=relaxed/simple;
-	bh=vurzQAkj+Uzk8AykBkc/bg1M650EYGHX9phKK+ngi0w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=D2oS7SaXaa3plLowmtUB3PiFDu0eBjbQ/DGoxC8S2y8GGxTeAlr+k0sb+ErgWQCm8dq5AwpHbEoDcP/+BJw9LHwH1mQjQ1/xfCIByxd0gjma/CMYK/hEBxLmDuhwp/NKjsk8TMEmD2NOPJttRoOI5U6U/kW2enoQIZYumT9znVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XZB1hZ3U; arc=none smtp.client-ip=209.85.216.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-299c5a61099so114558a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:32:33 -0800 (PST)
+	s=arc-20240116; t=1709155998; c=relaxed/simple;
+	bh=2QplW/PSL+l5wBlz2Fhb2MD7icGVtnf5yghrdyR7zlI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hzQgaPxtXpcEJYN/faCYIOGfrg7DCPHMtaGa6/mKhs2iJL5gh1X8GX5RVjwqR+EyiCgMYEYDfQ+7lN2qQ5okC3gGUOgWFvUd0Tq1ivQLIFRoUKUbuPBp8P9VAxCT1WYWH6aOHEt+M2izOcpV19agZeZsddb+z78y25ef/oyJ1aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aBN6sDQb; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d944e8f367so2158555ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 13:33:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709155953; x=1709760753; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yIIQ0MmR6ymPVVYqXu0m83pfog7nJNUxZwJFPucVFi0=;
-        b=XZB1hZ3UMvXWJLjaQaeYPxOHV2M5jI+gqknzS7dMrWdXBTHYMXtFzOkr8uQ+L7b44v
-         uHTA5U4uB8lAXmIJPbtCKLUIJDkkiOJCj5suajWjuDxo7VfYl3Mb83eUn9c9jmt1m5Vd
-         +Rk0ASaFGvBh1h6pUTiC+21sCznyK6gQsj2yTqftisDy2GSWFEMF1FyfCnDceDvXK4lQ
-         yBxCuNCepiv0ChdrX4MzS+e9viPGa8do49szM5bDHIJqDVJbQMHwlSCcroTQ2hzfYkqB
-         /+RW8ZmfMGmFtLkwYHBZBEO6Ytw7+D1oKVdjC9RiV1jGYzjbBDDCVKRZ13+CT7lbl2Xg
-         bpHw==
+        d=chromium.org; s=google; t=1709155997; x=1709760797; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XLd8h0kEPBZWXG99LoXPX1j7y1LhX/a2aDKq9S3uX68=;
+        b=aBN6sDQbxrowODDrLK+SjX+fBVboj16jTtc0JmnAsYlX+IxsJR//Q78Ef229q7BVeH
+         k1loVZK1lowplOUnadJZy6JVfXerQXD8WmyZTW9TvRQjvfhk9aXLvNV/TdU3BT+CZ6AJ
+         AA8I7rfTB85C3iJawTE0geey0WYKINkco6uXQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709155953; x=1709760753;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yIIQ0MmR6ymPVVYqXu0m83pfog7nJNUxZwJFPucVFi0=;
-        b=CPpvp8/FPxG4DdDPH0eds4HBbmVRO/e1jA7MQIExRMFNfMtKyLM43Tj2FalvFj270U
-         oIM23gvYS+5EU1CcSSsbrfa/Ssq2HpiOp9wlt4PaggPZt+VASAFl4xfzLtfBRvJ+ddaV
-         zCBbCp9ACgaeaFO/F8fVRnjVDUWsmXorRDYuvRauDHTHQevqBTeD1g0EeeHx6DBuXmzP
-         5+g0kURIEJamvzCTF0oPGU810jIgCy192XOz2wnYhAU+fRHdiaun/uAWeJX3KsZA+HLQ
-         hrCaGmTgiwfNBUhAGV5yT7cW17Mb8rUpmQhkjIbILH9ajzHiQ0HC69lduFrX5bGHtMcF
-         3kOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXtiWZJN8B8wRBQ662e7qsSS+hFbz9xci1JjT6LdSthO9Py+PqH2OKiMx/HO7gLRBPIR2+tQZC3SyLAXkAT7IiAgW2wUOFO7OSVqHb4
-X-Gm-Message-State: AOJu0Yz8tZOH3EwqKp1KJFbsCuz3AobCncvODq7ROiUo137qO50cX5QH
-	d40+9xK4oKxsayw0Ii/6qm2SbqUBIrIJl64rpM14d9VXuA+3XQJdRsqUWpVMga/nbY2HDCGKfv5
-	x4w==
-X-Google-Smtp-Source: AGHT+IGubsT96u1o3j+RmR8kfG5FWlObG7Q+IXPU/pt+XH6aKFJjnUg2nj9BZEmVlfZA8HUeJOMt5JH+YUc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:23d4:b0:29a:a842:6eff with SMTP id
- md20-20020a17090b23d400b0029aa8426effmr1162pjb.1.1709155952903; Wed, 28 Feb
- 2024 13:32:32 -0800 (PST)
-Date: Wed, 28 Feb 2024 13:32:31 -0800
-In-Reply-To: <170900036555.3692027.1057525433723685864.b4-ty@google.com>
+        d=1e100.net; s=20230601; t=1709155997; x=1709760797;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XLd8h0kEPBZWXG99LoXPX1j7y1LhX/a2aDKq9S3uX68=;
+        b=JWYA2mtCQdSspT0zvjTLFj3jONagiHaaTObqxruw9gXfLUyeu8xaPLsft4pvXN1p/f
+         bamyH4LydwkP20uE5mWpL9Y/Rlq860kC/V63RAwH2zwalaSRrIQjf+223cfhRV8413ny
+         WBIlBAumUst06bKhb1M8p/ahPpGWxCeY2+fEIIVWkzgLcPgJqRlbwsHZ2nnG88xCF/Na
+         jzDg4avVseRJyFWOR91JrahNy4hw1DddSTaLRey4Mj3ouAR3kRbnDPvOT2G8OfTJZnOc
+         Jr8rQ6CI/oJcsKUIHjVFmdJ6YLfWw0zmale6S1itx9+W7J06Oo0XL1iSirTROlf3Q8y9
+         Ljlw==
+X-Forwarded-Encrypted: i=1; AJvYcCUkwoMdE8ZFEHkcYHS162B36f3Qqzx6nWCRoow7WeTI1rrBoDH4cO/E2I5xrlUns2G39s/GF+xUYS399TiK3VInupb2+qT5DBDVDGPB
+X-Gm-Message-State: AOJu0YzWMHiUraNX1TQLi6Rax47WWtfKRbAveEYYth3bQnSnYXTHhFgt
+	V0ElqQRXEZYkG28Y46Flu+49YXcgS/8Ldq3dY4HvCZIrPD2Ogk2wntQkz1039Q==
+X-Google-Smtp-Source: AGHT+IGO5QT2ql8Rf0ElQjy3mY7mI7ajEF2Z3zSl9mRYp9jbKdiPIbR1SfabYEntk3bTWsEUAJJ/WQ==
+X-Received: by 2002:a17:902:ce02:b0:1d9:f83e:3a54 with SMTP id k2-20020a170902ce0200b001d9f83e3a54mr192671plg.64.1709155996838;
+        Wed, 28 Feb 2024 13:33:16 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id c2-20020a170902848200b001dca997b3e3sm3729404plo.65.2024.02.28.13.33.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 13:33:15 -0800 (PST)
+Date: Wed, 28 Feb 2024 13:33:15 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+	linux-spi@vger.kernel.org, netdev@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Subject: Re: [PATCH v4 1/8] overflow: Use POD in check_shl_overflow()
+Message-ID: <202402281332.9B2F13570@keescook>
+References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
+ <20240228204919.3680786-2-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240208204844.119326-1-thuth@redhat.com> <170900036555.3692027.1057525433723685864.b4-ty@google.com>
-Message-ID: <Zd-mbxzD--SkEBjP@google.com>
-Subject: Re: [PATCH v3 0/8] Use TAP in some more x86 KVM selftests
-From: Sean Christopherson <seanjc@google.com>
-To: kvm@vger.kernel.org, Thomas Huth <thuth@redhat.com>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Paolo Bonzini <pbonzini@redhat.com>, Andrew Jones <ajones@ventanamicro.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228204919.3680786-2-andriy.shevchenko@linux.intel.com>
 
-On Mon, Feb 26, 2024, Sean Christopherson wrote:
-> On Thu, 08 Feb 2024 21:48:36 +0100, Thomas Huth wrote:
-> > Basic idea of this series is now to use the kselftest_harness.h
-> > framework to get TAP output in the tests, so that it is easier
-> > for the user to see what is going on, and e.g. to be able to
-> > detect whether a certain test is part of the test binary or not
-> > (which is useful when tests get extended in the course of time).
-> > 
-> > Since most tests also need a vcpu, we introduce our own macros
-> > to define such tests, so we don't have to repeat this code all
-> > over the place.
-> > 
-> > [...]
+On Wed, Feb 28, 2024 at 10:41:31PM +0200, Andy Shevchenko wrote:
+> The check_shl_overflow() uses u64 type that is defined in types.h.
+> Instead of including that header, just switch to use POD type
+> directly.
 > 
-> OMG, you didn't tell me this allows sub-tests to run after a failed test!
-> That alone is worth the conversion :-)
-> 
-> There's definitely a few enhancements we'll want to make, but this is more than
-> good enough as a starting point.
-> 
-> Applied to kvm-x86 selftests, thanks!
-> 
-> [1/8] KVM: selftests: x86: sync_regs_test: Use vcpu_run() where appropriate
->       https://github.com/kvm-x86/linux/commit/e10086285659
-> [2/8] KVM: selftests: x86: sync_regs_test: Get regs structure before modifying it
->       https://github.com/kvm-x86/linux/commit/221d65449453
-> [3/8] KVM: selftests: Move setting a vCPU's entry point to a dedicated API
->       https://github.com/kvm-x86/linux/commit/8ef192609f14
-> [4/8] KVM: selftests: Add a macro to define a test with one vcpu
->       https://github.com/kvm-x86/linux/commit/992178c7219c
-> [5/8] KVM: selftests: x86: Use TAP interface in the sync_regs test
->       https://github.com/kvm-x86/linux/commit/04941eb15439
-> [6/8] KVM: selftests: x86: Use TAP interface in the fix_hypercall test
->       https://github.com/kvm-x86/linux/commit/69fb12492005
-> [7/8] KVM: selftests: x86: Use TAP interface in the vmx_pmu_caps test
->       https://github.com/kvm-x86/linux/commit/200f604dfd07
-> [8/8] KVM: selftests: x86: Use TAP interface in the userspace_msr_exit test
->       https://github.com/kvm-x86/linux/commit/8fd14fc541c7
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-FYI, the hashes have changed for patches 3-8, as I forced pushed to fix an ARM
-goof in patch 3.
+Acked-by: Kees Cook <keescook@chromium.org>
 
-[1/8] KVM: selftests: x86: sync_regs_test: Use vcpu_run() where appropriate
-      https://github.com/kvm-x86/linux/commit/e10086285659
-[2/8] KVM: selftests: x86: sync_regs_test: Get regs structure before modifying it
-      https://github.com/kvm-x86/linux/commit/221d65449453
-[3/8] KVM: selftests: Move setting a vCPU's entry point to a dedicated API
-      https://github.com/kvm-x86/linux/commit/53a43dd48f8e
-[4/8] KVM: selftests: Add a macro to define a test with one vcpu
-      https://github.com/kvm-x86/linux/commit/55f2cf88486c
-[5/8] KVM: selftests: x86: Use TAP interface in the sync_regs test
-      https://github.com/kvm-x86/linux/commit/ba97ed0af6fe
-[6/8] KVM: selftests: x86: Use TAP interface in the fix_hypercall test
-      https://github.com/kvm-x86/linux/commit/a6983e8f5fab
-[7/8] KVM: selftests: x86: Use TAP interface in the vmx_pmu_caps test
-      https://github.com/kvm-x86/linux/commit/de1b03f25f3b
-[8/8] KVM: selftests: x86: Use TAP interface in the userspace_msr_exit test
-      https://github.com/kvm-x86/linux/commit/8d251856d425
+-- 
+Kees Cook
 
