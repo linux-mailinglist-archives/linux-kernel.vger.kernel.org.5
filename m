@@ -1,91 +1,79 @@
-Return-Path: <linux-kernel+bounces-85829-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EEEA86BBE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:05:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF77586BBED
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:07:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF517B28D0D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:05:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11E601C218EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:07:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0A513D2FC;
-	Wed, 28 Feb 2024 23:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC2F13D2FA;
+	Wed, 28 Feb 2024 23:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Frmk1kIk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SGDMpXEL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDDE1EEE7;
-	Wed, 28 Feb 2024 23:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE2DA13D2E6;
+	Wed, 28 Feb 2024 23:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709161522; cv=none; b=Ur/yVPGbrb4IjjlokUpUyLdFWElINk0CdkTj67vZzg636OA3SR1KdL91P9VZWjw/LYtOV3KkB5vejCucgwz5y7/qCnB/zM49UpJXv3DoqIUPMkJJSdz67UNdv6xmXM2mxfWxGmuTLiQMCd+wHXsPB5mhvQb5oTyo53YjTP4weTE=
+	t=1709161628; cv=none; b=VHiISjWazDsiyeijwSwRYuFvHUs1Zd1aRPAyZN7Gg/OYLT3n/qsP1zbQkqXr/wJO8rrkjbGCkUoRWoY+CZO30FJtEIqTQoqQmaTWWCaw0EMtQD6lKe6wIS6JtTxv2tOfA+a8iVD7D4Uuu+xi3PO538XgGSbyDblksO0+v3ThEmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709161522; c=relaxed/simple;
-	bh=F1VOE+DnjdscjpxmdpPOZleVN5H0NxncCSGnUm/eOfM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Pt0C5I7Ckxxm2LIhEG8pmQxh0k9WsqdniTeLm1WrP042AvNU2RxDgEG63u4jvqCUjjlIbY8QZH05jxa3LXnQ/9M79jwBi+QJKB3l03Slm2qoB9sTYRIoETIybyh/ZGHZ0/oFLujVG/b1uIWzVyHtRJjGByJIzfdiPd/FJXnsnk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Frmk1kIk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1E74C433F1;
-	Wed, 28 Feb 2024 23:05:21 +0000 (UTC)
+	s=arc-20240116; t=1709161628; c=relaxed/simple;
+	bh=aR4XOGShLBiKaiFwyckrNuJndPej+Cz0PLltPRgtO/0=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=I2dkAQ+sqxUSMwIjMXHMGCOu56Gg+OpRd5V6MYFqO1IWq04eys70/AiPXxt7bBHEaZjzspR6AG0p3QMYDwzfeaIe0uOLFoixigPwzSazTE2wUXoHR3X77v4Is7uhdwnQdAZdqGfuK5dpPL9EtTyLnKBkgqoQmAxnbB+9FDJfaUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SGDMpXEL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55CF8C433C7;
+	Wed, 28 Feb 2024 23:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709161521;
-	bh=F1VOE+DnjdscjpxmdpPOZleVN5H0NxncCSGnUm/eOfM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=Frmk1kIkCtxpQM1uEGaF3hVv/D95rdvphgFe94ADYS2R3mpXMAjS/R25w0LEwLNFy
-	 hC2cj69c3cptVkpQFMZpR4bvruVKfqOaZJ38zAeO7J+6fTVHgfT+are01CP+pz7wyP
-	 n38haW2bEAVvFD+a6zm+2HbahRmWN5Fy4n+o9NPPJR0Pc+M0Sej9QiaedNEY4jmtZ/
-	 YcwTG+vuyYyhjKVC7mqP6+zCfzmsr+Ukawhx3154Wgczj33Q7KUrRZDCQrdsuqZViS
-	 Ejvl8OYqjPMfbtt2nJLHQqQg8eJ5oGHkHMF8iqpoc53W5FchQXztgXSTrwhVLbsFVB
-	 +JOP4EYyPL36Q==
-Date: Wed, 28 Feb 2024 17:05:20 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 2/6] PCI: imx6: Rename pci-imx6.c and PCI_IMX6 config
-Message-ID: <20240228230520.GA314710@bhelgaas>
+	s=k20201202; t=1709161627;
+	bh=aR4XOGShLBiKaiFwyckrNuJndPej+Cz0PLltPRgtO/0=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=SGDMpXELHbumNnj2vOipRsbXBpmiviivWs4gnnCaTcxPqWkKBayyehjUyhwqhySRN
+	 9UAB8ACDCTBUxi0BAgtivVkCW/NXy+UeiEJa9v3Huivqwj/yfc6VVXqsBXPJndte+5
+	 6oGKfrhX+ncpcGWdA7pLNTJvR1u9jfL8GL4C6e/j244TAOj1qZXq+66UNWYfYBGrTX
+	 JLa74Ah9kl2vqRV+xNbmzlOhMEmqNVjBzseoIfYjty0wbl+a+Pa7ZGR32+PIH4dqVp
+	 A6Feiw6ZcEC6ljZJGDNKpPe/m5dmj3kWwSP/2+baG4bR4qL3wIVuFTe3s4SqOtFbBa
+	 WL/OOIqdqJinw==
+Message-ID: <f0a90f14993aa0fddb87e658be43341b.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227-pci2_upstream-v1-2-b952f8333606@nxp.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240214073318.82573-1-duoming@zju.edu.cn>
+References: <20240214073318.82573-1-duoming@zju.edu.cn>
+Subject: Re: [PATCH] clk: zynq: Prevent null pointer dereference caused by kmalloc failure
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: mturquette@baylibre.com, michal.simek@amd.com, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Duoming Zhou <duoming@zju.edu.cn>
+To: Duoming Zhou <duoming@zju.edu.cn>, linux-kernel@vger.kernel.org
+Date: Wed, 28 Feb 2024 15:07:05 -0800
+User-Agent: alot/0.10
 
-On Tue, Feb 27, 2024 at 04:47:09PM -0500, Frank Li wrote:
-> pci-imx6.c and PCI_IMX6 actuall for all i.MX chips (i.MX6x, i.MX7x, i.MX8x,
-> i.MX9x). Remove '6' to avoid confuse.
+Quoting Duoming Zhou (2024-02-13 23:33:18)
+> diff --git a/drivers/clk/zynq/clkc.c b/drivers/clk/zynq/clkc.c
+> index 7bdeaff2bfd..7621c2f0046 100644
+> --- a/drivers/clk/zynq/clkc.c
+> +++ b/drivers/clk/zynq/clkc.c
+> @@ -427,7 +427,7 @@ static void __init zynq_clk_setup(struct device_node =
+*np)
+>                         SLCR_GEM1_CLK_CTRL, 0, 0, &gem1clk_lock);
+> =20
+>         tmp =3D strlen("mio_clk_00x");
+> -       clk_name =3D kmalloc(tmp, GFP_KERNEL);
+> +       clk_name =3D kmalloc(tmp, GFP_KERNEL | __GFP_NOFAIL);
 
-s/actuall for all/cover all/
-s/confuse/confusion/
+Just make a stack variable please. __GFP_NOFAIL is a bad code smell.
 
->  drivers/pci/controller/dwc/{pci-imx6.c => pci-imx.c} |  0
-
-If we're going to rename it, we should rename it to "pcie-imx.c".
-
-It was my mistake long ago to use "pci-" instead of "pcie-".
-
-> -config PCI_IMX6
-> +config PCI_IMX
-
-What does this look like to users who carry an old .config file
-forward?
+>         for (i =3D 0; i < NUM_MIO_PINS; i++) {
+>                 int idx;
+>
 
