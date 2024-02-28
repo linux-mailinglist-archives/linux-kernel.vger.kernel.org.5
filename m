@@ -1,88 +1,117 @@
-Return-Path: <linux-kernel+bounces-85853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8102F86BC40
-	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:37:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DC6386BC45
+	for <lists+linux-kernel@lfdr.de>; Thu, 29 Feb 2024 00:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32A81286B78
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:37:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2725C1C2242E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:39:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA193FB92;
-	Wed, 28 Feb 2024 23:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1479570044;
+	Wed, 28 Feb 2024 23:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ixcyAYiR"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2089.outbound.protection.outlook.com [40.107.104.89])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a/PrZj4q"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78B2C13D2E3;
-	Wed, 28 Feb 2024 23:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.89
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC87613D2E3
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 23:39:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709163428; cv=fail; b=CbNlPIEhjaJyGQh0Y+FY+owhLRklWysmDGBkk+rRL1n7aknfBbQBSz70C3UDEuIfwDM5LxJz0Mja3A0aRCzbNvDQ9il85TLsjO7E3kztyd33Ee0ckASjfRY8XfTmsDY5gpbe/Oepn3oCLMQeSwAPsp2hX9KYGsm27k8bnxOeDo0=
+	t=1709163571; cv=fail; b=BKwpm07+gSh/B7ewfzzWLHBmEz9S/QrOqRJ0nP4aAUsWZMRnFSSGNAhQ18jXtZGYHMDeYzlHtR+6jGw6Iko/H/VOhZ2IRVMhF9zo1KXvaJ28UZuv51AdArPFsg9sAklcKu/qLPYQt+mRxzYjl2C0Yn+hJppVxoiFCoj3xVRIg8o=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709163428; c=relaxed/simple;
-	bh=7dfro3d1weE28kImcx976nWSWdSrq+Rcp+JhS/d3ZDY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=HxULFYGvCNuF3e9nPiv7lcZPPtPACAaezoFI6dQ2io9IJX6wljpcctzNAHpAkDoqTB06XcmYbYrTQwUjBRpi8u59CcNVIu/C2pavo3uWHHbqk0Ozero4uGm2doy1WZpatTFNsUJIa4Xu76GJxJ6z1CvtVkZggkkyDDxZGvoyg4U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ixcyAYiR; arc=fail smtp.client-ip=40.107.104.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+	s=arc-20240116; t=1709163571; c=relaxed/simple;
+	bh=FdpSF3mA33YrKVZ0sIHZoDi2dMkptRNqMXoWmRpa1fE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=CrybPdVZeolJKeX8hZLZhjycIdeGxY0OFp30ieMakrHHJhxGa4JcVLXZvyy6YiYKbuuppHNHf5dXLFR45p2eLrnr+vavpxwVIfI5kJtRn+duiONbe2jLPVI+gcC3OQDnOuCDQorXef1kT5iHAhJMDoIBwtZNRQq3fBnvfR+B0io=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a/PrZj4q; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709163569; x=1740699569;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=FdpSF3mA33YrKVZ0sIHZoDi2dMkptRNqMXoWmRpa1fE=;
+  b=a/PrZj4q4Kze9MSbpeFOuBsxsJYUq0Em/oPzBAL1LlFEiQTCirAxqEl2
+   GA7JbsJnnOgA5wOkkhaDeujPxbVZhOojL9VBECiham+bCg4B7pKJbnn4s
+   rSEZfzJpcNybwdSei5u9BWvD11uCbl9BUn8sR91HwIdu9W0+0PwCTtl+B
+   VjxvEjD5Q+qP5ccx3E7H5+1H2c4+y8iYrH9fNmEuGVxRcvOnI/D8L9Oys
+   l+v4PswxWAYQaT8pC3NFhfooXrnhH1H42bzGYfay6rj3Mz+cwz3QtDbev
+   TgeeASAQTY4Xc06y+gFMHa/XNBs1qqYlSq+Wxp+kd/qrRm8EGr2QFSzgA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="7420535"
+X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
+   d="scan'208";a="7420535"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 15:39:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
+   d="scan'208";a="12173853"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 28 Feb 2024 15:39:28 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 28 Feb 2024 15:39:27 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 28 Feb 2024 15:39:26 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Wed, 28 Feb 2024 15:39:26 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 28 Feb 2024 15:39:26 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gPqV7wausV8MJB1V/3xRhN0EziCr47sSensb5XGVR2I5hkLFZBGRH0pOYRTOnAwUshnjFBfcHC4nc27a4oLfmQhF+UKty2tXXjPu+9zxGcd7yEAJXUCPGMlE8rl1gGeE0DorP7tOGHeiRqDW2iG67NQ6uG6cqFscrDmpp8lOXEdlBPo+5QIuC/khOVdUKXgDMv/10xbrDPD9DZrMR7r/peLXi8Lw9SogPV1583ik/C0Jvq3EVK44EqeQCZ8kgN0EEdgPMDDPT7OFRCFOhK9w5Bw9MQ783zTsiR7DYAI+tWqtyBCX0czwNykvj3r+rKOYwZq94xXECzlmY+zi/Mbjrg==
+ b=itoNmKvBsFbdKVz4q5xmYijPd583QPn631Wd/z8zi+lHpitUHwKAB5YD7crNwxgclvUgSZWvRgN15ShErGUXcgFSKGKwk2ZwRWlWVM3ojGDdukoxk03V6pL24zgY7Kq5RasZkJdB8i5cCCoVnFebzpANjaM+AsTte1OXPSqG4l8hH9UFkjnxCYCtkqjj+hRLnki1g5RqPSSTO2YtIgrIzukMME2WfP9fRzhXi1reCf65Se5koEpeYpRZm9nCmRDF/9x/4pdU9E9J7jtzK+OrguZHM51UOPONwEqNhGvy5T4asdkp0mglMoAvfFrnVOr3tP3/qC8vWJ/UNAlLWkNxgA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=A6ooSMnka9Ggj6LQm+575U+ETqzlYjoeoWQWkd5HnY8=;
- b=Ms1rw+dKobqpT8uzUD3oe+VwhPF7Pz3BKRMYv8CeDq3gf7xvVSGGE9t/VymAu8OLIQRMpETvBsTWVDfHw7LLF4IjDqn94BM9a9u+z0rWfIhepjYTSvrBtL03WjNVKflHaWYTS6ak6Gd2phW5U+1Xj9mDOCzvLEuTpHdLvXMl7ISqjraGhlm36rIuMpsGI5RkpoMyy4eUFaENBKbik7f0kNxuD45BoAxf/SJqen81VGe6W563El9Nc+JATUvyU+FRVO03VXwm/WXUwdzcAo78ylEQryRqbuEaEE0jx2rBOiQ2cBoR7s7FWrhBCQj1BZmjlmL+ZrjyYP0jVKNwtamcGQ==
+ bh=4MIx0LmLU1ai9jv9CNlEDqa5zy7YM1Fdcu3yosxIwWk=;
+ b=aNuMPfx8Huimc1tVZwBS5/9Qn4w8k2hiWtYtjayy/hDG0F4nQPRT1HcPqXJGLw4b9rO8NvrAdGxEytSm0gZANlL9IEp3Ckvo+YZQlLGvd/y6s1v1Ue3cFh6UjDOuzN3Y8rP5qYMvJjLCdoeHCxirEC2BcbIYdmZ3FruQ6ecuJguk49ufffomwxBB0HKI7DJ005gXt/wzX/3HZkXz98HqVWVqbjMpy3FLhtaklUtJP9Fgxc0WezPMy/CS1rUb8NJ3ojxBbeJh3y8/wu9sp5UjCm3AcIvg1TYHSDT12bp7gl+3/EORq1ogFEu9gJGEHwjreGZCoC/BZWoMVrd3TUTDrQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=A6ooSMnka9Ggj6LQm+575U+ETqzlYjoeoWQWkd5HnY8=;
- b=ixcyAYiRJxyxrEDLky2/ndqvjbDS9j4ZhRW6dB08eKXP4vYcVUJLTXlnWLYEz3lkTWm2WzeFX3pMqgvauZvCK/bPkha9NJJiRQpOrT4FsIwJutpxupNH8XyvGT+f9FYVPdnXsuOApraeqc9iwBso7pOoZFS2PBfOtukCZkqqq+4=
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DB9PR04MB8185.eurprd04.prod.outlook.com (2603:10a6:10:240::22) with
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by SA1PR11MB8327.namprd11.prod.outlook.com (2603:10b6:806:378::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 28 Feb
- 2024 23:37:03 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::9af4:87e:d74:94aa%7]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
- 23:37:03 +0000
-Date: Wed, 28 Feb 2024 18:36:54 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 2/6] PCI: imx6: Rename pci-imx6.c and PCI_IMX6 config
-Message-ID: <Zd/DlibuoSxvjPW5@lizhi-Precision-Tower-5810>
-References: <20240227-pci2_upstream-v1-2-b952f8333606@nxp.com>
- <20240228230520.GA314710@bhelgaas>
-Content-Type: text/plain; charset=us-ascii
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.23; Wed, 28 Feb
+ 2024 23:39:24 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::7352:aa4b:e13e:cb01]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::7352:aa4b:e13e:cb01%7]) with mapi id 15.20.7339.024; Wed, 28 Feb 2024
+ 23:39:24 +0000
+Date: Wed, 28 Feb 2024 17:39:21 -0600
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Yury Norov <yury.norov@gmail.com>
+CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>, <linux-kernel@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, Jani Nikula <jani.nikula@linux.intel.com>,
+	<intel-xe@lists.freedesktop.org>, <intel-gfx@lists.freedesktop.org>, "Jani
+ Nikula" <jani.nikula@intel.com>
+Subject: Re: [PATCH v3 1/3] bits: introduce fixed-type genmasks
+Message-ID: <3o3nvkg76sofrhgcuogo3wuhitnz3bgus6qzle7pejng3v4s62@frdbuj46uiu7>
+References: <20240208074521.577076-1-lucas.demarchi@intel.com>
+ <20240208074521.577076-2-lucas.demarchi@intel.com>
+ <CAA8EJpprfrtOjNzT6TFhV1n6MXzLdTahanfxcRW4uVjeHaBduA@mail.gmail.com>
+ <ZdZlVn9BI-0q1Xdn@smile.fi.intel.com>
+ <btssirjumey2kcp5dyhe6m3embdwd5bswjz3c6swrhxfijfhld@lztxaptkegw6>
+ <ZddfF7kb54o2c/QR@yury-ThinkPad>
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240228230520.GA314710@bhelgaas>
-X-ClientProxiedBy: BY3PR10CA0029.namprd10.prod.outlook.com
- (2603:10b6:a03:255::34) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+In-Reply-To: <ZddfF7kb54o2c/QR@yury-ThinkPad>
+X-ClientProxiedBy: SJ0PR13CA0126.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c6::11) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,81 +119,235 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DB9PR04MB8185:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8e2bbc5f-5dbd-4656-b92b-08dc38b62b05
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|SA1PR11MB8327:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2df533cd-d098-4dc8-9013-08dc38b67ec5
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VHNsuZZrHcoWoxlbI14D1hqL0wIvCEe8s43ECfKOYaufJI7eLeUZG2ZPz/AtEIikyTEMZkjCJvmbkWzS2ymdgPER1MnhYwez9zWOuXwjLporWSUxscVz1ESWKCwk/6w8ghKPvIO6GmveMMKI3OrUerkWNZibQkyrG+n43boPp+hLtfy6QyvEFFZS+YUP2n00iX6KWqFpQ9PVwlpTBR2Fw+7Lw7IoayJRgxqMbTeIg/xKfwCBBIvJGngA4+rdSv6o/PVcbzXdAE09r3kjbOH/WH/7E74NqKfRxkC7urR4i2C3oNC/yslC8XxC1OqB/IXuIx+02NbeEIjaPqprtUi0Y3i2ydr98cllk0xBbDv/RuSjFmWyWFkawU+lA+rLICOhT03bwcits8AfndsNC6DHkJkl0gkiQHzX+NV5YNrZyZyXkXkhhsYQ9DymTUehk6NFPyhq1AcOGM0SOqcUHgPnHtzIhMD0dE4u7SimC4aE2F1RBuQNxRHk33+bWIBHPQaiJHeGvD4wdkle6C/moRYWTr7R/yRrAKjmrI1ohTbCWmVdrTjsGeXnQ5IEgs8D6WwJSOoTBk7M0/xQPj4k8zoexsWUGfhD2dPA93m1wKap5tnw8WhhZPi7f2sjtvFjgphZKGkHesJH5pDOMKf8K4RqEES7/i0qSqbIuv+sHvY6H4+pE5htxvIymrULRBQ1zEGeZPv2KVV08lpfcEeJibTN40i0L+73F75PqkSNTDHVi18=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38350700005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: d/B1BOzQXnKdNIlwq0egx0qWfs1f0fRVyIIc6jKIyx+nIMpNc1ucqC/JdtBOmQEylBsG15S4txQWljGGrmpyNO60Zn+zccVdaL35fb0Cf7MrKJtRC9bJy3EPlJhhpOPjXckJquslXsniJXfELFFO8tHJWevDeW1BI3+nfY+cGpsQRL9xE9O0duwT97PFKALuZr5xeZ4EahnIoI3cWA5xW9U/Vd7RQXA/EgHOmJCbzFqc4jwDOeS7x7dfqAvRhLOEF7bU70/R8Ugz+kI5ab3M6Ek33zCBGB4INGoeAWYQ7TXEuDWWOHRc6L+rgFHeDUAHAYq4cOJOdlH3j57d0yywPY0ShEg5bNT5sSdqCu9qOMv3+iC+rJGHCgswVORNxkYhzJENn5n2Hryu+8QLMlG99EJ/yq0XJi7MMD5R9Nc+CDJ6NOgHb3cNCvkIfqjrWHnVi/QjVCY75BxRgaoO3jo8uWsicRxFLtL6HSKTT2/GU7pDpH0z4XdoF3IlVGhqSXMXr5ZK7AlHGnRD5Kf30AEd4S7h7zLYR1z7rND1ZzcS4NXNgHgUqZ2/mNY4qy86MRXoC+KFm58dzlqUjscraqeyYY17m+7L1S6VpmXTemWEwrb4811R+1U3EtWMsZoebDWRQp8/mPTG6Rttt1zKqf6JfA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?C6f76EwO8zu88rIT9HezeJ9vkJANGv9WE6BwX2u+e9oYzJa9XqcEbC3l9jk4?=
- =?us-ascii?Q?8lnaioysHnYM9eyTxUqbLImSvlwlU6lF4Vhb1rwwJ94KZ0PFEYUCyaZnMRqZ?=
- =?us-ascii?Q?67AR/msvj26+ExpOwVLYg/y32BxuIvXJt8qFoZkgI0J2agy2rcNjxOZ7Ffwz?=
- =?us-ascii?Q?tSuGxrGZ9JInFTl1wH7VNfJmAwUm/sgX/xaOu/t7N7FqPS1N9aZsObK4UGd5?=
- =?us-ascii?Q?cmJtFWTaUhSvCbav+9qnE13Pxk3modtjcdibwX8VsQyYvnDCrdf1p0Z7qOr+?=
- =?us-ascii?Q?veJ0AJNjNU94YIOJngxX5Ov7JGSxz4sGa3fJ7OlHvVbS6KifWI5lZXW7MXeO?=
- =?us-ascii?Q?gIBvmx6yAKEZh8nBwENKsW7Ej9eGqcNtJ3EiZf6IGAFQAX3ehsEIcstwFG3l?=
- =?us-ascii?Q?E6uX41pt4OUseh3RyE5z7wnQZ5HSzWfDmO0izENMK8GZV+1n3jBZKAZSbVIQ?=
- =?us-ascii?Q?9uMFISigB9dfLnowRPkx9UJALqIfGseLZEoncDSbB3tQRr96MODJT52njdik?=
- =?us-ascii?Q?8OTuhAYeKMW59b8Kju2rpQI5Qxj818A0ZXGwMJrbgbQXoQaQgFppkoOowa3i?=
- =?us-ascii?Q?qtNDKF5WNDutjpP82TUDGuZi/ruCgf1k1DiSnoXgVknFBEK0q3jj9sZoo0zh?=
- =?us-ascii?Q?/csMEQZUHhjTg4nVi+OvEPHKKvJ0yzt6aOXl8uL226XDgLLiqb3R9x7FwwnM?=
- =?us-ascii?Q?EP4NGGxcFPhse2iHaTS1/Y+zmbmTcZCsRI25MEJFiWJVENHnolupcnqAdtp2?=
- =?us-ascii?Q?VAe9yw3oAHTipyuSp0y+PcVTYzIQYi7pgNKiPQvi02DIME2AhYmU22xiI9d7?=
- =?us-ascii?Q?9VoKKKTUHBonlfOpv5fNbTQkD0V1E0Q9MDX0mm+4EjAV11s++4BHesb3bfvc?=
- =?us-ascii?Q?Px2pmszqvwrCT+EwT1ogOJGA5NvsjrTg/sfZrWYmkFuRX4aQnaLZi9Dmtg2u?=
- =?us-ascii?Q?kNtsdNRQwatBqZUbJIJ7/TxGpq+UPPoduDkiDb1qYFLCFrHCXQoSvPm49/tP?=
- =?us-ascii?Q?lV/dOY99WE0iAjei7GjE6+PyDCs41rM47rI/T6o30OuxBTevAvEq/IymPypi?=
- =?us-ascii?Q?2uNoyF0WmAsA/0rQNvgfuxTy/arGOrJ6biR5VLkCL5nCLCn+qcClE3eKWsOM?=
- =?us-ascii?Q?oO/Hs6EyihBToNGtL2o2z+tWjNr+VjDeq+jZv+Qmotj+0DUe5jqomn57Ivpr?=
- =?us-ascii?Q?C5PZi1ycwafZX7cGd8zTJI/Dtmn83djlhXoOd+0JMDh79bSl6Hzkqued7HYI?=
- =?us-ascii?Q?IKsREfiGkW2eLX1w1cNCYPrRwVJPxzB1MlED4MxWojra3WkTucM2HhaaXmJ/?=
- =?us-ascii?Q?GuyiBYcAMnyNo8XFwJ4eRCQHUaVTIp442NufTpZJEG8isFu1/z0TUJdfircd?=
- =?us-ascii?Q?Mp51J17yedSi3VrQYuFH7dH4S5Ht7rWEYxQE9G09Pl3qQt149S3pqLWG4Pei?=
- =?us-ascii?Q?y+agLfaYbIzVg8QhLIQ7LO2w+5Mamn99SecHSNbvx752ovU90ErNT+v5KHnU?=
- =?us-ascii?Q?mkt3DgrDSIqMG97Ycdnz603NcnZB79gIwEjOJ6JQdwKAhqwbbeEuCA/6Q9Cl?=
- =?us-ascii?Q?uvJt0F2VznihEotehqtMzhPKXf5mH2mJhKL/Ic4Q?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e2bbc5f-5dbd-4656-b92b-08dc38b62b05
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Dbt+y6tqBG3Q0wGaIQLNHRFd0d8T5rQGNXuBvIG0whgB+F+POKKYKtGLyPlZ?=
+ =?us-ascii?Q?wGkPKXfwVZk+i++waMcD4lXRdahQvtXSoPqkf5ZKr0/0b5KpXHfY7lH3RnP8?=
+ =?us-ascii?Q?lPvgonNrdUcYP7+9YwhQFyn0DgJNSiMWVwcUSk6VNMCvX7eqKzyVw6NS5TG6?=
+ =?us-ascii?Q?5rXJ4udoJsblgKpbgupnFh1q0OOjB7Vra984wx1rQHUubk1Rrg3Tdtr95sxd?=
+ =?us-ascii?Q?ispS2+nR+ST9sZhbQNHLUYU94eXTvfif9wdd0DuQh6SVN6UKR/fgCy8ZKHPJ?=
+ =?us-ascii?Q?Xv6vHvK4h1MLrSV77lqyuF8YTV/iSwxkFRX0TX//rWPeMZ9CTNGO1s2UAkD+?=
+ =?us-ascii?Q?3LIXaX2JZVgJRj7nUs0iRzGue9KZnSVY7duFwbgEq9VMzY5Tiy1DaKyzwv7w?=
+ =?us-ascii?Q?vJSdurqKqNodBaxGvB7X8wPXLGnXl/rlaLp+iJccPH1WyYpkoyEyprMwViNj?=
+ =?us-ascii?Q?QOduYIYS5YNDatT1PgCtBhK+dvViefMjr9TG9K3PqY3DLdR0pejWv75kND1d?=
+ =?us-ascii?Q?oblncmFGnLWvrsDftitDbNDPIs5orOvA15y/dW/gEdxh6Cx8L+GTcneN1sLu?=
+ =?us-ascii?Q?qSnnKrmqHcAA1P9etgttd+GNQ/JyeZeYQ6hL5bkFwEdgfCjMACWrpPINiwUQ?=
+ =?us-ascii?Q?a/n427+VPs40FesqHcTu5h3nK7lteeUoV4nGCkY5tSKIDkn2sPmgGDrgZqt8?=
+ =?us-ascii?Q?CncNtZcCSEF/DsWwb6YW2dYn3OyheXG9WqpnrqVKyDi3rJl8x+M5+byKnfij?=
+ =?us-ascii?Q?bdviPvKhaMb0Lg8DrZRniwDBZ9XyqkBGLnSdeMEqXSpL+oClTcFIcz0dpHKl?=
+ =?us-ascii?Q?R5LcMBS+BY35Frz7ztivVnG3dgKM6DrdehwJ5a2wpl/Juv8E1CFPLD2CfKCv?=
+ =?us-ascii?Q?k91QikCILxb+2sqIWyS7wm7YLMJCF/tv/fZl523KAQmpc7VW2aTsfaYy8x3E?=
+ =?us-ascii?Q?kbsywoyfTbs9nsSv1dc0K14jD0iqUbKFy1GLzK//fDDm5EORwM7TWxMVFIyb?=
+ =?us-ascii?Q?U2Oh78vkRCY+SSe4Egl2TWUaWOpxJeqEjNMWPMwEtB/lzVoglKGQL8JLK8nk?=
+ =?us-ascii?Q?+jPL1pq5Y3Nr58ojyF+n/wFGAF01eJtYhhcpsMwnzXW52QGo0VN1J//KqyLu?=
+ =?us-ascii?Q?gQ4oxaDW0/e0MP1yjOBPwrl16RWnna/AqMkPdRl4GUhJ430SrxtmUXNv7zzs?=
+ =?us-ascii?Q?PlPCye+dLVeoJeTaPcuHH7C82WTuC/E7nx0SuEu10kLBJusoUJkuv75X97qf?=
+ =?us-ascii?Q?uaUkd7ncfqRNAfnVn7W0ULxilv6g618s3GT4GA/T2XAB7q+kr7eJfEglXckv?=
+ =?us-ascii?Q?/JI1pTWQ8yNVQWcWo/2oPgQZbMYkd8GRyuB5canW7AY1DDYyj/CJDxiBQC4c?=
+ =?us-ascii?Q?Wc9NtkS30GwY1DjvqXU41x9guNjS0t0L1Ysn/OVGeo1m5vxeaEIldCGD4hPJ?=
+ =?us-ascii?Q?W0LnB2wtqxeIOr1EdnJ/kHrwguXGSXDje9zjS3JfPvBTWNbdFtj1AxYEvTGm?=
+ =?us-ascii?Q?4+T7bSy4vLLkI6BH7WnyiRetemN6Q9NPNvRVUf92m6zgmFevLQmH+JuXb9k/?=
+ =?us-ascii?Q?5K/xJaq24jWwT8h0Xlv64IbhvKd+Gqy4SJTBHXE89VeYg2X8WG4XrpTIZtYB?=
+ =?us-ascii?Q?CA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2df533cd-d098-4dc8-9013-08dc38b67ec5
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 23:37:03.7693
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 23:39:24.3950
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6C/91ffRKrzlDl9HVxKim2MZytUODH0VH7misf6C4PxPSeYvYnx8A/BHCuF70RwGIzsGnmV4mpYIiiZB8IvK+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8185
+X-MS-Exchange-CrossTenant-UserPrincipalName: cvHKny9rKTXSyuL8LLBw4TEGA4X5/WslLfo4W71ReyrBCzdvq4txcTcrm44EPBeTEhUvbM3exPrvHL0t2tyIBnlCGJFd+LXaGjYBDNJwtKM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB8327
+X-OriginatorOrg: intel.com
 
-On Wed, Feb 28, 2024 at 05:05:20PM -0600, Bjorn Helgaas wrote:
-> On Tue, Feb 27, 2024 at 04:47:09PM -0500, Frank Li wrote:
-> > pci-imx6.c and PCI_IMX6 actuall for all i.MX chips (i.MX6x, i.MX7x, i.MX8x,
-> > i.MX9x). Remove '6' to avoid confuse.
-> 
-> s/actuall for all/cover all/
-> s/confuse/confusion/
-> 
-> >  drivers/pci/controller/dwc/{pci-imx6.c => pci-imx.c} |  0
-> 
-> If we're going to rename it, we should rename it to "pcie-imx.c".
+On Thu, Feb 22, 2024 at 06:49:59AM -0800, Yury Norov wrote:
+>On Wed, Feb 21, 2024 at 03:59:06PM -0600, Lucas De Marchi wrote:
+>> On Wed, Feb 21, 2024 at 11:04:22PM +0200, Andy Shevchenko wrote:
+>> > On Wed, Feb 21, 2024 at 10:30:02PM +0200, Dmitry Baryshkov wrote:
+>> > > On Thu, 8 Feb 2024 at 09:45, Lucas De Marchi <lucas.demarchi@intel.com> wrote:
+>> >
+>> > ...
+>> >
+>> > > > +#define BITS_PER_TYPE(type)    (sizeof(type) * BITS_PER_BYTE)
+>> >
+>> > Can sizeof() be used in assembly?
+>> >
+>> > ...
+>> >
+>> > > > -#define __GENMASK(h, l) \
+>> > > > -       (((~UL(0)) - (UL(1) << (l)) + 1) & \
+>> > > > -        (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+>> > > > -#define GENMASK(h, l) \
+>> > > > -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+>> >
+>> > > > +#define __GENMASK(t, h, l) \
+>> > > > +       (GENMASK_INPUT_CHECK(h, l) + \
+>> > > > +        (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+>> > > > +        ((t)~0ULL >> (BITS_PER_TYPE(t) - 1 - (h)))))
+>> >
+>> > Nevertheless, the use ~0ULL is not proper assembly, this broke initial
+>> > implementation using UL() / ULL().
+>>
+>> indeed.
+>>
+>> >
+>> >
+>> > > > -#define __GENMASK_ULL(h, l) \
+>> > > > -       (((~ULL(0)) - (ULL(1) << (l)) + 1) & \
+>> > > > -        (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
+>> > > > -#define GENMASK_ULL(h, l) \
+>> > > > -       (GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
+>> >
+>> > Ditto.
+>>
+>> problem here seems actually because of the cast to the final type. My
+>> previous impl was avoiding that, but was too verbose compared to this.
+>>
+>> I will look at reverting this.
+>>
+>> Lucas De Marchi
+>
+>The fix is quite straightforward. Can you consider the following
+>patch? I tested it for C and x86_64 asm parts, and it compiles well.
+>
+>Thanks,
+>Yury
+>
+>From 78b2887eea26f208aac50ae283ba9a4d062bb997 Mon Sep 17 00:00:00 2001
+>From: Yury Norov <yury.norov@gmail.com>
+>Date: Wed, 7 Feb 2024 23:45:19 -0800
+>Subject: [PATCH v2] bits: introduce fixed-type GENMASKs
+>
+>Generalize __GENMASK() to support different types, and implement
+>fixed-types versions of GENMASK() based on it. The fixed-type version
+>allows more strict checks to the min/max values accepted, which is
+>useful for defining registers like implemented by i915 and xe drivers
+>with their REG_GENMASK*() macros.
+>
+>The strict checks rely on shift-count-overflow compiler check to
+>fail the build if a number outside of the range allowed is passed.
+>Example:
+>
+>	#define FOO_MASK GENMASK_U32(33, 4)
+>
+>will generate a warning like:
+>
+>	../include/linux/bits.h:41:31: error: left shift count >= width of type [-Werror=shift-count-overflow]
+>	   41 |          (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+>	      |                               ^~
+>
+>CC: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>	
+>Signed-off-by: Yury Norov <yury.norov@gmail.com>
+>Acked-by: Jani Nikula <jani.nikula@intel.com>
+>Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
 
-Good. I will update it.
+I build-tested this in x86-64, x86-32 and arm64. I didn't like much the
+need to fork the __GENMASK() implementation on the 2 sides of the ifdef
+since I think the GENMASK_INPUT_CHECK() should be the one covering the
+input checks. However to make it common we'd need to solve 2 problems:
+the casts and the sizeof. The sizeof can be passed as arg to
+__GENMASK(), however the casts I think would need a __CAST_U8(x)
+or the like and sprinkle it everywhere, which would hurt readability.
+Not pretty. Or go back to the original submission and make it less
+horrible :-/
 
-> 
-> It was my mistake long ago to use "pci-" instead of "pcie-".
-> 
-> > -config PCI_IMX6
-> > +config PCI_IMX
-> 
-> What does this look like to users who carry an old .config file
-> forward?
+>
+>---
+> include/linux/bitops.h |  1 -
+> include/linux/bits.h   | 41 ++++++++++++++++++++++++++++-------------
+> 2 files changed, 28 insertions(+), 14 deletions(-)
+>
+>diff --git a/include/linux/bitops.h b/include/linux/bitops.h
+>index 2ba557e067fe..1db50c69cfdb 100644
+>--- a/include/linux/bitops.h
+>+++ b/include/linux/bitops.h
+>@@ -15,7 +15,6 @@
+> #  define aligned_byte_mask(n) (~0xffUL << (BITS_PER_LONG - 8 - 8*(n)))
+> #endif
+>
+>-#define BITS_PER_TYPE(type)	(sizeof(type) * BITS_PER_BYTE)
+> #define BITS_TO_LONGS(nr)	__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(long))
+> #define BITS_TO_U64(nr)		__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u64))
+> #define BITS_TO_U32(nr)		__KERNEL_DIV_ROUND_UP(nr, BITS_PER_TYPE(u32))
+>diff --git a/include/linux/bits.h b/include/linux/bits.h
+>index 7c0cf5031abe..f3cf8d5f2b55 100644
+>--- a/include/linux/bits.h
+>+++ b/include/linux/bits.h
+>@@ -6,6 +6,8 @@
+> #include <vdso/bits.h>
+> #include <asm/bitsperlong.h>
+>
+>+#define BITS_PER_TYPE(type)	(sizeof(type) * BITS_PER_BYTE)
+>+
+> #define BIT_MASK(nr)		(UL(1) << ((nr) % BITS_PER_LONG))
+> #define BIT_WORD(nr)		((nr) / BITS_PER_LONG)
+> #define BIT_ULL_MASK(nr)	(ULL(1) << ((nr) % BITS_PER_LONG_LONG))
+>@@ -22,24 +24,37 @@
+> #define GENMASK_INPUT_CHECK(h, l) \
+> 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> 		__is_constexpr((l) > (h)), (l) > (h), 0)))
+>+#define __GENMASK(t, h, l) \
+>+	(GENMASK_INPUT_CHECK(h, l) + \
+>+	 (((t)~0ULL - ((t)(1) << (l)) + 1) & \
+>+	 ((t)~0ULL >> (BITS_PER_TYPE(t) - 1 - (h)))))
+> #else
+> /*
+>- * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+>- * disable the input check if that is the case.
+>+ * BUILD_BUG_ON_ZERO is not available in h files included from asm files.
+>+ * Similarly, assembler lacks for C types. So no parameters check in asm.
+>+ * It's users' responsibility to provide bitranges within a machine word
+>+ * boundaries.
+>  */
+> #define GENMASK_INPUT_CHECK(h, l) 0
+>+#define __GENMASK(t, h, l) \
+>+	((~0 - (1 << (l)) + 1) & (~0 >> (BITS_PER_LONG - 1 - (h))))
 
-I don't think people will use old .config when update to new kernel. I can
-keep PCI_IMX6 for config if have to.
+humn... this builds, but does it work if GENMASK_ULL() is used in
+assembly? That BITS_PER_LONG does not match the type width.
 
+Lucas De Marchi
 
+> #endif
+>
+>-#define __GENMASK(h, l) \
+>-	(((~UL(0)) - (UL(1) << (l)) + 1) & \
+>-	 (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
+>-#define GENMASK(h, l) \
+>-	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+>-
+>-#define __GENMASK_ULL(h, l) \
+>-	(((~ULL(0)) - (ULL(1) << (l)) + 1) & \
+>-	 (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
+>-#define GENMASK_ULL(h, l) \
+>-	(GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
+>+/*
+>+ * Generate a mask for the specified type @t. Additional checks are made to
+>+ * guarantee the value returned fits in that type, relying on
+>+ * shift-count-overflow compiler check to detect incompatible arguments.
+>+ * For example, all these create build errors or warnings:
+>+ *
+>+ * - GENMASK(15, 20): wrong argument order
+>+ * - GENMASK(72, 15): doesn't fit unsigned long
+>+ * - GENMASK_U32(33, 15): doesn't fit in a u32
+>+ */
+>+#define GENMASK(h, l)		__GENMASK(unsigned long,  h, l)
+>+#define GENMASK_ULL(h, l)	__GENMASK(unsigned long long, h, l)
+>+#define GENMASK_U8(h, l)	__GENMASK(u8,  h, l)
+>+#define GENMASK_U16(h, l)	__GENMASK(u16, h, l)
+>+#define GENMASK_U32(h, l)	__GENMASK(u32, h, l)
+>+#define GENMASK_U64(h, l)	__GENMASK(u64, h, l)
+>
+> #endif	/* __LINUX_BITS_H */
+>-- 
+>2.40.1
+>
 
