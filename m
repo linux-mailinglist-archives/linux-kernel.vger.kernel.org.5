@@ -1,301 +1,179 @@
-Return-Path: <linux-kernel+bounces-85487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A1F86B68F
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:59:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD49286B692
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C5A91F2438D
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:59:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D04011C23D96
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 17:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBD815F30E;
-	Wed, 28 Feb 2024 17:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2522D79B9C;
+	Wed, 28 Feb 2024 17:58:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vso+9MMN"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HKZhhflH"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239E974436
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CA579B8B
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 17:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709143027; cv=none; b=DfqOvez9KneqAVbIdAndQ1IS+CWx1PVWhzLpaCW1v1eBfPe74FeSHvGKixyPx4aiPUwDAFuJ5oqfLQKcDPTqs8h0yvxNcOluqAUrCG903JA7zmf7mj550K0coAcz6DxYb7vfzkpS0T+Dl1Pj4YWRJVPYU/KoP+ASzsDNPzom6Vs=
+	t=1709143095; cv=none; b=BIyoKN//x7bjoFxunXjwBi5BDa69klr4EbL3PkOogBByPXp5nQ9CqAZ/vlV740+SheHlMMZsipWqkJ5u0qtsY0/vZFJCJuikIgW+kEg+cXUPGPKR2uOeu2lg957e1Zw0J8+wS9XyPaF1jINc5Yxx9EDOItdfeL1RXOZltZpdoEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709143027; c=relaxed/simple;
-	bh=RFf0SovuHqWJtY0/DKROVO/7jIucJjMLUFN5wMVSl0U=;
-	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=M14gxrkb5WVyM07xQAPKRYXeoas3l2a/iKJLLvNlC1QOwTmDchvJYKuGHREtEhfYiAZyPBEAbSsNsj+Frn3/1Ak5gS4VTq4hnXyax1JcS+XWSFP8LkbBBDg6njiyABN1gzVN8+6n9CTNY0YN7wQB2YhCsSoDvlNLQIQdz80LCmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vso+9MMN; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcd94cc48a1so84344276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:57:05 -0800 (PST)
+	s=arc-20240116; t=1709143095; c=relaxed/simple;
+	bh=cwZiV52W0Y4J4E8o/fpSdIpBIClZMIEQbiWW06NOSag=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U/BbBH87cz0zB84VnxFr+BQvF0Y9dXkUcI6PD+4x9b1IqDKcL98iyoEQ/vBjmxy3tBaC0BLHHMTJD2/YEc6zpnr3zHxUR/gMyE60cYMsFvz09MWfosdQ6y+46sJESeZED5IHNgvgb90D7VTCj3+GrsDx1tqSAffQ7ciqPaUC2tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HKZhhflH; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5131a9b3d5bso1211948e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:58:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709143025; x=1709747825; darn=vger.kernel.org;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M6NqTe4lQsI2lCeybdcDVIAKYLSVy1HDfTgRobHAwi4=;
-        b=vso+9MMNgXr6fayIR2i1LyL62utD/cc1sKvPb0PfhNZwymo1M/gyZW+v3uaSHSdQU7
-         T2ov0MIlHn51uINxFF0lREaMCLvvGxnahnFJ3sweFaGaA9XM00ok8T1kWykxjbksnyH+
-         DBZuUOmpZnSkiDz0+1vXnj+Xzq2KUP/yQhv0VuZv2G1EsFOCJ6a+3atI5V72W+a+l178
-         jzwXs/pTCEx9TKnUYhw/IjmxoUsuZ8Fh+jXZwQoEM7RrkBAGeRmmCrqNOsdV859TX+Ee
-         zDTyJcnFzHG8Kgh64AobR9P1sBnBPNaJCL5KWytIbWh1XsJh0wmHkCRscWpA79GDD4Ud
-         8P/w==
+        d=linaro.org; s=google; t=1709143091; x=1709747891; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2jJWhDy/4v7p6ijvXOsuvAzvYiBXZd1/Rbd71b95v5s=;
+        b=HKZhhflH8oebgM1wEmzKZCTJ10RlHHrhICV4QIzMsB4cxSowyjldig2JJG9bvwicQw
+         PhzEAHNxM6jTSgMiNKqEbRKV0N0DdS/nzWgPmH+h4ZW5CEIsNMvgJuLVOn3KlxLeXBtV
+         4x1o0ztGHAQWLX9bFzEgRSN9jBSWUoid5Q430C0SN3I2MFJ60TjDbE2h81QbCOUrDJjZ
+         lCq54VZFvJCF9Z9j1U/eaVjK1cs0NNuSFSJTFfIRmQ9Qxf9WLGPuChNe+BfyvaRjot3h
+         lt1dYi3T7YVhLTsY1XPBvHnwLWVEBs223CJsPKAfMSegPeV5gkQUThNVWmAd9cmSRSBG
+         R4lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709143025; x=1709747825;
-        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M6NqTe4lQsI2lCeybdcDVIAKYLSVy1HDfTgRobHAwi4=;
-        b=JsDASKh1ybCS0+eavV6d/gFyOzuFBrgJdQsVLe4UaaqmKJtW0af7W7igm+ZPwakpaU
-         glkXaifH6mSoe+fiZD1XcguzgAcWIcyuZRem/JP6O57grU1ClbdFZrwZfzUlsCsbbG+s
-         D1o5YePtSMpm2f+ihzn2VmaAsi8mmymAuj+DBJQbzkBNK5TAFsuPHDPoi1BTDOtdyq6A
-         0NhboOhStHEHgaIoHDQMCIo8Dl4FKhU99GZFFoN0yQ5Urb5wCeag+EiSp2iGOkWxDbMY
-         bpemD53NTmJzf2ldEamCpVfJthNJBaKlLHN4SapTW5X3ucD8RkuWPeVyByBUnuq8xVH6
-         4J4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWUCOFp9bB4EVyng55KITjzfKUV3Tom6mo5J+nz3qYzC148bBiUIq54A2dMFbc1O0r0ZbV2bIzNQj723rWKh3RwGB7q2n6L5FqUeZ0k
-X-Gm-Message-State: AOJu0YyyXuV8Px4Mw/NHlBy/GKWb33SWWlmgh64czsrduyfRRKVtvOBZ
-	XJlTLGUt4bbbOFHjERSuMfp63ANt59oJFNIX9LuBINXuYqqnz2q/jxinXNTbkjZJ/DIXnN4Vw0d
-	p4Wwssw==
-X-Google-Smtp-Source: AGHT+IEXq2MY86zbh8qNj0dj6Z5P07UKBCnxR9qEnKybPAvKfXIeSsHZc2tWN3H1cMUiTPnEctFXUrTRqY9Z
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:77dc:144c:334e:e2dd])
- (user=irogers job=sendgmr) by 2002:a05:6902:1244:b0:dcf:b5b8:f825 with SMTP
- id t4-20020a056902124400b00dcfb5b8f825mr11204ybu.0.1709143025258; Wed, 28 Feb
- 2024 09:57:05 -0800 (PST)
-Date: Wed, 28 Feb 2024 09:56:17 -0800
-In-Reply-To: <20240228175617.4049201-1-irogers@google.com>
-Message-Id: <20240228175617.4049201-13-irogers@google.com>
+        d=1e100.net; s=20230601; t=1709143091; x=1709747891;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2jJWhDy/4v7p6ijvXOsuvAzvYiBXZd1/Rbd71b95v5s=;
+        b=V5Asj2qvO/4MHVpyka7Ywq9/r92CXngJiNNxPcQ/gU3rtkft4CrtnqokcpWBfwahTQ
+         7WaCR8C/ghtcsgmOD5UrHe9xRxu6oBqUEiz38ZQytxTfwLmUyL8dKFPiDMt9ldfdP51z
+         C1AxECExdixmkVusuMYeyFarizc3SIlaO4ueuF+AsMss+dF1cj0iot7o69dk9RCwcdPZ
+         BXgKFxbIXW6LAjxRXNM4kjDZjfZoAarOGjbrMQPXOs7kwYrDgW3P9NAk7aNQocuhVGke
+         DcotZr7RxWCM9iXrpYdydW0KeDW4xnirdSGpwYJUEXwKIjYn1FAwNAUh+AwRXA4KcALr
+         tnuw==
+X-Forwarded-Encrypted: i=1; AJvYcCUeOeQHbUq6mPWDs59YKHJQeVcSRJ1LAyh7RJZ115O6iAWNkmVCQEb0TthJQJJfgoIYnLoRMR8nEYFmOeqBhfO6Fy+4MmNZYCpzqI9M
+X-Gm-Message-State: AOJu0YzvXS5kUQ9aXjkd6R/cQcanr2QByGa+F4lpUIyaJghkpvtGcbXg
+	hzpYXvQMGUfvpR4u0OPeFqmiefnoLHKe6s88apiXkVMqZWZGPRS4HIboRKPmXY8=
+X-Google-Smtp-Source: AGHT+IGeMb8GvdN1GKFJ44gE1Wrb49Q1GOwh8I5mdv3/2IvchNoaxUJcJdry4KzXQeujNBKsOdl3zw==
+X-Received: by 2002:a19:ae05:0:b0:512:c9bc:f491 with SMTP id f5-20020a19ae05000000b00512c9bcf491mr269277lfc.47.1709143091336;
+        Wed, 28 Feb 2024 09:58:11 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id eo8-20020a056000428800b0033dcac2a8dasm12637657wrb.68.2024.02.28.09.58.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 09:58:10 -0800 (PST)
+Date: Wed, 28 Feb 2024 20:58:07 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Lukasz Majewski <lukma@denx.de>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Andrew Lunn <andrew@lunn.ch>,
+	Eric Dumazet <edumazet@google.com>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	Tristram.Ha@microchip.com,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Ravi Gunasekaran <r-gunasekaran@ti.com>,
+	Simon Horman <horms@kernel.org>,
+	Wojciech Drewek <wojciech.drewek@intel.com>,
+	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Murali Karicheri <m-karicheri2@ti.com>,
+	Ziyang Xuan <william.xuanziyang@huawei.com>,
+	Kristian Overskeid <koverskeid@gmail.com>,
+	Matthieu Baerts <matttbe@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] net: hsr: Provide RedBox support
+Message-ID: <9ea38811-4297-424d-b82c-855ee75579f0@moroto.mountain>
+References: <20240228150735.3647892-1-lukma@denx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228175617.4049201-1-irogers@google.com>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-Subject: [PATCH v1 12/12] perf jevents: Add load event json to verify and
- allow fallbacks
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
-	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Sandipan Das <sandipan.das@amd.com>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Perry Taylor <perry.taylor@intel.com>, 
-	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
-	Weilin Wang <weilin.wang@intel.com>, Edward Baker <edward.baker@intel.com>, 
-	Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228150735.3647892-1-lukma@denx.de>
 
-Add a LoadEvents function that loads all event json files in a
-directory. In the Event constructor ensure all events are defined in
-the event json except for legacy events like "cycles". If the initial
-event isn't found then legacy_event1 is used, and if that isn't found
-legacy_event2 is used. This allows a single Event to have multiple
-event names as models will often rename the same event over time. If
-the event doesn't exist an exception is raised.
+On Wed, Feb 28, 2024 at 04:07:35PM +0100, Lukasz Majewski wrote:
+>  void hsr_debugfs_rename(struct net_device *dev)
+>  {
+> @@ -95,6 +114,19 @@ void hsr_debugfs_init(struct hsr_priv *priv, struct net_device *hsr_dev)
+>  		priv->node_tbl_root = NULL;
+>  		return;
+>  	}
+> +
+> +	if (!priv->redbox)
+> +		return;
+> +
+> +	de = debugfs_create_file("proxy_node_table", S_IFREG | 0444,
+> +				 priv->node_tbl_root, priv,
+> +				 &hsr_proxy_node_table_fops);
+> +	if (IS_ERR(de)) {
+> +		pr_err("Cannot create hsr proxy node_table file\n");
 
-So that references to metrics can be added, add the MetricRef
-class. This doesn't validate as an event name and so provides an
-escape hatch for metrics to refer to each other.
+Debugfs functions are not supposed to be checked.  This will print a
+warning when CONFIG_DEBUGFS is disabled.  Just leave all the clean up
+out.  If debugfs can't allocate enough memory then probably this one
+debugfs_remove() is not going to save us.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/pmu-events/amd_metrics.py   |  7 ++-
- tools/perf/pmu-events/arm64_metrics.py |  7 ++-
- tools/perf/pmu-events/intel_metrics.py |  7 ++-
- tools/perf/pmu-events/metric.py        | 77 +++++++++++++++++++++++++-
- 4 files changed, 92 insertions(+), 6 deletions(-)
+> +		debugfs_remove(priv->node_tbl_root);
+> +		priv->node_tbl_root = NULL;
+> +		return;
+> +	}
+>  }
+>  
+>  /* hsr_debugfs_term - Tear down debugfs intrastructure
 
-diff --git a/tools/perf/pmu-events/amd_metrics.py b/tools/perf/pmu-events/amd_metrics.py
-index cb850ab1ed13..227f9b98c016 100755
---- a/tools/perf/pmu-events/amd_metrics.py
-+++ b/tools/perf/pmu-events/amd_metrics.py
-@@ -1,14 +1,19 @@
- #!/usr/bin/env python3
- # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--from metric import (JsonEncodeMetric, JsonEncodeMetricGroupDescriptions, MetricGroup)
-+from metric import (JsonEncodeMetric, JsonEncodeMetricGroupDescriptions, LoadEvents,
-+                    MetricGroup)
- import argparse
- import json
-+import os
- 
- parser = argparse.ArgumentParser(description="AMD perf json generator")
- parser.add_argument("-metricgroups", help="Generate metricgroups data", action='store_true')
- parser.add_argument("model", help="e.g. amdzen[123]")
- args = parser.parse_args()
- 
-+directory = f"{os.path.dirname(os.path.realpath(__file__))}/arch/x86/{args.model}/"
-+LoadEvents(directory)
-+
- all_metrics = MetricGroup("",[])
- 
- if args.metricgroups:
-diff --git a/tools/perf/pmu-events/arm64_metrics.py b/tools/perf/pmu-events/arm64_metrics.py
-index a54fa8aae2fa..7cd0ebc0bd80 100755
---- a/tools/perf/pmu-events/arm64_metrics.py
-+++ b/tools/perf/pmu-events/arm64_metrics.py
-@@ -1,8 +1,10 @@
- #!/usr/bin/env python3
- # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--from metric import (JsonEncodeMetric, JsonEncodeMetricGroupDescriptions, MetricGroup)
-+from metric import (JsonEncodeMetric, JsonEncodeMetricGroupDescriptions, LoadEvents,
-+                    MetricGroup)
- import argparse
- import json
-+import os
- 
- parser = argparse.ArgumentParser(description="ARM perf json generator")
- parser.add_argument("-metricgroups", help="Generate metricgroups data", action='store_true')
-@@ -10,6 +12,9 @@ parser.add_argument("vendor", help="e.g. arm")
- parser.add_argument("model", help="e.g. neoverse-n1")
- args = parser.parse_args()
- 
-+directory = f"{os.path.dirname(os.path.realpath(__file__))}/arch/arm64/{args.vendor}/{args.model}/"
-+LoadEvents(directory)
-+
- all_metrics = MetricGroup("",[])
- 
- if args.metricgroups:
-diff --git a/tools/perf/pmu-events/intel_metrics.py b/tools/perf/pmu-events/intel_metrics.py
-index 8b67b9613ab5..4fbb31c9eccd 100755
---- a/tools/perf/pmu-events/intel_metrics.py
-+++ b/tools/perf/pmu-events/intel_metrics.py
-@@ -1,14 +1,19 @@
- #!/usr/bin/env python3
- # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
--from metric import (JsonEncodeMetric, JsonEncodeMetricGroupDescriptions, MetricGroup)
-+from metric import (JsonEncodeMetric, JsonEncodeMetricGroupDescriptions, LoadEvents,
-+                    MetricGroup)
- import argparse
- import json
-+import os
- 
- parser = argparse.ArgumentParser(description="Intel perf json generator")
- parser.add_argument("-metricgroups", help="Generate metricgroups data", action='store_true')
- parser.add_argument("model", help="e.g. skylakex")
- args = parser.parse_args()
- 
-+directory = f"{os.path.dirname(os.path.realpath(__file__))}/arch/x86/{args.model}/"
-+LoadEvents(directory)
-+
- all_metrics = MetricGroup("",[])
- 
- if args.metricgroups:
-diff --git a/tools/perf/pmu-events/metric.py b/tools/perf/pmu-events/metric.py
-index 0326050f1e0f..7d445e47ae09 100644
---- a/tools/perf/pmu-events/metric.py
-+++ b/tools/perf/pmu-events/metric.py
-@@ -3,10 +3,50 @@
- import ast
- import decimal
- import json
-+import os
- import re
- from enum import Enum
- from typing import Dict, List, Optional, Set, Tuple, Union
- 
-+all_events = set()
-+
-+def LoadEvents(directory: str) -> None:
-+  """Populate a global set of all known events for the purpose of validating Event names"""
-+  global all_events
-+  all_events = {
-+      "context\-switches",
-+      "cycles",
-+      "duration_time",
-+      "instructions",
-+      "l2_itlb_misses",
-+  }
-+  for file in os.listdir(os.fsencode(directory)):
-+    filename = os.fsdecode(file)
-+    if filename.endswith(".json"):
-+      for x in json.load(open(f"{directory}/{filename}")):
-+        if "EventName" in x:
-+          all_events.add(x["EventName"])
-+        elif "ArchStdEvent" in x:
-+          all_events.add(x["ArchStdEvent"])
-+
-+
-+def CheckEvent(name: str) -> bool:
-+  """Check the event name exists in the set of all loaded events"""
-+  global all_events
-+  if len(all_events) == 0:
-+    # No events loaded so assume any event is good.
-+    return True
-+
-+  if ':' in name:
-+    # Remove trailing modifier.
-+    name = name[:name.find(':')]
-+  elif '/' in name:
-+    # Name could begin with a PMU or an event, for now assume it is good.
-+    return True
-+
-+  return name in all_events
-+
-+
- class MetricConstraint(Enum):
-   GROUPED_EVENTS = 0
-   NO_GROUP_EVENTS = 1
-@@ -317,9 +357,18 @@ def _FixEscapes(s: str) -> str:
- class Event(Expression):
-   """An event in an expression."""
- 
--  def __init__(self, name: str, legacy_name: str = ''):
--    self.name = _FixEscapes(name)
--    self.legacy_name = _FixEscapes(legacy_name)
-+  def __init__(self, *args: str):
-+    error = ""
-+    for name in args:
-+      if CheckEvent(name):
-+        self.name = _FixEscapes(name)
-+        return
-+      if error:
-+        error += " or " + name
-+      else:
-+        error = name
-+    global all_events
-+    raise Exception(f"No event {error} in:\n{all_events}")
- 
-   def ToPerfJson(self):
-     result = re.sub('/', '@', self.name)
-@@ -338,6 +387,28 @@ class Event(Expression):
-     return self
- 
- 
-+class MetricRef(Expression):
-+  """A metric reference in an expression."""
-+
-+  def __init__(self, name: str):
-+    self.name = _FixEscapes(name)
-+
-+  def ToPerfJson(self):
-+    return self.name
-+
-+  def ToPython(self):
-+    return f'MetricRef(r"{self.name}")'
-+
-+  def Simplify(self) -> Expression:
-+    return self
-+
-+  def Equals(self, other: Expression) -> bool:
-+    return isinstance(other, MetricRef) and self.name == other.name
-+
-+  def Substitute(self, name: str, expression: Expression) -> Expression:
-+    return self
-+
-+
- class Constant(Expression):
-   """A constant within the expression tree."""
- 
--- 
-2.44.0.278.ge034bb2e1d-goog
+[ snip ]
+
+> @@ -545,8 +558,8 @@ static const unsigned char def_multicast_addr[ETH_ALEN] __aligned(2) = {
+>  };
+>  
+>  int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
+> -		     unsigned char multicast_spec, u8 protocol_version,
+> -		     struct netlink_ext_ack *extack)
+> +		     struct net_device *interlink, unsigned char multicast_spec,
+> +		     u8 protocol_version, struct netlink_ext_ack *extack)
+>  {
+>  	bool unregister = false;
+>  	struct hsr_priv *hsr;
+> @@ -555,6 +568,7 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
+>  	hsr = netdev_priv(hsr_dev);
+>  	INIT_LIST_HEAD(&hsr->ports);
+>  	INIT_LIST_HEAD(&hsr->node_db);
+> +	INIT_LIST_HEAD(&hsr->proxy_node_db);
+>  	spin_lock_init(&hsr->list_lock);
+>  
+>  	eth_hw_addr_set(hsr_dev, slave[0]->dev_addr);
+> @@ -615,6 +629,18 @@ int hsr_dev_finalize(struct net_device *hsr_dev, struct net_device *slave[2],
+>  	if (res)
+>  		goto err_unregister;
+>  
+> +	if (interlink) {
+> +		res = hsr_add_port(hsr, interlink, HSR_PT_INTERLINK, extack);
+> +		if (res)
+> +			goto err_unregister;
+
+You need to add the iterlink port to hsr_del_ports() to avoid a leak in
+the remove() function.
+
+regards,
+dan carpenter
+
+> +
+> +		hsr->redbox = true;
+> +		ether_addr_copy(hsr->macaddress_redbox, interlink->dev_addr);
+> +		timer_setup(&hsr->prune_proxy_timer, hsr_prune_proxy_nodes, 0);
+> +		mod_timer(&hsr->prune_proxy_timer,
+> +			  jiffies + msecs_to_jiffies(PRUNE_PROXY_PERIOD));
+> +	}
+> +
+>  	hsr_debugfs_init(hsr, hsr_dev);
+>  	mod_timer(&hsr->prune_timer, jiffies + msecs_to_jiffies(PRUNE_PERIOD));
+>  
 
 
