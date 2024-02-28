@@ -1,159 +1,101 @@
-Return-Path: <linux-kernel+bounces-84821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB2A086AC05
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:17:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED4886AC06
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 11:18:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 339A7B23C39
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:17:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E7281C2148C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F1245941;
-	Wed, 28 Feb 2024 10:17:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C004D59F;
+	Wed, 28 Feb 2024 10:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sKxKZKBm"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LG8R525/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5102744C67
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C1E482FE
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 10:18:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709115446; cv=none; b=Wtwzaez4keHbZVshr2W1BO2Qq0KFvrK5SWCBD7OZ2G59nqg7+dvhjWuL87AsZB77064VccEYq0InM+iuHL0Lm8xJFgo66NmNLaE2VQygBqi5wamC5FAJ93mZUY4Mr+KvC8uFN+uTKa0RnlNM+REwUJmLTFvZJ1SGBO7/EqBiKRg=
+	t=1709115526; cv=none; b=cN8CiAzwzTANMex0NyNoS9ThzcPm3bnSO7PVzHvWsUHciWMHwik+pZlmcaYOWD4RPvByR+ywBlM/9gJAxtTCyw6teQR5JopbuPNAsXfWhiiTmiMeQ5nLgtrzoAur+6kQvcLok9KmhHRCW6HRnUF4HCIwS//xp7YsZ9M0YuZMYhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709115446; c=relaxed/simple;
-	bh=IH3Bikqi68/A7myTJacr+ILlvEGyjU3gcgKm2F9+LWA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BEgZBFPw2bhGFybAc2hqN6ZR+RfsNxb9anq5OUwihbRssdRa5Lq6dLhNXEQXJWyYGAp2R/jwFoiy0ZH7DOb1FSiGE6+TEP4kvLEoxoN7jzN9WD2naZvHH6DcvgaToTrUhSP+sWH7Pt4CJy7nO9JI/YwpwBY3QPymodGB055dR+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sKxKZKBm; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412a3901eaaso25196085e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 02:17:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709115442; x=1709720242; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CoC1aILR23YFVOifjxSejtqanuyoJI7UmmW0U6nvIzU=;
-        b=sKxKZKBmuqS3jUyOaAKDYxS5lPkpLaDSQnWoSPTw/9PWDdU5/OAMFe3frRcOFUrxyd
-         +3G4CFaVhIQVaSBnFozZqYWIVvRsDNNN9T0Eb/xmzbJzLKQ0uiYTqnQ/7kUuIggNTYXi
-         uHTc3yPutfAM/HxmiTFP9pb+jkCk3Op+zbWVjpGea3Y9rMSqVXDcrfSf7eVivpYjzn9N
-         gL5QcHTSONvdYbazTKN6BK51U19VVsjCaxS6GyKwPhRUB4dwplONnnOvXR5pZqq1mfJZ
-         cEW5swr9cPbURo7xGrhc80Ep0AXMvXZAF9O6gqmAPik51PTLFQNQTeDldWTYH4zkH6T3
-         zTQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709115442; x=1709720242;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CoC1aILR23YFVOifjxSejtqanuyoJI7UmmW0U6nvIzU=;
-        b=mTaR4ZJmYd208zbYQjZFOAm5ULFPNPxteUy49zoCtdLBDRHXws+B4329MDZj2AG2nu
-         51pq+W3dBHmiHVRuycx2/r03Ig78aSRMlV0oYpHgREAJUnlwFZAcpqAXN9d4WhboHRQw
-         Vj0lQfwpehRx6iMfV2tCjdDH6GPr1pILwIUUQ0H6bGpQIJY64dLrzIIQC/gJctOl1bED
-         LtvsAhV2EUdVhrP0CpCmSrXdEcqr5HIyKv3eeAH29/P2qkzKvD9OPmwemFFQPBX+wPJ1
-         di4r5tWCkHXxfLHnHmawZKrNYDFB6NmjM6Kmj+2L/hWdzxuDlKklVpE7Nr7JPZ6pQ4as
-         rG1g==
-X-Forwarded-Encrypted: i=1; AJvYcCXj36CTuNMSjZLM+FdWT9T7P8XmxoRhgNQbuBUS0adg4UQsTpBfCLnb50lE1gfHB9affvKsZmQ+xikusT9rhqUPXSmEQGgEU+69FK0s
-X-Gm-Message-State: AOJu0Yw9Wt5JOOKmTAdQQRL544aYI53pSQyTrLtOdg7CA4ZYKwRS1NpE
-	3dvFpfNBAoPz2cvxwyqAP/deeZAmcKnmPRK5UbTzTCh1s2SxnqqeykC+ZvimJwA=
-X-Google-Smtp-Source: AGHT+IEpamqaOQJDn0FhlvGVDX/h+ul85tspB7tBYEVrVbYsrmgIR5nB914VhdUa8+jQISj4AybjKg==
-X-Received: by 2002:a05:600c:548a:b0:412:9e75:29f1 with SMTP id iv10-20020a05600c548a00b004129e7529f1mr8539047wmb.28.1709115441614;
-        Wed, 28 Feb 2024 02:17:21 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id s28-20020a05600c319c00b00412a38e732csm1605103wmp.35.2024.02.28.02.17.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 02:17:21 -0800 (PST)
-Date: Wed, 28 Feb 2024 13:17:17 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: andy@greyhouse.net, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net 2/2] net: tehuti: Fix leaks in the error handling
- path of bdx_probe()
-Message-ID: <3b12e1e2-4859-40b6-8d9d-0a940251bed4@moroto.mountain>
-References: <cover.1709066709.git.christophe.jaillet@wanadoo.fr>
- <9090b599c7574892b77a9521e3ddb3a52a154205.1709066709.git.christophe.jaillet@wanadoo.fr>
+	s=arc-20240116; t=1709115526; c=relaxed/simple;
+	bh=5nMH6rhMv/5mgGZqAP+nH6ZKn9Su5tHGv21eiWmAMG0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=n0VCtGYzNqivukBb9p5+0r77ITd7ETvL36BOkX5RY1TAVG8++zTOINKGUy/xNeyiYvvLMQ9vyZ7fkDh2QjUtOUyRkhU6pTJTeY2J1sIzmSpYzYUtekVdqQmNENVJHRJgWse8Qu4iPqH3Yaw1YK6v4Gj7coxiBkRUujOkyBB/Xps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LG8R525/; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709115523;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=iFcTu4vWXsmQv14zHnSYq8RhqP6dIPyBbIRKHjBzM90=;
+	b=LG8R525/o3Vy+pT5xQqtVKQ/C8SE8/ytbYoUJOhjk6ZlzCz+SFrCSwkagyBRXWhBNgt9go
+	k1iuN6EFhgG11F0UFVt4dawq53hnSEKGiMtALu9V3A9lMnihruuLF2bEIvCdoW71KObmKI
+	imESXjQ06Mv42A7mhsqk6TQ33deChmA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-173-FP8xKnhlP221lR6BnYgJXQ-1; Wed,
+ 28 Feb 2024 05:18:39 -0500
+X-MC-Unique: FP8xKnhlP221lR6BnYgJXQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5ED8B3C11A06;
+	Wed, 28 Feb 2024 10:18:39 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.226.93])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 268818177;
+	Wed, 28 Feb 2024 10:18:38 +0000 (UTC)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: Li RongQing <lirongqing@baidu.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] KVM: x86: Fix KVM_FEATURE_PV_UNHALT update logic
+Date: Wed, 28 Feb 2024 11:18:34 +0100
+Message-ID: <20240228101837.93642-1-vkuznets@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9090b599c7574892b77a9521e3ddb3a52a154205.1709066709.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Tue, Feb 27, 2024 at 09:50:56PM +0100, Christophe JAILLET wrote:
-> If an error occurs when allocating the net_device, all the one already
-> allocated and registered should be released, as already done in the remove
-> function.
-> 
-> Add a new label, remove the now useless 'err_out_disable_msi' label and
-> adjust the error handling path accordingly.
-> 
-> Fixes: 1a348ccc1047 ("[NET]: Add Tehuti network driver.")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Compile tested only.
-> ---
->  drivers/net/ethernet/tehuti/tehuti.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/tehuti/tehuti.c b/drivers/net/ethernet/tehuti/tehuti.c
-> index 938a5caf5a3b..6678179885cb 100644
-> --- a/drivers/net/ethernet/tehuti/tehuti.c
-> +++ b/drivers/net/ethernet/tehuti/tehuti.c
-> @@ -1965,7 +1965,7 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  		ndev = alloc_etherdev(sizeof(struct bdx_priv));
->  		if (!ndev) {
->  			err = -ENOMEM;
-> -			goto err_out_disable_msi;
-> +			goto err_out_free;
->  		}
->  
->  		ndev->netdev_ops = &bdx_netdev_ops;
-> @@ -2031,13 +2031,13 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  		if (bdx_read_mac(priv)) {
->  			pr_err("load MAC address failed\n");
->  			err = -EFAULT;
-> -			goto err_out_disable_msi;
-> +			goto err_out_free_current;
->  		}
->  		SET_NETDEV_DEV(ndev, &pdev->dev);
->  		err = register_netdev(ndev);
->  		if (err) {
->  			pr_err("register_netdev failed\n");
-> -			goto err_out_free;
-> +			goto err_out_free_current;
->  		}
->  		netif_carrier_off(ndev);
->  		netif_stop_queue(ndev);
-> @@ -2046,9 +2046,14 @@ bdx_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->  	}
->  	RET(0);
->  
-> -err_out_free:
-> +err_out_free_current:
->  	free_netdev(ndev);
+Guest hangs in specific configurations (KVM_X86_DISABLE_EXITS_HLT) are 
+reported and the issue was bisected to commit ee3a5f9e3d9b ("KVM: x86: Do
+runtime CPUID update before updating vcpu->arch.cpuid_entries") which, of
+course, carries "No functional change intended" blurb. Turns out, moving
+__kvm_update_cpuid_runtime() earlier in kvm_set_cpuid() to tweak the 
+incoming CPUID data before checking it wasn't innocent as 
+KVM_FEATURE_PV_UNHALT reset logic relies on cached KVM CPUID base which
+gets updated later.
 
-Since it seems like you're going to be resending this patch, could you
-do this free_netdev() before gotos?  That way if someone adds more code
-after the loop then we can still use the goto ladder to unwind.  (No one
-is going to add more code after the loop, I know...  I wouldn't have
-commented except that it seemed like you were going to resend.)
+I was not able to reproduce the issue with QEMU myself so I wrote a
+selftest to show the problem.
 
-		if (bdx_read_mac(priv)) {
-			free_netdev(ndev);
-			pr_err("load MAC address failed\n");
-			err = -EFAULT;
-			goto err_out_free;
-		}
+Vitaly Kuznetsov (3):
+  KVM: x86: Introduce __kvm_get_hypervisor_cpuid() helper
+  KVM: x86: Use actual kvm_cpuid.base for clearing KVM_FEATURE_PV_UNHALT
+  KVM: selftests: Check that KVM_FEATURE_PV_UNHALT is cleared with
+    KVM_X86_DISABLE_EXITS_HLT
 
-regards,
-dan carpenter
+ arch/x86/kvm/cpuid.c                          | 42 ++++++++++++-------
+ .../selftests/kvm/x86_64/kvm_pv_test.c        | 42 +++++++++++++++++++
+ 2 files changed, 68 insertions(+), 16 deletions(-)
 
+
+base-commit: 0cbca1bf44a0b8666c91ce3438f235c6fe70fbf1
+-- 
+2.43.0
 
 
