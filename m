@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-85280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ECC786B369
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:41:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6391E86B36B
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 16:41:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A13991C2615E
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:41:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F57628856C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 15:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62DD15E5A8;
-	Wed, 28 Feb 2024 15:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE3615E5CD;
+	Wed, 28 Feb 2024 15:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oc0UR0W5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nyAvpgaw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E0D15DBCC;
-	Wed, 28 Feb 2024 15:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989BE15CD76;
+	Wed, 28 Feb 2024 15:40:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709134834; cv=none; b=QJVbA5KEYbetG+DjU0d8QJTGy1wZy0rP/EnG9eKGB5719uqQ/Bb6uzQ1lgFaS/mJPCq6yZT/ScDR4fOEHkEEiPt9Mxk0piyczbsCJOfKegw5OR/VK7MfVDzZTZRL7gyosbjCuygt8szq0du7hWq2VGe18knl/18JmhJidC019wI=
+	t=1709134836; cv=none; b=jB9WXKpdbIyylCVp4476ko8g6hdH9+/+ecP4fe/NrQGuFDOy04muko23fOul9gjU+gegb4N0u2ZWtdbHVCb+2XMwRR5yf9M95sFgex4SqVJYgheJm3NUNAheTYoZGfFW7jIIjZnm8NOj3J+3UbquVioG5u1R9HQ9CNFAKRVkDRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709134834; c=relaxed/simple;
-	bh=tsYF06O0hUx6z4ZysguYUFGc6hPhoeQDqvJiBqFtdJ8=;
+	s=arc-20240116; t=1709134836; c=relaxed/simple;
+	bh=EdBXZWWZuhFQ2tBqeSWmQW8C9/3C6rfZGCgEINTeNPs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k33f4PYWOZsc0eoKVLaGIjpPLqPo7pb1EJEb0i2hcicuPhsV5WYxN2c+5e2bdqYbPmLMxj1BSFULTyg2ALDXhU/EBIP8kF0gPs5Y1+8hMSxsMSzRERyuFZgK0YR3CUHFzOf9Ogbo4AcUQ6WyY/KsphHH8NutjmJQJe0jl4TEqj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oc0UR0W5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11DA2C433F1;
-	Wed, 28 Feb 2024 15:40:32 +0000 (UTC)
+	 MIME-Version:Content-Type; b=tPGfT2mQTZSqiUSmdjEKwNodAGgRze+bSuRLCZ1eTJCUlFAQepD1bNMZpy1hmIYP6appAezi/IP/bt7cD9huKNayMWnhcL1jhYcckMe8TtPivGCi0S7soZ7Pb38LQYfhUDzKtHgJ1KotCHykYgU5QxYRP09xpKA4++EgrgF6bK0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nyAvpgaw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFE28C43394;
+	Wed, 28 Feb 2024 15:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709134833;
-	bh=tsYF06O0hUx6z4ZysguYUFGc6hPhoeQDqvJiBqFtdJ8=;
+	s=k20201202; t=1709134836;
+	bh=EdBXZWWZuhFQ2tBqeSWmQW8C9/3C6rfZGCgEINTeNPs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oc0UR0W52EEdg18ChVfUPfTObi+XvVwTxZAZCH0pYpvuH6Rkp35mP2PjYQsFADrls
-	 m1ezLLZ7tR5oWqiOAxAQRelAOAltWSIuPcaDMoxN+UVuJdSpvgFp6vwIGR/Vc1l8Ai
-	 iRgF4MnYtsQZsdsdcbZFF+LDY6lV5lN4GcHclccBBlheViyEExSKgTtkBQ9q/hisbG
-	 586XL4Z+RGP7nn5eE4Mx/B1kOEj/na4QsBOCC/I2odX0ikOs1PHi/kwcoJpH3Y6Z4Q
-	 K1rFK8gKXXSvRmcCyP/ctftY0FsQIr+ziGP7tk02F/ENhvL4ANxcDf0BImQmltQlW8
-	 RJCXawW2vMoMA==
+	b=nyAvpgawbjRhXN3/idGsieliKuBer1VZ4n5wUriSTJKwJKF5v4z6qteLWf9kwTt7S
+	 S3pjYTZZFoTyyx8U4OocIU5RbG8rpPhLwp3kEOnjggislmg9b8efSUJGaV0sOUmQUE
+	 hBYeEokykF1BjV5uWDsOYwM9UK0Ke1Mgr5TLXBeHwIgm37Wu+My+P/jWWcAOe/wlUx
+	 LkmgGkwW1txkgcjGcVCJEfNpUE3OPIr2DdJYtcCpIJY/fGzXsA+yKhGJurXVk6g/fk
+	 umk/ws+Zn43pmDM6KDbw6GKW8eof6L/aeqfuY/wwWb4TKxYekwi3QzvBappQ2F+nMR
+	 Nxkvw138GytBg==
 From: Maxime Ripard <mripard@kernel.org>
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Thomas Zimmermann <tzimmermann@suse.de>,
@@ -62,12 +62,12 @@ Cc: Hans Verkuil <hverkuil@xs4all.nl>,
 	linux-media@vger.kernel.org,
 	linux-rockchip@lists.infradead.org,
 	linux-sunxi@lists.linux.dev
-Subject: Re: (subset) [PATCH v7 04/36] drm/tests: Add helper to create mock crtc
-Date: Wed, 28 Feb 2024 16:40:17 +0100
-Message-ID: <170913481316.384117.15338048951068923035.b4-ty@kernel.org>
+Subject: Re: (subset) [PATCH v7 05/36] drm/tests: connector: Add tests for drmm_connector_init
+Date: Wed, 28 Feb 2024 16:40:18 +0100
+Message-ID: <170913481316.384117.11464006515273994691.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240222-kms-hdmi-connector-state-v7-4-8f4af575fce2@kernel.org>
-References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org> <20240222-kms-hdmi-connector-state-v7-4-8f4af575fce2@kernel.org>
+In-Reply-To: <20240222-kms-hdmi-connector-state-v7-5-8f4af575fce2@kernel.org>
+References: <20240222-kms-hdmi-connector-state-v7-0-8f4af575fce2@kernel.org> <20240222-kms-hdmi-connector-state-v7-5-8f4af575fce2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,15 +77,11 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Thu, 22 Feb 2024 19:13:50 +0100, Maxime Ripard wrote:
-> We're going to need a full-blown, functional, KMS device to test more
-> components of the atomic modesetting infrastructure.
+On Thu, 22 Feb 2024 19:13:51 +0100, Maxime Ripard wrote:
+> drmm_connector_init is the preferred function to initialize a
+> drm_connector structure. Let's add a bunch of unit tests for it.
 > 
-> Let's add a new helper to create a dumb, mocked, CRTC. By default it
-> will create a CRTC relying only on the default helpers, but drivers are
-> free to deviate from that.
 > 
-> [...]
 
 Applied to drm/drm-misc (drm-misc-next).
 
