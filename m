@@ -1,123 +1,156 @@
-Return-Path: <linux-kernel+bounces-84774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84776-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC45D86AB64
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:35:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9A086AB67
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:36:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26980B2570B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:35:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E1F8282105
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:36:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C70383A2;
-	Wed, 28 Feb 2024 09:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AC536B0E;
+	Wed, 28 Feb 2024 09:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BYTrXii3"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="g1i/ND/s"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26521381D9
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3DB33987
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112860; cv=none; b=FjE2i+0HnQOzgSNucHi6t5U+gBgLAoTUF37gJk0rXIhaXhWNzK6Pdc3iNYXr42kI9x/tbWYSQQr4iO/ehrxg4VJuVy2Yv+tfEbda4h3PWuQoL6/xVHNcIGR8mc+XLtr3infkbTku6gJWF+RlktsgReos+01tETrvSIJGfR71S7Q=
+	t=1709112895; cv=none; b=sNbO/lDyo/t5ymRRWneNZLe1kFtIoesPg7g5Z9jaPn9nrBlmwmN34MTmSY1/8WHEw58EFBQ+ozH+tvhBJgYZoSaz7RGDk19RnKCjx86xybQjmb0mVnsxjVw+YMsFnfzrk5dJ7p1O8Y43vuitaRTkU4Tj1KOojkJ5240jNEmgLgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112860; c=relaxed/simple;
-	bh=GFVNR/zlWJslKz1dioQtSnYIsd3zA6B9GH6xfvmWywE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Pex670m8kLn3+S4Ks/FDL28uhPzU8+bzgktcWj3Fgy7rSlPZF3jegZqN2q+/4ANDfX/jEWJ/vImWfGZlG3ltdK0NJQsUOTtOVWdWk366PO1ZWjJ6jFY+0rQtr5YXGysuuVfhK/6GSPps7+h9+fcFvCOKoSqhL36ptCNCrRjWgto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BYTrXii3; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7dad2d1c9edso527345241.1
-        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:34:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709112858; x=1709717658; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JrofktxwInA3vcID9wwrk0HbtLWVMB1feXE92jqNChU=;
-        b=BYTrXii3O+7No5bFL1pM+uqSoWav+cSJ7XsD0w1uHWISAjAhylO5L8sKI11aA4CbF3
-         Gpjj6WfvAvPQ5aI+h2YpFzAV0/Ece6qo4rOyTroldtQNza3W6vErhSevlV7Ej1TTLX0M
-         svZ/BAL7aCkn3ThYiZuBDPIFBk/ads67JM0j7Z1DWEL2g7Zh8JbAWkXd+8/5AvdeX5qk
-         +WhCMYutC8To9WAHEZQS7Z1Y1+/YPPiQnNJDJWZky0CsRjXVdPpTAytLxuhJgXSKVHWZ
-         FyQNgvyxrZeO5goMBtpjmChSvcyTclSdZr3s8ClE2K0MXYi6j6k5xWzBf3x5k5ibraPC
-         DZkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709112858; x=1709717658;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JrofktxwInA3vcID9wwrk0HbtLWVMB1feXE92jqNChU=;
-        b=e0eTh0vQ1NK2+YRl89pmod9JEc/qPxXCg4jHixYhfg+yXMe+PKfFXgQ1PdEQkJetn4
-         Y/uFfa8wSwAx2jk0L52Jy3fLsO11ivo/rR2c3C88GXmjpGPfikz11qwFdr5prsQ73BPa
-         k0uz/gJEzHl7kyYGl8ZAHjQyc8vdmjEeUh9pFgfPAjzXcXw4ym3XhnR6JaTyFVpl1cOc
-         n2XBdJ/3VS7Uo7tRzfnTiTHLI7s2TOAsfw6ln86qfpQrAcDN34hYZD4Zmp08AmdKIIf7
-         WsHCEQj9mc+UolLd+R4NbDho28EKSjDmuSgiCWRUdLOuMETaN74TbVlAgV6FsyhR+W6e
-         8E/w==
-X-Forwarded-Encrypted: i=1; AJvYcCUMoH6MFiqmgT3jeH/B89IlcN3BKRaDBzvdL0IpBSQEhP3/bTUwBRNdasPzVM6e+gc7puTX63zV2izcxFInO9k9+8+Aki9dW9cQNwrP
-X-Gm-Message-State: AOJu0YwOccmVChymtzpBeoYdOPo5ATbO+mI034mCNodCVKK+6ekddvtE
-	9o660L5DNozkwPEtT5wDoPHgA4qEkogxw7eGiv47MhyudisUVxObZ35Kq8jtTWLEAab9DPuFH8Z
-	komi6txhllrX+jjD0jUDAHCXcrZ0=
-X-Google-Smtp-Source: AGHT+IF0+UYaaN6m0QRKJndax7JXEHR+fygNk1XN64sj9tDZQvEktqzoxCNdUl67Oa9NtNbY9GdEofhoM8AuRFGfE3s=
-X-Received: by 2002:a1f:cdc3:0:b0:4b8:383e:8266 with SMTP id
- d186-20020a1fcdc3000000b004b8383e8266mr8069276vkg.11.1709112858035; Wed, 28
- Feb 2024 01:34:18 -0800 (PST)
+	s=arc-20240116; t=1709112895; c=relaxed/simple;
+	bh=6orYZl3wn2cOkF4brbe/Asz5vqmU0uEkBFM9m2BCNjo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RhQvovF2mrJFcsmQ4+07v0TGpvKUOTXtYqU7wTo7HIDJvwvWioB9/zy1irfDxERTr88G3SUQXru7LnOUd56Dypvi240jBBSHZUxdci6SV1kpsc7IL8J35fpbscfn/zSqIgJjcmPGMxa0dWHl/H6G+p03faVSNG99j8k2vaAP0PI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=g1i/ND/s; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41S5jrJv016379;
+	Wed, 28 Feb 2024 09:34:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=mC1TlTHZ8OiOtXr093yL
+	IlnoHBATtQ3OA9nN4jcVblw=; b=g1i/ND/sZO/H2i6FS46xY1bww0ZvGUKstbVl
+	volNPgdvfaeQyRA3ztISsnloUuMfRScZXDL69ZYjyXByMau4LqE5MueVqjR0YDeh
+	L1KLhSMBsy33wsnMrr/Af1F3GJfe/mB3AmUQdgxkhqsnXSq1Ujt8S2Vp7aBnoJp6
+	jSwxWp53PumrX9HdbpQYuXMazuUWstIace17BZEqkMpFgBG2nYmaHa1XwebOOSni
+	sUU+w6yv4g5aCw4L7SXSF7HBYGyDyZ6FqwU0VzXy0OK96eFdA6yN7/aHV0Pwwi+p
+	uzy1/uGBXAcekIGmCo87G+C6a+UZEcB4QjOrLmtrHLFMTPQmqA==
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3whp65sepy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 09:34:39 +0000 (GMT)
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 41S9YaQQ018749;
+	Wed, 28 Feb 2024 09:34:36 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3wf9hkux7y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 09:34:36 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41S9YaRR018744;
+	Wed, 28 Feb 2024 09:34:36 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-msavaliy-hyd.qualcomm.com [10.213.110.207])
+	by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 41S9YZFH018743
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 28 Feb 2024 09:34:36 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 429934)
+	id 9729524176; Wed, 28 Feb 2024 15:04:34 +0530 (+0530)
+From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+To: alexandre.belloni@bootlin.com, linux-i3c@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc: andersson@kernel.org, vkoul@kernel.org, manivannan.sadhasivam@linaro.org,
+        Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+Subject: [PATCH v1] i3c: master: Enable runtime PM for master controller
+Date: Wed, 28 Feb 2024 15:04:07 +0530
+Message-Id: <20240228093407.4038399-1-quic_msavaliy@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <84d7cd03-1cf8-401a-8edf-2524db0bd6d5@oppo.com>
-In-Reply-To: <84d7cd03-1cf8-401a-8edf-2524db0bd6d5@oppo.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Wed, 28 Feb 2024 22:34:06 +1300
-Message-ID: <CAGsJ_4w_itxmZR7ytu7HnptQNZQzM-vAJhE_zSZrTAH1iqBV6g@mail.gmail.com>
-Subject: Re: [PATCH] mm/vmalloc: Fix return value check for vb_alloc
-To: =?UTF-8?B?5YiY5rW36b6ZKExhb0xpdSk=?= <liuhailong@oppo.com>
-Cc: "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "urezki@gmail.com" <urezki@gmail.com>, 
-	"hch@infradead.org" <hch@infradead.org>, "lstoakes@gmail.com" <lstoakes@gmail.com>, 
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JLMJw9ph6eLPqoAJlm04ymWsw6_J4r7L
+X-Proofpoint-ORIG-GUID: JLMJw9ph6eLPqoAJlm04ymWsw6_J4r7L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-28_04,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ impostorscore=0 priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1011
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402280074
 
-On Wed, Feb 28, 2024 at 9:51=E2=80=AFPM =E5=88=98=E6=B5=B7=E9=BE=99(LaoLiu)=
- <liuhailong@oppo.com> wrote:
->
-> If vm_map_ram(page, 0, 0) would cause panic by vmap_pages_range_noflush, =
-so
-> change IS_ERR to IS_ERR_OR_NULL to fix this.
->
-> Signed-off-by: Hailong.Liu <liuhailong@oppo.com>
-> ---
->  mm/vmalloc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index d12a17fc0c17..109732006cf7 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2387,7 +2387,7 @@ void *vm_map_ram(struct page **pages, unsigned int
-> count, int node)
->
->         if (likely(count <=3D VMAP_MAX_ALLOC)) {
->                 mem =3D vb_alloc(size, GFP_KERNEL);
-> -               if (IS_ERR(mem))
-> +               if (IS_ERR_OR_NULL(mem))
+Enable runtime PM for i3c master node during master registration time.
 
-it seems the only case for vb_alloc to return NULL is size =3D 0, isn't
-it a bug of
-caller?
+Sometimes i3c client device driver may want to control the PM of the
+parent (master) to perform the transactions and save the power in an
+efficient way by controlling the session. Hence device can call PM
+APIs by passing the parent node.
 
->                         return NULL;
->                 addr =3D (unsigned long)mem;
->         } else {
-> --
-> 2.34.1
+Here, I3C target device when calls pm_runtime_get_sync(dev->parent)
+couldn't invoke master drivers runtime PM callback registered by
+the master driver because parent's PM status was disabled in the
+Master node.
 
-Thanks
-Barry
+Also call pm_runtime_no_callbacks() and pm_suspend_ignore_children()
+for the master node to not have any callback addition and ignore the
+children to have runtime PM work just locally in the driver. This
+should be generic and common change for all i3c devices and should
+not have any other impact.
+
+With these changes, I3C client device works and able to invoke
+master driver registered runtime PM callbacks.
+
+Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+---
+ drivers/i3c/master.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+index 3afa530c5e32..a3dc88974f92 100644
+--- a/drivers/i3c/master.c
++++ b/drivers/i3c/master.c
+@@ -13,6 +13,7 @@
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/of.h>
++#include <linux/pm_runtime.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/workqueue.h>
+@@ -2812,6 +2813,10 @@ int i3c_master_register(struct i3c_master_controller *master,
+ 
+ 	i3c_bus_notify(i3cbus, I3C_NOTIFY_BUS_ADD);
+ 
++	pm_runtime_no_callbacks(&master->dev);
++	pm_suspend_ignore_children(&master->dev, true);
++	pm_runtime_enable(&master->dev);
++
+ 	/*
+ 	 * We're done initializing the bus and the controller, we can now
+ 	 * register I3C devices discovered during the initial DAA.
+@@ -2849,6 +2854,7 @@ void i3c_master_unregister(struct i3c_master_controller *master)
+ 	i3c_master_i2c_adapter_cleanup(master);
+ 	i3c_master_unregister_i3c_devs(master);
+ 	i3c_master_bus_cleanup(master);
++	pm_runtime_disable(&master->dev);
+ 	device_unregister(&master->dev);
+ }
+ EXPORT_SYMBOL_GPL(i3c_master_unregister);
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
 
