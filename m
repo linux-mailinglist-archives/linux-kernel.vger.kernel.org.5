@@ -1,97 +1,121 @@
-Return-Path: <linux-kernel+bounces-85710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E01E86B9B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:14:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3313C86B9B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:16:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F9EA1C24E19
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:14:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C82DE1F25FCD
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 21:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BCD213AF2;
-	Wed, 28 Feb 2024 21:14:50 +0000 (UTC)
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A9C86278;
+	Wed, 28 Feb 2024 21:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MyfdGmBe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72CD86241;
-	Wed, 28 Feb 2024 21:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48DD786241;
+	Wed, 28 Feb 2024 21:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709154890; cv=none; b=lCmNbR4W3qwIdm0NfxH363zHis8xuoTiGP7j1k+Q8qJ3FZdX2FxmNCtThL7paAPBQVjWzKOYTvnHnIszn7anYLb3M86RR4q9jm60HOIDHtegw2Qoe9/OmiQrbYrbEFbljat9vUUtHyZfAAtz1Y0ASX/gFOJM756a0793SMVPwF8=
+	t=1709154965; cv=none; b=IVpxgG1lODtDcaqKk6jHyKua4Cr3npYSlaTKuhU6pFYrIw0pOnjoHYALeOH6rAVIQMdH6QzZ38KgLDxvdzayRK8H23c7Q7r2vAY0bCG/RQHvHdLvoaGE2pIdtBQhgRNTpgW7R1AveHdQSBmmrJDPlY67KC929HC5nH6D/Cl6UQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709154890; c=relaxed/simple;
-	bh=vga5pA+ojUatokeTJQVGmvG5MkhEI6W2dbJk1EB3qrE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sxYyLQePr0VpWq9q+N8mEzn5D3PuHAZJAr/qQQiMeAdhJgY4WTT/LOA+eh6rVvqHBjzQsdWt7QrQu9BAs0h1+Exe165c9/iDKHZ9lbQVu0H3k6UiJT+fDpCzJhBpWgZGyiUtj+b908TXqqwM8uMz94wNGm5d/qdEGaeYIFAHeIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-6e2b466d213so38915a34.0;
-        Wed, 28 Feb 2024 13:14:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709154888; x=1709759688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W9hD0YbFqBXT/nXqtV3fYDeNO40gmiO0A4+0rNHvkIk=;
-        b=LAnkfUFSGPyR3aqU8uuC+Ig2vg6IVv8WgofgMh6a3JasuoM//1CUthoRTPVljKXWCC
-         v66FbGzP9To6h/7HHOJgqopDoiHZ1N6UzkHl8dWGp+fTSElNB3iTR/LSw57Cc1+tCHH8
-         PKEvXtAU0tKsri+X6+NtVYMrSeSnBlcT/CIm7n9Q592BK9BBLsqqd/mT9E8nLcJli/NA
-         tRuCw2xzs25ueIsGRV5UvV6kexeYz02wBFDcz3G1cS2qM7iOKMa/rUKDgb/DIGo5pZ4p
-         swbUAID13R6c8HmG3s6IezaVmCIP46niOFF2dWn0PAf1LTdgOb0KOSWhPDgiJcNfO5gT
-         C4fg==
-X-Forwarded-Encrypted: i=1; AJvYcCXVfGiR3A93Yxcp3lN3DSrI915qpcyHgLMQ/apPGHNqTuzkx/LDEL3tPTL/eC7A4YLpomUAbkZrfX79vvNEyAEhZZs+HvrKq0IBLZ9HOBfC+cHjscI+ba/C0vzZzsCQCChU8Cf7fdrZWw==
-X-Gm-Message-State: AOJu0YxANWcdDB5ThaW8kNNrSINfcJ+nGMcbsCwtAROtrjhWharwnWFX
-	SZAd8GBqzv5nhW864vmz0Vx68J00dcFX7s6YyfH0H7QYSE1fIqnofD1sBnS4HAsPTPZtDHNv3W3
-	XpRkmKHJPg5LC0Dhh22BqLbOqAEsHZkdx
-X-Google-Smtp-Source: AGHT+IFR7qFdUqz48+gGHmdyqSr7YuDPzeNmv6VTZEBxCB9UizCjvZI5i60mgaTaHiqy7YBJ7WfwSn306BNwE3vBPUA=
-X-Received: by 2002:a4a:620a:0:b0:5a0:6de5:a880 with SMTP id
- x10-20020a4a620a000000b005a06de5a880mr347558ooc.0.1709154887860; Wed, 28 Feb
- 2024 13:14:47 -0800 (PST)
+	s=arc-20240116; t=1709154965; c=relaxed/simple;
+	bh=tLkK7HiFrVQn53zl701UulLerP36hjLPt8SmsC1MkTk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KhuBxgI40V+cAA2fSKEzUi2atsf3CIkv6AYXOraXIIoN/1HlcdejsxLp5dRmNpysWGeuC0KvbXmyFWIdhmuPreANLU3bMSc3fQq3mnW90toZ5nCCKdKwPsby3LnPWgKzDO3jwzTwgkw+9MDVn+Z84vqzikEu05yjhBmNQqBdKPk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MyfdGmBe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2F01C433C7;
+	Wed, 28 Feb 2024 21:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709154964;
+	bh=tLkK7HiFrVQn53zl701UulLerP36hjLPt8SmsC1MkTk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=MyfdGmBeVBLalf5giO0n+MQrpOq+iPNQHM0R+9NNdIYnulltiV2k/RVRaeirND7S/
+	 sU58XtolspGI+RdnAPDRwdavPOJsTfJX5tc3rmldx94VMtIsXb93MikONH+uOLi7OI
+	 BMaas0mlsjstsLgRoPUOcsXDUV7PlCv+YyJD39bXMpIH/Whg+3l0RVS34tv2bikh38
+	 cZPvsenq2CSl/i2jbGlGTMdq1e+/aPKobzYGidKboKXuz3D8lsrVxxFZk6Oa0VuQET
+	 5oZBFCCa96atXwe6I2se2DGPNfXyB7We4rtkpc2Ty0c2fBsCTD4/32+xTY3aCfgSk4
+	 non/64E3Ik7yg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 4A0C3CE03F3; Wed, 28 Feb 2024 13:16:04 -0800 (PST)
+Date: Wed, 28 Feb 2024 13:16:04 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	Thomas Gleixner <tglx@linutronix.de>, kernel-team@meta.com
+Subject: Re: [PATCH RFC ftrace] Chose RCU Tasks based on TASKS_RCU rather
+ than PREEMPTION
+Message-ID: <b5acdc28-0441-49ca-9e8d-50d6ac40c395@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <f6507b10-5bb5-4407-bd4d-c547193a5a28@paulmck-laptop>
+ <20240228152236.7a4c9eec@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223155731.858412-1-andriy.shevchenko@linux.intel.com> <20240223155731.858412-3-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240223155731.858412-3-andriy.shevchenko@linux.intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 28 Feb 2024 22:14:36 +0100
-Message-ID: <CAJZ5v0gmJYZ==O_xn7v+=-9dr9n+GvV2TmcjWVsRvXc4F2UcYQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] driver core: Move fw_devlink stuff to where it belongs
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Sakari Ailus <sakari.ailus@linux.intel.com>, 
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Scally <djrscally@gmail.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228152236.7a4c9eec@gandalf.local.home>
 
-On Fri, Feb 23, 2024 at 4:57=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> A few APIs that belong specifically to the fw_devlink APIs
+On Wed, Feb 28, 2024 at 03:22:36PM -0500, Steven Rostedt wrote:
+> On Wed, 28 Feb 2024 11:38:29 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > The advent of CONFIG_PREEMPT_AUTO, AKA lazy preemption, will mean that
+> > even kernels built with CONFIG_PREEMPT_NONE or CONFIG_PREEMPT_VOLUNTARY
+> > might see the occasional preemption, and that this preemption just might
+> > happen within a trampoline.
+> > 
+> > Therefore, update ftrace_shutdown() to invoke synchronize_rcu_tasks()
+> > based on CONFIG_TASKS_RCU instead of CONFIG_PREEMPTION.
+> > 
+> > Only build tested.
+> > 
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > Cc: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > Cc: Ankur Arora <ankur.a.arora@oracle.com>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: <linux-trace-kernel@vger.kernel.org>
+> > 
+> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > index 2da4eaa2777d6..c9e6c69cf3446 100644
+> > --- a/kernel/trace/ftrace.c
+> > +++ b/kernel/trace/ftrace.c
+> > @@ -3156,7 +3156,7 @@ int ftrace_shutdown(struct ftrace_ops *ops, int command)
+> >  		 * synchronize_rcu_tasks() will wait for those tasks to
+> >  		 * execute and either schedule voluntarily or enter user space.
+> >  		 */
+> > -		if (IS_ENABLED(CONFIG_PREEMPTION))
+> > +		if (IS_ENABLED(CONFIG_TASKS_RCU))
+> >  			synchronize_rcu_tasks();
+> 
+> What happens if CONFIG_TASKS_RCU is not enabled? Does
+> synchronize_rcu_tasks() do anything? Or is it just a synchronize_rcu()?
 
-It would be better to say which functions specifically you mean here.
+It is just a synchronize_rcu().
 
-> - are exposed to others without need
+> If that's the case, perhaps just remove the if statement and make it:
+> 
+> 	synchronize_rcu_tasks();
+> 
+> Not sure an extra synchronize_rcu() will hurt (especially after doing a
+> synchronize_rcu_tasks_rude() just before hand!
 
-This is not particularly precise.  I guess you mean that they could be
-static and are not, which is fair enough, but why not just say that?
+That would work for me.  If there are no objections, I will make this
+change.
 
-> - prevents device property code to be cleaned up in the future
-
-This is completely unclear to me.
-
-> Resolve this mess by moving fw_devlink code to where it belongs
-> and hide from others.
-
-This could be more precise.
-
-Also I think that the patch is not expected to introduce functional
-changes, which could be mentioned here.
+							Thanx, Paul
 
