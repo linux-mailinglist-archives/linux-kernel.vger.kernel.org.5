@@ -1,100 +1,152 @@
-Return-Path: <linux-kernel+bounces-84753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8C886AB11
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:20:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5177586AB13
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 10:20:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0AB1AB219B2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:20:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADEB9B22EEB
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 09:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85EF822065;
-	Wed, 28 Feb 2024 09:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0BF36124;
+	Wed, 28 Feb 2024 09:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gJynUbTV"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOYOpJgq"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCEB22E64F
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 09:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EBCC33CC2;
+	Wed, 28 Feb 2024 09:20:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709112012; cv=none; b=k1jOsG0eKBARfw1Ra7Lmbj6bK5vJ9l5X+WWH6K2DngS2BOHLFhxYG4WMbQHya2+YebdtvbZg5AzIg3+Za7olAR2D+ywqc/3tEmRnKeyOy8S1Sp5F8wjd2woi+89Mh4AKZycTEq6vA+CLoIMLKZfjexEgFZbzOuQBfiUgmtlNCfY=
+	t=1709112019; cv=none; b=JA6ajDYLnumDVkDbGheCiWkUS+CKBsCl+uCRqn1GkqVh+QAGJWZcoV1zOeJkox0xyEqNioyiCidyXPKvQA6ReoBNIj8djMnK1BiLd27cucVqgj8xhe4cqZc2kJVgissqdhA2Mjdprhfhr5AmRhty9Jt//gQzYcVfm/gOSKWG26Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709112012; c=relaxed/simple;
-	bh=HnyQ8g0HLMtXdCZ8EJhrVdx4C/CLJyXQkFRs51GeN3o=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=DduTfKwgw3VcgpOh+6Nc6WW7c9nHNHEFWFZSZRE9MrXk8FK4FGfvC0S2mBf3gu2i/o8/Eeti36DdC0rkJ5kDPvF3skX9NoOFYI9M4vwVXY2BAmdQFjJZL9l5IsaKOXjq7fsrvn6OpVcyIoGLWnWIVJqs+4H+U0Vxaw4+uupbzx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gJynUbTV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3338C433C7;
-	Wed, 28 Feb 2024 09:20:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709112012;
-	bh=HnyQ8g0HLMtXdCZ8EJhrVdx4C/CLJyXQkFRs51GeN3o=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=gJynUbTVCFxqBN9o2Wnyssp2HwEVYmz+PwITJtV8iHWL6Ts0bHCKq9ICqNix4aeSh
-	 CGIlzDPa/q6VCjJ0nZXRuaZTxMUiiunVxo6bT7EpoSznv4y6QdkQl2SBEorMPQSFL3
-	 9aZK34wNXZ4MJPKLC1DsYh+VK8MTxDsI2+UNOdI+Yc5EDB65m9QBTSsqV2ddiCnVFB
-	 hd+ERmqEoyJa/4nIqO72m3MuwoMOX4uiqE0wyp5PwAgMBUNRLft5h3Hz8ZPyX5s9pf
-	 7IILd2js0y8hk+vapT7qCCcYBRtJ/TaRycuaVFpWeMMNkcP0Bcuuwft5Ig8zgMEi66
-	 fVTDid9TGgVtA==
-Date: Wed, 28 Feb 2024 10:20:13 +0100 (CET)
-From: Jiri Kosina <jikos@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc: Bjorn Helgaas <helgaas@kernel.org>, 
-    =?ISO-8859-15?Q?Carlos_L=F3pez?= <clopez@suse.de>, cve@kernel.org, 
-    linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
-    Jonas Gorski <jonas.gorski@gmail.com>, 
-    Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: Re: CVE-2023-52466: PCI: Avoid potential out-of-bounds read in
- pci_dev_for_each_resource()
-In-Reply-To: <2024022706-kindle-tapering-5f66@gregkh>
-Message-ID: <nycvar.YFH.7.76.2402281011470.21798@cbobk.fhfr.pm>
-References: <2024022709-magazine-handshake-50da@gregkh> <20240227150744.GA235367@bhelgaas> <2024022706-kindle-tapering-5f66@gregkh>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+	s=arc-20240116; t=1709112019; c=relaxed/simple;
+	bh=v2eiHuL62WCXQs7hcAtCym9lIkCchgxpESbrCei0pbA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VvRbD2U8k/GbVaNY6ODrYqkFbhDm1ydBwZtZCzDDCe5ak8OoQBB9WWGqbUZJkLfoVclh5n8AjI4T37f7unWfzCJk0cZUPXd9upPZFoTRBWlSZzEe8mpYkaVsnpVQP2VUADxbtNu+yskDuhH8Tp36NctZbZpOw7aA5uSRtv6lbNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NOYOpJgq; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-565ef8af2f5so3860635a12.3;
+        Wed, 28 Feb 2024 01:20:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709112016; x=1709716816; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MMWQD7UAFsp9KchPLx3P8oI21qYIe7rr+n1htkt7OGE=;
+        b=NOYOpJgqlfXsp1NviA5b58FjGtoZFiLLPZ83p12jcAolpm5eNLtyoPZyNWWPa+cxsh
+         3fnXVmy0KFs2ESN/8bF4WZSYNh1mJ/uziHXHG2T57U4Bu8dXOBMoNNiJHybSLngH7zCF
+         kYRDGXuItJ0Ien2s5OBUMJwnF8T3SpRhBjLx795PYWl16C5HKWqvACAUNn+H9D7Ap+PW
+         iN0I23QryATIATDgXIFOkDNg6xOg8nP2PoGuh8v77CQTdat61pI2/YrOd6d5Tk5ucNdP
+         6RyazRzjo2E/cg58OfM6gfB40PeStnHytSFyeVFcHpcRUzabV1+7otTV9ZKKxbladzxg
+         TufQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709112016; x=1709716816;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MMWQD7UAFsp9KchPLx3P8oI21qYIe7rr+n1htkt7OGE=;
+        b=HouydlVj6Db825ZJJW4zKsTdmH44snCiOqCeggP89KkSSEuf4o0dgsFZM7xZDo9Vpr
+         c38zYGR4nO4guy+TOutBipnTB/lHa1hGJ8epzjdsnQjwR5rXz68jHfCj4hpObpepGPb5
+         uqlXHnUZBqiw5ExujcNtOLECHyI5rjXHgN3aOIWPGKQ5CnXWe+xDxjYIGiGbqlrMPDbM
+         GRj9qNAdSKlAfx/JiPxyDhBE0ZjUVS/WTM7TPSU/oqQ44BTQb28koZ3GYayTVjJn1UVD
+         DkTE4ouAUk3KL19rwyGCpRMUqeayEQxgCbsZGWHNeDH5Yq8Yr4wvok1fVGcLWv+9BI4Z
+         VYeA==
+X-Forwarded-Encrypted: i=1; AJvYcCWvfqlYaVlwsQTIctJvEQ/7+EGz7sy8qCUkzjlE3md7FOaYJmwGiCoik6B5pa2QkT6KrXdSzlhVHOeC85rU4BuVXj3ycZiCsa8JOdSKeNucquNDBrJQnfMZ+dKbF5HwbMffcJkHMJf5lDxIobNNaL4tvRHyA+HIxehTkA==
+X-Gm-Message-State: AOJu0YyrcVIxrHkvLDvzrRuYOoHyjj5zPTSqn2SOcAnKatAjrcLTi1c7
+	x3mAJrLD1S2tR91ERUBQ3L0a7p3xWSSJn/w4gYKTAoSuYPH9LILI
+X-Google-Smtp-Source: AGHT+IFMqeyTM1Fz8XS/CKmvJQyp3KmW3GKHKd3rNDuQ3QkpR1QTAbKMMsbOlG73ALffL7AbF66auQ==
+X-Received: by 2002:a17:906:13db:b0:a42:f40e:3ac0 with SMTP id g27-20020a17090613db00b00a42f40e3ac0mr8087879ejc.6.1709112016441;
+        Wed, 28 Feb 2024 01:20:16 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id fj15-20020a1709069c8f00b00a42ea946917sm1626181ejc.130.2024.02.28.01.20.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Feb 2024 01:20:16 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 28 Feb 2024 10:20:14 +0100
+To: John Hubbard <jhubbard@nvidia.com>
+Cc: Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>, dwarves@vger.kernel.org
+Subject: Re: [PATCH] fix linux kernel BTF builds: increase max percpu
+ variables by 10x
+Message-ID: <Zd76zrhA4LAwA_WF@krava>
+References: <20240228032142.396719-1-jhubbard@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228032142.396719-1-jhubbard@nvidia.com>
 
-On Tue, 27 Feb 2024, Greg Kroah-Hartman wrote:
-
-> > 09cc90063240 ("PCI: Introduce pci_dev_for_each_resource()") added
-> > pci_dev_for_each_resource(), which expands to:
-> > 
-> >   for (...; res = (&(dev)->resource[(bar)]), bar < PCI_NUM_RESOURCES; ...)
-> > 
-> > We compute "res" before the bounds-check of "bar", so the pointer may
-> > be out-of-bounds, but the body of the pci_dev_for_each_resource() loop
-> > is never executed with that out-of-bounds value.
-> > 
-> > So I don't think this is a security issue, no matter how
-> > pci_dev_for_each_resource() is used, unless the mere presence of an
-> > invalid address in a register is an issue.
+On Tue, Feb 27, 2024 at 07:21:42PM -0800, John Hubbard wrote:
+> When building the Linux kernel with a distro .config, most or even all
+> possible kernel modules are built. This adds up to 4500+ modules, and
+> based on my testing, this causes the pahole utility to run out of space,
+> which shows up like this (CONFIG_DEBUG_INFO_BTF=y is required in order
+> to reproduce this):
 > 
-> Ah, yeah, now I remember, stuff like this was fixed up in other loops as
-> just reading off into the wild can be a speculation issue and so we had
-> to fix up a bunch of places in the kernel where we did have "invalid
-> data" in a register.  The code didn't use that, but the processor would
-> fetch from there, and boom, speculation mess.  There's a whole research
-> paper published on this type of thing somewhere...
+>   LD      .tmp_vmlinux.btf
+>   BTF     .btf.vmlinux.bin.o
+> Reached the limit of per-CPU variables: 4096
+> ...repeated many times...
+> Reached the limit of per-CPU variables: 4096
+>   LD      .tmp_vmlinux.kallsyms1
+>   NM      .tmp_vmlinux.kallsyms1.syms
+>   KSYMS   .tmp_vmlinux.kallsyms1.S
+>   AS      .tmp_vmlinux.kallsyms1.S
+>   LD      .tmp_vmlinux.kallsyms2
+>   NM      .tmp_vmlinux.kallsyms2.syms
+>   KSYMS   .tmp_vmlinux.kallsyms2.S
+>   AS      .tmp_vmlinux.kallsyms2.S
+>   LD      vmlinux
+>   BTFIDS  vmlinux
+> libbpf: failed to find '.BTF' ELF section in vmlinux
+> FAILED: load BTF from vmlinux: No data available
+> make[2]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 255
+> make[2]: *** Deleting file 'vmlinux'
+> make[1]: *** [/kernel_work/linux-people/Makefile:1162: vmlinux] Error 2
+> make: *** [Makefile:240: __sub-make] Error 2
+> 
+> Increasing MAX_PERCPU_VAR_CNT by 10x avoids running out of space, and
+> allows the build to succeed.
 
-Greg, could you please elaborate on this?
+do you have an actual count of percpu variables for your config?
+10x seems a lot to me
 
-Where in this whole construct do you see a potential for *_uncached_* (!) 
-memory access that'd cause CPU to speculate into the wild? I just don't 
-see it.
+this might be a workaround, but we should make encoder->percpu.vars
+dynamically allocated like we do for functions
 
-Thanks,
+jirka
 
--- 
-Jiri Kosina
-SUSE Labs
-
+> 
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  btf_encoder.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index fd04008..d9f4e80 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -50,7 +50,7 @@ struct elf_function {
+>  	struct btf_encoder_state state;
+>  };
+>  
+> -#define MAX_PERCPU_VAR_CNT 4096
+> +#define MAX_PERCPU_VAR_CNT 40960
+>  
+>  struct var_info {
+>  	uint64_t    addr;
+> -- 
+> 2.44.0
+> 
+> 
 
