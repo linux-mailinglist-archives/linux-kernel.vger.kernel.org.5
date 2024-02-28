@@ -1,195 +1,159 @@
-Return-Path: <linux-kernel+bounces-85790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A83E86BACA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:38:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 168D686BACF
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D8391C21EE6
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:38:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE47C289F2E
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 021CA433A7;
-	Wed, 28 Feb 2024 22:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0E6771ECB;
+	Wed, 28 Feb 2024 22:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SSKks+Z8"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VRSMvcUR"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 068691361C0
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F745433A7
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709159901; cv=none; b=pcm6WJUoOJjJ3h0FzAz2j6ZxUZurt+DyfhS6iLXqQL5iKj/AsQKzonzHTz91g3CXs4p1YV+h0YtvPdWtCWiKAknwffTGaz5xqpUbwVopLfx8S8+MRIwRblzVUUAgGsHf0KDZFCev/CFwM0vF/ogo1wrvPBeklfRawFQe/ey4tgc=
+	t=1709160029; cv=none; b=cf8q+m2pTFzHN7UIhwOu+HyeiksR+v9vEzYhu44caGyC5Ix2ufaclD974QgiN7dSO/f0xuFuvs+EqZL4G9lH+aK9YNafaiLrJsfXDXwTpef2eHYiKF4V6W8Vzf5G23pTqsaH3GwkgwD4A7s7n27FLrTOs9nbRJOZwz4io+asE+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709159901; c=relaxed/simple;
-	bh=TVwIV/vSFmAAbOXFs2H1IInGHczq4zeA1rG+LD25b80=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=BZZyEldwsQbhtzwsmgqkOyQ0xoiv/l8dc/j7R/WQ2CXXhrQyU09dMeeD2XR1VAIG9KgU7DA3Q1HJXXDGf5JDk0gqWPp40jCRqgH8RS4DdauDpT7oOIJE2zt64p1wFMMmP1N4LAEQsL2LiN57MYEOeY0v2EeRG3BZV4FqWP2DBSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SSKks+Z8; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709159899; x=1740695899;
-  h=date:from:to:cc:subject:message-id;
-  bh=TVwIV/vSFmAAbOXFs2H1IInGHczq4zeA1rG+LD25b80=;
-  b=SSKks+Z8YPfH66kL32VJ5F6ursIqopo448Pszw6eDY3d6GME7DYK+DUe
-   jpPP3IUkoXdTfznDNtwci3wUUuMTe5TKoj6ASvP7hnksJ0xB3egkY0pqj
-   MG2dOlY9tuhPAxoaVBW4oquxd9WS4ST5lkc9RLijkCCSMqPNOETa2OLHO
-   2o55TX2MjgOaWF58PjTM88yyStVvnfxy0VNlFvFQWp46KmfYBzxSa/ypT
-   Ge589FbEP3MvFGv0UQPk0fYQozu7NOEZvyKtV3Q3UYLuy3rpqaKckeffK
-   Y9RmXKVDYGjOnKJ7Q9OqOEoRzQVvvp85ghEP5EekRB+hSsfWy0cYXMZjI
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10998"; a="14233452"
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="14233452"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 14:38:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,191,1705392000"; 
-   d="scan'208";a="45116461"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 28 Feb 2024 14:38:16 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfSZ3-000CRZ-0S;
-	Wed, 28 Feb 2024 22:38:13 +0000
-Date: Thu, 29 Feb 2024 06:38:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 9e1daa3bfcccf79ee368061d807ff541d6e2d909
-Message-ID: <202402290606.7aC2w4RQ-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709160029; c=relaxed/simple;
+	bh=UI4N3O0p1OPV51s6ww8VE+iOxUsmCX0+oAuufGaCP2g=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=PmC4Fr8yTQ1A5gZ/RQ462Dp6j0ewALq+5lCGAMq1P2GCcjiCQoBsRe5VQWY/dFY5xJ4KFRKSO/f42IyDkMNDh9O4pL/szQSGjKhjpqMJIVyuMDPkrQEcy2UcgPA0ruaOpafZRFrwh6i0Rx4K9dHYa1eOBD36cIjufzMADYkQQ18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VRSMvcUR; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so530598276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:40:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709160027; x=1709764827; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l+UTQgqjeTeuB4joWxs/sUGJ8L/gPUO2H1zeCMeGlUc=;
+        b=VRSMvcUR1Z0nR83k7kzHQOcmnt39dGdDGXjA13POB7UJv2hWZ0yA/arivRbHMA9P6z
+         KoyAjPSxTiL6qG4WHjqff/8lF1QnnBOGg75yYA8g16fpAW55Z5SRr6nKhV9fLVRftcvM
+         OctCfnY2e94ZDFNg4tKOvyV1BGy/mgnD9oydYGiESvjNpj/1Qm41qqylFSIiCfB+qlSU
+         EjVuWlQmbAaq0ZCsl77+efIaBzkkoK5ZX1JDxOQxZQ/JSrh9Z3Don3zIgHBjhlfln6ZH
+         mmJb3n/Sx/LYAiWqzmaxL4uz+uZlFVpXYS/sTe0SVMx2unLTd9pa9ChMBLdXw3MBKbSt
+         Obdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709160027; x=1709764827;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l+UTQgqjeTeuB4joWxs/sUGJ8L/gPUO2H1zeCMeGlUc=;
+        b=GLsmmNnbGEHVXMhsr4Z4IW8eTnQJhIysyiM5YYnOifditDYnJfnGOFZ1/A1uJHsG47
+         o1AcMrkHAdS9mKiSJGSsEF4A42RNXTsjJDlUBhwOc0KcFtph37ziHoaad1g7jydGtEU8
+         08tm8PhcwOokJuVspwRjpmF1HJ6v9psk6DmgIty8f6MDGHahTmpA+4GES0ulnnxvtn5W
+         PWQfWF1ayFYPd5jxjBs0UxUFByVYd+r8N0SV/6Ydp7SB93VSnvH3e6gOtjh86NxuqNXg
+         04r7SjLt3g4m+YnOzcL8Yy7QE7GFYKeSKAi/yurjfq6i2ph+JYIpET55fG4AJbMZZwGz
+         hutw==
+X-Forwarded-Encrypted: i=1; AJvYcCWG3jVlh2+GuazYyo2qCfkt6OhAj4nt64Hu9G5EeLSJ1vFCGJ3Tk3hnmSJvz0j4FFLMmtHKLhb5R4pEWt47j/B327MTWAXLoB5RJ4y0
+X-Gm-Message-State: AOJu0YzUAoTbtLrHdpJyJpvURX3of8ZaIsHtQMe87cFRUsOGQxkCVEtK
+	IK1RoBCpZ06jOkL/y9CRaGVUM2j2Zh2i6A7sdSb2FmmqZW1ThBJSUql7iDk6FcN6Lgii6K5iFZe
+	1Ng==
+X-Google-Smtp-Source: AGHT+IFUPZtJnUkx4ZeqCTT90Ca+tWDsq48kFwktE+9CygIbxZw4LB/eimUqGjDzbeY7BpvlpduVfE/E17k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:abc2:0:b0:dc7:48ce:d17f with SMTP id
+ v60-20020a25abc2000000b00dc748ced17fmr140494ybi.10.1709160027352; Wed, 28 Feb
+ 2024 14:40:27 -0800 (PST)
+Date: Wed, 28 Feb 2024 14:40:20 -0800
+In-Reply-To: <170900037528.3692126.18029642068469384283.b4-ty@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+References: <20240223004258.3104051-1-seanjc@google.com> <170900037528.3692126.18029642068469384283.b4-ty@google.com>
+Message-ID: <Zd-2VK2kvMr_t1jx@google.com>
+Subject: Re: [PATCH v9 00/11] KVM: selftests: Add SEV and SEV-ES smoke tests
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Anup Patel <anup@brainfault.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Vishal Annapurve <vannapurve@google.com>, Ackerley Tng <ackerleytng@google.com>, 
+	Andrew Jones <andrew.jones@linux.dev>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Michael Roth <michael.roth@amd.com>, Carlos Bilbao <carlos.bilbao@amd.com>, 
+	Peter Gonda <pgonda@google.com>, Itaru Kitayama <itaru.kitayama@fujitsu.com>
+Content-Type: text/plain; charset="us-ascii"
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 9e1daa3bfcccf79ee368061d807ff541d6e2d909  x86/e820: Don't reserve SETUP_RNG_SEED in e820
+On Mon, Feb 26, 2024, Sean Christopherson wrote:
+> On Thu, 22 Feb 2024 16:42:47 -0800, Sean Christopherson wrote:
+> > Add basic SEV and SEV-ES smoke tests.  Unlike the intra-host migration tests,
+> > this one actually runs a small chunk of code in the guest.
+> > 
+> > Unless anyone strongly objects to the quick and dirty approach I've taken for
+> > SEV-ES, I'll get all of this queued for 6.9 soon-ish.
+> > 
+> > As for _why_ I added the quick-and-dirty SEV-ES testcase, I have a series to
+> > cleanup __svm_sev_es_vcpu_run(), and found out that apparently I have a version
+> > of OVMF that doesn't quite have to the right <something> for SEV-ES, and so I
+> > could even get a "real" VM to reach KVM_RUN.  I assumed (correctly, yay!) that
+> > hacking together a selftest would be faster than figuring out what firmware
+> > magic I am missing.
+> > 
+> > [...]
+> 
+> Applied to kvm-x86 selftests, thanks!
+> 
+> [01/11] KVM: selftests: Extend VM creation's @shape to allow control of VM subtype
+>         https://github.com/kvm-x86/linux/commit/309d1ad7b6ff
+> [02/11] KVM: selftests: Make sparsebit structs const where appropriate
+>         https://github.com/kvm-x86/linux/commit/6077c3ce4021
+> [03/11] KVM: selftests: Add a macro to iterate over a sparsebit range
+>         https://github.com/kvm-x86/linux/commit/8811565ff68e
+> [04/11] KVM: selftests: Add support for allocating/managing protected guest memory
+>         https://github.com/kvm-x86/linux/commit/29e749e8faff
+> [05/11] KVM: selftests: Add support for protected vm_vaddr_* allocations
+>         https://github.com/kvm-x86/linux/commit/1e3af7cf984a
+> [06/11] KVM: selftests: Explicitly ucall pool from shared memory
+>         https://github.com/kvm-x86/linux/commit/5ef7196273b6
+> [07/11] KVM: selftests: Allow tagging protected memory in guest page tables
+>         https://github.com/kvm-x86/linux/commit/a8446cd81de8
+> [08/11] KVM: selftests: Add library for creating and interacting with SEV guests
+>         https://github.com/kvm-x86/linux/commit/f3ff1e9b2f9c
+> [09/11] KVM: selftests: Use the SEV library APIs in the intra-host migration test
+>         https://github.com/kvm-x86/linux/commit/0837ddb51f9b
+> [10/11] KVM: selftests: Add a basic SEV smoke test
+>         https://github.com/kvm-x86/linux/commit/5101f1e27683
+> [11/11] KVM: selftests: Add a basic SEV-ES smoke test
+>         https://github.com/kvm-x86/linux/commit/f3750b0c7f6e
 
-elapsed time: 732m
+FYI, the hashes changed due to a force push to squash a bug in a different
+series.
 
-configs tested: 107
-configs skipped: 133
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                     haps_hs_smp_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                             pxa_defconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240228   clang
-i386         buildonly-randconfig-001-20240229   clang
-i386         buildonly-randconfig-002-20240228   clang
-i386         buildonly-randconfig-003-20240228   clang
-i386         buildonly-randconfig-004-20240228   clang
-i386         buildonly-randconfig-004-20240229   clang
-i386         buildonly-randconfig-005-20240228   gcc  
-i386         buildonly-randconfig-006-20240228   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240228   clang
-i386                  randconfig-001-20240229   clang
-i386                  randconfig-002-20240228   clang
-i386                  randconfig-003-20240228   gcc  
-i386                  randconfig-003-20240229   clang
-i386                  randconfig-004-20240228   clang
-i386                  randconfig-005-20240228   clang
-i386                  randconfig-006-20240228   gcc  
-i386                  randconfig-011-20240228   clang
-i386                  randconfig-012-20240228   clang
-i386                  randconfig-013-20240228   gcc  
-i386                  randconfig-013-20240229   clang
-i386                  randconfig-014-20240228   gcc  
-i386                  randconfig-014-20240229   clang
-i386                  randconfig-015-20240228   gcc  
-i386                  randconfig-015-20240229   clang
-i386                  randconfig-016-20240228   clang
-i386                  randconfig-016-20240229   clang
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                          defconfig   gcc  
-microblaze                      mmu_defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                           rs90_defconfig   gcc  
-nios2                            alldefconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                        cell_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                              allnoconfig   clang
-s390                                defconfig   clang
-sh                        dreamcast_defconfig   gcc  
-sparc                            allyesconfig   gcc  
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240228   gcc  
-x86_64       buildonly-randconfig-002-20240228   clang
-x86_64       buildonly-randconfig-003-20240228   clang
-x86_64       buildonly-randconfig-004-20240228   gcc  
-x86_64       buildonly-randconfig-005-20240228   gcc  
-x86_64       buildonly-randconfig-006-20240228   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240228   clang
-x86_64                randconfig-002-20240228   gcc  
-x86_64                randconfig-003-20240228   gcc  
-x86_64                randconfig-004-20240228   gcc  
-x86_64                randconfig-005-20240228   gcc  
-x86_64                randconfig-006-20240228   clang
-x86_64                randconfig-011-20240228   clang
-x86_64                randconfig-012-20240228   clang
-x86_64                randconfig-013-20240228   clang
-x86_64                randconfig-014-20240228   gcc  
-x86_64                randconfig-015-20240228   gcc  
-x86_64                randconfig-016-20240228   gcc  
-x86_64                randconfig-071-20240228   gcc  
-x86_64                randconfig-072-20240228   clang
-x86_64                randconfig-073-20240228   gcc  
-x86_64                randconfig-074-20240228   gcc  
-x86_64                randconfig-075-20240228   clang
-x86_64                randconfig-076-20240228   clang
-x86_64                          rhel-8.3-func   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                           allyesconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+[1/11] KVM: selftests: Extend VM creation's @shape to allow control of VM subtype
+      https://github.com/kvm-x86/linux/commit/126190379c57
+[2/11] KVM: selftests: Make sparsebit structs const where appropriate
+      https://github.com/kvm-x86/linux/commit/35f50c91c43e
+[3/11] KVM: selftests: Add a macro to iterate over a sparsebit range
+      https://github.com/kvm-x86/linux/commit/57e19f057758
+[4/11] KVM: selftests: Add support for allocating/managing protected guest memory
+      https://github.com/kvm-x86/linux/commit/cd8eb2913205
+[5/11] KVM: selftests: Add support for protected vm_vaddr_* allocations
+      https://github.com/kvm-x86/linux/commit/d210eebb51a2
+[6/11] KVM: selftests: Explicitly ucall pool from shared memory
+      https://github.com/kvm-x86/linux/commit/31e00dae72fd
+[7/11] KVM: selftests: Allow tagging protected memory in guest page tables
+      https://github.com/kvm-x86/linux/commit/bf47e87c65be
+[8/11] KVM: selftests: Add library for creating and interacting with SEV guests
+      https://github.com/kvm-x86/linux/commit/bdceeebcddb8
+[9/11] KVM: selftests: Use the SEV library APIs in the intra-host migration test
+      https://github.com/kvm-x86/linux/commit/8b174eb9d289
+[10/11] KVM: selftests: Add a basic SEV smoke test
+      https://github.com/kvm-x86/linux/commit/faa0d7027de3
+[11/11] KVM: selftests: Add a basic SEV-ES smoke test
+      https://github.com/kvm-x86/linux/commit/974ba6f0e595
 
