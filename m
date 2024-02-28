@@ -1,210 +1,127 @@
-Return-Path: <linux-kernel+bounces-85518-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85519-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA61F86B6FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:16:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16B0E86B6FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 19:16:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10B49B23ED1
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:16:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A96B11F2878C
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 18:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07BE84085D;
-	Wed, 28 Feb 2024 18:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F75371EB0;
+	Wed, 28 Feb 2024 18:16:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Z/DPKn2L"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD8E4084E;
-	Wed, 28 Feb 2024 18:16:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709144183; cv=fail; b=gE8Hi2TkDSz1jCD0/hSIaqIESefU+WopgY1G5MbGeLhCFLAG15pi7Pj2j5/VjNV1Hkr/BntvueRB6COrmdzt8qhfEckj3KOulwiMeLJtKkCn70lNU8dNb91iDq9z0INddg13j57MbLCknGgM1UK+f0upjp9pez4ts3OauCJuJeE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709144183; c=relaxed/simple;
-	bh=MGsKJX4mcVdYAK5FC9t4V0bW6GfmwqrPhV1K6cc+91o=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=mC5tKxOQeFPG0Qw7KF8Wuaqfsf5TwPYCUybuz4tmF74SpoA2mk/Ui/jb+Vgn1+anOIzQjSvPsKfZ5lxyGj5yZsvGNB926HA6q3sw6SNRWfYH8U76LzH9tYs5HjQfnrhZryXXF+/HxjdQeWg+1HtEV1Z7W9ZwwPy4pdO59WBvarw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Z/DPKn2L; arc=fail smtp.client-ip=40.107.236.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XOoqYdbZVz3CjAMcsVU7AL+sFPIsm4B76nRsqtQMwFIyKEFfU7YjZ1gZ5MOSlzkhD2COGAhUVmVWPbH/f9T9acHI094dZGV9L+FEOb04i9rBvxpj6okW6SO20xrztYXX3U3LmI8h8ureZdx0BNZ47PLFHjxUHCQL31n8vt99h1XFO5mrV8D1fwL9geNrLwbq63wQafIqJwC1kwtF4wUWzWIPtSnBBNDUA1UsglyCa/6wHu3HYu+WeRzpPvijz2Bzxf6Nvlffk1Gs9uMye0caDNaoyDqBgy0ZwNzg9yx5LsNOhKVW1EgCsql6vdUjUCmuKaSpj+3q08UaR38E6FdX4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/8QQBAXpKIWMbZdvM5VJTKu7bNGlQoyBPXepVedtWuE=;
- b=c1VFmlx8Qi6F+fIb/J8bsYrRBdLyjbTRlz+WdZmkfQz6nLVWnt5J4167v3LaaPGJcSDa9/kw5ezNd6rVyhqg7uHjNcDTWaTnvf4+TsJiT8aHP3fB5ndslD/wrwpPKtiM3cFiwRxhYMASFaYlA+dT5FYTO3s8Sn1893HqLaCb5sWhH8Q6jDsbbNwviJ4nBiiNYJ8M+U1S+eUV6FkIZLqNqp/kq+sqcf/try3jKwDT7/z1HQ/fYVBbVsvp3mVeX49v9+9oLh1SZTJ9H6NrfcWytqjOWxCqsxqWGzhceTgEezN8PCGVhzqOexOybi1Cx/6O0v1ha/ikAz9pJwP/A5jD4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/8QQBAXpKIWMbZdvM5VJTKu7bNGlQoyBPXepVedtWuE=;
- b=Z/DPKn2LiUChVya5JAf9GC5EaJXl8WGA13ZVgjIalTL92Mm0/sX4W8ojlZC2syJI97n5sPU0aGkYTqTwbx7av4C/zJW4kpVXCAaiywHIgZj9l/noUca7V0bSvC9HWvDw0nM77WRAVYE3JgWORjvsXU+CO7Ik3k4appain6/oJsc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
- by DM4PR12MB7622.namprd12.prod.outlook.com (2603:10b6:8:109::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Wed, 28 Feb
- 2024 18:16:18 +0000
-Received: from PH0PR12MB7982.namprd12.prod.outlook.com
- ([fe80::dc92:cf24:9d0c:53ea]) by PH0PR12MB7982.namprd12.prod.outlook.com
- ([fe80::dc92:cf24:9d0c:53ea%7]) with mapi id 15.20.7316.035; Wed, 28 Feb 2024
- 18:16:18 +0000
-Message-ID: <d2e16738-377f-44dd-ae00-5c0c2c2da35a@amd.com>
-Date: Wed, 28 Feb 2024 10:16:16 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 vfio 0/2] vfio/pds: Fix and simplify resets
-To: Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
- Brett Creeley <brett.creeley@amd.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
- "yishaih@nvidia.com" <yishaih@nvidia.com>,
- "kevin.tian@intel.com" <kevin.tian@intel.com>,
- "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
- "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "shannon.nelson@amd.com" <shannon.nelson@amd.com>
-References: <20240228003205.47311-1-brett.creeley@amd.com>
- <ead300c6e249429f92a4ce124fc0fd56@huawei.com>
-Content-Language: en-US
-From: Brett Creeley <bcreeley@amd.com>
-In-Reply-To: <ead300c6e249429f92a4ce124fc0fd56@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PH0PR07CA0075.namprd07.prod.outlook.com
- (2603:10b6:510:f::20) To PH0PR12MB7982.namprd12.prod.outlook.com
- (2603:10b6:510:28d::5)
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="dxBCPlld"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C2154087E;
+	Wed, 28 Feb 2024 18:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709144186; cv=none; b=QxMMTERwqoSFiD2Pkv0OlV8uGk/+Ofs2djfgfU4Qf6U9xwU+TWOQ0BP+Uv7AWqH4UJadepGaSzyWe7hD12pos6aGoUQO3eq1Rhj/24RBe5gzmGwsgGALMsU4BdBZrFvLQWNsE81cCul3qZC7Daw+sPrO14ZPyBaM2Ufxaui+eOc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709144186; c=relaxed/simple;
+	bh=YCnamN+ZO/atEuFaycWdvLvU6Yn6mowtfFIBNvZ/r7U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ngB64s8r2wPDYzh6ppxw5B9c0XGMgohNv2Bs4QT7fHHaQMve6ZGfdMsPjWeHa7peLqT5OL+d/5ksiJ59k3Eysgu2NRNyGgG8n8EGxoc+N4bVsX2hM0CiuMkZ03xdbbyKdM68CM28H1ATlD4j58EpH7Ec9LH6SWwWsetuhmOVNWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=dxBCPlld; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id DE35520B74C0; Wed, 28 Feb 2024 10:16:18 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DE35520B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1709144178;
+	bh=og4MbU6fj0BKyQD5O9MQnQfNn4Ii7URCo9iRJW9WPxM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dxBCPlldnp9Smg6kffaefldjK9sf8JyJ0wXwfvFdCqCIlN+ooMwr5GPswNWA+g+JK
+	 OplaOH2rMpYP8T89+wld4UnCbemUi9LvEYdVYiDJtzBCa0TWA8vqpMi8KzNGguqHBT
+	 9x5sIbLzjdJWAmJ9K5QSQuUDhLrBATYVeYNvbxjE=
+Date: Wed, 28 Feb 2024 10:16:18 -0800
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>, bhelgaas@google.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alexander.stein@ew.tq-group.com, decui@microsoft.com
+Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
+Message-ID: <20240228181618.GA14383@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <20240227171458.GA16664@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20240228152222.GA272403@bhelgaas>
+ <20240228172255.GA3579062@rocinante>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR12MB7982:EE_|DM4PR12MB7622:EE_
-X-MS-Office365-Filtering-Correlation-Id: c86a5b1b-8f52-4d4e-467e-08dc38895c10
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	QBtgLBj8DptxEDEQJ2Li6wzYGIPr3YtXHK1iXMrYgXGnuv7EAr+KJy0SzqtK03Xmyi5ZLUJoVu9omu67KBoZmA0hJaCbxk6uZ73bvxSrAWptuyJ9oJ9MrqN5PnTzbnQgqoiAj1wdQYxAfuSqPbK3+vFKtJV/3iarMx48BOkVxeC1C6WgV+iDUu7lNF+hgZNfPDf+iy20AeSOWnkwzLwXnkynQt316B1JgxmK4JkURPVXURZTsXvn00tT9FdasXTbRJhdhr/qdUb3hMiW/D+iTVikSotAIjVP6RxvcWbGxWk9J+3LGCvc73BPaY1weq903FTCbRf7jCBgjdwQtLAG1pDENDZvtKJTlbOplZGwEhujMYgOAPYWhb8W5m/EOJ28DVwo3XSsS+ZPntRsthBtg2U0fl2z1ReNc7pN05UBHK8rY2amTIFL+vXsN/2HdqKUDiwrIVBTS37enQUrc0DC4hXrvYE6sQaIaQJ1GdREY9BIppr1DdIOD4bcfbFM4IYKbgnZct1q/eUZT5h5rVLfAvAzis4EN4VPJNl/npWyw40HX3Ve37hY9QMsvK5DK+YvFTuZdXYuhy1l10mOttc3JLX0/W6LhKTS5WNVnhqJ3acP4OGMP+94BtKZzChU8xYNRoOQ0IYB5V78T5m7PZcsQA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB7982.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MDAxR1VMYUZza094Q3hyRFR2cWI3TEp5cmpXbzJicVN4MmtLUWMwZ0JYREpP?=
- =?utf-8?B?Y2duSFNjdTEzbnoxdWZnWVllcUt3OFdpTWY4K1hIK0FVWlRkeGNEZ2R4RlZP?=
- =?utf-8?B?VTlsTTJiN0o5czNoMGpVYU9OcnVibHNPdzVyaGFYNWEyeHorbXJUdmtmRlhN?=
- =?utf-8?B?NFp3T0NTa24wUVpqQmNUcDk5N1hrSTJ5YnpUMGo4SWdTRERuWFNkK29VU0F0?=
- =?utf-8?B?akRyYVFxVllOOTY0V2pwdTZJOHBpRDFvU01OaS9mMEpSZy81VFFDVXpRMndW?=
- =?utf-8?B?YUtuUmhJMTErUm5WcDR0bmxUVXVOZWMyMXRvNHVuZlEwTEtVSEJNTmJUa3BR?=
- =?utf-8?B?VmM5QkluTU1CVmtkR2VOOVUrWmdDVC93UzZtMmRPS0Ezai9VS3FjdURIK1Vw?=
- =?utf-8?B?OVloTFBoT0RJQkhjcFZXNk5GSVgwUlM4VlluZUVHaG05bGFlQjVMUHBkV3Zu?=
- =?utf-8?B?dnNsbWE0SklxMWswQ0I3dmhhV0F4UlRLZWlYWFdWN1YweHpCTys4ME1OTjcv?=
- =?utf-8?B?OWthYm40VXZHQ2VPS2l3b1N6Q2Q2NXVEQlhzc0FqZEhoajBIdUkrT3AzK0RO?=
- =?utf-8?B?T2VsKzB6VjI4cFZ4TEl6Z0dZeGpxSUdsbWJrK2RhMGdUQnlHSEprK2tZMWl4?=
- =?utf-8?B?a2ZnSTBDVkFiMGJ1Q3Bkc0tyY3NXWi81UzFNOWtKNUsyZlZBbldlaXdLTXVP?=
- =?utf-8?B?NXhoOGFKTW9lbjBESDB3eWNnNzBYaUJKbktoQ1d5OW9tZGhXSkRmV0QxYnBn?=
- =?utf-8?B?a3dRTURzcDdoeHEwMjE4ZjVUMTRUNi9NMjRLQ1hibVd6eHFSNUxvdGJJQ0I1?=
- =?utf-8?B?emRJckRQMEQ0YUh4R1NjdTBFcTRBMUJmQUtJU2dteEc5dmJXSmtuQnlIcGk4?=
- =?utf-8?B?UzV4ZXNiRUNtT2R5VllVYi9RaGZITmg2aUh0K082QTFRaWNQOTlkV0NNL09W?=
- =?utf-8?B?cW9jNnU4WU9iSGttS2ZLRFlwaEg2OFZySFArbkxrenVpNUg1OHQ5Mld1TjdQ?=
- =?utf-8?B?Wms4TmlQNThZdXFjZEdLNG1kMk1ldHBrSHNtMXM4RlhQeVJDZktpYklHMGJs?=
- =?utf-8?B?Y3lVSjlucnZZRFA5M01Kdjk3Z0dORVJjYXNPeHR3TGlsenY1Q0hWYnNmczhX?=
- =?utf-8?B?RzVCck9PS2dhbjVOR2svQ1VmK1FPb3VOREc5UW5KaUtPaTk3WFpjbmJOQ0tk?=
- =?utf-8?B?emltU0MzQXhGMGRUSlhSUmxNTjV1SEY4dTU0Z25XNHp0aWkrU0ZTUm1mYkhT?=
- =?utf-8?B?TlNFbC8valc2ZlRtMGRuVmJUNGc4bXM5b2NEc01EaTlQQWkxdGtUaUZBQ1hh?=
- =?utf-8?B?QnV4NFl1WUM3b2tXS2xMa2ZSU1dEY2hHbTAzQ0E5YTFrNmVrSVZINHdKQ2Ez?=
- =?utf-8?B?cHFXYmZSNS96MlVqcHdDMmxpelBoYlNLcm9pNFE3TGIrZzNDSkQ4Nk1PblVZ?=
- =?utf-8?B?K0VYNFRNUHkzdlJJbHNaaWJ6WXJlL3dpOWdUUEF6MFkwOXdPY1dNa3BLTkNG?=
- =?utf-8?B?WEpRdHYyRTFvcFpkR0QrZUo5WFl6bWRwUjRQaVg3OHFwYjgvbWlxNmpraHF1?=
- =?utf-8?B?amw2Wk5hSTMvdmJLdjY3aEppdW9XdDI3Q2NKTVdTQkdOb2hSKy9MWTkxalc3?=
- =?utf-8?B?cHZONzl0SjhOOEtqTVFhbis3S0RlcFRTZXplK20xMTlRVjhtZkRDSDUyZlcr?=
- =?utf-8?B?bjIzQy9pQnVHc0VFOXFhRFNSdmxSd3ZDMTA0RnJCY2ZLaXpKSHVhcDlkVGVS?=
- =?utf-8?B?Sk5SYlhwZ1ZzNm5HRGFXQzRWV1k3VWJCeGxhWFcvYWQ2ZVpWdUJkZ0dNNjA3?=
- =?utf-8?B?c3FPc3RpcnUxaFFvdjFGTWdBTzVQMVRqTlJpa240OE9BSnMxeUM5WVRZRWFL?=
- =?utf-8?B?eHZrRHBDaElla0s2Qmo0YzZJK003cWN3cTNpM1Izenl1OEVLSzJ5YVdpTS9x?=
- =?utf-8?B?d3kzQ0FETXZqdjQ1Y1Q1QmpoUUN3dGlOdGZVdUlEK3doVXdWelNkTHdUUnQ4?=
- =?utf-8?B?UTJJZW1SY2FLYmFrTUVPQWRXckJSNWJFOE5kemNJRVNxNW1ZQkVieWRwR2hE?=
- =?utf-8?B?MzR6UWMyWDF6b3V4Wm8wZU9QVUFwSU1SOWR2dVArV2FyS21Ma3hkWHdqcndN?=
- =?utf-8?Q?xzksgNez9dhRP2FCdsCHEBSCe?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c86a5b1b-8f52-4d4e-467e-08dc38895c10
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB7982.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2024 18:16:18.7365
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3cf1pSHWnEu/RZeWVi3tn5mmhKfdOAe6Xpo7Q1F82Lk0idTWU6OvyI/5OjRfuHMIj8eTr+ZulMBHX/Zj0OkG7A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7622
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240228172255.GA3579062@rocinante>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On 2/28/2024 1:05 AM, Shameerali Kolothum Thodi wrote:
-> Caution: This message originated from an External Source. Use proper caution when opening attachments, clicking links, or responding.
+On Thu, Feb 29, 2024 at 02:22:55AM +0900, Krzysztof Wilczyński wrote:
+> Hello,
 > 
+> Sorry for late reply.
 > 
->> -----Original Message-----
->> From: Brett Creeley <brett.creeley@amd.com>
->> Sent: Wednesday, February 28, 2024 12:32 AM
->> To: jgg@ziepe.ca; yishaih@nvidia.com; Shameerali Kolothum Thodi
->> <shameerali.kolothum.thodi@huawei.com>; kevin.tian@intel.com;
->> alex.williamson@redhat.com; kvm@vger.kernel.org; linux-
->> kernel@vger.kernel.org
->> Cc: shannon.nelson@amd.com; brett.creeley@amd.com
->> Subject: [PATCH v2 vfio 0/2] vfio/pds: Fix and simplify resets
->>
->> This small series contains a fix and readability improvements for
->> resets.
->>
->> v2:
->> - Split single patch into 2 patches
->> - Improve commit messages
+> [...]
+> > > > > Krzysztof has done a ton of work to convert these files to static
+> > > > > attributes, where the device model prevents most of these races:
+> > > > > 
+> > > > >   506140f9c06b ("PCI/sysfs: Convert "index", "acpi_index", "label" to static attributes")
+> > > > >   d93f8399053d ("PCI/sysfs: Convert "vpd" to static attribute")
+> > > > >   f42c35ea3b13 ("PCI/sysfs: Convert "reset" to static attribute")
+> > > > >   527139d738d7 ("PCI/sysfs: Convert "rom" to static attribute")
+> > > > >   e1d3f3268b0e ("PCI/sysfs: Convert "config" to static attribute")
+> > > > > 
+> > > > > and he even posted a series to do the same for the resource files:
+> > > > > 
+> > > > >   https://lore.kernel.org/linux-pci/20210910202623.2293708-1-kw@linux.com/
+> > > > > 
+> > > > > I can't remember why we didn't apply that at the time, and it no
+> > > > > longer applies cleanly, but I think that's the direction we should go.
+> > > > 
+> > > > Thanks for you review.
+> > > > 
+> > > > Please inform me if there's existing feedback explaining why this
+> > > > series hasn't been merged yet. I am willing to further improve it
+> > > > if necessary.
+> > > 
+> > > Let us know your opinion so that we can move ahead in fixing this
+> > > long pending bug.
 > 
-> Just a query on the reset_done handler and the deferred_reset()
-> logic in this driver. From a quick look, it doesn't look like you have
-> a condition where a copy_to/from_user() is under state_mutex. So
-> do you think we can get rid of the deferred_reset logic from this
-> driver? Please see the discussion here,
-> https://lore.kernel.org/kvm/20240220132459.GM13330@nvidia.com/
+> I really thought you were asking me about your patch.  So, I didn't reply
+> since Bjorn added his review.
 > 
-> For HiSilicon, we do have the lock taken for PRE_COPY, but that needs fixing
-> and then can get rid of the deferred_reset. I will sent out a patch for
-> that soon.
+> > There's no feedback on the mailing list (I checked the link above), so
+> > the way forward is to update the series so it applies cleanly again
+> > and post it as a v3.
 > 
-> Thanks,
-> Shameer
+> Start with a review, if you have some time.  Perhaps we can make it better
+> before sending another revision.
+> 
+> There are two areas which this series decided not to tackle initially:
+> 
+>   - Support for the Alpha platform
+>   - Support for legacy PCI platforms
+> 
+> Feel free to have a look at the above.  Perhaps you will have some ideas on how
+> to best convert both of these to use static attributes, so that we could convert
+> everything at the same time.
+> 
+> > There's no need to wait for Krzysztof to refresh it, and if you have
+> > time to do it, it would be very welcomed!  The best base would be
+> > v6.8-rc1.
+> 
+> That I can do, perhaps this coming weekend.  Or even sooner when I find some
+> time this week.
+> 
+> 	Krzysztof
 
-Hi Shameer,
+Thank you ! I will look forward to it. I am happy to review and offer
+contributions if required.
 
-You are probably right that we can get rid of this logic, but the 
-current 2 patch series is very simple and I would prefer to keep it that 
-way. If you plan to make changes to the HiSilicon driver in the near 
-future, then I can use that as a reference in enhancing the pds-vfio-pci 
-driver.
-
-Thanks,
-
-Brett
-> 
->>
->> v1:
->> https://lore.kernel.org/kvm/20240126183225.19193-1-
->> brett.creeley@amd.com/
->>
->> Brett Creeley (2):
->>    vfio/pds: Always clear the save/restore FDs on reset
->>    vfio/pds: Refactor/simplify reset logic
->>
->>   drivers/vfio/pci/pds/pci_drv.c  |  2 +-
->>   drivers/vfio/pci/pds/vfio_dev.c | 14 +++++++-------
->>   drivers/vfio/pci/pds/vfio_dev.h |  7 ++++++-
->>   3 files changed, 14 insertions(+), 9 deletions(-)
->>
->> --
->> 2.17.1
-> 
+- Saurabh
 
