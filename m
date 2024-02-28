@@ -1,109 +1,151 @@
-Return-Path: <linux-kernel+bounces-85794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-85795-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2993686BAD9
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:44:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88DF386BAE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 23:45:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B6F21C2123B
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:44:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00E941F252BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 22:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C85E70053;
-	Wed, 28 Feb 2024 22:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5746270053;
+	Wed, 28 Feb 2024 22:45:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="kYxz469G"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Az+rB4Qq"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6D21361A4;
-	Wed, 28 Feb 2024 22:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10CB1361C4
+	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 22:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709160257; cv=none; b=LZI6dhR+b8aeCZ0bC0S71rWwRdzRWxkrLHWnPEOR0juBh0zSeLfjMnTWV/Zywr51LP/oCXDEZlUOLY3jDmRS3tq5dmQV16uILdeCdEiIQSdv1fDPGccs0X/aI0ac8tO6v27sI2OQ+beNr2TqAGcho5g7duF5TVwZXaPDmOlht1o=
+	t=1709160307; cv=none; b=cNX8Y1Nb6Za4g6oY4KZsaWJE0zAnf/SqfYeBVM/04j/LscDBudyw9bBDusfwNHOJGGNmcENQ7Wnj1azrGx95Jmij3MpB9AA7HMi7U+Og8kMIGtI6ggMqNoRFmNjPsBuy5onfTkexs93dda2w1wD/BGjQAncXWqrH28S3MUC/G5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709160257; c=relaxed/simple;
-	bh=sFfSQI8H9anZqbz5zbNOIZk5SSnIblghGOAsPyjilNY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ne3z+051HVH0UdirKSHAyebv8m/M9HiGWrLPLDMzZRaP0gB61PuDj2M+yaiNLXOpG/O+4zFygq+hjJbAOGItLNYGPm7rK8/OTACi4hYKOKsfFlhoWEUDdnByJigIR+7OalSO7wcY0QajxvzXnqmgXVsgOUgDq5QAHNDcZF3wsfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=kYxz469G; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 564AE418B5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1709160255; bh=bPfj70haa25vAmOOxEZhbdceUi0BE5fJTxAq5LIhQMQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=kYxz469GMvwqL0TDa/2gg7OCU9jAQKhQ8VcBrE+zyB5gecIQq/mj3QxaEdLrIpWhw
-	 1aaX3Pr/8HF+7bTXppbjQBZAV9YgC4PiwZRJaAVD212OJzzUhs+XoNjGDnO3ZRkvo0
-	 MCDmAxdXfrWzmtNPNVAdVnr0OEtkWyG77D+Cx0PhMrLsDEha1DF+/PVJrU1/xu2SS5
-	 VoInppWoPPAk1xBAXS9o2lX1AJVm3d+MgrMMd8CiqyHJT1ffONOw/ktr0LcqhN0p3o
-	 dc9g32owRJIMB7tyzLPj4tHeGLozLuulr702Mvqb2vX3bDDasQPx22gZlML6f2nFYF
-	 3VXNYM8tnqhTg==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 564AE418B5;
-	Wed, 28 Feb 2024 22:44:15 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Zhang Qiao <zhangqiao22@huawei.com>
-Cc: mingo@kernel.org, chrubis@suse.cz, zhangqiao22@huawei.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/Documentation: Add RT_RUNTIME_SHARE documentation
-In-Reply-To: <20240131123238.2332064-1-zhangqiao22@huawei.com>
-References: <20240131123238.2332064-1-zhangqiao22@huawei.com>
-Date: Wed, 28 Feb 2024 15:44:14 -0700
-Message-ID: <875xy8p5tt.fsf@meer.lwn.net>
+	s=arc-20240116; t=1709160307; c=relaxed/simple;
+	bh=Cbo16Kdpdj/Sou5J9lkN1s8YVlAEB7JmVmpKJ1D3TMg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UY3wBhWn6qYMucesJhddxN2sPM3lkx4SD/xYoPdQ12HnV8X8UMHQJarLtc4NtNSiLuQaXzOXTR4JInuoKyT1h91HvwXJJfcc6ngGzLLT0f2UwjlMAI1CWuuG1anXvBp2r53JQXVgxezPRBYlfjLRyQ75N/9KCivK/YFzofpDOlU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Az+rB4Qq; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3d484a58f6so45372366b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:45:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709160302; x=1709765102; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uaIW3mETQDzZhGMK3PRFUOCtdSx2PTiCbd1xUJLaJyo=;
+        b=Az+rB4QqOJcSbdh04nioxXjyjpYoQtz1UnRg0ZGmOM2XWugR0YwX+LFXTEzycCDwtD
+         eLmx6y6M0gVRlgxb1hXSLJ/y2XdVkxw2snvH+qfUwl1XzXBnde8gqY7dFFogmTK95Qam
+         1lqMhYWpIeBgPp8h0nM0eFlY4nI6s4ExmylLE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709160302; x=1709765102;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uaIW3mETQDzZhGMK3PRFUOCtdSx2PTiCbd1xUJLaJyo=;
+        b=Oi0FKcaiqgSFuwoYDZhbeNYmXJKIQwrPfI0fAZffeGfg+fwgtJTljCPjWeVZkV2KAd
+         ZdSsQOBzIMENYAs+kvuowxVBVupEWTT21h9kyY0Q7t4odRQiIhuHmFN2rnwi4cXBFp/M
+         mSx8UiKkaB2tLxzdQ5AmHA6Fx+4lXiJod9oiip6jSo6kjp5XR1lap+npV1ePAP9f48Xm
+         58auSPF3cFPavGnHgQNx14ImKKwsC1wtbzrl3h7toKFYvTWcgenkN15Zp9oZ6FZc3G9H
+         ahyDB5cXvet9Vy3k41OuIGX+Kv9+rZE6Zc1OBzUBHo32YGr8wkKWUq0qbWvlwheRoCra
+         RkaA==
+X-Forwarded-Encrypted: i=1; AJvYcCViJJQ86v9v3XiJ87hch8VPODck+5dXl9+zP/iyrqq9wSjRSRz/Jz5+Hh187gGyTr4p4rDyEq+N1tK+eo9cT834YA+p2jCs3cmE4E8M
+X-Gm-Message-State: AOJu0YzlxQFaK8HtLmMTC91QA1fJgfLWDVOyVOpTcD4U8plkPy+1+3vX
+	0FMpH/TlmapbId2koD/6lmtBdA0vq/8MIWAVT7IpDUX8oJP3s+un9b+Om47yxAtV1okW6vB+YlA
+	TJ2wT
+X-Google-Smtp-Source: AGHT+IE/dysKzShwSrdTOevROS6nU6UXBkMkselPY7Z4kkKOiACKSQb4/YRYZJatQ2XlcH0QGscQqw==
+X-Received: by 2002:a17:906:1307:b0:a43:3879:35e0 with SMTP id w7-20020a170906130700b00a43387935e0mr177809ejb.11.1709160302231;
+        Wed, 28 Feb 2024 14:45:02 -0800 (PST)
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
+        by smtp.gmail.com with ESMTPSA id i25-20020a1709063c5900b00a3f596aaf9dsm2315023ejg.26.2024.02.28.14.45.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 14:45:01 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4129a748420so29245e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 14:45:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUeFq0reSER0EMean7cnSWu792JC3gGjDZFAgOsbZttHOllXf0VzlXWHTmfIAAYWn18Ur3dAOHT3x4tNKMPchXsoyyRie4zv8F9/Ech
+X-Received: by 2002:a05:600c:4e16:b0:412:b66f:3d0a with SMTP id
+ b22-20020a05600c4e1600b00412b66f3d0amr20561wmq.6.1709160300349; Wed, 28 Feb
+ 2024 14:45:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240228072216.95130-1-yaoma@linux.alibaba.com> <20240228072216.95130-3-yaoma@linux.alibaba.com>
+In-Reply-To: <20240228072216.95130-3-yaoma@linux.alibaba.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Wed, 28 Feb 2024 14:44:44 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=U1b+8atmju_w4eRmVKmSqjj6WCsy5EawYqj31fQ1kvrw@mail.gmail.com>
+Message-ID: <CAD=FV=U1b+8atmju_w4eRmVKmSqjj6WCsy5EawYqj31fQ1kvrw@mail.gmail.com>
+Subject: Re: [PATCHv11 2/4] genirq: Provide a snapshot mechanism for interrupt statistics
+To: Bitao Hu <yaoma@linux.alibaba.com>
+Cc: tglx@linutronix.de, liusong@linux.alibaba.com, akpm@linux-foundation.org, 
+	pmladek@suse.com, kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com, 
+	tsbogend@alpha.franken.de, James.Bottomley@hansenpartnership.com, 
+	jan.kiszka@siemens.com, linux-kernel@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Zhang Qiao <zhangqiao22@huawei.com> writes:
+Hi,
 
-> RT_RUNTIME_SHARE is an important strategy for rt bandwidth, and
-> we should document this sched feature.
+On Tue, Feb 27, 2024 at 11:22=E2=80=AFPM Bitao Hu <yaoma@linux.alibaba.com>=
+ wrote:
 >
-> Signed-off-by: Zhang Qiao <zhangqiao22@huawei.com>
+> The soft lockup detector lacks a mechanism to identify interrupt storms
+> as root cause of a lockup. To enable this the detector needs a
+> mechanism to snapshot the interrupt count statistics on a CPU when the
+> detector observes a potential lockup scenario and compare that against
+> the interrupt count when it warns about the lockup later on. The number
+> of interrupts in that period give a hint whether the lockup might be
+> caused by an interrupt storm.
+>
+> Instead of having extra storage in the lockup detector and accessing
+> the internals of the interrupt descriptor directly, convert the per CPU
+> irq_desc::kstat_irq member to a data structure which contains the
+> counter plus a snapshot member and provide interfaces to take a
+> snapshot of all interrupts on the current CPU and to retrieve the delta
+> of a specific interrupt later on.
+>
+> Originally-by: Thomas Gleixner <tglx@linutronix.de>
+> Signed-off-by: Bitao Hu <yaoma@linux.alibaba.com>
+> Reviewed-by: Liu Song <liusong@linux.alibaba.com>
 > ---
->  Documentation/scheduler/sched-rt-group.rst | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/Documentation/scheduler/sched-rt-group.rst b/Documentation/scheduler/sched-rt-group.rst
-> index d685609ed3d7..4d8eceb71f5e 100644
-> --- a/Documentation/scheduler/sched-rt-group.rst
-> +++ b/Documentation/scheduler/sched-rt-group.rst
-> @@ -12,6 +12,7 @@ Real-Time group scheduling
->       2.1 System-wide settings
->       2.2 Default behaviour
->       2.3 Basis for grouping tasks
-> +     2.4 RT_RUNTIME_SHARE sched feature
->     3. Future plans
->  
->  
-> @@ -146,6 +147,16 @@ For now, this can be simplified to just the following (but see Future plans):
->  
->     \Sum_{i} runtime_{i} <= global_runtime
->  
-> +2.4 RT_RUNTIME_SHARE sched feature
-> +----------------------------
-> +
-> +RT_RUNTIME_SHARE allows a cpu borrows rt-runtime from other cpus if it runs
-> +out of its own rt-runtime.
-> +
-> +With this feature enabled, a rt-task probably hits 100% cpu usage and starves
-> +per-cpu tasks like kworkers, as a result, it may hang up the whole system.
-> +Therefore, in order to avoid such exception, recommand to disable this feature
-> +by default unless you really know what you're up to.
+>  arch/mips/dec/setup.c                |  2 +-
+>  arch/parisc/kernel/smp.c             |  2 +-
+>  arch/powerpc/kvm/book3s_hv_rm_xics.c |  2 +-
+>  include/linux/irqdesc.h              | 14 ++++++++++--
+>  include/linux/kernel_stat.h          |  3 +++
+>  kernel/irq/internals.h               |  2 +-
+>  kernel/irq/irqdesc.c                 | 34 ++++++++++++++++++++++------
+>  kernel/irq/proc.c                    |  5 ++--
+>  scripts/gdb/linux/interrupts.py      |  6 ++---
+>  9 files changed, 51 insertions(+), 19 deletions(-)
 
-So this doesn't appear to have been picked up by anybody...should I
-carry it in docs, or is there some other reason why it hasn't gone in?
+I won't insist on it, but I continue to worry about memory
+implications with large numbers of CPUs. With a 4-byte int, 8192 max
+CPUs, and 100 IRQs the extra "ref" value takes up over 3MB of memory
+(8192 * 4 bytes * 100).
 
-Thanks,
+Technically, you could add a new symbol like "config
+NEED_IRQ_SNAPSHOTS". This wouldn't be a symbol selectable by the end
+user but would automatically be selected by "config
+SOFTLOCKUP_DETECTOR_INTR_STORM". If the config wasn't defined then the
+struct wouldn't contain "ref" and the snapshot routines would just be
+static inline stubs.
 
-jon
+Maybe Thomas has an opinion about whether this is something to worry
+about. Worst case it wouldn't be hard to do in a follow-up patch.
+
+Everything else looks good to me. Given that I'm not insisting on
+adding the extra CONFIG, I'm OK w/:
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
