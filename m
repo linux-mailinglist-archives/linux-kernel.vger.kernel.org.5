@@ -1,142 +1,159 @@
-Return-Path: <linux-kernel+bounces-84308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-84301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45B5986A4CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:12:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BAE186A4BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 02:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9EBA6B24EC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:12:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C7CA1C21EE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 28 Feb 2024 01:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93ADA1BC27;
-	Wed, 28 Feb 2024 01:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C37F1FC4;
+	Wed, 28 Feb 2024 01:06:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="JdYfd3We"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eMY6CVTD"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DFE524A
-	for <linux-kernel@vger.kernel.org>; Wed, 28 Feb 2024 01:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AD0FEBF;
+	Wed, 28 Feb 2024 01:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709082702; cv=none; b=b7ZnDVgMn9B1djPLwXEEsQ/TB2hd9X3oGfGLzKH5Wz7ttrgXcBMkbv0zvlRyUDX+ol46n+7ADwenuGPbDe0jwK9eHWuCL68ksQDVjmzaYUOoK05YoPR4ehpfgW26KB+dv8wWe5yXdRJsU045UaECDync67qkKowKREPEkZN1rJs=
+	t=1709082374; cv=none; b=tuRXd5m6FGv5Vbo2KuDD4Qpy0qMTUe+aBqtfA90+4nT0XSAYuknQ5Lcs+SPAnG8LEZ0hoXD82pfUU0NLrY7AFhEz02ArJ4OvMPka9cxpsIoZjzbvpu1Tm/HC6K/kecUoK5GeKfhbtSTJhjZrqLLlOreRpU3ZkpgZ9jmDA80h6sA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709082702; c=relaxed/simple;
-	bh=vZThvoMpdMVB0bR3QX6Z7AfXdGCXxCbTtC+Qsih/PaM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W5xRfhp3rcCHtWU5p+cx6q3652hutRzi7P43BXUoQXdVyLK8LGDsdu7BDGB9JXKXMku6CpL916YiNZa5Qx8dBzMxuF1SJ7y3HGouDECugofUgQW1keF25qwLiZM+1zChFk+us4oAWW1Xl+rBEqisddf+40O0l7wnJ5l2jtXT7eU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=JdYfd3We; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so26218855ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 27 Feb 2024 17:11:41 -0800 (PST)
+	s=arc-20240116; t=1709082374; c=relaxed/simple;
+	bh=Sm75gcCv9xKtIq0Ia+ywMl1YZw2dek62rJr+oQKTC1g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cjU7IsNrefAwEcKZu4AKTe6gYJrnZ0ACGQd62WGCGsU9yHXfmN7lzcMZ6HrcheDdZxS10bOJ9oQm52ZWwR41HyxCKHTwuhe+QIXzACDuwb5gKlJrjo4kyUGTGATmsIhpF52vIZX/Ndu2OhV/anyRBjMOKYKKAlP5f3Mllqo54oA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eMY6CVTD; arc=none smtp.client-ip=209.85.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=groves.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e49872f576so1656005a34.1;
+        Tue, 27 Feb 2024 17:06:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709082701; x=1709687501; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JUDXeYcrvidwDBcA1WOXXMMQ4eSI9QRabZdiDLCy8AY=;
-        b=JdYfd3WeVZxkIyt+ITeBN+60LEyPfRqjNA6y+gtQ/NmTNn1Vb4uyKs1tfAnhQ0PA6T
-         0nxXdvhGA5JJTs/zJDsSHz/b1DGpEx/kaQdiPxbOkHJzKyn5z8c3rVQVDS0GTs05BFSE
-         jsgibS45mE5otCPzWR8uVDipvHuIk6QByW+5A=
+        d=gmail.com; s=20230601; t=1709082372; x=1709687172; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DhG2DGa6pDHH1VG928nucKPhUiyDvmB5uJFD8WxCLAk=;
+        b=eMY6CVTD1mZfy03rOZkJ4ki/QIeX53Mx2oiVe2EPjFaYG+lPUv/D05iyiotwDXcLxx
+         pfSoxsDvJ6Vz6gWEfEj0nlD4hKz/78j6xWas7xXV0t5qOnb34AahB49xjZslFbS7ev3f
+         EuWPAK7Ah4wohBdaYAO1s1PmIuoyH69zYYoWcMXgcOIvRXuFsReyHSDFNpZ5Xg6W7lQG
+         WdpJiBv2G+ySuQSQUNWljKnI2M55f9HKo8e2nLiO2qxxNLrd5ujcFOrRe4Hko4B44GBI
+         gYcKlp9UO/sr7nKIY3cTjNvPw+RzCX5H5NFLdMTnUpHjdjgUH8IFFRCeYgDgDpwABFKb
+         uX0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709082701; x=1709687501;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1709082372; x=1709687172;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JUDXeYcrvidwDBcA1WOXXMMQ4eSI9QRabZdiDLCy8AY=;
-        b=pq25gqSEMS9ShSxKeZzf6FmRHitwn7MMyMsWNjAIC1bWLxIfCMIPj55Cf0R2n917tk
-         xYYlvUnBGowDy3MsKKkgtb41pCmI5iaVvJGr9WU0/cSsKJHOaGUA/tPya3feAIfw8QpI
-         sgLZ9fQSGqg/EEa5FuMDxYcQbFX+cjlTqQCu286h9p6XuQKQWyCe0HXcWp3xdeDVNS7K
-         2ldEqdS5CbNXMYZT7fWdZrwOQIjfUlEnX11amXEEMUsWeuFWe8MUUT4dK37a6e85/rgy
-         K3wuco0R2R7HSZe4jFrLKMEzwfQZ0Zb9UOC4inis40wV0VEOKe7Hs2kr8BuSr35ZA3PL
-         M9mw==
-X-Forwarded-Encrypted: i=1; AJvYcCVy3gSHsBOTVyilDw5eCToDQA06nPCDr9nTCUpZH9uVzktN1MXJN3ZIlj/rXWetRWeH0StkkVFvcuigJAVAwqa4bxJ8z3QoDrxU1FHc
-X-Gm-Message-State: AOJu0YxOMY8WQ8LV2C7A0th6r+qAYTKYSPuSWSb4Zs8pkQuTiMeJ9v9R
-	ykHfdot9znLvmu+bIUZ4p9ZxpTdOX4cM+yAgz/1fBelSEiIOxJJVyLCTLcsy0A==
-X-Google-Smtp-Source: AGHT+IE0Z6fIVeriFN1uMUOqrW9/ukSipbQ+YPExtZ1nyKsCKZYK1PuQscgD1Vwgs+5BAfFvhvuBsg==
-X-Received: by 2002:a17:903:985:b0:1db:c6ff:6648 with SMTP id mb5-20020a170903098500b001dbc6ff6648mr13245620plb.10.1709082700718;
-        Tue, 27 Feb 2024 17:11:40 -0800 (PST)
-Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:87d1:e95d:b670:4783])
-        by smtp.gmail.com with ESMTPSA id kl14-20020a170903074e00b001db4b3769f6sm2131529plb.280.2024.02.27.17.11.40
+        bh=DhG2DGa6pDHH1VG928nucKPhUiyDvmB5uJFD8WxCLAk=;
+        b=hpmeQp1E3u3ObK7fli9lVTrrf++q1OocXyMRjwOB2IQ4P5mjUCccoV0+FECIKsMfXZ
+         dC3MUxPtZ9rNgk2HKlkRfwX2x2vhgkP0CfdIHQuI078TZkVafALz7TeL6fecPXydTUwu
+         qXiUAumrqoaT5Md2Ap1kW9Z0zNFQkwXYfdH9ZGjCHPr1EPypbC78+yQbxH8EklbHzmd4
+         Itpo1CBf2P0Q53fMimFgLppwUG7TMIgrJYsP/SXYKlvHwy+wYC3tmTMeKZPSmCnS5bDI
+         RzEffwSVuOQ/eFMnbYQdNucGuLxWQqmi2xe+q/kgAXhzAzI9MQ1JlfkauPV4vVcHRZsM
+         CbEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXHmMS+0ZFqhOoxRUkh1NRHhQqc0xVp5vJLuBBH1w1u4dy0Thunx9cnCIWJfcoRRDhpjJFz5yIhxNeRJxLiAm46Wc+U0FCZjoSKupS+inKuREo9NSwKE0TBVQ/voqEsaKdXaA+739Wz8s1wUp57xiHbZ32ECXmflxmyaUHS2taDBcYVH8nZXyPm+E1DVg6eGOjy+S6FSGRnyqr2BpLY7OKKzg==
+X-Gm-Message-State: AOJu0Ywj/p8Yq0KjGKESJdBygDWKMxL2dw1X/DJuji3b99/UTiBNGLzn
+	hjf+N74+y17B/YRR4E9GJSMe3F7FlcHKIvcO/qKGzM+X5297HTLn
+X-Google-Smtp-Source: AGHT+IFKfO0y13JodeF6eFlc6IWCbbbk2Jvw3nQLEBpJsjWeW7+WZ/Ry4CGjgxNXq0G9thCXP1TIMA==
+X-Received: by 2002:a9d:6a9a:0:b0:6e4:8d2d:64e5 with SMTP id l26-20020a9d6a9a000000b006e48d2d64e5mr11096665otq.13.1709082372064;
+        Tue, 27 Feb 2024 17:06:12 -0800 (PST)
+Received: from Borg-9.local (070-114-203-196.res.spectrum.com. [70.114.203.196])
+        by smtp.gmail.com with ESMTPSA id p4-20020a056830338400b006e2d8b5d9e5sm1713834ott.21.2024.02.27.17.06.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 17:11:40 -0800 (PST)
-From: Hsin-Yi Wang <hsinyi@chromium.org>
-To: Douglas Anderson <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] drm/panel: panel-edp: Fix AUO 0x405c panel naming and add a variant
-Date: Tue, 27 Feb 2024 17:06:00 -0800
-Message-ID: <20240228011133.1238439-4-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-In-Reply-To: <20240228011133.1238439-1-hsinyi@chromium.org>
-References: <20240228011133.1238439-1-hsinyi@chromium.org>
+        Tue, 27 Feb 2024 17:06:11 -0800 (PST)
+Sender: John Groves <grovesaustin@gmail.com>
+Date: Tue, 27 Feb 2024 19:06:09 -0600
+From: John Groves <John@groves.net>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: John Groves <jgroves@micron.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Dan Williams <dan.j.williams@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, 
+	Dave Jiang <dave.jiang@intel.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Matthew Wilcox <willy@infradead.org>, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev, john@jagalactic.com, 
+	Dave Chinner <david@fromorbit.com>, Christoph Hellwig <hch@infradead.org>, 
+	dave.hansen@linux.intel.com, gregory.price@memverge.com
+Subject: Re: [RFC PATCH 08/20] famfs: Add famfs_internal.h
+Message-ID: <agvghv2lask3iazxtycynwkdydrxqula3pwbrusvwn3e2fz6jd@nrmpnbamp6f7>
+References: <cover.1708709155.git.john@groves.net>
+ <13556dbbd8d0f51bc31e3bdec796283fe85c6baf.1708709155.git.john@groves.net>
+ <20240226124818.0000251d@Huawei.com>
+ <u6nfwlidsmmhejsboqdo4r2juox4txkzt4ffjlnlcqzzrwthlt@wsh5eb5xeghj>
+ <20240227102846.00003eef@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227102846.00003eef@Huawei.com>
 
-There are 2 different AUO panels using the same panel id. One of the
-variants requires using overridden modes to resolve glitching issue as
-described in commit 70e0d5550f5c ("drm/panel-edp: Add auo_b116xa3_mode").
-Other variants should use the modes parsed from EDID.
+On 24/02/27 10:28AM, Jonathan Cameron wrote:
+> On Mon, 26 Feb 2024 11:35:17 -0600
+> John Groves <John@groves.net> wrote:
+> 
+> > On 24/02/26 12:48PM, Jonathan Cameron wrote:
+> > > On Fri, 23 Feb 2024 11:41:52 -0600
+> > > John Groves <John@Groves.net> wrote:
+> > >   
+> > > > Add the famfs_internal.h include file. This contains internal data
+> > > > structures such as the per-file metadata structure (famfs_file_meta)
+> > > > and extent formats.
+> > > > 
+> > > > Signed-off-by: John Groves <john@groves.net>  
+> > > Hi John,
+> > > 
+> > > Build this up as you add the definitions in later patches.
+> > > 
+> > > Separate header patches just make people jump back and forth when trying
+> > > to review.  Obviously more work to build this stuff up cleanly but
+> > > it's worth doing to save review time.
+> > >   
+> > 
+> > Ohhhhkaaaaay. I think you're right, just not looking forward to
+> > all that rebasing.
+> 
+> :)  Patch mangling is half the fun of upstream development :)
+> 
+> > 
+> > > Generally I'd plumb up Kconfig and Makefile a the beginning as it means
+> > > that the set is bisectable and we can check the logic of building each stage.
+> > > That is harder to do but tends to bring benefits in forcing clear step
+> > > wise approach on a patch set. Feel free to ignore this one though as it
+> > > can slow things down.  
+> > 
+> > I'm not sure that's practical. A file system needs a bunch of different
+> > kinds of operations
+> > - super_operations
+> > - fs_context_operations
+> > - inode_operations
+> > - file_operations
+> > - dax holder_operations, iomap_ops
+> > - etc.
+> > 
+> > Will think about the dependency graph of these entities, but I'm not sure
+> > it's tractable...
+> 
+> Sure.  There's a difference though between doing something useful (or
+> even successfully loading) and being able to build it at intermediate steps.
+> I'm only looking for buildability.
+> 
+> If not possible, even with a few stubs, empty ops structures etc
+> then fair enough.
+> 
+> Jonathan
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-v2: new
----
- drivers/gpu/drm/panel/panel-edp.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+I'm through at least the first stage of grief on this. By the time we're
+through this I'll be able to reconstitute the whole bloody thing from memory,
+backwards :D
 
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index 72ad552bff24..e39af92342e8 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -1013,6 +1013,19 @@ static const struct panel_desc auo_b101ean01 = {
- 	},
- };
- 
-+static const struct drm_display_mode auo_b116xa3_mode = {
-+	.clock = 70589,
-+	.hdisplay = 1366,
-+	.hsync_start = 1366 + 40,
-+	.hsync_end = 1366 + 40 + 40,
-+	.htotal = 1366 + 40 + 40 + 32,
-+	.vdisplay = 768,
-+	.vsync_start = 768 + 10,
-+	.vsync_end = 768 + 10 + 12,
-+	.vtotal = 768 + 10 + 12 + 6,
-+	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-+};
-+
- static const struct drm_display_mode auo_b116xak01_mode = {
- 	.clock = 69300,
- 	.hdisplay = 1366,
-@@ -1990,7 +2003,9 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B116XAN06.1"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B116XTN02.5"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B140HAN04.0"),
--	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAN04.0 "),
-+	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0 ",
-+			 &auo_b116xa3_mode),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x435c, &delay_200_500_e50, "Unknown"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x582d, &delay_200_500_e50, "B133UAN01.0"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1"),
--- 
-2.44.0.rc1.240.g4c46232300-goog
+John
 
 
